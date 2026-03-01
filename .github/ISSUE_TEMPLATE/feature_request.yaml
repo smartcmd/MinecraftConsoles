@@ -11,6 +11,16 @@ body:
       value: |
         **Thanks for taking the time to fill out this feature request report!**
         We kindly ask that you search to see if an issue [already exists](https://github.com/smartcmd/MinecraftConsoles/issues) for your feature.
+  - type: checkboxes
+    id: checklist
+    attributes:
+      label: Pre-submission Checklist
+      description: "Please help us help you by checking these boxes. Feature requests missing this information may be closed."
+      options:
+        - label: "I have searched for existing feature requests and didn't find a similar one."
+          required: true
+        - label: "I have read the README and understand the project goals."
+          required: true
 
   - type: textarea
     attributes:

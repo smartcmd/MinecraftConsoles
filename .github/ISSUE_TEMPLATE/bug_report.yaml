@@ -8,6 +8,18 @@ body:
       value: |
         **Thanks for taking the time to report a bug!**
         Please ensure you are using the latest version of the repository and have followed the build instructions in the README.
+  - type: checkboxes
+    id: checklist
+    attributes:
+      label: Pre-submission Checklist
+      description: "Please help us help you by checking these boxes. Reports missing this information may be closed."
+      options:
+        - label: "I have searched for existing issues and didn't find a similar one."
+          required: true
+        - label: "I have followed the build instructions in the README exactly."
+          required: true
+        - label: "I am using the latest version of the `main` branch."
+          required: true
   - type: textarea
     id: description
     attributes:
@@ -16,6 +28,14 @@ body:
       placeholder: "Describe what happened..."
     validations:
       required: true
+  - type: input
+    id: commit-hash
+    attributes:
+      label: Commit Hash / Version
+      description: "Provide the commit hash (e.g., `git rev-parse HEAD`) or version you are running."
+      placeholder: "e.g. 5a1b2c3d..."
+    validations:
+      required: false
   - type: textarea
     id: reproduction
     attributes:
@@ -26,6 +46,11 @@ body:
         2. Set configuration to ...
         3. Run the project
         4. Do ...
+
+        or
+
+        1. Open the release or debug executable
+        2. Do ...
     validations:
       required: true
   - type: textarea
@@ -43,6 +68,7 @@ body:
       options:
         - Debug
         - Release
+        - Both
     validations:
       required: true
   - type: dropdown
@@ -66,7 +92,7 @@ body:
   - type: textarea
     id: context
     attributes:
-      label: Additional Context
-      description: "Add any other context, screenshots, or logs here."
+      label: Visual Proof & Logs
+      description: "Drag and drop screenshots, videos, or log snippets here. Visual proof is highly recommended for game bugs."
     validations:
       required: false
