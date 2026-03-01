@@ -2344,6 +2344,9 @@
     <ClInclude Include="Windows64\KeyboardMouseInput.h">
       <Filter>Windows64\Source Files</Filter>
     </ClInclude>
+    <ClInclude Include="Windows64\Windows64_DInputManager.h">
+      <Filter>Windows64\Source Files</Filter>
+    </ClInclude>
     <ClInclude Include="Windows64\Windows64_App.h">
       <Filter>Windows64</Filter>
     </ClInclude>
@@ -4774,6 +4777,9 @@
       <Filter>Windows64\Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Windows64\KeyboardMouseInput.cpp">
+      <Filter>Windows64\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Windows64\Windows64_DInputManager.cpp">
       <Filter>Windows64\Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Windows64\Windows64_App.cpp">

@@ -38,6 +38,7 @@
 #include "..\..\Minecraft.World\OldChunkStorage.h"
 
 #include "Xbox/resource.h"
+#include "Windows64_DInputManager.h"
 
 #ifdef _MSC_VER
 #pragma comment(lib, "legacy_stdio_definitions.lib")
@@ -395,9 +396,6 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	case WM_MOUSEWHEEL:
 		KMInput.OnMouseWheel(GET_WHEEL_DELTA_WPARAM(wParam));
 		break;
-	case WM_MOUSEMOVE:
-		KMInput.OnMouseMove(GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam));
-		break;
 	case WM_ACTIVATE:
 		if (LOWORD(wParam) == WA_INACTIVE)
 			KMInput.SetCapture(false);
@@ -408,8 +406,9 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		break;
 
 	case WM_SETCURSOR:
-		// Hide the OS cursor when an Iggy/Flash menu is displayed (it has its own Flash cursor)
-		if (LOWORD(lParam) == HTCLIENT && !KMInput.IsCaptured() && ui.GetMenuDisplayed(0))
+		// Hide the OS cursor in inventory/container menus - the game renders its own in-game pointer.
+		// Main menus show the OS cursor so the player can see exactly where they are clicking.
+		if (LOWORD(lParam) == HTCLIENT && !KMInput.IsCaptured() && ui.IsContainerMenuDisplayed(0))
 		{
 			SetCursor(NULL);
 			return TRUE;
@@ -856,6 +855,10 @@ int APIENTRY _tWinMain(_In_ HINSTANCE hInstance,
 	// Set the number of possible joypad layouts that the user can switch between, and the number of actions
 	InputManager.Initialise(1,3,MINECRAFT_ACTION_MAX, ACTION_MAX_MENU);
 
+	// Hook XInputGetState/XInputGetCapabilities so non-XInput controllers
+	// (DS4, generic DInput gamepads) are visible to InputManager and the game.
+	DInputManager_Init();
+
 	// Initialize keyboard/mouse input
 	KMInput.Init(g_hWnd);
 
@@ -1083,6 +1086,7 @@ int APIENTRY _tWinMain(_In_ HINSTANCE hInstance,
 
 		app.UpdateTime();
 		PIXBeginNamedEvent(0,"Input manager tick");
+		DInputManager_Tick();   // refresh DInput slot assignments
 		InputManager.Tick();
 		KMInput.Tick();
 		PIXEndNamedEvent();
