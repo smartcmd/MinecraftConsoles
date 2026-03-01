@@ -594,6 +594,7 @@ app.DebugPrintf("width: %d, height: %d\n", width, height);
 
 	// Create a depth stencil buffer
 	D3D11_TEXTURE2D_DESC descDepth;
+	ZeroMemory(&descDepth, sizeof(descDepth));
 
 	descDepth.Width = width;
 	descDepth.Height = height;
@@ -609,6 +610,7 @@ app.DebugPrintf("width: %d, height: %d\n", width, height);
 	hr = g_pd3dDevice->CreateTexture2D(&descDepth, NULL, &g_pDepthStencilBuffer);
 
 	D3D11_DEPTH_STENCIL_VIEW_DESC descDSView;
+	ZeroMemory(&descDSView, sizeof(descDSView));
 	descDSView.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
 	descDSView.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2D;
 	descDSView.Texture2D.MipSlice = 0;
