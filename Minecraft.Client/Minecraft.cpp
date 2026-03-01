@@ -1223,6 +1223,53 @@ void Minecraft::createPrimaryLocalPlayer(int iPad)
 	}
 }
 
+#ifdef _WINDOWS64
+void Minecraft::applyFrameMouseLook()
+{
+	// Per-frame mouse look: consume mouse deltas every frame instead of waiting
+	// for the 20Hz game tick. Apply the same delta to both xRot/yRot AND xRotO/yRotO
+	// so the render interpolation instantly reflects the change without waiting for a tick.
+	if (level == NULL) return;
+
+	for (int i = 0; i < XUSER_MAX_COUNT; i++)
+	{
+		if (localplayers[i] == NULL) continue;
+		int iPad = localplayers[i]->GetXboxPad();
+		if (iPad != 0) continue;  // Mouse only applies to pad 0
+
+		if (!KMInput.IsCaptured()) continue;
+		if (localgameModes[iPad] == NULL) continue;
+
+		float rawDx, rawDy;
+		KMInput.ConsumeMouseDelta(rawDx, rawDy);
+		if (rawDx == 0.0f && rawDy == 0.0f) continue;
+
+		float mouseSensitivity = 0.5f;
+		float mdx = rawDx * mouseSensitivity;
+		float mdy = -rawDy * mouseSensitivity;
+		if (app.GetGameSettings(iPad, eGameSetting_ControlInvertLook))
+			mdy = -mdy;
+
+		// Apply 0.15f scaling (same as Entity::interpolateTurn / Entity::turn)
+		float dyaw = mdx * 0.15f;
+		float dpitch = -mdy * 0.15f;
+
+		// Apply to both current and old rotation so render interpolation
+		// reflects the change immediately (no 50ms tick delay)
+		localplayers[i]->yRot += dyaw;
+		localplayers[i]->yRotO += dyaw;
+		localplayers[i]->xRot += dpitch;
+		localplayers[i]->xRotO += dpitch;
+
+		// Clamp pitch
+		if (localplayers[i]->xRot < -90.0f) localplayers[i]->xRot = -90.0f;
+		if (localplayers[i]->xRot > 90.0f) localplayers[i]->xRot = 90.0f;
+		if (localplayers[i]->xRotO < -90.0f) localplayers[i]->xRotO = -90.0f;
+		if (localplayers[i]->xRotO > 90.0f) localplayers[i]->xRotO = 90.0f;
+	}
+}
+#endif
+
 void Minecraft::run_middle()
 {
 	static __int64 lastTime = 0;

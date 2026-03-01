@@ -217,6 +217,9 @@ public:
 	static Minecraft *GetInstance();
 	void run_middle();
 	void run_end();
+#ifdef _WINDOWS64
+	void applyFrameMouseLook();  // Per-frame mouse look to reduce input latency
+#endif
 
 	void emergencySave();
 

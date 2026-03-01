@@ -1081,6 +1081,7 @@ int APIENTRY _tWinMain(_In_ HINSTANCE hInstance,
 		// Render game graphics.
 		if(app.GetGameStarted())
 		{
+			pMinecraft->applyFrameMouseLook();  // Per-frame mouse look (before ticks + render)
 			pMinecraft->run_middle();
 			app.SetAppPaused( g_NetworkManager.IsLocalGame() && g_NetworkManager.GetPlayerCount() == 1 && ui.IsPauseMenuDisplayed(ProfileManager.GetPrimaryPad()) );
 		}

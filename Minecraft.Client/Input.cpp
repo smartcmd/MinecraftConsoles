@@ -128,17 +128,23 @@ void Input::tick(LocalPlayer *player)
 	player->interpolateTurn(tx * abs(tx) * turnSpeed, ty * abs(ty) * turnSpeed);
 
 #ifdef _WINDOWS64
-	// Mouse look (added after stick-based turn)
+	// Mouse look is now handled per-frame in Minecraft::applyFrameMouseLook()
+	// to eliminate the 20Hz tick delay. Only flush any remaining delta here
+	// as a safety measure.
 	if (iPad == 0 && KMInput.IsCaptured())
 	{
-		float mouseSensitivity = 0.5f;
 		float rawDx, rawDy;
 		KMInput.ConsumeMouseDelta(rawDx, rawDy);
-		float mdx = rawDx * mouseSensitivity;
-		float mdy = -rawDy * mouseSensitivity;
-		if (app.GetGameSettings(iPad, eGameSetting_ControlInvertLook))
-			mdy = -mdy;
-		player->interpolateTurn(mdx, mdy);
+		// Delta should normally be 0 since applyFrameMouseLook() already consumed it
+		if (rawDx != 0.0f || rawDy != 0.0f)
+		{
+			float mouseSensitivity = 0.5f;
+			float mdx = rawDx * mouseSensitivity;
+			float mdy = -rawDy * mouseSensitivity;
+			if (app.GetGameSettings(iPad, eGameSetting_ControlInvertLook))
+				mdy = -mdy;
+			player->interpolateTurn(mdx, mdy);
+		}
 	}
 #endif
 
