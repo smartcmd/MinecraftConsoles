@@ -9,18 +9,6 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Minecraft.Client", "Minecra
 	EndProjectSection
 EndProject
 Global
-	GlobalSection(TeamFoundationVersionControl) = preSolution
-		SccNumberOfProjects = 3
-		SccEnterpriseProvider = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
-		SccTeamFoundationServer = https://tfs4jstudios.visualstudio.com/defaultcollection
-		SccLocalPath0 = .
-		SccProjectUniqueName1 = Minecraft.World\\Minecraft.World.vcxproj
-		SccProjectName1 = Minecraft.World
-		SccLocalPath1 = Minecraft.World
-		SccProjectUniqueName2 = Minecraft.Client\\Minecraft.Client.vcxproj
-		SccProjectName2 = Minecraft.Client
-		SccLocalPath2 = Minecraft.Client
-	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		ContentPackage_NO_TU|Durango = ContentPackage_NO_TU|Durango
 		ContentPackage_NO_TU|ORBIS = ContentPackage_NO_TU|ORBIS
