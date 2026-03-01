@@ -1,0 +1,42 @@
+name: "Quick Bug Report"
+description: "Use this for small, obvious bugs (typos, UI glitches, etc.)"
+title: "[Quick Bug]: "
+labels: ["bug", "quick"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        **Thanks for the quick report!**
+        Only use this for bugs that are simple to explain and don't require complex environment details.
+  - type: textarea
+    id: description
+    attributes:
+      label: Bug Description
+      description: "What's wrong?"
+      placeholder: "e.g., The 'Exit' button is misaligned in the pause menu."
+    validations:
+      required: true
+  - type: textarea
+    id: expected-actual
+    attributes:
+      label: Expected vs. Actual Behavior
+      description: "What should happen and what actually happens?"
+    validations:
+      required: true
+  - type: dropdown
+    id: build-config
+    attributes:
+      label: Build Configuration
+      options:
+        - Debug
+        - Release
+        - Both
+    validations:
+      required: true
+  - type: textarea
+    id: context
+    attributes:
+      label: Visual Proof / Extra info
+      description: "Screenshots are very helpful if it's a UI bug!"
+    validations:
+      required: false

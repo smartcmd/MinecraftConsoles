@@ -1,0 +1,48 @@
+name: "Detailed Feature Request"
+description: "Use this for complex feature ideas that require detailed solutions and alternatives."
+title: "[Detailed Feature]: "
+labels: ["enhancement", "detailed"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        **Thanks for your detailed feature proposal!**
+        We value deep dives into how we can improve MinecraftConsoles.
+  - type: checkboxes
+    id: checklist
+    attributes:
+      label: Pre-submission Checklist
+      description: "Please help us help you by checking these boxes."
+      options:
+        - label: "I have searched for existing feature requests."
+          required: true
+        - label: "I have read the README and understand the project goals."
+          required: true
+  - type: textarea
+    id: description
+    attributes:
+      label: Feature Description
+      description: "A clear and concise description of the feature you're interested in."
+    validations:
+      required: true
+  - type: textarea
+    id: solution
+    attributes:
+      label: Suggested Solution
+      description: "Describe the solution you'd like. What exactly should happen?"
+    validations:
+      required: true
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives
+      description: "Describe any alternative solutions or features you've considered."
+    validations:
+      required: false
+  - type: textarea
+    id: context
+    attributes:
+      label: Additional Context
+      description: "Add any other context, mockups, or technical details here."
+    validations:
+      required: false

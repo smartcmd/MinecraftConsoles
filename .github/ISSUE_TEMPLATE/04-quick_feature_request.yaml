@@ -1,0 +1,32 @@
+name: "Quick Feature Suggestion"
+description: "Use this for small, simple ideas (minor QoL, small UI tweaks, etc.)"
+title: "[Quick Suggestion]: "
+labels: ["enhancement", "quick"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        **Thanks for the suggestion!**
+        Use this for easy-to-explain improvements.
+  - type: textarea
+    id: description
+    attributes:
+      label: What's your idea?
+      description: "A short description of the improvement."
+      placeholder: "e.g., Add a toggle for X in the settings menu."
+    validations:
+      required: true
+  - type: textarea
+    id: why
+    attributes:
+      label: Why would this be useful?
+      description: "How does this improve the player experience?"
+    validations:
+      required: true
+  - type: textarea
+    id: context
+    attributes:
+      label: Additional Context / Mockups
+      description: "Optional, but always helpful!"
+    validations:
+      required: false

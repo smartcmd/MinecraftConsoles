@@ -1,22 +1,22 @@
-name: "Bug Report"
-description: "Report a bug to help us improve MinecraftConsoles"
-title: "[Bug]: "
-labels: ["bug"]
+name: "Detailed Bug Report"
+description: "Use this for complex bugs that require environment details and reproduction steps."
+title: "[Detailed Bug]: "
+labels: ["bug", "detailed"]
 body:
   - type: markdown
     attributes:
       value: |
-        **Thanks for taking the time to report a bug!**
-        Please ensure you are using the latest version of the repository and have followed the build instructions in the README.
+        **Thanks for taking the time to report a detailed bug!**
+        Please ensure you are using the latest version of the repository.
   - type: checkboxes
     id: checklist
     attributes:
       label: Pre-submission Checklist
-      description: "Please help us help you by checking these boxes. Reports missing this information may be closed."
+      description: "Please help us help you by checking these boxes."
       options:
-        - label: "I have searched for existing issues and didn't find a similar one."
+        - label: "I have searched for existing issues."
           required: true
-        - label: "I have followed the build instructions in the README exactly."
+        - label: "I have followed the build instructions in the README."
           required: true
         - label: "I am using the latest version of the `main` branch."
           required: true
@@ -32,8 +32,7 @@ body:
     id: commit-hash
     attributes:
       label: Commit Hash / Version
-      description: "Provide the commit hash (e.g., `git rev-parse HEAD`) or version you are running."
-      placeholder: "e.g. 5a1b2c3d..."
+      description: "Provide the commit hash or version you are running."
     validations:
       required: false
   - type: textarea
@@ -44,13 +43,7 @@ body:
       placeholder: |
         1. Open MinecraftConsoles.sln
         2. Set configuration to ...
-        3. Run the project
-        4. Do ...
-
-        or
-
-        1. Open the release or debug executable
-        2. Do ...
+        3. Do ...
     validations:
       required: true
   - type: textarea
@@ -85,14 +78,13 @@ body:
     id: environment
     attributes:
       label: Environment Details
-      description: "e.g., Visual Studio version, Windows version, Hardware specs."
-      placeholder: "Visual Studio 2022 v17.x, Windows 11..."
+      description: "e.g., Visual Studio version, Windows version."
     validations:
       required: false
   - type: textarea
     id: context
     attributes:
       label: Visual Proof & Logs
-      description: "Drag and drop screenshots, videos, or log snippets here. Visual proof is highly recommended for game bugs."
+      description: "Drag and drop screenshots, videos, or logs."
     validations:
       required: false
