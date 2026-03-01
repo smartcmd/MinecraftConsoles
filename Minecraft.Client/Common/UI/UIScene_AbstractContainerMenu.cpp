@@ -5,6 +5,9 @@
 #include "..\..\..\Minecraft.World\net.minecraft.world.inventory.h"
 #include "..\..\..\Minecraft.World\net.minecraft.world.item.h"
 #include "..\..\MultiplayerLocalPlayer.h"
+#ifdef _WINDOWS64
+#include "..\..\Windows64\KeyboardMouseInput.h"
+#endif
 
 UIScene_AbstractContainerMenu::UIScene_AbstractContainerMenu(int iPad, UILayer *parentLayer) : UIScene(iPad, parentLayer)
 {
@@ -25,6 +28,9 @@ UIScene_AbstractContainerMenu::UIScene_AbstractContainerMenu(int iPad, UILayer *
 	ui.OverrideSFX(m_iPad,ACTION_MENU_DOWN,true);
 
 	m_bIgnoreInput=false;
+#ifdef _WINDOWS64
+	m_bMouseDragSlider=false;
+#endif
 }
 
 UIScene_AbstractContainerMenu::~UIScene_AbstractContainerMenu()
@@ -106,8 +112,8 @@ void UIScene_AbstractContainerMenu::PlatformInitialize(int iPad, int startIndex)
 #ifdef __ORBIS__
 	// we need to map the touchpad rectangle to the UI rectangle. While it works great for the creative menu, it is much too sensitive for the smaller menus.
 	//X coordinate of the touch point (0 to 1919)    
-	//Y coordinate of the touch point (0 to 941: DUALSHOCK®4 wireless controllers and the CUH-ZCT1J/CAP-ZCT1J/CAP-ZCT1U controllers for the PlayStation®4 development tool,    
-	//0 to 753: JDX-1000x series controllers for the PlayStation®4 development tool,)     
+	//Y coordinate of the touch point (0 to 941: DUALSHOCKï¿½4 wireless controllers and the CUH-ZCT1J/CAP-ZCT1J/CAP-ZCT1U controllers for the PlayStationï¿½4 development tool,    
+	//0 to 753: JDX-1000x series controllers for the PlayStationï¿½4 development tool,)     
 	m_fTouchPadMulX=fPanelWidth/1919.0f;
 	m_fTouchPadMulY=fPanelHeight/941.0f;
 	m_fTouchPadDeadZoneX=15.0f*m_fTouchPadMulX;
@@ -173,13 +179,118 @@ void UIScene_AbstractContainerMenu::tick()
 {
 	UIScene::tick();
 
+#ifdef _WINDOWS64
+	bool mouseActive = (m_iPad == 0 && !KMInput.IsCaptured());
+	float rawMouseMovieX = 0, rawMouseMovieY = 0;
+	// Map Windows mouse position to the virtual pointer in movie coordinates
+	if (mouseActive)
+	{
+		RECT clientRect;
+		GetClientRect(KMInput.GetHWnd(), &clientRect);
+		int clientWidth = clientRect.right;
+		int clientHeight = clientRect.bottom;
+		if (clientWidth > 0 && clientHeight > 0)
+		{
+			int mouseX = KMInput.GetMouseX();
+			int mouseY = KMInput.GetMouseY();
+
+			// Convert mouse position to movie coordinates using the movie/client ratio
+			float mx = (float)mouseX * ((float)m_movieWidth / (float)clientWidth);
+			float my = (float)mouseY * ((float)m_movieHeight / (float)clientHeight);
+
+			m_pointerPos.x = mx;
+			m_pointerPos.y = my;
+			rawMouseMovieX = mx;
+			rawMouseMovieY = my;
+		}
+	}
+#endif
+
 	onMouseTick();
+
+#ifdef _WINDOWS64
+	// Dispatch mouse clicks AFTER onMouseTick() has updated m_eCurrSection from the new pointer position
+	if (mouseActive)
+	{
+		if (KMInput.ConsumeMousePress(0))
+		{
+			if (m_eCurrSection == eSectionInventoryCreativeSlider)
+			{
+				// Scrollbar click: use raw mouse position (onMouseTick may have snapped m_pointerPos)
+				m_bMouseDragSlider = true;
+				m_pointerPos.x = rawMouseMovieX;
+				m_pointerPos.y = rawMouseMovieY;
+				handleOtherClicked(m_iPad, eSectionInventoryCreativeSlider, 0, false);
+			}
+			else
+			{
+				handleKeyDown(m_iPad, ACTION_MENU_A, false);
+			}
+		}
+		else if (m_bMouseDragSlider && KMInput.IsMouseDown(0))
+		{
+			// Continue scrollbar drag: update scroll position from current mouse Y
+			m_pointerPos.x = rawMouseMovieX;
+			m_pointerPos.y = rawMouseMovieY;
+			handleOtherClicked(m_iPad, eSectionInventoryCreativeSlider, 0, false);
+		}
+
+		if (!KMInput.IsMouseDown(0))
+			m_bMouseDragSlider = false;
+
+		if (KMInput.ConsumeMousePress(1))
+		{
+			handleKeyDown(m_iPad, ACTION_MENU_X, false);
+		}
+		if (KMInput.ConsumeMousePress(2))
+		{
+			handleKeyDown(m_iPad, ACTION_MENU_Y, false);
+		}
+
+		// Mouse scroll wheel for tab switching
+		int scrollDelta = KMInput.ConsumeScrollDelta();
+		if (scrollDelta > 0)
+		{
+			handleKeyDown(m_iPad, ACTION_MENU_LEFT_SCROLL, false);
+		}
+		else if (scrollDelta < 0)
+		{
+			handleKeyDown(m_iPad, ACTION_MENU_RIGHT_SCROLL, false);
+		}
+
+		// ESC to close â€” must be last since it may destroy this scene
+		if (KMInput.ConsumeKeyPress(VK_ESCAPE))
+		{
+			handleKeyDown(m_iPad, ACTION_MENU_B, false);
+			return;
+		}
+	}
+#endif
 
 	IggyEvent mouseEvent;
 	S32 width, height;
 	m_parentLayer->getRenderDimensions(width, height);
+
+#ifdef _WINDOWS64
+	S32 x, y;
+	if (mouseActive)
+	{
+		// Send raw mouse position directly as Iggy event to avoid coordinate round-trip errors
+		// Scale mouse client coords to the Iggy display space (which was set to getRenderDimensions())
+		RECT clientRect;
+		GetClientRect(KMInput.GetHWnd(), &clientRect);
+		x = (S32)((float)KMInput.GetMouseX() * ((float)width / (float)clientRect.right));
+		y = (S32)((float)KMInput.GetMouseY() * ((float)height / (float)clientRect.bottom));
+	}
+	else
+	{
+		x = (S32)(m_pointerPos.x * ((float)width / m_movieWidth));
+		y = (S32)(m_pointerPos.y * ((float)height / m_movieHeight));
+	}
+#else
 	S32 x = m_pointerPos.x*((float)width/m_movieWidth);
 	S32 y = m_pointerPos.y*((float)height/m_movieHeight);
+#endif
 	IggyMakeEventMouseMove( &mouseEvent, x, y);
 
 	// 4J Stu - This seems to be broken on Durango, so do it ourself

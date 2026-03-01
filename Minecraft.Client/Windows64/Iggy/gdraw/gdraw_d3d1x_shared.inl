@@ -502,7 +502,7 @@ static GDrawTexture * RADLINK gdraw_MakeTextureEnd(GDraw_MakeTexture_ProcessingI
    }
 
    // actually create texture
-   D3D1X_(TEXTURE2D_DESC) desc = { w, h, nmips, 1, (DXGI_FORMAT) p->i3, { 1, 0 },
+   D3D1X_(TEXTURE2D_DESC) desc = { static_cast<U32>(w), static_cast<U32>(h), static_cast<U32>(nmips), 1, static_cast<DXGI_FORMAT>(p->i3), { 1, 0 },
       (p->i2 & GDRAW_MAKETEXTURE_FLAGS_updatable) ? D3D1X_(USAGE_DEFAULT) : D3D1X_(USAGE_IMMUTABLE),
       D3D1X_(BIND_SHADER_RESOURCE), 0, 0 };
 
@@ -541,7 +541,7 @@ static rrbool RADLINK gdraw_UpdateTextureBegin(GDrawTexture *t, void *unique_id,
 static void RADLINK gdraw_UpdateTextureRect(GDrawTexture *t, void * /*unique_id*/, S32 x, S32 y, S32 stride, S32 w, S32 h, U8 *samples, gdraw_texture_format /*format*/)
 {
    GDrawHandle *s = (GDrawHandle *) t;
-   D3D1X_(BOX) box = { x, y, 0, x+w, y+h, 1 };
+   D3D1X_(BOX) box = { static_cast<U32>(x), static_cast<U32>(y), 0U, static_cast<U32>(x + w), static_cast<U32>(y + h), 1U };
 
    gdraw->d3d_context->UpdateSubresource(s->handle.tex.d3d, 0, &box, samples, stride, 0);
 }
@@ -586,8 +586,8 @@ static void RADLINK gdraw_SetAntialiasTexture(S32 width, U8 *rgba)
    safe_release(gdraw->aa_tex_view);
    safe_release(gdraw->aa_tex);
 
-   D3D1X_(TEXTURE2D_DESC) desc = { width, 1, 1, 1, DXGI_FORMAT_R8G8B8A8_UNORM, { 1, 0 }, D3D1X_(USAGE_IMMUTABLE), D3D1X_(BIND_SHADER_RESOURCE), 0, 0 };
-   D3D1X_(SUBRESOURCE_DATA) data = { rgba, width*4, 0 };
+   D3D1X_(TEXTURE2D_DESC) desc = { static_cast<U32>(width), 1U, 1U, 1U, DXGI_FORMAT_R8G8B8A8_UNORM, { 1, 0 }, D3D1X_(USAGE_IMMUTABLE), D3D1X_(BIND_SHADER_RESOURCE), 0U, 0U };
+   D3D1X_(SUBRESOURCE_DATA) data = { rgba, static_cast<U32>(width) * 4U, 0U };
 
    hr = gdraw->d3d_device->CreateTexture2D(&desc, &data, &gdraw->aa_tex);
    if (FAILED(hr)) {
@@ -646,10 +646,10 @@ static GDrawVertexBuffer * RADLINK gdraw_MakeVertexBufferEnd(GDraw_MakeVertexBuf
    GDrawHandle *vb = (GDrawHandle *) p->p0;
 
    HRESULT hr;
-   D3D1X_(BUFFER_DESC) vbdesc = { p->vertex_data_length, D3D1X_(USAGE_IMMUTABLE), D3D1X_(BIND_VERTEX_BUFFER), 0, 0 };
+   D3D1X_(BUFFER_DESC) vbdesc = { static_cast<U32>(p->vertex_data_length), D3D1X_(USAGE_IMMUTABLE), D3D1X_(BIND_VERTEX_BUFFER), 0U, 0U };
    D3D1X_(SUBRESOURCE_DATA) vbdata = { p->vertex_data, 0, 0 };
    
-   D3D1X_(BUFFER_DESC) ibdesc = { p->index_data_length, D3D1X_(USAGE_IMMUTABLE), D3D1X_(BIND_INDEX_BUFFER), 0, 0 };
+   D3D1X_(BUFFER_DESC) ibdesc = { static_cast<U32>(p->index_data_length), D3D1X_(USAGE_IMMUTABLE), D3D1X_(BIND_INDEX_BUFFER), 0U, 0U };
    D3D1X_(SUBRESOURCE_DATA) ibdata = { p->index_data, 0, 0 };
 
    hr = gdraw->d3d_device->CreateBuffer(&vbdesc, &vbdata, &vb->handle.vbuf.verts);
@@ -722,8 +722,8 @@ static GDrawHandle *get_color_rendertarget(GDrawStats *stats)
       return t;
    }
 
-   D3D1X_(TEXTURE2D_DESC) desc = { gdraw->frametex_width, gdraw->frametex_height, 1, 1, DXGI_FORMAT_R8G8B8A8_UNORM, { 1, 0 },
-      D3D1X_(USAGE_DEFAULT), D3D1X_(BIND_SHADER_RESOURCE) | D3D1X_(BIND_RENDER_TARGET), 0, 0 };
+   D3D1X_(TEXTURE2D_DESC) desc = { static_cast<U32>(gdraw->frametex_width), static_cast<U32>(gdraw->frametex_height), 1U, 1U, DXGI_FORMAT_R8G8B8A8_UNORM, { 1, 0 },
+      D3D1X_(USAGE_DEFAULT), D3D1X_(BIND_SHADER_RESOURCE) | D3D1X_(BIND_RENDER_TARGET), 0U, 0U };
 
    t->handle.tex.d3d = NULL;
    t->handle.tex.d3d_view = NULL;
@@ -765,8 +765,8 @@ static ID3D1X(DepthStencilView) *get_rendertarget_depthbuffer(GDrawStats *stats)
       char *failed_call;
       assert(!gdraw->rt_depth_buffer);
 
-      D3D1X_(TEXTURE2D_DESC) desc = { gdraw->frametex_width, gdraw->frametex_height, 1, 1, DXGI_FORMAT_D24_UNORM_S8_UINT, { 1, 0 },
-         D3D1X_(USAGE_DEFAULT), D3D1X_(BIND_DEPTH_STENCIL), 0, 0 };
+      D3D1X_(TEXTURE2D_DESC) desc = { static_cast<U32>(gdraw->frametex_width), static_cast<U32>(gdraw->frametex_height), 1U, 1U, DXGI_FORMAT_D24_UNORM_S8_UINT, { 1, 0 },
+         D3D1X_(USAGE_DEFAULT), D3D1X_(BIND_DEPTH_STENCIL), 0U, 0U };
 
       HRESULT hr = gdraw->d3d_device->CreateTexture2D(&desc, NULL, &gdraw->rt_depth_buffer);
       failed_call = "CreateTexture2D";
@@ -2399,8 +2399,8 @@ GDrawTexture * RADLINK gdraw_D3D1X_(MakeTextureFromResource)(U8 *resource_file, 
    mipmaps = texture->mipmaps;
    blk = 1;
 
-   D3D1X_(TEXTURE2D_DESC) desc = { width, height, mipmaps, 1, DXGI_FORMAT_UNKNOWN, { 1, 0 },
-      D3D1X_(USAGE_IMMUTABLE), D3D1X_(BIND_SHADER_RESOURCE), 0, 0 };
+   D3D1X_(TEXTURE2D_DESC) desc = { static_cast<U32>(width), static_cast<U32>(height), static_cast<U32>(mipmaps), 1U, DXGI_FORMAT_UNKNOWN, { 1, 0 },
+      D3D1X_(USAGE_IMMUTABLE), D3D1X_(BIND_SHADER_RESOURCE), 0U, 0U };
 
    switch (texture->format) {
       case IFT_FORMAT_rgba_8888   : size= 4; d3dfmt = DXGI_FORMAT_R8G8B8A8_UNORM; break;

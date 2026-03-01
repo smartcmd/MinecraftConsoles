@@ -186,7 +186,11 @@ class Keyboard
 public:
 	static void create() {}
 	static void destroy() {}
+#ifdef _WINDOWS64
+	static bool isKeyDown(int key);
+#else
 	static bool isKeyDown(int) {return false;}
+#endif
 	static wstring getKeyName(int) { return L"KEYNAME"; }
 	static void enableRepeatEvents(bool) {}
 	static const int KEY_A = 0;
@@ -224,6 +228,8 @@ public:
 	static const int KEY_UP = 32;
 	static const int KEY_DOWN = 33;
 	static const int KEY_TAB = 34;
+	static const int KEY_LEFT = 35;
+	static const int KEY_RIGHT = 36;
 };
 
 class Mouse
@@ -231,9 +237,15 @@ class Mouse
 public:
 	static void create() {}
 	static void destroy() {}
+#ifdef _WINDOWS64
+	static int getX();
+	static int getY();
+	static bool isButtonDown(int button);
+#else
 	static int getX() { return 0; }
 	static int getY() { return 0; }
 	static bool isButtonDown(int) { return false; }
+#endif
 };
 
 class Display

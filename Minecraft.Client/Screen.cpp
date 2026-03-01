@@ -5,6 +5,9 @@
 #include "Tesselator.h"
 #include "Textures.h"
 #include "..\Minecraft.World\SoundTypes.h"
+#ifdef _WINDOWS64
+#include "Windows64\KeyboardMouseInput.h"
+#endif
 
 
 
@@ -103,20 +106,71 @@ void Screen::init()
 
 void Screen::updateEvents()
 {
+#ifdef _WINDOWS64
+	// Poll mouse button state and dispatch click/release events
+	for (int btn = 0; btn < 3; btn++)
+	{
+		if (KMInput.ConsumeMousePress(btn))
+		{
+			int xm = Mouse::getX() * width / minecraft->width;
+			int ym = height - Mouse::getY() * height / minecraft->height - 1;
+			mouseClicked(xm, ym, btn);
+		}
+		if (KMInput.ConsumeMouseRelease(btn))
+		{
+			int xm = Mouse::getX() * width / minecraft->width;
+			int ym = height - Mouse::getY() * height / minecraft->height - 1;
+			mouseReleased(xm, ym, btn);
+		}
+	}
+
+	// Poll keyboard events
+	for (int vk = 0; vk < 256; vk++)
+	{
+		if (KMInput.ConsumeKeyPress(vk))
+		{
+			// Map Windows virtual key to the Keyboard constants used by Screen::keyPressed
+			int mappedKey = -1;
+			wchar_t ch = 0;
+			if (vk == VK_ESCAPE)  mappedKey = Keyboard::KEY_ESCAPE;
+			else if (vk == VK_RETURN)  mappedKey = Keyboard::KEY_RETURN;
+			else if (vk == VK_BACK)    mappedKey = Keyboard::KEY_BACK;
+			else if (vk == VK_UP)      mappedKey = Keyboard::KEY_UP;
+			else if (vk == VK_DOWN)    mappedKey = Keyboard::KEY_DOWN;
+			else if (vk == VK_LEFT)    mappedKey = Keyboard::KEY_LEFT;
+			else if (vk == VK_RIGHT)   mappedKey = Keyboard::KEY_RIGHT;
+			else if (vk == VK_LSHIFT || vk == VK_RSHIFT) mappedKey = Keyboard::KEY_LSHIFT;
+			else if (vk == VK_TAB)     mappedKey = Keyboard::KEY_TAB;
+			else if (vk >= 'A' && vk <= 'Z')
+			{
+				ch = (wchar_t)(vk - 'A' + L'a');
+				if (KMInput.IsKeyDown(VK_SHIFT)) ch = (wchar_t)vk;
+			}
+			else if (vk >= '0' && vk <= '9') ch = (wchar_t)vk;
+			else if (vk == VK_SPACE) ch = L' ';
+
+			if (mappedKey != -1) keyPressed(ch, mappedKey);
+			else if (ch != 0) keyPressed(ch, -1);
+		}
+	}
+#else
 	/* 4J - TODO
-    while (Mouse.next()) {
-        mouseEvent();
-    }
+	while (Mouse.next()) {
+		mouseEvent();
+	}
 
-    while (Keyboard.next()) {
-        keyboardEvent();
-    }
+	while (Keyboard.next()) {
+		keyboardEvent();
+	}
 	*/
-
+#endif
 }
 
 void Screen::mouseEvent()
 {
+#ifdef _WINDOWS64
+	// Mouse event dispatching is handled directly in updateEvents() for Windows
+#else
 	/* 4J - TODO
     if (Mouse.getEventButtonState()) {
         int xm = Mouse.getEventX() * width / minecraft.width;
@@ -128,6 +182,7 @@ void Screen::mouseEvent()
         mouseReleased(xm, ym, Mouse.getEventButton());
     }
 	*/
+#endif
 }
 
 void Screen::keyboardEvent()

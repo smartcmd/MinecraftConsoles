@@ -1,5 +1,7 @@
 # MinecraftConsoles
 
+[![Discord](https://img.shields.io/badge/Discord-Join%20Server-5865F2?logo=discord&logoColor=white)](https://discord.gg/5CSzhc9t)
+
 ![img.png](img.png)
 
 ## Introduction
@@ -20,9 +22,9 @@ This project contains the source code of Minecraft Legacy Console Edition v1.3.0
 2. Clone the repository
 3. Open the project by double-clicking `MinecraftConsoles.sln`
 4. Make sure `Minecraft.Client` is set as the Startup Project
-5. Set the build configuration to **Debug** or **Release** and the target platform to **Windows64**, then build and run
+5. Set the build configuration to **Debug** (Release is also OK but has some bugs) and the target platform to **Windows64**, then build and run
 
 ## Known Issues
 
 - Builds for other platforms have not been tested and are most likely non-functional
-- Other unknown issues may exist
+- There are some render bugs in the Release mode build

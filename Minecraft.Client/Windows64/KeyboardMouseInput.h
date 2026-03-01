@@ -42,8 +42,15 @@ public:
 	// Use these from code that runs at game tick rate (20Hz).
 	bool ConsumeKeyPress(int vk);
 	bool ConsumeMousePress(int btn);
+	bool ConsumeMouseRelease(int btn);
 	void ConsumeMouseDelta(float &dx, float &dy);
 	int ConsumeScrollDelta();
+
+	// Absolute cursor position (client-area coordinates, for GUI when not captured)
+	void OnMouseMove(int x, int y);
+	int GetMouseX() const;
+	int GetMouseY() const;
+	HWND GetHWnd() const;
 
 	// Mouse capture for FPS look
 	void SetCapture(bool capture);
@@ -61,6 +68,7 @@ private:
 	// Sticky press accumulators (persist until consumed by game tick)
 	bool m_keyPressedAccum[256];
 	bool m_mousePressedAccum[3];
+	bool m_mouseReleasedAccum[3];
 
 	// Mouse delta accumulators (persist until consumed by game tick)
 	float m_mouseDeltaXAccum;
@@ -72,6 +80,10 @@ private:
 	bool m_captured;
 	HWND m_hWnd;
 	bool m_initialized;
+
+	// Absolute cursor position in client coordinates
+	int m_mouseX;
+	int m_mouseY;
 };
 
 extern KeyboardMouseInput KMInput;

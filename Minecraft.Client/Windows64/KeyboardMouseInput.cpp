@@ -13,6 +13,8 @@ KeyboardMouseInput::KeyboardMouseInput()
 	, m_captured(false)
 	, m_hWnd(NULL)
 	, m_initialized(false)
+	, m_mouseX(0)
+	, m_mouseY(0)
 {
 	memset(m_keyState, 0, sizeof(m_keyState));
 	memset(m_keyStatePrev, 0, sizeof(m_keyStatePrev));
@@ -20,6 +22,7 @@ KeyboardMouseInput::KeyboardMouseInput()
 	memset(m_mouseButtonsPrev, 0, sizeof(m_mouseButtonsPrev));
 	memset(m_keyPressedAccum, 0, sizeof(m_keyPressedAccum));
 	memset(m_mousePressedAccum, 0, sizeof(m_mousePressedAccum));
+	memset(m_mouseReleasedAccum, 0, sizeof(m_mouseReleasedAccum));
 }
 
 KeyboardMouseInput::~KeyboardMouseInput()
@@ -103,6 +106,7 @@ void KeyboardMouseInput::OnMouseButton(int button, bool down)
 	if (button >= 0 && button < 3)
 	{
 		if (down && !m_mouseButtons[button]) m_mousePressedAccum[button] = true;
+		if (!down && m_mouseButtons[button]) m_mouseReleasedAccum[button] = true;
 		m_mouseButtons[button] = down;
 	}
 }
@@ -112,12 +116,23 @@ void KeyboardMouseInput::OnMouseWheel(int delta)
 	m_scrollDeltaAccum += delta;
 }
 
+void KeyboardMouseInput::OnMouseMove(int x, int y)
+{
+	m_mouseX = x;
+	m_mouseY = y;
+}
+
+int KeyboardMouseInput::GetMouseX() const { return m_mouseX; }
+int KeyboardMouseInput::GetMouseY() const { return m_mouseY; }
+HWND KeyboardMouseInput::GetHWnd() const { return m_hWnd; }
+
 void KeyboardMouseInput::ClearAllState()
 {
 	memset(m_keyState, 0, sizeof(m_keyState));
 	memset(m_mouseButtons, 0, sizeof(m_mouseButtons));
 	memset(m_keyPressedAccum, 0, sizeof(m_keyPressedAccum));
 	memset(m_mousePressedAccum, 0, sizeof(m_mousePressedAccum));
+	memset(m_mouseReleasedAccum, 0, sizeof(m_mouseReleasedAccum));
 	m_mouseDeltaXAccum = 0.0f;
 	m_mouseDeltaYAccum = 0.0f;
 	m_scrollDeltaAccum = 0;
@@ -176,6 +191,14 @@ bool KeyboardMouseInput::ConsumeMousePress(int btn)
 	bool pressed = m_mousePressedAccum[btn];
 	m_mousePressedAccum[btn] = false;
 	return pressed;
+}
+
+bool KeyboardMouseInput::ConsumeMouseRelease(int btn)
+{
+	if (btn < 0 || btn >= 3) return false;
+	bool released = m_mouseReleasedAccum[btn];
+	m_mouseReleasedAccum[btn] = false;
+	return released;
 }
 
 void KeyboardMouseInput::ConsumeMouseDelta(float &dx, float &dy)

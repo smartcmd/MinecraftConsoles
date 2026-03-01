@@ -10,6 +10,9 @@ class UIScene_AbstractContainerMenu : public UIScene, public virtual IUIScene_Ab
 private:
 	ESceneSection m_focusSection;
 	bool m_bIgnoreInput;
+#ifdef _WINDOWS64
+	bool m_bMouseDragSlider;
+#endif
 
 protected:
 	UIControl m_controlMainPanel;
