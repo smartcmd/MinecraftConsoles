@@ -428,7 +428,7 @@ void Textures::bindTextureLayers(ResourceLocation *resource)
 
 	for( int i = 0; i < layers; i++ )
 	{
-		RenderManager.TextureBind(i,loadTexture(resource->getTexture(i)));
+		RenderManager.TextureBind(loadTexture(resource->getTexture(i)));
 	}
 }
 

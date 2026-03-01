@@ -49,7 +49,7 @@ void HorseRenderer::renderModel(shared_ptr<LivingEntity> mob, float wp, float ws
         EntityRenderer::bindTexture(mob);
         model->render(mob, wp, ws, bob, headRotMinusBodyRot, headRotx, scale, true);
 		// Ensure that any extra layers of texturing are disabled after rendering this horse
-		RenderManager.TextureBind(1,-1);
+		RenderManager.TextureBind(-1);
     }
 }
 

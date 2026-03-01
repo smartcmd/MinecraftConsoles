@@ -556,7 +556,7 @@ void CPlatformNetworkManagerStub::ForceFriendsSessionRefresh()
 
 INetworkPlayer *CPlatformNetworkManagerStub::addNetworkPlayer(IQNetPlayer *pQNetPlayer)
 {
-	NetworkPlayerXbox *pNetworkPlayer = new NetworkPlayerXbox(pQNetPlayer, NULL);
+	NetworkPlayerXbox *pNetworkPlayer = new NetworkPlayerXbox(pQNetPlayer);
 	pQNetPlayer->SetCustomDataValue((ULONG_PTR)pNetworkPlayer);
 	currentNetworkPlayers.push_back( pNetworkPlayer );
 	return pNetworkPlayer;

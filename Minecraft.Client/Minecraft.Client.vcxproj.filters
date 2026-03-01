@@ -5913,6 +5913,9 @@
     <ClCompile Include="Common\Leaderboards\LeaderboardInterface.cpp">
       <Filter>Common\Source Files\Leaderboards</Filter>
     </ClCompile>
+    <ClCompile Include="compat_shims.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Library Include="Xbox\4JLibs\libs\4J_Render_d.lib">
@@ -6140,25 +6143,13 @@
     <Library Include="PSVita\Iggy\lib\libiggyperfmon_psp2.a">
       <Filter>PSVita\Iggy\Lib</Filter>
     </Library>
-    <Library Include="PSVita\Miles\lib\binkapsp2.a">
-      <Filter>PSVita\Miles Sound System\lib</Filter>
-    </Library>
-    <Library Include="PSVita\Miles\lib\fltpsp2.a">
-      <Filter>PSVita\Miles Sound System\lib</Filter>
-    </Library>
-    <Library Include="PSVita\Miles\lib\msspsp2.a">
-      <Filter>PSVita\Miles Sound System\lib</Filter>
-    </Library>
-    <Library Include="PSVita\Miles\lib\msspsp2midi.a">
-      <Filter>PSVita\Miles Sound System\lib</Filter>
-    </Library>
     <Library Include="Xbox\4JLibs\libs\4J_XTMS_d.lib">
       <Filter>Xbox\4JLibs\libs</Filter>
     </Library>
     <Library Include="Xbox\4JLibs\libs\4J_XTMS_r.lib">
       <Filter>Xbox\4JLibs\libs</Filter>
     </Library>
-    <Library Include="PSVita\4JLibs\libs\libSceNpToolkit_rtti.a">
+    <!-- <Library Include="PSVita\4JLibs\libs\libSceNpToolkit_rtti.a">
       <Filter>PSVita\4JLibs\libs</Filter>
     </Library>
     <Library Include="PSVita\4JLibs\libs\libSceNpToolkitUtils_rtti.a">
@@ -6169,7 +6160,7 @@
     </Library>
     <Library Include="PSVita\4JLibs\libs\libSceNpToolkitUtils_rtti_dbg.a">
       <Filter>PSVita\4JLibs\libs</Filter>
-    </Library>
+    </Library> -->
   </ItemGroup>
   <ItemGroup>
     <Xsd Include="Xbox\Sentient\SentientStats.xsd">
@@ -6289,5 +6280,10 @@
   </ItemGroup>
   <ItemGroup>
     <Xml Include="Durango\manifest.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <MASM Include="iob_shim.asm">
+      <Filter>Source Files</Filter>
+    </MASM>
   </ItemGroup>
 </Project>

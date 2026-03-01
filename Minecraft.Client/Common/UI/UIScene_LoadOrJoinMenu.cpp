@@ -8,7 +8,6 @@
 #include "..\..\..\Minecraft.World\net.minecraft.world.level.chunk.storage.h"
 #include "..\..\..\Minecraft.World\ConsoleSaveFile.h"
 #include "..\..\..\Minecraft.World\ConsoleSaveFileOriginal.h"
-#include "..\..\..\Minecraft.World\ConsoleSaveFileSplit.h"
 #include "..\..\ProgressRenderer.h"
 #include "..\..\MinecraftServer.h"
 #include "..\..\TexturePackRepository.h"
