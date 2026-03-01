@@ -1,5 +1,0 @@
-#define IDC_XuiCheckbox1 L"XuiCheckbox1"
-#define IDC_XuiCheckbox2 L"XuiCheckbox2"
-#define IDC_XuiCheckbox3 L"XuiCheckbox3"
-#define IDC_XuiCheckbox4 L"XuiCheckbox4"
-#define IDC_SceneDebug L"SceneDebug"

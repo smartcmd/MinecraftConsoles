@@ -1,1 +1,0 @@
-"C:\Program Files (x86)\winzip\wzzip" -p -r -ex c:\MinecraftSubmissionBuilds\Zips\Minecraft_14.09.30.0494_TU18.zip c:\MinecraftSubmissionBuilds\Minecraft_14.09.30.0494_TU18\*

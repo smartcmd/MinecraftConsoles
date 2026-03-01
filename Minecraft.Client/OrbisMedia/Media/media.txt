@@ -1,8 +1,0 @@
-languages.loc
-Tutorial.pck
-skinHDOrbis.swf
-skinOrbis.swf
-DefaultOptionsImage228x128.png
-DefaultSaveImage228x128.png
-DefaultSaveThumbnail64x64.png
-DLCOffersMenu1080.swf

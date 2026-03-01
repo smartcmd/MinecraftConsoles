@@ -1,6 +1,0 @@
-#define IDC_control_ListItem L"control_ListItem"
-#define IDC_control_ListItem L"control_ListItem"
-#define IDC_GamePlayers L"GamePlayers"
-#define IDC_Title L"Title"
-#define IDC_GameOptionsButton L"GameOptionsButton"
-#define IDC_InGameInfo L"InGameInfo"

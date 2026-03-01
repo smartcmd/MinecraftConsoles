@@ -1,9 +1,0 @@
-You'll need -
-Incredibuild
-Winzip command line interface
-
-Perl - 
-Install perl from - http://www.activestate.com/activeperl/downloads
-then run from the command line:
- cpan App::cpanminus
- cpanm File::Copy::Recursive

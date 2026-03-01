@@ -1,6 +1,0 @@
-languages.loc
-Tutorial.pck
-skinDurango.swf
-skinHDDurango.swf
-DLCOffersMenu1080.swf
-DefaultSaveThumbnail64x64.png

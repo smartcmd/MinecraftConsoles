@@ -1,8 +1,0 @@
-#define IDC_XuiButton1 L"XuiButton1"
-#define IDC_XuiButton2 L"XuiButton2"
-#define IDC_XuiButton3 L"XuiButton3"
-#define IDC_XuiButton4 L"XuiButton4"
-#define IDC_XuiButton5 L"XuiButton5"
-#define IDC_XuiButton6 L"XuiButton6"
-#define IDC_FocusSink L"FocusSink"
-#define IDC_SceneReinstall L"SceneReinstall"

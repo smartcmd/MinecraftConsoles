@@ -1,6 +1,0 @@
-You'll need activestate perl from perl.org
-
-Also need the recursive copy - 
-ppm install File-Copy-Recursive
-
-Then run SubmissionAutobuild.cmd

@@ -1,7 +1,0 @@
-languages.loc
-Tutorial.pck
-skinVita.swf
-DLCOffersMenuVita.swf
-DefaultOptionsImage320x176.png
-DefaultSaveImage320x176.png
-DefaultSaveThumbnail64x64.png

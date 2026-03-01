@@ -1,8 +1,0 @@
-#define IDC_BackgroundImage L"BackgroundImage"
-#define IDC_EditLineOne L"EditLineOne"
-#define IDC_EditLineTwo L"EditLineTwo"
-#define IDC_EditLineThree L"EditLineThree"
-#define IDC_EditLineFour L"EditLineFour"
-#define IDC_ButtonDone L"ButtonDone"
-#define IDC_XuiLabel1 L"XuiLabel1"
-#define IDC_SceneSignEntry L"SceneSignEntry"

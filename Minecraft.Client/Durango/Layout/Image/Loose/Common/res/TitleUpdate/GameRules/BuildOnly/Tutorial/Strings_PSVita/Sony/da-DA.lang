@@ -1,6 +1,0 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<root>
-	<data name="IDS_COLLECTED_MUSIC_DISCS">
-		<value>Du har fundet {*progress*} af {*goal*} musikplader!</value>
-	</data>
-</root>

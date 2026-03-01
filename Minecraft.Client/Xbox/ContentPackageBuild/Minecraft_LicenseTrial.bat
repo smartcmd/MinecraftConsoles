@@ -1,3 +1,0 @@
-Copy Online\584111F700000000 .\584111F700000000
-Arcadelicense trial 584111F700000000
-pause

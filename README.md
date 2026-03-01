@@ -21,7 +21,8 @@ This project contains the source code of Minecraft Legacy Console Edition v1.3.0
 1. Install Visual Studio 2022
 2. Clone the repository
 3. Open the project by double-clicking `MinecraftConsoles.sln`
-4. Set the build configuration to **Debug** (Release is also OK) and the target platform to **Windows64**, then build and run
+4. Make sure `Minecraft.Client` is set as the Startup Project
+5. Set the build configuration to **Debug** (Release is also OK but has some bugs) and the target platform to **Windows64**, then build and run
 
 ## Known Issues
 

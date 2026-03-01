@@ -1,6 +1,0 @@
-#define IDC_Description L"Description"
-#define IDC_XuiInventoryPic L"XuiInventoryPic"
-#define IDC_XuiImage L"XuiImage"
-#define IDC_Title L"Title"
-#define IDC_FontSize L"FontSize"
-#define IDC_TutorialPopup L"TutorialPopup"

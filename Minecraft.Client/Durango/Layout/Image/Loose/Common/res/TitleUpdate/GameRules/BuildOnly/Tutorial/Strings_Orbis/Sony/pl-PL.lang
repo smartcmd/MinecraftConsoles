@@ -1,6 +1,0 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<root>
-	<data name="IDS_COLLECTED_MUSIC_DISCS">
-		<value>Udało ci się znaleźć {*progress*} z {*goal*} płyt muzycznych!</value>
-	</data>
-</root>

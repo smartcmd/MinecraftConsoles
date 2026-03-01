@@ -1,8 +1,0 @@
-languages.loc
-Tutorial.pck
-skinPS3.swf
-DLCOffersMenu480.swf
-DLCOffersMenu720.swf
-DefaultOptionsImage320x176.png
-DefaultSaveImage320x176.png
-DefaultSaveThumbnail64x64.png
