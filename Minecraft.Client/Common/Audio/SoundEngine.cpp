@@ -56,7 +56,7 @@ void SoundEngine::playMusicTick() {};
 #else
 
 #ifdef _WINDOWS64
-char SoundEngine::m_szSoundPath[]={"Durango\\Sound\\"};
+char SoundEngine::m_szSoundPath[]={"Windows64Media\\Sound\\"};
 char SoundEngine::m_szMusicPath[]={"music\\"};
 char SoundEngine::m_szRedistName[]={"redist64"};
 #elif defined _DURANGO

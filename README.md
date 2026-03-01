@@ -22,13 +22,14 @@ This project contains the source code of Minecraft Legacy Console Edition v1.3.0
 - **Movement**: `W` `A` `S` `D`
 - **Jump / Fly (Up)**: `Space`
 - **Sneak / Fly (Down)**: `Shift` (Hold)
-- **Sprint**: `Ctrl` (Hold)
+- **Sprint**: `Ctrl` (Hold) or Double-tap `W`
 - **Inventory**: `E`
 - **Drop Item**: `Q`
 - **Crafting**: `C`
 - **Toggle View (FPS/TPS)**: `F5`
 - **Fullscreen**: `F11`
 - **Pause Menu**: `Esc`
+- **Toggle Mouse Capture**: `Left Alt` (for debugging)
 - **Attack / Destroy**: `Left Click`
 - **Use / Place**: `Right Click`
 - **Select Item**: `Mouse Wheel` or keys `1` to `9`

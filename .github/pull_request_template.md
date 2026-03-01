@@ -1,4 +1,4 @@
-# Pull Request Template
+# Pull Request
 
 ## Description
 Briefly describe the changes this PR introduces.
