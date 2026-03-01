@@ -404,7 +404,17 @@ FodyWeavers.xsd
 
 # End of https://www.toptal.com/developers/gitignore/api/visualstudio
 
+enc_temp_folder/
+
+# Game data / assets
 Minecraft.Client/Schematics/
 Minecraft.Client/Windows64/GameHDD/
+
+# Intermediate build files (per-project)
+Minecraft.Client/x64/
+Minecraft.Client/Debug/
+Minecraft.Client/Release/
+Minecraft.World/x64/
 Minecraft.World/x64_Debug/
-enc_temp_folder/
+Minecraft.World/Debug/
+Minecraft.World/Release/
