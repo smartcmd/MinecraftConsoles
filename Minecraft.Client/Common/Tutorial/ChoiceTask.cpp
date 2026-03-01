@@ -7,6 +7,7 @@
 #include "TutorialConstraints.h"
 #include "ChoiceTask.h"
 #include "..\..\..\Minecraft.World\Material.h"
+#include "..\..\Windows64\KeyboardMouseInput.h"
 
 ChoiceTask::ChoiceTask(Tutorial *tutorial, int descriptionId, int promptId /*= -1*/, bool requiresUserInput /*= false*/,
 	int iConfirmMapping /*= 0*/, int iCancelMapping /*= 0*/,
@@ -51,11 +52,11 @@ bool ChoiceTask::isCompleted()
 		// If the player is under water then allow all keypresses so they can jump out
 		if( pMinecraft->localplayers[tutorial->getPad()]->isUnderLiquid(Material::water) ) return false;
 
-		if(!m_bConfirmMappingComplete && InputManager.GetValue(pMinecraft->player->GetXboxPad(), m_iConfirmMapping) > 0 )
+		if(!m_bConfirmMappingComplete && InputManager.GetValue(pMinecraft->player->GetXboxPad(), m_iConfirmMapping) > 0 || KMInput.IsKeyDown(VK_RETURN))
 		{
 			m_bConfirmMappingComplete = true;
 		}
-		if(!m_bCancelMappingComplete && InputManager.GetValue(pMinecraft->player->GetXboxPad(), m_iCancelMapping) > 0 )
+		if(!m_bCancelMappingComplete && InputManager.GetValue(pMinecraft->player->GetXboxPad(), m_iCancelMapping) > 0 || KMInput.IsKeyDown('B'))
 		{
 			m_bCancelMappingComplete = true;
 		}
@@ -99,11 +100,11 @@ void ChoiceTask::handleUIInput(int iAction)
 {
 	if(bHasBeenActivated && m_bShownForMinimumTime)
 	{
-		if( iAction == m_iConfirmMapping )
+		if( iAction == m_iConfirmMapping || KMInput.IsKeyDown(41))
 		{
 			m_bConfirmMappingComplete = true;
 		}
-		else if(iAction == m_iCancelMapping )
+		else if(iAction == m_iCancelMapping || KMInput.IsKeyDown(42))
 		{
 			m_bCancelMappingComplete = true;
 		}
