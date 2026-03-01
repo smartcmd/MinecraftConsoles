@@ -15,6 +15,23 @@ This project contains the source code of Minecraft Legacy Console Edition v1.3.0
 - Added fullscreen mode support (toggle using F11)
 - Disabled V-Sync for better performance
 - Auto-detect native monitor resolution with DPI awareness, resulting in sharper visuals on high-resolution displays
+- Full support for keyboard and mouse input
+
+## Controls (Keyboard & Mouse)
+
+- **Movement**: `W` `A` `S` `D`
+- **Jump / Fly (Up)**: `Space`
+- **Sneak / Fly (Down)**: `Shift` (Hold)
+- **Sprint**: `Ctrl` (Hold)
+- **Inventory**: `E`
+- **Drop Item**: `Q`
+- **Crafting**: `C`
+- **Toggle View (FPS/TPS)**: `F5`
+- **Fullscreen**: `F11`
+- **Pause Menu**: `Esc`
+- **Attack / Destroy**: `Left Click`
+- **Use / Place**: `Right Click`
+- **Select Item**: `Mouse Wheel` or keys `1` to `9`
 
 ## Build & Run
 

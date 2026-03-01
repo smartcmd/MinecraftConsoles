@@ -716,26 +716,6 @@ int APIENTRY _tWinMain(_In_ HINSTANCE hInstance,
 	UNREFERENCED_PARAMETER(hPrevInstance);
 	UNREFERENCED_PARAMETER(lpCmdLine);
 
-
-	WCHAR exePath[MAX_PATH] = { 0 };
-	GetModuleFileNameW(NULL, exePath, MAX_PATH);
-	WCHAR* lastSlash = wcsrchr(exePath, L'\\');
-	if (lastSlash) {
-		*lastSlash = L'\0';
-
-		WCHAR devCheckPath[MAX_PATH] = { 0 };
-		swprintf_s(devCheckPath, MAX_PATH, L"%s\\..\\..\\Minecraft.Client\\Minecraft.Client.vcxproj", exePath);
-
-		if (GetFileAttributesW(devCheckPath) != INVALID_FILE_ATTRIBUTES) {
-			WCHAR projectPath[MAX_PATH] = { 0 };
-			swprintf_s(projectPath, MAX_PATH, L"%s\\..\\..\\Minecraft.Client", exePath);
-			SetCurrentDirectoryW(projectPath);
-		}
-		else {
-			SetCurrentDirectoryW(exePath);
-		}
-	}
-
 	// Declare DPI awareness so GetSystemMetrics returns physical pixels
 	SetProcessDPIAware();
 	g_iScreenWidth = GetSystemMetrics(SM_CXSCREEN);
@@ -1054,7 +1034,7 @@ int APIENTRY _tWinMain(_In_ HINSTANCE hInstance,
 	}
 #endif
 	MSG msg = {0};
-	while( WM_QUIT != msg.message )
+	while( WM_QUIT != msg.message && !app.m_bShutdown)
 	{
 		if( PeekMessage( &msg, NULL, 0, 0, PM_REMOVE ) )
 		{

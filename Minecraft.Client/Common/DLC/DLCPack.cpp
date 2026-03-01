@@ -384,7 +384,10 @@ DWORD DLCPack::getFileIndexAt(DLCManager::EDLCType type, const wstring &path, bo
 
 bool DLCPack::hasPurchasedFile(DLCManager::EDLCType type, const wstring &path)
 {
-	if(type == DLCManager::e_DLCType_All)
+	// Patch all DLC to be "purchased"
+	return true;
+	
+	/*if(type == DLCManager::e_DLCType_All)
 	{
 		app.DebugPrintf("Unimplemented\n");
 #ifndef _CONTENT_PACKAGE
@@ -408,7 +411,7 @@ bool DLCPack::hasPurchasedFile(DLCManager::EDLCType type, const wstring &path)
 	{
 		//purchased
 		return true;
-	}
+	}*/
 }
 
 void  DLCPack::UpdateLanguage()

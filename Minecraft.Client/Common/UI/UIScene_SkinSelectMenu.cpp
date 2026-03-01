@@ -1134,7 +1134,13 @@ void UIScene_SkinSelectMenu::updatePackDisplay()
 	if(m_packIndex >= SKIN_SELECT_MAX_DEFAULTS)
 	{
 		DLCPack *thisPack = app.m_dlcManager.getPack(m_packIndex - SKIN_SELECT_MAX_DEFAULTS, DLCManager::e_DLCType_Skin);
-		setCentreLabel(thisPack->getName().c_str());
+		// Fix the incorrect string type on title to display correctly
+		const char* name = static_cast<const char*>(thisPack->getName().c_str());
+		int len = MultiByteToWideChar(CP_UTF8, 0, name, -1, NULL, 0);
+		std::wstring wName(len, 0);
+		MultiByteToWideChar(CP_UTF8, 0, name, -1, &wName[0], len);
+		setCentreLabel(wName.c_str());
+		//setCentreLabel(thisPack->getName().c_str());
 	}
 	else
 	{
@@ -1153,7 +1159,13 @@ void UIScene_SkinSelectMenu::updatePackDisplay()
 	if(nextPackIndex >= SKIN_SELECT_MAX_DEFAULTS)
 	{
 		DLCPack *thisPack = app.m_dlcManager.getPack(nextPackIndex - SKIN_SELECT_MAX_DEFAULTS, DLCManager::e_DLCType_Skin);
-		setRightLabel(thisPack->getName().c_str());
+		// Fix the incorrect string type on title to display correctly
+		const char* name = static_cast<const char*>(thisPack->getName().c_str());
+		int len = MultiByteToWideChar(CP_UTF8, 0, name, -1, NULL, 0);
+		std::wstring wName(len, 0);
+		MultiByteToWideChar(CP_UTF8, 0, name, -1, &wName[0], len);
+		setRightLabel(wName.c_str());
+		//setRightLabel(thisPack->getName().c_str());
 	}
 	else
 	{
@@ -1172,7 +1184,13 @@ void UIScene_SkinSelectMenu::updatePackDisplay()
 	if(previousPackIndex >= SKIN_SELECT_MAX_DEFAULTS)
 	{
 		DLCPack *thisPack = app.m_dlcManager.getPack(previousPackIndex - SKIN_SELECT_MAX_DEFAULTS, DLCManager::e_DLCType_Skin);
-		setLeftLabel(thisPack->getName().c_str());
+		// Fix the incorrect string type on title to display correctly
+		const char* name = static_cast<const char*>(thisPack->getName().c_str());
+		int len = MultiByteToWideChar(CP_UTF8, 0, name, -1, NULL, 0);
+		std::wstring wName(len, 0);
+		MultiByteToWideChar(CP_UTF8, 0, name, -1, &wName[0], len);
+		setLeftLabel(wName.c_str());
+		//setLeftLabel(thisPack->getName().c_str());
 	}
 	else
 	{

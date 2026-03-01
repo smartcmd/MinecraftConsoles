@@ -65,7 +65,7 @@ UIScene_LoadMenu::UIScene_LoadMenu(int iPad, void *initData, UILayer *parentLaye
 
 	LoadMenuInitData *params = (LoadMenuInitData *)initData;
 
-	//m_labelGameName.init(app.GetString(IDS_WORLD_NAME));
+	m_labelGameName.init(app.GetString(IDS_WORLD_NAME));
 	m_labelSeed.init(L"");
 	m_labelCreatedMode.init(app.GetString(IDS_CREATED_IN_SURVIVAL));
 
