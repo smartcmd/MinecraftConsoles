@@ -35,6 +35,9 @@ bld/
 [Oo]bj/
 [Ll]og/
 [Ll]ogs/
+## PS3
+PS3_Debug/
+PS3_Release/
 
 # Visual Studio 2015/2017 cache/options directory
 .vs/
@@ -421,3 +424,8 @@ Minecraft.World/Release/
 Minecraft.World/x64_Release/Minecraft.World.vcxproj.FileListAbsolute.txt
 Minecraft.World/x64_Release/Minecraft.World.lib
 Minecraft.World/x64_Release/Minecraft.World.lib.recipe
+## PS3
+Minecraft.Client/PS3_Debug/
+Minecraft.Client/PS3_Release/
+Minecraft.World/PS3_Debug/
+Minecraft.World/PS3_Release/

@@ -541,6 +541,7 @@
     <ImageXexOutput>$(OutDir)$(ProjectName)_D.xex</ImageXexOutput>
     <IncludePath>$(ProjectDir)\..\Minecraft.Client\PS3\Assert;$(SCE_PS3_ROOT)\target\ppu\include;$(SCE_PS3_ROOT)\target\common\include;$(SCE_PS3_ROOT)\host-win32\sn\ppu\include;$(ProjectDir)\..\Minecraft.Client\PS3\PS3Extras;$(ProjectDir)\..\Minecraft.Client\PS3\PS3Extras\boost_1_53_0\boost\tr1\tr1;$(ProjectDir)\..\Minecraft.Client\PS3\PS3Extras\boost_1_53_0;$(ProjectDir)..\Minecraft.World\x64headers</IncludePath>
     <PreBuildEventUseInBuild>false</PreBuildEventUseInBuild>
+    <PostBuildEventUseInBuild>true</PostBuildEventUseInBuild>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|PSVita'">
     <LinkIncremental>true</LinkIncremental>
@@ -552,6 +553,7 @@
     <LinkIncremental>true</LinkIncremental>
     <ImageXexOutput>$(OutDir)$(ProjectName)_D.xex</ImageXexOutput>
     <IncludePath>$(ProjectDir)\..\Minecraft.Client\PS3\Assert;$(SCE_PS3_ROOT)\target\ppu\include;$(SCE_PS3_ROOT)\target\common\include;$(SCE_PS3_ROOT)\host-win32\sn\ppu\include;$(ProjectDir)\..\Minecraft.Client\PS3\PS3Extras;$(ProjectDir)\..\Minecraft.Client\PS3\PS3Extras\boost_1_53_0\boost\tr1\tr1;$(ProjectDir)\..\Minecraft.Client\PS3\PS3Extras\boost_1_53_0;$(ProjectDir)..\Minecraft.World\x64headers</IncludePath>
+    <PostBuildEventUseInBuild>true</PostBuildEventUseInBuild>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='ContentPackage_Vita|PS3'">
     <LinkIncremental>true</LinkIncremental>
@@ -988,6 +990,21 @@
       <Command>
       </Command>
     </PreBuildEvent>
+    <PostBuildEvent>
+      <Command>
+        xcopy /q /y /i /s /e "$(ProjectDir)PS3_GAME\" "$(OutDir)"
+        xcopy /q /y /i /s /e "$(ProjectDir)Common\Media" "$(OutDir)USRDIR\Common\Media"
+        xcopy /q /y /i /s /e "$(ProjectDir)Common\res" "$(OutDir)USRDIR\Common\res"
+        xcopy /q /y /i /s /e "$(ProjectDir)Common\Trial" "$(OutDir)USRDIR\PS3\Trial"
+        xcopy /q /y /i /s /e "$(ProjectDir)Common\Tutorial" "$(OutDir)USRDIR\PS3\Tutorial"
+        xcopy /q /y /i /s /e "$(ProjectDir)Common\DLC" "$(OutDir)USRDIR\DLC"
+        xcopy /q /y /i /s /e "$(ProjectDir)Common\DLC" "$(OutDir)USRDIR\CU\DLC"
+        xcopy /q /y /i /s /e "$(ProjectDir)music" "$(OutDir)USRDIR\music"
+        xcopy /q /y /i /s /e "$(ProjectDir)PS3\Media" "$(OutDir)USRDIR\Common\Media"
+        xcopy /q /y /i /s /e "$(ProjectDir)PS3\Sound" "$(OutDir)USRDIR\PS3\Sound"
+        xcopy /q /y "$(OutDir)Minecraft.Client.self" "$(OutDir)USRDIR\"
+      </Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|PSVita'">
     <ClCompile>
@@ -1072,6 +1089,7 @@ if not exist "$(TargetDir)\savedata" mkdir "$(TargetDir)\savedata"</Command>
       <SystemIncludeDirectories>$(ProjectDir)\..\Minecraft.Client\PS3\Assert</SystemIncludeDirectories>
       <FastMath>true</FastMath>
       <AssumeCorrectAlignment>Yes</AssumeCorrectAlignment>
+      <PostBuildEventUseInBuild>true</PostBuildEventUseInBuild>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -1099,6 +1117,21 @@ if not exist "$(TargetDir)\savedata" mkdir "$(TargetDir)\savedata"</Command>
       <Command>
       </Command>
     </PreBuildEvent>
+    <PostBuildEvent>
+      <Command>
+        xcopy /q /y /i /s /e "$(ProjectDir)PS3_GAME\" "$(OutDir)"
+        xcopy /q /y /i /s /e "$(ProjectDir)Common\Media" "$(OutDir)USRDIR\Common\Media"
+        xcopy /q /y /i /s /e "$(ProjectDir)Common\res" "$(OutDir)USRDIR\Common\res"
+        xcopy /q /y /i /s /e "$(ProjectDir)Common\Trial" "$(OutDir)USRDIR\PS3\Trial"
+        xcopy /q /y /i /s /e "$(ProjectDir)Common\Tutorial" "$(OutDir)USRDIR\PS3\Tutorial"
+        xcopy /q /y /i /s /e "$(ProjectDir)Common\DLC" "$(OutDir)USRDIR\DLC"
+        xcopy /q /y /i /s /e "$(ProjectDir)Common\DLC" "$(OutDir)USRDIR\CU\DLC"
+        xcopy /q /y /i /s /e "$(ProjectDir)music" "$(OutDir)USRDIR\music"
+        xcopy /q /y /i /s /e "$(ProjectDir)PS3\Media" "$(OutDir)USRDIR\Common\Media"
+        xcopy /q /y /i /s /e "$(ProjectDir)PS3\Sound" "$(OutDir)USRDIR\PS3\Sound"
+        xcopy /q /y "$(OutDir)Minecraft.Client.self" "$(OutDir)USRDIR\"
+      </Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='ContentPackage_Vita|PS3'">
     <ClCompile>

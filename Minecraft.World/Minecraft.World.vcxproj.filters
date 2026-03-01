@@ -2776,6 +2776,9 @@
     <ClInclude Include="PerformanceTimer.h">
       <Filter>ConsoleHelpers</Filter>
     </ClInclude>
+    <ClInclude Include="..\Minecraft.Client\Windows64Media\strings.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">

@@ -263,8 +263,8 @@ void UIScene_MainMenu::handleInput(int iPad, int key, bool repeat, bool pressed,
 		if(pressed && ProfileManager.IsFullVersion()) 
 		{
 			UINT uiIDA[2];
-			uiIDA[0]=IDS__NETWORK_PSN;
-			uiIDA[1]=IDS_NETWORK_ADHOC;
+			uiIDA[0]=___NETWORK_PSN;
+			uiIDA[1]=W_NETWORK_ADHOC;
 			ui.RequestMessageBox(IDS_SELECT_NETWORK_MODE_TITLE, IDS_SELECT_NETWORK_MODE_TEXT, uiIDA, 2, XUSER_INDEX_ANY, &UIScene_MainMenu::SelectNetworkModeReturned,this);
 		}
 		break;
@@ -340,7 +340,13 @@ void UIScene_MainMenu::handlePress(F64 controlId, F64 childId)
 			UINT uiIDA[2];
 			uiIDA[0]=IDS_CANCEL;
 			uiIDA[1]=IDS_OK;
-			ui.RequestMessageBox(IDS_WARNING_ARCADE_TITLE, IDS_WARNING_ARCADE_TEXT, uiIDA, 2, XUSER_INDEX_ANY,&UIScene_MainMenu::ExitGameReturned,this);
+			ui.RequestMessageBox(
+#ifdef __PS3__
+				1936,
+#else
+				IDS_WARNING_ARCADE_TITLE,
+#endif
+				IDS_WARNING_ARCADE_TEXT, uiIDA, 2, XUSER_INDEX_ANY,&UIScene_MainMenu::ExitGameReturned,this);
 		}
 		else
 		{

@@ -828,6 +828,7 @@
       <OptimizationLevel>Leveld</OptimizationLevel>
       <DisableSpecificWarnings>1700;613;1011</DisableSpecificWarnings>
       <AdditionalOptions>-Xpch_override=1 %(AdditionalOptions)</AdditionalOptions>
+      <CppLanguageStd>Cpp03</CppLanguageStd>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -1778,6 +1779,7 @@
     <None Include="Tag.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\Minecraft.Client\Windows64Media\strings.h" />
     <ClInclude Include="AABB.h" />
     <ClInclude Include="Abilities.h" />
     <ClInclude Include="AbstractContainerMenu.h" />

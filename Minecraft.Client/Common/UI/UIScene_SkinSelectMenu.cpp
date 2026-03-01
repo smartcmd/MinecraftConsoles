@@ -1242,6 +1242,21 @@ void UIScene_SkinSelectMenu::handlePackIndexChanged()
 	updatePackDisplay();
 }
 
+#ifdef __PS3__
+std::wstring fakeWideToRealWide(const wchar_t* original) {
+    if (!original) {
+        return L"";
+    }
+
+    int len = 0;
+    while (original[len] != L'\0') {
+        ++len;
+    }
+
+    std::wstring wName(original, len);
+    return wName;
+}
+#else
 std::wstring fakeWideToRealWide(const wchar_t* original)
 {
 	const char* name = reinterpret_cast<const char*>(original);
@@ -1250,6 +1265,7 @@ std::wstring fakeWideToRealWide(const wchar_t* original)
 	MultiByteToWideChar(CP_UTF8, 0, name, -1, &wName[0], len);
 	return wName.c_str();
 }
+#endif
 
 void UIScene_SkinSelectMenu::updatePackDisplay()
 {
