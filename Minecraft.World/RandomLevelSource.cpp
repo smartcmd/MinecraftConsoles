@@ -573,9 +573,12 @@ doubleArray RandomLevelSource::getHeights(doubleArray buffer, int x, int y, int 
 
 }
 
-bool RandomLevelSource::hasChunk(int x, int y)
+bool RandomLevelSource::hasChunk(int x, int z)
 {
-	return true;
+	const int half = m_XZSize / 2;
+
+	return (x >= -half && x < half &&
+		z >= -half && z < half);
 }
 
 void RandomLevelSource::calcWaterDepths(ChunkSource *parent, int xt, int zt)

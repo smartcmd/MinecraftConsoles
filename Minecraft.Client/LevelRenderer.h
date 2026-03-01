@@ -210,6 +210,9 @@ public:
 #ifdef _LARGE_WORLDS
 	static const int	PLAYER_VIEW_DISTANCE = 18; // Straight line distance from centre to extent of visible world
 	static const int	PLAYER_RENDER_AREA = (PLAYER_VIEW_DISTANCE * PLAYER_VIEW_DISTANCE * 4);
+
+	static const int	MAX_CHUNKS_PER_PLAYER = PLAYER_RENDER_AREA * CHUNK_Y_COUNT;
+	static const int	MAX_RENDER_CHUNK_SLOTS = MAX_CHUNKS_PER_PLAYER * 4;
 #else
 	static const int	PLAYER_RENDER_AREA = 400;
 #endif
@@ -270,6 +273,10 @@ public:
 	static C4JThread::Event *s_activationEventA[MAX_CHUNK_REBUILD_THREADS];
 	static void staticCtor();
 	static int rebuildChunkThreadProc(LPVOID lpParam);
+
+	int allocateListBaseForGlobalIdx(int globalIdx);
+	void freeListBaseForGlobalIdx(int globalIdx);
+	int getListBaseForGlobalIdx(int globalIdx) const;
 
 	CRITICAL_SECTION m_csChunkFlags;
 #endif

@@ -67,29 +67,42 @@ Dimension::~Dimension()
 		delete biomeSource;
 }
 
-ChunkSource *Dimension::createRandomLevelSource() const
+ChunkSource* Dimension::createRandomLevelSource() const
 {
+	ChunkSource* src = NULL;
+
 #ifdef _OVERRIDE_HEIGHTMAP
-	// 4J Stu - Added to enable overriding the heightmap from a loaded in data file
-	if(app.DebugSettingsOn() && app.GetGameSettingsDebugMask(ProfileManager.GetPrimaryPad())&(1L<<eDebugSetting_EnableHeightWaterBiomeOverride))
+	if (app.DebugSettingsOn() && app.GetGameSettingsDebugMask(ProfileManager.GetPrimaryPad()) & (1L << eDebugSetting_EnableHeightWaterBiomeOverride))
 	{
-		return new CustomLevelSource(level, level->getSeed(), level->getLevelData()->isGenerateMapFeatures());
+		src = new CustomLevelSource(level, level->getSeed(), level->getLevelData()->isGenerateMapFeatures());
 	}
 	else
 #endif
-	if (levelType == LevelType::lvl_flat) 
+		if (levelType == LevelType::lvl_flat)
+		{
+			src = new FlatLevelSource(level, level->getSeed(), level->getLevelData()->isGenerateMapFeatures());
+		}
+		else
+		{
+			src = new RandomLevelSource(level, level->getSeed(), level->getLevelData()->isGenerateMapFeatures());
+		}
+
+	if (src != NULL)
 	{
-		return new FlatLevelSource(level, level->getSeed(), level->getLevelData()->isGenerateMapFeatures());
-	} 
-	else 
-	{
-		return new RandomLevelSource(level, level->getSeed(), level->getLevelData()->isGenerateMapFeatures());
+		src->m_XZSize = level->getLevelData()->getXZSize();
 	}
+
+	return src;
 }
 
-ChunkSource *Dimension::createFlatLevelSource() const
+ChunkSource* Dimension::createFlatLevelSource() const
 {
-	return new FlatLevelSource(level, level->getSeed(), level->getLevelData()->isGenerateMapFeatures());
+	ChunkSource* src = new FlatLevelSource(level, level->getSeed(), level->getLevelData()->isGenerateMapFeatures());
+	if (src != NULL)
+	{
+		src->m_XZSize = level->getLevelData()->getXZSize();
+	}
+	return src;
 }
 
 ChunkStorage *Dimension::createStorage(File dir)

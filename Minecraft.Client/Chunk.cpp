@@ -78,6 +78,7 @@ void Chunk::setPos(int x, int y, int z)
 	clipChunk->zm = zm;
 
 	clipChunk->globalIdx = LevelRenderer::getGlobalIndexForChunk(x, y, z, level);
+	int globalIdx = clipChunk->globalIdx;
 
 #if 1
 	// 4J - we're not using offsetted renderlists anymore, so just set the full position of this chunk into x/y/zRenderOffs where
@@ -126,6 +127,11 @@ void Chunk::setPos(int x, int y, int z)
 	// If we're the first thing to be referencing this, mark it up as dirty to get rebuilt
 	if( refCount == 1 )
 	{
+		int listBase = levelRenderer->allocateListBaseForGlobalIdx(globalIdx);
+		if (listBase < 0)
+		{
+			__debugbreak();
+		}
 //		printf("Setting %d %d %d dirty [%d]\n",x,y,z, idx);
 		// Chunks being made dirty in this way can be very numerous (eg the full visible area of the world at start up, or a whole edge of the world when moving).
 		// On account of this, don't want to stick them into our lock free queue that we would normally use for letting the render update thread know about this chunk.
@@ -211,8 +217,14 @@ void Chunk::rebuild()
 
 	int r = 1;
 
-	int lists = levelRenderer->getGlobalIndexForChunk(this->x,this->y,this->z,level) * 2;
-	lists += levelRenderer->chunkLists;
+	int globalIdx = levelRenderer->getGlobalIndexForChunk(this->x, this->y, this->z, level);
+	int listBase = levelRenderer->getListBaseForGlobalIdx(globalIdx);
+	if (listBase < 0)
+	{
+		__debugbreak();
+		PIXEndNamedEvent();
+		return;
+	}
 
 	PIXEndNamedEvent();
 
@@ -324,7 +336,7 @@ void Chunk::rebuild()
 		for (int currentLayer = 0; currentLayer < 2; currentLayer++)
 		{
 			levelRenderer->setGlobalChunkFlag(this->x, this->y, this->z, level, LevelRenderer::CHUNK_FLAG_EMPTY0, currentLayer);
-			RenderManager.CBuffClear(lists + currentLayer);
+			RenderManager.CBuffClear(listBase + currentLayer);
 		}
 
 		delete region;
@@ -381,7 +393,7 @@ void Chunk::rebuild()
 							started = true;
 
 							MemSect(31);
-							glNewList(lists + currentLayer, GL_COMPILE);
+							glNewList(listBase + currentLayer, GL_COMPILE);
 							MemSect(0);
 							glPushMatrix();
 							glDepthMask(true);	// 4J added
@@ -459,12 +471,12 @@ void Chunk::rebuild()
 		{
 			// 4J - added - clear any renderer data associated with this unused list
 			levelRenderer->setGlobalChunkFlag(this->x, this->y, this->z, level, LevelRenderer::CHUNK_FLAG_EMPTY0, currentLayer);
-			RenderManager.CBuffClear(lists + currentLayer);
+			RenderManager.CBuffClear(listBase + currentLayer);
 		}
 		if((currentLayer==0)&&(!renderNextLayer))
 		{
 			levelRenderer->setGlobalChunkFlag(this->x, this->y, this->z, level, LevelRenderer::CHUNK_FLAG_EMPTY1);
-			RenderManager.CBuffClear(lists + 1);
+			RenderManager.CBuffClear(listBase + 1);
 			break;		
 		}
 	}
@@ -670,8 +682,12 @@ void Chunk::rebuild_SPU()
 	Region region(level, x0 - r, y0 - r, z0 - r, x1 + r, y1 + r, z1 + r);
 	TileRenderer tileRenderer(&region);
 
-	int lists = levelRenderer->getGlobalIndexForChunk(this->x,this->y,this->z,level) * 2;
-	lists += levelRenderer->chunkLists;
+	int globalIdx = levelRenderer->getGlobalIndexForChunk(this->x, this->y, this->z, level);
+	int listBase = levelRenderer->getListBaseForGlobalIdx(globalIdx);
+	if (listBase < 0)
+	{
+		return;
+	}
 
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// 4J - optimisation begins.
@@ -700,7 +716,7 @@ void Chunk::rebuild_SPU()
 		bool rendered = false;
 
 		{
-			glNewList(lists + currentLayer, GL_COMPILE);
+			glNewList(listBase + currentLayer, GL_COMPILE);
 			MemSect(0);
 			glPushMatrix();
 			glDepthMask(true);	// 4J added
@@ -796,7 +812,7 @@ void Chunk::rebuild_SPU()
 		{
 			// 4J - added - clear any renderer data associated with this unused list
 			levelRenderer->setGlobalChunkFlag(this->x, this->y, this->z, level, LevelRenderer::CHUNK_FLAG_EMPTY0, currentLayer);
-			RenderManager.CBuffClear(lists + currentLayer);
+			RenderManager.CBuffClear(listBase + currentLayer);
 		}
 
 	}
@@ -965,18 +981,13 @@ void Chunk::reset()
 		unsigned char refCount = levelRenderer->decGlobalChunkRefCount(x, y, z, level);
 		assigned = false;
 //		printf("\t\t [dec] refcount %d at %d, %d, %d\n",refCount,x,y,z);
-		if( refCount == 0 )
+		if (refCount == 0)
 		{
-			int lists = levelRenderer->getGlobalIndexForChunk(x, y, z, level) * 2;
-			if(lists >= 0)
+			int globalIdx = levelRenderer->getGlobalIndexForChunk(x, y, z, level);
+			if (globalIdx >= 0)
 			{
-				lists += levelRenderer->chunkLists;
-				for (int i = 0; i < 2; i++)
-				{
-					// 4J - added - clear any renderer data associated with this unused list
-					RenderManager.CBuffClear(lists + i);
-				}
 				levelRenderer->setGlobalChunkFlags(x, y, z, level, 0);
+				levelRenderer->freeListBaseForGlobalIdx(globalIdx);
 			}
 		}
 		LeaveCriticalSection(&levelRenderer->m_csDirtyChunks);
@@ -995,11 +1006,12 @@ int Chunk::getList(int layer)
 {
 	if (!clipChunk->visible) return -1;
 
-	int lists = levelRenderer->getGlobalIndexForChunk(x, y, z,level) * 2;
-	lists += levelRenderer->chunkLists;
+	int globalIdx = levelRenderer->getGlobalIndexForChunk(x, y, z, level);
+	int listBase = levelRenderer->getListBaseForGlobalIdx(globalIdx);
+	if (listBase < 0) return -1;
 
-	bool empty =  levelRenderer->getGlobalChunkFlag(x, y, z, level, LevelRenderer::CHUNK_FLAG_EMPTY0, layer);
-	if (!empty) return lists + layer;
+	bool empty = levelRenderer->getGlobalChunkFlag(x, y, z, level, LevelRenderer::CHUNK_FLAG_EMPTY0, layer);
+	if (!empty) return listBase + layer;
 	return -1;
 }
 

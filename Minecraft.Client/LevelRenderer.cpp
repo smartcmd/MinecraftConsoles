@@ -77,6 +77,9 @@ C4JThread *LevelRenderer::rebuildThreads[MAX_CHUNK_REBUILD_THREADS];
 C4JThread::EventArray *LevelRenderer::s_rebuildCompleteEvents;
 C4JThread::Event *LevelRenderer::s_activationEventA[MAX_CHUNK_REBUILD_THREADS];
 
+unordered_map<int, int> m_globalIdxToListBase;
+vector<int> m_freeListBases;
+
 // This defines the maximum size of renderable level, must be big enough to cope with actual size of level + view distance at each side
 // so that we can render the "infinite" sea at the edges. Currently defined as:
 const int overworldSize = LEVEL_MAX_WIDTH + LevelRenderer::PLAYER_VIEW_DISTANCE + LevelRenderer::PLAYER_VIEW_DISTANCE;
@@ -149,9 +152,17 @@ LevelRenderer::LevelRenderer(Minecraft *mc, Textures *textures)
 	this->mc = mc;
 	this->textures = textures;
 
-	chunkLists = MemoryTracker::genLists(getGlobalChunkCount()*2);		// *2 here is because there is one renderlist per chunk here for each of the opaque & transparent layers
+	chunkLists = MemoryTracker::genLists(MAX_RENDER_CHUNK_SLOTS * 2);		// *2 here is because there is one renderlist per chunk here for each of the opaque & transparent layers
 	globalChunkFlags = new unsigned char[getGlobalChunkCount()];
 	memset(globalChunkFlags, 0, getGlobalChunkCount());
+
+	m_globalIdxToListBase.clear();
+	m_freeListBases.clear();
+	m_freeListBases.reserve(MAX_RENDER_CHUNK_SLOTS);
+	for (int i = 0; i < MAX_RENDER_CHUNK_SLOTS; ++i)
+	{
+		m_freeListBases.push_back(chunkLists + i * 2);
+	}
 
 	starList = MemoryTracker::genLists(4);
 
@@ -248,6 +259,43 @@ LevelRenderer::LevelRenderer(Minecraft *mc, Textures *textures)
 	m_jobPort_CullSPU = new C4JSpursJobQueue::Port("C4JSpursJob_LevelRenderer_cull");
 	m_jobPort_FindNearestChunk = new C4JSpursJobQueue::Port("C4JSpursJob_LevelRenderer_FindNearestChunk");
 #endif // __PS3__
+}
+
+int LevelRenderer::allocateListBaseForGlobalIdx(int globalIdx)
+{
+	AUTO_VAR(it, m_globalIdxToListBase.find(globalIdx));
+	if (it != m_globalIdxToListBase.end())
+		return it->second;
+
+	if (m_freeListBases.empty())
+		return -1;
+
+	int listBase = m_freeListBases.back();
+	m_freeListBases.pop_back();
+	m_globalIdxToListBase[globalIdx] = listBase;
+	return listBase;
+}
+
+void LevelRenderer::freeListBaseForGlobalIdx(int globalIdx)
+{
+	AUTO_VAR(it, m_globalIdxToListBase.find(globalIdx));
+	if (it == m_globalIdxToListBase.end())
+		return;
+
+	int listBase = it->second;
+	RenderManager.CBuffClear(listBase + 0);
+	RenderManager.CBuffClear(listBase + 1);
+
+	m_freeListBases.push_back(listBase);
+	m_globalIdxToListBase.erase(it);
+}
+
+int LevelRenderer::getListBaseForGlobalIdx(int globalIdx) const
+{
+	AUTO_VAR(it, m_globalIdxToListBase.find(globalIdx));
+	if (it == m_globalIdxToListBase.end())
+		return -1;
+	return it->second;
 }
 
 void LevelRenderer::renderStars()
@@ -787,8 +835,10 @@ int LevelRenderer::renderChunks(int from, int to, int layer, double alpha)
 		if( ( globalChunkFlags[pClipChunk->globalIdx] & emptyFlag ) == emptyFlag ) continue;	// Check that this particular layer isn't empty
 
 		// List can be calculated directly from the chunk's global idex
-		int list = pClipChunk->globalIdx * 2 + layer;
-		list += chunkLists;
+		int listBase = getListBaseForGlobalIdx(pClipChunk->globalIdx);
+		if (listBase < 0)
+			continue;
+		int list = listBase + layer;
 
 		if(RenderManager.CBuffCall(list, first))
 		{
