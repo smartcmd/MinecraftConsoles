@@ -462,9 +462,14 @@ void LocalPlayer::aiStep()
 			if( isSprinting() )
 			{
 				// Accelrate up to full speed if we are sprinting, moving in the direction of the view vector
-				flyX = (float)viewVector->x * input->ya;
+				float yawRad = yRot * (PI / 180.0f);
+				
+				flyX = -sinf(yawRad) * input->ya + cosf(yawRad) * input->xa;
 				flyY = (float)viewVector->y * input->ya;
-				flyZ = (float)viewVector->z * input->ya;
+				flyZ = cosf(yawRad) * input->ya + sinf(yawRad) * input->xa;
+				
+				float h = sqrtf(flyX * flyX + flyZ * flyZ);
+				if (h > 1.0f) { flyX /= h; flyZ /= h; }
 
 				float scale = ((float)(SPRINT_DURATION - sprintTime))/10.0f;
 				scale = scale * scale;
