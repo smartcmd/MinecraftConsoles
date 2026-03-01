@@ -723,7 +723,7 @@ void ClientConnection::handleAddPlayer(shared_ptr<AddPlayerPacket> packet)
 	// Some remote players could actually be local players that are already added
 	for(unsigned int idx = 0; idx < XUSER_MAX_COUNT; ++idx)
 	{
-		// need to use the XUID here		
+		// need to use the XUID here
  		PlayerUID playerXUIDOnline = INVALID_XUID, playerXUIDOffline = INVALID_XUID;
  		ProfileManager.GetXUID(idx,&playerXUIDOnline,true);
  		ProfileManager.GetXUID(idx,&playerXUIDOffline,false);
@@ -734,6 +734,21 @@ void ClientConnection::handleAddPlayer(shared_ptr<AddPlayerPacket> packet)
 			return;
 		}
 	}
+#ifdef _WINDOWS64
+	// On Windows64 all XUIDs are INVALID_XUID so the XUID check above never fires.
+	// packet->m_playerIndex is the server-assigned sequential index (set via LoginPacket),
+	// NOT the controller slot — so we must scan all local player slots and match by
+	// their stored server index rather than using it directly as an array subscript.
+	for(unsigned int idx = 0; idx < XUSER_MAX_COUNT; ++idx)
+	{
+		if(minecraft->localplayers[idx] != NULL &&
+		   minecraft->localplayers[idx]->getPlayerIndex() == packet->m_playerIndex)
+		{
+			app.DebugPrintf("AddPlayerPacket received for local player (controller %d, server index %d), skipping RemotePlayer creation\n", idx, packet->m_playerIndex);
+			return;
+		}
+	}
+#endif
 
     double x = packet->x / 32.0;
     double y = packet->y / 32.0;

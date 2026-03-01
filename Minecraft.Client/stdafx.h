@@ -174,6 +174,7 @@ typedef XUID GameSessionUID;
 	#include "Durango\4JLibs\inc\4J_Render.h"
 	#include "Durango\4JLibs\inc\4J_Storage.h"
 #elif defined _WINDOWS64
+	#include <Xinput.h>
 	#include "Windows64\4JLibs\inc\4J_Input.h"
 	#include "Windows64\4JLibs\inc\4J_Profile.h"
 	#include "Windows64\4JLibs\inc\4J_Render.h"

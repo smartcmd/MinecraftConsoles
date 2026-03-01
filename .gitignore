@@ -1,0 +1,46 @@
+# Visual Studio
+.vs/
+*.user
+*.suo
+*.sdf
+*.opensdf
+*.VC.db
+*.VC.VC.opendb
+
+# Source control binding files
+*.vspscc
+*.vssscc
+
+# Build output
+x64/
+x86/
+Debug/
+Release/
+
+# Game data / assets
+Minecraft.Client/Windows64/GameHDD/
+
+# Intermediate build files (per-project)
+Minecraft.Client/x64/
+Minecraft.Client/Debug/
+Minecraft.Client/Release/
+Minecraft.World/x64/
+Minecraft.World/x64_Debug/
+Minecraft.World/Debug/
+Minecraft.World/Release/
+
+# Compiled artifacts
+*.exe
+*.dll
+*.lib
+*.pdb
+*.pch
+*.ilk
+*.exp
+*.obj
+*.idb
+*.ipdb
+*.iobj
+
+# Precompiled headers
+*.gch

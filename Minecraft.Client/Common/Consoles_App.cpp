@@ -8956,7 +8956,11 @@ bool CMinecraftApp::IsLocalMultiplayerAvailable()
 		if( InputManager.IsPadConnected(i) || ProfileManager.IsSignedIn(i) ) ++connectedControllers;
 	}
 
+#ifdef _WINDOWS64
+	bool available = connectedControllers > 1;
+#else
 	bool available = RenderManager.IsHiDef() && connectedControllers > 1;
+#endif
 
 #ifdef __ORBIS__
 	// Check for remote play
