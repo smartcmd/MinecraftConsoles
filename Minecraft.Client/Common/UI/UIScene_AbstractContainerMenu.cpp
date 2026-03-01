@@ -83,6 +83,7 @@ UIScene_AbstractContainerMenu::UIScene_AbstractContainerMenu(int iPad, UILayer *
 	ui.OverrideSFX(m_iPad,ACTION_MENU_DOWN,true);
 
 	m_bIgnoreInput=false;
+	m_bMouseDragSlider=false;
 }
 
 UIScene_AbstractContainerMenu::~UIScene_AbstractContainerMenu()
@@ -279,6 +280,56 @@ void UIScene_AbstractContainerMenu::tick()
 #endif
 
 	onMouseTick();
+
+#ifdef _WINDOWS64
+	if (getPad() == 0 && m_bMousePointerControl)
+	{
+		if (KMInput.ConsumeMousePress(0))
+		{
+			if (m_eCurrSection == eSectionInventoryCreativeSlider)
+			{
+				m_bMouseDragSlider = true;
+				handleOtherClicked(m_iPad, eSectionInventoryCreativeSlider, 0, false);
+			}
+			else
+			{
+				handleKeyDown(m_iPad, ACTION_MENU_A, false);
+			}
+		}
+		else if (m_bMouseDragSlider && KMInput.IsMouseDown(0))
+		{
+			handleOtherClicked(m_iPad, eSectionInventoryCreativeSlider, 0, false);
+		}
+
+		if (!KMInput.IsMouseDown(0))
+			m_bMouseDragSlider = false;
+
+		if (KMInput.ConsumeMousePress(1))
+		{
+			handleKeyDown(m_iPad, ACTION_MENU_X, false);
+		}
+		if (KMInput.ConsumeMousePress(2))
+		{
+			handleKeyDown(m_iPad, ACTION_MENU_Y, false);
+		}
+
+		int scrollDelta = KMInput.ConsumeScrollDelta();
+		if (scrollDelta > 0)
+		{
+			handleKeyDown(m_iPad, ACTION_MENU_OTHER_STICK_UP, false);
+		}
+		else if (scrollDelta < 0)
+		{
+			handleKeyDown(m_iPad, ACTION_MENU_OTHER_STICK_DOWN, false);
+		}
+
+		if (KMInput.ConsumeKeyPress(VK_ESCAPE))
+		{
+			handleKeyDown(m_iPad, ACTION_MENU_B, false);
+			return;
+		}
+	}
+#endif
 
 	IggyEvent mouseEvent;
 	S32 width, height;
