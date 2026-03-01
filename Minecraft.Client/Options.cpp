@@ -116,7 +116,7 @@ void Options::init()
     bobView = true;
     anaglyph3d = false;
     advancedOpengl = false;
-    framerateLimit = 2;
+    framerateLimit = 0;
     fancyGraphics = true;
     ambientOcclusion = true;
 	renderClouds = true;

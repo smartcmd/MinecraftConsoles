@@ -1,5 +1,46 @@
 #include "stdafx.h"
 
+#ifdef _WINDOWS64
+#include "Windows64\KeyboardMouseInput.h"
+
+int Mouse::getX()
+{
+	return KMInput.GetMouseX();
+}
+
+int Mouse::getY()
+{
+	// Return Y in bottom-up coordinates (OpenGL convention, matching original Java LWJGL Mouse)
+	RECT rect;
+	GetClientRect(KMInput.GetHWnd(), &rect);
+	return (rect.bottom - 1) - KMInput.GetMouseY();
+}
+
+bool Mouse::isButtonDown(int button)
+{
+	return KMInput.IsMouseDown(button);
+}
+
+bool Keyboard::isKeyDown(int key)
+{
+	// Map Keyboard constants to Windows virtual key codes
+	if (key == Keyboard::KEY_LSHIFT) return KMInput.IsKeyDown(VK_LSHIFT);
+	if (key == Keyboard::KEY_RSHIFT) return KMInput.IsKeyDown(VK_RSHIFT);
+	if (key == Keyboard::KEY_ESCAPE) return KMInput.IsKeyDown(VK_ESCAPE);
+	if (key == Keyboard::KEY_RETURN) return KMInput.IsKeyDown(VK_RETURN);
+	if (key == Keyboard::KEY_BACK)   return KMInput.IsKeyDown(VK_BACK);
+	if (key == Keyboard::KEY_SPACE)  return KMInput.IsKeyDown(VK_SPACE);
+	if (key == Keyboard::KEY_TAB)    return KMInput.IsKeyDown(VK_TAB);
+	if (key == Keyboard::KEY_UP)     return KMInput.IsKeyDown(VK_UP);
+	if (key == Keyboard::KEY_DOWN)   return KMInput.IsKeyDown(VK_DOWN);
+	if (key == Keyboard::KEY_LEFT)   return KMInput.IsKeyDown(VK_LEFT);
+	if (key == Keyboard::KEY_RIGHT)  return KMInput.IsKeyDown(VK_RIGHT);
+	if (key >= Keyboard::KEY_A && key <= Keyboard::KEY_Z)
+		return KMInput.IsKeyDown('A' + (key - Keyboard::KEY_A));
+	return false;
+}
+#endif
+
 void glReadPixels(int,int, int, int, int, int, ByteBuffer *)
 {
 }

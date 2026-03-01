@@ -1169,6 +1169,53 @@ void Minecraft::createPrimaryLocalPlayer(int iPad)
 	}
 }
 
+#ifdef _WINDOWS64
+void Minecraft::applyFrameMouseLook()
+{
+	// Per-frame mouse look: consume mouse deltas every frame instead of waiting
+	// for the 20Hz game tick. Apply the same delta to both xRot/yRot AND xRotO/yRotO
+	// so the render interpolation instantly reflects the change without waiting for a tick.
+	if (level == NULL) return;
+
+	for (int i = 0; i < XUSER_MAX_COUNT; i++)
+	{
+		if (localplayers[i] == NULL) continue;
+		int iPad = localplayers[i]->GetXboxPad();
+		if (iPad != 0) continue;  // Mouse only applies to pad 0
+
+		if (!KMInput.IsCaptured()) continue;
+		if (localgameModes[iPad] == NULL) continue;
+
+		float rawDx, rawDy;
+		KMInput.ConsumeMouseDelta(rawDx, rawDy);
+		if (rawDx == 0.0f && rawDy == 0.0f) continue;
+
+		float mouseSensitivity = 0.5f;
+		float mdx = rawDx * mouseSensitivity;
+		float mdy = -rawDy * mouseSensitivity;
+		if (app.GetGameSettings(iPad, eGameSetting_ControlInvertLook))
+			mdy = -mdy;
+
+		// Apply 0.15f scaling (same as Entity::interpolateTurn / Entity::turn)
+		float dyaw = mdx * 0.15f;
+		float dpitch = -mdy * 0.15f;
+
+		// Apply to both current and old rotation so render interpolation
+		// reflects the change immediately (no 50ms tick delay)
+		localplayers[i]->yRot += dyaw;
+		localplayers[i]->yRotO += dyaw;
+		localplayers[i]->xRot += dpitch;
+		localplayers[i]->xRotO += dpitch;
+
+		// Clamp pitch
+		if (localplayers[i]->xRot < -90.0f) localplayers[i]->xRot = -90.0f;
+		if (localplayers[i]->xRot > 90.0f) localplayers[i]->xRot = 90.0f;
+		if (localplayers[i]->xRotO < -90.0f) localplayers[i]->xRotO = -90.0f;
+		if (localplayers[i]->xRotO > 90.0f) localplayers[i]->xRotO = 90.0f;
+	}
+}
+#endif
+
 void Minecraft::run_middle()
 {
 	static __int64 lastTime = 0;
@@ -1398,6 +1445,21 @@ void Minecraft::run_middle()
 					if(InputManager.ButtonPressed(i, MINECRAFT_ACTION_RENDER_THIRD_PERSON))		localplayers[i]->ullButtonsPressed|=1LL<<MINECRAFT_ACTION_RENDER_THIRD_PERSON;
 					if(InputManager.ButtonPressed(i, MINECRAFT_ACTION_GAME_INFO))				localplayers[i]->ullButtonsPressed|=1LL<<MINECRAFT_ACTION_GAME_INFO;
 
+#ifdef _WINDOWS64
+					// Keyboard/mouse button presses for player 0
+					if (i == 0)
+					{
+						if (KMInput.ConsumeKeyPress(VK_ESCAPE))  localplayers[i]->ullButtonsPressed |= 1LL<<MINECRAFT_ACTION_PAUSEMENU;
+						if (KMInput.ConsumeKeyPress('E'))         localplayers[i]->ullButtonsPressed |= 1LL<<MINECRAFT_ACTION_INVENTORY;
+						if (KMInput.ConsumeKeyPress('Q'))         localplayers[i]->ullButtonsPressed |= 1LL<<MINECRAFT_ACTION_DROP;
+						if (KMInput.ConsumeKeyPress('C'))         localplayers[i]->ullButtonsPressed |= 1LL<<MINECRAFT_ACTION_CRAFTING;
+						if (KMInput.ConsumeKeyPress(VK_F5))       localplayers[i]->ullButtonsPressed |= 1LL<<MINECRAFT_ACTION_RENDER_THIRD_PERSON;
+						// In flying mode, Shift held = sneak/descend
+						if (localplayers[i]->abilities.flying && KMInput.IsKeyDown(VK_SHIFT))
+							localplayers[i]->ullButtonsPressed |= 1LL<<MINECRAFT_ACTION_SNEAK_TOGGLE;
+					}
+#endif
+
 #ifndef _FINAL_BUILD
 					if( app.DebugSettingsOn() && app.GetUseDPadForDebug() )
 					{
@@ -1448,7 +1510,31 @@ void Minecraft::run_middle()
 					// 4J Stu - This doesn't make any sense with the way we handle XboxOne users
 #ifndef _DURANGO
 					// did we just get input from a player who doesn't exist? They'll be wanting to join the game then
+#ifdef _WINDOWS64
+					// The 4J toggle system is unreliable here: UIController::handleInput() calls
+					// ButtonPressed for every ACTION_MENU_* mapped button (which covers all physical
+					// buttons) before run_middle() runs. Bypass it with raw XInput and own edge detection.
+					// A latch counter keeps startJustPressed active for ~120 frames after the rising edge
+					// so the detection window is large enough to be caught reliably.
+					static WORD s_prevXButtons[XUSER_MAX_COUNT] = {};
+					static int  s_startPressLatch[XUSER_MAX_COUNT] = {};
+					XINPUT_STATE xstate_join;
+					memset(&xstate_join, 0, sizeof(xstate_join));
+					WORD xCurButtons = 0;
+					if (XInputGetState(i, &xstate_join) == ERROR_SUCCESS)
+					{
+						xCurButtons = xstate_join.Gamepad.wButtons;
+						if ((xCurButtons & XINPUT_GAMEPAD_START) != 0 && (s_prevXButtons[i] & XINPUT_GAMEPAD_START) == 0)
+							s_startPressLatch[i] = 120; // rising edge: latch for ~120 frames (~2s at 60fps)
+						else if (s_startPressLatch[i] > 0)
+							s_startPressLatch[i]--;
+						s_prevXButtons[i] = xCurButtons;
+					}
+					bool startJustPressed = s_startPressLatch[i] > 0;
+					bool tryJoin = !pause && !ui.IsIgnorePlayerJoinMenuDisplayed(ProfileManager.GetPrimaryPad()) && g_NetworkManager.SessionHasSpace() && xCurButtons != 0;
+#else
 					bool tryJoin = !pause && !ui.IsIgnorePlayerJoinMenuDisplayed(ProfileManager.GetPrimaryPad()) && g_NetworkManager.SessionHasSpace() && RenderManager.IsHiDef() && InputManager.ButtonPressed(i);
+#endif
 #ifdef __ORBIS__
 					// Check for remote play
 					tryJoin = tryJoin && InputManager.IsLocalMultiplayerAvailable();
@@ -1476,6 +1562,8 @@ void Minecraft::run_middle()
 							// did we just get input from a player who doesn't exist? They'll be wanting to join the game then
 #ifdef __ORBIS__
 							if(InputManager.ButtonPressed(i, ACTION_MENU_A))
+#elif defined _WINDOWS64
+							if(startJustPressed)
 #else
 							if(InputManager.ButtonPressed(i, MINECRAFT_ACTION_PAUSEMENU))
 #endif
@@ -1483,7 +1571,11 @@ void Minecraft::run_middle()
 								// Let them join
 
 								// are they signed in?
+#ifdef _WINDOWS64
+								if(ProfileManager.IsSignedIn(i) || (g_NetworkManager.IsLocalGame() && InputManager.IsPadConnected(i)))
+#else
 								if(ProfileManager.IsSignedIn(i))
+#endif
 								{
 									// if this is a local game, then the player just needs to be signed in
 									if( g_NetworkManager.IsLocalGame() || (ProfileManager.IsSignedInLive(i) && ProfileManager.AllowedToPlayMultiplayer(i) ) )
@@ -3337,6 +3429,30 @@ void Minecraft::tick(bool bFirst, bool bUpdateTextures)
 		{
 			wheel = -1;
 		}
+
+#ifdef _WINDOWS64
+		// Mouse scroll wheel for hotbar
+		if (iPad == 0)
+		{
+			int kbWheel = KMInput.ConsumeScrollDelta();
+			if (kbWheel > 0 && gameMode->isInputAllowed(MINECRAFT_ACTION_LEFT_SCROLL)) wheel += 1;
+			else if (kbWheel < 0 && gameMode->isInputAllowed(MINECRAFT_ACTION_RIGHT_SCROLL)) wheel -= 1;
+
+			// 1-9 keys for direct hotbar selection
+			if (gameMode->isInputAllowed(MINECRAFT_ACTION_LEFT_SCROLL))
+			{
+				for (int k = '1'; k <= '9'; k++)
+				{
+					if (KMInput.ConsumeKeyPress(k))
+					{
+						player->inventory->selected = k - '1';
+						app.SetOpacityTimer(iPad);
+						break;
+					}
+				}
+			}
+		}
+#endif
 		if (wheel != 0)
 		{
 			player->inventory->swapPaint(wheel);
@@ -3368,6 +3484,13 @@ void Minecraft::tick(bool bFirst, bool bUpdateTextures)
 				player->handleMouseClick(0);
 				player->lastClickTick[0] = ticks;
 			}
+#ifdef _WINDOWS64
+			else if (iPad == 0 && KMInput.IsCaptured() && KMInput.ConsumeMousePress(0))
+			{
+				player->handleMouseClick(0);
+				player->lastClickTick[0] = ticks;
+			}
+#endif
 
 			if (InputManager.ButtonDown(iPad, MINECRAFT_ACTION_ACTION) && ticks - player->lastClickTick[0] >= timer->ticksPerSecond / 4)
 			{
@@ -3375,8 +3498,19 @@ void Minecraft::tick(bool bFirst, bool bUpdateTextures)
 				player->handleMouseClick(0);
 				player->lastClickTick[0] = ticks;
 			}
+#ifdef _WINDOWS64
+			else if (iPad == 0 && KMInput.IsCaptured() && KMInput.IsMouseDown(0) && ticks - player->lastClickTick[0] >= timer->ticksPerSecond / 4)
+			{
+				player->handleMouseClick(0);
+				player->lastClickTick[0] = ticks;
+			}
+#endif
 
-			if(InputManager.ButtonDown(iPad, MINECRAFT_ACTION_ACTION) )
+			if(InputManager.ButtonDown(iPad, MINECRAFT_ACTION_ACTION)
+#ifdef _WINDOWS64
+				|| (iPad == 0 && KMInput.IsCaptured() && KMInput.IsMouseDown(0))
+#endif
+			)
 			{
 				player->handleMouseDown(0, true );
 			}
@@ -3397,14 +3531,23 @@ void Minecraft::tick(bool bFirst, bool bUpdateTextures)
 		*/
 		if( player->isUsingItem() )
 		{
-			if(!InputManager.ButtonDown(iPad, MINECRAFT_ACTION_USE)) gameMode->releaseUsingItem(player);
+			if(!InputManager.ButtonDown(iPad, MINECRAFT_ACTION_USE)
+#ifdef _WINDOWS64
+				&& !(iPad == 0 && KMInput.IsCaptured() && KMInput.IsMouseDown(1))
+#endif
+			) gameMode->releaseUsingItem(player);
 		}
 		else if( gameMode->isInputAllowed(MINECRAFT_ACTION_USE) )
 		{
+#ifdef _WINDOWS64
+			bool useButtonDown = InputManager.ButtonDown(iPad, MINECRAFT_ACTION_USE) || (iPad == 0 && KMInput.IsCaptured() && KMInput.IsMouseDown(1));
+#else
+			bool useButtonDown = InputManager.ButtonDown(iPad, MINECRAFT_ACTION_USE);
+#endif
 			if( player->abilities.instabuild )
 			{
 				// 4J - attempt to handle click in special creative mode fashion if possible (used for placing blocks at regular intervals)
-				bool didClick = player->creativeModeHandleMouseClick(1, InputManager.ButtonDown(iPad, MINECRAFT_ACTION_USE) );
+				bool didClick = player->creativeModeHandleMouseClick(1, useButtonDown );
 				// If this handler has put us in lastClick_oldRepeat mode then it is because we aren't placing blocks - behave largely as the code used to
 				if( player->lastClickState == LocalPlayer::lastClick_oldRepeat )
 				{
@@ -3416,7 +3559,7 @@ void Minecraft::tick(bool bFirst, bool bUpdateTextures)
 					else
 					{
 						// Otherwise just the original game code for handling autorepeat
-						if (InputManager.ButtonDown(iPad, MINECRAFT_ACTION_USE) && ticks - player->lastClickTick[1] >= timer->ticksPerSecond / 4)
+						if (useButtonDown && ticks - player->lastClickTick[1] >= timer->ticksPerSecond / 4)
 						{
 							player->handleMouseClick(1);
 							player->lastClickTick[1] = ticks;
@@ -3432,7 +3575,7 @@ void Minecraft::tick(bool bFirst, bool bUpdateTextures)
 				bool firstClick = ( player->lastClickTick[1] == 0 );
 				bool autoRepeat = ticks - player->lastClickTick[1] >= timer->ticksPerSecond / 4;
 				if ( player->isRiding() || player->isSprinting() || player->isSleeping() ) autoRepeat = false;
-				if (InputManager.ButtonDown(iPad, MINECRAFT_ACTION_USE) )
+				if (useButtonDown )
 				{
 					// If the player has just exited a bed, then delay the time before a repeat key is allowed without releasing
 					if(player->isSleeping() ) player->lastClickTick[1] = ticks + (timer->ticksPerSecond * 2);

@@ -182,7 +182,7 @@ UIController::UIController()
 #if defined _WINDOWS64 || defined _DURANGO || defined __ORBIS__
 	m_fScreenWidth = 1920.0f;
 	m_fScreenHeight = 1080.0f;
-	m_bScreenWidthSetup = true;
+	m_bScreenWidthSetup = false;
 #else
 	m_fScreenWidth = 1280.0f;
 	m_fScreenHeight = 720.0f;
@@ -500,36 +500,36 @@ void UIController::loadSkins()
 #elif defined __PSVITA__
 	platformSkinPath = L"skinVita.swf";
 #elif defined _WINDOWS64
-	if(m_fScreenHeight==1080.0f)
+	if(m_fScreenHeight>=1080.0f)
 	{
 		platformSkinPath = L"skinHDWin.swf";
 	}
 	else
 	{
-		platformSkinPath = L"skinWin.swf";	
+		platformSkinPath = L"skinWin.swf";
 	}
 #elif defined _DURANGO
-	if(m_fScreenHeight==1080.0f)
+	if(m_fScreenHeight>=1080.0f)
 	{
-		platformSkinPath = L"skinHDDurango.swf";	
+		platformSkinPath = L"skinHDDurango.swf";
 	}
 	else
 	{
-		platformSkinPath = L"skinDurango.swf";	
+		platformSkinPath = L"skinDurango.swf";
 	}
 #elif defined __ORBIS__
-	if(m_fScreenHeight==1080.0f)
+	if(m_fScreenHeight>=1080.0f)
 	{
-		platformSkinPath = L"skinHDOrbis.swf";	
+		platformSkinPath = L"skinHDOrbis.swf";
 	}
 	else
 	{
-		platformSkinPath = L"skinOrbis.swf";	
+		platformSkinPath = L"skinOrbis.swf";
 	}
 
 #endif
 	// Every platform has one of these, so nothing shared
-	if(m_fScreenHeight==1080.0f)
+	if(m_fScreenHeight>=1080.0f)
 	{
 		m_iggyLibraries[eLibrary_Platform] = loadSkin(platformSkinPath, L"platformskinHD.swf");
 	}
@@ -994,8 +994,31 @@ void UIController::handleKeyPress(unsigned int iPad, unsigned int key)
 	pressed = InputManager.ButtonPressed(iPad,key); // Toggle
 	released = InputManager.ButtonReleased(iPad,key); // Toggle
 
-	//if(pressed) app.DebugPrintf("Pressed %d\n",key);
-	//if(released) app.DebugPrintf("Released %d\n",key);
+#ifdef _WINDOWS64
+	// Keyboard menu input for player 0
+	if (iPad == 0)
+	{
+		bool kbDown = false, kbPressed = false, kbReleased = false;
+		switch(key)
+		{
+			case ACTION_MENU_UP:        kbDown = KMInput.IsKeyDown(VK_UP);     kbPressed = KMInput.IsKeyPressed(VK_UP);     kbReleased = KMInput.IsKeyReleased(VK_UP);     break;
+			case ACTION_MENU_DOWN:      kbDown = KMInput.IsKeyDown(VK_DOWN);   kbPressed = KMInput.IsKeyPressed(VK_DOWN);   kbReleased = KMInput.IsKeyReleased(VK_DOWN);   break;
+			case ACTION_MENU_LEFT:      kbDown = KMInput.IsKeyDown(VK_LEFT);   kbPressed = KMInput.IsKeyPressed(VK_LEFT);   kbReleased = KMInput.IsKeyReleased(VK_LEFT);   break;
+			case ACTION_MENU_RIGHT:     kbDown = KMInput.IsKeyDown(VK_RIGHT);  kbPressed = KMInput.IsKeyPressed(VK_RIGHT);  kbReleased = KMInput.IsKeyReleased(VK_RIGHT);  break;
+			case ACTION_MENU_OK:        kbDown = KMInput.IsKeyDown(VK_RETURN); kbPressed = KMInput.IsKeyPressed(VK_RETURN); kbReleased = KMInput.IsKeyReleased(VK_RETURN); break;
+			case ACTION_MENU_A:         kbDown = KMInput.IsKeyDown(VK_RETURN); kbPressed = KMInput.IsKeyPressed(VK_RETURN); kbReleased = KMInput.IsKeyReleased(VK_RETURN); break;
+			case ACTION_MENU_CANCEL:    kbDown = KMInput.IsKeyDown(VK_ESCAPE); kbPressed = KMInput.IsKeyPressed(VK_ESCAPE); kbReleased = KMInput.IsKeyReleased(VK_ESCAPE); break;
+			case ACTION_MENU_B:         kbDown = KMInput.IsKeyDown(VK_ESCAPE); kbPressed = KMInput.IsKeyPressed(VK_ESCAPE); kbReleased = KMInput.IsKeyReleased(VK_ESCAPE); break;
+			case ACTION_MENU_PAUSEMENU: kbDown = KMInput.IsKeyDown(VK_ESCAPE); kbPressed = KMInput.IsKeyPressed(VK_ESCAPE); kbReleased = KMInput.IsKeyReleased(VK_ESCAPE); break;
+		}
+		pressed = pressed || kbPressed;
+		released = released || kbReleased;
+		down = down || kbDown;
+	}
+#endif
+
+	if(pressed) app.DebugPrintf("Pressed %d\n",key);
+	if(released) app.DebugPrintf("Released %d\n",key);
 	// Repeat handling
 	if(pressed)
 	{

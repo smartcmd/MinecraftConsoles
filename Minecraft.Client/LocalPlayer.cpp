@@ -279,6 +279,15 @@ void LocalPlayer::aiStep()
 	// world with low food, then reload it in creative.
 	if(abilities.mayfly || isAllowedToFly() ) enoughFoodToSprint = true;
 
+#ifdef _WINDOWS64
+	// Keyboard sprint: Ctrl held while moving forward
+	if (GetXboxPad() == 0 && KMInput.IsKeyDown(VK_CONTROL) && input->ya > 0.0f &&
+		enoughFoodToSprint && !isUsingItem() && !hasEffect(MobEffect::blindness) && onGround)
+	{
+		if (!isSprinting()) setSprinting(true);
+	}
+#endif
+
 	// 4J - altered this slightly to make sure that the joypad returns to below returnTreshold in between registering two movements up to runThreshold
 	if (onGround && !isSprinting() && enoughFoodToSprint && !isUsingItem() && !hasEffect(MobEffect::blindness))
 	{

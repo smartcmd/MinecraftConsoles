@@ -2344,6 +2344,9 @@
     <ClInclude Include="Windows64\Resource.h">
       <Filter>Windows64</Filter>
     </ClInclude>
+    <ClInclude Include="Windows64\KeyboardMouseInput.h">
+      <Filter>Windows64\Source Files</Filter>
+    </ClInclude>
     <ClInclude Include="Windows64\Windows64_App.h">
       <Filter>Windows64</Filter>
     </ClInclude>
@@ -4909,6 +4912,9 @@
       <Filter>Common\Source Files\DLC</Filter>
     </ClCompile>
     <ClCompile Include="Windows64\Windows64_Minecraft.cpp">
+      <Filter>Windows64\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Windows64\KeyboardMouseInput.cpp">
       <Filter>Windows64\Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Windows64\Windows64_App.cpp">

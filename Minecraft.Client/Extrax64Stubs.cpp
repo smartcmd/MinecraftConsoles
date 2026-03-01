@@ -197,7 +197,15 @@ bool IQNetPlayer::IsHost() { return this == &IQNet::m_player[0]; }
 bool IQNetPlayer::IsGuest() { return false; }
 bool IQNetPlayer::IsLocal() { return true; }
 PlayerUID IQNetPlayer::GetXuid() { return INVALID_XUID; }
-LPCWSTR IQNetPlayer::GetGamertag() { static const wchar_t *test = L"stub"; return test; }
+LPCWSTR IQNetPlayer::GetGamertag()
+{
+	static wchar_t tags[4][16];
+	int idx = GetUserIndex();
+	if(idx < 0 || idx >= 4) idx = 0;
+	mbstowcs(tags[idx], ProfileManager.GetGamertag(idx), 15);
+	tags[idx][15] = L'\0';
+	return tags[idx];
+}
 int IQNetPlayer::GetSessionIndex() { return 0; }
 bool IQNetPlayer::IsTalking() { return false; }
 bool IQNetPlayer::IsMutedByLocalUser(DWORD dwUserIndex) { return false; }
@@ -487,8 +495,22 @@ char fakeGamerTag[32] = "PlayerName";
 void				SetFakeGamertag(char *name){ strcpy_s(fakeGamerTag, name); }
 char*				C_4JProfile::GetGamertag(int iPad){ return fakeGamerTag; }
 #else
-char*				C_4JProfile::GetGamertag(int iPad){ return "PlayerName"; }
-wstring				C_4JProfile::GetDisplayName(int iPad){ return L"PlayerName"; }
+char*				C_4JProfile::GetGamertag(int iPad)
+{
+	static char tags[4][16] = { "Player 1", "Player 2", "Player 3", "Player 4" };
+	if(iPad >= 0 && iPad < 4) return tags[iPad];
+	return tags[0];
+}
+wstring				C_4JProfile::GetDisplayName(int iPad)
+{
+	switch(iPad)
+	{
+	case 1:  return L"Player 2";
+	case 2:  return L"Player 3";
+	case 3:  return L"Player 4";
+	default: return L"Player 1";
+	}
+}
 #endif
 bool				C_4JProfile::IsFullVersion() { return s_bProfileIsFullVersion; }
 void				C_4JProfile::SetSignInChangeCallback(void ( *Func)(LPVOID, bool, unsigned int),LPVOID lpParam) {}

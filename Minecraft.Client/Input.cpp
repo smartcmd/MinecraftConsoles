@@ -18,6 +18,7 @@ Input::Input()
 
 	lReset = false;
     rReset = false;
+	m_gamepadSneaking = false;
 }
 
 void Input::tick(LocalPlayer *player)
@@ -34,11 +35,29 @@ void Input::tick(LocalPlayer *player)
 		xa = -InputManager.GetJoypadStick_LX(iPad);
 	else
 		xa = 0.0f;
-	
+
 	if( pMinecraft->localgameModes[iPad]->isInputAllowed(MINECRAFT_ACTION_FORWARD) || pMinecraft->localgameModes[iPad]->isInputAllowed(MINECRAFT_ACTION_BACKWARD) )
 		ya = InputManager.GetJoypadStick_LY(iPad);
 	else
 		ya = 0.0f;
+
+#ifdef _WINDOWS64
+	// WASD movement (combine with gamepad)
+	if (iPad == 0)
+	{
+		float kbX = 0.0f, kbY = 0.0f;
+		if (KMInput.IsKeyDown('W')) kbY += 1.0f;
+		if (KMInput.IsKeyDown('S')) kbY -= 1.0f;
+		if (KMInput.IsKeyDown('A')) kbX += 1.0f;  // inverted like gamepad
+		if (KMInput.IsKeyDown('D')) kbX -= 1.0f;
+		// Normalize diagonal
+		if (kbX != 0.0f && kbY != 0.0f) { kbX *= 0.707f; kbY *= 0.707f; }
+		if (pMinecraft->localgameModes[iPad]->isInputAllowed(MINECRAFT_ACTION_LEFT) || pMinecraft->localgameModes[iPad]->isInputAllowed(MINECRAFT_ACTION_RIGHT))
+			xa = max(min(xa + kbX, 1.0f), -1.0f);
+		if (pMinecraft->localgameModes[iPad]->isInputAllowed(MINECRAFT_ACTION_FORWARD) || pMinecraft->localgameModes[iPad]->isInputAllowed(MINECRAFT_ACTION_BACKWARD))
+			ya = max(min(ya + kbY, 1.0f), -1.0f);
+	}
+#endif
 
 #ifndef _CONTENT_PACKAGE
 	if (app.GetFreezePlayers())
@@ -47,7 +66,7 @@ void Input::tick(LocalPlayer *player)
 		player->abilities.flying = true;
 	}
 #endif
-	
+
     if (!lReset)
     {
         if (xa*xa+ya*ya==0.0f)
@@ -62,9 +81,16 @@ void Input::tick(LocalPlayer *player)
 	{
 		if((player->ullButtonsPressed&(1LL<<MINECRAFT_ACTION_SNEAK_TOGGLE)) && pMinecraft->localgameModes[iPad]->isInputAllowed(MINECRAFT_ACTION_SNEAK_TOGGLE))
 		{
-			sneaking=!sneaking;
+			m_gamepadSneaking=!m_gamepadSneaking;
 		}
 	}
+	sneaking = m_gamepadSneaking;
+
+#ifdef _WINDOWS64
+	// Keyboard hold-to-sneak (overrides gamepad toggle)
+	if (iPad == 0 && KMInput.IsKeyDown(VK_SHIFT) && !player->abilities.flying)
+		sneaking = true;
+#endif
 
 	if(sneaking)
 	{
@@ -80,7 +106,7 @@ void Input::tick(LocalPlayer *player)
 		tx = InputManager.GetJoypadStick_RX(iPad)*(((float)app.GetGameSettings(iPad,eGameSetting_Sensitivity_InGame))/100.0f); // apply sensitivity to look
 	if( pMinecraft->localgameModes[iPad]->isInputAllowed(MINECRAFT_ACTION_LOOK_UP) || pMinecraft->localgameModes[iPad]->isInputAllowed(MINECRAFT_ACTION_LOOK_DOWN) )
 		ty = InputManager.GetJoypadStick_RY(iPad)*(((float)app.GetGameSettings(iPad,eGameSetting_Sensitivity_InGame))/100.0f); // apply sensitivity to look
-	
+
 #ifndef _CONTENT_PACKAGE
 	if (app.GetFreezePlayers())	tx = ty = 0.0f;
 #endif
@@ -100,15 +126,42 @@ void Input::tick(LocalPlayer *player)
         tx = ty = 0.0f;
     }
 	player->interpolateTurn(tx * abs(tx) * turnSpeed, ty * abs(ty) * turnSpeed);
-        
+
+#ifdef _WINDOWS64
+	// Mouse look is now handled per-frame in Minecraft::applyFrameMouseLook()
+	// to eliminate the 20Hz tick delay. Only flush any remaining delta here
+	// as a safety measure.
+	if (iPad == 0 && KMInput.IsCaptured())
+	{
+		float rawDx, rawDy;
+		KMInput.ConsumeMouseDelta(rawDx, rawDy);
+		// Delta should normally be 0 since applyFrameMouseLook() already consumed it
+		if (rawDx != 0.0f || rawDy != 0.0f)
+		{
+			float mouseSensitivity = 0.5f;
+			float mdx = rawDx * mouseSensitivity;
+			float mdy = -rawDy * mouseSensitivity;
+			if (app.GetGameSettings(iPad, eGameSetting_ControlInvertLook))
+				mdy = -mdy;
+			player->interpolateTurn(mdx, mdy);
+		}
+	}
+#endif
+
     //jumping = controller.isButtonPressed(0);
 
-	
+
 	unsigned int jump = InputManager.GetValue(iPad, MINECRAFT_ACTION_JUMP);
 	if( jump > 0 && pMinecraft->localgameModes[iPad]->isInputAllowed(MINECRAFT_ACTION_JUMP) )
 		jumping = true;
 	else
  		jumping = false;
+
+#ifdef _WINDOWS64
+	// Keyboard jump (Space)
+	if (iPad == 0 && KMInput.IsKeyDown(VK_SPACE) && pMinecraft->localgameModes[iPad]->isInputAllowed(MINECRAFT_ACTION_JUMP))
+		jumping = true;
+#endif
 
 #ifndef _CONTENT_PACKAGE
 	if (app.GetFreezePlayers())	jumping = false;

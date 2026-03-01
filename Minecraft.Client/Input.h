@@ -16,7 +16,8 @@ public:
     virtual void tick(LocalPlayer *player);
 
 private:
-	
+
     bool lReset;
     bool rReset;
+	bool m_gamepadSneaking;
 };

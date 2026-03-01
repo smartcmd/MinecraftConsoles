@@ -66,6 +66,7 @@ typedef unsigned __int64 __uint64;
 #define WIN32_LEAN_AND_MEAN             // Exclude rarely-used stuff from Windows headers
 // Windows Header Files:
 #include <windows.h>
+#include <windowsx.h>
 #include <malloc.h>
 #include <tchar.h>
 // TODO: reference additional headers your program requires here
@@ -174,10 +175,12 @@ typedef XUID GameSessionUID;
 	#include "Durango\4JLibs\inc\4J_Render.h"
 	#include "Durango\4JLibs\inc\4J_Storage.h"
 #elif defined _WINDOWS64
-	#include "Windows64\4JLibs\inc\4J_Input.h"	
+	#include <Xinput.h>
+	#include "Windows64\4JLibs\inc\4J_Input.h"
 	#include "Windows64\4JLibs\inc\4J_Profile.h"
 	#include "Windows64\4JLibs\inc\4J_Render.h"
 	#include "Windows64\4JLibs\inc\4J_Storage.h"
+	#include "Windows64\KeyboardMouseInput.h"
 #elif defined __PSVITA__
 	#include "PSVita\4JLibs\inc\4J_Input.h"	
 	#include "PSVita\4JLibs\inc\4J_Profile.h"

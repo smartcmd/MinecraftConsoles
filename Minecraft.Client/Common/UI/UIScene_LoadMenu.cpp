@@ -1444,7 +1444,14 @@ int UIScene_LoadMenu::LoadDataComplete(void *pParam)
 #endif
 			else
 			{
+#ifdef _WINDOWS64
+				// On Windows64, IsSignedInLive() returns true as a stub but Xbox Live is
+				// not available. Skip QuadrantSignin and proceed directly with local play.
+				DWORD dwLocalUsersMask = CGameNetworkManager::GetLocalPlayerMask(ProfileManager.GetPrimaryPad());
+				StartGameFromSave(pClass, dwLocalUsersMask);
+#else
 				pClass->m_bRequestQuadrantSignin = true;
+#endif
 			}
 		}
 	}
