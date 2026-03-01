@@ -413,9 +413,12 @@ Minecraft.Client/Windows64/GameHDD/
 # Intermediate build files (per-project)
 Minecraft.Client/x64/
 Minecraft.Client/Debug/
+Minecraft.Client/x64_Debug/
 Minecraft.Client/Release/
+Minecraft.Client/x64_Release/
+
 Minecraft.World/x64/
-Minecraft.World/x64_Debug/
 Minecraft.World/Debug/
+Minecraft.World/x64_Debug/
 Minecraft.World/Release/
-Minecraft.World/x64_Release
+Minecraft.World/x64_Release/
