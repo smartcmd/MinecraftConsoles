@@ -78,7 +78,7 @@ body:
       description: "Which platform were you targeting?"
       options:
         - Windows64
-        - Other (please specify in context)
+        - Other (please specify)
     validations:
       required: true
   - type: textarea
