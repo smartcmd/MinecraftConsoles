@@ -131,6 +131,18 @@ private:
 	vector<QueuedMessageBoxData *> m_queuedMessageBoxData;
 
 	unsigned int m_winUserIndex;
+
+#ifdef _WINDOWS64
+	bool m_menuMouseOkPressed;
+	bool m_menuMouseOkReleased;
+	bool m_menuMousePageUpPressed;
+	bool m_menuMousePageDownPressed;
+	Iggy *m_menuMouseFocusMovie;
+	IggyFocusHandle m_menuMouseFocusObject;
+	int m_menuMouseX;
+	int m_menuMouseY;
+#endif
+
 	//bool m_bSysUIShowing;
 	bool m_bSystemUIShowing;
 	C4JThread *m_reloadSkinThread;
@@ -208,6 +220,12 @@ private:
 	void tickInput();
 	void handleInput();
 	void handleKeyPress(unsigned int iPad, unsigned int key);
+#ifdef _WINDOWS64
+	void handleMouseMenuInput();
+	UIScene *getMouseFocusableScene(EUIGroup &group) const;
+	void getViewportOffset(C4JRender::eViewportType viewport, S32 &xPos, S32 &yPos) const;
+	bool isContainerSceneType(EUIScene sceneType) const;
+#endif
 	
 protected:
 	static rrbool RADLINK ExternalFunctionCallback( void * user_callback_data , Iggy * player , IggyExternalFunctionCallUTF16 * call );

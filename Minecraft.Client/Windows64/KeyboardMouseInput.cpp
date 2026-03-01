@@ -216,6 +216,31 @@ int KeyboardMouseInput::ConsumeScrollDelta()
 	return delta;
 }
 
+bool KeyboardMouseInput::GetMouseClientPosition(int &x, int &y) const
+{
+	if (!m_hWnd) return false;
+
+	POINT cursor;
+	if (!GetCursorPos(&cursor)) return false;
+	if (!ScreenToClient(m_hWnd, &cursor)) return false;
+
+	x = cursor.x;
+	y = cursor.y;
+	return true;
+}
+
+bool KeyboardMouseInput::GetClientSize(int &width, int &height) const
+{
+	if (!m_hWnd) return false;
+
+	RECT rect;
+	if (!GetClientRect(m_hWnd, &rect)) return false;
+
+	width = rect.right - rect.left;
+	height = rect.bottom - rect.top;
+	return true;
+}
+
 // Mouse capture
 void KeyboardMouseInput::SetCapture(bool capture)
 {

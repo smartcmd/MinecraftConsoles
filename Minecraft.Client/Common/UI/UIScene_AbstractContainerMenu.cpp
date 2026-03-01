@@ -5,8 +5,63 @@
 #include "..\..\..\Minecraft.World\net.minecraft.world.inventory.h"
 #include "..\..\..\Minecraft.World\net.minecraft.world.item.h"
 #include "..\..\MultiplayerLocalPlayer.h"
+
 #ifdef _WINDOWS64
-#include "..\..\Windows64\KeyboardMouseInput.h"
+static void GetViewportRect(C4JRender::eViewportType viewport, S32 fullWidth, S32 fullHeight, S32 &xPos, S32 &yPos, S32 &width, S32 &height)
+{
+	xPos = 0;
+	yPos = 0;
+	width = fullWidth;
+	height = fullHeight;
+
+	switch (viewport)
+	{
+	case C4JRender::VIEWPORT_TYPE_SPLIT_TOP:
+		xPos = width / 4;
+		width /= 2;
+		height /= 2;
+		break;
+	case C4JRender::VIEWPORT_TYPE_SPLIT_BOTTOM:
+		xPos = width / 4;
+		yPos = height / 2;
+		width /= 2;
+		height /= 2;
+		break;
+	case C4JRender::VIEWPORT_TYPE_SPLIT_LEFT:
+		yPos = height / 4;
+		width /= 2;
+		height /= 2;
+		break;
+	case C4JRender::VIEWPORT_TYPE_SPLIT_RIGHT:
+		xPos = width / 2;
+		yPos = height / 4;
+		width /= 2;
+		height /= 2;
+		break;
+	case C4JRender::VIEWPORT_TYPE_QUADRANT_TOP_LEFT:
+		width /= 2;
+		height /= 2;
+		break;
+	case C4JRender::VIEWPORT_TYPE_QUADRANT_TOP_RIGHT:
+		xPos = width / 2;
+		width /= 2;
+		height /= 2;
+		break;
+	case C4JRender::VIEWPORT_TYPE_QUADRANT_BOTTOM_LEFT:
+		yPos = height / 2;
+		width /= 2;
+		height /= 2;
+		break;
+	case C4JRender::VIEWPORT_TYPE_QUADRANT_BOTTOM_RIGHT:
+		xPos = width / 2;
+		yPos = height / 2;
+		width /= 2;
+		height /= 2;
+		break;
+	default:
+		break;
+	}
+}
 #endif
 
 UIScene_AbstractContainerMenu::UIScene_AbstractContainerMenu(int iPad, UILayer *parentLayer) : UIScene(iPad, parentLayer)
@@ -28,9 +83,6 @@ UIScene_AbstractContainerMenu::UIScene_AbstractContainerMenu(int iPad, UILayer *
 	ui.OverrideSFX(m_iPad,ACTION_MENU_DOWN,true);
 
 	m_bIgnoreInput=false;
-#ifdef _WINDOWS64
-	m_bMouseDragSlider=false;
-#endif
 }
 
 UIScene_AbstractContainerMenu::~UIScene_AbstractContainerMenu()
@@ -112,8 +164,8 @@ void UIScene_AbstractContainerMenu::PlatformInitialize(int iPad, int startIndex)
 #ifdef __ORBIS__
 	// we need to map the touchpad rectangle to the UI rectangle. While it works great for the creative menu, it is much too sensitive for the smaller menus.
 	//X coordinate of the touch point (0 to 1919)    
-	//Y coordinate of the touch point (0 to 941: DUALSHOCK�4 wireless controllers and the CUH-ZCT1J/CAP-ZCT1J/CAP-ZCT1U controllers for the PlayStation�4 development tool,    
-	//0 to 753: JDX-1000x series controllers for the PlayStation�4 development tool,)     
+	//Y coordinate of the touch point (0 to 941: DUALSHOCK�4 wireless controllers and the CUH-ZCT1J/CAP-ZCT1J/CAP-ZCT1U controllers for the PlayStation�4 development tool,)
+	//0 to 753: JDX-1000x series controllers for the PlayStation�4 development tool,)
 	m_fTouchPadMulX=fPanelWidth/1919.0f;
 	m_fTouchPadMulY=fPanelHeight/941.0f;
 	m_fTouchPadDeadZoneX=15.0f*m_fTouchPadMulX;
@@ -160,8 +212,8 @@ void UIScene_AbstractContainerMenu::PlatformInitialize(int iPad, int startIndex)
 	IggyEvent mouseEvent;
 	S32 width, height;
 	m_parentLayer->getRenderDimensions(width, height);
-	S32 x = m_pointerPos.x*((float)width/m_movieWidth);
-	S32 y = m_pointerPos.y*((float)height/m_movieHeight); 
+	S32 x = m_pointerPos.x*((float)width/m_renderWidth);
+	S32 y = m_pointerPos.y*((float)height/m_renderHeight);
 	IggyMakeEventMouseMove( &mouseEvent, x, y);
 
 	IggyEventResult result;
@@ -179,118 +231,61 @@ void UIScene_AbstractContainerMenu::tick()
 {
 	UIScene::tick();
 
+	m_bMousePointerControl = false;
 #ifdef _WINDOWS64
-	bool mouseActive = (m_iPad == 0 && !KMInput.IsCaptured());
-	float rawMouseMovieX = 0, rawMouseMovieY = 0;
-	// Map Windows mouse position to the virtual pointer in movie coordinates
-	if (mouseActive)
+	if (getPad() == 0)
 	{
-		RECT clientRect;
-		GetClientRect(KMInput.GetHWnd(), &clientRect);
-		int clientWidth = clientRect.right;
-		int clientHeight = clientRect.bottom;
-		if (clientWidth > 0 && clientHeight > 0)
+		if (KMInput.IsCaptured())
 		{
-			int mouseX = KMInput.GetMouseX();
-			int mouseY = KMInput.GetMouseY();
+			float dx = 0.0f;
+			float dy = 0.0f;
+			KMInput.ConsumeMouseDelta(dx, dy);
 
-			// Convert mouse position to movie coordinates using the movie/client ratio
-			float mx = (float)mouseX * ((float)m_movieWidth / (float)clientWidth);
-			float my = (float)mouseY * ((float)m_movieHeight / (float)clientHeight);
+			const float pointerSensitivity = 1.00f;
+			m_pointerPos.x += dx * pointerSensitivity;
+			m_pointerPos.y += dy * pointerSensitivity;
+			m_bMousePointerControl = true;
+		}
+		else
+		{
+			int clientX = 0;
+			int clientY = 0;
+			int clientWidth = 0;
+			int clientHeight = 0;
+			if (KMInput.GetMouseClientPosition(clientX, clientY) && KMInput.GetClientSize(clientWidth, clientHeight) && clientWidth > 0 && clientHeight > 0)
+			{
+				S32 viewportX = 0;
+				S32 viewportY = 0;
+				S32 viewportW = 0;
+				S32 viewportH = 0;
+				GetViewportRect(m_parentLayer->m_parentGroup->GetViewportType(), (S32)clientWidth, (S32)clientHeight, viewportX, viewportY, viewportW, viewportH);
 
-			m_pointerPos.x = mx;
-			m_pointerPos.y = my;
-			rawMouseMovieX = mx;
-			rawMouseMovieY = my;
+				if (viewportW > 0 && viewportH > 0)
+				{
+					S32 localX = (S32)clientX - viewportX;
+					S32 localY = (S32)clientY - viewportY;
+					if (localX >= 0 && localY >= 0 && localX < viewportW && localY < viewportH)
+					{
+						float pointerX = ((float)localX / (float)viewportW) * (float)m_renderWidth;
+						float pointerY = ((float)localY / (float)viewportH) * (float)m_renderHeight;
+						m_pointerPos.x = pointerX;
+						m_pointerPos.y = pointerY;
+						m_bMousePointerControl = true;
+					}
+				}
+			}
 		}
 	}
 #endif
 
 	onMouseTick();
 
-#ifdef _WINDOWS64
-	// Dispatch mouse clicks AFTER onMouseTick() has updated m_eCurrSection from the new pointer position
-	if (mouseActive)
-	{
-		if (KMInput.ConsumeMousePress(0))
-		{
-			if (m_eCurrSection == eSectionInventoryCreativeSlider)
-			{
-				// Scrollbar click: use raw mouse position (onMouseTick may have snapped m_pointerPos)
-				m_bMouseDragSlider = true;
-				m_pointerPos.x = rawMouseMovieX;
-				m_pointerPos.y = rawMouseMovieY;
-				handleOtherClicked(m_iPad, eSectionInventoryCreativeSlider, 0, false);
-			}
-			else
-			{
-				handleKeyDown(m_iPad, ACTION_MENU_A, false);
-			}
-		}
-		else if (m_bMouseDragSlider && KMInput.IsMouseDown(0))
-		{
-			// Continue scrollbar drag: update scroll position from current mouse Y
-			m_pointerPos.x = rawMouseMovieX;
-			m_pointerPos.y = rawMouseMovieY;
-			handleOtherClicked(m_iPad, eSectionInventoryCreativeSlider, 0, false);
-		}
-
-		if (!KMInput.IsMouseDown(0))
-			m_bMouseDragSlider = false;
-
-		if (KMInput.ConsumeMousePress(1))
-		{
-			handleKeyDown(m_iPad, ACTION_MENU_X, false);
-		}
-		if (KMInput.ConsumeMousePress(2))
-		{
-			handleKeyDown(m_iPad, ACTION_MENU_Y, false);
-		}
-
-		// Mouse scroll wheel for page scrolling
-		int scrollDelta = KMInput.ConsumeScrollDelta();
-		if (scrollDelta > 0)
-		{
-			handleKeyDown(m_iPad, ACTION_MENU_OTHER_STICK_UP, false);
-		}
-		else if (scrollDelta < 0)
-		{
-			handleKeyDown(m_iPad, ACTION_MENU_OTHER_STICK_DOWN, false);
-		}
-
-		// ESC to close — must be last since it may destroy this scene
-		if (KMInput.ConsumeKeyPress(VK_ESCAPE))
-		{
-			handleKeyDown(m_iPad, ACTION_MENU_B, false);
-			return;
-		}
-	}
-#endif
-
 	IggyEvent mouseEvent;
 	S32 width, height;
 	m_parentLayer->getRenderDimensions(width, height);
+	S32 x = m_pointerPos.x*((float)width/m_renderWidth);
+	S32 y = m_pointerPos.y*((float)height/m_renderHeight);
 
-#ifdef _WINDOWS64
-	S32 x, y;
-	if (mouseActive)
-	{
-		// Send raw mouse position directly as Iggy event to avoid coordinate round-trip errors
-		// Scale mouse client coords to the Iggy display space (which was set to getRenderDimensions())
-		RECT clientRect;
-		GetClientRect(KMInput.GetHWnd(), &clientRect);
-		x = (S32)((float)KMInput.GetMouseX() * ((float)width / (float)clientRect.right));
-		y = (S32)((float)KMInput.GetMouseY() * ((float)height / (float)clientRect.bottom));
-	}
-	else
-	{
-		x = (S32)(m_pointerPos.x * ((float)width / m_movieWidth));
-		y = (S32)(m_pointerPos.y * ((float)height / m_movieHeight));
-	}
-#else
-	S32 x = m_pointerPos.x*((float)width/m_movieWidth);
-	S32 y = m_pointerPos.y*((float)height/m_movieHeight);
-#endif
 	IggyMakeEventMouseMove( &mouseEvent, x, y);
 
 	// 4J Stu - This seems to be broken on Durango, so do it ourself

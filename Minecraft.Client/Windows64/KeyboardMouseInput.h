@@ -45,6 +45,8 @@ public:
 	bool ConsumeMouseRelease(int btn);
 	void ConsumeMouseDelta(float &dx, float &dy);
 	int ConsumeScrollDelta();
+	bool GetMouseClientPosition(int &x, int &y) const;
+	bool GetClientSize(int &width, int &height) const;
 
 	// Absolute cursor position (client-area coordinates, for GUI when not captured)
 	void OnMouseMove(int x, int y);

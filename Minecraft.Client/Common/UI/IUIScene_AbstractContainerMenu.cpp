@@ -21,6 +21,7 @@ IUIScene_AbstractContainerMenu::IUIScene_AbstractContainerMenu()
 
 	m_pointerPos.x = 0.0f;
 	m_pointerPos.y = 0.0f;
+	m_bMousePointerControl = false;
 
 }
 
@@ -63,6 +64,7 @@ void IUIScene_AbstractContainerMenu::Initialize(int iPad, AbstractContainerMenu*
 	m_eMaxSection = maxSection;
 
 	m_iConsectiveInputTicks = 0;
+	m_bMousePointerControl = false;
 
 	m_bNavigateBack = bNavigateBack;
 
@@ -463,6 +465,25 @@ void IUIScene_AbstractContainerMenu::onMouseTick()
 	}
 #endif
 
+	if (m_bMousePointerControl)
+	{
+		// Force pointer to the externally provided mouse position so any
+		// residual stick input/drift cannot desync the software cursor.
+		vPointerPos = m_pointerPos;
+		vPointerPos.x += m_fPointerImageOffsetX;
+		vPointerPos.y += m_fPointerImageOffsetY;
+
+		bStickInput = true;
+		m_iConsectiveInputTicks = 0;
+		m_eCurrTapState = eTapStateNoInput;
+#ifdef USE_POINTER_ACCEL
+		m_fPointerVelX = 0.0f;
+		m_fPointerVelY = 0.0f;
+		m_fPointerAccelX = 0.0f;
+		m_fPointerAccelY = 0.0f;
+#endif
+	}
+
 	// Determine which slot the pointer is currently over.
 	ESceneSection eSectionUnderPointer = eSectionNone;
 	int iNewSlotX = -1;
@@ -689,10 +710,13 @@ void IUIScene_AbstractContainerMenu::onMouseTick()
 	}
 
 	// Clamp to pointer extents.
-	if ( vPointerPos.x < m_fPointerMinX )				vPointerPos.x = m_fPointerMinX;
-	else if ( vPointerPos.x > m_fPointerMaxX )		vPointerPos.x = m_fPointerMaxX;
-	if ( vPointerPos.y < m_fPointerMinY )				vPointerPos.y = m_fPointerMinY;
-	else if ( vPointerPos.y > m_fPointerMaxY )		vPointerPos.y = m_fPointerMaxY;
+	if (!m_bMousePointerControl)
+	{
+		if ( vPointerPos.x < m_fPointerMinX )				vPointerPos.x = m_fPointerMinX;
+		else if ( vPointerPos.x > m_fPointerMaxX )		vPointerPos.x = m_fPointerMaxX;
+		if ( vPointerPos.y < m_fPointerMinY )				vPointerPos.y = m_fPointerMinY;
+		else if ( vPointerPos.y > m_fPointerMaxY )		vPointerPos.y = m_fPointerMaxY;
+	}
 
 	// Check if the pointer is outside of the panel.
 	bool bPointerIsOutsidePanel = false;

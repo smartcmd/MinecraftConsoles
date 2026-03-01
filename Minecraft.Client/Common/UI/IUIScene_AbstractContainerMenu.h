@@ -158,6 +158,7 @@ protected:
 	Slot *m_lastPointerLabelSlot;
 
 	bool m_bSplitscreen;
+	bool m_bMousePointerControl;
 	bool	m_bNavigateBack; // should we exit the xuiscenes or just navigate back on exit?
 	
 	virtual bool IsSectionSlotList( ESceneSection eSection ) { return eSection != eSectionNone; }

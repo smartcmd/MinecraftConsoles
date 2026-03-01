@@ -210,6 +210,18 @@ UIController::UIController()
 	m_currentRenderViewport = C4JRender::VIEWPORT_TYPE_FULLSCREEN;
 	m_bCustomRenderPosition = false;
 	m_winUserIndex = 0;
+
+#ifdef _WINDOWS64
+	m_menuMouseOkPressed = false;
+	m_menuMouseOkReleased = false;
+	m_menuMousePageUpPressed = false;
+	m_menuMousePageDownPressed = false;
+	m_menuMouseFocusMovie = NULL;
+	m_menuMouseFocusObject = IGGY_FOCUS_NULL;
+	m_menuMouseX = -1;
+	m_menuMouseY = -1;
+#endif
+
 	m_accumulatedTicks = 0;
 
 	InitializeCriticalSection(&m_navigationLock);
@@ -694,6 +706,10 @@ void UIController::tickInput()
 
 void UIController::handleInput()
 {
+#ifdef _WINDOWS64
+	handleMouseMenuInput();
+#endif
+
 	// For each user, loop over each key type and send messages based on the state
 	for(unsigned int iPad = 0; iPad < XUSER_MAX_COUNT; ++iPad)
 	{
@@ -752,6 +768,264 @@ void UIController::handleInput()
 	}
 #endif
 }
+
+#ifdef _WINDOWS64
+void UIController::handleMouseMenuInput()
+{
+	m_menuMouseOkPressed = false;
+	m_menuMouseOkReleased = false;
+	m_menuMousePageUpPressed = false;
+	m_menuMousePageDownPressed = false;
+
+	if (KMInput.IsCaptured() || !GetMenuDisplayed(0))
+	{
+		m_menuMouseFocusMovie = NULL;
+		m_menuMouseFocusObject = IGGY_FOCUS_NULL;
+		m_menuMouseX = -1;
+		m_menuMouseY = -1;
+		return;
+	}
+
+	m_menuMouseOkPressed = KMInput.IsMousePressed(0);
+	m_menuMouseOkReleased = KMInput.IsMouseReleased(0);
+
+	int wheel = KMInput.ConsumeScrollDelta();
+	if (wheel > 0) m_menuMousePageUpPressed = true;
+	else if (wheel < 0) m_menuMousePageDownPressed = true;
+
+	if (IsContainerMenuDisplayed(0))
+	{
+		m_menuMouseFocusMovie = NULL;
+		m_menuMouseFocusObject = IGGY_FOCUS_NULL;
+		m_menuMouseX = -1;
+		m_menuMouseY = -1;
+		return;
+	}
+
+	EUIGroup group = eUIGroup_Fullscreen;
+	UIScene *scene = getMouseFocusableScene(group);
+	if (!scene || !scene->hasMovie())
+	{
+		m_menuMouseFocusMovie = NULL;
+		m_menuMouseFocusObject = IGGY_FOCUS_NULL;
+		m_menuMouseX = -1;
+		m_menuMouseY = -1;
+		return;
+	}
+
+	int clientWidth = 0;
+	int clientHeight = 0;
+	if (!KMInput.GetClientSize(clientWidth, clientHeight) || clientWidth <= 0 || clientHeight <= 0)
+	{
+		return;
+	}
+
+	int clientX = 0;
+	int clientY = 0;
+	if (!KMInput.GetMouseClientPosition(clientX, clientY))
+	{
+		return;
+	}
+
+	S32 uiX = (S32)((float)clientX * (m_fScreenWidth / (float)clientWidth));
+	S32 uiY = (S32)((float)clientY * (m_fScreenHeight / (float)clientHeight));
+
+	S32 viewportX = 0;
+	S32 viewportY = 0;
+	S32 viewportW = 0;
+	S32 viewportH = 0;
+	m_groups[(int)group]->getRenderDimensions(viewportW, viewportH);
+	getViewportOffset(m_groups[(int)group]->GetViewportType(), viewportX, viewportY);
+
+	if (viewportW <= 0 || viewportH <= 0)
+	{
+		return;
+	}
+
+	S32 localX = uiX - viewportX;
+	S32 localY = uiY - viewportY;
+	if (localX < 0 || localY < 0 || localX >= viewportW || localY >= viewportH)
+	{
+		return;
+	}
+
+	Iggy *movie = scene->getMovie();
+	IggyFocusableObject focusableObjects[256];
+	S32 numFocusableObjects = 0;
+	IggyFocusHandle currentFocus = IGGY_FOCUS_NULL;
+	if (!IggyPlayerGetFocusableObjects(movie, &currentFocus, focusableObjects, 256, &numFocusableObjects))
+	{
+		return;
+	}
+
+	S32 mouseX = (S32)((float)localX * ((float)scene->getRenderWidth() / (float)viewportW));
+	S32 mouseY = (S32)((float)localY * ((float)scene->getRenderHeight() / (float)viewportH));
+
+	IggyFocusHandle bestFocus = IGGY_FOCUS_NULL;
+	float bestArea = 3.4e38f;
+
+	for (S32 i = 0; i < numFocusableObjects; ++i)
+	{
+		const IggyFocusableObject &obj = focusableObjects[i];
+		float minX = min(obj.x0, obj.x1);
+		float maxX = max(obj.x0, obj.x1);
+		float minY = min(obj.y0, obj.y1);
+		float maxY = max(obj.y0, obj.y1);
+
+		if ((float)mouseX < minX || (float)mouseX > maxX || (float)mouseY < minY || (float)mouseY > maxY)
+		{
+			continue;
+		}
+
+		float area = max(1.0f, (maxX - minX) * (maxY - minY));
+		if (area <= bestArea)
+		{
+			bestArea = area;
+			bestFocus = obj.object;
+		}
+	}
+
+	if (bestFocus == IGGY_FOCUS_NULL)
+	{
+		float fallbackBestArea = 3.4e38f;
+		for (S32 i = 0; i < numFocusableObjects; ++i)
+		{
+			const IggyFocusableObject &obj = focusableObjects[i];
+			float minX = min(obj.x0, obj.x1);
+			float maxX = max(obj.x0, obj.x1);
+			float minY = min(obj.y0, obj.y1);
+			float maxY = max(obj.y0, obj.y1);
+
+			if ((float)localX < minX || (float)localX > maxX || (float)localY < minY || (float)localY > maxY)
+			{
+				continue;
+			}
+
+			float area = max(1.0f, (maxX - minX) * (maxY - minY));
+			if (area <= fallbackBestArea)
+			{
+				fallbackBestArea = area;
+				bestFocus = obj.object;
+			}
+		}
+
+		if (bestFocus != IGGY_FOCUS_NULL)
+		{
+			mouseX = localX;
+			mouseY = localY;
+		}
+	}
+
+	IggyEvent mouseEvent;
+	IggyEventResult eventResult;
+	IggyMakeEventMouseMove(&mouseEvent, mouseX, mouseY);
+	IggyPlayerDispatchEventRS(movie, &mouseEvent, &eventResult);
+
+	if (movie == m_menuMouseFocusMovie && mouseX == m_menuMouseX && mouseY == m_menuMouseY)
+	{
+		return;
+	}
+	bool movieChanged = (movie != m_menuMouseFocusMovie);
+
+	m_menuMouseFocusMovie = movie;
+	m_menuMouseX = mouseX;
+	m_menuMouseY = mouseY;
+	if (movieChanged) m_menuMouseFocusObject = IGGY_FOCUS_NULL;
+
+	if (bestFocus != IGGY_FOCUS_NULL && bestFocus != m_menuMouseFocusObject)
+	{
+		IggyPlayerSetFocusRS(movie, bestFocus, 0);
+	}
+	m_menuMouseFocusObject = bestFocus;
+}
+
+UIScene *UIController::getMouseFocusableScene(EUIGroup &group) const
+{
+	static const EUILayer kLayerOrder[] =
+	{
+		eUILayer_Error,
+		eUILayer_Alert,
+		eUILayer_Popup,
+		eUILayer_Scene,
+		eUILayer_Fullscreen,
+	};
+
+	for (int groupIndex = 0; groupIndex < eUIGroup_COUNT; ++groupIndex)
+	{
+		EUIGroup testGroup = (EUIGroup)groupIndex;
+		for (int layerIndex = 0; layerIndex < (int)(sizeof(kLayerOrder) / sizeof(kLayerOrder[0])); ++layerIndex)
+		{
+			UIScene *scene = m_groups[groupIndex]->GetTopScene(kLayerOrder[layerIndex]);
+			if (!scene || !scene->canHandleInput() || !scene->hasMovie()) continue;
+			if (isContainerSceneType(scene->getSceneType())) continue;
+			group = testGroup;
+			return scene;
+		}
+	}
+
+	return NULL;
+}
+
+void UIController::getViewportOffset(C4JRender::eViewportType viewport, S32 &xPos, S32 &yPos) const
+{
+	xPos = 0;
+	yPos = 0;
+	const float screenWidth = m_fScreenWidth;
+	const float screenHeight = m_fScreenHeight;
+
+	switch (viewport)
+	{
+	case C4JRender::VIEWPORT_TYPE_SPLIT_TOP:
+		xPos = (S32)(screenWidth / 4);
+		break;
+	case C4JRender::VIEWPORT_TYPE_SPLIT_BOTTOM:
+		xPos = (S32)(screenWidth / 4);
+		yPos = (S32)(screenHeight / 2);
+		break;
+	case C4JRender::VIEWPORT_TYPE_SPLIT_LEFT:
+		yPos = (S32)(screenHeight / 4);
+		break;
+	case C4JRender::VIEWPORT_TYPE_SPLIT_RIGHT:
+		xPos = (S32)(screenWidth / 2);
+		yPos = (S32)(screenHeight / 4);
+		break;
+	case C4JRender::VIEWPORT_TYPE_QUADRANT_TOP_RIGHT:
+		xPos = (S32)(screenWidth / 2);
+		break;
+	case C4JRender::VIEWPORT_TYPE_QUADRANT_BOTTOM_LEFT:
+		yPos = (S32)(screenHeight / 2);
+		break;
+	case C4JRender::VIEWPORT_TYPE_QUADRANT_BOTTOM_RIGHT:
+		xPos = (S32)(screenWidth / 2);
+		yPos = (S32)(screenHeight / 2);
+		break;
+	default:
+		break;
+	}
+}
+
+bool UIController::isContainerSceneType(EUIScene sceneType) const
+{
+	switch (sceneType)
+	{
+	case eUIScene_Crafting2x2Menu:
+	case eUIScene_Crafting3x3Menu:
+	case eUIScene_FurnaceMenu:
+	case eUIScene_ContainerMenu:
+	case eUIScene_LargeContainerMenu:
+	case eUIScene_InventoryMenu:
+	case eUIScene_DispenserMenu:
+	case eUIScene_CreativeMenu:
+	case eUIScene_EnchantingMenu:
+	case eUIScene_BrewingStandMenu:
+	case eUIScene_TradingMenu:
+	case eUIScene_AnvilMenu:
+		return true;
+	default:
+		return false;
+	}
+}
+#endif
 
 void UIController::handleKeyPress(unsigned int iPad, unsigned int key)
 {
@@ -924,17 +1198,23 @@ void UIController::handleKeyPress(unsigned int iPad, unsigned int key)
 	if (iPad == 0)
 	{
 		bool kbDown = false, kbPressed = false, kbReleased = false;
+		bool capturedContainerMenu = IsContainerMenuDisplayed(0) && KMInput.IsCaptured();
+		bool capturedMouseOkDown = capturedContainerMenu && KMInput.IsMouseDown(0);
+		bool capturedMouseOkPressed = capturedContainerMenu && KMInput.IsMousePressed(0);
+		bool capturedMouseOkReleased = capturedContainerMenu && KMInput.IsMouseReleased(0);
 		switch(key)
 		{
 			case ACTION_MENU_UP:        kbDown = KMInput.IsKeyDown(VK_UP);     kbPressed = KMInput.IsKeyPressed(VK_UP);     kbReleased = KMInput.IsKeyReleased(VK_UP);     break;
 			case ACTION_MENU_DOWN:      kbDown = KMInput.IsKeyDown(VK_DOWN);   kbPressed = KMInput.IsKeyPressed(VK_DOWN);   kbReleased = KMInput.IsKeyReleased(VK_DOWN);   break;
 			case ACTION_MENU_LEFT:      kbDown = KMInput.IsKeyDown(VK_LEFT);   kbPressed = KMInput.IsKeyPressed(VK_LEFT);   kbReleased = KMInput.IsKeyReleased(VK_LEFT);   break;
-			case ACTION_MENU_RIGHT:     kbDown = KMInput.IsKeyDown(VK_RIGHT);  kbPressed = KMInput.IsKeyPressed(VK_RIGHT);  kbReleased = KMInput.IsKeyReleased(VK_RIGHT);  break;
-			case ACTION_MENU_OK:        kbDown = KMInput.IsKeyDown(VK_RETURN); kbPressed = KMInput.IsKeyPressed(VK_RETURN); kbReleased = KMInput.IsKeyReleased(VK_RETURN); break;
-			case ACTION_MENU_A:         kbDown = KMInput.IsKeyDown(VK_RETURN); kbPressed = KMInput.IsKeyPressed(VK_RETURN); kbReleased = KMInput.IsKeyReleased(VK_RETURN); break;
-			case ACTION_MENU_CANCEL:    kbDown = KMInput.IsKeyDown(VK_ESCAPE); kbPressed = KMInput.IsKeyPressed(VK_ESCAPE); kbReleased = KMInput.IsKeyReleased(VK_ESCAPE); break;
-			case ACTION_MENU_B:         kbDown = KMInput.IsKeyDown(VK_ESCAPE); kbPressed = KMInput.IsKeyPressed(VK_ESCAPE); kbReleased = KMInput.IsKeyReleased(VK_ESCAPE); break;
-			case ACTION_MENU_PAUSEMENU: kbDown = KMInput.IsKeyDown(VK_ESCAPE); kbPressed = KMInput.IsKeyPressed(VK_ESCAPE); kbReleased = KMInput.IsKeyReleased(VK_ESCAPE); break;
+		case ACTION_MENU_RIGHT:     kbDown = KMInput.IsKeyDown(VK_RIGHT);  kbPressed = KMInput.IsKeyPressed(VK_RIGHT);  kbReleased = KMInput.IsKeyReleased(VK_RIGHT);  break;
+		case ACTION_MENU_OK:        kbDown = KMInput.IsKeyDown(VK_RETURN) || capturedMouseOkDown; kbPressed = KMInput.IsKeyPressed(VK_RETURN) || m_menuMouseOkPressed || capturedMouseOkPressed; kbReleased = KMInput.IsKeyReleased(VK_RETURN) || m_menuMouseOkReleased || capturedMouseOkReleased; break;
+		case ACTION_MENU_A:         kbDown = KMInput.IsKeyDown(VK_RETURN) || capturedMouseOkDown; kbPressed = KMInput.IsKeyPressed(VK_RETURN) || m_menuMouseOkPressed || capturedMouseOkPressed; kbReleased = KMInput.IsKeyReleased(VK_RETURN) || m_menuMouseOkReleased || capturedMouseOkReleased; break;
+		case ACTION_MENU_CANCEL:    kbDown = KMInput.IsKeyDown(VK_ESCAPE); kbPressed = KMInput.IsKeyPressed(VK_ESCAPE); kbReleased = KMInput.IsKeyReleased(VK_ESCAPE); break;
+		case ACTION_MENU_B:         kbDown = KMInput.IsKeyDown(VK_ESCAPE); kbPressed = KMInput.IsKeyPressed(VK_ESCAPE); kbReleased = KMInput.IsKeyReleased(VK_ESCAPE); break;
+		case ACTION_MENU_PAUSEMENU: kbDown = KMInput.IsKeyDown(VK_ESCAPE); kbPressed = KMInput.IsKeyPressed(VK_ESCAPE); kbReleased = KMInput.IsKeyReleased(VK_ESCAPE); break;
+		case ACTION_MENU_PAGEUP:    kbPressed = m_menuMousePageUpPressed; break;
+		case ACTION_MENU_PAGEDOWN:  kbPressed = m_menuMousePageDownPressed; break;
 		}
 		pressed = pressed || kbPressed;
 		released = released || kbReleased;

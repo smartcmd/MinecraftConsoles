@@ -138,7 +138,7 @@ void Input::tick(LocalPlayer *player)
 	// Mouse look is now handled per-frame in Minecraft::applyFrameMouseLook()
 	// to eliminate the 20Hz tick delay. Only flush any remaining delta here
 	// as a safety measure.
-	if (iPad == 0 && KMInput.IsCaptured())
+	if (iPad == 0 && KMInput.IsCaptured() && !ui.GetMenuDisplayed(iPad))
 	{
 		float rawDx, rawDy;
 		KMInput.ConsumeMouseDelta(rawDx, rawDy);
