@@ -7,7 +7,7 @@
 #include "net.minecraft.h"
 #include "EnderChestTile.h"
 
-EnderChestTile::EnderChestTile(int id) : EntityTile(id, Material::stone, isSolidRender())
+EnderChestTile::EnderChestTile(int id) : BaseEntityTile(id, Material::stone, isSolidRender())
 {
 	updateDefaultShape();
 }
@@ -48,7 +48,7 @@ bool EnderChestTile::isSilkTouchable()
 	return true;
 }
 
-void EnderChestTile::setPlacedBy(Level *level, int x, int y, int z, shared_ptr<Mob> by)
+void EnderChestTile::setPlacedBy(Level *level, int x, int y, int z, shared_ptr<LivingEntity> by, shared_ptr<ItemInstance> itemInstance)
 {
 	int facing = 0;
 	int dir = (Mth::floor(by->yRot * 4 / (360) + 0.5f)) & 3;
@@ -58,7 +58,7 @@ void EnderChestTile::setPlacedBy(Level *level, int x, int y, int z, shared_ptr<M
 	if (dir == 2) facing = Facing::SOUTH;
 	if (dir == 3) facing = Facing::WEST;
 
-	level->setData(x, y, z, facing);
+	level->setData(x, y, z, facing, Tile::UPDATE_CLIENTS);
 }
 
 bool EnderChestTile::use(Level *level, int x, int y, int z, shared_ptr<Player> player, int clickedFace, float clickX, float clickY, float clickZ, bool soundOnly)

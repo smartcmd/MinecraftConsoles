@@ -48,6 +48,12 @@
 	<data name="IDS_CORRUPT_OPTIONS">
 		<value>Il file delle opzioni è danneggiato e deve essere cancellato.</value>
 	</data>
+	<data name="IDS_CORRUPT_OPTIONS_DELETE">
+		<value>Cancella file opzioni.</value>
+	</data>
+	<data name="IDS_CORRUPT_OPTIONS_RETRY">
+		<value>Riprova a caricare il file opzioni.</value>
+	</data>
 	<data name="IDS_CORRUPT_SAVECACHE">
 		<value>Il file di salvataggio è danneggiato e deve essere cancellato.</value>
 	</data>
@@ -75,6 +81,10 @@
 	<data name="IDS_CONTENT_RESTRICTION_MULTIPLAYER">
 		<value>I servizi online sono disattivati nel tuo account Sony Entertainment Network a causa delle limitazioni sui contenuti di uno dei giocatori locali.</value>
 	</data>
+	<data name="IDS_CONTENT_RESTRICTION_PATCH_AVAILABLE">
+		<value>Le funzionalità online sono state disabilitate per la disponibilità di un aggiornamento al gioco.
+</value>
+	</data>
 	<data name="IDS_NO_DLCCATEGORIES">
 		<value>Nessuna offerta di contenuto scaricabile disponibile per questo titolo al momento.</value>
 	</data>
@@ -83,9 +93,5 @@
 	</data>
 	<data name="IDS_INVITATION_BODY">
 		<value>Venite a giocare una partita a Minecraft: PlayStation®Vita Edition!</value>
-	</data>
-	<data name="IDS_CONTENT_RESTRICTION_PATCH_AVAILABLE">
-		<value>Le funzionalità online sono state disabilitate per la disponibilità di un aggiornamento al gioco.
-</value>
 	</data>
 </root>

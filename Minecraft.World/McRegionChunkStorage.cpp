@@ -160,6 +160,13 @@ LevelChunk *McRegionChunkStorage::load(Level *level, int x, int z)
 #endif
 		delete chunkData;
 	}
+#ifndef _CONTENT_PACKAGE
+	if(levelChunk && app.DebugSettingsOn() && app.GetGameSettingsDebugMask(ProfileManager.GetPrimaryPad())&(1L<<eDebugSetting_EnableBiomeOverride))
+	{
+		// 4J Stu - This will force an update of the chunk's biome array
+		levelChunk->reloadBiomes();
+	}
+#endif
 	return levelChunk;
 
 }

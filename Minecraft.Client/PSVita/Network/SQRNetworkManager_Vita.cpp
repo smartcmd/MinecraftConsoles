@@ -108,6 +108,7 @@ SQRNetworkManager_Vita::SQRNetworkManager_Vita(ISQRNetworkManagerListener *liste
 	InitializeCriticalSection(&m_csPlayerState);
 	InitializeCriticalSection(&m_csStateChangeQueue);
 	InitializeCriticalSection(&m_csMatching);
+	InitializeCriticalSection(&m_csAckQueue);
 
 	memset( &m_roomSyncData,0,sizeof(m_roomSyncData));		// MGH -  added to fix problem when joining a full room, and the sync data wasn't populated
 
@@ -277,6 +278,10 @@ void SQRNetworkManager_Vita::Terminate()
 // into SNM_INT_STATE_IDLE at this stage.
 void SQRNetworkManager_Vita::InitialiseAfterOnline()
 {
+	// MGH -  added, so we don't init the matching2 stuff in trial mode - devtrack #5921
+	if(!ProfileManager.IsFullVersion())
+		return;
+
 	// 	SceNpId npId;
 	// 	int option = 0;
 
@@ -358,6 +363,7 @@ void SQRNetworkManager_Vita::InitialiseAfterOnline()
 // General tick function to be called from main game loop - any internal tick functions should be called from here.
 void SQRNetworkManager_Vita::Tick()
 {
+	TickWriteAcks();
 	OnlineCheck();
 	sceNetCtlCheckCallback();
 	updateNetCheckDialog();
@@ -1527,7 +1533,7 @@ void SQRNetworkManager_Vita::TickJoinablePresenceData()
 				// Not signed in to PSN
 				UINT uiIDA[1];
 				uiIDA[0] = IDS_PRO_NOTONLINE_ACCEPT;
-				ui.RequestMessageBox( IDS_PRO_NOTONLINE_TITLE, IDS_PRO_NOTONLINE_TEXT, uiIDA, 1, ProfileManager.GetPrimaryPad(), &MustSignInReturnedPresenceInvite, NULL, app.GetStringTable(), NULL, 0, false);
+				ui.RequestAlertMessage( IDS_PRO_NOTONLINE_TITLE, IDS_PRO_NOTONLINE_TEXT, uiIDA, 1, ProfileManager.GetPrimaryPad(), &MustSignInReturnedPresenceInvite, NULL);
 			}
 
 		}
@@ -2105,6 +2111,16 @@ bool SQRNetworkManager_Vita::GetServerContext2()
 // using mainly the same code by making a single element list. This is used when joining an existing room.
 bool SQRNetworkManager_Vita::GetServerContext(SceNpMatching2ServerId serverId)
 {
+	if(m_state == SNM_INT_STATE_STARTING_CONTEXT)
+	{
+		// MGH - added for devtrack 5936 : race between the context starting after going online, and trying to start it here, so skip this one if we're already starting.
+		m_serverCount = 1;
+		m_totalServerCount = m_serverCount;
+		m_aServerId = (SceNpMatching2ServerId *)realloc(m_aServerId, sizeof(SceNpMatching2ServerId) * m_serverCount );
+		m_aServerId[0] = serverId;
+		SetState(SNM_INT_STATE_JOINING_STARTING_MATCHING_CONTEXT);
+		return true;
+	}
 	assert(m_state == SNM_INT_STATE_IDLE);
 	assert(m_serverContextValid == false);
 
@@ -2895,7 +2911,9 @@ void SQRNetworkManager_Vita::DefaultRequestCallback(SceNpMatching2ContextId id, 
 		manager->SetState(SNM_INT_STATE_JOINING_JOIN_ROOM_FAILED);
 		if(errorCode == SCE_NP_MATCHING2_SERVER_ERROR_ROOM_FULL) // MGH - added to fix "host has exited" error when 2 players go after the final slot
 		{
+			app.DebugPrintf("setting DisconnectPacket::eDisconnect_ServerFull\n");
 			Minecraft::GetInstance()->connectionDisconnected(ProfileManager.GetPrimaryPad(), DisconnectPacket::eDisconnect_ServerFull);
+			app.SetDisconnectReason(DisconnectPacket::eDisconnect_ServerFull);		// MGH - added to fix when joining from an invite
 		}
 		break;
 		// This is the response to sceNpMatching2GetRoomMemberDataInternal.This only happens on the host, as a response to an incoming connection being established, when we
@@ -3339,6 +3357,17 @@ int SQRNetworkManager_Vita::BasicEventCallback(int event, int retCode, uint32_t 
 // Implementation of SceNpManagerCallback
 void SQRNetworkManager_Vita::OnlineCheck()
 {
+	static bool s_bFullVersion = ProfileManager.IsFullVersion();
+	if(s_bFullVersion != ProfileManager.IsFullVersion())
+	{
+		s_bFullVersion = ProfileManager.IsFullVersion();
+		// we've switched from trial to full version here, if we're already online, call InitialiseAfterOnline, as this is now returns immediately in trial mode (devtrack #5921)
+		if(GetOnlineStatus() == true)
+		{
+			InitialiseAfterOnline();
+		}
+	}
+
 	bool bSignedIn = ProfileManager.IsSignedInLive(ProfileManager.GetPrimaryPad());
 	if(GetOnlineStatus() == false)
 	{
@@ -3423,9 +3452,22 @@ void SQRNetworkManager_Vita::updateNetCheckDialog()
 			ret = sceNetCheckDialogTerm();
 			app.DebugPrintf("NetCheckDialogTerm ret = 0x%x\n", ret);
 			ProfileManager.SetSysUIShowing( false );
+
+			bool bConnectedOK = (netCheckResult.result == SCE_COMMON_DIALOG_RESULT_OK);
+			if(bConnectedOK)
+			{
+				SceNetCtlInfo info;
+				sceNetCtlInetGetInfo(SCE_NET_CTL_INFO_DEVICE, &info);
+				if(info.device == SCE_NET_CTL_DEVICE_PHONE) // 3G connection, we're not going to allow this
+				{
+ 					app.DebugPrintf("Online with 3G connection!!\n");
+					ProfileManager.DisplaySystemMessage( SCE_MSG_DIALOG_SYSMSG_TYPE_TRC_WIFI_REQUIRED_OPERATION, 0 );
+					bConnectedOK = false;
+				}
+			}
 			app.DebugPrintf("------------>>>>>>>>   sceNetCheckDialog finished\n");
 
-			if( netCheckResult.result == SCE_COMMON_DIALOG_RESULT_OK )
+			if( bConnectedOK )
 			{
 				if( s_SignInCompleteCallbackFn )
 				{
@@ -3521,7 +3563,8 @@ void SQRNetworkManager_Vita::RudpContextCallback(int ctx_id, int event_id, int e
 			}
 			else
 			{
-				unsigned int dataSize = sceRudpGetSizeReadable(ctx_id);
+				SQRNetworkPlayer *playerIncomingData = manager->GetPlayerFromRudpCtx( ctx_id );
+				unsigned int dataSize = playerIncomingData->GetPacketDataSize();
 				// If we're the host, and this player hasn't yet had its small id confirmed, then the first byte sent to us should be this id
 				if( manager->m_isHosting )
 				{
@@ -3531,7 +3574,7 @@ void SQRNetworkManager_Vita::RudpContextCallback(int ctx_id, int event_id, int e
 						if( dataSize >= sizeof(SQRNetworkPlayer::InitSendData) )
 						{
 							SQRNetworkPlayer::InitSendData ISD;
-							unsigned int bytesRead = sceRudpRead( ctx_id, &ISD, sizeof(SQRNetworkPlayer::InitSendData), 0, NULL );
+							int bytesRead = playerFrom->ReadDataPacket( &ISD, sizeof(SQRNetworkPlayer::InitSendData));
 							if( bytesRead == sizeof(SQRNetworkPlayer::InitSendData) )
 							{
 								manager->NetworkPlayerInitialDataReceived(playerFrom, &ISD);
@@ -3552,7 +3595,7 @@ void SQRNetworkManager_Vita::RudpContextCallback(int ctx_id, int event_id, int e
 				if( dataSize > 0 )
 				{
 					unsigned char *data = new unsigned char [ dataSize ];
-					unsigned int bytesRead = sceRudpRead( ctx_id, data, dataSize, 0, NULL );
+					int bytesRead = playerIncomingData->ReadDataPacket( data, dataSize );
 					if( bytesRead > 0 )
 					{
 						SQRNetworkPlayer *playerFrom, *playerTo;
@@ -3868,6 +3911,9 @@ void SQRNetworkManager_Vita::AttemptPSNSignIn(int (*SignInCompleteCallbackFn)(vo
 	param.mode = SCE_NETCHECK_DIALOG_MODE_PSN_ONLINE;
 	param.defaultAgeRestriction = ProfileManager.GetMinimumAge();
 
+	// -------------------------------------------------------------
+	// MGH -  this code is duplicated in the adhoc manager now too, so any changes will have to be made there too
+	// -------------------------------------------------------------
 	//CD - Only add if EU sku, not SCEA or SCEJ
 	if( app.GetProductSKU() == e_sku_SCEE )	
 	{
@@ -3925,7 +3971,10 @@ int SQRNetworkManager_Vita::SetRichPresence(const void *data)
 	s_lastPresenceInfo.presenceType = SCE_NP_BASIC_IN_GAME_PRESENCE_TYPE_DEFAULT;
 
 	s_presenceStatusDirty = true;
-	SendLastPresenceInfo();
+	if(s_resendPresenceCountdown == 0)
+	{
+		s_resendPresenceCountdown = 5; // wait a few ticks before setting the rich presence value, so if there's a few being set at one time (like on game startup) we can send them all in a single call
+	}
 
 	// Return as if no error happened no matter what, as we'll be resending ourselves if we need to and don't want the calling system to retry
 	return 0;
@@ -3938,7 +3987,10 @@ void SQRNetworkManager_Vita::UpdateRichPresenceCustomData(void *data, unsigned i
 	s_lastPresenceInfo.size = dataBytes;
 
 	s_presenceStatusDirty = true;
-	SendLastPresenceInfo();
+	if(s_resendPresenceCountdown == 0)
+	{
+		s_resendPresenceCountdown = 5; // wait a few ticks before setting the rich presence value, so if there's a few being set at one time (like on game startup) we can send them all in a single call
+	}
 }
 
 void SQRNetworkManager_Vita::TickRichPresence()

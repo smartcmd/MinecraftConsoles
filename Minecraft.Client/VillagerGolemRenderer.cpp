@@ -3,16 +3,14 @@
 #include "..\Minecraft.World\net.minecraft.world.level.tile.h"
 #include "VillagerGolemModel.h"
 #include "ModelPart.h"
+#include "TextureAtlas.h"
 #include "VillagerGolemRenderer.h"
+
+ResourceLocation VillagerGolemRenderer::GOLEM_LOCATION = ResourceLocation(TN_MOB_VILLAGER_GOLEM);
 
 VillagerGolemRenderer::VillagerGolemRenderer() : MobRenderer(new VillagerGolemModel(), 0.5f)
 {
 	golemModel = (VillagerGolemModel *) model;
-}
-
-int VillagerGolemRenderer::prepareArmor(VillagerGolemModel *villagerGolem, int layer, float a)
-{
-	return -1;
 }
 
 void VillagerGolemRenderer::render(shared_ptr<Entity> mob, double x, double y, double z, float rot, float a)
@@ -20,7 +18,7 @@ void VillagerGolemRenderer::render(shared_ptr<Entity> mob, double x, double y, d
 	MobRenderer::render(mob, x, y, z, rot, a);
 }
 
-void VillagerGolemRenderer::setupRotations(shared_ptr<Mob> _mob, float bob, float bodyRot, float a)
+void VillagerGolemRenderer::setupRotations(shared_ptr<LivingEntity> _mob, float bob, float bodyRot, float a)
 {
 	// 4J - original version used generics and thus had an input parameter of type Blaze rather than shared_ptr<Entity>  we have here - 
 	// do some casting around instead
@@ -34,7 +32,12 @@ void VillagerGolemRenderer::setupRotations(shared_ptr<Mob> _mob, float bob, floa
 	glRotatef(6.5f * triangleWave, 0, 0, 1);
 }
 
-void VillagerGolemRenderer::additionalRendering(shared_ptr<Mob> _mob, float a)
+ResourceLocation *VillagerGolemRenderer::getTextureLocation(shared_ptr<Entity> mob)
+{
+	return &GOLEM_LOCATION;
+}
+
+void VillagerGolemRenderer::additionalRendering(shared_ptr<LivingEntity> _mob, float a)
 {
 	// 4J - original version used generics and thus had an input parameter of type Blaze rather than shared_ptr<Entity>  we have here - 
 	// do some casting around instead
@@ -62,7 +65,7 @@ void VillagerGolemRenderer::additionalRendering(shared_ptr<Mob> _mob, float a)
 	}
 
 	glColor4f(1, 1, 1, 1);
-	bindTexture(TN_TERRAIN); //"/terrain.png");
+	bindTexture(&TextureAtlas::LOCATION_BLOCKS); // TODO: By Icon
 	tileRenderer->renderTile(Tile::rose, 0, 1);
 	glPopMatrix();
 	glDisable(GL_RESCALE_NORMAL);

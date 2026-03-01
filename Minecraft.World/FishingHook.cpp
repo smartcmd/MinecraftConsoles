@@ -67,18 +67,18 @@ FishingHook::FishingHook(Level *level, shared_ptr<Player> mob) : Entity( level )
 {
 	_init();
 
-	this->owner = mob;
+	owner = mob;
 	// 4J Stu - Moved this outside the ctor
 	//owner->fishing = dynamic_pointer_cast<FishingHook>( shared_from_this() );
 
-	this->moveTo(mob->x, mob->y + 1.62 - mob->heightOffset, mob->z, mob->yRot, mob->xRot);
+	moveTo(mob->x, mob->y + 1.62 - mob->heightOffset, mob->z, mob->yRot, mob->xRot);
 
 
 	x -= Mth::cos(yRot / 180 * PI) * 0.16f;
 	y -= 0.1f;
 	z -= Mth::sin(yRot / 180 * PI) * 0.16f;
-	this->setPos(x, y, z);
-	this->heightOffset = 0;
+	setPos(x, y, z);
+	heightOffset = 0;
 
 
 	float speed = 0.4f;
@@ -122,8 +122,8 @@ void FishingHook::shoot(double xd, double yd, double zd, float pow, float uncert
 
 	double sd = sqrt(xd * xd + zd * zd);
 
-	yRotO = this->yRot = (float) (atan2(xd, zd) * 180 / PI);
-	xRotO = this->xRot = (float) (atan2(yd, sd) * 180 / PI);
+	yRotO = yRot = (float) (atan2(xd, zd) * 180 / PI);
+	xRotO = xRot = (float) (atan2(yd, sd) * 180 / PI);
 	life = 0;
 }
 
@@ -137,9 +137,9 @@ void FishingHook::lerpTo(double x, double y, double z, float yRot, float xRot, i
 
 	lSteps = steps;
 
-	this->xd = lxd;
-	this->yd = lyd;
-	this->zd = lzd;
+	xd = lxd;
+	yd = lyd;
+	zd = lzd;
 }
 
 void FishingHook::lerpMotion(double xd, double yd, double zd)
@@ -165,15 +165,15 @@ void FishingHook::tick()
 		xRot += (float) ( (lxr - xRot) / lSteps );
 
 		lSteps--;
-		this->setPos(xt, yt, zt);
-		this->setRot(yRot, xRot);
+		setPos(xt, yt, zt);
+		setRot(yRot, xRot);
 		return;
 	}
 
 	if (!level->isClientSide)
 	{
 		shared_ptr<ItemInstance> selectedItem = owner->getSelectedItem();
-		if (owner->removed || !owner->isAlive() || selectedItem == NULL || selectedItem->getItem() != Item::fishingRod || this->distanceToSqr(owner) > 32 * 32)
+		if (owner->removed || !owner->isAlive() || selectedItem == NULL || selectedItem->getItem() != Item::fishingRod || distanceToSqr(owner) > 32 * 32)
 		{
 			remove();
 			owner->fishing = nullptr;
@@ -231,7 +231,7 @@ void FishingHook::tick()
 		to = Vec3::newTemp(res->pos->x, res->pos->y, res->pos->z);
 	}
 	shared_ptr<Entity> hitEntity = nullptr;
-	vector<shared_ptr<Entity> > *objects = level->getEntities(shared_from_this(), this->bb->expand(xd, yd, zd)->grow(1, 1, 1));
+	vector<shared_ptr<Entity> > *objects = level->getEntities(shared_from_this(), bb->expand(xd, yd, zd)->grow(1, 1, 1));
 	double nearest = 0;
 	AUTO_VAR(itEnd, objects->end());
 	for (AUTO_VAR(it, objects->begin()); it != itEnd; it++)
@@ -337,7 +337,7 @@ void FishingHook::tick()
 			{
 				nibble = random->nextInt(30) + 10;
 				yd -= 0.2f;
-				level->playSound(shared_from_this(), eSoundType_RANDOM_SPLASH, 0.25f, 1 + (random->nextFloat() - random->nextFloat()) * 0.4f);
+				playSound(eSoundType_RANDOM_SPLASH, 0.25f, 1 + (random->nextFloat() - random->nextFloat()) * 0.4f);
 				float yt = (float) Mth::floor(bb->y0);
 				for (int i = 0; i < 1 + bbWidth * 20; i++)
 				{
@@ -432,7 +432,7 @@ int FishingHook::retrieve()
 		ie->Entity::yd = ya * speed + sqrt(dist) * 0.08;
 		ie->Entity::zd = za * speed;
 		level->addEntity(ie);
-		owner->level->addEntity( shared_ptr<ExperienceOrb>( new ExperienceOrb(owner->level, owner->x, owner->y + 0.5f, owner->z + 0.5f, random->nextInt(3) + 1) ) ); // 4J Stu brought forward from 1.4
+		owner->level->addEntity( shared_ptr<ExperienceOrb>( new ExperienceOrb(owner->level, owner->x, owner->y + 0.5f, owner->z + 0.5f, random->nextInt(6) + 1) ) ); // 4J Stu brought forward from 1.4
 		dmg = 1;
 	}
 	if (inGround) dmg = 2;

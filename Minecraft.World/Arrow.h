@@ -2,11 +2,12 @@
 using namespace std;
 
 #include "Entity.h"
+#include "Projectile.h"
 
 class Level;
 class CompoundTag;
 
-class Arrow : public Entity
+class Arrow : public Entity, public Projectile
 {
 public:
 	eINSTANCEOF GetType() {	return eTYPE_ARROW; }
@@ -26,35 +27,35 @@ private:
 	static const int FLAG_CRIT = 1;
 
 private:
-    int xTile;
-    int yTile;
-    int zTile;
-    int lastTile;
-    int lastData;
-    bool inGround;
+	int xTile;
+	int yTile;
+	int zTile;
+	int lastTile;
+	int lastData;
+	bool inGround;
 
 public:
 	int pickup;
-    int shakeTime;
-    shared_ptr<Entity> owner;
+	int shakeTime;
+	shared_ptr<Entity> owner;
 
 private:
 	double baseDamage;
 
-    int knockback;
+	int knockback;
 
 private:
 	int life;
-    int flightTime;
+	int flightTime;
 
 	// 4J - added common ctor code.
 	void _init();
 
 public:
 	Arrow(Level *level);
-	Arrow(Level *level, shared_ptr<Mob> mob, shared_ptr<Mob> target, float power, float uncertainty);
-    Arrow(Level *level, double x, double y, double z);
-    Arrow(Level *level, shared_ptr<Mob> mob, float power);
+	Arrow(Level *level, shared_ptr<LivingEntity> mob, shared_ptr<LivingEntity> target, float power, float uncertainty);
+	Arrow(Level *level, double x, double y, double z);
+	Arrow(Level *level, shared_ptr<LivingEntity> mob, float power);
 
 protected:
 	virtual void defineSynchedData();
@@ -63,11 +64,16 @@ public:
 	void shoot(double xd, double yd, double zd, float pow, float uncertainty);
 	virtual void lerpTo(double x, double y, double z, float yRot, float xRot, int steps);
 	virtual void lerpMotion(double xd, double yd, double zd);
-    virtual void tick();
-    virtual void addAdditonalSaveData(CompoundTag *tag);
-    virtual void readAdditionalSaveData(CompoundTag *tag);
-    virtual void playerTouch(shared_ptr<Player> player);
-    virtual float getShadowHeightOffs();
+	virtual void tick();
+	virtual void addAdditonalSaveData(CompoundTag *tag);
+	virtual void readAdditionalSaveData(CompoundTag *tag);
+	virtual void playerTouch(shared_ptr<Player> player);
+
+protected:
+	virtual bool makeStepSound();
+
+public:
+	virtual float getShadowHeightOffs();
 
 	void setBaseDamage(double baseDamage);
 	double getBaseDamage();

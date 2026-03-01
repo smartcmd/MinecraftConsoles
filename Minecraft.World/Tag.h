@@ -19,7 +19,7 @@ public:
     static const byte TAG_List = 9;
     static const byte TAG_Compound = 10;
 	static const byte TAG_Int_Array = 11;
-
+	static const int MAX_DEPTH = 512;
 private:
     wstring name;
 
@@ -28,7 +28,7 @@ protected:
 
 public:
     virtual void write(DataOutput *dos) = 0;
-    virtual void load(DataInput *dis)  = 0;
+    virtual void load(DataInput *dis, int tagDepth)  = 0;
     virtual wstring toString() = 0;
     virtual byte getId() = 0;
     void print(ostream out);
@@ -36,6 +36,7 @@ public:
     wstring getName();
     Tag *setName(const wstring& name);
     static Tag *readNamedTag(DataInput *dis);
+    static Tag *readNamedTag(DataInput *dis, int tagDepth);
     static void writeNamedTag(Tag *tag, DataOutput *dos);
     static Tag *newTag(byte type, const wstring &name);
     static wchar_t *getTagName(byte type);

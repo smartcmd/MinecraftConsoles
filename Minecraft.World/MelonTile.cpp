@@ -4,9 +4,6 @@
 #include "net.minecraft.world.h"
 #include "Facing.h"
 
-const wstring MelonTile::TEX = L"melon_side";
-const wstring MelonTile::TEX_TOP = L"melon_top";
-
 MelonTile::MelonTile(int id) : Tile(id, Material::vegetable)
 {
 	iconTop = NULL;
@@ -40,6 +37,6 @@ int MelonTile::getResourceCountForLootBonus(int bonusLevel, Random *random)
 
 void MelonTile::registerIcons(IconRegister *iconRegister)
 {
-	icon = iconRegister->registerIcon(TEX);
-	iconTop = iconRegister->registerIcon(TEX_TOP);
+	icon = iconRegister->registerIcon(getIconName() + L"_side");
+	iconTop = iconRegister->registerIcon(getIconName() + L"_top");
 }

@@ -1,6 +1,8 @@
 #include "stdafx.h"
 #include "net.minecraft.world.level.h"
 #include "net.minecraft.world.h"
+#include "net.minecraft.world.entity.ai.attributes.h"
+#include "net.minecraft.world.entity.monster.h"
 #include "net.minecraft.world.item.h"
 #include "..\Minecraft.Client\Textures.h"
 #include "LavaSlime.h"
@@ -14,13 +16,16 @@ LavaSlime::LavaSlime(Level *level) : Slime(level)
 	// the derived version of the function is called
 	// 4J Stu - The Slime ctor has already called this, and as we don't override it here don't need to call it
 	//this->defineSynchedData();
+	registerAttributes();
 
-	// 4J Stu - This function call had to be moved here from the Entity ctor to ensure that the derived version of the function is called
-	health = getMaxHealth();
-
-	this->textureIdx = TN_MOB_LAVA; // 4J was "/mob/lava.png";
 	fireImmune = true;
-	walkingSpeed = .2f;
+}
+
+void LavaSlime::registerAttributes()
+{
+	Slime::registerAttributes();
+
+	getAttribute(SharedMonsterAttributes::MOVEMENT_SPEED)->setBaseValue(0.2f);
 }
 
 bool LavaSlime::canSpawn()
@@ -95,7 +100,7 @@ void LavaSlime::decreaseSquish()
 void LavaSlime::jumpFromGround()
 {
 	yd = 0.42f + getSize() * .1f;
-	this->hasImpulse = true;
+	hasImpulse = true;
 }
 
 void LavaSlime::causeFallDamage(float distance)
@@ -114,12 +119,12 @@ int LavaSlime::getAttackDamage()
 
 int LavaSlime::getHurtSound()
 {
-	return eSoundType_MOB_SLIME;
+	return getSize() > 1 ? eSoundType_MOB_SLIME_BIG : eSoundType_MOB_SLIME_SMALL;
 }
 
 int LavaSlime::getDeathSound()
 {
-	return eSoundType_MOB_SLIME;
+	return getSize() > 1 ? eSoundType_MOB_SLIME_BIG : eSoundType_MOB_SLIME_SMALL;
 }
 
 int LavaSlime::getSquishSound()

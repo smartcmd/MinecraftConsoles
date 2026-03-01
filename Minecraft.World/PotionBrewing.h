@@ -5,6 +5,14 @@ class MobEffectInstance;
 class PotionBrewing
 {
 public:
+	static const int POTION_ID_SPLASH_DAMAGE = 32732;
+	static const int POTION_ID_SPLASH_WEAKNESS = 32696;
+	static const int POTION_ID_SPLASH_SLOWNESS = 32698;
+	static const int POTION_ID_SPLASH_POISON = 32660;
+	static const int POTION_ID_HEAL = 16341;
+	static const int POTION_ID_SWIFTNESS = 16274;
+	static const int POTION_ID_FIRE_RESISTANCE = 16307;
+
 	static const bool SIMPLIFIED_BREWING = true;
 	// 4J Stu - Made #define so we can use it to select const initialisation
 #define _SIMPLIFIED_BREWING 1
@@ -27,6 +35,12 @@ public:
 	static const wstring MOD_NETHERWART;
 	static const wstring MOD_GUNPOWDER;
 	static const wstring MOD_GOLDENCARROT;
+
+	static const int BITS_FOR_MAX_NORMAL_EFFECT = 0xF;
+	static const int BITS_FOR_DURATION = (1 << 5);
+	static const int BITS_FOR_EXTENDED = (1 << 6);
+	static const int BITS_FOR_NORMAL = (1 << 13);
+	static const int BITS_FOR_SPLASH = (1 << 14);
 
 private:
 	typedef unordered_map<int, wstring> intStringMap;
@@ -55,6 +69,7 @@ private:
 public:
 	static int getAppearanceValue(int brew);
 	static int getColorValue(vector<MobEffectInstance *> *effects);
+	static bool areAllEffectsAmbient(vector<MobEffectInstance *> *effects);
 
 private:
 	static unordered_map<int, int> cachedColors;

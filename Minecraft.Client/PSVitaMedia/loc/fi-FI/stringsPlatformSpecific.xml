@@ -1,37 +1,122 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <root>
-	<data name="IDS_TIPS_GAMETIP_0">
-		<value>NOT USED</value>
+	<data name="IDS_SIGNIN_PSN">
+		<value>Haluatko kirjautua "PSN"-verkkoon?</value>
 	</data>
-	<data name="IDS_TIPS_GAMETIP_1">
-		<value>Voit käyttää PlayStation®Vita-järjestelmän kosketusnäyttöä valikoiden selaamiseen.</value>
+	<data name="IDS_KICK_PLAYER_DESCRIPTION">
+		<value>Jos pelaaja ei pelaa samalla PlayStation®Vita-järjestelmällä kuin istunnon järjestänyt pelaaja, tämän asetuksen valitseminen potkaisee ulos kyseisen pelaajan sekä kaikki muut pelaajat, jotka pelaavat hänen PlayStation®Vita-järjestelmällään. Pelaaja ei pysty enää liittymään peliin ennen kuin se aloitetaan uudelleen.</value>
 	</data>
-	<data name="IDS_TIPS_GAMETIP_48">
-		<value>Minecraft-foorumissa on osio, joka on omistettu PlayStation®Vita Edition -pelille.</value>
+	<data name="IDS_BACK_BUTTON">
+		<value>SELECT</value>
 	</data>
-	<data name="IDS_TIPS_GAMETIP_44">
-		<value>Uusimmat tiedot tästä pelistä löytää Twitteristä osoitteista @4JStudios ja @Kappische!</value>
+	<data name="IDS_HOST_OPTION_DISABLES_ACHIEVEMENTS">
+		<value>Tämä asetus poistaa käytöstä trophyt ja pistetilastopäivitykset tässä maailmassa, ja kun maailma ladataan uudestaan, jos se on tallennettu tämän asetuksen ollessa käytössä.</value>
 	</data>
-	<data name="IDS_TIPS_GAMETIP_45">
-		<value>Älä katso ääreläistä silmiin!</value>
+	<data name="IDS_PLATFORM_NAME">
+		<value>PlayStation®Vita-järjestelmä</value>
 	</data>
-	<data name="IDS_TIPS_TRIVIA_4">
-		<value>Uskomme, että 4J Studios on poistanut Herobrinen PlayStation®Vita-järjestelmän pelistä, mutta emme ole asiasta aivan varmoja.</value>
+	<data name="IDS_SELECT_NETWORK_MODE_TEXT">
+		<value>Valitse Ad Hoc -verkko, jos haluat yhdistää läheisiin PlayStation®Vita-järjestelmiin, tai "PSN", jos haluat yhdistää ystäviin kaikkialla maailmassa.</value>
 	</data>
-	<data name="IDS_TIPS_TRIVIA_17">
-		<value>Minecraft: PlayStation®Vita Edition rikkoi useita ennätyksiä!</value>
+	<data name="IDS_NETWORK_ADHOC">
+		<value>Ad Hoc -verkko</value>
 	</data>
-	<data name="IDS_HOW_TO_PLAY_MULTIPLAYER">
-		<value>{*T3*}PELIOHJE: MONINPELI{*ETW*}{*B*}{*B*}
-PlayStation®Vita-järjestelmällä Minecraft on oletusarvoisesti moninpeli.{*B*}{*B*}
-Kun aloitat verkkopelin tai liityt sellaiseen, kaveriluettelosi ihmiset näkevät sen (ellet ole peliä järjestäessäsi valinnut vaihtoehtoa "Vain kutsu"), ja jos he liittyvät peliin, se näkyy ihmisille heidän kaveriluettelossaan (jos olet valinnut "Salli kaverien kaverit" -vaihtoehdon).{*B*}
-Kun olet pelissä, SELECT-näppäintä painamalla voit avata luettelon kaikista muista pelissä olevista pelaajista ja potkaista pelaajia ulos pelistä.</value>
+	<data name="IDS_TOOLTIP_CHANGE_NETWORK_MODE">
+		<value>Vaihda verkkotilaa</value>
 	</data>
-	<data name="IDS_HOW_TO_PLAY_SOCIALMEDIA">
-		<value>{*T3*}PELIOHJE: NÄYTTÖKUVIEN JAKAMINEN{*ETW*}{*B*}{*B*}
-Voit ottaa näyttökuvan pelistäsi avaamalla taukovalikon, ja jakaa sen Facebookissa painamalla{*CONTROLLER_VK_Y*}. Näet näyttökuvasta pikkuversion ja voit muokata Facebook-julkaisun ohessa näkyvää tekstiä.{*B*}{*B*}
-Juuri näiden näyttökuvien ottamista varten on olemassa kameratila, jossa pystyt näkemään hahmosi edestäpäin, kun otat kuvan. Paina{*CONTROLLER_ACTION_CAMERA*} kunnes näet hahmosi edestäpäin ennen kuin painat{*CONTROLLER_VK_Y*} jakaaksesi kuvan.{*B*}{*B*}
-Online-tunnuksesi ei näy näyttökuvassa.</value>
+	<data name="IDS_SELECT_NETWORK_MODE_TITLE">
+		<value>Valitse verkkotila</value>
+	</data>
+	<data name="IDS_CHECKBOX_DISPLAY_SPLITSCREENGAMERTAGS">
+		<value>Jaetun näytön online-tunnukset</value>
+	</data>
+	<data name="IDS_ACHIEVEMENTS">
+		<value>Trophyt</value>
+	</data>
+	<data name="IDS_SAVE_ICON_MESSAGE">
+		<value>Tämän pelin kentät tallentuvat automaattisesti. Kun näet tämän kuvan, peli tallentaa tietojasi.
+Älä sammuta PlayStation®Vita-järjestelmää, kun tämä kuva näkyy näytöllä.</value>
+	</data>
+	<data name="IDS_GAMEOPTION_HOST_PRIVILEGES">
+		<value>Kun tämä asetus on käytössä, istunnon järjestäjä voi pelinsisäisestä valikosta ottaa käyttöön tai poistaa käytöstä lentokyvyn, hengästymisen ja näkymättömyyden. Poistaa käytöstä trophyt ja tulostilaston päivitykset.</value>
+	</data>
+	<data name="IDS_LABEL_GAMERTAGS">
+		<value>Online-tunnukset:</value>
+	</data>
+	<data name="IDS_USING_TRIAL_TEXUREPACK_WARNING">
+		<value>Käytät tekstuuripaketin koeversiota. Voit käyttää tekstuuripaketin koko sisältöä, mutta et pysty tallentamaan edistymistäsi.
+Jos yrität tallentaa käyttäessäsi koeversiota, sinulle tarjotaan mahdollisuutta ostaa täysi versio.
+    </value>
+	</data>
+	<data name="IDS_TITLE_UPDATE_NAME">
+		<value>Paketti 1.04 (Pelipäivitys 14)</value>
+	</data>
+	<data name="IDS_IN_GAME_GAMERTAGS">
+		<value>Online-tunnukset pelissä</value>
+	</data>
+	<data name="IDS_SOCIAL_DEFAULT_DESCRIPTION">
+		<value>Katso mitä minä tein Minecraft: PlayStation®Vita Edition -pelissä!</value>
+	</data>
+	<data name="IDS_SAVE_TRANSFER_DOWNLOADFAILED">
+		<value>Lataus epäonnistui. Yritä myöhemmin uudelleen.</value>
+	</data>
+	<data name="IDS_DISCONNECTED_NAT_TYPE_MISMATCH">
+		<value>Peliin liittyminen epäonnistui rajoittavan NAT-tyypin takia. Tarkista verkkoasetuksesi.</value>
+	</data>
+	<data name="IDS_SAVE_TRANSFER_UPLOADFAILED">
+		<value>Lähetys epäonnistui. Yritä myöhemmin uudelleen.</value>
+	</data>
+	<data name="IDS_SAVE_TRANSFER_DOWNLOADCOMPLETE">
+		<value>Lataus valmis!</value>
+	</data>
+	<data name="IDS_SAVE_TRANSFER_NOT_AVAILABLE_TEXT">
+		<value>Tallenteensiirtoalueella ei ole tällä hetkellä tallennetta saatavilla.
+Voit lähettää maailmatallenteen tallenteensiirtoalueelle Minecraft: PlayStation®3 Edition -pelistä ja ladata sen sitten Minecraft: PlayStation®Vita Edition -peliin.</value>
+	</data>
+	<data name="IDS_SAVE_INCOMPLETE_TITLE">
+		<value>Tallennus kesken</value>
+	</data>
+	<data name="IDS_SAVE_INCOMPLETE_EXPLANATION_QUOTA">
+		<value>Minecraft: PlayStation®Vita Editionin tallennustiedoille ei ole riittävästi tilaa. Tee tilaa poistamalla muita Minecraft: PlayStation®Vita Editionin tallennuksia.</value>
+	</data>
+	<data name="IDS_CANCEL_UPLOAD_TITLE">
+		<value>Lähettäminen peruttu</value>
+	</data>
+	<data name="IDS_CANCEL_UPLOAD_TEXT">
+		<value>Olet perunut tämän tallenteen lähettämisen tallenteensiirtoalueelle.</value>
+	</data>
+	<data name="IDS_TOOLTIPS_SAVETRANSFER_UPLOAD">
+		<value>Lähetä tallennus PS3™/PS4™-järjestelmälle</value>
+	</data>
+	<data name="IDS_SAVETRANSFER_STAGE_PUT_DATA">
+		<value>Lähetetään tietoja: %d%%</value>
+	</data>
+	<data name="IDS__NETWORK_PSN">
+		<value>"PSN"</value>
+	</data>
+	<data name="IDS_TOOLTIPS_SAVETRANSFER_DOWNLOAD">
+		<value>Lataa PS3™-tallenne</value>
+	</data>
+	<data name="IDS_SAVETRANSFER_STAGE_GET_DATA">
+		<value>Ladataan tietoja: %d%%</value>
+	</data>
+	<data name="IDS_SAVETRANSFER_STAGE_SAVING">
+		<value>Tallennetaan</value>
+	</data>
+	<data name="IDS_SAVE_TRANSFER_UPLOADCOMPLETE">
+		<value>Lähetys valmis!</value>
+	</data>
+	<data name="IDS_SAVE_TRANSFER_TEXT">
+		<value>Oletko varma, että haluat lähettää tämän tallenteen ja korvata mahdollisen aiemman tallennuksen tallennussiirtoalueelta?</value>
+	</data>
+	<data name="IDS_SAVETRANSFER_STAGE_CONVERTING">
+		<value>Muunnetaan dataa</value>
+	</data>
+	<data name="IDS_TOOLTIPS_SELECTDEVICE">
+		<value>EI KÄYTÖSSÄ</value>
+	</data>
+	<data name="IDS_TOOLTIPS_CHANGEDEVICE">
+		<value>EI KÄYTÖSSÄ</value>
 	</data>
 	<data name="IDS_HOW_TO_PLAY_CREATIVE">
 		<value>{*T3*}PELIOHJE: LUOVA TILA{*ETW*}{*B*}{*B*}
@@ -46,20 +131,8 @@ lentää vasemmalle painamalla{*CONTROLLER_ACTION_DPAD_LEFT*}, ja lentää oikea
 		<value>Jos painat{*CONTROLLER_ACTION_JUMP*} kaksi kertaa nopeasti, voit nousta lentoon. Kun haluat lopettaa lentämisen, tee sama uudestaan. Jos haluat lentää nopeammin, paina lentäessäsi{*CONTROLLER_ACTION_MOVE*} eteenpäin kaksi kertaa nopeasti. 
 Lentotilassa voit nousta ylemmäs pitämällä{*CONTROLLER_ACTION_JUMP*} painettuna, laskeutua alemmas pitämällä{*CONTROLLER_ACTION_SNEAK*} painettuna, tai liikkua suuntanäppäimillä ylös, alas, vasemmalle tai oikealle.</value>
 	</data>
-	<data name="IDS_TOOLTIPS_SELECTDEVICE">
-		<value>EI KÄYTÖSSÄ</value>
-	</data>
-	<data name="IDS_TOOLTIPS_CHANGEDEVICE">
-		<value>EI KÄYTÖSSÄ</value>
-	</data>
 	<data name="IDS_TOOLTIPS_VIEW_GAMERCARD">
 		<value>"EI KÄYTÖSSÄ"</value>
-	</data>
-	<data name="IDS_TOOLTIPS_VIEW_GAMERPROFILE">
-		<value>"EI KÄYTÖSSÄ"</value>
-	</data>
-	<data name="IDS_TOOLTIPS_INVITE_PARTY">
-		<value>Kutsu kavereita</value>
 	</data>
 	<data name="IDS_CONFIRM_START_CREATIVE">
 		<value>Jos luot, lataat tai tallennat maailman Luovassa tilassa, kyseisen maailman trophyt ja tulostilaston päivitykset eivät ole käytössä, vaikka se myöhemmin ladattaisiinkin Selviytymistilassa. Haluatko varmasti jatkaa?</value>
@@ -67,11 +140,71 @@ Lentotilassa voit nousta ylemmäs pitämällä{*CONTROLLER_ACTION_JUMP*} painett
 	<data name="IDS_CONFIRM_START_SAVEDINCREATIVE">
 		<value>Tämä maailma on aiemmin tallennettu Luovassa tilassa ja siksi sen trophyt ja tulostilaston päivitykset eivät ole käytössä. Haluatko varmasti jatkaa?</value>
 	</data>
-	<data name="IDS_CONFIRM_START_SAVEDINCREATIVE_CONTINUE">
-		<value>Tämä maailma on aiemmin tallennettu Luovassa tilassa, ja siksi sen trophyt ja tulostilastojen päivitykset eivät ole käytössä.</value>
+	<data name="IDS_TOOLTIPS_VIEW_GAMERPROFILE">
+		<value>"EI KÄYTÖSSÄ"</value>
 	</data>
-	<data name="IDS_CONFIRM_START_HOST_PRIVILEGES">
-		<value>Jos luot, lataat tai tallennat maailman kun "Pelin järjestäjän oikeudet" ovat käytössä, kyseisen maailman trophyt ja tulostilaston päivitykset eivät ole käytössä, vaikka se myöhemmin ladattaisiin ilman Pelin järjestäjän oikeuksia. Haluatko varmasti jatkaa?</value>
+	<data name="IDS_TOOLTIPS_INVITE_PARTY">
+		<value>Kutsu kavereita</value>
+	</data>
+	<data name="IDS_TIPS_GAMETIP_48">
+		<value>Minecraft-foorumissa on osio, joka on omistettu PlayStation®Vita Edition -pelille.</value>
+	</data>
+	<data name="IDS_TIPS_GAMETIP_44">
+		<value>Uusimmat tiedot tästä pelistä löytää Twitteristä osoitteista @4JStudios ja @Kappische!</value>
+	</data>
+	<data name="IDS_TIPS_GAMETIP_0">
+		<value>NOT USED</value>
+	</data>
+	<data name="IDS_TIPS_GAMETIP_1">
+		<value>Voit käyttää PlayStation®Vita-järjestelmän kosketusnäyttöä valikoiden selaamiseen.</value>
+	</data>
+	<data name="IDS_TIPS_GAMETIP_45">
+		<value>Älä katso ääreläistä silmiin!</value>
+	</data>
+	<data name="IDS_HOW_TO_PLAY_MULTIPLAYER">
+		<value>{*T3*}PELIOHJE: MONINPELI{*ETW*}{*B*}{*B*}
+PlayStation®Vita-järjestelmällä Minecraft on oletusarvoisesti moninpeli.{*B*}{*B*}
+Kun aloitat verkkopelin tai liityt sellaiseen, kaveriluettelosi ihmiset näkevät sen (ellet ole peliä järjestäessäsi valinnut vaihtoehtoa "Vain kutsu"), ja jos he liittyvät peliin, se näkyy ihmisille heidän kaveriluettelossaan (jos olet valinnut "Salli kaverien kaverit" -vaihtoehdon).{*B*}
+Kun olet pelissä, SELECT-näppäintä painamalla voit avata luettelon kaikista muista pelissä olevista pelaajista ja potkaista pelaajia ulos pelistä.</value>
+	</data>
+	<data name="IDS_HOW_TO_PLAY_SOCIALMEDIA">
+		<value>{*T3*}PELIOHJE: NÄYTTÖKUVIEN JAKAMINEN{*ETW*}{*B*}{*B*}
+Voit ottaa näyttökuvan pelistäsi avaamalla taukovalikon, ja jakaa sen Facebookissa painamalla{*CONTROLLER_VK_Y*}. Näet näyttökuvasta pikkuversion ja voit muokata Facebook-julkaisun ohessa näkyvää tekstiä.{*B*}{*B*}
+Juuri näiden näyttökuvien ottamista varten on olemassa kameratila, jossa pystyt näkemään hahmosi edestäpäin, kun otat kuvan. Paina{*CONTROLLER_ACTION_CAMERA*} kunnes näet hahmosi edestäpäin ennen kuin painat{*CONTROLLER_VK_Y*} jakaaksesi kuvan.{*B*}{*B*}
+Online-tunnuksesi ei näy näyttökuvassa.</value>
+	</data>
+	<data name="IDS_TIPS_TRIVIA_4">
+		<value>Uskomme, että 4J Studios on poistanut Herobrinen PlayStation®Vita-järjestelmän pelistä, mutta emme ole asiasta aivan varmoja.</value>
+	</data>
+	<data name="IDS_TIPS_TRIVIA_17">
+		<value>Minecraft: PlayStation®Vita Edition rikkoi useita ennätyksiä!</value>
+	</data>
+	<data name="IDS_TRIALOVER_TEXT">
+		<value>Olet pelannut Minecraft: PlayStation®Vita Edition -koepeliä pisimmän sallitun ajan! Haluatko avata koko pelin ja jatkaa hauskuutta?</value>
+	</data>
+	<data name="IDS_FATAL_ERROR_TEXT">
+		<value>Minecraft: PlayStation®Vita Edition -pelin lataaminen ei onnistunut, eikä sitä voi jatkaa.</value>
+	</data>
+	<data name="IDS_GROUPNAME_POTIONS_480">
+		<value>Keittäminen</value>
+	</data>
+	<data name="IDS_RETURNEDTOTITLESCREEN_TEXT">
+		<value>Sinut palautettiin aloitusnäyttöön, koska kirjauduit ulos "PSN"-verkosta.</value>
+	</data>
+	<data name="IDS_NO_MULTIPLAYER_PRIVILEGE_JOIN_TEXT">
+		<value>Peliin liittyminen ei onnistunut, koska yksi tai useampi pelaaja ei saa pelata verkossa Sony Entertainment Network -tilinsä keskustelurajoitusten vuoksi.</value>
+	</data>
+	<data name="IDS_NO_USER_CREATED_CONTENT_PRIVILEGE_ALL_LOCAL">
+		<value>Sinä et saa liittyä tähän peli-istuntoon, koska yhden paikallisen pelaajasi verkkopelaaminen on estetty Sony Entertainment Network -tilinsä keskustelurajoitusten vuoksi. Poista ruksi "Lisäasetukset"-kohdan "Verkkopeli"-ruudusta aloittaaksesi paikallisen pelin.</value>
+	</data>
+	<data name="IDS_NO_USER_CREATED_CONTENT_PRIVILEGE_CREATE">
+		<value>Sinä et saa luoda tätä peli-istuntoa, koska yhden paikallisen pelaajasi verkkopelaaminen on estetty Sony Entertainment Network -tilinsä keskustelurajoitusten vuoksi. Poista ruksi "Lisäasetukset"-kohdan "Verkkopeli"-ruudusta aloittaaksesi paikallisen pelin.</value>
+	</data>
+	<data name="IDS_NO_MULTIPLAYER_PRIVILEGE_HOST_TEXT">
+		<value>Verkkopelin luominen ei onnistunut, koska yksi tai useampi pelaaja ei saa pelata verkossa Sony Entertainment Network -tilinsä keskustelurajoitusten vuoksi. Poista ruksi "Lisäasetukset"-kohdan "Verkkopeli"-ruudusta aloittaaksesi paikallisen pelin.</value>
+	</data>
+	<data name="IDS_NO_USER_CREATED_CONTENT_PRIVILEGE_SINGLE_LOCAL">
+		<value>Sinä et saa liittyä tähän peli-istuntoon, koska verkkopelaaminen on estetty Sony Entertainment Network -tililläsi keskustelurajoitusten vuoksi.</value>
 	</data>
 	<data name="IDS_CONNECTION_LOST_LIVE">
 		<value>Yhteys "PSN"-verkkoon katkesi. Poistutaan päävalikkoon.</value>
@@ -79,10 +212,22 @@ Lentotilassa voit nousta ylemmäs pitämällä{*CONTROLLER_ACTION_JUMP*} painett
 	<data name="IDS_CONNECTION_LOST_LIVE_NO_EXIT">
 		<value>Yhteys "PSN"-verkkoon katkesi.</value>
 	</data>
+	<data name="IDS_CONFIRM_START_SAVEDINCREATIVE_CONTINUE">
+		<value>Tämä maailma on aiemmin tallennettu Luovassa tilassa, ja siksi sen trophyt ja tulostilastojen päivitykset eivät ole käytössä.</value>
+	</data>
+	<data name="IDS_CONFIRM_START_HOST_PRIVILEGES">
+		<value>Jos luot, lataat tai tallennat maailman kun "Pelin järjestäjän oikeudet" ovat käytössä, kyseisen maailman trophyt ja tulostilaston päivitykset eivät ole käytössä, vaikka se myöhemmin ladattaisiin ilman Pelin järjestäjän oikeuksia. Haluatko varmasti jatkaa?</value>
+	</data>
 	<data name="IDS_UNLOCK_ACHIEVEMENT_TEXT">
 		<value>Tämä on Minecraft: PlayStation®Vita Edition -koepeli. Jos sinulla olisi koko peli, olisit juuri ansainnut trophyn! 
 Avaa koko peli kokeaksesi Minecraft: PlayStation®Vita Edition -pelin riemun ja pelataksesi "PSN"-verkon kautta ympäri maailmaa asuvien kaveriesi kanssa.
 Haluatko avata koko pelin?</value>
+	</data>
+	<data name="IDS_UNLOCK_GUEST_TEXT">
+		<value>Vierailevat pelaajat eivät voi avata koko peliä. Kirjaudu sisään Sony Entertainment Network -tilillä.</value>
+	</data>
+	<data name="IDS_LEADERBOARD_GAMERTAG">
+		<value>Online-tunnus</value>
 	</data>
 	<data name="IDS_UNLOCK_THEME_TEXT">
 		<value>Tämä on Minecraft: PlayStation®Vita Edition -koepeli. Jos sinulla olisi koko peli, olisit juuri ansainnut teeman! 
@@ -93,151 +238,7 @@ Haluatko avata koko pelin?</value>
 		<value>Tämä on Minecraft: PlayStation®Vita Edition -koepeli. Tarvitset koko pelin, jotta voisit hyväksyä tämän kutsun. 
 Haluatko avata koko pelin?</value>
 	</data>
-	<data name="IDS_UNLOCK_GUEST_TEXT">
-		<value>Vierailevat pelaajat eivät voi avata koko peliä. Kirjaudu sisään Sony Entertainment Network -tilillä.</value>
-	</data>
-	<data name="IDS_LEADERBOARD_GAMERTAG">
-		<value>Online-tunnus</value>
-	</data>
-	<data name="IDS_GROUPNAME_POTIONS_480">
-		<value>Keittäminen</value>
-	</data>
-	<data name="IDS_RETURNEDTOTITLESCREEN_TEXT">
-		<value>Sinut palautettiin aloitusnäyttöön, koska kirjauduit ulos "PSN"-verkosta.</value>
-	</data>
-	<data name="IDS_TRIALOVER_TEXT">
-		<value>Olet pelannut Minecraft: PlayStation®Vita Edition -koepeliä pisimmän sallitun ajan! Haluatko avata koko pelin ja jatkaa hauskuutta?</value>
-	</data>
-	<data name="IDS_FATAL_ERROR_TEXT">
-		<value>Minecraft: PlayStation®Vita Edition -pelin lataaminen ei onnistunut, eikä sitä voi jatkaa.</value>
-	</data>
-	<data name="IDS_NO_MULTIPLAYER_PRIVILEGE_JOIN_TEXT">
-		<value>Peliin liittyminen ei onnistunut, koska yksi tai useampi pelaaja ei saa pelata verkossa Sony Entertainment Network -tilinsä keskustelurajoitusten vuoksi.</value>
-	</data>
-	<data name="IDS_NO_MULTIPLAYER_PRIVILEGE_HOST_TEXT">
-		<value>Verkkopelin luominen ei onnistunut, koska yksi tai useampi pelaaja ei saa pelata verkossa Sony Entertainment Network -tilinsä keskustelurajoitusten vuoksi. Poista ruksi "Lisäasetukset"-kohdan "Verkkopeli"-ruudusta aloittaaksesi paikallisen pelin.</value>
-	</data>
-	<data name="IDS_NO_USER_CREATED_CONTENT_PRIVILEGE_SINGLE_LOCAL">
-		<value>Sinä et saa liittyä tähän peli-istuntoon, koska verkkopelaaminen on estetty Sony Entertainment Network -tililläsi keskustelurajoitusten vuoksi.</value>
-	</data>
-	<data name="IDS_NO_USER_CREATED_CONTENT_PRIVILEGE_ALL_LOCAL">
-		<value>Sinä et saa liittyä tähän peli-istuntoon, koska yhden paikallisen pelaajasi verkkopelaaminen on estetty Sony Entertainment Network -tilinsä keskustelurajoitusten vuoksi. Poista ruksi "Lisäasetukset"-kohdan "Verkkopeli"-ruudusta aloittaaksesi paikallisen pelin.</value>
-	</data>
-	<data name="IDS_NO_USER_CREATED_CONTENT_PRIVILEGE_CREATE">
-		<value>Sinä et saa luoda tätä peli-istuntoa, koska yhden paikallisen pelaajasi verkkopelaaminen on estetty Sony Entertainment Network -tilinsä keskustelurajoitusten vuoksi. Poista ruksi "Lisäasetukset"-kohdan "Verkkopeli"-ruudusta aloittaaksesi paikallisen pelin.</value>
-	</data>
-	<data name="IDS_SAVE_ICON_MESSAGE">
-		<value>Tämän pelin kentät tallentuvat automaattisesti. Kun näet tämän kuvan, peli tallentaa tietojasi.
-Älä sammuta PlayStation®Vita-järjestelmää, kun tämä kuva näkyy näytöllä.</value>
-	</data>
-	<data name="IDS_GAMEOPTION_HOST_PRIVILEGES">
-		<value>Kun tämä asetus on käytössä, istunnon järjestäjä voi pelinsisäisestä valikosta ottaa käyttöön tai poistaa käytöstä lentokyvyn, hengästymisen ja näkymättömyyden. Poistaa käytöstä trophyt ja tulostilaston päivitykset.</value>
-	</data>
-	<data name="IDS_CHECKBOX_DISPLAY_SPLITSCREENGAMERTAGS">
-		<value>Jaetun näytön online-tunnukset</value>
-	</data>
-	<data name="IDS_ACHIEVEMENTS">
-		<value>Trophyt</value>
-	</data>
-	<data name="IDS_LABEL_GAMERTAGS">
-		<value>Online-tunnukset:</value>
-	</data>
-	<data name="IDS_IN_GAME_GAMERTAGS">
-		<value>Online-tunnukset pelissä</value>
-	</data>
-	<data name="IDS_SOCIAL_DEFAULT_DESCRIPTION">
-		<value>Katso mitä minä tein Minecraft: PlayStation®Vita Edition -pelissä!</value>
-	</data>
-	<data name="IDS_USING_TRIAL_TEXUREPACK_WARNING">
-		<value>Käytät tekstuuripaketin koeversiota. Voit käyttää tekstuuripaketin koko sisältöä, mutta et pysty tallentamaan edistymistäsi.
-Jos yrität tallentaa käyttäessäsi koeversiota, sinulle tarjotaan mahdollisuutta ostaa täysi versio.
-    </value>
-	</data>
-	<data name="IDS_TITLE_UPDATE_NAME">
-		<value>Paketti 1.04 (Pelipäivitys 14)</value>
-	</data>
-	<data name="IDS_BACK_BUTTON">
-		<value>SELECT</value>
-	</data>
-	<data name="IDS_HOST_OPTION_DISABLES_ACHIEVEMENTS">
-		<value>Tämä asetus poistaa käytöstä trophyt ja pistetilastopäivitykset tässä maailmassa, ja kun maailma ladataan uudestaan, jos se on tallennettu tämän asetuksen ollessa käytössä.</value>
-	</data>
-	<data name="IDS_SIGNIN_PSN">
-		<value>Haluatko kirjautua "PSN"-verkkoon?</value>
-	</data>
-	<data name="IDS_KICK_PLAYER_DESCRIPTION">
-		<value>Jos pelaaja ei pelaa samalla PlayStation®Vita-järjestelmällä kuin istunnon järjestänyt pelaaja, tämän asetuksen valitseminen potkaisee ulos kyseisen pelaajan sekä kaikki muut pelaajat, jotka pelaavat hänen PlayStation®Vita-järjestelmällään. Pelaaja ei pysty enää liittymään peliin ennen kuin se aloitetaan uudelleen.</value>
-	</data>
-	<data name="IDS_PLATFORM_NAME">
-		<value>PlayStation®Vita-järjestelmä</value>
-	</data>
-	<data name="IDS_TOOLTIP_CHANGE_NETWORK_MODE">
-		<value>Vaihda verkkotilaa</value>
-	</data>
-	<data name="IDS_SELECT_NETWORK_MODE_TITLE">
-		<value>Valitse verkkotila</value>
-	</data>
-	<data name="IDS_SELECT_NETWORK_MODE_TEXT">
-		<value>Valitse Ad Hoc -verkko, jos haluat yhdistää läheisiin PlayStation®Vita-järjestelmiin, tai "PSN", jos haluat yhdistää ystäviin kaikkialla maailmassa.</value>
-	</data>
-	<data name="IDS_NETWORK_ADHOC">
-		<value>Ad Hoc -verkko</value>
-	</data>
-	<data name="IDS__NETWORK_PSN">
-		<value>"PSN"</value>
-	</data>
-	<data name="IDS_TOOLTIPS_SAVETRANSFER_DOWNLOAD">
-		<value>Lataa PlayStation®3-järjestelmä tallenne
-</value>
-	</data>
-	<data name="IDS_TOOLTIPS_SAVETRANSFER_UPLOAD">
-		<value>Lähetä tallenne PlayStation®3/PlayStation®4-järjestelmälle</value>
-	</data>
-	<data name="IDS_CANCEL_UPLOAD_TITLE">
-		<value>Lähettäminen peruttu</value>
-	</data>
-	<data name="IDS_CANCEL_UPLOAD_TEXT">
-		<value>Olet perunut tämän tallenteen lähettämisen tallenteensiirtoalueelle.</value>
-	</data>
-	<data name="IDS_SAVETRANSFER_STAGE_PUT_DATA">
-		<value>Lähetetään tietoja: %d%%</value>
-	</data>
-	<data name="IDS_SAVETRANSFER_STAGE_GET_DATA">
-		<value>Ladataan tietoja: %d%%</value>
-	</data>
-	<data name="IDS_SAVE_TRANSFER_TEXT">
-		<value>Oletko varma, että haluat lähettää tämän tallenteen ja korvata mahdollisen aiemman tallennuksen tallennussiirtoalueelta?</value>
-	</data>
-	<data name="IDS_SAVETRANSFER_STAGE_CONVERTING">
-		<value>Muunnetaan dataa</value>
-	</data>
-	<data name="IDS_SAVETRANSFER_STAGE_SAVING">
-		<value>Tallennetaan</value>
-	</data>
-	<data name="IDS_SAVE_TRANSFER_UPLOADCOMPLETE">
-		<value>Lähetys valmis!</value>
-	</data>
-	<data name="IDS_SAVE_TRANSFER_UPLOADFAILED">
-		<value>Lähetys epäonnistui. Yritä myöhemmin uudelleen.</value>
-	</data>
-	<data name="IDS_SAVE_TRANSFER_DOWNLOADCOMPLETE">
-		<value>Lataus valmis!</value>
-	</data>
-	<data name="IDS_SAVE_TRANSFER_DOWNLOADFAILED">
-		<value>Lataus epäonnistui. Yritä myöhemmin uudelleen.</value>
-	</data>
-	<data name="IDS_DISCONNECTED_NAT_TYPE_MISMATCH">
-		<value>Peliin liittyminen epäonnistui rajoittavan NAT-tyypin takia. Tarkista verkkoasetuksesi.</value>
-	</data>
-	<data name="IDS_SAVE_TRANSFER_NOT_AVAILABLE_TEXT">
-		<value>Tallenteensiirtoalueella ei ole tällä hetkellä tallennetta saatavilla.
-Voit lähettää maailmatallenteen tallenteensiirtoalueelle Minecraft: PlayStation®3 Edition -pelistä ja ladata sen sitten Minecraft: PlayStation®Vita Edition -peliin.
-</value>
-	</data>
-	<data name="IDS_SAVE_INCOMPLETE_TITLE">
-		<value>Tallennus kesken</value>
-	</data>
-	<data name="IDS_SAVE_INCOMPLETE_EXPLANATION_QUOTA">
-		<value>Minecraft: PlayStation®Vita Editionin tallennustiedoille ei ole riittävästi tilaa. Tee tilaa poistamalla muita Minecraft: PlayStation®Vita Editionin tallennuksia.</value>
+	<data name="IDS_SAVE_TRANSFER_WRONG_VERSION">
+		<value>Tallenteensiirtoalueella olevassa tallennustiedostossa on versionumero, jota Minecraft: PlayStation®Vita Edition ei vielä tue.</value>
 	</data>
 </root>

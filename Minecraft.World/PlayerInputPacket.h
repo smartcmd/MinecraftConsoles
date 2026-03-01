@@ -7,26 +7,22 @@ class PlayerInputPacket : public Packet, public enable_shared_from_this<PlayerIn
 {
 
 private:
-	float xa;
-    float ya;
+	float xxa;
+    float yya;
     bool isJumpingVar;
     bool isSneakingVar;
-    float xRot;
-    float yRot;
 
 public:
 	PlayerInputPacket();
-	PlayerInputPacket(float xa, float ya, bool isJumpingVar, bool isSneakingVar, float xRot, float yRot);
+	PlayerInputPacket(float xxa, float yya, bool isJumpingVar, bool isSneakingVar);
 
 	virtual void read(DataInputStream *dis);
 	virtual void write(DataOutputStream *dos);
 	virtual void handle(PacketListener *listener);
 	virtual int getEstimatedSize();
 
-	float getXa();
-	float getXRot();
-	float getYa();
-	float getYRot();
+	float getXxa();
+	float getYya();
 	bool isJumping();
 	bool isSneaking();
 

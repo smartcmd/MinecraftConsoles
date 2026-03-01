@@ -4,6 +4,8 @@
 #include "..\Minecraft.World\net.minecraft.world.entity.item.h"
 #include "..\Minecraft.World\Mth.h"
 
+ResourceLocation BoatRenderer::BOAT_LOCATION = ResourceLocation(TN_ITEM_BOAT);
+
 BoatRenderer::BoatRenderer()  : EntityRenderer()
 {
     this->shadowRadius = 0.5f;
@@ -29,13 +31,17 @@ void BoatRenderer::render(shared_ptr<Entity> _boat, double x, double y, double z
         glRotatef(Mth::sin(hurt)*hurt*dmg/10*boat->getHurtDir(), 1, 0, 0);
     }
 
-    bindTexture(TN_TERRAIN);	// 4J was L"/terrain.png"
     float ss = 12/16.0f;
     glScalef(ss, ss, ss);
     glScalef(1/ss, 1/ss, 1/ss);
 
-    bindTexture(TN_ITEM_BOAT);	// 4J was L"/item/boat.png"
+    bindTexture(boat);
     glScalef(-1, -1, 1);
     model->render(boat, 0, 0, -0.1f, 0, 0, 1 / 16.0f, true);
     glPopMatrix();
+}
+
+ResourceLocation *BoatRenderer::getTextureLocation(shared_ptr<Entity> mob)
+{
+    return &BOAT_LOCATION;
 }

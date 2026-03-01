@@ -32,7 +32,7 @@ void CocoaTile::tick(Level *level, int x, int y, int z, Random *random)
 	if (!canSurvive(level, x, y, z))
 	{
 		this->spawnResources(level, x, y, z, level->getData(x, y, z), 0);
-		level->setTile(x, y, z, 0);
+		level->setTileAndData(x, y, z, 0, 0, UPDATE_CLIENTS);
 	}
 	else if (level->random->nextInt(5) == 0)
 	{
@@ -41,7 +41,7 @@ void CocoaTile::tick(Level *level, int x, int y, int z, Random *random)
 		if (age < 2)
 		{
 			age++;
-			level->setData(x, y, z, (age << 2) | (getDirection(data)));
+			level->setData(x, y, z, (age << 2) | (getDirection(data)), Tile::UPDATE_CLIENTS);
 		}
 	}
 }
@@ -112,10 +112,10 @@ void CocoaTile::updateShape(LevelSource *level, int x, int y, int z, int forceDa
 	}
 }
 
-void CocoaTile::setPlacedBy(Level *level, int x, int y, int z, shared_ptr<Mob> by, shared_ptr<ItemInstance> itemInstance)
+void CocoaTile::setPlacedBy(Level *level, int x, int y, int z, shared_ptr<LivingEntity> by, shared_ptr<ItemInstance> itemInstance)
 {
 	int dir = (((Mth::floor(by->yRot * 4 / (360) + 0.5)) & 3) + 0) % 4;
-	level->setData(x, y, z, dir);
+	level->setData(x, y, z, dir, Tile::UPDATE_CLIENTS);
 }
 
 int CocoaTile::getPlacedOnFaceDataValue(Level *level, int x, int y, int z, int face, float clickX, float clickY, float clickZ, int itemValue)
@@ -132,7 +132,7 @@ void CocoaTile::neighborChanged(Level *level, int x, int y, int z, int type)
 	if (!canSurvive(level, x, y, z))
 	{
 		this->spawnResources(level, x, y, z, level->getData(x, y, z), 0);
-		level->setTile(x, y, z, 0);
+		level->setTileAndData(x, y, z, 0, 0, UPDATE_CLIENTS);
 	}
 }
 

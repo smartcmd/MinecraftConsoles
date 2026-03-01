@@ -1,6 +1,8 @@
 #include "stdafx.h"
 #include "net.minecraft.world.entity.player.h"
 #include "net.minecraft.world.entity.h"
+#include "net.minecraft.world.entity.ai.attributes.h"
+#include "net.minecraft.world.entity.monster.h"
 #include "net.minecraft.world.item.h"
 #include "net.minecraft.world.level.h"
 #include "net.minecraft.world.level.tile.h"
@@ -10,7 +12,7 @@
 #include "..\Minecraft.Client\Textures.h"
 #include "EnderMan.h"
 
-
+AttributeModifier *EnderMan::SPEED_MODIFIER_ATTACKING = (new AttributeModifier(eModifierId_MOB_ENDERMAN_ATTACKSPEED, 6.2f, AttributeModifier::OPERATION_ADDITION))->setSerialize(false);
 
 bool EnderMan::MAY_TAKE[256];
 
@@ -23,8 +25,8 @@ void EnderMan::staticCtor()
 	MAY_TAKE[Tile::gravel_Id] = true;
 	MAY_TAKE[Tile::flower_Id] = true;
 	MAY_TAKE[Tile::rose_Id] = true;
-	MAY_TAKE[Tile::mushroom1_Id] = true;
-	MAY_TAKE[Tile::mushroom2_Id] = true;
+	MAY_TAKE[Tile::mushroom_brown_Id] = true;
+	MAY_TAKE[Tile::mushroom_red_Id] = true;
 	MAY_TAKE[Tile::tnt_Id] = true;
 	MAY_TAKE[Tile::cactus_Id] = true;
 	MAY_TAKE[Tile::clay_Id] = true;
@@ -39,27 +41,28 @@ EnderMan::EnderMan(Level *level) : Monster( level )
 	// the derived version of the function is called
 	// Brought forward from 1.2.3
 	this->defineSynchedData();
-
-	// 4J Stu - This function call had to be moved here from the Entity ctor to ensure that the derived version of the function is called
-	health = getMaxHealth();
+	registerAttributes();
+	setHealth(getMaxHealth());
 
 	// 4J initialisors
 	teleportTime = 0;
 	aggroTime = 0;
+	lastAttackTarget = nullptr;
+	aggroedByPlayer = false;
 
-	this->textureIdx = TN_MOB_ENDERMAN; // 4J was "/mob/enderman.png";
-	runSpeed = 0.2f;
-	attackDamage = 7;
 	setSize(0.6f, 2.9f);
 	footSize = 1;
 }
 
-int EnderMan::getMaxHealth()
+void EnderMan::registerAttributes()
 {
-	return 40;
+	Monster::registerAttributes();
+
+	getAttribute(SharedMonsterAttributes::MAX_HEALTH)->setBaseValue(40);
+	getAttribute(SharedMonsterAttributes::MOVEMENT_SPEED)->setBaseValue(0.3f);
+	getAttribute(SharedMonsterAttributes::ATTACK_DAMAGE)->setBaseValue(7);
 }
 
-// Brought forward from 1.2.3
 void EnderMan::defineSynchedData()
 {
 	Monster::defineSynchedData();
@@ -97,6 +100,8 @@ shared_ptr<Entity> EnderMan::findAttackTarget()
 	{
 		if (isLookingAtMe(player))
 		{
+			aggroedByPlayer = true;
+			if (aggroTime == 0) level->playEntitySound(player, eSoundType_MOB_ENDERMAN_STARE, 1, 1);
 			if (aggroTime++ == 5)
 			{
 				aggroTime = 0;
@@ -131,48 +136,61 @@ bool EnderMan::isLookingAtMe(shared_ptr<Player> player)
 
 void EnderMan::aiStep()
 {
-	if (this->isInWaterOrRain()) hurt(DamageSource::drown, 1);
+	if (isInWaterOrRain()) hurt(DamageSource::drown, 1);
 
-	runSpeed = attackTarget != NULL ? 6.5f : 0.3f;
+	if (lastAttackTarget != attackTarget)
+	{
+		AttributeInstance *speed = getAttribute(SharedMonsterAttributes::MOVEMENT_SPEED);
+		speed->removeModifier(SPEED_MODIFIER_ATTACKING);
+
+		if (attackTarget != NULL)
+		{
+			speed->addModifier(new AttributeModifier(*SPEED_MODIFIER_ATTACKING));
+		}
+	}
+
+	lastAttackTarget = attackTarget;
 
 	if (!level->isClientSide)
 	{
-		if (getCarryingTile() == 0)
+		if (level->getGameRules()->getBoolean(GameRules::RULE_MOBGRIEFING))
 		{
-			if (random->nextInt(20) == 0)
+			if (getCarryingTile() == 0)
 			{
-				int xt = Mth::floor(x - 2 + random->nextDouble() * 4);
-				int yt = Mth::floor(y + random->nextDouble() * 3);
-				int zt = Mth::floor(z - 2 + random->nextDouble() * 4);
-				int t = level->getTile(xt, yt, zt);
-				//if (t > 0 && Tile::tiles[t]->isCubeShaped())
-				if(EnderMan::MAY_TAKE[t]) // 4J - Brought forward from 1.2.3
+				if (random->nextInt(20) == 0)
 				{
-					setCarryingTile(level->getTile(xt, yt, zt));
-					setCarryingData(level->getData(xt, yt, zt));
-					level->setTile(xt, yt, zt, 0);
+					int xt = Mth::floor(x - 2 + random->nextDouble() * 4);
+					int yt = Mth::floor(y + random->nextDouble() * 3);
+					int zt = Mth::floor(z - 2 + random->nextDouble() * 4);
+					int t = level->getTile(xt, yt, zt);
+					if(MAY_TAKE[t])
+					{
+						setCarryingTile(level->getTile(xt, yt, zt));
+						setCarryingData(level->getData(xt, yt, zt));
+						level->setTileAndUpdate(xt, yt, zt, 0);
+					}
 				}
 			}
-		}
-		else
-		{
-			if (random->nextInt(2000) == 0)
+			else
 			{
-				int xt = Mth::floor(x - 1 + random->nextDouble() * 2);
-				int yt = Mth::floor(y + random->nextDouble() * 2);
-				int zt = Mth::floor(z - 1 + random->nextDouble() * 2);
-				int t = level->getTile(xt, yt, zt);
-				int bt = level->getTile(xt, yt - 1, zt);
-				if (t == 0 && bt > 0 && Tile::tiles[bt]->isCubeShaped())
+				if (random->nextInt(2000) == 0)
 				{
-					level->setTileAndData(xt, yt, zt, getCarryingTile(), getCarryingData());
-					setCarryingTile(0);
+					int xt = Mth::floor(x - 1 + random->nextDouble() * 2);
+					int yt = Mth::floor(y + random->nextDouble() * 2);
+					int zt = Mth::floor(z - 1 + random->nextDouble() * 2);
+					int t = level->getTile(xt, yt, zt);
+					int bt = level->getTile(xt, yt - 1, zt);
+					if (t == 0 && bt > 0 && Tile::tiles[bt]->isCubeShaped())
+					{
+						level->setTileAndData(xt, yt, zt, getCarryingTile(), getCarryingData(), Tile::UPDATE_ALL);
+						setCarryingTile(0);
+					}
 				}
 			}
 		}
 	}
 
-	// 4J - Brought forward particles from 1.2.3
+
 	for (int i = 0; i < 2; i++)
 	{
 		level->addParticle(eParticleType_ender, x + (random->nextDouble() - 0.5) * bbWidth, y + random->nextDouble() * bbHeight - 0.25f, z + (random->nextDouble() - 0.5) * bbWidth,
@@ -184,37 +202,41 @@ void EnderMan::aiStep()
 		float br = getBrightness(1);
 		if (br > 0.5f)
 		{
-			if (level->canSeeSky(Mth::floor(x), Mth::floor(y), Mth::floor(z)) && random->nextFloat() * 30 < (br - 0.4f) * 2)
+			if (level->canSeeSky(Mth::floor(x), (int)floor( y + 0.5 ), Mth::floor(z)) && random->nextFloat() * 30 < (br - 0.4f) * 2)
 			{
-				// 4J - Brought forward behaviour change from 1.2.3
-				//onFire = 20 * 15;
 				attackTarget = nullptr;
 				setCreepy(false);
+				aggroedByPlayer = false;
 				teleport();
 			}
 		}
 	}
-	// 4J Brought forward behaviour change from 1.2.3
+
 	if (isInWaterOrRain() || isOnFire())
 	{
 		attackTarget = nullptr;
 		setCreepy(false);
+		aggroedByPlayer = false;
 		teleport();
 	}
+
+	if (isCreepy() && !aggroedByPlayer && random->nextInt(100) == 0)
+	{
+		setCreepy(false);
+	}
+
 	jumping = false;
 	if (attackTarget != NULL)
 	{
-		this->lookAt(attackTarget, 100, 100);
+		lookAt(attackTarget, 100, 100);
 	}
 
 	if (!level->isClientSide && isAlive())
 	{
 		if (attackTarget != NULL)
 		{
-			if ( dynamic_pointer_cast<Player>(attackTarget) != NULL && isLookingAtMe(dynamic_pointer_cast<Player>(attackTarget)))
+			if ( attackTarget->instanceof(eTYPE_PLAYER) && isLookingAtMe(dynamic_pointer_cast<Player>(attackTarget)))
 			{
-				xxa = yya = 0;
-				runSpeed = 0;
 				if (attackTarget->distanceToSqr(shared_from_this()) < 4 * 4)
 				{
 					teleport();
@@ -316,13 +338,10 @@ bool EnderMan::teleport(double xx, double yy, double zz)
 			double _y = yo + (y - yo) * d + random->nextDouble() * bbHeight;
 			double _z = zo + (z - zo) * d + (random->nextDouble() - 0.5) * bbWidth * 2;
 
-			// 4J - Brought forward particle change from 1.2.3
-			//level->addParticle(eParticleType_largesmoke, _x, _y, _z, xa, ya, za);
 			level->addParticle(eParticleType_ender, _x, _y, _z, xa, ya, za);
 		}
-		// 4J - moved sounds forward from 1.2.3
 		level->playSound(xo, yo, zo, eSoundType_MOB_ENDERMEN_PORTAL, 1, 1);
-		level->playSound(shared_from_this(), eSoundType_MOB_ENDERMEN_PORTAL, 1, 1);
+		playSound(eSoundType_MOB_ENDERMEN_PORTAL, 1, 1);
 		return true;
 	}
 	else
@@ -334,19 +353,16 @@ bool EnderMan::teleport(double xx, double yy, double zz)
 
 int EnderMan::getAmbientSound()
 {
-	// 4J - brought sound change forward from 1.2.3
-	return eSoundType_MOB_ENDERMEN_IDLE;
+	return isCreepy()? eSoundType_MOB_ENDERMAN_SCREAM : eSoundType_MOB_ENDERMEN_IDLE;
 }
 
 int EnderMan::getHurtSound()
 {
-	// 4J - brought sound change forward from 1.2.3
 	return eSoundType_MOB_ENDERMEN_HIT;
 }
 
 int EnderMan::getDeathSound()
 {
-	// 4J - brought sound change forward from 1.2.3
 	return eSoundType_MOB_ENDERMEN_DEATH;
 }
 
@@ -387,13 +403,25 @@ int EnderMan::getCarryingData()
 	return entityData->getByte(DATA_CARRY_ITEM_DATA);
 }
 
-bool EnderMan::hurt(DamageSource *source, int damage)
+bool EnderMan::hurt(DamageSource *source, float damage)
 {
+	if (isInvulnerable()) return false;
+	setCreepy(true);
+
+	if ( dynamic_cast<EntityDamageSource *>(source) != NULL && source->getEntity()->instanceof(eTYPE_PLAYER))
+	{
+		aggroedByPlayer = true;
+	}
+
 	if (dynamic_cast<IndirectEntityDamageSource *>(source) != NULL)
 	{
+		aggroedByPlayer = false;
 		for (int i = 0; i < 64; i++)
 		{
-			if (teleport()) return true;
+			if (teleport())
+			{
+				return true;
+			}
 		}
 		return false;
 	}

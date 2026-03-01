@@ -1,5 +1,5 @@
 #include "stdafx.h"
-
+#include "net.minecraft.world.level.tile.h"
 #include "TickNextTickData.h"
 
 __int64 TickNextTickData::C = 0;
@@ -13,39 +13,51 @@ TickNextTickData::TickNextTickData(int x, int y, int z, int tileId)
 	this->y = y;
 	this->z = z;
 	this->tileId = tileId;
+	priorityTilt = 0;
 }
 
 
-bool TickNextTickData::equals(const void *o) const
+bool TickNextTickData::equals(const TickNextTickData *o) const
 {
 	// TODO 4J Is this safe to cast it before we do a dynamic_cast? Will the dynamic_cast still fail?
 	// We cannot dynamic_cast a void*
-	if ( dynamic_cast<TickNextTickData *>( (TickNextTickData *) o ) != NULL)
+	if ( o != NULL)
 	{
 		TickNextTickData *t = (TickNextTickData *) o;
-		return x == t->x && y == t->y && z == t->z && tileId == t->tileId;
+		return x == t->x && y == t->y && z == t->z && Tile::isMatching(tileId, t->tileId);
 	}
 	return false;
 }
 
 int TickNextTickData::hashCode() const
 {
-	return (((x * 1024 * 1024) + (z * 1024) + y) * 256) + tileId;
+	return (((x * 1024 * 1024) + (z * 1024) + y) * 256);
 }
 
 TickNextTickData *TickNextTickData::delay(__int64 l)
 {
-	this->m_delay = l;
+	m_delay = l;
 	return this;
+}
+
+void TickNextTickData::setPriorityTilt(int priorityTilt)
+{
+	this->priorityTilt = priorityTilt;
 }
 
 int TickNextTickData::compareTo(const TickNextTickData *tnd) const
 {
 	if (m_delay < tnd->m_delay) return -1;
 	if (m_delay > tnd->m_delay) return 1;
+	if (priorityTilt != tnd->priorityTilt) return priorityTilt - tnd->priorityTilt;
 	if (c < tnd->c) return -1;
 	if (c > tnd->c) return 1;
 	return 0;
+}
+
+bool TickNextTickData::operator==(const TickNextTickData &k)
+{
+	return equals( &k );
 }
 
 //A class that takes two arguments of the same type as the container elements and returns a bool.
@@ -65,5 +77,5 @@ int TickNextTickData::hash_fnct(const TickNextTickData &k)
 
 bool TickNextTickData::eq_test(const TickNextTickData &x, const TickNextTickData &y)
 {
-	return ( x.x == y.x ) && ( x.y == y.y ) && ( x.z == y.z ) && ( x.tileId == y.tileId );
+	return x.equals(&y);
 }

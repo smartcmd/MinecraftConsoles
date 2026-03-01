@@ -5,7 +5,7 @@
 
 LeapAtTargetGoal::LeapAtTargetGoal(Mob *mob, float yd)
 {
-	target = weak_ptr<Mob>();
+	target = weak_ptr<LivingEntity>();
 
 	this->mob = mob;
 	this->yd = yd;
@@ -14,7 +14,7 @@ LeapAtTargetGoal::LeapAtTargetGoal(Mob *mob, float yd)
 
 bool LeapAtTargetGoal::canUse()
 {
-	target = weak_ptr<Mob>(mob->getTarget());
+	target = weak_ptr<LivingEntity>(mob->getTarget());
 	if (target.lock() == NULL) return false;
 	double d = mob->distanceToSqr(target.lock());
 	if (d < 2 * 2 || d > 4 * 4) return false;

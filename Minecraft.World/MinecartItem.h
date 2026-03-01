@@ -2,9 +2,23 @@
 using namespace std;
 
 #include "Item.h"
+#include "DefaultDispenseItemBehavior.h"
 
 class MinecartItem : public Item 
 {
+private:
+	class MinecartDispenseBehavior : public DefaultDispenseItemBehavior
+	{
+	private:
+		DefaultDispenseItemBehavior defaultDispenseItemBehavior;
+
+	public:
+		virtual shared_ptr<ItemInstance> execute(BlockSource *source, shared_ptr<ItemInstance> dispensed, eOUTCOME &outcome);
+
+	protected:
+		virtual void playSound(BlockSource *source);
+	};
+
 public:
 	int type;
 

@@ -5,13 +5,13 @@
 
 void Bush::_init()
 {
-    setTicking(true);
-    updateDefaultShape();
+	setTicking(true);
+	updateDefaultShape();
 }
 
 Bush::Bush(int id, Material *material) : Tile(id, material, isSolidRender())
 {
-    _init();
+	_init();
 }
 
 Bush::Bush(int id) : Tile(id, Material::plant, isSolidRender())
@@ -22,8 +22,8 @@ Bush::Bush(int id) : Tile(id, Material::plant, isSolidRender())
 // 4J Added override
 void Bush::updateDefaultShape()
 {
-    float ss = 0.2f;
-    this->setShape(0.5f - ss, 0, 0.5f - ss, 0.5f + ss, ss * 3, 0.5f + ss);
+	float ss = 0.2f;
+	setShape(0.5f - ss, 0, 0.5f - ss, 0.5f + ss, ss * 3, 0.5f + ss);
 }
 
 bool Bush::mayPlace(Level *level, int x, int y, int z)
@@ -49,11 +49,11 @@ void Bush::tick(Level *level, int x, int y, int z, Random *random)
 
 void Bush::checkAlive(Level *level, int x, int y, int z)
 {
-    if (!canSurvive(level, x, y, z))
+	if (!canSurvive(level, x, y, z))
 	{
-        this->spawnResources(level, x, y, z, level->getData(x, y, z), 0);
-        level->setTile(x, y, z, 0);
-    }
+		this->spawnResources(level, x, y, z, level->getData(x, y, z), 0);
+		level->setTileAndData(x, y, z, 0, 0, UPDATE_CLIENTS);
+	}
 }
 
 bool Bush::canSurvive(Level *level, int x, int y, int z)

@@ -184,6 +184,12 @@ private:
 #endif
 
 #ifdef __PSVITA__
+	static int	MustSignInReturned(void *pParam,int iPad,C4JStorage::EMessageResult result);
+	static int PSNSignInReturned(void* pParam, bool bContinue, int iPad);
+#endif
+
+
+#ifdef __PSVITA__
 	CRITICAL_SECTION m_DLCInstallCS;		// to prevent a race condition between the install and the mounted callback
 #endif
 };

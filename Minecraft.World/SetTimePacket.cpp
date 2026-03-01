@@ -4,26 +4,38 @@
 #include "PacketListener.h"
 #include "SetTimePacket.h"
 
-
-
 SetTimePacket::SetTimePacket() 
 {
-	time = 0;
+	gameTime = 0;
+	dayTime = 0;
 }
 
-SetTimePacket::SetTimePacket(__int64 time)
+SetTimePacket::SetTimePacket(__int64 gameTime, __int64 dayTime, bool tickDayTime)
 {
-	this->time = time;
+	this->gameTime = gameTime;
+	this->dayTime = dayTime;
+
+	// 4J: We send daylight cycle rule with host options so don't need this
+	/*if (!tickDayTime)
+	{
+		this->dayTime = -this->dayTime;
+		if (this->dayTime == 0)
+		{
+			this->dayTime = -1;
+		}
+	}*/
 }
 
 void SetTimePacket::read(DataInputStream *dis) //throws IOException
 {
-	time = dis->readLong();
+	gameTime = dis->readLong();
+	dayTime = dis->readLong();
 }
 
 void SetTimePacket::write(DataOutputStream *dos) //throws IOException 
 {
-	dos->writeLong(time);
+	dos->writeLong(gameTime);
+	dos->writeLong(dayTime);
 }
 
 void SetTimePacket::handle(PacketListener *listener)
@@ -33,7 +45,7 @@ void SetTimePacket::handle(PacketListener *listener)
 
 int SetTimePacket::getEstimatedSize()
 {
-	return 8;
+	return 16;
 }
 
 bool SetTimePacket::canBeInvalidated()

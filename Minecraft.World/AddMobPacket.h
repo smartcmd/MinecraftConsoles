@@ -4,7 +4,7 @@ using namespace std;
 #include "Packet.h"
 #include "SynchedEntityData.h"
 
-class Mob;
+class LivingEntity;
 
 class AddMobPacket : public Packet, public enable_shared_from_this<AddMobPacket>
 {
@@ -22,7 +22,7 @@ private:
 public:
 	AddMobPacket();
 	~AddMobPacket();
-	AddMobPacket(shared_ptr<Mob> mob, int yRotp, int xRotp, int xp, int yp, int zp, int yHeadRotp);
+	AddMobPacket(shared_ptr<LivingEntity> mob, int yRotp, int xRotp, int xp, int yp, int zp, int yHeadRotp);
 
 	virtual void read(DataInputStream *dis);
 	virtual void write(DataOutputStream *dos);

@@ -39,13 +39,13 @@ UseItemPacket::UseItemPacket(int x, int y, int z, int face, shared_ptr<ItemInsta
 void UseItemPacket::read(DataInputStream *dis) //throws IOException 
 {
 	x = dis->readInt();
-	y = dis->read();
+	y = dis->readUnsignedByte();
 	z = dis->readInt();
 	face = dis->read();
 	item = readItem(dis);
-	clickX = dis->read() / CLICK_ACCURACY;
-	clickY = dis->read() / CLICK_ACCURACY;
-	clickZ = dis->read() / CLICK_ACCURACY;
+	clickX = dis->readUnsignedByte() / CLICK_ACCURACY;
+	clickY = dis->readUnsignedByte() / CLICK_ACCURACY;
+	clickZ = dis->readUnsignedByte() / CLICK_ACCURACY;
 }
 
 void UseItemPacket::write(DataOutputStream *dos) //throws IOException 
@@ -58,7 +58,7 @@ void UseItemPacket::write(DataOutputStream *dos) //throws IOException
 	writeItem(item, dos);
 	dos->write((int) (clickX * CLICK_ACCURACY));
 	dos->write((int) (clickY * CLICK_ACCURACY));
-	dos->write((int)(clickZ * CLICK_ACCURACY));
+	dos->write((int) (clickZ * CLICK_ACCURACY));
 }
 
 void UseItemPacket::handle(PacketListener *listener)

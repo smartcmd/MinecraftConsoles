@@ -10,6 +10,11 @@ class DoorTile : public Tile
 {
 	friend class Tile;
 	friend class ChunkRebuildData;
+
+private:
+	static const int TEXTURE_NORMAL = 0;
+	static const int TEXTURE_FLIPPED = 1;
+
 public:
 	static const int UPPER_BIT = 8;
 	static const int C_DIR_MASK = 3;
@@ -22,16 +27,15 @@ private:
 	static const int DOOR_TILE_TEXTURE_COUNT = 4;
 	static const wstring TEXTURES[];
 	int texBase;
-	Icon **icons;
+	Icon *iconTop[2];
+	Icon *iconBottom[2];
 
 protected:
 	DoorTile(int id, Material *material);
 public:
 	virtual Icon *getTexture(int face, int data);
-	//@Override
-	Icon *getTexture(LevelSource *level, int x, int y, int z, int face);
-	//@Override
-	void registerIcons(IconRegister *iconRegister);
+	virtual Icon *getTexture(LevelSource *level, int x, int y, int z, int face);
+	virtual void registerIcons(IconRegister *iconRegister);
 	virtual bool blocksLight();
 	virtual bool isSolidRender(bool isServerLevel = false);
 	virtual bool isCubeShaped();
@@ -57,4 +61,5 @@ public:
 	virtual int getPistonPushReaction();
 	int getCompositeData(LevelSource *level, int x, int y, int z);
 	virtual int cloneTileId(Level *level, int x, int y, int z);
+	virtual void playerWillDestroy(Level *level, int x, int y, int z, int data, shared_ptr<Player> player);
 };

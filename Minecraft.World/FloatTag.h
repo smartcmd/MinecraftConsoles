@@ -10,7 +10,7 @@ public:
 	FloatTag(const wstring &name, float data) : Tag(name) {this->data = data; }
 	
 	void write(DataOutput *dos) { dos->writeFloat(data); }
-	void load(DataInput *dis) { data = dis->readFloat(); }
+	void load(DataInput *dis, int tagDepth) { data = dis->readFloat(); }
 
 	byte getId() { return TAG_Float; }
 	wstring toString()

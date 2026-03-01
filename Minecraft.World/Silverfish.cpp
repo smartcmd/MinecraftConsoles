@@ -3,6 +3,8 @@
 #include "net.minecraft.world.level.tile.h"
 #include "net.minecraft.world.phys.h"
 #include "net.minecraft.world.damagesource.h"
+#include "net.minecraft.world.entity.ai.attributes.h"
+#include "net.minecraft.world.entity.monster.h"
 #include "net.minecraft.h"
 #include "..\Minecraft.Client\Textures.h"
 #include "Silverfish.h"
@@ -15,21 +17,19 @@ Silverfish::Silverfish(Level *level) : Monster( level )
 	// 4J Stu - This function call had to be moved here from the Entity ctor to ensure that
 	// the derived version of the function is called
 	this->defineSynchedData();
+	registerAttributes();
+	setHealth(getMaxHealth());
 
-	// 4J Stu - This function call had to be moved here from the Entity ctor to ensure that the derived version of the function is called
-	health = getMaxHealth();
-
-	this->textureIdx = TN_MOB_SILVERFISH;// 4J was "/mob/silverfish.png";
-	this->setSize(0.3f, 0.7f);
-	runSpeed = 0.6f;
-
-	// 4J - Brought forward damage from 1.2.3
-	attackDamage = 1;
+	setSize(0.3f, 0.7f);
 }
 
-int Silverfish::getMaxHealth()
+void Silverfish::registerAttributes()
 {
-	return 8;
+	Monster::registerAttributes();
+
+	getAttribute(SharedMonsterAttributes::MAX_HEALTH)->setBaseValue(8);
+	getAttribute(SharedMonsterAttributes::MOVEMENT_SPEED)->setBaseValue(0.6f);
+	getAttribute(SharedMonsterAttributes::ATTACK_DAMAGE)->setBaseValue(1);
 }
 
 bool Silverfish::makeStepSound()
@@ -69,8 +69,9 @@ int Silverfish::getDeathSound()
 }
 
 
-bool Silverfish::hurt(DamageSource *source, int dmg)
+bool Silverfish::hurt(DamageSource *source, float dmg)
 {
+	if (isInvulnerable()) return false;
 	if (lookForFriends <= 0 && (dynamic_cast<EntityDamageSource *>(source) != NULL || source == DamageSource::magic))
 	{
 		// look for friends
@@ -86,16 +87,14 @@ void Silverfish::checkHurtTarget(shared_ptr<Entity> target, float d)
 	if (attackTime <= 0 && d < 1.2f && target->bb->y1 > bb->y0 && target->bb->y0 < bb->y1)
 	{
 		attackTime = 20;
-		DamageSource *damageSource = DamageSource::mobAttack( dynamic_pointer_cast<Mob>( shared_from_this() ) );
-		target->hurt(damageSource, attackDamage);
-		delete damageSource;
+		doHurtTarget(target);
 	}
 
 }
 
 void Silverfish::playStepSound(int xt, int yt, int zt, int t)
 {
-	level->playSound(shared_from_this(), eSoundType_MOB_SILVERFISH_STEP, 1, 1);
+	playSound(eSoundType_MOB_SILVERFISH_STEP, 0.15f, 1);
 }
 
 int Silverfish::getDeathLoot()
@@ -140,9 +139,26 @@ void Silverfish::serverAiStep()
 						int tile = level->getTile(baseX + xOff, baseY + yOff, baseZ + zOff);
 						if (tile == Tile::monsterStoneEgg_Id)
 						{
-							level->levelEvent(LevelEvent::PARTICLES_DESTROY_BLOCK, baseX + xOff, baseY + yOff, baseZ + zOff,
-								Tile::monsterStoneEgg_Id + (level->getData(baseX + xOff, baseY + yOff, baseZ + zOff) << Tile::TILE_NUM_SHIFT));
-							level->setTile(baseX + xOff, baseY + yOff, baseZ + zOff, 0);
+							if (!level->getGameRules()->getBoolean(GameRules::RULE_MOBGRIEFING))
+							{
+								int data = level->getData(baseX + xOff, baseY + yOff, baseZ + zOff);
+
+								Tile *restoreTile = Tile::stone;
+								if (data == StoneMonsterTile::HOST_COBBLE)
+								{
+									restoreTile = Tile::cobblestone;
+								}
+								if (data == StoneMonsterTile::HOST_STONEBRICK)
+								{
+									restoreTile = Tile::stoneBrick;
+								}
+
+								level->setTileAndData(baseX + xOff, baseY + yOff, baseZ + zOff, restoreTile->id, 0, Tile::UPDATE_ALL);
+							}
+							else
+							{
+								level->destroyTile(baseX + xOff, baseY + yOff, baseZ + zOff, false);
+							}
 							Tile::monsterStoneEgg->destroy(level, baseX + xOff, baseY + yOff, baseZ + zOff, 0);
 
 							if (random->nextBoolean())
@@ -167,7 +183,7 @@ void Silverfish::serverAiStep()
 		int tile = level->getTile(tileX + Facing::STEP_X[facing], tileY + Facing::STEP_Y[facing], tileZ + Facing::STEP_Z[facing]);
 		if (StoneMonsterTile::isCompatibleHostBlock(tile))
 		{
-			level->setTileAndData(tileX + Facing::STEP_X[facing], tileY + Facing::STEP_Y[facing], tileZ + Facing::STEP_Z[facing], Tile::monsterStoneEgg_Id, StoneMonsterTile::getDataForHostBlock(tile));
+			level->setTileAndData(tileX + Facing::STEP_X[facing], tileY + Facing::STEP_Y[facing], tileZ + Facing::STEP_Z[facing], Tile::monsterStoneEgg_Id, StoneMonsterTile::getDataForHostBlock(tile), Tile::UPDATE_ALL);
 			spawnAnim();
 			remove();
 		}
@@ -186,7 +202,7 @@ void Silverfish::serverAiStep()
 float Silverfish::getWalkTargetValue(int x, int y, int z)
 {
 	// silverfish LOVES stone =)
-	if (level->getTile(x, y - 1, z) == Tile::rock_Id) return 10;
+	if (level->getTile(x, y - 1, z) == Tile::stone_Id) return 10;
 	return Monster::getWalkTargetValue(x, y, z);
 }
 

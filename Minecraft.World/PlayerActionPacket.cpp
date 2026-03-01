@@ -7,7 +7,7 @@
 const int PlayerActionPacket::START_DESTROY_BLOCK = 0;
 const int PlayerActionPacket::ABORT_DESTROY_BLOCK = 1;
 const int PlayerActionPacket::STOP_DESTROY_BLOCK = 2;
-const int PlayerActionPacket::GET_UPDATED_BLOCK = 3;
+const int PlayerActionPacket::DROP_ALL_ITEMS = 3;
 const int PlayerActionPacket::DROP_ITEM = 4;
 const int PlayerActionPacket::RELEASE_USE_ITEM = 5;
 
@@ -31,11 +31,11 @@ PlayerActionPacket::PlayerActionPacket(int action, int x, int y, int z, int face
 
 void PlayerActionPacket::read(DataInputStream *dis) //throws IOException 
 {
-	action = dis->read();
+	action = dis->readUnsignedByte();
 	x = dis->readInt();
-	y = dis->read();
+	y = dis->readUnsignedByte();
 	z = dis->readInt();
-	face = dis->read();
+	face = dis->readUnsignedByte();
 }
 
 void PlayerActionPacket::write(DataOutputStream *dos) //throws IOException 

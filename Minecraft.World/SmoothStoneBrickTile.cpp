@@ -2,7 +2,7 @@
 #include "SmoothStoneBrickTile.h"
 #include "net.minecraft.world.h"
 
-const wstring SmoothStoneBrickTile::TEXTURE_NAMES[] = {L"stonebricksmooth", L"stonebricksmooth_mossy", L"stonebricksmooth_cracked", L"stonebricksmooth_carved"};
+const wstring SmoothStoneBrickTile::TEXTURE_NAMES[] = {L"", L"mossy", L"cracked", L"carved"};
 
 const unsigned int SmoothStoneBrickTile::SMOOTH_STONE_BRICK_NAMES[SMOOTH_STONE_BRICK_NAMES_LENGTH] = {	IDS_TILE_STONE_BRICK_SMOOTH,
 													IDS_TILE_STONE_BRICK_SMOOTH_MOSSY,
@@ -38,6 +38,8 @@ void SmoothStoneBrickTile::registerIcons(IconRegister *iconRegister)
 
 	for (int i = 0; i < SMOOTH_STONE_BRICK_NAMES_LENGTH; i++)
 	{
-		icons[i] = iconRegister->registerIcon(TEXTURE_NAMES[i]);
+		wstring name = getIconName();
+		if (!TEXTURE_NAMES[i].empty() ) name += L"_" + TEXTURE_NAMES[i];
+		icons[i] = iconRegister->registerIcon(name);
 	}
 }

@@ -8,40 +8,32 @@
 
 PlayerInputPacket::PlayerInputPacket()
 {
-	xa = 0.0f;
-	ya = 0.0f;
+	xxa = 0.0f;
+	yya = 0.0f;
 	isJumpingVar = false;
 	isSneakingVar = false;
-	xRot = 0.0f;
-	yRot = 0.0f;
 }
 
-PlayerInputPacket::PlayerInputPacket(float xa, float ya, bool isJumpingVar, bool isSneakingVar, float xRot, float yRot) 
+PlayerInputPacket::PlayerInputPacket(float xxa, float yya, bool isJumpingVar, bool isSneakingVar) 
 {
-	this->xa = xa;
-	this->ya = ya;
+	this->xxa = xxa;
+	this->yya = yya;
 	this->isJumpingVar = isJumpingVar;
 	this->isSneakingVar = isSneakingVar;
-	this->xRot = xRot;
-	this->yRot = yRot;
 }
 
 void PlayerInputPacket::read(DataInputStream *dis) //throws IOException 
 {
-	xa = dis->readFloat();
-	ya = dis->readFloat();
-	xRot = dis->readFloat();
-	yRot = dis->readFloat();
+	xxa = dis->readFloat();
+	yya = dis->readFloat();
 	isJumpingVar = dis->readBoolean();
 	isSneakingVar = dis->readBoolean();
 }
 
 void PlayerInputPacket::write(DataOutputStream *dos) //throws IOException 
 {
-	dos->writeFloat(xa);
-	dos->writeFloat(ya);
-	dos->writeFloat(xRot);
-	dos->writeFloat(yRot);
+	dos->writeFloat(xxa);
+	dos->writeFloat(yya);
 	dos->writeBoolean(isJumpingVar);
 	dos->writeBoolean(isSneakingVar);
 }
@@ -53,27 +45,17 @@ void PlayerInputPacket::handle(PacketListener *listener)
 
 int PlayerInputPacket::getEstimatedSize()
 {
-	return 18;
+	return 10;
 }
 
-float PlayerInputPacket::getXa()
+float PlayerInputPacket::getXxa()
 {
-	return xa;
+	return xxa;
 }
 
-float PlayerInputPacket::getXRot()
+float PlayerInputPacket::getYya() 
 {
-	return xRot;
-}
-
-float PlayerInputPacket::getYa() 
-{
-	return ya;
-}
-
-float PlayerInputPacket::getYRot()
-{
-	return yRot;
+	return yya;
 }
 
 bool PlayerInputPacket::isJumping() 

@@ -16,17 +16,17 @@ Icon *FenceGateTile::getTexture(int face, int data)
 
 bool FenceGateTile::mayPlace(Level *level, int x, int y, int z)
 {
-    if (!level->getMaterial(x, y - 1, z)->isSolid()) return false;
-    return Tile::mayPlace(level, x, y, z);
+	if (!level->getMaterial(x, y - 1, z)->isSolid()) return false;
+	return Tile::mayPlace(level, x, y, z);
 }
 
 AABB *FenceGateTile::getAABB(Level *level, int x, int y, int z)
 {
-    int data = level->getData(x, y, z);
-    if (isOpen(data))
+	int data = level->getData(x, y, z);
+	if (isOpen(data))
 	{
-        return NULL;
-    }
+		return NULL;
+	}
 	// 4J Brought forward change from 1.2.3 to fix hit box rotation
 	if (data == Direction::NORTH || data == Direction::SOUTH)
 	{
@@ -75,38 +75,39 @@ int FenceGateTile::getRenderShape()
 	return Tile::SHAPE_FENCE_GATE;
 }
 
-void FenceGateTile::setPlacedBy(Level *level, int x, int y, int z, shared_ptr<Mob> by)
+void FenceGateTile::setPlacedBy(Level *level, int x, int y, int z, shared_ptr<LivingEntity> by, shared_ptr<ItemInstance> itemInstance)
 {
-    int dir = (((Mth::floor(by->yRot * 4 / (360) + 0.5)) & 3)) % 4;
-    level->setData(x, y, z, dir);
+	int dir = (((Mth::floor(by->yRot * 4 / (360) + 0.5)) & 3)) % 4;
+	level->setData(x, y, z, dir, Tile::UPDATE_CLIENTS);
 }
 
 bool FenceGateTile::use(Level *level, int x, int y, int z, shared_ptr<Player> player, int clickedFace, float clickX, float clickY, float clickZ, bool soundOnly/*=false*/) // 4J added soundOnly param
 {
-	if( soundOnly )
+	if (soundOnly)
 	{
 		// 4J - added - just do enough to play the sound
 		level->levelEvent(player, LevelEvent::SOUND_OPEN_DOOR, x, y, z, 0);	// 4J - changed event to pass player rather than NULL as the source of the event so we can filter the broadcast properly
 		return false;
 	}
 
-    int data = level->getData(x, y, z);
-    if (isOpen(data))
+	int data = level->getData(x, y, z);
+	if (isOpen(data))
 	{
-        level->setData(x, y, z, data & ~OPEN_BIT);
-    }
+		level->setData(x, y, z, data & ~OPEN_BIT, Tile::UPDATE_CLIENTS);
+	}
 	else
 	{
-        // open the door from the player
-        int dir = (((Mth::floor(player->yRot * 4 / (360) + 0.5)) & 3)) % 4;
-        int current = getDirection(data);
-        if (current == ((dir + 2) % 4)) {
-            data = dir;
-        }
-        level->setData(x, y, z, data | OPEN_BIT);
-    }
-    level->levelEvent(player, LevelEvent::SOUND_OPEN_DOOR, x, y, z, 0);
-    return true;
+		// open the door from the player
+		int dir = (((Mth::floor(player->yRot * 4 / (360) + 0.5)) & 3)) % 4;
+		int current = getDirection(data);
+		if (current == ((dir + 2) % 4))
+		{
+			data = dir;
+		}
+		level->setData(x, y, z, data | OPEN_BIT, Tile::UPDATE_CLIENTS);
+	}
+	level->levelEvent(player, LevelEvent::SOUND_OPEN_DOOR, x, y, z, 0);
+	return true;
 }
 
 void FenceGateTile::neighborChanged(Level *level, int x, int y, int z, int type)
@@ -120,12 +121,12 @@ void FenceGateTile::neighborChanged(Level *level, int x, int y, int z, int type)
 	{
 		if (signal && !isOpen(data))
 		{
-			level->setData(x, y, z, data | OPEN_BIT);
+			level->setData(x, y, z, data | OPEN_BIT, Tile::UPDATE_CLIENTS);
 			level->levelEvent(nullptr, LevelEvent::SOUND_OPEN_DOOR, x, y, z, 0);
 		}
 		else if (!signal && isOpen(data))
 		{
-			level->setData(x, y, z, data & ~OPEN_BIT);
+			level->setData(x, y, z, data & ~OPEN_BIT, Tile::UPDATE_CLIENTS);
 			level->levelEvent(nullptr, LevelEvent::SOUND_OPEN_DOOR, x, y, z, 0);
 		}
 	}

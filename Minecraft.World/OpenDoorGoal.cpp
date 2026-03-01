@@ -6,7 +6,7 @@
 OpenDoorGoal::OpenDoorGoal(Mob *mob, bool closeDoorAfter) : DoorInteractGoal(mob)
 {
 	this->mob = mob;
-	this->closeDoor = closeDoorAfter;
+	closeDoor = closeDoorAfter;
 }
 
 bool OpenDoorGoal::canContinueToUse()

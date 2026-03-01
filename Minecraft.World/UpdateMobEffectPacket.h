@@ -17,6 +17,7 @@ public:
 
 	virtual void read(DataInputStream *dis);
 	virtual void write(DataOutputStream *dos);
+	virtual bool isSuperLongDuration();
 	virtual void handle(PacketListener *listener);
 	virtual int getEstimatedSize();
 	virtual bool canBeInvalidated();

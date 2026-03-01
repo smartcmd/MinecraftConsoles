@@ -6,7 +6,7 @@
 #include "net.minecraft.world.level.h"
 #include "TemptGoal.h"
 
-TemptGoal::TemptGoal(PathfinderMob *mob, float speed, int itemId, bool canScare)
+TemptGoal::TemptGoal(PathfinderMob *mob, double speedModifier, int itemId, bool canScare)
 {
 	px = py = pz = pRotX = pRotY = 0.0;
 	player = weak_ptr<Player>();
@@ -15,7 +15,7 @@ TemptGoal::TemptGoal(PathfinderMob *mob, float speed, int itemId, bool canScare)
 	oldAvoidWater = false;
 
 	this->mob = mob;
-	this->speed = speed;
+	this->speedModifier = speedModifier;
 	this->itemId = itemId;
 	this->canScare = canScare;
 	setRequiredControlFlags(Control::MoveControlFlag | Control::LookControlFlag);
@@ -82,7 +82,7 @@ void TemptGoal::tick()
 {
 	mob->getLookControl()->setLookAt(player.lock(), 30, mob->getMaxHeadXRot());
 	if (mob->distanceToSqr(player.lock()) < 2.5 * 2.5) mob->getNavigation()->stop();
-	else mob->getNavigation()->moveTo(player.lock(), speed);
+	else mob->getNavigation()->moveTo(player.lock(), speedModifier);
 }
 
 bool TemptGoal::isRunning()

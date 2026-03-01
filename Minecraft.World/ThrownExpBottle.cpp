@@ -11,7 +11,7 @@ ThrownExpBottle::ThrownExpBottle(Level *level) : Throwable(level)
 {
 }
 
-ThrownExpBottle::ThrownExpBottle(Level *level, shared_ptr<Mob> mob) : Throwable(level,mob)
+ThrownExpBottle::ThrownExpBottle(Level *level, shared_ptr<LivingEntity> mob) : Throwable(level,mob)
 {
 }
 

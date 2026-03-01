@@ -35,7 +35,7 @@ public:
 	virtual float getWalkTargetValue(int x, int y, int z);
 
 public:
-	virtual bool hurt(DamageSource *source, int dmg);
+	virtual bool hurt(DamageSource *source, float dmg);
 	virtual void addAdditonalSaveData(CompoundTag *tag);
 	virtual void readAdditionalSaveData(CompoundTag *tag);
 
@@ -52,7 +52,7 @@ protected:
 
 public:
 	virtual bool isFood(shared_ptr<ItemInstance> itemInstance);
-	virtual bool interact(shared_ptr<Player> player);
+	virtual bool mobInteract(shared_ptr<Player> player);
 
 protected:
 	int getInLoveValue();					// 4J added
@@ -60,10 +60,12 @@ protected:
 public:
 	void setInLoveValue(int value); // 4J added
 	void setInLove(shared_ptr<Player> player);			// 4J added, then modified to match latest Java for XboxOne achievements
+	virtual void setInLove();
 	shared_ptr<Player> getLoveCause();
 	bool isInLove();
     void resetLove();
     virtual bool canMate(shared_ptr<Animal> partner);
+	virtual void handleEntityEvent(byte id);
 
 	// 4J added for determining whether animals are enclosed or not
 private:

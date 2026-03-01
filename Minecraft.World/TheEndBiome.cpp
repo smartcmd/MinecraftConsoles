@@ -6,17 +6,18 @@
 
 TheEndBiome::TheEndBiome(int id) : Biome(id)
 {
-    enemies.clear();
-    friendlies.clear();
+	enemies.clear();
+	friendlies.clear();
 	friendlies_chicken.clear();	// 4J added
 	friendlies_wolf.clear(); 	// 4J added
-    waterFriendlies.clear();
+	waterFriendlies.clear();
+	ambientFriendlies.clear();
 
-    enemies.push_back(new MobSpawnerData(eTYPE_ENDERMAN, 10, 4, 4));
-    topMaterial = (byte) Tile::dirt_Id;
-    this->material = (byte) Tile::dirt_Id;
+	enemies.push_back(new MobSpawnerData(eTYPE_ENDERMAN, 10, 4, 4));
+	topMaterial = (byte) Tile::dirt_Id;
+	material = (byte) Tile::dirt_Id;
 
-    decorator = new TheEndBiomeDecorator(this);
+	decorator = new TheEndBiomeDecorator(this);
 }
 
 // 4J Stu - Don't need override

@@ -3,7 +3,7 @@
 #include "../Minecraft.World/net.minecraft.world.entity.player.h"
 #include "Chunk.h"
 
-DirtyChunkSorter::DirtyChunkSorter(shared_ptr<Mob> cameraEntity, int playerIndex)	// 4J - added player index
+DirtyChunkSorter::DirtyChunkSorter(shared_ptr<LivingEntity> cameraEntity, int playerIndex)	// 4J - added player index
 {
 	this->cameraEntity = cameraEntity;
 	this->playerIndex = playerIndex;

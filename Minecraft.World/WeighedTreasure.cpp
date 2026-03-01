@@ -18,7 +18,7 @@ WeighedTreasure::WeighedTreasure(shared_ptr<ItemInstance> item, int minCount, in
 	this->maxCount = maxCount;
 }
 
-void WeighedTreasure::addChestItems(Random *random, WeighedTreasureArray items, shared_ptr<ChestTileEntity> dest, int numRolls)
+void WeighedTreasure::addChestItems(Random *random, WeighedTreasureArray items, shared_ptr<Container> dest, int numRolls)
 {
 	for (int r = 0; r < numRolls; r++)
 	{

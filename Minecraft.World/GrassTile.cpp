@@ -16,23 +16,23 @@ GrassTile::GrassTile(int id) : Tile(id, Material::grass)
 	iconSnowSide = NULL;
 	iconSideOverlay = NULL;
 
-    setTicking(true);
+	setTicking(true);
 }
 
 Icon *GrassTile::getTexture(int face, int data)
 {
-    if (face == Facing::UP) return iconTop;
-    if (face == Facing::DOWN) return Tile::dirt->getTexture(face);
-    return icon;
+	if (face == Facing::UP) return iconTop;
+	if (face == Facing::DOWN) return Tile::dirt->getTexture(face);
+	return icon;
 }
 
 Icon *GrassTile::getTexture(LevelSource *level, int x, int y, int z, int face)
 {
-    if (face == Facing::UP) return iconTop;
-    if (face == Facing::DOWN) return Tile::dirt->getTexture(face);
-    Material *above = level->getMaterial(x, y + 1, z);
-    if (above == Material::topSnow || above == Material::snow) return iconSnowSide;
-    else return icon;
+	if (face == Facing::UP) return iconTop;
+	if (face == Facing::DOWN) return Tile::dirt->getTexture(face);
+	Material *above = level->getMaterial(x, y + 1, z);
+	if (above == Material::topSnow || above == Material::snow) return iconSnowSide;
+	else return icon;
 }
 
 void GrassTile::registerIcons(IconRegister *iconRegister)
@@ -46,10 +46,10 @@ void GrassTile::registerIcons(IconRegister *iconRegister)
 int GrassTile::getColor() const
 {
 	// 4J Replaced
-    //double temp = 0.5;
-    //double rain = 1.0;
+	//double temp = 0.5;
+	//double rain = 1.0;
 
-    //return GrassColor::get(temp, rain);
+	//return GrassColor::get(temp, rain);
 
 	return Minecraft::GetInstance()->getColourTable()->getColor( eMinecraftColour_Grass_Common );
 }
@@ -90,15 +90,15 @@ int GrassTile::getColor(LevelSource *level, int x, int y, int z, int data)
 
 void GrassTile::tick(Level *level, int x, int y, int z, Random *random)
 {
-    if (level->isClientSide) return;
+	if (level->isClientSide) return;
 
-    if (level->getRawBrightness(x, y + 1, z) < MIN_BRIGHTNESS && Tile::lightBlock[level->getTile(x, y + 1, z)] > 2)
+	if (level->getRawBrightness(x, y + 1, z) < MIN_BRIGHTNESS && Tile::lightBlock[level->getTile(x, y + 1, z)] > 2)
 	{
-        level->setTile(x, y, z, Tile::dirt_Id);
-    }
+		level->setTileAndUpdate(x, y, z, Tile::dirt_Id);
+	}
 	else
 	{
-        if (level->getRawBrightness(x, y + 1, z) >= Level::MAX_BRIGHTNESS - 6)
+		if (level->getRawBrightness(x, y + 1, z) >= Level::MAX_BRIGHTNESS - 6)
 		{
 			for (int i = 0; i < 4; i++)
 			{
@@ -108,11 +108,11 @@ void GrassTile::tick(Level *level, int x, int y, int z, Random *random)
 				int above = level->getTile(xt, yt + 1, zt);
 				if (level->getTile(xt, yt, zt) == Tile::dirt_Id && level->getRawBrightness(xt, yt + 1, zt) >= MIN_BRIGHTNESS && Tile::lightBlock[above] <= 2)
 				{
-					level->setTile(xt, yt, zt, Tile::grass_Id);
+					level->setTileAndUpdate(xt, yt, zt, Tile::grass_Id);
 				}
 			}
-        }
-    }
+		}
+	}
 }
 
 int GrassTile::getResource(int data, Random *random, int playerBonusLevel)

@@ -3,27 +3,19 @@
 #include "LavaSlimeModel.h"
 #include "LavaSlimeRenderer.h"
 
+ResourceLocation LavaSlimeRenderer::MAGMACUBE_LOCATION = ResourceLocation(TN_MOB_LAVA);
+
 LavaSlimeRenderer::LavaSlimeRenderer() : MobRenderer(new LavaSlimeModel(), .25f)
 {
 	this->modelVersion = ((LavaSlimeModel *) model)->getModelVersion();
 }
 
-void LavaSlimeRenderer::render(shared_ptr<Entity> _mob, double x, double y, double z, float rot, float a)
-{		
-	// 4J - original version used generics and thus had an input parameter of type LavaSlime rather than shared_ptr<Entity>  we have here - 
-	// do some casting around instead
-	shared_ptr<LavaSlime> mob = dynamic_pointer_cast<LavaSlime>(_mob);
-	int modelVersion = ((LavaSlimeModel *) model)->getModelVersion();
-	if (modelVersion != this->modelVersion)
-	{
-		this->modelVersion = modelVersion;
-		model = new LavaSlimeModel();
-		app.DebugPrintf("new lava slime model\n");
-	}
-	MobRenderer::render(mob, x, y, z, rot, a);
+ResourceLocation *LavaSlimeRenderer::getTextureLocation(shared_ptr<Entity> mob)
+{
+    return &MAGMACUBE_LOCATION;
 }
 
-void LavaSlimeRenderer::scale(shared_ptr<Mob> _slime, float a)
+void LavaSlimeRenderer::scale(shared_ptr<LivingEntity> _slime, float a)
 {
 	// 4J - original version used generics and thus had an input parameter of type LavaSlime rather than shared_ptr<Mob>  we have here - 
 	// do some casting around instead

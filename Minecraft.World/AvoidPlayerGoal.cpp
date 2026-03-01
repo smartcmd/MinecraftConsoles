@@ -10,15 +10,27 @@
 #include "net.minecraft.world.phys.h"
 #include "AvoidPlayerGoal.h"
 
-AvoidPlayerGoal::AvoidPlayerGoal(PathfinderMob *mob, const type_info& avoidType, float maxDist, float walkSpeed, float sprintSpeed) : avoidType(avoidType)
+AvoidPlayerGoalEntitySelector::AvoidPlayerGoalEntitySelector(AvoidPlayerGoal *parent)
+{
+	m_parent = parent;
+}
+
+bool AvoidPlayerGoalEntitySelector::matches(shared_ptr<Entity> entity) const
+{
+	return entity->isAlive() && m_parent->mob->getSensing()->canSee(entity);
+}
+
+AvoidPlayerGoal::AvoidPlayerGoal(PathfinderMob *mob, const type_info& avoidType, float maxDist, double walkSpeedModifier, double sprintSpeedModifier) : avoidType(avoidType)
 {
 	this->mob = mob;
 	//this->avoidType = avoidType;
 	this->maxDist = maxDist;
-	this->walkSpeed = walkSpeed;
-	this->sprintSpeed = sprintSpeed;
+	this->walkSpeedModifier = walkSpeedModifier;
+	this->sprintSpeedModifier = sprintSpeedModifier;
 	this->pathNav = mob->getNavigation();
 	setRequiredControlFlags(Control::MoveControlFlag);
+
+	entitySelector = new AvoidPlayerGoalEntitySelector(this);
 
 	toAvoid = weak_ptr<Entity>();
 	path = NULL;
@@ -27,6 +39,7 @@ AvoidPlayerGoal::AvoidPlayerGoal(PathfinderMob *mob, const type_info& avoidType,
 AvoidPlayerGoal::~AvoidPlayerGoal()
 {
 	if(path != NULL) delete path;
+	delete entitySelector;
 }
 
 bool AvoidPlayerGoal::canUse()
@@ -40,7 +53,7 @@ bool AvoidPlayerGoal::canUse()
 	}
 	else
 	{
-		vector<shared_ptr<Entity> > *entities = mob->level->getEntitiesOfClass(avoidType, mob->bb->grow(maxDist, 3, maxDist));
+		vector<shared_ptr<Entity> > *entities = mob->level->getEntitiesOfClass(avoidType, mob->bb->grow(maxDist, 3, maxDist), entitySelector);
 		if (entities->empty())
 		{
 			delete entities;
@@ -49,8 +62,6 @@ bool AvoidPlayerGoal::canUse()
 		toAvoid = weak_ptr<Entity>(entities->at(0));
 		delete entities;
 	}
-
-	if (!mob->getSensing()->canSee(toAvoid.lock())) return false;
 
 	Vec3 *pos = RandomPos::getPosAvoid(dynamic_pointer_cast<PathfinderMob>(mob->shared_from_this()), 16, 7, Vec3::newTemp(toAvoid.lock()->x, toAvoid.lock()->y, toAvoid.lock()->z));
 	if (pos == NULL) return false;
@@ -69,7 +80,7 @@ bool AvoidPlayerGoal::canContinueToUse()
 
 void AvoidPlayerGoal::start()
 {
-	pathNav->moveTo(path, walkSpeed);
+	pathNav->moveTo(path, walkSpeedModifier);
 	path = NULL;
 }
 
@@ -80,6 +91,6 @@ void AvoidPlayerGoal::stop()
 
 void AvoidPlayerGoal::tick()
 {
-	if (mob->distanceToSqr(toAvoid.lock()) < 7 * 7) mob->getNavigation()->setSpeed(sprintSpeed);
-	else mob->getNavigation()->setSpeed(walkSpeed);
+	if (mob->distanceToSqr(toAvoid.lock()) < 7 * 7) mob->getNavigation()->setSpeedModifier(sprintSpeedModifier);
+	else mob->getNavigation()->setSpeedModifier(walkSpeedModifier);
 }

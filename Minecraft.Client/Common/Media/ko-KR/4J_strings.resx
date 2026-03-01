@@ -73,11 +73,11 @@
   </data>
 <data name="IDS_PRO_NOTONLINE_TITLE"><value>게이머 프로필이 오프라인 상태입니다.</value>
   </data>
-<data name="IDS_PRO_NOTONLINE_TEXT"><value>이 게임 기능 중 일부는 게이머 프로필로 Xbox Live에 로그인해야 이용할 수 있습니다. 현재는 오프라인 상태입니다.</value>
+<data name="IDS_PRO_NOTONLINE_TEXT"><value>이 게임 기능 중 일부는 게이머 프로필로 Xbox LIVE에 로그인해야 이용할 수 있습니다. 현재는 오프라인 상태입니다.</value>
   </data>
-<data name="IDS_PRO_XBOXLIVE_NOTIFICATION"><value>이 기능을 이용하려면 게이머 프로필로 Xbox Live에 로그인해야 합니다.</value>
+<data name="IDS_PRO_XBOXLIVE_NOTIFICATION"><value>이 기능을 이용하려면 게이머 프로필로 Xbox LIVE에 로그인해야 합니다.</value>
   </data>
-<data name="IDS_PRO_NOTONLINE_ACCEPT"><value>Xbox Live 연결</value>
+<data name="IDS_PRO_NOTONLINE_ACCEPT"><value>Xbox LIVE 연결</value>
   </data>
 <data name="IDS_PRO_NOTONLINE_DECLINE"><value>오프라인으로 계속하기</value>
   </data>

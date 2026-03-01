@@ -20,6 +20,7 @@ public:
     vector <Cube *> cubes;
     vector <ModelPart *> children;
     static const float RAD;
+	float translateX, translateY, translateZ;
 
 private:
     wstring id;

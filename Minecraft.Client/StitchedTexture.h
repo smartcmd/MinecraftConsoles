@@ -9,6 +9,9 @@ class StitchedTexture : public Icon
 private:
 	const wstring name;
 
+public:
+	wstring m_fileName;
+
 protected:
 	Texture *source;
 	vector<Texture *> *frames;
@@ -45,7 +48,7 @@ public:
 	
 	~StitchedTexture();
 protected:
-	StitchedTexture(const wstring &name);
+	StitchedTexture(const wstring &name, const wstring &filename);
 
 public:
 	void initUVs(float U0, float V0, float U1, float V1);

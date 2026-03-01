@@ -832,7 +832,7 @@ void Tesselator::vertex(float x, float y, float z)
 		pShortData[5] = (((int)(v * 8192.0f))&0xffff);
 		int16_t u2 = ((int16_t*)&_tex2)[0];
 		int16_t v2 = ((int16_t*)&_tex2)[1];
-#if defined _XBOX_ONE || defined __ORBIS__
+#if defined _XBOX_ONE || defined __ORBIS__ || defined _WINDOWS64
 		// Optimisation - pack the second UVs into a single short (they could actually go in a byte), which frees up a short to store the x offset for this chunk in the vertex itself.
 		// This means that when rendering chunks, we don't need to update the vertex constants that specify the location for a chunk, when only the x offset has changed.
 		pShortData[6] = ( u2 << 8 ) | v2;

@@ -52,7 +52,6 @@ protected:
 
 		eSectionInventoryCreativeUsing,
 		eSectionInventoryCreativeSelector,
-#ifndef _XBOX
 		eSectionInventoryCreativeTab_0,
 		eSectionInventoryCreativeTab_1,
 		eSectionInventoryCreativeTab_2,
@@ -62,7 +61,6 @@ protected:
 		eSectionInventoryCreativeTab_6,
 		eSectionInventoryCreativeTab_7,
 		eSectionInventoryCreativeSlider,
-#endif
 		eSectionInventoryCreativeMax,
 		
 		eSectionEnchantUsing,
@@ -88,6 +86,37 @@ protected:
 		eSectionAnvilResult,
 		eSectionAnvilName,
 		eSectionAnvilMax,
+
+		eSectionBeaconUsing,
+		eSectionBeaconInventory,
+		eSectionBeaconItem,
+		eSectionBeaconPrimaryTierOneOne,
+		eSectionBeaconPrimaryTierOneTwo,
+		eSectionBeaconPrimaryTierTwoOne,
+		eSectionBeaconPrimaryTierTwoTwo,
+		eSectionBeaconPrimaryTierThree,
+		eSectionBeaconSecondaryOne,
+		eSectionBeaconSecondaryTwo,
+		eSectionBeaconConfirm,
+		eSectionBeaconMax,
+
+		eSectionHopperUsing,
+		eSectionHopperInventory,
+		eSectionHopperContents,
+		eSectionHopperMax,
+
+		eSectionHorseUsing,
+		eSectionHorseInventory,
+		eSectionHorseChest,
+		eSectionHorseArmor,
+		eSectionHorseSaddle,
+		eSectionHorseMax,
+
+		eSectionFireworksUsing,
+		eSectionFireworksInventory,
+		eSectionFireworksResult,
+		eSectionFireworksIngredients,
+		eSectionFireworksMax,
 	};
 
 	AbstractContainerMenu* m_menu;
@@ -162,13 +191,14 @@ protected:
 	
 	virtual bool IsSectionSlotList( ESceneSection eSection ) { return eSection != eSectionNone; }
 	virtual bool CanHaveFocus( ESceneSection eSection ) { return true; }
+	virtual bool IsVisible( ESceneSection eSection ) { return true; }
 	int	GetSectionDimensions( ESceneSection eSection, int* piNumColumns, int* piNumRows );
 	virtual int getSectionColumns(ESceneSection eSection) = 0;
 	virtual int getSectionRows(ESceneSection eSection) = 0;
 	virtual ESceneSection GetSectionAndSlotInDirection( ESceneSection eSection, ETapState eTapDirection, int *piTargetX, int *piTargetY ) = 0;
 	virtual void GetPositionOfSection( ESceneSection eSection, UIVec2D* pPosition ) = 0;
 	virtual void GetItemScreenData( ESceneSection eSection, int iItemIndex, UIVec2D* pPosition, UIVec2D* pSize ) = 0;
-	void updateSlotPosition( ESceneSection eSection, ESceneSection newSection, ETapState eTapDirection, int *piTargetX, int *piTargetY, int xOffset );
+	void updateSlotPosition( ESceneSection eSection, ESceneSection newSection, ETapState eTapDirection, int *piTargetX, int *piTargetY, int xOffset = 0, int yOffset = 0 );
 
 	#ifdef TAP_DETECTION
 		ETapState GetTapInputType( float fInputX, float fInputY );
@@ -200,18 +230,32 @@ protected:
 	virtual void setSectionFocus(ESceneSection eSection, int iPad) = 0;
 	virtual void setSectionSelectedSlot(ESceneSection eSection, int x, int y) = 0;
 	virtual void setFocusToPointer(int iPad) = 0;
-	virtual void SetPointerText(const wstring &description, vector<wstring> &unformattedStrings, bool newSlot) = 0;
+	virtual void SetPointerText(vector<HtmlString> *description, bool newSlot) = 0;
+	virtual vector<HtmlString> *GetSectionHoverText(ESceneSection eSection);
 	virtual shared_ptr<ItemInstance> getSlotItem(ESceneSection eSection, int iSlot) = 0;
+	virtual Slot *getSlot(ESceneSection eSection, int iSlot) = 0;
 	virtual bool isSlotEmpty(ESceneSection eSection, int iSlot) = 0;
 	virtual void adjustPointerForSafeZone() = 0;
 
-	virtual bool overrideTooltips(ESceneSection sectionUnderPointer, shared_ptr<ItemInstance> itemUnderPointer, bool bIsItemCarried, bool bSlotHasItem, bool bCarriedIsSameAsSlot, int iSlotStackSizeRemaining,
-		EToolTipItem &buttonA, EToolTipItem &buttonX, EToolTipItem &buttonY, EToolTipItem &buttonRT) { return false; }
+	virtual bool overrideTooltips(
+		ESceneSection sectionUnderPointer,
+		shared_ptr<ItemInstance> itemUnderPointer,
+		bool bIsItemCarried,
+		bool bSlotHasItem,
+		bool bCarriedIsSameAsSlot,
+		int iSlotStackSizeRemaining,
+		EToolTipItem &buttonA,
+		EToolTipItem &buttonX,
+		EToolTipItem &buttonY,
+		EToolTipItem &buttonRT,
+		EToolTipItem &buttonBack
+	) { return false; }
 
 private:
 	bool IsSameItemAs(shared_ptr<ItemInstance> itemA, shared_ptr<ItemInstance> itemB);
 	int GetEmptyStackSpace(Slot *slot);
-	wstring GetItemDescription(Slot *slot, vector<wstring> &unformattedStrings);
+
+	vector<HtmlString> *GetItemDescription(Slot *slot);
 
 protected:
 

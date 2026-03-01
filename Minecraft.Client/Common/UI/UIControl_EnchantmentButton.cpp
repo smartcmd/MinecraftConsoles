@@ -35,6 +35,18 @@ void UIControl_EnchantmentButton::init(int index)
 	m_index = index;
 }
 
+
+void UIControl_EnchantmentButton::ReInit()
+{
+	UIControl_Button::ReInit();
+
+	
+	m_lastState = eState_Inactive;
+	m_lastCost = 0;
+	m_bHasFocus = false;
+	updateState();
+}
+
 void UIControl_EnchantmentButton::tick()
 {
 	updateState();

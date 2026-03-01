@@ -5,6 +5,11 @@
 
 class MapItemSavedData : public SavedData
 {
+private:
+	static const int HEADER_COLOURS = 0;
+	static const int HEADER_DECORATIONS = 1;
+	static const int HEADER_METADATA = 2;
+
 public:
 	static const int MAP_SIZE = 64;
 	static const int MAX_SCALE = 4;
@@ -37,6 +42,12 @@ public:
 		int sendPosTick;
 		charArray lastSentDecorations;
 
+	public:
+		int step;
+
+	private:
+		bool hasSentInitial;
+
 	protected:
 		const MapItemSavedData *parent;
 
@@ -52,10 +63,10 @@ public:
 	char dimension;
 	byte scale;
 	byteArray colors;
-	int step;
 	vector<shared_ptr<HoldingPlayer> > carriedBy;
 
 private:
+
 	typedef unordered_map<shared_ptr<Player> , shared_ptr<HoldingPlayer> , PlayerKeyHash, PlayerKeyEq> playerHoldingPlayerMapType;
 	playerHoldingPlayerMapType carriedByPlayers;
 
@@ -82,6 +93,7 @@ public:
 	using SavedData::setDirty;
 	void setDirty(int x, int y0, int y1);
 	void handleComplexItemData(charArray &data);
+	shared_ptr<HoldingPlayer> getHoldingPlayer(shared_ptr<Player> player);
 
 	// 4J Stu Added
 	void mergeInMapData(shared_ptr<MapItemSavedData> dataToAdd);

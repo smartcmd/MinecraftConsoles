@@ -9,7 +9,6 @@ public:
 	static const int DIRECTION_INV_MASK = 0xC;
 
 protected:
-	DirectionalTile(int id, Material *material);
 	DirectionalTile(int id, Material *material, bool isSolidRender);
 
 public:

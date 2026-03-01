@@ -8,7 +8,7 @@
 #include "TallGrass.h"
 
 const unsigned int TallGrass::TALL_GRASS_TILE_NAMES[TALL_GRASS_TILE_NAMES_LENGTH] = {	IDS_TILE_SHRUB,
-													IDS_TILE_GRASS,
+													IDS_TILE_TALL_GRASS,
 													IDS_TILE_FERN,
 												};
 

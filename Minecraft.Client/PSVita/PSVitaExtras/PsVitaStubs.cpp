@@ -304,7 +304,8 @@ LPVOID VirtualAlloc(LPVOID lpAddress, SIZE_T dwSize, DWORD flAllocationType, DWO
 			NumPagesRequired += 1;
 		}
 
-		while( VirtualNumAllocs != NumPagesRequired )
+		// allocate pages until we reach the required number of pages
+		while( VirtualNumAllocs < NumPagesRequired )
 		{
 			// allocate a new page
 			void* NewAlloc = malloc(VIRTUAL_PAGE_SIZE);
@@ -941,35 +942,18 @@ int _wtoi(const wchar_t *_Str)
 
 DWORD XGetLanguage() 
 { 
-	unsigned char ucLang = app.GetMinecraftLanguage(0);
-	SceInt32 iLang;
-
 	// check if we should override the system language or not
-	if(ucLang==MINECRAFT_LANGUAGE_DEFAULT)	
-	{
-		sceAppUtilSystemParamGetInt(SCE_SYSTEM_PARAM_ID_LANG,&iLang);
-	}
-	else
-	{
-		return (DWORD)ucLang;
-	}
+	unsigned char ucLang = app.GetMinecraftLanguage(0);
+	if (ucLang != MINECRAFT_LANGUAGE_DEFAULT) return ucLang;
 
+	SceInt32 iLang;
+	sceAppUtilSystemParamGetInt(SCE_SYSTEM_PARAM_ID_LANG,&iLang);
 	switch(iLang)
 	{
 	case SCE_SYSTEM_PARAM_LANG_JAPANESE			: return XC_LANGUAGE_JAPANESE;
 	case SCE_SYSTEM_PARAM_LANG_ENGLISH_US		: return XC_LANGUAGE_ENGLISH;
 	case SCE_SYSTEM_PARAM_LANG_FRENCH			: return XC_LANGUAGE_FRENCH;
-
-	case SCE_SYSTEM_PARAM_LANG_SPANISH			: 
-		if(app.IsAmericanSKU())
-		{
-			return XC_LANGUAGE_LATINAMERICANSPANISH;
-		}
-		else
-		{
-			return XC_LANGUAGE_SPANISH;
-		}
-
+	case SCE_SYSTEM_PARAM_LANG_SPANISH			: return XC_LANGUAGE_SPANISH;
 	case SCE_SYSTEM_PARAM_LANG_GERMAN			: return XC_LANGUAGE_GERMAN;
 	case SCE_SYSTEM_PARAM_LANG_ITALIAN			: return XC_LANGUAGE_ITALIAN;
 	case SCE_SYSTEM_PARAM_LANG_PORTUGUESE_PT	: return XC_LANGUAGE_PORTUGUESE;
@@ -997,6 +981,10 @@ DWORD XGetLanguage()
 }
 DWORD XGetLocale() 
 { 
+	// check if we should override the system locale or not
+	unsigned char ucLocale = app.GetMinecraftLocale(0);
+	if (ucLocale != MINECRAFT_LANGUAGE_DEFAULT) return ucLocale;
+
 	SceInt32 iLang;
 	sceAppUtilSystemParamGetInt(SCE_SYSTEM_PARAM_ID_LANG,&iLang);
 	switch(iLang)

@@ -11,6 +11,7 @@ private:
 public:
 	int x, y, z, tileId;
 	__int64 m_delay;
+	int priorityTilt;
 
 private:
 	__int64 c;
@@ -18,14 +19,16 @@ private:
 public:
 	TickNextTickData(int x, int y, int z, int tileId);
 
-	bool equals(const void *o) const;
+	bool equals(const TickNextTickData *o) const;
 	int hashCode() const;
 	TickNextTickData *delay(__int64 l);
+	void setPriorityTilt(int priorityTilt);
 	int compareTo(const TickNextTickData *tnd) const;
 
 	static bool compare_fnct(const TickNextTickData &x, const TickNextTickData &y);
 	static int hash_fnct(const TickNextTickData &k);
 	static bool eq_test(const TickNextTickData &x, const TickNextTickData &y);
+	bool operator==(const TickNextTickData &k);
 };
 
 typedef struct

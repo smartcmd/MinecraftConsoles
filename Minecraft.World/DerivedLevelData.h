@@ -2,6 +2,8 @@
 
 #include "LevelData.h"
 
+class GameRules;
+
 class DerivedLevelData : public LevelData
 {
 private:
@@ -20,7 +22,8 @@ public:
 	int getXSpawn();
 	int getYSpawn();
 	int getZSpawn();
-	__int64 getTime();
+	__int64 getGameTime();
+	__int64 getDayTime();
 	__int64 getSizeOnDisk();
 	CompoundTag *getLoadedPlayerTag();
 	wstring getLevelName();
@@ -35,7 +38,8 @@ public:
 	void setXSpawn(int xSpawn);
 	void setYSpawn(int ySpawn);
 	void setZSpawn(int zSpawn);
-	void setTime(__int64 time);
+	void setGameTime(__int64 time);
+	void setDayTime(__int64 time);
 	void setSizeOnDisk(__int64 sizeOnDisk);
 	void setLoadedPlayerTag(CompoundTag *loadedPlayerTag);
 	void setDimension(int dimension);
@@ -55,6 +59,7 @@ public:
 	void setAllowCommands(bool allowCommands);
 	bool isInitialized();
 	void setInitialized(bool initialized);
+	GameRules *getGameRules();
 	int getXZSize(); // 4J Added
 	int getHellScale(); // 4J Addded
 };

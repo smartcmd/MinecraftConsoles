@@ -4,6 +4,9 @@
 
 class ScatteredFeaturePieces
 {
+public:
+	static void loadStatic();
+
 private:
 	class ScatteredFeaturePiece : public StructurePiece
 	{
@@ -14,8 +17,11 @@ private:
 
 		int heightPosition;
 
+		ScatteredFeaturePiece();
 		ScatteredFeaturePiece(Random *random, int west, int floor, int north, int width, int height, int depth);
 
+		virtual void addAdditonalSaveData(CompoundTag *tag);
+		virtual void readAdditonalSaveData(CompoundTag *tag);
 		bool updateAverageGroundHeight(Level *level, BoundingBox *chunkBB, int offset);
 	};
 
@@ -23,13 +29,22 @@ public:
 	class DesertPyramidPiece : public ScatteredFeaturePiece
 	{
 	public:
-		static const int TREASURE_ITEMS_COUNT = 6;
+		static StructurePiece *Create() { return new DesertPyramidPiece(); }
+		virtual EStructurePiece GetType() { return eStructurePiece_DesertPyramidPiece; }
+
+	public:
+		static const int TREASURE_ITEMS_COUNT = 10;
 	private:
 		bool hasPlacedChest[4];
 		static WeighedTreasure *treasureItems[TREASURE_ITEMS_COUNT];
 
 	public:
+		DesertPyramidPiece();
 		DesertPyramidPiece(Random *random, int west, int north);
+
+	protected:
+		virtual void addAdditonalSaveData(CompoundTag *tag);
+		virtual void readAdditonalSaveData(CompoundTag *tag);
 
 		bool postProcess(Level *level, Random *random, BoundingBox *chunkBB);
 
@@ -38,7 +53,11 @@ public:
 	class JunglePyramidPiece : public ScatteredFeaturePiece
 	{
 	public:
-		static const int TREASURE_ITEMS_COUNT = 6;
+		static StructurePiece *Create() { return new JunglePyramidPiece(); }
+		virtual EStructurePiece GetType() { return eStructurePiece_JunglePyramidPiece; }
+
+	public:
+		static const int TREASURE_ITEMS_COUNT = 10;
 		static const int DISPENSER_ITEMS_COUNT = 1;
 	private:
 		bool placedMainChest;
@@ -50,8 +69,14 @@ public:
 		static WeighedTreasure *dispenserItems[DISPENSER_ITEMS_COUNT];
 
 	public:
+		JunglePyramidPiece();
 		JunglePyramidPiece(Random *random, int west, int north);
 
+	protected:
+		virtual void addAdditonalSaveData(CompoundTag *tag);
+		virtual void readAdditonalSaveData(CompoundTag *tag);
+
+	public:
 		bool postProcess(Level *level, Random *random, BoundingBox *chunkBB);
 
 	private:
@@ -63,5 +88,26 @@ public:
 
 		static MossStoneSelector stoneSelector;
 
+	};
+
+	class SwamplandHut : public ScatteredFeaturePiece
+	{
+	public:
+		static StructurePiece *Create() { return new SwamplandHut(); }
+		virtual EStructurePiece GetType() { return eStructurePiece_SwamplandHut; }
+
+	private:
+		bool spawnedWitch;
+
+	public:
+		SwamplandHut();
+		SwamplandHut(Random *random, int west, int north);
+
+	protected:
+		virtual void addAdditonalSaveData(CompoundTag *tag);
+		virtual void readAdditonalSaveData(CompoundTag *tag);
+
+	public:
+		bool postProcess(Level *level, Random *random, BoundingBox *chunkBB);
 	};
 };

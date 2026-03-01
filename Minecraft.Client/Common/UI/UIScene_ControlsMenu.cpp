@@ -37,7 +37,7 @@ UIScene_ControlsMenu::UIScene_ControlsMenu(int iPad, void *initData, UILayer *pa
 	// 4J-PB - stop the label showing in the in-game controls menu
 	else
 	{
-		m_labelVersion.init(" ");
+		m_labelVersion.init(L" ");
 	}
 	m_bCreativeMode = !bNotInGame && Minecraft::GetInstance()->localplayers[m_iPad] && Minecraft::GetInstance()->localplayers[m_iPad]->abilities.mayfly;
 

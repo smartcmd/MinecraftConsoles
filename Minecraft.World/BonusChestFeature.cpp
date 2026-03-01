@@ -37,7 +37,7 @@ bool BonusChestFeature::place(Level *level, Random *random, int x, int y, int z,
 		y++;
 	}
 
-    for (int i = 0; i < 4; i++)
+	for (int i = 0; i < 4; i++)
 	{
 		int x2, y2, z2;
 
@@ -45,7 +45,7 @@ bool BonusChestFeature::place(Level *level, Random *random, int x, int y, int z,
 		{
 			x2 = x;
 			y2 = y - 1;	// 4J - the position passed in is actually two above the top solid block, as the calling function adds 1 to getTopSolidBlock, and that actually returns the block above anyway.
-						// this would explain why there is a while loop above here (not used in force mode) to move the y back down again, shouldn't really be needed if 1 wasn't added to the getTopSolidBlock return value.
+			// this would explain why there is a while loop above here (not used in force mode) to move the y back down again, shouldn't really be needed if 1 wasn't added to the getTopSolidBlock return value.
 			z2 = z;
 		}
 		else
@@ -55,34 +55,34 @@ bool BonusChestFeature::place(Level *level, Random *random, int x, int y, int z,
 			z2 = z + random->nextInt(4) - random->nextInt(4);
 		}
 
-        if (force || ( level->isEmptyTile(x2, y2, z2) && level->isTopSolidBlocking(x2, y2 - 1, z2)))
+		if (force || ( level->isEmptyTile(x2, y2, z2) && level->isTopSolidBlocking(x2, y2 - 1, z2)))
 		{
-            level->setTile(x2, y2, z2, Tile::chest_Id);
-            shared_ptr<ChestTileEntity> chest = dynamic_pointer_cast<ChestTileEntity>(level->getTileEntity(x2, y2, z2));
-            if (chest != NULL)
+			level->setTileAndData(x2, y2, z2, Tile::chest_Id, 0, Tile::UPDATE_CLIENTS);
+			shared_ptr<ChestTileEntity> chest = dynamic_pointer_cast<ChestTileEntity>(level->getTileEntity(x2, y2, z2));
+			if (chest != NULL)
 			{
-                WeighedTreasure::addChestItems(random, treasureList, chest, numRolls);
+				WeighedTreasure::addChestItems(random, treasureList, chest, numRolls);
 				chest->isBonusChest = true;	// 4J added
-            }
-            if (level->isEmptyTile(x2 - 1, y2, z2) && level->isTopSolidBlocking(x2 - 1, y2 - 1, z2))
+			}
+			if (level->isEmptyTile(x2 - 1, y2, z2) && level->isTopSolidBlocking(x2 - 1, y2 - 1, z2))
 			{
-                level->setTile(x2 - 1, y2, z2, Tile::torch_Id);
-            }
-            if (level->isEmptyTile(x2 + 1, y2, z2) && level->isTopSolidBlocking(x2 - 1, y2 - 1, z2))
+				level->setTileAndData(x2 - 1, y2, z2, Tile::torch_Id, 0, Tile::UPDATE_CLIENTS);
+			}
+			if (level->isEmptyTile(x2 + 1, y2, z2) && level->isTopSolidBlocking(x2 - 1, y2 - 1, z2))
 			{
-                level->setTile(x2 + 1, y2, z2, Tile::torch_Id);
-            }
-            if (level->isEmptyTile(x2, y2, z2 - 1) && level->isTopSolidBlocking(x2 - 1, y2 - 1, z2))
+				level->setTileAndData(x2 + 1, y2, z2, Tile::torch_Id, 0, Tile::UPDATE_CLIENTS);
+			}
+			if (level->isEmptyTile(x2, y2, z2 - 1) && level->isTopSolidBlocking(x2 - 1, y2 - 1, z2))
 			{
-                level->setTile(x2, y2, z2 - 1, Tile::torch_Id);
-            }
-            if (level->isEmptyTile(x2, y2, z2 + 1) && level->isTopSolidBlocking(x2 - 1, y2 - 1, z2))
+				level->setTileAndData(x2, y2, z2 - 1, Tile::torch_Id, 0, Tile::UPDATE_CLIENTS);
+			}
+			if (level->isEmptyTile(x2, y2, z2 + 1) && level->isTopSolidBlocking(x2 - 1, y2 - 1, z2))
 			{
-                level->setTile(x2, y2, z2 + 1, Tile::torch_Id);
-            }
-            return true;
-        }
-    }
+				level->setTileAndData(x2, y2, z2 + 1, Tile::torch_Id, 0, Tile::UPDATE_CLIENTS);
+			}
+			return true;
+		}
+	}
 
-    return false;
+	return false;
 }

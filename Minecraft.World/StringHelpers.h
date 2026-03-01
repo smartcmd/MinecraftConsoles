@@ -13,23 +13,30 @@ template <class T> std::wstring _toString(T t)
 	oss << std::dec << t;
 	return oss.str();
 }
+template <class T> std::wstring _toHexString(T t)
+{
+	std::wostringstream oss;
+	oss << std::hex << t;
+	return oss.str();
+}
 template <class T> T _fromString(const std::wstring& s)
 {
-    std::wistringstream stream (s);
-    T t;
-    stream >> t;
-    return t;
+	std::wistringstream stream (s);
+	T t;
+	stream >> t;
+	return t;
 }
 template <class T> T _fromHEXString(const std::wstring& s)
 {
-    std::wistringstream stream (s);
-    T t;
-    stream >> std::hex >> t;
-    return t;
+	std::wistringstream stream (s);
+	T t;
+	stream >> std::hex >> t;
+	return t;
 }
 
 wstring convStringToWstring(const string& converting);
 const char *wstringtofilename(const wstring& name);
+const char *wstringtochararray(const wstring& name);
 wstring filenametowstring(const char *name);
 
 std::vector<std::wstring> &stringSplit(const std::wstring &s, wchar_t delim, std::vector<std::wstring> &elems);

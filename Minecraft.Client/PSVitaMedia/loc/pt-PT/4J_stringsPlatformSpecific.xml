@@ -1,52 +1,52 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <root>
-	<data name="IDS_NOFREESPACE_TEXT">
-		<value>O armazenamento do sistema não tem espaço livre suficiente para criar uma gravação de jogo.</value>
-	</data>
-	<data name="IDS_PRO_RETURNEDTOTITLESCREEN_TEXT">
-		<value>Foste reencaminhado para o ecrã principal porque terminaste a sessão na "PSN".</value>
-	</data>
-	<data name="IDS_PRO_RETURNEDTOMENU_TEXT">
-		<value>O jogo terminou porque terminaste a sessão na "PSN".
-</value>
-	</data>
-	<data name="IDS_PRO_NOTONLINE_TITLE">
-		<value>Sem sessão iniciada de momento.</value>
-	</data>
-	<data name="IDS_PRO_NOTONLINE_TEXT">
-		<value>O jogo tem algumas funcionalidades que requerem uma sessão iniciada na "PSN", mas de momento estás offline.</value>
-	</data>
-	<data name="IDS_PRO_NOTADHOCONLINE_TITLE">
-		<value>Rede Ad Hoc offline.</value>
-	</data>
-	<data name="IDS_PRO_NOTADHOCONLINE_TEXT">
-		<value>Este jogo tem algumas funcionalidades que requerem uma ligação de rede Ad Hoc, mas neste momento estás offline.</value>
-	</data>
-	<data name="IDS_PRO_XBOXLIVE_NOTIFICATION">
-		<value>Esta funcionalidade requer uma sessão iniciada na "PSN".
-</value>
-	</data>
-	<data name="IDS_PRO_NOTONLINE_ACCEPT">
-		<value>Ligar à "PSN".</value>
-	</data>
-	<data name="IDS_PRO_NOTADHOCONLINE_ACCEPT">
-		<value>Ligar à Rede Ad Hoc</value>
-	</data>
-	<data name="IDS_PRO_ACHIEVEMENTPROBLEM_TITLE">
-		<value>Problema com Troféu</value>
-	</data>
-	<data name="IDS_PRO_ACHIEVEMENTPROBLEM_TEXT">
-		<value>Ocorreu um problema ao aceder à tua conta Sony Entertainment Network. Não foi possível atribuir-te o troféu, neste momento.</value>
+	<data name="IDS_PRO_NOPROFILEOPTIONS_TEXT">
+		<value>Falha ao guardar as definições para a tua conta Sony Entertainment Network.</value>
 	</data>
 	<data name="IDS_PRO_NOPROFILE_TITLE">
 		<value>Problema com a conta Sony Entertainment Network</value>
 	</data>
-	<data name="IDS_PRO_NOPROFILEOPTIONS_TEXT">
-		<value>Falha ao guardar as definições para a tua conta Sony Entertainment Network.</value>
+	<data name="IDS_PRO_ACHIEVEMENTPROBLEM_TEXT">
+		<value>Ocorreu um problema ao aceder à tua conta Sony Entertainment Network. Não foi possível atribuir-te o troféu, neste momento.</value>
 	</data>
 	<data name="IDS_PRO_UNLOCKGAME_TEXT">
 		<value>Esta é a versão de avaliação do Minecraft: PlayStation®3 Edition. Se tivesses o jogo completo, terias acabado de ganhar um troféu! 
 Desbloqueia o jogo completo para viveres a emoção do Minecraft: PlayStation®3 Edition e para jogares com amigos, de todo o mundo, através da "PSN".
 Queres desbloquear o jogo completo?</value>
+	</data>
+	<data name="IDS_PRO_NOTADHOCONLINE_ACCEPT">
+		<value>Ligar à Rede Ad Hoc</value>
+	</data>
+	<data name="IDS_PRO_NOTADHOCONLINE_TEXT">
+		<value>Este jogo tem algumas funcionalidades que requerem uma ligação de rede Ad Hoc, mas neste momento estás offline.</value>
+	</data>
+	<data name="IDS_PRO_NOTADHOCONLINE_TITLE">
+		<value>Rede Ad Hoc offline.</value>
+	</data>
+	<data name="IDS_PRO_ACHIEVEMENTPROBLEM_TITLE">
+		<value>Problema com Troféu</value>
+	</data>
+	<data name="IDS_PRO_RETURNEDTOMENU_TEXT">
+		<value>O jogo terminou porque terminaste a sessão na "PSN".
+</value>
+	</data>
+	<data name="IDS_PRO_RETURNEDTOTITLESCREEN_TEXT">
+		<value>Foste reencaminhado para o ecrã principal porque terminaste a sessão na "PSN".</value>
+	</data>
+	<data name="IDS_NOFREESPACE_TEXT">
+		<value>O armazenamento do sistema não tem espaço livre suficiente para criar uma gravação de jogo.</value>
+	</data>
+	<data name="IDS_PRO_NOTONLINE_TITLE">
+		<value>Sem sessão iniciada de momento.</value>
+	</data>
+	<data name="IDS_PRO_NOTONLINE_ACCEPT">
+		<value>Ligar à "PSN".</value>
+	</data>
+	<data name="IDS_PRO_XBOXLIVE_NOTIFICATION">
+		<value>Esta funcionalidade requer uma sessão iniciada na "PSN".
+</value>
+	</data>
+	<data name="IDS_PRO_NOTONLINE_TEXT">
+		<value>O jogo tem algumas funcionalidades que requerem uma sessão iniciada na "PSN", mas de momento estás offline.</value>
 	</data>
 </root>

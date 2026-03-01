@@ -27,7 +27,7 @@ void DelayedRelease::tick()
 	}
 }
 
-bool DelayedRelease::hurt(DamageSource *source, int damage)
+bool DelayedRelease::hurt(DamageSource *source, float damage)
 {
 	return false;
 }

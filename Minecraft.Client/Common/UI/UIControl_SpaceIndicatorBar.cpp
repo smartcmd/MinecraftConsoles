@@ -24,7 +24,7 @@ bool UIControl_SpaceIndicatorBar::setupControl(UIScene *scene, IggyValuePath *pa
 	return success;
 }
 
-void UIControl_SpaceIndicatorBar::init(const wstring &label, int id, __int64 min, __int64 max)
+void UIControl_SpaceIndicatorBar::init(UIString label, int id, __int64 min, __int64 max)
 {
 	m_label = label;
 	m_id = id;

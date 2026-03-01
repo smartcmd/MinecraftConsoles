@@ -33,7 +33,7 @@ SquidModel::SquidModel() : Model()
 
 }
 
-void SquidModel::setupAnim(float time, float r, float bob, float yRot, float xRot, float scale, unsigned int uiBitmaskOverrideAnim)
+void SquidModel::setupAnim(float time, float r, float bob, float yRot, float xRot, float scale, shared_ptr<Entity> entity, unsigned int uiBitmaskOverrideAnim)
 {
     for (int i = 0; i < TENTACLES_LENGTH; i++)	 // 4J - 8 was tentacles.length
 	{
@@ -45,7 +45,7 @@ void SquidModel::setupAnim(float time, float r, float bob, float yRot, float xRo
 
 void SquidModel::render(shared_ptr<Entity> entity, float time, float r, float bob, float yRot, float xRot, float scale, bool usecompiled)
 {
-    setupAnim(time, r, bob, yRot, xRot, scale);
+    setupAnim(time, r, bob, yRot, xRot, scale, entity);
 
     body->render(scale, usecompiled);
     for (int i = 0; i < TENTACLES_LENGTH; i++) // 4J - 8 was tentacles.length // 4J Stu - Was 9 but I made it 8 as the array is [0,8)

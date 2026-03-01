@@ -3,9 +3,14 @@
 
 class GhastRenderer : public MobRenderer
 {
+private:
+	static ResourceLocation GHAST_LOCATION;
+	static ResourceLocation GHAST_SHOOTING_LOCATION;
+
 public:
-	GhastRenderer();
+	GhastRenderer();	
 
 protected:
-	virtual void scale(shared_ptr<Mob> mob, float a);
+	virtual void scale(shared_ptr<LivingEntity> mob, float a);
+	virtual ResourceLocation *getTextureLocation(shared_ptr<Entity> mob);
 };

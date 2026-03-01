@@ -1,11 +1,17 @@
 #include "stdafx.h"
-#include "..\Minecraft.World\SkullTileEntity.h"
-#include "..\Minecraft.World\net.minecraft.world.level.tile.h"
-#include "..\Minecraft.World\net.minecraft.h"
-#include "SkeletonHeadModel.h"
 #include "SkullTileRenderer.h"
+#include "SkeletonHeadModel.h"
+#include "PlayerRenderer.h"
+#include "..\Minecraft.World\SkullTileEntity.h"
+#include "..\Minecraft.World\net.minecraft.h"
+#include "..\Minecraft.World\net.minecraft.world.level.tile.h"
 
 SkullTileRenderer *SkullTileRenderer::instance = NULL;
+
+ResourceLocation SkullTileRenderer::SKELETON_LOCATION = ResourceLocation(TN_MOB_SKELETON);
+ResourceLocation SkullTileRenderer::WITHER_SKELETON_LOCATION = ResourceLocation(TN_MOB_WITHER_SKELETON);
+ResourceLocation SkullTileRenderer::ZOMBIE_LOCATION = ResourceLocation(TN_MOB_ZOMBIE);
+ResourceLocation SkullTileRenderer::CREEPER_LOCATION = ResourceLocation(TN_MOB_CREEPER);
 
 SkullTileRenderer::SkullTileRenderer()
 {
@@ -38,10 +44,10 @@ void SkullTileRenderer::renderSkull(float x, float y, float z, int face, float r
 	switch (type)
 	{
 	case SkullTileEntity::TYPE_WITHER:
-		bindTexture(TN_MOB_WITHER_SKELETON);
+		bindTexture(&WITHER_SKELETON_LOCATION);
 		break;
 	case SkullTileEntity::TYPE_ZOMBIE:
-		bindTexture(TN_MOB_ZOMBIE);
+		bindTexture(&ZOMBIE_LOCATION);
 		//model = zombieModel;
 		break;
 	case SkullTileEntity::TYPE_CHAR:
@@ -58,15 +64,15 @@ void SkullTileRenderer::renderSkull(float x, float y, float z, int face, float r
 		//}
 		//else
 		{
-			bindTexture(TN_MOB_CHAR);
+			bindTexture(&PlayerRenderer::DEFAULT_LOCATION);
 		}
 		break;
 	case SkullTileEntity::TYPE_CREEPER:
-		bindTexture(TN_MOB_CREEPER);
+		bindTexture(&CREEPER_LOCATION);
 		break;
 	case SkullTileEntity::TYPE_SKELETON:
 	default:
-		bindTexture(TN_MOB_SKELETON);
+		bindTexture(&SKELETON_LOCATION);
 		break;
 	}
 

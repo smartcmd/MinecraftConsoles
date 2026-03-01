@@ -31,10 +31,9 @@ protected:
 	virtual void defineSynchedData();
 
 public:
-	using Entity::setSize;
+	using Mob::setSize;
 
 	virtual void setSize(int size);
-	virtual int getMaxHealth();
 	virtual int getSize();
 	virtual void addAdditonalSaveData(CompoundTag *tag);
 	virtual void readAdditionalSaveData(CompoundTag *tag);

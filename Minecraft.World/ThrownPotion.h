@@ -16,14 +16,16 @@ public:
 private:
 	static const double SPLASH_RANGE_SQ;
 
-	int potionValue;
+	shared_ptr<ItemInstance> potionItem;
 
 	void _init();
 
 public:
 	ThrownPotion(Level *level);
-	ThrownPotion(Level *level, shared_ptr<Mob> mob, int potionValue);
+	ThrownPotion(Level *level, shared_ptr<LivingEntity> mob, int potionValue);
+	ThrownPotion(Level *level, shared_ptr<LivingEntity> mob, shared_ptr<ItemInstance> potion);
 	ThrownPotion(Level *level, double x, double y, double z, int potionValue);
+	ThrownPotion(Level *level, double x, double y, double z, shared_ptr<ItemInstance> potion);
 
 protected:
 	virtual float getGravity();

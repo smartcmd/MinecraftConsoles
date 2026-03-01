@@ -12,6 +12,11 @@ EGameCommand ToggleDownfallCommand::getId()
 	return eGameCommand_ToggleDownfall;
 }
 
+int ToggleDownfallCommand::getPermissionLevel()
+{
+	return LEVEL_GAMEMASTERS;
+}
+
 void ToggleDownfallCommand::execute(shared_ptr<CommandSender> source, byteArray commandData)
 {
 	doToggleDownfall();

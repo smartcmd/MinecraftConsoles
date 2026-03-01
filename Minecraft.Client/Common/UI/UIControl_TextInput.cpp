@@ -20,7 +20,7 @@ bool UIControl_TextInput::setupControl(UIScene *scene, IggyValuePath *parent, co
 	return success;
 }
 
-void UIControl_TextInput::init(const wstring &label, int id)
+void UIControl_TextInput::init(UIString label, int id)
 {
 	m_label = label;
 	m_id = id;

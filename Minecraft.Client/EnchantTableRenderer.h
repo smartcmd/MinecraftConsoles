@@ -1,5 +1,4 @@
 #pragma once
-
 #include "TileEntityRenderer.h"
 
 class BookModel;
@@ -9,6 +8,8 @@ class EnchantTableRenderer : public TileEntityRenderer
 	friend class CXuiCtrlEnchantmentBook;
 	friend class UIControl_EnchantmentBook;
 private:
+	static ResourceLocation BOOK_LOCATION;
+
 	BookModel *bookModel;
 
 public:

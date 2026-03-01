@@ -36,7 +36,7 @@ void RedlightTile::onPlace(Level *level, int x, int y, int z)
 		}
 		else if (!isLit && level->hasNeighborSignal(x, y, z))
 		{
-			level->setTile(x, y, z, Tile::redstoneLight_lit_Id);
+			level->setTileAndData(x, y, z, Tile::redstoneLight_lit_Id, 0, UPDATE_CLIENTS);
 		}
 	}
 }
@@ -51,7 +51,7 @@ void RedlightTile::neighborChanged(Level *level, int x, int y, int z, int type)
 		}
 		else if (!isLit && level->hasNeighborSignal(x, y, z))
 		{
-			level->setTile(x, y, z, Tile::redstoneLight_lit_Id);
+			level->setTileAndData(x, y, z, Tile::redstoneLight_lit_Id, 0, UPDATE_CLIENTS);
 		}
 	}
 }
@@ -62,7 +62,7 @@ void RedlightTile::tick(Level *level, int x, int y, int z, Random *random)
 	{
 		if (isLit && !level->hasNeighborSignal(x, y, z))
 		{
-			level->setTile(x, y, z, Tile::redstoneLight_Id);
+			level->setTileAndData(x, y, z, Tile::redstoneLight_Id, 0, UPDATE_CLIENTS);
 		}
 	}
 }

@@ -103,6 +103,7 @@ public:
 	bool IsAmericanSKU();
 	//char *GetSKUPostfix();
 	SONYDLC *GetSONYDLCInfo(char *pchTitle);
+	SONYDLC *GetSONYDLCInfo(int iTexturePackID);
 
 	int GetiFirstSkinFromName(char *pchName);
 	int GetiConfigFromName(char *pchName);
@@ -214,7 +215,7 @@ private:
 	bool m_bCommerceInitialised;
 	bool m_bCommerceProductListRetrieved;
 	bool m_bProductListAdditionalDetailsRetrieved;
-	char m_pchSkuID[48];
+	char m_pchSkuID[SCE_NP_COMMERCE2_SKU_ID_LEN];
 
 	int m_eCommerce_State;
 	int m_ProductListRetrievedC;

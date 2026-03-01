@@ -36,6 +36,12 @@ enum ESaveVersions
 	// This is the version at which we changed the chunk format to directly save the compressed storage formats
 	SAVE_FILE_VERSION_COMPRESSED_CHUNK_STORAGE,
 
+	// This is the version at which we added inhabited time to chunk (1.6.4)
+	SAVE_FILE_VERSION_CHUNK_INHABITED_TIME,
+
+
+	// 4J Stu - If you add a new version here, the save conversion tool will also need updated to be able to read this new format
+
 	SAVE_FILE_VERSION_NEXT,
 };
 

@@ -3,28 +3,26 @@
 #include "Goal.h"
 
 class Level;
-class Mob;
+class PathfinderMob;
 class Path;
 
 class MeleeAttackGoal : public Goal
 {
 private:
 	Level *level;
-	Mob *mob; // Owner of this goal
-	weak_ptr<Mob> target;
-
+	PathfinderMob *mob; // Owner of this goal
 	int attackTime;
-	float speed;
+	double speedModifier;
 	bool trackTarget;
 	Path *path;
 	eINSTANCEOF attackType;
 	int timeToRecalcPath;
 
-	void _init(Mob *mob, float speed, bool trackTarget);
+	void _init(PathfinderMob *mob, double speedModifier, bool trackTarget);
 
 public:
-	MeleeAttackGoal(Mob *mob, eINSTANCEOF attackType, float speed, bool trackTarget);
-	MeleeAttackGoal(Mob *mob, float speed, bool trackTarget);
+	MeleeAttackGoal(PathfinderMob *mob, eINSTANCEOF attackType, double speedModifier, bool trackTarget);
+	MeleeAttackGoal(PathfinderMob *mob, double speedModifier, bool trackTarget);
 	~MeleeAttackGoal();
 
 	virtual bool canUse();

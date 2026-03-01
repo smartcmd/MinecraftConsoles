@@ -13,5 +13,5 @@ public:
 	virtual void overrideOffers(MerchantRecipeList *recipeList) = 0;
 	virtual void notifyTrade(MerchantRecipe *activeRecipe) = 0;
 	virtual void notifyTradeUpdated(shared_ptr<ItemInstance> item) = 0;
-	virtual int getDisplayName() = 0;
+	virtual wstring getDisplayName() = 0;
 };

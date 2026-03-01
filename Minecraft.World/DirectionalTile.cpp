@@ -2,10 +2,6 @@
 
 #include "DirectionalTile.h"
 
-DirectionalTile::DirectionalTile(int id, Material *material) : Tile(id, material)
-{
-}
-
 DirectionalTile::DirectionalTile(int id, Material *material, bool isSolidRender) : Tile(id, material, isSolidRender)
 {
 }

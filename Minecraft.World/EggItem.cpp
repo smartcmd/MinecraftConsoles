@@ -16,7 +16,7 @@ using namespace std;
 
 EggItem::EggItem(int id) : Item( id )
 {
-        this->maxStackSize = 16;
+	maxStackSize = 16;
 }
 
 shared_ptr<ItemInstance> EggItem::use(shared_ptr<ItemInstance> instance, Level *level, shared_ptr<Player> player) 
@@ -25,7 +25,7 @@ shared_ptr<ItemInstance> EggItem::use(shared_ptr<ItemInstance> instance, Level *
 	{
 		instance->count--;
 	}
-    level->playSound( dynamic_pointer_cast<Entity>(player), eSoundType_RANDOM_BOW, 0.5f, 0.4f / (random->nextFloat() * 0.4f + 0.8f));
-    if (!level->isClientSide) level->addEntity( shared_ptr<ThrownEgg>( new ThrownEgg(level, dynamic_pointer_cast<Mob>( player )) ));
-    return instance;
+	level->playEntitySound( player, eSoundType_RANDOM_BOW, 0.5f, 0.4f / (random->nextFloat() * 0.4f + 0.8f));
+	if (!level->isClientSide) level->addEntity( shared_ptr<ThrownEgg>(new ThrownEgg(level, player)) );
+	return instance;
 }

@@ -142,12 +142,12 @@ HumanoidModel::HumanoidModel(float g, float yOffset, int texWidth, int texHeight
 
 void HumanoidModel::render(shared_ptr<Entity> entity, float time, float r, float bob, float yRot, float xRot, float scale, bool usecompiled)
 {	
-	if(entity!=NULL)
+	if(entity != NULL)
 	{
 		m_uiAnimOverrideBitmask=entity->getAnimOverrideBitmask();
 	}
 
-	setupAnim(time, r, bob, yRot, xRot, scale, m_uiAnimOverrideBitmask);
+	setupAnim(time, r, bob, yRot, xRot, scale, entity, m_uiAnimOverrideBitmask);
 
 	if (young)
 	{
@@ -180,7 +180,7 @@ void HumanoidModel::render(shared_ptr<Entity> entity, float time, float r, float
 	}
 }
 
-void HumanoidModel::setupAnim(float time, float r, float bob, float yRot, float xRot, float scale, unsigned int uiBitmaskOverrideAnim)
+void HumanoidModel::setupAnim(float time, float r, float bob, float yRot, float xRot, float scale, shared_ptr<Entity> entity, unsigned int uiBitmaskOverrideAnim)
 {
 	//bool bIsAttacking = (attackTime > -9990.0f);
 	
@@ -189,6 +189,7 @@ void HumanoidModel::setupAnim(float time, float r, float bob, float yRot, float 
 		head->xRot = xRot / (float) (180.0f / PI);
 		hair->yRot = head->yRot;
 		hair->xRot = head->xRot;
+		body->z = 0.0f;
 
 		// Does the skin have an override for anim?
 
@@ -240,12 +241,22 @@ void HumanoidModel::setupAnim(float time, float r, float bob, float yRot, float 
 
 		if (riding)
 		{
-			arm0->xRot += -HALF_PI * 0.4f;
-			arm1->xRot += -HALF_PI * 0.4f;
-			leg0->xRot = -HALF_PI * 0.8f;
-			leg1->xRot = -HALF_PI * 0.8f;
-			leg0->yRot = HALF_PI * 0.2f;
-			leg1->yRot = -HALF_PI * 0.2f;
+			if(uiBitmaskOverrideAnim&(1<<eAnim_SmallModel) == 0)
+			{
+				arm0->xRot += -HALF_PI * 0.4f;
+				arm1->xRot += -HALF_PI * 0.4f;
+				leg0->xRot = -HALF_PI * 0.8f;
+				leg1->xRot = -HALF_PI * 0.8f;
+				leg0->yRot = HALF_PI * 0.2f;
+				leg1->yRot = -HALF_PI * 0.2f;
+			}
+			else
+			{
+				arm0->xRot += -HALF_PI * 0.4f;
+				arm1->xRot += -HALF_PI * 0.4f;
+				leg0->xRot = -HALF_PI * 0.4f;
+				leg1->xRot = -HALF_PI * 0.4f;
+			}
 		}
 		else if(idle && !sneaking )
 		{
@@ -334,22 +345,45 @@ void HumanoidModel::setupAnim(float time, float r, float bob, float yRot, float 
 
 		if (sneaking)
 		{
-			body->xRot = 0.5f;
-			leg0->xRot -= 0.0f;
-			leg1->xRot -= 0.0f;
-			arm0->xRot += 0.4f;
-			arm1->xRot += 0.4f;
-			leg0->z = +4.0f;
-			leg1->z = +4.0f;
-			body->y = 0.0f;
-			arm0->y = 2.0f;
-			arm1->y = 2.0f;
-			leg0->y = +9.0f;
-			leg1->y = +9.0f;
-			head->y = +1.0f;
-			hair->y = +1.0f;
-			ear->y = +1.0f;
-			cloak->y = 0.0f;
+			if(uiBitmaskOverrideAnim&(1<<eAnim_SmallModel))
+			{
+				body->xRot = -0.5f;
+				leg0->xRot -= 0.0f;
+				leg1->xRot -= 0.0f;
+				arm0->xRot += 0.4f;
+				arm1->xRot += 0.4f;
+				leg0->z = -4.0f;
+				leg1->z = -4.0f;
+				body->z = 2.0f;
+				body->y = 0.0f;
+				arm0->y = 2.0f;
+				arm1->y = 2.0f;
+				leg0->y = +9.0f;
+				leg1->y = +9.0f;
+				head->y = +1.0f;
+				hair->y = +1.0f;
+				ear->y = +1.0f;
+				cloak->y = 0.0f;
+			}
+			else
+			{
+				body->xRot = 0.5f;
+				leg0->xRot -= 0.0f;
+				leg1->xRot -= 0.0f;
+				arm0->xRot += 0.4f;
+				arm1->xRot += 0.4f;
+				leg0->z = +4.0f;
+				leg1->z = +4.0f;
+				body->y = 0.0f;
+				arm0->y = 2.0f;
+				arm1->y = 2.0f;
+				leg0->y = +9.0f;
+				leg1->y = +9.0f;
+				head->y = +1.0f;
+				hair->y = +1.0f;
+				ear->y = +1.0f;
+				cloak->y = 0.0f;
+			}
 		}
 		else
 		{

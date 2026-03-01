@@ -6,6 +6,7 @@
 #include "ArmorRecipes.h"
 #include "ClothDyeRecipes.h"
 #include "FoodRecipies.h"
+#include "FireworksRecipe.h"
 #include "FurnaceRecipes.h"
 #include "OreRecipies.h"
 #include "ShapedRecipy.h"

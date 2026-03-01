@@ -11,6 +11,7 @@
 static const int sc_maxCompressTiles = 64;
 static CompressedTileStorage_compress_dataIn g_compressTileDataIn[sc_maxCompressTiles] __attribute__((__aligned__(16)));
 static int g_currentCompressTiles = 0;
+//#define DISABLE_SPU_CODE
 #endif //__PS3__
 
 // Note: See header for an overview of this class

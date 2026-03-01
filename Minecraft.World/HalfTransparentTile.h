@@ -15,5 +15,5 @@ public:
     virtual bool isSolidRender(bool isServerLevel = false);
     virtual bool shouldRenderFace(LevelSource *level, int x, int y, int z, int face);
     virtual bool blocksLight();
-	void registerIcons(IconRegister *iconRegister);
+	virtual void registerIcons(IconRegister *iconRegister);
 };

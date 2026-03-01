@@ -37,7 +37,7 @@ File::File( const wstring& pathname ) //: parent( NULL )
 		m_abstractPathName = pathname;
 
 #ifdef _WINDOWS64
-	string path = wstringtofilename(m_abstractPathName);
+	string path = wstringtochararray(m_abstractPathName);
 	string finalPath = StorageManager.GetMountedPath(path.c_str());
 	if(finalPath.size() == 0) finalPath = path;
 	m_abstractPathName = convStringToWstring(finalPath);

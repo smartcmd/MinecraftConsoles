@@ -26,7 +26,9 @@ enum ePARTICLE_TYPE
 	eParticleType_largeexplode,
 	eParticleType_townaura,
 	eParticleType_spell,
+	eParticleType_witchMagic,
 	eParticleType_mobSpell,
+	eParticleType_mobSpellAmbient,
 	eParticleType_instantSpell,
 	eParticleType_magicCrit,
 	eParticleType_dripWater,
@@ -36,6 +38,7 @@ enum ePARTICLE_TYPE
 	eParticleType_ender, // 4J Added - These are things that used the "portal" particle but are actually end related entities
 	eParticleType_angryVillager,
 	eParticleType_happyVillager,
+	eParticleType_fireworksspark,
 
 	// 4J-JEV: In the java, the particle name was used to sneak parameters in for the Terrain and IconCrack particle constructors.
 	

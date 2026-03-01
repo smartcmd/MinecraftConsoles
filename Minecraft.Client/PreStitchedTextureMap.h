@@ -30,13 +30,16 @@ private:
 	Texture *stitchResult;
 	vector<StitchedTexture *> animatedTextures; // = new ArrayList<StitchedTexture>();
 
-	vector<pair<wstring, wstring> > texturesToAnimate;
-
 	void loadUVs();
 public:
 	PreStitchedTextureMap(int type, const wstring &name, const wstring &path, BufferedImage *missingTexture, bool mipMap = false);
 
 	void stitch();
+
+private:
+	void makeTextureAnimated(TexturePack *texturePack, StitchedTexture *tex);
+
+public:
 	StitchedTexture *getTexture(const wstring &name);
 	void cycleAnimationFrames();
 	Texture *getStitchedTexture();

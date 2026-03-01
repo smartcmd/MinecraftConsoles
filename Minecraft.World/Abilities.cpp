@@ -63,7 +63,7 @@ float Abilities::getFlyingSpeed()
 
 void Abilities::setFlyingSpeed(float value)
 {
-	this->flyingSpeed = value;
+	flyingSpeed = value;
 }
 
 float Abilities::getWalkingSpeed()
@@ -73,5 +73,5 @@ float Abilities::getWalkingSpeed()
 
 void Abilities::setWalkingSpeed(float value)
 {
-	this->walkingSpeed = value;
+	walkingSpeed = value;
 }

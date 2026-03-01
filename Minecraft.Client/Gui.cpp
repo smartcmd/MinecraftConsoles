@@ -5,6 +5,7 @@
 #include "Options.h"
 #include "MultiplayerLocalPlayer.h"
 #include "Textures.h"
+#include "TextureAtlas.h"
 #include "GameMode.h"
 #include "Lighting.h"
 #include "ChatScreen.h"
@@ -27,6 +28,8 @@
 #include "..\Minecraft.World\net.minecraft.world.h"
 #include "..\Minecraft.World\LevelChunk.h"
 #include "..\Minecraft.World\Biome.h"
+
+ResourceLocation Gui::PUMPKIN_BLUR_LOCATION = ResourceLocation(TN__BLUR__MISC_PUMPKINBLUR);
 
 #define RENDER_HUD 0
 //#ifndef _XBOX
@@ -78,7 +81,7 @@ void Gui::render(float a, bool mouseFree, int xMouse, int yMouse)
 	ScreenSizeCalculator ssc(minecraft->options, minecraft->width, minecraft->height, guiScale );
 	int screenWidth = ssc.getWidth();
 	int screenHeight = ssc.getHeight();
-	int iSafezoneXHalf=0,iSafezoneYHalf=0;
+	int iSafezoneXHalf=0,iSafezoneYHalf=0,iSafezoneTopYHalf=0;
 	int iTooltipsYOffset=0;
 	int quickSelectWidth=182;
 	int quickSelectHeight=22;
@@ -106,11 +109,13 @@ void Gui::render(float a, bool mouseFree, int xMouse, int yMouse)
 		// single player
 		iSafezoneXHalf = screenWidth/20; // 5%
 		iSafezoneYHalf = screenHeight/20; // 5%
+		iSafezoneTopYHalf = iSafezoneYHalf;
 		iTooltipsYOffset=40+splitYOffset;
 		break;
 	case C4JRender::VIEWPORT_TYPE_SPLIT_TOP:
 		iSafezoneXHalf = screenWidth/10; // 5%  (need to treat the whole screen is 2x this screen)
 		iSafezoneYHalf = splitYOffset;
+		iSafezoneTopYHalf = screenHeight/10;
 		fScaleFactorWidth=0.5f;
 		iWidthOffset=(int)((float)screenWidth*(1.0f - fScaleFactorWidth));
 		iTooltipsYOffset=44;
@@ -120,6 +125,7 @@ void Gui::render(float a, bool mouseFree, int xMouse, int yMouse)
 	case C4JRender::VIEWPORT_TYPE_SPLIT_BOTTOM:
 		iSafezoneXHalf = screenWidth/10; // 5% (need to treat the whole screen is 2x this screen)
 		iSafezoneYHalf = splitYOffset + screenHeight/10;// 5%  (need to treat the whole screen is 2x this screen)
+		iSafezoneTopYHalf = 0;
 		fScaleFactorWidth=0.5f;
 		iWidthOffset=(int)((float)screenWidth*(1.0f - fScaleFactorWidth));
 		iTooltipsYOffset=44;
@@ -129,6 +135,7 @@ void Gui::render(float a, bool mouseFree, int xMouse, int yMouse)
 	case C4JRender::VIEWPORT_TYPE_SPLIT_LEFT:
 		iSafezoneXHalf = screenWidth/10; // 5% (the whole screen is 2x this screen)
 		iSafezoneYHalf = splitYOffset + screenHeight/10;// 5% (need to treat the whole screen is 2x this screen)
+		iSafezoneTopYHalf = screenHeight/10;
 		fScaleFactorHeight=0.5f;
 		iHeightOffset=screenHeight;
 		iTooltipsYOffset=44;
@@ -138,6 +145,7 @@ void Gui::render(float a, bool mouseFree, int xMouse, int yMouse)
 	case C4JRender::VIEWPORT_TYPE_SPLIT_RIGHT:
 		iSafezoneXHalf = 0; 
 		iSafezoneYHalf = splitYOffset + screenHeight/10;// 5% (need to treat the whole screen is 2x this screen)
+		iSafezoneTopYHalf = splitYOffset + screenHeight/10;
 		fScaleFactorHeight=0.5f;
 		iHeightOffset=screenHeight;
 		iTooltipsYOffset=44;
@@ -147,24 +155,28 @@ void Gui::render(float a, bool mouseFree, int xMouse, int yMouse)
 	case C4JRender::VIEWPORT_TYPE_QUADRANT_TOP_LEFT:
 		iSafezoneXHalf = screenWidth/10; // 5% (the whole screen is 2x this screen)
 		iSafezoneYHalf = splitYOffset;
+		iSafezoneTopYHalf = screenHeight/10;
 		iTooltipsYOffset=44;
 		currentGuiScaleFactor *= 0.5f;
 		break;
 	case C4JRender::VIEWPORT_TYPE_QUADRANT_TOP_RIGHT:
 		iSafezoneXHalf = 0; 
 		iSafezoneYHalf = splitYOffset; // 5%
+		iSafezoneTopYHalf = screenHeight/10;
 		iTooltipsYOffset=44;
 		currentGuiScaleFactor *= 0.5f;
 		break;
 	case C4JRender::VIEWPORT_TYPE_QUADRANT_BOTTOM_LEFT:
 		iSafezoneXHalf = screenWidth/10; // 5%  (the whole screen is 2x this screen)
 		iSafezoneYHalf = splitYOffset + screenHeight/10; // 5% (the whole screen is 2x this screen)
+		iSafezoneTopYHalf = 0;
 		iTooltipsYOffset=44;
 		currentGuiScaleFactor *= 0.5f;
 		break;
 	case C4JRender::VIEWPORT_TYPE_QUADRANT_BOTTOM_RIGHT:
 		iSafezoneXHalf = 0; 
 		iSafezoneYHalf = splitYOffset + screenHeight/10; // 5%  (the whole screen is 2x this screen)
+		iSafezoneTopYHalf = 0;
 		iTooltipsYOffset=44;
 		currentGuiScaleFactor *= 0.5f;
 		break;
@@ -421,93 +433,168 @@ void Gui::render(float a, bool mouseFree, int xMouse, int yMouse)
 					yLine2 = yLine1 - 10;
 				}
 
+				double maxHealth = minecraft->localplayers[iPad]->getAttribute(SharedMonsterAttributes.MAX_HEALTH);
+
+				double totalAbsorption = minecraft->localplayers[iPad]->getAbsorptionAmount();
+				int numHealthRows = Mth.ceil((maxHealth + totalAbsorption) / 2 / (float) NUM_HEARTS_PER_ROW);
+				int healthRowHeight = Math.max(10 - (numHealthRows - 2), 3);
+				int yLine2 = yLine1 - (numHealthRows - 1) * healthRowHeight - 10;
+				absorption = totalAbsorption;
+
 				int armor = minecraft->player->getArmorValue();
 				int heartOffsetIndex = -1;
 				if (minecraft->player->hasEffect(MobEffect::regeneration))
 				{
-					heartOffsetIndex = tickCount % 25;
+					heartOffsetIndex = tickCount % (int) ceil(maxHealth + 5);
 				}
 
 				// render health and armor
+				//minecraft.profiler.push("armor");
 				for (int i = 0; i < Player::MAX_HEALTH / 2; i++)
 				{
 					if (armor > 0)
 					{
 						int xo = xLeft + i * 8;
-
-						// HEALTH
-						if (i * 2 + 1 < armor) blit(xo, yLine2, 16 + 2 * 9, 9 * 1, 9, 9);
-						if (i * 2 + 1 == armor) blit(xo, yLine2, 16 + 1 * 9, 9 * 1, 9, 9);
-						if (i * 2 + 1 > armor) blit(xo, yLine2, 16 + 0 * 9, 9 * 1, 9, 9);
+						if (i * 2 + 1 < armor) blit(xo, yLine2, 16 + 2 * 9, 9, 9, 9);
+						if (i * 2 + 1 == armor) blit(xo, yLine2, 16 + 1 * 9, 9, 9, 9);
+						if (i * 2 + 1 > armor) blit(xo, yLine2, 16 + 0 * 9, 9, 9, 9);
 					}
+				}
 
+				//minecraft.profiler.popPush("health");
+				for (int i = Mth.ceil((maxHealth + totalAbsorption) / 2) - 1; i >= 0; i--)
+				{
 					int healthTexBaseX = 16;
-					if (minecraft->player->hasEffect(MobEffect::poison))
+					if (minecraft.player.hasEffect(MobEffect.poison))
 					{
 						healthTexBaseX += 4 * 9;
+					}
+					else if (minecraft.player.hasEffect(MobEffect.wither))
+					{
+						healthTexBaseX += 8 * 9;
 					}
 
 					int bg = 0;
 					if (blink) bg = 1;
-					int xo = xLeft + i * 8;
-					int yo = yLine1;
-				
-					if (iHealth <= 4)
+					int rowIndex = Mth.ceil((i + 1)  / (float) NUM_HEARTS_PER_ROW) - 1;
+					int xo = xLeft + (i % NUM_HEARTS_PER_ROW) * 8;
+					int yo = yLine1 - rowIndex * healthRowHeight;
+					if (currentHealth <= 4)
 					{
-						yo += random->nextInt(2);
+						yo += random.nextInt(2);
 					}
+
 					if (i == heartOffsetIndex)
 					{
 						yo -= 2;
 					}
 
 					int y0 = 0;
-					// 4J-PB - no hardcore in xbox
-// 					if (minecraft.level.getLevelData().isHardcore()) {
-// 						y0 = 5;
-// 					}
-					blit(xo, yo, 16 + bg * 9, 9 * 0, 9, 9);
+
+					// No hardcore on console
+					/*if (minecraft->level.getLevelData().isHardcore())
+					{
+						y0 = 5;
+					}*/
+
+					blit(xo, yo, 16 + bg * 9, 9 * y0, 9, 9);
 					if (blink)
 					{
-						if (i * 2 + 1 < iLastHealth) blit(xo, yo, healthTexBaseX + 6 * 9, 9 * y0, 9, 9);
-						if (i * 2 + 1 == iLastHealth) blit(xo, yo, healthTexBaseX + 7 * 9, 9 * y0, 9, 9);
+						if (i * 2 + 1 < oldHealth) blit(xo, yo, healthTexBaseX + 6 * 9, 9 * y0, 9, 9);
+						if (i * 2 + 1 == oldHealth) blit(xo, yo, healthTexBaseX + 7 * 9, 9 * y0, 9, 9);
 					}
-					if (i * 2 + 1 < iHealth) blit(xo, yo, healthTexBaseX + 4 * 9, 9 * y0, 9, 9);
-					if (i * 2 + 1 == iHealth) blit(xo, yo, healthTexBaseX + 5 * 9, 9 * y0, 9, 9);
+
+					if (absorption > 0)
+					{
+						if (absorption == totalAbsorption && totalAbsorption % 2 == 1)
+						{
+							blit(xo, yo, healthTexBaseX + 17 * 9, 9 * y0, 9, 9);
+						}
+						else
+						{
+							blit(xo, yo, healthTexBaseX + 16 * 9, 9 * y0, 9, 9);
+						}
+						absorption -= 2;
+					}
+					else
+					{
+						if (i * 2 + 1 < currentHealth) blit(xo, yo, healthTexBaseX + 4 * 9, 9 * y0, 9, 9);
+						if (i * 2 + 1 == currentHealth) blit(xo, yo, healthTexBaseX + 5 * 9, 9 * y0, 9, 9);
+					}
 				}
 
-				// render food
-				for (int i = 0; i < FoodConstants::MAX_FOOD / 2; i++)
+				std::shared_ptr<Entity> riding = minecraft->localplayers[iPad].get()->riding;
+				std::shared_ptr<LivingEntity> living = dynamic_pointer_cast<LivingEntity>(riding);
+				if (riding == NULL)
 				{
-					int yo = yLine1;
-
-
-					int texBaseX = 16;
-					int bg = 0;
-					if (minecraft->player->hasEffect(MobEffect::hunger))
+					// render food
+					for (int i = 0; i < FoodConstants::MAX_FOOD / 2; i++)
 					{
-						texBaseX += 4 * 9;
-						bg = 13;
-					}
+						int yo = yLine1;
 
-					if (minecraft->player->getFoodData()->getSaturationLevel() <= 0)
-					{
-						if ((tickCount % (food * 3 + 1)) == 0)
+
+						int texBaseX = 16;
+						int bg = 0;
+						if (minecraft->player->hasEffect(MobEffect::hunger))
 						{
-							yo += random->nextInt(3) - 1;
+							texBaseX += 4 * 9;
+							bg = 13;
 						}
+
+						if (minecraft->player->getFoodData()->getSaturationLevel() <= 0)
+						{
+							if ((tickCount % (food * 3 + 1)) == 0)
+							{
+								yo += random->nextInt(3) - 1;
+							}
+						}
+
+						if (foodBlink) bg = 1;
+						int xo = xRight - i * 8 - 9;
+						blit(xo, yo, 16 + bg * 9, 9 * 3, 9, 9);
+						if (foodBlink)
+						{
+							if (i * 2 + 1 < oldFood) blit(xo, yo, texBaseX + 6 * 9, 9 * 3, 9, 9);
+							if (i * 2 + 1 == oldFood) blit(xo, yo, texBaseX + 7 * 9, 9 * 3, 9, 9);
+						}
+						if (i * 2 + 1 < food) blit(xo, yo, texBaseX + 4 * 9, 9 * 3, 9, 9);
+						if (i * 2 + 1 == food) blit(xo, yo, texBaseX + 5 * 9, 9 * 3, 9, 9);
+					}
+				}
+				else if (living != nullptr)
+				{
+					// Render mount health
+
+					int riderCurrentHealth = (int) ceil(living.get()->GetHealth());
+					float maxRiderHealth = living->GetMaxHealth();
+					int hearts = (int) (maxRiderHealth + .5f) / 2;
+					if (hearts > 30)
+					{
+						hearts = 30;
 					}
 
-					if (foodBlink) bg = 1;
-					int xo = xRight - i * 8 - 9;
-					blit(xo, yo, 16 + bg * 9, 9 * 3, 9, 9);
-					if (foodBlink)
+					int yo = yLine1;
+					int baseHealth = 0;
+
+					while (hearts > 0)
 					{
-						if (i * 2 + 1 < oldFood) blit(xo, yo, texBaseX + 6 * 9, 9 * 3, 9, 9);
-						if (i * 2 + 1 == oldFood) blit(xo, yo, texBaseX + 7 * 9, 9 * 3, 9, 9);
+						int rowHearts = min(hearts, 10);
+						hearts -= rowHearts;
+
+						for (int i = 0; i < rowHearts; i++)
+						{
+							int texBaseX = 52;
+							int bg = 0;
+
+							if (foodBlink) bg = 1;
+							int xo = xRight - i * 8 - 9;
+							blit(xo, yo, texBaseX + bg * 9, 9 * 1, 9, 9);
+							if (i * 2 + 1 + baseHealth < riderCurrentHealth) blit(xo, yo, texBaseX + 4 * 9, 9 * 1, 9, 9);
+							if (i * 2 + 1 + baseHealth == riderCurrentHealth) blit(xo, yo, texBaseX + 5 * 9, 9 * 1, 9, 9);
+						}
+						yo -= 10;
+						baseHealth += 20;
 					}
-					if (i * 2 + 1 < food) blit(xo, yo, texBaseX + 4 * 9, 9 * 3, 9, 9);
-					if (i * 2 + 1 == food) blit(xo, yo, texBaseX + 5 * 9, 9 * 3, 9, 9);
 				}
 
 				// render air bubbles
@@ -595,46 +682,22 @@ void Gui::render(float a, bool mouseFree, int xMouse, int yMouse)
 
 			if( bDisplayGui && (displayCrouch || displaySprint || displayFlying) )
 			{
-				EntityRenderDispatcher::instance->prepare(minecraft->level, minecraft->textures, minecraft->font, minecraft->cameraTargetPlayer, minecraft->options, a);
+				EntityRenderDispatcher::instance->prepare(minecraft->level, minecraft->textures, minecraft->font, minecraft->cameraTargetPlayer, minecraft->crosshairPickMob, minecraft->options, a);
 				glEnable(GL_RESCALE_NORMAL);
 				glEnable(GL_COLOR_MATERIAL);
 
-				int xo = 0;
-				int yo = 0;
-				switch( minecraft->player->m_iScreenSection )
-				{
-					case C4JRender::VIEWPORT_TYPE_FULLSCREEN:
-					default:
-						if(RenderManager.IsHiDef()) xo = -22;
-						yo = -36;
-						break;
-					case C4JRender::VIEWPORT_TYPE_SPLIT_TOP:
-						xo = 0; yo = -25;
-						break;
-					case C4JRender::VIEWPORT_TYPE_SPLIT_BOTTOM:
-						xo = 0; yo = -48;
-						break;
-					case C4JRender::VIEWPORT_TYPE_SPLIT_LEFT:
-						xo = 0; yo = -25;
-						break;
-					case C4JRender::VIEWPORT_TYPE_SPLIT_RIGHT:
-						xo = -43; yo = -25;
-						break;
-					case C4JRender::VIEWPORT_TYPE_QUADRANT_TOP_LEFT:
-						xo = 0; yo = -25;
-						break;
-					case C4JRender::VIEWPORT_TYPE_QUADRANT_TOP_RIGHT:
-						xo = -43; yo = -25;
-						break;
-					case C4JRender::VIEWPORT_TYPE_QUADRANT_BOTTOM_LEFT:
-						xo = 0; yo = -48;
-						break;
-					case C4JRender::VIEWPORT_TYPE_QUADRANT_BOTTOM_RIGHT:
-						xo = -43; yo = -48;
-						break;
-				}
+				// 4J - TomK now using safe zone values directly instead of the magic number calculation that lived here before (which only worked for medium scale, the other two were off!)
+				int xo = iSafezoneXHalf + 10;
+				int yo = iSafezoneTopYHalf + 10;
+
+#ifdef __PSVITA__
+				// align directly with corners, there are no safe zones on vita
+				xo = 10;
+				yo = 10;
+#endif
+
 				glPushMatrix();
-				glTranslatef((float)xo + 51, (float)yo + 75, 50);
+				glTranslatef((float)xo, (float)yo, 50);
 				float ss = 12;
 				glScalef(-ss, ss, ss);
 				glRotatef(180, 0, 0, 1);
@@ -671,7 +734,9 @@ void Gui::render(float a, bool mouseFree, int xMouse, int yMouse)
 				minecraft->player->onFire = 0;
 				minecraft->player->setSharedFlag(Entity::FLAG_ONFIRE, false);
 					
-				glTranslatef(0, minecraft->player->heightOffset, 0);
+				// 4J - TomK don't offset the player. it's easier to align it with the safe zones that way!
+				//glTranslatef(0, minecraft->player->heightOffset, 0);
+				glTranslatef(0, 0, 0);
 				EntityRenderDispatcher::instance->playerRotY = 180;
 				EntityRenderDispatcher::instance->isGuiRender = true;
 				EntityRenderDispatcher::instance->render(minecraft->player, 0, 0, 0, 0, 1);
@@ -1066,7 +1131,7 @@ void Gui::renderPumpkin(int w, int h)
     glDisable(GL_ALPHA_TEST);
 
 	MemSect(31);
-    minecraft->textures->bindTexture(TN__BLUR__MISC_PUMPKINBLUR);//L"%blur%/misc/pumpkinblur.png"));
+    minecraft->textures->bindTexture(&PUMPKIN_BLUR_LOCATION);
 	MemSect(0);
     Tesselator *t = Tesselator::getInstance();
     t->begin();
@@ -1124,7 +1189,7 @@ void Gui::renderTp(float br, int w, int h)
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     glColor4f(1, 1, 1, br);
 	MemSect(31);
-    minecraft->textures->bindTexture(TN_TERRAIN);//L"/terrain.png"));
+    minecraft->textures->bindTexture(&TextureAtlas::LOCATION_BLOCKS);
 	MemSect(0);
 	
 	Icon *slot = Tile::portalTile->getTexture(Facing::UP);

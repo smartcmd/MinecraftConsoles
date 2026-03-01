@@ -149,6 +149,7 @@ private:
 	__int64 m_seed;
 	bool m_useFlatWorld;
 	Pos *m_spawnPos;
+	int m_bHasBeenInCreative;
 	vector<ApplySchematicRuleDefinition *> m_schematicRules;
 	vector<ConsoleGenerateStructure *> m_structureRules;
 	bool m_bHaveMinY;
@@ -162,8 +163,11 @@ private:
 
 	StringTable *m_stringTable;
 
+	DLCPack *m_parentDLCPack;
+	bool m_bLoadingData;
+
 public:
-	LevelGenerationOptions();
+	LevelGenerationOptions(DLCPack *parentPack = NULL);
 	~LevelGenerationOptions();
 
 	virtual ConsoleGameRules::EGameRuleType getActionType();
@@ -174,6 +178,7 @@ public:
 	virtual void addAttribute(const wstring &attributeName, const wstring &attributeValue);
 
 	__int64 getLevelSeed();
+	int getLevelHasBeenInCreative();
 	Pos *getSpawnPos();
 	bool getuseFlatWorld();
 
@@ -197,12 +202,15 @@ public:
 	LevelRuleset *getRequiredGameRules();
 
 	void getBiomeOverride(int biomeId, BYTE &tile, BYTE &topTile);
-	bool isFeatureChunk(int chunkX, int chunkZ, StructureFeature::EFeatureTypes feature);
+	bool isFeatureChunk(int chunkX, int chunkZ, StructureFeature::EFeatureTypes feature, int *orientation = NULL);
 
 	void loadStringTable(StringTable *table);
 	LPCWSTR getString(const wstring &key);
 
 	unordered_map<wstring, ConsoleSchematicFile *> *getUnfinishedSchematicFiles();
+
+	void loadBaseSaveData();
+	static int packMounted(LPVOID pParam,int iPad,DWORD dwErr,DWORD dwLicenceMask);
 	
 	// 4J-JEV:
 	// ApplySchematicRules contain limited state

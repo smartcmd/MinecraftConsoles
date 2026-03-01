@@ -1,29 +1,36 @@
 #include "stdafx.h"
 #include "net.minecraft.world.entity.monster.h"
 #include "net.minecraft.world.level.h"
+#include "net.minecraft.world.level.tile.h"
 #include "StoneMonsterTile.h"
 
 const unsigned int StoneMonsterTile::STONE_MONSTER_NAMES[STONE_MONSTER_NAMES_LENGTH] = {	IDS_TILE_STONE_SILVERFISH,
-													IDS_TILE_STONE_SILVERFISH_COBBLESTONE,
-													IDS_TILE_STONE_SILVERFISH_STONE_BRICK,
-												};
+	IDS_TILE_STONE_SILVERFISH_COBBLESTONE,
+	IDS_TILE_STONE_SILVERFISH_STONE_BRICK,
+};
 
 StoneMonsterTile::StoneMonsterTile(int id) : Tile(id, Material::clay)
 {
-    setDestroyTime(0);
+	setDestroyTime(0);
 }
 
 Icon *StoneMonsterTile::getTexture(int face, int data)
 {
-    if (data == HOST_COBBLE)
+#ifndef _CONTENT_PACKAGE
+	if(app.DebugArtToolsOn())
 	{
-        return Tile::stoneBrick->getTexture(face);
-    }
-    if (data == HOST_STONEBRICK)
+		return Tile::fire->getTexture(face, 0);
+	}
+#endif
+	if (data == HOST_COBBLE)
 	{
-        return Tile::stoneBrickSmooth->getTexture(face);
-    }
-    return Tile::rock->getTexture(face);
+		return Tile::cobblestone->getTexture(face);
+	}
+	if (data == HOST_STONEBRICK)
+	{
+		return Tile::stoneBrick->getTexture(face);
+	}
+	return Tile::stone->getTexture(face);
 }
 
 void StoneMonsterTile::registerIcons(IconRegister *iconRegister)
@@ -33,7 +40,7 @@ void StoneMonsterTile::registerIcons(IconRegister *iconRegister)
 
 void StoneMonsterTile::destroy(Level *level, int x, int y, int z, int data)
 {
-    if (!level->isClientSide)
+	if (!level->isClientSide)
 	{
 		// 4J - limit total amount of monsters. The normal map spawning limits these to 50, and mobspawning tiles limit to 60, so give ourselves a bit of headroom here to also be able to make silverfish
 		if(level->countInstanceOf( eTYPE_MONSTER, false) < 70 )
@@ -48,8 +55,8 @@ void StoneMonsterTile::destroy(Level *level, int x, int y, int z, int data)
 				silverfish->spawnAnim();
 			}
 		}
-    }
-    Tile::destroy(level, x, y, z, data);
+	}
+	Tile::destroy(level, x, y, z, data);
 }
 
 int StoneMonsterTile::getResourceCount(Random *random)
@@ -59,20 +66,20 @@ int StoneMonsterTile::getResourceCount(Random *random)
 
 bool StoneMonsterTile::isCompatibleHostBlock(int block)
 {
-	return block == Tile::rock_Id || block == Tile::stoneBrick_Id || block == Tile::stoneBrickSmooth_Id;
+	return block == Tile::stone_Id || block == Tile::cobblestone_Id || block == Tile::stoneBrick_Id;
 }
 
 int StoneMonsterTile::getDataForHostBlock(int block)
 {
-    if (block == Tile::stoneBrick_Id)
+	if (block == Tile::cobblestone_Id)
 	{
-        return HOST_COBBLE;
-    }
-    if (block == Tile::stoneBrickSmooth_Id)
+		return HOST_COBBLE;
+	}
+	if (block == Tile::stoneBrick_Id)
 	{
-        return HOST_STONEBRICK;
-    }
-    return HOST_ROCK;
+		return HOST_STONEBRICK;
+	}
+	return HOST_ROCK;
 }
 
 Tile *StoneMonsterTile::getHostBlockForData(int data)
@@ -80,26 +87,26 @@ Tile *StoneMonsterTile::getHostBlockForData(int data)
 	switch (data)
 	{
 	case HOST_COBBLE:
-		return Tile::stoneBrick;
+		return Tile::cobblestone;
 	case HOST_STONEBRICK:
-		return Tile::stoneBrickSmooth;
+		return Tile::stoneBrick;
 	default:
-		return Tile::rock;
+		return Tile::stone;
 	}
 }
 
 shared_ptr<ItemInstance> StoneMonsterTile::getSilkTouchItemInstance(int data)
 {
-    Tile *tile = Tile::rock;
-    if (data == HOST_COBBLE)
+	Tile *tile = Tile::stone;
+	if (data == HOST_COBBLE)
 	{
-        tile = Tile::stoneBrick;
-    }
-    if (data == HOST_STONEBRICK)
+		tile = Tile::cobblestone;
+	}
+	if (data == HOST_STONEBRICK)
 	{
-        tile = Tile::stoneBrickSmooth;
-    }
-    return shared_ptr<ItemInstance>(new ItemInstance(tile));
+		tile = Tile::stoneBrick;
+	}
+	return shared_ptr<ItemInstance>(new ItemInstance(tile));
 }
 
 int StoneMonsterTile::cloneTileData(Level *level, int x, int y, int z)

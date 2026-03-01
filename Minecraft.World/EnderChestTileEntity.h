@@ -19,7 +19,7 @@ public:
 	EnderChestTileEntity();
 
 	void tick();
-	void triggerEvent(int b0, int b1);
+	bool triggerEvent(int b0, int b1);
 	void setRemoved();
 	void startOpen();
 	void stopOpen();

@@ -239,7 +239,7 @@ void IUIScene_StartGame::UpdateCurrentTexturePack(int iSlot)
 
 
 		// Give the player a warning about the texture pack missing
-		ui.RequestMessageBox(IDS_DLC_TEXTUREPACK_NOT_PRESENT_TITLE, IDS_DLC_TEXTUREPACK_NOT_PRESENT, uiIDA, 3, ProfileManager.GetPrimaryPad(),&:TexturePackDialogReturned,this,app.GetStringTable());
+		ui.RequestErrorMessage(IDS_DLC_TEXTUREPACK_NOT_PRESENT_TITLE, IDS_DLC_TEXTUREPACK_NOT_PRESENT, uiIDA, 3, ProfileManager.GetPrimaryPad(),&:TexturePackDialogReturned,this);
 
 		// do set the texture pack id, and on the user pressing create world, check they have it	
 		m_MoreOptionsParams.dwTexturePack = ListItem.iData;
@@ -368,7 +368,7 @@ int IUIScene_StartGame::TexturePackDialogReturned(void *pParam,int iPad,C4JStora
 			{	
 				// 4J-JEV: Fix for XB1: #165863 - XR-074: Compliance: With no active network connection user is unable to convert from Trial to Full texture pack and is not messaged why.
 				UINT uiIDA[1] = { IDS_CONFIRM_OK };
-				ui.RequestMessageBox(IDS_PRO_NOTONLINE_TITLE, IDS_PRO_XBOXLIVE_NOTIFICATION, uiIDA, 1, iPad, NULL, NULL, app.GetStringTable()); 
+				ui.RequestErrorMessage(IDS_PRO_NOTONLINE_TITLE, IDS_PRO_XBOXLIVE_NOTIFICATION, uiIDA, 1, iPad); 
 			}
 		}
 	}

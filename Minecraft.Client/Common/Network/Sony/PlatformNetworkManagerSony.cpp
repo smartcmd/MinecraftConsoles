@@ -54,10 +54,8 @@ void CPlatformNetworkManagerSony::HandleStateChange(SQRNetworkManager::eSQRNetwo
 	else if( newState == SQRNetworkManager::SNM_STATE_JOINING )
 	{
 		// 4J Stu - We may be accepting an invite from the DLC menu, so hide the icon
-#ifdef __ORBIS__
-	sceNpCommerceHidePsStoreIcon();
-#elif defined __PSVITA__
-	sceNpCommerce2HidePsStoreIcon();
+#if defined __ORBIS__ || defined __PSVITA__
+		app.GetCommerce()->HidePsStoreIcon();
 #endif
 		m_bLeavingGame = false;
 		m_bLeaveGameOnTick = false;
@@ -459,16 +457,16 @@ int CPlatformNetworkManagerSony::CorrectErrorIDS(int IDS)
 	// Determine if we'd prefer to present errors as a signing out issue, rather than a network issue, based on whether we have a network connection at all or not
 	bool preferSignoutError = false;
 	int state;
-#ifdef __PS3__
+
+#if defined __PSVITA__			// MGH - to fix devtrack #6258 
+	if(!ProfileManager.IsSignedInPSN(ProfileManager.GetPrimaryPad()))
+		preferSignoutError = true;
+#elif defined __ORBIS__
+	if(!ProfileManager.isSignedInPSN(ProfileManager.GetPrimaryPad()))
+		preferSignoutError = true;
+#elif defined __PS3__
 	int ret = cellNetCtlGetState( &state );
 	int IPObtainedState = CELL_NET_CTL_STATE_IPObtained;
-#elif defined __ORBIS__
-	int ret = sceNetCtlGetState( &state );
-	int IPObtainedState = SCE_NET_CTL_STATE_IPOBTAINED;
-#elif defined __PSVITA__
-	int ret = sceNetCtlInetGetState( &state );
-	int IPObtainedState = SCE_NET_CTL_STATE_IPOBTAINED;
-#endif
 	if( ret == 0 )
 	{
 		if( state == IPObtainedState )
@@ -476,6 +474,7 @@ int CPlatformNetworkManagerSony::CorrectErrorIDS(int IDS)
 			preferSignoutError = true;
 		}
 	}
+#endif
 
 #ifdef __PSVITA__
 	// If we're in ad-hoc mode this problem definitely wasn't PSN related
@@ -1446,7 +1445,8 @@ void CPlatformNetworkManagerSony::startAdhocMatching( )
 
 bool CPlatformNetworkManagerSony::checkValidInviteData(const INVITE_INFO* pInviteInfo)
 {
-	if(((SQRNetworkManager_Vita*)m_pSQRNet_Vita)->GetHostUID() == pInviteInfo->hostPlayerUID)
+	SQRNetworkManager_Vita* pSQR = (SQRNetworkManager_Vita*)m_pSQRNet_Vita;
+	if(pSQR->IsOnlineGame() && !pSQR->IsHost()&& (pSQR->GetHostUID() == pInviteInfo->hostPlayerUID))
 	{
 		// we're trying to join a game we're already in, so we just ignore this
 		return false;

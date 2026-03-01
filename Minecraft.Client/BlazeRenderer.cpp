@@ -3,9 +3,11 @@
 #include "..\Minecraft.World\net.minecraft.world.entity.monster.h"
 #include "BlazeRenderer.h"
 
+ResourceLocation BlazeRenderer::BLAZE_LOCATION = ResourceLocation(TN_MOB_BLAZE);
+
 BlazeRenderer::BlazeRenderer() : MobRenderer(new BlazeModel(), 0.5f)
 {
-	this->modelVersion = ((BlazeModel *) model)->modelVersion();
+	modelVersion = ((BlazeModel *) model)->modelVersion();
 }
 
 void BlazeRenderer::render(shared_ptr<Entity> _mob, double x, double y, double z, float rot, float a)
@@ -21,4 +23,9 @@ void BlazeRenderer::render(shared_ptr<Entity> _mob, double x, double y, double z
 		model = new BlazeModel();
 	}
 	MobRenderer::render(mob, x, y, z, rot, a);
+}
+
+ResourceLocation *BlazeRenderer::getTextureLocation(shared_ptr<Entity> mob)
+{
+    return &BLAZE_LOCATION;
 }

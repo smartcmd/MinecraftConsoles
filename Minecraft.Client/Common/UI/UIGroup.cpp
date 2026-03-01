@@ -13,6 +13,8 @@ UIGroup::UIGroup(EUIGroup group, int iPad)
 
 	m_updateFocusStateCountdown = 0;
 
+	m_viewportType = C4JRender::VIEWPORT_TYPE_FULLSCREEN;
+
 	for(unsigned int i = 0; i < eUILayer_COUNT; ++i)
 	{
 		m_layers[i] = new UILayer(this);
@@ -38,8 +40,6 @@ UIGroup::UIGroup(EUIGroup group, int iPad)
 	{
 		m_pressStartToPlay = (UIComponent_PressStartToPlay *)m_layers[(int)eUILayer_Tooltips]->addComponent(0, eUIComponent_PressStartToPlay);
 	}
-
-	m_viewportType = C4JRender::VIEWPORT_TYPE_FULLSCREEN;
 
 	// 4J Stu - Pre-allocate this for cached rendering in scenes. It's horribly slow to do dynamically, but we should only need one
 	// per group as we will only be displaying one of these types of scenes at a time
@@ -317,6 +317,16 @@ void UIGroup::HandleDLCLicenseChange()
 	}
 }
 #endif
+
+void UIGroup::HandleMessage(EUIMessage message, void *data)
+{
+	// Ignore this group if the player isn't signed in
+	if(m_iPad >= 0 && !ProfileManager.IsSignedIn(m_iPad)) return;
+	for(unsigned int i = 0; i < eUILayer_COUNT; ++i)
+	{
+		m_layers[i]->HandleMessage(message, data);
+	}
+}
 
 bool UIGroup::IsFullscreenGroup()
 {

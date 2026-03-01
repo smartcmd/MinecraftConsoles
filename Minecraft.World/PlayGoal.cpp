@@ -9,14 +9,14 @@
 #include "BasicTypeContainers.h"
 #include "PlayGoal.h"
 
-PlayGoal::PlayGoal(Villager *mob, float speed)
+PlayGoal::PlayGoal(Villager *mob, double speedModifier)
 {
-	followFriend = weak_ptr<Mob>();
+	followFriend = weak_ptr<LivingEntity>();
 	wantedX = wantedY = wantedZ = 0.0;
 	playTime = 0;
 
 	this->mob = mob;
-	this->speed = speed;
+	this->speedModifier = speedModifier;
 	setRequiredControlFlags(Control::MoveControlFlag);
 }
 
@@ -38,7 +38,7 @@ bool PlayGoal::canUse()
 		double distSqr = friendV->distanceToSqr(mob->shared_from_this());
 		if (distSqr > closestDistSqr) continue;
 		closestDistSqr = distSqr;
-		followFriend = weak_ptr<Mob>(friendV);
+		followFriend = weak_ptr<LivingEntity>(friendV);
 	}
 	delete children;
 
@@ -64,7 +64,7 @@ void PlayGoal::start()
 void PlayGoal::stop()
 {
 	mob->setChasing(false);
-	followFriend = weak_ptr<Mob>();
+	followFriend = weak_ptr<LivingEntity>();
 }
 
 void PlayGoal::tick()
@@ -72,7 +72,7 @@ void PlayGoal::tick()
 	--playTime;
 	if (followFriend.lock() != NULL)
 	{
-		if (mob->distanceToSqr(followFriend.lock()) > 2 * 2) mob->getNavigation()->moveTo(followFriend.lock(), speed);
+		if (mob->distanceToSqr(followFriend.lock()) > 2 * 2) mob->getNavigation()->moveTo(followFriend.lock(), speedModifier);
 	}
 	else
 	{
@@ -80,7 +80,7 @@ void PlayGoal::tick()
 		{
 			Vec3 *pos = RandomPos::getPos(dynamic_pointer_cast<PathfinderMob>(mob->shared_from_this()), 16, 3);
 			if (pos == NULL) return;
-			mob->getNavigation()->moveTo(pos->x, pos->y, pos->z, speed);
+			mob->getNavigation()->moveTo(pos->x, pos->y, pos->z, speedModifier);
 		}
 	}
 }

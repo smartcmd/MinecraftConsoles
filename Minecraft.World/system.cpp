@@ -109,10 +109,9 @@ __int64 System::currentTimeMillis()
 __int64 System::currentRealTimeMillis()
 {
 #ifdef __PSVITA__
-	SceDateTime Time;
-	sceRtcGetCurrentClockLocalTime(&Time);
-	__int64 systTime = (((((((Time.day * 24) + Time.hour) * 60) + Time.minute) * 60) + Time.second) * 1000) + (Time.microsecond / 1000);
-	return systTime;
+	SceFiosDate fileTime = sceFiosDateGetCurrent();
+
+	return fileTime/1000000;
 #else
 	return currentTimeMillis();
 #endif

@@ -1,25 +1,29 @@
 #pragma once
 using namespace std;
 
-#include "Mob.h"
+#include "LivingEntity.h"
 #include "Definitions.h"
 #include "Abilities.h"
 #include "FoodData.h"
 #include "PlayerEnderChestContainer.h"
 #include "CommandSender.h"
+#include "ScoreHolder.h"
 
 class AbstractContainerMenu;
 class Stats;
 class FishingHook;
-
+class EntityHorse;
 class ItemEntity;
 class Slot;
 class Pos;
-
+class TileEntity;
+class BeaconTileEntity;
 class FurnaceTileEntity;
 class DispenserTileEntity;
 class SignTileEntity;
 class BrewingStandTileEntity;
+class HopperTileEntity;
+class MinecartHopper;
 class Inventory;
 class Container;
 class FoodData;
@@ -27,13 +31,13 @@ class DamageSource;
 class Merchant;
 class PlayerEnderChestContainer;
 class GameType;
+class Scoreboard;
 
-class Player : public Mob, public CommandSender
+class Player : public LivingEntity, public CommandSender, public ScoreHolder
 {
 public:
 	static const int MAX_NAME_LENGTH = 16 + 4;
 	static const int MAX_HEALTH = 20;
-	static const int SWING_DURATION = 6;
 	static const int SLEEP_DURATION = 100;
 	static const int WAKE_UP_DURATION = 10;
 
@@ -47,7 +51,11 @@ private:
 	static const int FLY_ACHIEVEMENT_SPEED = 25;
 
 	static const int DATA_PLAYER_FLAGS_ID = 16;
-	static const int DATA_PLAYER_RUNNING_ID = 17;
+	static const int DATA_PLAYER_ABSORPTION_ID = 17;
+	static const int DATA_SCORE_ID = 18;
+
+protected:
+	static const int FLAG_HIDE_CAPE = 1;
 
 public:
 	shared_ptr<Inventory> inventory;
@@ -65,16 +73,14 @@ protected:
 
 public:
 	BYTE userType;
-	int score;
 	float oBob, bob;
-	bool swinging;
-	int swingTime;
 
 	wstring name;
-	int dimension;
 	int takeXpDelay;
 
 	// 4J-PB - track custom skin
+	wstring customTextureUrl;
+	wstring customTextureUrl2;
 	unsigned int m_uiPlayerCurrentSkin;
 	void ChangePlayerSkin();
 
@@ -83,8 +89,8 @@ public:
 	double xCloakO, yCloakO, zCloakO;
 	double xCloak, yCloak, zCloak;
 
-	// 4J-HEG - store display name, added for Xbox One
-	wstring displayName;
+	// 4J-HG: store display name, added for Xbox One "game display name"
+	wstring m_displayName;
 
 protected:
 	// player sleeping in bed?
@@ -103,20 +109,13 @@ public:
 
 private:
 	Pos *respawnPosition;
+	bool respawnForced;
 	Pos *minecartAchievementPos;
 
 	//4J Gordon: These are in cms, every time they go > 1m they are entered into the stats
 	int distanceWalk, distanceSwim, distanceFall, distanceClimb, distanceMinecart, distanceBoat, distancePig;
 
 public:
-	int changingDimensionDelay;
-
-protected:
-	bool isInsidePortal;
-
-public:
-	float portalTime, oPortalTime;
-
 	Abilities abilities;
 
 	int experienceLevel, totalExperience;
@@ -131,6 +130,9 @@ protected:
 	float defaultWalkSpeed;
 	float defaultFlySpeed;
 
+private:
+	int lastLevelUpTime;
+
 public:
 
 	eINSTANCEOF GetType() { return eTYPE_PLAYER; }
@@ -138,11 +140,11 @@ public:
 	// 4J Added to default init
 	void _init();
 
-	Player(Level *level);
+	Player(Level *level, const wstring &name);
 	virtual ~Player();
 
-	virtual int getMaxHealth();
 protected:
+	virtual void registerAttributes();
 	virtual void defineSynchedData();
 
 public:
@@ -153,7 +155,13 @@ public:
 	void stopUsingItem();
 	virtual bool isBlocking();
 
+	// 4J Stu - Added for things that should only be ticked once per simulation frame
+	virtual void updateFrameTick();
+
 	virtual void tick();
+	virtual int getPortalWaitTime();
+	virtual int getDimensionChangingDelay();
+	virtual void playSound(int iSound, float volume, float pitch);
 
 protected:
 	void spawnEatParticles(shared_ptr<ItemInstance> useItem, int count);
@@ -172,9 +180,6 @@ public:
 	virtual void rideTick();
 	virtual void resetPos();
 
-private:
-	int getCurrentSwingDuration();
-
 protected:
 	virtual void serverAiStep();
 
@@ -185,18 +190,14 @@ private:
 	virtual void touch(shared_ptr<Entity> entity);
 
 public:
-	//bool addResource(int resource); // 4J - Removed 1.0.1
-	int getScore();
+	virtual int getScore();
+	virtual void setScore(int value);
+	virtual void increaseScore(int amount);
 	virtual void die(DamageSource *source);
-	void awardKillScore(shared_ptr<Entity> victim, int score);
-
-protected:
-	virtual int decreaseAirSupply(int currentSupply);
-
-public:
+	virtual void awardKillScore(shared_ptr<Entity> victim, int awardPoints);
 	virtual bool isShootable();
 	bool isCreativeModeAllowed();
-	virtual shared_ptr<ItemEntity> drop();
+	virtual shared_ptr<ItemEntity> drop(bool all);
 	shared_ptr<ItemEntity> drop(shared_ptr<ItemInstance> item);
 	shared_ptr<ItemEntity> drop(shared_ptr<ItemInstance> item, bool randomly);
 
@@ -204,16 +205,18 @@ protected:
 	virtual void reallyDrop(shared_ptr<ItemEntity> thrownItem);
 
 public:
-	float getDestroySpeed(Tile *tile);
+	float getDestroySpeed(Tile *tile, bool hasProperTool);
 	bool canDestroy(Tile *tile);
 	virtual void readAdditionalSaveData(CompoundTag *entityTag);
 	virtual void addAdditonalSaveData(CompoundTag *entityTag);
-	static Pos *getRespawnPosition(Level *level, CompoundTag *entityTag);
 	virtual bool openContainer(shared_ptr<Container> container);	// 4J - added bool return
-	virtual bool startEnchanting(int x, int y, int z);				// 4J - added bool return
+	virtual bool openHopper(shared_ptr<HopperTileEntity> container);
+	virtual bool openHopper(shared_ptr<MinecartHopper> container);
+	virtual bool openHorseInventory(shared_ptr<EntityHorse> horse, shared_ptr<Container> container);
+	virtual bool startEnchanting(int x, int y, int z, const wstring &name);				// 4J - added bool return
 	virtual bool startRepairing(int x, int y, int z);				// 4J - added bool return
-	virtual bool startCrafting(int x, int y, int z);				// 4J - added boo return
-	virtual void take(shared_ptr<Entity> e, int orgCount);
+	virtual bool startCrafting(int x, int y, int z);				// 4J - added bool return
+	virtual bool openFireworks(int x, int y, int z);				// 4J - added
 	virtual float getHeadHeight();
 
 	// 4J-PB - added to keep the code happy with the change to make the third person view per player
@@ -226,35 +229,34 @@ protected:
 public:
 	shared_ptr<FishingHook> fishing;
 
-	virtual bool hurt(DamageSource *source, int dmg);
+	virtual bool hurt(DamageSource *source, float dmg);
+	virtual bool canHarmPlayer(shared_ptr<Player> target);
+	virtual bool canHarmPlayer(wstring targetName); // 4J: Added for ServerPlayer when only player name is provided
 
 protected:
-	virtual int getDamageAfterMagicAbsorb(DamageSource *damageSource, int damage);
-	virtual bool isPlayerVersusPlayer();
-	void directAllTameWolvesOnTarget(shared_ptr<Mob> target, bool skipSitting);
-	virtual void hurtArmor(int damage);
+	virtual void hurtArmor(float damage);
 
 public:
 	virtual int getArmorValue();
-	float getArmorCoverPercentage();
+	virtual float getArmorCoverPercentage();
 
 protected:
-	virtual void actuallyHurt(DamageSource *source, int dmg);
+	virtual void actuallyHurt(DamageSource *source, float dmg);
 
 public:
 	using Entity::interact;
 
 	virtual bool openFurnace(shared_ptr<FurnaceTileEntity> container);		// 4J - added bool return
 	virtual bool openTrap(shared_ptr<DispenserTileEntity> container);		// 4J - added bool return
-	virtual void openTextEdit(shared_ptr<SignTileEntity> sign);
+	virtual void openTextEdit(shared_ptr<TileEntity> sign);
 	virtual bool openBrewingStand(shared_ptr<BrewingStandTileEntity> brewingStand); // 4J - added bool return
-	virtual bool openTrading(shared_ptr<Merchant> traderTarget); // 4J - added bool return
+	virtual bool openBeacon(shared_ptr<BeaconTileEntity> beacon);
+	virtual bool openTrading(shared_ptr<Merchant> traderTarget, const wstring &name); // 4J - added bool return
 	virtual void openItemInstanceGui(shared_ptr<ItemInstance> itemInstance);
 	virtual bool interact(shared_ptr<Entity> entity);
 	virtual shared_ptr<ItemInstance> getSelectedItem();
 	void removeSelectedItem();
 	virtual double getRidingHeight();
-	virtual void swing();
 	virtual void attack(shared_ptr<Entity> entity);
 	virtual void crit(shared_ptr<Entity> entity);
 	virtual void magicCrit(shared_ptr<Entity> entity);
@@ -298,7 +300,7 @@ private:
 	bool checkBed();
 
 public:
-	static Pos *checkBedValidRespawnPosition(Level *level, Pos *pos);
+	static Pos *checkBedValidRespawnPosition(Level *level, Pos *pos, bool forced);
 	float getSleepRotation();
 	bool isSleeping();
 	bool isSleepingLongEnough();
@@ -316,16 +318,18 @@ public:
 	* client.
 	*/
 	virtual void displayClientMessage(int messageId);
-	Pos *getRespawnPosition();
-	void setRespawnPosition(Pos *respawnPosition);
+	virtual Pos *getRespawnPosition();
+	virtual bool isRespawnForced();
+	virtual void setRespawnPosition(Pos *respawnPosition, bool forced);
 	virtual void awardStat(Stat *stat, byteArray param);
 
 protected:
 	void jumpFromGround();
 
 public:
-	void travel(float xa, float ya);
-	void checkMovementStatistiscs(double dx, double dy, double dz);
+	virtual void travel(float xa, float ya);
+	virtual float getSpeed();
+	virtual void checkMovementStatistiscs(double dx, double dy, double dz);
 
 private:
 	void checkRidingStatistiscs(double dx, double dy, double dz);
@@ -336,25 +340,20 @@ protected:
 	virtual void causeFallDamage(float distance);
 
 public:
-	virtual void killed(shared_ptr<Mob> mob);
+	virtual void killed(shared_ptr<LivingEntity> mob);
+	virtual void makeStuckInWeb();
 	virtual Icon *getItemInHandIcon(shared_ptr<ItemInstance> item, int layer);
 	virtual shared_ptr<ItemInstance> getArmor(int pos);
-	virtual void handleInsidePortal();
-
-	void increaseXp(int i);
-	virtual void withdrawExperienceLevels(int amount);
+	virtual void increaseXp(int i);
+	virtual void giveExperienceLevels(int amount);
 	int getXpNeededForNextLevel();
-
-private:
-	void levelUp();
-
-public:
 	void causeFoodExhaustion(float amount);
 	FoodData *getFoodData();
 	bool canEat(bool magicalItem);
 	bool isHurt();
 	virtual void startUsingItem(shared_ptr<ItemInstance> instance, int duration);
-	bool mayBuild(int x, int y, int z);
+	virtual bool mayDestroyBlockAt(int x, int y, int z);
+	virtual bool mayUseItemAt(int x, int y, int z, int face, shared_ptr<ItemInstance> item);
 
 protected:
 	virtual int getExperienceReward(shared_ptr<Player> killedBy);
@@ -362,8 +361,7 @@ protected:
 
 public:
 	virtual wstring getAName();
-
-	virtual void changeDimension(int i);
+	virtual bool shouldShowName();
 	virtual void restoreFrom(shared_ptr<Player> oldPlayer, bool restoreAll);
 
 protected:
@@ -373,17 +371,26 @@ public:
 	void onUpdateAbilities();
 	void setGameMode(GameType *mode);
 	wstring getName();
-	wstring getDisplayName(); // 4J added
+	virtual wstring getDisplayName();
+	virtual wstring getNetworkName(); // 4J: Added
 
-	//Language getLanguage() { return Language.getInstance(); }
-	//String localize(String key, Object... args) { return getLanguage().getElement(key, args); }
+	virtual Level *getCommandSenderWorld();
 
 	shared_ptr<PlayerEnderChestContainer> getEnderChestInventory();
 
-public:
+	virtual shared_ptr<ItemInstance> getCarried(int slot);
 	virtual shared_ptr<ItemInstance> getCarriedItem();
-
+	virtual void setEquippedSlot(int slot, shared_ptr<ItemInstance> item);
 	virtual bool isInvisibleTo(shared_ptr<Player> player);
+	virtual ItemInstanceArray getEquipmentSlots();
+	virtual bool isCapeHidden();
+	virtual bool isPushedByWater();
+	virtual Scoreboard *getScoreboard();
+	virtual Team *getTeam();
+	virtual void setAbsorptionAmount(float absorptionAmount);
+	virtual float getAbsorptionAmount();
+
+	//////// 4J /////////////////
 
 	static int hash_fnct(const shared_ptr<Player> k);
 	static bool eq_test(const shared_ptr<Player> x, const shared_ptr<Player> y);
@@ -410,8 +417,6 @@ public:
 	PlayerUID getXuid()																			{ return m_xuid; }
 	void setOnlineXuid(PlayerUID xuid)															{ m_OnlineXuid = xuid; }
 	PlayerUID getOnlineXuid()																	{ return m_OnlineXuid; }
-	void setUUID(const wstring &UUID)															{ m_UUID = UUID; }
-	wstring getUUID()																			{ return m_UUID; }
 
 	void setPlayerIndex(DWORD dwIndex)														{ m_playerIndex = dwIndex; }
 	DWORD getPlayerIndex()																	{ return m_playerIndex; }
@@ -421,15 +426,13 @@ public:
 
 	void setShowOnMaps(bool bVal)															{ m_bShownOnMaps = bVal; }
 	bool canShowOnMaps()																	{ return m_bShownOnMaps && !getPlayerGamePrivilege(ePlayerGamePrivilege_Invisible); }
-	
+
 	virtual void sendMessage(const wstring& message, ChatPacket::EChatPacketMessage type = ChatPacket::e_ChatCustom, int customData = -1, const wstring& additionalMessage = L"") { }
 private:
 	PlayerUID m_xuid;
 	PlayerUID m_OnlineXuid;
 
 protected:
-	wstring m_UUID; // 4J Added
-
 	bool m_bShownOnMaps;
 
 	bool m_bIsGuest;

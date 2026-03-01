@@ -16,6 +16,9 @@
 #include "..\Minecraft.World\net.minecraft.world.h"
 #include "..\Minecraft.World\net.minecraft.world.level.h"
 #include "..\Minecraft.World\StringHelpers.h"
+#include "ResourceLocation.h"
+#include "..\Minecraft.World\ItemEntity.h"
+#include "TextureAtlas.h"
 
 bool Textures::MIPMAP = true;
 C4JRender::eTextureFormat Textures::TEXTURE_FORMAT = C4JRender::TEXTURE_FORMAT_RxGyBzAw;
@@ -119,6 +122,44 @@ wchar_t *Textures::preLoaded[TN_COUNT] =
 	// TU 14
 	L"mob/wolf_collar",
 	L"mob/zombie_villager",
+
+	// 1.6.4
+	L"item/lead_knot",
+
+	L"misc/beacon_beam",
+
+	L"mob/bat",
+
+	L"mob/horse/donkey",
+	L"mob/horse/horse_black",
+	L"mob/horse/horse_brown",
+	L"mob/horse/horse_chestnut",
+	L"mob/horse/horse_creamy",
+	L"mob/horse/horse_darkbrown",
+	L"mob/horse/horse_gray",
+	L"mob/horse/horse_markings_blackdots",
+	L"mob/horse/horse_markings_white",
+	L"mob/horse/horse_markings_whitedots",
+	L"mob/horse/horse_markings_whitefield",
+	L"mob/horse/horse_skeleton",
+	L"mob/horse/horse_white",
+	L"mob/horse/horse_zombie",
+	L"mob/horse/mule",
+	
+	L"mob/horse/armor/horse_armor_diamond",
+	L"mob/horse/armor/horse_armor_gold",
+	L"mob/horse/armor/horse_armor_iron",
+
+	L"mob/witch",
+
+	L"mob/wither/wither",
+	L"mob/wither/wither_armor",
+	L"mob/wither/wither_invulnerable",
+
+	L"item/trapped",
+	L"item/trapped_double",
+	//L"item/christmas",
+	//L"item/christmas_double",
 
 #ifdef _LARGE_WORLDS
 	L"misc/additionalmapicons",
@@ -367,9 +408,28 @@ void Textures::bindTexture(const wstring &resourceName)
 }
 
 // 4J Added
-void Textures::bindTexture(int resourceId)
+void Textures::bindTexture(ResourceLocation *resource)
 {
-	bind(loadTexture(resourceId));
+	if(resource->isPreloaded())
+	{
+		bind(loadTexture(resource->getTexture()));
+	}
+	else
+	{
+		bind(loadTexture(TN_COUNT, resource->getPath()));
+	}
+}
+
+void Textures::bindTextureLayers(ResourceLocation *resource)
+{
+	assert(resource->isPreloaded());
+
+	int layers = resource->getTextureCount();
+
+	for( int i = 0; i < layers; i++ )
+	{
+		RenderManager.TextureBind(i,loadTexture(resource->getTexture(i)));
+	}
 }
 
 void Textures::bind(int id)
@@ -379,6 +439,26 @@ void Textures::bind(int id)
 		if(id < 0) return;
 		glBindTexture(GL_TEXTURE_2D, id);
 	//	lastBoundId = id;
+	}
+}
+
+ResourceLocation *Textures::getTextureLocation(shared_ptr<Entity> entity)
+{
+	shared_ptr<ItemEntity> item = dynamic_pointer_cast<ItemEntity>(entity);
+	int iconType = item->getItem()->getIconType();
+	return getTextureLocation(iconType);
+}
+
+ResourceLocation *Textures::getTextureLocation(int iconType)
+{
+	switch(iconType)
+	{
+	case Icon::TYPE_TERRAIN:
+		return &TextureAtlas::LOCATION_BLOCKS;
+		break;
+	case Icon::TYPE_ITEM:
+		return &TextureAtlas::LOCATION_ITEMS;
+		break;
 	}
 }
 
@@ -1300,6 +1380,42 @@ TEXTURE_NAME TUImages[] =
 	TN_PARTICLES,
 	TN_MOB_ZOMBIE_VILLAGER,
 
+	TN_ITEM_LEASHKNOT,
+
+	TN_MISC_BEACON_BEAM,
+
+	TN_MOB_BAT,
+
+	TN_MOB_DONKEY,
+	TN_MOB_HORSE_BLACK,
+	TN_MOB_HORSE_BROWN,
+	TN_MOB_HORSE_CHESTNUT,
+	TN_MOB_HORSE_CREAMY,
+	TN_MOB_HORSE_DARKBROWN,
+	TN_MOB_HORSE_GRAY,
+	TN_MOB_HORSE_MARKINGS_BLACKDOTS,
+	TN_MOB_HORSE_MARKINGS_WHITE,
+	TN_MOB_HORSE_MARKINGS_WHITEDOTS,
+	TN_MOB_HORSE_MARKINGS_WHITEFIELD,
+	TN_MOB_HORSE_SKELETON,
+	TN_MOB_HORSE_WHITE,
+	TN_MOB_HORSE_ZOMBIE,
+	TN_MOB_MULE,
+	TN_MOB_HORSE_ARMOR_DIAMOND,
+	TN_MOB_HORSE_ARMOR_GOLD,
+	TN_MOB_HORSE_ARMOR_IRON,
+
+	TN_MOB_WITCH,
+
+	TN_MOB_WITHER,
+	TN_MOB_WITHER_ARMOR,
+	TN_MOB_WITHER_INVULNERABLE,
+
+	TN_TILE_TRAP_CHEST,
+	TN_TILE_LARGE_TRAP_CHEST,
+	//TN_TILE_XMAS_CHEST,	
+	//TN_TILE_LARGE_XMAS_CHEST,
+
 #ifdef _LARGE_WORLDS
 	TN_MISC_ADDITIONALMAPICONS,
 #endif
@@ -1323,6 +1439,8 @@ wchar_t *TUImagePaths[] =
 	L"armor/cloth_1_b.png",
 	L"armor/cloth_2.png",
 	L"armor/cloth_2_b.png",
+
+	//
 
 	NULL
 };

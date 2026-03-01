@@ -74,11 +74,11 @@ public:
 	virtual int getMinCost(int level);
 	virtual int getMaxCost(int level);
 	virtual int getDamageProtection(int level, DamageSource *source);
-	virtual int getDamageBonus(int level, shared_ptr<Mob> target);
+	virtual float getDamageBonus(int level, shared_ptr<LivingEntity> target);
 	virtual bool isCompatibleWith(Enchantment *other) const;
 	virtual Enchantment *setDescriptionId(int id);
 	virtual int getDescriptionId();
-	virtual wstring getFullname(int level,wstring &unformatted); // 4J Stu added unformatted
+	virtual HtmlString getFullname(int level);
 	virtual bool canEnchant(shared_ptr<ItemInstance> item);
 
 private:

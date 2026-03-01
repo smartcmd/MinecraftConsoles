@@ -10,7 +10,7 @@ private:
 		eControl_OffersList,
 	};
 
-	UIControl_ButtonList m_buttonListOffers;
+	UIControl_DynamicButtonList m_buttonListOffers;
 	UIControl_Label m_labelOffers, m_labelXboxStore;
 	UIControl m_Timer;
 	UI_BEGIN_MAP_ELEMENTS_AND_NAMES(UIScene)

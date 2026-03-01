@@ -9,7 +9,9 @@ private:
 	{
 		eControllerStatus_ConnectController,
 		eControllerStatus_PressToJoin,
-		eControllerStatus_PlayerDetails
+		eControllerStatus_PlayerDetails,
+		eControllerStatus_PressToJoin_LoggedIn,
+		eControllerStatus_PressToJoin_NoController,
 	};
 
 	bool m_bIgnoreInput;
@@ -98,7 +100,11 @@ public:
 	virtual void handleInput(int iPad, int key, bool repeat, bool pressed, bool released, bool &handled);
 
 private:
+#ifdef _XBOX_ONE
+	static int SignInReturned(void *pParam,bool bContinue, int iPad, int iController);
+#else
 	static int SignInReturned(void *pParam,bool bContinue, int iPad);
+#endif
 	static int AvatarReturned(LPVOID lpParam,PBYTE pbThumbnail,DWORD dwThumbnailBytes);
 
 	void updateState();
@@ -107,4 +113,9 @@ private:
 #ifdef _DURANGO
 	static void checkAllPrivilegesCallback(LPVOID lpParam, bool hasPrivileges, int iPad);
 #endif
+
+protected:
+	void _initQuadrants();
+
+	virtual void handleReload();
 };

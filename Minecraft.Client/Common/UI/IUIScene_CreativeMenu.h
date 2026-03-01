@@ -38,6 +38,8 @@ public:
 		eCreativeInventory_Potions_Extended,
 		eCreativeInventory_Potions_Level2_Extended,
 		eCreativeInventory_Misc,
+		eCreativeInventory_ArtToolsDecorations,
+		eCreativeInventory_ArtToolsMisc,
 		eCreativeInventoryGroupsCount
 	};
 
@@ -57,14 +59,17 @@ public:
 		ECreative_Inventory_Groups *m_staticGroupsA;
 		const int m_dynamicGroupsCount;
 		ECreative_Inventory_Groups *m_dynamicGroupsA;
+		const int m_debugGroupsCount;
+		ECreative_Inventory_Groups *m_debugGroupsA;
 
 	private:
 		unsigned int m_pages;
 		unsigned int m_staticPerPage;
 		unsigned int m_staticItems;
+		unsigned int m_debugItems;
 
 	public:
-		TabSpec( LPCWSTR icon, int descriptionId, int staticGroupsCount, ECreative_Inventory_Groups *staticGroups, int dynamicGroupsCount, ECreative_Inventory_Groups *dynamicGroups );
+		TabSpec( LPCWSTR icon, int descriptionId, int staticGroupsCount, ECreative_Inventory_Groups *staticGroups, int dynamicGroupsCount = 0, ECreative_Inventory_Groups *dynamicGroups = NULL, int debugGroupsCount = 0, ECreative_Inventory_Groups *debugGroups = NULL );
 		~TabSpec();
 
 		void populateMenu(AbstractContainerMenu *menu, int dynamicIndex, unsigned int page);
@@ -104,7 +109,8 @@ protected:
 	int m_tabDynamicPos[eCreativeInventoryTab_COUNT];
 	int m_tabPage[eCreativeInventoryTab_COUNT];
 
-	void switchTab(ECreativeInventoryTabs tab);
+	void switchTab(ECreativeInventoryTabs tab);	
+	void ScrollBar(UIVec2D pointerPos);
 	virtual void updateTabHighlightAndText(ECreativeInventoryTabs tab) = 0;
 	virtual void updateScrollCurrentPage(int currentPage, int pageCount) = 0;
 	virtual ESceneSection GetSectionAndSlotInDirection( ESceneSection eSection, ETapState eTapDirection, int *piTargetX, int *piTargetY );
@@ -117,6 +123,19 @@ protected:
 	virtual bool IsSectionSlotList( ESceneSection eSection );
 	virtual bool CanHaveFocus( ESceneSection eSection );
 
-	virtual bool overrideTooltips(ESceneSection sectionUnderPointer, shared_ptr<ItemInstance> itemUnderPointer, bool bIsItemCarried, bool bSlotHasItem, bool bCarriedIsSameAsSlot, int iSlotStackSizeRemaining,
-		EToolTipItem &buttonA, EToolTipItem &buttonX, EToolTipItem &buttonY, EToolTipItem &buttonRT);
+	virtual bool overrideTooltips(
+		ESceneSection sectionUnderPointer,
+		shared_ptr<ItemInstance> itemUnderPointer,
+		bool bIsItemCarried,
+		bool bSlotHasItem,
+		bool bCarriedIsSameAsSlot,
+		int iSlotStackSizeRemaining,
+		EToolTipItem &buttonA,
+		EToolTipItem &buttonX,
+		EToolTipItem &buttonY,
+		EToolTipItem &buttonRT,
+		EToolTipItem &buttonBack
+	);
+
+	static void BuildFirework(vector<shared_ptr<ItemInstance> > *list, byte type, int color, int sulphur, bool flicker, bool trail, int fadeColor = -1);
 };

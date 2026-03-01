@@ -35,4 +35,8 @@ public:
 	bool checkIntersects(int x0, int y0, int z0, int x1, int y1, int z1);
 
 	virtual int getMinY();
+
+	EStructurePiece GetType() { return (EStructurePiece)0; }
+	void addAdditonalSaveData(CompoundTag *tag) {}
+	void readAdditonalSaveData(CompoundTag *tag) {}
 };

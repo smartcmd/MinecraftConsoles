@@ -300,6 +300,7 @@ public:
 	int												GetJoiningReadyPercentage();
 	static void										SetPresenceFailedCallback();
 	GameSessionUID									GetHostUID() { return s_lastPresenceSyncInfo.hostPlayerUID; }
+	bool											IsOnlineGame() { return !m_offlineGame; }
 private:
 	static void										UpdateRichPresenceCustomData(void *data, unsigned int dataBytes);
 	static void										TickRichPresence();

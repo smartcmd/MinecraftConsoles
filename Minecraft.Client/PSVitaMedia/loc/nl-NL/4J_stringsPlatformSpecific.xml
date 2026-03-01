@@ -1,50 +1,50 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <root>
-	<data name="IDS_NOFREESPACE_TEXT">
-		<value>Je systeemopslag heeft te weinig vrije ruimte voor een opslagbestand.</value>
-	</data>
-	<data name="IDS_PRO_RETURNEDTOTITLESCREEN_TEXT">
-		<value>Je bent terug in het titelscherm omdat je bent afgemeld bij "PSN".</value>
-	</data>
-	<data name="IDS_PRO_RETURNEDTOMENU_TEXT">
-		<value>De game is beëindigd omdat je bent afgemeld bij "PSN"</value>
-	</data>
-	<data name="IDS_PRO_NOTONLINE_TITLE">
-		<value>Momenteel niet aangemeld.</value>
-	</data>
-	<data name="IDS_PRO_NOTONLINE_TEXT">
-		<value>Voor bepaalde functies van deze game moet je met "PSN" zijn verbonden. Je bent momenteel offline.</value>
-	</data>
-	<data name="IDS_PRO_NOTADHOCONLINE_TITLE">
-		<value>Ad hoc-netwerk niet beschikbaar.</value>
-	</data>
-	<data name="IDS_PRO_NOTADHOCONLINE_TEXT">
-		<value>Je bent momenteel offline. Voor bepaalde functies van deze game moet je over een Ad hoc-netwerkverbinding beschikken.</value>
-	</data>
-	<data name="IDS_PRO_XBOXLIVE_NOTIFICATION">
-		<value>Voor deze functie moet je zijn aangemeld bij "PSN".</value>
-	</data>
-	<data name="IDS_PRO_NOTONLINE_ACCEPT">
-		<value>Maak verbinding met "PSN"</value>
-	</data>
-	<data name="IDS_PRO_NOTADHOCONLINE_ACCEPT">
-		<value>Verbinding maken met Ad hoc-netwerk</value>
-	</data>
-	<data name="IDS_PRO_ACHIEVEMENTPROBLEM_TITLE">
-		<value>Probleem met trofee</value>
-	</data>
-	<data name="IDS_PRO_ACHIEVEMENTPROBLEM_TEXT">
-		<value>Er is een probleem opgetreden tijdens de verbinding met je Sony Entertainment Network-account. Je kunt de trofee momenteel niet ontvangen.</value>
+	<data name="IDS_PRO_NOPROFILEOPTIONS_TEXT">
+		<value>De instellingen kunnen niet worden opgeslagen naar je Sony Entertainment Network-account.</value>
 	</data>
 	<data name="IDS_PRO_NOPROFILE_TITLE">
 		<value>Probleem met Sony Entertainment Network-account</value>
 	</data>
-	<data name="IDS_PRO_NOPROFILEOPTIONS_TEXT">
-		<value>De instellingen kunnen niet worden opgeslagen naar je Sony Entertainment Network-account.</value>
+	<data name="IDS_PRO_ACHIEVEMENTPROBLEM_TEXT">
+		<value>Er is een probleem opgetreden tijdens de verbinding met je Sony Entertainment Network-account. Je kunt de trofee momenteel niet ontvangen.</value>
 	</data>
 	<data name="IDS_PRO_UNLOCKGAME_TEXT">
 		<value>Dit is de testversie van Minecraft: PlayStation®3 Edition. Als je de volledige versie had, zou je nu een trofee krijgen! 
 Koop de volledige game om optimaal te genieten van Minecraft: PlayStation®3 Edition en samen te spelen met je vrienden uit de hele wereld via "PSN".
 Wil je nu de volledige versie kopen?</value>
+	</data>
+	<data name="IDS_PRO_NOTADHOCONLINE_ACCEPT">
+		<value>Verbinding maken met Ad hoc-netwerk</value>
+	</data>
+	<data name="IDS_PRO_NOTADHOCONLINE_TEXT">
+		<value>Je bent momenteel offline. Voor bepaalde functies van deze game moet je over een Ad hoc-netwerkverbinding beschikken.</value>
+	</data>
+	<data name="IDS_PRO_NOTADHOCONLINE_TITLE">
+		<value>Ad hoc-netwerk niet beschikbaar.</value>
+	</data>
+	<data name="IDS_PRO_ACHIEVEMENTPROBLEM_TITLE">
+		<value>Probleem met trofee</value>
+	</data>
+	<data name="IDS_PRO_RETURNEDTOMENU_TEXT">
+		<value>De game is beëindigd omdat je bent afgemeld bij "PSN"</value>
+	</data>
+	<data name="IDS_PRO_RETURNEDTOTITLESCREEN_TEXT">
+		<value>Je bent terug in het titelscherm omdat je bent afgemeld bij "PSN".</value>
+	</data>
+	<data name="IDS_NOFREESPACE_TEXT">
+		<value>Je systeemopslag heeft te weinig vrije ruimte voor een opslagbestand.</value>
+	</data>
+	<data name="IDS_PRO_NOTONLINE_TITLE">
+		<value>Momenteel niet aangemeld.</value>
+	</data>
+	<data name="IDS_PRO_NOTONLINE_ACCEPT">
+		<value>Maak verbinding met "PSN"</value>
+	</data>
+	<data name="IDS_PRO_XBOXLIVE_NOTIFICATION">
+		<value>Voor deze functie moet je zijn aangemeld bij "PSN".</value>
+	</data>
+	<data name="IDS_PRO_NOTONLINE_TEXT">
+		<value>Voor bepaalde functies van deze game moet je met "PSN" zijn verbonden. Je bent momenteel offline.</value>
 	</data>
 </root>

@@ -5,7 +5,7 @@ using namespace std;
 
 class ChatPacket : public Packet, public enable_shared_from_this<ChatPacket>
 {
-    // longest allowed string is "<" + name + "> " + message
+	// longest allowed string is "<" + name + "> " + message
 private:
 	static const unsigned int MAX_LENGTH;
 
@@ -46,10 +46,31 @@ public:
 		e_ChatDeathThrown,
 		e_ChatDeathIndirectMagic,
 		e_ChatDeathDragonBreath,
-		e_ChatDeathWither,
 		e_ChatDeathAnvil,
 		e_ChatDeathFallingBlock,
 		e_ChatDeathThorns,
+
+		e_ChatDeathFellAccidentLadder,
+		e_ChatDeathFellAccidentVines,
+		e_ChatDeathFellAccidentWater,
+		e_ChatDeathFellAccidentGeneric,
+		e_ChatDeathFellKiller,
+		e_ChatDeathFellAssist,
+		e_ChatDeathFellAssistItem,
+		e_ChatDeathFellFinish,
+		e_ChatDeathFellFinishItem,
+		e_ChatDeathInFirePlayer,
+		e_ChatDeathOnFirePlayer,
+		e_ChatDeathLavaPlayer,
+		e_ChatDeathDrownPlayer,
+		e_ChatDeathCactusPlayer,
+		e_ChatDeathExplosionPlayer,
+		e_ChatDeathWither,
+		e_ChatDeathPlayerItem,
+		e_ChatDeathArrowItem,
+		e_ChatDeathFireballItem,
+		e_ChatDeathThrownItem,
+		e_ChatDeathIndirectMagicItem,
 
 		e_ChatPlayerEnteredEnd,
 		e_ChatPlayerLeftEnd,
@@ -71,6 +92,7 @@ public:
 		e_ChatPlayerMaxBredWolves, // Tell the player they can't put this wolf in love mode because no breeding can be done
 		e_ChatPlayerCantShearMooshroom, // Tell the player they can't shear because the limits have been reached
 		e_ChatPlayerMaxBoats,
+		e_ChatPlayerMaxBats,
 
 		e_ChatCommandTeleportSuccess,
 		e_ChatCommandTeleportMe,
@@ -84,7 +106,12 @@ public:
 	EChatPacketMessage m_messageType;
 
 	ChatPacket();
-	ChatPacket(const wstring& message, EChatPacketMessage type = e_ChatCustom, int customData = -1, const wstring& additionalMessage = L"");
+
+	// 4J: Seperated the one convoluted ctor into three more readable ctors. The last two ctors are only used for death messages and I'd really
+	// like to consolodate them and/or the logic that uses them at some point.
+	ChatPacket(const wstring& message, EChatPacketMessage type = e_ChatCustom, int customData = -1);
+	ChatPacket(const wstring& message, EChatPacketMessage type, int sourceEntityType, const wstring& sourceName); 
+	ChatPacket(const wstring& message, EChatPacketMessage type, int sourceEntityType, const wstring& sourceName, const wstring& itemName);
 
 	virtual void read(DataInputStream *dis);
 	virtual void write(DataOutputStream *dos);

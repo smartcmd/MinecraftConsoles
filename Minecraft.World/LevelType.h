@@ -14,6 +14,7 @@ public:
 	static void staticCtor();
 
 private:
+	int id;
 	wstring m_generatorName;
 	int m_version;
 	bool m_selectable;
@@ -36,4 +37,5 @@ private:
 public:
 	bool hasReplacement();
 	static LevelType *getLevelType(wstring name);
+	int getId();
 };

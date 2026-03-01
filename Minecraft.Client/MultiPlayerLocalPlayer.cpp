@@ -12,9 +12,13 @@
 #include "..\Minecraft.World\net.minecraft.world.effect.h"
 #include "..\Minecraft.World\LevelData.h"
 #include "..\Minecraft.World\net.minecraft.world.entity.item.h"
+#include "Input.h"
+#include "LevelRenderer.h"
 
-
-
+// 4J added for testing
+#ifdef STRESS_TEST_MOVE
+volatile bool stressTestEnabled = true;
+#endif
 
 MultiplayerLocalPlayer::MultiplayerLocalPlayer(Minecraft *minecraft, Level *level, User *user, ClientConnection *connection) : LocalPlayer(minecraft, level, user, level->dimension->id)
 {
@@ -31,12 +35,12 @@ MultiplayerLocalPlayer::MultiplayerLocalPlayer(Minecraft *minecraft, Level *leve
     this->connection = connection;
 }
 
-bool MultiplayerLocalPlayer::hurt(DamageSource *source, int dmg)
+bool MultiplayerLocalPlayer::hurt(DamageSource *source, float dmg)
 {
 	return false;
 }
 
-void MultiplayerLocalPlayer::heal(int heal)
+void MultiplayerLocalPlayer::heal(float heal)
 {
 }
 
@@ -56,12 +60,29 @@ void MultiplayerLocalPlayer::tick()
 	if (!level->hasChunkAt(Mth::floor(x), 0, Mth::floor(z))) return;
 
 	double tempX = x, tempY = y, tempZ = z;
+
     LocalPlayer::tick();
-	
+
+	// 4J added for testing
+#ifdef STRESS_TEST_MOVE
+	if(stressTestEnabled)
+	{
+		StressTestMove(&tempX,&tempY,&tempZ);
+	}
+#endif
+
 	//if( !minecraft->localgameModes[m_iPad]->isTutorial() || minecraft->localgameModes[m_iPad]->getTutorial()->canMoveToPosition(tempX, tempY, tempZ, x, y, z) )
 	if(minecraft->localgameModes[m_iPad]->getTutorial()->canMoveToPosition(tempX, tempY, tempZ, x, y, z))
 	{		
-		sendPosition();
+		if (isRiding())
+		{
+			connection->send(shared_ptr<MovePlayerPacket>(new MovePlayerPacket::Rot(yRot, xRot, onGround, abilities.flying)));
+            connection->send(shared_ptr<PlayerInputPacket>(new PlayerInputPacket(xxa, yya, input->jumping, input->sneaking)));
+        }
+		else
+		{
+            sendPosition();
+        }
 	}
 	else
 	{
@@ -129,7 +150,7 @@ void MultiplayerLocalPlayer::sendPosition()
         }
 		else
 		{
-		  connection->send( shared_ptr<MovePlayerPacket>( new MovePlayerPacket(onGround, abilities.flying) ) );
+			connection->send( shared_ptr<MovePlayerPacket>( new MovePlayerPacket(onGround, abilities.flying) ) );
         }
     }
 
@@ -180,8 +201,9 @@ void MultiplayerLocalPlayer::respawn()
 }
 
 
-void MultiplayerLocalPlayer::actuallyHurt(DamageSource *source, int dmg)
+void MultiplayerLocalPlayer::actuallyHurt(DamageSource *source, float dmg)
 {
+	if (isInvulnerable()) return;
 	setHealth(getHealth() - dmg);
 }
 
@@ -211,7 +233,7 @@ void MultiplayerLocalPlayer::onEffectAdded(MobEffectInstance *effect)
 }
 
 
-void MultiplayerLocalPlayer::onEffectUpdated(MobEffectInstance *effect)
+void MultiplayerLocalPlayer::onEffectUpdated(MobEffectInstance *effect, bool doRefreshAttributes)
 {
 	Minecraft *pMinecraft = Minecraft::GetInstance();
 	if(pMinecraft->localgameModes[m_iPad] != NULL )
@@ -220,7 +242,7 @@ void MultiplayerLocalPlayer::onEffectUpdated(MobEffectInstance *effect)
 		Tutorial *tutorial = gameMode->getTutorial();
 		tutorial->onEffectChanged(MobEffect::effects[effect->getId()]);
 	}
-	Player::onEffectUpdated(effect);
+	Player::onEffectUpdated(effect, doRefreshAttributes);
 }
 
 
@@ -239,11 +261,17 @@ void MultiplayerLocalPlayer::onEffectRemoved(MobEffectInstance *effect)
 void MultiplayerLocalPlayer::closeContainer()
 {
     connection->send( shared_ptr<ContainerClosePacket>( new ContainerClosePacket(containerMenu->containerId) ) );
+	clientSideCloseContainer();
+}
+
+// close the container without sending a packet to the server
+void MultiplayerLocalPlayer::clientSideCloseContainer()
+{
     inventory->setCarried(nullptr);
     LocalPlayer::closeContainer();
 }
 
-void MultiplayerLocalPlayer::hurtTo(int newHealth, ETelemetryChallenges damageSource)
+void MultiplayerLocalPlayer::hurtTo(float newHealth, ETelemetryChallenges damageSource)
 {
 	if (flashOnSetHealth)
 	{
@@ -294,11 +322,28 @@ bool MultiplayerLocalPlayer::isLocalPlayer()
 	return true;
 }
 
+void MultiplayerLocalPlayer::sendRidingJump()
+{
+	connection->send(shared_ptr<PlayerCommandPacket>(new PlayerCommandPacket(shared_from_this(), PlayerCommandPacket::RIDING_JUMP, (int) (getJumpRidingScale() * 100.0f))));
+}
+
+void MultiplayerLocalPlayer::sendOpenInventory()
+{
+	connection->send(shared_ptr<PlayerCommandPacket>(new PlayerCommandPacket(shared_from_this(), PlayerCommandPacket::OPEN_INVENTORY)));
+}
+
 void MultiplayerLocalPlayer::ride(shared_ptr<Entity> e)
 {
 	bool wasRiding = riding != NULL;
 	LocalPlayer::ride(e);
 	bool isRiding = riding != NULL;
+
+	// 4J Added
+	if(wasRiding && !isRiding)
+	{
+		setSneaking(false);
+		input->sneaking = false;
+	}
 
 	if( isRiding )
 	{
@@ -334,10 +379,7 @@ void MultiplayerLocalPlayer::ride(shared_ptr<Entity> e)
 		}
 		else if (!wasRiding && isRiding)
 		{
-			if(dynamic_pointer_cast<Minecart>(e) != NULL)
-				gameMode->getTutorial()->changeTutorialState(e_Tutorial_State_Riding_Minecart);
-			else if(dynamic_pointer_cast<Boat>(e) != NULL)
-				gameMode->getTutorial()->changeTutorialState(e_Tutorial_State_Riding_Boat);
+			gameMode->getTutorial()->onRideEntity(e);
 		}
 	}
 }
@@ -367,3 +409,78 @@ void MultiplayerLocalPlayer::setAndBroadcastCustomCape(DWORD capeId)
 #endif
 	if(getCustomCape() != oldCapeIndex) connection->send( shared_ptr<TextureChangePacket>( new TextureChangePacket( shared_from_this(), TextureChangePacket::e_TextureChange_Cape, app.GetPlayerCapeName(GetXboxPad()) ) ) );
 }
+
+// 4J added for testing. This moves the player in a repeated sequence of 2 modes:
+// Mode 0 - teleports to random location in the world, and waits for the number of chunks that are fully loaded/created to have setting for 2 seconds before changing to mode 1
+// Mode 1 - picks a random direction to move in for 200 ticks (~10 seconds), repeating for a total of 2000 ticks, before cycling back to mode 0
+// Whilst carrying out this movement pattern, this calls checkAllPresentChunks which checks the integrity of all currently loaded/created chunks round the player.
+#ifdef STRESS_TEST_MOVE
+void MultiplayerLocalPlayer::StressTestMove(double *tempX, double *tempY, double *tempZ)
+{
+	static volatile int64_t lastChangeTime = 0;
+	static volatile int64_t lastTeleportTime = 0;
+	static int lastCount = 0;
+	static int stressTestCount = 0;
+	const int dirChangeTickCount = 200;
+
+	int64_t currentTime = System::currentTimeMillis();
+
+	bool faultFound = false;
+	int count = Minecraft::GetInstance()->levelRenderer->checkAllPresentChunks(&faultFound);
+
+/*
+	if( faultFound )
+	{
+		app.DebugPrintf("Fault found\n");
+		stressTestEnabled = false;
+	}
+	*/
+	if( count != lastCount )
+	{
+		lastChangeTime = currentTime;
+		lastCount = count;
+	}
+
+	static float angle = 30.0;
+	static float dx = cos(30.0);
+	static float dz = sin(30.0);
+
+#if 0
+	if( ( stressTestCount % dirChangeTickCount) == 0 )
+	{
+		int angledeg = rand() % 360;
+		angle = (((double)angledeg) / 360.0 ) * ( 2.0 * 3.141592654 );
+		dx = cos(angle);
+		dz = sin(angle);
+	}
+#endif
+
+	float nx =  x + ( dx * 1.2 );
+	float nz  = z + ( dz * 1.2 );
+	float ny = y;
+	if( ny < 140.0f ) ny += 0.5f;
+	if( nx > 2539.0 )
+	{
+		nx = 2539.0;
+		dx = -dx;
+	}
+	if( nz > 2539.0 )
+	{
+		nz = 2539.0;
+		dz = -dz;
+	}
+	if( nx < -2550.0 )
+	{
+		nx = -2550.0;
+		dx = -dx;
+	}
+
+	if( nz < -2550.0 )
+	{
+		nz = -2550.0;
+		dz = -dz;
+	}
+	absMoveTo(nx,ny,nz,yRot,xRot);
+	stressTestCount++;
+}
+#endif

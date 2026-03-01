@@ -3,6 +3,8 @@
 #include "..\Minecraft.World\net.minecraft.world.entity.boss.enderdragon.h"
 #include "EnderCrystalRenderer.h"
 
+ResourceLocation EnderCrystalRenderer::ENDER_CRYSTAL_LOCATION = ResourceLocation(TN_MOB_ENDERDRAGON_ENDERCRYSTAL);
+
 EnderCrystalRenderer::EnderCrystalRenderer()
 {
 	currentModel = -1;
@@ -24,10 +26,15 @@ void EnderCrystalRenderer::render(shared_ptr<Entity> _crystal, double x, double 
 	float tt = crystal->time + a;
 	glPushMatrix();
 	glTranslatef((float) x, (float) y, (float) z);
-	bindTexture(TN_MOB_ENDERDRAGON_ENDERCRYSTAL); // 4J was "/mob/enderdragon/crystal.png"
+	bindTexture(&ENDER_CRYSTAL_LOCATION);
 	float hh = sin(tt * 0.2f) / 2 + 0.5f;
 	hh = hh * hh + hh;
 	model->render(crystal, 0, tt * 3, hh * 0.2f, 0, 0, 1 / 16.0f, true);
 
 	glPopMatrix();
+}
+
+ResourceLocation *EnderCrystalRenderer::getTextureLocation(shared_ptr<Entity> mob)
+{
+    return &ENDER_CRYSTAL_LOCATION;
 }

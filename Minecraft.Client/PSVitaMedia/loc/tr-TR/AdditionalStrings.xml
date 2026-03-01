@@ -48,6 +48,12 @@
 	<data name="IDS_CORRUPT_OPTIONS">
 		<value>Seçenekler dosyanız bozulmuş ve silinmesi gerekiyor.</value>
 	</data>
+	<data name="IDS_CORRUPT_OPTIONS_DELETE">
+		<value>Seçenekler dosyasını sil</value>
+	</data>
+	<data name="IDS_CORRUPT_OPTIONS_RETRY">
+		<value>Seçenekler dosyasını tekrar yüklemeyi dene.</value>
+	</data>
 	<data name="IDS_CORRUPT_SAVECACHE">
 		<value>Kayıt Önbellek dosyanız bozulmuş ve silinmesi gerekiyor.</value>
 	</data>
@@ -75,6 +81,9 @@
 	<data name="IDS_CONTENT_RESTRICTION_MULTIPLAYER">
 		<value>Yerel oyuncularınızdan birinin ebeveyn ayarlarından dolayı Sony Entertainment Network hesabınızda çevrimiçi hizmet devre dışı bırakıldı.</value>
 	</data>
+	<data name="IDS_CONTENT_RESTRICTION_PATCH_AVAILABLE">
+		<value>Bir oyun güncellemesinin mevcut olması nedeniyle çevrimiçi özellikler devre dışı bırakılmıştır. </value>
+	</data>
 	<data name="IDS_NO_DLCCATEGORIES">
 		<value>Bu ürün için şu anda indirilebilir içerik teklifi bulunmamaktadır.</value>
 	</data>
@@ -83,8 +92,5 @@
 	</data>
 	<data name="IDS_INVITATION_BODY">
 		<value>Lütfen buyurun ve biraz Minecraft: PlayStation®Vita Edition oynayın!</value>
-	</data>
-	<data name="IDS_CONTENT_RESTRICTION_PATCH_AVAILABLE">
-		<value>Bir oyun güncellemesinin mevcut olması nedeniyle çevrimiçi özellikler devre dışı bırakılmıştır. </value>
 	</data>
 </root>

@@ -69,7 +69,7 @@ shared_ptr<ItemInstance> MerchantMenu::quickMoveStack(shared_ptr<Player> player,
 	shared_ptr<ItemInstance> clicked = nullptr;
 	Slot *slot = NULL;
 	
-	if(slotIndex < slots->size()) slot = slots->at(slotIndex);
+	if(slotIndex < slots.size()) slot = slots.at(slotIndex);
 	if (slot != NULL && slot->hasItem())
 	{
 		shared_ptr<ItemInstance> stack = slot->getItem();

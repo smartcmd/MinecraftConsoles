@@ -206,7 +206,7 @@ void IUIScene_AnvilMenu::handleTick()
 			m_costString = app.GetString(IDS_REPAIR_EXPENSIVE);
 			canAfford = false;
 		}
-		else if(!m_repairMenu->getSlot(RepairMenu::RESULT_SLOT)->hasItem())
+		else if(!m_repairMenu->getSlot(AnvilMenu::RESULT_SLOT)->hasItem())
 		{
 			// Do nothing
 		}
@@ -216,7 +216,7 @@ void IUIScene_AnvilMenu::handleTick()
 			wchar_t temp[256];
 			swprintf(temp, 256, costString, m_repairMenu->cost);
 			m_costString = temp;
-			if(!m_repairMenu->getSlot(RepairMenu::RESULT_SLOT)->mayPickup(dynamic_pointer_cast<Player>(m_inventory->player->shared_from_this())))
+			if(!m_repairMenu->getSlot(AnvilMenu::RESULT_SLOT)->mayPickup(dynamic_pointer_cast<Player>(m_inventory->player->shared_from_this())))
 			{
 				canAfford = false;
 			}
@@ -224,13 +224,13 @@ void IUIScene_AnvilMenu::handleTick()
 	}
 	setCostLabel(m_costString, canAfford);
 
-	bool crossVisible = (m_repairMenu->getSlot(RepairMenu::INPUT_SLOT)->hasItem() || m_repairMenu->getSlot(RepairMenu::ADDITIONAL_SLOT)->hasItem()) && !m_repairMenu->getSlot(RepairMenu::RESULT_SLOT)->hasItem();
+	bool crossVisible = (m_repairMenu->getSlot(AnvilMenu::INPUT_SLOT)->hasItem() || m_repairMenu->getSlot(AnvilMenu::ADDITIONAL_SLOT)->hasItem()) && !m_repairMenu->getSlot(AnvilMenu::RESULT_SLOT)->hasItem();
 	showCross(crossVisible);
 }
 
 void IUIScene_AnvilMenu::updateItemName()
 {
-	Slot *slot = m_repairMenu->getSlot(RepairMenu::INPUT_SLOT);
+	Slot *slot = m_repairMenu->getSlot(AnvilMenu::INPUT_SLOT);
 	if (slot != NULL && slot->hasItem())
 	{
 		if (!slot->getItem()->hasCustomHoverName() && m_itemName.compare(slot->getItem()->getHoverName())==0)
@@ -250,12 +250,12 @@ void IUIScene_AnvilMenu::updateItemName()
 
 void IUIScene_AnvilMenu::refreshContainer(AbstractContainerMenu *container, vector<shared_ptr<ItemInstance> > *items)
 {
-	slotChanged(container, RepairMenu::INPUT_SLOT, container->getSlot(0)->getItem());
+	slotChanged(container, AnvilMenu::INPUT_SLOT, container->getSlot(0)->getItem());
 }
 
 void IUIScene_AnvilMenu::slotChanged(AbstractContainerMenu *container, int slotIndex, shared_ptr<ItemInstance> item)
 {
-	if (slotIndex == RepairMenu::INPUT_SLOT)
+	if (slotIndex == AnvilMenu::INPUT_SLOT)
 	{
 		m_itemName = item == NULL ? L"" : item->getHoverName();
 		setEditNameValue(m_itemName);

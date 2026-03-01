@@ -37,7 +37,8 @@ void UIControl_MinecraftPlayer::render(IggyCustomDrawCallbackRegion *region)
 	float xo = width/2;
 	float yo = height;
 	
-	glTranslatef(xo, yo - 7.0f, 50.0f);
+	// dynamic y offset according to region height
+	glTranslatef(xo, yo - (height / 9.0f), 50.0f);
 
 	float ss;
 

@@ -19,8 +19,8 @@ MultiPlayerGameMode::MultiPlayerGameMode(Minecraft *minecraft, ClientConnection 
     xDestroyBlock = -1;
     yDestroyBlock = -1;
     zDestroyBlock = -1;
+    destroyingItem = nullptr;
     destroyProgress = 0;
-    oDestroyProgress = 0;
     destroyTicks = 0;
     destroyDelay = 0;
     isDestroying = false;
@@ -66,10 +66,19 @@ bool MultiPlayerGameMode::canHurtPlayer()
 
 bool MultiPlayerGameMode::destroyBlock(int x, int y, int z, int face)
 {
-	if (localPlayerMode->isReadOnly())
+	if (localPlayerMode->isAdventureRestricted()) {
+        if (!minecraft->player->mayDestroyBlockAt(x, y, z)) {
+            return false;
+        }
+    }
+
+	if (localPlayerMode->isCreative())
 	{
-		return false;
-	}
+        if (minecraft->player->getCarriedItem() != NULL && dynamic_cast<WeaponItem *>(minecraft->player->getCarriedItem()->getItem()) != NULL)
+		{
+            return false;
+        }
+    }
 
 	Level *level = minecraft->level;
 	Tile *oldTile = Tile::tiles[level->getTile(x, y, z)];
@@ -79,11 +88,12 @@ bool MultiPlayerGameMode::destroyBlock(int x, int y, int z, int face)
 	level->levelEvent(LevelEvent::PARTICLES_DESTROY_BLOCK, x, y, z, oldTile->id + (level->getData(x, y, z) << Tile::TILE_NUM_SHIFT));
 
 	int data = level->getData(x, y, z);
-	bool changed = level->setTile(x, y, z, 0);
+	bool changed = level->removeTile(x, y, z);
 	if (changed)
 	{
 		oldTile->destroy(level, x, y, z, data);
 	}
+	yDestroyBlock = -1;
 
 	if (!localPlayerMode->isCreative())
 	{
@@ -104,10 +114,14 @@ bool MultiPlayerGameMode::destroyBlock(int x, int y, int z, int face)
 void MultiPlayerGameMode::startDestroyBlock(int x, int y, int z, int face)
 {	
 	if(!minecraft->player->isAllowedToMine()) return;
-	if (localPlayerMode->isReadOnly())
+
+	if (localPlayerMode->isAdventureRestricted())
 	{
-		return;
-	}
+        if (!minecraft->player->mayDestroyBlockAt(x, y, z))
+		{
+            return;
+        }
+    }
 
 	if (localPlayerMode->isCreative())
 	{
@@ -115,14 +129,18 @@ void MultiPlayerGameMode::startDestroyBlock(int x, int y, int z, int face)
 		creativeDestroyBlock(minecraft, this, x, y, z, face);
 		destroyDelay = 5;
 	}
-	else if (!isDestroying || x != xDestroyBlock || y != yDestroyBlock || z != zDestroyBlock)
+	else if (!isDestroying || !sameDestroyTarget(x, y, z))
 	{
+		if (isDestroying)
+		{
+            connection->send(shared_ptr<PlayerActionPacket>(new PlayerActionPacket(PlayerActionPacket::ABORT_DESTROY_BLOCK, xDestroyBlock, yDestroyBlock, zDestroyBlock, face)));
+        }
         connection->send( shared_ptr<PlayerActionPacket>( new PlayerActionPacket(PlayerActionPacket::START_DESTROY_BLOCK, x, y, z, face) ) );
         int t = minecraft->level->getTile(x, y, z);
         if (t > 0 && destroyProgress == 0) Tile::tiles[t]->attack(minecraft->level, x, y, z, minecraft->player);
         if (t > 0 &&
-			(Tile::tiles[t]->getDestroyProgress(minecraft->player, minecraft->player->level, x, y, z) >= 1 ||
-			(app.DebugSettingsOn() && app.GetGameSettingsDebugMask(ProfileManager.GetPrimaryPad())&(1L<<eDebugSetting_InstantDestroy))
+			(Tile::tiles[t]->getDestroyProgress(minecraft->player, minecraft->player->level, x, y, z) >= 1
+			// ||(app.DebugSettingsOn() && app.GetGameSettingsDebugMask(ProfileManager.GetPrimaryPad())&(1L<<eDebugSetting_InstantDestroy))
 			)
 			)
 		{
@@ -134,8 +152,8 @@ void MultiPlayerGameMode::startDestroyBlock(int x, int y, int z, int face)
             xDestroyBlock = x;
             yDestroyBlock = y;
             zDestroyBlock = z;
-            destroyProgress = 0;
-            oDestroyProgress = 0;
+			destroyingItem = minecraft->player->getCarriedItem();
+            destroyProgress = 0;        
             destroyTicks = 0;
 			minecraft->level->destroyTileProgress(minecraft->player->entityId, xDestroyBlock, yDestroyBlock, zDestroyBlock, (int)(destroyProgress * 10) - 1);
         }
@@ -175,7 +193,7 @@ void MultiPlayerGameMode::continueDestroyBlock(int x, int y, int z, int face)
 		return;
 	}
 
-    if (x == xDestroyBlock && y == yDestroyBlock && z == zDestroyBlock)
+    if (sameDestroyTarget(x, y, z))
 	{
         int t = minecraft->level->getTile(x, y, z);
         if (t == 0)
@@ -205,7 +223,6 @@ void MultiPlayerGameMode::continueDestroyBlock(int x, int y, int z, int face)
             connection->send( shared_ptr<PlayerActionPacket>( new PlayerActionPacket(PlayerActionPacket::STOP_DESTROY_BLOCK, x, y, z, face) ) );
 			destroyBlock(x, y, z, face);
             destroyProgress = 0;
-            oDestroyProgress = 0;
             destroyTicks = 0;
             destroyDelay = 5;
         }
@@ -231,8 +248,21 @@ float MultiPlayerGameMode::getPickRange()
 void MultiPlayerGameMode::tick()
 {
     ensureHasSentCarriedItem();
-    oDestroyProgress = destroyProgress;
     //minecraft->soundEngine->playMusicTick();
+}
+
+bool MultiPlayerGameMode::sameDestroyTarget(int x, int y, int z)
+{
+    shared_ptr<ItemInstance> selected = minecraft->player->getCarriedItem();
+    bool sameItems = destroyingItem == NULL && selected == NULL;
+    if (destroyingItem != NULL && selected != NULL)
+	{
+        sameItems = 
+			selected->id == destroyingItem->id &&
+			ItemInstance::tagMatches(selected, destroyingItem) &&
+			(selected->isDamageableItem() || selected->getAuxValue() == destroyingItem->getAuxValue());
+    }
+    return x == xDestroyBlock && y == yDestroyBlock && z == zDestroyBlock && sameItems;
 }
 
 void MultiPlayerGameMode::ensureHasSentCarriedItem()
@@ -258,34 +288,37 @@ bool MultiPlayerGameMode::useItemOn(shared_ptr<Player> player, Level *level, sha
 	float clickY = (float) hit->y - y;
 	float clickZ = (float) hit->z - z;
 	bool didSomething = false;
-	int t = level->getTile(x, y, z);
-	
-	if (t > 0 && player->isAllowedToUse(Tile::tiles[t]))
+
+	if (!player->isSneaking() || player->getCarriedItem() == NULL)
 	{
-		if(bTestUseOnly)
+		int t = level->getTile(x, y, z);	
+		if (t > 0 && player->isAllowedToUse(Tile::tiles[t]))
 		{
-			switch(t)
+			if(bTestUseOnly)
 			{
-			case Tile::recordPlayer_Id: 
-			case Tile::bed_Id: // special case for a bed
-				if (Tile::tiles[t]->TestUse(level, x, y, z, player )) 
+				switch(t)
 				{
-					return true;
-				}
-				else if (t==Tile::bed_Id) // 4J-JEV: You can still use items on record players (ie. set fire to them).
-				{
-					// bed is too far away, or something
-					return false;
-				}
-			break;
-			default:
-				if (Tile::tiles[t]->TestUse()) return true;
+				case Tile::jukebox_Id: 
+				case Tile::bed_Id: // special case for a bed
+					if (Tile::tiles[t]->TestUse(level, x, y, z, player )) 
+					{
+						return true;
+					}
+					else if (t==Tile::bed_Id) // 4J-JEV: You can still use items on record players (ie. set fire to them).
+					{
+						// bed is too far away, or something
+						return false;
+					}
 				break;
+				default:
+					if (Tile::tiles[t]->TestUse()) return true;
+					break;
+				}
 			}
-		}
-		else 
-		{
-			if (Tile::tiles[t]->use(level, x, y, z, player, face, clickX, clickY, clickZ)) didSomething = true;
+			else 
+			{
+				if (Tile::tiles[t]->use(level, x, y, z, player, face, clickX, clickY, clickZ)) didSomething = true;
+			}
 		}
 	}
 
@@ -321,6 +354,7 @@ bool MultiPlayerGameMode::useItemOn(shared_ptr<Player> player, Level *level, sha
 	}
 	else
 	{
+		int t = level->getTile(x, y, z);
 		// 4J - Bit of a hack, however seems preferable to any larger changes which would have more chance of causing unwanted side effects. 
 		// If we aren't going to be actually performing the use method locally, then call this method with its "soundOnly" parameter set to true.
 		// This is an addition from the java version, and as its name suggests, doesn't actually perform the use locally but just makes any sounds that
@@ -361,7 +395,7 @@ bool MultiPlayerGameMode::useItem(shared_ptr<Player> player, Level *level, share
 	// 4J-PB added for tooltips to test use only
 	if(bTestUseOnly)
 	{
-		result = item->TestUse(level, player);
+		result = item->TestUse(item, level, player);
 	}
 	else
 	{
@@ -444,7 +478,7 @@ void MultiPlayerGameMode::releaseUsingItem(shared_ptr<Player> player)
 
 bool MultiPlayerGameMode::hasExperience()
 {
-	return true;
+	return localPlayerMode->isSurvival();
 }
 
 bool MultiPlayerGameMode::hasMissTime()
@@ -460,6 +494,13 @@ bool MultiPlayerGameMode::hasInfiniteItems()
 bool MultiPlayerGameMode::hasFarPickRange()
 {
 	return localPlayerMode->isCreative();
+}
+
+// Returns true when the inventory is opened from the server-side. Currently
+// only happens when the player is riding a horse.
+bool MultiPlayerGameMode::isServerControlledInventory()
+{
+    return minecraft->player->isRiding() && minecraft->player->riding->instanceof(eTYPE_HORSE);
 }
 
 bool MultiPlayerGameMode::handleCraftItem(int recipe, shared_ptr<Player> player)

@@ -20,44 +20,44 @@ CakeTile::CakeTile(int id) : Tile(id, Material::cake,isSolidRender())
 
 void CakeTile::updateShape(LevelSource *level, int x, int y, int z, int forceData, shared_ptr<TileEntity> forceEntity) // 4J added forceData, forceEntity param
 {
-    int d = level->getData(x, y, z);
-    float r = 1 / 16.0f;
-    float r2 = (1 + d * 2) / 16.0f;
-    float h = 8 / 16.0f;
-    this->setShape(r2, 0, r, 1 - r, h, 1 - r);
+	int d = level->getData(x, y, z);
+	float r = 1 / 16.0f;
+	float r2 = (1 + d * 2) / 16.0f;
+	float h = 8 / 16.0f;
+	this->setShape(r2, 0, r, 1 - r, h, 1 - r);
 }
 
 void CakeTile::updateDefaultShape()
 {
-    float r = 1 / 16.0f;
-    float h = 8 / 16.0f;
-    this->setShape(r, 0, r, 1 - r, h, 1 - r);
+	float r = 1 / 16.0f;
+	float h = 8 / 16.0f;
+	this->setShape(r, 0, r, 1 - r, h, 1 - r);
 }
 
 AABB *CakeTile::getAABB(Level *level, int x, int y, int z)
 {
-    int d = level->getData(x, y, z);
-    float r = 1 / 16.0f;
-    float r2 = (1 + d * 2) / 16.0f;
-    float h = 8 / 16.0f;
-    return AABB::newTemp(x + r2, y, z + r, x + 1 - r, y + h - r, z + 1 - r);
+	int d = level->getData(x, y, z);
+	float r = 1 / 16.0f;
+	float r2 = (1 + d * 2) / 16.0f;
+	float h = 8 / 16.0f;
+	return AABB::newTemp(x + r2, y, z + r, x + 1 - r, y + h - r, z + 1 - r);
 }
 
 AABB *CakeTile::getTileAABB(Level *level, int x, int y, int z)
 {
-    int d = level->getData(x, y, z);
-    float r = 1 / 16.0f;
-    float r2 = (1 + d * 2) / 16.0f;
-    float h = 8 / 16.0f;
-    return AABB::newTemp(x + r2, y, z + r, x + 1 - r, y + h, z + 1 - r);
+	int d = level->getData(x, y, z);
+	float r = 1 / 16.0f;
+	float r2 = (1 + d * 2) / 16.0f;
+	float h = 8 / 16.0f;
+	return AABB::newTemp(x + r2, y, z + r, x + 1 - r, y + h, z + 1 - r);
 }
 
 Icon *CakeTile::getTexture(int face, int data)
 {
-    if (face == Facing::UP) return iconTop;
-    if (face == Facing::DOWN) return iconBottom;
-    if (data > 0 && face == Facing::WEST) return iconInner;
-    return icon;
+	if (face == Facing::UP) return iconTop;
+	if (face == Facing::DOWN) return iconBottom;
+	if (data > 0 && face == Facing::WEST) return iconInner;
+	return icon;
 }
 
 void CakeTile::registerIcons(IconRegister *iconRegister)
@@ -87,8 +87,8 @@ bool CakeTile::TestUse()
 bool CakeTile::use(Level *level, int x, int y, int z, shared_ptr<Player> player, int clickedFace, float clickX, float clickY, float clickZ, bool soundOnly/*=false*/) // 4J added soundOnly param
 {
 	if( soundOnly ) return false;
-    eat(level, x, y, z, player);
-    return true;
+	eat(level, x, y, z, player);
+	return true;
 }
 
 void CakeTile::attack(Level *level, int x, int y, int z, shared_ptr<Player> player)
@@ -98,35 +98,34 @@ void CakeTile::attack(Level *level, int x, int y, int z, shared_ptr<Player> play
 
 void CakeTile::eat(Level *level, int x, int y, int z, shared_ptr<Player> player)
 {
-    if (player->canEat(false))
+	if (player->canEat(false))
 	{
-        player->getFoodData()->eat(2, FoodConstants::FOOD_SATURATION_POOR);
+		player->getFoodData()->eat(2, FoodConstants::FOOD_SATURATION_POOR);
 
-        int d = level->getData(x, y, z) + 1;
-        if (d >= 6)
+		int d = level->getData(x, y, z) + 1;
+		if (d >= 6)
 		{
-            level->setTile(x, y, z, 0);
-        } else
+			level->removeTile(x, y, z);
+		}
+		else
 		{
-            level->setData(x, y, z, d);
-            level->setTileDirty(x, y, z);
-        }
-    }
+			level->setData(x, y, z, d, Tile::UPDATE_CLIENTS);
+		}
+	}
 }
 
 bool CakeTile::mayPlace(Level *level, int x, int y, int z)
 {
-    if (!Tile::mayPlace(level, x, y, z)) return false;
+	if (!Tile::mayPlace(level, x, y, z)) return false;
 
-    return canSurvive(level, x, y, z);
+	return canSurvive(level, x, y, z);
 }
 
 void CakeTile::neighborChanged(Level *level, int x, int y, int z, int type)
 {
-    if (!canSurvive(level, x, y, z))
+	if (!canSurvive(level, x, y, z))
 	{
-        this->spawnResources(level, x, y, z, level->getData(x, y, z), 0);
-        level->setTile(x, y, z, 0);
+		level->removeTile(x, y, z);
 	}
 }
 

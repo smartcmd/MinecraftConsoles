@@ -7,12 +7,12 @@ class CauldronTile : public Tile
 {
 public:
 	static const wstring TEXTURE_INSIDE;
-    static const wstring TEXTURE_BOTTOM;
+	static const wstring TEXTURE_BOTTOM;
 
 private:
 	Icon *iconInner;
-    Icon *iconTop;
-    Icon *iconBottom;
+	Icon *iconTop;
+	Icon *iconBottom;
 
 public:
 	CauldronTile(int id);
@@ -30,4 +30,7 @@ public:
 	virtual void handleRain(Level *level, int x, int y, int z);
 	virtual int getResource(int data, Random *random, int playerBonusLevel);
 	virtual int cloneTileId(Level *level, int x, int y, int z);
+	virtual bool hasAnalogOutputSignal();
+	virtual int getAnalogOutputSignal(Level *level, int x, int y, int z, int dir);
+	static int getFillLevel(int data);
 };

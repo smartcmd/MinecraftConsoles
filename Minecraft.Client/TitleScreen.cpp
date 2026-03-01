@@ -59,7 +59,7 @@ void TitleScreen::keyPressed(wchar_t eventCharacter, int eventKey)
 
 void TitleScreen::init()
 {
-	/* 4J - removed
+	/* 4J - Implemented in main menu instead
     Calendar c = Calendar.getInstance();
     c.setTime(new Date());
 

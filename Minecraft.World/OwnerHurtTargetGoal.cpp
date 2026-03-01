@@ -7,19 +7,30 @@ OwnerHurtTargetGoal::OwnerHurtTargetGoal(TamableAnimal *tameAnimal) : TargetGoal
 {
 	this->tameAnimal = tameAnimal;
 	setRequiredControlFlags(TargetGoal::TargetFlag);
+	timestamp = 0;
 }
 
 bool OwnerHurtTargetGoal::canUse()
 {
 	if (!tameAnimal->isTame()) return false;
-	shared_ptr<Mob> owner = tameAnimal->getOwner();
+	shared_ptr<LivingEntity> owner = dynamic_pointer_cast<LivingEntity>( tameAnimal->getOwner() );
 	if (owner == NULL) return false;
-	ownerLastHurt = weak_ptr<Mob>(owner->getLastHurtMob());
-	return canAttack(ownerLastHurt.lock(), false);
+	ownerLastHurt = weak_ptr<LivingEntity>(owner->getLastHurtMob());
+	int ts = owner->getLastHurtMobTimestamp();
+	shared_ptr<LivingEntity> locked = ownerLastHurt.lock();
+	return ts != timestamp && canAttack(locked, false) && tameAnimal->wantsToAttack(locked, owner);
 }
 
 void OwnerHurtTargetGoal::start()
 {
 	mob->setTarget(ownerLastHurt.lock());
-	TargetGoal::start();
+
+	shared_ptr<LivingEntity> owner = dynamic_pointer_cast<LivingEntity>( tameAnimal->getOwner() );
+	if (owner != NULL)
+	{
+		timestamp = owner->getLastHurtMobTimestamp();
+
+
+		TargetGoal::start();
+	}
 }

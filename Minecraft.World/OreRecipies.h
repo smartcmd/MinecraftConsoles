@@ -1,6 +1,6 @@
 #pragma once
 
-#define MAX_ORE_RECIPES 5
+#define MAX_ORE_RECIPES 8
 
 class OreRecipies 
 {
@@ -10,7 +10,7 @@ public:
 	OreRecipies()			{_init();}
 
 private:
-	vector <Object *> *map;
+	vector <Object *> map[MAX_ORE_RECIPES];
 
 public:
 	void addRecipes(Recipes *r);

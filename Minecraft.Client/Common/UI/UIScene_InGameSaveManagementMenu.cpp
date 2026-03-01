@@ -442,7 +442,7 @@ void UIScene_InGameSaveManagementMenu::handlePress(F64 controlId, F64 childId)
 			UINT uiIDA[2];
 			uiIDA[0]=IDS_CONFIRM_CANCEL;
 			uiIDA[1]=IDS_CONFIRM_OK;
-			ui.RequestMessageBox(IDS_TOOLTIPS_DELETESAVE, IDS_TEXT_DELETE_SAVE, uiIDA, 2,m_iPad,&UIScene_InGameSaveManagementMenu::DeleteSaveDialogReturned,this, app.GetStringTable(),NULL,0,true);
+			ui.RequestErrorMessage(IDS_TOOLTIPS_DELETESAVE, IDS_TEXT_DELETE_SAVE, uiIDA, 2,m_iPad,&UIScene_InGameSaveManagementMenu::DeleteSaveDialogReturned,this);
 
 			ui.PlayUISFX(eSFX_Press);
 			break;

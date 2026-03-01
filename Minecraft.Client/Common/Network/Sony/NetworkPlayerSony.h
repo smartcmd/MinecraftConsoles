@@ -11,8 +11,9 @@ public:
 	// Common player interface
 	NetworkPlayerSony(SQRNetworkPlayer *sqrPlayer);
 	virtual unsigned char GetSmallId();
-	virtual void SendData(INetworkPlayer *player, const void *pvData, int dataSize, bool lowPriority);
+	virtual void SendData(INetworkPlayer *player, const void *pvData, int dataSize, bool lowPriority, bool ack);
 	virtual bool IsSameSystem(INetworkPlayer *player);
+	virtual int GetOutstandingAckCount();
 	virtual int GetSendQueueSizeBytes( INetworkPlayer *player, bool lowPriority );
 	virtual int GetSendQueueSizeMessages( INetworkPlayer *player, bool lowPriority );
 	virtual int GetCurrentRtt();
@@ -33,7 +34,10 @@ public:
 
 	void SetUID(PlayerUID UID);
 
+	virtual void SentChunkPacket();
+	virtual int GetTimeSinceLastChunkPacket_ms();
 private:
 	SQRNetworkPlayer *m_sqrPlayer;
 	Socket *m_pSocket;
+	__int64 m_lastChunkPacketTime;
 };

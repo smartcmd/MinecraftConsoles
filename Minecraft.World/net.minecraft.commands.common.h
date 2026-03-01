@@ -1,6 +1,7 @@
 #pragma once
 
 #include "DefaultGameModeCommand.h"
+#include "EffectCommand.h"
 #include "EnchantItemCommand.h"
 #include "ExperienceCommand.h"
 #include "GameModeCommand.h"

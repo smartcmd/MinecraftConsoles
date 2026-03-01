@@ -5,7 +5,7 @@
 #include "SignTileEntity.h"
 #include "SignTile.h"
 
-SignTile::SignTile(int id, eINSTANCEOF clas, bool onGround) : EntityTile(id, Material::wood, isSolidRender())
+SignTile::SignTile(int id, eINSTANCEOF clas, bool onGround) : BaseEntityTile(id, Material::wood, isSolidRender())
 {
 	this->onGround = onGround;
 	this->clas = clas;
@@ -32,7 +32,7 @@ AABB *SignTile::getAABB(Level *level, int x, int y, int z)
 AABB *SignTile::getTileAABB(Level *level, int x, int y, int z)
 {
 	updateShape(level, x, y, z);
-	return EntityTile::getTileAABB(level, x, y, z);
+	return BaseEntityTile::getTileAABB(level, x, y, z);
 }
 
 void SignTile::updateShape(LevelSource *level, int x, int y, int z, int forceData, shared_ptr<TileEntity> forceEntity) // 4J added forceData, forceEntity param
@@ -112,10 +112,10 @@ void SignTile::neighborChanged(Level *level, int x, int y, int z, int type)
 	if (remove)
 	{
 		spawnResources(level, x, y, z, level->getData(x, y, z), 0);
-		level->setTile(x, y, z, 0);
+		level->removeTile(x, y, z);
 	}
 
-	EntityTile::neighborChanged(level, x, y, z, type);
+	BaseEntityTile::neighborChanged(level, x, y, z, type);
 }
 
 int SignTile::cloneTileId(Level *level, int x, int y, int z)

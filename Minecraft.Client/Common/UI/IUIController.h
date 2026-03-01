@@ -29,7 +29,7 @@ public:
 	virtual void SetTooltipText( unsigned int iPad, unsigned int tooltip, int iTextID ) = 0;
 	virtual void SetEnableTooltips( unsigned int iPad, BOOL bVal ) = 0;
 	virtual void ShowTooltip( unsigned int iPad, unsigned int tooltip, bool show ) = 0;
-	virtual void SetTooltips( unsigned int iPad, int iA, int iB=-1, int iX=-1, int iY=-1 , int iLT=-1, int iRT=-1, int iLB=-1, int iRB=-1, int iLS=-1, bool forceUpdate = false) = 0;
+	virtual void SetTooltips( unsigned int iPad, int iA, int iB=-1, int iX=-1, int iY=-1 , int iLT=-1, int iRT=-1, int iLB=-1, int iRB=-1, int iLS=-1, int iRS=-1, int iBack=-1, bool forceUpdate = false) = 0;
 	virtual void EnableTooltip( unsigned int iPad, unsigned int tooltip, bool enable ) = 0;
 	virtual void RefreshTooltips(unsigned int iPad) = 0;
 

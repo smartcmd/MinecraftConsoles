@@ -33,8 +33,8 @@ TheEndBiomeDecorator::SPIKE TheEndBiomeDecorator::SpikeValA[8]=
 
 TheEndBiomeDecorator::TheEndBiomeDecorator(Biome *biome) : BiomeDecorator(biome)
 {
-	spikeFeature = new SpikeFeature(Tile::whiteStone_Id);
-	endPodiumFeature = new EndPodiumFeature(Tile::whiteStone_Id);
+	spikeFeature = new SpikeFeature(Tile::endStone_Id);
+	endPodiumFeature = new EndPodiumFeature(Tile::endStone_Id);
 }
 
 void TheEndBiomeDecorator::decorate()
@@ -56,16 +56,17 @@ void TheEndBiomeDecorator::decorate()
 			spikeFeature->placeWithIndex(level, random, SpikeValA[i].x, level->GetHighestY(), SpikeValA[i].z,i,SpikeValA[i].radius);
 		}
 	}
-    if (xo == 0 && zo == 0)
+	if (xo == 0 && zo == 0)
 	{
 		shared_ptr<EnderDragon> enderDragon = shared_ptr<EnderDragon>(new EnderDragon(level));
-        enderDragon->moveTo(0, 128, 0, random->nextFloat() * 360, 0);
-        level->addEntity(enderDragon);
+		enderDragon->AddParts();		// 4J added
+		enderDragon->moveTo(0, 128, 0, random->nextFloat() * 360, 0);
+		level->addEntity(enderDragon);
 	}
 
 	// end podium radius is 4, position is 0,0, so chunk needs to be the -16,-16 one since this guarantees that all chunks required for the podium are loaded
 	if (xo == -16 && zo == -16)
 	{		
-		endPodiumFeature->place(level, random, 0, Level::genDepth / 2, 0);
-    }
+		endPodiumFeature->place(level, random, 0, level->seaLevel, 0);
+	}
 }

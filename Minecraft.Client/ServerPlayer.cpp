@@ -8,56 +8,68 @@
 #include "Settings.h"
 #include "PlayerList.h"
 #include "MultiPlayerLevel.h"
-#include "..\Minecraft.World\Pos.h"
+
+#include "..\Minecraft.World\net.minecraft.network.packet.h"
+#include "..\Minecraft.World\net.minecraft.world.damagesource.h"
+#include "..\Minecraft.World\net.minecraft.world.inventory.h"
 #include "..\Minecraft.World\net.minecraft.world.level.h"
 #include "..\Minecraft.World\net.minecraft.world.level.storage.h"
 #include "..\Minecraft.World\net.minecraft.world.level.dimension.h"
-#include "..\Minecraft.World\Random.h"
-#include "..\Minecraft.World\net.minecraft.world.inventory.h"
-#include "..\Minecraft.World\net.minecraft.network.packet.h"
 #include "..\Minecraft.World\net.minecraft.world.entity.projectile.h"
 #include "..\Minecraft.World\net.minecraft.world.entity.h"
+#include "..\Minecraft.World\net.minecraft.world.entity.animal.h"
 #include "..\Minecraft.World\net.minecraft.world.item.h"
 #include "..\Minecraft.World\net.minecraft.world.item.trading.h"
 #include "..\Minecraft.World\net.minecraft.world.entity.item.h"
 #include "..\Minecraft.World\net.minecraft.world.level.tile.entity.h"
+#include "..\Minecraft.World\net.minecraft.world.scores.h"
+#include "..\Minecraft.World\net.minecraft.world.scores.criteria.h"
 #include "..\Minecraft.World\net.minecraft.stats.h"
 #include "..\Minecraft.World\net.minecraft.locale.h"
-#include "..\Minecraft.World\net.minecraft.world.damagesource.h"
+
+#include "..\Minecraft.World\Pos.h"
+#include "..\Minecraft.World\Random.h"
+
 #include "..\Minecraft.World\LevelChunk.h"
 #include "LevelRenderer.h"
 
-ServerPlayer::ServerPlayer(MinecraftServer *server, Level *level, const wstring& name, ServerPlayerGameMode *gameMode) : Player(level)
+
+ServerPlayer::ServerPlayer(MinecraftServer *server, Level *level, const wstring& name, ServerPlayerGameMode *gameMode) : Player(level, name)
 {
 	// 4J - added initialisers
 	connection = nullptr;
-    lastMoveX = lastMoveZ = 0;
-    spewTimer = 0;
+	lastMoveX = lastMoveZ = 0;
+	spewTimer = 0;
+	lastRecordedHealthAndAbsorption = FLT_MIN;
 	lastSentHealth = -99999999;
 	lastSentFood = -99999999;
 	lastFoodSaturationZero = true;
 	lastSentExp = -99999999;
-    invulnerableTime = 20 * 3;
+	invulnerableTime = 20 * 3;
 	containerCounter = 0;
 	ignoreSlotUpdateHack = false;
 	latency = 0;
 	wonGame = false;
 	m_enteredEndExitPortal = false;
-	lastCarried = ItemInstanceArray(5);
-	viewDistance = 10;
+	// lastCarried = ItemInstanceArray(5);
+	lastActionTime = 0;
 
-//    gameMode->player = this;		// 4J - removed to avoid use of shared_from_this in ctor, now set up externally
-    this->gameMode = gameMode;
+	viewDistance = server->getPlayers()->getViewDistance();
 
-    Pos *spawnPos = level->getSharedSpawnPos();
-    int xx = spawnPos->x;
-    int zz = spawnPos->z;
-    int yy = spawnPos->y;
+	//    gameMode->player = this;		// 4J - removed to avoid use of shared_from_this in ctor, now set up externally
+	this->gameMode = gameMode;
+
+	Pos *spawnPos = level->getSharedSpawnPos();
+	int xx = spawnPos->x;
+	int zz = spawnPos->z;
+	int yy = spawnPos->y;
 	delete spawnPos;
 
 	if (!level->dimension->hasCeiling && level->getLevelData()->getGameType() != GameType::ADVENTURE)
 	{
 		level->isFindingSpawn = true;
+
+		int radius = max(5, server->getSpawnProtectionRadius() - 6);
 
 		// 4J added - do additional checking that we aren't putting the player in deep water. Give up after 20 or goes just
 		// in case the spawnPos is somehow in a really bad spot and we would just lock here.
@@ -74,16 +86,16 @@ ServerPlayer::ServerPlayer(MinecraftServer *server, Level *level, const wstring&
 			// Also check that we aren't straying outside of the map
 			do
 			{
-				xx2 = xx + random->nextInt(20) - 10;
-				zz2 = zz + random->nextInt(20) - 10;
+				xx2 = xx + random->nextInt(radius * 2) - radius;
+				zz2 = zz + random->nextInt(radius * 2) - radius;
 			} while ( ( xx2 > maxXZ ) || ( xx2 < minXZ ) || ( zz2 > maxXZ ) || ( zz2 < minXZ ) );
 			yy2 = level->getTopSolidBlock(xx2, zz2);
 
 			waterDepth = 0;
 			int yw = yy2;
 			while( ( yw < 128 ) &&
-				   (( level->getTile(xx2,yw,zz2) == Tile::water_Id ) ||
-				   ( level->getTile(xx2,yw,zz2) == Tile::calmWater_Id )) )
+				(( level->getTile(xx2,yw,zz2) == Tile::water_Id ) ||
+				( level->getTile(xx2,yw,zz2) == Tile::calmWater_Id )) )
 			{
 				yw++;
 				waterDepth++;
@@ -96,16 +108,21 @@ ServerPlayer::ServerPlayer(MinecraftServer *server, Level *level, const wstring&
 		zz = zz2;
 
 		level->isFindingSpawn = false;
-    }
+	}
+
+	this->server = server;
+	footSize = 0;
 
 	heightOffset = 0;	// 4J - this height used to be set up after moveTo, but that ends up with the y value being incorrect as it depends on this offset
-    this->moveTo(xx + 0.5, yy, zz + 0.5, 0, 0);
+	this->moveTo(xx + 0.5, yy, zz + 0.5, 0, 0);
 
-    this->server = server;
-    footSize = 0;
+	// 4J Handled later
+	//while (!level->getCubes(this, bb).empty())
+	//{
+	//	setPos(x, y + 1, z);
+	//}
 
-    this->name = name;
-	m_UUID = name;
+	// m_UUID = name;
 
 	// 4J Added
 	lastBrupSendTickCount = 0;
@@ -113,7 +130,7 @@ ServerPlayer::ServerPlayer(MinecraftServer *server, Level *level, const wstring&
 
 ServerPlayer::~ServerPlayer()
 {
-	delete [] lastCarried.data;
+	// delete [] lastCarried.data;
 }
 
 // 4J added - add bits to a flag array that is passed in, to represent those entities which have small Ids, and are in our vector of entitiesToRemove.
@@ -154,7 +171,14 @@ void ServerPlayer::readAdditionalSaveData(CompoundTag *entityTag)
 	if (entityTag->contains(L"playerGameType"))
 	{
 		// 4J Stu - We do not want to change the game mode for the player, instead we let the server override it globally
-		//gameMode->setGameModeForPlayer(GameType::byId(entityTag->getInt(L"playerGameType")));
+		//if (MinecraftServer::getInstance()->getForceGameType())
+		//{
+		//	gameMode->setGameModeForPlayer(MinecraftServer::getInstance()->getDefaultGameType());
+		//}
+		//else
+		//{
+		//	gameMode->setGameModeForPlayer(GameType::byId(entityTag->getInt(L"playerGameType")));
+		//}
 	}
 
 	GameRulesInstance *grs = gameMode->getGameRules();
@@ -190,20 +214,15 @@ void ServerPlayer::addAdditonalSaveData(CompoundTag *entityTag)
 	//entityTag->putInt(L"playerGameType", gameMode->getGameModeForPlayer()->getId());
 }
 
-void ServerPlayer::withdrawExperienceLevels(int amount)
+void ServerPlayer::giveExperienceLevels(int amount)
 {
-	Player::withdrawExperienceLevels(amount);
+	Player::giveExperienceLevels(amount);
 	lastSentExp = -1;
 }
 
 void ServerPlayer::initMenu()
 {
 	containerMenu->addSlotListener(this);
-}
-
-ItemInstanceArray ServerPlayer::getEquipmentSlots()
-{
-	return lastCarried;
 }
 
 void ServerPlayer::setDefaultHeadHeight()
@@ -218,10 +237,10 @@ float ServerPlayer::getHeadHeight()
 
 void ServerPlayer::tick()
 {
-    gameMode->tick();
+	gameMode->tick();
 
-    if (invulnerableTime > 0) invulnerableTime--;
-    containerMenu->broadcastChanges();
+	if (invulnerableTime > 0) invulnerableTime--;
+	containerMenu->broadcastChanges();
 
 	// 4J-JEV, hook for Durango event 'EnteredNewBiome'.
 	Biome *newBiome = level->getBiome(x,z);
@@ -234,15 +253,14 @@ void ServerPlayer::tick()
 		currentBiome = newBiome;
 	}
 
-    for (int i = 0; i < 5; i++)
+	if (!level->isClientSide)
 	{
-        shared_ptr<ItemInstance> currentCarried = getCarried(i);
-        if (currentCarried != lastCarried[i])
+		if (!containerMenu->stillValid(dynamic_pointer_cast<Player>(shared_from_this())))
 		{
-            getLevel()->getTracker()->broadcast(shared_from_this(), shared_ptr<SetEquippedItemPacket>( new SetEquippedItemPacket(this->entityId, i, currentCarried) ) );
-            lastCarried[i] = currentCarried;
-        }
-    }
+			closeContainer();
+			containerMenu = inventoryMenu;
+		}
+	}
 
 	flushEntitiesToRemove();
 }
@@ -250,7 +268,7 @@ void ServerPlayer::tick()
 // 4J Stu - Split out here so that we can call this from other places
 void ServerPlayer::flushEntitiesToRemove()
 {
-	if (!entitiesToRemove.empty())
+	while (!entitiesToRemove.empty())
 	{
 		int sz = entitiesToRemove.size();
 		int amount = min(sz, RemoveEntitiesPacket::MAX_PER_PACKET);
@@ -268,58 +286,63 @@ void ServerPlayer::flushEntitiesToRemove()
 	}
 }
 
-
 // 4J - have split doTick into 3 bits, so that we can call the doChunkSendingTick separately, but still do the equivalent of what calling a full doTick used to do, by calling this method
 void ServerPlayer::doTick(bool sendChunks, bool dontDelayChunks/*=false*/, bool ignorePortal/*=false*/)
 {
+	m_ignorePortal = ignorePortal;
+	if( sendChunks )
+	{
+		updateFrameTick();
+	}
 	doTickA();
 	if( sendChunks )
 	{
 		doChunkSendingTick(dontDelayChunks);
 	}
-	doTickB(ignorePortal);
+	doTickB();
+	m_ignorePortal = false;
 }
 
 void ServerPlayer::doTickA()
 {
-    Player::tick();
+	Player::tick();
 
-    for (unsigned int i = 0; i < inventory->getContainerSize(); i++)
+	for (unsigned int i = 0; i < inventory->getContainerSize(); i++)
 	{
-        shared_ptr<ItemInstance> ie = inventory->getItem(i);
-        if (ie != NULL)
+		shared_ptr<ItemInstance> ie = inventory->getItem(i);
+		if (ie != NULL)
 		{
 			// 4J - removed condition. These were getting lower priority than tile update packets etc. on the slow outbound queue, and so were extremely slow to send sometimes,
 			// particularly at the start of a game. They don't typically seem to be massive and shouldn't be send when there isn't actually any updating to do.
-            if (Item::items[ie->id]->isComplex() ) // && connection->countDelayedPackets() <= 2)
+			if (Item::items[ie->id]->isComplex() ) // && connection->countDelayedPackets() <= 2)
 			{
-                shared_ptr<Packet> packet = (dynamic_cast<ComplexItem *>(Item::items[ie->id])->getUpdatePacket(ie, level, dynamic_pointer_cast<Player>( shared_from_this() ) ) );
-                if (packet != NULL)
+				shared_ptr<Packet> packet = (dynamic_cast<ComplexItem *>(Item::items[ie->id])->getUpdatePacket(ie, level, dynamic_pointer_cast<Player>( shared_from_this() ) ) );
+				if (packet != NULL)
 				{
-                    connection->send(packet);
-                }
-            }
-        }
-    }
+					connection->send(packet);
+				}
+			}
+		}
+	}
 }
 
 // 4J - split off the chunk sending bit of the tick here from ::doTick so we can do this exactly once per player per server tick
 void ServerPlayer::doChunkSendingTick(bool dontDelayChunks)
 {
-//	printf("[%d] %s: sendChunks: %d, empty: %d\n",tickCount, connection->getNetworkPlayer()->GetUID().getOnlineID(),sendChunks,chunksToSend.empty());
+	//	printf("[%d] %s: sendChunks: %d, empty: %d\n",tickCount, connection->getNetworkPlayer()->GetUID().getOnlineID(),sendChunks,chunksToSend.empty());
 	if (!chunksToSend.empty())
 	{
-        ChunkPos nearest = chunksToSend.front();
+		ChunkPos nearest = chunksToSend.front();
 		bool nearestValid = false;
 
 		// 4J - reinstated and optimised some code that was commented out in the original, to make sure that we always
 		// send the nearest chunk to the player. The original uses the bukkit sorting thing to try and avoid doing this, but
 		// the player can quickly wander away from the centre of the spiral of chunks that that method creates, long before transmission
 		// of them is complete.
-        double dist = DBL_MAX;
+		double dist = DBL_MAX;
 		for( AUTO_VAR(it, chunksToSend.begin()); it != chunksToSend.end(); it++ )
 		{
-            ChunkPos chunk = *it;
+			ChunkPos chunk = *it;
 			if( level->isChunkFinalised(chunk.x, chunk.z) )
 			{
 				double newDist = chunk.distanceToSqr(x, z);
@@ -330,36 +353,42 @@ void ServerPlayer::doChunkSendingTick(bool dontDelayChunks)
 					nearestValid = true;
 				}
 			}
-        }
+		}
 
-//        if (nearest != NULL)		// 4J - removed as we don't have references here
+		//        if (nearest != NULL)		// 4J - removed as we don't have references here
 		if( nearestValid )
 		{
-            bool okToSend = false;
+			bool okToSend = false;
 
-//                if (dist < 32 * 32) okToSend = true;
+			//                if (dist < 32 * 32) okToSend = true;
 			if( connection->isLocal() )
 			{
 				if( !connection->done ) okToSend = true;
 			}
 			else
 			{
-				bool canSendOnSlowQueue = MinecraftServer::canSendOnSlowQueue(connection->getNetworkPlayer());
-				
-//				app.DebugPrintf("%ls: canSendOnSlowQueue %d, countDelayedPackets %d GetSendQueueSizeBytes %d done: %d",
-//					connection->getNetworkPlayer()->GetUID().toString().c_str(),
-//					canSendOnSlowQueue, connection->countDelayedPackets(),
-//					g_NetworkManager.GetHostPlayer()->GetSendQueueSizeBytes( NULL, true ),
-//					connection->done);
-	
+				bool canSendToPlayer = MinecraftServer::chunkPacketManagement_CanSendTo(connection->getNetworkPlayer());
+
+//				app.DebugPrintf(">>> %d\n", canSendToPlayer);
+//				if( connection->getNetworkPlayer() )
+//				{
+//					app.DebugPrintf("%d: canSendToPlayer %d, countDelayedPackets %d GetSendQueueSizeBytes %d done: %d\n",
+//						connection->getNetworkPlayer()->GetSmallId(),
+//						canSendToPlayer, connection->countDelayedPackets(),
+//						g_NetworkManager.GetHostPlayer()->GetSendQueueSizeMessages( NULL, true ),
+//						connection->done);
+//				}
+		
 				if( dontDelayChunks || 
-					(canSendOnSlowQueue &&
-					(connection->countDelayedPackets() < 4 )&&
+					(canSendToPlayer &&
 #ifdef _XBOX_ONE
 					// The network manager on xbox one doesn't currently split data into slow & fast queues - since we can only measure
 					// both together then bytes provides a better metric than count of data items to determine if we should avoid queueing too much up
 					(g_NetworkManager.GetHostPlayer()->GetSendQueueSizeBytes( NULL, true ) < 8192 )&&
+#elif defined _XBOX
+					(g_NetworkManager.GetHostPlayer()->GetSendQueueSizeMessages( NULL, true ) < 4 )&&
 #else
+					(connection->countDelayedPackets() < 4 )&&
 					(g_NetworkManager.GetHostPlayer()->GetSendQueueSizeMessages( NULL, true ) < 4 )&&
 #endif 
 					//(tickCount - lastBrupSendTickCount) > (connection->getNetworkPlayer()->GetCurrentRtt()>>4) &&
@@ -367,7 +396,7 @@ void ServerPlayer::doChunkSendingTick(bool dontDelayChunks)
 				{
 					lastBrupSendTickCount = tickCount;
 					okToSend = true;
-					MinecraftServer::s_slowQueuePacketSent = true;
+					MinecraftServer::chunkPacketManagement_DidSendTo(connection->getNetworkPlayer());
 
 //					static unordered_map<wstring,__int64> mapLastTime;
 //					__int64 thisTime = System::currentTimeMillis();
@@ -377,15 +406,15 @@ void ServerPlayer::doChunkSendingTick(bool dontDelayChunks)
 				}
 				else
 				{
-//					app.DebugPrintf(" - <NOT OK>\n");
+					//					app.DebugPrintf(" - <NOT OK>\n");
 				}
 			}
 
-            if (okToSend)
+			if (okToSend)
 			{
-                ServerLevel *level = server->getLevel(dimension);
+				ServerLevel *level = server->getLevel(dimension);
 				int flagIndex = getFlagIndexForChunk(nearest,this->level->dimension->id);
-                chunksToSend.remove(nearest);
+				chunksToSend.remove(nearest);
 
 				bool chunkDataSent = false;
 
@@ -400,9 +429,12 @@ void ServerPlayer::doChunkSendingTick(bool dontDelayChunks)
 					//     unloaded on the client and so just gradually build up more and more of the finite set of chunks as the player moves
 					if( !g_NetworkManager.SystemFlagGet(connection->getNetworkPlayer(),flagIndex) )
 					{
-//						app.DebugPrintf("Creating BRUP for %d %d\n",nearest.x, nearest.z);
+						//						app.DebugPrintf("Creating BRUP for %d %d\n",nearest.x, nearest.z);
 						PIXBeginNamedEvent(0,"Creation BRUP for sending\n");
+						__int64 before = System::currentTimeMillis();
 						shared_ptr<BlockRegionUpdatePacket> packet = shared_ptr<BlockRegionUpdatePacket>( new BlockRegionUpdatePacket(nearest.x * 16, 0, nearest.z * 16, 16, Level::maxBuildHeight, 16, level) );
+						__int64 after = System::currentTimeMillis();
+//						app.DebugPrintf(">>><<< %d ms\n",after-before);
 						PIXEndNamedEvent();
 						if( dontDelayChunks ) packet->shouldDelay = false;
 
@@ -435,7 +467,7 @@ void ServerPlayer::doChunkSendingTick(bool dontDelayChunks)
 						lc->reSyncLighting();
 						lc->recalcHeightmapOnly();
 						clientLevel->setTilesDirty(nearest.x * 16 + 1, 1, nearest.z * 16 + 1,
-												   nearest.x * 16 + 14, Level::maxBuildHeight - 2, nearest.z * 16 + 14 );
+							nearest.x * 16 + 14, Level::maxBuildHeight - 2, nearest.z * 16 + 14 );
 					}
 				}
 				// Don't send TileEntity data until we have sent the block data
@@ -450,40 +482,39 @@ void ServerPlayer::doChunkSendingTick(bool dontDelayChunks)
 					}
 					delete tes;
 				}
-            }
-        }
-    }
+			}
+		}
+	}
 }
 
-void ServerPlayer::doTickB(bool ignorePortal)
+void ServerPlayer::doTickB()
 {
 #ifndef _CONTENT_PACKAGE
 	// check if there's a debug dimension change requested
-	if(app.GetGameSettingsDebugMask(ProfileManager.GetPrimaryPad())&(1L<<eDebugSetting_GoToNether))
-	{
-		if(level->dimension->id == 0 )
-		{		
-			ignorePortal=false;
-			isInsidePortal=true;
-			portalTime=1;
-		}
-		unsigned int uiVal=app.GetGameSettingsDebugMask(ProfileManager.GetPrimaryPad());
-		app.SetGameSettingsDebugMask(ProfileManager.GetPrimaryPad(),uiVal&~(1L<<eDebugSetting_GoToNether));
-	}
-// 	else if (app.GetGameSettingsDebugMask(ProfileManager.GetPrimaryPad())&(1L<<eDebugSetting_GoToEnd))
-// 	{
-// 		if(level->dimension->id == 0 )
-// 		{		
-// 			server->players->toggleDimension( dynamic_pointer_cast<ServerPlayer>( shared_from_this() ), 1 );
-// 		}
-// 		unsigned int uiVal=app.GetGameSettingsDebugMask(ProfileManager.GetPrimaryPad());
-// 		app.SetGameSettingsDebugMask(ProfileManager.GetPrimaryPad(),uiVal&~(1L<<eDebugSetting_GoToEnd));
-// 	}
-	else if (app.GetGameSettingsDebugMask(ProfileManager.GetPrimaryPad())&(1L<<eDebugSetting_GoToOverworld))
+	//if(app.GetGameSettingsDebugMask(ProfileManager.GetPrimaryPad())&(1L<<eDebugSetting_GoToNether))
+	//{
+	//	if(level->dimension->id == 0 )
+	//	{
+	//		isInsidePortal=true;
+	//		portalTime=1;
+	//	}
+	//	unsigned int uiVal=app.GetGameSettingsDebugMask(ProfileManager.GetPrimaryPad());
+	//	app.SetGameSettingsDebugMask(ProfileManager.GetPrimaryPad(),uiVal&~(1L<<eDebugSetting_GoToNether));
+	//}
+	// 	else if (app.GetGameSettingsDebugMask(ProfileManager.GetPrimaryPad())&(1L<<eDebugSetting_GoToEnd))
+	// 	{
+	// 		if(level->dimension->id == 0 )
+	// 		{		
+	// 			server->players->toggleDimension( dynamic_pointer_cast<ServerPlayer>( shared_from_this() ), 1 );
+	// 		}
+	// 		unsigned int uiVal=app.GetGameSettingsDebugMask(ProfileManager.GetPrimaryPad());
+	// 		app.SetGameSettingsDebugMask(ProfileManager.GetPrimaryPad(),uiVal&~(1L<<eDebugSetting_GoToEnd));
+	// 	}
+	//else
+		if (app.GetGameSettingsDebugMask(ProfileManager.GetPrimaryPad())&(1L<<eDebugSetting_GoToOverworld))
 	{
 		if(level->dimension->id != 0 )
-		{		
-			ignorePortal=false;
+		{
 			isInsidePortal=true;
 			portalTime=1;
 		}
@@ -492,60 +523,33 @@ void ServerPlayer::doTickB(bool ignorePortal)
 	}
 #endif
 
-	if(!ignorePortal)
-	{
-		if (isInsidePortal)
-		{
-			if (server->isNetherEnabled())
-			{
-				if (containerMenu != inventoryMenu)
-				{
-					closeContainer();
-				}
-				if (riding != NULL)
-				{
-					this->ride(riding);
-				}
-				else
-				{
-
-					portalTime += 1 / 80.0f;
-					if (portalTime >= 1)
-					{
-						portalTime = 1;
-						changingDimensionDelay = 10;
-
-						int targetDimension = 0;
-						if (dimension == -1) targetDimension = 0;
-						else targetDimension = -1;
-
-						server->getPlayers()->toggleDimension( dynamic_pointer_cast<ServerPlayer>( shared_from_this() ), targetDimension );
-						lastSentExp = -1;
-						lastSentHealth = -1;
-						lastSentFood = -1;
-
-						//awardStat(Achievements::portal);
-					}
-				}
-				isInsidePortal = false;
-			}
-		}
-		else
-		{
-			if (portalTime > 0) portalTime -= 1 / 20.0f;
-			if (portalTime < 0) portalTime = 0;
-		}
-		if (changingDimensionDelay > 0) changingDimensionDelay--;
-	}
-
-    if (getHealth() != lastSentHealth || lastSentFood != foodData.getFoodLevel() || ((foodData.getSaturationLevel() == 0) != lastFoodSaturationZero))
+	if (getHealth() != lastSentHealth || lastSentFood != foodData.getFoodLevel() || ((foodData.getSaturationLevel() == 0) != lastFoodSaturationZero))
 	{
 		// 4J Stu - Added m_lastDamageSource for telemetry
 		connection->send( shared_ptr<SetHealthPacket>( new SetHealthPacket(getHealth(), foodData.getFoodLevel(), foodData.getSaturationLevel(), m_lastDamageSource) ) );
-        lastSentHealth = getHealth();
+		lastSentHealth = getHealth();
 		lastSentFood = foodData.getFoodLevel();
 		lastFoodSaturationZero = foodData.getSaturationLevel() == 0;
-    }
+	}
+
+	if (getHealth() + getAbsorptionAmount() != lastRecordedHealthAndAbsorption)
+	{
+		lastRecordedHealthAndAbsorption = getHealth() + getAbsorptionAmount();
+
+		vector<Objective *> *objectives = getScoreboard()->findObjectiveFor(ObjectiveCriteria::HEALTH);
+		if(objectives)
+		{
+			vector< shared_ptr<Player> > players = vector< shared_ptr<Player> >();
+			players.push_back(dynamic_pointer_cast<Player>(shared_from_this()));
+
+			for (AUTO_VAR(it,objectives->begin()); it != objectives->end(); ++it)
+			{
+				Objective *objective = *it;
+				getScoreboard()->getPlayerScore(getAName(), objective)->updateFor(&players);
+			}
+			delete objectives;
+		}
+	}
 
 	if (totalExperience != lastSentExp)
 	{
@@ -557,42 +561,67 @@ void ServerPlayer::doTickB(bool ignorePortal)
 
 shared_ptr<ItemInstance> ServerPlayer::getCarried(int slot)
 {
-    if (slot == 0) return inventory->getSelected();
-    return inventory->armor[slot - 1];
+	if (slot == 0) return inventory->getSelected();
+	return inventory->armor[slot - 1];
 }
 
 void ServerPlayer::die(DamageSource *source)
 {
-	server->getPlayers()->broadcastAll(source->getDeathMessagePacket(dynamic_pointer_cast<Player>(shared_from_this())));
-	inventory->dropAll();
+	server->getPlayers()->broadcastAll(getCombatTracker()->getDeathMessagePacket());
+
+	if (!level->getGameRules()->getBoolean(GameRules::RULE_KEEPINVENTORY))
+	{
+		inventory->dropAll();
+	}
+
+	vector<Objective *> *objectives = level->getScoreboard()->findObjectiveFor(ObjectiveCriteria::DEATH_COUNT);
+	if(objectives)
+	{
+		for (int i = 0; i < objectives->size(); i++)
+		{
+			Objective *objective = objectives->at(i);
+
+			Score *score = getScoreboard()->getPlayerScore(getAName(), objective);
+			score->increment();
+		}
+		delete objectives;
+	}
+
+	shared_ptr<LivingEntity> killer = getKillCredit();
+	if (killer != NULL) killer->awardKillScore(shared_from_this(), deathScore);
+	//awardStat(Stats::deaths, 1);
 }
 
-bool ServerPlayer::hurt(DamageSource *dmgSource, int dmg)
+bool ServerPlayer::hurt(DamageSource *dmgSource, float dmg)
 {
-    if (invulnerableTime > 0) return false;
+	if (isInvulnerable()) return false;
 
-    if (dynamic_cast<EntityDamageSource *>(dmgSource) != NULL)
+	// 4J: Not relevant to console servers
+	// Allow falldamage on dedicated pvpservers -- so people cannot cheat their way out of 'fall traps'
+	//bool allowFallDamage = server->isPvpAllowed() && server->isDedicatedServer() && server->isPvpAllowed() && (dmgSource->msgId.compare(L"fall") == 0);
+	if (!server->isPvpAllowed() && invulnerableTime > 0 && dmgSource != DamageSource::outOfWorld) return false;
+
+	if (dynamic_cast<EntityDamageSource *>(dmgSource) != NULL)
 	{
 		// 4J Stu - Fix for #46422 - TU5: Crash: Gameplay: Crash when being hit by a trap using a dispenser
 		// getEntity returns the owner of projectiles, and this would never be the arrow. The owner is sometimes NULL.
 		shared_ptr<Entity> source = dmgSource->getDirectEntity();
 
-		
-		if (dynamic_pointer_cast<Player>(source) != NULL &&	(!server->pvp || !dynamic_pointer_cast<Player>(source)->isAllowedToAttackPlayers()) )
+		if (source->instanceof(eTYPE_PLAYER) && !dynamic_pointer_cast<Player>(source)->canHarmPlayer(dynamic_pointer_cast<Player>(shared_from_this())))
 		{
 			return false;
 		}
 
-		if (source != NULL && source->GetType() == eTYPE_ARROW)
+		if ( (source != NULL) && source->instanceof(eTYPE_ARROW) )
 		{
 			shared_ptr<Arrow> arrow = dynamic_pointer_cast<Arrow>(source);
-			if (dynamic_pointer_cast<Player>(arrow->owner) != NULL && (!server->pvp || !dynamic_pointer_cast<Player>(arrow->owner)->isAllowedToAttackPlayers()) )
+			if ( (arrow->owner != NULL) && arrow->owner->instanceof(eTYPE_PLAYER) && !canHarmPlayer(dynamic_pointer_cast<Player>(arrow->owner))  )
 			{
 				return false;
 			}
 		}
-    }
-    bool returnVal = Player::hurt(dmgSource, dmg);
+	}
+	bool returnVal = Player::hurt(dmgSource, dmg);
 
 	if( returnVal )
 	{		
@@ -646,7 +675,7 @@ bool ServerPlayer::hurt(DamageSource *dmgSource, int dmg)
 					break;
 				case eTYPE_ARROW:
 					if ((dynamic_pointer_cast<Arrow>(source))->owner != NULL)
-						{
+					{
 						shared_ptr<Entity> attacker = (dynamic_pointer_cast<Arrow>(source))->owner;
 						if (attacker != NULL)
 						{
@@ -659,7 +688,7 @@ bool ServerPlayer::hurt(DamageSource *dmgSource, int dmg)
 							case eTYPE_SERVERPLAYER:
 								m_lastDamageSource = eTelemetryPlayerDeathSource_Player_Arrow;
 								break;
-					}
+							}
 						}
 					}
 					break;
@@ -674,9 +703,29 @@ bool ServerPlayer::hurt(DamageSource *dmgSource, int dmg)
 	return returnVal;
 }
 
-bool ServerPlayer::isPlayerVersusPlayer()
+bool ServerPlayer::canHarmPlayer(shared_ptr<Player> target)
 {
-	return server->pvp;
+	if (!server->isPvpAllowed()) return false;
+	if(!isAllowedToAttackPlayers()) return false;
+	return Player::canHarmPlayer(target);
+}
+
+// 4J: Added for checking when only player name is provided (possible player isn't on server), e.g. can harm owned animals
+bool ServerPlayer::canHarmPlayer(wstring targetName)
+{
+	bool canHarm = true;
+
+	shared_ptr<ServerPlayer> owner = server->getPlayers()->getPlayer(targetName);
+	if (owner != NULL)
+	{
+		if ((shared_from_this() != owner) && canHarmPlayer(owner)) canHarm = false;
+	}
+	else
+	{
+		if (this->name != targetName && (!isAllowedToAttackPlayers() || !server->isPvpAllowed())) canHarm = false;
+	}
+
+	return canHarm;
 }
 
 void ServerPlayer::changeDimension(int i)
@@ -717,15 +766,25 @@ void ServerPlayer::changeDimension(int i)
 	}
 	else
 	{
-		awardStat(GenericStats::theEnd(), GenericStats::param_theEnd());
-
-		Pos *pos = server->getLevel(i)->getDimensionSpecificSpawn();
-		if (pos != NULL)
+		if (dimension == 0 && i == 1)
 		{
-			connection->teleport(pos->x, pos->y, pos->z, 0, 0);
-			delete pos;
+			awardStat(GenericStats::theEnd(), GenericStats::param_theEnd());
+
+			Pos *pos = server->getLevel(i)->getDimensionSpecificSpawn();
+			if (pos != NULL)
+			{
+				connection->teleport(pos->x, pos->y, pos->z, 0, 0);
+				delete pos;
+			}
+
+			i = 1;
 		}
-		server->getPlayers()->toggleDimension( dynamic_pointer_cast<ServerPlayer>(shared_from_this()), 1);
+		else
+		{
+			// 4J: Removed on the advice of the mighty King of Achievments (JV)
+			// awardStat(GenericStats::portal(), GenericStats::param_portal());
+		}
+		server->getPlayers()->toggleDimension( dynamic_pointer_cast<ServerPlayer>(shared_from_this()), i);
 		lastSentExp = -1;
 		lastSentHealth = -1;
 		lastSentFood = -1;
@@ -735,82 +794,56 @@ void ServerPlayer::changeDimension(int i)
 // 4J Added delay param
 void ServerPlayer::broadcast(shared_ptr<TileEntity> te, bool delay /*= false*/)
 {
-    if (te != NULL)
+	if (te != NULL)
 	{
-        shared_ptr<Packet> p = te->getUpdatePacket();
-        if (p != NULL)
+		shared_ptr<Packet> p = te->getUpdatePacket();
+		if (p != NULL)
 		{
 			p->shouldDelay = delay;
 			if(delay) connection->queueSend(p);
 			else connection->send(p);
-        }
-    }
+		}
+	}
 }
 
 void ServerPlayer::take(shared_ptr<Entity> e, int orgCount)
 {
-    if (!e->removed)
-	{
-        EntityTracker *entityTracker = getLevel()->getTracker();
-        if (e->GetType() == eTYPE_ITEMENTITY)
-		{
-            entityTracker->broadcast(e, shared_ptr<TakeItemEntityPacket>( new TakeItemEntityPacket(e->entityId, entityId) ) );
-        }
-        if (e->GetType() == eTYPE_ARROW)
-		{
-            entityTracker->broadcast(e, shared_ptr<TakeItemEntityPacket>( new TakeItemEntityPacket(e->entityId, entityId) ) );
-        }		
-        if (e->GetType() == eTYPE_EXPERIENCEORB)
-		{
-            entityTracker->broadcast(e, shared_ptr<TakeItemEntityPacket>( new TakeItemEntityPacket(e->entityId, entityId) ) );
-        }
-    }
-    Player::take(e, orgCount);
-    containerMenu->broadcastChanges();
-}
-
-void ServerPlayer::swing()
-{
-    if (!swinging)
-	{
-        swingTime = -1;
-        swinging = true;
-        getLevel()->getTracker()->broadcast(shared_from_this(), shared_ptr<AnimatePacket>( new AnimatePacket(shared_from_this(), AnimatePacket::SWING) ) );
-    }
+	Player::take(e, orgCount);
+	containerMenu->broadcastChanges();
 }
 
 Player::BedSleepingResult ServerPlayer::startSleepInBed(int x, int y, int z, bool bTestUse)
 {
-    BedSleepingResult result = Player::startSleepInBed(x, y, z, bTestUse);
-    if (result == OK)
+	BedSleepingResult result = Player::startSleepInBed(x, y, z, bTestUse);
+	if (result == OK)
 	{
-        shared_ptr<Packet> p = shared_ptr<EntityActionAtPositionPacket>( new EntityActionAtPositionPacket(shared_from_this(), EntityActionAtPositionPacket::START_SLEEP, x, y, z) );
-        getLevel()->getTracker()->broadcast(shared_from_this(), p);
-        connection->teleport(this->x, this->y, this->z, yRot, xRot);
-        connection->send(p);
-    }
-    return result;
+		shared_ptr<Packet> p = shared_ptr<EntityActionAtPositionPacket>( new EntityActionAtPositionPacket(shared_from_this(), EntityActionAtPositionPacket::START_SLEEP, x, y, z) );
+		getLevel()->getTracker()->broadcast(shared_from_this(), p);
+		connection->teleport(this->x, this->y, this->z, yRot, xRot);
+		connection->send(p);
+	}
+	return result;
 }
 
 void ServerPlayer::stopSleepInBed(bool forcefulWakeUp, bool updateLevelList, bool saveRespawnPoint)
 {
-    if (isSleeping())
+	if (isSleeping())
 	{
-        getLevel()->getTracker()->broadcastAndSend(shared_from_this(), shared_ptr<AnimatePacket>( new AnimatePacket(shared_from_this(), AnimatePacket::WAKE_UP) ) );
-    }
-    Player::stopSleepInBed(forcefulWakeUp, updateLevelList, saveRespawnPoint);
-    if (connection != NULL) connection->teleport(x, y, z, yRot, xRot);
+		getLevel()->getTracker()->broadcastAndSend(shared_from_this(), shared_ptr<AnimatePacket>( new AnimatePacket(shared_from_this(), AnimatePacket::WAKE_UP) ) );
+	}
+	Player::stopSleepInBed(forcefulWakeUp, updateLevelList, saveRespawnPoint);
+	if (connection != NULL) connection->teleport(x, y, z, yRot, xRot);
 }
 
 void ServerPlayer::ride(shared_ptr<Entity> e)
 {
-    Player::ride(e);
-    connection->send( shared_ptr<SetRidingPacket>( new SetRidingPacket(shared_from_this(), riding) ) );
+	Player::ride(e);
+	connection->send( shared_ptr<SetEntityLinkPacket>( new SetEntityLinkPacket(SetEntityLinkPacket::RIDING, shared_from_this(), riding) ) );
 
 	// 4J Removed this - The act of riding will be handled on the client and will change the position
 	// of the player. If we also teleport it then we can end up with a repeating movements, e.g. bouncing
 	// up and down after exiting a boat due to slight differences in position on the client and server
-    //connection->teleport(x, y, z, yRot, xRot);
+	//connection->teleport(x, y, z, yRot, xRot);
 }
 
 void ServerPlayer::checkFallDamage(double ya, bool onGround)
@@ -819,7 +852,17 @@ void ServerPlayer::checkFallDamage(double ya, bool onGround)
 
 void ServerPlayer::doCheckFallDamage(double ya, bool onGround)
 {
-	 Player::checkFallDamage(ya, onGround);
+	Player::checkFallDamage(ya, onGround);
+}
+
+void ServerPlayer::openTextEdit(shared_ptr<TileEntity> sign)
+{
+	shared_ptr<SignTileEntity> signTE = dynamic_pointer_cast<SignTileEntity>(sign);
+	if (signTE != NULL)
+	{
+		signTE->setAllowedPlayerEditor(dynamic_pointer_cast<Player>(shared_from_this()));
+		connection->send( shared_ptr<TileEditorOpenPacket>( new TileEditorOpenPacket(TileEditorOpenPacket::SIGN, sign->x, sign->y, sign->z)) );
+	}
 }
 
 void ServerPlayer::nextContainerCounter()
@@ -832,7 +875,7 @@ bool ServerPlayer::startCrafting(int x, int y, int z)
 	if(containerMenu == inventoryMenu)
 	{
 		nextContainerCounter();
-		connection->send( shared_ptr<ContainerOpenPacket>( new ContainerOpenPacket(containerCounter, ContainerOpenPacket::WORKBENCH, 0, 9) ) );
+		connection->send( shared_ptr<ContainerOpenPacket>( new ContainerOpenPacket(containerCounter, ContainerOpenPacket::WORKBENCH, L"", 9, false) ) );
 		containerMenu = new CraftingMenu(inventory, level, x, y, z);
 		containerMenu->containerId = containerCounter;
 		containerMenu->addSlotListener(this);
@@ -841,16 +884,44 @@ bool ServerPlayer::startCrafting(int x, int y, int z)
 	{
 		app.DebugPrintf("ServerPlayer tried to open crafting container when one was already open\n");
 	}
-	
+
 	return true;
 }
 
-bool ServerPlayer::startEnchanting(int x, int y, int z)
+bool ServerPlayer::openFireworks(int x, int y, int z)
 {
 	if(containerMenu == inventoryMenu)
 	{
 		nextContainerCounter();
-		connection->send(shared_ptr<ContainerOpenPacket>( new ContainerOpenPacket(containerCounter, ContainerOpenPacket::ENCHANTMENT, 0, 9) ));
+		connection->send( shared_ptr<ContainerOpenPacket>( new ContainerOpenPacket(containerCounter, ContainerOpenPacket::FIREWORKS, L"", 9, false) ) );
+		containerMenu = new FireworksMenu(inventory, level, x, y, z);
+		containerMenu->containerId = containerCounter;
+		containerMenu->addSlotListener(this);
+	}
+	else if(dynamic_cast<CraftingMenu *>(containerMenu) != NULL)
+	{		
+		closeContainer();
+
+		nextContainerCounter();
+		connection->send( shared_ptr<ContainerOpenPacket>( new ContainerOpenPacket(containerCounter, ContainerOpenPacket::FIREWORKS, L"", 9, false) ) );
+		containerMenu = new FireworksMenu(inventory, level, x, y, z);
+		containerMenu->containerId = containerCounter;
+		containerMenu->addSlotListener(this);
+	}
+	else
+	{
+		app.DebugPrintf("ServerPlayer tried to open crafting container when one was already open\n");
+	}
+
+	return true;
+}
+
+bool ServerPlayer::startEnchanting(int x, int y, int z, const wstring &name)
+{
+	if(containerMenu == inventoryMenu)
+	{
+		nextContainerCounter();
+		connection->send(shared_ptr<ContainerOpenPacket>( new ContainerOpenPacket(containerCounter, ContainerOpenPacket::ENCHANTMENT, name.empty()? L"" : name, 9, !name.empty() ) ));
 		containerMenu = new EnchantmentMenu(inventory, level, x, y, z);
 		containerMenu->containerId = containerCounter;
 		containerMenu->addSlotListener(this);
@@ -868,8 +939,8 @@ bool ServerPlayer::startRepairing(int x, int y, int z)
 	if(containerMenu == inventoryMenu)
 	{
 		nextContainerCounter();
-		connection->send(shared_ptr<ContainerOpenPacket> ( new ContainerOpenPacket(containerCounter, ContainerOpenPacket::REPAIR_TABLE, 0, 9)) );
-		containerMenu = new RepairMenu(inventory, level, x, y, z, dynamic_pointer_cast<Player>(shared_from_this()));
+		connection->send(shared_ptr<ContainerOpenPacket> ( new ContainerOpenPacket(containerCounter, ContainerOpenPacket::REPAIR_TABLE, L"", 9, false)) );
+		containerMenu = new AnvilMenu(inventory, level, x, y, z, dynamic_pointer_cast<Player>(shared_from_this()));
 		containerMenu->containerId = containerCounter;
 		containerMenu->addSlotListener(this);
 	}
@@ -886,7 +957,12 @@ bool ServerPlayer::openContainer(shared_ptr<Container> container)
 	if(containerMenu == inventoryMenu)
 	{
 		nextContainerCounter();
-		connection->send( shared_ptr<ContainerOpenPacket>( new ContainerOpenPacket(containerCounter, ContainerOpenPacket::CONTAINER, container->getName(), container->getContainerSize()) ) );
+
+		// 4J-JEV: Added to distinguish between ender, bonus, large and small chests (for displaying the name of the chest).
+		int containerType = container->getContainerType();
+		assert(containerType >= 0);
+
+		connection->send( shared_ptr<ContainerOpenPacket>( new ContainerOpenPacket(containerCounter, containerType, container->getCustomName(), container->getContainerSize(), container->hasCustomName()) ) );
 
 		containerMenu = new ContainerMenu(inventory, container);
 		containerMenu->containerId = containerCounter;
@@ -900,12 +976,48 @@ bool ServerPlayer::openContainer(shared_ptr<Container> container)
 	return true;
 }
 
+bool ServerPlayer::openHopper(shared_ptr<HopperTileEntity> container)
+{
+	if(containerMenu == inventoryMenu)
+	{
+		nextContainerCounter();
+		connection->send( shared_ptr<ContainerOpenPacket>( new ContainerOpenPacket(containerCounter, ContainerOpenPacket::HOPPER, container->getCustomName(), container->getContainerSize(), container->hasCustomName())) );
+		containerMenu = new HopperMenu(inventory, container);
+		containerMenu->containerId = containerCounter;
+		containerMenu->addSlotListener(this);
+	}
+	else
+	{
+		app.DebugPrintf("ServerPlayer tried to open hopper container when one was already open\n");
+	}
+
+	return true;
+}
+
+bool ServerPlayer::openHopper(shared_ptr<MinecartHopper> container)
+{
+	if(containerMenu == inventoryMenu)
+	{
+		nextContainerCounter();
+		connection->send( shared_ptr<ContainerOpenPacket>( new ContainerOpenPacket(containerCounter, ContainerOpenPacket::HOPPER, container->getCustomName(), container->getContainerSize(), container->hasCustomName())) );
+		containerMenu = new HopperMenu(inventory, container);
+		containerMenu->containerId = containerCounter;
+		containerMenu->addSlotListener(this);
+	}
+	else
+	{
+		app.DebugPrintf("ServerPlayer tried to open minecart hopper container when one was already open\n");
+	}
+
+	return true;
+}
+
 bool ServerPlayer::openFurnace(shared_ptr<FurnaceTileEntity> furnace)
 {
 	if(containerMenu == inventoryMenu)
 	{
 		nextContainerCounter();
-		connection->send( shared_ptr<ContainerOpenPacket>( new ContainerOpenPacket(containerCounter, ContainerOpenPacket::FURNACE, 0, furnace->getContainerSize()) ) );
+		connection->send( shared_ptr<ContainerOpenPacket>( new ContainerOpenPacket(containerCounter, ContainerOpenPacket::FURNACE, furnace->getCustomName(), furnace->getContainerSize(), furnace->hasCustomName()) ) );
 		containerMenu = new FurnaceMenu(inventory, furnace);
 		containerMenu->containerId = containerCounter;
 		containerMenu->addSlotListener(this);
@@ -923,7 +1035,7 @@ bool ServerPlayer::openTrap(shared_ptr<DispenserTileEntity> trap)
 	if(containerMenu == inventoryMenu)
 	{
 		nextContainerCounter();
-		connection->send( shared_ptr<ContainerOpenPacket>( new ContainerOpenPacket(containerCounter, ContainerOpenPacket::TRAP, 0, trap->getContainerSize()) ) );
+		connection->send( shared_ptr<ContainerOpenPacket>( new ContainerOpenPacket(containerCounter, trap->GetType() == eTYPE_DROPPERTILEENTITY ? ContainerOpenPacket::DROPPER : ContainerOpenPacket::TRAP, trap->getCustomName(), trap->getContainerSize(), trap->hasCustomName() ) ) );
 		containerMenu = new TrapMenu(inventory, trap);
 		containerMenu->containerId = containerCounter;
 		containerMenu->addSlotListener(this);
@@ -932,7 +1044,7 @@ bool ServerPlayer::openTrap(shared_ptr<DispenserTileEntity> trap)
 	{
 		app.DebugPrintf("ServerPlayer tried to open dispenser when one was already open\n");
 	}
-	
+
 	return true;
 }
 
@@ -941,7 +1053,7 @@ bool ServerPlayer::openBrewingStand(shared_ptr<BrewingStandTileEntity> brewingSt
 	if(containerMenu == inventoryMenu)
 	{
 		nextContainerCounter();
-		connection->send(shared_ptr<ContainerOpenPacket>( new ContainerOpenPacket(containerCounter, ContainerOpenPacket::BREWING_STAND, 0, brewingStand->getContainerSize())));
+		connection->send(shared_ptr<ContainerOpenPacket>( new ContainerOpenPacket(containerCounter, ContainerOpenPacket::BREWING_STAND, brewingStand->getCustomName(), brewingStand->getContainerSize(), brewingStand->hasCustomName() )));
 		containerMenu = new BrewingStandMenu(inventory, brewingStand);
 		containerMenu->containerId = containerCounter;
 		containerMenu->addSlotListener(this);
@@ -954,7 +1066,25 @@ bool ServerPlayer::openBrewingStand(shared_ptr<BrewingStandTileEntity> brewingSt
 	return true;
 }
 
-bool ServerPlayer::openTrading(shared_ptr<Merchant> traderTarget)
+bool ServerPlayer::openBeacon(shared_ptr<BeaconTileEntity> beacon)
+{
+	if(containerMenu == inventoryMenu)
+	{
+		nextContainerCounter();
+		connection->send(shared_ptr<ContainerOpenPacket>( new ContainerOpenPacket(containerCounter, ContainerOpenPacket::BEACON, beacon->getCustomName(), beacon->getContainerSize(), beacon->hasCustomName() )));
+		containerMenu = new BeaconMenu(inventory, beacon);
+		containerMenu->containerId = containerCounter;
+		containerMenu->addSlotListener(this);
+	}
+	else
+	{
+		app.DebugPrintf("ServerPlayer tried to open beacon when one was already open\n");
+	}
+
+	return true;
+}
+
+bool ServerPlayer::openTrading(shared_ptr<Merchant> traderTarget, const wstring &name)
 {
 	if(containerMenu == inventoryMenu)
 	{
@@ -964,19 +1094,19 @@ bool ServerPlayer::openTrading(shared_ptr<Merchant> traderTarget)
 		containerMenu->addSlotListener(this);
 		shared_ptr<Container> container = ((MerchantMenu *) containerMenu)->getTradeContainer();
 
-		connection->send(shared_ptr<ContainerOpenPacket>(new ContainerOpenPacket(containerCounter, ContainerOpenPacket::TRADER_NPC, container->getName(), container->getContainerSize())));
+		connection->send(shared_ptr<ContainerOpenPacket>(new ContainerOpenPacket(containerCounter, ContainerOpenPacket::TRADER_NPC, name.empty()?L"":name, container->getContainerSize(), !name.empty())));
 
 		MerchantRecipeList *offers = traderTarget->getOffers(dynamic_pointer_cast<Player>(shared_from_this()));
 		if (offers != NULL)
 		{
-				ByteArrayOutputStream rawOutput;
-				DataOutputStream output(&rawOutput);
+			ByteArrayOutputStream rawOutput;
+			DataOutputStream output(&rawOutput);
 
-				// just to make sure the offers are matched to the container
-				output.writeInt(containerCounter);
-				offers->writeToStream(&output);
+			// just to make sure the offers are matched to the container
+			output.writeInt(containerCounter);
+			offers->writeToStream(&output);
 
-				connection->send(shared_ptr<CustomPayloadPacket>( new CustomPayloadPacket(CustomPayloadPacket::TRADER_LIST_PACKET, rawOutput.toByteArray())));
+			connection->send(shared_ptr<CustomPayloadPacket>( new CustomPayloadPacket(CustomPayloadPacket::TRADER_LIST_PACKET, rawOutput.toByteArray())));
 		}
 	}
 	else
@@ -987,24 +1117,39 @@ bool ServerPlayer::openTrading(shared_ptr<Merchant> traderTarget)
 	return true;
 }
 
+bool ServerPlayer::openHorseInventory(shared_ptr<EntityHorse> horse, shared_ptr<Container> container)
+{
+	if (containerMenu != inventoryMenu)
+	{
+		closeContainer();
+	}
+	nextContainerCounter();
+	connection->send(shared_ptr<ContainerOpenPacket>(new ContainerOpenPacket(containerCounter, ContainerOpenPacket::HORSE, horse->getCustomName(), container->getContainerSize(), container->hasCustomName(), horse->entityId )));
+	containerMenu = new HorseInventoryMenu(inventory, container, horse);
+	containerMenu->containerId = containerCounter;
+	containerMenu->addSlotListener(this);
+
+	return true;
+}
+
 void ServerPlayer::slotChanged(AbstractContainerMenu *container, int slotIndex, shared_ptr<ItemInstance> item)
 {
-    if (dynamic_cast<ResultSlot *>(container->getSlot(slotIndex)))
+	if (dynamic_cast<ResultSlot *>(container->getSlot(slotIndex)))
 	{
-        return;
-    }
+		return;
+	}
 
-    if (ignoreSlotUpdateHack)
+	if (ignoreSlotUpdateHack)
 	{
-        // Do not send this packet!
-        //
-        // This is a horrible hack that makes sure that inventory clicks
-        // that the client correctly predicted don't get sent out to the
-        // client again.
-        return;
-    }
+		// Do not send this packet!
+		//
+		// This is a horrible hack that makes sure that inventory clicks
+		// that the client correctly predicted don't get sent out to the
+		// client again.
+		return;
+	}
 
-    connection->send( shared_ptr<ContainerSetSlotPacket>( new ContainerSetSlotPacket(container->containerId, slotIndex, item) ) );
+	connection->send( shared_ptr<ContainerSetSlotPacket>( new ContainerSetSlotPacket(container->containerId, slotIndex, item) ) );
 
 }
 
@@ -1017,96 +1162,91 @@ void ServerPlayer::refreshContainer(AbstractContainerMenu *menu)
 
 void ServerPlayer::refreshContainer(AbstractContainerMenu *container, vector<shared_ptr<ItemInstance> > *items)
 {
-    connection->send( shared_ptr<ContainerSetContentPacket>( new ContainerSetContentPacket(container->containerId, items) ) );
-    connection->send( shared_ptr<ContainerSetSlotPacket>( new ContainerSetSlotPacket(-1, -1, inventory->getCarried()) ) );
+	connection->send( shared_ptr<ContainerSetContentPacket>( new ContainerSetContentPacket(container->containerId, items) ) );
+	connection->send( shared_ptr<ContainerSetSlotPacket>( new ContainerSetSlotPacket(-1, -1, inventory->getCarried()) ) );
 }
 
 void ServerPlayer::setContainerData(AbstractContainerMenu *container, int id, int value)
 {
 	// 4J - added, so that furnace updates also have this hack
-    if (ignoreSlotUpdateHack)
+	if (ignoreSlotUpdateHack)
 	{
-        // Do not send this packet!
-        //
-        // This is a horrible hack that makes sure that inventory clicks
-        // that the client correctly predicted don't get sent out to the
-        // client again.
-        return;
-    }
+		// Do not send this packet!
+		//
+		// This is a horrible hack that makes sure that inventory clicks
+		// that the client correctly predicted don't get sent out to the
+		// client again.
+		return;
+	}
 	connection->send( shared_ptr<ContainerSetDataPacket>( new ContainerSetDataPacket(container->containerId, id, value) ) );
 }
 
 void ServerPlayer::closeContainer()
 {
-    connection->send( shared_ptr<ContainerClosePacket>( new ContainerClosePacket(containerMenu->containerId) ) );
-    doCloseContainer();
+	connection->send( shared_ptr<ContainerClosePacket>( new ContainerClosePacket(containerMenu->containerId) ) );
+	doCloseContainer();
 }
 
 void ServerPlayer::broadcastCarriedItem()
 {
-    if (ignoreSlotUpdateHack)
+	if (ignoreSlotUpdateHack)
 	{
-        // Do not send this packet!
-        // This is a horrible hack that makes sure that inventory clicks
-        // that the client correctly predicted don't get sent out to the
-        // client again.
-        return;
-    }
-    connection->send( shared_ptr<ContainerSetSlotPacket>( new ContainerSetSlotPacket(-1, -1, inventory->getCarried()) ) );
+		// Do not send this packet!
+		// This is a horrible hack that makes sure that inventory clicks
+		// that the client correctly predicted don't get sent out to the
+		// client again.
+		return;
+	}
+	connection->send( shared_ptr<ContainerSetSlotPacket>( new ContainerSetSlotPacket(-1, -1, inventory->getCarried()) ) );
 }
 
 void ServerPlayer::doCloseContainer()
 {
-    containerMenu->removed( dynamic_pointer_cast<Player>( shared_from_this() ) );
-    containerMenu = inventoryMenu;
+	containerMenu->removed( dynamic_pointer_cast<Player>( shared_from_this() ) );
+	containerMenu = inventoryMenu;
 }
 
-void ServerPlayer::setPlayerInput(float xa, float ya, bool jumping, bool sneaking, float xRot, float yRot)
+void ServerPlayer::setPlayerInput(float xxa, float yya, bool jumping, bool sneaking)
 {
-    xxa = xa;
-    yya = ya;
-    this->jumping = jumping;
-	this->setSneaking(sneaking);
-   this->xRot = xRot;
-    this->yRot = yRot;
+	if(riding != NULL)
+	{
+		if (xxa >= -1 && xxa <= 1) this->xxa = xxa;
+		if (yya >= -1 && yya <= 1) this->yya = yya;
+		this->jumping = jumping;
+		this->setSneaking(sneaking);
+	}
 }
 
 void ServerPlayer::awardStat(Stat *stat, byteArray param)
 {
-    if (stat == NULL)
+	if (stat == NULL)
 	{
 		delete [] param.data;
 		return;
 	}
 
-    if (!stat->awardLocallyOnly)
+	if (!stat->awardLocallyOnly)
 	{
 #ifndef _DURANGO
 		int count = *((int*)param.data);
 		delete [] param.data;
 
-        while (count > 100)
-		{
-            connection->send( shared_ptr<AwardStatPacket>( new AwardStatPacket(stat->id, 100) ) );
-            count -= 100;
-        }
 		connection->send( shared_ptr<AwardStatPacket>( new AwardStatPacket(stat->id, count) ) );
 #else
 		connection->send( shared_ptr<AwardStatPacket>( new AwardStatPacket(stat->id, param) ) );
 		// byteArray deleted in AwardStatPacket destructor.
 #endif
-    }
+	}
 	else delete [] param.data;
 }
 
 void ServerPlayer::disconnect()
 {
-    if (riding != NULL) ride(riding);
-    if (rider.lock() != NULL) rider.lock()->ride(shared_from_this() );
-    if (this->m_isSleeping)
+	if (rider.lock() != NULL) rider.lock()->ride(shared_from_this() );
+	if (m_isSleeping)
 	{
-        stopSleepInBed(true, false, false);
-    }
+		stopSleepInBed(true, false, false);
+	}
 }
 
 void ServerPlayer::resetSentInfo()
@@ -1205,6 +1345,16 @@ void ServerPlayer::displayClientMessage(int messageId)
 			if(shared_from_this()==player)
 			{
 				player->connection->send(shared_ptr<ChatPacket>( new ChatPacket(name, ChatPacket::e_ChatPlayerMaxSquid)));
+			}
+		}
+		break;
+	case IDS_MAX_BATS_SPAWNED:
+		for (unsigned int i = 0; i < server->getPlayers()->players.size(); i++)
+		{
+			shared_ptr<ServerPlayer> player = server->getPlayers()->players[i];
+			if(shared_from_this()==player)
+			{
+				player->connection->send(shared_ptr<ChatPacket>( new ChatPacket(name, ChatPacket::e_ChatPlayerMaxBats)));
 			}
 		}
 		break;
@@ -1341,9 +1491,9 @@ void ServerPlayer::displayClientMessage(int messageId)
 		break;
 	}
 
-    //Language *language = Language::getInstance();
-    //wstring languageString = app.GetString(messageId);//language->getElement(messageId);
-    //connection->send( shared_ptr<ChatPacket>( new ChatPacket(L"", messageType) ) );
+	//Language *language = Language::getInstance();
+	//wstring languageString = app.GetString(messageId);//language->getElement(messageId);
+	//connection->send( shared_ptr<ChatPacket>( new ChatPacket(L"", messageType) ) );
 }
 
 void ServerPlayer::completeUsingItem()
@@ -1378,9 +1528,9 @@ void ServerPlayer::onEffectAdded(MobEffectInstance *effect)
 }
 
 
-void ServerPlayer::onEffectUpdated(MobEffectInstance *effect)
+void ServerPlayer::onEffectUpdated(MobEffectInstance *effect, bool doRefreshAttributes)
 {
-	Player::onEffectUpdated(effect);
+	Player::onEffectUpdated(effect, doRefreshAttributes);
 	connection->send(shared_ptr<UpdateMobEffectPacket>( new UpdateMobEffectPacket(entityId, effect) ) );
 }
 
@@ -1431,6 +1581,13 @@ void ServerPlayer::sendMessage(const wstring& message, ChatPacket::EChatPacketMe
 bool ServerPlayer::hasPermission(EGameCommand command)
 {
 	return server->getPlayers()->isOp(dynamic_pointer_cast<ServerPlayer>(shared_from_this()));
+
+	// 4J: Removed permission level
+	/*if( server->getPlayers()->isOp(dynamic_pointer_cast<ServerPlayer>(shared_from_this())) )
+	{
+		return server->getOperatorUserPermissionLevel() >= permissionLevel;
+	}
+	return false;*/
 }
 
 // 4J - Don't use
@@ -1472,6 +1629,16 @@ int ServerPlayer::getViewDistance()
 //{
 //	return chatVisibility;
 //}
+
+Pos *ServerPlayer::getCommandSenderWorldPosition()
+{
+	return new Pos(Mth::floor(x), Mth::floor(y + .5), Mth::floor(z));
+}
+
+void ServerPlayer::resetLastActionTime()
+{
+	this->lastActionTime = MinecraftServer::getCurrentTimeMillis();
+}
 
 // Get an index that can be used to uniquely reference this chunk from either dimension
 int ServerPlayer::getFlagIndexForChunk(const ChunkPos& pos, int dimension)

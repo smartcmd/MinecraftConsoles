@@ -289,9 +289,9 @@ void Tutorial::staticCtor()
 	s_completableTasks.push_back( e_Tutorial_Hint_Potato );
 	s_completableTasks.push_back( e_Tutorial_Hint_Carrot );
 
-	s_completableTasks.push_back( e_Tutorial_Hint_Item_Unused_18 );
-	s_completableTasks.push_back( e_Tutorial_Hint_Item_Unused_19 );
-	s_completableTasks.push_back( e_Tutorial_Hint_Item_Unused_20 );
+	s_completableTasks.push_back( e_Tutorial_Hint_CommandBlock );
+	s_completableTasks.push_back( e_Tutorial_Hint_Beacon );
+	s_completableTasks.push_back( e_Tutorial_Hint_Activator_Rail );
 
 	s_completableTasks.push_back( eTutorial_Telemetry_TrialStart );
 	s_completableTasks.push_back( eTutorial_Telemetry_Halfway );
@@ -317,9 +317,31 @@ void Tutorial::staticCtor()
 	s_completableTasks.push_back( e_Tutorial_State_Anvil );
 	s_completableTasks.push_back( e_Tutorial_State_Anvil_Menu );
 	s_completableTasks.push_back( e_Tutorial_State_Enderchests );
+	s_completableTasks.push_back( e_Tutorial_State_Horse_Menu );
+	s_completableTasks.push_back( e_Tutorial_State_Hopper_Menu );
+	
+	s_completableTasks.push_back( e_Tutorial_Hint_Wither );
+	s_completableTasks.push_back( e_Tutorial_Hint_Witch );
+	s_completableTasks.push_back( e_Tutorial_Hint_Bat );
+	s_completableTasks.push_back( e_Tutorial_Hint_Horse );
 
-	s_completableTasks.push_back( e_Tutorial_State_Unused_9 );
-	s_completableTasks.push_back( e_Tutorial_State_Unused_10 );
+	s_completableTasks.push_back( e_Tutorial_Hint_RedstoneBlock );
+	s_completableTasks.push_back( e_Tutorial_Hint_DaylightDetector );
+	s_completableTasks.push_back( e_Tutorial_Hint_Dropper );
+	s_completableTasks.push_back( e_Tutorial_Hint_Hopper );
+	s_completableTasks.push_back( e_Tutorial_Hint_Comparator );
+	s_completableTasks.push_back( e_Tutorial_Hint_ChestTrap );
+	s_completableTasks.push_back( e_Tutorial_Hint_HayBlock );
+	s_completableTasks.push_back( e_Tutorial_Hint_ClayHardened );
+	s_completableTasks.push_back( e_Tutorial_Hint_ClayHardenedColored );
+	s_completableTasks.push_back( e_Tutorial_Hint_CoalBlock );
+
+	s_completableTasks.push_back( e_Tutorial_State_Beacon_Menu );
+	s_completableTasks.push_back( e_Tutorial_State_Fireworks_Menu );
+	s_completableTasks.push_back( e_Tutorial_State_Horse );
+	s_completableTasks.push_back( e_Tutorial_State_Hopper );
+	s_completableTasks.push_back( e_Tutorial_State_Beacon );
+	s_completableTasks.push_back( e_Tutorial_State_Fireworks );
 
 	if( s_completableTasks.size() > TUTORIAL_PROFILE_STORAGE_BITS )
 	{
@@ -376,10 +398,10 @@ Tutorial::Tutorial(int iPad, bool isFullTutorial /*= false*/) : m_iPad( iPad )
 	/*
 	* TILE HINTS
 	*/
-	int rockItems[] = {Tile::rock_Id};
+	int rockItems[] = {Tile::stone_Id};
 	if(!isHintCompleted(e_Tutorial_Hint_Rock)) addHint(e_Tutorial_State_Gameplay, new LookAtTileHint(e_Tutorial_Hint_Rock, this, rockItems, 1 ) );
 
-	int stoneItems[] = {Tile::stoneBrick_Id};
+	int stoneItems[] = {Tile::cobblestone_Id};
 	if(!isHintCompleted(e_Tutorial_Hint_Stone)) addHint(e_Tutorial_State_Gameplay, new LookAtTileHint(e_Tutorial_Hint_Stone, this, stoneItems, 1 ) );
 
 	int plankItems[] = {Tile::wood_Id};
@@ -438,7 +460,7 @@ Tutorial::Tutorial(int iPad, bool isFullTutorial /*= false*/) : m_iPad( iPad )
 		addHint(e_Tutorial_State_Gameplay, new LookAtTileHint(e_Tutorial_Hint_Sandstone, this, sandstoneItems, 1, -1, SandStoneTile::TYPE_SMOOTHSIDE ) );
 	}
 
-	int noteBlockItems[] = {Tile::musicBlock_Id};
+	int noteBlockItems[] = {Tile::noteblock_Id};
 	if(!isHintCompleted(e_Tutorial_Hint_Note_Block)) addHint(e_Tutorial_State_Gameplay, new LookAtTileHint(e_Tutorial_Hint_Note_Block, this, noteBlockItems, 1 ) );
 
 	int poweredRailItems[] = {Tile::goldenRail_Id};
@@ -455,13 +477,13 @@ Tutorial::Tutorial(int iPad, bool isFullTutorial /*= false*/) : m_iPad( iPad )
 		addHint(e_Tutorial_State_Gameplay, new LookAtTileHint(e_Tutorial_Hint_Tall_Grass, this, tallGrassItems, 1, -1, TallGrass::FERN ) );
 	}
 
-	int woolItems[] = {Tile::cloth_Id};
+	int woolItems[] = {Tile::wool_Id};
 	if(!isHintCompleted(e_Tutorial_Hint_Wool)) addHint(e_Tutorial_State_Gameplay, new LookAtTileHint(e_Tutorial_Hint_Wool, this, woolItems, 1 ) );
 
 	int flowerItems[] = {Tile::flower_Id, Tile::rose_Id};
 	if(!isHintCompleted(e_Tutorial_Hint_Flower)) addHint(e_Tutorial_State_Gameplay, new LookAtTileHint(e_Tutorial_Hint_Flower, this, flowerItems, 2 ) );
 
-	int mushroomItems[] = {Tile::mushroom1_Id, Tile::mushroom2_Id};
+	int mushroomItems[] = {Tile::mushroom_brown_Id, Tile::mushroom_red_Id};
 	if(!isHintCompleted(e_Tutorial_Hint_Mushroom)) addHint(e_Tutorial_State_Gameplay, new LookAtTileHint(e_Tutorial_Hint_Mushroom, this, mushroomItems, 2 ) );
 
 	int goldBlockItems[] = {Tile::goldBlock_Id};
@@ -499,7 +521,7 @@ Tutorial::Tutorial(int iPad, bool isFullTutorial /*= false*/) : m_iPad( iPad )
 	int bookshelfItems[] = {Tile::bookshelf_Id};
 	if(!isHintCompleted(e_Tutorial_Hint_Bookshelf)) addHint(e_Tutorial_State_Gameplay, new LookAtTileHint(e_Tutorial_Hint_Bookshelf, this, bookshelfItems, 1 ) );
 
-	int mossStoneItems[] = {Tile::mossStone_Id};
+	int mossStoneItems[] = {Tile::mossyCobblestone_Id};
 	if(!isHintCompleted(e_Tutorial_Hint_Moss_Stone)) addHint(e_Tutorial_State_Gameplay, new LookAtTileHint(e_Tutorial_Hint_Moss_Stone, this, mossStoneItems, 1 ) );
 
 	int obsidianItems[] = {Tile::obsidian_Id};
@@ -526,7 +548,7 @@ Tutorial::Tutorial(int iPad, bool isFullTutorial /*= false*/) : m_iPad( iPad )
 	int craftingTableItems[] = {Tile::workBench_Id};
 	if(!isHintCompleted(e_Tutorial_Hint_Crafting_Table)) addHint(e_Tutorial_State_Gameplay, new LookAtTileHint(e_Tutorial_Hint_Crafting_Table, this, craftingTableItems, 1 ) );
 
-	int cropsItems[] = {Tile::crops_Id};
+	int cropsItems[] = {Tile::wheat_Id};
 	if(!isHintCompleted(e_Tutorial_Hint_Crops)) addHint(e_Tutorial_State_Gameplay, new LookAtTileHint(e_Tutorial_Hint_Crops, this, cropsItems, 1, -1, -1, 7 ) );
 
 	int farmlandItems[] = {Tile::farmland_Id};
@@ -544,7 +566,7 @@ Tutorial::Tutorial(int iPad, bool isFullTutorial /*= false*/) : m_iPad( iPad )
 	int ladderItems[] = {Tile::ladder_Id};
 	if(!isHintCompleted(e_Tutorial_Hint_Ladder)) addHint(e_Tutorial_State_Gameplay, new LookAtTileHint(e_Tutorial_Hint_Ladder, this, ladderItems, 1 ) );
 
-	int stairsStoneItems[] = {Tile::stairs_stone_Id,Tile::stairs_bricks_Id,Tile::stairs_stoneBrickSmooth_Id,Tile::stairs_wood_Id,Tile::stairs_sprucewood_Id,Tile::stairs_birchwood_Id,Tile::stairs_netherBricks_Id,Tile::stairs_sandstone_Id,Tile::stairs_quartz_Id};
+	int stairsStoneItems[] = {Tile::stairs_stone_Id,Tile::stairs_bricks_Id,Tile::stairs_stoneBrick_Id,Tile::stairs_wood_Id,Tile::stairs_sprucewood_Id,Tile::stairs_birchwood_Id,Tile::stairs_netherBricks_Id,Tile::stairs_sandstone_Id,Tile::stairs_quartz_Id};
 	if(!isHintCompleted(e_Tutorial_Hint_Stairs_Stone)) addHint(e_Tutorial_State_Gameplay, new LookAtTileHint(e_Tutorial_Hint_Stairs_Stone, this, stairsStoneItems, 9 ) );
 
 	int railItems[] = {Tile::rail_Id};
@@ -562,7 +584,7 @@ Tutorial::Tutorial(int iPad, bool isFullTutorial /*= false*/) : m_iPad( iPad )
 	int redstoneOreItems[] = {Tile::redStoneOre_Id, Tile::redStoneOre_lit_Id};
 	if(!isHintCompleted(e_Tutorial_Hint_Redstone_Ore)) addHint(e_Tutorial_State_Gameplay, new LookAtTileHint(e_Tutorial_Hint_Redstone_Ore, this, redstoneOreItems, 2 ) );
 
-	int redstoneTorchItems[] = {Tile::notGate_off_Id, Tile::notGate_on_Id};
+	int redstoneTorchItems[] = {Tile::redstoneTorch_off_Id, Tile::redstoneTorch_on_Id};
 	if(!isHintCompleted(e_Tutorial_Hint_Redstone_Torch)) addHint(e_Tutorial_State_Gameplay, new LookAtTileHint(e_Tutorial_Hint_Redstone_Torch, this, redstoneTorchItems, 2 ) );
 
 	int buttonItems[] = {Tile::button_stone_Id, Tile::button_wood_Id};
@@ -583,19 +605,19 @@ Tutorial::Tutorial(int iPad, bool isFullTutorial /*= false*/) : m_iPad( iPad )
 	int sugarCaneItems[] = {Tile::reeds_Id};
 	if(!isHintCompleted(e_Tutorial_Hint_Sugarcane)) addHint(e_Tutorial_State_Gameplay, new LookAtTileHint(e_Tutorial_Hint_Sugarcane, this, sugarCaneItems, 1 ) );
 
-	int recordPlayerItems[] = {Tile::recordPlayer_Id};
+	int recordPlayerItems[] = {Tile::jukebox_Id};
 	if(!isHintCompleted(e_Tutorial_Hint_Record_Player)) addHint(e_Tutorial_State_Gameplay, new LookAtTileHint(e_Tutorial_Hint_Record_Player, this, recordPlayerItems, 1 ) );
 
 	int pumpkinItems[] = {Tile::pumpkin_Id};
 	if(!isHintCompleted(e_Tutorial_Hint_Pumpkin)) addHint(e_Tutorial_State_Gameplay, new LookAtTileHint(e_Tutorial_Hint_Pumpkin, this, pumpkinItems, 1, -1, -1, 0 ) );
 
-	int hellRockItems[] = {Tile::hellRock_Id};
+	int hellRockItems[] = {Tile::netherRack_Id};
 	if(!isHintCompleted(e_Tutorial_Hint_Hell_Rock)) addHint(e_Tutorial_State_Gameplay, new LookAtTileHint(e_Tutorial_Hint_Hell_Rock, this, hellRockItems, 1 ) );
 
-	int hellSandItems[] = {Tile::hellSand_Id};
+	int hellSandItems[] = {Tile::soulsand_Id};
 	if(!isHintCompleted(e_Tutorial_Hint_Hell_Sand)) addHint(e_Tutorial_State_Gameplay, new LookAtTileHint(e_Tutorial_Hint_Hell_Sand, this, hellSandItems, 1 ) );
 
-	int glowstoneItems[] = {Tile::lightGem_Id};
+	int glowstoneItems[] = {Tile::glowstone_Id};
 	if(!isHintCompleted(e_Tutorial_Hint_Glowstone)) addHint(e_Tutorial_State_Gameplay, new LookAtTileHint(e_Tutorial_Hint_Glowstone, this, glowstoneItems, 1 ) );
 
 	int portalItems[] = {Tile::portalTile_Id};
@@ -608,7 +630,7 @@ Tutorial::Tutorial(int iPad, bool isFullTutorial /*= false*/) : m_iPad( iPad )
 	if(!isHintCompleted(e_Tutorial_Hint_Cake)) addHint(e_Tutorial_State_Gameplay, new LookAtTileHint(e_Tutorial_Hint_Cake, this, cakeItems, 1 ) );
 
 	int redstoneRepeaterItems[] = {Tile::diode_on_Id, Tile::diode_off_Id};
-	if(!isHintCompleted(e_Tutorial_Hint_Redstone_Repeater)) addHint(e_Tutorial_State_Gameplay, new LookAtTileHint(e_Tutorial_Hint_Redstone_Repeater, this, redstoneRepeaterItems, 2, Item::diode_Id ) );
+	if(!isHintCompleted(e_Tutorial_Hint_Redstone_Repeater)) addHint(e_Tutorial_State_Gameplay, new LookAtTileHint(e_Tutorial_Hint_Redstone_Repeater, this, redstoneRepeaterItems, 2, Item::repeater_Id ) );
 
 	int trapdoorItems[] = {Tile::trapdoor_Id};
 	if(!isHintCompleted(e_Tutorial_Hint_Trapdoor)) addHint(e_Tutorial_State_Gameplay, new LookAtTileHint(e_Tutorial_Hint_Trapdoor, this, trapdoorItems, 1 ) );
@@ -622,10 +644,10 @@ Tutorial::Tutorial(int iPad, bool isFullTutorial /*= false*/) : m_iPad( iPad )
 	int monsterStoneEggItems[] = {Tile::monsterStoneEgg_Id};
 	if(!isHintCompleted(e_Tutorial_Hint_Monster_Stone_Egg)) addHint(e_Tutorial_State_Gameplay, new LookAtTileHint(e_Tutorial_Hint_Monster_Stone_Egg, this, monsterStoneEggItems, 1 ) );
 
-	int stoneBrickSmoothItems[] = {Tile::stoneBrickSmooth_Id};
+	int stoneBrickSmoothItems[] = {Tile::stoneBrick_Id};
 	if(!isHintCompleted(e_Tutorial_Hint_Stone_Brick_Smooth)) addHint(e_Tutorial_State_Gameplay, new LookAtTileHint(e_Tutorial_Hint_Stone_Brick_Smooth, this, stoneBrickSmoothItems, 1 ) );
 
-	int hugeMushroomItems[] = {Tile::hugeMushroom1_Id,Tile::hugeMushroom2_Id};
+	int hugeMushroomItems[] = {Tile::hugeMushroom_brown_Id,Tile::hugeMushroom_red_Id};
 	if(!isHintCompleted(e_Tutorial_Hint_Huge_Mushroom)) addHint(e_Tutorial_State_Gameplay, new LookAtTileHint(e_Tutorial_Hint_Huge_Mushroom, this, hugeMushroomItems, 2 ) );
 
 	int ironFenceItems[] = {Tile::ironFence_Id};
@@ -673,7 +695,7 @@ Tutorial::Tutorial(int iPad, bool isFullTutorial /*= false*/) : m_iPad( iPad )
 	int endPortalFrameItems[] = {Tile::endPortalFrameTile_Id};
 	if(!isHintCompleted(e_Tutorial_Hint_End_Portal_Frame)) addHint(e_Tutorial_State_Gameplay, new LookAtTileHint(e_Tutorial_Hint_End_Portal_Frame, this, endPortalFrameItems, 1 ) );
 
-	int whiteStoneItems[] = {Tile::whiteStone_Id};
+	int whiteStoneItems[] = {Tile::endStone_Id};
 	if(!isHintCompleted(e_Tutorial_Hint_White_Stone)) addHint(e_Tutorial_State_Gameplay, new LookAtTileHint(e_Tutorial_Hint_White_Stone, this, whiteStoneItems, 1 ) );
 
 	int dragonEggItems[] = {Tile::dragonEgg_Id};
@@ -683,7 +705,7 @@ Tutorial::Tutorial(int iPad, bool isFullTutorial /*= false*/) : m_iPad( iPad )
 	if(!isHintCompleted(e_Tutorial_Hint_RedstoneLamp)) addHint(e_Tutorial_State_Gameplay, new LookAtTileHint(e_Tutorial_Hint_RedstoneLamp, this, redstoneLampItems, 2 ) );
 
 	int cocoaItems[] = {Tile::cocoa_Id};
-	if(!isHintCompleted(e_Tutorial_Hint_Cocoa)) addHint(e_Tutorial_State_Gameplay, new LookAtTileHint(e_Tutorial_Hint_Cocoa, this, cocoaItems, 1 ) );
+	if(!isHintCompleted(e_Tutorial_Hint_Cocoa)) addHint(e_Tutorial_State_Gameplay, new LookAtTileHint(e_Tutorial_Hint_Cocoa, this, cocoaItems, 1, Item::dye_powder_Id, -1, DyePowderItem::BROWN) );
 
 	int emeraldOreItems[] = {Tile::emeraldOre_Id};
 	if(!isHintCompleted(e_Tutorial_Hint_EmeraldOre)) addHint(e_Tutorial_State_Gameplay, new LookAtTileHint(e_Tutorial_Hint_EmeraldOre, this, emeraldOreItems, 1 ) );
@@ -734,6 +756,45 @@ Tutorial::Tutorial(int iPad, bool isFullTutorial /*= false*/) : m_iPad( iPad )
 	
 	int carrotItems[] = {Tile::carrots_Id};
 	if(!isHintCompleted(e_Tutorial_Hint_Carrot)) addHint(e_Tutorial_State_Gameplay, new LookAtTileHint(e_Tutorial_Hint_Carrot, this, carrotItems, 1, -1, -1, 7 ) );
+	
+	int commandBlockItems[] = {Tile::commandBlock_Id};
+	if(!isHintCompleted(e_Tutorial_Hint_CommandBlock)) addHint(e_Tutorial_State_Gameplay, new LookAtTileHint(e_Tutorial_Hint_CommandBlock, this, commandBlockItems, 1 ) );
+	
+	int beaconItems[] = {Tile::beacon_Id};
+	if(!isHintCompleted(e_Tutorial_Hint_Beacon)) addHint(e_Tutorial_State_Gameplay, new LookAtTileHint(e_Tutorial_Hint_Beacon, this, beaconItems, 1 ) );
+	
+	int activatorRailItems[] = {Tile::activatorRail_Id};
+	if(!isHintCompleted(e_Tutorial_Hint_Activator_Rail)) addHint(e_Tutorial_State_Gameplay, new LookAtTileHint(e_Tutorial_Hint_Activator_Rail, this, activatorRailItems, 1 ) );
+	
+	int redstoneBlockItems[] = {Tile::redstoneBlock_Id};
+	if(!isHintCompleted(e_Tutorial_Hint_RedstoneBlock)) addHint(e_Tutorial_State_Gameplay, new LookAtTileHint(e_Tutorial_Hint_RedstoneBlock, this, redstoneBlockItems, 1 ) );
+	
+	int daylightDetectorItems[] = {Tile::daylightDetector_Id};
+	if(!isHintCompleted(e_Tutorial_Hint_DaylightDetector)) addHint(e_Tutorial_State_Gameplay, new LookAtTileHint(e_Tutorial_Hint_DaylightDetector, this, daylightDetectorItems, 1 ) );
+	
+	int dropperItems[] = {Tile::dropper_Id};
+	if(!isHintCompleted(e_Tutorial_Hint_Dropper)) addHint(e_Tutorial_State_Gameplay, new LookAtTileHint(e_Tutorial_Hint_Dropper, this, dropperItems, 1 ) );
+	
+	int hopperItems[] = {Tile::hopper_Id};
+	if(!isHintCompleted(e_Tutorial_Hint_Hopper)) addHint(e_Tutorial_State_Gameplay, new LookAtTileHint(e_Tutorial_Hint_Hopper, this, hopperItems, 1 ) );
+	
+	int comparatorItems[] = {Tile::comparator_off_Id, Tile::comparator_on_Id};
+	if(!isHintCompleted(e_Tutorial_Hint_Comparator)) addHint(e_Tutorial_State_Gameplay, new LookAtTileHint(e_Tutorial_Hint_Comparator, this, comparatorItems, 2, Item::comparator_Id ) );
+	
+	int trappedChestItems[] = {Tile::chest_trap_Id};
+	if(!isHintCompleted(e_Tutorial_Hint_ChestTrap)) addHint(e_Tutorial_State_Gameplay, new LookAtTileHint(e_Tutorial_Hint_ChestTrap, this, trappedChestItems, 1 ) );
+	
+	int hayBlockItems[] = {Tile::hayBlock_Id};
+	if(!isHintCompleted(e_Tutorial_Hint_HayBlock)) addHint(e_Tutorial_State_Gameplay, new LookAtTileHint(e_Tutorial_Hint_HayBlock, this, hayBlockItems, 1 ) );
+	
+	int clayHardenedItems[] = {Tile::clayHardened_Id};
+	if(!isHintCompleted(e_Tutorial_Hint_ClayHardened)) addHint(e_Tutorial_State_Gameplay, new LookAtTileHint(e_Tutorial_Hint_ClayHardened, this, clayHardenedItems, 1 ) );
+	
+	int clayHardenedColoredItems[] = {Tile::clayHardened_colored_Id};
+	if(!isHintCompleted(e_Tutorial_Hint_ClayHardenedColored)) addHint(e_Tutorial_State_Gameplay, new LookAtTileHint(e_Tutorial_Hint_ClayHardenedColored, this, clayHardenedColoredItems, 1 ) );
+	
+	int coalBlockItems[] = {Tile::coalBlock_Id};
+	if(!isHintCompleted(e_Tutorial_Hint_CoalBlock)) addHint(e_Tutorial_State_Gameplay, new LookAtTileHint(e_Tutorial_Hint_CoalBlock, this, coalBlockItems, 1 ) );
 
 	/*
 	* ENTITY HINTS
@@ -760,8 +821,12 @@ Tutorial::Tutorial(int iPad, bool isFullTutorial /*= false*/) : m_iPad( iPad )
 	if(!isHintCompleted(e_Tutorial_Hint_EnderDragon)) addHint(e_Tutorial_State_Gameplay, new LookAtEntityHint(e_Tutorial_Hint_EnderDragon, this, IDS_DESC_ENDERDRAGON, IDS_ENDERDRAGON, eTYPE_ENDERDRAGON ) );
 	if(!isHintCompleted(e_Tutorial_Hint_Blaze)) addHint(e_Tutorial_State_Gameplay, new LookAtEntityHint(e_Tutorial_Hint_Blaze, this, IDS_DESC_BLAZE, IDS_BLAZE, eTYPE_BLAZE ) );
 	if(!isHintCompleted(e_Tutorial_Hint_Lava_Slime)) addHint(e_Tutorial_State_Gameplay, new LookAtEntityHint(e_Tutorial_Hint_Lava_Slime, this, IDS_DESC_LAVA_SLIME, IDS_LAVA_SLIME, eTYPE_LAVASLIME ) );
-	if(!isHintCompleted(e_Tutorial_Hint_Ozelot)) addHint(e_Tutorial_State_Gameplay, new LookAtEntityHint(e_Tutorial_Hint_Ozelot, this, IDS_DESC_OZELOT, IDS_OZELOT, eTYPE_OZELOT ) );
+	if(!isHintCompleted(e_Tutorial_Hint_Ozelot)) addHint(e_Tutorial_State_Gameplay, new LookAtEntityHint(e_Tutorial_Hint_Ozelot, this, IDS_DESC_OZELOT, IDS_OZELOT, eTYPE_OCELOT ) );
 	if(!isHintCompleted(e_Tutorial_Hint_Villager)) addHint(e_Tutorial_State_Gameplay, new LookAtEntityHint(e_Tutorial_Hint_Villager, this, IDS_DESC_VILLAGER, IDS_VILLAGER, eTYPE_VILLAGER) );
+	if(!isHintCompleted(e_Tutorial_Hint_Wither)) addHint(e_Tutorial_State_Gameplay, new LookAtEntityHint(e_Tutorial_Hint_Wither, this, IDS_DESC_WITHER, IDS_WITHER, eTYPE_WITHERBOSS) );
+	if(!isHintCompleted(e_Tutorial_Hint_Witch)) addHint(e_Tutorial_State_Gameplay, new LookAtEntityHint(e_Tutorial_Hint_Witch, this, IDS_DESC_WITCH, IDS_WITCH, eTYPE_WITCH) );
+	if(!isHintCompleted(e_Tutorial_Hint_Bat)) addHint(e_Tutorial_State_Gameplay, new LookAtEntityHint(e_Tutorial_Hint_Bat, this, IDS_DESC_BAT, IDS_BAT, eTYPE_BAT) );
+	if(!isHintCompleted(e_Tutorial_Hint_Horse)) addHint(e_Tutorial_State_Gameplay, new LookAtEntityHint(e_Tutorial_Hint_Horse, this, IDS_DESC_HORSE, IDS_HORSE, eTYPE_HORSE) );
 
 
 	/*
@@ -928,6 +993,86 @@ Tutorial::Tutorial(int iPad, bool isFullTutorial /*= false*/) : m_iPad( iPad )
 		addTask(e_Tutorial_State_Trading_Menu, tradingOverviewTask );
 	}
 	// Other tasks can be added in the derived classes
+
+	/*
+	*
+	*
+	* HORSE ENCOUNTER
+	*
+	*/
+	if(isFullTutorial || !isStateCompleted(e_Tutorial_State_Horse) ) 
+	{
+		addTask(e_Tutorial_State_Horse, 
+			new HorseChoiceTask(this, IDS_TUTORIAL_TASK_HORSE_OVERVIEW,	IDS_TUTORIAL_TASK_DONKEY_OVERVIEW, IDS_TUTORIAL_TASK_MULE_OVERVIEW, IDS_TUTORIAL_PROMPT_HORSE_OVERVIEW,
+			true, ACTION_MENU_A, ACTION_MENU_B, e_Tutorial_Completion_Complete_State_Gameplay_Constraints, eTelemetryTutorial_Horse) );
+
+		addTask(e_Tutorial_State_Horse, new InfoTask(this, IDS_TUTORIAL_TASK_HORSE_INTRO,		IDS_TUTORIAL_PROMPT_PRESS_A_TO_CONTINUE, true, ACTION_MENU_A) );
+		addTask(e_Tutorial_State_Horse, new InfoTask(this, IDS_TUTORIAL_TASK_HORSE_PURPOSE,		IDS_TUTORIAL_PROMPT_PRESS_A_TO_CONTINUE, true, ACTION_MENU_A) );
+		addTask(e_Tutorial_State_Horse, new InfoTask(this, IDS_TUTORIAL_TASK_HORSE_TAMING,		IDS_TUTORIAL_PROMPT_PRESS_A_TO_CONTINUE, true, ACTION_MENU_A) );
+		addTask(e_Tutorial_State_Horse, new InfoTask(this, IDS_TUTORIAL_TASK_HORSE_TAMING2,		IDS_TUTORIAL_PROMPT_PRESS_A_TO_CONTINUE, true, ACTION_MENU_A) );
+
+		// 4J-JEV: Only force the RideEntityTask if we're on the full-tutorial.
+		if (isFullTutorial)	addTask(e_Tutorial_State_Horse, new RideEntityTask(eTYPE_HORSE, this, IDS_TUTORIAL_TASK_HORSE_RIDE, true, NULL, false, false, false) );
+		else				addTask(e_Tutorial_State_Horse, new InfoTask(this, IDS_TUTORIAL_TASK_HORSE_RIDE,	IDS_TUTORIAL_PROMPT_PRESS_A_TO_CONTINUE, true, ACTION_MENU_A) );
+
+		addTask(e_Tutorial_State_Horse, new InfoTask(this, IDS_TUTORIAL_TASK_HORSE_SADDLES,		IDS_TUTORIAL_PROMPT_PRESS_A_TO_CONTINUE, true, ACTION_MENU_A) );
+		addTask(e_Tutorial_State_Horse, new InfoTask(this, IDS_TUTORIAL_TASK_HORSE_SADDLEBAGS,	IDS_TUTORIAL_PROMPT_PRESS_A_TO_CONTINUE, true, ACTION_MENU_A) );
+		addTask(e_Tutorial_State_Horse, new InfoTask(this, IDS_TUTORIAL_TASK_HORSE_BREEDING,	IDS_TUTORIAL_PROMPT_PRESS_A_TO_CONTINUE, true, ACTION_MENU_A) );
+	}
+
+	/*
+	*
+	*
+	* HORSE MENU
+	*
+	*/
+	if(isFullTutorial || !isStateCompleted( e_Tutorial_State_Horse_Menu ) )
+	{
+		ProcedureCompoundTask *horseMenuTask = new ProcedureCompoundTask( this );
+		horseMenuTask->AddTask( new ChoiceTask(this,	IDS_TUTORIAL_TASK_HORSE_MENU_OVERVIEW,		IDS_TUTORIAL_PROMPT_HORSE_MENU_OVERVIEW,	true, ACTION_MENU_A, ACTION_MENU_B, e_Tutorial_Completion_Complete_State, eTelemetryTutorial_HorseMenu) );
+		horseMenuTask->AddTask( new InfoTask(this,		IDS_TUTORIAL_TASK_HORSE_MENU_LAYOUT,		IDS_TUTORIAL_PROMPT_PRESS_A_TO_CONTINUE,	true, ACTION_MENU_A) );
+		horseMenuTask->AddTask( new InfoTask(this,		IDS_TUTORIAL_TASK_HORSE_MENU_EQUIPMENT,		IDS_TUTORIAL_PROMPT_PRESS_A_TO_CONTINUE,	true, ACTION_MENU_A) );
+		horseMenuTask->AddTask( new InfoTask(this,		IDS_TUTORIAL_TASK_HORSE_MENU_SADDLEBAGS,	IDS_TUTORIAL_PROMPT_PRESS_A_TO_CONTINUE,	true, ACTION_MENU_A) );
+		addTask(e_Tutorial_State_Horse_Menu, horseMenuTask );
+	}
+
+	/*
+	*
+	*
+	* FIREWORKS MENU
+	*
+	*/
+	if(isFullTutorial || !isStateCompleted( e_Tutorial_State_Fireworks_Menu ) )
+	{
+		ProcedureCompoundTask *fireworksMenuTask = new ProcedureCompoundTask( this );
+		fireworksMenuTask->AddTask( new ChoiceTask(this,	IDS_TUTORIAL_TASK_FIREWORK_MENU_OVERVIEW,		IDS_TUTORIAL_PROMPT_FIREWORK_MENU_OVERVIEW,	true, ACTION_MENU_A, ACTION_MENU_B, e_Tutorial_Completion_Complete_State, eTelemetryTutorial_FireworksMenu) );
+		fireworksMenuTask->AddTask( new InfoTask(this,		IDS_TUTORIAL_TASK_FIREWORK_MENU_BASIC_START,	IDS_TUTORIAL_PROMPT_PRESS_A_TO_CONTINUE,	true, ACTION_MENU_A) );
+		fireworksMenuTask->AddTask( new InfoTask(this,		IDS_TUTORIAL_TASK_FIREWORK_MENU_BASIC_STARS,	IDS_TUTORIAL_PROMPT_PRESS_A_TO_CONTINUE,	true, ACTION_MENU_A) );
+		fireworksMenuTask->AddTask( new InfoTask(this,		IDS_TUTORIAL_TASK_FIREWORK_MENU_BASIC_HEIGHT,	IDS_TUTORIAL_PROMPT_PRESS_A_TO_CONTINUE,	true, ACTION_MENU_A) );
+		fireworksMenuTask->AddTask( new InfoTask(this,		IDS_TUTORIAL_TASK_FIREWORK_MENU_BASIC_CRAFT,	IDS_TUTORIAL_PROMPT_PRESS_A_TO_CONTINUE,	true, ACTION_MENU_A) );
+		fireworksMenuTask->AddTask( new InfoTask(this,		IDS_TUTORIAL_TASK_FIREWORK_MENU_ADV_START,		IDS_TUTORIAL_PROMPT_PRESS_A_TO_CONTINUE,	true, ACTION_MENU_A) );
+		fireworksMenuTask->AddTask( new InfoTask(this,		IDS_TUTORIAL_TASK_FIREWORK_MENU_ADV_COLOUR,		IDS_TUTORIAL_PROMPT_PRESS_A_TO_CONTINUE,	true, ACTION_MENU_A) );
+		fireworksMenuTask->AddTask( new InfoTask(this,		IDS_TUTORIAL_TASK_FIREWORK_MENU_ADV_SHAPE,		IDS_TUTORIAL_PROMPT_PRESS_A_TO_CONTINUE,	true, ACTION_MENU_A) );
+		fireworksMenuTask->AddTask( new InfoTask(this,		IDS_TUTORIAL_TASK_FIREWORK_MENU_ADV_EFFECT,		IDS_TUTORIAL_PROMPT_PRESS_A_TO_CONTINUE,	true, ACTION_MENU_A) );
+		fireworksMenuTask->AddTask( new InfoTask(this,		IDS_TUTORIAL_TASK_FIREWORK_MENU_ADV_FADE,		IDS_TUTORIAL_PROMPT_PRESS_A_TO_CONTINUE,	true, ACTION_MENU_A) );
+		addTask(e_Tutorial_State_Fireworks_Menu, fireworksMenuTask );
+	}
+
+	/*
+	*
+	*
+	* BEACON MENU
+	*
+	*/
+	if(isFullTutorial || !isStateCompleted( e_Tutorial_State_Beacon_Menu ) )
+	{
+		ProcedureCompoundTask *beaconMenuTask = new ProcedureCompoundTask( this );
+		beaconMenuTask->AddTask( new ChoiceTask(this,	IDS_TUTORIAL_TASK_BEACON_MENU_OVERVIEW,			IDS_TUTORIAL_PROMPT_BEACON_MENU_OVERVIEW,	true, ACTION_MENU_A, ACTION_MENU_B, e_Tutorial_Completion_Complete_State, eTelemetryTutorial_BeaconMenu) );
+		beaconMenuTask->AddTask( new InfoTask(this,		IDS_TUTORIAL_TASK_BEACON_MENU_PRIMARY_POWERS,	IDS_TUTORIAL_PROMPT_PRESS_A_TO_CONTINUE,	true, ACTION_MENU_A) );
+		beaconMenuTask->AddTask( new InfoTask(this,		IDS_TUTORIAL_TASK_BEACON_MENU_SECONDARY_POWER,	IDS_TUTORIAL_PROMPT_PRESS_A_TO_CONTINUE,	true, ACTION_MENU_A) );
+		beaconMenuTask->AddTask( new InfoTask(this,		IDS_TUTORIAL_TASK_BEACON_MENU_ACTIVATION,		IDS_TUTORIAL_PROMPT_PRESS_A_TO_CONTINUE,	true, ACTION_MENU_A) );
+		addTask(e_Tutorial_State_Beacon_Menu, beaconMenuTask );
+	}
 
 	/*
 	*
@@ -1203,27 +1348,15 @@ void Tutorial::tick()
 		// Need to set the time on both levels to stop the flickering as the local level
 		// tries to predict the time
 		MinecraftServer::SetTimeOfDay(m_iTutorialFreezeTimeValue);
-		pMinecraft->level->setOverrideTimeOfDay(m_iTutorialFreezeTimeValue); // Always daytime
+		pMinecraft->level->setDayTime(m_iTutorialFreezeTimeValue); // Always daytime
+		app.SetGameHostOption(eGameHostOption_DoDaylightCycle,0);
 		m_timeFrozen = true;
 	}
 	else if(m_freezeTime && m_timeFrozen && m_fullTutorialComplete)
 	{
-		__int64 currentTime = pMinecraft->level->getTime();
-		int currentDayTime = (currentTime % Level::TICKS_PER_DAY);
-		int timeToAdd = 0;
-		if(currentDayTime > m_iTutorialFreezeTimeValue)
-		{
-			timeToAdd = (Level::TICKS_PER_DAY - currentDayTime) + m_iTutorialFreezeTimeValue;
-		}
-		else
-		{
-			timeToAdd = m_iTutorialFreezeTimeValue - currentDayTime;
-		}
-		__int64 targetTime = currentTime + timeToAdd;
-		MinecraftServer::SetTimeOfDay(-1);
-		MinecraftServer::SetTime(targetTime);
-		pMinecraft->level->setOverrideTimeOfDay(-1);
-		pMinecraft->level->setTime(targetTime);
+		MinecraftServer::SetTimeOfDay(m_iTutorialFreezeTimeValue);
+		pMinecraft->level->setDayTime(m_iTutorialFreezeTimeValue);
+		app.SetGameHostOption(eGameHostOption_DoDaylightCycle,1);
 		m_timeFrozen = false;
 	}
 
@@ -1569,10 +1702,22 @@ bool Tutorial::setMessage(PopupMessageDetails *message)
 			{
 				TutorialMessage *messageString = it->second;
 				text = wstring( messageString->getMessageForDisplay() );
+
+				// 4J Stu - Quick fix for boat tutorial being incorrect
+				if(message->m_messageId == IDS_TUTORIAL_TASK_BOAT_OVERVIEW)
+				{
+					text = replaceAll(text, L"{*CONTROLLER_ACTION_USE*}", L"{*CONTROLLER_ACTION_DISMOUNT*}");
+				}
 			}
 			else
 			{
 				text = wstring( app.GetString(message->m_messageId) );
+
+				// 4J Stu - Quick fix for boat tutorial being incorrect
+				if(message->m_messageId == IDS_TUTORIAL_TASK_BOAT_OVERVIEW)
+				{
+					text = replaceAll(text, L"{*CONTROLLER_ACTION_USE*}", L"{*CONTROLLER_ACTION_DISMOUNT*}");
+				}
 			}
 		}
 
@@ -1916,7 +2061,7 @@ void Tutorial::onLookAt(int id, int iData)
 	}
 }
 
-void Tutorial::onLookAtEntity(eINSTANCEOF type)
+void Tutorial::onLookAtEntity(shared_ptr<Entity> entity)
 {
 	if( m_hintDisplayed ) return;
 
@@ -1924,11 +2069,38 @@ void Tutorial::onLookAtEntity(eINSTANCEOF type)
 	for(AUTO_VAR(it, hints[m_CurrentState].begin()); it < hints[m_CurrentState].end(); ++it)
 	{
 		TutorialHint *hint = *it;
-		hintNeeded = hint->onLookAtEntity(type);
+		hintNeeded = hint->onLookAtEntity(entity->GetType());
 		if(hintNeeded)
 		{
 			break;
 		}
+	}
+
+	if ( (m_CurrentState == e_Tutorial_State_Gameplay) && entity->instanceof(eTYPE_HORSE) )
+	{
+		changeTutorialState(e_Tutorial_State_Horse);
+	}
+
+	for (AUTO_VAR(it, activeTasks[m_CurrentState].begin()); it != activeTasks[m_CurrentState].end(); ++it)
+	{
+		(*it)->onLookAtEntity(entity);
+	}
+}
+
+void Tutorial::onRideEntity(shared_ptr<Entity> entity)
+{
+	if(m_CurrentState == e_Tutorial_State_Gameplay)
+	{
+		switch (entity->GetType())
+		{
+		case eTYPE_MINECART:	changeTutorialState(e_Tutorial_State_Riding_Minecart);	break;
+		case eTYPE_BOAT:		changeTutorialState(e_Tutorial_State_Riding_Boat);		break;
+		}
+	}
+
+	for (AUTO_VAR(it, activeTasks[m_CurrentState].begin()); it != activeTasks[m_CurrentState].end(); ++it)
+	{
+		(*it)->onRideEntity(entity);
 	}
 }
 

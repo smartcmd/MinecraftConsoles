@@ -13,40 +13,51 @@ AgableMob::AgableMob(Level *level) : PathfinderMob(level)
 	registeredBBHeight = 0;
 }
 
-bool AgableMob::interact(shared_ptr<Player> player)
+bool AgableMob::mobInteract(shared_ptr<Player> player)
 {
 	shared_ptr<ItemInstance> item = player->inventory->getSelected();
 
-	if (item != NULL && item->id == Item::monsterPlacer_Id)
+	if (item != NULL && item->id == Item::spawnEgg_Id)
 	{
 		if (!level->isClientSide)
 		{
 			eINSTANCEOF classToSpawn = EntityIO::getClass(item->getAuxValue());
 			if (classToSpawn != eTYPE_NOTSET && (classToSpawn & eTYPE_AGABLE_MOB) == eTYPE_AGABLE_MOB && classToSpawn == GetType() ) // 4J Added GetType() check to only spawn same type
 			{
-				shared_ptr<AgableMob> offspring = getBreedOffspring(dynamic_pointer_cast<AgableMob>(shared_from_this()));
-				if (offspring != NULL)
+				int error;
+				shared_ptr<Entity> result = SpawnEggItem::canSpawn(item->getAuxValue(), level, &error);
+
+				if (result != NULL)
 				{
-					offspring->setAge(-20 * 60 * 20);
-					offspring->moveTo(x, y, z, 0, 0);
-
-					level->addEntity(offspring);
-
-					if (!player->abilities.instabuild)
+					shared_ptr<AgableMob> offspring = getBreedOffspring(dynamic_pointer_cast<AgableMob>(shared_from_this()));
+					if (offspring != NULL)
 					{
-						item->count--;
+						offspring->setAge(BABY_START_AGE);
+						offspring->moveTo(x, y, z, 0, 0);
 
-						if (item->count <= 0)
+						level->addEntity(offspring);
+
+						if (!player->abilities.instabuild)
 						{
-							player->inventory->setItem(player->inventory->selected, nullptr);
+							item->count--;
+
+							if (item->count <= 0)
+							{
+								player->inventory->setItem(player->inventory->selected, nullptr);
+							}
 						}
 					}
 				}
+				else 
+				{
+					SpawnEggItem::DisplaySpawnError(player, error);
+				}
 			}
 		}
+		return true;
 	}
 
-	return PathfinderMob::interact(player);
+	return false;
 }
 
 void AgableMob::defineSynchedData()
@@ -58,6 +69,17 @@ void AgableMob::defineSynchedData()
 int AgableMob::getAge()
 {
 	return entityData->getInteger(DATA_AGE_ID);
+}
+
+void AgableMob::ageUp(int seconds)
+{
+	int age = getAge();
+	age += seconds * SharedConstants::TICKS_PER_SECOND;
+	if (age > 0)
+	{
+		age = 0;
+	}
+	setAge(age);
 }
 
 void AgableMob::setAge(int age)

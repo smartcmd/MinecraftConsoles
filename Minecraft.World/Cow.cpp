@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "com.mojang.nbt.h"
+#include "net.minecraft.world.entity.ai.attributes.h"
 #include "net.minecraft.world.entity.ai.navigation.h"
 #include "net.minecraft.world.entity.ai.goal.h"
 #include "net.minecraft.world.level.tile.h"
@@ -7,6 +8,7 @@
 #include "net.minecraft.world.level.h"
 #include "net.minecraft.world.item.h"
 #include "net.minecraft.world.entity.player.h"
+#include "net.minecraft.world.entity.monster.h"
 #include "net.minecraft.stats.h"
 #include "Cow.h"
 #include "..\Minecraft.Client\Textures.h"
@@ -19,20 +21,18 @@ Cow::Cow(Level *level) : Animal( level )
 	// 4J Stu - This function call had to be moved here from the Entity ctor to ensure that
 	// the derived version of the function is called
 	this->defineSynchedData();
+	registerAttributes();
+	setHealth(getMaxHealth());
 
-	// 4J Stu - This function call had to be moved here from the Entity ctor to ensure that the derived version of the function is called
-	health = getMaxHealth();
-
-	this->textureIdx = TN_MOB_COW;	// 4J was L"/mob/cow.png";
 	this->setSize(0.9f, 1.3f);
 
 	getNavigation()->setAvoidWater(true);
 	goalSelector.addGoal(0, new FloatGoal(this));
-	goalSelector.addGoal(1, new PanicGoal(this, 0.38f));
-	goalSelector.addGoal(2, new BreedGoal(this, 0.2f));
-	goalSelector.addGoal(3, new TemptGoal(this, 0.25f, Item::wheat_Id, false));
-	goalSelector.addGoal(4, new FollowParentGoal(this, 0.25f));
-	goalSelector.addGoal(5, new RandomStrollGoal(this, 0.2f));
+	goalSelector.addGoal(1, new PanicGoal(this, 2.0f));
+	goalSelector.addGoal(2, new BreedGoal(this, 1.0f));
+	goalSelector.addGoal(3, new TemptGoal(this, 1.25f, Item::wheat_Id, false));
+	goalSelector.addGoal(4, new FollowParentGoal(this, 1.25f));
+	goalSelector.addGoal(5, new RandomStrollGoal(this, 1.0f));
 	goalSelector.addGoal(6, new LookAtPlayerGoal(this, typeid(Player), 6));
 	goalSelector.addGoal(7, new RandomLookAroundGoal(this));
 }
@@ -42,9 +42,12 @@ bool Cow::useNewAi()
 	return true;
 }
 
-int Cow::getMaxHealth()
+void Cow::registerAttributes()
 {
-	return 10;
+	Animal::registerAttributes();
+
+	getAttribute(SharedMonsterAttributes::MAX_HEALTH)->setBaseValue(10);
+	getAttribute(SharedMonsterAttributes::MOVEMENT_SPEED)->setBaseValue(0.2f);
 }
 
 int Cow::getAmbientSound() 
@@ -60,6 +63,11 @@ int Cow::getHurtSound()
 int Cow::getDeathSound() 
 {
 	return eSoundType_MOB_COW_HURT;
+}
+
+void Cow::playStepSound(int xt, int yt, int zt, int t)
+{
+	playSound(eSoundType_MOB_COW_STEP, 0.15f, 1);
 }
 
 float Cow::getSoundVolume() 
@@ -95,25 +103,25 @@ void Cow::dropDeathLoot(bool wasKilledByPlayer, int playerBonusLevel)
 	}
 }
 
-bool Cow::interact(shared_ptr<Player> player) 
+bool Cow::mobInteract(shared_ptr<Player> player) 
 {
 	shared_ptr<ItemInstance> item = player->inventory->getSelected();
-	if (item != NULL && item->id == Item::bucket_empty->id) 
+	if (item != NULL && item->id == Item::bucket_empty->id && !player->abilities.instabuild) 
 	{
 		player->awardStat(GenericStats::cowsMilked(),GenericStats::param_cowsMilked());
 
-		if (--item->count <= 0) 
+		if (item->count-- == 0) 
 		{
-			player->inventory->setItem(player->inventory->selected, shared_ptr<ItemInstance>( new ItemInstance(Item::milk) ) );
+			player->inventory->setItem(player->inventory->selected, shared_ptr<ItemInstance>( new ItemInstance(Item::bucket_milk) ) );
 		} 
-		else if (!player->inventory->add(shared_ptr<ItemInstance>( new ItemInstance(Item::milk) ))) 
+		else if (!player->inventory->add(shared_ptr<ItemInstance>( new ItemInstance(Item::bucket_milk) ))) 
 		{
-			player->drop(shared_ptr<ItemInstance>( new ItemInstance(Item::milk) ));
+			player->drop(shared_ptr<ItemInstance>( new ItemInstance(Item::bucket_milk) ));
 		}
 		
 		return true;
 	}
-	return Animal::interact(player);
+	return Animal::mobInteract(player);
 }
 
 shared_ptr<AgableMob> Cow::getBreedOffspring(shared_ptr<AgableMob> target)

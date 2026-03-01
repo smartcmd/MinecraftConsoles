@@ -64,14 +64,12 @@ void Villages::tick()
 
 void Villages::removeVillages()
 {
-	//for (Iterator<Village> it = villages.iterator(); it.hasNext();)
 	for(AUTO_VAR(it, villages.begin()); it != villages.end(); )
 	{
-		shared_ptr<Village> village = *it; //it.next();
+		shared_ptr<Village> village = *it;
 		if (village->canRemove())
 		{
 			it = villages.erase(it);
-			//it.remove();
 			setDirty();
 		}
 		else
@@ -90,7 +88,6 @@ shared_ptr<Village> Villages::getClosestVillage(int x, int y, int z, int maxDist
 {
 	shared_ptr<Village> closest = nullptr;
 	float closestDistSqr = Float::MAX_VALUE;
-	//for (Village village : villages)
 	for(AUTO_VAR(it, villages.begin()); it != villages.end(); ++it)
 	{
 		shared_ptr<Village> village = *it;
@@ -118,13 +115,11 @@ void Villages::processNextQuery()
 void Villages::cluster()
 {
 	// note doesn't merge or split existing villages
-	//for (int i = 0; i < unclustered.size(); ++i)
 	for(AUTO_VAR(it, unclustered.begin()); it != unclustered.end(); ++it)
 	{
-		shared_ptr<DoorInfo> di = *it; //unclustered.get(i);
+		shared_ptr<DoorInfo> di = *it;
 
 		bool found = false;
-		//for (Village village : villages)
 		for(AUTO_VAR(itV, villages.begin()); itV != villages.end(); ++itV)
 		{
 			shared_ptr<Village> village = *itV;

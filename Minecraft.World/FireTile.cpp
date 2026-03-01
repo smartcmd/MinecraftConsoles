@@ -50,8 +50,10 @@ void FireTile::init()
 	setFlammable(Tile::bookshelf_Id, FLAME_EASY, BURN_MEDIUM);
 	setFlammable(Tile::tnt_Id, FLAME_MEDIUM, BURN_INSTANT);
 	setFlammable(Tile::tallgrass_Id, FLAME_INSTANT, BURN_INSTANT);
-	setFlammable(Tile::cloth_Id, FLAME_EASY, BURN_EASY);
+	setFlammable(Tile::wool_Id, FLAME_EASY, BURN_EASY);
 	setFlammable(Tile::vine_Id, FLAME_MEDIUM, BURN_INSTANT);
+	setFlammable(Tile::coalBlock_Id, FLAME_HARD, BURN_HARD);
+	setFlammable(Tile::hayBlock_Id, FLAME_INSTANT, BURN_MEDIUM);
 }
 
 void FireTile::setFlammable(int id, int flame, int burn)
@@ -90,13 +92,18 @@ int FireTile::getResourceCount(Random *random)
 	return 0;
 }
 
-int FireTile::getTickDelay()
+int FireTile::getTickDelay(Level *level)
 {
 	return 30;
 }
 
 void FireTile::tick(Level *level, int x, int y, int z, Random *random)
 {
+	if (!level->getGameRules()->getBoolean(GameRules::RULE_DOFIRETICK))
+	{
+		return;
+	}
+
 	// 4J added - we don't want fire to do anything that might create new fire, or destroy this fire, if we aren't actually tracking (for network) the chunk this is in in the player
 	// chunk map. If we did change something in that case, then the change wouldn't get sent to any player that had already received that full chunk, and so we'd just become desynchronised.
 	// Seems safest just to do an addToTickNextTick here instead with a decent delay, to make sure that we will get ticked again in the future, when we might again be in a chunk
@@ -105,13 +112,13 @@ void FireTile::tick(Level *level, int x, int y, int z, Random *random)
 	{
 		if( !MinecraftServer::getInstance()->getPlayers()->isTrackingTile(x, y, z, level->dimension->id) )
 		{
-			level->addToTickNextTick(x, y, z, id, getTickDelay() * 5);
+			level->addToTickNextTick(x, y, z, id, getTickDelay(level) * 5);
 			return;
 		}
 	}
 
 
-	bool infiniBurn = level->getTile(x, y - 1, z) == Tile::hellRock_Id;
+	bool infiniBurn = level->getTile(x, y - 1, z) == Tile::netherRack_Id;
 	if (level->dimension->id == 1)		// 4J - was == instanceof TheEndDimension
 	{
 		if (level->getTile(x, y - 1, z) == Tile::unbreakable_Id) infiniBurn = true;
@@ -119,14 +126,14 @@ void FireTile::tick(Level *level, int x, int y, int z, Random *random)
 
 	if (!mayPlace(level, x, y, z))
 	{
-		level->setTile(x, y, z, 0);
+		level->removeTile(x, y, z);
 	}
 
 	if (!infiniBurn && level->isRaining())
 	{
 		if (level->isRainingAt(x, y, z) || level->isRainingAt(x - 1, y, z) || level->isRainingAt(x + 1, y, z) || level->isRainingAt(x, y, z - 1) || level->isRainingAt(x, y, z + 1)) {
 
-			level->setTile(x, y, z, 0);
+			level->removeTile(x, y, z);
 			return;
 		}
 	}
@@ -134,13 +141,13 @@ void FireTile::tick(Level *level, int x, int y, int z, Random *random)
 	int age = level->getData(x, y, z);
 	if (age < 15)
 	{
-		level->setDataNoUpdate(x, y, z, age + random->nextInt(3) / 2);
+		level->setData(x, y, z, age + random->nextInt(3) / 2, Tile::UPDATE_NONE);
 	}
-	level->addToTickNextTick(x, y, z, id, getTickDelay() + random->nextInt(10));
+	level->addToTickNextTick(x, y, z, id, getTickDelay(level) + random->nextInt(10));
 
 	if (!infiniBurn && !isValidFireLocation(level, x, y, z))
 	{
-		if (!level->isTopSolidBlocking(x, y - 1, z) || age > 3) level->setTile(x, y, z, 0);
+		if (!level->isTopSolidBlocking(x, y - 1, z) || age > 3) level->removeTile(x, y, z);
 		return;
 	}
 
@@ -148,7 +155,7 @@ void FireTile::tick(Level *level, int x, int y, int z, Random *random)
 	{
 		if (age == 15 && random->nextInt(4) == 0)
 		{
-			level->setTile(x, y, z, 0);
+			level->removeTile(x, y, z);
 			return;
 		}
 	}
@@ -183,23 +190,18 @@ void FireTile::tick(Level *level, int x, int y, int z, Random *random)
 
 					int fodds = getFireOdds(level, xx, yy, zz);
 					if (fodds > 0) {
-						int odds = (fodds + 40) / (age + 30);
+						int odds = (fodds + 40 + (level->difficulty * 7)) / (age + 30);
 						if (isHumid)
 						{
 							odds /= 2;
 						}
 						if (odds > 0 && random->nextInt(rate) <= odds)
 						{
-							if ((level->isRaining() && level->isRainingAt(xx, yy, zz)) || level->isRainingAt(xx - 1, yy, z) || level->isRainingAt(xx + 1, yy, zz) || level->isRainingAt(xx, yy, zz - 1)
-								|| level->isRainingAt(xx, yy, zz + 1))
+							if (!(level->isRaining() && level->isRainingAt(xx, yy, zz) || level->isRainingAt(xx - 1, yy, z) || level->isRainingAt(xx + 1, yy, zz) || level->isRainingAt(xx, yy, zz - 1) || level->isRainingAt(xx, yy, zz + 1)))
 							{
-								// DO NOTHING, rain!
-
-							} else {
 								int tAge = age + random->nextInt(5) / 4;
 								if (tAge > 15) tAge = 15;
-								level->setTileAndData(xx, yy, zz, this->id, tAge);
-
+								level->setTileAndData(xx, yy, zz, id, tAge, Tile::UPDATE_ALL);
 							}
 						}
 					}
@@ -207,6 +209,11 @@ void FireTile::tick(Level *level, int x, int y, int z, Random *random)
 			}
 		}
 	}
+}
+
+bool FireTile::canInstantlyTick()
+{
+	return false;
 }
 
 void FireTile::checkBurnOut(Level *level, int x, int y, int z, int chance, Random *random, int age)
@@ -219,10 +226,10 @@ void FireTile::checkBurnOut(Level *level, int x, int y, int z, int chance, Rando
 		{
 			int tAge = age + random->nextInt(5) / 4;
 			if (tAge > 15) tAge = 15;
-			level->setTileAndData(x, y, z, this->id, tAge);
+			level->setTileAndData(x, y, z, id, tAge, Tile::UPDATE_ALL);
 		} else
 		{
-			level->setTile(x, y, z, 0);
+			level->removeTile(x, y, z);
 		}
 		if (wasTnt)
 		{
@@ -284,7 +291,7 @@ void FireTile::neighborChanged(Level *level, int x, int y, int z, int type)
 {
 	if (!level->isTopSolidBlocking(x, y - 1, z) && !isValidFireLocation(level, x, y, z))
 	{
-		level->setTile(x, y, z, 0);
+		level->removeTile(x, y, z);
 		return;
 	}
 }
@@ -300,10 +307,10 @@ void FireTile::onPlace(Level *level, int x, int y, int z)
 	}
 	if (!level->isTopSolidBlocking(x, y - 1, z) && !isValidFireLocation(level, x, y, z))
 	{
-		level->setTile(x, y, z, 0);
+		level->removeTile(x, y, z);
 		return;
 	}
-	level->addToTickNextTick(x, y, z, id, getTickDelay() + level->random->nextInt(10));
+	level->addToTickNextTick(x, y, z, id, getTickDelay(level) + level->random->nextInt(10));
 }
 
 bool FireTile::isFlammable(int tile)
@@ -315,7 +322,7 @@ void FireTile::animateTick(Level *level, int x, int y, int z, Random *random)
 {
 	if (random->nextInt(24) == 0)
 	{
-		level->playLocalSound(x + 0.5f, y + 0.5f, z + 0.5f,eSoundType_FIRE_FIRE, 1 + random->nextFloat(), random->nextFloat() * 0.7f + 0.3f);
+		level->playLocalSound(x + 0.5f, y + 0.5f, z + 0.5f,eSoundType_FIRE_FIRE, 1 + random->nextFloat(), random->nextFloat() * 0.7f + 0.3f, false);
 	}
 
 	if (level->isTopSolidBlocking(x, y - 1, z) || Tile::fire->canBurn(level, x, y - 1, z))

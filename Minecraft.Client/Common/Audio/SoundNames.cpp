@@ -151,6 +151,78 @@ const WCHAR *ConsoleSoundEngine::wchSoundNames[eSoundType_MAX]=
 	L"dig.snow",						//  eSoundType_DIG_SNOW	
 	L"dig.stone",						//  eSoundType_DIG_STONE	
 	L"dig.wood",						//  eSoundType_DIG_WOOD	
+
+	// 1.6.4
+	L"fireworks.launch",				//eSoundType_FIREWORKS_LAUNCH,
+	L"fireworks.blast",					//eSoundType_FIREWORKS_BLAST,
+	L"fireworks.blast_far",				//eSoundType_FIREWORKS_BLAST_FAR,
+	L"fireworks.large_blast",			//eSoundType_FIREWORKS_LARGE_BLAST,
+	L"fireworks.large_blast_far",		//eSoundType_FIREWORKS_LARGE_BLAST_FAR,
+	L"fireworks.twinkle",				//eSoundType_FIREWORKS_TWINKLE,
+	L"fireworks.twinkle_far",			//eSoundType_FIREWORKS_TWINKLE_FAR,
+
+	L"mob.bat.idle",					//eSoundType_MOB_BAT_IDLE,
+	L"mob.bat.hurt",					//eSoundType_MOB_BAT_HURT,
+	L"mob.bat.death",					//eSoundType_MOB_BAT_DEATH,
+	L"mob.bat.takeoff",					//eSoundType_MOB_BAT_TAKEOFF,
+
+	L"mob.wither.spawn",				//eSoundType_MOB_WITHER_SPAWN,
+	L"mob.wither.idle",					//eSoundType_MOB_WITHER_IDLE,	
+	L"mob.wither.hurt",					//eSoundType_MOB_WITHER_HURT, 
+	L"mob.wither.death",				//eSoundType_MOB_WITHER_DEATH,
+	L"mob.wither.shoot",				//eSoundType_MOB_WITHER_SHOOT,
+
+	L"mob.cow.step",					//eSoundType_MOB_COW_STEP,
+	L"mob.chicken.step",				//eSoundType_MOB_CHICKEN_STEP,
+	L"mob.pig.step",					//eSoundType_MOB_PIG_STEP,
+	L"mob.enderman.stare",				//eSoundType_MOB_ENDERMAN_STARE,
+	L"mob.enderman.scream",				//eSoundType_MOB_ENDERMAN_SCREAM,
+	L"mob.sheep.shear",					//eSoundType_MOB_SHEEP_SHEAR,
+	L"mob.sheep.step",					//eSoundType_MOB_SHEEP_STEP,
+	L"mob.skeleton.death",				//eSoundType_MOB_SKELETON_DEATH,
+	L"mob.skeleton.step",				//eSoundType_MOB_SKELETON_STEP,
+	L"mob.spider.step",					//eSoundType_MOB_SPIDER_STEP,
+	L"mob.wolf.step",					//eSoundType_MOB_WOLF_STEP,
+	L"mob.zombie.step",					//eSoundType_MOB_ZOMBIE_STEP,
+
+	L"liquid.swim",						//eSoundType_LIQUID_SWIM,
+
+	L"mob.horse.land",					//eSoundType_MOB_HORSE_LAND,
+	L"mob.horse.armor",					//eSoundType_MOB_HORSE_ARMOR,
+	L"mob.horse.leather",				//eSoundType_MOB_HORSE_LEATHER,
+	L"mob.horse.zombie.death",			//eSoundType_MOB_HORSE_ZOMBIE_DEATH,
+	L"mob.horse.skeleton.death",		//eSoundType_MOB_HORSE_SKELETON_DEATH,
+	L"mob.horse.donkey.death",			//eSoundType_MOB_HORSE_DONKEY_DEATH,
+	L"mob.horse.death",					//eSoundType_MOB_HORSE_DEATH,
+	L"mob.horse.zombie.hit",			//eSoundType_MOB_HORSE_ZOMBIE_HIT,
+	L"mob.horse.skeleton.hit",			//eSoundType_MOB_HORSE_SKELETON_HIT,
+	L"mob.horse.donkey.hit",			//eSoundType_MOB_HORSE_DONKEY_HIT,
+	L"mob.horse.hit",					//eSoundType_MOB_HORSE_HIT,
+	L"mob.horse.zombie.idle",			//eSoundType_MOB_HORSE_ZOMBIE_IDLE,
+	L"mob.horse.skeleton.idle",			//eSoundType_MOB_HORSE_SKELETON_IDLE,
+	L"mob.horse.donkey.idle",			//eSoundType_MOB_HORSE_DONKEY_IDLE,
+	L"mob.horse.idle",					//eSoundType_MOB_HORSE_IDLE,
+	L"mob.horse.donkey.angry",			//eSoundType_MOB_HORSE_DONKEY_ANGRY,
+	L"mob.horse.angry",					//eSoundType_MOB_HORSE_ANGRY,
+	L"mob.horse.gallop",				//eSoundType_MOB_HORSE_GALLOP,
+	L"mob.horse.breathe",				//eSoundType_MOB_HORSE_BREATHE,
+	L"mob.horse.wood",					//eSoundType_MOB_HORSE_WOOD,
+	L"mob.horse.soft",					//eSoundType_MOB_HORSE_SOFT,
+	L"mob.horse.jump",					//eSoundType_MOB_HORSE_JUMP,
+
+	L"mob.witch.idle",					//eSoundType_MOB_WITCH_IDLE,			<--- missing
+	L"mob.witch.hurt",					//eSoundType_MOB_WITCH_HURT,			<--- missing
+	L"mob.witch.death",					//eSoundType_MOB_WITCH_DEATH,			<--- missing
+
+	L"mob.slime.big",					//eSoundType_MOB_SLIME_BIG,
+	L"mob.slime.small",					//eSoundType_MOB_SLIME_SMALL,
+
+	L"eating",							//eSoundType_EATING						<--- missing
+	L"random.levelup",					//eSoundType_RANDOM_LEVELUP
+
+	// 4J-PB  - Some sounds were updated, but we can't do that for the 360 or we have to do a new sound bank
+	// instead, we'll add the sounds as new ones and change the code to reference them
+	L"fire.new_ignite",
 };
 
 

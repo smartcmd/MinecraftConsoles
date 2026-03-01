@@ -46,9 +46,9 @@ void BowItem::releaseUsing(shared_ptr<ItemInstance> itemInstance, Level *level, 
 		{
 			arrow->setOnFire(100);
 		}
-		itemInstance->hurt(1, player);
+		itemInstance->hurtAndBreak(1, player);
 
-		level->playSound(player, eSoundType_RANDOM_BOW, 1.0f, 1 / (random->nextFloat() * 0.4f + 1.2f) + pow * 0.5f);
+		level->playEntitySound(player, eSoundType_RANDOM_BOW, 1.0f, 1 / (random->nextFloat() * 0.4f + 1.2f) + pow * 0.5f);
 
 		if (infiniteArrows)
 		{

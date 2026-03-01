@@ -12,7 +12,7 @@ public:
 
 public:
 	SmallFireball(Level *level);
-	SmallFireball(Level *level, shared_ptr<Mob> mob, double xa, double ya, double za);
+	SmallFireball(Level *level, shared_ptr<LivingEntity> mob, double xa, double ya, double za);
 	SmallFireball(Level *level, double x, double y, double z, double xa, double ya, double za);
 
 protected:
@@ -20,5 +20,5 @@ protected:
 
 public:
 	virtual bool isPickable();
-	virtual bool hurt(DamageSource *source, int damage);
+	virtual bool hurt(DamageSource *source, float damage);
 };

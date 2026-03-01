@@ -13,14 +13,15 @@
 
 MushroomCow::MushroomCow(Level *level) : Cow(level)
 {
-	// 4J Stu - This function call had to be moved here from the Entity ctor to ensure that the derived version of the function is called
-	health = getMaxHealth();
+	// 4J Stu - This function call had to be moved here from the Entity ctor to ensure that
+	// the derived version of the function is called
+	this->defineSynchedData();
+	setHealth(getMaxHealth());
 
-	this->textureIdx = TN_MOB_RED_COW;// 4J was "/mob/redcow.png";
 	this->setSize(0.9f, 1.3f);
 }
 
-bool MushroomCow::interact(shared_ptr<Player> player)
+bool MushroomCow::mobInteract(shared_ptr<Player> player)
 {
 	shared_ptr<ItemInstance> item = player->inventory->getSelected();
 	if (item != NULL && item->id == Item::bowl_Id && getAge() >= 0)
@@ -36,14 +37,14 @@ bool MushroomCow::interact(shared_ptr<Player> player)
 			player->inventory->removeItem(player->inventory->selected, 1);
 			return true;
 		}
-	}
-	if (item != NULL && item->id == Item::shears_Id && getAge() >= 0)
+	}	
+	// 4J: Do not allow shearing if we can't create more cows
+	if (item != NULL && item->id == Item::shears_Id && getAge() >= 0 && level->canCreateMore(eTYPE_COW, Level::eSpawnType_Breed))
 	{
 		remove();
 		level->addParticle(eParticleType_largeexplode, x, y + bbHeight / 2, z, 0, 0, 0);
 		if(!level->isClientSide)
 		{
-			// 4J Stu - We don't need to check spawn limits when adding the new cow, as we are removing the MushroomCow
 			remove();
 			shared_ptr<Cow> cow = shared_ptr<Cow>( new Cow(level) );
 			cow->moveTo(x, y, z, yRot, xRot);
@@ -52,13 +53,13 @@ bool MushroomCow::interact(shared_ptr<Player> player)
 			level->addEntity(cow);
 			for (int i = 0; i < 5; i++)
 			{
-				level->addEntity( shared_ptr<ItemEntity>( new ItemEntity(level, x, y + bbHeight, z, shared_ptr<ItemInstance>( new ItemInstance(Tile::mushroom2))) ));
+				level->addEntity( shared_ptr<ItemEntity>( new ItemEntity(level, x, y + bbHeight, z, shared_ptr<ItemInstance>( new ItemInstance(Tile::mushroom_red))) ));
 			}
-			return true;			
+			return true;
 		}
 		return true;
 	}
-	return Cow::interact(player);
+	return Cow::mobInteract(player);
 }
 
 // 4J - added so that mushroom cows have more of a chance of spawning, they can now spawn on mycelium as well as grass - seems a bit odd that they don't already really

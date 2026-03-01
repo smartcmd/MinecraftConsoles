@@ -38,7 +38,8 @@ public:
 	virtual bool stillValid(shared_ptr<Player> player);
 	virtual shared_ptr<ItemInstance> quickMoveStack(shared_ptr<Player> player, int slotIndex);
 	virtual bool mayCombine(Slot *slot, shared_ptr<ItemInstance> item);
+	virtual bool canTakeItemForPickAll(shared_ptr<ItemInstance> carried, Slot *target);
 
 	// 4J ADDED,
-	virtual shared_ptr<ItemInstance> clicked(int slotIndex, int buttonNum, int clickType, shared_ptr<Player> player);
+	virtual shared_ptr<ItemInstance> clicked(int slotIndex, int buttonNum, int clickType, shared_ptr<Player> player, bool looped = false);
 };

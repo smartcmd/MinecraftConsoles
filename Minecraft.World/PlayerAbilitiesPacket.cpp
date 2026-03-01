@@ -3,8 +3,6 @@
 #include "net.minecraft.network.packet.h"
 #include "PlayerAbilitiesPacket.h"
 
-const float PlayerAbilitiesPacket::SPEED_ACCURACY = 255.0f;
-
 PlayerAbilitiesPacket::PlayerAbilitiesPacket()
 {
 	invulnerable = false;
@@ -17,24 +15,24 @@ PlayerAbilitiesPacket::PlayerAbilitiesPacket()
 
 PlayerAbilitiesPacket::PlayerAbilitiesPacket(Abilities *abilities)
 {
-	this->setInvulnerable(abilities->invulnerable);
-	this->setFlying(abilities->flying);
-	this->setCanFly(abilities->mayfly);
-	this->setInstabuild(abilities->instabuild);
-	this->setFlyingSpeed(abilities->getFlyingSpeed());
-	this->setWalkingSpeed(abilities->getWalkingSpeed());
+	setInvulnerable(abilities->invulnerable);
+	setFlying(abilities->flying);
+	setCanFly(abilities->mayfly);
+	setInstabuild(abilities->instabuild);
+	setFlyingSpeed(abilities->getFlyingSpeed());
+	setWalkingSpeed(abilities->getWalkingSpeed());
 }
 
 void PlayerAbilitiesPacket::read(DataInputStream *dis)
 {
 	byte bitfield = dis->readByte();
 
-	this->setInvulnerable((bitfield & FLAG_INVULNERABLE) > 0);
-	this->setFlying((bitfield & FLAG_FLYING) > 0);
-	this->setCanFly((bitfield & FLAG_CAN_FLY) > 0);
-	this->setInstabuild((bitfield & FLAG_INSTABUILD) > 0);
-	this->setFlyingSpeed(dis->readByte() / SPEED_ACCURACY);
-	this->setWalkingSpeed(dis->readByte() / SPEED_ACCURACY);
+	setInvulnerable((bitfield & FLAG_INVULNERABLE) > 0);
+	setFlying((bitfield & FLAG_FLYING) > 0);
+	setCanFly((bitfield & FLAG_CAN_FLY) > 0);
+	setInstabuild((bitfield & FLAG_INSTABUILD) > 0);
+	setFlyingSpeed(dis->readFloat());
+	setWalkingSpeed(dis->readFloat());
 }
 
 void PlayerAbilitiesPacket::write(DataOutputStream *dos)
@@ -47,8 +45,8 @@ void PlayerAbilitiesPacket::write(DataOutputStream *dos)
 	if (canInstabuild()) bitfield |= FLAG_INSTABUILD;
 
 	dos->writeByte(bitfield);
-	dos->writeByte((int) (flyingSpeed * SPEED_ACCURACY));
-	dos->writeByte((int) (walkingSpeed * SPEED_ACCURACY));
+	dos->writeFloat(flyingSpeed);
+	dos->writeFloat(walkingSpeed);
 }
 
 void PlayerAbilitiesPacket::handle(PacketListener *listener)
@@ -113,7 +111,7 @@ float PlayerAbilitiesPacket::getFlyingSpeed()
 
 void PlayerAbilitiesPacket::setFlyingSpeed(float flySpeed)
 {
-	this->flyingSpeed = flySpeed;
+	flyingSpeed = flySpeed;
 }
 
 float PlayerAbilitiesPacket::getWalkingSpeed()

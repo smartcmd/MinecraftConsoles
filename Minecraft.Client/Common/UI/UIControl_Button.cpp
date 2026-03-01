@@ -17,7 +17,7 @@ bool UIControl_Button::setupControl(UIScene *scene, IggyValuePath *parent, const
 	return success;
 }
 
-void UIControl_Button::init(const wstring &label, int id)
+void UIControl_Button::init(UIString label, int id)
 {
 	m_label = label;
 	m_id = id;

@@ -165,7 +165,8 @@ public:
 	void onTake(shared_ptr<ItemInstance> item, unsigned int invItemCountAnyAux, unsigned int invItemCountThisAux);
 	void onSelectedItemChanged(shared_ptr<ItemInstance> item);
 	void onLookAt(int id, int iData=0);
-	void onLookAtEntity(eINSTANCEOF type);
+	void onLookAtEntity(shared_ptr<Entity> entity);
+	void onRideEntity(shared_ptr<Entity> entity);
 	void onEffectChanged(MobEffect *effect, bool bRemoved=false);
 
 	bool canMoveToPosition(double xo, double yo, double zo, double xt, double yt, double zt);

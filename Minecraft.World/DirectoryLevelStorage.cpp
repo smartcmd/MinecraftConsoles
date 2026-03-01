@@ -328,7 +328,7 @@ LevelData *DirectoryLevelStorage::prepareLevel()
 		}
 
 		m_bHasLoadedMapDataMappings = true;
-    }
+	}
 
 	// 4J Jev, removed try/catch
 
@@ -344,7 +344,7 @@ LevelData *DirectoryLevelStorage::prepareLevel()
 		return ret;
 	}
 
-    return NULL;
+	return NULL;
 }
 
 void DirectoryLevelStorage::saveLevelData(LevelData *levelData, vector<shared_ptr<Player> > *players)
@@ -428,18 +428,15 @@ void DirectoryLevelStorage::save(shared_ptr<Player> player)
 	}
 }
 
- // 4J Changed return val to bool to check if new player or loaded player
-bool DirectoryLevelStorage::load(shared_ptr<Player> player) 
+// 4J Changed return val to bool to check if new player or loaded player
+CompoundTag *DirectoryLevelStorage::load(shared_ptr<Player> player) 
 {
-	bool newPlayer = true;
 	CompoundTag *tag = loadPlayerDataTag( player->getXuid() );
 	if (tag != NULL)
 	{
-		newPlayer = false;
 		player->load(tag);
-		delete tag;
 	}
-	return newPlayer;
+	return tag;
 }
 
 CompoundTag *DirectoryLevelStorage::loadPlayerDataTag(PlayerUID xuid)
@@ -506,20 +503,20 @@ void DirectoryLevelStorage::clearOldPlayerFiles()
 				sort(playerFiles->begin(), playerFiles->end(), FileEntry::newestFirst );
 
 				for(unsigned int i = MAX_PLAYER_DATA_SAVES; i < playerFiles->size(); ++i )
-			{
+				{
 					FileEntry *file = playerFiles->at(i);
 					wstring xuidStr = replaceAll( replaceAll(file->data.filename,playerDir.getName(),L""),L".dat",L"");
 #if defined(__PS3__) || defined(__ORBIS__) || defined(_DURANGO)
-				PlayerUID xuid(xuidStr);
+					PlayerUID xuid(xuidStr);
 #else
-				PlayerUID xuid = _fromString<PlayerUID>(xuidStr);
+					PlayerUID xuid = _fromString<PlayerUID>(xuidStr);
 #endif
-				deleteMapFilesForPlayer(xuid);
-				m_saveFile->deleteFile( playerFiles->at(i) );
-			}
+					deleteMapFilesForPlayer(xuid);
+					m_saveFile->deleteFile( playerFiles->at(i) );
+				}
 			}
 
-		delete playerFiles;
+			delete playerFiles;
 	}
 }
 
@@ -704,10 +701,10 @@ void DirectoryLevelStorage::saveMapIdLookup()
 			);
 #else
 		m_saveFile->writeFile(	fileEntry,
-					&m_saveableMapDataMappings, // data buffer
-					sizeof(MapDataMappings), // number of bytes to write
-					&NumberOfBytesWritten // number of bytes written
-					);
+			&m_saveableMapDataMappings, // data buffer
+			sizeof(MapDataMappings), // number of bytes to write
+			&NumberOfBytesWritten // number of bytes written
+			);
 		assert( NumberOfBytesWritten == sizeof(MapDataMappings) );
 #endif
 	}

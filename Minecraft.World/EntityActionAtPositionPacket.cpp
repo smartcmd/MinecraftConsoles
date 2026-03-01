@@ -24,7 +24,7 @@ EntityActionAtPositionPacket::EntityActionAtPositionPacket(shared_ptr<Entity> e,
 	this->x = x;
 	this->y = y;
 	this->z = z;
-	this->id = e->entityId;
+	id = e->entityId;
 }
 
 void EntityActionAtPositionPacket::read(DataInputStream *dis) //throws IOException 

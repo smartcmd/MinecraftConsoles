@@ -28,7 +28,7 @@ void TileUpdatePacket::read(DataInputStream *dis) //throws IOException
 {
 #ifdef _LARGE_WORLDS
 	x = dis->readInt();
-	y = dis->read();
+	y = dis->readUnsignedByte();
 	z = dis->readInt();
 	
 	block = (int)dis->readShort() & 0xffff;

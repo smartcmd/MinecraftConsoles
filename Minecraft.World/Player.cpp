@@ -15,7 +15,9 @@
 #include "net.minecraft.world.level.chunk.h"
 #include "net.minecraft.world.phys.h"
 #include "net.minecraft.world.entity.h"
+#include "net.minecraft.world.entity.ai.attributes.h"
 #include "net.minecraft.world.entity.animal.h"
+#include "net.minecraft.world.entity.boss.h"
 #include "net.minecraft.world.entity.monster.h"
 #include "net.minecraft.world.entity.item.h"
 #include "net.minecraft.world.item.h"
@@ -24,6 +26,8 @@
 #include "net.minecraft.world.level.material.h"
 #include "net.minecraft.world.level.tile.h"
 #include "net.minecraft.world.level.tile.entity.h"
+#include "net.minecraft.world.scores.h"
+#include "net.minecraft.world.scores.criteria.h"
 #include "net.minecraft.world.entity.projectile.h"
 #include "net.minecraft.world.inventory.h"
 #include "net.minecraft.world.damagesource.h"
@@ -43,51 +47,34 @@
 
 void Player::_init()
 {
+	registerAttributes();
+	setHealth(getMaxHealth());
 
 	inventory = shared_ptr<Inventory>( new Inventory( this ) );
 
 	userType = 0;
-	score = 0;
 	oBob = bob = 0.0f;
-	swinging = false;
-	swingTime = 0;
-
-	//string name;
-	dimension = 0;
-	//string cloakTexture;
 
 	xCloakO = yCloakO = zCloakO = 0.0;
 	xCloak = yCloak = zCloak = 0.0;
 
 	m_isSleeping = false;
 
+	customTextureUrl = L"";
+	customTextureUrl2 = L"";
 	m_uiPlayerCurrentSkin=0;
 
 	bedPosition = NULL;
 
-
 	sleepCounter = 0;
 	deathFadeCounter=0;
-
 
 	bedOffsetX = bedOffsetY = bedOffsetZ = 0.0f;
 	stats = NULL;
 
-
 	respawnPosition = NULL;
+	respawnForced = false;
 	minecartAchievementPos = NULL;
-
-
-	changingDimensionDelay = 20;
-
-
-	isInsidePortal = false;
-
-
-	portalTime = oPortalTime = 0.0f;
-
-	dmgSpill = 0;
-
 
 	fishing = nullptr;
 
@@ -106,6 +93,8 @@ void Player::_init()
 	defaultWalkSpeed = 0.1f;
 	defaultFlySpeed = 0.02f;
 
+	lastLevelUpTime = 0;
+
 	m_uiGamePrivileges = 0;
 
 	m_ppAdditionalModelParts=NULL;
@@ -121,14 +110,13 @@ void Player::_init()
 	m_bAwardedOnARail=false;
 }
 
-Player::Player(Level *level) : Mob( level )
+Player::Player(Level *level, const wstring &name) : LivingEntity( level )
 {
 	// 4J Stu - This function call had to be moved here from the Entity ctor to ensure that
 	// the derived version of the function is called
 	this->defineSynchedData();
 
-	// 4J Stu - This function call had to be moved here from the Entity ctor to ensure that the derived version of the function is called
-	health = getMaxHealth();
+	this->name = name;
 
 	_init();
 	MemSect(11);
@@ -139,14 +127,12 @@ Player::Player(Level *level) : Mob( level )
 
 	heightOffset = 1.62f;
 	Pos *spawnPos = level->getSharedSpawnPos();
-	this->moveTo(spawnPos->x + 0.5, spawnPos->y + 1, spawnPos->z + 0.5, 0, 0);
+	moveTo(spawnPos->x + 0.5, spawnPos->y + 1, spawnPos->z + 0.5, 0, 0);
 	delete spawnPos;
 
-	modelName = L"humanoid";
 	rotOffs = 180;
 	flameTime = 20;
 
-	textureIdx = TN_MOB_CHAR; // 4J - was L"/mob/char.png";
 	m_skinIndex = eDefaultSkins_Skin0;
 	m_playerIndex = 0;
 	m_dwSkinId = 0;
@@ -158,7 +144,12 @@ Player::Player(Level *level) : Mob( level )
 	//m_bShownOnMaps = true;
 	setShowOnMaps(app.GetGameHostOption(eGameHostOption_Gamertags)!=0?true:false);
 	m_bIsGuest = false;
-	m_UUID = L"";
+
+#ifndef _XBOX_ONE
+	// 4J: Set UUID to name on none-XB1 consoles, may change in future but for now
+	// ownership of animals on these consoles is done by name
+	setUUID(name);
+#endif
 }
 
 Player::~Player()
@@ -173,17 +164,20 @@ Player::~Player()
 	//if( containerMenu != inventoryMenu ) delete containerMenu;
 }
 
-int Player::getMaxHealth()
+void Player::registerAttributes()
 {
-	return MAX_HEALTH;
+	LivingEntity::registerAttributes();
+
+	getAttributes()->registerAttribute(SharedMonsterAttributes::ATTACK_DAMAGE)->setBaseValue(1);
 }
 
 void Player::defineSynchedData()
 {
-	this->Mob::defineSynchedData();
+	LivingEntity::defineSynchedData();
 
 	entityData->define(DATA_PLAYER_FLAGS_ID, (byte) 0);
-	entityData->define(DATA_PLAYER_RUNNING_ID, (byte) 0);
+	entityData->define(DATA_PLAYER_ABSORPTION_ID, (float) 0);
+	entityData->define(DATA_SCORE_ID, (int) 0);
 }
 
 shared_ptr<ItemInstance> Player::getUseItem()
@@ -240,8 +234,8 @@ bool Player::isBlocking()
 	return isUsingItem() && Item::items[useItem->id]->getUseAnimation(useItem) == UseAnim_block;
 }
 
-
-void Player::tick()
+// 4J Stu - Added for things that should only be ticked once per simulation frame
+void Player::updateFrameTick()
 {
 	if (useItem != NULL)
 	{
@@ -308,7 +302,17 @@ void Player::tick()
 			deathFadeCounter = DEATHFADE_DURATION;
 		}
 	}
-	this->Mob::tick();
+}
+
+void Player::tick()
+{
+	if(level->isClientSide)
+	{
+		// 4J Stu - Server player calls this differently so that it only happens once per simulation tick
+		updateFrameTick();
+	}
+
+	LivingEntity::tick();
 
 	if (!level->isClientSide)
 	{
@@ -459,62 +463,61 @@ void Player::tick()
 			this->drop( shared_ptr<ItemInstance>( new ItemInstance( Tile::goldenRail, 10 ) ) );
 			this->drop( shared_ptr<ItemInstance>( new ItemInstance( Tile::lever, 10 ) ) );
 
-			level->setTime( 0 );
 			int poweredCount = 0;
 			for(int i = 10; i < 2800; ++i)
 			{
-				level->setTile(x+i,y-1,z-2,Tile::quartzBlock_Id);
-				level->setTile(x+i,y,z-2,Tile::quartzBlock_Id);
-				level->setTile(x+i,y+1,z-2,Tile::quartzBlock_Id);
-				level->setTile(x+i,y+2,z-2,Tile::lightGem_Id);
-				level->setTile(x+i,y+3,z-2,Tile::quartzBlock_Id);
+				level->setTileAndData(x+i,y-1,z-2,Tile::quartzBlock_Id,0,Tile::UPDATE_CLIENTS);
+				level->setTileAndData(x+i,y,z-2,Tile::quartzBlock_Id,0,Tile::UPDATE_CLIENTS);
+				level->setTileAndData(x+i,y+1,z-2,Tile::quartzBlock_Id,0,Tile::UPDATE_CLIENTS);
+				level->setTileAndData(x+i,y+2,z-2,Tile::glowstone_Id,0,Tile::UPDATE_CLIENTS);
+				level->setTileAndData(x+i,y+3,z-2,Tile::quartzBlock_Id,0,Tile::UPDATE_CLIENTS);
 
-				level->setTile(x+i,y-1,z-1,Tile::stoneBrick_Id);
+				level->setTileAndData(x+i,y-1,z-1,Tile::stoneBrick_Id,0,Tile::UPDATE_CLIENTS);
 				if(i%20 == 0)
 				{
-					level->setTile(x+i,y,z-1,Tile::notGate_on_Id);
+					level->setTileAndData(x+i,y,z-1,Tile::redstoneTorch_on_Id,0,Tile::UPDATE_CLIENTS);
 					poweredCount = 4;
 				}
 				else
 				{
-					level->setTile(x+i,y,z-1,0);
+					level->setTileAndData(x+i,y,z-1,0,0,Tile::UPDATE_CLIENTS);
 				}
-				level->setTile(x+i,y+1,z-1,0);
-				level->setTile(x+i,y+2,z-1,0);
-				level->setTile(x+i,y+3,z-1,0);
+				level->setTileAndData(x+i,y+1,z-1,0,0,Tile::UPDATE_CLIENTS);
+				level->setTileAndData(x+i,y+2,z-1,0,0,Tile::UPDATE_CLIENTS);
+				level->setTileAndData(x+i,y+3,z-1,0,0,Tile::UPDATE_CLIENTS);
 
-				level->setTile(x+i,y-1,z,Tile::stoneBrick_Id);
+				level->setTileAndData(x+i,y-1,z,Tile::stoneBrick_Id,0,Tile::UPDATE_CLIENTS);
 				if(poweredCount>0)
 				{
-					level->setTile(x+i,y,z,Tile::goldenRail_Id);
+					level->setTileAndData(x+i,y,z,Tile::goldenRail_Id,0,Tile::UPDATE_CLIENTS);
 					--poweredCount;
 				}
 				else
 				{
-					level->setTile(x+i,y,z,Tile::rail_Id);
+					level->setTileAndData(x+i,y,z,Tile::rail_Id,0,Tile::UPDATE_CLIENTS);
 				}
-				level->setTile(x+i,y+1,z,0);
-				level->setTile(x+i,y+2,z,0);
-				level->setTile(x+i,y+3,z,0);
+				level->setTileAndData(x+i,y+1,z,0,0,Tile::UPDATE_CLIENTS);
+				level->setTileAndData(x+i,y+2,z,0,0,Tile::UPDATE_CLIENTS);
+				level->setTileAndData(x+i,y+3,z,0,0,Tile::UPDATE_CLIENTS);
 
-				level->setTile(x+i,y-1,z+1,Tile::stoneBrick_Id);
+				level->setTileAndData(x+i,y-1,z+1,Tile::stoneBrick_Id,0,Tile::UPDATE_CLIENTS);
 				if((i+5)%20 == 0)
 				{
-					level->setTile(x+i,y,z+1,Tile::torch_Id);
+					level->setTileAndData(x+i,y,z+1,Tile::torch_Id,0,Tile::UPDATE_CLIENTS);
 				}
 				else
 				{
-					level->setTile(x+i,y,z+1,0);
+					level->setTileAndData(x+i,y,z+1,0,0,Tile::UPDATE_CLIENTS);
 				}
-				level->setTile(x+i,y+1,z+1,0);
-				level->setTile(x+i,y+2,z+1,0);
-				level->setTile(x+i,y+3,z+1,0);
+				level->setTileAndData(x+i,y+1,z+1,0,0,Tile::UPDATE_CLIENTS);
+				level->setTileAndData(x+i,y+2,z+1,0,0,Tile::UPDATE_CLIENTS);
+				level->setTileAndData(x+i,y+3,z+1,0,0,Tile::UPDATE_CLIENTS);
 
-				level->setTile(x+i,y-1,z+2,Tile::quartzBlock_Id);
-				level->setTile(x+i,y,z+2,Tile::quartzBlock_Id);
-				level->setTile(x+i,y+1,z+2,Tile::quartzBlock_Id);
-				level->setTile(x+i,y+2,z+2,Tile::lightGem_Id);
-				level->setTile(x+i,y+3,z+2,Tile::quartzBlock_Id);
+				level->setTileAndData(x+i,y-1,z+2,Tile::quartzBlock_Id,0,Tile::UPDATE_CLIENTS);
+				level->setTileAndData(x+i,y,z+2,Tile::quartzBlock_Id,0,Tile::UPDATE_CLIENTS);
+				level->setTileAndData(x+i,y+1,z+2,Tile::quartzBlock_Id,0,Tile::UPDATE_CLIENTS);
+				level->setTileAndData(x+i,y+2,z+2,Tile::glowstone_Id,0,Tile::UPDATE_CLIENTS);
+				level->setTileAndData(x+i,y+3,z+2,Tile::quartzBlock_Id,0,Tile::UPDATE_CLIENTS);
 			}
 			madeTrack = true;
 		}
@@ -523,11 +526,28 @@ void Player::tick()
 	//End 4J sTU
 }
 
+int Player::getPortalWaitTime()
+{
+	return abilities.invulnerable ? 0 : SharedConstants::TICKS_PER_SECOND * 4;
+}
+
+int Player::getDimensionChangingDelay()
+{
+	return SharedConstants::TICKS_PER_SECOND / 2;
+}
+
+void Player::playSound(int iSound, float volume, float pitch)
+{
+	// this sound method will play locally for the local player, and
+	// broadcast to remote players
+	level->playPlayerSound(dynamic_pointer_cast<Player>(shared_from_this()), iSound, volume, pitch);
+}
+
 void Player::spawnEatParticles(shared_ptr<ItemInstance> useItem, int count)
 {
 	if (useItem->getUseAnimation() == UseAnim_drink)
 	{
-		level->playSound(shared_from_this(), eSoundType_RANDOM_DRINK, 0.5f, level->random->nextFloat() * 0.1f + 0.9f);
+		playSound(eSoundType_RANDOM_DRINK, 0.5f, level->random->nextFloat() * 0.1f + 0.9f);
 	}
 	if (useItem->getUseAnimation() == UseAnim_eat)
 	{
@@ -547,7 +567,7 @@ void Player::spawnEatParticles(shared_ptr<ItemInstance> useItem, int count)
 		}
 
 		// 4J Stu - Was L"mob.eat" which doesnt exist
-		level->playSound(shared_from_this(), eSoundType_RANDOM_EAT, 0.5f + 0.5f * random->nextInt(2), (random->nextFloat() - random->nextFloat()) * 0.2f + 1.0f);
+		playSound(eSoundType_RANDOM_EAT, 0.5f + 0.5f * random->nextInt(2), (random->nextFloat() - random->nextFloat()) * 0.2f + 1.0f);
 	}
 }
 
@@ -579,7 +599,7 @@ void Player::handleEntityEvent(byte id)
 	}
 	else
 	{
-		Mob::handleEntityEvent(id);
+		LivingEntity::handleEntityEvent(id);
 	}
 }
 
@@ -587,7 +607,6 @@ bool Player::isImmobile()
 {
 	return getHealth() <= 0 || isSleeping();
 }
-
 
 void Player::closeContainer()
 {
@@ -608,7 +627,7 @@ void Player::ride(shared_ptr<Entity> e)
 
 		return;
 	}
-	Mob::ride(e);
+	LivingEntity::ride(e);
 }
 
 void Player::setPlayerDefaultSkin(EDefaultSkins skin)										
@@ -927,10 +946,17 @@ void Player::prepareCustomTextures()
 
 void Player::rideTick()
 {
+	if (!level->isClientSide && isSneaking())
+	{
+		ride(nullptr);
+		setSneaking(false);
+		return;
+	}
+
 	double preX = x, preY = y, preZ = z;
 	float preYRot = yRot, preXRot = xRot;
 
-	this->Mob::rideTick();
+	LivingEntity::rideTick();
 	oBob = bob;
 	bob = 0;
 
@@ -958,42 +984,15 @@ void Player::resetPos()
 {
 	heightOffset = 1.62f;
 	setSize(0.6f, 1.8f);
-	this->Mob::resetPos();
+	LivingEntity::resetPos();
 	setHealth(getMaxHealth());
 	deathTime = 0;
 }
 
-int Player::getCurrentSwingDuration()
-{
-	if (hasEffect(MobEffect::digSpeed))
-	{
-		return SWING_DURATION - (1 + getEffect(MobEffect::digSpeed)->getAmplifier()) * 1;
-	}
-	if (hasEffect(MobEffect::digSlowdown))
-	{
-		return SWING_DURATION + (1 + getEffect(MobEffect::digSlowdown)->getAmplifier()) * 2;
-	}
-	return SWING_DURATION;
-}
-
 void Player::serverAiStep()
 {
-	int currentSwingDuration = getCurrentSwingDuration();
-	if (swinging)
-	{
-		swingTime++;
-		if (swingTime >= currentSwingDuration)
-		{
-			swingTime = 0;
-			swinging = false;
-		}
-	}
-	else
-	{
-		swingTime = 0;
-	}
-
-	attackAnim = swingTime / (float) currentSwingDuration;
+	LivingEntity::serverAiStep();
+	updateSwingTime();
 }
 
 
@@ -1001,22 +1000,24 @@ void Player::aiStep()
 {
 	if (jumpTriggerTime > 0) jumpTriggerTime--;
 
-	if (level->difficulty == Difficulty::PEACEFUL && getHealth() < getMaxHealth())
+	if (level->difficulty == Difficulty::PEACEFUL && getHealth() < getMaxHealth() && level->getGameRules()->getBoolean(GameRules::RULE_NATURAL_REGENERATION))
 	{
 		if (tickCount % 20 * 12 == 0) heal(1);
 	}
 	inventory->tick();
 	oBob = bob;
 
-	this->Mob::aiStep();
+	LivingEntity::aiStep();
 
-	this->walkingSpeed = abilities.getWalkingSpeed();
-	this->flyingSpeed = defaultFlySpeed;
+	AttributeInstance *speed = getAttribute(SharedMonsterAttributes::MOVEMENT_SPEED);
+	if (!level->isClientSide) speed->setBaseValue(abilities.getWalkingSpeed());
+	flyingSpeed = defaultFlySpeed;
 	if (isSprinting())
 	{
-		walkingSpeed += abilities.getWalkingSpeed() * 0.3f;
 		flyingSpeed += defaultFlySpeed * 0.3f;
 	}
+
+	setSpeed((float) speed->getValue());
 
 	float tBob = (float) sqrt(xd * xd + zd * zd);
 
@@ -1037,7 +1038,19 @@ void Player::aiStep()
 
 	if (getHealth() > 0)
 	{
-		vector<shared_ptr<Entity> > *entities = level->getEntities(shared_from_this(), bb->grow(1, 0, 1));
+		AABB *pickupArea = NULL;
+		if (riding != NULL && !riding->removed)
+		{
+			// if the player is riding, also touch entities under the
+			// pig/horse
+			pickupArea = bb->minmax(riding->bb)->grow(1, 0, 1);
+		}
+		else
+		{
+			pickupArea = bb->grow(1, .5, 1);
+		}
+
+		vector<shared_ptr<Entity> > *entities = level->getEntities(shared_from_this(), pickupArea);
 		if (entities != NULL)
 		{
 			AUTO_VAR(itEnd, entities->end());
@@ -1059,21 +1072,26 @@ void Player::touch(shared_ptr<Entity> entity)
 	entity->playerTouch( dynamic_pointer_cast<Player>( shared_from_this() ) );
 }
 
-// 4J - Removed 1.0.1
-//bool Player::addResource(int resource)
-//{
-//	return inventory->add(shared_ptr<ItemInstance>( new ItemInstance(resource, 1, 0) ) );
-//}
-
 int Player::getScore()
 {
-	return score;
+	return entityData->getInteger(DATA_SCORE_ID);
+}
+
+void Player::setScore(int value)
+{
+	entityData->set(DATA_SCORE_ID, value);
+}
+
+void Player::increaseScore(int amount)
+{
+	int score = getScore();
+	entityData->set(DATA_SCORE_ID, score + amount);
 }
 
 void Player::die(DamageSource *source)
 {
-	this->Mob::die(source);
-	this->setSize(0.2f, 0.2f);
+	LivingEntity::die(source);
+	setSize(0.2f, 0.2f);
 	setPos(x, y, z);
 	yd = 0.1f;
 
@@ -1082,7 +1100,10 @@ void Player::die(DamageSource *source)
 	{
 		drop(shared_ptr<ItemInstance>( new ItemInstance(Item::apple, 1) ), true);
 	}
-	inventory->dropAll();
+	if (!level->getGameRules()->getBoolean(GameRules::RULE_KEEPINVENTORY))
+	{
+		inventory->dropAll();
+	}
 
 	if (source != NULL)
 	{
@@ -1093,26 +1114,33 @@ void Player::die(DamageSource *source)
 	{
 		xd = zd = 0;
 	}
-	this->heightOffset = 0.1f;
+	heightOffset = 0.1f;
 }
 
-void Player::awardKillScore(shared_ptr<Entity> victim, int score)
+void Player::awardKillScore(shared_ptr<Entity> victim, int awardPoints)
 {
-	this->score += score;
-}
+	increaseScore(awardPoints);
+	vector<Objective *> *objectives = getScoreboard()->findObjectiveFor(ObjectiveCriteria::KILL_COUNT_ALL);
 
-int Player::decreaseAirSupply(int currentSupply)
-{
-	int oxygenBonus = EnchantmentHelper::getOxygenBonus(inventory);
-	if (oxygenBonus > 0)
+	//if (victim instanceof Player)
+	//{
+	//	awardStat(Stats::playerKills, 1);
+	//	objectives.addAll(getScoreboard().findObjectiveFor(ObjectiveCriteria::KILL_COUNT_PLAYERS));
+	//}
+	//else
+	//{
+	//	awardStat(Stats::mobKills, 1);
+	//}
+
+	if(objectives)
 	{
-		if (random->nextInt(oxygenBonus + 1) > 0)
+		for (AUTO_VAR(it,objectives->begin()); it != objectives->end(); ++it)
 		{
-			// the oxygen bonus prevents us from drowning
-			return currentSupply;
+			Objective *objective = *it;
+			Score *score = getScoreboard()->getPlayerScore(getAName(), objective);
+			score->increment();
 		}
 	}
-	return Mob::decreaseAirSupply(currentSupply);
 }
 
 bool Player::isShootable()
@@ -1125,9 +1153,9 @@ bool Player::isCreativeModeAllowed()
 	return true;
 }
 
-shared_ptr<ItemEntity> Player::drop()
+shared_ptr<ItemEntity> Player::drop(bool all)
 {
-	return drop(inventory->removeItem(inventory->selected, 1), false);
+	return drop(inventory->removeItem(inventory->selected, all && inventory->getSelected() != NULL ? inventory->getSelected()->count : 1), false);
 }
 
 shared_ptr<ItemEntity> Player::drop(shared_ptr<ItemInstance> item)
@@ -1138,6 +1166,7 @@ shared_ptr<ItemEntity> Player::drop(shared_ptr<ItemInstance> item)
 shared_ptr<ItemEntity> Player::drop(shared_ptr<ItemInstance> item, bool randomly)
 {
 	if (item == NULL) return nullptr;
+	if (item->count == 0) return nullptr;
 
 	shared_ptr<ItemEntity> thrownItem = shared_ptr<ItemEntity>( new ItemEntity(level, x, y - 0.3f + getHeadHeight(), z, item) );
 	thrownItem->throwTime = 20 * 2;
@@ -1181,14 +1210,28 @@ void Player::reallyDrop(shared_ptr<ItemEntity> thrownItem)
 }
 
 
-float Player::getDestroySpeed(Tile *tile)
+float Player::getDestroySpeed(Tile *tile, bool hasProperTool)
 {
 	float speed = inventory->getDestroySpeed(tile);
 
-	int efficiency = EnchantmentHelper::getDiggingBonus(inventory);
-	if (efficiency > 0 && inventory->canDestroy(tile))
+	if (speed > 1)
 	{
-		speed += (efficiency * efficiency + 1);
+		int efficiency = EnchantmentHelper::getDiggingBonus(dynamic_pointer_cast<LivingEntity>(shared_from_this()));
+		shared_ptr<ItemInstance> item = inventory->getSelected();
+
+		if (efficiency > 0 && item != NULL)
+		{
+			float boost = efficiency * efficiency + 1;
+
+			if (item->canDestroySpecial(tile) || speed > 1)
+			{
+				speed += boost;
+			}
+			else
+			{
+				speed += boost * 0.08f;
+			}
+		}
 	}
 
 	if (hasEffect(MobEffect::digSpeed))
@@ -1200,7 +1243,7 @@ float Player::getDestroySpeed(Tile *tile)
 		speed *= 1.0f - (getEffect(MobEffect::digSlowdown)->getAmplifier() + 1) * .2f;
 	}
 
-	if (isUnderLiquid(Material::water) && !EnchantmentHelper::hasWaterWorkerBonus(inventory)) speed /= 5;
+	if (isUnderLiquid(Material::water) && !EnchantmentHelper::hasWaterWorkerBonus(dynamic_pointer_cast<LivingEntity>(shared_from_this()))) speed /= 5;
 
 	// 4J Stu - onGround is set to true on the client when we are flying, which means
 	// the dig speed is out of sync with the server. Removing this speed change when
@@ -1217,16 +1260,17 @@ bool Player::canDestroy(Tile *tile)
 
 void Player::readAdditionalSaveData(CompoundTag *entityTag)
 {
-	Mob::readAdditionalSaveData(entityTag);
+	LivingEntity::readAdditionalSaveData(entityTag);
 	ListTag<CompoundTag> *inventoryList = (ListTag<CompoundTag> *) entityTag->getList(L"Inventory");
 	inventory->load(inventoryList);
-	dimension = entityTag->getInt(L"Dimension");
+	inventory->selected = entityTag->getInt(L"SelectedItemSlot");
 	m_isSleeping = entityTag->getBoolean(L"Sleeping");
 	sleepCounter = entityTag->getShort(L"SleepTimer");
 
 	experienceProgress = entityTag->getFloat(L"XpP");
 	experienceLevel = entityTag->getInt(L"XpLevel");
 	totalExperience = entityTag->getInt(L"XpTotal");
+	setScore(entityTag->getInt(L"Score"));
 
 	if (m_isSleeping)
 	{
@@ -1237,6 +1281,7 @@ void Player::readAdditionalSaveData(CompoundTag *entityTag)
 	if (entityTag->contains(L"SpawnX") && entityTag->contains(L"SpawnY") && entityTag->contains(L"SpawnZ"))
 	{
 		respawnPosition = new Pos(entityTag->getInt(L"SpawnX"), entityTag->getInt(L"SpawnY"), entityTag->getInt(L"SpawnZ"));
+		respawnForced = entityTag->getBoolean(L"SpawnForced");
 	}
 
 	foodData.readAdditionalSaveData(entityTag);
@@ -1254,21 +1299,23 @@ void Player::readAdditionalSaveData(CompoundTag *entityTag)
 
 void Player::addAdditonalSaveData(CompoundTag *entityTag)
 {
-	Mob::addAdditonalSaveData(entityTag);
+	LivingEntity::addAdditonalSaveData(entityTag);
 	entityTag->put(L"Inventory", inventory->save(new ListTag<CompoundTag>()));
-	entityTag->putInt(L"Dimension", dimension);
+	entityTag->putInt(L"SelectedItemSlot", inventory->selected);
 	entityTag->putBoolean(L"Sleeping", m_isSleeping);
 	entityTag->putShort(L"SleepTimer", (short) sleepCounter);
 
 	entityTag->putFloat(L"XpP", experienceProgress);
 	entityTag->putInt(L"XpLevel", experienceLevel);
 	entityTag->putInt(L"XpTotal", totalExperience);
+	entityTag->putInt(L"Score", getScore());
 
 	if (respawnPosition != NULL)
 	{
 		entityTag->putInt(L"SpawnX", respawnPosition->x);
 		entityTag->putInt(L"SpawnY", respawnPosition->y);
 		entityTag->putInt(L"SpawnZ", respawnPosition->z);
+		entityTag->putBoolean(L"SpawnForced", respawnForced);
 	}
 
 	foodData.addAdditonalSaveData(entityTag);
@@ -1281,21 +1328,27 @@ void Player::addAdditonalSaveData(CompoundTag *entityTag)
 
 }
 
-Pos *Player::getRespawnPosition(Level *level, CompoundTag *entityTag)
-{
-	if (entityTag->contains(L"SpawnX") && entityTag->contains(L"SpawnY") && entityTag->contains(L"SpawnZ"))
-	{
-		return new Pos(entityTag->getInt(L"SpawnX"), entityTag->getInt(L"SpawnY"), entityTag->getInt(L"SpawnZ"));
-	}
-	return level->getSharedSpawnPos();
-}
-
 bool Player::openContainer(shared_ptr<Container> container)
 {
 	return true;
 }
 
-bool Player::startEnchanting(int x, int y, int z)
+bool Player::openHopper(shared_ptr<HopperTileEntity> container)
+{
+	return true;
+}
+
+bool Player::openHopper(shared_ptr<MinecartHopper> container)
+{
+	return true;
+}
+
+bool Player::openHorseInventory(shared_ptr<EntityHorse> horse, shared_ptr<Container> container)
+{
+	return true;
+}
+
+bool Player::startEnchanting(int x, int y, int z, const wstring &name)
 {
 	return true;
 }
@@ -1310,8 +1363,9 @@ bool Player::startCrafting(int x, int y, int z)
 	return true;
 }
 
-void Player::take(shared_ptr<Entity> e, int orgCount)
+bool Player::openFireworks(int x, int y, int z)
 {
+	return true;
 }
 
 float Player::getHeadHeight()
@@ -1325,8 +1379,9 @@ void Player::setDefaultHeadHeight()
 	heightOffset = 1.62f;
 }
 
-bool Player::hurt(DamageSource *source, int dmg)
+bool Player::hurt(DamageSource *source, float dmg)
 {
+	if (isInvulnerable()) return false;
 	if ( hasInvulnerablePrivilege() || (abilities.invulnerable && !source->isBypassInvul()) )	return false;
 
 	// 4J-JEV: Fix for PSVita: #3987 - [IN GAME] The user can take damage/die, when attempting to re-enter fly mode when falling from a height.
@@ -1350,95 +1405,40 @@ bool Player::hurt(DamageSource *source, int dmg)
 	if (dmg == 0) return false;
 
 	shared_ptr<Entity> attacker = source->getEntity();
-	if ( dynamic_pointer_cast<Arrow>( attacker ) != NULL )
+	if ( attacker != NULL && attacker->instanceof(eTYPE_ARROW) )
 	{
-		if ((dynamic_pointer_cast<Arrow>(attacker))->owner != NULL)
+		shared_ptr<Arrow> arrow = dynamic_pointer_cast<Arrow>(attacker);
+		if ( arrow->owner != NULL)
 		{
-			attacker = (dynamic_pointer_cast<Arrow>(attacker))->owner;
+			attacker = arrow->owner;
 		}
 	}
-	if ( dynamic_pointer_cast<Mob>( attacker ) != NULL )
-	{
-		// aggreviate all pet wolves nearby
-		directAllTameWolvesOnTarget(dynamic_pointer_cast<Mob>(attacker), false);
-	}
 
-	return this->Mob::hurt(source, dmg);
+	return LivingEntity::hurt(source, dmg);
 }
 
-int Player::getDamageAfterMagicAbsorb(DamageSource *damageSource, int damage)
+bool Player::canHarmPlayer(shared_ptr<Player> target)
 {
-	int remainingDamage = Mob::getDamageAfterMagicAbsorb(damageSource, damage);
-	if (remainingDamage <= 0)
-	{
-		return 0;
-	}
+	Team *team = getTeam();
+	Team *otherTeam = target->getTeam();
 
-	int enchantmentArmor = EnchantmentHelper::getDamageProtection(inventory, damageSource);
-	if (enchantmentArmor > 20)
+	if (team == NULL)
 	{
-		enchantmentArmor = 20;
+		return true;
 	}
-	if (enchantmentArmor > 0 && enchantmentArmor <= 20)
+	if (!team->isAlliedTo(otherTeam))
 	{
-		int absorb = 25 - enchantmentArmor;
-		int v = remainingDamage * absorb + dmgSpill;
-		remainingDamage = v / 25;
-		dmgSpill = v % 25;
+		return true;
 	}
-
-	return remainingDamage;
+	return team->isAllowFriendlyFire();
 }
 
-bool Player::isPlayerVersusPlayer()
+bool Player::canHarmPlayer(wstring targetName)
 {
-	return false;
+	return true;
 }
 
-void Player::directAllTameWolvesOnTarget(shared_ptr<Mob> target, bool skipSitting)
-{
-
-	// filter un-attackable mobs
-	if ((dynamic_pointer_cast<Creeper>( target ) != NULL) || (dynamic_pointer_cast<Ghast>( target) != NULL))
-	{
-		return;
-	}
-	// never target wolves that has this player as owner
-	if (dynamic_pointer_cast<Wolf>(target) != NULL)
-	{
-		shared_ptr<Wolf> wolfTarget = dynamic_pointer_cast<Wolf>(target);
-		if (wolfTarget->isTame() && m_UUID.compare( wolfTarget->getOwnerUUID() ) == 0 )
-		{
-			return;
-		}
-	}
-	if ((dynamic_pointer_cast<Player>( target ) != NULL) && !isPlayerVersusPlayer())
-	{
-		// pvp is off
-		return;
-	}
-
-
-	// TODO: Optimize this? Most of the time players wont have pets:
-	vector<shared_ptr<Entity> > *nearbyWolves = level->getEntitiesOfClass(typeid(Wolf), AABB::newTemp(x, y, z, x + 1, y + 1, z + 1)->grow(16, 4, 16));
-	AUTO_VAR(itEnd, nearbyWolves->end());
-	for (AUTO_VAR(it, nearbyWolves->begin()); it != itEnd; it++)
-	{
-		shared_ptr<Wolf> wolf = dynamic_pointer_cast<Wolf>(*it);;
-		if (wolf->isTame() && wolf->getAttackTarget() == NULL && m_UUID.compare( wolf->getOwnerUUID() ) == 0)
-		{
-			if (!skipSitting || !wolf->isSitting())
-			{
-				wolf->setSitting(false);
-				wolf->setAttackTarget(target);
-			}
-		}
-	}
-	delete nearbyWolves;
-
-}
-
-void Player::hurtArmor(int damage)
+void Player::hurtArmor(float damage)
 {
 	inventory->hurtArmor(damage);
 }
@@ -1450,29 +1450,36 @@ int Player::getArmorValue()
 
 float Player::getArmorCoverPercentage()
 {
-    int count = 0;
+	int count = 0;
 	for (int i = 0; i < inventory->armor.length; i++)
 	{
-        if (inventory->armor[i] != NULL) {
-            count++;
-        }
-    }
-    return (float) count / (float) inventory->armor.length;
+		if (inventory->armor[i] != NULL) {
+			count++;
+		}
+	}
+	return (float) count / (float) inventory->armor.length;
 }
 
-void Player::actuallyHurt(DamageSource *source, int dmg)
+void Player::actuallyHurt(DamageSource *source, float dmg)
 {
-	if (!source->isBypassArmor() && isBlocking())
+	if (isInvulnerable()) return;
+	if (!source->isBypassArmor() && isBlocking() && dmg > 0)
 	{
-		dmg = (1 + dmg) >> 1;
+		dmg = (1 + dmg) * .5f;
 	}
 	dmg = getDamageAfterArmorAbsorb(source, dmg);
 	dmg = getDamageAfterMagicAbsorb(source, dmg);
-	causeFoodExhaustion(source->getFoodExhaustion());
-	//this->Mob::actuallyHurt(source, dmg);
-	health -= dmg;
-}
 
+	float originalDamage = dmg;
+	dmg = max(dmg - getAbsorptionAmount(), 0.0f);
+	setAbsorptionAmount(getAbsorptionAmount() - (originalDamage - dmg));
+	if (dmg == 0) return;
+
+	causeFoodExhaustion(source->getFoodExhaustion());
+	float oldHealth = getHealth();
+	setHealth(getHealth() - dmg);
+	getCombatTracker()->recordDamage(source, oldHealth, dmg);
+}
 
 bool Player::openFurnace(shared_ptr<FurnaceTileEntity> container)
 {
@@ -1484,7 +1491,7 @@ bool Player::openTrap(shared_ptr<DispenserTileEntity> container)
 	return true;
 }
 
-void Player::openTextEdit(shared_ptr<SignTileEntity> sign)
+void Player::openTextEdit(shared_ptr<TileEntity> sign)
 {
 }
 
@@ -1493,7 +1500,12 @@ bool Player::openBrewingStand(shared_ptr<BrewingStandTileEntity> brewingStand)
 	return true;
 }
 
-bool Player::openTrading(shared_ptr<Merchant> traderTarget)
+bool Player::openBeacon(shared_ptr<BeaconTileEntity> beacon)
+{
+	return true;
+}
+
+bool Player::openTrading(shared_ptr<Merchant> traderTarget, const wstring &name)
 {
 	return true;
 }
@@ -1509,21 +1521,41 @@ void Player::openItemInstanceGui(shared_ptr<ItemInstance> itemInstance)
 
 bool Player::interact(shared_ptr<Entity> entity)
 {
-	if (entity->interact( dynamic_pointer_cast<Player>( shared_from_this() ) )) return true;
+	shared_ptr<Player> thisPlayer = dynamic_pointer_cast<Player>(shared_from_this());
+
 	shared_ptr<ItemInstance> item = getSelectedItem();
-	if (item != NULL && dynamic_pointer_cast<Mob>( entity ) != NULL)
+	shared_ptr<ItemInstance> itemClone = (item != NULL) ? item->copy() : nullptr;
+	if ( entity->interact(thisPlayer) )
+	{
+		// [EB]: Added rude check to see if we're still talking about the
+		// same item; this code caused bucket->milkbucket to be deleted because
+		// the milkbuckets' stack got decremented to 0.
+		if (item != NULL && item == getSelectedItem())
+		{
+			if (item->count <= 0 && !abilities.instabuild)
+			{
+				removeSelectedItem();
+			}
+			else if (item->count < itemClone->count && abilities.instabuild)
+			{
+				item->count = itemClone->count;
+			}
+		}
+		return true;
+	}
+
+	if ( (item != NULL) && entity->instanceof(eTYPE_LIVINGENTITY) )
 	{		
 		// 4J - PC Comments
 		// Hack to prevent item stacks from decrementing if the player has
 		// the ability to instabuild
-		if(this->abilities.instabuild) item = item->copy();
-		if(item->interactEnemy(dynamic_pointer_cast<Mob>(entity)))
+		if(this->abilities.instabuild) item = itemClone;
+		if(item->interactEnemy(thisPlayer, dynamic_pointer_cast<LivingEntity>(entity)))
 		{
 			// 4J - PC Comments
 			// Don't remove the item in hand if the player has the ability
-			// to
-			// instabuild
-			if (item->count <= 0 && !this->abilities.instabuild)
+			// to instabuild
+			if ( (item->count <= 0) && !abilities.instabuild)
 			{
 				removeSelectedItem();
 			}
@@ -1548,15 +1580,6 @@ double Player::getRidingHeight()
 	return heightOffset - 0.5f;
 }
 
-void Player::swing()
-{
-	if (!swinging || swingTime >= getCurrentSwingDuration() / 2 || swingTime < 0)
-	{
-		swingTime = -1;
-		swinging = true;
-	}
-}
-
 void Player::attack(shared_ptr<Entity> entity)
 {
 	if (!entity->isAttackable())
@@ -1564,24 +1587,22 @@ void Player::attack(shared_ptr<Entity> entity)
 		return;
 	}
 
-	int dmg = inventory->getAttackDamage(entity);
+	if (entity->skipAttackInteraction(shared_from_this()))
+	{
+		return;
+	}
 
-	if (hasEffect(MobEffect::damageBoost))
-	{
-		dmg += (3 << getEffect(MobEffect::damageBoost)->getAmplifier());
-	}
-	if (hasEffect(MobEffect::weakness))
-	{
-		dmg -= (2 << getEffect(MobEffect::weakness)->getAmplifier());
-	}
+	float dmg = (float) getAttribute(SharedMonsterAttributes::ATTACK_DAMAGE)->getValue();
 
 	int knockback = 0;
-	int magicBoost = 0;
-	shared_ptr<Mob> mob = dynamic_pointer_cast<Mob>(entity);
-	if (mob != NULL)
+	float magicBoost = 0;
+	
+	if ( entity->instanceof(eTYPE_LIVINGENTITY) )
 	{
-		magicBoost = EnchantmentHelper::getDamageBonus(inventory, mob);
-		knockback += EnchantmentHelper::getKnockbackBonus(inventory, mob);
+		shared_ptr<Player> thisPlayer = dynamic_pointer_cast<Player>(shared_from_this());
+		shared_ptr<LivingEntity> mob = dynamic_pointer_cast<LivingEntity>(entity);
+		magicBoost = EnchantmentHelper::getDamageBonus(thisPlayer, mob);
+		knockback += EnchantmentHelper::getKnockbackBonus(thisPlayer, mob);
 	}
 	if (isSprinting())
 	{
@@ -1590,18 +1611,18 @@ void Player::attack(shared_ptr<Entity> entity)
 
 	if (dmg > 0 || magicBoost > 0)
 	{
-		bool bCrit = fallDistance > 0 && !onGround && !onLadder() && !isInWater() && !hasEffect(MobEffect::blindness) && riding == NULL && mob != NULL;
-		if (bCrit)
+		bool bCrit = fallDistance > 0 && !onGround && !onLadder() && !isInWater() && !hasEffect(MobEffect::blindness) && (riding == NULL) && entity->instanceof(eTYPE_LIVINGENTITY);
+		if (bCrit && dmg > 0)
 		{
-			dmg += random->nextInt(dmg / 2 + 2);
+			dmg *= 1.5f;
 		}
 		dmg += magicBoost;
-		
+
 		// Ensure we put the entity on fire if we're hitting with a
 		// fire-enchanted weapon
 		bool setOnFireTemporatily = false;
-		int fireAspect = EnchantmentHelper::getFireAspect(dynamic_pointer_cast<Mob>(shared_from_this()));
-		if (dynamic_pointer_cast<Mob>(entity) && fireAspect > 0 && !entity->isOnFire())
+		int fireAspect = EnchantmentHelper::getFireAspect(dynamic_pointer_cast<LivingEntity>(shared_from_this()));
+		if ( entity->instanceof(eTYPE_MOB) && fireAspect > 0 && !entity->isOnFire())
 		{
 			setOnFireTemporatily = true;
 			entity->setOnFire(1);
@@ -1635,29 +1656,36 @@ void Player::attack(shared_ptr<Entity> entity)
 			}
 			setLastHurtMob(entity);
 
-			shared_ptr<Mob> mob = dynamic_pointer_cast<Mob>(entity);
-			if (mob)
+			
+			if ( entity->instanceof(eTYPE_LIVINGENTITY) )
 			{
+				shared_ptr<LivingEntity> mob = dynamic_pointer_cast<LivingEntity>(entity);
 				ThornsEnchantment::doThornsAfterAttack(shared_from_this(), mob, random);
 			}
 		}
 
 		shared_ptr<ItemInstance> item = getSelectedItem();
-		if (item != NULL && dynamic_pointer_cast<Mob>( entity ) != NULL)
+		shared_ptr<Entity> hurtTarget = entity;
+		if ( entity->instanceof(eTYPE_MULTIENTITY_MOB_PART) )
 		{
-			item->hurtEnemy(dynamic_pointer_cast<Mob>(entity), dynamic_pointer_cast<Player>( shared_from_this() ) );
+			shared_ptr<Entity> multiMob = dynamic_pointer_cast<Entity>((dynamic_pointer_cast<MultiEntityMobPart>(entity))->parentMob.lock());
+			if ( (multiMob != NULL) && multiMob->instanceof(eTYPE_LIVINGENTITY) )
+			{
+				hurtTarget = dynamic_pointer_cast<LivingEntity>( multiMob );
+			}
+		}
+		if ( (item != NULL) && hurtTarget->instanceof(eTYPE_LIVINGENTITY) )
+		{
+			item->hurtEnemy(dynamic_pointer_cast<LivingEntity>(hurtTarget), dynamic_pointer_cast<Player>( shared_from_this() ) );
 			if (item->count <= 0)
 			{
 				removeSelectedItem();
 			}
 		}
-		if (dynamic_pointer_cast<Mob>( entity ) != NULL)
+		if ( entity->instanceof(eTYPE_LIVINGENTITY) )
 		{
-			if (entity->isAlive())
-			{
-				directAllTameWolvesOnTarget(dynamic_pointer_cast<Mob>(entity), true);
-			}
-			// 4J Stu - Brought forward wasHurt check to Fix 66140 - Bug: Fire Aspect bypasses "Player v Player" being Disabled
+			//awardStat(Stats.damageDealt, (int) Math.round(dmg * 10));
+
 			if (fireAspect > 0 && wasHurt)
 			{
 				entity->setOnFire(fireAspect * 4);
@@ -1670,6 +1698,11 @@ void Player::attack(shared_ptr<Entity> entity)
 
 		causeFoodExhaustion(FoodConstants::EXHAUSTION_ATTACK);
 	}
+
+	// if (SharedConstants::INGAME_DEBUG_OUTPUT)
+	// {
+	// 		//sendMessage(ChatMessageComponent.forPlainText("DMG " + dmg + ", " + magicBoost + ", " + knockback));
+	// }
 }
 
 void Player::crit(shared_ptr<Entity> entity)
@@ -1707,7 +1740,7 @@ Slot *Player::getInventorySlot(int slotId)
 
 void Player::remove()
 {
-	this->Mob::remove();
+	LivingEntity::remove();
 	inventoryMenu->removed( dynamic_pointer_cast<Player>( shared_from_this() ) );
 	if (containerMenu != NULL)
 	{
@@ -1717,7 +1750,7 @@ void Player::remove()
 
 bool Player::isInWall()
 {
-	return !m_isSleeping && this->Mob::isInWall();
+	return !m_isSleeping && LivingEntity::isInWall();
 }
 
 bool Player::isLocalPlayer()
@@ -1759,6 +1792,7 @@ Player::BedSleepingResult Player::startSleepInBed(int x, int y, int z, bool bTes
 			vector<shared_ptr<Entity> > *monsters = level->getEntitiesOfClass(typeid(Monster), AABB::newTemp(x - hRange, y - vRange, z - hRange, x + hRange, y + vRange, z + hRange));
 			if (!monsters->empty())
 			{
+				delete monsters;
 				return NOT_SAFE;
 			}
 			delete monsters;
@@ -1778,8 +1812,10 @@ Player::BedSleepingResult Player::startSleepInBed(int x, int y, int z, bool bTes
 		return OK;
 	}
 
-	// 4J Stu - You can use a bed from within a minecart, and this causes all sorts of problems.
-	ride(nullptr);
+	if (isRiding())
+	{
+		ride(nullptr);
+	}
 
 	setSize(0.2f, 0.2f);
 	heightOffset = .2f;
@@ -1898,7 +1934,7 @@ void Player::stopSleepInBed(bool forcefulWakeUp, bool updateLevelList, bool save
 	}
 	if (saveRespawnPoint)
 	{
-		setRespawnPosition(bedPosition);
+		setRespawnPosition(bedPosition, false);
 	}
 }
 
@@ -1909,7 +1945,7 @@ bool Player::checkBed()
 }
 
 
-Pos *Player::checkBedValidRespawnPosition(Level *level, Pos *pos)
+Pos *Player::checkBedValidRespawnPosition(Level *level, Pos *pos, bool forced)
 {
 	// make sure the chunks around the bed exist
 	ChunkSource *chunkSource = level->getChunkSource();
@@ -1921,6 +1957,15 @@ Pos *Player::checkBedValidRespawnPosition(Level *level, Pos *pos)
 	// make sure the bed is still standing
 	if (level->getTile(pos->x, pos->y, pos->z) != Tile::bed_Id)
 	{
+		Material *bottomMaterial = level->getMaterial(pos->x, pos->y, pos->z);
+		Material *topMaterial = level->getMaterial(pos->x, pos->y + 1, pos->z);
+		bool freeFeet = !bottomMaterial->isSolid() && !bottomMaterial->isLiquid();
+		bool freeHead = !topMaterial->isSolid() && !topMaterial->isLiquid();
+
+		if (forced && freeFeet && freeHead)
+		{
+			return pos;
+		}
 		return NULL;
 	}
 	// make sure the bed still has a stand-up position
@@ -2005,15 +2050,22 @@ Pos *Player::getRespawnPosition()
 	return respawnPosition;
 }
 
-void Player::setRespawnPosition(Pos *respawnPosition)
+bool Player::isRespawnForced()
+{
+	return respawnForced;
+}
+
+void Player::setRespawnPosition(Pos *respawnPosition, bool forced)
 {
 	if (respawnPosition != NULL)
 	{
 		this->respawnPosition = new Pos(*respawnPosition);
+		respawnForced = forced;
 	}
 	else
 	{
 		this->respawnPosition = NULL;
+		respawnForced = false;
 	}
 }
 
@@ -2028,7 +2080,7 @@ void Player::awardStat(Stat *stat, byteArray paramBlob)
 
 void Player::jumpFromGround()
 {
-	this->Mob::jumpFromGround();
+	LivingEntity::jumpFromGround();
 
 	// 4J Stu - This seems to have been missed from 1.7.3, but do we care?
 	//awardStat(Stats::jump, 1);
@@ -2050,21 +2102,25 @@ void Player::travel(float xa, float ya)
 
 	if (abilities.flying && riding == NULL)
 	{
-		double ydo = this->yd;
+		double ydo = yd;
 		float ofs = flyingSpeed;
 		flyingSpeed = abilities.getFlyingSpeed();
-		this->Mob::travel(xa, ya);
-		this->yd = ydo * 0.6;
+		LivingEntity::travel(xa, ya);
+		yd = ydo * 0.6;
 		flyingSpeed = ofs;
 	}
 	else
 	{
-		this->Mob::travel(xa, ya);
+		LivingEntity::travel(xa, ya);
 	}
 
 	checkMovementStatistiscs(x - preX, y - preY, z - preZ);
 }
 
+float Player::getSpeed()
+{
+	return (float) getAttribute(SharedMonsterAttributes::MOVEMENT_SPEED)->getValue();
+}
 
 void Player::checkMovementStatistiscs(double dx, double dy, double dz)
 {
@@ -2142,7 +2198,7 @@ void Player::checkRidingStatistiscs(double dx, double dy, double dz)
 		int distance = (int) Math::round(sqrt(dx * dx + dy * dy + dz * dz) * 100.0f);
 		if (distance > 0)
 		{
-			if ( dynamic_pointer_cast<Minecart>( riding ) )
+			if ( riding->instanceof(eTYPE_MINECART) )
 			{
 				distanceMinecart += distance;
 				if( distanceMinecart >= 100 )
@@ -2189,7 +2245,7 @@ void Player::checkRidingStatistiscs(double dx, double dy, double dz)
 				}
 
 			}
-			else if (dynamic_pointer_cast<Boat>( riding ) != NULL)
+			else if ( riding->instanceof(eTYPE_BOAT) )
 			{
 				distanceBoat += distance;
 				if( distanceBoat >= 100 )
@@ -2199,7 +2255,7 @@ void Player::checkRidingStatistiscs(double dx, double dy, double dz)
 					awardStat(GenericStats::boatOneM(), GenericStats::param_boat(newDistance/100) );
 				}
 			}
-			else if (dynamic_pointer_cast<Pig>( riding ) != NULL)
+			else if ( riding->instanceof(eTYPE_PIG) )
 			{
 				distancePig += distance;
 				if( distancePig >= 100 )
@@ -2228,14 +2284,14 @@ void Player::causeFallDamage(float distance)
 			awardStat(GenericStats::fallOneM(), GenericStats::param_fall(newDistance/100) );
 		}
 	}
-	this->Mob::causeFallDamage(distance);
+	LivingEntity::causeFallDamage(distance);
 }
 
 
-void Player::killed(shared_ptr<Mob> mob)
+void Player::killed(shared_ptr<LivingEntity> mob)
 {
 	// 4J-PB - added the lavaslime enemy - fix for #64007 - TU7: Code: Achievements: TCR#073: Killing Magma Cubes doesn't unlock "Monster Hunter" Achievement.
-	if( dynamic_pointer_cast<Monster>( mob ) != NULL || mob->GetType() == eTYPE_GHAST || mob->GetType() == eTYPE_SLIME || mob->GetType() == eTYPE_LAVASLIME || mob->GetType() == eTYPE_ENDERDRAGON)
+	if( mob->instanceof(eTYPE_ENEMY) || mob->GetType() == eTYPE_GHAST || mob->GetType() == eTYPE_SLIME || mob->GetType() == eTYPE_LAVASLIME || mob->GetType() == eTYPE_ENDERDRAGON)
 	{
 		awardStat(GenericStats::killEnemy(), GenericStats::param_noArgs());
 
@@ -2282,9 +2338,14 @@ void Player::killed(shared_ptr<Mob> mob)
 	}
 }
 
+void Player::makeStuckInWeb()
+{
+	if (!abilities.flying) LivingEntity::makeStuckInWeb();
+}
+
 Icon *Player::getItemInHandIcon(shared_ptr<ItemInstance> item, int layer)
 {
-	Icon *icon = Mob::getItemInHandIcon(item, layer);
+	Icon *icon = LivingEntity::getItemInHandIcon(item, layer);
 	if (item->id == Item::fishingRod->id && fishing != NULL)
 	{
 		icon = Item::fishingRod->getEmptyIcon();
@@ -2317,21 +2378,9 @@ shared_ptr<ItemInstance> Player::getArmor(int pos)
 	return inventory->getArmor(pos);
 }
 
-void Player::handleInsidePortal()
-{
-	if (changingDimensionDelay > 0)
-	{
-		changingDimensionDelay = 10;
-		return;
-	}
-
-	isInsidePortal = true;
-}
-
 void Player::increaseXp(int i)
 {
-	// Update xp calculations from 1.3
-	score += i;
+	increaseScore(i);
 	int max = INT_MAX - totalExperience;
 	if (i > max)
 	{
@@ -2342,17 +2391,26 @@ void Player::increaseXp(int i)
 	while (experienceProgress >= 1)
 	{
 		experienceProgress = (experienceProgress - 1) * getXpNeededForNextLevel();
-		levelUp();
+		giveExperienceLevels(1);
 		experienceProgress /= getXpNeededForNextLevel();
 	}
 }
 
-void Player::withdrawExperienceLevels(int amount)
+void Player::giveExperienceLevels(int amount)
 {
-	experienceLevel -= amount;
+	experienceLevel += amount;
 	if (experienceLevel < 0)
 	{
 		experienceLevel = 0;
+		experienceProgress = 0;
+		totalExperience = 0;
+	}
+
+	if (amount > 0 && experienceLevel % 5 == 0 && lastLevelUpTime < tickCount - SharedConstants::TICKS_PER_SECOND * 5.0f)
+	{
+		float vol = experienceLevel > 30 ? 1 : experienceLevel / 30.0f;
+		level->playEntitySound(shared_from_this(), eSoundType_RANDOM_LEVELUP, vol * 0.75f, 1);
+		lastLevelUpTime = tickCount;
 	}
 }
 
@@ -2368,11 +2426,6 @@ int Player::getXpNeededForNextLevel()
 		return 17 + (experienceLevel - 15) * 3;
 	}
 	return 17;
-}
-
-void Player::levelUp()
-{
-	experienceLevel++;
 }
 
 /**
@@ -2433,13 +2486,49 @@ void Player::startUsingItem(shared_ptr<ItemInstance> instance, int duration)
 #endif
 }
 
-bool Player::mayBuild(int x, int y, int z)
+bool Player::mayDestroyBlockAt(int x, int y, int z)
 {
-	return abilities.mayBuild;
+	if (abilities.mayBuild)
+	{
+		return true;
+	}
+	int t = level->getTile(x, y, z);
+	if (t > 0) {
+		Tile *tile = Tile::tiles[t];
+
+		if (tile->material->isDestroyedByHand())
+		{
+			return true;
+		}
+		else if (getSelectedItem() != NULL)
+		{
+			shared_ptr<ItemInstance> carried = getSelectedItem();
+
+			if (carried->canDestroySpecial(tile) || carried->getDestroySpeed(tile) > 1)
+			{
+				return true;
+			}
+		}
+	}
+	return false;
+}
+
+bool Player::mayUseItemAt(int x, int y, int z, int face, shared_ptr<ItemInstance> item)
+{
+	if (abilities.mayBuild)
+	{
+		return true;
+	}
+	if (item != NULL)
+	{
+		return item->mayBePlacedInAdventureMode();
+	}
+	return false;
 }
 
 int Player::getExperienceReward(shared_ptr<Player> killedBy)
 {
+	if (level->getGameRules()->getBoolean(GameRules::RULE_KEEPINVENTORY)) return 0;
 	int reward = experienceLevel * 7;
 	if (reward > 100)
 	{
@@ -2459,8 +2548,9 @@ wstring Player::getAName()
 	return name;
 }
 
-void Player::changeDimension(int i)
+bool Player::shouldShowName()
 {
+	return true;
 }
 
 void Player::restoreFrom(shared_ptr<Player> oldPlayer, bool restoreAll)
@@ -2469,21 +2559,24 @@ void Player::restoreFrom(shared_ptr<Player> oldPlayer, bool restoreAll)
 	{
 		inventory->replaceWith(oldPlayer->inventory);
 
-		health = oldPlayer->health;
+		setHealth(oldPlayer->getHealth());
 		foodData = oldPlayer->foodData;
 
 		experienceLevel = oldPlayer->experienceLevel;
 		totalExperience = oldPlayer->totalExperience;
 		experienceProgress = oldPlayer->experienceProgress;
 
-		score = oldPlayer->score;
+		setScore(oldPlayer->getScore());
+		portalEntranceDir = oldPlayer->portalEntranceDir;
+	}
+	else if (level->getGameRules()->getBoolean(GameRules::RULE_KEEPINVENTORY))
+	{
+		inventory->replaceWith(oldPlayer->inventory);
 
-		for(AUTO_VAR(it, oldPlayer->activeEffects.begin()); it != oldPlayer->activeEffects.end(); ++it)
-		{
-			MobEffectInstance *instance = it->second;
-			addEffectNoUpdate( instance );
-		}
-		oldPlayer->activeEffects.clear();
+		experienceLevel = oldPlayer->experienceLevel;
+		totalExperience = oldPlayer->totalExperience;
+		experienceProgress = oldPlayer->experienceProgress;
+		setScore(oldPlayer->getScore());
 	}
 	enderChestInventory = oldPlayer->enderChestInventory;
 }
@@ -2508,15 +2601,32 @@ wstring Player::getName()
 
 wstring Player::getDisplayName()
 {
-	return displayName;
+	//PlayerTeam.formatNameForTeam(getTeam(), name);
+
+	// If player display name is not set, return name
+	return m_displayName.size() > 0 ? m_displayName : name;
 }
 
-//Language getLanguage() { return Language.getInstance(); }
-//String localize(String key, Object... args) { return getLanguage().getElement(key, args); }
+wstring Player::getNetworkName()
+{
+	// 4J: We can only transmit gamertag in network packets
+	return name;
+}
+
+Level *Player::getCommandSenderWorld()
+{
+	return level;
+}
 
 shared_ptr<PlayerEnderChestContainer> Player::getEnderChestInventory()
 {
 	return enderChestInventory;
+}
+
+shared_ptr<ItemInstance> Player::getCarried(int slot)
+{
+	if (slot == 0) return inventory->getSelected();
+	return inventory->armor[slot - 1];
 }
 
 shared_ptr<ItemInstance> Player::getCarriedItem()
@@ -2524,9 +2634,50 @@ shared_ptr<ItemInstance> Player::getCarriedItem()
 	return inventory->getSelected();
 }
 
+void Player::setEquippedSlot(int slot, shared_ptr<ItemInstance> item)
+{
+	inventory->armor[slot] = item;
+}
+
 bool Player::isInvisibleTo(shared_ptr<Player> player)
 {
-    return isInvisible();
+	return isInvisible();
+}
+
+ItemInstanceArray Player::getEquipmentSlots()
+{
+	return inventory->armor;
+}
+
+bool Player::isCapeHidden()
+{
+	return getPlayerFlag(FLAG_HIDE_CAPE);
+}
+
+bool Player::isPushedByWater()
+{
+	return !abilities.flying;
+}
+
+Scoreboard *Player::getScoreboard()
+{
+	return level->getScoreboard();
+}
+
+Team *Player::getTeam()
+{
+	return getScoreboard()->getPlayersTeam(name);
+}
+
+void Player::setAbsorptionAmount(float absorptionAmount)
+{
+	if (absorptionAmount < 0) absorptionAmount = 0;
+	getEntityData()->set(DATA_PLAYER_ABSORPTION_ID, absorptionAmount);
+}
+
+float Player::getAbsorptionAmount()
+{
+	return getEntityData()->getFloat(DATA_PLAYER_ABSORPTION_ID);
 }
 
 int Player::getTexture()
@@ -2561,7 +2712,7 @@ int Player::hash_fnct(const shared_ptr<Player> k)
 #ifdef __PS3__
 	return (int)boost::hash_value( k->name ); // 4J Stu - Names are completely unique?
 #else
-	return (int)std::hash<wstring>{}( k->name ); // 4J Stu - Names are completely unique?
+	return (int)std::hash_value( k->name ); // 4J Stu - Names are completely unique?
 #endif //__PS3__
 }
 
@@ -2770,12 +2921,12 @@ bool Player::isAllowedToInteract(shared_ptr<Entity> target)
 	bool allowed = true;
 	if(app.GetGameHostOption(eGameHostOption_TrustPlayers) == 0)
 	{
-		if (target->GetType() == eTYPE_MINECART)
+		if (target->instanceof(eTYPE_MINECART))
 		{
 			if (getPlayerGamePrivilege(Player::ePlayerGamePrivilege_CanUseContainers) == 0)
 			{
 				shared_ptr<Minecart> minecart = dynamic_pointer_cast<Minecart>( target );
-				if (minecart->type == Minecart::CHEST)
+				if (minecart->getType() == Minecart::TYPE_CHEST)
 					allowed = false;
 			}
 

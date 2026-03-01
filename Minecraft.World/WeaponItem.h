@@ -6,16 +6,15 @@ using namespace std;
 class WeaponItem : public Item
 {
 private:
-	int damage;
+	float damage;
 	const Tier *tier;
 
 public:
 	WeaponItem(int id, const Tier *tier);
-
+	virtual float getTierDamage();
 	virtual float getDestroySpeed(shared_ptr<ItemInstance> itemInstance, Tile *tile);
-	virtual bool hurtEnemy(shared_ptr<ItemInstance> itemInstance, shared_ptr<Mob> mob, shared_ptr<Mob> attacker);
-	virtual bool mineBlock(shared_ptr<ItemInstance> itemInstance, Level *level, int tile, int x, int y, int z, shared_ptr<Mob> owner);
-	virtual int getAttackDamage(shared_ptr<Entity> entity);
+	virtual bool hurtEnemy(shared_ptr<ItemInstance> itemInstance, shared_ptr<LivingEntity> mob, shared_ptr<LivingEntity> attacker);
+	virtual bool mineBlock(shared_ptr<ItemInstance> itemInstance, Level *level, int tile, int x, int y, int z, shared_ptr<LivingEntity> owner);
 	virtual bool isHandEquipped();
 	virtual UseAnim getUseAnimation(shared_ptr<ItemInstance> itemInstance);
 	virtual int getUseDuration(shared_ptr<ItemInstance> itemInstance);
@@ -25,4 +24,5 @@ public:
 
 	const Tier *getTier();
 	bool isValidRepairItem(shared_ptr<ItemInstance> source, shared_ptr<ItemInstance> repairItem);
+	attrAttrModMap *getDefaultAttributeModifiers();
 };

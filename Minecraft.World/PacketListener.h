@@ -45,7 +45,7 @@ class SetEntityDataPacket;
 class SetEntityMotionPacket;
 class SetEquippedItemPacket;
 class SetHealthPacket;
-class SetRidingPacket;
+class SetEntityLinkPacket;
 class SetSpawnPositionPacket;
 class SetTimePacket;
 class SignUpdatePacket;
@@ -85,6 +85,15 @@ class LevelSoundPacket;
 class TileDestructionPacket;
 class ClientCommandPacket;
 class LevelChunksPacket;
+
+// 1.6.4
+class SetObjectivePacket;
+class SetScorePacket;
+class SetDisplayObjectivePacket;
+class SetPlayerTeamPacket;
+class LevelParticlesPacket;
+class UpdateAttributesPacket;
+class TileEditorOpenPacket;
 
 // 4J Added
 class CraftItemPacket;
@@ -135,7 +144,7 @@ public:
 	virtual void handleSetSpawn(shared_ptr<SetSpawnPositionPacket> packet);
 	virtual void handleSetEntityMotion(shared_ptr<SetEntityMotionPacket> packet);
 	virtual void handleSetEntityData(shared_ptr<SetEntityDataPacket> packet);
-	virtual void handleRidePacket(shared_ptr<SetRidingPacket> packet);
+	virtual void handleEntityLinkPacket(shared_ptr<SetEntityLinkPacket> packet);
 	virtual void handleInteract(shared_ptr<InteractPacket> packet);
 	virtual void handleEntityEvent(shared_ptr<EntityEventPacket> packet);
 	virtual void handleSetHealth(shared_ptr<SetHealthPacket> packet);
@@ -192,6 +201,16 @@ public:
 	virtual void handleClientCommand(shared_ptr<ClientCommandPacket> packet);
 	//virtual void handleLevelChunks(shared_ptr<LevelChunksPacket> packet);
 	virtual bool canHandleAsyncPackets();
+
+	// 1.6.4
+	virtual void handleAddObjective(shared_ptr<SetObjectivePacket> packet);
+	virtual void handleSetScore(shared_ptr<SetScorePacket> packet);
+	virtual void handleSetDisplayObjective(shared_ptr<SetDisplayObjectivePacket> packet);
+	virtual void handleSetPlayerTeamPacket(shared_ptr<SetPlayerTeamPacket> packet);
+	virtual void handleParticleEvent(shared_ptr<LevelParticlesPacket> packet);
+	virtual void handleUpdateAttributes(shared_ptr<UpdateAttributesPacket> packet);
+	virtual void handleTileEditorOpen(shared_ptr<TileEditorOpenPacket> tileEditorOpenPacket);
+	virtual bool isDisconnected();
 
 	// 4J Added
 	virtual void handleCraftItem(shared_ptr<CraftItemPacket> packet);

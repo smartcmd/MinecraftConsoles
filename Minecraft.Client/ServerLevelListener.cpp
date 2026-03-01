@@ -66,7 +66,7 @@ void ServerLevelListener::playSound(int iSound, double x, double y, double z, fl
 	}
 }
 
-void ServerLevelListener::playSound(shared_ptr<Entity> entity,int iSound, double x, double y, double z, float volume, float pitch, float fClipSoundDist)
+void ServerLevelListener::playSoundExceptPlayer(shared_ptr<Player> player, int iSound, double x, double y, double z, float volume, float pitch, float fSoundClipDist)
 {
 	if(iSound < 0)
 	{
@@ -76,7 +76,6 @@ void ServerLevelListener::playSound(shared_ptr<Entity> entity,int iSound, double
 	{	
 		// 4J-PB - I don't want to broadcast player sounds to my local machine, since we're already playing these in the LevelRenderer::playSound.
 		// The PC version does seem to do this and the result is I can stop walking , and then I'll hear my footstep sound with a delay
-		shared_ptr<Player> player= dynamic_pointer_cast<Player>(entity);
 		server->getPlayers()->broadcast(player,x, y, z, volume > 1 ? 16 * volume : 16, level->dimension->id, shared_ptr<LevelSoundPacket>(new LevelSoundPacket(iSound, x, y, z, volume, pitch)));
 	}
 }
@@ -104,7 +103,12 @@ void ServerLevelListener::playStreamingMusic(const wstring& name, int x, int y, 
 
 void ServerLevelListener::levelEvent(shared_ptr<Player> source, int type, int x, int y, int z, int data)
 {
-	server->getPlayers()->broadcast(source, x, y, z, 64, level->dimension->id, shared_ptr<LevelEventPacket>( new LevelEventPacket(type, x, y, z, data) ) );
+	server->getPlayers()->broadcast(source, x, y, z, 64, level->dimension->id, shared_ptr<LevelEventPacket>( new LevelEventPacket(type, x, y, z, data, false) ) );
+}
+
+void ServerLevelListener::globalLevelEvent(int type, int sourceX, int sourceY, int sourceZ, int data)
+{
+	server->getPlayers()->broadcastAll( shared_ptr<LevelEventPacket>( new LevelEventPacket(type, sourceX, sourceY, sourceZ, data, true)) );
 }
 
 void ServerLevelListener::destroyTileProgress(int id, int x, int y, int z, int progress)

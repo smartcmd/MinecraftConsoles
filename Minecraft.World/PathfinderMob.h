@@ -7,6 +7,9 @@ class Path;
 
 class PathfinderMob : public Mob
 {
+public:
+	static AttributeModifier *SPEED_MODIFIER_FLEEING;
+
 private:
 	static const int MAX_TURN = 30;
 
@@ -22,6 +25,13 @@ protected:
 	bool holdGround;
 	int fleeTime;
 
+private:
+	Pos *restrictCenter;
+	float restrictRadius;
+	Goal *leashRestrictionGoal;
+	bool addedLeashRestrictionGoal;
+
+protected:
 	virtual bool shouldHoldGround();
 	virtual void serverAiStep();
 	virtual void findRandomStrollLocation(int quadrant = -1);
@@ -35,13 +45,23 @@ protected:
 
 public:
 	virtual bool canSpawn();
-	bool isPathFinding();
-	void setPath(Path *path);
-	shared_ptr<Entity> getAttackTarget();
-	void setAttackTarget(shared_ptr<Entity> attacker);
+	virtual bool isPathFinding();
+	virtual void setPath(Path *path);
+	virtual shared_ptr<Entity> getAttackTarget();
+	virtual void setAttackTarget(shared_ptr<Entity> attacker);
+
+	// might move to navigation, might make area
+	virtual bool isWithinRestriction();
+	virtual bool isWithinRestriction(int x, int y, int z);
+	virtual void restrictTo(int x, int y, int z, int radius);
+	virtual Pos *getRestrictCenter();
+	virtual float getRestrictRadius();
+	virtual void clearRestriction();
+	virtual bool hasRestriction();
 
 protected:
-	float getWalkingSpeedModifier();
+	void tickLeash();
+	void onLeashDistance(float distanceToLeashHolder);
 
 	// 4J added
 public:

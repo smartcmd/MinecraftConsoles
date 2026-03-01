@@ -1,48 +1,48 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <root>
-	<data name="IDS_NOFREESPACE_TEXT">
-		<value>Sistem belleği depolama alanınızda oyunu kaydedecek kadar boş alanı yok.</value>
-	</data>
-	<data name="IDS_PRO_RETURNEDTOTITLESCREEN_TEXT">
-		<value>Ana ekrana döndün çünkü "PSN" hesabından çıktın.</value>
-	</data>
-	<data name="IDS_PRO_RETURNEDTOMENU_TEXT">
-		<value>"PSN" hesabından çıktığın için maç sona erdi</value>
-	</data>
-	<data name="IDS_PRO_NOTONLINE_TITLE">
-		<value>Şu an giriş yapılmadı.</value>
-	</data>
-	<data name="IDS_PRO_NOTONLINE_TEXT">
-		<value>Bu oyunda "PSN" hesabına bağlı olmanı gerektiren bazı özellikler var ancak şu anda çevrimdışısın.</value>
-	</data>
-	<data name="IDS_PRO_NOTADHOCONLINE_TITLE">
-		<value>Ad Hoc Ağı çevrimdışı.</value>
-	</data>
-	<data name="IDS_PRO_NOTADHOCONLINE_TEXT">
-		<value>Bu oyunun Ad Hoc ağ bağlantısı gerektiren bazı özellikleri var ancak siz şu an çevrimdışısınız.</value>
-	</data>
-	<data name="IDS_PRO_XBOXLIVE_NOTIFICATION">
-		<value>Bu özellik "PSN" hesabına giriş yapmayı gerektiriyor.</value>
-	</data>
-	<data name="IDS_PRO_NOTONLINE_ACCEPT">
-		<value>"PSN" hesabına bağlan</value>
-	</data>
-	<data name="IDS_PRO_NOTADHOCONLINE_ACCEPT">
-		<value>Ad Hoc Ağına Bağlan</value>
-	</data>
-	<data name="IDS_PRO_ACHIEVEMENTPROBLEM_TITLE">
-		<value>Kupa Sorunu</value>
-	</data>
-	<data name="IDS_PRO_ACHIEVEMENTPROBLEM_TEXT">
-		<value>Sony Entertainment Network hesabına giriş yapmakta sorun çıktı. Kupanı bu sefer alamayacaksın.</value>
+	<data name="IDS_PRO_NOPROFILEOPTIONS_TEXT">
+		<value>Ayarları Sony Entertainment Network hesabına kaydetme başarısız oldu.</value>
 	</data>
 	<data name="IDS_PRO_NOPROFILE_TITLE">
 		<value>Sony Entertainment Network hesabı sorunu</value>
 	</data>
-	<data name="IDS_PRO_NOPROFILEOPTIONS_TEXT">
-		<value>Ayarları Sony Entertainment Network hesabına kaydetme başarısız oldu.</value>
+	<data name="IDS_PRO_ACHIEVEMENTPROBLEM_TEXT">
+		<value>Sony Entertainment Network hesabına giriş yapmakta sorun çıktı. Kupanı bu sefer alamayacaksın.</value>
 	</data>
 	<data name="IDS_PRO_UNLOCKGAME_TEXT">
 		<value>Bu oyun Minecraft: PlayStation®3 Edition deneme oyunudur. Eğer tam oyuna sahip olsaydınız, bir kupa kazanacaktınız! Minecraft: PlayStation®3 Edition keyfini sürmek için tam oyunun kilidini açın ve "PSN" sayesinde dünyanın dört bir yanındaki arkadaşlarınızla oynayın. Tam sürüm oyunu açmak ister misiniz?</value>
+	</data>
+	<data name="IDS_PRO_NOTADHOCONLINE_ACCEPT">
+		<value>Ad Hoc Ağına Bağlan</value>
+	</data>
+	<data name="IDS_PRO_NOTADHOCONLINE_TEXT">
+		<value>Bu oyunun Ad Hoc ağ bağlantısı gerektiren bazı özellikleri var ancak siz şu an çevrimdışısınız.</value>
+	</data>
+	<data name="IDS_PRO_NOTADHOCONLINE_TITLE">
+		<value>Ad Hoc Ağı çevrimdışı.</value>
+	</data>
+	<data name="IDS_PRO_ACHIEVEMENTPROBLEM_TITLE">
+		<value>Kupa Sorunu</value>
+	</data>
+	<data name="IDS_PRO_RETURNEDTOMENU_TEXT">
+		<value>"PSN" hesabından çıktığın için maç sona erdi</value>
+	</data>
+	<data name="IDS_PRO_RETURNEDTOTITLESCREEN_TEXT">
+		<value>Ana ekrana döndün çünkü "PSN" hesabından çıktın.</value>
+	</data>
+	<data name="IDS_NOFREESPACE_TEXT">
+		<value>Sistem belleği depolama alanınızda oyunu kaydedecek kadar boş alanı yok.</value>
+	</data>
+	<data name="IDS_PRO_NOTONLINE_TITLE">
+		<value>Şu an giriş yapılmadı.</value>
+	</data>
+	<data name="IDS_PRO_NOTONLINE_ACCEPT">
+		<value>"PSN" hesabına bağlan</value>
+	</data>
+	<data name="IDS_PRO_XBOXLIVE_NOTIFICATION">
+		<value>Bu özellik "PSN" hesabına giriş yapmayı gerektiriyor.</value>
+	</data>
+	<data name="IDS_PRO_NOTONLINE_TEXT">
+		<value>Bu oyunda "PSN" hesabına bağlı olmanı gerektiren bazı özellikler var ancak şu anda çevrimdışısın.</value>
 	</data>
 </root>

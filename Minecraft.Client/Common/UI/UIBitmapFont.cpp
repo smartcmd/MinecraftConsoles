@@ -39,16 +39,16 @@ UIAbstractBitmapFont::UIAbstractBitmapFont(const string &fontname)
 
 void UIAbstractBitmapFont::registerFont()
 {
-	if(m_registered)
+	if (!m_registered)
 	{
-		return;
+		// 4J-JEV: These only need registering the once when we first use this font in Iggy.
+		m_bitmapFontProvider->num_glyphs = m_numGlyphs;
+		IggyFontInstallBitmapUTF8( m_bitmapFontProvider, m_fontname.c_str(), -1, IGGY_FONTFLAG_none );
+		m_registered = true;
 	}
 
-	m_bitmapFontProvider->num_glyphs = m_numGlyphs;
-
-	IggyFontInstallBitmapUTF8( m_bitmapFontProvider,m_fontname.c_str(),-1,IGGY_FONTFLAG_none );
-	IggyFontSetIndirectUTF8( m_fontname.c_str(),-1 ,IGGY_FONTFLAG_all ,m_fontname.c_str() ,-1 ,IGGY_FONTFLAG_none );
-	m_registered = true;
+	// 4J-JEV: Reset the font redirect to these fonts (we must do this everytime in-case we switched away elsewhere).
+	IggyFontSetIndirectUTF8( m_fontname.c_str(), -1, IGGY_FONTFLAG_all, m_fontname.c_str(), -1, IGGY_FONTFLAG_none );
 }
 
 IggyFontMetrics * RADLINK UIAbstractBitmapFont::GetFontMetrics_Callback(void *user_context,IggyFontMetrics *metrics)
@@ -357,7 +357,7 @@ rrbool UIBitmapFont::GetGlyphBitmap(S32 glyph,F32 pixel_scale,IggyBitmapCharacte
 }
 
 //Callback function type for freeing a bitmap shape returned by GetGlyphBitmap
-void RADLINK UIBitmapFont::FreeGlyphBitmap(S32 glyph,F32 pixel_scale,IggyBitmapCharacter *bitmap)
+void UIBitmapFont::FreeGlyphBitmap(S32 glyph,F32 pixel_scale,IggyBitmapCharacter *bitmap)
 {
 	// We don't need to free anything,it just comes from the archive.
 	//app.DebugPrintf("Free bitmap for glyph %d at scale %f\n",glyph,pixel_scale);

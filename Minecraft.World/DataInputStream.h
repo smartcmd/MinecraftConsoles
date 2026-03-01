@@ -18,6 +18,7 @@ public:
 	virtual bool readBoolean();
 	virtual byte readByte();
 	virtual unsigned char readUnsignedByte();
+	virtual unsigned short readUnsignedShort();
 	virtual wchar_t readChar();
 	virtual bool readFully(byteArray b);
 	virtual bool readFully(charArray b);

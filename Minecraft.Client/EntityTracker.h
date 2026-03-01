@@ -28,6 +28,7 @@ public:
     void broadcast(shared_ptr<Entity> e, shared_ptr<Packet> packet);
     void broadcastAndSend(shared_ptr<Entity> e, shared_ptr<Packet> packet);
     void clear(shared_ptr<ServerPlayer> serverPlayer);
+	void playerLoadedChunk(shared_ptr<ServerPlayer> player, LevelChunk *chunk);
 	void updateMaxRange();	// AP added for Vita
 
 

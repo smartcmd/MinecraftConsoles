@@ -21,7 +21,7 @@ ThrownEgg::ThrownEgg(Level *level) : Throwable(level)
 	_init();
 }
 
-ThrownEgg::ThrownEgg(Level *level, shared_ptr<Mob> mob) : Throwable(level,mob)
+ThrownEgg::ThrownEgg(Level *level, shared_ptr<LivingEntity> mob) : Throwable(level,mob)
 {
 	_init();
 }

@@ -48,6 +48,12 @@
 	<data name="IDS_CORRUPT_OPTIONS">
 		<value>Asetustiedostosi on vioittunut ja se pitää poistaa.</value>
 	</data>
+	<data name="IDS_CORRUPT_OPTIONS_DELETE">
+		<value>Poista asetustiedosto.</value>
+	</data>
+	<data name="IDS_CORRUPT_OPTIONS_RETRY">
+		<value>Yritä ladata asetustiedosto uudelleen.</value>
+	</data>
 	<data name="IDS_CORRUPT_SAVECACHE">
 		<value>Tallennusvälimuistitiedostosi on vioittunut ja se pitää poistaa.</value>
 	</data>
@@ -75,6 +81,9 @@
 	<data name="IDS_CONTENT_RESTRICTION_MULTIPLAYER">
 		<value>Verkkopalvelu on poistettu käytöstä Sony Entertainment Network -tililläsi jonkun paikallisen pelaajasi lapsilukkoasetusten takia.</value>
 	</data>
+	<data name="IDS_CONTENT_RESTRICTION_PATCH_AVAILABLE">
+		<value>Verkko-ominaisuudet ovat pois käytöstä, koska peliin on saatavilla päivitys.</value>
+	</data>
 	<data name="IDS_NO_DLCCATEGORIES">
 		<value>Ladattavan sisällön tarjouksia ei ole juuri nyt saatavilla tälle pelille.</value>
 	</data>
@@ -83,8 +92,5 @@
 	</data>
 	<data name="IDS_INVITATION_BODY">
 		<value>Tule pelaamaan Minecraft: PlayStation®Vita Edition -peliä!</value>
-	</data>
-	<data name="IDS_CONTENT_RESTRICTION_PATCH_AVAILABLE">
-		<value>Verkko-ominaisuudet ovat pois käytöstä, koska peliin on saatavilla päivitys.</value>
 	</data>
 </root>

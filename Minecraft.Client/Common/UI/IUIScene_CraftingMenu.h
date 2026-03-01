@@ -86,6 +86,7 @@ protected:
 	void DisplayIngredients();
 	void UpdateTooltips();
 	void UpdateDescriptionText(bool);
+	void HandleInventoryUpdated();
 
 public:
 	Recipy::_eGroupType getCurrentGroup() { return m_pGroupA[m_iGroupIndex]; }

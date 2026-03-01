@@ -59,6 +59,7 @@
 #include "Conf.h"
 #include "PSVita/Network/PSVita_NPToolkit.h"
 #include "PSVita\Network\SonyVoiceChat_Vita.h"
+#include "..\..\Minecraft.World\FireworksRecipe.h"
 
 #include <libsysmodule.h>
 #include <libperf.h>
@@ -163,7 +164,7 @@ void DefineActions(void)
 	InputManager.SetGameJoypadMaps(MAP_STYLE_0,ACTION_MENU_LEFT,						_PSV_JOY_BUTTON_DPAD_LEFT | _360_JOY_BUTTON_LSTICK_LEFT);
 	InputManager.SetGameJoypadMaps(MAP_STYLE_0,ACTION_MENU_RIGHT,						_PSV_JOY_BUTTON_DPAD_RIGHT | _360_JOY_BUTTON_LSTICK_RIGHT);
 	InputManager.SetGameJoypadMaps(MAP_STYLE_0,ACTION_MENU_PAGEUP,						_360_JOY_BUTTON_LT);
-	InputManager.SetGameJoypadMaps(MAP_STYLE_0,ACTION_MENU_PAGEDOWN,					_360_JOY_BUTTON_RT);
+	InputManager.SetGameJoypadMaps(MAP_STYLE_0,ACTION_MENU_PAGEDOWN,					_360_JOY_BUTTON_BACK);
 	InputManager.SetGameJoypadMaps(MAP_STYLE_0,ACTION_MENU_RIGHT_SCROLL,				_PSV_JOY_BUTTON_R1);
 	InputManager.SetGameJoypadMaps(MAP_STYLE_0,ACTION_MENU_LEFT_SCROLL,					_PSV_JOY_BUTTON_L1);
 	InputManager.SetGameJoypadMaps(MAP_STYLE_0,ACTION_MENU_PAUSEMENU,					_PSV_JOY_BUTTON_START);
@@ -297,11 +298,7 @@ int simpleMessageBoxCallback(	UINT uiTitle, UINT uiText,
 							 int(*Func) (LPVOID,int,const C4JStorage::EMessageResult),
 							 LPVOID lpParam )
 {
-	ui.RequestMessageBox(	uiTitle, uiText,
-		uiOptionA, uiOptionC, dwPad,
-		Func, lpParam, app.GetStringTable(),
-		NULL, 0
-		);
+	ui.RequestErrorMessage(	uiTitle, uiText, uiOptionA, uiOptionC, dwPad, Func, lpParam);
 
 	return 0;
 }
@@ -438,6 +435,7 @@ void LoadSysModule(uint16_t module, const char* moduleName)
 	{
 #ifndef _CONTENT_PACKAGE
 		printf("Error sceSysmoduleLoadModule %s failed (%d) \n", moduleName, ret );
+		// are you running the debugger and don't have the Debugging/Mapping File set?  - $(ProjectDir)\PSVita\configuration.psp2path
 #endif
 		assert(0);
 	}
@@ -509,7 +507,7 @@ int main()
 	//	Compression::CreateNewThreadStorage();
 
 	app.loadMediaArchive();
-	RenderManager.Initialise(NULL, NULL);
+	RenderManager.Initialise();
 
 	// Read the file containing the product codes
 	if(app.ReadProductCodes()==FALSE)
@@ -589,7 +587,7 @@ int main()
 	ProfileManager.Initialise( 
  		s_npCommunicationConfig,
 		app.GetCommerceCategory(),// 		s_serviceId,
-		PROFILE_VERSION_BUILD_JUNE14,
+		PROFILE_VERSION_CURRENT,
 		NUM_PROFILE_VALUES,
 		NUM_PROFILE_SETTINGS,
 		dwProfileSettingsA,
@@ -617,7 +615,7 @@ int main()
 	byteArray baSaveThumbnail = app.getArchiveFile(L"DefaultSaveThumbnail64x64.png");
 	byteArray baSaveImage = app.getArchiveFile(L"DefaultSaveImage320x176.png");
 
-	StorageManager.InitialiseProfileData(PROFILE_VERSION_BUILD_JUNE14,
+	StorageManager.InitialiseProfileData(PROFILE_VERSION_CURRENT,
 		NUM_PROFILE_VALUES,
 		NUM_PROFILE_SETTINGS,
 		dwProfileSettingsA,
@@ -667,9 +665,9 @@ int main()
 	// debug switch to trial version
 	//ProfileManager.SetDebugFullOverride(false);
 
-#if 0
 	//ProfileManager.AddDLC(2);
 	StorageManager.SetDLCPackageRoot("DLCDrive");
+#if 0
 	StorageManager.RegisterMarketplaceCountsCallback(&CConsoleMinecraftApp::MarketplaceCountsCallback,(LPVOID)&app);
 	// Kinect !
 
@@ -693,7 +691,8 @@ int main()
 	Compression::CreateNewThreadStorage();
 	OldChunkStorage::CreateNewThreadStorage();
 	Level::enableLightingCache();
-	Tile::CreateNewThreadStorage();
+	Tile::CreateNewThreadStorage();	
+	FireworksRecipe::CreateNewThreadStorage();
 
 	Minecraft::main();
 	Minecraft *pMinecraft=Minecraft::GetInstance();
@@ -1048,7 +1047,7 @@ int main()
 		Vec3::resetPool();
 
 		//		sceRazorCpuSync();
-#ifndef _CONTENT_PACKAGE
+#if 0 //ndef _CONTENT_PACKAGE
 		if( InputManager.ButtonDown(0, MINECRAFT_ACTION_DPAD_LEFT) )
 		{
 			malloc_managed_size mmsize;

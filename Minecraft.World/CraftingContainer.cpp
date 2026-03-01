@@ -41,9 +41,19 @@ shared_ptr<ItemInstance> CraftingContainer::getItem(unsigned int x, unsigned int
 	return getItem(pos);
 }
 
-int CraftingContainer::getName()
+wstring CraftingContainer::getName()
 {
-	return 0;
+	return L"";
+}
+
+wstring CraftingContainer::getCustomName()
+{
+	return L"";
+}
+
+bool CraftingContainer::hasCustomName()
+{
+	return false;
 }
 
 shared_ptr<ItemInstance> CraftingContainer::removeItemNoUpdate(int slot)
@@ -95,6 +105,11 @@ void CraftingContainer::setChanged()
 }
 
 bool CraftingContainer::stillValid(shared_ptr<Player> player)
+{
+	return true;
+}
+
+bool CraftingContainer::canPlaceItem(int slot, shared_ptr<ItemInstance> item)
 {
 	return true;
 }

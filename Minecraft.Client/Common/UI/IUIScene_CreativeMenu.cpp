@@ -8,6 +8,9 @@
 #include "..\..\..\Minecraft.World\net.minecraft.world.level.tile.entity.h"
 #include "..\..\..\Minecraft.World\net.minecraft.world.item.h"
 #include "..\..\..\Minecraft.World\net.minecraft.world.item.enchantment.h"
+#include "..\..\..\Minecraft.World\net.minecraft.world.entity.h"
+#include "..\..\..\Minecraft.World\net.minecraft.world.entity.animal.h"
+#include "..\..\..\Minecraft.World\JavaMath.h"
 
 // 4J JEV - Images for each tab.
 IUIScene_CreativeMenu::TabSpec **IUIScene_CreativeMenu::specs = NULL;
@@ -26,14 +29,15 @@ void IUIScene_CreativeMenu::staticCtor()
 
 	// Building Blocks
 	DEF(eCreativeInventory_BuildingBlocks)
-		ITEM(Tile::rock_Id)
+		ITEM(Tile::stone_Id)
 		ITEM(Tile::grass_Id)
 		ITEM(Tile::dirt_Id)
-		ITEM(Tile::stoneBrick_Id)
+		ITEM(Tile::cobblestone_Id)
 		ITEM(Tile::sand_Id)
 		ITEM(Tile::sandStone_Id)
 		ITEM_AUX(Tile::sandStone_Id, SandStoneTile::TYPE_SMOOTHSIDE)
 		ITEM_AUX(Tile::sandStone_Id, SandStoneTile::TYPE_HEIROGLYPHS)
+		ITEM(Tile::coalBlock_Id)
 		ITEM(Tile::goldBlock_Id)
 		ITEM(Tile::ironBlock_Id)
 		ITEM(Tile::lapisBlock_Id)
@@ -59,24 +63,29 @@ void IUIScene_CreativeMenu::staticCtor()
 		ITEM_AUX(Tile::treeTrunk_Id, TreeTile::JUNGLE_TRUNK)	
 		ITEM(Tile::gravel_Id)
 		ITEM(Tile::redBrick_Id)
-		ITEM(Tile::mossStone_Id)
+		ITEM(Tile::mossyCobblestone_Id)
 		ITEM(Tile::obsidian_Id)
 		ITEM(Tile::clay)
 		ITEM(Tile::ice_Id)
 		ITEM(Tile::snow_Id)
-		ITEM(Tile::hellRock_Id)
-		ITEM(Tile::hellSand_Id)
-		ITEM(Tile::lightGem_Id)
-		ITEM_AUX(Tile::stoneBrickSmooth_Id,SmoothStoneBrickTile::TYPE_DEFAULT)
-		ITEM_AUX(Tile::stoneBrickSmooth_Id,SmoothStoneBrickTile::TYPE_MOSSY)
-		ITEM_AUX(Tile::stoneBrickSmooth_Id,SmoothStoneBrickTile::TYPE_CRACKED)
-		ITEM_AUX(Tile::stoneBrickSmooth_Id,SmoothStoneBrickTile::TYPE_DETAIL)
+		ITEM(Tile::netherRack_Id)
+		ITEM(Tile::soulsand_Id)
+		ITEM(Tile::glowstone_Id)
+		ITEM(Tile::fence_Id)
+		ITEM(Tile::netherFence_Id)
+		ITEM(Tile::ironFence_Id)
+		ITEM_AUX(Tile::cobbleWall_Id, WallTile::TYPE_NORMAL)
+		ITEM_AUX(Tile::cobbleWall_Id, WallTile::TYPE_MOSSY)
+		ITEM_AUX(Tile::stoneBrick_Id,SmoothStoneBrickTile::TYPE_DEFAULT)
+		ITEM_AUX(Tile::stoneBrick_Id,SmoothStoneBrickTile::TYPE_MOSSY)
+		ITEM_AUX(Tile::stoneBrick_Id,SmoothStoneBrickTile::TYPE_CRACKED)
+		ITEM_AUX(Tile::stoneBrick_Id,SmoothStoneBrickTile::TYPE_DETAIL)
 		ITEM_AUX(Tile::monsterStoneEgg_Id,StoneMonsterTile::HOST_ROCK)
 		ITEM_AUX(Tile::monsterStoneEgg_Id,StoneMonsterTile::HOST_COBBLE)
 		ITEM_AUX(Tile::monsterStoneEgg_Id,StoneMonsterTile::HOST_STONEBRICK)
 		ITEM(Tile::mycel_Id)
 		ITEM(Tile::netherBrick_Id)
-		ITEM(Tile::whiteStone_Id)
+		ITEM(Tile::endStone_Id)
 		ITEM_AUX(Tile::quartzBlock_Id,QuartzBlockTile::TYPE_CHISELED)
 		ITEM_AUX(Tile::quartzBlock_Id,QuartzBlockTile::TYPE_LINES_Y)
 		ITEM(Tile::trapdoor_Id)
@@ -102,11 +111,28 @@ void IUIScene_CreativeMenu::staticCtor()
 		ITEM(Tile::stairs_junglewood_Id)
 		ITEM(Tile::stairs_stone_Id)
 		ITEM(Tile::stairs_bricks_Id)
-		ITEM(Tile::stairs_stoneBrickSmooth_Id)
+		ITEM(Tile::stairs_stoneBrick_Id)
 		ITEM(Tile::stairs_netherBricks_Id)
 		ITEM(Tile::stairs_sandstone_Id)
 		ITEM(Tile::stairs_quartz_Id)
 
+		ITEM(Tile::clayHardened_Id)
+		ITEM_AUX(Tile::clayHardened_colored_Id,14)	// Red
+		ITEM_AUX(Tile::clayHardened_colored_Id,1)	// Orange
+		ITEM_AUX(Tile::clayHardened_colored_Id,4)	// Yellow
+		ITEM_AUX(Tile::clayHardened_colored_Id,5)	// Lime
+		ITEM_AUX(Tile::clayHardened_colored_Id,3)	// Light Blue
+		ITEM_AUX(Tile::clayHardened_colored_Id,9)	// Cyan
+		ITEM_AUX(Tile::clayHardened_colored_Id,11)	// Blue
+		ITEM_AUX(Tile::clayHardened_colored_Id,10)	// Purple
+		ITEM_AUX(Tile::clayHardened_colored_Id,2)	// Magenta
+		ITEM_AUX(Tile::clayHardened_colored_Id,6)	// Pink
+		ITEM_AUX(Tile::clayHardened_colored_Id,0)	// White
+		ITEM_AUX(Tile::clayHardened_colored_Id,8)	// Light Gray
+		ITEM_AUX(Tile::clayHardened_colored_Id,7)	// Gray
+		ITEM_AUX(Tile::clayHardened_colored_Id,15)	// Black
+		ITEM_AUX(Tile::clayHardened_colored_Id,13)	// Green
+		ITEM_AUX(Tile::clayHardened_colored_Id,12)	// Brown
 
 	// Decoration
 	DEF(eCreativeInventory_Decoration)
@@ -136,8 +162,8 @@ void IUIScene_CreativeMenu::staticCtor()
 		ITEM(Tile::deadBush_Id)
 		ITEM(Tile::flower_Id)
 		ITEM(Tile::rose_Id)
-		ITEM(Tile::mushroom1_Id)
-		ITEM(Tile::mushroom2_Id)
+		ITEM(Tile::mushroom_brown_Id)
+		ITEM(Tile::mushroom_red_Id)
 		ITEM(Tile::cactus_Id)
 		ITEM(Tile::topSnow_Id)
 		// 4J-PB - Already got sugar cane in Materials ITEM_11(Tile::reeds_Id)
@@ -149,22 +175,23 @@ void IUIScene_CreativeMenu::staticCtor()
 		ITEM(Item::sign_Id)
 		ITEM(Tile::bookshelf_Id)
 		ITEM(Item::flowerPot_Id)
-		ITEM_AUX(Tile::cloth_Id,14)	// Red
-		ITEM_AUX(Tile::cloth_Id,1)	// Orange
-		ITEM_AUX(Tile::cloth_Id,4)	// Yellow
-		ITEM_AUX(Tile::cloth_Id,5)	// Lime
-		ITEM_AUX(Tile::cloth_Id,3)	// Light Blue
-		ITEM_AUX(Tile::cloth_Id,9)	// Cyan
-		ITEM_AUX(Tile::cloth_Id,11)	// Blue
-		ITEM_AUX(Tile::cloth_Id,10)	// Purple
-		ITEM_AUX(Tile::cloth_Id,2)	// Magenta
-		ITEM_AUX(Tile::cloth_Id,6)	// Pink
-		ITEM_AUX(Tile::cloth_Id,0)	// White
-		ITEM_AUX(Tile::cloth_Id,8)	// Light Gray
-		ITEM_AUX(Tile::cloth_Id,7)	// Gray
-		ITEM_AUX(Tile::cloth_Id,15)	// Black
-		ITEM_AUX(Tile::cloth_Id,13)	// Green
-		ITEM_AUX(Tile::cloth_Id,12)	// Brown
+		ITEM(Tile::hayBlock_Id)
+		ITEM_AUX(Tile::wool_Id,14)	// Red
+		ITEM_AUX(Tile::wool_Id,1)	// Orange
+		ITEM_AUX(Tile::wool_Id,4)	// Yellow
+		ITEM_AUX(Tile::wool_Id,5)	// Lime
+		ITEM_AUX(Tile::wool_Id,3)	// Light Blue
+		ITEM_AUX(Tile::wool_Id,9)	// Cyan
+		ITEM_AUX(Tile::wool_Id,11)	// Blue
+		ITEM_AUX(Tile::wool_Id,10)	// Purple
+		ITEM_AUX(Tile::wool_Id,2)	// Magenta
+		ITEM_AUX(Tile::wool_Id,6)	// Pink
+		ITEM_AUX(Tile::wool_Id,0)	// White
+		ITEM_AUX(Tile::wool_Id,8)	// Light Gray
+		ITEM_AUX(Tile::wool_Id,7)	// Gray
+		ITEM_AUX(Tile::wool_Id,15)	// Black
+		ITEM_AUX(Tile::wool_Id,13)	// Green
+		ITEM_AUX(Tile::wool_Id,12)	// Brown
 
 		ITEM_AUX(Tile::woolCarpet_Id,14)	// Red
 		ITEM_AUX(Tile::woolCarpet_Id,1)	// Orange
@@ -183,11 +210,102 @@ void IUIScene_CreativeMenu::staticCtor()
 		ITEM_AUX(Tile::woolCarpet_Id,13)	// Green
 		ITEM_AUX(Tile::woolCarpet_Id,12)	// Brown
 
+#if 0
+		ITEM_AUX(Tile::stained_glass_Id,14)	// Red
+		ITEM_AUX(Tile::stained_glass_Id,1)	// Orange
+		ITEM_AUX(Tile::stained_glass_Id,4)	// Yellow
+		ITEM_AUX(Tile::stained_glass_Id,5)	// Lime
+		ITEM_AUX(Tile::stained_glass_Id,3)	// Light Blue
+		ITEM_AUX(Tile::stained_glass_Id,9)	// Cyan
+		ITEM_AUX(Tile::stained_glass_Id,11)	// Blue
+		ITEM_AUX(Tile::stained_glass_Id,10)	// Purple
+		ITEM_AUX(Tile::stained_glass_Id,2)	// Magenta
+		ITEM_AUX(Tile::stained_glass_Id,6)	// Pink
+		ITEM_AUX(Tile::stained_glass_Id,0)	// White
+		ITEM_AUX(Tile::stained_glass_Id,8)	// Light Gray
+		ITEM_AUX(Tile::stained_glass_Id,7)	// Gray
+		ITEM_AUX(Tile::stained_glass_Id,15)	// Black
+		ITEM_AUX(Tile::stained_glass_Id,13)	// Green
+		ITEM_AUX(Tile::stained_glass_Id,12)	// Brown
+
+		ITEM_AUX(Tile::stained_glass_pane_Id,14)	// Red
+		ITEM_AUX(Tile::stained_glass_pane_Id,1)	// Orange
+		ITEM_AUX(Tile::stained_glass_pane_Id,4)	// Yellow
+		ITEM_AUX(Tile::stained_glass_pane_Id,5)	// Lime
+		ITEM_AUX(Tile::stained_glass_pane_Id,3)	// Light Blue
+		ITEM_AUX(Tile::stained_glass_pane_Id,9)	// Cyan
+		ITEM_AUX(Tile::stained_glass_pane_Id,11)	// Blue
+		ITEM_AUX(Tile::stained_glass_pane_Id,10)	// Purple
+		ITEM_AUX(Tile::stained_glass_pane_Id,2)	// Magenta
+		ITEM_AUX(Tile::stained_glass_pane_Id,6)	// Pink
+		ITEM_AUX(Tile::stained_glass_pane_Id,0)	// White
+		ITEM_AUX(Tile::stained_glass_pane_Id,8)	// Light Gray
+		ITEM_AUX(Tile::stained_glass_pane_Id,7)	// Gray
+		ITEM_AUX(Tile::stained_glass_pane_Id,15)	// Black
+		ITEM_AUX(Tile::stained_glass_pane_Id,13)	// Green
+		ITEM_AUX(Tile::stained_glass_pane_Id,12)	// Brown
+#endif
+
+#ifndef _CONTENT_PACKAGE
+	DEF(eCreativeInventory_ArtToolsDecorations)
+		if(app.DebugSettingsOn())
+		{
+			for(unsigned int i = 0; i < Painting::LAST_VALUE; ++i)
+			{
+				ITEM_AUX(Item::painting_Id, i + 1)
+			}
+
+			BuildFirework(list, FireworksItem::TYPE_BIG, DyePowderItem::PURPLE, 1, false, false);
+
+			BuildFirework(list, FireworksItem::TYPE_SMALL, DyePowderItem::RED, 1, false, false);
+			BuildFirework(list, FireworksItem::TYPE_SMALL, DyePowderItem::RED, 2, false, false);
+			BuildFirework(list, FireworksItem::TYPE_SMALL, DyePowderItem::RED, 3, false, false);
+
+			BuildFirework(list, FireworksItem::TYPE_BURST, DyePowderItem::GREEN, 1, false, true);
+			BuildFirework(list, FireworksItem::TYPE_CREEPER, DyePowderItem::BLUE, 1, true, false);
+			BuildFirework(list, FireworksItem::TYPE_STAR, DyePowderItem::YELLOW, 1, false, false);
+			BuildFirework(list, FireworksItem::TYPE_BIG, DyePowderItem::WHITE, 1, true, true);
+
+			ITEM_AUX(Tile::stained_glass_Id,14)	// Red
+			ITEM_AUX(Tile::stained_glass_Id,1)	// Orange
+			ITEM_AUX(Tile::stained_glass_Id,4)	// Yellow
+			ITEM_AUX(Tile::stained_glass_Id,5)	// Lime
+			ITEM_AUX(Tile::stained_glass_Id,3)	// Light Blue
+			ITEM_AUX(Tile::stained_glass_Id,9)	// Cyan
+			ITEM_AUX(Tile::stained_glass_Id,11)	// Blue
+			ITEM_AUX(Tile::stained_glass_Id,10)	// Purple
+			ITEM_AUX(Tile::stained_glass_Id,2)	// Magenta
+			ITEM_AUX(Tile::stained_glass_Id,6)	// Pink
+			ITEM_AUX(Tile::stained_glass_Id,0)	// White
+			ITEM_AUX(Tile::stained_glass_Id,8)	// Light Gray
+			ITEM_AUX(Tile::stained_glass_Id,7)	// Gray
+			ITEM_AUX(Tile::stained_glass_Id,15)	// Black
+			ITEM_AUX(Tile::stained_glass_Id,13)	// Green
+			ITEM_AUX(Tile::stained_glass_Id,12)	// Brown
+
+			ITEM_AUX(Tile::stained_glass_pane_Id,14)	// Red
+			ITEM_AUX(Tile::stained_glass_pane_Id,1)	// Orange
+			ITEM_AUX(Tile::stained_glass_pane_Id,4)	// Yellow
+			ITEM_AUX(Tile::stained_glass_pane_Id,5)	// Lime
+			ITEM_AUX(Tile::stained_glass_pane_Id,3)	// Light Blue
+			ITEM_AUX(Tile::stained_glass_pane_Id,9)	// Cyan
+			ITEM_AUX(Tile::stained_glass_pane_Id,11)	// Blue
+			ITEM_AUX(Tile::stained_glass_pane_Id,10)	// Purple
+			ITEM_AUX(Tile::stained_glass_pane_Id,2)	// Magenta
+			ITEM_AUX(Tile::stained_glass_pane_Id,6)	// Pink
+			ITEM_AUX(Tile::stained_glass_pane_Id,0)	// White
+			ITEM_AUX(Tile::stained_glass_pane_Id,8)	// Light Gray
+			ITEM_AUX(Tile::stained_glass_pane_Id,7)	// Gray
+			ITEM_AUX(Tile::stained_glass_pane_Id,15)	// Black
+			ITEM_AUX(Tile::stained_glass_pane_Id,13)	// Green
+			ITEM_AUX(Tile::stained_glass_pane_Id,12)	// Brown
+		}
+#endif
 
 	// Redstone
 	DEF(eCreativeInventory_Redstone)
 		ITEM(Tile::dispenser_Id)
-		ITEM(Tile::musicBlock_Id)
+		ITEM(Tile::noteblock_Id)
 		ITEM(Tile::pistonBase_Id)
 		ITEM(Tile::pistonStickyBase_Id)
 		ITEM(Tile::tnt_Id)
@@ -197,20 +315,31 @@ void IUIScene_CreativeMenu::staticCtor()
 		ITEM(Tile::pressurePlate_stone_Id)
 		ITEM(Tile::pressurePlate_wood_Id)
 		ITEM(Item::redStone_Id)
-		ITEM(Tile::notGate_on_Id)
-		ITEM(Item::diode_Id)
+		ITEM(Tile::redstoneBlock_Id)
+		ITEM(Tile::redstoneTorch_on_Id)
+		ITEM(Item::repeater_Id)
 		ITEM(Tile::redstoneLight_Id)
 		ITEM(Tile::tripWireSource_Id)
+		ITEM(Tile::daylightDetector_Id)
+		ITEM(Tile::dropper_Id)
+		ITEM(Tile::hopper_Id)
+		ITEM(Item::comparator_Id)
+		ITEM(Tile::chest_trap_Id)
+		ITEM(Tile::weightedPlate_heavy_Id)
+		ITEM(Tile::weightedPlate_light_Id)
 
 	// Transport
 	DEF(eCreativeInventory_Transport)
 		ITEM(Tile::rail_Id)
 		ITEM(Tile::goldenRail_Id)
 		ITEM(Tile::detectorRail_Id)
+		ITEM(Tile::activatorRail_Id)
 		ITEM(Tile::ladder_Id)
 		ITEM(Item::minecart_Id)
 		ITEM(Item::minecart_chest_Id)
 		ITEM(Item::minecart_furnace_Id)
+		ITEM(Item::minecart_hopper_Id)
+		ITEM(Item::minecart_tnt_Id)
 		ITEM(Item::saddle_Id)
 		ITEM(Item::boat_Id)
 
@@ -222,25 +351,49 @@ void IUIScene_CreativeMenu::staticCtor()
 		ITEM(Tile::furnace_Id)
 		ITEM(Item::brewingStand_Id)
 		ITEM(Tile::enchantTable_Id)
+		ITEM(Tile::beacon_Id)
 		ITEM(Tile::endPortalFrameTile_Id)
-		ITEM(Tile::recordPlayer_Id)
+		ITEM(Tile::jukebox_Id)
 		ITEM(Tile::anvil_Id);
-		ITEM(Tile::fence_Id)
-		ITEM(Tile::netherFence_Id)
-		ITEM(Tile::ironFence_Id)
-		ITEM_AUX(Tile::cobbleWall_Id, WallTile::TYPE_NORMAL)
-		ITEM_AUX(Tile::cobbleWall_Id, WallTile::TYPE_MOSSY)
 		ITEM(Item::bed_Id)
 		ITEM(Item::bucket_empty_Id)
 		ITEM(Item::bucket_lava_Id)	
 		ITEM(Item::bucket_water_Id)
-		ITEM(Item::milk_Id)
+		ITEM(Item::bucket_milk_Id)
 		ITEM(Item::cauldron_Id)
 		ITEM(Item::snowBall_Id)
 		ITEM(Item::paper_Id)
 		ITEM(Item::book_Id)
 		ITEM(Item::enderPearl_Id)
 		ITEM(Item::eyeOfEnder_Id)
+		ITEM(Item::nameTag_Id)
+		ITEM(Item::netherStar_Id)
+		ITEM_AUX(Item::spawnEgg_Id, 50); // Creeper
+		ITEM_AUX(Item::spawnEgg_Id, 51); // Skeleton
+		ITEM_AUX(Item::spawnEgg_Id, 52); // Spider
+		ITEM_AUX(Item::spawnEgg_Id, 54); // Zombie
+		ITEM_AUX(Item::spawnEgg_Id, 55); // Slime
+		ITEM_AUX(Item::spawnEgg_Id, 56); // Ghast
+		ITEM_AUX(Item::spawnEgg_Id, 57); // Zombie Pigman
+		ITEM_AUX(Item::spawnEgg_Id, 58); // Enderman
+		ITEM_AUX(Item::spawnEgg_Id, 59); // Cave Spider
+		ITEM_AUX(Item::spawnEgg_Id, 60); // Silverfish
+		ITEM_AUX(Item::spawnEgg_Id, 61); // Blaze
+		ITEM_AUX(Item::spawnEgg_Id, 62); // Magma Cube
+		ITEM_AUX(Item::spawnEgg_Id, 65); // Bat
+		ITEM_AUX(Item::spawnEgg_Id, 66); // Witch
+		ITEM_AUX(Item::spawnEgg_Id, 90); // Pig
+		ITEM_AUX(Item::spawnEgg_Id, 91); // Sheep
+		ITEM_AUX(Item::spawnEgg_Id, 92); // Cow
+		ITEM_AUX(Item::spawnEgg_Id, 93); // Chicken
+		ITEM_AUX(Item::spawnEgg_Id, 94); // Squid
+		ITEM_AUX(Item::spawnEgg_Id, 95); // Wolf
+		ITEM_AUX(Item::spawnEgg_Id, 96); // Mooshroom
+		ITEM_AUX(Item::spawnEgg_Id, 98); // Ozelot
+		ITEM_AUX(Item::spawnEgg_Id, 100); // Horse
+		ITEM_AUX(Item::spawnEgg_Id, 100 | ((EntityHorse::TYPE_DONKEY + 1) << 12) ); // Donkey
+		ITEM_AUX(Item::spawnEgg_Id, 100 | ((EntityHorse::TYPE_MULE + 1) << 12)); // Mule
+		ITEM_AUX(Item::spawnEgg_Id, 120); // Villager
 		ITEM(Item::record_01_Id)
 		ITEM(Item::record_02_Id)
 		ITEM(Item::record_03_Id)
@@ -253,27 +406,26 @@ void IUIScene_CreativeMenu::staticCtor()
 		ITEM(Item::record_10_Id)
 		ITEM(Item::record_11_Id)
 		ITEM(Item::record_12_Id)
-		ITEM_AUX(Item::monsterPlacer_Id, 50); // Creeper
-		ITEM_AUX(Item::monsterPlacer_Id, 51); // Skeleton
-		ITEM_AUX(Item::monsterPlacer_Id, 52); // Spider
-		ITEM_AUX(Item::monsterPlacer_Id, 54); // Zombie
-		ITEM_AUX(Item::monsterPlacer_Id, 55); // Slime
-		ITEM_AUX(Item::monsterPlacer_Id, 56); // Ghast
-		ITEM_AUX(Item::monsterPlacer_Id, 57); // Zombie Pigman
-		ITEM_AUX(Item::monsterPlacer_Id, 58); // Enderman
-		ITEM_AUX(Item::monsterPlacer_Id, 59); // Cave Spider
-		ITEM_AUX(Item::monsterPlacer_Id, 60); // Silverfish
-		ITEM_AUX(Item::monsterPlacer_Id, 61); // Blaze
-		ITEM_AUX(Item::monsterPlacer_Id, 62); // Magma Cube
-		ITEM_AUX(Item::monsterPlacer_Id, 90); // Pig
-		ITEM_AUX(Item::monsterPlacer_Id, 91); // Sheep
-		ITEM_AUX(Item::monsterPlacer_Id, 92); // Cow
-		ITEM_AUX(Item::monsterPlacer_Id, 93); // Chicken
-		ITEM_AUX(Item::monsterPlacer_Id, 94); // Squid
-		ITEM_AUX(Item::monsterPlacer_Id, 95); // Wolf
-		ITEM_AUX(Item::monsterPlacer_Id, 96); // Mooshroom
-		ITEM_AUX(Item::monsterPlacer_Id, 98); // Ozelot
-		ITEM_AUX(Item::monsterPlacer_Id, 120); // Villager
+
+		BuildFirework(list, FireworksItem::TYPE_SMALL, DyePowderItem::LIGHT_BLUE, 1, true, false);
+		BuildFirework(list, FireworksItem::TYPE_CREEPER, DyePowderItem::GREEN, 2, false, false);
+		BuildFirework(list, FireworksItem::TYPE_MAX, DyePowderItem::RED, 2, false, false, DyePowderItem::ORANGE);
+		BuildFirework(list, FireworksItem::TYPE_BURST, DyePowderItem::MAGENTA, 3, true, false, DyePowderItem::BLUE);
+		BuildFirework(list, FireworksItem::TYPE_STAR, DyePowderItem::YELLOW, 2, false, true, DyePowderItem::ORANGE);
+
+#ifndef _CONTENT_PACKAGE
+	DEF(eCreativeInventory_ArtToolsMisc)
+		if(app.DebugSettingsOn())
+		{
+			ITEM_AUX(Item::spawnEgg_Id, 100 | ((EntityHorse::TYPE_SKELETON + 1) << 12)); // Skeleton
+			ITEM_AUX(Item::spawnEgg_Id, 100 | ((EntityHorse::TYPE_UNDEAD + 1) << 12)); // Zombie
+			ITEM_AUX(Item::spawnEgg_Id,  98 | ((Ocelot::TYPE_BLACK + 1) << 12));
+			ITEM_AUX(Item::spawnEgg_Id,  98 | ((Ocelot::TYPE_RED + 1) << 12));
+			ITEM_AUX(Item::spawnEgg_Id,  98 | ((Ocelot::TYPE_SIAMESE + 1) << 12));
+			ITEM_AUX(Item::spawnEgg_Id,  52 | (2 << 12)); // Spider-Jockey
+			ITEM_AUX(Item::spawnEgg_Id,  63); // Enderdragon
+		}
+#endif
 
 	// Food
 	DEF(eCreativeInventory_Food)
@@ -305,17 +457,17 @@ void IUIScene_CreativeMenu::staticCtor()
 	// Tools, Armour and Weapons (Complete)
 	DEF(eCreativeInventory_ToolsArmourWeapons)
 		ITEM(Item::compass_Id)
-		ITEM(Item::helmet_cloth_Id)
-		ITEM(Item::chestplate_cloth_Id)
-		ITEM(Item::leggings_cloth_Id)
-		ITEM(Item::boots_cloth_Id)
+		ITEM(Item::helmet_leather_Id)
+		ITEM(Item::chestplate_leather_Id)
+		ITEM(Item::leggings_leather_Id)
+		ITEM(Item::boots_leather_Id)
 		ITEM(Item::sword_wood_Id)
 		ITEM(Item::shovel_wood_Id)
 		ITEM(Item::pickAxe_wood_Id)
 		ITEM(Item::hatchet_wood_Id)
 		ITEM(Item::hoe_wood_Id)
 		
-		ITEM(Item::map_Id)
+		ITEM(Item::emptyMap_Id)
 		ITEM(Item::helmet_chain_Id)
 		ITEM(Item::chestplate_chain_Id)
 		ITEM(Item::leggings_chain_Id)
@@ -364,6 +516,10 @@ void IUIScene_CreativeMenu::staticCtor()
 		ITEM(Item::shears_Id)
 		ITEM(Item::fishingRod_Id)
 		ITEM(Item::carrotOnAStick_Id)
+		ITEM(Item::lead_Id)
+		ITEM(Item::horseArmorDiamond_Id)
+		ITEM(Item::horseArmorGold_Id)
+		ITEM(Item::horseArmorMetal_Id)
 
 		for(unsigned int i = 0; i < Enchantment::enchantments.length; ++i)
 		{
@@ -371,6 +527,16 @@ void IUIScene_CreativeMenu::staticCtor()
 			if (enchantment == NULL || enchantment->category == NULL) continue;
 			list->push_back(Item::enchantedBook->createForEnchantment(new EnchantmentInstance(enchantment, enchantment->getMaxLevel())));
 		}
+
+#ifndef _CONTENT_PACKAGE
+		if(app.DebugSettingsOn())
+		{
+			shared_ptr<ItemInstance> debugSword = shared_ptr<ItemInstance>(new ItemInstance(Item::sword_diamond_Id, 1, 0));
+			debugSword->enchant( Enchantment::damageBonus, 50 );
+			debugSword->setHoverName(L"Sword of Debug");
+			list->push_back(debugSword);
+		}
+#endif
 
 	// Materials
 	DEF(eCreativeInventory_Materials)
@@ -390,7 +556,7 @@ void IUIScene_CreativeMenu::staticCtor()
 		ITEM(Item::feather_Id)
 		ITEM(Item::flint_Id)
 		ITEM(Item::leather_Id)
-		ITEM(Item::sulphur_Id)
+		ITEM(Item::gunpowder_Id)
 		ITEM(Item::clay_Id)
 		ITEM(Item::yellowDust_Id)
 		ITEM(Item::seeds_wheat_Id)	
@@ -403,7 +569,7 @@ void IUIScene_CreativeMenu::staticCtor()
 		ITEM(Item::slimeBall_Id)
 		ITEM(Item::blazeRod_Id)
 		ITEM(Item::goldNugget_Id)
-		ITEM(Item::netherStalkSeeds_Id)
+		ITEM(Item::netherwart_seeds_Id)
 		ITEM_AUX(Item::dye_powder_Id,1)		// Red
 		ITEM_AUX(Item::dye_powder_Id,14)	// Orange
 		ITEM_AUX(Item::dye_powder_Id,11)	// Yellow
@@ -538,22 +704,28 @@ void IUIScene_CreativeMenu::staticCtor()
 
 	// Top Row
 	ECreative_Inventory_Groups blocksGroup[] = {eCreativeInventory_BuildingBlocks};
-	specs[eCreativeInventoryTab_BuildingBlocks] = new TabSpec(L"Structures", IDS_GROUPNAME_BUILDING_BLOCKS, 1, blocksGroup, 0, NULL);
-
+	specs[eCreativeInventoryTab_BuildingBlocks] = new TabSpec(L"Structures", IDS_GROUPNAME_BUILDING_BLOCKS, 1, blocksGroup);
+	
+#ifndef _CONTENT_PACKAGE
 	ECreative_Inventory_Groups decorationsGroup[] = {eCreativeInventory_Decoration};
-	specs[eCreativeInventoryTab_Decorations] = new TabSpec(L"Decoration", IDS_GROUPNAME_DECORATIONS, 1, decorationsGroup, 0, NULL);
+	ECreative_Inventory_Groups debugDecorationsGroup[] = {eCreativeInventory_ArtToolsDecorations};
+	specs[eCreativeInventoryTab_Decorations] = new TabSpec(L"Decoration", IDS_GROUPNAME_DECORATIONS, 1, decorationsGroup, 0, NULL, 1, debugDecorationsGroup);
+#else
+	ECreative_Inventory_Groups decorationsGroup[] = {eCreativeInventory_Decoration};
+	specs[eCreativeInventoryTab_Decorations] = new TabSpec(L"Decoration", IDS_GROUPNAME_DECORATIONS, 1, decorationsGroup);
+#endif
 
 	ECreative_Inventory_Groups redAndTranGroup[] = {eCreativeInventory_Transport, eCreativeInventory_Redstone};
-	specs[eCreativeInventoryTab_RedstoneAndTransport] = new TabSpec(L"RedstoneAndTransport", IDS_GROUPNAME_REDSTONE_AND_TRANSPORT, 2, redAndTranGroup, 0, NULL);
+	specs[eCreativeInventoryTab_RedstoneAndTransport] = new TabSpec(L"RedstoneAndTransport", IDS_GROUPNAME_REDSTONE_AND_TRANSPORT, 2, redAndTranGroup);
 
 	ECreative_Inventory_Groups materialsGroup[] = {eCreativeInventory_Materials};
-	specs[eCreativeInventoryTab_Materials] = new TabSpec(L"Materials", IDS_GROUPNAME_MATERIALS, 1, materialsGroup, 0, NULL);
+	specs[eCreativeInventoryTab_Materials] = new TabSpec(L"Materials", IDS_GROUPNAME_MATERIALS, 1, materialsGroup);
 
 	ECreative_Inventory_Groups foodGroup[] = {eCreativeInventory_Food};
-	specs[eCreativeInventoryTab_Food] = new TabSpec(L"Food", IDS_GROUPNAME_FOOD, 1, foodGroup, 0, NULL);
+	specs[eCreativeInventoryTab_Food] = new TabSpec(L"Food", IDS_GROUPNAME_FOOD, 1, foodGroup);
 
 	ECreative_Inventory_Groups toolsGroup[] = {eCreativeInventory_ToolsArmourWeapons};
-	specs[eCreativeInventoryTab_ToolsWeaponsArmor] = new TabSpec(L"Tools", IDS_GROUPNAME_TOOLS_WEAPONS_ARMOR, 1, toolsGroup, 0, NULL);
+	specs[eCreativeInventoryTab_ToolsWeaponsArmor] = new TabSpec(L"Tools", IDS_GROUPNAME_TOOLS_WEAPONS_ARMOR, 1, toolsGroup);
 
 	ECreative_Inventory_Groups brewingGroup[] = {eCreativeInventory_Brewing, eCreativeInventory_Potions_Level2_Extended, eCreativeInventory_Potions_Extended, eCreativeInventory_Potions_Level2, eCreativeInventory_Potions_Basic};
 
@@ -561,16 +733,21 @@ void IUIScene_CreativeMenu::staticCtor()
 	// In 480p there's not enough room for the LT button, so use text instead
 	//if(!RenderManager.IsHiDef() && !RenderManager.IsWidescreen())
 	{
-		specs[eCreativeInventoryTab_Brewing] = new TabSpec(L"Brewing", IDS_GROUPNAME_POTIONS_480, 5, brewingGroup, 0, NULL);
+		specs[eCreativeInventoryTab_Brewing] = new TabSpec(L"Brewing", IDS_GROUPNAME_POTIONS_480, 5, brewingGroup);
 	}
 	// 	else
 	// 	{
 	// 		specs[eCreativeInventoryTab_Brewing] = new TabSpec(L"icon_brewing.png", IDS_GROUPNAME_POTIONS, 1, brewingGroup, 4, potionsGroup);
 	// 	}
 
+#ifndef _CONTENT_PACKAGE
 	ECreative_Inventory_Groups miscGroup[] = {eCreativeInventory_Misc};
-	specs[eCreativeInventoryTab_Misc] = new TabSpec(L"Misc", IDS_GROUPNAME_MISCELLANEOUS, 1, miscGroup, 0, NULL);
-
+	ECreative_Inventory_Groups debugMiscGroup[] = {eCreativeInventory_ArtToolsMisc};
+	specs[eCreativeInventoryTab_Misc] = new TabSpec(L"Misc", IDS_GROUPNAME_MISCELLANEOUS, 1, miscGroup, 0, NULL, 1, debugMiscGroup);
+#else
+	ECreative_Inventory_Groups miscGroup[] = {eCreativeInventory_Misc};
+	specs[eCreativeInventoryTab_Misc] = new TabSpec(L"Misc", IDS_GROUPNAME_MISCELLANEOUS, 1, miscGroup);
+#endif
 }
 
 IUIScene_CreativeMenu::IUIScene_CreativeMenu()
@@ -600,10 +777,33 @@ void IUIScene_CreativeMenu::switchTab(ECreativeInventoryTabs tab)
 	specs[tab]->populateMenu(itemPickerMenu,m_tabDynamicPos[m_curTab], m_tabPage[m_curTab]);
 }
 
+void IUIScene_CreativeMenu::ScrollBar(UIVec2D pointerPos)
+{
+	UIVec2D pos;
+	UIVec2D size;
+	GetItemScreenData(eSectionInventoryCreativeSlider, 0, &pos, &size);
+	float fPosition = ((float)pointerPos.y - pos.y) /  size.y;
+
+	// clamp
+	if(fPosition > 1)
+		fPosition = 1.0f;
+	else if(fPosition < 0)
+		fPosition = 0.0f;
+
+	// calculate page position according to page count
+	int iCurrentPage = Math::round(fPosition * (specs[m_curTab]->getPageCount() - 1));
+
+	// set tab page
+	m_tabPage[m_curTab] = iCurrentPage;
+
+	// update tab
+	switchTab(m_curTab);
+}
+
 // 4J JEV - Tab Spec Struct
 
-IUIScene_CreativeMenu::TabSpec::TabSpec(LPCWSTR icon, int descriptionId, int staticGroupsCount, ECreative_Inventory_Groups *staticGroups, int dynamicGroupsCount, ECreative_Inventory_Groups *dynamicGroups)
-	: m_icon(icon), m_descriptionId(descriptionId), m_staticGroupsCount(staticGroupsCount), m_dynamicGroupsCount(dynamicGroupsCount)
+IUIScene_CreativeMenu::TabSpec::TabSpec(LPCWSTR icon, int descriptionId, int staticGroupsCount, ECreative_Inventory_Groups *staticGroups, int dynamicGroupsCount, ECreative_Inventory_Groups *dynamicGroups, int debugGroupsCount /*= 0*/, ECreative_Inventory_Groups *debugGroups /*= NULL*/)
+	: m_icon(icon), m_descriptionId(descriptionId), m_staticGroupsCount(staticGroupsCount), m_dynamicGroupsCount(dynamicGroupsCount), m_debugGroupsCount(debugGroupsCount)
 {
 	
 	m_pages = 0;
@@ -622,8 +822,20 @@ IUIScene_CreativeMenu::TabSpec::TabSpec(LPCWSTR icon, int descriptionId, int sta
 		}
 	}
 
+	m_debugGroupsA = NULL;
+	m_debugItems = 0;
+	if(debugGroupsCount > 0)
+	{
+		m_debugGroupsA  = new ECreative_Inventory_Groups[debugGroupsCount];
+		for(int i = 0; i < debugGroupsCount; ++i)
+		{
+			m_debugGroupsA[i] = debugGroups[i];
+			m_debugItems += categoryGroups[m_debugGroupsA[i]].size();
+		}
+	}
+
 	m_dynamicGroupsA = NULL;
-	if(dynamicGroupsCount > 0)
+	if(dynamicGroupsCount > 0 && dynamicGroups != NULL)
 	{
 		m_dynamicGroupsA  = new ECreative_Inventory_Groups[dynamicGroupsCount];
 		for(int i = 0; i < dynamicGroupsCount; ++i)
@@ -641,6 +853,7 @@ IUIScene_CreativeMenu::TabSpec::~TabSpec()
 {
 	if(m_staticGroupsA != NULL) delete [] m_staticGroupsA;
 	if(m_dynamicGroupsA != NULL) delete [] m_dynamicGroupsA;
+	if(m_debugGroupsA != NULL) delete [] m_debugGroupsA;
 }
 
 void IUIScene_CreativeMenu::TabSpec::populateMenu(AbstractContainerMenu *menu, int dynamicIndex, unsigned int page)
@@ -659,12 +872,12 @@ void IUIScene_CreativeMenu::TabSpec::populateMenu(AbstractContainerMenu *menu, i
 
 	// Fill from the static groups
 	unsigned int startIndex = page * m_staticPerPage;
-	int remainingItems = m_staticItems - startIndex;
 
 	// Work out the first group with an item the want to display, and which item in that group
 	unsigned int currentIndex = 0;
 	unsigned int currentGroup = 0;
 	unsigned int currentItem = 0;
+	bool displayStatic = false;
 	for(; currentGroup < m_staticGroupsCount; ++currentGroup)
 	{
 		int size = categoryGroups[m_staticGroupsA[currentGroup]].size();
@@ -673,26 +886,79 @@ void IUIScene_CreativeMenu::TabSpec::populateMenu(AbstractContainerMenu *menu, i
 			currentIndex += size;
 			continue;
 		}
+		displayStatic = true;
 		currentItem = size - ((currentIndex + size) - startIndex);
 		break;
 	}
 
-	for(; lastSlotIndex < MAX_SIZE;)
-	{
-		Slot *slot = menu->getSlot(lastSlotIndex++);
-		slot->set(categoryGroups[m_staticGroupsA[currentGroup]][currentItem]);
+	int lastStaticPageCount = currentIndex;
+	while(lastStaticPageCount > m_staticPerPage) lastStaticPageCount -= m_staticPerPage;
 
-		++currentItem;
-		if(currentItem >= categoryGroups[m_staticGroupsA[currentGroup]].size())
+	if(displayStatic)
+	{
+		for(; lastSlotIndex < MAX_SIZE;)
 		{
-			currentItem = 0;
-			++currentGroup;
-			if(currentGroup >= m_staticGroupsCount)
+			Slot *slot = menu->getSlot(lastSlotIndex++);
+			slot->set(categoryGroups[m_staticGroupsA[currentGroup]][currentItem]);
+
+			++currentItem;
+			if(currentItem >= categoryGroups[m_staticGroupsA[currentGroup]].size())
 			{
-				break;
+				currentItem = 0;
+				++currentGroup;
+				if(currentGroup >= m_staticGroupsCount)
+				{
+					break;
+				}
 			}
 		}
 	}
+
+#ifndef _CONTENT_PACKAGE
+	if(app.DebugArtToolsOn())
+	{
+		if(m_debugGroupsCount > 0)
+		{
+			startIndex = 0;
+			if(lastStaticPageCount != 0)
+			{
+				startIndex = m_staticPerPage - lastStaticPageCount;
+			}
+			currentIndex = 0;
+			currentGroup = 0;
+			currentItem = 0;
+			bool showDebug = false;
+			for(; currentGroup < m_debugGroupsCount; ++currentGroup)
+			{
+				int size = categoryGroups[m_debugGroupsA[currentGroup]].size();
+				if( currentIndex + size < startIndex)
+				{
+					currentIndex += size;
+					continue;
+				}
+				currentItem = size - ((currentIndex + size) - startIndex);
+				break;
+			}
+
+			for(; lastSlotIndex < MAX_SIZE;)
+			{
+				Slot *slot = menu->getSlot(lastSlotIndex++);
+				slot->set(categoryGroups[m_debugGroupsA[currentGroup]][currentItem]);
+
+				++currentItem;
+				if(currentItem >= categoryGroups[m_debugGroupsA[currentGroup]].size())
+				{
+					currentItem = 0;
+					++currentGroup;
+					if(currentGroup >= m_debugGroupsCount)
+					{
+						break;
+					}
+				}
+			}
+		}
+	}
+#endif
 
 	for(; lastSlotIndex < MAX_SIZE; ++lastSlotIndex)
 	{
@@ -703,7 +969,16 @@ void IUIScene_CreativeMenu::TabSpec::populateMenu(AbstractContainerMenu *menu, i
 
 unsigned int IUIScene_CreativeMenu::TabSpec::getPageCount()
 {
-	return m_pages;
+#ifndef _CONTENT_PACKAGE
+	if(app.DebugArtToolsOn())
+	{
+		return (int)ceil((float)(m_staticItems + m_debugItems) / m_staticPerPage);
+	}
+	else
+#endif
+	{
+		return m_pages;
+	}
 }
 
 
@@ -763,7 +1038,6 @@ IUIScene_AbstractContainerMenu::ESceneSection IUIScene_CreativeMenu::GetSectionA
 			newSection = eSectionInventoryCreativeSelector;
 		}
 		break;
-#ifndef _XBOX
 	case eSectionInventoryCreativeTab_0:
 	case eSectionInventoryCreativeTab_1:
 	case eSectionInventoryCreativeTab_2:
@@ -775,7 +1049,6 @@ IUIScene_AbstractContainerMenu::ESceneSection IUIScene_CreativeMenu::GetSectionA
 	case eSectionInventoryCreativeSlider:
 		/* do nothing */
 		break;
-#endif
 	default:
 		assert( false );
 		break;
@@ -800,7 +1073,7 @@ bool IUIScene_CreativeMenu::handleValidKeyPress(int iPad, int buttonNum, BOOL qu
 			{
 				m_menu->getSlot(i)->set(nullptr);
 				// call this function to synchronize multiplayer item bar
-				pMinecraft->localgameModes[iPad]->handleCreativeModeItemAdd(nullptr, i - (int)m_menu->slots->size() + 9 + InventoryMenu::USE_ROW_SLOT_START);
+				pMinecraft->localgameModes[iPad]->handleCreativeModeItemAdd(nullptr, i - (int)m_menu->slots.size() + 9 + InventoryMenu::USE_ROW_SLOT_START);
 			}
 		}
 		return true;
@@ -930,7 +1203,7 @@ void IUIScene_CreativeMenu::handleSlotListClicked(ESceneSection eSection, int bu
 		m_menu->clicked(currentIndex, buttonNum, quickKeyHeld?AbstractContainerMenu::CLICK_QUICK_MOVE:AbstractContainerMenu::CLICK_PICKUP, pMinecraft->localplayers[getPad()]);
 		shared_ptr<ItemInstance> newItem = m_menu->getSlot(currentIndex)->getItem();
 		// call this function to synchronize multiplayer item bar
-		pMinecraft->localgameModes[getPad()]->handleCreativeModeItemAdd(newItem, currentIndex - (int)m_menu->slots->size() + 9 + InventoryMenu::USE_ROW_SLOT_START);
+		pMinecraft->localgameModes[getPad()]->handleCreativeModeItemAdd(newItem, currentIndex - (int)m_menu->slots.size() + 9 + InventoryMenu::USE_ROW_SLOT_START);
 
 		if(m_bCarryingCreativeItem)
 		{
@@ -978,7 +1251,7 @@ bool IUIScene_CreativeMenu::getEmptyInventorySlot(shared_ptr<ItemInstance> item,
 	for(unsigned int i = TabSpec::MAX_SIZE; i < TabSpec::MAX_SIZE + 9; ++i)
 	{
 		shared_ptr<ItemInstance> slotItem = m_menu->getSlot(i)->getItem();
-		if( slotItem != NULL && slotItem->sameItem(item) && (slotItem->GetCount() + item->GetCount() <= item->getMaxStackSize() ))
+		if( slotItem != NULL && slotItem->sameItemWithTags(item) && (slotItem->GetCount() + item->GetCount() <= item->getMaxStackSize() ))
 		{
 			sameItemFound = true;
 			slotX = i - TabSpec::MAX_SIZE;
@@ -1021,7 +1294,7 @@ int IUIScene_CreativeMenu::getSectionStartOffset(ESceneSection eSection)
 }
 
 bool IUIScene_CreativeMenu::overrideTooltips(ESceneSection sectionUnderPointer, shared_ptr<ItemInstance> itemUnderPointer, bool bIsItemCarried, bool bSlotHasItem, bool bCarriedIsSameAsSlot, int iSlotStackSizeRemaining,
-	EToolTipItem &buttonA, EToolTipItem &buttonX, EToolTipItem &buttonY, EToolTipItem &buttonRT)
+	EToolTipItem &buttonA, EToolTipItem &buttonX, EToolTipItem &buttonY, EToolTipItem &buttonRT, EToolTipItem &buttonBack)
 {
 	bool _override = false;
 
@@ -1030,7 +1303,6 @@ bool IUIScene_CreativeMenu::overrideTooltips(ESceneSection sectionUnderPointer, 
 		if(bSlotHasItem)
 		{
 			buttonA = eToolTipPickUpGeneric;
-			buttonRT = eToolTipWhatIsThis;
 
 			if(itemUnderPointer->isStackable())
 			{
@@ -1050,4 +1322,75 @@ bool IUIScene_CreativeMenu::overrideTooltips(ESceneSection sectionUnderPointer, 
 	_override = true;
 
 	return _override;
+}
+
+void IUIScene_CreativeMenu::BuildFirework(vector<shared_ptr<ItemInstance> > *list, byte type, int color, int sulphur, bool flicker, bool trail, int fadeColor/*= -1*/)
+{
+	/////////////////////////////////
+	// Create firecharge
+	/////////////////////////////////
+
+
+	CompoundTag *expTag = new CompoundTag(FireworksItem::TAG_EXPLOSION);
+
+	vector<int> colors;
+
+	colors.push_back(DyePowderItem::COLOR_RGB[color]);
+
+	// glowstone dust gives flickering
+	if (flicker) expTag->putBoolean(FireworksItem::TAG_E_FLICKER, true);
+
+	// diamonds give trails
+	if (trail) expTag->putBoolean(FireworksItem::TAG_E_TRAIL, true);
+
+	intArray colorArray(colors.size());
+	for (int i = 0; i < colorArray.length; i++)
+	{
+		colorArray[i] = colors.at(i);
+	}
+	expTag->putIntArray(FireworksItem::TAG_E_COLORS, colorArray);
+	// delete colorArray.data;
+
+	expTag->putByte(FireworksItem::TAG_E_TYPE, type);
+
+	if (fadeColor != -1)
+	{
+		////////////////////////////////////
+		// Apply fade colors to firecharge
+		////////////////////////////////////
+
+		vector<int> colors;
+		colors.push_back(DyePowderItem::COLOR_RGB[fadeColor]);
+
+		intArray colorArray(colors.size());
+		for (int i = 0; i < colorArray.length; i++)
+		{
+			colorArray[i] = colors.at(i);
+		}
+		expTag->putIntArray(FireworksItem::TAG_E_FADECOLORS, colorArray);
+	}
+
+	/////////////////////////////////
+	// Create fireworks
+	/////////////////////////////////
+
+	shared_ptr<ItemInstance> firework;
+
+	{
+		firework = shared_ptr<ItemInstance>( new ItemInstance(Item::fireworks) );
+		CompoundTag *itemTag = new CompoundTag();
+		CompoundTag *fireTag = new CompoundTag(FireworksItem::TAG_FIREWORKS);
+		ListTag<CompoundTag> *expTags = new ListTag<CompoundTag>(FireworksItem::TAG_EXPLOSIONS);
+
+		expTags->add(expTag);
+
+		fireTag->put(FireworksItem::TAG_EXPLOSIONS, expTags);
+		fireTag->putByte(FireworksItem::TAG_FLIGHT, (byte) sulphur);
+
+		itemTag->put(FireworksItem::TAG_FIREWORKS, fireTag);
+
+		firework->setTag(itemTag);
+	}			
+
+	list->push_back(firework);
 }

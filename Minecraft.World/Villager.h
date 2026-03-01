@@ -39,9 +39,9 @@ private:
 	int updateMerchantTimer;
 	bool addRecipeOnUpdate;
 	int riches;
-    wstring lastPlayerTradeName;
+	wstring lastPlayerTradeName;
 
-    bool rewardPlayersOnFirstVillage;
+	bool rewardPlayersOnFirstVillage;
 
 private:
 
@@ -52,23 +52,24 @@ public:
 	Villager(Level *level, int profession);
 	~Villager();
 
+protected:
+	virtual void registerAttributes();
+
+public:
 	virtual bool useNewAi();
 
 protected:
 	virtual void serverAiMobStep();
 
 public:
-	virtual bool interact(shared_ptr<Player> player);
+	virtual bool mobInteract(shared_ptr<Player> player);
 
 protected:
 	virtual void defineSynchedData();
 
 public:
-	virtual int getMaxHealth();
 	virtual void addAdditonalSaveData(CompoundTag *tag);
 	virtual void readAdditionalSaveData(CompoundTag *tag);
-
-	virtual int getTexture();
 
 protected:
 	virtual bool removeWhenFarAway();
@@ -83,7 +84,7 @@ public:
 	void setInLove(bool inLove);
 	void setChasing(bool chasing);
 	bool isChasing();
-	void setLastHurtByMob(shared_ptr<Mob> mob);
+	void setLastHurtByMob(shared_ptr<LivingEntity> mob);
 	void die(DamageSource *source);
 
 	void handleEntityEvent(byte id);
@@ -141,9 +142,9 @@ private:
 	static int getPurchaseCost(int itemId, Random *random);
 
 public:
-	void finalizeMobSpawn();
-	void setRewardPlayersInVillage();
-	shared_ptr<AgableMob> getBreedOffspring(shared_ptr<AgableMob> target);
-
-	virtual int getDisplayName();
+	virtual MobGroupData *finalizeMobSpawn(MobGroupData *groupData, int extraData = 0); // 4J Added extraData param
+	virtual void setRewardPlayersInVillage();
+	virtual shared_ptr<AgableMob> getBreedOffspring(shared_ptr<AgableMob> target);
+	virtual bool canBeLeashed();
+	virtual wstring getDisplayName();
 };

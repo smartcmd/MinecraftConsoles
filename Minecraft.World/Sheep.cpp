@@ -1,5 +1,3 @@
-using namespace std;
-
 #include "stdafx.h"
 #include "com.mojang.nbt.h"
 #include "net.minecraft.world.level.tile.h"
@@ -8,6 +6,7 @@ using namespace std;
 #include "net.minecraft.world.item.h"
 #include "net.minecraft.world.item.crafting.h"
 #include "net.minecraft.world.inventory.h"
+#include "net.minecraft.world.entity.ai.attributes.h"
 #include "net.minecraft.world.entity.ai.goal.h"
 #include "net.minecraft.world.entity.ai.navigation.h"
 #include "net.minecraft.world.entity.h"
@@ -15,12 +14,13 @@ using namespace std;
 #include "net.minecraft.world.entity.player.h"
 #include "net.minecraft.world.entity.global.h"
 #include "net.minecraft.world.entity.player.h"
+#include "net.minecraft.world.entity.monster.h"
 #include "Sheep.h"
 #include "..\Minecraft.Client\Textures.h"
 #include "MobCategory.h"
 #include "GenericStats.h"
 
-const float Sheep::COLOR[][3] =
+const float Sheep::COLOR[Sheep::COLOR_LENGTH][3] =
 {
 	{ 1.0f, 1.0f, 1.0f }, // white
 	{ 0.85f, 0.5f, 0.2f }, // orange
@@ -45,26 +45,23 @@ Sheep::Sheep(Level *level) : Animal( level )
 	// 4J Stu - This function call had to be moved here from the Entity ctor to ensure that
 	// the derived version of the function is called
 	this->defineSynchedData();
+	registerAttributes();
+	setHealth(getMaxHealth());
 
-	// 4J Stu - This function call had to be moved here from the Entity ctor to ensure that the derived version of the function is called
-	health = getMaxHealth();
-
-	this->textureIdx = TN_MOB_SHEEP; // 4J - was L"/mob/sheep.png";
-	this->setSize(0.9f, 1.3f);
+	setSize(0.9f, 1.3f);
 
 	eatAnimationTick = 0;
 
 	eatTileGoal = new EatTileGoal(this);
 
-	float walkSpeed = 0.23f;
 	getNavigation()->setAvoidWater(true);
 	goalSelector.addGoal(0, new FloatGoal(this));
-	goalSelector.addGoal(1, new PanicGoal(this, 0.38f));
-	goalSelector.addGoal(2, new BreedGoal(this, walkSpeed));
-	goalSelector.addGoal(3, new TemptGoal(this, 0.25f, Item::wheat_Id, false));
-	goalSelector.addGoal(4, new FollowParentGoal(this, 0.25f));
+	goalSelector.addGoal(1, new PanicGoal(this, 1.25));
+	goalSelector.addGoal(2, new BreedGoal(this, 1.0));
+	goalSelector.addGoal(3, new TemptGoal(this, 1.1, Item::wheat_Id, false));
+	goalSelector.addGoal(4, new FollowParentGoal(this, 1.1));
 	goalSelector.addGoal(5, eatTileGoal, false);
-	goalSelector.addGoal(6, new RandomStrollGoal(this, walkSpeed));
+	goalSelector.addGoal(6, new RandomStrollGoal(this, 1.0));
 	goalSelector.addGoal(7, new LookAtPlayerGoal(this, typeid(Player), 6));
 	goalSelector.addGoal(8, new RandomLookAroundGoal(this));
 
@@ -90,9 +87,12 @@ void Sheep::aiStep()
 	Animal::aiStep();
 }
 
-int Sheep::getMaxHealth()
+void Sheep::registerAttributes()
 {
-	return 8;
+	Animal::registerAttributes();
+
+	getAttribute(SharedMonsterAttributes::MAX_HEALTH)->setBaseValue(8);
+	getAttribute(SharedMonsterAttributes::MOVEMENT_SPEED)->setBaseValue(0.23f);
 }
 
 void Sheep::defineSynchedData() 
@@ -108,13 +108,13 @@ void Sheep::dropDeathLoot(bool wasKilledByPlayer, int playerBonusLevel)
 	if(!isSheared())
 	{
 		// killing a non-sheared sheep will drop a single block of cloth
-		spawnAtLocation(shared_ptr<ItemInstance>( new ItemInstance(Tile::cloth_Id, 1, getColor()) ), 0.0f);
+		spawnAtLocation(shared_ptr<ItemInstance>( new ItemInstance(Tile::wool_Id, 1, getColor()) ), 0.0f);
 	}
 }
 
 int Sheep::getDeathLoot()
 {
-	return Tile::cloth_Id;
+	return Tile::wool_Id;
 }
 
 void Sheep::handleEntityEvent(byte id)
@@ -160,35 +160,36 @@ float Sheep::getHeadEatAngleScale(float a)
 	return ((xRot / (180.0f / PI)));
 }
 
-bool Sheep::interact(shared_ptr<Player> player)
+bool Sheep::mobInteract(shared_ptr<Player> player)
 {
-    shared_ptr<ItemInstance> item = player->inventory->getSelected();
+	shared_ptr<ItemInstance> item = player->inventory->getSelected();
 
 	// 4J-JEV: Fix for #88212,
 	// Untrusted players shouldn't be able to sheer sheep.
 	if (!player->isAllowedToInteract( shared_from_this() ))
 		return false; //Animal::interact(player);
 
-    if (item != NULL && item->id == Item::shears->id && !isSheared() && !isBaby())
+	if (item != NULL && item->id == Item::shears->id && !isSheared() && !isBaby())
 	{
-        if (!level->isClientSide)
+		if (!level->isClientSide)
 		{
-            setSheared(true);
-            int count = 1 + random->nextInt(3);
-            for (int i = 0; i < count; i++)
+			setSheared(true);
+			int count = 1 + random->nextInt(3);
+			for (int i = 0; i < count; i++)
 			{
-                shared_ptr<ItemEntity> ie = spawnAtLocation(shared_ptr<ItemInstance>( new ItemInstance(Tile::cloth_Id, 1, getColor()) ), 1.0f);
-                ie->yd += random->nextFloat() * 0.05f;
-                ie->xd += (random->nextFloat() - random->nextFloat()) * 0.1f;
-                ie->zd += (random->nextFloat() - random->nextFloat()) * 0.1f;
-            }
+				shared_ptr<ItemEntity> ie = spawnAtLocation(shared_ptr<ItemInstance>( new ItemInstance(Tile::wool_Id, 1, getColor()) ), 1.0f);
+				ie->yd += random->nextFloat() * 0.05f;
+				ie->xd += (random->nextFloat() - random->nextFloat()) * 0.1f;
+				ie->zd += (random->nextFloat() - random->nextFloat()) * 0.1f;
+			}
 
 			player->awardStat( GenericStats::shearedEntity(eTYPE_SHEEP), GenericStats::param_shearedEntity(eTYPE_SHEEP) );
-        }
-        item->hurt(1, player);
-    }
+		}
+		item->hurtAndBreak(1, player);
+		playSound(eSoundType_MOB_SHEEP_SHEAR, 1, 1);
+	}
 
-    return Animal::interact(player);
+	return Animal::mobInteract(player);
 }
 
 void Sheep::addAdditonalSaveData(CompoundTag *tag) 
@@ -218,6 +219,11 @@ int Sheep::getHurtSound()
 int Sheep::getDeathSound() 
 {
 	return eSoundType_MOB_SHEEP_AMBIENT;
+}
+
+void Sheep::playStepSound(int xt, int yt, int zt, int t)
+{
+	playSound(eSoundType_MOB_SHEEP_STEP, 0.15f, 1);
 }
 
 int Sheep::getColor() 
@@ -295,18 +301,16 @@ void Sheep::ate()
 	if (isBaby())
 	{
 		// remove a minute from aging
-		int age = getAge() + SharedConstants::TICKS_PER_SECOND * 60;
-		if (age > 0)
-		{
-			age = 0;
-		}
-		setAge(age);
+		ageUp(60);
 	}
 }
 
-void Sheep::finalizeMobSpawn()
+MobGroupData *Sheep::finalizeMobSpawn(MobGroupData *groupData, int extraData /*= 0*/) // 4J Added extraData param
 {
-	setColor(Sheep::getSheepColor(level->random));
+	groupData = Animal::finalizeMobSpawn(groupData);
+
+	setColor(getSheepColor(level->random));
+	return groupData;
 }
 
 int Sheep::getOffspringColor(shared_ptr<Animal> animal, shared_ptr<Animal> partner)

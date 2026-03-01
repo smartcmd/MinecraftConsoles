@@ -637,6 +637,15 @@ void ConsoleSaveFileOriginal::Flush(bool autosave, bool updateThumbnail )
 {
 	LockSaveAccess();
 
+#ifdef __PSVITA__
+	// On Vita we've had problems with saves being corrupted on rapid save/save-exiting so seems prudent to wait for idle
+	while( StorageManager.GetSaveState() != C4JStorage::ESaveGame_Idle )
+	{
+		app.DebugPrintf("Flush wait\n");
+		Sleep(10);
+	}
+#endif
+
 	finalizeWrite();
 
 	// Get the frequency of the timer

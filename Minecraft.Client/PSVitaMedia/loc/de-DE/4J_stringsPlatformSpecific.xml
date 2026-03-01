@@ -1,51 +1,50 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <root>
-	<data name="IDS_NOFREESPACE_TEXT">
-		<value>Im Systemspeicher ist nicht genug freier Speicherplatz vorhanden, um einen Spielstand zu erstellen.</value>
-	</data>
-	<data name="IDS_PRO_RETURNEDTOTITLESCREEN_TEXT">
-		<value>Du bist zum Titelbildschirm zurückgekehrt, weil du dich von "PSN" abgemeldet hast.</value>
-	</data>
-	<data name="IDS_PRO_RETURNEDTOMENU_TEXT">
-		<value>Das Spiel wurde beendet, weil du dich von "PSN" abgemeldet hast.</value>
-	</data>
-	<data name="IDS_PRO_NOTONLINE_TITLE">
-		<value>Derzeit nicht angemeldet.
-</value>
-	</data>
-	<data name="IDS_PRO_NOTONLINE_TEXT">
-		<value>Dieses Spiel verfügt über Funktionen, die eine Verbindung mit "PSN" erfordern, aber du bist derzeit offline.</value>
-	</data>
-	<data name="IDS_PRO_NOTADHOCONLINE_TITLE">
-		<value>Ad-hoc-Netzwerk offline.</value>
-	</data>
-	<data name="IDS_PRO_NOTADHOCONLINE_TEXT">
-		<value>Einige Funktionen dieses Spiels erfordern eine Ad-hoc-Netzwerkverbindung, allerdings bist du derzeit offline.</value>
-	</data>
-	<data name="IDS_PRO_XBOXLIVE_NOTIFICATION">
-		<value>Diese Funktion erfordert, dass du bei "PSN" angemeldet bist.</value>
-	</data>
-	<data name="IDS_PRO_NOTONLINE_ACCEPT">
-		<value>Mit "PSN" verbinden</value>
-	</data>
-	<data name="IDS_PRO_NOTADHOCONLINE_ACCEPT">
-		<value>Mit Ad-hoc-Netzwerk verbinden</value>
-	</data>
-	<data name="IDS_PRO_ACHIEVEMENTPROBLEM_TITLE">
-		<value>Problem mit Trophäe</value>
-	</data>
-	<data name="IDS_PRO_ACHIEVEMENTPROBLEM_TEXT">
-		<value>Beim Zugriff auf dein Sony Entertainment Network-Konto ist ein Problem aufgetreten. Deine Trophäe kann derzeit nicht verliehen werden.</value>
+	<data name="IDS_PRO_NOPROFILEOPTIONS_TEXT">
+		<value>Speichern der Einstellungen des Sony Entertainment Network-Kontos fehlgeschlagen.</value>
 	</data>
 	<data name="IDS_PRO_NOPROFILE_TITLE">
 		<value>Problem mit Sony Entertainment Network-Konto</value>
 	</data>
-	<data name="IDS_PRO_NOPROFILEOPTIONS_TEXT">
-		<value>Speichern der Einstellungen des Sony Entertainment Network-Kontos fehlgeschlagen.</value>
+	<data name="IDS_PRO_ACHIEVEMENTPROBLEM_TEXT">
+		<value>Beim Zugriff auf dein Sony Entertainment Network-Konto ist ein Problem aufgetreten. Deine Trophäe kann derzeit nicht verliehen werden.</value>
 	</data>
 	<data name="IDS_PRO_UNLOCKGAME_TEXT">
 		<value>Dies ist die Testversion von Minecraft: PlayStation®3 Edition. Würdest du das vollständige Spiel besitzen, hättest du dir gerade eine Trophäe verdient! 
 Schalte das vollständige Spiel frei, um den ganzen Spaß von Minecraft: PlayStation®3  Edition zu erleben und zusammen mit deinen Freunden auf der ganzen Welt über "PSN" zu spielen.
 Möchtest du jetzt das vollständige Spiel freischalten?</value>
+	</data>
+	<data name="IDS_PRO_NOTADHOCONLINE_ACCEPT">
+		<value>Mit Ad-hoc-Netzwerk verbinden</value>
+	</data>
+	<data name="IDS_PRO_NOTADHOCONLINE_TEXT">
+		<value>Einige Funktionen dieses Spiels erfordern eine Ad-hoc-Netzwerkverbindung, allerdings bist du derzeit offline.</value>
+	</data>
+	<data name="IDS_PRO_NOTADHOCONLINE_TITLE">
+		<value>Ad-hoc-Netzwerk offline.</value>
+	</data>
+	<data name="IDS_PRO_ACHIEVEMENTPROBLEM_TITLE">
+		<value>Problem mit Trophäe</value>
+	</data>
+	<data name="IDS_PRO_RETURNEDTOMENU_TEXT">
+		<value>Das Spiel wurde beendet, weil du dich von "PSN" abgemeldet hast.</value>
+	</data>
+	<data name="IDS_PRO_RETURNEDTOTITLESCREEN_TEXT">
+		<value>Du bist zum Titelbildschirm zurückgekehrt, weil du dich von "PSN" abgemeldet hast.</value>
+	</data>
+	<data name="IDS_NOFREESPACE_TEXT">
+		<value>Im Systemspeicher ist nicht genug freier Speicherplatz vorhanden, um einen Spielstand zu erstellen.</value>
+	</data>
+	<data name="IDS_PRO_NOTONLINE_TITLE">
+		<value>Derzeit nicht angemeldet.</value>
+	</data>
+	<data name="IDS_PRO_NOTONLINE_ACCEPT">
+		<value>Mit "PSN" verbinden</value>
+	</data>
+	<data name="IDS_PRO_XBOXLIVE_NOTIFICATION">
+		<value>Diese Funktion erfordert, dass du bei "PSN" angemeldet bist.</value>
+	</data>
+	<data name="IDS_PRO_NOTONLINE_TEXT">
+		<value>Dieses Spiel verfügt über Funktionen, die eine Verbindung mit "PSN" erfordern, aber du bist derzeit offline.</value>
 	</data>
 </root>

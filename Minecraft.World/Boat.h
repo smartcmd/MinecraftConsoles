@@ -47,7 +47,7 @@ public:
 	Boat(Level *level, double x, double y, double z);
 
 	virtual double getRideHeight();
-	virtual bool hurt(DamageSource *source, int damage);
+	virtual bool hurt(DamageSource *source, float damage);
 	virtual void animateHurt();
 	virtual bool isPickable();
 
@@ -71,8 +71,8 @@ public:
 	wstring getName();
 	virtual bool interact(shared_ptr<Player> player);
 
-	virtual void setDamage(int damage);
-	virtual int getDamage();
+	virtual void setDamage(float damage);
+	virtual float getDamage();
 	virtual void setHurtTime(int hurtTime);
 	virtual int getHurtTime();
 	virtual void setHurtDir(int hurtDir);

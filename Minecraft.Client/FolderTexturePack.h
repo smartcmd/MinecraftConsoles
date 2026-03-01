@@ -20,7 +20,7 @@ public:
 	bool isTerrainUpdateCompatible();
 
 	// 4J Added
-	virtual wstring getPath(bool bTitleUpdateTexture = false);
+	virtual wstring getPath(bool bTitleUpdateTexture = false, const char *pchBDPatchFilename=NULL);
 	virtual void loadUI();
 	virtual void unloadUI();
 };

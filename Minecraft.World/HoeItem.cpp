@@ -14,15 +14,13 @@ HoeItem::HoeItem(int id, const Tier *tier) : Item(id)
 
 bool HoeItem::useOn(shared_ptr<ItemInstance> instance, shared_ptr<Player> player, Level *level, int x, int y, int z, int face, float clickX, float clickY, float clickZ, bool bTestUseOnOnly)
 {
-	if (!player->mayBuild(x, y, z)) return false;
+	if (!player->mayUseItemAt(x, y, z, face, instance)) return false;
 
 	// 4J-PB - Adding a test only version to allow tooltips to be displayed
 
 	int targetType = level->getTile(x, y, z);
-	//        Material above = level.getMaterial(x, y + 1, z);
 	int above = level->getTile(x, y + 1, z);
 
-	// 4J-PB - missing parentheses
 	if (face != 0 && above == 0 && (targetType == Tile::grass_Id || targetType == Tile::dirt_Id)) 
 	{
 		if(!bTestUseOnOnly)
@@ -31,8 +29,8 @@ bool HoeItem::useOn(shared_ptr<ItemInstance> instance, shared_ptr<Player> player
 			level->playSound(x + 0.5f, y + 0.5f, z + 0.5f, tile->soundType->getStepSound(), (tile->soundType->getVolume() + 1) / 2, tile->soundType->getPitch() * 0.8f);
 
 			if (level->isClientSide) return true;
-			level->setTile(x, y, z, tile->id);
-			instance->hurt(1, player);
+			level->setTileAndUpdate(x, y, z, tile->id);
+			instance->hurtAndBreak(1, player);
 		}
 		return true;
 	}

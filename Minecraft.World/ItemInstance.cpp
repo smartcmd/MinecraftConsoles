@@ -3,6 +3,8 @@
 #include "net.minecraft.locale.h"
 #include "net.minecraft.stats.h"
 #include "net.minecraft.world.entity.h"
+#include "net.minecraft.world.entity.ai.attributes.h"
+#include "net.minecraft.world.entity.monster.h"
 #include "net.minecraft.world.entity.player.h"
 #include "net.minecraft.world.level.h"
 #include "net.minecraft.world.level.tile.h"
@@ -10,8 +12,9 @@
 #include "net.minecraft.world.item.enchantment.h"
 #include "Item.h"
 #include "ItemInstance.h"
+#include "HtmlString.h"
 
-
+const wstring ItemInstance::ATTRIBUTE_MODIFIER_FORMAT = L"#.###";
 
 const wchar_t *ItemInstance::TAG_ENCH_ID = L"id";
 const wchar_t *ItemInstance::TAG_ENCH_LEVEL = L"lvl";
@@ -45,29 +48,33 @@ ItemInstance::ItemInstance(MapItem *item, int count)
 
 ItemInstance::ItemInstance(Tile *tile, int count, int auxValue)
 {
-    _init(tile->id, count, auxValue);
+	_init(tile->id, count, auxValue);
 }
 
 ItemInstance::ItemInstance(Item *item) 
 {
-    _init(item->id, 1, 0);
+	_init(item->id, 1, 0);
 }
 
 
 
 ItemInstance::ItemInstance(Item *item, int count) 
 {
-    _init(item->id, count, 0);
+	_init(item->id, count, 0);
 }
 
 ItemInstance::ItemInstance(Item *item, int count, int auxValue) 
 {
-    _init(item->id, count, auxValue);
+	_init(item->id, count, auxValue);
 }
 
 ItemInstance::ItemInstance(int id, int count, int damage)
 {
-    _init(id,count,damage);
+	_init(id,count,damage);
+	if (auxValue < 0)
+	{
+		auxValue = 0;
+	}
 }
 
 shared_ptr<ItemInstance> ItemInstance::fromTag(CompoundTag *itemTag)
@@ -98,12 +105,12 @@ shared_ptr<ItemInstance> ItemInstance::remove(int count)
 
 Item *ItemInstance::getItem() const
 {
-    return Item::items[id];
+	return Item::items[id];
 }
 
 Icon *ItemInstance::getIcon()
 {
-    return getItem()->getIcon(shared_from_this());
+	return getItem()->getIcon(shared_from_this());
 }
 
 int ItemInstance::getIconType()
@@ -118,17 +125,17 @@ bool ItemInstance::useOn(shared_ptr<Player> player, Level *level, int x, int y, 
 
 float ItemInstance::getDestroySpeed(Tile *tile) 
 {
-    return getItem()->getDestroySpeed(shared_from_this(), tile);
+	return getItem()->getDestroySpeed(shared_from_this(), tile);
 }
 
-bool ItemInstance::TestUse(Level *level, shared_ptr<Player> player) 
+bool ItemInstance::TestUse(shared_ptr<ItemInstance> itemInstance, Level *level, shared_ptr<Player> player) 
 {
-	return getItem()->TestUse( level, player);
+	return getItem()->TestUse( itemInstance, level, player);
 }
 
 shared_ptr<ItemInstance> ItemInstance::use(Level *level, shared_ptr<Player> player) 
 {
-    return getItem()->use(shared_from_this(), level, player);
+	return getItem()->use(shared_from_this(), level, player);
 }
 
 shared_ptr<ItemInstance> ItemInstance::useTimeDepleted(Level *level, shared_ptr<Player> player)
@@ -138,135 +145,159 @@ shared_ptr<ItemInstance> ItemInstance::useTimeDepleted(Level *level, shared_ptr<
 
 CompoundTag *ItemInstance::save(CompoundTag *compoundTag) 
 {
-    compoundTag->putShort(L"id", (short) id);
-    compoundTag->putByte(L"Count", (byte) count);
-    compoundTag->putShort(L"Damage", (short) auxValue);
-	if (this->tag != NULL) compoundTag->put(L"tag", tag->copy());
-    return compoundTag;
+	compoundTag->putShort(L"id", (short) id);
+	compoundTag->putByte(L"Count", (byte) count);
+	compoundTag->putShort(L"Damage", (short) auxValue);
+	if (tag != NULL) compoundTag->put(L"tag", tag->copy());
+	return compoundTag;
 }
 
 void ItemInstance::load(CompoundTag *compoundTag)
 {
 	popTime = 0;
-    id = compoundTag->getShort(L"id");
-    count = compoundTag->getByte(L"Count");
-    auxValue = compoundTag->getShort(L"Damage");
+	id = compoundTag->getShort(L"id");
+	count = compoundTag->getByte(L"Count");
+	auxValue = compoundTag->getShort(L"Damage");
+	if (auxValue < 0)
+	{
+		auxValue = 0;
+	}
 	if (compoundTag->contains(L"tag"))
 	{
+		delete tag;
 		tag = (CompoundTag *)compoundTag->getCompound(L"tag")->copy();
 	}
 }
 
 int ItemInstance::getMaxStackSize()
 {
-    return getItem()->getMaxStackSize();
+	return getItem()->getMaxStackSize();
 }
 
 bool ItemInstance::isStackable()
 {
-    return getMaxStackSize() > 1 && (!isDamageableItem() || !isDamaged());
+	return getMaxStackSize() > 1 && (!isDamageableItem() || !isDamaged());
 }
 
 bool ItemInstance::isDamageableItem() 
 {
-    return Item::items[id]->getMaxDamage() > 0;
+	return Item::items[id]->getMaxDamage() > 0;
 }
 
 /**
- * Returns true if this item type only can be stacked with items that have
- * the same auxValue data.
- * 
- * @return
- */
+* Returns true if this item type only can be stacked with items that have
+* the same auxValue data.
+* 
+* @return
+*/
 
 bool ItemInstance::isStackedByData()
 {
-    return Item::items[id]->isStackedByData();
+	return Item::items[id]->isStackedByData();
 }
 
 bool ItemInstance::isDamaged() 
 {
-    return isDamageableItem() && auxValue > 0;
+	return isDamageableItem() && auxValue > 0;
 }
 
 int ItemInstance::getDamageValue()
 {
-    return auxValue;
+	return auxValue;
 }
 
 int ItemInstance::getAuxValue() const
 {
-    return auxValue;
+	return auxValue;
 }
 
 void ItemInstance::setAuxValue(int value)
 {
-    auxValue = value;
+	auxValue = value;
+	if (auxValue < 0)
+	{
+		auxValue = 0;
+	}
 }
 
 int ItemInstance::getMaxDamage()
 {
-    return Item::items[id]->getMaxDamage();
+	return Item::items[id]->getMaxDamage();
 }
 
-void ItemInstance::hurt(int i, shared_ptr<Mob> owner)
+bool ItemInstance::hurt(int dmg, Random *random)
 {
-    if (!isDamageableItem())
+	if (!isDamageableItem())
 	{
-        return;
-    }
-
-	shared_ptr<Player> player = dynamic_pointer_cast<Player>(owner);
- 	if (i > 0 && player != NULL)
-	{
-		int enchanted = EnchantmentHelper::getDigDurability(player->inventory);
-		// Fix for #65233 - TU8: Content: Gameplay: Tools Enchanted with "Unbreaking" occasionally repair themselves.
-		// 4J Stu - If it's the clientside level, then always assume that no damage is done. This stops the case where the client random
-		// results in damage, but the server random does not
-		if (enchanted > 0 && (owner->level->isClientSide || owner->level->random->nextInt(enchanted + 1) > 0) )
-		{
-			// enchantment prevents damage
-			return;
-		}
+		return false;
 	}
 
- 	// 4J Stu - Changed in TU6 to not damage items in creative mode
-    if (!(owner != NULL && player->abilities.instabuild)) auxValue += i;
-	
-    if (auxValue > getMaxDamage())
+	if (dmg > 0)
 	{
-		owner->breakItem(shared_from_this());
-        count--;
-        if (count < 0) count = 0;
-        auxValue = 0;
-    }
+		int level = EnchantmentHelper::getEnchantmentLevel(Enchantment::digDurability->id, shared_from_this());
+
+		int drop = 0;
+		for (int y = 0; level > 0 && y < dmg; y++)
+		{
+			if (DigDurabilityEnchantment::shouldIgnoreDurabilityDrop(shared_from_this(), level, random))
+			{
+				drop++;
+			}
+		}
+		dmg -= drop;
+
+		if (dmg <= 0) return false;
+	}
+
+	auxValue += dmg;
+
+	return auxValue > getMaxDamage();
 }
 
-void ItemInstance::hurtEnemy(shared_ptr<Mob> mob, shared_ptr<Player> attacker)
+void ItemInstance::hurtAndBreak(int dmg, shared_ptr<LivingEntity> owner)
 {
-    //bool used = 
-		Item::items[id]->hurtEnemy(shared_from_this(), mob, attacker);
+	shared_ptr<Player> player = dynamic_pointer_cast<Player>(owner);
+	if (player != NULL && player->abilities.instabuild) return;
+	if (!isDamageableItem()) return;
+
+	if (hurt(dmg, owner->getRandom()))
+	{
+		owner->breakItem(shared_from_this());
+
+		count--;
+		if (player != NULL)
+		{
+			//player->awardStat(Stats::itemBroke[id], 1);
+			if (count == 0 && dynamic_cast<BowItem *>( getItem() ) != NULL)
+			{
+				player->removeSelectedItem();
+			}
+		}
+		if (count < 0) count = 0;
+		auxValue = 0;
+	}
+}
+
+void ItemInstance::hurtEnemy(shared_ptr<LivingEntity> mob, shared_ptr<Player> attacker)
+{
+	//bool used = 
+	Item::items[id]->hurtEnemy(shared_from_this(), mob, attacker);
 }
 
 void ItemInstance::mineBlock(Level *level, int tile, int x, int y, int z, shared_ptr<Player> owner) 
 {
-    //bool used = 
-		Item::items[id]->mineBlock( shared_from_this(), level, tile, x, y, z, owner);
-}
-
-int ItemInstance::getAttackDamage(shared_ptr<Entity> entity)
-{
-    return Item::items[id]->getAttackDamage(entity);
+	//bool used = 
+	Item::items[id]->mineBlock( shared_from_this(), level, tile, x, y, z, owner);
 }
 
 bool ItemInstance::canDestroySpecial(Tile *tile)
 {
-    return Item::items[id]->canDestroySpecial(tile);
+	return Item::items[id]->canDestroySpecial(tile);
 }
 
-bool ItemInstance::interactEnemy(shared_ptr<Mob> mob)
+bool ItemInstance::interactEnemy(shared_ptr<Player> player, shared_ptr<LivingEntity> mob)
 {
-    return Item::items[id]->interactEnemy(shared_from_this(), mob);
+	return Item::items[id]->interactEnemy(shared_from_this(), player, mob);
 }
 
 shared_ptr<ItemInstance> ItemInstance::copy() const
@@ -313,16 +344,16 @@ bool ItemInstance::tagMatches(shared_ptr<ItemInstance> a, shared_ptr<ItemInstanc
 
 bool ItemInstance::matches(shared_ptr<ItemInstance> a, shared_ptr<ItemInstance> b) 
 {
-    if (a == NULL && b == NULL) return true;
-    if (a == NULL || b == NULL) return false;
-    return a->matches(b);
+	if (a == NULL && b == NULL) return true;
+	if (a == NULL || b == NULL) return false;
+	return a->matches(b);
 }
 
 bool ItemInstance::matches(shared_ptr<ItemInstance> b)
 {
-    if (count != b->count) return false;
-    if (id != b->id) return false;
-    if (auxValue != b->auxValue) return false;
+	if (count != b->count) return false;
+	if (id != b->id) return false;
+	if (auxValue != b->auxValue) return false;
 	if (tag == NULL && b->tag != NULL)
 	{
 		return false;
@@ -331,25 +362,25 @@ bool ItemInstance::matches(shared_ptr<ItemInstance> b)
 	{
 		return false;
 	}
-    return true;
+	return true;
 }
 
 /**
- * Checks if this item is the same item as the other one, disregarding the
- * 'count' value.
- * 
- * @param b
- * @return
- */
+* Checks if this item is the same item as the other one, disregarding the
+* 'count' value.
+* 
+* @param b
+* @return
+*/
 bool ItemInstance::sameItem(shared_ptr<ItemInstance> b)
 {
-    return id == b->id && auxValue == b->auxValue;
+	return id == b->id && auxValue == b->auxValue;
 }
 
 bool ItemInstance::sameItemWithTags(shared_ptr<ItemInstance> b)
 {
-    if (id != b->id) return false;
-    if (auxValue != b->auxValue) return false;
+	if (id != b->id) return false;
+	if (auxValue != b->auxValue) return false;
 	if (tag == NULL && b->tag != NULL)
 	{
 		return false;
@@ -358,41 +389,41 @@ bool ItemInstance::sameItemWithTags(shared_ptr<ItemInstance> b)
 	{
 		return false;
 	}
-    return true;
+	return true;
 }
 
 // 4J Stu - Added this for the one time when we compare with a non-shared pointer
 bool ItemInstance::sameItem_not_shared(ItemInstance *b)
 {
-    return id == b->id && auxValue == b->auxValue;
+	return id == b->id && auxValue == b->auxValue;
 }
 
 unsigned int ItemInstance::getUseDescriptionId() 
 {
-    return Item::items[id]->getUseDescriptionId(shared_from_this());
+	return Item::items[id]->getUseDescriptionId(shared_from_this());
 }
 
 unsigned int ItemInstance::getDescriptionId(int iData /*= -1*/) 
 {
-    return Item::items[id]->getDescriptionId(shared_from_this());
+	return Item::items[id]->getDescriptionId(shared_from_this());
 }
 
 ItemInstance *ItemInstance::setDescriptionId(unsigned int id)
 {
 	// 4J Stu - I don't think this function is ever used. It if is, it should probably return shared_from_this()
 	assert(false);
-    return this;
+	return this;
 }
 
 shared_ptr<ItemInstance> ItemInstance::clone(shared_ptr<ItemInstance> item)
 {
-    return item == NULL ? nullptr : item->copy();
+	return item == NULL ? nullptr : item->copy();
 }
 
 wstring ItemInstance::toString() 
 {
-    //return count + "x" + Item::items[id]->getDescriptionId() + "@" + auxValue;
-	
+	//return count + "x" + Item::items[id]->getDescriptionId() + "@" + auxValue;
+
 	std::wostringstream oss;
 	// 4J-PB - TODO - temp fix until ore recipe issue is fixed
 	if(Item::items[id]==NULL)
@@ -408,8 +439,8 @@ wstring ItemInstance::toString()
 
 void ItemInstance::inventoryTick(Level *level, shared_ptr<Entity> owner, int slot, bool selected)
 {
-    if (popTime > 0) popTime--;
-    Item::items[id]->inventoryTick(shared_from_this(), level, owner, slot, selected);
+	if (popTime > 0) popTime--;
+	Item::items[id]->inventoryTick(shared_from_this(), level, owner, slot, selected);
 }
 
 void ItemInstance::onCraftedBy(Level *level, shared_ptr<Player> player, int craftCount)
@@ -422,12 +453,12 @@ void ItemInstance::onCraftedBy(Level *level, shared_ptr<Player> player, int craf
 		GenericStats::param_itemsCrafted(id, auxValue, craftCount)
 		);
 
-    Item::items[id]->onCraftedBy(shared_from_this(), level, player);
+	Item::items[id]->onCraftedBy(shared_from_this(), level, player);
 }
 
 bool ItemInstance::equals(shared_ptr<ItemInstance> ii)
 {
-    return id == ii->id && count == ii->count && auxValue == ii->auxValue;
+	return id == ii->id && count == ii->count && auxValue == ii->auxValue;
 }
 
 int ItemInstance::getUseDuration()
@@ -467,6 +498,7 @@ ListTag<CompoundTag> *ItemInstance::getEnchantmentTags()
 
 void ItemInstance::setTag(CompoundTag *tag)
 {
+	delete this->tag;
 	this->tag = tag;
 }
 
@@ -494,6 +526,24 @@ void ItemInstance::setHoverName(const wstring &name)
 	tag->getCompound(L"display")->putString(L"Name", name);
 }
 
+void ItemInstance::resetHoverName()
+{
+	if (tag == NULL) return;
+	if (!tag->contains(L"display")) return;
+	CompoundTag *display = tag->getCompound(L"display");
+	display->remove(L"Name");
+
+	if (display->isEmpty())
+	{
+		tag->remove(L"display");
+
+		if (tag->isEmpty())
+		{
+			setTag(NULL);
+		}
+	}
+}
+
 bool ItemInstance::hasCustomHoverName()
 {
 	if (tag == NULL) return false;
@@ -501,49 +551,49 @@ bool ItemInstance::hasCustomHoverName()
 	return tag->getCompound(L"display")->contains(L"Name");
 }
 
-vector<wstring> *ItemInstance::getHoverText(shared_ptr<Player> player, bool advanced, vector<wstring> &unformattedStrings)
+vector<HtmlString> *ItemInstance::getHoverText(shared_ptr<Player> player, bool advanced)
 {
-	vector<wstring> *lines = new vector<wstring>();
+	vector<HtmlString> *lines = new vector<HtmlString>();
 	Item *item = Item::items[id];
-	wstring title = getHoverName();
+	HtmlString title = HtmlString(getHoverName());
 
-	// 4J Stu - We don't do italics, but do change colour. But handle this later in the process due to text length measuring on the Xbox360
-	//if (hasCustomHoverName())
-	//{
-	//	title = L"<i>" + title + L"</i>";
-	//}
+	if (hasCustomHoverName())
+	{
+		title.italics = true;
+	}
 
-	// 4J Stu - Don't currently have this
-	//if (advanced)
-	//{
-	//	String suffix = "";
+	// 4J: This is for showing aux values, not useful in console version
+	/*
+	if (advanced)
+	{
+		wstring suffix = L"";
 
-	//	if (title.length() > 0) {
-	//		title += " (";
-	//		suffix = ")";
-	//	}
+		if (title.length() > 0)
+		{
+			title += L" (";
+			suffix = L")";
+		}
 
-	//	if (isStackedByData())
-	//	{
-	//		title += String.format("#%04d/%d%s", id, auxValue, suffix);
-	//	}
-	//	else
-	//	{
-	//		title += String.format("#%04d%s", id, suffix);
-	//	}
-	//}
-	//else
-	//	if (!hasCustomHoverName())
-	//{
-	//	if (id == Item::map_Id)
-	//	{
-	//		title += L" #" + _toString(auxValue);
-	//	}
-	//}
+		if (isStackedByData())
+		{
+			title += String.format("#%04d/%d%s", id, auxValue, suffix);
+		}
+		else
+		{
+			title += String.format("#%04d%s", id, suffix);
+		}
+	}
+	else if (!hasCustomHoverName() && id == Item::map_Id)
+	*/
+
+	/*if (!hasCustomHoverName() && id == Item::map_Id)
+	{
+		title.text += L" #" + _toString(auxValue);
+	}*/
 
 	lines->push_back(title);
-	unformattedStrings.push_back(title);
-	item->appendHoverText(shared_from_this(), player, lines, advanced, unformattedStrings);
+
+	item->appendHoverText(shared_from_this(), player, lines, advanced);
 
 	if (hasTag())
 	{
@@ -558,22 +608,87 @@ vector<wstring> *ItemInstance::getHoverText(shared_ptr<Player> player, bool adva
 				if (Enchantment::enchantments[type] != NULL)
 				{
 					wstring unformatted = L"";
-					lines->push_back(Enchantment::enchantments[type]->getFullname(level, unformatted));
-					unformattedStrings.push_back(unformatted);
+					lines->push_back(Enchantment::enchantments[type]->getFullname(level));
 				}
 			}
 		}
+
+		if (tag->contains(L"display"))
+		{
+			//CompoundTag *display = tag->getCompound(L"display");
+
+			//if (display->contains(L"color"))
+			//{
+			//	if (advanced)
+			//	{
+			//		wchar_t text [256];
+			//		swprintf(text, 256, L"Color: LOCALISE #%08X", display->getInt(L"color"));
+			//		lines->push_back(HtmlString(text));
+			//	}
+			//	else
+			//	{
+			//		lines->push_back(HtmlString(L"Dyed LOCALISE", eMinecraftColour_NOT_SET, true));
+			//	}
+			//}
+
+			// 4J: Lore isn't in use in game
+			/*if (display->contains(L"Lore"))
+			{
+				ListTag<StringTag> *lore = (ListTag<StringTag> *) display->getList(L"Lore");
+				if (lore->size() > 0)
+				{
+					for (int i = 0; i < lore->size(); i++)
+					{
+						//lines->push_back(ChatFormatting::DARK_PURPLE + "" + ChatFormatting::ITALIC + lore->get(i)->data);
+						lines->push_back(lore->get(i)->data);
+					}
+				}
+			}*/
+		}
 	}
+
+	attrAttrModMap *modifiers = getAttributeModifiers();
+
+	if (!modifiers->empty())
+	{
+		// New line
+		lines->push_back(HtmlString(L""));
+
+		// Modifier descriptions
+		for (AUTO_VAR(it, modifiers->begin()); it != modifiers->end(); ++it)
+		{
+			// 4J: Moved modifier string building to AttributeModifier
+			lines->push_back(it->second->getHoverText(it->first));
+		}
+	}
+	
+	// Delete modifiers map
+	for (AUTO_VAR(it, modifiers->begin()); it != modifiers->end(); ++it)
+	{
+		AttributeModifier *modifier = it->second;
+		delete modifier;
+	}
+	delete modifiers;
+
+	if (advanced)
+	{
+		if (isDamaged())
+		{
+			wstring damageStr = L"Durability: LOCALISE " + _toString<int>((getMaxDamage()) - getDamageValue()) + L" / " + _toString<int>(getMaxDamage());
+			lines->push_back(HtmlString(damageStr));
+		}
+	}
+
 	return lines;
 }
 
 // 4J Added
-vector<wstring> *ItemInstance::getHoverTextOnly(shared_ptr<Player> player, bool advanced, vector<wstring> &unformattedStrings)
+vector<HtmlString> *ItemInstance::getHoverTextOnly(shared_ptr<Player> player, bool advanced)
 {
-	vector<wstring> *lines = new vector<wstring>();
+	vector<HtmlString> *lines = new vector<HtmlString>();
 	Item *item = Item::items[id];
 
-	item->appendHoverText(shared_from_this(), player, lines, advanced, unformattedStrings);
+	item->appendHoverText(shared_from_this(), player, lines, advanced);
 
 	if (hasTag())
 	{
@@ -588,8 +703,7 @@ vector<wstring> *ItemInstance::getHoverTextOnly(shared_ptr<Player> player, bool 
 				if (Enchantment::enchantments[type] != NULL)
 				{
 					wstring unformatted = L"";
-					lines->push_back(Enchantment::enchantments[type]->getFullname(level,unformatted));
-					unformattedStrings.push_back(unformatted);
+					lines->push_back(Enchantment::enchantments[type]->getFullname(level));
 				}
 			}
 		}
@@ -636,9 +750,76 @@ void ItemInstance::addTagElement(wstring name, Tag *tag)
 {
 	if (this->tag == NULL)
 	{
-		this->setTag(new CompoundTag());
+		setTag(new CompoundTag());
 	}
 	this->tag->put((wchar_t *)name.c_str(), tag);
+}
+
+bool ItemInstance::mayBePlacedInAdventureMode()
+{
+	return getItem()->mayBePlacedInAdventureMode();
+}
+
+bool ItemInstance::isFramed() 
+{
+	return frame != NULL;
+}
+
+void ItemInstance::setFramed(shared_ptr<ItemFrame> frame) 
+{
+	this->frame = frame;
+}
+
+shared_ptr<ItemFrame> ItemInstance::getFrame() 
+{
+	return frame;
+}
+
+int ItemInstance::getBaseRepairCost()
+{
+	if (hasTag() && tag->contains(L"RepairCost"))
+	{
+		return tag->getInt(L"RepairCost");
+	}
+	else
+	{
+		return 0;
+	}
+}
+
+void ItemInstance::setRepairCost(int cost)
+{
+	if (!hasTag()) tag = new CompoundTag();
+	tag->putInt(L"RepairCost", cost);
+}
+
+attrAttrModMap *ItemInstance::getAttributeModifiers()
+{
+	attrAttrModMap *result = NULL;
+
+	if (hasTag() && tag->contains(L"AttributeModifiers"))
+	{
+		result = new attrAttrModMap();
+		ListTag<CompoundTag> *entries = (ListTag<CompoundTag> *) tag->getList(L"AttributeModifiers");
+
+		for (int i = 0; i < entries->size(); i++)
+		{
+			CompoundTag *entry = entries->get(i);
+			AttributeModifier *attribute = SharedMonsterAttributes::loadAttributeModifier(entry);
+
+			// 4J Not sure why but this is a check that the attribute ID is not empty 
+			/*if (attribute->getId()->getLeastSignificantBits() != 0 && attribute->getId()->getMostSignificantBits() != 0) 
+			{*/
+			result->insert(std::pair<eATTRIBUTE_ID, AttributeModifier *>(static_cast<eATTRIBUTE_ID>(entry->getInt(L"ID")), attribute));
+			/*}*/
+		}
+	}
+	else
+	{
+		result = getItem()->getDefaultAttributeModifiers();
+	}
+
+	return result;
 }
 
 void ItemInstance::set4JData(int data)
@@ -689,39 +870,4 @@ int ItemInstance::GetPotionStrength()
 	{
 		return (auxValue&MASK_LEVEL2EXTENDED)>>5;
 	}
-}
-
-// TU9
-
-bool ItemInstance::isFramed() 
-{
-	return frame != NULL;
-}
-
-void ItemInstance::setFramed(shared_ptr<ItemFrame> frame) 
-{
-	this->frame = frame;
-}
-
-shared_ptr<ItemFrame> ItemInstance::getFrame() 
-{
-	return frame;
-}
-
-int ItemInstance::getBaseRepairCost()
-{
-	if (hasTag() && tag->contains(L"RepairCost"))
-	{
-		return tag->getInt(L"RepairCost");
-	}
-	else
-	{
-		return 0;
-	}
-}
-
-void ItemInstance::setRepairCost(int cost)
-{
-	if (!hasTag()) tag = new CompoundTag();
-	tag->putInt(L"RepairCost", cost);
 }

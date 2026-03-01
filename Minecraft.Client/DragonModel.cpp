@@ -106,7 +106,7 @@ DragonModel::DragonModel(float g) : Model()
 	rearFoot->compile(1.0f/16.0f);
 }
 
-void DragonModel::prepareMobModel(shared_ptr<Mob> mob, float time, float r, float a) 
+void DragonModel::prepareMobModel(shared_ptr<LivingEntity> mob, float time, float r, float a) 
 {
 	this->a = a;
 }

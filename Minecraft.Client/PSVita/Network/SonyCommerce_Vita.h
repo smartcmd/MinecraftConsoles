@@ -201,4 +201,7 @@ public:
 	static bool getPurchasabilityUpdated();
 	static bool	getDLCUpgradePending();
 
+	virtual void ShowPsStoreIcon();
+	virtual void HidePsStoreIcon();
+
 };

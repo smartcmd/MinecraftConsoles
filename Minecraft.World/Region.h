@@ -19,7 +19,7 @@ private:
 	unsigned char *CachedTiles;
 
 public:
-	Region(Level *level, int x1, int y1, int z1, int x2, int y2, int z2);
+	Region(Level *level, int x1, int y1, int z1, int x2, int y2, int z2, int r);
 	virtual ~Region();
 	bool isAllEmpty();
 	int getTile(int x, int y, int z);
@@ -43,6 +43,7 @@ public:
 	int getBrightness(LightLayer::variety layer, int x, int y, int z);
 
 	int getMaxBuildHeight();
+	int getDirectSignal(int x, int y, int z, int dir);
 
 	LevelChunk* getLevelChunk(int x, int y, int z);
 

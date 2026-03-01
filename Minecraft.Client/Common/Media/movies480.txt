@@ -1,4 +1,5 @@
 AnvilMenu480.swf
+BeaconMenu480.swf
 BrewingStandMenu480.swf
 ChestLargeMenu480.swf
 ChestMenu480.swf
@@ -15,9 +16,12 @@ DLCMainMenu480.swf
 EnchantingMenu480.swf
 EndPoem480.swf
 EULA480.swf
+FireworksMenu480.swf
 FullscreenProgress480.swf
 FurnaceMenu480.swf
 HelpAndOptionsMenu480.swf
+HopperMenu480.swf
+HorseInventoryMenu480.swf
 HowToPlay480.swf
 HowToPlayMenu480.swf
 HUD480.swf
@@ -27,6 +31,7 @@ InGamePlayerOptions480.swf
 Intro480.swf
 InventoryMenu480.swf
 JoinMenu480.swf
+LanguagesMenu480.swf
 LaunchMoreOptionsMenu480.swf
 LeaderboardMenu480.swf
 LoadMenu480.swf

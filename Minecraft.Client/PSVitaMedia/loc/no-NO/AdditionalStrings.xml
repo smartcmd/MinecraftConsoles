@@ -48,6 +48,12 @@
 	<data name="IDS_CORRUPT_OPTIONS">
 		<value>Alternativer-filen din er ødelagt og må slettes.</value>
 	</data>
+	<data name="IDS_CORRUPT_OPTIONS_DELETE">
+		<value>Slett alternativer-fil.</value>
+	</data>
+	<data name="IDS_CORRUPT_OPTIONS_RETRY">
+		<value>Prøv å laste inn alternativer-fil igjen.</value>
+	</data>
 	<data name="IDS_CORRUPT_SAVECACHE">
 		<value>Hurtigbuffer-filen din er ødelagt og må slettes.</value>
 	</data>
@@ -75,6 +81,9 @@
 	<data name="IDS_CONTENT_RESTRICTION_MULTIPLAYER">
 		<value>Onlinetjenester er deaktivert på Sony Entertainment Network-kontoen din på grunn av foreldrekontrollbegrensninger for én av de lokale spillerne.</value>
 	</data>
+	<data name="IDS_CONTENT_RESTRICTION_PATCH_AVAILABLE">
+		<value>Onlinefunksjoner er deaktivert på grunn av at en spilloppdatering er tilgjengelig.</value>
+	</data>
 	<data name="IDS_NO_DLCCATEGORIES">
 		<value>Det er for øyeblikket ingen tilbud på nedlastbart innhold til dette spillet.</value>
 	</data>
@@ -83,8 +92,5 @@
 	</data>
 	<data name="IDS_INVITATION_BODY">
 		<value>Bli med å spille Minecraft: PlayStation®Vita Edition!</value>
-	</data>
-	<data name="IDS_CONTENT_RESTRICTION_PATCH_AVAILABLE">
-		<value>Onlinefunksjoner er deaktivert på grunn av at en spilloppdatering er tilgjengelig.</value>
 	</data>
 </root>

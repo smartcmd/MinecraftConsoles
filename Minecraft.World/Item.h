@@ -20,12 +20,16 @@ class ArmorItem;
 class BowItem;
 class FishingRodItem;
 class EnchantedBookItem;
+class EmptyMapItem;
 
 #define ITEM_ICON_COLUMNS 16
 
 
 class Item : public enable_shared_from_this<Item>
 {
+protected:
+	//static const UUID BASE_ATTACK_DAMAGE_UUID;
+
 public:
 	static const int ITEM_NUM_COUNT = 32000;
 
@@ -79,7 +83,14 @@ public:
 		eMaterial_emerald,
 		eMaterial_quartz,
 		eMaterial_apple,
-		eMaterial_carrot
+		eMaterial_carrot,
+		eMaterial_redstone,
+		eMaterial_coal,
+		eMaterial_paper,
+		eMaterial_book,
+		eMaterial_bookshelf,
+		eMaterial_wheat,
+
 	}
 	eMaterial;
 
@@ -123,6 +134,12 @@ public:
 		eBaseItemType_rod,
 		eBaseItemType_giltFruit,
 		eBaseItemType_carpet,
+		eBaseItemType_clay,
+		eBaseItemType_glass,
+		eBaseItemType_redstoneContainer,
+		eBaseItemType_fireworks,
+		eBaseItemType_lever,
+		eBaseItemType_paper,
 		eBaseItemType_MAXTYPES,
 	}
 	eBaseItemType;
@@ -146,25 +163,20 @@ public:
 		const int level;
 		const int uses;
 		const float speed;
-		const int damage;
+		const float damage;
 		const int enchantmentValue;
 
 		// 4J Stu - Had to make this public but was protected
 		// We shouldn't be creating these except the static initialisation
 	public:
-		Tier(int level, int uses, float speed, int damage, int enchantmentValue);
+		Tier(int level, int uses, float speed, float damage, int enchantmentValue);
 
 	public:
 		int getUses() const;
-
 		float getSpeed() const;
-
-		int getAttackDamageBonus() const;
-
+		float getAttackDamageBonus() const;
 		int getLevel() const;
-
 		int getEnchantmentValue() const;
-
 		int getTierItemId() const;
 	};
 
@@ -216,7 +228,7 @@ public:
 
 	static Item *string;
 	static Item *feather;
-	static Item *sulphur;
+	static Item *gunpowder;
 
 	static Item *hoe_wood;
 	static Item *hoe_stone;
@@ -228,10 +240,10 @@ public:
 	static Item *wheat;
 	static Item *bread;
 
-	static ArmorItem *helmet_cloth;
-	static ArmorItem *chestplate_cloth;
-	static ArmorItem *leggings_cloth;
-	static ArmorItem *boots_cloth;
+	static ArmorItem *helmet_leather;
+	static ArmorItem *chestplate_leather;
+	static ArmorItem *leggings_leather;
+	static ArmorItem *boots_leather;
 
 	static ArmorItem *helmet_chain;
 	static ArmorItem *chestplate_chain;
@@ -276,7 +288,7 @@ public:
 	static Item *boat;
 
 	static Item *leather;
-	static Item *milk;
+	static Item *bucket_milk;
 	static Item *brick;
 	static Item *clay;
 	static Item *reeds;
@@ -300,7 +312,7 @@ public:
 
 	static Item *bed;
 
-	static Item *diode;
+	static Item *repeater;
 	static Item *cookie;
 
 	static MapItem *map;
@@ -324,7 +336,7 @@ public:
 	static Item *ghastTear;
 	static Item *goldNugget;
 
-	static Item *netherStalkSeeds;
+	static Item *netherwart_seeds;
 
 	static PotionItem *potion;
 	static Item *glassBottle;
@@ -340,7 +352,7 @@ public:
 	static Item *eyeOfEnder;
 	static Item *speckledMelon;
 
-	static Item *monsterPlacer;
+	static Item *spawnEgg;
 
 	static Item *expBottle;
 
@@ -362,7 +374,6 @@ public:
 	// TU9
 	static Item *fireball;
 	static Item *frame;
-	static Item *netherbrick;
 
 	// TU14
 	//static Item writingBook;
@@ -377,13 +388,29 @@ public:
 	static Item *potatoBaked;
 	static Item *potatoPoisonous;
 
+	static EmptyMapItem *emptyMap;
+
 	static Item *carrotGolden;
 
 	static Item *carrotOnAStick;
+	static Item *netherStar;
 	static Item *pumpkinPie;
+
+	static Item *fireworks;
+	static Item *fireworksCharge;
 	static Item *netherQuartz;
 
+	static Item *comparator;
+	static Item *netherbrick;
 	static EnchantedBookItem *enchantedBook;
+	static Item *minecart_tnt;
+	static Item *minecart_hopper;
+
+	static Item *horseArmorMetal;
+	static Item *horseArmorGold;
+	static Item *horseArmorDiamond;
+	static Item *lead;
+	static Item *nameTag;
 
 
 	static const int shovel_iron_Id			= 256;
@@ -419,7 +446,7 @@ public:
 	static const int hatchet_gold_Id		= 286;
 	static const int string_Id				= 287;
 	static const int feather_Id				= 288;
-	static const int sulphur_Id				= 289;
+	static const int gunpowder_Id			= 289;
 	static const int hoe_wood_Id			= 290;
 	static const int hoe_stone_Id			= 291;
 	static const int hoe_iron_Id			= 292;
@@ -429,10 +456,10 @@ public:
 	static const int wheat_Id				= 296;
 	static const int bread_Id				= 297;
 
-	static const int helmet_cloth_Id		= 298;
-	static const int chestplate_cloth_Id	= 299;
-	static const int leggings_cloth_Id		= 300;
-	static const int boots_cloth_Id			= 301;
+	static const int helmet_leather_Id		= 298;
+	static const int chestplate_leather_Id	= 299;
+	static const int leggings_leather_Id	= 300;
+	static const int boots_leather_Id		= 301;
 
 	static const int helmet_chain_Id		= 302;
 	static const int chestplate_chain_Id	= 303;
@@ -471,7 +498,7 @@ public:
 	static const int snowBall_Id			= 332;
 	static const int boat_Id				= 333;
 	static const int leather_Id				= 334;
-	static const int milk_Id				= 335;
+	static const int bucket_milk_Id			= 335;
 	static const int brick_Id				= 336;
 	static const int clay_Id				= 337;
 	static const int reeds_Id				= 338;	
@@ -492,7 +519,7 @@ public:
 	static const int sugar_Id				= 353;
 	static const int cake_Id				= 354;
 	static const int bed_Id					= 355;
-	static const int diode_Id	= 356;
+	static const int repeater_Id			= 356;
 	static const int cookie_Id				= 357;
 	static const int map_Id					= 358;
 
@@ -514,7 +541,7 @@ public:
 	static const int blazeRod_Id			= 369;
 	static const int ghastTear_Id			= 370;
 	static const int goldNugget_Id			= 371;
-	static const int netherStalkSeeds_Id	= 372;
+	static const int netherwart_seeds_Id	= 372;
 	static const int potion_Id				= 373;
 	static const int glassBottle_Id			= 374;
 	static const int spiderEye_Id			= 375;
@@ -527,7 +554,7 @@ public:
 	static const int speckledMelon_Id		= 382;
 
 	// 1.1
-	static const int monsterPlacer_Id		= 383;
+	static const int spawnEgg_Id		= 383;
 
 	static const int expBottle_Id			 = 384;
 
@@ -552,7 +579,6 @@ public:
 	// TU9
 	static const int fireball_Id			 = 385;
 	static const int itemFrame_Id			 = 389;
-	static const int netherbrick_Id			 = 405;
 
 	// TU14
 	//static const int writingBook_Id			 = 130;
@@ -567,14 +593,30 @@ public:
 	static const int potatoBaked_Id = 393;
 	static const int potatoPoisonous_Id = 394;
 
+	static const int emptyMap_Id = 395;
 
 	static const int carrotGolden_Id = 396;
 
 	static const int carrotOnAStick_Id = 398;
+	static const int netherStar_Id = 399;
 	static const int pumpkinPie_Id = 400;
 
+	static const int fireworks_Id = 401;
+	static const int fireworksCharge_Id = 402;
+
 	static const int enchantedBook_Id = 403;
+
+	static const int comparator_Id = 404;
+	static const int netherbrick_Id = 405;
 	static const int netherQuartz_Id = 406;
+	static const int minecart_tnt_Id = 407;
+	static const int minecart_hopper_Id = 408;
+
+	static const int horseArmorMetal_Id = 417;
+	static const int horseArmorGold_Id = 418;
+	static const int horseArmorDiamond_Id = 419;
+	static const int lead_Id = 420;
+	static const int nameTag_Id = 421;
 
 public:
 	const int id;
@@ -610,7 +652,8 @@ protected:
 
 public:
 	// 4J Using per-item textures now
-	Item *setTextureName(const wstring &name);
+	Item *setIconName(const wstring &name);
+	wstring getIconName();
 	Item *setMaxStackSize(int max);
 	Item *setBaseItemTypeAndMaterial(int iType,int iMaterial);
 	int getBaseItemType();
@@ -620,11 +663,9 @@ public:
 	virtual Icon *getIcon(int auxValue);
 	Icon *getIcon(shared_ptr<ItemInstance> itemInstance);
 
-	const bool useOn(shared_ptr<ItemInstance> itemInstance, Level *level, int x, int y, int z, int face, bool bTestUseOnOnly=false);
-
 	virtual bool useOn(shared_ptr<ItemInstance> itemInstance, shared_ptr<Player> player, Level *level, int x, int y, int z, int face, float clickX, float clickY, float clickZ, bool bTestUseOnOnly=false);
 	virtual float getDestroySpeed(shared_ptr<ItemInstance> itemInstance, Tile *tile);
-	virtual bool TestUse(Level *level, shared_ptr<Player> player);
+	virtual bool TestUse(shared_ptr<ItemInstance> itemInstance, Level *level, shared_ptr<Player> player);
 	virtual shared_ptr<ItemInstance> use(shared_ptr<ItemInstance> itemInstance, Level *level, shared_ptr<Player> player);
 	virtual shared_ptr<ItemInstance> useTimeDepleted(shared_ptr<ItemInstance> itemInstance, Level *level, shared_ptr<Player> player);
 	virtual int getMaxStackSize();
@@ -651,7 +692,7 @@ public:
 	* @param attacker
 	* @return
 	*/
-	virtual bool hurtEnemy(shared_ptr<ItemInstance> itemInstance, shared_ptr<Mob> mob, shared_ptr<Mob> attacker);
+	virtual bool hurtEnemy(shared_ptr<ItemInstance> itemInstance, shared_ptr<LivingEntity> mob, shared_ptr<LivingEntity> attacker);
 
 	/**
 	* Returns true when the item was used to mine more efficiently
@@ -664,10 +705,10 @@ public:
 	* @param owner
 	* @return
 	*/
-	virtual bool mineBlock(shared_ptr<ItemInstance> itemInstance, Level *level, int tile, int x, int y, int z, shared_ptr<Mob> owner);
+	virtual bool mineBlock(shared_ptr<ItemInstance> itemInstance, Level *level, int tile, int x, int y, int z, shared_ptr<LivingEntity> owner);
 	virtual int getAttackDamage(shared_ptr<Entity> entity);
 	virtual bool canDestroySpecial(Tile *tile);
-	virtual bool interactEnemy(shared_ptr<ItemInstance> itemInstance, shared_ptr<Mob> mob);
+	virtual bool interactEnemy(shared_ptr<ItemInstance> itemInstance, shared_ptr<Player> player, shared_ptr<LivingEntity> mob);
 	Item *handEquipped();
 	virtual bool isHandEquipped();
 	virtual bool isMirroredArt();
@@ -700,7 +741,7 @@ protected:
 public:
 	virtual wstring getPotionBrewingFormula();
 	virtual bool hasPotionBrewingFormula();
-	virtual void appendHoverText(shared_ptr<ItemInstance> itemInstance, shared_ptr<Player> player, vector<wstring> *lines, bool advanced, vector<wstring> &unformattedStrings); // 4J Added unformattedStrings
+	virtual void appendHoverText(shared_ptr<ItemInstance> itemInstance, shared_ptr<Player> player, vector<HtmlString> *lines, bool advanced);
 	virtual wstring getHoverName(shared_ptr<ItemInstance> itemInstance);
 	virtual bool isFoil(shared_ptr<ItemInstance> itemInstance);
 	virtual const Rarity *getRarity(shared_ptr<ItemInstance> itemInstance);
@@ -713,6 +754,8 @@ public:
 	virtual int getEnchantmentValue();
 	virtual bool hasMultipleSpriteLayers();
 	virtual Icon *getLayerIcon(int auxValue, int spriteLayer);
+	virtual bool mayBePlacedInAdventureMode();
 	virtual bool isValidRepairItem(shared_ptr<ItemInstance> source, shared_ptr<ItemInstance> repairItem);
 	virtual void registerIcons(IconRegister *iconRegister);
+	virtual attrAttrModMap *getDefaultAttributeModifiers();
 };

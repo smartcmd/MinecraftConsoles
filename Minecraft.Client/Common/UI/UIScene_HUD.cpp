@@ -1,13 +1,12 @@
 #include "stdafx.h"
 #include "UI.h"
 #include "UIScene_HUD.h"
+#include "BossMobGuiInfo.h"
 #include "..\..\Minecraft.h"
 #include "..\..\MultiplayerLocalPlayer.h"
 #include "..\..\..\Minecraft.World\net.minecraft.world.entity.boss.enderdragon.h"
 #include "..\..\EnderDragonRenderer.h"
 #include "..\..\..\Minecraft.World\net.minecraft.world.inventory.h"
-#include "..\..\..\Minecraft.World\net.minecraft.world.item.h"
-#include "..\..\..\Minecraft.World\net.minecraft.world.effect.h"
 #include "..\..\..\Minecraft.World\StringHelpers.h"
 
 UIScene_HUD::UIScene_HUD(int iPad, void *initData, UILayer *parentLayer) : UIScene(iPad, parentLayer)
@@ -16,32 +15,6 @@ UIScene_HUD::UIScene_HUD(int iPad, void *initData, UILayer *parentLayer) : UISce
 
 	// Setup all the Iggy references we need for this scene
 	initialiseMovie();
-
-	m_lastActiveSlot = 0;
-	m_lastScale = 1;
-	m_bToolTipsVisible = true;
-	m_lastExpProgress = 0.0f;
-	m_lastExpLevel = 0;
-	m_lastMaxHealth = 20;
-	m_lastHealthBlink = false;
-	m_lastHealthPoison = false;
-	m_lastMaxFood = 20;
-	m_lastFoodPoison = false;
-	m_lastAir = 10;
-	m_lastArmour = 0;
-	m_showHealth = true;
-	m_showFood = true;
-	m_showAir = true;
-	m_showArmour = true;
-	m_showExpBar = true;
-	m_lastRegenEffect = false;
-	m_lastSaturation = 0;
-	m_lastDragonHealth = 0.0f;
-	m_showDragonHealth = false;
-	m_ticksWithNoBoss = 0;
-	m_uiSelectedItemOpacityCountDown = 0;
-	m_displayName = L"";
-	m_lastShowDisplayName = true;
 
 	SetDragonLabel( app.GetString( IDS_BOSS_ENDERDRAGON_HEALTH ) );
 	SetSelectedLabel(L"");
@@ -146,33 +119,35 @@ void UIScene_HUD::tick()
 			return;
 		}
 
-		if(pMinecraft->localplayers[m_iPad]->dimension == 1)
+		// Is boss present?
+		bool noBoss = BossMobGuiInfo::name.empty() || BossMobGuiInfo::displayTicks <= 0;
+		if (noBoss) 
 		{
-			if (EnderDragonRenderer::bossInstance == NULL)
+			if (m_showDragonHealth)
 			{
-				if(m_ticksWithNoBoss<=20)
+				// No boss and health is visible
+				if(m_ticksWithNoBoss <= 20)
 				{
 					++m_ticksWithNoBoss;
 				}
-				if( m_ticksWithNoBoss > 20 )
+				else
 				{
 					ShowDragonHealth(false);
 				}
 			}
-			else
-			{
-				shared_ptr<EnderDragon> boss = EnderDragonRenderer::bossInstance;
-				// 4J Stu - Don't clear this here as it's wiped for other players
-				//EnderDragonRenderer::bossInstance = nullptr;
-				m_ticksWithNoBoss = 0;
-
-				ShowDragonHealth(true);
-				SetDragonHealth( (float)boss->getSynchedHealth()/boss->getMaxHealth());
-			}
 		}
 		else
 		{
-			ShowDragonHealth(false);
+			BossMobGuiInfo::displayTicks--;
+
+			m_ticksWithNoBoss = 0;			
+			SetDragonHealth(BossMobGuiInfo::healthProgress);
+
+			if (!m_showDragonHealth)
+			{
+				SetDragonLabel(BossMobGuiInfo::name);
+				ShowDragonHealth(true);
+			}
 		}
 	}
 }
@@ -229,34 +204,46 @@ void UIScene_HUD::customDraw(IggyCustomDrawCallbackRegion *region)
 
 void UIScene_HUD::handleReload()
 {
-	m_lastActiveSlot = 0;
-	m_lastScale = 1;
+	m_lastActiveSlot = -1;
+	m_iGuiScale = -1;
 	m_bToolTipsVisible = true;
 	m_lastExpProgress = 0.0f;
 	m_lastExpLevel = 0;
+	m_iCurrentHealth = 0;
 	m_lastMaxHealth = 20;
 	m_lastHealthBlink = false;
 	m_lastHealthPoison = false;
-	m_lastMaxFood = 20;
+	m_iCurrentFood = -1;
 	m_lastFoodPoison = false;
 	m_lastAir = 10;
+	m_currentExtraAir = 0;
 	m_lastArmour = 0;
 	m_showHealth = true;
+	m_showHorseHealth = true;
 	m_showFood = true;
-	m_showAir = true;
+	m_showAir = false;	// get's initialised invisible anyways, by setting it to false we ensure it will remain visible when switching in and out of split screen!
 	m_showArmour = true;
 	m_showExpBar = true;
-	m_lastRegenEffect = false;
-	m_lastSaturation = 0;
+	m_bRegenEffectEnabled = false;
+	m_iFoodSaturation = 0;
 	m_lastDragonHealth = 0.0f;
 	m_showDragonHealth = false;
 	m_ticksWithNoBoss = 0;
 	m_uiSelectedItemOpacityCountDown = 0;
 	m_displayName = L"";
+	m_lastShowDisplayName = true;
+	m_bRidingHorse = true;
+	m_horseHealth = 1;
+	m_lastHealthWither = true;
+	m_iCurrentHealthAbsorb = -1;
+	m_horseJumpProgress = 1.0f;
+	m_iHeartOffsetIndex = -1;
+	m_bHealthAbsorbActive = false;
+	m_iHorseMaxHealth = -1;
 
 	m_labelDisplayName.setVisible(m_lastShowDisplayName);
 
-	SetDragonLabel( app.GetString( IDS_BOSS_ENDERDRAGON_HEALTH ) );
+	SetDragonLabel(BossMobGuiInfo::name);
 	SetSelectedLabel(L"");
 
 	for(unsigned int i = 0; i < CHAT_LINES_COUNT; ++i)
@@ -284,11 +271,26 @@ void UIScene_HUD::handleReload()
 	SetTooltipsEnabled(((ui.GetMenuDisplayed(ProfileManager.GetPrimaryPad())) || (app.GetGameSettings(ProfileManager.GetPrimaryPad(),eGameSetting_Tooltips) != 0)));
 }
 
+int UIScene_HUD::getPad()
+{
+	return m_iPad;
+}
+
+void UIScene_HUD::SetOpacity(float opacity)
+{
+	setOpacity(opacity);
+}
+
+void UIScene_HUD::SetVisible(bool visible)
+{
+	setVisible(visible);
+}
+
 void UIScene_HUD::SetHudSize(int scale)
 {
-	if(scale != m_lastScale)
+	if(scale != m_iGuiScale)
 	{
-		m_lastScale = scale;
+		m_iGuiScale = scale;
 
 		IggyDataValue result;
 		IggyDataValue value[1];
@@ -298,7 +300,7 @@ void UIScene_HUD::SetHudSize(int scale)
 	}
 }
 
-void UIScene_HUD::SetExpBarProgress(float progress)
+void UIScene_HUD::SetExpBarProgress(float progress, int xpNeededForNextLevel)
 {
 	if(progress != m_lastExpProgress)
 	{
@@ -340,24 +342,27 @@ void UIScene_HUD::SetActiveSlot(int slot)
 	}
 }
 
-void UIScene_HUD::SetHealth(int iHealth, int iLastHealth, bool bBlink, bool bPoison)
+void UIScene_HUD::SetHealth(int iHealth, int iLastHealth, bool bBlink, bool bPoison, bool bWither)
 {
 	int maxHealth = max(iHealth, iLastHealth);
-	if(maxHealth != m_lastMaxHealth || bBlink != m_lastHealthBlink || bPoison != m_lastHealthPoison)
+	if(maxHealth != m_lastMaxHealth || bBlink != m_lastHealthBlink || bPoison != m_lastHealthPoison || bWither != m_lastHealthWither)
 	{
 		m_lastMaxHealth = maxHealth;
 		m_lastHealthBlink = bBlink;
 		m_lastHealthPoison = bPoison;
+		m_lastHealthWither = bWither;
 
 		IggyDataValue result;
-		IggyDataValue value[3];
+		IggyDataValue value[4];
 		value[0].type = IGGY_DATATYPE_number;
 		value[0].number = maxHealth;
 		value[1].type = IGGY_DATATYPE_boolean;
 		value[1].boolval = bBlink;
 		value[2].type = IGGY_DATATYPE_boolean;
 		value[2].boolval = bPoison;
-		IggyResult out = IggyPlayerCallMethodRS ( getMovie() , &result, IggyPlayerRootPath( getMovie() ), m_funcSetHealth , 3 , value );
+		value[3].type = IGGY_DATATYPE_boolean;
+		value[3].boolval = bWither;
+		IggyResult out = IggyPlayerCallMethodRS ( getMovie() , &result, IggyPlayerRootPath( getMovie() ), m_funcSetHealth , 4 , value );
 	}
 }
 
@@ -365,9 +370,9 @@ void UIScene_HUD::SetFood(int iFood, int iLastFood, bool bPoison)
 {
 	// Ignore iLastFood as food doesn't flash
 	int maxFood = iFood; //, iLastFood);
-	if(maxFood != m_lastMaxFood || bPoison != m_lastFoodPoison)
+	if(maxFood != m_iCurrentFood || bPoison != m_lastFoodPoison)
 	{
-		m_lastMaxFood = maxFood;
+		m_iCurrentFood = maxFood;
 		m_lastFoodPoison = bPoison;
 
 		IggyDataValue result;
@@ -380,7 +385,7 @@ void UIScene_HUD::SetFood(int iFood, int iLastFood, bool bPoison)
 	}
 }
 
-void UIScene_HUD::SetAir(int iAir)
+void UIScene_HUD::SetAir(int iAir, int extra)
 {
 	if(iAir != m_lastAir)
 	{
@@ -422,6 +427,21 @@ void UIScene_HUD::ShowHealth(bool show)
 		value[0].type = IGGY_DATATYPE_boolean;
 		value[0].boolval = show;
 		IggyResult out = IggyPlayerCallMethodRS ( getMovie() , &result, IggyPlayerRootPath( getMovie() ), m_funcShowHealth , 1 , value );
+	}
+}
+
+void UIScene_HUD::ShowHorseHealth(bool show)
+{
+	if(show != m_showHorseHealth)
+	{
+		app.DebugPrintf("ShowHorseHealth to %s\n", show?"TRUE":"FALSE");
+		m_showHorseHealth = show;
+
+		IggyDataValue result;
+		IggyDataValue value[1];
+		value[0].type = IGGY_DATATYPE_boolean;
+		value[0].boolval = show;
+		IggyResult out = IggyPlayerCallMethodRS ( getMovie() , &result, IggyPlayerRootPath( getMovie() ), m_funcShowHorseHealth , 1 , value );
 	}
 }
 
@@ -487,10 +507,10 @@ void UIScene_HUD::ShowExpBar(bool show)
 
 void UIScene_HUD::SetRegenerationEffect(bool bEnabled)
 {
-	if(bEnabled != m_lastRegenEffect)
+	if(bEnabled != m_bRegenEffectEnabled)
 	{
 		app.DebugPrintf("SetRegenerationEffect to %s\n", bEnabled?"TRUE":"FALSE");
-		m_lastRegenEffect = bEnabled;
+		m_bRegenEffectEnabled = bEnabled;
 
 		IggyDataValue result;
 		IggyDataValue value[1];
@@ -502,10 +522,10 @@ void UIScene_HUD::SetRegenerationEffect(bool bEnabled)
 
 void UIScene_HUD::SetFoodSaturationLevel(int iSaturation)
 {
-	if(iSaturation != m_lastSaturation)
+	if(iSaturation != m_iFoodSaturation)
 	{
 		app.DebugPrintf("Set saturation to %d\n", iSaturation);
-		m_lastSaturation = iSaturation;
+		m_iFoodSaturation = iSaturation;
 
 		IggyDataValue result;
 		IggyDataValue value[1];
@@ -576,6 +596,77 @@ void UIScene_HUD::HideSelectedLabel()
 {
 	IggyDataValue result;
 	IggyResult out = IggyPlayerCallMethodRS ( getMovie() , &result, IggyPlayerRootPath( getMovie() ), m_funcHideSelectedLabel , 0 , NULL );
+}
+
+
+void UIScene_HUD::SetRidingHorse(bool ridingHorse, bool bIsJumpable, int maxHorseHealth)
+{
+	if(m_bRidingHorse != ridingHorse || maxHorseHealth != m_iHorseMaxHealth)
+	{
+		app.DebugPrintf("SetRidingHorse to %s\n", ridingHorse?"TRUE":"FALSE");
+		m_bRidingHorse = ridingHorse;
+		m_bIsJumpable = bIsJumpable;
+		m_iHorseMaxHealth = maxHorseHealth;
+
+		IggyDataValue result;
+		IggyDataValue value[3];
+		value[0].type = IGGY_DATATYPE_boolean;
+		value[0].boolval = ridingHorse;
+		value[1].type = IGGY_DATATYPE_boolean;
+		value[1].boolval = bIsJumpable;
+		value[2].type = IGGY_DATATYPE_number;
+		value[2].number = maxHorseHealth;
+		IggyResult out = IggyPlayerCallMethodRS ( getMovie() , &result, IggyPlayerRootPath( getMovie() ), m_funcSetRidingHorse , 3 , value );
+	}
+}
+
+void UIScene_HUD::SetHorseHealth(int health, bool blink /*= false*/)
+{
+	if(m_bRidingHorse && m_horseHealth != health)
+	{
+		app.DebugPrintf("SetHorseHealth to %d\n", health);
+		m_horseHealth = health;
+
+		IggyDataValue result;
+		IggyDataValue value[2];
+		value[0].type = IGGY_DATATYPE_number;
+		value[0].number = health;
+		value[1].type = IGGY_DATATYPE_boolean;
+		value[1].boolval = blink;
+		IggyResult out = IggyPlayerCallMethodRS ( getMovie() , &result, IggyPlayerRootPath( getMovie() ), m_funcSetHorseHealth , 2 , value );
+	}
+}
+
+void UIScene_HUD::SetHorseJumpBarProgress(float progress)
+{
+	if(m_bRidingHorse && m_horseJumpProgress != progress)
+	{
+		app.DebugPrintf("SetHorseJumpBarProgress to %f\n", progress);
+		m_horseJumpProgress = progress;
+
+		IggyDataValue result;
+		IggyDataValue value[1];
+		value[0].type = IGGY_DATATYPE_number;
+		value[0].number = progress;
+		IggyResult out = IggyPlayerCallMethodRS ( getMovie() , &result, IggyPlayerRootPath( getMovie() ), m_funcSetHorseJumpBarProgress , 1 , value );
+	}
+}
+
+void UIScene_HUD::SetHealthAbsorb(int healthAbsorb)
+{
+	if(m_iCurrentHealthAbsorb != healthAbsorb)
+	{
+		app.DebugPrintf("SetHealthAbsorb to %d\n", healthAbsorb);
+		m_iCurrentHealthAbsorb = healthAbsorb;
+
+		IggyDataValue result;
+		IggyDataValue value[2];
+		value[0].type = IGGY_DATATYPE_boolean;
+		value[0].boolval = healthAbsorb > 0;
+		value[1].type = IGGY_DATATYPE_number;
+		value[1].number = healthAbsorb;
+		IggyResult out = IggyPlayerCallMethodRS ( getMovie() , &result, IggyPlayerRootPath( getMovie() ), m_funcSetHealthAbsorb , 2 , value );
+	}
 }
 
 void UIScene_HUD::render(S32 width, S32 height, C4JRender::eViewportType viewport)
@@ -775,223 +866,6 @@ void UIScene_HUD::handleGameTick()
 		}
 		m_parentLayer->showComponent(m_iPad, eUIScene_HUD,true);
 
-		int iGuiScale;	
-
-		if(pMinecraft->localplayers[m_iPad]->m_iScreenSection == C4JRender::VIEWPORT_TYPE_FULLSCREEN)
-		{
-			iGuiScale=app.GetGameSettings(m_iPad,eGameSetting_UISize);
-		}
-		else
-		{
-			iGuiScale=app.GetGameSettings(m_iPad,eGameSetting_UISizeSplitscreen);
-		}
-		SetHudSize(iGuiScale);
-
-		SetDisplayName(ProfileManager.GetDisplayName(m_iPad));
-		
-		SetTooltipsEnabled(((ui.GetMenuDisplayed(ProfileManager.GetPrimaryPad())) || (app.GetGameSettings(ProfileManager.GetPrimaryPad(),eGameSetting_Tooltips) != 0)));
-
-#if TO_BE_IMPLEMENTED
-		// Move the whole hud group if we are not in fullscreen
-		if(pMinecraft->localplayers[m_iPad]->m_iScreenSection != C4JRender::VIEWPORT_TYPE_FULLSCREEN)
-		{
-			int iTooltipsYOffset = 0;
-			// if tooltips are off, set the y offset to zero
-			if(app.GetGameSettings(m_iPad,eGameSetting_Tooltips)==0)	
-			{	
-				switch(iGuiScale)
-				{
-				case 0:
-					iTooltipsYOffset=28;//screenHeight/10;
-					break;
-				case 2:
-					iTooltipsYOffset=28;//screenHeight/10;
-					break;
-				case 1:
-				default:
-					iTooltipsYOffset=28;//screenHeight/10;
-					break;
-				}
-			}
-
-			float fHeight, fWidth;
-			GetBounds(&fWidth, &fHeight);
-
-			int iSafezoneYHalf = 0;
-			switch(pMinecraft->localplayers[m_iPad]->m_iScreenSection)
-			{
-			case C4JRender::VIEWPORT_TYPE_SPLIT_TOP:
-				break;
-			case C4JRender::VIEWPORT_TYPE_SPLIT_BOTTOM:
-				iSafezoneYHalf = -fHeight/10;// 5%  (need to treat the whole screen is 2x this screen)
-				break;
-			case C4JRender::VIEWPORT_TYPE_SPLIT_LEFT:
-				iSafezoneYHalf = (fHeight/2)-(fHeight/10);// 5% (need to treat the whole screen is 2x this screen)
-				break;
-			case C4JRender::VIEWPORT_TYPE_SPLIT_RIGHT:
-				iSafezoneYHalf = (fHeight/2)-(fHeight/10);// 5% (need to treat the whole screen is 2x this screen)
-				break;
-			case C4JRender::VIEWPORT_TYPE_QUADRANT_TOP_LEFT:
-				break;
-			case C4JRender::VIEWPORT_TYPE_QUADRANT_TOP_RIGHT:
-				break;
-			case C4JRender::VIEWPORT_TYPE_QUADRANT_BOTTOM_LEFT:
-				iSafezoneYHalf = -fHeight/10; // 5% (the whole screen is 2x this screen)
-				break;
-			case C4JRender::VIEWPORT_TYPE_QUADRANT_BOTTOM_RIGHT:
-				iSafezoneYHalf = -fHeight/10; // 5%  (the whole screen is 2x this screen)
-				break;
-			};
-
-			D3DXVECTOR3 pos;
-			m_hudGroup.GetPosition(&pos);
-			pos.y = iTooltipsYOffset + iSafezoneYHalf;
-			m_hudGroup.SetPosition(&pos);
-		}
-#endif
-		SetActiveSlot(pMinecraft->localplayers[m_iPad]->inventory->selected);
-
-		// Update xp progress
-		if (pMinecraft->localgameModes[m_iPad]->canHurtPlayer())
-		{
-			ShowExpBar(true);
-			int xpNeededForNextLevel = pMinecraft->localplayers[m_iPad]->getXpNeededForNextLevel();
-			int progress = (int)(pMinecraft->localplayers[m_iPad]->experienceProgress  *xpNeededForNextLevel);
-			SetExpBarProgress((float)progress/xpNeededForNextLevel);
-		}
-		else
-		{
-			ShowExpBar(false);
-		}
-
-		// Update xp level
-		if (pMinecraft->localgameModes[m_iPad]->hasExperience() && pMinecraft->localplayers[m_iPad]->experienceLevel > 0)
-		{
-			SetExpLevel(pMinecraft->localplayers[m_iPad]->experienceLevel);
-		}
-		else
-		{
-			SetExpLevel(0);
-		}
-
-		if (pMinecraft->localgameModes[m_iPad]->canHurtPlayer())
-		{
-			ShowHealth(true);
-			ShowFood(true);
-
-			SetRegenerationEffect(pMinecraft->localplayers[m_iPad]->hasEffect(MobEffect::regeneration));
-
-			// Update health
-			bool blink = pMinecraft->localplayers[m_iPad]->invulnerableTime / 3 % 2 == 1;
-			if (pMinecraft->localplayers[m_iPad]->invulnerableTime < 10) blink = false;
-			int iHealth = pMinecraft->localplayers[m_iPad]->getHealth();
-			int iLastHealth = pMinecraft->localplayers[m_iPad]->lastHealth;
-			bool bHasPoison = pMinecraft->localplayers[m_iPad]->hasEffect(MobEffect::poison);
-			SetHealth(iHealth, iLastHealth, blink, bHasPoison);
-
-			// Update food
-			//bool foodBlink = false;
-			FoodData *foodData = pMinecraft->localplayers[m_iPad]->getFoodData();
-			int food = foodData->getFoodLevel();
-			int oldFood = foodData->getLastFoodLevel();
-			bool hasHungerEffect = pMinecraft->localplayers[m_iPad]->hasEffect(MobEffect::hunger);
-			int saturationLevel = pMinecraft->localplayers[m_iPad]->getFoodData()->getSaturationLevel();
-			SetFood(food, oldFood, hasHungerEffect);
-			SetFoodSaturationLevel(saturationLevel);
-
-			// Update armour
-			int armor = pMinecraft->localplayers[m_iPad]->getArmorValue();
-			if(armor > 0)
-			{
-				ShowArmour(true);
-				SetArmour(armor);
-			}
-			else
-			{
-				ShowArmour(false);
-			}
-
-			// Update air
-			if (pMinecraft->localplayers[m_iPad]->isUnderLiquid(Material::water))
-			{
-				ShowAir(true);
-				int count = (int) ceil((pMinecraft->localplayers[m_iPad]->getAirSupply() - 2) * 10.0f / Player::TOTAL_AIR_SUPPLY);
-				SetAir(count);
-			}
-			else
-			{
-				ShowAir(false);
-			}
-		}
-		else
-		{
-			ShowHealth(false);
-			ShowFood(false);
-			ShowAir(false);
-			ShowArmour(false);
-		}
-
-		if(m_uiSelectedItemOpacityCountDown>0)
-		{
-			--m_uiSelectedItemOpacityCountDown;
-
-			// 4J Stu - Timing here is kept the same as on Xbox360, even though we do it differently now and do the fade out in Flash rather than directly setting opacity
-			if(m_uiSelectedItemOpacityCountDown < (SharedConstants::TICKS_PER_SECOND * 1) )
-			{
-				HideSelectedLabel();
-				m_uiSelectedItemOpacityCountDown = 0;
-			}
-		}
-
-		unsigned char ucAlpha=app.GetGameSettings(ProfileManager.GetPrimaryPad(),eGameSetting_InterfaceOpacity);
-		float fVal;
-
-		if(ucAlpha<80)
-		{
-			// if we are in a menu, set the minimum opacity for tooltips to 15%
-			if(ui.GetMenuDisplayed(m_iPad) && (ucAlpha<15))
-			{
-				ucAlpha=15;
-			}
-
-			// check if we have the timer running for the opacity
-			unsigned int uiOpacityTimer=app.GetOpacityTimer(m_iPad);
-			if(uiOpacityTimer!=0)
-			{
-				if(uiOpacityTimer<10)
-				{
-					float fStep=(80.0f-(float)ucAlpha)/10.0f;
-					fVal=0.01f*(80.0f-((10.0f-(float)uiOpacityTimer)*fStep));
-				}
-				else
-				{
-					fVal=0.01f*80.0f;
-				}
-			}
-			else
-			{
-				fVal=0.01f*(float)ucAlpha;
-			}
-		}
-		else
-		{
-			// if we are in a menu, set the minimum opacity for tooltips to 15%
-			if(ui.GetMenuDisplayed(m_iPad) && (ucAlpha<15))
-			{
-				ucAlpha=15;
-			}
-			fVal=0.01f*(float)ucAlpha;
-		}
-		setOpacity(fVal);
-
-		bool bDisplayGui=app.GetGameStarted() && !ui.GetMenuDisplayed(m_iPad) && !(app.GetXuiAction(m_iPad)==eAppAction_AutosaveSaveGameCapturedThumbnail) && app.GetGameSettings(m_iPad,eGameSetting_DisplayHUD)!=0;
-		if(bDisplayGui && pMinecraft->localplayers[m_iPad] != NULL)
-		{
-			setVisible(true);			
-		}
-		else
-		{
-			setVisible(false);	
-		}
+		updateFrameTick();
 	}
 }

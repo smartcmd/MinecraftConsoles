@@ -13,7 +13,7 @@ public:
 
 	virtual bool setupControl(UIScene *scene, IggyValuePath *parent, const string &controlName);
 
-	void init(const wstring &label, int id);
+	void init(UIString label, int id);
 	void ReInit();
 
 	virtual void setFocus(bool focus);

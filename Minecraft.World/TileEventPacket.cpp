@@ -30,8 +30,8 @@ void TileEventPacket::read(DataInputStream *dis) //throws IOException
 	x = dis->readInt();
 	y = dis->readShort();
 	z = dis->readInt();
-	b0 = dis->read();
-	b1 = dis->read();
+	b0 = dis->readUnsignedByte();
+	b1 = dis->readUnsignedByte();
 	tile = dis->readShort() & Tile::TILE_NUM_MASK;
 }
 

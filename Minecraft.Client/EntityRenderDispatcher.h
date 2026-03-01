@@ -26,7 +26,8 @@ public:
     Textures *textures;
     ItemInHandRenderer *itemInHandRenderer;
     Level *level;
-    shared_ptr<Mob> cameraEntity;
+    shared_ptr<LivingEntity> cameraEntity;
+	shared_ptr<LivingEntity> crosshairPickMob;
     float playerRotY;
     float playerRotX;
     Options *options;
@@ -36,14 +37,19 @@ public:
 
 private:
 	EntityRenderDispatcher();
+
 public:
 	EntityRenderer *getRenderer(eINSTANCEOF e);
     EntityRenderer *getRenderer(shared_ptr<Entity> e);
-    void prepare(Level *level, Textures *textures, Font *font, shared_ptr<Mob> player, Options *options, float a);
+    void prepare(Level *level, Textures *textures, Font *font, shared_ptr<LivingEntity> player, shared_ptr<LivingEntity> crosshairPickMob, Options *options, float a);
     void render(shared_ptr<Entity> entity, float a);
     void render(shared_ptr<Entity> entity, double x, double y, double z, float rot, float a, bool bItemFrame = false, bool bRenderPlayerShadow = true);
     void setLevel(Level *level);
     double distanceToSqr(double x, double y, double z);
     Font *getFont();
 	void registerTerrainTextures(IconRegister *iconRegister);
+
+private:
+	void renderHitbox(shared_ptr<Entity> entity, double x, double y, double z, float rot, float a);
+
 };

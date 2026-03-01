@@ -21,7 +21,7 @@ bool UIControl_CheckBox::setupControl(UIScene *scene, IggyValuePath *parent, con
 	return success;
 }
 
-void UIControl_CheckBox::init(const wstring &label, int id, bool checked)
+void UIControl_CheckBox::init(UIString label, int id, bool checked)
 {
 	m_label = label;
 	m_id = id;

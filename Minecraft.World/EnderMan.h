@@ -10,6 +10,8 @@ public:
 public:
 	static void staticCtor();
 private:
+	static AttributeModifier *SPEED_MODIFIER_ATTACKING;
+
 	static bool MAY_TAKE[256];
 
 	static const int DATA_CARRY_ITEM_ID = 16;
@@ -19,13 +21,14 @@ private:
 private:
 	int teleportTime;
 	int aggroTime;
+	shared_ptr<Entity> lastAttackTarget;
+	bool aggroedByPlayer;
 
 public:
 	EnderMan(Level *level);
 
-	virtual int getMaxHealth();
-
 protected:
+	virtual void registerAttributes();
 	virtual void defineSynchedData();
 
 public:
@@ -53,12 +56,11 @@ protected:
 	virtual void dropDeathLoot(bool wasKilledByPlayer, int playerBonusLevel);
 
 public:
-	// 4J Brought forward from 1.2.3 to help fix Enderman behaviour
 	void setCarryingTile(int carryingTile);
 	int getCarryingTile();
 	void setCarryingData(int carryingData);
 	int getCarryingData();
-	virtual bool hurt(DamageSource *source, int damage);
+	virtual bool hurt(DamageSource *source, float damage);
 	bool isCreepy();
 	void setCreepy(bool creepy);
 };

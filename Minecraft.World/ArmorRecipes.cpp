@@ -49,25 +49,25 @@ void ArmorRecipes::_init()
 	ADD_OBJECT(map[0],Item::diamond);
 	ADD_OBJECT(map[0],Item::goldIngot);
 
-	ADD_OBJECT(map[1],Item::helmet_cloth);
+	ADD_OBJECT(map[1],Item::helmet_leather);
 //	ADD_OBJECT(map[1],Item::helmet_chain);
 	ADD_OBJECT(map[1],Item::helmet_iron);
 	ADD_OBJECT(map[1],Item::helmet_diamond);
 	ADD_OBJECT(map[1],Item::helmet_gold);
 
-	ADD_OBJECT(map[2],Item::chestplate_cloth);
+	ADD_OBJECT(map[2],Item::chestplate_leather);
 //	ADD_OBJECT(map[2],Item::chestplate_chain);
 	ADD_OBJECT(map[2],Item::chestplate_iron);
 	ADD_OBJECT(map[2],Item::chestplate_diamond);
 	ADD_OBJECT(map[2],Item::chestplate_gold);
 
-	ADD_OBJECT(map[3],Item::leggings_cloth);
+	ADD_OBJECT(map[3],Item::leggings_leather);
 //	ADD_OBJECT(map[3],Item::leggings_chain);
 	ADD_OBJECT(map[3],Item::leggings_iron);
 	ADD_OBJECT(map[3],Item::leggings_diamond);
 	ADD_OBJECT(map[3],Item::leggings_gold);
 
-	ADD_OBJECT(map[4],Item::boots_cloth);
+	ADD_OBJECT(map[4],Item::boots_leather);
 //	ADD_OBJECT(map[4],Item::boots_chain);
 	ADD_OBJECT(map[4],Item::boots_iron);
 	ADD_OBJECT(map[4],Item::boots_diamond);
@@ -79,7 +79,7 @@ ArmorRecipes::_eArmorType ArmorRecipes::GetArmorType(int iId)
 {
 	switch(iId)
 	{
-	case Item::helmet_cloth_Id:	
+	case Item::helmet_leather_Id:	
 	case Item::helmet_chain_Id:	
 	case Item::helmet_iron_Id:		
 	case Item::helmet_diamond_Id:						
@@ -87,7 +87,7 @@ ArmorRecipes::_eArmorType ArmorRecipes::GetArmorType(int iId)
 		return eArmorType_Helmet;
 		break;
 
-	case Item::chestplate_cloth_Id:
+	case Item::chestplate_leather_Id:
 	case Item::chestplate_chain_Id:
 	case Item::chestplate_iron_Id:	
 	case Item::chestplate_diamond_Id:
@@ -95,7 +95,7 @@ ArmorRecipes::_eArmorType ArmorRecipes::GetArmorType(int iId)
 		return eArmorType_Chestplate;
 		break;
 
-	case Item::leggings_cloth_Id:
+	case Item::leggings_leather_Id:
 	case Item::leggings_chain_Id:	
 	case Item::leggings_iron_Id:
 	case Item::leggings_diamond_Id:
@@ -103,7 +103,7 @@ ArmorRecipes::_eArmorType ArmorRecipes::GetArmorType(int iId)
 		return eArmorType_Leggings;
 		break;
 
-	case Item::boots_cloth_Id:		
+	case Item::boots_leather_Id:		
 	case Item::boots_chain_Id:	
 	case Item::boots_iron_Id:
 	case Item::boots_diamond_Id:

@@ -45,15 +45,20 @@ protected:
 	virtual bool doesSectionTreeHaveFocus(ESceneSection eSection) { return false; }
 	virtual void setSectionFocus(ESceneSection eSection, int iPad);
 	void setFocusToPointer(int iPad);
-	void SetPointerText(const wstring &description, vector<wstring> &unformattedStrings, bool newSlot);
+	void SetPointerText(vector<HtmlString> *description, bool newSlot);
 	virtual shared_ptr<ItemInstance> getSlotItem(ESceneSection eSection, int iSlot);
+	virtual Slot *getSlot(ESceneSection eSection, int iSlot);
 	virtual bool isSlotEmpty(ESceneSection eSection, int iSlot);
 	virtual void adjustPointerForSafeZone();
 
 	virtual UIControl *getSection(ESceneSection eSection) { return NULL; }
+	virtual int GetBaseSlotCount() { return 0; }
 
 public:
 	virtual void tick();
+
+	// 4J - TomK If update tooltips is called then make sure the correct parent is invoked! (both UIScene AND IUIScene_AbstractContainerMenu have an instance of said function!)
+	virtual void updateTooltips() { IUIScene_AbstractContainerMenu::UpdateTooltips(); }
 	
 	virtual void render(S32 width, S32 height, C4JRender::eViewportType viewpBort);
 	virtual void customDraw(IggyCustomDrawCallbackRegion *region);

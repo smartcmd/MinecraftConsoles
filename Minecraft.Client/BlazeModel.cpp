@@ -32,18 +32,17 @@ int BlazeModel::modelVersion()
 
 void BlazeModel::render(shared_ptr<Entity> entity, float time, float r, float bob, float yRot, float xRot, float scale, bool usecompiled) 
 {
-    setupAnim(time, r, bob, yRot, xRot, scale);
+    setupAnim(time, r, bob, yRot, xRot, scale, entity);
 
-    head->render(scale,usecompiled);
+    head->render(scale, usecompiled);
     for (unsigned int i = 0; i < upperBodyParts.length; i++) 
 	{
         upperBodyParts[i]->render(scale, usecompiled);
     }
 }
 
-void BlazeModel::setupAnim(float time, float r, float bob, float yRot, float xRot, float scale, unsigned int uiBitmaskOverrideAnim) 
+void BlazeModel::setupAnim(float time, float r, float bob, float yRot, float xRot, float scale, shared_ptr<Entity> entity, unsigned int uiBitmaskOverrideAnim) 
 {
-
     float angle = bob * PI * -.1f;
     for (int i = 0; i < 4; i++) 
 	{

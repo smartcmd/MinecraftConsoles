@@ -42,7 +42,7 @@ bool FlowerPotTile::use(Level *level, int x, int y, int z, shared_ptr<Player> pl
 
 	if (type > 0)
 	{
-		level->setData(x, y, z, type);
+		level->setData(x, y, z, type, Tile::UPDATE_CLIENTS);
 
 		if (!player->abilities.instabuild)
 		{
@@ -102,7 +102,7 @@ void FlowerPotTile::neighborChanged(Level *level, int x, int y, int z, int type)
 	{
 		spawnResources(level, x, y, z, level->getData(x, y, z), 0);
 
-		level->setTile(x, y, z, 0);
+		level->removeTile(x, y, z);
 	}
 }
 
@@ -133,9 +133,9 @@ shared_ptr<ItemInstance> FlowerPotTile::getItemFromType(int type)
 	case TYPE_CACTUS:
 		return shared_ptr<ItemInstance>( new ItemInstance(Tile::cactus) );
 	case TYPE_MUSHROOM_BROWN:
-		return shared_ptr<ItemInstance>( new ItemInstance(Tile::mushroom1) );
+		return shared_ptr<ItemInstance>( new ItemInstance(Tile::mushroom_brown) );
 	case TYPE_MUSHROOM_RED:
-		return shared_ptr<ItemInstance>( new ItemInstance(Tile::mushroom2) );
+		return shared_ptr<ItemInstance>( new ItemInstance(Tile::mushroom_red) );
 	case TYPE_DEAD_BUSH:
 		return shared_ptr<ItemInstance>( new ItemInstance(Tile::deadBush) );
 	case TYPE_SAPLING_DEFAULT:
@@ -160,8 +160,8 @@ int FlowerPotTile::getTypeFromItem(shared_ptr<ItemInstance> item)
 	if (id == Tile::rose_Id) return TYPE_FLOWER_RED;
 	if (id == Tile::flower_Id) return TYPE_FLOWER_YELLOW;
 	if (id == Tile::cactus_Id) return TYPE_CACTUS;
-	if (id == Tile::mushroom1_Id) return TYPE_MUSHROOM_BROWN;
-	if (id == Tile::mushroom2_Id) return TYPE_MUSHROOM_RED;
+	if (id == Tile::mushroom_brown_Id) return TYPE_MUSHROOM_BROWN;
+	if (id == Tile::mushroom_red_Id) return TYPE_MUSHROOM_RED;
 	if (id == Tile::deadBush_Id) return TYPE_DEAD_BUSH;
 
 	if (id == Tile::sapling_Id)

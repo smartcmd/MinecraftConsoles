@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "FireballRenderer.h"
 #include "EntityRenderDispatcher.h"
+#include "TextureAtlas.h"
 #include "..\Minecraft.World\net.minecraft.world.entity.projectile.h"
 #include "..\Minecraft.World\net.minecraft.world.item.h"
 #include "..\Minecraft.World\net.minecraft.world.level.tile.h"
@@ -25,7 +26,7 @@ void FireballRenderer::render(shared_ptr<Entity> _fireball, double x, double y, 
     glScalef(s / 1.0f, s / 1.0f, s / 1.0f);
 	Icon *icon = Item::fireball->getIcon(fireball->GetType()==eTYPE_DRAGON_FIREBALL?1:0);//14 + 2 * 16;
 	MemSect(31);
-    bindTexture(TN_GUI_ITEMS);	// 4J was L"/gui/items.png"
+    bindTexture(fireball);
 	MemSect(0);
     Tesselator *t = Tesselator::getInstance();
 
@@ -65,7 +66,7 @@ void FireballRenderer::renderFlame(shared_ptr<Entity> e, double x, double y, dou
     float s = e->bbWidth * 1.4f;
     glScalef(s, s, s);
 	MemSect(31);
-    bindTexture(TN_TERRAIN);	// 4J was L"/terrain.png"
+    bindTexture(&TextureAtlas::LOCATION_BLOCKS);
 	MemSect(0);
     Tesselator *t = Tesselator::getInstance();
 
@@ -106,4 +107,9 @@ void FireballRenderer::renderFlame(shared_ptr<Entity> e, double x, double y, dou
     t->end();
     glPopMatrix();
     glEnable(GL_LIGHTING);
+}
+
+ResourceLocation *FireballRenderer::getTextureLocation(shared_ptr<Entity> mob)
+{
+    return &TextureAtlas::LOCATION_ITEMS;
 }

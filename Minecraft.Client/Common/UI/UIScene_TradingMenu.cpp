@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "UI.h"
 #include "..\..\..\Minecraft.World\net.minecraft.world.inventory.h"
+#include "..\..\..\Minecraft.World\net.minecraft.world.item.h"
 #include "..\..\..\Minecraft.World\net.minecraft.world.item.trading.h"
 #include "..\..\..\Minecraft.World\net.minecraft.world.level.tile.entity.h"
 #include "MultiPlayerLocalPlayer.h"
@@ -118,6 +119,15 @@ void UIScene_TradingMenu::handleReload()
 
 	m_slotListInventory.addSlots(MerchantMenu::INV_SLOT_START, 27);
 	m_slotListHotbar.addSlots(MerchantMenu::USE_ROW_SLOT_START, 9);
+
+	updateDisplay();
+	
+	IggyDataValue result;
+	IggyDataValue value[1];
+
+	value[0].type = IGGY_DATATYPE_number;
+	value[0].number = m_selectedSlot;
+	IggyResult out = IggyPlayerCallMethodRS ( getMovie() , &result, IggyPlayerRootPath( getMovie() ), m_funcSetActiveSlot , 1 , value );
 }
 
 void UIScene_TradingMenu::tick()
@@ -253,16 +263,33 @@ void UIScene_TradingMenu::setTradeRedBox(int index, bool show)
 	m_slotListTrades.showSlotRedBox(index,show);
 }
 
-void UIScene_TradingMenu::setOfferDescription(const wstring &name, vector<wstring> &unformattedStrings)
+void UIScene_TradingMenu::setOfferDescription(vector<HtmlString> *description)
 {
+	wstring descriptionStr = HtmlString::Compose(description);
+
 	IggyDataValue result;
 	IggyDataValue value[1];
 
 	IggyStringUTF16 stringVal;
-	stringVal.string = (IggyUTF16*)name.c_str();
-	stringVal.length = name.length();
+	stringVal.string = (IggyUTF16*)descriptionStr.c_str();
+	stringVal.length = descriptionStr.length();
 	value[0].type = IGGY_DATATYPE_string_UTF16;
 	value[0].string16 = stringVal;
 
 	IggyResult out = IggyPlayerCallMethodRS ( getMovie() , &result, IggyPlayerRootPath( getMovie() ), m_funcSetOfferDescription , 1 , value );
+}
+
+void UIScene_TradingMenu::HandleMessage(EUIMessage message, void *data)
+{
+	switch(message)
+	{
+	case eUIMessage_InventoryUpdated:
+		handleInventoryUpdated(data);
+		break;
+	};
+}
+
+void UIScene_TradingMenu::handleInventoryUpdated(LPVOID data)
+{
+	HandleInventoryUpdated();
 }

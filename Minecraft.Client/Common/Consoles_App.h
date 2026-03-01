@@ -39,6 +39,11 @@ class Container;
 class DispenserTileEntity;
 class SignTileEntity;
 class BrewingStandTileEntity;
+class CommandBlockEntity;
+class HopperTileEntity;
+class MinecartHopper;
+class EntityHorse;
+class BeaconTileEntity;
 class LocalPlayer;
 class DLCPack;
 class LevelRuleset;
@@ -87,9 +92,9 @@ public:
 
 #ifdef _EXTENDED_ACHIEVEMENTS
 	/* 4J-JEV:
-	 * We need more space in the profile data because of the new achievements and statistics 
-	 * necessary for the new expanded achievement set.
-	 */
+	* We need more space in the profile data because of the new achievements and statistics 
+	* necessary for the new expanded achievement set.
+	*/
 	static const int GAME_DEFINED_PROFILE_DATA_BYTES = 2*972; // per user
 #else
 	static const int GAME_DEFINED_PROFILE_DATA_BYTES = 972; // per user
@@ -108,7 +113,7 @@ public:
 	static const int USER_RR = 5;
 	static const int USER_SR = 6;
 	static const int USER_UI = 7; // 4J Stu - This also makes it appear on the UI console
-	
+
 	void			HandleButtonPresses();
 	bool			IntroRunning()																									{ return m_bIntroRunning;}
 	void			SetIntroRunning(bool bSet)																						{m_bIntroRunning=bSet;}
@@ -127,23 +132,30 @@ public:
 	int				GetLocalPlayerCount(void);
 	bool			LoadInventoryMenu(int iPad,shared_ptr<LocalPlayer> player, bool bNavigateBack=false);
 	bool			LoadCreativeMenu(int iPad,shared_ptr<LocalPlayer> player,bool bNavigateBack=false);
-	bool			LoadEnchantingMenu(int iPad,shared_ptr<Inventory> inventory, int x, int y, int z, Level *level);
+	bool			LoadEnchantingMenu(int iPad,shared_ptr<Inventory> inventory, int x, int y, int z, Level *level, const wstring &name);
 	bool			LoadFurnaceMenu(int iPad,shared_ptr<Inventory> inventory, shared_ptr<FurnaceTileEntity> furnace);
 	bool			LoadBrewingStandMenu(int iPad,shared_ptr<Inventory> inventory, shared_ptr<BrewingStandTileEntity> brewingStand);
 	bool			LoadContainerMenu(int iPad,shared_ptr<Container> inventory, shared_ptr<Container> container);
 	bool			LoadTrapMenu(int iPad,shared_ptr<Container> inventory, shared_ptr<DispenserTileEntity> trap);
 	bool			LoadCrafting2x2Menu(int iPad,shared_ptr<LocalPlayer> player);
 	bool			LoadCrafting3x3Menu(int iPad,shared_ptr<LocalPlayer> player, int x, int y, int z);
+	bool			LoadFireworksMenu(int iPad,shared_ptr<LocalPlayer> player, int x, int y, int z);
 	bool			LoadSignEntryMenu(int iPad,shared_ptr<SignTileEntity> sign);
 	bool			LoadRepairingMenu(int iPad,shared_ptr<Inventory> inventory, Level *level, int x, int y, int z);
-	bool			LoadTradingMenu(int iPad, shared_ptr<Inventory> inventory, shared_ptr<Merchant> trader, Level *level);
+	bool			LoadTradingMenu(int iPad, shared_ptr<Inventory> inventory, shared_ptr<Merchant> trader, Level *level, const wstring &name);
+
+	bool			LoadCommandBlockMenu(int iPad, shared_ptr<CommandBlockEntity> commandBlock) { return false; }
+	bool			LoadHopperMenu(int iPad ,shared_ptr<Inventory> inventory, shared_ptr<HopperTileEntity> hopper);
+	bool			LoadHopperMenu(int iPad ,shared_ptr<Inventory> inventory, shared_ptr<MinecartHopper> hopper);
+	bool			LoadHorseMenu(int iPad ,shared_ptr<Inventory> inventory, shared_ptr<Container> container, shared_ptr<EntityHorse> horse);
+	bool			LoadBeaconMenu(int iPad ,shared_ptr<Inventory> inventory, shared_ptr<BeaconTileEntity> beacon);
 
 	bool			GetTutorialMode()																									{ return m_bTutorialMode;}
 	void			SetTutorialMode(bool bSet)																							{m_bTutorialMode=bSet;}
 
 	void			SetSpecialTutorialCompletionFlag(int iPad, int index);
 
- 	static			LPCWSTR			GetString(int iID);
+	static			LPCWSTR			GetString(int iID);
 
 	eGameMode		GetGameMode()																										{ return m_eGameMode;}
 	void			SetGameMode(eGameMode eMode)																						{ m_eGameMode=eMode;}
@@ -159,7 +171,7 @@ public:
 	void			SetXuiServerAction(int iPad, eXuiServerAction action, LPVOID param = NULL)											{m_eXuiServerAction[iPad]=action; m_eXuiServerActionParam[iPad] = param;}
 	eXuiServerAction GetGlobalXuiServerAction()																							{return m_eGlobalXuiServerAction;}
 	void			SetGlobalXuiServerAction(eXuiServerAction action)																			{m_eGlobalXuiServerAction=action;}
-	
+
 	DisconnectPacket::eDisconnectReason	GetDisconnectReason()																			{ return m_disconnectReason; }
 	void			SetDisconnectReason(DisconnectPacket::eDisconnectReason bVal)														{ m_disconnectReason = bVal; }
 
@@ -206,6 +218,7 @@ public:
 	static int		OldProfileVersionCallback(LPVOID pParam,unsigned char *pucData, const unsigned short usVersion, const int iPad);
 
 #if ( defined  __PS3__  || defined __ORBIS__ || defined _DURANGO || defined __PSVITA__ )
+	wstring			toStringOptionsStatus(const C4JStorage::eOptionsCallback &eStatus);
 	static int		DefaultOptionsCallback(LPVOID pParam,C4JStorage::PROFILESETTINGS *pSettings, const int iPad);
 	int				SetDefaultOptions(C4JStorage::PROFILESETTINGS *pSettings,const int iPad,bool bWriteProfile=true);
 #ifdef __ORBIS__
@@ -224,7 +237,7 @@ public:
 #endif
 	virtual void	SetRichPresenceContext(int iPad, int contextId) = 0;
 
-	
+
 	void			SetGameSettings(int iPad,eGameSetting eVal,unsigned char ucVal);
 	unsigned char	GetGameSettings(int iPad,eGameSetting eVal);
 	unsigned char	GetGameSettings(eGameSetting eVal); // for the primary pad
@@ -247,7 +260,8 @@ public:
 	// Minecraft language select
 	void			SetMinecraftLanguage(int iPad, unsigned char ucLanguage);
 	unsigned char	GetMinecraftLanguage(int iPad);
-
+	void			SetMinecraftLocale(int iPad, unsigned char ucLanguage);
+	unsigned char	GetMinecraftLocale(int iPad);
 
 	// 4J-PB - set a timer when the user navigates the quickselect, so we can bring the opacity back to defaults for a short time
 	unsigned int	GetOpacityTimer(int iPad)																						{ return m_uiOpacityCountDown[iPad]; }
@@ -301,9 +315,11 @@ public:
 #endif
 
 #ifdef _DEBUG_MENUS_ENABLED
-	bool			DebugSettingsOn()																									{ return m_bDebugOptions;}
+	bool			DebugSettingsOn()														{ return m_bDebugOptions;}
+	bool			DebugArtToolsOn();
 #else
-	bool			DebugSettingsOn()																									{ return false;}
+	bool			DebugSettingsOn()														{ return false;}
+	bool			DebugArtToolsOn()														{ return false;}
 #endif
 	void			SetDebugSequence(const char *pchSeq);
 	static int		DebugInputCallback(LPVOID pParam);
@@ -424,10 +440,10 @@ public:
 	byteArray getArchiveFile(const wstring &filename);
 
 private:
-	
+
 	static int BannedLevelDialogReturned(void *pParam,int iPad,const C4JStorage::EMessageResult);
 	static int TexturePackDialogReturned(void *pParam,int iPad,C4JStorage::EMessageResult result);
-	
+
 	VBANNEDLIST *m_vBannedListA[XUSER_MAX_COUNT]; 
 
 	void HandleButtonPresses(int iPad);
@@ -440,7 +456,7 @@ private:
 
 	// Container scene for some menu
 
-//	CXuiScene debugContainerScene;
+	//	CXuiScene debugContainerScene;
 
 
 	//bool m_bSplitScreenEnabled;
@@ -482,14 +498,14 @@ public:
 
 	static const DWORD m_dwOfferID = 0x00000001;
 
-// timer
+	// timer
 	void InitTime();
 	void UpdateTime();
 
 	// trial timer
 	void SetTrialTimerStart(void);
 	float getTrialTimer(void);
-	
+
 	// notifications from the game for qnet
 	VNOTIFICATIONS *GetNotifications()	{return &m_vNotifications;}
 
@@ -599,7 +615,7 @@ public:
 	unsigned int GetDLCCreditsCount();
 	SCreditTextItemDef * GetDLCCredits(int iIndex);
 
-// TMS
+	// TMS
 	void ReadDLCFileFromTMS(int iPad,eTMSAction action, bool bCallback=false);
 	void ReadXuidsFileFromTMS(int iPad,eTMSAction action,bool bCallback=false);
 
@@ -633,8 +649,8 @@ private:
 	static unordered_map<ULONGLONG,DLC_INFO * > DLCInfo_Full; // full offerid, dlc_info
 	static unordered_map<wstring, ULONGLONG >  DLCInfo_SkinName; // skin name, full offer id
 #endif
-//	bool m_bRead_TMS_XUIDS_XML; // track whether we have already read the TMS xuids.xml file
-//	bool m_bRead_TMS_DLCINFO_XML; // track whether we have already read the TMS DLC.xml file
+	//	bool m_bRead_TMS_XUIDS_XML; // track whether we have already read the TMS xuids.xml file
+	//	bool m_bRead_TMS_DLCINFO_XML; // track whether we have already read the TMS DLC.xml file
 
 	bool m_bDefaultCapeInstallAttempted; // have we attempted to install the default cape from tms
 
@@ -651,13 +667,13 @@ public:
 	XUSER_SIGNIN_INFO m_currentSigninInfo[XUSER_MAX_COUNT];
 
 	//void OverrideFontRenderer(bool set, bool immediate = true);
-//	void ToggleFontRenderer() { OverrideFontRenderer(!m_bFontRendererOverridden,false); }
+	//	void ToggleFontRenderer() { OverrideFontRenderer(!m_bFontRendererOverridden,false); }
 	BANNEDLIST BannedListA[XUSER_MAX_COUNT];
 
 private:
-// 	XUI_FontRenderer *m_fontRenderer;
-// 	bool m_bFontRendererOverridden;
-// 	bool m_bOverrideFontRenderer;
+	// 	XUI_FontRenderer *m_fontRenderer;
+	// 	bool m_bFontRendererOverridden;
+	// 	bool m_bOverrideFontRenderer;
 
 
 	bool m_bRead_BannedListA[XUSER_MAX_COUNT];
@@ -667,7 +683,7 @@ private:
 public:
 	void SetBanListCheck(int iPad,bool bVal) {m_BanListCheck[iPad]=bVal;}
 	bool GetBanListCheck(int iPad)			{ return m_BanListCheck[iPad];}
-// AUTOSAVE
+	// AUTOSAVE
 public:
 	void SetAutosaveTimerTime(void);
 	bool AutosaveDue(void);
@@ -685,6 +701,11 @@ private:
 	unsigned int m_uiGameHostSettings;
 	static unsigned char m_szPNG[8];
 
+#ifdef _LARGE_WORLDS
+	unsigned int	m_GameNewWorldSize;
+	bool			m_bGameNewWorldSizeUseMoat;
+	unsigned int	m_GameNewHellScale;
+#endif
 	unsigned int	FromBigEndian(unsigned int uiValue);
 
 public:
@@ -695,6 +716,13 @@ public:
 	unsigned int	GetGameHostOption(eGameHostOption eVal);
 	unsigned int	GetGameHostOption(unsigned int uiHostSettings, eGameHostOption eVal);
 
+#ifdef _LARGE_WORLDS
+	void			SetGameNewWorldSize(unsigned int newSize, bool useMoat) { m_GameNewWorldSize = newSize; m_bGameNewWorldSizeUseMoat = useMoat; }
+	unsigned int	GetGameNewWorldSize()									{ return m_GameNewWorldSize; }
+	unsigned int	GetGameNewWorldSizeUseMoat()							{ return m_bGameNewWorldSizeUseMoat; }
+	void			SetGameNewHellScale(unsigned int newScale)				{ m_GameNewHellScale = newScale; }
+	unsigned int	GetGameNewHellScale()									{ return m_GameNewHellScale; }
+#endif
 	void			SetResetNether(bool bResetNether) {m_bResetNether=bResetNether;}
 	bool			GetResetNether() {return m_bResetNether;}
 	bool			CanRecordStatsAndAchievements();
@@ -808,9 +836,9 @@ public:
 	DWORD m_dwDLCFileSize;
 	BYTE *m_pDLCFileBuffer;
 
-// 	static int CallbackReadXuidsFileFromTMS(LPVOID lpParam, WCHAR *wchFilename, int iPad, bool bResult, int iAction);
-// 	static int CallbackDLCFileFromTMS(LPVOID lpParam, WCHAR *wchFilename, int iPad, bool bResult, int iAction);
-// 	static int CallbackBannedListFileFromTMS(LPVOID lpParam, WCHAR *wchFilename, int iPad, bool bResult, int iAction);
+	// 	static int CallbackReadXuidsFileFromTMS(LPVOID lpParam, WCHAR *wchFilename, int iPad, bool bResult, int iAction);
+	// 	static int CallbackDLCFileFromTMS(LPVOID lpParam, WCHAR *wchFilename, int iPad, bool bResult, int iAction);
+	// 	static int CallbackBannedListFileFromTMS(LPVOID lpParam, WCHAR *wchFilename, int iPad, bool bResult, int iAction);
 
 	// Storing additional model parts per skin texture
 	void SetAdditionalSkinBoxes(DWORD dwSkinID, SKIN_BOX *SkinBoxA, DWORD dwSkinBoxC);
@@ -875,27 +903,27 @@ public:
 
 	void SetTickTMSDLCFiles(bool bVal);
 
-	wstring getFilePath(DWORD packId, wstring filename, bool bAddDataFolder);
+	wstring getFilePath(DWORD packId, wstring filename, bool bAddDataFolder, wstring mountPoint = L"TPACK:");
 
 private:
-		unordered_map<int, wstring>m_localeA;
-		unordered_map<wstring, int>m_eMCLangA;
-		unordered_map<wstring, int>m_xcLangA;
-	wstring getRootPath(DWORD packId, bool allowOverride, bool bAddDataFolder);
+	unordered_map<int, wstring>m_localeA;
+	unordered_map<wstring, int>m_eMCLangA;
+	unordered_map<wstring, int>m_xcLangA;
+	wstring getRootPath(DWORD packId, bool allowOverride, bool bAddDataFolder, wstring mountPoint);
 public:
 
 #ifdef _XBOX
-// 	bool m_bTransferSavesToXboxOne;
-// 	unsigned int m_uiTransferSlotC;
-	
+	// 	bool m_bTransferSavesToXboxOne;
+	// 	unsigned int m_uiTransferSlotC;
+
 #elif defined (__PS3__)
-	
+
 #elif defined _DURANGO
-	
+
 #elif defined _WINDOWS64
 	//CMinecraftAudio audio;
 #else // PS4
-	
+
 #endif
 
 #ifdef _XBOX_ONE

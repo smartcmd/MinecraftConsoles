@@ -30,7 +30,7 @@ public:
 	virtual int getUseDuration(shared_ptr<ItemInstance> itemInstance);
 	virtual UseAnim getUseAnimation(shared_ptr<ItemInstance> itemInstance);
 	virtual shared_ptr<ItemInstance> use(shared_ptr<ItemInstance> instance, Level *level, shared_ptr<Player> player);
-	virtual bool TestUse(Level *level, shared_ptr<Player> player);
+	virtual bool TestUse(shared_ptr<ItemInstance> itemInstance, Level *level, shared_ptr<Player> player);
 	virtual bool useOn(shared_ptr<ItemInstance> itemInstance, shared_ptr<Player> player, Level *level, int x, int y, int z, int face, float clickX, float clickY, float clickZ, bool bTestUseOnOnly=false);
 	virtual Icon *getIcon(int auxValue);
 	virtual Icon *getLayerIcon(int auxValue, int spriteLayer);
@@ -40,7 +40,7 @@ public:
 	virtual bool hasMultipleSpriteLayers();
 	virtual bool hasInstantenousEffects(int itemAuxValue);
 	virtual wstring getHoverName(shared_ptr<ItemInstance> itemInstance);
-	virtual void appendHoverText(shared_ptr<ItemInstance> itemInstance, shared_ptr<Player> player, vector<wstring> *lines, bool advanced, vector<wstring> &unformattedStrings);
+	virtual void appendHoverText(shared_ptr<ItemInstance> itemInstance, shared_ptr<Player> player, vector<HtmlString> *lines, bool advanced);
 	virtual bool isFoil(shared_ptr<ItemInstance> itemInstance);
 
 	virtual unsigned int getUseDescriptionId(shared_ptr<ItemInstance> instance);

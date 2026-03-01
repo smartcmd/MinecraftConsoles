@@ -7,7 +7,7 @@
 		<value>隱藏</value>
 	</data>
 	<data name="IDS_GAMENAME">
-		<value>Minecraft: PlayStation(R)3 Edition</value>
+		<value>Minecraft: "PlayStation 3" Edition</value>
 	</data>
 	<data name="IDS_OPTIONSFILE">
 		<value>選項
@@ -54,6 +54,12 @@
 		<value>您的選項檔已損毀，必須刪除。
 </value>
 	</data>
+	<data name="IDS_CORRUPT_OPTIONS_DELETE">
+		<value>刪除選項檔。</value>
+	</data>
+	<data name="IDS_CORRUPT_OPTIONS_RETRY">
+		<value>重試載入選項檔。</value>
+	</data>
 	<data name="IDS_CORRUPT_SAVECACHE">
 		<value>您的緩存檔已損毀，必須刪除。</value>
 	</data>
@@ -82,6 +88,9 @@
 		<value>您的 Sony Entertainment Network 帳戶因受到一個本地用戶的副帳戶的使用限制而無法使用線上功能。
 </value>
 	</data>
+	<data name="IDS_CONTENT_RESTRICTION_PATCH_AVAILABLE">
+		<value>因為遊戲更新的推出，線上功能已停用。</value>
+	</data>
 	<data name="IDS_NO_DLCCATEGORIES">
 		<value>這款遊戲目前沒有可下載內容。</value>
 	</data>
@@ -89,9 +98,6 @@
 		<value>邀請</value>
 	</data>
 	<data name="IDS_INVITATION_BODY">
-		<value>快來玩 Minecraft: PlayStation(R)Vita Edition 遊戲！</value>
-	</data>
-	<data name="IDS_CONTENT_RESTRICTION_PATCH_AVAILABLE">
-		<value>因為遊戲更新的推出，線上功能已停用。</value>
+		<value>快來玩 Minecraft: "PlayStation Vita" Edition 遊戲！</value>
 	</data>
 </root>

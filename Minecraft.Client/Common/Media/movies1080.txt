@@ -7,6 +7,7 @@ skinHDHud.swf
 skinHDLabels.swf
 skinHDInGame.swf
 AnvilMenu1080.swf
+BeaconMenu1080.swf
 BrewingStandMenu1080.swf
 ChestMenu1080.swf
 ChestLargeMenu1080.swf
@@ -31,9 +32,12 @@ DispenserMenu1080.swf
 EnchantingMenu1080.swf
 EndPoem1080.swf
 EULA1080.swf
+FireworksMenu1080.swf
 FullscreenProgress1080.swf
 FurnaceMenu1080.swf
 HelpAndOptionsMenu1080.swf
+HopperMenu1080.swf
+HorseInventoryMenu1080.swf
 HowToPlay1080.swf
 HowToPlayMenu1080.swf
 HUD1080.swf
@@ -44,6 +48,8 @@ InGameTeleportMenu1080.swf
 Intro1080.swf
 InventoryMenu1080.swf
 JoinMenu1080.swf
+LanguagesMenu1080.swf
+LanguagesMenuSplit1080.swf
 LoadOrJoinMenu1080.swf
 LaunchMoreOptionsMenu1080.swf
 LeaderboardMenu1080.swf
@@ -72,6 +78,7 @@ ToolTips1080.swf
 TradingMenu1080.swf
 TutorialPopup1080.swf
 AnvilMenuSplit1080.swf
+BeaconMenuSplit1080.swf
 BrewingStandMenuSplit1080.swf
 ChestMenuSplit1080.swf
 ChestLargeMenuSplit1080.swf
@@ -82,9 +89,12 @@ CreativeMenuSplit1080.swf
 DeathMenuSplit1080.swf
 DispenserMenuSplit1080.swf
 EnchantingMenuSplit1080.swf
+FireworksMenuSplit1080.swf
 FurnaceMenuSplit1080.swf
 FullscreenProgressSplit1080.swf
 HelpAndOptionsMenuSplit1080.swf
+HopperMenuSplit1080.swf
+HorseInventoryMenuSplit1080.swf
 HowToPlaySplit1080.swf
 HowToPlayMenuSplit1080.swf
 HUDSplit1080.swf

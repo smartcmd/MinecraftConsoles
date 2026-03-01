@@ -14,30 +14,36 @@ public:
 
 private:
 	static const int DATA_SWELL_DIR = 16;
-    static const int DATA_IS_POWERED = 17;
+	static const int DATA_IS_POWERED = 17;
 
-    int swell;
-    int oldSwell;
-
-	static const int MAX_SWELL = 30;
+	int oldSwell;
+	int swell;
+	int maxSwell;
+	int explosionRadius;
 
 	void _init();
 
 public:
 	Creeper(Level *level);
 
+protected:
+	void registerAttributes();
+
+public:
 	virtual bool useNewAi();
-	virtual int getMaxHealth();
+
+	virtual int getMaxFallDistance();
 
 protected:
+	virtual void causeFallDamage(float distance);
 	virtual void defineSynchedData();
 
 public:
 	virtual void addAdditonalSaveData(CompoundTag *entityTag);
-    virtual void readAdditionalSaveData(CompoundTag *tag);
+	virtual void readAdditionalSaveData(CompoundTag *tag);
 
 protected:
-    virtual void tick();
+	virtual void tick();
 
 protected:
 	virtual int getHurtSound();
@@ -47,7 +53,7 @@ public:
 	virtual void die(DamageSource *source);
 	virtual bool doHurtTarget(shared_ptr<Entity> target);
 	virtual bool isPowered();
-    float getSwelling(float a);
+	float getSwelling(float a);
 
 protected:
 	int getDeathLoot();

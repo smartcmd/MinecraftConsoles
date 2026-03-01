@@ -2,6 +2,8 @@
 
 #include "Goal.h"
 
+class PathfinderMob;
+
 class TargetGoal : public Goal
 {
 
@@ -15,8 +17,7 @@ private:
 	static const int UnseenMemoryTicks = 60;
 
 protected:
-	Mob *mob; // Owner of this goal
-	float within;
+	PathfinderMob *mob; // Owner of this goal
 	bool mustSee;
 
 private:
@@ -25,20 +26,25 @@ private:
 	int reachCacheTime;
 	int unseenTicks;
 
-	void _init(Mob *mob, float within, bool mustSee, bool mustReach);
+	void _init(PathfinderMob *mob, bool mustSee, bool mustReach);
 
 public:
-	TargetGoal(Mob *mob, float within, bool mustSee);
-	TargetGoal(Mob *mob, float within, bool mustSee, bool mustReach);
+	TargetGoal(PathfinderMob *mob, bool mustSee);
+	TargetGoal(PathfinderMob *mob, bool mustSee, bool mustReach);
 	virtual ~TargetGoal() {}
 
 	virtual bool canContinueToUse();
+
+protected:
+	virtual double getFollowDistance();
+
+public:
 	virtual void start();
 	virtual void stop();
 
 protected:
-	virtual bool canAttack(shared_ptr<Mob> target, bool allowInvulnerable);
+	virtual bool canAttack(shared_ptr<LivingEntity> target, bool allowInvulnerable);
 
 private:
-	bool canReach(shared_ptr<Mob> target);
+	bool canReach(shared_ptr<LivingEntity> target);
 };

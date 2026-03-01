@@ -7,6 +7,7 @@
 #include "..\Minecraft.World\Entity.h"
 #include "..\Minecraft.World\Level.h"
 
+ResourceLocation SignRenderer::SIGN_LOCATION = ResourceLocation(TN_ITEM_SIGN);
 
 SignRenderer::SignRenderer()
 {
@@ -45,7 +46,7 @@ void SignRenderer::render(shared_ptr<TileEntity> _sign, double x, double y, doub
         signModel->cube2->visible = false;
     }
 
-    bindTexture(TN_ITEM_SIGN);	// 4J was L"/item/sign.png"
+    bindTexture(&SIGN_LOCATION);	// 4J was L"/item/sign.png"
 
     glPushMatrix();
     glScalef(size, -size, -size);

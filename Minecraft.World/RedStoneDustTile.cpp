@@ -3,7 +3,10 @@
 #include "RedStoneDustTile.h"
 #include "net.minecraft.world.item.h"
 #include "net.minecraft.world.level.h"
+#include "net.minecraft.world.level.redstone.h"
+#include "net.minecraft.world.level.tile.h"
 #include "net.minecraft.world.h"
+#include "net.minecraft.h"
 #include "Direction.h"
 #include "DiodeTile.h"
 
@@ -11,10 +14,10 @@
 #include "IntBuffer.h"
 #include "..\Minecraft.Client\Tesselator.h"
 
-const wstring RedStoneDustTile::TEXTURE_CROSS = L"redstoneDust_cross";
-const wstring RedStoneDustTile::TEXTURE_LINE = L"redstoneDust_line";
-const wstring RedStoneDustTile::TEXTURE_CROSS_OVERLAY = L"redstoneDust_cross_overlay";
-const wstring RedStoneDustTile::TEXTURE_LINE_OVERLAY = L"redstoneDust_line_overlay";
+const wstring RedStoneDustTile::TEXTURE_CROSS = L"_cross";
+const wstring RedStoneDustTile::TEXTURE_LINE = L"_line";
+const wstring RedStoneDustTile::TEXTURE_CROSS_OVERLAY = L"_cross_overlay";
+const wstring RedStoneDustTile::TEXTURE_LINE_OVERLAY = L"_line_overlay";
 
 RedStoneDustTile::RedStoneDustTile(int id) : Tile(id, Material::decoration,isSolidRender())
 {
@@ -71,13 +74,13 @@ int RedStoneDustTile::getColor(LevelSource *level, int x, int y, int z, int data
 
 bool RedStoneDustTile::mayPlace(Level *level, int x, int y, int z)
 {
-	return level->isTopSolidBlocking(x, y - 1, z) || level->getTile(x, y - 1, z) == Tile::lightGem_Id;
+	return level->isTopSolidBlocking(x, y - 1, z) || level->getTile(x, y - 1, z) == Tile::glowstone_Id;
 }
 
 void RedStoneDustTile::updatePowerStrength(Level *level, int x, int y, int z)
 {
 	updatePowerStrength(level, x, y, z, x, y, z);
-	
+
 	vector<TilePos> updates = vector<TilePos>(toUpdate.begin(), toUpdate.end());
 	toUpdate.clear();
 
@@ -94,16 +97,19 @@ void RedStoneDustTile::updatePowerStrength(Level *level, int x, int y, int z, in
 	int old = level->getData(x, y, z);
 	int target = 0;
 
-	this->shouldSignal = false;
-	bool neighborSignal = level->hasNeighborSignal(x, y, z);
-	this->shouldSignal = true;
+	target = checkTarget(level, xFrom, yFrom, zFrom, target);
 
-	if (neighborSignal)
+	shouldSignal = false;
+	int neighborSignal = level->getBestNeighborSignal(x, y, z);
+	shouldSignal = true;
+
+	if (neighborSignal > Redstone::SIGNAL_NONE && neighborSignal > target - 1)
 	{
-		target = 15;
+		target = neighborSignal;
 	}
-	else
+
 	{
+		int newTarget = 0;
 		for (int i = 0; i < 4; i++)
 		{
 			int xt = x;
@@ -113,57 +119,32 @@ void RedStoneDustTile::updatePowerStrength(Level *level, int x, int y, int z, in
 			if (i == 2) zt--;
 			if (i == 3) zt++;
 
-			if (xt != xFrom || y != yFrom || zt != zFrom) target = checkTarget(level, xt, y, zt, target);
+			if (xt != xFrom || zt != zFrom) newTarget = checkTarget(level, xt, y, zt, newTarget);
 			if (level->isSolidBlockingTile(xt, y, zt) && !level->isSolidBlockingTile(x, y + 1, z))
 			{
-				if (xt != xFrom || y + 1 != yFrom || zt != zFrom) target = checkTarget(level, xt, y + 1, zt, target);
+				if ((xt != xFrom || zt != zFrom) && y >= yFrom)
+					newTarget = checkTarget(level, xt, y + 1, zt, newTarget);
 			}
 			else if (!level->isSolidBlockingTile(xt, y, zt))
 			{
-				if (xt != xFrom || y - 1 != yFrom || zt != zFrom) target = checkTarget(level, xt, y - 1, zt, target);
+				if ((xt != xFrom || zt != zFrom) && y <= yFrom)
+					newTarget = checkTarget(level, xt, y - 1, zt, newTarget);
 			}
 		}
-		if (target > 0) target--;
+		if (newTarget > target) target = newTarget - 1;
+		else if (target > 0) target--;
 		else target = 0;
+
+		if (neighborSignal > target - 1)
+		{
+			target = neighborSignal;
+		}
 	}
 
 	if (old != target)
 	{
-		level->noNeighborUpdate = true;
-		level->setData(x, y, z, target);
-		level->setTilesDirty(x, y, z, x, y, z);
-		level->noNeighborUpdate = false;
+		level->setData(x, y, z, target, Tile::UPDATE_CLIENTS);
 
-		for (int i = 0; i < 4; i++)
-		{
-			int xt = x;
-			int zt = z;
-			int yt = y - 1;
-			if (i == 0) xt--;
-			if (i == 1) xt++;
-			if (i == 2) zt--;
-			if (i == 3) zt++;
-
-			if (level->isSolidBlockingTile(xt, y, zt)) yt += 2;
-
-			int current = 0;
-			current = checkTarget(level, xt, y, zt, -1);
-			target = level->getData(x, y, z);
-			if (target > 0) target--;
-			if (current >= 0 && current != target)
-			{
-				updatePowerStrength(level, xt, y, zt, x, y, z);
-			}
-			current = checkTarget(level, xt, yt, zt, -1);
-			target = level->getData(x, y, z);
-			if (target > 0) target--;
-			if (current >= 0 && current != target)
-			{
-				updatePowerStrength(level, xt, yt, zt, x, y, z);
-			}
-		}
-
-		if (old < target || target == 0)
 		{
 			toUpdate.insert(TilePos(x, y, z));
 			toUpdate.insert(TilePos(x - 1, y, z));
@@ -185,7 +166,7 @@ void RedStoneDustTile::checkCornerChangeAt(Level *level, int x, int y, int z)
 	level->updateNeighborsAt(x + 1, y, z, id);
 	level->updateNeighborsAt(x, y, z - 1, id);
 	level->updateNeighborsAt(x, y, z + 1, id);
-		 
+
 	level->updateNeighborsAt(x, y - 1, z, id);
 	level->updateNeighborsAt(x, y + 1, z, id);
 }
@@ -254,7 +235,6 @@ int RedStoneDustTile::checkTarget(Level *level, int x, int y, int z, int target)
 void RedStoneDustTile::neighborChanged(Level *level, int x, int y, int z, int type)
 {
 	if (level->isClientSide) return;
-	int face = level->getData(x, y, z);
 
 	bool ok = mayPlace(level, x, y, z);
 
@@ -264,8 +244,8 @@ void RedStoneDustTile::neighborChanged(Level *level, int x, int y, int z, int ty
 	}
 	else
 	{
-		spawnResources(level, x, y, z, face, 0);
-		level->setTile(x, y, z, 0);
+		spawnResources(level, x, y, z, 0, 0);
+		level->removeTile(x, y, z);
 	}
 
 	Tile::neighborChanged(level, x, y, z, type);
@@ -276,44 +256,48 @@ int RedStoneDustTile::getResource(int data, Random *random, int playerBonusLevel
 	return Item::redStone->id;
 }
 
-bool RedStoneDustTile::getDirectSignal(Level *level, int x, int y, int z, int dir)
+int RedStoneDustTile::getDirectSignal(LevelSource *level, int x, int y, int z, int dir)
 {
-	if (!shouldSignal) return false;
+	if (!shouldSignal) return Redstone::SIGNAL_NONE;
 	return getSignal(level, x, y, z, dir);
 }
 
-bool RedStoneDustTile::getSignal(LevelSource *level, int x, int y, int z, int dir)
+int RedStoneDustTile::getSignal(LevelSource *level, int x, int y, int z, int dir)
 {
-	if (!shouldSignal) return false;
-	if (level->getData(x, y, z) == 0) return false;
+	if (!shouldSignal) return Redstone::SIGNAL_NONE;
+	int data = level->getData(x, y, z);
+	if (data == Facing::DOWN)
+	{
+		return Redstone::SIGNAL_NONE;
+	}
 
-	if (dir == 1) return true;
+	if (dir == Facing::UP) return data;
 
-    bool w = RedStoneDustTile::shouldReceivePowerFrom(level, x - 1, y, z, Direction::WEST)
-            || (!level->isSolidBlockingTile(x - 1, y, z) && RedStoneDustTile::shouldReceivePowerFrom(level, x - 1, y - 1, z, Direction::UNDEFINED));
-    bool e = RedStoneDustTile::shouldReceivePowerFrom(level, x + 1, y, z, Direction::EAST)
-            || (!level->isSolidBlockingTile(x + 1, y, z) && RedStoneDustTile::shouldReceivePowerFrom(level, x + 1, y - 1, z, Direction::UNDEFINED));
-    bool n = RedStoneDustTile::shouldReceivePowerFrom(level, x, y, z - 1, Direction::NORTH)
-            || (!level->isSolidBlockingTile(x, y, z - 1) && RedStoneDustTile::shouldReceivePowerFrom(level, x, y - 1, z - 1, Direction::UNDEFINED));
-    bool s = RedStoneDustTile::shouldReceivePowerFrom(level, x, y, z + 1, Direction::SOUTH)
-            || (!level->isSolidBlockingTile(x, y, z + 1) && RedStoneDustTile::shouldReceivePowerFrom(level, x, y - 1, z + 1, Direction::UNDEFINED));
+	bool w = shouldReceivePowerFrom(level, x - 1, y, z, Direction::WEST)
+		|| (!level->isSolidBlockingTile(x - 1, y, z) && shouldReceivePowerFrom(level, x - 1, y - 1, z, Direction::UNDEFINED));
+	bool e = shouldReceivePowerFrom(level, x + 1, y, z, Direction::EAST)
+		|| (!level->isSolidBlockingTile(x + 1, y, z) && shouldReceivePowerFrom(level, x + 1, y - 1, z, Direction::UNDEFINED));
+	bool n = shouldReceivePowerFrom(level, x, y, z - 1, Direction::NORTH)
+		|| (!level->isSolidBlockingTile(x, y, z - 1) && shouldReceivePowerFrom(level, x, y - 1, z - 1, Direction::UNDEFINED));
+	bool s = shouldReceivePowerFrom(level, x, y, z + 1, Direction::SOUTH)
+		|| (!level->isSolidBlockingTile(x, y, z + 1) && shouldReceivePowerFrom(level, x, y - 1, z + 1, Direction::UNDEFINED));
 
 	if (!level->isSolidBlockingTile(x, y + 1, z))
 	{
-        if (level->isSolidBlockingTile(x - 1, y, z) && RedStoneDustTile::shouldReceivePowerFrom(level, x - 1, y + 1, z, Direction::UNDEFINED)) w = true;
-        if (level->isSolidBlockingTile(x + 1, y, z) && RedStoneDustTile::shouldReceivePowerFrom(level, x + 1, y + 1, z, Direction::UNDEFINED)) e = true;
-        if (level->isSolidBlockingTile(x, y, z - 1) && RedStoneDustTile::shouldReceivePowerFrom(level, x, y + 1, z - 1, Direction::UNDEFINED)) n = true;
-        if (level->isSolidBlockingTile(x, y, z + 1) && RedStoneDustTile::shouldReceivePowerFrom(level, x, y + 1, z + 1, Direction::UNDEFINED)) s = true;
+		if (level->isSolidBlockingTile(x - 1, y, z) && shouldReceivePowerFrom(level, x - 1, y + 1, z, Direction::UNDEFINED)) w = true;
+		if (level->isSolidBlockingTile(x + 1, y, z) && shouldReceivePowerFrom(level, x + 1, y + 1, z, Direction::UNDEFINED)) e = true;
+		if (level->isSolidBlockingTile(x, y, z - 1) && shouldReceivePowerFrom(level, x, y + 1, z - 1, Direction::UNDEFINED)) n = true;
+		if (level->isSolidBlockingTile(x, y, z + 1) && shouldReceivePowerFrom(level, x, y + 1, z + 1, Direction::UNDEFINED)) s = true;
 	}
 
-	if (!n && !e && !w && !s && (dir >= 2 && dir <= 5)) return true;
+	if (!n && !e && !w && !s && (dir >= 2 && dir <= 5)) return data;
 
-	if (dir == 2 && n && (!w && !e)) return true;
-	if (dir == 3 && s && (!w && !e)) return true;
-	if (dir == 4 && w && (!n && !s)) return true;
-	if (dir == 5 && e && (!n && !s)) return true;
+	if (dir == 2 && n && (!w && !e)) return data;
+	if (dir == 3 && s && (!w && !e)) return data;
+	if (dir == 4 && w && (!n && !s)) return data;
+	if (dir == 5 && e && (!n && !s)) return data;
 
-	return false;
+	return Redstone::SIGNAL_NONE;
 
 }
 
@@ -374,11 +358,11 @@ bool RedStoneDustTile::shouldConnectTo(LevelSource *level, int x, int y, int z, 
 	int t = level->getTile(x, y, z);
 	if (t == Tile::redStoneDust_Id) return true;
 	if (t == 0) return false;
-    if (t == Tile::diode_off_Id || t == Tile::diode_on_Id)
+	if (Tile::diode_off->isSameDiode(t))
 	{
-        int data = level->getData(x, y, z);
-        return direction == (data & DiodeTile::DIRECTION_MASK) || direction == Direction::DIRECTION_OPPOSITE[data & DiodeTile::DIRECTION_MASK];
-    }
+		int data = level->getData(x, y, z);
+		return direction == (data & DiodeTile::DIRECTION_MASK) || direction == Direction::DIRECTION_OPPOSITE[data & DiodeTile::DIRECTION_MASK];
+	}
 	else if (Tile::tiles[t]->isSignalSource() && direction != Direction::UNDEFINED) return true;
 
 	return false;
@@ -386,18 +370,18 @@ bool RedStoneDustTile::shouldConnectTo(LevelSource *level, int x, int y, int z, 
 
 bool RedStoneDustTile::shouldReceivePowerFrom(LevelSource *level, int x, int y, int z, int direction)
 {
-    if (shouldConnectTo(level, x, y, z, direction))
+	if (shouldConnectTo(level, x, y, z, direction))
 	{
-        return true;
-    }
+		return true;
+	}
 
-    int t = level->getTile(x, y, z);
-    if (t == Tile::diode_on_Id)
+	int t = level->getTile(x, y, z);
+	if (t == Tile::diode_on_Id)
 	{
-        int data = level->getData(x, y, z);
-        return direction == (data & DiodeTile::DIRECTION_MASK);
-    }
-    return false;
+		int data = level->getData(x, y, z);
+		return direction == (data & DiodeTile::DIRECTION_MASK);
+	}
+	return false;
 }
 
 int  RedStoneDustTile::cloneTileId(Level *level, int x, int y, int z)
@@ -407,10 +391,10 @@ int  RedStoneDustTile::cloneTileId(Level *level, int x, int y, int z)
 
 void RedStoneDustTile::registerIcons(IconRegister *iconRegister)
 {
-	iconCross = iconRegister->registerIcon(TEXTURE_CROSS);
-	iconLine = iconRegister->registerIcon(TEXTURE_LINE);
-	iconCrossOver = iconRegister->registerIcon(TEXTURE_CROSS_OVERLAY);
-	iconLineOver = iconRegister->registerIcon(TEXTURE_LINE_OVERLAY);
+	iconCross = iconRegister->registerIcon(getIconName() + TEXTURE_CROSS);
+	iconLine = iconRegister->registerIcon(getIconName() + TEXTURE_LINE);
+	iconCrossOver = iconRegister->registerIcon(getIconName() + TEXTURE_CROSS_OVERLAY);
+	iconLineOver = iconRegister->registerIcon(getIconName() + TEXTURE_LINE_OVERLAY);
 
 	icon = iconCross;
 }

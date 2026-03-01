@@ -51,12 +51,11 @@ EndermanModel::EndermanModel() : HumanoidModel(0, -14, 64, 32)
 	leg0->compile(1.0f/16.0f);
 	leg1->compile(1.0f/16.0f);
 	hair->compile(1.0f/16.0f);
-
 }
 
-void EndermanModel::setupAnim(float time, float r, float bob, float yRot, float xRot, float scale, unsigned int uiBitmaskOverrideAnim)
+void EndermanModel::setupAnim(float time, float r, float bob, float yRot, float xRot, float scale, shared_ptr<Entity> entity, unsigned int uiBitmaskOverrideAnim)
 {
-	HumanoidModel::setupAnim(time, r, bob, yRot, xRot, scale, uiBitmaskOverrideAnim);
+	HumanoidModel::setupAnim(time, r, bob, yRot, xRot, scale, entity, uiBitmaskOverrideAnim);
 
 	head->visible = true;
 

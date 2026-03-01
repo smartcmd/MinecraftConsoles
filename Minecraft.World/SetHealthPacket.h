@@ -6,15 +6,14 @@ using namespace std;
 class SetHealthPacket : public Packet, public enable_shared_from_this<SetHealthPacket>
 {
 public:
-	int health;
+	float health;
 	int food;
 	float saturation;
-	//    public float exhaustion; // 4J - Original comment
 
 	ETelemetryChallenges damageSource; // 4J Added
 
 	SetHealthPacket();
-	SetHealthPacket(int health, int food, float saturation, ETelemetryChallenges damageSource);
+	SetHealthPacket(float health, int food, float saturation, ETelemetryChallenges damageSource);
 
 	virtual void read(DataInputStream *dis);
 	virtual void write(DataOutputStream *dos);

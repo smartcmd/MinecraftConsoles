@@ -61,9 +61,17 @@
 
 	<data name="IDS_CORRUPT_OPTIONS">
 		<value>Your Options file is corrupt and needs to be deleted.</value>
-	</data>	
+	</data>
+  
+  <data name="IDS_CORRUPT_OPTIONS_DELETE">
+    <value>Delete options file.</value>
+  </data>
 
-	<data name="IDS_CORRUPT_SAVECACHE">
+  <data name="IDS_CORRUPT_OPTIONS_RETRY">
+    <value>Retry loading options file.</value>
+  </data>
+
+  <data name="IDS_CORRUPT_SAVECACHE">
 		<value>Your Save Cache file is corrupt and needs to be deleted.</value>
 	</data>	
 

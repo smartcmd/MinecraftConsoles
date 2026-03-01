@@ -1,7 +1,6 @@
 #pragma once
 #include "EntityRenderer.h"
 
-
 class FallingTileRenderer : public EntityRenderer
 {
 private:
@@ -11,4 +10,5 @@ public:
 	FallingTileRenderer();
 
     virtual void render(shared_ptr<Entity> _tile, double x, double y, double z, float rot, float a);
+	virtual ResourceLocation *getTextureLocation(shared_ptr<Entity> mob);
 };

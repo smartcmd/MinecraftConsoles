@@ -48,6 +48,12 @@
 	<data name="IDS_CORRUPT_OPTIONS">
 		<value>Το αρχείο Επιλογών είναι κατεστραμμένο και πρέπει να διαγραφεί.</value>
 	</data>
+	<data name="IDS_CORRUPT_OPTIONS_DELETE">
+		<value>Διαγραφή αρχείου επιλογών.</value>
+	</data>
+	<data name="IDS_CORRUPT_OPTIONS_RETRY">
+		<value>Επανάληψη φόρτωσης αρχείου επιλογών.</value>
+	</data>
 	<data name="IDS_CORRUPT_SAVECACHE">
 		<value>Το αρχείο Αποθήκευσης της Κρυφής Μνήμης είναι κατεστραμμένο και πρέπει να διαγραφεί.</value>
 	</data>
@@ -61,7 +67,7 @@
 		<value>Κρίσιμο σφάλμα: Η ενεργοποίηση των Τροπαίων απέτυχε. Βγείτε από το παιχνίδι.</value>
 	</data>
 	<data name="IDS_TOOLTIPS_GAME_INVITES">
-		<value>Προβολή Προσκλήσεων Παιχνιδιού</value>
+		<value>Προβολή Προσκλήσεων</value>
 	</data>
 	<data name="IDS_CORRUPT_FILE">
 		<value>Κατεστραμμένο Αρχείο</value>
@@ -75,6 +81,9 @@
 	<data name="IDS_CONTENT_RESTRICTION_MULTIPLAYER">
 		<value>Η Διαδικτυακή υπηρεσία απενεργοποιήθηκε στο Sony Entertainment Network λογαριασμό σας, λόγω ρυθμίσεων γονικού ελέγχου για έναν από τους τοπικούς σας παίκτες.</value>
 	</data>
+	<data name="IDS_CONTENT_RESTRICTION_PATCH_AVAILABLE">
+		<value>Οι online λειτουργίες είναι απενεργοποιημένες, επειδή υπάρχει διαθέσιμη ενημέρωση παιχνιδιού.</value>
+	</data>
 	<data name="IDS_NO_DLCCATEGORIES">
 		<value>Δεν υπάρχουν προσφορές για διαθέσιμο περιεχόμενο με δυνατότητα λήψης αυτήν τη στιγμή.</value>
 	</data>
@@ -83,8 +92,5 @@
 	</data>
 	<data name="IDS_INVITATION_BODY">
 		<value>Ελάτε να παίξετε ένα παιχνίδι του Minecraft: PlayStation®Vita Edition!</value>
-	</data>
-	<data name="IDS_CONTENT_RESTRICTION_PATCH_AVAILABLE">
-		<value>Οι online λειτουργίες είναι απενεργοποιημένες, επειδή υπάρχει διαθέσιμη ενημέρωση παιχνιδιού.</value>
 	</data>
 </root>

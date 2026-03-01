@@ -7,25 +7,25 @@
 
 WaterlilyTile::WaterlilyTile(int id) : Bush(id)
 {
-    this->updateDefaultShape();
+	this->updateDefaultShape();
 }
 
 // 4J Added override
 void WaterlilyTile::updateDefaultShape()
 {
-    float ss = 0.5f;
-    float hh = 0.25f / 16.0f;
-    this->setShape(0.5f - ss, 0, 0.5f - ss, 0.5f + ss, hh, 0.5f + ss);
+	float ss = 0.5f;
+	float hh = 0.25f / 16.0f;
+	setShape(0.5f - ss, 0, 0.5f - ss, 0.5f + ss, hh, 0.5f + ss);
 }
 
 int WaterlilyTile::getRenderShape()
 {
-	 return Tile::SHAPE_LILYPAD;
+	return Tile::SHAPE_LILYPAD;
 }
 
 void WaterlilyTile::addAABBs(Level *level, int x, int y, int z, AABB *box, AABBList *boxes, shared_ptr<Entity> source)
 {
-	if (source == NULL || !(dynamic_pointer_cast<Boat>(source)))
+	if (source == NULL || !source->instanceof(eTYPE_BOAT))
 	{
 		Bush::addAABBs(level, x, y, z, box, boxes, source);
 	}
@@ -67,7 +67,7 @@ bool WaterlilyTile::mayPlaceOn(int tile)
 bool WaterlilyTile::canSurvive(Level *level, int x, int y, int z)
 {
 	if (y < 0 || y >= Level::maxBuildHeight) return false;
-    return level->getMaterial(x, y - 1, z) == Material::water && level->getData(x, y - 1, z) == 0;
+	return level->getMaterial(x, y - 1, z) == Material::water && level->getData(x, y - 1, z) == 0;
 }
 
 bool WaterlilyTile::growTree(Level *level, int x, int y, int z, Random *random)

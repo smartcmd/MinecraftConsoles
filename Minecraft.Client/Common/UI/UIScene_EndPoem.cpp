@@ -219,7 +219,16 @@ void UIScene_EndPoem::updateNoise()
 		replaceString = L"";
 		for(int i = 0; i < length; ++i)
 		{
-			randomChar = SharedConstants::acceptableLetters[random->nextInt((int)SharedConstants::acceptableLetters.length())];
+			if (ui.UsingBitmapFont())
+			{
+				randomChar = SharedConstants::acceptableLetters[random->nextInt((int)SharedConstants::acceptableLetters.length())];
+			}
+			else
+			{
+				// 4J-JEV: It'd be nice to avoid null characters when using asian languages.
+				static wstring acceptableLetters = L"!\"#$%&'()*+,-./0123456789:;<=>?@[\\]^_'|}~";
+				randomChar = acceptableLetters[ random->nextInt((int)acceptableLetters.length()) ];
+			}
 			
 			wstring randomCharStr = L"";
 			randomCharStr.push_back(randomChar);

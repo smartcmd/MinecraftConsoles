@@ -17,7 +17,7 @@
   </data>
 <data name="IDS_NOFREESPACE_TITLE"><value>沒有可用空間</value>
   </data>
-<data name="IDS_NOFREESPACE_TEXT"><value>已選取儲存裝置沒有足夠的可用空間來建立遊戲存檔。</value>
+<data name="IDS_NOFREESPACE_TEXT"><value>您所選取的儲存裝置沒有足夠的可用空間來建立遊戲存檔。</value>
   </data>
 <data name="IDS_SELECTAGAIN"><value>再選取一次</value>
   </data>
@@ -27,7 +27,7 @@
   </data>
 <data name="IDS_OVERWRITESAVE_TITLE"><value>要覆寫存檔嗎？</value>
   </data>
-<data name="IDS_OVERWRITESAVE_TEXT"><value>已選取儲存裝置已經有這個存檔，確定要覆寫該存檔嗎？</value>
+<data name="IDS_OVERWRITESAVE_TEXT"><value>您所選取的儲存裝置已經有這個存檔，確定要覆寫該存檔嗎？</value>
   </data>
 <data name="IDS_OVERWRITESAVE_NO"><value>否：不要覆寫</value>
   </data>

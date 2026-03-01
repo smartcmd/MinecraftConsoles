@@ -11,7 +11,7 @@ public:
 	static Entity *create(Level *level) { return new ThrownExpBottle(level); }
 public:
 	ThrownExpBottle(Level *level);
-	ThrownExpBottle(Level *level, shared_ptr<Mob> mob);
+	ThrownExpBottle(Level *level, shared_ptr<LivingEntity> mob);
 	ThrownExpBottle(Level *level, double x, double y, double z);
 
 protected:

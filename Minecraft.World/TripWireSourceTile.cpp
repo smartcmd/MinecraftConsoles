@@ -2,6 +2,7 @@
 #include "net.minecraft.h"
 #include "net.minecraft.world.level.h"
 #include "net.minecraft.world.level.tile.h"
+#include "net.minecraft.world.level.redstone.h"
 #include "TripWireSourceTile.h"
 
 TripWireSourceTile::TripWireSourceTile(int id) : Tile(id, Material::decoration, isSolidRender())
@@ -102,8 +103,8 @@ void TripWireSourceTile::neighborChanged(Level *level, int x, int y, int z, int 
 
 		if (replace)
 		{
-			this->spawnResources(level, x, y, z, data, 0);
-			level->setTile(x, y, z, 0);
+			spawnResources(level, x, y, z, data, 0);
+			level->removeTile(x, y, z);
 		}
 	}
 }
@@ -111,8 +112,6 @@ void TripWireSourceTile::neighborChanged(Level *level, int x, int y, int z, int 
 void TripWireSourceTile::calculateState(Level *level, int x, int y, int z, int id, int data, bool canUpdate, 
 										/*4J-Jev, these parameters only used with 'updateSource' -->*/ int wireSource, int wireSourceData)
 {
-
-
 	int dir = data & MASK_DIR;
 	bool wasAttached = (data & MASK_ATTACHED) == MASK_ATTACHED;
 	bool wasPowered = (data & MASK_POWERED) == MASK_POWERED;
@@ -176,7 +175,7 @@ void TripWireSourceTile::calculateState(Level *level, int x, int y, int z, int i
 		int xx = x + stepX * receiverPos;
 		int zz = z + stepZ * receiverPos;
 		int opposite = Direction::DIRECTION_OPPOSITE[dir];
-		level->setData(xx, y, zz, opposite | state);
+		level->setData(xx, y, zz, opposite | state, Tile::UPDATE_ALL);
 		notifyNeighbors(level, xx, y, zz, opposite);
 
 		playSound(level, xx, y, zz, attached, powered, wasAttached, wasPowered);
@@ -186,7 +185,7 @@ void TripWireSourceTile::calculateState(Level *level, int x, int y, int z, int i
 
 	if (id > 0) // ie. it isn't being removed.
 	{
-		level->setData(x, y, z, data);
+		level->setData(x, y, z, data, Tile::UPDATE_ALL);
 		if (canUpdate) notifyNeighbors(level, x, y, z, dir);
 	}
 
@@ -209,7 +208,7 @@ void TripWireSourceTile::calculateState(Level *level, int x, int y, int z, int i
 			}
 
 			
-			level->setData(xx, y, zz, wireData);
+			level->setData(xx, y, zz, wireData, Tile::UPDATE_ALL);
 		}
 	}
 }
@@ -241,23 +240,23 @@ void TripWireSourceTile::playSound(Level *level, int x, int y, int z, bool attac
 
 void TripWireSourceTile::notifyNeighbors(Level *level, int x, int y, int z, int dir)
 {
-	level->updateNeighborsAt(x, y, z, this->id);
+	level->updateNeighborsAt(x, y, z, id);
 
 	if (dir == Direction::EAST)
 	{
-		level->updateNeighborsAt(x - 1, y, z, this->id);
+		level->updateNeighborsAt(x - 1, y, z, id);
 	}
 	else if (dir == Direction::WEST)
 	{
-		level->updateNeighborsAt(x + 1, y, z, this->id);
+		level->updateNeighborsAt(x + 1, y, z, id);
 	}
 	else if (dir == Direction::SOUTH)
 	{
-		level->updateNeighborsAt(x, y, z - 1, this->id);
+		level->updateNeighborsAt(x, y, z - 1, id);
 	}
 	else if (dir == Direction::NORTH)
 	{
-		level->updateNeighborsAt(x, y, z + 1, this->id);
+		level->updateNeighborsAt(x, y, z + 1, id);
 	}
 }
 
@@ -266,7 +265,7 @@ bool TripWireSourceTile::checkCanSurvive(Level *level, int x, int y, int z)
 	if (!mayPlace(level, x, y, z))
 	{
 		this->spawnResources(level, x, y, z, level->getData(x, y, z), 0);
-		level->setTile(x, y, z, 0);
+		level->removeTile(x, y, z);
 		return false;
 	}
 
@@ -333,24 +332,24 @@ void TripWireSourceTile::onRemove(Level *level, int x, int y, int z, int id, int
 	Tile::onRemove(level, x, y, z, id, data);
 }
 
-bool TripWireSourceTile::getSignal(LevelSource *level, int x, int y, int z, int dir)
+int TripWireSourceTile::getSignal(LevelSource *level, int x, int y, int z, int dir)
 {
-	return (level->getData(x, y, z) & MASK_POWERED) == MASK_POWERED;
+	return (level->getData(x, y, z) & MASK_POWERED) == MASK_POWERED ? Redstone::SIGNAL_MAX : Redstone::SIGNAL_NONE;
 }
 
-bool TripWireSourceTile::getDirectSignal(Level *level, int x, int y, int z, int dir)
+int TripWireSourceTile::getDirectSignal(LevelSource *level, int x, int y, int z, int dir)
 {
 	int data = level->getData(x, y, z);
-	if ((data & MASK_POWERED) != MASK_POWERED) return false;
+	if ((data & MASK_POWERED) != MASK_POWERED) return Redstone::SIGNAL_NONE;
 	int myDir = data & MASK_DIR;
 
-	if (myDir == Direction::NORTH && dir == Facing::NORTH) return true;
-	if (myDir == Direction::SOUTH && dir == Facing::SOUTH) return true;
-	if (myDir == Direction::WEST && dir == Facing::WEST) return true;
-	if (myDir == Direction::EAST && dir == Facing::EAST) return true;
+	if (myDir == Direction::NORTH && dir == Facing::NORTH) return Redstone::SIGNAL_MAX;
+	if (myDir == Direction::SOUTH && dir == Facing::SOUTH) return Redstone::SIGNAL_MAX;
+	if (myDir == Direction::WEST && dir == Facing::WEST) return Redstone::SIGNAL_MAX;
+	if (myDir == Direction::EAST && dir == Facing::EAST) return Redstone::SIGNAL_MAX;
 
 
-	return false;
+	return Redstone::SIGNAL_NONE;
 }
 
 bool TripWireSourceTile::isSignalSource()

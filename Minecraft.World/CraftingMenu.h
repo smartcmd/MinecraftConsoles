@@ -32,4 +32,9 @@ public:
 	virtual void removed(shared_ptr<Player> player);
 	virtual bool stillValid(shared_ptr<Player> player);
 	virtual shared_ptr<ItemInstance> quickMoveStack(shared_ptr<Player> player, int slotIndex);
+	virtual bool canTakeItemForPickAll(shared_ptr<ItemInstance> carried, Slot *target);
+
+	int getX() { return x; }
+	int getY() { return y; }
+	int getZ() { return z; }
 };

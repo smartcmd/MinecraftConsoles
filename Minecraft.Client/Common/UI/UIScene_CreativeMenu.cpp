@@ -21,7 +21,7 @@ UIScene_CreativeMenu::UIScene_CreativeMenu(int iPad, void *_initData, UILayer *p
 
 	InventoryScreenInput *initData = (InventoryScreenInput *)_initData;
 
-	shared_ptr<SimpleContainer> creativeContainer = shared_ptr<SimpleContainer>(new SimpleContainer( 0, TabSpec::MAX_SIZE ));
+	shared_ptr<SimpleContainer> creativeContainer = shared_ptr<SimpleContainer>(new SimpleContainer( 0, L"", false, TabSpec::MAX_SIZE ));
 	itemPickerMenu = new ItemPickerMenu(creativeContainer, initData->player->inventory);
 
 	Initialize( initData->iPad, itemPickerMenu, false, -1, eSectionInventoryCreativeUsing, eSectionInventoryCreativeMax, initData->bNavigateBack);
@@ -158,26 +158,6 @@ void UIScene_CreativeMenu::handleOtherClicked(int iPad, ESceneSection eSection, 
 	}
 }
 
-void UIScene_CreativeMenu::ScrollBar(UIVec2D pointerPos)
-{
-	float fPosition = ((float)pointerPos.y - (float)m_TouchInput[ETouchInput_TouchSlider].getYPos()) /  (float)m_TouchInput[ETouchInput_TouchSlider].getHeight();
-
-	// clamp
-	if(fPosition > 1)
-		fPosition = 1.0f;
-	else if(fPosition < 0)
-		fPosition = 0.0f;
-
-	// calculate page position according to page count
-	int iCurrentPage = Math::round(fPosition * (specs[m_curTab]->getPageCount() - 1));
-
-	// set tab page
-	m_tabPage[m_curTab] = iCurrentPage;
-
-	// update tab
-	switchTab(m_curTab);
-}
-
 void UIScene_CreativeMenu::handleReload()
 {
 	Initialize( m_iPad, m_menu, false, -1, eSectionInventoryCreativeUsing, eSectionInventoryCreativeMax, m_bNavigateBack );
@@ -191,6 +171,10 @@ void UIScene_CreativeMenu::handleReload()
 	{
 		m_slotListHotbar.addSlot(i);
 	}
+	
+	ECreativeInventoryTabs lastTab = m_curTab;
+	m_curTab = eCreativeInventoryTab_COUNT;
+	switchTab(lastTab);
 }
 
 void UIScene_CreativeMenu::handleInput(int iPad, int key, bool repeat, bool pressed, bool released, bool &handled)

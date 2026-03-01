@@ -723,6 +723,9 @@
     <Filter Include="PSVita\Miles Sound System\lib">
       <UniqueIdentifier>{0061db22-43de-4b54-a161-c43958cdcd7e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="net\minecraft\client\resources">
+      <UniqueIdentifier>{889a84db-3009-4a7c-8234-4bf93d412690}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <None Include="ReadMe.txt" />
@@ -2431,14 +2434,8 @@
     <ClInclude Include="Common\Consoles_App.h">
       <Filter>Common</Filter>
     </ClInclude>
-    <ClInclude Include="OzelotModel.h">
-      <Filter>net\minecraft\client\model</Filter>
-    </ClInclude>
     <ClInclude Include="VillagerGolemModel.h">
       <Filter>net\minecraft\client\model</Filter>
-    </ClInclude>
-    <ClInclude Include="OzelotRenderer.h">
-      <Filter>net\minecraft\client\renderer\entity</Filter>
     </ClInclude>
     <ClInclude Include="VillagerGolemRenderer.h">
       <Filter>net\minecraft\client\renderer\entity</Filter>
@@ -3190,9 +3187,6 @@
     <ClInclude Include="PS3\Leaderboards\PS3LeaderboardManager.h">
       <Filter>PS3\Source Files\Leaderboards</Filter>
     </ClInclude>
-    <ClInclude Include="PS3\Leaderboards\base64.h">
-      <Filter>PS3\Source Files\Leaderboards</Filter>
-    </ClInclude>
     <ClInclude Include="Common\Leaderboards\LeaderboardManager.h">
       <Filter>Common\Source Files\Leaderboards</Filter>
     </ClInclude>
@@ -3463,17 +3457,11 @@
     <ClInclude Include="PSVita\PSVita_UIController.h">
       <Filter>PSVita</Filter>
     </ClInclude>
-    <ClInclude Include="PSVita\PSVita_PlayerUID.h">
-      <Filter>PSVita\Source Files</Filter>
-    </ClInclude>
     <ClInclude Include="PSVita\GameConfig\Minecraft.spa.h">
       <Filter>PSVita\GameConfig</Filter>
     </ClInclude>
     <ClInclude Include="Orbis\Network\SonyVoiceChat_Orbis.h">
       <Filter>Orbis\Network</Filter>
-    </ClInclude>
-    <ClInclude Include="Orbis\Leaderboards\base64.h">
-      <Filter>Orbis\Source Files\Leaderboards</Filter>
     </ClInclude>
     <ClInclude Include="Common\UI\UIScene_DebugCreateSchematic.h">
       <Filter>Common\Source Files\UI\Scenes\Debug</Filter>
@@ -3571,9 +3559,6 @@
     <ClInclude Include="PSVita\Network\SQRNetworkManager_Vita.h">
       <Filter>PSVita\Source Files\Network</Filter>
     </ClInclude>
-    <ClInclude Include="PSVita\Leaderboards\base64.h">
-      <Filter>PSVita\Source Files\Leaderboards</Filter>
-    </ClInclude>
     <ClInclude Include="PSVita\Leaderboards\PSVitaLeaderboardManager.h">
       <Filter>PSVita\Source Files\Leaderboards</Filter>
     </ClInclude>
@@ -3624,6 +3609,162 @@
     </ClInclude>
     <ClInclude Include="Common\UI\UIScene_Keyboard.h">
       <Filter>Common\Source Files\UI\Scenes</Filter>
+    </ClInclude>
+    <ClInclude Include="Common\Leaderboards\SonyLeaderboardManager.h">
+      <Filter>Common\Source Files\Leaderboards</Filter>
+    </ClInclude>
+    <ClInclude Include="Common\Leaderboards\base64.h">
+      <Filter>Common\Source Files\Leaderboards</Filter>
+    </ClInclude>
+    <ClInclude Include="DispenserBootstrap.h">
+      <Filter>net\minecraft\server</Filter>
+    </ClInclude>
+    <ClInclude Include="ServerScoreboard.h">
+      <Filter>net\minecraft\server</Filter>
+    </ClInclude>
+    <ClInclude Include="BatModel.h">
+      <Filter>net\minecraft\client\model</Filter>
+    </ClInclude>
+    <ClInclude Include="LeashKnotModel.h">
+      <Filter>net\minecraft\client\model</Filter>
+    </ClInclude>
+    <ClInclude Include="ModelHorse.h">
+      <Filter>net\minecraft\client\model</Filter>
+    </ClInclude>
+    <ClInclude Include="SkiModel.h">
+      <Filter>net\minecraft\client\model</Filter>
+    </ClInclude>
+    <ClInclude Include="WitchModel.h">
+      <Filter>net\minecraft\client\model</Filter>
+    </ClInclude>
+    <ClInclude Include="WitherBossModel.h">
+      <Filter>net\minecraft\client\model</Filter>
+    </ClInclude>
+    <ClInclude Include="FireworksParticles.h">
+      <Filter>net\minecraft\client\particle</Filter>
+    </ClInclude>
+    <ClInclude Include="ResourceLocation.h">
+      <Filter>net\minecraft\client\resources</Filter>
+    </ClInclude>
+    <ClInclude Include="LivingEntityRenderer.h">
+      <Filter>net\minecraft\client\renderer\entity</Filter>
+    </ClInclude>
+    <ClInclude Include="BatRenderer.h">
+      <Filter>net\minecraft\client\renderer\entity</Filter>
+    </ClInclude>
+    <ClInclude Include="CaveSpiderRenderer.h">
+      <Filter>net\minecraft\client\renderer\entity</Filter>
+    </ClInclude>
+    <ClInclude Include="HorseRenderer.h">
+      <Filter>net\minecraft\client\renderer\entity</Filter>
+    </ClInclude>
+    <ClInclude Include="LeashKnotRenderer.h">
+      <Filter>net\minecraft\client\renderer\entity</Filter>
+    </ClInclude>
+    <ClInclude Include="MinecartSpawnerRenderer.h">
+      <Filter>net\minecraft\client\renderer\entity</Filter>
+    </ClInclude>
+    <ClInclude Include="OcelotRenderer.h">
+      <Filter>net\minecraft\client\renderer\entity</Filter>
+    </ClInclude>
+    <ClInclude Include="SkeletonRenderer.h">
+      <Filter>net\minecraft\client\renderer\entity</Filter>
+    </ClInclude>
+    <ClInclude Include="WitchRenderer.h">
+      <Filter>net\minecraft\client\renderer\entity</Filter>
+    </ClInclude>
+    <ClInclude Include="WitherBossRenderer.h">
+      <Filter>net\minecraft\client\renderer\entity</Filter>
+    </ClInclude>
+    <ClInclude Include="WitherSkullRenderer.h">
+      <Filter>net\minecraft\client\renderer\entity</Filter>
+    </ClInclude>
+    <ClInclude Include="TntMinecartRenderer.h">
+      <Filter>net\minecraft\client\renderer\entity</Filter>
+    </ClInclude>
+    <ClInclude Include="BeaconRenderer.h">
+      <Filter>net\minecraft\client\renderer\tileentity</Filter>
+    </ClInclude>
+    <ClInclude Include="TextureAtlas.h">
+      <Filter>net\minecraft\client\renderer\texture</Filter>
+    </ClInclude>
+    <ClInclude Include="BossMobGuiInfo.h">
+      <Filter>net\minecraft\client\renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="Common\UI\IUIScene_BeaconMenu.h">
+      <Filter>Common\Source Files\UI\All Platforms</Filter>
+    </ClInclude>
+    <ClInclude Include="Common\UI\IUIScene_CommandBlockMenu.h">
+      <Filter>Common\Source Files\UI\All Platforms</Filter>
+    </ClInclude>
+    <ClInclude Include="Common\UI\IUIScene_HopperMenu.h">
+      <Filter>Common\Source Files\UI\All Platforms</Filter>
+    </ClInclude>
+    <ClInclude Include="Common\UI\IUIScene_HorseInventoryMenu.h">
+      <Filter>Common\Source Files\UI\All Platforms</Filter>
+    </ClInclude>
+    <ClInclude Include="OcelotModel.h">
+      <Filter>net\minecraft\client\model</Filter>
+    </ClInclude>
+    <ClInclude Include="Common\UI\UIScene_HopperMenu.h">
+      <Filter>Common\Source Files\UI\Scenes\In-Game Menu Screens\Containers</Filter>
+    </ClInclude>
+    <ClInclude Include="Common\UI\UIScene_HorseInventoryMenu.h">
+      <Filter>Common\Source Files\UI\Scenes\In-Game Menu Screens\Containers</Filter>
+    </ClInclude>
+    <ClInclude Include="Common\XUI\XUI_Scene_Hopper.h">
+      <Filter>Xbox\Source Files\XUI\Containers</Filter>
+    </ClInclude>
+    <ClInclude Include="Common\XUI\XUI_Scene_HorseInventory.h">
+      <Filter>Xbox\Source Files\XUI\Containers</Filter>
+    </ClInclude>
+    <ClInclude Include="Common\XUI\XUI_Ctrl_MinecraftHorse.h">
+      <Filter>Xbox\Source Files\XUI\Controls</Filter>
+    </ClInclude>
+    <ClInclude Include="Common\XUI\XUI_Scene_Beacon.h">
+      <Filter>Xbox\Source Files\XUI\Containers</Filter>
+    </ClInclude>
+    <ClInclude Include="Common\XUI\XUI_Ctrl_BeaconButton.h">
+      <Filter>Xbox\Source Files\XUI\Controls</Filter>
+    </ClInclude>
+    <ClInclude Include="Common\UI\IUIScene_FireworksMenu.h">
+      <Filter>Common\Source Files\UI\All Platforms</Filter>
+    </ClInclude>
+    <ClInclude Include="Common\XUI\XUI_Scene_Fireworks.h">
+      <Filter>Xbox\Source Files\XUI\Containers</Filter>
+    </ClInclude>
+    <ClInclude Include="Common\UI\UIControl_BeaconEffectButton.h">
+      <Filter>Common\Source Files\UI\Controls</Filter>
+    </ClInclude>
+    <ClInclude Include="Common\UI\UIScene_BeaconMenu.h">
+      <Filter>Common\Source Files\UI\Scenes\In-Game Menu Screens\Containers</Filter>
+    </ClInclude>
+    <ClInclude Include="Common\UI\UIScene_FireworksMenu.h">
+      <Filter>Common\Source Files\UI\Scenes\In-Game Menu Screens\Containers</Filter>
+    </ClInclude>
+    <ClInclude Include="Common\UI\IUIScene_HUD.h">
+      <Filter>Common\Source Files\UI\All Platforms</Filter>
+    </ClInclude>
+    <ClInclude Include="Common\UI\UIScene_LanguageSelector.h">
+      <Filter>Common\Source Files\UI\Scenes\Help &amp; Options</Filter>
+    </ClInclude>
+    <ClInclude Include="Common\UI\UIString.h">
+      <Filter>Common\Source Files\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="Common\UI\UIControl_MinecraftHorse.h">
+      <Filter>Common\Source Files\UI\Controls</Filter>
+    </ClInclude>
+    <ClInclude Include="Common\Tutorial\HorseChoiceTask.h">
+      <Filter>Common\Source Files\Tutorial\Tasks</Filter>
+    </ClInclude>
+    <ClInclude Include="Common\Tutorial\RideEntityTask.h">
+      <Filter>Common\Source Files\Tutorial\Tasks</Filter>
+    </ClInclude>
+    <ClInclude Include="Common\UI\UIScene_NewUpdateMessage.h">
+      <Filter>Common\Source Files\UI\Scenes\Frontend Menu screens</Filter>
+    </ClInclude>
+    <ClInclude Include="Common\Leaderboards\LeaderboardInterface.h">
+      <Filter>Common\Source Files\Leaderboards</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -4806,13 +4947,7 @@
     <ClCompile Include="VillagerGolemRenderer.cpp">
       <Filter>net\minecraft\client\renderer\entity</Filter>
     </ClCompile>
-    <ClCompile Include="OzelotRenderer.cpp">
-      <Filter>net\minecraft\client\renderer\entity</Filter>
-    </ClCompile>
     <ClCompile Include="VillagerGolemModel.cpp">
-      <Filter>net\minecraft\client\model</Filter>
-    </ClCompile>
-    <ClCompile Include="OzelotModel.cpp">
       <Filter>net\minecraft\client\model</Filter>
     </ClCompile>
     <ClCompile Include="Xbox\Audio\SoundEngine.cpp">
@@ -4831,9 +4966,6 @@
       <Filter>PS3\ChunkRebuild_SPU</Filter>
     </ClCompile>
     <ClCompile Include="PS3\SPU_Tasks\ChunkUpdate\DiodeTile_SPU.cpp">
-      <Filter>PS3\ChunkRebuild_SPU</Filter>
-    </ClCompile>
-    <ClCompile Include="PS3\SPU_Tasks\ChunkUpdate\Direction_SPU.cpp">
       <Filter>PS3\ChunkRebuild_SPU</Filter>
     </ClCompile>
     <ClCompile Include="PS3\SPU_Tasks\ChunkUpdate\DoorTile_SPU.cpp">
@@ -5262,9 +5394,6 @@
     <ClCompile Include="PS3\Leaderboards\PS3LeaderboardManager.cpp">
       <Filter>PS3\Source Files\Leaderboards</Filter>
     </ClCompile>
-    <ClCompile Include="PS3\Leaderboards\base64.cpp">
-      <Filter>PS3\Source Files\Leaderboards</Filter>
-    </ClCompile>
     <ClCompile Include="Common\Leaderboards\LeaderboardManager.cpp">
       <Filter>Common\Source Files\Leaderboards</Filter>
     </ClCompile>
@@ -5484,9 +5613,6 @@
     <ClCompile Include="PSVita\PSVita_UIController.cpp">
       <Filter>PSVita</Filter>
     </ClCompile>
-    <ClCompile Include="PSVita\PSVita_PlayerUID.cpp">
-      <Filter>PSVita\Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="PSVita\PSVita_Minecraft.cpp">
       <Filter>PSVita\Source Files</Filter>
     </ClCompile>
@@ -5498,9 +5624,6 @@
     </ClCompile>
     <ClCompile Include="Common\Network\Sony\SQRNetworkManager.cpp">
       <Filter>Common\Source Files\Network\Sony</Filter>
-    </ClCompile>
-    <ClCompile Include="Orbis\Leaderboards\base64.cpp">
-      <Filter>Orbis\Source Files\Leaderboards</Filter>
     </ClCompile>
     <ClCompile Include="Common\UI\UIScene_DebugCreateSchematic.cpp">
       <Filter>Common\Source Files\UI\Scenes\Debug</Filter>
@@ -5592,9 +5715,6 @@
     <ClCompile Include="PSVita\Network\SQRNetworkManager_Vita.cpp">
       <Filter>PSVita\Source Files\Network</Filter>
     </ClCompile>
-    <ClCompile Include="PSVita\Leaderboards\base64.cpp">
-      <Filter>PSVita\Source Files\Leaderboards</Filter>
-    </ClCompile>
     <ClCompile Include="PSVita\Leaderboards\PSVitaLeaderboardManager.cpp">
       <Filter>PSVita\Source Files\Leaderboards</Filter>
     </ClCompile>
@@ -5634,8 +5754,158 @@
     <ClCompile Include="Common\UI\UIScene_Keyboard.cpp">
       <Filter>Common\Source Files\UI\Scenes</Filter>
     </ClCompile>
-    <ClCompile Include="crt_compat.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="Common\Leaderboards\SonyLeaderboardManager.cpp">
+      <Filter>Common\Source Files\Leaderboards</Filter>
+    </ClCompile>
+    <ClCompile Include="Common\Leaderboards\base64.cpp">
+      <Filter>Common\Source Files\Leaderboards</Filter>
+    </ClCompile>
+    <ClCompile Include="Common\UI\UIScene_LanguageSelector.cpp">
+      <Filter>Common\Source Files\UI\Scenes\Help &amp; Options</Filter>
+    </ClCompile>
+    <ClCompile Include="Common\UI\UIString.cpp">
+      <Filter>Common\Source Files\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="DispenserBootstrap.cpp">
+      <Filter>net\minecraft\server</Filter>
+    </ClCompile>
+    <ClCompile Include="ServerScoreboard.cpp">
+      <Filter>net\minecraft\server</Filter>
+    </ClCompile>
+    <ClCompile Include="BatModel.cpp">
+      <Filter>net\minecraft\client\model</Filter>
+    </ClCompile>
+    <ClCompile Include="LeashKnotModel.cpp">
+      <Filter>net\minecraft\client\model</Filter>
+    </ClCompile>
+    <ClCompile Include="ModelHorse.cpp">
+      <Filter>net\minecraft\client\model</Filter>
+    </ClCompile>
+    <ClCompile Include="SkiModel.cpp">
+      <Filter>net\minecraft\client\model</Filter>
+    </ClCompile>
+    <ClCompile Include="WitchModel.cpp">
+      <Filter>net\minecraft\client\model</Filter>
+    </ClCompile>
+    <ClCompile Include="WitherBossModel.cpp">
+      <Filter>net\minecraft\client\model</Filter>
+    </ClCompile>
+    <ClCompile Include="FireworksParticles.cpp">
+      <Filter>net\minecraft\client\particle</Filter>
+    </ClCompile>
+    <ClCompile Include="LivingEntityRenderer.cpp">
+      <Filter>net\minecraft\client\renderer\entity</Filter>
+    </ClCompile>
+    <ClCompile Include="BatRenderer.cpp">
+      <Filter>net\minecraft\client\renderer\entity</Filter>
+    </ClCompile>
+    <ClCompile Include="CaveSpiderRenderer.cpp">
+      <Filter>net\minecraft\client\renderer\entity</Filter>
+    </ClCompile>
+    <ClCompile Include="HorseRenderer.cpp">
+      <Filter>net\minecraft\client\renderer\entity</Filter>
+    </ClCompile>
+    <ClCompile Include="LeashKnotRenderer.cpp">
+      <Filter>net\minecraft\client\renderer\entity</Filter>
+    </ClCompile>
+    <ClCompile Include="MinecartSpawnerRenderer.cpp">
+      <Filter>net\minecraft\client\renderer\entity</Filter>
+    </ClCompile>
+    <ClCompile Include="OcelotRenderer.cpp">
+      <Filter>net\minecraft\client\renderer\entity</Filter>
+    </ClCompile>
+    <ClCompile Include="SkeletonRenderer.cpp">
+      <Filter>net\minecraft\client\renderer\entity</Filter>
+    </ClCompile>
+    <ClCompile Include="TntMinecartRenderer.cpp">
+      <Filter>net\minecraft\client\renderer\entity</Filter>
+    </ClCompile>
+    <ClCompile Include="WitherBossRenderer.cpp">
+      <Filter>net\minecraft\client\renderer\entity</Filter>
+    </ClCompile>
+    <ClCompile Include="WitherSkullRenderer.cpp">
+      <Filter>net\minecraft\client\renderer\entity</Filter>
+    </ClCompile>
+    <ClCompile Include="WitchRenderer.cpp">
+      <Filter>net\minecraft\client\renderer\entity</Filter>
+    </ClCompile>
+    <ClCompile Include="BeaconRenderer.cpp">
+      <Filter>net\minecraft\client\renderer\tileentity</Filter>
+    </ClCompile>
+    <ClCompile Include="TextureAtlas.cpp">
+      <Filter>net\minecraft\client\renderer\texture</Filter>
+    </ClCompile>
+    <ClCompile Include="BossMobGuiInfo.cpp">
+      <Filter>net\minecraft\client\renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="Common\UI\IUIScene_BeaconMenu.cpp">
+      <Filter>Common\Source Files\UI\All Platforms</Filter>
+    </ClCompile>
+    <ClCompile Include="Common\UI\IUIScene_CommandBlockMenu.cpp">
+      <Filter>Common\Source Files\UI\All Platforms</Filter>
+    </ClCompile>
+    <ClCompile Include="Common\UI\IUIScene_HopperMenu.cpp">
+      <Filter>Common\Source Files\UI\All Platforms</Filter>
+    </ClCompile>
+    <ClCompile Include="Common\UI\IUIScene_HorseInventoryMenu.cpp">
+      <Filter>Common\Source Files\UI\All Platforms</Filter>
+    </ClCompile>
+    <ClCompile Include="OcelotModel.cpp">
+      <Filter>net\minecraft\client\model</Filter>
+    </ClCompile>
+    <ClCompile Include="Common\UI\UIScene_HopperMenu.cpp">
+      <Filter>Common\Source Files\UI\Scenes\In-Game Menu Screens\Containers</Filter>
+    </ClCompile>
+    <ClCompile Include="Common\UI\UIScene_HorseInventoryMenu.cpp">
+      <Filter>Common\Source Files\UI\Scenes\In-Game Menu Screens\Containers</Filter>
+    </ClCompile>
+    <ClCompile Include="Common\XUI\XUI_Scene_Hopper.cpp">
+      <Filter>Xbox\Source Files\XUI\Containers</Filter>
+    </ClCompile>
+    <ClCompile Include="Common\XUI\XUI_Scene_HorseInventory.cpp">
+      <Filter>Xbox\Source Files\XUI\Containers</Filter>
+    </ClCompile>
+    <ClCompile Include="Common\XUI\XUI_Ctrl_MinecraftHorse.cpp">
+      <Filter>Xbox\Source Files\XUI\Controls</Filter>
+    </ClCompile>
+    <ClCompile Include="Common\XUI\XUI_Scene_Beacon.cpp">
+      <Filter>Xbox\Source Files\XUI\Containers</Filter>
+    </ClCompile>
+    <ClCompile Include="Common\XUI\XUI_Ctrl_BeaconButton.cpp">
+      <Filter>Xbox\Source Files\XUI\Controls</Filter>
+    </ClCompile>
+    <ClCompile Include="Common\UI\IUIScene_FireworksMenu.cpp">
+      <Filter>Common\Source Files\UI\All Platforms</Filter>
+    </ClCompile>
+    <ClCompile Include="Common\XUI\XUI_Scene_Fireworks.cpp">
+      <Filter>Xbox\Source Files\XUI\Containers</Filter>
+    </ClCompile>
+    <ClCompile Include="Common\UI\UIControl_BeaconEffectButton.cpp">
+      <Filter>Common\Source Files\UI\Controls</Filter>
+    </ClCompile>
+    <ClCompile Include="Common\UI\UIScene_BeaconMenu.cpp">
+      <Filter>Common\Source Files\UI\Scenes\In-Game Menu Screens\Containers</Filter>
+    </ClCompile>
+    <ClCompile Include="Common\UI\UIScene_FireworksMenu.cpp">
+      <Filter>Common\Source Files\UI\Scenes\In-Game Menu Screens\Containers</Filter>
+    </ClCompile>
+    <ClCompile Include="Common\UI\IUIScene_HUD.cpp">
+      <Filter>Common\Source Files\UI\All Platforms</Filter>
+    </ClCompile>
+    <ClCompile Include="Common\UI\UIControl_MinecraftHorse.cpp">
+      <Filter>Common\Source Files\UI\Controls</Filter>
+    </ClCompile>
+    <ClCompile Include="Common\Tutorial\HorseChoiceTask.cpp">
+      <Filter>Common\Source Files\Tutorial\Tasks</Filter>
+    </ClCompile>
+    <ClCompile Include="Common\Tutorial\RideEntityTask.cpp">
+      <Filter>Common\Source Files\Tutorial\Tasks</Filter>
+    </ClCompile>
+    <ClCompile Include="Common\UI\UIScene_NewUpdateMessage.cpp">
+      <Filter>Common\Source Files\UI\Scenes\Frontend Menu screens</Filter>
+    </ClCompile>
+    <ClCompile Include="Common\Leaderboards\LeaderboardInterface.cpp">
+      <Filter>Common\Source Files\Leaderboards</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

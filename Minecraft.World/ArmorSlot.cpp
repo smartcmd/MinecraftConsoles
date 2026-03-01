@@ -19,6 +19,10 @@ int ArmorSlot::getMaxStackSize()
 
 bool ArmorSlot::mayPlace(shared_ptr<ItemInstance> item)
 {
+	if (item == NULL)
+	{
+		return false;
+	}
 	if ( dynamic_cast<ArmorItem *>( item->getItem() ) != NULL)
 	{
 		return dynamic_cast<ArmorItem *>( item->getItem() )->slot == slotNum;

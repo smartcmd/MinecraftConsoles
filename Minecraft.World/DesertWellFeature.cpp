@@ -33,17 +33,17 @@ bool DesertWellFeature::place(Level *level, Random *random, int x, int y, int z)
 		{
 			for (int oz = -2; oz <= 2; oz++)
 			{
-				level->setTileNoUpdate(x + ox, y + oy, z + oz, Tile::sandStone_Id);
+				level->setTileAndData(x + ox, y + oy, z + oz, Tile::sandStone_Id, 0, Tile::UPDATE_CLIENTS);
 			}
 		}
 	}
 
 	// place water cross
-	level->setTileNoUpdate(x, y, z, Tile::water_Id);
-	level->setTileNoUpdate(x - 1, y, z, Tile::water_Id);
-	level->setTileNoUpdate(x + 1, y, z, Tile::water_Id);
-	level->setTileNoUpdate(x, y, z - 1, Tile::water_Id);
-	level->setTileNoUpdate(x, y, z + 1, Tile::water_Id);
+	level->setTileAndData(x, y, z, Tile::water_Id, 0, Tile::UPDATE_CLIENTS);
+	level->setTileAndData(x - 1, y, z, Tile::water_Id, 0, Tile::UPDATE_CLIENTS);
+	level->setTileAndData(x + 1, y, z, Tile::water_Id, 0, Tile::UPDATE_CLIENTS);
+	level->setTileAndData(x, y, z - 1, Tile::water_Id, 0, Tile::UPDATE_CLIENTS);
+	level->setTileAndData(x, y, z + 1, Tile::water_Id, 0, Tile::UPDATE_CLIENTS);
 
 	// place "fence"
 	for (int ox = -2; ox <= 2; ox++)
@@ -52,14 +52,14 @@ bool DesertWellFeature::place(Level *level, Random *random, int x, int y, int z)
 		{
 			if (ox == -2 || ox == 2 || oz == -2 || oz == 2)
 			{
-				level->setTileNoUpdate(x + ox, y + 1, z + oz, Tile::sandStone_Id);
+				level->setTileAndData(x + ox, y + 1, z + oz, Tile::sandStone_Id, 0, Tile::UPDATE_CLIENTS);
 			}
 		}
 	}
-	level->setTileAndDataNoUpdate(x + 2, y + 1, z, Tile::stoneSlabHalf_Id, StoneSlabTile::SAND_SLAB);
-	level->setTileAndDataNoUpdate(x - 2, y + 1, z, Tile::stoneSlabHalf_Id, StoneSlabTile::SAND_SLAB);
-	level->setTileAndDataNoUpdate(x, y + 1, z + 2, Tile::stoneSlabHalf_Id, StoneSlabTile::SAND_SLAB);
-	level->setTileAndDataNoUpdate(x, y + 1, z - 2, Tile::stoneSlabHalf_Id, StoneSlabTile::SAND_SLAB);
+	level->setTileAndData(x + 2, y + 1, z, Tile::stoneSlabHalf_Id, StoneSlabTile::SAND_SLAB, Tile::UPDATE_CLIENTS);
+	level->setTileAndData(x - 2, y + 1, z, Tile::stoneSlabHalf_Id, StoneSlabTile::SAND_SLAB, Tile::UPDATE_CLIENTS);
+	level->setTileAndData(x, y + 1, z + 2, Tile::stoneSlabHalf_Id, StoneSlabTile::SAND_SLAB, Tile::UPDATE_CLIENTS);
+	level->setTileAndData(x, y + 1, z - 2, Tile::stoneSlabHalf_Id, StoneSlabTile::SAND_SLAB, Tile::UPDATE_CLIENTS);
 
 	// place roof
 	for (int ox = -1; ox <= 1; ox++)
@@ -68,11 +68,11 @@ bool DesertWellFeature::place(Level *level, Random *random, int x, int y, int z)
 		{
 			if (ox == 0 && oz == 0)
 			{
-				level->setTileNoUpdate(x + ox, y + 4, z + oz, Tile::sandStone_Id);
+				level->setTileAndData(x + ox, y + 4, z + oz, Tile::sandStone_Id, 0, Tile::UPDATE_CLIENTS);
 			}
 			else
 			{
-				level->setTileAndDataNoUpdate(x + ox, y + 4, z + oz, Tile::stoneSlabHalf_Id, StoneSlabTile::SAND_SLAB);
+				level->setTileAndData(x + ox, y + 4, z + oz, Tile::stoneSlabHalf_Id, StoneSlabTile::SAND_SLAB, Tile::UPDATE_CLIENTS);
 			}
 		}
 	}
@@ -80,10 +80,10 @@ bool DesertWellFeature::place(Level *level, Random *random, int x, int y, int z)
 	// place pillars
 	for (int oy = 1; oy <= 3; oy++)
 	{
-		level->setTileNoUpdate(x - 1, y + oy, z - 1, Tile::sandStone_Id);
-		level->setTileNoUpdate(x - 1, y + oy, z + 1, Tile::sandStone_Id);
-		level->setTileNoUpdate(x + 1, y + oy, z - 1, Tile::sandStone_Id);
-		level->setTileNoUpdate(x + 1, y + oy, z + 1, Tile::sandStone_Id);
+		level->setTileAndData(x - 1, y + oy, z - 1, Tile::sandStone_Id, 0, Tile::UPDATE_CLIENTS);
+		level->setTileAndData(x - 1, y + oy, z + 1, Tile::sandStone_Id, 0, Tile::UPDATE_CLIENTS);
+		level->setTileAndData(x + 1, y + oy, z - 1, Tile::sandStone_Id, 0, Tile::UPDATE_CLIENTS);
+		level->setTileAndData(x + 1, y + oy, z + 1, Tile::sandStone_Id, 0, Tile::UPDATE_CLIENTS);
 	}
 
 	return true;

@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "LevelRenderer.h"
 #include "Textures.h"
+#include "TextureAtlas.h"
 #include "Tesselator.h"
 #include "Chunk.h"
 #include "EntityRenderDispatcher.h"
@@ -36,6 +37,7 @@
 #include "DripParticle.h"
 #include "EchantmentTableParticle.h"
 #include "DragonBreathParticle.h"
+#include "FireworksParticles.h"
 #include "Lighting.h"
 #include "Options.h"
 #include "MultiPlayerChunkCache.h"
@@ -60,6 +62,8 @@
 #include "FrustumCuller.h"
 #include "..\Minecraft.World\BasicTypeContainers.h"
 
+//#define DISABLE_SPU_CODE
+
 #ifdef __PS3__
 #include "PS3\SPU_Tasks\LevelRenderer_cull\LevelRenderer_cull.h"
 #include "PS3\SPU_Tasks\LevelRenderer_FindNearestChunk\LevelRenderer_FindNearestChunk.h"
@@ -68,6 +72,12 @@
 static LevelRenderer_cull_DataIn g_cullDataIn[4] __attribute__((__aligned__(16)));
 static LevelRenderer_FindNearestChunk_DataIn g_findNearestChunkDataIn __attribute__((__aligned__(16)));
 #endif
+
+ResourceLocation LevelRenderer::MOON_LOCATION = ResourceLocation(TN_TERRAIN_MOON);
+ResourceLocation LevelRenderer::MOON_PHASES_LOCATION = ResourceLocation(TN_TERRAIN_MOON_PHASES);
+ResourceLocation LevelRenderer::SUN_LOCATION = ResourceLocation(TN_TERRAIN_SUN);
+ResourceLocation LevelRenderer::CLOUDS_LOCATION = ResourceLocation(TN_ENVIRONMENT_CLOUDS);
+ResourceLocation LevelRenderer::END_SKY_LOCATION = ResourceLocation(TN_MISC_TUNNEL);
 
 const unsigned int HALO_RING_RADIUS = 100;
 
@@ -173,8 +183,8 @@ LevelRenderer::LevelRenderer(Minecraft *mc, Textures *textures)
 	glDepthMask(false);				// 4J - added to get depth mask disabled within the command buffer
 	float yy;
 	int s = 64;
-	int d = (256 / s) + 2;
-	yy = (float) (16);
+	int d = 256 / s + 2;
+	yy = (float) 16;
 	for (int xx = -s * d; xx <= s * d; xx += s)
 	{
 		for (int zz = -s * d; zz <= s * d; zz += s)
@@ -191,7 +201,7 @@ LevelRenderer::LevelRenderer(Minecraft *mc, Textures *textures)
 
 	darkList = starList + 2;
 	glNewList(darkList, GL_COMPILE);
-	yy = -(float) (16);
+	yy = -(float) 16;
 	t->begin();
 	for (int xx = -s * d; xx <= s * d; xx += s)
 	{
@@ -288,7 +298,7 @@ void LevelRenderer::renderStars()
 			{
 				double ___xo = 0;
 				double ___yo = ((c & 2) - 1) * ss;
-				double ___zo = (((c + 1) & 2) - 1) * ss;
+				double ___zo = ((c + 1 & 2) - 1) * ss;
 
 				double __xo = ___xo;
 				double __yo = ___yo * zCos - ___zo * zSin;
@@ -497,7 +507,7 @@ void LevelRenderer::renderEntities(Vec3 *cam, Culler *culler, float a)
 
 	// 4J Stu - Set these up every time, even when not rendering as other things (like particle render) may depend on it for those frames.
 	TileEntityRenderDispatcher::instance->prepare(level[playerIndex], textures, mc->font, mc->cameraTargetPlayer, a);
-	EntityRenderDispatcher::instance->prepare(level[playerIndex], textures, mc->font, mc->cameraTargetPlayer, mc->options, a);
+	EntityRenderDispatcher::instance->prepare(level[playerIndex], textures, mc->font, mc->cameraTargetPlayer, mc->crosshairPickMob, mc->options, a);
 
 	if (noEntityRenderFrames > 0)
 	{
@@ -536,11 +546,24 @@ void LevelRenderer::renderEntities(Vec3 *cam, Culler *culler, float a)
 	{
 		shared_ptr<Entity> entity = *it; //entities[i];
 
-		if ((entity->shouldRender(cam) && (entity->noCulling || culler->isVisible(entity->bb))))
+		bool shouldRender = (entity->shouldRender(cam) && (entity->noCulling || culler->isVisible(entity->bb)));
+
+		// Render the mob if the mob's leash holder is within the culler
+		if ( !shouldRender && entity->instanceof(eTYPE_MOB) )
+		{
+			shared_ptr<Mob> mob = dynamic_pointer_cast<Mob>(entity);
+			if ( mob->isLeashed() && (mob->getLeashHolder() != NULL) )
+			{
+				shared_ptr<Entity> leashHolder = mob->getLeashHolder();
+				shouldRender = culler->isVisible(leashHolder->bb);
+			}
+		}
+
+		if (shouldRender)
 		{
 			// 4J-PB - changing this to be per player
 			//if (entity == mc->cameraTargetPlayer && !mc->options->thirdPersonView && !mc->cameraTargetPlayer->isSleeping()) continue;
-			shared_ptr<LocalPlayer> localplayer = dynamic_pointer_cast<LocalPlayer>(mc->cameraTargetPlayer);
+			shared_ptr<LocalPlayer> localplayer = mc->cameraTargetPlayer->instanceof(eTYPE_LOCALPLAYER) ? dynamic_pointer_cast<LocalPlayer>(mc->cameraTargetPlayer) : nullptr;
 
 			if (localplayer && entity == mc->cameraTargetPlayer && !localplayer->ThirdPersonView() && !mc->cameraTargetPlayer->isSleeping()) continue;
 
@@ -669,7 +692,7 @@ void LevelRenderer::resortChunks(int xc, int yc, int zc)
 	LeaveCriticalSection(&m_csDirtyChunks);
 }
 
-int LevelRenderer::render(shared_ptr<Mob> player, int layer, double alpha, bool updateChunks)
+int LevelRenderer::render(shared_ptr<LivingEntity> player, int layer, double alpha, bool updateChunks)
 {
 	int playerIndex = mc->player->GetXboxPad();
 
@@ -741,7 +764,7 @@ int LevelRenderer::renderChunks(int from, int to, int layer, double alpha)
 #if 1
 	// 4J - cut down version, we're not using offsetted render lists, or a sorted chunk list, anymore
 	mc->gameRenderer->turnOnLightLayer(alpha);		// 4J - brought forward from 1.8.2
-	shared_ptr<Mob> player = mc->cameraTargetPlayer;
+	shared_ptr<LivingEntity> player = mc->cameraTargetPlayer;
 	double xOff = player->xOld + (player->x - player->xOld) * alpha;
 	double yOff = player->yOld + (player->y - player->yOld) * alpha;
 	double zOff = player->zOld + (player->z - player->zOld) * alpha;
@@ -941,7 +964,7 @@ void LevelRenderer::renderSky(float alpha)
 
 
 		glDepthMask(false);
-		textures->bind(textures->loadTexture(TN_MISC_TUNNEL)); // 4J was L"/1_2_2/misc/tunnel.png"
+		textures->bindTexture(&END_SKY_LOCATION); // 4J was L"/1_2_2/misc/tunnel.png"
 		Tesselator *t = Tesselator::getInstance();
 		t->setMipmapEnable(false);
 		for (int i = 0; i < 6; i++)
@@ -1071,7 +1094,7 @@ void LevelRenderer::renderSky(float alpha)
 		float ss = 30;
 
 		MemSect(31);
-		textures->bindTexture(TN_TERRAIN_SUN);	// 4J was L"/terrain/sun.png"
+		textures->bindTexture(&SUN_LOCATION);
 		MemSect(0);
 		t->begin();
 		t->vertexUV((float)(-ss), (float)( 100), (float)( -ss), (float)( 0), (float)( 0));
@@ -1081,8 +1104,8 @@ void LevelRenderer::renderSky(float alpha)
 		t->end();
 
 		ss = 20;
-		textures->bindTexture(TN_TERRAIN_MOON_PHASES); // 4J was L"/1_2_2/terrain/moon_phases.png"
-		int phase = level[playerIndex]->getMoonPhase(alpha);
+		textures->bindTexture(&MOON_PHASES_LOCATION); // 4J was L"/1_2_2/terrain/moon_phases.png"
+		int phase = level[playerIndex]->getMoonPhase();
 		int u = phase % 4;
 		int v = phase / 4 % 2;
 		float u0 = (u + 0) / 4.0f;
@@ -1264,7 +1287,7 @@ void LevelRenderer::renderClouds(float alpha)
 	int d = 256 / s;
 	Tesselator *t = Tesselator::getInstance();
 
-	textures->bindTexture(TN_ENVIRONMENT_CLOUDS);	// 4J was L"/environment/clouds.png"
+	textures->bindTexture(&CLOUDS_LOCATION);
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
@@ -1556,7 +1579,7 @@ void LevelRenderer::renderAdvancedClouds(float alpha)
 	}
 
 	MemSect(31);
-	textures->bindTexture(TN_ENVIRONMENT_CLOUDS);	// 4J was L"/environment/clouds.png"
+	textures->bindTexture(&CLOUDS_LOCATION);	// 4J was L"/environment/clouds.png"
 	MemSect(0);
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -1809,7 +1832,7 @@ bool LevelRenderer::updateDirtyChunks()
 	static int throttle = 0;
 	if( ( throttle % 100 ) == 0 )
 	{
-		app.DebugPrintf("CBuffSize: %d\n",memAlloc/(1024*1024));
+	app.DebugPrintf("CBuffSize: %d\n",memAlloc/(1024*1024));
 	}
 	throttle++;
 	*/
@@ -1919,7 +1942,7 @@ bool LevelRenderer::updateDirtyChunks()
 			int py = (int)player->y;
 			int pz = (int)player->z;		
 
-//			app.DebugPrintf("!! %d %d %d, %d %d %d {%d,%d} ",px,py,pz,stackChunkDirty,nonStackChunkDirty,onlyRebuild, xChunks, zChunks);
+			//			app.DebugPrintf("!! %d %d %d, %d %d %d {%d,%d} ",px,py,pz,stackChunkDirty,nonStackChunkDirty,onlyRebuild, xChunks, zChunks);
 
 			int considered = 0;
 			int wouldBeNearButEmpty = 0;
@@ -2008,13 +2031,13 @@ bool LevelRenderer::updateDirtyChunks()
 					}
 				}
 			}
-//			app.DebugPrintf("[%d,%d,%d]\n",nearestClipChunks.empty(),considered,wouldBeNearButEmpty);
+			//			app.DebugPrintf("[%d,%d,%d]\n",nearestClipChunks.empty(),considered,wouldBeNearButEmpty);
 		}
 #endif // __PS3__
 		PIXEndNamedEvent();
 	}
 
-	
+
 
 	Chunk *chunk = NULL;
 #ifdef _LARGE_WORLDS
@@ -2160,7 +2183,6 @@ bool LevelRenderer::updateDirtyChunks()
 	return false;
 }
 
-
 void LevelRenderer::renderHit(shared_ptr<Player> player, HitResult *h, int mode, shared_ptr<ItemInstance> inventoryItem, float a)
 {
 	Tesselator *t = Tesselator::getInstance();
@@ -2174,7 +2196,7 @@ void LevelRenderer::renderHit(shared_ptr<Player> player, HitResult *h, int mode,
 		float br = (Mth::sin(Minecraft::currentTimeMillis() / 100.0f) * 0.2f + 0.8f);
 		glColor4f(br, br, br, (Mth::sin(Minecraft::currentTimeMillis() / 200.0f) * 0.2f + 0.5f));
 
-		textures->bindTexture(TN_TERRAIN); //L"/terrain.png");
+		textures->bindTexture(&TextureAtlas::LOCATION_BLOCKS);
 	}
 	glDisable(GL_BLEND);
 	glDisable(GL_ALPHA_TEST);
@@ -2191,7 +2213,7 @@ void LevelRenderer::renderDestroyAnimation(Tesselator *t, shared_ptr<Player> pla
 	{
 		glBlendFunc(GL_DST_COLOR, GL_SRC_COLOR);
 
-		textures->bindTexture(TN_TERRAIN);		// 4J was L"/terrain.png"
+		textures->bindTexture(&TextureAtlas::LOCATION_BLOCKS);
 		glColor4f(1, 1, 1, 0.5f);
 		glPushMatrix();
 
@@ -2224,7 +2246,7 @@ void LevelRenderer::renderDestroyAnimation(Tesselator *t, shared_ptr<Player> pla
 				int iPad = mc->player->GetXboxPad();	// 4J added
 				int tileId = level[iPad]->getTile(block->getX(), block->getY(), block->getZ());
 				Tile *tile = tileId > 0 ? Tile::tiles[tileId] : NULL;
-				if (tile == NULL) tile = Tile::rock;
+				if (tile == NULL) tile = Tile::stone;
 				tileRenderer[iPad]->tesselateInWorldFixedTexture(tile, block->getX(), block->getY(), block->getZ(), breakingTextures[block->getProgress()]);	// 4J renamed to differentiate from tesselateInWorld
 			}
 			++it;
@@ -2246,7 +2268,7 @@ void LevelRenderer::renderDestroyAnimation(Tesselator *t, shared_ptr<Player> pla
 	}
 }
 
-void LevelRenderer::renderHitOutline(shared_ptr<Player> player, HitResult *h, int mode, shared_ptr<ItemInstance> inventoryItem, float a)
+void LevelRenderer::renderHitOutline(shared_ptr<Player> player, HitResult *h, int mode, float a)
 {
 
 	if (mode == 0 && h->type == HitResult::TILE)
@@ -2590,6 +2612,10 @@ void LevelRenderer::playSound(shared_ptr<Entity> entity,int iSound, double x, do
 {
 }
 
+void LevelRenderer::playSoundExceptPlayer(shared_ptr<Player> player, int iSound, double x, double y, double z, float volume, float pitch, float fSoundClipDist)
+{
+}
+
 // 4J-PB - original function. I've changed to an enum instead of string compares
 // 4J removed - 
 /*
@@ -2716,6 +2742,10 @@ shared_ptr<Particle> LevelRenderer::addParticleInternal(ePARTICLE_TYPE eParticle
 	case eParticleType_largeexplode:
 		particle = shared_ptr<Particle>(new HugeExplosionParticle(textures, lev, x, y, z, xa, ya, za));
 		break;
+	case eParticleType_fireworksspark:
+		particle = shared_ptr<Particle>(new FireworksParticles::FireworksSparkParticle(lev, x, y, z, xa, ya, za, mc->particleEngine));
+		particle->setAlpha(0.99f);
+		break;
 
 	case eParticleType_bubble:
 		particle = shared_ptr<Particle>( new BubbleParticle(lev, x, y, z, xa, ya, za) );
@@ -2783,8 +2813,21 @@ shared_ptr<Particle> LevelRenderer::addParticleInternal(ePARTICLE_TYPE eParticle
 		particle = shared_ptr<Particle>(new SpellParticle(lev, x, y, z, 0, 0, 0));
 		particle->setColor((float) xa, (float) ya, (float) za);
 		break;
+	case eParticleType_mobSpellAmbient:
+		particle = shared_ptr<SpellParticle>(new SpellParticle(lev, x, y, z, 0, 0, 0));
+		particle->setAlpha(0.15f);
+		particle->setColor((float) xa, (float) ya, (float) za);
+		break;
 	case eParticleType_spell:
 		particle = shared_ptr<Particle>( new SpellParticle(lev, x, y, z, xa, ya, za) );
+		break;
+	case eParticleType_witchMagic:
+		{
+			particle = shared_ptr<SpellParticle>(new SpellParticle(lev, x, y, z, xa, ya, za));
+			dynamic_pointer_cast<SpellParticle>(particle)->setBaseTex(9 * 16);
+			float randBrightness = lev->random->nextFloat() * 0.5f + 0.35f;
+			particle->setColor(1 * randBrightness, 0 * randBrightness, 1 * randBrightness);
+		}
 		break;
 	case eParticleType_instantSpell:
 		particle = shared_ptr<Particle>(new SpellParticle(lev, x, y, z, xa, ya, za));
@@ -2877,41 +2920,36 @@ shared_ptr<Particle> LevelRenderer::addParticleInternal(ePARTICLE_TYPE eParticle
 
 void LevelRenderer::entityAdded(shared_ptr<Entity> entity)
 {
-	entity->prepareCustomTextures();
-	// 4J - these empty string comparisons used to check for NULL references, but we don't have string pointers (currently) in entities,
-	// hopefully this should be equivalent
-	/* 4J - removed temp */
-	//if (entity->customTextureUrl != L"") textures->addHttpTexture(entity->customTextureUrl, new MobSkinTextureProcessor());
-	//if (entity->customTextureUrl2 != L"") textures->addHttpTexture(entity->customTextureUrl2, new MobSkinTextureProcessor());
-
-	// 4J-PB - adding these from global title storage
-	if (entity->customTextureUrl != L"") 
+	if(entity->instanceof(eTYPE_PLAYER))
 	{
-		textures->addMemTexture(entity->customTextureUrl, new MobSkinMemTextureProcessor());
+		shared_ptr<Player> player = dynamic_pointer_cast<Player>(entity);
+		player->prepareCustomTextures();
+
+		// 4J-PB - adding these from global title storage
+		if (player->customTextureUrl != L"") 
+		{
+			textures->addMemTexture(player->customTextureUrl, new MobSkinMemTextureProcessor());
+		}
+		if (player->customTextureUrl2 != L"") 
+		{
+			textures->addMemTexture(player->customTextureUrl2, new MobSkinMemTextureProcessor());
+		}
 	}
-	if (entity->customTextureUrl2 != L"") 
-	{
-		textures->addMemTexture(entity->customTextureUrl2, new MobSkinMemTextureProcessor());
-	}
-
-	// 	if (entity->customTextureUrl2 != L"") textures->addHttpTexture(entity->customTextureUrl2, new MobSkinTextureProcessor());
-
-
 }
 
 void LevelRenderer::entityRemoved(shared_ptr<Entity> entity)
 {
-	/* 4J - removed temp
-	if (entity->customTextureUrl != L"") textures->removeHttpTexture(entity->customTextureUrl);
-	if (entity->customTextureUrl2 != L"") textures->removeHttpTexture(entity->customTextureUrl2);
-	*/
-	if (entity->customTextureUrl != L"") 
+	if(entity->instanceof(eTYPE_PLAYER))
 	{
-		textures->removeMemTexture(entity->customTextureUrl);
-	}
-	if (entity->customTextureUrl2 != L"") 
-	{
-		textures->removeMemTexture(entity->customTextureUrl2);
+		shared_ptr<Player> player = dynamic_pointer_cast<Player>(entity);
+		if (player->customTextureUrl != L"") 
+		{
+			textures->removeMemTexture(player->customTextureUrl);
+		}
+		if (player->customTextureUrl2 != L"") 
+		{
+			textures->removeMemTexture(player->customTextureUrl2);
+		}
 	}
 }
 
@@ -2934,6 +2972,49 @@ void LevelRenderer::skyColorChanged()
 void LevelRenderer::clear()
 {
 	MemoryTracker::releaseLists(chunkLists);
+}
+
+void LevelRenderer::globalLevelEvent(int type, int sourceX, int sourceY, int sourceZ, int data)
+{
+	Level *lev;
+	int playerIndex = mc->player->GetXboxPad();	// 4J added
+	lev = level[playerIndex];
+
+	Random *random = lev->random;
+
+	switch (type)
+	{
+	case LevelEvent::SOUND_WITHER_BOSS_SPAWN:
+	case LevelEvent::SOUND_DRAGON_DEATH:
+		if (mc->cameraTargetPlayer != NULL)
+		{
+			// play the sound at an offset from the player
+			double dx = sourceX - mc->cameraTargetPlayer->x;
+			double dy = sourceY - mc->cameraTargetPlayer->y;
+			double dz = sourceZ - mc->cameraTargetPlayer->z;
+
+			double len = sqrt(dx * dx + dy * dy + dz * dz);
+			double sx = mc->cameraTargetPlayer->x;
+			double sy = mc->cameraTargetPlayer->y;
+			double sz = mc->cameraTargetPlayer->z;
+
+			if (len > 0)
+			{
+				sx += dx / len * 2;
+				sy += dy / len * 2;
+				sz += dz / len * 2;
+			}
+			if (type == LevelEvent::SOUND_WITHER_BOSS_SPAWN)
+			{
+				lev->playLocalSound(sx, sy, sz, eSoundType_MOB_WITHER_SPAWN, 1.0f, 1.0f, false);
+			}
+			else if (type == LevelEvent::SOUND_DRAGON_DEATH)
+			{
+				lev->playLocalSound(sx, sy, sz, eSoundType_MOB_ENDERDRAGON_END, 5.0f, 1.0f, false);
+			}
+		}
+		break;
+	}
 }
 
 void LevelRenderer::levelEvent(shared_ptr<Player> source, int type, int x, int y, int z, int data)
@@ -2968,13 +3049,13 @@ void LevelRenderer::levelEvent(shared_ptr<Player> source, int type, int x, int y
 		break;
 	case LevelEvent::SOUND_CLICK_FAIL:
 		//level[playerIndex]->playSound(x, y, z, L"random.click", 1.0f, 1.2f);
-		level[playerIndex]->playLocalSound(x, y, z, eSoundType_RANDOM_CLICK, 1.0f, 1.2f);
+		level[playerIndex]->playLocalSound(x, y, z, eSoundType_RANDOM_CLICK, 1.0f, 1.2f, false);
 		break;
 	case LevelEvent::SOUND_CLICK:
-		level[playerIndex]->playLocalSound(x, y, z, eSoundType_RANDOM_CLICK, 1.0f, 1.0f);
+		level[playerIndex]->playLocalSound(x, y, z, eSoundType_RANDOM_CLICK, 1.0f, 1.0f, false);
 		break;
 	case LevelEvent::SOUND_LAUNCH:
-		level[playerIndex]->playLocalSound(x, y, z, eSoundType_RANDOM_BOW, 1.0f, 1.2f);
+		level[playerIndex]->playLocalSound(x, y, z, eSoundType_RANDOM_BOW, 1.0f, 1.2f, false);
 		break;
 	case LevelEvent::PARTICLES_SHOOT:
 		{
@@ -3021,7 +3102,7 @@ void LevelRenderer::levelEvent(shared_ptr<Player> source, int type, int x, int y
 			double yp = y;
 			double zp = z;
 
-			ePARTICLE_TYPE particle = PARTICLE_ICONCRACK(Item::potion->id,0);
+			ePARTICLE_TYPE particle = PARTICLE_ICONCRACK(Item::potion->id, data);
 			for (int i = 0; i < 8; i++)
 			{
 				addParticle(particle, xp, yp, zp, random->nextGaussian() * 0.15, random->nextDouble() * 0.2, random->nextGaussian() * 0.15);
@@ -3056,7 +3137,7 @@ void LevelRenderer::levelEvent(shared_ptr<Player> source, int type, int x, int y
 					spellParticle->setPower((float) dist);
 				}
 			}
-			level[playerIndex]->playLocalSound(x + 0.5, y + 0.5, z + 0.5, eSoundType_RANDOM_GLASS, 1, level[playerIndex]->random->nextFloat() * 0.1f + 0.9f);
+			level[playerIndex]->playLocalSound(x + 0.5, y + 0.5, z + 0.5, eSoundType_RANDOM_GLASS, 1, level[playerIndex]->random->nextFloat() * 0.1f + 0.9f, false);
 		}
 		break;
 	case LevelEvent::ENDERDRAGON_FIREBALL_SPLASH:
@@ -3111,25 +3192,28 @@ void LevelRenderer::levelEvent(shared_ptr<Player> source, int type, int x, int y
 			}
 			break;
 		}
+	case LevelEvent::PARTICLES_PLANT_GROWTH:
+        DyePowderItem::addGrowthParticles(level[playerIndex], x, y, z, data);
+        break;
 	case LevelEvent::SOUND_OPEN_DOOR:
 		if (Math::random() < 0.5)
 		{
-			level[playerIndex]->playLocalSound(x + 0.5, y + 0.5, z + 0.5, eSoundType_RANDOM_DOOR_OPEN, 1.0f, level[playerIndex]->random->nextFloat() * 0.1f + 0.9f);
+			level[playerIndex]->playLocalSound(x + 0.5, y + 0.5, z + 0.5, eSoundType_RANDOM_DOOR_OPEN, 1.0f, level[playerIndex]->random->nextFloat() * 0.1f + 0.9f, false);
 		} else {
-			level[playerIndex]->playLocalSound(x + 0.5, y + 0.5, z + 0.5, eSoundType_RANDOM_DOOR_CLOSE, 1.0f, level[playerIndex]->random->nextFloat() * 0.1f + 0.9f);
+			level[playerIndex]->playLocalSound(x + 0.5, y + 0.5, z + 0.5, eSoundType_RANDOM_DOOR_CLOSE, 1.0f, level[playerIndex]->random->nextFloat() * 0.1f + 0.9f, false);
 		}
 		break;
 	case LevelEvent::SOUND_FIZZ:
-		level[playerIndex]->playLocalSound(x + 0.5f, y + 0.5f, z + 0.5f, eSoundType_RANDOM_FIZZ, 0.5f, 2.6f + (random->nextFloat() - random->nextFloat()) * 0.8f);
+		level[playerIndex]->playLocalSound(x + 0.5f, y + 0.5f, z + 0.5f, eSoundType_RANDOM_FIZZ, 0.5f, 2.6f + (random->nextFloat() - random->nextFloat()) * 0.8f, false);
 		break;
 	case LevelEvent::SOUND_ANVIL_BROKEN:
-		level[playerIndex]->playLocalSound(x + 0.5f, y + 0.5f, z + 0.5f, eSoundType_RANDOM_ANVIL_BREAK, 1.0f, level[playerIndex]->random->nextFloat() * 0.1f + 0.9f);
+		level[playerIndex]->playLocalSound(x + 0.5f, y + 0.5f, z + 0.5f, eSoundType_RANDOM_ANVIL_BREAK, 1.0f, level[playerIndex]->random->nextFloat() * 0.1f + 0.9f, false);
 		break;
 	case LevelEvent::SOUND_ANVIL_USED:
-		level[playerIndex]->playLocalSound(x + 0.5f, y + 0.5f, z + 0.5f, eSoundType_RANDOM_ANVIL_USE, 1.0f, level[playerIndex]->random->nextFloat() * 0.1f + 0.9f);
+		level[playerIndex]->playLocalSound(x + 0.5f, y + 0.5f, z + 0.5f, eSoundType_RANDOM_ANVIL_USE, 1.0f, level[playerIndex]->random->nextFloat() * 0.1f + 0.9f, false);
 		break;
 	case LevelEvent::SOUND_ANVIL_LAND:
-		level[playerIndex]->playLocalSound(x + 0.5f, y + 0.5f, z + 0.5f, eSoundType_RANDOM_ANVIL_LAND, 0.3f, level[playerIndex]->random->nextFloat() * 0.1f + 0.9f);
+		level[playerIndex]->playLocalSound(x + 0.5f, y + 0.5f, z + 0.5f, eSoundType_RANDOM_ANVIL_LAND, 0.3f, level[playerIndex]->random->nextFloat() * 0.1f + 0.9f, false);
 		break;
 	case LevelEvent::SOUND_PLAY_RECORDING:
 		{
@@ -3151,10 +3235,10 @@ void LevelRenderer::levelEvent(shared_ptr<Player> source, int type, int x, int y
 		break;
 		// 4J - new level event sounds brought forward from 1.2.3
 	case LevelEvent::SOUND_GHAST_WARNING:
-		level[playerIndex]->playLocalSound(x + 0.5, y + 0.5, z + 0.5, eSoundType_MOB_GHAST_CHARGE, 2.0f, (random->nextFloat() - random->nextFloat()) * 0.2f + 1.0f, 80.0f);
+		level[playerIndex]->playLocalSound(x + 0.5, y + 0.5, z + 0.5, eSoundType_MOB_GHAST_CHARGE, 2.0f, (random->nextFloat() - random->nextFloat()) * 0.2f + 1.0f, false, 80.0f);
 		break;
 	case LevelEvent::SOUND_GHAST_FIREBALL:
-		level[playerIndex]->playLocalSound(x + 0.5, y + 0.5, z + 0.5, eSoundType_MOB_GHAST_FIREBALL, 2.0f, (random->nextFloat() - random->nextFloat()) * 0.2f + 1.0f, 80.0f);
+		level[playerIndex]->playLocalSound(x + 0.5, y + 0.5, z + 0.5, eSoundType_MOB_GHAST_FIREBALL, 2.0f, (random->nextFloat() - random->nextFloat()) * 0.2f + 1.0f, false, 80.0f);
 		break;
 	case LevelEvent::SOUND_ZOMBIE_WOODEN_DOOR:
 		level[playerIndex]->playLocalSound(x + 0.5, y + 0.5, z + 0.5, eSoundType_MOB_ZOMBIE_WOOD, 2.0f, (random->nextFloat() - random->nextFloat()) * 0.2f + 1.0f);
@@ -3164,6 +3248,12 @@ void LevelRenderer::levelEvent(shared_ptr<Player> source, int type, int x, int y
 		break;
 	case LevelEvent::SOUND_ZOMBIE_IRON_DOOR:
 		level[playerIndex]->playLocalSound(x + 0.5, y + 0.5, z + 0.5, eSoundType_MOB_ZOMBIE_METAL, 2.0f, (random->nextFloat() - random->nextFloat()) * 0.2f + 1.0f);
+		break;
+	case LevelEvent::SOUND_BLAZE_FIREBALL:
+		level[playerIndex]->playLocalSound(x + 0.5, y + 0.5, z + 0.5, eSoundType_MOB_GHAST_FIREBALL, 2, (random->nextFloat() - random->nextFloat()) * 0.2f + 1.0f);//, false);
+		break;
+	case LevelEvent::SOUND_WITHER_BOSS_SHOOT:
+		level[playerIndex]->playLocalSound(x + 0.5, y + 0.5, z + 0.5, eSoundType_MOB_WITHER_SHOOT, 2, (random->nextFloat() - random->nextFloat()) * 0.2f + 1.0f);//, false);
 		break;
 	case LevelEvent::SOUND_ZOMBIE_INFECTED:
 		level[playerIndex]->playLocalSound(x + 0.5, y + 0.5, z + 0.5, eSoundType_MOB_ZOMBIE_INFECT, 2.0f, (random->nextFloat() - random->nextFloat()) * 0.2f + 1.0f);//, false);
@@ -3175,6 +3265,9 @@ void LevelRenderer::levelEvent(shared_ptr<Player> source, int type, int x, int y
 	case LevelEvent::END_EGG_TELEPORT:
 		// 4J Added to show the paricles when the End egg teleports after being attacked
 		EggTile::generateTeleportParticles(level[playerIndex],x,y,z,data);
+		break;
+	case LevelEvent::SOUND_BAT_LIFTOFF:
+		level[playerIndex]->playLocalSound(x + 0.5, y + 0.5, z + 0.5, eSoundType_MOB_BAT_TAKEOFF, .05f, (random->nextFloat() - random->nextFloat()) * 0.2f + 1.0f);
 		break;
 	}
 
@@ -3642,3 +3735,40 @@ void LevelRenderer::nonStackDirtyChunksAdded()
 {
 	dirtyChunksLockFreeStack.Push((int *)1);
 }
+
+// 4J - for test purposes, check all chunks that are currently present for the player. Currently this is implemented to do tests to identify missing client chunks in flat worlds, but
+// this could be extended to do other kinds of automated testing. Returns the number of chunks that are present, so that from the calling function we can determine when chunks have
+// finished loading/generating round the current location.
+int LevelRenderer::checkAllPresentChunks(bool *faultFound)
+{
+	int playerIndex = mc->player->GetXboxPad();	// 4J added
+
+	int presentCount = 0;
+	ClipChunk *pClipChunk = chunks[playerIndex].data;
+	for( int i = 0; i < chunks[playerIndex].length; i++, pClipChunk++ )
+	{
+		if(pClipChunk->chunk->y == 0 )
+		{
+			bool chunkPresent = level[0]->reallyHasChunk(pClipChunk->chunk->x>>4,pClipChunk->chunk->z>>4);
+			if( chunkPresent )
+			{
+				presentCount++;
+				LevelChunk *levelChunk = level[0]->getChunk(pClipChunk->chunk->x>>4,pClipChunk->chunk->z>>4);
+
+				for( int cx = 4; cx <= 12; cx++ )
+				{
+					for( int cz = 4; cz <= 12; cz++ )
+					{
+						int t0 = levelChunk->getTile(cx, 0, cz);
+						if( ( t0 != Tile::unbreakable_Id ) && (t0 != Tile::dirt_Id) )
+						{
+							*faultFound = true;
+						}
+					}
+				}
+			}
+		}
+	}
+	return presentCount;
+}
+

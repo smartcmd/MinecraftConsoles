@@ -150,7 +150,7 @@ Minecraft ist ein Spiel, bei dem du Blöcke platzierst, um alles zu bauen, was d
 Mit{*CONTROLLER_ACTION_LOOK*} kannst du dich umsehen.{*B*}{*B*}
 Mit{*CONTROLLER_ACTION_MOVE*} kannst du dich bewegen.{*B*}{*B*}
 Drück{*CONTROLLER_ACTION_JUMP*}, um zu springen.{*B*}{*B*}
-Drück{*CONTROLLER_ACTION_MOVE*} zweimal schnell nacheinander nach vorn, um zu sprinten. Solange du{*CONTROLLER_ACTION_MOVE*} nach vorn gedrückt hältst, sprintest du weiter, bis dir die Sprintzeit ausgeht oder deine Hungerleiste weniger als{*ICON_SHANK_03*} anzeigt.
+Drück{*CONTROLLER_ACTION_MOVE*} zweimal schnell nacheinander nach vorn, um zu sprinten. Solange du{*CONTROLLER_ACTION_MOVE*} nach vorn gedrückt hältst, sprintest du weiter, bis dir die Sprintzeit ausgeht oder deine Hungerleiste weniger als{*ICON_SHANK_03*} anzeigt..{*B*}{*B*}
 Halte{*CONTROLLER_ACTION_ACTION*} gedrückt, um mit deiner Hand oder dem, was du darin hältst, zu graben oder zu hacken. Möglicherweise musst du dir ein Werkzeug bauen, um manche Blöcke abbauen zu können.{*B*}{*B*}
 Wenn du einen Gegenstand in der Hand hältst, kannst du ihn mit{*CONTROLLER_ACTION_USE*} verwenden. Drück{*CONTROLLER_ACTION_DROP*}, um ihn abzulegen.</value>
   </data>
@@ -228,13 +228,13 @@ Du wirst selbst mit Kombinationen von Zutaten experimentieren müssen, um alle v
   </value>
   </data>
 <data name="IDS_HOW_TO_PLAY_ENCHANTMENT"><value>{*T3*}SO WIRD GESPIELT: VERZAUBERN{*ETW*}{*B*}{*B*}
-Mithilfe der Erfahrungspunkte, die du erhältst, wenn ein NPC stirbt oder wenn du bestimmte Blöcke abbaust oder im Ofen einschmilzt, kannst du einige Werkzeuge, Waffen, Rüstungen und Bücher verzaubern. {*B*}
-Wenn ein Schwert, ein Bogen, eine Axt, eine Spitzhacke, eine Schaufel, eine Rüstung oder ein Buch in das Feld unter dem Buch in den Zaubertisch gelegt werden, zeigen die drei Schaltflächen rechts des Feldes ein paar Zauber und ihre Kosten in Erfahrungsleveln an. {*B*} 
-Wenn du für einen der Zauber nicht genug Erfahrungslevel hast, werden seine Kosten in Rot angezeigt, sonst in Grün. {*B*}{*B*}
-Die tatsächlich angewendete Verzauberung wird zufällig aus den angezeigten Verzauberungen ausgewählt. {*B*}{*B*}
-Wenn der Zaubertisch von Bücherregalen umgeben ist (bis hin zu maximal 15 Bücherregalen), wobei zwischen Zaubertisch und Bücherregal ein Block Abstand sein muss, werden die Verzauberungen verstärkt und man kann sehen, wie arkane Schriftzeichen aus dem Buch auf dem Zaubertisch herausfliegen. {*B*}{*B*}
+Mithilfe der Erfahrungspunkte, die du erhältst, wenn ein NPC stirbt oder wenn du bestimmte Blöcke abbaust oder im Ofen einschmilzt, kannst du einige Werkzeuge, Waffen, Rüstungen und Bücher verzaubern.{*B*}
+Wenn ein Schwert, ein Bogen, eine Axt, eine Spitzhacke, eine Schaufel, eine Rüstung oder ein Buch in das Feld unter dem Buch in den Zaubertisch gelegt werden, zeigen die drei Schaltflächen rechts des Feldes ein paar Zauber und ihre Kosten in Erfahrungsleveln an.{*B*}
+Wenn du für einen der Zauber nicht genug Erfahrungslevel hast, werden seine Kosten in Rot angezeigt, sonst in Grün.{*B*}{*B*}
+Die tatsächlich angewendete Verzauberung wird zufällig aus den angezeigten Verzauberungen ausgewählt.{*B*}{*B*}
+Wenn der Zaubertisch von Bücherregalen umgeben ist (bis hin zu maximal 15 Bücherregalen), wobei zwischen Zaubertisch und Bücherregal ein Block Abstand sein muss, werden die Verzauberungen verstärkt und man kann sehen, wie arkane Schriftzeichen aus dem Buch auf dem Zaubertisch herausfliegen.{*B*}{*B*}
 Alle Zutaten für einen Zaubertisch kann man in den Dörfern einer Welt finden oder indem man die Welt abbaut und bewirtschaftet.{*B*}{*B*}
-Zauberbücher werden beim Amboss benutzt, um Verzauberungen auf Gegenstände anzuwenden. Das gibt dir mir Kontrolle darüber, welche Verzauberungen du auf deinen Gegenständen möchtest.{*B*}
+Zauberbücher werden beim Amboss benutzt, um Verzauberungen auf Gegenstände anzuwenden. Das gibt dir mehr Kontrolle darüber, welche Verzauberungen du auf deinen Gegenständen möchtest.{*B*}
 </value>
   </data>
 <data name="IDS_HOW_TO_PLAY_FARMANIMALS"><value>{*T3*}SO WIRD GESPIELT: TIERHALTUNG{*ETW*}{*B*}{*B*}
@@ -301,6 +301,27 @@ Beim Laden oder Erstellen einer Welt kannst du mit der Schaltfläche "Weitere Op
 	{*T2*}Hostprivilegien{*ETW*}{*B*}
 	Aktiviert, dass der Host das Fliegen nutzen, Erschöpfung deaktivieren und sich selbst im Spielmenü unsichtbar machen kann. {*DISABLES_ACHIEVEMENTS*}{*B*}{*B*}
 
+	{*T2*}Tageslichtzyklus{*ETW*}{*B*}
+	Bei Deaktivierung ändert sich die Tageszeit nicht.{*B*}{*B*}
+
+	{*T2*}Inventar behalten{*ETW*}{*B*}
+	Bei Aktivierung behalten Spieler ihr Inventar, wenn sie sterben.{*B*}{*B*}
+
+	{*T2*}NPC-Eintritt{*ETW*}{*B*}
+	Bei Deaktivierung erscheinen keine NPCs auf natürlichem Weg.{*B*}{*B*}
+
+	{*T2*}NPC-Griefing{*ETW*}{*B*}
+	Bei Deaktivierung können Monster und Tiere keine Blöcke verändern (z. B. werden bei Creeper-Explosionen keine Blöcke zerstört und Schafe entfernen kein Gras) oder Gegenstände aufheben.{*B*}{*B*}
+
+	{*T2*}NPC-Beute{*ETW*}{*B*}
+	Bei Deaktivierung lassen Monster und Tiere keine Beute fallen (z. B. lassen Creeper kein Schießpulver fallen).{*B*}{*B*}
+
+	{*T2*}Felderertrag{*ETW*}{*B*}
+	Bei Deaktivierung lassen Blöcke keine Gegenstände zurück, wenn sie zerstört werden (z. B. hinterlassen Steinblöcke keine Pflastersteine).{*B*}{*B*}
+
+	{*T2*}Natürliche Erholung{*ETW*}{*B*}
+	Bei Deaktivierung wird die Gesundheit von Spielern nicht auf natürlichem Weg wiederhergestellt.{*B*}{*B*}
+
 {*T1*}Optionen für das Erstellen der Welt{*ETW*}{*B*}
 Beim Erstellen einer neuen Welt gibt es einige zusätzliche Optionen.{*B*}{*B*}
 
@@ -317,7 +338,7 @@ Beim Erstellen einer neuen Welt gibt es einige zusätzliche Optionen.{*B*}{*B*}
 	Bei Aktivierung wird der Nether neu erstellt. Das ist nützlich, wenn du einen älteren Spielstand ohne Netherfestungen hast.{*B*}{*B*}
 
 	{*T1*}Optionen im Spiel{*ETW*}{*B*}
-	Während des Spielens hast du Zugriff auf eine Reihe von Optionen, indem du mit der BACK-Taste das Spielmenü aufrufst.{*B*}{*B*}
+	Während des Spielens hast du Zugriff auf eine Reihe von Optionen, indem du mit {*BACK_BUTTON*} das Spielmenü aufrufst.{*B*}{*B*}
 	
 	{*T2*}Hostoptionen{*ETW*}{*B*}
 	Der Host-Spieler und alle anderen als Moderatoren eingesetzten Spieler haben Zugriff auf das Menü "Hostoptionen". In diesem Menü können "Feuer breitet sich aus" und "TNT explodiert" aktiviert und deaktiviert werden.{*B*}{*B*}
@@ -344,24 +365,26 @@ Um die Privilegien für einen Spieler zu bearbeiten, rufst du mit {*CONTROLLER_V
 	Ist diese Option aktiviert, kann der Spieler Privilegien für andere Spieler (den Host ausgenommen) ändern, wenn "Spielern vertrauen" ausgeschaltet ist. Der Spieler kann andere Spieler ausschließen und "Feuer breitet sich aus" sowie "TNT explodiert" an- und ausschalten.{*B*}{*B*}
 	
 	{*T2*}Spieler ausschließen{*ETW*}{*B*}
-	Ist diese Option ausgewählt, werden Spieler, die nicht auf der gleichen {*PLATFORM_NAME*} Konsole wie der Host-Spieler spielen, ebenso wie alle anderen Spieler auf seiner {*PLATFORM_NAME*} Konsole vom Spiel ausgeschlossen. Dieser Spieler kann dem Spiel erst wieder beitreten, wenn es neu gestartet wird.{*B*}{*B*}
+	{*KICK_PLAYER_DESCRIPTION*}{*B*}{*B*}
 
 {*T1*}Optionen für Host-Spieler{*ETW*}{*B*}
 Wenn "Hostprivilegien" aktiviert ist, kann der Host-Spieler einige seiner eigenen Privilegien bearbeiten. Zur Bearbeitung der Privilegien für einen Spieler rufst du mit {*CONTROLLER_VK_A*} das Privilegien-Menü für Spieler auf, wo du die folgenden Optionen nutzen kannst.{*B*}{*B*}
 
 	{*T2*}Kann fliegen{*ETW*}{*B*}
 	Ist diese Option aktiviert, kann der Spieler fliegen. Diese Option ist nur für den Überlebensmodus relevant, da das Fliegen im Kreativmodus für alle Spieler aktiviert ist.{*B*}{*B*}
-	
+
 	{*T2*}Erschöpfung deaktivieren{*ETW*}{*B*}
 	Diese Option betrifft nur den Überlebensmodus. Aktiviert, dass körperliche Aktivitäten (Laufen/Sprinten/Springen etc.) sich nicht auf die Hungerleiste auswirken. Verletzt der Spieler sich allerdings, verringert sich die Hungerleiste langsam während des Heilungsvorgangs.{*B*}{*B*}
-	
+
 	{*T2*}Unsichtbar{*ETW*}{*B*}
 	Ist diese Option aktiviert, kann der Spieler von anderen Spielern nicht gesehen werden und ist unverwundbar.{*B*}{*B*}
-    
-    {*T2*}Kann teleportieren{*ETW*}{*B*}
+
+	{*T2*}Kann teleportieren{*ETW*}{*B*}
 	Dies erlaubt dem Spieler, sich selbst oder andere Spieler zu anderen Spielern in der Welt zu bewegen.
 </value>
 </data>
+<data name="IDS_KICK_PLAYER_DESCRIPTION"><value>Mit dieser Option wird ein Spieler, der nicht auf der {*PLATFORM_NAME*} Konsole des Hosts spielt, vom Spiel ausgeschlossen; andere Spieler auf der {*PLATFORM_NAME*} Konsole des ausgeschlossenen Spielers werden ebenfalls ausgeschlossen. Dieser Spieler kann dem Spiel erst wieder beitreten, wenn es neu gestartet wird.</value>
+  </data>
 <data name="IDS_HOW_TO_PLAY_NEXT"><value>Nächste Seite</value>
   </data>
 <data name="IDS_HOW_TO_PLAY_PREV"><value>Vorige Seite</value>
@@ -374,7 +397,7 @@ Wenn "Hostprivilegien" aktiviert ist, kann der Host-Spieler einige seiner eigene
   </data>
 <data name="IDS_HOW_TO_PLAY_MENU_CHESTS"><value>Truhen</value>
   </data>
-<data name="IDS_HOW_TO_PLAY_MENU_CRAFTING"><value>Dinge herstellen</value>
+<data name="IDS_HOW_TO_PLAY_MENU_CRAFTING"><value>Crafting</value>
   </data>
 <data name="IDS_HOW_TO_PLAY_MENU_FURNACE"><value>Ofen</value>
   </data>
@@ -425,62 +448,94 @@ sie können dir also leicht zu Hilfe kommen.
   </data>
 <data name="IDS_HOW_TO_PLAY_MENU_WHATSNEW"><value>Neuigkeiten</value>
   </data>
-<data name="IDS_HOW_TO_PLAY_WHATSNEW"><value>
-{*T3*}Veränderungen und Neuerungen{*ETW*}{*B*}{*B*}
-- Neue Gegenstände hinzugefügt: Smaragde, Smaragderz, Smaragdblock, Endertruhe, Stolperdrahthaken, verzauberter goldener Apfel, Amboss, Blumentopf, Pflastersteinmauer, bemooste Pflastersteinmauer, Dörrgemälde, Kartoffel, Ofenkartoffel, giftige Kartoffel, Karotte, goldene Karotte,
-Karottenangel, Kürbiskuchen, Nachtsichttrank, Unsichtbarkeitstrank, Netherquarz, Netherquarzerz, Quarzblock, Quarzstufe, Quarztreppe, gemeißelter Quarzblock, Säulen-Quarzblock, Zauberbuch, Teppich.{*B*}
-- Neue Rezepte für glatten und gemeißelten Sandstein hinzugefügt.{*B*}
-- Neue NPCs hinzugefügt: Zombie-Dorfbewohner.{*B*}
-- Neue Geländeerstellungsfunktionen hinzugefügt: Wüstentempel, Wüstendörfer, Dschungeltempel.{*B*}
-- Handel mit Dorfbewohnern hinzugefügt.{*B*}
-- Ambossmenü hinzugefügt.{*B*}
-- Lederrüstungen können nun eingefärbt werden.{*B*}
-- Wolfshalsbänder können nun eingefärbt werden.{*B*}
-- Beim Reiten auf Schweinen kann mit einer Karottenangel gesteuert werden.{*B*}
-- Aktualisierter Bonustruheninhalt mit mehr Gegenständen.{*B*}
-- Die Platzierung halber Blöcke sowie von Blöcken auf halben Blöcken wurde geändert.{*B*}
-- Die Platzierung von umgedrehten Treppen und Stufen wurde geändert.{*B*}
-- Verschiedene Berufe für Dorfbewohner hinzugefügt.{*B*}
-- Dorfbewohner, die aus einem Eintrittsei spawnen, haben zufällige Berufe.{*B*}
-- Baumstämme können seitwärts platziert werden.{*B*}
-- Öfen können mit hölzernen Werkzeugen befeuert werden.{*B*}
-- Eis- und Glasscheiben können mit Werkzeugen gesammelt werden, die mit Behutsamkeit verzaubert wurden.{*B*}
-- Hölzerne Knöpfe und Druckplatten können durch Pfeile betätigt werden.{*B*}
-- Nether-NPCs können oberirdisch aus Portalen spawnen.{*B*}
-- Creeper und Spinnen sind aggressiver gegenüber dem Spieler, der sie zuletzt geschlagen hat.{*B*}
-- Im Kreativmodus werden NPCs nach kurzer Zeit wieder neutral.{*B*}
-- Der Rückstoßeffekt beim Ertrinken wurde entfernt.{*B*}
-- Wenn Zombies Türen zerstören, ist der Schaden jetzt sichtbar.{*B*}
-- Eis schmilzt im Nether.{*B*}
-- Kessel, die draußen im Regen stehen, werden aufgefüllt.{*B*}
-- Die Aktualisierungszeit von Kolben wurde verdoppelt.{*B*}
-- Schweine verlieren gegebenenfalls ihren Sattel, wenn sie getötet werden.{*B*}
-- Die Farbe des Himmels im Ende wurde geändert.{*B*}
-- Draht für Stolperdraht kann platziert werden.{*B*}
-- Regen tropft durch Blätter.{*B*}
-- Hebel können an der Unterseite von Blöcken platziert werden.{*B*}
-- Je nach Schwierigkeit verursacht TNT mehr oder weniger Schaden.{*B*}
-- Das Bücherrezept wurde geändert.{*B*}
-- Boote zerstören jetzt Seerosenblätter, nicht mehr umgekehrt.{*B*}
-- Schweine lassen mehr Schweinefleisch fallen.{*B*}
-- In superflachen Welten spawnen weniger Slimes.{*B*}
-- Creeper verursachen je nach Schwierigkeit mehr oder weniger Schaden und der Rückstoß wurde erhöht.{*B*}
-- Das Problem, durch das Endermen ihre Kiefer nicht bewegen konnten, wurde behoben.{*B*}
-- Spieler können nun im BACK-Taste-Menü während des Spiels teleportieren.{*B*}
-- Neue Hostoptionen für Flug, Unsichtbarkeit und Unverwundbarkeit entfernter Spieler hinzugefügt.{*B*}
-- Neue Tutorials über neue Gegenstände und Funktionen zur Tutorial-Welt hinzugefügt.{*B*}
-- Die Schallplattentruhen in der Tutorial-Welt wurden neu verteilt.{*B*}
+<data name="IDS_HOW_TO_PLAY_WHATSNEW"><value>{*T3*}Veränderungen und Neuerungen{*ETW*}{*B*}{*B*}
+- Neue Gegenstände hinzugefügt: Ausgehärteter Lehm, gefärbter Lehm, Kohleblock, Heuballen, Aktivierungsschiene, Redstone-Block, Tageslichtsensor, Auswurfblock, Trichter, Lore mit Trichter, Lore mit TNT, Redstone-Vergleicher, beschwerte Druckplatte, Signalfeuer, eingeklemmte Truhe, Feuerwerksrakete, Feuerwerksstern, Netherstern, Leine, Pferderüstung, Namensschild, Pferde-Eintrittsei.{*B*}
+- Neue NPCs hinzugefügt: Dürre, Dörrskelette, Hexen, Fledermäuse, Pferde, Esel und Maultiere.{*B*}
+- Neue Geländeerstellungsfunktionen hinzugefügt: Hexenhütten.{*B*}
+- Signalfeuer-Oberfläche hinzugefügt.{*B*}
+- Pferde-Oberfläche hinzugefügt.{*B*}
+Trichter-Oberfläche hinzugefügt.{*B*}
+- Feuerwerk hinzugefügt: Die Feuerwerk-Oberfläche kann von der Werkbank aufgerufen werden, wenn du die Zutaten zum Craften eines Feuerwerkssterns oder einer Feuerwerksrakete hast.{*B*}
+- Abenteuermodus hinzugefügt: Du kannst Blöcke nur mit den richtigen Werkzeugen abbauen.{*B*}
+- Viele neue Sounds hinzugefügt.{*B*}
+NPCs, Gegenstände und Projektile können jetzt durch Portale gehen.{*B*}
+- Repeater können jetzt gesperrt werden, indem ihre Seiten von einem weiteren Repeater mit Strom versorgt werden.{*B*}
+- Zombies und Skelette können jetzt andere Waffen und Rüstungen haben.{*B*}
+- Neue Todesmeldungen.{*B*}
+- Benenne NPCs mit einem Namensschild und benenne Behälter um, um den Titel des geöffneten Menüs zu ändern.{*B*}
+- Knochenmehl lässt nicht mehr alles sofort zu voller Größe wachsen, sondern in zufälligen Stufen.{*B*}
+- Ein Redstone-Signal, das den Inhalt von Truhen, Brauständen, Dispensern und Jukeboxen beschreibt, kann aufgefangen werden, indem ein Redstone-Vergleicher direkt daran platziert wird.{*B*}
+- Dispenser können in jede Richtung zeigen.{*B*}
+- Goldene Äpfel verleihen Spielern kurzfristig zusätzliche Absorptions-Gesundheit.{*B*}
+- In einem Gebiet erscheinende Monster werden mit zunehmender Dauer des Aufenthalts immer schwieriger.{*B*}
 </value>
 </data>
 <data name="IDS_TITLEUPDATE"><value>{*ETB*}Willkommen zurück! Vielleicht hast du es gar nicht bemerkt, aber dein Minecraft wurde gerade aktualisiert.{*B*}{*B*}
 Es gibt jede Menge neue Funktionen für dich und deine Freunde. Hier stellen wir dir nur ein paar Highlights vor. Lies sie dir durch und dann ziehe los und hab Spaß!{*B*}{*B*}
-{*T1*}Neue Gegenstände{*ETB*}: Smaragde, Smaragderz, Smaragdblock, Endertruhe, Stolperdrahthaken, verzauberter goldener Apfel, Amboss, Blumentopf, Pflastersteinmauer, bemooste Pflastersteinmauer, Dörrgemälde, Kartoffel, Ofenkartoffel, giftige Kartoffel, Karotte, goldene Karotte,
-Karottenangel, Kürbiskuchen, Nachtsichttrank, Unsichtbarkeitstrank, Netherquarz, Netherquarzerz, Quarzblock, Quarzstufe, Quarztreppe, gemeißelter Quarzblock, Säulen-Quarzblock, Zauberbuch, Teppich.{*B*}{*B*}
- {*T1*}Neue NPCs{*ETB*} – Zombie-Dorfbewohner.{*B*}{*B*}
-{*T1*}Neue Funktionen{*ETB*}: Handel mit Dorfbewohnern, Waffen und Werkzeuge auf Ambossen reparieren oder verzaubern, Gegenstände in einer Endertruhe lagern, Steuerung beim Reiten auf Schweinen mit einer Karottenangel!{*B*}{*B*}
-{*T1*}Neue Mini-Tutorials{*ETB*} – Lerne in der Tutorial-Welt, wie man die neuen Features benutzt!{*B*}{*B*}
-{*T1*}Neue 'Easter Eggs'{*ETB*} – Wir haben alle geheimen Schallplatten in der Tutorial-Welt neu platziert. Versuch, sie alle wiederzufinden!{*B*}{*B*}
+{*T1*}Neue Gegenstände{*ETB*} – Ausgehärteter Lehm, gefärbter Lehm, Kohleblock, Heuballen, Aktivierungsschiene, Redstone-Block, Tageslichtsensor, Auswurfblock, Trichter, Lore mit Trichter, Lore mit TNT, Redstone-Vergleicher, beschwerte Druckplatte, Signalfeuer, eingeklemmte Truhe, Feuerwerksrakete, Feuerwerksstern, Netherstern, Leine, Pferderüstung, Namensschild, Pferde-Eintrittsei.{*B*}{*B*}
+{*T1*}Neue NPCs{*ETB*} – Dürre, Dörrskelette, Hexen, Fledermäuse, Pferde, Esel und Maultiere.{*B*}{*B*}
+{*T1*}Neue Features{*ETB*} – Zähme und reite ein Pferd, crafte Feuerkwerk für eine Show, benenne Tiere und Monster mit einem Namensschild, erschaffe fortgeschrittenere Redstone-Schaltkreise und neue Hostoptionen zur Kontrolle der Gastberechtigungen!{*B*}{*B*}
+{*T1*}Neue Tutorial-Welt{*ETB*} – Lerne den Umgang mit neuen und alten Features. Versuche, alle geheimen Schallplatten in der Welt zu finden!{*B*}{*B*}
 </value>
+</data>
+<data name="IDS_HOW_TO_PLAY_MENU_HORSES"><value>Pferde</value>
+</data>
+<data name="IDS_HOW_TO_PLAY_HORSES"><value>{*T3*}SO WIRD GESPIELT: PFERDE{*ETW*}{*B*}{*B*}
+Pferde und Esel findet man hauptsächlich auf freiem Feld. Maultiere sind die Nachfahren von jeweils einem Esel und einem Pferd, sie sind aber selbst unfruchtbar.{*B*}
+Alle ausgewachsenen Pferde, Esel und Maultiere können geritten werden. Allerdings können nur Pferden Rüstungen angelegt werden und nur Maultiere sowie Esel können mit Satteltaschen für den Transport von Gegenständen ausgestattet werden.{*B*}{*B*}
+Pferde, Esel und Maultiere müssen vor dem Gebrauch gezähmt werden. Du zähmst ein Pferd, indem du versuchst, es zu reiten, und oben bleibst, wenn es versucht, dich abzuwerfen.{*B*}
+Wenn um das Pferd herum Liebesherzen erscheinen, ist es zahm und versucht nicht mehr, dich abzuwerfen. Um ein Pferd beim Reiten zu lenken, musst du ihm einen Sattel anlegen.{*B*}{*B*}
+Du kannst Sättel von Dorfbewohnern kaufen oder in versteckten Truhen in der Welt finden.{*B*}
+Du kannst zahmen Eseln und Maultieren Satteltaschen geben, indem du eine Truhe anbringst. Du kannst dann während des Reitens oder beim Schleichen auf die Taschen zugreifen.{*B*}{*B*}
+Pferde und Esel (nicht aber Maultiere) können wie andere Tiere mithilfe von goldenen Äpfeln oder goldenen Karotten gezüchtet werden.{*B*}
+Fohlen wachsen mit der Zeit zu Pferden heran und du kannst dies beschleunigen, indem du sie mit Weizen oder Heu fütterst.{*B*}
+	</value>
+</data>
+<data name="IDS_HOW_TO_PLAY_MENU_BEACONS"><value>Signalfeuer</value>
+</data>
+<data name="IDS_HOW_TO_PLAY_BEACONS"><value>{*T3*}SO WIRD GESPIELT: SIGNALFEUER{*ETW*}{*B*}{*B*}
+Aktive Signalfeuer werfen einen hellen Lichtstrahl in den Himmel und gewähren Spielern in der Nähe Kräfte.{*B*}
+Sie werden aus Glas, Obsidian und Nethersternen gefertigt, die du erhältst, wenn du die Dürre besiegst.{*B*}{*B*}
+Signalfeuer müssen auf Pyramiden aus Eisen, Gold, Smaragd oder Diamant so platziert werden, dass sie tagsüber dem Sonnenlicht ausgesetzt sind.{*B*}
+Das Material der Unterlage hat keine Auswirkungen auf die Kraft des Signalfeuers.{*B*}{*B*}
+Im Signalfeuermenü kannst du eine Hauptkraft für dein Signalfeuer auswählen. Je mehr Stufen deine Pyramide hat, desto mehr Kräfte stehen dir zur Auswahl.{*B*}
+Bei einem Signalfeuer auf einer Pyramide mit mindestens vier Stufen hast du außerdem die Option, entweder die Regeneration als Zweitkraft oder eine stärkere Hauptkraft auszuwählen.{*B*}{*B*}
+Um die Kräfte deines Signalfeuers einzustellen, musst du einen Smaragd, Diamant, Gold- oder Eisenbarren im Bezahl-Slot opfern.{*B*}
+Danach strahlt das Signalfeuer für unbegrenzte Zeit die Kräfte aus.{*B*}
+	</value>
+</data>
+<data name="IDS_HOW_TO_PLAY_MENU_FIREWORKS"><value>Feuerwerk</value>
+</data>
+<data name="IDS_HOW_TO_PLAY_FIREWORKS"><value>{*T3*}SO WIRD GESPIELT: FEUERWERK{*ETW*}{*B*}{*B*}
+Feuerwerk sind dekorative Gegenstände, die manuell oder von Dispensern gestartet werden können. Sie werden aus Papier, Schießpulver und wahlweise einigen Feuerwerkssternen gecraftet.{*B*}
+Farben, Verblassen, Form, Größe und Effekte (wie Spuren und Funkeln) von Feuerwerkssternen können beim Craften durch zusätzliche Zutaten angepasst werden.{*B*}{*B*}
+Feuerkwerk craftest du, indem du Schießpulver und Papier in das 3x3-Crafting-Raster legst, das über deinem Inventar angezeigt wird.{*B*}
+Du kannst wahlweise mehrere Feuerwerkssterne in das Raster legen, um sie dem Feuerwerk hinzuzufügen.{*B*}
+Mehr Schießpulver im Raster erhöht die Höhe, in der Feuerwerkssterne explodieren.{*B*}{*B*}
+Du kannst das fertige Feuerwerk dann aus dem Ausgabeplatz nehmen.{*B*}{*B*}
+Feuerwerkssterne werden hergestellt, indem du Schießpulver und Farbe in das Raster legst.{*B*}
+ – Die Explosion des Feuerwerkssterns nimmt die jeweilige Farbe an.{*B*}
+ – Die Form des Feuerwerkssterns ändert sich durch das Hinzufügen von Feuerkugeln, Goldklumpen, Federn oder NPC-Köpfen.{*B*}
+ – Spur oder Funkeln können mit Diamanten oder Glowstone-Staub hinzugefügt werden.{*B*}{*B*}
+Wenn ein Feuerwerksstern gecraftet wurde, kannst du das Verblassen mit Farbe ändern.
+	</value>
+	</data>	
+<data name="IDS_HOW_TO_PLAY_MENU_HOPPERS"><value>Trichter</value>
+</data>
+<data name="IDS_HOW_TO_PLAY_HOPPERS"><value>{*T3*}SO WIRD GESPIELT: TRICHTER{*ETW*}{*B*}{*B*}
+Mit Trichtern kannst du Gegenstände in Behälter füllen oder sie daraus entnehmen sowie automatisch Gegenstände aufheben, die hineingeworfen werden.{*B*}
+Sie können mit Brauständen, Truhen, Dispensern, Auswurfblöcken, Loren mit Truhen, Loren mit Trichtern sowie anderen Trichtern verwendet werden.{*B*}{*B*}
+Trichter versuchen fortwährend, Gegenstände aus einem geeigneten Behälter aufzusaugen, der über ihnen platziert wird. Sie versuchen auch, gelagerte Gegenstände in einen Ausgabebehälter zu legen.{*B*}
+Wenn ein Trichter mit Redstone betrieben wird, wird er inaktiv und hört auf, Gegenstände aufzusaugen und einzufügen.{*B*}{*B*}
+Ein Trichter zeigt in die Ausgaberichtung für Gegenstände. Damit ein Trichter auf einen bestimmten Block zeigt, platzierst du ihn dagegen, während du schleichst.{*B*}
+	</value>
+</data>
+<data name="IDS_HOW_TO_PLAY_MENU_DROPPERS"><value>Auswurfblöcke</value>
+</data>
+<data name="IDS_HOW_TO_PLAY_DROPPERS"><value>{*T3*}SO WIRD GESPIELT: AUSWURFBLÖCKE{*ETW*}{*B*}{*B*}
+Von Redstone mit Energie versorgte Auswurfblöcke lassen einen einzelnen, zufälligen Gegenstand fallen. Öffne den Auswurfblock mit {*CONTROLLER_ACTION_USE*} und fülle ihn dann mit Gegenständen aus deinem Inventar.{*B*}
+Wenn der Auswurfblock einer Truhe oder einem anderen Behälter zugewandt ist, wird der Gegenstand stattdessen darin abgelegt. Lange Ketten aus Auswurfblöcken können hergestellt werden, um Gegenstände über längere Entfernungen zu transportieren. Dafür müssen sie abwechselnd ein- und ausgeschaltet werden.
+	</value>
 </data>
 <data name="IDS_DESC_SWORD"><value>Fügt mehr Schaden zu als eine leere Hand.</value>
   </data>
@@ -613,10 +668,36 @@ haben.</value>
   </data>
 <data name="IDS_DESC_MAP"><value>Erzeugt ein Abbild einer Gegend, bei deren Erforschung du sie in der Hand hattest. Nützlich, um den Weg zu finden.</value>
   </data>
+<data name="IDS_DESC_MAP_EMPTY"><value>Wird bei Benutzung zu einem Kartenteil der aktuellen Welt und füllt sich, wenn du die Gegend erkundest.</value>
+  </data>
 <data name="IDS_DESC_BOW"><value>Erlaubt Fernangriffe mit Pfeilen.</value>
   </data>
 <data name="IDS_DESC_ARROW"><value>Wird als Munition für Bögen verwendet.</value>
   </data>
+<data name="IDS_DESC_NETHER_STAR"><value>Von der Dürre fallen gelassen, wird zur Herstellung von Signalfeuern verwendet.</value>
+</data>
+<data name="IDS_DESC_FIREWORKS"><value>Erzeugt bei Aktivierung bunte Explosionen. Die Farbe, der Effekt, die Form und das Verblassen hängen davon ab, welcher Feuerwerksstern zur Herstellung verwendet wird.</value>
+</data>
+<data name="IDS_DESC_FIREWORKS_CHARGE"><value>Legt die Farbe, den Effekt und die Form eines Feuerwerks fest.</value>
+</data>
+<data name="IDS_DESC_COMPARATOR"><value>Wird in Redstone-Schaltkreisen verwendet, um die Signalstärke aufrechtzuerhalten, zu vergleichen oder zu mindern, oder um bestimmte Blockzustände zu messen.</value>
+</data>
+<data name="IDS_DESC_MINECART_TNT"><value>Ein Lorentyp, der als beweglicher TNT-Block funktioniert.</value>
+</data>
+<data name="IDS_DESC_DAYLIGHT_DETECTOR"><value>Ein Block, der auf Grundlage des Sonnenlichts (oder des Mangels an Sonnenlicht) ein Redstone-Signal ausgibt.</value>
+</data>		
+<data name="IDS_DESC_MINECART_HOPPER"><value>Ein besonderer Lorentyp, der ähnlich funktioniert wie ein Trichter. Er sammelt Gegenstände, die auf Schienen liegen, und aus Behältern darüber.</value>
+</data>
+<data name="IDS_DESC_IRON_HORSE_ARMOR"><value>Ein besonderer Rüstungstyp, der einem Pferd angelegt werden kann. Gewährt 5 Rüstungspunkte.</value>
+</data>
+<data name="IDS_DESC_GOLD_HORSE_ARMOR"><value>Ein besonderer Rüstungstyp, der einem Pferd angelegt werden kann. Gewährt 7 Rüstungspunkte.</value>
+</data>
+<data name="IDS_DESC_DIAMOND_HORSE_ARMOR"><value>Ein besonderer Rüstungstyp, der einem Pferd angelegt werden kann. Gewährt 11 Rüstungspunkte.</value>
+</data>
+<data name="IDS_DESC_LEAD"><value>Hiermit kannst du NPCs am Spieler oder an Zaunpfosten festbinden.</value>
+</data>
+<data name="IDS_DESC_NAME_TAG"><value>Hiermit kannst du NPCs in der Welt Namen geben.</value>
+</data>
 <data name="IDS_DESC_BREAD"><value>Regeneriert 2,5{*ICON_SHANK_01*}.</value>
   </data>
 <data name="IDS_DESC_CAKE"><value>Regeneriert 1,5{*ICON_SHANK_01*}. Kann 6-mal verwendet werden.</value>
@@ -668,7 +749,7 @@ Kann auch genutzt werden, um ein wenig Licht zu erzeugen.</value>
   </data>
 <data name="IDS_DESC_POWEREDRAIL"><value>Beschleunigt darüberfahrende Loren, wenn sie unter Strom steht. Wenn kein Strom anliegt, bewirkt sie, dass Loren auf ihr anhalten.</value>
   </data>
-<data name="IDS_DESC_DETECTORRAIL"><value>Funktioniert wie eine Druckplatte – sendet ein Redstone-Signal, wenn sie aktiviert wird, kann aber nur durch Loren aktiviert werden.</value>
+<data name="IDS_DESC_DETECTORRAIL"><value>Funktioniert wie eine Druckplatte – sendet ein Redstone-Signal, wenn sie aktiviert wird, kann aber nur durch Loren aktiviert werden.</value>
   </data>
 <data name="IDS_DESC_MINECART"><value>Kann dich, ein Tier oder ein Monster auf Schienen  transportieren.</value>
   </data>
@@ -944,100 +1025,158 @@ statt nur 3.)</value>
   </data>
 <data name="IDS_DESC_SKULL"><value>NPC-Köpfe können als Dekoration platziert werden oder als Maske anstatt eines Helms getragen werden.</value>
   </data>
+<data name="IDS_DESC_COMMAND_BLOCK"><value>Hiermit werden Befehle ausgeführt.</value>
+	</data>
+<data name="IDS_DESC_BEACON"><value>Wirft einen Lichtstrahl in den Himmel und kann Spielern in der Nähe Statuseffekte gewähren.</value>
+	</data>
+<data name="IDS_DESC_CHEST_TRAP"><value>Lässt dich in ihrem Inneren Blöcke und Gegenstände lagern. Platzier zwei Truhen nebeneinander, um eine größere Truhe mit der doppelten Kapazität zu erschaffen. Die eingeklemmte Truhe erstellt beim Öffnen außerdem eine Redstone-Ladung.</value>
+	</data>
+<data name="IDS_DESC_WEIGHTED_PLATE_LIGHT"><value>Gewährt eine Redstone-Ladung. Die Ladung wird stärker, wenn mehr Gegenstände auf der Platte liegen.</value>
+	</data>
+<data name="IDS_DESC_WEIGHTED_PLATE_HEAVY"><value>Gewährt eine Redstone-Ladung. Die Ladung wird stärker, wenn mehr Gegenstände auf der Platte liegen. Erfordert mehr Gewicht als die leichte Platte.</value>
+	</data>
+<data name="IDS_DESC_REDSTONE_BLOCK"><value>Dient als Redstone-Energiequelle. Kann in Redstone zurückverwandelt werden.</value>
+	</data>
+<data name="IDS_DESC_HOPPER"><value>Kann Gegenstände fangen oder sie in Behälter legen bzw. aus ihnen entfernen.</value>
+	</data>
+<data name="IDS_DESC_ACTIVATOR_RAIL"><value>Ein Schienentyp, der Loren mit Trichtern aktivieren oder deaktivieren und Loren mit TNT auslösen kann.</value>
+	</data>
+<data name="IDS_DESC_DROPPER"><value>Kann Gegenstände lagern und ablegen oder in einen anderen Behälter schieben, wenn er einen Impuls von einem Redstone-Stromkreis erhält.</value>
+	</data>
+<data name="IDS_DESC_STAINED_CLAY"><value>Bunte Blöcke aus gefärbtem, ausgehärtetem Lehm.</value>
+	</data>
+<data name="IDS_DESC_HAY"><value>Kann an Pferde, Esel oder Maultiere verfüttert werden, um bis zu 10 Herzen zu heilen. Lässt Fohlen schneller wachsen.</value>
+	</data>
+<data name="IDS_DESC_HARDENED_CLAY"><value>Wird hergestellt, indem man Lehm in einem Ofen schmilzt.</value>
+	</data>
+<data name="IDS_DESC_STAINED_GLASS"><value>Wird aus Glas und einer Farbe hergestellt.</value>
+	</data>
+<data name="IDS_DESC_STAINED_GLASS_PANE"><value>Wird aus Buntglas hergestellt.</value>
+	</data>
+<data name="IDS_DESC_COAL_BLOCK"><value>Eine kompakte Art, Kohle zu lagern. Kann als Brennstoff in Öfen verwendet werden.</value>
+	 </data>
 <data name="IDS_SQUID"><value>Tintenfisch</value>
-  </data>
+	</data>
 <data name="IDS_DESC_SQUID"><value>Wenn er getötet wird, lässt er einen Tintensack fallen.</value>
-  </data>
+	</data>
 <data name="IDS_COW"><value>Kuh</value>
-  </data>
+	</data>
 <data name="IDS_DESC_COW"><value>Wenn sie getötet wird, lässt sie Leder fallen. Kann außerdem mit einem Eimer gemolken werden.</value>
-  </data>
+	</data>
 <data name="IDS_SHEEP"><value>Schaf</value>
-  </data>
+	</data>
 <data name="IDS_DESC_SHEEP"><value>Wenn es geschoren wird, lässt es Wolle fallen, wenn es nicht schon geschoren war. Kann gefärbt werden, wodurch seine Wolle eine andere Farbe erhält.</value>
-  </data>
+	</data>
 <data name="IDS_CHICKEN"><value>Huhn</value>
-  </data>
+	</data>
 <data name="IDS_DESC_CHICKEN"><value>Wenn es getötet wird, lässt es Federn fallen. Legt in zufälligen Abständen Eier.</value>
-  </data>
+	</data>
 <data name="IDS_PIG"><value>Schwein</value>
-  </data>
+	</data>
 <data name="IDS_DESC_PIG"><value>Wenn es getötet wird, lässt es Schweinefleisch fallen. Kann mithilfe eines Sattels geritten werden.</value>
-  </data>
+	</data>
 <data name="IDS_WOLF"><value>Wolf</value>
-  </data>
+	</data>
 <data name="IDS_DESC_WOLF"><value>Friedlich, bis er angegriffen wird, dann wehrt er sich. Kann mithilfe von Knochen gezähmt werden. Der Wolf wird dir dann folgen und alles angreifen, was dich angreift.</value>
-  </data>
+	</data>
 <data name="IDS_CREEPER"><value>Creeper</value>
-  </data>
+	</data>
 <data name="IDS_DESC_CREEPER"><value>Explodiert, wenn du ihm zu nahe kommst!</value>
-  </data>
+	</data>
 <data name="IDS_SKELETON"><value>Skelett</value>
-  </data>
+	</data>
 <data name="IDS_DESC_SKELETON"><value>Schießt mit Pfeilen auf dich. Wenn es getötet wird, lässt es Pfeile fallen.</value>
-  </data>
+	</data>
 <data name="IDS_SPIDER"><value>Spinne</value>
-  </data>
+	</data>
 <data name="IDS_DESC_SPIDER"><value>Greift dich an, wenn du ihr zu nahe kommst. Kann Wände hochklettern. Wenn sie getötet wird, lässt sie Faden fallen.</value>
-  </data>
+	</data>
 <data name="IDS_ZOMBIE"><value>Zombie</value>
-  </data>
+	</data>
 <data name="IDS_DESC_ZOMBIE"><value>Greift dich an, wenn du ihm zu nahe kommst.</value>
-  </data>
+	</data>
 <data name="IDS_PIGZOMBIE"><value>Zombie-Schweinezüchter</value>
-  </data>
+	</data>
 <data name="IDS_DESC_PIGZOMBIE"><value>Eigentlich friedlich, greift dich aber in Gruppen an, wenn du einen angreifst.</value>
-  </data>
+	</data>
 <data name="IDS_GHAST"><value>Ghast</value>
-  </data>
+	</data>
 <data name="IDS_DESC_GHAST"><value>Schießt Feuerbälle auf dich, die beim Auftreffen explodieren.</value>
-  </data>
+	</data>
 <data name="IDS_SLIME"><value>Slime</value>
-  </data>
+	</data>
 <data name="IDS_DESC_SLIME"><value>Zerfällt in kleinere Slimes, wenn er Schaden erhält.</value>
-  </data>
+	</data>
 <data name="IDS_ENDERMAN"><value>Enderman</value>
-  </data>
+	</data>
 <data name="IDS_DESC_ENDERMAN"><value>Greift dich an, wenn du ihn ansiehst. Kann außerdem Blöcke bewegen.</value>
-  </data>
+	</data>
 <data name="IDS_SILVERFISH"><value>Silberfisch</value>
-  </data>
+	</data>
 <data name="IDS_DESC_SILVERFISH"><value>Lockt in der Nähe versteckte Silberfische an, wenn er angegriffen wird. Versteckt sich in Steinblöcken.</value>
-  </data>
+	</data>
 <data name="IDS_CAVE_SPIDER"><value>Höhlenspinne</value>
-  </data>
+	</data>
 <data name="IDS_DESC_CAVE_SPIDER"><value>Hat einen giftigen Biss.</value>
-  </data>
+	</data>
 <data name="IDS_MUSHROOM_COW"><value>Pilzkuh</value>
-  </data>
+	</data>
 <data name="IDS_DESC_MUSHROOM_COW"><value>Kann mithilfe einer Schüssel zu Pilzsuppe verarbeitet werden. Lässt Pilze fallen und wird zu einer normalen Kuh, wenn man sie schert.</value>
-  </data>
+	</data>
 <data name="IDS_SNOWMAN"><value>Schneegolem</value>
-  </data>
+	</data>
 <data name="IDS_DESC_SNOWMAN"><value>Der Schneegolem entsteht, wenn Spieler Schneeblöcke und einen Kürbis kombinieren. Bewirft die Feinde seines Erbauers mit Schneebällen.</value>
-  </data>
+	</data>
 <data name="IDS_ENDERDRAGON"><value>Enderdrache</value>
-  </data>
+	</data>
 <data name="IDS_DESC_ENDERDRAGON"><value>Ein großer schwarzer Drache, den man im Ende findet.</value>
-  </data>
+	</data>
 <data name="IDS_BLAZE"><value>Lohe</value>
-  </data>
+	</data>
 <data name="IDS_DESC_BLAZE"><value>Gegner, die man im Nether findet, vorwiegend in Netherfestungen. Lassen Lohenruten fallen, wenn sie getötet werden.</value>
-  </data>
+	</data>
 <data name="IDS_LAVA_SLIME"><value>Magmawürfel</value>
-  </data>
+	</data>
 <data name="IDS_DESC_LAVA_SLIME"><value>Findet man im Nether. Ähnlich wie Schleim zerfallen sie zu kleineren Versionen, wenn man sie tötet.</value>
-  </data>
+	</data>
 <data name="IDS_VILLAGER"><value>Dorfbewohner</value>
-  </data>
+	</data>
 <data name="IDS_OZELOT"><value>Ozelot</value>
-  </data>
+	</data>
 <data name="IDS_DESC_OZELOT"><value>Findet man in Dschungeln. Füttere sie mit rohem Fisch, um sie zu zähmen. Du musst aber zulassen, dass der Ozelot sich dir nähert, denn bei schnellen Bewegungen läuft er weg.</value>
-  </data>
+	</data>
 <data name="IDS_IRONGOLEM"><value>Eisengolem</value>
-  </data>
+	</data>
 <data name="IDS_DESC_IRONGOLEM"><value>Erscheinen in Dörfern, um sie zu beschützen, und können mittels Eisenblöcken und Kürbissen erstellt werden.</value>
-  </data>
+	</data>
+<data name="IDS_BAT"><value>Fledermaus</value>
+	</data>
+<data name="IDS_DESC_BAT"><value>Diese fliegenden Geschöpfe findet man in Höhlen oder anderen großen geschlossenen Räumen.</value>
+	</data>
+<data name="IDS_WITCH"><value>Hexe</value>
+	</data>
+<data name="IDS_DESC_WITCH"><value>Diese Feinde findet man in Sümpfen, und sie werfen mit Tränken nach dir, um dich anzugreifen. Wenn sie sterben, lassen sie Tränke fallen.</value>
+	</data>
+<data name="IDS_HORSE"><value>Pferd</value>
+	</data>
+<data name="IDS_DESC_HORSE"><value>Diese Tiere können gezähmt und dann geritten werden.</value>
+	</data>
+<data name="IDS_DONKEY"><value>Esel</value>
+	</data>
+<data name="IDS_DESC_DONKEY"><value>Diese Tiere können gezähmt und dann geritten werden. Du kannst Truhen an ihnen anbringen.</value>
+	</data>
+<data name="IDS_MULE"><value>Maultier</value>
+	</data>
+<data name="IDS_DESC_MULE"><value>Eine Kreuzung aus einem Pferd und einem Esel. Diese Tiere können gezähmt und dann geritten werden. Sie können Truhen tragen.</value>
+	</data>
+<data name="IDS_ZOMBIE_HORSE"><value>Zombiepferd</value>
+	</data>
+<data name="IDS_SKELETON_HORSE"><value>Skelettpferd</value>
+	</data>
+<data name="IDS_WITHER"><value>Dürre</value>
+	</data>
+<data name="IDS_DESC_WITHER"><value>Werden aus Dörrschädeln und Seelensand hergestellt. Feuern explodierende Schädel auf dich ab.</value>
+	</data>
 <data name="IDS_CREDITS_EXPLODANIM"><value>Explosives Animator</value>
 </data>
 <data name="IDS_CREDITS_CONCEPTART"><value>Concept Artist</value>
@@ -1384,6 +1523,8 @@ statt nur 3.)</value>
   </data>
 <data name="IDS_ITEM_MAP"><value>Karte</value>
   </data>
+<data name="IDS_ITEM_MAP_EMPTY"><value>Leere Karte</value>
+  </data>
 <data name="IDS_ITEM_RECORD_01"><value>Schallplatte - "13"</value>
   </data>
 <data name="IDS_ITEM_RECORD_02"><value>Schallplatte - "cat"</value>
@@ -1486,6 +1627,28 @@ statt nur 3.)</value>
   </data>
 <data name="IDS_ITEM_SKULL_CREEPER"><value>Creeper-Kopf</value>
   </data>
+<data name="IDS_NETHER_STAR"><value>Netherstern</value>
+  </data>
+<data name="IDS_FIREWORKS"><value>Feuerwerksrakete</value>
+  </data>
+<data name="IDS_FIREWORKS_CHARGE"><value>Feuerwerksstern</value>
+  </data>
+<data name="IDS_ITEM_COMPARATOR"><value>Redstone-Vergleicher</value>
+  </data>
+<data name="IDS_ITEM_MINECART_TNT"><value>Lore mit TNT</value>
+  </data>
+<data name="IDS_ITEM_MINECART_HOPPER"><value>Lore mit Trichter</value>
+  </data>
+<data name="IDS_ITEM_IRON_HORSE_ARMOR"><value>Eisen-Pferderüstung</value>
+  </data>
+<data name="IDS_ITEM_GOLD_HORSE_ARMOR"><value>Gold-Pferderüstung</value>
+  </data>
+<data name="IDS_ITEM_DIAMOND_HORSE_ARMOR"><value>Diamant-Pferderüstung</value>
+  </data>
+<data name="IDS_ITEM_LEAD"><value>Leine</value>
+  </data>
+<data name="IDS_ITEM_NAME_TAG"><value>Namensschild</value>
+  </data>
 <data name="IDS_TILE_STONE"><value>Stein</value>
   </data>
 <data name="IDS_TILE_GRASS"><value>Grasblock</value>
@@ -1501,6 +1664,8 @@ statt nur 3.)</value>
 <data name="IDS_TILE_BIRCHWOOD_PLANKS"><value>Birkenholzbretter</value>
   </data>
 <data name="IDS_TILE_JUNGLE_PLANKS"><value>Dschungelholzbretter</value>
+  </data>
+<data name="IDS_TILE_PLANKS"><value>Holzbretter (jeder Typ)</value>
   </data>
 <data name="IDS_TILE_SAPLING"><value>Setzling</value>
   </data>
@@ -1838,6 +2003,190 @@ statt nur 3.)</value>
   </data>
 <data name="IDS_TILE_SKULL"><value>Schädel</value>
   </data>
+<data name="IDS_TILE_COMMAND_BLOCK"><value>Befehlsblock</value>
+  </data>
+<data name="IDS_TILE_BEACON"><value>Signalfeuer</value>
+  </data>
+<data name="IDS_TILE_CHEST_TRAP"><value>Eingeklemmte Truhe</value>
+  </data>
+<data name="IDS_TILE_WEIGHTED_PLATE_LIGHT"><value>Beschwerte Druckplatte (leicht)</value>
+  </data>
+<data name="IDS_TILE_WEIGHTED_PLATE_HEAVY"><value>Beschwerte Druckplatte (schwer)</value>
+  </data>
+<data name="IDS_TILE_COMPARATOR"><value>Redstone-Vergleicher</value>
+  </data>
+<data name="IDS_TILE_DAYLIGHT_DETECTOR"><value>Tageslichtsensor</value>
+  </data>
+<data name="IDS_TILE_REDSTONE_BLOCK"><value>Redstone-Block</value>
+  </data>
+<data name="IDS_TILE_HOPPER"><value>Trichter</value>
+  </data>
+<data name="IDS_TILE_ACTIVATOR_RAIL"><value>Aktivierungsschiene</value>
+  </data>
+<data name="IDS_TILE_DROPPER"><value>Auswurfblock</value>
+  </data>
+<data name="IDS_TILE_STAINED_CLAY"><value>Gefärbter Lehm</value>
+  </data>
+<data name="IDS_TILE_HAY"><value>Heuballen</value>
+  </data>
+<data name="IDS_TILE_HARDENED_CLAY"><value>Ausgehärteter Lehm</value>
+  </data>
+<data name="IDS_TILE_COAL"><value>Kohleblock</value>
+  </data>
+<data name="IDS_TILE_STAINED_CLAY_BLACK"><value>Schwarz gefärbter Lehm</value>
+  </data>
+<data name="IDS_TILE_STAINED_CLAY_RED"><value>Rot gefärbter Lehm</value>
+  </data>
+<data name="IDS_TILE_STAINED_CLAY_GREEN"><value>Grün gefärbter Lehm</value>
+  </data>
+<data name="IDS_TILE_STAINED_CLAY_BROWN"><value>Braun gefärbter Lehm</value>
+  </data>
+<data name="IDS_TILE_STAINED_CLAY_BLUE"><value>Blau gefärbter Lehm</value>
+  </data>
+<data name="IDS_TILE_STAINED_CLAY_PURPLE"><value>Lila gefärbter Lehm</value>
+  </data>
+<data name="IDS_TILE_STAINED_CLAY_CYAN"><value>Cyanfarbener gefärbter Lehm</value>
+  </data>
+<data name="IDS_TILE_STAINED_CLAY_SILVER"><value>Hellgrau gefärbter Lehm</value>
+  </data>
+<data name="IDS_TILE_STAINED_CLAY_GRAY"><value>Grau gefärbter Lehm</value>
+  </data>
+<data name="IDS_TILE_STAINED_CLAY_PINK"><value>Rosa gefärbter Lehm</value>
+  </data>
+<data name="IDS_TILE_STAINED_CLAY_LIME"><value>Hellgrün gefärbter Lehm</value>
+  </data>
+<data name="IDS_TILE_STAINED_CLAY_YELLOW"><value>Gelb gefärbter Lehm</value>
+  </data>
+<data name="IDS_TILE_STAINED_CLAY_LIGHT_BLUE"><value>Hellblau gefärbter Lehm</value>
+  </data>
+<data name="IDS_TILE_STAINED_CLAY_MAGENTA"><value>Magentafarben gefärbter Lehm</value>
+  </data>
+<data name="IDS_TILE_STAINED_CLAY_ORANGE"><value>Orange gefärbter Lehm</value>
+  </data>
+<data name="IDS_TILE_STAINED_CLAY_WHITE"><value>Weiß gefärbter Lehm</value>
+  </data>
+<data name="IDS_TILE_STAINED_GLASS"><value>Buntglas</value>
+  </data>
+<data name="IDS_TILE_STAINED_GLASS_BLACK"><value>Schwarzes Buntglas</value>
+  </data>
+<data name="IDS_TILE_STAINED_GLASS_RED"><value>Rotes Buntglas</value>
+  </data>
+<data name="IDS_TILE_STAINED_GLASS_GREEN"><value>Grünes Buntglas</value>
+  </data>
+<data name="IDS_TILE_STAINED_GLASS_BROWN"><value>Braunes Buntglas</value>
+  </data>
+<data name="IDS_TILE_STAINED_GLASS_BLUE"><value>Blaues Buntglas</value>
+  </data>
+<data name="IDS_TILE_STAINED_GLASS_PURPLE"><value>Lila Buntglas</value>
+  </data>
+<data name="IDS_TILE_STAINED_GLASS_CYAN"><value>Cyanfarbenes Buntglas</value>
+  </data>
+<data name="IDS_TILE_STAINED_GLASS_SILVER"><value>Hellgraues Buntglas</value>
+  </data>
+<data name="IDS_TILE_STAINED_GLASS_GRAY"><value>Graues Buntglas</value>
+  </data>
+<data name="IDS_TILE_STAINED_GLASS_PINK"><value>Rosa Buntglas</value>
+  </data>
+<data name="IDS_TILE_STAINED_GLASS_LIME"><value>Hellgrünes Buntglas</value>
+  </data>
+<data name="IDS_TILE_STAINED_GLASS_YELLOW"><value>Gelbes Buntglas</value>
+  </data>
+<data name="IDS_TILE_STAINED_GLASS_LIGHT_BLUE"><value>Hellblaues Buntglas</value>
+  </data>
+<data name="IDS_TILE_STAINED_GLASS_MAGENTA"><value>Magentafarbenes Buntglas</value>
+  </data>
+<data name="IDS_TILE_STAINED_GLASS_ORANGE"><value>Oranges Buntglas</value>
+  </data>
+<data name="IDS_TILE_STAINED_GLASS_WHITE"><value>Weißes Buntglas</value>
+  </data>
+<data name="IDS_TILE_STAINED_GLASS_PANE"><value>Buntglasscheibe</value>
+  </data>
+<data name="IDS_TILE_STAINED_GLASS_PANE_BLACK"><value>Schwarze Buntglasscheibe</value>
+  </data>
+<data name="IDS_TILE_STAINED_GLASS_PANE_RED"><value>Rote Buntglasscheibe</value>
+  </data>
+<data name="IDS_TILE_STAINED_GLASS_PANE_GREEN"><value>Grüne Buntglasscheibe</value>
+  </data>
+<data name="IDS_TILE_STAINED_GLASS_PANE_BROWN"><value>Braune Buntglasscheibe</value>
+  </data>
+<data name="IDS_TILE_STAINED_GLASS_PANE_BLUE"><value>Blaue Buntglasscheibe</value>
+  </data>
+<data name="IDS_TILE_STAINED_GLASS_PANE_PURPLE"><value>Lila Buntglasscheibe</value>
+  </data>
+<data name="IDS_TILE_STAINED_GLASS_PANE_CYAN"><value>Cyanfarbene Buntglasscheibe</value>
+  </data>
+<data name="IDS_TILE_STAINED_GLASS_PANE_SILVER"><value>Hellgraue Buntglasscheibe</value>
+  </data>
+<data name="IDS_TILE_STAINED_GLASS_PANE_GRAY"><value>Graue Buntglasscheibe</value>
+  </data>
+<data name="IDS_TILE_STAINED_GLASS_PANE_PINK"><value>Rosa Buntglasscheibe</value>
+  </data>
+<data name="IDS_TILE_STAINED_GLASS_PANE_LIME"><value>Hellgrüne Buntglasscheibe</value>
+  </data>
+<data name="IDS_TILE_STAINED_GLASS_PANE_YELLOW"><value>Gelbe Buntglasscheibe</value>
+  </data>
+<data name="IDS_TILE_STAINED_GLASS_PANE_LIGHT_BLUE"><value>Hellblaue Buntglasscheibe</value>
+  </data>
+<data name="IDS_TILE_STAINED_GLASS_PANE_MAGENTA"><value>Magentafarbene Buntglasscheibe</value>
+  </data>
+<data name="IDS_TILE_STAINED_GLASS_PANE_ORANGE"><value>Orange Buntglasscheibe</value>
+  </data>
+<data name="IDS_TILE_STAINED_GLASS_PANE_WHITE"><value>Weiße Buntglasscheibe</value>
+  </data>
+<data name="IDS_FIREWORKS_CHARGE_TYPE_0"><value>Kleiner Ball</value>
+  </data>
+<data name="IDS_FIREWORKS_CHARGE_TYPE_1"><value>Großer Ball</value>
+  </data>
+<data name="IDS_FIREWORKS_CHARGE_TYPE_2"><value>Sternförmig</value>
+  </data>
+<data name="IDS_FIREWORKS_CHARGE_TYPE_3"><value>Creeper-förmig</value>
+  </data>
+<data name="IDS_FIREWORKS_CHARGE_TYPE_4"><value>Explosion</value>
+  </data>
+<data name="IDS_FIREWORKS_CHARGE_TYPE"><value>Unbekannte Form</value>
+  </data>
+<data name="IDS_FIREWORKS_CHARGE_BLACK"><value>Schwarz</value>
+  </data>
+<data name="IDS_FIREWORKS_CHARGE_RED"><value>Rot</value>
+  </data>
+<data name="IDS_FIREWORKS_CHARGE_GREEN"><value>Grün</value>
+  </data>
+<data name="IDS_FIREWORKS_CHARGE_BROWN"><value>Braun</value>
+  </data>
+<data name="IDS_FIREWORKS_CHARGE_BLUE"><value>Blau</value>
+  </data>
+<data name="IDS_FIREWORKS_CHARGE_PURPLE"><value>Lila</value>
+  </data>
+<data name="IDS_FIREWORKS_CHARGE_CYAN"><value>Cyan</value>
+  </data>
+<data name="IDS_FIREWORKS_CHARGE_SILVER"><value>Hellgrau</value>
+  </data>
+<data name="IDS_FIREWORKS_CHARGE_GRAY"><value>Grau</value>
+  </data>
+<data name="IDS_FIREWORKS_CHARGE_PINK"><value>Rosa</value>
+  </data>
+<data name="IDS_FIREWORKS_CHARGE_LIME"><value>Hellgrün</value>
+  </data>
+<data name="IDS_FIREWORKS_CHARGE_YELLOW"><value>Gelb</value>
+  </data>
+<data name="IDS_FIREWORKS_CHARGE_LIGHT_BLUE"><value>Hellblau</value>
+  </data>
+<data name="IDS_FIREWORKS_CHARGE_MAGENTA"><value>Magenta</value>
+  </data>
+<data name="IDS_FIREWORKS_CHARGE_ORANGE"><value>Orange</value>
+  </data>
+<data name="IDS_FIREWORKS_CHARGE_WHITE"><value>Weiß</value>
+  </data>
+<data name="IDS_FIREWORKS_CHARGE_CUSTOM"><value>Andere</value>
+  </data>
+<data name="IDS_FIREWORKS_CHARGE_FADE_TO"><value>Verblassen</value>
+  </data>
+<data name="IDS_FIREWORKS_CHARGE_FLICKER"><value>Funkeln</value>
+  </data>
+<data name="IDS_FIREWORKS_CHARGE_TRAIL"><value>Spur</value>
+  </data>
+<data name="IDS_ITEM_FIREWORKS_FLIGHT"><value>Flugdauer:</value>
+  </data>﻿
 <data name="IDS_CURRENT_LAYOUT"><value>Derzeitige Steuerung</value>
   </data>
 <data name="IDS_CONTROLS_LAYOUT"><value>Layout</value>
@@ -2015,8 +2364,7 @@ Nachts treiben sich Monster herum, du solltest dir einen Unterstand bauen, bevor
   </data>
 <data name="IDS_TUTORIAL_TASK_INV_OVERVIEW"><value>
       Dies ist dein Inventar. Hier werden die Gegenstände angezeigt, die du in deiner Hand verwenden kannst, sowie alle anderen Gegenstände, die du bei dir trägst. Außerdem wird hier deine Rüstung angezeigt.
-    </value>
-  </data>
+    </value></data>
 <data name="IDS_TUTORIAL_PROMPT_INV_OVERVIEW"><value>{*B*}
       Drück zum Fortfahren{*CONTROLLER_VK_A*}.{*B*}
       Drück{*CONTROLLER_VK_B*}, wenn du bereits weißt, wie das Inventar verwendet wird.
@@ -2037,7 +2385,7 @@ Nachts treiben sich Monster herum, du solltest dir einen Unterstand bauen, bevor
     </value>
   </data>
 <data name="IDS_TUTORIAL_TASK_INV_INFO"><value>
-      Wenn du mehr Informationen über einen Gegenstand brauchst, beweg den Cursor über den Gegenstand und drück{*CONTROLLER_VK_RT*}.
+      Wenn du mehr Informationen über einen Gegenstand brauchst, beweg den Cursor über den Gegenstand und drück{*CONTROLLER_ACTION_MENU_PAGEDOWN*}.
     </value>
   </data>
 <data name="IDS_TUTORIAL_TASK_INV_EXIT"><value>
@@ -2071,7 +2419,7 @@ Nachts treiben sich Monster herum, du solltest dir einen Unterstand bauen, bevor
     </value>
   </data>
 <data name="IDS_TUTORIAL_TASK_CREATIVE_INV_INFO"><value>
-      Wenn du mehr Informationen über einen Gegenstand brauchst, beweg den Cursor über den Gegenstand und drück{*CONTROLLER_VK_RT*}.
+      Wenn du mehr Informationen über einen Gegenstand brauchst, beweg den Cursor über den Gegenstand und drück{*CONTROLLER_ACTION_MENU_PAGEDOWN*}.
     </value>
   </data>
 <data name="IDS_TUTORIAL_TASK_CREATIVE_INV_EXIT"><value>
@@ -2618,6 +2966,211 @@ Im Flugmodus halte{*CONTROLLER_ACTION_JUMP*} nach unten gedrückt, um dich nach 
       Drück{*CONTROLLER_VK_B*}, wenn du schon alles über die Hungerleiste und die Nahrungsaufnahme weißt.
     </value>
   </data>
+<data name="IDS_TUTORIAL_TASK_HORSE_MENU_OVERVIEW"><value>
+			Dies ist das Pferdeinventar.
+		</value>
+	</data>
+<data name="IDS_TUTORIAL_PROMPT_HORSE_MENU_OVERVIEW"><value>
+			{*B*}Drücke zum Fortfahren {*CONTROLLER_VK_A*}.
+			{*B*}Drücke {*CONTROLLER_VK_B*}, wenn du bereits weißt, wie das Pferdeinventar verwendet wird.
+		</value>
+	</data>
+<data name="IDS_TUTORIAL_TASK_HORSE_MENU_LAYOUT"><value>
+			Im Pferdeinventar kannst du Gegenstände an dein Pferd, deinen Esel oder dein Maultier übertragen oder es mit ihnen ausrüsten.
+		</value>
+	</data>
+<data name="IDS_TUTORIAL_TASK_HORSE_MENU_EQUIPMENT"><value>
+			Sattle dein Pferd, indem du einen Sattel im Sattel-Slot platzierst. Pferde können Rüstungen tragen, wenn du Pferderüstung im Rüstungs-Slot platzierst.
+		</value>
+	</data>
+<data name="IDS_TUTORIAL_TASK_HORSE_MENU_SADDLEBAGS"><value>
+			Du kannst hier auch Gegenstände zwischen deinem eigenen Inventar und den Satteltaschen von Eseln und Maultieren austauschen.
+		</value>
+	</data>
+<data name="IDS_TUTORIAL_TASK_HORSE_OVERVIEW"><value>Du hast ein Pferd gefunden.</value>
+	</data>
+<data name="IDS_TUTORIAL_TASK_DONKEY_OVERVIEW"><value>Du hast einen Esel gefunden.</value>
+	</data>
+<data name="IDS_TUTORIAL_TASK_MULE_OVERVIEW"><value>Du hast ein Maultier gefunden.</value>
+	</data>	
+<data name="IDS_TUTORIAL_PROMPT_HORSE_OVERVIEW"><value>
+		  {*B*}Drücke {*CONTROLLER_VK_A*}, um mehr über Pferde, Esel und Maultiere zu erfahren.
+		  {*B*}Drücke {*CONTROLLER_VK_B*}, wenn du bereits alles über Pferde, Esel und Maultiere weißt.
+		</value>
+	</data>
+<data name="IDS_TUTORIAL_TASK_HORSE_INTRO"><value>
+			Pferde und Esel findet man hauptsächlich auf freiem Feld. Maultiere sind die Nachfahren von jeweils einem Esel und einem Pferd, sie sind aber selbst unfruchtbar.
+		</value>
+	</data>
+<data name="IDS_TUTORIAL_TASK_HORSE_PURPOSE"><value>
+			Alle ausgewachsenen Pferde, Esel und Maultiere können geritten werden. Allerdings können nur Pferden Rüstungen angelegt werden und nur Maultiere sowie Esel können mit Satteltaschen für den Transport von Gegenständen ausgestattet werden.
+		</value>
+	</data>
+<data name="IDS_TUTORIAL_TASK_HORSE_TAMING"><value>
+			Pferde, Esel und Maultiere müssen vor dem Gebrauch gezähmt werden. Du zähmst ein Pferd, indem du versuchst, es zu reiten, und oben bleibst, wenn es versucht, dich abzuwerfen.
+		</value>
+	</data>
+<data name="IDS_TUTORIAL_TASK_HORSE_TAMING2"><value>
+			Wenn das Tier gezähmt ist, erscheinen Liebesherzen und es versucht nicht mehr, dich abzuwerfen.
+		</value>
+	</data>
+<data name="IDS_TUTORIAL_TASK_HORSE_RIDE"><value>
+			Versuche jetzt, dieses Pferd zu reiten. Verwende {*CONTROLLER_ACTION_USE*} ohne Gegenstände oder Werkzeuge in der Hand, um aufzusteigen.
+		</value>
+	</data>
+<data name="IDS_TUTORIAL_TASK_HORSE_SADDLES"><value>
+			Um ein Pferd beim Reiten zu lenken, musst du ihm einen Sattel anlegen. Du kannst Sättel von Dorfbewohnern kaufen oder in versteckten Truhen in der Welt finden.
+		</value>
+	</data>
+<data name="IDS_TUTORIAL_TASK_HORSE_SADDLEBAGS"><value>
+			Du kannst zahmen Eseln und Maultieren Satteltaschen geben, indem du eine Truhe anbringst. Du kannst dann während des Reitens oder beim Schleichen auf die Taschen zugreifen.
+		</value>
+	</data>
+<data name="IDS_TUTORIAL_TASK_HORSE_BREEDING"><value>
+			Pferde und Esel (nicht aber Maultiere) können wie andere Tiere mithilfe von goldenen Äpfeln oder goldenen Karotten gezüchtet werden. Fohlen wachsen mit der Zeit zu Pferden heran und du kannst dies beschleunigen, indem du sie mit Weizen oder Heu fütterst.
+		</value>
+	</data>
+<data name="IDS_TUTORIAL_TASK_HORSE_AREA"><value>
+			Du kannst versuchen, die Pferde und Esel hier zu zähmen, und in den Truhen in der Nähe liegen Sättel, Pferderüstungen und andere nützliche Dinge.
+		</value>
+	</data>
+<data name="IDS_TUTORIAL_TASK_BEACON_MENU_OVERVIEW"><value>
+			Dies ist das Signalfeuermenü. Hier kannst du auswählen, welche Kräfte dein Signalfeuer gewähren soll.
+		</value>
+	</data>
+<data name="IDS_TUTORIAL_PROMPT_BEACON_MENU_OVERVIEW"><value>
+			{*B*}Drücke zum Fortfahren {*CONTROLLER_VK_A*}.
+			{*B*}Drücke {*CONTROLLER_VK_B*}, wenn du bereits weißt, wie das Signalfeuermenü verwendet wird.
+		</value>
+	</data>
+<data name="IDS_TUTORIAL_TASK_BEACON_MENU_PRIMARY_POWERS"><value>
+			Im Signalfeuermenü kannst du 1 Hauptkraft für dein Signalfeuer auswählen. Je mehr Stufen deine Pyramide hat, desto mehr Kräfte stehen dir zur Auswahl.
+		</value>
+	</data>
+<data name="IDS_TUTORIAL_TASK_BEACON_MENU_SECONDARY_POWER"><value>
+			Bei einem Signalfeuer auf einer Pyramide mit mindestens 4 Stufen hast du außerdem die Option, entweder die Regeneration als Zweitkraft oder eine stärkere Hauptkraft auszuwählen.
+		</value>
+	</data>
+<data name="IDS_TUTORIAL_TASK_BEACON_MENU_ACTIVATION"><value>
+			Um die Kräfte deines Signalfeuers einzustellen, musst du einen Smaragd, Diamant, Gold- oder Eisenbarren im Bezahl-Slot opfern. Danach strahlt das Signalfeuer für unbegrenzte Zeit die Kräfte aus.
+		</value>
+	</data>
+<data name="IDS_TUTORIAL_TASK_BEACON_OVERVIEW"><value>Auf der Spitze dieser Pyramide steht ein inaktives Signalfeuer.</value>
+	</data>
+<data name="IDS_TUTORIAL_PROMPT_BEACON_OVERVIEW"><value>
+		{*B*}Drücke {*CONTROLLER_VK_A*}, um mehr über Signalfeuer zu erfahren.
+		{*B*}Drücke {*CONTROLLER_VK_B*}, wenn du bereits alles über Signalfeuer weißt.
+		</value>
+	</data>
+<data name="IDS_TUTORIAL_TASK_BEACON_PURPOSE"><value>
+			Aktive Signalfeuer werfen einen hellen Lichtstrahl in den Himmel und gewähren Spielern in der Nähe Kräfte. Sie werden aus Glas, Obsidian und Nethersternen gefertigt, die du erhältst, wenn du die Dürre besiegst.
+		</value>
+	</data>
+<data name="IDS_TUTORIAL_TASK_BEACON_DESIGN"><value>
+			Signalfeuer müssen auf Pyramiden aus Eisen, Gold, Smaragd oder Diamant so platziert werden, dass sie tagsüber dem Sonnenlicht ausgesetzt sind. Das Material der Unterlage hat aber keine Auswirkungen auf die Kraft des Signalfeuers.
+		</value>
+	</data>
+<data name="IDS_TUTORIAL_TASK_BEACON_CHOOSING_POWERS"><value>
+			Verwende das Signalfeuer, um die gewährte Kraft festzulegen. Du kannst mit den bereitgestellten Eisenbarren bezahlen.
+		</value>
+	</data>
+<data name="IDS_TUTORIAL_TASK_HOPPER_OVERVIEW"><value>Dieser Raum enthält Trichter.</value>
+	</data>
+<data name="IDS_TUTORIAL_PROMPT_HOPPER_OVERVIEW"><value>
+		{*B*}Drücke {*CONTROLLER_VK_A*}, um mehr über Trichter zu erfahren.
+		{*B*}Drücke {*CONTROLLER_VK_B*}, wenn du bereits alles über Trichter weißt.
+		</value>
+	</data>
+<data name="IDS_TUTORIAL_TASK_HOPPER_PURPOSE"><value>
+			Mit Trichtern kannst du Gegenstände in Behälter füllen oder sie daraus entnehmen sowie automatisch Gegenstände aufheben, die hineingeworfen werden.
+		</value>
+	</data>
+<data name="IDS_TUTORIAL_TASK_HOPPER_CONTAINERS"><value>
+			Sie können mit Brauständen, Truhen, Dispensern, Auswurfblöcken, Loren mit Truhen, Loren mit Trichtern sowie anderen Trichtern verwendet werden.
+		</value>
+	</data>
+<data name="IDS_TUTORIAL_TASK_HOPPER_MECHANICS"><value>
+			Trichter versuchen fortwährend, Gegenstände aus einem geeigneten Behälter aufzusaugen, der über ihnen platziert wird. Sie versuchen auch, gelagerte Gegenstände in einen Ausgabebehälter zu legen.
+		</value>
+	</data>
+<data name="IDS_TUTORIAL_TASK_HOPPER_REDSTONE"><value>
+			Wenn ein Trichter allerdings mit Redstone betrieben wird, wird er inaktiv und hört auf, Gegenstände aufzusaugen und einzufügen.
+		</value>
+	</data>
+<data name="IDS_TUTORIAL_TASK_HOPPER_OUTPUT"><value>
+			Ein Trichter zeigt in die Ausgaberichtung für Gegenstände. Damit ein Trichter auf einen bestimmten Block zeigt, platzierst du ihn dagegen, während du schleichst.
+		</value>
+	</data>
+<data name="IDS_TUTORIAL_TASK_HOPPER_AREA"><value>
+			Es gibt viele nützliche Anwendungsmöglichkeiten für Trichter. In diesem Raum kannst du sie dir ansehen und ausprobieren.
+		</value>
+	</data>
+<data name="IDS_TUTORIAL_TASK_FIREWORK_MENU_OVERVIEW"><value>
+			Dies ist das Feuerwerkmenü. Hier kannst du Feuerwerk und Feuerwerkssterne craften.
+		</value>
+	</data>
+<data name="IDS_TUTORIAL_PROMPT_FIREWORK_MENU_OVERVIEW"><value>
+			{*B*}Drücke zum Fortfahren {*CONTROLLER_VK_A*}.
+			{*B*}Drücke {*CONTROLLER_VK_B*}, wenn du bereits weißt, wie das Signalfeuermenü verwendet wird.
+		</value>
+	</data>
+<data name="IDS_TUTORIAL_TASK_FIREWORK_MENU_BASIC_START"><value>
+			Leg Schießpulver und Papier in das 3x3-Crafting-Raster, das über deinem Inventar angezeigt wird, um Feuerwerk zu craften.
+		</value>
+	</data>
+<data name="IDS_TUTORIAL_TASK_FIREWORK_MENU_BASIC_STARS"><value>
+			Du kannst wahlweise mehrere Feuerwerkssterne in das Raster legen, um sie dem Feuerwerk hinzuzufügen.
+		</value>
+	</data>
+<data name="IDS_TUTORIAL_TASK_FIREWORK_MENU_BASIC_HEIGHT"><value>
+			Mehr Schießpulver im Raster erhöht die Höhe, in der Feuerwerkssterne explodieren.
+		</value>
+	</data>
+<data name="IDS_TUTORIAL_TASK_FIREWORK_MENU_BASIC_CRAFT"><value>
+			Du kannst das fertige Feuerwerk dann aus dem Ausgabeplatz nehmen.
+		</value>
+	</data>
+<data name="IDS_TUTORIAL_TASK_FIREWORK_MENU_ADV_START"><value>
+			Feuerwerkssterne werden hergestellt, indem du Schießpulver und Farbe in das Raster legst.
+		</value>
+	</data>
+<data name="IDS_TUTORIAL_TASK_FIREWORK_MENU_ADV_COLOUR"><value>
+			Die Explosion des Feuerwerkssterns nimmt die jeweilige Farbe an.
+		</value>
+	</data>
+<data name="IDS_TUTORIAL_TASK_FIREWORK_MENU_ADV_SHAPE"><value>
+			Die Form des Feuerwerkssterns ändert sich durch das Hinzufügen von Feuerkugeln, Goldklumpen, Federn oder NPC-Köpfen.
+		</value>
+	</data>
+<data name="IDS_TUTORIAL_TASK_FIREWORK_MENU_ADV_EFFECT"><value>
+			Spur oder Funkeln können mit Diamanten oder Glowstone-Staub hinzugefügt werden.
+		</value>
+	</data>
+<data name="IDS_TUTORIAL_TASK_FIREWORK_MENU_ADV_FADE"><value>
+			Wenn ein Feuerwerksstern gecraftet wurde, kannst du das Verblassen mit Farbe ändern.
+		</value>
+	</data>
+<data name="IDS_TUTORIAL_TASK_FIREWORK_OVERVIEW"><value>
+			In diesen Truhen befinden sich verschiedene Gegenstände, die bei der Herstellung von FEUERWERK verwendet werden!
+		</value>
+	</data>
+<data name="IDS_TUTORIAL_PROMPT_FIREWORK_OVERVIEW"><value>
+		{*B*}Drück{*CONTROLLER_VK_A*}, um mehr über Feuerwerk zu erfahren.
+		{*B*}Drück{*CONTROLLER_VK_B*}, wenn du bereits alles über Feuerwerk weißt.
+		</value>
+	</data>
+<data name="IDS_TUTORIAL_TASK_FIREWORK_PURPOSE"><value>
+			Feuerwerk sind dekorative Gegenstände, die manuell oder von Dispensern gestartet werden können. Sie werden aus Papier, Schießpulver und wahlweise einigen Feuerwerkssternen gecraftet.
+		</value>
+	</data>
+<data name="IDS_TUTORIAL_TASK_FIREWORK_CUSTOMISE"><value>
+			Farben, Verblassen, Form, Größe und Effekte (wie Spuren und Funkeln) von Feuerwerkssternen können beim Craften durch zusätzliche Zutaten angepasst werden.
+		</value>
+	</data>
+<data name="IDS_TUTORIAL_TASK_FIREWORK_CRAFTING"><value>
+			Probiere, Feuerwerk mit verschiedenen Zutaten aus den Truhen an der Werkbank herzustellen.
+		</value>
+	</data>﻿
 <data name="IDS_TOOLTIPS_SELECT"><value>Auswählen</value>
   </data>
 <data name="IDS_TOOLTIPS_USE"><value>Verwenden</value>
@@ -2678,7 +3231,7 @@ Im Flugmodus halte{*CONTROLLER_ACTION_JUMP*} nach unten gedrückt, um dich nach 
   </data>
 <data name="IDS_TOOLTIPS_CLEAR_QUICK_SELECT"><value>Schnellauswahl leeren</value>
   </data>
-<data name="IDS_TOOLTIPS_WHAT_IS_THIS"><value>?</value>
+<data name="IDS_TOOLTIPS_WHAT_IS_THIS"><value>Was ist das?</value>
   </data>
 <data name="IDS_TOOLTIPS_SHARE"><value>Auf Facebook teilen</value>
   </data>
@@ -2840,6 +3393,22 @@ Im Flugmodus halte{*CONTROLLER_ACTION_JUMP*} nach unten gedrückt, um dich nach 
 </data>
 <data name="IDS_TOOLTIPS_SAVETRANSFER_UPLOAD"><value>Spielstand für Xbox One hochladen</value>
   </data>
+<data name="IDS_TOOLTIPS_MOUNT"><value>Aufsteigen</value>
+</data>
+<data name="IDS_TOOLTIPS_DISMOUNT"><value>Absteigen</value>
+</data>
+<data name="IDS_TOOLTIPS_SADDLEBAGS"><value>Truhe befestigen</value>
+</data>
+<data name="IDS_TOOLTIPS_FIREWORK_LAUNCH"><value>Starten</value>
+</data>
+<data name="IDS_TOOLTIPS_LEASH"><value>Festbinden</value>
+</data>
+<data name="IDS_TOOLTIPS_UNLEASH"><value>Losbinden</value>
+</data>
+<data name="IDS_TOOLTIPS_ATTACH"><value>Befestigen</value>
+</data>
+<data name="IDS_TOOLTIPS_NAME"><value>Name</value>
+</data>
 <data name="IDS_CONFIRM_OK"><value>OK</value>
   </data>
 <data name="IDS_CONFIRM_CANCEL"><value>Abbrechen</value>
@@ -3150,6 +3719,20 @@ Möchtest du das vollständige Spiel freischalten?</value>
   </data>
 <data name="IDS_DISPENSER"><value>Dispenser</value>
   </data>
+<data name="IDS_CONTAINER_ANIMAL"><value>Pferd</value>
+  </data>
+<data name="IDS_CONTAINER_DROPPER"><value>Auswurfblock</value>
+  </data>
+<data name="IDS_CONTAINER_HOPPER"><value>Trichter</value>
+  </data>
+<data name="IDS_CONTAINER_BEACON"><value>Signalfeuer</value>
+  </data>
+<data name="IDS_CONTAINER_BEACON_PRIMARY_POWER"><value>Hauptkraft</value>
+  </data>
+<data name="IDS_CONTAINER_BEACON_SECONDARY_POWER"><value>Zweitkraft</value>
+  </data>
+<data name="IDS_CONTAINER_MINECART"><value>Lore</value>
+  </data>
 <data name="IDS_NO_DLCOFFERS"><value>Es stehen derzeit keine entsprechenden Inhalte zum Herunterladen für diesen Titel zur Verfügung.</value>
   </data>
 <data name="IDS_PLAYER_JOINED"><value>%s ist dem Spiel beigetreten.</value>
@@ -3309,9 +3892,13 @@ Möchtest du das Mash-up-Paket oder Texturpaket jetzt installieren?</value>
  </data>
 <data name="IDS_GAMEMODE_CREATIVE"><value>Spielmodus: Kreativ</value>
  </data>
+<data name="IDS_GAMEMODE_ADVENTURE"><value>Spielmodus: Abenteuer</value>
+ </data>
 <data name="IDS_SURVIVAL"><value>Überleben</value>
  </data>
 <data name="IDS_CREATIVE"><value>Kreativ</value>
+ </data>
+<data name="IDS_ADVENTURE"><value>Abenteuer</value>
  </data>
 <data name="IDS_CREATED_IN_SURVIVAL"><value>Im Überlebensmodus</value>
  </data>
@@ -3333,6 +3920,8 @@ Möchtest du das Mash-up-Paket oder Texturpaket jetzt installieren?</value>
 </data>
 <data name="IDS_LEVELTYPE_SUPERFLAT"><value>Superflach</value>
 </data>
+<data name="IDS_GAMEOPTION_SEED"><value>Gib einen Seed ein, um das gleiche Gelände erneut zu erstellen. Lass das Feld leer, um eine zufällige Welt zu erstellen.</value>
+</data>
 <data name="IDS_GAMEOPTION_ONLINE"><value>Wenn dies aktiviert ist, ist das Spiel online.</value>
 </data>
 <data name="IDS_GAMEOPTION_INVITEONLY"><value>Wenn dies aktiviert ist, können nur eingeladene Spieler beitreten.</value>
@@ -3349,13 +3938,27 @@ Möchtest du das Mash-up-Paket oder Texturpaket jetzt installieren?</value>
 </data>
 <data name="IDS_GAMEOPTION_HOST_PRIVILEGES"><value>Aktiviert, dass der Host das Fliegen nutzen, Erschöpfung deaktivieren und sich selbst im Spielmenü unsichtbar machen kann. Deaktiviert Erfolge und Bestenlisten-Aktualisierungen.</value>
 </data>
-<data name="IDS_GAMEOPTION_RESET_NETHER"><value>Sorgt bei Aktivierung dafür, dass der Nether neu erstellt wird. Dies ist nützlich, wenn du einen alten Spielstand hast, der keine Netherfestungen enthält.</value>
+<data name="IDS_GAMEOPTION_RESET_NETHER"><value>Bei Aktivierung wird der Nether neu erstellt. Nützlich bei alten Spielständen, die keine Netherfestungen enthalten.</value>
 </data>
 <data name="IDS_GAMEOPTION_STRUCTURES"><value>Aktiviert, dass Strukturen wie Dörfer und Festungen in der Welt erstellt werden.</value>
 </data>
 <data name="IDS_GAMEOPTION_SUPERFLAT"><value>Aktiviert, dass eine völlig flache Welt in der Oberwelt und im Nether erschaffen wird.</value>
 </data>
 <data name="IDS_GAMEOPTION_BONUS_CHEST"><value>Aktiviert, dass eine Truhe mit nützlichen Gegenständen in der Nähe des Startpunkts des Spielers erstellt wird.</value>
+</data>
+<data name="IDS_GAMEOPTION_MOB_GRIEFING"><value>Bei Deaktivierung können Monster und Tiere keine Blöcke verändern (z. B. werden bei Creeper-Explosionen keine Blöcke zerstört und Schafe entfernen kein Gras) oder Gegenstände aufheben.</value>
+</data>
+<data name="IDS_GAMEOPTION_KEEP_INVENTORY"><value>Bei Aktivierung behalten Spieler ihr Inventar, wenn sie sterben.</value>
+</data>
+<data name="IDS_GAMEOPTION_MOB_SPAWNING"><value>Bei Deaktivierung erscheinen keine NPCs auf natürlichem Weg.</value>
+</data>
+<data name="IDS_GAMEOPTION_MOB_LOOT"><value>Bei Deaktivierung lassen Monster und Tiere keine Beute fallen (z. B. lassen Creeper kein Schießpulver fallen).</value>
+</data>
+<data name="IDS_GAMEOPTION_TILE_DROPS"><value>Bei Deaktivierung lassen Blöcke keine Gegenstände zurück, wenn sie zerstört werden (z. B. hinterlassen Steinblöcke keine Pflastersteine).</value>
+</data>
+<data name="IDS_GAMEOPTION_NATURAL_REGEN"><value>Bei Deaktivierung wird die Gesundheit von Spielern nicht auf natürlichem Weg wiederhergestellt.</value>
+</data>
+<data name="IDS_GAMEOPTION_DAYLIGHT_CYCLE"><value>Bei Deaktivierung ändert sich die Tageszeit nicht.</value>
 </data>
 <data name="IDS_DLC_MENU_SKINPACKS"><value>Skinpakete</value>
 </data>
@@ -3405,7 +4008,49 @@ Möchtest du das Mash-up-Paket oder Texturpaket jetzt installieren?</value>
 </data>
 <data name="IDS_DEATH_THROWN"><value>{*PLAYER*} wurde von {*SOURCE*} erschlagen.</value>
 </data>
-<data name="IDS_DEATH_INDIRECT_MAGIC"><value>{*PLAYER*} wurde durch {*SOURCE*} getötet.</value>
+<data name="IDS_DEATH_INDIRECT_MAGIC"><value>{*PLAYER*} wurde durch {*SOURCE*} mit Magie getötet.</value>
+</data>
+<data name="IDS_DEATH_FELL_ACCIDENT_LADDER"><value>{*PLAYER*} ist von einer Leiter gefallen.</value>
+</data>
+<data name="IDS_DEATH_FELL_ACCIDENT_VINES"><value>{*PLAYER*} ist von Ranken heruntergefallen.</value>
+</data>
+<data name="IDS_DEATH_FELL_ACCIDENT_WATER"><value>{*PLAYER*} ist aus dem Wasser gefallen.</value>
+</data>
+<data name="IDS_DEATH_FELL_ACCIDENT_GENERIC"><value>{*PLAYER*} ist aus großer Höhe heruntergefallen.</value>
+</data>
+<data name="IDS_DEATH_FELL_KILLER"><value>{*PLAYER*} wurde von {*SOURCE*} zum Absturz verdammt.</value>
+</data>
+<data name="IDS_DEATH_FELL_ASSIST"><value>{*PLAYER*} wurde von {*SOURCE*} zum Absturz verdammt.</value>
+</data>
+<data name="IDS_DEATH_FELL_ASSIST_ITEM"><value>{*PLAYER*} wurde von {*SOURCE*} mit {*ITEM*} zum Absturz verdammt.</value>
+</data>
+<data name="IDS_DEATH_FELL_FINISH"><value>{*PLAYER*} ist zu tief gefallen und wurde von {*SOURCE*} erledigt.</value>
+</data>
+<data name="IDS_DEATH_FELL_FINISH_ITEM"><value>{*PLAYER*} ist zu tief gefallen und wurde von {*SOURCE*} mit {*ITEM*} erledigt.</value>
+</data>
+<data name="IDS_DEATH_INFIRE_PLAYER"><value>{*PLAYER*} ist im Kampf gegen {*SOURCE*} ins Feuer gegangen.</value>
+</data>
+<data name="IDS_DEATH_ONFIRE_PLAYER"><value>{*PLAYER*} wurde im Kampf gegen {*SOURCE*} eingeäschert.</value>
+</data>
+<data name="IDS_DEATH_LAVA_PLAYER"><value>{*PLAYER*} hat versucht, in Lava zu schwimmen, um {*SOURCE*} zu entkommen.</value>
+</data>
+<data name="IDS_DEATH_DROWN_PLAYER"><value>{*PLAYER*} ist beim Versuch ertrunken, {*SOURCE*} zu entkommen.</value>
+</data>
+<data name="IDS_DEATH_CACTUS_PLAYER"><value>{*PLAYER*} ist beim Versuch, {*SOURCE*} zu entkommen, in einen Kaktus gelaufen.</value>
+</data>
+<data name="IDS_DEATH_EXPLOSION_PLAYER"><value>{*PLAYER*} wurde von {*SOURCE*} in die Luft gejagt.</value>
+</data>
+<data name="IDS_DEATH_WITHER"><value>{*PLAYER*} ist verdorrt.</value>
+</data>
+<data name="IDS_DEATH_PLAYER_ITEM"><value>{*PLAYER*} wurde durch {*SOURCE*} mit {*ITEM*} getötet.</value>
+</data>
+<data name="IDS_DEATH_ARROW_ITEM"><value>{*PLAYER*} wurde von {*SOURCE*} mit {*ITEM*} erschossen.</value>
+</data>
+<data name="IDS_DEATH_FIREBALL_ITEM"><value>{*PLAYER*} starb durch einen Feuerball von {*SOURCE*} mit {*ITEM*}.</value>
+</data>
+<data name="IDS_DEATH_THROWN_ITEM"><value>{*PLAYER*} wurde von {*SOURCE*} mit {*ITEM*} erschlagen.</value>
+</data>
+<data name="IDS_DEATH_INDIRECT_MAGIC_ITEM"><value>{*PLAYER*} wurde durch {*SOURCE*} mit {*ITEM*} getötet.</value>
 </data>
 <data name="IDS_CHECKBOX_RENDER_BEDROCKFOG"><value>Grundgesteinnebel</value>
 </data>
@@ -3570,9 +4215,9 @@ Möchtest du das Mash-up-Paket oder Texturpaket jetzt installieren?</value>
 </data>
 <data name="IDS_DONT_RESET_NETHER"><value>Nether nicht zurücksetzen</value>
 </data>
-<data name="IDS_CANT_SHEAR_MOOSHROOM"><value>Pilzkuh kann momentan nicht geschoren werden. Die Höchstanzahl von Schweinen, Schafen, Kühen und Katzen wurde erreicht.</value>
+<data name="IDS_CANT_SHEAR_MOOSHROOM"><value>Pilzkuh kann momentan nicht geschoren werden. Die Höchstanzahl von Schweinen, Schafen, Kühen, Katzen und Pferden wurde erreicht.</value>
 </data>
-<data name="IDS_MAX_PIGS_SHEEP_COWS_CATS_SPAWNED"><value>Eintrittsei kann momentan nicht verwendet werden. Die Höchstanzahl von Schweinen, Schafen, Kühen und Katzen wurde erreicht.</value>
+<data name="IDS_MAX_PIGS_SHEEP_COWS_CATS_SPAWNED"><value>Kann momentan kein Eintrittsei verwenden. Die Höchstanzahl von Schweinen, Schafen, Kühen, Katzen und Pferden wurde erreicht.</value>
 </data>
 <data name="IDS_MAX_MOOSHROOMS_SPAWNED"><value>Kann momentan kein Eintrittsei verwenden. Die Höchstanzahl von Pilzkühen wurde erreicht.</value>
 </data>
@@ -3582,6 +4227,8 @@ Möchtest du das Mash-up-Paket oder Texturpaket jetzt installieren?</value>
 </data>
 <data name="IDS_MAX_SQUID_SPAWNED"><value>Kann momentan kein Eintrittsei verwenden. Die Höchstanzahl von Tintenfischen in einer Welt wurde erreicht.</value>
 </data>
+<data name="IDS_MAX_BATS_SPAWNED"><value>Kann momentan kein Eintrittsei verwenden. Die Höchstanzahl von Fledermäusen in einer Welt wurde erreicht.</value>
+</data>
 <data name="IDS_MAX_ENEMIES_SPAWNED"><value>Kann momentan kein Eintrittsei verwenden. Die Höchstanzahl von Feinden in einer Welt wurde erreicht.</value>
 </data>
 <data name="IDS_MAX_VILLAGERS_SPAWNED"><value>Kann momentan kein Eintrittsei verwenden. Die Höchstanzahl von Dorfbewohnern in einer Welt wurde erreicht.</value>
@@ -3590,12 +4237,14 @@ Möchtest du das Mash-up-Paket oder Texturpaket jetzt installieren?</value>
 </data>
 <data name="IDS_CANT_SPAWN_IN_PEACEFUL"><value>Im friedlichen Modus kannst du keine Feinde erscheinen lassen.</value>
 </data>
-<data name="IDS_MAX_PIGS_SHEEP_COWS_CATS_BRED"><value>Tier kann nicht in den Liebesmodus versetzt werden. Die Zuchtobergrenze für Schweine, Schafe, Kühe und Katzen wurde erreicht.</value>
+<data name="IDS_MAX_PIGS_SHEEP_COWS_CATS_BRED"><value>Tier kann nicht in den Liebesmodus versetzt werden. Die Zuchtobergrenze für Schweine, Schafe, Kühen, Katzen und Pferden wurde erreicht.</value>
 </data>
 <data name="IDS_MAX_WOLVES_BRED"><value>Tier kann nicht in den Liebesmodus versetzt werden. Die Zuchtobergrenze für Wölfe wurde erreicht.</value>
 </data>
 <data name="IDS_MAX_CHICKENS_BRED"><value>Tier kann nicht in den Liebesmodus versetzt werden. Die Zuchtobergrenze für Hühner wurde erreicht.</value>
 </data>
+<data name="IDS_MAX_HORSES_BRED"><value>Tier kann nicht in den Liebesmodus versetzt werden. Die Zuchtobergrenze für Pferde wurde erreicht.</value>
+  </data>
 <data name="IDS_MAX_MUSHROOMCOWS_BRED"><value>Tier kann nicht in den Liebesmodus versetzt werden. Die Zuchtobergrenze für Pilzkühe wurde erreicht.</value>
 </data>
 <data name="IDS_MAX_BOATS"><value>Die Höchstanzahl von Booten in einer Welt wurde erreicht.</value>
@@ -3623,27 +4272,43 @@ Möchtest du das Mash-up-Paket oder Texturpaket jetzt installieren?</value>
 <data name="IDS_CREDITS"><value>Mitwirkende</value>
   </data>
 <data name="IDS_REINSTALL_CONTENT"><value>Inhalte neu installieren</value>
-  </data>
+	</data>
 <data name="IDS_DEBUG_SETTINGS"><value>Debug-Einstellungen</value>
-  </data>
+	</data>
 <data name="IDS_FIRE_SPREADS"><value>Feuer breitet sich aus</value>
-  </data>
+	</data>
 <data name="IDS_TNT_EXPLODES"><value>TNT explodiert</value>
-  </data>
+	</data>
 <data name="IDS_PLAYER_VS_PLAYER"><value>Spieler gegen Spieler</value>
-  </data>
+	</data>
 <data name="IDS_TRUST_PLAYERS"><value>Spielern vertrauen</value>
-  </data>
+	</data>
 <data name="IDS_HOST_PRIVILEGES"><value>Hostprivilegien</value>
-  </data>
+	</data>
 <data name="IDS_GENERATE_STRUCTURES"><value>Strukturen erzeugen</value>
-  </data>
+	</data>
 <data name="IDS_SUPERFLAT_WORLD"><value>Superflache Welt</value>
-  </data>
+	</data>
 <data name="IDS_BONUS_CHEST"><value>Bonustruhe</value>
-  </data>
+	</data>
 <data name="IDS_WORLD_OPTIONS"><value>Weltoptionen</value>
-  </data>
+	</data>
+<data name="IDS_GAME_OPTIONS"><value>Spieloptionen</value>
+	</data>
+<data name="IDS_MOB_GRIEFING"><value>NPC-Griefing</value>
+	</data>
+<data name="IDS_KEEP_INVENTORY"><value>Inventar behalten</value>
+	</data>
+<data name="IDS_MOB_SPAWNING"><value>NPC-Eintritt</value>
+	</data>
+<data name="IDS_MOB_LOOT"><value>NPC-Beute</value>
+	</data>
+<data name="IDS_TILE_DROPS"><value>Felderertrag</value>
+	</data>
+<data name="IDS_NATURAL_REGEN"><value>Natürliche Erholung</value>
+	</data>
+<data name="IDS_DAYLIGHT_CYCLE"><value>Tageslichtzyklus</value>
+	</data>
 <data name="IDS_CAN_BUILD_AND_MINE"><value>Kann bauen und abbauen</value>
   </data>
 <data name="IDS_CAN_USE_DOORS_AND_SWITCHES"><value>Kann Türen und Schalter verwenden</value>
@@ -3830,6 +4495,14 @@ Möchtest du das Mash-up-Paket oder Texturpaket jetzt installieren?</value>
   </data>
 <data name="IDS_POTION_POISON"><value>Gift</value>
   </data>
+<data name="IDS_POTION_WITHER"><value>Dürre</value>
+  </data>
+<data name="IDS_POTION_HEALTHBOOST"><value>Gesundheitsbonus</value>
+  </data>
+<data name="IDS_POTION_ABSORPTION"><value>Absorption</value>
+  </data>
+<data name="IDS_POTION_SATURATION"><value>Sättigung</value>
+  </data>
 <data name="IDS_POTION_MOVESPEED_POSTFIX"><value>der Geschwindigkeit</value>
   </data>
 <data name="IDS_POTION_MOVESLOWDOWN_POSTFIX"><value>der Langsamkeit</value>
@@ -3867,6 +4540,14 @@ Möchtest du das Mash-up-Paket oder Texturpaket jetzt installieren?</value>
 <data name="IDS_POTION_HUNGER_POSTFIX"><value>des Hungers</value>
   </data>
 <data name="IDS_POTION_POISON_POSTFIX"><value>des Gifts</value>
+  </data>
+<data name="IDS_POTION_WITHER_POSTFIX"><value>des Verfalls</value>
+  </data>
+<data name="IDS_POTION_HEALTHBOOST_POSTFIX"><value>des Gesundheitsbonus</value>
+  </data>
+<data name="IDS_POTION_ABSORPTION_POSTFIX"><value>der Absorption</value>
+  </data>
+<data name="IDS_POTION_SATURATION_POSTFIX"><value>der Sättigung</value>
   </data>
 <data name="IDS_POTION_POTENCY_0"><value></value>
   </data>
@@ -3964,6 +4645,22 @@ Möchtest du das Mash-up-Paket oder Texturpaket jetzt installieren?</value>
   </data>
 <data name="IDS_POTION_DESC_POISON"><value>Verringert mit der Zeit die Gesundheit von betroffenen Spielern, Tieren und Monstern.</value>
   </data>
+<data name="IDS_POTION_EFFECTS_WHENDRANK"><value>Bei Anwendung:</value>
+  </data>
+<data name="IDS_ATTRIBUTE_NAME_HORSE_JUMPSTRENGTH"><value>Pferdesprungstärke</value>
+  </data>
+<data name="IDS_ATTRIBUTE_NAME_ZOMBIE_SPAWNREINFORCEMENTS"><value>Zombie-Verstärkungen</value>
+  </data>
+<data name="IDS_ATTRIBUTE_NAME_GENERIC_MAXHEALTH"><value>Max. Gesundheit</value>
+  </data>
+<data name="IDS_ATTRIBUTE_NAME_GENERIC_FOLLOWRANGE"><value>NPC-Folgereichweite</value>
+  </data>
+<data name="IDS_ATTRIBUTE_NAME_GENERIC_KNOCKBACKRESISTANCE"><value>Rückstoßwiderstand</value>
+  </data>
+<data name="IDS_ATTRIBUTE_NAME_GENERIC_MOVEMENTSPEED"><value>Geschwindigkeit</value>
+  </data>
+<data name="IDS_ATTRIBUTE_NAME_GENERIC_ATTACKDAMAGE"><value>Angriffsschaden</value>
+  </data>
 <data name="IDS_ENCHANTMENT_DAMAGE_ALL"><value>Schärfe</value>
   </data>
 <data name="IDS_ENCHANTMENT_DAMAGE_UNDEAD"><value>Bann</value>
@@ -4054,7 +4751,7 @@ Möchtest du das Mash-up-Paket oder Texturpaket jetzt installieren?</value>
   </data>
 <data name="IDS_DESC_POTATO_BAKED"><value>Regeneriert 3{*ICON_SHANK_01*}. Entsteht, wenn man eine Kartoffel im Ofen brät.</value>
   </data>
-<data name="IDS_DESC_POTATO_POISONOUS"><value>Regeneriert 1{*ICON_SHANK_01*}, doch du kannst dich damit vergiften. Kann in einem Ofen gebraten oder auf Ackerland gepflanzt werden.</value>
+<data name="IDS_DESC_POTATO_POISONOUS"><value>Regeneriert 1{*ICON_SHANK_01*}, doch du kannst dich damit vergiften.</value>
   </data>
 <data name="IDS_DESC_CARROT_GOLDEN"><value>Regeneriert 3{*ICON_SHANK_01*}. Wird aus einer Karotte und Goldnuggets hergestellt.</value>
   </data>
@@ -4452,7 +5149,7 @@ Alle Endertruhen in einer Welt sind verknüpft, sodass Gegenstände, die in eine
   </data>
 <data name="IDS_PLATFORM_NAME"><value>Xbox 360</value>
   </data>
-<data name="IDS_BACK_BUTTON"><value>Back</value>
+<data name="IDS_BACK_BUTTON"><value>BACK</value>
   </data>
 <data name="IDS_HOST_OPTION_DISABLES_ACHIEVEMENTS"><value>Diese Option deaktiviert für diese Welt Erfolge und Bestenlisten-Aktualisierungen während des Spielens und wenn nach dem Speichern mit aktivierter Option erneut geladen wird.</value>
   </data>

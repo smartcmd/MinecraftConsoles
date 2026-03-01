@@ -13,7 +13,7 @@ const unsigned int WoodTile::WOOD_NAMES[WOOD_NAMES_LENGTH] = {	IDS_TILE_OAKWOOD_
 	IDS_TILE_JUNGLE_PLANKS,
 };
 
-const wstring WoodTile::TEXTURE_NAMES[] = {L"wood", L"wood_spruce", L"wood_birch", L"wood_jungle"};
+const wstring WoodTile::TEXTURE_NAMES[] = {L"oak", L"spruce", L"birch", L"jungle"};
 
 // 	public static final String[] WOOD_NAMES = {
 // 		"oak", "spruce", "birch", "jungle"
@@ -51,6 +51,6 @@ void WoodTile::registerIcons(IconRegister *iconRegister)
 
 	for (int i = 0; i < WOOD_NAMES_LENGTH; i++)
 	{
-		icons[i] = iconRegister->registerIcon(TEXTURE_NAMES[i]);
+		icons[i] = iconRegister->registerIcon(getIconName() + L"_" + TEXTURE_NAMES[i]);
 	}
 }

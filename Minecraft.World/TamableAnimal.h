@@ -1,10 +1,11 @@
 #pragma once
 
 #include "Animal.h"
+#include "OwnableEntity.h"
 
 class SitGoal;
 
-class TamableAnimal : public Animal
+class TamableAnimal : public Animal, public OwnableEntity
 {
 protected:
 	static const int DATA_FLAGS_ID = 16;
@@ -33,6 +34,9 @@ public:
 	virtual void setSitting(bool value);
 	virtual wstring getOwnerUUID();
 	virtual void setOwnerUUID(const wstring &name);
-	virtual shared_ptr<Mob> getOwner();
+	virtual shared_ptr<Entity> getOwner();
 	virtual SitGoal *getSitGoal();
+	bool wantsToAttack(shared_ptr<LivingEntity> target, shared_ptr<LivingEntity> owner);
+	Team *getTeam();
+	bool isAlliedTo(shared_ptr<LivingEntity> other);
 };

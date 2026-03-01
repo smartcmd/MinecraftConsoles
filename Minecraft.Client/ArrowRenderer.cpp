@@ -3,12 +3,14 @@
 #include "..\Minecraft.World\net.minecraft.world.entity.projectile.h"
 #include "..\Minecraft.World\Mth.h"
 
+ResourceLocation ArrowRenderer::ARROW_LOCATION = ResourceLocation(TN_ITEM_ARROWS);
+
 void ArrowRenderer::render(shared_ptr<Entity> _arrow, double x, double y, double z, float rot, float a)
 {
 	// 4J - original version used generics and thus had an input parameter of type Arrow rather than shared_ptr<Entity>  we have here - 
 	// do some casting around instead
 	shared_ptr<Arrow> arrow = dynamic_pointer_cast<Arrow>(_arrow);
-    bindTexture(TN_ITEM_ARROWS); // 4J - was L"/item/arrows.png"
+    bindTexture(_arrow); // 4J - was L"/item/arrows.png"
 
     glPushMatrix();
 
@@ -83,4 +85,9 @@ void ArrowRenderer::render(shared_ptr<Entity> _arrow, double x, double y, double
     }
     glDisable(GL_RESCALE_NORMAL);
     glPopMatrix();
+}
+
+ResourceLocation *ArrowRenderer::getTextureLocation(shared_ptr<Entity> mob)
+{
+    return &ARROW_LOCATION;
 }

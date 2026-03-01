@@ -93,6 +93,7 @@ void UIScene::reloadMovie(bool force)
 		(*it)->ReInit();
 	}
 
+	updateComponents();
 	handleReload();
 	
 	IggyDataValue result;
@@ -740,6 +741,9 @@ void UIScene::_customDrawSlotControl(CustomDrawData *region, int iPad, shared_pt
 
 	PIXBeginNamedEvent(0,"Render and decorate");
 	if(m_pItemRenderer == NULL) m_pItemRenderer = new ItemRenderer();
+	RenderManager.StateSetBlendEnable(true);
+	RenderManager.StateSetBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	RenderManager.StateSetBlendFactor(0xffffffff);
 	m_pItemRenderer->renderAndDecorateItem(pMinecraft->font, pMinecraft->textures, item, x, y,scaleX,scaleY,fAlpha,isFoil,false, !usingCommandBuffer);
 	PIXEndNamedEvent();
 
@@ -827,7 +831,7 @@ void UIScene::gainFocus()
 		app.DebugPrintf("Sent gain focus event to scene\n");
 		*/
 		bHasFocus = true;
-		if(app.GetGameStarted() && needsReloaded())
+		if(needsReloaded())
 		{
 			reloadMovie();
 		}
@@ -882,7 +886,8 @@ void UIScene::handleGainFocus(bool navBack)
 
 void UIScene::updateTooltips()
 {
-	ui.SetTooltips(m_iPad, -1);
+	if(!ui.IsReloadingSkin())
+		ui.SetTooltips(m_iPad, -1);
 }
 
 void UIScene::sendInputToMovie(int key, bool repeat, bool pressed, bool released)
@@ -906,6 +911,7 @@ void UIScene::sendInputToMovie(int key, bool repeat, bool pressed, bool released
 
 int UIScene::convertGameActionToIggyKeycode(int action)
 {
+	// TODO: This action to key mapping should probably use the control mapping
 	int keycode = -1;
 	switch(action)
 	{
@@ -946,7 +952,16 @@ int UIScene::convertGameActionToIggyKeycode(int action)
 		keycode = IGGY_KEYCODE_PAGE_UP;
 		break;
 	case ACTION_MENU_PAGEDOWN:
-		keycode = IGGY_KEYCODE_PAGE_DOWN;
+#ifdef __PSVITA__
+		if (!InputManager.IsVitaTV())
+		{
+			keycode = IGGY_KEYCODE_F6;
+		}
+		else
+#endif
+		{
+			keycode = IGGY_KEYCODE_PAGE_DOWN;
+		}
 		break;
 	case ACTION_MENU_RIGHT_SCROLL:
 		keycode = IGGY_KEYCODE_F3;
@@ -957,6 +972,7 @@ int UIScene::convertGameActionToIggyKeycode(int action)
 	case ACTION_MENU_STICK_PRESS:
 		break;
 	case ACTION_MENU_OTHER_STICK_PRESS:
+		keycode = IGGY_KEYCODE_F5;
 		break;
 	case ACTION_MENU_OTHER_STICK_UP:
 		keycode = IGGY_KEYCODE_F11;
@@ -1232,6 +1248,10 @@ void UIScene::UpdateSceneControls()
 	}
 }
 #endif
+
+void UIScene::HandleMessage(EUIMessage message, void *data)
+{
+}
 
 size_t UIScene::GetCallbackUniqueId()
 {

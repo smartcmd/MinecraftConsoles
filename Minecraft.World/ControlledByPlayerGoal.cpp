@@ -36,8 +36,7 @@ void ControlledByPlayerGoal::stop()
 
 bool ControlledByPlayerGoal::canUse()
 {
-	shared_ptr<Player> player = dynamic_pointer_cast<Player>( mob->rider.lock() );
-	return mob->isAlive() && player && (boosting || mob->canBeControlledByRider());
+	return mob->isAlive() && mob->rider.lock() != NULL && mob->rider.lock()->instanceof(eTYPE_PLAYER) && (boosting || mob->canBeControlledByRider());
 }
 
 void ControlledByPlayerGoal::tick()
@@ -120,7 +119,7 @@ void ControlledByPlayerGoal::tick()
 
 		if (carriedItem != NULL && carriedItem->id == Item::carrotOnAStick_Id)
 		{
-			carriedItem->hurt(1, player);
+			carriedItem->hurtAndBreak(1, player);
 
 			if (carriedItem->count == 0)
 			{
@@ -132,6 +131,11 @@ void ControlledByPlayerGoal::tick()
 	}
 
 	mob->travel(0, moveSpeed);
+}
+
+bool ControlledByPlayerGoal::isNoJumpTile(int tile)
+{
+	return Tile::tiles[tile] != NULL && (Tile::tiles[tile]->getRenderShape() == Tile::SHAPE_STAIRS || (dynamic_cast<HalfSlabTile *>(Tile::tiles[tile]) != NULL) );
 }
 
 bool ControlledByPlayerGoal::isBoosting()

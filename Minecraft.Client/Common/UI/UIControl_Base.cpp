@@ -7,7 +7,7 @@
 UIControl_Base::UIControl_Base()
 {
 	m_bLabelChanged = false;
-	m_label = L"";
+	m_label;
 	m_id = 0;
 }
 
@@ -27,7 +27,7 @@ void UIControl_Base::tick()
 {
 	UIControl::tick();
 
-	if(m_bLabelChanged)
+	if ( m_label.needsUpdating() || m_bLabelChanged )
 	{
 		//app.DebugPrintf("Calling SetLabel - '%ls'\n", m_label.c_str());
 		m_bLabelChanged = false;
@@ -37,15 +37,17 @@ void UIControl_Base::tick()
 		value[0].type = IGGY_DATATYPE_string_UTF16;
 		IggyStringUTF16 stringVal;
 
-		stringVal.string = (IggyUTF16*)m_label.c_str();
+		stringVal.string = (IggyUTF16*) m_label.c_str();
 		stringVal.length = m_label.length();
 		value[0].string16 = stringVal;
 
 		IggyResult out = IggyPlayerCallMethodRS ( m_parentScene->getMovie() , &result, getIggyValuePath() , m_setLabelFunc , 1 , value );
+
+		m_label.setUpdated();
 	}
 }
 
-void UIControl_Base::setLabel(const wstring &label, bool instant, bool force)
+void UIControl_Base::setLabel(UIString label, bool instant, bool force)
 {
 	if( force || ((!m_label.empty() || !label.empty()) && m_label.compare(label) != 0) ) m_bLabelChanged = true;
 	m_label = label;
@@ -67,20 +69,14 @@ void UIControl_Base::setLabel(const wstring &label, bool instant, bool force)
 	}
 }
 
-void UIControl_Base::setLabel(const string &label)
-{
-	wstring wlabel = convStringToWstring(label);
-	setLabel(wlabel);
-}
-
 const wchar_t* UIControl_Base::getLabel()
 {
 	IggyDataValue result;
-	IggyResult out = IggyPlayerCallMethodRS ( m_parentScene->getMovie() , &result, getIggyValuePath() , m_funcGetLabel , 0 , NULL );
+	IggyResult out = IggyPlayerCallMethodRS(m_parentScene->getMovie(), &result, getIggyValuePath(), m_funcGetLabel, 0, NULL);
 
 	if(result.type == IGGY_DATATYPE_string_UTF16)
 	{
-		m_label = wstring( (wchar_t *)result.string16.string, result.string16.length);
+		m_label = wstring((wchar_t *)result.string16.string, result.string16.length);
 	}
 
 	return m_label.c_str();

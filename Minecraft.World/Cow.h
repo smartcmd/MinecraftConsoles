@@ -16,17 +16,18 @@ public:
 public:
 	Cow(Level *level);
 	virtual bool useNewAi();
-	virtual int getMaxHealth();
 
 protected:
+	virtual void registerAttributes();
 	virtual int getAmbientSound();
 	virtual int getHurtSound();
 	virtual int getDeathSound();
 	virtual float getSoundVolume();
 	virtual int getDeathLoot();
+	virtual void playStepSound(int xt, int yt, int zt, int t);
 	virtual void dropDeathLoot(bool wasKilledByPlayer, int playerBonusLevel);
 
 public:
-	virtual bool interact(shared_ptr<Player> player);
+	virtual bool mobInteract(shared_ptr<Player> player);
 	virtual shared_ptr<AgableMob> getBreedOffspring(shared_ptr<AgableMob> target);
 };

@@ -1,11 +1,33 @@
 #include "stdafx.h"
+#include "net.minecraft.world.item.h"
 #include "net.minecraft.world.level.h"
 #include "net.minecraft.world.level.tile.h"
 #include "net.minecraft.world.level.tile.entity.h"
 #include "net.minecraft.world.level.levelgen.h"
 #include "net.minecraft.world.level.storage.h"
+#include "net.minecraft.world.level.levelgen.structure.h"
+#include "WeighedTreasure.h"
 #include "NetherBridgePieces.h"
 #include "Direction.h"
+
+void NetherBridgePieces::loadStatic()
+{
+	StructureFeatureIO::setPieceId( eStructurePiece_BridgeCrossing, BridgeCrossing::Create, L"NeBCr");
+	StructureFeatureIO::setPieceId( eStructurePiece_BridgeEndFiller, BridgeEndFiller::Create, L"NeBEF");
+	StructureFeatureIO::setPieceId( eStructurePiece_BridgeStraight, BridgeStraight::Create, L"NeBS");
+	StructureFeatureIO::setPieceId( eStructurePiece_CastleCorridorStairsPiece, CastleCorridorStairsPiece::Create, L"NeCCS");
+	StructureFeatureIO::setPieceId( eStructurePiece_CastleCorridorTBalconyPiece, CastleCorridorTBalconyPiece::Create, L"NeCTB");
+	StructureFeatureIO::setPieceId( eStructurePiece_CastleEntrance, CastleEntrance::Create, L"NeCE");
+	StructureFeatureIO::setPieceId( eStructurePiece_CastleSmallCorridorCrossingPiece, CastleSmallCorridorCrossingPiece::Create, L"NeSCSC");
+	StructureFeatureIO::setPieceId( eStructurePiece_CastleSmallCorridorLeftTurnPiece, CastleSmallCorridorLeftTurnPiece::Create, L"NeSCLT");
+	StructureFeatureIO::setPieceId( eStructurePiece_CastleSmallCorridorPiece, CastleSmallCorridorPiece::Create, L"NeSC");
+	StructureFeatureIO::setPieceId( eStructurePiece_CastleSmallCorridorRightTurnPiece, CastleSmallCorridorRightTurnPiece::Create, L"NeSCRT");
+	StructureFeatureIO::setPieceId( eStructurePiece_CastleStalkRoom, CastleStalkRoom::Create, L"NeCSR");
+	StructureFeatureIO::setPieceId( eStructurePiece_MonsterThrone, MonsterThrone::Create, L"NeMT");
+	StructureFeatureIO::setPieceId( eStructurePiece_RoomCrossing, RoomCrossing::Create, L"NeRC");
+	StructureFeatureIO::setPieceId( eStructurePiece_StairsRoom, StairsRoom::Create, L"NeSR");
+	StructureFeatureIO::setPieceId( eStructurePiece_NetherBridgeStartPiece, StartPiece::Create, L"NeStart");
+}
 
 NetherBridgePieces::PieceWeight::PieceWeight(EPieceClass pieceClass, int weight, int maxPlaceCount, bool allowInRow) : weight(weight)
 {
@@ -114,7 +136,34 @@ NetherBridgePieces::NetherBridgePiece *NetherBridgePieces::findAndCreateBridgePi
 	return structurePiece;
 }
 
+WeighedTreasure *NetherBridgePieces::NetherBridgePiece::fortressTreasureItems[FORTRESS_TREASURE_ITEMS_COUNT] = {
+	new WeighedTreasure(Item::diamond_Id, 0, 1, 3, 5),
+	new WeighedTreasure(Item::ironIngot_Id, 0, 1, 5, 5),
+	new WeighedTreasure(Item::goldIngot_Id, 0, 1, 3, 15),
+	new WeighedTreasure(Item::sword_gold_Id, 0, 1, 1, 5),
+	new WeighedTreasure(Item::chestplate_gold_Id, 0, 1, 1, 5),
+	new WeighedTreasure(Item::flintAndSteel_Id, 0, 1, 1, 5),
+	new WeighedTreasure(Item::netherwart_seeds_Id, 0, 3, 7, 5),
+	new WeighedTreasure(Item::saddle_Id, 0, 1, 1, 10),
+	new WeighedTreasure(Item::horseArmorGold_Id, 0, 1, 1, 8),
+	new WeighedTreasure(Item::horseArmorMetal_Id, 0, 1, 1, 5),
+	new WeighedTreasure(Item::horseArmorDiamond_Id, 0, 1, 1, 3),
+};
+
+NetherBridgePieces::NetherBridgePiece::NetherBridgePiece()
+{
+	// for reflection
+}
+
 NetherBridgePieces::NetherBridgePiece::NetherBridgePiece(int genDepth) : StructurePiece(genDepth)
+{
+}
+
+void NetherBridgePieces::NetherBridgePiece::readAdditonalSaveData(CompoundTag *tag)
+{
+}
+
+void NetherBridgePieces::NetherBridgePiece::addAdditonalSaveData(CompoundTag *tag)
 {
 }
 
@@ -280,12 +329,12 @@ void NetherBridgePieces::NetherBridgePiece::generateLightPost(Level *level, Rand
 	if (level->isEmptyTile(worldX, worldY, worldZ) && level->isEmptyTile(worldX, worldY + 1, worldZ) && level->isEmptyTile(worldX, worldY + 2, worldZ)
 		&& level->isEmptyTile(worldX, worldY + 3, worldZ))
 	{
-		level->setTileAndDataNoUpdate(worldX, worldY, worldZ, Tile::netherFence_Id, 0);
-		level->setTileAndDataNoUpdate(worldX, worldY + 1, worldZ, Tile::netherFence_Id, 0);
-		level->setTileAndDataNoUpdate(worldX, worldY + 2, worldZ, Tile::netherFence_Id, 0);
-		level->setTileAndDataNoUpdate(worldX, worldY + 3, worldZ, Tile::netherFence_Id, 0);
+		level->setTileAndData(worldX, worldY, worldZ, Tile::netherFence_Id, 0, Tile::UPDATE_CLIENTS);
+		level->setTileAndData(worldX, worldY + 1, worldZ, Tile::netherFence_Id, 0, Tile::UPDATE_CLIENTS);
+		level->setTileAndData(worldX, worldY + 2, worldZ, Tile::netherFence_Id, 0, Tile::UPDATE_CLIENTS);
+		level->setTileAndData(worldX, worldY + 3, worldZ, Tile::netherFence_Id, 0, Tile::UPDATE_CLIENTS);
 		placeBlock(level, Tile::netherFence_Id, 0, x + xOff, y + 3, z + zOff, chunkBB);
-		placeBlock(level, Tile::lightGem_Id, 0, x + xOff, y + 2, z + zOff, chunkBB);
+		placeBlock(level, Tile::glowstone_Id, 0, x + xOff, y + 2, z + zOff, chunkBB);
 	}
 }
 
@@ -309,6 +358,10 @@ void NetherBridgePieces::NetherBridgePiece::generateLightPostFacingDown(Level *l
 	generateLightPost(level, random, chunkBB, x, y, z, 0, -1);
 }
 
+NetherBridgePieces::BridgeStraight::BridgeStraight()
+{
+	// for reflection
+}
 
 NetherBridgePieces::BridgeStraight::BridgeStraight(int genDepth, Random *random, BoundingBox *stairsBox, int direction) : NetherBridgePiece(genDepth)
 {
@@ -328,7 +381,7 @@ NetherBridgePieces::BridgeStraight *NetherBridgePieces::BridgeStraight::createPi
 	StartPiece *startPiece = NULL;	
 	if(pieces != NULL) startPiece = ((NetherBridgePieces::StartPiece *) pieces->front());
 
-    if (!isOkBox(box, startPiece) || StructurePiece::findCollisionPiece(pieces, box) != NULL)
+	if (!isOkBox(box, startPiece) || StructurePiece::findCollisionPiece(pieces, box) != NULL)
 	{
 		delete box;
 		return NULL;
@@ -375,6 +428,11 @@ bool NetherBridgePieces::BridgeStraight::postProcess(Level *level, Random *rando
 	return true;
 }
 
+NetherBridgePieces::BridgeEndFiller::BridgeEndFiller()
+{
+	// for reflection
+}
+
 NetherBridgePieces::BridgeEndFiller::BridgeEndFiller(int genDepth, Random *random, BoundingBox *stairsBox, int direction) : NetherBridgePiece(genDepth)
 {
 	orientation = direction;
@@ -389,7 +447,7 @@ NetherBridgePieces::BridgeEndFiller *NetherBridgePieces::BridgeEndFiller::create
 	StartPiece *startPiece = NULL;	
 	if(pieces != NULL) startPiece = ((NetherBridgePieces::StartPiece *) pieces->front());
 
-    if (!isOkBox(box, startPiece) || StructurePiece::findCollisionPiece(pieces, box) != NULL)
+	if (!isOkBox(box, startPiece) || StructurePiece::findCollisionPiece(pieces, box) != NULL)
 	{
 		delete box;
 		return NULL;
@@ -442,6 +500,25 @@ bool NetherBridgePieces::BridgeEndFiller::postProcess(Level *level, Random *rand
 	return true;
 }
 
+void NetherBridgePieces::BridgeEndFiller::readAdditonalSaveData(CompoundTag *tag)
+{
+	NetherBridgePiece::readAdditonalSaveData(tag);
+
+	selfSeed = tag->getInt(L"Seed");
+}
+
+void NetherBridgePieces::BridgeEndFiller::addAdditonalSaveData(CompoundTag *tag)
+{
+	NetherBridgePiece::addAdditonalSaveData(tag);
+
+	tag->putInt(L"Seed", selfSeed);
+}
+
+NetherBridgePieces::BridgeCrossing::BridgeCrossing()
+{
+	// for reflection
+}
+
 NetherBridgePieces::BridgeCrossing::BridgeCrossing(int genDepth, Random *random, BoundingBox *stairsBox, int direction) : NetherBridgePiece(genDepth)
 {
 	orientation = direction;
@@ -478,7 +555,7 @@ NetherBridgePieces::BridgeCrossing *NetherBridgePieces::BridgeCrossing::createPi
 	StartPiece *startPiece = NULL;	
 	if(pieces != NULL) startPiece = ((NetherBridgePieces::StartPiece *) pieces->front());
 
-    if (!isOkBox(box, startPiece) || StructurePiece::findCollisionPiece(pieces, box) != NULL)
+	if (!isOkBox(box, startPiece) || StructurePiece::findCollisionPiece(pieces, box) != NULL)
 	{
 		delete box;
 		return NULL;
@@ -535,10 +612,14 @@ bool NetherBridgePieces::BridgeCrossing::postProcess(Level *level, Random *rando
 	return true;
 }
 
+NetherBridgePieces::StartPiece::StartPiece()
+{
+	// for reflection
+	previousPiece = NULL;
+}
 
 NetherBridgePieces::StartPiece::StartPiece(Random *random, int west, int north, Level *level) : BridgeCrossing(random, west, north)
 {
-	isLibraryAdded = false;
 	previousPiece = NULL;
 	m_level = level;
 
@@ -558,6 +639,20 @@ NetherBridgePieces::StartPiece::StartPiece(Random *random, int west, int north, 
 	}
 }
 
+void NetherBridgePieces::StartPiece::readAdditonalSaveData(CompoundTag *tag)
+{
+	BridgeCrossing::readAdditonalSaveData(tag);
+}
+
+void NetherBridgePieces::StartPiece::addAdditonalSaveData(CompoundTag *tag)
+{
+	BridgeCrossing::addAdditonalSaveData(tag);
+}
+
+NetherBridgePieces::RoomCrossing::RoomCrossing()
+{
+	// for reflection
+}
 
 NetherBridgePieces::RoomCrossing::RoomCrossing(int genDepth, Random *random, BoundingBox *box, int direction) : NetherBridgePiece(genDepth)
 {
@@ -579,7 +674,7 @@ NetherBridgePieces::RoomCrossing *NetherBridgePieces::RoomCrossing::createPiece(
 	StartPiece *startPiece = NULL;	
 	if(pieces != NULL) startPiece = ((NetherBridgePieces::StartPiece *) pieces->front());
 
-    if (!isOkBox(box, startPiece) || StructurePiece::findCollisionPiece(pieces, box) != NULL)
+	if (!isOkBox(box, startPiece) || StructurePiece::findCollisionPiece(pieces, box) != NULL)
 	{
 		delete box;
 		return NULL;
@@ -626,6 +721,11 @@ bool NetherBridgePieces::RoomCrossing::postProcess(Level *level, Random *random,
 	return true;
 }
 
+NetherBridgePieces::StairsRoom::StairsRoom()
+{
+	// for reflection
+}
+
 NetherBridgePieces::StairsRoom::StairsRoom(int genDepth, Random *random, BoundingBox *box, int direction) : NetherBridgePiece(genDepth)
 {
 	orientation = direction;
@@ -644,7 +744,7 @@ NetherBridgePieces::StairsRoom *NetherBridgePieces::StairsRoom::createPiece(list
 	StartPiece *startPiece = NULL;	
 	if(pieces != NULL) startPiece = ((NetherBridgePieces::StartPiece *) pieces->front());
 
-    if (!isOkBox(box, startPiece) || StructurePiece::findCollisionPiece(pieces, box) != NULL)
+	if (!isOkBox(box, startPiece) || StructurePiece::findCollisionPiece(pieces, box) != NULL)
 	{
 		delete box;
 		return NULL;
@@ -699,6 +799,10 @@ bool NetherBridgePieces::StairsRoom::postProcess(Level *level, Random *random, B
 
 }
 
+NetherBridgePieces::MonsterThrone::MonsterThrone()
+{
+	// for reflection
+}
 
 NetherBridgePieces::MonsterThrone::MonsterThrone(int genDepth, Random *random, BoundingBox *box, int direction) : NetherBridgePiece(genDepth)
 {
@@ -714,13 +818,27 @@ NetherBridgePieces::MonsterThrone *NetherBridgePieces::MonsterThrone::createPiec
 	StartPiece *startPiece = NULL;	
 	if(pieces != NULL) startPiece = ((NetherBridgePieces::StartPiece *) pieces->front());
 
-    if (!isOkBox(box, startPiece) || StructurePiece::findCollisionPiece(pieces, box) != NULL)
+	if (!isOkBox(box, startPiece) || StructurePiece::findCollisionPiece(pieces, box) != NULL)
 	{
 		delete box;
 		return NULL;
 	}
 
 	return new MonsterThrone(genDepth, random, box, direction);
+}
+
+void NetherBridgePieces::MonsterThrone::readAdditonalSaveData(CompoundTag *tag)
+{
+	NetherBridgePiece::readAdditonalSaveData(tag);
+
+	hasPlacedMobSpawner = tag->getBoolean(L"Mob");
+}
+
+void NetherBridgePieces::MonsterThrone::addAdditonalSaveData(CompoundTag *tag)
+{
+	NetherBridgePiece::addAdditonalSaveData(tag);
+
+	tag->putBoolean(L"Mob", hasPlacedMobSpawner);
 }
 
 bool NetherBridgePieces::MonsterThrone::postProcess(Level *level, Random *random, BoundingBox *chunkBB)
@@ -756,9 +874,9 @@ bool NetherBridgePieces::MonsterThrone::postProcess(Level *level, Random *random
 		if (chunkBB->isInside(x, y, z))
 		{
 			hasPlacedMobSpawner = true;
-			level->setTile(x, y, z, Tile::mobSpawner_Id);
+			level->setTileAndData(x, y, z, Tile::mobSpawner_Id, 0, Tile::UPDATE_CLIENTS);
 			shared_ptr<MobSpawnerTileEntity> entity = dynamic_pointer_cast<MobSpawnerTileEntity>( level->getTileEntity(x, y, z) );
-			if (entity != NULL) entity->setEntityId(L"Blaze");
+			if (entity != NULL) entity->getSpawner()->setEntityId(L"Blaze");
 		}
 	}
 
@@ -773,6 +891,10 @@ bool NetherBridgePieces::MonsterThrone::postProcess(Level *level, Random *random
 	return true;
 }
 
+NetherBridgePieces::CastleEntrance::CastleEntrance()
+{
+	// for reflection
+}
 
 NetherBridgePieces::CastleEntrance::CastleEntrance(int genDepth, Random *random, BoundingBox *stairsBox, int direction) : NetherBridgePiece(genDepth)
 {
@@ -792,7 +914,7 @@ NetherBridgePieces::CastleEntrance *NetherBridgePieces::CastleEntrance::createPi
 	StartPiece *startPiece = NULL;	
 	if(pieces != NULL) startPiece = ((NetherBridgePieces::StartPiece *) pieces->front());
 
-    if (!isOkBox(box, startPiece) || StructurePiece::findCollisionPiece(pieces, box) != NULL)
+	if (!isOkBox(box, startPiece) || StructurePiece::findCollisionPiece(pieces, box) != NULL)
 	{
 		delete box;
 		return NULL;
@@ -898,6 +1020,10 @@ bool NetherBridgePieces::CastleEntrance::postProcess(Level *level, Random *rando
 	return true;
 }
 
+NetherBridgePieces::CastleStalkRoom::CastleStalkRoom()
+{
+	// for reflection
+}
 
 NetherBridgePieces::CastleStalkRoom::CastleStalkRoom(int genDepth, Random *random, BoundingBox *stairsBox, int direction) : NetherBridgePiece(genDepth)
 {
@@ -918,7 +1044,7 @@ NetherBridgePieces::CastleStalkRoom *NetherBridgePieces::CastleStalkRoom::create
 	StartPiece *startPiece = NULL;	
 	if(pieces != NULL) startPiece = ((NetherBridgePieces::StartPiece *) pieces->front());
 
-    if (!isOkBox(box, startPiece) || StructurePiece::findCollisionPiece(pieces, box) != NULL)
+	if (!isOkBox(box, startPiece) || StructurePiece::findCollisionPiece(pieces, box) != NULL)
 	{
 		delete box;
 		return NULL;
@@ -1024,8 +1150,8 @@ bool NetherBridgePieces::CastleStalkRoom::postProcess(Level *level, Random *rand
 	placeBlock(level, Tile::stairs_netherBricks_Id, eastOrientation, 8, 5, 10, chunkBB);
 
 	// farmlands
-	generateBox(level, chunkBB, 3, 4, 4, 4, 4, 8, Tile::hellSand_Id, Tile::hellSand_Id, false);
-	generateBox(level, chunkBB, 8, 4, 4, 9, 4, 8, Tile::hellSand_Id, Tile::hellSand_Id, false);
+	generateBox(level, chunkBB, 3, 4, 4, 4, 4, 8, Tile::soulsand_Id, Tile::soulsand_Id, false);
+	generateBox(level, chunkBB, 8, 4, 4, 9, 4, 8, Tile::soulsand_Id, Tile::soulsand_Id, false);
 	generateBox(level, chunkBB, 3, 5, 4, 4, 5, 8, Tile::netherStalk_Id, Tile::netherStalk_Id, false);
 	generateBox(level, chunkBB, 8, 5, 4, 9, 5, 8, Tile::netherStalk_Id, Tile::netherStalk_Id, false);
 
@@ -1059,6 +1185,10 @@ bool NetherBridgePieces::CastleStalkRoom::postProcess(Level *level, Random *rand
 
 }
 
+NetherBridgePieces::CastleSmallCorridorPiece::CastleSmallCorridorPiece()
+{
+	// for reflection
+}
 
 NetherBridgePieces::CastleSmallCorridorPiece::CastleSmallCorridorPiece(int genDepth, Random *random, BoundingBox *stairsBox, int direction) : NetherBridgePiece(genDepth)
 {
@@ -1080,7 +1210,7 @@ NetherBridgePieces::CastleSmallCorridorPiece *NetherBridgePieces::CastleSmallCor
 	StartPiece *startPiece = NULL;	
 	if(pieces != NULL) startPiece = ((NetherBridgePieces::StartPiece *) pieces->front());
 
-    if (!isOkBox(box, startPiece) || StructurePiece::findCollisionPiece(pieces, box) != NULL)
+	if (!isOkBox(box, startPiece) || StructurePiece::findCollisionPiece(pieces, box) != NULL)
 	{
 		delete box;
 		return NULL;
@@ -1119,6 +1249,10 @@ bool NetherBridgePieces::CastleSmallCorridorPiece::postProcess(Level *level, Ran
 	return true;
 }
 
+NetherBridgePieces::CastleSmallCorridorCrossingPiece::CastleSmallCorridorCrossingPiece()
+{
+	// for reflection
+}
 
 NetherBridgePieces::CastleSmallCorridorCrossingPiece::CastleSmallCorridorCrossingPiece(int genDepth, Random *random, BoundingBox *stairsBox, int direction) : NetherBridgePiece(genDepth)
 {
@@ -1140,7 +1274,7 @@ NetherBridgePieces::CastleSmallCorridorCrossingPiece *NetherBridgePieces::Castle
 	StartPiece *startPiece = NULL;	
 	if(pieces != NULL) startPiece = ((NetherBridgePieces::StartPiece *) pieces->front());
 
-    if (!isOkBox(box, startPiece) || StructurePiece::findCollisionPiece(pieces, box) != NULL)
+	if (!isOkBox(box, startPiece) || StructurePiece::findCollisionPiece(pieces, box) != NULL)
 	{
 		delete box;
 		return NULL;
@@ -1177,11 +1311,31 @@ bool NetherBridgePieces::CastleSmallCorridorCrossingPiece::postProcess(Level *le
 	return true;
 }
 
+NetherBridgePieces::CastleSmallCorridorRightTurnPiece::CastleSmallCorridorRightTurnPiece()
+{
+	// for reflection
+	isNeedingChest = false;
+}
 
 NetherBridgePieces::CastleSmallCorridorRightTurnPiece::CastleSmallCorridorRightTurnPiece(int genDepth, Random *random, BoundingBox *stairsBox, int direction) : NetherBridgePiece(genDepth)
 {
 	orientation = direction;
 	boundingBox = stairsBox;
+	isNeedingChest = random->nextInt(3) == 0;
+}
+
+void NetherBridgePieces::CastleSmallCorridorRightTurnPiece::readAdditonalSaveData(CompoundTag *tag)
+{
+	NetherBridgePiece::readAdditonalSaveData(tag);
+
+	isNeedingChest = tag->getBoolean(L"Chest");
+}
+
+void NetherBridgePieces::CastleSmallCorridorRightTurnPiece::addAdditonalSaveData(CompoundTag *tag)
+{
+	NetherBridgePiece::addAdditonalSaveData(tag);
+
+	tag->putBoolean(L"Chest", isNeedingChest);
 }
 
 void NetherBridgePieces::CastleSmallCorridorRightTurnPiece::addChildren(StructurePiece *startPiece, list<StructurePiece *> *pieces, Random *random)
@@ -1196,7 +1350,7 @@ NetherBridgePieces::CastleSmallCorridorRightTurnPiece *NetherBridgePieces::Castl
 	StartPiece *startPiece = NULL;	
 	if(pieces != NULL) startPiece = ((NetherBridgePieces::StartPiece *) pieces->front());
 
-    if (!isOkBox(box, startPiece) || StructurePiece::findCollisionPiece(pieces, box) != NULL)
+	if (!isOkBox(box, startPiece) || StructurePiece::findCollisionPiece(pieces, box) != NULL)
 	{
 		delete box;
 		return NULL;
@@ -1223,6 +1377,17 @@ bool NetherBridgePieces::CastleSmallCorridorRightTurnPiece::postProcess(Level *l
 	generateBox(level, chunkBB, 1, 3, 4, 1, 4, 4, Tile::netherFence_Id, Tile::netherBrick_Id, false);
 	generateBox(level, chunkBB, 3, 3, 4, 3, 4, 4, Tile::netherFence_Id, Tile::netherBrick_Id, false);
 
+	if (isNeedingChest)
+	{
+		int y = getWorldY(2);
+		int x = getWorldX(1, 3), z = getWorldZ(1, 3);
+		if (chunkBB->isInside(x, y, z))
+		{
+			isNeedingChest = false;
+			createChest(level, chunkBB, random, 1, 2, 3, WeighedTreasureArray(fortressTreasureItems,FORTRESS_TREASURE_ITEMS_COUNT), 2 + random->nextInt(4));
+		}
+	}
+
 	// roof
 	generateBox(level, chunkBB, 0, 6, 0, 4, 6, 4, Tile::netherBrick_Id, Tile::netherBrick_Id, false);
 
@@ -1238,11 +1403,31 @@ bool NetherBridgePieces::CastleSmallCorridorRightTurnPiece::postProcess(Level *l
 	return true;
 }
 
+NetherBridgePieces::CastleSmallCorridorLeftTurnPiece::CastleSmallCorridorLeftTurnPiece()
+{
+	isNeedingChest = false;
+	// for reflection
+}
 
 NetherBridgePieces::CastleSmallCorridorLeftTurnPiece::CastleSmallCorridorLeftTurnPiece(int genDepth, Random *random, BoundingBox *stairsBox, int direction) : NetherBridgePiece(genDepth)
 {
 	orientation = direction;
 	boundingBox = stairsBox;
+	isNeedingChest = random->nextInt(3) == 0;
+}
+
+void NetherBridgePieces::CastleSmallCorridorLeftTurnPiece::readAdditonalSaveData(CompoundTag *tag)
+{
+	NetherBridgePiece::readAdditonalSaveData(tag);
+
+	isNeedingChest = tag->getBoolean(L"Chest");
+}
+
+void NetherBridgePieces::CastleSmallCorridorLeftTurnPiece::addAdditonalSaveData(CompoundTag *tag)
+{
+	NetherBridgePiece::addAdditonalSaveData(tag);
+
+	tag->putBoolean(L"Chest", isNeedingChest);
 }
 
 void NetherBridgePieces::CastleSmallCorridorLeftTurnPiece::addChildren(StructurePiece *startPiece, list<StructurePiece *> *pieces, Random *random)
@@ -1257,7 +1442,7 @@ NetherBridgePieces::CastleSmallCorridorLeftTurnPiece *NetherBridgePieces::Castle
 	StartPiece *startPiece = NULL;	
 	if(pieces != NULL) startPiece = ((NetherBridgePieces::StartPiece *) pieces->front());
 
-    if (!isOkBox(box, startPiece) || StructurePiece::findCollisionPiece(pieces, box) != NULL)
+	if (!isOkBox(box, startPiece) || StructurePiece::findCollisionPiece(pieces, box) != NULL)
 	{
 		delete box;
 		return NULL;
@@ -1284,6 +1469,17 @@ bool NetherBridgePieces::CastleSmallCorridorLeftTurnPiece::postProcess(Level *le
 	generateBox(level, chunkBB, 1, 3, 4, 1, 4, 4, Tile::netherFence_Id, Tile::netherBrick_Id, false);
 	generateBox(level, chunkBB, 3, 3, 4, 3, 4, 4, Tile::netherFence_Id, Tile::netherBrick_Id, false);
 
+	if (isNeedingChest)
+	{
+		int y = getWorldY(2);
+		int x = getWorldX(3, 3), z = getWorldZ(3, 3);
+		if (chunkBB->isInside(x, y, z))
+		{
+			isNeedingChest = false;
+			createChest(level, chunkBB, random, 3, 2, 3, WeighedTreasureArray(fortressTreasureItems,FORTRESS_TREASURE_ITEMS_COUNT), 2 + random->nextInt(4));
+		}
+	}
+
 	// roof
 	generateBox(level, chunkBB, 0, 6, 0, 4, 6, 4, Tile::netherBrick_Id, Tile::netherBrick_Id, false);
 
@@ -1299,6 +1495,10 @@ bool NetherBridgePieces::CastleSmallCorridorLeftTurnPiece::postProcess(Level *le
 	return true;
 }
 
+NetherBridgePieces::CastleCorridorStairsPiece::CastleCorridorStairsPiece()
+{
+	// for reflection
+}
 
 NetherBridgePieces::CastleCorridorStairsPiece::CastleCorridorStairsPiece(int genDepth, Random *random, BoundingBox *stairsBox, int direction) : NetherBridgePiece(genDepth)
 {
@@ -1318,7 +1518,7 @@ NetherBridgePieces::CastleCorridorStairsPiece *NetherBridgePieces::CastleCorrido
 	StartPiece *startPiece = NULL;	
 	if(pieces != NULL) startPiece = ((NetherBridgePieces::StartPiece *) pieces->front());
 
-    if (!isOkBox(box, startPiece) || StructurePiece::findCollisionPiece(pieces, box) != NULL)
+	if (!isOkBox(box, startPiece) || StructurePiece::findCollisionPiece(pieces, box) != NULL)
 	{
 		delete box;
 		return NULL;
@@ -1369,6 +1569,10 @@ bool NetherBridgePieces::CastleCorridorStairsPiece::postProcess(Level *level, Ra
 	return true;
 }
 
+NetherBridgePieces::CastleCorridorTBalconyPiece::CastleCorridorTBalconyPiece()
+{
+	// for reflection
+}
 
 NetherBridgePieces::CastleCorridorTBalconyPiece::CastleCorridorTBalconyPiece(int genDepth, Random *random, BoundingBox *stairsBox, int direction) : NetherBridgePiece(genDepth)
 {
@@ -1396,7 +1600,7 @@ NetherBridgePieces::CastleCorridorTBalconyPiece *NetherBridgePieces::CastleCorri
 	StartPiece *startPiece = NULL;	
 	if(pieces != NULL) startPiece = ((NetherBridgePieces::StartPiece *) pieces->front());
 
-    if (!isOkBox(box, startPiece) || StructurePiece::findCollisionPiece(pieces, box) != NULL)
+	if (!isOkBox(box, startPiece) || StructurePiece::findCollisionPiece(pieces, box) != NULL)
 	{
 		delete box;
 		return NULL;

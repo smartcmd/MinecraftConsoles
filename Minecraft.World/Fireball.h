@@ -10,7 +10,6 @@ class Fireball : public Entity
 {
 public:
 	eINSTANCEOF GetType() { return 	eTYPE_FIREBALL; }
-	static Entity *create(Level *level) { return new Fireball(level); }
 
 private:
 	int xTile;
@@ -22,7 +21,7 @@ private:
 	bool inGround;
 
 public:
-	shared_ptr<Mob> owner;
+	shared_ptr<LivingEntity> owner;
 
 private:
 	int life;
@@ -43,31 +42,30 @@ public:
 	virtual bool shouldRenderAtSqrDistance(double distance);
 
 	Fireball(Level *level, double x, double y, double z, double xa, double ya, double za);
-	Fireball(Level *level, shared_ptr<Mob> mob, double xa, double ya, double za);
+	Fireball(Level *level, shared_ptr<LivingEntity> mob, double xa, double ya, double za);
 
 public:
 	virtual void tick();
 
 protected:
-	virtual void onHit(HitResult *res);
+	virtual float getInertia();
+	virtual void onHit(HitResult *res) = 0;
 
 public:
 	virtual void addAdditonalSaveData(CompoundTag *tag);
 	virtual void readAdditionalSaveData(CompoundTag *tag);
 	virtual bool isPickable();
 	virtual float getPickRadius();
-	virtual bool hurt(DamageSource *source, int damage);
+	virtual bool hurt(DamageSource *source, float damage);
 	virtual float getShadowHeightOffs();
 	virtual float getBrightness(float a);
 	virtual int getLightColor(float a);
 
-	// 4J Added TU9
-	virtual bool shouldBurn();
-	virtual int getIcon();
-
 protected:
 // 4J Added TU9
 	virtual ePARTICLE_TYPE getTrailParticleType();
+
+	virtual bool shouldBurn();
 };
 
 

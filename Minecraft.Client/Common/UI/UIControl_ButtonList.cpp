@@ -195,3 +195,47 @@ bool UIControl_ButtonList::CanTouchTrigger(S32 iX, S32 iY)
 	return bCanTouchTrigger;
 }
 #endif
+
+
+void UIControl_DynamicButtonList::tick()
+{
+	UIControl_ButtonList::tick();
+
+	int buttonIndex = 0;
+	vector<UIString>::iterator itr;
+	for (itr = m_labels.begin(); itr != m_labels.end(); itr++)
+	{
+		if ( itr->needsUpdating() )
+		{
+			setButtonLabel(buttonIndex, itr->getString());
+			itr->setUpdated();
+		}
+		buttonIndex++;
+	}
+}
+
+void UIControl_DynamicButtonList::addItem(UIString label, int data)
+{
+	if (data < 0) data = m_itemCount;
+
+	if (data < m_labels.size())
+	{
+		m_labels[data] = label;
+	}
+	else
+	{
+		while (data > m_labels.size()) 
+		{
+			m_labels.push_back(UIString());
+		}
+		m_labels.push_back(label);
+	}
+
+	UIControl_ButtonList::addItem(label.getString(), data);
+}
+
+void UIControl_DynamicButtonList::removeItem(int index)
+{
+	m_labels.erase( m_labels.begin() + index );
+	UIControl_ButtonList::removeItem(index);
+}

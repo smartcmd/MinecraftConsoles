@@ -10,7 +10,7 @@
 
 VineTile::VineTile(int id) : Tile(id, Material::replaceable_plant, isSolidRender() )
 {
-    setTicking(true);
+	setTicking(true);
 }
 
 void VineTile::updateDefaultShape()
@@ -35,68 +35,68 @@ bool VineTile::isCubeShaped()
 
 void VineTile::updateShape(LevelSource *level, int x, int y, int z, int forceData, shared_ptr<TileEntity> forceEntity) // 4J added forceData, forceEntity param
 {
-    const float thickness = 1.0f / 16.0f;
+	const float thickness = 1.0f / 16.0f;
 
-    int facings = level->getData(x, y, z);
+	int facings = level->getData(x, y, z);
 
-    float minX = 1;
-    float minY = 1;
-    float minZ = 1;
-    float maxX = 0;
-    float maxY = 0;
-    float maxZ = 0;
-    bool hasWall = facings > 0;
+	float minX = 1;
+	float minY = 1;
+	float minZ = 1;
+	float maxX = 0;
+	float maxY = 0;
+	float maxZ = 0;
+	bool hasWall = facings > 0;
 
-    if ((facings & VINE_WEST) != 0)
+	if ((facings & VINE_WEST) != 0)
 	{
-        maxX = Math::_max(maxX, thickness);
-        minX = 0;
-        minY = 0;
-        maxY = 1;
-        minZ = 0;
-        maxZ = 1;
-        hasWall = true;
-    }
-    if ((facings & VINE_EAST) != 0)
+		maxX = Math::_max(maxX, thickness);
+		minX = 0;
+		minY = 0;
+		maxY = 1;
+		minZ = 0;
+		maxZ = 1;
+		hasWall = true;
+	}
+	if ((facings & VINE_EAST) != 0)
 	{
-        minX = Math::_min(minX, 1 - thickness);
-        maxX = 1;
-        minY = 0;
-        maxY = 1;
-        minZ = 0;
-        maxZ = 1;
-        hasWall = true;
-    }
-    if ((facings & VINE_NORTH) != 0)
+		minX = Math::_min(minX, 1 - thickness);
+		maxX = 1;
+		minY = 0;
+		maxY = 1;
+		minZ = 0;
+		maxZ = 1;
+		hasWall = true;
+	}
+	if ((facings & VINE_NORTH) != 0)
 	{
-        maxZ = Math::_max(maxZ, thickness);
-        minZ = 0;
-        minX = 0;
-        maxX = 1;
-        minY = 0;
-        maxY = 1;
-        hasWall = true;
-    }
-    if ((facings & VINE_SOUTH) != 0)
+		maxZ = Math::_max(maxZ, thickness);
+		minZ = 0;
+		minX = 0;
+		maxX = 1;
+		minY = 0;
+		maxY = 1;
+		hasWall = true;
+	}
+	if ((facings & VINE_SOUTH) != 0)
 	{
-        minZ = Math::_min(minZ, 1 - thickness);
-        maxZ = 1;
-        minX = 0;
-        maxX = 1;
-        minY = 0;
-        maxY = 1;
-        hasWall = true;
-    }
-    if (!hasWall && isAcceptableNeighbor(level->getTile(x, y + 1, z)))
+		minZ = Math::_min(minZ, 1 - thickness);
+		maxZ = 1;
+		minX = 0;
+		maxX = 1;
+		minY = 0;
+		maxY = 1;
+		hasWall = true;
+	}
+	if (!hasWall && isAcceptableNeighbor(level->getTile(x, y + 1, z)))
 	{
-        minY = Math::_min(minY, 1 - thickness);
-        maxY = 1;
-        minX = 0;
-        maxX = 1;
-        minZ = 0;
-        maxZ = 1;
-    }
-    setShape(minX, minY, minZ, maxX, maxY, maxZ);
+		minY = Math::_min(minY, 1 - thickness);
+		maxY = 1;
+		minX = 0;
+		maxX = 1;
+		minZ = 0;
+		maxZ = 1;
+	}
+	setShape(minX, minY, minZ, maxX, maxY, maxZ);
 
 }
 
@@ -107,69 +107,69 @@ AABB *VineTile::getAABB(Level *level, int x, int y, int z)
 
 bool VineTile::mayPlace(Level *level, int x, int y, int z, int face)
 {
-    switch (face)
+	switch (face)
 	{
-		default:
-			return false;
-		case Facing::UP:
-			return isAcceptableNeighbor(level->getTile(x, y + 1, z));
-		case Facing::NORTH:
-			return isAcceptableNeighbor(level->getTile(x, y, z + 1));
-		case Facing::SOUTH:
-			return isAcceptableNeighbor(level->getTile(x, y, z - 1));
-		case Facing::EAST:
-			return isAcceptableNeighbor(level->getTile(x - 1, y, z));
-		case Facing::WEST:
-			return isAcceptableNeighbor(level->getTile(x + 1, y, z));
-    }
+	default:
+		return false;
+	case Facing::UP:
+		return isAcceptableNeighbor(level->getTile(x, y + 1, z));
+	case Facing::NORTH:
+		return isAcceptableNeighbor(level->getTile(x, y, z + 1));
+	case Facing::SOUTH:
+		return isAcceptableNeighbor(level->getTile(x, y, z - 1));
+	case Facing::EAST:
+		return isAcceptableNeighbor(level->getTile(x - 1, y, z));
+	case Facing::WEST:
+		return isAcceptableNeighbor(level->getTile(x + 1, y, z));
+	}
 }
 
 bool VineTile::isAcceptableNeighbor(int id)
 {
-    if (id == 0) return false;
-    Tile *tile = Tile::tiles[id];
-    if (tile->isCubeShaped() && tile->material->blocksMotion()) return true;
-    return false;
+	if (id == 0) return false;
+	Tile *tile = Tile::tiles[id];
+	if (tile->isCubeShaped() && tile->material->blocksMotion()) return true;
+	return false;
 }
 
 bool VineTile::updateSurvival(Level *level, int x, int y, int z)
 {
-    int facings = level->getData(x, y, z);
-    int newFacings = facings;
+	int facings = level->getData(x, y, z);
+	int newFacings = facings;
 
-    if (newFacings > 0)
+	if (newFacings > 0)
 	{
-        for (int d = 0; d <= 3; d++)
+		for (int d = 0; d <= 3; d++)
 		{
-            int facing = 1 << d;
-            if ((facings & facing) != 0)
+			int facing = 1 << d;
+			if ((facings & facing) != 0)
 			{
-                if (!isAcceptableNeighbor(level->getTile(x + Direction::STEP_X[d], y, z + Direction::STEP_Z[d])))
+				if (!isAcceptableNeighbor(level->getTile(x + Direction::STEP_X[d], y, z + Direction::STEP_Z[d])))
 				{
-                    // no attachment in this direction,
-                    // verify that there is vines hanging above
-                    if (level->getTile(x, y + 1, z) != id || (level->getData(x, y + 1, z) & facing) == 0)
+					// no attachment in this direction,
+					// verify that there is vines hanging above
+					if (level->getTile(x, y + 1, z) != id || (level->getData(x, y + 1, z) & facing) == 0)
 					{
-                        newFacings &= ~facing;
-                    }
-                }
-            }
-        }
-    }
+						newFacings &= ~facing;
+					}
+				}
+			}
+		}
+	}
 
-    if (newFacings == 0)
+	if (newFacings == 0)
 	{
-        // the block will die unless it has a roof
-        if (!isAcceptableNeighbor(level->getTile(x, y + 1, z)))
+		// the block will die unless it has a roof
+		if (!isAcceptableNeighbor(level->getTile(x, y + 1, z)))
 		{
-            return false;
-        }
-    }
-    if (newFacings != facings)
+			return false;
+		}
+	}
+	if (newFacings != facings)
 	{
-        level->setData(x, y, z, newFacings);
-    }
-    return true;
+		level->setData(x, y, z, newFacings, Tile::UPDATE_CLIENTS);
+	}
+	return true;
 
 }
 
@@ -195,18 +195,18 @@ int VineTile::getColor(LevelSource *level, int x, int y, int z)
 
 void VineTile::neighborChanged(Level *level, int x, int y, int z, int type)
 {
-    if (!level->isClientSide && !updateSurvival(level, x, y, z))
+	if (!level->isClientSide && !updateSurvival(level, x, y, z))
 	{
-        spawnResources(level, x, y, z, level->getData(x, y, z), 0);
-        level->setTile(x, y, z, 0);
-    }
+		spawnResources(level, x, y, z, level->getData(x, y, z), 0);
+		level->removeTile(x, y, z);
+	}
 }
 
 void VineTile::tick(Level *level, int x, int y, int z, Random *random)
 {
-    if (!level->isClientSide)
+	if (!level->isClientSide)
 	{
-        if (level->random->nextInt(4) == 0)
+		if (level->random->nextInt(4) == 0)
 		{
 			// 4J - Brought side spread check forward from 1.2.3
 			int r = 4;
@@ -226,110 +226,111 @@ void VineTile::tick(Level *level, int x, int y, int z, Random *random)
 testLoop:		if(noSideSpread) break;
 			}
 
-            int currentFacings = level->getData(x, y, z);
-            int testFacing = level->random->nextInt(6);
-            int testDirection = Direction::FACING_DIRECTION[testFacing];
+			int currentFacings = level->getData(x, y, z);
+			int testFacing = level->random->nextInt(6);
+			int testDirection = Direction::FACING_DIRECTION[testFacing];
 
 			if (testFacing == Facing::UP && y < (Level::maxBuildHeight - 1) && level->isEmptyTile(x, y + 1, z))
 			{
 				// 4J - Brought side spread check forward from 1.2.3
 				if (noSideSpread) return;
 
-                // grow upwards, but only if there is something to cling to
-                int spawnFacings = level->random->nextInt(16) & currentFacings;
-                if (spawnFacings > 0)
+				// grow upwards, but only if there is something to cling to
+				int spawnFacings = level->random->nextInt(16) & currentFacings;
+				if (spawnFacings > 0)
 				{
-                    for (int d = 0; d <= 3; d++)
+					for (int d = 0; d <= 3; d++)
 					{
-                        if (!isAcceptableNeighbor(level->getTile(x + Direction::STEP_X[d], y + 1, z + Direction::STEP_Z[d])))
+						if (!isAcceptableNeighbor(level->getTile(x + Direction::STEP_X[d], y + 1, z + Direction::STEP_Z[d])))
 						{
-                            spawnFacings &= ~(1 << d);
-                        }
-                    }
-                    if (spawnFacings > 0)
+							spawnFacings &= ~(1 << d);
+						}
+					}
+					if (spawnFacings > 0)
 					{
-                        level->setTileAndData(x, y + 1, z, id, spawnFacings);
-                    }
-                }
-            }
+						level->setTileAndData(x, y + 1, z, id, spawnFacings, Tile::UPDATE_CLIENTS);
+					}
+				}
+			}
 			else if (testFacing >= Facing::NORTH && testFacing <= Facing::EAST && (currentFacings & (1 << testDirection)) == 0)
 			{
 				// 4J - Brought side spread check forward from 1.2.3
 				if (noSideSpread) return;
 
-                int edgeTile = level->getTile(x + Direction::STEP_X[testDirection], y, z + Direction::STEP_Z[testDirection]);
+				int edgeTile = level->getTile(x + Direction::STEP_X[testDirection], y, z + Direction::STEP_Z[testDirection]);
 
-                if (edgeTile == 0 || Tile::tiles[edgeTile] == NULL)
+				if (edgeTile == 0 || Tile::tiles[edgeTile] == NULL)
 				{
-                    // if the edge tile is air, we could possibly cling
-                    // to something
-                    int left = (testDirection + 1) & 3;
-                    int right = (testDirection + 3) & 3;
+					// if the edge tile is air, we could possibly cling
+					// to something
+					int left = (testDirection + 1) & 3;
+					int right = (testDirection + 3) & 3;
 
-                    // attempt to grow straight onto solid tiles
-                    if ((currentFacings & (1 << left)) != 0
-                            && isAcceptableNeighbor(level->getTile(x + Direction::STEP_X[testDirection] + Direction::STEP_X[left], y, z + Direction::STEP_Z[testDirection] + Direction::STEP_Z[left])))
+					// attempt to grow straight onto solid tiles
+					if ((currentFacings & (1 << left)) != 0
+						&& isAcceptableNeighbor(level->getTile(x + Direction::STEP_X[testDirection] + Direction::STEP_X[left], y, z + Direction::STEP_Z[testDirection] + Direction::STEP_Z[left])))
 					{
-                        level->setTileAndData(x + Direction::STEP_X[testDirection], y, z + Direction::STEP_Z[testDirection], id, 1 << left);
-                    }
+						level->setTileAndData(x + Direction::STEP_X[testDirection], y, z + Direction::STEP_Z[testDirection], id, 1 << left, Tile::UPDATE_CLIENTS);
+					}
 					else if ((currentFacings & (1 << right)) != 0
-                            && isAcceptableNeighbor(level->getTile(x + Direction::STEP_X[testDirection] + Direction::STEP_X[right], y, z + Direction::STEP_Z[testDirection] + Direction::STEP_Z[right])))
+						&& isAcceptableNeighbor(level->getTile(x + Direction::STEP_X[testDirection] + Direction::STEP_X[right], y, z + Direction::STEP_Z[testDirection] + Direction::STEP_Z[right])))
 					{
-                        level->setTileAndData(x + Direction::STEP_X[testDirection], y, z + Direction::STEP_Z[testDirection], id, 1 << right);
-                    }
-                    // attempt to grow around corners, but only if the
-                    // base tile is solid
-                    else if ((currentFacings & (1 << left)) != 0
-                            && level->isEmptyTile(x + Direction::STEP_X[testDirection] + Direction::STEP_X[left], y, z + Direction::STEP_Z[testDirection] + Direction::STEP_Z[left])
-                            && isAcceptableNeighbor(level->getTile(x + Direction::STEP_X[left], y, z + Direction::STEP_Z[left])))
+						level->setTileAndData(x + Direction::STEP_X[testDirection], y, z + Direction::STEP_Z[testDirection], id, 1 << right, Tile::UPDATE_CLIENTS);
+					}
+					// attempt to grow around corners, but only if the
+					// base tile is solid
+					else if ((currentFacings & (1 << left)) != 0
+						&& level->isEmptyTile(x + Direction::STEP_X[testDirection] + Direction::STEP_X[left], y, z + Direction::STEP_Z[testDirection] + Direction::STEP_Z[left])
+						&& isAcceptableNeighbor(level->getTile(x + Direction::STEP_X[left], y, z + Direction::STEP_Z[left])))
 					{
-                        level->setTileAndData(x + Direction::STEP_X[testDirection] + Direction::STEP_X[left], y, z + Direction::STEP_Z[testDirection] + Direction::STEP_Z[left], id,
-                                1 << ((testDirection + 2) & 3));
-                    }
+						level->setTileAndData(x + Direction::STEP_X[testDirection] + Direction::STEP_X[left], y, z + Direction::STEP_Z[testDirection] + Direction::STEP_Z[left], id,
+							1 << ((testDirection + 2) & 3), Tile::UPDATE_CLIENTS);
+					}
 					else if ((currentFacings & (1 << right)) != 0
-                            && level->isEmptyTile(x + Direction::STEP_X[testDirection] + Direction::STEP_X[right], y, z + Direction::STEP_Z[testDirection] + Direction::STEP_Z[right])
-                            && isAcceptableNeighbor(level->getTile(x + Direction::STEP_X[right], y, z + Direction::STEP_Z[right])))
+						&& level->isEmptyTile(x + Direction::STEP_X[testDirection] + Direction::STEP_X[right], y, z + Direction::STEP_Z[testDirection] + Direction::STEP_Z[right])
+						&& isAcceptableNeighbor(level->getTile(x + Direction::STEP_X[right], y, z + Direction::STEP_Z[right])))
 					{
-                        level->setTileAndData(x + Direction::STEP_X[testDirection] + Direction::STEP_X[right], y, z + Direction::STEP_Z[testDirection] + Direction::STEP_Z[right], id,
-                                1 << ((testDirection + 2) & 3));
-                    }
-                    // attempt to grow onto the ceiling
-                    else if (isAcceptableNeighbor(level->getTile(x + Direction::STEP_X[testDirection], y + 1, z + Direction::STEP_Z[testDirection])))
+						level->setTileAndData(x + Direction::STEP_X[testDirection] + Direction::STEP_X[right], y, z + Direction::STEP_Z[testDirection] + Direction::STEP_Z[right], id,
+							1 << ((testDirection + 2) & 3), Tile::UPDATE_CLIENTS);
+					}
+					// attempt to grow onto the ceiling
+					else if (isAcceptableNeighbor(level->getTile(x + Direction::STEP_X[testDirection], y + 1, z + Direction::STEP_Z[testDirection])))
 					{
-                        level->setTileAndData(x + Direction::STEP_X[testDirection], y, z + Direction::STEP_Z[testDirection], id, 0);
-                    }
+						level->setTileAndData(x + Direction::STEP_X[testDirection], y, z + Direction::STEP_Z[testDirection], id, 0, Tile::UPDATE_CLIENTS);
+					}
 
-                }
+				}
 				else if (Tile::tiles[edgeTile]->material->isSolidBlocking() && Tile::tiles[edgeTile]->isCubeShaped())
 				{
-                    // we have a wall that we can cling to
-                    level->setData(x, y, z, currentFacings | (1 << testDirection));
-                }
-            }
-            // growing downwards happens more often than the other
-            // directions
-            else if (y > 1)
+					// we have a wall that we can cling to
+					level->setData(x, y, z, currentFacings | (1 << testDirection), Tile::UPDATE_CLIENTS);
+				}
+			}
+			// growing downwards happens more often than the other
+			// directions
+			else if (y > 1)
 			{
-                int belowTile = level->getTile(x, y - 1, z);
-                // grow downwards into air
-                if (belowTile == 0)
+				int belowTile = level->getTile(x, y - 1, z);
+				// grow downwards into air
+				if (belowTile == 0)
 				{
-                    int spawnFacings = level->random->nextInt(16) & currentFacings;
-                    if (spawnFacings > 0)
+					int spawnFacings = level->random->nextInt(16) & currentFacings;
+					if (spawnFacings > 0)
 					{
-                        level->setTileAndData(x, y - 1, z, id, spawnFacings);
-                    }
-                }
+						level->setTileAndData(x, y - 1, z, id, spawnFacings, Tile::UPDATE_CLIENTS);
+					}
+				}
 				else if (belowTile == id)
 				{
-                    int spawnFacings = level->random->nextInt(16) & currentFacings;
-                    int belowData = level->getData(x, y - 1, z);
-                    if (belowData != (belowData | spawnFacings)) {
-                        level->setData(x, y - 1, z, belowData | spawnFacings);
-                    }
-                }
-            }
-        }
+					int spawnFacings = level->random->nextInt(16) & currentFacings;
+					int belowData = level->getData(x, y - 1, z);
+					if (belowData != (belowData | spawnFacings))
+					{
+						level->setData(x, y - 1, z, belowData | spawnFacings, Tile::UPDATE_CLIENTS);
+					}
+				}
+			}
+		}
 	}
 }
 
@@ -377,11 +378,11 @@ void VineTile::playerDestroy(Level *level, shared_ptr<Player>player, int x, int 
 			GenericStats::param_blocksMined(id,data,1)
 			);
 
-        // drop leaf block instead of sapling
-        popResource(level, x, y, z, shared_ptr<ItemInstance>(new ItemInstance(Tile::vine, 1, 0)));
-    }
+		// drop leaf block instead of sapling
+		popResource(level, x, y, z, shared_ptr<ItemInstance>(new ItemInstance(Tile::vine, 1, 0)));
+	}
 	else
 	{
-        Tile::playerDestroy(level, player, x, y, z, data);
-    }
+		Tile::playerDestroy(level, player, x, y, z, data);
+	}
 }

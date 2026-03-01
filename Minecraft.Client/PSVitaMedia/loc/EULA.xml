@@ -1,7 +1,7 @@
-<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<root xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
 	<data name="IDS_EULA">
-		<value>Minecraft: PlayStation®Vita Edition - TERMS OF USE
+		<value>      Minecraft: PlayStation®Vita Edition - TERMS OF USE
       These Terms set out some rules for using Minecraft: PlayStation®Vita Edition ("Minecraft"). In order to protect Minecraft and the members of our community, we need these terms to set out some rules for downloading and using Minecraft. We don't like rules any more than you do, so we have tried to keep this as short as possible but if you buy, download, use or play Minecraft, you are agreeing to stick to these terms ("Terms").
       Before we get going there is one thing we want to make really clear. Minecraft is a game that allows players to build and break things. If you play with other people (multiplayer) you can build with them or you can break what they have been building - and they can do the same to you. So don't play with other people if they don't behave like you want them to. Also sometimes people do things that they shouldn't. We don't like it but there is not a lot we can do to stop it except ask that everyone behaves properly. We rely on you and others like you in the community to let us know if someone isn’t behaving properly and if that is the case and / or you think someone is breaching the rules or these Terms or using Minecraft improperly please do tell us. We have a flagging / reporting system for doing that so please use it and we will do what is necessary to deal with it.
       To flag or report any issues please email us at support@mojang.com and give us as much information as you can such as the user's details and what has happened.
@@ -15,10 +15,10 @@
       ...and so that we are crystal clear, what we have made includes, but is not limited to, the client or the server software for Minecraft. It also includes modified versions of a Game, part of it or anything else we've made.
       Otherwise we are quite relaxed about what you do - in fact we really encourage you to do cool stuff (see below) - but just don't do those things that we say you can't.
       USING MINECRAFT
-      • You have bought Minecraft so you can use it, yourself, on your PlayStation®Vita system .
+      • You have bought Minecraft so you can use it, yourself, on your PlayStation®Vita system.
       • Below we also give you limited rights to do other things but we have to draw a line somewhere or else people will go too far. If you wish to make something related to anything we've made we're humbled, but please make sure that it can't be interpreted as being official and that it complies with these Terms  and above all do not make commercial use of anything we've made.
       • The permission we give you to use and play Minecraft can be revoked if you break these Terms.
-      • When you buy Minecraft, we give you permission to install Minecraft on your own PlayStation®Vita system  and use and play it on that PlayStation®Vita system  as set out in these Terms. This permission is personal to you, so you are not allowed to distribute Minecraft (or any part of it) to anyone else (except as expressly permitted by us of course).
+      • When you buy Minecraft, we give you permission to install Minecraft on your own PlayStation®Vita system and use and play it on that PlayStation®Vita system as set out in these Terms. This permission is personal to you, so you are not allowed to distribute Minecraft (or any part of it) to anyone else (except as expressly permitted by us of course).
       • Within reason you're free to do whatever you want with screenshots and videos of Minecraft. By "within reason" we mean that you can't make any commercial use of them or do things that are unfair or adversely affect our rights. Also, don't just rip art resources and pass them around, that's no fun.
       • Essentially the simple rule is do not make commercial use of anything we've made unless specifically agreed by us, either in our brand and asset usage guidelines or under these Terms. Oh and if the law expressly allows it, such as under a "fair use" or "fair dealing" doctrine then that's ok too – but only to the extent that the law says so.
       OWNERSHIP OF MINECRAFT AND OTHER THINGS
@@ -55,7 +55,7 @@
       • the views expressed in any User Content are the views of the individual authors or creators and not us or anyone connected with us unless we specify otherwise;
       • we are not responsible for (and make no warranty or representation in relation to and disclaim all liability for) all User Content including any comments, views or remarks expressed in it;
       • by using Minecraft you acknowledge that we have no responsibility to review the content of any User Content and that all User Content is made available on the basis that we are not required to and do not exercise any control or judgement over it.
-      HOWEVER we (or our licensees like Sony Computer Entertainment) may remove, reject or suspend access to any User Content and remove or suspend your ability to post, make available or access User Content – including removing or suspending access to Minecraft or the "PSN" if we consider it is appropriate to do so, such as because you have breached these Terms or we receive a complaint. We will also act expeditiously to remove or disable access to User Content if and when we have actual knowledge of it being unlawful.
+      HOWEVER we (or our licensees like Sony Computer Entertainment) may remove, reject or suspend access to any User Content and remove or suspend your ability to post, make available or access User Content – including removing or suspending access to Minecraft or "PSN" if we consider it is appropriate to do so, such as because you have breached these Terms or we receive a complaint. We will also act expeditiously to remove or disable access to User Content if and when we have actual knowledge of it being unlawful.
       UPGRADES
       • We might make upgrades and updates available from time to time, but we don't have to. We are also not obliged to provide ongoing support or maintenance of any game. Of course, we hope to continue to release new updates for Minecraft, we just can't guarantee that we will do so.
       OUR LIABILITY
@@ -66,7 +66,7 @@
       • ANY BREACH OF THESE TERMS BY YOU;
       • ANY BREACH OF ANY TERMS BY ANY OTHER PERSON.
       TERMINATION
-      • If we want we can terminate your right to use Minecraft if you breach these Terms. You can terminate it too, at any time, all you have to do is uninstall Minecraft from your PlayStation®Vita system . In any case the paragraphs about "Ownership of Minecraft", "Our Liability" and "General Stuff" will continue to apply even after termination.
+      • If we want we can terminate your right to use Minecraft if you breach these Terms. You can terminate it too, at any time, all you have to do is uninstall Minecraft from your PlayStation®Vita system. In any case the paragraphs about "Ownership of Minecraft", "Our Liability" and "General Stuff" will continue to apply even after termination.
       GENERAL STUFF
       • These Terms are subject to any legal rights you might have. Nothing in these Terms will limit any of your rights that may not be excluded under law nor shall it exclude or limit our liability for death or personal injury resulting from our negligence nor any fraudulent representation.
       • We may also change these Terms from time to time but those changes will only be effective to the extent that they can legally apply. For example if you only use Minecraft in single player mode and don't use the updates we make available then the old EULA applies but if you do use the updates or use parts of Minecraft that rely on our providing ongoing online services then the new EULA will apply. In that case we may not be able to / don't need to tell you about the changes for them to have effect so you should check back here from time to time so you are aware of any changes to these Terms. We're not going to be unfair about this though - but sometimes the law changes or someone does something that affects other users of Minecraft and we therefore need to put a lid on it.
@@ -80,13 +80,18 @@
       SE-11853
       Stockholm
       Sweden
-      Organization number: 556819-2388</value>
+      Organization number: 556819-2388
+</value>
 	</data>
 	<data name="IDS_EULA_SCEE">
-		<value>Any content purchased in an in-game store will be purchased from Sony Network Entertainment Europe Limited ("SNEE") and be subject to Sony Entertainment Network Terms of Service and User Agreement which is available on the PlayStation®Store. Please check usage rights for each purchase as these may differ from item to item. Unless otherwise shown, content available in any in-game store has the same age rating as the game.</value>
+		<value>
+      Any content purchased in an in-game store will be purchased from Sony Network Entertainment Europe Limited ("SNEE") and be subject to Sony Entertainment Network Terms of Service and User Agreement which is available on the PlayStation®Store. Please check usage rights for each purchase as these may differ from item to item. Unless otherwise shown, content available in any in-game store has the same age rating as the game.
+    </value>
 	</data>
 	<data name="IDS_EULA_SCEA">
-		<value>Purchase and use of items are subject to the Network Terms of Service and User Agreement. This online service has been sublicensed to you by Sony Computer Entertainment America.</value>
+		<value>
+  Purchase and use of items are subject to the Network Terms of Service and User Agreement. This online service has been sublicensed to you by Sony Computer Entertainment America.
+    </value>
 	</data>
 	<data name="IDS_EULA_SCEE_BD">
 		<value>Remember: Use of this software is subject to the Software Usage Terms at eu.playstation.com/legal.</value>

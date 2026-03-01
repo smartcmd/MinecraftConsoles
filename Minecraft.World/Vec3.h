@@ -56,4 +56,8 @@ public:
 
 	// 4J Added
 	double distanceTo(AABB *box);
+
+	Vec3* closestPointOnLine(Vec3* p1, Vec3* p2);
+	double distanceFromLine(Vec3* p1, Vec3* p2);
+
 };

@@ -20,3 +20,5 @@ const int Facing::STEP_Z[6] =
 {
 	0, 0, -1, 1, 0, 0
 };
+
+const wstring Facing::NAMES[] = {L"DOWN", L"UP", L"NORTH", L"SOUTH", L"WEST", L"EAST"};

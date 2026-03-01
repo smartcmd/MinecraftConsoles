@@ -2,16 +2,16 @@
 
 #include "Slot.h"
 
-class RepairMenu;
+class AnvilMenu;
 
 class RepairResultSlot : public Slot
 {
 private:
-	RepairMenu *m_menu;
+	AnvilMenu *m_menu;
 	int xt, yt, zt;
 
 public:
-	RepairResultSlot(RepairMenu *menu, int xt, int yt, int zt, shared_ptr<Container> container, int slot, int x, int y);
+	RepairResultSlot(AnvilMenu *menu, int xt, int yt, int zt, shared_ptr<Container> container, int slot, int x, int y);
 
 	bool mayPlace(shared_ptr<ItemInstance> item);
 	bool mayPickup(shared_ptr<Player> player);

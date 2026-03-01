@@ -6,6 +6,9 @@ class HugeMushroomTile : public Tile
 {
 	friend class ChunkRebuildData;
 public:
+	static const int MUSHROOM_TYPE_BROWN = 0;
+	static const int MUSHROOM_TYPE_RED = 1;
+
 	static const wstring TEXTURE_STEM;
 	static const wstring TEXTURE_INSIDE;
 
@@ -18,9 +21,9 @@ private:
 	Icon *iconInside;
 public:
 	HugeMushroomTile(int id, Material *material, int type);
-    Icon *getTexture(int face, int data);
-    int getResourceCount(Random *random);
-    int getResource(int data, Random *random, int playerBonusLevel);
+	Icon *getTexture(int face, int data);
+	int getResourceCount(Random *random);
+	int getResource(int data, Random *random, int playerBonusLevel);
 	int cloneTileId(Level *level, int x, int y, int z);
 	void registerIcons(IconRegister *iconRegister);
 };

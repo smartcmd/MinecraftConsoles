@@ -18,7 +18,7 @@ public:
 
 	//virtual void playSound(const wstring& name, double x, double y, double z, float volume, float pitch) = 0;
 	virtual void playSound(int iSound, double x, double y, double z, float volume, float pitch, float fSoundClipDist=16.0f) = 0;
-	virtual void playSound(shared_ptr<Entity> entity,int iSound, double x, double y, double z, float volume, float pitch, float fSoundClipDist=16.0f) = 0;
+	virtual void playSoundExceptPlayer(shared_ptr<Player> player, int iSound, double x, double y, double z, float volume, float pitch, float fSoundClipDist=16.0f) = 0;
 
 	// 4J removed - virtual void addParticle(const wstring& name, double x, double y, double z, double xa, double ya, double za) = 0;
 
@@ -33,7 +33,7 @@ public:
 	virtual void skyColorChanged() = 0;
 
 	virtual void playStreamingMusic(const wstring& name, int x, int y, int z) = 0;
-
+	virtual void globalLevelEvent(int type, int sourceX, int sourceY, int sourceZ, int data) = 0;
 	virtual void levelEvent(shared_ptr<Player> source, int type, int x, int y, int z, int data) = 0;
 
 	virtual void destroyTileProgress(int id, int x, int y, int z, int progress) = 0;

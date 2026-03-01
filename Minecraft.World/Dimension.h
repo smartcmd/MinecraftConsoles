@@ -12,44 +12,47 @@ class LevelType;
 class Dimension
 {
 public:
-    Level *level;
-	LevelType *levelType;
-    BiomeSource *biomeSource;
-    bool ultraWarm ;
-    bool hasCeiling;
-    float *brightnessRamp;
-    int id;
+	static const float MOON_BRIGHTNESS_PER_PHASE[8];
 
-    virtual void init(Level *level);
+	Level *level;
+	LevelType *levelType;
+	wstring levelTypeOptions;
+	BiomeSource *biomeSource;
+	bool ultraWarm ;
+	bool hasCeiling;
+	float *brightnessRamp;
+	int id;
+
+	virtual void init(Level *level);
 
 protected:
-    virtual void updateLightRamp();
-    virtual void init();
+	virtual void updateLightRamp();
+	virtual void init();
 
 public:
 	Dimension();
 	~Dimension();
 	virtual ChunkSource *createRandomLevelSource() const;
 	virtual ChunkSource *createFlatLevelSource() const;
-    virtual ChunkStorage *createStorage(File dir);
+	virtual ChunkStorage *createStorage(File dir);
 
-    virtual bool isValidSpawn(int x, int z) const;
+	virtual bool isValidSpawn(int x, int z) const;
 
-    virtual float getTimeOfDay(__int64 time, float a) const;
-	virtual int getMoonPhase(__int64 time, float a) const;
+	virtual float getTimeOfDay(__int64 time, float a) const;
+	virtual int getMoonPhase(__int64 time) const;
 	virtual bool isNaturalDimension();
 private:
-    static const int fogColor = 0xc0d8ff;
+	static const int fogColor = 0xc0d8ff;
 
-    float sunriseCol[4];
+	float sunriseCol[4];
 
 public:
-    virtual float *getSunriseColor(float td, float a);
-    virtual Vec3 *getFogColor(float td, float a) const;
-    virtual bool mayRespawn() const;
-    static Dimension *getNew(int id);
-    virtual float getCloudHeight();
-    virtual bool hasGround();
+	virtual float *getSunriseColor(float td, float a);
+	virtual Vec3 *getFogColor(float td, float a) const;
+	virtual bool mayRespawn() const;
+	static Dimension *getNew(int id);
+	virtual float getCloudHeight();
+	virtual bool hasGround();
 	virtual Pos *getSpawnPos();
 
 	int getSpawnYPosition();

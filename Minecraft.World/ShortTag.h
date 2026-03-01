@@ -9,7 +9,7 @@ public:
 	ShortTag(const wstring &name, int data) : Tag(name) {this->data = data; }
 	
 	void write(DataOutput *dos) { dos->writeShort(data); }
-	void load(DataInput *dis) { data = dis->readShort(); }
+	void load(DataInput *dis, int tagDepth) { data = dis->readShort(); }
 
 	byte getId() { return TAG_Short; }
 	wstring toString()

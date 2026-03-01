@@ -1,6 +1,8 @@
 #include "stdafx.h"
-#include "net.minecraft.world.entity.ai.control.h"
 #include "net.minecraft.world.entity.h"
+#include "net.minecraft.world.entity.ai.attributes.h"
+#include "net.minecraft.world.entity.ai.control.h"
+#include "net.minecraft.world.entity.monster.h"
 #include "net.minecraft.world.phys.h"
 #include "MoveControl.h"
 
@@ -14,7 +16,7 @@ MoveControl::MoveControl(Mob *mob)
 	wantedY = mob->y;
 	wantedZ = mob->z;
 
-	speed = 0.0f;
+	speedModifier = 0.0;
 
 	_hasWanted = false;
 }
@@ -24,17 +26,17 @@ bool MoveControl::hasWanted()
 	return _hasWanted;
 }
 
-float MoveControl::getSpeed()
+double MoveControl::getSpeedModifier()
 {
-	return speed;
+	return speedModifier;
 }
 
-void MoveControl::setWantedPosition(double x, double y, double z, float speed)
+void MoveControl::setWantedPosition(double x, double y, double z, double speedModifier)
 {
 	wantedX = x;
 	wantedY = y;
 	wantedZ = z;
-	this->speed = speed;
+	this->speedModifier = speedModifier;
 	_hasWanted = true;
 }
 
@@ -55,7 +57,7 @@ void MoveControl::tick()
 	float yRotD = (float) (atan2(zd, xd) * 180 / PI) - 90;
 
 	mob->yRot = rotlerp(mob->yRot, yRotD, MAX_TURN);
-	mob->setSpeed(speed * mob->getWalkingSpeedModifier());
+	mob->setSpeed((float) (speedModifier * mob->getAttribute(SharedMonsterAttributes::MOVEMENT_SPEED)->getValue()));
 
 	if (yd > 0 && xd * xd + zd * zd < 1) mob->getJumpControl()->jump();
 }
