@@ -2,7 +2,7 @@
 #include "net.minecraft.world.level.tile.h"
 #include "TickNextTickData.h"
 
-__int64 TickNextTickData::C = 0;
+int64_t TickNextTickData::C = 0;
 
 TickNextTickData::TickNextTickData(int x, int y, int z, int tileId)
 {
@@ -34,7 +34,7 @@ int TickNextTickData::hashCode() const
 	return (((x * 1024 * 1024) + (z * 1024) + y) * 256);
 }
 
-TickNextTickData *TickNextTickData::delay(__int64 l)
+TickNextTickData *TickNextTickData::delay(int64_t l)
 {
 	m_delay = l;
 	return this;

@@ -1,5 +1,9 @@
 #pragma once
-using namespace std;
+
+#include <cstdint>
+#include <vector>
+#include <string>
+
 // 4J Stu - Represents java standard library class
 
 class FileFilter;
@@ -24,11 +28,11 @@ public:
 	bool exists() const;
 	bool isFile() const;
 	bool renameTo(File dest);
-	vector<File *> *listFiles() const; // Array
-	vector<File *> *listFiles(FileFilter *filter) const;
+	std::vector<File *> *listFiles() const; // Array
+	std::vector<File *> *listFiles(FileFilter *filter) const;
 	bool isDirectory() const;
-	__int64 length();
-	__int64 lastModified();
+	int64_t length();
+	int64_t lastModified();
 	const wstring getPath() const; // 4J Jev: TODO
 	wstring getName() const;
 
@@ -43,14 +47,12 @@ private:
 	//File(vector<wstring> *path);
 };
 
-typedef struct
+struct FileKeyHash
 {
-	int operator() (const File &k) const { return File::hash_fnct(k); }
+	int operator() (const File &k) const;
+};
 
-} FileKeyHash;
-
-typedef struct
+struct FileKeyEq
 {
-	bool operator() (const File &x, const File &y) const {return File::eq_test(x,y); }
-
-} FileKeyEq;
+	bool operator() (const File &x, const File &y) const;
+};

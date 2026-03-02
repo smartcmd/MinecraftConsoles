@@ -360,8 +360,11 @@ void UIScene_MainMenu::handlePress(F64 controlId, F64 childId)
 		signInReturnedFunc = &UIScene_MainMenu::UnlockFullGame_SignInReturned;
 		break;
 	case eControl_Exit:
+		//CD - Added for audio
+		ui.PlayUISFX(eSFX_Press);
+
 		if( ProfileManager.IsFullVersion() )
-		{				
+		{
 			UINT uiIDA[2];
 			uiIDA[0]=IDS_CANCEL;
 			uiIDA[1]=IDS_OK;

@@ -542,13 +542,15 @@ private:
 #endif
 };
 
-typedef struct
+struct PlayerKeyHash
 {
-	int operator() (const shared_ptr<Player> k) const { return Player::hash_fnct (k); }
+	inline int operator() (const shared_ptr<Player> k) const 
+	{ return Player::hash_fnct (k); }
+};
 
-} PlayerKeyHash;
-
-typedef struct
+struct PlayerKeyEq
 {
-	bool operator() (const shared_ptr<Player> x, const shared_ptr<Player> y) const { return Player::eq_test (x, y); }
-} PlayerKeyEq;
+	inline bool operator() (const shared_ptr<Player> x, const shared_ptr<Player> y) const 
+	{ return Player::eq_test (x, y); }
+};
+
