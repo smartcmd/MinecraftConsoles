@@ -55,7 +55,7 @@ cmake -S . -B build -G "Visual Studio 17 2022" -A x64
 cmake --build build --config Debug --target MinecraftClient
 ```
 
-For more informatio, see [COMPILE.md](COMPILE.md)
+For more information, see [COMPILE.md](COMPILE.md)
 
 ## Known Issues
 
