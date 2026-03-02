@@ -19,7 +19,7 @@ typedef enum _TEXTURE_NAME
 	TN__BLUR__MISC_PUMPKINBLUR,
 //	TN__BLUR__MISC_VIGNETTE,		// Not currently used
 	TN__CLAMP__MISC_SHADOW,
-//	TN_ACHIEVEMENT_BG,				// Not currently used
+	TN_ACHIEVEMENT_BG,				// Not currently used
 	TN_ART_KZ,
 	TN_ENVIRONMENT_CLOUDS,
 	TN_ENVIRONMENT_RAIN,
