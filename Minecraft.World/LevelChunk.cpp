@@ -699,9 +699,9 @@ void LevelChunk::recheckGaps(bool bForce)
 	// to light massive gaps between the height of 0 and whatever heights are in those.
 	if( isEmpty() ) return;
 
-	// 4J added
-	int minXZ = - (level->dimension->getXZSize() * 16 ) / 2;
-	int maxXZ = (level->dimension->getXZSize() * 16 ) / 2 - 1;
+	// 4J added - use MAX_LEVEL_SIZE for infinite world support
+	int minXZ = -Level::MAX_LEVEL_SIZE;
+	int maxXZ = Level::MAX_LEVEL_SIZE - 1;
 
 	// 4J - note - this test will currently return true for chunks at the edge of our world. Making further checks inside the loop now to address this issue.
     if (level->hasChunksAt(x * 16 + 8, Level::maxBuildHeight / 2, z * 16 + 8, 16))

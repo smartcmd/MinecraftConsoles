@@ -4,10 +4,13 @@
 class ProgressListener;
 class TilePos;
 
-// The maximum number of chunks that we can store
+// The maximum number of chunks for the world.
+// For infinite worlds (_LARGE_WORLDS), this is kept at a very large value
+// so that structure generation code (villages, strongholds, etc.) still works.
+// The actual chunk cache is now unbounded (hash map); this constant is only
+// used for structure placement limits and similar range checks.
 #ifdef _LARGE_WORLDS
-// 4J Stu - Our default map (at zoom level 3) is 1024x1024 blocks (or 64 chunks)
-#define LEVEL_MAX_WIDTH (5*64) //(6*54)
+#define LEVEL_MAX_WIDTH (1875000)  // 30,000,000 blocks / 16 = effectively infinite kinda :3
 #else
 #define LEVEL_MAX_WIDTH 54
 #endif

@@ -498,9 +498,7 @@ public:
 
 	int64_t						m_timeOfDayOverride;
 
-	// 4J - optimisation - keep direct reference of underlying cache here
-	LevelChunk					**chunkSourceCache;
-	int							chunkSourceXZSize;
+	// Removed chunkSourceCache/chunkSourceXZSize: replaced by virtual dispatch for infinite world support
 
 	// 4J - added for implementation of finite limit to number of item entities, tnt and falling block entities
 public:

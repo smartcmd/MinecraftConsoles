@@ -14,9 +14,6 @@
 
 ServerChunkCache::ServerChunkCache(ServerLevel *level, ChunkStorage *storage, ChunkSource *source)
 {
-	XZSIZE = source->m_XZSize; // 4J Added
-	XZOFFSET = XZSIZE/2; // 4J Added
-
 	autoCreate = false;	// 4J added
     
 	emptyChunk = new EmptyLevelChunk(level, byteArray( Level::CHUNK_TILE_COUNT ), 0, 0);
@@ -24,15 +21,9 @@ ServerChunkCache::ServerChunkCache(ServerLevel *level, ChunkStorage *storage, Ch
     this->level = level;
     this->storage = storage;
     this->source = source;
+	// For infinite worlds, m_XZSize is no longer used for cache sizing.
+	// Keep it at a large value so code that reads it (e.g. dimension getXZSize) still works.
 	this->m_XZSize = source->m_XZSize;
-
-	this->cache = new LevelChunk *[XZSIZE * XZSIZE];
-	memset(this->cache, 0, XZSIZE * XZSIZE * sizeof(LevelChunk *));
-
-#ifdef _LARGE_WORLDS
-	m_unloadedCache = new LevelChunk *[XZSIZE * XZSIZE];
-	memset(m_unloadedCache, 0, XZSIZE * XZSIZE * sizeof(LevelChunk *));
-#endif
 
 	InitializeCriticalSectionAndSpinCount(&m_csLoadCreate,4000);
 }
@@ -41,15 +32,12 @@ ServerChunkCache::ServerChunkCache(ServerLevel *level, ChunkStorage *storage, Ch
 ServerChunkCache::~ServerChunkCache()
 {
 	delete emptyChunk;
-	delete cache;
 	delete source;
 
 #ifdef _LARGE_WORLDS
-	for(unsigned int i = 0; i < XZSIZE * XZSIZE; ++i)
-	{
-		delete m_unloadedCache[i];
-	}
-	delete m_unloadedCache;
+	for (auto &kv : m_unloadedMap)
+		delete kv.second;
+	m_unloadedMap.clear();
 #endif
 
 	AUTO_VAR(itEnd, m_loadedChunkList.end());
@@ -60,18 +48,12 @@ ServerChunkCache::~ServerChunkCache()
 
 bool ServerChunkCache::hasChunk(int x, int z)
 {
-	int ix = x + XZOFFSET;
-	int iz = z + XZOFFSET;
-	// Check we're in range of the stored level
-	// 4J Stu - Request for chunks outside the range always return an emptyChunk, so just return true here to say we have it
-	// If we return false entities less than 2 chunks from the edge do not tick properly due to them requiring a certain radius
-	// of chunks around them when they tick
-	if( ( ix < 0 ) || ( ix >= XZSIZE ) ) return true;
-	if( ( iz < 0 ) || ( iz >= XZSIZE ) ) return true;
-	int idx = ix * XZSIZE + iz;
-	LevelChunk *lc = cache[idx];
-	if( lc == NULL ) return false;
-	return true;
+	// Infinite worlds: any coordinate is valid; check if chunk is loaded
+	EnterCriticalSection(&m_csLoadCreate);
+	auto it = m_chunkMap.find(chunkKey(x, z));
+	bool result = (it != m_chunkMap.end() && it->second != NULL);
+	LeaveCriticalSection(&m_csLoadCreate);
+	return result;
 }
 
 vector<LevelChunk *> *ServerChunkCache::getLoadedChunkList()
@@ -81,40 +63,12 @@ vector<LevelChunk *> *ServerChunkCache::getLoadedChunkList()
 
 void ServerChunkCache::drop(int x, int z)
 {
-	// 4J - we're not dropping things anymore now that we have a fixed sized cache
 #ifdef _LARGE_WORLDS
-
-	bool canDrop = false;
-//	if (level->dimension->mayRespawn())
-//	{
-//		Pos *spawnPos = level->getSharedSpawnPos();
-//		int xd = x * 16 + 8 - spawnPos->x;
-//		int zd = z * 16 + 8 - spawnPos->z;
-//		delete spawnPos;
-//		int r = 128;
-//		if (xd < -r || xd > r || zd < -r || zd > r)
-//		{
-//			canDrop = true;
-//}
-//	}
-//	else
+	int64_t key = chunkKey(x, z);
+	auto it = m_chunkMap.find(key);
+	if (it != m_chunkMap.end() && it->second != NULL)
 	{
-		canDrop = true;
-	}
-	if(canDrop)
-	{
-		int ix = x + XZOFFSET;
-		int iz = z + XZOFFSET;
-		// Check we're in range of the stored level
-		if( ( ix < 0 ) || ( ix >= XZSIZE ) ) return;
-		if( ( iz < 0 ) || ( iz >= XZSIZE ) ) return;
-		int idx = ix * XZSIZE + iz;
-		LevelChunk *chunk = cache[idx];
-
-		if(chunk)
-		{
-			m_toDrop.push_back(chunk);
-		}
+		m_toDrop.push_back(it->second);
 	}
 #endif
 }
@@ -137,108 +91,71 @@ LevelChunk *ServerChunkCache::create(int x, int z)
 
 LevelChunk *ServerChunkCache::create(int x, int z, bool asyncPostProcess)	// 4J - added extra parameter
 {
-	int ix = x + XZOFFSET;
-	int iz = z + XZOFFSET;
-	// Check we're in range of the stored level
-	if( ( ix < 0 ) || ( ix >= XZSIZE ) ) return emptyChunk;
-	if( ( iz < 0 ) || ( iz >= XZSIZE ) ) return emptyChunk;
-	int idx = ix * XZSIZE + iz;
+	int64_t key = chunkKey(x, z);
 
-	LevelChunk *chunk = cache[idx];
-	LevelChunk *lastChunk = chunk;
+	EnterCriticalSection(&m_csLoadCreate);
 
-	if( ( chunk == NULL ) || ( chunk->x != x ) || ( chunk->z != z ) )
+	// Check under lock
 	{
-		EnterCriticalSection(&m_csLoadCreate);
-        chunk = load(x, z);
-        if (chunk == NULL)
+		auto it = m_chunkMap.find(key);
+		if (it != m_chunkMap.end() && it->second != NULL)
 		{
-            if (source == NULL)
-			{
-                chunk = emptyChunk;
-            }
-			else
-			{
-                chunk = source->getChunk(x, z);
-            }
-        }
-		if (chunk != NULL)
-		{
-			chunk->load();
-		}
-
-		LeaveCriticalSection(&m_csLoadCreate);
-
-#if ( defined _WIN64 || defined __LP64__ )
-		if( InterlockedCompareExchangeRelease64((LONG64 *)&cache[idx],(LONG64)chunk,(LONG64)lastChunk) == (LONG64)lastChunk )
-#else
-		if( InterlockedCompareExchangeRelease((LONG *)&cache[idx],(LONG)chunk,(LONG)lastChunk) == (LONG)lastChunk )
-#endif // _DURANGO
-		{
-			// Successfully updated the cache
-			EnterCriticalSection(&m_csLoadCreate);
-			// 4J - added - this will run a recalcHeightmap if source is a randomlevelsource, which has been split out from source::getChunk so that
-			// we are doing it after the chunk has been added to the cache - otherwise a lot of the lighting fails as lights aren't added if the chunk
-			// they are in fail ServerChunkCache::hasChunk.
-			source->lightChunk(chunk);
-
-			updatePostProcessFlags( x, z );
-
-			m_loadedChunkList.push_back(chunk);
-
-			// 4J - If post-processing is to be async, then let the server know about requests rather than processing directly here. Note that
-			// these hasChunk() checks appear to be incorrect - the chunks checked by these map out as:
-			//
-			// 1.		2.		3.		4.
-			// oxx		xxo		ooo		ooo
-			// oPx		Poo		oox		xoo
-			// ooo		ooo		oPx		Pxo
-			//
-			// where P marks the chunk that is being considered for postprocessing, and x marks chunks that needs to be loaded. It would seem that the
-			// chunks which need to be loaded should stay the same relative to the chunk to be processed, but the hasChunk checks in 3 cases check again
-			// the chunk which is to be processed itself rather than (what I presume to be) the correct position.
-			// Don't think we should change in case it alters level creation.
-
-			if( asyncPostProcess )
-			{
-				// 4J Stu - TODO This should also be calling the same code as chunk->checkPostProcess, but then we cannot guarantee we are in the server add the post-process request
-				if ( ( (chunk->terrainPopulated & LevelChunk::sTerrainPopulatedFromHere) == 0) && hasChunk(x + 1, z + 1) && hasChunk(x, z + 1) && hasChunk(x + 1, z)) MinecraftServer::getInstance()->addPostProcessRequest(this, x, z);
-				if (hasChunk(x - 1, z) && ((getChunk(x - 1, z)->terrainPopulated & LevelChunk::sTerrainPopulatedFromHere ) == 0 ) && hasChunk(x - 1, z + 1) && hasChunk(x, z + 1) && hasChunk(x - 1, z)) MinecraftServer::getInstance()->addPostProcessRequest(this, x - 1, z);
-				if (hasChunk(x, z - 1) && ((getChunk(x, z - 1)->terrainPopulated & LevelChunk::sTerrainPopulatedFromHere ) == 0 ) && hasChunk(x + 1, z - 1) && hasChunk(x, z - 1) && hasChunk(x + 1, z)) MinecraftServer::getInstance()->addPostProcessRequest(this, x, z - 1);
-				if (hasChunk(x - 1, z - 1) && ((getChunk(x - 1, z - 1)->terrainPopulated & LevelChunk::sTerrainPopulatedFromHere ) == 0 ) && hasChunk(x - 1, z - 1) && hasChunk(x, z - 1) && hasChunk(x - 1, z)) MinecraftServer::getInstance()->addPostProcessRequest(this, x - 1, z - 1);
-			}
-			else
-			{
-				chunk->checkPostProcess(this, this, x, z);
-			}
-
-			// 4J - Now try and fix up any chests that were saved pre-1.8.2. We don't want to do this to this particular chunk as we don't know if all its neighbours are loaded yet, and we
-			// need the neighbours to be able to work out the facing direction for the chests. Therefore process any neighbouring chunk that loading this chunk would be the last neighbour for.
-			// 5 cases illustrated below, where P is the chunk to be processed, T is this chunk, and x are other chunks that need to be checked for being present
-
-			// 1.		2.		3.		4.		5.
-			// ooooo	ooxoo	ooooo	ooooo	ooooo
-			// oxooo	oxPxo	oooxo	ooooo	ooxoo
-			// xPToo	ooToo	ooTPx	ooToo	oxPxo	(in 5th case P and T are same)
-			// oxooo	ooooo	oooxo	oxPxo	ooxoo
-			// ooooo	ooooo	ooooo	ooxoo	ooooo
-
-			if( hasChunk( x - 1, z ) && hasChunk( x - 2, z ) && hasChunk( x - 1, z + 1 ) && hasChunk( x - 1, z - 1 ) ) chunk->checkChests( this, x - 1, z );
-			if( hasChunk( x, z + 1) && hasChunk( x , z + 2 ) && hasChunk( x - 1, z + 1 ) && hasChunk( x + 1, z + 1 ) ) chunk->checkChests( this, x, z + 1);
-			if( hasChunk( x + 1, z ) && hasChunk( x + 2, z ) && hasChunk( x + 1, z + 1 ) && hasChunk( x + 1, z - 1 ) ) chunk->checkChests( this, x + 1, z );
-			if( hasChunk( x, z - 1) && hasChunk( x , z - 2 ) && hasChunk( x - 1, z - 1 ) && hasChunk( x + 1, z - 1 ) ) chunk->checkChests( this, x, z - 1);
-			if( hasChunk( x - 1, z ) && hasChunk( x + 1, z ) && hasChunk ( x, z - 1 ) && hasChunk( x, z + 1 ) ) chunk->checkChests( this, x, z );
-
+			LevelChunk *existing = it->second;
 			LeaveCriticalSection(&m_csLoadCreate);
+			return existing;
 		}
+	}
+
+    LevelChunk *chunk = load(x, z);
+    if (chunk == NULL)
+	{
+        if (source == NULL)
+		{
+            chunk = emptyChunk;
+        }
 		else
 		{
-			// Something else must have updated the cache. Return that chunk and discard this one
-			chunk->unload(true);
-			delete chunk;
-			return cache[idx];
-		}
+            chunk = source->getChunk(x, z);
+        }
     }
+	if (chunk != NULL)
+	{
+		chunk->load();
+	}
+
+	m_chunkMap[key] = chunk;
+
+	// 4J - added - this will run a recalcHeightmap if source is a randomlevelsource, which has been split out from source::getChunk so that
+	// we are doing it after the chunk has been added to the cache - otherwise a lot of the lighting fails as lights aren't added if the chunk
+	// they are in fail ServerChunkCache::hasChunk.
+	source->lightChunk(chunk);
+
+	updatePostProcessFlags( x, z );
+
+	m_loadedChunkList.push_back(chunk);
+
+	// 4J - If post-processing is to be async, then let the server know about requests rather than processing directly here.
+	if( asyncPostProcess )
+	{
+		// 4J Stu - TODO This should also be calling the same code as chunk->checkPostProcess, but then we cannot guarantee we are in the server add the post-process request
+		if ( ( (chunk->terrainPopulated & LevelChunk::sTerrainPopulatedFromHere) == 0) && hasChunk(x + 1, z + 1) && hasChunk(x, z + 1) && hasChunk(x + 1, z)) MinecraftServer::getInstance()->addPostProcessRequest(this, x, z);
+		if (hasChunk(x - 1, z) && ((getChunk(x - 1, z)->terrainPopulated & LevelChunk::sTerrainPopulatedFromHere ) == 0 ) && hasChunk(x - 1, z + 1) && hasChunk(x, z + 1) && hasChunk(x - 1, z)) MinecraftServer::getInstance()->addPostProcessRequest(this, x - 1, z);
+		if (hasChunk(x, z - 1) && ((getChunk(x, z - 1)->terrainPopulated & LevelChunk::sTerrainPopulatedFromHere ) == 0 ) && hasChunk(x + 1, z - 1) && hasChunk(x, z - 1) && hasChunk(x + 1, z)) MinecraftServer::getInstance()->addPostProcessRequest(this, x, z - 1);
+		if (hasChunk(x - 1, z - 1) && ((getChunk(x - 1, z - 1)->terrainPopulated & LevelChunk::sTerrainPopulatedFromHere ) == 0 ) && hasChunk(x - 1, z - 1) && hasChunk(x, z - 1) && hasChunk(x - 1, z)) MinecraftServer::getInstance()->addPostProcessRequest(this, x - 1, z - 1);
+	}
+	else
+	{
+		chunk->checkPostProcess(this, this, x, z);
+	}
+
+	// 4J - Now try and fix up any chests that were saved pre-1.8.2.
+	if( hasChunk( x - 1, z ) && hasChunk( x - 2, z ) && hasChunk( x - 1, z + 1 ) && hasChunk( x - 1, z - 1 ) ) chunk->checkChests( this, x - 1, z );
+	if( hasChunk( x, z + 1) && hasChunk( x , z + 2 ) && hasChunk( x - 1, z + 1 ) && hasChunk( x + 1, z + 1 ) ) chunk->checkChests( this, x, z + 1);
+	if( hasChunk( x + 1, z ) && hasChunk( x + 2, z ) && hasChunk( x + 1, z + 1 ) && hasChunk( x + 1, z - 1 ) ) chunk->checkChests( this, x + 1, z );
+	if( hasChunk( x, z - 1) && hasChunk( x , z - 2 ) && hasChunk( x - 1, z - 1 ) && hasChunk( x + 1, z - 1 ) ) chunk->checkChests( this, x, z - 1);
+	if( hasChunk( x - 1, z ) && hasChunk( x + 1, z ) && hasChunk ( x, z - 1 ) && hasChunk( x, z + 1 ) ) chunk->checkChests( this, x, z );
+
+	LeaveCriticalSection(&m_csLoadCreate);
 
 #ifdef __PS3__
 	Sleep(1);
@@ -251,24 +168,14 @@ LevelChunk *ServerChunkCache::create(int x, int z, bool asyncPostProcess)	// 4J 
 // This is used when sharing server chunk data on the main thread
 LevelChunk *ServerChunkCache::getChunk(int x, int z)
 {
-	int ix = x + XZOFFSET;
-	int iz = z + XZOFFSET;
-	// Check we're in range of the stored level
-	if( ( ix < 0 ) || ( ix >= XZSIZE ) ) return emptyChunk;
-	if( ( iz < 0 ) || ( iz >= XZSIZE ) ) return emptyChunk;
-	int idx = ix * XZSIZE + iz;
+	EnterCriticalSection(&m_csLoadCreate);
+	auto it = m_chunkMap.find(chunkKey(x, z));
+	LevelChunk *chunk = (it != m_chunkMap.end() && it->second != NULL) ? it->second : NULL;
+	LeaveCriticalSection(&m_csLoadCreate);
 
-	LevelChunk *lc = cache[idx];
-	if( lc )
-	{
-		return lc;
-	}
-
-	if( level->isFindingSpawn || autoCreate )
-	{
+	if (chunk != NULL) return chunk;
+	if (level->isFindingSpawn || autoCreate)
 		return create(x, z);
-	}
-
 	return emptyChunk;
 }
 
@@ -279,29 +186,28 @@ LevelChunk *ServerChunkCache::getChunk(int x, int z)
 // As such it is really important that we don't return emptyChunk in these situations, when we actually still have the block/data/lighting in the unloaded cache
 LevelChunk *ServerChunkCache::getChunkLoadedOrUnloaded(int x, int z)
 {
-	int ix = x + XZOFFSET;
-	int iz = z + XZOFFSET;
-	// Check we're in range of the stored level
-	if( ( ix < 0 ) || ( ix >= XZSIZE ) ) return emptyChunk;
-	if( ( iz < 0 ) || ( iz >= XZSIZE ) ) return emptyChunk;
-	int idx = ix * XZSIZE + iz;
+	int64_t key = chunkKey(x, z);
 
-	LevelChunk *lc = cache[idx];
-	if( lc )
+	EnterCriticalSection(&m_csLoadCreate);
+	auto it = m_chunkMap.find(key);
+	if (it != m_chunkMap.end() && it->second != NULL)
 	{
-		return lc;
+		LevelChunk *chunk = it->second;
+		LeaveCriticalSection(&m_csLoadCreate);
+		return chunk;
 	}
 
-	lc = m_unloadedCache[idx];
-	if( lc )
+	auto it2 = m_unloadedMap.find(key);
+	if (it2 != m_unloadedMap.end() && it2->second != NULL)
 	{
-		return lc;
-}
+		LevelChunk *chunk = it2->second;
+		LeaveCriticalSection(&m_csLoadCreate);
+		return chunk;
+	}
+	LeaveCriticalSection(&m_csLoadCreate);
 
 	if( level->isFindingSpawn || autoCreate )
-	{
 		return create(x, z);
-	}
 
 	return emptyChunk;
 }
@@ -311,7 +217,7 @@ LevelChunk *ServerChunkCache::getChunkLoadedOrUnloaded(int x, int z)
 #ifdef _LARGE_WORLDS
 void ServerChunkCache::dontDrop(int x, int z)
 {
-	LevelChunk *chunk = getChunk(x,z);
+	LevelChunk *chunk = getChunk(x, z);
 	m_toDrop.erase(std::remove(m_toDrop.begin(), m_toDrop.end(), chunk), m_toDrop.end());
 }
 #endif
@@ -323,12 +229,15 @@ LevelChunk *ServerChunkCache::load(int x, int z)
     LevelChunk *levelChunk = NULL;
 
 #ifdef _LARGE_WORLDS
-	int ix = x + XZOFFSET;
-	int iz = z + XZOFFSET;
-	int idx = ix * XZSIZE + iz;
-	levelChunk = m_unloadedCache[idx];
-	m_unloadedCache[idx] = NULL;
-	if(levelChunk == NULL)
+	// Check the in-memory unloaded cache first before going to disk
+	int64_t key = chunkKey(x, z);
+	auto it = m_unloadedMap.find(key);
+	if (it != m_unloadedMap.end())
+	{
+		levelChunk = it->second;
+		m_unloadedMap.erase(it);
+	}
+	if (levelChunk == NULL)
 #endif
 	{
 		levelChunk = storage->load(level, x, z);
@@ -484,31 +393,7 @@ void ServerChunkCache::postProcess(ChunkSource *parent, int x, int z )
 		// chunks exist as that's determined before post-processing can even run
 		chunk->terrainPopulated |= LevelChunk::sTerrainPopulatedFromHere;
 
-		// If we are an edge chunk, fill in missing flags from sides that will never post-process
-		if(x == -XZOFFSET)						// Furthest west
-		{
-			chunk->terrainPopulated |= LevelChunk::sTerrainPopulatedFromW;
-			chunk->terrainPopulated |= LevelChunk::sTerrainPopulatedFromSW;
-			chunk->terrainPopulated |= LevelChunk::sTerrainPopulatedFromNW;
-		}
-		if(x == (XZOFFSET - 1 ))				// Furthest east
-		{
-			chunk->terrainPopulated |= LevelChunk::sTerrainPopulatedFromE;
-			chunk->terrainPopulated |= LevelChunk::sTerrainPopulatedFromSE;
-			chunk->terrainPopulated |= LevelChunk::sTerrainPopulatedFromNE;
-		}
-		if(z == -XZOFFSET)						// Furthest south
-		{
-			chunk->terrainPopulated |= LevelChunk::sTerrainPopulatedFromS;
-			chunk->terrainPopulated |= LevelChunk::sTerrainPopulatedFromSW;
-			chunk->terrainPopulated |= LevelChunk::sTerrainPopulatedFromSE;
-		}
-		if(z == (XZOFFSET - 1))					// Furthest north
-		{
-			chunk->terrainPopulated |= LevelChunk::sTerrainPopulatedFromN;
-			chunk->terrainPopulated |= LevelChunk::sTerrainPopulatedFromNW;
-			chunk->terrainPopulated |= LevelChunk::sTerrainPopulatedFromNE;
-		}
+		// Infinite worlds: no fixed world edges, so no edge-chunk special-casing needed.
 
 		// Set flags for post-processing being complete for neighbouring chunks. This also performs actions if this post-processing completes
 		// a full set of post-processing flags for one of these neighbours.
@@ -866,20 +751,19 @@ bool ServerChunkCache::tick()
 				LevelChunk *chunk = m_toDrop.front();
 				if(!chunk->isUnloaded())
 				{
-					save(chunk);
-					saveEntities(chunk);
-					chunk->unload(true);
+				save(chunk);
+				saveEntities(chunk);
+				chunk->unload(true);
 
-					//loadedChunks.remove(cp);
-					//loadedChunkList.remove(chunk);
-					AUTO_VAR(it, std::find( m_loadedChunkList.begin(), m_loadedChunkList.end(), chunk) );
-					if(it != m_loadedChunkList.end()) m_loadedChunkList.erase(it);
+				EnterCriticalSection(&m_csLoadCreate);
+				AUTO_VAR(it, std::find( m_loadedChunkList.begin(), m_loadedChunkList.end(), chunk) );
+				if(it != m_loadedChunkList.end()) m_loadedChunkList.erase(it);
 
-					int ix = chunk->x + XZOFFSET;
-					int iz = chunk->z + XZOFFSET;
-					int idx = ix * XZSIZE + iz;
-					m_unloadedCache[idx] = chunk;
-					cache[idx] = NULL;
+				int64_t key = chunkKey(chunk->x, chunk->z);
+				// Move from live map to unloaded map; data stays in RAM
+				m_unloadedMap[key] = chunk;
+				m_chunkMap.erase(key);
+				LeaveCriticalSection(&m_csLoadCreate);
 				}
 				m_toDrop.pop_front();
 			}

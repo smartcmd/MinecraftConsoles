@@ -5,8 +5,14 @@
 #include "..\Minecraft.World\JavaIntHash.h"
 #include "..\Minecraft.World\RandomLevelSource.h"
 #include "..\Minecraft.World\C4JThread.h"
+#include <unordered_map>
 using namespace std;
 class ServerLevel;
+
+// Helper: pack (x,z) chunk coords into a single int64 key
+static inline int64_t chunkKey(int x, int z) {
+	return ((int64_t)(unsigned int)x << 32) | (unsigned int)z;
+}
 
 class ServerChunkCache : public ChunkSource
 {
@@ -20,20 +26,19 @@ private:
 public:
 	bool autoCreate;
 private:
-	LevelChunk **cache;
+	// Infinite-world chunk cache: maps packed (x,z) -> LevelChunk*
+	unordered_map<int64_t, LevelChunk *> m_chunkMap;
+	// Secondary map for unloaded-but-retained chunks (_LARGE_WORLDS streaming)
+	unordered_map<int64_t, LevelChunk *> m_unloadedMap;
     vector<LevelChunk *> m_loadedChunkList;
     ServerLevel *level;
 
 #ifdef _LARGE_WORLDS
 	deque<LevelChunk *> m_toDrop;
-	LevelChunk **m_unloadedCache;
 #endif
 
 	// 4J - added for multithreaded support
 	CRITICAL_SECTION m_csLoadCreate;
-	// 4J - size of cache is defined by size of one side - must be even
-	int XZSIZE;
-	int XZOFFSET;
 
 public:
 	ServerChunkCache(ServerLevel *level, ChunkStorage *storage, ChunkSource *source);
@@ -48,7 +53,8 @@ public:
 #ifdef _LARGE_WORLDS	
 	LevelChunk *getChunkLoadedOrUnloaded(int x, int z);		// 4J added
 #endif
-	virtual LevelChunk **getCache() { return cache; }		// 4J added
+	// getCache() is no longer meaningful for infinite worlds; returns NULL
+	virtual LevelChunk **getCache() { return NULL; }
 
 	// 4J-JEV Added; Remove chunk from the toDrop queue.
 #ifdef _LARGE_WORLDS	

@@ -154,44 +154,8 @@ void RandomLevelSource::prepareHeights(int xOffs, int zOffs, byteArray blocks)
 						val -= vala;
                         for (int z = 0; z < CHUNK_WIDTH; z++)
 						{
-							///////////////////////////////////////////////////////////////////
-							// 4J - add this chunk of code to make land "fall-off" at the edges of
-							// a finite world - size of that world is currently hard-coded in here
-							const int worldSize = m_XZSize * 16;
-							const int falloffStart = 32;			// chunks away from edge were we start doing fall-off
-							const float falloffMax = 128.0f;			// max value we need to get to falloff by the edge of the map
-
-							int xxx = ( ( xOffs * 16 ) + x + ( xc * CHUNK_WIDTH ) );
-							int zzz = ( ( zOffs * 16 ) + z + ( zc * CHUNK_WIDTH ) );
-
-							// Get distance to edges of world in x
-							int xxx0 = xxx + ( worldSize / 2 );
-							if( xxx0 < 0 ) xxx0 = 0;
-							int xxx1 = ( ( worldSize / 2 ) - 1 ) - xxx;
-							if( xxx1 < 0 ) xxx1 = 0;
-
-							// Get distance to edges of world in z
-							int zzz0 = zzz + ( worldSize / 2 );
-							if( zzz0 < 0 ) zzz0 = 0;
-							int zzz1 = ( ( worldSize / 2 ) - 1 ) - zzz;
-							if( zzz1 < 0 ) zzz1 = 0;
-
-							// Get min distance to any edge
-							int emin = xxx0;
-							if (xxx1 < emin ) emin = xxx1;
-							if (zzz0 < emin ) emin = zzz0;
-							if (zzz1 < emin ) emin = zzz1;
-
+							// Infinite worlds: no edge falloff; comp is always 0.0f
 							float comp = 0.0f;
-
-							// Calculate how much we want the world to fall away, if we're in the defined region to do so
-							if( emin < falloffStart )
-							{
-								int falloff = falloffStart - emin;
-								comp = ((float)falloff / (float)falloffStart ) * falloffMax;
-							}
-							// 4J - end of extra code
-							///////////////////////////////////////////////////////////////////
 
 							// 4J - slightly rearranged this code (as of java 1.0.1 merge) to better fit with
 							// changes we've made edge-of-world things - original sets blocks[offs += step] directly
@@ -205,17 +169,7 @@ void RandomLevelSource::prepareHeights(int xOffs, int zOffs, byteArray blocks)
 							else if (yc * CHUNK_HEIGHT + y < waterHeight)
 							{
                                 tileId = (byte) Tile::calmWater_Id;
-                            }
-
-							// 4J - more extra code to make sure that the column at the edge of the world is just water & rock, to match the infinite sea that
-							// continues on after the edge of the world.
-
-							if( emin == 0 )
-							{
-								// This matches code in MultiPlayerChunkCache that makes the geometry which continues at the edge of the world
-								if( yc * CHUNK_HEIGHT + y <= ( level->getSeaLevel() - 10 ) ) tileId = Tile::rock_Id;
-								else if( yc * CHUNK_HEIGHT + y < level->getSeaLevel() ) tileId = Tile::calmWater_Id;
-							}
+              }
 
 							blocks[offs += step] = tileId;
                         }

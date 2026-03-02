@@ -30,10 +30,8 @@ public:
 
 	void enableResetChanges(bool enable) { m_bEnableResetChanges = enable; } // 4J Added
 private:
-	int unshareCheckX;		// 4J - added
-	int unshareCheckZ;		// 4J - added
-	int compressCheckX;		// 4J - added
-	int compressCheckZ;		// 4J - added
+	int unshareCheckIdx;	// 4J - index into loadedChunkList for unshare cycling (infinite-worlds fix)
+	int compressCheckIdx;	// 4J - index into loadedChunkList for compress cycling (infinite-worlds fix)
     vector<ClientConnection *> connections; // 4J Stu - Made this a vector as we can have more than one local connection
     MultiPlayerChunkCache *chunkCache;
 	Minecraft *minecraft;
