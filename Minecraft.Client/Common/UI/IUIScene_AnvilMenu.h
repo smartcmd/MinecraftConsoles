@@ -11,13 +11,13 @@
 #define ANVIL_SCENE_ITEM2_SLOT_DOWN_OFFSET 4
 
 class Inventory;
-class RepairMenu;
+class AnvilMenu;
 
 class IUIScene_AnvilMenu : public virtual IUIScene_AbstractContainerMenu, public net_minecraft_world_inventory::ContainerListener
 {
 protected:
 	shared_ptr<Inventory> m_inventory;
-	RepairMenu *m_repairMenu;
+	AnvilMenu *m_repairMenu;
 	wstring m_itemName;
 
 protected:

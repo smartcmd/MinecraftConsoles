@@ -41,6 +41,7 @@ class PsPlusUpsellWrapper;
 #include "..\Minecraft.World\File.h"
 #include "..\Minecraft.World\DisconnectPacket.h"
 #include "..\Minecraft.World\C4JThread.h"
+#include "ResourceLocation.h"
 
 using namespace std;
 
@@ -50,6 +51,9 @@ private:
 	enum  OS{
 		linux, solaris, windows, macos, unknown, xbox
 	};
+
+	static ResourceLocation DEFAULT_FONT_LOCATION;
+	static ResourceLocation ALT_FONT_LOCATION;
 
 public:
 	static const wstring VERSION_STRING;
@@ -119,7 +123,8 @@ public:
 	void updatePlayerViewportAssignments();
 	int unoccupiedQuadrant;	// 4J - added
 
-	shared_ptr<Mob> cameraTargetPlayer;
+	shared_ptr<LivingEntity> cameraTargetPlayer;
+	shared_ptr<LivingEntity> crosshairPickMob;
 	ParticleEngine *particleEngine;
 	User *user;
 	wstring serverDomain;
@@ -193,11 +198,6 @@ public:
 private:
 	static File workDir;
 
-public:
-	static File getWorkingDirectory();
-	static File getWorkingDirectory(const wstring& applicationName);
-private:
-	static OS getPlatform();
 public:
 	LevelStorageSource *getLevelSource();
 	void setScreen(Screen *screen);
@@ -280,7 +280,6 @@ public:
 	// 4J-PB - added to force in the 'other' level when the main player creates the level at game load time
 	void forceaddLevel(MultiPlayerLevel *level);
 	void prepareLevel(int title);	// 4J - changed to public
-	void fileDownloaded(const wstring& name, File *file);
 	//  OpenGLCapabilities getOpenGLCapabilities();	// 4J - removed
 
 	wstring gatherStats1();
@@ -305,8 +304,10 @@ public:
 
 #ifdef _DURANGO
 	static void inGameSignInCheckAllPrivilegesCallback(LPVOID lpParam, bool hasPrivileges, int iPad);
-#endif
+	static int InGame_SignInReturned(void *pParam,bool bContinue, int iPad, int iController);
+#else
 	static int InGame_SignInReturned(void *pParam,bool bContinue, int iPad);
+#endif
 	// 4J-PB
 	Screen * getScreen();
 

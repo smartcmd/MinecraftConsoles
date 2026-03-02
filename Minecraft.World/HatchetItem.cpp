@@ -25,7 +25,7 @@ HatchetItem::HatchetItem(int id, const Tier *tier) : DiggerItem (id, 3, tier, di
 // 4J - brought forward from 1.2.3
 float HatchetItem::getDestroySpeed(shared_ptr<ItemInstance> itemInstance, Tile *tile)
 {
-    if (tile != NULL && tile->material == Material::wood)
+    if (tile != NULL && (tile->material == Material::wood  || tile->material == Material::plant || tile->material == Material::replaceable_plant))
 	{
         return speed;
     }

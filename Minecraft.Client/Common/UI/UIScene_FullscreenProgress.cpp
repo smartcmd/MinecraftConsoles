@@ -187,7 +187,7 @@ void UIScene_FullscreenProgress::tick()
 
 				UINT uiIDA[1];
 				uiIDA[0]=IDS_CONFIRM_OK;
-				ui.RequestMessageBox( g_NetworkManager.CorrectErrorIDS(IDS_CONNECTION_FAILED), g_NetworkManager.CorrectErrorIDS(IDS_CONNECTION_LOST_SERVER), uiIDA,1, XUSER_INDEX_ANY,NULL,NULL, app.GetStringTable());
+				ui.RequestErrorMessage( g_NetworkManager.CorrectErrorIDS(IDS_CONNECTION_FAILED), g_NetworkManager.CorrectErrorIDS(IDS_CONNECTION_LOST_SERVER), uiIDA,1, XUSER_INDEX_ANY);
 
 				ui.NavigateToHomeMenu();
 				ui.UpdatePlayerBasePositions();
@@ -199,6 +199,10 @@ void UIScene_FullscreenProgress::tick()
 			{				
 				m_threadCompleted = true;
 				m_buttonConfirm.setVisible( true );
+				// 4J-TomK - rebuild touch after confirm button made visible again
+#ifdef __PSVITA__
+				ui.TouchBoxRebuild(this);
+#endif
 				updateTooltips();
 			}
 			else

@@ -68,6 +68,20 @@ const char *wstringtofilename(const wstring& name)
 	return buf;
 }
 
+const char *wstringtochararray(const wstring& name)
+{
+	static char buf[256];
+	assert(name.length()<256);
+	for(unsigned int i = 0; i < name.length(); i++ )
+	{
+		wchar_t c = name[i];
+		assert(c<128);	// Will we have to do any conversion of non-ASCII characters in filenames?
+		buf[i] = (char)c;
+	}
+	buf[name.length()] = 0;
+	return buf;
+}
+
 wstring filenametowstring(const char *name)
 {
 	return convStringToWstring(name);

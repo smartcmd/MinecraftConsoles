@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "ItemSpriteRenderer.h"
 #include "EntityRenderDispatcher.h"
+#include "TextureAtlas.h"
 #include "..\Minecraft.World\net.minecraft.world.entity.projectile.h"
 #include "..\Minecraft.World\net.minecraft.world.item.alchemy.h"
 #include "..\Minecraft.World\net.minecraft.world.item.h"
@@ -31,7 +32,7 @@ void ItemSpriteRenderer::render(shared_ptr<Entity> e, double x, double y, double
     glTranslatef((float) x, (float) y, (float) z);
     glEnable(GL_RESCALE_NORMAL);
     glScalef(1 / 2.0f, 1 / 2.0f, 1 / 2.0f);
-    bindTexture(TN_GUI_ITEMS);	// 4J - was L"/gui/items.png"
+    bindTexture(e);
     Tesselator *t = Tesselator::getInstance();
 
 	if (icon == PotionItem::getTexture(PotionItem::THROWABLE_ICON) )
@@ -76,4 +77,9 @@ void ItemSpriteRenderer::renderIcon(Tesselator *t, Icon *icon)
     t->vertexUV((float)(r - xo), (float)( r - yo), (float)( 0), (float)( u1), (float)( v0));
     t->vertexUV((float)(0 - xo), (float)( r - yo), (float)( 0), (float)( u0), (float)( v0));
     t->end();
+}
+
+ResourceLocation *ItemSpriteRenderer::getTextureLocation(shared_ptr<Entity> mob)
+{
+    return &TextureAtlas::LOCATION_ITEMS;
 }

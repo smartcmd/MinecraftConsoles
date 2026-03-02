@@ -17,6 +17,7 @@ private:
 		eCCLoginReceived,
 		eCCConnected
 	};
+
 private:
 	bool done;
     Connection *connection;
@@ -58,6 +59,7 @@ public:
     virtual void handleSetEntityData(shared_ptr<SetEntityDataPacket> packet);
     virtual void handleAddPlayer(shared_ptr<AddPlayerPacket> packet);
     virtual void handleTeleportEntity(shared_ptr<TeleportEntityPacket> packet);
+	virtual void handleSetCarriedItem(shared_ptr<SetCarriedItemPacket> packet);
     virtual void handleMoveEntity(shared_ptr<MoveEntityPacket> packet);
 	virtual void handleRotateMob(shared_ptr<RotateHeadPacket> packet);
 	virtual void handleMoveEntitySmall(shared_ptr<MoveEntityPacketSmall> packet);
@@ -86,7 +88,7 @@ public:
     virtual void handleAddMob(shared_ptr<AddMobPacket> packet);
     virtual void handleSetTime(shared_ptr<SetTimePacket> packet);
     virtual void handleSetSpawn(shared_ptr<SetSpawnPositionPacket> packet);
-    virtual void handleRidePacket(shared_ptr<SetRidingPacket> packet);
+    virtual void handleEntityLinkPacket(shared_ptr<SetEntityLinkPacket> packet);
     virtual void handleEntityEvent(shared_ptr<EntityEventPacket> packet);
 private:
 	shared_ptr<Entity> getEntity(int entityId);
@@ -100,6 +102,7 @@ public:
     virtual void handleContainerSetSlot(shared_ptr<ContainerSetSlotPacket> packet);
     virtual void handleContainerAck(shared_ptr<ContainerAckPacket> packet);
     virtual void handleContainerContent(shared_ptr<ContainerSetContentPacket> packet);
+	virtual void handleTileEditorOpen(shared_ptr<TileEditorOpenPacket> packet);
     virtual void handleSignUpdate(shared_ptr<SignUpdatePacket> packet);
 	virtual void handleTileEntityData(shared_ptr<TileEntityDataPacket> packet);
     virtual void handleContainerSetData(shared_ptr<ContainerSetDataPacket> packet);
@@ -137,4 +140,27 @@ public:
 	virtual void handleXZ(shared_ptr<XZPacket> packet);
 
 	void displayPrivilegeChanges(shared_ptr<MultiplayerLocalPlayer> player, unsigned int oldPrivileges);
+
+	virtual void handleAddObjective(shared_ptr<SetObjectivePacket> packet);
+    virtual void handleSetScore(shared_ptr<SetScorePacket> packet);
+    virtual void handleSetDisplayObjective(shared_ptr<SetDisplayObjectivePacket> packet);
+    virtual void handleSetPlayerTeamPacket(shared_ptr<SetPlayerTeamPacket> packet);
+    virtual void handleParticleEvent(shared_ptr<LevelParticlesPacket> packet);
+	virtual void handleUpdateAttributes(shared_ptr<UpdateAttributesPacket> packet);
+
+private:
+	// 4J: Entity link packet deferred
+	class DeferredEntityLinkPacket
+	{
+	public:
+		DWORD m_recievedTick;
+		shared_ptr<SetEntityLinkPacket> m_packet;
+
+		DeferredEntityLinkPacket(shared_ptr<SetEntityLinkPacket> packet);
+	};
+
+	vector<DeferredEntityLinkPacket> deferredEntityLinkPackets;
+	static const int MAX_ENTITY_LINK_DEFERRAL_INTERVAL = 1000;
+
+	void checkDeferredEntityLinkPackets(int newEntityId);
 };

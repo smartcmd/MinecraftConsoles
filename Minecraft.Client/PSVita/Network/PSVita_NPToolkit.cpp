@@ -102,7 +102,16 @@ void PSVitaNPToolkit::coreCallback( const sce::Toolkit::NP::Event& event )
 		break;
 	case sce::Toolkit::NP::Event::loggedIn:		///< An event from the NetCtl service generated when a connection to the PSN has been established.
  		app.DebugPrintf("Received core callback: PSN sign in \n");
-		ProfileManager.SetNetworkStatus(true, true);
+		SceNetCtlInfo info;
+		sceNetCtlInetGetInfo(SCE_NET_CTL_INFO_DEVICE, &info);
+		if(info.device == SCE_NET_CTL_DEVICE_PHONE) // 3G connection, we're not going to allow this
+		{
+			ProfileManager.SetNetworkStatus(false, true);
+		}
+		else
+		{
+			ProfileManager.SetNetworkStatus(true, true);
+		}
 		break;
 	case sce::Toolkit::NP::Event::loggedOut:	///< An event from the NetCtl service generated when a connection to the PSN has been lost.
  		app.DebugPrintf("Received core callback: PSN sign out \n");
@@ -350,7 +359,17 @@ static void npStateCallback(SceNpServiceState state, int retCode, void *userdata
 		ProfileManager.SetNetworkStatus(false, true);
 		break;
 	case SCE_NP_SERVICE_STATE_ONLINE:
-		ProfileManager.SetNetworkStatus(true, true);
+		SceNetCtlInfo info;
+		sceNetCtlInetGetInfo(SCE_NET_CTL_INFO_DEVICE, &info);
+		if(info.device == SCE_NET_CTL_DEVICE_PHONE) // 3G connection, we're not going to allow this
+		{
+			app.DebugPrintf("Online with 3G connection!!\n");
+			ProfileManager.SetNetworkStatus(false, true);
+		}
+		else
+		{
+			ProfileManager.SetNetworkStatus(true, true);
+		}
 		break;
 	default:
 		break;

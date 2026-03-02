@@ -3,8 +3,10 @@
 #include "net.minecraft.world.phys.h"
 #include "net.minecraft.world.level.h"
 #include "net.minecraft.world.entity.h"
+#include "net.minecraft.world.entity.ai.attributes.h"
 #include "net.minecraft.world.entity.projectile.h"
 #include "net.minecraft.world.entity.player.h"
+#include "net.minecraft.world.entity.monster.h"
 #include "net.minecraft.world.item.h"
 #include "net.minecraft.world.damagesource.h"
 #include "net.minecraft.stats.h"
@@ -17,6 +19,7 @@
 
 void Ghast::_init()
 {
+	explosionPower = 1;
 	floatDuration = 0;
 	target = nullptr;
 	retargetTime = 0;
@@ -33,28 +36,31 @@ Ghast::Ghast(Level *level) : FlyingMob( level )
 	// 4J Stu - This function call had to be moved here from the Entity ctor to ensure that
 	// the derived version of the function is called
 	this->defineSynchedData();
+	registerAttributes();
+	setHealth(getMaxHealth());
 
-	// 4J Stu - This function call had to be moved here from the Entity ctor to ensure that the derived version of the function is called
-	health = getMaxHealth();
+	_init();
 
-    _init();
-
-    this->textureIdx = TN_MOB_GHAST; // 4J was L"/mob/ghast.png";
-    this->setSize(4, 4);
-    this->fireImmune = true;
+	setSize(4, 4);
+	fireImmune = true;
 	xpReward = Enemy::XP_REWARD_MEDIUM;
 }
 
-bool Ghast::hurt(DamageSource *source, int dmg)
+bool Ghast::isCharging()
 {
+	return entityData->getByte(DATA_IS_CHARGING) != 0;
+}
+
+bool Ghast::hurt(DamageSource *source, float dmg)
+{
+	if (isInvulnerable()) return false;
 	if (source->getMsgId() == ChatPacket::e_ChatDeathFireball)
 	{
-		shared_ptr<Player> player = dynamic_pointer_cast<Player>( source->getEntity() );
-		if (player != NULL)
+		if ( (source->getEntity() != NULL) && source->getEntity()->instanceof(eTYPE_PLAYER) )
 		{
 			// reflected fireball, kill the ghast
 			FlyingMob::hurt(source, 1000);
-			player->awardStat(GenericStats::ghast(),GenericStats::param_ghast());
+			dynamic_pointer_cast<Player>(source->getEntity())->awardStat(GenericStats::ghast(), GenericStats::param_ghast());
 			return true;
 		}
 	}
@@ -64,123 +70,118 @@ bool Ghast::hurt(DamageSource *source, int dmg)
 
 void Ghast::defineSynchedData() 
 {
-    FlyingMob::defineSynchedData();
+	FlyingMob::defineSynchedData();
 
-    entityData->define(DATA_IS_CHARGING, (byte) 0);
+	entityData->define(DATA_IS_CHARGING, (byte) 0);
 }
 
-int Ghast::getMaxHealth()
+void Ghast::registerAttributes()
 {
-	return 10;
-}
+	FlyingMob::registerAttributes();
 
-void Ghast::tick()
-{
-    FlyingMob::tick();
-    byte current = entityData->getByte(DATA_IS_CHARGING);
-//    this->textureName = current == 1 ? L"/mob/ghast_fire.png" : L"/mob/ghast.png";	// 4J replaced with following line
-	this->textureIdx = current == 1 ? TN_MOB_GHAST_FIRE : TN_MOB_GHAST;
+	getAttribute(SharedMonsterAttributes::MAX_HEALTH)->setBaseValue(10);
 }
 
 void Ghast::serverAiStep() 
 {
-    if (!level->isClientSide && level->difficulty == Difficulty::PEACEFUL) remove();
-    checkDespawn();
+	if (!level->isClientSide && level->difficulty == Difficulty::PEACEFUL) remove();
+	checkDespawn();
 
-    oCharge = charge;
-    double xd = xTarget - x;
-    double yd = yTarget - y;
-    double zd = zTarget - z;
+	oCharge = charge;
+	double xd = xTarget - x;
+	double yd = yTarget - y;
+	double zd = zTarget - z;
 
-    double dd = xd * xd + yd * yd + zd * zd;
+	double dd = xd * xd + yd * yd + zd * zd;
 
-    if (dd < 1 * 1 || dd > 60 * 60)
+	if (dd < 1 * 1 || dd > 60 * 60)
 	{
-        xTarget = x + (random->nextFloat() * 2 - 1) * 16;
-        yTarget = y + (random->nextFloat() * 2 - 1) * 16;
-        zTarget = z + (random->nextFloat() * 2 - 1) * 16;
-    }
+		xTarget = x + (random->nextFloat() * 2 - 1) * 16;
+		yTarget = y + (random->nextFloat() * 2 - 1) * 16;
+		zTarget = z + (random->nextFloat() * 2 - 1) * 16;
+	}
 
-    if (floatDuration-- <= 0)
+	if (floatDuration-- <= 0)
 	{
-        floatDuration += random->nextInt(5) + 2;
+		floatDuration += random->nextInt(5) + 2;
 
 		dd = sqrt(dd);
 
-        if (canReach(xTarget, yTarget, zTarget, dd)) 
+		if (canReach(xTarget, yTarget, zTarget, dd)) 
 		{
-            this->xd += xd / dd * 0.1;
-            this->yd += yd / dd * 0.1;
-            this->zd += zd / dd * 0.1;
-        }
+			this->xd += xd / dd * 0.1;
+			this->yd += yd / dd * 0.1;
+			this->zd += zd / dd * 0.1;
+		}
 		else
 		{
-            xTarget = x;
-            yTarget = y;
-            zTarget = z;
-        }
-    }
+			xTarget = x;
+			yTarget = y;
+			zTarget = z;
+		}
+	}
 
-    if (target != NULL && target->removed) target = nullptr;
-    if (target == NULL || retargetTime-- <= 0)
+	if (target != NULL && target->removed) target = nullptr;
+	if (target == NULL || retargetTime-- <= 0)
 	{
-        target = level->getNearestAttackablePlayer(shared_from_this(), 100);
-        if (target != NULL) 
+		target = level->getNearestAttackablePlayer(shared_from_this(), 100);
+		if (target != NULL) 
 		{
-            retargetTime = 20;
-        }
-    }
+			retargetTime = 20;
+		}
+	}
 
-    double maxDist = 64.0f;
-    if (target != NULL && target->distanceToSqr(shared_from_this()) < maxDist * maxDist) 
+	double maxDist = 64.0f;
+	if (target != NULL && target->distanceToSqr(shared_from_this()) < maxDist * maxDist) 
 	{
-        double xdd = target->x - x;
-        double ydd = (target->bb->y0 + target->bbHeight / 2) - (y + bbHeight / 2);
-        double zdd = target->z - z;
-        yBodyRot = yRot = -(float) atan2(xdd, zdd) * 180 / PI;
+		double xdd = target->x - x;
+		double ydd = (target->bb->y0 + target->bbHeight / 2) - (y + bbHeight / 2);
+		double zdd = target->z - z;
+		yBodyRot = yRot = -(float) atan2(xdd, zdd) * 180 / PI;
 
-        if (this->canSee(target))
+		if (canSee(target))
 		{
-            if (charge == 10)
+			if (charge == 10)
 			{
 				// 4J - change brought forward from 1.2.3
 				level->levelEvent(nullptr, LevelEvent::SOUND_GHAST_WARNING, (int) x, (int) y, (int) z, 0);
-            }
-            charge++;
-            if (charge == 20)
+			}
+			charge++;
+			if (charge == 20)
 			{
 				// 4J - change brought forward from 1.2.3
 				level->levelEvent(nullptr, LevelEvent::SOUND_GHAST_FIREBALL, (int) x, (int) y, (int) z, 0);
-                shared_ptr<Fireball> ie = shared_ptr<Fireball>( new Fireball(level, dynamic_pointer_cast<Mob>( shared_from_this() ), xdd, ydd, zdd) );
-                double d = 4;
-                Vec3 *v = getViewVector(1);
-                ie->x = x + v->x * d;
-                ie->y = y + bbHeight / 2 + 0.5f;
-                ie->z = z + v->z * d;
-                level->addEntity(ie);
-                charge = -40;
-            }
-        } 
+				shared_ptr<LargeFireball> ie = shared_ptr<LargeFireball>( new LargeFireball(level, dynamic_pointer_cast<Mob>( shared_from_this() ), xdd, ydd, zdd) );
+				ie->explosionPower = explosionPower;
+				double d = 4;
+				Vec3 *v = getViewVector(1);
+				ie->x = x + v->x * d;
+				ie->y = y + bbHeight / 2 + 0.5f;
+				ie->z = z + v->z * d;
+				level->addEntity(ie);
+				charge = -40;
+			}
+		} 
 		else 
 		{
-            if (charge > 0) charge--;
-        }
-    }
+			if (charge > 0) charge--;
+		}
+	}
 	else
 	{
-        yBodyRot = yRot = -(float) atan2(this->xd, this->zd) * 180 / PI;
-        if (charge > 0) charge--;
-    }
+		yBodyRot = yRot = -(float) atan2(this->xd, this->zd) * 180 / PI;
+		if (charge > 0) charge--;
+	}
 
-    if (!level->isClientSide) 
+	if (!level->isClientSide) 
 	{
-        byte old = entityData->getByte(DATA_IS_CHARGING);
-        byte current = (byte) (charge > 10 ? 1 : 0);
-        if (old != current)
+		byte old = entityData->getByte(DATA_IS_CHARGING);
+		byte current = (byte) (charge > 10 ? 1 : 0);
+		if (old != current)
 		{
-            entityData->set(DATA_IS_CHARGING, current);
-        }
-    }
+			entityData->set(DATA_IS_CHARGING, current);
+		}
+	}
 }
 
 bool Ghast::canReach(double xt, double yt, double zt, double dist) 
@@ -192,31 +193,31 @@ bool Ghast::canReach(double xt, double yt, double zt, double dist)
 	AABB *bb = this->bb->copy();
 	for (int d = 1; d < dist; d++)
 	{
-	    bb->move(xd, yd, zd);
-	    if (!level->getCubes( shared_from_this(), bb)->empty()) return false;
+		bb->move(xd, yd, zd);
+		if (!level->getCubes( shared_from_this(), bb)->empty()) return false;
 	}
 
-    return true;
+	return true;
 }
 
 int Ghast::getAmbientSound()
 {
-    return eSoundType_MOB_GHAST_MOAN;
+	return eSoundType_MOB_GHAST_MOAN;
 }
 
 int Ghast::getHurtSound()
 {
-    return eSoundType_MOB_GHAST_SCREAM;
+	return eSoundType_MOB_GHAST_SCREAM;
 }
 
 int Ghast::getDeathSound()
 {
-    return eSoundType_MOB_GHAST_DEATH;
+	return eSoundType_MOB_GHAST_DEATH;
 }
 
 int Ghast::getDeathLoot() 
 {
-    return Item::sulphur->id;
+	return Item::gunpowder_Id;
 }
 
 void Ghast::dropDeathLoot(bool wasKilledByPlayer, int playerBonusLevel)
@@ -229,21 +230,32 @@ void Ghast::dropDeathLoot(bool wasKilledByPlayer, int playerBonusLevel)
 	count = random->nextInt(3) + random->nextInt(1 + playerBonusLevel);
 	for (int i = 0; i < count; i++)
 	{
-		spawnAtLocation(Item::sulphur_Id, 1);
+		spawnAtLocation(Item::gunpowder_Id, 1);
 	}
 }
 
 float Ghast::getSoundVolume()
 {
-    return 0.4f;//10; 4J-PB - changing due to customer demands
+	return 0.4f;//10; 4J-PB - changing due to customer demands
 }
 
 bool Ghast::canSpawn()
 {
-    return (random->nextInt(20) == 0 && FlyingMob::canSpawn() && level->difficulty > Difficulty::PEACEFUL);
+	return (random->nextInt(20) == 0 && FlyingMob::canSpawn() && level->difficulty > Difficulty::PEACEFUL);
 }
 
 int Ghast::getMaxSpawnClusterSize()
 {
-    return 1;
+	return 1;
+}
+void Ghast::addAdditonalSaveData(CompoundTag *tag)
+{
+	FlyingMob::addAdditonalSaveData(tag);
+	tag->putInt(L"ExplosionPower", explosionPower);
+}
+
+void Ghast::readAdditionalSaveData(CompoundTag *tag)
+{
+	FlyingMob::readAdditionalSaveData(tag);
+	if (tag->contains(L"ExplosionPower")) explosionPower = tag->getInt(L"ExplosionPower");
 }

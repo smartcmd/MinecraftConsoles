@@ -94,12 +94,12 @@ bool InventoryMenu::stillValid(shared_ptr<Player> player)
 shared_ptr<ItemInstance> InventoryMenu::quickMoveStack(shared_ptr<Player> player, int slotIndex)
 {
 	shared_ptr<ItemInstance> clicked = nullptr;
-	Slot *slot = slots->at(slotIndex);
+	Slot *slot = slots.at(slotIndex);
 	
-	Slot *HelmetSlot = slots->at(ARMOR_SLOT_START);
-	Slot *ChestplateSlot = slots->at(ARMOR_SLOT_START+1);
-	Slot *LeggingsSlot = slots->at(ARMOR_SLOT_START+2);
-	Slot *BootsSlot = slots->at(ARMOR_SLOT_START+3);
+	Slot *HelmetSlot = slots.at(ARMOR_SLOT_START);
+	Slot *ChestplateSlot = slots.at(ARMOR_SLOT_START+1);
+	Slot *LeggingsSlot = slots.at(ARMOR_SLOT_START+2);
+	Slot *BootsSlot = slots.at(ARMOR_SLOT_START+3);
 
 
 	if (slot != NULL && slot->hasItem())
@@ -225,16 +225,21 @@ bool InventoryMenu::mayCombine(Slot *slot, shared_ptr<ItemInstance> item)
 	return slot->mayCombine(item);
 }
 
-// 4J-JEV: Added for achievement 'Iron Man'.
-shared_ptr<ItemInstance> InventoryMenu::clicked(int slotIndex, int buttonNum, int clickType, shared_ptr<Player> player)
+bool InventoryMenu::canTakeItemForPickAll(shared_ptr<ItemInstance> carried, Slot *target)
 {
-	shared_ptr<ItemInstance> out = AbstractContainerMenu::clicked(slotIndex, buttonNum, clickType, player);
+	return target->container != resultSlots && AbstractContainerMenu::canTakeItemForPickAll(carried, target);
+}
+
+// 4J-JEV: Added for achievement 'Iron Man'.
+shared_ptr<ItemInstance> InventoryMenu::clicked(int slotIndex, int buttonNum, int clickType, shared_ptr<Player> player, bool looped) // 4J Added looped param
+{
+	shared_ptr<ItemInstance> out = AbstractContainerMenu::clicked(slotIndex, buttonNum, clickType, player, looped);
 
 #ifdef _EXTENDED_ACHIEVEMENTS
 	static int ironItems[4] = {Item::helmet_iron_Id,Item::chestplate_iron_Id,Item::leggings_iron_Id,Item::boots_iron_Id};
 	for (int i = ARMOR_SLOT_START; i < ARMOR_SLOT_END; i++)
 	{
-		Slot *slot = slots->at(i);
+		Slot *slot = slots.at(i);
 		if ( (slot==NULL) || (!slot->hasItem()) || (slot->getItem()->getItem()->id != ironItems[i-ARMOR_SLOT_START]) )
 		{
 			return out;

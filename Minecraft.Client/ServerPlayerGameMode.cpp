@@ -17,12 +17,12 @@ ServerPlayerGameMode::ServerPlayerGameMode(Level *level)
 {
 	// 4J - added initialisers
 	isDestroyingBlock = false;
-    destroyProgressStart = 0;
-    xDestroyBlock = yDestroyBlock = zDestroyBlock = 0;
-    gameTicks = 0;
-    hasDelayedDestroy = false;
-    delayedDestroyX = delayedDestroyY = delayedDestroyZ = 0;
-    delayedTickStart = 0;
+	destroyProgressStart = 0;
+	xDestroyBlock = yDestroyBlock = zDestroyBlock = 0;
+	gameTicks = 0;
+	hasDelayedDestroy = false;
+	delayedDestroyX = delayedDestroyY = delayedDestroyZ = 0;
+	delayedTickStart = 0;
 	lastSentState = -1;
 	gameModeForPlayer = GameType::NOT_SET;
 
@@ -72,12 +72,12 @@ void ServerPlayerGameMode::updateGameMode(GameType *gameType)
 
 void ServerPlayerGameMode::tick()
 {
-    gameTicks++;
+	gameTicks++;
 
-    if (hasDelayedDestroy)
+	if (hasDelayedDestroy)
 	{
-        int ticksSpentDestroying = gameTicks - delayedTickStart;
-        int t = level->getTile(delayedDestroyX, delayedDestroyY, delayedDestroyZ);
+		int ticksSpentDestroying = gameTicks - delayedTickStart;
+		int t = level->getTile(delayedDestroyX, delayedDestroyY, delayedDestroyZ);
 		if (t == 0)
 		{
 			hasDelayedDestroy = false;
@@ -130,9 +130,12 @@ void ServerPlayerGameMode::startDestroyBlock(int x, int y, int z, int face)
 {
 	if(!player->isAllowedToMine()) return;
 
-	if (gameModeForPlayer->isReadOnly())
+	if (gameModeForPlayer->isAdventureRestricted())
 	{
-		return;
+		if (!player->mayDestroyBlockAt(x, y, z))
+		{
+			return;
+		}
 	}
 
 	if (isCreative())
@@ -144,62 +147,62 @@ void ServerPlayerGameMode::startDestroyBlock(int x, int y, int z, int face)
 		return;
 	}
 	level->extinguishFire(player, x, y, z, face);
-    destroyProgressStart = gameTicks;
+	destroyProgressStart = gameTicks;
 	float progress = 1.0f;
-    int t = level->getTile(x, y, z);
-    if (t > 0)
+	int t = level->getTile(x, y, z);
+	if (t > 0)
 	{
 		Tile::tiles[t]->attack(level, x, y, z, player);
 		progress = Tile::tiles[t]->getDestroyProgress(player, player->level, x, y, z);
 	}
 
-    if (t > 0 && (progress >= 1 || (app.DebugSettingsOn() && (player->GetDebugOptions()&(1L<<eDebugSetting_InstantDestroy) ) )))
+	if (t > 0 && (progress >= 1 ) ) //|| (app.DebugSettingsOn() && (player->GetDebugOptions()&(1L<<eDebugSetting_InstantDestroy) ) )))
 	{
-        destroyBlock(x, y, z);
-    }
+		destroyBlock(x, y, z);
+	}
 	else
 	{
 		isDestroyingBlock = true;
-        xDestroyBlock = x;
-        yDestroyBlock = y;
-        zDestroyBlock = z;
+		xDestroyBlock = x;
+		yDestroyBlock = y;
+		zDestroyBlock = z;
 		int state = (int) (progress * 10);
 		level->destroyTileProgress(player->entityId, x, y, z, state);
 		lastSentState = state;
-    }
+	}
 }
 
 void ServerPlayerGameMode::stopDestroyBlock(int x, int y, int z)
 {
-    if (x == xDestroyBlock && y == yDestroyBlock && z == zDestroyBlock)
+	if (x == xDestroyBlock && y == yDestroyBlock && z == zDestroyBlock)
 	{
-//         int ticksSpentDestroying = gameTicks - destroyProgressStart;
+		//         int ticksSpentDestroying = gameTicks - destroyProgressStart;
 
-        int t = level->getTile(x, y, z);
-        if (t != 0)
+		int t = level->getTile(x, y, z);
+		if (t != 0)
 		{
-            Tile *tile = Tile::tiles[t];
+			Tile *tile = Tile::tiles[t];
 
 			// MGH -	removed checking for the destroy progress here, it has already been checked on the client before it sent the packet.
 			//			fixes issues with this failing to destroy because of packets bunching up
-//             float destroyProgress = tile->getDestroyProgress(player, player->level, x, y, z) * (ticksSpentDestroying + 1);
-//             if (destroyProgress >= .7f || bIgnoreDestroyProgress)
+			//             float destroyProgress = tile->getDestroyProgress(player, player->level, x, y, z) * (ticksSpentDestroying + 1);
+			//             if (destroyProgress >= .7f || bIgnoreDestroyProgress)
 			{
 				isDestroyingBlock = false;
 				level->destroyTileProgress(player->entityId, x, y, z, -1);
-                destroyBlock(x, y, z);
-            }
-// 			else if (!hasDelayedDestroy)
-// 			{
-// 				isDestroyingBlock = false;
-//                 hasDelayedDestroy = true;
-//                 delayedDestroyX = x;
-//                 delayedDestroyY = y;
-//                 delayedDestroyZ = z;
-//                 delayedTickStart = destroyProgressStart;
-//             }
-        }
-    }
+				destroyBlock(x, y, z);
+			}
+			// 			else if (!hasDelayedDestroy)
+			// 			{
+			// 				isDestroyingBlock = false;
+			//                 hasDelayedDestroy = true;
+			//                 delayedDestroyX = x;
+			//                 delayedDestroyY = y;
+			//                 delayedDestroyZ = z;
+			//                 delayedTickStart = destroyProgressStart;
+			//             }
+		}
+	}
 }
 
 void ServerPlayerGameMode::abortDestroyBlock(int x, int y, int z)
@@ -210,34 +213,45 @@ void ServerPlayerGameMode::abortDestroyBlock(int x, int y, int z)
 
 bool ServerPlayerGameMode::superDestroyBlock(int x, int y, int z)
 {
-    Tile *oldTile = Tile::tiles[level->getTile(x, y, z)];
-    int data = level->getData(x, y, z);
+	Tile *oldTile = Tile::tiles[level->getTile(x, y, z)];
+	int data = level->getData(x, y, z);
 
 	if (oldTile != NULL)
 	{
 		oldTile->playerWillDestroy(level, x, y, z, data, player);
 	}
 
-    bool changed = level->setTile(x, y, z, 0);
-    if (oldTile != NULL && changed)
+	bool changed = level->removeTile(x, y, z);
+	if (oldTile != NULL && changed)
 	{
-        oldTile->destroy(level, x, y, z, data);
-    }
-    return changed;
+		oldTile->destroy(level, x, y, z, data);
+	}
+	return changed;
 }
 
 bool ServerPlayerGameMode::destroyBlock(int x, int y, int z)
 {
-	if (gameModeForPlayer->isReadOnly())
+	if (gameModeForPlayer->isAdventureRestricted())
 	{
-		return false;
+		if (!player->mayDestroyBlockAt(x, y, z))
+		{
+			return false;
+		}
 	}
 
-    int t = level->getTile(x, y, z);
-    int data = level->getData(x, y, z);
-        
-    level->levelEvent(player, LevelEvent::PARTICLES_DESTROY_BLOCK, x, y, z, t + (level->getData(x, y, z) << Tile::TILE_NUM_SHIFT));
-        
+	if (gameModeForPlayer->isCreative())
+	{
+		if (player->getCarriedItem() != NULL && dynamic_cast<WeaponItem *>(player->getCarriedItem()->getItem()) != NULL)
+		{
+			return false;
+		}
+	}
+
+	int t = level->getTile(x, y, z);
+	int data = level->getData(x, y, z);
+
+	level->levelEvent(player, LevelEvent::PARTICLES_DESTROY_BLOCK, x, y, z, t + (level->getData(x, y, z) << Tile::TILE_NUM_SHIFT));
+
 	// 4J - In creative mode, the point where we need to tell the renderer that we are about to destroy a tile via destroyingTileAt is quite complicated.
 	// If the player being told is remote, then we always want the client to do it as it does the final update. If the player being told is local,
 	// then we need to update the renderer Here if we are sharing data between host & client as this is the final point where the original data is still intact.
@@ -268,7 +282,7 @@ bool ServerPlayerGameMode::destroyBlock(int x, int y, int z)
 		}
 	}
 
-    bool changed = superDestroyBlock(x, y, z);
+	bool changed = superDestroyBlock(x, y, z);
 
 	if (isCreative())
 	{
@@ -297,7 +311,7 @@ bool ServerPlayerGameMode::destroyBlock(int x, int y, int z)
 			Tile::tiles[t]->playerDestroy(level, player, x, y, z, data);
 		}
 	}
-    return changed;
+	return changed;
 
 }
 
@@ -305,24 +319,28 @@ bool ServerPlayerGameMode::useItem(shared_ptr<Player> player, Level *level, shar
 {
 	if(!player->isAllowedToUse(item)) return false;
 
-    int oldCount = item->count;
+	int oldCount = item->count;
 	int oldAux = item->getAuxValue();
-    shared_ptr<ItemInstance> itemInstance = item->use(level, player);
-    if ((itemInstance != NULL && itemInstance != item) || (itemInstance != NULL && itemInstance->count != oldCount) || (itemInstance != NULL && itemInstance->getUseDuration() > 0))
+	shared_ptr<ItemInstance> itemInstance = item->use(level, player);
+	if (itemInstance != item || (itemInstance != NULL && (itemInstance->count != oldCount || itemInstance->getUseDuration() > 0 || itemInstance->getAuxValue() != oldAux)))
 	{
-        player->inventory->items[player->inventory->selected] = itemInstance;
+		player->inventory->items[player->inventory->selected] = itemInstance;
 		if (isCreative())
 		{
 			itemInstance->count = oldCount;
-			itemInstance->setAuxValue(oldAux);
+			if (itemInstance->isDamageableItem()) itemInstance->setAuxValue(oldAux);
 		}
-        if (itemInstance->count == 0)
+		if (itemInstance->count == 0)
 		{
-            player->inventory->items[player->inventory->selected] = nullptr;
-        }
-        return true;
-    }
-    return false;
+			player->inventory->items[player->inventory->selected] = nullptr;
+		}
+		if (!player->isUsingItem())
+		{
+			dynamic_pointer_cast<ServerPlayer>(player)->refreshContainer(player->inventoryMenu);
+		}
+		return true;
+	}
+	return false;
 
 }
 
@@ -330,23 +348,26 @@ bool ServerPlayerGameMode::useItemOn(shared_ptr<Player> player, Level *level, sh
 {
 	// 4J-PB - Adding a test only version to allow tooltips to be displayed
 	int t = level->getTile(x, y, z);
-	if (t > 0 && player->isAllowedToUse(Tile::tiles[t]))
+	if (!player->isSneaking() || player->getCarriedItem() == NULL)
 	{
-		if(bTestUseOnOnly)
+		if (t > 0 && player->isAllowedToUse(Tile::tiles[t]))
 		{
-			if (Tile::tiles[t]->TestUse()) return true;
-		}
-		else 
-		{
-			if (Tile::tiles[t]->use(level, x, y, z, player, face, clickX, clickY, clickZ))
+			if(bTestUseOnOnly)
 			{
-				if(m_gameRules != NULL) m_gameRules->onUseTile(t,x,y,z);
-				return true;
+				if (Tile::tiles[t]->TestUse()) return true;
+			}
+			else 
+			{
+				if (Tile::tiles[t]->use(level, x, y, z, player, face, clickX, clickY, clickZ))
+				{
+					if(m_gameRules != NULL) m_gameRules->onUseTile(t,x,y,z);
+					return true;
+				}
 			}
 		}
 	}
-	
-    if (item == NULL || !player->isAllowedToUse(item)) return false;
+
+	if (item == NULL || !player->isAllowedToUse(item)) return false;
 	if (isCreative())
 	{
 		int aux = item->getAuxValue();

@@ -24,7 +24,7 @@ private:
 	Face faces[6];
     double xOff, yOff, zOff;
 public:
-	ViewportCuller(shared_ptr<Mob> mob, double fogDistance, float a);
+	ViewportCuller(shared_ptr<LivingEntity> mob, double fogDistance, float a);
     virtual bool isVisible(AABB bb);
     virtual bool cubeInFrustum(double x0, double y0, double z0, double x1, double y1, double z1);
     virtual bool cubeFullyInFrustum(double x0, double y0, double z0, double x1, double y1, double z1);

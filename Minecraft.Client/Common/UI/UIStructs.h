@@ -13,6 +13,10 @@ class SignTileEntity;
 class LevelGenerationOptions;
 class LocalPlayer;
 class Merchant;
+class EntityHorse;
+class BeaconTileEntity;
+class Slot;
+class AbstractContainerMenu;
 
 // 4J Stu - Structs shared by Iggy and Xui scenes.
 typedef struct _UIVec2D
@@ -74,7 +78,9 @@ typedef struct _EnchantingScreenInput
 	int z;
 	int iPad;
 	bool bSplitscreen;
-} EnchantingScreenInput;
+	wstring name;
+} 
+EnchantingScreenInput;
 
 // Furnace
 typedef struct _FurnaceScreenInput
@@ -97,6 +103,18 @@ typedef struct _CraftingPanelScreenInput
 	int						z;
 } 
 CraftingPanelScreenInput;
+
+// Fireworks
+typedef struct _FireworksScreenInput
+{
+	shared_ptr<LocalPlayer> player;
+	bool					bSplitscreen;
+	int						iPad;
+	int						x;
+	int						y;
+	int						z;
+} 
+FireworksScreenInput;
 
 // Trading
 typedef struct _TradingScreenInput
@@ -121,6 +139,37 @@ typedef struct _AnvilScreenInput
 	bool bSplitscreen;
 }
 AnvilScreenInput;
+
+// Hopper
+typedef struct _HopperScreenInput
+{
+	shared_ptr<Inventory> inventory;
+	shared_ptr<Container> hopper;
+	int iPad;
+	bool bSplitscreen;
+}
+HopperScreenInput;
+
+// Horse
+typedef struct _HorseScreenInput
+{
+	shared_ptr<Inventory> inventory;
+	shared_ptr<Container> container;
+	shared_ptr<EntityHorse> horse;
+	int iPad;
+	bool bSplitscreen;
+}
+HorseScreenInput;
+
+// Beacon
+typedef struct _BeaconScreenInput
+{
+	shared_ptr<Inventory> inventory;
+	shared_ptr<BeaconTileEntity> beacon;
+	int iPad;
+	bool bSplitscreen;
+}
+BeaconScreenInput;
 
 // Sign
 typedef struct _SignEntryScreenInput
@@ -236,24 +285,32 @@ typedef struct _JoinMenuInitData
 // More Options
 typedef struct _LaunchMoreOptionsMenuInitData
 {
-	BOOL bOnlineGame;
-	BOOL bInviteOnly;
-	BOOL bAllowFriendsOfFriends;
+	bool bOnlineGame;
+	bool bInviteOnly;
+	bool bAllowFriendsOfFriends;
 
-	BOOL bGenerateOptions;
-	BOOL bStructures;
-	BOOL bFlatWorld;
-	BOOL bBonusChest;
+	bool bGenerateOptions;
+	bool bStructures;
+	bool bFlatWorld;
+	bool bBonusChest;
 
-	BOOL bPVP;
-	BOOL bTrust;
-	BOOL bFireSpreads;
-	BOOL bTNT;
+	bool bPVP;
+	bool bTrust;
+	bool bFireSpreads;
+	bool bTNT;
 
-	BOOL bHostPrivileges;
-	BOOL bResetNether;
+	bool bHostPrivileges;
+	bool bResetNether;
 
-	BOOL bOnlineSettingChangedBySystem;
+	bool bMobGriefing;
+	bool bKeepInventory;
+	bool bDoMobSpawning;
+	bool bDoMobLoot;
+	bool bDoTileDrops;
+	bool bNaturalRegeneration;
+	bool bDoDaylightCycle;
+
+	bool bOnlineSettingChangedBySystem;
 
 	int iPad;
 
@@ -263,18 +320,32 @@ typedef struct _LaunchMoreOptionsMenuInitData
 	int worldSize;
 	bool bDisableSaving;
 
+	EGameHostOptionWorldSize currentWorldSize;
+	EGameHostOptionWorldSize newWorldSize;
+	bool newWorldSizeOverwriteEdges;
+
 	_LaunchMoreOptionsMenuInitData()
 	{
 		memset(this,0,sizeof(_LaunchMoreOptionsMenuInitData));
-		bOnlineGame = TRUE;
-		bAllowFriendsOfFriends = TRUE;
-		bPVP = TRUE;
-		bFireSpreads = TRUE;
-		bTNT = TRUE;
+		bOnlineGame = true;
+		bAllowFriendsOfFriends = true;
+		bPVP = true;
+		bFireSpreads = true;
+		bTNT = true;
 		iPad = -1;
 		worldSize = 3;
 		seed = L"";
 		bDisableSaving = false;
+		newWorldSize = e_worldSize_Unknown;
+		newWorldSizeOverwriteEdges = false;
+
+		bMobGriefing = true;
+		bKeepInventory = false;
+		bDoMobSpawning = true;
+		bDoMobLoot = true;
+		bDoTileDrops = true;
+		bNaturalRegeneration = true;
+		bDoDaylightCycle = true;
 	}
 } 
 LaunchMoreOptionsMenuInitData;
@@ -407,3 +478,10 @@ typedef struct _CustomDrawData
 	float x0, y0, x1, y1;     // the bounding box of the original DisplayObject, in object space
 	float mat[16];
 } CustomDrawData;
+
+typedef struct _ItemEditorInput
+{
+	int iPad;
+	Slot *slot;
+	AbstractContainerMenu *menu;
+} ItemEditorInput;

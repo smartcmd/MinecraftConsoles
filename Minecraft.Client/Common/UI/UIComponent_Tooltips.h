@@ -13,6 +13,8 @@ protected:
 		bool show;	
 		int iString;
 
+		UIString label;
+
 		_TooltipValues()
 		{
 			show = false;
@@ -23,7 +25,7 @@ protected:
 	TooltipValues m_tooltipValues[eToolTipNumButtons];
 
 	IggyName m_funcSetTooltip, m_funcSetOpacity, m_funcSetABSwap, m_funcUpdateLayout;
-
+	
 #ifdef __PSVITA__
 	enum ETouchInput
 	{
@@ -36,6 +38,8 @@ protected:
 		ETouchInput_Touch_LeftBumper,
 		ETouchInput_Touch_RightBumper,
 		ETouchInput_Touch_LeftStick,
+		ETouchInput_Touch_RightStick,
+		ETouchInput_Touch_Select,
 		
 		ETouchInput_Count,
 	};
@@ -53,6 +57,8 @@ protected:
 		UI_MAP_ELEMENT( m_TouchController[ETouchInput_Touch_LeftBumper], "Touch_LeftBumper")
 		UI_MAP_ELEMENT( m_TouchController[ETouchInput_Touch_RightBumper], "Touch_RightBumper")
 		UI_MAP_ELEMENT( m_TouchController[ETouchInput_Touch_LeftStick], "Touch_LeftStick")
+		UI_MAP_ELEMENT( m_TouchController[ETouchInput_Touch_RightStick], "Touch_RightStick")
+		UI_MAP_ELEMENT( m_TouchController[ETouchInput_Touch_Select], "Touch_Select")
 #endif
 		UI_MAP_NAME( m_funcSetTooltip, L"SetToolTip")
 		UI_MAP_NAME( m_funcSetOpacity, L"SetOpacity")
@@ -88,7 +94,7 @@ public:
 	virtual void SetTooltipText( unsigned int tooltip, int iTextID );
 	virtual void SetEnableTooltips( bool bVal );
 	virtual void ShowTooltip( unsigned int tooltip, bool show );
-	virtual void SetTooltips( int iA, int iB=-1, int iX=-1, int iY=-1 , int iLT=-1, int iRT=-1, int iLB=-1, int iRB=-1, int iLS=-1, bool forceUpdate = false);
+	virtual void SetTooltips( int iA, int iB=-1, int iX=-1, int iY=-1 , int iLT=-1, int iRT=-1, int iLB=-1, int iRB=-1, int iLS=-1, int iRS=-1, int iBack=-1, bool forceUpdate = false);
 	virtual void EnableTooltip( unsigned int tooltip, bool enable );
 
 	virtual void handleReload();
@@ -99,7 +105,7 @@ public:
 
 private:
 	bool _SetTooltip(unsigned int iToolTip, int iTextID);
-	void _SetTooltip(unsigned int iToolTipId, const wstring &label, bool show, bool force = false);
+	void _SetTooltip(unsigned int iToolTipId, UIString label, bool show, bool force = false);
 	void _Relayout();
 
 	bool m_overrideSFX[XUSER_MAX_COUNT][ACTION_MAX_MENU];

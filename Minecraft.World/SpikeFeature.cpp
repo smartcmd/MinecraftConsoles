@@ -12,67 +12,67 @@ SpikeFeature::SpikeFeature(int tile)
 
 bool SpikeFeature::place(Level *level, Random *random, int x, int y, int z)
 {
-    if (!(level->isEmptyTile(x, y, z) && level->getTile(x, y - 1, z) == tile))
+	if (!(level->isEmptyTile(x, y, z) && level->getTile(x, y - 1, z) == tile))
 	{
-        return false;
-    }
-    int hh = random->nextInt(32) + 6;
-    int r = random->nextInt(4) + 1;
+		return false;
+	}
+	int hh = random->nextInt(32) + 6;
+	int r = random->nextInt(4) + 1;
 
-    for (int xx = x - r; xx <= x + r; xx++)
-        for (int zz = z - r; zz <= z + r; zz++)
+	for (int xx = x - r; xx <= x + r; xx++)
+		for (int zz = z - r; zz <= z + r; zz++)
 		{
-            int xd = xx - x;
-            int zd = zz - z;
-            if (xd * xd + zd * zd <= r * r + 1)
+			int xd = xx - x;
+			int zd = zz - z;
+			if (xd * xd + zd * zd <= r * r + 1)
 			{
-                if (level->getTile(xx, y - 1, zz) != tile) 
+				if (level->getTile(xx, y - 1, zz) != tile) 
 				{
 					return false;
 				}
-            }
-        }
+			}
+		}
 
-    for (int yy = y; yy < y + hh; yy++)
-	{
-        if (yy < Level::genDepth)
+		for (int yy = y; yy < y + hh; yy++)
 		{
-            for (int xx = x - r; xx <= x + r; xx++)
-                for (int zz = z - r; zz <= z + r; zz++)
-				{
-                    int xd = xx - x;
-                    int zd = zz - z;
-                    if (xd * xd + zd * zd <= r * r + 1)
+			if (yy < Level::genDepth)
+			{
+				for (int xx = x - r; xx <= x + r; xx++)
+					for (int zz = z - r; zz <= z + r; zz++)
 					{
-                        level->setTile(xx, yy, zz, Tile::obsidian_Id);
-                    }
-                }
-        } else break;
-    }
+						int xd = xx - x;
+						int zd = zz - z;
+						if (xd * xd + zd * zd <= r * r + 1)
+						{
+							level->setTileAndData(xx, yy, zz, Tile::obsidian_Id, 0, Tile::UPDATE_CLIENTS);
+						}
+					}
+			} else break;
+		}
 
-    shared_ptr<EnderCrystal> enderCrystal = shared_ptr<EnderCrystal>(new EnderCrystal(level));
-    enderCrystal->moveTo(x + 0.5f, y + hh, z + 0.5f, random->nextFloat() * 360, 0);
-    level->addEntity(enderCrystal);
-    level->setTile(x, y + hh, z, Tile::unbreakable_Id);
+		shared_ptr<EnderCrystal> enderCrystal = shared_ptr<EnderCrystal>(new EnderCrystal(level));
+		enderCrystal->moveTo(x + 0.5f, y + hh, z + 0.5f, random->nextFloat() * 360, 0);
+		level->addEntity(enderCrystal);
+		level->setTileAndData(x, y + hh, z, Tile::unbreakable_Id, 0, Tile::UPDATE_CLIENTS);
 
-    return true;
+		return true;
 }
 
 bool SpikeFeature::placeWithIndex(Level *level, Random *random, int x, int y, int z,int iIndex, int iRadius)
 {
 	app.DebugPrintf("Spike - %d,%d,%d - index %d\n",x,y,z,iIndex);
 
-    int hh = 12 + (iIndex*3);
+	int hh = 12 + (iIndex*3);
 
 	// fill any tiles below the spike
 
-    for (int xx = x - iRadius; xx <= x + iRadius; xx++)
+	for (int xx = x - iRadius; xx <= x + iRadius; xx++)
 	{
-        for (int zz = z - iRadius; zz <= z + iRadius; zz++)
+		for (int zz = z - iRadius; zz <= z + iRadius; zz++)
 		{
-            int xd = xx - x;
-            int zd = zz - z;
-            if (xd * xd + zd * zd <= iRadius * iRadius + 1)
+			int xd = xx - x;
+			int zd = zz - z;
+			if (xd * xd + zd * zd <= iRadius * iRadius + 1)
 			{
 				int iTileBelow=1;
 
@@ -81,43 +81,43 @@ bool SpikeFeature::placeWithIndex(Level *level, Random *random, int x, int y, in
 					if(level->isEmptyTile(xx, y - iTileBelow, zz))
 					{
 						// empty tile
-						level->setTileNoUpdate(xx, y - iTileBelow, zz, Tile::obsidian_Id);
+						level->setTileAndData(xx, y - iTileBelow, zz, Tile::obsidian_Id, 0, Tile::UPDATE_CLIENTS);
 					}
 					else
 					{
-						level->setTile(xx, y - iTileBelow, zz, Tile::obsidian_Id);
+						level->setTileAndData(xx, y - iTileBelow, zz, Tile::obsidian_Id, 0, Tile::UPDATE_CLIENTS);
 					}
 					iTileBelow++;
 				}
-            }
-        }
+			}
+		}
 	}
 
-    for (int yy = y; yy < y + hh; yy++)
+	for (int yy = y; yy < y + hh; yy++)
 	{
-        if (yy < Level::genDepth)
+		if (yy < Level::genDepth)
 		{
-            for (int xx = x - iRadius; xx <= x + iRadius; xx++)
+			for (int xx = x - iRadius; xx <= x + iRadius; xx++)
 			{
-                for (int zz = z - iRadius; zz <= z + iRadius; zz++)
+				for (int zz = z - iRadius; zz <= z + iRadius; zz++)
 				{
-                    int xd = xx - x;
-                    int zd = zz - z;
+					int xd = xx - x;
+					int zd = zz - z;
 					int iVal = xd * xd + zd * zd;
-                    if ( iVal <= iRadius * iRadius + 1)
+					if ( iVal <= iRadius * iRadius + 1)
 					{
-                        //level->setTile(xx, yy, zz, Tile::obsidian_Id);
+						//level->setTile(xx, yy, zz, Tile::obsidian_Id);
 						placeBlock(level, xx, yy, zz, Tile::obsidian_Id, 0);
-                    }
-                }
+					}
+				}
 			}
-        } 
+		} 
 		else 
 		{
 			app.DebugPrintf("Breaking out of spike feature\n");
 			break;
 		}
-    }
+	}
 
 	// cap the last spikes with a fence to stop lucky arrows hitting the crystal
 
@@ -155,7 +155,7 @@ bool SpikeFeature::placeWithIndex(Level *level, Random *random, int x, int y, in
 
 		// and cap off the top
 		int yy =  y + hh + 3;
-		
+
 		if (yy < Level::genDepth)
 		{
 			for (int xx = x - 2; xx <= x + 2; xx++)
@@ -168,12 +168,12 @@ bool SpikeFeature::placeWithIndex(Level *level, Random *random, int x, int y, in
 		}
 	}
 
-    shared_ptr<EnderCrystal> enderCrystal = shared_ptr<EnderCrystal>(new EnderCrystal(level));
-    enderCrystal->moveTo(x + 0.5f, y + hh, z + 0.5f, random->nextFloat() * 360, 0);
-    level->addEntity(enderCrystal);
+	shared_ptr<EnderCrystal> enderCrystal = shared_ptr<EnderCrystal>(new EnderCrystal(level));
+	enderCrystal->moveTo(x + 0.5f, y + hh, z + 0.5f, random->nextFloat() * 360, 0);
+	level->addEntity(enderCrystal);
 	placeBlock(level, x, y + hh, z, Tile::unbreakable_Id, 0);
-    //level->setTile(x, y + hh, z, Tile::unbreakable_Id);
+	//level->setTile(x, y + hh, z, Tile::unbreakable_Id);
 
-    return true;
+	return true;
 }
 

@@ -9,37 +9,37 @@ BirchFeature::BirchFeature(bool doUpdate) : Feature(doUpdate)
 
 bool BirchFeature::place(Level *level, Random *random, int x, int y, int z)
 {
-    int treeHeight = random->nextInt(3) + 5;
+	int treeHeight = random->nextInt(3) + 5;
 
-    bool free = true;
-    if (y < 1 || y + treeHeight + 1 > Level::maxBuildHeight) return false;
+	bool free = true;
+	if (y < 1 || y + treeHeight + 1 > Level::maxBuildHeight) return false;
 
-    for (int yy = y; yy <= y + 1 + treeHeight; yy++)
+	for (int yy = y; yy <= y + 1 + treeHeight; yy++)
 	{
-        int r = 1;
-        if (yy == y) r = 0;
-        if (yy >= y + 1 + treeHeight - 2) r = 2;
-        for (int xx = x - r; xx <= x + r && free; xx++)
+		int r = 1;
+		if (yy == y) r = 0;
+		if (yy >= y + 1 + treeHeight - 2) r = 2;
+		for (int xx = x - r; xx <= x + r && free; xx++)
 		{
-            for (int zz = z - r; zz <= z + r && free; zz++)
+			for (int zz = z - r; zz <= z + r && free; zz++)
 			{
-                if (yy >= 0 && yy < Level::maxBuildHeight)
+				if (yy >= 0 && yy < Level::maxBuildHeight)
 				{
-                    int tt = level->getTile(xx, yy, zz);
-                    if (tt != 0 && tt != Tile::leaves_Id) free = false;
-                }
+					int tt = level->getTile(xx, yy, zz);
+					if (tt != 0 && tt != Tile::leaves_Id) free = false;
+				}
 				else
 				{
-                    free = false;
-                }
-            }
-        }
-    }
+					free = false;
+				}
+			}
+		}
+	}
 
-    if (!free) return false;
+	if (!free) return false;
 
-    int belowTile = level->getTile(x, y - 1, z);
-    if ((belowTile != Tile::grass_Id && belowTile != Tile::dirt_Id) || y >= Level::maxBuildHeight - treeHeight - 1) return false;
+	int belowTile = level->getTile(x, y - 1, z);
+	if ((belowTile != Tile::grass_Id && belowTile != Tile::dirt_Id) || y >= Level::maxBuildHeight - treeHeight - 1) return false;
 
 	// 4J Stu Added to stop tree features generating areas previously place by game rule generation
 	if(app.getLevelGenerationOptions() != NULL)
@@ -54,28 +54,29 @@ bool BirchFeature::place(Level *level, Random *random, int x, int y, int z)
 		}
 	}
 
-    level->setTileNoUpdate(x, y - 1, z, Tile::dirt_Id);
+	placeBlock(level, x, y - 1, z, Tile::dirt_Id);
 
-    for (int yy = y - 3 + treeHeight; yy <= y + treeHeight; yy++)
+	for (int yy = y - 3 + treeHeight; yy <= y + treeHeight; yy++)
 	{
-        int yo = yy - (y + treeHeight);
-        int offs = 1 - yo / 2;
-        for (int xx = x - offs; xx <= x + offs; xx++)
+		int yo = yy - (y + treeHeight);
+		int offs = 1 - yo / 2;
+		for (int xx = x - offs; xx <= x + offs; xx++)
 		{
-            int xo = xx - (x);
-            for (int zz = z - offs; zz <= z + offs; zz++)
+			int xo = xx - (x);
+			for (int zz = z - offs; zz <= z + offs; zz++)
 			{
-                int zo = zz - (z);
-                if (abs(xo) == offs && abs(zo) == offs && (random->nextInt(2) == 0 || yo == 0)) continue;
-                if (!Tile::solid[level->getTile(xx, yy, zz)]) placeBlock(level, xx, yy, zz, Tile::leaves_Id, LeafTile::BIRCH_LEAF);
-            }
-        }
-    }
-    for (int hh = 0; hh < treeHeight; hh++)
+				int zo = zz - (z);
+				if (abs(xo) == offs && abs(zo) == offs && (random->nextInt(2) == 0 || yo == 0)) continue;
+				int t = level->getTile(xx, yy, zz);
+				if (t == 0 || t == Tile::leaves_Id) placeBlock(level, xx, yy, zz, Tile::leaves_Id, LeafTile::BIRCH_LEAF);
+			}
+		}
+	}
+	for (int hh = 0; hh < treeHeight; hh++)
 	{
-        int t = level->getTile(x, y + hh, z);
-        if (t == 0 || t == Tile::leaves_Id) placeBlock(level, x, y + hh, z, Tile::treeTrunk_Id, TreeTile::BIRCH_TRUNK);
-    }
-    return true;
+		int t = level->getTile(x, y + hh, z);
+		if (t == 0 || t == Tile::leaves_Id) placeBlock(level, x, y + hh, z, Tile::treeTrunk_Id, TreeTile::BIRCH_TRUNK);
+	}
+	return true;
 
 }

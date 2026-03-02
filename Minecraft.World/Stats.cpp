@@ -125,9 +125,9 @@ void Stats::buildBlockStats()
 	blocksMined[Tile::farmland->id] = newStat;
 	newStat->postConstruct();
 
-	newStat = new ItemStat(BLOCKS_MINED_OFFSET + 1, L"mineBlock.stone", Tile::stoneBrick->id);
+	newStat = new ItemStat(BLOCKS_MINED_OFFSET + 1, L"mineBlock.stone", Tile::cobblestone->id);
 	blocksMinedStats->push_back(newStat);
-	blocksMined[Tile::stoneBrick->id] = newStat;
+	blocksMined[Tile::cobblestone->id] = newStat;
 	newStat->postConstruct();
 
 	newStat = new ItemStat(BLOCKS_MINED_OFFSET + 2, L"mineBlock.sand", Tile::sand->id);
@@ -135,9 +135,9 @@ void Stats::buildBlockStats()
 	blocksMined[Tile::sand->id] = newStat;
 	newStat->postConstruct();
 
-	newStat = new ItemStat(BLOCKS_MINED_OFFSET + 3, L"mineBlock.cobblestone", Tile::rock->id);
+	newStat = new ItemStat(BLOCKS_MINED_OFFSET + 3, L"mineBlock.cobblestone", Tile::stone->id);
 	blocksMinedStats->push_back(newStat);
-	blocksMined[Tile::rock->id] = newStat;
+	blocksMined[Tile::stone->id] = newStat;
 	newStat->postConstruct();
 
 	newStat = new ItemStat(BLOCKS_MINED_OFFSET + 4, L"mineBlock.gravel", Tile::gravel->id);
@@ -186,19 +186,19 @@ void Stats::buildBlockStats()
 	blocksMined[Tile::lapisOre->id] = newStat;
 	newStat->postConstruct();
 
-	newStat = new ItemStat(BLOCKS_MINED_OFFSET + 13, L"mineBlock.netherrack", Tile::hellRock->id);
+	newStat = new ItemStat(BLOCKS_MINED_OFFSET + 13, L"mineBlock.netherrack", Tile::netherRack->id);
 	blocksMinedStats->push_back(newStat);
-	blocksMined[Tile::hellRock->id] = newStat;
+	blocksMined[Tile::netherRack->id] = newStat;
 	newStat->postConstruct();
 
-	newStat = new ItemStat(BLOCKS_MINED_OFFSET + 14, L"mineBlock.soulSand", Tile::hellSand->id);
+	newStat = new ItemStat(BLOCKS_MINED_OFFSET + 14, L"mineBlock.soulSand", Tile::soulsand->id);
 	blocksMinedStats->push_back(newStat);
-	blocksMined[Tile::hellSand->id] = newStat;
+	blocksMined[Tile::soulsand->id] = newStat;
 	newStat->postConstruct();
 
-	newStat = new ItemStat(BLOCKS_MINED_OFFSET + 15, L"mineBlock.glowstone", Tile::lightGem->id);
+	newStat = new ItemStat(BLOCKS_MINED_OFFSET + 15, L"mineBlock.glowstone", Tile::glowstone->id);
 	blocksMinedStats->push_back(newStat);
-	blocksMined[Tile::lightGem->id] = newStat;
+	blocksMined[Tile::glowstone->id] = newStat;
 	newStat->postConstruct();
 
 	newStat = new ItemStat(BLOCKS_MINED_OFFSET + 16, L"mineBlock.wood", Tile::treeTrunk->id);
@@ -249,14 +249,14 @@ void Stats::buildCraftableStats()
 
 	// 4J Stu - The following stats were added as it was too easy to cheat the leaderboards by dropping and picking up these items
 	// They are now changed to mining the block which involves a tiny bit more effort	
-	newStat = new ItemStat(BLOCKS_MINED_OFFSET + 18, L"mineBlock.wheat", Tile::crops_Id);
+	newStat = new ItemStat(BLOCKS_MINED_OFFSET + 18, L"mineBlock.wheat", Tile::wheat_Id);
 	blocksMinedStats->push_back(newStat);
-	blocksMined[Tile::crops_Id] = newStat;
+	blocksMined[Tile::wheat_Id] = newStat;
 	newStat->postConstruct();
 	
-	newStat = new ItemStat(BLOCKS_MINED_OFFSET + 19, L"mineBlock.mushroom1", Tile::mushroom1_Id);
+	newStat = new ItemStat(BLOCKS_MINED_OFFSET + 19, L"mineBlock.mushroom1", Tile::mushroom_brown_Id);
 	blocksMinedStats->push_back(newStat);
-	blocksMined[Tile::mushroom1_Id] = newStat;
+	blocksMined[Tile::mushroom_brown_Id] = newStat;
 	newStat->postConstruct();
 
 	newStat = new ItemStat(BLOCKS_MINED_OFFSET + 17, L"mineBlock.sugar", Tile::reeds_Id);
@@ -407,9 +407,9 @@ void Stats::buildCraftableStats()
 	itemsCrafted[Item::hoe_gold->id] = newStat;
 	newStat->postConstruct();
 
-	newStat = new ItemStat(ITEMS_CRAFTED_OFFSET + 23, L"craftItem.glowstone", Tile::lightGem_Id);
+	newStat = new ItemStat(ITEMS_CRAFTED_OFFSET + 23, L"craftItem.glowstone", Tile::glowstone_Id);
 	itemsCraftedStats->push_back(newStat);
-	itemsCrafted[Tile::lightGem_Id] = newStat;
+	itemsCrafted[Tile::glowstone_Id] = newStat;
 	newStat->postConstruct();
 
 	newStat = new ItemStat(ITEMS_CRAFTED_OFFSET + 24, L"craftItem.tnt", Tile::tnt_Id);

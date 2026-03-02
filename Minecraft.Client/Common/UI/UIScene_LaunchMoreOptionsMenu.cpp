@@ -25,10 +25,28 @@ UIScene_LaunchMoreOptionsMenu::UIScene_LaunchMoreOptionsMenu(int iPad, void *ini
 	m_labelWorldOptions.init(app.GetString(IDS_WORLD_OPTIONS));
 
 	IggyDataValue result;
+
+#ifdef _LARGE_WORLDS
+	IggyDataValue value[2];
+	value[0].type = IGGY_DATATYPE_number;
+	value[0].number = m_params->bGenerateOptions ? 0 : 1;
+	value[1].type = IGGY_DATATYPE_boolean;
+	value[1].boolval = false;
+	if(m_params->currentWorldSize == e_worldSize_Classic ||
+		m_params->currentWorldSize == e_worldSize_Small ||
+		m_params->currentWorldSize == e_worldSize_Medium )
+	{
+		// don't show the increase world size stuff if we're already large, or the size is unknown.
+		value[1].boolval = true;
+	}
+
+	IggyResult out = IggyPlayerCallMethodRS ( getMovie() , &result, IggyPlayerRootPath( getMovie() ), m_funcSetMenuType , 2 , value );
+#else
 	IggyDataValue value[1];
 	value[0].type = IGGY_DATATYPE_number;
-	value[0].number = m_params->bGenerateOptions?0:1;
+	value[0].number = m_params->bGenerateOptions ? 0 : 1;
 	IggyResult out = IggyPlayerCallMethodRS ( getMovie() , &result, IggyPlayerRootPath( getMovie() ), m_funcSetMenuType , 1 , value );
+#endif
 
 	m_bMultiplayerAllowed = ProfileManager.IsSignedInLive( m_params->iPad ) && ProfileManager.AllowedToPlayMultiplayer(m_params->iPad);
 	
@@ -54,10 +72,14 @@ UIScene_LaunchMoreOptionsMenu::UIScene_LaunchMoreOptionsMenu(int iPad, void *ini
 	}
 	else if(!m_params->bOnlineGame)
 	{
-
 		m_checkboxes[eLaunchCheckbox_InviteOnly].SetEnable(false);
 		m_checkboxes[eLaunchCheckbox_AllowFoF].SetEnable(false);
 	}
+
+	// Init cheats
+	m_bUpdateCheats = false;
+	// Update cheat checkboxes
+	UpdateCheats();
 
 	m_checkboxes[eLaunchCheckbox_Online].init(app.GetString(IDS_ONLINE_GAME),eLaunchCheckbox_Online,bOnlineGame);
 	m_checkboxes[eLaunchCheckbox_InviteOnly].init(app.GetString(IDS_INVITE_ONLY),eLaunchCheckbox_InviteOnly,bInviteOnly);
@@ -72,25 +94,43 @@ UIScene_LaunchMoreOptionsMenu::UIScene_LaunchMoreOptionsMenu(int iPad, void *ini
 	m_checkboxes[eLaunchCheckbox_FlatWorld].init(app.GetString(IDS_SUPERFLAT_WORLD),eLaunchCheckbox_FlatWorld,m_params->bFlatWorld);
 	m_checkboxes[eLaunchCheckbox_BonusChest].init(app.GetString(IDS_BONUS_CHEST),eLaunchCheckbox_BonusChest,m_params->bBonusChest);
 
-	if(m_loadedResolution == eSceneResolution_1080)
-	{
-#ifdef _LARGE_WORLDS
-		m_labelGameOptions.init( app.GetString(IDS_GAME_OPTIONS) );
-		m_labelSeed.init(app.GetString(IDS_CREATE_NEW_WORLD_SEED));
-		m_labelRandomSeed.init(app.GetString(IDS_CREATE_NEW_WORLD_RANDOM_SEED));
-		m_editSeed.init(m_params->seed, eControl_EditSeed);
-		m_labelWorldSize.init(app.GetString(IDS_WORLD_SIZE));
-		m_sliderWorldSize.init(app.GetString(m_iWorldSizeTitleA[m_params->worldSize]),eControl_WorldSize,0,3,m_params->worldSize);
+	m_checkboxes[eLaunchCheckbox_KeepInventory].init(app.GetString(IDS_KEEP_INVENTORY), eLaunchCheckbox_KeepInventory, m_params->bKeepInventory);
+	m_checkboxes[eLaunchCheckbox_MobSpawning].init(app.GetString(IDS_MOB_SPAWNING), eLaunchCheckbox_MobSpawning, m_params->bDoMobSpawning);
+	m_checkboxes[eLaunchCheckbox_MobLoot].init(app.GetString(IDS_MOB_LOOT), eLaunchCheckbox_MobLoot, m_params->bDoMobLoot);
+	m_checkboxes[eLaunchCheckbox_MobGriefing].init(app.GetString(IDS_MOB_GRIEFING), eLaunchCheckbox_MobGriefing, m_params->bMobGriefing);
+	m_checkboxes[eLaunchCheckbox_TileDrops].init(app.GetString(IDS_TILE_DROPS), eLaunchCheckbox_TileDrops, m_params->bDoTileDrops);
+	m_checkboxes[eLaunchCheckbox_NaturalRegeneration].init(app.GetString(IDS_NATURAL_REGEN), eLaunchCheckbox_NaturalRegeneration, m_params->bNaturalRegeneration);
+	m_checkboxes[eLaunchCheckbox_DayLightCycle].init(app.GetString(IDS_DAYLIGHT_CYCLE), eLaunchCheckbox_DayLightCycle, m_params->bDoDaylightCycle);
 
-		m_checkboxes[eLaunchCheckbox_DisableSaving].init( app.GetString(IDS_DISABLE_SAVING), eLaunchCheckbox_DisableSaving, m_params->bDisableSaving );
-#endif
+	m_labelGameOptions.init( app.GetString(IDS_GAME_OPTIONS) );
+	m_labelSeed.init(app.GetString(IDS_CREATE_NEW_WORLD_SEED));
+	m_labelRandomSeed.init(app.GetString(IDS_CREATE_NEW_WORLD_RANDOM_SEED));
+	m_editSeed.init(m_params->seed, eControl_EditSeed);
+
+#ifdef _LARGE_WORLDS
+	m_labelWorldSize.init(app.GetString(IDS_WORLD_SIZE));
+	m_sliderWorldSize.init(app.GetString(m_iWorldSizeTitleA[m_params->worldSize]),eControl_WorldSize,0,3,m_params->worldSize);
+
+	m_checkboxes[eLaunchCheckbox_DisableSaving].init( app.GetString(IDS_DISABLE_SAVING), eLaunchCheckbox_DisableSaving, m_params->bDisableSaving );
+	
+	if(m_params->currentWorldSize != e_worldSize_Unknown)
+	{
+		m_labelWorldResize.init(app.GetString(IDS_INCREASE_WORLD_SIZE));
+		int min= int(m_params->currentWorldSize)-1;
+		int max=3;
+		int curr = int(m_params->newWorldSize)-1;
+		m_sliderWorldResize.init(app.GetString(m_iWorldSizeTitleA[curr]),eControl_WorldResize,min,max,curr);
+		m_checkboxes[eLaunchCheckbox_WorldResizeType].init(app.GetString(IDS_INCREASE_WORLD_SIZE_OVERWRITE_EDGES),eLaunchCheckbox_WorldResizeType,m_params->newWorldSizeOverwriteEdges);
 	}
+#endif
 
 	// Only the Xbox 360 needs a reset nether
 	// 4J-PB - PS3 needs it now
 	// #ifndef _XBOX
 	// 	if(!m_params->bGenerateOptions) removeControl( &m_checkboxes[eLaunchCheckbox_ResetNether], false );
 	// #endif
+
+	m_tabIndex = m_params->bGenerateOptions ? TAB_WORLD_OPTIONS : TAB_GAME_OPTIONS;
 
 	// set the default text
 #ifdef _LARGE_WORLDS
@@ -114,36 +154,37 @@ UIScene_LaunchMoreOptionsMenu::UIScene_LaunchMoreOptionsMenu(int iPad, void *ini
 	wchar_t startTags[64];
 	swprintf(startTags,64,L"<font color=\"#%08x\">",app.GetHTMLColour(eHTMLColor_White));
 	wsText= startTags + wsText;
-	m_labelDescription.init(wsText);
+	if (m_tabIndex == TAB_WORLD_OPTIONS)
+		m_labelDescription_WorldOptions.setLabel(wsText);
+	else
+		m_labelDescription_GameOptions.setLabel(wsText);
 
 	addTimer(GAME_CREATE_ONLINE_TIMER_ID,GAME_CREATE_ONLINE_TIMER_TIME);
 
 #ifdef __PSVITA__
+	// initialise vita tab  controls with ids
+	m_TouchTabWorld.init(ETouchInput_TabWorld);
+	m_TouchTabGame.init(ETouchInput_TabGame);
+
 	ui.TouchBoxRebuild(this);
 #endif
 
 	m_bIgnoreInput = false;
-	m_tabIndex = 0;
 }
 
 void UIScene_LaunchMoreOptionsMenu::updateTooltips()
 {
 	int changeTabTooltip = -1;
 
-#ifdef _LARGE_WORLDS
-	if (m_loadedResolution == eSceneResolution_1080 && m_params->bGenerateOptions)
+	// Set tooltip for change tab (only two tabs)
+	if (m_tabIndex == TAB_GAME_OPTIONS)
 	{
-		// Set tooltip for change tab (only two tabs)
-		if (m_tabIndex == 0)
-		{
-			changeTabTooltip = IDS_GAME_OPTIONS;
-		}
-		else 
-		{
-			changeTabTooltip = IDS_WORLD_OPTIONS;
-		}
+		changeTabTooltip = IDS_WORLD_OPTIONS;
 	}
-#endif
+	else 
+	{
+		changeTabTooltip = IDS_GAME_OPTIONS;
+	}
 
 	// If there's a change tab tooltip, left bumper symbol should show but not the text (-2)
 	int lb = changeTabTooltip == -1 ? -1 : -2;
@@ -154,11 +195,11 @@ void UIScene_LaunchMoreOptionsMenu::updateTooltips()
 void UIScene_LaunchMoreOptionsMenu::updateComponents()
 {
 	m_parentLayer->showComponent(m_iPad,eUIComponent_Panorama,true);
-#ifdef _LARGE_WORLDS
-	m_parentLayer->showComponent(m_iPad,eUIComponent_Logo,true);
-#else
+//#ifdef _LARGE_WORLDS
+//	m_parentLayer->showComponent(m_iPad,eUIComponent_Logo,true);
+//#else
 	m_parentLayer->showComponent(m_iPad,eUIComponent_Logo,false);
-#endif
+//#endif
 }
 
 wstring UIScene_LaunchMoreOptionsMenu::getMoviePath()
@@ -185,6 +226,19 @@ void UIScene_LaunchMoreOptionsMenu::tick()
 		}
 
 		m_bMultiplayerAllowed = bMultiplayerAllowed;
+	}
+
+	// Check cheats
+	if (m_bUpdateCheats)
+	{
+		UpdateCheats();
+		m_bUpdateCheats = false;
+	}
+	// check online
+	if(m_bUpdateOnline)
+	{
+		UpdateOnline();
+		m_bUpdateOnline = false;
 	}
 }
 
@@ -227,7 +281,7 @@ void UIScene_LaunchMoreOptionsMenu::handleInput(int iPad, int key, bool repeat, 
 			if ( pressed && controlHasFocus( checkboxOnline->getId()) && !checkboxOnline->IsEnabled() )
 			{
 				UINT uiIDA[1] = { IDS_CONFIRM_OK };
-				ui.RequestMessageBox(IDS_PRO_NOTONLINE_TITLE, IDS_PRO_XBOXLIVE_NOTIFICATION, uiIDA, 1, iPad, NULL, NULL, app.GetStringTable()); 
+				ui.RequestErrorMessage(IDS_PRO_NOTONLINE_TITLE, IDS_PRO_XBOXLIVE_NOTIFICATION, uiIDA, 1, iPad); 
 			}
 		}
 #endif
@@ -245,7 +299,7 @@ void UIScene_LaunchMoreOptionsMenu::handleInput(int iPad, int key, bool repeat, 
 		break;
 	case ACTION_MENU_LEFT_SCROLL:
 	case ACTION_MENU_RIGHT_SCROLL:
-		if(pressed && m_loadedResolution == eSceneResolution_1080)
+		if(pressed)
 		{
 			// Toggle tab index
 			m_tabIndex = m_tabIndex == 0 ? 1 : 0;
@@ -257,6 +311,39 @@ void UIScene_LaunchMoreOptionsMenu::handleInput(int iPad, int key, bool repeat, 
 	}
 }
 
+#ifdef __PSVITA__
+void UIScene_LaunchMoreOptionsMenu::handleTouchInput(unsigned int iPad, S32 x, S32 y, int iId, bool bPressed, bool bRepeat, bool bReleased)
+{
+	if(bPressed)
+	{
+		switch(iId)
+		{
+		case ETouchInput_TabWorld:
+		case ETouchInput_TabGame:
+			// Toggle tab index
+			int iNewTabIndex = (iId == ETouchInput_TabWorld) ? 0 : 1;
+			if(m_tabIndex != iNewTabIndex)
+			{
+				m_tabIndex = iNewTabIndex;
+				updateTooltips();
+				IggyDataValue result;
+				IggyResult out = IggyPlayerCallMethodRS ( getMovie() , &result, IggyPlayerRootPath( getMovie() ), m_funcChangeTab , 0 , NULL );
+			}
+			ui.TouchBoxRebuild(this);
+			break;
+		}
+	}
+}
+
+UIControl* UIScene_LaunchMoreOptionsMenu::GetMainPanel()
+{
+	if(m_tabIndex == 0)
+		return &m_worldOptions;
+	else
+		return &m_gameOptions;
+}
+#endif
+
 void UIScene_LaunchMoreOptionsMenu::handleCheckboxToggled(F64 controlId, bool selected)
 {
 	//CD - Added for audio
@@ -266,6 +353,7 @@ void UIScene_LaunchMoreOptionsMenu::handleCheckboxToggled(F64 controlId, bool se
 	{
 	case eLaunchCheckbox_Online:
 		m_params->bOnlineGame = selected;
+		m_bUpdateOnline = true;
 		break;
 	case eLaunchCheckbox_InviteOnly:
 		m_params->bInviteOnly = selected;
@@ -287,6 +375,7 @@ void UIScene_LaunchMoreOptionsMenu::handleCheckboxToggled(F64 controlId, bool se
 		break;
 	case eLaunchCheckbox_HostPrivileges:
 		m_params->bHostPrivileges = selected;
+		m_bUpdateCheats = true;
 		break;
 	case eLaunchCheckbox_ResetNether:
 		m_params->bResetNether = selected;
@@ -300,8 +389,33 @@ void UIScene_LaunchMoreOptionsMenu::handleCheckboxToggled(F64 controlId, bool se
 	case eLaunchCheckbox_BonusChest:
 		m_params->bBonusChest = selected;
 		break;
+#ifdef _LARGE_WORLDS
 	case eLaunchCheckbox_DisableSaving:
 		m_params->bDisableSaving = selected;
+		break;
+	case eLaunchCheckbox_WorldResizeType:
+		m_params->newWorldSizeOverwriteEdges = selected;
+		break;
+#endif
+	case eLaunchCheckbox_KeepInventory:
+		m_params->bKeepInventory = selected;
+		break;
+	case eLaunchCheckbox_MobSpawning:
+		m_params->bDoMobSpawning = selected;
+		break;
+	case eLaunchCheckbox_MobLoot:
+		m_params->bDoMobLoot = selected;
+	case eLaunchCheckbox_MobGriefing:
+		m_params->bMobGriefing = selected;
+		break;
+	case eLaunchCheckbox_TileDrops:
+		m_params->bDoTileDrops = selected;
+		break;
+	case eLaunchCheckbox_NaturalRegeneration:
+		m_params->bNaturalRegeneration = selected;
+		break;
+	case eLaunchCheckbox_DayLightCycle:
+		m_params->bDoDaylightCycle = selected;
 		break;
 	};
 }
@@ -347,15 +461,42 @@ void UIScene_LaunchMoreOptionsMenu::handleFocusChange(F64 controlId, F64 childId
 	case eLaunchCheckbox_BonusChest:
 		stringId = IDS_GAMEOPTION_BONUS_CHEST;
 		break;
-#ifdef _LARGE_WORLDS
+	case eLaunchCheckbox_KeepInventory:
+		stringId = IDS_GAMEOPTION_KEEP_INVENTORY;
+		break;
+	case eLaunchCheckbox_MobSpawning:
+		stringId = IDS_GAMEOPTION_MOB_SPAWNING;
+		break;
+	case eLaunchCheckbox_MobLoot:
+		stringId = IDS_GAMEOPTION_MOB_LOOT;	// PLACEHOLDER
+		break;
+	case eLaunchCheckbox_MobGriefing:
+		stringId = IDS_GAMEOPTION_MOB_GRIEFING;	// PLACEHOLDER
+		break;
+	case eLaunchCheckbox_TileDrops:
+		stringId = IDS_GAMEOPTION_TILE_DROPS;
+		break;
+	case eLaunchCheckbox_NaturalRegeneration:
+		stringId = IDS_GAMEOPTION_NATURAL_REGEN;
+		break;
+	case eLaunchCheckbox_DayLightCycle:
+		stringId = IDS_GAMEOPTION_DAYLIGHT_CYCLE;
+		break;
 	case eControl_EditSeed:
 		stringId = IDS_GAMEOPTION_SEED;
 		break;
+#ifdef _LARGE_WORLDS
 	case eControl_WorldSize:
 		stringId = IDS_GAMEOPTION_WORLD_SIZE;
 		break;
+	case eControl_WorldResize:
+		stringId = IDS_GAMEOPTION_INCREASE_WORLD_SIZE;
+		break;
 	case eLaunchCheckbox_DisableSaving:
 		stringId = IDS_GAMEOPTION_DISABLE_SAVING;
+		break;
+	case eLaunchCheckbox_WorldResizeType:
+		stringId = IDS_GAMEOPTION_INCREASE_WORLD_SIZE_OVERWRITE_EDGES;
 		break;
 #endif
 	};
@@ -368,9 +509,12 @@ void UIScene_LaunchMoreOptionsMenu::handleFocusChange(F64 controlId, F64 childId
 	}
 	wchar_t startTags[64];
 	swprintf(startTags,64,L"<font color=\"#%08x\">",app.GetHTMLColour(eHTMLColor_White));
-	wsText= startTags + wsText;
+	wsText = startTags + wsText;
 
-	m_labelDescription.setLabel(wsText);
+	if (m_tabIndex == TAB_WORLD_OPTIONS)
+		m_labelDescription_WorldOptions.setLabel(wsText);
+	else
+		m_labelDescription_GameOptions.setLabel(wsText);
 }
 
 void UIScene_LaunchMoreOptionsMenu::handleTimerComplete(int id)
@@ -405,8 +549,14 @@ int UIScene_LaunchMoreOptionsMenu::KeyboardCompleteSeedCallback(LPVOID lpParam,b
 	// 4J HEG - No reason to set value if keyboard was cancelled
 	if (bRes)
 	{
+#ifdef __PSVITA__
+		//CD - Changed to 2048 [SCE_IME_MAX_TEXT_LENGTH]
+		uint16_t pchText[2048];
+		ZeroMemory(pchText, 2048 * sizeof(uint16_t) );
+#else
 		uint16_t pchText[128];
 		ZeroMemory(pchText, 128 * sizeof(uint16_t) );
+#endif
 		InputManager.GetText(pchText);
 		pClass->m_editSeed.setLabel((wchar_t *)pchText);
 		pClass->m_params->seed = (wchar_t *)pchText;
@@ -458,5 +608,48 @@ void UIScene_LaunchMoreOptionsMenu::handleSliderMove(F64 sliderId, F64 currentVa
 		m_sliderWorldSize.setLabel(app.GetString(m_iWorldSizeTitleA[value]));
 #endif
 		break;
+	case eControl_WorldResize:
+#ifdef _LARGE_WORLDS
+		EGameHostOptionWorldSize changedSize = EGameHostOptionWorldSize(value+1);
+		if(changedSize >= m_params->currentWorldSize)
+		{
+			m_sliderWorldResize.handleSliderMove(value);
+			m_params->newWorldSize = EGameHostOptionWorldSize(value+1);
+			m_sliderWorldResize.setLabel(app.GetString(m_iWorldSizeTitleA[value]));
+		}
+#endif
+		break;
 	}
+}
+
+void UIScene_LaunchMoreOptionsMenu::UpdateCheats()
+{
+	bool cheatsOn = m_params->bHostPrivileges;
+
+	m_checkboxes[eLaunchCheckbox_KeepInventory].SetEnable(cheatsOn);
+	m_checkboxes[eLaunchCheckbox_MobSpawning].SetEnable(cheatsOn);
+	m_checkboxes[eLaunchCheckbox_MobGriefing].SetEnable(cheatsOn);
+	m_checkboxes[eLaunchCheckbox_DayLightCycle].SetEnable(cheatsOn);
+
+	if (!cheatsOn)
+	{
+		// Set defaults
+		m_params->bMobGriefing = true;
+		m_params->bKeepInventory = false;
+		m_params->bDoMobSpawning = true;
+		m_params->bDoDaylightCycle = true;
+
+		m_checkboxes[eLaunchCheckbox_KeepInventory].setChecked(m_params->bKeepInventory);
+		m_checkboxes[eLaunchCheckbox_MobSpawning].setChecked(m_params->bDoMobSpawning);
+		m_checkboxes[eLaunchCheckbox_MobGriefing].setChecked(m_params->bMobGriefing);
+		m_checkboxes[eLaunchCheckbox_DayLightCycle].setChecked(m_params->bDoDaylightCycle);
+	}
+}
+
+void UIScene_LaunchMoreOptionsMenu::UpdateOnline()
+{
+	bool bOnline = m_params->bOnlineGame;
+
+	m_checkboxes[eLaunchCheckbox_InviteOnly].SetEnable(bOnline);
+	m_checkboxes[eLaunchCheckbox_AllowFoF].SetEnable(bOnline);
 }

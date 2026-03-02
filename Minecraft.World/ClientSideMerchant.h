@@ -10,21 +10,21 @@ class ClientSideMerchant : public Merchant, public enable_shared_from_this<Clien
 {
 private:
 	MerchantContainer *container;
-    shared_ptr<Player> source;
-    MerchantRecipeList *currentOffers;
-	int m_name;
+	shared_ptr<Player> source;
+	MerchantRecipeList *currentOffers;
+	wstring m_name;
 
 public:
-	ClientSideMerchant(shared_ptr<Player> source, int name);
+	ClientSideMerchant(shared_ptr<Player> source, const wstring &name);
 	~ClientSideMerchant();
 
 	void createContainer(); // 4J Added
-    Container *getContainer();
-    shared_ptr<Player> getTradingPlayer();
-    void setTradingPlayer(shared_ptr<Player> player);
-    MerchantRecipeList *getOffers(shared_ptr<Player> forPlayer);
-    void overrideOffers(MerchantRecipeList *recipeList);
-    void notifyTrade(MerchantRecipe *activeRecipe);
+	Container *getContainer();
+	shared_ptr<Player> getTradingPlayer();
+	void setTradingPlayer(shared_ptr<Player> player);
+	MerchantRecipeList *getOffers(shared_ptr<Player> forPlayer);
+	void overrideOffers(MerchantRecipeList *recipeList);
+	void notifyTrade(MerchantRecipe *activeRecipe);
 	void notifyTradeUpdated(shared_ptr<ItemInstance> item);
-	int getDisplayName();
+	wstring getDisplayName();
 };

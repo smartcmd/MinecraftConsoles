@@ -1,9 +1,8 @@
-using namespace std;
-
 #include "stdafx.h"
 #include "net.minecraft.world.item.h"
 #include "net.minecraft.world.entity.item.h"
 #include "net.minecraft.world.entity.player.h"
+#include "net.minecraft.world.h"
 #include "CoalItem.h"
 
 CoalItem::CoalItem(int id) : Item( id )
@@ -19,4 +18,20 @@ unsigned int CoalItem::getDescriptionId(shared_ptr<ItemInstance> instance)
 		return IDS_ITEM_CHARCOAL;
 	}
 	return IDS_ITEM_COAL;
+}
+
+Icon *CoalItem::getIcon(int auxValue)
+{
+	if (auxValue == CHAR_COAL)
+	{
+		return charcoalIcon;
+	}
+	return Item::getIcon(auxValue);
+}
+
+void CoalItem::registerIcons(IconRegister *iconRegister)
+{
+	Item::registerIcons(iconRegister);
+
+	charcoalIcon = iconRegister->registerIcon(L"charcoal");
 }

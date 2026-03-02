@@ -12,6 +12,7 @@ class LargeFeature;
 class StrongholdFeature;
 class VillageFeature;
 class MineShaftFeature;
+class RandomScatteredLargeFeature;
 
 class CustomLevelSource : public ChunkSource
 {
@@ -32,6 +33,7 @@ private:
  	StrongholdFeature *strongholdFeature;
  	VillageFeature *villageFeature;
  	MineShaftFeature *mineShaftFeature;
+	RandomScatteredLargeFeature *scatteredFeature;
  	LargeFeature *canyonFeature;
 	Level *level;
 #endif
@@ -76,4 +78,5 @@ public:
 public:
 	virtual vector<Biome::MobSpawnerData *> *getMobsAt(MobCategory *mobCategory, int x, int y, int z);
 	virtual TilePos *findNearestMapFeature(Level *level, const wstring& featureName, int x, int y, int z); 
+	virtual void recreateLogicStructuresForChunk(int chunkX, int chunkZ);
 };

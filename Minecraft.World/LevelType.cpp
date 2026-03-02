@@ -46,6 +46,7 @@ LevelType::LevelType(int id, wstring generatorName, int version)
 
 void LevelType::init(int id, wstring generatorName, int version) 
 {
+	this->id = id;
 	m_generatorName = generatorName;
 	m_version = version;
 	m_selectable = true;
@@ -115,4 +116,7 @@ LevelType *LevelType::getLevelType(wstring name)
 	return NULL;
 }
 
-
+int LevelType::getId()
+{
+	return id;
+}

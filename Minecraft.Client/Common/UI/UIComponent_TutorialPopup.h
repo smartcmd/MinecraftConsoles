@@ -39,6 +39,8 @@ private:
 		e_ICON_TYPE_TRANSPORT = 11,
 	};
 
+	EIcons m_iconType;
+
 public:
 	UIComponent_TutorialPopup(int iPad, void *initData, UILayer *parentLayer);
 

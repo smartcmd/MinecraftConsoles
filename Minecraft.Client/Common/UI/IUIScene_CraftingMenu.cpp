@@ -267,65 +267,68 @@ bool IUIScene_CraftingMenu::handleKeyDown(int iPad, int iAction, bool bRepeat)
 					//pMinecraft->soundEngine->playUI( L"random.pop", 1.0f, 1.0f);
 					ui.PlayUISFX(eSFX_Craft);
 
-					// and remove those resources from your inventory
-					for(int i=0;i<pRecipeIngredientsRequired[iRecipe].iIngC;i++)
+					if(pTempItemInst->id != Item::fireworksCharge_Id && pTempItemInst->id != Item::fireworks_Id)
 					{
-						for(int j=0;j<pRecipeIngredientsRequired[iRecipe].iIngValA[i];j++)
+						// and remove those resources from your inventory
+						for(int i=0;i<pRecipeIngredientsRequired[iRecipe].iIngC;i++)
 						{
-							shared_ptr<ItemInstance> ingItemInst = nullptr;
-							// do we need to remove a specific aux value?
-							if(pRecipeIngredientsRequired[iRecipe].iIngAuxValA[i]!=Recipes::ANY_AUX_VALUE)
+							for(int j=0;j<pRecipeIngredientsRequired[iRecipe].iIngValA[i];j++)
 							{
-								ingItemInst = m_pPlayer->inventory->getResourceItem( pRecipeIngredientsRequired[iRecipe].iIngIDA[i],pRecipeIngredientsRequired[iRecipe].iIngAuxValA[i] );
-								m_pPlayer->inventory->removeResource(pRecipeIngredientsRequired[iRecipe].iIngIDA[i],pRecipeIngredientsRequired[iRecipe].iIngAuxValA[i]);
-							}
-							else
-							{
-								ingItemInst = m_pPlayer->inventory->getResourceItem( pRecipeIngredientsRequired[iRecipe].iIngIDA[i] );
-								m_pPlayer->inventory->removeResource(pRecipeIngredientsRequired[iRecipe].iIngIDA[i]);
-							}
-
-							// 4J Stu - Fix for #13097 - Bug: Milk Buckets are removed when crafting Cake
-							if (ingItemInst != NULL)
-							{
-								if (ingItemInst->getItem()->hasCraftingRemainingItem())
+								shared_ptr<ItemInstance> ingItemInst = nullptr;
+								// do we need to remove a specific aux value?
+								if(pRecipeIngredientsRequired[iRecipe].iIngAuxValA[i]!=Recipes::ANY_AUX_VALUE)
 								{
-									// replace item with remaining result
-									m_pPlayer->inventory->add( shared_ptr<ItemInstance>( new ItemInstance(ingItemInst->getItem()->getCraftingRemainingItem()) ) );
+									ingItemInst = m_pPlayer->inventory->getResourceItem( pRecipeIngredientsRequired[iRecipe].iIngIDA[i],pRecipeIngredientsRequired[iRecipe].iIngAuxValA[i] );
+									m_pPlayer->inventory->removeResource(pRecipeIngredientsRequired[iRecipe].iIngIDA[i],pRecipeIngredientsRequired[iRecipe].iIngAuxValA[i]);
+								}
+								else
+								{
+									ingItemInst = m_pPlayer->inventory->getResourceItem( pRecipeIngredientsRequired[iRecipe].iIngIDA[i] );
+									m_pPlayer->inventory->removeResource(pRecipeIngredientsRequired[iRecipe].iIngIDA[i]);
 								}
 
+								// 4J Stu - Fix for #13097 - Bug: Milk Buckets are removed when crafting Cake
+								if (ingItemInst != NULL)
+								{
+									if (ingItemInst->getItem()->hasCraftingRemainingItem())
+									{
+										// replace item with remaining result
+										m_pPlayer->inventory->add( shared_ptr<ItemInstance>( new ItemInstance(ingItemInst->getItem()->getCraftingRemainingItem()) ) );
+									}
+
+								}
 							}
 						}
-					}
 
-					// 4J Stu - Fix for #13119 - We should add the item after we remove the ingredients
-					if(m_pPlayer->inventory->add(pTempItemInst)==false )
-					{
-						// no room in inventory, so throw it down
-						m_pPlayer->drop(pTempItemInst);
-					}
+						// 4J Stu - Fix for #13119 - We should add the item after we remove the ingredients
+						if(m_pPlayer->inventory->add(pTempItemInst)==false )
+						{
+							// no room in inventory, so throw it down
+							m_pPlayer->drop(pTempItemInst);
+						}
 
-					//4J Gordon: Achievements
-					switch(pTempItemInst->id )
-					{
-					case Tile::workBench_Id:		m_pPlayer->awardStat(GenericStats::buildWorkbench(),		GenericStats::param_buildWorkbench());		break;
-					case Item::pickAxe_wood_Id:		m_pPlayer->awardStat(GenericStats::buildPickaxe(),			GenericStats::param_buildPickaxe());		break;
-					case Tile::furnace_Id:			m_pPlayer->awardStat(GenericStats::buildFurnace(),			GenericStats::param_buildFurnace());		break;
-					case Item::hoe_wood_Id:			m_pPlayer->awardStat(GenericStats::buildHoe(),				GenericStats::param_buildHoe());			break;
-					case Item::bread_Id:			m_pPlayer->awardStat(GenericStats::makeBread(),				GenericStats::param_makeBread());			break;
-					case Item::cake_Id:				m_pPlayer->awardStat(GenericStats::bakeCake(),				GenericStats::param_bakeCake());			break;
-					case Item::pickAxe_stone_Id:	m_pPlayer->awardStat(GenericStats::buildBetterPickaxe(),	GenericStats::param_buildBetterPickaxe());	break;
-					case Item::sword_wood_Id:		m_pPlayer->awardStat(GenericStats::buildSword(),			GenericStats::param_buildSword());			break;
-					case Tile::dispenser_Id:		m_pPlayer->awardStat(GenericStats::dispenseWithThis(),		GenericStats::param_dispenseWithThis());	break;
-					case Tile::enchantTable_Id:		m_pPlayer->awardStat(GenericStats::enchantments(),			GenericStats::param_enchantments());		break;
-					case Tile::bookshelf_Id:		m_pPlayer->awardStat(GenericStats::bookcase(),				GenericStats::param_bookcase());			break;
-					}
+						//4J Gordon: Achievements
+						switch(pTempItemInst->id )
+						{
+						case Tile::workBench_Id:		m_pPlayer->awardStat(GenericStats::buildWorkbench(),		GenericStats::param_buildWorkbench());		break;
+						case Item::pickAxe_wood_Id:		m_pPlayer->awardStat(GenericStats::buildPickaxe(),			GenericStats::param_buildPickaxe());		break;
+						case Tile::furnace_Id:			m_pPlayer->awardStat(GenericStats::buildFurnace(),			GenericStats::param_buildFurnace());		break;
+						case Item::hoe_wood_Id:			m_pPlayer->awardStat(GenericStats::buildHoe(),				GenericStats::param_buildHoe());			break;
+						case Item::bread_Id:			m_pPlayer->awardStat(GenericStats::makeBread(),				GenericStats::param_makeBread());			break;
+						case Item::cake_Id:				m_pPlayer->awardStat(GenericStats::bakeCake(),				GenericStats::param_bakeCake());			break;
+						case Item::pickAxe_stone_Id:	m_pPlayer->awardStat(GenericStats::buildBetterPickaxe(),	GenericStats::param_buildBetterPickaxe());	break;
+						case Item::sword_wood_Id:		m_pPlayer->awardStat(GenericStats::buildSword(),			GenericStats::param_buildSword());			break;
+						case Tile::dispenser_Id:		m_pPlayer->awardStat(GenericStats::dispenseWithThis(),		GenericStats::param_dispenseWithThis());	break;
+						case Tile::enchantTable_Id:		m_pPlayer->awardStat(GenericStats::enchantments(),			GenericStats::param_enchantments());		break;
+						case Tile::bookshelf_Id:		m_pPlayer->awardStat(GenericStats::bookcase(),				GenericStats::param_bookcase());			break;
+						}
 
-					// We've used some ingredients from our inventory, so update the recipes we can make
-					CheckRecipesAvailable();
-					// don't reset the vertical slots - we want to stay where we are
-					UpdateVerticalSlots();
-					UpdateHighlight();
+						// We've used some ingredients from our inventory, so update the recipes we can make
+						CheckRecipesAvailable();
+						// don't reset the vertical slots - we want to stay where we are
+						UpdateVerticalSlots();
+						UpdateHighlight();
+					}
 				}
 				else
 				{
@@ -1067,6 +1070,30 @@ void IUIScene_CraftingMenu::DisplayIngredients()
 			int id=pRecipeIngredientsRequired[iRecipe].iIngIDA[i];
 			int iAuxVal=pRecipeIngredientsRequired[iRecipe].iIngAuxValA[i];
 			Item *item = Item::items[id];
+
+			shared_ptr<ItemInstance> itemInst= shared_ptr<ItemInstance>(new ItemInstance(item,pRecipeIngredientsRequired[iRecipe].iIngValA[i],iAuxVal));
+
+			// 4J-PB - a very special case - the bed can use any kind of wool, so we can't use the item description
+			// and the same goes for the painting
+			int idescID;
+
+			if( ((pTempItemInst->id==Item::bed_Id)		&&(id==Tile::wool_Id)) ||
+				((pTempItemInst->id==Item::painting_Id)	&&(id==Tile::wool_Id)) )
+			{
+				idescID=IDS_ANY_WOOL;
+			}
+			else if((pTempItemInst->id==Item::fireworksCharge_Id) && (id==Item::dye_powder_Id))
+			{
+				idescID=IDS_ITEM_DYE_POWDER;
+				iAuxVal = 1;
+			}
+			else
+			{
+				idescID=itemInst->getDescriptionId();
+			}
+			setIngredientDescriptionText(i,app.GetString(idescID));
+
+
 			if( (iAuxVal & 0xFF) == 0xFF) // 4J Stu - If the aux value is set to match any
 				iAuxVal = 0;
 
@@ -1076,26 +1103,10 @@ void IUIScene_CraftingMenu::DisplayIngredients()
 			{
 				iAuxVal = 0xFF;
 			}
-
-			shared_ptr<ItemInstance> itemInst= shared_ptr<ItemInstance>(new ItemInstance(item,pRecipeIngredientsRequired[iRecipe].iIngValA[i],iAuxVal));
+			itemInst->setAuxValue(iAuxVal);
 
 			setIngredientDescriptionItem(getPad(),i,itemInst);
 			setIngredientDescriptionRedBox(i,false);
-
-			// 4J-PB - a very special case - the bed can use any kind of wool, so we can't use the item description
-			// and the same goes for the painting
-			int idescID;
-
-			if( ((pTempItemInst->id==Item::bed_Id)		&&(id==Tile::cloth_Id)) ||
-				((pTempItemInst->id==Item::painting_Id)	&&(id==Tile::cloth_Id)) )
-			{
-				idescID=IDS_ANY_WOOL;
-			}
-			else
-			{
-				idescID=itemInst->getDescriptionId();
-			}
-			setIngredientDescriptionText(i,app.GetString(idescID));
 		}
 
 		// 4J Stu - For clocks and compasses we set the aux value to a special one that signals we should use a default texture
@@ -1140,6 +1151,10 @@ void IUIScene_CraftingMenu::DisplayIngredients()
 					if( id == Item::clock_Id || id == Item::compass_Id )
 					{
 						iAuxVal = 0xFF;
+					}
+					else if( pTempItemInst->id==Item::fireworksCharge_Id && id == Item::dye_powder_Id)
+					{
+						iAuxVal = 1;
 					}
 					shared_ptr<ItemInstance> itemInst= shared_ptr<ItemInstance>(new ItemInstance(id,1,iAuxVal));
 					setIngredientSlotItem(getPad(),index,itemInst);
@@ -1366,6 +1381,15 @@ void IUIScene_CraftingMenu::UpdateTooltips()
 	{
 		ui.ShowTooltip( getPad(), eToolTipButtonA, false );
 	}*/
+}
+
+void IUIScene_CraftingMenu::HandleInventoryUpdated()
+{
+	// Check which recipes are available with the resources we have
+	CheckRecipesAvailable();
+	UpdateVerticalSlots();
+	UpdateHighlight();
+	UpdateTooltips();
 }
 
 bool IUIScene_CraftingMenu::isItemSelected(int itemId)

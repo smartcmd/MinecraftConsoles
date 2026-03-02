@@ -4,6 +4,7 @@
 #include "entityRenderDispatcher.h"
 //#include "ItemFrame"
 #include "ItemFrameRenderer.h"
+#include "TextureAtlas.h"
 
 #include "..\Minecraft.World\JavaMath.h"
 #include "..\Minecraft.World\net.minecraft.world.entity.Item.h"
@@ -17,6 +18,8 @@
 #include "..\Minecraft.World\net.minecraft.h"
 #include "CompassTexture.h"
 #include "Minimap.h"
+
+ResourceLocation ItemFrameRenderer::MAP_BACKGROUND_LOCATION = ResourceLocation(TN_MISC_MAPBG);
 
 void ItemFrameRenderer::registerTerrainTextures(IconRegister *iconRegister)
 {
@@ -52,7 +55,7 @@ void ItemFrameRenderer::drawFrame(shared_ptr<ItemFrame> itemFrame)
 	Minecraft *pMinecraft=Minecraft::GetInstance();
 
 	glPushMatrix();
-	entityRenderDispatcher->textures->bindTexture(TN_TERRAIN);
+	entityRenderDispatcher->textures->bindTexture(&TextureAtlas::LOCATION_BLOCKS);
 	glRotatef(itemFrame->yRot, 0, 1, 0);
 
 	Tile *wood = Tile::wood;
@@ -134,7 +137,7 @@ void ItemFrameRenderer::drawItem(shared_ptr<ItemFrame> entity)
 
 	if (itemEntity->getItem()->getItem() == Item::map) 
 	{
-		entityRenderDispatcher->textures->bindTexture(TN_MISC_MAPBG);
+		entityRenderDispatcher->textures->bindTexture(&MAP_BACKGROUND_LOCATION);
 		Tesselator *t = Tesselator::getInstance();
 
 		glRotatef(180, 0, 1, 0);

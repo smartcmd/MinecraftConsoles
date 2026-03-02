@@ -1,16 +1,15 @@
-using namespace std;
-
 #include "stdafx.h"
 #include "com.mojang.nbt.h"
 #include "net.minecraft.world.level.tile.h"
 #include "net.minecraft.world.phys.h"
 #include "net.minecraft.world.level.h"
 #include "net.minecraft.world.item.h"
+#include "net.minecraft.world.entity.h"
+#include "net.minecraft.world.entity.ai.attributes.h"
+#include "net.minecraft.world.entity.monster.h"
 #include "SharedConstants.h"
 #include "Squid.h"
 #include "..\Minecraft.Client\Textures.h"
-
-
 
 void Squid::_init()
 {
@@ -32,19 +31,19 @@ Squid::Squid(Level *level) : WaterAnimal( level )
 	// 4J Stu - This function call had to be moved here from the Entity ctor to ensure that
 	// the derived version of the function is called
 	this->defineSynchedData();
-
-	// 4J Stu - This function call had to be moved here from the Entity ctor to ensure that the derived version of the function is called
-	health = getMaxHealth();
+	registerAttributes();
+	setHealth(getMaxHealth());
 
 	_init();
-	this->textureIdx = TN_MOB_SQUID; // 4J - was L"/mob/squid.png";
 	this->setSize(0.95f, 0.95f);
 	tentacleSpeed = 1 / (random->nextFloat() + 1) * 0.2f;
 }
 
-int Squid::getMaxHealth()
+void Squid::registerAttributes()
 {
-	return 10;
+	WaterAnimal::registerAttributes();
+
+	getAttribute(SharedMonsterAttributes::MAX_HEALTH)->setBaseValue(10);
 }
 
 int Squid::getAmbientSound() 
@@ -70,6 +69,11 @@ float Squid::getSoundVolume()
 int Squid::getDeathLoot() 
 {
 	return 0;
+}
+
+bool Squid::makeStepSound()
+{
+	return false;
 }
 
 void Squid::dropDeathLoot(bool wasKilledByPlayer, int playerBonusLevel)
@@ -136,10 +140,10 @@ void Squid::aiStep()
 
 		double horizontalMovement = sqrt(xd * xd + zd * zd);
 
-		yBodyRot += ((-(float) atan2(this->xd, this->zd) * 180 / PI) - yBodyRot) * 0.1f;
+		yBodyRot += ((-(float) atan2(xd, zd) * 180 / PI) - yBodyRot) * 0.1f;
 		yRot = yBodyRot;
 		zBodyRot = zBodyRot + (float) PI * rotateSpeed * 1.5f;
-		xBodyRot += ((-(float) atan2(horizontalMovement, this->yd) * 180 / PI) - xBodyRot) * 0.1f;
+		xBodyRot += ((-(float) atan2(horizontalMovement, yd) * 180 / PI) - xBodyRot) * 0.1f;
 	}
 	else 
 	{

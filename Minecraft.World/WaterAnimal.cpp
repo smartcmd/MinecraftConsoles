@@ -3,6 +3,7 @@
 #include "net.minecraft.world.level.tile.h"
 #include "net.minecraft.world.phys.h"
 #include "net.minecraft.world.level.h"
+#include "net.minecraft.world.damagesource.h"
 #include "WaterAnimal.h"
 
 
@@ -39,4 +40,25 @@ bool WaterAnimal::removeWhenFarAway()
 int WaterAnimal::getExperienceReward(shared_ptr<Player> killedBy)
 {
 	return 1 + level->random->nextInt(3);
+}
+
+void WaterAnimal::baseTick()
+{
+	int airSupply = getAirSupply();
+
+	PathfinderMob::baseTick(); // this modified the airsupply
+
+	if (isAlive() && !isInWater())
+	{
+		setAirSupply(--airSupply);
+		if (getAirSupply() == -20)
+		{
+			setAirSupply(0);
+			hurt(DamageSource::drown, 2);
+		}
+	}
+	else
+	{
+		setAirSupply(TOTAL_AIR_SUPPLY);
+	}
 }

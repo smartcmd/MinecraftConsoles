@@ -7,23 +7,32 @@ EGameCommand GameModeCommand::getId()
 	return eGameCommand_GameMode;
 }
 
+int GameModeCommand::getPermissionLevel()
+{
+	return LEVEL_GAMEMASTERS;
+}
+
 void GameModeCommand::execute(shared_ptr<CommandSender> source, byteArray commandData)
 {
-	//if (args.length > 0)
-	//{
+	//if (args.length > 0) {
 	//	GameType newMode = getModeForString(source, args[0]);
-	//	Player player = args.length >= 2 ? getPlayer(args[1]) : convertSourceToPlayer(source);
+	//	Player player = args.length >= 2 ? convertToPlayer(source, args[1]) : convertSourceToPlayer(source);
 
 	//	player.setGameMode(newMode);
+	//	player.fallDistance = 0; // reset falldistance so flying people do not die :P
 
-	//	String mode = I18n.get("gameMode." + newMode.getName());
+	//	ChatMessageComponent mode = ChatMessageComponent.forTranslation("gameMode." + newMode.getName());
 
 	//	if (player != source) {
 	//		logAdminAction(source, AdminLogCommand.LOGTYPE_DONT_SHOW_TO_SELF, "commands.gamemode.success.other", player.getAName(), mode);
 	//	} else {
 	//		logAdminAction(source, AdminLogCommand.LOGTYPE_DONT_SHOW_TO_SELF, "commands.gamemode.success.self", mode);
 	//	}
+
+	//	return;
 	//}
+
+	//throw new UsageException("commands.gamemode.usage");
 }
 
 GameType *GameModeCommand::getModeForString(shared_ptr<CommandSender> source, const wstring &name)
@@ -37,17 +46,5 @@ GameType *GameModeCommand::getModeForString(shared_ptr<CommandSender> source, co
 	//	return GameType.ADVENTURE;
 	//} else {
 	//	return LevelSettings.validateGameType(convertArgToInt(source, name, 0, GameType.values().length - 2));
-	//}
-}
-
-shared_ptr<Player> GameModeCommand::getPlayer(PlayerUID playerId)
-{
-	return nullptr;
-	//Player player = MinecraftServer.getInstance().getPlayers().getPlayer(name);
-
-	//if (player == null) {
-	//	throw new PlayerNotFoundException();
-	//} else {
-	//	return player;
 	//}
 }

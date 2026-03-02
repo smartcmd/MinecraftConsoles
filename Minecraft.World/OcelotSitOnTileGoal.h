@@ -2,7 +2,7 @@
 
 #include "Goal.h"
 
-class Ozelot;
+class Ocelot;
 
 class OcelotSitOnTileGoal : public Goal
 {
@@ -13,8 +13,8 @@ private:
 	static const double SIT_CHANCE;
 
 private:
-	Ozelot *ocelot; // Owner of this goal
-	float speed;
+	Ocelot *ocelot; // Owner of this goal
+	double speedModifier;
 	int _tick;
 	int tryTicks;
 	int maxTicks;
@@ -23,7 +23,7 @@ private:
 	int tileZ;
 
 public:
-	OcelotSitOnTileGoal(Ozelot *ocelot, float speed);
+	OcelotSitOnTileGoal(Ocelot *ocelot, double speedModifier);
 
 	bool canUse();
 	bool canContinueToUse();

@@ -15,59 +15,20 @@ UIScene_InGameInfoMenu::UIScene_InGameInfoMenu(int iPad, void *initData, UILayer
 	m_labelTitle.init(app.GetString(IDS_PLAYERS_INVITE));
 	m_playerList.init(eControl_GamePlayers);
 
-	for(unsigned int i = 0; i < MINECRAFT_NET_MAX_PLAYERS; ++i)
-	{
-		m_playerNames[i] = L"";
-	}
+	m_players = vector<PlayerInfo *>();
 
 	DWORD playerCount = g_NetworkManager.GetPlayerCount();
 
-	m_playersCount = 0;
 	for(DWORD i = 0; i < playerCount; ++i)
 	{
 		INetworkPlayer *player = g_NetworkManager.GetPlayerByIndex( i );
 
 		if( player != NULL )
 		{
-			m_players[i] = player->GetSmallId();
-			++m_playersCount;
+			PlayerInfo *info = BuildPlayerInfo(player);
 
-			wstring playerName = L"";
-#ifndef _CONTENT_PACKAGE
-			if(app.DebugSettingsOn() && (app.GetGameSettingsDebugMask()&(1L<<eDebugSetting_DebugLeaderboards)))
-			{
-				playerName =  L"WWWWWWWWWWWWWWWW";
-			}
-			else
-#endif
-			{
-				playerName = player->GetDisplayName();
-			}
-
-			int voiceStatus = 0;
-			if(player != NULL && player->HasVoice() )
-			{
-				if( player->IsMutedByLocalUser(m_iPad) )
-				{
-					// Muted image
-					voiceStatus = 3;
-				}
-				else if( player->IsTalking() )
-				{
-					// Talking image
-					voiceStatus = 2;
-				}
-				else
-				{
-					// Not talking image
-					voiceStatus = 1;
-				}
-			}
-
-			m_playersVoiceState[i] = voiceStatus;
-			m_playersColourState[i] = app.GetPlayerColour( m_players[i] );
-			m_playerNames[i] = playerName;
-			m_playerList.addItem( playerName, app.GetPlayerColour( m_players[i] ), voiceStatus); 
+			m_players.push_back(info);
+			m_playerList.addItem(info->m_name, info->m_colorState, info->m_voiceStatus); 
 		}
 	}
 
@@ -98,6 +59,12 @@ UIScene_InGameInfoMenu::UIScene_InGameInfoMenu(int iPad, void *initData, UILayer
 #endif
 }
 
+UIScene_InGameInfoMenu::~UIScene_InGameInfoMenu()
+{
+	// Delete player infos
+	for (int i = 0; i < m_players.size(); i++) { delete m_players[i]; }
+}
+
 wstring UIScene_InGameInfoMenu::getMoviePath()
 {
 	if(app.GetLocalPlayerCount() > 1)
@@ -126,8 +93,7 @@ void UIScene_InGameInfoMenu::updateTooltips()
 	if(CGameNetworkManager::usingAdhocMode()) keyX = -1;
 #endif
 
-
-	INetworkPlayer *selectedPlayer = g_NetworkManager.GetPlayerBySmallId( m_players[ m_playerList.getCurrentSelection() ] );
+	INetworkPlayer *selectedPlayer = g_NetworkManager.GetPlayerBySmallId(m_players[m_playerList.getCurrentSelection()]->m_smallId);
 
 	int keyA = -1;
 	Minecraft *pMinecraft = Minecraft::GetInstance();
@@ -198,52 +164,20 @@ void UIScene_InGameInfoMenu::handleReload()
 {
 	DWORD playerCount = g_NetworkManager.GetPlayerCount();
 
-	m_playersCount = 0;
+	// Remove all player info
+	for (int i = 0; i < m_players.size(); i++) { delete m_players[i]; }
+	m_players.clear();
+
 	for(DWORD i = 0; i < playerCount; ++i)
 	{
 		INetworkPlayer *player = g_NetworkManager.GetPlayerByIndex( i );
 
 		if( player != NULL )
 		{
-			m_players[i] = player->GetSmallId();
-			++m_playersCount;
+			PlayerInfo *info = BuildPlayerInfo(player);
 
-			wstring playerName = L"";
-#ifndef _CONTENT_PACKAGE
-			if(app.DebugSettingsOn() && (app.GetGameSettingsDebugMask()&(1L<<eDebugSetting_DebugLeaderboards)))
-			{
-				playerName =  L"WWWWWWWWWWWWWWWW";
-			}
-			else
-#endif
-			{
-				playerName = player->GetDisplayName();
-			}
-
-			int voiceStatus = 0;
-			if(player != NULL && player->HasVoice() )
-			{
-				if( player->IsMutedByLocalUser(m_iPad) )
-				{
-					// Muted image
-					voiceStatus = 3;
-				}
-				else if( player->IsTalking() )
-				{
-					// Talking image
-					voiceStatus = 2;
-				}
-				else
-				{
-					// Not talking image
-					voiceStatus = 1;
-				}
-			}
-
-			m_playersVoiceState[i] = voiceStatus;
-			m_playersColourState[i] = app.GetPlayerColour( m_players[i] );
-			m_playerNames[i] = playerName;
-			m_playerList.addItem( playerName, app.GetPlayerColour( m_players[i] ), voiceStatus); 
+			m_players.push_back(info);
+			m_playerList.addItem(info->m_name, info->m_colorState, info->m_voiceStatus); 
 		}
 	}
 
@@ -270,63 +204,36 @@ void UIScene_InGameInfoMenu::tick()
 {
 	UIScene::tick();
 
-	for(DWORD i = 0; i < m_playersCount; ++i)
+	// Update players by index
+	for(DWORD i = 0; i < m_players.size(); ++i)
 	{
 		INetworkPlayer *player = g_NetworkManager.GetPlayerByIndex( i );
 
-		if( player != NULL )
+		if(player != NULL)
 		{
-			m_players[i] = player->GetSmallId();
-			int voiceStatus = 0;
-			if(player != NULL && player->HasVoice() )
+			PlayerInfo *info = BuildPlayerInfo(player);
+
+			m_players[i]->m_smallId = info->m_smallId;
+
+			if(info->m_voiceStatus != m_players[i]->m_voiceStatus)
 			{
-				if( player->IsMutedByLocalUser(m_iPad) )
-				{
-					// Muted image
-					voiceStatus = 3;
-				}
-				else if( player->IsTalking() )
-				{
-					// Talking image
-					voiceStatus = 2;
-				}
-				else
-				{
-					// Not talking image
-					voiceStatus = 1;
-				}
+				m_players[i]->m_voiceStatus = info->m_voiceStatus;
+				m_playerList.setVOIPIcon(i, info->m_voiceStatus);
+			}
+			
+			if(info->m_colorState != m_players[i]->m_colorState)
+			{
+				m_players[i]->m_colorState = info->m_colorState;
+				m_playerList.setPlayerIcon(i, info->m_colorState);
 			}
 
-			if(voiceStatus != m_playersVoiceState[i])
+			if(info->m_name.compare( m_players[i]->m_name ) != 0 )
 			{
-				m_playersVoiceState[i] = voiceStatus;
-				m_playerList.setVOIPIcon( i, voiceStatus );
+				m_playerList.setButtonLabel(i, info->m_name);
+				m_players[i]->m_name = info->m_name;
 			}
 
-			short icon = app.GetPlayerColour( m_players[i] );
-
-			if(icon != m_playersColourState[i])
-			{
-				m_playersColourState[i] = icon;
-				m_playerList.setPlayerIcon( i, (int)app.GetPlayerColour( m_players[i] ) );
-			}
-
-			wstring playerName = L"";
-#ifndef _CONTENT_PACKAGE
-			if(app.DebugSettingsOn() && (app.GetGameSettingsDebugMask()&(1L<<eDebugSetting_DebugLeaderboards)))
-			{
-				playerName =  L"WWWWWWWWWWWWWWWW";
-			}
-			else
-#endif
-			{
-				playerName = player->GetDisplayName();
-			}
-			if(playerName.compare( m_playerNames[i] ) != 0 )
-			{
-				m_playerList.setButtonLabel(i, playerName);
-				m_playerNames[i] = playerName;
-			}
+			delete info;
 		}
 	}
 }
@@ -357,7 +264,7 @@ void UIScene_InGameInfoMenu::handleInput(int iPad, int key, bool repeat, bool pr
 				UINT uiIDA[2];
 				uiIDA[0]=IDS_PRO_NOTONLINE_ACCEPT;
 				uiIDA[1]=IDS_PRO_NOTONLINE_DECLINE;
-				ui.RequestMessageBox(IDS_PRO_NOTONLINE_TITLE, IDS_PRO_NOTONLINE_TEXT, uiIDA, 2, ProfileManager.GetPrimaryPad(),&UIScene_InGameInfoMenu::MustSignInReturnedPSN,this, app.GetStringTable());
+				ui.RequestErrorMessage(IDS_PRO_NOTONLINE_TITLE, IDS_PRO_NOTONLINE_TEXT, uiIDA, 2, ProfileManager.GetPrimaryPad(),&UIScene_InGameInfoMenu::MustSignInReturnedPSN,this);
 			}
 			else
 #endif
@@ -373,9 +280,9 @@ void UIScene_InGameInfoMenu::handleInput(int iPad, int key, bool repeat, bool pr
 #else
 
 
-		if(pressed && m_playerList.hasFocus() && (m_playerList.getItemCount() > 0) && (m_playerList.getCurrentSelection() < m_playersCount) )
+		if(pressed && m_playerList.hasFocus() && (m_playerList.getItemCount() > 0) && (m_playerList.getCurrentSelection() < m_players.size()) )
 		{
-			INetworkPlayer *player = g_NetworkManager.GetPlayerBySmallId(m_players[m_playerList.getCurrentSelection()]);
+			INetworkPlayer *player = g_NetworkManager.GetPlayerBySmallId(m_players[m_playerList.getCurrentSelection()]->m_smallId);
 			if( player != NULL )
 			{
 				PlayerUID uid = player->GetUID();
@@ -428,7 +335,7 @@ void UIScene_InGameInfoMenu::handlePress(F64 controlId, F64 childId)
 		break;
 	case eControl_GamePlayers:
 		int currentSelection = (int)childId;
-		INetworkPlayer *selectedPlayer = g_NetworkManager.GetPlayerBySmallId( m_players[ currentSelection ] );
+		INetworkPlayer *selectedPlayer = g_NetworkManager.GetPlayerBySmallId(m_players[currentSelection]->m_smallId);
 
 		Minecraft *pMinecraft = Minecraft::GetInstance();
 		shared_ptr<MultiplayerLocalPlayer> localPlayer = pMinecraft->localplayers[m_iPad];
@@ -448,20 +355,20 @@ void UIScene_InGameInfoMenu::handlePress(F64 controlId, F64 childId)
 			{
 				InGamePlayerOptionsInitData *pInitData = new InGamePlayerOptionsInitData();
 				pInitData->iPad = m_iPad;
-				pInitData->networkSmallId = m_players[ currentSelection ];
-				pInitData->playerPrivileges = app.GetPlayerPrivileges(m_players[ currentSelection ] );
+				pInitData->networkSmallId = m_players[currentSelection]->m_smallId;
+				pInitData->playerPrivileges = app.GetPlayerPrivileges(m_players[currentSelection]->m_smallId);
 				ui.NavigateToScene(m_iPad,eUIScene_InGamePlayerOptionsMenu,pInitData);
 			}
 			else if(selectedPlayer->IsLocal() != TRUE && selectedPlayer->IsSameSystem(g_NetworkManager.GetHostPlayer()) != TRUE)
 			{
 				// Only ops will hit this, can kick anyone not local and not local to the host
 				BYTE *smallId = new BYTE();
-				*smallId = m_players[currentSelection];
+				*smallId = m_players[currentSelection]->m_smallId;
 				UINT uiIDA[2];
 				uiIDA[0]=IDS_CONFIRM_OK;
 				uiIDA[1]=IDS_CONFIRM_CANCEL;
 
-				ui.RequestMessageBox(IDS_UNLOCK_KICK_PLAYER_TITLE, IDS_UNLOCK_KICK_PLAYER, uiIDA, 2, m_iPad,&UIScene_InGameInfoMenu::KickPlayerReturned,smallId,app.GetStringTable(),NULL,0,false);
+				ui.RequestAlertMessage(IDS_UNLOCK_KICK_PLAYER_TITLE, IDS_UNLOCK_KICK_PLAYER, uiIDA, 2, m_iPad,&UIScene_InGameInfoMenu::KickPlayerReturned,smallId);
 			}
 		}
 		break;
@@ -480,71 +387,53 @@ void UIScene_InGameInfoMenu::handleFocusChange(F64 controlId, F64 childId)
 
 void UIScene_InGameInfoMenu::OnPlayerChanged(void *callbackParam, INetworkPlayer *pPlayer, bool leaving)
 {
+	app.DebugPrintf("<UIScene_InGameInfoMenu::OnPlayerChanged> Player \"%ls\" %s (smallId: %d)\n", pPlayer->GetOnlineName(), leaving ? "leaving" : "joining", pPlayer->GetSmallId());
+
 	UIScene_InGameInfoMenu *scene = (UIScene_InGameInfoMenu *)callbackParam;
 	bool playerFound = false;
 	int foundIndex = 0;
-	for(int i = 0; i < scene->m_playersCount; ++i)
+	for(int i = 0; i < scene->m_players.size(); ++i)
 	{
-		if(!playerFound && scene->m_players[i] == pPlayer->GetSmallId() )
+		if(!playerFound && scene->m_players[i]->m_smallId == pPlayer->GetSmallId() )
 		{
 			if( scene->m_playerList.getCurrentSelection() == scene->m_playerList.getItemCount() - 1 )
 			{
 				scene->m_playerList.setCurrentSelection( scene->m_playerList.getItemCount() - 2 );
 			}
-			// Player removed
+
+			// Player found
 			playerFound = true;
 			foundIndex = i;
 		}
 	}
 
-	if( playerFound )
+	if (leaving && !playerFound) app.DebugPrintf("<UIScene_InGameInfoMenu::OnPlayerChanged> Error: Player \"%ls\" leaving but not found in list\n", pPlayer->GetOnlineName());
+	if (!leaving && playerFound) app.DebugPrintf("<UIScene_InGameInfoMenu::OnPlayerChanged> Error: Player \"%ls\" joining but already in list\n", pPlayer->GetOnlineName());
+
+	// If the player was found remove them (even if they're joining, they'll be added again later)
+	if(playerFound)
 	{
-		--scene->m_playersCount;
-		scene->m_playersVoiceState[scene->m_playersCount] = 0;
-		scene->m_playersColourState[scene->m_playersCount] = 0;
-		scene->m_playerNames[scene->m_playersCount] = L"";
-		scene->m_playerList.removeItem(scene->m_playersCount);
+		app.DebugPrintf("<UIScene_InGameInfoMenu::OnPlayerChanged> Player \"%ls\" found, removing\n", pPlayer->GetOnlineName());
+
+		// Remove player info
+		delete scene->m_players[foundIndex];
+		scene->m_players.erase(scene->m_players.begin() + foundIndex);
+
+		// Remove player from list
+		scene->m_playerList.removeItem(foundIndex);
 	}
 
-	if( !playerFound )
+	// If the player is joining
+	if(!leaving)
 	{
-		// Player added
-		scene->m_players[scene->m_playersCount] = pPlayer->GetSmallId();
-		++scene->m_playersCount;
+		app.DebugPrintf("<UIScene_InGameInfoMenu::OnPlayerChanged> Player \"%ls\" not found, adding\n", pPlayer->GetOnlineName());
 
-		wstring playerName = L"";
-#ifndef _CONTENT_PACKAGE
-		if(app.DebugSettingsOn() && (app.GetGameSettingsDebugMask()&(1L<<eDebugSetting_DebugLeaderboards)))
-		{
-			playerName =  L"WWWWWWWWWWWWWWWW";
-		}
-		else
-#endif
-		{
-			playerName = pPlayer->GetDisplayName();
-		}
-
-		int voiceStatus = 0;
-		if(pPlayer != NULL && pPlayer->HasVoice() )
-		{
-			if( pPlayer->IsMutedByLocalUser(scene->m_iPad) )
-			{
-				// Muted image
-				voiceStatus = 3;
-			}
-			else if( pPlayer->IsTalking() )
-			{
-				// Talking image
-				voiceStatus = 2;
-			}
-			else
-			{
-				// Not talking image
-				voiceStatus = 1;
-			}
-		}
-
-		scene->m_playerList.addItem( playerName, app.GetPlayerColour( scene->m_players[scene->m_playersCount - 1] ), voiceStatus); 
+		PlayerInfo *info = scene->BuildPlayerInfo(pPlayer);
+		scene->m_players.push_back(info);
+		
+		// Note that the tick updates buttons every tick so it's only really important that we
+		// add the button (not the order or content)
+		scene->m_playerList.addItem(info->m_name, info->m_colorState, info->m_voiceStatus);
 	}
 }
 
@@ -564,6 +453,50 @@ int UIScene_InGameInfoMenu::KickPlayerReturned(void *pParam,int iPad,C4JStorage:
 	}
 
 	return 0;
+}
+
+UIScene_InGameInfoMenu::PlayerInfo *UIScene_InGameInfoMenu::BuildPlayerInfo(INetworkPlayer *player)
+{
+	PlayerInfo *info = new PlayerInfo();
+	info->m_smallId = player->GetSmallId();
+
+	wstring playerName = L"";
+#ifndef _CONTENT_PACKAGE
+	if(app.DebugSettingsOn() && (app.GetGameSettingsDebugMask()&(1L<<eDebugSetting_DebugLeaderboards)))
+	{
+		playerName =  L"WWWWWWWWWWWWWWWW";
+	}
+	else
+#endif
+	{
+		playerName = player->GetDisplayName();
+	}
+
+	int voiceStatus = 0;
+	if(player != NULL && player->HasVoice() )
+	{
+		if( player->IsMutedByLocalUser(m_iPad) )
+		{
+			// Muted image
+			voiceStatus = 3;
+		}
+		else if( player->IsTalking() )
+		{
+			// Talking image
+			voiceStatus = 2;
+		}
+		else
+		{
+			// Not talking image
+			voiceStatus = 1;
+		}
+	}
+
+	info->m_voiceStatus = voiceStatus;
+	info->m_colorState = app.GetPlayerColour(info->m_smallId);
+	info->m_name = playerName;
+
+	return info;
 }
 
 #if defined __PS3__ || defined __PSVITA__
@@ -596,7 +529,7 @@ int UIScene_InGameInfoMenu::ViewInvites_SignInReturned(void *pParam,bool bContin
 			int ret = sceNpBasicRecvMessageCustom(SCE_NP_BASIC_MESSAGE_MAIN_TYPE_INVITE, SCE_NP_BASIC_RECV_MESSAGE_OPTIONS_INCLUDE_BOOTABLE, SYS_MEMORY_CONTAINER_ID_INVALID);
 			app.DebugPrintf("sceNpBasicRecvMessageCustom return %d ( %08x )\n", ret, ret);
 #else // __PSVITA__
-			PSVITA_STUBBED;
+			SQRNetworkManager_Vita::RecvInviteGUI();
 #endif
 		}
 	}

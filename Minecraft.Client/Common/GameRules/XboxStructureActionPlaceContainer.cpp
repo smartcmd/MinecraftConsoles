@@ -74,16 +74,16 @@ bool XboxStructureActionPlaceContainer::placeContainerInLevel(StructurePiece *st
 		{
 			// Remove the current tile entity
 			level->removeTileEntity( worldX, worldY, worldZ );
-			level->setTile( worldX, worldY, worldZ, 0 );
+			level->setTileAndData( worldX, worldY, worldZ, 0, 0, Tile::UPDATE_ALL );
 		}
 
-		level->setTile( worldX, worldY, worldZ, m_tile );
+		level->setTileAndData( worldX, worldY, worldZ, m_tile, 0, Tile::UPDATE_ALL );
 		shared_ptr<Container> container = dynamic_pointer_cast<Container>(level->getTileEntity( worldX, worldY, worldZ ));
 		
 		app.DebugPrintf("XboxStructureActionPlaceContainer - placing a container at (%d,%d,%d)\n", worldX, worldY, worldZ);
 		if ( container != NULL )
 		{
-			level->setData( worldX, worldY, worldZ, m_data);
+			level->setData( worldX, worldY, worldZ, m_data, Tile::UPDATE_CLIENTS);
 			// Add items
 			int slotId = 0;
 			for(AUTO_VAR(it, m_items.begin()); it != m_items.end() && (slotId < container->getContainerSize()); ++it, ++slotId )

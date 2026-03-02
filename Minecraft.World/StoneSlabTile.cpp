@@ -38,11 +38,11 @@ Icon *StoneSlabTile::getTexture(int face, int data)
 	case WOOD_SLAB:
 		return Tile::wood->getTexture(face);
 	case COBBLESTONE_SLAB:
-		return Tile::stoneBrick->getTexture(face);
+		return Tile::cobblestone->getTexture(face);
 	case BRICK_SLAB:
 		return Tile::redBrick->getTexture(face);
 	case SMOOTHBRICK_SLAB:
-		return Tile::stoneBrickSmooth->getTexture(face, SmoothStoneBrickTile::TYPE_DEFAULT);
+		return Tile::stoneBrick->getTexture(face, SmoothStoneBrickTile::TYPE_DEFAULT);
 	case NETHERBRICK_SLAB:
 		return Tile::netherBrick->getTexture(Facing::UP);
 	case QUARTZ_SLAB:

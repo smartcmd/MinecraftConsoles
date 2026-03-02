@@ -1,4 +1,5 @@
 #include "stdafx.h"
+#include "net.minecraft.world.entity.item.h"
 #include "net.minecraft.world.level.levelgen.structure.h"
 #include "net.minecraft.world.level.h"
 #include "net.minecraft.world.level.tile.h"
@@ -12,7 +13,7 @@ WeighedTreasureArray MineShaftPieces::smallTreasureItems;;
 
 void MineShaftPieces::staticCtor()
 {
-	smallTreasureItems = WeighedTreasureArray(11);
+	smallTreasureItems = WeighedTreasureArray(13);
 	smallTreasureItems[0] = new WeighedTreasure(Item::ironIngot_Id, 0, 1, 5, 10);
 	smallTreasureItems[1] = new WeighedTreasure(Item::goldIngot_Id, 0, 1, 3, 5);
 	smallTreasureItems[2] = new WeighedTreasure(Item::redStone_Id, 0, 4, 9, 5);
@@ -23,8 +24,18 @@ void MineShaftPieces::staticCtor()
 	smallTreasureItems[7] = new WeighedTreasure(Item::pickAxe_iron_Id, 0, 1, 1, 1);
 	smallTreasureItems[8] = new WeighedTreasure(Tile::rail_Id, 0, 4, 8, 1);
 	smallTreasureItems[9] = new WeighedTreasure(Item::seeds_melon_Id, 0, 2, 4, 10);
-	// 4J-PB - Adding from 1.2.3
 	smallTreasureItems[10] = new WeighedTreasure(Item::seeds_pumpkin_Id, 0, 2, 4, 10);
+	// very rare for shafts ...
+	smallTreasureItems[11] = new WeighedTreasure(Item::saddle_Id, 0, 1, 1, 3);
+	smallTreasureItems[12] = new WeighedTreasure(Item::horseArmorMetal_Id, 0, 1, 1, 1);
+}
+
+void MineShaftPieces::loadStatic()
+{
+	StructureFeatureIO::setPieceId( eStructurePiece_MineShaftCorridor, MineShaftCorridor::Create, L"MSCorridor");
+	StructureFeatureIO::setPieceId( eStructurePiece_MineShaftCrossing, MineShaftCrossing::Create, L"MSCrossing");
+	StructureFeatureIO::setPieceId( eStructurePiece_MineShaftRoom, MineShaftRoom::Create, L"MSRoom");
+	StructureFeatureIO::setPieceId( eStructurePiece_MineShaftStairs, MineShaftStairs::Create, L"MSStairs");
 }
 
 StructurePiece *MineShaftPieces::createRandomShaftPiece(list<StructurePiece *> *pieces, Random *random, int footX, int footY, int footZ, int direction, int genDepth)
@@ -80,6 +91,10 @@ StructurePiece *MineShaftPieces::generateAndAddPiece(StructurePiece *startPiece,
 	return newPiece;
 }
 
+MineShaftPieces::MineShaftRoom::MineShaftRoom()
+{
+	// for reflection
+}
 
 MineShaftPieces::MineShaftRoom::MineShaftRoom(int genDepth, Random *random, int west, int north) : StructurePiece(genDepth)
 {
@@ -199,6 +214,46 @@ bool MineShaftPieces::MineShaftRoom::postProcess(Level *level, Random *random, B
 	return true;
 }
 
+void MineShaftPieces::MineShaftRoom::addAdditonalSaveData(CompoundTag *tag)
+{
+	ListTag<IntArrayTag> *entrances = new ListTag<IntArrayTag>(L"Entrances");
+	for (AUTO_VAR(it,childEntranceBoxes.begin()); it != childEntranceBoxes.end(); ++it)
+	{
+		BoundingBox *bb =*it;
+		entrances->add(bb->createTag(L""));
+	}
+	tag->put(L"Entrances", entrances);
+}
+
+void MineShaftPieces::MineShaftRoom::readAdditonalSaveData(CompoundTag *tag)
+{
+	ListTag<IntArrayTag> *entrances = (ListTag<IntArrayTag> *) tag->getList(L"Entrances");
+	for (int i = 0; i < entrances->size(); i++)
+	{
+		childEntranceBoxes.push_back(new BoundingBox(entrances->get(i)->data));
+	}
+}
+
+MineShaftPieces::MineShaftCorridor::MineShaftCorridor()
+{
+	// for reflection
+}
+
+void MineShaftPieces::MineShaftCorridor::addAdditonalSaveData(CompoundTag *tag)
+{
+	tag->putBoolean(L"hr", hasRails);
+	tag->putBoolean(L"sc", spiderCorridor);
+	tag->putBoolean(L"hps", hasPlacedSpider);
+	tag->putInt(L"Num", numSections);
+}
+
+void MineShaftPieces::MineShaftCorridor::readAdditonalSaveData(CompoundTag *tag)
+{
+	hasRails = tag->getBoolean(L"hr");
+	spiderCorridor = tag->getBoolean(L"sc");
+	hasPlacedSpider = tag->getBoolean(L"hps");
+	numSections = tag->getInt(L"Num");
+}
 
 MineShaftPieces::MineShaftCorridor::MineShaftCorridor(int genDepth, Random *random, BoundingBox *corridorBox, int direction)
 	: StructurePiece(genDepth)
@@ -370,6 +425,27 @@ void MineShaftPieces::MineShaftCorridor::addChildren(StructurePiece *startPiece,
 	}
 }
 
+bool MineShaftPieces::MineShaftCorridor::createChest(Level *level, BoundingBox *chunkBB, Random *random, int x, int y, int z, WeighedTreasureArray treasure, int numRolls)
+{
+	int worldX = getWorldX(x, z);
+	int worldY = getWorldY(y);
+	int worldZ = getWorldZ(x, z);
+
+	if (chunkBB->isInside(worldX, worldY, worldZ))
+	{
+		if (level->getTile(worldX, worldY, worldZ) == 0)
+		{
+			level->setTileAndData(worldX, worldY, worldZ, Tile::rail_Id, getOrientationData(Tile::rail_Id, random->nextBoolean() ? RailTile::DIR_FLAT_X : RailTile::DIR_FLAT_Z), Tile::UPDATE_CLIENTS);
+			shared_ptr<MinecartChest> chest = shared_ptr<MinecartChest>( new MinecartChest(level, worldX + 0.5f, worldY + 0.5f, worldZ + 0.5f) );
+			WeighedTreasure::addChestItems(random, treasure, chest, numRolls);
+			level->addEntity(chest);
+			return true;
+		}
+	}
+
+	return false;
+}
+
 bool MineShaftPieces::MineShaftCorridor::postProcess(Level *level, Random *random, BoundingBox *chunkBB)
 {
 	if (edgesLiquid(level, chunkBB))
@@ -439,9 +515,9 @@ bool MineShaftPieces::MineShaftCorridor::postProcess(Level *level, Random *rando
 			if (chunkBB->isInside(x, y, newZ))
 			{
 				hasPlacedSpider = true;
-				level->setTile(x, y, newZ, Tile::mobSpawner_Id);
+				level->setTileAndData(x, y, newZ, Tile::mobSpawner_Id, 0, Tile::UPDATE_CLIENTS);
 				shared_ptr<MobSpawnerTileEntity> entity = dynamic_pointer_cast<MobSpawnerTileEntity>( level->getTileEntity(x, y, newZ) );
-				if (entity != NULL) entity->setEntityId(L"CaveSpider");
+				if (entity != NULL) entity->getSpawner()->setEntityId(L"CaveSpider");
 			}
 		}
 	}
@@ -466,12 +542,29 @@ bool MineShaftPieces::MineShaftCorridor::postProcess(Level *level, Random *rando
 			int floor = getBlock(level, x0 + 1, y0 - 1, z, chunkBB);
 			if (floor > 0 && Tile::solid[floor])
 			{
-				maybeGenerateBlock(level, chunkBB, random, .7f, x0 + 1, y0, z, Tile::rail_Id, getOrientationData(Tile::rail_Id, RailTile::DIR_FLAT_Z));
+				maybeGenerateBlock(level, chunkBB, random, .7f, x0 + 1, y0, z, Tile::rail_Id, getOrientationData(Tile::rail_Id, BaseRailTile::DIR_FLAT_Z));
 			}
 		}
 	}
 
 	return true;
+}
+
+MineShaftPieces::MineShaftCrossing::MineShaftCrossing()
+{
+	// for reflection
+}
+
+void MineShaftPieces::MineShaftCrossing::addAdditonalSaveData(CompoundTag *tag)
+{
+	tag->putBoolean(L"tf", isTwoFloored);
+	tag->putInt(L"D", direction);
+}
+
+void MineShaftPieces::MineShaftCrossing::readAdditonalSaveData(CompoundTag *tag)
+{
+	isTwoFloored = tag->getBoolean(L"tf");
+	direction = tag->getInt(L"D");
 }
 
 MineShaftPieces::MineShaftCrossing::MineShaftCrossing(int genDepth, Random *random, BoundingBox *crossingBox, int direction)
@@ -609,11 +702,24 @@ bool MineShaftPieces::MineShaftCrossing::postProcess(Level *level, Random *rando
 	return true;
 }
 
+MineShaftPieces::MineShaftStairs::MineShaftStairs()
+{
+	// for reflection
+}
 
 MineShaftPieces::MineShaftStairs::MineShaftStairs(int genDepth, Random *random, BoundingBox *stairsBox, int direction) : StructurePiece(genDepth)
 {
 	this->orientation = direction;
 	boundingBox = stairsBox;
+}
+
+
+void MineShaftPieces::MineShaftStairs::addAdditonalSaveData(CompoundTag *tag)
+{
+}
+
+void MineShaftPieces::MineShaftStairs::readAdditonalSaveData(CompoundTag *tag)
+{
 }
 
 BoundingBox *MineShaftPieces::MineShaftStairs::findStairs(list<StructurePiece *> *pieces, Random *random, int footX, int footY, int footZ, int direction)

@@ -12,7 +12,7 @@ RedStoneOreTile::RedStoneOreTile(int id, bool lit) : Tile(id, Material::stone)
 	this->lit = lit;
 }
 
-int RedStoneOreTile::getTickDelay()
+int RedStoneOreTile::getTickDelay(Level *level)
 {
 	return 30;
 }
@@ -32,7 +32,7 @@ void RedStoneOreTile::stepOn(Level *level, int x, int y, int z, shared_ptr<Entit
 // 4J-PB - Adding a TestUse for tooltip display
 bool RedStoneOreTile::TestUse()
 {
-	return true;
+	return id == Tile::redStoneOre_Id;
 }
 
 bool RedStoneOreTile::use(Level *level, int x, int y, int z, shared_ptr<Player> player, int clickedFace, float clickX, float clickY, float clickZ, bool soundOnly/*=false*/) // 4J added soundOnly param
@@ -48,7 +48,7 @@ void RedStoneOreTile::interact(Level *level, int x, int y, int z)
 	if (level->isClientSide) return;		// 4J added
 	if (id == Tile::redStoneOre_Id)
 	{
-		level->setTile(x, y, z, Tile::redStoneOre_lit_Id);
+		level->setTileAndUpdate(x, y, z, Tile::redStoneOre_lit_Id);
 	}
 }
 
@@ -56,7 +56,7 @@ void RedStoneOreTile::tick(Level *level, int x, int y, int z, Random* random)
 {
 	if (id == Tile::redStoneOre_lit_Id)
 	{
-		level->setTile(x, y, z, Tile::redStoneOre_Id);
+		level->setTileAndUpdate(x, y, z, Tile::redStoneOre_Id);
 	}
 }
 
@@ -119,7 +119,7 @@ void RedStoneOreTile::poofParticles(Level *level, int x, int y, int z)
 
 bool RedStoneOreTile::shouldTileTick(Level *level, int x,int y,int z)
 {
-    return id == Tile::redStoneOre_lit_Id;
+	return id == Tile::redStoneOre_lit_Id;
 }
 
 shared_ptr<ItemInstance> RedStoneOreTile::getSilkTouchItemInstance(int data)

@@ -7,14 +7,14 @@
 #include "Texture.h"
 #include "ClockTexture.h"
 
-ClockTexture::ClockTexture() : StitchedTexture(L"compass")
+ClockTexture::ClockTexture() : StitchedTexture(L"clock", L"clock")
 {
 	rot = rota = 0.0;
 	m_dataTexture = NULL;
 	m_iPad = XUSER_INDEX_ANY;
 }
 
-ClockTexture::ClockTexture(int iPad, ClockTexture *dataTexture) : StitchedTexture(L"compass")
+ClockTexture::ClockTexture(int iPad, ClockTexture *dataTexture) : StitchedTexture(L"clock", L"clock")
 {
 	rot = rota = 0.0;
 	m_dataTexture = dataTexture;

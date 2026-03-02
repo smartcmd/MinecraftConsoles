@@ -278,7 +278,7 @@ __int64 ConsoleSchematicFile::applyBlocksAndData(LevelChunk *chunk, AABB *chunkB
 	//{
 	//	if(blockData[i] == Tile::sand_Id || blockData[i] == Tile::sandStone_Id)
 	//	{
-	//		blockData[i] = Tile::whiteStone_Id;
+	//		blockData[i] = Tile::endStone_Id;
 	//	}
 	//}
 	
@@ -706,15 +706,19 @@ void ConsoleSchematicFile::generateSchematicFile(DataOutputStream *dos, Level *l
 		shared_ptr<Entity> e = *it;
 
 		bool mobCanBeSaved = false;
-		if(bSaveMobs)
+		if (bSaveMobs)
 		{
-			if( ( e->GetType() & eTYPE_MONSTER ) || ( e->GetType() & eTYPE_WATERANIMAL ) || ( e->GetType() & eTYPE_ANIMAL ) ||
-				( e->GetType() == eTYPE_CHICKEN ) || ( e->GetType() == eTYPE_WOLF ) || ( e->GetType() == eTYPE_VILLAGER) || ( e->GetType() == eTYPE_MUSHROOMCOW ) )
+			if ( e->instanceof(eTYPE_MONSTER) || e->instanceof(eTYPE_WATERANIMAL) || e->instanceof(eTYPE_ANIMAL) || (e->GetType() == eTYPE_VILLAGER) )
+
+				// 4J-JEV: All these are derived from eTYPE_ANIMAL and true implicitly.
+				//||	( e->GetType() == eTYPE_CHICKEN ) || ( e->GetType() == eTYPE_WOLF ) || ( e->GetType() == eTYPE_MUSHROOMCOW ) )
 			{
 				mobCanBeSaved = true;
 			}
 		}
-		if(mobCanBeSaved || e->GetType() == eTYPE_MINECART  || e->GetType() == eTYPE_BOAT || e->GetType() == eTYPE_PAINTING || e->GetType() == eTYPE_ITEM_FRAME)
+
+		// 4J-JEV: Changed to check for instances of minecarts and hangingEntities instead of just eTYPE_PAINTING, eTYPE_ITEM_FRAME and eTYPE_MINECART
+		if (mobCanBeSaved || e->instanceof(eTYPE_MINECART)  || e->GetType() == eTYPE_BOAT || e->instanceof(eTYPE_HANGING_ENTITY)) 
 		{
 			CompoundTag *eTag = new CompoundTag();
 			if( e->save(eTag) )
@@ -725,7 +729,7 @@ void ConsoleSchematicFile::generateSchematicFile(DataOutputStream *dos, Level *l
 				pos->get(1)->data -= yStart;
 				pos->get(2)->data -= zStart;
 
-				if( e->GetType() == eTYPE_PAINTING || e->GetType() == eTYPE_ITEM_FRAME )
+				if( e->instanceof(eTYPE_HANGING_ENTITY) )
 				{					
 					((IntTag *) eTag->get(L"TileX") )->data -= xStart;
 					((IntTag *) eTag->get(L"TileY") )->data -= yStart;

@@ -35,6 +35,8 @@
 #define MACRO_POTION_IS_SLOWNESS(aux)			((aux & 0x200F)									== MASK_SLOWNESS)
 #define MACRO_POTION_IS_POISON(aux)				((aux & 0x200F)									== MASK_POISON)
 #define MACRO_POTION_IS_INSTANTDAMAGE(aux)		((aux & 0x200F)									== MASK_INSTANTDAMAGE)
+#define MACRO_POTION_IS_NIGHTVISION(aux)		((aux & 0x200F)									== MASK_NIGHTVISION)
+#define MACRO_POTION_IS_INVISIBILITY(aux)		((aux & 0x200F)									== MASK_INVISIBILITY)
 
 #define MACRO_POTION_IS_SPLASH(aux)				((aux & MASK_SPLASH)							== MASK_SPLASH)
 #define MACRO_POTION_IS_BOTTLE(aux)				((aux & MASK_SPLASH)							== 0)

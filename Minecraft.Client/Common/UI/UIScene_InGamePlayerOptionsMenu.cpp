@@ -232,6 +232,92 @@ void UIScene_InGamePlayerOptionsMenu::updateTooltips()
 	ui.SetTooltips( m_iPad, IDS_TOOLTIPS_SELECT,IDS_TOOLTIPS_BACK);
 }
 
+void UIScene_InGamePlayerOptionsMenu::handleReload()
+{
+	UIScene::handleReload();
+
+	INetworkPlayer *localPlayer = g_NetworkManager.GetLocalPlayerByUserIndex( m_iPad );
+	INetworkPlayer *editingPlayer = g_NetworkManager.GetPlayerBySmallId(m_networkSmallId);
+
+	bool trustPlayers = app.GetGameHostOption(eGameHostOption_TrustPlayers) != 0;
+	bool cheats = app.GetGameHostOption(eGameHostOption_CheatsEnabled) != 0;
+	m_editingSelf = (localPlayer != NULL && localPlayer == editingPlayer);
+
+	if( m_editingSelf || trustPlayers || editingPlayer->IsHost())
+	{
+		removeControl( &m_checkboxes[eControl_BuildAndMine], true );
+		removeControl( &m_checkboxes[eControl_UseDoorsAndSwitches], true );
+		removeControl( &m_checkboxes[eControl_UseContainers], true );
+		removeControl( &m_checkboxes[eControl_AttackPlayers], true );
+		removeControl( &m_checkboxes[eControl_AttackAnimals], true );
+	}
+
+	if(m_editingSelf)
+	{
+#if (defined(_CONTENT_PACKAGE) || defined(_FINAL_BUILD) && !defined(_DEBUG_MENUS_ENABLED))
+		removeControl( &m_checkboxes[eControl_Op], true );
+#endif
+		
+		removeControl( &m_buttonKick, true );
+		removeControl( &m_checkboxes[eControl_CheatTeleport], true );
+
+		if(cheats)
+		{
+			bool inCreativeMode = Player::getPlayerGamePrivilege(m_playerPrivileges,Player::ePlayerGamePrivilege_CreativeMode) != 0;
+			if(inCreativeMode)
+			{
+				removeControl( &m_checkboxes[eControl_HostFly], true );
+				removeControl( &m_checkboxes[eControl_HostHunger], true );
+			}
+		}
+		else
+		{
+			removeControl( &m_checkboxes[eControl_HostInvisible], true );
+			removeControl( &m_checkboxes[eControl_HostFly], true );
+			removeControl( &m_checkboxes[eControl_HostHunger], true );
+		}
+	}
+	else
+	{
+		if(!localPlayer->IsHost())
+		{
+			removeControl( &m_checkboxes[eControl_Op], true );
+		}
+
+		if(localPlayer->IsHost() && cheats )
+		{
+
+			bool inCreativeMode = Player::getPlayerGamePrivilege(m_playerPrivileges,Player::ePlayerGamePrivilege_CreativeMode) != 0;
+			if(inCreativeMode)
+			{
+				removeControl( &m_checkboxes[eControl_HostFly], true );
+				removeControl( &m_checkboxes[eControl_HostHunger], true );
+			}
+		}
+		else
+		{
+			removeControl( &m_checkboxes[eControl_HostInvisible], true );
+			removeControl( &m_checkboxes[eControl_HostFly], true );
+			removeControl( &m_checkboxes[eControl_HostHunger], true );
+			removeControl( &m_checkboxes[eControl_CheatTeleport], true );
+		}
+
+
+		// Can only kick people if they are not local, and not local to the host
+		if(editingPlayer->IsLocal() == TRUE || editingPlayer->IsSameSystem(g_NetworkManager.GetHostPlayer()) == TRUE)
+		{
+			removeControl( &m_buttonKick, true );
+		}
+	}
+
+	short colourIndex = app.GetPlayerColour( m_networkSmallId );
+	IggyDataValue result;
+	IggyDataValue value[1];
+	value[0].type = IGGY_DATATYPE_number;
+	value[0].number = colourIndex;
+	IggyResult out = IggyPlayerCallMethodRS ( getMovie() , &result, IggyPlayerRootPath( getMovie() ), m_funcSetPlayerIcon , 1 , value );
+}
+
 void UIScene_InGamePlayerOptionsMenu::tick()
 {
 	UIScene::tick();
@@ -352,7 +438,7 @@ void UIScene_InGamePlayerOptionsMenu::handlePress(F64 controlId, F64 childId)
 			uiIDA[0]=IDS_CONFIRM_OK;
 			uiIDA[1]=IDS_CONFIRM_CANCEL;
 
-			ui.RequestMessageBox(IDS_UNLOCK_KICK_PLAYER_TITLE, IDS_UNLOCK_KICK_PLAYER, uiIDA, 2, m_iPad,&UIScene_InGamePlayerOptionsMenu::KickPlayerReturned,smallId,app.GetStringTable(),NULL,0,false);
+			ui.RequestAlertMessage(IDS_UNLOCK_KICK_PLAYER_TITLE, IDS_UNLOCK_KICK_PLAYER, uiIDA, 2, m_iPad,&UIScene_InGamePlayerOptionsMenu::KickPlayerReturned,smallId);
 		}
 		break;
 	};

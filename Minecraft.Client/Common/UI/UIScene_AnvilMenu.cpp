@@ -27,14 +27,14 @@ UIScene_AnvilMenu::UIScene_AnvilMenu(int iPad, void *_initData, UILayer *parentL
 		gameMode->getTutorial()->changeTutorialState(e_Tutorial_State_Anvil_Menu, this);
 	}
 
-	m_repairMenu = new RepairMenu( initData->inventory, initData->level, initData->x, initData->y, initData->z, pMinecraft->localplayers[iPad] );
+	m_repairMenu = new AnvilMenu( initData->inventory, initData->level, initData->x, initData->y, initData->z, pMinecraft->localplayers[iPad] );
 	m_repairMenu->addSlotListener(this);
 
-	Initialize( iPad, m_repairMenu, true, RepairMenu::INV_SLOT_START, eSectionAnvilUsing, eSectionAnvilMax );
+	Initialize( iPad, m_repairMenu, true, AnvilMenu::INV_SLOT_START, eSectionAnvilUsing, eSectionAnvilMax );
 
-	m_slotListItem1.addSlots(RepairMenu::INPUT_SLOT, 1);
-	m_slotListItem2.addSlots(RepairMenu::ADDITIONAL_SLOT, 1);
-	m_slotListResult.addSlots(RepairMenu::RESULT_SLOT, 1);
+	m_slotListItem1.addSlots(AnvilMenu::INPUT_SLOT, 1);
+	m_slotListItem2.addSlots(AnvilMenu::ADDITIONAL_SLOT, 1);
+	m_slotListResult.addSlots(AnvilMenu::RESULT_SLOT, 1);
 
 	bool expensive = false;
 	wstring m_costString = L"";
@@ -46,7 +46,7 @@ UIScene_AnvilMenu::UIScene_AnvilMenu(int iPad, void *_initData, UILayer *parentL
 			m_costString = app.GetString(IDS_REPAIR_EXPENSIVE);
 			expensive = true;
 		}
-		else if(!m_repairMenu->getSlot(RepairMenu::RESULT_SLOT)->hasItem())
+		else if(!m_repairMenu->getSlot(AnvilMenu::RESULT_SLOT)->hasItem())
 		{
 			// Do nothing
 		}
@@ -56,7 +56,7 @@ UIScene_AnvilMenu::UIScene_AnvilMenu(int iPad, void *_initData, UILayer *parentL
 			wchar_t temp[256];
 			swprintf(temp, 256, costString, m_repairMenu->cost);
 			m_costString = temp;
-			if(!m_repairMenu->getSlot(RepairMenu::RESULT_SLOT)->mayPickup(dynamic_pointer_cast<Player>(m_inventory->player->shared_from_this())))
+			if(!m_repairMenu->getSlot(AnvilMenu::RESULT_SLOT)->mayPickup(dynamic_pointer_cast<Player>(m_inventory->player->shared_from_this())))
 			{
 				expensive = true;
 			}
@@ -85,11 +85,11 @@ wstring UIScene_AnvilMenu::getMoviePath()
 
 void UIScene_AnvilMenu::handleReload()
 {
-	Initialize( m_iPad, m_menu, true, RepairMenu::INV_SLOT_START, eSectionAnvilUsing, eSectionAnvilMax  );
+	Initialize( m_iPad, m_menu, true, AnvilMenu::INV_SLOT_START, eSectionAnvilUsing, eSectionAnvilMax  );
 
-	m_slotListItem1.addSlots(RepairMenu::INPUT_SLOT, 1);
-	m_slotListItem2.addSlots(RepairMenu::ADDITIONAL_SLOT, 1);
-	m_slotListResult.addSlots(RepairMenu::RESULT_SLOT, 1);
+	m_slotListItem1.addSlots(AnvilMenu::INPUT_SLOT, 1);
+	m_slotListItem2.addSlots(AnvilMenu::ADDITIONAL_SLOT, 1);
+	m_slotListResult.addSlots(AnvilMenu::RESULT_SLOT, 1);
 }
 
 void UIScene_AnvilMenu::tick()

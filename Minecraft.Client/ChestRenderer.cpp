@@ -5,11 +5,29 @@
 #include "ModelPart.h"
 #include "..\Minecraft.World\net.minecraft.world.level.tile.entity.h"
 #include "..\Minecraft.World\net.minecraft.world.level.tile.h"
+#include "..\Minecraft.World\Calendar.h"
 
-ChestRenderer::ChestRenderer()
+ResourceLocation ChestRenderer::CHEST_LARGE_TRAP_LOCATION = ResourceLocation(TN_TILE_LARGE_TRAP_CHEST);
+//ResourceLocation ChestRenderer::CHEST_LARGE_XMAS_LOCATION = ResourceLocation(TN_TILE_LARGE_XMAS_CHEST);
+ResourceLocation ChestRenderer::CHEST_LARGE_LOCATION = ResourceLocation(TN_TILE_LARGE_CHEST);
+ResourceLocation ChestRenderer::CHEST_TRAP_LOCATION = ResourceLocation(TN_TILE_TRAP_CHEST);
+//ResourceLocation ChestRenderer::CHEST_XMAS_LOCATION = ResourceLocation(TN_TILE_XMAS_CHEST);
+ResourceLocation ChestRenderer::CHEST_LOCATION = ResourceLocation(TN_TILE_CHEST);
+
+ChestRenderer::ChestRenderer() : TileEntityRenderer()
 {
 	chestModel = new ChestModel();
 	largeChestModel = new LargeChestModel();
+
+	xmasTextures = false;
+
+	// 4J Stu - Disable this
+#if 0
+	if (Calendar::GetMonth() + 1 == 12 && Calendar::GetDayOfMonth() >= 24 && Calendar::GetDayOfMonth() <= 26)
+	{
+		xmasTextures = true;
+	}
+#endif
 }
 
 ChestRenderer::~ChestRenderer()
@@ -34,7 +52,7 @@ void ChestRenderer::render(shared_ptr<TileEntity>  _chest, double x, double y, d
 		Tile *tile = chest->getTile();
 		data = chest->getData();
 
-		if (tile != NULL && data == 0)
+		if (dynamic_cast<ChestTile*>(tile) != NULL && data == 0)
 		{
 			((ChestTile *) tile)->recalcLockDir(chest->getLevel(), chest->x, chest->y, chest->z);
 			data = chest->getData();
@@ -49,12 +67,35 @@ void ChestRenderer::render(shared_ptr<TileEntity>  _chest, double x, double y, d
 	if (chest->e.lock() != NULL || chest->s.lock() != NULL)
 	{
 		model = largeChestModel;
-		bindTexture(TN_TILE_LARGE_CHEST); // 4J Was "/item/largechest.png"
+
+		if (chest->getType() == ChestTile::TYPE_TRAP)
+		{
+			bindTexture(&CHEST_LARGE_TRAP_LOCATION);
+		}
+		//else if (xmasTextures)
+		//{
+		//	bindTexture(&CHEST_LARGE_XMAS_LOCATION);
+		//}
+		else
+		{
+			bindTexture(&CHEST_LARGE_LOCATION);
+		}
 	}
 	else
 	{
 		model = chestModel;
-		bindTexture(TN_TILE_CHEST); // 4J Was "/item/chest.png"
+		if (chest->getType() == ChestTile::TYPE_TRAP)
+		{
+			bindTexture(&CHEST_TRAP_LOCATION);
+		}
+		//else if (xmasTextures)
+		//{
+		//	bindTexture(&CHEST_XMAS_LOCATION);
+		//}
+		else
+		{
+			bindTexture(&CHEST_LOCATION);
+		}
 	}
 
 	glPushMatrix();

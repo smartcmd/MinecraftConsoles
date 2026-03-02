@@ -7,16 +7,16 @@
 #include "net.minecraft.world.phys.h"
 #include "FollowOwnerGoal.h"
 
-FollowOwnerGoal::FollowOwnerGoal(TamableAnimal *tamable, float speed, float startDistance, float stopDistance)
+FollowOwnerGoal::FollowOwnerGoal(TamableAnimal *tamable, double speedModifier, float startDistance, float stopDistance)
 {
 	owner = weak_ptr<Mob>();
 	timeToRecalcPath = 0;
 	oldAvoidWater = false;
 
 	this->tamable = tamable;
-	this->level = tamable->level;
-	this->speed = speed;
-	this->navigation = tamable->getNavigation();
+	level = tamable->level;
+	this->speedModifier = speedModifier;
+	navigation = tamable->getNavigation();
 	this->startDistance = startDistance;
 	this->stopDistance = stopDistance;
 	setRequiredControlFlags(Control::MoveControlFlag | Control::LookControlFlag);
@@ -24,11 +24,11 @@ FollowOwnerGoal::FollowOwnerGoal(TamableAnimal *tamable, float speed, float star
 
 bool FollowOwnerGoal::canUse()
 {
-	shared_ptr<Mob> owner = tamable->getOwner();
+	shared_ptr<LivingEntity> owner = dynamic_pointer_cast<LivingEntity>( tamable->getOwner() );
 	if (owner == NULL) return false;
 	if (tamable->isSitting()) return false;
 	if (tamable->distanceToSqr(owner) < startDistance * startDistance) return false;
-	this->owner = weak_ptr<Mob>(owner);
+	this->owner = weak_ptr<LivingEntity>(owner);
 	return true;
 }
 
@@ -59,7 +59,8 @@ void FollowOwnerGoal::tick()
 	if (--timeToRecalcPath > 0) return;
 	timeToRecalcPath = 10;
 
-	if (navigation->moveTo(owner.lock(), speed)) return;
+	if (navigation->moveTo(owner.lock(), speedModifier)) return;
+	if (tamable->isLeashed()) return;
 	if (tamable->distanceToSqr(owner.lock()) < TeleportDistance * TeleportDistance) return;
 
 	// find a good spawn position nearby the owner

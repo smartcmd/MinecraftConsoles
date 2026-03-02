@@ -7,6 +7,7 @@ skinHud.swf
 skinLabels.swf
 skinInGame.swf
 AnvilMenuVita.swf
+BeaconMenuVita.swf
 BrewingStandMenuVita.swf
 ChestLargeMenuVita.swf
 ChestMenuVita.swf
@@ -24,9 +25,12 @@ DLCMainMenuVita.swf
 EnchantingMenuVita.swf
 EndPoemVita.swf
 EULAVita.swf
+FireworksMenuVita.swf
 FullscreenProgressVita.swf
 FurnaceMenuVita.swf
 HelpAndOptionsMenuVita.swf
+HopperMenuVita.swf
+HorseInventoryMenuVita.swf
 HowToPlayMenuVita.swf
 HowToPlayVita.swf
 HUDVita.swf
@@ -37,6 +41,7 @@ InGameTeleportMenuVita.swf
 IntroVita.swf
 InventoryMenuVita.swf
 JoinMenuVita.swf
+LanguagesMenuVita.swf
 LaunchMoreOptionsMenuVita.swf
 LeaderboardMenuVita.swf
 LoadMenuVita.swf

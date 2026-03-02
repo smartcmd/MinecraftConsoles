@@ -3,28 +3,30 @@ using namespace std;
 
 #include "FurnaceTile.h"
 #include "TileEntity.h"
-#include "Container.h"
+#include "WorldlyContainer.h"
 
 class Player;
 class Level;
 
-class FurnaceTileEntity : public TileEntity, public Container
+class FurnaceTileEntity : public TileEntity, public WorldlyContainer
 {
 public:
 	eINSTANCEOF GetType() { return eTYPE_FURNACETILEENTITY; }
 	static TileEntity *create() { return new FurnaceTileEntity(); }
 
-using TileEntity::setChanged;
+	using TileEntity::setChanged;
+
+	static const int SLOT_INPUT = 0;
+	static const int SLOT_FUEL = 1;
+	static const int SLOT_RESULT = 2;
 
 private:
-	static const int BURN_INTERVAL;
-	ItemInstanceArray *items;
+	static const intArray SLOTS_FOR_UP;
+	static const intArray SLOTS_FOR_DOWN;
+	static const intArray SLOTS_FOR_SIDES;
 
-	enum {
-		INPUT_SLOT = 0,
-		FUEL_SLOT,
-		RESULT_SLOT,
-	};
+	static const int BURN_INTERVAL;
+	ItemInstanceArray items;
 
 	// 4J-JEV: Added for 'Renewable Energy' achievement.
 	// Should be true iff characoal was consumed whilst cooking the current stack.
@@ -34,6 +36,10 @@ public:
 	int litTime;
 	int litDuration;
 	int tickCount;
+
+private:
+
+	wstring name;
 
 public:
 	// 4J Stu - Need a ctor to initialise member variables
@@ -45,7 +51,10 @@ public:
 	virtual shared_ptr<ItemInstance> removeItem(unsigned int slot, int count);
 	virtual shared_ptr<ItemInstance> removeItemNoUpdate(int slot);
 	virtual void setItem(unsigned int slot, shared_ptr<ItemInstance> item);
-	virtual int getName();
+	virtual wstring getName();
+	virtual wstring getCustomName();
+	virtual bool hasCustomName();
+	virtual void setCustomName(const wstring &name);
 	virtual void load(CompoundTag *base);
 	virtual void save(CompoundTag *base);
 	virtual int getMaxStackSize();
@@ -67,8 +76,13 @@ public:
 	virtual bool stillValid(shared_ptr<Player> player);
 	virtual void setChanged();
 
-    void startOpen();
-    void stopOpen();
+	void startOpen();
+	void stopOpen();
+
+	virtual bool canPlaceItem(int slot, shared_ptr<ItemInstance> item);
+	virtual intArray getSlotsForFace(int face);
+	virtual bool canPlaceItemThroughFace(int slot, shared_ptr<ItemInstance> item, int face);
+	virtual bool canTakeItemThroughFace(int slot, shared_ptr<ItemInstance> item, int face);
 
 	// 4J Added
 	virtual shared_ptr<TileEntity> clone();

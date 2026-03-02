@@ -29,6 +29,7 @@ public:
 
 	// 4J Added canDelete param
 	void addGoal(int prio, Goal *goal, bool canDeletePointer = true);
+	void removeGoal(Goal *toRemove);
 	void tick();
 	vector<InternalGoal *> *getRunningGoals();
 

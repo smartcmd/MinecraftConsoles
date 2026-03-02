@@ -1,50 +1,50 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <root>
-	<data name="IDS_NOFREESPACE_TEXT">
-		<value>Järjestelmän tallennustila ei ole tarpeeksi vapaata tilaa pelitallenteen luomiseksi.</value>
-	</data>
-	<data name="IDS_PRO_RETURNEDTOTITLESCREEN_TEXT">
-		<value>Sinut on palautettu aloitusnäyttöön, koska olet kirjautunut ulos "PSN"-verkosta</value>
-	</data>
-	<data name="IDS_PRO_RETURNEDTOMENU_TEXT">
-		<value>Ottelu on päättynyt, koska olet kirjautunut ulos "PSN"-verkosta</value>
-	</data>
-	<data name="IDS_PRO_NOTONLINE_TITLE">
-		<value>Ei tällä hetkellä kirjautunut sisään.</value>
-	</data>
-	<data name="IDS_PRO_NOTONLINE_TEXT">
-		<value>Tässä pelissä on ominaisuuksia, joita hyödyntääksesi sinun on oltava kirjautunut "PSN"-verkkoon, mutta et ole tällä hetkellä verkossa.</value>
-	</data>
-	<data name="IDS_PRO_NOTADHOCONLINE_TITLE">
-		<value>Ad Hoc -verkko offline-tilassa.</value>
-	</data>
-	<data name="IDS_PRO_NOTADHOCONLINE_TEXT">
-		<value>Tässä pelissä on joitakin toimintoja, jotka vaativat Ad Hoc -verkkoyhteyden, mutta olet tällä hetkellä offline-tilassa.</value>
-	</data>
-	<data name="IDS_PRO_XBOXLIVE_NOTIFICATION">
-		<value>Tämä ominaisuus vaatii, että olet kirjautunut "PSN"-verkkoon.</value>
-	</data>
-	<data name="IDS_PRO_NOTONLINE_ACCEPT">
-		<value>Yhdistä "PSN"-verkkoon</value>
-	</data>
-	<data name="IDS_PRO_NOTADHOCONLINE_ACCEPT">
-		<value>Yhdistä Ad Hoc -verkkoon</value>
-	</data>
-	<data name="IDS_PRO_ACHIEVEMENTPROBLEM_TITLE">
-		<value>Trophy-ongelma</value>
-	</data>
-	<data name="IDS_PRO_ACHIEVEMENTPROBLEM_TEXT">
-		<value>Pääsyssä Sony Entertainment Network -tilillesi oli ongelma. Trophyasi ei voitu myöntää tällä hetkellä.</value>
+	<data name="IDS_PRO_NOPROFILEOPTIONS_TEXT">
+		<value>Asetusten tallentaminen Sony Entertainment Network -tilillesi epäonnistui.</value>
 	</data>
 	<data name="IDS_PRO_NOPROFILE_TITLE">
 		<value>Sony Entertainment Network -tilin ongelma</value>
 	</data>
-	<data name="IDS_PRO_NOPROFILEOPTIONS_TEXT">
-		<value>Asetusten tallentaminen Sony Entertainment Network -tilillesi epäonnistui.</value>
+	<data name="IDS_PRO_ACHIEVEMENTPROBLEM_TEXT">
+		<value>Pääsyssä Sony Entertainment Network -tilillesi oli ongelma. Trophyasi ei voitu myöntää tällä hetkellä.</value>
 	</data>
 	<data name="IDS_PRO_UNLOCKGAME_TEXT">
 		<value>Tämä on Minecraft: PlayStation®3 Edition -koepeli. Jos sinulla olisi koko peli, olisit juuri ansainnut trophyn! 
 Avaa koko peli kokeaksesi Minecraft: PlayStation®3 Edition -pelin riemun ja pelataksesi "PSN"-verkon kautta ympäri maailmaa asuvien kaveriesi kanssa.
 Haluatko avata koko pelin?</value>
+	</data>
+	<data name="IDS_PRO_NOTADHOCONLINE_ACCEPT">
+		<value>Yhdistä Ad Hoc -verkkoon</value>
+	</data>
+	<data name="IDS_PRO_NOTADHOCONLINE_TEXT">
+		<value>Tässä pelissä on joitakin toimintoja, jotka vaativat Ad Hoc -verkkoyhteyden, mutta olet tällä hetkellä offline-tilassa.</value>
+	</data>
+	<data name="IDS_PRO_NOTADHOCONLINE_TITLE">
+		<value>Ad Hoc -verkko offline-tilassa.</value>
+	</data>
+	<data name="IDS_PRO_ACHIEVEMENTPROBLEM_TITLE">
+		<value>Trophy-ongelma</value>
+	</data>
+	<data name="IDS_PRO_RETURNEDTOMENU_TEXT">
+		<value>Ottelu on päättynyt, koska olet kirjautunut ulos "PSN"-verkosta</value>
+	</data>
+	<data name="IDS_PRO_RETURNEDTOTITLESCREEN_TEXT">
+		<value>Sinut on palautettu aloitusnäyttöön, koska olet kirjautunut ulos "PSN"-verkosta</value>
+	</data>
+	<data name="IDS_NOFREESPACE_TEXT">
+		<value>Järjestelmän tallennustila ei ole tarpeeksi vapaata tilaa pelitallenteen luomiseksi.</value>
+	</data>
+	<data name="IDS_PRO_NOTONLINE_TITLE">
+		<value>Ei tällä hetkellä kirjautunut sisään.</value>
+	</data>
+	<data name="IDS_PRO_NOTONLINE_ACCEPT">
+		<value>Yhdistä "PSN"-verkkoon</value>
+	</data>
+	<data name="IDS_PRO_XBOXLIVE_NOTIFICATION">
+		<value>Tämä ominaisuus vaatii, että olet kirjautunut "PSN"-verkkoon.</value>
+	</data>
+	<data name="IDS_PRO_NOTONLINE_TEXT">
+		<value>Tässä pelissä on ominaisuuksia, joita hyödyntääksesi sinun on oltava kirjautunut "PSN"-verkkoon, mutta et ole tällä hetkellä verkossa.</value>
 	</data>
 </root>

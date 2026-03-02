@@ -31,7 +31,8 @@ private:
 	EatTileGoal *eatTileGoal;
 
 public:
-	static const float COLOR[][3];
+	static const int COLOR_LENGTH = 16;
+	static const float COLOR[COLOR_LENGTH][3];
 
 public:
 	Sheep(Level *level);
@@ -42,9 +43,9 @@ protected:
 
 public:
 	void aiStep();
-	virtual int getMaxHealth();
 
 protected:
+	virtual void registerAttributes();
 	virtual void defineSynchedData();
 
 public:
@@ -58,7 +59,7 @@ public:
 	float getHeadEatPositionScale(float a);
 	float getHeadEatAngleScale(float a);
 
-	virtual bool interact(shared_ptr<Player> player);
+	virtual bool mobInteract(shared_ptr<Player> player);
 	virtual void addAdditonalSaveData(CompoundTag *tag);
 	virtual void readAdditionalSaveData(CompoundTag *tag);
 
@@ -66,6 +67,7 @@ protected:
 	virtual int getAmbientSound();
 	virtual int getHurtSound();
 	virtual int getDeathSound();
+	virtual void playStepSound(int xt, int yt, int zt, int t);
 
 public:
 	int getColor();
@@ -78,7 +80,7 @@ public:
 
 	virtual void ate();
 
-	void finalizeMobSpawn();
+	MobGroupData *finalizeMobSpawn(MobGroupData *groupData, int extraData = 0); // 4J Added extraData param
 
 private:
 	int getOffspringColor(shared_ptr<Animal> animal, shared_ptr<Animal> partner);

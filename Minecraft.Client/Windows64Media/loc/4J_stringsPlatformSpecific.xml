@@ -99,6 +99,10 @@
     </value>
   </data>
 
+  <data name="IDS_SAVE_TRANSFER_WRONG_VERSION">
+    <value>The save file in the save transfer area has a version number that this version doesn't support yet.</value>
+  </data>
+
   <data name="IDS_PRO_PROFILEPROBLEM_TEXT">
     <value>You are being returned to the main menu because of a problem reading your profile.</value>
   </data>

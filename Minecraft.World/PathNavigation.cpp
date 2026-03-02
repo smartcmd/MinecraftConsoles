@@ -2,20 +2,22 @@
 #include "net.minecraft.world.level.h"
 #include "net.minecraft.world.level.pathfinder.h"
 #include "net.minecraft.world.entity.h"
+#include "net.minecraft.world.entity.ai.attributes.h"
 #include "net.minecraft.world.entity.ai.control.h"
+#include "net.minecraft.world.entity.monster.h"
 #include "net.minecraft.world.level.h"
 #include "net.minecraft.world.level.tile.h"
 #include "net.minecraft.world.phys.h"
 #include "PathNavigation.h"
 
-PathNavigation::PathNavigation(Mob *mob, Level *level, float maxDist)
+PathNavigation::PathNavigation(Mob *mob, Level *level)
 {
 	this->mob = mob;
 	this->level = level;
-	this->maxDist = maxDist;
+	dist = mob->getAttribute(SharedMonsterAttributes::FOLLOW_RANGE);
 
 	path = NULL;
-	speed = 0.0f;
+	speedModifier = 0.0;
 	avoidSun = false;
 	_tick = 0;
 	lastStuckCheck = 0;
@@ -67,9 +69,9 @@ void PathNavigation::setAvoidSun(bool avoidSun)
 	this->avoidSun = avoidSun;
 }
 
-void PathNavigation::setSpeed(float speed)
+void PathNavigation::setSpeedModifier(double speedModifier)
 {
-	this->speed = speed;
+	this->speedModifier = speedModifier;
 }
 
 void PathNavigation::setCanFloat(bool canFloat)
@@ -77,38 +79,43 @@ void PathNavigation::setCanFloat(bool canFloat)
 	this->canFloat = canFloat;
 }
 
+float PathNavigation::getMaxDist()
+{
+	return (float) dist->getValue();
+}
+
 Path *PathNavigation::createPath(double x, double y, double z)
 {
 	if (!canUpdatePath()) return NULL;
-	return level->findPath(mob->shared_from_this(), Mth::floor(x), (int) y, Mth::floor(z), maxDist, _canPassDoors, _canOpenDoors, avoidWater, canFloat);
+	return level->findPath(mob->shared_from_this(), Mth::floor(x), (int) y, Mth::floor(z), getMaxDist(), _canPassDoors, _canOpenDoors, avoidWater, canFloat);
 }
 
-bool PathNavigation::moveTo(double x, double y, double z, float speed)
+bool PathNavigation::moveTo(double x, double y, double z, double speedModifier)
 {
 	MemSect(52);
 	Path *newPath = createPath(Mth::floor(x), (int) y, Mth::floor(z));
 	MemSect(0);
 	// No need to delete newPath here as this will be copied into the member variable path and the class can assume responsibility for it
-	return moveTo(newPath, speed);
+	return moveTo(newPath, speedModifier);
 }
 
-Path *PathNavigation::createPath(shared_ptr<Mob> target)
+Path *PathNavigation::createPath(shared_ptr<Entity> target)
 {
 	if (!canUpdatePath()) return NULL;
-	return level->findPath(mob->shared_from_this(), target, maxDist, _canPassDoors, _canOpenDoors, avoidWater, canFloat);
+	return level->findPath(mob->shared_from_this(), target, getMaxDist(), _canPassDoors, _canOpenDoors, avoidWater, canFloat);
 }
 
-bool PathNavigation::moveTo(shared_ptr<Mob> target, float speed)
+bool PathNavigation::moveTo(shared_ptr<Entity> target, double speedModifier)
 {
 	MemSect(53);
 	Path *newPath = createPath(target);
 	MemSect(0);
 	// No need to delete newPath here as this will be copied into the member variable path and the class can assume responsibility for it
-	if (newPath != NULL) return moveTo(newPath, speed);
+	if (newPath != NULL) return moveTo(newPath, speedModifier);
 	else return false;
 }
 
-bool PathNavigation::moveTo(Path *newPath, float speed)
+bool PathNavigation::moveTo(Path *newPath, double speedModifier)
 {
 	if(newPath == NULL)
 	{
@@ -128,7 +135,7 @@ bool PathNavigation::moveTo(Path *newPath, float speed)
 	if (avoidSun) trimPathFromSun();
 	if (path->getSize() == 0) return false;
 
-	this->speed = speed;
+	this->speedModifier = speedModifier;
 	Vec3 *mobPos = getTempMobPos();
 	lastStuckCheck = _tick;
 	lastStuckCheckPos->x = mobPos->x;
@@ -153,7 +160,7 @@ void PathNavigation::tick()
 	Vec3 *target = path->currentPos(mob->shared_from_this());
 	if (target == NULL) return;
 
-	mob->getMoveControl()->setWantedPosition(target->x, target->y, target->z, speed);
+	mob->getMoveControl()->setWantedPosition(target->x, target->y, target->z, speedModifier);
 }
 
 void PathNavigation::updatePath()

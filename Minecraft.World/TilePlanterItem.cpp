@@ -12,40 +12,40 @@
 
 TilePlanterItem::TilePlanterItem(int id, Tile *tile) : Item(id)
 {
-    this->tileId = tile->id;
+	this->tileId = tile->id;
 }
 
 bool TilePlanterItem::useOn(shared_ptr<ItemInstance> instance, shared_ptr<Player> player, Level *level, int x, int y, int z, int face, float clickX, float clickY, float clickZ, bool bTestUseOnOnly)
 {
 	// 4J-PB - Adding a test only version to allow tooltips to be displayed
 	int currentTile = level->getTile(x, y, z);
-    if (currentTile == Tile::topSnow_Id) 
+	if (currentTile == Tile::topSnow_Id && (level->getData(x, y, z) & TopSnowTile::HEIGHT_MASK) < 1) 
 	{
-        face = Facing::UP;
-    } 
+		face = Facing::UP;
+	} 
 	else if (currentTile == Tile::vine_Id || currentTile == Tile::tallgrass_Id || currentTile == Tile::deadBush_Id)
 	{
 	}
 	else
 	{
-        if (face == 0) y--;
-        if (face == 1) y++;
-        if (face == 2) z--;
-        if (face == 3) z++;
-        if (face == 4) x--;
-        if (face == 5) x++;
-    }
+		if (face == 0) y--;
+		if (face == 1) y++;
+		if (face == 2) z--;
+		if (face == 3) z++;
+		if (face == 4) x--;
+		if (face == 5) x++;
+	}
 
-	if (!player->mayBuild(x, y, z)) return false;
-    if (instance->count == 0) return false;
+	if (!player->mayUseItemAt(x, y, z, face, instance)) return false;
+	if (instance->count == 0) return false;
 
-	if (level->mayPlace(tileId, x, y, z, false, face, nullptr)) 
+	if (level->mayPlace(tileId, x, y, z, false, face, nullptr, instance)) 
 	{
 		if(!bTestUseOnOnly)
 		{
 			Tile *tile = Tile::tiles[tileId];
 			int dataValue = tile->getPlacedOnFaceDataValue(level, x, y, z, face, clickX, clickY, clickZ, 0);
-			if (level->setTileAndData(x, y, z, tileId, dataValue))
+			if (level->setTileAndData(x, y, z, tileId, dataValue, Tile::UPDATE_ALL))
 			{
 				// 4J-JEV: Hook for durango 'BlockPlaced' event.
 				player->awardStat(GenericStats::blocksPlaced(tileId),GenericStats::param_blocksPlaced(tileId,instance->getAuxValue(),1));
@@ -56,14 +56,14 @@ bool TilePlanterItem::useOn(shared_ptr<ItemInstance> instance, shared_ptr<Player
 				// are called
 				if (level->getTile(x, y, z) == tileId)
 				{
-					Tile::tiles[tileId]->setPlacedBy(level, x, y, z, player);
+					Tile::tiles[tileId]->setPlacedBy(level, x, y, z, player, instance);
 					Tile::tiles[tileId]->finalizePlacement(level, x, y, z, dataValue);
 				}
-				level->playSound(x + 0.5f, y + 0.5f, z + 0.5f, tile->soundType->getStepSound(), (tile->soundType->getVolume() + 1) / 2, tile->soundType->getPitch() * 0.8f);
+				level->playSound(x + 0.5f, y + 0.5f, z + 0.5f, tile->soundType->getPlaceSound(), (tile->soundType->getVolume() + 1) / 2, tile->soundType->getPitch() * 0.8f);
 				// 4J-PB - If we have the debug option on, don't reduce the number of this item
-	#ifndef _FINAL_BUILD
+#ifndef _FINAL_BUILD
 				if(!(app.DebugSettingsOn() && app.GetGameSettingsDebugMask()&(1L<<eDebugSetting_CraftAnything)))
-	#endif				
+#endif				
 				{
 					instance->count--;
 				}
@@ -76,5 +76,5 @@ bool TilePlanterItem::useOn(shared_ptr<ItemInstance> instance, shared_ptr<Player
 		// Can't place, so return false
 		if(bTestUseOnOnly) return false;
 	}
-    return true;
+	return true;
 }

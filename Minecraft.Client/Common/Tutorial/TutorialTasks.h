@@ -9,6 +9,8 @@
 #include "XuiCraftingTask.h"
 #include "StateChangeTask.h"
 #include "ChoiceTask.h"
+#include "HorseChoiceTask.h"
+#include "RideEntityTask.h"
 #include "FullTutorialActiveTask.h"
 #include "AreaTask.h"
 #include "ProgressFlagTask.h"

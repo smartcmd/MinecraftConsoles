@@ -5,13 +5,13 @@
 class BodyControl : public Control
 {
 private:
-	Mob *mob;
+	LivingEntity *mob;
 	static const float maxClampAngle;
 	int timeStill;
 	float lastHeadY;
 
 public:
-	BodyControl(Mob *mob);
+	BodyControl(LivingEntity *mob);
 
 	void clientTick();
 

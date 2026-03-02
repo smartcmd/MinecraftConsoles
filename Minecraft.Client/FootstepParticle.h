@@ -6,7 +6,9 @@ class FootstepParticle : public Particle
 {
 public:
 	virtual eINSTANCEOF GetType() { return eType_FOOTSTEPPARTICLE; }
+
 private:
+	static ResourceLocation FOOTPRINT_LOCATION;
 	int life;
     int lifeTime;
     Textures *textures;

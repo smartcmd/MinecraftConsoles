@@ -21,7 +21,12 @@ public:
 	Pig(Level *level);
 
 	virtual bool useNewAi();
-	virtual int getMaxHealth();
+
+protected:
+	virtual void registerAttributes();
+	virtual void newServerAiStep();
+
+public:
 	virtual bool canBeControlledByRider();
 
 protected:
@@ -35,9 +40,10 @@ protected:
 	virtual int getAmbientSound();
 	virtual int getHurtSound();
 	virtual int getDeathSound();
+	virtual void playStepSound(int xt, int yt, int zt, int t);
 
 public:
-	virtual bool interact(shared_ptr<Player> player);
+	virtual bool mobInteract(shared_ptr<Player> player);
 
 protected:
 	virtual int getDeathLoot();

@@ -18,7 +18,7 @@ private:
 
 public:
 	DragonFireball(Level *level);
-	DragonFireball(Level *level, shared_ptr<Mob> mob, double xa, double ya, double za);
+	DragonFireball(Level *level, shared_ptr<LivingEntity> mob, double xa, double ya, double za);
 	DragonFireball(Level *level, double x, double y, double z, double xa, double ya, double za);
 
 protected:
@@ -26,12 +26,11 @@ protected:
 
 public:
 	virtual bool isPickable();
-	virtual bool hurt(DamageSource *source, int damage);
-
-	virtual bool shouldBurn();
-	virtual int getIcon();
+	virtual bool hurt(DamageSource *source, float damage);
 
 protected:
 // 4J Added TU9
 	virtual ePARTICLE_TYPE getTrailParticleType();
+	
+	virtual bool shouldBurn();
 };

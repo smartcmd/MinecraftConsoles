@@ -1,5 +1,4 @@
 #pragma once
-
 #include "HumanoidMobRenderer.h"
 
 class VillagerZombieModel;
@@ -8,6 +7,10 @@ class Zombie;
 class ZombieRenderer : public HumanoidMobRenderer
 {
 private:
+	static ResourceLocation ZOMBIE_PIGMAN_LOCATION;
+    static ResourceLocation ZOMBIE_LOCATION;
+    static ResourceLocation ZOMBIE_VILLAGER_LOCATION;
+
 	HumanoidModel *defaultModel;
 	VillagerZombieModel *villagerModel;
 
@@ -24,18 +27,19 @@ public:
 	ZombieRenderer();
 
 protected:
-	void createArmorParts();
-	int prepareArmor(shared_ptr<Mob> _mob, int layer, float a);
+	virtual void createArmorParts();
+	virtual int prepareArmor(shared_ptr<LivingEntity> _mob, int layer, float a);
 
 public:
-	void render(shared_ptr<Entity> _mob, double x, double y, double z, float rot, float a);
+	virtual void render(shared_ptr<Entity> _mob, double x, double y, double z, float rot, float a);
+	virtual ResourceLocation *getTextureLocation(shared_ptr<Entity> entity);
 
 protected:
-	void additionalRendering(shared_ptr<Mob> _mob, float a);
+	virtual void additionalRendering(shared_ptr<LivingEntity> _mob, float a);
 
 private:
-	void swapArmor(shared_ptr<Zombie> mob);
+	virtual void swapArmor(shared_ptr<Zombie> mob);
 
 protected:
-	void setupRotations(shared_ptr<Mob> _mob, float bob, float bodyRot, float a);
+	virtual void setupRotations(shared_ptr<LivingEntity> _mob, float bob, float bodyRot, float a);
 };

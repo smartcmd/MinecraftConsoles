@@ -4,7 +4,8 @@
 #include "..\..\..\Minecraft.World\File.h"
 #include "UITTFFont.h"
 
-UITTFFont::UITTFFont(const string &path, S32 fallbackCharacter)
+UITTFFont::UITTFFont(const string &name, const string &path, S32 fallbackCharacter) 
+	: m_strFontName(name)
 {
 	app.DebugPrintf("UITTFFont opening %s\n",path.c_str());
 
@@ -36,9 +37,9 @@ UITTFFont::UITTFFont(const string &path, S32 fallbackCharacter)
 		}
 		CloseHandle(file);
 
-		IggyFontInstallTruetypeUTF8 ( (void *)pbData, IGGY_TTC_INDEX_none, "Mojangles_TTF", -1, IGGY_FONTFLAG_none );
+		IggyFontInstallTruetypeUTF8 ( (void *)pbData, IGGY_TTC_INDEX_none, m_strFontName.c_str(), -1, IGGY_FONTFLAG_none );
 
-		IggyFontInstallTruetypeFallbackCodepointUTF8( "Mojangles_TTF", -1, IGGY_FONTFLAG_none, fallbackCharacter );
+		IggyFontInstallTruetypeFallbackCodepointUTF8( m_strFontName.c_str(), -1, IGGY_FONTFLAG_none, fallbackCharacter );
 
 		// 4J Stu - These are so we can use the default flash controls
 		IggyFontInstallTruetypeUTF8 ( (void *)pbData, IGGY_TTC_INDEX_none, "Times New Roman", -1, IGGY_FONTFLAG_none );
@@ -48,4 +49,10 @@ UITTFFont::UITTFFont(const string &path, S32 fallbackCharacter)
 
 UITTFFont::~UITTFFont()
 {
+}
+
+
+string UITTFFont::getFontName()
+{
+	return m_strFontName;
 }

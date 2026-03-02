@@ -30,15 +30,15 @@ PreStitchedTextureMap::PreStitchedTextureMap(int type, const wstring &name, cons
 	stitchResult = NULL;
 
 	m_mipMap = mipmap;
-	missingPosition = (StitchedTexture *)(new SimpleIcon(NAME_MISSING_TEXTURE,0,0,1,1));
+	missingPosition = (StitchedTexture *)(new SimpleIcon(NAME_MISSING_TEXTURE,NAME_MISSING_TEXTURE,0,0,1,1));
 }
 
 void PreStitchedTextureMap::stitch()
 {
 	// Animated StitchedTextures store a vector of textures for each frame of the animation. Free any pre-existing ones here.
-	for(AUTO_VAR(it, texturesToAnimate.begin()); it != texturesToAnimate.end(); ++it)
+	for(AUTO_VAR(it, animatedTextures.begin()); it != animatedTextures.end(); ++it)
 	{
-		StitchedTexture *animatedStitchedTexture = (StitchedTexture *)texturesByName[it->first];
+		StitchedTexture *animatedStitchedTexture = *it;
 		animatedStitchedTexture->freeFrameTextures();
 	}
 
@@ -88,6 +88,24 @@ void PreStitchedTextureMap::stitch()
 
 	MemSect(32);
 	wstring drive = L"";
+
+	// 4J-PB - need to check for BD patched files
+#ifdef __PS3__
+	const char *pchName=wstringtofilename(filename);
+	if(app.GetBootedFromDiscPatch() && app.IsFileInPatchList(pchName))
+	{
+		if(texturePack->hasFile(L"res/" + filename,false))
+		{
+			drive = texturePack->getPath(true,pchName);
+		}
+		else
+		{
+			drive = Minecraft::GetInstance()->skins->getDefault()->getPath(true,pchName);
+			texturePack = Minecraft::GetInstance()->skins->getDefault();
+		}
+	}
+	else
+#endif
 	if(texturePack->hasFile(L"res/" + filename,false))
 	{
 		drive = texturePack->getPath(true);
@@ -97,6 +115,7 @@ void PreStitchedTextureMap::stitch()
 		drive = Minecraft::GetInstance()->skins->getDefault()->getPath(true);
 		texturePack = Minecraft::GetInstance()->skins->getDefault();
 	}
+
 	//BufferedImage *image = new BufferedImage(texturePack->getResource(L"/" + filename),false,true,drive); //ImageIO::read(texturePack->getResource(L"/" + filename));
 	BufferedImage *image = texturePack->getImageResource(filename, false, true, drive);
 	MemSect(0);
@@ -127,47 +146,11 @@ void PreStitchedTextureMap::stitch()
 	}
 
 	MemSect(52);
-	for(AUTO_VAR(it, texturesToAnimate.begin()); it != texturesToAnimate.end(); ++it)
+	for(AUTO_VAR(it, texturesByName.begin()); it != texturesByName.end(); ++it)
 	{
-		wstring textureName = it->first;
-		wstring textureFileName = it->second;
+		StitchedTexture *preStitched = (StitchedTexture *)(it->second);
 
-		StitchedTexture *preStitched = (StitchedTexture *)texturesByName[textureName];
-
-		if(!preStitched->hasOwnData())
-		{
-			if(preStitched->getFrames() > 1) animatedTextures.push_back(preStitched);
-			continue;
-		}
-
-		wstring filename = path + textureFileName + extension;
-
-		// TODO: [EB] Put the frames into a proper object, not this inside out hack
-		vector<Texture *> *frames = TextureManager::getInstance()->createTextures(filename, m_mipMap);
-		if (frames == NULL || frames->empty())
-		{
-			continue; // Couldn't load a texture, skip it
-		}
-
-		Texture *first = frames->at(0);
-
-#ifndef _CONTENT_PACKAGE
-		if(first->getWidth() != preStitched->getWidth() || first->getHeight() != preStitched->getHeight())
-		{
-			__debugbreak();
-		}
-#endif
-
-		preStitched->init(stitchResult, frames, preStitched->getX(), preStitched->getY(), first->getWidth(), first->getHeight(), false);
-
-		if (frames->size() > 1)
-		{
-			animatedTextures.push_back(preStitched);
-
-			wstring animString = texturePack->getAnimationString(textureFileName, path, true);
-
-			preStitched->loadAnimationFrames(animString);
-		}
+		makeTextureAnimated(texturePack, preStitched);		
 	}
 	MemSect(0);
 	//missingPosition = (StitchedTexture *)texturesByName.find(NAME_MISSING_TEXTURE)->second;
@@ -214,6 +197,50 @@ void PreStitchedTextureMap::stitch()
 		}
 	}
 #endif
+}
+
+void PreStitchedTextureMap::makeTextureAnimated(TexturePack *texturePack, StitchedTexture *tex)
+{
+	if(!tex->hasOwnData())
+	{
+		animatedTextures.push_back(tex);
+		return;
+	}
+
+	wstring textureFileName = tex->m_fileName;
+	
+	wstring animString = texturePack->getAnimationString(textureFileName, path, true);
+
+	if(!animString.empty())
+	{
+		wstring filename = path + textureFileName + extension;
+
+		// TODO: [EB] Put the frames into a proper object, not this inside out hack
+		vector<Texture *> *frames = TextureManager::getInstance()->createTextures(filename, m_mipMap);
+		if (frames == NULL || frames->empty())
+		{
+			return; // Couldn't load a texture, skip it
+		}
+
+		Texture *first = frames->at(0);
+
+#ifndef _CONTENT_PACKAGE
+		if(first->getWidth() != tex->getWidth() || first->getHeight() != tex->getHeight())
+		{
+			app.DebugPrintf("%ls - first w - %d, h - %d, tex w - %d, h - %d\n",textureFileName.c_str(),first->getWidth(),tex->getWidth(),first->getHeight(),tex->getHeight());
+			//__debugbreak();
+		}
+#endif
+
+		tex->init(stitchResult, frames, tex->getX(), tex->getY(), first->getWidth(), first->getHeight(), false);
+
+		if (frames->size() > 1)
+		{
+			animatedTextures.push_back(tex);
+
+			tex->loadAnimationFrames(animString);
+		}
+	}
 }
 
 StitchedTexture *PreStitchedTextureMap::getTexture(const wstring &name)
@@ -265,7 +292,7 @@ Icon *PreStitchedTextureMap::registerIcon(const wstring &name)
 	if (result == NULL)
 	{
 #ifndef _CONTENT_PACKAGE
-		wprintf(L"Could not find uv data for icon %ls\n", name.c_str() );
+		app.DebugPrintf("Could not find uv data for icon %ls\n", name.c_str() );
 		__debugbreak();
 #endif
 		result = missingPosition;
@@ -284,6 +311,10 @@ Icon *PreStitchedTextureMap::getMissingIcon()
 	return missingPosition;
 }
 
+#define ADD_ICON(row, column, name) (texturesByName[name] =	new SimpleIcon(name,name,horizRatio*column,vertRatio*row,horizRatio*(column+1),vertRatio*(row+1)));
+#define ADD_ICON_WITH_NAME(row, column, name, filename) (texturesByName[name] =	new SimpleIcon(name,filename,horizRatio*column,vertRatio*row,horizRatio*(column+1),vertRatio*(row+1)));
+#define ADD_ICON_SIZE(row, column, name, height, width) (texturesByName[name] =	new SimpleIcon(name,name,horizRatio*column,vertRatio*row,horizRatio*(column+width),vertRatio*(row+height)));
+
 void PreStitchedTextureMap::loadUVs()
 {
 	if(!texturesByName.empty())
@@ -299,233 +330,263 @@ void PreStitchedTextureMap::loadUVs()
 		delete it->second;
 	}
 	texturesByName.clear();
-	texturesToAnimate.clear();
 
-	float slotSize = 1.0f/16.0f;
 	if(iconType != Icon::TYPE_TERRAIN)
 	{
-		texturesByName.insert(stringIconMap::value_type(L"helmetCloth",new SimpleIcon(L"helmetCloth",slotSize*0,slotSize*0,slotSize*(0+1),slotSize*(0+1))));
-		texturesByName.insert(stringIconMap::value_type(L"helmetChain",new SimpleIcon(L"helmetChain",slotSize*1,slotSize*0,slotSize*(1+1),slotSize*(0+1))));
-		texturesByName.insert(stringIconMap::value_type(L"helmetIron",new SimpleIcon(L"helmetIron",slotSize*2,slotSize*0,slotSize*(2+1),slotSize*(0+1))));
-		texturesByName.insert(stringIconMap::value_type(L"helmetDiamond",new SimpleIcon(L"helmetDiamond",slotSize*3,slotSize*0,slotSize*(3+1),slotSize*(0+1))));
-		texturesByName.insert(stringIconMap::value_type(L"helmetGold",new SimpleIcon(L"helmetGold",slotSize*4,slotSize*0,slotSize*(4+1),slotSize*(0+1))));
-		texturesByName.insert(stringIconMap::value_type(L"flintAndSteel",new SimpleIcon(L"flintAndSteel",slotSize*5,slotSize*0,slotSize*(5+1),slotSize*(0+1))));
-		texturesByName.insert(stringIconMap::value_type(L"flint",new SimpleIcon(L"flint",slotSize*6,slotSize*0,slotSize*(6+1),slotSize*(0+1))));
-		texturesByName.insert(stringIconMap::value_type(L"coal",new SimpleIcon(L"coal",slotSize*7,slotSize*0,slotSize*(7+1),slotSize*(0+1))));
-		texturesByName.insert(stringIconMap::value_type(L"string",new SimpleIcon(L"string",slotSize*8,slotSize*0,slotSize*(8+1),slotSize*(0+1))));
-		texturesByName.insert(stringIconMap::value_type(L"seeds",new SimpleIcon(L"seeds",slotSize*9,slotSize*0,slotSize*(9+1),slotSize*(0+1))));
-		texturesByName.insert(stringIconMap::value_type(L"apple",new SimpleIcon(L"apple",slotSize*10,slotSize*0,slotSize*(10+1),slotSize*(0+1))));
-		texturesByName.insert(stringIconMap::value_type(L"appleGold",new SimpleIcon(L"appleGold",slotSize*11,slotSize*0,slotSize*(11+1),slotSize*(0+1))));
-		texturesByName.insert(stringIconMap::value_type(L"egg",new SimpleIcon(L"egg",slotSize*12,slotSize*0,slotSize*(12+1),slotSize*(0+1))));
-		texturesByName.insert(stringIconMap::value_type(L"sugar",new SimpleIcon(L"sugar",slotSize*13,slotSize*0,slotSize*(13+1),slotSize*(0+1))));
-		texturesByName.insert(stringIconMap::value_type(L"snowball",new SimpleIcon(L"snowball",slotSize*14,slotSize*0,slotSize*(14+1),slotSize*(0+1))));
-		texturesByName.insert(stringIconMap::value_type(L"slot_empty_helmet",new SimpleIcon(L"slot_empty_helmet",slotSize*15,slotSize*0,slotSize*(15+1),slotSize*(0+1))));
-		texturesByName.insert(stringIconMap::value_type(L"chestplateCloth",new SimpleIcon(L"chestplateCloth",slotSize*0,slotSize*1,slotSize*(0+1),slotSize*(1+1))));
-		texturesByName.insert(stringIconMap::value_type(L"chestplateChain",new SimpleIcon(L"chestplateChain",slotSize*1,slotSize*1,slotSize*(1+1),slotSize*(1+1))));
-		texturesByName.insert(stringIconMap::value_type(L"chestplateIron",new SimpleIcon(L"chestplateIron",slotSize*2,slotSize*1,slotSize*(2+1),slotSize*(1+1))));
-		texturesByName.insert(stringIconMap::value_type(L"chestplateDiamond",new SimpleIcon(L"chestplateDiamond",slotSize*3,slotSize*1,slotSize*(3+1),slotSize*(1+1))));
-		texturesByName.insert(stringIconMap::value_type(L"chestplateGold",new SimpleIcon(L"chestplateGold",slotSize*4,slotSize*1,slotSize*(4+1),slotSize*(1+1))));
-		texturesByName.insert(stringIconMap::value_type(L"bow",new SimpleIcon(L"bow",slotSize*5,slotSize*1,slotSize*(5+1),slotSize*(1+1))));
-		texturesByName.insert(stringIconMap::value_type(L"brick",new SimpleIcon(L"brick",slotSize*6,slotSize*1,slotSize*(6+1),slotSize*(1+1))));
-		texturesByName.insert(stringIconMap::value_type(L"ingotIron",new SimpleIcon(L"ingotIron",slotSize*7,slotSize*1,slotSize*(7+1),slotSize*(1+1))));
-		texturesByName.insert(stringIconMap::value_type(L"feather",new SimpleIcon(L"feather",slotSize*8,slotSize*1,slotSize*(8+1),slotSize*(1+1))));
-		texturesByName.insert(stringIconMap::value_type(L"wheat",new SimpleIcon(L"wheat",slotSize*9,slotSize*1,slotSize*(9+1),slotSize*(1+1))));
-		texturesByName.insert(stringIconMap::value_type(L"painting",new SimpleIcon(L"painting",slotSize*10,slotSize*1,slotSize*(10+1),slotSize*(1+1))));
-		texturesByName.insert(stringIconMap::value_type(L"reeds",new SimpleIcon(L"reeds",slotSize*11,slotSize*1,slotSize*(11+1),slotSize*(1+1))));
-		texturesByName.insert(stringIconMap::value_type(L"bone",new SimpleIcon(L"bone",slotSize*12,slotSize*1,slotSize*(12+1),slotSize*(1+1))));
-		texturesByName.insert(stringIconMap::value_type(L"cake",new SimpleIcon(L"cake",slotSize*13,slotSize*1,slotSize*(13+1),slotSize*(1+1))));
-		texturesByName.insert(stringIconMap::value_type(L"slimeball",new SimpleIcon(L"slimeball",slotSize*14,slotSize*1,slotSize*(14+1),slotSize*(1+1))));
-		texturesByName.insert(stringIconMap::value_type(L"slot_empty_chestplate",new SimpleIcon(L"slot_empty_chestplate",slotSize*15,slotSize*1,slotSize*(15+1),slotSize*(1+1))));
-		texturesByName.insert(stringIconMap::value_type(L"leggingsCloth",new SimpleIcon(L"leggingsCloth",slotSize*0,slotSize*2,slotSize*(0+1),slotSize*(2+1))));
-		texturesByName.insert(stringIconMap::value_type(L"leggingsChain",new SimpleIcon(L"leggingsChain",slotSize*1,slotSize*2,slotSize*(1+1),slotSize*(2+1))));
-		texturesByName.insert(stringIconMap::value_type(L"leggingsIron",new SimpleIcon(L"leggingsIron",slotSize*2,slotSize*2,slotSize*(2+1),slotSize*(2+1))));
-		texturesByName.insert(stringIconMap::value_type(L"leggingsDiamond",new SimpleIcon(L"leggingsDiamond",slotSize*3,slotSize*2,slotSize*(3+1),slotSize*(2+1))));
-		texturesByName.insert(stringIconMap::value_type(L"leggingsGold",new SimpleIcon(L"leggingsGold",slotSize*4,slotSize*2,slotSize*(4+1),slotSize*(2+1))));
-		texturesByName.insert(stringIconMap::value_type(L"arrow",new SimpleIcon(L"arrow",slotSize*5,slotSize*2,slotSize*(5+1),slotSize*(2+1))));
-		texturesByName.insert(stringIconMap::value_type(L"quiver",new SimpleIcon(L"quiver",slotSize*6,slotSize*2,slotSize*(6+1),slotSize*(2+1))));
-		texturesByName.insert(stringIconMap::value_type(L"ingotGold",new SimpleIcon(L"ingotGold",slotSize*7,slotSize*2,slotSize*(7+1),slotSize*(2+1))));
-		texturesByName.insert(stringIconMap::value_type(L"sulphur",new SimpleIcon(L"sulphur",slotSize*8,slotSize*2,slotSize*(8+1),slotSize*(2+1))));
-		texturesByName.insert(stringIconMap::value_type(L"bread",new SimpleIcon(L"bread",slotSize*9,slotSize*2,slotSize*(9+1),slotSize*(2+1))));
-		texturesByName.insert(stringIconMap::value_type(L"sign",new SimpleIcon(L"sign",slotSize*10,slotSize*2,slotSize*(10+1),slotSize*(2+1))));
-		texturesByName.insert(stringIconMap::value_type(L"doorWood",new SimpleIcon(L"doorWood",slotSize*11,slotSize*2,slotSize*(11+1),slotSize*(2+1))));
-		texturesByName.insert(stringIconMap::value_type(L"doorIron",new SimpleIcon(L"doorIron",slotSize*12,slotSize*2,slotSize*(12+1),slotSize*(2+1))));
-		texturesByName.insert(stringIconMap::value_type(L"bed",new SimpleIcon(L"bed",slotSize*13,slotSize*2,slotSize*(13+1),slotSize*(2+1))));
-		texturesByName.insert(stringIconMap::value_type(L"fireball",new SimpleIcon(L"fireball",slotSize*14,slotSize*2,slotSize*(14+1),slotSize*(2+1))));
-		texturesByName.insert(stringIconMap::value_type(L"slot_empty_leggings",new SimpleIcon(L"slot_empty_leggings",slotSize*15,slotSize*2,slotSize*(15+1),slotSize*(2+1))));
-		texturesByName.insert(stringIconMap::value_type(L"bootsCloth",new SimpleIcon(L"bootsCloth",slotSize*0,slotSize*3,slotSize*(0+1),slotSize*(3+1))));
-		texturesByName.insert(stringIconMap::value_type(L"bootsChain",new SimpleIcon(L"bootsChain",slotSize*1,slotSize*3,slotSize*(1+1),slotSize*(3+1))));
-		texturesByName.insert(stringIconMap::value_type(L"bootsIron",new SimpleIcon(L"bootsIron",slotSize*2,slotSize*3,slotSize*(2+1),slotSize*(3+1))));
-		texturesByName.insert(stringIconMap::value_type(L"bootsDiamond",new SimpleIcon(L"bootsDiamond",slotSize*3,slotSize*3,slotSize*(3+1),slotSize*(3+1))));
-		texturesByName.insert(stringIconMap::value_type(L"bootsGold",new SimpleIcon(L"bootsGold",slotSize*4,slotSize*3,slotSize*(4+1),slotSize*(3+1))));
-		texturesByName.insert(stringIconMap::value_type(L"stick",new SimpleIcon(L"stick",slotSize*5,slotSize*3,slotSize*(5+1),slotSize*(3+1))));
-		texturesByName.insert(stringIconMap::value_type(L"compass",new SimpleIcon(L"compass",slotSize*6,slotSize*3,slotSize*(6+1),slotSize*(3+1))));
-		texturesByName.insert(stringIconMap::value_type(L"compassP0",new SimpleIcon(L"compassP0",slotSize*7,slotSize*14,slotSize*(7+1),slotSize*(14+1))));
-		texturesByName.insert(stringIconMap::value_type(L"compassP1",new SimpleIcon(L"compassP1",slotSize*8,slotSize*14,slotSize*(8+1),slotSize*(14+1))));
-		texturesByName.insert(stringIconMap::value_type(L"compassP2",new SimpleIcon(L"compassP2",slotSize*9,slotSize*14,slotSize*(9+1),slotSize*(14+1))));
-		texturesByName.insert(stringIconMap::value_type(L"compassP3",new SimpleIcon(L"compassP3",slotSize*10,slotSize*14,slotSize*(10+1),slotSize*(14+1))));
-		texturesToAnimate.push_back(pair<wstring, wstring>(L"compass",L"compass"));
-		texturesToAnimate.push_back(pair<wstring, wstring>(L"compassP0",L"compass"));
-		texturesToAnimate.push_back(pair<wstring, wstring>(L"compassP1",L"compass"));
-		texturesToAnimate.push_back(pair<wstring, wstring>(L"compassP2",L"compass"));
-		texturesToAnimate.push_back(pair<wstring, wstring>(L"compassP3",L"compass"));
-		texturesByName.insert(stringIconMap::value_type(L"diamond",new SimpleIcon(L"diamond",slotSize*7,slotSize*3,slotSize*(7+1),slotSize*(3+1))));
-		texturesByName.insert(stringIconMap::value_type(L"redstone",new SimpleIcon(L"redstone",slotSize*8,slotSize*3,slotSize*(8+1),slotSize*(3+1))));
-		texturesByName.insert(stringIconMap::value_type(L"clay",new SimpleIcon(L"clay",slotSize*9,slotSize*3,slotSize*(9+1),slotSize*(3+1))));
-		texturesByName.insert(stringIconMap::value_type(L"paper",new SimpleIcon(L"paper",slotSize*10,slotSize*3,slotSize*(10+1),slotSize*(3+1))));
-		texturesByName.insert(stringIconMap::value_type(L"book",new SimpleIcon(L"book",slotSize*11,slotSize*3,slotSize*(11+1),slotSize*(3+1))));
-		texturesByName.insert(stringIconMap::value_type(L"map",new SimpleIcon(L"map",slotSize*12,slotSize*3,slotSize*(12+1),slotSize*(3+1))));
-		texturesByName.insert(stringIconMap::value_type(L"seeds_pumpkin",new SimpleIcon(L"seeds_pumpkin",slotSize*13,slotSize*3,slotSize*(13+1),slotSize*(3+1))));
-		texturesByName.insert(stringIconMap::value_type(L"seeds_melon",new SimpleIcon(L"seeds_melon",slotSize*14,slotSize*3,slotSize*(14+1),slotSize*(3+1))));
-		texturesByName.insert(stringIconMap::value_type(L"slot_empty_boots",new SimpleIcon(L"slot_empty_boots",slotSize*15,slotSize*3,slotSize*(15+1),slotSize*(3+1))));
-		texturesByName.insert(stringIconMap::value_type(L"swordWood",new SimpleIcon(L"swordWood",slotSize*0,slotSize*4,slotSize*(0+1),slotSize*(4+1))));
-		texturesByName.insert(stringIconMap::value_type(L"swordStone",new SimpleIcon(L"swordStone",slotSize*1,slotSize*4,slotSize*(1+1),slotSize*(4+1))));
-		texturesByName.insert(stringIconMap::value_type(L"swordIron",new SimpleIcon(L"swordIron",slotSize*2,slotSize*4,slotSize*(2+1),slotSize*(4+1))));
-		texturesByName.insert(stringIconMap::value_type(L"swordDiamond",new SimpleIcon(L"swordDiamond",slotSize*3,slotSize*4,slotSize*(3+1),slotSize*(4+1))));
-		texturesByName.insert(stringIconMap::value_type(L"swordGold",new SimpleIcon(L"swordGold",slotSize*4,slotSize*4,slotSize*(4+1),slotSize*(4+1))));
-		texturesByName.insert(stringIconMap::value_type(L"fishingRod",new SimpleIcon(L"fishingRod",slotSize*5,slotSize*4,slotSize*(5+1),slotSize*(4+1))));
-		texturesByName.insert(stringIconMap::value_type(L"clock",new SimpleIcon(L"clock",slotSize*6,slotSize*4,slotSize*(6+1),slotSize*(4+1))));
-		texturesByName.insert(stringIconMap::value_type(L"clockP0",new SimpleIcon(L"clockP0",slotSize*11,slotSize*14,slotSize*(11+1),slotSize*(14+1))));
-		texturesByName.insert(stringIconMap::value_type(L"clockP1",new SimpleIcon(L"clockP1",slotSize*12,slotSize*14,slotSize*(12+1),slotSize*(14+1))));
-		texturesByName.insert(stringIconMap::value_type(L"clockP2",new SimpleIcon(L"clockP2",slotSize*13,slotSize*14,slotSize*(13+1),slotSize*(14+1))));
-		texturesByName.insert(stringIconMap::value_type(L"clockP3",new SimpleIcon(L"clockP3",slotSize*14,slotSize*14,slotSize*(14+1),slotSize*(14+1))));
-		texturesToAnimate.push_back(pair<wstring, wstring>(L"clock",L"clock"));
-		texturesToAnimate.push_back(pair<wstring, wstring>(L"clockP0",L"clock"));
-		texturesToAnimate.push_back(pair<wstring, wstring>(L"clockP1",L"clock"));
-		texturesToAnimate.push_back(pair<wstring, wstring>(L"clockP2",L"clock"));
-		texturesToAnimate.push_back(pair<wstring, wstring>(L"clockP3",L"clock"));
-		texturesByName.insert(stringIconMap::value_type(L"bowl",new SimpleIcon(L"bowl",slotSize*7,slotSize*4,slotSize*(7+1),slotSize*(4+1))));
-		texturesByName.insert(stringIconMap::value_type(L"mushroomStew",new SimpleIcon(L"mushroomStew",slotSize*8,slotSize*4,slotSize*(8+1),slotSize*(4+1))));
-		texturesByName.insert(stringIconMap::value_type(L"yellowDust",new SimpleIcon(L"yellowDust",slotSize*9,slotSize*4,slotSize*(9+1),slotSize*(4+1))));
-		texturesByName.insert(stringIconMap::value_type(L"bucket",new SimpleIcon(L"bucket",slotSize*10,slotSize*4,slotSize*(10+1),slotSize*(4+1))));
-		texturesByName.insert(stringIconMap::value_type(L"bucketWater",new SimpleIcon(L"bucketWater",slotSize*11,slotSize*4,slotSize*(11+1),slotSize*(4+1))));
-		texturesByName.insert(stringIconMap::value_type(L"bucketLava",new SimpleIcon(L"bucketLava",slotSize*12,slotSize*4,slotSize*(12+1),slotSize*(4+1))));
-		texturesByName.insert(stringIconMap::value_type(L"milk",new SimpleIcon(L"milk",slotSize*13,slotSize*4,slotSize*(13+1),slotSize*(4+1))));
-		texturesByName.insert(stringIconMap::value_type(L"dyePowder_black",new SimpleIcon(L"dyePowder_black",slotSize*14,slotSize*4,slotSize*(14+1),slotSize*(4+1))));
-		texturesByName.insert(stringIconMap::value_type(L"dyePowder_gray",new SimpleIcon(L"dyePowder_gray",slotSize*15,slotSize*4,slotSize*(15+1),slotSize*(4+1))));
-		texturesByName.insert(stringIconMap::value_type(L"shovelWood",new SimpleIcon(L"shovelWood",slotSize*0,slotSize*5,slotSize*(0+1),slotSize*(5+1))));
-		texturesByName.insert(stringIconMap::value_type(L"shovelStone",new SimpleIcon(L"shovelStone",slotSize*1,slotSize*5,slotSize*(1+1),slotSize*(5+1))));
-		texturesByName.insert(stringIconMap::value_type(L"shovelIron",new SimpleIcon(L"shovelIron",slotSize*2,slotSize*5,slotSize*(2+1),slotSize*(5+1))));
-		texturesByName.insert(stringIconMap::value_type(L"shovelDiamond",new SimpleIcon(L"shovelDiamond",slotSize*3,slotSize*5,slotSize*(3+1),slotSize*(5+1))));
-		texturesByName.insert(stringIconMap::value_type(L"shovelGold",new SimpleIcon(L"shovelGold",slotSize*4,slotSize*5,slotSize*(4+1),slotSize*(5+1))));
-		texturesByName.insert(stringIconMap::value_type(L"fishingRod_empty",new SimpleIcon(L"fishingRod_empty",slotSize*5,slotSize*5,slotSize*(5+1),slotSize*(5+1))));
-		texturesByName.insert(stringIconMap::value_type(L"diode",new SimpleIcon(L"diode",slotSize*6,slotSize*5,slotSize*(6+1),slotSize*(5+1))));
-		texturesByName.insert(stringIconMap::value_type(L"porkchopRaw",new SimpleIcon(L"porkchopRaw",slotSize*7,slotSize*5,slotSize*(7+1),slotSize*(5+1))));
-		texturesByName.insert(stringIconMap::value_type(L"porkchopCooked",new SimpleIcon(L"porkchopCooked",slotSize*8,slotSize*5,slotSize*(8+1),slotSize*(5+1))));
-		texturesByName.insert(stringIconMap::value_type(L"fishRaw",new SimpleIcon(L"fishRaw",slotSize*9,slotSize*5,slotSize*(9+1),slotSize*(5+1))));
-		texturesByName.insert(stringIconMap::value_type(L"fishCooked",new SimpleIcon(L"fishCooked",slotSize*10,slotSize*5,slotSize*(10+1),slotSize*(5+1))));
-		texturesByName.insert(stringIconMap::value_type(L"rottenFlesh",new SimpleIcon(L"rottenFlesh",slotSize*11,slotSize*5,slotSize*(11+1),slotSize*(5+1))));
-		texturesByName.insert(stringIconMap::value_type(L"cookie",new SimpleIcon(L"cookie",slotSize*12,slotSize*5,slotSize*(12+1),slotSize*(5+1))));
-		texturesByName.insert(stringIconMap::value_type(L"shears",new SimpleIcon(L"shears",slotSize*13,slotSize*5,slotSize*(13+1),slotSize*(5+1))));
-		texturesByName.insert(stringIconMap::value_type(L"dyePowder_red",new SimpleIcon(L"dyePowder_red",slotSize*14,slotSize*5,slotSize*(14+1),slotSize*(5+1))));
-		texturesByName.insert(stringIconMap::value_type(L"dyePowder_pink",new SimpleIcon(L"dyePowder_pink",slotSize*15,slotSize*5,slotSize*(15+1),slotSize*(5+1))));
-		texturesByName.insert(stringIconMap::value_type(L"pickaxeWood",new SimpleIcon(L"pickaxeWood",slotSize*0,slotSize*6,slotSize*(0+1),slotSize*(6+1))));
-		texturesByName.insert(stringIconMap::value_type(L"pickaxeStone",new SimpleIcon(L"pickaxeStone",slotSize*1,slotSize*6,slotSize*(1+1),slotSize*(6+1))));
-		texturesByName.insert(stringIconMap::value_type(L"pickaxeIron",new SimpleIcon(L"pickaxeIron",slotSize*2,slotSize*6,slotSize*(2+1),slotSize*(6+1))));
-		texturesByName.insert(stringIconMap::value_type(L"pickaxeDiamond",new SimpleIcon(L"pickaxeDiamond",slotSize*3,slotSize*6,slotSize*(3+1),slotSize*(6+1))));
-		texturesByName.insert(stringIconMap::value_type(L"pickaxeGold",new SimpleIcon(L"pickaxeGold",slotSize*4,slotSize*6,slotSize*(4+1),slotSize*(6+1))));
-		texturesByName.insert(stringIconMap::value_type(L"bow_pull_0",new SimpleIcon(L"bow_pull_0",slotSize*5,slotSize*6,slotSize*(5+1),slotSize*(6+1))));
-		texturesByName.insert(stringIconMap::value_type(L"carrotOnAStick",new SimpleIcon(L"carrotOnAStick",slotSize*6,slotSize*6,slotSize*(6+1),slotSize*(6+1))));
-		texturesByName.insert(stringIconMap::value_type(L"leather",new SimpleIcon(L"leather",slotSize*7,slotSize*6,slotSize*(7+1),slotSize*(6+1))));
-		texturesByName.insert(stringIconMap::value_type(L"saddle",new SimpleIcon(L"saddle",slotSize*8,slotSize*6,slotSize*(8+1),slotSize*(6+1))));
-		texturesByName.insert(stringIconMap::value_type(L"beefRaw",new SimpleIcon(L"beefRaw",slotSize*9,slotSize*6,slotSize*(9+1),slotSize*(6+1))));
-		texturesByName.insert(stringIconMap::value_type(L"beefCooked",new SimpleIcon(L"beefCooked",slotSize*10,slotSize*6,slotSize*(10+1),slotSize*(6+1))));
-		texturesByName.insert(stringIconMap::value_type(L"enderPearl",new SimpleIcon(L"enderPearl",slotSize*11,slotSize*6,slotSize*(11+1),slotSize*(6+1))));
-		texturesByName.insert(stringIconMap::value_type(L"blazeRod",new SimpleIcon(L"blazeRod",slotSize*12,slotSize*6,slotSize*(12+1),slotSize*(6+1))));
-		texturesByName.insert(stringIconMap::value_type(L"melon",new SimpleIcon(L"melon",slotSize*13,slotSize*6,slotSize*(13+1),slotSize*(6+1))));
-		texturesByName.insert(stringIconMap::value_type(L"dyePowder_green",new SimpleIcon(L"dyePowder_green",slotSize*14,slotSize*6,slotSize*(14+1),slotSize*(6+1))));
-		texturesByName.insert(stringIconMap::value_type(L"dyePowder_lime",new SimpleIcon(L"dyePowder_lime",slotSize*15,slotSize*6,slotSize*(15+1),slotSize*(6+1))));
-		texturesByName.insert(stringIconMap::value_type(L"hatchetWood",new SimpleIcon(L"hatchetWood",slotSize*0,slotSize*7,slotSize*(0+1),slotSize*(7+1))));
-		texturesByName.insert(stringIconMap::value_type(L"hatchetStone",new SimpleIcon(L"hatchetStone",slotSize*1,slotSize*7,slotSize*(1+1),slotSize*(7+1))));
-		texturesByName.insert(stringIconMap::value_type(L"hatchetIron",new SimpleIcon(L"hatchetIron",slotSize*2,slotSize*7,slotSize*(2+1),slotSize*(7+1))));
-		texturesByName.insert(stringIconMap::value_type(L"hatchetDiamond",new SimpleIcon(L"hatchetDiamond",slotSize*3,slotSize*7,slotSize*(3+1),slotSize*(7+1))));
-		texturesByName.insert(stringIconMap::value_type(L"hatchetGold",new SimpleIcon(L"hatchetGold",slotSize*4,slotSize*7,slotSize*(4+1),slotSize*(7+1))));
-		texturesByName.insert(stringIconMap::value_type(L"bow_pull_1",new SimpleIcon(L"bow_pull_1",slotSize*5,slotSize*7,slotSize*(5+1),slotSize*(7+1))));
-		texturesByName.insert(stringIconMap::value_type(L"potatoBaked",new SimpleIcon(L"potatoBaked",slotSize*6,slotSize*7,slotSize*(6+1),slotSize*(7+1))));
-		texturesByName.insert(stringIconMap::value_type(L"potato",new SimpleIcon(L"potato",slotSize*7,slotSize*7,slotSize*(7+1),slotSize*(7+1))));
-		texturesByName.insert(stringIconMap::value_type(L"carrots",new SimpleIcon(L"carrots",slotSize*8,slotSize*7,slotSize*(8+1),slotSize*(7+1))));
-		texturesByName.insert(stringIconMap::value_type(L"chickenRaw",new SimpleIcon(L"chickenRaw",slotSize*9,slotSize*7,slotSize*(9+1),slotSize*(7+1))));
-		texturesByName.insert(stringIconMap::value_type(L"chickenCooked",new SimpleIcon(L"chickenCooked",slotSize*10,slotSize*7,slotSize*(10+1),slotSize*(7+1))));
-		texturesByName.insert(stringIconMap::value_type(L"ghastTear",new SimpleIcon(L"ghastTear",slotSize*11,slotSize*7,slotSize*(11+1),slotSize*(7+1))));
-		texturesByName.insert(stringIconMap::value_type(L"goldNugget",new SimpleIcon(L"goldNugget",slotSize*12,slotSize*7,slotSize*(12+1),slotSize*(7+1))));
-		texturesByName.insert(stringIconMap::value_type(L"netherStalkSeeds",new SimpleIcon(L"netherStalkSeeds",slotSize*13,slotSize*7,slotSize*(13+1),slotSize*(7+1))));
-		texturesByName.insert(stringIconMap::value_type(L"dyePowder_brown",new SimpleIcon(L"dyePowder_brown",slotSize*14,slotSize*7,slotSize*(14+1),slotSize*(7+1))));
-		texturesByName.insert(stringIconMap::value_type(L"dyePowder_yellow",new SimpleIcon(L"dyePowder_yellow",slotSize*15,slotSize*7,slotSize*(15+1),slotSize*(7+1))));
-		texturesByName.insert(stringIconMap::value_type(L"hoeWood",new SimpleIcon(L"hoeWood",slotSize*0,slotSize*8,slotSize*(0+1),slotSize*(8+1))));
-		texturesByName.insert(stringIconMap::value_type(L"hoeStone",new SimpleIcon(L"hoeStone",slotSize*1,slotSize*8,slotSize*(1+1),slotSize*(8+1))));
-		texturesByName.insert(stringIconMap::value_type(L"hoeIron",new SimpleIcon(L"hoeIron",slotSize*2,slotSize*8,slotSize*(2+1),slotSize*(8+1))));
-		texturesByName.insert(stringIconMap::value_type(L"hoeDiamond",new SimpleIcon(L"hoeDiamond",slotSize*3,slotSize*8,slotSize*(3+1),slotSize*(8+1))));
-		texturesByName.insert(stringIconMap::value_type(L"hoeGold",new SimpleIcon(L"hoeGold",slotSize*4,slotSize*8,slotSize*(4+1),slotSize*(8+1))));
-		texturesByName.insert(stringIconMap::value_type(L"bow_pull_2",new SimpleIcon(L"bow_pull_2",slotSize*5,slotSize*8,slotSize*(5+1),slotSize*(8+1))));
-		texturesByName.insert(stringIconMap::value_type(L"potatoPoisonous",new SimpleIcon(L"potatoPoisonous",slotSize*6,slotSize*8,slotSize*(6+1),slotSize*(8+1))));
-		texturesByName.insert(stringIconMap::value_type(L"minecart",new SimpleIcon(L"minecart",slotSize*7,slotSize*8,slotSize*(7+1),slotSize*(8+1))));
-		texturesByName.insert(stringIconMap::value_type(L"boat",new SimpleIcon(L"boat",slotSize*8,slotSize*8,slotSize*(8+1),slotSize*(8+1))));
-		texturesByName.insert(stringIconMap::value_type(L"speckledMelon",new SimpleIcon(L"speckledMelon",slotSize*9,slotSize*8,slotSize*(9+1),slotSize*(8+1))));
-		texturesByName.insert(stringIconMap::value_type(L"fermentedSpiderEye",new SimpleIcon(L"fermentedSpiderEye",slotSize*10,slotSize*8,slotSize*(10+1),slotSize*(8+1))));
-		texturesByName.insert(stringIconMap::value_type(L"spiderEye",new SimpleIcon(L"spiderEye",slotSize*11,slotSize*8,slotSize*(11+1),slotSize*(8+1))));
-		texturesByName.insert(stringIconMap::value_type(L"potion",new SimpleIcon(L"potion",slotSize*12,slotSize*8,slotSize*(12+1),slotSize*(8+1))));
-		texturesByName.insert(stringIconMap::value_type(L"glassBottle",new SimpleIcon(L"glassBottle",slotSize*12,slotSize*8,slotSize*(12+1),slotSize*(8+1))));
-		texturesByName.insert(stringIconMap::value_type(L"potion_contents",new SimpleIcon(L"potion_contents",slotSize*13,slotSize*8,slotSize*(13+1),slotSize*(8+1))));
-		texturesByName.insert(stringIconMap::value_type(L"dyePowder_blue",new SimpleIcon(L"dyePowder_blue",slotSize*14,slotSize*8,slotSize*(14+1),slotSize*(8+1))));
-		texturesByName.insert(stringIconMap::value_type(L"dyePowder_lightBlue",new SimpleIcon(L"dyePowder_lightBlue",slotSize*15,slotSize*8,slotSize*(15+1),slotSize*(8+1))));
-		texturesByName.insert(stringIconMap::value_type(L"helmetCloth_overlay",new SimpleIcon(L"helmetCloth_overlay",slotSize*0,slotSize*9,slotSize*(0+1),slotSize*(9+1))));
-		texturesByName.insert(stringIconMap::value_type(L"comparator",new SimpleIcon(L"comparator",slotSize*5,slotSize*9,slotSize*(5+1),slotSize*(9+1))));
-		texturesByName.insert(stringIconMap::value_type(L"carrotGolden",new SimpleIcon(L"carrotGolden",slotSize*6,slotSize*9,slotSize*(6+1),slotSize*(9+1))));
-		texturesByName.insert(stringIconMap::value_type(L"minecartChest",new SimpleIcon(L"minecartChest",slotSize*7,slotSize*9,slotSize*(7+1),slotSize*(9+1))));
-		texturesByName.insert(stringIconMap::value_type(L"pumpkinPie",new SimpleIcon(L"pumpkinPie",slotSize*8,slotSize*9,slotSize*(8+1),slotSize*(9+1))));
-		texturesByName.insert(stringIconMap::value_type(L"monsterPlacer",new SimpleIcon(L"monsterPlacer",slotSize*9,slotSize*9,slotSize*(9+1),slotSize*(9+1))));
-		texturesByName.insert(stringIconMap::value_type(L"potion_splash",new SimpleIcon(L"potion_splash",slotSize*10,slotSize*9,slotSize*(10+1),slotSize*(9+1))));
-		texturesByName.insert(stringIconMap::value_type(L"eyeOfEnder",new SimpleIcon(L"eyeOfEnder",slotSize*11,slotSize*9,slotSize*(11+1),slotSize*(9+1))));
-		texturesByName.insert(stringIconMap::value_type(L"cauldron",new SimpleIcon(L"cauldron",slotSize*12,slotSize*9,slotSize*(12+1),slotSize*(9+1))));
-		texturesByName.insert(stringIconMap::value_type(L"blazePowder",new SimpleIcon(L"blazePowder",slotSize*13,slotSize*9,slotSize*(13+1),slotSize*(9+1))));
-		texturesByName.insert(stringIconMap::value_type(L"dyePowder_purple",new SimpleIcon(L"dyePowder_purple",slotSize*14,slotSize*9,slotSize*(14+1),slotSize*(9+1))));
-		texturesByName.insert(stringIconMap::value_type(L"dyePowder_magenta",new SimpleIcon(L"dyePowder_magenta",slotSize*15,slotSize*9,slotSize*(15+1),slotSize*(9+1))));
-		texturesByName.insert(stringIconMap::value_type(L"chestplateCloth_overlay",new SimpleIcon(L"chestplateCloth_overlay",slotSize*0,slotSize*10,slotSize*(0+1),slotSize*(10+1))));
-		texturesByName.insert(stringIconMap::value_type(L"netherbrick",new SimpleIcon(L"netherbrick",slotSize*5,slotSize*10,slotSize*(5+1),slotSize*(10+1))));
-		texturesByName.insert(stringIconMap::value_type(L"minecartFurnace",new SimpleIcon(L"minecartFurnace",slotSize*7,slotSize*10,slotSize*(7+1),slotSize*(10+1))));
-		texturesByName.insert(stringIconMap::value_type(L"monsterPlacer_overlay",new SimpleIcon(L"monsterPlacer_overlay",slotSize*9,slotSize*10,slotSize*(9+1),slotSize*(10+1))));
-		texturesByName.insert(stringIconMap::value_type(L"ruby",new SimpleIcon(L"ruby",slotSize*10,slotSize*10,slotSize*(10+1),slotSize*(10+1))));
-		texturesByName.insert(stringIconMap::value_type(L"expBottle",new SimpleIcon(L"expBottle",slotSize*11,slotSize*10,slotSize*(11+1),slotSize*(10+1))));
-		texturesByName.insert(stringIconMap::value_type(L"brewingStand",new SimpleIcon(L"brewingStand",slotSize*12,slotSize*10,slotSize*(12+1),slotSize*(10+1))));
-		texturesByName.insert(stringIconMap::value_type(L"magmaCream",new SimpleIcon(L"magmaCream",slotSize*13,slotSize*10,slotSize*(13+1),slotSize*(10+1))));
-		texturesByName.insert(stringIconMap::value_type(L"dyePowder_cyan",new SimpleIcon(L"dyePowder_cyan",slotSize*14,slotSize*10,slotSize*(14+1),slotSize*(10+1))));
-		texturesByName.insert(stringIconMap::value_type(L"dyePowder_orange",new SimpleIcon(L"dyePowder_orange",slotSize*15,slotSize*10,slotSize*(15+1),slotSize*(10+1))));
-		texturesByName.insert(stringIconMap::value_type(L"leggingsCloth_overlay",new SimpleIcon(L"leggingsCloth_overlay",slotSize*0,slotSize*11,slotSize*(0+1),slotSize*(11+1))));
-		texturesByName.insert(stringIconMap::value_type(L"minecartHopper",new SimpleIcon(L"minecartHopper",slotSize*7,slotSize*11,slotSize*(7+1),slotSize*(11+1))));
-		texturesByName.insert(stringIconMap::value_type(L"hopper",new SimpleIcon(L"hopper",slotSize*8,slotSize*11,slotSize*(8+1),slotSize*(11+1))));
-		texturesByName.insert(stringIconMap::value_type(L"netherStar",new SimpleIcon(L"netherStar",slotSize*9,slotSize*11,slotSize*(9+1),slotSize*(11+1))));
-		texturesByName.insert(stringIconMap::value_type(L"emerald",new SimpleIcon(L"emerald",slotSize*10,slotSize*11,slotSize*(10+1),slotSize*(11+1))));
-		texturesByName.insert(stringIconMap::value_type(L"writingBook",new SimpleIcon(L"writingBook",slotSize*11,slotSize*11,slotSize*(11+1),slotSize*(11+1))));
-		texturesByName.insert(stringIconMap::value_type(L"writtenBook",new SimpleIcon(L"writtenBook",slotSize*12,slotSize*11,slotSize*(12+1),slotSize*(11+1))));
-		texturesByName.insert(stringIconMap::value_type(L"flowerPot",new SimpleIcon(L"flowerPot",slotSize*13,slotSize*11,slotSize*(13+1),slotSize*(11+1))));
-		texturesByName.insert(stringIconMap::value_type(L"dyePowder_silver",new SimpleIcon(L"dyePowder_silver",slotSize*14,slotSize*11,slotSize*(14+1),slotSize*(11+1))));
-		texturesByName.insert(stringIconMap::value_type(L"dyePowder_white",new SimpleIcon(L"dyePowder_white",slotSize*15,slotSize*11,slotSize*(15+1),slotSize*(11+1))));
-		texturesByName.insert(stringIconMap::value_type(L"bootsCloth_overlay",new SimpleIcon(L"bootsCloth_overlay",slotSize*0,slotSize*12,slotSize*(0+1),slotSize*(12+1))));
-		texturesByName.insert(stringIconMap::value_type(L"minecartTnt",new SimpleIcon(L"minecartTnt",slotSize*7,slotSize*12,slotSize*(7+1),slotSize*(12+1))));
-		texturesByName.insert(stringIconMap::value_type(L"fireworks",new SimpleIcon(L"fireworks",slotSize*9,slotSize*12,slotSize*(9+1),slotSize*(12+1))));
-		texturesByName.insert(stringIconMap::value_type(L"fireworksCharge",new SimpleIcon(L"fireworksCharge",slotSize*10,slotSize*12,slotSize*(10+1),slotSize*(12+1))));
-		texturesByName.insert(stringIconMap::value_type(L"fireworksCharge_overlay",new SimpleIcon(L"fireworksCharge_overlay",slotSize*11,slotSize*12,slotSize*(11+1),slotSize*(12+1))));
-		texturesByName.insert(stringIconMap::value_type(L"netherquartz",new SimpleIcon(L"netherquartz",slotSize*12,slotSize*12,slotSize*(12+1),slotSize*(12+1))));
-		texturesByName.insert(stringIconMap::value_type(L"emptyMap",new SimpleIcon(L"emptyMap",slotSize*13,slotSize*12,slotSize*(13+1),slotSize*(12+1))));
-		texturesByName.insert(stringIconMap::value_type(L"frame",new SimpleIcon(L"frame",slotSize*14,slotSize*12,slotSize*(14+1),slotSize*(12+1))));
-		texturesByName.insert(stringIconMap::value_type(L"enchantedBook",new SimpleIcon(L"enchantedBook",slotSize*15,slotSize*12,slotSize*(15+1),slotSize*(12+1))));
-		texturesByName.insert(stringIconMap::value_type(L"skull_skeleton",new SimpleIcon(L"skull_skeleton",slotSize*0,slotSize*14,slotSize*(0+1),slotSize*(14+1))));
-		texturesByName.insert(stringIconMap::value_type(L"skull_wither",new SimpleIcon(L"skull_wither",slotSize*1,slotSize*14,slotSize*(1+1),slotSize*(14+1))));
-		texturesByName.insert(stringIconMap::value_type(L"skull_zombie",new SimpleIcon(L"skull_zombie",slotSize*2,slotSize*14,slotSize*(2+1),slotSize*(14+1))));
-		texturesByName.insert(stringIconMap::value_type(L"skull_char",new SimpleIcon(L"skull_char",slotSize*3,slotSize*14,slotSize*(3+1),slotSize*(14+1))));
-		texturesByName.insert(stringIconMap::value_type(L"skull_creeper",new SimpleIcon(L"skull_creeper",slotSize*4,slotSize*14,slotSize*(4+1),slotSize*(14+1))));
-		texturesByName.insert(stringIconMap::value_type(L"dragonFireball",new SimpleIcon(L"dragonFireball",slotSize*15,slotSize*14,slotSize*(15+1),slotSize*(14+1))));
-		texturesByName.insert(stringIconMap::value_type(L"record_13",new SimpleIcon(L"record_13",slotSize*0,slotSize*15,slotSize*(0+1),slotSize*(15+1))));
-		texturesByName.insert(stringIconMap::value_type(L"record_cat",new SimpleIcon(L"record_cat",slotSize*1,slotSize*15,slotSize*(1+1),slotSize*(15+1))));
-		texturesByName.insert(stringIconMap::value_type(L"record_blocks",new SimpleIcon(L"record_blocks",slotSize*2,slotSize*15,slotSize*(2+1),slotSize*(15+1))));
-		texturesByName.insert(stringIconMap::value_type(L"record_chirp",new SimpleIcon(L"record_chirp",slotSize*3,slotSize*15,slotSize*(3+1),slotSize*(15+1))));
-		texturesByName.insert(stringIconMap::value_type(L"record_far",new SimpleIcon(L"record_far",slotSize*4,slotSize*15,slotSize*(4+1),slotSize*(15+1))));
-		texturesByName.insert(stringIconMap::value_type(L"record_mall",new SimpleIcon(L"record_mall",slotSize*5,slotSize*15,slotSize*(5+1),slotSize*(15+1))));
-		texturesByName.insert(stringIconMap::value_type(L"record_mellohi",new SimpleIcon(L"record_mellohi",slotSize*6,slotSize*15,slotSize*(6+1),slotSize*(15+1))));
-		texturesByName.insert(stringIconMap::value_type(L"record_stal",new SimpleIcon(L"record_stal",slotSize*7,slotSize*15,slotSize*(7+1),slotSize*(15+1))));
-		texturesByName.insert(stringIconMap::value_type(L"record_strad",new SimpleIcon(L"record_strad",slotSize*8,slotSize*15,slotSize*(8+1),slotSize*(15+1))));
-		texturesByName.insert(stringIconMap::value_type(L"record_ward",new SimpleIcon(L"record_ward",slotSize*9,slotSize*15,slotSize*(9+1),slotSize*(15+1))));
-		texturesByName.insert(stringIconMap::value_type(L"record_11",new SimpleIcon(L"record_11",slotSize*10,slotSize*15,slotSize*(10+1),slotSize*(15+1))));
-		texturesByName.insert(stringIconMap::value_type(L"record_where are we now",new SimpleIcon(L"record_where are we now",slotSize*11,slotSize*15,slotSize*(11+1),slotSize*(15+1))));
+		float horizRatio = 1.0f/16.0f;
+		float vertRatio = 1.0f/16.0f;
+
+		ADD_ICON(0,		0,	L"helmetCloth")
+		ADD_ICON(0,		1,	L"helmetChain")
+		ADD_ICON(0,		2,	L"helmetIron")
+		ADD_ICON(0,		3,	L"helmetDiamond")
+		ADD_ICON(0,		4,	L"helmetGold")
+		ADD_ICON(0,		5,	L"flintAndSteel")
+		ADD_ICON(0,		6,	L"flint")
+		ADD_ICON(0,		7,	L"coal")
+		ADD_ICON(0,		8,	L"string")
+		ADD_ICON(0,		9,	L"seeds")
+		ADD_ICON(0,		10,	L"apple")
+		ADD_ICON(0,		11,	L"appleGold")
+		ADD_ICON(0,		12,	L"egg")
+		ADD_ICON(0,		13,	L"sugar")
+		ADD_ICON(0,		14,	L"snowball")
+		ADD_ICON(0,		15,	L"slot_empty_helmet")
+
+		ADD_ICON(1,		0,	L"chestplateCloth")
+		ADD_ICON(1,		1,	L"chestplateChain")
+		ADD_ICON(1,		2,	L"chestplateIron")
+		ADD_ICON(1,		3,	L"chestplateDiamond")
+		ADD_ICON(1,		4,	L"chestplateGold")
+		ADD_ICON(1,		5,	L"bow")
+		ADD_ICON(1,		6,	L"brick")
+		ADD_ICON(1,		7,	L"ingotIron")
+		ADD_ICON(1,		8,	L"feather")
+		ADD_ICON(1,		9,	L"wheat")
+		ADD_ICON(1,		10,	L"painting")
+		ADD_ICON(1,		11,	L"reeds")
+		ADD_ICON(1,		12,	L"bone")
+		ADD_ICON(1,		13,	L"cake")
+		ADD_ICON(1,		14,	L"slimeball")
+		ADD_ICON(1,		15,	L"slot_empty_chestplate")
+
+		ADD_ICON(2,		0,	L"leggingsCloth")
+		ADD_ICON(2,		1,	L"leggingsChain")
+		ADD_ICON(2,		2,	L"leggingsIron")
+		ADD_ICON(2,		3,	L"leggingsDiamond")
+		ADD_ICON(2,		4,	L"leggingsGold")
+		ADD_ICON(2,		5,	L"arrow")
+		ADD_ICON(2,		6,	L"quiver")
+		ADD_ICON(2,		7,	L"ingotGold")
+		ADD_ICON(2,		8,	L"sulphur")
+		ADD_ICON(2,		9,	L"bread")
+		ADD_ICON(2,		10,	L"sign")
+		ADD_ICON(2,		11,	L"doorWood")
+		ADD_ICON(2,		12,	L"doorIron")
+		ADD_ICON(2,		13,	L"bed")
+		ADD_ICON(2,		14,	L"fireball")
+		ADD_ICON(2,		15,	L"slot_empty_leggings")
+
+		ADD_ICON(3,		0,	L"bootsCloth")
+		ADD_ICON(3,		1,	L"bootsChain")
+		ADD_ICON(3,		2,	L"bootsIron")
+		ADD_ICON(3,		3,	L"bootsDiamond")
+		ADD_ICON(3,		4,	L"bootsGold")
+		ADD_ICON(3,		5,	L"stick")
+		ADD_ICON(3,		6,	L"compass")
+		ADD_ICON(3,		7,	L"diamond")
+		ADD_ICON(3,		8,	L"redstone")
+		ADD_ICON(3,		9,	L"clay")
+		ADD_ICON(3,		10,	L"paper")
+		ADD_ICON(3,		11,	L"book")
+		ADD_ICON(3,		12,	L"map")
+		ADD_ICON(3,		13,	L"seeds_pumpkin")
+		ADD_ICON(3,		14,	L"seeds_melon")
+		ADD_ICON(3,		15,	L"slot_empty_boots")
+
+		ADD_ICON(4,		0,	L"swordWood")
+		ADD_ICON(4,		1,	L"swordStone")
+		ADD_ICON(4,		2,	L"swordIron")
+		ADD_ICON(4,		3,	L"swordDiamond")
+		ADD_ICON(4,		4,	L"swordGold")
+		ADD_ICON(4,		5,	L"fishingRod_uncast")
+		ADD_ICON(4,		6,	L"clock")
+		ADD_ICON(4,		7,	L"bowl")
+		ADD_ICON(4,		8,	L"mushroomStew")
+		ADD_ICON(4,		9,	L"yellowDust")
+		ADD_ICON(4,		10,	L"bucket")
+		ADD_ICON(4,		11,	L"bucketWater")
+		ADD_ICON(4,		12,	L"bucketLava")
+		ADD_ICON(4,		13,	L"milk")
+		ADD_ICON(4,		14,	L"dyePowder_black")
+		ADD_ICON(4,		15,	L"dyePowder_gray")
+
+		ADD_ICON(5,		0,	L"shovelWood")
+		ADD_ICON(5,		1,	L"shovelStone")
+		ADD_ICON(5,		2,	L"shovelIron")
+		ADD_ICON(5,		3,	L"shovelDiamond")
+		ADD_ICON(5,		4,	L"shovelGold")
+		ADD_ICON(5,		5,	L"fishingRod_cast")
+		ADD_ICON(5,		6,	L"diode")
+		ADD_ICON(5,		7,	L"porkchopRaw")
+		ADD_ICON(5,		8,	L"porkchopCooked")
+		ADD_ICON(5,		9,	L"fishRaw")
+		ADD_ICON(5,		10,	L"fishCooked")
+		ADD_ICON(5,		11,	L"rottenFlesh")
+		ADD_ICON(5,		12,	L"cookie")
+		ADD_ICON(5,		13,	L"shears")
+		ADD_ICON(5,		14,	L"dyePowder_red")
+		ADD_ICON(5,		15,	L"dyePowder_pink")
+
+		ADD_ICON(6,		0,	L"pickaxeWood")
+		ADD_ICON(6,		1,	L"pickaxeStone")
+		ADD_ICON(6,		2,	L"pickaxeIron")
+		ADD_ICON(6,		3,	L"pickaxeDiamond")
+		ADD_ICON(6,		4,	L"pickaxeGold")
+		ADD_ICON(6,		5,	L"bow_pull_0")
+		ADD_ICON(6,		6,	L"carrotOnAStick")
+		ADD_ICON(6,		7,	L"leather")
+		ADD_ICON(6,		8,	L"saddle")
+		ADD_ICON(6,		9,	L"beefRaw")
+		ADD_ICON(6,		10,	L"beefCooked")
+		ADD_ICON(6,		11,	L"enderPearl")
+		ADD_ICON(6,		12,	L"blazeRod")
+		ADD_ICON(6,		13,	L"melon")
+		ADD_ICON(6,		14,	L"dyePowder_green")
+		ADD_ICON(6,		15,	L"dyePowder_lime")
+
+		ADD_ICON(7,		0,	L"hatchetWood")
+		ADD_ICON(7,		1,	L"hatchetStone")
+		ADD_ICON(7,		2,	L"hatchetIron")
+		ADD_ICON(7,		3,	L"hatchetDiamond")
+		ADD_ICON(7,		4,	L"hatchetGold")
+		ADD_ICON(7,		5,	L"bow_pull_1")
+		ADD_ICON(7,		6,	L"potatoBaked")
+		ADD_ICON(7,		7,	L"potato")
+		ADD_ICON(7,		8,	L"carrots")
+		ADD_ICON(7,		9,	L"chickenRaw")
+		ADD_ICON(7,		10,	L"chickenCooked")
+		ADD_ICON(7,		11,	L"ghastTear")
+		ADD_ICON(7,		12,	L"goldNugget")
+		ADD_ICON(7,		13,	L"netherStalkSeeds")
+		ADD_ICON(7,		14,	L"dyePowder_brown")
+		ADD_ICON(7,		15,	L"dyePowder_yellow")
+
+		ADD_ICON(8,		0,	L"hoeWood")
+		ADD_ICON(8,		1,	L"hoeStone")
+		ADD_ICON(8,		2,	L"hoeIron")
+		ADD_ICON(8,		3,	L"hoeDiamond")
+		ADD_ICON(8,		4,	L"hoeGold")
+		ADD_ICON(8,		5,	L"bow_pull_2")
+		ADD_ICON(8,		6,	L"potatoPoisonous")
+		ADD_ICON(8,		7,	L"minecart")
+		ADD_ICON(8,		8,	L"boat")
+		ADD_ICON(8,		9,	L"speckledMelon")
+		ADD_ICON(8,		10,	L"fermentedSpiderEye")
+		ADD_ICON(8,		11,	L"spiderEye")
+		ADD_ICON(8,		12,	L"potion")
+		ADD_ICON(8,		12,	L"glassBottle") // Same as potion
+		ADD_ICON(8,		13,	L"potion_contents")
+		ADD_ICON(8,		14,	L"dyePowder_blue")
+		ADD_ICON(8,		15,	L"dyePowder_light_blue")
+
+		ADD_ICON(9,		0,	L"helmetCloth_overlay")
+		//ADD_ICON(9,		1,	L"unused")
+		ADD_ICON(9,		2,	L"iron_horse_armor")
+		ADD_ICON(9,		3,	L"diamond_horse_armor")
+		ADD_ICON(9,		4,	L"gold_horse_armor")
+		ADD_ICON(9,		5,	L"comparator")
+		ADD_ICON(9,		6,	L"carrotGolden")
+		ADD_ICON(9,		7,	L"minecart_chest")
+		ADD_ICON(9,		8,	L"pumpkinPie")
+		ADD_ICON(9,		9,	L"monsterPlacer")
+		ADD_ICON(9,		10,	L"potion_splash")
+		ADD_ICON(9,		11,	L"eyeOfEnder")
+		ADD_ICON(9,		12,	L"cauldron")
+		ADD_ICON(9,		13,	L"blazePowder")
+		ADD_ICON(9,		14,	L"dyePowder_purple")
+		ADD_ICON(9,		15,	L"dyePowder_magenta")
+
+		ADD_ICON(10,	0,	L"chestplateCloth_overlay")
+		//ADD_ICON(10,	1,	L"unused")
+		//ADD_ICON(10,	2,	L"unused")
+		ADD_ICON(10,	3,	L"name_tag")
+		ADD_ICON(10,	4,	L"lead")
+		ADD_ICON(10,	5,	L"netherbrick")
+		//ADD_ICON(10,	6,	L"unused")
+		ADD_ICON(10,	7,	L"minecart_furnace")
+		ADD_ICON(10,	8,	L"charcoal")
+		ADD_ICON(10,	9,	L"monsterPlacer_overlay")
+		ADD_ICON(10,	10,	L"ruby")
+		ADD_ICON(10,	11,	L"expBottle")
+		ADD_ICON(10,	12,	L"brewingStand")
+		ADD_ICON(10,	13,	L"magmaCream")
+		ADD_ICON(10,	14,	L"dyePowder_cyan")
+		ADD_ICON(10,	15,	L"dyePowder_orange")
+
+		ADD_ICON(11,	0,	L"leggingsCloth_overlay")
+		//ADD_ICON(11,	1,	L"unused")
+		//ADD_ICON(11,	2,	L"unused")
+		//ADD_ICON(11,	3,	L"unused")
+		//ADD_ICON(11,	4,	L"unused")
+		//ADD_ICON(11,	5,	L"unused")
+		//ADD_ICON(11,	6,	L"unused")
+		ADD_ICON(11,	7,	L"minecart_hopper")
+		ADD_ICON(11,	8,	L"hopper")
+		ADD_ICON(11,	9,	L"nether_star")
+		ADD_ICON(11,	10,	L"emerald")
+		ADD_ICON(11,	11,	L"writingBook")
+		ADD_ICON(11,	12,	L"writtenBook")
+		ADD_ICON(11,	13,	L"flowerPot")
+		ADD_ICON(11,	14,	L"dyePowder_silver")
+		ADD_ICON(11,	15,	L"dyePowder_white")
+
+		ADD_ICON(12,	0,	L"bootsCloth_overlay")
+		//ADD_ICON(12,	1,	L"unused")
+		//ADD_ICON(12,	2,	L"unused")
+		//ADD_ICON(12,	3,	L"unused")
+		//ADD_ICON(12,	4,	L"unused")
+		//ADD_ICON(12,	5,	L"unused")
+		//ADD_ICON(12,	6,	L"unused")
+		ADD_ICON(12,	7,	L"minecart_tnt")
+		//ADD_ICON(12,	8,	L"unused")
+		ADD_ICON(12,	9,	L"fireworks")
+		ADD_ICON(12,	10,	L"fireworks_charge")
+		ADD_ICON(12,	11,	L"fireworks_charge_overlay")
+		ADD_ICON(12,	12,	L"netherquartz")
+		ADD_ICON(12,	13,	L"map_empty")
+		ADD_ICON(12,	14,	L"frame")
+		ADD_ICON(12,	15,	L"enchantedBook")
+
+		ADD_ICON(14,	0,	L"skull_skeleton")
+		ADD_ICON(14,	1,	L"skull_wither")
+		ADD_ICON(14,	2,	L"skull_zombie")
+		ADD_ICON(14,	3,	L"skull_char")
+		ADD_ICON(14,	4,	L"skull_creeper")
+		//ADD_ICON(14,	5,	L"unused")
+		//ADD_ICON(14,	6,	L"unused")
+		ADD_ICON_WITH_NAME(14,	7,	L"compassP0", L"compass") // 4J Added
+		ADD_ICON_WITH_NAME(14,	8,	L"compassP1", L"compass") // 4J Added
+		ADD_ICON_WITH_NAME(14,	9,	L"compassP2", L"compass") // 4J Added
+		ADD_ICON_WITH_NAME(14,	10,	L"compassP3", L"compass") // 4J Added
+		ADD_ICON_WITH_NAME(14,	11,	L"clockP0", L"clock") // 4J Added
+		ADD_ICON_WITH_NAME(14,	12,	L"clockP1", L"clock") // 4J Added
+		ADD_ICON_WITH_NAME(14,	13,	L"clockP2", L"clock") // 4J Added
+		ADD_ICON_WITH_NAME(14,	14,	L"clockP3", L"clock") // 4J Added
+		ADD_ICON(14,	15,	L"dragonFireball")
+
+		ADD_ICON(15,		0,	L"record_13")
+		ADD_ICON(15,		1,	L"record_cat")
+		ADD_ICON(15,		2,	L"record_blocks")
+		ADD_ICON(15,		3,	L"record_chirp")
+		ADD_ICON(15,		4,	L"record_far")
+		ADD_ICON(15,		5,	L"record_mall")
+		ADD_ICON(15,		6,	L"record_mellohi")
+		ADD_ICON(15,		7,	L"record_stal")
+		ADD_ICON(15,		8,	L"record_strad")
+		ADD_ICON(15,		9,	L"record_ward")
+		ADD_ICON(15,		10,	L"record_11")
+		ADD_ICON(15,		11,	L"record_where are we now")
 
 		// Special cases
 		ClockTexture *dataClock = new ClockTexture();
@@ -590,264 +651,343 @@ void PreStitchedTextureMap::loadUVs()
 	}
 	else
 	{
-		texturesByName.insert(stringIconMap::value_type(L"grass_top",new SimpleIcon(L"grass_top",slotSize*0,slotSize*0,slotSize*(0+1),slotSize*(0+1))));
+		float horizRatio = 1.0f/16.0f;
+		float vertRatio = 1.0f/32.0f;
+
+		ADD_ICON(0,		0,	L"grass_top")
 		texturesByName[L"grass_top"]->setFlags(Icon::IS_GRASS_TOP);			// 4J added for faster determination of texture type in tesselation
-		texturesByName.insert(stringIconMap::value_type(L"stone",new SimpleIcon(L"stone",slotSize*1,slotSize*0,slotSize*(1+1),slotSize*(0+1))));
-		texturesByName.insert(stringIconMap::value_type(L"dirt",new SimpleIcon(L"dirt",slotSize*2,slotSize*0,slotSize*(2+1),slotSize*(0+1))));
-		texturesByName.insert(stringIconMap::value_type(L"grass_side",new SimpleIcon(L"grass_side",slotSize*3,slotSize*0,slotSize*(3+1),slotSize*(0+1))));
+		ADD_ICON(0,		1,	L"stone")
+		ADD_ICON(0,		2,	L"dirt")
+		ADD_ICON(0,		3,	L"grass_side")
 		texturesByName[L"grass_side"]->setFlags(Icon::IS_GRASS_SIDE);		// 4J added for faster determination of texture type in tesselation
-		texturesByName.insert(stringIconMap::value_type(L"wood",new SimpleIcon(L"wood",slotSize*4,slotSize*0,slotSize*(4+1),slotSize*(0+1))));
-		texturesByName.insert(stringIconMap::value_type(L"stoneslab_side",new SimpleIcon(L"stoneslab_side",slotSize*5,slotSize*0,slotSize*(5+1),slotSize*(0+1))));
-		texturesByName.insert(stringIconMap::value_type(L"stoneslab_top",new SimpleIcon(L"stoneslab_top",slotSize*6,slotSize*0,slotSize*(6+1),slotSize*(0+1))));
-		texturesByName.insert(stringIconMap::value_type(L"brick",new SimpleIcon(L"brick",slotSize*7,slotSize*0,slotSize*(7+1),slotSize*(0+1))));
-		texturesByName.insert(stringIconMap::value_type(L"tnt_side",new SimpleIcon(L"tnt_side",slotSize*8,slotSize*0,slotSize*(8+1),slotSize*(0+1))));
-		texturesByName.insert(stringIconMap::value_type(L"tnt_top",new SimpleIcon(L"tnt_top",slotSize*9,slotSize*0,slotSize*(9+1),slotSize*(0+1))));
-		texturesByName.insert(stringIconMap::value_type(L"tnt_bottom",new SimpleIcon(L"tnt_bottom",slotSize*10,slotSize*0,slotSize*(10+1),slotSize*(0+1))));
-		texturesByName.insert(stringIconMap::value_type(L"web",new SimpleIcon(L"web",slotSize*11,slotSize*0,slotSize*(11+1),slotSize*(0+1))));
-		texturesByName.insert(stringIconMap::value_type(L"rose",new SimpleIcon(L"rose",slotSize*12,slotSize*0,slotSize*(12+1),slotSize*(0+1))));
-		texturesByName.insert(stringIconMap::value_type(L"flower",new SimpleIcon(L"flower",slotSize*13,slotSize*0,slotSize*(13+1),slotSize*(0+1))));
-		texturesByName.insert(stringIconMap::value_type(L"portal",new SimpleIcon(L"portal",slotSize*14,slotSize*0,slotSize*(14+1),slotSize*(0+1))));
-		texturesToAnimate.push_back(pair<wstring, wstring>(L"portal",L"portal"));
-		texturesByName.insert(stringIconMap::value_type(L"sapling",new SimpleIcon(L"sapling",slotSize*15,slotSize*0,slotSize*(15+1),slotSize*(0+1))));
-		texturesByName.insert(stringIconMap::value_type(L"stonebrick",new SimpleIcon(L"stonebrick",slotSize*0,slotSize*1,slotSize*(0+1),slotSize*(1+1))));
-		texturesByName.insert(stringIconMap::value_type(L"bedrock",new SimpleIcon(L"bedrock",slotSize*1,slotSize*1,slotSize*(1+1),slotSize*(1+1))));
-		texturesByName.insert(stringIconMap::value_type(L"sand",new SimpleIcon(L"sand",slotSize*2,slotSize*1,slotSize*(2+1),slotSize*(1+1))));
-		texturesByName.insert(stringIconMap::value_type(L"gravel",new SimpleIcon(L"gravel",slotSize*3,slotSize*1,slotSize*(3+1),slotSize*(1+1))));
-		texturesByName.insert(stringIconMap::value_type(L"tree_side",new SimpleIcon(L"tree_side",slotSize*4,slotSize*1,slotSize*(4+1),slotSize*(1+1))));
-		texturesByName.insert(stringIconMap::value_type(L"tree_top",new SimpleIcon(L"tree_top",slotSize*5,slotSize*1,slotSize*(5+1),slotSize*(1+1))));
-		texturesByName.insert(stringIconMap::value_type(L"blockIron",new SimpleIcon(L"blockIron",slotSize*6,slotSize*1,slotSize*(6+1),slotSize*(1+1))));
-		texturesByName.insert(stringIconMap::value_type(L"blockGold",new SimpleIcon(L"blockGold",slotSize*7,slotSize*1,slotSize*(7+1),slotSize*(1+1))));
-		texturesByName.insert(stringIconMap::value_type(L"blockDiamond",new SimpleIcon(L"blockDiamond",slotSize*8,slotSize*1,slotSize*(8+1),slotSize*(1+1))));
-		texturesByName.insert(stringIconMap::value_type(L"blockEmerald",new SimpleIcon(L"blockEmerald",slotSize*9,slotSize*1,slotSize*(9+1),slotSize*(1+1))));
-		texturesByName.insert(stringIconMap::value_type(L"blockRedstone",new SimpleIcon(L"blockRedstone",slotSize*10,slotSize*1,slotSize*(10+1),slotSize*(1+1))));
-		texturesByName.insert(stringIconMap::value_type(L"dropper_front",new SimpleIcon(L"dropper_front",slotSize*11,slotSize*1,slotSize*(11+1),slotSize*(1+1))));
-		texturesByName.insert(stringIconMap::value_type(L"mushroom_red",new SimpleIcon(L"mushroom_red",slotSize*12,slotSize*1,slotSize*(12+1),slotSize*(1+1))));
-		texturesByName.insert(stringIconMap::value_type(L"mushroom_brown",new SimpleIcon(L"mushroom_brown",slotSize*13,slotSize*1,slotSize*(13+1),slotSize*(1+1))));
-		texturesByName.insert(stringIconMap::value_type(L"sapling_jungle",new SimpleIcon(L"sapling_jungle",slotSize*14,slotSize*1,slotSize*(14+1),slotSize*(1+1))));
-		texturesByName.insert(stringIconMap::value_type(L"fire_0",new SimpleIcon(L"fire_0",slotSize*15,slotSize*1,slotSize*(15+1),slotSize*(1+1))));
-		texturesToAnimate.push_back(pair<wstring, wstring>(L"fire_0",L"fire_0"));
-		texturesByName.insert(stringIconMap::value_type(L"oreGold",new SimpleIcon(L"oreGold",slotSize*0,slotSize*2,slotSize*(0+1),slotSize*(2+1))));
-		texturesByName.insert(stringIconMap::value_type(L"oreIron",new SimpleIcon(L"oreIron",slotSize*1,slotSize*2,slotSize*(1+1),slotSize*(2+1))));
-		texturesByName.insert(stringIconMap::value_type(L"oreCoal",new SimpleIcon(L"oreCoal",slotSize*2,slotSize*2,slotSize*(2+1),slotSize*(2+1))));
-		texturesByName.insert(stringIconMap::value_type(L"bookshelf",new SimpleIcon(L"bookshelf",slotSize*3,slotSize*2,slotSize*(3+1),slotSize*(2+1))));
-		texturesByName.insert(stringIconMap::value_type(L"stoneMoss",new SimpleIcon(L"stoneMoss",slotSize*4,slotSize*2,slotSize*(4+1),slotSize*(2+1))));
-		texturesByName.insert(stringIconMap::value_type(L"obsidian",new SimpleIcon(L"obsidian",slotSize*5,slotSize*2,slotSize*(5+1),slotSize*(2+1))));
-		texturesByName.insert(stringIconMap::value_type(L"grass_side_overlay",new SimpleIcon(L"grass_side_overlay",slotSize*6,slotSize*2,slotSize*(6+1),slotSize*(2+1))));
-		texturesByName.insert(stringIconMap::value_type(L"tallgrass",new SimpleIcon(L"tallgrass",slotSize*7,slotSize*2,slotSize*(7+1),slotSize*(2+1))));
-		texturesByName.insert(stringIconMap::value_type(L"dispenser_front_vertical",new SimpleIcon(L"dispenser_front_vertical",slotSize*8,slotSize*2,slotSize*(8+1),slotSize*(2+1))));
-		texturesByName.insert(stringIconMap::value_type(L"beacon",new SimpleIcon(L"beacon",slotSize*9,slotSize*2,slotSize*(9+1),slotSize*(2+1))));
-		texturesByName.insert(stringIconMap::value_type(L"dropper_front_vertical",new SimpleIcon(L"dropper_front_vertical",slotSize*10,slotSize*2,slotSize*(10+1),slotSize*(2+1))));
-		texturesByName.insert(stringIconMap::value_type(L"workbench_top",new SimpleIcon(L"workbench_top",slotSize*11,slotSize*2,slotSize*(11+1),slotSize*(2+1))));
-		texturesByName.insert(stringIconMap::value_type(L"furnace_front",new SimpleIcon(L"furnace_front",slotSize*12,slotSize*2,slotSize*(12+1),slotSize*(2+1))));
-		texturesByName.insert(stringIconMap::value_type(L"furnace_side",new SimpleIcon(L"furnace_side",slotSize*13,slotSize*2,slotSize*(13+1),slotSize*(2+1))));
-		texturesByName.insert(stringIconMap::value_type(L"dispenser_front",new SimpleIcon(L"dispenser_front",slotSize*14,slotSize*2,slotSize*(14+1),slotSize*(2+1))));
-		texturesByName.insert(stringIconMap::value_type(L"fire_1",new SimpleIcon(L"fire_1",slotSize*15,slotSize*1,slotSize*(15+1),slotSize*(1+1))));
-		texturesToAnimate.push_back(pair<wstring, wstring>(L"fire_1",L"fire_1"));
-		texturesByName.insert(stringIconMap::value_type(L"sponge",new SimpleIcon(L"sponge",slotSize*0,slotSize*3,slotSize*(0+1),slotSize*(3+1))));
-		texturesByName.insert(stringIconMap::value_type(L"glass",new SimpleIcon(L"glass",slotSize*1,slotSize*3,slotSize*(1+1),slotSize*(3+1))));
-		texturesByName.insert(stringIconMap::value_type(L"oreDiamond",new SimpleIcon(L"oreDiamond",slotSize*2,slotSize*3,slotSize*(2+1),slotSize*(3+1))));
-		texturesByName.insert(stringIconMap::value_type(L"oreRedstone",new SimpleIcon(L"oreRedstone",slotSize*3,slotSize*3,slotSize*(3+1),slotSize*(3+1))));
-		texturesByName.insert(stringIconMap::value_type(L"leaves",new SimpleIcon(L"leaves",slotSize*4,slotSize*3,slotSize*(4+1),slotSize*(3+1))));
-		texturesByName.insert(stringIconMap::value_type(L"leaves_opaque",new SimpleIcon(L"leaves_opaque",slotSize*5,slotSize*3,slotSize*(5+1),slotSize*(3+1))));
-		texturesByName.insert(stringIconMap::value_type(L"stonebricksmooth",new SimpleIcon(L"stonebricksmooth",slotSize*6,slotSize*3,slotSize*(6+1),slotSize*(3+1))));
-		texturesByName.insert(stringIconMap::value_type(L"deadbush",new SimpleIcon(L"deadbush",slotSize*7,slotSize*3,slotSize*(7+1),slotSize*(3+1))));
-		texturesByName.insert(stringIconMap::value_type(L"fern",new SimpleIcon(L"fern",slotSize*8,slotSize*3,slotSize*(8+1),slotSize*(3+1))));
-		texturesByName.insert(stringIconMap::value_type(L"daylightDetector_top",new SimpleIcon(L"daylightDetector_top",slotSize*9,slotSize*3,slotSize*(9+1),slotSize*(3+1))));
-		texturesByName.insert(stringIconMap::value_type(L"daylightDetector_side",new SimpleIcon(L"daylightDetector_side",slotSize*10,slotSize*3,slotSize*(10+1),slotSize*(3+1))));
-		texturesByName.insert(stringIconMap::value_type(L"workbench_side",new SimpleIcon(L"workbench_side",slotSize*11,slotSize*3,slotSize*(11+1),slotSize*(3+1))));
-		texturesByName.insert(stringIconMap::value_type(L"workbench_front",new SimpleIcon(L"workbench_front",slotSize*12,slotSize*3,slotSize*(12+1),slotSize*(3+1))));
-		texturesByName.insert(stringIconMap::value_type(L"furnace_front_lit",new SimpleIcon(L"furnace_front_lit",slotSize*13,slotSize*3,slotSize*(13+1),slotSize*(3+1))));
-		texturesByName.insert(stringIconMap::value_type(L"furnace_top",new SimpleIcon(L"furnace_top",slotSize*14,slotSize*3,slotSize*(14+1),slotSize*(3+1))));
-		texturesByName.insert(stringIconMap::value_type(L"sapling_spruce",new SimpleIcon(L"sapling_spruce",slotSize*15,slotSize*3,slotSize*(15+1),slotSize*(3+1))));
-		texturesByName.insert(stringIconMap::value_type(L"cloth_0",new SimpleIcon(L"cloth_0",slotSize*0,slotSize*4,slotSize*(0+1),slotSize*(4+1))));
-		texturesByName.insert(stringIconMap::value_type(L"mobSpawner",new SimpleIcon(L"mobSpawner",slotSize*1,slotSize*4,slotSize*(1+1),slotSize*(4+1))));
-		texturesByName.insert(stringIconMap::value_type(L"snow",new SimpleIcon(L"snow",slotSize*2,slotSize*4,slotSize*(2+1),slotSize*(4+1))));
-		texturesByName.insert(stringIconMap::value_type(L"ice",new SimpleIcon(L"ice",slotSize*3,slotSize*4,slotSize*(3+1),slotSize*(4+1))));
-		texturesByName.insert(stringIconMap::value_type(L"snow_side",new SimpleIcon(L"snow_side",slotSize*4,slotSize*4,slotSize*(4+1),slotSize*(4+1))));
-		texturesByName.insert(stringIconMap::value_type(L"cactus_top",new SimpleIcon(L"cactus_top",slotSize*5,slotSize*4,slotSize*(5+1),slotSize*(4+1))));
-		texturesByName.insert(stringIconMap::value_type(L"cactus_side",new SimpleIcon(L"cactus_side",slotSize*6,slotSize*4,slotSize*(6+1),slotSize*(4+1))));
-		texturesByName.insert(stringIconMap::value_type(L"cactus_bottom",new SimpleIcon(L"cactus_bottom",slotSize*7,slotSize*4,slotSize*(7+1),slotSize*(4+1))));
-		texturesByName.insert(stringIconMap::value_type(L"clay",new SimpleIcon(L"clay",slotSize*8,slotSize*4,slotSize*(8+1),slotSize*(4+1))));
-		texturesByName.insert(stringIconMap::value_type(L"reeds",new SimpleIcon(L"reeds",slotSize*9,slotSize*4,slotSize*(9+1),slotSize*(4+1))));
-		texturesByName.insert(stringIconMap::value_type(L"musicBlock",new SimpleIcon(L"musicBlock",slotSize*10,slotSize*4,slotSize*(10+1),slotSize*(4+1))));
-		texturesByName.insert(stringIconMap::value_type(L"jukebox_top",new SimpleIcon(L"jukebox_top",slotSize*11,slotSize*4,slotSize*(11+1),slotSize*(4+1))));
-		texturesByName.insert(stringIconMap::value_type(L"waterlily",new SimpleIcon(L"waterlily",slotSize*12,slotSize*4,slotSize*(12+1),slotSize*(4+1))));
-		texturesByName.insert(stringIconMap::value_type(L"mycel_side",new SimpleIcon(L"mycel_side",slotSize*13,slotSize*4,slotSize*(13+1),slotSize*(4+1))));
-		texturesByName.insert(stringIconMap::value_type(L"mycel_top",new SimpleIcon(L"mycel_top",slotSize*14,slotSize*4,slotSize*(14+1),slotSize*(4+1))));
-		texturesByName.insert(stringIconMap::value_type(L"sapling_birch",new SimpleIcon(L"sapling_birch",slotSize*15,slotSize*4,slotSize*(15+1),slotSize*(4+1))));
-		texturesByName.insert(stringIconMap::value_type(L"torch",new SimpleIcon(L"torch",slotSize*0,slotSize*5,slotSize*(0+1),slotSize*(5+1))));
-		texturesByName.insert(stringIconMap::value_type(L"doorWood_upper",new SimpleIcon(L"doorWood_upper",slotSize*1,slotSize*5,slotSize*(1+1),slotSize*(5+1))));
-		texturesByName.insert(stringIconMap::value_type(L"doorIron_upper",new SimpleIcon(L"doorIron_upper",slotSize*2,slotSize*5,slotSize*(2+1),slotSize*(5+1))));
-		texturesByName.insert(stringIconMap::value_type(L"ladder",new SimpleIcon(L"ladder",slotSize*3,slotSize*5,slotSize*(3+1),slotSize*(5+1))));
-		texturesByName.insert(stringIconMap::value_type(L"trapdoor",new SimpleIcon(L"trapdoor",slotSize*4,slotSize*5,slotSize*(4+1),slotSize*(5+1))));
-		texturesByName.insert(stringIconMap::value_type(L"fenceIron",new SimpleIcon(L"fenceIron",slotSize*5,slotSize*5,slotSize*(5+1),slotSize*(5+1))));
-		texturesByName.insert(stringIconMap::value_type(L"farmland_wet",new SimpleIcon(L"farmland_wet",slotSize*6,slotSize*5,slotSize*(6+1),slotSize*(5+1))));
-		texturesByName.insert(stringIconMap::value_type(L"farmland_dry",new SimpleIcon(L"farmland_dry",slotSize*7,slotSize*5,slotSize*(7+1),slotSize*(5+1))));
-		texturesByName.insert(stringIconMap::value_type(L"crops_0",new SimpleIcon(L"crops_0",slotSize*8,slotSize*5,slotSize*(8+1),slotSize*(5+1))));
-		texturesByName.insert(stringIconMap::value_type(L"crops_1",new SimpleIcon(L"crops_1",slotSize*9,slotSize*5,slotSize*(9+1),slotSize*(5+1))));
-		texturesByName.insert(stringIconMap::value_type(L"crops_2",new SimpleIcon(L"crops_2",slotSize*10,slotSize*5,slotSize*(10+1),slotSize*(5+1))));
-		texturesByName.insert(stringIconMap::value_type(L"crops_3",new SimpleIcon(L"crops_3",slotSize*11,slotSize*5,slotSize*(11+1),slotSize*(5+1))));
-		texturesByName.insert(stringIconMap::value_type(L"crops_4",new SimpleIcon(L"crops_4",slotSize*12,slotSize*5,slotSize*(12+1),slotSize*(5+1))));
-		texturesByName.insert(stringIconMap::value_type(L"crops_5",new SimpleIcon(L"crops_5",slotSize*13,slotSize*5,slotSize*(13+1),slotSize*(5+1))));
-		texturesByName.insert(stringIconMap::value_type(L"crops_6",new SimpleIcon(L"crops_6",slotSize*14,slotSize*5,slotSize*(14+1),slotSize*(5+1))));
-		texturesByName.insert(stringIconMap::value_type(L"crops_7",new SimpleIcon(L"crops_7",slotSize*15,slotSize*5,slotSize*(15+1),slotSize*(5+1))));
-		texturesByName.insert(stringIconMap::value_type(L"lever",new SimpleIcon(L"lever",slotSize*0,slotSize*6,slotSize*(0+1),slotSize*(6+1))));
-		texturesByName.insert(stringIconMap::value_type(L"doorWood_lower",new SimpleIcon(L"doorWood_lower",slotSize*1,slotSize*6,slotSize*(1+1),slotSize*(6+1))));
-		texturesByName.insert(stringIconMap::value_type(L"doorIron_lower",new SimpleIcon(L"doorIron_lower",slotSize*2,slotSize*6,slotSize*(2+1),slotSize*(6+1))));
-		texturesByName.insert(stringIconMap::value_type(L"redtorch_lit",new SimpleIcon(L"redtorch_lit",slotSize*3,slotSize*6,slotSize*(3+1),slotSize*(6+1))));
-		texturesByName.insert(stringIconMap::value_type(L"stonebricksmooth_mossy",new SimpleIcon(L"stonebricksmooth_mossy",slotSize*4,slotSize*6,slotSize*(4+1),slotSize*(6+1))));
-		texturesByName.insert(stringIconMap::value_type(L"stonebricksmooth_cracked",new SimpleIcon(L"stonebricksmooth_cracked",slotSize*5,slotSize*6,slotSize*(5+1),slotSize*(6+1))));
-		texturesByName.insert(stringIconMap::value_type(L"pumpkin_top",new SimpleIcon(L"pumpkin_top",slotSize*6,slotSize*6,slotSize*(6+1),slotSize*(6+1))));
-		texturesByName.insert(stringIconMap::value_type(L"hellrock",new SimpleIcon(L"hellrock",slotSize*7,slotSize*6,slotSize*(7+1),slotSize*(6+1))));
-		texturesByName.insert(stringIconMap::value_type(L"hellsand",new SimpleIcon(L"hellsand",slotSize*8,slotSize*6,slotSize*(8+1),slotSize*(6+1))));
-		texturesByName.insert(stringIconMap::value_type(L"lightgem",new SimpleIcon(L"lightgem",slotSize*9,slotSize*6,slotSize*(9+1),slotSize*(6+1))));
-		texturesByName.insert(stringIconMap::value_type(L"piston_top_sticky",new SimpleIcon(L"piston_top_sticky",slotSize*10,slotSize*6,slotSize*(10+1),slotSize*(6+1))));
-		texturesByName.insert(stringIconMap::value_type(L"piston_top",new SimpleIcon(L"piston_top",slotSize*11,slotSize*6,slotSize*(11+1),slotSize*(6+1))));
-		texturesByName.insert(stringIconMap::value_type(L"piston_side",new SimpleIcon(L"piston_side",slotSize*12,slotSize*6,slotSize*(12+1),slotSize*(6+1))));
-		texturesByName.insert(stringIconMap::value_type(L"piston_bottom",new SimpleIcon(L"piston_bottom",slotSize*13,slotSize*6,slotSize*(13+1),slotSize*(6+1))));
-		texturesByName.insert(stringIconMap::value_type(L"piston_inner_top",new SimpleIcon(L"piston_inner_top",slotSize*14,slotSize*6,slotSize*(14+1),slotSize*(6+1))));
-		texturesByName.insert(stringIconMap::value_type(L"stem_straight",new SimpleIcon(L"stem_straight",slotSize*15,slotSize*6,slotSize*(15+1),slotSize*(6+1))));
-		texturesByName.insert(stringIconMap::value_type(L"rail_turn",new SimpleIcon(L"rail_turn",slotSize*0,slotSize*7,slotSize*(0+1),slotSize*(7+1))));
-		texturesByName.insert(stringIconMap::value_type(L"cloth_15",new SimpleIcon(L"cloth_15",slotSize*1,slotSize*7,slotSize*(1+1),slotSize*(7+1))));
-		texturesByName.insert(stringIconMap::value_type(L"cloth_7",new SimpleIcon(L"cloth_7",slotSize*2,slotSize*7,slotSize*(2+1),slotSize*(7+1))));
-		texturesByName.insert(stringIconMap::value_type(L"redtorch",new SimpleIcon(L"redtorch",slotSize*3,slotSize*7,slotSize*(3+1),slotSize*(7+1))));
-		texturesByName.insert(stringIconMap::value_type(L"tree_spruce",new SimpleIcon(L"tree_spruce",slotSize*4,slotSize*7,slotSize*(4+1),slotSize*(7+1))));
-		texturesByName.insert(stringIconMap::value_type(L"tree_birch",new SimpleIcon(L"tree_birch",slotSize*5,slotSize*7,slotSize*(5+1),slotSize*(7+1))));
-		texturesByName.insert(stringIconMap::value_type(L"pumpkin_side",new SimpleIcon(L"pumpkin_side",slotSize*6,slotSize*7,slotSize*(6+1),slotSize*(7+1))));
-		texturesByName.insert(stringIconMap::value_type(L"pumpkin_face",new SimpleIcon(L"pumpkin_face",slotSize*7,slotSize*7,slotSize*(7+1),slotSize*(7+1))));
-		texturesByName.insert(stringIconMap::value_type(L"pumpkin_jack",new SimpleIcon(L"pumpkin_jack",slotSize*8,slotSize*7,slotSize*(8+1),slotSize*(7+1))));
-		texturesByName.insert(stringIconMap::value_type(L"cake_top",new SimpleIcon(L"cake_top",slotSize*9,slotSize*7,slotSize*(9+1),slotSize*(7+1))));
-		texturesByName.insert(stringIconMap::value_type(L"cake_side",new SimpleIcon(L"cake_side",slotSize*10,slotSize*7,slotSize*(10+1),slotSize*(7+1))));
-		texturesByName.insert(stringIconMap::value_type(L"cake_inner",new SimpleIcon(L"cake_inner",slotSize*11,slotSize*7,slotSize*(11+1),slotSize*(7+1))));
-		texturesByName.insert(stringIconMap::value_type(L"cake_bottom",new SimpleIcon(L"cake_bottom",slotSize*12,slotSize*7,slotSize*(12+1),slotSize*(7+1))));
-		texturesByName.insert(stringIconMap::value_type(L"mushroom_skin_red",new SimpleIcon(L"mushroom_skin_red",slotSize*13,slotSize*7,slotSize*(13+1),slotSize*(7+1))));
-		texturesByName.insert(stringIconMap::value_type(L"mushroom_skin_brown",new SimpleIcon(L"mushroom_skin_brown",slotSize*14,slotSize*7,slotSize*(14+1),slotSize*(7+1))));
-		texturesByName.insert(stringIconMap::value_type(L"stem_bent",new SimpleIcon(L"stem_bent",slotSize*15,slotSize*7,slotSize*(15+1),slotSize*(7+1))));
-		texturesByName.insert(stringIconMap::value_type(L"rail",new SimpleIcon(L"rail",slotSize*0,slotSize*8,slotSize*(0+1),slotSize*(8+1))));
-		texturesByName.insert(stringIconMap::value_type(L"cloth_14",new SimpleIcon(L"cloth_14",slotSize*1,slotSize*8,slotSize*(1+1),slotSize*(8+1))));
-		texturesByName.insert(stringIconMap::value_type(L"cloth_6",new SimpleIcon(L"cloth_6",slotSize*2,slotSize*8,slotSize*(2+1),slotSize*(8+1))));
-		texturesByName.insert(stringIconMap::value_type(L"repeater",new SimpleIcon(L"repeater",slotSize*3,slotSize*8,slotSize*(3+1),slotSize*(8+1))));
-		texturesByName.insert(stringIconMap::value_type(L"leaves_spruce",new SimpleIcon(L"leaves_spruce",slotSize*4,slotSize*8,slotSize*(4+1),slotSize*(8+1))));
-		texturesByName.insert(stringIconMap::value_type(L"leaves_spruce_opaque",new SimpleIcon(L"leaves_spruce_opaque",slotSize*5,slotSize*8,slotSize*(5+1),slotSize*(8+1))));
-		texturesByName.insert(stringIconMap::value_type(L"bed_feet_top",new SimpleIcon(L"bed_feet_top",slotSize*6,slotSize*8,slotSize*(6+1),slotSize*(8+1))));
-		texturesByName.insert(stringIconMap::value_type(L"bed_head_top",new SimpleIcon(L"bed_head_top",slotSize*7,slotSize*8,slotSize*(7+1),slotSize*(8+1))));
-		texturesByName.insert(stringIconMap::value_type(L"melon_side",new SimpleIcon(L"melon_side",slotSize*8,slotSize*8,slotSize*(8+1),slotSize*(8+1))));
-		texturesByName.insert(stringIconMap::value_type(L"melon_top",new SimpleIcon(L"melon_top",slotSize*9,slotSize*8,slotSize*(9+1),slotSize*(8+1))));
-		texturesByName.insert(stringIconMap::value_type(L"cauldron_top",new SimpleIcon(L"cauldron_top",slotSize*10,slotSize*8,slotSize*(10+1),slotSize*(8+1))));
-		texturesByName.insert(stringIconMap::value_type(L"cauldron_inner",new SimpleIcon(L"cauldron_inner",slotSize*11,slotSize*8,slotSize*(11+1),slotSize*(8+1))));
-		texturesByName.insert(stringIconMap::value_type(L"mushroom_skin_stem",new SimpleIcon(L"mushroom_skin_stem",slotSize*13,slotSize*8,slotSize*(13+1),slotSize*(8+1))));
-		texturesByName.insert(stringIconMap::value_type(L"mushroom_inside",new SimpleIcon(L"mushroom_inside",slotSize*14,slotSize*8,slotSize*(14+1),slotSize*(8+1))));
-		texturesByName.insert(stringIconMap::value_type(L"vine",new SimpleIcon(L"vine",slotSize*15,slotSize*8,slotSize*(15+1),slotSize*(8+1))));
-		texturesByName.insert(stringIconMap::value_type(L"blockLapis",new SimpleIcon(L"blockLapis",slotSize*0,slotSize*9,slotSize*(0+1),slotSize*(9+1))));
-		texturesByName.insert(stringIconMap::value_type(L"cloth_13",new SimpleIcon(L"cloth_13",slotSize*1,slotSize*9,slotSize*(1+1),slotSize*(9+1))));
-		texturesByName.insert(stringIconMap::value_type(L"cloth_5",new SimpleIcon(L"cloth_5",slotSize*2,slotSize*9,slotSize*(2+1),slotSize*(9+1))));
-		texturesByName.insert(stringIconMap::value_type(L"repeater_lit",new SimpleIcon(L"repeater_lit",slotSize*3,slotSize*9,slotSize*(3+1),slotSize*(9+1))));
-		texturesByName.insert(stringIconMap::value_type(L"thinglass_top",new SimpleIcon(L"thinglass_top",slotSize*4,slotSize*9,slotSize*(4+1),slotSize*(9+1))));
-		texturesByName.insert(stringIconMap::value_type(L"bed_feet_end",new SimpleIcon(L"bed_feet_end",slotSize*5,slotSize*9,slotSize*(5+1),slotSize*(9+1))));
-		texturesByName.insert(stringIconMap::value_type(L"bed_feet_side",new SimpleIcon(L"bed_feet_side",slotSize*6,slotSize*9,slotSize*(6+1),slotSize*(9+1))));
-		texturesByName.insert(stringIconMap::value_type(L"bed_head_side",new SimpleIcon(L"bed_head_side",slotSize*7,slotSize*9,slotSize*(7+1),slotSize*(9+1))));
-		texturesByName.insert(stringIconMap::value_type(L"bed_head_end",new SimpleIcon(L"bed_head_end",slotSize*8,slotSize*9,slotSize*(8+1),slotSize*(9+1))));
-		texturesByName.insert(stringIconMap::value_type(L"tree_jungle",new SimpleIcon(L"tree_jungle",slotSize*9,slotSize*9,slotSize*(9+1),slotSize*(9+1))));
-		texturesByName.insert(stringIconMap::value_type(L"cauldron_side",new SimpleIcon(L"cauldron_side",slotSize*10,slotSize*9,slotSize*(10+1),slotSize*(9+1))));
-		texturesByName.insert(stringIconMap::value_type(L"cauldron_bottom",new SimpleIcon(L"cauldron_bottom",slotSize*11,slotSize*9,slotSize*(11+1),slotSize*(9+1))));
-		texturesByName.insert(stringIconMap::value_type(L"brewingStand_base",new SimpleIcon(L"brewingStand_base",slotSize*12,slotSize*9,slotSize*(12+1),slotSize*(9+1))));
-		texturesByName.insert(stringIconMap::value_type(L"brewingStand",new SimpleIcon(L"brewingStand",slotSize*13,slotSize*9,slotSize*(13+1),slotSize*(9+1))));
-		texturesByName.insert(stringIconMap::value_type(L"endframe_top",new SimpleIcon(L"endframe_top",slotSize*14,slotSize*9,slotSize*(14+1),slotSize*(9+1))));
-		texturesByName.insert(stringIconMap::value_type(L"endframe_side",new SimpleIcon(L"endframe_side",slotSize*15,slotSize*9,slotSize*(15+1),slotSize*(9+1))));
-		texturesByName.insert(stringIconMap::value_type(L"oreLapis",new SimpleIcon(L"oreLapis",slotSize*0,slotSize*10,slotSize*(0+1),slotSize*(10+1))));
-		texturesByName.insert(stringIconMap::value_type(L"cloth_12",new SimpleIcon(L"cloth_12",slotSize*1,slotSize*10,slotSize*(1+1),slotSize*(10+1))));
-		texturesByName.insert(stringIconMap::value_type(L"cloth_4",new SimpleIcon(L"cloth_4",slotSize*2,slotSize*10,slotSize*(2+1),slotSize*(10+1))));
-		texturesByName.insert(stringIconMap::value_type(L"goldenRail",new SimpleIcon(L"goldenRail",slotSize*3,slotSize*10,slotSize*(3+1),slotSize*(10+1))));
-		texturesByName.insert(stringIconMap::value_type(L"redstoneDust_cross",new SimpleIcon(L"redstoneDust_cross",slotSize*4,slotSize*10,slotSize*(4+1),slotSize*(10+1))));
-		texturesByName.insert(stringIconMap::value_type(L"redstoneDust_line",new SimpleIcon(L"redstoneDust_line",slotSize*5,slotSize*10,slotSize*(5+1),slotSize*(10+1))));
-		texturesByName.insert(stringIconMap::value_type(L"enchantment_top",new SimpleIcon(L"enchantment_top",slotSize*6,slotSize*10,slotSize*(6+1),slotSize*(10+1))));
-		texturesByName.insert(stringIconMap::value_type(L"dragonEgg",new SimpleIcon(L"dragonEgg",slotSize*7,slotSize*10,slotSize*(7+1),slotSize*(10+1))));
-		texturesByName.insert(stringIconMap::value_type(L"cocoa_2",new SimpleIcon(L"cocoa_2",slotSize*8,slotSize*10,slotSize*(8+1),slotSize*(10+1))));
-		texturesByName.insert(stringIconMap::value_type(L"cocoa_1",new SimpleIcon(L"cocoa_1",slotSize*9,slotSize*10,slotSize*(9+1),slotSize*(10+1))));
-		texturesByName.insert(stringIconMap::value_type(L"cocoa_0",new SimpleIcon(L"cocoa_0",slotSize*10,slotSize*10,slotSize*(10+1),slotSize*(10+1))));
-		texturesByName.insert(stringIconMap::value_type(L"oreEmerald",new SimpleIcon(L"oreEmerald",slotSize*11,slotSize*10,slotSize*(11+1),slotSize*(10+1))));
-		texturesByName.insert(stringIconMap::value_type(L"tripWireSource",new SimpleIcon(L"tripWireSource",slotSize*12,slotSize*10,slotSize*(12+1),slotSize*(10+1))));
-		texturesByName.insert(stringIconMap::value_type(L"tripWire",new SimpleIcon(L"tripWire",slotSize*13,slotSize*10,slotSize*(13+1),slotSize*(10+1))));
-		texturesByName.insert(stringIconMap::value_type(L"endframe_eye",new SimpleIcon(L"endframe_eye",slotSize*14,slotSize*10,slotSize*(14+1),slotSize*(10+1))));
-		texturesByName.insert(stringIconMap::value_type(L"whiteStone",new SimpleIcon(L"whiteStone",slotSize*15,slotSize*10,slotSize*(15+1),slotSize*(10+1))));
-		texturesByName.insert(stringIconMap::value_type(L"sandstone_top",new SimpleIcon(L"sandstone_top",slotSize*0,slotSize*11,slotSize*(0+1),slotSize*(11+1))));
-		texturesByName.insert(stringIconMap::value_type(L"cloth_11",new SimpleIcon(L"cloth_11",slotSize*1,slotSize*11,slotSize*(1+1),slotSize*(11+1))));
-		texturesByName.insert(stringIconMap::value_type(L"cloth_3",new SimpleIcon(L"cloth_3",slotSize*2,slotSize*11,slotSize*(2+1),slotSize*(11+1))));
-		texturesByName.insert(stringIconMap::value_type(L"goldenRail_powered",new SimpleIcon(L"goldenRail_powered",slotSize*3,slotSize*11,slotSize*(3+1),slotSize*(11+1))));
-		texturesByName.insert(stringIconMap::value_type(L"redstoneDust_cross_overlay",new SimpleIcon(L"redstoneDust_cross_overlay",slotSize*4,slotSize*11,slotSize*(4+1),slotSize*(11+1))));
-		texturesByName.insert(stringIconMap::value_type(L"redstoneDust_line_overlay",new SimpleIcon(L"redstoneDust_line_overlay",slotSize*5,slotSize*11,slotSize*(5+1),slotSize*(11+1))));
-		texturesByName.insert(stringIconMap::value_type(L"enchantment_side",new SimpleIcon(L"enchantment_side",slotSize*6,slotSize*11,slotSize*(6+1),slotSize*(11+1))));
-		texturesByName.insert(stringIconMap::value_type(L"enchantment_bottom",new SimpleIcon(L"enchantment_bottom",slotSize*7,slotSize*11,slotSize*(7+1),slotSize*(11+1))));
-		texturesByName.insert(stringIconMap::value_type(L"commandBlock",new SimpleIcon(L"commandBlock",slotSize*8,slotSize*11,slotSize*(8+1),slotSize*(11+1))));
-		texturesByName.insert(stringIconMap::value_type(L"itemframe_back",new SimpleIcon(L"itemframe_back",slotSize*9,slotSize*11,slotSize*(9+1),slotSize*(11+1))));
-		texturesByName.insert(stringIconMap::value_type(L"flowerPot",new SimpleIcon(L"flowerPot",slotSize*10,slotSize*11,slotSize*(10+1),slotSize*(11+1))));
-		texturesByName.insert(stringIconMap::value_type(L"comparator",new SimpleIcon(L"comparator",slotSize*11,slotSize*11,slotSize*(11+1),slotSize*(11+1))));
-		texturesByName.insert(stringIconMap::value_type(L"comparator_lit",new SimpleIcon(L"comparator_lit",slotSize*12,slotSize*11,slotSize*(12+1),slotSize*(11+1))));
-		texturesByName.insert(stringIconMap::value_type(L"activatorRail",new SimpleIcon(L"activatorRail",slotSize*13,slotSize*11,slotSize*(13+1),slotSize*(11+1))));
-		texturesByName.insert(stringIconMap::value_type(L"activatorRail_powered",new SimpleIcon(L"activatorRail_powered",slotSize*14,slotSize*11,slotSize*(14+1),slotSize*(11+1))));
-		texturesByName.insert(stringIconMap::value_type(L"netherquartz",new SimpleIcon(L"netherquartz",slotSize*15,slotSize*11,slotSize*(15+1),slotSize*(11+1))));
-		texturesByName.insert(stringIconMap::value_type(L"sandstone_side",new SimpleIcon(L"sandstone_side",slotSize*0,slotSize*12,slotSize*(0+1),slotSize*(12+1))));
-		texturesByName.insert(stringIconMap::value_type(L"cloth_10",new SimpleIcon(L"cloth_10",slotSize*1,slotSize*12,slotSize*(1+1),slotSize*(12+1))));
-		texturesByName.insert(stringIconMap::value_type(L"cloth_2",new SimpleIcon(L"cloth_2",slotSize*2,slotSize*12,slotSize*(2+1),slotSize*(12+1))));
-		texturesByName.insert(stringIconMap::value_type(L"detectorRail",new SimpleIcon(L"detectorRail",slotSize*3,slotSize*12,slotSize*(3+1),slotSize*(12+1))));
-		texturesByName.insert(stringIconMap::value_type(L"leaves_jungle",new SimpleIcon(L"leaves_jungle",slotSize*4,slotSize*12,slotSize*(4+1),slotSize*(12+1))));
-		texturesByName.insert(stringIconMap::value_type(L"leaves_jungle_opaque",new SimpleIcon(L"leaves_jungle_opaque",slotSize*5,slotSize*12,slotSize*(5+1),slotSize*(12+1))));
-		texturesByName.insert(stringIconMap::value_type(L"wood_spruce",new SimpleIcon(L"wood_spruce",slotSize*6,slotSize*12,slotSize*(6+1),slotSize*(12+1))));
-		texturesByName.insert(stringIconMap::value_type(L"wood_jungle",new SimpleIcon(L"wood_jungle",slotSize*7,slotSize*12,slotSize*(7+1),slotSize*(12+1))));
-		texturesByName.insert(stringIconMap::value_type(L"carrots_0",new SimpleIcon(L"carrots_0",slotSize*8,slotSize*12,slotSize*(8+1),slotSize*(12+1))));
-		texturesByName.insert(stringIconMap::value_type(L"carrots_1",new SimpleIcon(L"carrots_1",slotSize*9,slotSize*12,slotSize*(9+1),slotSize*(12+1))));
-		texturesByName.insert(stringIconMap::value_type(L"carrots_2",new SimpleIcon(L"carrots_2",slotSize*10,slotSize*12,slotSize*(10+1),slotSize*(12+1))));
-		texturesByName.insert(stringIconMap::value_type(L"carrots_3",new SimpleIcon(L"carrots_3",slotSize*11,slotSize*12,slotSize*(11+1),slotSize*(12+1))));
-		texturesByName.insert(stringIconMap::value_type(L"potatoes_0",new SimpleIcon(L"potatoes_0",slotSize*8,slotSize*12,slotSize*(8+1),slotSize*(12+1))));
-		texturesByName.insert(stringIconMap::value_type(L"potatoes_1",new SimpleIcon(L"potatoes_1",slotSize*9,slotSize*12,slotSize*(9+1),slotSize*(12+1))));
-		texturesByName.insert(stringIconMap::value_type(L"potatoes_2",new SimpleIcon(L"potatoes_2",slotSize*10,slotSize*12,slotSize*(10+1),slotSize*(12+1))));
-		texturesByName.insert(stringIconMap::value_type(L"potatoes_3",new SimpleIcon(L"potatoes_3",slotSize*12,slotSize*12,slotSize*(12+1),slotSize*(12+1))));
-		texturesByName.insert(stringIconMap::value_type(L"water",new SimpleIcon(L"water",slotSize*13,slotSize*12,slotSize*(13+1),slotSize*(12+1))));
-		texturesToAnimate.push_back(pair<wstring, wstring>(L"water",L"water"));
-		texturesByName.insert(stringIconMap::value_type(L"water_flow",new SimpleIcon(L"water_flow",slotSize*14,slotSize*12,slotSize*(14+2),slotSize*(12+2))));
-		texturesToAnimate.push_back(pair<wstring, wstring>(L"water_flow",L"water_flow"));
-		texturesByName.insert(stringIconMap::value_type(L"sandstone_bottom",new SimpleIcon(L"sandstone_bottom",slotSize*0,slotSize*13,slotSize*(0+1),slotSize*(13+1))));
-		texturesByName.insert(stringIconMap::value_type(L"cloth_9",new SimpleIcon(L"cloth_9",slotSize*1,slotSize*13,slotSize*(1+1),slotSize*(13+1))));
-		texturesByName.insert(stringIconMap::value_type(L"cloth_1",new SimpleIcon(L"cloth_1",slotSize*2,slotSize*13,slotSize*(2+1),slotSize*(13+1))));
-		texturesByName.insert(stringIconMap::value_type(L"redstoneLight",new SimpleIcon(L"redstoneLight",slotSize*3,slotSize*13,slotSize*(3+1),slotSize*(13+1))));
-		texturesByName.insert(stringIconMap::value_type(L"redstoneLight_lit",new SimpleIcon(L"redstoneLight_lit",slotSize*4,slotSize*13,slotSize*(4+1),slotSize*(13+1))));
-		texturesByName.insert(stringIconMap::value_type(L"stonebricksmooth_carved",new SimpleIcon(L"stonebricksmooth_carved",slotSize*5,slotSize*13,slotSize*(5+1),slotSize*(13+1))));
-		texturesByName.insert(stringIconMap::value_type(L"wood_birch",new SimpleIcon(L"wood_birch",slotSize*6,slotSize*13,slotSize*(6+1),slotSize*(13+1))));
-		texturesByName.insert(stringIconMap::value_type(L"anvil_base",new SimpleIcon(L"anvil_base",slotSize*7,slotSize*13,slotSize*(7+1),slotSize*(13+1))));
-		texturesByName.insert(stringIconMap::value_type(L"anvil_top_damaged_1",new SimpleIcon(L"anvil_top_damaged_1",slotSize*8,slotSize*13,slotSize*(8+1),slotSize*(13+1))));
-		texturesByName.insert(stringIconMap::value_type(L"quartzblock_chiseled_top",new SimpleIcon(L"quartzblock_chiseled_top",slotSize*9,slotSize*13,slotSize*(9+1),slotSize*(13+1))));
-		texturesByName.insert(stringIconMap::value_type(L"quartzblock_lines_top",new SimpleIcon(L"quartzblock_lines_top",slotSize*10,slotSize*13,slotSize*(10+1),slotSize*(13+1))));
-		texturesByName.insert(stringIconMap::value_type(L"quartzblock_top",new SimpleIcon(L"quartzblock_top",slotSize*11,slotSize*13,slotSize*(11+1),slotSize*(13+1))));
-		texturesByName.insert(stringIconMap::value_type(L"hopper",new SimpleIcon(L"hopper",slotSize*12,slotSize*13,slotSize*(12+1),slotSize*(13+1))));
-		texturesByName.insert(stringIconMap::value_type(L"detectorRail_on",new SimpleIcon(L"detectorRail_on",slotSize*13,slotSize*13,slotSize*(13+1),slotSize*(13+1))));
-		texturesByName.insert(stringIconMap::value_type(L"netherBrick",new SimpleIcon(L"netherBrick",slotSize*0,slotSize*14,slotSize*(0+1),slotSize*(14+1))));
-		texturesByName.insert(stringIconMap::value_type(L"cloth_8",new SimpleIcon(L"cloth_8",slotSize*1,slotSize*14,slotSize*(1+1),slotSize*(14+1))));
-		texturesByName.insert(stringIconMap::value_type(L"netherStalk_0",new SimpleIcon(L"netherStalk_0",slotSize*2,slotSize*14,slotSize*(2+1),slotSize*(14+1))));
-		texturesByName.insert(stringIconMap::value_type(L"netherStalk_1",new SimpleIcon(L"netherStalk_1",slotSize*3,slotSize*14,slotSize*(3+1),slotSize*(14+1))));
-		texturesByName.insert(stringIconMap::value_type(L"netherStalk_2",new SimpleIcon(L"netherStalk_2",slotSize*4,slotSize*14,slotSize*(4+1),slotSize*(14+1))));
-		texturesByName.insert(stringIconMap::value_type(L"sandstone_carved",new SimpleIcon(L"sandstone_carved",slotSize*5,slotSize*14,slotSize*(5+1),slotSize*(14+1))));
-		texturesByName.insert(stringIconMap::value_type(L"sandstone_smooth",new SimpleIcon(L"sandstone_smooth",slotSize*6,slotSize*14,slotSize*(6+1),slotSize*(14+1))));
-		texturesByName.insert(stringIconMap::value_type(L"anvil_top",new SimpleIcon(L"anvil_top",slotSize*7,slotSize*14,slotSize*(7+1),slotSize*(14+1))));
-		texturesByName.insert(stringIconMap::value_type(L"anvil_top_damaged_2",new SimpleIcon(L"anvil_top_damaged_2",slotSize*8,slotSize*14,slotSize*(8+1),slotSize*(14+1))));
-		texturesByName.insert(stringIconMap::value_type(L"quartzblock_chiseled",new SimpleIcon(L"quartzblock_chiseled",slotSize*9,slotSize*14,slotSize*(9+1),slotSize*(14+1))));
-		texturesByName.insert(stringIconMap::value_type(L"quartzblock_lines",new SimpleIcon(L"quartzblock_lines",slotSize*10,slotSize*14,slotSize*(10+1),slotSize*(14+1))));
-		texturesByName.insert(stringIconMap::value_type(L"quartzblock_side",new SimpleIcon(L"quartzblock_side",slotSize*11,slotSize*14,slotSize*(11+1),slotSize*(14+1))));
-		texturesByName.insert(stringIconMap::value_type(L"hopper_inside",new SimpleIcon(L"hopper_inside",slotSize*12,slotSize*14,slotSize*(12+1),slotSize*(14+1))));
-		texturesByName.insert(stringIconMap::value_type(L"lava",new SimpleIcon(L"lava",slotSize*13,slotSize*14,slotSize*(13+1),slotSize*(14+1))));
-		texturesToAnimate.push_back(pair<wstring, wstring>(L"lava",L"lava"));
-		texturesByName.insert(stringIconMap::value_type(L"lava_flow",new SimpleIcon(L"lava_flow",slotSize*14,slotSize*14,slotSize*(14+2),slotSize*(14+2))));
-		texturesToAnimate.push_back(pair<wstring, wstring>(L"lava_flow",L"lava_flow"));
-		texturesByName.insert(stringIconMap::value_type(L"destroy_0",new SimpleIcon(L"destroy_0",slotSize*0,slotSize*15,slotSize*(0+1),slotSize*(15+1))));
-		texturesByName.insert(stringIconMap::value_type(L"destroy_1",new SimpleIcon(L"destroy_1",slotSize*1,slotSize*15,slotSize*(1+1),slotSize*(15+1))));
-		texturesByName.insert(stringIconMap::value_type(L"destroy_2",new SimpleIcon(L"destroy_2",slotSize*2,slotSize*15,slotSize*(2+1),slotSize*(15+1))));
-		texturesByName.insert(stringIconMap::value_type(L"destroy_3",new SimpleIcon(L"destroy_3",slotSize*3,slotSize*15,slotSize*(3+1),slotSize*(15+1))));
-		texturesByName.insert(stringIconMap::value_type(L"destroy_4",new SimpleIcon(L"destroy_4",slotSize*4,slotSize*15,slotSize*(4+1),slotSize*(15+1))));
-		texturesByName.insert(stringIconMap::value_type(L"destroy_5",new SimpleIcon(L"destroy_5",slotSize*5,slotSize*15,slotSize*(5+1),slotSize*(15+1))));
-		texturesByName.insert(stringIconMap::value_type(L"destroy_6",new SimpleIcon(L"destroy_6",slotSize*6,slotSize*15,slotSize*(6+1),slotSize*(15+1))));
-		texturesByName.insert(stringIconMap::value_type(L"destroy_7",new SimpleIcon(L"destroy_7",slotSize*7,slotSize*15,slotSize*(7+1),slotSize*(15+1))));
-		texturesByName.insert(stringIconMap::value_type(L"destroy_8",new SimpleIcon(L"destroy_8",slotSize*8,slotSize*15,slotSize*(8+1),slotSize*(15+1))));
-		texturesByName.insert(stringIconMap::value_type(L"destroy_9",new SimpleIcon(L"destroy_9",slotSize*9,slotSize*15,slotSize*(9+1),slotSize*(15+1))));
-		texturesByName.insert(stringIconMap::value_type(L"quartzblock_bottom",new SimpleIcon(L"quartzblock_bottom",slotSize*11,slotSize*15,slotSize*(11+1),slotSize*(15+1))));
-		texturesByName.insert(stringIconMap::value_type(L"hopper_top",new SimpleIcon(L"hopper_top",slotSize*12,slotSize*15,slotSize*(12+1),slotSize*(15+1))));
+		ADD_ICON(0,		4,	L"planks_oak")
+		ADD_ICON(0,		5,	L"stoneslab_side")
+		ADD_ICON(0,		6,	L"stoneslab_top")
+		ADD_ICON(0,		7,	L"brick")
+		ADD_ICON(0,		8,	L"tnt_side")
+		ADD_ICON(0,		9,	L"tnt_top")
+		ADD_ICON(0,		10,	L"tnt_bottom")
+		ADD_ICON(0,		11,	L"web")
+		ADD_ICON(0,		12,	L"flower_rose")
+		ADD_ICON(0,		13,	L"flower_dandelion")
+		ADD_ICON(0,		14,	L"portal")
+		ADD_ICON(0,		15,	L"sapling")
+
+		ADD_ICON(1,		0,	L"cobblestone");
+		ADD_ICON(1,		1,	L"bedrock");
+		ADD_ICON(1,		2,	L"sand");
+		ADD_ICON(1,		3,	L"gravel");
+		ADD_ICON(1,		4,	L"log_oak");
+		ADD_ICON(1,		5,	L"log_oak_top");
+		ADD_ICON(1,		6,	L"iron_block");
+		ADD_ICON(1,		7,	L"gold_block");
+		ADD_ICON(1,		8,	L"diamond_block");
+		ADD_ICON(1,		9,	L"emerald_block");
+		ADD_ICON(1,		10,	L"redstone_block");
+		ADD_ICON(1,		11,	L"dropper_front_horizontal");
+		ADD_ICON(1,		12,	L"mushroom_red");
+		ADD_ICON(1,		13,	L"mushroom_brown");
+		ADD_ICON(1,		14,	L"sapling_jungle");
+		ADD_ICON(1,		15,	L"fire_0");
+
+		ADD_ICON(2,		0,	L"gold_ore");
+		ADD_ICON(2,		1,	L"iron_ore");
+		ADD_ICON(2,		2,	L"coal_ore");
+		ADD_ICON(2,		3,	L"bookshelf");
+		ADD_ICON(2,		4,	L"cobblestone_mossy");
+		ADD_ICON(2,		5,	L"obsidian");
+		ADD_ICON(2,		6,	L"grass_side_overlay");
+		ADD_ICON(2,		7,	L"tallgrass");
+		ADD_ICON(2,		8,	L"dispenser_front_vertical");
+		ADD_ICON(2,		9,	L"beacon");
+		ADD_ICON(2,		10,	L"dropper_front_vertical");
+		ADD_ICON(2,		11,	L"workbench_top");
+		ADD_ICON(2,		12,	L"furnace_front");
+		ADD_ICON(2,		13,	L"furnace_side");
+		ADD_ICON(2,		14,	L"dispenser_front");
+		ADD_ICON(2,		15,	L"fire_1");
+
+		ADD_ICON(3,		0,	L"sponge");
+		ADD_ICON(3,		1,	L"glass");
+		ADD_ICON(3,		2,	L"diamond_ore");
+		ADD_ICON(3,		3,	L"redstone_ore");
+		ADD_ICON(3,		4,	L"leaves");
+		ADD_ICON(3,		5,	L"leaves_opaque");
+		ADD_ICON(3,		6,	L"stonebrick");
+		ADD_ICON(3,		7,	L"deadbush");
+		ADD_ICON(3,		8,	L"fern");
+		ADD_ICON(3,		9,	L"daylight_detector_top");
+		ADD_ICON(3,		10,	L"daylight_detector_side");
+		ADD_ICON(3,		11,	L"workbench_side");
+		ADD_ICON(3,		12,	L"workbench_front");
+		ADD_ICON(3,		13,	L"furnace_front_lit");
+		ADD_ICON(3,		14,	L"furnace_top");
+		ADD_ICON(3,		15,	L"sapling_spruce");
+
+		ADD_ICON(4,		0,	L"wool_colored_white");
+		ADD_ICON(4,		1,	L"mob_spawner");
+		ADD_ICON(4,		2,	L"snow");
+		ADD_ICON(4,		3,	L"ice");
+		ADD_ICON(4,		4,	L"snow_side");
+		ADD_ICON(4,		5,	L"cactus_top");
+		ADD_ICON(4,		6,	L"cactus_side");
+		ADD_ICON(4,		7,	L"cactus_bottom");
+		ADD_ICON(4,		8,	L"clay");
+		ADD_ICON(4,		9,	L"reeds");
+		ADD_ICON(4,		10,	L"jukebox_side");
+		ADD_ICON(4,		11,	L"jukebox_top");
+		ADD_ICON(4,		12,	L"waterlily");
+		ADD_ICON(4,		13,	L"mycel_side");
+		ADD_ICON(4,		14,	L"mycel_top");
+		ADD_ICON(4,		15,	L"sapling_birch");
+
+		ADD_ICON(5,		0,	L"torch_on");
+		ADD_ICON(5,		1,	L"door_wood_upper");
+		ADD_ICON(5,		2,	L"door_iron_upper");
+		ADD_ICON(5,		3,	L"ladder");
+		ADD_ICON(5,		4,	L"trapdoor");
+		ADD_ICON(5,		5,	L"iron_bars");
+		ADD_ICON(5,		6,	L"farmland_wet");
+		ADD_ICON(5,		7,	L"farmland_dry");
+		ADD_ICON(5,		8,	L"crops_0");
+		ADD_ICON(5,		9,	L"crops_1");
+		ADD_ICON(5,		10,	L"crops_2");
+		ADD_ICON(5,		11,	L"crops_3");
+		ADD_ICON(5,		12,	L"crops_4");
+		ADD_ICON(5,		13,	L"crops_5");
+		ADD_ICON(5,		14,	L"crops_6");
+		ADD_ICON(5,		15,	L"crops_7");
+
+		ADD_ICON(6,		0,	L"lever");
+		ADD_ICON(6,		1,	L"door_wood_lower");
+		ADD_ICON(6,		2,	L"door_iron_lower");
+		ADD_ICON(6,		3,	L"redstone_torch_on");
+		ADD_ICON(6,		4,	L"stonebrick_mossy");
+		ADD_ICON(6,		5,	L"stonebrick_cracked");
+		ADD_ICON(6,		6,	L"pumpkin_top");
+		ADD_ICON(6,		7,	L"netherrack");
+		ADD_ICON(6,		8,	L"soul_sand");
+		ADD_ICON(6,		9,	L"glowstone");
+		ADD_ICON(6,		10,	L"piston_top_sticky");
+		ADD_ICON(6,		11,	L"piston_top");
+		ADD_ICON(6,		12,	L"piston_side");
+		ADD_ICON(6,		13,	L"piston_bottom");
+		ADD_ICON(6,		14,	L"piston_inner_top");
+		ADD_ICON(6,		15,	L"stem_straight");
+
+		ADD_ICON(7,		0,	L"rail_normal_turned");
+		ADD_ICON(7,		1,	L"wool_colored_black");
+		ADD_ICON(7,		2,	L"wool_colored_gray");
+		ADD_ICON(7,		3,	L"redstone_torch_off");
+		ADD_ICON(7,		4,	L"log_spruce");
+		ADD_ICON(7,		5,	L"log_birch");
+		ADD_ICON(7,		6,	L"pumpkin_side");
+		ADD_ICON(7,		7,	L"pumpkin_face_off");
+		ADD_ICON(7,		8,	L"pumpkin_face_on");
+		ADD_ICON(7,		9,	L"cake_top");
+		ADD_ICON(7,		10,	L"cake_side");
+		ADD_ICON(7,		11,	L"cake_inner");
+		ADD_ICON(7,		12,	L"cake_bottom");
+		ADD_ICON(7,		13,	L"mushroom_block_skin_red");
+		ADD_ICON(7,		14,	L"mushroom_block_skin_brown");
+		ADD_ICON(7,		15,	L"stem_bent");
+
+		ADD_ICON(8,		0,	L"rail_normal");
+		ADD_ICON(8,		1,	L"wool_colored_red");
+		ADD_ICON(8,		2,	L"wool_colored_pink");
+		ADD_ICON(8,		3,	L"repeater_off");
+		ADD_ICON(8,		4,	L"leaves_spruce");
+		ADD_ICON(8,		5,	L"leaves_spruce_opaque");
+		ADD_ICON(8,		6,	L"bed_feet_top");
+		ADD_ICON(8,		7,	L"bed_head_top");
+		ADD_ICON(8,		8,	L"melon_side");
+		ADD_ICON(8,		9,	L"melon_top");
+		ADD_ICON(8,		10,	L"cauldron_top");
+		ADD_ICON(8,		11,	L"cauldron_inner");
+		//ADD_ICON(8,		12,	L"unused");
+		ADD_ICON(8,		13,	L"mushroom_block_skin_stem");
+		ADD_ICON(8,		14,	L"mushroom_block_inside");
+		ADD_ICON(8,		15,	L"vine");
+
+		ADD_ICON(9,		0,	L"lapis_block");
+		ADD_ICON(9,		1,	L"wool_colored_green");
+		ADD_ICON(9,		2,	L"wool_colored_lime");
+		ADD_ICON(9,		3,	L"repeater_on");
+		ADD_ICON(9,		4,	L"glass_pane_top");
+		ADD_ICON(9,		5,	L"bed_feet_end");
+		ADD_ICON(9,		6,	L"bed_feet_side");
+		ADD_ICON(9,		7,	L"bed_head_side");
+		ADD_ICON(9,		8,	L"bed_head_end");
+		ADD_ICON(9,		9,	L"log_jungle");
+		ADD_ICON(9,		10,	L"cauldron_side");
+		ADD_ICON(9,		11,	L"cauldron_bottom");
+		ADD_ICON(9,		12,	L"brewing_stand_base");
+		ADD_ICON(9,		13,	L"brewing_stand");
+		ADD_ICON(9,		14,	L"endframe_top");
+		ADD_ICON(9,		15,	L"endframe_side");
+
+		ADD_ICON(10,	0,	L"lapis_ore");
+		ADD_ICON(10,	1,	L"wool_colored_brown");
+		ADD_ICON(10,	2,	L"wool_colored_yellow");
+		ADD_ICON(10,	3,	L"rail_golden");
+		ADD_ICON(10,	4,	L"redstone_dust_cross");
+		ADD_ICON(10,	5,	L"redstone_dust_line");
+		ADD_ICON(10,	6,	L"enchantment_top");
+		ADD_ICON(10,	7,	L"dragon_egg");
+		ADD_ICON(10,	8,	L"cocoa_2");
+		ADD_ICON(10,	9,	L"cocoa_1");
+		ADD_ICON(10,	10,	L"cocoa_0");
+		ADD_ICON(10,	11,	L"emerald_ore");
+		ADD_ICON(10,	12,	L"trip_wire_source");
+		ADD_ICON(10,	13,	L"trip_wire");
+		ADD_ICON(10,	14,	L"endframe_eye");
+		ADD_ICON(10,	15,	L"end_stone");
+
+		ADD_ICON(11,	0,	L"sandstone_top");
+		ADD_ICON(11,	1,	L"wool_colored_blue");
+		ADD_ICON(11,	2,	L"wool_colored_light_blue");
+		ADD_ICON(11,	3,	L"rail_golden_powered");
+		ADD_ICON(11,	4,	L"redstone_dust_cross_overlay");
+		ADD_ICON(11,	5,	L"redstone_dust_line_overlay");
+		ADD_ICON(11,	6,	L"enchantment_side");
+		ADD_ICON(11,	7,	L"enchantment_bottom");
+		ADD_ICON(11,	8,	L"command_block");
+		ADD_ICON(11,	9,	L"itemframe_back");
+		ADD_ICON(11,	10,	L"flower_pot");
+		ADD_ICON(11,	11,	L"comparator_off");
+		ADD_ICON(11,	12,	L"comparator_on");
+		ADD_ICON(11,	13,	L"rail_activator");
+		ADD_ICON(11,	14,	L"rail_activator_powered");
+		ADD_ICON(11,	15,	L"quartz_ore");
+
+		ADD_ICON(12,	0,	L"sandstone_side");
+		ADD_ICON(12,	1,	L"wool_colored_purple");
+		ADD_ICON(12,	2,	L"wool_colored_magenta");
+		ADD_ICON(12,	3,	L"detectorRail");
+		ADD_ICON(12,	4,	L"leaves_jungle");
+		ADD_ICON(12,	5,	L"leaves_jungle_opaque");
+		ADD_ICON(12,	6,	L"planks_spruce");
+		ADD_ICON(12,	7,	L"planks_jungle");
+		ADD_ICON(12,	8,	L"carrots_stage_0");
+		ADD_ICON(12,	9,	L"carrots_stage_1");
+		ADD_ICON(12,	10,	L"carrots_stage_2");
+		ADD_ICON(12,	11,	L"carrots_stage_3");
+		//ADD_ICON(12,	12,	L"unused");
+		ADD_ICON(12,	13,	L"water");
+		ADD_ICON_SIZE(12,14,L"water_flow",2,2);
+
+		ADD_ICON(13,	0,	L"sandstone_bottom");
+		ADD_ICON(13,	1,	L"wool_colored_cyan");
+		ADD_ICON(13,	2,	L"wool_colored_orange");
+		ADD_ICON(13,	3,	L"redstoneLight");
+		ADD_ICON(13,	4,	L"redstoneLight_lit");
+		ADD_ICON(13,	5,	L"stonebrick_carved");
+		ADD_ICON(13,	6,	L"planks_birch");
+		ADD_ICON(13,	7,	L"anvil_base");
+		ADD_ICON(13,	8,	L"anvil_top_damaged_1");
+		ADD_ICON(13,	9,	L"quartz_block_chiseled_top");
+		ADD_ICON(13,	10,	L"quartz_block_lines_top");
+		ADD_ICON(13,	11,	L"quartz_block_top");
+		ADD_ICON(13,	12,	L"hopper_outside");
+		ADD_ICON(13,	13,	L"detectorRail_on");
+
+		ADD_ICON(14,	0,	L"nether_brick");
+		ADD_ICON(14,	1,	L"wool_colored_silver");
+		ADD_ICON(14,	2,	L"nether_wart_stage_0");
+		ADD_ICON(14,	3,	L"nether_wart_stage_1");
+		ADD_ICON(14,	4,	L"nether_wart_stage_2");
+		ADD_ICON(14,	5,	L"sandstone_carved");
+		ADD_ICON(14,	6,	L"sandstone_smooth");
+		ADD_ICON(14,	7,	L"anvil_top");
+		ADD_ICON(14,	8,	L"anvil_top_damaged_2");
+		ADD_ICON(14,	9,	L"quartz_block_chiseled");
+		ADD_ICON(14,	10,	L"quartz_block_lines");
+		ADD_ICON(14,	11,	L"quartz_block_side");
+		ADD_ICON(14,	12,	L"hopper_inside");
+		ADD_ICON(14,	13,	L"lava");
+		ADD_ICON_SIZE(14,14,L"lava_flow",2,2);
+
+		ADD_ICON(15,	0,	L"destroy_0");
+		ADD_ICON(15,	1,	L"destroy_1");
+		ADD_ICON(15,	2,	L"destroy_2");
+		ADD_ICON(15,	3,	L"destroy_3");
+		ADD_ICON(15,	4,	L"destroy_4");
+		ADD_ICON(15,	5,	L"destroy_5");
+		ADD_ICON(15,	6,	L"destroy_6");
+		ADD_ICON(15,	7,	L"destroy_7");
+		ADD_ICON(15,	8,	L"destroy_8");
+		ADD_ICON(15,	9,	L"destroy_9");
+		ADD_ICON(15,	10,	L"hay_block_side");
+		ADD_ICON(15,	11,	L"quartz_block_bottom");
+		ADD_ICON(15,	12,	L"hopper_top");
+		ADD_ICON(15,	13,	L"hay_block_top");
+
+		ADD_ICON(16,	0,	L"coal_block");
+		ADD_ICON(16,	1,	L"hardened_clay");
+		ADD_ICON(16,	2,	L"noteblock");
+		//ADD_ICON(16,	3,	L"unused");
+		//ADD_ICON(16,	4,	L"unused");
+		//ADD_ICON(16,	5,	L"unused");
+		//ADD_ICON(16,	6,	L"unused");
+		//ADD_ICON(16,	7,	L"unused");
+		//ADD_ICON(16,	8,	L"unused");
+		ADD_ICON(16,	9,	L"potatoes_stage_0");
+		ADD_ICON(16,	10,	L"potatoes_stage_1");
+		ADD_ICON(16,	11,	L"potatoes_stage_2");
+		ADD_ICON(16,	12,	L"potatoes_stage_3");
+		ADD_ICON(16,	13,	L"log_spruce_top");
+		ADD_ICON(16,	14,	L"log_jungle_top");
+		ADD_ICON(16,	15,	L"log_birch_top");
+
+		ADD_ICON(17,	0,	L"hardened_clay_stained_black");
+		ADD_ICON(17,	1,	L"hardened_clay_stained_blue");
+		ADD_ICON(17,	2,	L"hardened_clay_stained_brown");
+		ADD_ICON(17,	3,	L"hardened_clay_stained_cyan");
+		ADD_ICON(17,	4,	L"hardened_clay_stained_gray");
+		ADD_ICON(17,	5,	L"hardened_clay_stained_green");
+		ADD_ICON(17,	6,	L"hardened_clay_stained_light_blue");
+		ADD_ICON(17,	7,	L"hardened_clay_stained_lime");
+		ADD_ICON(17,	8,	L"hardened_clay_stained_magenta");
+		ADD_ICON(17,	9,	L"hardened_clay_stained_orange");
+		ADD_ICON(17,	10,	L"hardened_clay_stained_pink");
+		ADD_ICON(17,	11,	L"hardened_clay_stained_purple");
+		ADD_ICON(17,	12,	L"hardened_clay_stained_red");
+		ADD_ICON(17,	13,	L"hardened_clay_stained_silver");
+		ADD_ICON(17,	14,	L"hardened_clay_stained_white");
+		ADD_ICON(17,	15,	L"hardened_clay_stained_yellow");
+
+		ADD_ICON(18,	0,	L"glass_black");
+		ADD_ICON(18,	1,	L"glass_blue");
+		ADD_ICON(18,	2,	L"glass_brown");
+		ADD_ICON(18,	3,	L"glass_cyan");
+		ADD_ICON(18,	4,	L"glass_gray");
+		ADD_ICON(18,	5,	L"glass_green");
+		ADD_ICON(18,	6,	L"glass_light_blue");
+		ADD_ICON(18,	7,	L"glass_lime");
+		ADD_ICON(18,	8,	L"glass_magenta");
+		ADD_ICON(18,	9,	L"glass_orange");
+		ADD_ICON(18,	10,	L"glass_pink");
+		ADD_ICON(18,	11,	L"glass_purple");
+		ADD_ICON(18,	12,	L"glass_red");
+		ADD_ICON(18,	13,	L"glass_silver");
+		ADD_ICON(18,	14,	L"glass_white");
+		ADD_ICON(18,	15,	L"glass_yellow");
+		
+		ADD_ICON(19,	0,	L"glass_pane_top_black");
+		ADD_ICON(19,	1,	L"glass_pane_top_blue");
+		ADD_ICON(19,	2,	L"glass_pane_top_brown");
+		ADD_ICON(19,	3,	L"glass_pane_top_cyan");
+		ADD_ICON(19,	4,	L"glass_pane_top_gray");
+		ADD_ICON(19,	5,	L"glass_pane_top_green");
+		ADD_ICON(19,	6,	L"glass_pane_top_light_blue");
+		ADD_ICON(19,	7,	L"glass_pane_top_lime");
+		ADD_ICON(19,	8,	L"glass_pane_top_magenta");
+		ADD_ICON(19,	9,	L"glass_pane_top_orange");
+		ADD_ICON(19,	10,	L"glass_pane_top_pink");
+		ADD_ICON(19,	11,	L"glass_pane_top_purple");
+		ADD_ICON(19,	12,	L"glass_pane_top_red");
+		ADD_ICON(19,	13,	L"glass_pane_top_silver");
+		ADD_ICON(19,	14,	L"glass_pane_top_white");
+		ADD_ICON(19,	15,	L"glass_pane_top_yellow");
 	}
 }

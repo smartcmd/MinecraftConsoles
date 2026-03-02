@@ -12,7 +12,7 @@ CactusTile::CactusTile(int id) : Tile(id, Material::cactus,isSolidRender())
 {
 	setTicking(true);
 	iconTop = NULL;
-    iconBottom = NULL;
+	iconBottom = NULL;
 }
 
 void CactusTile::tick(Level *level, int x, int y, int z, Random *random)
@@ -29,11 +29,13 @@ void CactusTile::tick(Level *level, int x, int y, int z, Random *random)
 			int age = level->getData(x, y, z);
 			if (age == 15)
 			{
-				level->setTile(x, y + 1, z, id);
-				level->setData(x, y, z, 0);
-			} else
+				level->setTileAndUpdate(x, y + 1, z, id);
+				level->setData(x, y, z, 0, Tile::UPDATE_NONE);
+				neighborChanged(level, x, y + 1, z, id);
+			}
+			else
 			{
-				level->setData(x, y, z, age + 1);
+				level->setData(x, y, z, age + 1, Tile::UPDATE_NONE);
 			}
 		}
 	}
@@ -41,22 +43,22 @@ void CactusTile::tick(Level *level, int x, int y, int z, Random *random)
 
 AABB *CactusTile::getAABB(Level *level, int x, int y, int z)
 {
-    float r = 1 / 16.0f;
-    return AABB::newTemp(x + r, y, z + r, x + 1 - r, y + 1 - r, z + 1 - r);
+	float r = 1 / 16.0f;
+	return AABB::newTemp(x + r, y, z + r, x + 1 - r, y + 1 - r, z + 1 - r);
 
 }
 
 AABB *CactusTile::getTileAABB(Level *level, int x, int y, int z)
 {
-    float r = 1 / 16.0f;
-    return AABB::newTemp(x + r, y, z + r, x + 1 - r, y + 1, z + 1 - r);
+	float r = 1 / 16.0f;
+	return AABB::newTemp(x + r, y, z + r, x + 1 - r, y + 1, z + 1 - r);
 }
 
 Icon *CactusTile::getTexture(int face, int data)
 {
-    if (face == Facing::UP) return iconTop;
-    if (face == Facing::DOWN) return iconBottom;
-    else return icon;
+	if (face == Facing::UP) return iconTop;
+	if (face == Facing::DOWN) return iconBottom;
+	else return icon;
 }
 
 bool CactusTile::isCubeShaped()
@@ -76,28 +78,27 @@ int CactusTile::getRenderShape()
 
 bool CactusTile::mayPlace(Level *level, int x, int y, int z)
 {
-    if (!Tile::mayPlace(level, x, y, z)) return false;
+	if (!Tile::mayPlace(level, x, y, z)) return false;
 
-    return canSurvive(level, x, y, z);
+	return canSurvive(level, x, y, z);
 }
 
 void CactusTile::neighborChanged(Level *level, int x, int y, int z, int type)
 {
-    if (!canSurvive(level, x, y, z))
+	if (!canSurvive(level, x, y, z))
 	{
-        this->spawnResources(level, x, y, z, level->getData(x, y, z), 0);
-        level->setTile(x, y, z, 0);
+		level->destroyTile(x, y, z, true);
 	}
 }
 
 bool CactusTile::canSurvive(Level *level, int x, int y, int z)
 {
-    if (level->getMaterial(x - 1, y, z)->isSolid()) return false;
-    if (level->getMaterial(x + 1, y, z)->isSolid()) return false;
-    if (level->getMaterial(x, y, z - 1)->isSolid()) return false;
-    if (level->getMaterial(x, y, z + 1)->isSolid()) return false;
-    int below = level->getTile(x, y - 1, z);
-    return below == Tile::cactus_Id || below == Tile::sand_Id;
+	if (level->getMaterial(x - 1, y, z)->isSolid()) return false;
+	if (level->getMaterial(x + 1, y, z)->isSolid()) return false;
+	if (level->getMaterial(x, y, z - 1)->isSolid()) return false;
+	if (level->getMaterial(x, y, z + 1)->isSolid()) return false;
+	int below = level->getTile(x, y - 1, z);
+	return below == Tile::cactus_Id || below == Tile::sand_Id;
 }
 
 void CactusTile::entityInside(Level *level, int x, int y, int z, shared_ptr<Entity> entity)
@@ -114,5 +115,5 @@ void CactusTile::registerIcons(IconRegister *iconRegister)
 
 bool CactusTile::shouldTileTick(Level *level, int x,int y,int z)
 {
-    return level->isEmptyTile(x, y + 1, z);
+	return level->isEmptyTile(x, y + 1, z);
 }

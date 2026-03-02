@@ -202,4 +202,10 @@ protected:
 	virtual void updateVSlotPositions(int iSlots, int i);
 
 	virtual void UpdateMultiPanel();
+	
+	virtual void HandleMessage(EUIMessage message, void *data);
+	void handleInventoryUpdated(LPVOID data);
+
+	// 4J - TomK If update tooltips is called then make sure the correct parent is invoked! (both UIScene AND IUIScene_CraftingMenu have an instance of said function!)
+	virtual void updateTooltips() { IUIScene_CraftingMenu::UpdateTooltips(); }
 };

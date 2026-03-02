@@ -10,7 +10,6 @@ class UseItemTask : public TutorialTask
 {
 private:
 	const int itemId;
-	bool completed;
 
 public:
 	UseItemTask(const int itemId, Tutorial *tutorial, int descriptionId,

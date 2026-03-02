@@ -9,7 +9,7 @@ public:
 	ByteTag(const wstring &name, byte data) : Tag(name) {this->data = data; }
 	
 	void write(DataOutput *dos) { dos->writeByte(data); }
-	void load(DataInput *dis) { data = dis->readByte(); }
+	void load(DataInput *dis, int tagDepth) { data = dis->readByte(); }
 
 	byte getId() { return TAG_Byte; }
 	wstring toString()

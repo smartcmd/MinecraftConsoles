@@ -23,75 +23,44 @@ public:
 	bool equals(void *other);
 
 	int hashCode();
-
 	int compareTo(Pos *pos);
-
 	Pos *offset(int x, int y, int z);
-
 	void set(int x, int y, int z);
-
 	void set(Pos *pos);
 
 	Pos *above();
-
 	Pos *above(int steps);
-
 	Pos *below();
-
 	Pos *below(int steps);
-
 	Pos *north();
-
 	Pos *north(int steps);
-
 	Pos *south();
-
 	Pos *south(int steps);
-
 	Pos *west();
-
 	Pos *west(int steps);
-
 	Pos *east();
-
 	Pos *east(int steps);
 
 	void move(int x, int y, int z);
-
 	void move(Pos pos);
-
 	void moveX(int steps);
-
 	void moveY(int steps);
-
 	void moveZ(int steps);
-
 	void moveUp(int steps);
-
 	void moveUp();
-
 	void moveDown(int steps);
-
 	void moveDown();
-
 	void moveEast(int steps);
-
 	void moveEast();
-
 	void moveWest(int steps);
-
 	void moveWest();
-
 	void moveNorth(int steps);
-
 	void moveNorth();
-
 	void moveSouth(int steps);
-
 	void moveSouth();
 
 	double dist(int x, int y, int z);
-
 	double dist(Pos *pos);
 	float distSqr(int x, int y, int z);
+	float distSqr(Pos *pos);
 };

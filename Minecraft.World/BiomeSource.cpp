@@ -11,9 +11,9 @@
 // 4J - removal of separate temperature & downfall layers brought forward from 1.2.3
 void BiomeSource::_init()
 {	
-    layer = nullptr;
+	layer = nullptr;
 	zoomedLayer = nullptr;
-	
+
 	cache = new BiomeCache(this);
 
 	playerSpawnBiomes.push_back(Biome::forest);
@@ -39,7 +39,7 @@ void BiomeSource::_init(__int64 seed, LevelType *generator)
 
 BiomeSource::BiomeSource()
 {
-    _init();
+	_init();
 }
 
 // 4J added
@@ -105,7 +105,7 @@ void BiomeSource::getDownfallBlock(floatArray &downfalls, int x, int z, int w, i
 
 BiomeCache::Block *BiomeSource::getBlockAt(int x, int y)
 {
-    return cache->getBlockAt(x, y);
+	return cache->getBlockAt(x, y);
 }
 
 float BiomeSource::getTemperature(int x, int y, int z) const
@@ -277,6 +277,7 @@ void BiomeSource::getBiomeIndexBlock(byteArray& biomeIndices, int x, int z, int 
 */
 bool BiomeSource::containsOnly(int x, int z, int r, vector<Biome *> allowed)
 {
+	IntCache::releaseAll();
 	int x0 = ((x - r) >> 2);
 	int z0 = ((z - r) >> 2);
 	int x1 = ((x + r) >> 2);
@@ -304,11 +305,12 @@ bool BiomeSource::containsOnly(int x, int z, int r, vector<Biome *> allowed)
 */
 bool BiomeSource::containsOnly(int x, int z, int r, Biome *allowed)
 {
+	IntCache::releaseAll();
 	int x0 = ((x - r) >> 2);
 	int z0 = ((z - r) >> 2);
 	int x1 = ((x + r) >> 2);
 	int z1 = ((z + r) >> 2);
-	
+
 	int w = x1 - x0;
 	int h = z1 - z0;
 	int biomesCount = w*h;
@@ -330,6 +332,7 @@ bool BiomeSource::containsOnly(int x, int z, int r, Biome *allowed)
 */
 TilePos *BiomeSource::findBiome(int x, int z, int r, Biome *toFind, Random *random)
 {
+	IntCache::releaseAll();
 	int x0 = ((x - r) >> 2);
 	int z0 = ((z - r) >> 2);
 	int x1 = ((x + r) >> 2);
@@ -367,6 +370,7 @@ TilePos *BiomeSource::findBiome(int x, int z, int r, Biome *toFind, Random *rand
 */
 TilePos *BiomeSource::findBiome(int x, int z, int r, vector<Biome *> allowed, Random *random)
 {
+	IntCache::releaseAll();
 	int x0 = ((x - r) >> 2);
 	int z0 = ((z - r) >> 2);
 	int x1 = ((x + r) >> 2);
@@ -378,8 +382,7 @@ TilePos *BiomeSource::findBiome(int x, int z, int r, vector<Biome *> allowed, Ra
 	intArray biomes = layer->getArea(x0, z0, w, h);
 	TilePos *res = NULL;
 	int found = 0;
-	int biomesCount = w*h;
-	for (unsigned int i = 0; i < biomesCount; i++)
+	for (unsigned int i = 0; i < w * h; i++)
 	{
 		int xx = (x0 + i % w) << 2;
 		int zz = (z0 + i / w) << 2;
@@ -420,7 +423,7 @@ __int64 BiomeSource::findSeed(LevelType *generator)
 	mcprogress->progressStage(IDS_PROGRESS_NEW_WORLD_SEED);
 
 #ifndef _CONTENT_PACKAGE
-	if(app.DebugSettingsOn() && app.GetGameSettingsDebugMask(ProfileManager.GetPrimaryPad())&(1L<<eDebugSetting_EnableHeightWaterBiomeOverride))
+	if(app.DebugSettingsOn() && app.GetGameSettingsDebugMask(ProfileManager.GetPrimaryPad())&(1L<<eDebugSetting_EnableBiomeOverride))
 	{
 		// Do nothing
 	}
@@ -561,30 +564,30 @@ bool BiomeSource::getIsMatch(float *frac)
 {
 	// A true for a particular biome type here marks it as one that *has* to be present
 	static const bool critical[Biome::BIOME_COUNT] = { 
-										true,	// ocean
-										true,	// plains
-										true,	// desert
-										false,	// extreme hills
-										true,	// forest
-										true,	// taiga
-										true,	// swamps
-										false,	// river
-										false,	// hell
-										false,	// end biome
-										false,	// frozen ocean
-										false,	// frozen river
-										false,	// ice flats
-										false,	// ice mountains
-										true,	// mushroom island / shore
-										false,  // mushroom shore (combined with above)
-										false,	// beach
-										false,	// desert hills (combined with desert)
-										false,	// forest hills (combined with forest)
-										false,	// taiga hills (combined with taga)
-										false,	// small extreme hills
-										true,	// jungle
-										false,	// jungle hills (combined with jungle)
-										};
+		true,	// ocean
+		true,	// plains
+		true,	// desert
+		false,	// extreme hills
+		true,	// forest
+		true,	// taiga
+		true,	// swamps
+		false,	// river
+		false,	// hell
+		false,	// end biome
+		false,	// frozen ocean
+		false,	// frozen river
+		false,	// ice flats
+		false,	// ice mountains
+		true,	// mushroom island / shore
+		false,  // mushroom shore (combined with above)
+		false,	// beach
+		false,	// desert hills (combined with desert)
+		false,	// forest hills (combined with forest)
+		false,	// taiga hills (combined with taga)
+		false,	// small extreme hills
+		true,	// jungle
+		false,	// jungle hills (combined with jungle)
+	};
 
 
 	// Don't want more than 15% ocean

@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "..\..\..\Minecraft.World\net.minecraft.world.item.trading.h"
 #include "..\..\..\Minecraft.World\net.minecraft.world.inventory.h"
+#include "..\..\..\Minecraft.World\net.minecraft.world.item.h"
 #include "..\..\..\Minecraft.World\net.minecraft.network.packet.h"
 #include "..\..\Minecraft.h"
 #include "..\..\MultiPlayerLocalPlayer.h"
@@ -77,6 +78,9 @@ bool IUIScene_TradingMenu::handleKeyDown(int iPad, int iAction, bool bRepeat)
 					int buyBMatches = player->inventory->countMatches(buyBItem);
 					if( (buyAItem != NULL && buyAMatches >= buyAItem->count) && (buyBItem == NULL || buyBMatches >= buyBItem->count) )
 					{
+						// 4J-JEV: Fix for PS4 #7111: [PATCH 1.12] Trading Librarian villagers for multiple ‘Enchanted Books’ will cause the title to crash.
+						int actualShopItem = m_activeOffers.at(selectedShopItem).second;
+
 						m_merchant->notifyTrade(activeRecipe);
 
 						// Remove the items we are purchasing with
@@ -91,7 +95,6 @@ bool IUIScene_TradingMenu::handleKeyDown(int iPad, int iAction, bool bRepeat)
 						}
 
 						// Send a packet to the server
-						int actualShopItem = m_activeOffers.at(selectedShopItem).second;
 						player->connection->send( shared_ptr<TradeItemPacket>( new TradeItemPacket(m_menu->containerId, actualShopItem) ) );
 
 						updateDisplay();
@@ -238,15 +241,14 @@ void IUIScene_TradingMenu::updateDisplay()
 
 			// 4J-PB - need to get the villager type here
 			wsTemp = app.GetString(IDS_VILLAGER_OFFERS_ITEM);
-			wsTemp = replaceAll(wsTemp,L"{*VILLAGER_TYPE*}",app.GetString(m_merchant->getDisplayName()));
+			wsTemp = replaceAll(wsTemp,L"{*VILLAGER_TYPE*}",m_merchant->getDisplayName());
 			int iPos=wsTemp.find(L"%s");
 			wsTemp.replace(iPos,2,activeRecipe->getSellItem()->getHoverName());
 
 			setTitle(wsTemp.c_str());
 
-			vector<wstring> unformattedStrings;
-			wstring offerDescription = GetItemDescription(activeRecipe->getSellItem(), unformattedStrings);
-			setOfferDescription(offerDescription, unformattedStrings);
+			vector<HtmlString> *offerDescription = GetItemDescription(activeRecipe->getSellItem());
+			setOfferDescription(offerDescription);
 			
 			shared_ptr<ItemInstance> buyAItem = activeRecipe->getBuyAItem();
 			shared_ptr<ItemInstance> buyBItem = activeRecipe->getBuyBItem();
@@ -299,13 +301,15 @@ void IUIScene_TradingMenu::updateDisplay()
 		}
 		else
 		{
-			setTitle(app.GetString(m_merchant->getDisplayName()));
+			setTitle(m_merchant->getDisplayName());
 			setRequest1Name(L"");
 			setRequest2Name(L"");
 			setRequest1RedBox(false);
 			setRequest2RedBox(false);
 			setRequest1Item(nullptr);
-			setRequest2Item(nullptr);
+			setRequest2Item(nullptr);			
+			vector<HtmlString> offerDescription;
+			setOfferDescription(&offerDescription);
 		}
 
 		m_bHasUpdatedOnce = true;
@@ -361,27 +365,20 @@ void IUIScene_TradingMenu::setTradeItem(int index, shared_ptr<ItemInstance> item
 {
 }
 
-wstring IUIScene_TradingMenu::GetItemDescription(shared_ptr<ItemInstance> item, vector<wstring> &unformattedStrings)
+vector<HtmlString> *IUIScene_TradingMenu::GetItemDescription(shared_ptr<ItemInstance> item)
 {
-	if(item == NULL) return L"";
+	vector<HtmlString> *lines = item->getHoverText(nullptr, false);
 
-	wstring desc = L"";
-	vector<wstring> *strings = item->getHoverTextOnly(nullptr, false, unformattedStrings);
-	bool firstLine = true;
-	for(AUTO_VAR(it, strings->begin()); it != strings->end(); ++it)
+	// Add rarity to first line
+	if (lines->size() > 0)
 	{
-		wstring thisString = *it;
-		if(!firstLine)
-		{
-			desc.append( L"<br />" );
-		}
-		else
-		{
-			firstLine = false;
-		}
-		desc.append( thisString );
+		lines->at(0).color = item->getRarity()->color;
 	}
-	strings->clear();
-	delete strings;
-	return desc;
+
+	return lines;
+}
+
+void IUIScene_TradingMenu::HandleInventoryUpdated()
+{
+	updateDisplay();
 }

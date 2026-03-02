@@ -73,11 +73,11 @@
   </data>
 <data name="IDS_PRO_NOTONLINE_TITLE"><value>Perfil de jogador offline</value>
   </data>
-<data name="IDS_PRO_NOTONLINE_TEXT"><value>O jogo tem algumas funcionalidades que requerem um perfil de jogador ativo no Xbox Live, mas de momento estás offline.</value>
+<data name="IDS_PRO_NOTONLINE_TEXT"><value>O jogo tem algumas funcionalidades que requerem um perfil de jogador ativo no Xbox LIVE, mas de momento estás offline.</value>
   </data>
-<data name="IDS_PRO_XBOXLIVE_NOTIFICATION"><value>Esta funcionalidade requer um perfil de jogador ligado ao Xbox Live.</value>
+<data name="IDS_PRO_XBOXLIVE_NOTIFICATION"><value>Esta funcionalidade requer um perfil de jogador ligado ao Xbox LIVE.</value>
   </data>
-<data name="IDS_PRO_NOTONLINE_ACCEPT"><value>Ligar ao Xbox Live</value>
+<data name="IDS_PRO_NOTONLINE_ACCEPT"><value>Ligar ao Xbox LIVE</value>
   </data>
 <data name="IDS_PRO_NOTONLINE_DECLINE"><value>Continuar a jogar offline</value>
   </data>
@@ -100,7 +100,7 @@
 <data name="IDS_PRO_UNLOCKGAME_TITLE"><value>Desbloquear Jogo Completo</value>
   </data>
 <data name="IDS_PRO_UNLOCKGAME_TEXT"><value>Esta é a versão de avaliação do Minecraft. Se tivesses o jogo completo, terias acabado de ganhar um feito! 
-Desbloqueia o jogo completo para experimentares a diversão do Minecraft e para jogares com os teus amigos em todo o mundo através do Xbox Live.
+Desbloqueia o jogo completo para experimentares a diversão do Minecraft e para jogares com os teus amigos em todo o mundo através do Xbox LIVE.
 Queres desbloquear o jogo completo?</value>
   </data>
 <data name="IDS_PRO_PROFILEPROBLEM_TEXT"><value>Estás a ser reencaminhado para o menu principal devido a um problema de leitura do teu perfil.</value>

@@ -48,6 +48,12 @@
 	<data name="IDS_CORRUPT_OPTIONS">
 		<value>Plik zapisu opcji został uszkodzony i musi zostać usunięty.</value>
 	</data>
+	<data name="IDS_CORRUPT_OPTIONS_DELETE">
+		<value>Usuń plik z opcjami.</value>
+	</data>
+	<data name="IDS_CORRUPT_OPTIONS_RETRY">
+		<value>Spróbuj ponownie wczytać plik z opcjami.</value>
+	</data>
 	<data name="IDS_CORRUPT_SAVECACHE">
 		<value>Plik zapisu w pamięci podręcznej został uszkodzony i musi zostać usunięty.</value>
 	</data>
@@ -75,6 +81,9 @@
 	<data name="IDS_CONTENT_RESTRICTION_MULTIPLAYER">
 		<value>Ze względu na kontrolę rodzicielską na koncie jednego z lokalnych graczy usługa sieciowa została wyłączona na twoim koncie Sony Entertainment Network.</value>
 	</data>
+	<data name="IDS_CONTENT_RESTRICTION_PATCH_AVAILABLE">
+		<value>Funkcje sieciowe są wyłączone gdyż dostępna jest aktualizacja.</value>
+	</data>
 	<data name="IDS_NO_DLCCATEGORIES">
 		<value>Aktualnie nie ma dostępnej zawartości do pobrania dla tej gry.</value>
 	</data>
@@ -82,9 +91,6 @@
 		<value>Zaproszenie</value>
 	</data>
 	<data name="IDS_INVITATION_BODY">
-		<value>Dołącz do mnie w Minecraft: Edycja PlayStation®Vita!</value>
-	</data>
-	<data name="IDS_CONTENT_RESTRICTION_PATCH_AVAILABLE">
-		<value>Funkcje sieciowe są wyłączone gdyż dostępna jest aktualizacja.</value>
+		<value>Dołącz do mnie w Minecraft: edycja PlayStation®Vita!</value>
 	</data>
 </root>

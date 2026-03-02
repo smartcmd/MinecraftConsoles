@@ -12,8 +12,8 @@
 
 MusicTileEntity::MusicTileEntity() : TileEntity()
 {
-    note = 0;
-    
+	note = 0;
+
 	on = false;
 }
 
@@ -49,7 +49,7 @@ void MusicTileEntity::playNote(Level *level, int x, int y, int z)
 	if (m == Material::glass) i = 3;
 	if (m == Material::wood) i = 4;
 
-	level->tileEvent(x, y, z, Tile::musicBlock_Id, i, note);
+	level->tileEvent(x, y, z, Tile::noteblock_Id, i, note);
 }
 
 // 4J Added

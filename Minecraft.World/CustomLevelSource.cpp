@@ -7,6 +7,7 @@
 #include "net.minecraft.world.level.levelgen.synth.h"
 #include "net.minecraft.world.level.tile.h"
 #include "net.minecraft.world.level.storage.h"
+#include "net.minecraft.world.entity.h"
 #include "CustomLevelSource.h"
 
 const double CustomLevelSource::SNOW_SCALE = 0.3;
@@ -103,15 +104,16 @@ CustomLevelSource::CustomLevelSource(Level *level, __int64 seed, bool generateSt
 
 	caveFeature = new LargeCaveFeature();
 	strongholdFeature = new StrongholdFeature();
-	villageFeature = new VillageFeature(0,m_XZSize);
+	villageFeature = new VillageFeature(m_XZSize);
 	mineShaftFeature = new MineShaftFeature();
+	scatteredFeature = new RandomScatteredLargeFeature();
 	canyonFeature = new CanyonFeature();
 
 	this->level = level;
 
 	random = new Random(seed);
 	pprandom = new Random(seed);	// 4J - added, so that we can have a separate random for doing post-processing in parallel with creation
-    perlinNoise3 = new PerlinNoise(random, 4);
+	perlinNoise3 = new PerlinNoise(random, 4);
 #endif
 }
 
@@ -127,7 +129,7 @@ CustomLevelSource::~CustomLevelSource()
 	this->level = level;
 
 	delete random;
-    delete perlinNoise3;
+	delete perlinNoise3;
 #endif
 }
 
@@ -202,7 +204,7 @@ void CustomLevelSource::prepareHeights(int xOffs, int zOffs, byteArray blocks)
 							// 4J - this comparison used to just be with 0.0f but is now varied by block above
 							if (yc * CHUNK_HEIGHT + y < mapHeight)
 							{
-								tileId = (byte) Tile::rock_Id;
+								tileId = (byte) Tile::stone_Id;
 							}
 							else if (yc * CHUNK_HEIGHT + y < waterHeight)
 							{
@@ -215,7 +217,7 @@ void CustomLevelSource::prepareHeights(int xOffs, int zOffs, byteArray blocks)
 							if( emin == 0 )
 							{
 								// This matches code in MultiPlayerChunkCache that makes the geometry which continues at the edge of the world
-								if( yc * CHUNK_HEIGHT + y <= ( level->getSeaLevel() - 10 ) ) tileId = Tile::rock_Id;
+								if( yc * CHUNK_HEIGHT + y <= ( level->getSeaLevel() - 10 ) ) tileId = Tile::stone_Id;
 								else if( yc * CHUNK_HEIGHT + y < level->getSeaLevel() ) tileId = Tile::calmWater_Id;
 							}
 
@@ -298,14 +300,14 @@ void CustomLevelSource::buildSurfaces(int xOffs, int zOffs, byteArray blocks, Bi
 					{
 						run = -1;
 					}
-					else if (old == Tile::rock_Id)
+					else if (old == Tile::stone_Id)
 					{
 						if (run == -1)
 						{
 							if (runDepth <= 0)
 							{
 								top = 0;
-								material = (byte) Tile::rock_Id;
+								material = (byte) Tile::stone_Id;
 							}
 							else if (y >= waterHeight - 4 && y <= waterHeight + 1)
 							{
@@ -393,6 +395,7 @@ LevelChunk *CustomLevelSource::getChunk(int xOffs, int zOffs)
 		mineShaftFeature->apply(this, level, xOffs, zOffs, blocks);
 		villageFeature->apply(this, level, xOffs, zOffs, blocks);
 		strongholdFeature->apply(this, level, xOffs, zOffs, blocks);
+		scatteredFeature->apply(this, level, xOffs, zOffs, blocks);
 	}
 	//        canyonFeature.apply(this, level, xOffs, zOffs, blocks);
 	// townFeature.apply(this, level, xOffs, zOffs, blocks);
@@ -466,7 +469,7 @@ void CustomLevelSource::calcWaterDepths(ChunkSource *parent, int xt, int zt)
 										int od = level->getData(xp + x2, y, zp + z2);
 										if (od < 7 && od < d)
 										{
-											level->setData(xp + x2, y, zp + z2, d);
+											level->setData(xp + x2, y, zp + z2, d, Tile::UPDATE_CLIENTS);
 										}
 									}
 								}
@@ -474,10 +477,10 @@ void CustomLevelSource::calcWaterDepths(ChunkSource *parent, int xt, int zt)
 						}
 						if (hadWater)
 						{
-							level->setTileAndDataNoUpdate(xp, y, zp, Tile::calmWater_Id, 7);
+							level->setTileAndData(xp, y, zp, Tile::calmWater_Id, 7, Tile::UPDATE_CLIENTS);
 							for (int y2 = 0; y2 < y; y2++)
 							{
-								level->setTileAndDataNoUpdate(xp, y2, zp, Tile::calmWater_Id, 8);
+								level->setTileAndData(xp, y2, zp, Tile::calmWater_Id, 8, Tile::UPDATE_CLIENTS);
 							}
 						}
 					}
@@ -516,6 +519,7 @@ void CustomLevelSource::postProcess(ChunkSource *parent, int xt, int zt)
 		mineShaftFeature->postProcess(level, pprandom, xt, zt);
 		hasVillage = villageFeature->postProcess(level, pprandom, xt, zt);
 		strongholdFeature->postProcess(level, pprandom, xt, zt);
+		scatteredFeature->postProcess(level, random, xt, zt);
 	}
 	PIXEndNamedEvent();
 
@@ -581,11 +585,11 @@ void CustomLevelSource::postProcess(ChunkSource *parent, int xt, int zt)
 
 			if (level->shouldFreezeIgnoreNeighbors(x + xo, y - 1, z + zo))
 			{
-				level->setTileNoUpdate(x + xo, y - 1, z + zo, Tile::ice_Id);		// 4J - changed from setTile, otherwise we end up creating a *lot* of dynamic water tiles as these ice tiles are set
+				level->setTileAndData(x + xo, y - 1, z + zo, Tile::ice_Id,0, Tile::UPDATE_INVISIBLE);		// 4J - changed from setTile, otherwise we end up creating a *lot* of dynamic water tiles as these ice tiles are set
 			}
 			if (level->shouldSnow(x + xo, y, z + zo))
 			{
-				level->setTile(x + xo, y, z + zo, Tile::topSnow_Id);
+				level->setTileAndData(x + xo, y, z + zo, Tile::topSnow_Id,0, Tile::UPDATE_CLIENTS);
 			}
 		}
 	}
@@ -622,6 +626,10 @@ vector<Biome::MobSpawnerData *> *CustomLevelSource::getMobsAt(MobCategory *mobCa
 	{
 		return NULL;
 	}
+	if (mobCategory == MobCategory::monster && scatteredFeature->isSwamphut(x, y, z))
+	{
+		return scatteredFeature->getSwamphutEnemies();
+	}
 	return biome->getMobs(mobCategory);
 #else
 	return NULL;
@@ -637,4 +645,17 @@ TilePos *CustomLevelSource::findNearestMapFeature(Level *level, const wstring& f
 	}
 #endif
 	return NULL;
+}
+
+void CustomLevelSource::recreateLogicStructuresForChunk(int chunkX, int chunkZ)
+{
+	if (generateStructures)
+	{
+#ifdef _OVERRIDE_HEIGHTMAP
+		mineShaftFeature->apply(this, level, chunkX, chunkZ, NULL);
+		villageFeature->apply(this, level, chunkX, chunkZ, NULL);
+		strongholdFeature->apply(this, level, chunkX, chunkZ, NULL);
+		scatteredFeature->apply(this, level, chunkX, chunkZ, NULL);
+#endif
+	}
 }

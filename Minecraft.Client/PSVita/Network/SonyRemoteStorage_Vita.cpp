@@ -116,7 +116,7 @@ void SonyRemoteStorage_Vita::internalCallback(const SceRemoteStorageEvent event,
 		app.DebugPrintf("Set data progress: %i%%\n", retCode);
 		m_status = e_setDataInProgress;
 		m_dataProgress = retCode;
-
+		m_startTime = System::currentTimeMillis();
 		break;
 
 	case USER_ACCOUNT_LINKED:
@@ -146,7 +146,11 @@ bool SonyRemoteStorage_Vita::init(CallbackFunc cb, LPVOID lpParam)
 
 	m_callbackFunc = cb;
 	m_callbackParam = lpParam;
+	m_bTransferStarted = false;
+	m_bAborting = false;
+
 	m_lastErrorCode = SCE_OK;
+
 
 	if(m_bInitialised)
 	{
@@ -293,6 +297,10 @@ bool SonyRemoteStorage_Vita::setDataInternal()
 	//	CompressSaveData();		// check if we need to re-save the file compressed first
 
 	snprintf(m_saveFilename, sizeof(m_saveFilename), "%s:%s/GAMEDATA.bin", "savedata0", m_setDataSaveInfo->UTF8SaveFilename);
+
+	SceFiosSize outSize = sceFiosFileGetSizeSync(NULL, m_saveFilename);
+	m_uploadSaveSize = (int)outSize;
+	
 	strcpy(m_saveFileDesc, m_setDataSaveInfo->UTF8SaveTitle);
 	m_status = e_setDataInProgress;
 
@@ -302,39 +310,7 @@ bool SonyRemoteStorage_Vita::setDataInternal()
 	strcpy(params.pathLocation, m_saveFilename);
 	sprintf(params.fileName, getRemoteSaveFilename());
 
-	DescriptionData descData;
-	ZeroMemory(&descData, sizeof(DescriptionData));
-	descData.m_platform[0] = SAVE_FILE_PLATFORM_LOCAL & 0xff;
-	descData.m_platform[1] = (SAVE_FILE_PLATFORM_LOCAL >> 8) & 0xff;
-	descData.m_platform[2] = (SAVE_FILE_PLATFORM_LOCAL >> 16) & 0xff;
-	descData.m_platform[3] = (SAVE_FILE_PLATFORM_LOCAL >> 24)& 0xff;
-
-	if(m_thumbnailData)
-	{
-		unsigned int uiHostOptions;
-		bool bHostOptionsRead;
-		DWORD uiTexturePack;
-		char seed[22];
-		app.GetImageTextData(m_thumbnailData, m_thumbnailDataSize,(unsigned char *)seed, uiHostOptions, bHostOptionsRead, uiTexturePack);
-
-		__int64 iSeed = strtoll(seed,NULL,10);
-		char seedHex[17];
-		sprintf(seedHex,"%016llx",iSeed);
-		memcpy(descData.m_seed,seedHex,16); // Don't copy null
-
-		// Save the host options that this world was last played with
-		char hostOptions[9];
-		sprintf(hostOptions,"%08x",uiHostOptions);
-		memcpy(descData.m_hostOptions,hostOptions,8); // Don't copy null
-
-		// Save the texture pack id
-		char texturePack[9];
-		sprintf(texturePack,"%08x",uiTexturePack);
-		memcpy(descData.m_texturePack,texturePack,8); // Don't copy null
-	}
-
-	memcpy(descData.m_saveNameUTF8, m_saveFileDesc, strlen(m_saveFileDesc)+1); // plus null
-	memcpy(params.fileDescription, &descData, sizeof(descData));
+	GetDescriptionData(params.fileDescription);
 
 
 	if(m_bAborting)

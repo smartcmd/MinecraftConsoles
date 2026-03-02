@@ -15,6 +15,8 @@
 #include "SnowMan.h"
 
 // 1.2.3
-#include "TamableAnimal.h"
-#include "Ozelot.h"
+#include "Ocelot.h"
 #include "VillagerGolem.h"
+
+// 1.6.4
+#include "EntityHorse.h"

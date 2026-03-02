@@ -257,6 +257,13 @@ short DataInputStream::readShort()
 	return (short)((a << 8) | (b & 0xff));
 }
 
+unsigned short DataInputStream::readUnsignedShort()
+{
+	int a = stream->read();
+	int b = stream->read();
+	return (unsigned short)((a << 8) | (b & 0xff));
+}
+
 //Reads in a string that has been encoded using a modified UTF-8 format. The general contract of readUTF is that it reads a representation
 //of a Unicode character string encoded in modified UTF-8 format; this string of characters is then returned as a String.
 //First, two bytes are read and used to construct an unsigned 16-bit integer in exactly the manner of the readUnsignedShort method .

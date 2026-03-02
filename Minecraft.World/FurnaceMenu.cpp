@@ -45,8 +45,8 @@ void FurnaceMenu::broadcastChanges()
 {
 	AbstractContainerMenu::broadcastChanges();
 	
-	AUTO_VAR(itEnd, containerListeners->end());
-	for (AUTO_VAR(it, containerListeners->begin()); it != itEnd; it++)
+	AUTO_VAR(itEnd, containerListeners.end());
+	for (AUTO_VAR(it, containerListeners.begin()); it != itEnd; it++)
 	{
 		ContainerListener *listener = *it; //containerListeners->at(i);
 		if (tc != furnace->tickCount) 
@@ -83,7 +83,7 @@ bool FurnaceMenu::stillValid(shared_ptr<Player> player)
 shared_ptr<ItemInstance> FurnaceMenu::quickMoveStack(shared_ptr<Player> player, int slotIndex)
 {
 	shared_ptr<ItemInstance> clicked = nullptr;
-	Slot *slot = slots->at(slotIndex);
+	Slot *slot = slots.at(slotIndex);
 	//Slot *IngredientSlot = slots->at(INGREDIENT_SLOT);
 
 	bool charcoalUsed = furnace->wasCharcoalUsed();
@@ -160,11 +160,11 @@ shared_ptr<ItemInstance> FurnaceMenu::quickMoveStack(shared_ptr<Player> player, 
 	return clicked;
 }
 
-shared_ptr<ItemInstance> FurnaceMenu::clicked(int slotIndex, int buttonNum, int clickType, shared_ptr<Player> player)
+shared_ptr<ItemInstance> FurnaceMenu::clicked(int slotIndex, int buttonNum, int clickType, shared_ptr<Player> player, bool looped) // 4J Added looped param
 {
 	bool charcoalUsed = furnace->wasCharcoalUsed();
 
-	shared_ptr<ItemInstance> out = AbstractContainerMenu::clicked(slotIndex, buttonNum, clickType, player);
+	shared_ptr<ItemInstance> out = AbstractContainerMenu::clicked(slotIndex, buttonNum, clickType, player, looped);
 
 #ifdef _EXTENDED_ACHIEVEMENTS
 	if ( charcoalUsed && (out!=nullptr) && (buttonNum==0 || buttonNum==1) && clickType==CLICK_PICKUP

@@ -10,13 +10,22 @@ private:
 		eControl_GameOptions,
 		eControl_GamePlayers,
 	};
+
+	typedef struct _PlayerInfo
+	{
+		byte m_smallId;
+		char m_voiceStatus;
+		short m_colorState;
+		wstring m_name;
+
+	} PlayerInfo;
 	
 	bool m_isHostPlayer;
-	int m_playersCount;
-	BYTE m_players[MINECRAFT_NET_MAX_PLAYERS]; // An array of QNet small-id's
-	char m_playersVoiceState[MINECRAFT_NET_MAX_PLAYERS];
-	short m_playersColourState[MINECRAFT_NET_MAX_PLAYERS];
-	wstring m_playerNames[MINECRAFT_NET_MAX_PLAYERS];
+	//int m_playersCount;
+	vector<PlayerInfo *> m_players; // A vector of player info structs
+	//char m_playersVoiceState[MINECRAFT_NET_MAX_PLAYERS];
+	//short m_playersColourState[MINECRAFT_NET_MAX_PLAYERS];
+	//wstring m_playerNames[MINECRAFT_NET_MAX_PLAYERS];
 
 	UIControl_Button m_buttonGameOptions;
 	UIControl_PlayerList m_playerList;
@@ -28,6 +37,7 @@ private:
 	UI_END_MAP_ELEMENTS_AND_NAMES()
 public:
 	UIScene_InGameInfoMenu(int iPad, void *initData, UILayer *parentLayer);
+	virtual ~UIScene_InGameInfoMenu();
 
 	virtual EUIScene getSceneType() { return eUIScene_InGameInfoMenu;}
 	virtual void updateTooltips();
@@ -55,6 +65,8 @@ public:
 	static void OnPlayerChanged(void *callbackParam, INetworkPlayer *pPlayer, bool leaving);
 
 private:
+	PlayerInfo *BuildPlayerInfo(INetworkPlayer *player);
+
 #if defined(__PS3__) || defined (__PSVITA__) || defined(__ORBIS__)
 	static int MustSignInReturnedPSN(void *pParam,int iPad,C4JStorage::EMessageResult result);
 	static int ViewInvites_SignInReturned(void *pParam,bool bContinue, int iPad);

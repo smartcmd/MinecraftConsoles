@@ -4,6 +4,8 @@ class LevelType;
 class Abilities;
 class LevelData;
 
+#define _ADVENTURE_MODE_ENABLED
+
 // 4J Stu - Was Java enum class
 class GameType
 {
@@ -25,7 +27,7 @@ public:
 	int getId();
 	wstring getName();
 	void updatePlayerAbilities(Abilities *abilities);
-	bool isReadOnly();
+	bool isAdventureRestricted();
 	bool isCreative();
 	bool isSurvival();
 	static GameType *byId(int id);
@@ -43,6 +45,7 @@ private:
 	LevelType *levelType;
 	bool allowCommands;
 	bool startingBonusItems;	// 4J - brought forward from 1.3.2
+	wstring levelTypeOptions;
 	int m_xzSize;	// 4J Added
 	int m_hellScale;
 
@@ -53,6 +56,7 @@ public:
 	LevelSettings(LevelData *levelData);
 	LevelSettings *enableStartingBonusItems();		// 4J - brought forward from 1.3.2
 	LevelSettings *enableSinglePlayerCommands();
+	LevelSettings *setLevelTypeOptions(const wstring &options);
 	bool hasStartingBonusItems(); // 4J - brought forward from 1.3.2
 	__int64 getSeed();
 	GameType *getGameType();
@@ -64,4 +68,5 @@ public:
 	int getXZSize(); // 4J Added
 	int getHellScale(); // 4J Added
 	static GameType *validateGameType(int gameType);
+	wstring getLevelTypeOptions();
 };

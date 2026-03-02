@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+	<data name="IDS_LANG_SYSTEM">					<value>System Language</value>			</data>
+	<data name="IDS_LANG_ENGLISH">					<value>English</value>					</data>
+	
+	<data name="IDS_LANG_GERMAN">					<value>German</value>					</data>
+	
+	<data name="IDS_LANG_SPANISH">					<value>Spanish</value>					</data>
+	<data name="IDS_LANG_SPANISH_SPAIN">			<value>Spanish (Spain)</value>			</data>
+	<data name="IDS_LANG_SPANISH_LATIN_AMERICA">	<value>Spanish (Latin America)</value>	</data>
+	
+	<data name="IDS_LANG_FRENCH">					<value>French</value>					</data>
+	
+	<data name="IDS_LANG_ITALIAN">					<value>Italian</value>					</data>
+	
+	<data name="IDS_LANG_PORTUGUESE">				<value>Portuguese</value>				</data>
+	<data name="IDS_LANG_PORTUGUESE_PORTUGAL">		<value>Portuguese (Portugal)</value>	</data>
+	<data name="IDS_LANG_PORTUGUESE_BRAZIL">		<value>Portuguese (Brazil)</value>		</data>
+	
+	<data name="IDS_LANG_JAPANESE">					<value>Japanese</value>					</data>
+
+    <data name="IDS_LANG_KOREAN">					<value>Korean</value>					</data>
+
+	<data name="IDS_LANG_CHINESE_TRADITIONAL">		<value>Chinese (Traditional)</value>	</data>
+	<data name="IDS_LANG_CHINESE_SIMPLIFIED">		<value>Chinese (Simplified)</value>		</data>
+
+	<data name="IDS_LANG_DANISH">					<value>Danish</value>					</data>
+    <data name="IDS_LANG_FINISH">					<value>Finnish</value>					</data>
+	
+	<data name="IDS_LANG_DUTCH">					<value>Dutch</value>					</data>
+	
+    <data name="IDS_LANG_POLISH">					<value>Polish</value>					</data>
+    <data name="IDS_LANG_RUSSIAN">					<value>Russian</value>					</data>
+    <data name="IDS_LANG_SWEDISH">					<value>Swedish</value>					</data>
+    <data name="IDS_LANG_NORWEGIAN">				<value>Norwegian</value>				</data>
+	
+    <data name="IDS_LANG_GREEK">					<value>Greek</value>					</data>
+	
+	<data name="IDS_LANG_TURKISH">					<value>Turkish</value>					</data>
+</root>

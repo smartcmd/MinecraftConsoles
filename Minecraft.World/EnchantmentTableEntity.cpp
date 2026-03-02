@@ -10,20 +10,33 @@ EnchantmentTableEntity::EnchantmentTableEntity()
 	random = new Random();
 
 	time = 0;
-    flip = 0.0f;
+	flip = 0.0f;
 	oFlip = 0.0f;
 	flipT = 0.0f;
 	flipA = 0.0f;
-    open = 0.0f;
+	open = 0.0f;
 	oOpen = 0.0f;
-    rot = 0.0f;
+	rot = 0.0f;
 	oRot = 0.0f;
 	tRot = 0.0f;
+	name = L"";
 }
 
 EnchantmentTableEntity::~EnchantmentTableEntity()
 {
 	delete random;
+}
+
+void EnchantmentTableEntity::save(CompoundTag *base)
+{
+	TileEntity::save(base);
+	if (hasCustomName()) base->putString(L"CustomName", name);
+}
+
+void EnchantmentTableEntity::load(CompoundTag *base)
+{
+	TileEntity::load(base);
+	if (base->contains(L"CustomName")) name = base->getString(L"CustomName");
 }
 
 void EnchantmentTableEntity::tick()
@@ -87,6 +100,26 @@ void EnchantmentTableEntity::tick()
 	flipA += (diff - flipA) * 0.9f;
 
 	flip = flip + flipA;
+}
+
+wstring EnchantmentTableEntity::getName()
+{
+	return hasCustomName() ? name : app.GetString(IDS_ENCHANT);
+}
+
+wstring EnchantmentTableEntity::getCustomName()
+{
+	return hasCustomName() ? name : L"";
+}
+
+bool EnchantmentTableEntity::hasCustomName()
+{
+	return !name.empty();
+}
+
+void EnchantmentTableEntity::setCustomName(const wstring &name)
+{
+	this->name = name;
 }
 
 shared_ptr<TileEntity> EnchantmentTableEntity::clone()

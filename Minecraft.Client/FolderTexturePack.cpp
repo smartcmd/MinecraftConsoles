@@ -58,7 +58,7 @@ bool FolderTexturePack::isTerrainUpdateCompatible()
 	return true;
 }
 
-wstring FolderTexturePack::getPath(bool bTitleUpdateTexture /*= false*/)
+wstring FolderTexturePack::getPath(bool bTitleUpdateTexture /*= false*/,const char *pchBDPatchFilename)
 {
 	wstring wDrive;
 #ifdef _XBOX

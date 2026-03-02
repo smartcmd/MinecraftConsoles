@@ -1,11 +1,11 @@
 #pragma once
 
-#include "Tile.h"
+#include "RotatedPillarTile.h"
 
 class ChunkRebuildData;
 class Player;
 
-class TreeTile : public Tile
+class TreeTile : public RotatedPillarTile
 {	
 	friend class Tile;
 	friend class ChunkRebuildData;
@@ -25,26 +25,26 @@ public:
 
 	static const unsigned int TREE_NAMES[TREE_NAMES_LENGTH];
 
+	static const wstring TREE_STRING_NAMES[TREE_NAMES_LENGTH];
+
 	static const wstring TREE_TEXTURES[];
 
 private:
-	Icon **icons;
-	Icon *iconTop;
+	Icon *icons_side[TREE_NAMES_LENGTH];
+	Icon *icons_top[TREE_NAMES_LENGTH];
 
 protected:
 	TreeTile(int id);
 
 public:
-	virtual int getRenderShape();
 	virtual int getResourceCount(Random *random);
 	virtual int getResource(int data, Random *random, int playerBonusLevel);
 	virtual void onRemove(Level *level, int x, int y, int z, int id, int data);
-	virtual void setPlacedBy(Level *level, int x, int y, int z, shared_ptr<Mob> by);
-	virtual Icon *getTexture(int face, int data);
 	virtual unsigned int getDescriptionId(int iData = -1);
 
 protected:
-	int getSpawnResourcesAuxValue(int data);
+	virtual Icon *getTypeTexture(int type);
+	virtual Icon *getTopTexture(int type);
 
 public:
 	static int getWoodType(int data);

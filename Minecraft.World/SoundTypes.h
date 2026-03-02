@@ -57,7 +57,7 @@ enum eSOUND_TYPE
 	eSoundType_MOB_CAT_PURR,
 	eSoundType_MOB_CAT_PURREOW,
 	eSoundType_MOB_CAT_MEOW,
-	eSoundType_MOB_CAT_HITT,
+	eSoundType_MOB_CAT_HIT,
 //	eSoundType_MOB_IRONGOLEM_THROW,
 //	eSoundType_MOB_IRONGOLEM_HIT,
 //	eSoundType_MOB_IRONGOLEM_DEATH,
@@ -146,6 +146,72 @@ enum eSOUND_TYPE
 	eSoundType_DIG_SNOW,
 	eSoundType_DIG_STONE,
 	eSoundType_DIG_WOOD,
+
+	// 1.6.4
+	eSoundType_FIREWORKS_LAUNCH,
+	eSoundType_FIREWORKS_BLAST,
+	eSoundType_FIREWORKS_BLAST_FAR,
+	eSoundType_FIREWORKS_LARGE_BLAST,
+	eSoundType_FIREWORKS_LARGE_BLAST_FAR,
+	eSoundType_FIREWORKS_TWINKLE,
+	eSoundType_FIREWORKS_TWINKLE_FAR,
+
+	eSoundType_MOB_BAT_IDLE,
+	eSoundType_MOB_BAT_HURT,
+	eSoundType_MOB_BAT_DEATH,
+	eSoundType_MOB_BAT_TAKEOFF,
+
+
+	eSoundType_MOB_WITHER_SPAWN,
+	eSoundType_MOB_WITHER_IDLE,	//"mob.wither.idle";
+	eSoundType_MOB_WITHER_HURT, //"mob.wither.hurt";
+	eSoundType_MOB_WITHER_DEATH,//"mob.wither.death";
+	eSoundType_MOB_WITHER_SHOOT,//"mob.wither.shoot";
+
+	eSoundType_MOB_COW_STEP,
+	eSoundType_MOB_CHICKEN_STEP,
+	eSoundType_MOB_PIG_STEP,
+	eSoundType_MOB_ENDERMAN_STARE,
+	eSoundType_MOB_ENDERMAN_SCREAM,
+	eSoundType_MOB_SHEEP_SHEAR,
+	eSoundType_MOB_SHEEP_STEP,
+	eSoundType_MOB_SKELETON_DEATH,
+	eSoundType_MOB_SKELETON_STEP,
+	eSoundType_MOB_SPIDER_STEP,
+	eSoundType_MOB_WOLF_STEP,
+	eSoundType_MOB_ZOMBIE_STEP,
+	eSoundType_LIQUID_SWIM,
+	eSoundType_MOB_HORSE_LAND,
+	eSoundType_MOB_HORSE_ARMOR,
+	eSoundType_MOB_HORSE_LEATHER,
+	eSoundType_MOB_HORSE_ZOMBIE_DEATH,
+	eSoundType_MOB_HORSE_SKELETON_DEATH,
+	eSoundType_MOB_HORSE_DONKEY_DEATH,
+	eSoundType_MOB_HORSE_DEATH,
+	eSoundType_MOB_HORSE_ZOMBIE_HIT,
+	eSoundType_MOB_HORSE_SKELETON_HIT,
+	eSoundType_MOB_HORSE_DONKEY_HIT,
+	eSoundType_MOB_HORSE_HIT,
+	eSoundType_MOB_HORSE_ZOMBIE_IDLE,
+	eSoundType_MOB_HORSE_SKELETON_IDLE,
+	eSoundType_MOB_HORSE_DONKEY_IDLE,
+	eSoundType_MOB_HORSE_IDLE,
+	eSoundType_MOB_HORSE_DONKEY_ANGRY,
+	eSoundType_MOB_HORSE_ANGRY,
+	eSoundType_MOB_HORSE_GALLOP,
+	eSoundType_MOB_HORSE_BREATHE,
+	eSoundType_MOB_HORSE_WOOD,
+	eSoundType_MOB_HORSE_SOFT,
+	eSoundType_MOB_HORSE_JUMP,
+	eSoundType_MOB_WITCH_IDLE,
+	eSoundType_MOB_WITCH_HURT,
+	eSoundType_MOB_WITCH_DEATH,
+	eSoundType_MOB_SLIME_BIG,
+	eSoundType_MOB_SLIME_SMALL,
+	eSoundType_EATING,
+	eSoundType_RANDOM_LEVELUP,
+
+	eSoundType_FIRE_NEWIGNITE,
 
 	eSoundType_MAX
 };

@@ -48,6 +48,12 @@
 	<data name="IDS_CORRUPT_OPTIONS">
 		<value>Deine Optionen-Datei ist fehlerhaft und muss gelöscht werden.</value>
 	</data>
+	<data name="IDS_CORRUPT_OPTIONS_DELETE">
+		<value>Lösche die Optionen-Datei.</value>
+	</data>
+	<data name="IDS_CORRUPT_OPTIONS_RETRY">
+		<value>Versuche erneut, die Optionen-Datei zu laden.</value>
+	</data>
 	<data name="IDS_CORRUPT_SAVECACHE">
 		<value>Deine Cache-Datei ist fehlerhaft und muss gelöscht werden.</value>
 	</data>
@@ -75,6 +81,9 @@
 	<data name="IDS_CONTENT_RESTRICTION_MULTIPLAYER">
 		<value>Online-Dienste sind für dein Sony Entertainment Network-Konto aufgrund von Kindersicherungseinstellungen für einen deiner lokalen Spieler deaktiviert.</value>
 	</data>
+	<data name="IDS_CONTENT_RESTRICTION_PATCH_AVAILABLE">
+		<value>Online-Funktionen sind aufgrund einer verfügbaren Spielaktualisierung deaktiviert.</value>
+	</data>
 	<data name="IDS_NO_DLCCATEGORIES">
 		<value>Für diesen Titel sind momentan keine herunterladbaren Inhalte im Angebot.</value>
 	</data>
@@ -83,8 +92,5 @@
 	</data>
 	<data name="IDS_INVITATION_BODY">
 		<value>Komm doch vorbei und spiel eine Runde Minecraft: PlayStation®Vita Edition!</value>
-	</data>
-	<data name="IDS_CONTENT_RESTRICTION_PATCH_AVAILABLE">
-		<value>Online-Funktionen sind aufgrund einer verfügbaren Spielaktualisierung deaktiviert.</value>
 	</data>
 </root>

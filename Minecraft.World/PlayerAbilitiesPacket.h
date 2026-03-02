@@ -11,7 +11,6 @@ private:
 	static const int FLAG_FLYING = 1 << 1;
 	static const int FLAG_CAN_FLY = 1 << 2;
 	static const int FLAG_INSTABUILD = 1 << 3;
-	static const float SPEED_ACCURACY;
 
 	bool invulnerable;
 	bool _isFlying;

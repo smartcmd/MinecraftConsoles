@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "UI.h"
+#include "..\Minecraft.World\StringHelpers.h"
 #include "UIScene_Credits.h"
 
 #define CREDIT_ICON -2
@@ -50,7 +51,16 @@ SCreditTextItemDef UIScene_Credits::gs_aCreditDefs[MAX_CREDIT_STRINGS] =
 	{ L"Patrick Geuder",								NO_TRANSLATED_STRING,			NO_TRANSLATED_STRING,eSmallText },																						
 	{ L"%ls",											IDS_CREDITS_MUSICANDSOUNDS,		NO_TRANSLATED_STRING,eLargeText },
 	{ L"Daniel Rosenfeld (C418)",						NO_TRANSLATED_STRING,			NO_TRANSLATED_STRING,eSmallText },
-	{ L"",												NO_TRANSLATED_STRING,			NO_TRANSLATED_STRING,eSmallText },	// extra blank line																						
+	{ L"",												NO_TRANSLATED_STRING,			NO_TRANSLATED_STRING,eSmallText },	// extra blank line	
+
+// Added credit for horses
+	{ L"Developers of Mo' Creatures:",					NO_TRANSLATED_STRING,			NO_TRANSLATED_STRING,eExtraLargeText },
+	{ L"John Olarte (DrZhark)",							NO_TRANSLATED_STRING,			NO_TRANSLATED_STRING,eSmallText },
+	{ L"Kent Christian Jensen",							NO_TRANSLATED_STRING,			NO_TRANSLATED_STRING,eSmallText },
+	{ L"Dan Roque",										NO_TRANSLATED_STRING,			NO_TRANSLATED_STRING,eSmallText },
+	{ L"",												NO_TRANSLATED_STRING,			NO_TRANSLATED_STRING,eSmallText },	// extra blank line	
+
+
 	{ L"4J Studios",									NO_TRANSLATED_STRING,			NO_TRANSLATED_STRING,eExtraLargeText },
 	{ L"%ls",											IDS_CREDITS_PROGRAMMING,		NO_TRANSLATED_STRING,eLargeText },
 	{ L"Paddy Burns",									NO_TRANSLATED_STRING,			NO_TRANSLATED_STRING,eSmallText },
@@ -584,27 +594,38 @@ void UIScene_Credits::tick()
 
 		// Set up the new text element.
 		if(pDef->m_Text!=NULL) // 4J-PB - think the RAD logo ones aren't set up yet and are coming is as null
-		{	
-
+		{
 			if ( pDef->m_iStringID[0] == CREDIT_ICON )
 			{
 				addImage((ECreditIcons)pDef->m_iStringID[1]);
-			}
-			else if ( pDef->m_iStringID[0] == NO_TRANSLATED_STRING )
-			{
-				setNextLabel(pDef->m_Text,pDef->m_eType);
-			}
+			}			
 			else // using additional translated string.
 			{
-				LPWSTR creditsString = new wchar_t[ 128 ];
-				if(pDef->m_iStringID[1]!=NO_TRANSLATED_STRING)
+				wstring sanitisedString = wstring(pDef->m_Text);
+
+				// 4J-JEV: Some DLC credits contain copyright or registered symbols that are not rendered in some fonts.
+				if ( !ui.UsingBitmapFont() )
 				{
-					swprintf( creditsString, 128, pDef->m_Text, app.GetString( pDef->m_iStringID[0] ),  app.GetString( pDef->m_iStringID[1] ) );	
+					sanitisedString = replaceAll(sanitisedString, L"\u00A9", L"(C)");
+					sanitisedString = replaceAll(sanitisedString, L"\u00AE", L"(R)");
+					sanitisedString = replaceAll(sanitisedString, L"\u2013", L"-");
+				}
+
+				LPWSTR creditsString = new wchar_t[ 128 ];
+				if (pDef->m_iStringID[0]==NO_TRANSLATED_STRING)
+				{
+					ZeroMemory(creditsString, 128);
+					memcpy( creditsString, sanitisedString.c_str(), sizeof(WCHAR) * sanitisedString.length() );
+				}
+				else if(pDef->m_iStringID[1]!=NO_TRANSLATED_STRING)
+				{
+					swprintf( creditsString, 128, sanitisedString.c_str(), app.GetString( pDef->m_iStringID[0] ),  app.GetString( pDef->m_iStringID[1] ) );	
 				}
 				else
 				{
-					swprintf( creditsString, 128, pDef->m_Text, app.GetString( pDef->m_iStringID[0] ) );	
+					swprintf( creditsString, 128, sanitisedString.c_str(), app.GetString( pDef->m_iStringID[0] ) );	
 				}
+
 				setNextLabel(creditsString,pDef->m_eType);
 				delete [] creditsString;
 			}

@@ -2,12 +2,12 @@
 
 #include "DiggerItem.h"
 
-#define PICKAXE_DIGGABLES 22
+#define PICKAXE_DIGGABLES 23
 
 class PickaxeItem : public DiggerItem
 {
 private:
-	static TileArray *diggables;
+	static TileArray diggables;
 
 public: // 
 	static void staticCtor();

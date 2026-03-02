@@ -43,9 +43,9 @@ ListTag<CompoundTag> *EnchantedBookItem::getEnchantments(shared_ptr<ItemInstance
 	return (ListTag<CompoundTag> *) item->tag->get((wchar_t *)TAG_STORED_ENCHANTMENTS.c_str());
 }
 
-void EnchantedBookItem::appendHoverText(shared_ptr<ItemInstance> itemInstance, shared_ptr<Player> player, vector<wstring> *lines, bool advanced, vector<wstring> &unformattedStrings)
+void EnchantedBookItem::appendHoverText(shared_ptr<ItemInstance> itemInstance, shared_ptr<Player> player, vector<HtmlString> *lines, bool advanced)
 {
-	Item::appendHoverText(itemInstance, player, lines, advanced, unformattedStrings);
+	Item::appendHoverText(itemInstance, player, lines, advanced);
 
 	ListTag<CompoundTag> *list = getEnchantments(itemInstance);
 
@@ -59,8 +59,7 @@ void EnchantedBookItem::appendHoverText(shared_ptr<ItemInstance> itemInstance, s
 
 			if (Enchantment::enchantments[type] != NULL)
 			{
-				lines->push_back(Enchantment::enchantments[type]->getFullname(level, unformatted));
-				unformattedStrings.push_back(unformatted);
+				lines->push_back(Enchantment::enchantments[type]->getFullname(level));
 			}
 		}
 	}

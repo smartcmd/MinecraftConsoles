@@ -51,7 +51,7 @@ void UIComponent_Panorama::tick()
 		// are we in the Nether? - Leave the time as 0 if we are, so we show daylight
 		if(pMinecraft->level->dimension->id==0)
 		{
-			i64TimeOfDay = pMinecraft->level->getLevelData()->getTime() % 24000;
+			i64TimeOfDay = pMinecraft->level->getLevelData()->getGameTime() % 24000;
 		}
 
 		if(i64TimeOfDay>14000)

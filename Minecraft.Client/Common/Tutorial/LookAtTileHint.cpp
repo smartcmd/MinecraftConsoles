@@ -50,15 +50,11 @@ bool LookAtTileHint::onLookAt(int id,int iData)
 			else
 			{
 				message->m_icon = id;
-				if(m_iDataOverride > -1)
-				{
-					message->m_iAuxVal = m_iDataOverride;
-				}
-				else
-				{
-					message->m_iAuxVal = iData;
-				}
 			}
+
+			// 4J-JEV: Moved to keep data override even if we're overriding the icon as well.
+			message->m_iAuxVal = (m_iDataOverride > -1) ? m_iDataOverride : iData;
+
 			message->m_messageId = Item::items[id]->getUseDescriptionId();
 			message->m_titleId = Item::items[id]->getDescriptionId(message->m_iAuxVal);
 			return m_tutorial->setMessage(this, message);

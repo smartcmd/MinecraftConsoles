@@ -63,7 +63,7 @@ void EnderCrystal::tick()
 		int zt = Mth::floor(z);
 		if (level->getTile(xt, yt, zt) != Tile::fire_Id)
 		{
-			level->setTile(xt, yt, zt, Tile::fire_Id);
+			level->setTileAndUpdate(xt, yt, zt, Tile::fire_Id);
 		}
 	}
 }
@@ -88,12 +88,12 @@ bool EnderCrystal::isPickable()
 	return true;
 }
 
-bool EnderCrystal::hurt(DamageSource *source, int damage)
+bool EnderCrystal::hurt(DamageSource *source, float damage)
 {
-	// 4J-PB - if the owner of the source is the enderdragon, then ignore it (where the dragon's fireball hits an endercrystal)
-	shared_ptr<EnderDragon> sourceIsDragon = dynamic_pointer_cast<EnderDragon>(source->getEntity());
+	if (isInvulnerable()) return false;
 
-	if(sourceIsDragon!=NULL)
+	// 4J-PB - if the owner of the source is the enderdragon, then ignore it (where the dragon's fireball hits an endercrystal)
+	if ( source->getEntity() != NULL && source->getEntity()->instanceof(eTYPE_ENDERDRAGON) )
 	{
 		return false;
 	}

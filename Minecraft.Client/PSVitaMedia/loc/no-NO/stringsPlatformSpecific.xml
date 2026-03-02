@@ -1,37 +1,124 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <root>
-	<data name="IDS_TIPS_GAMETIP_0">
-		<value>NOT USED</value>
+	<data name="IDS_SIGNIN_PSN">
+		<value>Vil du logge inn på "PSN"?</value>
 	</data>
-	<data name="IDS_TIPS_GAMETIP_1">
-		<value>Du kan bruke berøringsskjermen til PlayStation®Vita-systemet til å navigere i menyene!</value>
+	<data name="IDS_KICK_PLAYER_DESCRIPTION">
+		<value>Med dette alternativet kan spillere som ikke er på samme PlayStation®Vita-system som verten, sparkes ut av spillet (sammen med eventuelt andre spillere på vedkommendes PlayStation®Vita-system). Denne spilleren vil da ikke kunne bli med i spillet igjen før det startes på nytt.</value>
 	</data>
-	<data name="IDS_TIPS_GAMETIP_48">
-		<value>minecraftforum har et eget forum for PlayStation®Vita Edition.</value>
+	<data name="IDS_BACK_BUTTON">
+		<value>SELECT</value>
 	</data>
-	<data name="IDS_TIPS_GAMETIP_44">
-		<value>Du får siste nytt om dette spillet fra @4JStudios og @Kappische på twitter!</value>
+	<data name="IDS_HOST_OPTION_DISABLES_ACHIEVEMENTS">
+		<value>Dette deaktiverer oppdateringer for trophies og topplister i denne verdenen mens du spiller, og hvis du laster inn på nytt etter å ha lagret med dette alternativet på.</value>
 	</data>
-	<data name="IDS_TIPS_GAMETIP_45">
-		<value>Ikke se endermenn inn i øynene!</value>
+	<data name="IDS_PLATFORM_NAME">
+		<value>PlayStation®Vita-system</value>
 	</data>
-	<data name="IDS_TIPS_TRIVIA_4">
-		<value>Vi tror kanskje 4J Studios har fjernet Herobrine fra PlayStation®Vita-system-spillet, men vi er ikke sikre.</value>
+	<data name="IDS_SELECT_NETWORK_MODE_TEXT">
+		<value>Velg Ad Hoc-nettverk for å koble til andre PlayStation®Vita-systemer i nærheten, eller "PSN" for å koble til venner over hele verden.</value>
 	</data>
-	<data name="IDS_TIPS_TRIVIA_17">
-		<value>Minecraft: PlayStation®Vita Edition har tatt en rekke rekorder!</value>
+	<data name="IDS_NETWORK_ADHOC">
+		<value>Ad Hoc-nettverk</value>
 	</data>
-	<data name="IDS_HOW_TO_PLAY_MULTIPLAYER">
-		<value>{*T3*}SLIK SPILLER DU: FLERSPILLER{*ETW*}{*B*}{*B*}
-Minecraft på PlayStation®Vita-system er i utgangspunktet et flerspillerspill. 
-Når du starter eller blir med i et onlinespill, vil det vises for spillere på vennelisten din (med mindre du som vert har valgt "Kun inviterte"), og hvis vennene dine blir med i spillet, vil også dette vises for spillere på deres vennelister (hvis du har valgt "Tillat venner av venner").{*B*}
-Når du er i et spill, kan du trykke på SELECT-knappen for å åpne en liste over andre spillere i spillet, og det er også mulig å sparke ut spillere.</value>
+	<data name="IDS_TOOLTIP_CHANGE_NETWORK_MODE">
+		<value>Endre nettverksmodus</value>
 	</data>
-	<data name="IDS_HOW_TO_PLAY_SOCIALMEDIA">
-		<value>{*T3*}SLIK SPILLER DU: DELE SKJERMBILDER{*ETW*}{*B*}{*B*}
-Du kan dele skjermbilder fra spillet ved å åpne pausemenyen og trykke på {*CONTROLLER_VK_Y*} for å legge ut på Facebook. Da vil du se en miniatyrversjon av skjermbildet, og du kan redigere teksten som skal knyttes til Facebook-innlegget.{*B*}{*B*}
-Det finnes en egen kameramodus for å ta slike skjermbilder, slik at du kan se karakteren din forfra på bildet: Trykk på {*CONTROLLER_ACTION_CAMERA*} til du ser karakteren din forfra, og trykk deretter på {*CONTROLLER_VK_Y*} for å dele.{*B*}{*B*}
-Online-ID-en vises ikke på skjermbildet.</value>
+	<data name="IDS_SELECT_NETWORK_MODE_TITLE">
+		<value>Velg nettverksmodus</value>
+	</data>
+	<data name="IDS_CHECKBOX_DISPLAY_SPLITSCREENGAMERTAGS">
+		<value>Vis Online-ID-er på delt skjerm</value>
+	</data>
+	<data name="IDS_ACHIEVEMENTS">
+		<value>Trofeer</value>
+	</data>
+	<data name="IDS_SAVE_ICON_MESSAGE">
+		<value>Dette spillet har en automatisk lagringsfunksjon. Når du ser ikonet over, betyr det at spillet blir lagret.
+Ikke slå av PlayStation®Vita-systemet når dette ikonet vises på skjermen.</value>
+	</data>
+	<data name="IDS_GAMEOPTION_HOST_PRIVILEGES">
+		<value>Når dette er aktivert, kan verten slå av og på sin egen evne til å fly, deaktivere utmattelse og gjøre seg selv usynlig via menyen i spillet. Deaktiverer trofeer og poengtavleoppdateringer.</value>
+	</data>
+	<data name="IDS_LABEL_GAMERTAGS">
+		<value>Online-ID-er:</value>
+	</data>
+	<data name="IDS_USING_TRIAL_TEXUREPACK_WARNING">
+		<value>Du bruker prøveversjonen av teksturpakken. Det innebærer at du har tilgang til alt innhold i teksturpakken, men du vil ikke kunne lagre fremdriften.
+Hvis du prøver å lagre mens du bruker prøveversjonen, vil du få spørsmål om å kjøpe fullversjonen.
+    </value>
+	</data>
+	<data name="IDS_TITLE_UPDATE_NAME">
+		<value>Patch 1.04 (oppdatering 14)</value>
+	</data>
+	<data name="IDS_IN_GAME_GAMERTAGS">
+		<value>Online-ID-er i spillet</value>
+	</data>
+	<data name="IDS_SOCIAL_DEFAULT_DESCRIPTION">
+		<value>Se hva jeg laget i Minecraft: PlayStation®Vita Edition!</value>
+	</data>
+	<data name="IDS_SAVE_TRANSFER_DOWNLOADFAILED">
+		<value>Nedlasting mislyktes. Prøv igjen senere.</value>
+	</data>
+	<data name="IDS_DISCONNECTED_NAT_TYPE_MISMATCH">
+		<value>Kunne ikke bli med i spillet på grunn av en restriktiv NAT-type. Kontroller nettverksinnstillingene.</value>
+	</data>
+	<data name="IDS_SAVE_TRANSFER_UPLOADFAILED">
+		<value>Opplasting mislyktes. Prøv igjen senere.</value>
+	</data>
+	<data name="IDS_SAVE_TRANSFER_DOWNLOADCOMPLETE">
+		<value>Nedlasting fullført!</value>
+	</data>
+	<data name="IDS_SAVE_TRANSFER_NOT_AVAILABLE_TEXT">
+		<value>
+Det er i øyeblikket ingen lagring tilgjengelig i området for lagringsoverføring.
+Du kan laste opp en verdenslagring til området for lagringsoverføring med Minecraft: PlayStation®3 Edition, og deretter laste den ned med Minecraft: PlayStation®Vita Edition.
+</value>
+	</data>
+	<data name="IDS_SAVE_INCOMPLETE_TITLE">
+		<value>Lagring ikke fullført</value>
+	</data>
+	<data name="IDS_SAVE_INCOMPLETE_EXPLANATION_QUOTA">
+		<value>Minecraft: PlayStation®Vita Edition har ikke mer plass til lagringsdata. Du kan slette lagret data fra Minecraft: PlayStation®Vita Edition for å frigjøre mer plass.</value>
+	</data>
+	<data name="IDS_CANCEL_UPLOAD_TITLE">
+		<value>Opplasting avbrutt</value>
+	</data>
+	<data name="IDS_CANCEL_UPLOAD_TEXT">
+		<value>Du har avbrutt opplastingen av denne lagringen til lagringsomføringsområdet.</value>
+	</data>
+	<data name="IDS_TOOLTIPS_SAVETRANSFER_UPLOAD">
+		<value>Last opp lagring for PS3™/PS4™</value>
+	</data>
+	<data name="IDS_SAVETRANSFER_STAGE_PUT_DATA">
+		<value>Laster opp data: %d% %</value>
+	</data>
+	<data name="IDS__NETWORK_PSN">
+		<value>"PSN"</value>
+	</data>
+	<data name="IDS_TOOLTIPS_SAVETRANSFER_DOWNLOAD">
+		<value>Last ned PS3™-lagring</value>
+	</data>
+	<data name="IDS_SAVETRANSFER_STAGE_GET_DATA">
+		<value>Laster ned data: %d%%</value>
+	</data>
+	<data name="IDS_SAVETRANSFER_STAGE_SAVING">
+		<value>Lagrer</value>
+	</data>
+	<data name="IDS_SAVE_TRANSFER_UPLOADCOMPLETE">
+		<value>Opplasting fullført!</value>
+	</data>
+	<data name="IDS_SAVE_TRANSFER_TEXT">
+		<value>Er du sikker på at du ønsker å laste opp denne lagringen og overskrive en eventuell lagring som for øyeblikket finnes i området for lagringsoverføring?</value>
+	</data>
+	<data name="IDS_SAVETRANSFER_STAGE_CONVERTING">
+		<value>Konverterer data</value>
+	</data>
+	<data name="IDS_TOOLTIPS_SELECTDEVICE">
+		<value>IKKE I BRUK</value>
+	</data>
+	<data name="IDS_TOOLTIPS_CHANGEDEVICE">
+		<value>IKKE I BRUK</value>
 	</data>
 	<data name="IDS_HOW_TO_PLAY_CREATIVE">
 		<value>{*T3*}SLIK SPILLER DU: KREATIV MODUS{*ETW*}{*B*}{*B*}
@@ -47,20 +134,8 @@ I flymodus kan du holde inne {*CONTROLLER_ACTION_JUMP*} for å bevege deg opp og
 		<value>Ved å trykke raskt to ganger på {*CONTROLLER_ACTION_JUMP*} kan du fly. Gjenta dette for å slutte å fly. Hvis du vil fly fortere, trykker du på {*CONTROLLER_ACTION_MOVE*} raskt to ganger fremover mens du flyr.
 I flymodus kan du holde inne {*CONTROLLER_ACTION_JUMP*} for å bevege deg opp og {*CONTROLLER_ACTION_SNEAK*} for å bevege deg ned, eller du kan bruke retningsknappene for å bevege deg opp, ned, til venstre og til høyre.</value>
 	</data>
-	<data name="IDS_TOOLTIPS_SELECTDEVICE">
-		<value>IKKE I BRUK</value>
-	</data>
-	<data name="IDS_TOOLTIPS_CHANGEDEVICE">
-		<value>IKKE I BRUK</value>
-	</data>
 	<data name="IDS_TOOLTIPS_VIEW_GAMERCARD">
 		<value>"IKKE I BRUK"</value>
-	</data>
-	<data name="IDS_TOOLTIPS_VIEW_GAMERPROFILE">
-		<value>"IKKE I BRUK"</value>
-	</data>
-	<data name="IDS_TOOLTIPS_INVITE_PARTY">
-		<value>Inviter venner</value>
 	</data>
 	<data name="IDS_CONFIRM_START_CREATIVE">
 		<value>Hvis du lager, laster inn eller lagrer en verden i kreativ modus, vil trofeer og poengtavleoppdateringer være deaktivert for denne verdenen, selv om den deretter lastes inn i overlevelsesmodus. Er du sikker på at du vil fortsette?</value>
@@ -68,11 +143,71 @@ I flymodus kan du holde inne {*CONTROLLER_ACTION_JUMP*} for å bevege deg opp og
 	<data name="IDS_CONFIRM_START_SAVEDINCREATIVE">
 		<value>Denne verdenen har tidligere blitt lagret i kreativ modus, så den vil ha trofeer og poengtavleoppdateringer deaktivert. Er du sikker på at du vil fortsette?</value>
 	</data>
-	<data name="IDS_CONFIRM_START_SAVEDINCREATIVE_CONTINUE">
-		<value>Denne verdenen har tidligere blitt lagret i kreativ modus, så den vil ha trofeer og poengtavleoppdateringer deaktivert. Er du sikker på at du vil fortsette?</value>
+	<data name="IDS_TOOLTIPS_VIEW_GAMERPROFILE">
+		<value>"IKKE I BRUK"</value>
 	</data>
-	<data name="IDS_CONFIRM_START_HOST_PRIVILEGES">
-		<value>Hvis du lager, laster inn eller lagrer en verden med vertsrettigheter aktivert, vil trofeer og poengtavleoppdateringer være deaktivert for denne verdenen, selv om den deretter lastes inn med vertsrettigheter deaktivert. Er du sikker på at du vil fortsette?</value>
+	<data name="IDS_TOOLTIPS_INVITE_PARTY">
+		<value>Inviter venner</value>
+	</data>
+	<data name="IDS_TIPS_GAMETIP_48">
+		<value>minecraftforum har et eget forum for PlayStation®Vita Edition.</value>
+	</data>
+	<data name="IDS_TIPS_GAMETIP_44">
+		<value>Du får siste nytt om dette spillet fra @4JStudios og @Kappische på twitter!</value>
+	</data>
+	<data name="IDS_TIPS_GAMETIP_0">
+		<value>NOT USED</value>
+	</data>
+	<data name="IDS_TIPS_GAMETIP_1">
+		<value>Du kan bruke berøringsskjermen til PlayStation®Vita-systemet til å navigere i menyene!</value>
+	</data>
+	<data name="IDS_TIPS_GAMETIP_45">
+		<value>Ikke se endermenn inn i øynene!</value>
+	</data>
+	<data name="IDS_HOW_TO_PLAY_MULTIPLAYER">
+		<value>{*T3*}SLIK SPILLER DU: FLERSPILLER{*ETW*}{*B*}{*B*}
+Minecraft på PlayStation®Vita-system er i utgangspunktet et flerspillerspill. 
+Når du starter eller blir med i et onlinespill, vil det vises for spillere på vennelisten din (med mindre du som vert har valgt "Kun inviterte"), og hvis vennene dine blir med i spillet, vil også dette vises for spillere på deres vennelister (hvis du har valgt "Tillat venner av venner").{*B*}
+Når du er i et spill, kan du trykke på SELECT-knappen for å åpne en liste over andre spillere i spillet, og det er også mulig å sparke ut spillere.</value>
+	</data>
+	<data name="IDS_HOW_TO_PLAY_SOCIALMEDIA">
+		<value>{*T3*}SLIK SPILLER DU: DELE SKJERMBILDER{*ETW*}{*B*}{*B*}
+Du kan dele skjermbilder fra spillet ved å åpne pausemenyen og trykke på {*CONTROLLER_VK_Y*} for å legge ut på Facebook. Da vil du se en miniatyrversjon av skjermbildet, og du kan redigere teksten som skal knyttes til Facebook-innlegget.{*B*}{*B*}
+Det finnes en egen kameramodus for å ta slike skjermbilder, slik at du kan se karakteren din forfra på bildet: Trykk på {*CONTROLLER_ACTION_CAMERA*} til du ser karakteren din forfra, og trykk deretter på {*CONTROLLER_VK_Y*} for å dele.{*B*}{*B*}
+Online-ID-en vises ikke på skjermbildet.</value>
+	</data>
+	<data name="IDS_TIPS_TRIVIA_4">
+		<value>Vi tror kanskje 4J Studios har fjernet Herobrine fra PlayStation®Vita-system-spillet, men vi er ikke sikre.</value>
+	</data>
+	<data name="IDS_TIPS_TRIVIA_17">
+		<value>Minecraft: PlayStation®Vita Edition har tatt en rekke rekorder!</value>
+	</data>
+	<data name="IDS_TRIALOVER_TEXT">
+		<value>Du har spilt prøveversjonen av Minecraft: PlayStation®Vita Edition så lenge som det er tilltatt! Vil du låse opp fullversjonen?</value>
+	</data>
+	<data name="IDS_FATAL_ERROR_TEXT">
+		<value>Feil under innlasting av Minecraft: PlayStation®Vita Edition. Kan ikke fortsette.</value>
+	</data>
+	<data name="IDS_GROUPNAME_POTIONS_480">
+		<value>Brygging</value>
+	</data>
+	<data name="IDS_RETURNEDTOTITLESCREEN_TEXT">
+		<value>Du ble sendt tilbake til startskjermen fordi du ble logget ut av "PSN".</value>
+	</data>
+	<data name="IDS_NO_MULTIPLAYER_PRIVILEGE_JOIN_TEXT">
+		<value>Kunne ikke bli med i spillet fordi én eller flere spillere ikke kan spille online på grunn av chatbegrensninger på sin Sony Entertainment Network-konto. </value>
+	</data>
+	<data name="IDS_NO_USER_CREATED_CONTENT_PRIVILEGE_ALL_LOCAL">
+		<value>Du kan ikke bli med i denne spilløkten fordi en av dine lokale spillere har onlinespilling deaktivert på Sony Entertainment Network-kontoen sin på grunn av chatbegrensninger. Fjern avmerkingen på "Onlinespill" under "Flere alternativer" for å starte et offlinespill.</value>
+	</data>
+	<data name="IDS_NO_USER_CREATED_CONTENT_PRIVILEGE_CREATE">
+		<value>Du kan ikke opprette denne spilløkten fordi en av dine lokale spillere har onlinespilling deaktivert på Sony Entertainment Network-kontoen sin på grunn av chatbegrensninger. Fjern avmerkingen på "Onlinespill" under "Flere alternativer" for å starte et offlinespill.</value>
+	</data>
+	<data name="IDS_NO_MULTIPLAYER_PRIVILEGE_HOST_TEXT">
+		<value>Kunne ikke opprette onlinespill fordi én eller flere spillere ikke kan spille online på grunn av chatbegrensninger på sin Sony Entertainment Network-konto. Fjern avmerkingen på "Onlinespill" under "Flere alternativer" for å starte et offlinespill.</value>
+	</data>
+	<data name="IDS_NO_USER_CREATED_CONTENT_PRIVILEGE_SINGLE_LOCAL">
+		<value>Du kan ikke bli med i denne spilløkten fordi onlinespilling er deaktivert på Sony Entertainment Network-kontoen din på grunn av chatbegrensninger.</value>
 	</data>
 	<data name="IDS_CONNECTION_LOST_LIVE">
 		<value>Forbindelsen til "PSN" ble brutt. Går tilbake til hovedmenyen.</value>
@@ -80,10 +215,22 @@ I flymodus kan du holde inne {*CONTROLLER_ACTION_JUMP*} for å bevege deg opp og
 	<data name="IDS_CONNECTION_LOST_LIVE_NO_EXIT">
 		<value>Forbindelsen til "PSN" ble brutt.</value>
 	</data>
+	<data name="IDS_CONFIRM_START_SAVEDINCREATIVE_CONTINUE">
+		<value>Denne verdenen har tidligere blitt lagret i kreativ modus, så den vil ha trofeer og poengtavleoppdateringer deaktivert. Er du sikker på at du vil fortsette?</value>
+	</data>
+	<data name="IDS_CONFIRM_START_HOST_PRIVILEGES">
+		<value>Hvis du lager, laster inn eller lagrer en verden med vertsrettigheter aktivert, vil trofeer og poengtavleoppdateringer være deaktivert for denne verdenen, selv om den deretter lastes inn med vertsrettigheter deaktivert. Er du sikker på at du vil fortsette?</value>
+	</data>
 	<data name="IDS_UNLOCK_ACHIEVEMENT_TEXT">
 		<value>Dette er prøveversjonen av Minecraft: PlayStation®Vita Edition. Hvis du hadde hatt fullversjonen, ville du nettopp ha fått deg et trofé!
 Lås opp fullversjonen av spillet for å få fullt utbytte av Minecraft: PlayStation®Vita Edition og for å spille sammen med vennene dine rundt om i verden via "PSN".
 Vil du låse opp fullversjonen?</value>
+	</data>
+	<data name="IDS_UNLOCK_GUEST_TEXT">
+		<value>Gjestespillere kan ikke låse opp fullversjonen. Vennligst logg inn med en Sony Entertainment Network-konto.</value>
+	</data>
+	<data name="IDS_LEADERBOARD_GAMERTAG">
+		<value>Online-ID</value>
 	</data>
 	<data name="IDS_UNLOCK_THEME_TEXT">
 		<value>Dette er prøveversjonen av Minecraft: PlayStation®Vita Edition. Hvis du hadde hatt fullversjonen, ville du nettopp ha fått deg et tema!
@@ -94,153 +241,7 @@ Vil du låse opp fullversjonen?</value>
 		<value>Dette er prøveversjonen av Minecraft: PlayStation®Vita Edition. Du trenger fullversjonen for å kunne akseptere denne invitasjonen.
 Vil du låse opp fullversjonen?</value>
 	</data>
-	<data name="IDS_UNLOCK_GUEST_TEXT">
-		<value>Gjestespillere kan ikke låse opp fullversjonen. Vennligst logg inn med en Sony Entertainment Network-konto.</value>
-	</data>
-	<data name="IDS_LEADERBOARD_GAMERTAG">
-		<value>Online-ID</value>
-	</data>
-	<data name="IDS_GROUPNAME_POTIONS_480">
-		<value>Brygging</value>
-	</data>
-	<data name="IDS_RETURNEDTOTITLESCREEN_TEXT">
-		<value>Du ble sendt tilbake til startskjermen fordi du ble logget ut av "PSN".</value>
-	</data>
-	<data name="IDS_TRIALOVER_TEXT">
-		<value>Du har spilt prøveversjonen av Minecraft: PlayStation®Vita Edition så lenge som det er tilltatt! Vil du låse opp fullversjonen?</value>
-	</data>
-	<data name="IDS_FATAL_ERROR_TEXT">
-		<value>Feil under innlasting av Minecraft: PlayStation®Vita Edition. Kan ikke fortsette.</value>
-	</data>
-	<data name="IDS_NO_MULTIPLAYER_PRIVILEGE_JOIN_TEXT">
-		<value>Kunne ikke bli med i spillet fordi én eller flere spillere ikke kan spille online på grunn av chatbegrensninger på sin Sony Entertainment Network-konto. </value>
-	</data>
-	<data name="IDS_NO_MULTIPLAYER_PRIVILEGE_HOST_TEXT">
-		<value>Kunne ikke opprette onlinespill fordi én eller flere spillere ikke kan spille online på grunn av chatbegrensninger på sin Sony Entertainment Network-konto. Fjern avmerkingen på "Onlinespill" under "Flere alternativer" for å starte et offlinespill.</value>
-	</data>
-	<data name="IDS_NO_USER_CREATED_CONTENT_PRIVILEGE_SINGLE_LOCAL">
-		<value>Du kan ikke bli med i denne spilløkten fordi onlinespilling er deaktivert på Sony Entertainment Network-kontoen din på grunn av chatbegrensninger.</value>
-	</data>
-	<data name="IDS_NO_USER_CREATED_CONTENT_PRIVILEGE_ALL_LOCAL">
-		<value>Du kan ikke bli med i denne spilløkten fordi en av dine lokale spillere har onlinespilling deaktivert på Sony Entertainment Network-kontoen sin på grunn av chatbegrensninger. Fjern avmerkingen på "Onlinespill" under "Flere alternativer" for å starte et offlinespill.</value>
-	</data>
-	<data name="IDS_NO_USER_CREATED_CONTENT_PRIVILEGE_CREATE">
-		<value>Du kan ikke opprette denne spilløkten fordi en av dine lokale spillere har onlinespilling deaktivert på Sony Entertainment Network-kontoen sin på grunn av chatbegrensninger. Fjern avmerkingen på "Onlinespill" under "Flere alternativer" for å starte et offlinespill.</value>
-	</data>
-	<data name="IDS_SAVE_ICON_MESSAGE">
-		<value>Dette spillet har en automatisk lagringsfunksjon. Når du ser ikonet over, betyr det at spillet blir lagret.
-Ikke slå av PlayStation®Vita-systemet når dette ikonet vises på skjermen.</value>
-	</data>
-	<data name="IDS_GAMEOPTION_HOST_PRIVILEGES">
-		<value>Når dette er aktivert, kan verten slå av og på sin egen evne til å fly, deaktivere utmattelse og gjøre seg selv usynlig via menyen i spillet. Deaktiverer trofeer og poengtavleoppdateringer.</value>
-	</data>
-	<data name="IDS_CHECKBOX_DISPLAY_SPLITSCREENGAMERTAGS">
-		<value>Vis Online-ID-er på delt skjerm</value>
-	</data>
-	<data name="IDS_ACHIEVEMENTS">
-		<value>Trofeer</value>
-	</data>
-	<data name="IDS_LABEL_GAMERTAGS">
-		<value>Online-ID-er:</value>
-	</data>
-	<data name="IDS_IN_GAME_GAMERTAGS">
-		<value>Online-ID-er i spillet</value>
-	</data>
-	<data name="IDS_SOCIAL_DEFAULT_DESCRIPTION">
-		<value>Se hva jeg laget i Minecraft: PlayStation®Vita Edition!</value>
-	</data>
-	<data name="IDS_USING_TRIAL_TEXUREPACK_WARNING">
-		<value>Du bruker prøveversjonen av teksturpakken. Det innebærer at du har tilgang til alt innhold i teksturpakken, men du vil ikke kunne lagre fremdriften.
-Hvis du prøver å lagre mens du bruker prøveversjonen, vil du få spørsmål om å kjøpe fullversjonen.
-    </value>
-	</data>
-	<data name="IDS_TITLE_UPDATE_NAME">
-		<value>Patch 1.04 (oppdatering 14)</value>
-	</data>
-	<data name="IDS_BACK_BUTTON">
-		<value>SELECT</value>
-	</data>
-	<data name="IDS_HOST_OPTION_DISABLES_ACHIEVEMENTS">
-		<value>Dette deaktiverer oppdateringer for trophies og topplister i denne verdenen mens du spiller, og hvis du laster inn på nytt etter å ha lagret med dette alternativet på.</value>
-	</data>
-	<data name="IDS_SIGNIN_PSN">
-		<value>Vil du logge inn på "PSN"?</value>
-	</data>
-	<data name="IDS_KICK_PLAYER_DESCRIPTION">
-		<value>Med dette alternativet kan spillere som ikke er på samme PlayStation®Vita-system som verten, sparkes ut av spillet (sammen med eventuelt andre spillere på vedkommendes PlayStation®Vita-system). Denne spilleren vil da ikke kunne bli med i spillet igjen før det startes på nytt.</value>
-	</data>
-	<data name="IDS_PLATFORM_NAME">
-		<value>PlayStation®Vita-system</value>
-	</data>
-	<data name="IDS_TOOLTIP_CHANGE_NETWORK_MODE">
-		<value>Endre nettverksmodus</value>
-	</data>
-	<data name="IDS_SELECT_NETWORK_MODE_TITLE">
-		<value>Velg nettverksmodus</value>
-	</data>
-	<data name="IDS_SELECT_NETWORK_MODE_TEXT">
-		<value>Velg Ad Hoc-nettverk for å koble til andre PlayStation®Vita-systemer i nærheten, eller "PSN" for å koble til venner over hele verden.</value>
-	</data>
-	<data name="IDS_NETWORK_ADHOC">
-		<value>Ad Hoc-nettverk</value>
-	</data>
-	<data name="IDS__NETWORK_PSN">
-		<value>"PSN"</value>
-	</data>
-	<data name="IDS_TOOLTIPS_SAVETRANSFER_DOWNLOAD">
-		<value>Last ned PlayStation®3-system lagring
-</value>
-	</data>
-	<data name="IDS_TOOLTIPS_SAVETRANSFER_UPLOAD">
-		<value>Last opp lagring for PlayStation®3/PlayStation®4-system
-</value>
-	</data>
-	<data name="IDS_CANCEL_UPLOAD_TITLE">
-		<value>Opplasting avbrutt</value>
-	</data>
-	<data name="IDS_CANCEL_UPLOAD_TEXT">
-		<value>Du har avbrutt opplastingen av denne lagringen til lagringsomføringsområdet.</value>
-	</data>
-	<data name="IDS_SAVETRANSFER_STAGE_PUT_DATA">
-		<value>Laster opp data: %d</value>
-	</data>
-	<data name="IDS_SAVETRANSFER_STAGE_GET_DATA">
-		<value>Laster ned data: %d%%</value>
-	</data>
-	<data name="IDS_SAVE_TRANSFER_TEXT">
-		<value>Er du sikker på at du ønsker å laste opp denne lagringen og overskrive en eventuell lagring som for øyeblikket finnes i området for lagringsoverføring?</value>
-	</data>
-	<data name="IDS_SAVETRANSFER_STAGE_CONVERTING">
-		<value>Konverterer data</value>
-	</data>
-	<data name="IDS_SAVETRANSFER_STAGE_SAVING">
-		<value>Lagrer</value>
-	</data>
-	<data name="IDS_SAVE_TRANSFER_UPLOADCOMPLETE">
-		<value>Opplasting fullført!</value>
-	</data>
-	<data name="IDS_SAVE_TRANSFER_UPLOADFAILED">
-		<value>Opplasting mislyktes. Prøv igjen senere.</value>
-	</data>
-	<data name="IDS_SAVE_TRANSFER_DOWNLOADCOMPLETE">
-		<value>Nedlasting fullført!</value>
-	</data>
-	<data name="IDS_SAVE_TRANSFER_DOWNLOADFAILED">
-		<value>Nedlasting mislyktes. Prøv igjen senere.</value>
-	</data>
-	<data name="IDS_DISCONNECTED_NAT_TYPE_MISMATCH">
-		<value>Kunne ikke bli med i spillet på grunn av en restriktiv NAT-type. Kontroller nettverksinnstillingene.</value>
-	</data>
-	<data name="IDS_SAVE_TRANSFER_NOT_AVAILABLE_TEXT">
-		<value>
-      Det er i øyeblikket ingen lagring tilgjengelig i området for lagringsoverføring.
-      Du kan laste opp en verdenslagring til området for lagringsoverføring med Minecraft: PlayStation®3 Edition, og deretter laste den ned med Minecraft: PlayStation®Vita Edition.
-</value>
-	</data>
-	<data name="IDS_SAVE_INCOMPLETE_TITLE">
-		<value>Lagring ikke fullført</value>
-	</data>
-	<data name="IDS_SAVE_INCOMPLETE_EXPLANATION_QUOTA">
-		<value>Minecraft: PlayStation®Vita Edition har ikke mer plass til lagringsdata. Du kan slette lagret data fra Minecraft: PlayStation®Vita Edition for å frigjøre mer plass.</value>
+	<data name="IDS_SAVE_TRANSFER_WRONG_VERSION">
+		<value>Lagringsfilen i området for lagringsoverføring har et versjonnummer som Minecraft: PlayStation®Vita Edition ennå ikke støtter.</value>
 	</data>
 </root>

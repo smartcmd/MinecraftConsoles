@@ -3,6 +3,7 @@
 #include "net.minecraft.world.item.h"
 #include "net.minecraft.world.item.enchantment.h"
 #include "net.minecraft.world.level.h"
+#include "net.minecraft.world.level.dimension.h"
 #include "net.minecraft.world.level.tile.h"
 #include "net.minecraft.world.phys.h"
 #include "net.minecraft.world.entity.item.h"
@@ -21,7 +22,10 @@
 #include "..\Minecraft.Client\MinecraftServer.h"
 #include "..\Minecraft.Client\MultiPlayerLevel.h"
 #include "..\Minecraft.Client\MultiplayerLocalPlayer.h"
+#include "..\Minecraft.Client\ServerLevel.h"
+#include "..\Minecraft.Client\PlayerList.h"
 
+const wstring Entity::RIDING_TAG = L"Riding";
 
 int Entity::entityCounter = 2048;		// 4J - changed initialiser to 2048, as we are using range 0 - 2047 as special unique smaller ids for things that need network tracked
 DWORD Entity::tlsIdx = TlsAlloc();
@@ -55,7 +59,7 @@ int Entity::getSmallId()
 			if( removedFound )
 			{
 				// Has set up the entityIdRemovingFlags vector in this case, so we should check against this when allocating new ids
-//				app.DebugPrintf("getSmallId: Removed entities found\n");
+				//				app.DebugPrintf("getSmallId: Removed entities found\n");
 				puiRemovedFlags = entityIdRemovingFlags;
 			}
 		}
@@ -75,7 +79,7 @@ int Entity::getSmallId()
 				{
 					if( puiRemovedFlags[i] & uiMask )
 					{
-//						app.DebugPrintf("Avoiding using ID %d (0x%x)\n", i * 32 + j,puiRemovedFlags[i]);
+						//						app.DebugPrintf("Avoiding using ID %d (0x%x)\n", i * 32 + j,puiRemovedFlags[i]);
 						uiMask >>= 1;
 						continue;
 					}
@@ -234,7 +238,7 @@ void Entity::tickExtraWandering()
 
 // 4J - added for common ctor code
 // Do all the default initialisations done in the java class
-void Entity::_init(bool useSmallId)
+void Entity::_init(bool useSmallId, Level *level)
 {
 	// 4J - changed to assign two different types of ids. A range from 0-2047 is used for things that we'll be wanting to identify over the network,
 	// so we should only need 11 bits rather than 32 to uniquely identify them. The rest of the range is used for anything we don't need to track like this,
@@ -254,6 +258,7 @@ void Entity::_init(bool useSmallId)
 	blocksBuilding = false;
 	rider = weak_ptr<Entity>();
 	riding = nullptr;
+	forcedLoading = false;
 
 	//level = NULL; // Level is assigned to in the original c_tor code
 	xo = yo = zo = 0.0;
@@ -277,6 +282,7 @@ void Entity::_init(bool useSmallId)
 
 	walkDistO = 0;
 	walkDist = 0;
+	moveDist = 0.0f;
 
 	fallDistance = 0;
 
@@ -301,15 +307,17 @@ void Entity::_init(bool useSmallId)
 
 	firstTick = true;
 
-
-	customTextureUrl = L"";
-	customTextureUrl2 = L"";
-
-
 	fireImmune = false;
 
 	// values that need to be sent to clients in SMP
-	entityData = shared_ptr<SynchedEntityData>(new SynchedEntityData());
+	if( useSmallId )
+	{
+		entityData = shared_ptr<SynchedEntityData>(new SynchedEntityData());
+	}
+	else
+	{
+		entityData = nullptr;
+	}
 
 	xRideRotA = yRideRotA = 0.0;
 	inChunk = false;
@@ -320,23 +328,43 @@ void Entity::_init(bool useSmallId)
 
 	hasImpulse = false;
 
+	changingDimensionDelay = 0;
+	isInsidePortal = false;
+	portalTime = 0;
+	dimension = 0;
+	portalEntranceDir = 0;
+	invulnerable = false;
+	if( useSmallId )
+	{
+		uuid = L"ent" + Mth::createInsecureUUID(random);
+	}
+
 	// 4J Added
 	m_ignoreVerticalCollisions = false;
 	m_uiAnimOverrideBitmask = 0L;
+	m_ignorePortal = false;
 }
 
 Entity::Entity(Level *level, bool useSmallId)	// 4J - added useSmallId parameter
 {
 	MemSect(16);
-	_init(useSmallId);
+	_init(useSmallId, level);
 	MemSect(0);
 
 	this->level = level;
 	// resetPos();
 	setPos(0, 0, 0);
 
-	entityData->define(DATA_SHARED_FLAGS_ID, (byte) 0);
-	entityData->define(DATA_AIR_SUPPLY_ID, TOTAL_AIR_SUPPLY); // 4J Stu - Brought forward from 1.2.3 to fix 38654 - Gameplay: Player will take damage when air bubbles are present if resuming game from load/autosave underwater.
+	if (level != NULL)
+	{
+		dimension = level->dimension->id;
+	}
+
+	if( entityData )
+	{
+		entityData->define(DATA_SHARED_FLAGS_ID, (byte) 0);
+		entityData->define(DATA_AIR_SUPPLY_ID, TOTAL_AIR_SUPPLY); // 4J Stu - Brought forward from 1.2.3 to fix 38654 - Gameplay: Player will take damage when air bubbles are present if resuming game from load/autosave underwater.
+	}
 
 	// 4J Stu - We cannot call virtual functions in ctors, as at this point the object
 	// is of type Entity and not a derived class
@@ -482,9 +510,11 @@ void Entity::baseTick()
 	// 4J Stu - Not needed
 	//util.Timer.push("entityBaseTick");
 
-	if (riding != NULL && riding->removed) riding = nullptr;
+	if (riding != NULL && riding->removed)
+	{
+		riding = nullptr;
+	}
 
-	tickCount++;
 	walkDistO = walkDist;
 	xo = x;
 	yo = y;
@@ -492,10 +522,54 @@ void Entity::baseTick()
 	xRotO = xRot;
 	yRotO = yRot;
 
+	if (!level->isClientSide) // 4J Stu - Don't need this && level instanceof ServerLevel)
+	{
+		if(!m_ignorePortal) // 4J Added
+		{
+			MinecraftServer *server = dynamic_cast<ServerLevel *>(level)->getServer();
+			int waitTime = getPortalWaitTime();
+
+			if (isInsidePortal)
+			{
+				if (server->isNetherEnabled())
+				{
+					if (riding == NULL)
+					{
+						if (portalTime++ >= waitTime)
+						{
+							portalTime = waitTime;
+							changingDimensionDelay = getDimensionChangingDelay();
+
+							int targetDimension;
+
+							if (level->dimension->id == -1)
+							{
+								targetDimension = 0;
+							}
+							else
+							{
+								targetDimension = -1;
+							}
+
+							changeDimension(targetDimension);
+						}
+					}
+					isInsidePortal = false;
+				}
+			}
+			else
+			{
+				if (portalTime > 0) portalTime -= 4;
+				if (portalTime < 0) portalTime = 0;
+			}
+			if (changingDimensionDelay > 0) changingDimensionDelay--;
+		}
+	}
+
 	if (isSprinting() && !isInWater() && canCreateParticles())
 	{
 		int xt = Mth::floor(x);
-		int yt = Mth::floor(y - 0.2f - this->heightOffset);
+		int yt = Mth::floor(y - 0.2f - heightOffset);
 		int zt = Mth::floor(z);
 		int t = level->getTile(xt, yt, zt);
 		int d = level->getData(xt, yt, zt);
@@ -505,37 +579,7 @@ void Entity::baseTick()
 		}
 	}
 
-	if (updateInWaterState())
-	{
-		if (!wasInWater && !firstTick && canCreateParticles())
-		{
-			float speed = Mth::sqrt(xd * xd * 0.2f + yd * yd + zd * zd * 0.2f) * 0.2f;
-			if (speed > 1) speed = 1;
-			MemSect(31);
-			level->playSound(shared_from_this(), eSoundType_RANDOM_SPLASH, speed, 1 + (random->nextFloat() - random->nextFloat()) * 0.4f);
-			MemSect(0);
-			float yt = (float) Mth::floor(bb->y0);
-			for (int i = 0; i < 1 + bbWidth * 20; i++)
-			{
-				float xo = (random->nextFloat() * 2 - 1) * bbWidth;
-				float zo = (random->nextFloat() * 2 - 1) * bbWidth;
-				level->addParticle(eParticleType_bubble, x + xo, yt + 1, z + zo, xd, yd - random->nextFloat() * 0.2f, zd);
-			}
-			for (int i = 0; i < 1 + bbWidth * 20; i++)
-			{
-				float xo = (random->nextFloat() * 2 - 1) * bbWidth;
-				float zo = (random->nextFloat() * 2 - 1) * bbWidth;
-				level->addParticle(eParticleType_splash, x + xo, yt + 1, z + zo, xd, yd, zd);
-			}
-		}
-		fallDistance = 0;
-		wasInWater = true;
-		onFire = 0;
-	} 
-	else
-	{
-		wasInWater = false;
-	}
+	updateInWaterState();
 
 	if (level->isClientSide)
 	{
@@ -575,7 +619,6 @@ void Entity::baseTick()
 	if (!level->isClientSide)
 	{
 		setSharedFlag(FLAG_ONFIRE, onFire > 0);
-		setSharedFlag(FLAG_RIDING, riding != NULL);
 	}
 
 	firstTick = false;
@@ -584,6 +627,10 @@ void Entity::baseTick()
 	//util.Timer.pop();
 }
 
+int Entity::getPortalWaitTime()
+{
+	return 0;
+}
 
 void Entity::lavaHurt()
 {
@@ -650,6 +697,7 @@ void Entity::move(double xa, double ya, double za, bool noEntityCubes)   // 4J -
 	ySlideOffset *= 0.4f;
 
 	double xo = x;
+	double yo = y;
 	double zo = z;
 
 	if (isStuckInWeb)
@@ -670,7 +718,7 @@ void Entity::move(double xa, double ya, double za, bool noEntityCubes)   // 4J -
 
 	AABB *bbOrg = bb->copy();
 
-	bool isPlayerSneaking = onGround && isSneaking() && dynamic_pointer_cast<Player>(shared_from_this()) != NULL;
+	bool isPlayerSneaking = onGround && isSneaking() && instanceof(eTYPE_PLAYER);
 
 	if (isPlayerSneaking)
 	{
@@ -709,8 +757,8 @@ void Entity::move(double xa, double ya, double za, bool noEntityCubes)   // 4J -
 	AUTO_VAR(itEndAABB, aABBs->end());
 
 	// 4J Stu - Particles (and possibly other entities) don't have xChunk and zChunk set, so calculate the chunk instead
-    int xc = Mth::floor(x / 16);
-    int zc = Mth::floor(z / 16);
+	int xc = Mth::floor(x / 16);
+	int zc = Mth::floor(z / 16);
 	if(!level->isClientSide || level->reallyHasChunk(xc, zc))
 	{
 		// 4J Stu - It's horrible that the client is doing any movement at all! But if we don't have the chunk
@@ -824,13 +872,6 @@ void Entity::move(double xa, double ya, double za, bool noEntityCubes)   // 4J -
 			za = zaN;
 			bb->set(normal);
 		}
-		else
-		{
-			double ss = bb->y0 - (int) bb->y0;
-			if (ss > 0) {
-				ySlideOffset += (float) (ss + 0.01);
-			}
-		}
 	}
 
 
@@ -849,14 +890,14 @@ void Entity::move(double xa, double ya, double za, bool noEntityCubes)   // 4J -
 	if (zaOrg != za) zd = 0;
 
 	double xm = x - xo;
+	double ym = y - yo;
 	double zm = z - zo;
 
 
 	if (makeStepSound() && !isPlayerSneaking && riding == NULL)
 	{
-		walkDist += (float) ( sqrt(xm * xm + zm * zm) * 0.6 );
 		int xt = Mth::floor(x);
-		int yt = Mth::floor(y - 0.2f - this->heightOffset);
+		int yt = Mth::floor(y - 0.2f - heightOffset);
 		int zt = Mth::floor(z);
 		int t = level->getTile(xt, yt, zt);
 		if (t == 0)
@@ -867,10 +908,23 @@ void Entity::move(double xa, double ya, double za, bool noEntityCubes)   // 4J -
 				t = level->getTile(xt, yt - 1, zt);
 			}
 		}
-
-		if (walkDist > nextStep && t > 0)
+		if (t != Tile::ladder_Id)
 		{
-			nextStep = (int) walkDist + 1;
+			ym = 0;
+		}
+
+		walkDist += Mth::sqrt(xm * xm + zm * zm) * 0.6;
+		moveDist += Mth::sqrt(xm * xm + ym * ym + zm * zm) * 0.6;
+
+		if (moveDist > nextStep && t > 0)
+		{
+			nextStep = (int) moveDist + 1;
+			if (isInWater())
+			{
+				float speed = Mth::sqrt(xd * xd * 0.2f + yd * yd + zd * zd * 0.2f) * 0.35f;
+				if (speed > 1) speed = 1;
+				playSound(eSoundType_LIQUID_SWIM, speed, 1 + (random->nextFloat() - random->nextFloat()) * 0.4f);
+			}
 			playStepSound(xt, yt, zt, t);
 			Tile::tiles[t]->stepOn(level, xt, yt, zt, shared_from_this());
 		}
@@ -879,7 +933,7 @@ void Entity::move(double xa, double ya, double za, bool noEntityCubes)   // 4J -
 	checkInsideTiles();
 
 
-	bool water = this->isInWaterOrRain();
+	bool water = isInWaterOrRain();
 	if (level->containsFireTile(bb->shrink(0.001, 0.001, 0.001)))
 	{
 		burn(1);
@@ -899,7 +953,7 @@ void Entity::move(double xa, double ya, double za, bool noEntityCubes)   // 4J -
 
 	if (water && onFire > 0)
 	{
-		level->playSound(shared_from_this(), eSoundType_RANDOM_FIZZ, 0.7f, 1.6f + (random->nextFloat() - random->nextFloat()) * 0.4f);
+		playSound(eSoundType_RANDOM_FIZZ, 0.7f, 1.6f + (random->nextFloat() - random->nextFloat()) * 0.4f);
 		onFire = -flameTime;
 	}
 }
@@ -933,7 +987,8 @@ void Entity::playStepSound(int xt, int yt, int zt, int t)
 {
 	const Tile::SoundType *soundType = Tile::tiles[t]->soundType;
 	MemSect(31);
-	if(GetType() == eTYPE_PLAYER)
+
+	if (GetType() == eTYPE_PLAYER)
 	{
 		// should we turn off step sounds?
 		unsigned int uiAnimOverrideBitmask=getAnimOverrideBitmask(); // this is masked for custom anim off, and force anim
@@ -943,51 +998,23 @@ void Entity::playStepSound(int xt, int yt, int zt, int t)
 			return;
 		}
 
-		MultiPlayerLevel *mplevel= (MultiPlayerLevel *)level;
-
-		if(mplevel)
-		{
-			if (level->getTile(xt, yt + 1, zt) == Tile::topSnow_Id)
-			{
-				soundType = Tile::topSnow->soundType;
-				mplevel->playLocalSound((double)xt+0.5,(double)yt,(double)zt+0.5,soundType->getStepSound(), soundType->getVolume() * 0.15f, soundType->getPitch());
-			}
-			else if (!Tile::tiles[t]->material->isLiquid())
-			{
-				mplevel->playLocalSound((double)xt+0.5,(double)yt,(double)zt+0.5,soundType->getStepSound(), soundType->getVolume() * 0.15f, soundType->getPitch());
-			}
-		}
-		else
-		{	
-			if (level->getTile(xt, yt + 1, zt) == Tile::topSnow_Id)
-			{
-				soundType = Tile::topSnow->soundType;
-				level->playLocalSound((double)xt+0.5,(double)yt,(double)zt+0.5,soundType->getStepSound(), soundType->getVolume() * 0.15f, soundType->getPitch());
-			}
-			else if (!Tile::tiles[t]->material->isLiquid())
-			{
-				level->playLocalSound((double)xt+0.5,(double)yt,(double)zt+0.5,soundType->getStepSound(), soundType->getVolume() * 0.15f, soundType->getPitch());
-			}
-		}
 	}
-	else
+	if (level->getTile(xt, yt + 1, zt) == Tile::topSnow_Id)
 	{
-		if (level->getTile(xt, yt + 1, zt) == Tile::topSnow_Id)
-		{
-			soundType = Tile::topSnow->soundType;
-			level->playSound(shared_from_this(), soundType->getStepSound(), soundType->getVolume() * 0.15f, soundType->getPitch());
-		}
-		else if (!Tile::tiles[t]->material->isLiquid())
-		{
-			level->playSound(shared_from_this(), soundType->getStepSound(), soundType->getVolume() * 0.15f, soundType->getPitch());
-		}
+		soundType = Tile::topSnow->soundType;
+		playSound(soundType->getStepSound(), soundType->getVolume() * 0.15f, soundType->getPitch());
 	}
+	else if (!Tile::tiles[t]->material->isLiquid())
+	{
+		playSound(soundType->getStepSound(), soundType->getVolume() * 0.15f, soundType->getPitch());
+	}
+
 	MemSect(0);
 }
 
 void Entity::playSound(int iSound, float volume, float pitch)
 {
-	level->playSound(shared_from_this(), iSound, volume, pitch);
+	level->playEntitySound(shared_from_this(), iSound, volume, pitch);
 }
 
 bool Entity::makeStepSound()
@@ -1001,22 +1028,6 @@ void Entity::checkFallDamage(double ya, bool onGround)
 	{
 		if (fallDistance > 0)
 		{
-			if (dynamic_pointer_cast<Mob>(shared_from_this()) != NULL)
-			{
-				int xt = Mth::floor(x);
-				int yt = Mth::floor(y - 0.2f - this->heightOffset);
-				int zt = Mth::floor(z);
-				int t = level->getTile(xt, yt, zt);
-				if (t == 0 && level->getTile(xt, yt - 1, zt) == Tile::fence_Id)
-				{
-					t = level->getTile(xt, yt - 1, zt);
-				}
-
-				if (t > 0)
-				{
-					Tile::tiles[t]->fallOn(level, xt, yt, zt, shared_from_this(), fallDistance);
-				}
-			}
 			causeFallDamage(fallDistance);
 			fallDistance = 0;
 		}
@@ -1053,7 +1064,7 @@ void Entity::causeFallDamage(float distance)
 
 bool Entity::isInWaterOrRain()
 {
-	return wasInWater || (level->isRainingAt( Mth::floor(x), Mth::floor(y), Mth::floor(z)));
+	return wasInWater || (level->isRainingAt( Mth::floor(x), Mth::floor(y), Mth::floor(z)) || level->isRainingAt(Mth::floor(x), Mth::floor(y + bbHeight), Mth::floor(z)));
 }
 
 bool Entity::isInWater()
@@ -1063,7 +1074,38 @@ bool Entity::isInWater()
 
 bool Entity::updateInWaterState()
 {
-	return level->checkAndHandleWater(bb->grow(0, -0.4f, 0)->shrink(0.001, 0.001, 0.001), Material::water, shared_from_this());
+	if(level->checkAndHandleWater(bb->grow(0, -0.4f, 0)->shrink(0.001, 0.001, 0.001), Material::water, shared_from_this()))
+	{
+		if (!wasInWater && !firstTick && canCreateParticles())
+		{
+			float speed = Mth::sqrt(xd * xd * 0.2f + yd * yd + zd * zd * 0.2f) * 0.2f;
+			if (speed > 1) speed = 1;
+			MemSect(31);
+			playSound(eSoundType_RANDOM_SPLASH, speed, 1 + (random->nextFloat() - random->nextFloat()) * 0.4f);
+			MemSect(0);
+			float yt = (float) Mth::floor(bb->y0);
+			for (int i = 0; i < 1 + bbWidth * 20; i++)
+			{
+				float xo = (random->nextFloat() * 2 - 1) * bbWidth;
+				float zo = (random->nextFloat() * 2 - 1) * bbWidth;
+				level->addParticle(eParticleType_bubble, x + xo, yt + 1, z + zo, xd, yd - random->nextFloat() * 0.2f, zd);
+			}
+			for (int i = 0; i < 1 + bbWidth * 20; i++)
+			{
+				float xo = (random->nextFloat() * 2 - 1) * bbWidth;
+				float zo = (random->nextFloat() * 2 - 1) * bbWidth;
+				level->addParticle(eParticleType_splash, x + xo, yt + 1, z + zo, xd, yd, zd);
+			}
+		}
+		fallDistance = 0;
+		wasInWater = true;
+		onFire = 0;
+	} 
+	else
+	{
+		wasInWater = false;
+	}
+	return wasInWater;
 }
 
 bool Entity::isUnderLiquid(Material *material)
@@ -1118,7 +1160,7 @@ int Entity::getLightColor(float a)
 	if (level->hasChunkAt(xTile, 0, zTile))
 	{
 		double hh = (bb->y1 - bb->y0) * 0.66;
-		int yTile = Mth::floor(y - this->heightOffset + hh);
+		int yTile = Mth::floor(y - heightOffset + hh);
 		return level->getLightColor(xTile, yTile, zTile, 0);
 	}
 	return 0;
@@ -1132,7 +1174,7 @@ float Entity::getBrightness(float a)
 	if (level->hasChunkAt(xTile, 0, zTile))
 	{
 		double hh = (bb->y1 - bb->y0) * 0.66;
-		int yTile = Mth::floor(y - this->heightOffset + hh);
+		int yTile = Mth::floor(y - heightOffset + hh);
 		return level->getBrightness(xTile, yTile, zTile);
 	}
 	return 0;
@@ -1145,28 +1187,28 @@ void Entity::setLevel(Level *level)
 
 void Entity::absMoveTo(double x, double y, double z, float yRot, float xRot)
 {
-	this->xo = this->x = x;
-	this->yo = this->y = y;
-	this->zo = this->z = z;
-	this->yRotO = this->yRot = yRot;
-	this->xRotO = this->xRot = xRot;
+	xo = this->x = x;
+	yo = this->y = y;
+	zo = this->z = z;
+	yRotO = this->yRot = yRot;
+	xRotO = this->xRot = xRot;
 	ySlideOffset = 0;
 
 	double yRotDiff = yRotO - yRot;
 	if (yRotDiff < -180) yRotO += 360;
 	if (yRotDiff >= 180) yRotO -= 360;
-	this->setPos(this->x, this->y, this->z);
-	this->setRot(yRot, xRot);
+	setPos(this->x, this->y, this->z);
+	setRot(yRot, xRot);
 }
 
 void Entity::moveTo(double x, double y, double z, float yRot, float xRot)
 {
-	this->xOld = this->xo = this->x = x;
-	this->yOld = this->yo = this->y = y + heightOffset;
-	this->zOld = this->zo = this->z = z;
+	xOld = xo = this->x = x;
+	yOld = yo = this->y = y + heightOffset;
+	zOld = zo = this->z = z;
 	this->yRot = yRot;
 	this->xRot = xRot;
-	this->setPos(this->x, this->y, this->z);
+	setPos(this->x, this->y, this->z);
 }
 
 float Entity::distanceTo(shared_ptr<Entity> e)
@@ -1231,7 +1273,7 @@ void Entity::push(shared_ptr<Entity> e)
 		xa *= 1 - pushthrough;
 		za *= 1 - pushthrough;
 
-		this->push(-xa, 0, -za);
+		push(-xa, 0, -za);
 		e->push(xa, 0, za);
 	}
 }
@@ -1241,18 +1283,17 @@ void Entity::push(double xa, double ya, double za)
 	xd += xa;
 	yd += ya;
 	zd += za;
-	this->hasImpulse = true;
+	hasImpulse = true;
 }
-
 
 void Entity::markHurt()
 {
-	this->hurtMarked = true;
+	hurtMarked = true;
 }
 
-
-bool Entity::hurt(DamageSource *source, int damage)
+bool Entity::hurt(DamageSource *source, float damage)
 {
+	if(isInvulnerable()) return false;
 	markHurt();
 	return false;
 }
@@ -1297,21 +1338,28 @@ bool Entity::shouldRenderAtSqrDistance(double distance)
 	return distance < size * size;
 }
 
-// 4J - used to be wstring return type, returning L""
-int Entity::getTexture()
-{
-	return -1;
-}
-
 bool Entity::isCreativeModeAllowed()
 {
 	return false;
 }
 
-bool Entity::save(CompoundTag *entityTag)
+bool Entity::saveAsMount(CompoundTag *entityTag)
 {
 	wstring id = getEncodeId();
 	if (removed || id.empty() )
+	{
+		return false;
+	}
+	// TODO Is this fine to be casting to a non-const char pointer?
+	entityTag->putString(L"id", id );
+	saveWithoutId(entityTag);
+	return true;
+}
+
+bool Entity::save(CompoundTag *entityTag)
+{
+	wstring id = getEncodeId();
+	if (removed || id.empty() || (rider.lock() != NULL) )
 	{
 		return false;
 	}
@@ -1331,8 +1379,22 @@ void Entity::saveWithoutId(CompoundTag *entityTag)
 	entityTag->putShort(L"Fire", (short) onFire);
 	entityTag->putShort(L"Air", (short) getAirSupply());
 	entityTag->putBoolean(L"OnGround", onGround);
+	entityTag->putInt(L"Dimension", dimension);
+	entityTag->putBoolean(L"Invulnerable", invulnerable);
+	entityTag->putInt(L"PortalCooldown", changingDimensionDelay);
+
+	entityTag->putString(L"UUID", uuid);
 
 	addAdditonalSaveData(entityTag);
+
+	if (riding != NULL)
+	{
+		CompoundTag *ridingTag = new CompoundTag(RIDING_TAG);
+		if (riding->saveAsMount(ridingTag))
+		{
+			entityTag->put(L"Riding", ridingTag);
+		}
+	}
 }
 
 void Entity::load(CompoundTag *tag)
@@ -1369,17 +1431,41 @@ void Entity::load(CompoundTag *tag)
 	onFire = tag->getShort(L"Fire");
 	setAirSupply(tag->getShort(L"Air"));
 	onGround = tag->getBoolean(L"OnGround");
+	dimension = tag->getInt(L"Dimension");
+	invulnerable = tag->getBoolean(L"Invulnerable");
+	changingDimensionDelay = tag->getInt(L"PortalCooldown");
+
+	if (tag->contains(L"UUID"))
+	{
+		uuid = tag->getString(L"UUID");
+	}
 
 	setPos(x, y, z);
 	setRot(yRot, xRot);
 
 	readAdditionalSaveData(tag);
+
+	// set position again because bb size may have changed
+	if (repositionEntityAfterLoad()) setPos(x, y, z);
 }
 
+bool Entity::repositionEntityAfterLoad()
+{
+	return true;
+}
 
 const wstring Entity::getEncodeId()
 {
 	return EntityIO::getEncodeId( shared_from_this() );
+}
+
+/**
+* Called after load() has finished and the entity has been added to the
+* world
+*/
+void Entity::onLoadedFromSave()
+{
+
 }
 
 ListTag<DoubleTag> *Entity::newDoubleList(unsigned int number, double firstValue, ...)
@@ -1449,6 +1535,10 @@ shared_ptr<ItemEntity> Entity::spawnAtLocation(int resource, int count, float yO
 
 shared_ptr<ItemEntity> Entity::spawnAtLocation(shared_ptr<ItemInstance> itemInstance, float yOffs)
 {
+	if (itemInstance->count == 0)
+	{
+		return nullptr;
+	}
 	shared_ptr<ItemEntity> ie = shared_ptr<ItemEntity>( new ItemEntity(level, x, y + yOffs, z, itemInstance) );
 	ie->throwTime = 10;
 	level->addEntity(ie);
@@ -1468,7 +1558,7 @@ bool Entity::isInWall()
 		float yo = ((i >> 1) % 2 - 0.5f) * 0.1f;
 		float zo = ((i >> 2) % 2 - 0.5f) * bbWidth * 0.8f;
 		int xt = Mth::floor(x + xo);
-		int yt = Mth::floor(y + this->getHeadHeight() + yo);
+		int yt = Mth::floor(y + getHeadHeight() + yo);
 		int zt = Mth::floor(z + zo);
 		if (level->isSolidBlockingTile(xt, yt, zt))
 		{
@@ -1525,24 +1615,20 @@ void Entity::rideTick()
 	yRideRotA -= yra;
 	xRideRotA -= xra;
 
-	yRot += (float) yra;
-	xRot += (float) xra;
+	// jeb: This caused the crosshair to "drift" while riding horses. For now I've just disabled it,
+	//      because I can't figure out what it's needed for. Riding boats and minecarts seem unaffected...
+	// yRot += yra;
+	// xRot += xra;
 }
 
 void Entity::positionRider()
 {
 	shared_ptr<Entity> lockedRider = rider.lock();
-	if( lockedRider )
+	if( lockedRider == NULL)
 	{
-		shared_ptr<Player> player = dynamic_pointer_cast<Player>(lockedRider);
-		if (!(player && player->isLocalPlayer()))
-		{
-			lockedRider->xOld = xOld;
-			lockedRider->yOld = yOld + getRideHeight() + lockedRider->getRidingHeight();
-			lockedRider->zOld = zOld;
-		}
-		lockedRider->setPos(x, y + getRideHeight() + lockedRider->getRidingHeight(), z);
+		return;
 	}
+	lockedRider->setPos(x, y + getRideHeight() + lockedRider->getRidingHeight(), z);
 }
 
 double Entity::getRidingHeight()
@@ -1564,7 +1650,7 @@ void Entity::ride(shared_ptr<Entity> e)
 	{
 		if (riding != NULL)
 		{
-			// 4J Stu - Position should already be updated before the SetRidingPacket comes in
+			// 4J Stu - Position should already be updated before the SetEntityLinkPacket comes in
 			if(!level->isClientSide) moveTo(riding->x, riding->bb->y0 + riding->bbHeight, riding->z, yRot, xRot);
 			riding->rider = weak_ptr<Entity>();
 		}
@@ -1577,52 +1663,6 @@ void Entity::ride(shared_ptr<Entity> e)
 	}
 	riding = e;
 	e->rider = shared_from_this();
-}
-
-// 4J Stu - Brought forward from 12w36 to fix #46282 - TU5: Gameplay: Exiting the minecart in a tight corridor damages the player
-void Entity::findStandUpPosition(shared_ptr<Entity> vehicle)
-{
-	AABB *boundingBox;
-	double fallbackX = vehicle->x;
-	double fallbackY = vehicle->bb->y0 + vehicle->bbHeight;
-	double fallbackZ = vehicle->z;
-
-	for (double xDiff = -1.5; xDiff < 2; xDiff += 1.5)
-	{
-		for (double zDiff = -1.5; zDiff < 2; zDiff += 1.5)
-		{
-			if (xDiff == 0 && zDiff == 0)
-			{
-				continue;
-			}
-
-			int xToInt = (int) (this->x + xDiff);
-			int zToInt = (int) (this->z + zDiff);
-
-			// 4J Stu - Added loop over y to restaring the bb into 2 block high spaces if required (eg the track block plus 1 air block above it for minecarts)
-			for(double yDiff = 1.0; yDiff >= 0; yDiff -= 0.5)
-			{
-				boundingBox = this->bb->cloneMove(xDiff, yDiff, zDiff);
-
-				if (level->getTileCubes(boundingBox,true)->size() == 0)
-				{
-					if (level->isTopSolidBlocking(xToInt, (int) (y - (1-yDiff)), zToInt))
-					{
-						this->moveTo(this->x + xDiff, this->y + yDiff, this->z + zDiff, yRot, xRot);
-						return;
-					}
-					else if (level->isTopSolidBlocking(xToInt, (int) (y - (1-yDiff)) - 1, zToInt) || level->getMaterial(xToInt, (int) (y - (1-yDiff)) - 1, zToInt) == Material::water)
-					{
-						fallbackX = x + xDiff;
-						fallbackY = y + yDiff;
-						fallbackZ = z + zDiff;
-					}
-				}
-			}
-		}
-	}
-
-	this->moveTo(fallbackX, fallbackY, fallbackZ, yRot, xRot);
 }
 
 void Entity::lerpTo(double x, double y, double z, float yRot, float xRot, int steps)
@@ -1663,6 +1703,26 @@ Vec3 *Entity::getLookAngle()
 
 void Entity::handleInsidePortal()
 {
+	if (changingDimensionDelay > 0)
+	{
+		changingDimensionDelay = getDimensionChangingDelay();
+		return;
+	}
+
+	double xd = xo - x;
+	double zd = zo - z;
+
+	if (!level->isClientSide && !isInsidePortal)
+	{
+		portalEntranceDir = Direction::getDirection(xd, zd);
+	}
+
+	isInsidePortal = true;
+}
+
+int Entity::getDimensionChangingDelay()
+{
+	return SharedConstants::TICKS_PER_SECOND * 45;
 }
 
 void Entity::lerpMotion(double xd, double yd, double zd)
@@ -1680,10 +1740,6 @@ void Entity::animateHurt()
 {
 }
 
-void Entity::prepareCustomTextures()
-{
-}
-
 ItemInstanceArray Entity::getEquipmentSlots() // ItemInstance[]
 {
 	return ItemInstanceArray();	// Default ctor creates NULL internal array
@@ -1696,12 +1752,12 @@ void Entity::setEquippedSlot(int slot, shared_ptr<ItemInstance> item)
 
 bool Entity::isOnFire()
 {
-	return onFire > 0 || getSharedFlag(FLAG_ONFIRE);
+	return !fireImmune && (onFire > 0 || getSharedFlag(FLAG_ONFIRE));
 }
 
 bool Entity::isRiding()
 {
-	return riding != NULL || getSharedFlag(FLAG_RIDING);
+	return riding != NULL;
 }
 
 bool Entity::isSneaking()
@@ -1771,19 +1827,29 @@ void Entity::setUsingItemFlag(bool value)
 
 bool Entity::getSharedFlag(int flag)
 {
-	return (entityData->getByte(DATA_SHARED_FLAGS_ID) & (1 << flag)) != 0;
+	if( entityData )
+	{
+		return (entityData->getByte(DATA_SHARED_FLAGS_ID) & (1 << flag)) != 0;
+	}
+	else
+	{
+		return false;
+	}
 }
 
 void Entity::setSharedFlag(int flag, bool value)
 {
-	byte currentValue = entityData->getByte(DATA_SHARED_FLAGS_ID);
-	if (value) 
+	if( entityData )
 	{
-		entityData->set(DATA_SHARED_FLAGS_ID, (byte) (currentValue | (1 << flag)));
-	}
-	else
-	{
-		entityData->set(DATA_SHARED_FLAGS_ID, (byte) (currentValue & ~(1 << flag)));
+		byte currentValue = entityData->getByte(DATA_SHARED_FLAGS_ID);
+		if (value) 
+		{
+			entityData->set(DATA_SHARED_FLAGS_ID, (byte) (currentValue | (1 << flag)));
+		}
+		else
+		{
+			entityData->set(DATA_SHARED_FLAGS_ID, (byte) (currentValue & ~(1 << flag)));
+		}
 	}
 }
 
@@ -1806,10 +1872,9 @@ void Entity::thunderHit(const LightningBolt *lightningBolt)
 	if (onFire == 0) setOnFire(8);
 }
 
-void Entity::killed(shared_ptr<Mob> mob)
+void Entity::killed(shared_ptr<LivingEntity> mob)
 {
 }
-
 
 bool Entity::checkInTile(double x, double y, double z)
 {
@@ -1821,16 +1886,17 @@ bool Entity::checkInTile(double x, double y, double z)
 	double yd = y - (yTile);
 	double zd = z - (zTile);
 
-	if (level->isSolidBlockingTile(xTile, yTile, zTile))
+	vector<AABB *> *cubes = level->getTileCubes(bb);
+	if ( (cubes && !cubes->empty()) || level->isFullAABBTile(xTile, yTile, zTile))
 	{
-		bool west = !level->isSolidBlockingTile(xTile - 1, yTile, zTile);
-		bool east = !level->isSolidBlockingTile(xTile + 1, yTile, zTile);
-		bool up = !level->isSolidBlockingTile(xTile, yTile - 1, zTile);
-		bool down = !level->isSolidBlockingTile(xTile, yTile + 1, zTile);
-		bool north = !level->isSolidBlockingTile(xTile, yTile, zTile - 1);
-		bool south = !level->isSolidBlockingTile(xTile, yTile, zTile + 1);
+		bool west = !level->isFullAABBTile(xTile - 1, yTile, zTile);
+		bool east = !level->isFullAABBTile(xTile + 1, yTile, zTile);
+		bool down = !level->isFullAABBTile(xTile, yTile - 1, zTile);
+		bool up = !level->isFullAABBTile(xTile, yTile + 1, zTile);
+		bool north = !level->isFullAABBTile(xTile, yTile, zTile - 1);
+		bool south = !level->isFullAABBTile(xTile, yTile, zTile + 1);
 
-		int dir = -1;
+		int dir = 3;
 		double closest = 9999;
 		if (west && xd < closest)
 		{
@@ -1842,12 +1908,7 @@ bool Entity::checkInTile(double x, double y, double z)
 			closest = 1 - xd;
 			dir = 1;
 		}
-		if (up && yd < closest)
-		{
-			closest = yd;
-			dir = 2;
-		}
-		if (down && 1 - yd < closest)
+		if (up && 1 - yd < closest)
 		{
 			closest = 1 - yd;
 			dir = 3;
@@ -1872,9 +1933,9 @@ bool Entity::checkInTile(double x, double y, double z)
 
 		if (dir == 4) this->zd = -speed;
 		if (dir == 5) this->zd = +speed;
+
 		return true;
 	}
-
 	return false;
 }
 
@@ -1886,10 +1947,13 @@ void Entity::makeStuckInWeb()
 
 wstring Entity::getAName()
 {
+#ifdef _DEBUG
 	wstring id = EntityIO::getEncodeId(shared_from_this());
 	if (id.empty()) id = L"generic";
 	return L"entity." + id + _toString(entityId);
-	//return I18n.get("entity." + id + ".name");
+#else
+	return L"";
+#endif
 }
 
 vector<shared_ptr<Entity> > *Entity::getSubEntities()
@@ -1916,14 +1980,145 @@ bool Entity::isAttackable()
 	return true;
 }
 
-bool Entity::isInvulnerable()
+bool Entity::skipAttackInteraction(shared_ptr<Entity> source)
 {
 	return false;
+}
+
+bool Entity::isInvulnerable()
+{
+	return invulnerable;
 }
 
 void Entity::copyPosition(shared_ptr<Entity> target)
 {
 	moveTo(target->x, target->y, target->z, target->yRot, target->xRot);
+}
+
+void Entity::restoreFrom(shared_ptr<Entity> oldEntity, bool teleporting)
+{
+	CompoundTag *tag = new CompoundTag();
+	oldEntity->saveWithoutId(tag);
+	load(tag);
+	delete tag;
+	changingDimensionDelay = oldEntity->changingDimensionDelay;
+	portalEntranceDir = oldEntity->portalEntranceDir;
+}
+
+void Entity::changeDimension(int i)
+{
+	if (level->isClientSide || removed) return;
+
+	MinecraftServer *server = MinecraftServer::getInstance();
+	int lastDimension = dimension;
+	ServerLevel *oldLevel = server->getLevel(lastDimension);
+	ServerLevel *newLevel = server->getLevel(i);
+
+	if (lastDimension == 1 && i == 1)
+	{
+		newLevel = server->getLevel(0);
+	}
+
+	// 4J: Restrictions on what can go through
+	{
+		// 4J: Some things should just be destroyed when they hit a portal
+		if (instanceof(eTYPE_FALLINGTILE))
+		{
+			removed = true;
+			return;
+		}
+
+		// 4J: Check server level entity limit (arrows, item entities, experience orbs, etc)
+		if (newLevel->atEntityLimit(shared_from_this())) return;
+
+		// 4J: Check level limit on living entities, minecarts and boats
+		if (!instanceof(eTYPE_PLAYER) && !newLevel->canCreateMore(GetType(), Level::eSpawnType_Portal)) return;
+	}
+
+	// 4J: Definitely sending, set dimension now
+	dimension = newLevel->dimension->id;
+
+	level->removeEntity(shared_from_this());
+	removed = false;
+
+	server->getPlayers()->repositionAcrossDimension(shared_from_this(), lastDimension, oldLevel, newLevel);
+	shared_ptr<Entity> newEntity = EntityIO::newEntity(EntityIO::getEncodeId(shared_from_this()), newLevel);
+
+	if (newEntity != NULL)
+	{
+		newEntity->restoreFrom(shared_from_this(), true);
+
+		if (lastDimension == 1 && i == 1)
+		{
+			Pos *spawnPos = newLevel->getSharedSpawnPos();
+			spawnPos->y = level->getTopSolidBlock(spawnPos->x, spawnPos->z);
+			newEntity->moveTo(spawnPos->x, spawnPos->y, spawnPos->z, newEntity->yRot, newEntity->xRot);
+			delete spawnPos;
+		}
+
+		newLevel->addEntity(newEntity);
+	}
+
+	removed = true;
+
+	oldLevel->resetEmptyTime();
+	newLevel->resetEmptyTime();
+}
+
+float Entity::getTileExplosionResistance(Explosion *explosion, Level *level, int x, int y, int z, Tile *tile)
+{
+	return tile->getExplosionResistance(shared_from_this());
+}
+
+bool Entity::shouldTileExplode(Explosion *explosion, Level *level, int x, int y, int z, int id, float power)
+{
+	return true;
+}
+
+int Entity::getMaxFallDistance()
+{
+	return 3;
+}
+
+int Entity::getPortalEntranceDir()
+{
+	return portalEntranceDir;
+}
+
+bool Entity::isIgnoringTileTriggers()
+{
+	return false;
+}
+
+bool Entity::displayFireAnimation()
+{
+	return isOnFire();
+}
+
+void Entity::setUUID(const wstring &UUID)
+{
+	uuid = UUID;
+}
+
+wstring Entity::getUUID()
+{
+	return uuid;
+}
+
+bool Entity::isPushedByWater()
+{
+	return true;
+}
+
+wstring Entity::getDisplayName()
+{
+	return getAName();
+}
+
+// 4J: Added to retrieve name that should be sent in ChatPackets (important on Xbox One for players)
+wstring Entity::getNetworkName()
+{
+	return getDisplayName();
 }
 
 void Entity::setAnimOverrideBitmask(unsigned int uiBitmask) 

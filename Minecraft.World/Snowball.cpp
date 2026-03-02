@@ -19,7 +19,7 @@ Snowball::Snowball(Level *level) : Throwable(level)
 	_init();
 }
 
-Snowball::Snowball(Level *level, shared_ptr<Mob> mob) : Throwable(level,mob)
+Snowball::Snowball(Level *level, shared_ptr<LivingEntity> mob) : Throwable(level,mob)
 {
 	_init();
 }
@@ -34,12 +34,12 @@ void Snowball::onHit(HitResult *res)
 	if (res->entity != NULL)
 	{
 		int damage = 0;
-		if (dynamic_pointer_cast<Blaze>(res->entity) != NULL)
+		if ( res->entity->instanceof(eTYPE_BLAZE) )
 		{
 			damage = 3;
 		}
 
-		DamageSource *damageSource = DamageSource::thrown(shared_from_this(), owner);
+		DamageSource *damageSource = DamageSource::thrown(shared_from_this(), getOwner());
 		res->entity->hurt(damageSource, damage);
 		delete damageSource;
 	}

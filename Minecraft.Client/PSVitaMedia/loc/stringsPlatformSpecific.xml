@@ -278,9 +278,13 @@ If you try to save while using the trial version, you will be given the option t
 
   <data name="IDS_SAVE_TRANSFER_NOT_AVAILABLE_TEXT">
     <value>
-      There is no save available in the save transfer area at the moment.
-      You can upload a world save to the save transfer area using Minecraft: PlayStation®3 Edition, and then download it with Minecraft: PlayStation®Vita Edition.
+There is no save available in the save transfer area at the moment.
+You can upload a world save to the save transfer area using Minecraft: PlayStation®3 Edition, and then download it with Minecraft: PlayStation®Vita Edition.
     </value>
+  </data>
+
+  <data name="IDS_SAVE_TRANSFER_WRONG_VERSION">
+    <value>The save file in the save transfer area has a version number that Minecraft: PlayStation®Vita Edition doesn't support yet.</value>
   </data>
 
   <data name="IDS_SAVE_INCOMPLETE_TITLE">

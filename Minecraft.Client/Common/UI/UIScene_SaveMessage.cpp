@@ -156,10 +156,10 @@ void UIScene_SaveMessage::handleTimerComplete(int id)
 				app.SetOptionsCallbackStatus(0,C4JStorage::eOptions_Callback_Read_CorruptDeletePending);
 				m_bIgnoreInput=false;
 				// give the option to delete the save
-				UINT uiIDA[1];
-				uiIDA[0]=IDS_CONFIRM_OK;
-				ui.RequestMessageBox(IDS_CORRUPT_FILE, IDS_CORRUPT_OPTIONS, uiIDA, 1, 
-					0,&UIScene_SaveMessage::DeleteOptionsDialogReturned,this, app.GetStringTable());
+				UINT uiIDA[2];
+				uiIDA[0]=IDS_CORRUPT_OPTIONS_RETRY;
+				uiIDA[1]=IDS_CORRUPT_OPTIONS_DELETE;
+				ui.RequestErrorMessage(IDS_CORRUPT_FILE, IDS_CORRUPT_OPTIONS, uiIDA, 2, 0,&UIScene_SaveMessage::DeleteOptionsDialogReturned,this);
 				break;
 			}
 #endif
@@ -173,10 +173,16 @@ void UIScene_SaveMessage::handleTimerComplete(int id)
 int UIScene_SaveMessage::DeleteOptionsDialogReturned(void *pParam,int iPad,C4JStorage::EMessageResult result)
 {
 	//UIScene_SaveMessage* pClass = (UIScene_SaveMessage*)pParam;
-
-	// kick off the delete
-	StorageManager.DeleteOptionsData(iPad);
-
+	if(result == C4JStorage::EMessage_ResultAccept)
+	{
+		// retry loading the options file
+		StorageManager.ReadFromProfile(iPad);
+	}
+	else // result == EMessage_ResultDecline
+	{
+		// kick off the delete
+		StorageManager.DeleteOptionsData(iPad);
+	}
 	return 0;
 }
 #endif

@@ -96,14 +96,10 @@ void ServerConnection::tick()
 		shared_ptr<ServerPlayer> serverPlayer = player->getPlayer();
 		if( serverPlayer )
 		{
+			serverPlayer->updateFrameTick();
 			serverPlayer->doChunkSendingTick(false);
 		}
-//        try {	// 4J - removed try/catch
-            player->tick();
-//        } catch (Exception e) {
-//            logger.log(Level.WARNING, "Failed to handle packet: " + e, e);
-//            player.disconnect("Internal server error");
-//        }
+        player->tick();
         if (player->done)
 		{
             players.erase(players.begin()+i);
@@ -201,4 +197,9 @@ void ServerConnection::handleServerSettingsChanged(shared_ptr<ServerSettingsChan
 // 			playerconnection->setShowOnMaps(pMinecraft->options->GetGamertagSetting());				
 // 		}
 // 	}
+}
+
+vector< shared_ptr<PlayerConnection> >  * ServerConnection::getPlayers()
+{
+	return &players;
 }

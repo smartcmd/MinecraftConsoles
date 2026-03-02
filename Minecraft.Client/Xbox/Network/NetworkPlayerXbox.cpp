@@ -12,12 +12,17 @@ unsigned char NetworkPlayerXbox::GetSmallId()
 	return m_qnetPlayer->GetSmallId();
 }
 
-void NetworkPlayerXbox::SendData(INetworkPlayer *player, const void *pvData, int dataSize, bool lowPriority)
+void NetworkPlayerXbox::SendData(INetworkPlayer *player, const void *pvData, int dataSize, bool lowPriority, bool ack)
 {
 	DWORD flags;
 	flags = QNET_SENDDATA_RELIABLE | QNET_SENDDATA_SEQUENTIAL;
 	if( lowPriority ) flags |= QNET_SENDDATA_LOW_PRIORITY | QNET_SENDDATA_SECONDARY;
 	m_qnetPlayer->SendData(((NetworkPlayerXbox *)player)->m_qnetPlayer, pvData, dataSize, flags);
+}
+
+int NetworkPlayerXbox::GetOutstandingAckCount()
+{
+	return 0;
 }
 
 bool NetworkPlayerXbox::IsSameSystem(INetworkPlayer *player)
@@ -119,3 +124,19 @@ IQNetPlayer *NetworkPlayerXbox::GetQNetPlayer()
 	return m_qnetPlayer;
 }
 
+void NetworkPlayerXbox::SentChunkPacket()
+{
+	m_lastChunkPacketTime = System::currentTimeMillis();
+}
+
+int NetworkPlayerXbox::GetTimeSinceLastChunkPacket_ms()
+{
+	// If we haven't ever sent a packet, return maximum
+	if( m_lastChunkPacketTime == 0 )
+	{
+		return INT_MAX;
+	}
+
+	__int64 currentTime = System::currentTimeMillis();
+	return (int)( currentTime - m_lastChunkPacketTime );
+}

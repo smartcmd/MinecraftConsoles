@@ -66,7 +66,7 @@ void TripWireTile::neighborChanged(Level *level, int x, int y, int z, int type)
 	if (wasSuspended != isSuspended)
 	{
 		spawnResources(level, x, y, z, data, 0);
-		level->setTile(x, y, z, 0);
+		level->removeTile(x, y, z);
 	}
 }
 
@@ -93,7 +93,7 @@ void TripWireTile::updateShape(LevelSource *level, int x, int y, int z, int forc
 void TripWireTile::onPlace(Level *level, int x, int y, int z)
 {
 	int data = level->isTopSolidBlocking(x, y - 1, z) ? 0 : MASK_SUSPENDED;
-	level->setData(x, y, z, data);
+	level->setData(x, y, z, data, Tile::UPDATE_ALL);
 	updateSource(level, x, y, z, data);
 }
 
@@ -108,7 +108,7 @@ void TripWireTile::playerWillDestroy(Level *level, int x, int y, int z, int data
 
 	if (player->getSelectedItem() != NULL && player->getSelectedItem()->id == Item::shears_Id)
 	{
-		level->setData(x, y, z, data | MASK_DISARMED);
+		level->setData(x, y, z, data | MASK_DISARMED, Tile::UPDATE_NONE);
 	}
 }
 
@@ -169,7 +169,15 @@ void TripWireTile::checkPressed(Level *level, int x, int y, int z)
 	vector<shared_ptr<Entity> > *entities = level->getEntities(nullptr, AABB::newTemp(x + tls->xx0, y + tls->yy0, z + tls->zz0, x + tls->xx1, y + tls->yy1, z + tls->zz1));
 	if (!entities->empty())
 	{
-		shouldBePressed = true;
+		for (AUTO_VAR(it, entities->begin()); it != entities->end(); ++it)
+		{
+			shared_ptr<Entity> e = *it;
+			if (!e->isIgnoringTileTriggers())
+			{
+				shouldBePressed = true;
+				break;
+			}
+		}
 	}
 
 	if (shouldBePressed && !wasPressed)
@@ -184,7 +192,7 @@ void TripWireTile::checkPressed(Level *level, int x, int y, int z)
 
 	if (shouldBePressed != wasPressed)
 	{
-		level->setData(x, y, z, data);
+		level->setData(x, y, z, data, Tile::UPDATE_ALL);
 		updateSource(level, x, y, z, data);
 	}
 

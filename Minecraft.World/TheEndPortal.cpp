@@ -21,9 +21,9 @@ void TheEndPortal::allowAnywhere(bool set)
 	TlsSetValue(tlsIdx,(LPVOID)(set?1:0));
 }
 
-TheEndPortal::TheEndPortal(int id, Material *material) : EntityTile(id, material, isSolidRender())
+TheEndPortal::TheEndPortal(int id, Material *material) : BaseEntityTile(id, material, isSolidRender())
 {
-    this->setLightEmission(1.0f);
+	this->setLightEmission(1.0f);
 }
 
 shared_ptr<TileEntity> TheEndPortal::newTileEntity(Level *level)
@@ -33,14 +33,14 @@ shared_ptr<TileEntity> TheEndPortal::newTileEntity(Level *level)
 
 void TheEndPortal::updateShape(LevelSource *level, int x, int y, int z, int forceData, shared_ptr<TileEntity> forceEntity) // 4J added forceData, forceEntity param
 {
-    float r = 1 / 16.0f;
-    this->setShape(0, 0, 0, 1, r, 1);
+	float r = 1 / 16.0f;
+	setShape(0, 0, 0, 1, r, 1);
 }
 
 bool TheEndPortal::shouldRenderFace(LevelSource *level, int x, int y, int z, int face)
 {
-    if (face != 0) return false;
-    return EntityTile::shouldRenderFace(level, x, y, z, face);
+	if (face != 0) return false;
+	return BaseEntityTile::shouldRenderFace(level, x, y, z, face);
 }
 
 void TheEndPortal::addAABBs(Level *level, int x, int y, int z, AABB *box, AABBList *boxes, shared_ptr<Entity> source)
@@ -64,11 +64,13 @@ int TheEndPortal::getResourceCount(Random *random)
 
 void TheEndPortal::entityInside(Level *level, int x, int y, int z, shared_ptr<Entity> entity)
 {
-    if (entity->riding == NULL && entity->rider.lock() == NULL)
+	if (entity->GetType() == eTYPE_EXPERIENCEORB ) return;		// 4J added
+
+	if (entity->riding == NULL && entity->rider.lock() == NULL)
 	{
-        if (dynamic_pointer_cast<Player>(entity) != NULL)
+		if (!level->isClientSide)
 		{
-            if (!level->isClientSide)
+			if ( entity->instanceof(eTYPE_PLAYER) )
 			{
 				// 4J Stu - Update the level data position so that the stronghold portal can be shown on the maps
 				int x,z;
@@ -79,39 +81,38 @@ void TheEndPortal::entityInside(Level *level, int x, int y, int z, shared_ptr<En
 					level->getLevelData()->setZStrongholdEndPortal(z);
 					level->getLevelData()->setHasStrongholdEndPortal();
 				}
-
-                (dynamic_pointer_cast<Player>(entity))->changeDimension(1);
-            }
-        }
-    }
+			}
+			entity->changeDimension(1);
+		}
+	}
 }
 
 void TheEndPortal::animateTick(Level *level, int xt, int yt, int zt, Random *random)
 {
-    double x = xt + random->nextFloat();
-    double y = yt + 0.8f;
-    double z = zt + random->nextFloat();
-    double xa = 0;
-    double ya = 0;
-    double za = 0;
+	double x = xt + random->nextFloat();
+	double y = yt + 0.8f;
+	double z = zt + random->nextFloat();
+	double xa = 0;
+	double ya = 0;
+	double za = 0;
 
-    level->addParticle(eParticleType_endportal, x, y, z, xa, ya, za);
+	level->addParticle(eParticleType_endportal, x, y, z, xa, ya, za);
 }
 
 int TheEndPortal::getRenderShape()
 {
-    return SHAPE_INVISIBLE;
+	return SHAPE_INVISIBLE;
 }
 
 void TheEndPortal::onPlace(Level *level, int x, int y, int z)
 {
-    if (allowAnywhere()) return;
+	if (allowAnywhere()) return;
 
-    if (level->dimension->id != 0)
+	if (level->dimension->id != 0)
 	{
-        level->setTile(x, y, z, 0);
-        return;
-    }
+		level->removeTile(x, y, z);
+		return;
+	}
 }
 
 int TheEndPortal::cloneTileId(Level *level, int x, int y, int z)

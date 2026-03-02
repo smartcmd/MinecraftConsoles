@@ -21,6 +21,7 @@ UIComponent_TutorialPopup::UIComponent_TutorialPopup(int iPad, void *initData, U
 
 	m_bContainerMenuVisible = false;
 	m_bSplitscreenGamertagVisible = false;
+	m_iconType = e_ICON_TYPE_IGGY;
 
 	m_labelDescription.init(L"");
 }
@@ -63,6 +64,8 @@ void UIComponent_TutorialPopup::handleReload()
 	value[0].type = IGGY_DATATYPE_boolean;
 	value[0].boolval = (bool)((app.GetGameSettings(ProfileManager.GetPrimaryPad(),eGameSetting_DisplaySplitscreenGamertags)!=0) && !m_bContainerMenuVisible);	// 4J - TomK - Offset for splitscreen gamertag?
 	IggyResult out = IggyPlayerCallMethodRS ( getMovie() , &result, IggyPlayerRootPath( getMovie() ), m_funcAdjustLayout, 1 , value );
+
+	setupIconHolder(m_iconType);
 }
 
 void UIComponent_TutorialPopup::SetTutorialDescription(TutorialPopupInfo *info)
@@ -317,7 +320,7 @@ wstring UIComponent_TutorialPopup::_SetIcon(int icon, int iAuxVal, bool isFoil, 
 		}
 		else if(temp.find(L"{*StoneIcon*}")!=wstring::npos)
 		{
-			m_iconItem = shared_ptr<ItemInstance>(new ItemInstance(Tile::rock_Id,1,0));
+			m_iconItem = shared_ptr<ItemInstance>(new ItemInstance(Tile::stone_Id,1,0));
 		}
 		else
 		{
@@ -428,6 +431,7 @@ void UIComponent_TutorialPopup::UpdateInteractScenePosition(bool visible)
 	bool bAllowAnim=false;
 	bool isCraftingScene = (m_interactScene->getSceneType() == eUIScene_Crafting2x2Menu) || (m_interactScene->getSceneType() == eUIScene_Crafting3x3Menu);
 	bool isCreativeScene = (m_interactScene->getSceneType() == eUIScene_CreativeMenu);
+	bool isTradingScene = (m_interactScene->getSceneType() == eUIScene_TradingMenu);
 	switch(Minecraft::GetInstance()->localplayers[m_iPad]->m_iScreenSection)
 	{
 	case C4JRender::VIEWPORT_TYPE_FULLSCREEN:
@@ -437,7 +441,7 @@ void UIComponent_TutorialPopup::UpdateInteractScenePosition(bool visible)
 		break;
 	default:
 		// anim allowed for everything except the crafting 2x2 and 3x3, and the creative menu
-		if(!isCraftingScene && !isCreativeScene)
+		if(!isCraftingScene && !isCreativeScene && !isTradingScene)
 		{
 			bAllowAnim=true;
 		}
@@ -536,4 +540,6 @@ void UIComponent_TutorialPopup::setupIconHolder(EIcons icon)
 	value[0].type = IGGY_DATATYPE_number;
 	value[0].number = (F64)icon;
 	IggyResult out = IggyPlayerCallMethodRS ( getMovie() , &result, IggyPlayerRootPath( getMovie() ), m_funcSetupIconHolder , 1 , value );
+
+	m_iconType = icon;
 }

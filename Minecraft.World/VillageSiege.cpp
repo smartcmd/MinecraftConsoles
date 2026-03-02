@@ -135,7 +135,7 @@ bool VillageSiege::trySpawn()
 	//try
 	{
 		mob = shared_ptr<Zombie>( new Zombie(level) );
-		mob->finalizeMobSpawn();
+		mob->finalizeMobSpawn(NULL);
 		mob->setVillager(false);
 	}
 	//catch (Exception e) {

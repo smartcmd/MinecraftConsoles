@@ -33,24 +33,27 @@ int UIScene_LoadMenu::m_iDifficultyTitleSettingA[4]=
 
 int UIScene_LoadMenu::LoadSaveDataThumbnailReturned(LPVOID lpParam,PBYTE pbThumbnail,DWORD dwThumbnailBytes)
 {
-	UIScene_LoadMenu *pClass= (UIScene_LoadMenu *)lpParam;
+	UIScene_LoadMenu *pClass= (UIScene_LoadMenu *)ui.GetSceneFromCallbackId((size_t)lpParam);
 
-	app.DebugPrintf("Received data for a thumbnail\n");
-
-	if(pbThumbnail && dwThumbnailBytes)
+	if(pClass)
 	{
-		pClass->registerSubstitutionTexture(pClass->m_thumbnailName,pbThumbnail,dwThumbnailBytes);
+		app.DebugPrintf("Received data for a thumbnail\n");
 
-		pClass->m_pbThumbnailData = pbThumbnail;
-		pClass->m_uiThumbnailSize = dwThumbnailBytes;
-		pClass->m_bSaveThumbnailReady = true;
+		if(pbThumbnail && dwThumbnailBytes)
+		{
+			pClass->registerSubstitutionTexture(pClass->m_thumbnailName,pbThumbnail,dwThumbnailBytes);
+
+			pClass->m_pbThumbnailData = pbThumbnail;
+			pClass->m_uiThumbnailSize = dwThumbnailBytes;
+			pClass->m_bSaveThumbnailReady = true;
+		}
+		else
+		{
+			app.DebugPrintf("Thumbnail data is NULL, or has size 0\n");
+			pClass->m_bThumbnailGetFailed = true;
+		}
+		pClass->m_bRetrievingSaveThumbnail = false;
 	}
-	else
-	{
-		app.DebugPrintf("Thumbnail data is NULL, or has size 0\n");
-		pClass->m_bThumbnailGetFailed = true;
-	}
-	pClass->m_bRetrievingSaveThumbnail = false;
 
 	return 0;
 }
@@ -90,8 +93,10 @@ UIScene_LoadMenu::UIScene_LoadMenu(int iPad, void *initData, UILayer *parentLaye
 	m_iSaveGameInfoIndex=params->iSaveGameInfoIndex;
 	m_levelGen = params->levelGen;
 
-	m_bGameModeSurvival=true;
+	m_bGameModeCreative = false;
+	m_iGameModeId = GameType::SURVIVAL->getId();
 	m_bHasBeenInCreative = false;
+	m_bIsSaveOwner = true;
 
 	m_bSaveThumbnailReady = false;
 	m_bRetrievingSaveThumbnail = true;
@@ -103,6 +108,7 @@ UIScene_LoadMenu::UIScene_LoadMenu(int iPad, void *initData, UILayer *parentLaye
 	m_bRebuildTouchBoxes = false;
 	m_bThumbnailGetFailed = false;
 	m_seed = 0;
+	m_bIsCorrupt = false;
 
 	m_bMultiplayerAllowed = ProfileManager.IsSignedInLive( m_iPad ) && ProfileManager.AllowedToPlayMultiplayer(m_iPad);
 	// 4J-PB - read the settings for the online flag. We'll only save this setting if the user changed it.
@@ -136,29 +142,23 @@ UIScene_LoadMenu::UIScene_LoadMenu(int iPad, void *initData, UILayer *parentLaye
 		}	
 	}
 
-	
-#if defined _XBOX_ONE || defined __ORBIS__ || defined _WINDOWS64
-	if(getSceneResolution() == eSceneResolution_1080)
+	// Set up online game checkbox
+	bool bOnlineGame = m_MoreOptionsParams.bOnlineGame;
+	m_checkboxOnline.SetEnable(true);
+
+	// 4J-PB - to stop an offline game being able to select the online flag
+	if(ProfileManager.IsSignedInLive(m_iPad) == false)
 	{
-		// Set up online game checkbox
-		bool bOnlineGame = m_MoreOptionsParams.bOnlineGame;
-		m_checkboxOnline.SetEnable(true);
-
-		// 4J-PB - to stop an offline game being able to select the online flag
-		if(ProfileManager.IsSignedInLive(m_iPad) == false)
-		{
-			m_checkboxOnline.SetEnable(false);
-		}
-
-		if(m_MoreOptionsParams.bOnlineSettingChangedBySystem)
-		{
-			m_checkboxOnline.SetEnable(false);
-			bOnlineGame = false;
-		}
-
-		m_checkboxOnline.init(app.GetString(IDS_ONLINE_GAME), eControl_OnlineGame, bOnlineGame);
+		m_checkboxOnline.SetEnable(false);
 	}
-#endif
+
+	if(m_MoreOptionsParams.bOnlineSettingChangedBySystem)
+	{
+		m_checkboxOnline.SetEnable(false);
+		bOnlineGame = false;
+	}
+
+	m_checkboxOnline.init(app.GetString(IDS_ONLINE_GAME), eControl_OnlineGame, bOnlineGame);
 
 	// Level gen
 	if(m_levelGen)
@@ -185,8 +185,15 @@ UIScene_LoadMenu::UIScene_LoadMenu(int iPad, void *initData, UILayer *parentLaye
 			}
 		}
 		// Set this level as created in creative mode, so that people can't use the themed worlds as an easy way to get achievements
-		m_bHasBeenInCreative = true;
-		m_labelCreatedMode.setLabel( app.GetString(IDS_CREATED_IN_CREATIVE) );
+		m_bHasBeenInCreative = m_levelGen->getLevelHasBeenInCreative();
+		if(m_bHasBeenInCreative)
+		{
+			m_labelCreatedMode.setLabel( app.GetString(IDS_CREATED_IN_CREATIVE) );
+		}
+		else
+		{
+			m_labelCreatedMode.setLabel( app.GetString(IDS_CREATED_IN_SURVIVAL) );
+		}
 	}
 	else
 	{
@@ -225,17 +232,19 @@ UIScene_LoadMenu::UIScene_LoadMenu(int iPad, void *initData, UILayer *parentLaye
 #ifdef _DURANGO
 			// On Durango, we have an extra flag possible with LoadSaveDataThumbnail, which if true will force the loading of this thumbnail even if the save data isn't sync'd from
 			// the cloud at this stage. This could mean that there could be a pretty large delay before the callback happens, in this case.
-			C4JStorage::ESaveGameState eLoadStatus=StorageManager.LoadSaveDataThumbnail(&pSaveDetails->SaveInfoA[(int)m_iSaveGameInfoIndex],&LoadSaveDataThumbnailReturned,this,true);
+			C4JStorage::ESaveGameState eLoadStatus=StorageManager.LoadSaveDataThumbnail(&pSaveDetails->SaveInfoA[(int)m_iSaveGameInfoIndex],&LoadSaveDataThumbnailReturned,(LPVOID)GetCallbackUniqueId(),true);
 #else
-			C4JStorage::ESaveGameState eLoadStatus=StorageManager.LoadSaveDataThumbnail(&pSaveDetails->SaveInfoA[(int)m_iSaveGameInfoIndex],&LoadSaveDataThumbnailReturned,this);
+			C4JStorage::ESaveGameState eLoadStatus=StorageManager.LoadSaveDataThumbnail(&pSaveDetails->SaveInfoA[(int)m_iSaveGameInfoIndex],&LoadSaveDataThumbnailReturned,(LPVOID)GetCallbackUniqueId());
 #endif
 			m_bShowTimer = true;
 		}
 #if defined(_DURANGO) 
 		m_labelGameName.init(params->saveDetails->UTF16SaveName);
 #else
-
-		m_labelGameName.init(params->saveDetails->UTF8SaveName);
+        wchar_t wSaveName[128];
+        ZeroMemory(wSaveName, 128 * sizeof(wchar_t) );
+        mbstowcs(wSaveName, params->saveDetails->UTF8SaveName, strlen(params->saveDetails->UTF8SaveName)+1); // plus null
+		m_labelGameName.init(wSaveName);
 #endif
 #endif
 	}
@@ -457,12 +466,37 @@ void UIScene_LoadMenu::tick()
 			m_MoreOptionsParams.bTNT = app.GetGameHostOption(uiHostOptions,eGameHostOption_TNT)>0?TRUE:FALSE;
 			m_MoreOptionsParams.bHostPrivileges = app.GetGameHostOption(uiHostOptions,eGameHostOption_CheatsEnabled)>0?TRUE:FALSE;
 			m_MoreOptionsParams.bDisableSaving = app.GetGameHostOption(uiHostOptions,eGameHostOption_DisableSaving)>0?TRUE:FALSE;
+			m_MoreOptionsParams.currentWorldSize = (EGameHostOptionWorldSize)app.GetGameHostOption(uiHostOptions,eGameHostOption_WorldSize);
+			m_MoreOptionsParams.newWorldSize = m_MoreOptionsParams.currentWorldSize;
+
+			m_MoreOptionsParams.bMobGriefing = app.GetGameHostOption(uiHostOptions, eGameHostOption_MobGriefing);
+			m_MoreOptionsParams.bKeepInventory = app.GetGameHostOption(uiHostOptions, eGameHostOption_KeepInventory);
+			m_MoreOptionsParams.bDoMobSpawning = app.GetGameHostOption(uiHostOptions, eGameHostOption_DoMobSpawning);
+			m_MoreOptionsParams.bDoMobLoot = app.GetGameHostOption(uiHostOptions, eGameHostOption_DoMobLoot);
+			m_MoreOptionsParams.bDoTileDrops = app.GetGameHostOption(uiHostOptions, eGameHostOption_DoTileDrops);
+			m_MoreOptionsParams.bNaturalRegeneration = app.GetGameHostOption(uiHostOptions, eGameHostOption_NaturalRegeneration);
+			m_MoreOptionsParams.bDoDaylightCycle = app.GetGameHostOption(uiHostOptions, eGameHostOption_DoDaylightCycle);
+
+			bool cheatsOn = m_MoreOptionsParams.bHostPrivileges;
+			if (!cheatsOn)
+			{
+				// Set defaults
+				m_MoreOptionsParams.bMobGriefing = true;
+				m_MoreOptionsParams.bKeepInventory = false;
+				m_MoreOptionsParams.bDoMobSpawning = true;
+				m_MoreOptionsParams.bDoDaylightCycle = true;
+			}
 
 			// turn off creative mode on the save
 			// #ifdef _DEBUG
 			//  			uiHostOptions&=~GAME_HOST_OPTION_BITMASK_BEENINCREATIVE;
 			//  			app.SetGameHostOption(eGameHostOption_HasBeenInCreative, 0);
 			// #endif
+
+			if(app.GetGameHostOption(uiHostOptions,eGameHostOption_WasntSaveOwner)>0)
+			{
+				m_bIsSaveOwner = false;
+			}
 
 			m_bHasBeenInCreative = app.GetGameHostOption(uiHostOptions,eGameHostOption_HasBeenInCreative)>0;
 			if(app.GetGameHostOption(uiHostOptions,eGameHostOption_HasBeenInCreative)>0)
@@ -474,11 +508,27 @@ void UIScene_LoadMenu::tick()
 				m_labelCreatedMode.setLabel( app.GetString(IDS_CREATED_IN_SURVIVAL) );
 			}
 
-			if(app.GetGameHostOption(uiHostOptions,eGameHostOption_GameType)>0)
-			{			
+			switch(app.GetGameHostOption(uiHostOptions,eGameHostOption_GameType))
+			{
+			case 1: // Creative
 				m_buttonGamemode.setLabel(app.GetString(IDS_GAMEMODE_CREATIVE));
-				m_bGameModeSurvival=false;
-			}
+				m_bGameModeCreative=true;
+				m_iGameModeId = GameType::CREATIVE->getId();
+				break;
+#ifdef _ADVENTURE_MODE_ENABLED
+			case 2: // Adventure
+				m_buttonGamemode.setLabel(app.GetString(IDS_GAMEMODE_ADVENTURE));
+				m_bGameModeCreative=false;
+				m_iGameModeId = GameType::ADVENTURE->getId();
+				break;
+#endif
+			case 0: // Survival
+			default:
+				m_buttonGamemode.setLabel(app.GetString(IDS_GAMEMODE_SURVIVAL));
+				m_bGameModeCreative=false;
+				m_iGameModeId = GameType::SURVIVAL->getId();
+				break;
+			};
 
 			bool bGameSetting_Online=(app.GetGameSettings(m_iPad,eGameSetting_Online)!=0);
 			if(app.GetGameHostOption(uiHostOptions,eGameHostOption_FriendsOfFriends) && !(m_bMultiplayerAllowed && bGameSetting_Online))
@@ -545,7 +595,7 @@ void UIScene_LoadMenu::tick()
 				uiIDA[0]=IDS_PRO_NOTONLINE_DECLINE;
 
 				// Give the player a warning about the texture pack missing
-				ui.RequestMessageBox(IDS_PLAY_OFFLINE,IDS_NO_PLAYSTATIONPLUS, uiIDA, 1, ProfileManager.GetPrimaryPad(),&UIScene_LoadMenu::ContinueOffline,this,app.GetStringTable(), 0, 0, false);
+				ui.RequestAlertMessage(IDS_PLAY_OFFLINE,IDS_NO_PLAYSTATIONPLUS, uiIDA, 1, ProfileManager.GetPrimaryPad(),&UIScene_LoadMenu::ContinueOffline,this);
 			}
 		}
 		break;
@@ -599,7 +649,7 @@ void UIScene_LoadMenu::handleInput(int iPad, int key, bool repeat, bool pressed,
 		if ( pressed && controlHasFocus(m_checkboxOnline.getId()) && !m_checkboxOnline.IsEnabled() )
 		{
 			UINT uiIDA[1] = { IDS_CONFIRM_OK };
-			ui.RequestMessageBox(IDS_PRO_NOTONLINE_TITLE, IDS_PRO_XBOXLIVE_NOTIFICATION, uiIDA, 1, iPad, NULL, NULL, app.GetStringTable()); 
+			ui.RequestErrorMessage(IDS_PRO_NOTONLINE_TITLE, IDS_PRO_XBOXLIVE_NOTIFICATION, uiIDA, 1, iPad); 
 		}
 #endif
 
@@ -610,23 +660,19 @@ void UIScene_LoadMenu::handleInput(int iPad, int key, bool repeat, bool pressed,
 	case ACTION_MENU_OTHER_STICK_UP:
 	case ACTION_MENU_OTHER_STICK_DOWN:
 		sendInputToMovie(key, repeat, pressed, released);
-		
-#if defined _XBOX_ONE || defined __ORBIS__ || defined _WINDOWS64
-		if(getSceneResolution() == eSceneResolution_1080)
-		{
-			bool bOnlineGame = m_checkboxOnline.IsChecked();
-			if (m_MoreOptionsParams.bOnlineGame != bOnlineGame)
-			{
-				m_MoreOptionsParams.bOnlineGame = bOnlineGame;
 
-				if (!m_MoreOptionsParams.bOnlineGame)
-				{
-					m_MoreOptionsParams.bInviteOnly = false;
-					m_MoreOptionsParams.bAllowFriendsOfFriends = false;
-				}
+		bool bOnlineGame = m_checkboxOnline.IsChecked();
+		if (m_MoreOptionsParams.bOnlineGame != bOnlineGame)
+		{
+			m_MoreOptionsParams.bOnlineGame = bOnlineGame;
+
+			if (!m_MoreOptionsParams.bOnlineGame)
+			{
+				m_MoreOptionsParams.bInviteOnly = false;
+				m_MoreOptionsParams.bAllowFriendsOfFriends = false;
 			}
 		}
-#endif 
+
 		handled = true;
 		break;
 	}
@@ -642,16 +688,26 @@ void UIScene_LoadMenu::handlePress(F64 controlId, F64 childId)
 	switch((int)controlId)
 	{
 	case eControl_GameMode:
-		if(m_bGameModeSurvival)
+		switch(m_iGameModeId)
 		{
+		case 0: // Survival
 			m_buttonGamemode.setLabel(app.GetString(IDS_GAMEMODE_CREATIVE));
-			m_bGameModeSurvival=false;
-		}
-		else
-		{
+			m_iGameModeId = GameType::CREATIVE->getId();
+			m_bGameModeCreative = true;
+			break;
+		case 1: // Creative
+#ifdef _ADVENTURE_MODE_ENABLED
+			m_buttonGamemode.setLabel(app.GetString(IDS_GAMEMODE_ADVENTURE));
+			m_iGameModeId = GameType::ADVENTURE->getId();
+			m_bGameModeCreative = false;
+			break;
+		case 2: // Adventure
+#endif
 			m_buttonGamemode.setLabel(app.GetString(IDS_GAMEMODE_SURVIVAL));
-			m_bGameModeSurvival=true;
-		}
+			m_iGameModeId = GameType::SURVIVAL->getId();
+			m_bGameModeCreative = false;
+			break;
+		};
 		break;
 	case eControl_MoreOptions:
 		ui.NavigateToScene(m_iPad, eUIScene_LaunchMoreOptionsMenu, &m_MoreOptionsParams);
@@ -729,7 +785,7 @@ void UIScene_LoadMenu::StartSharedLaunchFlow()
 			uiIDA[1]=IDS_CONFIRM_CANCEL;
 
 			// Give the player a warning about the texture pack missing
-			ui.RequestMessageBox(IDS_DLC_TEXTUREPACK_NOT_PRESENT_TITLE, IDS_DLC_TEXTUREPACK_NOT_PRESENT, uiIDA, 2, ProfileManager.GetPrimaryPad(),&TexturePackDialogReturned,this,app.GetStringTable(),NULL,0,false);
+			ui.RequestAlertMessage(IDS_DLC_TEXTUREPACK_NOT_PRESENT_TITLE, IDS_DLC_TEXTUREPACK_NOT_PRESENT, uiIDA, 2, ProfileManager.GetPrimaryPad(),&TexturePackDialogReturned,this);
 			return;
 		}
 	}
@@ -799,13 +855,13 @@ void UIScene_LoadMenu::StartSharedLaunchFlow()
 				// trial pack warning
 				UINT uiIDA[1];
 				uiIDA[0]=IDS_CONFIRM_OK;
-				ui.RequestMessageBox(IDS_WARNING_DLC_TRIALTEXTUREPACK_TITLE, IDS_USING_TRIAL_TEXUREPACK_WARNING, uiIDA, 1, m_iPad,&TrialTexturePackWarningReturned,this,app.GetStringTable(),NULL,0,false);
+				ui.RequestAlertMessage(IDS_WARNING_DLC_TRIALTEXTUREPACK_TITLE, IDS_USING_TRIAL_TEXUREPACK_WARNING, uiIDA, 1, m_iPad,&TrialTexturePackWarningReturned,this);
 #elif defined(__PS3__) || defined(__ORBIS__) || defined(__PSVITA__)
 				// trial pack warning
 				UINT uiIDA[2];
 				uiIDA[0]=IDS_CONFIRM_OK;
 				uiIDA[1]=IDS_CONFIRM_CANCEL;
-				ui.RequestMessageBox(IDS_WARNING_DLC_TRIALTEXTUREPACK_TITLE, IDS_USING_TRIAL_TEXUREPACK_WARNING, uiIDA, 2, m_iPad,&TrialTexturePackWarningReturned,this,app.GetStringTable(),NULL,0,false);
+				ui.RequestAlertMessage(IDS_WARNING_DLC_TRIALTEXTUREPACK_TITLE, IDS_USING_TRIAL_TEXUREPACK_WARNING, uiIDA, 2, m_iPad,&TrialTexturePackWarningReturned,this);
 #endif
 
 #if defined _XBOX_ONE || defined __ORBIS__
@@ -815,11 +871,45 @@ void UIScene_LoadMenu::StartSharedLaunchFlow()
 			}
 		}			
 	}
+	app.SetGameHostOption(eGameHostOption_WasntSaveOwner, (!m_bIsSaveOwner)); 
 
 #if defined _XBOX_ONE || defined __ORBIS__
 	app.SetGameHostOption(eGameHostOption_DisableSaving, m_MoreOptionsParams.bDisableSaving?1:0);
-
 	StorageManager.SetSaveDisabled(m_MoreOptionsParams.bDisableSaving);
+
+	int newWorldSize = 0;
+	int newHellScale = 0;
+	switch(m_MoreOptionsParams.newWorldSize)
+	{
+	case e_worldSize_Unknown:	
+		newWorldSize = 0;
+		newHellScale = 0;
+		break;
+	case e_worldSize_Classic:	
+		newWorldSize = LEVEL_WIDTH_CLASSIC;	
+		newHellScale = HELL_LEVEL_SCALE_CLASSIC;
+		break;
+	case e_worldSize_Small:		
+		newWorldSize = LEVEL_WIDTH_SMALL;	
+		newHellScale = HELL_LEVEL_SCALE_SMALL;
+		break;
+	case e_worldSize_Medium:	
+		newWorldSize = LEVEL_WIDTH_MEDIUM;	
+		newHellScale = HELL_LEVEL_SCALE_MEDIUM;
+		break;
+	case e_worldSize_Large:		
+		newWorldSize = LEVEL_WIDTH_LARGE;	
+		newHellScale = HELL_LEVEL_SCALE_LARGE;
+		break;
+	default:
+		assert(0);
+		break;
+	}
+	bool bUseMoat = !m_MoreOptionsParams.newWorldSizeOverwriteEdges;
+	app.SetGameNewWorldSize(newWorldSize, bUseMoat);
+	app.SetGameNewHellScale(newHellScale);
+	app.SetGameHostOption(eGameHostOption_WorldSize, m_MoreOptionsParams.newWorldSize);
+
 #endif
 
 #if TO_BE_IMPLEMENTED
@@ -834,7 +924,7 @@ void UIScene_LoadMenu::StartSharedLaunchFlow()
 		uiIDA[0]=IDS_DONT_RESET_NETHER;
 		uiIDA[1]=IDS_RESET_NETHER;
 
-		ui.RequestMessageBox(IDS_RESETNETHER_TITLE, IDS_RESETNETHER_TEXT, uiIDA, 2, m_iPad,&UIScene_LoadMenu::CheckResetNetherReturned,this,app.GetStringTable(),NULL,0,false);
+		ui.RequestAlertMessage(IDS_RESETNETHER_TITLE, IDS_RESETNETHER_TEXT, uiIDA, 2, m_iPad,&UIScene_LoadMenu::CheckResetNetherReturned,this);
 	}
 	else
 	{
@@ -905,13 +995,9 @@ void UIScene_LoadMenu::handleTimerComplete(int id)
 					m_MoreOptionsParams.bInviteOnly = FALSE;
 					m_MoreOptionsParams.bAllowFriendsOfFriends = FALSE;
 				}
-#if defined _XBOX_ONE || defined __ORBIS__ || defined _WINDOWS64
-				if(getSceneResolution() == eSceneResolution_1080)
-				{
-					m_checkboxOnline.SetEnable(bMultiplayerAllowed);
-					m_checkboxOnline.setChecked(m_MoreOptionsParams.bOnlineGame);
-				}
-#endif
+
+				m_checkboxOnline.SetEnable(bMultiplayerAllowed);
+				m_checkboxOnline.setChecked(m_MoreOptionsParams.bOnlineGame);
 
 				m_bMultiplayerAllowed = bMultiplayerAllowed;
 			}
@@ -988,17 +1074,17 @@ void UIScene_LoadMenu::LaunchGame(void)
 	killTimer(CHECKFORAVAILABLETEXTUREPACKS_TIMER_ID);
 #endif
 
-	if( (m_bGameModeSurvival != true || m_bHasBeenInCreative) || m_MoreOptionsParams.bHostPrivileges == TRUE)
+	if( (m_bGameModeCreative == true || m_bHasBeenInCreative) || m_MoreOptionsParams.bHostPrivileges == TRUE)
 	{			
 		UINT uiIDA[2];
 		uiIDA[0]=IDS_CONFIRM_OK;
 		uiIDA[1]=IDS_CONFIRM_CANCEL;
-		if(m_bGameModeSurvival != true || m_bHasBeenInCreative)
+		if(m_bGameModeCreative == true || m_bHasBeenInCreative)
 		{
 			// 4J-PB - Need different text for Survival mode with a level that has been saved in Creative
-			if(m_bGameModeSurvival)
+			if(!m_bGameModeCreative)
 			{
-				ui.RequestMessageBox(IDS_TITLE_START_GAME, IDS_CONFIRM_START_SAVEDINCREATIVE, uiIDA, 2, m_iPad,&UIScene_LoadMenu::ConfirmLoadReturned,this,app.GetStringTable(),NULL,0,false);
+				ui.RequestAlertMessage(IDS_TITLE_START_GAME, IDS_CONFIRM_START_SAVEDINCREATIVE, uiIDA, 2, m_iPad,&UIScene_LoadMenu::ConfirmLoadReturned,this);
 			}
 			else // it's creative mode
 			{
@@ -1012,7 +1098,8 @@ void UIScene_LoadMenu::LaunchGame(void)
 
 					if(m_levelGen != NULL)
 					{
-						LoadLevelGen(m_levelGen);
+						m_bIsCorrupt = false;
+						LoadDataComplete(this);
 					}
 					else
 					{
@@ -1032,7 +1119,7 @@ void UIScene_LoadMenu::LaunchGame(void)
 							StorageManager.SetSaveDeviceSelected(m_iPad,false);
 							UINT uiIDA[1];
 							uiIDA[0]=IDS_OK;
-							ui.RequestMessageBox(IDS_STORAGEDEVICEPROBLEM_TITLE, IDS_FAILED_TO_LOADSAVE_TEXT, uiIDA, 1, m_iPad,&CScene_LoadGameSettings::DeviceRemovedDialogReturned,this);
+							ui.RequestErrorMessage(IDS_STORAGEDEVICEPROBLEM_TITLE, IDS_FAILED_TO_LOADSAVE_TEXT, uiIDA, 1, m_iPad,&CScene_LoadGameSettings::DeviceRemovedDialogReturned,this);
 
 						}
 #endif
@@ -1041,20 +1128,21 @@ void UIScene_LoadMenu::LaunchGame(void)
 				else
 				{
 					// ask if they're sure they want to turn this into a creative map
-					ui.RequestMessageBox(IDS_TITLE_START_GAME, IDS_CONFIRM_START_CREATIVE, uiIDA, 2, m_iPad,&UIScene_LoadMenu::ConfirmLoadReturned,this,app.GetStringTable(),NULL,0,false);
+					ui.RequestAlertMessage(IDS_TITLE_START_GAME, IDS_CONFIRM_START_CREATIVE, uiIDA, 2, m_iPad,&UIScene_LoadMenu::ConfirmLoadReturned,this);
 				}
 			}
 		}
 		else
 		{
-			ui.RequestMessageBox(IDS_TITLE_START_GAME, IDS_CONFIRM_START_HOST_PRIVILEGES, uiIDA, 2, m_iPad,&UIScene_LoadMenu::ConfirmLoadReturned,this,app.GetStringTable(),NULL,0,false);
+			ui.RequestAlertMessage(IDS_TITLE_START_GAME, IDS_CONFIRM_START_HOST_PRIVILEGES, uiIDA, 2, m_iPad,&UIScene_LoadMenu::ConfirmLoadReturned,this);
 		}
 	}
 	else
 	{
 		if(m_levelGen != NULL)
 		{
-			LoadLevelGen(m_levelGen);
+			m_bIsCorrupt = false;
+			LoadDataComplete(this);
 		}
 		else
 		{
@@ -1073,7 +1161,7 @@ void UIScene_LoadMenu::LaunchGame(void)
 				StorageManager.SetSaveDeviceSelected(m_iPad,false);
 				UINT uiIDA[1];
 				uiIDA[0]=IDS_OK;
-				ui.RequestMessageBox(IDS_STORAGEDEVICEPROBLEM_TITLE, IDS_FAILED_TO_LOADSAVE_TEXT, uiIDA, 1, m_iPad,&CScene_LoadGameSettings::DeviceRemovedDialogReturned,this);
+				ui.RequestErrorMessage(IDS_STORAGEDEVICEPROBLEM_TITLE, IDS_FAILED_TO_LOADSAVE_TEXT, uiIDA, 1, m_iPad,&CScene_LoadGameSettings::DeviceRemovedDialogReturned,this);
 			}
 #endif
 		}
@@ -1113,7 +1201,8 @@ int UIScene_LoadMenu::ConfirmLoadReturned(void *pParam,int iPad,C4JStorage::EMes
 	{
 		if(pClass->m_levelGen != NULL)
 		{
-			pClass->LoadLevelGen(pClass->m_levelGen);
+			pClass->m_bIsCorrupt = false;
+			pClass->LoadDataComplete(pClass);
 		}
 		else
 		{
@@ -1132,9 +1221,9 @@ int UIScene_LoadMenu::ConfirmLoadReturned(void *pParam,int iPad,C4JStorage::EMes
 				StorageManager.SetSaveDeviceSelected(m_iPad,false);
 				UINT uiIDA[1];
 				uiIDA[0]=IDS_OK;
-				ui.RequestMessageBox(IDS_STORAGEDEVICEPROBLEM_TITLE, IDS_FAILED_TO_LOADSAVE_TEXT, uiIDA, 1, m_iPad,&CScene_LoadGameSettings::DeviceRemovedDialogReturned,this);
+				ui.RequestErrorMessage(IDS_STORAGEDEVICEPROBLEM_TITLE, IDS_FAILED_TO_LOADSAVE_TEXT, uiIDA, 1, m_iPad,&CScene_LoadGameSettings::DeviceRemovedDialogReturned,this);
 			}
-#endif		
+#endif
 		}
 	}
 	else
@@ -1183,7 +1272,7 @@ int UIScene_LoadMenu::LoadDataComplete(void *pParam)
 				// 4J Stu - This is a bit messy and is due to the library incorrectly returning false for IsSignedInLive if the npAvailability isn't SCE_OK
 				UINT uiIDA[1];
 				uiIDA[0]=IDS_OK;
-				ui.RequestMessageBox(IDS_ONLINE_SERVICE_TITLE, IDS_CONTENT_RESTRICTION, uiIDA, 1, iPadNotSignedInLive, NULL, NULL, app.GetStringTable());
+				ui.RequestErrorMessage(IDS_ONLINE_SERVICE_TITLE, IDS_CONTENT_RESTRICTION, uiIDA, 1, iPadNotSignedInLive);
 			}
 			else
 			{
@@ -1191,14 +1280,14 @@ int UIScene_LoadMenu::LoadDataComplete(void *pParam)
 				UINT uiIDA[2];
 				uiIDA[0] = IDS_PRO_NOTONLINE_ACCEPT;
 				uiIDA[1] = IDS_CANCEL;
-				ui.RequestMessageBox( IDS_PRO_NOTONLINE_TITLE, IDS_PRO_NOTONLINE_TEXT, uiIDA, 2, iPadNotSignedInLive, &UIScene_LoadMenu::MustSignInReturnedPSN, pClass, app.GetStringTable(), NULL, 0, false);
+				ui.RequestAlertMessage( IDS_PRO_NOTONLINE_TITLE, IDS_PRO_NOTONLINE_TEXT, uiIDA, 2, iPadNotSignedInLive, &UIScene_LoadMenu::MustSignInReturnedPSN, pClass);
 			}
 		return 0;
 #else
 			pClass->m_bIgnoreInput=false;
 			UINT uiIDA[1];
 			uiIDA[0]=IDS_CONFIRM_OK;
-			ui.RequestMessageBox( IDS_PRO_NOTONLINE_TITLE, IDS_PRO_NOTONLINE_TEXT, uiIDA,1,ProfileManager.GetPrimaryPad(),NULL,NULL, app.GetStringTable(),NULL,0,false);
+			ui.RequestAlertMessage( IDS_PRO_NOTONLINE_TITLE, IDS_PRO_NOTONLINE_TEXT, uiIDA,1,ProfileManager.GetPrimaryPad());
 			return 0;
 #endif
 		}
@@ -1256,6 +1345,15 @@ int UIScene_LoadMenu::LoadDataComplete(void *pParam)
 			{
 				pClass->setVisible( true );
 				pClass->m_bIgnoreInput=false;
+
+				if(ProfileManager.RequestingPlaystationPlus(iPadWithNoPlaystationPlus))
+				{
+					// MGH -  added this so we don't try and upsell when we don't know if the player has PS Plus yet (if it can't connect to the PS Plus server).
+					UINT uiIDA[1];
+					uiIDA[0]=IDS_OK;
+					ui.RequestAlertMessage(IDS_ERROR_NETWORK_TITLE, IDS_ERROR_NETWORK, uiIDA, 1, ProfileManager.GetPrimaryPad(), NULL, NULL);
+					return 0;
+				}
 
 				// 4J-PB - we're not allowed to show the text Playstation Plus - have to call the upsell all the time!
 				// upsell psplus
@@ -1317,6 +1415,15 @@ int UIScene_LoadMenu::LoadDataComplete(void *pParam)
 				pClass->setVisible( true );
 				pClass->m_bIgnoreInput=false;
 
+				if(ProfileManager.RequestingPlaystationPlus(iPadWithNoPlaystationPlus))
+				{
+					// MGH -  added this so we don't try and upsell when we don't know if the player has PS Plus yet (if it can't connect to the PS Plus server).
+					UINT uiIDA[1];
+					uiIDA[0]=IDS_OK;
+					ui.RequestAlertMessage(IDS_ERROR_NETWORK_TITLE, IDS_ERROR_NETWORK, uiIDA, 1, ProfileManager.GetPrimaryPad(), NULL, NULL);
+					return 0;
+				}
+
 				// 4J-PB - we're not allowed to show the text Playstation Plus - have to call the upsell all the time!
 				// upsell psplus
 				int32_t iResult=sceNpCommerceDialogInitialize();
@@ -1357,7 +1464,7 @@ int UIScene_LoadMenu::LoadDataComplete(void *pParam)
 		UINT uiIDA[2];
 		uiIDA[0]=IDS_CONFIRM_CANCEL;
 		uiIDA[1]=IDS_CONFIRM_OK;
-		ui.RequestMessageBox(IDS_CORRUPT_OR_DAMAGED_SAVE_TITLE, IDS_CORRUPT_OR_DAMAGED_SAVE_TEXT, uiIDA, 2, pClass->m_iPad,&UIScene_LoadMenu::DeleteSaveDialogReturned,pClass, app.GetStringTable(),NULL,0,false);
+		ui.RequestAlertMessage(IDS_CORRUPT_OR_DAMAGED_SAVE_TITLE, IDS_CORRUPT_OR_DAMAGED_SAVE_TEXT, uiIDA, 2, pClass->m_iPad,&UIScene_LoadMenu::DeleteSaveDialogReturned,pClass);
 
 	}
 
@@ -1369,6 +1476,14 @@ int UIScene_LoadMenu::LoadSaveDataReturned(void *pParam,bool bIsCorrupt, bool bI
 	UIScene_LoadMenu* pClass = (UIScene_LoadMenu*)pParam;
 
 	pClass->m_bIsCorrupt=bIsCorrupt;
+
+#if defined(__PS3__) || defined(__ORBIS__) || defined (__PSVITA__)
+	if(app.GetGameHostOption(eGameHostOption_WasntSaveOwner))
+	{
+		bIsOwner = false;
+	}
+#endif
+
 	if(bIsOwner)
 	{
 		LoadDataComplete(pClass);
@@ -1382,8 +1497,9 @@ int UIScene_LoadMenu::LoadSaveDataReturned(void *pParam,bool bIsCorrupt, bool bI
 		// show the message that trophies are disabled
 		UINT uiIDA[1];
 		uiIDA[0]=IDS_CONFIRM_OK;
-		ui.RequestMessageBox(IDS_SAVEDATA_COPIED_TITLE, IDS_SAVEDATA_COPIED_TEXT, uiIDA, 1, 
-			pClass->m_iPad,&UIScene_LoadMenu::TrophyDialogReturned,pClass, app.GetStringTable());
+		ui.RequestErrorMessage(IDS_SAVEDATA_COPIED_TITLE, IDS_SAVEDATA_COPIED_TEXT, uiIDA, 1, 
+			pClass->m_iPad,&UIScene_LoadMenu::TrophyDialogReturned,pClass);
+		app.SetGameHostOption(eGameHostOption_WasntSaveOwner, true);
 #endif
 	}
 
@@ -1427,9 +1543,18 @@ int UIScene_LoadMenu::DeleteSaveDataReturned(void *pParam,bool bSuccess)
 // 4J Stu - Shared functionality that is the same whether we needed a quadrant sign-in or not
 void UIScene_LoadMenu::StartGameFromSave(UIScene_LoadMenu* pClass, DWORD dwLocalUsersMask)
 {
-	INT saveOrCheckpointId = 0;
-	bool validSave = StorageManager.GetSaveUniqueNumber(&saveOrCheckpointId);
-	TelemetryManager->RecordLevelResume(pClass->m_iPad, eSen_FriendOrMatch_Playing_With_Invited_Friends, eSen_CompeteOrCoop_Coop_and_Competitive, app.GetGameSettings(pClass->m_iPad,eGameSetting_Difficulty), app.GetLocalPlayerCount(), g_NetworkManager.GetOnlinePlayerCount(), saveOrCheckpointId);
+	if(pClass->m_levelGen == NULL)
+	{
+		INT saveOrCheckpointId = 0;
+		bool validSave = StorageManager.GetSaveUniqueNumber(&saveOrCheckpointId);
+		TelemetryManager->RecordLevelResume(pClass->m_iPad, eSen_FriendOrMatch_Playing_With_Invited_Friends, eSen_CompeteOrCoop_Coop_and_Competitive, app.GetGameSettings(pClass->m_iPad,eGameSetting_Difficulty), app.GetLocalPlayerCount(), g_NetworkManager.GetOnlinePlayerCount(), saveOrCheckpointId);
+	}
+	else
+	{		
+		StorageManager.ResetSaveData();
+		// Make our next save default to the name of the level
+		StorageManager.SetSaveTitle(pClass->m_levelGen->getDefaultSaveName().c_str());
+	}
 
 	bool isClientSide = ProfileManager.IsSignedInLive(ProfileManager.GetPrimaryPad()) && pClass->m_MoreOptionsParams.bOnlineGame;
 #ifdef __PSVITA__
@@ -1446,7 +1571,8 @@ void UIScene_LoadMenu::StartGameFromSave(UIScene_LoadMenu* pClass, DWORD dwLocal
 
 	NetworkGameInitData *param = new NetworkGameInitData();
 	param->seed = pClass->m_seed;
-	param->saveData = NULL;
+	param->saveData = NULL;	
+	param->levelGen = pClass->m_levelGen;
 	param->texturePackId = pClass->m_MoreOptionsParams.dwTexturePack;
 
 	Minecraft *pMinecraft = Minecraft::GetInstance();
@@ -1467,12 +1593,26 @@ void UIScene_LoadMenu::StartGameFromSave(UIScene_LoadMenu* pClass, DWORD dwLocal
 	app.SetGameHostOption(eGameHostOption_HostCanChangeHunger,pClass->m_MoreOptionsParams.bHostPrivileges);
 	app.SetGameHostOption(eGameHostOption_HostCanBeInvisible,pClass->m_MoreOptionsParams.bHostPrivileges );
 
+	app.SetGameHostOption(eGameHostOption_MobGriefing, pClass->m_MoreOptionsParams.bMobGriefing);
+	app.SetGameHostOption(eGameHostOption_KeepInventory, pClass->m_MoreOptionsParams.bKeepInventory);
+	app.SetGameHostOption(eGameHostOption_DoMobSpawning, pClass->m_MoreOptionsParams.bDoMobSpawning);
+	app.SetGameHostOption(eGameHostOption_DoMobLoot, pClass->m_MoreOptionsParams.bDoMobLoot);
+	app.SetGameHostOption(eGameHostOption_DoTileDrops, pClass->m_MoreOptionsParams.bDoTileDrops);
+	app.SetGameHostOption(eGameHostOption_NaturalRegeneration, pClass->m_MoreOptionsParams.bNaturalRegeneration);
+	app.SetGameHostOption(eGameHostOption_DoDaylightCycle, pClass->m_MoreOptionsParams.bDoDaylightCycle);
+
+#ifdef _LARGE_WORLDS
+	app.SetGameHostOption(eGameHostOption_WorldSize, pClass->m_MoreOptionsParams.worldSize+1 );  // 0 is GAME_HOST_OPTION_WORLDSIZE_UNKNOWN
+#endif
+// 	app.SetGameNewWorldSize(64, true );
+//	app.SetGameNewWorldSize(0, false );
+
 	// flag if the user wants to reset the Nether to force a Fortress with netherwart etc.
 	app.SetResetNether((pClass->m_MoreOptionsParams.bResetNether==TRUE)?true:false);
 	// clear out the app's terrain features list
 	app.ClearTerrainFeaturePosition();
 
-	app.SetGameHostOption(eGameHostOption_GameType,pClass->m_bGameModeSurvival?GameType::SURVIVAL->getId():GameType::CREATIVE->getId() );
+	app.SetGameHostOption(eGameHostOption_GameType,pClass->m_iGameModeId );
 
 	g_NetworkManager.HostGame(dwLocalUsersMask,isClientSide,isPrivate,MINECRAFT_NET_MAX_PLAYERS,0);
 
@@ -1508,119 +1648,12 @@ void UIScene_LoadMenu::checkStateAndStartGame()
 		uiIDA[0]=IDS_DONT_RESET_NETHER;
 		uiIDA[1]=IDS_RESET_NETHER;
 
-		ui.RequestMessageBox(IDS_RESETNETHER_TITLE, IDS_RESETNETHER_TEXT, uiIDA, 2, m_iPad,&UIScene_LoadMenu::CheckResetNetherReturned,this,app.GetStringTable(),NULL,0,false);
+		ui.RequestAlertMessage(IDS_RESETNETHER_TITLE, IDS_RESETNETHER_TEXT, uiIDA, 2, m_iPad,&UIScene_LoadMenu::CheckResetNetherReturned,this);
 	}
 	else
 	{
 		LaunchGame();
 	}
-}
-
-void UIScene_LoadMenu::LoadLevelGen(LevelGenerationOptions *levelGen)
-{
-	bool isClientSide = ProfileManager.IsSignedInLive(ProfileManager.GetPrimaryPad()) && m_MoreOptionsParams.bOnlineGame;
-
-	// 4J Stu - If we only have one controller connected, then don't show the sign-in UI again
-	DWORD connectedControllers = 0;
-	for(unsigned int i = 0; i < XUSER_MAX_COUNT; ++i)
-	{
-		if( InputManager.IsPadConnected(i) || ProfileManager.IsSignedIn(i) ) ++connectedControllers;
-	}
-
-	if(!isClientSide || connectedControllers == 1 || !RenderManager.IsHiDef())
-	{
-
-		// Check if user-created content is allowed, as we cannot play multiplayer if it's not
-		bool noUGC = false;
-		BOOL pccAllowed = TRUE;
-		BOOL pccFriendsAllowed = TRUE;
-
-		ProfileManager.AllowedPlayerCreatedContent(ProfileManager.GetPrimaryPad(),false,&pccAllowed,&pccFriendsAllowed);
-		if(!pccAllowed && !pccFriendsAllowed) noUGC = true;
-
-		if(isClientSide && noUGC )
-		{
-			m_bIgnoreInput=false;
-			UINT uiIDA[1];
-			uiIDA[0]=IDS_CONFIRM_OK;
-			ui.RequestMessageBox( IDS_FAILED_TO_CREATE_GAME_TITLE, IDS_NO_USER_CREATED_CONTENT_PRIVILEGE_CREATE, uiIDA,1,ProfileManager.GetPrimaryPad(),NULL,NULL, app.GetStringTable(),NULL,0,false);
-			return;
-		}
-
-	}
-
-	DWORD dwLocalUsersMask = 0;
-
-	dwLocalUsersMask |= CGameNetworkManager::GetLocalPlayerMask(ProfileManager.GetPrimaryPad());
-	// Load data from disc
-	//File saveFile( L"Tutorial\\Tutorial" );
-	//LoadSaveFromDisk(&saveFile);
-
-	StorageManager.ResetSaveData();
-	// Make our next save default to the name of the level
-	StorageManager.SetSaveTitle(levelGen->getDefaultSaveName().c_str());
-
-	bool isPrivate = (app.GetGameSettings(m_iPad,eGameSetting_InviteOnly)>0)?true:false;
-
-	g_NetworkManager.HostGame(dwLocalUsersMask,isClientSide,isPrivate,MINECRAFT_NET_MAX_PLAYERS,0);
-
-	NetworkGameInitData *param = new NetworkGameInitData();
-	param->seed = 0;
-	param->saveData = NULL;
-	param->levelGen = levelGen;
-
-	if(levelGen->requiresTexturePack())
-	{
-		param->texturePackId = levelGen->getRequiredTexturePackId();
-
-		Minecraft *pMinecraft = Minecraft::GetInstance();
-		pMinecraft->skins->selectTexturePackById(param->texturePackId);
-		//pMinecraft->skins->updateUI();
-	}
-
-
-	app.SetGameHostOption(eGameHostOption_Difficulty,Minecraft::GetInstance()->options->difficulty);
-	app.SetGameHostOption(eGameHostOption_FriendsOfFriends,app.GetGameSettings(m_iPad,eGameSetting_FriendsOfFriends));
-	app.SetGameHostOption(eGameHostOption_Gamertags,app.GetGameSettings(m_iPad,eGameSetting_GamertagsVisible));
-
-	app.SetGameHostOption(eGameHostOption_BedrockFog,app.GetGameSettings(m_iPad,eGameSetting_BedrockFog)?1:0);
-
-	app.SetGameHostOption(eGameHostOption_PvP,m_MoreOptionsParams.bPVP);
-	app.SetGameHostOption(eGameHostOption_TrustPlayers,m_MoreOptionsParams.bTrust );
-	app.SetGameHostOption(eGameHostOption_FireSpreads,m_MoreOptionsParams.bFireSpreads );
-	app.SetGameHostOption(eGameHostOption_TNT,m_MoreOptionsParams.bTNT );
-	app.SetGameHostOption(eGameHostOption_HostCanFly,m_MoreOptionsParams.bHostPrivileges);
-	app.SetGameHostOption(eGameHostOption_HostCanChangeHunger,m_MoreOptionsParams.bHostPrivileges);
-	app.SetGameHostOption(eGameHostOption_HostCanBeInvisible,m_MoreOptionsParams.bHostPrivileges );
-
-	// flag if the user wants to reset the Nether to force a Fortress with netherwart etc.
-	app.SetResetNether((m_MoreOptionsParams.bResetNether==TRUE)?true:false);
-	// clear out the app's terrain features list
-	app.ClearTerrainFeaturePosition();
-
-	app.SetGameHostOption(eGameHostOption_GameType,m_bGameModeSurvival?GameType::SURVIVAL->getId():GameType::CREATIVE->getId() );
-
-	param->settings = app.GetGameHostOption( eGameHostOption_All );
-
-#ifndef _XBOX
-	g_NetworkManager.FakeLocalPlayerJoined();
-#endif
-
-	LoadingInputParams *loadingParams = new LoadingInputParams();
-	loadingParams->func = &CGameNetworkManager::RunNetworkGameThreadProc;
-	loadingParams->lpParam = (LPVOID)param;
-
-	// Reset the autosave time
-	app.SetAutosaveTimerTime();
-
-	UIFullscreenProgressCompletionData *completionData = new UIFullscreenProgressCompletionData();
-	completionData->bShowBackground=TRUE;
-	completionData->bShowLogo=TRUE;
-	completionData->type = e_ProgressCompletion_CloseAllPlayersUIScenes;
-	completionData->iPad = DEFAULT_XUI_MENU_USER;
-	loadingParams->completionData = completionData;
-
-	ui.NavigateToScene(ProfileManager.GetPrimaryPad(),eUIScene_FullscreenProgress, loadingParams);
 }
 
 int UIScene_LoadMenu::StartGame_SignInReturned(void *pParam,bool bContinue, int iPad)
@@ -1670,7 +1703,7 @@ int UIScene_LoadMenu::StartGame_SignInReturned(void *pParam,bool bContinue, int 
 					// 4J Stu - This is a bit messy and is due to the library incorrectly returning false for IsSignedInLive if the npAvailability isn't SCE_OK
 					UINT uiIDA[1];
 					uiIDA[0]=IDS_OK;
-					ui.RequestMessageBox(IDS_ONLINE_SERVICE_TITLE, IDS_CONTENT_RESTRICTION, uiIDA, 1, iPadNotSignedInLive, NULL, NULL, app.GetStringTable());
+					ui.RequestErrorMessage(IDS_ONLINE_SERVICE_TITLE, IDS_CONTENT_RESTRICTION, uiIDA, 1, iPadNotSignedInLive);
 				}
 				else
 				{
@@ -1678,14 +1711,14 @@ int UIScene_LoadMenu::StartGame_SignInReturned(void *pParam,bool bContinue, int 
 					UINT uiIDA[2];
 					uiIDA[0] = IDS_PRO_NOTONLINE_ACCEPT;
 					uiIDA[1] = IDS_CANCEL;
-					ui.RequestMessageBox( IDS_PRO_NOTONLINE_TITLE, IDS_PRO_NOTONLINE_TEXT, uiIDA, 2, iPadNotSignedInLive, &UIScene_LoadMenu::MustSignInReturnedPSN, pClass, app.GetStringTable(), NULL, 0, false);
+					ui.RequestAlertMessage( IDS_PRO_NOTONLINE_TITLE, IDS_PRO_NOTONLINE_TEXT, uiIDA, 2, iPadNotSignedInLive, &UIScene_LoadMenu::MustSignInReturnedPSN, pClass);
 				}
 				return 0;
 #else
 				pClass->m_bIgnoreInput=false;
 				UINT uiIDA[1];
 				uiIDA[0]=IDS_CONFIRM_OK;
-				ui.RequestMessageBox( IDS_PRO_NOTONLINE_TITLE, IDS_PRO_NOTONLINE_TEXT, uiIDA,1,ProfileManager.GetPrimaryPad(),NULL,NULL, app.GetStringTable(),NULL,0,false);
+				ui.RequestAlertMessage( IDS_PRO_NOTONLINE_TITLE, IDS_PRO_NOTONLINE_TEXT, uiIDA,1,ProfileManager.GetPrimaryPad());
 				return 0;
 #endif
 			}
@@ -1706,7 +1739,7 @@ int UIScene_LoadMenu::StartGame_SignInReturned(void *pParam,bool bContinue, int 
 					pClass->setVisible( true );
 					UINT uiIDA[1];
 					uiIDA[0]=IDS_CONFIRM_OK;
-					ui.RequestMessageBox( IDS_FAILED_TO_CREATE_GAME_TITLE, IDS_NO_USER_CREATED_CONTENT_PRIVILEGE_CREATE, uiIDA,1,ProfileManager.GetPrimaryPad(),NULL,NULL, app.GetStringTable(),NULL,0,false);
+					ui.RequestAlertMessage( IDS_FAILED_TO_CREATE_GAME_TITLE, IDS_NO_USER_CREATED_CONTENT_PRIVILEGE_CREATE, uiIDA,1,ProfileManager.GetPrimaryPad());
 				}
 				else
 				{
@@ -1714,7 +1747,7 @@ int UIScene_LoadMenu::StartGame_SignInReturned(void *pParam,bool bContinue, int 
 					pClass->setVisible( true );
 					UINT uiIDA[1];
 					uiIDA[0]=IDS_CONFIRM_OK;
-					ui.RequestMessageBox( IDS_NO_MULTIPLAYER_PRIVILEGE_TITLE, IDS_NO_MULTIPLAYER_PRIVILEGE_HOST_TEXT, uiIDA,1,ProfileManager.GetPrimaryPad(),NULL,NULL, app.GetStringTable(),NULL,0,false);
+					ui.RequestAlertMessage( IDS_NO_MULTIPLAYER_PRIVILEGE_TITLE, IDS_NO_MULTIPLAYER_PRIVILEGE_HOST_TEXT, uiIDA,1,ProfileManager.GetPrimaryPad());
 				}
 			}
 			else
@@ -1754,13 +1787,7 @@ void UIScene_LoadMenu::handleGainFocus(bool navBack)
 {
 	if(navBack)
 	{
-		
-#if defined _XBOX_ONE || defined __ORBIS__ || defined _WINDOWS64
-		if(getSceneResolution() == eSceneResolution_1080)
-		{
-			m_checkboxOnline.setChecked(m_MoreOptionsParams.bOnlineGame == TRUE);
-		}
-#endif
+		m_checkboxOnline.setChecked(m_MoreOptionsParams.bOnlineGame == TRUE);
 	}
 }
 

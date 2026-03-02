@@ -4,9 +4,9 @@
 class ItemFrameRenderer : public EntityRenderer
 {
 private:
+	static ResourceLocation MAP_BACKGROUND_LOCATION;
 	Icon *backTexture;
 
-	//@Override
 public:
 	void registerTerrainTextures(IconRegister *iconRegister);
 	virtual void render(shared_ptr<Entity> _itemframe, double x, double y, double z, float rot, float a); 

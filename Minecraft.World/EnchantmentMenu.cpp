@@ -17,9 +17,9 @@ EnchantmentMenu::EnchantmentMenu(shared_ptr<Inventory> inventory, Level *level, 
 	}
 
 	this->level = level;
-	this->x = xt;
-	this->y = yt;
-	this->z = zt;
+	x = xt;
+	y = yt;
+	z = zt;
 	addSlot(new EnchantmentSlot(enchantSlots, 0, 21 + 4, 43 + 4));
 
 	for (int y = 0; y < 3; y++)
@@ -53,9 +53,9 @@ void EnchantmentMenu::broadcastChanges()
 	// 4J Added m_costsChanged to stop continually sending update packets even when no changes have been made
 	if(m_costsChanged)
 	{
-		for (int i = 0; i < containerListeners->size(); i++)
+		for (int i = 0; i < containerListeners.size(); i++)
 		{
-			ContainerListener *listener = containerListeners->at(i);
+			ContainerListener *listener = containerListeners.at(i);
 			listener->setContainerData(this, 0, costs[0]);
 			listener->setContainerData(this, 1, costs[1]);
 			listener->setContainerData(this, 2, costs[2]);
@@ -162,7 +162,7 @@ bool EnchantmentMenu::clickMenuButton(shared_ptr<Player> player, int i)
 			vector<EnchantmentInstance *> *newEnchantment = EnchantmentHelper::selectEnchantment(&random, item, costs[i]);
 			if (newEnchantment != NULL)
 			{
-				player->withdrawExperienceLevels(costs[i]);
+				player->giveExperienceLevels(-costs[i]);
 				if (isBook) item->id = Item::enchantedBook_Id;
 				int randomIndex = isBook ? random.nextInt(newEnchantment->size()) : -1;
 				//for (EnchantmentInstance e : newEnchantment)
@@ -216,8 +216,8 @@ bool EnchantmentMenu::stillValid(shared_ptr<Player> player)
 shared_ptr<ItemInstance> EnchantmentMenu::quickMoveStack(shared_ptr<Player> player, int slotIndex)
 {
 	shared_ptr<ItemInstance> clicked = nullptr;
-	Slot *slot = slots->at(slotIndex);
-	Slot *IngredientSlot = slots->at(INGREDIENT_SLOT);
+	Slot *slot = slots.at(slotIndex);
+	Slot *IngredientSlot = slots.at(INGREDIENT_SLOT);
 
 	if (slot != NULL && slot->hasItem())
 	{

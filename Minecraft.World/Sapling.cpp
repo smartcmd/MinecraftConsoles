@@ -6,11 +6,11 @@
 
 #include "Sapling.h"
 
-const unsigned int Sapling::SAPLING_NAMES[SAPLING_NAMES_SIZE] = {	IDS_TILE_SAPLING_OAK,
-													IDS_TILE_SAPLING_SPRUCE,
-													IDS_TILE_SAPLING_BIRCH,
-													IDS_TILE_SAPLING_JUNGLE
-												};
+int Sapling::SAPLING_NAMES[SAPLING_NAMES_SIZE] = {	IDS_TILE_SAPLING_OAK,
+	IDS_TILE_SAPLING_SPRUCE,
+	IDS_TILE_SAPLING_BIRCH,
+	IDS_TILE_SAPLING_JUNGLE
+};
 
 const wstring Sapling::TEXTURE_NAMES[] = {L"sapling", L"sapling_spruce", L"sapling_birch", L"sapling_jungle"};
 
@@ -37,15 +37,7 @@ void Sapling::tick(Level *level, int x, int y, int z, Random *random)
 	{
 		if (random->nextInt(7) == 0)
 		{
-			int data = level->getData(x, y, z);
-			if ((data & AGE_BIT) == 0)
-			{
-				level->setData(x, y, z, data | AGE_BIT);
-			}
-			else
-			{
-				growTree(level, x, y, z, random);
-			}
+			advanceTree(level, x, y, z, random);
 		}
 	}
 }
@@ -54,6 +46,19 @@ Icon *Sapling::getTexture(int face, int data)
 {
 	data = data & TYPE_MASK;
 	return icons[data];
+}
+
+void Sapling::advanceTree(Level *level, int x, int y, int z, Random *random)
+{
+	int data = level->getData(x, y, z);
+	if ((data & AGE_BIT) == 0)
+	{
+		level->setData(x, y, z, data | AGE_BIT, Tile::UPDATE_NONE);
+	}
+	else
+	{
+		growTree(level, x, y, z, random);
+	}
 }
 
 void Sapling::growTree(Level *level, int x, int y, int z, Random *random)
@@ -80,14 +85,12 @@ void Sapling::growTree(Level *level, int x, int y, int z, Random *random)
 		{
 			for (oz = 0; oz >= -1; oz--)
 			{
-				if (isSapling(level, x + ox, y, z + oz, TYPE_JUNGLE) &&
-					isSapling(level, x + ox + 1, y, z + oz, TYPE_JUNGLE) &&
-					isSapling(level, x + ox, y, z + oz + 1, TYPE_JUNGLE) &&
-					isSapling(level, x + ox + 1, y, z + oz + 1, TYPE_JUNGLE))
+				if (isSapling(level, x + ox, y, z + oz, TYPE_JUNGLE) && isSapling(level, x + ox + 1, y, z + oz, TYPE_JUNGLE) && isSapling(level, x + ox, y, z + oz + 1, TYPE_JUNGLE)
+					&& isSapling(level, x + ox + 1, y, z + oz + 1, TYPE_JUNGLE))
 				{
-						f = new MegaTreeFeature(true, 10 + random->nextInt(20), TreeTile::JUNGLE_TRUNK, LeafTile::JUNGLE_LEAF);
-						multiblock = true;
-						break;
+					f = new MegaTreeFeature(true, 10 + random->nextInt(20), TreeTile::JUNGLE_TRUNK, LeafTile::JUNGLE_LEAF);
+					multiblock = true;
+					break;
 				}
 			}
 			if (f != NULL)
@@ -112,27 +115,27 @@ void Sapling::growTree(Level *level, int x, int y, int z, Random *random)
 	}
 	if (multiblock)
 	{
-		level->setTileNoUpdate(x + ox, y, z + oz, 0);
-		level->setTileNoUpdate(x + ox + 1, y, z + oz, 0);
-		level->setTileNoUpdate(x + ox, y, z + oz + 1, 0);
-		level->setTileNoUpdate(x + ox + 1, y, z + oz + 1, 0);
+		level->setTileAndData(x + ox, y, z + oz, 0, 0, Tile::UPDATE_NONE);
+		level->setTileAndData(x + ox + 1, y, z + oz, 0, 0, Tile::UPDATE_NONE);
+		level->setTileAndData(x + ox, y, z + oz + 1, 0, 0, Tile::UPDATE_NONE);
+		level->setTileAndData(x + ox + 1, y, z + oz + 1, 0, 0, Tile::UPDATE_NONE);
 	}
 	else
 	{
-		level->setTileNoUpdate(x, y, z, 0);
+		level->setTileAndData(x, y, z, 0, 0, Tile::UPDATE_NONE);
 	}
 	if (!f->place(level, random, x + ox, y, z + oz))
 	{
 		if (multiblock)
 		{
-			level->setTileAndDataNoUpdate(x + ox, y, z + oz, this->id, data);
-			level->setTileAndDataNoUpdate(x + ox + 1, y, z + oz, this->id, data);
-			level->setTileAndDataNoUpdate(x + ox, y, z + oz + 1, this->id, data);
-			level->setTileAndDataNoUpdate(x + ox + 1, y, z + oz + 1, this->id, data);
+			level->setTileAndData(x + ox, y, z + oz, id, data, Tile::UPDATE_NONE);
+			level->setTileAndData(x + ox + 1, y, z + oz, id, data, Tile::UPDATE_NONE);
+			level->setTileAndData(x + ox, y, z + oz + 1, id, data, Tile::UPDATE_NONE);
+			level->setTileAndData(x + ox + 1, y, z + oz + 1, id, data, Tile::UPDATE_NONE);
 		}
 		else
 		{
-			level->setTileAndDataNoUpdate(x, y, z, this->id, data);
+			level->setTileAndData(x, y, z, id, data, Tile::UPDATE_NONE);
 		}
 	}
 	if( f != NULL )

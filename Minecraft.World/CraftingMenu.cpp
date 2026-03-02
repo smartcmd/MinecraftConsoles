@@ -23,9 +23,9 @@ CraftingMenu::CraftingMenu(shared_ptr<Inventory> inventory, Level *level, int xt
 	resultSlots = shared_ptr<ResultContainer>( new ResultContainer() );
 
 	this->level = level;
-	this->x = xt;
-	this->y = yt;
-	this->z = zt;
+	x = xt;
+	y = yt;
+	z = zt;
 	addSlot(new ResultSlot( inventory->player, craftSlots, resultSlots, 0, 120 + 4, 31 + 4));
 
 	for (int y = 0; y < 3; y++)
@@ -81,7 +81,7 @@ bool CraftingMenu::stillValid(shared_ptr<Player> player)
 shared_ptr<ItemInstance> CraftingMenu::quickMoveStack(shared_ptr<Player> player, int slotIndex)
 {
 	shared_ptr<ItemInstance> clicked = nullptr;
-	Slot *slot = slots->at(slotIndex);
+	Slot *slot = slots.at(slotIndex);
 	if (slot != NULL && slot->hasItem())
 	{
 		shared_ptr<ItemInstance> stack = slot->getItem();
@@ -135,4 +135,9 @@ shared_ptr<ItemInstance> CraftingMenu::quickMoveStack(shared_ptr<Player> player,
 		}
 	}
 	return clicked;
+}
+
+bool CraftingMenu::canTakeItemForPickAll(shared_ptr<ItemInstance> carried, Slot *target)
+{
+	return target->container != resultSlots && AbstractContainerMenu::canTakeItemForPickAll(carried, target);
 }

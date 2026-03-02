@@ -19,7 +19,7 @@ void ThrownPotion::_init()
 	// the derived version of the function is called
 	this->defineSynchedData();
 
-	potionValue = 0;
+	potionItem = nullptr;
 }
 
 ThrownPotion::ThrownPotion(Level *level) : Throwable(level)
@@ -27,17 +27,32 @@ ThrownPotion::ThrownPotion(Level *level) : Throwable(level)
 	_init();
 }
 
-ThrownPotion::ThrownPotion(Level *level, shared_ptr<Mob> mob, int potionValue) : Throwable(level,mob)
+ThrownPotion::ThrownPotion(Level *level, shared_ptr<LivingEntity> mob, int potionValue) : Throwable(level,mob)
 {
 	_init();
 
-	this->potionValue = potionValue;
+	potionItem = shared_ptr<ItemInstance>( new ItemInstance(Item::potion, 1, potionValue));
+}
+
+ThrownPotion::ThrownPotion(Level *level, shared_ptr<LivingEntity> mob, shared_ptr<ItemInstance> potion) : Throwable(level, mob)
+{
+	_init();
+
+	potionItem = potion;
 }
 
 ThrownPotion::ThrownPotion(Level *level, double x, double y, double z, int potionValue) : Throwable(level,x,y,z)
 {
 	_init();
-	this->potionValue = potionValue;
+
+	potionItem = shared_ptr<ItemInstance>( new ItemInstance(Item::potion, 1, potionValue));
+}
+
+ThrownPotion::ThrownPotion(Level *level, double x, double y, double z, shared_ptr<ItemInstance> potion) : Throwable(level, x, y, z)
+{
+	_init();
+
+	potionItem = potion;
 }
 
 float ThrownPotion::getGravity()
@@ -57,24 +72,26 @@ float ThrownPotion::getThrowUpAngleOffset()
 
 void ThrownPotion::setPotionValue(int potionValue)
 {
-	this->potionValue = potionValue;
+	if (potionItem == NULL) potionItem = shared_ptr<ItemInstance>( new ItemInstance(Item::potion, 1, 0) );
+	potionItem->setAuxValue(potionValue);
 }
 
 int ThrownPotion::getPotionValue()
 {
-	return potionValue;
+	if (potionItem == NULL) potionItem = shared_ptr<ItemInstance>( new ItemInstance(Item::potion, 1, 0) );
+	return potionItem->getAuxValue();
 }
 
 void ThrownPotion::onHit(HitResult *res)
 {
 	if (!level->isClientSide)
 	{
-		vector<MobEffectInstance *> *mobEffects = Item::potion->getMobEffects(potionValue);
+		vector<MobEffectInstance *> *mobEffects = Item::potion->getMobEffects(potionItem);
 
 		if (mobEffects != NULL && !mobEffects->empty())
 		{
 			AABB *aoe = bb->grow(SPLASH_RANGE, SPLASH_RANGE / 2, SPLASH_RANGE);
-			vector<shared_ptr<Entity> > *entitiesOfClass = level->getEntitiesOfClass(typeid(Mob), aoe);
+			vector<shared_ptr<Entity> > *entitiesOfClass = level->getEntitiesOfClass(typeid(LivingEntity), aoe);
 
 			if (entitiesOfClass != NULL && !entitiesOfClass->empty())
 			{
@@ -82,7 +99,7 @@ void ThrownPotion::onHit(HitResult *res)
 				for(AUTO_VAR(it, entitiesOfClass->begin()); it != entitiesOfClass->end(); ++it)
 				{
 					//shared_ptr<Entity> e = *it;
-					shared_ptr<Mob> e = dynamic_pointer_cast<Mob>( *it );
+					shared_ptr<LivingEntity> e = dynamic_pointer_cast<LivingEntity>( *it );
 					double dist = distanceToSqr(e);
 					if (dist < SPLASH_RANGE_SQ)
 					{
@@ -99,7 +116,7 @@ void ThrownPotion::onHit(HitResult *res)
 							int id = effect->getId();
 							if (MobEffect::effects[id]->isInstantenous())
 							{
-								MobEffect::effects[id]->applyInstantenousEffect(this->owner, e, effect->getAmplifier(), scale);
+								MobEffect::effects[id]->applyInstantenousEffect(getOwner(), e, effect->getAmplifier(), scale);
 							}
 							else
 							{
@@ -115,7 +132,7 @@ void ThrownPotion::onHit(HitResult *res)
 			}
 			delete entitiesOfClass;
 		}
-		level->levelEvent(LevelEvent::PARTICLES_POTION_SPLASH, (int) Math::round(x), (int) Math::round(y), (int) Math::round(z), potionValue);
+		level->levelEvent(LevelEvent::PARTICLES_POTION_SPLASH, (int) Math::round(x), (int) Math::round(y), (int) Math::round(z), getPotionValue() );
 
 		remove();
 	}
@@ -125,12 +142,21 @@ void ThrownPotion::readAdditionalSaveData(CompoundTag *tag)
 {
 	Throwable::readAdditionalSaveData(tag);
 
-	potionValue = tag->getInt(L"potionValue");
+	if (tag->contains(L"Potion"))
+	{
+		potionItem = ItemInstance::fromTag(tag->getCompound(L"Potion"));
+	}
+	else
+	{
+		setPotionValue(tag->getInt(L"potionValue"));
+	}
+
+	if (potionItem == NULL) remove();
 }
 
 void ThrownPotion::addAdditonalSaveData(CompoundTag *tag)
 {
 	Throwable::addAdditonalSaveData(tag);
 
-	tag->putInt(L"potionValue", potionValue);
+	if (potionItem != NULL) tag->putCompound(L"Potion", potionItem->save(new CompoundTag()));
 }

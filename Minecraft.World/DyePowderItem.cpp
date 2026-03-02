@@ -62,8 +62,8 @@ const unsigned int DyePowderItem::COLOR_USE_DESCS[] =
 };
 
 const wstring DyePowderItem::COLOR_TEXTURES[] =
-{ L"dyePowder_black", L"dyePowder_red", L"dyePowder_green", L"dyePowder_brown", L"dyePowder_blue", L"dyePowder_purple", L"dyePowder_cyan", L"dyePowder_silver", L"dyePowder_gray", L"dyePowder_pink",
-L"dyePowder_lime", L"dyePowder_yellow", L"dyePowder_lightBlue", L"dyePowder_magenta", L"dyePowder_orange", L"dyePowder_white"};
+{ L"black", L"red", L"green", L"brown", L"blue", L"purple", L"cyan", L"silver", L"gray", L"pink",
+L"lime", L"yellow", L"light_blue", L"magenta", L"orange", L"white"};
 
 const int DyePowderItem::COLOR_RGB[] =
 {
@@ -73,8 +73,8 @@ const int DyePowderItem::COLOR_RGB[] =
 	0x51301a,
 	0x253192,
 	0x7b2fbe,
-	0xababab,
 	0x287697,
+	0xababab,
 	0x434343,
 	0xd88198,
 	0x41cd34,
@@ -121,137 +121,16 @@ unsigned int DyePowderItem::getUseDescriptionId(shared_ptr<ItemInstance> itemIns
 
 bool DyePowderItem::useOn(shared_ptr<ItemInstance> itemInstance, shared_ptr<Player> player, Level *level, int x, int y, int z, int face, float clickX, float clickY, float clickZ, bool bTestUseOnOnly) 
 {
-	if (!player->mayBuild(x, y, z)) return false;
+	if (!player->mayUseItemAt(x, y, z, face, itemInstance)) return false;
 
 	// 4J-PB - Adding a test only version to allow tooltips to be displayed
 	if (itemInstance->getAuxValue() == WHITE) 
 	{
 		// bone meal is a fertilizer, so instantly grow trees and stuff
 
-		int tile = level->getTile(x, y, z);
-		if (tile == Tile::sapling_Id) 
+		if (growCrop(itemInstance, level, x, y, z, bTestUseOnOnly))
 		{
-			if(!bTestUseOnOnly)
-			{	
-				if (!level->isClientSide) 
-				{
-					((Sapling *) Tile::sapling)->growTree(level, x, y, z, level->random);
-					itemInstance->count--;
-				}
-			}
-			return true;
-		}
-		else if (tile == Tile::mushroom1_Id || tile == Tile::mushroom2_Id)
-		{
-			if(!bTestUseOnOnly)
-			{
-				if (!level->isClientSide)
-				{
-					if (((Mushroom *) Tile::tiles[tile])->growTree(level, x, y, z, level->random))
-					{
-						itemInstance->count--;
-					}
-				}
-			}
-			return true;
-		}
-		else if (tile == Tile::melonStem_Id || tile == Tile::pumpkinStem_Id)
-		{
-			if (level->getData(x, y, z) == 7) return false;
-			if(!bTestUseOnOnly)
-			{
-				if (!level->isClientSide)
-				{
-					((StemTile *) Tile::tiles[tile])->growCropsToMax(level, x, y, z);
-					itemInstance->count--;
-				}
-			}
-			return true;
-		} 
-		else if (tile == Tile::carrots_Id || tile == Tile::potatoes_Id)
-		{
-			if (level->getData(x, y, z) == 7) return false;
-			if(!bTestUseOnOnly)
-			{
-				if (!level->isClientSide) 
-				{
-					((CropTile *) Tile::tiles[tile])->growCropsToMax(level, x, y, z);
-					itemInstance->count--;
-				}
-			}
-			return true;
-		}
-		else if (tile == Tile::crops_Id) 
-		{
-			if (level->getData(x, y, z) == 7) return false;
-			if(!bTestUseOnOnly)
-			{	
-				if (!level->isClientSide) 
-				{
-					((CropTile *) Tile::crops)->growCropsToMax(level, x, y, z);
-					itemInstance->count--;
-				}
-			}
-			return true;
-		}
-		else if (tile == Tile::cocoa_Id)
-		{
-			if(!bTestUseOnOnly)
-			{
-				if (!level->isClientSide)
-				{
-					level->setData(x, y, z, (2 << 2) | DirectionalTile::getDirection(level->getData(x, y, z)));
-					itemInstance->count--;
-				}
-			}
-			return true;
-		} 
-		else if (tile == Tile::grass_Id) 
-		{
-			if(!bTestUseOnOnly)
-			{	
-				if (!level->isClientSide) 
-				{
-					itemInstance->count--;
-
-					for (int j = 0; j < 128; j++) 
-					{
-						int xx = x;
-						int yy = y + 1;
-						int zz = z;
-						for (int i = 0; i < j / 16; i++) 
-						{
-							xx += random->nextInt(3) - 1;
-							yy += (random->nextInt(3) - 1) * random->nextInt(3) / 2;
-							zz += random->nextInt(3) - 1;
-							if (level->getTile(xx, yy - 1, zz) != Tile::grass_Id || level->isSolidBlockingTile(xx, yy, zz)) 
-							{
-								goto mainloop;
-							}
-						}
-
-						if (level->getTile(xx, yy, zz) == 0) 
-						{
-							if (random->nextInt(10) != 0) 
-							{
-								if (Tile::tallgrass->canSurvive(level, xx, yy, zz)) level->setTileAndData(xx, yy, zz, Tile::tallgrass_Id, TallGrass::TALL_GRASS);
-							} 
-							else if (random->nextInt(3) != 0) 
-							{
-								if (Tile::flower->canSurvive(level, xx, yy, zz)) level->setTile(xx, yy, zz, Tile::flower_Id);
-							} 
-							else 
-							{
-								if (Tile::rose->canSurvive(level, xx, yy, zz)) level->setTile(xx, yy, zz, Tile::rose_Id);
-							}
-						}
-
-						// 4J - Stops infinite loops.
-mainloop: continue;
-					}
-				}
-			}
-
+			if (!level->isClientSide) level->levelEvent(LevelEvent::PARTICLES_PLANT_GROWTH, x, y, z, 0);
 			return true;
 		}
 	}
@@ -276,7 +155,7 @@ mainloop: continue;
 				if (level->isEmptyTile(x, y, z))
 				{
 					int cocoaData = Tile::tiles[Tile::cocoa_Id]->getPlacedOnFaceDataValue(level, x, y, z, face, clickX, clickY, clickZ, 0);
-					level->setTileAndData(x, y, z, Tile::cocoa_Id, cocoaData);
+					level->setTileAndData(x, y, z, Tile::cocoa_Id, cocoaData, Tile::UPDATE_CLIENTS);
 					if (!player->abilities.instabuild)
 					{
 						itemInstance->count--;
@@ -289,13 +168,165 @@ mainloop: continue;
 	return false;
 }
 
-bool DyePowderItem::interactEnemy(shared_ptr<ItemInstance> itemInstance, shared_ptr<Mob> mob) 
+bool DyePowderItem::growCrop(shared_ptr<ItemInstance> itemInstance, Level *level, int x, int y, int z, bool bTestUseOnOnly)
+{
+	int tile = level->getTile(x, y, z);
+	if (tile == Tile::sapling_Id) 
+	{
+		if(!bTestUseOnOnly)
+		{	
+			if (!level->isClientSide) 
+			{
+				if (level->random->nextFloat() < 0.45) ((Sapling *) Tile::sapling)->advanceTree(level, x, y, z, level->random);
+				itemInstance->count--;
+			}
+		}
+		return true;
+	}
+	else if (tile == Tile::mushroom_brown_Id || tile == Tile::mushroom_red_Id)
+	{
+		if(!bTestUseOnOnly)
+		{
+			if (!level->isClientSide)
+			{
+				if (level->random->nextFloat() < 0.4) ((Mushroom *) Tile::tiles[tile])->growTree(level, x, y, z, level->random);
+				itemInstance->count--;
+			}
+		}
+		return true;
+	}
+	else if (tile == Tile::melonStem_Id || tile == Tile::pumpkinStem_Id)
+	{
+		if (level->getData(x, y, z) == 7) return false;
+		if(!bTestUseOnOnly)
+		{
+			if (!level->isClientSide)
+			{
+				((StemTile *) Tile::tiles[tile])->growCrops(level, x, y, z);
+				itemInstance->count--;
+			}
+		}
+		return true;
+	} 
+	else if (tile == Tile::carrots_Id || tile == Tile::potatoes_Id)
+	{
+		if (level->getData(x, y, z) == 7) return false;
+		if(!bTestUseOnOnly)
+		{
+			if (!level->isClientSide) 
+			{
+				((CropTile *) Tile::tiles[tile])->growCrops(level, x, y, z);
+				itemInstance->count--;
+			}
+		}
+		return true;
+	}
+	else if (tile == Tile::wheat_Id) 
+	{
+		if (level->getData(x, y, z) == 7) return false;
+		if(!bTestUseOnOnly)
+		{	
+			if (!level->isClientSide) 
+			{
+				((CropTile *) Tile::tiles[tile])->growCrops(level, x, y, z);
+				itemInstance->count--;
+			}
+		}
+		return true;
+	}
+	else if (tile == Tile::cocoa_Id)
+	{
+		if(!bTestUseOnOnly)
+		{
+			int data = level->getData(x, y, z);
+			int direction = DirectionalTile::getDirection(data);
+			int age = CocoaTile::getAge(data);
+			if (age >= 2) return false;
+			if (!level->isClientSide)
+			{
+				age++;
+				level->setData(x, y, z, (age << 2) | direction, Tile::UPDATE_CLIENTS);
+				itemInstance->count--;
+			}
+		}
+		return true;
+	} 
+	else if (tile == Tile::grass_Id) 
+	{
+		if(!bTestUseOnOnly)
+		{	
+			if (!level->isClientSide) 
+			{
+				itemInstance->count--;
+
+				for (int j = 0; j < 128; j++) 
+				{
+					int xx = x;
+					int yy = y + 1;
+					int zz = z;
+					for (int i = 0; i < j / 16; i++) 
+					{
+						xx += random->nextInt(3) - 1;
+						yy += (random->nextInt(3) - 1) * random->nextInt(3) / 2;
+						zz += random->nextInt(3) - 1;
+						if (level->getTile(xx, yy - 1, zz) != Tile::grass_Id || level->isSolidBlockingTile(xx, yy, zz)) 
+						{
+							goto mainloop;
+						}
+					}
+
+					if (level->getTile(xx, yy, zz) == 0) 
+					{
+						if (random->nextInt(10) != 0) 
+						{
+							if (Tile::tallgrass->canSurvive(level, xx, yy, zz)) level->setTileAndData(xx, yy, zz, Tile::tallgrass_Id, TallGrass::TALL_GRASS, Tile::UPDATE_ALL);
+						} 
+						else if (random->nextInt(3) != 0) 
+						{
+							if (Tile::flower->canSurvive(level, xx, yy, zz)) level->setTileAndUpdate(xx, yy, zz, Tile::flower_Id);
+						} 
+						else 
+						{
+							if (Tile::rose->canSurvive(level, xx, yy, zz)) level->setTileAndUpdate(xx, yy, zz, Tile::rose_Id);
+						}
+					}
+
+					// 4J - Stops infinite loops.
+mainloop: continue;
+				}
+			}
+		}
+
+		return true;
+	}
+	return false;
+}
+
+void DyePowderItem::addGrowthParticles(Level *level, int x, int y, int z, int count)
+{
+    int id = level->getTile(x, y, z);
+    if (count == 0) count = 15;
+    Tile *tile = id > 0 && id < Tile::TILE_NUM_COUNT ? Tile::tiles[id] : NULL;
+
+    if (tile == NULL) return;
+    tile->updateShape(level, x, y, z);
+
+    for (int i = 0; i < count; i++)
+	{
+        double xa = level->random->nextGaussian() * 0.02;
+        double ya = level->random->nextGaussian() * 0.02;
+        double za = level->random->nextGaussian() * 0.02;
+        level->addParticle(eParticleType_happyVillager, x + level->random->nextFloat(), y + level->random->nextFloat() * tile->getShapeY1(), z + level->random->nextFloat(), xa, ya, za);
+    }
+}
+
+bool DyePowderItem::interactEnemy(shared_ptr<ItemInstance> itemInstance, shared_ptr<Player> player, shared_ptr<LivingEntity> mob) 
 {
 	if (dynamic_pointer_cast<Sheep>( mob ) != NULL) 
 	{
 		shared_ptr<Sheep> sheep = dynamic_pointer_cast<Sheep>(mob);
 		// convert to tile-based color value (0 is white instead of black)
-		int newColor = ClothTile::getTileDataForItemAuxValue(itemInstance->getAuxValue());
+		int newColor = ColoredTile::getTileDataForItemAuxValue(itemInstance->getAuxValue());
 		if (!sheep->isSheared() && sheep->getColor() != newColor) 
 		{
 			sheep->setColor(newColor);
@@ -312,6 +343,6 @@ void DyePowderItem::registerIcons(IconRegister *iconRegister)
 
 	for (int i = 0; i < DYE_POWDER_ITEM_TEXTURE_COUNT; i++)
 	{
-		icons[i] = iconRegister->registerIcon(COLOR_TEXTURES[i]);
+		icons[i] = iconRegister->registerIcon(getIconName() + L"_" + COLOR_TEXTURES[i]);
 	}
 }

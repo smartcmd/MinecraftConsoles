@@ -12,7 +12,7 @@ EGameCommand EnchantItemCommand::getId()
 
 int EnchantItemCommand::getPermissionLevel()
 {
-	return 0; //aLEVEL_GAMEMASTERS;
+	return LEVEL_GAMEMASTERS;
 }
 
 void EnchantItemCommand::execute(shared_ptr<CommandSender> source, byteArray commandData)

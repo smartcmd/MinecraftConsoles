@@ -86,7 +86,7 @@ LayerArray Layer::getDefaultLayers(__int64 seed, LevelType *levelType)
 
 #ifndef _CONTENT_PACKAGE
 #ifdef _BIOME_OVERRIDE
-	if(app.DebugSettingsOn() && app.GetGameSettingsDebugMask(ProfileManager.GetPrimaryPad())&(1L<<eDebugSetting_EnableHeightWaterBiomeOverride))
+	if(app.DebugSettingsOn() && app.GetGameSettingsDebugMask(ProfileManager.GetPrimaryPad())&(1L<<eDebugSetting_EnableBiomeOverride))
 	{
 		biomeLayer = shared_ptr<BiomeOverrideLayer>(new BiomeOverrideLayer(1));
 	}

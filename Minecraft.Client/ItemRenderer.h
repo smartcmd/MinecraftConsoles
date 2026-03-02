@@ -19,6 +19,8 @@ public:
     ItemRenderer();
 	virtual ~ItemRenderer();
     virtual void render(shared_ptr<Entity> _itemEntity, double x, double y, double z, float rot, float a);
+	virtual ResourceLocation *getTextureLocation(shared_ptr<Entity> entity);
+	virtual ResourceLocation *getTextureLocation(int iconType);
 
 private:
 	virtual void renderItemBillboard(shared_ptr<ItemEntity> entity, Icon *icon, int count, float a, float red, float green, float blue);

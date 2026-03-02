@@ -26,7 +26,7 @@ public:
 
 	static void prepare(shared_ptr<Player> player, bool mirror);
 
-	static TilePos *getCameraTilePos(shared_ptr<Mob> player, double alpha);
-	static Vec3 *getCameraPos(shared_ptr<Mob> player, double alpha);
-	static int getBlockAt(Level *level, shared_ptr<Mob> player, float alpha);
+	static TilePos *getCameraTilePos(shared_ptr<LivingEntity> player, double alpha);
+	static Vec3 *getCameraPos(shared_ptr<LivingEntity> player, double alpha);
+	static int getBlockAt(Level *level, shared_ptr<LivingEntity> player, float alpha);
 };

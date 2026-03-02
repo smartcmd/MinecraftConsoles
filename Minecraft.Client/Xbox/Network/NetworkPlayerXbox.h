@@ -11,8 +11,9 @@ public:
 	// Common player interface
 	NetworkPlayerXbox(IQNetPlayer *qnetPlayer);
 	virtual unsigned char GetSmallId();
-	virtual void SendData(INetworkPlayer *player, const void *pvData, int dataSize, bool lowPriority);
+	virtual void SendData(INetworkPlayer *player, const void *pvData, int dataSize, bool lowPriority, bool ack);
 	virtual bool IsSameSystem(INetworkPlayer *player);
+	virtual int GetOutstandingAckCount();
 	virtual int GetSendQueueSizeBytes( INetworkPlayer *player, bool lowPriority );
 	virtual int GetSendQueueSizeMessages( INetworkPlayer *player, bool lowPriority );
 	virtual int GetCurrentRtt();
@@ -30,10 +31,13 @@ public:
 	virtual const wchar_t *GetOnlineName();
 	virtual std::wstring GetDisplayName();
 	virtual PlayerUID GetUID();
+	virtual void SentChunkPacket();
+	virtual int GetTimeSinceLastChunkPacket_ms();
 
 	// Extra xbox-specific things
 	IQNetPlayer *GetQNetPlayer();
 private:
 	IQNetPlayer *m_qnetPlayer;
 	Socket *m_pSocket;
+	__int64 m_lastChunkPacketTime;
 };

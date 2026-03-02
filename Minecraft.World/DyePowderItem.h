@@ -43,7 +43,9 @@ public:
 	virtual unsigned int getDescriptionId(shared_ptr<ItemInstance> itemInstance);
 	virtual unsigned int getUseDescriptionId(shared_ptr<ItemInstance> itemInstance);
 	virtual bool useOn(shared_ptr<ItemInstance> itemInstance, shared_ptr<Player> player, Level *level, int x, int y, int z, int face, float clickX, float clickY, float clickZ, bool bTestUseOnOnly=false);
-	virtual bool interactEnemy(shared_ptr<ItemInstance> itemInstance, shared_ptr<Mob> mob);
+	static bool growCrop(shared_ptr<ItemInstance> itemInstance, Level *level, int x, int y, int z, bool bTestUseOnOnly);
+	static void addGrowthParticles(Level *level, int x, int y, int z, int count);
+	virtual bool interactEnemy(shared_ptr<ItemInstance> itemInstance, shared_ptr<Player> player, shared_ptr<LivingEntity> mob);
 
 	//@Override
     void registerIcons(IconRegister *iconRegister);

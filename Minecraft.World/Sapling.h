@@ -18,7 +18,7 @@ public:
 
 	static const int SAPLING_NAMES_SIZE = 4;
 
-	static const unsigned int SAPLING_NAMES[SAPLING_NAMES_SIZE];
+	static int SAPLING_NAMES[SAPLING_NAMES_SIZE];
 
 private:
 	static const wstring TEXTURE_NAMES[];
@@ -32,11 +32,11 @@ protected:
 	Sapling(int id);
 
 public:
-    virtual void updateDefaultShape(); // 4J Added override
-	void tick(Level *level, int x, int y, int z, Random *random);
+	virtual void updateDefaultShape(); // 4J Added override
+	virtual void tick(Level *level, int x, int y, int z, Random *random);
 
-	Icon *getTexture(int face, int data);
-
+	virtual Icon *getTexture(int face, int data);
+	virtual void advanceTree(Level *level, int x, int y, int z, Random *random);
 	void growTree(Level *level, int x, int y, int z, Random *random);
 
 	virtual unsigned int getDescriptionId(int iData = -1);

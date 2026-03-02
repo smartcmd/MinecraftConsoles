@@ -1,15 +1,17 @@
 #pragma once
-
 #include "Model.h"
 #include "TileRenderer.h"
 #include "Tesselator.h"
 #include "Textures.h"
 #include "ItemInHandRenderer.h"
+#include "ResourceLocation.h"
+
 class Tile;
 class Entity;
 class Level;
 class AABB;
 class IconRegister;
+class ResourceLocation;
 
 using namespace std;
 
@@ -24,7 +26,11 @@ protected:
 	EntityRenderDispatcher *entityRenderDispatcher;
 
 private:
-	Model *model;			// 4J - TODO - check why exactly this is here, it seems to get shadowed by classes inheriting from this by their own
+	static ResourceLocation SHADOW_LOCATION;
+
+protected:
+	Model *model;			// TODO 4J: Check why exactly this is here, it seems to get shadowed by classes inheriting from this by their own
+
 protected:
     TileRenderer *tileRenderer;	// 4J - changed to protected so derived classes can use instead of shadowing their own
 
@@ -38,11 +44,12 @@ public:
 public:
 	virtual void render(shared_ptr<Entity> entity, double x, double y, double z, float rot, float a) = 0;
 protected:
-	virtual void bindTexture(int resourceName);	// 4J - added
-	virtual void bindTexture(const wstring& resourceName);
+	virtual void bindTexture(shared_ptr<Entity> entity);
+    virtual void bindTexture(ResourceLocation *location);
+	virtual bool bindTexture(const wstring& urlTexture, int backupTexture);
+	virtual bool bindTexture(const wstring& urlTexture, const wstring& backupTexture);
 
-    virtual bool bindTexture(const wstring& urlTexture, int backupTexture);			// 4J added
-	virtual bool bindTexture(const wstring& urlTexture, const wstring& backupTexture);	
+	virtual ResourceLocation *getTextureLocation(shared_ptr<Entity> mob);
 private:
 	virtual void renderFlame(shared_ptr<Entity> e, double x, double y, double z, float a);
     virtual void renderShadow(shared_ptr<Entity> e, double x, double y, double z, float pow, float a);

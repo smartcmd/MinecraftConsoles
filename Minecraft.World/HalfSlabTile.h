@@ -5,11 +5,9 @@
 
 class HalfSlabTile : public Tile 
 {
-
-
 public:
- 	static const int TYPE_MASK = 7;
- 	static const int TOP_SLOT_BIT = 8;
+	static const int TYPE_MASK = 7;
+	static const int TOP_SLOT_BIT = 8;
 
 protected:
 	bool fullSize;
@@ -30,4 +28,6 @@ private:
 public:
 	virtual int getAuxName(int auxValue) = 0;
 
+	virtual int cloneTileData(Level *level, int x, int y, int z);
+	virtual int cloneTileId(Level *level, int x, int y, int z);
 };

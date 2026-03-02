@@ -133,7 +133,9 @@ void ConsoleSaveFileConverter::ConvertSave(ConsoleSaveFile *sourceSave, ConsoleS
 
 	if(progress)
 	{
+#ifndef _WINDOWS64
 		progress->progressStage(IDS_SAVETRANSFER_STAGE_CONVERTING);
+#endif
 	}
 
 	// Overworld
@@ -167,10 +169,11 @@ void ConsoleSaveFileConverter::ConvertSave(ConsoleSaveFile *sourceSave, ConsoleS
 					bos.flush();
 					dos->close();
 					dos->deleteChildStream();
-					delete dos;
+					delete dos;			
+					dis->deleteChildStream();
+					delete dis;
 				}
 
-				delete dis;
 
 				++currentProgress;
 				if(progress) progress->progressStagePercentage( (currentProgress*100)/progressTarget);
@@ -212,9 +215,10 @@ void ConsoleSaveFileConverter::ConvertSave(ConsoleSaveFile *sourceSave, ConsoleS
 					dos->close();
 					dos->deleteChildStream();
 					delete dos;
+					dis->deleteChildStream();
+					delete dis;
 				}
 
-				delete dis;
 
 				++currentProgress;
 				if(progress) progress->progressStagePercentage((currentProgress*100)/progressTarget);
@@ -254,9 +258,10 @@ void ConsoleSaveFileConverter::ConvertSave(ConsoleSaveFile *sourceSave, ConsoleS
 					dos->close();
 					dos->deleteChildStream();
 					delete dos;
+					dis->deleteChildStream();
+					delete dis;
 				}
 
-				delete dis;
 
 				++currentProgress;
 				if(progress) progress->progressStagePercentage((currentProgress*100)/progressTarget);

@@ -18,9 +18,9 @@ Pos::Pos(int x, int y, int z)
 
 Pos::Pos(Pos *position)
 {
-	this->x = position->x;
-	this->y = position->y;
-	this->z = position->z;
+	x = position->x;
+	y = position->y;
+	z = position->z;
 }
 
 //@Override
@@ -71,9 +71,9 @@ void Pos::set(int x, int y, int z)
 
 void Pos::set(Pos *pos)
 {
-	this->x = pos->x;
-	this->y = pos->y;
-	this->z = pos->z;
+	x = pos->x;
+	y = pos->y;
+	z = pos->z;
 }
 
 Pos *Pos::above()
@@ -145,93 +145,93 @@ void Pos::move(int x, int y, int z)
 
 void Pos::move(Pos pos)
 {
-	this->x += pos.x;
-	this->y += pos.y;
-	this->z += pos.z;
+	x += pos.x;
+	y += pos.y;
+	z += pos.z;
 }
 
 void Pos::moveX(int steps) 
 {
-	this->x += steps;
+	x += steps;
 }
 
 void Pos::moveY(int steps)
 {
-	this->y += steps;
+	y += steps;
 }
 
 void Pos::moveZ(int steps)
 {
-	this->z += steps;
+	z += steps;
 }
 
 void Pos::moveUp(int steps)
 {
-	this->y += steps;
+	y += steps;
 }
 
 void Pos::moveUp()
 {
-	this->y++;
+	y++;
 }
 
 void Pos::moveDown(int steps)
 {
-	this->y -= steps;
+	y -= steps;
 }
 
 void Pos::moveDown()
 {
-	this->y--;
+	y--;
 }
 
 void Pos::moveEast(int steps)
 {
-	this->x += steps;
+	x += steps;
 }
 
 void Pos::moveEast()
 {
-	this->x++;
+	x++;
 }
 
 void Pos::moveWest(int steps)
 {
-	this->x -= steps;
+	x -= steps;
 }
 
 void Pos::moveWest()
 {
-	this->x--;
+	x--;
 }
 
 void Pos::moveNorth(int steps)
 {
-	this->z -= steps;
+	z -= steps;
 }
 
 void Pos::moveNorth()
 {
-	this->z--;
+	z--;
 }
 
 void Pos::moveSouth(int steps)
 {
-	this->z += steps;
+	z += steps;
 }
 
 void Pos::moveSouth()
 {
-	this->z++;
+	z++;
 }
 
 double Pos::dist(int x, int y, int z)
 {
-	int dx = this->x - x;
-	int dy = this->y - y;
-	int dz = this->z - z;
+	double dx = this->x - x;
+	double dy = this->y - y;
+	double dz = this->z - z;
 
-	return sqrt( (double) dx * dx + dy * dy + dz * dz);
+	return sqrt( dx * dx + dy * dy + dz * dz);
 }
 
 double Pos::dist(Pos *pos)
@@ -241,8 +241,13 @@ double Pos::dist(Pos *pos)
 
 float Pos::distSqr(int x, int y, int z)
 {
-	int dx = this->x - x;
-	int dy = this->y - y;
-	int dz = this->z - z;
+	float dx = this->x - x;
+	float dy = this->y - y;
+	float dz = this->z - z;
 	return dx * dx + dy * dy + dz * dz;
+}
+
+float Pos::distSqr(Pos *pos)
+{
+	return distSqr(pos->x, pos->y, pos->z);
 }

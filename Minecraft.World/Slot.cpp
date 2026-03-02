@@ -116,6 +116,11 @@ bool Slot::mayPickup(shared_ptr<Player> player)
 	return true;
 }
 
+bool Slot::isActive()
+{
+	return true;
+}
+
 bool Slot::mayCombine(shared_ptr<ItemInstance> second)
 {
 	shared_ptr<ItemInstance> first = getItem();

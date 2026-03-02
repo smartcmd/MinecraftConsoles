@@ -1,37 +1,123 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <root>
-	<data name="IDS_TIPS_GAMETIP_0">
+	<data name="IDS_SIGNIN_PSN">
+		<value>Möchtest du dich bei "PSN" anmelden?</value>
+	</data>
+	<data name="IDS_KICK_PLAYER_DESCRIPTION">
+		<value>Ist diese Option ausgewählt, werden Spieler vom Spiel ausgeschlossen, die nicht auf demselben PlayStation®Vita-System spielen wie der Host-Spieler. Das gilt auch für alle anderen Spieler auf dem PlayStation®Vita-System der ausgeschlossenen Spieler. Diese können dem Spiel erst wieder beitreten, wenn es neu gestartet wird.</value>
+	</data>
+	<data name="IDS_BACK_BUTTON">
+		<value>SELECT</value>
+	</data>
+	<data name="IDS_HOST_OPTION_DISABLES_ACHIEVEMENTS">
+		<value>Diese Option deaktiviert Trophäen und Bestenlisten-Aktualisierungen während des Spielens für diese Welt. Die Einstellung bleibt außerdem aktiv, wenn das Spiel nach dem Speichern mit aktivierter Option erneut geladen wird.</value>
+	</data>
+	<data name="IDS_PLATFORM_NAME">
+		<value>PlayStation®Vita-System</value>
+	</data>
+	<data name="IDS_SELECT_NETWORK_MODE_TEXT">
+		<value>Wähle „Ad-hoc-Netzwerk“, um dich mit anderen PlayStation®Vita-Systemen in der Nähe oder mit "PSN" zu verbinden, um mit Freunden auf der ganzen Welt in Kontakt zu kommen.</value>
+	</data>
+	<data name="IDS_NETWORK_ADHOC">
+		<value>Ad-hoc-Netzwerk</value>
+	</data>
+	<data name="IDS_TOOLTIP_CHANGE_NETWORK_MODE">
+		<value>Netzwerkmodus ändern</value>
+	</data>
+	<data name="IDS_SELECT_NETWORK_MODE_TITLE">
+		<value>Netzwerkmodus wählen</value>
+	</data>
+	<data name="IDS_CHECKBOX_DISPLAY_SPLITSCREENGAMERTAGS">
+		<value>Online-IDs, geteilter Bildschirm</value>
+	</data>
+	<data name="IDS_ACHIEVEMENTS">
+		<value>Trophäen</value>
+	</data>
+	<data name="IDS_SAVE_ICON_MESSAGE">
+		<value>Dieses Spiel hat eine automatische Levelspeicherfunktion. Wenn du das obige Symbol siehst, speichert das Spiel deine Daten.
+Bitte schalte dein PlayStation®Vita-System nicht aus, solange dieses Symbol angezeigt wird.</value>
+	</data>
+	<data name="IDS_GAMEOPTION_HOST_PRIVILEGES">
+		<value>Aktiviert, dass der Host das Fliegen nutzen, Erschöpfung deaktivieren und sich selbst im Spielmenü unsichtbar machen kann. Deaktiviert Trophäen und Bestenlisten-Aktualisierungen.</value>
+	</data>
+	<data name="IDS_LABEL_GAMERTAGS">
+		<value>Online-IDs: </value>
+	</data>
+	<data name="IDS_USING_TRIAL_TEXUREPACK_WARNING">
+		<value>Du verwendest die Testversion eines Texturpakets. Du erhältst Zugriff auf alle Inhalte des Texturpakets, aber du kannst deine Fortschritte nicht speichern.
+Wenn du versuchst, mit der Testversion zu speichern, wird dir die Möglichkeit gegeben, die Vollversion zu kaufen.</value>
+	</data>
+	<data name="IDS_TITLE_UPDATE_NAME">
+		<value>Patch 1.04 (Titel-Update 14)</value>
+	</data>
+	<data name="IDS_IN_GAME_GAMERTAGS">
+		<value>Online-IDs im Spiel</value>
+	</data>
+	<data name="IDS_SOCIAL_DEFAULT_DESCRIPTION">
+		<value>Schau mal, was ich in Minecraft: PlayStation®Vita Edition erschaffen habe!</value>
+	</data>
+	<data name="IDS_SAVE_TRANSFER_DOWNLOADFAILED">
+		<value>Download fehlgeschlagen. Bitte versuche es später erneut.</value>
+	</data>
+	<data name="IDS_DISCONNECTED_NAT_TYPE_MISMATCH">
+		<value>Beitritt zum Spiel aufgrund eines eingeschränkten NAT-Typs fehlgeschlagen. Bitte überprüfe deine Netzwerkeinstellungen.</value>
+	</data>
+	<data name="IDS_SAVE_TRANSFER_UPLOADFAILED">
+		<value>Upload fehlgeschlagen. Bitte versuche es später erneut.</value>
+	</data>
+	<data name="IDS_SAVE_TRANSFER_DOWNLOADCOMPLETE">
+		<value>Download abgeschlossen!</value>
+	</data>
+	<data name="IDS_SAVE_TRANSFER_NOT_AVAILABLE_TEXT">
+		<value>
+Im Spielstandtransferspeicher ist derzeit kein Spielstand verfügbar.
+Du kannst mit der Minecraft: PlayStation®3 Edition einen Welt-Spielstand in den Spielstandtransferspeicher hochladen und ihn dann mit der Minecraft: PlayStation®Vita Edition herunterladen.
+</value>
+	</data>
+	<data name="IDS_SAVE_INCOMPLETE_TITLE">
+		<value>Speicherung nicht vollständig.</value>
+	</data>
+	<data name="IDS_SAVE_INCOMPLETE_EXPLANATION_QUOTA">
+		<value>Für Minecraft: PlayStation®Vita Edition steht kein Speicherplatz mehr für weitere Speicherdaten zur Verfügung. Lösche andere „Minecraft: PlayStation®Vita Edition“-Speicherdateien, um Platz zu schaffen.</value>
+	</data>
+	<data name="IDS_CANCEL_UPLOAD_TITLE">
+		<value>Hochladen abgebrochen</value>
+	</data>
+	<data name="IDS_CANCEL_UPLOAD_TEXT">
+		<value>Du hast das Hochladen dieses Spielstands in den Spielstandtransferspeicher abgebrochen.</value>
+	</data>
+	<data name="IDS_TOOLTIPS_SAVETRANSFER_UPLOAD">
+		<value>Spielstand für PS3™/PS4™ hochladen</value>
+	</data>
+	<data name="IDS_SAVETRANSFER_STAGE_PUT_DATA">
+		<value>Daten werden hochgeladen: %d %%</value>
+	</data>
+	<data name="IDS__NETWORK_PSN">
+		<value>"PSN"</value>
+	</data>
+	<data name="IDS_TOOLTIPS_SAVETRANSFER_DOWNLOAD">
+		<value>Spielstand für PS3™ herunterladen</value>
+	</data>
+	<data name="IDS_SAVETRANSFER_STAGE_GET_DATA">
+		<value>Daten werden heruntergeladen: %d %%</value>
+	</data>
+	<data name="IDS_SAVETRANSFER_STAGE_SAVING">
+		<value>Speichert ...</value>
+	</data>
+	<data name="IDS_SAVE_TRANSFER_UPLOADCOMPLETE">
+		<value>Upload abgeschlossen!</value>
+	</data>
+	<data name="IDS_SAVE_TRANSFER_TEXT">
+		<value>Möchtest du wirklich diesen Spielstand hochladen und damit den derzeit im Spielstandtransferspeicher befindlichen Spielstand überschreiben?</value>
+	</data>
+	<data name="IDS_SAVETRANSFER_STAGE_CONVERTING">
+		<value>Daten werden konvertiert</value>
+	</data>
+	<data name="IDS_TOOLTIPS_SELECTDEVICE">
 		<value>NOT USED</value>
 	</data>
-	<data name="IDS_TIPS_GAMETIP_1">
-		<value>Mit dem Touchscreen des PlayStation®Vita-Systems kannst du durch Menüs navigieren!</value>
-	</data>
-	<data name="IDS_TIPS_GAMETIP_48">
-		<value>minecraftforum hat einen eigenen Bereich zur PlayStation®Vita Edition.</value>
-	</data>
-	<data name="IDS_TIPS_GAMETIP_44">
-		<value>Die neuesten Informationen von @4JStudios und @Kappische zu diesem Spiel findest du auf Twitter!</value>
-	</data>
-	<data name="IDS_TIPS_GAMETIP_45">
-		<value>Schau einem Enderman nie in die Augen!</value>
-	</data>
-	<data name="IDS_TIPS_TRIVIA_4">
-		<value>Wir glauben, dass 4J Studios Herobrine aus dem PlayStation®Vita-System entfernt haben, aber wir sind uns nicht ganz sicher.</value>
-	</data>
-	<data name="IDS_TIPS_TRIVIA_17">
-		<value>Minecraft: PlayStation®Vita Edition hat jede Menge Rekorde gebrochen!</value>
-	</data>
-	<data name="IDS_HOW_TO_PLAY_MULTIPLAYER">
-		<value>{*T3*}SO WIRD GESPIELT: MULTIPLAYER{*ETW*}{*B*}{*B*}
-Minecraft für das PlayStation®Vita-System ist standardmäßig ein Multiplayer-Spiel.{*B*}{*B*}
-Wenn du ein Online-Spiel startest oder einem beitrittst, können die Spieler in deiner Freundeliste es sehen (es sei denn, du richtest das Spiel aus und hast „Nur mit Einladung“ ausgewählt), und wenn sie dem Spiel beitreten, können Spieler in ihrer Freundeliste es auch sehen (falls du die Option „Freunde von Freunden zulassen“ ausgewählt hast).{*B*}
-Wenn du in einem Spiel bist, kannst du durch Drücken der SELECT-Taste eine Liste aller anderen Spieler im Spiel aufrufen und Spieler aus dem Spiel ausschließen.</value>
-	</data>
-	<data name="IDS_HOW_TO_PLAY_SOCIALMEDIA">
-		<value>{*T3*}SO WIRD GESPIELT: SCREENSHOTS TEILEN{*ETW*}{*B*}{*B*}
-Du kannst einen Screenshot von deinem Spiel erstellen, indem du das Pause-Menü aufrufst und{*CONTROLLER_VK_Y*} drückst, um den Screenshot auf Facebook zu teilen. Es wird eine verkleinerte Version deines Screenshots angezeigt, und du kannst den Begleittext deines Facebook-Beitrags bearbeiten.{*B*}{*B*}
-Es gibt einen eigenen Kameramodus für das Erstellen solcher Screenshots, damit du auf dem Bild deine Spielfigur von vorn sehen kannst. Drücke{*CONTROLLER_ACTION_CAMERA*}, bis du deine Spielfigur von vorn siehst, bevor du zum Teilen{*CONTROLLER_VK_Y*} drückst.{*B*}{*B*}
-Die Online-ID wird auf Screenshots nicht angezeigt.</value>
+	<data name="IDS_TOOLTIPS_CHANGEDEVICE">
+		<value>NOT USED</value>
 	</data>
 	<data name="IDS_HOW_TO_PLAY_CREATIVE">
 		<value>{*T3*}SO WIRD GESPIELT: KREATIVMODUS{*ETW*}{*B*}{*B*}
@@ -45,20 +131,8 @@ Im Flugmodus halte{*CONTROLLER_ACTION_JUMP*} gedrückt, um dich nach oben zu bew
 		<value>Drücke zweimal schnell nacheinander {*CONTROLLER_ACTION_JUMP*}, um zu fliegen. Um das Fliegen zu beenden, wiederhole die Aktion. Um schneller zu fliegen, drücke{*CONTROLLER_ACTION_MOVE*} beim Fliegen zweimal schnell nach vorn. 
 Im Flugmodus halte{*CONTROLLER_ACTION_JUMP*} gedrückt, um dich nach oben zu bewegen, und{*CONTROLLER_ACTION_SNEAK*}, um dich nach unten zu bewegen, oder verwende die Richtungstasten, um dich nach oben, nach unten, nach links oder nach rechts zu bewegen.</value>
 	</data>
-	<data name="IDS_TOOLTIPS_SELECTDEVICE">
-		<value>NOT USED</value>
-	</data>
-	<data name="IDS_TOOLTIPS_CHANGEDEVICE">
-		<value>NOT USED</value>
-	</data>
 	<data name="IDS_TOOLTIPS_VIEW_GAMERCARD">
 		<value>"NOT USED"</value>
-	</data>
-	<data name="IDS_TOOLTIPS_VIEW_GAMERPROFILE">
-		<value>"NOT USED"</value>
-	</data>
-	<data name="IDS_TOOLTIPS_INVITE_PARTY">
-		<value>Freunde einladen</value>
 	</data>
 	<data name="IDS_CONFIRM_START_CREATIVE">
 		<value>Wenn du eine Welt im Kreativmodus erstellst, lädst oder speicherst, sind in dieser Welt Trophäen und Bestenlisten-Aktualisierungen deaktiviert, selbst wenn sie später im Überlebensmodus geladen wird. Möchtest du wirklich fortfahren?</value>
@@ -66,11 +140,71 @@ Im Flugmodus halte{*CONTROLLER_ACTION_JUMP*} gedrückt, um dich nach oben zu bew
 	<data name="IDS_CONFIRM_START_SAVEDINCREATIVE">
 		<value>Diese Welt wurde früher im Kreativmodus gespeichert, Trophäen und Bestenlisten-Aktualisierungen sind deaktiviert. Möchtest du wirklich fortfahren?</value>
 	</data>
-	<data name="IDS_CONFIRM_START_SAVEDINCREATIVE_CONTINUE">
-		<value>Diese Welt wurde im Kreativmodus gespeichert, Trophäen und Bestenlisten-Aktualisierungen sind deaktiviert.</value>
+	<data name="IDS_TOOLTIPS_VIEW_GAMERPROFILE">
+		<value>"NOT USED"</value>
 	</data>
-	<data name="IDS_CONFIRM_START_HOST_PRIVILEGES">
-		<value>Wenn du eine Welt mit aktivierten Hostprivilegien erstellst, lädst oder speicherst, sind in dieser Welt Trophäen und Bestenlisten-Aktualisierungen deaktiviert, selbst wenn sie später ohne diese Privilegien geladen wird. Möchtest du wirklich fortfahren?</value>
+	<data name="IDS_TOOLTIPS_INVITE_PARTY">
+		<value>Freunde einladen</value>
+	</data>
+	<data name="IDS_TIPS_GAMETIP_48">
+		<value>minecraftforum hat einen eigenen Bereich zur PlayStation®Vita Edition.</value>
+	</data>
+	<data name="IDS_TIPS_GAMETIP_44">
+		<value>Die neuesten Informationen von @4JStudios und @Kappische zu diesem Spiel findest du auf Twitter!</value>
+	</data>
+	<data name="IDS_TIPS_GAMETIP_0">
+		<value>NOT USED</value>
+	</data>
+	<data name="IDS_TIPS_GAMETIP_1">
+		<value>Mit dem Touchscreen des PlayStation®Vita-Systems kannst du durch Menüs navigieren!</value>
+	</data>
+	<data name="IDS_TIPS_GAMETIP_45">
+		<value>Schau einem Enderman nie in die Augen!</value>
+	</data>
+	<data name="IDS_HOW_TO_PLAY_MULTIPLAYER">
+		<value>{*T3*}SO WIRD GESPIELT: MULTIPLAYER{*ETW*}{*B*}{*B*}
+Minecraft für das PlayStation®Vita-System ist standardmäßig ein Multiplayer-Spiel.{*B*}{*B*}
+Wenn du ein Online-Spiel startest oder einem beitrittst, können die Spieler in deiner Freundeliste es sehen (es sei denn, du richtest das Spiel aus und hast „Nur mit Einladung“ ausgewählt), und wenn sie dem Spiel beitreten, können Spieler in ihrer Freundeliste es auch sehen (falls du die Option „Freunde von Freunden zulassen“ ausgewählt hast).{*B*}
+Wenn du in einem Spiel bist, kannst du durch Drücken der SELECT-Taste eine Liste aller anderen Spieler im Spiel aufrufen und Spieler aus dem Spiel ausschließen.</value>
+	</data>
+	<data name="IDS_HOW_TO_PLAY_SOCIALMEDIA">
+		<value>{*T3*}SO WIRD GESPIELT: SCREENSHOTS TEILEN{*ETW*}{*B*}{*B*}
+Du kannst einen Screenshot von deinem Spiel erstellen, indem du das Pause-Menü aufrufst und{*CONTROLLER_VK_Y*} drückst, um den Screenshot auf Facebook zu teilen. Es wird eine verkleinerte Version deines Screenshots angezeigt, und du kannst den Begleittext deines Facebook-Beitrags bearbeiten.{*B*}{*B*}
+Es gibt einen eigenen Kameramodus für das Erstellen solcher Screenshots, damit du auf dem Bild deine Spielfigur von vorn sehen kannst. Drücke{*CONTROLLER_ACTION_CAMERA*}, bis du deine Spielfigur von vorn siehst, bevor du zum Teilen{*CONTROLLER_VK_Y*} drückst.{*B*}{*B*}
+Die Online-ID wird auf Screenshots nicht angezeigt.</value>
+	</data>
+	<data name="IDS_TIPS_TRIVIA_4">
+		<value>Wir glauben, dass 4J Studios Herobrine aus dem PlayStation®Vita-System entfernt haben, aber wir sind uns nicht ganz sicher.</value>
+	</data>
+	<data name="IDS_TIPS_TRIVIA_17">
+		<value>Minecraft: PlayStation®Vita Edition hat jede Menge Rekorde gebrochen!</value>
+	</data>
+	<data name="IDS_TRIALOVER_TEXT">
+		<value>Du hast die Testversion von Minecraft: PlayStation®Vita Edition die maximal erlaubte Zeit lang gespielt! Möchtest du jetzt das vollständige Spiel freischalten, um weiterhin Spaß zu haben?</value>
+	</data>
+	<data name="IDS_FATAL_ERROR_TEXT">
+		<value>Minecraft: PlayStation®Vita Edition konnte nicht geladen werden und kann daher nicht fortgesetzt werden.</value>
+	</data>
+	<data name="IDS_GROUPNAME_POTIONS_480">
+		<value>Brauen</value>
+	</data>
+	<data name="IDS_RETURNEDTOTITLESCREEN_TEXT">
+		<value>Du bist zum Titelbildschirm zurückgekehrt, weil du von "PSN" abgemeldet wurdest.</value>
+	</data>
+	<data name="IDS_NO_MULTIPLAYER_PRIVILEGE_JOIN_TEXT">
+		<value>Spielbeitritt nicht möglich: Einer oder mehrere Spieler dürfen aufgrund einer Chat-Beschränkung ihres Sony Entertainment Network-Kontos nicht online spielen.</value>
+	</data>
+	<data name="IDS_NO_USER_CREATED_CONTENT_PRIVILEGE_ALL_LOCAL">
+		<value>Du kannst dieser Spielsitzung nicht beitreten, weil die Online-Funktionen von einem deiner lokalen Spieler aufgrund von Chat-Beschränkungen seines Sony Entertainment Network-Kontos deaktiviert sind. Deaktiviere die Option „Online-Spiel“ unter „Weitere Optionen“, um offline zu spielen.</value>
+	</data>
+	<data name="IDS_NO_USER_CREATED_CONTENT_PRIVILEGE_CREATE">
+		<value>Du kannst diese Spielsitzung nicht erstellen, weil die Online-Funktionen von einem deiner lokalen Spieler aufgrund von Chat-Beschränkungen seines Sony Entertainment Network-Kontos deaktiviert sind. Deaktiviere die Option „Online-Spiel“ unter „Weitere Optionen“, um offline zu spielen.</value>
+	</data>
+	<data name="IDS_NO_MULTIPLAYER_PRIVILEGE_HOST_TEXT">
+		<value>Erstellen des Online-Spiels nicht möglich: Einer oder mehrere Spieler haben aufgrund ihrer Chat-Beschränkungen keine aktivierte Online-Funktion für ihr Sony Entertainment Network-Konto. Deaktiviere die Option „Online-Spiel“ unter „Weitere Optionen“, um offline zu spielen.</value>
+	</data>
+	<data name="IDS_NO_USER_CREATED_CONTENT_PRIVILEGE_SINGLE_LOCAL">
+		<value>Du kannst dieser Spielsitzung nicht beitreten, weil Online-Funktionen aufgrund von Chat-Beschränkungen deines Sony Entertainment Network-Kontos deaktiviert sind.</value>
 	</data>
 	<data name="IDS_CONNECTION_LOST_LIVE">
 		<value>Die Verbindung zu "PSN" wurde unterbrochen. Zurück zum Hauptmenü.</value>
@@ -78,10 +212,22 @@ Im Flugmodus halte{*CONTROLLER_ACTION_JUMP*} gedrückt, um dich nach oben zu bew
 	<data name="IDS_CONNECTION_LOST_LIVE_NO_EXIT">
 		<value>Die Verbindung zu "PSN" wurde unterbrochen.</value>
 	</data>
+	<data name="IDS_CONFIRM_START_SAVEDINCREATIVE_CONTINUE">
+		<value>Diese Welt wurde im Kreativmodus gespeichert, Trophäen und Bestenlisten-Aktualisierungen sind deaktiviert.</value>
+	</data>
+	<data name="IDS_CONFIRM_START_HOST_PRIVILEGES">
+		<value>Wenn du eine Welt mit aktivierten Hostprivilegien erstellst, lädst oder speicherst, sind in dieser Welt Trophäen und Bestenlisten-Aktualisierungen deaktiviert, selbst wenn sie später ohne diese Privilegien geladen wird. Möchtest du wirklich fortfahren?</value>
+	</data>
 	<data name="IDS_UNLOCK_ACHIEVEMENT_TEXT">
 		<value>Dies ist die Testversion von Minecraft: PlayStation®Vita Edition. Würdest du das vollständige Spiel besitzen, hättest du dir gerade eine Trophäe verdient! 
 Schalte das vollständige Spiel frei, um den ganzen Spaß von Minecraft: PlayStation®Vita Edition zu erleben und zusammen mit deinen Freunden auf der ganzen Welt über "PSN" zu spielen.
 Möchtest du jetzt das vollständige Spiel freischalten?</value>
+	</data>
+	<data name="IDS_UNLOCK_GUEST_TEXT">
+		<value>Gastspieler können das vollständige Spiel nicht freischalten. Melde dich mit einem Sony Entertainment Network-Konto an.</value>
+	</data>
+	<data name="IDS_LEADERBOARD_GAMERTAG">
+		<value>Online-ID</value>
 	</data>
 	<data name="IDS_UNLOCK_THEME_TEXT">
 		<value>Dies ist die Testversion von Minecraft: PlayStation®Vita Edition. Würdest du das vollständige Spiel besitzen, hättest du dir gerade ein Design verdient! 
@@ -92,149 +238,7 @@ Möchtest du jetzt das vollständige Spiel freischalten?</value>
 		<value>Dies ist die Testversion von Minecraft: PlayStation®Vita Edition. Du brauchst das vollständige Spiel, um diese Einladung anzunehmen. 
 Möchtest du das vollständige Spiel freischalten?</value>
 	</data>
-	<data name="IDS_UNLOCK_GUEST_TEXT">
-		<value>Gastspieler können das vollständige Spiel nicht freischalten. Melde dich mit einem Sony Entertainment Network-Konto an.</value>
-	</data>
-	<data name="IDS_LEADERBOARD_GAMERTAG">
-		<value>Online-ID</value>
-	</data>
-	<data name="IDS_GROUPNAME_POTIONS_480">
-		<value>Brauen</value>
-	</data>
-	<data name="IDS_RETURNEDTOTITLESCREEN_TEXT">
-		<value>Du bist zum Titelbildschirm zurückgekehrt, weil du von "PSN" abgemeldet wurdest.</value>
-	</data>
-	<data name="IDS_TRIALOVER_TEXT">
-		<value>Du hast die Testversion von Minecraft: PlayStation®Vita Edition die maximal erlaubte Zeit lang gespielt! Möchtest du jetzt das vollständige Spiel freischalten, um weiterhin Spaß zu haben?</value>
-	</data>
-	<data name="IDS_FATAL_ERROR_TEXT">
-		<value>Minecraft: PlayStation®Vita Edition konnte nicht geladen werden und kann daher nicht fortgesetzt werden.</value>
-	</data>
-	<data name="IDS_NO_MULTIPLAYER_PRIVILEGE_JOIN_TEXT">
-		<value>Spielbeitritt nicht möglich: Einer oder mehrere Spieler dürfen aufgrund einer Chat-Beschränkung ihres Sony Entertainment Network-Kontos nicht online spielen.</value>
-	</data>
-	<data name="IDS_NO_MULTIPLAYER_PRIVILEGE_HOST_TEXT">
-		<value>Erstellen des Online-Spiels nicht möglich: Einer oder mehrere Spieler haben aufgrund ihrer Chat-Beschränkungen keine aktivierte Online-Funktion für ihr Sony Entertainment Network-Konto. Deaktiviere die Option „Online-Spiel“ unter „Weitere Optionen“, um offline zu spielen.</value>
-	</data>
-	<data name="IDS_NO_USER_CREATED_CONTENT_PRIVILEGE_SINGLE_LOCAL">
-		<value>Du kannst dieser Spielsitzung nicht beitreten, weil Online-Funktionen aufgrund von Chat-Beschränkungen deines Sony Entertainment Network-Kontos deaktiviert sind.</value>
-	</data>
-	<data name="IDS_NO_USER_CREATED_CONTENT_PRIVILEGE_ALL_LOCAL">
-		<value>Du kannst dieser Spielsitzung nicht beitreten, weil die Online-Funktionen von einem deiner lokalen Spieler aufgrund von Chat-Beschränkungen seines Sony Entertainment Network-Kontos deaktiviert sind. Deaktiviere die Option „Online-Spiel“ unter „Weitere Optionen“, um offline zu spielen.</value>
-	</data>
-	<data name="IDS_NO_USER_CREATED_CONTENT_PRIVILEGE_CREATE">
-		<value>Du kannst diese Spielsitzung nicht erstellen, weil die Online-Funktionen von einem deiner lokalen Spieler aufgrund von Chat-Beschränkungen seines Sony Entertainment Network-Kontos deaktiviert sind. Deaktiviere die Option „Online-Spiel“ unter „Weitere Optionen“, um offline zu spielen.</value>
-	</data>
-	<data name="IDS_SAVE_ICON_MESSAGE">
-		<value>Dieses Spiel hat eine automatische Levelspeicherfunktion. Wenn du das obige Symbol siehst, speichert das Spiel deine Daten.
-Bitte schalte dein PlayStation®Vita-System nicht aus, solange dieses Symbol angezeigt wird.</value>
-	</data>
-	<data name="IDS_GAMEOPTION_HOST_PRIVILEGES">
-		<value>Aktiviert, dass der Host das Fliegen nutzen, Erschöpfung deaktivieren und sich selbst im Spielmenü unsichtbar machen kann. Deaktiviert Trophäen und Bestenlisten-Aktualisierungen.</value>
-	</data>
-	<data name="IDS_CHECKBOX_DISPLAY_SPLITSCREENGAMERTAGS">
-		<value>Online-IDs, geteilter Bildschirm</value>
-	</data>
-	<data name="IDS_ACHIEVEMENTS">
-		<value>Trophäen</value>
-	</data>
-	<data name="IDS_LABEL_GAMERTAGS">
-		<value>Online-IDs: </value>
-	</data>
-	<data name="IDS_IN_GAME_GAMERTAGS">
-		<value>Online-IDs im Spiel</value>
-	</data>
-	<data name="IDS_SOCIAL_DEFAULT_DESCRIPTION">
-		<value>Schau mal, was ich in Minecraft: PlayStation®Vita Edition erschaffen habe!</value>
-	</data>
-	<data name="IDS_USING_TRIAL_TEXUREPACK_WARNING">
-		<value>Du verwendest die Testversion eines Texturpakets. Du erhältst Zugriff auf alle Inhalte des Texturpakets, aber du kannst deine Fortschritte nicht speichern.
-Wenn du versuchst, mit der Testversion zu speichern, wird dir die Möglichkeit gegeben, die Vollversion zu kaufen.</value>
-	</data>
-	<data name="IDS_TITLE_UPDATE_NAME">
-		<value>Patch 1.04 (Titel-Update 14)</value>
-	</data>
-	<data name="IDS_BACK_BUTTON">
-		<value>SELECT</value>
-	</data>
-	<data name="IDS_HOST_OPTION_DISABLES_ACHIEVEMENTS">
-		<value>Diese Option deaktiviert Trophäen und Bestenlisten-Aktualisierungen während des Spielens für diese Welt. Die Einstellung bleibt außerdem aktiv, wenn das Spiel nach dem Speichern mit aktivierter Option erneut geladen wird.</value>
-	</data>
-	<data name="IDS_SIGNIN_PSN">
-		<value>Möchtest du dich bei "PSN" anmelden?</value>
-	</data>
-	<data name="IDS_KICK_PLAYER_DESCRIPTION">
-		<value>Ist diese Option ausgewählt, werden Spieler vom Spiel ausgeschlossen, die nicht auf demselben PlayStation®Vita-System spielen wie der Host-Spieler. Das gilt auch für alle anderen Spieler auf dem PlayStation®Vita-System der ausgeschlossenen Spieler. Diese können dem Spiel erst wieder beitreten, wenn es neu gestartet wird.</value>
-	</data>
-	<data name="IDS_PLATFORM_NAME">
-		<value>PlayStation®Vita-System</value>
-	</data>
-	<data name="IDS_TOOLTIP_CHANGE_NETWORK_MODE">
-		<value>Netzwerkmodus ändern</value>
-	</data>
-	<data name="IDS_SELECT_NETWORK_MODE_TITLE">
-		<value>Netzwerkmodus wählen</value>
-	</data>
-	<data name="IDS_SELECT_NETWORK_MODE_TEXT">
-		<value>Wähle „Ad-hoc-Netzwerk“, um dich mit anderen PlayStation®Vita-Systemen in der Nähe oder mit "PSN" zu verbinden, um mit Freunden auf der ganzen Welt in Kontakt zu kommen.</value>
-	</data>
-	<data name="IDS_NETWORK_ADHOC">
-		<value>Ad-hoc-Netzwerk</value>
-	</data>
-	<data name="IDS__NETWORK_PSN">
-		<value>"PSN"</value>
-	</data>
-	<data name="IDS_TOOLTIPS_SAVETRANSFER_DOWNLOAD">
-		<value>PlayStation®3-System herunterladen</value>
-	</data>
-	<data name="IDS_TOOLTIPS_SAVETRANSFER_UPLOAD">
-		<value>Spielstand für PlayStation®3/PlayStation®4-System hochladen</value>
-	</data>
-	<data name="IDS_CANCEL_UPLOAD_TITLE">
-		<value>Hochladen abgebrochen</value>
-	</data>
-	<data name="IDS_CANCEL_UPLOAD_TEXT">
-		<value>Du hast das Hochladen dieses Spielstands in den Spielstandtransferspeicher abgebrochen.</value>
-	</data>
-	<data name="IDS_SAVETRANSFER_STAGE_PUT_DATA">
-		<value>Daten werden hochgeladen: %d %%</value>
-	</data>
-	<data name="IDS_SAVETRANSFER_STAGE_GET_DATA">
-		<value>Daten werden heruntergeladen: %d %%</value>
-	</data>
-	<data name="IDS_SAVE_TRANSFER_TEXT">
-		<value>Möchtest du wirklich diesen Spielstand hochladen und damit den derzeit im Spielstandtransferspeicher befindlichen Spielstand überschreiben?</value>
-	</data>
-	<data name="IDS_SAVETRANSFER_STAGE_CONVERTING">
-		<value>Daten werden konvertiert</value>
-	</data>
-	<data name="IDS_SAVETRANSFER_STAGE_SAVING">
-		<value>Speichert ...</value>
-	</data>
-	<data name="IDS_SAVE_TRANSFER_UPLOADCOMPLETE">
-		<value>Upload abgeschlossen!</value>
-	</data>
-	<data name="IDS_SAVE_TRANSFER_UPLOADFAILED">
-		<value>Upload fehlgeschlagen. Bitte versuche es später erneut.</value>
-	</data>
-	<data name="IDS_SAVE_TRANSFER_DOWNLOADCOMPLETE">
-		<value>Download abgeschlossen!</value>
-	</data>
-	<data name="IDS_SAVE_TRANSFER_DOWNLOADFAILED">
-		<value>Download fehlgeschlagen. Bitte versuche es später erneut.</value>
-	</data>
-	<data name="IDS_DISCONNECTED_NAT_TYPE_MISMATCH">
-		<value>Beitritt zum Spiel aufgrund eines eingeschränkten NAT-Typs fehlgeschlagen. Bitte überprüfe deine Netzwerkeinstellungen.</value>
-	</data>
-	<data name="IDS_SAVE_TRANSFER_NOT_AVAILABLE_TEXT">
-		<value>
-      Im Spielstandtransferspeicher ist derzeit kein Spielstand verfügbar.
-      Du kannst mit der Minecraft: PlayStation®3 Edition einen Welt-Spielstand in den Spielstandtransferspeicher hochladen und ihn dann mit der Minecraft: PlayStation®Vita Edition herunterladen.</value>
-	</data>
-	<data name="IDS_SAVE_INCOMPLETE_TITLE">
-		<value>Speicherung nicht vollständig.</value>
-	</data>
-	<data name="IDS_SAVE_INCOMPLETE_EXPLANATION_QUOTA">
-		<value>Für Minecraft: PlayStation®Vita Edition steht kein Speicherplatz mehr für weitere Speicherdaten zur Verfügung. Lösche andere „Minecraft: PlayStation®Vita Edition“-Speicherdateien, um Platz zu schaffen.</value>
+	<data name="IDS_SAVE_TRANSFER_WRONG_VERSION">
+		<value>Die Speicherdatei im Spielstandtransferspeicher hat eine Versionsnummer, die Minecraft: PlayStation®Vita Edition noch nicht unterstützt.</value>
 	</data>
 </root>

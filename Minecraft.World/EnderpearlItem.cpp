@@ -7,10 +7,10 @@
 
 EnderpearlItem::EnderpearlItem(int id) : Item(id)
 {
-	this->maxStackSize = 16;
+	maxStackSize = 16;
 }
 
-bool EnderpearlItem::TestUse(Level *level, shared_ptr<Player> player)
+bool EnderpearlItem::TestUse(shared_ptr<ItemInstance> itemInstance, Level *level, shared_ptr<Player> player)
 {
 	return true;
 }
@@ -25,7 +25,7 @@ shared_ptr<ItemInstance> EnderpearlItem::use(shared_ptr<ItemInstance> instance, 
 		instance->count--;
 	}
 
-	level->playSound(player, eSoundType_RANDOM_BOW, 0.5f, 0.4f / (random->nextFloat() * 0.4f + 0.8f));
+	level->playEntitySound(player, eSoundType_RANDOM_BOW, 0.5f, 0.4f / (random->nextFloat() * 0.4f + 0.8f));
 	if (!level->isClientSide) 
 	{
 		level->addEntity( shared_ptr<ThrownEnderpearl>( new ThrownEnderpearl(level, player) ) );

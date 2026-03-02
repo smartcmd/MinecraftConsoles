@@ -34,9 +34,7 @@ void UIControl_EnchantmentBook::render(IggyCustomDrawCallbackRegion *region)
 	glTranslatef(m_width/2, m_height/2, 50.0f);
 
 	// Add a uniform scale
-	glScalef(1/ssX, 1/ssX, 1.0f);
-
-	glScalef(50.0f,50.0f,1.0f);
+	glScalef(-57/ssX, 57/ssX, 360.0f);
 
 	glRotatef(45 + 90, 0, 1, 0);
 	Lighting::turnOn();

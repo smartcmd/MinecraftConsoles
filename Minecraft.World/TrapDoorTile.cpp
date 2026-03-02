@@ -72,7 +72,14 @@ void TrapDoorTile::setShape(int data)
 {
 
 	float r = 3 / 16.0f;
-	Tile::setShape(0, 0, 0, 1, r, 1);
+	if ((data & TOP_MASK) != 0)
+	{
+		setShape(0, 1 - r, 0, 1, 1, 1);
+	}
+	else
+	{
+		setShape(0, 0, 0, 1, r, 1);
+	}
 	if (isOpen(data))
 	{
 		if ((data & 3) == 0) setShape(0, 0, 1 - r, 1, 1, 1);
@@ -85,7 +92,7 @@ void TrapDoorTile::setShape(int data)
 
 void TrapDoorTile::attack(Level *level, int x, int y, int z, shared_ptr<Player> player)
 {
-	use(level, x, y, z, player, 0, 0, 0, 0);
+	//use(level, x, y, z, player, 0, 0, 0, 0);
 }
 
 // 4J-PB - Adding a TestUse for tooltip display
@@ -106,7 +113,7 @@ bool TrapDoorTile::use(Level *level, int x, int y, int z, shared_ptr<Player> pla
 	}
 
 	int dir = level->getData(x, y, z);
-	level->setData(x, y, z, dir ^ 4);
+	level->setData(x, y, z, dir ^ 4, Tile::UPDATE_CLIENTS);
 
 	level->levelEvent(player, LevelEvent::SOUND_OPEN_DOOR, x, y, z, 0);
 	return true;
@@ -120,7 +127,7 @@ void TrapDoorTile::setOpen(Level *level, int x, int y, int z, bool shouldOpen)
 	bool wasOpen = (dir & 4) > 0;
 	if (wasOpen == shouldOpen) return;
 
-	level->setData(x, y, z, dir ^ 4);
+	level->setData(x, y, z, dir ^ 4, Tile::UPDATE_CLIENTS);
 
 	level->levelEvent(nullptr, LevelEvent::SOUND_OPEN_DOOR, x, y, z, 0);
 }
@@ -140,7 +147,7 @@ void TrapDoorTile::neighborChanged(Level *level, int x, int y, int z, int type)
 
 	if (!attachesTo(level->getTile(xt, y, zt)))
 	{
-		level->setTile(x, y, z, 0);
+		level->removeTile(x, y, z);
 		spawnResources(level, x, y, z, data, 0);
 	}
 
@@ -205,5 +212,5 @@ bool TrapDoorTile::attachesTo(int id)
 	}
 	Tile *tile = Tile::tiles[id];
 
-	return tile != NULL && (tile->material->isSolidBlocking() && tile->isCubeShaped()) || tile == Tile::lightGem || (dynamic_cast<HalfSlabTile *>(tile) != NULL) || (dynamic_cast<StairTile *>(tile) != NULL);
+	return tile != NULL && (tile->material->isSolidBlocking() && tile->isCubeShaped()) || tile == Tile::glowstone || (dynamic_cast<HalfSlabTile *>(tile) != NULL) || (dynamic_cast<StairTile *>(tile) != NULL);
 }

@@ -60,7 +60,7 @@ WolfModel::WolfModel()
 void WolfModel::render(shared_ptr<Entity> entity, float time, float r, float bob, float yRot, float xRot, float scale, bool usecompiled)
 {
     Model::render(entity, time, r, bob, yRot, xRot, scale, usecompiled);
-    setupAnim(time, r, bob, yRot, xRot, scale);
+    setupAnim(time, r, bob, yRot, xRot, scale, entity);
 
 	if (young) 
 	{
@@ -94,7 +94,7 @@ void WolfModel::render(shared_ptr<Entity> entity, float time, float r, float bob
 	}
 }
 
-void WolfModel::prepareMobModel(shared_ptr<Mob> mob, float time, float r, float a)
+void WolfModel::prepareMobModel(shared_ptr<LivingEntity> mob, float time, float r, float a)
 {
     shared_ptr<Wolf> wolf = dynamic_pointer_cast<Wolf>(mob);
 
@@ -158,9 +158,9 @@ void WolfModel::prepareMobModel(shared_ptr<Mob> mob, float time, float r, float 
     tail->zRot = wolf->getBodyRollAngle(a, -.2f);
 }
 
-void WolfModel::setupAnim(float time, float r, float bob, float yRot, float xRot, float scale, unsigned int uiBitmaskOverrideAnim)
+void WolfModel::setupAnim(float time, float r, float bob, float yRot, float xRot, float scale, shared_ptr<Entity> entity, unsigned int uiBitmaskOverrideAnim)
 {
-    Model::setupAnim(time, r, bob, yRot, xRot, scale);
+    Model::setupAnim(time, r, bob, yRot, xRot, scale, entity);
     head->xRot = xRot / (float) (180 / PI);
     head->yRot = yRot / (float) (180 / PI);
     tail->xRot = bob;

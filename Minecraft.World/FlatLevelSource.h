@@ -41,4 +41,5 @@ public:
 	virtual wstring gatherStats();
 	virtual vector<Biome::MobSpawnerData *> *getMobsAt(MobCategory *mobCategory, int x, int y, int z);
     virtual TilePos *findNearestMapFeature(Level *level, const wstring& featureName, int x, int y, int z);
+	virtual void recreateLogicStructuresForChunk(int chunkX, int chunkZ);
 };

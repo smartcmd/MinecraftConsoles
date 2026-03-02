@@ -31,7 +31,7 @@ shared_ptr<ItemInstance> BottleItem::use(shared_ptr<ItemInstance> itemInstance, 
 		{
 			return itemInstance;
 		}
-		if (!player->mayBuild(xt, yt, zt))
+		if (!player->mayUseItemAt(xt, yt, zt, hr->f, itemInstance))
 		{
 			return itemInstance;
 		}
@@ -60,7 +60,7 @@ shared_ptr<ItemInstance> BottleItem::use(shared_ptr<ItemInstance> itemInstance, 
 }
 
 // 4J-PB - added to allow tooltips
-bool BottleItem::TestUse(Level *level, shared_ptr<Player> player)
+bool BottleItem::TestUse(shared_ptr<ItemInstance> itemInstance, Level *level, shared_ptr<Player> player)
 {
 	HitResult *hr = getPlayerPOVHitResult(level, player, true);
 	if (hr == NULL) return false;
@@ -76,7 +76,7 @@ bool BottleItem::TestUse(Level *level, shared_ptr<Player> player)
 		{
 			return false;
 		}
-		if (!player->mayBuild(xt, yt, zt))
+		if (!player->mayUseItemAt(xt, yt, zt, hr->f, itemInstance))
 		{
 			return false;
 		}

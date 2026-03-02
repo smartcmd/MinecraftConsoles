@@ -74,23 +74,34 @@ Painting::Painting(Level *level, int xTile, int yTile, int zTile, int dir) : Han
 }
 
 // 4J Stu - Added this so that we can use some shared_ptr functions that were needed in the ctor
-void Painting::PaintingPostConstructor(int dir)
+// 4J Stu - Added motive param for debugging/artists only
+void Painting::PaintingPostConstructor(int dir, int motive)
 {
-	vector<Motive *> *survivableMotives = new vector<Motive *>();
-	for (int i = 0 ; i < LAST_VALUE; i++)
+#ifndef _CONTENT_PACKAGE
+	if (app.DebugArtToolsOn() && motive >= 0) 
 	{
-		this->motive = (Motive *)Motive::values[i];
+		this->motive = (Motive *)Motive::values[motive];
 		setDir(dir);
-		if (survives())
-		{
-			survivableMotives->push_back(this->motive);
-		}
 	}
-	if (!survivableMotives->empty())
+	else
+#endif
 	{
-		this->motive = survivableMotives->at(random->nextInt((int)survivableMotives->size()));
+		vector<Motive *> *survivableMotives = new vector<Motive *>();
+		for (int i = 0 ; i < LAST_VALUE; i++)
+		{
+			this->motive = (Motive *)Motive::values[i];
+			setDir(dir);
+			if (survives())
+			{
+				survivableMotives->push_back(this->motive);
+			}
+		}
+		if (!survivableMotives->empty())
+		{
+			this->motive = survivableMotives->at(random->nextInt((int)survivableMotives->size()));
+		}
+		setDir(dir);
 	}
-	setDir(dir);
 }
 
 Painting::Painting(Level *level, int x, int y, int z, int dir, wstring motiveName) : HangingEntity( level , x, y, z, dir )
@@ -142,7 +153,16 @@ int Painting::getHeight()
 	return motive->h;
 }
 
-void Painting::dropItem() 
+void Painting::dropItem(shared_ptr<Entity> causedBy) 
 {
+	if ( (causedBy != NULL) && causedBy->instanceof(eTYPE_PLAYER) )
+	{
+		shared_ptr<Player> player = dynamic_pointer_cast<Player>(causedBy);
+		if (player->abilities.instabuild)
+		{
+			return;
+		}
+	}
+
 	spawnAtLocation(shared_ptr<ItemInstance>(new ItemInstance(Item::painting)), 0.0f);
 }

@@ -1,10 +1,12 @@
 #include "stdafx.h"
 #include "net.minecraft.world.entity.h"
+#include "net.minecraft.world.entity.ai.attributes.h"
+#include "net.minecraft.world.entity.monster.h"
 #include "net.minecraft.world.item.h"
 #include "net.minecraft.world.level.tile.h"
 #include "DiggerItem.h"
 
-DiggerItem::DiggerItem(int id, int attackDamage, const Tier *tier, TileArray *tiles) : Item( id ), tier( tier )
+DiggerItem::DiggerItem(int id, float attackDamage, const Tier *tier, TileArray *tiles) : Item( id ), tier( tier )
 {
 	//this->tier = tier;
 	this->tiles = tiles;
@@ -21,22 +23,17 @@ float DiggerItem::getDestroySpeed(shared_ptr<ItemInstance> itemInstance, Tile *t
 	return 1;
 }
 
-bool DiggerItem::hurtEnemy(shared_ptr<ItemInstance> itemInstance, shared_ptr<Mob> mob, shared_ptr<Mob> attacker)
+bool DiggerItem::hurtEnemy(shared_ptr<ItemInstance> itemInstance, shared_ptr<LivingEntity> mob, shared_ptr<LivingEntity> attacker)
 {
-	itemInstance->hurt(2, attacker);
+	itemInstance->hurtAndBreak(2, attacker);
 	return true;
 }
 
-bool DiggerItem::mineBlock(shared_ptr<ItemInstance> itemInstance, Level *level, int tile, int x, int y, int z, shared_ptr<Mob> owner)
+bool DiggerItem::mineBlock(shared_ptr<ItemInstance> itemInstance, Level *level, int tile, int x, int y, int z, shared_ptr<LivingEntity> owner)
 {
 	// Don't damage tools if the tile can be destroyed in one hit.
-	if (Tile::tiles[tile]->getDestroySpeed(level, x, y, z) != 0.0) itemInstance->hurt(1, owner);
+	if (Tile::tiles[tile]->getDestroySpeed(level, x, y, z) != 0.0) itemInstance->hurtAndBreak(1, owner);
 	return true;
-}
-
-int DiggerItem::getAttackDamage(shared_ptr<Entity> entity)
-{
-	return attackDamage;
 }
 
 bool DiggerItem::isHandEquipped()
@@ -61,4 +58,13 @@ bool DiggerItem::isValidRepairItem(shared_ptr<ItemInstance> source, shared_ptr<I
 		return true;
 	}
 	return Item::isValidRepairItem(source, repairItem);
+}
+
+attrAttrModMap *DiggerItem::getDefaultAttributeModifiers()
+{
+	attrAttrModMap *result = Item::getDefaultAttributeModifiers();
+
+	(*result)[SharedMonsterAttributes::ATTACK_DAMAGE->getId()] = new AttributeModifier(eModifierId_ITEM_BASEDAMAGE, attackDamage, AttributeModifier::OPERATION_ADDITION);
+
+	return result;
 }

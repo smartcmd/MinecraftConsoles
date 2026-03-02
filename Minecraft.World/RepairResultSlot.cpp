@@ -5,7 +5,7 @@
 #include "net.minecraft.world.entity.player.h"
 #include "RepairResultSlot.h"
 
-RepairResultSlot::RepairResultSlot(RepairMenu *menu, int xt, int yt, int zt, shared_ptr<Container> container, int slot, int x, int y) : Slot(container, slot, x, y)
+RepairResultSlot::RepairResultSlot(AnvilMenu *menu, int xt, int yt, int zt, shared_ptr<Container> container, int slot, int x, int y) : Slot(container, slot, x, y)
 {
 	m_menu = menu;
 	this->xt = xt;
@@ -25,24 +25,24 @@ bool RepairResultSlot::mayPickup(shared_ptr<Player> player)
 
 void RepairResultSlot::onTake(shared_ptr<Player> player, shared_ptr<ItemInstance> carried)
 {
-	if (!player->abilities.instabuild) player->withdrawExperienceLevels(m_menu->cost);
-	m_menu->repairSlots->setItem(RepairMenu::INPUT_SLOT, nullptr);
+	if (!player->abilities.instabuild) player->giveExperienceLevels(-m_menu->cost);
+	m_menu->repairSlots->setItem(AnvilMenu::INPUT_SLOT, nullptr);
 	if (m_menu->repairItemCountCost > 0)
 	{
-		shared_ptr<ItemInstance> addition = m_menu->repairSlots->getItem(RepairMenu::ADDITIONAL_SLOT);
+		shared_ptr<ItemInstance> addition = m_menu->repairSlots->getItem(AnvilMenu::ADDITIONAL_SLOT);
 		if (addition != NULL && addition->count > m_menu->repairItemCountCost)
 		{
 			addition->count -= m_menu->repairItemCountCost;
-			m_menu->repairSlots->setItem(RepairMenu::ADDITIONAL_SLOT, addition);
+			m_menu->repairSlots->setItem(AnvilMenu::ADDITIONAL_SLOT, addition);
 		}
 		else
 		{
-			m_menu->repairSlots->setItem(RepairMenu::ADDITIONAL_SLOT, nullptr);
+			m_menu->repairSlots->setItem(AnvilMenu::ADDITIONAL_SLOT, nullptr);
 		}
 	}
 	else
 	{
-		m_menu->repairSlots->setItem(RepairMenu::ADDITIONAL_SLOT, nullptr);
+		m_menu->repairSlots->setItem(AnvilMenu::ADDITIONAL_SLOT, nullptr);
 	}
 	m_menu->cost = 0;
 
@@ -54,12 +54,12 @@ void RepairResultSlot::onTake(shared_ptr<Player> player, shared_ptr<ItemInstance
 
 		if (++dmg > 2)
 		{
-			m_menu->level->setTile(xt, yt, zt, 0);
+			m_menu->level->removeTile(xt, yt, zt);
 			m_menu->level->levelEvent(LevelEvent::SOUND_ANVIL_BROKEN, xt, yt, zt, 0);
 		}
 		else
 		{
-			m_menu->level->setData(xt, yt, zt, dir | (dmg << 2));
+			m_menu->level->setData(xt, yt, zt, dir | (dmg << 2), Tile::UPDATE_CLIENTS);
 			m_menu->level->levelEvent(LevelEvent::SOUND_ANVIL_USED, xt, yt, zt, 0);
 		}
 	}

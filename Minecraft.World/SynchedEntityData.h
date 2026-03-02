@@ -15,9 +15,12 @@ public:
 		const int id;
 		// 4J - there used to be one "value" type here of general type Object, just storing the different (used) varieties
 		// here separately for us
-		byte	value_byte;
-		int		value_int;
-		short	value_short;
+		union {
+			byte	value_byte;
+			int		value_int;
+			short	value_short;
+			float   value_float;
+		};
 		wstring	value_wstring;
 		shared_ptr<ItemInstance> value_itemInstance;
 		bool dirty;
@@ -29,16 +32,19 @@ public:
 		DataItem(int type, int id, const wstring& value);
 		DataItem(int type, int id, shared_ptr<ItemInstance> itemInstance);
 		DataItem(int type, int id, short value);
+		DataItem(int type, int id, float value);
 
 		int getId();
 		void setValue(byte value);
 		void setValue(int value);
 		void setValue(short value);
+		void setValue(float value);
 		void setValue(const wstring& value);
 		void setValue(shared_ptr<ItemInstance> value);
 		byte getValue_byte();
 		int getValue_int();
 		short getValue_short();
+		float getValue_float();
 		wstring getValue_wstring();
 		shared_ptr<ItemInstance> getValue_itemInstance();
 		int getType();
@@ -50,7 +56,6 @@ public:
 	static const int MAX_STRING_DATA_LENGTH = 64;
 	static const int EOF_MARKER = 0x7f;
 
-private:
 	static const int TYPE_BYTE = 0;
 	static const int TYPE_SHORT = 1;
 	static const int TYPE_INT = 2;
@@ -71,7 +76,7 @@ private:
 	// the id value must fit in the remaining bits
 	static const int MAX_ID_VALUE = ~TYPE_MASK & 0xff;
 
-	unordered_map<int, shared_ptr<DataItem> > itemsById;
+	shared_ptr<DataItem> itemsById[MAX_ID_VALUE+1];
 	bool m_isDirty;
 
 public:
@@ -83,6 +88,7 @@ public:
 	void define(int id, const wstring& value);
 	void define(int id, int value);
 	void define(int id, short value);
+	void define(int id, float value);
 	void defineNULL(int id, void *pVal);
 
 	void checkId(int id);	// 4J - added to contain common code from overloaded define functions above
@@ -97,6 +103,7 @@ public:
 	void set(int id, byte value);
 	void set(int id, int value);
 	void set(int id, short value);
+	void set(int id, float value);
 	void set(int id, const wstring& value);
 	void set(int id, shared_ptr<ItemInstance>);
 	void markDirty(int id);
@@ -121,6 +128,7 @@ public:
 public:
 	void assignValues(vector<shared_ptr<DataItem> > *items);
 	bool isEmpty();
+	void clearDirty();
 
 	// 4J Added
 	int getSizeInBytes();

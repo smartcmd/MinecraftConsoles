@@ -140,7 +140,7 @@ FullTutorial::FullTutorial(int iPad, bool isTrial /*= false*/)
 	int pickaxeAuxVals[] = {-1,-1,-1,-1,-1};
 	addTask(e_Tutorial_State_Gameplay, new CraftTask( pickaxeItems, pickaxeAuxVals, 5, 1, this, IDS_TUTORIAL_TASK_CREATE_WOODEN_PICKAXE) );
 
-	addTask(e_Tutorial_State_Gameplay, new PickupTask( Tile::stoneBrick_Id, 8, -1, this, IDS_TUTORIAL_TASK_MINE_STONE ) );	
+	addTask(e_Tutorial_State_Gameplay, new PickupTask( Tile::cobblestone_Id, 8, -1, this, IDS_TUTORIAL_TASK_MINE_STONE ) );	
 
 	addTask(e_Tutorial_State_Gameplay, new ProgressFlagTask( &m_progressFlags, FULL_TUTORIAL_PROGRESS_CRAFT_FURNACE, ProgressFlagTask::e_Progress_Set_Flag, this ) );
 	addTask(e_Tutorial_State_Gameplay, new CraftTask( Tile::furnace_Id, -1, 1, this, IDS_TUTORIAL_TASK_CREATE_FURNACE ) );
@@ -522,8 +522,8 @@ FullTutorial::FullTutorial(int iPad, bool isTrial /*= false*/)
 		AABB *area = app.getGameRuleDefinitions()->getNamedArea(L"tradingArea");
 		if(area != NULL)
 		{
-			eTutorial_State enchantingStates[] = {e_Tutorial_State_Gameplay};
-			AddGlobalConstraint( new ChangeStateConstraint(this, e_Tutorial_State_Trading, enchantingStates, 1, area->x0,area->y0,area->z0,area->x1,area->y1,area->z1) );
+			eTutorial_State tradingStates[] = {e_Tutorial_State_Gameplay};
+			AddGlobalConstraint( new ChangeStateConstraint(this, e_Tutorial_State_Trading, tradingStates, 1, area->x0,area->y0,area->z0,area->x1,area->y1,area->z1) );
 
 			addTask(e_Tutorial_State_Trading, new ChoiceTask(this, IDS_TUTORIAL_TASK_TRADING_OVERVIEW, IDS_TUTORIAL_PROMPT_TRADING_OVERVIEW, true, ACTION_MENU_A, ACTION_MENU_B, e_Tutorial_Completion_Complete_State_Gameplay_Constraints, eTelemetryTutorial_Trading) );
 
@@ -532,6 +532,75 @@ FullTutorial::FullTutorial(int iPad, bool isTrial /*= false*/)
 			addTask(e_Tutorial_State_Trading, new InfoTask(this, IDS_TUTORIAL_TASK_TRADING_INCREASE_TRADES, IDS_TUTORIAL_PROMPT_PRESS_A_TO_CONTINUE, true, ACTION_MENU_A) );
 			addTask(e_Tutorial_State_Trading, new InfoTask(this, IDS_TUTORIAL_TASK_TRADING_DECREASE_TRADES, IDS_TUTORIAL_PROMPT_PRESS_A_TO_CONTINUE, true, ACTION_MENU_A) );
 			addTask(e_Tutorial_State_Trading, new InfoTask(this, IDS_TUTORIAL_TASK_TRADING_USE_CHESTS, IDS_TUTORIAL_PROMPT_PRESS_A_TO_CONTINUE, true, ACTION_MENU_A) );
+		}
+	}
+
+	/*
+	*
+	*
+	* FIREWORKS
+	*
+	*/
+	if(app.getGameRuleDefinitions() != NULL)
+	{
+		AABB *area = app.getGameRuleDefinitions()->getNamedArea(L"fireworksArea");
+		if(area != NULL)
+		{
+			eTutorial_State fireworkStates[] = {e_Tutorial_State_Gameplay};
+			AddGlobalConstraint( new ChangeStateConstraint(this, e_Tutorial_State_Fireworks, fireworkStates, 1, area->x0,area->y0,area->z0,area->x1,area->y1,area->z1) );
+
+			addTask(e_Tutorial_State_Fireworks, new ChoiceTask(this,	IDS_TUTORIAL_TASK_FIREWORK_OVERVIEW,	IDS_TUTORIAL_PROMPT_FIREWORK_OVERVIEW, true, ACTION_MENU_A, ACTION_MENU_B, e_Tutorial_Completion_Complete_State_Gameplay_Constraints, eTelemetryTutorial_Trading) );
+
+			addTask(e_Tutorial_State_Fireworks, new InfoTask(this,		IDS_TUTORIAL_TASK_FIREWORK_PURPOSE,		IDS_TUTORIAL_PROMPT_PRESS_A_TO_CONTINUE, true, ACTION_MENU_A) );
+			addTask(e_Tutorial_State_Fireworks, new InfoTask(this,		IDS_TUTORIAL_TASK_FIREWORK_CUSTOMISE,	IDS_TUTORIAL_PROMPT_PRESS_A_TO_CONTINUE, true, ACTION_MENU_A) ); // 
+			addTask(e_Tutorial_State_Fireworks, new InfoTask(this,		IDS_TUTORIAL_TASK_FIREWORK_CRAFTING,	IDS_TUTORIAL_PROMPT_PRESS_A_TO_CONTINUE, true, ACTION_MENU_A) );
+		}
+	}
+
+	/*
+	*
+	*
+	* BEACON
+	*
+	*/
+	if(app.getGameRuleDefinitions() != NULL)
+	{
+		AABB *area = app.getGameRuleDefinitions()->getNamedArea(L"beaconArea");
+		if(area != NULL)
+		{
+			eTutorial_State beaconStates[] = {e_Tutorial_State_Gameplay};
+			AddGlobalConstraint( new ChangeStateConstraint(this, e_Tutorial_State_Beacon, beaconStates, 1, area->x0,area->y0,area->z0,area->x1,area->y1,area->z1) );
+
+			addTask(e_Tutorial_State_Beacon, new ChoiceTask(this, IDS_TUTORIAL_TASK_BEACON_OVERVIEW,		IDS_TUTORIAL_PROMPT_BEACON_OVERVIEW, true, ACTION_MENU_A, ACTION_MENU_B, e_Tutorial_Completion_Complete_State_Gameplay_Constraints, eTelemetryTutorial_Beacon) );
+
+			addTask(e_Tutorial_State_Beacon, new InfoTask(this, IDS_TUTORIAL_TASK_BEACON_PURPOSE,			IDS_TUTORIAL_PROMPT_PRESS_A_TO_CONTINUE, true, ACTION_MENU_A) );
+			addTask(e_Tutorial_State_Beacon, new InfoTask(this, IDS_TUTORIAL_TASK_BEACON_DESIGN,			IDS_TUTORIAL_PROMPT_PRESS_A_TO_CONTINUE, true, ACTION_MENU_A) );
+			addTask(e_Tutorial_State_Beacon, new InfoTask(this, IDS_TUTORIAL_TASK_BEACON_CHOOSING_POWERS,	IDS_TUTORIAL_PROMPT_PRESS_A_TO_CONTINUE, true, ACTION_MENU_A) );
+		}
+	}
+
+	/*
+	*
+	*
+	* HOPPER
+	*
+	*/
+	if(app.getGameRuleDefinitions() != NULL)
+	{
+		AABB *area = app.getGameRuleDefinitions()->getNamedArea(L"hopperArea");
+		if(area != NULL)
+		{
+			eTutorial_State hopperStates[] = {e_Tutorial_State_Gameplay};
+			AddGlobalConstraint( new ChangeStateConstraint(this, e_Tutorial_State_Hopper, hopperStates, 1, area->x0,area->y0,area->z0,area->x1,area->y1,area->z1) );
+
+			addTask(e_Tutorial_State_Hopper, new ChoiceTask(this, IDS_TUTORIAL_TASK_HOPPER_OVERVIEW,	IDS_TUTORIAL_PROMPT_HOPPER_OVERVIEW, true, ACTION_MENU_A, ACTION_MENU_B, e_Tutorial_Completion_Complete_State_Gameplay_Constraints, eTelemetryTutorial_Hopper) );
+
+			addTask(e_Tutorial_State_Hopper, new InfoTask(this, IDS_TUTORIAL_TASK_HOPPER_PURPOSE,		IDS_TUTORIAL_PROMPT_PRESS_A_TO_CONTINUE, true, ACTION_MENU_A) );
+			addTask(e_Tutorial_State_Hopper, new InfoTask(this, IDS_TUTORIAL_TASK_HOPPER_CONTAINERS,	IDS_TUTORIAL_PROMPT_PRESS_A_TO_CONTINUE, true, ACTION_MENU_A) );
+			addTask(e_Tutorial_State_Hopper, new InfoTask(this, IDS_TUTORIAL_TASK_HOPPER_MECHANICS,		IDS_TUTORIAL_PROMPT_PRESS_A_TO_CONTINUE, true, ACTION_MENU_A) );
+			addTask(e_Tutorial_State_Hopper, new InfoTask(this, IDS_TUTORIAL_TASK_HOPPER_REDSTONE,		IDS_TUTORIAL_PROMPT_PRESS_A_TO_CONTINUE, true, ACTION_MENU_A) );
+			addTask(e_Tutorial_State_Hopper, new InfoTask(this, IDS_TUTORIAL_TASK_HOPPER_OUTPUT,		IDS_TUTORIAL_PROMPT_PRESS_A_TO_CONTINUE, true, ACTION_MENU_A) );
+			addTask(e_Tutorial_State_Hopper, new InfoTask(this, IDS_TUTORIAL_TASK_HOPPER_AREA,			IDS_TUTORIAL_PROMPT_PRESS_A_TO_CONTINUE, true, ACTION_MENU_A) );
 		}
 	}
 

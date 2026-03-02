@@ -12,5 +12,5 @@ public:
 	VillagerZombieModel(float g, float yOffset, bool isArmor);
 
 	int version();
-	void setupAnim(float time, float r, float bob, float yRot, float xRot, float scale, unsigned int uiBitmaskOverrideAnim=0);
+	void setupAnim(float time, float r, float bob, float yRot, float xRot, float scale, shared_ptr<Entity> entity, unsigned int uiBitmaskOverrideAnim=0);
 };

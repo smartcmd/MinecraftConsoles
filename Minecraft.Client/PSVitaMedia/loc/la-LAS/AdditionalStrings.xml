@@ -48,6 +48,12 @@
 	<data name="IDS_CORRUPT_OPTIONS">
 		<value>Tu archivo Opciones está dañado y tiene que borrarse.</value>
 	</data>
+	<data name="IDS_CORRUPT_OPTIONS_DELETE">
+		<value>Borrar archivo Opciones.</value>
+	</data>
+	<data name="IDS_CORRUPT_OPTIONS_RETRY">
+		<value>Volver a cargar archivo Opciones.</value>
+	</data>
 	<data name="IDS_CORRUPT_SAVECACHE">
 		<value>Tu archivo Guardar caché está dañado y tiene que borrarse.</value>
 	</data>
@@ -75,6 +81,9 @@
 	<data name="IDS_CONTENT_RESTRICTION_MULTIPLAYER">
 		<value>Debido a la configuración del control paterno de uno de los jugadores locales, se desactivó la función online de tu cuenta Sony Entertainment Network.</value>
 	</data>
+	<data name="IDS_CONTENT_RESTRICTION_PATCH_AVAILABLE">
+		<value>Las funciones online están deshabilitadas debido a que hay una actualización del juego disponible. </value>
+	</data>
 	<data name="IDS_NO_DLCCATEGORIES">
 		<value>En este momento no hay ofertas de contenido descargable disponibles para este título.</value>
 	</data>
@@ -83,8 +92,5 @@
 	</data>
 	<data name="IDS_INVITATION_BODY">
 		<value>¡Ven a jugar una partida de Minecraft: PlayStation®Vita Edition!</value>
-	</data>
-	<data name="IDS_CONTENT_RESTRICTION_PATCH_AVAILABLE">
-		<value>Las funciones online están deshabilitadas debido a que hay una actualización del juego disponible. </value>
 	</data>
 </root>

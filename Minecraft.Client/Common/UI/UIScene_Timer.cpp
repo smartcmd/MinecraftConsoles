@@ -20,7 +20,7 @@ wstring UIScene_Timer::getMoviePath()
 	return L"Timer";
 }
 
-void UIScene_Timer::reloadMovie()
+void UIScene_Timer::reloadMovie(bool force)
 {
 	// Never needs reloaded
 }

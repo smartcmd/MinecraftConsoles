@@ -55,8 +55,8 @@ void BiomeDecorator::_init()
 	lapisOreFeature = new OreFeature(Tile::lapisOre_Id, 6);
 	yellowFlowerFeature = new FlowerFeature(Tile::flower_Id);
 	roseFlowerFeature = new FlowerFeature(Tile::rose_Id);
-	brownMushroomFeature = new FlowerFeature(Tile::mushroom1_Id);
-	redMushroomFeature = new FlowerFeature(Tile::mushroom2_Id);
+	brownMushroomFeature = new FlowerFeature(Tile::mushroom_brown_Id);
+	redMushroomFeature = new FlowerFeature(Tile::mushroom_red_Id);
 	hugeMushroomFeature = new HugeMushroomFeature();
 	reedsFeature = new ReedsFeature();
 	cactusFeature = new CactusFeature();
@@ -123,12 +123,12 @@ void BiomeDecorator::decorate()
 	PIXEndNamedEvent();
 
 	PIXBeginNamedEvent(0,"Decorate mushrooms/flowers/grass");
-    for (int i = 0; i < hugeMushrooms; i++)
+	for (int i = 0; i < hugeMushrooms; i++)
 	{
-        int x = xo + random->nextInt(16) + 8;
-        int z = zo + random->nextInt(16) + 8;
-        hugeMushroomFeature->place(level, random, x, level->getHeightmap(x, z), z);
-    }
+		int x = xo + random->nextInt(16) + 8;
+		int z = zo + random->nextInt(16) + 8;
+		hugeMushroomFeature->place(level, random, x, level->getHeightmap(x, z), z);
+	}
 
 	for (int i = 0; i < flowerCount; i++)
 	{
@@ -176,15 +176,15 @@ void BiomeDecorator::decorate()
 	}
 	if(deadBushFeature != NULL)delete deadBushFeature;
 
-    for (int i = 0; i < waterlilyCount; i++)
+	for (int i = 0; i < waterlilyCount; i++)
 	{
-        int x = xo + random->nextInt(16) + 8;
-        int z = zo + random->nextInt(16) + 8;
-        int y = random->nextInt(Level::genDepth);
-        while (y > 0 && level->getTile(x, y - 1, z) == 0)
-            y--;
-        waterlilyFeature->place(level, random, x, y, z);
-    }
+		int x = xo + random->nextInt(16) + 8;
+		int z = zo + random->nextInt(16) + 8;
+		int y = random->nextInt(Level::genDepth);
+		while (y > 0 && level->getTile(x, y - 1, z) == 0)
+			y--;
+		waterlilyFeature->place(level, random, x, y, z);
+	}
 
 	for (int i = 0; i < mushroomCount; i++)
 	{

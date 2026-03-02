@@ -55,12 +55,14 @@ void EnderChestTileEntity::tick()
 	}
 }
 
-void EnderChestTileEntity::triggerEvent(int b0, int b1)
+bool EnderChestTileEntity::triggerEvent(int b0, int b1)
 {
 	if (b0 == ChestTile::EVENT_SET_OPEN_COUNT)
 	{
 		openCount = b1;
+		return true;
 	}
+	return TileEntity::triggerEvent(b0, b1);
 }
 
 void EnderChestTileEntity::setRemoved()

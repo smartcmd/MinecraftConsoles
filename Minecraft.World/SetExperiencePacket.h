@@ -18,7 +18,6 @@ public:
 	virtual int getEstimatedSize();
 	virtual bool canBeInvalidated();
 	virtual bool isInvalidatedBy(shared_ptr<Packet> packet);
-	virtual bool isAync();
 
 public:
 	static shared_ptr<Packet> create() { return shared_ptr<Packet>(new SetExperiencePacket()); }

@@ -14,6 +14,12 @@ void FlyingMob::causeFallDamage(float distance)
 	// not trigger the "fallOn" tile calls (such as trampling crops)
 }
 
+void FlyingMob::checkFallDamage(double ya, bool onGround)
+{
+	// this method is empty because flying creatures should
+	// not trigger the "fallOn" tile calls (such as trampling crops)
+}
+
 void FlyingMob::travel(float xa, float ya)
 {
 	if (isInWater())

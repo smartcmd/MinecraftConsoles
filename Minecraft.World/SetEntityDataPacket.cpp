@@ -53,11 +53,6 @@ int SetEntityDataPacket::getEstimatedSize()
 	return 5;
 }
 
-bool SetEntityDataPacket::isAync()
-{
-	return true;
-}
-
 vector<shared_ptr<SynchedEntityData::DataItem> > *SetEntityDataPacket::getUnpackedData()
 {
 	return packedItems;

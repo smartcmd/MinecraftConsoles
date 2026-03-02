@@ -11,11 +11,24 @@ class ServerPlayer;
 
 class Command
 {
+public:
+	// commands such as "help" and "emote"
+	static const int LEVEL_ALL = 0;
+	// commands such as "mute"
+	static const int LEVEL_MODERATORS = 1;
+	// commands such as "seed", "tp", "spawnpoint" and "give"
+	static const int LEVEL_GAMEMASTERS = 2;
+	// commands such as "whitelist", "ban", etc
+	static const int LEVEL_ADMINS = 3;
+	// commands such as "stop", "save-all", etc
+	static const int LEVEL_OWNERS = 4;
+
 private:
 	static AdminLogCommand *logger;
 
 public:
 	virtual EGameCommand getId() = 0;
+	virtual int getPermissionLevel();
 	virtual void execute(shared_ptr<CommandSender> source, byteArray commandData) = 0;
 	virtual bool canExecute(shared_ptr<CommandSender> source);
 

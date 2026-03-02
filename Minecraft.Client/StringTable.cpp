@@ -11,6 +11,20 @@ StringTable::StringTable(PBYTE pbData, DWORD dwSize)
 {
 	src = byteArray(pbData, dwSize);
 
+	ProcessStringTableData();
+}
+
+
+void StringTable::ReloadStringTable()
+{
+	m_stringsMap.clear();
+	m_stringsVec.clear();
+
+	ProcessStringTableData();
+}
+
+void StringTable::ProcessStringTableData(void)
+{
 	ByteArrayInputStream bais(src);
 	DataInputStream dis(&bais);
 
@@ -35,8 +49,8 @@ StringTable::StringTable(PBYTE pbData, DWORD dwSize)
 
 	//
 	for(	AUTO_VAR(it_locales, locales.begin());
-			it_locales!=locales.end() && (!foundLang); 
-			it_locales++
+		it_locales!=locales.end() && (!foundLang); 
+		it_locales++
 		)
 	{
 		bytesToSkip = 0;
@@ -72,13 +86,15 @@ StringTable::StringTable(PBYTE pbData, DWORD dwSize)
 
 		// Read the language file for the selected language
 		int langVersion = dis2.readInt();
-	
+
 		isStatic = false;     // 4J-JEV: Versions 1 and up could use 
 		if (langVersion > 0)  // integers rather than wstrings as keys.
 			isStatic = dis2.readBoolean();
 
 		wstring langId = dis2.readUTF();
 		int totalStrings = dis2.readInt();
+
+		app.DebugPrintf("IsStatic=%d totalStrings = %d\n",isStatic?1:0,totalStrings);
 
 		if (!isStatic)
 		{
@@ -109,10 +125,11 @@ StringTable::StringTable(PBYTE pbData, DWORD dwSize)
 
 		isStatic = false;
 	}
-	
+
 	// We can't delete this data in the dtor, so clear the reference
 	bais.reset();
 }
+
 
 StringTable::~StringTable(void)
 {

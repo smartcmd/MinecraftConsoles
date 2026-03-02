@@ -48,6 +48,12 @@
 	<data name="IDS_CORRUPT_OPTIONS">
 		<value>Filen med indstillinger er ødelagt og skal slettes.</value>
 	</data>
+	<data name="IDS_CORRUPT_OPTIONS_DELETE">
+		<value>Slet indstillingsfil.</value>
+	</data>
+	<data name="IDS_CORRUPT_OPTIONS_RETRY">
+		<value>Prøv at hente indstillingsfil igen.</value>
+	</data>
 	<data name="IDS_CORRUPT_SAVECACHE">
 		<value>Cache-filen til dit gemte spil er ødelagt og skal slettes.</value>
 	</data>
@@ -75,6 +81,9 @@
 	<data name="IDS_CONTENT_RESTRICTION_MULTIPLAYER">
 		<value>Onlinetjenesten er deaktiveret for din Sony Entertainment Network-konto på grund af indstillingerne for forældrekontrol for en af de lokale spillere.</value>
 	</data>
+	<data name="IDS_CONTENT_RESTRICTION_PATCH_AVAILABLE">
+		<value>Online-funktioner er deaktiveret, fordi der er en opdatering til spillet.</value>
+	</data>
 	<data name="IDS_NO_DLCCATEGORIES">
 		<value>Der er ikke nogen tilbud på indhold, der kan hentes, til dette spil i øjeblikket.</value>
 	</data>
@@ -83,8 +92,5 @@
 	</data>
 	<data name="IDS_INVITATION_BODY">
 		<value>Kom og spil Minecraft: PlayStation®Vita Edition!</value>
-	</data>
-	<data name="IDS_CONTENT_RESTRICTION_PATCH_AVAILABLE">
-		<value>Online-funktioner er deaktiveret, fordi der er en opdatering til spillet.</value>
 	</data>
 </root>

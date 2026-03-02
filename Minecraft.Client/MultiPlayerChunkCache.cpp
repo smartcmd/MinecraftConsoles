@@ -46,7 +46,7 @@ MultiPlayerChunkCache::MultiPlayerChunkCache(Level *level)
 					for( int z = 0; z < 16; z++ )
 					{
 						unsigned char tileId = 0;
-						if( y <= ( level->getSeaLevel() - 10 ) ) tileId = Tile::rock_Id;
+						if( y <= ( level->getSeaLevel() - 10 ) ) tileId = Tile::stone_Id;
 						else if( y < level->getSeaLevel() ) tileId = Tile::calmWater_Id;
 
 						bytes[x << 11 | z << 7 | y] = tileId;
@@ -141,16 +141,16 @@ void MultiPlayerChunkCache::drop(int x, int z)
 {
 	// 4J Stu - We do want to drop any entities in the chunks, especially for the case when a player is dead as they will
 	// not get the RemoveEntity packet if an entity is removed.
-    LevelChunk *chunk = getChunk(x, z);
-    if (!chunk->isEmpty())
+	LevelChunk *chunk = getChunk(x, z);
+	if (!chunk->isEmpty())
 	{
 		// Added parameter here specifies that we don't want to delete tile entities, as they won't get recreated unless they've got update packets
 		// The tile entities are in general only created on the client by virtue of the chunk rebuild
-        chunk->unload(false);	
+		chunk->unload(false);	
 
 		// 4J - We just want to clear out the entities in the chunk, but everything else should be valid
 		chunk->loaded = true;
-    }
+	}
 }
 
 LevelChunk *MultiPlayerChunkCache::create(int x, int z)
@@ -194,9 +194,9 @@ LevelChunk *MultiPlayerChunkCache::create(int x, int z)
 
 			// 4J - changed to use new methods for lighting
 			chunk->setSkyLightDataAllBright(); 
-//			Arrays::fill(chunk->skyLight->data, (byte) 255);
+			//			Arrays::fill(chunk->skyLight->data, (byte) 255);
 		}
-		
+
 		chunk->loaded = true;
 
 		LeaveCriticalSection(&m_csLoadCreate);
@@ -285,13 +285,17 @@ TilePos *MultiPlayerChunkCache::findNearestMapFeature(Level *level, const wstrin
 	return NULL;
 }
 
+void MultiPlayerChunkCache::recreateLogicStructuresForChunk(int chunkX, int chunkZ)
+{
+}
+
 wstring MultiPlayerChunkCache::gatherStats()
 {
 	EnterCriticalSection(&m_csLoadCreate);
 	int size = (int)loadedChunkList.size();
 	LeaveCriticalSection(&m_csLoadCreate);
 	return L"MultiplayerChunkCache: " + _toString<int>(size);
-	
+
 }
 
 void MultiPlayerChunkCache::dataReceived(int x, int z)

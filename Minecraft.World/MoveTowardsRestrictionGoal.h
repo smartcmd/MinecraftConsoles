@@ -7,10 +7,10 @@ class MoveTowardsRestrictionGoal : public Goal
 private:
 	PathfinderMob *mob;
 	double wantedX, wantedY, wantedZ;
-	float speed;
+	double speedModifier;
 
 public:
-	MoveTowardsRestrictionGoal(PathfinderMob *mob, float speed);
+	MoveTowardsRestrictionGoal(PathfinderMob *mob, double speedModifier);
 
 	bool canUse();
 	bool canContinueToUse();

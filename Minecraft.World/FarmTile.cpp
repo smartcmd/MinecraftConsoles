@@ -8,18 +8,18 @@
 
 FarmTile::FarmTile(int id) : Tile(id, Material::dirt,isSolidRender())
 {
-    iconWet = NULL;
+	iconWet = NULL;
 	iconDry = NULL;
 
-    setTicking(true);
-    updateDefaultShape();
-    setLightBlock(255);
+	setTicking(true);
+	updateDefaultShape();
+	setLightBlock(255);
 }
 
 // 4J Added override
 void FarmTile::updateDefaultShape()
 {
-    setShape(0, 0, 0, 1, 15 / 16.0f, 1);
+	setShape(0, 0, 0, 1, 15 / 16.0f, 1);
 }
 
 AABB *FarmTile::getAABB(Level *level, int x, int y, int z)
@@ -39,7 +39,7 @@ bool FarmTile::isCubeShaped()
 
 Icon *FarmTile::getTexture(int face, int data)
 {
-    if (face == Facing::UP)
+	if (face == Facing::UP)
 	{
 		if(data > 0)
 		{
@@ -50,28 +50,30 @@ Icon *FarmTile::getTexture(int face, int data)
 			return iconDry;
 		}
 	}
-    return Tile::dirt->getTexture(face);
+	return Tile::dirt->getTexture(face);
 }
 
 void FarmTile::tick(Level *level, int x, int y, int z, Random *random)
 {
-    if (isNearWater(level, x, y, z) || level->isRainingAt(x, y + 1, z))
+	if (isNearWater(level, x, y, z) || level->isRainingAt(x, y + 1, z))
 	{
-        level->setData(x, y, z, 7);
-    } else
+		level->setData(x, y, z, 7, Tile::UPDATE_CLIENTS);
+	}
+	else
 	{
-        int moisture = level->getData(x, y, z);
-        if (moisture > 0)
+		int moisture = level->getData(x, y, z);
+		if (moisture > 0)
 		{
-            level->setData(x, y, z, moisture - 1);
-        } else
+			level->setData(x, y, z, moisture - 1, Tile::UPDATE_CLIENTS);
+		}
+		else
 		{
-            if (!isUnderCrops(level, x, y, z))
+			if (!isUnderCrops(level, x, y, z))
 			{
-                level->setTile(x, y, z, Tile::dirt_Id);
-            }
-        }
-    }
+				level->setTileAndUpdate(x, y, z, Tile::dirt_Id);
+			}
+		}
+	}
 }
 
 void FarmTile::fallOn(Level *level, int x, int y, int z, shared_ptr<Entity> entity, float fallDistance)
@@ -80,49 +82,59 @@ void FarmTile::fallOn(Level *level, int x, int y, int z, shared_ptr<Entity> enti
 	// We should not be setting tiles on the client based on random values!
 	if (!level->isClientSide && level->random->nextFloat() < (fallDistance - .5f))
 	{
-		// Fix for #60547 - TU7: Content: Gameplay: Players joining a game can destroy crops even with Trust Players option disabled.
-		shared_ptr<Player> player = dynamic_pointer_cast<Player>(entity);
-		if(player == NULL || player->isAllowedToMine()) level->setTile(x, y, z, Tile::dirt_Id);
-    }
+		if(entity->instanceof(eTYPE_PLAYER))
+		{
+			shared_ptr<Player> player = dynamic_pointer_cast<Player>(entity);
+			if(!player->isAllowedToMine())
+			{
+				return;
+			}
+		}
+		else if (!level->getGameRules()->getBoolean(GameRules::RULE_MOBGRIEFING))
+		{
+			return;
+		}
+		level->setTileAndUpdate(x, y, z, Tile::dirt_Id);
+	}
 }
 
 bool FarmTile::isUnderCrops(Level *level, int x, int y, int z)
 {
-    int r = 0;
-    for (int xx = x - r; xx <= x + r; xx++)
-        for (int zz = z - r; zz <= z + r; zz++)
+	int r = 0;
+	for (int xx = x - r; xx <= x + r; xx++)
+		for (int zz = z - r; zz <= z + r; zz++)
 		{
-            int tile = level->getTile(xx, y + 1, zz);
-            if (tile == Tile::crops_Id || tile == Tile::melonStem_Id || tile == Tile::pumpkinStem_Id || tile == Tile::potatoes_Id || tile == Tile::carrots_Id)
+			int tile = level->getTile(xx, y + 1, zz);
+			if (tile == Tile::wheat_Id || tile == Tile::melonStem_Id || tile == Tile::pumpkinStem_Id || tile == Tile::potatoes_Id || tile == Tile::carrots_Id)
 			{
-                return true;
-            }
-        }
-    return false;
+				return true;
+			}
+		}
+		return false;
 }
 
 bool FarmTile::isNearWater(Level *level, int x, int y, int z)
 {
-    for (int xx = x - 4; xx <= x + 4; xx++)
-        for (int yy = y; yy <= y + 1; yy++)
-            for (int zz = z - 4; zz <= z + 4; zz++)
+	for (int xx = x - 4; xx <= x + 4; xx++)
+		for (int yy = y; yy <= y + 1; yy++)
+			for (int zz = z - 4; zz <= z + 4; zz++)
 			{
-                if (level->getMaterial(xx, yy, zz) == Material::water)
+				if (level->getMaterial(xx, yy, zz) == Material::water)
 				{
-                    return true;
-                }
-            }
-    return false;
+					return true;
+				}
+			}
+			return false;
 }
 
 void FarmTile::neighborChanged(Level *level, int x, int y, int z, int type)
 {
-    Tile::neighborChanged(level, x, y, z, type);
-    Material *above = level->getMaterial(x, y + 1, z);
-    if (above->isSolid())
+	Tile::neighborChanged(level, x, y, z, type);
+	Material *above = level->getMaterial(x, y + 1, z);
+	if (above->isSolid())
 	{
-        level->setTile(x, y, z, Tile::dirt_Id);
-    }
+		level->setTileAndUpdate(x, y, z, Tile::dirt_Id);
+	}
 }
 
 bool FarmTile::blocksLight()

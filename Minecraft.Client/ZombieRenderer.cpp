@@ -4,6 +4,10 @@
 #include "..\Minecraft.World\net.minecraft.world.entity.monster.h"
 #include "ZombieRenderer.h"
 
+ResourceLocation ZombieRenderer::ZOMBIE_PIGMAN_LOCATION(TN_MOB_PIGZOMBIE);
+ResourceLocation ZombieRenderer::ZOMBIE_LOCATION(TN_MOB_ZOMBIE);
+ResourceLocation ZombieRenderer::ZOMBIE_VILLAGER_LOCATION(TN_MOB_ZOMBIE_VILLAGER);
+
 ZombieRenderer::ZombieRenderer() : HumanoidMobRenderer(new ZombieModel(), .5f, 1.0f)
 {
 	modelVersion = 1;
@@ -34,7 +38,7 @@ void ZombieRenderer::createArmorParts()
 	villagerArmorParts2 = new VillagerZombieModel(0.5f, 0, true);
 }
 
-int ZombieRenderer::prepareArmor(shared_ptr<Mob> _mob, int layer, float a)
+int ZombieRenderer::prepareArmor(shared_ptr<LivingEntity> _mob, int layer, float a)
 {
 	shared_ptr<Zombie> mob = dynamic_pointer_cast<Zombie>(_mob);
 	swapArmor(mob);
@@ -48,7 +52,24 @@ void ZombieRenderer::render(shared_ptr<Entity> _mob, double x, double y, double 
 	HumanoidMobRenderer::render(_mob, x, y, z, rot, a);
 }
 
-void ZombieRenderer::additionalRendering(shared_ptr<Mob> _mob, float a)
+ResourceLocation *ZombieRenderer::getTextureLocation(shared_ptr<Entity> entity)
+{
+	shared_ptr<Zombie> mob = dynamic_pointer_cast<Zombie>(entity);
+
+    // TODO Extract this clusterfck into 3 renderers
+    if ( entity->instanceof(eTYPE_PIGZOMBIE) )
+	{
+        return &ZOMBIE_PIGMAN_LOCATION;
+    }
+
+    if (mob->isVillager())
+	{
+        return &ZOMBIE_VILLAGER_LOCATION;
+    }
+    return &ZOMBIE_LOCATION;
+}
+
+void ZombieRenderer::additionalRendering(shared_ptr<LivingEntity> _mob, float a)
 {
 	shared_ptr<Zombie> mob = dynamic_pointer_cast<Zombie>(_mob);
 	swapArmor(mob);
@@ -80,7 +101,7 @@ void ZombieRenderer::swapArmor(shared_ptr<Zombie> mob)
 	humanoidModel = (HumanoidModel *) model;
 }
 
-void ZombieRenderer::setupRotations(shared_ptr<Mob> _mob, float bob, float bodyRot, float a)
+void ZombieRenderer::setupRotations(shared_ptr<LivingEntity> _mob, float bob, float bodyRot, float a)
 {
 	shared_ptr<Zombie> mob = dynamic_pointer_cast<Zombie>(_mob);
 	if (mob->isConverting())

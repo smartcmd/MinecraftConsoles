@@ -49,14 +49,14 @@ private:
 	* @return
 	*/
 public:
-	static int getDamageProtection(shared_ptr<Inventory> inventory, DamageSource *source);
+	static int getDamageProtection(ItemInstanceArray armor, DamageSource *source);
 
 private:
 	class GetDamageBonusIteration : public EnchantmentIterationMethod
 	{
 	public:
-		int sum;
-		shared_ptr<Mob> target;
+		float sum;
+		shared_ptr<LivingEntity> target;
 
 		virtual void doEnchantment(Enchantment *enchantment, int level);
 	};
@@ -70,18 +70,18 @@ private:
 	* @return
 	*/
 public:
-	static int getDamageBonus(shared_ptr<Inventory> inventory, shared_ptr<Mob> target);
-	static int getKnockbackBonus(shared_ptr<Inventory> inventory, shared_ptr<Mob> target);
-	static int getFireAspect(shared_ptr<Mob> source);
-	static int getOxygenBonus(shared_ptr<Inventory> inventory);
-	static int getDiggingBonus(shared_ptr<Inventory> inventory);
-	static int getDigDurability(shared_ptr<Inventory> inventory);
-	static bool hasSilkTouch(shared_ptr<Inventory> inventory);
-	static int getDiggingLootBonus(shared_ptr<Inventory> inventory);
-	static int getKillingLootBonus(shared_ptr<Inventory> inventory);
-	static bool hasWaterWorkerBonus(shared_ptr<Inventory> inventory);
-	static int getArmorThorns(shared_ptr<Mob> source);
-	static shared_ptr<ItemInstance> getRandomItemWith(Enchantment *enchantment, shared_ptr<Mob> source);
+	static float getDamageBonus(shared_ptr<LivingEntity> source, shared_ptr<LivingEntity> target);
+	static int getKnockbackBonus(shared_ptr<LivingEntity> source, shared_ptr<LivingEntity> target);
+	static int getFireAspect(shared_ptr<LivingEntity> source);
+	static int getOxygenBonus(shared_ptr<LivingEntity> source);
+	static int getDiggingBonus(shared_ptr<LivingEntity> source);
+	static int getDigDurability(shared_ptr<LivingEntity> source);
+	static bool hasSilkTouch(shared_ptr<LivingEntity> source);
+	static int getDiggingLootBonus(shared_ptr<LivingEntity> source);
+	static int getKillingLootBonus(shared_ptr<LivingEntity> source);
+	static bool hasWaterWorkerBonus(shared_ptr<LivingEntity> source);
+	static int getArmorThorns(shared_ptr<LivingEntity> source);
+	static shared_ptr<ItemInstance> getRandomItemWith(Enchantment *enchantment, shared_ptr<LivingEntity> source);
 
 	/**
 	* 

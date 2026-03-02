@@ -90,7 +90,7 @@ void ExperienceOrb::tick()
 		yd = 0.2f;
 		xd = (random->nextFloat() - random->nextFloat()) * 0.2f;
 		zd = (random->nextFloat() - random->nextFloat()) * 0.2f;
-		level->playSound(shared_from_this(), eSoundType_RANDOM_FIZZ, 0.4f, 2.0f + random->nextFloat() * 0.4f);
+		playSound(eSoundType_RANDOM_FIZZ, 0.4f, 2.0f + random->nextFloat() * 0.4f);
 	}
 	checkInTile(x, (bb->y0 + bb->y1) / 2, z);
 
@@ -162,8 +162,9 @@ void ExperienceOrb::burn(int dmg)
 	hurt(DamageSource::inFire, dmg);
 }
 
-bool ExperienceOrb::hurt(DamageSource *source, int damage)
+bool ExperienceOrb::hurt(DamageSource *source, float damage)
 {
+	if (isInvulnerable()) return false;
 	markHurt();
 	health -= damage;
 	if (health <= 0)
@@ -195,7 +196,7 @@ void ExperienceOrb::playerTouch(shared_ptr<Player> player)
 	{
 		player->takeXpDelay = 2;
 		// 4J - sound change brought forward from 1.2.3
-		level->playSound(shared_from_this(), eSoundType_RANDOM_ORB, 0.1f, 0.5f * ((random->nextFloat() - random->nextFloat()) * 0.7f + 1.8f));
+		playSound(eSoundType_RANDOM_ORB, 0.1f, 0.5f * ((random->nextFloat() - random->nextFloat()) * 0.7f + 1.8f));
 		player->take(shared_from_this(), 1);
 		player->increaseXp(value);
 		remove();

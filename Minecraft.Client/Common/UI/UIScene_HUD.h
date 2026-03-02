@@ -1,37 +1,14 @@
 #pragma once
 
 #include "UIScene.h"
+#include "IUIScene_HUD.h"
 
 #define CHAT_LINES_COUNT 10
 
-class UIScene_HUD : public UIScene
+class UIScene_HUD : public UIScene, public IUIScene_HUD
 {
 private:
 	bool m_bSplitscreen;
-
-	int m_lastActiveSlot;
-	int m_lastScale;
-	bool m_bToolTipsVisible;
-	float m_lastExpProgress;
-	int m_lastExpLevel;
-	int m_lastMaxHealth;
-	bool m_lastHealthBlink, m_lastHealthPoison;
-	int m_lastMaxFood;
-	bool m_lastFoodPoison;
-	int m_lastAir;
-	int m_lastArmour;
-	float m_lastDragonHealth;
-	bool m_showDragonHealth;
-	int m_ticksWithNoBoss;
-	bool m_lastShowDisplayName;
-
-	bool m_showHealth, m_showFood, m_showAir, m_showArmour, m_showExpBar;
-	bool m_lastRegenEffect;
-	int m_lastSaturation;
-
-	unsigned int m_uiSelectedItemOpacityCountDown;
-
-	wstring m_displayName;
 
 protected:
 	UIControl_Label m_labelChatText[CHAT_LINES_COUNT];
@@ -41,11 +18,13 @@ protected:
 
 	IggyName m_funcLoadHud, m_funcSetExpBarProgress, m_funcSetPlayerLevel, m_funcSetActiveSlot;
 	IggyName m_funcSetHealth, m_funcSetFood, m_funcSetAir, m_funcSetArmour;
-	IggyName m_funcShowHealth, m_funcShowFood, m_funcShowAir, m_funcShowArmour, m_funcShowExpbar;
+	IggyName m_funcShowHealth, m_funcShowHorseHealth, m_funcShowFood, m_funcShowAir, m_funcShowArmour, m_funcShowExpbar;
 	IggyName m_funcSetRegenerationEffect, m_funcSetFoodSaturationLevel;
 	IggyName m_funcSetDragonHealth, m_funcSetDragonLabel, m_funcShowDragonHealth;
 	IggyName m_funcSetSelectedLabel, m_funcHideSelectedLabel;
 	IggyName m_funcRepositionHud, m_funcSetDisplayName, m_funcSetTooltipsEnabled;
+	IggyName m_funcSetRidingHorse, m_funcSetHorseHealth, m_funcSetHorseJumpBarProgress;
+	IggyName m_funcSetHealthAbsorb;
 	UI_BEGIN_MAP_ELEMENTS_AND_NAMES(UIScene)
 		UI_MAP_ELEMENT(m_labelChatText[0],"Label1")
 		UI_MAP_ELEMENT(m_labelChatText[1],"Label2")
@@ -84,6 +63,7 @@ protected:
 		UI_MAP_NAME(m_funcSetArmour, L"SetArmour")
 		
 		UI_MAP_NAME(m_funcShowHealth, L"ShowHealth")
+		UI_MAP_NAME(m_funcShowHorseHealth, L"ShowHorseHealth")
 		UI_MAP_NAME(m_funcShowFood, L"ShowFood")
 		UI_MAP_NAME(m_funcShowAir, L"ShowAir")
 		UI_MAP_NAME(m_funcShowArmour, L"ShowArmour")
@@ -103,6 +83,12 @@ protected:
 		UI_MAP_NAME(m_funcSetDisplayName, L"SetGamertag")
 
 		UI_MAP_NAME(m_funcSetTooltipsEnabled, L"SetTooltipsEnabled")
+		
+		UI_MAP_NAME(m_funcSetRidingHorse, L"SetRidingHorse")
+		UI_MAP_NAME(m_funcSetHorseHealth, L"SetHorseHealth")
+		UI_MAP_NAME(m_funcSetHorseJumpBarProgress, L"SetHorseJumpBarProgress")
+		
+		UI_MAP_NAME(m_funcSetHealthAbsorb, L"SetHealthAbsorb")
 	UI_END_MAP_ELEMENTS_AND_NAMES()
 
 public:
@@ -133,17 +119,22 @@ public:
 	virtual void handleReload();
 
 private:
+	virtual int getPad();
+	virtual void SetOpacity(float opacity);
+	virtual void SetVisible(bool visible);
+
 	void SetHudSize(int scale);
-	void SetExpBarProgress(float progress);
+	void SetExpBarProgress(float progress, int xpNeededForNextLevel);
 	void SetExpLevel(int level);
 	void SetActiveSlot(int slot);
 
-	void SetHealth(int iHealth, int iLastHealth, bool bBlink, bool bPoison);
+	void SetHealth(int iHealth, int iLastHealth, bool bBlink, bool bPoison, bool bWither);
 	void SetFood(int iFood, int iLastFood, bool bPoison);
-	void SetAir(int iAir);
+	void SetAir(int iAir, int extra);
 	void SetArmour(int iArmour);
 
 	void ShowHealth(bool show);
+	void ShowHorseHealth(bool show);
 	void ShowFood(bool show);
 	void ShowAir(bool show);
 	void ShowArmour(bool show);
@@ -161,6 +152,12 @@ private:
 	void SetDisplayName(const wstring &displayName);
 
 	void SetTooltipsEnabled(bool bEnabled);
+
+	void SetRidingHorse(bool ridingHorse, bool bIsJumpable, int maxHorseHealth);
+	void SetHorseHealth(int health, bool blink = false);
+	void SetHorseJumpBarProgress(float progress);
+
+	void SetHealthAbsorb(int healthAbsorb);
 
 public:
 	void SetSelectedLabel(const wstring &label);

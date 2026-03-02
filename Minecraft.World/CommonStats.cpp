@@ -55,7 +55,7 @@ Stat *CommonStats::get_breedEntity(eINSTANCEOF mobType)
 
 Stat *CommonStats::get_tamedEntity(eINSTANCEOF mobType)
 {
-	if (mobType == eTYPE_OZELOT)		return GenericStats::lionTamer();
+	if (mobType == eTYPE_OCELOT)		return GenericStats::lionTamer();
 	else if (mobType == eTYPE_WOLF)		return Stats::befriendsWolf;
 	else								return NULL;
 }
@@ -93,7 +93,7 @@ Stat *CommonStats::get_itemsCollected(int itemId, int itemAux)
 	// stor itemsBought(emerald) so I don't have to make yet another massive
 	// StatArray for Items Bought.
 #if (defined _EXTENDED_ACHIEVEMENTS) && (!defined _XBOX_ONE)
-	if (itemId == Tile::cloth_Id)			return Stats::rainbowCollection[itemAux];
+	if (itemId == Tile::wool_Id)			return Stats::rainbowCollection[itemAux];
 #endif
 
 	if (itemId != Item::emerald_Id)			return Stats::itemsCollected[itemId];

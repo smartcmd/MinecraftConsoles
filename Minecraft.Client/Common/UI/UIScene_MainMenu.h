@@ -90,10 +90,20 @@ private:
 
 	};
 	eActions m_eAction;
+
+private:
+	// 4J-JEV: Delay navigation until font changes.
+	static EUIScene eNavigateWhenReady;
+
+	static void proceedToScene(int iPad, EUIScene eScene)
+	{
+		eNavigateWhenReady = eScene;
+	}
+
 public:
 	UIScene_MainMenu(int iPad, void *initData, UILayer *parentLayer);
 	virtual ~UIScene_MainMenu();
-
+	
 	// Returns true if this scene has focus for the pad passed in
 #ifndef __PS3__
 	virtual bool hasFocus(int iPad) { return bHasFocus; }
@@ -113,6 +123,7 @@ protected:
 
 public:
 	virtual void tick();
+	virtual void handleReload();
 	// INPUT
 	virtual void handleInput(int iPad, int key, bool repeat, bool pressed, bool released, bool &handled);
 
@@ -137,8 +148,20 @@ private:
 	static void LoadTrial();
 
 #ifdef _XBOX_ONE
-	static int ChooseUser_SignInReturned(void *pParam,bool bContinue, int iPad);
-#endif
+	static int ChooseUser_SignInReturned(void *pParam,bool bContinue, int iPad, int iController);
+	static int CreateLoad_SignInReturned(void *pParam,bool bContinue, int iPad, int iController);
+	static int HelpAndOptions_SignInReturned(void *pParam,bool bContinue,int iPad, int iController);
+	static int Achievements_SignInReturned(void *pParam,bool bContinue,int iPad, int iController);
+	static int MustSignInReturned(void *pParam,int iPad,C4JStorage::EMessageResult result);
+
+	static int Leaderboards_SignInReturned(void* pParam, bool bContinue, int iPad, int iController);
+	static int UnlockFullGame_SignInReturned(void *pParam,bool bContinue,int iPad, int iController);
+	static int ExitGameReturned(void *pParam,int iPad,C4JStorage::EMessageResult result);
+
+
+	static int XboxHelp_SignInReturned(void *pParam, bool bContinue, int iPad, int iController);
+#else
+
 	static int CreateLoad_SignInReturned(void *pParam,bool bContinue, int iPad);
 	static int HelpAndOptions_SignInReturned(void *pParam,bool bContinue,int iPad);
 	static int Achievements_SignInReturned(void *pParam,bool bContinue,int iPad);
@@ -157,9 +180,6 @@ private:
 
 	static int PlayOfflineReturned(void *pParam, int iPad, C4JStorage::EMessageResult result);
 #endif
-
-#ifdef _DURANGO
-	static int XboxHelp_SignInReturned(void *pParam, bool bContinue, int iPad);
 #endif
 
 #ifdef __PSVITA__

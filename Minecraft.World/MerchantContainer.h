@@ -30,11 +30,14 @@ private:
 public:
 	shared_ptr<ItemInstance> removeItemNoUpdate(int slot);
 	void setItem(unsigned int slot, shared_ptr<ItemInstance> item);
-	int getName();
+	wstring getName();
+	wstring getCustomName();
+	bool hasCustomName();
 	int getMaxStackSize();
 	bool stillValid(shared_ptr<Player> player);
 	void startOpen();
 	void stopOpen();
+	bool canPlaceItem(int slot, shared_ptr<ItemInstance> item);
 	void setChanged();
 	void updateSellItem();
 	MerchantRecipe *getActiveRecipe();

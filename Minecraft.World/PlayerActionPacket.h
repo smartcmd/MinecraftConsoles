@@ -9,7 +9,7 @@ public:
 	static const int START_DESTROY_BLOCK;
     static const int ABORT_DESTROY_BLOCK;
     static const int STOP_DESTROY_BLOCK;
-    static const int GET_UPDATED_BLOCK;
+    static const int DROP_ALL_ITEMS;
     static const int DROP_ITEM;
 	static const int RELEASE_USE_ITEM;
 

@@ -1,11 +1,11 @@
 #pragma once
-
 #include "TileEntityRenderer.h"
 #include "ChestModel.h"
 
 class EnderChestRenderer : public TileEntityRenderer
 {
 private:
+	static ResourceLocation ENDER_CHEST_LOCATION; 
 	ChestModel chestModel;
 
 public:

@@ -31,10 +31,12 @@
 #include "UIControl_HTMLLabel.h"
 #include "UIControl_DynamicLabel.h"
 #include "UIControl_MinecraftPlayer.h"
+#include "UIControl_MinecraftHorse.h"
 #include "UIControl_PlayerSkinPreview.h"
 #include "UIControl_EnchantmentButton.h"
 #include "UIControl_EnchantmentBook.h"
 #include "UIControl_SpaceIndicatorBar.h"
+#include "UIControl_BeaconEffectButton.h"
 
 #ifdef __PSVITA__
 #include "UIControl_Touch.h"
@@ -85,6 +87,7 @@
 #include "UIScene_SettingsUIMenu.h"
 #include "UIScene_SkinSelectMenu.h"
 #include "UIScene_HowToPlayMenu.h"
+#include "UIScene_LanguageSelector.h"
 #include "UIScene_HowToPlay.h"
 #include "UIScene_ControlsMenu.h"
 #include "UIScene_Credits.h"
@@ -101,6 +104,10 @@
 #include "UIScene_CreativeMenu.h"
 #include "UIScene_TradingMenu.h"
 #include "UIScene_AnvilMenu.h"
+#include "UIScene_HorseInventoryMenu.h"
+#include "UIScene_HopperMenu.h"
+#include "UIScene_BeaconMenu.h"
+#include "UIScene_FireworksMenu.h"
 
 #include "UIScene_CraftingMenu.h"
 #include "UIScene_SignEntryMenu.h"
@@ -116,3 +123,4 @@
 #include "UIScene_TeleportMenu.h"
 #include "UIScene_EndPoem.h"
 #include "UIScene_EULA.h"
+#include "UIScene_NewUpdateMessage.h"

@@ -223,3 +223,12 @@ private:
 };
 void SetThreadName( DWORD dwThreadID, LPCSTR szThreadName );
 
+
+class CriticalSectionScopeLock
+{
+	CRITICAL_SECTION* m_pCS;
+public:
+	CriticalSectionScopeLock(CRITICAL_SECTION* pCS) { m_pCS = pCS; EnterCriticalSection(m_pCS); }
+	~CriticalSectionScopeLock() { LeaveCriticalSection(m_pCS); }
+};
+

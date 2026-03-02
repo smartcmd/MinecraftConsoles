@@ -16,7 +16,7 @@
 
 MapItem::MapItem(int id) : ComplexItem(id)
 {
-	this->setMaxStackSize(1);
+	setStackedByData(true);
 }
 
 shared_ptr<MapItemSavedData> MapItem::getSavedData(short idNum, Level *level)
@@ -86,7 +86,7 @@ shared_ptr<MapItemSavedData> MapItem::getSavedData(shared_ptr<ItemInstance> item
 
 void MapItem::update(Level *level, shared_ptr<Entity> player, shared_ptr<MapItemSavedData> data)
 {
-	if (level->dimension->id != data->dimension) 
+	if ( (level->dimension->id != data->dimension) || !player->instanceof(eTYPE_PLAYER) ) 
 	{
 		// Wrong dimension, abort
 		return;
@@ -108,11 +108,12 @@ void MapItem::update(Level *level, shared_ptr<Entity> player, shared_ptr<MapItem
 	{
 		rad /= 2;
 	}
-	data->step++;
+	shared_ptr<MapItemSavedData::HoldingPlayer> hp = data->getHoldingPlayer(dynamic_pointer_cast<Player>(player));
+	hp->step++;
 
 	for (int x = xp - rad + 1; x < xp + rad; x++)
 	{
-		if ((x & 15) != (data->step & 15)) continue;
+		if ((x & 15) != (hp->step & 15)) continue;
 
 		int yd0 = 255;
 		int yd1 = 0;
@@ -130,11 +131,6 @@ void MapItem::update(Level *level, shared_ptr<Entity> player, shared_ptr<MapItem
 			int xx = (xo / scale + x - w / 2) * scale;
 			int zz = (zo / scale + z - h / 2) * scale;
 
-			int r = 0;
-			int g = 0;
-			int b = 0;
-
-
 			int count[256];
 			memset( count,0,sizeof(int)*256);
 
@@ -150,7 +146,7 @@ void MapItem::update(Level *level, shared_ptr<Entity> player, shared_ptr<MapItem
 				int ss = xx + zz * 231871;
 				ss = ss * ss * 31287121 + ss * 11;
 				if (((ss >> 20) & 1) == 0) count[Tile::dirt_Id] += 10;
-				else count[Tile::rock_Id] += 10;
+				else count[Tile::stone_Id] += 10;
 				hh = 100;
 			} 
 			else 
@@ -201,9 +197,6 @@ void MapItem::update(Level *level, shared_ptr<Entity> player, shared_ptr<MapItem
 				}
 			}
 			liquidDepth /= scale * scale;
-			r /= scale * scale;
-			g /= scale * scale;
-			b /= scale * scale;
 
 			int best = 0;
 			int tBest = 0;
@@ -264,7 +257,7 @@ void MapItem::inventoryTick(shared_ptr<ItemInstance> itemInstance, Level *level,
 	if (level->isClientSide) return;
 
 	shared_ptr<MapItemSavedData> data = getSavedData(itemInstance, level);
-	if (dynamic_pointer_cast<Player>(owner) != NULL) 
+	if ( owner->instanceof(eTYPE_PLAYER) ) 
 	{
 		shared_ptr<Player> player = dynamic_pointer_cast<Player>(owner);
 
@@ -296,6 +289,17 @@ void MapItem::inventoryTick(shared_ptr<ItemInstance> itemInstance, Level *level,
 	{
 		update(level, owner, data);
 	}
+}
+
+shared_ptr<Packet> MapItem::getUpdatePacket(shared_ptr<ItemInstance> itemInstance, Level *level, shared_ptr<Player> player) 
+{
+	charArray data = MapItem::getSavedData(itemInstance, level)->getUpdatePacket(itemInstance, level, player);
+
+	if (data.data == NULL || data.length == 0) return nullptr;
+
+	shared_ptr<Packet> retval = shared_ptr<Packet>(new ComplexItemDataPacket((short) Item::map->id, (short) itemInstance->getAuxValue(), data));
+	delete data.data;
+	return retval;
 }
 
 void MapItem::onCraftedBy(shared_ptr<ItemInstance> itemInstance, Level *level, shared_ptr<Player> player) 
@@ -335,13 +339,18 @@ void MapItem::onCraftedBy(shared_ptr<ItemInstance> itemInstance, Level *level, s
 	data->setDirty();
 }
 
-shared_ptr<Packet> MapItem::getUpdatePacket(shared_ptr<ItemInstance> itemInstance, Level *level, shared_ptr<Player> player) 
-{
-	charArray data = MapItem::getSavedData(itemInstance, level)->getUpdatePacket(itemInstance, level, player);
+// 4J - Don't want
+/*
+void appendHoverText(ItemInstance itemInstance, Player player, List<String> lines, boolean advanced) {
+	MapItemSavedData data = getSavedData(itemInstance, player.level);
 
-	if (data.data == NULL || data.length == 0) return nullptr;
-
-	shared_ptr<Packet> retval = shared_ptr<Packet>(new ComplexItemDataPacket((short) Item::map->id, (short) itemInstance->getAuxValue(), data));
-	delete data.data;
-	return retval;
+	if (advanced) {
+		if (data == null) {
+			lines.add("Unknown map");
+		} else {
+			lines.add("Scaling at 1:" + (1 << data.scale));
+			lines.add("(Level " + data.scale + "/" + MapItemSavedData.MAX_SCALE + ")");
+		}
+	}
 }
+*/

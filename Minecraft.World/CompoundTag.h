@@ -20,7 +20,7 @@ public:
 	CompoundTag() : Tag(L"") {}
 	CompoundTag(const wstring &name) : Tag(name) {}
 
-    void write(DataOutput *dos)
+	void write(DataOutput *dos)
 	{
 		AUTO_VAR(itEnd, tags.end());
 		for( unordered_map<wstring, Tag *>::iterator it = tags.begin(); it != itEnd; it++ )
@@ -28,180 +28,188 @@ public:
 			Tag::writeNamedTag(it->second, dos);
 		}
 		dos->writeByte(Tag::TAG_End);
-    }
+	}
 
 
-	void load(DataInput *dis)
+	void load(DataInput *dis, int tagDepth)
 	{
-        tags.clear();
-        Tag *tag;
-        while ((tag = Tag::readNamedTag(dis))->getId() != Tag::TAG_End)
+		if(tagDepth > MAX_DEPTH)
+		{
+#ifndef _CONTENT_PACKAGE
+			printf("Tried to read NBT tag with too high complexity, depth > %d" , MAX_DEPTH);
+			__debugbreak();
+#endif
+			return;
+		}
+		tags.clear();
+		Tag *tag;
+		while ((tag = Tag::readNamedTag(dis))->getId() != Tag::TAG_End)
 		{
 			tags[tag->getName()] = tag;
-        }
+		}
 		delete tag;
-    }
+	}
 
-    vector<Tag *> *getAllTags()		// 4J - was collection
+	vector<Tag *> *getAllTags()		// 4J - was collection
 	{
 		// 4J - was return tags.values();
 		vector<Tag *> *ret = new vector<Tag *>;
-		
+
 		AUTO_VAR(itEnd, tags.end());
 		for( unordered_map<wstring, Tag *>::iterator it = tags.begin(); it != itEnd; it++ )
 		{
 			ret->push_back(it->second);
 		}
-        return ret;
-    }
+		return ret;
+	}
 
-    byte getId()
+	byte getId()
 	{
-        return TAG_Compound;
-    }
+		return TAG_Compound;
+	}
 
-    void put(wchar_t *name, Tag *tag)
+	void put(const wstring &name, Tag *tag)
 	{
-        tags[name] = tag->setName(wstring( name ));
-    }
+		tags[name] = tag->setName(name);
+	}
 
-    void putByte(wchar_t * name, byte value)
+	void putByte(const wstring &name, byte value)
 	{
-        tags[name] = (new ByteTag(name,value));
-    }
+		tags[name] = (new ByteTag(name,value));
+	}
 
-    void putShort(wchar_t * name, short value)
+	void putShort(const wstring &name, short value)
 	{
-        tags[name] = (new ShortTag(name,value));
-    }
+		tags[name] = (new ShortTag(name,value));
+	}
 
-    void putInt(wchar_t * name, int value)
+	void putInt(const wstring &name, int value)
 	{
-        tags[name] = (new IntTag(name,value));
-    }
+		tags[name] = (new IntTag(name,value));
+	}
 
-    void putLong(wchar_t * name, __int64 value)
+	void putLong(const wstring &name, __int64 value)
 	{
-        tags[name] = (new LongTag(name,value));
-    }
+		tags[name] = (new LongTag(name,value));
+	}
 
-    void putFloat(wchar_t * name, float value)
+	void putFloat(const wstring &name, float value)
 	{
-        tags[name] = (new FloatTag(name,value));
-    }
+		tags[name] = (new FloatTag(name,value));
+	}
 
-    void putDouble(wchar_t * name, double value)
+	void putDouble(const wstring &name, double value)
 	{
-        tags[name] = (new DoubleTag(name,value));
-    }
+		tags[name] = (new DoubleTag(name,value));
+	}
 
-    void putString(wchar_t *name, const wstring& value)
+	void putString(const wstring &name, const wstring& value)
 	{
-        tags[name] = (new StringTag(name,value));
-    }
+		tags[name] = (new StringTag(name,value));
+	}
 
-    void putByteArray(wchar_t * name, byteArray value)
+	void putByteArray(const wstring &name, byteArray value)
 	{
-        tags[name] = (new ByteArrayTag(name,value));
-    }
+		tags[name] = (new ByteArrayTag(name,value));
+	}
 
-	void putIntArray(wchar_t * name, intArray value)
+	void putIntArray(const wstring &name, intArray value)
 	{
 		tags[name] = (new IntArrayTag(name, value));
 	}
 
-    void putCompound(wchar_t * name, CompoundTag *value)
+	void putCompound(const wstring &name, CompoundTag *value)
 	{
-        tags[name] = value->setName( wstring( name ) );
-    }
+		tags[name] = value->setName( wstring( name ) );
+	}
 
-    void putBoolean(wchar_t * string, bool val)
+	void putBoolean(const wstring &name, bool val)
 	{
-        putByte(string, val?(byte)1:0);
-    }
+		putByte(name, val?(byte)1:0);
+	}
 
-    Tag *get(wchar_t *name)
+	Tag *get(const wstring &name)
 	{
 		AUTO_VAR(it, tags.find(name));
 		if(it != tags.end()) return it->second;
 		return NULL;
-    }
-    
-    bool contains(wchar_t * name)
+	}
+
+	bool contains(const wstring &name)
 	{
 		return tags.find(name) != tags.end();
-    }
+	}
 
-    byte getByte(wchar_t * name)
+	byte getByte(const wstring &name)
 	{
-        if (tags.find(name) == tags.end()) return (byte)0;
-        return ((ByteTag *) tags[name])->data;
-    }
+		if (tags.find(name) == tags.end()) return (byte)0;
+		return ((ByteTag *) tags[name])->data;
+	}
 
-    short getShort(wchar_t * name)
+	short getShort(const wstring &name)
 	{
-        if (tags.find(name) == tags.end()) return (short)0;
-        return ((ShortTag *) tags[name])->data;
-    }
+		if (tags.find(name) == tags.end()) return (short)0;
+		return ((ShortTag *) tags[name])->data;
+	}
 
-    int getInt(wchar_t * name)
+	int getInt(const wstring &name)
 	{
-        if (tags.find(name) == tags.end()) return (int)0;
-        return ((IntTag *) tags[name])->data;
-    }
+		if (tags.find(name) == tags.end()) return (int)0;
+		return ((IntTag *) tags[name])->data;
+	}
 
-    __int64 getLong(wchar_t * name)
+	__int64 getLong(const wstring &name)
 	{
-        if (tags.find(name) == tags.end()) return (__int64)0;
-        return ((LongTag *) tags[name])->data;
-    }
+		if (tags.find(name) == tags.end()) return (__int64)0;
+		return ((LongTag *) tags[name])->data;
+	}
 
-    float getFloat(wchar_t * name)
+	float getFloat(const wstring &name)
 	{
-        if (tags.find(name) == tags.end()) return (float)0;
-        return ((FloatTag *) tags[name])->data;
-    }
+		if (tags.find(name) == tags.end()) return (float)0;
+		return ((FloatTag *) tags[name])->data;
+	}
 
-    double getDouble(wchar_t * name)
+	double getDouble(const wstring &name)
 	{
-        if (tags.find(name) == tags.end()) return (double)0;
-        return ((DoubleTag *) tags[name])->data;
-    }
+		if (tags.find(name) == tags.end()) return (double)0;
+		return ((DoubleTag *) tags[name])->data;
+	}
 
-    wstring getString(wchar_t * name)
+	wstring getString(const wstring &name)
 	{
-        if (tags.find(name) == tags.end()) return wstring( L"" );
-        return ((StringTag *) tags[name])->data;
-    }
+		if (tags.find(name) == tags.end()) return wstring( L"" );
+		return ((StringTag *) tags[name])->data;
+	}
 
-    byteArray getByteArray(wchar_t * name)
+	byteArray getByteArray(const wstring &name)
 	{
-        if (tags.find(name) == tags.end()) return byteArray();
-        return ((ByteArrayTag *) tags[name])->data;
-    }
+		if (tags.find(name) == tags.end()) return byteArray();
+		return ((ByteArrayTag *) tags[name])->data;
+	}
 
-	intArray getIntArray(wchar_t * name)
+	intArray getIntArray(const wstring &name)
 	{
-		if (tags.find(name) == tags.end()) return intArray(0);
+		if (tags.find(name) == tags.end()) return intArray();
 		return ((IntArrayTag *) tags[name])->data;
 	}
 
-    CompoundTag *getCompound(wchar_t * name)
+	CompoundTag *getCompound(const wstring &name)
 	{
-        if (tags.find(name) == tags.end()) return new CompoundTag(name);
-        return (CompoundTag *) tags[name];
-    }
+		if (tags.find(name) == tags.end()) return new CompoundTag(name);
+		return (CompoundTag *) tags[name];
+	}
 
-    ListTag<Tag> *getList(wchar_t * name)
+	ListTag<Tag> *getList(const wstring &name)
 	{
-        if (tags.find(name) == tags.end()) return new ListTag<Tag>(name);
-        return (ListTag<Tag> *) tags[name];
-    }
+		if (tags.find(name) == tags.end()) return new ListTag<Tag>(name);
+		return (ListTag<Tag> *) tags[name];
+	}
 
-    bool getBoolean(wchar_t *string)
+	bool getBoolean(const wstring &string)
 	{
-        return getByte(string)!=0;
-    }
+		return getByte(string)!=0;
+	}
 
 	void remove(const wstring &name)
 	{
@@ -210,38 +218,38 @@ public:
 		//tags.remove(name);
 	}
 
-    wstring toString()
+	wstring toString()
 	{
 		static const int bufSize = 32;
 		static wchar_t buf[bufSize];
 		swprintf(buf,bufSize,L"%d entries",tags.size());
 		return wstring( buf );
-    }
+	}
 
-    void print(char *prefix, ostream out)
+	void print(char *prefix, ostream out)
 	{
 		/*
-        Tag::print(prefix, out);
+		Tag::print(prefix, out);
 		out << prefix << "{" << endl;
 
 		char *newPrefix = new char[ strlen(prefix) + 4 ];
 		strcpy( newPrefix, prefix);
 		strcat( newPrefix, "   ");
-		
+
 		AUTO_VAR(itEnd, tags.end());
 		for( unordered_map<string, Tag *>::iterator it = tags.begin(); it != itEnd; it++ )
 		{
-			it->second->print(newPrefix, out);
+		it->second->print(newPrefix, out);
 		}
 		delete[] newPrefix;
 		out << prefix << "}" << endl;
 		*/
-    }
+	}
 
-    bool isEmpty()
+	bool isEmpty()
 	{
 		return tags.empty();
-    }
+	}
 
 	virtual ~CompoundTag()
 	{
@@ -255,7 +263,7 @@ public:
 	Tag *copy()
 	{
 		CompoundTag *tag = new CompoundTag(getName());
-		
+
 		AUTO_VAR(itEnd, tags.end());
 		for( AUTO_VAR(it, tags.begin()); it != itEnd; it++ )
 		{			

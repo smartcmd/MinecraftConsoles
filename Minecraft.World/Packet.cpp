@@ -37,7 +37,7 @@ void Packet::staticCtor()
 
 	map(14, false, true, false, false, typeid(PlayerActionPacket), PlayerActionPacket::create);
 	map(15, false, true, false, false, typeid(UseItemPacket), UseItemPacket::create);
-	map(16, false, true, false, false, typeid(SetCarriedItemPacket), SetCarriedItemPacket::create);
+	map(16, true, true, true, false, typeid(SetCarriedItemPacket), SetCarriedItemPacket::create);
 	// 4J-PB - we need to send to any client for the sleep in bed
 	//map(17, true, false, false, false, EntityActionAtPositionPacket));
 	map(17, true, false, true, false, typeid(EntityActionAtPositionPacket), EntityActionAtPositionPacket::create);
@@ -52,7 +52,7 @@ void Packet::staticCtor()
 	map(24, true, false, false, true, typeid(AddMobPacket), AddMobPacket::create);
 	map(25, true, false, false, false, typeid(AddPaintingPacket), AddPaintingPacket::create);
 	map(26, true, false, false, false, typeid(AddExperienceOrbPacket), AddExperienceOrbPacket::create); // TODO New for 1.8.2 - Needs sendToAny?
-	//map(27, false, true, false, false, PlayerInputPacket));
+	map(27, false, true, false, false, typeid(PlayerInputPacket), PlayerInputPacket::create);
 	// 4J-PB - needs to go to any player, due to the knockback effect when a played is hit
 	map(28, true, false, true, true, typeid(SetEntityMotionPacket), SetEntityMotionPacket::create);
 	map(29, true, false, false, true, typeid(RemoveEntitiesPacket), RemoveEntitiesPacket::create);
@@ -66,11 +66,12 @@ void Packet::staticCtor()
 
 	// 4J - needs to go to any player, to create sound effect when a player is hit
 	map(38, true, false, true, true, typeid(EntityEventPacket), EntityEventPacket::create);
-	map(39, true, false, true, false, typeid(SetRidingPacket), SetRidingPacket::create);
+	map(39, true, false, true, false, typeid(SetEntityLinkPacket), SetEntityLinkPacket::create);
 	map(40, true, false, true, true, typeid(SetEntityDataPacket), SetEntityDataPacket::create);
 	map(41, true, false, true, false, typeid(UpdateMobEffectPacket), UpdateMobEffectPacket::create);
 	map(42, true, false, true, false, typeid(RemoveMobEffectPacket), RemoveMobEffectPacket::create);
 	map(43, true, false, true, false, typeid(SetExperiencePacket), SetExperiencePacket::create);
+	map(44, true, false, true, false, typeid(UpdateAttributesPacket), UpdateAttributesPacket::create);
 
 	map(50, true, false, true, true, typeid(ChunkVisibilityPacket), ChunkVisibilityPacket::create);
 	map(51, true, false, true, true, typeid(BlockRegionUpdatePacket), BlockRegionUpdatePacket::create); // Changed to LevelChunkPacket in Java but we aren't using that
@@ -83,7 +84,7 @@ void Packet::staticCtor()
 	map(61, true, false, true, false, typeid(LevelEventPacket), LevelEventPacket::create);
 	// 4J-PB - don't see the need for this, we can use 61
 	map(62, true, false, true, false, typeid(LevelSoundPacket), LevelSoundPacket::create);
-	//map(62, true, false, true, false, typeid(LevelSoundPacket), LevelSoundPacket::create);
+	map(63, true, false, true, false, typeid(LevelParticlesPacket), LevelParticlesPacket::create);
 
 	map(70, true, false, false, false, typeid(GameEventPacket), GameEventPacket::create);
 	map(71, true, false, false, false, typeid(AddGlobalEntityPacket), AddGlobalEntityPacket::create);
@@ -107,6 +108,7 @@ void Packet::staticCtor()
 	map(130, true, true, true, false, typeid(SignUpdatePacket), SignUpdatePacket::create);
 	map(131, true, false, true, false, typeid(ComplexItemDataPacket), ComplexItemDataPacket::create);
 	map(132, true, false, false, false, typeid(TileEntityDataPacket), TileEntityDataPacket::create);
+	map(133, true, false, true, false, typeid(TileEditorOpenPacket), TileEditorOpenPacket::create);
 
 	// 4J Added
 	map(150, false, true, false, false, typeid(CraftItemPacket), CraftItemPacket::create);
@@ -136,6 +138,12 @@ void Packet::staticCtor()
 	//map(203, true, true, true, false, ChatAutoCompletePacket.class);
 	//map(204, false, true, true, false, ClientInformationPacket.class);
 	map(205, false, true, true, false, typeid(ClientCommandPacket), ClientCommandPacket::create);
+
+	map(206, true, false, true, false, typeid(SetObjectivePacket), SetObjectivePacket::create);
+	map(207, true, false, true, false, typeid(SetScorePacket), SetScorePacket::create);
+	map(208, true, false, true, false, typeid(SetDisplayObjectivePacket), SetDisplayObjectivePacket::create);
+	map(209, true, false, true, false, typeid(SetPlayerTeamPacket), SetPlayerTeamPacket::create);
+
 	map(250, true, true, true, false, typeid(CustomPayloadPacket), CustomPayloadPacket::create);
 	// 4J Stu - These added 1.3.2, but don't think we need them
 	//map(252, true, true, SharedKeyPacket.class);
@@ -207,16 +215,25 @@ void Packet::map(int id, bool receiveOnClient, bool receiveOnServer, bool sendTo
 }
 
 // 4J Added to record data for outgoing packets
-void Packet::recordOutgoingPacket(shared_ptr<Packet> packet)
+void Packet::recordOutgoingPacket(shared_ptr<Packet> packet, int playerIndex)
 {
 #ifndef _CONTENT_PACKAGE
 #if PACKET_ENABLE_STAT_TRACKING
-	AUTO_VAR(it, outgoingStatistics.find(packet->getId()));
+#if 0
+	int idx = packet->getId();
+#else
+	int idx = playerIndex;
+	if( packet->getId() != 51 )
+	{
+		idx = 100;
+	}
+#endif
+	AUTO_VAR(it, outgoingStatistics.find(idx));
 
 	if( it == outgoingStatistics.end() )
 	{
-		Packet::PacketStatistics *packetStatistics = new PacketStatistics(packet->getId());
-		outgoingStatistics[packet->getId()] = packetStatistics;
+		Packet::PacketStatistics *packetStatistics = new PacketStatistics(idx);
+		outgoingStatistics[idx] = packetStatistics;
 		packetStatistics->addPacket(packet->getEstimatedSize());
 	}
 	else
@@ -227,77 +244,31 @@ void Packet::recordOutgoingPacket(shared_ptr<Packet> packet)
 #endif
 }
 
-void Packet::renderPacketStats(int id)
-{
-	AUTO_VAR(it, outgoingStatistics.find(id));
-
-	if( it != outgoingStatistics.end() )
-	{
-		it->second->renderStats();
-	}
-}
-
-void Packet::renderAllPacketStats()
+void Packet::updatePacketStatsPIX()
 {
 #ifndef _CONTENT_PACKAGE
 #if PACKET_ENABLE_STAT_TRACKING
-	Minecraft *pMinecraft = Minecraft::GetInstance();
-	pMinecraft->gui->renderStackedGraph(Packet::renderPos, 512, renderableStats.size(), &Packet::getIndexedStatValue );
-
-	renderAllPacketStatsKey();
-
-	Packet::renderPos++;
-	Packet::renderPos%=511;
-#endif
-#endif
-}
-
-void Packet::renderAllPacketStatsKey()
-{
-#ifndef _CONTENT_PACKAGE	
-#if PACKET_ENABLE_STAT_TRACKING
-	Minecraft *pMinecraft = Minecraft::GetInstance();
-	int total = Packet::renderableStats.size();
-	for(unsigned int i = 0; i < total; ++i)
+	
+	for( AUTO_VAR(it, outgoingStatistics.begin()); it != outgoingStatistics.end(); it++ )
 	{
-		Packet::PacketStatistics *stat = Packet::renderableStats[i];
-		float vary = (float)i/total;
-		int fColour = floor(vary * 0xffffff);
-
-		int colour = 0xff000000 + fColour;
-		pMinecraft->gui->drawString( pMinecraft->font, stat->getLegendString(), 900, 30 + (10 * i), colour);
+		Packet::PacketStatistics *stat = it->second;
+		__int64 count = stat->getRunningCount();
+		wchar_t pixName[256];
+		swprintf_s(pixName,L"Packet count %d",stat->id);
+//		PIXReportCounter(pixName,(float)count);
+		__int64 total = stat->getRunningTotal();
+		swprintf_s(pixName,L"Packet bytes %d",stat->id);
+		PIXReportCounter(pixName,(float)total);
+		stat->IncrementPos();
 	}
 #endif
 #endif
 }
-
-__int64 Packet::getIndexedStatValue(unsigned int samplePos, unsigned int renderableId)
-{
-	__int64 val = 0;
-
-#ifndef _CONTENT_PACKAGE
-#if PACKET_ENABLE_STAT_TRACKING
-	val = renderableStats[renderableId]->getCountSample(samplePos);
-#endif
-#endif
-
-	return val;
-}
-
 
 shared_ptr<Packet> Packet::getPacket(int id) 
 {
-	// 4J - removed try/catch
-	//    try
-	//	{
+	// 4J: Removed try/catch
 	return idToCreateMap[id]();
-	//    } 
-	//	catch (exception e)
-	//	{
-	//		// TODO 4J JEV print stack trace, newInstance doesnt throw an exception in c++ yet.
-	//        printf("Skipping packet with id %d" , id);
-	//        return NULL;
-	//    }
 }
 
 void Packet::writeBytes(DataOutputStream *dataoutputstream, byteArray bytes)
@@ -320,7 +291,7 @@ byteArray Packet::readBytes(DataInputStream *datainputstream)
 	}
 
 	byteArray bytes(size);
-	datainputstream->read(bytes);
+	datainputstream->readFully(bytes);
 
 	return bytes;
 }
@@ -446,18 +417,19 @@ wstring Packet::readUtf(DataInputStream *dis, int maxLength) // throws IOExcepti
 	return builder;
 }
 
+Packet::PacketStatistics::PacketStatistics(int id) : id( id ), count( 0 ), totalSize( 0 ), samplesPos( 0 )
+{
+	memset(countSamples, 0, sizeof(countSamples));
+	memset(sizeSamples, 0, sizeof(sizeSamples));
+}
+
 void Packet::PacketStatistics::addPacket(int bytes)
 {
-	if(count == 0)
-	{
-		firstSampleTime = System::currentTimeMillis();
-	}
-	count++;
+	countSamples[samplesPos]++;
+	sizeSamples[samplesPos] += bytes;
+	timeSamples[samplesPos] = System::currentTimeMillis();
 	totalSize += bytes;
-
-	// 4J Added	
-	countSamples[samplesPos & (512 - 1)]++;
-	sizeSamples[samplesPos & (512 - 1)] += (unsigned int) bytes;
+	count++;
 }
 
 int Packet::PacketStatistics::getCount() 
@@ -474,44 +446,45 @@ double Packet::PacketStatistics::getAverageSize()
 	return (double) totalSize / count;
 }
 
-void Packet::PacketStatistics::renderStats( )
+int Packet::PacketStatistics::getTotalSize() 
 {
-#ifndef _CONTENT_PACKAGE
-#if PACKET_ENABLE_STAT_TRACKING
-	samplesPos++;
-
-	countSamples[samplesPos & (512 - 1)] = 0;
-	sizeSamples[samplesPos & (512 - 1)] = 0;
-
-	Minecraft *pMinecraft = Minecraft::GetInstance();
-	pMinecraft->gui->renderGraph(512, samplesPos, countSamples, 1, 10, sizeSamples, 1, 50);
-#endif
-#endif
+	return totalSize;
 }
 
-__int64 Packet::PacketStatistics::getCountSample(int samplePos)
+__int64 Packet::PacketStatistics::getRunningTotal()
 {
-	if(samplePos == 511)
+	__int64 total = 0;
+	__int64 currentTime = System::currentTimeMillis();
+	for( int i = 0; i < TOTAL_TICKS; i++ )
 	{
-		samplesPos++;
-		countSamples[samplesPos & (512 - 1)] = 0;
-		sizeSamples[samplesPos & (512 - 1)] = 0;
+		if( currentTime - timeSamples[i] <= 1000 )
+		{
+			total += sizeSamples[i];
+		}
 	}
-
-	return countSamples[samplePos] * 10;
+	return total;
 }
 
-wstring Packet::PacketStatistics::getLegendString()
+__int64 Packet::PacketStatistics::getRunningCount()
 {
-	static wchar_t string[128];
-	double bps = 0.0;
-	if(firstSampleTime > 0)
+	__int64 total = 0;
+	__int64 currentTime = System::currentTimeMillis();
+	for( int i = 0; i < TOTAL_TICKS; i++ )
 	{
-		float timeDiff = ((System::currentTimeMillis() - firstSampleTime)/1000);
-		if(timeDiff > 0) bps = totalSize / timeDiff;
+		if( currentTime - timeSamples[i] <= 1000 )
+		{
+			total += countSamples[i];
+		}
 	}
-	swprintf(string, 128, L"id: %d , packets: %d , total: %d , bytes: %d, total: %d, %f Bps", id, countSamples[(samplesPos - 1) & (512 - 1)], count, sizeSamples[(samplesPos - 1) & (512 - 1)], totalSize, bps );
-	return string;
+	return total;
+}
+
+void Packet::PacketStatistics::IncrementPos()
+{
+	samplesPos = ( samplesPos + 1 ) % TOTAL_TICKS;
+	countSamples[samplesPos] = 0;
+	sizeSamples[samplesPos] = 0;
+	timeSamples[samplesPos] = 0;
 }
 
 bool Packet::canBeInvalidated()

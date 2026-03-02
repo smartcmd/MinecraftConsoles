@@ -5,6 +5,7 @@
 class HugeExplosionParticle : public Particle
 {
 private:
+	static ResourceLocation EXPLOSION_LOCATION;
 	int life;
 	int lifeTime;
 	Textures *textures;

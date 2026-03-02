@@ -49,8 +49,8 @@ void TeleportEntityPacket::read(DataInputStream *dis) //throws IOException
 	y = dis->readShort();
 	z = dis->readShort();
 #endif
-	yRot = (byte) dis->read();
-	xRot = (byte) dis->read();
+	yRot = dis->readByte();
+	xRot = dis->readByte();
 }
 
 void TeleportEntityPacket::write(DataOutputStream *dos) //throws IOException 

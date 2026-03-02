@@ -9,7 +9,7 @@
 
 CompassTexture *CompassTexture::instance = NULL;
 
-CompassTexture::CompassTexture() : StitchedTexture(L"compass")
+CompassTexture::CompassTexture() : StitchedTexture(L"compass",L"compass")
 {
 	instance = this;
 
@@ -19,7 +19,7 @@ CompassTexture::CompassTexture() : StitchedTexture(L"compass")
 	rot = rota = 0.0;
 }
 
-CompassTexture::CompassTexture(int iPad, CompassTexture *dataTexture) : StitchedTexture(L"compass")
+CompassTexture::CompassTexture(int iPad, CompassTexture *dataTexture) : StitchedTexture(L"compass",L"compass")
 {
 	m_dataTexture = dataTexture;
 	m_iPad = iPad;

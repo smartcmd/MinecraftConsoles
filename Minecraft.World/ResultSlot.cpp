@@ -66,21 +66,17 @@ void ResultSlot::onTake(shared_ptr<Player> player, shared_ptr<ItemInstance> carr
 
 			if (item->getItem()->hasCraftingRemainingItem())
 			{
-
-				// (TheApathetic)
 				shared_ptr<ItemInstance> craftResult = shared_ptr<ItemInstance>(new ItemInstance(item->getItem()->getCraftingRemainingItem()));
 
 				/*
-				* Try to place this in the player's inventory (See we.java
-				* for new method)
+				* Try to place this in the player's inventory (See we.java for new method)
 				*/
-				if (item->getItem()->shouldMoveCraftingResultToInventory(item) && this->player->inventory->add(craftResult))
+				if (item->getItem()->shouldMoveCraftingResultToInventory(item) && player->inventory->add(craftResult))
 				{
 					continue;
 				}
 
-				// If this slot is now empty, place it there (current
-				// behavior)
+				// If this slot is now empty, place it there (current behavior)
 				if (craftSlots->getItem(i) == NULL)
 				{
 					craftSlots->setItem(i, craftResult);
@@ -88,7 +84,7 @@ void ResultSlot::onTake(shared_ptr<Player> player, shared_ptr<ItemInstance> carr
 				else
 				{
 					// Finally, if nothing else, just drop the item
-					this->player->drop(craftResult);
+					player->drop(craftResult);
 				}
 			}
 

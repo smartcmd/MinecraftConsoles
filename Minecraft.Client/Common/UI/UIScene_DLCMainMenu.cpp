@@ -15,7 +15,7 @@ UIScene_DLCMainMenu::UIScene_DLCMainMenu(int iPad, void *initData, UILayer *pare
 	// Alert the app the we want to be informed of ethernet connections
 	app.SetLiveLinkRequired( true );
 
-	m_labelOffers.init(app.GetString(IDS_DOWNLOADABLE_CONTENT_OFFERS));
+	m_labelOffers.init(IDS_DOWNLOADABLE_CONTENT_OFFERS);
 	m_buttonListOffers.init(eControl_OffersList);
 
 #if defined _XBOX_ONE || defined __ORBIS__
@@ -33,7 +33,7 @@ UIScene_DLCMainMenu::UIScene_DLCMainMenu(int iPad, void *initData, UILayer *pare
 	if(m_loadedResolution == eSceneResolution_1080)
 	{
 #ifdef _DURANGO
-		m_labelXboxStore.init( app.GetString(IDS_XBOX_STORE) );
+		m_labelXboxStore.init(IDS_XBOX_STORE);
 #else
 		m_labelXboxStore.init( L"" );
 #endif
@@ -42,9 +42,9 @@ UIScene_DLCMainMenu::UIScene_DLCMainMenu(int iPad, void *initData, UILayer *pare
 #if defined(_DURANGO)
 	m_Timer.setVisible(false);
 
-	m_buttonListOffers.addItem(app.GetString(IDS_DLC_MENU_SKINPACKS),e_DLC_SkinPack);
-	m_buttonListOffers.addItem(app.GetString(IDS_DLC_MENU_TEXTUREPACKS),e_DLC_TexturePacks);
-	m_buttonListOffers.addItem(app.GetString(IDS_DLC_MENU_MASHUPPACKS),e_DLC_MashupPacks);
+	m_buttonListOffers.addItem(IDS_DLC_MENU_SKINPACKS,e_DLC_SkinPack);
+	m_buttonListOffers.addItem(IDS_DLC_MENU_TEXTUREPACKS,e_DLC_TexturePacks);
+	m_buttonListOffers.addItem(IDS_DLC_MENU_MASHUPPACKS,e_DLC_MashupPacks);
 
 	app.AddDLCRequest(e_Marketplace_Content); // content is skin packs, texture packs and mash-up packs
 	// we also need to mount the local DLC so we can tell what's been purchased
@@ -53,10 +53,8 @@ UIScene_DLCMainMenu::UIScene_DLCMainMenu(int iPad, void *initData, UILayer *pare
 	
 	TelemetryManager->RecordMenuShown(iPad, eUIScene_DLCMainMenu, 0);
 
-#ifdef __ORBIS__
-	sceNpCommerceShowPsStoreIcon(SCE_NP_COMMERCE_PS_STORE_ICON_RIGHT);
-#elif defined __PSVITA__
-	sceNpCommerce2ShowPsStoreIcon(SCE_NP_COMMERCE2_ICON_DISP_RIGHT);
+#if defined __ORBIS__ || defined __PSVITA__
+	app.GetCommerce()->ShowPsStoreIcon();
 #endif
 
 #if ( defined __PS3__ || defined __ORBIS__ || defined __PSVITA__ )
@@ -70,6 +68,11 @@ UIScene_DLCMainMenu::~UIScene_DLCMainMenu()
 	app.SetLiveLinkRequired( false );
 #if defined _XBOX_ONE || defined __ORBIS__
 	app.FreeLocalDLCImages();
+#endif
+
+#ifdef _XBOX_ONE
+	// 4J-JEV: Have to switch back to user preferred languge now.
+	setLanguageOverride(true);
 #endif
 }
 
@@ -93,10 +96,8 @@ void UIScene_DLCMainMenu::handleInput(int iPad, int key, bool repeat, bool press
 	case ACTION_MENU_CANCEL:
 		if(pressed)
 		{
-#ifdef __ORBIS__
-			sceNpCommerceHidePsStoreIcon();
-#elif defined __PSVITA__
-			sceNpCommerce2HidePsStoreIcon();
+#if defined __ORBIS__ || defined __PSVITA__
+			app.GetCommerce()->HidePsStoreIcon();
 #endif
 			navigateBack();
 		}
@@ -155,7 +156,7 @@ void UIScene_DLCMainMenu::handleTimerComplete(int id)
 			// If they have, bring up the PSN warning and exit from the leaderboards
 			unsigned int uiIDA[1];
 			uiIDA[0]=IDS_OK;
-			C4JStorage::EMessageResult result = ui.RequestMessageBox( IDS_CONNECTION_LOST, g_NetworkManager.CorrectErrorIDS(IDS_CONNECTION_LOST_LIVE_NO_EXIT), uiIDA,1,ProfileManager.GetPrimaryPad(),UIScene_DLCMainMenu::ExitDLCMainMenu,this, app.GetStringTable());
+			C4JStorage::EMessageResult result = ui.RequestErrorMessage( IDS_CONNECTION_LOST, g_NetworkManager.CorrectErrorIDS(IDS_CONNECTION_LOST_LIVE_NO_EXIT), uiIDA,1,ProfileManager.GetPrimaryPad(),UIScene_DLCMainMenu::ExitDLCMainMenu,this);
 		}
 #endif
 		break;
@@ -167,10 +168,8 @@ int UIScene_DLCMainMenu::ExitDLCMainMenu(void *pParam,int iPad,C4JStorage::EMess
 {
 	UIScene_DLCMainMenu* pClass = (UIScene_DLCMainMenu*)pParam;
 
-#ifdef __ORBIS__
-	sceNpCommerceHidePsStoreIcon();
-#elif defined __PSVITA__
-	sceNpCommerce2HidePsStoreIcon();
+#if defined __ORBIS__ || defined __PSVITA__
+	app.GetCommerce()->HidePsStoreIcon();
 #endif
 	pClass->navigateBack();
 

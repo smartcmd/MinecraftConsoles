@@ -19,11 +19,11 @@ StitchedTexture *StitchedTexture::create(const wstring &name)
 	}
 	else
 	{
-		return new StitchedTexture(name);
+		return new StitchedTexture(name,name);
 	}
 }
 
-StitchedTexture::StitchedTexture(const wstring &name) : name(name)
+StitchedTexture::StitchedTexture(const wstring &name, const wstring &filename) : name(name)
 {
 	// 4J Initialisers
 	source = NULL;
@@ -43,6 +43,7 @@ StitchedTexture::StitchedTexture(const wstring &name) : name(name)
 	frameOverride = NULL;
 	flags = 0;
 	frames = NULL;
+	m_fileName = filename;
 }
 
 void StitchedTexture::freeFrameTextures()

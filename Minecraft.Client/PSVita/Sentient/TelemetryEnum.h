@@ -225,5 +225,14 @@ enum ETelemetryChallenges
 	eTelemetryTutorial_TradingMenu,
 	eTelemetryTutorial_Enderchest,
 
+	eTelemetryTutorial_Horse, // Java 1.6.4
+	eTelemetryTutorial_HorseMenu,
+	eTelemetryTutorial_Fireworks,
+	eTelemetryTutorial_FireworksMenu,
+	eTelemetryTutorial_Beacon,
+	eTelemetryTutorial_BeaconMenu,
+	eTelemetryTutorial_Hopper,
+	eTelemetryTutorial_HopperMenu,
+
 	// Sent over network as a byte
 };

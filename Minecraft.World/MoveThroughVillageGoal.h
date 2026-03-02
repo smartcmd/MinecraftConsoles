@@ -10,14 +10,14 @@ class MoveThroughVillageGoal : public Goal
 {
 private:
 	PathfinderMob *mob;
-	float speed;
+	double speedModifier;
 	Path *path;
 	weak_ptr<DoorInfo> doorInfo;
 	bool onlyAtNight;
 	vector< weak_ptr<DoorInfo> > visited;
 
 public:
-	MoveThroughVillageGoal(PathfinderMob *mob, float speed, bool onlyAtNight);
+	MoveThroughVillageGoal(PathfinderMob *mob, double speedModifier, bool onlyAtNight);
 	~MoveThroughVillageGoal();
 
 	virtual bool canUse();

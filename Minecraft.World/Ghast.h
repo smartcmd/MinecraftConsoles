@@ -29,21 +29,20 @@ public:
     int charge;
 
 private:
+	int explosionPower;
+
+
 	void _init();
 
 public:
 	Ghast(Level *level);
 
-	virtual bool hurt(DamageSource *source, int dmg);
+	virtual bool isCharging();
+	virtual bool hurt(DamageSource *source, float dmg);
 
 protected:
 	virtual void defineSynchedData();
-
-public:
-	int getMaxHealth();
-
-public:
-	virtual void tick();
+	virtual void registerAttributes();
 
 protected:
 	virtual void serverAiStep();
@@ -61,5 +60,7 @@ protected:
 
 public:
 	virtual bool canSpawn();
-    virtual int getMaxSpawnClusterSize();
+	virtual int getMaxSpawnClusterSize();
+	virtual void addAdditonalSaveData(CompoundTag *tag);
+	virtual void readAdditionalSaveData(CompoundTag *tag);
 };

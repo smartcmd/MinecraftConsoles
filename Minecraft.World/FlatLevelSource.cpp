@@ -20,7 +20,7 @@ FlatLevelSource::FlatLevelSource(Level *level, __int64 seed, bool generateStruct
 	this->random = new Random(seed);
 	this->pprandom = new Random(seed);		// 4J - added, so that we can have a separate random for doing post-processing in parallel with creation
 
-	villageFeature = new VillageFeature(0,m_XZSize);
+	villageFeature = new VillageFeature(m_XZSize);
 
 
 }
@@ -150,4 +150,9 @@ vector<Biome::MobSpawnerData *> *FlatLevelSource::getMobsAt(MobCategory *mobCate
 TilePos *FlatLevelSource::findNearestMapFeature(Level *level, const wstring& featureName, int x, int y, int z)
 {
 	return NULL;
+}
+
+void FlatLevelSource::recreateLogicStructuresForChunk(int chunkX, int chunkZ)
+{
+	// TODO
 }

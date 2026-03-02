@@ -147,29 +147,29 @@
   </data>
 <data name="IDS_HOW_TO_PLAY_BASICS"><value>{*T3*}COMO JOGAR: NOÇÕES BÁSICAS{*ETW*}{*B*}{*B*}
 Minecraft é um jogo que consiste em colocar blocos para construir qualquer coisa que imaginar. À noite os monstros aparecem; então, construa um abrigo antes que isso aconteça.{*B*}{*B*}
-Use {*CONTROLLER_ACTION_LOOK*}para olhar à sua volta.{*B*}{*B*}
-Use {*CONTROLLER_ACTION_MOVE*}para se mover.{*B*}{*B*}
-Pressione {*CONTROLLER_ACTION_JUMP*}para pular.{*B*}{*B*}
-Pressione {*CONTROLLER_ACTION_MOVE*}duas vezes para frente rapidamente para correr. Enquanto mantiver {*CONTROLLER_ACTION_MOVE*}pressionado para a frente, o personagem continuará correndo, a não ser que o tempo de corrida acabe ou que a Barra de Alimentos tenha menos de {*ICON_SHANK_03*}.{*B*}{*B*}
-Mantenha {*CONTROLLER_ACTION_ACTION*}pressionado para extrair e cortar usando a mão ou o que estiver segurando. Talvez seja necessário fabricar uma ferramenta para extrair alguns blocos.{*B*}{*B*}
-Se estiver segurando um item na mão, use {*CONTROLLER_ACTION_USE*}para utilizá-lo ou pressione {*CONTROLLER_ACTION_DROP*}para soltá-lo.</value>
+Use {*CONTROLLER_ACTION_LOOK*} para olhar à sua volta.{*B*}{*B*}
+Use {*CONTROLLER_ACTION_MOVE*} para se mover.{*B*}{*B*}
+Pressione {*CONTROLLER_ACTION_JUMP*} para pular.{*B*}{*B*}
+Pressione {*CONTROLLER_ACTION_MOVE*} duas vezes para frente rapidamente para correr. Enquanto mantiver {*CONTROLLER_ACTION_MOVE*} pressionado para a frente, o personagem continuará correndo, a não ser que o tempo de corrida acabe ou que a Barra de Alimentos tenha menos de {*ICON_SHANK_03*}.{*B*}{*B*}
+Mantenha {*CONTROLLER_ACTION_ACTION*} pressionado para extrair e cortar usando a mão ou o que estiver segurando. Talvez seja necessário fabricar uma ferramenta para extrair alguns blocos.{*B*}{*B*}
+Se estiver segurando um item na mão, use {*CONTROLLER_ACTION_USE*} para utilizá-lo ou pressione {*CONTROLLER_ACTION_DROP*} para soltá-lo.</value>
   </data>
 <data name="IDS_HOW_TO_PLAY_HUD"><value>{*T3*}COMO JOGAR: HUD{*ETW*}{*B*}{*B*}
 O HUD mostra informações sobre seu status; sua energia, o oxigênio restante quando está debaixo da água, seu nível de fome (é preciso comer para reabastecer) e sua armadura, se estiver usando uma. Se você perder energia, mas tiver uma barrra de alimentos com 9 ou mais {*ICON_SHANK_01*}, sua energia será reabastecida automaticamente. Comer reabastece sua barra de alimentos. {*B*}
 A Barra de Experiência também é mostrada aqui, com um valor numérico que mostra seu Nível de Experiência e a barra que indica quantos Pontos de Experiência são necessários para aumentar seu Nível de Experiência. Você ganha Pontos de Experiência coletando as Esferas de Experiência liberadas por multidões quando elas morrem, ao minerar alguns tipos de blocos, ao criar animais, pescar e fundir minérios na fornalha.{*B*}{*B*}
-Também mostra os itens disponíveis para uso. Use {*CONTROLLER_ACTION_LEFT_SCROLL*}e {*CONTROLLER_ACTION_RIGHT_SCROLL*}para trocar o item em sua mão.</value>
+Também mostra os itens disponíveis para uso. Use {*CONTROLLER_ACTION_LEFT_SCROLL*} e {*CONTROLLER_ACTION_RIGHT_SCROLL*} para trocar o item em sua mão.</value>
   </data>
 <data name="IDS_HOW_TO_PLAY_INVENTORY"><value>{*T3*}COMO JOGAR: INVENTÁRIO{*ETW*}{*B*}{*B*}
-Use {*CONTROLLER_ACTION_INVENTORY*}para ver seu inventário.{*B*}{*B*}
+Use {*CONTROLLER_ACTION_INVENTORY*} para ver seu inventário.{*B*}{*B*}
 Essa tela mostra os itens disponíveis para uso em sua mão e todos os outros itens que está carregando. Sua armadura também é mostrada aqui.{*B*}{*B*}
-Use{*CONTROLLER_MENU_NAVIGATE*}para mover o ponteiro. Use {*CONTROLLER_VK_A*}para pegar um item sob o ponteiro. Se houver mais de um item aqui, ele pegará todos ou você pode usar {*CONTROLLER_VK_X*}para pegar apenas metade deles.{*B*}{*B*}
-Mova o item com o ponteiro sobre outro espaço no inventário e coloque-o lá usando {*CONTROLLER_VK_A*}. Se tiver vários itens no ponteiro, use {*CONTROLLER_VK_A*}para colocar todos ou {*CONTROLLER_VK_X*}para colocar apenas um.{*B*}{*B*}
-Se o item sobre o qual você estiver for uma armadura, aparecerá uma dica de ferramenta para permitir a movimentação rápida para o espaço da armadura à direita no inventário.
-É possível mudar a cor da sua Armadura de Couro, tingindo-a. Faça isso no menu do estoque, segurando a tinta com o cursor, e em seguida apertando{*CONTROLLER_VK_X*} enquanto o cursor estiver sobre a peça que deseja tingir.
-  </value>
+Use{*CONTROLLER_MENU_NAVIGATE*} para mover o ponteiro. Use {*CONTROLLER_VK_A*} para pegar um item sob o ponteiro. Se houver mais de um item aqui, ele pegará todos ou você pode usar {*CONTROLLER_VK_X*} para pegar apenas metade deles.{*B*}{*B*}
+Mova o item com o ponteiro sobre outro espaço no inventário e coloque-o lá usando {*CONTROLLER_VK_A*}. Se tiver vários itens no ponteiro, use {*CONTROLLER_VK_A*} para colocar todos ou {*CONTROLLER_VK_X*} para colocar apenas um.{*B*}{*B*}
+Se o item sobre o qual você estiver for uma armadura, aparecerá uma dica de ferramenta para permitir a movimentação rápida para o espaço da armadura à direita no inventário.{*B*}{*B*}
+É possível mudar a cor da sua Armadura de Couro, tingindo-a. Faça isso no menu do estoque, segurando a tinta com o cursor, e em seguida apertando {*CONTROLLER_VK_X*} enquanto o cursor estiver sobre a peça que deseja tingir.
+ </value>
   </data>
 <data name="IDS_HOW_TO_PLAY_CHEST"><value>{*T3*}COMO JOGAR: BAÚ{*ETW*}{*B*}{*B*}
-Depois de criar um baú, poderá colocá-lo no mundo e usá-lo com{*CONTROLLER_ACTION_USE*} para guardar itens do seu inventário.{*B*}{*B*}
+Depois de criar um baú, poderá colocá-lo no mundo e usá-lo com {*CONTROLLER_ACTION_USE*} para guardar itens do seu inventário.{*B*}{*B*}
 Use o ponteiro para mover itens entre o inventário e o baú.{*B*}{*B*}
 Os itens no baú ficarão guardados lá para você até devolvê-los ao inventário mais tarde.
   </value>
@@ -180,20 +180,20 @@ Dois baús colocados lado a lado serão combinados para formar um Baú Grande. E
   </value>
   </data>
 <data name="IDS_HOW_TO_PLAY_CRAFTING"><value>{*T3*}COMO JOGAR: FABRICAÇÃO{*ETW*}{*B*}{*B*}
-Na interface de fabricação, você pode combinar itens do seu inventário para criar novos tipos de itens. Use{*CONTROLLER_ACTION_CRAFTING*}para abrir a interface de fabricação.{*B*}{*B*}
-Role pelas guias na parte superior usando{*CONTROLLER_VK_LB*}e{*CONTROLLER_VK_RB*}para selecionar o tipo de item que deseja criar e, em seguida, use {*CONTROLLER_MENU_NAVIGATE*}para selecionar o item a ser criado.{*B*}{*B*}
-A área de fabricação mostra os itens necessários para criar o novo item. Pressione {*CONTROLLER_VK_A*}para criar o item e colocá-lo no inventário.
+Na interface de fabricação, você pode combinar itens do seu inventário para criar novos tipos de itens. Use {*CONTROLLER_ACTION_CRAFTING*} para abrir a interface de fabricação.{*B*}{*B*}
+Role pelas guias na parte superior usando {*CONTROLLER_VK_LB*} e {*CONTROLLER_VK_RB*} para selecionar o tipo de item que deseja criar e, em seguida, use {*CONTROLLER_MENU_NAVIGATE*} para selecionar o item a ser criado.{*B*}{*B*}
+A área de fabricação mostra os itens necessários para criar o novo item. Pressione {*CONTROLLER_VK_A*} para criar o item e colocá-lo no inventário.
   </value>
   </data>
 <data name="IDS_HOW_TO_PLAY_CRAFT_TABLE"><value>{*T3*}COMO JOGAR: BANCADA{*ETW*}{*B*}{*B*}
 Você pode criar itens maiores usando uma bancada.{*B*}{*B*}
-Coloque a bancada no mundo e pressione{*CONTROLLER_ACTION_USE*} para usá-la.{*B*}{*B*}
+Coloque a bancada no mundo e pressione {*CONTROLLER_ACTION_USE*} para usá-la.{*B*}{*B*}
 A fabricação de itens na bancada funciona da mesma maneira que a fabricação básica, mas você terá uma área maior para trabalhar e uma variedade maior de itens para criar.
   </value>
   </data>
 <data name="IDS_HOW_TO_PLAY_FURNACE"><value>{*T3*}COMO JOGAR: FORNALHA{*ETW*}{*B*}{*B*}
 Com a fornalha você pode alterar os itens queimando-os. Por exemplo, você pode transformar minério de ferro em barras de ferro na fornalha.{*B*}{*B*}
-Coloque a fornalha no mundo e pressione{*CONTROLLER_ACTION_USE*} para usá-la.{*B*}{*B*}
+Coloque a fornalha no mundo e pressione {*CONTROLLER_ACTION_USE*} para usá-la.{*B*}{*B*}
 Você deve colocar combustível sob a fornalha e o item a ser queimado na parte superior. A fornalha acenderá e começará a funcionar.{*B*}{*B*}
 Quando os itens estiverem queimados, você poderá movê-los da área de saída para seu inventário.{*B*}{*B*}
 Se o item que você estiver examinando for um ingrediente ou combustível para a fornalha, aparecerão dicas de ferramenta para permitir a movimentação rápida para a fornalha. 
@@ -201,7 +201,7 @@ Se o item que você estiver examinando for um ingrediente ou combustível para a
   </data>
 <data name="IDS_HOW_TO_PLAY_DISPENSER"><value>{*T3*}COMO JOGAR: DISTRIBUIDOR{*ETW*}{*B*}{*B*}
 O distribuidor é usado para projetar itens. Você deve colocar um acionador, como uma alavanca, ao lado do distribuidor para acioná-lo.{*B*}{*B*}
-Para encher o distribuidor com itens, pressione{*CONTROLLER_ACTION_USE*} e mova os itens desejados do inventário para ele.{*B*}{*B*}
+Para encher o distribuidor com itens, pressione {*CONTROLLER_ACTION_USE*} e mova os itens desejados do inventário para ele.{*B*}{*B*}
 Então, quando usar o acionador, o distribuidor projetará um item.
   </value>
   </data>
@@ -229,11 +229,11 @@ Você deve experimentar todas as combinações de ingredientes para descobrir to
   </data>
 <data name="IDS_HOW_TO_PLAY_ENCHANTMENT"><value>{*T3*}INSTRUÇÕES DE JOGO: FEITIÇOS{*ETW*}{*B*}{*B*}
 Os Pontos de Experiência recolhidos quando um habitante morre ou quando certos blocos são extraídos ou fundidos numa fornalha podem ser usados para enfeitiçar algumas ferramentas, armaduras e livros.{*B*}
-Quando é colocada uma Espada, Arco, Machado, Picareta, Pá, Armadura ou Livro no orifício por baixo do livro na Mesa de Feitiços, os três botões à direita do orifício apresentam alguns feitiços e os respectivos custos em Níveis de Experiência.{*B*} 
+Quando é colocada uma Espada, Arco, Machado, Picareta, Pá, Armadura ou Livro no orifício por baixo do livro na Mesa de Feitiços, os três botões à direita do orifício apresentam alguns feitiços e os respectivos custos em Níveis de Experiência.{*B*}
 Se você não tem Níveis de Experiência suficientes para usar, o custo aparecerá em vermelho, caso contrário, verde.{*B*}{*B*}
 O feitiço aplicado é selecionado aleatoriamente com base no custo apresentado.{*B*}{*B*}
 Se a Mesa de Feitiços estiver rodeada de Estantes (até um máximo de 15 Estantes), com um bloco de intervalo entre a Estante e a Mesa de Feitiços, o poder dos feitiços irá aumentar e serão vistos glifos misteriosos saindo do livro na Mesa de Feitiços.{*B*}{*B*}
-Todos os ingredientes para uma Mesa de Feitiços podem ser encontrados nas aldeias, extraindo nas minas ou cultivando no mundo.{*B*}{*B}
+Todos os ingredientes para uma Mesa de Feitiços podem ser encontrados nas aldeias, extraindo nas minas ou cultivando no mundo.{*B*}{*B*}
 Os Livros Encantados são usados na Bigorna para aplicar feitiços aos itens. Desta forma você tem maior controle sobre os feitiços que deseja em seus itens.{*B*}
 </value>
   </data>
@@ -257,28 +257,28 @@ Exemplos de construção de portais são mostrados na figura à direita.
   </data>
 <data name="IDS_HOW_TO_PLAY_MULTIPLAYER"><value>{*T3*}COMO JOGAR: MULTIJOGADOR{*ETW*}{*B*}{*B*}
 O Minecraft no console Xbox 360 é um jogo multijogador por padrão. Se você estiver jogando em um modo de Alta Definição, poderá incluir outros jogadores conectando os controles e pressionando START em qualquer ponto durante o jogo.{*B*}{*B*}
-Ao iniciar ou participar de um jogo online, ele estará visível para as pessoas de sua lista de amigos (a não ser que você tenha selecionado Só Convidados como host do jogo) e, se eles entrarem no jogo, também estará visível para as pessoas da lista de amigos deles (se você tiver selecionado a opção Permitir Amigos dos Amigos). 
+Ao iniciar ou participar de um jogo online, ele estará visível para as pessoas de sua lista de amigos (a não ser que você tenha selecionado Só Convidados como host do jogo) e, se eles entrarem no jogo, também estará visível para as pessoas da lista de amigos deles (se você tiver selecionado a opção Permitir Amigos dos Amigos).{*B*}
 Quando estiver em um jogo, você poderá pressionar o botão BACK para ver a lista de todos os outros jogadores, ver os Cartões de Jogador deles, expulsar jogadores do jogo e convidar outras pessoas.
   </value>
   </data>
 <data name="IDS_HOW_TO_PLAY_SOCIALMEDIA"><value>{*T3*}COMO JOGAR: COMPARTILHANDO CAPTURAS DE TELA{*ETW*}{*B*}{*B*}
-Você pode capturar uma tela de seu jogo abrindo o menu Pausar e pressionando{*CONTROLLER_VK_Y*} para compartilhar no Facebook. Você verá uma versão em miniatura da captura de tela e poderá editar o texto associado à postagem no Facebook.{*B*}{*B*}
-Há um modo de câmera especial para essas capturas de tela, para que você possa ver a frente do seu personagem na captura: pressione {*CONTROLLER_ACTION_CAMERA*}até ter uma visão frontal do personagem antes de pressionar {*CONTROLLER_VK_Y*}para compartilhar.{*B*}{*B*}
+Você pode capturar uma tela de seu jogo abrindo o menu Pausar e pressionando {*CONTROLLER_VK_Y*} para compartilhar no Facebook. Você verá uma versão em miniatura da captura de tela e poderá editar o texto associado à postagem no Facebook.{*B*}{*B*}
+Há um modo de câmera especial para essas capturas de tela, para que você possa ver a frente do seu personagem na captura: pressione {*CONTROLLER_ACTION_CAMERA*} até ter uma visão frontal do personagem antes de pressionar {*CONTROLLER_VK_Y*} para compartilhar.{*B*}{*B*}
 Gamertags não serão exibidas na captura de tela.
   </value>
   </data>
 <data name="IDS_HOW_TO_PLAY_BANLIST"><value>{*T3*}COMO JOGAR: BANINDO NÍVEIS{*ETW*}{*B*}{*B*}
 Se você encontrar conteúdo ofensivo em um nível em que estiver jogando, poderá optar por adicioná-lo à sua lista de Níveis Banidos. 
-Para isso, abra o menu Pausar e pressione {*CONTROLLER_VK_RB*}para selecionar a dica de ferramenta de Banir Nível. 
+Para isso, abra o menu Pausar e pressione {*CONTROLLER_VK_RB*} para selecionar a dica de ferramenta de Banir Nível. 
 Se você tentar entrar nesse nível no futuro, será notificado de que ele está em sua lista de Níveis Banidos e poderá removê-lo da lista e continuar no nível ou sair.</value>
 </data>
 <data name="IDS_HOW_TO_PLAY_CREATIVE"><value>{*T3*}COMO JOGAR: MODO CRIATIVO{*ETW*}{*B*}{*B*}
 A interface do modo criativo permite que qualquer item do jogo seja movido para o inventário do jogador sem precisar minerar ou fabricar aquele item. 
 Os itens no inventário do jogador não serão removidos quando forem colocados ou usados no mundo, e desta forma o jogador pode se concentrar na construção, em vez de coletar recursos.{*B*}
 Se você criar, carregar ou salvar um mundo no Modo Criativo, as atualizações de conquistas e de placar de líderes estarão desabilitadas nesse mundo, mesmo que ele seja carregado depois no Modo Sobrevivência.{*B*}
-Para voar quando estiver no Modo Criativo, pressione {*CONTROLLER_ACTION_JUMP*}duas vezes rapidamente. Para parar de voar, repita a ação. Para voar mais rápido, pressione {*CONTROLLER_ACTION_MOVE*}rapidamente duas vezes para frente enquanto estiver voando. 
-No modo de voo, você pode manter pressionado {*CONTROLLER_ACTION_JUMP*}para se mover para cima e {*CONTROLLER_ACTION_SNEAK*}para se mover para baixo ou usar {*CONTROLLER_ACTION_DPAD_UP*}para se mover para cima, {*CONTROLLER_ACTION_DPAD_DOWN*}para se mover para baixo, 
-{*CONTROLLER_ACTION_DPAD_LEFT*}para se mover para a esquerda e  {*CONTROLLER_ACTION_DPAD_RIGHT*}para se mover para a direita.</value>
+Para voar quando estiver no Modo Criativo, pressione {*CONTROLLER_ACTION_JUMP*} duas vezes rapidamente. Para parar de voar, repita a ação. Para voar mais rápido, pressione {*CONTROLLER_ACTION_MOVE*} rapidamente duas vezes para frente enquanto estiver voando. 
+No modo de voo, você pode manter pressionado {*CONTROLLER_ACTION_JUMP*} para se mover para cima e {*CONTROLLER_ACTION_SNEAK*} para se mover para baixo ou usar {*CONTROLLER_ACTION_DPAD_UP*} para se mover para cima, {*CONTROLLER_ACTION_DPAD_DOWN*} para se mover para baixo, 
+{*CONTROLLER_ACTION_DPAD_LEFT*} para se mover para a esquerda e  {*CONTROLLER_ACTION_DPAD_RIGHT*} para se mover para a direita.</value>
 </data>
 <data name="IDS_HOW_TO_PLAY_HOSTOPTIONS"><value>{*T3*}COMO JOGAR: OPÇÕES DE HOST E JOGADOR{*ETW*}{*B*}{*B*}
 
@@ -300,6 +300,27 @@ Ao carregar ou criar um mundo, você pode pressionar o botão "Mais Opções" pa
 	{*T2*}Privilégios do Host{*ETW*}{*B*}
 	Quando habilitado, o host pode ativar ou desativar no menu do jogo sua habilidade de voar, desativar a exaustão e ficar invisível. {*DISABLES_ACHIEVEMENTS*}{*B*}{*B*}
 
+	{*T2*}Ciclo do dia{*ETW*}{*B*}
+	Quando desativado, a hora do dia não muda.{*B*}{*B*}
+
+	{*T2*}Manter inventário{*ETW*}{*B*}
+	Quando ativada, jogadores vão manter o inventário ao morrer.{*B*}{*B*}
+
+	{*T2*}Surgimento de criaturas{*ETW*}{*B*}
+	Quando desativado, criaturas não aparecerão naturalmente.{*B*}{*B*}
+
+	{*T2*}Assédio por criaturas{*ETW*}{*B*}
+	Quando desativado,impede monstros e animais de mudar blocos (por exemplo, explosões de Creepers não destróem blocos e ovelhas não removem grama) ou pegar itens.{*B*}{*B*}
+
+	{*T2*}Itens de criaturas{*ETW*}{*B*}
+	Quando desativado, monstros e animais não derrubam itens (por exemplo, Creepers não derrubam pólvora).{*B*}{*B*}
+
+	{*T2*}Itens de blocos{*ETW*}{*B*}
+	Quando desativado, blocos não derrubam itens ao serem destruídos (por exemplo, blocos de pedra não derrubam paralelepípedos).{*B*}{*B*}
+
+	{*T2*}Regeneração natural{*ETW*}{*B*}
+	Quando desativada, jogadores não regeneram vida naturalmente.{*B*}{*B*}
+
 {*T1*}Opções de Geração de Mundo{*ETW*}{*B*}
 Ao criar um novo mundo, há algumas opções adicionais.{*B*}{*B*}
 
@@ -316,7 +337,7 @@ Ao criar um novo mundo, há algumas opções adicionais.{*B*}{*B*}
 	Quando ativado, o Submundo é recriado. É útil quando se tem um jogo salvo mais antigo em que as Fortalezas do Submundo não estavam presentes.{*B*}{*B*}
 
 	{*T1*}Opções no Jogo{*ETW*}{*B*}
-	Durante o jogo, várias opções podem ser acessadas pressionando BACK para abrir o menu do jogo.{*B*}{*B*}
+	Durante o jogo, várias opções podem ser acessadas pressionando {*BACK_BUTTON*} para abrir o menu do jogo.{*B*}{*B*}
 	
 	{*T2*}Opções do Host{*ETW*}{*B*}
 	O jogador host e os jogadores definidos como moderadores podem acessar o menu "Opção do Host". Neste menu, eles podem habilitar e desabilitar as opções Fogo Espalha e TNT Explode.{*B*}{*B*}
@@ -325,13 +346,13 @@ Ao criar um novo mundo, há algumas opções adicionais.{*B*}{*B*}
 Para modificar os privilégios de um jogador, selecione o nome dele e pressione {*CONTROLLER_VK_A*} para abrir o menu privilégios do jogador, onde você poderá usar as opções a seguir.{*B*}{*B*}
 
 	{*T2*}Pode Construir e Minerar{*ETW*}{*B*}
-	Esta opção só está disponível quando "Confiar nos Jogadores" está ativado. Quando esta opção está habilitada, o jogador pode interagir com o mundo normalmente. Quando está desativada, o jogador não pode colocar nem destruir blocos, nem interagir com muitos itens e blocos.{*B*}{*B*}
+	Esta opção só está disponível quando "Confiar nos Jogadores" está desativada. Quando esta opção está habilitada, o jogador pode interagir com o mundo normalmente. Quando está desativada, o jogador não pode colocar nem destruir blocos, nem interagir com muitos itens e blocos.{*B*}{*B*}
 	
 	{*T2*}Pode utilizar portas e interruptores{*ETW*}{*B*}
 	Esta opção só está disponível quando “Confiar nos Jogadores” está desativada. Quando esta opção estiver desabilitada, o jogador não poderá utilizar portas e interruptores.{*B*}{*B*}
 	
-	{*T2*}Pode abrir containers{*ETW*}{*B*}
-	Esta opção só está disponível quando “Confiar nos Jogadores” está desativada. Quando esta opção estiver desabilitada, o jogador não poderá abrir containers, tais como baús.{*B*}{*B*}
+	{*T2*}Pode abrir recipientes{*ETW*}{*B*}
+	Esta opção só está disponível quando “Confiar nos Jogadores” está desativada. Quando esta opção estiver desabilitada, o jogador não poderá abrir recipientes, tais como baús.{*B*}{*B*}
 	
 	{*T2*}Pode Atacar Jogadores{*ETW*}{*B*}
 	Esta opção só está disponível quando "Confiar nos Jogadores" está desativado. Quando esta opção estiver desabilitada o jogador não poderá causar danos a outros jogadores.{*B*}{*B*}
@@ -343,7 +364,7 @@ Para modificar os privilégios de um jogador, selecione o nome dele e pressione 
 	Quando esta opção está habilitada, o jogador pode usar algumas das opções do menu do jogo para mudar privilégios de outros jogadores e algumas opções de mundo.{*B*}{*B*}
 	
 	{*T2*}Expulsar Jogador{*ETW*}{*B*}
-	Para os jogadores que não estão no mesmo console {*PLATFORM_NAME*} que o jogador host, selecionar esta opção faz o jogador e todos os jogadores que estiverem no console {*PLATFORM_NAME*} dele serem expulsos do jogo. Este jogador não poderá voltar ao jogo até que ele seja reiniciado.{*B*}{*B*}
+	{*KICK_PLAYER_DESCRIPTION*}{*B*}{*B*}
 
 {*T1*}Opções do Jogador Host{*ETW*}{*B*}
 Se "Privilégios do Host" estiver habilitado, o jogador host poderá modificar alguns privilégios para si mesmo. Para modificar os privilégios de um jogador, selecione o nome dele e pressione {*CONTROLLER_VK_A*} para abrir o menu privilégios do jogador, onde você pode usar as opções a seguir.{*B*}{*B*}
@@ -353,14 +374,16 @@ Se "Privilégios do Host" estiver habilitado, o jogador host poderá modificar a
 	
 	{*T2*}Desabilitar Exaustão{*ETW*}{*B*}
 	Esta opção só afeta o modo de Sobrevivência. Quando habilitado, as atividades físicas (voar/correr/pular etc.) não diminuem a barra de alimentos. Entretanto, se o jogador estiver ferido, a barra de alimentos diminuirá lentamente enquanto ele estiver se curando.{*B*}{*B*}
-	
+
 	{*T2*}Invisível{*ETW*}{*B*}
 	Quando esta opção está habilitada, o jogador não está visível para outros jogadores e é invulnerável.{*B*}{*B*}
-    
-    {*T2*}É possível Teleportar{*ETW*}{*B*}
+
+	{*T2*}É possível Teleportar{*ETW*}{*B*}
 	Isto permite que o jogador mova a si mesmo ou outros jogadores para outros jogadores no mundo.
 </value>
 </data>
+<data name="IDS_KICK_PLAYER_DESCRIPTION"><value>Para jogadores que não estão no mesmo console {*PLATFORM_NAME*} que o host, selecionar esta opção vai expulsá-los junto com qualquer jogador conectado em seu console {*PLATFORM_NAME*}. Este jogador não poderá se juntar novamente ao jogo até que seja reiniciado.</value>
+  </data>
 <data name="IDS_HOW_TO_PLAY_NEXT"><value>Próxima Página</value>
   </data>
 <data name="IDS_HOW_TO_PLAY_PREV"><value>Página Anterior</value>
@@ -424,56 +447,93 @@ portanto, poderão facilmente se juntar a você.
   </data>
 <data name="IDS_HOW_TO_PLAY_MENU_WHATSNEW"><value>O Que Há de Novo</value>
   </data>
-<data name="IDS_HOW_TO_PLAY_WHATSNEW"><value>
-{*T3*}Alterações e adições {*ETW*}{*B*}{*B*}
-- Novos itens adicionados -Esmeralda, Minério de Esmeralda, Bloco de Esmeralda, Baú Ender, Gancho Disparador, Maçã Dourada Encantada, Bigorna, Vaso de Flor, Parede de Paralelepípedos, Paredes de Parelelepípedos com Musgo, Pintura Podre, Batata, Batata Cozida, Batata Venenosa, Cenoura, Cenoura Dourada, Cenoura na Vareta, Torta de Abóbora, Poção de Visão Noturna, Poção da Invisibilidade, Quartzo, Minério de Quartzo, Bloco de Quartzo, Laje de Quartzo, Escada de Quartzo, Bloco de Quartzo Cinzelado, Coluna de Bloco de Quartzo, Livro Encantado, Tapete.{*B*}
-- Novos recipientes adicionados para arenito macio e arenito cinzelado.{*B*}
-- Nova multidão adicionada - Aldeões zumbis.{*B*}
-- Adicionados novos recursos de geração de terreno - Templos do Deserto, Aldeias Desertas, Templos de Selva.{*B*}
-- Adicionado o comércio com aldeões.{*B*}
-- Adicionada interface de bigorna.{*B*}
-- Armadura de couro tingido.{*B*}
-- Colar de lobo tingido.{*B*}
-- Montaria no porco com uma cenoura na vareta.{*B*}
-- Bônus de baú melhorado contendo mais itens.{*B*}
-- Alteradas as posições de meio blocos e outros blocos em meio blocos.{*B*}
-- Alteradas as posições de escadas invertidas e lajes.{*B*}
-- Adicionadas profissões de cidadões.{*B*}
-- Cidadãos vindos de ovos terão uma profissão aleatória.{*B*}
-- Adicionado log unilateral.{*B*}
-- Fornos podem usar ferramentas de madeira como combustível.{*B*}
-- Painéis de gelo e vidro podem ser coletados com pequenos toques de ferramentas encantadas.{*B*}
-- Botões de madeira e pratos de pressão de madeira podem ser ativados com flechas.{*B*}
-- Pequenas multidões podem aparecer em portais no submundo.{*B*}
-- Rastejantes e aranhas são agressivos com o último jogador que acertá-los.{*B*}
-- Multidões no modo criativo ficam neutras novamente depois de um curto período.{*B*}
-- Contra-ataque removido quando afogar.{*B*}
-- Portas sendo quebradas por zumbis mostram danos.{*B*}
-- Gelo derrete no submundo.{*B*}
-- Calderões enchem quando estiver sem chuva.{*B*}
-- Pistões levam o dobro de tempo para melhorar.{*B*}
-- O Porco derruba a cela ao ser morto (se tiver uma).{*B*}
-- Cor do céu No Fim alterada.{*B*}
-- Barbante pode ser substituído (por corda).{*B*}
-- Chuva pinga das folhas.{*B*}
-- Alavancas podem ser colocadas em baixo dos blocos.{*B*}
-- TNT causa dano variável dependendo da configuração de dificuldade.{*B*}
-- Livro de receitas alterado.{*B*}
-- Barcos quebram lírios, ao invés de lírios quebrarem barcos.{*B*}
-- Porcos oferecem mais costeletas.{*B*}
-- Lodos aparecem menos em mundos retos.{*B*}
-- Rastejadores têm danos variáveis baseado na configuração de dificuldade, mais contra-ataque.{*B*}
--  Endermen consertados para não abrir suas mandíbulas.{*B*}
-- Adicionado teleporte de jogadores (usando o menu {*BACK_BUTTON*} no jogo).{*B*}
--Adicionados novas opções de vôo, invisibilidade e invulnerabilidade para jogadores remotos.{*B*}
-- Adicionados novos tutoriais para o Mundo do Tutorial para novos itens e recursos.{*B*}
-- Melhorada a posição para o baú de discos musicais no Mundo do Tutorial.{*B*}
+<data name="IDS_HOW_TO_PLAY_WHATSNEW"><value>{*T3*}Alterações e adições{*ETW*}{*B*}{*B*}
+- Novos itens adicionados - Argila endurecida, Argila colorida, Bloco de carvão, fardo de feno, trilho ativador, bloco de redstone, sensor de luz solar, monólito, tremonha, carrinho com tremonha, carrinho com TNT, comparador Redstone, placa de pressão ponderada, farol, baú preso, foguete de artifício, estrela de artifício, estrela do submundo, chumbo, armadura para cavalo, crachá, ovo de surgimento de cavalos{*B*}
+- Novas criaturas adicionadas - Wither, esqueletos murchos, bruxas, morcegos, cavalos, burros e mulas{*B*}
+- Adicionados novos recursos de geração de terreno - cabanas de bruxas.{*B*}
+- Adicionada interface de farol.{*B*}
+- Adicionada interface de cavalo.{*B*}
+- Adicionada interface de tremonha.{*B*}
+- Adicionados fogos de artifício - A interface dos fogos de artifício pode ser acessada na bancada quando tem os ingredientes para fazer uma estrela ou foguete de artifício.{*B*}
+- Adicionado 'modo de aventura' - Você só pode quebrar blocos com as ferramentas corretas.{*B*}
+- Adicionados muitos sons novos.{*B*}
+- Criaturas, itens e projéteis agora podem passar pelos portais.{*B*}
+- Repetidores agora podem ser trancados alimentando suas laterais com outro repetidor.{*B*}
+- Agora zumbis e esqueletos podem surgir com armas e armaduras diferentes.{*B*}
+- Novas mensagens de morte.{*B*}
+- Nomeie criaturas com um crachá, e renomeie recipientes para mudar o título quando o menu está aberto.{*B*}
+- Farelo de osso não mais faz tudo crescer imediatamente, agora cresce aleatoriamente em estágios.{*B*}
+- Um sinal de redstone descrevendo o conteúdo de baús, barracas de poções, distribuidores e jukeboxes podem ser detectados colocando um comparador redstone diretamente contra eles.{*B*}
+- Distribuidores podem ser colocados em qualquer direção.{*B*}
+- Comer uma maçã dourada dá ao jogador vida "de absorção" extra por um curto período.{*B*}
+- Quanto mais você fica em uma área, mais difíceis são as criaturas que surgem naquela área.{*B*}</value>
+</data>
+<data name="IDS_TITLEUPDATE"><value>{*ETB*}Bem-vindo(a) de volta! Talvez você não tenha notado que o seu Minecraft foi atualizado.{*B*}{*B*}
+Há muitos recursos novos para você e seus amigos experimentarem, aqui estão apenas alguns destaques. Dê uma lida e divirta-se!{*B*}{*B*} 
+\{*T1*}Novos itens{*ETB*} - Argila endurecida, argila colorida, bloco de carvão, fardo de feno, trilho ativador, bloco de redstone, sensor de luz do dia, distribuidor, tremonha, carrinho com tremonha, carrinho com TNT, comparador redstone, placa de pressão ponderada, farol, baú preso, estrela e foguete de artifício, estrela do Submundo, chumbo, armadura de cavalos, crachá, ovo de surgimento de cavalos{*B*}{*B*}
+{*T1*}Novas criaturas{*ETB*} - Wither, esqueletos murchos, bruxas, morcegos, cavalos, burros e mulas{*B*}{*B*}
+{*T1*}Novos recursos{*ETB*} -  Dome e cavalgue um cavalo, faça fogos de artifício e dê um show, nomeie animais e monstros com um crachá, crie circuitos redstone mais avançados, e novas opções de anfitrião para ajudar a controlar o que os convidados podem fazer no seu mundo!{*B*}{*B*}
+{*T1*}Novo mundo tutorial{*ETB*} – Aprenda a usar os recursos novos e velhos no mundo tutorial. Veja se consegue encontrar todos os discos de música secretos escondidos no mundo!{*B*}{*B*}
 </value>
 </data>
-<data name="IDS_TITLEUPDATE"><value>{*ETB*}Bem-vindo de volta! Talvez você não tenha notado que o seu Minecraft foi atualizado.{*B*}{*B*}
-Há muitos recursos novos para você e seus amigos experimentarem, aqui estão apenas alguns destaques. Dê uma lida e divirta-se!{*B*}{*B*} 
-{*T1*}Novos itens{*ETB*} - Esmeralda, Minério de Esmeralda, Bloco de Esmeralda, Baú Ender, Gancho Disparador, Maçã Dourada Encantada, Bigorna, Vaso de Flor, Parede de Paralelepípedos, Paredes de Parelelepípedos com Musgo, Pintura Podre, Batata, Batata Cozida, Batata Venenosa, Cenoura, Cenoura Dourada, Cenoura na Vareta, Torta de Abóbora, Poção de Visão Noturna, Poção da Invisibilidade, Quartzo, Minério de Quartzo, Bloco de Quartzo, Laje de Quartzo, Escada de Quartzo, Bloco de Quartzo Cinzelado, Coluna de Bloco de Quartzo, Livro Encantado, Tapete{*B*}{*B*}
-{*T1*}Novas multidões{*ETB*} - Aldeões zumbis.{*B*}{*B*}\r\n{*T1*}Novos recursos{*ETB*} -  Comércio com aldeões, consertar ou encantar armas e ferramentas com uma Bigorna, armazenar itens em um Baú Ender, controle de um porco enquanto o monta usando uma cenoura na vareta!{*B*}{*B*}\r\n{*T1*}Novos Mini-tutoriais{*ETB*} – Saiba como usar os novos recursos no Tutorial do Mundo!{*B*}{*B*}\r\n{*T1*}Novos "Ovos de Páscoa"{*ETB*} – Movemos todos os Discos de música secretos no Mundo do Tutorial. Veja se consegue encontrá-los novamente!{*B*}{*B*}\r\n</value>
+<data name="IDS_HOW_TO_PLAY_MENU_HORSES"><value>Cavalos</value>
+</data>
+<data name="IDS_HOW_TO_PLAY_HORSES"><value>{*T3*}COMO JOGAR: CAVALOS{*ETW*}{*B*}{*B*}    
+Cavalos e burros são encontrados principalmente em planícies. Mulas são o fruto de um burro e um cavalo, mas são estéreis.{*B*}
+Todos os cavalos, burros e mulas adultos são animais de montaria. No entanto, apenas os cavalos podem usar armadura, ao passo que só as mulas e os burros podem portar alforjes para transportar itens.{*B*}{*B*}
+Cavalos, burros e mulas devem ser domesticados antes que possam ser usados. Para domesticar um cavalo, basta tentar montá-lo e permanecer montado enquanto ele tenta arremessar o montador.{*B*}
+Quando aparecem coraçõezinhos em volta do cavalo, ele terá sido domesticado e não tentará mais se livrar do(a) jogador(a). Para guiar um cavalo, o jogador deve equipar uma sela sobre o animal.{*B*}{*B*}
+As selas podem ser compradas de aldeões ou encontradas dentro de Baús no mundo.{*B*}
+Você pode equipar alforjes em burros e mulas domesticados ao amarrar um Baú. Esses alforjes podem, então, ser acessados enquanto você monta ou se esgueira.{*B*}{*B*}    
+Cavalos e burros (mas não mulas) podem ser criados como os outros animais utilizando-se Maçãs Douradas ou Cenouras Douradas.{*B*}
+Potros se tornarão cavalos adultos com o tempo, embora alimentá-los com Trigo ou Feno acelere o processo.{*B*}
+	</value>
+</data>
+<data name="IDS_HOW_TO_PLAY_MENU_BEACONS"><value>Faróis</value>
+</data>
+<data name="IDS_HOW_TO_PLAY_BEACONS"><value>{*T3*}COMO JOGAR: FARÓIS{*ETW*}{*B*}{*B*}
+Faróis ativos projetam um feixe de luz clara no céu e concedem poderes aos jogadores próximos.{*B*}
+Eles podem ser produzidos com Vidro, Obsidiana e Estrelas do Submundo, obtidas ao derrotar-se o Wither.{*B*}{*B*}
+Os faróis devem ser posicionados de forma a receberem luz solar durante o dia. Eles devem ser colocados em pirâmides de ferro, ouro, esmeralda ou diamante.{*B*}
+O material sobre o qual é posicionado não afeta o poder do farol.{*B*}{*B*}
+No menu do Farol, você pode selecionar o poder principal deste farol. Quanto mais níveis sua pirâmide tiver, maior será o número de opções de poderes disponível para escolha.{*B*}
+Um farol em uma pirâmide com pelo menos quatro níveis também concede a opção de Regenerar o segundo poder ou aumentar o poder do primeiro.{*B*}{*B*}
+Para definir os poderes do seu farol, sacrifique uma esmeralda, um diamante, um ouro ou um lingote de ferro no espaço de pagamento.{*B*}
+Quando tudo estiver montado, os poderes emanarão do farol indefinidamente.{*B*}
+    </value>
+</data>
+<data name="IDS_HOW_TO_PLAY_MENU_FIREWORKS"><value>Fogos de artifício</value>
+</data>
+<data name="IDS_HOW_TO_PLAY_FIREWORKS"><value>{*T3*}COMO JOGAR : FOGOS DE ARTIFÍCIO{*ETW*}{*B*}{*B*}
+Fogos de artifício são itens decorativos que podem ser lançaodos à mão ou de distribuidores. Eles são criados usando papel, pólvora e opcionalmente um número de estrelas de artifício.{*B*}
+As cores, desvanecimento, forma, tamanho e efeitos (como trilhas e brilho) das estrelas de artifício podem ser customizados incluindo ingredientes adicionais na criação.{*B*}{*B*}
+Para criar um fogo de artifício coloque pólvora e papel na grade de criação 3x3 que é mostrada acima do seu inventário.{*B*}
+Opcionalmente, você pode colocar várias estrelas de artifício na grade de criação para adicioná-los ao fogo de artifício.{*B*}
+Encher mais vagas na grade de criação com pólvora aumenta a altura na qual as estrelas de artifício explodem.{*B*}{*B*}
+Depois você pode tirar o fogo de artifício do espaço de resultado.{*B*}{*B*}
+Estrelas de artifício podem ser criadas colocando pólvora e corante na grade de criação.{*B*}
+ - O corante ajusta a cor da explosão da estrela de artifício.{*B*}
+ - A forma da estrela de artifício é configurada adicionando uma carga de fogo, barra de ouro, pena ou cabeça de criatura.{*B*}
+ - Uma trilha ou um brilho podem ser adicionados usando diamantes ou pó de glowstone.{*B*}{*B*}
+Depois que uma estrela de fogos de artifício foi criada, você pode ajustar a cor de desvanecimento da estrela de artifício combinando-a com um corante.
+	</value>
+	</data>	
+<data name="IDS_HOW_TO_PLAY_MENU_HOPPERS"><value>Tremonhas</value>
+</data>
+<data name="IDS_HOW_TO_PLAY_HOPPERS"><value>{*T3*}COMO JOGAR: TREMONHAS{*ETW*}{*B*}{*B*}
+Tremonhas são usadas para inserir ou remover itens de recipientes e para pegar automaticamente os itens lançados dentro delas.{*B*}
+Elas afetam Barraca de Poções, Baús, Distribuidor, Monólitos, Carrinhos com Baús, Carrinhos com Tremonhas, assim como outras Tremonhas.{*B*}{*B*}
+Tremonhas farão tentativas contínuas de sugar os itens de recipientes convenientes que estejam acima delas. Além disso, também tentarão inserir itens depositados em um recipiente de saída.{*B*}
+Se uma Tremonha for movida a Redstone, ela se tornará inativa e deixará de sugar e inserir itens.{*B*}{*B*}
+Uma Tremonha aponta na direção que tenta retirar os itens. Para fazer uma Tremonha apontar para um bloco específico, coloque-a em frente a este bloco enquanto se esgueira.{*B*}
+    </value>
+</data>
+<data name="IDS_HOW_TO_PLAY_MENU_DROPPERS"><value>Monólitos</value>
+</data>
+<data name="IDS_HOW_TO_PLAY_DROPPERS"><value>{*T3*}COMO JOGAR : MONÓLITOS{*ETW*}{*B*}{*B*}
+Quando alimentado com um sinal de Redstone, monólitos derrubam aleatoriamente um dos itens armazenados. Use {*CONTROLLER_ACTION_USE*} para abrir o monólito e então carregá-lo com itens do seu inventário.{*B*}
+Se o monólito estiver de frente para um baú ou outro tipo de recipiente, o item será colocado ali ao invés de cair no chão. Longas correntes de monólitos podem ser construídos para carregar itens. Para que isso funcione, eles devem ser ativados e desativados alternadamente.
+	</value>
 </data>
 <data name="IDS_DESC_SWORD"><value>Causa mais danos que à mão.</value>
   </data>
@@ -600,10 +660,36 @@ As cores da cama são sempre as mesmas, independentemente da cor da lã usada.</
   </data>
 <data name="IDS_DESC_MAP"><value>Cria uma imagem da área explorada enquanto você o segura. Pode ser usado para encontrar caminhos.</value>
   </data>
+<data name="IDS_DESC_MAP_EMPTY"><value>Quando usado, vira um mapa da parte do mundo onde você está, sendo preenchido conforme você explora.</value>
+  </data>
 <data name="IDS_DESC_BOW"><value>Permite ataques à distância usando flechas.</value>
   </data>
 <data name="IDS_DESC_ARROW"><value>Usada como munição para arcos.</value>
   </data>
+<data name="IDS_DESC_NETHER_STAR"><value>Derrubados pelo Wither, utilizado na produção de Faróis.</value>
+</data>
+<data name="IDS_DESC_FIREWORKS"><value>Quando ativado, cria explosões coloridas. Determina-se a cor, o efeito, o formato e o desvanecimento pela Estrela de Artifício usada na criação do Fogo de Artifício.</value>
+</data>
+<data name="IDS_DESC_FIREWORKS_CHARGE"><value>Usado para determinar a cor, efeito e formato do Fogo de Artifício.</value>
+</data>
+<data name="IDS_DESC_COMPARATOR"><value>Usados em circuito de Redstone para manter, comparar e subtrair a força do sinal ou para medir os estados de determinados blocos.</value>
+</data>
+<data name="IDS_DESC_MINECART_TNT"><value>Um tipo de Carrinho de Minas que funciona como um bloco de TNT móvel.</value>
+</data>
+<data name="IDS_DESC_DAYLIGHT_DETECTOR"><value>É um bloco que produz um sinal Redstone derivado de luz do sol (ou a falta dela).</value>
+</data>		
+<data name="IDS_DESC_MINECART_HOPPER"><value>Tipo especial de Carrinho de Minas que funciona de forma similar a uma Tremonha. Ele coletará os itens deixados nos trilhos e nos recipientes acima dele.</value>
+</data>
+<data name="IDS_DESC_IRON_HORSE_ARMOR"><value>Tipo especial de armadura que pode ser equipada em um cavalo. Oferece 5 de Armadura.</value>
+</data>
+<data name="IDS_DESC_GOLD_HORSE_ARMOR"><value>Tipo especial de armadura que pode ser equipada em um cavalo. Oferece 7 de Armadura.</value>
+</data>
+<data name="IDS_DESC_DIAMOND_HORSE_ARMOR"><value>Tipo especial de armadura que pode ser equipada em um cavalo. Oferece 11 de Armadura.</value>
+</data>
+<data name="IDS_DESC_LEAD"><value>Usado para amarrar criaturas ao jogador ou postes de cercas</value>
+</data>
+<data name="IDS_DESC_NAME_TAG"><value>Usado para nomear criaturas no mundo.</value>
+</data>
 <data name="IDS_DESC_BREAD"><value>Restaura 2,5{*ICON_SHANK_01*}.</value>
   </data>
 <data name="IDS_DESC_CAKE"><value>Restaura 1{*ICON_SHANK_01*}. Pode ser usado 6 vezes.</value>
@@ -655,7 +741,7 @@ Também pode ser usado para pouca iluminação.</value>
   </data>
 <data name="IDS_DESC_POWEREDRAIL"><value>Quando ativado, acelera os carrinhos de minas que passam sobre ele. Quando desativado, faz os carrinhos pararem nele.</value>
   </data>
-<data name="IDS_DESC_DETECTORRAIL"><value>Funciona como uma chapa de pressão (envia um sinal Redstone quando ativado), mas só pode ser ativado por um carrinho de minas.</value>
+<data name="IDS_DESC_DETECTORRAIL"><value>Funciona como uma chapa de pressão (envia um sinal Redstone quando ativado), mas só pode ser ativado por um Carrinho de Minas.</value>
   </data>
 <data name="IDS_DESC_MINECART"><value>Usado para transportar você, um animal ou um monstro sobre trilhos.</value>
   </data>
@@ -928,100 +1014,158 @@ Também pode ser usado para pouca iluminação.</value>
   </data>
 <data name="IDS_DESC_SKULL"><value>As Cabeças de multidão podem ser colocadas como decoração, ou usadas como máscara na abertura do capacete.</value>
   </data>
+<data name="IDS_DESC_COMMAND_BLOCK"><value>Usado para executar comandos.</value>
+	</data>
+<data name="IDS_DESC_BEACON"><value>Projeta um feixe de luz no céu e pode oferecer efeitos de status para os jogadores próximos.</value>
+	</data>
+<data name="IDS_DESC_CHEST_TRAP"><value>Armazena blocos e itens dentro. Coloque dois baús, lado a lado, para criar um baú maior com o dobro de capacidade. Além disso, o baú preso cria uma carga Redstone quando aberto.</value>
+	</data>
+<data name="IDS_DESC_WEIGHTED_PLATE_LIGHT"><value>Oferece uma carga Redstone. A carga será mais forte se houver mais itens na chapa.</value>
+	</data>
+<data name="IDS_DESC_WEIGHTED_PLATE_HEAVY"><value>Oferece uma carga Redstone. A carga será mais forte se houver mais itens na chapa. Exige mais peso que uma chapa leve.</value>
+	</data>
+<data name="IDS_DESC_REDSTONE_BLOCK"><value>Usado como fonte de energia redstone. Redstones podem ser criadas a partir dele.</value>
+	</data>
+<data name="IDS_DESC_HOPPER"><value>Usado para capturar itens, transferi-los ou retirá-los de recipientes.</value>
+	</data>
+<data name="IDS_DESC_ACTIVATOR_RAIL"><value>Um tipo de corrimão que habilita ou desabilita Carrinhos de Minas com Tremonhas e aciona Carrinhos de Minas com TNT.</value>
+	</data>
+<data name="IDS_DESC_DROPPER"><value>Usado para segurar e derrubar itens ou empurrá-los em outros recipientes quando recebem carga Redstone.</value>
+	</data>
+<data name="IDS_DESC_STAINED_CLAY"><value>Blocos coloridos produzidos ao tingir-se a argila endurecida.</value>
+	</data>
+<data name="IDS_DESC_HAY"><value>Pode alimentar Cavalos, Burros e Mulas para curar até 10 Corações. Acelera o crescimento de potros.</value>
+	</data>
+<data name="IDS_DESC_HARDENED_CLAY"><value>Criado ao cozinhar a argila no forno.</value>
+	</data>
+<data name="IDS_DESC_STAINED_GLASS"><value>Criado a partir de vidro e um corante.</value>
+	</data>
+<data name="IDS_DESC_STAINED_GLASS_PANE"><value>Criado a partir de um vitral</value>
+	</data>
+<data name="IDS_DESC_COAL_BLOCK"><value>Uma forma compacta de armazenar carvão. Pode ser usado como combustível em fornalhas.</value>
+	 </data>
 <data name="IDS_SQUID"><value>Lula</value>
-  </data>
+	</data>
 <data name="IDS_DESC_SQUID"><value>Solta sacos de tinta quando morta.</value>
-  </data>
+	</data>
 <data name="IDS_COW"><value>Vaca</value>
-  </data>
+	</data>
 <data name="IDS_DESC_COW"><value>Solta couro quando morta. Pode ser ordenhada com um balde.</value>
-  </data>
+	</data>
 <data name="IDS_SHEEP"><value>Ovelha</value>
-  </data>
+	</data>
 <data name="IDS_DESC_SHEEP"><value>Solta lã quando tosquiada (se já não tiver sido tosquiada). Pode ser tingida para produzir lã de cores diferentes.</value>
-  </data>
+	</data>
 <data name="IDS_CHICKEN"><value>Galinha</value>
-  </data>
+	</data>
 <data name="IDS_DESC_CHICKEN"><value>Solta penas quando morta e põe ovos aleatoriamente.</value>
-  </data>
+	</data>
 <data name="IDS_PIG"><value>Porco</value>
-  </data>
+	</data>
 <data name="IDS_DESC_PIG"><value>Solta costeletas quando morto. Pode ser montado usando uma sela.</value>
-  </data>
+	</data>
 <data name="IDS_WOLF"><value>Lobo</value>
-  </data>
+	</data>
 <data name="IDS_DESC_WOLF"><value>Dócil até ser atacado, quando atacará de volta. Pode ser domado usando ossos, o que faz o lobo segui-lo e atacar qualquer coisa que ataque você.</value>
-  </data>
+	</data>
 <data name="IDS_CREEPER"><value>Creeper</value>
-  </data>
+	</data>
 <data name="IDS_DESC_CREEPER"><value>Explode se você chegar muito perto!</value>
-  </data>
+	</data>
 <data name="IDS_SKELETON"><value>Esqueleto</value>
-  </data>
+	</data>
 <data name="IDS_DESC_SKELETON"><value>Dispara flechas em você. Solta flechas quando morto.</value>
-  </data>
+	</data>
 <data name="IDS_SPIDER"><value>Aranha</value>
-  </data>
+	</data>
 <data name="IDS_DESC_SPIDER"><value>Ataca quando você chega perto. Escala paredes. Solta fio quando morta.</value>
-  </data>
+	</data>
 <data name="IDS_ZOMBIE"><value>Zumbi</value>
-  </data>
+	</data>
 <data name="IDS_DESC_ZOMBIE"><value>Ataca quando você chega perto.</value>
-  </data>
+	</data>
 <data name="IDS_PIGZOMBIE"><value>Homem-porco zumbi</value>
-  </data>
+	</data>
 <data name="IDS_DESC_PIGZOMBIE"><value>Inicialmente dócil, mas ataca em grupos se você ataca um deles.</value>
-  </data>
+	</data>
 <data name="IDS_GHAST"><value>Ghast</value>
-  </data>
+	</data>
 <data name="IDS_DESC_GHAST"><value>Atira bolas de fogo em você, que explodem ao contato.</value>
-  </data>
+	</data>
 <data name="IDS_SLIME"><value>Slime</value>
-  </data>
+	</data>
 <data name="IDS_DESC_SLIME"><value>Divide-se em slimes menores quando atingido.</value>
-  </data>
+	</data>
 <data name="IDS_ENDERMAN"><value>Enderman</value>
-  </data>
+	</data>
 <data name="IDS_DESC_ENDERMAN"><value>Atacará se você olhar para ele. Também pode mover blocos.</value>
-  </data>
+	</data>
 <data name="IDS_SILVERFISH"><value>Traça</value>
-  </data>
+	</data>
 <data name="IDS_DESC_SILVERFISH"><value>Atrai as Traças próximas quando atacada. Esconde-se em blocos de pedra.</value>
-  </data>
+	</data>
 <data name="IDS_CAVE_SPIDER"><value>Aranha de Caverna</value>
-  </data>
+	</data>
 <data name="IDS_DESC_CAVE_SPIDER"><value>Tem uma mordida venenosa.</value>
-  </data>
+	</data>
 <data name="IDS_MUSHROOM_COW"><value>Vacogumelo</value>
-  </data>
+	</data>
 <data name="IDS_DESC_MUSHROOM_COW"><value>Faz sopa de cogumelo quando usada com uma vasilha. Derruba cogumelos e torna-se uma vaca normal depois de tosquiada.</value>
-  </data>
+	</data>
 <data name="IDS_SNOWMAN"><value>Golem de Neve</value>
-  </data>
+	</data>
 <data name="IDS_DESC_SNOWMAN"><value>O Golem de Neve pode ser criado pelos jogadores usando blocos de neve e uma abóbora. Ele atira bolas de neve nos inimigos dos seus criadores.</value>
-  </data>
+	</data>
 <data name="IDS_ENDERDRAGON"><value>Dragão Ender</value>
-  </data>
+	</data>
 <data name="IDS_DESC_ENDERDRAGON"><value>Este é um grande dragão negro encontrado no Final.</value>
-  </data>
+	</data>
 <data name="IDS_BLAZE"><value>Chama</value>
-  </data>
+	</data>
 <data name="IDS_DESC_BLAZE"><value>Estes são inimigos encontrados no Submundo, geralmente dentro das Fortalezas do Submundo. Derrubam Varas de Chamas quando são mortos.</value>
-  </data>
+	</data>
 <data name="IDS_LAVA_SLIME"><value>Cubo de Magma</value>
-  </data>
+	</data>
 <data name="IDS_DESC_LAVA_SLIME"><value>Eles são encontrados no Submundo. Similares aos Slimes, dividem-se em versões menores quando são mortos.</value>
-  </data>
+	</data>
 <data name="IDS_VILLAGER"><value>Aldeão</value>
-  </data>
+	</data>
 <data name="IDS_OZELOT"><value>Ocelote</value>
-  </data>
+	</data>
 <data name="IDS_DESC_OZELOT"><value>Estes podem ser encontrados nas florestas. Eles podem ser domesticados, alimentando-os com Peixe Cru. Mas você deve deixar o Ocelote se aproximar, pois quaisquer movimentos bruscos podem assustá-lo e fazê-lo fugir.</value>
-  </data>
+	</data>
 <data name="IDS_IRONGOLEM"><value>Golem de Ferro</value>
-  </data>
+	</data>
 <data name="IDS_DESC_IRONGOLEM"><value>Aparece em vilas para protegê-las e podem ser criados usando blocos de ferro e abóboras.</value>
-  </data>
+	</data>
+<data name="IDS_BAT"><value>Morcego</value>
+	</data>
+<data name="IDS_DESC_BAT"><value>Estas criaturas voadoras são encontradas nas cavernas ou em outros espaços fechados.</value>
+	</data>
+<data name="IDS_WITCH"><value>Bruxa</value>
+	</data>
+<data name="IDS_DESC_WITCH"><value>Estas inimigas podem ser encontradas em pântanos e atacam atirando Poções. Derrubam Poções quando mortas.</value>
+	</data>
+<data name="IDS_HORSE"><value>Cavalo</value>
+	</data>
+<data name="IDS_DESC_HORSE"><value>Estes animais podem ser domesticados e então montados.</value>
+	</data>
+<data name="IDS_DONKEY"><value>Burro</value>
+	</data>
+<data name="IDS_DESC_DONKEY"><value>Estes animais podem ser domesticados e então montados. Podem portar baús amarrados.</value>
+	</data>
+<data name="IDS_MULE"><value>Mula</value>
+	</data>
+<data name="IDS_DESC_MULE"><value>Fruto do cruzamento entre um cavalo e um burro. Estes animais podem ser domesticados e então montados, e podem carregar baús.</value>
+	</data>
+<data name="IDS_ZOMBIE_HORSE"><value>Cavalo Zumbi</value>
+	</data>
+<data name="IDS_SKELETON_HORSE"><value>Cavalo Esqueleto</value>
+	</data>
+<data name="IDS_WITHER"><value>Wither</value>
+	</data>
+<data name="IDS_DESC_WITHER"><value>Estes são criados a partir de Caveiras Murchas ou Areia Movediça. Atiram caveiras explosivas em você.</value>
+	</data>
 <data name="IDS_CREDITS_EXPLODANIM"><value>Explosives Animator</value>
 </data>
 <data name="IDS_CREDITS_CONCEPTART"><value>Concept Artist</value>
@@ -1368,6 +1512,8 @@ Também pode ser usado para pouca iluminação.</value>
   </data>
 <data name="IDS_ITEM_MAP"><value>Mapa</value>
   </data>
+<data name="IDS_ITEM_MAP_EMPTY"><value>Mapa vazio</value>
+  </data>
 <data name="IDS_ITEM_RECORD_01"><value>Disco - "13"</value>
   </data>
 <data name="IDS_ITEM_RECORD_02"><value>Disco de Música - "cat"</value>
@@ -1470,6 +1616,28 @@ Também pode ser usado para pouca iluminação.</value>
   </data>
 <data name="IDS_ITEM_SKULL_CREEPER"><value>Cabeça de creeper</value>
   </data>
+<data name="IDS_NETHER_STAR"><value>Estrela do Submundo</value>
+  </data>
+<data name="IDS_FIREWORKS"><value>Foguete de Artifício</value>
+  </data>
+<data name="IDS_FIREWORKS_CHARGE"><value>Estrela de Artifício</value>
+  </data>
+<data name="IDS_ITEM_COMPARATOR"><value>Comparador Redstone</value>
+  </data>
+<data name="IDS_ITEM_MINECART_TNT"><value>Carrinho com TNT</value>
+  </data>
+<data name="IDS_ITEM_MINECART_HOPPER"><value>Carrinho com Tremonha</value>
+  </data>
+<data name="IDS_ITEM_IRON_HORSE_ARMOR"><value>Armadura de Ferro para Cavalo</value>
+  </data>
+<data name="IDS_ITEM_GOLD_HORSE_ARMOR"><value>Armadura de Ouro para Cavalo</value>
+  </data>
+<data name="IDS_ITEM_DIAMOND_HORSE_ARMOR"><value>Armadura de Diamante para Cavalo</value>
+  </data>
+<data name="IDS_ITEM_LEAD"><value>Chumbo</value>
+  </data>
+<data name="IDS_ITEM_NAME_TAG"><value>Crachá</value>
+  </data>
 <data name="IDS_TILE_STONE"><value>Pedra</value>
   </data>
 <data name="IDS_TILE_GRASS"><value>Bloco de Grama</value>
@@ -1485,6 +1653,8 @@ Também pode ser usado para pouca iluminação.</value>
 <data name="IDS_TILE_BIRCHWOOD_PLANKS"><value>Tábuas de Bétula</value>
   </data>
 <data name="IDS_TILE_JUNGLE_PLANKS"><value>Tábua de madeira de floresta</value>
+  </data>
+<data name="IDS_TILE_PLANKS"><value>Tábuas (qualquer tipo)</value>
   </data>
 <data name="IDS_TILE_SAPLING"><value>Muda</value>
   </data>
@@ -1822,6 +1992,190 @@ Também pode ser usado para pouca iluminação.</value>
   </data>
 <data name="IDS_TILE_SKULL"><value>Caveira</value>
   </data>
+<data name="IDS_TILE_COMMAND_BLOCK"><value>Bloco de Comando</value>
+  </data>
+<data name="IDS_TILE_BEACON"><value>Farol</value>
+  </data>
+<data name="IDS_TILE_CHEST_TRAP"><value>Baú Preso</value>
+  </data>
+<data name="IDS_TILE_WEIGHTED_PLATE_LIGHT"><value>Chapa de Pressão Ponderada (Leve)</value>
+  </data>
+<data name="IDS_TILE_WEIGHTED_PLATE_HEAVY"><value>Chapa de Pressão Ponderada (Pesada)</value>
+  </data>
+<data name="IDS_TILE_COMPARATOR"><value>Comparador Redstone</value>
+  </data>
+<data name="IDS_TILE_DAYLIGHT_DETECTOR"><value>Sensor de Luz Solar</value>
+  </data>
+<data name="IDS_TILE_REDSTONE_BLOCK"><value>Bloco de Redstone</value>
+  </data>
+<data name="IDS_TILE_HOPPER"><value>Tremonha</value>
+  </data>
+<data name="IDS_TILE_ACTIVATOR_RAIL"><value>Trilho Ativador</value>
+  </data>
+<data name="IDS_TILE_DROPPER"><value>Monólito</value>
+  </data>
+<data name="IDS_TILE_STAINED_CLAY"><value>Argila colorida</value>
+  </data>
+<data name="IDS_TILE_HAY"><value>Fardo de Feno</value>
+  </data>
+<data name="IDS_TILE_HARDENED_CLAY"><value>Argila endurecida</value>
+  </data>
+<data name="IDS_TILE_COAL"><value>Bloco de carvão</value>
+  </data>
+<data name="IDS_TILE_STAINED_CLAY_BLACK"><value>Argila colorida preta</value>
+  </data>
+<data name="IDS_TILE_STAINED_CLAY_RED"><value>Argila colorida vermelha</value>
+  </data>
+<data name="IDS_TILE_STAINED_CLAY_GREEN"><value>Argila colorida verde</value>
+  </data>
+<data name="IDS_TILE_STAINED_CLAY_BROWN"><value>Argila colorida marrom</value>
+  </data>
+<data name="IDS_TILE_STAINED_CLAY_BLUE"><value>Argila colorida azul</value>
+  </data>
+<data name="IDS_TILE_STAINED_CLAY_PURPLE"><value>Argila colorida roxa</value>
+  </data>
+<data name="IDS_TILE_STAINED_CLAY_CYAN"><value>Argila colorida ciano</value>
+  </data>
+<data name="IDS_TILE_STAINED_CLAY_SILVER"><value>Argila colorida cinza claro</value>
+  </data>
+<data name="IDS_TILE_STAINED_CLAY_GRAY"><value>Argila colorida cinza</value>
+  </data>
+<data name="IDS_TILE_STAINED_CLAY_PINK"><value>Argila colorida rosa</value>
+  </data>
+<data name="IDS_TILE_STAINED_CLAY_LIME"><value>Argila colorida verde-limão</value>
+  </data>
+<data name="IDS_TILE_STAINED_CLAY_YELLOW"><value>Argila colorida amarela</value>
+  </data>
+<data name="IDS_TILE_STAINED_CLAY_LIGHT_BLUE"><value>Argila colorida azul claro</value>
+  </data>
+<data name="IDS_TILE_STAINED_CLAY_MAGENTA"><value>Argila colorida magenta</value>
+  </data>
+<data name="IDS_TILE_STAINED_CLAY_ORANGE"><value>Argila colorida laranja</value>
+  </data>
+<data name="IDS_TILE_STAINED_CLAY_WHITE"><value>Argila colorida branca</value>
+  </data>
+<data name="IDS_TILE_STAINED_GLASS"><value>Vitral</value>
+  </data>
+<data name="IDS_TILE_STAINED_GLASS_BLACK"><value>Vitral preto</value>
+  </data>
+<data name="IDS_TILE_STAINED_GLASS_RED"><value>Vitral vermelho</value>
+  </data>
+<data name="IDS_TILE_STAINED_GLASS_GREEN"><value>Vitral verde</value>
+  </data>
+<data name="IDS_TILE_STAINED_GLASS_BROWN"><value>Vitral marrom</value>
+  </data>
+<data name="IDS_TILE_STAINED_GLASS_BLUE"><value>Vitral azul</value>
+  </data>
+<data name="IDS_TILE_STAINED_GLASS_PURPLE"><value>Vitral roxo</value>
+  </data>
+<data name="IDS_TILE_STAINED_GLASS_CYAN"><value>Vitral ciano</value>
+  </data>
+<data name="IDS_TILE_STAINED_GLASS_SILVER"><value>Vitral cinza claro</value>
+  </data>
+<data name="IDS_TILE_STAINED_GLASS_GRAY"><value>Vitral cinza escuro</value>
+  </data>
+<data name="IDS_TILE_STAINED_GLASS_PINK"><value>Vitral rosa</value>
+  </data>
+<data name="IDS_TILE_STAINED_GLASS_LIME"><value>Vitral verde-limão</value>
+  </data>
+<data name="IDS_TILE_STAINED_GLASS_YELLOW"><value>Vitral amarelo</value>
+  </data>
+<data name="IDS_TILE_STAINED_GLASS_LIGHT_BLUE"><value>Vitral azul claro</value>
+  </data>
+<data name="IDS_TILE_STAINED_GLASS_MAGENTA"><value>Vitral magenta</value>
+  </data>
+<data name="IDS_TILE_STAINED_GLASS_ORANGE"><value>Vitral laranja</value>
+  </data>
+<data name="IDS_TILE_STAINED_GLASS_WHITE"><value>Vitral branco</value>
+  </data>
+<data name="IDS_TILE_STAINED_GLASS_PANE"><value>Painel de vitral</value>
+  </data>
+<data name="IDS_TILE_STAINED_GLASS_PANE_BLACK"><value>Painel de vitral preto</value>
+  </data>
+<data name="IDS_TILE_STAINED_GLASS_PANE_RED"><value>Painel de vitral vermelho</value>
+  </data>
+<data name="IDS_TILE_STAINED_GLASS_PANE_GREEN"><value>Painel de vitral verde</value>
+  </data>
+<data name="IDS_TILE_STAINED_GLASS_PANE_BROWN"><value>Painel de vitral marrom</value>
+  </data>
+<data name="IDS_TILE_STAINED_GLASS_PANE_BLUE"><value>Painel de vitral azul</value>
+  </data>
+<data name="IDS_TILE_STAINED_GLASS_PANE_PURPLE"><value>Painel de vitral roxo</value>
+  </data>
+<data name="IDS_TILE_STAINED_GLASS_PANE_CYAN"><value>Painel de vitral ciano</value>
+  </data>
+<data name="IDS_TILE_STAINED_GLASS_PANE_SILVER"><value>Painel de vitral cinza claro</value>
+  </data>
+<data name="IDS_TILE_STAINED_GLASS_PANE_GRAY"><value>Painel de vitral cinza</value>
+  </data>
+<data name="IDS_TILE_STAINED_GLASS_PANE_PINK"><value>Painel de vitral rosa</value>
+  </data>
+<data name="IDS_TILE_STAINED_GLASS_PANE_LIME"><value>Painel de vitral verde-limão</value>
+  </data>
+<data name="IDS_TILE_STAINED_GLASS_PANE_YELLOW"><value>Painel de vitral amarelo</value>
+  </data>
+<data name="IDS_TILE_STAINED_GLASS_PANE_LIGHT_BLUE"><value>Painel de vitral azul claro</value>
+  </data>
+<data name="IDS_TILE_STAINED_GLASS_PANE_MAGENTA"><value>Painel de vitral magenta</value>
+  </data>
+<data name="IDS_TILE_STAINED_GLASS_PANE_ORANGE"><value>Painel de vitral laranja</value>
+  </data>
+<data name="IDS_TILE_STAINED_GLASS_PANE_WHITE"><value>Painel de vitral branco</value>
+  </data>
+<data name="IDS_FIREWORKS_CHARGE_TYPE_0"><value>Bola pequena</value>
+  </data>
+<data name="IDS_FIREWORKS_CHARGE_TYPE_1"><value>Bola grande</value>
+  </data>
+<data name="IDS_FIREWORKS_CHARGE_TYPE_2"><value>Forma Estelar</value>
+  </data>
+<data name="IDS_FIREWORKS_CHARGE_TYPE_3"><value>Forma de Creeper</value>
+  </data>
+<data name="IDS_FIREWORKS_CHARGE_TYPE_4"><value>Explosão</value>
+  </data>
+<data name="IDS_FIREWORKS_CHARGE_TYPE"><value>Formato desconhecido</value>
+  </data>
+<data name="IDS_FIREWORKS_CHARGE_BLACK"><value>Preto</value>
+  </data>
+<data name="IDS_FIREWORKS_CHARGE_RED"><value>Vermelho</value>
+  </data>
+<data name="IDS_FIREWORKS_CHARGE_GREEN"><value>Verde</value>
+  </data>
+<data name="IDS_FIREWORKS_CHARGE_BROWN"><value>Marrom</value>
+  </data>
+<data name="IDS_FIREWORKS_CHARGE_BLUE"><value>Azul</value>
+  </data>
+<data name="IDS_FIREWORKS_CHARGE_PURPLE"><value>Roxo</value>
+  </data>
+<data name="IDS_FIREWORKS_CHARGE_CYAN"><value>Ciano</value>
+  </data>
+<data name="IDS_FIREWORKS_CHARGE_SILVER"><value>Cinza claro</value>
+  </data>
+<data name="IDS_FIREWORKS_CHARGE_GRAY"><value>Cinza</value>
+  </data>
+<data name="IDS_FIREWORKS_CHARGE_PINK"><value>Rosa</value>
+  </data>
+<data name="IDS_FIREWORKS_CHARGE_LIME"><value>Verde-limão</value>
+  </data>
+<data name="IDS_FIREWORKS_CHARGE_YELLOW"><value>Amarelo</value>
+  </data>
+<data name="IDS_FIREWORKS_CHARGE_LIGHT_BLUE"><value>Azul claro</value>
+  </data>
+<data name="IDS_FIREWORKS_CHARGE_MAGENTA"><value>Magenta</value>
+  </data>
+<data name="IDS_FIREWORKS_CHARGE_ORANGE"><value>Laranja</value>
+  </data>
+<data name="IDS_FIREWORKS_CHARGE_WHITE"><value>Branco</value>
+  </data>
+<data name="IDS_FIREWORKS_CHARGE_CUSTOM"><value>Personalizado</value>
+  </data>
+<data name="IDS_FIREWORKS_CHARGE_FADE_TO"><value>Desbotado</value>
+  </data>
+<data name="IDS_FIREWORKS_CHARGE_FLICKER"><value>Brilho</value>
+  </data>
+<data name="IDS_FIREWORKS_CHARGE_TRAIL"><value>Trilho</value>
+  </data>
+<data name="IDS_ITEM_FIREWORKS_FLIGHT"><value>Duração do voo:</value>
+  </data>﻿
 <data name="IDS_CURRENT_LAYOUT"><value>Controles Atuais</value>
   </data>
 <data name="IDS_CONTROLS_LAYOUT"><value>Estilo</value>
@@ -1999,8 +2353,7 @@ Também pode ser usado para pouca iluminação.</value>
   </data>
 <data name="IDS_TUTORIAL_TASK_INV_OVERVIEW"><value>
       Este é seu inventário. Ele mostra os itens disponíveis para uso em sua mão e todos os outros itens que está carregando. Sua armadura também é mostrada aqui.
-    </value>
-  </data>
+    </value></data>
 <data name="IDS_TUTORIAL_PROMPT_INV_OVERVIEW"><value>{*B*}
       Pressione{*CONTROLLER_VK_A*} para continuar.{*B*}
       Pressione {*CONTROLLER_VK_B*} se já souber usar o inventário.
@@ -2021,7 +2374,7 @@ Também pode ser usado para pouca iluminação.</value>
     </value>
   </data>
 <data name="IDS_TUTORIAL_TASK_INV_INFO"><value>
-      Para obter mais informações sobre um item, passe o ponteiro do mouse sobre ele e pressione {*CONTROLLER_VK_RT*}.
+      Para obter mais informações sobre um item, passe o ponteiro do mouse sobre ele e pressione {*CONTROLLER_ACTION_MENU_PAGEDOWN*} .
     </value>
   </data>
 <data name="IDS_TUTORIAL_TASK_INV_EXIT"><value>
@@ -2055,7 +2408,7 @@ Também pode ser usado para pouca iluminação.</value>
     </value>
   </data>
 <data name="IDS_TUTORIAL_TASK_CREATIVE_INV_INFO"><value>
-      Para obter mais informações sobre um item, passe o ponteiro do mouse sobre ele e pressione {*CONTROLLER_VK_RT*}.
+      Para obter mais informações sobre um item, passe o ponteiro do mouse sobre ele e pressione {*CONTROLLER_ACTION_MENU_PAGEDOWN*} .
     </value>
   </data>
 <data name="IDS_TUTORIAL_TASK_CREATIVE_INV_EXIT"><value>
@@ -2602,6 +2955,211 @@ No modo de voo, mantenha pressionado {*CONTROLLER_ACTION_JUMP*}para se mover par
       Pressione {*CONTROLLER_VK_B*}se já souber usar a barra de alimentos e como comer.
     </value>
   </data>
+<data name="IDS_TUTORIAL_TASK_HORSE_MENU_OVERVIEW"><value>
+			Esta é a interface do inventário do cavalo.
+		</value>
+	</data>
+<data name="IDS_TUTORIAL_PROMPT_HORSE_MENU_OVERVIEW"><value>
+			{*B*}Pressione{*CONTROLLER_VK_A*} para continuar.
+			{*B*}Pressione{*CONTROLLER_VK_B*} se você já sabe usar o inventário do cavalo.
+		</value>
+	</data>
+<data name="IDS_TUTORIAL_TASK_HORSE_MENU_LAYOUT"><value>
+			O inventário do cavalo permite a você transferir ou equipar itens no seu Cavalo, Burro ou Mula.
+		</value>
+	</data>
+<data name="IDS_TUTORIAL_TASK_HORSE_MENU_EQUIPMENT"><value>
+			Sele o cavalo posicionando a sela em seu respectivo espaço. Cavalos podem receber armadura ao se posicionar a Armadura de Cavalo em seu respectivo espaço.
+		</value>
+	</data>
+<data name="IDS_TUTORIAL_TASK_HORSE_MENU_SADDLEBAGS"><value>
+			Você também pode transferir os itens entre o seu inventário e os alforjes amarrados aos burros e mulas neste menu.
+		</value>
+	</data>
+<data name="IDS_TUTORIAL_TASK_HORSE_OVERVIEW"><value>Você encontrou um Cavalo.</value>
+	</data>
+<data name="IDS_TUTORIAL_TASK_DONKEY_OVERVIEW"><value>Você encontrou um Burro.</value>
+	</data>
+<data name="IDS_TUTORIAL_TASK_MULE_OVERVIEW"><value>Você encontrou uma Mula.</value>
+	</data>	
+<data name="IDS_TUTORIAL_PROMPT_HORSE_OVERVIEW"><value>
+		  {*B*}Pressione{*CONTROLLER_VK_A*} para saber mais sobre Cavalos, Burros e Mulas.
+		  {*B*}Pressione{*CONTROLLER_VK_B*} se você já sabe sobre Cavalos, Burros e Mulas.
+		</value>
+	</data>
+<data name="IDS_TUTORIAL_TASK_HORSE_INTRO"><value>
+			Cavalos e burros são encontradas principalmente em planícies abertas. Mulas são o fruto de um burro e um cavalo, mas são estéreis.
+		</value>
+	</data>
+<data name="IDS_TUTORIAL_TASK_HORSE_PURPOSE"><value>
+			Todos os cavalos, burros e mulas adultos são animais de montaria. No entanto, apenas os cavalos podem usar armadura, ao passo que só as mulas e os burros podem portar alforjes para transportar itens.
+		</value>
+	</data>
+<data name="IDS_TUTORIAL_TASK_HORSE_TAMING"><value>
+			Cavalos, burros e mulas devem ser domesticados antes que possam ser usados. Para domesticar um cavalo, basta tentar montá-lo e permanecer montado enquanto ele tenta tenta arremessar quem o monta. 
+		</value>
+	</data>
+<data name="IDS_TUTORIAL_TASK_HORSE_TAMING2"><value>
+		\Quando aparecem coraçõezinhos em volta do cavalo, ele terá sido domesticado e não tentará mais se livrar do(a) jogador(a).  
+		</value>
+	</data>
+<data name="IDS_TUTORIAL_TASK_HORSE_RIDE"><value>
+			Tente montar agora neste cavalo. Use {*CONTROLLER_ACTION_USE*} sem itens ou ferramentas na mão para montar.
+		</value>
+	</data>
+<data name="IDS_TUTORIAL_TASK_HORSE_SADDLES"><value>
+			Para guiar um cavalo, o jogador deve equipar uma sela sobre o animal, que pode ser comprada de aldeões, pescada ou encontrada dentro de baús no mundo.
+		</value>
+	</data>
+<data name="IDS_TUTORIAL_TASK_HORSE_SADDLEBAGS"><value>
+			Você pode equipar alforjes em burros e mulas domesticados ao amarrar um Baú. Estes alforjes podem então ser acessados enquanto você monta ou se esgueira.
+		</value>
+	</data>
+<data name="IDS_TUTORIAL_TASK_HORSE_BREEDING"><value>
+			Cavalos e burros (mas não mulas) podem ser criados como outros animais utilizando-se Maçãs  Douradas ou Cenouras Douradas. Potros se tornarão cavalos adultos com o tempo, embora alimentá-los com Trigo ou Feno acelere o processo.
+		</value>
+	</data>
+<data name="IDS_TUTORIAL_TASK_HORSE_AREA"><value>
+			Você pode tentar domesticar cavalos e burros aqui; além disso, há selas, armaduras de cavalos e outros itens úteis para cavalos nos baús pelas redondezas.
+		</value>
+	</data>
+<data name="IDS_TUTORIAL_TASK_BEACON_MENU_OVERVIEW"><value>
+			Esta é a interface do Farol, que você pode usar para escolher os poderes que o seu farol vai conceder.
+		</value>
+	</data>
+<data name="IDS_TUTORIAL_PROMPT_BEACON_MENU_OVERVIEW"><value>
+			{*B*}Pressione{*CONTROLLER_VK_A*} para continuar.
+			{*B*}Pressione{*CONTROLLER_VK_B*} se você já sabe usar a interface do Farol.
+		</value>
+	</data>
+<data name="IDS_TUTORIAL_TASK_BEACON_MENU_PRIMARY_POWERS"><value>
+			No menu do Farol, você pode selecionar o poder principal deste farol. Quanto mais níveis sua pirâmide tiver, maior será o número de opções de poderes disponível para escolha.
+		</value>
+	</data>
+<data name="IDS_TUTORIAL_TASK_BEACON_MENU_SECONDARY_POWER"><value>
+			Um farol em uma pirâmide com pelo menos 4 níveis também concede a opção de Regenerar o segundo poder ou aumentar o poder do primeiro.
+		</value>
+	</data>
+<data name="IDS_TUTORIAL_TASK_BEACON_MENU_ACTIVATION"><value>
+			Para definir os poderes do seu farol, sacrifique uma Esmeralda, Diamante, Ouro ou Lingote de Ferro no espaço de pagamento. Quando tudo estiver montado, os poderes emanarão do farol indefinidamente.
+		</value>
+	</data>
+<data name="IDS_TUTORIAL_TASK_BEACON_OVERVIEW"><value>Há um farol inativo no topo desta pirâmide.</value>
+	</data>
+<data name="IDS_TUTORIAL_PROMPT_BEACON_OVERVIEW"><value>
+		  {*B*}Pressione{*CONTROLLER_VK_A*} para saber mais sobre os Faróis.
+		  {*B*}Pressione{*CONTROLLER_VK_B*} se você já sabe sobre os Faróis.
+		</value>
+	</data>
+<data name="IDS_TUTORIAL_TASK_BEACON_PURPOSE"><value>
+			Faróis ativos projetam um feixe de luz clara no céu e concedem poderes aos jogadores próximos. Eles podem ser produzidos com vidro, obsidiana e estrelas do Submundo, obtidas ao derrotar o Wither.
+		</value>
+	</data>
+<data name="IDS_TUTORIAL_TASK_BEACON_DESIGN"><value>
+			Os faróis devem ser posicionados de forma a receberem luz solar durante o dia. Eles devem ser colocados em pirâmides de ferro, ouro, esmeralda ou diamante. No entanto, o material sobre o qual um farol é posicionado não afeta o poder do farol.
+		</value>
+	</data>
+<data name="IDS_TUTORIAL_TASK_BEACON_CHOOSING_POWERS"><value>
+			Tente usar o Farol para definir os poderes que ele concede. Você pode usar lingotes de ferro concedidos como o pagamento necessário.
+		</value>
+	</data>
+<data name="IDS_TUTORIAL_TASK_HOPPER_OVERVIEW"><value>Esta sala contém Tremonhas</value>
+	</data>
+<data name="IDS_TUTORIAL_PROMPT_HOPPER_OVERVIEW"><value>
+		  {*B*}Pressione{*CONTROLLER_VK_A*} para saber mais sobre as Tremonhas.
+		  {*B*}Press{*CONTROLLER_VK_B*} se você já sabe sobre as Tremonhas.
+		</value>
+	</data>
+<data name="IDS_TUTORIAL_TASK_HOPPER_PURPOSE"><value>
+			Tremonhas são usadas para inserir ou remover itens de recipientes e para pegar itens lançados dentro delas automaticamente.
+		</value>
+	</data>
+<data name="IDS_TUTORIAL_TASK_HOPPER_CONTAINERS"><value>
+			Elas afetam as Barraca de Poções, Baús, Distribuidor, Monólitos, Carrinhos com Baús, Carrinhos com Tremonhas, assim como outras Tremonhas.
+		</value>
+	</data>
+<data name="IDS_TUTORIAL_TASK_HOPPER_MECHANICS"><value>
+			Tremonhas farão tentativas contínuas de sugar os itens de recipientes apropriados acima delas. Além disso, também tentarão inserir itens depositados em um recipiente de saída.
+		</value>
+	</data>
+<data name="IDS_TUTORIAL_TASK_HOPPER_REDSTONE"><value>
+			Se uma Tremonha for movida a Redstone, ela se tornará inativa e deixará de sugar e inserir itens.
+		</value>
+	</data>
+<data name="IDS_TUTORIAL_TASK_HOPPER_OUTPUT"><value>
+			Uma Tremonha aponta na direção que tenta retirar os itens. Para fazer uma Tremonha apontar para um bloco específico, coloque-a em frente a este bloco enquanto se esgueira.
+		</value>
+	</data>
+<data name="IDS_TUTORIAL_TASK_HOPPER_AREA"><value>
+			Há diversos modelos de Tremonhas para você ver e experimentar nesta sala.
+		</value>
+	</data>
+<data name="IDS_TUTORIAL_TASK_FIREWORK_MENU_OVERVIEW"><value>
+			Essa é a interface de fogos de artifício, que você pode usar para fazer fogos de artifício e estrelas de fogos de artifício.
+		</value>
+	</data>
+<data name="IDS_TUTORIAL_PROMPT_FIREWORK_MENU_OVERVIEW"><value>
+			{*B*}Pressione{*CONTROLLER_VK_A*} para continuar.
+			{*B*}Pressione{*CONTROLLER_VK_B*} se você já sabe usar a interface do Farol.
+		</value>
+	</data>
+<data name="IDS_TUTORIAL_TASK_FIREWORK_MENU_BASIC_START"><value>
+			Para fazer fogos de artifício coloque pólvora e papel na grade de fabricação 3x3 acima do seu inventário.
+		</value>
+	</data>
+<data name="IDS_TUTORIAL_TASK_FIREWORK_MENU_BASIC_STARS"><value>
+			Opcionalmente, você pode colotar múltiplas estrelas de fogos de artifício na grade de fabricação, para adicioná-las ao fogo de artifício sendo fabricado.
+		</value>
+	</data>
+<data name="IDS_TUTORIAL_TASK_FIREWORK_MENU_BASIC_HEIGHT"><value>
+			Encher mais espaços na grade de fabricação com pólvora aumenta a altura na qual as estrelas de fogos de artifício explodem.
+		</value>
+	</data>
+<data name="IDS_TUTORIAL_TASK_FIREWORK_MENU_BASIC_CRAFT"><value>
+			Depois você pode remover o fogo de artifício do espaço de resultado, quando quiser criá-lo.
+		</value>
+	</data>
+<data name="IDS_TUTORIAL_TASK_FIREWORK_MENU_ADV_START"><value>
+			Estrelas de fogo de artifício podem ser feitas colocando pólvora e corante na grade de fabricação.
+		</value>
+	</data>
+<data name="IDS_TUTORIAL_TASK_FIREWORK_MENU_ADV_COLOUR"><value>
+			O corante define a cor da explosão na estrela de fogos de artifício.
+		</value>
+	</data>
+<data name="IDS_TUTORIAL_TASK_FIREWORK_MENU_ADV_SHAPE"><value>
+			A forma da estrela de fogos de artifício é definida ao adicionar uma carga de fogo, barra de ouro, pena or cabeça.
+		</value>
+	</data>
+<data name="IDS_TUTORIAL_TASK_FIREWORK_MENU_ADV_EFFECT"><value>
+			Uma trilha ou brilho pode ser adicionado usando diamantes e pó de glowstone.
+		</value>
+	</data>
+<data name="IDS_TUTORIAL_TASK_FIREWORK_MENU_ADV_FADE"><value>
+			Depois da criação de uma estrela de fogos de artifício, você pode ajustar a cor de desvanecimento combinando-a com um corante.
+		</value>
+	</data>
+<data name="IDS_TUTORIAL_TASK_FIREWORK_OVERVIEW"><value>
+			Contido nos baús aqui estão vários itens usados na criação de FOGOS DE ARTIFÍCIO!
+		</value>
+	</data>
+<data name="IDS_TUTORIAL_PROMPT_FIREWORK_OVERVIEW"><value>
+		  {*B*}Pressione{*CONTROLLER_VK_A*} para aprender mais sobre fogos de artifício.
+		  {*B*}Pressione{*CONTROLLER_VK_B*} se você já sabe sobre fogos de artifício.
+		</value>
+	</data>
+<data name="IDS_TUTORIAL_TASK_FIREWORK_PURPOSE"><value>
+			Fogos de artifício são itens decorativos que podem ser lançados à mão ou de distribuidores. Eles podem ser criados com papel, pólvora e opcionalmente um punhado de estrelas de fogos de artifício.
+		</value>
+	</data>
+<data name="IDS_TUTORIAL_TASK_FIREWORK_CUSTOMISE"><value>
+			 As cores, desvanecimento, forma, tamanho e efeitos (como trilhas e brilhos) das estrelas de fogos de artifício podem ser customizados usando ingredientes extras na criação.
+		</value>
+	</data>
+<data name="IDS_TUTORIAL_TASK_FIREWORK_CRAFTING"><value>
+			Tente criar um fogo de artifício na bancada usando um sortimento de ingredientes dos baús.
+		</value>
+	</data>﻿
 <data name="IDS_TOOLTIPS_SELECT"><value>Selecionar</value>
   </data>
 <data name="IDS_TOOLTIPS_USE"><value>Usar</value>
@@ -2824,6 +3382,22 @@ No modo de voo, mantenha pressionado {*CONTROLLER_ACTION_JUMP*}para se mover par
 </data>
 <data name="IDS_TOOLTIPS_SAVETRANSFER_UPLOAD"><value>Carregar jogo salvo para o Xbox One</value>
   </data>
+<data name="IDS_TOOLTIPS_MOUNT"><value>Montar</value>
+</data>
+<data name="IDS_TOOLTIPS_DISMOUNT"><value>Desmontar</value>
+</data>
+<data name="IDS_TOOLTIPS_SADDLEBAGS"><value>Baú amarrado</value>
+</data>
+<data name="IDS_TOOLTIPS_FIREWORK_LAUNCH"><value>Lançar</value>
+</data>
+<data name="IDS_TOOLTIPS_LEASH"><value>Rédea</value>
+</data>
+<data name="IDS_TOOLTIPS_UNLEASH"><value>Soltar</value>
+</data>
+<data name="IDS_TOOLTIPS_ATTACH"><value>Amarrar</value>
+</data>
+<data name="IDS_TOOLTIPS_NAME"><value>Nomear</value>
+</data>
 <data name="IDS_CONFIRM_OK"><value>OK</value>
   </data>
 <data name="IDS_CONFIRM_CANCEL"><value>Cancelar</value>
@@ -3134,6 +3708,20 @@ Deseja desbloquear a versão integral do jogo?</value>
   </data>
 <data name="IDS_DISPENSER"><value>Distribuidor</value>
   </data>
+<data name="IDS_CONTAINER_ANIMAL"><value>Cavalo</value>
+  </data>
+<data name="IDS_CONTAINER_DROPPER"><value>Monólito</value>
+  </data>
+<data name="IDS_CONTAINER_HOPPER"><value>Tremonha</value>
+  </data>
+<data name="IDS_CONTAINER_BEACON"><value>Farol</value>
+  </data>
+<data name="IDS_CONTAINER_BEACON_PRIMARY_POWER"><value>Poder Principal</value>
+  </data>
+<data name="IDS_CONTAINER_BEACON_SECONDARY_POWER"><value>Poder Secundário</value>
+  </data>
+<data name="IDS_CONTAINER_MINECART"><value>Carrinho de Minas</value>
+  </data>
 <data name="IDS_NO_DLCOFFERS"><value>Não há ofertas de conteúdo para baixar desse tipo disponíveis para este título no momento.</value>
   </data>
 <data name="IDS_PLAYER_JOINED"><value>%s entrou no jogo.</value>
@@ -3293,9 +3881,13 @@ Deseja instalar o pacote de combinações ou o pacote de texturas agora?</value>
  </data>
 <data name="IDS_GAMEMODE_CREATIVE"><value>Modo Jogo Criativo</value>
  </data>
+<data name="IDS_GAMEMODE_ADVENTURE"><value>Modo de Jogo: Aventura</value>
+ </data>
 <data name="IDS_SURVIVAL"><value>Sobrevivência</value>
  </data>
 <data name="IDS_CREATIVE"><value>Criativo</value>
+ </data>
+<data name="IDS_ADVENTURE"><value>Aventura</value>
  </data>
 <data name="IDS_CREATED_IN_SURVIVAL"><value>Criado em Sobrevivência</value>
  </data>
@@ -3317,6 +3909,8 @@ Deseja instalar o pacote de combinações ou o pacote de texturas agora?</value>
 </data>
 <data name="IDS_LEVELTYPE_SUPERFLAT"><value>Superplano</value>
 </data>
+<data name="IDS_GAMEOPTION_SEED"><value>Insira uma semente para gerar novamente o mesmo terreno. Deixe vazio para um mundo aleatório.</value>
+</data>
 <data name="IDS_GAMEOPTION_ONLINE"><value>Quando habilitado, o jogo será um jogo online.</value>
 </data>
 <data name="IDS_GAMEOPTION_INVITEONLY"><value>Quando habilitado, apenas jogadores convidados poderão entrar.</value>
@@ -3333,13 +3927,27 @@ Deseja instalar o pacote de combinações ou o pacote de texturas agora?</value>
 </data>
 <data name="IDS_GAMEOPTION_HOST_PRIVILEGES"><value>Quando habilitado, o host pode alternar o vôo, desabilitar exaustão e ficar invisível pelo menu do jogo. Desabilita atualizações de conquistas e de placar de líderes.</value>
 </data>
-<data name="IDS_GAMEOPTION_RESET_NETHER"><value>Quando ativado, o Submundo é recriado. É útil quando se tem um jogo salvo mais antigo em que as Fortalezas do Submundo não estavam presentes.</value>
+<data name="IDS_GAMEOPTION_RESET_NETHER"><value>Ao ativar, recria o Submundo. Útil para mundos criados quando Fortalezas do Submundo ainda não existiam.</value>
 </data>
 <data name="IDS_GAMEOPTION_STRUCTURES"><value>Quando habilitado, estruturas como Vilas e Fortalezas serão geradas no mundo.</value>
 </data>
 <data name="IDS_GAMEOPTION_SUPERFLAT"><value>Quando habilitado, um mundo completamente plano será gerado na Superfície e no Submundo.</value>
 </data>
 <data name="IDS_GAMEOPTION_BONUS_CHEST"><value>Quando habilitado, um baú contendo alguns itens úteis será criado perto do ponto de criação do jogador.</value>
+</data>
+<data name="IDS_GAMEOPTION_MOB_GRIEFING"><value>Quando desativada, impede que monstros e animais alterem os bloco (por exemplo, as explosões dos Creepers não destroem os blocos e as Ovelhas não removem a Grama) ou peguem itens.</value>
+</data>
+<data name="IDS_GAMEOPTION_KEEP_INVENTORY"><value>Quando ativada, os jogadores manterão o inventário ao morrer.</value>
+</data>
+<data name="IDS_GAMEOPTION_MOB_SPAWNING"><value>Quando desativada, as criaturas não aparecerão naturalmente.</value>
+</data>
+<data name="IDS_GAMEOPTION_MOB_LOOT"><value>Quando desativada, monstros e animais não deixarão itens (por exemplo, os Creepers não vão deixar cair pólvora).</value>
+</data>
+<data name="IDS_GAMEOPTION_TILE_DROPS"><value>Quando desativada, os blocos vão parar de derrubar itens ao serem destruídos (por exemplo, blocos de pedra não derrubarão mais paralelepípedos).</value>
+</data>
+<data name="IDS_GAMEOPTION_NATURAL_REGEN"><value>Quando desativada, os jogadores não regenerarão a saúde naturalmente.</value>
+</data>
+<data name="IDS_GAMEOPTION_DAYLIGHT_CYCLE"><value>Quando desativada, a hora do dia não sofrerá alteração.</value>
 </data>
 <data name="IDS_DLC_MENU_SKINPACKS"><value>Pacotes de Capas</value>
 </data>
@@ -3389,7 +3997,49 @@ Deseja instalar o pacote de combinações ou o pacote de texturas agora?</value>
 </data>
 <data name="IDS_DEATH_THROWN"><value>{*PLAYER*} foi esmurrado por {*SOURCE*}</value>
 </data>
-<data name="IDS_DEATH_INDIRECT_MAGIC"><value>{*PLAYER*} foi morto por {*SOURCE*}</value>
+<data name="IDS_DEATH_INDIRECT_MAGIC"><value>{*PLAYER*} foi morto por {*SOURCE*} usando magia</value>
+</data>
+<data name="IDS_DEATH_FELL_ACCIDENT_LADDER"><value>{*PLAYER*} caiu da escada</value>
+</data>
+<data name="IDS_DEATH_FELL_ACCIDENT_VINES"><value>{*PLAYER*} caiu de algumas videiras</value>
+</data>
+<data name="IDS_DEATH_FELL_ACCIDENT_WATER"><value>{*PLAYER*} caiu para fora da água</value>
+</data>
+<data name="IDS_DEATH_FELL_ACCIDENT_GENERIC"><value>{*PLAYER*} caiu de um lugar alto</value>
+</data>
+<data name="IDS_DEATH_FELL_KILLER"><value>{*PLAYER*} foi condenado(a) a cair por {*SOURCE*}</value>
+</data>
+<data name="IDS_DEATH_FELL_ASSIST"><value>{*PLAYER*} foi condenado(a) a cair por {*SOURCE*}</value>
+</data>
+<data name="IDS_DEATH_FELL_ASSIST_ITEM"><value>{*PLAYER*} foi condenado(a) a cair por {*SOURCE*} usando {*ITEM*}</value>
+</data>
+<data name="IDS_DEATH_FELL_FINISH"><value>{*PLAYER*} caiu muito longe e foi eliminado(a) por {*SOURCE*}</value>
+</data>
+<data name="IDS_DEATH_FELL_FINISH_ITEM"><value>{*PLAYER*} caiu muito longe e foi eliminado(a) por {*SOURCE*} usando {*ITEM*}</value>
+</data>
+<data name="IDS_DEATH_INFIRE_PLAYER"><value>{*PLAYER*} andou sobre as chamas enquanto lutava {*SOURCE*}</value>
+</data>
+<data name="IDS_DEATH_ONFIRE_PLAYER"><value>{*PLAYER*} virou cinzas enquanto lutava {*SOURCE*}</value>
+</data>
+<data name="IDS_DEATH_LAVA_PLAYER"><value>{*PLAYER*} tentou nadar na lava para escapar{*SOURCE*}</value>
+</data>
+<data name="IDS_DEATH_DROWN_PLAYER"><value>{*PLAYER*} afogou-se enquanto tentava escapar{*SOURCE*}</value>
+</data>
+<data name="IDS_DEATH_CACTUS_PLAYER"><value>{*PLAYER*} pisou no cacto enquanto tentava escapar {*SOURCE*}</value>
+</data>
+<data name="IDS_DEATH_EXPLOSION_PLAYER"><value>{*PLAYER*} foi explodido(a) por {*SOURCE*}</value>
+</data>
+<data name="IDS_DEATH_WITHER"><value>{*PLAYER*} secou até morrer</value>
+</data>
+<data name="IDS_DEATH_PLAYER_ITEM"><value>{*PLAYER*} foi assassinado por {*SOURCE*} usando {*ITEM*}</value>
+</data>
+<data name="IDS_DEATH_ARROW_ITEM"><value>{*PLAYER*} foi baleado(a) {*SOURCE*} usando {*ITEM*}</value>
+</data>
+<data name="IDS_DEATH_FIREBALL_ITEM"><value>{*PLAYER*} levou uma bola de fogo de {*SOURCE*} usando {*ITEM*}</value>
+</data>
+<data name="IDS_DEATH_THROWN_ITEM"><value>{*PLAYER*} foi socado(a) por {*SOURCE*} usando {*ITEM*}</value>
+</data>
+<data name="IDS_DEATH_INDIRECT_MAGIC_ITEM"><value>{*PLAYER*} foi morto(a) por {*SOURCE*} usando {*ITEM*}</value>
 </data>
 <data name="IDS_CHECKBOX_RENDER_BEDROCKFOG"><value>Neblina Base</value>
 </data>
@@ -3566,6 +4216,8 @@ Deseja instalar o pacote de combinações ou o pacote de texturas agora?</value>
 </data>
 <data name="IDS_MAX_SQUID_SPAWNED"><value>Não é possível usar o ovo spawn no momento. O número máximo de lulas em um mundo foi alcançado.</value>
 </data>
+<data name="IDS_MAX_BATS_SPAWNED"><value>Não pode usar um Ovo de Criação no momento. O número máximo de Morcegos em um mundo foi alcançado.</value>
+</data>
 <data name="IDS_MAX_ENEMIES_SPAWNED"><value>Não é possível usar o Ovo de Criação no momento. O número máximo de inimigos no mundo já foi alcançado.</value>
 </data>
 <data name="IDS_MAX_VILLAGERS_SPAWNED"><value>Não é possível usar o Ovo de Criação no momento. O número máximo de aldeões no mundo já foi alcançado.</value>
@@ -3574,12 +4226,14 @@ Deseja instalar o pacote de combinações ou o pacote de texturas agora?</value>
 </data>
 <data name="IDS_CANT_SPAWN_IN_PEACEFUL"><value>Você não pode gerar inimigos no Modo Paz.</value>
 </data>
-<data name="IDS_MAX_PIGS_SHEEP_COWS_CATS_BRED"><value>Este animal não pode entrar no Modo Amor. O número máximo de Porcos, Ovelhas, Vacas e Gatos de criação foi alcançado.</value>
+<data name="IDS_MAX_PIGS_SHEEP_COWS_CATS_BRED"><value>Este animal não pode entrar no Modo do Amor. O número máximo de Porcos, Ovelhas, Vacas e Gatos de criação foi alcançado.</value>
 </data>
 <data name="IDS_MAX_WOLVES_BRED"><value>Este animal não pode entrar em Modo Amor. O número máximo de lobos foi alcançado.</value>
 </data>
 <data name="IDS_MAX_CHICKENS_BRED"><value>Este animal não pode entrar em Modo Amor. O número máximo de frangos foi alcançado.</value>
 </data>
+<data name="IDS_MAX_HORSES_BRED"><value>Este animal não pode entrar no Modo do Amor. O número máximo de cavalos reprodutores foi alcançado.</value>
+  </data>
 <data name="IDS_MAX_MUSHROOMCOWS_BRED"><value>Este animal não pode entrar em Modo Amor. O número máximo de vacogumelos foi alcançado.</value>
 </data>
 <data name="IDS_MAX_BOATS"><value>O número máximo de barcos em um mundo foi alcançado.</value>
@@ -3607,27 +4261,43 @@ Deseja instalar o pacote de combinações ou o pacote de texturas agora?</value>
 <data name="IDS_CREDITS"><value>Créditos</value>
   </data>
 <data name="IDS_REINSTALL_CONTENT"><value>Reinstalar Conteúdo</value>
-  </data>
+	</data>
 <data name="IDS_DEBUG_SETTINGS"><value>Configurações de Depuração</value>
-  </data>
+	</data>
 <data name="IDS_FIRE_SPREADS"><value>Fogo Espalha</value>
-  </data>
+	</data>
 <data name="IDS_TNT_EXPLODES"><value>TNT Explode</value>
-  </data>
+	</data>
 <data name="IDS_PLAYER_VS_PLAYER"><value>Jogador x Jogador</value>
-  </data>
+	</data>
 <data name="IDS_TRUST_PLAYERS"><value>Confiar nos Jogadores</value>
-  </data>
+	</data>
 <data name="IDS_HOST_PRIVILEGES"><value>Privilégios do Host</value>
-  </data>
+	</data>
 <data name="IDS_GENERATE_STRUCTURES"><value>Gerar Estruturas</value>
-  </data>
+	</data>
 <data name="IDS_SUPERFLAT_WORLD"><value>Mundo Superplano</value>
-  </data>
+	</data>
 <data name="IDS_BONUS_CHEST"><value>Baú de Bônus</value>
-  </data>
+	</data>
 <data name="IDS_WORLD_OPTIONS"><value>Opções de Mundo</value>
-  </data>
+	</data>
+<data name="IDS_GAME_OPTIONS"><value>Opções de Jogo</value>
+	</data>
+<data name="IDS_MOB_GRIEFING"><value>Assédio por criatura</value>
+	</data>
+<data name="IDS_KEEP_INVENTORY"><value>Manter inventário</value>
+	</data>
+<data name="IDS_MOB_SPAWNING"><value>Surgimento de criaturas</value>
+	</data>
+<data name="IDS_MOB_LOOT"><value>Itens de criaturas</value>
+	</data>
+<data name="IDS_TILE_DROPS"><value>Itens de Espaços</value>
+	</data>
+<data name="IDS_NATURAL_REGEN"><value>Regeneração Natural</value>
+	</data>
+<data name="IDS_DAYLIGHT_CYCLE"><value>Ciclo da Luz do Dia</value>
+	</data>
 <data name="IDS_CAN_BUILD_AND_MINE"><value>Pode Construir e Minerar</value>
   </data>
 <data name="IDS_CAN_USE_DOORS_AND_SWITCHES"><value>Pode Usar Portas e Acionadores</value>
@@ -3666,7 +4336,7 @@ Deseja instalar o pacote de combinações ou o pacote de texturas agora?</value>
   </data>
 <data name="IDS_CREATE_NEW_WORLD_SEED"><value>Semente para Criação de Mundo</value>
   </data>
-<data name="IDS_CREATE_NEW_WORLD_RANDOM_SEED"><value>Deixar em branco para semente aleatória</value>
+<data name="IDS_CREATE_NEW_WORLD_RANDOM_SEED"><value>Deixar livre p/ uma semente aleatória</value>
   </data>
 <data name="IDS_PLAYERS"><value>Jogadores</value>
   </data>
@@ -3700,7 +4370,7 @@ Deseja instalar o pacote de combinações ou o pacote de texturas agora?</value>
   </data>
 <data name="IDS_LABEL_LEVEL_TYPE"><value>Tipo de Nível:</value>
   </data>
-<data name="IDS_LABEL_PvP"><value>JxJ:</value>
+<data name="IDS_LABEL_PvP"><value>JvJ:</value>
   </data>
 <data name="IDS_LABEL_TRUST"><value>Confiar Jogadores:</value>
   </data>
@@ -3732,7 +4402,7 @@ Deseja instalar o pacote de combinações ou o pacote de texturas agora?</value>
   </data>
 <data name="IDS_RESET_TO_DEFAULTS"><value>Restaurar Padrões</value>
   </data>
-<data name="IDS_VIEW_BOBBING"><value>Exibir Oscilação</value>
+<data name="IDS_VIEW_BOBBING"><value>Oscilação da visão</value>
   </data>
 <data name="IDS_HINTS"><value>Dicas</value>
   </data>
@@ -3754,7 +4424,7 @@ Deseja instalar o pacote de combinações ou o pacote de texturas agora?</value>
   </data>
 <data name="IDS_SOCIAL_LABEL_DESCRIPTION"><value>Editar mensagem da placa:</value>
   </data>
-<data name="IDS_SOCIAL_DEFAULT_DESCRIPTION"><value>Vejam o que fiz no Minecraft: Xbox 360 Edition!</value>
+<data name="IDS_SOCIAL_DEFAULT_DESCRIPTION"><value>Olha o que eu fiz no Minecraft: Xbox 360 Edition!</value>
   </data>
 <data name="IDS_DEFAULT_TEXTUREPACK"><value>Texturas, ícones e interface do usuário clássicos do Minecraft!</value>
   </data>
@@ -3814,6 +4484,14 @@ Deseja instalar o pacote de combinações ou o pacote de texturas agora?</value>
   </data>
 <data name="IDS_POTION_POISON"><value>Veneno</value>
   </data>
+<data name="IDS_POTION_WITHER"><value>Wither</value>
+  </data>
+<data name="IDS_POTION_HEALTHBOOST"><value>Reforço de Saúde</value>
+  </data>
+<data name="IDS_POTION_ABSORPTION"><value>Absorção</value>
+  </data>
+<data name="IDS_POTION_SATURATION"><value>Saturação</value>
+  </data>
 <data name="IDS_POTION_MOVESPEED_POSTFIX"><value>de Rapidez</value>
   </data>
 <data name="IDS_POTION_MOVESLOWDOWN_POSTFIX"><value>de Lentidão</value>
@@ -3851,6 +4529,14 @@ Deseja instalar o pacote de combinações ou o pacote de texturas agora?</value>
 <data name="IDS_POTION_HUNGER_POSTFIX"><value>de Fome</value>
   </data>
 <data name="IDS_POTION_POISON_POSTFIX"><value>de Veneno</value>
+  </data>
+<data name="IDS_POTION_WITHER_POSTFIX"><value>da Decadência</value>
+  </data>
+<data name="IDS_POTION_HEALTHBOOST_POSTFIX"><value>do Reforço de Saúde</value>
+  </data>
+<data name="IDS_POTION_ABSORPTION_POSTFIX"><value>da Absorção</value>
+  </data>
+<data name="IDS_POTION_SATURATION_POSTFIX"><value>da Saturação</value>
   </data>
 <data name="IDS_POTION_POTENCY_0"><value></value>
   </data>
@@ -3948,6 +4634,22 @@ Deseja instalar o pacote de combinações ou o pacote de texturas agora?</value>
   </data>
 <data name="IDS_POTION_DESC_POISON"><value>Reduz a saúde dos jogadores, animais e monstros afetados com o tempo.</value>
   </data>
+<data name="IDS_POTION_EFFECTS_WHENDRANK"><value>Quando aplicado:</value>
+  </data>
+<data name="IDS_ATTRIBUTE_NAME_HORSE_JUMPSTRENGTH"><value>Força de pulo para o cavalo</value>
+  </data>
+<data name="IDS_ATTRIBUTE_NAME_ZOMBIE_SPAWNREINFORCEMENTS"><value>Reforços Zumbis</value>
+  </data>
+<data name="IDS_ATTRIBUTE_NAME_GENERIC_MAXHEALTH"><value>Saúde Máxima</value>
+  </data>
+<data name="IDS_ATTRIBUTE_NAME_GENERIC_FOLLOWRANGE"><value>Limite de acomp. pelas criaturas</value>
+  </data>
+<data name="IDS_ATTRIBUTE_NAME_GENERIC_KNOCKBACKRESISTANCE"><value>Resistência a empurrão</value>
+  </data>
+<data name="IDS_ATTRIBUTE_NAME_GENERIC_MOVEMENTSPEED"><value>Velocidade</value>
+  </data>
+<data name="IDS_ATTRIBUTE_NAME_GENERIC_ATTACKDAMAGE"><value>Dano de ataque</value>
+  </data>
 <data name="IDS_ENCHANTMENT_DAMAGE_ALL"><value>Nitidez </value>
   </data>
 <data name="IDS_ENCHANTMENT_DAMAGE_UNDEAD"><value>Atacar</value>
@@ -4038,7 +4740,7 @@ Deseja instalar o pacote de combinações ou o pacote de texturas agora?</value>
   </data>
 <data name="IDS_DESC_POTATO_BAKED"><value>Restaura 3{*ICON_SHANK_01*}. Criado ao cozinhar uma batata na fornalha.</value>
   </data>
-<data name="IDS_DESC_POTATO_POISONOUS"><value>Restaura 1{*ICON_SHANK_01*}, ou pode ser cozinhado em uma fornalha. Pode ser plantado na fazenda. Comer isso pode te envenenar.</value>
+<data name="IDS_DESC_POTATO_POISONOUS"><value>Restaura 1{*ICON_SHANK_01*} Comer isso pode te envenenar.</value>
   </data>
 <data name="IDS_DESC_CARROT_GOLDEN"><value>Restaura 3{*ICON_SHANK_01*}. Criado com uma cenoura e barras de ouro.</value>
   </data>

@@ -11,7 +11,7 @@ EatTileGoal::EatTileGoal(Mob *mob)
 	eatAnimationTick = 0;
 
 	this->mob = mob;
-	this->level = mob->level;
+	level = mob->level;
 	setRequiredControlFlags(Control::MoveControlFlag | Control::LookControlFlag | Control::JumpControlFlag);
 }
 
@@ -60,14 +60,13 @@ void EatTileGoal::tick()
 
 	if (level->getTile(xx, yy, zz) == Tile::tallgrass_Id)
 	{
-		level->levelEvent(LevelEvent::PARTICLES_DESTROY_BLOCK, xx, yy, zz, Tile::tallgrass_Id + (TallGrass::TALL_GRASS << Tile::TILE_NUM_SHIFT));
-		level->setTile(xx, yy, zz, 0);
+		level->destroyTile(xx, yy, zz, false);
 		mob->ate();
 	}
 	else if (level->getTile(xx, yy - 1, zz) == Tile::grass_Id)
 	{
 		level->levelEvent(LevelEvent::PARTICLES_DESTROY_BLOCK, xx, yy - 1, zz, Tile::grass_Id);
-		level->setTile(xx, yy - 1, zz, Tile::dirt_Id);
+		level->setTileAndData(xx, yy - 1, zz, Tile::dirt_Id, 0, Tile::UPDATE_CLIENTS);
 		mob->ate();
 	}
 }

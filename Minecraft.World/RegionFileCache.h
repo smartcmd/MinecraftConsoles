@@ -16,6 +16,7 @@ private:
 public:
 	// Made public and non-static so we can have a cache for input and output files
 	RegionFileCache() {}
+	~RegionFileCache();
 
     RegionFile *_getRegionFile(ConsoleSaveFile *saveFile, const wstring &prefix, int chunkX, int chunkZ);		// 4J - TODO was synchronized
     void _clear();															// 4J - TODO was synchronized

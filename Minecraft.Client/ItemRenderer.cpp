@@ -10,6 +10,11 @@
 #include "..\Minecraft.World\StringHelpers.h"
 #include "..\Minecraft.World\net.minecraft.world.h"
 #include "Options.h"
+#include "TextureAtlas.h"
+
+#ifdef _XBOX
+extern IDirect3DDevice9 *g_pD3DDevice;
+#endif
 
 ItemRenderer::ItemRenderer() : EntityRenderer()
 {
@@ -17,8 +22,8 @@ ItemRenderer::ItemRenderer() : EntityRenderer()
     setColor = true;
 	blitOffset = 0;
 
-    this->shadowRadius = 0.15f;
-    this->shadowStrength = 0.75f;
+    shadowRadius = 0.15f;
+    shadowStrength = 0.75f;
 
 	// 4J added
 	m_bItemFrame= false;
@@ -29,13 +34,38 @@ ItemRenderer::~ItemRenderer()
 	delete random;
 }
 
+ResourceLocation *ItemRenderer::getTextureLocation(shared_ptr<Entity> entity)
+{
+	shared_ptr<ItemEntity> itemEntity = dynamic_pointer_cast<ItemEntity>(entity);
+	return getTextureLocation(itemEntity->getItem()->getIconType());
+}
+
+ResourceLocation *ItemRenderer::getTextureLocation(int iconType)
+{
+	if (iconType == Icon::TYPE_TERRAIN)
+	{
+		return &TextureAtlas::LOCATION_BLOCKS;//L"/terrain.png"));
+	}
+	else
+	{
+#ifdef _XBOX
+		// 4J - make sure we've got linear sampling on minification here as non-mipmapped things like this currently
+		// default to having point sampling, which makes very small icons render rather badly
+		g_pD3DDevice->SetSamplerState( 0, D3DSAMP_MINFILTER, D3DTEXF_LINEAR );
+#endif
+		return &TextureAtlas::LOCATION_ITEMS;//L"/gui/items.png"));
+	}
+}
+
 void ItemRenderer::render(shared_ptr<Entity> _itemEntity, double x, double y, double z, float rot, float a)
 {
 	// 4J - dynamic cast required because we aren't using templates/generics in our version
 	shared_ptr<ItemEntity> itemEntity = dynamic_pointer_cast<ItemEntity>(_itemEntity);
+	bindTexture(itemEntity);
 
     random->setSeed(187);
     shared_ptr<ItemInstance> item = itemEntity->getItem();
+	if (item->getItem() == NULL) return;
 
     glPushMatrix();
     float bob = Mth::sin((itemEntity->age + a) / 10.0f + itemEntity->bobOffs) * 0.1f + 0.1f;
@@ -45,11 +75,13 @@ void ItemRenderer::render(shared_ptr<Entity> _itemEntity, double x, double y, do
     if (itemEntity->getItem()->count > 1) count = 2;
     if (itemEntity->getItem()->count > 5) count = 3;
     if (itemEntity->getItem()->count > 20) count = 4;
+	if (itemEntity->getItem()->count > 40) count = 5;
 
     glTranslatef((float) x, (float) y + bob, (float) z);
     glEnable(GL_RESCALE_NORMAL);
 
 	Tile *tile = Tile::tiles[item->id];
+
 	if (item->getIconType() == Icon::TYPE_TERRAIN && tile != NULL && TileRenderer::canRender(tile->getRenderShape()))
 	{
         glRotatef(spin, 0, 1, 0);
@@ -61,7 +93,6 @@ void ItemRenderer::render(shared_ptr<Entity> _itemEntity, double x, double y, do
 			glRotatef(-90, 0, 1, 0);
 		}
 
-        bindTexture(TN_TERRAIN);	// 4J was L"/terrain.png"
         float s = 1 / 4.0f;
 		int shape = tile->getRenderShape();
         if (shape == Tile::SHAPE_CROSS_TEXTURE || shape == Tile::SHAPE_STEM || shape == Tile::SHAPE_LEVER || shape == Tile::SHAPE_TORCH )
@@ -86,7 +117,7 @@ void ItemRenderer::render(shared_ptr<Entity> _itemEntity, double x, double y, do
             glPopMatrix();
         }
 	}
-	else if (item->getItem()->hasMultipleSpriteLayers())
+	else if (item->getIconType() == Icon::TYPE_ITEM && item->getItem()->hasMultipleSpriteLayers())
 	{
 		if (m_bItemFrame) 
 		{
@@ -99,7 +130,7 @@ void ItemRenderer::render(shared_ptr<Entity> _itemEntity, double x, double y, do
 			glScalef(1 / 2.0f, 1 / 2.0f, 1 / 2.0f);
 		}
 
-		bindTexture(TN_GUI_ITEMS); // 4J was "/gui/items.png"
+		bindTexture(&TextureAtlas::LOCATION_ITEMS); // 4J was "/gui/items.png"
 
 		for (int layer = 0; layer <= 1; layer++)
 		{
@@ -137,16 +168,9 @@ void ItemRenderer::render(shared_ptr<Entity> _itemEntity, double x, double y, do
 		
 		// 4J Stu - For rendering the static compass, we give it a non-zero aux value
 		if(item->id == Item::compass_Id) item->setAuxValue(255);
-		Icon *icon = item->getIcon();
 		if(item->id == Item::compass_Id) item->setAuxValue(0);
-        if (item->getIconType() == Icon::TYPE_TERRAIN)
-		{
-            bindTexture(TN_TERRAIN);	// 4J was L"/terrain.png"
-        }
-		else
-		{
-            bindTexture(TN_GUI_ITEMS);	// 4J was L"/gui/items.png"
-        }
+
+		Icon *icon = item->getIcon();
 		if (setColor)
 		{
 			int col = Item::items[item->id]->getColor(item,0);
@@ -238,24 +262,28 @@ void ItemRenderer::renderItemBillboard(shared_ptr<ItemEntity> entity, Icon *icon
 		for (int i = 0; i < count; i++)
 		{
 			glTranslatef(0, 0, width + margin);
+			
+			bool bIsTerrain = false;
 			if (item->getIconType() == Icon::TYPE_TERRAIN && Tile::tiles[item->id] != NULL)
 			{
-				bindTexture(TN_TERRAIN); // Was L"/terrain.png");
-			}
+				bIsTerrain = true;
+                bindTexture(&TextureAtlas::LOCATION_BLOCKS); // TODO: Do this sanely by Icon
+            }
 			else
-			{
-				bindTexture(TN_GUI_ITEMS); //L"/gui/items.png");
-			}
+			{                
+				bindTexture(&TextureAtlas::LOCATION_ITEMS); // TODO: Do this sanely by Icon
+            }
+
 			glColor4f(red, green, blue, 1);
 			// 4J Stu - u coords were swapped in Java
 			//ItemInHandRenderer::renderItem3D(t, u1, v0, u0, v1, icon->getSourceWidth(), icon->getSourceHeight(), width, false);
-			ItemInHandRenderer::renderItem3D(t, u0, v0, u1, v1, icon->getSourceWidth(), icon->getSourceHeight(), width, false);
+			ItemInHandRenderer::renderItem3D(t, u0, v0, u1, v1, icon->getSourceWidth(), icon->getSourceHeight(), width, false, bIsTerrain);
 
 			if (item != NULL && item->isFoil())
 			{
 				glDepthFunc(GL_EQUAL);
 				glDisable(GL_LIGHTING);
-				entityRenderDispatcher->textures->bindTexture(TN__BLUR__MISC_GLINT); // was L"%blur%/misc/glint.png");
+				entityRenderDispatcher->textures->bindTexture(&ItemInHandRenderer::ENCHANT_GLINT_LOCATION);
 				glEnable(GL_BLEND);
 				glBlendFunc(GL_SRC_COLOR, GL_ONE);
 				float br = 0.76f;
@@ -268,14 +296,14 @@ void ItemRenderer::renderItemBillboard(shared_ptr<ItemEntity> entity, Icon *icon
 				glTranslatef(sx, 0, 0);
 				glRotatef(-50, 0, 0, 1);
 
-				ItemInHandRenderer::renderItem3D(t, 0, 0, 1, 1, 255, 255, width, true);
+				ItemInHandRenderer::renderItem3D(t, 0, 0, 1, 1, 255, 255, width, true, bIsTerrain);
 				glPopMatrix();
 				glPushMatrix();
 				glScalef(ss, ss, ss);
 				sx = Minecraft::currentTimeMillis() % (3000 + 1873) / (3000 + 1873.0f) * 8;
 				glTranslatef(-sx, 0, 0);
 				glRotatef(10, 0, 0, 1);
-				ItemInHandRenderer::renderItem3D(t, 0, 0, 1, 1, 255, 255, width, true);
+				ItemInHandRenderer::renderItem3D(t, 0, 0, 1, 1, 255, 255, width, true, bIsTerrain);
 				glPopMatrix();
 				glMatrixMode(GL_MODELVIEW);
 				glDisable(GL_BLEND);
@@ -320,10 +348,6 @@ void ItemRenderer::renderGuiItem(Font *font, Textures *textures, shared_ptr<Item
 	renderGuiItem(font,textures,item,x,y,fScale,fScale,fAlpha, true);
 }
 
-#ifdef _XBOX
-extern IDirect3DDevice9 *g_pD3DDevice;
-#endif
-
 // 4J - this used to take x and y as ints, and no scale and alpha - but this interface is now implemented as a wrapper round this more fully featured one
 void ItemRenderer::renderGuiItem(Font *font, Textures *textures, shared_ptr<ItemInstance> item, float x, float y, float fScaleX,float fScaleY, float fAlpha, bool useCompiled)
 {
@@ -335,7 +359,7 @@ void ItemRenderer::renderGuiItem(Font *font, Textures *textures, shared_ptr<Item
 	{
 		PIXBeginNamedEvent(0,"3D gui item render %d\n",itemId);
 		MemSect(31);
-        textures->bindTexture(TN_TERRAIN);//L"/terrain.png"));
+        textures->bindTexture(&TextureAtlas::LOCATION_BLOCKS);
 		MemSect(0);
 
         Tile *tile = Tile::tiles[itemId];
@@ -371,7 +395,9 @@ void ItemRenderer::renderGuiItem(Font *font, Textures *textures, shared_ptr<Item
 		PIXBeginNamedEvent(0,"Potion gui item render %d\n",itemIcon);
 		// special double-layered
 		glDisable(GL_LIGHTING);
-		textures->bindTexture(TN_GUI_ITEMS); // "/gui/items.png"
+		
+		ResourceLocation *location = getTextureLocation(item->getIconType());
+        textures->bindTexture(location);
 
 		for (int layer = 0; layer <= 1; layer++)
 		{
@@ -403,11 +429,11 @@ void ItemRenderer::renderGuiItem(Font *font, Textures *textures, shared_ptr<Item
 		MemSect(31);
 		if (item->getIconType() == Icon::TYPE_TERRAIN)
 		{
-            textures->bindTexture(TN_TERRAIN);//L"/terrain.png"));
+            textures->bindTexture(&TextureAtlas::LOCATION_BLOCKS);//L"/terrain.png"));
         }
 		else
 		{
-            textures->bindTexture(TN_GUI_ITEMS);//L"/gui/items.png"));
+            textures->bindTexture(&TextureAtlas::LOCATION_ITEMS);//L"/gui/items.png"));
 #ifdef _XBOX
 			// 4J - make sure we've got linear sampling on minification here as non-mipmapped things like this currently
 			// default to having point sampling, which makes very small icons render rather badly
@@ -475,7 +501,7 @@ void ItemRenderer::renderAndDecorateItem(Font *font, Textures *textures, const s
 		glDepthFunc(GL_GREATER);
 		glDisable(GL_LIGHTING);
 		glDepthMask(false);
-		textures->bindTexture(TN__BLUR__MISC_GLINT); // 4J was "%blur%/misc/glint.png"
+		textures->bindTexture(&ItemInHandRenderer::ENCHANT_GLINT_LOCATION); // 4J was "%blur%/misc/glint.png"
 		blitOffset -= 50;
 		if( !isConstantBlended )	glEnable(GL_BLEND);
 		
@@ -572,9 +598,6 @@ void ItemRenderer::renderGuiItemDecorations(Font *font, Textures *textures, shar
         return;
     }
 	
-	glEnable(GL_BLEND);
-	RenderManager.StateSetBlendFactor(0xffffff |(((unsigned int)(fAlpha * 0xff))<<24));
-	glBlendFunc(GL_CONSTANT_ALPHA, GL_ONE_MINUS_CONSTANT_ALPHA);
     if (item->count > 1 || !countText.empty() || item->GetForceNumberDisplay())
 	{
 		MemSect(31);
@@ -594,7 +617,7 @@ void ItemRenderer::renderGuiItemDecorations(Font *font, Textures *textures, shar
 		MemSect(0);
         glDisable(GL_LIGHTING);
         glDisable(GL_DEPTH_TEST);
-        font->drawShadow(amount, x + 19 - 2 - font->width(amount), y + 6 + 3, 0xffffff);
+        font->drawShadow(amount, x + 19 - 2 - font->width(amount), y + 6 + 3, 0xffffff |(((unsigned int)(fAlpha * 0xff))<<24));
         glEnable(GL_LIGHTING);
         glEnable(GL_DEPTH_TEST);
     }

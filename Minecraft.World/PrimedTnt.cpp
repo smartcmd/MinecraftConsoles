@@ -14,6 +14,8 @@ void PrimedTnt::_init()
 	blocksBuilding = true;
 	setSize(0.98f, 0.98f);
 	heightOffset = bbHeight / 2.0f;
+
+	owner = weak_ptr<LivingEntity>();
 }
 
 PrimedTnt::PrimedTnt(Level *level) : Entity( level )
@@ -25,7 +27,7 @@ PrimedTnt::PrimedTnt(Level *level) : Entity( level )
 	_init();
 }
 
-PrimedTnt::PrimedTnt(Level *level, double x, double y, double z) : Entity( level )
+PrimedTnt::PrimedTnt(Level *level, double x, double y, double z, shared_ptr<LivingEntity> owner) : Entity( level )
 {
 	_init();
 
@@ -41,6 +43,8 @@ PrimedTnt::PrimedTnt(Level *level, double x, double y, double z) : Entity( level
 	xo = x;
 	yo = y;
 	zo = z;
+
+	this->owner = weak_ptr<LivingEntity>(owner);
 }
 
 void PrimedTnt::defineSynchedData()
@@ -95,7 +99,7 @@ void PrimedTnt::tick()
 void PrimedTnt::explode()
 {
 	float r = 4.0f;
-	level->explode(nullptr, x, y, z, r, true);
+	level->explode(shared_from_this(), x, y, z, r, true);
 }
 
 
@@ -109,8 +113,12 @@ void PrimedTnt::readAdditionalSaveData(CompoundTag *tag)
 	life = tag->getByte(L"Fuse");
 }
 
-
 float PrimedTnt::getShadowHeightOffs()
 {
 	return 0;
+}
+
+shared_ptr<LivingEntity> PrimedTnt::getOwner()
+{
+	return owner.lock();
 }

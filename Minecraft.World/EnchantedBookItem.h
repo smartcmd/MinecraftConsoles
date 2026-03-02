@@ -15,7 +15,7 @@ public:
 	bool isEnchantable(shared_ptr<ItemInstance> itemInstance);
 	const Rarity *getRarity(shared_ptr<ItemInstance> itemInstance);
 	ListTag<CompoundTag> *getEnchantments(shared_ptr<ItemInstance> item);
-	void appendHoverText(shared_ptr<ItemInstance> itemInstance, shared_ptr<Player> player, vector<wstring> *lines, bool advanced, vector<wstring> &unformattedStrings);
+	void appendHoverText(shared_ptr<ItemInstance> itemInstance, shared_ptr<Player> player, vector<HtmlString> *lines, bool advanced);
 	void addEnchantment(shared_ptr<ItemInstance> item, EnchantmentInstance *enchantment);
 	shared_ptr<ItemInstance> createForEnchantment(EnchantmentInstance *enchant);
 	void createForEnchantment(Enchantment *enchant, vector<shared_ptr<ItemInstance> > *items);

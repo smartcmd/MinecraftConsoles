@@ -6,17 +6,17 @@
 #include "net.minecraft.world.phys.h"
 #include "MoveTowardsTargetGoal.h"
 
-MoveTowardsTargetGoal::MoveTowardsTargetGoal(PathfinderMob *mob, float speed, float within)
+MoveTowardsTargetGoal::MoveTowardsTargetGoal(PathfinderMob *mob, double speedModifier, float within)
 {
 	this->mob = mob;
-	this->speed = speed;
+	this->speedModifier = speedModifier;
 	this->within = within;
 	setRequiredControlFlags(Control::MoveControlFlag);
 }
 
 bool MoveTowardsTargetGoal::canUse()
 {
-	target = weak_ptr<Mob>(mob->getTarget());
+	target = weak_ptr<LivingEntity>(mob->getTarget());
 	if (target.lock() == NULL) return false;
 	if (target.lock()->distanceToSqr(mob->shared_from_this()) > within * within) return false;
 	Vec3 *pos = RandomPos::getPosTowards(dynamic_pointer_cast<PathfinderMob>(mob->shared_from_this()), 16, 7, Vec3::newTemp(target.lock()->x, target.lock()->y, target.lock()->z));
@@ -39,5 +39,5 @@ void MoveTowardsTargetGoal::stop()
 
 void MoveTowardsTargetGoal::start()
 {
-	mob->getNavigation()->moveTo(wantedX, wantedY, wantedZ, speed);
+	mob->getNavigation()->moveTo(wantedX, wantedY, wantedZ, speedModifier);
 }

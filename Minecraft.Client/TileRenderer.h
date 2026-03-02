@@ -13,6 +13,8 @@ class BrewingStandTile;
 class CauldronTile;
 class EggTile;
 class TheEndPortalFrameTile;
+class RepeaterTile;
+class ComparatorTile;
 class DiodeTile;
 class FireTile;
 class StemTile;
@@ -21,6 +23,8 @@ class CocoaTile;
 class AnvilTile;
 class FlowerPotTile;
 class WallTile;
+class BeaconTile;
+class HopperTile;
 class Icon;
 class Minecraft;
 
@@ -101,6 +105,8 @@ private:
 public:
 	bool tesselateTorchInWorld( Tile* tt, int x, int y, int z );
 private:
+	bool tesselateRepeaterInWorld(RepeaterTile *tt, int x, int y, int z);
+	bool tesselateComparatorInWorld(ComparatorTile *tt, int x, int y, int z);
 	bool tesselateDiodeInWorld(DiodeTile *tt, int x, int y, int z);
 	void tesselateDiodeInWorld( DiodeTile* tt, int x, int y, int z, int dir );
 	static const int FLIP_NONE = 0, FLIP_CW = 1, FLIP_CCW = 2, FLIP_180 = 3;
@@ -131,6 +137,7 @@ private:
 	bool tesselateRailInWorld( RailTile* tt, int x, int y, int z );
 	bool tesselateLadderInWorld( Tile* tt, int x, int y, int z );
 	bool tesselateVineInWorld( Tile* tt, int x, int y, int z );
+	bool tesselateThinPaneInWorld(Tile *tt, int x, int y, int z);
 	bool tesselateThinFenceInWorld( ThinFenceTile* tt, int x, int y, int z );
 	bool tesselateCrossInWorld( Tile* tt, int x, int y, int z );
 	bool tesselateStemInWorld( Tile* _tt, int x, int y, int z );
@@ -157,40 +164,40 @@ private:
 
 	private:
 	bool applyAmbienceOcclusion;
-	float ll000, llx00, ll0y0, ll00z, llX00, ll0Y0, ll00Z;
 	float llxyz, llxy0, llxyZ, ll0yz, ll0yZ, llXyz, llXy0;
 	float llXyZ, llxYz, llxY0, llxYZ, ll0Yz, llXYz, llXY0;
 	float ll0YZ, llXYZ, llx0z, llX0z, llx0Z, llX0Z;
+
 	// 4J - brought forward changes from 1.8.2
-	int ccx00, cc00z, cc0Y0, cc00Z;
 	int ccxyz, ccxy0, ccxyZ, cc0yz, cc0yZ, ccXyz, ccXy0;
 	int ccXyZ, ccxYz, ccxY0, ccxYZ, cc0Yz, ccXYz, ccXY0;
 	int cc0YZ, ccXYZ, ccx0z, ccX0z, ccx0Z, ccX0Z;
-	int blsmooth;
+
 	int tc1, tc2, tc3, tc4; // 4J - brought forward changes from 1.8.2
 	float c1r, c2r, c3r, c4r;
 	float c1g, c2g, c3g, c4g;
 	float c1b, c2b, c3b, c4b;
-	bool llTrans0Yz, llTransXY0, llTransxY0, llTrans0YZ;
-	bool llTransx0z, llTransX0Z, llTransx0Z, llTransX0z;
-	bool llTrans0yz, llTransXy0, llTransxy0, llTrans0yZ;
 
 	public:
 	// 4J - brought forward changes from 1.8.2
 	// AP - added faceFlags so we can cull earlier
 	bool tesselateBlockInWorldWithAmbienceOcclusionTexLighting( Tile* tt, int pX, int pY, int pZ, float pBaseRed,
-																float pBaseGreen, float pBaseBlue, int faceFlags );
-	private:
+																float pBaseGreen, float pBaseBlue, int faceFlags, bool smoothShapeLighting );
+
+private:
 	int blend( int a, int b, int c, int def );
 	int blend(int a, int b, int c, int d, double fa, double fb, double fc, double fd);
-	public:
+public:
 	bool tesselateBlockInWorld( Tile* tt, int x, int y, int z, float r, float g, float b );
+	bool tesselateBeaconInWorld( Tile *tt, int x, int y, int z);
 	bool tesselateCactusInWorld( Tile* tt, int x, int y, int z );
 	bool tesselateCactusInWorld( Tile* tt, int x, int y, int z, float r, float g, float b );
 	bool tesselateFenceInWorld( FenceTile* tt, int x, int y, int z );
 	bool tesselateWallInWorld(WallTile *tt, int x, int y, int z);
 	bool tesselateEggInWorld(EggTile *tt, int x, int y, int z);
 	bool tesselateFenceGateInWorld(FenceGateTile *tt, int x, int y, int z);
+	bool tesselateHopperInWorld(Tile *tt, int x, int y, int z);
+	bool tesselateHopperInWorld(Tile *tt, int x, int y, int z, int data, bool render);
 	bool tesselateStairsInWorld( StairTile* tt, int x, int y, int z );
 	bool tesselateDoorInWorld( Tile* tt, int x, int y, int z );
 	void renderFaceUp( Tile* tt, double x, double y, double z, Icon *tex );

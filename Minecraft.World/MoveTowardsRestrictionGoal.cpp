@@ -6,12 +6,12 @@
 #include "net.minecraft.world.level.h"
 #include "MoveTowardsRestrictionGoal.h"
 
-MoveTowardsRestrictionGoal::MoveTowardsRestrictionGoal(PathfinderMob *mob, float speed)
+MoveTowardsRestrictionGoal::MoveTowardsRestrictionGoal(PathfinderMob *mob, double speedModifier)
 {
 	wantedX = wantedY = wantedZ = 0.0;
 
 	this->mob = mob;
-	this->speed = speed;
+	this->speedModifier = speedModifier;
 	setRequiredControlFlags(Control::MoveControlFlag);
 }
 
@@ -34,5 +34,5 @@ bool MoveTowardsRestrictionGoal::canContinueToUse()
 
 void MoveTowardsRestrictionGoal::start()
 {
-	mob->getNavigation()->moveTo(wantedX, wantedY, wantedZ, speed);
+	mob->getNavigation()->moveTo(wantedX, wantedY, wantedZ, speedModifier);
 }

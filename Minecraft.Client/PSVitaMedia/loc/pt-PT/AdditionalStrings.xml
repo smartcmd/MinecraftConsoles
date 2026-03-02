@@ -48,6 +48,12 @@
 	<data name="IDS_CORRUPT_OPTIONS">
 		<value>O teu ficheiro de Opções está corrompido e precisa de ser apagado.</value>
 	</data>
+	<data name="IDS_CORRUPT_OPTIONS_DELETE">
+		<value>Apagar ficheiro de opções.</value>
+	</data>
+	<data name="IDS_CORRUPT_OPTIONS_RETRY">
+		<value>Tentar carregar o ficheiro de opções novamente.</value>
+	</data>
 	<data name="IDS_CORRUPT_SAVECACHE">
 		<value>O teu ficheiro Cache de Gravação está corrompido e precisa de ser apagado.</value>
 	</data>
@@ -75,6 +81,9 @@
 	<data name="IDS_CONTENT_RESTRICTION_MULTIPLAYER">
 		<value>O serviço online está desativado na tua conta Sony Entertainment Network devido às definições de controlo parental para um dos teus jogadores locais.</value>
 	</data>
+	<data name="IDS_CONTENT_RESTRICTION_PATCH_AVAILABLE">
+		<value>As funcionalidades online estão desativadas devido à existência de uma atualização para o jogo. </value>
+	</data>
 	<data name="IDS_NO_DLCCATEGORIES">
 		<value>Não existem ofertas de conteúdos transferíveis disponíveis de momento, para este título.</value>
 	</data>
@@ -83,8 +92,5 @@
 	</data>
 	<data name="IDS_INVITATION_BODY">
 		<value>Por favor, vem jogar um jogo de Minecraft: PlayStation®Vita Edition!</value>
-	</data>
-	<data name="IDS_CONTENT_RESTRICTION_PATCH_AVAILABLE">
-		<value>As funcionalidades online estão desativadas devido à existência de uma atualização para o jogo. </value>
 	</data>
 </root>

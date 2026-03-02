@@ -8,6 +8,7 @@ class PaintingRenderer : public EntityRenderer
 {
 private:
 	Random *random;
+	static ResourceLocation PAINTING_LOCATION;
 
 public:
 	PaintingRenderer();		// 4J -added
@@ -16,4 +17,5 @@ public:
 private:
 	void renderPainting(shared_ptr<Painting> painting, int w, int h, int uo, int vo);
     void setBrightness(shared_ptr<Painting> painting, float ss, float ya);
+	virtual ResourceLocation *getTextureLocation(shared_ptr<Entity> mob);
 };

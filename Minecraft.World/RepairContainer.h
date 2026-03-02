@@ -2,14 +2,15 @@
 
 #include "SimpleContainer.h"
 
-class RepairMenu;
+class AnvilMenu;
 
 class RepairContainer : public SimpleContainer, public enable_shared_from_this<RepairContainer>
 {
 private:
-	RepairMenu *m_menu;
+	AnvilMenu *m_menu;
 
 public:
-	RepairContainer(RepairMenu *menu, int name, int size);
+	RepairContainer(AnvilMenu *menu, int name, bool customName, int size);
 	void setChanged();
+	bool canPlaceItem(int slot, shared_ptr<ItemInstance> item);
 };

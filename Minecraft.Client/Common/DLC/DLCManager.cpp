@@ -91,6 +91,28 @@ void DLCManager::removePack(DLCPack *pack)
 	}
 }
 
+void DLCManager::removeAllPacks(void)
+{
+	for(AUTO_VAR(it, m_packs.begin()); it != m_packs.end(); ++it)
+	{
+		DLCPack *pack = (DLCPack *)*it;
+		delete pack;
+	}
+
+	m_packs.clear();
+}
+
+void DLCManager::LanguageChanged(void)
+{
+	for(AUTO_VAR(it, m_packs.begin()); it != m_packs.end(); ++it)
+	{
+		DLCPack *pack = (DLCPack *)*it;
+		// update the language
+		pack->UpdateLanguage();
+	}
+
+}
+
 DLCPack *DLCManager::getPack(const wstring &name)
 {
 	DLCPack *pack = NULL;
@@ -292,12 +314,12 @@ DWORD DLCManager::checkForCorruptDLCAndAlert(bool showMessage /*= true*/)
 			WCHAR wchFormat[132];
 			swprintf(wchFormat, 132, L"%ls\n\n%%ls", firstCorruptPack->getName().c_str());
 
-			C4JStorage::EMessageResult result = ui.RequestMessageBox( IDS_CORRUPT_DLC_TITLE, IDS_CORRUPT_DLC, uiIDA,1,ProfileManager.GetPrimaryPad(),NULL,NULL, app.GetStringTable(),wchFormat);
+			C4JStorage::EMessageResult result = ui.RequestErrorMessage( IDS_CORRUPT_DLC_TITLE, IDS_CORRUPT_DLC, uiIDA,1,ProfileManager.GetPrimaryPad(),NULL,NULL,wchFormat);
 
 		}
 		else
 		{
-			C4JStorage::EMessageResult result = ui.RequestMessageBox( IDS_CORRUPT_DLC_TITLE, IDS_CORRUPT_DLC_MULTIPLE, uiIDA,1,ProfileManager.GetPrimaryPad(),NULL,NULL, app.GetStringTable());
+			C4JStorage::EMessageResult result = ui.RequestErrorMessage( IDS_CORRUPT_DLC_TITLE, IDS_CORRUPT_DLC_MULTIPLE, uiIDA,1,ProfileManager.GetPrimaryPad());
 		}
 	}
 

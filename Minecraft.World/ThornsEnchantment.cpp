@@ -52,7 +52,7 @@ int ThornsEnchantment::getDamage(int level, Random *random)
 	}
 }
 
-void ThornsEnchantment::doThornsAfterAttack(shared_ptr<Entity> source, shared_ptr<Mob> target, Random *random)
+void ThornsEnchantment::doThornsAfterAttack(shared_ptr<Entity> source, shared_ptr<LivingEntity> target, Random *random)
 {
 	int level = EnchantmentHelper::getArmorThorns(target);
 	shared_ptr<ItemInstance> item = EnchantmentHelper::getRandomItemWith(Enchantment::thorns, target);
@@ -64,14 +64,14 @@ void ThornsEnchantment::doThornsAfterAttack(shared_ptr<Entity> source, shared_pt
 
 		if (item != NULL)
 		{
-			item->hurt(3, target);
+			item->hurtAndBreak(3, target);
 		}
 	}
 	else
 	{
 		if (item != NULL)
 		{
-			item->hurt(1, target);
+			item->hurtAndBreak(1, target);
 		}
 	}
 }

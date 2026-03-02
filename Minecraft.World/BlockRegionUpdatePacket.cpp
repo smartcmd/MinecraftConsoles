@@ -11,6 +11,8 @@
 #include "Dimension.h"
 
 
+#define BLOCK_REGION_UPDATE_FULLCHUNK 0x01
+#define BLOCK_REGION_UPDATE_ZEROHEIGHT 0x02	// added so we can still send a byte for ys, which really needs the range 0-256
 
 BlockRegionUpdatePacket::~BlockRegionUpdatePacket()
 {
@@ -82,16 +84,20 @@ BlockRegionUpdatePacket::BlockRegionUpdatePacket(int x, int y, int z, int xs, in
 		size = inputSize;
 	}
 }
-
+ 
 void BlockRegionUpdatePacket::read(DataInputStream *dis) //throws IOException
 {
-	bIsFullChunk = dis->readBoolean();
+	byte chunkFlags = dis->readByte();
 	x = dis->readInt();
 	y = dis->readShort();
 	z = dis->readInt();
 	xs = dis->read() + 1;
 	ys = dis->read() + 1;
 	zs = dis->read() + 1;
+
+	bIsFullChunk = (chunkFlags & BLOCK_REGION_UPDATE_FULLCHUNK) ? true : false;
+	if(chunkFlags & BLOCK_REGION_UPDATE_ZEROHEIGHT)	
+		ys = 0;
 
 	size = dis->readInt();
 	levelIdx = ( size >> 30 ) & 3;
@@ -131,7 +137,11 @@ void BlockRegionUpdatePacket::read(DataInputStream *dis) //throws IOException
 
 void BlockRegionUpdatePacket::write(DataOutputStream *dos) // throws IOException
 {
-	dos->writeBoolean(bIsFullChunk);
+	byte chunkFlags = 0;
+	if(bIsFullChunk) chunkFlags |= BLOCK_REGION_UPDATE_FULLCHUNK;
+	if(ys == 0) chunkFlags |= BLOCK_REGION_UPDATE_ZEROHEIGHT;
+
+	dos->writeByte(chunkFlags);
 	dos->writeInt(x);
 	dos->writeShort(y);
 	dos->writeInt(z);

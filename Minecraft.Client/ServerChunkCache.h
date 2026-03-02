@@ -47,6 +47,10 @@ public:
     virtual LevelChunk *getChunk(int x, int z);
 #ifdef _LARGE_WORLDS	
 	LevelChunk *getChunkLoadedOrUnloaded(int x, int z);		// 4J added
+	void overwriteLevelChunkFromSource(int x, int z);			// 4J MGH added, for expanding worlds, to kill any player changes and reset the chunk
+	void overwriteHellLevelChunkFromSource(int x, int z, int minVal, int maxVal);			// 4J MGH added, for expanding worlds, to reset the outer tiles in the chunk
+	void updateOverwriteHellChunk(LevelChunk* origChunk, LevelChunk* playerChunk, int xMin, int xMax, int zMin, int zMax);
+
 #endif
 	virtual LevelChunk **getCache() { return cache; }		// 4J added
 
@@ -84,6 +88,7 @@ public:
 
 	virtual vector<Biome::MobSpawnerData *> *getMobsAt(MobCategory *mobCategory, int x, int y, int z);
 	virtual TilePos *findNearestMapFeature(Level *level, const wstring &featureName, int x, int y, int z);
+	virtual void recreateLogicStructuresForChunk(int chunkX, int chunkZ);
 
 private:
 	typedef struct _SaveThreadData

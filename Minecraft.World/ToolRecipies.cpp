@@ -1,7 +1,3 @@
-//package net.minecraft.world.item.crafting;
-
-//import net.minecraft.world.item.*;
-//import net.minecraft.world.level.tile.Tile;
 #include "stdafx.h"
 #include "net.minecraft.world.item.h"
 #include "Tile.h"
@@ -29,23 +25,12 @@ wstring ToolRecipies::shapes[][4] =
 	L" #"},//
 };
 
-/*
-	Object[][] map = {
-			{Tile.wood, Tile.stoneBrick, Item.ironIngot, Item.diamond, Item.goldIngot}, 
-			{Item.pickAxe_wood, Item.pickAxe_stone, Item.pickAxe_iron, Item.pickAxe_diamond, Item.pickAxe_gold}, 
-			{Item.shovel_wood, Item.shovel_stone, Item.shovel_iron, Item.shovel_diamond, Item.shovel_gold}, 
-			{Item.hatchet_wood, Item.hatchet_stone, Item.hatchet_iron, Item.hatchet_diamond, Item.hatchet_gold}, 
-			{Item.hoe_wood, Item.hoe_stone, Item.hoe_iron, Item.hoe_diamond, Item.hoe_gold}, 
-	};
-	*/	
-//#define ADD_OBJECT(a,b) a.push_back(new Object(b))
-
 void ToolRecipies::_init()
 {
 	map = new vector <Object *> [MAX_TOOL_RECIPES];
 
 	ADD_OBJECT(map[0],Tile::wood);
-	ADD_OBJECT(map[0],Tile::stoneBrick);
+	ADD_OBJECT(map[0],Tile::cobblestone);
 	ADD_OBJECT(map[0],Item::ironIngot);
 	ADD_OBJECT(map[0],Item::diamond);
 	ADD_OBJECT(map[0],Item::goldIngot);

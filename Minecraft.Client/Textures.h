@@ -12,6 +12,7 @@ class Options;
 using namespace std;
 class IntBuffer;
 class PreStitchedTextureMap;
+class ResourceLocation;
 
 
 typedef enum _TEXTURE_NAME
@@ -102,7 +103,7 @@ typedef enum _TEXTURE_NAME
 	TN_TERRAIN_MOON_PHASES,
 
 	// 1.2.3
-	TN_MOB_OZELOT,
+	TN_MOB_OCELOT,
 	TN_MOB_CAT_BLACK,
 	TN_MOB_CAT_RED,
 	TN_MOB_CAT_SIAMESE,
@@ -112,6 +113,43 @@ typedef enum _TEXTURE_NAME
 	// TU14
 	TN_MOB_WOLF_COLLAR,
 	TN_MOB_ZOMBIE_VILLAGER,
+
+	// 1.6.4
+	TN_ITEM_LEASHKNOT,
+
+	TN_MISC_BEACON_BEAM,
+
+	TN_MOB_BAT,
+
+	TN_MOB_DONKEY,
+	TN_MOB_HORSE_BLACK,
+	TN_MOB_HORSE_BROWN,
+	TN_MOB_HORSE_CHESTNUT,
+	TN_MOB_HORSE_CREAMY,
+	TN_MOB_HORSE_DARKBROWN,
+	TN_MOB_HORSE_GRAY,
+	TN_MOB_HORSE_MARKINGS_BLACKDOTS,
+	TN_MOB_HORSE_MARKINGS_WHITE,
+	TN_MOB_HORSE_MARKINGS_WHITEDOTS,
+	TN_MOB_HORSE_MARKINGS_WHITEFIELD,
+	TN_MOB_HORSE_SKELETON,
+	TN_MOB_HORSE_WHITE,
+	TN_MOB_HORSE_ZOMBIE,
+	TN_MOB_MULE,
+	TN_MOB_HORSE_ARMOR_DIAMOND,
+	TN_MOB_HORSE_ARMOR_GOLD,
+	TN_MOB_HORSE_ARMOR_IRON,
+
+	TN_MOB_WITCH,
+
+	TN_MOB_WITHER,
+	TN_MOB_WITHER_ARMOR,
+	TN_MOB_WITHER_INVULNERABLE,
+
+	TN_TILE_TRAP_CHEST,
+	TN_TILE_LARGE_TRAP_CHEST,
+	//TN_TILE_XMAS_CHEST,	
+	//TN_TILE_LARGE_XMAS_CHEST,
 
 #ifdef _LARGE_WORLDS
 	TN_MISC_ADDITIONALMAPICONS,
@@ -240,10 +278,14 @@ private:
 
 public:
 	void bindTexture(const wstring &resourceName);
-	void bindTexture(int resourceId); // 4J Added
+	void bindTexture(ResourceLocation *resource); // 4J Added
+	void bindTextureLayers(ResourceLocation *resource);	// 4J added
 
 	// 4J Made public for use in XUI controls
 	void bind(int id);
+
+	ResourceLocation *getTextureLocation(shared_ptr<Entity> entity);
+	ResourceLocation *getTextureLocation(int iconType);
 
 public:
 	void clearLastBoundId();

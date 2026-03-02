@@ -140,6 +140,10 @@ void UIScene_JoinMenu::tick()
 		{
 			m_labelValues[eLabel_GameType].init( app.GetString(IDS_CREATIVE) );
 		}
+		else if(option == GameType::ADVENTURE->getId())
+		{
+			m_labelValues[eLabel_GameType].init( app.GetString(IDS_ADVENTURE) );
+		}
 		else
 		{
 			m_labelValues[eLabel_GameType].init( app.GetString(IDS_SURVIVAL) );
@@ -209,9 +213,9 @@ void UIScene_JoinMenu::tick()
 		UINT uiIDA[1];
 		uiIDA[0] = IDS_CONFIRM_OK;
 #ifdef _XBOX_ONE
-		ui.RequestMessageBox( IDS_CONNECTION_FAILED, IDS_DISCONNECTED_SERVER_QUIT, uiIDA,1,m_iPad,ErrorDialogReturned,this, app.GetStringTable());
+		ui.RequestErrorMessage( IDS_CONNECTION_FAILED, IDS_DISCONNECTED_SERVER_QUIT, uiIDA,1,m_iPad,ErrorDialogReturned,this);
 #else
-		ui.RequestMessageBox( IDS_ERROR_NETWORK_TITLE, IDS_ERROR_NETWORK, uiIDA,1,m_iPad,ErrorDialogReturned,this, app.GetStringTable());
+		ui.RequestErrorMessage( IDS_ERROR_NETWORK_TITLE, IDS_ERROR_NETWORK, uiIDA,1,m_iPad,ErrorDialogReturned,this);
 #endif
 	}
 
@@ -307,7 +311,7 @@ void UIScene_JoinMenu::handlePress(F64 controlId, F64 childId)
 			ui.PlayUISFX(eSFX_Press);
 
 #ifdef _DURANGO
-			ProfileManager.CheckMultiplayerPrivileges(m_iPad, true, &checkPrivilegeCallback, this);
+			ProfileManager.CheckMultiplayerPrivileges(m_iPad, true, &checkPrivilegeCallback, (LPVOID)GetCallbackUniqueId());
 #else
 			StartSharedLaunchFlow();
 #endif
@@ -331,15 +335,18 @@ void UIScene_JoinMenu::handleFocusChange(F64 controlId, F64 childId)
 #ifdef _DURANGO
 void UIScene_JoinMenu::checkPrivilegeCallback(LPVOID lpParam, bool hasPrivilege, int iPad)
 {
-	UIScene_JoinMenu* pClass = (UIScene_JoinMenu*)lpParam;
+	UIScene_JoinMenu* pClass = (UIScene_JoinMenu*)ui.GetSceneFromCallbackId((size_t)lpParam);
 
-	if(hasPrivilege)
+	if(pClass)
 	{
-		pClass->StartSharedLaunchFlow();
-}
-	else
-	{
-		pClass->m_bIgnoreInput = false;
+		if(hasPrivilege)
+		{
+			pClass->StartSharedLaunchFlow();
+		}
+		else
+		{
+			pClass->m_bIgnoreInput = false;
+		}
 	}
 }
 #endif
@@ -355,7 +362,7 @@ void UIScene_JoinMenu::StartSharedLaunchFlow()
 		//ProfileManager.RequestSignInUI(false, false, false, true, false,&UIScene_JoinMenu::StartGame_SignInReturned, this,ProfileManager.GetPrimaryPad());
 		SignInInfo info;
 		info.Func = &UIScene_JoinMenu::StartGame_SignInReturned;
-		info.lpParam = this;
+		info.lpParam = (LPVOID)GetCallbackUniqueId();
 		info.requireOnline = true;
 		ui.NavigateToScene(ProfileManager.GetPrimaryPad(),eUIScene_QuadrantSignin,&info);
 	}
@@ -363,23 +370,26 @@ void UIScene_JoinMenu::StartSharedLaunchFlow()
 
 int UIScene_JoinMenu::StartGame_SignInReturned(void *pParam,bool bContinue, int iPad)
 {
-	UIScene_JoinMenu* pClass = (UIScene_JoinMenu*)pParam;
+	UIScene_JoinMenu* pClass = (UIScene_JoinMenu*)ui.GetSceneFromCallbackId((size_t)pParam);
 
-	if(bContinue==true)
+	if(pClass)
 	{
-		// It's possible that the player has not signed in - they can back out
-		if(ProfileManager.IsSignedIn(iPad))
+		if(bContinue==true)
 		{
-			JoinGame(pClass);
+			// It's possible that the player has not signed in - they can back out
+			if(ProfileManager.IsSignedIn(iPad))
+			{
+				JoinGame(pClass);
+			}
+			else
+			{
+				pClass->m_bIgnoreInput=false;
+			}
 		}
 		else
 		{
 			pClass->m_bIgnoreInput=false;
 		}
-	}
-	else
-	{
-		pClass->m_bIgnoreInput=false;
 	}
 	return 0;
 }
@@ -442,7 +452,7 @@ void UIScene_JoinMenu::JoinGame(UIScene_JoinMenu* pClass)
 			// 4J Stu - This is a bit messy and is due to the library incorrectly returning false for IsSignedInLive if the npAvailability isn't SCE_OK
 			UINT uiIDA[1];
 			uiIDA[0]=IDS_OK;
-			ui.RequestMessageBox(IDS_ONLINE_SERVICE_TITLE, IDS_CONTENT_RESTRICTION, uiIDA, 1, iPadNotSignedInLive, NULL, NULL, app.GetStringTable());
+			ui.RequestErrorMessage(IDS_ONLINE_SERVICE_TITLE, IDS_CONTENT_RESTRICTION, uiIDA, 1, iPadNotSignedInLive);
 		}
 		else
 #endif
@@ -450,7 +460,7 @@ void UIScene_JoinMenu::JoinGame(UIScene_JoinMenu* pClass)
 			pClass->m_bIgnoreInput=false;
 			UINT uiIDA[1];
 			uiIDA[0]=IDS_CONFIRM_OK;
-			ui.RequestMessageBox( IDS_PRO_NOTONLINE_TITLE, IDS_PRO_NOTONLINE_TEXT, uiIDA,1,ProfileManager.GetPrimaryPad(),NULL,NULL, app.GetStringTable());
+			ui.RequestErrorMessage( IDS_PRO_NOTONLINE_TITLE, IDS_PRO_NOTONLINE_TEXT, uiIDA,1,ProfileManager.GetPrimaryPad());
 		}
 		return;
 	}
@@ -495,7 +505,7 @@ void UIScene_JoinMenu::JoinGame(UIScene_JoinMenu* pClass)
 		pClass->m_bIgnoreInput=false;
 		UINT uiIDA[1];
 		uiIDA[0]=IDS_CONFIRM_OK;
-		ui.RequestMessageBox( IDS_NO_MULTIPLAYER_PRIVILEGE_TITLE, IDS_NO_MULTIPLAYER_PRIVILEGE_JOIN_TEXT, uiIDA,1,ProfileManager.GetPrimaryPad(),NULL,NULL, app.GetStringTable());
+		ui.RequestErrorMessage( IDS_NO_MULTIPLAYER_PRIVILEGE_TITLE, IDS_NO_MULTIPLAYER_PRIVILEGE_JOIN_TEXT, uiIDA,1,ProfileManager.GetPrimaryPad());
 	}
 	else
 	{
@@ -530,7 +540,7 @@ void UIScene_JoinMenu::JoinGame(UIScene_JoinMenu* pClass)
 			{
 				UINT uiIDA[1];
 				uiIDA[0]=IDS_CONFIRM_OK;
-				ui.RequestMessageBox( IDS_CONNECTION_FAILED, exitReasonStringId, uiIDA,1,ProfileManager.GetPrimaryPad(),NULL,NULL, app.GetStringTable());
+				ui.RequestErrorMessage( IDS_CONNECTION_FAILED, exitReasonStringId, uiIDA,1,ProfileManager.GetPrimaryPad());
 				exitReasonStringId = -1;
 
 				ui.NavigateToHomeMenu();

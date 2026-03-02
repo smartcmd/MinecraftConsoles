@@ -10,11 +10,17 @@ public:
 
 	IntArrayTag(const wstring &name) : Tag(name)
 	{
+		data = intArray();
 	}
 
 	IntArrayTag(const wstring &name, intArray data) : Tag(name)
 	{
 		this->data = data;
+	}
+
+	~IntArrayTag()
+	{
+		delete [] data.data;
 	}
 
 	void write(DataOutput *dos)
@@ -26,7 +32,7 @@ public:
 		}
 	}
 
-	void load(DataInput *dis)
+	void load(DataInput *dis, int tagDepth)
 	{
 		int length = dis->readInt();
 
@@ -52,7 +58,7 @@ public:
 		if (Tag::equals(obj))
 		{
 			IntArrayTag *o = (IntArrayTag *) obj;
-			return ((data.data == NULL && o->data.data == NULL) || (data.data != NULL && data.length == o->data.length && memcmp(data.data, o->data.data, data.length) == 0) );
+			return ((data.data == NULL && o->data.data == NULL) || (data.data != NULL && data.length == o->data.length && memcmp(data.data, o->data.data, data.length * sizeof(int)) == 0) );
 		}
 		return false;
 	}

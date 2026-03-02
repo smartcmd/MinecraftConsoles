@@ -142,6 +142,14 @@ void DataOutputStream::writeShort(short a)
 	written += 2;
 }
 
+void DataOutputStream::writeUnsignedShort(unsigned short a)
+{
+	stream->write( (a >> 8) & 0xff );
+	stream->write( a & 0xff );
+	// TODO 4J Stu - Error handling?
+	written += 2;
+}
+
 //Writes a char to the underlying output stream as a 2-byte value, high byte first.
 //If no exception is thrown, the counter written is incremented by 2.
 //Parameters:

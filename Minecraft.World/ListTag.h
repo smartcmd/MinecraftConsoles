@@ -5,51 +5,60 @@ using namespace std;
 template <class T> class ListTag : public Tag
 {
 private:
-    vector<Tag *> list;
-    byte type;
+	vector<Tag *> list;
+	byte type;
 
 public:
 	ListTag() : Tag(L"") {}
 	ListTag(const wstring &name) : Tag(name) {}
 
-    void write(DataOutput *dos)
+	void write(DataOutput *dos)
 	{
-        if (list.size() > 0) type = (list[0])->getId();
-        else type = 1;
+		if (list.size() > 0) type = (list[0])->getId();
+		else type = 1;
 
-        dos->writeByte(type);
-        dos->writeInt((int)list.size());
+		dos->writeByte(type);
+		dos->writeInt((int)list.size());
 
 		AUTO_VAR(itEnd, list.end());
-        for (AUTO_VAR(it, list.begin()); it != itEnd; it++)
-            (*it)->write(dos);
+		for (AUTO_VAR(it, list.begin()); it != itEnd; it++)
+			(*it)->write(dos);
 	}
-    void load(DataInput *dis)
-	{
-        type = dis->readByte();
-        int size = dis->readInt();
 
-        list.clear();
-        for (int i = 0; i < size; i++)
+	void load(DataInput *dis, int tagDepth)
+	{
+		if (tagDepth > MAX_DEPTH)
 		{
-            Tag *tag = Tag::newTag(type, L"");
-            tag->load(dis);
-            list.push_back(tag);
-        }
+#ifndef _CONTENT_PACKAGE
+			printf("Tried to read NBT tag with too high complexity, depth > %d", MAX_DEPTH);
+			__debugbreak();
+#endif
+			return;
+		}
+		type = dis->readByte();
+		int size = dis->readInt();
+
+		list.clear();
+		for (int i = 0; i < size; i++)
+		{
+			Tag *tag = Tag::newTag(type, L"");
+			tag->load(dis, tagDepth);
+			list.push_back(tag);
+		}
 	}
 
 	byte getId() { return TAG_List; }
 
-    wstring toString()
+	wstring toString()
 	{
 		static wchar_t buf[64];
 		swprintf(buf,64,L"%d entries of type %ls",list.size(),Tag::getTagName(type));
 		return wstring( buf );
 	}
 
-    void print(char *prefix, ostream out)
+	void print(char *prefix, ostream out)
 	{
-        Tag::print(prefix, out);
+		Tag::print(prefix, out);
 
 		out << prefix << "{" << endl;
 
@@ -57,24 +66,29 @@ public:
 		strcpy( newPrefix, prefix);
 		strcat( newPrefix, "   ");
 		AUTO_VAR(itEnd, list.end());
-        for (AUTO_VAR(it, list.begin()); it != itEnd; it++)
-            (*it)->print(newPrefix, out);
+		for (AUTO_VAR(it, list.begin()); it != itEnd; it++)
+			(*it)->print(newPrefix, out);
 		delete[] newPrefix;
 		out << prefix << "}" << endl;
 	}
 
-    void add(T *tag)
+	void add(T *tag)
 	{
-        type = tag->getId();
-        list.push_back(tag);
+		type = tag->getId();
+		// 4J: List tag write/load doesn't preserve tag names so remove them so we can safely do comparisons
+		// There are a few ways I could have fixed this but this seems the least invasive, most complete fix
+		// (covers other items that also use list tags and require equality checks to work)
+		// considering we can't change the write/load functions.
+		tag->setName(L"");
+		list.push_back(tag);
 	}
 
-    T *get(int index)
+	T *get(int index)
 	{
 		return (T *) list[index];
 	}
 
-    int size()
+	int size()
 	{
 		return (int)list.size();
 	}
@@ -82,18 +96,18 @@ public:
 	virtual ~ListTag()
 	{
 		AUTO_VAR(itEnd, list.end());
-        for (AUTO_VAR(it, list.begin()); it != itEnd; it++)
+		for (AUTO_VAR(it, list.begin()); it != itEnd; it++)
 		{
 			delete *it;
 		}
 	}
 
-	Tag *copy()
+	virtual Tag *copy()
 	{
 		ListTag<T> *res = new ListTag<T>(getName());
 		res->type = type;
 		AUTO_VAR(itEnd, list.end());
-        for (AUTO_VAR(it, list.begin()); it != itEnd; it++)
+		for (AUTO_VAR(it, list.begin()); it != itEnd; it++)
 		{
 			T *copy = (T *) (*it)->copy();
 			res->list.push_back(copy);
@@ -101,8 +115,7 @@ public:
 		return res;
 	}
 
-#if 0
-	bool equals(Object obj)
+	virtual bool equals(Tag *obj)
 	{
 		if (Tag::equals(obj))
 		{
@@ -115,10 +128,10 @@ public:
 					equal = true;
 					AUTO_VAR(itEnd, list.end());
 					// 4J Stu - Pretty inefficient method, but I think we can live with it give how often it will happen, and the small sizes of the data sets
-					for (AUTO_VAR(it, list.begin()); it != itEnd; it++)
+					for (AUTO_VAR(it, list.begin()); it != itEnd; ++it)
 					{
 						bool thisMatches = false;
-						for(AUTO_VAR(it2, o->list.begin()); it != o->list.end(); ++it2)
+						for(AUTO_VAR(it2, o->list.begin()); it2 != o->list.end(); ++it2)
 						{
 							if((*it)->equals(*it2))
 							{
@@ -140,5 +153,4 @@ public:
 		}
 		return false;
 	}
-#endif
 };

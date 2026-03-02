@@ -30,6 +30,7 @@ void DLCTextureFile::addParameter(DLCManager::EDLCParameterType type, const wstr
 	{
 	case DLCManager::e_DLCParamType_Anim:
 		m_animString = value;
+		if(m_animString.empty()) m_animString = L",";
 		m_bIsAnim = true;
 
 		break;

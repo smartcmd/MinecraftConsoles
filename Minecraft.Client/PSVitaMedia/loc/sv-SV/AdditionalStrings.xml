@@ -48,6 +48,12 @@
 	<data name="IDS_CORRUPT_OPTIONS">
 		<value>Din alternativfil är korrupt och måste raderas.</value>
 	</data>
+	<data name="IDS_CORRUPT_OPTIONS_DELETE">
+		<value>Radera alternativfil.</value>
+	</data>
+	<data name="IDS_CORRUPT_OPTIONS_RETRY">
+		<value>Försök att läsa in alternativfilen igen.</value>
+	</data>
 	<data name="IDS_CORRUPT_SAVECACHE">
 		<value>Ditt sparcache är korrupt och måste raderas.</value>
 	</data>
@@ -75,6 +81,9 @@
 	<data name="IDS_CONTENT_RESTRICTION_MULTIPLAYER">
 		<value>Onlinetjänsten är avstängd för ditt Sony Entertainment Network-konto på grund av föräldrakontrollsinställningar för en av dina lokala spelare.</value>
 	</data>
+	<data name="IDS_CONTENT_RESTRICTION_PATCH_AVAILABLE">
+		<value>Onlinefunktioner har avaktiverats på grund av att det finns en uppdatering tillgänglig.</value>
+	</data>
 	<data name="IDS_NO_DLCCATEGORIES">
 		<value>Det finns inga erbjudanden på nedladdningsbart innehåll till det här spelet för tillfället.</value>
 	</data>
@@ -83,8 +92,5 @@
 	</data>
 	<data name="IDS_INVITATION_BODY">
 		<value>Kom och spela Minecraft: PlayStation®Vita Edition!</value>
-	</data>
-	<data name="IDS_CONTENT_RESTRICTION_PATCH_AVAILABLE">
-		<value>Onlinefunktioner har avaktiverats på grund av att det finns en uppdatering tillgänglig.</value>
 	</data>
 </root>

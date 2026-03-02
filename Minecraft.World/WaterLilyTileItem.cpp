@@ -10,7 +10,7 @@ WaterLilyTileItem::WaterLilyTileItem(int id) : ColoredTileItem(id, false)
 {
 }
 
-bool WaterLilyTileItem::TestUse(Level *level, shared_ptr<Player> player)
+bool WaterLilyTileItem::TestUse(shared_ptr<ItemInstance> itemInstance, Level *level, shared_ptr<Player> player)
 {
 	HitResult *hr = getPlayerPOVHitResult(level, player, true);
 	if (hr == NULL) return false;
@@ -20,13 +20,18 @@ bool WaterLilyTileItem::TestUse(Level *level, shared_ptr<Player> player)
 		int xt = hr->x;
 		int yt = hr->y;
 		int zt = hr->z;
-		delete hr;
 		if (!level->mayInteract(player, xt, yt, zt, 0))
 		{
+			delete hr;
 			return false;
 		}
-		if (!player->mayBuild(xt, yt, zt)) return false;
-
+		if (!player->mayUseItemAt(xt, yt, zt, hr->f, itemInstance))
+		{			
+			delete hr;
+			return false;
+		}
+		
+		delete hr;
 		if (level->getMaterial(xt, yt, zt) == Material::water && level->getData(xt, yt, zt) == 0 && level->isEmptyTile(xt, yt + 1, zt))
 		{
 			return true;
@@ -49,16 +54,21 @@ shared_ptr<ItemInstance> WaterLilyTileItem::use(shared_ptr<ItemInstance> itemIns
 		int xt = hr->x;
 		int yt = hr->y;
 		int zt = hr->z;
-		delete hr;
 		if (!level->mayInteract(player, xt, yt, zt, 0))
 		{
+		delete hr;
 			return itemInstance;
 		}
-		if (!player->mayBuild(xt, yt, zt)) return itemInstance;
-
+		if (!player->mayUseItemAt(xt, yt, zt, hr->f, itemInstance))
+		{			
+			delete hr;
+			return itemInstance;
+		}
+		
+		delete hr;
 		if (level->getMaterial(xt, yt, zt) == Material::water && level->getData(xt, yt, zt) == 0 && level->isEmptyTile(xt, yt + 1, zt))
 		{
-			level->setTile(xt, yt + 1, zt, Tile::waterLily->id);
+			level->setTileAndUpdate(xt, yt + 1, zt, Tile::waterLily->id);
 			if (!player->abilities.instabuild)
 			{
 				itemInstance->count--;
