@@ -4,10 +4,10 @@
 class LongTag : public Tag
 {
 public:
-	int64_t data;
+	__int64 data;
 	LongTag(const wstring &name) : Tag(name) {}
-	LongTag(const wstring &name, int64_t data) : Tag(name) {this->data = data; }
-
+	LongTag(const wstring &name, __int64 data) : Tag(name) {this->data = data; }
+	
 	void write(DataOutput *dos) { dos->writeLong(data); }
 	void load(DataInput *dis) { data = dis->readLong(); }
 

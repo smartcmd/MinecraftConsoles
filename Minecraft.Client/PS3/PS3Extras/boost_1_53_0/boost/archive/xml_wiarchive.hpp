@@ -9,7 +9,7 @@
 /////////1/////////2/////////3/////////4/////////5/////////6/////////7/////////8
 // xml_wiarchive.hpp
 
-// (C) Copyright 2002 Robert Ramey - http://www.rrsd.com .
+// (C) Copyright 2002 Robert Ramey - http://www.rrsd.com . 
 // Use, modification and distribution is subject to the Boost Software
 // License, Version 1.0. (See accompanying file LICENSE_1_0.txt or copy at
 // http://www.boost.org/LICENSE_1_0.txt)
@@ -37,7 +37,7 @@
 #  pragma warning(disable : 4511 4512)
 #endif
 
-namespace boost {
+namespace boost { 
 namespace archive {
 
 template<class CharType>
@@ -45,7 +45,7 @@ class basic_xml_grammar;
 typedef basic_xml_grammar<wchar_t> xml_wgrammar;
 
 template<class Archive>
-class xml_wiarchive_impl :
+class xml_wiarchive_impl : 
     public basic_text_iprimitive<std::wistream>,
     public basic_xml_iarchive<Archive>
 {
@@ -65,17 +65,17 @@ protected:
         return is;
     }
     template<class T>
-    void
+    void 
     load(T & t){
         basic_text_iprimitive<std::wistream>::load(t);
     }
-    void
+    void 
     load(version_type & t){
         unsigned int v;
         load(v);
         t = version_type(v);
     }
-    void
+    void 
     load(boost::serialization::item_version_type & t){
         unsigned int v;
         load(v);
@@ -99,11 +99,11 @@ protected:
     }
     BOOST_WARCHIVE_DECL(void)
     load_override(class_name_type & t, int);
-    BOOST_WARCHIVE_DECL(void)
+    BOOST_WARCHIVE_DECL(void) 
     init();
-    BOOST_WARCHIVE_DECL(BOOST_PP_EMPTY())
+    BOOST_WARCHIVE_DECL(BOOST_PP_EMPTY()) 
     xml_wiarchive_impl(std::wistream & is, unsigned int flags) ;
-    BOOST_WARCHIVE_DECL(BOOST_PP_EMPTY())
+    BOOST_WARCHIVE_DECL(BOOST_PP_EMPTY()) 
     ~xml_wiarchive_impl();
 };
 
@@ -112,7 +112,7 @@ protected:
 // preserve correct static polymorphism.
 
 // same as xml_wiarchive below - without the shared_ptr_helper
-class naked_xml_wiarchive :
+class naked_xml_wiarchive : 
     public xml_wiarchive_impl<naked_xml_wiarchive>
 {
 public:
@@ -126,14 +126,14 @@ public:
 } // namespace boost
 
 #ifdef BOOST_MSVC
-#  pragma warning(pop)
+#  pragma warning(pop) 
 #endif
 
 #include <boost/archive/detail/abi_suffix.hpp> // pops abi_suffix.hpp pragmas
 
-// note special treatment of std::shared_ptr. This type needs a special
+// note special treatment of shared_ptr. This type needs a special
 // structure associated with every archive.  We created a "mix-in"
-// class to provide this functionality.  Since std::shared_ptr holds a
+// class to provide this functionality.  Since shared_ptr holds a
 // special esteem in the boost library - we included it here by default.
 #include <boost/archive/shared_ptr_helper.hpp>
 
@@ -142,10 +142,10 @@ public:
 #  pragma warning(disable : 4511 4512)
 #endif
 
-namespace boost {
+namespace boost { 
 namespace archive {
 
-class xml_wiarchive :
+class xml_wiarchive : 
     public xml_wiarchive_impl<xml_wiarchive>,
     public detail::shared_ptr_helper
 {

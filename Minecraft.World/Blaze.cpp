@@ -115,7 +115,7 @@ void Blaze::aiStep()
 	Monster::aiStep();
 }
 
-void Blaze::checkHurtTarget(std::shared_ptr<Entity> target, float d)
+void Blaze::checkHurtTarget(shared_ptr<Entity> target, float d)
 {
 	if (attackTime <= 0 && d < 2.0f && target->bb->y1 > bb->y0 && target->bb->y0 < bb->y1)
 	{
@@ -154,7 +154,7 @@ void Blaze::checkHurtTarget(std::shared_ptr<Entity> target, float d)
 				level->levelEvent(nullptr, LevelEvent::SOUND_BLAZE_FIREBALL, (int) x, (int) y, (int) z, 0);
 				//                    level.playSound(this, "mob.ghast.fireball", getSoundVolume(), (random.nextFloat() - random.nextFloat()) * 0.2f + 1.0f);
 				for (int i = 0; i < 1; i++) {
-					std::shared_ptr<SmallFireball> ie = std::shared_ptr<SmallFireball>( new SmallFireball(level, std::dynamic_pointer_cast<Mob>( shared_from_this() ), xd + random->nextGaussian() * sqd, yd, zd + random->nextGaussian() * sqd) );
+					shared_ptr<SmallFireball> ie = shared_ptr<SmallFireball>( new SmallFireball(level, dynamic_pointer_cast<Mob>( shared_from_this() ), xd + random->nextGaussian() * sqd, yd, zd + random->nextGaussian() * sqd) );
 					//                        Vec3 v = getViewVector(1);
 					//                        ie.x = x + v.x * 1.5;
 					ie->y = y + bbHeight / 2 + 0.5f;

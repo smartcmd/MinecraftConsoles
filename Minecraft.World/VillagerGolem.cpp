@@ -69,7 +69,7 @@ void VillagerGolem::serverAiMobStep()
 	if (--villageUpdateInterval <= 0)
 	{
 		villageUpdateInterval = 70 + random->nextInt(50);
-		std::shared_ptr<Village> _village = level->villages->getClosestVillage(Mth::floor(x), Mth::floor(y), Mth::floor(z), Villages::MaxDoorDist);
+		shared_ptr<Village> _village = level->villages->getClosestVillage(Mth::floor(x), Mth::floor(y), Mth::floor(z), Villages::MaxDoorDist);
 		village = _village;
 		if (_village == NULL) clearRestriction();
 		else
@@ -133,11 +133,11 @@ void VillagerGolem::readAdditionalSaveData(CompoundTag *tag)
 	setPlayerCreated(tag->getBoolean(L"PlayerCreated"));
 }
 
-bool VillagerGolem::doHurtTarget(std::shared_ptr<Entity> target)
+bool VillagerGolem::doHurtTarget(shared_ptr<Entity> target)
 {
 	attackAnimationTick = 10;
 	level->broadcastEntityEvent(shared_from_this(), EntityEvent::START_ATTACKING);
-	bool hurt = target->hurt(DamageSource::mobAttack(std::dynamic_pointer_cast<Mob>(shared_from_this())), 7 + random->nextInt(15));
+	bool hurt = target->hurt(DamageSource::mobAttack(dynamic_pointer_cast<Mob>(shared_from_this())), 7 + random->nextInt(15));
 	if (hurt) target->yd += 0.4f;
 	level->playSound(shared_from_this(), eSoundType_MOB_IRONGOLEM_THROW, 1, 1);
 	return hurt;
@@ -157,7 +157,7 @@ void VillagerGolem::handleEntityEvent(byte id)
 	else Golem::handleEntityEvent(id);
 }
 
-std::shared_ptr<Village> VillagerGolem::getVillage()
+shared_ptr<Village> VillagerGolem::getVillage()
 {
 	return village.lock();
 }

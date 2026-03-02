@@ -43,9 +43,9 @@ public:
 	virtual bool canAttackType(eINSTANCEOF targetType);
 	virtual void addAdditonalSaveData(CompoundTag *tag);
 	virtual void readAdditionalSaveData(CompoundTag *tag);
-	virtual bool doHurtTarget(std::shared_ptr<Entity> target);
+	virtual bool doHurtTarget(shared_ptr<Entity> target);
 	virtual void handleEntityEvent(byte id);
-	virtual std::shared_ptr<Village> getVillage();
+	virtual shared_ptr<Village> getVillage();
 	virtual int getAttackAnimationTick();
 	virtual void offerFlower(bool offer);
 

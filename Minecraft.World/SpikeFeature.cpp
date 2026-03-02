@@ -26,7 +26,7 @@ bool SpikeFeature::place(Level *level, Random *random, int x, int y, int z)
             int zd = zz - z;
             if (xd * xd + zd * zd <= r * r + 1)
 			{
-                if (level->getTile(xx, y - 1, zz) != tile)
+                if (level->getTile(xx, y - 1, zz) != tile) 
 				{
 					return false;
 				}
@@ -50,7 +50,7 @@ bool SpikeFeature::place(Level *level, Random *random, int x, int y, int z)
         } else break;
     }
 
-    std::shared_ptr<EnderCrystal> enderCrystal = std::shared_ptr<EnderCrystal>(new EnderCrystal(level));
+    shared_ptr<EnderCrystal> enderCrystal = shared_ptr<EnderCrystal>(new EnderCrystal(level));
     enderCrystal->moveTo(x + 0.5f, y + hh, z + 0.5f, random->nextFloat() * 360, 0);
     level->addEntity(enderCrystal);
     level->setTile(x, y + hh, z, Tile::unbreakable_Id);
@@ -111,8 +111,8 @@ bool SpikeFeature::placeWithIndex(Level *level, Random *random, int x, int y, in
                     }
                 }
 			}
-        }
-		else
+        } 
+		else 
 		{
 			app.DebugPrintf("Breaking out of spike feature\n");
 			break;
@@ -145,8 +145,8 @@ bool SpikeFeature::placeWithIndex(Level *level, Random *random, int x, int y, in
 						}
 					}
 				}
-			}
-			else
+			} 
+			else 
 			{
 				app.DebugPrintf("Breaking out of spike feature\n");
 				break;
@@ -155,7 +155,7 @@ bool SpikeFeature::placeWithIndex(Level *level, Random *random, int x, int y, in
 
 		// and cap off the top
 		int yy =  y + hh + 3;
-
+		
 		if (yy < Level::genDepth)
 		{
 			for (int xx = x - 2; xx <= x + 2; xx++)
@@ -168,7 +168,7 @@ bool SpikeFeature::placeWithIndex(Level *level, Random *random, int x, int y, in
 		}
 	}
 
-    std::shared_ptr<EnderCrystal> enderCrystal = std::shared_ptr<EnderCrystal>(new EnderCrystal(level));
+    shared_ptr<EnderCrystal> enderCrystal = shared_ptr<EnderCrystal>(new EnderCrystal(level));
     enderCrystal->moveTo(x + 0.5f, y + hh, z + 0.5f, random->nextFloat() * 360, 0);
     level->addEntity(enderCrystal);
 	placeBlock(level, x, y + hh, z, Tile::unbreakable_Id, 0);

@@ -108,7 +108,7 @@ void TripWireSourceTile::neighborChanged(Level *level, int x, int y, int z, int 
 	}
 }
 
-void TripWireSourceTile::calculateState(Level *level, int x, int y, int z, int id, int data, bool canUpdate,
+void TripWireSourceTile::calculateState(Level *level, int x, int y, int z, int id, int data, bool canUpdate, 
 										/*4J-Jev, these parameters only used with 'updateSource' -->*/ int wireSource, int wireSourceData)
 {
 
@@ -116,7 +116,7 @@ void TripWireSourceTile::calculateState(Level *level, int x, int y, int z, int i
 	int dir = data & MASK_DIR;
 	bool wasAttached = (data & MASK_ATTACHED) == MASK_ATTACHED;
 	bool wasPowered = (data & MASK_POWERED) == MASK_POWERED;
-	bool attached = id == Tile::tripWireSource_Id; // id is only != TripwireSource_id when 'onRemove'
+	bool attached = id == Tile::tripWireSource_Id; // id is only != TripwireSource_id when 'onRemove' 
 	bool powered = false;
 	bool suspended = !level->isTopSolidBlocking(x, y - 1, z);
 	int stepX = Direction::STEP_X[dir];
@@ -208,7 +208,7 @@ void TripWireSourceTile::calculateState(Level *level, int x, int y, int z, int i
 				wireData &= ~TripWireTile::MASK_ATTACHED;
 			}
 
-
+			
 			level->setData(xx, y, zz, wireData);
 		}
 	}
@@ -273,7 +273,7 @@ bool TripWireSourceTile::checkCanSurvive(Level *level, int x, int y, int z)
 	return true;
 }
 
-void TripWireSourceTile::updateShape(LevelSource *level, int x, int y, int z, int forceData, std::shared_ptr<TileEntity> forceEntity)
+void TripWireSourceTile::updateShape(LevelSource *level, int x, int y, int z, int forceData, shared_ptr<TileEntity> forceEntity)
 {
 	int dir = level->getData(x, y, z) & MASK_DIR;
 	float r = 3 / 16.0f;

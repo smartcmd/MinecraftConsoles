@@ -94,13 +94,13 @@ void AddItemRuleDefinition::addAttribute(const wstring &attributeName, const wst
 	}
 }
 
-bool AddItemRuleDefinition::addItemToContainer(std::shared_ptr<Container> container, int slotId)
+bool AddItemRuleDefinition::addItemToContainer(shared_ptr<Container> container, int slotId)
 {
 	bool added = false;
 	if(Item::items[m_itemId] != NULL)
 	{
 		int quantity = min(m_quantity, Item::items[m_itemId]->getMaxStackSize());
-		std::shared_ptr<ItemInstance> newItem = std::shared_ptr<ItemInstance>(new ItemInstance(m_itemId,quantity,m_auxValue) );
+		shared_ptr<ItemInstance> newItem = shared_ptr<ItemInstance>(new ItemInstance(m_itemId,quantity,m_auxValue) );
 		newItem->set4JData(m_dataTag);
 
 		for(AUTO_VAR(it, m_enchantments.begin()); it != m_enchantments.end(); ++it)
@@ -118,9 +118,9 @@ bool AddItemRuleDefinition::addItemToContainer(std::shared_ptr<Container> contai
 			container->setItem( slotId, newItem );
 			added = true;
 		}
-		else if(std::dynamic_pointer_cast<Inventory>(container) != NULL)
+		else if(dynamic_pointer_cast<Inventory>(container) != NULL)
 		{
-			added = std::dynamic_pointer_cast<Inventory>(container)->add(newItem);
+			added = dynamic_pointer_cast<Inventory>(container)->add(newItem);
 		}
 	}
 	return added;

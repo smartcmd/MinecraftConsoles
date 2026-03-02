@@ -18,7 +18,7 @@ public:
 private:
 	void checkSlide(Level *level, int x, int y, int z);
 protected:
-	virtual void falling(std::shared_ptr<FallingTile> entity);
+	virtual void falling(shared_ptr<FallingTile> entity);
 public:
 	virtual int getTickDelay();
     static bool isFree(Level *level, int x, int y, int z);

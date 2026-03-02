@@ -133,7 +133,7 @@ void CropTile::spawnResources(Level *level, int x, int y, int z, int data, float
 		for (int i = 0; i < count; i++)
 		{
 			if (level->random->nextInt(5 * 3) > data) continue;
-			popResource(level, x, y, z, std::shared_ptr<ItemInstance>(new ItemInstance(getBaseSeedId(), 1, 0)));
+			popResource(level, x, y, z, shared_ptr<ItemInstance>(new ItemInstance(getBaseSeedId(), 1, 0)));
 		}
 	}
 }

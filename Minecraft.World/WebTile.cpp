@@ -8,7 +8,7 @@ WebTile::WebTile(int id) : Tile(id, Material::web)
 }
 
 
-void WebTile::entityInside(Level *level, int x, int y, int z, std::shared_ptr<Entity> entity)
+void WebTile::entityInside(Level *level, int x, int y, int z, shared_ptr<Entity> entity)
 {
 	entity->makeStuckInWeb();
 }

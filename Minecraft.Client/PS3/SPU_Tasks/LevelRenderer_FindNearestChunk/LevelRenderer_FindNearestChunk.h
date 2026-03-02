@@ -23,7 +23,7 @@ public:
 		int xm, ym, zm;
 	};
 
-	class AABB
+	class AABB 
 	{
 		double x0, y0, z0;
 		double x1, y1, z1;
@@ -64,7 +64,7 @@ public:
 		int id;
 		int padding[1];
 		//public:
-		//	vector<std::shared_ptr<TileEntity> > renderableTileEntities;		// 4J - removed
+		//	vector<shared_ptr<TileEntity> > renderableTileEntities;		// 4J - removed
 
 	private:
 		void	*globalRenderableTileEntities;
@@ -86,7 +86,7 @@ public:
 	MultiplayerChunkCache multiplayerChunkCache[4];
 
 	int lowerOffset;		// offsets into the level class, we don't want to compile the entire class
-	int upperOffset;
+	int upperOffset; 
 
 	int xChunks, yChunks, zChunks;
 

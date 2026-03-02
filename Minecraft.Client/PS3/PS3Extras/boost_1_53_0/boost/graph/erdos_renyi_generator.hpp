@@ -13,7 +13,7 @@
 #include <boost/assert.hpp>
 #include <iterator>
 #include <utility>
-#include <boost/std::shared_ptr.hpp>
+#include <boost/shared_ptr.hpp>
 #include <boost/random/uniform_int.hpp>
 #include <boost/graph/graph_traits.hpp>
 #include <boost/random/geometric_distribution.hpp>
@@ -31,7 +31,7 @@ namespace boost {
                std::pair<typename graph_traits<Graph>::vertices_size_type,
                          typename graph_traits<Graph>::vertices_size_type>,
                std::input_iterator_tag,
-               const
+               const 
                  std::pair<typename graph_traits<Graph>::vertices_size_type,
                            typename graph_traits<Graph>::vertices_size_type>&>
   {
@@ -97,7 +97,7 @@ namespace boost {
                std::pair<typename graph_traits<Graph>::vertices_size_type,
                          typename graph_traits<Graph>::vertices_size_type>,
                std::input_iterator_tag,
-               const
+               const 
                  std::pair<typename graph_traits<Graph>::vertices_size_type,
                            typename graph_traits<Graph>::vertices_size_type>&>
   {
@@ -181,7 +181,7 @@ namespace boost {
       if (src == n) src = (std::numeric_limits<vertices_size_type>::max)();
     }
 
-    std::shared_ptr<uniform_01<RandomGenerator*> > gen;
+    shared_ptr<uniform_01<RandomGenerator*> > gen;
     geometric_distribution<vertices_size_type> rand_vertex;
     vertices_size_type n;
     bool allow_self_loops;

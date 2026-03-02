@@ -41,7 +41,7 @@ PBGL_DISTRIB_PMAP::~distributed_property_map() { }
 
 template<typename ProcessGroup, typename GlobalMap, typename StorageMap>
 template<typename Reduce>
-void
+void 
 PBGL_DISTRIB_PMAP::set_reduce(const Reduce& reduce)
 {
   typedef handle_message<Reduce> Handler;
@@ -69,7 +69,7 @@ void PBGL_DISTRIB_PMAP::prune_ghost_cells() const
       // We need to flush values when we evict them.
       boost::parallel::detail::untracked_pair<key_type, value_type> const& victim
         = data->ghost_cells->back();
-      send(data->process_group, get(data->global, victim.first).first,
+      send(data->process_group, get(data->global, victim.first).first, 
            property_map_put, victim);
     }
 
@@ -83,11 +83,11 @@ typename PBGL_DISTRIB_PMAP::value_type&
 PBGL_DISTRIB_PMAP::cell(const key_type& key, bool request_if_missing) const
 {
   // Index by key
-  ghost_cells_key_index_type const& key_index
+  ghost_cells_key_index_type const& key_index 
     = data->ghost_cells->template get<1>();
 
   // Search for the ghost cell by key, and project back to the sequence
-  iterator ghost_cell
+  iterator ghost_cell 
     = data->ghost_cells->template project<0>(key_index.find(key));
   if (ghost_cell == data->ghost_cells->end()) {
     value_type value;
@@ -97,13 +97,13 @@ PBGL_DISTRIB_PMAP::cell(const key_type& key, bool request_if_missing) const
       value = data->get_default_value(key);
     else if (request_if_missing)
       // Request the actual value of this key from its owner
-      send_oob_with_reply(data->process_group, get(data->global, key).first,
+      send_oob_with_reply(data->process_group, get(data->global, key).first, 
                           property_map_get, key, value);
     else
       value = value_type();
 
     // Create a ghost cell containing the new value
-    ghost_cell
+    ghost_cell 
       = data->ghost_cells->push_front(std::make_pair(key, value)).first;
 
     // If we need to, prune the ghost cells
@@ -129,12 +129,12 @@ template<typename ProcessGroup, typename GlobalMap, typename StorageMap>
 template<typename Reduce>
 void
 PBGL_DISTRIB_PMAP::handle_message<Reduce>::
-handle_put(int /*source*/, int /*tag*/,
+handle_put(int /*source*/, int /*tag*/, 
            const boost::parallel::detail::untracked_pair<key_type, value_type>& req, trigger_receive_context)
 {
   using boost::get;
 
-  std::shared_ptr<data_t> data(data_ptr);
+  shared_ptr<data_t> data(data_ptr);
 
   owner_local_pair p = get(data->global, req.first);
   BOOST_ASSERT(p.first == process_id(data->process_group));
@@ -149,12 +149,12 @@ template<typename ProcessGroup, typename GlobalMap, typename StorageMap>
 template<typename Reduce>
 typename PBGL_DISTRIB_PMAP::value_type
 PBGL_DISTRIB_PMAP::handle_message<Reduce>::
-handle_get(int source, int /*tag*/, const key_type& key,
+handle_get(int source, int /*tag*/, const key_type& key, 
            trigger_receive_context)
 {
   using boost::get;
 
-  std::shared_ptr<data_t> data(data_ptr);
+  shared_ptr<data_t> data(data_ptr);
   BOOST_ASSERT(data);
 
   owner_local_pair p = get(data->global, key);
@@ -168,7 +168,7 @@ PBGL_DISTRIB_PMAP::handle_message<Reduce>::
 handle_multiget(int source, int tag, const std::vector<key_type>& keys,
                 trigger_receive_context)
 {
-  std::shared_ptr<data_t> data(data_ptr);
+  shared_ptr<data_t> data(data_ptr);
   BOOST_ASSERT(data);
 
   typedef boost::parallel::detail::untracked_pair<key_type, value_type> key_value;
@@ -190,15 +190,15 @@ template<typename Reduce>
 void
 PBGL_DISTRIB_PMAP::handle_message<Reduce>::
 handle_multiget_reply
-  (int source, int tag,
+  (int source, int tag, 
    const std::vector<boost::parallel::detail::untracked_pair<key_type, value_type> >& msg,
    trigger_receive_context)
 {
-  std::shared_ptr<data_t> data(data_ptr);
+  shared_ptr<data_t> data(data_ptr);
   BOOST_ASSERT(data);
 
   // Index by key
-  ghost_cells_key_index_type const& key_index
+  ghost_cells_key_index_type const& key_index 
     = data->ghost_cells->template get<1>();
 
   std::size_t n = msg.size();
@@ -217,13 +217,13 @@ template<typename Reduce>
 void
 PBGL_DISTRIB_PMAP::handle_message<Reduce>::
 handle_multiput
-  (int source, int tag,
+  (int source, int tag, 
    const std::vector<unsafe_pair<local_key_type, value_type> >& values,
    trigger_receive_context)
 {
   using boost::get;
 
-  std::shared_ptr<data_t> data(data_ptr);
+  shared_ptr<data_t> data(data_ptr);
   BOOST_ASSERT(data);
 
   std::size_t n = values.size();
@@ -247,11 +247,11 @@ setup_triggers(process_group_type& pg)
 
   simple_trigger(pg, property_map_put, this, &handle_message::handle_put);
   simple_trigger(pg, property_map_get, this, &handle_message::handle_get);
-  simple_trigger(pg, property_map_multiget, this,
+  simple_trigger(pg, property_map_multiget, this, 
                  &handle_message::handle_multiget);
-  simple_trigger(pg, property_map_multiget_reply, this,
+  simple_trigger(pg, property_map_multiget_reply, this, 
                  &handle_message::handle_multiget_reply);
-  simple_trigger(pg, property_map_multiput, this,
+  simple_trigger(pg, property_map_multiput, this, 
                  &handle_message::handle_multiput);
 }
 
@@ -261,7 +261,7 @@ PBGL_DISTRIB_PMAP
 ::on_synchronize::operator()()
 {
   int stage=0; // we only get called at the start now
-  std::shared_ptr<data_t> data(data_ptr);
+  shared_ptr<data_t> data(data_ptr);
   BOOST_ASSERT(data);
 
   // Determine in which stage backward consistency messages should be sent.
@@ -371,7 +371,7 @@ void PBGL_DISTRIB_PMAP::data_t::refresh_ghost_cells()
   for (process_size_type p = (id + 1) % n ; p != id ; p = (p + 1) % n) {
     if (!keys[p].empty())
       send(process_group, p, property_map_multiget, keys[p]);
-  }
+  }  
 }
 
 template<typename ProcessGroup, typename GlobalMap, typename StorageMap>

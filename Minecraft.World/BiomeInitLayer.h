@@ -10,7 +10,7 @@ private:
 	BiomeArray startBiomes;
 
 public:
-	BiomeInitLayer(int64_t seed, std::shared_ptr<Layer> parent, LevelType *levelType);
+	BiomeInitLayer(__int64 seed, shared_ptr<Layer> parent, LevelType *levelType);
 	virtual ~BiomeInitLayer();
     intArray getArea(int xo, int yo, int w, int h);
 };

@@ -6,7 +6,7 @@
 
 
 
-SetSpawnPositionPacket::SetSpawnPositionPacket()
+SetSpawnPositionPacket::SetSpawnPositionPacket() 
 {
 	x = 0;
 	y = 0;
@@ -27,19 +27,19 @@ void SetSpawnPositionPacket::read(DataInputStream *dis) //throws IOException
 	z = dis->readInt();
 }
 
-void SetSpawnPositionPacket::write(DataOutputStream *dos) //throws IOException
+void SetSpawnPositionPacket::write(DataOutputStream *dos) //throws IOException 
 {
 	dos->writeInt(x);
 	dos->writeInt(y);
 	dos->writeInt(z);
 }
 
-void SetSpawnPositionPacket::handle(PacketListener *listener)
+void SetSpawnPositionPacket::handle(PacketListener *listener) 
 {
 	listener->handleSetSpawn(shared_from_this());
 }
 
-int SetSpawnPositionPacket::getEstimatedSize()
+int SetSpawnPositionPacket::getEstimatedSize() 
 {
 	return 3*4;
 }
@@ -49,7 +49,7 @@ bool SetSpawnPositionPacket::canBeInvalidated()
 	return true;
 }
 
-bool SetSpawnPositionPacket::isInvalidatedBy(std::shared_ptr<Packet> packet)
+bool SetSpawnPositionPacket::isInvalidatedBy(shared_ptr<Packet> packet)
 {
 	return true;
 }

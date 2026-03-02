@@ -15,16 +15,16 @@ int VillagerGolemRenderer::prepareArmor(VillagerGolemModel *villagerGolem, int l
 	return -1;
 }
 
-void VillagerGolemRenderer::render(std::shared_ptr<Entity> mob, double x, double y, double z, float rot, float a)
+void VillagerGolemRenderer::render(shared_ptr<Entity> mob, double x, double y, double z, float rot, float a)
 {
 	MobRenderer::render(mob, x, y, z, rot, a);
 }
 
-void VillagerGolemRenderer::setupRotations(std::shared_ptr<Mob> _mob, float bob, float bodyRot, float a)
+void VillagerGolemRenderer::setupRotations(shared_ptr<Mob> _mob, float bob, float bodyRot, float a)
 {
-	// 4J - original version used generics and thus had an input parameter of type Blaze rather than std::shared_ptr<Entity>  we have here -
+	// 4J - original version used generics and thus had an input parameter of type Blaze rather than shared_ptr<Entity>  we have here - 
 	// do some casting around instead
-	std::shared_ptr<VillagerGolem> mob = std::dynamic_pointer_cast<VillagerGolem>(_mob);
+	shared_ptr<VillagerGolem> mob = dynamic_pointer_cast<VillagerGolem>(_mob);
 	MobRenderer::setupRotations(mob, bob, bodyRot, a);
 	if (mob->walkAnimSpeed < 0.01) return;
 
@@ -34,11 +34,11 @@ void VillagerGolemRenderer::setupRotations(std::shared_ptr<Mob> _mob, float bob,
 	glRotatef(6.5f * triangleWave, 0, 0, 1);
 }
 
-void VillagerGolemRenderer::additionalRendering(std::shared_ptr<Mob> _mob, float a)
+void VillagerGolemRenderer::additionalRendering(shared_ptr<Mob> _mob, float a)
 {
-	// 4J - original version used generics and thus had an input parameter of type Blaze rather than std::shared_ptr<Entity>  we have here -
+	// 4J - original version used generics and thus had an input parameter of type Blaze rather than shared_ptr<Entity>  we have here - 
 	// do some casting around instead
-	std::shared_ptr<VillagerGolem> mob = std::dynamic_pointer_cast<VillagerGolem>(_mob);
+	shared_ptr<VillagerGolem> mob = dynamic_pointer_cast<VillagerGolem>(_mob);
 	MobRenderer::additionalRendering(mob, a);
 	if (mob->getOfferFlowerTick() == 0) return;
 

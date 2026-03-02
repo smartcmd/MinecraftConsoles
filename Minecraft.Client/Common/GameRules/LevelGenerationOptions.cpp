@@ -70,17 +70,17 @@ LevelGenerationOptions::~LevelGenerationOptions()
 	{
 		delete *it;
 	}
-
+	
 	for(AUTO_VAR(it, m_biomeOverrides.begin()); it != m_biomeOverrides.end(); ++it)
 	{
 		delete *it;
 	}
-
+	
 	for(AUTO_VAR(it, m_features.begin()); it != m_features.end(); ++it)
 	{
 		delete *it;
 	}
-
+	
 	if (m_stringTable)
 		if (!isTutorial())
 			delete m_stringTable;
@@ -93,7 +93,7 @@ ConsoleGameRules::EGameRuleType LevelGenerationOptions::getActionType() { return
 void LevelGenerationOptions::writeAttributes(DataOutputStream *dos, UINT numAttrs)
 {
 	GameRuleDefinition::writeAttributes(dos, numAttrs + 5);
-
+		
 	ConsoleGameRules::write(dos, ConsoleGameRules::eGameRuleAttr_spawnX);
 	dos->writeUTF(_toString(m_spawnPos->x));
 	ConsoleGameRules::write(dos, ConsoleGameRules::eGameRuleAttr_spawnY);
@@ -110,12 +110,12 @@ void LevelGenerationOptions::writeAttributes(DataOutputStream *dos, UINT numAttr
 void LevelGenerationOptions::getChildren(vector<GameRuleDefinition *> *children)
 {
 	GameRuleDefinition::getChildren(children);
-
+	
 	vector<ApplySchematicRuleDefinition *> used_schematics;
 	for (AUTO_VAR(it, m_schematicRules.begin()); it != m_schematicRules.end(); it++)
 		if ( !(*it)->isComplete() )
 			used_schematics.push_back( *it );
-
+	
 	for(AUTO_VAR(it, m_structureRules.begin()); it!=m_structureRules.end(); it++)
 		children->push_back( *it );
 	for(AUTO_VAR(it, used_schematics.begin()); it!=used_schematics.end(); it++)
@@ -162,7 +162,7 @@ void LevelGenerationOptions::addAttribute(const wstring &attributeName, const ws
 {
 	if(attributeName.compare(L"seed") == 0)
 	{
-		m_seed = _fromString<int64_t>(attributeValue);
+		m_seed = _fromString<__int64>(attributeValue);
 		app.DebugPrintf("LevelGenerationOptions: Adding parameter m_seed=%I64d\n",m_seed);
 	}
 	else if(attributeName.compare(L"spawnX") == 0)
@@ -213,7 +213,7 @@ void LevelGenerationOptions::addAttribute(const wstring &attributeName, const ws
 		app.DebugPrintf("LevelGenerationOptions: Adding parameter displayName=%ls\n", getDisplayName());
 	}
 	else if(attributeName.compare(L"texturePackId") == 0)
-	{
+	{	
 		setRequiredTexturePackId( _fromString<unsigned int>(attributeValue) );
 		setRequiresTexturePack( true );
 		app.DebugPrintf("LevelGenerationOptions: Adding parameter texturePackId=%0x\n", getRequiredTexturePackId());
@@ -290,14 +290,14 @@ bool LevelGenerationOptions::checkIntersects(int x0, int y0, int z0, int x1, int
 
 		for( AUTO_VAR(it, m_structureRules.begin()); it != m_structureRules.end(); it++ )
 		{
-			ConsoleGenerateStructure *structureStart = *it;
+			ConsoleGenerateStructure *structureStart = *it;			
 			int minY = structureStart->getMinY();
 			if(minY < m_minY) m_minY = minY;
 		}
 
 		m_bHaveMinY = true;
 	}
-
+	
 	// 4J Stu - We DO NOT intersect if our upper bound is below the lower bound for all schematics
 	if( y1 < m_minY ) return false;
 
@@ -313,7 +313,7 @@ bool LevelGenerationOptions::checkIntersects(int x0, int y0, int z0, int x1, int
 	{
 		for( AUTO_VAR(it, m_structureRules.begin()); it != m_structureRules.end(); it++ )
 		{
-			ConsoleGenerateStructure *structureStart = *it;
+			ConsoleGenerateStructure *structureStart = *it;			
 			intersects = structureStart->checkIntersects(x0,y0,z0,x1,y1,z1);
 			if(intersects) break;
 		}
@@ -438,12 +438,12 @@ unordered_map<wstring, ConsoleSchematicFile *> *LevelGenerationOptions::getUnfin
 			usedFiles.insert( (*it)->getSchematicName() );
 
 	// Clean schematic files.
-	unordered_map<wstring, ConsoleSchematicFile *> *out
+	unordered_map<wstring, ConsoleSchematicFile *> *out 
 		= new unordered_map<wstring, ConsoleSchematicFile *>();
 	for (AUTO_VAR(it, usedFiles.begin()); it!=usedFiles.end(); it++)
 		out->insert( pair<wstring, ConsoleSchematicFile *>(*it, getSchematicFile(*it)) );
-
-	return out;
+	
+	return out;		
 }
 
 void LevelGenerationOptions::reset_start()
@@ -505,7 +505,7 @@ void LevelGenerationOptions::deleteBaseSaveData() { if(m_pbBaseSaveData) delete 
 bool LevelGenerationOptions::hasLoadedData() { return m_hasLoadedData; }
 void LevelGenerationOptions::setLoadedData() { m_hasLoadedData = true; }
 
-int64_t LevelGenerationOptions::getLevelSeed() { return m_seed; }
+__int64 LevelGenerationOptions::getLevelSeed() { return m_seed; }
 Pos *LevelGenerationOptions::getSpawnPos() { return m_spawnPos; }
 bool LevelGenerationOptions::getuseFlatWorld() { return m_useFlatWorld; }
 

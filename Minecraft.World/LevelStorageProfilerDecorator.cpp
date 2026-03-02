@@ -26,7 +26,7 @@ ChunkStorage *LevelStorageProfilerDecorator::createChunkStorage(Dimension *dimen
 	return new ChunkStorageProfilerDecorator(capsulated->createChunkStorage(dimension));
 }
 
-void LevelStorageProfilerDecorator::saveLevelData(LevelData *levelData, vector<std::shared_ptr<Player> > *players)
+void LevelStorageProfilerDecorator::saveLevelData(LevelData *levelData, vector<shared_ptr<Player> > *players)
 {
 	capsulated->saveLevelData(levelData, players);
 }

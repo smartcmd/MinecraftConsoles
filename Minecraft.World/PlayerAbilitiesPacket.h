@@ -42,9 +42,9 @@ public:
 	float getWalkingSpeed();
 	void setWalkingSpeed(float walkingSpeed);
 	bool canBeInvalidated();
-	bool isInvalidatedBy(std::shared_ptr<Packet> packet);
+	bool isInvalidatedBy(shared_ptr<Packet> packet);
 
 public:
-	static std::shared_ptr<Packet> create() { return std::shared_ptr<Packet>(new PlayerAbilitiesPacket()); }
+	static shared_ptr<Packet> create() { return shared_ptr<Packet>(new PlayerAbilitiesPacket()); }
 	virtual int getId() { return 202; }
 };

@@ -13,19 +13,19 @@ MultiTextureTileItem::MultiTextureTileItem(int id, Tile *parentTile, int *nameEx
 	setStackedByData(true);
 }
 
-Icon *MultiTextureTileItem::getIcon(int itemAuxValue)
+Icon *MultiTextureTileItem::getIcon(int itemAuxValue) 
 {
 	return parentTile->getTexture(2, itemAuxValue);
 }
 
-int MultiTextureTileItem::getLevelDataForAuxValue(int auxValue)
+int MultiTextureTileItem::getLevelDataForAuxValue(int auxValue) 
 {
 		return auxValue;
 }
 
 unsigned int MultiTextureTileItem::getDescriptionId(int iData)
 {
-	if (iData < 0 || iData >= m_iNameExtensionsLength)
+	if (iData < 0 || iData >= m_iNameExtensionsLength) 
 	{
 		iData = 0;
 	}
@@ -33,10 +33,10 @@ unsigned int MultiTextureTileItem::getDescriptionId(int iData)
 	return nameExtensions[iData];
 }
 
-unsigned int MultiTextureTileItem::getDescriptionId(std::shared_ptr<ItemInstance> instance)
+unsigned int MultiTextureTileItem::getDescriptionId(shared_ptr<ItemInstance> instance) 
 {
 		int auxValue = instance->getAuxValue();
-		if (auxValue < 0 || auxValue >= m_iNameExtensionsLength)
+		if (auxValue < 0 || auxValue >= m_iNameExtensionsLength) 
 		{
 			auxValue = 0;
 		}

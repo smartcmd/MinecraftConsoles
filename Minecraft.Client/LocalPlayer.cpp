@@ -165,7 +165,7 @@ void LocalPlayer::calculateFlight(float xa, float ya, float za)
 void LocalPlayer::serverAiStep()
 {
     Player::serverAiStep();
-
+	
 	if( abilities.flying && abilities.mayfly )
 	{
 		// snap y rotation for flying to nearest 90 degrees in world space
@@ -183,7 +183,7 @@ void LocalPlayer::serverAiStep()
 			float yRotDiff = yRotSnapped - yRotFinal;
 			// Apply the same difference to the player rotated space angle
 			float yRotInputAdjust = yRotInput + yRotDiff;
-
+			
 			// Calculate final x/y player-space movement required
 			this->xxa = cos(yRotInputAdjust * ( PI / 180.0f) ) * fMag;
 			this->yya = sin(yRotInputAdjust * ( PI / 180.0f) ) * fMag;
@@ -277,7 +277,7 @@ void LocalPlayer::aiStep()
 	float sprintForward = input->sprintForward;
 
 	bool wasRunning = sprintForward >= runTreshold;
-	//input->tick( std::dynamic_pointer_cast<Player>( shared_from_this() ) );
+	//input->tick( dynamic_pointer_cast<Player>( shared_from_this() ) );
 	// 4J-PB - make it a localplayer
 	input->tick( this );
 	sprintForward = input->sprintForward;
@@ -355,7 +355,7 @@ void LocalPlayer::aiStep()
 	if (isSprinting() && (!forwardEnoughToContinueSprint || !enoughFoodToSprint || isSneaking() || isUsingItem()))
 	{
 		setSprinting(false);
-	}
+	}	
 
 	// 4J Stu - Fix for #52705 - Customer Encountered: Player can fly in bed while being in Creative mode.
 	if (!isSleeping() && (abilities.mayfly || isAllowedToFly() ))
@@ -396,7 +396,7 @@ void LocalPlayer::aiStep()
 			abilities.flying = false;
 		}
 	}
-
+	
 
 	if (abilities.flying)
 	{
@@ -515,7 +515,7 @@ void LocalPlayer::aiStep()
 			else
 			{
 				ProfileManager.SetCurrentGameActivity(m_iPad,CONTEXT_PRESENCE_MULTIPLAYER,false);
-			}
+			}			
 		}
 		else
 		{
@@ -605,14 +605,14 @@ void LocalPlayer::closeContainer()
 	ui.CloseUIScenes( m_iPad );
 }
 
-void LocalPlayer::openTextEdit(std::shared_ptr<SignTileEntity> sign)
+void LocalPlayer::openTextEdit(shared_ptr<SignTileEntity> sign)
 {
 	bool success = app.LoadSignEntryMenu(GetXboxPad(), sign );
 	if( success ) ui.PlayUISFX(eSFX_Press);
 	//minecraft->setScreen(new TextEditScreen(sign));
 }
 
-bool LocalPlayer::openContainer(std::shared_ptr<Container> container)
+bool LocalPlayer::openContainer(shared_ptr<Container> container)
 {
 	bool success = app.LoadContainerMenu(GetXboxPad(), inventory, container );
 	if( success ) ui.PlayUISFX(eSFX_Press);
@@ -622,7 +622,7 @@ bool LocalPlayer::openContainer(std::shared_ptr<Container> container)
 
 bool LocalPlayer::startCrafting(int x, int y, int z)
 {
-	bool success = app.LoadCrafting3x3Menu(GetXboxPad(), std::dynamic_pointer_cast<LocalPlayer>( shared_from_this() ), x, y, z );
+	bool success = app.LoadCrafting3x3Menu(GetXboxPad(), dynamic_pointer_cast<LocalPlayer>( shared_from_this() ), x, y, z );
 	if( success ) ui.PlayUISFX(eSFX_Press);
 	//app.LoadXuiCraftMenu(0,inventory, level, x, y, z);
 	//minecraft->setScreen(new CraftingScreen(inventory, level, x, y, z));
@@ -645,7 +645,7 @@ bool LocalPlayer::startRepairing(int x, int y, int z)
 	return success;
 }
 
-bool LocalPlayer::openFurnace(std::shared_ptr<FurnaceTileEntity> furnace)
+bool LocalPlayer::openFurnace(shared_ptr<FurnaceTileEntity> furnace)
 {
 	bool success = app.LoadFurnaceMenu(GetXboxPad(),inventory, furnace);
 	if( success ) ui.PlayUISFX(eSFX_Press);
@@ -653,7 +653,7 @@ bool LocalPlayer::openFurnace(std::shared_ptr<FurnaceTileEntity> furnace)
 	return success;
 }
 
-bool LocalPlayer::openBrewingStand(std::shared_ptr<BrewingStandTileEntity> brewingStand)
+bool LocalPlayer::openBrewingStand(shared_ptr<BrewingStandTileEntity> brewingStand)
 {
 	bool success = app.LoadBrewingStandMenu(GetXboxPad(),inventory, brewingStand);
 	if( success ) ui.PlayUISFX(eSFX_Press);
@@ -661,7 +661,7 @@ bool LocalPlayer::openBrewingStand(std::shared_ptr<BrewingStandTileEntity> brewi
 	return success;
 }
 
-bool LocalPlayer::openTrap(std::shared_ptr<DispenserTileEntity> trap)
+bool LocalPlayer::openTrap(shared_ptr<DispenserTileEntity> trap)
 {
 	bool success = app.LoadTrapMenu(GetXboxPad(),inventory, trap);
 	if( success ) ui.PlayUISFX(eSFX_Press);
@@ -669,7 +669,7 @@ bool LocalPlayer::openTrap(std::shared_ptr<DispenserTileEntity> trap)
 	return success;
 }
 
-bool LocalPlayer::openTrading(std::shared_ptr<Merchant> traderTarget)
+bool LocalPlayer::openTrading(shared_ptr<Merchant> traderTarget)
 {
 	bool success = app.LoadTradingMenu(GetXboxPad(),inventory, traderTarget, level);
 	if( success ) ui.PlayUISFX(eSFX_Press);
@@ -677,23 +677,23 @@ bool LocalPlayer::openTrading(std::shared_ptr<Merchant> traderTarget)
 	return success;
 }
 
-void LocalPlayer::crit(std::shared_ptr<Entity> e)
+void LocalPlayer::crit(shared_ptr<Entity> e)
 {
-	std::shared_ptr<CritParticle> critParticle = std::shared_ptr<CritParticle>( new CritParticle((Level *)minecraft->level, e) );
+	shared_ptr<CritParticle> critParticle = shared_ptr<CritParticle>( new CritParticle((Level *)minecraft->level, e) );
 	critParticle->CritParticlePostConstructor();
 	minecraft->particleEngine->add(critParticle);
 }
 
-void LocalPlayer::magicCrit(std::shared_ptr<Entity> e)
+void LocalPlayer::magicCrit(shared_ptr<Entity> e)
 {
-	std::shared_ptr<CritParticle> critParticle = std::shared_ptr<CritParticle>( new CritParticle((Level *)minecraft->level, e, eParticleType_magicCrit) );
+	shared_ptr<CritParticle> critParticle = shared_ptr<CritParticle>( new CritParticle((Level *)minecraft->level, e, eParticleType_magicCrit) );
 	critParticle->CritParticlePostConstructor();
 	minecraft->particleEngine->add(critParticle);
 }
 
-void LocalPlayer::take(std::shared_ptr<Entity> e, int orgCount)
+void LocalPlayer::take(shared_ptr<Entity> e, int orgCount)
 {
-	minecraft->particleEngine->add( std::shared_ptr<TakeAnimationParticle>( new TakeAnimationParticle((Level *)minecraft->level, e, shared_from_this(), -0.5f) ) );
+	minecraft->particleEngine->add( shared_ptr<TakeAnimationParticle>( new TakeAnimationParticle((Level *)minecraft->level, e, shared_from_this(), -0.5f) ) );
 }
 
 void LocalPlayer::chat(const wstring& message)
@@ -761,12 +761,12 @@ void LocalPlayer::awardStat(Stat *stat, byteArray param)
 {
 #ifdef _DURANGO
 	// 4J-JEV: Maybe we want to fine tune this later? #TODO
-	if (	   !ProfileManager.IsGuest(GetXboxPad())
+	if (	   !ProfileManager.IsGuest(GetXboxPad()) 
 			&& app.CanRecordStatsAndAchievements()
 			&& ProfileManager.IsFullVersion()
 		)
 	{
-		stat->handleParamBlob(std::dynamic_pointer_cast<LocalPlayer>(shared_from_this()), param);
+		stat->handleParamBlob(dynamic_pointer_cast<LocalPlayer>(shared_from_this()), param);
 	}
 	delete [] param.data;
 #else
@@ -840,7 +840,7 @@ void LocalPlayer::awardStat(Stat *stat, byteArray param)
 			toolStats[0][2] = GenericStats::itemsCrafted(Item::shovel_iron->id);
 			toolStats[0][3] = GenericStats::itemsCrafted(Item::shovel_diamond->id);
 			toolStats[0][4] = GenericStats::itemsCrafted(Item::shovel_gold->id);
-			toolStats[1][0] = GenericStats::itemsCrafted(Item::pickAxe_wood->id);
+			toolStats[1][0] = GenericStats::itemsCrafted(Item::pickAxe_wood->id); 
 			toolStats[1][1] = GenericStats::itemsCrafted(Item::pickAxe_stone->id);
 			toolStats[1][2] = GenericStats::itemsCrafted(Item::pickAxe_iron->id);
 			toolStats[1][3] = GenericStats::itemsCrafted(Item::pickAxe_diamond->id);
@@ -855,7 +855,7 @@ void LocalPlayer::awardStat(Stat *stat, byteArray param)
 			toolStats[3][2] = GenericStats::itemsCrafted(Item::hoe_iron->id);
 			toolStats[3][3] = GenericStats::itemsCrafted(Item::hoe_diamond->id);
 			toolStats[3][4] = GenericStats::itemsCrafted(Item::hoe_gold->id);
-
+		
 			bool justCraftedTool = false;
 			for (int i=0; i<4; i++)
 			{
@@ -893,7 +893,7 @@ void LocalPlayer::awardStat(Stat *stat, byteArray param)
 					awardStat(GenericStats::MOARTools(), GenericStats::param_noArgs());
 				}
 			}
-
+			
 		}
 
 #ifdef _XBOX
@@ -977,7 +977,7 @@ void LocalPlayer::awardStat(Stat *stat, byteArray param)
 				numEmeraldMined = pStats->getTotalValue(emeraldMined);
 				numEmeraldBought = pStats->getTotalValue(emeraldBought);
 				totalSum = numEmeraldMined + numEmeraldBought;
-
+				
 				app.DebugPrintf(
 					"[AwardStat] Check unlock 'The Haggler': "
 					"emerald_mined=%i, emerald_bought=%i, sum=%i.\n",
@@ -1033,7 +1033,7 @@ void LocalPlayer::awardStat(Stat *stat, byteArray param)
 		// AWARD : Rainbow Collection, collect all different colours of wool.
 		{
 			bool justPickedupWool = false;
-
+			
 			for (int i=0; i<16; i++)
 				if ( stat == GenericStats::itemsCollected(Tile::cloth_Id, i) )
 					justPickedupWool = true;
@@ -1041,7 +1041,7 @@ void LocalPlayer::awardStat(Stat *stat, byteArray param)
 			if (justPickedupWool)
 			{
 				unsigned int woolCount = 0;
-
+			
 				for (unsigned int i = 0; i < 16; i++)
 				{
 					if (pStats->getTotalValue(GenericStats::itemsCollected(Tile::cloth_Id, i)) > 0)
@@ -1152,7 +1152,7 @@ bool LocalPlayer::hasPermission(EGameCommand command)
 	return level->getLevelData()->getAllowCommands();
 }
 
-void LocalPlayer::onCrafted(std::shared_ptr<ItemInstance> item)
+void LocalPlayer::onCrafted(shared_ptr<ItemInstance> item)
 {
 	if( minecraft->localgameModes[m_iPad] != NULL )
 	{
@@ -1195,7 +1195,7 @@ void LocalPlayer::mapPlayerChunk(const unsigned int flagTileType)
 						cout << "O";
 					else for (unsigned int y = 127; y > 0; y--)
 					{
-						int t = cc->getTile(x,y,z);
+						int t = cc->getTile(x,y,z);		
 						if (flagTileType != 0 && t == flagTileType)	{	cout << "@";	break; }
 						else if (t != 0 && t < 10)	{	cout << t;		break; }
 						else if (t > 0)			{	cout << "#";	break; }
@@ -1229,7 +1229,7 @@ void LocalPlayer::handleMouseDown(int button, bool down)
 		if( ( ( y == 0 ) || ( ( y == 127 ) && level->dimension->hasCeiling ) ) && level->dimension->id != 1 ) return;
 
 		minecraft->gameMode->continueDestroyBlock(x, y, z, minecraft->hitResult->f);
-
+		
 		if(mayBuild(x,y,z))
 		{
 			minecraft->particleEngine->crack(x, y, z, minecraft->hitResult->f);
@@ -1267,7 +1267,7 @@ bool LocalPlayer::creativeModeHandleMouseClick(int button, bool buttonPressed)
 			}
 
 			// Get distance from last click point in each axis
-			float dX = (float)x - lastClickX;
+			float dX = (float)x - lastClickX; 
 			float dY = (float)y - lastClickY;
 			float dZ = (float)z - lastClickZ;
 			bool newClick = false;
@@ -1415,13 +1415,13 @@ bool LocalPlayer::handleMouseClick(int button)
 	bool returnItemPlaced = false;
 
 	if (button == 0 && missTime > 0) return false;
-	if (button == 0)
+	if (button == 0) 
 	{
 		//app.DebugPrintf("handleMouseClick - Player %d is swinging\n",GetXboxPad());
 		swing();
 	}
 
-	bool mayUse = true;
+	bool mayUse = true;		
 
 	// 4J-PB - Adding a special case in here for sleeping in a bed in a multiplayer game - we need to wake up, and we don't have the inbedchatscreen with a button
 
@@ -1430,10 +1430,10 @@ bool LocalPlayer::handleMouseClick(int button)
 		if(lastClickState == lastClick_oldRepeat) return false;
 
 
-		std::shared_ptr<MultiplayerLocalPlayer> mplp = std::dynamic_pointer_cast<MultiplayerLocalPlayer>( shared_from_this() );
+		shared_ptr<MultiplayerLocalPlayer> mplp = dynamic_pointer_cast<MultiplayerLocalPlayer>( shared_from_this() );
 
 		if(mplp && mplp->connection) mplp->StopSleeping();
-
+	
 	}
 	// 4J Stu - We should not accept any input while asleep, except the above to wake up
 	if(isSleeping() && level != NULL && level->isClientSide)
@@ -1441,7 +1441,7 @@ bool LocalPlayer::handleMouseClick(int button)
 		return false;
 	}
 
-	std::shared_ptr<ItemInstance> oldItem = inventory->getSelected();
+	shared_ptr<ItemInstance> oldItem = inventory->getSelected();
 
 	if (minecraft->hitResult == NULL)
 	{
@@ -1455,15 +1455,15 @@ bool LocalPlayer::handleMouseClick(int button)
 		}
 		if (button == 1)
 		{
-			// 4J-PB - if we milk a cow here, and end up with a bucket of milk, the if (mayUse && button == 1) further down will
+			// 4J-PB - if we milk a cow here, and end up with a bucket of milk, the if (mayUse && button == 1) further down will 
 			// then empty our bucket if we're pointing at a tile
-			// It looks like interact really should be returning a result so we can check this, but it's possibly just the
+			// It looks like interact really should be returning a result so we can check this, but it's possibly just the 
 			// milk bucket that causes a problem
 
 			if(minecraft->hitResult->entity->GetType()==eTYPE_COW)
 			{
 				// If I have an empty bucket in my hand, it's going to be filled with milk, so turn off mayUse
-				std::shared_ptr<ItemInstance> item = inventory->getSelected();
+				shared_ptr<ItemInstance> item = inventory->getSelected();
 				if(item && (item->id==Item::bucket_empty_Id))
 				{
 					mayUse=false;
@@ -1493,7 +1493,7 @@ bool LocalPlayer::handleMouseClick(int button)
 		}
 		else
 		{
-			std::shared_ptr<ItemInstance> item = oldItem;
+			shared_ptr<ItemInstance> item = oldItem;
 			int oldCount = item != NULL ? item->count : 0;
 			bool usedItem = false;
 			if (minecraft->gameMode->useItemOn(minecraft->localplayers[GetXboxPad()], level, item, x, y, z, face, minecraft->hitResult->pos, false, &usedItem))
@@ -1525,7 +1525,7 @@ bool LocalPlayer::handleMouseClick(int button)
 
 	if (mayUse && button == 1)
 	{
-		std::shared_ptr<ItemInstance> item = inventory->getSelected();
+		shared_ptr<ItemInstance> item = inventory->getSelected();
 		if (item != NULL)
 		{
 			if (minecraft->gameMode->useItem(minecraft->localplayers[GetXboxPad()], level, item))
@@ -1541,7 +1541,7 @@ void LocalPlayer::updateRichPresence()
 {
 	if((m_iPad!=-1)/* && !ui.GetMenuDisplayed(m_iPad)*/ )
 	{
-		std::shared_ptr<ItemInstance> selectedItem = inventory->getSelected();
+		shared_ptr<ItemInstance> selectedItem = inventory->getSelected();
 		if(selectedItem != NULL && selectedItem->id == Item::fishingRod_Id)
 		{
 			app.SetRichPresenceContext(m_iPad,CONTEXT_GAME_STATE_FISHING);
@@ -1549,16 +1549,16 @@ void LocalPlayer::updateRichPresence()
 		else if(selectedItem != NULL && selectedItem->id == Item::map_Id)
 		{
 			app.SetRichPresenceContext(m_iPad,CONTEXT_GAME_STATE_MAP);
-		}
-		else if(riding != NULL && std::dynamic_pointer_cast<Minecart>(riding) != NULL)
+		}	
+		else if(riding != NULL && dynamic_pointer_cast<Minecart>(riding) != NULL)
 		{
 			app.SetRichPresenceContext(m_iPad,CONTEXT_GAME_STATE_RIDING_MINECART);
 		}
-		else if(riding != NULL && std::dynamic_pointer_cast<Boat>(riding) != NULL)
+		else if(riding != NULL && dynamic_pointer_cast<Boat>(riding) != NULL)
 		{
 			app.SetRichPresenceContext(m_iPad,CONTEXT_GAME_STATE_BOATING);
 		}
-		else if(riding != NULL && std::dynamic_pointer_cast<Pig>(riding) != NULL)
+		else if(riding != NULL && dynamic_pointer_cast<Pig>(riding) != NULL)
 		{
 			app.SetRichPresenceContext(m_iPad,CONTEXT_GAME_STATE_RIDING_PIG);
 		}
@@ -1597,7 +1597,7 @@ float LocalPlayer::getAndResetChangeDimensionTimer()
 	return returnVal;
 }
 
-void LocalPlayer::handleCollectItem(std::shared_ptr<ItemInstance> item)
+void LocalPlayer::handleCollectItem(shared_ptr<ItemInstance> item)
 {
 	if(item != NULL)
 	{

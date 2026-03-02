@@ -6,7 +6,7 @@
 #include "..\Minecraft.World\DispenserTileEntity.h"
 #include "..\Minecraft.World\net.minecraft.world.h"
 
-TrapScreen::TrapScreen(std::shared_ptr<Inventory> inventory, std::shared_ptr<DispenserTileEntity> trap) : AbstractContainerScreen(new TrapMenu(inventory, trap))
+TrapScreen::TrapScreen(shared_ptr<Inventory> inventory, shared_ptr<DispenserTileEntity> trap) : AbstractContainerScreen(new TrapMenu(inventory, trap))
 {
 
 }

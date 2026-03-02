@@ -13,7 +13,7 @@
 #include "DoorItem.h"
 
 /**
-*
+* 
 * A structure piece is a construction or room, located somewhere in the world
 * with a given orientatino (out of Direction.java). Structure pieces have a
 * bounding box that says where the piece is located and its bounds, and the
@@ -89,7 +89,7 @@ StructurePiece* StructurePiece::findCollisionPiece( list< StructurePiece* > *pie
 }
 
 // 4J-PB - Added from 1.2.3
-TilePos *StructurePiece::getLocatorPosition()
+TilePos *StructurePiece::getLocatorPosition() 
 {
 	return new TilePos(boundingBox->getXCenter(), boundingBox->getYCenter(), boundingBox->getZCenter());
 }
@@ -523,7 +523,7 @@ void StructurePiece::placeBlock( Level* level, int block, int data, int x, int y
 * The purpose of this method is to wrap the getTile call on Level, in order
 * to prevent the level from generating chunks that shouldn't be loaded yet.
 * Returns 0 if the call is out of bounds.
-*
+* 
 * @param level
 * @param x
 * @param y
@@ -781,7 +781,7 @@ bool StructurePiece::createChest( Level* level, BoundingBox* chunkBB, Random* ra
 		if ( level->getTile( worldX, worldY, worldZ ) != Tile::chest->id )
 		{
 			level->setTile( worldX, worldY, worldZ, Tile::chest->id );
-			std::shared_ptr<ChestTileEntity> chest = std::dynamic_pointer_cast<ChestTileEntity>(level->getTileEntity( worldX, worldY, worldZ ));
+			shared_ptr<ChestTileEntity> chest = dynamic_pointer_cast<ChestTileEntity>(level->getTileEntity( worldX, worldY, worldZ ));
 			if ( chest != NULL ) WeighedTreasure::addChestItems( random, treasure, chest, numRolls );
 			return true;
 		}
@@ -800,7 +800,7 @@ bool StructurePiece::createDispenser(Level *level, BoundingBox *chunkBB, Random 
 		if (level->getTile(worldX, worldY, worldZ) != Tile::dispenser_Id)
 		{
 			level->setTileAndData(worldX, worldY, worldZ, Tile::dispenser_Id, getOrientationData(Tile::dispenser_Id, facing));
-			std::shared_ptr<DispenserTileEntity> dispenser = std::dynamic_pointer_cast<DispenserTileEntity>(level->getTileEntity(worldX, worldY, worldZ));
+			shared_ptr<DispenserTileEntity> dispenser = dynamic_pointer_cast<DispenserTileEntity>(level->getTileEntity(worldX, worldY, worldZ));
 			if (dispenser != NULL) WeighedTreasure::addDispenserItems(random, items, dispenser, numRolls);
 			return true;
 		}

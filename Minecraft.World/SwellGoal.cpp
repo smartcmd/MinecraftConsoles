@@ -15,7 +15,7 @@ SwellGoal::SwellGoal(Creeper *creeper)
 
 bool SwellGoal::canUse()
 {
-	std::shared_ptr<Mob> target = creeper->getTarget();
+	shared_ptr<Mob> target = creeper->getTarget();
 	return creeper->getSwellDir() > 0 || (target != NULL && (creeper->distanceToSqr(target) < 3 * 3));
 }
 

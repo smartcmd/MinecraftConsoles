@@ -23,22 +23,22 @@ public:
 	static const int USE_ROW_SLOT_END;
 
 public:
-	std::shared_ptr<CraftingContainer> craftSlots;
-	std::shared_ptr<Container> resultSlots;
+	shared_ptr<CraftingContainer> craftSlots;
+	shared_ptr<Container> resultSlots;
 	bool active;
 
-	InventoryMenu(std::shared_ptr<Inventory> inventory, bool active, Player *player);
+	InventoryMenu(shared_ptr<Inventory> inventory, bool active, Player *player);
 
 private:
-	void _init(std::shared_ptr<Inventory> inventory, bool active);
+	void _init(shared_ptr<Inventory> inventory, bool active);
 
 public:
-	virtual void slotsChanged();	// 4J used to take a std::shared_ptr<Container> but wasn't using it, so removed to simplify things
-	virtual void removed(std::shared_ptr<Player> player);
-	virtual bool stillValid(std::shared_ptr<Player> player);
-	virtual std::shared_ptr<ItemInstance> quickMoveStack(std::shared_ptr<Player> player, int slotIndex);
-	virtual bool mayCombine(Slot *slot, std::shared_ptr<ItemInstance> item);
+	virtual void slotsChanged();	// 4J used to take a shared_ptr<Container> but wasn't using it, so removed to simplify things
+	virtual void removed(shared_ptr<Player> player);
+	virtual bool stillValid(shared_ptr<Player> player);
+	virtual shared_ptr<ItemInstance> quickMoveStack(shared_ptr<Player> player, int slotIndex);
+	virtual bool mayCombine(Slot *slot, shared_ptr<ItemInstance> item);
 
 	// 4J ADDED,
-	virtual std::shared_ptr<ItemInstance> clicked(int slotIndex, int buttonNum, int clickType, std::shared_ptr<Player> player);
+	virtual shared_ptr<ItemInstance> clicked(int slotIndex, int buttonNum, int clickType, shared_ptr<Player> player);
 };

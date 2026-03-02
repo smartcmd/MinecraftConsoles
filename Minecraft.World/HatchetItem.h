@@ -11,5 +11,5 @@ private:
 public:
 	static void staticCtor();
 	HatchetItem(int id, const Tier *tier);
-	virtual float getDestroySpeed(std::shared_ptr<ItemInstance> itemInstance, Tile *tile);	// 4J - brought forward from 1.2.3
+	virtual float getDestroySpeed(shared_ptr<ItemInstance> itemInstance, Tile *tile);	// 4J - brought forward from 1.2.3
 };

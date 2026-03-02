@@ -127,7 +127,7 @@ void UIScene_DebugOverlay::customDraw(IggyCustomDrawCallbackRegion *region)
 	}
 	else
 	{
-		std::shared_ptr<ItemInstance> item = std::shared_ptr<ItemInstance>( new ItemInstance(itemId,1,0) );
+		shared_ptr<ItemInstance> item = shared_ptr<ItemInstance>( new ItemInstance(itemId,1,0) );
 		if(item != NULL) customDrawSlotControl(region,m_iPad,item,1.0f,false,false);
 	}
 }
@@ -169,14 +169,14 @@ void UIScene_DebugOverlay::handlePress(F64 controlId, F64 childId)
 			int id = childId;
 			//app.SetXuiServerAction(m_iPad, eXuiServerAction_DropItem, (void *)m_itemIds[id]);
 			ClientConnection *conn = Minecraft::GetInstance()->getConnection(ProfileManager.GetPrimaryPad());
-			conn->send( GiveItemCommand::preparePacket(std::dynamic_pointer_cast<Player>(Minecraft::GetInstance()->localplayers[ProfileManager.GetPrimaryPad()]), m_itemIds[id]) );
+			conn->send( GiveItemCommand::preparePacket(dynamic_pointer_cast<Player>(Minecraft::GetInstance()->localplayers[ProfileManager.GetPrimaryPad()]), m_itemIds[id]) );
 		}
 		break;
 	case eControl_Mobs:
 		{
 			int id = childId;
 			if(id<m_mobFactories.size())
-			{
+			{			
 				app.SetXuiServerAction(ProfileManager.GetPrimaryPad(),eXuiServerAction_SpawnMob,(void *)m_mobFactories[id]);
 			}
 		}
@@ -185,7 +185,7 @@ void UIScene_DebugOverlay::handlePress(F64 controlId, F64 childId)
 		{
 			int id = childId;
 			ClientConnection *conn = Minecraft::GetInstance()->getConnection(ProfileManager.GetPrimaryPad());
-			conn->send( EnchantItemCommand::preparePacket(std::dynamic_pointer_cast<Player>(Minecraft::GetInstance()->localplayers[ProfileManager.GetPrimaryPad()]), m_enchantmentIdAndLevels[id].first, m_enchantmentIdAndLevels[id].second) );
+			conn->send( EnchantItemCommand::preparePacket(dynamic_pointer_cast<Player>(Minecraft::GetInstance()->localplayers[ProfileManager.GetPrimaryPad()]), m_enchantmentIdAndLevels[id].first, m_enchantmentIdAndLevels[id].second) );
 		}
 		break;
 	case eControl_Schematic:

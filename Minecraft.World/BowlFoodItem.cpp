@@ -8,9 +8,9 @@ BowlFoodItem::BowlFoodItem(int id, int nutrition) : FoodItem( id, nutrition, fal
 	setMaxStackSize(1);
 }
 
-std::shared_ptr<ItemInstance> BowlFoodItem::useTimeDepleted(std::shared_ptr<ItemInstance> instance, Level *level, std::shared_ptr<Player> player)
+shared_ptr<ItemInstance> BowlFoodItem::useTimeDepleted(shared_ptr<ItemInstance> instance, Level *level, shared_ptr<Player> player)
 {
 	FoodItem::useTimeDepleted(instance, level, player);
 
-	return std::shared_ptr<ItemInstance>(new ItemInstance(Item::bowl));
+	return shared_ptr<ItemInstance>(new ItemInstance(Item::bowl));
 }

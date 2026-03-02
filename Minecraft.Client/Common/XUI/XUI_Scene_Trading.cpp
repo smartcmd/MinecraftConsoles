@@ -19,11 +19,11 @@
 HRESULT CXuiSceneTrading::OnInit( XUIMessageInit* pInitData, BOOL& bHandled )
 {
 	MapChildControls();
-
+	
 	//XuiControlSetText(m_villagerText,app.GetString(IDS_VILLAGER));
 	XuiControlSetText(m_inventoryLabel,app.GetString(IDS_INVENTORY));
 	XuiControlSetText(m_requiredLabel,app.GetString(IDS_REQUIRED_ITEMS_FOR_TRADE));
-
+	
 
 	Minecraft *pMinecraft = Minecraft::GetInstance();
 
@@ -36,7 +36,7 @@ HRESULT CXuiSceneTrading::OnInit( XUIMessageInit* pInitData, BOOL& bHandled )
 
 	if(m_bSplitscreen)
 	{
-		app.AdjustSplitscreenScene(m_hObj,&m_OriginalPosition,m_iPad);
+		app.AdjustSplitscreenScene(m_hObj,&m_OriginalPosition,m_iPad);	
 	}
 
 	if( pMinecraft->localgameModes[m_iPad] != NULL )
@@ -65,7 +65,7 @@ HRESULT CXuiSceneTrading::OnInit( XUIMessageInit* pInitData, BOOL& bHandled )
 
 	// store the slot 0 highlight position
 	m_tradingSelector.GetPosition(&m_vSelectorInitialPos);
-
+	
 	//app.SetRichPresenceContextValue(m_iPad,CONTEXT_GAME_STATE_FORGING);
 
 	XuiSetTimer(m_hObj,TRADING_UPDATE_TIMER_ID,TRADING_UPDATE_TIMER_TIME);
@@ -86,7 +86,7 @@ HRESULT CXuiSceneTrading::OnDestroy()
 	}
 
 	// 4J Stu - Fix for #11302 - TCR 001: Network Connectivity: Host crashed after being killed by the client while accessing a chest during burst packet loss.
-	// We need to make sure that we call closeContainer() anytime this menu is closed, even if it is forced to close by some other reason (like the player dying)
+	// We need to make sure that we call closeContainer() anytime this menu is closed, even if it is forced to close by some other reason (like the player dying)	
 	if(Minecraft::GetInstance()->localplayers[m_iPad] != NULL) Minecraft::GetInstance()->localplayers[m_iPad]->closeContainer();
 	return S_OK;
 }
@@ -245,17 +245,17 @@ void CXuiSceneTrading::setTradeRedBox(int index, bool show)
 	m_tradeHSlots[index]->SetRedBox(show?TRUE:FALSE);
 }
 
-void CXuiSceneTrading::setRequest1Item(std::shared_ptr<ItemInstance> item)
+void CXuiSceneTrading::setRequest1Item(shared_ptr<ItemInstance> item)
 {
 	m_request1Control->SetIcon(getPad(), item, 12, 31, true);
 }
 
-void CXuiSceneTrading::setRequest2Item(std::shared_ptr<ItemInstance> item)
+void CXuiSceneTrading::setRequest2Item(shared_ptr<ItemInstance> item)
 {
 	m_request2Control->SetIcon(getPad(), item, 12, 31, true);
 }
 
-void CXuiSceneTrading::setTradeItem(int index, std::shared_ptr<ItemInstance> item)
+void CXuiSceneTrading::setTradeItem(int index, shared_ptr<ItemInstance> item)
 {
 	m_tradeHSlots[index]->SetIcon(getPad(), item, 12, 31, true);
 }
@@ -299,7 +299,7 @@ void CXuiSceneTrading::setOfferDescription(const wstring &name, vector<wstring> 
 	XuiElementSetBounds(m_hOfferInfoText,xuiRect.right+4.0f+4.0f,xuiRect.bottom+4.0f+4.0f); // edge graphics are 8 pixels, text is centred
 
 	m_offerInfoControl.SetShow(TRUE);
-
+	
 	D3DXVECTOR3 highlightPos, offerInfoPos;
 	float highlightWidth, highlightHeight;
 	m_tradingSelector.GetPosition(&highlightPos);

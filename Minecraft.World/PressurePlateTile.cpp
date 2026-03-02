@@ -76,7 +76,7 @@ void PressurePlateTile::tick(Level *level, int x, int y, int z, Random *random)
     checkPressed(level, x, y, z);
 }
 
-void PressurePlateTile::entityInside(Level *level, int x, int y, int z, std::shared_ptr<Entity> entity)
+void PressurePlateTile::entityInside(Level *level, int x, int y, int z, shared_ptr<Entity> entity)
 {
     if (level->isClientSide) return;
 
@@ -94,7 +94,7 @@ void PressurePlateTile::checkPressed(Level *level, int x, int y, int z)
     bool shouldBePressed = false;
 
     float b = 2 / 16.0f;
-    vector<std::shared_ptr<Entity> > *entities = NULL;
+    vector<shared_ptr<Entity> > *entities = NULL;
 
 	bool entitiesToBeFreed = false;
     if (sensitivity == PressurePlateTile::everything) entities = level->getEntities(nullptr, AABB::newTemp(x + b, y, z + b, x + 1 - b, y + 0.25, z + 1 - b));
@@ -155,7 +155,7 @@ void PressurePlateTile::onRemove(Level *level, int x, int y, int z, int id, int 
     Tile::onRemove(level, x, y, z, id, data);
 }
 
-void PressurePlateTile::updateShape(LevelSource *level, int x, int y, int z, int forceData, std::shared_ptr<TileEntity> forceEntity) // 4J added forceData, forceEntity param
+void PressurePlateTile::updateShape(LevelSource *level, int x, int y, int z, int forceData, shared_ptr<TileEntity> forceEntity) // 4J added forceData, forceEntity param
 {
     bool pressed = level->getData(x, y, z) == 1;
 

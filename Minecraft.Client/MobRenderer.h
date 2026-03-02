@@ -23,22 +23,22 @@ public:
 private:
 	float rotlerp(float from, float to, float a);
 public:
-    virtual void render(std::shared_ptr<Entity> mob, double x, double y, double z, float rot, float a);
+    virtual void render(shared_ptr<Entity> mob, double x, double y, double z, float rot, float a);
 protected:
-	virtual void renderModel(std::shared_ptr<Entity> mob, float wp, float ws, float bob, float headRotMinusBodyRot, float headRotx, float scale);
-	virtual void setupPosition(std::shared_ptr<Mob> mob, double x, double y, double z);
-    virtual void setupRotations(std::shared_ptr<Mob> mob, float bob, float bodyRot, float a);
-    virtual float getAttackAnim(std::shared_ptr<Mob> mob, float a);
-    virtual float getBob(std::shared_ptr<Mob> mob, float a);
-    virtual void additionalRendering(std::shared_ptr<Mob> mob, float a);
-    virtual int prepareArmorOverlay(std::shared_ptr<Mob> mob, int layer, float a);
-    virtual int prepareArmor(std::shared_ptr<Mob> mob, int layer, float a);
-	virtual void prepareSecondPassArmor(std::shared_ptr<Mob> mob, int layer, float a);
-    virtual float getFlipDegrees(std::shared_ptr<Mob> mob);
-    virtual int getOverlayColor(std::shared_ptr<Mob> mob, float br, float a);
-    virtual void scale(std::shared_ptr<Mob> mob, float a);
-    virtual void renderName(std::shared_ptr<Mob> mob, double x, double y, double z);
-    virtual void renderNameTag(std::shared_ptr<Mob> mob, const wstring& name, double x, double y, double z, int maxDist, int color = 0xff000000);
+	virtual void renderModel(shared_ptr<Entity> mob, float wp, float ws, float bob, float headRotMinusBodyRot, float headRotx, float scale);
+	virtual void setupPosition(shared_ptr<Mob> mob, double x, double y, double z);
+    virtual void setupRotations(shared_ptr<Mob> mob, float bob, float bodyRot, float a);
+    virtual float getAttackAnim(shared_ptr<Mob> mob, float a);
+    virtual float getBob(shared_ptr<Mob> mob, float a);
+    virtual void additionalRendering(shared_ptr<Mob> mob, float a);
+    virtual int prepareArmorOverlay(shared_ptr<Mob> mob, int layer, float a);
+    virtual int prepareArmor(shared_ptr<Mob> mob, int layer, float a);
+	virtual void prepareSecondPassArmor(shared_ptr<Mob> mob, int layer, float a);
+    virtual float getFlipDegrees(shared_ptr<Mob> mob);
+    virtual int getOverlayColor(shared_ptr<Mob> mob, float br, float a);
+    virtual void scale(shared_ptr<Mob> mob, float a);
+    virtual void renderName(shared_ptr<Mob> mob, double x, double y, double z);
+    virtual void renderNameTag(shared_ptr<Mob> mob, const wstring& name, double x, double y, double z, int maxDist, int color = 0xff000000);
 
 public:
 	// 4J Added

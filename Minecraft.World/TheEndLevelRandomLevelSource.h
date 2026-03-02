@@ -9,7 +9,7 @@ public:
     static const double SNOW_CUTOFF;
     static const double SNOW_SCALE;
     static const bool FLOATING_ISLANDS;
-
+	
     static const int CHUNK_HEIGHT = 4;
     static const int CHUNK_WIDTH = 8;
 private:
@@ -30,7 +30,7 @@ private:
 	Level *level;
 
 public:
-	TheEndLevelRandomLevelSource(Level *level, int64_t seed);
+	TheEndLevelRandomLevelSource(Level *level, __int64 seed);
 	~TheEndLevelRandomLevelSource();
 
     void prepareHeights(int xOffs, int zOffs, byteArray blocks, BiomeArray biomes);
@@ -56,5 +56,5 @@ public:
 
 public:
 	virtual vector<Biome::MobSpawnerData *> *getMobsAt(MobCategory *mobCategory, int x, int y, int z);
-	virtual TilePos *findNearestMapFeature(Level *level, const wstring& featureName, int x, int y, int z);
+	virtual TilePos *findNearestMapFeature(Level *level, const wstring& featureName, int x, int y, int z); 
 };

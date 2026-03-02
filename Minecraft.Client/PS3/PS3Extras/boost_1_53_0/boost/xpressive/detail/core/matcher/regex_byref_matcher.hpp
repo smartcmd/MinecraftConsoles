@@ -15,7 +15,7 @@
 
 #include <boost/assert.hpp>
 #include <boost/mpl/assert.hpp>
-#include <boost/std::shared_ptr.hpp>
+#include <boost/shared_ptr.hpp>
 #include <boost/xpressive/regex_error.hpp>
 #include <boost/xpressive/regex_constants.hpp>
 #include <boost/xpressive/detail/detail_fwd.hpp>
@@ -41,7 +41,7 @@ namespace boost { namespace xpressive { namespace detail
         // we don't have to worry about it going away.
         regex_impl<BidiIter> const *pimpl_;
 
-        regex_byref_matcher(std::shared_ptr<regex_impl<BidiIter> > const &impl)
+        regex_byref_matcher(shared_ptr<regex_impl<BidiIter> > const &impl)
           : wimpl_(impl)
           , pimpl_(impl.get())
         {

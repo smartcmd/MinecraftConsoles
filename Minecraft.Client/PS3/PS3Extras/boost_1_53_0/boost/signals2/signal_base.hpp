@@ -12,7 +12,7 @@
 #define BOOST_SIGNALS2_SIGNAL_BASE_HPP
 
 #include <boost/noncopyable.hpp>
-#include <boost/std::shared_ptr.hpp>
+#include <boost/shared_ptr.hpp>
 
 namespace boost {
   namespace signals2 {
@@ -25,7 +25,7 @@ namespace boost {
 
       virtual ~signal_base() {}
     protected:
-      virtual std::shared_ptr<void> lock_pimpl() const = 0;
+      virtual shared_ptr<void> lock_pimpl() const = 0;
     };
   } // end namespace signals2
 } // end namespace boost

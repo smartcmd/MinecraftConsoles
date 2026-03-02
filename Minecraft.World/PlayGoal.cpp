@@ -25,14 +25,14 @@ bool PlayGoal::canUse()
 	if (mob->getAge() >= 0) return false;
 	if (mob->getRandom()->nextInt(400) != 0) return false;
 
-	vector<std::shared_ptr<Entity> > *children = mob->level->getEntitiesOfClass(typeid(Villager), mob->bb->grow(6, 3, 6));
+	vector<shared_ptr<Entity> > *children = mob->level->getEntitiesOfClass(typeid(Villager), mob->bb->grow(6, 3, 6));
 	double closestDistSqr = Double::MAX_VALUE;
 	//for (Entity c : children)
 	for(AUTO_VAR(it, children->begin()); it != children->end(); ++it)
 	{
-		std::shared_ptr<Entity> c = *it;
+		shared_ptr<Entity> c = *it;
 		if (c.get() == mob) continue;
-		std::shared_ptr<Villager> friendV = std::dynamic_pointer_cast<Villager>(c);
+		shared_ptr<Villager> friendV = dynamic_pointer_cast<Villager>(c);
 		if (friendV->isChasing()) continue;
 		if (friendV->getAge() >= 0) continue;
 		double distSqr = friendV->distanceToSqr(mob->shared_from_this());
@@ -44,7 +44,7 @@ bool PlayGoal::canUse()
 
 	if (followFriend.lock() == NULL)
 	{
-		Vec3 *pos = RandomPos::getPos(std::dynamic_pointer_cast<PathfinderMob>(mob->shared_from_this()), 16, 3);
+		Vec3 *pos = RandomPos::getPos(dynamic_pointer_cast<PathfinderMob>(mob->shared_from_this()), 16, 3);
 		if (pos == NULL) return false;
 	}
 	return true;
@@ -78,7 +78,7 @@ void PlayGoal::tick()
 	{
 		if (mob->getNavigation()->isDone())
 		{
-			Vec3 *pos = RandomPos::getPos(std::dynamic_pointer_cast<PathfinderMob>(mob->shared_from_this()), 16, 3);
+			Vec3 *pos = RandomPos::getPos(dynamic_pointer_cast<PathfinderMob>(mob->shared_from_this()), 16, 3);
 			if (pos == NULL) return;
 			mob->getNavigation()->moveTo(pos->x, pos->y, pos->z, speed);
 		}

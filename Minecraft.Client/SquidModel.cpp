@@ -43,7 +43,7 @@ void SquidModel::setupAnim(float time, float r, float bob, float yRot, float xRo
     }
 }
 
-void SquidModel::render(std::shared_ptr<Entity> entity, float time, float r, float bob, float yRot, float xRot, float scale, bool usecompiled)
+void SquidModel::render(shared_ptr<Entity> entity, float time, float r, float bob, float yRot, float xRot, float scale, bool usecompiled)
 {
     setupAnim(time, r, bob, yRot, xRot, scale);
 

@@ -7,5 +7,5 @@ public:
 	GhastRenderer();
 
 protected:
-	virtual void scale(std::shared_ptr<Mob> mob, float a);
+	virtual void scale(shared_ptr<Mob> mob, float a);
 };

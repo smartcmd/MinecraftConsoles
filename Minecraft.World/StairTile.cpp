@@ -22,7 +22,7 @@ StairTile::StairTile(int id, Tile *base,int basedata) : Tile(id, base->material,
 	setLightBlock(255);
 }
 
-void StairTile::updateShape(LevelSource *level, int x, int y, int z, int forceData, std::shared_ptr<TileEntity> forceEntity) // 4J added forceData, forceEntity param
+void StairTile::updateShape(LevelSource *level, int x, int y, int z, int forceData, shared_ptr<TileEntity> forceEntity) // 4J added forceData, forceEntity param
 {
 	if (isClipping)
 	{
@@ -309,7 +309,7 @@ bool StairTile::setInnerPieceShape(LevelSource *level, int x, int y, int z)
 	return hasInnerPiece;
 }
 
-void StairTile::addAABBs(Level *level, int x, int y, int z, AABB *box, AABBList *boxes, std::shared_ptr<Entity> source)
+void StairTile::addAABBs(Level *level, int x, int y, int z, AABB *box, AABBList *boxes, shared_ptr<Entity> source)
 {
 	setBaseShape(level, x, y, z);
 	Tile::addAABBs(level, x, y, z, box, boxes, source);
@@ -380,7 +380,7 @@ void StairTile::animateTick(Level *level, int x, int y, int z, Random *random)
 	base->animateTick(level, x, y, z, random);
 }
 
-void StairTile::attack(Level *level, int x, int y, int z, std::shared_ptr<Player> player)
+void StairTile::attack(Level *level, int x, int y, int z, shared_ptr<Player> player)
 {
 	base->attack(level, x, y, z, player);
 }
@@ -401,7 +401,7 @@ float StairTile::getBrightness(LevelSource *level, int x, int y, int z)
 	return base->getBrightness(level, x, y, z);
 }
 
-float StairTile::getExplosionResistance(std::shared_ptr<Entity> source)
+float StairTile::getExplosionResistance(shared_ptr<Entity> source)
 {
 	return base->getExplosionResistance(source);
 }
@@ -426,7 +426,7 @@ AABB *StairTile::getTileAABB(Level *level, int x, int y, int z)
 	return base->getTileAABB(level, x, y, z);
 }
 
-void StairTile::handleEntityInside(Level *level, int x, int y, int z, std::shared_ptr<Entity> e, Vec3 *current)
+void StairTile::handleEntityInside(Level *level, int x, int y, int z, shared_ptr<Entity> e, Vec3 *current)
 {
 	base->handleEntityInside(level, x, y, z, e, current);
 }
@@ -462,7 +462,7 @@ void StairTile::prepareRender(Level *level, int x, int y, int z)
 	base->prepareRender(level, x, y, z);
 }
 
-void StairTile::stepOn(Level *level, int x, int y, int z, std::shared_ptr<Entity> entity)
+void StairTile::stepOn(Level *level, int x, int y, int z, shared_ptr<Entity> entity)
 {
 	base->stepOn(level, x, y, z, entity);
 }
@@ -479,7 +479,7 @@ void StairTile::tick(Level *level, int x, int y, int z, Random *random)
 //	return true;
 //}
 
-bool StairTile::use(Level *level, int x, int y, int z, std::shared_ptr<Player> player, int clickedFace, float clickX, float clickY, float clickZ, bool soundOnly/*=false*/) // 4J added soundOnly param
+bool StairTile::use(Level *level, int x, int y, int z, shared_ptr<Player> player, int clickedFace, float clickX, float clickY, float clickZ, bool soundOnly/*=false*/) // 4J added soundOnly param
 {
 	if (soundOnly) return false;
 	return base->use(level, x, y, z, player, 0, 0, 0, 0);
@@ -490,7 +490,7 @@ void StairTile::wasExploded(Level *level, int x, int y, int z)
 	base->wasExploded(level, x, y, z);
 }
 
-void StairTile::setPlacedBy(Level *level, int x, int y, int z, std::shared_ptr<Mob> by)
+void StairTile::setPlacedBy(Level *level, int x, int y, int z, shared_ptr<Mob> by)
 {
 	int dir = ( Mth::floor(by->yRot * 4 / (360) + 0.5) ) & 3;
 	int usd = level->getData(x, y, z) & UPSIDEDOWN_BIT;

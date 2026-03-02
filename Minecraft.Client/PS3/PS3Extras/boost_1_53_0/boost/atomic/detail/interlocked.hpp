@@ -94,12 +94,12 @@
 #pragma intrinsic(_InterlockedOr64)
 #pragma intrinsic(_InterlockedXor64)
 
-#define BOOST_ATOMIC_INTERLOCKED_COMPARE_EXCHANGE64(dest, exchange, compare) _InterlockedCompareExchange64((int64_t*)(dest), (int64_t)(exchange), (int64_t)(compare))
-#define BOOST_ATOMIC_INTERLOCKED_EXCHANGE_ADD64(dest, addend) _InterlockedExchangeAdd64((int64_t*)(dest), (int64_t)(addend))
-#define BOOST_ATOMIC_INTERLOCKED_EXCHANGE64(dest, newval) _InterlockedExchange64((int64_t*)(dest), (int64_t)(newval))
-#define BOOST_ATOMIC_INTERLOCKED_AND64(dest, arg) _InterlockedAnd64((int64_t*)(dest), (int64_t)(arg))
-#define BOOST_ATOMIC_INTERLOCKED_OR64(dest, arg) _InterlockedOr64((int64_t*)(dest), (int64_t)(arg))
-#define BOOST_ATOMIC_INTERLOCKED_XOR64(dest, arg) _InterlockedXor64((int64_t*)(dest), (int64_t)(arg))
+#define BOOST_ATOMIC_INTERLOCKED_COMPARE_EXCHANGE64(dest, exchange, compare) _InterlockedCompareExchange64((__int64*)(dest), (__int64)(exchange), (__int64)(compare))
+#define BOOST_ATOMIC_INTERLOCKED_EXCHANGE_ADD64(dest, addend) _InterlockedExchangeAdd64((__int64*)(dest), (__int64)(addend))
+#define BOOST_ATOMIC_INTERLOCKED_EXCHANGE64(dest, newval) _InterlockedExchange64((__int64*)(dest), (__int64)(newval))
+#define BOOST_ATOMIC_INTERLOCKED_AND64(dest, arg) _InterlockedAnd64((__int64*)(dest), (__int64)(arg))
+#define BOOST_ATOMIC_INTERLOCKED_OR64(dest, arg) _InterlockedOr64((__int64*)(dest), (__int64)(arg))
+#define BOOST_ATOMIC_INTERLOCKED_XOR64(dest, arg) _InterlockedXor64((__int64*)(dest), (__int64)(arg))
 
 #pragma intrinsic(_InterlockedCompareExchangePointer)
 #pragma intrinsic(_InterlockedExchangePointer)
@@ -128,9 +128,9 @@
 
 #if defined(_WIN64)
 
-#define BOOST_ATOMIC_INTERLOCKED_COMPARE_EXCHANGE64(dest, exchange, compare) InterlockedCompareExchange64((int64_t*)(dest), (int64_t)(exchange), (int64_t)(compare))
-#define BOOST_ATOMIC_INTERLOCKED_EXCHANGE64(dest, newval) InterlockedExchange64((int64_t*)(dest), (int64_t)(newval))
-#define BOOST_ATOMIC_INTERLOCKED_EXCHANGE_ADD64(dest, addend) InterlockedExchangeAdd64((int64_t*)(dest), (int64_t)(addend))
+#define BOOST_ATOMIC_INTERLOCKED_COMPARE_EXCHANGE64(dest, exchange, compare) InterlockedCompareExchange64((__int64*)(dest), (__int64)(exchange), (__int64)(compare))
+#define BOOST_ATOMIC_INTERLOCKED_EXCHANGE64(dest, newval) InterlockedExchange64((__int64*)(dest), (__int64)(newval))
+#define BOOST_ATOMIC_INTERLOCKED_EXCHANGE_ADD64(dest, addend) InterlockedExchangeAdd64((__int64*)(dest), (__int64)(addend))
 
 #define BOOST_ATOMIC_INTERLOCKED_COMPARE_EXCHANGE_POINTER(dest, exchange, compare) InterlockedCompareExchangePointer((void**)(dest), (void*)(exchange), (void*)(compare))
 #define BOOST_ATOMIC_INTERLOCKED_EXCHANGE_POINTER(dest, newval) InterlockedExchangePointer((void**)(dest), (void*)(newval))
@@ -168,16 +168,16 @@ BOOST_ATOMIC_INTERLOCKED_IMPORT long __stdcall InterlockedExchangeAdd(long volat
 
 #if defined(_WIN64)
 
-BOOST_ATOMIC_INTERLOCKED_IMPORT int64_t __stdcall InterlockedCompareExchange64(int64_t volatile*, int64_t, int64_t);
-BOOST_ATOMIC_INTERLOCKED_IMPORT int64_t __stdcall InterlockedExchange64(int64_t volatile*, int64_t);
-BOOST_ATOMIC_INTERLOCKED_IMPORT int64_t __stdcall InterlockedExchangeAdd64(int64_t volatile*, int64_t);
+BOOST_ATOMIC_INTERLOCKED_IMPORT __int64 __stdcall InterlockedCompareExchange64(__int64 volatile*, __int64, __int64);
+BOOST_ATOMIC_INTERLOCKED_IMPORT __int64 __stdcall InterlockedExchange64(__int64 volatile*, __int64);
+BOOST_ATOMIC_INTERLOCKED_IMPORT __int64 __stdcall InterlockedExchangeAdd64(__int64 volatile*, __int64);
 
 BOOST_ATOMIC_INTERLOCKED_IMPORT void* __stdcall InterlockedCompareExchangePointer(void* volatile *, void*, void*);
 BOOST_ATOMIC_INTERLOCKED_IMPORT void* __stdcall InterlockedExchangePointer(void* volatile *, void*);
 
-#define BOOST_ATOMIC_INTERLOCKED_COMPARE_EXCHANGE64(dest, exchange, compare) boost::atomics::detail::InterlockedCompareExchange64((int64_t*)(dest), (int64_t)(exchange), (int64_t)(compare))
-#define BOOST_ATOMIC_INTERLOCKED_EXCHANGE64(dest, newval) boost::atomics::detail::InterlockedExchange64((int64_t*)(dest), (int64_t)(newval))
-#define BOOST_ATOMIC_INTERLOCKED_EXCHANGE_ADD64(dest, addend) boost::atomics::detail::InterlockedExchangeAdd64((int64_t*)(dest), (int64_t)(addend))
+#define BOOST_ATOMIC_INTERLOCKED_COMPARE_EXCHANGE64(dest, exchange, compare) boost::atomics::detail::InterlockedCompareExchange64((__int64*)(dest), (__int64)(exchange), (__int64)(compare))
+#define BOOST_ATOMIC_INTERLOCKED_EXCHANGE64(dest, newval) boost::atomics::detail::InterlockedExchange64((__int64*)(dest), (__int64)(newval))
+#define BOOST_ATOMIC_INTERLOCKED_EXCHANGE_ADD64(dest, addend) boost::atomics::detail::InterlockedExchangeAdd64((__int64*)(dest), (__int64)(addend))
 
 #define BOOST_ATOMIC_INTERLOCKED_COMPARE_EXCHANGE_POINTER(dest, exchange, compare) boost::atomics::detail::InterlockedCompareExchangePointer((void**)(dest), (void*)(exchange), (void*)(compare))
 #define BOOST_ATOMIC_INTERLOCKED_EXCHANGE_POINTER(dest, newval) boost::atomics::detail::InterlockedExchangePointer((void**)(dest), (void*)(newval))

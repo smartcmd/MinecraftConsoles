@@ -78,7 +78,7 @@ OzelotModel::OzelotModel()
 	backLegR->compile(1.0f/16.0f);
 }
 
-void OzelotModel::render(std::shared_ptr<Entity> entity, float time, float r, float bob, float yRot, float xRot, float scale, bool usecompiled)
+void OzelotModel::render(shared_ptr<Entity> entity, float time, float r, float bob, float yRot, float xRot, float scale, bool usecompiled)
 {
 	setupAnim(time, r, bob, yRot, xRot, scale);
 	if (young)
@@ -180,9 +180,9 @@ void OzelotModel::setupAnim(float time, float r, float bob, float yRot, float xR
 	}
 }
 
-void OzelotModel::prepareMobModel(std::shared_ptr<Mob> mob, float time, float r, float a)
+void OzelotModel::prepareMobModel(shared_ptr<Mob> mob, float time, float r, float a)
 {
-	std::shared_ptr<Ozelot> ozelot = std::dynamic_pointer_cast<Ozelot>(mob);
+	shared_ptr<Ozelot> ozelot = dynamic_pointer_cast<Ozelot>(mob);
 
 	body->y = bodyWalkY;
 	body->z = bodyWalkZ;

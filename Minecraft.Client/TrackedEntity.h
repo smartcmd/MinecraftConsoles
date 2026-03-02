@@ -15,7 +15,7 @@ private:
 	static const int TOLERANCE_LEVEL = 4;
 
 public:
-	std::shared_ptr<Entity> e;
+	shared_ptr<Entity> e;
 
     int range, updateInterval;
     int xp, yp, zp, yRotp, xRotp, yHeadRotp;
@@ -27,23 +27,23 @@ private:
     bool updatedPlayerVisibility;
     bool trackDelta;
     int teleportDelay;
-	std::shared_ptr<Entity> wasRiding;
+	shared_ptr<Entity> wasRiding;
 
 public:
 	bool moved;
 
-    unordered_set<std::shared_ptr<ServerPlayer> , PlayerKeyHash, PlayerKeyEq > seenBy;
+    unordered_set<shared_ptr<ServerPlayer> , PlayerKeyHash, PlayerKeyEq > seenBy;
 
-    TrackedEntity(std::shared_ptr<Entity> e, int range, int updateInterval, bool trackDelta);
+    TrackedEntity(shared_ptr<Entity> e, int range, int updateInterval, bool trackDelta);
 
-    void tick(EntityTracker *tracker, vector<std::shared_ptr<Player> > *players);
-    void broadcast(std::shared_ptr<Packet> packet);
-    void broadcastAndSend(std::shared_ptr<Packet> packet);
+    void tick(EntityTracker *tracker, vector<shared_ptr<Player> > *players);
+    void broadcast(shared_ptr<Packet> packet);
+    void broadcastAndSend(shared_ptr<Packet> packet);
     void broadcastRemoved();
-    void removePlayer(std::shared_ptr<ServerPlayer> sp);
+    void removePlayer(shared_ptr<ServerPlayer> sp);
 
 private:
-	bool canBySeenBy(std::shared_ptr<ServerPlayer> player);
+	bool canBySeenBy(shared_ptr<ServerPlayer> player);
 
 	enum eVisibility
 	{
@@ -52,14 +52,14 @@ private:
 		eVisibility_SeenAndVisible = 2,
 	};
 
-	eVisibility isVisible(EntityTracker *tracker, std::shared_ptr<ServerPlayer> sp, bool forRider = false); // 4J Added forRider
-
+	eVisibility isVisible(EntityTracker *tracker, shared_ptr<ServerPlayer> sp, bool forRider = false); // 4J Added forRider
+	
 public:
-    void updatePlayer(EntityTracker *tracker, std::shared_ptr<ServerPlayer> sp);
-    void updatePlayers(EntityTracker *tracker, vector<std::shared_ptr<Player> > *players);
+    void updatePlayer(EntityTracker *tracker, shared_ptr<ServerPlayer> sp);
+    void updatePlayers(EntityTracker *tracker, vector<shared_ptr<Player> > *players);
 private:
-	void sendEntityData(std::shared_ptr<PlayerConnection> conn);
-	std::shared_ptr<Packet> getAddEntityPacket();
+	void sendEntityData(shared_ptr<PlayerConnection> conn);
+	shared_ptr<Packet> getAddEntityPacket();
 public:
-    void clear(std::shared_ptr<ServerPlayer> sp);
+    void clear(shared_ptr<ServerPlayer> sp);
 };

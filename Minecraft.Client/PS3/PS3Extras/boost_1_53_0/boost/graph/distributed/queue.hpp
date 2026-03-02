@@ -15,7 +15,7 @@
 
 #include <boost/graph/parallel/process_group.hpp>
 #include <boost/optional.hpp>
-#include <boost/std::shared_ptr.hpp>
+#include <boost/shared_ptr.hpp>
 #include <vector>
 
 namespace boost { namespace graph { namespace distributed {
@@ -213,12 +213,12 @@ class distributed_queue
   void setup_triggers();
 
   // Message handlers
-  void
-  handle_push(int source, int tag, const value_type& value,
+  void 
+  handle_push(int source, int tag, const value_type& value, 
               trigger_receive_context);
 
-  void
-  handle_multipush(int source, int tag, const std::vector<value_type>& values,
+  void 
+  handle_multipush(int source, int tag, const std::vector<value_type>& values, 
                    trigger_receive_context);
 
   mutable ProcessGroup process_group;
@@ -229,7 +229,7 @@ class distributed_queue
 
   typedef std::vector<value_type> outgoing_buffer_t;
   typedef std::vector<outgoing_buffer_t> outgoing_buffers_t;
-  std::shared_ptr<outgoing_buffers_t> outgoing_buffers;
+  shared_ptr<outgoing_buffers_t> outgoing_buffers;
 };
 
 /// Helper macro containing the normal names for the template

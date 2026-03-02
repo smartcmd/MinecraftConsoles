@@ -20,7 +20,7 @@ using namespace std;
     double radius = random->nextDouble() * 4 + 2;
     double fuss = random->nextDouble() * 0.6;
 
-    int64_t seed = random->nextLong();
+    __int64 seed = random->nextLong();
     random->setSeed(seed);
     vector<TilePos *> toRemove;
 
@@ -69,14 +69,14 @@ using namespace std;
                     }
                 }
     }
-
+	
 	AUTO_VAR(itEnd, toRemove.end());
 	for (AUTO_VAR(it, toRemove.begin()); it != itEnd; it++)
 	{
         TilePos *p = *it; //toRemove[i];
         level->setTileNoUpdate(p->x, p->y, p->z, 0);
     }
-
+	
 	itEnd = toRemove.end();
 	for (AUTO_VAR(it, toRemove.begin()); it != itEnd; it++)
 	{

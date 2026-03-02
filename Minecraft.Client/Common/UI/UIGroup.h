@@ -19,10 +19,10 @@ private:
 	UIScene_HUD *m_hud;
 
 	C4JRender::eViewportType m_viewportType;
-
+	
 	EUIGroup m_group;
 	int m_iPad;
-
+	
 	bool m_bMenuDisplayed;
 	bool m_bPauseMenuDisplayed;
 	bool m_bContainerMenuDisplayed;
@@ -90,7 +90,7 @@ public:
 
 	void SetViewportType(C4JRender::eViewportType type);
 	C4JRender::eViewportType GetViewportType();
-
+	
 	virtual void HandleDLCMountingComplete();
 	virtual void HandleDLCInstalled();
 #ifdef _XBOX_ONE
@@ -99,15 +99,15 @@ public:
 	bool IsFullscreenGroup();
 
 	void handleUnlockFullVersion();
-
-	void PrintTotalMemoryUsage(int64_t &totalStatic, int64_t &totalDynamic);
+	
+	void PrintTotalMemoryUsage(__int64 &totalStatic, __int64 &totalDynamic);
 
 	unsigned int GetLayerIndex(UILayer* layerPtr);
 
 	int getCommandBufferList();
 	UIScene *FindScene(EUIScene sceneType);
 
-private:
+private:	
 	void _UpdateFocusState();
 	void updateStackStates();
 };

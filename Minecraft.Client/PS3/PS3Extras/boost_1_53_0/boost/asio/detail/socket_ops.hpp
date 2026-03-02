@@ -18,7 +18,7 @@
 #include <boost/asio/detail/config.hpp>
 
 #include <boost/system/error_code.hpp>
-#include <boost/asio/detail/std::shared_ptr.hpp>
+#include <boost/asio/detail/shared_ptr.hpp>
 #include <boost/asio/detail/socket_types.hpp>
 #include <boost/asio/detail/weak_ptr.hpp>
 
@@ -60,7 +60,7 @@ enum
 typedef unsigned char state_type;
 
 struct noop_deleter { void operator()(void*) {} };
-typedef std::shared_ptr<void> shared_cancel_token_type;
+typedef shared_ptr<void> shared_cancel_token_type;
 typedef weak_ptr<void> weak_cancel_token_type;
 
 BOOST_ASIO_DECL socket_type accept(socket_type s, socket_addr_type* addr,

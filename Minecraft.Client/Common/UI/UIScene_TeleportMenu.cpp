@@ -11,13 +11,13 @@ UIScene_TeleportMenu::UIScene_TeleportMenu(int iPad, void *initData, UILayer *pa
 {
 	// Setup all the Iggy references we need for this scene
 	initialiseMovie();
-
+	
 	TeleportMenuInitData *initParam = (TeleportMenuInitData *)initData;
 
 	m_teleportToPlayer = initParam->teleportToPlayer;
 
 	delete initParam;
-
+	
 	if(m_teleportToPlayer)
 	{
 		m_labelTitle.init(app.GetString(IDS_TELEPORT_TO_PLAYER));
@@ -81,7 +81,7 @@ UIScene_TeleportMenu::UIScene_TeleportMenu(int iPad, void *initData, UILayer *pa
 			m_playersVoiceState[m_playersCount] = voiceStatus;
 			m_playersColourState[m_playersCount] = app.GetPlayerColour( m_players[m_playersCount] );
 			m_playerNames[m_playersCount] = playerName;
-			m_playerList.addItem( playerName, app.GetPlayerColour( m_players[m_playersCount] ), voiceStatus);
+			m_playerList.addItem( playerName, app.GetPlayerColour( m_players[m_playersCount] ), voiceStatus); 
 		}
 	}
 
@@ -171,7 +171,7 @@ void UIScene_TeleportMenu::handleReload()
 			m_playersVoiceState[m_playersCount] = voiceStatus;
 			m_playersColourState[m_playersCount] = app.GetPlayerColour( m_players[m_playersCount] );
 			m_playerNames[m_playersCount] = playerName;
-			m_playerList.addItem( playerName, app.GetPlayerColour( m_players[m_playersCount] ), voiceStatus);
+			m_playerList.addItem( playerName, app.GetPlayerColour( m_players[m_playersCount] ), voiceStatus); 
 		}
 	}
 
@@ -257,8 +257,8 @@ void UIScene_TeleportMenu::handlePress(F64 controlId, F64 childId)
 		int currentSelection = (int)childId;
 		INetworkPlayer *selectedPlayer = g_NetworkManager.GetPlayerBySmallId( m_players[ currentSelection ] );
 		INetworkPlayer *thisPlayer = g_NetworkManager.GetLocalPlayerByUserIndex(m_iPad);
-
-		std::shared_ptr<GameCommandPacket> packet;
+		
+		shared_ptr<GameCommandPacket> packet;
 		if(m_teleportToPlayer)
 		{
 			packet = TeleportCommand::preparePacket(thisPlayer->GetUID(),selectedPlayer->GetUID());
@@ -339,6 +339,6 @@ void UIScene_TeleportMenu::OnPlayerChanged(void *callbackParam, INetworkPlayer *
 			}
 		}
 
-		scene->m_playerList.addItem( playerName, app.GetPlayerColour( scene->m_players[scene->m_playersCount - 1] ), voiceStatus);
+		scene->m_playerList.addItem( playerName, app.GetPlayerColour( scene->m_players[scene->m_playersCount - 1] ), voiceStatus); 
 	}
 }

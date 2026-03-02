@@ -36,7 +36,7 @@ bool WaterAnimal::removeWhenFarAway()
 	return true;
 }
 
-int WaterAnimal::getExperienceReward(std::shared_ptr<Player> killedBy)
+int WaterAnimal::getExperienceReward(shared_ptr<Player> killedBy)
 {
 	return 1 + level->random->nextInt(3);
 }

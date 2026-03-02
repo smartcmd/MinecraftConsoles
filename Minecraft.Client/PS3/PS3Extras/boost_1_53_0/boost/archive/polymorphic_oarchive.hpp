@@ -17,7 +17,7 @@
 //  See http://www.boost.org for updates, documentation, and revision history.
 
 #include <cstddef> // size_t
-#include <climits> // ULONG_MAX
+#include <climits> // ULONG_MAX 
 #include <string>
 
 #include <boost/config.hpp>
@@ -39,7 +39,7 @@ namespace std{
 
 namespace boost {
 template<class T>
-class std::shared_ptr;
+class shared_ptr;
 namespace serialization {
     class extended_type_info;
 } // namespace serialization
@@ -82,8 +82,8 @@ public:
     virtual void save(const boost::long_long_type t) = 0;
     virtual void save(const boost::ulong_long_type t) = 0;
     #elif defined(BOOST_HAS_MS_INT64)
-    virtual void save(const int64_t t) = 0;
-    virtual void save(const uint64_t t) = 0;
+    virtual void save(const __int64 t) = 0;
+    virtual void save(const unsigned __int64 t) = 0;
     #endif
 
     virtual void save(const float t) = 0;
@@ -141,7 +141,7 @@ public:
 };
 
 // note: preserve naming symmetry
-class polymorphic_oarchive :
+class polymorphic_oarchive : 
     public polymorphic_oarchive_impl
 {
 public:

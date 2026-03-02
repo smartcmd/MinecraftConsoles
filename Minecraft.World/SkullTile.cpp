@@ -25,7 +25,7 @@ bool SkullTile::isCubeShaped()
 	return false;
 }
 
-void SkullTile::updateShape(LevelSource *level, int x, int y, int z, int forceData , std::shared_ptr<TileEntity> forceEntity)
+void SkullTile::updateShape(LevelSource *level, int x, int y, int z, int forceData , shared_ptr<TileEntity> forceEntity)
 {
 	int data = level->getData(x, y, z) & PLACEMENT_MASK;
 
@@ -56,15 +56,15 @@ AABB *SkullTile::getAABB(Level *level, int x, int y, int z)
 	return EntityTile::getAABB(level, x, y, z);
 }
 
-void SkullTile::setPlacedBy(Level *level, int x, int y, int z, std::shared_ptr<Mob> by)
+void SkullTile::setPlacedBy(Level *level, int x, int y, int z, shared_ptr<Mob> by)
 {
 	int dir = Mth::floor(by->yRot * 4 / (360) + 2.5) & 3;
 	level->setData(x, y, z, dir);
 }
 
-std::shared_ptr<TileEntity> SkullTile::newTileEntity(Level *level)
+shared_ptr<TileEntity> SkullTile::newTileEntity(Level *level)
 {
-	return std::shared_ptr<SkullTileEntity>(new SkullTileEntity());
+	return shared_ptr<SkullTileEntity>(new SkullTileEntity());
 }
 
 int SkullTile::cloneTileId(Level *level, int x, int y, int z)
@@ -74,8 +74,8 @@ int SkullTile::cloneTileId(Level *level, int x, int y, int z)
 
 int SkullTile::cloneTileData(Level *level, int x, int y, int z)
 {
-	std::shared_ptr<TileEntity> tileEntity = level->getTileEntity(x, y, z);
-	std::shared_ptr<SkullTileEntity> skull = std::dynamic_pointer_cast<SkullTileEntity>(tileEntity);
+	shared_ptr<TileEntity> tileEntity = level->getTileEntity(x, y, z);
+	shared_ptr<SkullTileEntity> skull = dynamic_pointer_cast<SkullTileEntity>(tileEntity);
 	if (skull != NULL)
 	{
 		return skull->getSkullType();
@@ -96,7 +96,7 @@ void SkullTile::spawnResources(Level *level, int x, int y, int z, int data, floa
 	// ... because the tile entity is removed prior to spawnResources
 }
 
-void SkullTile::playerWillDestroy(Level *level, int x, int y, int z, int data, std::shared_ptr<Player> player)
+void SkullTile::playerWillDestroy(Level *level, int x, int y, int z, int data, shared_ptr<Player> player)
 {
 	// 4J Stu - Not implemented
 #if 0
@@ -116,8 +116,8 @@ void SkullTile::onRemove(Level *level, int x, int y, int z)//, int id, int data)
     int data = level->getData(x, y, z);
 	if ((data & NO_DROP_BIT) == 0)
 	{
-		std::shared_ptr<ItemInstance> item = std::shared_ptr<ItemInstance>(new ItemInstance(Item::skull_Id, 1, cloneTileData(level, x, y, z)));
-		std::shared_ptr<SkullTileEntity> entity = std::dynamic_pointer_cast<SkullTileEntity>(level->getTileEntity(x, y, z));
+		shared_ptr<ItemInstance> item = shared_ptr<ItemInstance>(new ItemInstance(Item::skull_Id, 1, cloneTileData(level, x, y, z)));
+		shared_ptr<SkullTileEntity> entity = dynamic_pointer_cast<SkullTileEntity>(level->getTileEntity(x, y, z));
 
 		if (entity->getSkullType() == SkullTileEntity::TYPE_CHAR && !entity->getExtraType().empty())
 		{
@@ -135,7 +135,7 @@ int SkullTile::getResource(int data, Random *random, int playerBonusLevel)
 	return Item::skull_Id;
 }
 
-void SkullTile::checkMobSpawn(Level *level, int x, int y, int z, std::shared_ptr<SkullTileEntity> placedSkull)
+void SkullTile::checkMobSpawn(Level *level, int x, int y, int z, shared_ptr<SkullTileEntity> placedSkull)
 {
 	// 4J Stu - Don't have Withers yet, so don't need this
 #if 0
@@ -244,8 +244,8 @@ bool SkullTile::isSkullAt(Level *level, int x, int y, int z, int skullType)
 	{
 		return false;
 	}
-	std::shared_ptr<TileEntity> te = level->getTileEntity(x, y, z);
-	std::shared_ptr<SkullTileEntity> skull = std::dynamic_pointer_cast<SkullTileEntity>(te);
+	shared_ptr<TileEntity> te = level->getTileEntity(x, y, z);
+	shared_ptr<SkullTileEntity> skull = dynamic_pointer_cast<SkullTileEntity>(te);
 	if (skull == NULL)
 	{
 		return false;

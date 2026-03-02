@@ -1,4 +1,4 @@
-#pragma once
+#pragma once 
 
 
 #include "..\..\Common\Network\Sony\sceRemoteStorage\header\sceRemoteStorage.h"
@@ -42,7 +42,7 @@ public:
 	SceRemoteStorageData* m_remoteFileInfo;
 
 	class DescriptionData
-	{
+	{ 
 		// this stuff is read from a JSON query, so it all has to be text based, max 256 bytes
 	public:
 		char			m_platform[4];
@@ -72,7 +72,7 @@ public:
 	const char* getLocalFilename();
 	const char* getSaveNameUTF8();
 	ESavePlatform getSavePlatform();
-	int64_t getSaveSeed();
+	__int64 getSaveSeed();
 	unsigned int getSaveHostOptions();
 	unsigned int getSaveTexturePack();
 
@@ -97,7 +97,7 @@ public:
 	static int LoadSaveDataThumbnailReturned(LPVOID lpParam,PBYTE pbThumbnail,DWORD dwThumbnailBytes);
 	static int setDataThread(void* lpParam);
 
-	SonyRemoteStorage() : m_memPoolBuffer(NULL), m_bInitialised(false),m_getInfoStatus(e_noInfoFound) {}
+	SonyRemoteStorage() : m_memPoolBuffer(NULL), m_bInitialised(false),m_getInfoStatus(e_noInfoFound) {} 
 
 protected:
 	const char* getRemoteSaveFilename();
@@ -111,7 +111,7 @@ protected:
 	unsigned int m_thumbnailDataSize;
 	C4JThread* m_SetDataThread;
 	PSAVE_INFO m_setDataSaveInfo;
-	int64_t m_startTime;
+	__int64 m_startTime;
 
 	bool m_bAborting;
 	bool m_bTransferStarted;

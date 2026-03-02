@@ -4,7 +4,7 @@
 #include "PacketListener.h"
 #include "MoveEntityPacket.h"
 
-MoveEntityPacket::MoveEntityPacket()
+MoveEntityPacket::MoveEntityPacket() 
 {
 	hasRot = false;
 
@@ -28,7 +28,7 @@ MoveEntityPacket::MoveEntityPacket(int id)
 	xRot = 0;
 }
 
-void MoveEntityPacket::read(DataInputStream *dis) //throws IOException
+void MoveEntityPacket::read(DataInputStream *dis) //throws IOException 
 {
 	id = dis->readShort();
 }
@@ -48,7 +48,7 @@ void MoveEntityPacket::handle(PacketListener *listener)
 	listener->handleMoveEntity(shared_from_this());
 }
 
-int MoveEntityPacket::getEstimatedSize()
+int MoveEntityPacket::getEstimatedSize() 
 {
 	return 2;
 }
@@ -58,9 +58,9 @@ bool MoveEntityPacket::canBeInvalidated()
 	return true;
 }
 
-bool MoveEntityPacket::isInvalidatedBy(std::shared_ptr<Packet> packet)
+bool MoveEntityPacket::isInvalidatedBy(shared_ptr<Packet> packet)
 {
-	std::shared_ptr<MoveEntityPacket> target = std::dynamic_pointer_cast<MoveEntityPacket>(packet);
+	shared_ptr<MoveEntityPacket> target = dynamic_pointer_cast<MoveEntityPacket>(packet);
 	return target != NULL && target->id == id;
 }
 
@@ -79,7 +79,7 @@ MoveEntityPacket::PosRot::PosRot(int id, char xa, char ya, char za, char yRot, c
 	hasRot = true;
 }
 
-void MoveEntityPacket::PosRot::read(DataInputStream *dis) //throws IOException
+void MoveEntityPacket::PosRot::read(DataInputStream *dis) //throws IOException 
 {
 	MoveEntityPacket::read(dis);
 	xa = dis->readByte();
@@ -89,7 +89,7 @@ void MoveEntityPacket::PosRot::read(DataInputStream *dis) //throws IOException
 	xRot = dis->readByte();
 }
 
-void MoveEntityPacket::PosRot::write(DataOutputStream *dos) //throws IOException
+void MoveEntityPacket::PosRot::write(DataOutputStream *dos) //throws IOException 
 {
 	MoveEntityPacket::write(dos);
 	dos->writeByte(xa);
@@ -99,12 +99,12 @@ void MoveEntityPacket::PosRot::write(DataOutputStream *dos) //throws IOException
 	dos->writeByte(xRot);
 }
 
-int MoveEntityPacket::PosRot::getEstimatedSize()
+int MoveEntityPacket::PosRot::getEstimatedSize() 
 {
 	return 2+5;
 }
 
-MoveEntityPacket::Pos::Pos()
+MoveEntityPacket::Pos::Pos() 
 {
 }
 
@@ -115,7 +115,7 @@ MoveEntityPacket::Pos::Pos(int id, char xa, char ya, char za) : MoveEntityPacket
 	this->za = za;
 }
 
-void MoveEntityPacket::Pos::read(DataInputStream *dis) //throws IOException
+void MoveEntityPacket::Pos::read(DataInputStream *dis) //throws IOException 
 {
 	MoveEntityPacket::read(dis);
 	xa = dis->readByte();
@@ -136,7 +136,7 @@ int MoveEntityPacket::Pos::getEstimatedSize()
 	return 2+3;
 }
 
-MoveEntityPacket::Rot::Rot()
+MoveEntityPacket::Rot::Rot() 
 {
 	hasRot = true;
 }
@@ -148,14 +148,14 @@ MoveEntityPacket::Rot::Rot(int id, char yRot, char xRot) : MoveEntityPacket(id)
 	hasRot = true;
 }
 
-void MoveEntityPacket::Rot::read(DataInputStream *dis) //throws IOException
+void MoveEntityPacket::Rot::read(DataInputStream *dis) //throws IOException 
 {
 	MoveEntityPacket::read(dis);
 	yRot = dis->readByte();
 	xRot = dis->readByte();
 }
 
-void MoveEntityPacket::Rot::write(DataOutputStream *dos) //throws IOException
+void MoveEntityPacket::Rot::write(DataOutputStream *dos) //throws IOException 
 {
 	MoveEntityPacket::write(dos);
 	dos->writeByte(yRot);

@@ -13,7 +13,7 @@ AddExperienceOrbPacket::AddExperienceOrbPacket()
 	value = 0;
 }
 
-AddExperienceOrbPacket::AddExperienceOrbPacket(std::shared_ptr<ExperienceOrb> e)
+AddExperienceOrbPacket::AddExperienceOrbPacket(shared_ptr<ExperienceOrb> e)
 {
 	id = e->entityId;
 	x = Mth::floor(e->x * 32);

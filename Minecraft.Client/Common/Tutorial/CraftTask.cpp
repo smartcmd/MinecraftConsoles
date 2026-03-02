@@ -40,7 +40,7 @@ CraftTask::~CraftTask()
 	delete[] m_auxValues;
 }
 
-void CraftTask::onCrafted(std::shared_ptr<ItemInstance> item)
+void CraftTask::onCrafted(shared_ptr<ItemInstance> item)
 {
 #ifndef _CONTENT_PACKAGE
 	wprintf(L"CraftTask::onCrafted - %ls\n", item->toString().c_str() );

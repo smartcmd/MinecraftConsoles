@@ -3,7 +3,7 @@
 #include "..\Minecraft.World\SavedDataStorage.h"
 #include "..\Minecraft.World\DerivedLevelData.h"
 
-DerivedServerLevel::DerivedServerLevel(MinecraftServer *server, std::shared_ptr<LevelStorage> levelStorage, const wstring& levelName, int dimension, LevelSettings *levelSettings, ServerLevel *wrapped)
+DerivedServerLevel::DerivedServerLevel(MinecraftServer *server, shared_ptr<LevelStorage> levelStorage, const wstring& levelName, int dimension, LevelSettings *levelSettings, ServerLevel *wrapped)
 	: ServerLevel(server, levelStorage, levelName, dimension, levelSettings)
 {
 	// 4J-PB - we're going to override the savedDataStorage, so we need to delete the current one

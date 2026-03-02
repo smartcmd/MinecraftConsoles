@@ -8,5 +8,5 @@ private:
 
 public:
 	TntRenderer();
-	virtual void render(std::shared_ptr<Entity> _tnt, double x, double y, double z, float rot, float a);
+	virtual void render(shared_ptr<Entity> _tnt, double x, double y, double z, float rot, float a);
 };

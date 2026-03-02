@@ -10,8 +10,8 @@ private:
 public:
 	LavaSlimeRenderer();
 
-	virtual void render(std::shared_ptr<Entity> _mob, double x, double y, double z, float rot, float a);
+	virtual void render(shared_ptr<Entity> _mob, double x, double y, double z, float rot, float a);
 
 protected:
-	virtual void scale(std::shared_ptr<Mob> _slime, float a);
+	virtual void scale(shared_ptr<Mob> _slime, float a);
 };

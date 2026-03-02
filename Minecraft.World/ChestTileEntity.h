@@ -40,15 +40,15 @@ private:
 
 public:
 	virtual unsigned int getContainerSize();
-	virtual std::shared_ptr<ItemInstance> getItem(unsigned int slot);
-	virtual std::shared_ptr<ItemInstance> removeItem(unsigned int slot, int count);
-	virtual std::shared_ptr<ItemInstance> removeItemNoUpdate(int slot);
-	virtual void setItem(unsigned int slot, std::shared_ptr<ItemInstance> item);
+	virtual shared_ptr<ItemInstance> getItem(unsigned int slot);
+	virtual shared_ptr<ItemInstance> removeItem(unsigned int slot, int count);
+	virtual shared_ptr<ItemInstance> removeItemNoUpdate(int slot);
+	virtual void setItem(unsigned int slot, shared_ptr<ItemInstance> item);
 	virtual int getName();
 	virtual void load(CompoundTag *base);
 	virtual void save(CompoundTag *base);
 	virtual int getMaxStackSize();
-	virtual bool stillValid(std::shared_ptr<Player> player);
+	virtual bool stillValid(shared_ptr<Player> player);
 	virtual void setChanged();
 	virtual void clearCache();
     virtual void checkNeighbors();
@@ -59,5 +59,5 @@ public:
     virtual void setRemoved();
 
 	// 4J Added
-	virtual std::shared_ptr<TileEntity> clone();
+	virtual shared_ptr<TileEntity> clone();
 };

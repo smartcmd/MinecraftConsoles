@@ -16,7 +16,7 @@
 
 #include <boost/graph/graph_traits.hpp>
 #include <vector>
-#include <boost/std::shared_ptr.hpp>
+#include <boost/shared_ptr.hpp>
 #include <boost/property_map/property_map.hpp>
 #include <boost/graph/parallel/algorithm.hpp>
 #include <boost/graph/parallel/container_traits.hpp>
@@ -25,9 +25,9 @@
 namespace boost { namespace graph {
 
 // --------------------------------------------------------------------------
-// Global index map built from a distribution
+// Global index map built from a distribution 
 // --------------------------------------------------------------------------
-template<typename Distribution, typename OwnerPropertyMap,
+template<typename Distribution, typename OwnerPropertyMap, 
          typename LocalPropertyMap>
 class distribution_global_index_map
 {
@@ -47,16 +47,16 @@ class distribution_global_index_map
   LocalPropertyMap local;
 };
 
-template<typename Distribution, typename OwnerPropertyMap,
+template<typename Distribution, typename OwnerPropertyMap, 
          typename LocalPropertyMap>
-inline
+inline 
 typename distribution_global_index_map<Distribution, OwnerPropertyMap,
                                        LocalPropertyMap>::value_type
 get(const distribution_global_index_map<Distribution, OwnerPropertyMap,
                                         LocalPropertyMap>& p,
     typename distribution_global_index_map<Distribution, OwnerPropertyMap,
                                            LocalPropertyMap>::key_type x)
-{
+{ 
   using boost::get;
   return p.distribution_.global(get(p.owner, x), get(p.local, x));
 }
@@ -64,15 +64,15 @@ get(const distribution_global_index_map<Distribution, OwnerPropertyMap,
 template<typename Graph, typename Distribution>
 inline
 distribution_global_index_map<
-  Distribution,
+  Distribution, 
   typename property_map<Graph, vertex_owner_t>::const_type,
   typename property_map<Graph, vertex_local_t>::const_type>
 make_distribution_global_index_map(const Graph& g, const Distribution& d)
 {
   typedef distribution_global_index_map<
-            Distribution,
+            Distribution, 
             typename property_map<Graph, vertex_owner_t>::const_type,
-            typename property_map<Graph, vertex_local_t>::const_type>
+            typename property_map<Graph, vertex_local_t>::const_type> 
     result_type;
   return result_type(d, get(vertex_owner, g), get(vertex_local, g));
 }
@@ -86,7 +86,7 @@ class stored_global_index_map : public IndexMap
  public:
   typedef readable_property_map_tag category;
 
-  stored_global_index_map(const IndexMap& index_map) : IndexMap(index_map) {
+  stored_global_index_map(const IndexMap& index_map) : IndexMap(index_map) { 
     // When we have a global index, we need to always have the indices
     // of every key we've seen
     this->set_max_ghost_cells(0);
@@ -98,13 +98,13 @@ class stored_global_index_map : public IndexMap
 // --------------------------------------------------------------------------
 namespace detail {
   template<typename PropertyMap, typename ForwardIterator>
-  inline void
-  initialize_global_index_map(const PropertyMap&,
-                              ForwardIterator, ForwardIterator)
+  inline void 
+  initialize_global_index_map(const PropertyMap&, 
+                              ForwardIterator, ForwardIterator) 
   { }
 
   template<typename IndexMap, typename ForwardIterator>
-  void
+  void 
   initialize_global_index_map(stored_global_index_map<IndexMap>& p,
                               ForwardIterator first, ForwardIterator last)
   {
@@ -126,18 +126,18 @@ class vertex_list_adaptor : public graph_traits<Graph>
   typedef graph_traits<Graph> inherited;
 
   typedef typename inherited::traversal_category base_traversal_category;
-
+  
  public:
   typedef typename inherited::vertex_descriptor vertex_descriptor;
   typedef typename std::vector<vertex_descriptor>::iterator vertex_iterator;
   typedef typename std::vector<vertex_descriptor>::size_type
     vertices_size_type;
 
-  struct traversal_category
+  struct traversal_category 
     : public virtual base_traversal_category,
       public virtual vertex_list_graph_tag {};
 
-  vertex_list_adaptor(const Graph& g,
+  vertex_list_adaptor(const Graph& g, 
                       const GlobalIndexMap& index_map = GlobalIndexMap())
     : g(&g), index_map(index_map)
   {
@@ -146,7 +146,7 @@ class vertex_list_adaptor : public graph_traits<Graph>
     all_vertices_.reset(new std::vector<vertex_descriptor>());
     all_gather(process_group(), vertices(g).first, vertices(g).second,
                *all_vertices_);
-    detail::initialize_global_index_map(this->index_map,
+    detail::initialize_global_index_map(this->index_map, 
                                         all_vertices_->begin(),
                                         all_vertices_->end());
   }
@@ -156,13 +156,13 @@ class vertex_list_adaptor : public graph_traits<Graph>
   // --------------------------------------------------------------------------
   // Distributed Container
   // --------------------------------------------------------------------------
-  typedef typename boost::graph::parallel::process_group_type<Graph>::type
+  typedef typename boost::graph::parallel::process_group_type<Graph>::type 
     process_group_type;
 
-  process_group_type process_group() const
-  {
+  process_group_type process_group() const 
+  { 
     using boost::graph::parallel::process_group;
-    return process_group(*g);
+    return process_group(*g); 
   }
 
   std::pair<vertex_iterator, vertex_iterator> vertices() const
@@ -175,7 +175,7 @@ class vertex_list_adaptor : public graph_traits<Graph>
  private:
   const Graph* g;
   GlobalIndexMap index_map;
-  std::shared_ptr<std::vector<vertex_descriptor> > all_vertices_;
+  shared_ptr<std::vector<vertex_descriptor> > all_vertices_;
 };
 
 template<typename Graph, typename GlobalIndexMap>
@@ -197,18 +197,18 @@ namespace detail {
 }
 
 template<typename Graph>
-inline
-vertex_list_adaptor<Graph,
+inline 
+vertex_list_adaptor<Graph, 
                     typename detail::default_global_index_map<Graph>::type>
 make_vertex_list_adaptor(const Graph& g)
-{
-  typedef typename detail::default_global_index_map<Graph>::type
+{ 
+  typedef typename detail::default_global_index_map<Graph>::type 
     GlobalIndexMap;
   typedef typename detail::default_global_index_map<Graph>::distributed_map
     DistributedMap;
   typedef vertex_list_adaptor<Graph, GlobalIndexMap> result_type;
-  return result_type(g,
-                     GlobalIndexMap(DistributedMap(num_vertices(g),
+  return result_type(g, 
+                     GlobalIndexMap(DistributedMap(num_vertices(g), 
                                                    get(vertex_index, g))));
 }
 
@@ -375,7 +375,7 @@ namespace boost {
 // Property Graph: vertex_index property
 // --------------------------------------------------------------------------
 template<typename Graph, typename GlobalIndexMap>
-class property_map<vertex_index_t,
+class property_map<vertex_index_t, 
                    graph::vertex_list_adaptor<Graph, GlobalIndexMap> >
 {
 public:
@@ -384,7 +384,7 @@ public:
 };
 
 template<typename Graph, typename GlobalIndexMap>
-class property_map<vertex_index_t,
+class property_map<vertex_index_t, 
                    const graph::vertex_list_adaptor<Graph, GlobalIndexMap> >
 {
 public:

@@ -14,7 +14,7 @@
 #endif
 
 #include <vector>
-#include <boost/std::shared_ptr.hpp>
+#include <boost/shared_ptr.hpp>
 #include <boost/proto/traits.hpp>
 #include <boost/xpressive/detail/detail_fwd.hpp>
 #include <boost/xpressive/detail/dynamic/matchable.hpp>
@@ -41,7 +41,7 @@ struct core_access
         return rex.match_(state);
     }
 
-    static std::shared_ptr<detail::regex_impl<BidiIter> > const &
+    static shared_ptr<detail::regex_impl<BidiIter> > const &
     get_regex_impl(basic_regex<BidiIter> const &rex)
     {
         return proto::value(rex).get();

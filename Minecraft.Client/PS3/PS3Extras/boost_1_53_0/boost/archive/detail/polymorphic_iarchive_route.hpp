@@ -138,10 +138,10 @@ private:
         ArchiveImplementation::load(t);
     }
     #elif defined(BOOST_HAS_MS_INT64)
-    virtual void load(int64_t & t){
+    virtual void load(__int64 & t){
         ArchiveImplementation::load(t);
     }
-    virtual void load(uint64_t & t){
+    virtual void load(unsigned __int64 & t){
         ArchiveImplementation::load(t);
     }
     #endif
@@ -187,7 +187,7 @@ public:
     }
     // register type function
     template<class T>
-    const basic_pointer_iserializer *
+    const basic_pointer_iserializer * 
     register_type(T * t = NULL){
         return ArchiveImplementation::register_type(t);
     }

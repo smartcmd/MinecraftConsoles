@@ -137,7 +137,7 @@ void Minecart::defineSynchedData()
 }
 
 
-AABB *Minecart::getCollideAgainstBox(std::shared_ptr<Entity> entity)
+AABB *Minecart::getCollideAgainstBox(shared_ptr<Entity> entity)
 {
 	return entity->bb;
 }
@@ -180,15 +180,15 @@ double Minecart::getRideHeight()
 bool Minecart::hurt(DamageSource *source, int hurtDamage)
 {
 	if (level->isClientSide || removed) return true;
-
+	
 	// 4J-JEV: Fix for #88212,
 	// Untrusted players shouldn't be able to damage minecarts or boats.
 	if (dynamic_cast<EntityDamageSource *>(source) != NULL)
 	{
-		std::shared_ptr<Entity> attacker = source->getDirectEntity();
+		shared_ptr<Entity> attacker = source->getDirectEntity();
 
-		if (std::dynamic_pointer_cast<Player>(attacker) != NULL &&
-			!std::dynamic_pointer_cast<Player>(attacker)->isAllowedToHurtEntity( shared_from_this() ))
+		if (dynamic_pointer_cast<Player>(attacker) != NULL && 
+			!dynamic_pointer_cast<Player>(attacker)->isAllowedToHurtEntity( shared_from_this() ))
 			return false;
 	}
 
@@ -202,7 +202,7 @@ bool Minecart::hurt(DamageSource *source, int hurtDamage)
 	if( rider.lock() != NULL && rider.lock() == source->getEntity() ) hurtDamage += 1;
 
 	// 4J Stu - Brought froward from 12w36 to fix #46611 - TU5: Gameplay: Minecarts and boat requires more hits than one to be destroyed in creative mode
-	std::shared_ptr<Player> player = std::dynamic_pointer_cast<Player>(source->getEntity());
+	shared_ptr<Player> player = dynamic_pointer_cast<Player>(source->getEntity());
 	if (player != NULL && player->abilities.instabuild) this->setDamage(100);
 
 	this->setDamage(getDamage() + (hurtDamage * 10));
@@ -215,10 +215,10 @@ bool Minecart::hurt(DamageSource *source, int hurtDamage)
 		spawnAtLocation(Item::minecart->id, 1, 0);
 		if (type == Minecart::CHEST)
 		{
-			std::shared_ptr<Container> container = std::dynamic_pointer_cast<Container>( shared_from_this() );
+			shared_ptr<Container> container = dynamic_pointer_cast<Container>( shared_from_this() );
 			for (unsigned int i = 0; i < container->getContainerSize(); i++)
 			{
-				std::shared_ptr<ItemInstance> item = container->getItem(i);
+				shared_ptr<ItemInstance> item = container->getItem(i);
 				if (item != NULL)
 				{
 					float xo = random->nextFloat() * 0.8f + 0.1f;
@@ -231,7 +231,7 @@ bool Minecart::hurt(DamageSource *source, int hurtDamage)
 						if (count > item->count) count = item->count;
 						item->count -= count;
 
-						std::shared_ptr<ItemEntity> itemEntity = std::shared_ptr<ItemEntity>( new ItemEntity(level, x + xo, y + yo, z + zo, std::shared_ptr<ItemInstance>( new ItemInstance(item->id, count, item->getAuxValue()) ) ) );
+						shared_ptr<ItemEntity> itemEntity = shared_ptr<ItemEntity>( new ItemEntity(level, x + xo, y + yo, z + zo, shared_ptr<ItemInstance>( new ItemInstance(item->id, count, item->getAuxValue()) ) ) );
 						float pow = 0.05f;
 						itemEntity->xd = (float) random->nextGaussian() * pow;
 						itemEntity->yd = (float) random->nextGaussian() * pow + 0.2f;
@@ -270,20 +270,20 @@ void Minecart::remove()
 {
 	for (unsigned int i = 0; i < getContainerSize(); i++)
 	{
-		std::shared_ptr<ItemInstance> item = getItem(i);
-		if (item != NULL)
+		shared_ptr<ItemInstance> item = getItem(i);
+		if (item != NULL) 
 		{
 			float xo = random->nextFloat() * 0.8f + 0.1f;
 			float yo = random->nextFloat() * 0.8f + 0.1f;
 			float zo = random->nextFloat() * 0.8f + 0.1f;
 
-			while (item->count > 0)
+			while (item->count > 0) 
 			{
 				int count = random->nextInt(21) + 10;
 				if (count > item->count) count = item->count;
 				item->count -= count;
 
-				std::shared_ptr<ItemEntity> itemEntity = std::shared_ptr<ItemEntity>( new ItemEntity(level, x + xo, y + yo, z + zo, std::shared_ptr<ItemInstance>( new ItemInstance(item->id, count, item->getAuxValue()) ) ) );
+				shared_ptr<ItemEntity> itemEntity = shared_ptr<ItemEntity>( new ItemEntity(level, x + xo, y + yo, z + zo, shared_ptr<ItemInstance>( new ItemInstance(item->id, count, item->getAuxValue()) ) ) );
 				float pow = 0.05f;
 				itemEntity->xd = (float) random->nextGaussian() * pow;
 				itemEntity->yd = (float) random->nextGaussian() * pow + 0.2f;
@@ -388,7 +388,7 @@ void Minecart::tick()
 			if (data == 3) xd += slideSpeed;
 			if (data == 4) zd += slideSpeed;
 			if (data == 5) zd -= slideSpeed;
-
+		
 			// 4J TODO Is this a good way to copy the bit of the array that we need?
 			int exits[2][3];
 			memcpy( &exits, (void *)EXITS[data], sizeof(int) * 2 * 3);
@@ -409,8 +409,8 @@ void Minecart::tick()
 
 			xd = pow * xD / dd;
 			zd = pow * zD / dd;
-
-			std::shared_ptr<Entity> sharedRider = rider.lock();
+			
+			shared_ptr<Entity> sharedRider = rider.lock();
 			if (sharedRider != NULL)
 			{
 				double riderDist = (sharedRider->xd * sharedRider->xd + sharedRider->zd * sharedRider->zd);
@@ -669,16 +669,16 @@ void Minecart::tick()
 
 		// if (!level->isClientSide) {
 		{
-			vector<std::shared_ptr<Entity> > *entities = level->getEntities(shared_from_this(), this->bb->grow(0.2f, 0, 0.2f));
+			vector<shared_ptr<Entity> > *entities = level->getEntities(shared_from_this(), this->bb->grow(0.2f, 0, 0.2f));
 			if (entities != NULL && !entities->empty())
 			{
 				AUTO_VAR(itEnd, entities->end());
 				for (AUTO_VAR(it, entities->begin()); it != itEnd; it++)
 				{
-					std::shared_ptr<Entity> e = (*it); //entities->at(i);
+					shared_ptr<Entity> e = (*it); //entities->at(i);
 					if (e != rider.lock() && e->isPushable() && e->GetType() == eTYPE_MINECART)
 					{
-						std::shared_ptr<Minecart> cart = std::dynamic_pointer_cast<Minecart>(e);
+						shared_ptr<Minecart> cart = dynamic_pointer_cast<Minecart>(e);
 						cart->m_bHasPushedCartThisTick = false;
 						cart->push(shared_from_this());
 
@@ -848,7 +848,7 @@ void Minecart::addAdditonalSaveData(CompoundTag *base)
 {
 	base->putInt(L"Type", type);
 
-	if (type == Minecart::FURNACE)
+	if (type == Minecart::FURNACE) 
 	{
 		base->putDouble(L"PushX", xPush);
 		base->putDouble(L"PushZ", zPush);
@@ -889,7 +889,7 @@ void Minecart::readAdditionalSaveData(CompoundTag *base)
 		{
 			CompoundTag *tag = inventoryList->get(i);
 			unsigned int slot = tag->getByte(L"Slot") & 0xff;
-			if (slot >= 0 && slot < items->length) (*items)[slot] = std::shared_ptr<ItemInstance>( ItemInstance::fromTag(tag) );
+			if (slot >= 0 && slot < items->length) (*items)[slot] = shared_ptr<ItemInstance>( ItemInstance::fromTag(tag) );
 		}
 	}
 }
@@ -900,12 +900,12 @@ float Minecart::getShadowHeightOffs()
 	return 0;
 }
 
-void Minecart::push(std::shared_ptr<Entity> e)
+void Minecart::push(shared_ptr<Entity> e)
 {
 	if (level->isClientSide) return;
 
 	if (e == rider.lock()) return;
-	if (( std::dynamic_pointer_cast<Mob>(e)!=NULL) && std::dynamic_pointer_cast<Player>(e)==NULL && std::dynamic_pointer_cast<VillagerGolem>(e) == NULL && type == Minecart::RIDEABLE && xd * xd + zd * zd > 0.01)
+	if (( dynamic_pointer_cast<Mob>(e)!=NULL) && dynamic_pointer_cast<Player>(e)==NULL && dynamic_pointer_cast<VillagerGolem>(e) == NULL && type == Minecart::RIDEABLE && xd * xd + zd * zd > 0.01)
 	{
 		if (rider.lock() == NULL && e->riding == NULL)
 		{
@@ -954,7 +954,7 @@ void Minecart::push(std::shared_ptr<Entity> e)
 			double xdd = (e->xd + xd);
 			double zdd = (e->zd + zd);
 
-			std::shared_ptr<Minecart> cart = std::dynamic_pointer_cast<Minecart>(e);
+			shared_ptr<Minecart> cart = dynamic_pointer_cast<Minecart>(e);
 			if (cart != NULL && cart->type == Minecart::FURNACE && type != Minecart::FURNACE)
 			{
 				xd *= 0.2f;
@@ -1017,24 +1017,24 @@ unsigned int Minecart::getContainerSize()
 	return 9 * 3;
 }
 
-std::shared_ptr<ItemInstance> Minecart::getItem(unsigned int slot)
+shared_ptr<ItemInstance> Minecart::getItem(unsigned int slot)
 {
 	return (*items)[slot];
 }
 
-std::shared_ptr<ItemInstance> Minecart::removeItem(unsigned int slot, int count)
+shared_ptr<ItemInstance> Minecart::removeItem(unsigned int slot, int count)
 {
 	if ( (*items)[slot] != NULL)
 	{
 		if ( (*items)[slot]->count <= count)
 		{
-			std::shared_ptr<ItemInstance> item =  (*items)[slot];
+			shared_ptr<ItemInstance> item =  (*items)[slot];
 			(*items)[slot] = nullptr;
 			return item;
 		}
 		else
 		{
-			std::shared_ptr<ItemInstance> i = (*items)[slot]->remove(count);
+			shared_ptr<ItemInstance> i = (*items)[slot]->remove(count);
 			if ((*items)[slot]->count == 0)  (*items)[slot] = nullptr;
 			return i;
 		}
@@ -1042,18 +1042,18 @@ std::shared_ptr<ItemInstance> Minecart::removeItem(unsigned int slot, int count)
 	return nullptr;
 }
 
-std::shared_ptr<ItemInstance> Minecart::removeItemNoUpdate(int slot)
+shared_ptr<ItemInstance> Minecart::removeItemNoUpdate(int slot)
 {
 	if ( (*items)[slot] != NULL)
 	{
-		std::shared_ptr<ItemInstance> item = (*items)[slot];
+		shared_ptr<ItemInstance> item = (*items)[slot];
 		(*items)[slot] = nullptr;
 		return item;
 	}
 	return nullptr;
 }
 
-void Minecart::setItem(unsigned int slot, std::shared_ptr<ItemInstance> item)
+void Minecart::setItem(unsigned int slot, shared_ptr<ItemInstance> item)
 {
 	(*items)[slot] = item;
 	if (item != NULL && item->count > getMaxStackSize()) item->count = getMaxStackSize();
@@ -1073,11 +1073,11 @@ void Minecart::setChanged()
 {
 }
 
-bool Minecart::interact(std::shared_ptr<Player> player)
+bool Minecart::interact(shared_ptr<Player> player)
 {
 	if (type == Minecart::RIDEABLE)
 	{
-		if (rider.lock() != NULL && std::dynamic_pointer_cast<Player>(rider.lock())!=NULL && rider.lock() != player) return true;
+		if (rider.lock() != NULL && dynamic_pointer_cast<Player>(rider.lock())!=NULL && rider.lock() != player) return true;
 		if (!level->isClientSide)
 		{
 			// 4J HEG - Fixed issue with player not being able to dismount minecart (issue #4455)
@@ -1089,7 +1089,7 @@ bool Minecart::interact(std::shared_ptr<Player> player)
 		if ( player->isAllowedToInteract(shared_from_this()) )
 		{
 			if (!level->isClientSide)
-				player->openContainer( std::dynamic_pointer_cast<Container>( shared_from_this() ) );
+				player->openContainer( dynamic_pointer_cast<Container>( shared_from_this() ) );
 		}
 		else
 		{
@@ -1098,7 +1098,7 @@ bool Minecart::interact(std::shared_ptr<Player> player)
 	}
 	else if (type == Minecart::FURNACE)
 	{
-		std::shared_ptr<ItemInstance> selected = player->inventory->getSelected();
+		shared_ptr<ItemInstance> selected = player->inventory->getSelected();
 		if (selected != NULL && selected->id == Item::coal->id)
 		{
 			if (--selected->count == 0) player->inventory->setItem(player->inventory->selected, nullptr);
@@ -1144,7 +1144,7 @@ void Minecart::lerpMotion(double xd, double yd, double zd)
 	lzd = this->zd = zd;
 }
 
-bool Minecart::stillValid(std::shared_ptr<Player> player)
+bool Minecart::stillValid(shared_ptr<Player> player)
 {
 	if (this->removed) return false;
 	if (player->distanceToSqr(shared_from_this()) > 8 * 8) return false;

@@ -15,12 +15,12 @@ Icon *TreeTileItem::getIcon(int itemAuxValue)
 	return parentTile->getTexture(2, itemAuxValue);
 }
 
-int TreeTileItem::getLevelDataForAuxValue(int auxValue)
+int TreeTileItem::getLevelDataForAuxValue(int auxValue) 
 {
 	return auxValue;
 }
 
-unsigned int TreeTileItem::getDescriptionId(std::shared_ptr<ItemInstance> instance)
+unsigned int TreeTileItem::getDescriptionId(shared_ptr<ItemInstance> instance)
 {
 	int auxValue = instance->getAuxValue();
 	if (auxValue < 0 || auxValue >= TreeTile::TREE_NAMES_LENGTH)

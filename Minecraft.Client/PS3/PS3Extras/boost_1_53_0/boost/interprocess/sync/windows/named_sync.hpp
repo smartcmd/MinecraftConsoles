@@ -122,12 +122,12 @@ inline void windows_named_sync::open_or_create
       if(m_file_hnd != winapi::invalid_handle_value){
          //Now lock the file
          const std::size_t buflen = sync_interface.get_data_size();
-         typedef int64_t unique_id_type;
+         typedef __int64 unique_id_type;
          const std::size_t sizeof_file_info = sizeof(unique_id_type) + buflen;
          winapi::interprocess_overlapped overlapped;
          if(winapi::lock_file_ex
             (m_file_hnd, winapi::lockfile_exclusive_lock, 0, sizeof_file_info, 0, &overlapped)){
-            int64_t filesize = 0;
+            __int64 filesize = 0;
             //Obtain the unique id to open the native semaphore.
             //If file size was created
             if(winapi::get_file_size(m_file_hnd, filesize)){

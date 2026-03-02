@@ -10,7 +10,7 @@
 #define BOOST_SPIRIT_CHSET_HPP
 
 ///////////////////////////////////////////////////////////////////////////////
-#include <boost/std::shared_ptr.hpp>
+#include <boost/shared_ptr.hpp>
 #include <boost/spirit/home/classic/namespace.hpp>
 #include <boost/spirit/home/classic/core/primitives/primitives.hpp>
 #include <boost/spirit/home/classic/utility/impl/chset/basic_chset.hpp>
@@ -26,7 +26,7 @@ namespace utility { namespace impl {
     // template functions.  And we don't want to put the whole algorithm
     // in the chset constructor in the class definition.
     template <typename CharT, typename CharT2>
-    void construct_chset(boost::std::shared_ptr<basic_chset<CharT> >& ptr,
+    void construct_chset(boost::shared_ptr<basic_chset<CharT> >& ptr,
             CharT2 const* definition);
 
 }} // namespace utility::impl
@@ -84,7 +84,7 @@ public:
 
 private:
 
-    boost::std::shared_ptr<basic_chset<CharT> > ptr;
+    boost::shared_ptr<basic_chset<CharT> > ptr;
 };
 
 ///////////////////////////////////////////////////////////////////////////////

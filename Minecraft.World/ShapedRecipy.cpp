@@ -1,5 +1,5 @@
 // package net.minecraft.world.item.crafting;
-//
+// 
 // import net.minecraft.world.inventory.CraftingContainer;
 // import net.minecraft.world.item.ItemInstance;
 
@@ -12,7 +12,7 @@
 #include "ShapedRecipy.h"
 
 // 4J-PB - for new crafting - Adding group to define type of item that the recipe produces
-ShapedRecipy::ShapedRecipy(int width, int height, ItemInstance **recipeItems, ItemInstance *result, int iGroup)
+ShapedRecipy::ShapedRecipy(int width, int height, ItemInstance **recipeItems, ItemInstance *result, int iGroup) 
 	: resultId(result->id)
 {
 		this->width = width;
@@ -23,21 +23,21 @@ ShapedRecipy::ShapedRecipy(int width, int height, ItemInstance **recipeItems, It
 		_keepTag = false;
 }
 
-const int ShapedRecipy::getGroup()
+const int ShapedRecipy::getGroup() 
 {
 	return group;
 }
 
-const ItemInstance *ShapedRecipy::getResultItem()
+const ItemInstance *ShapedRecipy::getResultItem() 
 {
 	return result;
 }
 
-bool ShapedRecipy::matches(std::shared_ptr<CraftingContainer> craftSlots, Level *level)
+bool ShapedRecipy::matches(shared_ptr<CraftingContainer> craftSlots, Level *level) 
 {
-	for (int xOffs = 0; xOffs <= (3 - width); xOffs++)
+	for (int xOffs = 0; xOffs <= (3 - width); xOffs++) 
 	{
-		for (int yOffs = 0; yOffs <= (3 - height); yOffs++)
+		for (int yOffs = 0; yOffs <= (3 - height); yOffs++) 
 		{
 			if (matches(craftSlots, xOffs, yOffs, true)) return true;
 			if (matches(craftSlots, xOffs, yOffs, false)) return true;
@@ -46,32 +46,32 @@ bool ShapedRecipy::matches(std::shared_ptr<CraftingContainer> craftSlots, Level 
 	return false;
 }
 
-bool ShapedRecipy::matches(std::shared_ptr<CraftingContainer> craftSlots, int xOffs, int yOffs, bool xFlip)
+bool ShapedRecipy::matches(shared_ptr<CraftingContainer> craftSlots, int xOffs, int yOffs, bool xFlip) 
 {
 	for (int x = 0; x < 3; x++) {
 		for (int y = 0; y < 3; y++) {
 			int xs = x - xOffs;
 			int ys = y - yOffs;
 			ItemInstance *expected = NULL;
-			if (xs >= 0 && ys >= 0 && xs < width && ys < height)
+			if (xs >= 0 && ys >= 0 && xs < width && ys < height) 
 			{
 				if (xFlip) expected = recipeItems[(width - xs - 1) + ys * width];
 				else expected = recipeItems[xs + ys * width];
 			}
-			std::shared_ptr<ItemInstance> item = craftSlots->getItem(x, y);
-			if (item == NULL && expected == NULL)
+			shared_ptr<ItemInstance> item = craftSlots->getItem(x, y);
+			if (item == NULL && expected == NULL) 
 			{
 				continue;
 			}
-			if ((item == NULL && expected != NULL) || (item != NULL && expected == NULL))
+			if ((item == NULL && expected != NULL) || (item != NULL && expected == NULL)) 
 			{
 				return false;
 			}
-			if (expected->id != item->id)
+			if (expected->id != item->id) 
 			{
 				return false;
 			}
-			if (expected->getAuxValue() != Recipes::ANY_AUX_VALUE && expected->getAuxValue() != item->getAuxValue())
+			if (expected->getAuxValue() != Recipes::ANY_AUX_VALUE && expected->getAuxValue() != item->getAuxValue()) 
 			{
 				return false;
 			}
@@ -80,15 +80,15 @@ bool ShapedRecipy::matches(std::shared_ptr<CraftingContainer> craftSlots, int xO
 	return true;
 }
 
-std::shared_ptr<ItemInstance> ShapedRecipy::assemble(std::shared_ptr<CraftingContainer> craftSlots)
+shared_ptr<ItemInstance> ShapedRecipy::assemble(shared_ptr<CraftingContainer> craftSlots) 
 {
-	std::shared_ptr<ItemInstance> result = getResultItem()->copy();
+	shared_ptr<ItemInstance> result = getResultItem()->copy();
 
 	if (_keepTag && craftSlots != NULL)
 	{
 		for (int i = 0; i < craftSlots->getContainerSize(); i++)
 		{
-			std::shared_ptr<ItemInstance> item = craftSlots->getItem(i);
+			shared_ptr<ItemInstance> item = craftSlots->getItem(i);
 
 			if (item != NULL && item->hasTag())
 			{
@@ -100,25 +100,25 @@ std::shared_ptr<ItemInstance> ShapedRecipy::assemble(std::shared_ptr<CraftingCon
 	return result;
 }
 
-int ShapedRecipy::size()
+int ShapedRecipy::size() 
 {
 	return width * height;
 }
 
 // 4J-PB
-bool ShapedRecipy::requires(int iRecipe)
+bool ShapedRecipy::requires(int iRecipe) 
 {
 	app.DebugPrintf("ShapedRecipy %d\n",iRecipe);
 	int iCount=0;
-	for (int x = 0; x < 3; x++)
+	for (int x = 0; x < 3; x++) 
 	{
-		for (int y = 0; y < 3; y++)
+		for (int y = 0; y < 3; y++) 
 		{
-			if (x < width && y < height)
+			if (x < width && y < height) 
 			{
 				ItemInstance *expected = recipeItems[x+y*width];
-				if (expected!=NULL)
-				{
+				if (expected!=NULL) 
+				{			
 					//printf("\tIngredient %d is %d\n",iCount++,expected->id);
 				}
 			}
@@ -130,7 +130,7 @@ bool ShapedRecipy::requires(int iRecipe)
 	return false;
 }
 
-void ShapedRecipy::requires(INGREDIENTS_REQUIRED *pIngReq)
+void ShapedRecipy::requires(INGREDIENTS_REQUIRED *pIngReq) 
 {
 	//printf("ShapedRecipy %d\n",iRecipe);
 
@@ -151,16 +151,16 @@ void ShapedRecipy::requires(INGREDIENTS_REQUIRED *pIngReq)
 	memset(TempIngReq.iIngAuxValA,Recipes::ANY_AUX_VALUE,sizeof(int)*9);
 	ZeroMemory(TempIngReq.uiGridA,sizeof(unsigned int)*9);
 
-	for (int x = 0; x < 3; x++)
+	for (int x = 0; x < 3; x++) 
 	{
-		for (int y = 0; y < 3; y++)
+		for (int y = 0; y < 3; y++) 
 		{
-			if (x < width && y < height)
+			if (x < width && y < height) 
 			{
 				ItemInstance *expected = recipeItems[x+y*width];
 
-				if (expected!=NULL)
-				{
+				if (expected!=NULL) 
+				{			
 					int iAuxVal = expected->getAuxValue();
 					TempIngReq.uiGridA[x+y*3]=expected->id | iAuxVal<<24;
 

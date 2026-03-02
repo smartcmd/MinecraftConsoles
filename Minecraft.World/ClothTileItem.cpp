@@ -4,8 +4,8 @@
 #include "DyePowderItem.h"
 #include "ClothTileItem.h"
 
-const unsigned int ClothTileItem::COLOR_DESCS[] =
-{
+const unsigned int ClothTileItem::COLOR_DESCS[] = 
+{ 
 	IDS_TILE_CLOTH_BLACK,
 	IDS_TILE_CLOTH_RED,
 	IDS_TILE_CLOTH_GREEN,
@@ -24,8 +24,8 @@ const unsigned int ClothTileItem::COLOR_DESCS[] =
 	IDS_TILE_CLOTH_WHITE
 };
 
-const unsigned int ClothTileItem::CARPET_COLOR_DESCS[] =
-{
+const unsigned int ClothTileItem::CARPET_COLOR_DESCS[] = 
+{ 
 	IDS_TILE_CARPET_BLACK,
 	IDS_TILE_CARPET_RED,
 	IDS_TILE_CARPET_GREEN,
@@ -50,18 +50,18 @@ ClothTileItem::ClothTileItem(int id) : TileItem(id)
 	setStackedByData(true);
 }
 
-Icon *ClothTileItem::getIcon(int itemAuxValue)
+Icon *ClothTileItem::getIcon(int itemAuxValue) 
 {
 	return Tile::cloth->getTexture(2, ClothTile::getTileDataForItemAuxValue(itemAuxValue));
 
 }
 
-int ClothTileItem::getLevelDataForAuxValue(int auxValue)
+int ClothTileItem::getLevelDataForAuxValue(int auxValue) 
 {
 	return auxValue;
 }
 
-unsigned int ClothTileItem::getDescriptionId(std::shared_ptr<ItemInstance> instance)
+unsigned int ClothTileItem::getDescriptionId(shared_ptr<ItemInstance> instance) 
 {
 	if(getTileId() == Tile::woolCarpet_Id) return CARPET_COLOR_DESCS[ClothTile::getTileDataForItemAuxValue(instance->getAuxValue())];
 	else return COLOR_DESCS[ClothTile::getTileDataForItemAuxValue(instance->getAuxValue())];

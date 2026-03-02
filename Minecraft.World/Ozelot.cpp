@@ -184,9 +184,9 @@ int Ozelot::getDeathLoot()
 	return Item::leather_Id;
 }
 
-bool Ozelot::doHurtTarget(std::shared_ptr<Entity> target)
+bool Ozelot::doHurtTarget(shared_ptr<Entity> target)
 {
-	return target->hurt(DamageSource::mobAttack(std::dynamic_pointer_cast<Mob>(shared_from_this())), 3);
+	return target->hurt(DamageSource::mobAttack(dynamic_pointer_cast<Mob>(shared_from_this())), 3);
 }
 
 bool Ozelot::hurt(DamageSource *source, int dmg)
@@ -199,9 +199,9 @@ void Ozelot::dropDeathLoot(bool wasKilledByPlayer, int playerBonusLevel)
 {
 }
 
-bool Ozelot::interact(std::shared_ptr<Player> player)
+bool Ozelot::interact(shared_ptr<Player> player)
 {
-	std::shared_ptr<ItemInstance> item = player->inventory->getSelected();
+	shared_ptr<ItemInstance> item = player->inventory->getSelected();
 	if (isTame())
 	{
 		if (equalsIgnoreCase(player->getUUID(), getOwnerUUID()))
@@ -250,12 +250,12 @@ bool Ozelot::interact(std::shared_ptr<Player> player)
 	return TamableAnimal::interact(player);
 }
 
-std::shared_ptr<AgableMob> Ozelot::getBreedOffspring(std::shared_ptr<AgableMob> target)
+shared_ptr<AgableMob> Ozelot::getBreedOffspring(shared_ptr<AgableMob> target)
 {
 	// 4J - added limit to number of animals that can be bred
 	if( level->canCreateMore( GetType(), Level::eSpawnType_Breed) )
 	{
-		std::shared_ptr<Ozelot> offspring = std::shared_ptr<Ozelot>( new Ozelot(level) );
+		shared_ptr<Ozelot> offspring = shared_ptr<Ozelot>( new Ozelot(level) );
 		if (isTame())
 		{
 			offspring->setOwnerUUID(getOwnerUUID());
@@ -270,17 +270,17 @@ std::shared_ptr<AgableMob> Ozelot::getBreedOffspring(std::shared_ptr<AgableMob> 
 	}
 }
 
-bool Ozelot::isFood(std::shared_ptr<ItemInstance> itemInstance)
+bool Ozelot::isFood(shared_ptr<ItemInstance> itemInstance)
 {
 	return itemInstance != NULL && itemInstance->id == Item::fish_raw_Id;
 }
 
-bool Ozelot::canMate(std::shared_ptr<Animal> animal)
+bool Ozelot::canMate(shared_ptr<Animal> animal)
 {
 	if (animal == shared_from_this()) return false;
 	if (!isTame()) return false;
 
-	std::shared_ptr<Ozelot> partner = std::dynamic_pointer_cast<Ozelot>(animal);
+	shared_ptr<Ozelot> partner = dynamic_pointer_cast<Ozelot>(animal);
 	if (partner == NULL) return false;
 	if (!partner->isTame()) return false;
 

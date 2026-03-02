@@ -10,6 +10,6 @@ protected:
 public:
     virtual void onPlace(Level *level, int x, int y, int z);
 	virtual void onRemove(Level *level, int x, int y, int z, int id, int data);
-	virtual std::shared_ptr<TileEntity> newTileEntity(Level *level) = 0;
+	virtual shared_ptr<TileEntity> newTileEntity(Level *level) = 0;
 	virtual void triggerEvent(Level *level, int x, int y, int z, int b0, int b1);
 };

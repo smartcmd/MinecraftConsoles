@@ -55,10 +55,10 @@ public:
 	} XboxSchematicInitParam;
 private:
 	int m_xSize, m_ySize, m_zSize;
-	vector<std::shared_ptr<TileEntity> > m_tileEntities;
+	vector<shared_ptr<TileEntity> > m_tileEntities;
 	vector< pair<Vec3 *, CompoundTag *> > m_entities;
 
-public:
+public:	
 	byteArray m_data;
 
 public:
@@ -72,8 +72,8 @@ public:
 	void save(DataOutputStream *dos);
 	void load(DataInputStream *dis);
 
-	int64_t applyBlocksAndData(LevelChunk *chunk, AABB *chunkBox, AABB *destinationBox, ESchematicRotation rot);
-	int64_t applyLighting(LevelChunk *chunk, AABB *chunkBox, AABB *destinationBox, ESchematicRotation rot);
+	__int64 applyBlocksAndData(LevelChunk *chunk, AABB *chunkBox, AABB *destinationBox, ESchematicRotation rot);
+	__int64 applyLighting(LevelChunk *chunk, AABB *chunkBox, AABB *destinationBox, ESchematicRotation rot);
 	void applyTileEntities(LevelChunk *chunk, AABB *chunkBox, AABB *destinationBox, ESchematicRotation rot);
 
 	static void generateSchematicFile(DataOutputStream *dos, Level *level, int xStart, int yStart, int zStart, int xEnd, int yEnd, int zEnd, bool bSaveMobs, Compression::ECompressionTypes);
@@ -83,7 +83,7 @@ private:
 	void load_tags(DataInputStream *dis);
 
 	static void getBlocksAndData(LevelChunk *chunk, byteArray *data, int x0, int y0, int z0, int x1, int y1, int z1, int &blocksP, int &dataP, int &blockLightP, int &skyLightP);
-	static vector<std::shared_ptr<TileEntity> > *getTileEntitiesInRegion(LevelChunk *chunk, int x0, int y0, int z0, int x1, int y1, int z1);
+	static vector<shared_ptr<TileEntity> > *getTileEntitiesInRegion(LevelChunk *chunk, int x0, int y0, int z0, int x1, int y1, int z1);
 
 	void chunkCoordToSchematicCoord(AABB *destinationBox, int chunkX, int chunkZ, ESchematicRotation rot, int &schematicX, int &schematicZ);
 	void schematicCoordToChunkCoord(AABB *destinationBox, double schematicX, double schematicZ, ESchematicRotation rot, double &chunkX, double &chunkZ);

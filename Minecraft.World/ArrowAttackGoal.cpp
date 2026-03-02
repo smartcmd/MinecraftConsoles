@@ -26,7 +26,7 @@ ArrowAttackGoal::ArrowAttackGoal(Mob *mob, float speed, int projectileType, int 
 
 bool ArrowAttackGoal::canUse()
 {
-	std::shared_ptr<Mob> bestTarget = mob->getTarget();
+	shared_ptr<Mob> bestTarget = mob->getTarget();
 	if (bestTarget == NULL) return false;
 	target = weak_ptr<Mob>(bestTarget);
 	return true;
@@ -45,7 +45,7 @@ void ArrowAttackGoal::stop()
 void ArrowAttackGoal::tick()
 {
 	double attackRadiusSqr = 10 * 10;
-	std::shared_ptr<Mob> tar = target.lock();
+	shared_ptr<Mob> tar = target.lock();
 	double targetDistSqr = mob->distanceToSqr(tar->x, tar->bb->y0, tar->z);
 	bool canSee = mob->getSensing()->canSee(tar);
 
@@ -69,16 +69,16 @@ void ArrowAttackGoal::tick()
 
 void ArrowAttackGoal::fireAtTarget()
 {
-	std::shared_ptr<Mob> tar = target.lock();
+	shared_ptr<Mob> tar = target.lock();
 	if (projectileType == ArrowType)
 	{
-		std::shared_ptr<Arrow> arrow = std::shared_ptr<Arrow>( new Arrow(level, std::dynamic_pointer_cast<Mob>(mob->shared_from_this()), tar, 1.60f, 12) );
+		shared_ptr<Arrow> arrow = shared_ptr<Arrow>( new Arrow(level, dynamic_pointer_cast<Mob>(mob->shared_from_this()), tar, 1.60f, 12) );
 		level->playSound(mob->shared_from_this(), eSoundType_RANDOM_BOW, 1.0f, 1 / (mob->getRandom()->nextFloat() * 0.4f + 0.8f));
 		level->addEntity(arrow);
 	}
 	else if (projectileType == SnowballType)
 	{
-		std::shared_ptr<Snowball> snowball = std::shared_ptr<Snowball>( new Snowball(level, std::dynamic_pointer_cast<Mob>(mob->shared_from_this())) );
+		shared_ptr<Snowball> snowball = shared_ptr<Snowball>( new Snowball(level, dynamic_pointer_cast<Mob>(mob->shared_from_this())) );
 		double xd = tar->x - mob->x;
 		double yd = (tar->y + tar->getHeadHeight() - 1.1f) - snowball->y;
 		double zd = tar->z - mob->z;

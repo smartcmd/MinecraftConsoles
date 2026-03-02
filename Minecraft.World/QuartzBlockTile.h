@@ -39,7 +39,7 @@ public:
 	int getSpawnResourcesAuxValue(int data);
 
 protected:
-	std::shared_ptr<ItemInstance> getSilkTouchItemInstance(int data);
+	shared_ptr<ItemInstance> getSilkTouchItemInstance(int data);
 
 public:
 	int getRenderShape();

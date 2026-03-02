@@ -46,7 +46,7 @@ Icon *CauldronTile::getTexture(const wstring &name)
 	return NULL;
 }
 
-void CauldronTile::addAABBs(Level *level, int x, int y, int z, AABB *box, AABBList *boxes, std::shared_ptr<Entity> source)
+void CauldronTile::addAABBs(Level *level, int x, int y, int z, AABB *box, AABBList *boxes, shared_ptr<Entity> source)
 {
     setShape(0, 0, 0, 1, 5.0f / 16.0f, 1);
     Tile::addAABBs(level, x, y, z, box, boxes, source);
@@ -83,7 +83,7 @@ bool CauldronTile::isCubeShaped()
 	return false;
 }
 
-bool CauldronTile::use(Level *level, int x, int y, int z, std::shared_ptr<Player> player, int clickedFace, float clickX, float clickY, float clickZ, bool soundOnly/*=false*/) // 4J added soundOnly param
+bool CauldronTile::use(Level *level, int x, int y, int z, shared_ptr<Player> player, int clickedFace, float clickX, float clickY, float clickZ, bool soundOnly/*=false*/) // 4J added soundOnly param
 {
 	if(soundOnly) return false;
 
@@ -92,7 +92,7 @@ bool CauldronTile::use(Level *level, int x, int y, int z, std::shared_ptr<Player
         return true;
     }
 
-    std::shared_ptr<ItemInstance> item = player->inventory->getSelected();
+    shared_ptr<ItemInstance> item = player->inventory->getSelected();
     if (item == NULL)
 	{
         return true;
@@ -106,7 +106,7 @@ bool CauldronTile::use(Level *level, int x, int y, int z, std::shared_ptr<Player
 		{
             if (!player->abilities.instabuild)
 			{
-                player->inventory->setItem(player->inventory->selected, std::shared_ptr<ItemInstance>(new ItemInstance(Item::bucket_empty)));
+                player->inventory->setItem(player->inventory->selected, shared_ptr<ItemInstance>(new ItemInstance(Item::bucket_empty)));
             }
 
             level->setData(x, y, z, 3);
@@ -117,15 +117,15 @@ bool CauldronTile::use(Level *level, int x, int y, int z, std::shared_ptr<Player
 	{
         if (currentData > 0)
 		{
-            std::shared_ptr<ItemInstance> potion = std::shared_ptr<ItemInstance>(new ItemInstance(Item::potion, 1, 0));
+            shared_ptr<ItemInstance> potion = shared_ptr<ItemInstance>(new ItemInstance(Item::potion, 1, 0));
             if (!player->inventory->add(potion))
 			{
-                level->addEntity(std::shared_ptr<ItemEntity>(new ItemEntity(level, x + 0.5, y + 1.5, z + 0.5, potion)));
+                level->addEntity(shared_ptr<ItemEntity>(new ItemEntity(level, x + 0.5, y + 1.5, z + 0.5, potion)));
             }
 			// 4J Stu - Brought forward change to update inventory when filling bottles with water
-			else if (std::dynamic_pointer_cast<ServerPlayer>( player ) != NULL)
+			else if (dynamic_pointer_cast<ServerPlayer>( player ) != NULL)
 			{
-				std::dynamic_pointer_cast<ServerPlayer>( player )->refreshContainer(player->inventoryMenu);
+				dynamic_pointer_cast<ServerPlayer>( player )->refreshContainer(player->inventoryMenu);
 			}
 			// 4J-PB - don't lose the water in creative mode
 			if (player->abilities.instabuild==false)

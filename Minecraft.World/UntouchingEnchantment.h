@@ -11,5 +11,5 @@ public:
 	virtual int getMaxCost(int level);
 	virtual int getMaxLevel();
 	virtual bool isCompatibleWith(Enchantment *other) const;
-	virtual bool canEnchant(std::shared_ptr<ItemInstance> item);
+	virtual bool canEnchant(shared_ptr<ItemInstance> item);
 };

@@ -15,7 +15,7 @@ private:
 	int checkInterval;
 	//eINSTANCEOF eType;
 
-protected:
+protected: 
 	virtual void defineSynchedData() {};
 
 public:
@@ -29,7 +29,7 @@ public:
 
 	virtual void tick();
 	virtual bool isPickable();
-	virtual bool skipAttackInteraction(std::shared_ptr<Entity> source);
+	virtual bool skipAttackInteraction(shared_ptr<Entity> source);
 	virtual bool hurt(DamageSource *source, int damage);
 	virtual void move(double xa, double ya, double za, bool noEntityCubes=false);	// 4J - added noEntityCubes parameter
 	virtual void push(double xa, double ya, double za);

@@ -6,7 +6,7 @@
 SpiderModel::SpiderModel() : Model()
 {
     float g = 0;
-
+        
     int yo = 18+6-9;
 
     head = new ModelPart(this, 32, 4);
@@ -68,7 +68,7 @@ SpiderModel::SpiderModel() : Model()
     leg7->compile(1.0f/16.0f);
 }
 
-void SpiderModel::render(std::shared_ptr<Entity> entity, float time, float r, float bob, float yRot, float xRot, float scale, bool usecompiled)
+void SpiderModel::render(shared_ptr<Entity> entity, float time, float r, float bob, float yRot, float xRot, float scale, bool usecompiled)
 {
     setupAnim(time, r, bob, yRot, xRot, scale);
 
@@ -93,13 +93,13 @@ void SpiderModel::setupAnim(float time, float r, float bob, float yRot, float xR
     float sr = (float) PI / 4.0f;
     leg0->zRot = -sr;
     leg1->zRot = sr;
-
+		
     leg2->zRot = -sr * 0.74f;
     leg3->zRot = sr * 0.74f;
-
+		
     leg4->zRot = -sr * 0.74f;
     leg5->zRot = sr * 0.74f;
-
+		
     leg6->zRot = -sr;
     leg7->zRot = sr;
 

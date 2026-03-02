@@ -97,7 +97,7 @@ namespace boost {
       void set_controlling(bool control = true)
       { controlling_connection = control; }
 
-      std::shared_ptr<BOOST_SIGNALS_NAMESPACE::detail::basic_connection>
+      shared_ptr<BOOST_SIGNALS_NAMESPACE::detail::basic_connection>
       get_connection() const
       { return con; }
 
@@ -115,7 +115,7 @@ namespace boost {
       friend class BOOST_SIGNALS_NAMESPACE::detail::bound_objects_visitor;
 
       // Pointer to the actual contents of the connection
-      std::shared_ptr<BOOST_SIGNALS_NAMESPACE::detail::basic_connection> con;
+      shared_ptr<BOOST_SIGNALS_NAMESPACE::detail::basic_connection> con;
 
       // True if the destruction of this connection object should disconnect
       bool controlling_connection;

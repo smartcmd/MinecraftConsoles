@@ -17,7 +17,7 @@ ItemSpriteRenderer::ItemSpriteRenderer(Item *sourceItem, int sourceItemAuxValue 
 //	this(sourceItem, 0);
 //}
 
-void ItemSpriteRenderer::render(std::shared_ptr<Entity> e, double x, double y, double z, float rot, float a)
+void ItemSpriteRenderer::render(shared_ptr<Entity> e, double x, double y, double z, float rot, float a)
 {
 	// the icon is already cached in the item object, so there should not be any performance impact by not caching it here
 	Icon *icon = sourceItem->getIcon(sourceItemAuxValue);
@@ -37,7 +37,7 @@ void ItemSpriteRenderer::render(std::shared_ptr<Entity> e, double x, double y, d
 	if (icon == PotionItem::getTexture(PotionItem::THROWABLE_ICON) )
 	{
 
-		int col = PotionBrewing::getColorValue((std::dynamic_pointer_cast<ThrownPotion>(e) )->getPotionValue(), false);
+		int col = PotionBrewing::getColorValue((dynamic_pointer_cast<ThrownPotion>(e) )->getPotionValue(), false);
 		float red = ((col >> 16) & 0xff) / 255.0f;
 		float g = ((col >> 8) & 0xff) / 255.0f;
 		float b = ((col) & 0xff) / 255.0f;

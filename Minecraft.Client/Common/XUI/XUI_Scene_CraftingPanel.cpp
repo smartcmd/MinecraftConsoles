@@ -22,7 +22,7 @@
 
 //////////////////////////////////////////////////////////////////////////
 //
-//
+//	
 //
 //////////////////////////////////////////////////////////////////////////
 CXuiSceneCraftingPanel::CXuiSceneCraftingPanel()
@@ -46,10 +46,10 @@ HRESULT CXuiSceneCraftingPanel::OnInit( XUIMessageInit* pInitData, BOOL& bHandle
 	m_iPad=pCraftingPanelData->iPad;
 	m_bSplitscreen=pCraftingPanelData->bSplitscreen;
 
-	HRESULT hr = S_OK;
+	HRESULT hr = S_OK; 
 
 	MapChildControls();
-
+	
 	if(m_iContainerType==RECIPE_TYPE_2x2)
 	{
 		// TODO Inventory dimensions need defined as constants
@@ -74,7 +74,7 @@ HRESULT CXuiSceneCraftingPanel::OnInit( XUIMessageInit* pInitData, BOOL& bHandle
 	// if we are in splitscreen, then we need to figure out if we want to move this scene
 	if(m_bSplitscreen)
 	{
-		app.AdjustSplitscreenScene(m_hObj,&m_OriginalPosition,m_iPad);
+		app.AdjustSplitscreenScene(m_hObj,&m_OriginalPosition,m_iPad);	
 	}
 
 	XuiElementSetShow(m_hGrid,TRUE);
@@ -84,7 +84,7 @@ HRESULT CXuiSceneCraftingPanel::OnInit( XUIMessageInit* pInitData, BOOL& bHandle
 	if(m_iContainerType==RECIPE_TYPE_3x3)
 	{
 		m_pCursors=m_pHSlotsCraftingTableCursors;
-
+		
 		m_iIngredientsMaxSlotC = m_iIngredients3x3SlotC;
 		for(int i=0;i<m_iIngredients3x3SlotC;i++)
 		{
@@ -108,7 +108,7 @@ HRESULT CXuiSceneCraftingPanel::OnInit( XUIMessageInit* pInitData, BOOL& bHandle
 	else
 	{
 		m_pCursors=m_pHSlotsCraftingCursors;
-
+		
 		m_iIngredientsMaxSlotC = m_iIngredients2x2SlotC;
 		for(int i=0;i<m_iIngredients2x2SlotC;i++)
 		{
@@ -131,7 +131,7 @@ HRESULT CXuiSceneCraftingPanel::OnInit( XUIMessageInit* pInitData, BOOL& bHandle
 		}
 	}
 
-	// display the first group tab
+	// display the first group tab 
 	m_hTabGroupA[m_iGroupIndex].SetShow(TRUE);
 
 	// store the slot 0 position
@@ -192,8 +192,8 @@ HRESULT CXuiSceneCraftingPanel::OnInit( XUIMessageInit* pInitData, BOOL& bHandle
 //////////////////////////////////////////////////////////////////////////
 HRESULT CXuiSceneCraftingPanel::OnTransitionEnd( XUIMessageTransition *pTransData, BOOL& bHandled )
 {
-	// are we being destroyed? If so, don't do anything
-	if(pTransData->dwTransAction==XUI_TRANSITION_ACTION_DESTROY )
+	// are we being destroyed? If so, don't do anything 
+	if(pTransData->dwTransAction==XUI_TRANSITION_ACTION_DESTROY ) 
 	{
 		return S_OK;
 	}
@@ -222,7 +222,7 @@ HRESULT CXuiSceneCraftingPanel::OnTransitionEnd( XUIMessageTransition *pTransDat
 
 		// Display the tooltips
 		ui.SetTooltips(m_iPad, IDS_TOOLTIPS_CREATE,IDS_TOOLTIPS_EXIT, IDS_TOOLTIPS_SHOW_INVENTORY,-1,-1,-1,-2, IDS_TOOLTIPS_CHANGE_GROUP);
-		CXuiSceneBase::EnableTooltip(m_iPad, BUTTON_TOOLTIP_A, FALSE );
+		CXuiSceneBase::EnableTooltip(m_iPad, BUTTON_TOOLTIP_A, FALSE );	
 
 		// Check which recipes are available with the resources we have
 		CheckRecipesAvailable();
@@ -241,7 +241,7 @@ HRESULT CXuiSceneCraftingPanel::OnCustomMessage_InventoryUpdated()
 {
 	// Display the tooltips
 	ui.SetTooltips(m_iPad, IDS_TOOLTIPS_CREATE,IDS_TOOLTIPS_EXIT, IDS_TOOLTIPS_SHOW_INVENTORY,-1,-1,-1,-2, IDS_TOOLTIPS_CHANGE_GROUP);
-	CXuiSceneBase::EnableTooltip(m_iPad, BUTTON_TOOLTIP_A, FALSE );
+	CXuiSceneBase::EnableTooltip(m_iPad, BUTTON_TOOLTIP_A, FALSE );	
 
 	// Check which recipes are available with the resources we have
 	CheckRecipesAvailable();
@@ -359,7 +359,7 @@ HRESULT CXuiSceneCraftingPanel::OnDestroy()
 	}
 #endif
 
-	// We need to make sure that we call closeContainer() anytime this menu is closed, even if it is forced to close by some other reason (like the player dying)
+	// We need to make sure that we call closeContainer() anytime this menu is closed, even if it is forced to close by some other reason (like the player dying)	
 	if(Minecraft::GetInstance()->localplayers[m_iPad] != NULL) Minecraft::GetInstance()->localplayers[m_iPad]->closeContainer();
 
 	return S_OK;
@@ -417,21 +417,21 @@ void CXuiSceneCraftingPanel::hideAllIngredientsSlots()
 	}
 }
 
-void CXuiSceneCraftingPanel::setCraftHSlotItem(int iPad, int iIndex, std::shared_ptr<ItemInstance> item, unsigned int uiAlpha)
+void CXuiSceneCraftingPanel::setCraftHSlotItem(int iPad, int iIndex, shared_ptr<ItemInstance> item, unsigned int uiAlpha)
 {
 	m_pHSlotsBrushImageControl[iIndex]->SetIcon(iPad, item, 9, uiAlpha, false);
 	//m_pHSlotsBrushImageControl[iIndex]->SetPassThroughDataAssociation(MAKE_SLOTDISPLAY_ITEM_BITMASK(item->id,item->getAuxValue(),item->isFoil()),MAKE_SLOTDISPLAY_DATA_BITMASK (iPad, uiAlpha, false, item->GetCount(), 9,0) );
 	//m_pHSlotsBrushImageControl[iIndex]->SetShow(TRUE);
 }
 
-void CXuiSceneCraftingPanel::setCraftVSlotItem(int iPad, int iIndex, std::shared_ptr<ItemInstance> item, unsigned int uiAlpha)
+void CXuiSceneCraftingPanel::setCraftVSlotItem(int iPad, int iIndex, shared_ptr<ItemInstance> item, unsigned int uiAlpha)
 {
 	m_pVSlotsBrushImageControl[iIndex]->SetIcon(iPad, item, 9, uiAlpha, false);
 	//m_pVSlotsBrushImageControl[iIndex]->SetPassThroughDataAssociation(MAKE_SLOTDISPLAY_ITEM_BITMASK(item->id,item->getAuxValue(),item->isFoil()),MAKE_SLOTDISPLAY_DATA_BITMASK (iPad, uiAlpha, false, item->GetCount(), 9,0) );
 	//m_pVSlotsBrushImageControl[iIndex]->SetShow(TRUE);
 }
 
-void CXuiSceneCraftingPanel::setCraftingOutputSlotItem(int iPad, std::shared_ptr<ItemInstance> item)
+void CXuiSceneCraftingPanel::setCraftingOutputSlotItem(int iPad, shared_ptr<ItemInstance> item)
 {
 	if(item == NULL)
 	{
@@ -448,7 +448,7 @@ void CXuiSceneCraftingPanel::setCraftingOutputSlotRedBox(bool show)
 	m_pCraftingOutput->SetRedBox(show?TRUE:FALSE);
 }
 
-void CXuiSceneCraftingPanel::setIngredientSlotItem(int iPad, int index, std::shared_ptr<ItemInstance> item)
+void CXuiSceneCraftingPanel::setIngredientSlotItem(int iPad, int index, shared_ptr<ItemInstance> item)
 {
 	if(item == NULL)
 	{
@@ -465,7 +465,7 @@ void CXuiSceneCraftingPanel::setIngredientSlotRedBox(int index, bool show)
 	m_pCraftingIngredientA[index]->SetRedBox(show?TRUE:FALSE);
 }
 
-void CXuiSceneCraftingPanel::setIngredientDescriptionItem(int iPad, int index, std::shared_ptr<ItemInstance> item)
+void CXuiSceneCraftingPanel::setIngredientDescriptionItem(int iPad, int index, shared_ptr<ItemInstance> item)
 {
 	m_pCraftIngredientDescA[index]->SetIcon(iPad, item->id,item->getAuxValue(),item->GetCount(),8,31,TRUE,item->isFoil(),FALSE);
 }
@@ -524,7 +524,7 @@ void CXuiSceneCraftingPanel::UpdateMultiPanel()
 		// turn off the inventory
 		XuiElementSetShow(m_hGridInventory,FALSE);
 		XuiElementSetShow(m_DescriptionText,TRUE);
-		XuiElementSetShow(m_InventoryText,FALSE);
+		XuiElementSetShow(m_InventoryText,FALSE);		
 		break;
 	case DISPLAY_INGREDIENTS:
 		// turn off all the descriptions
@@ -544,7 +544,7 @@ void CXuiSceneCraftingPanel::UpdateMultiPanel()
 		{
 			XuiControlSetText(m_InventoryText,app.GetString(IDS_INGREDIENTS));
 			XuiElementSetShow(m_InventoryText,TRUE);
-		}
+		}		
 		break;
 	}
 }

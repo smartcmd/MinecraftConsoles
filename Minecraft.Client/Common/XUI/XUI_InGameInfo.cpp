@@ -58,7 +58,7 @@ HRESULT CScene_InGameInfo::OnInit( XUIMessageInit* pInitData, BOOL& bHandled )
 	if(thisPlayer != NULL) m_isHostPlayer = thisPlayer->IsHost() == TRUE;
 
 	Minecraft *pMinecraft = Minecraft::GetInstance();
-	std::shared_ptr<MultiplayerLocalPlayer> localPlayer = pMinecraft->localplayers[m_iPad];
+	shared_ptr<MultiplayerLocalPlayer> localPlayer = pMinecraft->localplayers[m_iPad];
 	if(!m_isHostPlayer && !localPlayer->isModerator() )
 	{
 		m_gameOptionsButton.SetEnable(FALSE);
@@ -77,7 +77,7 @@ HRESULT CScene_InGameInfo::OnInit( XUIMessageInit* pInitData, BOOL& bHandled )
 	int keyA = -1;
 	ui.SetTooltips( m_iPad, keyA,IDS_TOOLTIPS_BACK,keyX,-1);
 
-
+	
 	CXuiSceneBase::ShowDarkOverlay( m_iPad, TRUE );
 
 	SetTimer( TOOLTIP_TIMERID , INGAME_INFO_TOOLTIP_TIMER );
@@ -179,11 +179,11 @@ HRESULT CScene_InGameInfo::OnNotifyPressEx(HXUIOBJ hObjPressed, XUINotifyPress* 
 	ui.AnimateKeyPress(pNotifyPressData->UserIndex, VK_PAD_A);
 
 	if( hObjPressed == playersList )
-	{
+	{	
 		INetworkPlayer *selectedPlayer = g_NetworkManager.GetPlayerBySmallId( m_players[ playersList.GetCurSel() ] );
-
+		
 		Minecraft *pMinecraft = Minecraft::GetInstance();
-		std::shared_ptr<MultiplayerLocalPlayer> localPlayer = pMinecraft->localplayers[m_iPad];
+		shared_ptr<MultiplayerLocalPlayer> localPlayer = pMinecraft->localplayers[m_iPad];
 
 		bool isOp = m_isHostPlayer || localPlayer->isModerator();
 		bool cheats = app.GetGameHostOption(eGameHostOption_CheatsEnabled) != 0;
@@ -220,7 +220,7 @@ HRESULT CScene_InGameInfo::OnNotifyPressEx(HXUIOBJ hObjPressed, XUINotifyPress* 
 		}
 	}
 	else if( hObjPressed == m_gameOptionsButton )
-	{
+	{		
 		app.NavigateToScene(pNotifyPressData->UserIndex,eUIScene_InGameHostOptionsMenu);
 	}
 	return S_OK;
@@ -330,7 +330,7 @@ HRESULT CScene_InGameInfo::OnGetSourceDataText(XUIMessageGetSourceText *pGetSour
 			}
 
 			HRESULT hr;
-			HXUIOBJ hButton, hVisual, hPlayerIcon, hVoiceIcon;
+			HXUIOBJ hButton, hVisual, hPlayerIcon, hVoiceIcon;			
 			hButton = playersList.GetItemControl(pGetSourceTextData->iItem);
 			hr=XuiControlGetVisual(hButton,&hVisual);
 
@@ -415,7 +415,7 @@ HRESULT CScene_InGameInfo::OnGetSourceDataText(XUIMessageGetSourceText *pGetSour
 					XuiElementFindNamedFrame(hVoiceIcon, L"NotSpeaking", &playFrame);
 				}
 			}
-
+			
 			if(playFrame < 0)
 			{
 				XuiElementFindNamedFrame(hVoiceIcon, L"Normal", &playFrame);
@@ -465,8 +465,8 @@ void CScene_InGameInfo::updateTooltips()
 
 	int keyA = -1;
 	Minecraft *pMinecraft = Minecraft::GetInstance();
-	std::shared_ptr<MultiplayerLocalPlayer> localPlayer = pMinecraft->localplayers[m_iPad];
-
+	shared_ptr<MultiplayerLocalPlayer> localPlayer = pMinecraft->localplayers[m_iPad];
+	
 	bool isOp = m_isHostPlayer || localPlayer->isModerator();
 	bool cheats = app.GetGameHostOption(eGameHostOption_CheatsEnabled) != 0;
 	bool trust = app.GetGameHostOption(eGameHostOption_TrustPlayers) != 0;
@@ -524,12 +524,12 @@ int CScene_InGameInfo::KickPlayerReturned(void *pParam,int iPad,C4JStorage::EMes
 	delete pParam;
 
 	if(result==C4JStorage::EMessage_ResultAccept)
-	{
+	{		
 		Minecraft *pMinecraft = Minecraft::GetInstance();
-		std::shared_ptr<MultiplayerLocalPlayer> localPlayer = pMinecraft->localplayers[iPad];
+		shared_ptr<MultiplayerLocalPlayer> localPlayer = pMinecraft->localplayers[iPad];
 		if(localPlayer != NULL && localPlayer->connection)
 		{
-			localPlayer->connection->send( std::shared_ptr<KickPlayerPacket>( new KickPlayerPacket(smallId) ) );
+			localPlayer->connection->send( shared_ptr<KickPlayerPacket>( new KickPlayerPacket(smallId) ) );
 		}
 	}
 

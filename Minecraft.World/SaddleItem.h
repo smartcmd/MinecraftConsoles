@@ -8,6 +8,6 @@ class SaddleItem : public Item
 public:
 	SaddleItem(int id);
 
-	virtual bool interactEnemy(std::shared_ptr<ItemInstance> itemInstance, std::shared_ptr<Mob> mob);
-	virtual bool hurtEnemy(std::shared_ptr<ItemInstance> itemInstance, std::shared_ptr<Mob> mob, std::shared_ptr<Mob> attacker);
+	virtual bool interactEnemy(shared_ptr<ItemInstance> itemInstance, shared_ptr<Mob> mob);
+	virtual bool hurtEnemy(shared_ptr<ItemInstance> itemInstance, shared_ptr<Mob> mob, shared_ptr<Mob> attacker);
 };

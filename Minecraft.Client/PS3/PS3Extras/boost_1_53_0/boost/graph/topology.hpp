@@ -29,10 +29,10 @@ namespace boost {
  * Topologies                                              *
  ***********************************************************/
 template<std::size_t Dims>
-class convex_topology
+class convex_topology 
 {
   public: // For VisualAge C++
-  struct point
+  struct point 
   {
     BOOST_STATIC_CONSTANT(std::size_t, dimensions = Dims);
     point() { }
@@ -129,7 +129,7 @@ class convex_topology
   typedef point point_type;
   typedef point_difference point_difference_type;
 
-  double distance(point a, point b) const
+  double distance(point a, point b) const 
   {
     double dist = 0.;
     for (std::size_t i = 0; i < Dims; ++i) {
@@ -142,7 +142,7 @@ class convex_topology
     return dist;
   }
 
-  point move_position_toward(point a, double fraction, point b) const
+  point move_position_toward(point a, double fraction, point b) const 
   {
     point result;
     for (std::size_t i = 0; i < Dims; ++i)
@@ -206,15 +206,15 @@ class hypercube_topology : public convex_topology<Dims>
   typedef typename convex_topology<Dims>::point_type point_type;
   typedef typename convex_topology<Dims>::point_difference_type point_difference_type;
 
-  explicit hypercube_topology(double scaling = 1.0)
-    : gen_ptr(new RandomNumberGenerator), rand(new rand_t(*gen_ptr)),
-      scaling(scaling)
+  explicit hypercube_topology(double scaling = 1.0) 
+    : gen_ptr(new RandomNumberGenerator), rand(new rand_t(*gen_ptr)), 
+      scaling(scaling) 
   { }
 
-  hypercube_topology(RandomNumberGenerator& gen, double scaling = 1.0)
+  hypercube_topology(RandomNumberGenerator& gen, double scaling = 1.0) 
     : gen_ptr(), rand(new rand_t(gen)), scaling(scaling) { }
-
-  point_type random_point() const
+                     
+  point_type random_point() const 
   {
     point_type p;
     for (std::size_t i = 0; i < Dims; ++i)
@@ -268,8 +268,8 @@ class hypercube_topology : public convex_topology<Dims>
   }
 
  private:
-  std::shared_ptr<RandomNumberGenerator> gen_ptr;
-  std::shared_ptr<rand_t> rand;
+  shared_ptr<RandomNumberGenerator> gen_ptr;
+  shared_ptr<rand_t> rand;
   double scaling;
 };
 
@@ -280,8 +280,8 @@ class square_topology : public hypercube_topology<2, RandomNumberGenerator>
 
  public:
   explicit square_topology(double scaling = 1.0) : inherited(scaling) { }
-
-  square_topology(RandomNumberGenerator& gen, double scaling = 1.0)
+  
+  square_topology(RandomNumberGenerator& gen, double scaling = 1.0) 
     : inherited(gen, scaling) { }
 };
 
@@ -308,7 +308,7 @@ class rectangle_topology : public convex_topology<2>
   typedef typename convex_topology<2>::point_type point_type;
   typedef typename convex_topology<2>::point_difference_type point_difference_type;
 
-  point_type random_point() const
+  point_type random_point() const 
   {
     point_type p;
     p[0] = (*rand)() * (right - left) + left;
@@ -362,8 +362,8 @@ class rectangle_topology : public convex_topology<2>
   }
 
  private:
-  std::shared_ptr<RandomNumberGenerator> gen_ptr;
-  std::shared_ptr<rand_t> rand;
+  shared_ptr<RandomNumberGenerator> gen_ptr;
+  shared_ptr<rand_t> rand;
   double left, top, right, bottom;
 };
 
@@ -374,8 +374,8 @@ class cube_topology : public hypercube_topology<3, RandomNumberGenerator>
 
  public:
   explicit cube_topology(double scaling = 1.0) : inherited(scaling) { }
-
-  cube_topology(RandomNumberGenerator& gen, double scaling = 1.0)
+  
+  cube_topology(RandomNumberGenerator& gen, double scaling = 1.0) 
     : inherited(gen, scaling) { }
 };
 
@@ -389,15 +389,15 @@ class ball_topology : public convex_topology<Dims>
   typedef typename convex_topology<Dims>::point_type point_type;
   typedef typename convex_topology<Dims>::point_difference_type point_difference_type;
 
-  explicit ball_topology(double radius = 1.0)
-    : gen_ptr(new RandomNumberGenerator), rand(new rand_t(*gen_ptr)),
-      radius(radius)
+  explicit ball_topology(double radius = 1.0) 
+    : gen_ptr(new RandomNumberGenerator), rand(new rand_t(*gen_ptr)), 
+      radius(radius) 
   { }
 
-  ball_topology(RandomNumberGenerator& gen, double radius = 1.0)
+  ball_topology(RandomNumberGenerator& gen, double radius = 1.0) 
     : gen_ptr(), rand(new rand_t(gen)), radius(radius) { }
-
-  point_type random_point() const
+                     
+  point_type random_point() const 
   {
     point_type p;
     double dist_sum;
@@ -457,8 +457,8 @@ class ball_topology : public convex_topology<Dims>
   }
 
  private:
-  std::shared_ptr<RandomNumberGenerator> gen_ptr;
-  std::shared_ptr<rand_t> rand;
+  shared_ptr<RandomNumberGenerator> gen_ptr;
+  shared_ptr<rand_t> rand;
   double radius;
 };
 
@@ -469,8 +469,8 @@ class circle_topology : public ball_topology<2, RandomNumberGenerator>
 
  public:
   explicit circle_topology(double radius = 1.0) : inherited(radius) { }
-
-  circle_topology(RandomNumberGenerator& gen, double radius = 1.0)
+  
+  circle_topology(RandomNumberGenerator& gen, double radius = 1.0) 
     : inherited(gen, radius) { }
 };
 
@@ -481,13 +481,13 @@ class sphere_topology : public ball_topology<3, RandomNumberGenerator>
 
  public:
   explicit sphere_topology(double radius = 1.0) : inherited(radius) { }
-
-  sphere_topology(RandomNumberGenerator& gen, double radius = 1.0)
+  
+  sphere_topology(RandomNumberGenerator& gen, double radius = 1.0) 
     : inherited(gen, radius) { }
 };
 
 template<typename RandomNumberGenerator = minstd_rand>
-class heart_topology
+class heart_topology 
 {
   // Heart is defined as the union of three shapes:
   // Square w/ corners (+-1000, -1000), (0, 0), (0, -2000)
@@ -495,7 +495,7 @@ class heart_topology
   // Circle centered at (500, -500) radius 500*sqrt(2)
   // Bounding box (-1000, -2000) - (1000, 500*(sqrt(2) - 1))
 
-  struct point
+  struct point 
   {
     point() { values[0] = 0.0; values[1] = 0.0; }
     point(double x, double y) { values[0] = x; values[1] = y; }
@@ -507,7 +507,7 @@ class heart_topology
     double values[2];
   };
 
-  bool in_heart(point p) const
+  bool in_heart(point p) const 
   {
 #ifndef BOOST_NO_STDC_NAMESPACE
     using std::abs;
@@ -522,7 +522,7 @@ class heart_topology
     return false;
   }
 
-  bool segment_within_heart(point p1, point p2) const
+  bool segment_within_heart(point p1, point p2) const 
   {
     // Assumes that p1 and p2 are within the heart
     if ((p1[0] < 0) == (p2[0] < 0)) return true; // Same side of symmetry line
@@ -538,13 +538,13 @@ class heart_topology
  public:
   typedef point point_type;
 
-  heart_topology()
+  heart_topology() 
     : gen_ptr(new RandomNumberGenerator), rand(new rand_t(*gen_ptr)) { }
 
-  heart_topology(RandomNumberGenerator& gen)
+  heart_topology(RandomNumberGenerator& gen) 
     : gen_ptr(), rand(new rand_t(gen)) { }
 
-  point random_point() const
+  point random_point() const 
   {
     point result;
     do {
@@ -556,7 +556,7 @@ class heart_topology
 
   // Not going to provide clipping to bounding region or distance from boundary
 
-  double distance(point a, point b) const
+  double distance(point a, point b) const 
   {
     if (segment_within_heart(a, b)) {
       // Straight line
@@ -567,7 +567,7 @@ class heart_topology
     }
   }
 
-  point move_position_toward(point a, double fraction, point b) const
+  point move_position_toward(point a, double fraction, point b) const 
   {
     if (segment_within_heart(a, b)) {
       // Straight line
@@ -576,10 +576,10 @@ class heart_topology
     } else {
       double distance_to_point_a = boost::math::hypot(a[0], a[1]);
       double distance_to_point_b = boost::math::hypot(b[0], b[1]);
-      double location_of_point = distance_to_point_a /
+      double location_of_point = distance_to_point_a / 
                                    (distance_to_point_a + distance_to_point_b);
       if (fraction < location_of_point)
-        return point(a[0] * (1 - fraction / location_of_point),
+        return point(a[0] * (1 - fraction / location_of_point), 
                      a[1] * (1 - fraction / location_of_point));
       else
         return point(
@@ -589,8 +589,8 @@ class heart_topology
   }
 
  private:
-  std::shared_ptr<RandomNumberGenerator> gen_ptr;
-  std::shared_ptr<rand_t> rand;
+  shared_ptr<RandomNumberGenerator> gen_ptr;
+  shared_ptr<rand_t> rand;
 };
 
 } // namespace boost

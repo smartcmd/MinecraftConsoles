@@ -22,7 +22,7 @@ private:
 	bool inGround;
 
 public:
-	std::shared_ptr<Mob> owner;
+	shared_ptr<Mob> owner;
 
 private:
 	int life;
@@ -43,7 +43,7 @@ public:
 	virtual bool shouldRenderAtSqrDistance(double distance);
 
 	Fireball(Level *level, double x, double y, double z, double xa, double ya, double za);
-	Fireball(Level *level, std::shared_ptr<Mob> mob, double xa, double ya, double za);
+	Fireball(Level *level, shared_ptr<Mob> mob, double xa, double ya, double za);
 
 public:
 	virtual void tick();

@@ -13,9 +13,9 @@ AgableMob::AgableMob(Level *level) : PathfinderMob(level)
 	registeredBBHeight = 0;
 }
 
-bool AgableMob::interact(std::shared_ptr<Player> player)
+bool AgableMob::interact(shared_ptr<Player> player)
 {
-	std::shared_ptr<ItemInstance> item = player->inventory->getSelected();
+	shared_ptr<ItemInstance> item = player->inventory->getSelected();
 
 	if (item != NULL && item->id == Item::monsterPlacer_Id)
 	{
@@ -24,7 +24,7 @@ bool AgableMob::interact(std::shared_ptr<Player> player)
 			eINSTANCEOF classToSpawn = EntityIO::getClass(item->getAuxValue());
 			if (classToSpawn != eTYPE_NOTSET && (classToSpawn & eTYPE_AGABLE_MOB) == eTYPE_AGABLE_MOB && classToSpawn == GetType() ) // 4J Added GetType() check to only spawn same type
 			{
-				std::shared_ptr<AgableMob> offspring = getBreedOffspring(std::dynamic_pointer_cast<AgableMob>(shared_from_this()));
+				shared_ptr<AgableMob> offspring = getBreedOffspring(dynamic_pointer_cast<AgableMob>(shared_from_this()));
 				if (offspring != NULL)
 				{
 					offspring->setAge(-20 * 60 * 20);

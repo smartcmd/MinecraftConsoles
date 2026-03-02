@@ -53,7 +53,7 @@ int Skeleton::getMaxHealth()
 	return 20;
 }
 
-int Skeleton::getAmbientSound()
+int Skeleton::getAmbientSound() 
 {
     return eSoundType_MOB_SKELETON_AMBIENT;
 }
@@ -63,19 +63,19 @@ int Skeleton::getHurtSound()
     return eSoundType_MOB_SKELETON_HURT;
 }
 
-int Skeleton::getDeathSound()
+int Skeleton::getDeathSound() 
 {
     return eSoundType_MOB_SKELETON_HURT;
 }
 
-std::shared_ptr<ItemInstance> Skeleton::bow;
+shared_ptr<ItemInstance> Skeleton::bow;
 
-std::shared_ptr<ItemInstance> Skeleton::getCarriedItem()
+shared_ptr<ItemInstance> Skeleton::getCarriedItem() 
 {
     return bow;
 }
 
-MobType Skeleton::getMobType()
+MobType Skeleton::getMobType() 
 {
 	return UNDEAD;
 }
@@ -83,7 +83,7 @@ MobType Skeleton::getMobType()
 void Skeleton::aiStep()
 {
 	// isClientSide check brought forward from 1.8  (I assume it's related to the lighting changes)
-	if (level->isDay() && !level->isClientSide)
+	if (level->isDay() && !level->isClientSide) 
 	{
         float br = getBrightness(1);
         if (br > 0.5f)
@@ -101,8 +101,8 @@ void Skeleton::aiStep()
 void Skeleton::die(DamageSource *source)
 {
 	Monster::die(source);
-	std::shared_ptr<Player> player = std::dynamic_pointer_cast<Player>( source->getEntity() );
-	if ( std::dynamic_pointer_cast<Arrow>( source->getDirectEntity() ) != NULL && player != NULL)
+	shared_ptr<Player> player = dynamic_pointer_cast<Player>( source->getEntity() );
+	if ( dynamic_pointer_cast<Arrow>( source->getDirectEntity() ) != NULL && player != NULL)
 	{
 		double xd = player->x - x;
 		double zd = player->z - z;
@@ -113,7 +113,7 @@ void Skeleton::die(DamageSource *source)
 	}
 }
 
-int Skeleton::getDeathLoot()
+int Skeleton::getDeathLoot() 
 {
     return Item::arrow->id;
 }
@@ -122,7 +122,7 @@ void Skeleton::dropDeathLoot(bool wasKilledByPlayer, int playerBonusLevel)
 {
     // drop some arrows
     int count = random->nextInt(3 + playerBonusLevel);
-    for (int i = 0; i < count; i++)
+    for (int i = 0; i < count; i++) 
 	{
         spawnAtLocation(Item::arrow->id, 1);
     }
@@ -138,7 +138,7 @@ void Skeleton::dropRareDeathLoot(int rareLootLevel)
 {
 	if (rareLootLevel > 0)
 	{
-		std::shared_ptr<ItemInstance> bow = std::shared_ptr<ItemInstance>( new ItemInstance(Item::bow) );
+		shared_ptr<ItemInstance> bow = shared_ptr<ItemInstance>( new ItemInstance(Item::bow) );
 		EnchantmentHelper::enchantItem(random, bow, 5);
 		spawnAtLocation(bow, 0);
 	}
@@ -150,5 +150,5 @@ void Skeleton::dropRareDeathLoot(int rareLootLevel)
 
 void Skeleton::staticCtor()
 {
-	Skeleton::bow = std::shared_ptr<ItemInstance>( new ItemInstance(Item::bow, 1) );
+	Skeleton::bow = shared_ptr<ItemInstance>( new ItemInstance(Item::bow, 1) );
 }

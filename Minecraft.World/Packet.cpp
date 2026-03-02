@@ -30,7 +30,7 @@ void Packet::staticCtor()
 	map(8, true, false, true, true, typeid(SetHealthPacket), SetHealthPacket::create);
 	map(9, true, true, true, false, typeid(RespawnPacket), RespawnPacket::create);
 
-	map(10, true, true, true, false, typeid(MovePlayerPacket), MovePlayerPacket::create);
+	map(10, true, true, true, false, typeid(MovePlayerPacket), MovePlayerPacket::create);	
 	map(11, true, true, true, true, typeid(MovePlayerPacket::Pos), MovePlayerPacket::Pos::create);
 	map(12, true, true, true, true, typeid(MovePlayerPacket::Rot), MovePlayerPacket::Rot::create);
 	map(13, true, true, true, true, typeid(MovePlayerPacket::PosRot), MovePlayerPacket::PosRot::create);
@@ -207,7 +207,7 @@ void Packet::map(int id, bool receiveOnClient, bool receiveOnServer, bool sendTo
 }
 
 // 4J Added to record data for outgoing packets
-void Packet::recordOutgoingPacket(std::shared_ptr<Packet> packet)
+void Packet::recordOutgoingPacket(shared_ptr<Packet> packet)
 {
 #ifndef _CONTENT_PACKAGE
 #if PACKET_ENABLE_STAT_TRACKING
@@ -254,7 +254,7 @@ void Packet::renderAllPacketStats()
 
 void Packet::renderAllPacketStatsKey()
 {
-#ifndef _CONTENT_PACKAGE
+#ifndef _CONTENT_PACKAGE	
 #if PACKET_ENABLE_STAT_TRACKING
 	Minecraft *pMinecraft = Minecraft::GetInstance();
 	int total = Packet::renderableStats.size();
@@ -271,9 +271,9 @@ void Packet::renderAllPacketStatsKey()
 #endif
 }
 
-int64_t Packet::getIndexedStatValue(unsigned int samplePos, unsigned int renderableId)
+__int64 Packet::getIndexedStatValue(unsigned int samplePos, unsigned int renderableId)
 {
-	int64_t val = 0;
+	__int64 val = 0;
 
 #ifndef _CONTENT_PACKAGE
 #if PACKET_ENABLE_STAT_TRACKING
@@ -285,13 +285,13 @@ int64_t Packet::getIndexedStatValue(unsigned int samplePos, unsigned int rendera
 }
 
 
-std::shared_ptr<Packet> Packet::getPacket(int id)
+shared_ptr<Packet> Packet::getPacket(int id) 
 {
 	// 4J - removed try/catch
 	//    try
 	//	{
 	return idToCreateMap[id]();
-	//    }
+	//    } 
 	//	catch (exception e)
 	//	{
 	//		// TODO 4J JEV print stack trace, newInstance doesnt throw an exception in c++ yet.
@@ -326,7 +326,7 @@ byteArray Packet::readBytes(DataInputStream *datainputstream)
 }
 
 
-bool Packet::canSendToAnyClient(std::shared_ptr<Packet> packet)
+bool Packet::canSendToAnyClient(shared_ptr<Packet> packet)
 {
 	int packetId = packet->getId();
 
@@ -345,10 +345,10 @@ unordered_map<int, Packet::PacketStatistics *> Packet::statistics = unordered_ma
 
 //int Packet::nextPrint = 0;
 
-std::shared_ptr<Packet> Packet::readPacket(DataInputStream *dis, bool isServer) // throws IOException TODO 4J JEV, should this declare a throws?
+shared_ptr<Packet> Packet::readPacket(DataInputStream *dis, bool isServer) // throws IOException TODO 4J JEV, should this declare a throws?
 {
 	int id = 0;
-	std::shared_ptr<Packet> packet = nullptr;
+	shared_ptr<Packet> packet = nullptr;
 
 	// 4J - removed try/catch
 	//    try
@@ -366,11 +366,11 @@ std::shared_ptr<Packet> Packet::readPacket(DataInputStream *dis, bool isServer) 
 
 	packet = getPacket(id);
 	if (packet == NULL) assert(false);//throw new IOException(wstring(L"Bad packet id ") + _toString<int>(id));
-
+	
 	//app.DebugPrintf("%s reading packet %d\n", isServer ? "Server" : "Client", packet->getId());
 	packet->read(dis);
 	//    }
-	//	catch (EOFException e)
+	//	catch (EOFException e) 
 	//	{
 	//       // reached end of stream
 	//        OutputDebugString("Reached end of stream");
@@ -399,7 +399,7 @@ std::shared_ptr<Packet> Packet::readPacket(DataInputStream *dis, bool isServer) 
 	return packet;
 }
 
-void Packet::writePacket(std::shared_ptr<Packet> packet, DataOutputStream *dos) // throws IOException TODO 4J JEV, should this declare a throws?
+void Packet::writePacket(shared_ptr<Packet> packet, DataOutputStream *dos) // throws IOException TODO 4J JEV, should this declare a throws?
 {
 	//app.DebugPrintf("Writing packet %d\n", packet->getId());
 	dos->write(packet->getId());
@@ -409,7 +409,7 @@ void Packet::writePacket(std::shared_ptr<Packet> packet, DataOutputStream *dos) 
 void Packet::writeUtf(const wstring& value, DataOutputStream *dos) // throws IOException TODO 4J JEV, should this declare a throws?
 {
 #if 0
-	if (value.length() > Short::MAX_VALUE)
+	if (value.length() > Short::MAX_VALUE) 
 	{
 		throw new IOException(L"String too big");
 	}
@@ -437,7 +437,7 @@ wstring Packet::readUtf(DataInputStream *dis, int maxLength) // throws IOExcepti
 	}
 
 	wstring builder = L"";
-	for (int i = 0; i < stringLength; i++)
+	for (int i = 0; i < stringLength; i++) 
 	{
 		wchar_t rc = dis->readChar();
 		builder.push_back( rc );
@@ -455,12 +455,12 @@ void Packet::PacketStatistics::addPacket(int bytes)
 	count++;
 	totalSize += bytes;
 
-	// 4J Added
+	// 4J Added	
 	countSamples[samplesPos & (512 - 1)]++;
 	sizeSamples[samplesPos & (512 - 1)] += (unsigned int) bytes;
 }
 
-int Packet::PacketStatistics::getCount()
+int Packet::PacketStatistics::getCount() 
 {
 	return count;
 }
@@ -489,7 +489,7 @@ void Packet::PacketStatistics::renderStats( )
 #endif
 }
 
-int64_t Packet::PacketStatistics::getCountSample(int samplePos)
+__int64 Packet::PacketStatistics::getCountSample(int samplePos)
 {
 	if(samplePos == 511)
 	{
@@ -519,7 +519,7 @@ bool Packet::canBeInvalidated()
 	return false;
 }
 
-bool Packet::isInvalidatedBy(std::shared_ptr<Packet> packet)
+bool Packet::isInvalidatedBy(shared_ptr<Packet> packet)
 {
 	return false;
 }
@@ -530,16 +530,16 @@ bool Packet::isAync()
 }
 
 // 4J Stu - Brought these functions forward for enchanting/game rules
-std::shared_ptr<ItemInstance> Packet::readItem(DataInputStream *dis)
+shared_ptr<ItemInstance> Packet::readItem(DataInputStream *dis)
 {
-	std::shared_ptr<ItemInstance> item = nullptr;
+	shared_ptr<ItemInstance> item = nullptr;
 	int id = dis->readShort();
 	if (id >= 0)
 	{
 		int count = dis->readByte();
 		int damage = dis->readShort();
 
-		item = std::shared_ptr<ItemInstance>( new ItemInstance(id, count, damage) );
+		item = shared_ptr<ItemInstance>( new ItemInstance(id, count, damage) );
 		// 4J Stu - Always read/write the tag
 		//if (Item.items[id].canBeDepleted() || Item.items[id].shouldOverrideMultiplayerNBT())
 		{
@@ -550,7 +550,7 @@ std::shared_ptr<ItemInstance> Packet::readItem(DataInputStream *dis)
 	return item;
 }
 
-void Packet::writeItem(std::shared_ptr<ItemInstance> item, DataOutputStream *dos)
+void Packet::writeItem(shared_ptr<ItemInstance> item, DataOutputStream *dos)
 {
 	if (item == NULL)
 	{

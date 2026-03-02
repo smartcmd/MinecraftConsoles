@@ -30,13 +30,13 @@ public:
 	static DamageSource *anvil;
 	static DamageSource *fallingBlock;
 
-	static DamageSource *mobAttack(std::shared_ptr<Mob> mob);
-	static DamageSource *playerAttack(std::shared_ptr<Player> player);
-	static DamageSource *arrow(std::shared_ptr<Arrow> arrow, std::shared_ptr<Entity> owner);
-	static DamageSource *fireball(std::shared_ptr<Fireball> fireball, std::shared_ptr<Entity> owner);
-	static DamageSource *thrown(std::shared_ptr<Entity> entity, std::shared_ptr<Entity> owner);
-	static DamageSource *indirectMagic(std::shared_ptr<Entity> entity, std::shared_ptr<Entity> owner);
-	static DamageSource *thorns(std::shared_ptr<Entity> source);
+	static DamageSource *mobAttack(shared_ptr<Mob> mob);
+	static DamageSource *playerAttack(shared_ptr<Player> player);
+	static DamageSource *arrow(shared_ptr<Arrow> arrow, shared_ptr<Entity> owner);
+	static DamageSource *fireball(shared_ptr<Fireball> fireball, shared_ptr<Entity> owner);
+	static DamageSource *thrown(shared_ptr<Entity> entity, shared_ptr<Entity> owner);
+	static DamageSource *indirectMagic(shared_ptr<Entity> entity, shared_ptr<Entity> owner);
+	static DamageSource *thorns(shared_ptr<Entity> source);
 
 private:
 	bool _bypassArmor;
@@ -66,8 +66,8 @@ protected:
 public:
 	virtual ~DamageSource() {}
 
-	virtual std::shared_ptr<Entity> getDirectEntity();
-	virtual std::shared_ptr<Entity> getEntity();
+	virtual shared_ptr<Entity> getDirectEntity();
+	virtual shared_ptr<Entity> getEntity();
 
 protected:
 	DamageSource *bypassArmor();
@@ -82,8 +82,8 @@ public:
 	DamageSource *setMagic();
 
 	// 4J Stu - Made return a packet
-	//virtual wstring getLocalizedDeathMessage(std::shared_ptr<Player> player);
-	virtual std::shared_ptr<ChatPacket> getDeathMessagePacket(std::shared_ptr<Player> player);
+	//virtual wstring getLocalizedDeathMessage(shared_ptr<Player> player);
+	virtual shared_ptr<ChatPacket> getDeathMessagePacket(shared_ptr<Player> player);
 
 	bool isFire();
 	ChatPacket::EChatPacketMessage getMsgId(); // 4J Stu - Used to return String

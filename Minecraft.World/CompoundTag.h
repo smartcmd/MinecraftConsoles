@@ -11,7 +11,7 @@
 #include "ByteArrayTag.h"
 #include "IntArrayTag.h"
 
-class CompoundTag : public Tag
+class CompoundTag : public Tag    
 {
 private:
 	unordered_map<wstring, Tag *> tags;
@@ -46,7 +46,7 @@ public:
 	{
 		// 4J - was return tags.values();
 		vector<Tag *> *ret = new vector<Tag *>;
-
+		
 		AUTO_VAR(itEnd, tags.end());
 		for( unordered_map<wstring, Tag *>::iterator it = tags.begin(); it != itEnd; it++ )
 		{
@@ -80,7 +80,7 @@ public:
         tags[name] = (new IntTag(name,value));
     }
 
-    void putLong(wchar_t * name, int64_t value)
+    void putLong(wchar_t * name, __int64 value)
 	{
         tags[name] = (new LongTag(name,value));
     }
@@ -126,7 +126,7 @@ public:
 		if(it != tags.end()) return it->second;
 		return NULL;
     }
-
+    
     bool contains(wchar_t * name)
 	{
 		return tags.find(name) != tags.end();
@@ -150,9 +150,9 @@ public:
         return ((IntTag *) tags[name])->data;
     }
 
-    int64_t getLong(wchar_t * name)
+    __int64 getLong(wchar_t * name)
 	{
-        if (tags.find(name) == tags.end()) return (int64_t)0;
+        if (tags.find(name) == tags.end()) return (__int64)0;
         return ((LongTag *) tags[name])->data;
     }
 
@@ -227,7 +227,7 @@ public:
 		char *newPrefix = new char[ strlen(prefix) + 4 ];
 		strcpy( newPrefix, prefix);
 		strcat( newPrefix, "   ");
-
+		
 		AUTO_VAR(itEnd, tags.end());
 		for( unordered_map<string, Tag *>::iterator it = tags.begin(); it != itEnd; it++ )
 		{
@@ -255,10 +255,10 @@ public:
 	Tag *copy()
 	{
 		CompoundTag *tag = new CompoundTag(getName());
-
+		
 		AUTO_VAR(itEnd, tags.end());
 		for( AUTO_VAR(it, tags.begin()); it != itEnd; it++ )
-		{
+		{			
 			tag->put((wchar_t *)it->first.c_str(), it->second->copy());
 		}
 		return tag;

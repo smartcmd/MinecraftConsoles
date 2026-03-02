@@ -6,7 +6,7 @@ BookItem::BookItem(int id) : Item(id)
 {
 }
 
-bool BookItem::isEnchantable(std::shared_ptr<ItemInstance> itemInstance)
+bool BookItem::isEnchantable(shared_ptr<ItemInstance> itemInstance)
 {
 	return itemInstance->count == 1;
 }

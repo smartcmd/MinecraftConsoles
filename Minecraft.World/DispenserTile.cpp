@@ -98,7 +98,7 @@ bool DispenserTile::TestUse()
 	return true;
 }
 
-bool DispenserTile::use(Level *level, int x, int y, int z, std::shared_ptr<Player> player, int clickedFace, float clickX, float clickY, float clickZ, bool soundOnly/*=false*/) // 4J added soundOnly param
+bool DispenserTile::use(Level *level, int x, int y, int z, shared_ptr<Player> player, int clickedFace, float clickX, float clickY, float clickZ, bool soundOnly/*=false*/) // 4J added soundOnly param
 {
 	if( soundOnly) return false;
 
@@ -107,7 +107,7 @@ bool DispenserTile::use(Level *level, int x, int y, int z, std::shared_ptr<Playe
 		return true;
 	}
 
-	std::shared_ptr<DispenserTileEntity> trap = std::dynamic_pointer_cast<DispenserTileEntity>( level->getTileEntity(x, y, z) );
+	shared_ptr<DispenserTileEntity> trap = dynamic_pointer_cast<DispenserTileEntity>( level->getTileEntity(x, y, z) );
 	player->openTrap(trap);
 
 	return true;
@@ -138,7 +138,7 @@ void DispenserTile::fireArrow(Level *level, int x, int y, int z, Random *random)
 		xd = -1;
 	}
 
-	std::shared_ptr<DispenserTileEntity> trap = std::dynamic_pointer_cast<DispenserTileEntity>( level->getTileEntity(x, y, z) );
+	shared_ptr<DispenserTileEntity> trap = dynamic_pointer_cast<DispenserTileEntity>( level->getTileEntity(x, y, z) );
 	if(trap != NULL)
 	{
 		int slot=trap->getRandomSlot();
@@ -152,7 +152,7 @@ void DispenserTile::fireArrow(Level *level, int x, int y, int z, Random *random)
 			double xp = x + xd * 0.6 + 0.5;
 			double yp = y + 0.5;
 			double zp = z + zd * 0.6 + 0.5;
-			std::shared_ptr<ItemInstance> item=trap->getItem(slot);
+			shared_ptr<ItemInstance> item=trap->getItem(slot);
 			int result = dispenseItem(trap, level, item, random, x, y, z, xd, zd, xp, yp, zp);
 			if (result == REMOVE_ITEM)
 			{
@@ -190,12 +190,12 @@ void DispenserTile::tick(Level *level, int x, int y, int z, Random *random)
 	}
 }
 
-std::shared_ptr<TileEntity> DispenserTile::newTileEntity(Level *level)
+shared_ptr<TileEntity> DispenserTile::newTileEntity(Level *level)
 {
-	return std::shared_ptr<DispenserTileEntity>( new DispenserTileEntity() );
+	return shared_ptr<DispenserTileEntity>( new DispenserTileEntity() );
 }
 
-void DispenserTile::setPlacedBy(Level *level, int x, int y, int z, std::shared_ptr<Mob> by)
+void DispenserTile::setPlacedBy(Level *level, int x, int y, int z, shared_ptr<Mob> by)
 {
 	int dir = (Mth::floor(by->yRot * 4 / (360) + 0.5)) & 3;
 
@@ -207,12 +207,12 @@ void DispenserTile::setPlacedBy(Level *level, int x, int y, int z, std::shared_p
 
 void DispenserTile::onRemove(Level *level, int x, int y, int z, int id, int data)
 {
-	std::shared_ptr<Container> container = std::dynamic_pointer_cast<DispenserTileEntity>( level->getTileEntity(x, y, z) );
+	shared_ptr<Container> container = dynamic_pointer_cast<DispenserTileEntity>( level->getTileEntity(x, y, z) );
 	if (container != NULL )
 	{
 		for (unsigned int i = 0; i < container->getContainerSize(); i++)
 		{
-			std::shared_ptr<ItemInstance> item = container->getItem(i);
+			shared_ptr<ItemInstance> item = container->getItem(i);
 			if (item != NULL)
 			{
 				float xo = random->nextFloat() * 0.8f + 0.1f;
@@ -225,9 +225,9 @@ void DispenserTile::onRemove(Level *level, int x, int y, int z, int id, int data
 					if (count > item->count) count = item->count;
 					item->count -= count;
 
-					std::shared_ptr<ItemInstance> newItem = std::shared_ptr<ItemInstance>( new ItemInstance(item->id, count, item->getAuxValue()) );
+					shared_ptr<ItemInstance> newItem = shared_ptr<ItemInstance>( new ItemInstance(item->id, count, item->getAuxValue()) );
 					newItem->set4JData( item->get4JData() );
-					std::shared_ptr<ItemEntity> itemEntity = std::shared_ptr<ItemEntity>( new ItemEntity(level, x + xo, y + yo, z + zo, newItem ) );
+					shared_ptr<ItemEntity> itemEntity = shared_ptr<ItemEntity>( new ItemEntity(level, x + xo, y + yo, z + zo, newItem ) );
 					float pow = 0.05f;
 					itemEntity->xd = (float) random->nextGaussian() * pow;
 					itemEntity->yd = (float) random->nextGaussian() * pow + 0.2f;
@@ -247,9 +247,9 @@ void DispenserTile::onRemove(Level *level, int x, int y, int z, int id, int data
 	EntityTile::onRemove(level, x, y, z, id, data);
 }
 
-void DispenserTile::throwItem(Level *level, std::shared_ptr<ItemInstance> item, Random *random, int accuracy, int xd, int zd, double xp, double yp, double zp)
+void DispenserTile::throwItem(Level *level, shared_ptr<ItemInstance> item, Random *random, int accuracy, int xd, int zd, double xp, double yp, double zp)
 {
-	std::shared_ptr<ItemEntity> itemEntity = std::shared_ptr<ItemEntity>(new ItemEntity(level, xp, yp - 0.3, zp, item));
+	shared_ptr<ItemEntity> itemEntity = shared_ptr<ItemEntity>(new ItemEntity(level, xp, yp - 0.3, zp, item));
 
 	double pow = random->nextDouble() * 0.1 + 0.2;
 	itemEntity->xd = xd * pow;
@@ -263,7 +263,7 @@ void DispenserTile::throwItem(Level *level, std::shared_ptr<ItemInstance> item, 
 	level->addEntity(itemEntity);
 }
 
-int DispenserTile::dispenseItem(std::shared_ptr<DispenserTileEntity> trap, Level *level, std::shared_ptr<ItemInstance> item, Random *random, int x, int y, int z, int xd, int zd, double xp, double yp, double zp)
+int DispenserTile::dispenseItem(shared_ptr<DispenserTileEntity> trap, Level *level, shared_ptr<ItemInstance> item, Random *random, int x, int y, int z, int xd, int zd, double xp, double yp, double zp)
 {
 	float power = 1.1f;
 	int accuracy = 6;
@@ -276,7 +276,7 @@ int DispenserTile::dispenseItem(std::shared_ptr<DispenserTileEntity> trap, Level
 			int currentProjectiles = level->countInstanceOf(eTYPE_PROJECTILE,false);
 			if(currentProjectiles < Level::MAX_DISPENSABLE_PROJECTILES)	// 4J - added limit
 			{
-				std::shared_ptr<Arrow> arrow = std::shared_ptr<Arrow>( new Arrow(level, xp, yp, zp) );
+				shared_ptr<Arrow> arrow = shared_ptr<Arrow>( new Arrow(level, xp, yp, zp) );
 				arrow->shoot(xd, .1f, zd, power, (float) accuracy);
 				arrow->pickup = Arrow::PICKUP_ALLOWED;
 				level->addEntity(arrow);
@@ -291,14 +291,14 @@ int DispenserTile::dispenseItem(std::shared_ptr<DispenserTileEntity> trap, Level
 				// not sending a message here, since we will probably get flooded with them when people have automatic dispensers for spawn eggs
 				return LEAVE_ITEM;
 			}
-		}
+		}					
 		break;
 	case Item::egg_Id:
 		{
 			int currentProjectiles = level->countInstanceOf(eTYPE_PROJECTILE,false);
 			if(currentProjectiles < Level::MAX_DISPENSABLE_PROJECTILES)	// 4J - added limit
 			{
-				std::shared_ptr<ThrownEgg> egg = std::shared_ptr<ThrownEgg>( new ThrownEgg(level, xp, yp, zp) );
+				shared_ptr<ThrownEgg> egg = shared_ptr<ThrownEgg>( new ThrownEgg(level, xp, yp, zp) );
 				egg->shoot(xd, .1f, zd, power, (float) accuracy);
 				level->addEntity(egg);
 				level->levelEvent(LevelEvent::SOUND_LAUNCH, x, y, z, 0);
@@ -319,7 +319,7 @@ int DispenserTile::dispenseItem(std::shared_ptr<DispenserTileEntity> trap, Level
 			int currentProjectiles = level->countInstanceOf(eTYPE_PROJECTILE,false);
 			if(currentProjectiles < Level::MAX_DISPENSABLE_PROJECTILES)	// 4J - added limit
 			{
-				std::shared_ptr<Snowball> snowball = std::shared_ptr<Snowball>( new Snowball(level, xp, yp, zp) );
+				shared_ptr<Snowball> snowball = shared_ptr<Snowball>( new Snowball(level, xp, yp, zp) );
 				snowball->shoot(xd, .1f, zd, power, (float) accuracy);
 				level->addEntity(snowball);
 				level->levelEvent(LevelEvent::SOUND_LAUNCH, x, y, z, 0);
@@ -342,14 +342,14 @@ int DispenserTile::dispenseItem(std::shared_ptr<DispenserTileEntity> trap, Level
 			{
 				if(PotionItem::isThrowable(item->getAuxValue()))
 				{
-					std::shared_ptr<ThrownPotion> potion = std::shared_ptr<ThrownPotion>(new ThrownPotion(level, xp, yp, zp, item->getAuxValue()));
+					shared_ptr<ThrownPotion> potion = shared_ptr<ThrownPotion>(new ThrownPotion(level, xp, yp, zp, item->getAuxValue()));
 					potion->shoot(xd, .1f, zd, power * 1.25f, accuracy * .5f);
 					level->addEntity(potion);
 					level->levelEvent(LevelEvent::SOUND_LAUNCH, x, y, z, 0);
 				}
 				else
 				{
-					std::shared_ptr<ItemEntity> itemEntity = std::shared_ptr<ItemEntity>( new ItemEntity(level, xp, yp - 0.3, zp, item) );
+					shared_ptr<ItemEntity> itemEntity = shared_ptr<ItemEntity>( new ItemEntity(level, xp, yp - 0.3, zp, item) );
 
 					double pow = random->nextDouble() * 0.1 + 0.2;
 					itemEntity->xd = xd * pow;
@@ -362,7 +362,7 @@ int DispenserTile::dispenseItem(std::shared_ptr<DispenserTileEntity> trap, Level
 
 					level->addEntity(itemEntity);
 					level->levelEvent(LevelEvent::SOUND_CLICK, x, y, z, 0);
-				}
+				}					
 				return REMOVE_ITEM;
 			}
 			else
@@ -380,7 +380,7 @@ int DispenserTile::dispenseItem(std::shared_ptr<DispenserTileEntity> trap, Level
 			int currentProjectiles = level->countInstanceOf(eTYPE_PROJECTILE,false);
 			if(currentProjectiles < Level::MAX_DISPENSABLE_PROJECTILES)	// 4J - added limit
 			{
-				std::shared_ptr<ThrownExpBottle> expBottle = std::shared_ptr<ThrownExpBottle>( new ThrownExpBottle(level, xp, yp, zp) );
+				shared_ptr<ThrownExpBottle> expBottle = shared_ptr<ThrownExpBottle>( new ThrownExpBottle(level, xp, yp, zp) );
 				expBottle->shoot(xd, .1f, zd, power * 1.25f, accuracy * .5f);
 				level->addEntity(expBottle);
 				level->levelEvent(LevelEvent::SOUND_LAUNCH, x, y, z, 0);
@@ -394,14 +394,14 @@ int DispenserTile::dispenseItem(std::shared_ptr<DispenserTileEntity> trap, Level
 				// not sending a message here, since we will probably get flooded with them when people have automatic dispensers for spawn eggs
 				return LEAVE_ITEM;
 			}
-		}
+		}					
 		break;
 	case Item::fireball_Id: // TU9
 		{
 			int currentFireballs = level->countInstanceOf(eTYPE_SMALL_FIREBALL,true);
 			if(currentFireballs < Level::MAX_DISPENSABLE_FIREBALLS)	// 4J - added limit
 			{
-				std::shared_ptr<SmallFireball> fireball = std::shared_ptr<SmallFireball>( new SmallFireball(level, xp + xd * .3, yp, zp + zd * .3, xd + random->nextGaussian() * .05, random->nextGaussian() * .05, zd + random->nextGaussian() * .05));
+				shared_ptr<SmallFireball> fireball = shared_ptr<SmallFireball>( new SmallFireball(level, xp + xd * .3, yp, zp + zd * .3, xd + random->nextGaussian() * .05, random->nextGaussian() * .05, zd + random->nextGaussian() * .05));
 				level->addEntity(fireball);
 				level->levelEvent(LevelEvent::SOUND_BLAZE_FIREBALL, x, y, z, 0);
 				return REMOVE_ITEM;
@@ -414,21 +414,21 @@ int DispenserTile::dispenseItem(std::shared_ptr<DispenserTileEntity> trap, Level
 				// not sending a message here, since we will probably get flooded with them when people have automatic dispensers for spawn eggs
 				return LEAVE_ITEM;
 			}
-		}
+		} 					
 		break;
 	case Item::monsterPlacer_Id:
 		{
 			int iResult=0;
 			//MonsterPlacerItem *spawnEgg = (MonsterPlacerItem *)item->getItem();
-			std::shared_ptr<Entity> newEntity = MonsterPlacerItem::canSpawn(item->getAuxValue(), level,&iResult);
-
-			std::shared_ptr<Mob> mob = std::dynamic_pointer_cast<Mob>(newEntity);
+			shared_ptr<Entity> newEntity = MonsterPlacerItem::canSpawn(item->getAuxValue(), level,&iResult);
+			
+			shared_ptr<Mob> mob = dynamic_pointer_cast<Mob>(newEntity);
 			if (mob != NULL)
-			{
+			{		
 				// 4J-PB - Changed the line below slightly since mobs were sticking to the dispenser rather than dropping down when fired
 				mob->moveTo(xp + xd * 0.4, yp - 0.3, zp + zd * 0.4, level->random->nextFloat() * 360, 0);
 				mob->finalizeMobSpawn();
-				level->addEntity(mob);
+				level->addEntity(mob);		
 				level->levelEvent(LevelEvent::SOUND_LAUNCH, x, y, z, 0);
 				return REMOVE_ITEM;
 			}
@@ -447,7 +447,7 @@ int DispenserTile::dispenseItem(std::shared_ptr<DispenserTileEntity> trap, Level
 		{
 			BucketItem *pBucket = (BucketItem *) item->getItem();
 
-			if (pBucket->emptyBucket(level, x, y, z, x + xd, y, z + zd))
+			if (pBucket->emptyBucket(level, x, y, z, x + xd, y, z + zd)) 
 			{
 				item->id = Item::bucket_empty_Id;
 				item->count = 1;
@@ -472,9 +472,9 @@ int DispenserTile::dispenseItem(std::shared_ptr<DispenserTileEntity> trap, Level
 					item->id = Item::bucket_water_Id;
 					item->count = 1;
 				}
-				else if (trap->addItem(std::shared_ptr<ItemInstance>(new ItemInstance(Item::bucket_water))) < 0)
+				else if (trap->addItem(shared_ptr<ItemInstance>(new ItemInstance(Item::bucket_water))) < 0)
 				{
-					throwItem(level, std::shared_ptr<ItemInstance>(new ItemInstance(Item::bucket_water)), random, 6, xd, zd, xp, yp, zp);
+					throwItem(level, shared_ptr<ItemInstance>(new ItemInstance(Item::bucket_water)), random, 6, xd, zd, xp, yp, zp);
 				}
 
 				return LEAVE_ITEM;
@@ -488,9 +488,9 @@ int DispenserTile::dispenseItem(std::shared_ptr<DispenserTileEntity> trap, Level
 					item->id = Item::bucket_lava_Id;
 					item->count = 1;
 				}
-				else if (trap->addItem(std::shared_ptr<ItemInstance>(new ItemInstance(Item::bucket_lava))) < 0)
+				else if (trap->addItem(shared_ptr<ItemInstance>(new ItemInstance(Item::bucket_lava))) < 0)
 				{
-					throwItem(level, std::shared_ptr<ItemInstance>(new ItemInstance(Item::bucket_lava)), random, 6, xd, zd, xp, yp, zp);
+					throwItem(level, shared_ptr<ItemInstance>(new ItemInstance(Item::bucket_lava)), random, 6, xd, zd, xp, yp, zp);
 				}
 
 				return LEAVE_ITEM;
@@ -507,22 +507,22 @@ int DispenserTile::dispenseItem(std::shared_ptr<DispenserTileEntity> trap, Level
 			xp = x + (xd < 0 ? xd * 0.8 :  xd * 1.8f) + Mth::abs(zd) * 0.5f;
 			zp = z + (zd < 0 ? zd * 0.8 :  zd * 1.8f) + Mth::abs(xd) * 0.5f;
 
-			if (RailTile::isRail(level, x + xd, y, z + zd))
+			if (RailTile::isRail(level, x + xd, y, z + zd)) 
 			{
 				yp = y + 0.5f;
-			}
-			else if (level->isEmptyTile(x + xd, y, z + zd) && RailTile::isRail(level, x + xd, y - 1, z + zd))
+			} 
+			else if (level->isEmptyTile(x + xd, y, z + zd) && RailTile::isRail(level, x + xd, y - 1, z + zd)) 				
 			{
 				yp = y - 0.5f;
-			}
-			else
+			} 
+			else 
 			{
 				return DISPENSE_ITEM;
 			}
 
 			if( level->countInstanceOf(eTYPE_MINECART, true) < Level::MAX_CONSOLE_MINECARTS )		// 4J - added limit
 			{
-				std::shared_ptr<Minecart> minecart = std::shared_ptr<Minecart>(new Minecart(level, xp, yp, zp, ((MinecartItem *) item->getItem())->type));
+				shared_ptr<Minecart> minecart = shared_ptr<Minecart>(new Minecart(level, xp, yp, zp, ((MinecartItem *) item->getItem())->type));
 				level->addEntity(minecart);
 				level->levelEvent(LevelEvent::SOUND_CLICK, x, y, z, 0);
 
@@ -542,21 +542,21 @@ int DispenserTile::dispenseItem(std::shared_ptr<DispenserTileEntity> trap, Level
 			xp = x + (xd < 0 ? xd * 0.8 :  xd * 1.8f) + Mth::abs(zd) * 0.5f;
 			zp = z + (zd < 0 ? zd * 0.8 :  zd * 1.8f) + Mth::abs(xd) * 0.5f;
 
-			if (level->getMaterial(x + xd, y, z + zd) == Material::water)
+			if (level->getMaterial(x + xd, y, z + zd) == Material::water) 
 			{
 				bLaunchBoat=true;
 				yp = y + 1.0f;
-			}
-			else if (level->isEmptyTile(x + xd, y, z + zd) && level->getMaterial(x + xd, y - 1, z + zd) == Material::water)
+			} 
+			else if (level->isEmptyTile(x + xd, y, z + zd) && level->getMaterial(x + xd, y - 1, z + zd) == Material::water) 
 			{
 				bLaunchBoat=true;
 				yp = y;
-			}
+			} 			
 
 			// check the limit on boats
 			if( bLaunchBoat && level->countInstanceOf(eTYPE_BOAT, true) < Level::MAX_XBOX_BOATS )		// 4J - added limit
 			{
-				std::shared_ptr<Boat> boat = std::shared_ptr<Boat>(new Boat(level, xp, yp, zp));
+				shared_ptr<Boat> boat = shared_ptr<Boat>(new Boat(level, xp, yp, zp));
 				level->addEntity(boat);
 				level->levelEvent(LevelEvent::SOUND_CLICK, x, y, z, 0);
 				return REMOVE_ITEM;

@@ -22,7 +22,7 @@ int DiggingEnchantment::getMaxLevel()
 	return 5;
 }
 
-bool DiggingEnchantment::canEnchant(std::shared_ptr<ItemInstance> item)
+bool DiggingEnchantment::canEnchant(shared_ptr<ItemInstance> item)
 {
 	if (item->getItem()->id == Item::shears_Id) return true;
 	return Enchantment::canEnchant(item);

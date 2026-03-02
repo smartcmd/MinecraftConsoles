@@ -41,11 +41,11 @@ QuadrupedModel::QuadrupedModel(int legSize, float g) : Model()
     leg3->compile(1.0f/16.0f);
 }
 
-void QuadrupedModel::render(std::shared_ptr<Entity> entity, float time, float r, float bob, float yRot, float xRot, float scale, bool usecompiled)
+void QuadrupedModel::render(shared_ptr<Entity> entity, float time, float r, float bob, float yRot, float xRot, float scale, bool usecompiled)
 {
     setupAnim(time, r, bob, yRot, xRot, scale);
 
-	if (young)
+	if (young) 
 	{
 		float ss = 2.0f;
 		glPushMatrix();
@@ -61,8 +61,8 @@ void QuadrupedModel::render(std::shared_ptr<Entity> entity, float time, float r,
 		leg2->render(scale, usecompiled);
 		leg3->render(scale, usecompiled);
 		glPopMatrix();
-	}
-	else
+	} 
+	else 
 	{
 		head->render(scale, usecompiled);
 		body->render(scale, usecompiled);
@@ -102,7 +102,7 @@ void QuadrupedModel::render(QuadrupedModel *model, float scale, bool usecompiled
     leg2->xRot = model->leg2->xRot;
     leg3->xRot = model->leg3->xRot;
 
-	if (young)
+	if (young) 
 	{
 		float ss = 2.0f;
 		glPushMatrix();
@@ -118,8 +118,8 @@ void QuadrupedModel::render(QuadrupedModel *model, float scale, bool usecompiled
 		leg2->render(scale, usecompiled);
 		leg3->render(scale, usecompiled);
 		glPopMatrix();
-	}
-	else
+	} 
+	else 
 	{
 		head->render(scale, usecompiled);
 		body->render(scale, usecompiled);

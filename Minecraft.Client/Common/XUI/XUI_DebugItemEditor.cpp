@@ -9,7 +9,7 @@
 #include "..\..\Common\GameRules\ConsoleGameRules.h"
 #include "XUI_DebugItemEditor.h"
 
-#ifdef _DEBUG_MENUS_ENABLED
+#ifdef _DEBUG_MENUS_ENABLED	
 HRESULT CScene_DebugItemEditor::OnInit( XUIMessageInit *pInitData, BOOL &bHandled )
 {
 	MapChildControls();
@@ -22,7 +22,7 @@ HRESULT CScene_DebugItemEditor::OnInit( XUIMessageInit *pInitData, BOOL &bHandle
 
 	if(m_item!=NULL)
 	{
-		m_icon->SetIcon(m_iPad, m_item->id,m_item->getAuxValue(),m_item->count,10,31,false,m_item->isFoil());
+		m_icon->SetIcon(m_iPad, m_item->id,m_item->getAuxValue(),m_item->count,10,31,false,m_item->isFoil());		
 		m_itemName.SetText( app.GetString( Item::items[m_item->id]->getDescriptionId(m_item) ) );
 
 		m_itemId		.SetText( _toString<int>(m_item->id).c_str() );
@@ -59,8 +59,8 @@ HRESULT CScene_DebugItemEditor::OnKeyDown(XUIMessageInput* pInputData, BOOL& rfH
 			m_slot->set(m_item);
 
 			Minecraft *pMinecraft = Minecraft::GetInstance();
-			std::shared_ptr<MultiplayerLocalPlayer> player = pMinecraft->localplayers[m_iPad];
-			if(player != NULL && player->connection) player->connection->send( std::shared_ptr<ContainerSetSlotPacket>( new ContainerSetSlotPacket(m_menu->containerId, m_slot->index, m_item) ) );
+			shared_ptr<MultiplayerLocalPlayer> player = pMinecraft->localplayers[m_iPad];
+			if(player != NULL && player->connection) player->connection->send( shared_ptr<ContainerSetSlotPacket>( new ContainerSetSlotPacket(m_menu->containerId, m_slot->index, m_item) ) );
 		}
 		// kill the crafting xui
 		app.NavigateBack(m_iPad);
@@ -76,7 +76,7 @@ HRESULT CScene_DebugItemEditor::OnKeyDown(XUIMessageInput* pInputData, BOOL& rfH
 
 HRESULT CScene_DebugItemEditor::OnNotifyValueChanged( HXUIOBJ hObjSource, XUINotifyValueChanged *pNotifyValueChangedData, BOOL &bHandled)
 {
-	if(m_item == NULL) m_item = std::shared_ptr<ItemInstance>( new ItemInstance(0,1,0) );
+	if(m_item == NULL) m_item = shared_ptr<ItemInstance>( new ItemInstance(0,1,0) );
 	if(hObjSource == m_itemId)
 	{
 		int id = 0;
@@ -107,7 +107,7 @@ HRESULT CScene_DebugItemEditor::OnNotifyValueChanged( HXUIOBJ hObjSource, XUINot
 		if(!value.empty()) data = _fromString<int>( value );
 		m_item->set4JData(data);
 	}
-
+	
 	m_icon->SetIcon(m_iPad, m_item->id,m_item->getAuxValue(),m_item->count,10,31,false,m_item->isFoil());
 
 	m_itemName.SetText( app.GetString( Item::items[m_item->id]->getDescriptionId(m_item) ) );

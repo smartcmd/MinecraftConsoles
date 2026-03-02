@@ -59,14 +59,14 @@ void HeavyTile::checkSlide(Level *level, int x, int y, int z)
 				return;
 			}
 
-            std::shared_ptr<FallingTile> e = std::shared_ptr<FallingTile>( new FallingTile(level, x + 0.5f, y + 0.5f, z + 0.5f, id, level->getData(x, y, z)) );
+            shared_ptr<FallingTile> e = shared_ptr<FallingTile>( new FallingTile(level, x + 0.5f, y + 0.5f, z + 0.5f, id, level->getData(x, y, z)) );
 			falling(e);
             level->addEntity(e);
         }
     }
 }
 
-void HeavyTile::falling(std::shared_ptr<FallingTile> entity)
+void HeavyTile::falling(shared_ptr<FallingTile> entity)
 {
 }
 

@@ -28,7 +28,7 @@
 #include "..\..\..\Minecraft.World\net.minecraft.commands.common.h"
 #include "..\..\..\Minecraft.World\ConsoleSaveFileOriginal.h"
 
-#ifdef _DEBUG_MENUS_ENABLED
+#ifdef _DEBUG_MENUS_ENABLED	
 HRESULT CScene_DebugOverlay::OnInit( XUIMessageInit *pInitData, BOOL &bHandled )
 {
 	MapChildControls();
@@ -53,7 +53,7 @@ HRESULT CScene_DebugOverlay::OnInit( XUIMessageInit *pInitData, BOOL &bHandled )
 		m_enchantmentIds.push_back(ench->id);
 		m_enchantments.SetText( i, app.GetString( ench->getDescriptionId() ) );
 	}
-
+	
 	m_mobs.InsertItems( 0, 21 );
 
 	m_mobs.SetText( m_mobFactories.size(), L"Chicken" );
@@ -98,7 +98,7 @@ HRESULT CScene_DebugOverlay::OnInit( XUIMessageInit *pInitData, BOOL &bHandled )
 	m_mobFactories.push_back(eTYPE_BLAZE);
 	m_mobs.SetText( m_mobFactories.size(), L"Magma Cube" );
 	m_mobFactories.push_back(eTYPE_LAVASLIME);
-
+	
 
 	Minecraft *pMinecraft = Minecraft::GetInstance();
 	m_setTime.SetValue( pMinecraft->level->getLevelData()->getTime() % 24000 );
@@ -128,14 +128,14 @@ HRESULT CScene_DebugOverlay::OnNotifyPressEx(HXUIOBJ hObjPressed, XUINotifyPress
 			int id = m_itemIds[nIndex];
 			//app.SetXuiServerAction(pNotifyPressData->UserIndex, eXuiServerAction_DropItem, (void *)id);
 			ClientConnection *conn = Minecraft::GetInstance()->getConnection(ProfileManager.GetPrimaryPad());
-			conn->send( GiveItemCommand::preparePacket(std::dynamic_pointer_cast<Player>(Minecraft::GetInstance()->localplayers[ProfileManager.GetPrimaryPad()]), id) );
+			conn->send( GiveItemCommand::preparePacket(dynamic_pointer_cast<Player>(Minecraft::GetInstance()->localplayers[ProfileManager.GetPrimaryPad()]), id) );
 		}
     }
 	else if ( hObjPressed == m_mobs )
     {
         nIndex = m_mobs.GetCurSel();
 		if(nIndex<m_mobFactories.size())
-		{
+		{			
 			app.SetXuiServerAction(ProfileManager.GetPrimaryPad(),eXuiServerAction_SpawnMob,(void *)m_mobFactories[nIndex]);
 		}
     }
@@ -143,7 +143,7 @@ HRESULT CScene_DebugOverlay::OnNotifyPressEx(HXUIOBJ hObjPressed, XUINotifyPress
     {
         nIndex = m_enchantments.GetCurSel();
 		ClientConnection *conn = Minecraft::GetInstance()->getConnection(ProfileManager.GetPrimaryPad());
-		conn->send( EnchantItemCommand::preparePacket(std::dynamic_pointer_cast<Player>(Minecraft::GetInstance()->localplayers[ProfileManager.GetPrimaryPad()]), m_enchantmentIds[nIndex]) );
+		conn->send( EnchantItemCommand::preparePacket(dynamic_pointer_cast<Player>(Minecraft::GetInstance()->localplayers[ProfileManager.GetPrimaryPad()]), m_enchantmentIds[nIndex]) );
     }
 	/*else if( hObjPressed == m_saveToDisc ) // 4J-JEV: Doesn't look like we use this debug option anymore.
 	{
@@ -171,7 +171,7 @@ HRESULT CScene_DebugOverlay::OnNotifyPressEx(HXUIOBJ hObjPressed, XUINotifyPress
 		HXUIOBJ hScene;
 		HRESULT hr;
 		//const WCHAR XZP_SEPARATOR  = L'#';
-		const DWORD LOCATOR_SIZE = 256; // Use this to allocate space to hold a ResourceLocator string
+		const DWORD LOCATOR_SIZE = 256; // Use this to allocate space to hold a ResourceLocator string 
 		WCHAR szResourceLocator[ LOCATOR_SIZE ];
 
 		swprintf(szResourceLocator, LOCATOR_SIZE, L"section://%X,%ls#%ls",c_ModuleHandle,L"media", L"media/");
@@ -189,7 +189,7 @@ HRESULT CScene_DebugOverlay::OnNotifyPressEx(HXUIOBJ hObjPressed, XUINotifyPress
 		HXUIOBJ hScene;
 		HRESULT hr;
 		//const WCHAR XZP_SEPARATOR  = L'#';
-		const DWORD LOCATOR_SIZE = 256; // Use this to allocate space to hold a ResourceLocator string
+		const DWORD LOCATOR_SIZE = 256; // Use this to allocate space to hold a ResourceLocator string 
 		WCHAR szResourceLocator[ LOCATOR_SIZE ];
 
 		swprintf(szResourceLocator, LOCATOR_SIZE, L"section://%X,%ls#%ls",c_ModuleHandle,L"media", L"media/");
@@ -256,7 +256,7 @@ HRESULT CScene_DebugOverlay::OnNotifyValueChanged( HXUIOBJ hObjSource, XUINotify
 	if( hObjSource == m_setTime )
 	{
 		Minecraft *pMinecraft = Minecraft::GetInstance();
-
+		
 		// Need to set the time on both levels to stop the flickering as the local level
 		// tries to predict the time
 		// Only works if we are on the host machine, but shouldn't break if not

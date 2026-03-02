@@ -23,7 +23,7 @@ public:
 	virtual void tick();
 
 private:
-	bool playerHoldingInteresting(std::shared_ptr<Player> player);
+	bool playerHoldingInteresting(shared_ptr<Player> player);
 
 public:
 	// 4J Added override to update ai elements when loading entity from schematics

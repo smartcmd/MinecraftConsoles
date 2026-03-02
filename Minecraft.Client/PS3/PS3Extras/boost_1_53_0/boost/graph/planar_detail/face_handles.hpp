@@ -12,7 +12,7 @@
 
 #include <list>
 #include <boost/graph/graph_traits.hpp>
-#include <boost/std::shared_ptr.hpp>
+#include <boost/shared_ptr.hpp>
 
 
 // A "face handle" is an optimization meant to serve two purposes in
@@ -26,7 +26,7 @@
 // sequence of edges. The functions first_vertex/second_vertex and
 // first_edge/second_edge allow fast access to the beginning and end of the
 // stored sequence, which allows one to traverse the outer face of the partial
-// planar embedding as it's being created.
+// planar embedding as it's being created. 
 //
 // There are some policies below that define the contents of the face handles:
 // in the case no embedding is needed (for example, if one just wants to use
@@ -48,7 +48,7 @@ namespace boost { namespace graph { namespace detail {
 
 
   //face handle policies
-
+  
   //EmbeddingStorage policy
   struct store_embedding {};
   struct recursive_lazy_list : public store_embedding {};
@@ -65,14 +65,14 @@ namespace boost { namespace graph { namespace detail {
   template<typename DataType>
   struct lazy_list_node
   {
-    typedef std::shared_ptr< lazy_list_node<DataType> > ptr_t;
+    typedef shared_ptr< lazy_list_node<DataType> > ptr_t;
 
     lazy_list_node(const DataType& data) :
       m_reversed(false),
       m_data(data),
       m_has_data(true)
     {}
-
+    
     lazy_list_node(ptr_t left_child, ptr_t right_child) :
       m_reversed(false),
       m_has_data(false),
@@ -83,10 +83,10 @@ namespace boost { namespace graph { namespace detail {
     bool m_reversed;
     DataType m_data;
     bool m_has_data;
-    std::shared_ptr<lazy_list_node> m_left_child;
-    std::shared_ptr<lazy_list_node> m_right_child;
+    shared_ptr<lazy_list_node> m_left_child;
+    shared_ptr<lazy_list_node> m_right_child;
   };
-
+  
 
 
   template <typename StoreOldHandlesPolicy, typename Vertex, typename Edge>
@@ -139,7 +139,7 @@ namespace boost { namespace graph { namespace detail {
   struct edge_list_storage<recursive_lazy_list, Edge>
   {
     typedef lazy_list_node<Edge> node_type;
-    typedef std::shared_ptr< node_type > type;
+    typedef shared_ptr< node_type > type;
     type value;
 
     void push_back(Edge e)
@@ -178,17 +178,17 @@ namespace boost { namespace graph { namespace detail {
   private:
 
     template <typename OutputIterator>
-    void get_list_helper(OutputIterator o_itr,
+    void get_list_helper(OutputIterator o_itr, 
                          type root,
                          bool flipped = false
                          )
     {
       if (!root)
         return;
-
+      
       if (root->m_has_data)
         *o_itr = root->m_data;
-
+      
       if ((flipped && !root->m_reversed) ||
           (!flipped && root->m_reversed)
           )
@@ -201,9 +201,9 @@ namespace boost { namespace graph { namespace detail {
           get_list_helper(o_itr, root->m_left_child, false);
           get_list_helper(o_itr, root->m_right_child, false);
         }
-
+      
     }
-
+    
   };
 
 
@@ -254,20 +254,20 @@ namespace boost { namespace graph { namespace detail {
 
 
 
-
-  template<typename Graph,
-           typename StoreOldHandlesPolicy,
-           typename StoreEmbeddingPolicy
+  
+  template<typename Graph, 
+           typename StoreOldHandlesPolicy, 
+           typename StoreEmbeddingPolicy           
            >
   struct face_handle_impl
   {
     typedef typename graph_traits<Graph>::vertex_descriptor vertex_t;
     typedef typename graph_traits<Graph>::edge_descriptor edge_t;
-    typedef typename edge_list_storage<StoreEmbeddingPolicy, edge_t>::type
+    typedef typename edge_list_storage<StoreEmbeddingPolicy, edge_t>::type 
       edge_list_storage_t;
 
 
-    face_handle_impl() :
+    face_handle_impl() : 
       cached_first_vertex(graph_traits<Graph>::null_vertex()),
       cached_second_vertex(graph_traits<Graph>::null_vertex()),
       true_first_vertex(graph_traits<Graph>::null_vertex()),
@@ -308,11 +308,11 @@ namespace boost { namespace graph { namespace detail {
 
 
 
-  template <typename Graph,
-            typename StoreOldHandlesPolicy = store_old_handles,
+  template <typename Graph, 
+            typename StoreOldHandlesPolicy = store_old_handles, 
             typename StoreEmbeddingPolicy = recursive_lazy_list
             >
-  class face_handle
+  class face_handle 
   {
   public:
     typedef typename graph_traits<Graph>::vertex_descriptor vertex_t;
@@ -347,19 +347,19 @@ namespace boost { namespace graph { namespace detail {
     }
 
     //default copy construction, assignment okay.
-
-    void push_first(edge_t e, const Graph& g)
-    {
+    
+    void push_first(edge_t e, const Graph& g) 
+    { 
       pimpl->edge_list.push_front(e);
-      pimpl->cached_first_vertex = pimpl->true_first_vertex =
+      pimpl->cached_first_vertex = pimpl->true_first_vertex = 
         source(e, g) == pimpl->anchor ? target(e,g) : source(e,g);
       pimpl->cached_first_edge = e;
     }
-
-    void push_second(edge_t e, const Graph& g)
-    {
+  
+    void push_second(edge_t e, const Graph& g) 
+    { 
       pimpl->edge_list.push_back(e);
-      pimpl->cached_second_vertex = pimpl->true_second_vertex =
+      pimpl->cached_second_vertex = pimpl->true_second_vertex = 
         source(e, g) == pimpl->anchor ? target(e,g) : source(e,g);
       pimpl->cached_second_edge = e;
     }
@@ -370,22 +370,22 @@ namespace boost { namespace graph { namespace detail {
     }
 
     inline vertex_t first_vertex() const
-    {
+    { 
       return pimpl->cached_first_vertex;
     }
-
-    inline vertex_t second_vertex() const
-    {
+    
+    inline vertex_t second_vertex() const 
+    { 
       return pimpl->cached_second_vertex;
     }
 
-    inline vertex_t true_first_vertex() const
-    {
+    inline vertex_t true_first_vertex() const 
+    { 
       return pimpl->true_first_vertex;
     }
 
-    inline vertex_t true_second_vertex() const
-    {
+    inline vertex_t true_second_vertex() const 
+    { 
       return pimpl->true_second_vertex;
     }
 
@@ -413,17 +413,17 @@ namespace boost { namespace graph { namespace detail {
     {
       return pimpl->cached_first_edge;
     }
-
+  
     inline edge_t second_edge() const
     {
       return pimpl->cached_second_edge;
     }
-
+    
     inline vertex_t get_anchor() const
     {
       return pimpl->anchor;
     }
-
+  
     void glue_first_to_second
       (face_handle<Graph,StoreOldHandlesPolicy,StoreEmbeddingPolicy>& bottom)
     {
@@ -432,7 +432,7 @@ namespace boost { namespace graph { namespace detail {
       pimpl->cached_first_vertex = bottom.pimpl->cached_first_vertex;
       pimpl->cached_first_edge = bottom.pimpl->cached_first_edge;
     }
-
+    
     void glue_second_to_first
       (face_handle<Graph,StoreOldHandlesPolicy,StoreEmbeddingPolicy>& bottom)
     {
@@ -441,7 +441,7 @@ namespace boost { namespace graph { namespace detail {
       pimpl->cached_second_vertex = bottom.pimpl->cached_second_vertex;
       pimpl->cached_second_edge = bottom.pimpl->cached_second_edge;
     }
-
+  
     void flip()
     {
       pimpl->edge_list.reverse();
@@ -449,7 +449,7 @@ namespace boost { namespace graph { namespace detail {
       std::swap(pimpl->cached_first_vertex, pimpl->cached_second_vertex);
       std::swap(pimpl->cached_first_edge, pimpl->cached_second_edge);
     }
-
+    
     template <typename OutputIterator>
     void get_list(OutputIterator o_itr)
     {
@@ -481,12 +481,12 @@ namespace boost { namespace graph { namespace detail {
       pimpl->old_handles.first_edge = pimpl->cached_first_edge;
       pimpl->old_handles.second_edge = pimpl->cached_second_edge;
     }
-
+  
     void store_old_face_handles_dispatch(no_old_handles) {}
 
 
 
-    boost::std::shared_ptr<impl_t> pimpl;
+    boost::shared_ptr<impl_t> pimpl;
 
   };
 

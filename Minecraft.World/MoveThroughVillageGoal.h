@@ -26,7 +26,7 @@ public:
 	virtual void stop();
 
 private:
-	std::shared_ptr<DoorInfo> getNextDoorInfo(std::shared_ptr<Village> village);
-	bool hasVisited(std::shared_ptr<DoorInfo> di);
+	shared_ptr<DoorInfo> getNextDoorInfo(shared_ptr<Village> village);
+	bool hasVisited(shared_ptr<DoorInfo> di);
 	void updateVisited();
 };

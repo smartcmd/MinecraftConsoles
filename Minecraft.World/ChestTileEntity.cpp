@@ -32,32 +32,32 @@ ChestTileEntity::~ChestTileEntity()
 	delete items;
 }
 
-unsigned int ChestTileEntity::getContainerSize()
+unsigned int ChestTileEntity::getContainerSize() 
 {
 	return 9 * 3;
 }
 
-std::shared_ptr<ItemInstance> ChestTileEntity::getItem(unsigned int slot)
+shared_ptr<ItemInstance> ChestTileEntity::getItem(unsigned int slot)
 {
 	return items->data[slot];
 }
 
-std::shared_ptr<ItemInstance> ChestTileEntity::removeItem(unsigned int slot, int count)
+shared_ptr<ItemInstance> ChestTileEntity::removeItem(unsigned int slot, int count) 
 {
 	if (items->data[slot] != NULL)
 	{
-		if (items->data[slot]->count <= count)
+		if (items->data[slot]->count <= count) 
 		{
-			std::shared_ptr<ItemInstance> item = items->data[slot];
+			shared_ptr<ItemInstance> item = items->data[slot];
 			items->data[slot] = nullptr;
 			this->setChanged();
 			// 4J Stu - Fix for duplication glitch
 			if(item->count <= 0) return nullptr;
 			return item;
-		}
-		else
+		} 
+		else 
 		{
-			std::shared_ptr<ItemInstance> i = items->data[slot]->remove(count);
+			shared_ptr<ItemInstance> i = items->data[slot]->remove(count);
 			if (items->data[slot]->count == 0) items->data[slot] = nullptr;
 			this->setChanged();
 			// 4J Stu - Fix for duplication glitch
@@ -68,18 +68,18 @@ std::shared_ptr<ItemInstance> ChestTileEntity::removeItem(unsigned int slot, int
 	return nullptr;
 }
 
-std::shared_ptr<ItemInstance> ChestTileEntity::removeItemNoUpdate(int slot)
+shared_ptr<ItemInstance> ChestTileEntity::removeItemNoUpdate(int slot)
 {
 	if (items->data[slot] != NULL)
 	{
-		std::shared_ptr<ItemInstance> item = items->data[slot];
+		shared_ptr<ItemInstance> item = items->data[slot];
 		items->data[slot] = nullptr;
 		return item;
 	}
 	return nullptr;
 }
 
-void ChestTileEntity::setItem(unsigned int slot, std::shared_ptr<ItemInstance> item)
+void ChestTileEntity::setItem(unsigned int slot, shared_ptr<ItemInstance> item)
 {
 	items->data[slot] = item;
 	if (item != NULL && item->count > getMaxStackSize()) item->count = getMaxStackSize();
@@ -118,7 +118,7 @@ void ChestTileEntity::save(CompoundTag *base)
 
 	for (unsigned int i = 0; i < items->length; i++)
 	{
-		if (items->data[i] != NULL)
+		if (items->data[i] != NULL) 
 		{
 			CompoundTag *tag = new CompoundTag();
 			tag->putByte(L"Slot", (byte) i);
@@ -135,14 +135,14 @@ int ChestTileEntity::getMaxStackSize()
 	return Container::LARGE_MAX_STACK_SIZE;
 }
 
-bool ChestTileEntity::stillValid(std::shared_ptr<Player> player)
+bool ChestTileEntity::stillValid(shared_ptr<Player> player)
 {
 	if (level->getTileEntity(x, y, z) != shared_from_this() ) return false;
 	if (player->distanceToSqr(x + 0.5, y + 0.5, z + 0.5) > 8 * 8) return false;
 	return true;
 }
 
-void ChestTileEntity::setChanged()
+void ChestTileEntity::setChanged() 
 {
 	TileEntity::setChanged();
 }
@@ -165,19 +165,19 @@ void ChestTileEntity::checkNeighbors()
 
     if (level->getTile(x - 1, y, z) == Tile::chest_Id)
 	{
-        w = std::dynamic_pointer_cast<ChestTileEntity>(level->getTileEntity(x - 1, y, z));
+        w = dynamic_pointer_cast<ChestTileEntity>(level->getTileEntity(x - 1, y, z));
     }
     if (level->getTile(x + 1, y, z) == Tile::chest_Id)
 	{
-        e = std::dynamic_pointer_cast<ChestTileEntity>(level->getTileEntity(x + 1, y, z));
+        e = dynamic_pointer_cast<ChestTileEntity>(level->getTileEntity(x + 1, y, z));
     }
     if (level->getTile(x, y, z - 1) == Tile::chest_Id)
 	{
-        n = std::dynamic_pointer_cast<ChestTileEntity>(level->getTileEntity(x, y, z - 1));
+        n = dynamic_pointer_cast<ChestTileEntity>(level->getTileEntity(x, y, z - 1));
     }
     if (level->getTile(x, y, z + 1) == Tile::chest_Id)
 	{
-        s = std::dynamic_pointer_cast<ChestTileEntity>(level->getTileEntity(x, y, z + 1));
+        s = dynamic_pointer_cast<ChestTileEntity>(level->getTileEntity(x, y, z + 1));
     }
 
     if (n.lock() != NULL) n.lock()->clearCache();
@@ -208,7 +208,7 @@ void ChestTileEntity::tick()
             if (s.lock() != NULL) zc += 0.5;
             if (e.lock() != NULL) xc += 0.5;
 
-			// 4J-PB - Seems the chest open volume is much louder than other sounds from user reports. We'll tone it down a bit
+			// 4J-PB - Seems the chest open volume is much louder than other sounds from user reports. We'll tone it down a bit		
             level->playSound(xc, y + 0.5, zc, eSoundType_RANDOM_CHEST_OPEN, 0.2f, level->random->nextFloat() * 0.1f + 0.9f);
         }
     }
@@ -233,7 +233,7 @@ void ChestTileEntity::tick()
                 if (s.lock() != NULL) zc += 0.5;
                 if (e.lock() != NULL) xc += 0.5;
 
-				// 4J-PB - Seems the chest open volume is much louder than other sounds from user reports. We'll tone it down a bit
+				// 4J-PB - Seems the chest open volume is much louder than other sounds from user reports. We'll tone it down a bit	
                 level->playSound(xc, y + 0.5, zc, eSoundType_RANDOM_CHEST_CLOSE, 0.2f, level->random->nextFloat() * 0.1f + 0.9f);
             }
 		}
@@ -273,9 +273,9 @@ void ChestTileEntity::setRemoved()
 }
 
 // 4J Added
-std::shared_ptr<TileEntity> ChestTileEntity::clone()
+shared_ptr<TileEntity> ChestTileEntity::clone()
 {
-	std::shared_ptr<ChestTileEntity> result = std::shared_ptr<ChestTileEntity>( new ChestTileEntity() );
+	shared_ptr<ChestTileEntity> result = shared_ptr<ChestTileEntity>( new ChestTileEntity() );
 	TileEntity::clone(result);
 
 	for (unsigned int i = 0; i < items->length; i++)

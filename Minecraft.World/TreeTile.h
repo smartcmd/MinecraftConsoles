@@ -6,7 +6,7 @@ class ChunkRebuildData;
 class Player;
 
 class TreeTile : public Tile
-{
+{	
 	friend class Tile;
 	friend class ChunkRebuildData;
 public:
@@ -39,7 +39,7 @@ public:
 	virtual int getResourceCount(Random *random);
 	virtual int getResource(int data, Random *random, int playerBonusLevel);
 	virtual void onRemove(Level *level, int x, int y, int z, int id, int data);
-	virtual void setPlacedBy(Level *level, int x, int y, int z, std::shared_ptr<Mob> by);
+	virtual void setPlacedBy(Level *level, int x, int y, int z, shared_ptr<Mob> by);
 	virtual Icon *getTexture(int face, int data);
 	virtual unsigned int getDescriptionId(int iData = -1);
 
@@ -51,5 +51,5 @@ public:
 	void registerIcons(IconRegister *iconRegister);
 
 protected:
-	virtual std::shared_ptr<ItemInstance> getSilkTouchItemInstance(int data);
+	virtual shared_ptr<ItemInstance> getSilkTouchItemInstance(int data);
 };

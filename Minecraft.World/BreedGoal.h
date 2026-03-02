@@ -23,7 +23,7 @@ public:
 	virtual void tick();
 
 private:
-	std::shared_ptr<Animal> getFreePartner();
+	shared_ptr<Animal> getFreePartner();
 	void breed();
 
 public:

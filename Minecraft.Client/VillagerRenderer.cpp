@@ -8,30 +8,30 @@ VillagerRenderer::VillagerRenderer() : MobRenderer(new VillagerModel(0), 0.5f)
 	villagerModel = (VillagerModel *) model;
 }
 
-int VillagerRenderer::prepareArmor(std::shared_ptr<Mob> villager, int layer, float a)
+int VillagerRenderer::prepareArmor(shared_ptr<Mob> villager, int layer, float a)
 {
 	return -1;
 }
 
-void VillagerRenderer::render(std::shared_ptr<Entity> mob, double x, double y, double z, float rot, float a)
+void VillagerRenderer::render(shared_ptr<Entity> mob, double x, double y, double z, float rot, float a)
 {
 	MobRenderer::render(mob, x, y, z, rot, a);
 }
 
-void VillagerRenderer::renderName(std::shared_ptr<Mob> mob, double x, double y, double z)
+void VillagerRenderer::renderName(shared_ptr<Mob> mob, double x, double y, double z)
 {
 }
 
-void VillagerRenderer::additionalRendering(std::shared_ptr<Mob> mob, float a)
+void VillagerRenderer::additionalRendering(shared_ptr<Mob> mob, float a)
 {
 	MobRenderer::additionalRendering(mob, a);
 }
 
-void VillagerRenderer::scale(std::shared_ptr<Mob> _mob, float a)
+void VillagerRenderer::scale(shared_ptr<Mob> _mob, float a)
 {
-	// 4J - original version used generics and thus had an input parameter of type Blaze rather than std::shared_ptr<Entity>  we have here -
+	// 4J - original version used generics and thus had an input parameter of type Blaze rather than shared_ptr<Entity>  we have here - 
 	// do some casting around instead
-	std::shared_ptr<Villager> mob = std::dynamic_pointer_cast<Villager>(_mob);
+	shared_ptr<Villager> mob = dynamic_pointer_cast<Villager>(_mob);
 	float s = 15 / 16.0f;
 	if (mob->getAge() < 0)
 	{

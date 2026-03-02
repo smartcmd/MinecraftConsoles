@@ -28,7 +28,7 @@ typedef struct _JoinFromInviteData
 	DWORD dwUserIndex; // dwUserIndex
 	DWORD dwLocalUsersMask;   // dwUserMask
 	const INVITE_INFO *pInviteInfo;  // pInviteInfo
-}
+} 
 JoinFromInviteData;
 
 class Player;
@@ -50,7 +50,7 @@ class Merchant;
 
 class CMinecraftAudio;
 
-class CMinecraftApp
+class CMinecraftApp 
 
 #ifdef _XBOX
 	: public CXuiModule
@@ -87,7 +87,7 @@ public:
 
 #ifdef _EXTENDED_ACHIEVEMENTS
 	/* 4J-JEV:
-	 * We need more space in the profile data because of the new achievements and statistics
+	 * We need more space in the profile data because of the new achievements and statistics 
 	 * necessary for the new expanded achievement set.
 	 */
 	static const int GAME_DEFINED_PROFILE_DATA_BYTES = 2*972; // per user
@@ -108,7 +108,7 @@ public:
 	static const int USER_RR = 5;
 	static const int USER_SR = 6;
 	static const int USER_UI = 7; // 4J Stu - This also makes it appear on the UI console
-
+	
 	void			HandleButtonPresses();
 	bool			IntroRunning()																									{ return m_bIntroRunning;}
 	void			SetIntroRunning(bool bSet)																						{m_bIntroRunning=bSet;}
@@ -125,18 +125,18 @@ public:
 	bool			GetGameStarted()																								{return m_bGameStarted;}
 	void			SetGameStarted(bool bVal)																						{ if(bVal) DebugPrintf("SetGameStarted - true\n"); else DebugPrintf("SetGameStarted - false\n"); m_bGameStarted = bVal; m_bIsAppPaused = !bVal;}
 	int				GetLocalPlayerCount(void);
-	bool			LoadInventoryMenu(int iPad,std::shared_ptr<LocalPlayer> player, bool bNavigateBack=false);
-	bool			LoadCreativeMenu(int iPad,std::shared_ptr<LocalPlayer> player,bool bNavigateBack=false);
-	bool			LoadEnchantingMenu(int iPad,std::shared_ptr<Inventory> inventory, int x, int y, int z, Level *level);
-	bool			LoadFurnaceMenu(int iPad,std::shared_ptr<Inventory> inventory, std::shared_ptr<FurnaceTileEntity> furnace);
-	bool			LoadBrewingStandMenu(int iPad,std::shared_ptr<Inventory> inventory, std::shared_ptr<BrewingStandTileEntity> brewingStand);
-	bool			LoadContainerMenu(int iPad,std::shared_ptr<Container> inventory, std::shared_ptr<Container> container);
-	bool			LoadTrapMenu(int iPad,std::shared_ptr<Container> inventory, std::shared_ptr<DispenserTileEntity> trap);
-	bool			LoadCrafting2x2Menu(int iPad,std::shared_ptr<LocalPlayer> player);
-	bool			LoadCrafting3x3Menu(int iPad,std::shared_ptr<LocalPlayer> player, int x, int y, int z);
-	bool			LoadSignEntryMenu(int iPad,std::shared_ptr<SignTileEntity> sign);
-	bool			LoadRepairingMenu(int iPad,std::shared_ptr<Inventory> inventory, Level *level, int x, int y, int z);
-	bool			LoadTradingMenu(int iPad, std::shared_ptr<Inventory> inventory, std::shared_ptr<Merchant> trader, Level *level);
+	bool			LoadInventoryMenu(int iPad,shared_ptr<LocalPlayer> player, bool bNavigateBack=false);
+	bool			LoadCreativeMenu(int iPad,shared_ptr<LocalPlayer> player,bool bNavigateBack=false);
+	bool			LoadEnchantingMenu(int iPad,shared_ptr<Inventory> inventory, int x, int y, int z, Level *level);
+	bool			LoadFurnaceMenu(int iPad,shared_ptr<Inventory> inventory, shared_ptr<FurnaceTileEntity> furnace);
+	bool			LoadBrewingStandMenu(int iPad,shared_ptr<Inventory> inventory, shared_ptr<BrewingStandTileEntity> brewingStand);
+	bool			LoadContainerMenu(int iPad,shared_ptr<Container> inventory, shared_ptr<Container> container);
+	bool			LoadTrapMenu(int iPad,shared_ptr<Container> inventory, shared_ptr<DispenserTileEntity> trap);
+	bool			LoadCrafting2x2Menu(int iPad,shared_ptr<LocalPlayer> player);
+	bool			LoadCrafting3x3Menu(int iPad,shared_ptr<LocalPlayer> player, int x, int y, int z);
+	bool			LoadSignEntryMenu(int iPad,shared_ptr<SignTileEntity> sign);
+	bool			LoadRepairingMenu(int iPad,shared_ptr<Inventory> inventory, Level *level, int x, int y, int z);
+	bool			LoadTradingMenu(int iPad, shared_ptr<Inventory> inventory, shared_ptr<Merchant> trader, Level *level);
 
 	bool			GetTutorialMode()																									{ return m_bTutorialMode;}
 	void			SetTutorialMode(bool bSet)																							{m_bTutorialMode=bSet;}
@@ -152,14 +152,14 @@ public:
 	void			SetGlobalXuiAction(eXuiAction action)																				{m_eGlobalXuiAction=action;}
 	eXuiAction      GetXuiAction(int iPad)																								{return m_eXuiAction[iPad];}
 	void			SetAction(int iPad, eXuiAction action, LPVOID param = NULL);
-	void			SetTMSAction(int iPad, eTMSAction action)																			{m_eTMSAction[iPad]=action; }
+	void			SetTMSAction(int iPad, eTMSAction action)																			{m_eTMSAction[iPad]=action; }	
 	eTMSAction      GetTMSAction(int iPad)																								{return m_eTMSAction[iPad];}
 	eXuiServerAction GetXuiServerAction(int iPad)																						{return m_eXuiServerAction[iPad];}
 	LPVOID			GetXuiServerActionParam(int iPad)																					{return m_eXuiServerActionParam[iPad];}
 	void			SetXuiServerAction(int iPad, eXuiServerAction action, LPVOID param = NULL)											{m_eXuiServerAction[iPad]=action; m_eXuiServerActionParam[iPad] = param;}
 	eXuiServerAction GetGlobalXuiServerAction()																							{return m_eGlobalXuiServerAction;}
 	void			SetGlobalXuiServerAction(eXuiServerAction action)																			{m_eGlobalXuiServerAction=action;}
-
+	
 	DisconnectPacket::eDisconnectReason	GetDisconnectReason()																			{ return m_disconnectReason; }
 	void			SetDisconnectReason(DisconnectPacket::eDisconnectReason bVal)														{ m_disconnectReason = bVal; }
 
@@ -224,7 +224,7 @@ public:
 #endif
 	virtual void	SetRichPresenceContext(int iPad, int contextId) = 0;
 
-
+	
 	void			SetGameSettings(int iPad,eGameSetting eVal,unsigned char ucVal);
 	unsigned char	GetGameSettings(int iPad,eGameSetting eVal);
 	unsigned char	GetGameSettings(eGameSetting eVal); // for the primary pad
@@ -268,7 +268,7 @@ public:
 	void			SetGameSettingsDebugMask(int iPad, unsigned int uiVal);
 	void			ActionDebugMask(int iPad, bool bSetAllClear=false);
 
-	//
+	// 
 	bool IsLocalMultiplayerAvailable();
 
 	// for sign in change monitoring
@@ -343,7 +343,7 @@ public:
 
 	// Texture Pack Data files (icon, banner, comparison shot & text)
 	void AddMemoryTPDFile(int iConfig,PBYTE pbData,DWORD dwBytes);
-	void RemoveMemoryTPDFile(int iConfig);
+	void RemoveMemoryTPDFile(int iConfig);	
 	bool IsFileInTPD(int iConfig);
 	void GetTPD(int iConfig,PBYTE *ppbData,DWORD *pdwBytes);
 	int GetTPDSize() {return m_MEM_TPD.size();}
@@ -424,11 +424,11 @@ public:
 	byteArray getArchiveFile(const wstring &filename);
 
 private:
-
+	
 	static int BannedLevelDialogReturned(void *pParam,int iPad,const C4JStorage::EMessageResult);
 	static int TexturePackDialogReturned(void *pParam,int iPad,C4JStorage::EMessageResult result);
-
-	VBANNEDLIST *m_vBannedListA[XUSER_MAX_COUNT];
+	
+	VBANNEDLIST *m_vBannedListA[XUSER_MAX_COUNT]; 
 
 	void HandleButtonPresses(int iPad);
 
@@ -456,7 +456,7 @@ private:
 
 	static unsigned int m_uiLastSignInData;
 
-	// We've got sizeof(GAME_SETTINGS) bytes reserved at the start of the gamedefined data per player for settings
+	// We've got sizeof(GAME_SETTINGS) bytes reserved at the start of the gamedefined data per player for settings 
 	GAME_SETTINGS *GameSettingsA[XUSER_MAX_COUNT];
 
 	// For promo work
@@ -489,7 +489,7 @@ public:
 	// trial timer
 	void SetTrialTimerStart(void);
 	float getTrialTimer(void);
-
+	
 	// notifications from the game for qnet
 	VNOTIFICATIONS *GetNotifications()	{return &m_vNotifications;}
 
@@ -501,7 +501,7 @@ private:
 	eXuiAction m_eXuiAction[XUSER_MAX_COUNT];
 	eTMSAction m_eTMSAction[XUSER_MAX_COUNT];
 	LPVOID m_eXuiActionParam[XUSER_MAX_COUNT];
-	eXuiAction m_eGlobalXuiAction;
+	eXuiAction m_eGlobalXuiAction;	
 	eXuiServerAction m_eXuiServerAction[XUSER_MAX_COUNT];
 	LPVOID m_eXuiServerActionParam[XUSER_MAX_COUNT];
 	eXuiServerAction m_eGlobalXuiServerAction;
@@ -525,20 +525,20 @@ private:
 	// Trial timer
 	float m_fTrialTimerStart,mfTrialPausedTime;
 	typedef struct TimeInfo
-	{
-		LARGE_INTEGER qwTime;
-		LARGE_INTEGER qwAppTime;
+	{    
+		LARGE_INTEGER qwTime;    
+		LARGE_INTEGER qwAppTime;   
 
-		float fAppTime;
-		float fElapsedTime;
-		float fSecsPerTick;
-	} TIMEINFO;
+		float fAppTime;    
+		float fElapsedTime;    
+		float fSecsPerTick;    
+	} TIMEINFO;	
 
 	TimeInfo m_Time;
 
 protected:
-	static const int MAX_TIPS_GAMETIP = 50;
-	static const int MAX_TIPS_TRIVIATIP = 20;
+	static const int MAX_TIPS_GAMETIP = 50; 
+	static const int MAX_TIPS_TRIVIATIP = 20; 
 	static TIPSTRUCT m_GameTipA[MAX_TIPS_GAMETIP];
 	static TIPSTRUCT m_TriviaTipA[MAX_TIPS_TRIVIATIP];
 	static Random *TipRandom;
@@ -590,7 +590,7 @@ public:
 	DLC_INFO *GetDLCInfoForFullOfferID(WCHAR *pwchProductId);
 	DLC_INFO *GetDLCInfoForProductName(WCHAR *pwchProductName);
 #else
-	static HRESULT RegisterDLCData(WCHAR *, WCHAR *, int, uint64_t, uint64_t, WCHAR *, unsigned int, int, WCHAR *pDataFile);
+	static HRESULT RegisterDLCData(WCHAR *, WCHAR *, int, __uint64, __uint64, WCHAR *, unsigned int, int, WCHAR *pDataFile);
 	bool GetDLCFullOfferIDForSkinID(const wstring &FirstSkin,ULONGLONG *pullVal);
 	DLC_INFO *GetDLCInfoForTrialOfferID(ULONGLONG ullOfferID_Trial);
 	DLC_INFO *GetDLCInfoForFullOfferID(ULONGLONG ullOfferID_Full);
@@ -618,7 +618,7 @@ private:
 #if defined(__PS3__) || defined(__ORBIS__) || defined (__PSVITA__)
 	static unordered_map<PlayerUID,MOJANG_DATA *, PlayerUID::Hash > MojangData;
 	static unordered_map<int, char * >  DLCTextures_PackID; // for mash-up packs & texture packs
-	static unordered_map<string,DLC_INFO * > DLCInfo;
+	static unordered_map<string,DLC_INFO * > DLCInfo; 
 	static unordered_map<wstring, ULONGLONG >  DLCInfo_SkinName; // skin name, full offer id
 #elif defined(_DURANGO)
 	static unordered_map<PlayerUID,MOJANG_DATA *, PlayerUID::Hash > MojangData;
@@ -701,7 +701,7 @@ public:
 
 	// World seed from png image
 	void GetImageTextData(PBYTE pbImageData, DWORD dwImageBytes,unsigned char *pszSeed,unsigned int &uiHostOptions,bool &bHostOptionsRead,DWORD &uiTexturePack);
-	unsigned int CreateImageTextData(PBYTE bTextMetadata, int64_t seed, bool hasSeed, unsigned int uiHostOptions, unsigned int uiTexturePackId);
+	unsigned int CreateImageTextData(PBYTE bTextMetadata, __int64 seed, bool hasSeed, unsigned int uiHostOptions, unsigned int uiTexturePackId);
 
 	// Game rules
 	GameRuleManager m_gameRules;
@@ -745,7 +745,7 @@ public:
 	unsigned int	AddTMSPPFileTypeRequest(eDLCContentType eType, bool bPromote=false);
 	int				GetDLCInfoTexturesOffersCount();
 #if defined( __PS3__) || defined(__ORBIS__) || defined(__PSVITA__)
-	DLC_INFO *GetDLCInfo(int iIndex);
+	DLC_INFO *GetDLCInfo(int iIndex);	
 	DLC_INFO *GetDLCInfo(char *);
 	DLC_INFO *GetDLCInfoFromTPackID(int iTPID);
 	bool GetDLCNameForPackID(const int iPackID,char **ppchKeyID);
@@ -887,15 +887,15 @@ public:
 #ifdef _XBOX
 // 	bool m_bTransferSavesToXboxOne;
 // 	unsigned int m_uiTransferSlotC;
-
+	
 #elif defined (__PS3__)
-
+	
 #elif defined _DURANGO
-
+	
 #elif defined _WINDOWS64
 	//CMinecraftAudio audio;
 #else // PS4
-
+	
 #endif
 
 #ifdef _XBOX_ONE
@@ -907,5 +907,5 @@ private:
 #endif
 };
 
-//singleton
+//singleton 
 //extern CMinecraftApp app;

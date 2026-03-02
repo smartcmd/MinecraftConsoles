@@ -28,27 +28,27 @@ public:
 	void getNeighbourBrightnesses(int *brightnesses, LightLayer::variety layer, int x, int y, int z);	// 4J added
 	void setBrightness(LightLayer::variety layer, int x, int y, int z, int brightness);
 	int getRawBrightness(int x, int y, int z, int skyDampen);
-	void addEntity(std::shared_ptr<Entity> e);
-	void removeEntity(std::shared_ptr<Entity> e);
-	void removeEntity(std::shared_ptr<Entity> e, int yc);
+	void addEntity(shared_ptr<Entity> e);
+	void removeEntity(shared_ptr<Entity> e);
+	void removeEntity(shared_ptr<Entity> e, int yc);
 	bool isSkyLit(int x, int y, int z);
 	void skyBrightnessChanged();
-	std::shared_ptr<TileEntity> getTileEntity(int x, int y, int z);
-	void addTileEntity(std::shared_ptr<TileEntity> te);
-	void setTileEntity(int x, int y, int z, std::shared_ptr<TileEntity> tileEntity);
+	shared_ptr<TileEntity> getTileEntity(int x, int y, int z);
+	void addTileEntity(shared_ptr<TileEntity> te);
+	void setTileEntity(int x, int y, int z, shared_ptr<TileEntity> tileEntity);
 	void removeTileEntity(int x, int y, int z);
 	void load();
 	void unload(bool unloadTileEntities) ;	// 4J - added parameter
 	void markUnsaved();
-	void getEntities(std::shared_ptr<Entity> except, AABB bb, vector<std::shared_ptr<Entity> > &es);
-	void getEntitiesOfClass(const type_info& ec, AABB bb, vector<std::shared_ptr<Entity> > &es);
+	void getEntities(shared_ptr<Entity> except, AABB bb, vector<shared_ptr<Entity> > &es);
+	void getEntitiesOfClass(const type_info& ec, AABB bb, vector<shared_ptr<Entity> > &es);
 	int countEntities();
 	bool shouldSave(bool force);
 	void setBlocks(byteArray newBlocks, int sub);
 	int getBlocksAndData(byteArray data, int x0, int y0, int z0, int x1, int y1, int z1, int p, bool includeLighting = true);	// 4J - added includeLighting parameter
 	int setBlocksAndData(byteArray data, int x0, int y0, int z0, int x1, int y1, int z1, int p, bool includeLighting = true);	// 4J - added includeLighting parameter
 	bool testSetBlocksAndData(byteArray data, int x0, int y0, int z0, int x1, int y1, int z1, int p);	// 4J added
-	Random *getRandom(int64_t l);
+	Random *getRandom(__int64 l);
 	bool isEmpty();
 	virtual void reSyncLighting() {};	// 4J added
 };

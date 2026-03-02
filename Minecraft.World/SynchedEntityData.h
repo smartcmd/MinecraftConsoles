@@ -19,7 +19,7 @@ public:
 		int		value_int;
 		short	value_short;
 		wstring	value_wstring;
-		std::shared_ptr<ItemInstance> value_itemInstance;
+		shared_ptr<ItemInstance> value_itemInstance;
 		bool dirty;
 
 	public:
@@ -27,7 +27,7 @@ public:
 		DataItem(int type, int id, byte value);
 		DataItem(int type, int id, int value);
 		DataItem(int type, int id, const wstring& value);
-		DataItem(int type, int id, std::shared_ptr<ItemInstance> itemInstance);
+		DataItem(int type, int id, shared_ptr<ItemInstance> itemInstance);
 		DataItem(int type, int id, short value);
 
 		int getId();
@@ -35,12 +35,12 @@ public:
 		void setValue(int value);
 		void setValue(short value);
 		void setValue(const wstring& value);
-		void setValue(std::shared_ptr<ItemInstance> value);
+		void setValue(shared_ptr<ItemInstance> value);
 		byte getValue_byte();
 		int getValue_int();
 		short getValue_short();
 		wstring getValue_wstring();
-		std::shared_ptr<ItemInstance> getValue_itemInstance();
+		shared_ptr<ItemInstance> getValue_itemInstance();
 		int getType();
 		bool isDirty();
 		void setDirty(bool dirty);
@@ -71,7 +71,7 @@ private:
 	// the id value must fit in the remaining bits
 	static const int MAX_ID_VALUE = ~TYPE_MASK & 0xff;
 
-	unordered_map<int, std::shared_ptr<DataItem> > itemsById;
+	unordered_map<int, shared_ptr<DataItem> > itemsById;
 	bool m_isDirty;
 
 public:
@@ -91,35 +91,35 @@ public:
 	int getInteger(int id);
 	float getFloat(int id);
 	wstring getString(int id);
-	std::shared_ptr<ItemInstance> getItemInstance(int id);
+	shared_ptr<ItemInstance> getItemInstance(int id);
 	Pos *getPos(int id);
 	// 4J - using overloads rather than template here
 	void set(int id, byte value);
 	void set(int id, int value);
 	void set(int id, short value);
 	void set(int id, const wstring& value);
-	void set(int id, std::shared_ptr<ItemInstance>);
+	void set(int id, shared_ptr<ItemInstance>);
 	void markDirty(int id);
 	bool isDirty();
-	static void pack(vector<std::shared_ptr<DataItem> > *items, DataOutputStream *output); // TODO throws IOException
-	vector<std::shared_ptr<DataItem> > *packDirty();
+	static void pack(vector<shared_ptr<DataItem> > *items, DataOutputStream *output); // TODO throws IOException
+	vector<shared_ptr<DataItem> > *packDirty();
 	void packAll(DataOutputStream *output); // throws IOException
-	vector<std::shared_ptr<DataItem> > *getAll();
+	vector<shared_ptr<DataItem> > *getAll();
 
 private:
-	static void writeDataItem(DataOutputStream *output, std::shared_ptr<DataItem> dataItem); //throws IOException
+	static void writeDataItem(DataOutputStream *output, shared_ptr<DataItem> dataItem); //throws IOException
 
 
 public:
-	static vector<std::shared_ptr<DataItem> > *unpack(DataInputStream *input); // throws IOException
+	static vector<shared_ptr<DataItem> > *unpack(DataInputStream *input); // throws IOException
 
 	/**
 	* Assigns values from a list of data items.
-	*
+	* 
 	* @param items
 	*/
 public:
-	void assignValues(vector<std::shared_ptr<DataItem> > *items);
+	void assignValues(vector<shared_ptr<DataItem> > *items);
 	bool isEmpty();
 
 	// 4J Added

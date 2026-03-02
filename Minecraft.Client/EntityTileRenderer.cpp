@@ -7,8 +7,8 @@ EntityTileRenderer *EntityTileRenderer::instance = new EntityTileRenderer;
 
 EntityTileRenderer::EntityTileRenderer()
 {
-	chest = std::shared_ptr<ChestTileEntity>(new ChestTileEntity());
-	enderChest = std::shared_ptr<EnderChestTileEntity>(new EnderChestTileEntity());
+	chest = shared_ptr<ChestTileEntity>(new ChestTileEntity());
+	enderChest = shared_ptr<EnderChestTileEntity>(new EnderChestTileEntity());
 }
 
 void EntityTileRenderer::render(Tile *tile, int data, float brightness, float alpha, bool setColor, bool useCompiled)

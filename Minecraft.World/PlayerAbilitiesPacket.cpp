@@ -131,7 +131,7 @@ bool PlayerAbilitiesPacket::canBeInvalidated()
 	return true;
 }
 
-bool PlayerAbilitiesPacket::isInvalidatedBy(std::shared_ptr<Packet> packet)
+bool PlayerAbilitiesPacket::isInvalidatedBy(shared_ptr<Packet> packet)
 {
 	return true;
 }

@@ -24,7 +24,7 @@ MultiPlayerLevel::ResetInfo::ResetInfo(int x, int y, int z, int tile, int data)
 }
 
 MultiPlayerLevel::MultiPlayerLevel(ClientConnection *connection, LevelSettings *levelSettings, int dimension, int difficulty)
-	: Level(std::shared_ptr<MockedLevelStorage >(new MockedLevelStorage()), L"MpServer", Dimension::getNew(dimension), levelSettings, false)
+	: Level(shared_ptr<MockedLevelStorage >(new MockedLevelStorage()), L"MpServer", Dimension::getNew(dimension), levelSettings, false)
 {
 	minecraft = Minecraft::GetInstance();
 
@@ -108,7 +108,7 @@ void MultiPlayerLevel::tick()
 	EnterCriticalSection(&m_entitiesCS);
     for (int i = 0; i < 10 && !reEntries.empty(); i++)
 	{
-		std::shared_ptr<Entity> e = *(reEntries.begin());
+		shared_ptr<Entity> e = *(reEntries.begin());
 
         if (find(entities.begin(), entities.end(), e) == entities.end() ) addEntity(e);
     }
@@ -134,7 +134,7 @@ void MultiPlayerLevel::tick()
 		{
             Level::setTileAndDataNoUpdate(r.x, r.y, r.z, r.tile, r.data);
             Level::sendTileUpdated(r.x, r.y, r.z);
-
+            
 			//updatesToReset.erase(updatesToReset.begin()+i);
 			eraseElements = true;
 			lastIndexToRemove = 0;
@@ -156,7 +156,7 @@ void MultiPlayerLevel::tick()
 	// 4J - added this section. Each tick we'll check a different block, and force it to share data if it has been
 	// more than 2 minutes since we last wanted to unshare it. This shouldn't really ever happen, and is added
 	// here as a safe guard against accumulated memory leaks should a lot of chunks become unshared over time.
-
+	
 	int ls = dimension->getXZSize();
 	if( g_NetworkManager.IsHost() )
 	{
@@ -403,7 +403,7 @@ void MultiPlayerLevel::setChunkVisible(int x, int z, bool visible)
 
 }
 
-bool MultiPlayerLevel::addEntity(std::shared_ptr<Entity> e)
+bool MultiPlayerLevel::addEntity(shared_ptr<Entity> e)
 {
     bool ok = Level::addEntity(e);
     forced.insert(e);
@@ -416,7 +416,7 @@ bool MultiPlayerLevel::addEntity(std::shared_ptr<Entity> e)
     return ok;
 }
 
-void MultiPlayerLevel::removeEntity(std::shared_ptr<Entity> e)
+void MultiPlayerLevel::removeEntity(shared_ptr<Entity> e)
 {
 	// 4J Stu - Add this remove from the reEntries collection to stop us continually removing and re-adding things,
 	// in particular the MultiPlayerLocalPlayer when they die
@@ -430,7 +430,7 @@ void MultiPlayerLevel::removeEntity(std::shared_ptr<Entity> e)
     forced.erase(e);
 }
 
-void MultiPlayerLevel::entityAdded(std::shared_ptr<Entity> e)
+void MultiPlayerLevel::entityAdded(shared_ptr<Entity> e)
 {
     Level::entityAdded(e);
 	AUTO_VAR(it, reEntries.find(e));
@@ -440,7 +440,7 @@ void MultiPlayerLevel::entityAdded(std::shared_ptr<Entity> e)
     }
 }
 
-void MultiPlayerLevel::entityRemoved(std::shared_ptr<Entity> e)
+void MultiPlayerLevel::entityRemoved(shared_ptr<Entity> e)
 {
     Level::entityRemoved(e);
 	AUTO_VAR(it, forced.find(e));
@@ -450,9 +450,9 @@ void MultiPlayerLevel::entityRemoved(std::shared_ptr<Entity> e)
     }
 }
 
-void MultiPlayerLevel::putEntity(int id, std::shared_ptr<Entity> e)
+void MultiPlayerLevel::putEntity(int id, shared_ptr<Entity> e)
 {
-    std::shared_ptr<Entity> old = getEntity(id);
+    shared_ptr<Entity> old = getEntity(id);
     if (old != NULL)
 	{
         removeEntity(old);
@@ -467,16 +467,16 @@ void MultiPlayerLevel::putEntity(int id, std::shared_ptr<Entity> e)
     entitiesById[id] = e;
 }
 
-std::shared_ptr<Entity> MultiPlayerLevel::getEntity(int id)
+shared_ptr<Entity> MultiPlayerLevel::getEntity(int id)
 {
 	AUTO_VAR(it, entitiesById.find(id));
 	if( it == entitiesById.end() ) return nullptr;
 	return it->second;
 }
 
-std::shared_ptr<Entity> MultiPlayerLevel::removeEntity(int id)
+shared_ptr<Entity> MultiPlayerLevel::removeEntity(int id)
 {
-	std::shared_ptr<Entity> e;
+	shared_ptr<Entity> e;
 	AUTO_VAR(it, entitiesById.find(id));
 	if( it != entitiesById.end() )
 	{
@@ -493,11 +493,11 @@ std::shared_ptr<Entity> MultiPlayerLevel::removeEntity(int id)
 
 // 4J Added to remove the entities from the forced list
 // This gets called when a chunk is unloaded, but we only do half an unload to remove entities slightly differently
-void MultiPlayerLevel::removeEntities(vector<std::shared_ptr<Entity> > *list)
+void MultiPlayerLevel::removeEntities(vector<shared_ptr<Entity> > *list)
 {
 	for(AUTO_VAR(it, list->begin()); it < list->end(); ++it)
 	{
-		std::shared_ptr<Entity> e = *it;
+		shared_ptr<Entity> e = *it;
 
 		AUTO_VAR(reIt, reEntries.find(e));
 		if (reIt!=reEntries.end())
@@ -582,7 +582,7 @@ bool MultiPlayerLevel::doSetTileAndData(int x, int y, int z, int tile, int data)
 	// and so the thing being notified of any update through tileUpdated is the renderer
 	int prevTile = getTile(x, y, z);
 	bool visuallyImportant = (!( ( ( prevTile == Tile::water_Id ) && ( tile == Tile::calmWater_Id ) )   ||
-							   ( ( prevTile == Tile::calmWater_Id )  && ( tile == Tile::water_Id ) )	||
+							   ( ( prevTile == Tile::calmWater_Id )  && ( tile == Tile::water_Id ) )	|| 
 							   ( ( prevTile == Tile::lava_Id )		&& ( tile == Tile::calmLava_Id ) )	||
 							   ( ( prevTile == Tile::calmLava_Id )		&& ( tile == Tile::calmLava_Id ) )	||
 							   ( ( prevTile == Tile::calmLava_Id )	&& ( tile == Tile::lava_Id ) ) ) );
@@ -609,7 +609,7 @@ void MultiPlayerLevel::disconnect(bool sendDisconnect /*= true*/)
 	{
 		for(AUTO_VAR(it, connections.begin()); it < connections.end(); ++it )
 		{
-			(*it)->sendAndDisconnect( std::shared_ptr<DisconnectPacket>( new DisconnectPacket(DisconnectPacket::eDisconnect_Quitting) ) );
+			(*it)->sendAndDisconnect( shared_ptr<DisconnectPacket>( new DisconnectPacket(DisconnectPacket::eDisconnect_Quitting) ) );
 		}
 	}
 	else
@@ -687,7 +687,7 @@ void MultiPlayerLevel::animateTick(int xt, int yt, int zt)
 void MultiPlayerLevel::animateTickDoWork()
 {
 	const int ticksPerChunk = 16;		// This ought to give us roughly the same 1000/32768 chance of a tile being animated as the original
-
+	
 	// Horrible hack to communicate with the level renderer, which is just attached as a listener to this level. This let's the particle
 	// rendering know to use this level (rather than try to work it out from the current player), and to not bother distance clipping particles
 	// which would again be based on the current player.
@@ -730,7 +730,7 @@ void MultiPlayerLevel::animateTickDoWork()
 
 }
 
-void MultiPlayerLevel::playSound(std::shared_ptr<Entity> entity, int iSound, float volume, float pitch)
+void MultiPlayerLevel::playSound(shared_ptr<Entity> entity, int iSound, float volume, float pitch)
 {
 	playLocalSound(entity->x, entity->y - entity->heightOffset, entity->z, iSound, volume, pitch);
 }
@@ -790,7 +790,7 @@ void MultiPlayerLevel::removeAllPendingEntityRemovals()
 	AUTO_VAR(endIt, entitiesToRemove.end());
 	for (AUTO_VAR(it, entitiesToRemove.begin()); it != endIt; it++)
 	{
-		std::shared_ptr<Entity> e = *it;
+		shared_ptr<Entity> e = *it;
 		int xc = e->xChunk;
 		int zc = e->zChunk;
 		if (e->inChunk && hasChunk(xc, zc))
@@ -809,10 +809,10 @@ void MultiPlayerLevel::removeAllPendingEntityRemovals()
 
 	//for (int i = 0; i < entities.size(); i++)
 	EnterCriticalSection(&m_entitiesCS);
-	vector<std::shared_ptr<Entity> >::iterator it = entities.begin();
+	vector<shared_ptr<Entity> >::iterator it = entities.begin();
 	while(  it != entities.end() )
 	{
-		std::shared_ptr<Entity> e = *it;//entities.at(i);
+		shared_ptr<Entity> e = *it;//entities.at(i);
 
 		if (e->riding != NULL)
 		{
@@ -821,7 +821,7 @@ void MultiPlayerLevel::removeAllPendingEntityRemovals()
 				e->riding->rider = weak_ptr<Entity>();
 				e->riding = nullptr;
 			}
-			else
+			else 
 			{
 				++it;
 				continue;
@@ -853,7 +853,7 @@ void MultiPlayerLevel::removeClientConnection(ClientConnection *c, bool sendDisc
 {
 	if( sendDisconnect )
 	{
-			c->sendAndDisconnect( std::shared_ptr<DisconnectPacket>( new DisconnectPacket(DisconnectPacket::eDisconnect_Quitting) ) );
+			c->sendAndDisconnect( shared_ptr<DisconnectPacket>( new DisconnectPacket(DisconnectPacket::eDisconnect_Quitting) ) );
 	}
 
 	AUTO_VAR(it, find( connections.begin(), connections.end(), c ));
@@ -886,7 +886,7 @@ void MultiPlayerLevel::removeUnusedTileEntitiesInRegion(int x0, int y0, int z0, 
     for (unsigned int i = 0; i < tileEntityList.size();)
 	{
 		bool removed = false;
-        std::shared_ptr<TileEntity> te = tileEntityList[i];
+        shared_ptr<TileEntity> te = tileEntityList[i];
         if (te->x >= x0 && te->y >= y0 && te->z >= z0 && te->x < x1 && te->y < y1 && te->z < z1)
 		{
 			LevelChunk *lc = getChunk(te->x >> 4, te->z >> 4);

@@ -12,7 +12,7 @@ BoatItem::BoatItem(int id) : Item( id )
 	this->maxStackSize = 1;
 }
 
-bool BoatItem::TestUse(Level *level, std::shared_ptr<Player> player)
+bool BoatItem::TestUse(Level *level, shared_ptr<Player> player)
 {
 	// 4J-PB - added for tooltips to test use
 	// 4J TODO really we should have the crosshair hitresult telling us if it hit water, and at what distance, so we don't need to do this again
@@ -49,7 +49,7 @@ bool BoatItem::TestUse(Level *level, std::shared_ptr<Player> player)
 	delete hr;
 	return false;
 }
-std::shared_ptr<ItemInstance> BoatItem::use(std::shared_ptr<ItemInstance> itemInstance, Level *level, std::shared_ptr<Player> player)
+shared_ptr<ItemInstance> BoatItem::use(shared_ptr<ItemInstance> itemInstance, Level *level, shared_ptr<Player> player)
 {
 	float a = 1;
 
@@ -80,11 +80,11 @@ std::shared_ptr<ItemInstance> BoatItem::use(std::shared_ptr<ItemInstance> itemIn
 	Vec3 *b = player->getViewVector(a);
 	bool hitEntity = false;
 	float overlap = 1;
-	vector<std::shared_ptr<Entity> > *objects = level->getEntities(player, player->bb->expand(b->x * (range), b->y * (range), b->z * (range))->grow(overlap, overlap, overlap));
+	vector<shared_ptr<Entity> > *objects = level->getEntities(player, player->bb->expand(b->x * (range), b->y * (range), b->z * (range))->grow(overlap, overlap, overlap));
 	//for (int i = 0; i < objects.size(); i++) {
 	for(AUTO_VAR(it, objects->begin()); it != objects->end(); ++it)
 	{
-		std::shared_ptr<Entity> e = *it; //objects.get(i);
+		shared_ptr<Entity> e = *it; //objects.get(i);
 		if (!e->isPickable()) continue;
 
 		float rr = e->getPickRadius();
@@ -105,12 +105,12 @@ std::shared_ptr<ItemInstance> BoatItem::use(std::shared_ptr<ItemInstance> itemIn
 		int yt = hr->y;
 		int zt = hr->z;
 
-		if (!level->isClientSide)
+		if (!level->isClientSide) 
 		{
 			if (level->getTile(xt, yt, zt) == Tile::topSnow_Id) yt--;
 			if( level->countInstanceOf(eTYPE_BOAT, true) < Level::MAX_XBOX_BOATS )		// 4J - added limit
 			{
-				level->addEntity( std::shared_ptr<Boat>( new Boat(level, xt + 0.5f, yt + 1.0f, zt + 0.5f) ) );
+				level->addEntity( shared_ptr<Boat>( new Boat(level, xt + 0.5f, yt + 1.0f, zt + 0.5f) ) );
 				if (!player->abilities.instabuild)
 				{
 					itemInstance->count--;

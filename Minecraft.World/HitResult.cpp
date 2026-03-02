@@ -15,7 +15,7 @@ HitResult::HitResult(int x, int y, int z, int f, Vec3 *pos)
 	this->entity = nullptr;
 }
 
-HitResult::HitResult(std::shared_ptr<Entity> entity)
+HitResult::HitResult(shared_ptr<Entity> entity)
 {
 	this->type = ENTITY;
 	this->entity = entity;
@@ -24,7 +24,7 @@ HitResult::HitResult(std::shared_ptr<Entity> entity)
 	x = y = z = f = 0;
 }
 
-double HitResult::distanceTo(std::shared_ptr<Entity> e)
+double HitResult::distanceTo(shared_ptr<Entity> e)
 {
 	double xd = pos->x - e->x;
 	double yd = pos->y - e->y;

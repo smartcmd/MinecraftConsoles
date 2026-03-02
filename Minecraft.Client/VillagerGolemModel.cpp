@@ -36,7 +36,7 @@ VillagerGolemModel::VillagerGolemModel(float g, float yOffset)
 	leg1->addBox(-3.5f, -3, -3, 6, 16, 5, g);
 }
 
-void VillagerGolemModel::render(std::shared_ptr<Entity> entity, float time, float r, float bob, float yRot, float xRot, float scale, bool usecompiled)
+void VillagerGolemModel::render(shared_ptr<Entity> entity, float time, float r, float bob, float yRot, float xRot, float scale, bool usecompiled)
 {
 	setupAnim(time, r, bob, yRot, xRot, scale);
 
@@ -59,9 +59,9 @@ void VillagerGolemModel::setupAnim(float time, float r, float bob, float yRot, f
 	leg1->yRot = 0;
 }
 
-void VillagerGolemModel::prepareMobModel(std::shared_ptr<Mob> mob, float time, float r, float a)
+void VillagerGolemModel::prepareMobModel(shared_ptr<Mob> mob, float time, float r, float a)
 {
-	std::shared_ptr<VillagerGolem> vg = std::dynamic_pointer_cast<VillagerGolem>(mob);
+	shared_ptr<VillagerGolem> vg = dynamic_pointer_cast<VillagerGolem>(mob);
 	int attackTick = vg->getAttackAnimationTick();
 	if (attackTick > 0)
 	{

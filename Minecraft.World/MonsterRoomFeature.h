@@ -11,6 +11,6 @@ public:
 	virtual bool place(Level *level, Random *random, int x, int y, int z);
 
 private:
-    std::shared_ptr<ItemInstance> randomItem(Random *random);
+    shared_ptr<ItemInstance> randomItem(Random *random);
     wstring randomEntityId(Random *random);
 };

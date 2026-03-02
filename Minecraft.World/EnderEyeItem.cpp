@@ -13,7 +13,7 @@ EnderEyeItem::EnderEyeItem(int id) : Item(id)
 {
 }
 
-bool EnderEyeItem::useOn(std::shared_ptr<ItemInstance> instance, std::shared_ptr<Player> player, Level *level, int x, int y, int z, int face, float clickX, float clickY, float clickZ, bool bTestUseOnOnly)
+bool EnderEyeItem::useOn(shared_ptr<ItemInstance> instance, shared_ptr<Player> player, Level *level, int x, int y, int z, int face, float clickX, float clickY, float clickZ, bool bTestUseOnOnly)
 {
 	int targetType = level->getTile(x, y, z);
 	int targetData = level->getData(x, y, z);
@@ -132,7 +132,7 @@ bool EnderEyeItem::useOn(std::shared_ptr<ItemInstance> instance, std::shared_ptr
 	return false;
 }
 
-bool EnderEyeItem::TestUse(Level *level, std::shared_ptr<Player> player)
+bool EnderEyeItem::TestUse(Level *level, shared_ptr<Player> player)
 {
 	HitResult *hr = getPlayerPOVHitResult(level, player, false);
 	if (hr != NULL && hr->type == HitResult::TILE)
@@ -157,15 +157,15 @@ bool EnderEyeItem::TestUse(Level *level, std::shared_ptr<Player> player)
 		}
 		else
 		{
-// 			int x,z;
+// 			int x,z;			
 // 			if(app.GetTerrainFeaturePosition(eTerrainFeature_Stronghold,&x,&z))
 // 			{
 // 				level->getLevelData()->setXStronghold(x);
 // 				level->getLevelData()->setZStronghold(z);
 // 				level->getLevelData()->setHasStronghold();
-//
+// 
 // 				app.DebugPrintf("=== FOUND stronghold in terrain features list\n");
-//
+// 				
 // 				app.SetXuiServerAction(ProfileManager.GetPrimaryPad(),eXuiServerAction_StrongholdPosition);
 // 			}
 // 			else
@@ -185,7 +185,7 @@ bool EnderEyeItem::TestUse(Level *level, std::shared_ptr<Player> player)
 	return false;
 }
 
-std::shared_ptr<ItemInstance> EnderEyeItem::use(std::shared_ptr<ItemInstance> instance, Level *level, std::shared_ptr<Player> player)
+shared_ptr<ItemInstance> EnderEyeItem::use(shared_ptr<ItemInstance> instance, Level *level, shared_ptr<Player> player)
 {
 	HitResult *hr = getPlayerPOVHitResult(level, player, false);
 	if (hr != NULL && hr->type == HitResult::TILE)
@@ -206,7 +206,7 @@ std::shared_ptr<ItemInstance> EnderEyeItem::use(std::shared_ptr<ItemInstance> in
 	{
 		if((level->dimension->id==LevelData::DIMENSION_OVERWORLD) && level->getLevelData()->getHasStronghold())
 		{
-			std::shared_ptr<EyeOfEnderSignal> eyeOfEnderSignal = std::shared_ptr<EyeOfEnderSignal>( new EyeOfEnderSignal(level, player->x, player->y + 1.62 - player->heightOffset, player->z) );
+			shared_ptr<EyeOfEnderSignal> eyeOfEnderSignal = shared_ptr<EyeOfEnderSignal>( new EyeOfEnderSignal(level, player->x, player->y + 1.62 - player->heightOffset, player->z) );
 			eyeOfEnderSignal->signalTo(level->getLevelData()->getXStronghold()<<4, player->y + 1.62 - player->heightOffset, level->getLevelData()->getZStronghold()<<4);
 			level->addEntity(eyeOfEnderSignal);
 
@@ -221,7 +221,7 @@ std::shared_ptr<ItemInstance> EnderEyeItem::use(std::shared_ptr<ItemInstance> in
 		/*TilePos *nearestMapFeature = level->findNearestMapFeature(LargeFeature::STRONGHOLD, (int) player->x, (int) player->y, (int) player->z);
 		if (nearestMapFeature != NULL)
 		{
-			std::shared_ptr<EyeOfEnderSignal> eyeOfEnderSignal = std::shared_ptr<EyeOfEnderSignal>( new EyeOfEnderSignal(level, player->x, player->y + 1.62 - player->heightOffset, player->z) );
+			shared_ptr<EyeOfEnderSignal> eyeOfEnderSignal = shared_ptr<EyeOfEnderSignal>( new EyeOfEnderSignal(level, player->x, player->y + 1.62 - player->heightOffset, player->z) );
 			eyeOfEnderSignal->signalTo(nearestMapFeature->x, nearestMapFeature->y, nearestMapFeature->z);
 			delete nearestMapFeature;
 			level->addEntity(eyeOfEnderSignal);

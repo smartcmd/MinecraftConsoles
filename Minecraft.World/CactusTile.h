@@ -30,10 +30,10 @@ public:
 	virtual bool mayPlace(Level *level, int x, int y, int z);
 	virtual void neighborChanged(Level *level, int x, int y, int z, int type);
 	virtual bool canSurvive(Level *level, int x, int y, int z);
-	virtual void entityInside(Level *level, int x, int y, int z, std::shared_ptr<Entity> entity);
+	virtual void entityInside(Level *level, int x, int y, int z, shared_ptr<Entity> entity);
 	//@Override
     void registerIcons(IconRegister *iconRegister);
-
+	
 	// 4J Added so we can check before we try to add a tile to the tick list if it's actually going to do seomthing
 	virtual bool shouldTileTick(Level *level, int x,int y,int z);
 };

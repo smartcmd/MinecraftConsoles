@@ -19,17 +19,17 @@ private:
 
 public:
 	double x, y, z;
-	std::shared_ptr<Entity> source;
+	shared_ptr<Entity> source;
 	float r;
 
 	unordered_set<TilePos, TilePosKeyHash, TilePosKeyEq> toBlow;
-
+	
 private:
-	typedef unordered_map<std::shared_ptr<Player>, Vec3 * , PlayerKeyHash, PlayerKeyEq> playerVec3Map;
+	typedef unordered_map<shared_ptr<Player>, Vec3 * , PlayerKeyHash, PlayerKeyEq> playerVec3Map;
 	playerVec3Map hitPlayers;
 
 public:
-	Explosion(Level *level, std::shared_ptr<Entity> source, double x, double y, double z, float r);
+	Explosion(Level *level, shared_ptr<Entity> source, double x, double y, double z, float r);
 	~Explosion();
 
 public:
@@ -38,5 +38,5 @@ public:
 public:
 	void finalizeExplosion(bool generateParticles, vector<TilePos> *toBlowDirect = NULL);   // 4J - added toBlow parameter
 	playerVec3Map *getHitPlayers();
-	Vec3 *getHitPlayerKnockback( std::shared_ptr<Player> player );
+	Vec3 *getHitPlayerKnockback( shared_ptr<Player> player );
 };

@@ -17,10 +17,10 @@ const int CraftingMenu::INV_SLOT_END = CraftingMenu::INV_SLOT_START + 9 * 3;
 const int CraftingMenu::USE_ROW_SLOT_START = CraftingMenu::INV_SLOT_END;
 const int CraftingMenu::USE_ROW_SLOT_END = CraftingMenu::USE_ROW_SLOT_START + 9;
 
-CraftingMenu::CraftingMenu(std::shared_ptr<Inventory> inventory, Level *level, int xt, int yt, int zt) : AbstractContainerMenu()
+CraftingMenu::CraftingMenu(shared_ptr<Inventory> inventory, Level *level, int xt, int yt, int zt) : AbstractContainerMenu()
 {
-	craftSlots = std::shared_ptr<CraftingContainer>( new CraftingContainer(this, 3, 3) );
-	resultSlots = std::shared_ptr<ResultContainer>( new ResultContainer() );
+	craftSlots = shared_ptr<CraftingContainer>( new CraftingContainer(this, 3, 3) );
+	resultSlots = shared_ptr<ResultContainer>( new ResultContainer() );
 
 	this->level = level;
 	this->x = xt;
@@ -51,19 +51,19 @@ CraftingMenu::CraftingMenu(std::shared_ptr<Inventory> inventory, Level *level, i
 	slotsChanged();	// 4J - removed craftSlots parameter, see comment below
 }
 
-void CraftingMenu::slotsChanged()  // 4J used to take a std::shared_ptr<Container> but wasn't using it, so removed to simplify things
+void CraftingMenu::slotsChanged()  // 4J used to take a shared_ptr<Container> but wasn't using it, so removed to simplify things
 {
 	resultSlots->setItem(0, Recipes::getInstance()->getItemFor(craftSlots, level));
 }
 
-void CraftingMenu::removed(std::shared_ptr<Player> player)
+void CraftingMenu::removed(shared_ptr<Player> player)
 {
 	AbstractContainerMenu::removed(player);
 	if (level->isClientSide) return;
 
 	for (int i = 0; i < 9; i++)
 	{
-		std::shared_ptr<ItemInstance> item = craftSlots->removeItemNoUpdate(i);
+		shared_ptr<ItemInstance> item = craftSlots->removeItemNoUpdate(i);
 		if (item != NULL)
 		{
 			player->drop(item);
@@ -71,20 +71,20 @@ void CraftingMenu::removed(std::shared_ptr<Player> player)
 	}
 }
 
-bool CraftingMenu::stillValid(std::shared_ptr<Player> player)
+bool CraftingMenu::stillValid(shared_ptr<Player> player)
 {
 	if (level->getTile(x, y, z) != Tile::workBench_Id) return false;
 	if (player->distanceToSqr(x + 0.5, y + 0.5, z + 0.5) > 8 * 8) return false;
 	return true;
 }
 
-std::shared_ptr<ItemInstance> CraftingMenu::quickMoveStack(std::shared_ptr<Player> player, int slotIndex)
+shared_ptr<ItemInstance> CraftingMenu::quickMoveStack(shared_ptr<Player> player, int slotIndex)
 {
-	std::shared_ptr<ItemInstance> clicked = nullptr;
+	shared_ptr<ItemInstance> clicked = nullptr;
 	Slot *slot = slots->at(slotIndex);
 	if (slot != NULL && slot->hasItem())
 	{
-		std::shared_ptr<ItemInstance> stack = slot->getItem();
+		shared_ptr<ItemInstance> stack = slot->getItem();
 		clicked = stack->copy();
 
 		if (slotIndex == RESULT_SLOT)

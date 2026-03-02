@@ -24,7 +24,7 @@ private:
 	MinecraftServer *server;
     int _tick;
     wstring name;
-    std::shared_ptr<LoginPacket> acceptedLogin;
+    shared_ptr<LoginPacket> acceptedLogin;
     wstring loginKey;
 
 public:
@@ -32,14 +32,14 @@ public:
 	~PendingConnection();
     void tick();
     void disconnect(DisconnectPacket::eDisconnectReason reason);
-    virtual void handlePreLogin(std::shared_ptr<PreLoginPacket> packet);
-    virtual void handleLogin(std::shared_ptr<LoginPacket> packet);
-    virtual void handleAcceptedLogin(std::shared_ptr<LoginPacket> packet);
+    virtual void handlePreLogin(shared_ptr<PreLoginPacket> packet);
+    virtual void handleLogin(shared_ptr<LoginPacket> packet);
+    virtual void handleAcceptedLogin(shared_ptr<LoginPacket> packet);
     virtual void onDisconnect(DisconnectPacket::eDisconnectReason reason, void *reasonObjects);
-	virtual void handleGetInfo(std::shared_ptr<GetInfoPacket> packet);
-	virtual void handleKeepAlive(std::shared_ptr<KeepAlivePacket> packet);
-    virtual void onUnhandledPacket(std::shared_ptr<Packet> packet);
-    void send(std::shared_ptr<Packet> packet);
+	virtual void handleGetInfo(shared_ptr<GetInfoPacket> packet);
+	virtual void handleKeepAlive(shared_ptr<KeepAlivePacket> packet);
+    virtual void onUnhandledPacket(shared_ptr<Packet> packet);
+    void send(shared_ptr<Packet> packet);
     wstring getName();
     virtual bool isServerPacketListener();
 

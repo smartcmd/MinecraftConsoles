@@ -85,8 +85,8 @@ namespace boost
   template <> struct Integer< ::boost::long_long_type> {};
   template <> struct Integer< ::boost::ulong_long_type> {};
 # elif defined(BOOST_HAS_MS_INT64)
-  template <> struct Integer<int64_t> {};
-  template <> struct Integer<uint64_t> {};
+  template <> struct Integer<__int64> {};
+  template <> struct Integer<unsigned __int64> {};
 # endif
 
   BOOST_concept(SignedInteger,(T)) {
@@ -103,7 +103,7 @@ namespace boost
 # if defined(BOOST_HAS_LONG_LONG)
   template <> struct SignedInteger< ::boost::long_long_type> {};
 # elif defined(BOOST_HAS_MS_INT64)
-  template <> struct SignedInteger<int64_t> {};
+  template <> struct SignedInteger<__int64> {};
 # endif
 
   BOOST_concept(UnsignedInteger,(T)) {
@@ -121,7 +121,7 @@ namespace boost
 # if defined(BOOST_HAS_LONG_LONG)
   template <> struct UnsignedInteger< ::boost::ulong_long_type> {};
 # elif defined(BOOST_HAS_MS_INT64)
-  template <> struct UnsignedInteger<uint64_t> {};
+  template <> struct UnsignedInteger<unsigned __int64> {};
 # endif
 
   //===========================================================================

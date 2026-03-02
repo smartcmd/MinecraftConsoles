@@ -45,7 +45,7 @@ template<>struct uintptr_candidates<3> {typedef unsigned int           type;};
 #endif
 
 #if defined(BOOST_HAS_MS_INT64)
-template<>struct uintptr_candidates<4> {typedef uint64_t       type;};
+template<>struct uintptr_candidates<4> {typedef unsigned __int64       type;};
 #else
 template<>struct uintptr_candidates<4> {typedef unsigned int           type;};
 #endif

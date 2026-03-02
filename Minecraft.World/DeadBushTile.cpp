@@ -27,7 +27,7 @@ int DeadBushTile::getResource(int data, Random *random, int playerBonusLevel)
 	return -1;
 }
 
-void DeadBushTile::playerDestroy(Level *level, std::shared_ptr<Player> player, int x, int y, int z, int data)
+void DeadBushTile::playerDestroy(Level *level, shared_ptr<Player> player, int x, int y, int z, int data)
 {
 	if (!level->isClientSide && player->getSelectedItem() != NULL && player->getSelectedItem()->id == Item::shears_Id)
 	{
@@ -37,7 +37,7 @@ void DeadBushTile::playerDestroy(Level *level, std::shared_ptr<Player> player, i
 			);
 
 		// drop leaf block instead of sapling
-		popResource(level, x, y, z, std::shared_ptr<ItemInstance>(new ItemInstance(Tile::deadBush, 1, data)));
+		popResource(level, x, y, z, shared_ptr<ItemInstance>(new ItemInstance(Tile::deadBush, 1, data)));
 	}
 	else
 	{

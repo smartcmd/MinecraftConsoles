@@ -1,6 +1,6 @@
 #pragma once
 
-class Path
+class Path 
 {
 	friend class PathFinder;
 
@@ -21,9 +21,9 @@ public:
 	void setSize(int length);
 	int getIndex();
 	void setIndex(int index);
-	Vec3 *getPos(std::shared_ptr<Entity> e, int index);
+	Vec3 *getPos(shared_ptr<Entity> e, int index);
 	NodeArray Getarray();
-	Vec3 *currentPos(std::shared_ptr<Entity> e);
+	Vec3 *currentPos(shared_ptr<Entity> e);
 	Vec3 *currentPos();
 	bool sameAs(Path *path);
 	bool endsIn(Vec3 *pos);

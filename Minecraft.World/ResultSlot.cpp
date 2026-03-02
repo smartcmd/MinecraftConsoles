@@ -6,19 +6,19 @@
 #include "net.minecraft.world.level.tile.h"
 #include "ResultSlot.h"
 
-ResultSlot::ResultSlot(Player *player, std::shared_ptr<Container> craftSlots, std::shared_ptr<Container> container, int id, int x, int y) : Slot( container, id, x, y )
+ResultSlot::ResultSlot(Player *player, shared_ptr<Container> craftSlots, shared_ptr<Container> container, int id, int x, int y) : Slot( container, id, x, y )
 {
 	this->player = player;
 	this->craftSlots = craftSlots;
 	removeCount = 0;
 }
 
-bool ResultSlot::mayPlace(std::shared_ptr<ItemInstance> item)
+bool ResultSlot::mayPlace(shared_ptr<ItemInstance> item)
 {
 	return false;
 }
 
-std::shared_ptr<ItemInstance> ResultSlot::remove(int c)
+shared_ptr<ItemInstance> ResultSlot::remove(int c)
 {
 	if (hasItem())
 	{
@@ -27,15 +27,15 @@ std::shared_ptr<ItemInstance> ResultSlot::remove(int c)
 	return Slot::remove(c);
 }
 
-void ResultSlot::onQuickCraft(std::shared_ptr<ItemInstance> picked, int count)
+void ResultSlot::onQuickCraft(shared_ptr<ItemInstance> picked, int count)
 {
 	removeCount += count;
 	checkTakeAchievements(picked);
 }
 
-void ResultSlot::checkTakeAchievements(std::shared_ptr<ItemInstance> carried)
+void ResultSlot::checkTakeAchievements(shared_ptr<ItemInstance> carried)
 {
-	carried->onCraftedBy(player->level, std::dynamic_pointer_cast<Player>( player->shared_from_this() ), removeCount);
+	carried->onCraftedBy(player->level, dynamic_pointer_cast<Player>( player->shared_from_this() ), removeCount);
 	removeCount = 0;
 
 	if (carried->id == Tile::workBench_Id)				player->awardStat(GenericStats::buildWorkbench(),		GenericStats::param_buildWorkbench());
@@ -49,17 +49,17 @@ void ResultSlot::checkTakeAchievements(std::shared_ptr<ItemInstance> carried)
 	//else if (carried->id == Tile::enchantTable_Id)	player->awardStat(GenericStats::enchantments(),			GenericStats::param_achievement(eAward_));
 	else if (carried->id == Tile::bookshelf_Id)			player->awardStat(GenericStats::bookcase(),				GenericStats::param_bookcase());
 
-	// 4J : WESTY : Added new acheivements.
+	// 4J : WESTY : Added new acheivements. 
 	else if (carried->id == Tile::dispenser_Id) player->awardStat(GenericStats::dispenseWithThis(), GenericStats::param_dispenseWithThis());
 }
 
-void ResultSlot::onTake(std::shared_ptr<Player> player, std::shared_ptr<ItemInstance> carried)
+void ResultSlot::onTake(shared_ptr<Player> player, shared_ptr<ItemInstance> carried)
 {
 	checkTakeAchievements(carried);
 
 	for (unsigned int i = 0; i < craftSlots->getContainerSize(); i++)
 	{
-		std::shared_ptr<ItemInstance> item = craftSlots->getItem(i);
+		shared_ptr<ItemInstance> item = craftSlots->getItem(i);
 		if (item != NULL)
 		{
 			craftSlots->removeItem(i, 1);
@@ -68,7 +68,7 @@ void ResultSlot::onTake(std::shared_ptr<Player> player, std::shared_ptr<ItemInst
 			{
 
 				// (TheApathetic)
-				std::shared_ptr<ItemInstance> craftResult = std::shared_ptr<ItemInstance>(new ItemInstance(item->getItem()->getCraftingRemainingItem()));
+				shared_ptr<ItemInstance> craftResult = shared_ptr<ItemInstance>(new ItemInstance(item->getItem()->getCraftingRemainingItem()));
 
 				/*
 				* Try to place this in the player's inventory (See we.java
@@ -96,7 +96,7 @@ void ResultSlot::onTake(std::shared_ptr<Player> player, std::shared_ptr<ItemInst
 	}
 }
 
-bool ResultSlot::mayCombine(std::shared_ptr<ItemInstance> second)
+bool ResultSlot::mayCombine(shared_ptr<ItemInstance> second)
 {
 	return false;
 }

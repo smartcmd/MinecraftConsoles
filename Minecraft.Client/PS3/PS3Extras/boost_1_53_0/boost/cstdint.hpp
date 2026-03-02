@@ -1,8 +1,8 @@
 //  boost cstdint.hpp header file  ------------------------------------------//
 
-//  (C) Copyright Beman Dawes 1999.
-//  (C) Copyright Jens Mauer 2001
-//  (C) Copyright John Maddock 2001
+//  (C) Copyright Beman Dawes 1999. 
+//  (C) Copyright Jens Mauer 2001  
+//  (C) Copyright John Maddock 2001 
 //  Distributed under the Boost
 //  Software License, Version 1.0. (See accompanying file
 //  LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
@@ -24,9 +24,9 @@
 #define BOOST_CSTDINT_HPP
 
 //
-// Since we always define the INT#_C macros as per C++0x,
+// Since we always define the INT#_C macros as per C++0x, 
 // define __STDC_CONSTANT_MACROS so that <stdint.h> does the right
-// thing if possible, and so that the user knows that the macros
+// thing if possible, and so that the user knows that the macros 
 // are actually defined as per C99.
 //
 #ifndef __STDC_CONSTANT_MACROS
@@ -50,7 +50,7 @@
 #   ifdef __STDC_32_MODE__
       // this is triggered with GCC, because it defines __cplusplus < 199707L
 #     define BOOST_NO_INT64_T
-#   endif
+#   endif 
 # elif defined(__FreeBSD__) || defined(__IBMCPP__) || defined(_AIX)
 #   include <inttypes.h>
 # else
@@ -100,40 +100,40 @@ typedef ::uintfast64_t uint_fast64_t;
 namespace boost
 {
 
-  using ::int8_t;
-  using ::int_least8_t;
-  using ::int_fast8_t;
-  using ::uint8_t;
-  using ::uint_least8_t;
-  using ::uint_fast8_t;
-
-  using ::int16_t;
-  using ::int_least16_t;
-  using ::int_fast16_t;
-  using ::uint16_t;
-  using ::uint_least16_t;
-  using ::uint_fast16_t;
-
-  using ::int32_t;
-  using ::int_least32_t;
-  using ::int_fast32_t;
-  using ::uint32_t;
-  using ::uint_least32_t;
-  using ::uint_fast32_t;
-
+  using ::int8_t;             
+  using ::int_least8_t;       
+  using ::int_fast8_t;        
+  using ::uint8_t;            
+  using ::uint_least8_t;      
+  using ::uint_fast8_t;       
+                     
+  using ::int16_t;            
+  using ::int_least16_t;      
+  using ::int_fast16_t;       
+  using ::uint16_t;           
+  using ::uint_least16_t;     
+  using ::uint_fast16_t;      
+                     
+  using ::int32_t;            
+  using ::int_least32_t;      
+  using ::int_fast32_t;       
+  using ::uint32_t;           
+  using ::uint_least32_t;     
+  using ::uint_fast32_t;      
+                     
 # ifndef BOOST_NO_INT64_T
 
-  using ::int64_t;
-  using ::int_least64_t;
-  using ::int_fast64_t;
-  using ::uint64_t;
-  using ::uint_least64_t;
-  using ::uint_fast64_t;
-
+  using ::int64_t;            
+  using ::int_least64_t;      
+  using ::int_fast64_t;       
+  using ::uint64_t;           
+  using ::uint_least64_t;     
+  using ::uint_fast64_t;      
+                     
 # endif
 
-  using ::intmax_t;
-  using ::uintmax_t;
+  using ::intmax_t;      
+  using ::uintmax_t;     
 
 } // namespace boost
 
@@ -143,35 +143,35 @@ namespace boost
 
 namespace boost {
 
-  using ::int8_t;
-  typedef int8_t int_least8_t;
-  typedef int8_t int_fast8_t;
-  using ::uint8_t;
-  typedef uint8_t uint_least8_t;
-  typedef uint8_t uint_fast8_t;
+  using ::int8_t;             
+  typedef int8_t int_least8_t;       
+  typedef int8_t int_fast8_t;        
+  using ::uint8_t;            
+  typedef uint8_t uint_least8_t;      
+  typedef uint8_t uint_fast8_t;       
+                     
+  using ::int16_t;            
+  typedef int16_t int_least16_t;      
+  typedef int16_t int_fast16_t;       
+  using ::uint16_t;           
+  typedef uint16_t uint_least16_t;     
+  typedef uint16_t uint_fast16_t;      
+                     
+  using ::int32_t;            
+  typedef int32_t int_least32_t;      
+  typedef int32_t int_fast32_t;       
+  using ::uint32_t;           
+  typedef uint32_t uint_least32_t;     
+  typedef uint32_t uint_fast32_t;      
+         
+# ifndef BOOST_NO_INT64_T          
 
-  using ::int16_t;
-  typedef int16_t int_least16_t;
-  typedef int16_t int_fast16_t;
-  using ::uint16_t;
-  typedef uint16_t uint_least16_t;
-  typedef uint16_t uint_fast16_t;
-
-  using ::int32_t;
-  typedef int32_t int_least32_t;
-  typedef int32_t int_fast32_t;
-  using ::uint32_t;
-  typedef uint32_t uint_least32_t;
-  typedef uint32_t uint_fast32_t;
-
-# ifndef BOOST_NO_INT64_T
-
-  using ::int64_t;
-  typedef int64_t int_least64_t;
-  typedef int64_t int_fast64_t;
-  using ::uint64_t;
-  typedef uint64_t uint_least64_t;
-  typedef uint64_t uint_fast64_t;
+  using ::int64_t;            
+  typedef int64_t int_least64_t;      
+  typedef int64_t int_fast64_t;       
+  using ::uint64_t;           
+  typedef uint64_t uint_least64_t;     
+  typedef uint64_t uint_fast64_t;      
 
   typedef int64_t intmax_t;
   typedef uint64_t uintmax_t;
@@ -235,15 +235,15 @@ namespace boost
      typedef unsigned short  uint_least16_t;
      typedef unsigned short  uint_fast16_t;
 #  endif
-# elif (USHRT_MAX == 0xffffffff) && defined(__MTA__)
-      // On MTA / XMT short is 32 bits unless the -short16 compiler flag is specified
-      // MTA / XMT does support the following non-standard integer types
-      typedef __short16           int16_t;
-      typedef __short16           int_least16_t;
-      typedef __short16           int_fast16_t;
-      typedef unsigned __short16  uint16_t;
-      typedef unsigned __short16  uint_least16_t;
-      typedef unsigned __short16  uint_fast16_t;
+# elif (USHRT_MAX == 0xffffffff) && defined(__MTA__) 
+      // On MTA / XMT short is 32 bits unless the -short16 compiler flag is specified 
+      // MTA / XMT does support the following non-standard integer types 
+      typedef __short16           int16_t; 
+      typedef __short16           int_least16_t; 
+      typedef __short16           int_fast16_t; 
+      typedef unsigned __short16  uint16_t; 
+      typedef unsigned __short16  uint_least16_t; 
+      typedef unsigned __short16  uint_fast16_t; 
 # elif (USHRT_MAX == 0xffffffff) && defined(CRAY)
      // no 16-bit types on Cray:
      typedef short           int_least16_t;
@@ -277,14 +277,14 @@ namespace boost
      typedef unsigned long   uint32_t;
      typedef unsigned long   uint_least32_t;
      typedef unsigned long   uint_fast32_t;
-# elif (UINT_MAX == 0xffffffffffffffff) && defined(__MTA__)
-      // Integers are 64 bits on the MTA / XMT
-      typedef __int32           int32_t;
-      typedef __int32           int_least32_t;
-      typedef __int32           int_fast32_t;
-      typedef unsigned __int32  uint32_t;
-      typedef unsigned __int32  uint_least32_t;
-      typedef unsigned __int32  uint_fast32_t;
+# elif (UINT_MAX == 0xffffffffffffffff) && defined(__MTA__) 
+      // Integers are 64 bits on the MTA / XMT 
+      typedef __int32           int32_t; 
+      typedef __int32           int_least32_t; 
+      typedef __int32           int_fast32_t; 
+      typedef unsigned __int32  uint32_t; 
+      typedef unsigned __int32  uint_least32_t; 
+      typedef unsigned __int32  uint_fast32_t; 
 # else
 #    error defaults not correct; you must hand modify boost/cstdint.hpp
 # endif
@@ -337,16 +337,16 @@ namespace boost
      __extension__ typedef unsigned long long   uint_fast64_t;
 # elif defined(BOOST_HAS_MS_INT64)
      //
-     // we have Borland/Intel/Microsoft int64_t:
+     // we have Borland/Intel/Microsoft __int64:
      //
-     typedef int64_t             intmax_t;
-     typedef uint64_t    uintmax_t;
-     typedef int64_t             int64_t;
-     typedef int64_t             int_least64_t;
-     typedef int64_t             int_fast64_t;
-     typedef uint64_t    uint64_t;
-     typedef uint64_t    uint_least64_t;
-     typedef uint64_t    uint_fast64_t;
+     typedef __int64             intmax_t;
+     typedef unsigned __int64    uintmax_t;
+     typedef __int64             int64_t;
+     typedef __int64             int_least64_t;
+     typedef __int64             int_fast64_t;
+     typedef unsigned __int64    uint64_t;
+     typedef unsigned __int64    uint_least64_t;
+     typedef unsigned __int64    uint_fast64_t;
 # else // assume no 64-bit integers
 #  define BOOST_NO_INT64_T
      typedef int32_t              intmax_t;
@@ -376,15 +376,15 @@ INT#_C macros if they're not already defined (John Maddock).
 #if !defined(BOOST__STDC_CONSTANT_MACROS_DEFINED) && \
    (!defined(INT8_C) || !defined(INT16_C) || !defined(INT32_C) || !defined(INT64_C))
 //
-// For the following code we get several warnings along the lines of:
+// For the following code we get several warnings along the lines of: 
+// 
+// boost/cstdint.hpp:428:35: error: use of C99 long long integer constant 
+// 
+// So we declare this a system header to suppress these warnings. 
 //
-// boost/cstdint.hpp:428:35: error: use of C99 long long integer constant
-//
-// So we declare this a system header to suppress these warnings.
-//
-#if defined(__GNUC__) && (__GNUC__ >= 4)
-#pragma GCC system_header
-#endif
+#if defined(__GNUC__) && (__GNUC__ >= 4) 
+#pragma GCC system_header 
+#endif 
 
 #include <limits.h>
 # define BOOST__STDC_CONSTANT_MACROS_DEFINED

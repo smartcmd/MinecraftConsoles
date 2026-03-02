@@ -9,7 +9,7 @@
 
 
 void EnderCrystal::_init(Level *level)
-{
+{		
 	// 4J Stu - This function call had to be moved here from the Entity ctor to ensure that
 	// the derived version of the function is called
 	this->defineSynchedData();
@@ -91,7 +91,7 @@ bool EnderCrystal::isPickable()
 bool EnderCrystal::hurt(DamageSource *source, int damage)
 {
 	// 4J-PB - if the owner of the source is the enderdragon, then ignore it (where the dragon's fireball hits an endercrystal)
-	std::shared_ptr<EnderDragon> sourceIsDragon = std::dynamic_pointer_cast<EnderDragon>(source->getEntity());
+	shared_ptr<EnderDragon> sourceIsDragon = dynamic_pointer_cast<EnderDragon>(source->getEntity());
 
 	if(sourceIsDragon!=NULL)
 	{
@@ -108,13 +108,13 @@ bool EnderCrystal::hurt(DamageSource *source, int damage)
 			{
 				level->explode(nullptr, x, y, z, 6, true);
 
-				vector<std::shared_ptr<Entity> > entities = level->getAllEntities();
-				std::shared_ptr<EnderDragon> dragon = nullptr;
+				vector<shared_ptr<Entity> > entities = level->getAllEntities();
+				shared_ptr<EnderDragon> dragon = nullptr;
 				AUTO_VAR(itEnd, entities.end());
 				for (AUTO_VAR(it, entities.begin()); it != itEnd; it++)
 				{
-					std::shared_ptr<Entity> e = *it; //entities->at(i);
-					dragon = std::dynamic_pointer_cast<EnderDragon>(e);
+					shared_ptr<Entity> e = *it; //entities->at(i);
+					dragon = dynamic_pointer_cast<EnderDragon>(e);
 					if(dragon != NULL)
 					{
 						dragon->handleCrystalDestroyed(source);

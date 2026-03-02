@@ -29,7 +29,7 @@ Zombie::Zombie(Level *level) : Monster( level )
 	attackDamage = 4;
 
 	villagerConversionTime = 0;
-
+	
 	registeredBBWidth = -1;
 	registeredBBHeight = 0;
 
@@ -153,7 +153,7 @@ int Zombie::getHurtSound()
 int Zombie::getDeathSound()
 {
 	return eSoundType_MOB_ZOMBIE_DEATH;
-}
+}    
 
 int Zombie::getDeathLoot()
 {
@@ -211,7 +211,7 @@ void Zombie::readAdditionalSaveData(CompoundTag *tag)
 	if (tag->contains(L"ConversionTime") && tag->getInt(L"ConversionTime") > -1) startConverting(tag->getInt(L"ConversionTime"));
 }
 
-void Zombie::killed(std::shared_ptr<Mob> mob)
+void Zombie::killed(shared_ptr<Mob> mob)
 {
 	Monster::killed(mob);
 
@@ -220,7 +220,7 @@ void Zombie::killed(std::shared_ptr<Mob> mob)
 		if( !level->canCreateMore( GetType(), Level::eSpawnType_Egg) ) return;
 		if (level->difficulty == Difficulty::NORMAL && random->nextBoolean()) return;
 
-		std::shared_ptr<Zombie> zombie = std::shared_ptr<Zombie>(new Zombie(level));
+		shared_ptr<Zombie> zombie = shared_ptr<Zombie>(new Zombie(level));
 		zombie->copyPosition(mob);
 		level->removeEntity(mob);
 		zombie->finalizeMobSpawn();
@@ -263,9 +263,9 @@ void Zombie::finalizeMobSpawn()
 #endif
 }
 
-bool Zombie::interact(std::shared_ptr<Player> player)
+bool Zombie::interact(shared_ptr<Player> player)
 {
-	std::shared_ptr<ItemInstance> item = player->getSelectedItem();
+	shared_ptr<ItemInstance> item = player->getSelectedItem();
 
 	if (item != NULL && item->getItem() == Item::apple_gold && item->getAuxValue() == 0 && isVillager() && hasEffect(MobEffect::weakness))
 	{
@@ -319,7 +319,7 @@ bool Zombie::isConverting()
 
 void Zombie::finishConversion()
 {
-	std::shared_ptr<Villager> villager = std::shared_ptr<Villager>(new Villager(level));
+	shared_ptr<Villager> villager = shared_ptr<Villager>(new Villager(level));
 	villager->copyPosition(shared_from_this());
 	villager->finalizeMobSpawn();
 	villager->setRewardPlayersInVillage();

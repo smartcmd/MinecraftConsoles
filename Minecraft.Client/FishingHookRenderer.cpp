@@ -8,10 +8,10 @@
 #include "..\Minecraft.World\Mth.h"
 #include "MultiPlayerLocalPlayer.h"
 
-void FishingHookRenderer::render(std::shared_ptr<Entity> _hook, double x, double y, double z, float rot, float a)
+void FishingHookRenderer::render(shared_ptr<Entity> _hook, double x, double y, double z, float rot, float a)
 {
 	// 4J - dynamic cast required because we aren't using templates/generics in our version
-	std::shared_ptr<FishingHook> hook = std::dynamic_pointer_cast<FishingHook>(_hook);
+	shared_ptr<FishingHook> hook = dynamic_pointer_cast<FishingHook>(_hook);
 
     glPushMatrix();
 
@@ -62,7 +62,7 @@ void FishingHookRenderer::render(std::shared_ptr<Entity> _hook, double x, double
         double xp = hook->owner->xo + (hook->owner->x - hook->owner->xo) * a + vv->x;
         double yp = hook->owner->yo + (hook->owner->y - hook->owner->yo) * a + vv->y;
         double zp = hook->owner->zo + (hook->owner->z - hook->owner->zo) * a + vv->z;
-		double yOffset = hook->owner != std::dynamic_pointer_cast<Player>(Minecraft::GetInstance()->player) ? hook->owner->getHeadHeight() : 0;
+		double yOffset = hook->owner != dynamic_pointer_cast<Player>(Minecraft::GetInstance()->player) ? hook->owner->getHeadHeight() : 0;
 
 		// 4J-PB - changing this to be per player
 		//if (this->entityRenderDispatcher->options->thirdPersonView)

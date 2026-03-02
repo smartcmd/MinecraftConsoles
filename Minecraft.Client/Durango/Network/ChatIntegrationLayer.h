@@ -16,7 +16,7 @@ enum ChatPacketType
     OutgoingPacket = 1
 };
 
-class ChatIntegrationLayer
+class ChatIntegrationLayer 
     : public std::enable_shared_from_this<ChatIntegrationLayer> // shared_from_this is needed to use a weak ref to 'this' when handling delegate callbacks
 {
 public:
@@ -26,7 +26,7 @@ public:
     /// <summary>
     /// Initializes the chat manager
     /// </summary>
-    void InitializeChatManager(
+    void InitializeChatManager( 
         __in bool combineCaptureBuffersIntoSinglePacketEnabled,
         __in bool useKinectAsCaptureSource,
         __in bool applySoundEffectToCapture,
@@ -47,8 +47,8 @@ public:
 		bool										m_canCaptureAudio;
 	};
 
-    void AddLocalUser( __in Windows::Xbox::System::IUser^ user );
-	void RemoveLocalUser( __in Windows::Xbox::System::IUser^ user );
+    void AddLocalUser( __in Windows::Xbox::System::IUser^ user ); 
+	void RemoveLocalUser( __in Windows::Xbox::System::IUser^ user ); 
 	void EvaluateDevicesForUser(__in Windows::Xbox::System::IUser^ user );
 
 	vector<AddedUser *> m_addedUsers;
@@ -57,18 +57,18 @@ public:
 private:
     /// <summary>
     /// Adds a local user to a specific channel
-    /// This is helper function waits for the task to complete so shouldn't be called from the UI thread
+    /// This is helper function waits for the task to complete so shouldn't be called from the UI thread 
     /// </summary>
     /// <param name="channelIndex">The channel to add the user to</param>
     /// <param name="user">The local user to add</param>
-    void AddLocalUserToChatChannel(
+    void AddLocalUserToChatChannel( 
         __in uint8 channelIndex,
         __in Windows::Xbox::System::IUser^ user
-        );
+        ); 
 
     /// <summary>
     /// Removes a local user from a specific channel
-    /// This is helper function waits for the task to complete so shouldn't be called from the UI thread
+    /// This is helper function waits for the task to complete so shouldn't be called from the UI thread 
     /// </summary>
     /// <param name="channelIndex">The channel to remove the user from</param>
     /// <param name="user">The local user to remove</param>
@@ -80,10 +80,10 @@ public:
 
     /// <summary>
     /// Removes a remote console from chat
-    /// This is helper function waits for the task to complete so shouldn't be called from the UI thread
+    /// This is helper function waits for the task to complete so shouldn't be called from the UI thread 
     /// </summary>
     /// <param name="uniqueRemoteConsoleIdentifier">A unique ID for the remote console</param>
-    void RemoveRemoteConsole(
+    void RemoveRemoteConsole( 
         unsigned int address
         );
 
@@ -92,7 +92,7 @@ public:
     /// </summary>
     /// <param name="chatPacket">A buffer containing the chat message</param>
     /// <param name="uniqueRemoteConsoleIdentifier">A unique ID for the remote console</param>
-    void OnIncomingChatMessage(
+    void OnIncomingChatMessage( 
 		unsigned int sessionAddress,
 		Platform::Array<byte>^ message
         );
@@ -111,7 +111,7 @@ public:
     /// Helper function to swap the mute state of a specific chat user
     /// </summary>
     void ChangeChatUserMuteState(
-        __in Microsoft::Xbox::GameChat::ChatUser^ chatUser
+        __in Microsoft::Xbox::GameChat::ChatUser^ chatUser 
         );
 
     /// <summary>
@@ -120,20 +120,20 @@ public:
     void HandleChatChannelChanged(
         __in uint8 oldChatChannelIndex,
         __in uint8 newChatChannelIndex,
-        __in Microsoft::Xbox::GameChat::ChatUser^ chatUser
+        __in Microsoft::Xbox::GameChat::ChatUser^ chatUser 
         );
 
     /// <summary>
-    /// Call this when a new console connects.
+    /// Call this when a new console connects.  
     /// This adds this console to the chat layer
     /// </summary>
-    void OnNewSessionAddressAdded(
-        __in unsigned int address
+    void OnNewSessionAddressAdded( 
+        __in unsigned int address 
         );
 
     /// <summary>
     /// Adds a list of locally signed in users that have intent to play to the chat session on a specific channel index.
-    /// Avoid adding any user who is signed in that doesn't have intent to play otherwise users who are biometrically
+    /// Avoid adding any user who is signed in that doesn't have intent to play otherwise users who are biometrically 
     /// signed in automatically will be added to the chat session
     /// </summary>
     /// <param name="channelIndex">The channel to add the users to</param>
@@ -147,8 +147,8 @@ public:
     /// Handles when a debug message is received.  Send this to the UI and OutputDebugString.  Games should integrate with their existing log system.
     /// </summary>
     /// <param name="args">Contains the debug message to log</param>
-    void OnDebugMessageReceived(
-        __in Microsoft::Xbox::GameChat::DebugMessageEventArgs^ args
+    void OnDebugMessageReceived( 
+        __in Microsoft::Xbox::GameChat::DebugMessageEventArgs^ args 
         );
 
     /// <summary>
@@ -161,8 +161,8 @@ public:
     /// It should send the chat message in order (if that feature is available) if args->SendInOrder is true
     /// </summary>
     /// <param name="args">Describes the packet to send</param>
-    void OnOutgoingChatPacketReady(
-        __in Microsoft::Xbox::GameChat::ChatPacketEventArgs^ args
+    void OnOutgoingChatPacketReady( 
+        __in Microsoft::Xbox::GameChat::ChatPacketEventArgs^ args 
         );
 
     /// <summary>
@@ -189,13 +189,13 @@ public:
     /// <summary>
     /// Helper function to get specific ChatUser by xboxUserId
     /// </summary>
-    bool ChatIntegrationLayer::CompareUniqueConsoleIdentifiers(
-        __in Platform::Object^ uniqueRemoteConsoleIdentifier1,
-        __in Platform::Object^ uniqueRemoteConsoleIdentifier2
+    bool ChatIntegrationLayer::CompareUniqueConsoleIdentifiers( 
+        __in Platform::Object^ uniqueRemoteConsoleIdentifier1, 
+        __in Platform::Object^ uniqueRemoteConsoleIdentifier2 
         );
 
     /// <summary>
-    /// Helper function to return the ChatPerformanceCounters^ from the ChatManager so perf numbers can be shown on the UI
+    /// Helper function to return the ChatPerformanceCounters^ from the ChatManager so perf numbers can be shown on the UI 
     /// These numbers will only be valid if m_chatManager->ChatSettings->PerformanceCountersEnabled is set to true.
     /// </summary>
     Microsoft::Xbox::GameChat::ChatPerformanceCounters^ GetChatPerformanceCounters();
@@ -204,13 +204,13 @@ public:
     /// Returns a count of the number of chat packets of a specific type that have been either sent or received.
     /// It is useful to monitor this number in the UI / logs to debug network issues.
     /// </summary>
-    int GameUI_GetPacketStatistic(
+    int GameUI_GetPacketStatistic( 
         __in Microsoft::Xbox::GameChat::ChatMessageType messageType,
         __in ChatPacketType chatPacketType
         );
-
-    void OnControllerPairingChanged(
-        __in Windows::Xbox::Input::ControllerPairingChangedEventArgs^ args
+    
+    void OnControllerPairingChanged( 
+        __in Windows::Xbox::Input::ControllerPairingChangedEventArgs^ args 
         );
 
     void ToggleRenderTargetVolume();
@@ -233,7 +233,7 @@ private:
 
     // Debug stats for chat packets. Use Debug_GetPacketStatistic() to get the values.
     /// It is useful to monitor this number in the UI / logs to debug network issues.
-    void GameUI_RecordPacketStatistic(
+    void GameUI_RecordPacketStatistic( 
         __in Microsoft::Xbox::GameChat::ChatMessageType messageType,
         __in ChatPacketType chatPacketType
         );

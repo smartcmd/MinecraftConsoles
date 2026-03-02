@@ -25,7 +25,7 @@
 
 #include <boost/static_assert.hpp>
 #include <boost/type_traits/is_same.hpp>
-#include <boost/std::shared_ptr.hpp>
+#include <boost/shared_ptr.hpp>
 
 
 
@@ -38,7 +38,7 @@ namespace boost { namespace program_options { namespace detail {
         for(; i !=e; ++i) {
             *i;
         }
-
+        
         Syntax conventions:
 
         - config file can not contain positional options
@@ -47,10 +47,10 @@ namespace boost { namespace program_options { namespace detail {
         - variable assignments are in the form
           name '=' value.
           spaces around '=' are trimmed.
-        - Section names are given in brackets.
+        - Section names are given in brackets. 
 
          The actual option name is constructed by combining current section
-         name and specified option name, with dot between. If section_name
+         name and specified option name, with dot between. If section_name 
          already contains dot at the end, new dot is not inserted. For example:
          @verbatim
          [gui.accessibility]
@@ -61,8 +61,8 @@ namespace boost { namespace program_options { namespace detail {
 
          TODO: maybe, we should just accept a pointer to options_description
          class.
-     */
-    class common_config_file_iterator
+     */    
+    class common_config_file_iterator 
         : public eof_iterator<common_config_file_iterator, option>
     {
     public:
@@ -74,9 +74,9 @@ namespace boost { namespace program_options { namespace detail {
         virtual ~common_config_file_iterator() {}
 
     public: // Method required by eof_iterator
-
+        
         void get();
-
+        
     protected: // Stubs for derived classes
 
         // Obtains next line from the config file
@@ -85,7 +85,7 @@ namespace boost { namespace program_options { namespace detail {
         // constructor of this class, but to avoid templating this class
         // we'd need polymorphic iterator, which does not exist yet.
         virtual bool getline(std::string&) { return false; }
-
+        
     private:
         /** Adds another allowed option. If the 'name' ends with
             '*', then all options with the same prefix are
@@ -94,7 +94,7 @@ namespace boost { namespace program_options { namespace detail {
         void add_option(const char* name);
 
         // Returns true if 's' is a registered option name.
-        bool allowed_option(const std::string& s) const;
+        bool allowed_option(const std::string& s) const; 
 
         // That's probably too much data for iterator, since
         // it will be copied, but let's not bother for now.
@@ -113,20 +113,20 @@ namespace boost { namespace program_options { namespace detail {
             found_eof();
         }
 
-        /** Creates a config file parser for the specified stream.
+        /** Creates a config file parser for the specified stream.            
         */
-        basic_config_file_iterator(std::basic_istream<charT>& is,
+        basic_config_file_iterator(std::basic_istream<charT>& is, 
                                    const std::set<std::string>& allowed_options,
-                                   bool allow_unregistered = false);
+                                   bool allow_unregistered = false); 
 
     private: // base overrides
 
         bool getline(std::string&);
 
     private: // internal data
-        std::shared_ptr<std::basic_istream<charT> > is;
+        shared_ptr<std::basic_istream<charT> > is;
     };
-
+    
     typedef basic_config_file_iterator<char> config_file_iterator;
     typedef basic_config_file_iterator<wchar_t> wconfig_file_iterator;
 
@@ -139,12 +139,12 @@ namespace boost { namespace program_options { namespace detail {
 
     template<class charT>
     basic_config_file_iterator<charT>::
-    basic_config_file_iterator(std::basic_istream<charT>& is,
+    basic_config_file_iterator(std::basic_istream<charT>& is, 
                                const std::set<std::string>& allowed_options,
                                bool allow_unregistered)
     : common_config_file_iterator(allowed_options, allow_unregistered)
     {
-        this->is.reset(&is, null_deleter());
+        this->is.reset(&is, null_deleter());                 
         get();
     }
 
@@ -173,7 +173,7 @@ namespace boost { namespace program_options { namespace detail {
     basic_config_file_iterator<wchar_t>::getline(std::string& s);
 #endif
 
-
+    
 
 }}}
 

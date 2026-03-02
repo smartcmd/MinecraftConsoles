@@ -18,7 +18,7 @@ private:
 
 public:
 	DragonFireball(Level *level);
-	DragonFireball(Level *level, std::shared_ptr<Mob> mob, double xa, double ya, double za);
+	DragonFireball(Level *level, shared_ptr<Mob> mob, double xa, double ya, double za);
 	DragonFireball(Level *level, double x, double y, double z, double xa, double ya, double za);
 
 protected:

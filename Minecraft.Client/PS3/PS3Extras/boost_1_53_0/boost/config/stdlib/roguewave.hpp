@@ -1,16 +1,16 @@
-//  (C) Copyright John Maddock 2001 - 2003.
-//  (C) Copyright Jens Maurer 2001.
-//  (C) Copyright David Abrahams 2003.
-//  (C) Copyright Boris Gubenko 2007.
-//  Use, modification and distribution are subject to the
-//  Boost Software License, Version 1.0. (See accompanying file
+//  (C) Copyright John Maddock 2001 - 2003. 
+//  (C) Copyright Jens Maurer 2001. 
+//  (C) Copyright David Abrahams 2003. 
+//  (C) Copyright Boris Gubenko 2007. 
+//  Use, modification and distribution are subject to the 
+//  Boost Software License, Version 1.0. (See accompanying file 
 //  LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
 
 //  See http://www.boost.org for most recent version.
 
 //  Rogue Wave std lib:
 
-#define BOOST_RW_STDLIB 1
+#define BOOST_RW_STDLIB 1 
 
 #if !defined(__STD_RWCOMPILER_H__) && !defined(_RWSTD_VER)
 #  include <boost/config/no_tr1/utility.hpp>
@@ -57,7 +57,7 @@
 # endif
 
 //
-// Borland version of numeric_limits lacks int64_t specialisation:
+// Borland version of numeric_limits lacks __int64 specialisation:
 //
 #ifdef __BORLANDC__
 #  define BOOST_NO_MS_INT64_NUMERIC_LIMITS

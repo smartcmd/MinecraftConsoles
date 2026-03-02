@@ -28,7 +28,7 @@ void Fireball::_init()
 	zPower = 0.0;
 }
 
-Fireball::Fireball(Level *level) : Entity( level )
+Fireball::Fireball(Level *level) : Entity( level ) 
 {
 	// 4J Stu - This function call had to be moved here from the Entity ctor to ensure that
 	// the derived version of the function is called
@@ -84,7 +84,7 @@ Fireball::Fireball(Level *level, double x, double y, double z, double xa, double
 	}
 }
 
-Fireball::Fireball(Level *level, std::shared_ptr<Mob> mob, double xa, double ya, double za) : Entity ( level )
+Fireball::Fireball(Level *level, shared_ptr<Mob> mob, double xa, double ya, double za) : Entity ( level )
 {
 	// 4J Stu - This function call had to be moved here from the Entity ctor to ensure that
 	// the derived version of the function is called
@@ -142,7 +142,7 @@ void Fireball::tick()
 			int minXZ = - (level->dimension->getXZSize() * 16 ) / 2;
 			int maxXZ = (level->dimension->getXZSize() * 16 ) / 2 - 1;
 
-			if ((x<=minXZ) || (x>=maxXZ) || (z<=minXZ) || (z>=maxXZ))
+			if ((x<=minXZ) || (x>=maxXZ) || (z<=minXZ) || (z>=maxXZ)) 
 			{
 				remove();
 				app.DebugPrintf("Fireball removed - end of world\n");
@@ -163,7 +163,7 @@ void Fireball::tick()
         if (tile == lastTile)
 		{
             life++;
-            if (life == SharedConstants::TICKS_PER_SECOND * 30)
+            if (life == SharedConstants::TICKS_PER_SECOND * 30) 
 			{
 				remove();
 				app.DebugPrintf("Fireball removed - life is 20*60\n");
@@ -181,7 +181,7 @@ void Fireball::tick()
             flightTime = 0;
         }
     }
-	else
+	else 
 	{
 		flightTime++;
     }
@@ -197,13 +197,13 @@ void Fireball::tick()
 	{
         to = Vec3::newTemp(res->pos->x, res->pos->y, res->pos->z);
     }
-    std::shared_ptr<Entity> hitEntity = nullptr;
-    vector<std::shared_ptr<Entity> > *objects = level->getEntities(shared_from_this(), this->bb->expand(xd, yd, zd)->grow(1, 1, 1));
+    shared_ptr<Entity> hitEntity = nullptr;
+    vector<shared_ptr<Entity> > *objects = level->getEntities(shared_from_this(), this->bb->expand(xd, yd, zd)->grow(1, 1, 1));
     double nearest = 0;
 	AUTO_VAR(itEnd, objects->end());
 	for (AUTO_VAR(it, objects->begin()); it != itEnd; it++)
 	{
-        std::shared_ptr<Entity> e = *it; //objects->at(i);
+        shared_ptr<Entity> e = *it; //objects->at(i);
         if (!e->isPickable() || (e->is(owner) )) continue; //4J Stu - Never collide with the owner (Enderdragon) // && flightTime < 25)) continue;
 
         float rr = 0.3f;
@@ -217,7 +217,7 @@ void Fireball::tick()
                 hitEntity = e;
                 nearest = dd;
             }
-			delete p;
+			delete p;        
 		}
 
     }
@@ -259,7 +259,7 @@ void Fireball::tick()
     float inertia = 0.95f;
     if (isInWater())
 	{
-        for (int i = 0; i < 4; i++)
+        for (int i = 0; i < 4; i++) 
 		{
             float s = 1 / 4.0f;
             level->addParticle(eParticleType_bubble, x - xd * s, y - yd * s, z - zd * s, xd, yd, zd);
@@ -298,7 +298,7 @@ void Fireball::onHit(HitResult *res)
 	{
 		if (res->entity != NULL)
 		{
-			DamageSource *damageSource = DamageSource::fireball(std::dynamic_pointer_cast<Fireball>( shared_from_this() ), owner);
+			DamageSource *damageSource = DamageSource::fireball(dynamic_pointer_cast<Fireball>( shared_from_this() ), owner);
 			if (res->entity->hurt(damageSource, 6))
 			{
 			}
@@ -374,7 +374,7 @@ bool Fireball::hurt(DamageSource *source, int damage)
             yPower = yd * 0.1;
             zPower = zd * 0.1;
         }
-		std::shared_ptr<Mob> mob = std::dynamic_pointer_cast<Mob>( source->getEntity() );
+		shared_ptr<Mob> mob = dynamic_pointer_cast<Mob>( source->getEntity() );
 		if (mob != NULL)
 		{
 			owner = mob;
@@ -384,7 +384,7 @@ bool Fireball::hurt(DamageSource *source, int damage)
     return false;
 }
 
-float Fireball::getShadowHeightOffs()
+float Fireball::getShadowHeightOffs() 
 {
     return 0;
 }

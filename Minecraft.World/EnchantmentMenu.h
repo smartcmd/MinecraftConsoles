@@ -13,7 +13,7 @@ public:
 	static const int USE_ROW_SLOT_END = EnchantmentMenu::USE_ROW_SLOT_START + 9;
 
 public:
-	std::shared_ptr<Container> enchantSlots;
+	shared_ptr<Container> enchantSlots;
 
 private:
 	Level *level;
@@ -23,19 +23,19 @@ private:
 	bool m_costsChanged; // 4J Added
 
 public:
-	int64_t nameSeed;
+	__int64 nameSeed;
 
 public:
 	int costs[3];
 
-	EnchantmentMenu(std::shared_ptr<Inventory> inventory, Level *level, int xt, int yt, int zt);
+	EnchantmentMenu(shared_ptr<Inventory> inventory, Level *level, int xt, int yt, int zt);
 
 	virtual void addSlotListener(ContainerListener *listener);
 	virtual void broadcastChanges();
 	virtual void setData(int id, int value);
-	virtual void slotsChanged();// 4J used to take a std::shared_ptr<Container> container but wasn't using it, so removed to simplify things
-	virtual bool clickMenuButton(std::shared_ptr<Player> player, int i);
-	void removed(std::shared_ptr<Player> player);
-	virtual bool stillValid(std::shared_ptr<Player> player);
-	virtual std::shared_ptr<ItemInstance> quickMoveStack(std::shared_ptr<Player> player, int slotIndex);
+	virtual void slotsChanged();// 4J used to take a shared_ptr<Container> container but wasn't using it, so removed to simplify things
+	virtual bool clickMenuButton(shared_ptr<Player> player, int i);
+	void removed(shared_ptr<Player> player);
+	virtual bool stillValid(shared_ptr<Player> player);
+	virtual shared_ptr<ItemInstance> quickMoveStack(shared_ptr<Player> player, int slotIndex);
 };

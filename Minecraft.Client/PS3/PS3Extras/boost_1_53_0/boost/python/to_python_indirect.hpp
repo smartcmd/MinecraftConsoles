@@ -23,9 +23,9 @@
 
 # include <boost/mpl/bool.hpp>
 
-# if defined(__ICL) && __ICL < 600
-#  include <boost/std::shared_ptr.hpp>
-# else
+# if defined(__ICL) && __ICL < 600 
+#  include <boost/shared_ptr.hpp>
+# else 
 #  include <memory>
 # endif
 
@@ -57,7 +57,7 @@ struct to_python_indirect
         else
             return this->execute(*ptr, mpl::false_());
     }
-
+    
     template <class U>
     inline PyObject* execute(U const& x, mpl::false_) const
     {
@@ -84,9 +84,9 @@ namespace detail
           // can't use auto_ptr with Intel 5 and VC6 Dinkum library
           // for some reason. We get link errors against the auto_ptr
           // copy constructor.
-# if defined(__ICL) && __ICL < 600
-          typedef boost::std::shared_ptr<T> smart_pointer;
-# else
+# if defined(__ICL) && __ICL < 600 
+          typedef boost::shared_ptr<T> smart_pointer;
+# else 
           typedef std::auto_ptr<T> smart_pointer;
 # endif
           typedef objects::pointer_holder<smart_pointer, T> holder_t;

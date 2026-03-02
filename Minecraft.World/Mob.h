@@ -99,13 +99,13 @@ public:
 	float walkAnimPos;
 
 protected:
-	std::shared_ptr<Player> lastHurtByPlayer;
+	shared_ptr<Player> lastHurtByPlayer;
 	int lastHurtByPlayerTime;
 
 private:
-	std::shared_ptr<Mob> lastHurtByMob;
+	shared_ptr<Mob> lastHurtByMob;
 	int lastHurtByMobTime;
-	std::shared_ptr<Mob> lastHurtMob;
+	shared_ptr<Mob> lastHurtMob;
 
 public:
 	int arrowCount;
@@ -129,7 +129,7 @@ protected:
 	GoalSelector targetSelector;
 
 private:
-	std::shared_ptr<Mob> target;
+	shared_ptr<Mob> target;
 	Sensing *sensing;
 	float speed;
 
@@ -143,17 +143,17 @@ public:
 	virtual PathNavigation *getNavigation();
 	virtual Sensing *getSensing();
 	virtual Random *getRandom();
-	virtual std::shared_ptr<Mob> getLastHurtByMob();
-	virtual std::shared_ptr<Mob> getLastHurtMob();
-	void setLastHurtMob(std::shared_ptr<Entity> target);
+	virtual shared_ptr<Mob> getLastHurtByMob();
+	virtual shared_ptr<Mob> getLastHurtMob();
+	void setLastHurtMob(shared_ptr<Entity> target);
 	virtual int getNoActionTime();
 	float getYHeadRot();
 	void setYHeadRot(float yHeadRot);
 	float getSpeed();
 	void setSpeed(float speed);
-	virtual bool doHurtTarget(std::shared_ptr<Entity> target);
-	std::shared_ptr<Mob> getTarget();
-	virtual void setTarget(std::shared_ptr<Mob> target);
+	virtual bool doHurtTarget(shared_ptr<Entity> target);
+	shared_ptr<Mob> getTarget();
+	virtual void setTarget(shared_ptr<Mob> target);
 	virtual bool canAttackType(eINSTANCEOF targetType);
 	virtual void ate();
 
@@ -165,13 +165,13 @@ public:
 	void clearRestriction();
 	bool hasRestriction();
 
-	virtual void setLastHurtByMob(std::shared_ptr<Mob> hurtBy);
+	virtual void setLastHurtByMob(shared_ptr<Mob> hurtBy);
 
 protected:
 	virtual void defineSynchedData();
 
 public:
-	bool canSee(std::shared_ptr<Entity> target);
+	bool canSee(shared_ptr<Entity> target);
 	virtual int getTexture();		// 4J - changed from wstring to int
 	virtual bool isPickable() ;
 	virtual bool isPushable();
@@ -183,7 +183,7 @@ public:
 protected:
 	virtual void tickDeath();
 	virtual int decreaseAirSupply(int currentSupply);
-	virtual int getExperienceReward(std::shared_ptr<Player> killedBy);
+	virtual int getExperienceReward(shared_ptr<Player> killedBy);
 	virtual bool isAlwaysExperienceDropper();
 
 public:
@@ -222,7 +222,7 @@ public:
 
 	/**
 	* Fetches the mob's armor value, from 0 (no armor) to 20 (full armor)
-	*
+	* 
 	* @return
 	*/
 	virtual int getArmorValue();
@@ -239,7 +239,7 @@ protected:
 	virtual int getDeathSound();
 
 public:
-	void knockback(std::shared_ptr<Entity> source, int dmg, double xd, double zd);
+	void knockback(shared_ptr<Entity> source, int dmg, double xd, double zd);
 	virtual void die(DamageSource *source);
 
 protected:
@@ -286,7 +286,7 @@ protected:
 	virtual bool removeWhenFarAway();
 
 private:
-	std::shared_ptr<Entity> lookingAt;
+	shared_ptr<Entity> lookingAt;
 
 protected:
 	int lookTime;
@@ -300,9 +300,9 @@ public:
 	virtual int getMaxHeadXRot();
 
 protected:
-	void lookAt(std::shared_ptr<Entity> e, float yMax, float xMax);
+	void lookAt(shared_ptr<Entity> e, float yMax, float xMax);
 	bool isLookingAtAnEntity();
-	std::shared_ptr<Entity> getLookingAt();
+	shared_ptr<Entity> getLookingAt();
 
 private:
 	float rotlerp(float a, float b, float max);
@@ -322,11 +322,11 @@ public:
 	virtual float getHeadSizeScale();
 	HitResult *pick(double range, float a);
 	virtual int getMaxSpawnClusterSize();
-	virtual std::shared_ptr<ItemInstance> getCarriedItem();
-	virtual std::shared_ptr<ItemInstance> getArmor(int pos);
+	virtual shared_ptr<ItemInstance> getCarriedItem();
+	virtual shared_ptr<ItemInstance> getArmor(int pos);
 	virtual void handleEntityEvent(byte id);
 	virtual bool isSleeping();
-	virtual Icon *getItemInHandIcon(std::shared_ptr<ItemInstance> item, int layer);
+	virtual Icon *getItemInHandIcon(shared_ptr<ItemInstance> item, int layer);
 	virtual bool shouldRender(Vec3 *c);
 
 protected:
@@ -357,7 +357,7 @@ public:
 	virtual void teleportTo(double x, double y, double z);
 	virtual bool isBaby();
 	virtual MobType getMobType();
-	virtual void breakItem(std::shared_ptr<ItemInstance> itemInstance);
+	virtual void breakItem(shared_ptr<ItemInstance> itemInstance);
 
 	virtual bool isInvulnerable();
 

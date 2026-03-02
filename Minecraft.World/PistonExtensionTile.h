@@ -23,8 +23,8 @@ public:
     virtual bool mayPlace(Level *level, int x, int y, int z);
     virtual bool mayPlace(Level *level, int x, int y, int z, int face);
     virtual int getResourceCount(Random *random);
-    virtual void addAABBs(Level *level, int x, int y, int z, AABB *box, AABBList *boxes, std::shared_ptr<Entity> source);
-    virtual void updateShape(LevelSource *level, int x, int y, int z, int forceData = -1, std::shared_ptr<TileEntity> forceEntity = std::shared_ptr<TileEntity>());	// 4J added forceData, forceEntity param
+    virtual void addAABBs(Level *level, int x, int y, int z, AABB *box, AABBList *boxes, shared_ptr<Entity> source);
+    virtual void updateShape(LevelSource *level, int x, int y, int z, int forceData = -1, shared_ptr<TileEntity> forceEntity = shared_ptr<TileEntity>());	// 4J added forceData, forceEntity param
     virtual void neighborChanged(Level *level, int x, int y, int z, int type);
     static int getFacing(int data);
 	virtual int cloneTileId(Level *level, int x, int y, int z);

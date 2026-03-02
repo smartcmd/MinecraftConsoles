@@ -12,7 +12,7 @@ bool LookAtTradingPlayerGoal::canUse()
 {
 	if (villager->isTrading())
 	{
-		lookAt = weak_ptr<Entity>(std::dynamic_pointer_cast<Entity>(villager->getTradingPlayer()));
+		lookAt = weak_ptr<Entity>(dynamic_pointer_cast<Entity>(villager->getTradingPlayer()));
 		return true;
 	}
 	return false;

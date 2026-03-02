@@ -37,7 +37,7 @@ bool Throwable::shouldRenderAtSqrDistance(double distance)
 	return distance < size * size;
 }
 
-Throwable::Throwable(Level *level, std::shared_ptr<Mob> mob) : Entity(level)
+Throwable::Throwable(Level *level, shared_ptr<Mob> mob) : Entity(level)
 {
 	_throwableInit();
 	this->owner = mob;
@@ -171,12 +171,12 @@ void Throwable::tick()
 
 	if (!level->isClientSide)
 	{
-		std::shared_ptr<Entity> hitEntity = nullptr;
-		vector<std::shared_ptr<Entity> > *objects = level->getEntities(shared_from_this(), this->bb->expand(xd, yd, zd)->grow(1, 1, 1));
+		shared_ptr<Entity> hitEntity = nullptr;
+		vector<shared_ptr<Entity> > *objects = level->getEntities(shared_from_this(), this->bb->expand(xd, yd, zd)->grow(1, 1, 1));
 		double nearest = 0;
 		for (int i = 0; i < objects->size(); i++)
 		{
-			std::shared_ptr<Entity> e = objects->at(i);
+			shared_ptr<Entity> e = objects->at(i);
 			if (!e->isPickable() || (e == owner && flightTime < 5)) continue;
 
 			float rr = 0.3f;

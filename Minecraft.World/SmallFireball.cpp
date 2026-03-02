@@ -11,7 +11,7 @@ SmallFireball::SmallFireball(Level *level) : Fireball(level)
 	setSize(5 / 16.0f, 5 / 16.0f);
 }
 
-SmallFireball::SmallFireball(Level *level, std::shared_ptr<Mob> mob, double xa, double ya, double za) : Fireball(level, mob, xa, ya, za)
+SmallFireball::SmallFireball(Level *level, shared_ptr<Mob> mob, double xa, double ya, double za) : Fireball(level, mob, xa, ya, za)
 {
 	setSize(5 / 16.0f, 5 / 16.0f);
 }
@@ -27,7 +27,7 @@ void SmallFireball::onHit(HitResult *res)
 	{
 		if (res->entity != NULL)
 		{
-			DamageSource *damageSource = DamageSource::fireball(std::dynamic_pointer_cast<Fireball>(shared_from_this()),owner);
+			DamageSource *damageSource = DamageSource::fireball(dynamic_pointer_cast<Fireball>(shared_from_this()),owner);
 			if (!res->entity->isFireImmune() && res->entity->hurt(damageSource, 5))
 			{
 				res->entity->setOnFire(5);

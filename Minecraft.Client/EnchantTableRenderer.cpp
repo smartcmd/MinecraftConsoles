@@ -14,10 +14,10 @@ EnchantTableRenderer::~EnchantTableRenderer()
 	delete bookModel;
 }
 
-void EnchantTableRenderer::render(std::shared_ptr<TileEntity> _table, double x, double y, double z, float a, bool setColor, float alpha, bool useCompiled)
+void EnchantTableRenderer::render(shared_ptr<TileEntity> _table, double x, double y, double z, float a, bool setColor, float alpha, bool useCompiled)
 {
 	// 4J Convert as we aren't using a templated class
-	std::shared_ptr<EnchantmentTableEntity> table = std::dynamic_pointer_cast<EnchantmentTableEntity>(_table);
+	shared_ptr<EnchantmentTableEntity> table = dynamic_pointer_cast<EnchantmentTableEntity>(_table);
 
 #ifdef __PSVITA__
 	// AP - the book pages are made with 0 depth so the front and back polys are at the same location. This can cause z-fighting if culling is disabled which can sometimes happen

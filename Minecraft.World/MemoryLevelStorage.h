@@ -13,19 +13,19 @@ using namespace std;
 
 #include "ConsoleSaveFile.h"
 
-class MemoryLevelStorage : public LevelStorage, public PlayerIO
+class MemoryLevelStorage : public LevelStorage, public PlayerIO 
 {
 public:
     MemoryLevelStorage();
     virtual LevelData *prepareLevel();
     virtual void checkSession();
     virtual ChunkStorage *createChunkStorage(Dimension *dimension);
-    virtual void saveLevelData(LevelData *levelData, vector<std::shared_ptr<Player> > *players);
+    virtual void saveLevelData(LevelData *levelData, vector<shared_ptr<Player> > *players);
     virtual void saveLevelData(LevelData *levelData);
     virtual PlayerIO *getPlayerIO();
     virtual void closeAll();
-    virtual void save(std::shared_ptr<Player> player);
-    virtual bool load(std::shared_ptr<Player> player);
+    virtual void save(shared_ptr<Player> player);
+    virtual bool load(shared_ptr<Player> player);
     virtual CompoundTag *loadPlayerDataTag(const wstring& playerName);
     virtual ConsoleSavePath getDataFile(const wstring& id);
 };

@@ -4,14 +4,14 @@
 #include "MultiplayerLocalPlayer.h"
 #include "..\Minecraft.World\net.minecraft.world.inventory.h"
 
-CraftingScreen::CraftingScreen(std::shared_ptr<Inventory> inventory, Level *level, int x, int y, int z) : AbstractContainerScreen(new CraftingMenu(inventory, level, x, y, z))
+CraftingScreen::CraftingScreen(shared_ptr<Inventory> inventory, Level *level, int x, int y, int z) : AbstractContainerScreen(new CraftingMenu(inventory, level, x, y, z))
 {
 }
 
 void CraftingScreen::removed()
 {
     AbstractContainerScreen::removed();
-    menu->removed(std::dynamic_pointer_cast<Player>(minecraft->player));
+    menu->removed(dynamic_pointer_cast<Player>(minecraft->player));
 }
 
 void CraftingScreen::renderLabels()

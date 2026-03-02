@@ -87,7 +87,7 @@ ItemInHandRenderer::ItemInHandRenderer(Minecraft *mc, bool optimisedMinimap)
 				t->vertexUV(x0, y1, z1, u, v);
 				t->vertexUV(x0, y1, z0, u, v);
 				t->vertexUV(x1, y1, z0, u, v);
-			}
+			}					
 		t->end();
 		glEndList();
 	}
@@ -150,7 +150,7 @@ ItemInHandRenderer::ItemInHandRenderer(Minecraft *mc, bool optimisedMinimap)
 				t->vertexUV(x0, y1, z1, u0, v1);
 				t->vertexUV(x0, y1, z0, u0, v1);
 				t->vertexUV(x1, y1, z0, u1, v1);
-			}
+			}					
 		t->end();
 		glDepthFunc(GL_LEQUAL);
 		glEndList();
@@ -158,7 +158,7 @@ ItemInHandRenderer::ItemInHandRenderer(Minecraft *mc, bool optimisedMinimap)
 
 }
 
-void ItemInHandRenderer::renderItem(std::shared_ptr<Mob> mob, std::shared_ptr<ItemInstance> item, int layer, bool setColor/* = true*/)
+void ItemInHandRenderer::renderItem(shared_ptr<Mob> mob, shared_ptr<ItemInstance> item, int layer, bool setColor/* = true*/)
 {
 	// 4J - code borrowed from render method below, although not factoring in brightness as that should already be being taken into account
 	// by texture lighting. This is for colourising things held in 3rd person view.
@@ -203,7 +203,7 @@ void ItemInHandRenderer::renderItem(std::shared_ptr<Mob> mob, std::shared_ptr<It
 		MemSect(0);
         Tesselator *t = Tesselator::getInstance();
 
-		// Consider forcing the mipmap LOD level to use, if this is to be rendered from a larger than standard source texture.
+		// Consider forcing the mipmap LOD level to use, if this is to be rendered from a larger than standard source texture. 
 		int iconWidth = icon->getWidth();
 		int LOD = -1;	// Default to not doing anything special with LOD forcing
 		if( iconWidth == 32 )
@@ -312,14 +312,14 @@ void ItemInHandRenderer::renderItem3D(Tesselator *t, float u0, float v0, float u
 void ItemInHandRenderer::render(float a)
 {
     float h = oHeight + (height - oHeight) * a;
-    std::shared_ptr<Player> player = mc->player;
+    shared_ptr<Player> player = mc->player;
 
 	// 4J - added so we can adjust the position of the hands for horizontal & vertical split screens
 	float fudgeX = 0.0f;
 	float fudgeY = 0.0f;
 	float fudgeZ = 0.0f;
 	bool splitHoriz = false;
-	std::shared_ptr<LocalPlayer> localPlayer = std::dynamic_pointer_cast<LocalPlayer>(player);
+	shared_ptr<LocalPlayer> localPlayer = dynamic_pointer_cast<LocalPlayer>(player);
 	if( localPlayer )
 	{
 		if( localPlayer->m_iScreenSection == C4JRender::VIEWPORT_TYPE_SPLIT_BOTTOM ||
@@ -353,7 +353,7 @@ void ItemInHandRenderer::render(float a)
         glRotatef((yr - yrr) * 0.1f, 0, 1, 0);
     }
 
-    std::shared_ptr<ItemInstance> item = selectedItem;
+    shared_ptr<ItemInstance> item = selectedItem;
 
     float br = mc->level->getBrightness(Mth::floor(player->x), Mth::floor(player->y), Mth::floor(player->z));
 	// 4J - change brought forward from 1.8.2
@@ -433,7 +433,7 @@ void ItemInHandRenderer::render(float a)
                 glScalef(ss, ss, ss);
 
 				// Can't turn off the hand if the player is holding a map
-				std::shared_ptr<ItemInstance> itemInstance = player->inventory->getSelected();
+				shared_ptr<ItemInstance> itemInstance = player->inventory->getSelected();
 				if ((itemInstance && (itemInstance->getItem()->id==Item::map_Id)) || app.GetGameSettings(localPlayer->GetXboxPad(),eGameSetting_DisplayHand)!=0 )
                 {
 					playerRenderer->renderHand();
@@ -477,7 +477,7 @@ void ItemInHandRenderer::render(float a)
         t->vertexUV((float)(0 - vo), (float)( 0 - vo), (float)( 0), (float)( 0), (float)( 0));
         t->end();
 
-        std::shared_ptr<MapItemSavedData> data = Item::map->getSavedData(item, mc->level);
+        shared_ptr<MapItemSavedData> data = Item::map->getSavedData(item, mc->level);
 		PIXBeginNamedEvent(0,"Minimap render");
 		if(data != NULL) minimap->render(mc->player, mc->textures, data, mc->player->entityId);
 		PIXEndNamedEvent();
@@ -652,7 +652,7 @@ void ItemInHandRenderer::render(float a)
         glScalef(ss, ss, ss);
 		MemSect(31);
 		// Can't turn off the hand if the player is holding a map
-		std::shared_ptr<ItemInstance> itemInstance = player->inventory->getSelected();
+		shared_ptr<ItemInstance> itemInstance = player->inventory->getSelected();
 
 		if ( (itemInstance && (itemInstance->getItem()->id==Item::map_Id)) || app.GetGameSettings(localPlayer->GetXboxPad(),eGameSetting_DisplayHand)!=0 )
 		{
@@ -837,8 +837,8 @@ void ItemInHandRenderer::tick()
     oHeight = height;
 
 
-    std::shared_ptr<Player> player = mc->player;
-    std::shared_ptr<ItemInstance> nextTile = player->inventory->getSelected();
+    shared_ptr<Player> player = mc->player;
+    shared_ptr<ItemInstance> nextTile = player->inventory->getSelected();
 
     bool matches = lastSlot == player->inventory->selected && nextTile == selectedItem;
     if (selectedItem == NULL && nextTile == NULL)

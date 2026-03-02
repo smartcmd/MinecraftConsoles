@@ -3,7 +3,7 @@
 #include "Tile.h"
 
 
-class HalfSlabTile : public Tile
+class HalfSlabTile : public Tile 
 {
 
 
@@ -16,9 +16,9 @@ protected:
 
 public:
 	HalfSlabTile(int id, bool fullSize, Material *material);
-	virtual void updateShape(LevelSource *level, int x, int y, int z, int forceData = -1, std::shared_ptr<TileEntity> forceEntity = std::shared_ptr<TileEntity>());	// 4J added forceData, forceEntity param
+	virtual void updateShape(LevelSource *level, int x, int y, int z, int forceData = -1, shared_ptr<TileEntity> forceEntity = shared_ptr<TileEntity>());	// 4J added forceData, forceEntity param
 	virtual void updateDefaultShape();
-	virtual void addAABBs(Level *level, int x, int y, int z, AABB *box, AABBList *boxes, std::shared_ptr<Entity> source);
+	virtual void addAABBs(Level *level, int x, int y, int z, AABB *box, AABBList *boxes, shared_ptr<Entity> source);
 	virtual bool isSolidRender(bool isServerLevel);
 	virtual int getPlacedOnFaceDataValue(Level *level, int x, int y, int z, int face, float clickX, float clickY, float clickZ, int itemValue);
 	virtual int getResourceCount(Random *random);

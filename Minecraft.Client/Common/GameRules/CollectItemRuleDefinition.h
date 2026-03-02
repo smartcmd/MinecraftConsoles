@@ -25,16 +25,16 @@ public:
 
 	virtual int getGoal();
 	virtual int getProgress(GameRule *rule);
-
+	
 	virtual int getIcon() { return m_itemId; }
 	virtual int getAuxValue() { return m_auxValue; }
 
 	void populateGameRule(GameRulesInstance::EGameRulesInstanceType type, GameRule *rule);
 
-	bool onCollectItem(GameRule *rule, std::shared_ptr<ItemInstance> item);
+	bool onCollectItem(GameRule *rule, shared_ptr<ItemInstance> item);
 
-	static wstring generateXml(std::shared_ptr<ItemInstance> item);
+	static wstring generateXml(shared_ptr<ItemInstance> item);
 
-private:
+private:	
 	//static wstring generateXml(CollectItemRuleDefinition *ruleDef);
 };

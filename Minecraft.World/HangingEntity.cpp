@@ -10,7 +10,7 @@
 
 
 void HangingEntity::_init(Level *level)
-{
+{		
 	checkInterval = 0;
 	dir = 0;
 	xTile = yTile = zTile = 0;
@@ -35,7 +35,7 @@ HangingEntity::HangingEntity(Level *level, int xTile, int yTile, int zTile, int 
 	this->zTile = zTile;
 }
 
-void HangingEntity::setDir(int dir)
+void HangingEntity::setDir(int dir) 
 {
 	this->dir = dir;
 	this->yRotO = this->yRot = (float)(dir * 90);
@@ -44,12 +44,12 @@ void HangingEntity::setDir(int dir)
 	float h = (float)getHeight();
 	float d = (float)getWidth();
 
-	if (dir == Direction::NORTH || dir == Direction::SOUTH)
+	if (dir == Direction::NORTH || dir == Direction::SOUTH) 
 	{
 		d = 0.5f;
 		yRot = yRotO = (float)(Direction::DIRECTION_OPPOSITE[dir] * 90);
-	}
-	else
+	} 
+	else 
 	{
 		w = 0.5f;
 	}
@@ -89,19 +89,19 @@ void HangingEntity::setDir(int dir)
 	bb->set(min(x0,x1), min(y0,y1), min(z0,z1), max(x0,x1), max(y0,y1), max(z0,z1));
 }
 
-float HangingEntity::offs(int w)
+float HangingEntity::offs(int w) 
 {
 	if (w == 32) return 0.5f;
 	if (w == 64) return 0.5f;
 	return 0.0f;
 }
 
-void HangingEntity::tick()
+void HangingEntity::tick() 
 {
-	if (checkInterval++ == 20 * 5 && !level->isClientSide)//isClientSide)
+	if (checkInterval++ == 20 * 5 && !level->isClientSide)//isClientSide) 
 	{
 		checkInterval = 0;
-		if (!removed && !survives())
+		if (!removed && !survives()) 
 		{
 			remove();
 			dropItem();
@@ -109,13 +109,13 @@ void HangingEntity::tick()
 	}
 }
 
-bool HangingEntity::survives()
+bool HangingEntity::survives() 
 {
-	if (level->getCubes(shared_from_this(), bb)->size()!=0)//isEmpty())
+	if (level->getCubes(shared_from_this(), bb)->size()!=0)//isEmpty()) 
 	{
 		return false;
-	}
-	else
+	} 
+	else 
 	{
 		int ws = max(1, getWidth() / 16);
 		int hs = max(1, getHeight() / 16);
@@ -131,32 +131,32 @@ bool HangingEntity::survives()
 
 		for (int ss = 0; ss < ws; ss++)
 		{
-			for (int yy = 0; yy < hs; yy++)
+			for (int yy = 0; yy < hs; yy++) 
 			{
 				Material *m;
-				if (dir == Direction::NORTH || dir == Direction::SOUTH)
+				if (dir == Direction::NORTH || dir == Direction::SOUTH) 
 				{
 					m = level->getMaterial(xt + ss, yt + yy, zTile);
-				}
-				else
+				} 
+				else 
 				{
 					m = level->getMaterial(xTile, yt + yy, zt + ss);
 				}
-				if (!m->isSolid())
+				if (!m->isSolid()) 
 				{
 					return false;
 				}
 			}
 
-			vector<std::shared_ptr<Entity> > *entities = level->getEntities(shared_from_this(), bb);
+			vector<shared_ptr<Entity> > *entities = level->getEntities(shared_from_this(), bb);
 
 			if (entities != NULL && entities->size() > 0)
 			{
 				AUTO_VAR(itEnd, entities->end());
 				for (AUTO_VAR(it, entities->begin()); it != itEnd; it++)
 				{
-					std::shared_ptr<Entity> e = (*it);
-					if(std::dynamic_pointer_cast<HangingEntity>(e) != NULL)
+					shared_ptr<Entity> e = (*it);
+					if(dynamic_pointer_cast<HangingEntity>(e) != NULL)
 					{
 						return false;
 					}
@@ -167,29 +167,29 @@ bool HangingEntity::survives()
 	return true;
 }
 
-bool HangingEntity::isPickable()
+bool HangingEntity::isPickable() 
 {
 	return true;
 }
 
-bool HangingEntity::skipAttackInteraction(std::shared_ptr<Entity> source)
+bool HangingEntity::skipAttackInteraction(shared_ptr<Entity> source) 
 {
 	if(source->GetType()==eTYPE_PLAYER)
 	{
-		return hurt(DamageSource::playerAttack(std::dynamic_pointer_cast<Player>( source)), 0);
+		return hurt(DamageSource::playerAttack(dynamic_pointer_cast<Player>( source)), 0);
 	}
 	return false;
 }
 
-bool HangingEntity::hurt(DamageSource *source, int damage)
+bool HangingEntity::hurt(DamageSource *source, int damage) 
 {
-	if (!removed && !level->isClientSide)
+	if (!removed && !level->isClientSide) 
 	{
 		if (dynamic_cast<EntityDamageSource *>(source) != NULL)
 		{
-			std::shared_ptr<Entity> sourceEntity = source->getDirectEntity();
+			shared_ptr<Entity> sourceEntity = source->getDirectEntity();
 
-			if (std::dynamic_pointer_cast<Player>(sourceEntity) != NULL && !std::dynamic_pointer_cast<Player>(sourceEntity)->isAllowedToHurtEntity(shared_from_this()) )
+			if (dynamic_pointer_cast<Player>(sourceEntity) != NULL && !dynamic_pointer_cast<Player>(sourceEntity)->isAllowedToHurtEntity(shared_from_this()) )
 			{
 				return false;
 			}
@@ -198,14 +198,14 @@ bool HangingEntity::hurt(DamageSource *source, int damage)
 		remove();
 		markHurt();
 
-		std::shared_ptr<Player> player = nullptr;
-		std::shared_ptr<Entity> e = source->getEntity();
+		shared_ptr<Player> player = nullptr;
+		shared_ptr<Entity> e = source->getEntity();
 		if (e!=NULL && ((e->GetType() & eTYPE_PLAYER)!=0) ) // check if it's serverplayer or player
 		{
-			player = std::dynamic_pointer_cast<Player>( e );
+			player = dynamic_pointer_cast<Player>( e );
 		}
 
-		if (player != NULL && player->abilities.instabuild)
+		if (player != NULL && player->abilities.instabuild) 
 		{
 			return true;
 		}
@@ -216,25 +216,25 @@ bool HangingEntity::hurt(DamageSource *source, int damage)
 }
 
 // 4J - added noEntityCubes parameter
-void HangingEntity::move(double xa, double ya, double za, bool noEntityCubes)
+void HangingEntity::move(double xa, double ya, double za, bool noEntityCubes) 
 {
-	if (!level->isClientSide && !removed && (xa * xa + ya * ya + za * za) > 0)
+	if (!level->isClientSide && !removed && (xa * xa + ya * ya + za * za) > 0) 
 	{
 		remove();
 		dropItem();
 	}
 }
 
-void HangingEntity::push(double xa, double ya, double za)
+void HangingEntity::push(double xa, double ya, double za) 
 {
-	if (!level->isClientSide && !removed && (xa * xa + ya * ya + za * za) > 0)
+	if (!level->isClientSide && !removed && (xa * xa + ya * ya + za * za) > 0) 
 	{
 		remove();
 		dropItem();
 	}
 }
 
-void HangingEntity::addAdditonalSaveData(CompoundTag *tag)
+void HangingEntity::addAdditonalSaveData(CompoundTag *tag) 
 {
 	tag->putByte(L"Direction", (byte) dir);
 	tag->putInt(L"TileX", xTile);
@@ -242,7 +242,7 @@ void HangingEntity::addAdditonalSaveData(CompoundTag *tag)
 	tag->putInt(L"TileZ", zTile);
 
 	// Back compat
-	switch (dir)
+	switch (dir) 
 	{
 	case Direction::NORTH:
 		tag->putByte(L"Dir", (byte) 0);
@@ -259,15 +259,15 @@ void HangingEntity::addAdditonalSaveData(CompoundTag *tag)
 	}
 }
 
-void HangingEntity::readAdditionalSaveData(CompoundTag *tag)
+void HangingEntity::readAdditionalSaveData(CompoundTag *tag) 
 {
-	if (tag->contains(L"Direction"))
+	if (tag->contains(L"Direction")) 
 	{
 		dir = tag->getByte(L"Direction");
-	}
-	else
+	} 
+	else 
 	{
-		switch (tag->getByte(L"Dir"))
+		switch (tag->getByte(L"Dir")) 
 		{
 		case 0:
 			dir = Direction::NORTH;

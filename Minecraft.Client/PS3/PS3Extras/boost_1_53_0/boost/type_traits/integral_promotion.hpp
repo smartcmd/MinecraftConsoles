@@ -54,8 +54,8 @@ BOOST_TT_AUX_PROMOTE_NONSTANDARD_TYPE(unsigned __int16)
 BOOST_TT_AUX_PROMOTE_NONSTANDARD_TYPE(__int32         )
 BOOST_TT_AUX_PROMOTE_NONSTANDARD_TYPE(unsigned __int32)
 #ifdef __BORLANDC__
-BOOST_TT_AUX_PROMOTE_NONSTANDARD_TYPE(uint64_t)
-BOOST_TT_AUX_PROMOTE_NONSTANDARD_TYPE(         int64_t)
+BOOST_TT_AUX_PROMOTE_NONSTANDARD_TYPE(unsigned __int64)
+BOOST_TT_AUX_PROMOTE_NONSTANDARD_TYPE(         __int64)
 #endif
 #endif
 
@@ -63,8 +63,8 @@ BOOST_TT_AUX_PROMOTE_NONSTANDARD_TYPE(         int64_t)
 BOOST_TT_AUX_PROMOTE_NONSTANDARD_TYPE(boost::ulong_long_type)
 BOOST_TT_AUX_PROMOTE_NONSTANDARD_TYPE(boost::long_long_type )
 #elif defined(BOOST_HAS_MS_INT64)
-BOOST_TT_AUX_PROMOTE_NONSTANDARD_TYPE(uint64_t)
-BOOST_TT_AUX_PROMOTE_NONSTANDARD_TYPE(         int64_t)
+BOOST_TT_AUX_PROMOTE_NONSTANDARD_TYPE(unsigned __int64)
+BOOST_TT_AUX_PROMOTE_NONSTANDARD_TYPE(         __int64)
 #endif
 
 #undef BOOST_TT_AUX_PROMOTE_NONSTANDARD_TYPE
@@ -99,7 +99,7 @@ BOOST_TT_AUX_PROMOTE_FROM_INDEX(4, unsigned long)
 
 
 // WARNING: integral promotions to non-standard types
-// long long and int64_t are not defined by the standard.
+// long long and __int64 are not defined by the standard.
 // Additional specialisations and overloads shouldn't
 // introduce ambiguity, though.
 
@@ -107,8 +107,8 @@ BOOST_TT_AUX_PROMOTE_FROM_INDEX(4, unsigned long)
 BOOST_TT_AUX_PROMOTE_FROM_INDEX(5, boost::long_long_type )
 BOOST_TT_AUX_PROMOTE_FROM_INDEX(6, boost::ulong_long_type)
 #elif defined(BOOST_HAS_MS_INT64)
-BOOST_TT_AUX_PROMOTE_FROM_INDEX(7, int64_t         )
-BOOST_TT_AUX_PROMOTE_FROM_INDEX(8, uint64_t)
+BOOST_TT_AUX_PROMOTE_FROM_INDEX(7, __int64         )
+BOOST_TT_AUX_PROMOTE_FROM_INDEX(8, unsigned __int64)
 #endif
 
 #undef BOOST_TT_AUX_PROMOTE_FROM_INDEX
@@ -142,8 +142,8 @@ BOOST_TT_AUX_PROMOTED_INDEX_TESTER(4, unsigned long)
 BOOST_TT_AUX_PROMOTED_INDEX_TESTER(5, boost::long_long_type )
 BOOST_TT_AUX_PROMOTED_INDEX_TESTER(6, boost::ulong_long_type)
 #elif defined(BOOST_HAS_MS_INT64)
-BOOST_TT_AUX_PROMOTED_INDEX_TESTER(7, int64_t         )
-BOOST_TT_AUX_PROMOTED_INDEX_TESTER(8, uint64_t)
+BOOST_TT_AUX_PROMOTED_INDEX_TESTER(7, __int64         )
+BOOST_TT_AUX_PROMOTED_INDEX_TESTER(8, unsigned __int64)
 #endif
 
 #undef BOOST_TT_AUX_PROMOTED_INDEX_TESTER

@@ -15,7 +15,7 @@ private:
 public:
 	SurvivalMode(Minecraft *minecraft);
 	SurvivalMode(SurvivalMode *copy);
-    virtual void initPlayer(std::shared_ptr<Player> player);
+    virtual void initPlayer(shared_ptr<Player> player);
     virtual void init();
 	virtual bool canHurtPlayer();
     virtual bool destroyBlock(int x, int y, int z, int face);
@@ -25,8 +25,8 @@ public:
     virtual void render(float a);
     virtual float getPickRange();
     virtual void initLevel(Level *level);
-	virtual std::shared_ptr<Player> createPlayer(Level *level);
+	virtual shared_ptr<Player> createPlayer(Level *level);
     virtual void tick();
-	virtual bool useItemOn(std::shared_ptr<Player> player, Level *level, std::shared_ptr<ItemInstance> item, int x, int y, int z, int face, bool bTestUseOnOnly=false, bool *pbUsedItem=NULL);
+	virtual bool useItemOn(shared_ptr<Player> player, Level *level, shared_ptr<ItemInstance> item, int x, int y, int z, int face, bool bTestUseOnOnly=false, bool *pbUsedItem=NULL);
 	virtual bool hasExperience();
 };

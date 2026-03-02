@@ -38,7 +38,7 @@ void UILayer::tick()
 			m_scenesToDelete.push_back(scene);
 		}
 	}
-
+	
 	while (!m_scenesToDestroy.empty())
 	{
 		UIScene *scene = m_scenesToDestroy.back();
@@ -46,13 +46,13 @@ void UILayer::tick()
 		scene->destroyMovie();
 	}
 	m_scenesToDestroy.clear();
-
+	
 	for(AUTO_VAR(it,m_components.begin()); it != m_components.end(); ++it)
 	{
 		(*it)->tick();
 	}
 	// Note: reverse iterator, the last element is the top of the stack
-	int sceneIndex = m_sceneStack.size() - 1;
+	int sceneIndex = m_sceneStack.size() - 1;	
 	//for(AUTO_VAR(it,m_sceneStack.rbegin()); it != m_sceneStack.rend(); ++it)
 	while( sceneIndex >= 0 && sceneIndex < m_sceneStack.size() )
 	{
@@ -422,9 +422,9 @@ bool UILayer::NavigateToScene(int iPad, EUIScene scene, void *initData)
 	}
 
 	m_sceneStack.push_back(newScene);
-
+	
 	updateFocusState();
-
+	
 	newScene->tick();
 
 	return true;
@@ -706,12 +706,12 @@ bool UILayer::updateFocusState(bool allowedFocus /* = false */)
 
 		// 4J-PB - this should just be true
 		m_bMenuDisplayed=true;
-
+		
 		EUIScene sceneType = scene->getSceneType();
 		switch(sceneType)
 		{
 		case eUIScene_PauseMenu:
-			m_bPauseMenuDisplayed = true;
+			m_bPauseMenuDisplayed = true;			
 			break;
 		case eUIScene_Crafting2x2Menu:
 		case eUIScene_Crafting3x3Menu:
@@ -727,7 +727,7 @@ bool UILayer::updateFocusState(bool allowedFocus /* = false */)
 
 			// Intentional fall-through
 		case eUIScene_DeathMenu:
-		case eUIScene_FullscreenProgress:
+		case eUIScene_FullscreenProgress:		
 		case eUIScene_SignEntryMenu:
 		case eUIScene_EndPoem:
 			m_bIgnoreAutosaveMenuDisplayed = true;
@@ -736,7 +736,7 @@ bool UILayer::updateFocusState(bool allowedFocus /* = false */)
 
 		switch(sceneType)
 		{
-		case eUIScene_FullscreenProgress:
+		case eUIScene_FullscreenProgress:	
 		case eUIScene_EndPoem:
 		case eUIScene_Credits:
 		case eUIScene_LeaderboardsMenu:
@@ -775,8 +775,8 @@ void UILayer::handleInput(int iPad, int key, bool repeat, bool pressed, bool rel
 		UIScene *scene = *it;
 		if(scene->hasFocus(iPad) && scene->canHandleInput())
 		{
-			// 4J-PB - ignore repeats of action ABXY buttons
-			// fix for PS3 213 - [MAIN MENU] Holding down buttons will continue to activate every prompt.
+			// 4J-PB - ignore repeats of action ABXY buttons 
+			// fix for PS3 213 - [MAIN MENU] Holding down buttons will continue to activate every prompt. 
 			// 4J Stu - Changed this slightly to add the allowRepeat function so we can allow repeats in the crafting menu
 			if(repeat && !scene->allowRepeat(key) )
 			{
@@ -784,8 +784,8 @@ void UILayer::handleInput(int iPad, int key, bool repeat, bool pressed, bool rel
 			}
 			scene->handleInput(iPad, key, repeat, pressed, released, handled);
 		}
-
-		// Fix for PS3 #444 - [IN GAME] If the user keeps pressing CROSS while on the 'Save Game' screen the title will crash.
+		
+		// Fix for PS3 #444 - [IN GAME] If the user keeps pressing CROSS while on the 'Save Game' screen the title will crash. 
 		handled = handled || scene->hidesLowerScenes();
 		if(handled ) break;
 	}
@@ -842,10 +842,10 @@ void UILayer::handleUnlockFullVersion()
 	}
 }
 
-void UILayer::PrintTotalMemoryUsage(int64_t &totalStatic, int64_t &totalDynamic)
+void UILayer::PrintTotalMemoryUsage(__int64 &totalStatic, __int64 &totalDynamic)
 {
-	int64_t layerStatic = 0;
-	int64_t layerDynamic = 0;
+	__int64 layerStatic = 0;
+	__int64 layerDynamic = 0;
 	for(AUTO_VAR(it,m_components.begin()); it != m_components.end(); ++it)
 	{
 		(*it)->PrintTotalMemoryUsage(layerStatic, layerDynamic);
@@ -859,7 +859,7 @@ void UILayer::PrintTotalMemoryUsage(int64_t &totalStatic, int64_t &totalDynamic)
 	totalDynamic += layerDynamic;
 }
 
-// Returns the first scene of given type if it exists, NULL otherwise
+// Returns the first scene of given type if it exists, NULL otherwise 
 UIScene *UILayer::FindScene(EUIScene sceneType)
 {
 	for (int i = 0; i < m_sceneStack.size(); i++)

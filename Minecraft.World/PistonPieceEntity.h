@@ -36,5 +36,5 @@ public:
 	virtual void save(CompoundTag *tag);
 
 	// 4J Added
-	std::shared_ptr<TileEntity> clone();
+	shared_ptr<TileEntity> clone();
 };

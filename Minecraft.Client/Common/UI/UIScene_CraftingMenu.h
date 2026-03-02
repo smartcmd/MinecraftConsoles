@@ -32,7 +32,7 @@ class UIScene_CraftingMenu : public UIScene, public IUIScene_CraftingMenu
 private:
 	typedef struct _SlotInfo
 	{
-		std::shared_ptr<ItemInstance> item;
+		shared_ptr<ItemInstance> item;
 		unsigned int alpha;
 		bool show;
 
@@ -97,7 +97,7 @@ protected:
 		ETouchInput_TouchPanel_5,
 		ETouchInput_TouchPanel_6,
 		ETouchInput_CraftingHSlots,
-
+		
 		ETouchInput_Count,
 	};
 	UIControl_Touch m_TouchInput[ETouchInput_Count];
@@ -182,13 +182,13 @@ protected:
 	virtual void hideAllHSlots();
 	virtual void hideAllVSlots();
 	virtual void hideAllIngredientsSlots();
-	virtual void setCraftHSlotItem(int iPad, int iIndex, std::shared_ptr<ItemInstance> item, unsigned int uiAlpha);
-	virtual void setCraftVSlotItem(int iPad, int iIndex, std::shared_ptr<ItemInstance> item, unsigned int uiAlpha);
-	virtual void setCraftingOutputSlotItem(int iPad, std::shared_ptr<ItemInstance> item);
+	virtual void setCraftHSlotItem(int iPad, int iIndex, shared_ptr<ItemInstance> item, unsigned int uiAlpha);
+	virtual void setCraftVSlotItem(int iPad, int iIndex, shared_ptr<ItemInstance> item, unsigned int uiAlpha);
+	virtual void setCraftingOutputSlotItem(int iPad, shared_ptr<ItemInstance> item);
 	virtual void setCraftingOutputSlotRedBox(bool show);
-	virtual void setIngredientSlotItem(int iPad, int index, std::shared_ptr<ItemInstance> item);
+	virtual void setIngredientSlotItem(int iPad, int index, shared_ptr<ItemInstance> item);
 	virtual void setIngredientSlotRedBox(int index, bool show);
-	virtual void setIngredientDescriptionItem(int iPad, int index, std::shared_ptr<ItemInstance> item);
+	virtual void setIngredientDescriptionItem(int iPad, int index, shared_ptr<ItemInstance> item);
 	virtual void setIngredientDescriptionRedBox(int index, bool show);
 	virtual void setIngredientDescriptionText(int index, LPCWSTR text);
 	virtual void setShowCraftHSlot(int iIndex, bool show);

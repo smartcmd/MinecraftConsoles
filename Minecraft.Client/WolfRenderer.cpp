@@ -8,19 +8,19 @@ WolfRenderer::WolfRenderer(Model *model, Model *armor, float shadow) : MobRender
 	setArmor(armor);
 }
 
-float WolfRenderer::getBob(std::shared_ptr<Mob> _mob, float a)
+float WolfRenderer::getBob(shared_ptr<Mob> _mob, float a)
 {
 	// 4J - dynamic cast required because we aren't using templates/generics in our version
-	std::shared_ptr<Wolf> mob = std::dynamic_pointer_cast<Wolf>(_mob);
+	shared_ptr<Wolf> mob = dynamic_pointer_cast<Wolf>(_mob);
 
 	return mob->getTailAngle();
 }
 
-int WolfRenderer::prepareArmor(std::shared_ptr<Mob> mob, int layer, float a)
+int WolfRenderer::prepareArmor(shared_ptr<Mob> mob, int layer, float a)
 {
 	if (mob->isInvisibleTo(Minecraft::GetInstance()->player)) return -1; // 4J-JEV: Todo, merge with java fix in '1.7.5'.
 
-	std::shared_ptr<Wolf> wolf = std::dynamic_pointer_cast<Wolf>(mob);
+	shared_ptr<Wolf> wolf = dynamic_pointer_cast<Wolf>(mob);
 	if (layer == 0 && wolf->isWet())
 	{
 		float brightness = wolf->getBrightness(a) * wolf->getWetShade(a);

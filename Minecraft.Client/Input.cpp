@@ -47,7 +47,7 @@ void Input::tick(LocalPlayer *player)
 
 #ifdef _WINDOWS64
 	// WASD movement (combine with gamepad)
-	if (iPad == 0)
+	if (iPad == 0 && KMInput.IsCaptured())
 	{
 		float kbX = 0.0f, kbY = 0.0f;
 		if (KMInput.IsKeyDown('W')) { kbY += 1.0f; sprintForward += 1.0f; usingKeyboardMovement = true; }
@@ -95,7 +95,7 @@ void Input::tick(LocalPlayer *player)
 
 #ifdef _WINDOWS64
 	// Keyboard hold-to-sneak (overrides gamepad toggle)
-	if (iPad == 0 && KMInput.IsKeyDown(VK_SHIFT) && !player->abilities.flying)
+	if (iPad == 0 && KMInput.IsCaptured() && KMInput.IsKeyDown(VK_SHIFT) && !player->abilities.flying)
 		sneaking = true;
 #endif
 
@@ -166,7 +166,7 @@ void Input::tick(LocalPlayer *player)
 
 #ifdef _WINDOWS64
 	// Keyboard jump (Space)
-	if (iPad == 0 && KMInput.IsKeyDown(VK_SPACE) && pMinecraft->localgameModes[iPad]->isInputAllowed(MINECRAFT_ACTION_JUMP))
+	if (iPad == 0 && KMInput.IsCaptured() && KMInput.IsKeyDown(VK_SPACE) && pMinecraft->localgameModes[iPad]->isInputAllowed(MINECRAFT_ACTION_JUMP))
 		jumping = true;
 #endif
 

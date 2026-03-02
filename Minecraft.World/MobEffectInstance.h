@@ -24,13 +24,13 @@ public:
 	int getId();
 	int getDuration();
 	int getAmplifier();
-	bool tick(std::shared_ptr<Mob> target);
+	bool tick(shared_ptr<Mob> target);
 
 private:
 	int tickDownDuration();
 
 public:
-	void applyEffect(std::shared_ptr<Mob> mob);
+	void applyEffect(shared_ptr<Mob> mob);
 	int getDescriptionId();
 	int getPostfixDescriptionId(); // 4J Added
 	int hashCode();

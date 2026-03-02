@@ -21,8 +21,8 @@ DyePowderItem::DyePowderItem(int id) : Item( id )
 	icons = NULL;
 }
 
-const unsigned int DyePowderItem::COLOR_DESCS[] =
-{
+const unsigned int DyePowderItem::COLOR_DESCS[] = 
+{ 
 	IDS_ITEM_DYE_POWDER_BLACK,
 	IDS_ITEM_DYE_POWDER_RED,
 	IDS_ITEM_DYE_POWDER_GREEN,
@@ -41,8 +41,8 @@ const unsigned int DyePowderItem::COLOR_DESCS[] =
 	IDS_ITEM_DYE_POWDER_WHITE
 };
 
-const unsigned int DyePowderItem::COLOR_USE_DESCS[] =
-{
+const unsigned int DyePowderItem::COLOR_USE_DESCS[] = 
+{ 
 	IDS_DESC_DYE_BLACK,
 	IDS_DESC_DYE_RED,
 	IDS_DESC_DYE_GREEN,
@@ -102,38 +102,38 @@ const int DyePowderItem::MAGENTA = 13;
 const int DyePowderItem::ORANGE = 14;
 const int DyePowderItem::WHITE = 15;
 
-Icon *DyePowderItem::getIcon(int itemAuxValue)
+Icon *DyePowderItem::getIcon(int itemAuxValue) 
 {
 	int colorValue = Mth::clamp(itemAuxValue, 0, 15);
 	return icons[colorValue];
 }
 
-unsigned int DyePowderItem::getDescriptionId(std::shared_ptr<ItemInstance> itemInstance)
+unsigned int DyePowderItem::getDescriptionId(shared_ptr<ItemInstance> itemInstance) 
 {
 	int colorValue = Mth::clamp(itemInstance->getAuxValue(), 0, 15);
 	return COLOR_DESCS[colorValue];
 }
 
-unsigned int DyePowderItem::getUseDescriptionId(std::shared_ptr<ItemInstance> itemInstance)
+unsigned int DyePowderItem::getUseDescriptionId(shared_ptr<ItemInstance> itemInstance) 
 {
 	return COLOR_USE_DESCS[itemInstance->getAuxValue()];
 }
 
-bool DyePowderItem::useOn(std::shared_ptr<ItemInstance> itemInstance, std::shared_ptr<Player> player, Level *level, int x, int y, int z, int face, float clickX, float clickY, float clickZ, bool bTestUseOnOnly)
+bool DyePowderItem::useOn(shared_ptr<ItemInstance> itemInstance, shared_ptr<Player> player, Level *level, int x, int y, int z, int face, float clickX, float clickY, float clickZ, bool bTestUseOnOnly) 
 {
 	if (!player->mayBuild(x, y, z)) return false;
 
 	// 4J-PB - Adding a test only version to allow tooltips to be displayed
-	if (itemInstance->getAuxValue() == WHITE)
+	if (itemInstance->getAuxValue() == WHITE) 
 	{
 		// bone meal is a fertilizer, so instantly grow trees and stuff
 
 		int tile = level->getTile(x, y, z);
-		if (tile == Tile::sapling_Id)
+		if (tile == Tile::sapling_Id) 
 		{
 			if(!bTestUseOnOnly)
-			{
-				if (!level->isClientSide)
+			{	
+				if (!level->isClientSide) 
 				{
 					((Sapling *) Tile::sapling)->growTree(level, x, y, z, level->random);
 					itemInstance->count--;
@@ -167,13 +167,13 @@ bool DyePowderItem::useOn(std::shared_ptr<ItemInstance> itemInstance, std::share
 				}
 			}
 			return true;
-		}
+		} 
 		else if (tile == Tile::carrots_Id || tile == Tile::potatoes_Id)
 		{
 			if (level->getData(x, y, z) == 7) return false;
 			if(!bTestUseOnOnly)
 			{
-				if (!level->isClientSide)
+				if (!level->isClientSide) 
 				{
 					((CropTile *) Tile::tiles[tile])->growCropsToMax(level, x, y, z);
 					itemInstance->count--;
@@ -181,12 +181,12 @@ bool DyePowderItem::useOn(std::shared_ptr<ItemInstance> itemInstance, std::share
 			}
 			return true;
 		}
-		else if (tile == Tile::crops_Id)
+		else if (tile == Tile::crops_Id) 
 		{
 			if (level->getData(x, y, z) == 7) return false;
 			if(!bTestUseOnOnly)
-			{
-				if (!level->isClientSide)
+			{	
+				if (!level->isClientSide) 
 				{
 					((CropTile *) Tile::crops)->growCropsToMax(level, x, y, z);
 					itemInstance->count--;
@@ -205,42 +205,42 @@ bool DyePowderItem::useOn(std::shared_ptr<ItemInstance> itemInstance, std::share
 				}
 			}
 			return true;
-		}
-		else if (tile == Tile::grass_Id)
+		} 
+		else if (tile == Tile::grass_Id) 
 		{
 			if(!bTestUseOnOnly)
-			{
-				if (!level->isClientSide)
+			{	
+				if (!level->isClientSide) 
 				{
 					itemInstance->count--;
 
-					for (int j = 0; j < 128; j++)
+					for (int j = 0; j < 128; j++) 
 					{
 						int xx = x;
 						int yy = y + 1;
 						int zz = z;
-						for (int i = 0; i < j / 16; i++)
+						for (int i = 0; i < j / 16; i++) 
 						{
 							xx += random->nextInt(3) - 1;
 							yy += (random->nextInt(3) - 1) * random->nextInt(3) / 2;
 							zz += random->nextInt(3) - 1;
-							if (level->getTile(xx, yy - 1, zz) != Tile::grass_Id || level->isSolidBlockingTile(xx, yy, zz))
+							if (level->getTile(xx, yy - 1, zz) != Tile::grass_Id || level->isSolidBlockingTile(xx, yy, zz)) 
 							{
 								goto mainloop;
 							}
 						}
 
-						if (level->getTile(xx, yy, zz) == 0)
+						if (level->getTile(xx, yy, zz) == 0) 
 						{
-							if (random->nextInt(10) != 0)
+							if (random->nextInt(10) != 0) 
 							{
 								if (Tile::tallgrass->canSurvive(level, xx, yy, zz)) level->setTileAndData(xx, yy, zz, Tile::tallgrass_Id, TallGrass::TALL_GRASS);
-							}
-							else if (random->nextInt(3) != 0)
+							} 
+							else if (random->nextInt(3) != 0) 
 							{
 								if (Tile::flower->canSurvive(level, xx, yy, zz)) level->setTile(xx, yy, zz, Tile::flower_Id);
-							}
-							else
+							} 
+							else 
 							{
 								if (Tile::rose->canSurvive(level, xx, yy, zz)) level->setTile(xx, yy, zz, Tile::rose_Id);
 							}
@@ -289,14 +289,14 @@ mainloop: continue;
 	return false;
 }
 
-bool DyePowderItem::interactEnemy(std::shared_ptr<ItemInstance> itemInstance, std::shared_ptr<Mob> mob)
+bool DyePowderItem::interactEnemy(shared_ptr<ItemInstance> itemInstance, shared_ptr<Mob> mob) 
 {
-	if (std::dynamic_pointer_cast<Sheep>( mob ) != NULL)
+	if (dynamic_pointer_cast<Sheep>( mob ) != NULL) 
 	{
-		std::shared_ptr<Sheep> sheep = std::dynamic_pointer_cast<Sheep>(mob);
+		shared_ptr<Sheep> sheep = dynamic_pointer_cast<Sheep>(mob);
 		// convert to tile-based color value (0 is white instead of black)
 		int newColor = ClothTile::getTileDataForItemAuxValue(itemInstance->getAuxValue());
-		if (!sheep->isSheared() && sheep->getColor() != newColor)
+		if (!sheep->isSheared() && sheep->getColor() != newColor) 
 		{
 			sheep->setColor(newColor);
 			itemInstance->count--;

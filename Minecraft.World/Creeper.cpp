@@ -34,7 +34,7 @@ Creeper::Creeper(Level *level) : Monster( level )
 	health = getMaxHealth();
 
 	_init();
-
+	
     this->textureIdx = TN_MOB_CREEPER;	// 4J was L"/mob/creeper.png";
 
 	goalSelector.addGoal(1, new FloatGoal(this));
@@ -120,19 +120,19 @@ void Creeper::die(DamageSource *source)
 {
     Monster::die(source);
 
-    if ( std::dynamic_pointer_cast<Skeleton>(source->getEntity()) != NULL )
+    if ( dynamic_pointer_cast<Skeleton>(source->getEntity()) != NULL )
 	{
         spawnAtLocation(Item::record_01_Id + random->nextInt(12), 1);
     }
 
-	std::shared_ptr<Player> player = std::dynamic_pointer_cast<Player>(source->getEntity());
-	if ( (std::dynamic_pointer_cast<Arrow>(source->getDirectEntity()) != NULL) && (player != NULL) )
+	shared_ptr<Player> player = dynamic_pointer_cast<Player>(source->getEntity());
+	if ( (dynamic_pointer_cast<Arrow>(source->getDirectEntity()) != NULL) && (player != NULL) )
 	{
 		player->awardStat(GenericStats::archer(), GenericStats::param_archer());
 	}
 }
 
-bool Creeper::doHurtTarget(std::shared_ptr<Entity> target)
+bool Creeper::doHurtTarget(shared_ptr<Entity> target)
 {
 	return true;
 }
@@ -162,7 +162,7 @@ void Creeper::setSwellDir(int dir)
     entityData->set(DATA_SWELL_DIR, (byte) dir);
 }
 
-void Creeper::thunderHit(const LightningBolt *lightningBolt)
+void Creeper::thunderHit(const LightningBolt *lightningBolt) 
 {
     Monster::thunderHit(lightningBolt);
     entityData->set(DATA_IS_POWERED, (byte) 1);

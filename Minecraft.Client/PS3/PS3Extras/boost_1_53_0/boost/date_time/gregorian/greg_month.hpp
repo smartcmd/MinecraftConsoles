@@ -2,7 +2,7 @@
 #define GREG_MONTH_HPP___
 
 /* Copyright (c) 2002,2003 CrystalClear Software, Inc.
- * Use, modification and distribution is subject to the
+ * Use, modification and distribution is subject to the 
  * Boost Software License, Version 1.0. (See accompanying
  * file LICENSE_1_0.txt or http://www.boost.org/LICENSE_1_0.txt)
  * Author: Jeff Garland, Bart Garst
@@ -11,7 +11,7 @@
 
 #include "boost/date_time/constrained_value.hpp"
 #include "boost/date_time/date_defs.hpp"
-#include "boost/std::shared_ptr.hpp"
+#include "boost/shared_ptr.hpp"
 #include "boost/date_time/compiler_config.hpp"
 #include <stdexcept>
 #include <string>
@@ -39,7 +39,7 @@ namespace gregorian {
   using date_time::Dec;
   using date_time::NotAMonth;
   using date_time::NumMonths;
-
+  
   //! Exception thrown if a greg_month is constructed with a value out of range
   struct bad_month : public std::out_of_range
   {
@@ -50,15 +50,15 @@ namespace gregorian {
   //! A constrained range that implements the gregorian_month rules
   typedef CV::constrained_value<greg_month_policies> greg_month_rep;
 
-
+  
   //! Wrapper class to represent months in gregorian based calendar
   class BOOST_DATE_TIME_DECL greg_month : public greg_month_rep {
   public:
     typedef date_time::months_of_year month_enum;
     typedef std::map<std::string, unsigned short> month_map_type;
-    typedef boost::std::shared_ptr<month_map_type> month_map_ptr_type;
+    typedef boost::shared_ptr<month_map_type> month_map_ptr_type;
     //! Construct a month from the months_of_year enumeration
-    greg_month(month_enum theMonth) :
+    greg_month(month_enum theMonth) : 
       greg_month_rep(static_cast<greg_month_rep::value_type>(theMonth)) {}
     //! Construct from a short value
     greg_month(unsigned short theMonth) : greg_month_rep(theMonth) {}

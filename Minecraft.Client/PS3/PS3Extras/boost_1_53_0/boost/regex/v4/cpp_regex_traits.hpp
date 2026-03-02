@@ -3,12 +3,12 @@
  * Copyright (c) 2004 John Maddock
  * Copyright 2011 Garmin Ltd. or its subsidiaries
  *
- * Use, modification and distribution are subject to the
- * Boost Software License, Version 1.0. (See accompanying file
+ * Use, modification and distribution are subject to the 
+ * Boost Software License, Version 1.0. (See accompanying file 
  * LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
  *
  */
-
+ 
  /*
   *   LOCATION:    see http://www.boost.org for most recent version.
   *   FILE         cpp_regex_traits.hpp
@@ -60,14 +60,14 @@
 #pragma warning(disable:4786 4251)
 #endif
 
-namespace boost{
+namespace boost{ 
 
 //
 // forward declaration is needed by some compilers:
 //
 template <class charT>
 class cpp_regex_traits;
-
+   
 namespace re_detail{
 
 //
@@ -201,9 +201,9 @@ struct cpp_regex_traits_base
    }
    bool operator==(const cpp_regex_traits_base& b)const
    {
-      return (m_pctype == b.m_pctype)
+      return (m_pctype == b.m_pctype) 
 #ifndef BOOST_NO_STD_MESSAGES
-         && (m_pmessages == b.m_pmessages)
+         && (m_pmessages == b.m_pmessages) 
 #endif
          && (m_pcollate == b.m_pcollate);
    }
@@ -283,7 +283,7 @@ void cpp_regex_traits_char_layer<charT>::init()
    if(cat_name.size() && (this->m_pmessages != 0))
    {
       cat = this->m_pmessages->open(
-         cat_name,
+         cat_name, 
          this->m_locale);
       if((int)cat < 0)
       {
@@ -337,7 +337,7 @@ void cpp_regex_traits_char_layer<charT>::init()
 }
 
 template <class charT>
-typename cpp_regex_traits_char_layer<charT>::string_type
+typename cpp_regex_traits_char_layer<charT>::string_type 
    cpp_regex_traits_char_layer<charT>::get_default_message(regex_constants::syntax_type i)
 {
    const char* ptr = get_default_syntax(i);
@@ -386,16 +386,16 @@ private:
 #ifdef BOOST_REGEX_BUGGY_CTYPE_FACET
 enum
 {
-   char_class_space=1<<0,
-   char_class_print=1<<1,
-   char_class_cntrl=1<<2,
-   char_class_upper=1<<3,
+   char_class_space=1<<0, 
+   char_class_print=1<<1, 
+   char_class_cntrl=1<<2, 
+   char_class_upper=1<<3, 
    char_class_lower=1<<4,
-   char_class_alpha=1<<5,
-   char_class_digit=1<<6,
-   char_class_punct=1<<7,
+   char_class_alpha=1<<5, 
+   char_class_digit=1<<6, 
+   char_class_punct=1<<7, 
    char_class_xdigit=1<<8,
-   char_class_alnum=char_class_alpha|char_class_digit,
+   char_class_alnum=char_class_alpha|char_class_digit, 
    char_class_graph=char_class_alnum|char_class_punct,
    char_class_blank=1<<9,
    char_class_word=1<<10,
@@ -495,14 +495,14 @@ typename cpp_regex_traits_implementation<charT>::char_class_type const cpp_regex
 #endif
 
 template <class charT>
-typename cpp_regex_traits_implementation<charT>::string_type
+typename cpp_regex_traits_implementation<charT>::string_type 
    cpp_regex_traits_implementation<charT>::transform_primary(const charT* p1, const charT* p2) const
 {
    //
    // PRECONDITIONS:
    //
    // A bug in gcc 3.2 (and maybe other versions as well) treats
-   // p1 as a null terminated string, for efficiency reasons
+   // p1 as a null terminated string, for efficiency reasons 
    // we work around this elsewhere, but just assert here that
    // we adhere to gcc's (buggy) preconditions...
    //
@@ -565,14 +565,14 @@ typename cpp_regex_traits_implementation<charT>::string_type
 }
 
 template <class charT>
-typename cpp_regex_traits_implementation<charT>::string_type
+typename cpp_regex_traits_implementation<charT>::string_type 
    cpp_regex_traits_implementation<charT>::transform(const charT* p1, const charT* p2) const
 {
    //
    // PRECONDITIONS:
    //
    // A bug in gcc 3.2 (and maybe other versions as well) treats
-   // p1 as a null terminated string, for efficiency reasons
+   // p1 as a null terminated string, for efficiency reasons 
    // we work around this elsewhere, but just assert here that
    // we adhere to gcc's (buggy) preconditions...
    //
@@ -613,7 +613,7 @@ typename cpp_regex_traits_implementation<charT>::string_type
 
 
 template <class charT>
-typename cpp_regex_traits_implementation<charT>::string_type
+typename cpp_regex_traits_implementation<charT>::string_type 
    cpp_regex_traits_implementation<charT>::lookup_collatename(const charT* p1, const charT* p2) const
 {
    typedef typename std::map<string_type, string_type>::const_iterator iter_type;
@@ -669,7 +669,7 @@ void cpp_regex_traits_implementation<charT>::init()
    if(cat_name.size() && (this->m_pmessages != 0))
    {
       cat = this->m_pmessages->open(
-         cat_name,
+         cat_name, 
          this->m_locale);
       if((int)cat < 0)
       {
@@ -686,8 +686,8 @@ void cpp_regex_traits_implementation<charT>::init()
       //
       // Error messages:
       //
-      for(boost::regex_constants::error_type i = static_cast<boost::regex_constants::error_type>(0);
-         i <= boost::regex_constants::error_unknown;
+      for(boost::regex_constants::error_type i = static_cast<boost::regex_constants::error_type>(0); 
+         i <= boost::regex_constants::error_unknown; 
          i = static_cast<boost::regex_constants::error_type>(i + 1))
       {
          const char* p = get_default_error_string(i);
@@ -709,7 +709,7 @@ void cpp_regex_traits_implementation<charT>::init()
       // Custom class names:
       //
 #ifndef BOOST_REGEX_BUGGY_CTYPE_FACET
-      static const char_class_type masks[16] =
+      static const char_class_type masks[16] = 
       {
          std::ctype<charT>::alnum,
          std::ctype<charT>::alpha,
@@ -729,7 +729,7 @@ void cpp_regex_traits_implementation<charT>::init()
          cpp_regex_traits_implementation<charT>::mask_unicode,
       };
 #else
-      static const char_class_type masks[16] =
+      static const char_class_type masks[16] = 
       {
          ::boost::re_detail::char_class_alnum,
          ::boost::re_detail::char_class_alpha,
@@ -765,14 +765,14 @@ void cpp_regex_traits_implementation<charT>::init()
 }
 
 template <class charT>
-typename cpp_regex_traits_implementation<charT>::char_class_type
+typename cpp_regex_traits_implementation<charT>::char_class_type 
    cpp_regex_traits_implementation<charT>::lookup_classname_imp(const charT* p1, const charT* p2) const
 {
 #ifndef BOOST_REGEX_BUGGY_CTYPE_FACET
-   static const char_class_type masks[22] =
+   static const char_class_type masks[22] = 
    {
       0,
-      std::ctype<char>::alnum,
+      std::ctype<char>::alnum, 
       std::ctype<char>::alpha,
       cpp_regex_traits_implementation<charT>::mask_blank,
       std::ctype<char>::cntrl,
@@ -790,15 +790,15 @@ typename cpp_regex_traits_implementation<charT>::char_class_type
       cpp_regex_traits_implementation<charT>::mask_unicode,
       std::ctype<char>::upper,
       cpp_regex_traits_implementation<charT>::mask_vertical,
-      std::ctype<char>::alnum | cpp_regex_traits_implementation<charT>::mask_word,
-      std::ctype<char>::alnum | cpp_regex_traits_implementation<charT>::mask_word,
+      std::ctype<char>::alnum | cpp_regex_traits_implementation<charT>::mask_word, 
+      std::ctype<char>::alnum | cpp_regex_traits_implementation<charT>::mask_word, 
       std::ctype<char>::xdigit,
    };
 #else
-   static const char_class_type masks[22] =
+   static const char_class_type masks[22] = 
    {
       0,
-      ::boost::re_detail::char_class_alnum,
+      ::boost::re_detail::char_class_alnum, 
       ::boost::re_detail::char_class_alpha,
       ::boost::re_detail::char_class_blank,
       ::boost::re_detail::char_class_cntrl,
@@ -816,8 +816,8 @@ typename cpp_regex_traits_implementation<charT>::char_class_type
       ::boost::re_detail::char_class_unicode,
       ::boost::re_detail::char_class_upper,
       ::boost::re_detail::char_class_vertical_space,
-      ::boost::re_detail::char_class_alnum | ::boost::re_detail::char_class_word,
-      ::boost::re_detail::char_class_alnum | ::boost::re_detail::char_class_word,
+      ::boost::re_detail::char_class_alnum | ::boost::re_detail::char_class_word, 
+      ::boost::re_detail::char_class_alnum | ::boost::re_detail::char_class_word, 
       ::boost::re_detail::char_class_xdigit,
    };
 #endif
@@ -857,7 +857,7 @@ bool cpp_regex_traits_implementation<charT>::isctype(const charT c, char_class_t
 
 
 template <class charT>
-inline boost::std::shared_ptr<const cpp_regex_traits_implementation<charT> > create_cpp_regex_traits(const std::locale& l BOOST_APPEND_EXPLICIT_TEMPLATE_TYPE(charT))
+inline boost::shared_ptr<const cpp_regex_traits_implementation<charT> > create_cpp_regex_traits(const std::locale& l BOOST_APPEND_EXPLICIT_TEMPLATE_TYPE(charT))
 {
    cpp_regex_traits_base<charT> key(l);
    return ::boost::object_cache<cpp_regex_traits_base<charT>, cpp_regex_traits_implementation<charT> >::get(key, 5);
@@ -935,9 +935,9 @@ public:
 #ifndef BOOST_REGEX_BUGGY_CTYPE_FACET
       typedef typename std::ctype<charT>::mask ctype_mask;
 
-      static const ctype_mask mask_base =
+      static const ctype_mask mask_base = 
          static_cast<ctype_mask>(
-            std::ctype<charT>::alnum
+            std::ctype<charT>::alnum 
             | std::ctype<charT>::alpha
             | std::ctype<charT>::cntrl
             | std::ctype<charT>::digit
@@ -949,7 +949,7 @@ public:
             | std::ctype<charT>::upper
             | std::ctype<charT>::xdigit);
 
-      if((f & mask_base)
+      if((f & mask_base) 
          && (m_pimpl->m_pctype->is(
             static_cast<ctype_mask>(f & mask_base), c)))
          return true;
@@ -957,14 +957,14 @@ public:
          return true;
       else if((f & re_detail::cpp_regex_traits_implementation<charT>::mask_word) && (c == '_'))
          return true;
-      else if((f & re_detail::cpp_regex_traits_implementation<charT>::mask_blank)
+      else if((f & re_detail::cpp_regex_traits_implementation<charT>::mask_blank) 
          && m_pimpl->m_pctype->is(std::ctype<charT>::space, c)
          && !re_detail::is_separator(c))
          return true;
-      else if((f & re_detail::cpp_regex_traits_implementation<charT>::mask_vertical)
+      else if((f & re_detail::cpp_regex_traits_implementation<charT>::mask_vertical) 
          && (::boost::re_detail::is_separator(c) || (c == '\v')))
          return true;
-      else if((f & re_detail::cpp_regex_traits_implementation<charT>::mask_horizontal)
+      else if((f & re_detail::cpp_regex_traits_implementation<charT>::mask_horizontal) 
          && this->isctype(c, std::ctype<charT>::space) && !this->isctype(c, re_detail::cpp_regex_traits_implementation<charT>::mask_vertical))
          return true;
       return false;
@@ -1001,7 +1001,7 @@ public:
    static std::string get_catalog_name();
 
 private:
-   boost::std::shared_ptr<const re_detail::cpp_regex_traits_implementation<charT> > m_pimpl;
+   boost::shared_ptr<const re_detail::cpp_regex_traits_implementation<charT> > m_pimpl;
    //
    // catalog name handler:
    //

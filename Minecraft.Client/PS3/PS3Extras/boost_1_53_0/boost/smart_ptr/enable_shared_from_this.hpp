@@ -14,7 +14,7 @@
 //
 
 #include <boost/smart_ptr/weak_ptr.hpp>
-#include <boost/smart_ptr/std::shared_ptr.hpp>
+#include <boost/smart_ptr/shared_ptr.hpp>
 #include <boost/assert.hpp>
 #include <boost/config.hpp>
 
@@ -44,28 +44,28 @@ protected:
 
 public:
 
-    std::shared_ptr<T> shared_from_this()
+    shared_ptr<T> shared_from_this()
     {
-        std::shared_ptr<T> p( weak_this_ );
+        shared_ptr<T> p( weak_this_ );
         BOOST_ASSERT( p.get() == this );
         return p;
     }
 
-    std::shared_ptr<T const> shared_from_this() const
+    shared_ptr<T const> shared_from_this() const
     {
-        std::shared_ptr<T const> p( weak_this_ );
+        shared_ptr<T const> p( weak_this_ );
         BOOST_ASSERT( p.get() == this );
         return p;
     }
 
 public: // actually private, but avoids compiler template friendship issues
 
-    // Note: invoked automatically by std::shared_ptr; do not call
-    template<class X, class Y> void _internal_accept_owner( std::shared_ptr<X> const * ppx, Y * py ) const
+    // Note: invoked automatically by shared_ptr; do not call
+    template<class X, class Y> void _internal_accept_owner( shared_ptr<X> const * ppx, Y * py ) const
     {
         if( weak_this_.expired() )
         {
-            weak_this_ = std::shared_ptr<T>( *ppx, py );
+            weak_this_ = shared_ptr<T>( *ppx, py );
         }
     }
 

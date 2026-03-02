@@ -16,12 +16,12 @@
 
 namespace boost {
 
-// You'll see std::shared_ptr mentioned in this header because we need to
+// You'll see shared_ptr mentioned in this header because we need to
 // note which types are shared_ptrs in their registrations, to
-// implement special std::shared_ptr handling for rvalue conversions.
-template <class T> class std::shared_ptr;
+// implement special shared_ptr handling for rvalue conversions.
+template <class T> class shared_ptr;
 
-namespace python { namespace converter {
+namespace python { namespace converter { 
 
 struct registration;
 
@@ -64,23 +64,23 @@ namespace detail
   register_shared_ptr0(...)
   {
   }
-
+  
   template <class T>
   inline void
-  register_shared_ptr0(std::shared_ptr<T>*)
+  register_shared_ptr0(shared_ptr<T>*)
   {
-      registry::lookup_shared_ptr(type_id<std::shared_ptr<T> >());
+      registry::lookup_shared_ptr(type_id<shared_ptr<T> >());
   }
-
+  
   template <class T>
   inline void
   register_shared_ptr1(T const volatile*)
   {
       detail::register_shared_ptr0((T*)0);
   }
-
+  
   template <class T>
-  inline registration const&
+  inline registration const& 
   registry_lookup2(T&(*)())
   {
       detail::register_shared_ptr1((T*)0);
@@ -88,13 +88,13 @@ namespace detail
   }
 
   template <class T>
-  inline registration const&
+  inline registration const& 
   registry_lookup1(type<T>)
   {
       return registry_lookup2((T(*)())0);
   }
 
-  inline registration const&
+  inline registration const& 
   registry_lookup1(type<const volatile void>)
   {
       detail::register_shared_ptr1((void*)0);

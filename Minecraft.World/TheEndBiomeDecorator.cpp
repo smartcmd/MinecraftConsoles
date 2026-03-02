@@ -58,14 +58,14 @@ void TheEndBiomeDecorator::decorate()
 	}
     if (xo == 0 && zo == 0)
 	{
-		std::shared_ptr<EnderDragon> enderDragon = std::shared_ptr<EnderDragon>(new EnderDragon(level));
+		shared_ptr<EnderDragon> enderDragon = shared_ptr<EnderDragon>(new EnderDragon(level));
         enderDragon->moveTo(0, 128, 0, random->nextFloat() * 360, 0);
         level->addEntity(enderDragon);
 	}
 
 	// end podium radius is 4, position is 0,0, so chunk needs to be the -16,-16 one since this guarantees that all chunks required for the podium are loaded
 	if (xo == -16 && zo == -16)
-	{
+	{		
 		endPodiumFeature->place(level, random, 0, Level::genDepth / 2, 0);
     }
 }

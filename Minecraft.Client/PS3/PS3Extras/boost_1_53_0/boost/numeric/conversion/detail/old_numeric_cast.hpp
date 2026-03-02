@@ -216,14 +216,14 @@ namespace boost
             { return x >= 0 && static_cast<X>(static_cast<Y>(x)) != x; }
 
 # if defined(BOOST_MSVC) && BOOST_MSVC < 1300
-        // MSVC6 can't static_cast  uint64_t -> floating types
+        // MSVC6 can't static_cast  unsigned __int64 -> floating types
 #  define BOOST_UINT64_CAST(src_type)                                   \
-        static inline bool check(src_type x, uint64_t)          \
+        static inline bool check(src_type x, unsigned __int64)          \
         {                                                               \
             if (x < 0) return false;                                    \
-            uint64_t y = static_cast<uint64_t>(x);      \
+            unsigned __int64 y = static_cast<unsigned __int64>(x);      \
             bool odd = y & 0x1;                                         \
-            int64_t div2 = static_cast<int64_t>(y >> 1);                \
+            __int64 div2 = static_cast<__int64>(y >> 1);                \
             return ((static_cast<src_type>(div2) * 2.0) + odd) != x;    \
         }
 

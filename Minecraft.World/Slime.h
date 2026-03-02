@@ -27,7 +27,7 @@ private:
 public:
 	Slime(Level *level);
 
-protected:
+protected: 
 	virtual void defineSynchedData();
 
 public:
@@ -50,11 +50,11 @@ protected:
 	virtual void serverAiStep();
 	virtual void decreaseSquish();
 	virtual int getJumpDelay();
-	virtual std::shared_ptr<Slime> createChild();
+	virtual shared_ptr<Slime> createChild();
 
 public:
 	virtual void remove();
-	virtual void playerTouch(std::shared_ptr<Player> player);
+	virtual void playerTouch(shared_ptr<Player> player);
 
 protected:
 	virtual bool isDealsDamage();

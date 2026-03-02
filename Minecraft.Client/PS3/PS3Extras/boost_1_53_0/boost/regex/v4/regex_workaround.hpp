@@ -3,8 +3,8 @@
  * Copyright (c) 1998-2005
  * John Maddock
  *
- * Use, modification and distribution are subject to the
- * Boost Software License, Version 1.0. (See accompanying file
+ * Use, modification and distribution are subject to the 
+ * Boost Software License, Version 1.0. (See accompanying file 
  * LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
  *
  */
@@ -40,7 +40,7 @@
 #include <boost/throw_exception.hpp>
 #include <boost/scoped_ptr.hpp>
 #include <boost/scoped_array.hpp>
-#include <boost/std::shared_ptr.hpp>
+#include <boost/shared_ptr.hpp>
 #include <boost/mpl/bool_fwd.hpp>
 #ifndef BOOST_NO_STD_LOCALE
 #   include <locale>
@@ -128,13 +128,13 @@ namespace boost{ namespace re_detail{
    //
    // MSVC 8 will either emit warnings or else refuse to compile
    // code that makes perfectly legitimate use of std::copy, when
-   // the OutputIterator type is a user-defined class (apparently all user
+   // the OutputIterator type is a user-defined class (apparently all user 
    // defined iterators are "unsafe").  This code works around that:
    //
    template<class InputIterator, class OutputIterator>
    inline OutputIterator copy(
-      InputIterator first,
-      InputIterator last,
+      InputIterator first, 
+      InputIterator last, 
       OutputIterator dest
    )
    {
@@ -142,8 +142,8 @@ namespace boost{ namespace re_detail{
    }
    template<class InputIterator1, class InputIterator2>
    inline bool equal(
-      InputIterator1 first,
-      InputIterator1 last,
+      InputIterator1 first, 
+      InputIterator1 last, 
       InputIterator2 with
    )
    {
@@ -153,15 +153,15 @@ namespace boost{ namespace re_detail{
    //
    // MSVC 10 will either emit warnings or else refuse to compile
    // code that makes perfectly legitimate use of std::copy, when
-   // the OutputIterator type is a user-defined class (apparently all user
+   // the OutputIterator type is a user-defined class (apparently all user 
    // defined iterators are "unsafe").  What's more Microsoft have removed their
    // non-standard "unchecked" versions, even though their still in the MS
-   // documentation!! Work around this as best we can:
+   // documentation!! Work around this as best we can: 
    //
    template<class InputIterator, class OutputIterator>
    inline OutputIterator copy(
-      InputIterator first,
-      InputIterator last,
+      InputIterator first, 
+      InputIterator last, 
       OutputIterator dest
    )
    {
@@ -171,8 +171,8 @@ namespace boost{ namespace re_detail{
    }
    template<class InputIterator1, class InputIterator2>
    inline bool equal(
-      InputIterator1 first,
-      InputIterator1 last,
+      InputIterator1 first, 
+      InputIterator1 last, 
       InputIterator2 with
    )
    {
@@ -180,11 +180,11 @@ namespace boost{ namespace re_detail{
          if(*first++ != *with++) return false;
       return true;
    }
-#else
-   using std::copy;
-   using std::equal;
-#endif
-#if BOOST_WORKAROUND(BOOST_MSVC,>=1400) && defined(__STDC_WANT_SECURE_LIB__) && __STDC_WANT_SECURE_LIB__
+#else 
+   using std::copy; 
+   using std::equal; 
+#endif 
+#if BOOST_WORKAROUND(BOOST_MSVC,>=1400) && defined(__STDC_WANT_SECURE_LIB__) && __STDC_WANT_SECURE_LIB__ 
 
    // use safe versions of strcpy etc:
    using ::strcpy_s;
@@ -193,7 +193,7 @@ namespace boost{ namespace re_detail{
    inline std::size_t strcpy_s(
       char *strDestination,
       std::size_t sizeInBytes,
-      const char *strSource
+      const char *strSource 
    )
    {
       if(std::strlen(strSource)+1 > sizeInBytes)
@@ -204,7 +204,7 @@ namespace boost{ namespace re_detail{
    inline std::size_t strcat_s(
       char *strDestination,
       std::size_t sizeInBytes,
-      const char *strSource
+      const char *strSource 
    )
    {
       if(std::strlen(strSource) + std::strlen(strDestination) + 1 > sizeInBytes)

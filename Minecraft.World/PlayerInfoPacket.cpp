@@ -25,7 +25,7 @@ PlayerInfoPacket::PlayerInfoPacket(BYTE networkSmallId, short playerColourIndex,
 	m_entityId = -1;
 }
 
-PlayerInfoPacket::PlayerInfoPacket(std::shared_ptr<ServerPlayer> player)
+PlayerInfoPacket::PlayerInfoPacket(shared_ptr<ServerPlayer> player)
 {
 	m_networkSmallId = 0;
 	if(player->connection != NULL && player->connection->getNetworkPlayer() != NULL) m_networkSmallId = player->connection->getNetworkPlayer()->GetSmallId();

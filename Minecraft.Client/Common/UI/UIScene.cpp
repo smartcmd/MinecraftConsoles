@@ -13,7 +13,7 @@ UIScene::UIScene(int iPad, UILayer *parentLayer)
 	m_iPad = iPad;
 	swf = NULL;
 	m_pItemRenderer = NULL;
-
+	
 	bHasFocus = false;
 	m_hasTickedOnce = false;
 	m_bFocussedOnce = false;
@@ -27,7 +27,7 @@ UIScene::UIScene(int iPad, UILayer *parentLayer)
 	m_bUpdateOpacity = false;
 
 	m_backScene = NULL;
-
+	
 	m_cacheSlotRenders = false;
 	m_needsCacheRendered = true;
 	m_expectedCachedSlotCount = 0;
@@ -94,7 +94,7 @@ void UIScene::reloadMovie(bool force)
 	}
 
 	handleReload();
-
+	
 	IggyDataValue result;
 	IggyDataValue value[1];
 
@@ -328,11 +328,11 @@ void UIScene::loadMovie()
 	}
 
 	byteArray baFile = ui.getMovieData(moviePath.c_str());
-	int64_t beforeLoad = ui.iggyAllocCount;
+	__int64 beforeLoad = ui.iggyAllocCount;
 	swf = IggyPlayerCreateFromMemory ( baFile.data , baFile.length, NULL);
-	int64_t afterLoad = ui.iggyAllocCount;
-	IggyPlayerInitializeAndTickRS ( swf );
-	int64_t afterTick = ui.iggyAllocCount;
+	__int64 afterLoad = ui.iggyAllocCount;
+	IggyPlayerInitializeAndTickRS ( swf ); 
+	__int64 afterTick = ui.iggyAllocCount;
 
 	if(!swf)
 	{
@@ -343,7 +343,7 @@ void UIScene::loadMovie()
 		app.FatalLoadError();
 	}
 	app.DebugPrintf( app.USER_SR, "Loaded iggy movie %ls\n", moviePath.c_str() );
-	IggyProperties *properties = IggyPlayerProperties ( swf );
+	IggyProperties *properties = IggyPlayerProperties ( swf ); 
 	m_movieHeight = properties->movie_height_in_pixels;
 	m_movieWidth = properties->movie_width_in_pixels;
 
@@ -351,7 +351,7 @@ void UIScene::loadMovie()
 	m_renderHeight = m_movieHeight;
 
 	S32 width, height;
-	m_parentLayer->getRenderDimensions(width, height);
+	m_parentLayer->getRenderDimensions(width, height);	
 	IggyPlayerSetDisplaySize( swf, width, height );
 
 	IggyPlayerSetUserdata(swf,this);
@@ -361,8 +361,8 @@ void UIScene::loadMovie()
 	IggyMemoryUseInfo memoryInfo;
 	rrbool res;
 	int iteration = 0;
-	int64_t totalStatic = 0;
-	int64_t totalDynamic = 0;
+	__int64 totalStatic = 0;
+	__int64 totalDynamic = 0;
 	while(res = IggyDebugGetMemoryUseInfo ( swf ,
 		NULL ,
 		0 ,
@@ -372,7 +372,7 @@ void UIScene::loadMovie()
 	{
 		totalStatic += memoryInfo.static_allocation_bytes;
 		totalDynamic += memoryInfo.dynamic_allocation_bytes;
-		app.DebugPrintf(app.USER_SR, "%ls - %.*s static: %d ( %d ) dynamic: %d ( %d )\n", moviePath.c_str(), memoryInfo.subcategory_stringlen, memoryInfo.subcategory,
+		app.DebugPrintf(app.USER_SR, "%ls - %.*s static: %d ( %d ) dynamic: %d ( %d )\n", moviePath.c_str(), memoryInfo.subcategory_stringlen, memoryInfo.subcategory, 
 			memoryInfo.static_allocation_bytes, memoryInfo.static_allocation_count, memoryInfo.dynamic_allocation_bytes, memoryInfo.dynamic_allocation_count);
 		++iteration;
 		//if(memoryInfo.static_allocation_bytes > 0) getDebugMemoryUseRecursive(moviePath, memoryInfo);
@@ -398,22 +398,22 @@ void UIScene::getDebugMemoryUseRecursive(const wstring &moviePath, IggyMemoryUse
 		internalIteration ,
 		&internalMemoryInfo ))
 	{
-		app.DebugPrintf(app.USER_SR, "%ls - %.*s static: %d ( %d ) dynamic: %d ( %d )\n", moviePath.c_str(), internalMemoryInfo.subcategory_stringlen, internalMemoryInfo.subcategory,
+		app.DebugPrintf(app.USER_SR, "%ls - %.*s static: %d ( %d ) dynamic: %d ( %d )\n", moviePath.c_str(), internalMemoryInfo.subcategory_stringlen, internalMemoryInfo.subcategory, 
 			internalMemoryInfo.static_allocation_bytes, internalMemoryInfo.static_allocation_count, internalMemoryInfo.dynamic_allocation_bytes, internalMemoryInfo.dynamic_allocation_count);
 		++internalIteration;
 		if(internalMemoryInfo.subcategory_stringlen > memoryInfo.subcategory_stringlen) getDebugMemoryUseRecursive(moviePath, internalMemoryInfo);
 	}
 }
 
-void UIScene::PrintTotalMemoryUsage(int64_t &totalStatic, int64_t &totalDynamic)
+void UIScene::PrintTotalMemoryUsage(__int64 &totalStatic, __int64 &totalDynamic)
 {
 	if(!swf) return;
 
 	IggyMemoryUseInfo memoryInfo;
 	rrbool res;
 	int iteration = 0;
-	int64_t sceneStatic = 0;
-	int64_t sceneDynamic = 0;
+	__int64 sceneStatic = 0;
+	__int64 sceneDynamic = 0;
 	while(res = IggyDebugGetMemoryUseInfo ( swf ,
 		NULL ,
 		"" ,
@@ -483,7 +483,7 @@ void UIScene::tickTimers()
 		{
 			it = m_timers.erase(it);
 		}
-		else
+		else 
 		{
 			if(currentTime > it->second.targetTime)
 			{
@@ -597,7 +597,7 @@ void UIScene::customDraw(IggyCustomDrawCallbackRegion *region)
 	app.DebugPrintf("Handling custom draw for scene with no override!\n");
 }
 
-void UIScene::customDrawSlotControl(IggyCustomDrawCallbackRegion *region, int iPad, std::shared_ptr<ItemInstance> item, float fAlpha, bool isFoil, bool bDecorations)
+void UIScene::customDrawSlotControl(IggyCustomDrawCallbackRegion *region, int iPad, shared_ptr<ItemInstance> item, float fAlpha, bool isFoil, bool bDecorations)
 {
 	if (item!= NULL)
 	{
@@ -608,7 +608,7 @@ void UIScene::customDrawSlotControl(IggyCustomDrawCallbackRegion *region, int iP
 				//Make sure that pMinecraft->player is the correct player so that player specific rendering
 				// eg clock and compass, are rendered correctly
 				Minecraft *pMinecraft=Minecraft::GetInstance();
-				std::shared_ptr<MultiplayerLocalPlayer> oldPlayer = pMinecraft->player;
+				shared_ptr<MultiplayerLocalPlayer> oldPlayer = pMinecraft->player;
 				if( iPad >= 0 && iPad < XUSER_MAX_COUNT ) pMinecraft->player = pMinecraft->localplayers[iPad];
 
 				// Setup GDraw, normal game render states and matrices
@@ -634,7 +634,7 @@ void UIScene::customDrawSlotControl(IggyCustomDrawCallbackRegion *region, int iP
 					if(useCommandBuffers) RenderManager.CBuffStart(list, true);
 #endif
 					PIXBeginNamedEvent(0,"Draw uncached");
-					ui.setupCustomDrawMatrices(this, customDrawRegion);
+					ui.setupCustomDrawMatrices(this, customDrawRegion);	
 					_customDrawSlotControl(customDrawRegion, iPad, item, fAlpha, isFoil, bDecorations, useCommandBuffers);
 					delete customDrawRegion;
 					PIXEndNamedEvent();
@@ -644,7 +644,7 @@ void UIScene::customDrawSlotControl(IggyCustomDrawCallbackRegion *region, int iP
 					for(AUTO_VAR(it, m_cachedSlotDraw.begin()); it != m_cachedSlotDraw.end(); ++it)
 					{
 						CachedSlotDrawData *drawData = *it;
-						ui.setupCustomDrawMatrices(this, drawData->customDrawRegion);
+						ui.setupCustomDrawMatrices(this, drawData->customDrawRegion);					
 						_customDrawSlotControl(drawData->customDrawRegion, iPad, drawData->item, drawData->fAlpha, drawData->isFoil, drawData->bDecorations, useCommandBuffers);
 						delete drawData->customDrawRegion;
 						delete drawData;
@@ -688,7 +688,7 @@ void UIScene::customDrawSlotControl(IggyCustomDrawCallbackRegion *region, int iP
 
 			//Make sure that pMinecraft->player is the correct player so that player specific rendering
 			// eg clock and compass, are rendered correctly
-			std::shared_ptr<MultiplayerLocalPlayer> oldPlayer = pMinecraft->player;
+			shared_ptr<MultiplayerLocalPlayer> oldPlayer = pMinecraft->player;
 			if( iPad >= 0 && iPad < XUSER_MAX_COUNT ) pMinecraft->player = pMinecraft->localplayers[iPad];
 
 			_customDrawSlotControl(customDrawRegion, iPad, item, fAlpha, isFoil, bDecorations, false);
@@ -698,10 +698,10 @@ void UIScene::customDrawSlotControl(IggyCustomDrawCallbackRegion *region, int iP
 			// Finish GDraw and anything else that needs to be finalised
 			ui.endCustomDraw(region);
 		}
-	}
+	}	
 }
 
-void UIScene::_customDrawSlotControl(CustomDrawData *region, int iPad, std::shared_ptr<ItemInstance> item, float fAlpha, bool isFoil, bool bDecorations, bool usingCommandBuffer)
+void UIScene::_customDrawSlotControl(CustomDrawData *region, int iPad, shared_ptr<ItemInstance> item, float fAlpha, bool isFoil, bool bDecorations, bool usingCommandBuffer)
 {
 	Minecraft *pMinecraft=Minecraft::GetInstance();
 
@@ -716,7 +716,7 @@ void UIScene::_customDrawSlotControl(CustomDrawData *region, int iPad, std::shar
 	// we might want separate x & y scales here
 
 	float scaleX = bwidth / 16.0f;
-	float scaleY = bheight / 16.0f;
+	float scaleY = bheight / 16.0f;	
 
 	glEnable(GL_RESCALE_NORMAL);
 	glPushMatrix();
@@ -751,8 +751,8 @@ void UIScene::_customDrawSlotControl(CustomDrawData *region, int iPad, std::shar
 	if(bDecorations)
 	{
 		if((scaleX!=1.0f) ||(scaleY!=1.0f))
-		{
-			glPushMatrix();
+		{				
+			glPushMatrix();		
 			glScalef(scaleX, scaleY, 1.0f);
 			int iX= (int)(0.5f+((float)x)/scaleX);
 			int iY= (int)(0.5f+((float)y)/scaleY);
@@ -975,8 +975,8 @@ int UIScene::convertGameActionToIggyKeycode(int action)
 
 bool UIScene::allowRepeat(int key)
 {
-	// 4J-PB - ignore repeats of action ABXY buttons
-	// fix for PS3 213 - [MAIN MENU] Holding down buttons will continue to activate every prompt.
+	// 4J-PB - ignore repeats of action ABXY buttons 
+	// fix for PS3 213 - [MAIN MENU] Holding down buttons will continue to activate every prompt. 
 	switch(key)
 	{
 	case ACTION_MENU_OK:

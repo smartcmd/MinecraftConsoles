@@ -5,7 +5,7 @@
 #include "..\Minecraft.World\net.minecraft.world.phys.h"
 #include "..\Minecraft.World\net.minecraft.world.level.h"
 
-void CritParticle::_init(Level *level, std::shared_ptr<Entity> entity, ePARTICLE_TYPE type)
+void CritParticle::_init(Level *level, shared_ptr<Entity> entity, ePARTICLE_TYPE type)
 {
 	life = 0;
 	this->entity = entity;
@@ -15,17 +15,17 @@ void CritParticle::_init(Level *level, std::shared_ptr<Entity> entity, ePARTICLE
 	//tick();
 }
 
-CritParticle::CritParticle(Level *level, std::shared_ptr<Entity> entity) : Particle(level, entity->x, entity->bb->y0 + entity->bbHeight / 2, entity->z, entity->xd, entity->yd, entity->zd)
+CritParticle::CritParticle(Level *level, shared_ptr<Entity> entity) : Particle(level, entity->x, entity->bb->y0 + entity->bbHeight / 2, entity->z, entity->xd, entity->yd, entity->zd)
 {
 	_init(level,entity,eParticleType_crit);
 }
 
-CritParticle::CritParticle(Level *level, std::shared_ptr<Entity> entity, ePARTICLE_TYPE type) : Particle(level, entity->x, entity->bb->y0 + entity->bbHeight / 2, entity->z, entity->xd, entity->yd, entity->zd)
+CritParticle::CritParticle(Level *level, shared_ptr<Entity> entity, ePARTICLE_TYPE type) : Particle(level, entity->x, entity->bb->y0 + entity->bbHeight / 2, entity->z, entity->xd, entity->yd, entity->zd)
 {
 	_init(level, entity, type);
 }
 
-// 4J - Added this so that we can use some std::shared_ptr functions that were needed in the ctor
+// 4J - Added this so that we can use some shared_ptr functions that were needed in the ctor
 void CritParticle::CritParticlePostConstructor(void)
 {
 	tick();
@@ -49,7 +49,7 @@ void CritParticle::tick()
 		level->addParticle(particleName, x, y, z, xa, ya+0.2, za);
 	}
 	life++;
-	if (life >= lifeTime)
+	if (life >= lifeTime) 
 	{
 		remove();
 	}

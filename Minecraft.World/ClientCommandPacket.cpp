@@ -24,7 +24,7 @@ void ClientCommandPacket::write(DataOutputStream *dos)
 
 void ClientCommandPacket::handle(PacketListener *listener)
 {
-	listener->handleClientCommand(std::dynamic_pointer_cast<ClientCommandPacket>(shared_from_this()));
+	listener->handleClientCommand(dynamic_pointer_cast<ClientCommandPacket>(shared_from_this()));
 }
 
 int ClientCommandPacket::getEstimatedSize()

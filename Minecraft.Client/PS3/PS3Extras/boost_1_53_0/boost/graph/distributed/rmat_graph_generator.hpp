@@ -25,7 +25,7 @@ namespace boost {
   // requires an MPI process group.  Run-time is slightly worse than
   // the unique rmat generator.  Edge list generated is sorted and
   // unique.
-  template<typename ProcessGroup, typename Distribution,
+  template<typename ProcessGroup, typename Distribution, 
            typename RandomGenerator, typename Graph>
   class scalable_rmat_iterator
   {
@@ -47,8 +47,8 @@ namespace boost {
 
       // Initialize for edge generation
       scalable_rmat_iterator(ProcessGroup pg, Distribution distrib,
-                             RandomGenerator& gen, vertices_size_type n,
-                             edges_size_type m, double a, double b, double c,
+                             RandomGenerator& gen, vertices_size_type n, 
+                             edges_size_type m, double a, double b, double c, 
                              double d, bool permute_vertices = true)
           : gen(), done(false)
       {
@@ -58,12 +58,12 @@ namespace boost {
           this->gen.reset(new uniform_01<RandomGenerator>(gen));
 
           std::vector<vertices_size_type> vertexPermutation;
-          if (permute_vertices)
+          if (permute_vertices) 
               generate_permutation_vector(gen, vertexPermutation, n);
 
           int SCALE = int(floor(log(double(n))/log(2.)));
           boost::uniform_01<RandomGenerator> prob(gen);
-
+      
           std::map<value_type, bool> edge_map;
 
           edges_size_type generated = 0, local_edges = 0;
@@ -121,13 +121,13 @@ namespace boost {
 
       reference operator*() const { return current; }
       pointer operator->() const { return &current; }
-
+    
       scalable_rmat_iterator& operator++()
       {
           if (!values.empty()) {
               current = values.back();
               values.pop_back();
-          } else
+          } else 
               done = true;
 
           return *this;
@@ -151,7 +151,7 @@ namespace boost {
   private:
 
       // Parameters
-      std::shared_ptr<uniform_01<RandomGenerator> > gen;
+      shared_ptr<uniform_01<RandomGenerator> > gen;
 
       // Internal data structures
       std::vector<value_type> values;

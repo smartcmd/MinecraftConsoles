@@ -9,7 +9,7 @@ EGameCommand ExperienceCommand::getId()
 	return eGameCommand_Experience;
 }
 
-void ExperienceCommand::execute(std::shared_ptr<CommandSender> source, byteArray commandData)
+void ExperienceCommand::execute(shared_ptr<CommandSender> source, byteArray commandData)
 {
 	//if (args.length > 0)
 	//{
@@ -27,10 +27,10 @@ void ExperienceCommand::execute(std::shared_ptr<CommandSender> source, byteArray
 	//}
 }
 
-std::shared_ptr<Player> ExperienceCommand::getPlayer(PlayerUID playerId)
+shared_ptr<Player> ExperienceCommand::getPlayer(PlayerUID playerId)
 {
 	return nullptr;
-	//std::shared_ptr<Player> player = MinecraftServer::getInstance()->getPlayers()->getPlayer(playerId);
+	//shared_ptr<Player> player = MinecraftServer::getInstance()->getPlayers()->getPlayer(playerId);
 
 	//if (player == null)
 	//{

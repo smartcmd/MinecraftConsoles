@@ -28,7 +28,7 @@
 #include <boost/wave/wave_config.hpp>
 #if BOOST_WAVE_SERIALIZATION != 0
 #include <boost/serialization/serialization.hpp>
-#include <boost/serialization/std::shared_ptr.hpp>
+#include <boost/serialization/shared_ptr.hpp>
 #endif
 
 #include <boost/filesystem/path.hpp>
@@ -259,7 +259,7 @@ private:
 
 private:
     defined_macros_type *current_macros;                   // current symbol table
-    boost::std::shared_ptr<defined_macros_type> defined_macros; // global symbol table
+    boost::shared_ptr<defined_macros_type> defined_macros; // global symbol table
 
     token_type act_token;       // current token
     position_type main_pos;     // last token position in the pp_iterator

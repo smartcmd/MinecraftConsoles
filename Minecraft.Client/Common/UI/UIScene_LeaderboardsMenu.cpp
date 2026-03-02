@@ -9,7 +9,7 @@
 #define PLAYER_ONLINE_TIMER_TIME 100
 
 // if the value is greater than 32000, it's an xzp icon that needs displayed, rather than the game icon
-const int UIScene_LeaderboardsMenu::TitleIcons[UIScene_LeaderboardsMenu::NUM_LEADERBOARDS][7] =
+const int UIScene_LeaderboardsMenu::TitleIcons[UIScene_LeaderboardsMenu::NUM_LEADERBOARDS][7] = 
 {
 	{ UIControl_LeaderboardList::e_ICON_TYPE_WALKED,		UIControl_LeaderboardList::e_ICON_TYPE_FALLEN,		Item::minecart_Id,		Item::boat_Id,					NULL },
 	{ Tile::dirt_Id,		Tile::stoneBrick_Id,	Tile::sand_Id,			Tile::rock_Id,			Tile::gravel_Id,		Tile::clay_Id,			Tile::obsidian_Id },
@@ -36,7 +36,7 @@ const UIScene_LeaderboardsMenu::LeaderboardDescriptor UIScene_LeaderboardsMenu::
 		UIScene_LeaderboardsMenu::LeaderboardDescriptor( 6, false, IDS_LEADERBOARD_FARMING_HARD), // Farming Hard
 	},
 	{
-		UIScene_LeaderboardsMenu::LeaderboardDescriptor( 0, false, -1), //
+		UIScene_LeaderboardsMenu::LeaderboardDescriptor( 0, false, -1), // 
 		UIScene_LeaderboardsMenu::LeaderboardDescriptor( 7, false, IDS_LEADERBOARD_KILLS_EASY), // Kills Easy
 		UIScene_LeaderboardsMenu::LeaderboardDescriptor( 7, false, IDS_LEADERBOARD_KILLS_NORMAL), // Kills Normal
 		UIScene_LeaderboardsMenu::LeaderboardDescriptor( 7, false, IDS_LEADERBOARD_KILLS_HARD), // Kills Hard
@@ -132,7 +132,7 @@ void UIScene_LeaderboardsMenu::updateTooltips()
 						selection < (GetEntryStartIndex() + m_leaderboard.m_entries.size()) )
 					{
 #ifdef _XBOX
-						if( (m_leaderboard.m_entries[selection - (m_leaderboard.m_entryStartIndex-1)].m_bFriend==false)
+						if( (m_leaderboard.m_entries[selection - (m_leaderboard.m_entryStartIndex-1)].m_bFriend==false) 
 							&&  (m_leaderboard.m_entries[selection - (m_leaderboard.m_entryStartIndex-1)].m_bRequestedFriend==false))
 #endif
 						{
@@ -267,7 +267,7 @@ void UIScene_LeaderboardsMenu::handleInput(int iPad, int key, bool repeat, bool 
 
 				SetLeaderboardHeader();
 
-				ReadStats(-1);
+				ReadStats(-1);	
 				ui.PlayUISFX(eSFX_Press);
 			}
 			handled = true;
@@ -284,7 +284,7 @@ void UIScene_LeaderboardsMenu::handleInput(int iPad, int key, bool repeat, bool 
 
 				if( m_leaderboard.m_totalEntryCount <= 10 )
 					break;
-
+								
 				sendInputToMovie(key, repeat, pressed, released);
 
 #if 0
@@ -441,7 +441,7 @@ void UIScene_LeaderboardsMenu::ReadStats(int startIndex)
 	}
 
 	//app.DebugPrintf("Requesting stats read %d - %d - %d\n", m_currentLeaderboard, startIndex == -1 ? m_currentFilter : LeaderboardManager::eFM_TopRank, m_currentDifficulty);
-
+	
 	LeaderboardManager::EFilterMode filtermode;
 	if (	m_currentFilter == LeaderboardManager::eFM_MyScore
 		||	m_currentFilter == LeaderboardManager::eFM_TopRank )
@@ -457,8 +457,8 @@ void UIScene_LeaderboardsMenu::ReadStats(int startIndex)
 	switch (filtermode)
 	{
 	case LeaderboardManager::eFM_TopRank:
-		LeaderboardManager::Instance()->ReadStats_TopRank(	this,
-			m_currentDifficulty, (LeaderboardManager::EStatsType) m_currentLeaderboard,
+		LeaderboardManager::Instance()->ReadStats_TopRank(	this, 
+			m_currentDifficulty, (LeaderboardManager::EStatsType) m_currentLeaderboard, 
 			m_newEntryIndex, m_newReadSize
 			);
 		break;
@@ -529,7 +529,7 @@ bool UIScene_LeaderboardsMenu::RetrieveStats()
 	{
 		m_leaderboard.m_totalEntryCount		= NUM_ENTRIES;
 		m_leaderboard.m_numColumns			= LEADERBOARD_DESCRIPTORS[m_currentLeaderboard][m_currentDifficulty].m_columnCount;
-
+	
 		//For each entry in the leaderboard
 		for(unsigned int entryIndex=0; entryIndex < NUM_ENTRIES; entryIndex++)
 		{
@@ -539,7 +539,7 @@ bool UIScene_LeaderboardsMenu::RetrieveStats()
 			m_leaderboard.m_entries[entryIndex].m_row = entryIndex;
 			m_leaderboard.m_entries[entryIndex].m_rank = entryIndex+1;
 			swprintf(m_leaderboard.m_entries[entryIndex].m_wcRank, 12, L"12345678");//(int)m_leaderboard.m_entries[entryIndex].m_rank);
-
+					
 			swprintf(m_leaderboard.m_entries[entryIndex].m_gamerTag, 17, L"WWWWWWWWWWWWWWWW");
 
 			//m_leaderboard.m_entries[entryIndex].m_locale = (entryIndex % 37) + 1;
@@ -598,7 +598,7 @@ bool UIScene_LeaderboardsMenu::RetrieveStats()
 			//LeaderboardManager::Instance()->SetStatsRetrieved(false);
 			return false;
 		}
-
+		
 		m_leaderboard.m_numColumns = m_stats.m_queries[0].m_statsSize;
 
 		for( unsigned int entryIndex=0 ; entryIndex < m_newEntriesCount; ++entryIndex )
@@ -676,7 +676,7 @@ bool UIScene_LeaderboardsMenu::RetrieveStats()
 
 			insertPosition++;
 		}
-
+			
 		if (deleteFront)
 		{
 			// Delete front x entries
@@ -865,7 +865,7 @@ void UIScene_LeaderboardsMenu::PopulateLeaderboard(LeaderboardManager::eStatsRet
 		m_labelInfo.setVisible( false );
 
 		m_listEntries.initLeaderboard(m_newSel, m_leaderboard.m_totalEntryCount, LEADERBOARD_DESCRIPTORS[m_currentLeaderboard][m_currentDifficulty].m_columnCount);
-
+		
 		int startIndex = m_newEntryIndex;
 		int entryCount = m_newEntriesCount;
 
@@ -874,7 +874,7 @@ void UIScene_LeaderboardsMenu::PopulateLeaderboard(LeaderboardManager::eStatsRet
 			bool isLast = i == ((startIndex + entryCount) - 1);
 
 			int idsErrorMessage	= m_leaderboard.m_entries[i].m_idsErrorMessage;
-
+			
 			if (idsErrorMessage > 0)
 			{
 				m_listEntries.addDataSet(
@@ -882,7 +882,7 @@ void UIScene_LeaderboardsMenu::PopulateLeaderboard(LeaderboardManager::eStatsRet
 					m_leaderboard.m_entries[i].m_row,
 					m_leaderboard.m_entries[i].m_rank,
 					m_leaderboard.m_entries[i].m_gamerTag,
-
+				
 					true, // 4J-JEV: Has error message to display.
 
 					app.GetString(idsErrorMessage),
@@ -896,9 +896,9 @@ void UIScene_LeaderboardsMenu::PopulateLeaderboard(LeaderboardManager::eStatsRet
 					m_leaderboard.m_entries[i].m_row,
 					m_leaderboard.m_entries[i].m_rank,
 					m_leaderboard.m_entries[i].m_gamerTag,
-
-					// 4J-TomK | The bDisplayMessage Flag defines if Leaderboard Data should be
-					// displayed (false) or if a specific message (true - when data is private for example)
+				
+					// 4J-TomK | The bDisplayMessage Flag defines if Leaderboard Data should be 
+					// displayed (false) or if a specific message (true - when data is private for example) 
 					// should be displayed. The message itself should be passed on in col0!
 					false,
 
@@ -955,7 +955,7 @@ int UIScene_LeaderboardsMenu::SetLeaderboardTitleIcons()
 			m_listEntries.setColumnIcon(i,TitleIcons[m_currentLeaderboard][i]);
 		}
 	}
-
+		
 	return iValidIcons;
 }
 
@@ -969,7 +969,7 @@ void UIScene_LeaderboardsMenu::customDraw(IggyCustomDrawCallbackRegion *region)
 	}
 	else
 	{
-		std::shared_ptr<ItemInstance> item = std::shared_ptr<ItemInstance>( new ItemInstance(TitleIcons[m_currentLeaderboard][slotId], 1, 0) );
+		shared_ptr<ItemInstance> item = shared_ptr<ItemInstance>( new ItemInstance(TitleIcons[m_currentLeaderboard][slotId], 1, 0) );
 		customDrawSlotControl(region,m_iPad,item,1.0f,false,false);
 	}
 }

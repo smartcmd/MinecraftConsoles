@@ -155,12 +155,12 @@ Routine Description:
     Register the provider with ETW+.
 
 Arguments:
-
+    
     None
 
 Remarks:
 
-    ERROR_SUCCESS if success or if the provider was already registered.
+    ERROR_SUCCESS if success or if the provider was already registered. 
     Otherwise, an error code.
 
 --*/
@@ -175,7 +175,7 @@ Routine Description:
 Arguments:
             None
 Remarks:
-    ERROR_SUCCESS if success or if the provider was not registered.
+    ERROR_SUCCESS if success or if the provider was not registered. 
     Otherwise, an error code.
 --*/
 #define EventUnregisterXBLA_149E11AE() EtxUnregister(&XBLA_149E11AEProvider, &XBLA_149E11AEHandle)
@@ -265,7 +265,7 @@ EventWriteBanLevel(__in_opt PCWSTR UserId, __in LPCGUID PlayerSessionId, __in co
 //
 __inline
 ULONG
-EventWriteBlockBroken(__in_opt PCWSTR UserId, __in LPCGUID PlayerSessionId, __in const signed int DifficultyLevelId, __in const signed int BlockId, __in const signed int BlockAux, __in const uint64_t BlockCount)
+EventWriteBlockBroken(__in_opt PCWSTR UserId, __in LPCGUID PlayerSessionId, __in const signed int DifficultyLevelId, __in const signed int BlockId, __in const signed int BlockAux, __in const unsigned __int64 BlockCount)
 {
 #define ARGUMENT_COUNT_XBLA_149E11AE_BlockBroken 7
 
@@ -289,7 +289,7 @@ EventWriteBlockBroken(__in_opt PCWSTR UserId, __in LPCGUID PlayerSessionId, __in
 //
 __inline
 ULONG
-EventWriteBlockPlaced(__in_opt PCWSTR UserId, __in LPCGUID PlayerSessionId, __in const signed int DifficultyLevelId, __in const signed int BlockId, __in const signed int BlockAux, __in const uint64_t BlockCount)
+EventWriteBlockPlaced(__in_opt PCWSTR UserId, __in LPCGUID PlayerSessionId, __in const signed int DifficultyLevelId, __in const signed int BlockId, __in const signed int BlockAux, __in const unsigned __int64 BlockCount)
 {
 #define ARGUMENT_COUNT_XBLA_149E11AE_BlockPlaced 7
 
@@ -376,7 +376,7 @@ EventWriteGameProgress(__in_opt PCWSTR UserId, __in LPCGUID PlayerSessionId, __i
 //
 __inline
 ULONG
-EventWriteIncDistanceTravelled(__in_opt PCWSTR UserId, __in LPCGUID PlayerSessionId, __in const signed int DifficultyLevelId, __in const uint64_t Distance, __in const signed int TravelMethodId)
+EventWriteIncDistanceTravelled(__in_opt PCWSTR UserId, __in LPCGUID PlayerSessionId, __in const signed int DifficultyLevelId, __in const unsigned __int64 Distance, __in const signed int TravelMethodId)
 {
 #define ARGUMENT_COUNT_XBLA_149E11AE_IncDistanceTravelled 6
 
@@ -399,7 +399,7 @@ EventWriteIncDistanceTravelled(__in_opt PCWSTR UserId, __in LPCGUID PlayerSessio
 //
 __inline
 ULONG
-EventWriteIncTimePlayed(__in_opt PCWSTR UserId, __in LPCGUID PlayerSessionId, __in const signed int DifficultyLevelId, __in const uint64_t TimePlayed)
+EventWriteIncTimePlayed(__in_opt PCWSTR UserId, __in LPCGUID PlayerSessionId, __in const signed int DifficultyLevelId, __in const unsigned __int64 TimePlayed)
 {
 #define ARGUMENT_COUNT_XBLA_149E11AE_IncTimePlayed 5
 
@@ -570,7 +570,7 @@ EventWriteLevelStart(__in_opt PCWSTR UserId, __in LPCGUID PlayerSessionId, __in 
 //
 __inline
 ULONG
-EventWriteMcItemAcquired(__in_opt PCWSTR UserId, __in const signed int SectionId, __in LPCGUID PlayerSessionId, __in_opt PCWSTR MultiplayerCorrelationId, __in const signed int GameplayModeId, __in const signed int DifficultyLevelId, __in const signed int ItemId, __in const signed int AcquisitionMethodId, __in const float LocationX, __in const float LocationY, __in const float LocationZ, __in const signed int ItemAux, __in const uint64_t ItemCount)
+EventWriteMcItemAcquired(__in_opt PCWSTR UserId, __in const signed int SectionId, __in LPCGUID PlayerSessionId, __in_opt PCWSTR MultiplayerCorrelationId, __in const signed int GameplayModeId, __in const signed int DifficultyLevelId, __in const signed int ItemId, __in const signed int AcquisitionMethodId, __in const float LocationX, __in const float LocationY, __in const float LocationZ, __in const signed int ItemAux, __in const unsigned __int64 ItemCount)
 {
 #define ARGUMENT_COUNT_XBLA_149E11AE_McItemAcquired 14
 
@@ -601,7 +601,7 @@ EventWriteMcItemAcquired(__in_opt PCWSTR UserId, __in const signed int SectionId
 //
 __inline
 ULONG
-EventWriteMcItemUsed(__in_opt PCWSTR UserId, __in const signed int SectionId, __in LPCGUID PlayerSessionId, __in_opt PCWSTR MultiplayerCorrelationId, __in const signed int GameplayModeId, __in const signed int DifficultyLevelId, __in const signed int ItemId, __in const float LocationX, __in const float LocationY, __in const float LocationZ, __in const signed int ItemAux, __in const uint64_t ItemCount, __in const signed int Hunger)
+EventWriteMcItemUsed(__in_opt PCWSTR UserId, __in const signed int SectionId, __in LPCGUID PlayerSessionId, __in_opt PCWSTR MultiplayerCorrelationId, __in const signed int GameplayModeId, __in const signed int DifficultyLevelId, __in const signed int ItemId, __in const float LocationX, __in const float LocationY, __in const float LocationZ, __in const signed int ItemAux, __in const unsigned __int64 ItemCount, __in const signed int Hunger)
 {
 #define ARGUMENT_COUNT_XBLA_149E11AE_McItemUsed 14
 

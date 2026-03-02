@@ -12,7 +12,7 @@ HoeItem::HoeItem(int id, const Tier *tier) : Item(id)
 	setMaxDamage(tier->getUses());
 }
 
-bool HoeItem::useOn(std::shared_ptr<ItemInstance> instance, std::shared_ptr<Player> player, Level *level, int x, int y, int z, int face, float clickX, float clickY, float clickZ, bool bTestUseOnOnly)
+bool HoeItem::useOn(shared_ptr<ItemInstance> instance, shared_ptr<Player> player, Level *level, int x, int y, int z, int face, float clickX, float clickY, float clickZ, bool bTestUseOnOnly)
 {
 	if (!player->mayBuild(x, y, z)) return false;
 
@@ -23,7 +23,7 @@ bool HoeItem::useOn(std::shared_ptr<ItemInstance> instance, std::shared_ptr<Play
 	int above = level->getTile(x, y + 1, z);
 
 	// 4J-PB - missing parentheses
-	if (face != 0 && above == 0 && (targetType == Tile::grass_Id || targetType == Tile::dirt_Id))
+	if (face != 0 && above == 0 && (targetType == Tile::grass_Id || targetType == Tile::dirt_Id)) 
 	{
 		if(!bTestUseOnOnly)
 		{
@@ -40,7 +40,7 @@ bool HoeItem::useOn(std::shared_ptr<ItemInstance> instance, std::shared_ptr<Play
 	return false;
 }
 
-bool HoeItem::isHandEquipped()
+bool HoeItem::isHandEquipped() 
 {
 	return true;
 }

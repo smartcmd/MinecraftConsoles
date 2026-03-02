@@ -347,7 +347,7 @@ void VillagePieces::VillagePiece::spawnVillagers(Level *level, BoundingBox *chun
 		{
 			spawnedVillagerCount++;
 
-			std::shared_ptr<Villager> villager = std::shared_ptr<Villager>(new Villager(level, getVillagerProfession(i)));
+			shared_ptr<Villager> villager = shared_ptr<Villager>(new Villager(level, getVillagerProfession(i)));
 			villager->moveTo(worldX + 0.5, worldY, worldZ + 0.5, 0, 0);
 			level->addEntity(villager);
 		}
@@ -620,14 +620,14 @@ void VillagePieces::StraightRoad::addChildren(StructurePiece *startPiece, list<S
 		{
 		case Direction::NORTH:
 			generateAndAddRoadPiece((StartPiece *) startPiece, pieces, random, boundingBox->x1 + 1, boundingBox->y0, boundingBox->z0, Direction::EAST, getGenDepth());
-			break;
-		case Direction::SOUTH:
+			break;				
+		case Direction::SOUTH:	
 			generateAndAddRoadPiece((StartPiece *) startPiece, pieces, random, boundingBox->x1 + 1, boundingBox->y0, boundingBox->z1 - 2, Direction::EAST, getGenDepth());
-			break;
-		case Direction::EAST:
+			break;				
+		case Direction::EAST:	
 			generateAndAddRoadPiece((StartPiece *) startPiece, pieces, random, boundingBox->x1 - 2, boundingBox->y0, boundingBox->z1 + 1, Direction::SOUTH, getGenDepth());
-			break;
-		case Direction::WEST:
+			break;				
+		case Direction::WEST:	
 			generateAndAddRoadPiece((StartPiece *) startPiece, pieces, random, boundingBox->x0, boundingBox->y0, boundingBox->z1 + 1, Direction::SOUTH, getGenDepth());
 			break;
 		}
@@ -914,7 +914,7 @@ bool VillagePieces::SmallTemple::postProcess(Level *level, Random *random, Bound
 	}
 
 
-	for (int z = 0; z < depth; z++)
+	for (int z = 0; z < depth; z++) 
 	{
 		for (int x = 0; x < width; x++)
 		{

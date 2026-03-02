@@ -36,13 +36,13 @@ void ControlledByPlayerGoal::stop()
 
 bool ControlledByPlayerGoal::canUse()
 {
-	std::shared_ptr<Player> player = std::dynamic_pointer_cast<Player>( mob->rider.lock() );
+	shared_ptr<Player> player = dynamic_pointer_cast<Player>( mob->rider.lock() );
 	return mob->isAlive() && player && (boosting || mob->canBeControlledByRider());
 }
 
 void ControlledByPlayerGoal::tick()
 {
-	std::shared_ptr<Player> player = std::dynamic_pointer_cast<Player>(mob->rider.lock());
+	shared_ptr<Player> player = dynamic_pointer_cast<Player>(mob->rider.lock());
 	PathfinderMob *pig = (PathfinderMob *)mob;
 
 	float yrd = Mth::wrapDegrees(player->yRot - mob->yRot) * 0.5f;
@@ -116,7 +116,7 @@ void ControlledByPlayerGoal::tick()
 
 	if (!player->abilities.instabuild && speed >= maxSpeed * 0.5f && mob->getRandom()->nextFloat() < 0.006f && !boosting)
 	{
-		std::shared_ptr<ItemInstance> carriedItem = player->getCarriedItem();
+		shared_ptr<ItemInstance> carriedItem = player->getCarriedItem();
 
 		if (carriedItem != NULL && carriedItem->id == Item::carrotOnAStick_Id)
 		{
@@ -124,7 +124,7 @@ void ControlledByPlayerGoal::tick()
 
 			if (carriedItem->count == 0)
 			{
-				std::shared_ptr<ItemInstance> replacement = std::shared_ptr<ItemInstance>(new ItemInstance(Item::fishingRod));
+				shared_ptr<ItemInstance> replacement = shared_ptr<ItemInstance>(new ItemInstance(Item::fishingRod));
 				replacement->setTag(carriedItem->tag);
 				player->inventory->items[player->inventory->selected] = replacement;
 			}

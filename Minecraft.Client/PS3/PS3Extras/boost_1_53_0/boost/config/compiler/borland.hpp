@@ -155,7 +155,7 @@
 #  define BOOST_NO_CXX11_DECLTYPE
 #  define BOOST_NO_CXX11_EXPLICIT_CONVERSION_OPERATORS
 #  define BOOST_NO_CXX11_EXTERN_TEMPLATE
-#  define BOOST_NO_CXX11_RVALUE_REFERENCES
+#  define BOOST_NO_CXX11_RVALUE_REFERENCES 
 #  define BOOST_NO_CXX11_SCOPED_ENUMS
 #  define BOOST_NO_CXX11_STATIC_ASSERT
 #else
@@ -221,7 +221,7 @@
 #include <float.h>
 #endif
 //
-// int64_t:
+// __int64:
 //
 #if (__BORLANDC__ >= 0x530) && !defined(__STRICT_ANSI__)
 #  define BOOST_HAS_MS_INT64
@@ -242,7 +242,7 @@
 // all versions support __declspec:
 //
 #if defined(__STRICT_ANSI__)
-// config/platform/win32.hpp will define BOOST_SYMBOL_EXPORT, etc., unless already defined
+// config/platform/win32.hpp will define BOOST_SYMBOL_EXPORT, etc., unless already defined  
 #  define BOOST_SYMBOL_EXPORT
 #endif
 //

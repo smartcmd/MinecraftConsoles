@@ -9,11 +9,11 @@ EnderCrystalRenderer::EnderCrystalRenderer()
 	this->shadowRadius = 0.5f;
 }
 
-void EnderCrystalRenderer::render(std::shared_ptr<Entity> _crystal, double x, double y, double z, float rot, float a)
+void EnderCrystalRenderer::render(shared_ptr<Entity> _crystal, double x, double y, double z, float rot, float a)
 {
-	// 4J - original version used generics and thus had an input parameter of type EnderCrystal rather than std::shared_ptr<Entity>  we have here -
+	// 4J - original version used generics and thus had an input parameter of type EnderCrystal rather than shared_ptr<Entity>  we have here - 
 	// do some casting around instead
-	std::shared_ptr<EnderCrystal> crystal = std::dynamic_pointer_cast<EnderCrystal>(_crystal);
+	shared_ptr<EnderCrystal> crystal = dynamic_pointer_cast<EnderCrystal>(_crystal);
 	if (currentModel != EnderCrystalModel::MODEL_ID)
 	{
 		model = new EnderCrystalModel(0);

@@ -20,7 +20,7 @@ public:
 private:
 	int health;
 	int value;
-	std::shared_ptr<Player> followingPlayer;
+	shared_ptr<Player> followingPlayer;
 	int followingTime;
 
 	void _init();
@@ -49,7 +49,7 @@ public:
 	virtual bool hurt(DamageSource *source, int damage);
 	virtual void addAdditonalSaveData(CompoundTag *entityTag);
 	virtual void readAdditionalSaveData(CompoundTag *tag);
-	virtual void playerTouch(std::shared_ptr<Player> player);
+	virtual void playerTouch(shared_ptr<Player> player);
 	int getValue();
 	int getIcon();
 

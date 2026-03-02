@@ -39,9 +39,9 @@ bool RotateHeadPacket::canBeInvalidated()
 	return true;
 }
 
-bool RotateHeadPacket::isInvalidatedBy(std::shared_ptr<Packet> packet)
+bool RotateHeadPacket::isInvalidatedBy(shared_ptr<Packet> packet)
 {
-	std::shared_ptr<RotateHeadPacket> target = std::dynamic_pointer_cast<RotateHeadPacket>(packet);
+	shared_ptr<RotateHeadPacket> target = dynamic_pointer_cast<RotateHeadPacket>(packet);
 	return target->id == id;
 }
 

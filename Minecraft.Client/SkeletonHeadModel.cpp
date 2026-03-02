@@ -27,7 +27,7 @@ SkeletonHeadModel::SkeletonHeadModel(int u, int v, int tw, int th)
 	_init(u,v,tw,th);
 }
 
-void SkeletonHeadModel::render(std::shared_ptr<Entity> entity, float time, float r, float bob, float yRot, float xRot, float scale, bool usecompiled)
+void SkeletonHeadModel::render(shared_ptr<Entity> entity, float time, float r, float bob, float yRot, float xRot, float scale, bool usecompiled)
 {
 	setupAnim(time, r, bob, yRot, xRot, scale);
 

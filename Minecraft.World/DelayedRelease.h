@@ -10,11 +10,11 @@ public:
 	virtual eINSTANCEOF GetType() { return eTYPE_DELAYEDRELEASE; }
 
 private:
-	std::shared_ptr<Entity> toRelease;
+	shared_ptr<Entity> toRelease;
 	int delay;
 
 public:
-	DelayedRelease(Level *level, std::shared_ptr<Entity> toRelease, int delay);
+	DelayedRelease(Level *level, shared_ptr<Entity> toRelease, int delay);
 
 protected:
 	virtual bool makeStepSound();

@@ -44,7 +44,7 @@ private:
 	const bool generateStructures;
 
 public:
-	CustomLevelSource(Level *level, int64_t seed, bool generateStructures);
+	CustomLevelSource(Level *level, __int64 seed, bool generateStructures);
 	~CustomLevelSource();
 
 public:
@@ -75,5 +75,5 @@ public:
 
 public:
 	virtual vector<Biome::MobSpawnerData *> *getMobsAt(MobCategory *mobCategory, int x, int y, int z);
-	virtual TilePos *findNearestMapFeature(Level *level, const wstring& featureName, int x, int y, int z);
+	virtual TilePos *findNearestMapFeature(Level *level, const wstring& featureName, int x, int y, int z); 
 };

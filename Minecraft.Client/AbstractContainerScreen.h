@@ -32,7 +32,7 @@ protected:
     virtual void keyPressed(wchar_t eventCharacter, int eventKey);
 public:
 	virtual void removed();
-    virtual void slotsChanged(std::shared_ptr<Container> container);
+    virtual void slotsChanged(shared_ptr<Container> container);
     virtual bool isPauseScreen();
     virtual void tick();
 };

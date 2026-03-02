@@ -44,8 +44,8 @@
 CGameNetworkManager g_NetworkManager;
 CPlatformNetworkManager *CGameNetworkManager::s_pPlatformNetworkManager;
 
-int64_t CGameNetworkManager::messageQueue[512];
-int64_t CGameNetworkManager::byteQueue[512];
+__int64 CGameNetworkManager::messageQueue[512];
+__int64 CGameNetworkManager::byteQueue[512];
 int CGameNetworkManager::messageQueuePos = 0;
 
 CGameNetworkManager::CGameNetworkManager()
@@ -74,7 +74,7 @@ void CGameNetworkManager::Initialise()
 #else
 	s_pPlatformNetworkManager = new CPlatformNetworkManagerStub();
 #endif
-	s_pPlatformNetworkManager->Initialise( this, flagIndexSize );
+	s_pPlatformNetworkManager->Initialise( this, flagIndexSize );		
 	m_bNetworkThreadRunning = false;
 	m_bInitialised = true;
 }
@@ -104,7 +104,7 @@ void CGameNetworkManager::DoWork()
 				if((g_NetworkManager.GetLockedProfile()!=-1) && iPrimaryPlayer!=-1 && bConnected == false && g_NetworkManager.IsInSession() )
 				{
 					app.SetAction(iPrimaryPlayer,eAppAction_EthernetDisconnected);
-				}
+				}		
 			}
 			break;
 		case XN_LIVE_INVITE_ACCEPTED:
@@ -161,12 +161,12 @@ bool CGameNetworkManager::_RunNetworkGame(LPVOID lpParameter)
 
 		success = s_pPlatformNetworkManager->_RunNetworkGame();
 		if(!success)
-		{
+		{			
 			app.SetAction(ProfileManager.GetPrimaryPad(),eAppAction_ExitWorld,(void *)TRUE);
 			return true;
 		}
 	}
-
+	
 	if( g_NetworkManager.IsLeavingGame() ) return false;
 
 	app.SetGameStarted(true);
@@ -188,12 +188,12 @@ bool	CGameNetworkManager::StartNetworkGame(Minecraft *minecraft, LPVOID lpParame
 	ProfileManager.SetDeferredSignoutEnabled(true);
 #endif
 
-	int64_t seed = 0;
+	__int64 seed = 0;
 	if(lpParameter != NULL)
 	{
 		NetworkGameInitData *param = (NetworkGameInitData *)lpParameter;
 		seed = param->seed;
-
+		
 		app.setLevelGenerationOptions(param->levelGen);
 		if(param->levelGen != NULL)
 		{
@@ -204,12 +204,12 @@ bool	CGameNetworkManager::StartNetworkGame(Minecraft *minecraft, LPVOID lpParame
 			}
 			else
 			{
-				param->seed = seed = app.getLevelGenerationOptions()->getLevelSeed();
+				param->seed = seed = app.getLevelGenerationOptions()->getLevelSeed();					
 			}
 		}
 	}
 
-	static int64_t sseed = seed;	// Create static version so this will be valid until next call to this function & whilst thread is running
+	static __int64 sseed = seed;	// Create static version so this will be valid until next call to this function & whilst thread is running
 	ServerStoppedCreate(false);
 	if( g_NetworkManager.IsHost() )
 	{
@@ -227,7 +227,7 @@ bool	CGameNetworkManager::StartNetworkGame(Minecraft *minecraft, LPVOID lpParame
 		ServerReadyWait();
 		ServerReadyDestroy();
 
-		if( MinecraftServer::serverHalted() )
+		if( MinecraftServer::serverHalted() ) 
 			return false;
 
 //		printf("Server ready to go!\n");
@@ -238,7 +238,7 @@ bool	CGameNetworkManager::StartNetworkGame(Minecraft *minecraft, LPVOID lpParame
 	}
 
 #ifndef _XBOX
-	Minecraft *pMinecraft = Minecraft::GetInstance();
+	Minecraft *pMinecraft = Minecraft::GetInstance();	
 	// Make sure that we have transitioned through any joining/creating stages and are actually playing the game, so that we know the players should be valid
 	bool changedMessage = false;
 	while(!IsReadyToPlayOrIdle())
@@ -316,7 +316,7 @@ bool	CGameNetworkManager::StartNetworkGame(Minecraft *minecraft, LPVOID lpParame
 		return false;
 	}
 
-	connection->send( std::shared_ptr<PreLoginPacket>( new PreLoginPacket(minecraft->user->name) ) );
+	connection->send( shared_ptr<PreLoginPacket>( new PreLoginPacket(minecraft->user->name) ) );
 
 	// Tick connection until we're ready to go. The stages involved in this are:
 	// (1) Creating the ClientConnection sends a prelogin packet to the server
@@ -403,7 +403,7 @@ bool	CGameNetworkManager::StartNetworkGame(Minecraft *minecraft, LPVOID lpParame
 			// Open the socket on the server end to accept incoming data
 			Socket::addIncomingSocket(socket);
 
-			connection->send( std::shared_ptr<PreLoginPacket>( new PreLoginPacket(convStringToWstring( ProfileManager.GetGamertag(idx) )) ) );
+			connection->send( shared_ptr<PreLoginPacket>( new PreLoginPacket(convStringToWstring( ProfileManager.GetGamertag(idx) )) ) );
 
 			createdConnections.push_back( connection );
 
@@ -458,7 +458,7 @@ bool	CGameNetworkManager::StartNetworkGame(Minecraft *minecraft, LPVOID lpParame
 		return false;
 	}
 
-
+	
 	if(g_NetworkManager.IsLeavingGame() || !IsInSession() )
 	{
 		for(AUTO_VAR(it, createdConnections.begin()); it < createdConnections.end(); ++it)
@@ -754,7 +754,7 @@ int CGameNetworkManager::JoinFromInvite_SignInReturned(void *pParam,bool bContin
 				ProfileManager.SetPrimaryPad(iPad);
 
 				g_NetworkManager.SetLocalGame(false);
-
+			
 				// If the player was signed in before selecting play, we'll not have read the profile yet, so query the sign-in status to get this to happen
 				ProfileManager.QuerySigninStatus();
 
@@ -770,7 +770,7 @@ int CGameNetworkManager::JoinFromInvite_SignInReturned(void *pParam,bool bContin
 							pInviteInfo );      // pInviteInfo
 				if( !success )
 				{
-					app.DebugPrintf( "Failed joining game from invite\n" );
+					app.DebugPrintf( "Failed joining game from invite\n" ); 
 				}
 			}
 		}
@@ -816,7 +816,7 @@ int CGameNetworkManager::RunNetworkGameThreadProc( void* lpParameter )
 	Compression::UseDefaultThreadStorage();
 	Tile::CreateNewThreadStorage();
 	IntCache::CreateNewThreadStorage();
-
+	
 	g_NetworkManager.m_bNetworkThreadRunning = true;
 	bool success = g_NetworkManager._RunNetworkGame(lpParameter);
 	g_NetworkManager.m_bNetworkThreadRunning = false;
@@ -828,7 +828,7 @@ int CGameNetworkManager::RunNetworkGameThreadProc( void* lpParameter )
 			Sleep(1);
 		}
 		ui.CleanUpSkinReload();
-		if(app.GetDisconnectReason() == DisconnectPacket::eDisconnect_None)
+		if(app.GetDisconnectReason() == DisconnectPacket::eDisconnect_None) 
 		{
 			app.SetDisconnectReason( DisconnectPacket::eDisconnect_ConnectionCreationFailed );
 		}
@@ -850,7 +850,7 @@ int CGameNetworkManager::RunNetworkGameThreadProc( void* lpParameter )
 
 int CGameNetworkManager::ServerThreadProc( void* lpParameter )
 {
-	int64_t seed = 0;
+	__int64 seed = 0;
 	if(lpParameter != NULL)
 	{
 		NetworkGameInitData *param = (NetworkGameInitData *)lpParameter;
@@ -861,7 +861,7 @@ int CGameNetworkManager::ServerThreadProc( void* lpParameter )
 	SetThreadName(-1, "Minecraft Server thread");
 	AABB::CreateNewThreadStorage();
 	Vec3::CreateNewThreadStorage();
-	IntCache::CreateNewThreadStorage();
+	IntCache::CreateNewThreadStorage();	
 	Compression::UseDefaultThreadStorage();
 	OldChunkStorage::UseDefaultThreadStorage();
 	Entity::useSmallIds();
@@ -869,7 +869,7 @@ int CGameNetworkManager::ServerThreadProc( void* lpParameter )
 	Tile::CreateNewThreadStorage();
 
 	MinecraftServer::main(seed, lpParameter); //saveData, app.GetGameHostOption(eGameHostOption_All));
-
+	
 	Tile::ReleaseThreadStorage();
 	AABB::ReleaseThreadStorage();
 	Vec3::ReleaseThreadStorage();
@@ -926,7 +926,7 @@ int	CGameNetworkManager::ExitAndJoinFromInviteThreadProc( void* lpParam )
 // The pair of methods MustSignInReturned_0 & PSNSignInReturned_0 handle this
 int	CGameNetworkManager::MustSignInReturned_0(void *pParam,int iPad,C4JStorage::EMessageResult result)
 {
-	if(result==C4JStorage::EMessage_ResultAccept)
+	if(result==C4JStorage::EMessage_ResultAccept) 
 	{
 #ifdef __PS3__
 		SQRNetworkManager_PS3::AttemptPSNSignIn(&CGameNetworkManager::PSNSignInReturned_0, pParam,true);
@@ -986,7 +986,7 @@ int CGameNetworkManager::PSNSignInReturned_0(void* pParam, bool bContinue, int i
 // The pair of methods MustSignInReturned_1 & PSNSignInReturned_1 handle this
 int	CGameNetworkManager::MustSignInReturned_1(void *pParam,int iPad,C4JStorage::EMessageResult result)
 {
-	if(result==C4JStorage::EMessage_ResultAccept)
+	if(result==C4JStorage::EMessage_ResultAccept) 
 	{
 #ifdef __PS3__
 		SQRNetworkManager_PS3::AttemptPSNSignIn(&CGameNetworkManager::PSNSignInReturned_1, pParam,true);
@@ -1018,7 +1018,7 @@ int CGameNetworkManager::PSNSignInReturned_1(void* pParam, bool bContinue, int i
 #elif defined __ORBIS__
 			// TODO: No Orbis equivalent (should there be?)
 #endif
-
+			
 		}
 	}
 
@@ -1043,7 +1043,7 @@ int CGameNetworkManager::ChangeSessionTypeThreadProc( void* lpParam )
 	Vec3::UseDefaultThreadStorage();
 	Compression::UseDefaultThreadStorage();
 
-	Minecraft *pMinecraft = Minecraft::GetInstance();
+	Minecraft *pMinecraft = Minecraft::GetInstance();	
 	MinecraftServer *pServer = MinecraftServer::getInstance();
 
 #if defined(__PS3__) || defined(__ORBIS__) || defined __PSVITA__
@@ -1082,7 +1082,7 @@ int CGameNetworkManager::ChangeSessionTypeThreadProc( void* lpParam )
 		pMinecraft->progressRenderer->progressStartNoAbort( g_NetworkManager.CorrectErrorIDS(IDS_CONNECTION_LOST_LIVE_NO_EXIT) );
 		pMinecraft->progressRenderer->progressStage( IDS_PROGRESS_CONVERTING_TO_OFFLINE_GAME );
 	}
-
+	
 #else
 	pMinecraft->progressRenderer->progressStartNoAbort( g_NetworkManager.CorrectErrorIDS(IDS_CONNECTION_LOST_LIVE_NO_EXIT) );
 	pMinecraft->progressRenderer->progressStage( IDS_PROGRESS_CONVERTING_TO_OFFLINE_GAME );
@@ -1096,7 +1096,7 @@ int CGameNetworkManager::ChangeSessionTypeThreadProc( void* lpParam )
 
 	// wait for the server to be in a non-ticking state
 	pServer->m_serverPausedEvent->WaitForSignal(INFINITE);
-
+	
 #if defined(__PS3__) || defined(__ORBIS__) || defined __PSVITA__
 	// Swap these two messages around as one is too long to display at 480
 	pMinecraft->progressRenderer->progressStartNoAbort( IDS_PROGRESS_CONVERTING_TO_OFFLINE_GAME );
@@ -1134,7 +1134,7 @@ int CGameNetworkManager::ChangeSessionTypeThreadProc( void* lpParam )
 		PlayerList *players = pServer->getPlayers();
 		for(AUTO_VAR(it, players->players.begin()); it < players->players.end(); ++it)
 		{
-			std::shared_ptr<ServerPlayer> servPlayer = *it;
+			shared_ptr<ServerPlayer> servPlayer = *it;
 			if( servPlayer->connection->isLocal() && !servPlayer->connection->isGuest() )
 			{
 				servPlayer->connection->connection->getSocket()->setPlayer(NULL);
@@ -1158,7 +1158,7 @@ int CGameNetworkManager::ChangeSessionTypeThreadProc( void* lpParam )
 	{
 		Sleep(1);
 	}
-
+	
 	// Reset this flag as the we don't need to know that we only lost the room only from this point onwards, the behaviour is exactly the same
 	g_NetworkManager.m_bLastDisconnectWasLostRoomOnly = false;
 	g_NetworkManager.m_bFullSessionMessageOnNextSessionChange = false;
@@ -1189,7 +1189,7 @@ int CGameNetworkManager::ChangeSessionTypeThreadProc( void* lpParam )
 	{
 		Sleep(1);
 	}
-
+	
 	// Restore the network player of all the server players that are local
 	if( pServer != NULL )
 	{
@@ -1202,7 +1202,7 @@ int CGameNetworkManager::ChangeSessionTypeThreadProc( void* lpParam )
 				PlayerList *players = pServer->getPlayers();
 				for(AUTO_VAR(it, players->players.begin()); it < players->players.end(); ++it)
 				{
-					std::shared_ptr<ServerPlayer> servPlayer = *it;
+					shared_ptr<ServerPlayer> servPlayer = *it;
 					if( servPlayer->getXuid() == localPlayerXuid )
 					{
 						servPlayer->connection->connection->getSocket()->setPlayer( g_NetworkManager.GetLocalPlayerByUserIndex(index) );
@@ -1218,7 +1218,7 @@ int CGameNetworkManager::ChangeSessionTypeThreadProc( void* lpParam )
 			}
 		}
 	}
-
+	
 	pMinecraft->progressRenderer->progressStagePercentage(100);
 
 #ifndef _XBOX
@@ -1240,7 +1240,7 @@ int CGameNetworkManager::ChangeSessionTypeThreadProc( void* lpParam )
 #endif
 
 	// Start the game again
-	app.SetGameStarted(true);
+	app.SetGameStarted(true);				
 	app.SetXuiServerAction(ProfileManager.GetPrimaryPad(),eXuiServerAction_PauseServer,(void *)FALSE);
 	app.SetChangingSessionType(false);
 	app.SetReallyChangingSessionType(false);
@@ -1294,7 +1294,7 @@ void CGameNetworkManager::StateChange_AnyToJoining()
 	app.DebugPrintf("Disabling Guest Signin\n");
 	XEnableGuestSignin(FALSE);
 	Minecraft::GetInstance()->clearPendingClientTextureRequests();
-
+		
 	ConnectionProgressParams *param = new ConnectionProgressParams();
 	param->iPad = ProfileManager.GetPrimaryPad();
 	param->stringId = -1;
@@ -1342,7 +1342,7 @@ void CGameNetworkManager::StateChange_AnyToStarting()
 		completionData->type = e_ProgressCompletion_CloseAllPlayersUIScenes;
 		completionData->iPad = ProfileManager.GetPrimaryPad();
 		loadingParams->completionData = completionData;
-
+			
 		ui.NavigateToScene(ProfileManager.GetPrimaryPad(),eUIScene_FullscreenProgress, loadingParams);
 	}
 }
@@ -1391,7 +1391,7 @@ void CGameNetworkManager::CreateSocket( INetworkPlayer *pNetworkPlayer, bool loc
 	Minecraft *pMinecraft = Minecraft::GetInstance();
 
 	Socket *socket = NULL;
-	std::shared_ptr<MultiplayerLocalPlayer> mpPlayer = pMinecraft->localplayers[pNetworkPlayer->GetUserIndex()];
+	shared_ptr<MultiplayerLocalPlayer> mpPlayer = pMinecraft->localplayers[pNetworkPlayer->GetUserIndex()];
 	if( localPlayer && mpPlayer != NULL && mpPlayer->connection != NULL)
 	{
 		// If we already have a MultiplayerLocalPlayer here then we are doing a session type change
@@ -1428,7 +1428,7 @@ void CGameNetworkManager::CreateSocket( INetworkPlayer *pNetworkPlayer, bool loc
 
 			if( connection->createdOk )
 			{
-				connection->send( std::shared_ptr<PreLoginPacket>( new PreLoginPacket( pNetworkPlayer->GetOnlineName() ) ) );
+				connection->send( shared_ptr<PreLoginPacket>( new PreLoginPacket( pNetworkPlayer->GetOnlineName() ) ) );
 				pMinecraft->addPendingLocalConnection(idx, connection);
 			}
 			else
@@ -1463,7 +1463,7 @@ void CGameNetworkManager::PlayerJoining( INetworkPlayer *pNetworkPlayer )
 		bool multiplayer = g_NetworkManager.GetPlayerCount() > 1, localgame = g_NetworkManager.IsLocalGame();
 		for (int iPad=0; iPad<XUSER_MAX_COUNT; ++iPad)
 		{
-			INetworkPlayer *pNetworkPlayer = g_NetworkManager.GetLocalPlayerByUserIndex(iPad);
+			INetworkPlayer *pNetworkPlayer = g_NetworkManager.GetLocalPlayerByUserIndex(iPad);	
 			if (pNetworkPlayer == NULL)	continue;
 
 			app.SetRichPresenceContext(iPad,CONTEXT_GAME_STATE_BLANK);
@@ -1488,7 +1488,7 @@ void CGameNetworkManager::PlayerJoining( INetworkPlayer *pNetworkPlayer )
     else
     {
         if( !pNetworkPlayer->IsHost() )
-        {
+        {		
 			for(int idx = 0; idx < XUSER_MAX_COUNT; ++idx)
 			{
 				if(Minecraft::GetInstance()->localplayers[idx] != NULL)
@@ -1544,7 +1544,7 @@ void CGameNetworkManager::GameInviteReceived( int userIndex, const INVITE_INFO *
 	}
 
 	// Need to check we're signed in to PSN
-	bool isSignedInLive = true;
+	bool isSignedInLive = true;		
 	bool isLocalMultiplayerAvailable = app.IsLocalMultiplayerAvailable();
 	int iPadNotSignedInLive = -1;
 	for(unsigned int i = 0; i < XUSER_MAX_COUNT; i++)
@@ -1584,7 +1584,7 @@ void CGameNetworkManager::GameInviteReceived( int userIndex, const INVITE_INFO *
 			ui.RequestMessageBox( IDS_ERROR_NETWORK_TITLE, IDS_ERROR_NETWORK, uiIDA, 1, iPadNotSignedInLive, NULL, NULL, app.GetStringTable());
 		}
 		else
-		{
+		{		
 			// Not signed in to PSN
 			UINT uiIDA[1];
 			uiIDA[0] = IDS_PRO_NOTONLINE_ACCEPT;
@@ -1601,10 +1601,10 @@ void CGameNetworkManager::GameInviteReceived( int userIndex, const INVITE_INFO *
 		{
 			m_pInviteInfo = (INVITE_INFO *) pInviteInfo;
 			m_iPlayerInvited = userIndex;
-
+			
 			m_pUpsell = new PsPlusUpsellWrapper(index);
 			m_pUpsell->displayUpsell();
-
+			
 			return;
 		}
 	}
@@ -1612,7 +1612,7 @@ void CGameNetworkManager::GameInviteReceived( int userIndex, const INVITE_INFO *
 
 #ifdef __PSVITA__
 	// Need to check we're signed in to PSN
-	bool isSignedInLive = ProfileManager.IsSignedInLive(ProfileManager.GetPrimaryPad());
+	bool isSignedInLive = ProfileManager.IsSignedInLive(ProfileManager.GetPrimaryPad());		
 	if (!isSignedInLive)
 	{
 		// Determine why they're not "signed in live"
@@ -1625,7 +1625,7 @@ void CGameNetworkManager::GameInviteReceived( int userIndex, const INVITE_INFO *
 // 			ui.RequestMessageBox( IDS_ERROR_NETWORK_TITLE, IDS_ERROR_NETWORK, uiIDA, 1, ProfileManager.GetPrimaryPad(), NULL, NULL, app.GetStringTable());
 // 		}
 // 		else
-		{
+		{		
 			// Not signed in to PSN
 			UINT uiIDA[1];
 			uiIDA[0] = IDS_PRO_NOTONLINE_ACCEPT;
@@ -1648,9 +1648,9 @@ void CGameNetworkManager::GameInviteReceived( int userIndex, const INVITE_INFO *
 			// 4J-PB we shouldn't bring any inactive players into the game, except for the invited player (who may be an inactive player)
 			// 4J Stu - If we are not in a game, then bring in all players signed in
 			if(index==userIndex || pMinecraft->localplayers[index]!=NULL )
-			{
+			{	
 				++joiningUsers;
-				if( !ProfileManager.AllowedToPlayMultiplayer(index) ) noPrivileges = true;
+				if( !ProfileManager.AllowedToPlayMultiplayer(index) ) noPrivileges = true;	
 				localUsersMask |= GetLocalPlayerMask( index );
 			}
 		}
@@ -1667,7 +1667,7 @@ void CGameNetworkManager::GameInviteReceived( int userIndex, const INVITE_INFO *
 	ProfileManager.AllowedPlayerCreatedContent(ProfileManager.GetPrimaryPad(),false,&pccAllowed,&pccFriendsAllowed);
 	if(!pccAllowed && !pccFriendsAllowed) noUGC = true;
 #endif
-
+	
 #if defined(_XBOX) || defined(__PS3__)
 	if(joiningUsers > 1 && !RenderManager.IsHiDef() && userIndex != ProfileManager.GetPrimaryPad())
 	{
@@ -1716,9 +1716,9 @@ void CGameNetworkManager::GameInviteReceived( int userIndex, const INVITE_INFO *
 		}
 #endif
 		if( !g_NetworkManager.IsInSession() )
-		{
+		{	
 #ifndef __PS3__
-			HandleInviteWhenInMenus(userIndex, pInviteInfo);
+			HandleInviteWhenInMenus(userIndex, pInviteInfo);			
 #else
 			// PS3 is more complicated here - we need to make sure that the player is online. If they are then we can do the same as the xbox, if not we need to try and get them online and then, if they do sign in, go down the same path
 			if(ProfileManager.IsSignedInLive(ProfileManager.GetPrimaryPad()))
@@ -1771,7 +1771,7 @@ void CGameNetworkManager::HandleInviteWhenInMenus( int userIndex, const INVITE_I
 	if(!ProfileManager.IsFullVersion())
 	{
 		// The marketplace will fail with the primary player set to -1
-		ProfileManager.SetPrimaryPad(userIndex);
+		ProfileManager.SetPrimaryPad(userIndex); 
 
 		app.SetAction(userIndex,eAppAction_DashboardTrialJoinFromInvite);
 	}
@@ -1809,7 +1809,7 @@ void CGameNetworkManager::HandleInviteWhenInMenus( int userIndex, const INVITE_I
 				ProfileManager.QuerySigninStatus();
 
 				// 4J-PB - clear any previous connection errors
-				Minecraft::GetInstance()->clearConnectionFailed();
+				Minecraft::GetInstance()->clearConnectionFailed();						
 
 				g_NetworkManager.SetLocalGame(false);
 
@@ -1819,7 +1819,7 @@ void CGameNetworkManager::HandleInviteWhenInMenus( int userIndex, const INVITE_I
 				bool success = g_NetworkManager.JoinGameFromInviteInfo( userIndex, localUsersMask, pInviteInfo );
 				if( !success )
 				{
-					app.DebugPrintf( "Failed joining game from invite\n" );
+					app.DebugPrintf( "Failed joining game from invite\n" ); 
 				}
 			}
 		}

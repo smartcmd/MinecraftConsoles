@@ -167,7 +167,7 @@ void EyeOfEnderSignal::tick()
 			remove();
 			if (surviveAfterDeath)
 			{
-				level->addEntity(std::shared_ptr<ItemEntity>( new ItemEntity(level, x, y, z, std::shared_ptr<ItemInstance>(new ItemInstance(Item::eyeOfEnder)))));
+				level->addEntity(shared_ptr<ItemEntity>( new ItemEntity(level, x, y, z, shared_ptr<ItemInstance>(new ItemInstance(Item::eyeOfEnder)))));
 			}
 			else
 			{

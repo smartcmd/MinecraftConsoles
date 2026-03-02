@@ -1,6 +1,6 @@
 /*
     Copyright 2005-2007 Adobe Systems Incorporated
-
+   
     Use, modification and distribution are subject to the Boost Software License,
     Version 1.0. (See accompanying file LICENSE_1_0.txt or copy at
     http://www.boost.org/LICENSE_1_0.txt).
@@ -24,7 +24,7 @@
 #include <stdio.h>
 #include <string>
 #include <boost/mpl/bool.hpp>
-#include <boost/std::shared_ptr.hpp>
+#include <boost/shared_ptr.hpp>
 #include "../dynamic_image/dynamic_image_all.hpp"
 #include "io_error.hpp"
 
@@ -43,7 +43,7 @@ struct jpeg_write_is_supported {
 
 class jpeg_writer_dynamic : public jpeg_writer {
     int _quality;
-public:
+public:    
     jpeg_writer_dynamic(FILE* file,           int quality=100) : jpeg_writer(file)    , _quality(quality) {}
     jpeg_writer_dynamic(const char* filename, int quality=100) : jpeg_writer(filename), _quality(quality) {}
 
@@ -74,7 +74,7 @@ class jpeg_reader_dynamic : public jpeg_reader {
 public:
     jpeg_reader_dynamic(FILE* file)           : jpeg_reader(file)    {}
     jpeg_reader_dynamic(const char* filename) : jpeg_reader(filename){}
-
+        
     template <typename Images>
     void read_image(any_image<Images>& im) {
         if (!construct_matched(im,detail::jpeg_type_format_checker(_cinfo.out_color_space))) {
@@ -110,7 +110,7 @@ inline void jpeg_read_image(const std::string& filename,any_image<Images>& im) {
 
 /// \ingroup JPEG_IO
 /// \brief Saves the currently instantiated view to a jpeg file specified by the given jpeg image file name.
-/// Throws std::ios_base::failure if the currently instantiated view type is not supported for writing by the I/O extension
+/// Throws std::ios_base::failure if the currently instantiated view type is not supported for writing by the I/O extension 
 /// or if it fails to create the file.
 template <typename Views>
 inline void jpeg_write_view(const char* filename,const any_image_view<Views>& runtime_view) {

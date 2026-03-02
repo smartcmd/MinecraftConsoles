@@ -13,7 +13,7 @@ TripWireTile::TripWireTile(int id) : Tile(id, Material::decoration, isSolidRende
 
 int TripWireTile::getTickDelay(Level *level)
 {
-	// 4J:	Increased (x2); quick update caused problems with shared
+	// 4J:	Increased (x2); quick update caused problems with shared 
 	//		data between client and server.
 	return 20; // 10;
 }
@@ -70,7 +70,7 @@ void TripWireTile::neighborChanged(Level *level, int x, int y, int z, int type)
 	}
 }
 
-void TripWireTile::updateShape(LevelSource *level, int x, int y, int z, int forceData, std::shared_ptr<TileEntity> forceEntity)
+void TripWireTile::updateShape(LevelSource *level, int x, int y, int z, int forceData, shared_ptr<TileEntity> forceEntity)
 {
 	int data = level->getData(x, y, z);
 	bool attached = (data & MASK_ATTACHED) == MASK_ATTACHED;
@@ -102,7 +102,7 @@ void TripWireTile::onRemove(Level *level, int x, int y, int z, int id, int data)
 	updateSource(level, x, y, z, data | MASK_POWERED);
 }
 
-void TripWireTile::playerWillDestroy(Level *level, int x, int y, int z, int data, std::shared_ptr<Player> player)
+void TripWireTile::playerWillDestroy(Level *level, int x, int y, int z, int data, shared_ptr<Player> player)
 {
 	if (level->isClientSide) return;
 
@@ -141,7 +141,7 @@ void TripWireTile::updateSource(Level *level, int x, int y, int z, int data)
 	}
 }
 
-void TripWireTile::entityInside(Level *level, int x, int y, int z, std::shared_ptr<Entity> entity)
+void TripWireTile::entityInside(Level *level, int x, int y, int z, shared_ptr<Entity> entity)
 {
 	if (level->isClientSide) return;
 
@@ -164,9 +164,9 @@ void TripWireTile::checkPressed(Level *level, int x, int y, int z)
 	int data = level->getData(x, y, z);
 	bool wasPressed = (data & MASK_POWERED) == MASK_POWERED;
 	bool shouldBePressed = false;
-
+	
 	ThreadStorage *tls = (ThreadStorage *)TlsGetValue(Tile::tlsIdxShape);
-	vector<std::shared_ptr<Entity> > *entities = level->getEntities(nullptr, AABB::newTemp(x + tls->xx0, y + tls->yy0, z + tls->zz0, x + tls->xx1, y + tls->yy1, z + tls->zz1));
+	vector<shared_ptr<Entity> > *entities = level->getEntities(nullptr, AABB::newTemp(x + tls->xx0, y + tls->yy0, z + tls->zz0, x + tls->xx1, y + tls->yy1, z + tls->zz1));
 	if (!entities->empty())
 	{
 		shouldBePressed = true;

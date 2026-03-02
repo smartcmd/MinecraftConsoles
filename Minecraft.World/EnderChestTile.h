@@ -21,9 +21,9 @@ protected:
 	bool isSilkTouchable();
 
 public:
-	void setPlacedBy(Level *level, int x, int y, int z, std::shared_ptr<Mob> by);
-	bool use(Level *level, int x, int y, int z, std::shared_ptr<Player> player, int clickedFace, float clickX, float clickY, float clickZ, bool soundOnly = false);
-	std::shared_ptr<TileEntity> newTileEntity(Level *level);
+	void setPlacedBy(Level *level, int x, int y, int z, shared_ptr<Mob> by);
+	bool use(Level *level, int x, int y, int z, shared_ptr<Player> player, int clickedFace, float clickX, float clickY, float clickZ, bool soundOnly = false);
+	shared_ptr<TileEntity> newTileEntity(Level *level);
 	void animateTick(Level *level, int xt, int yt, int zt, Random *random);
 	virtual void registerIcons(IconRegister *iconRegister);
 };

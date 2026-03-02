@@ -60,10 +60,10 @@ void TreeTile::onRemove(Level *level, int x, int y, int z, int id, int data)
 	}
 }
 
-void TreeTile::setPlacedBy(Level *level, int x, int y, int z, std::shared_ptr<Mob> by)
+void TreeTile::setPlacedBy(Level *level, int x, int y, int z, shared_ptr<Mob> by)
 {
 	int type = level->getData(x, y, z) & MASK_TYPE;
-	int dir = PistonBaseTile::getNewFacing(level, x, y, z, std::dynamic_pointer_cast<Player>(by));
+	int dir = PistonBaseTile::getNewFacing(level, x, y, z, dynamic_pointer_cast<Player>(by));
 	int facing = 0;
 
 	switch (dir)
@@ -93,7 +93,7 @@ Icon *TreeTile::getTexture(int face, int data)
 	if (dir == FACING_Y && (face == Facing::UP || face == Facing::DOWN))
 	{
 		return iconTop;
-	}
+	} 
 	else if (dir == FACING_X && (face == Facing::EAST || face == Facing::WEST))
 	{
 		return iconTop;
@@ -123,10 +123,10 @@ int TreeTile::getWoodType(int data)
 	return data & MASK_TYPE;
 }
 
-std::shared_ptr<ItemInstance> TreeTile::getSilkTouchItemInstance(int data)
+shared_ptr<ItemInstance> TreeTile::getSilkTouchItemInstance(int data)
 {
 	// fix to avoid getting silktouched sideways logs
-	return std::shared_ptr<ItemInstance>(new ItemInstance(id, 1, getWoodType(data)));
+	return shared_ptr<ItemInstance>(new ItemInstance(id, 1, getWoodType(data)));
 }
 
 void TreeTile::registerIcons(IconRegister *iconRegister)

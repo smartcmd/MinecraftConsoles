@@ -13,12 +13,12 @@ private:
 	const int slotNum;
 
 public:
-	ArmorSlot(int slotNum, std::shared_ptr<Container> container, int id, int x, int y);
+	ArmorSlot(int slotNum, shared_ptr<Container> container, int id, int x, int y);
 	virtual ~ArmorSlot() {}
 
 	virtual int getMaxStackSize();
-	virtual bool mayPlace(std::shared_ptr<ItemInstance> item);
+	virtual bool mayPlace(shared_ptr<ItemInstance> item);
 	Icon *getNoItemIcon();
-	//virtual bool mayCombine(std::shared_ptr<ItemInstance> item); // 4J Added
-	//virtual std::shared_ptr<ItemInstance> combine(std::shared_ptr<ItemInstance> item); // 4J Added
+	//virtual bool mayCombine(shared_ptr<ItemInstance> item); // 4J Added
+	//virtual shared_ptr<ItemInstance> combine(shared_ptr<ItemInstance> item); // 4J Added
 };

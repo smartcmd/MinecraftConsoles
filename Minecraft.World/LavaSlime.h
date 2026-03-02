@@ -20,7 +20,7 @@ public:
 
 protected:
 	virtual ePARTICLE_TYPE getParticleName();
-	virtual std::shared_ptr<Slime> createChild();
+	virtual shared_ptr<Slime> createChild();
 	virtual int getDeathLoot();
 	virtual void dropDeathLoot(bool wasKilledByPlayer, int playerBonusLevel);
 

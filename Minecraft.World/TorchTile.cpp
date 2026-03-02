@@ -20,7 +20,7 @@ AABB *TorchTile::getTileAABB(Level *level, int x, int y, int z)
 	return Tile::getTileAABB(level, x, y, z);
 }
 
-void TorchTile::updateShape(LevelSource *level, int x, int y, int z, int forceData, std::shared_ptr<TileEntity> forceEntity) // 4J added forceData, forceEntity param
+void TorchTile::updateShape(LevelSource *level, int x, int y, int z, int forceData, shared_ptr<TileEntity> forceEntity) // 4J added forceData, forceEntity param
 {
 	setShape(level->getData(x, y, z));
 }
@@ -75,7 +75,7 @@ bool TorchTile::isConnection(Level *level, int x, int y, int z)
 		return true;
 	}
 	int tile = level->getTile(x, y, z);
-	if  (tile == Tile::fence_Id || tile == Tile::netherFence_Id
+	if  (tile == Tile::fence_Id || tile == Tile::netherFence_Id 
 		|| tile == Tile::glass_Id || tile == Tile::cobbleWall_Id)
 	{
 		return true;

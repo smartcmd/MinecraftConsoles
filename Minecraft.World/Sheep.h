@@ -15,10 +15,10 @@ class Sheep : public Animal
 private:
 	class SheepContainer : public AbstractContainerMenu
 	{
-		bool stillValid(std::shared_ptr<Player> player) { return false; }
+		bool stillValid(shared_ptr<Player> player) { return false; }
 	};
 
-	std::shared_ptr<CraftingContainer> container;
+	shared_ptr<CraftingContainer> container;
 public:
 	eINSTANCEOF GetType() { return eTYPE_SHEEP; }
 	static Entity *create(Level *level) { return new Sheep(level); }
@@ -58,7 +58,7 @@ public:
 	float getHeadEatPositionScale(float a);
 	float getHeadEatAngleScale(float a);
 
-	virtual bool interact(std::shared_ptr<Player> player);
+	virtual bool interact(shared_ptr<Player> player);
 	virtual void addAdditonalSaveData(CompoundTag *tag);
 	virtual void readAdditionalSaveData(CompoundTag *tag);
 
@@ -74,13 +74,13 @@ public:
 	void setSheared(bool value);
 
 	static int getSheepColor(Random *random);
-	virtual std::shared_ptr<AgableMob> getBreedOffspring(std::shared_ptr<AgableMob> target);
+	virtual shared_ptr<AgableMob> getBreedOffspring(shared_ptr<AgableMob> target);
 
 	virtual void ate();
 
 	void finalizeMobSpawn();
 
 private:
-	int getOffspringColor(std::shared_ptr<Animal> animal, std::shared_ptr<Animal> partner);
-	int getDyeColor(std::shared_ptr<Animal> animal);
+	int getOffspringColor(shared_ptr<Animal> animal, shared_ptr<Animal> partner);
+	int getDyeColor(shared_ptr<Animal> animal);
 };

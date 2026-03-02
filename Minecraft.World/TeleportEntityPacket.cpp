@@ -17,7 +17,7 @@ TeleportEntityPacket::TeleportEntityPacket()
 	xRot = 0;
 }
 
-TeleportEntityPacket::TeleportEntityPacket(std::shared_ptr<Entity> e)
+TeleportEntityPacket::TeleportEntityPacket(shared_ptr<Entity> e) 
 {
 	id = e->entityId;
 	x = Mth::floor(e->x * 32);
@@ -53,7 +53,7 @@ void TeleportEntityPacket::read(DataInputStream *dis) //throws IOException
 	xRot = (byte) dis->read();
 }
 
-void TeleportEntityPacket::write(DataOutputStream *dos) //throws IOException
+void TeleportEntityPacket::write(DataOutputStream *dos) //throws IOException 
 {
 	dos->writeShort(id);
 #ifdef _LARGE_WORLDS
@@ -69,12 +69,12 @@ void TeleportEntityPacket::write(DataOutputStream *dos) //throws IOException
 	dos->write(xRot);
 }
 
-void TeleportEntityPacket::handle(PacketListener *listener)
+void TeleportEntityPacket::handle(PacketListener *listener) 
 {
 	listener->handleTeleportEntity(shared_from_this());
 }
 
-int TeleportEntityPacket::getEstimatedSize()
+int TeleportEntityPacket::getEstimatedSize() 
 {
 	return 2 + 2 + 2 + 2 + 1 + 1;
 }
@@ -84,8 +84,8 @@ bool TeleportEntityPacket::canBeInvalidated()
 	return true;
 }
 
-bool TeleportEntityPacket::isInvalidatedBy(std::shared_ptr<Packet> packet)
+bool TeleportEntityPacket::isInvalidatedBy(shared_ptr<Packet> packet)
 {
-	std::shared_ptr<TeleportEntityPacket> target = std::dynamic_pointer_cast<TeleportEntityPacket>(packet);
+	shared_ptr<TeleportEntityPacket> target = dynamic_pointer_cast<TeleportEntityPacket>(packet);
 	return target->id == id;
 }

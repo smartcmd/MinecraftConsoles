@@ -19,7 +19,7 @@ Snowball::Snowball(Level *level) : Throwable(level)
 	_init();
 }
 
-Snowball::Snowball(Level *level, std::shared_ptr<Mob> mob) : Throwable(level,mob)
+Snowball::Snowball(Level *level, shared_ptr<Mob> mob) : Throwable(level,mob)
 {
 	_init();
 }
@@ -34,7 +34,7 @@ void Snowball::onHit(HitResult *res)
 	if (res->entity != NULL)
 	{
 		int damage = 0;
-		if (std::dynamic_pointer_cast<Blaze>(res->entity) != NULL)
+		if (dynamic_pointer_cast<Blaze>(res->entity) != NULL)
 		{
 			damage = 3;
 		}

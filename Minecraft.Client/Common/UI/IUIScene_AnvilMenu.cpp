@@ -216,7 +216,7 @@ void IUIScene_AnvilMenu::handleTick()
 			wchar_t temp[256];
 			swprintf(temp, 256, costString, m_repairMenu->cost);
 			m_costString = temp;
-			if(!m_repairMenu->getSlot(RepairMenu::RESULT_SLOT)->mayPickup(std::dynamic_pointer_cast<Player>(m_inventory->player->shared_from_this())))
+			if(!m_repairMenu->getSlot(RepairMenu::RESULT_SLOT)->mayPickup(dynamic_pointer_cast<Player>(m_inventory->player->shared_from_this())))
 			{
 				canAfford = false;
 			}
@@ -245,15 +245,15 @@ void IUIScene_AnvilMenu::updateItemName()
 	ByteArrayOutputStream baos;
 	DataOutputStream dos(&baos);
 	dos.writeUTF(m_itemName);
-	Minecraft::GetInstance()->localplayers[getPad()]->connection->send(std::shared_ptr<CustomPayloadPacket>(new CustomPayloadPacket(CustomPayloadPacket::SET_ITEM_NAME_PACKET, baos.toByteArray())));
+	Minecraft::GetInstance()->localplayers[getPad()]->connection->send(shared_ptr<CustomPayloadPacket>(new CustomPayloadPacket(CustomPayloadPacket::SET_ITEM_NAME_PACKET, baos.toByteArray())));
 }
 
-void IUIScene_AnvilMenu::refreshContainer(AbstractContainerMenu *container, vector<std::shared_ptr<ItemInstance> > *items)
+void IUIScene_AnvilMenu::refreshContainer(AbstractContainerMenu *container, vector<shared_ptr<ItemInstance> > *items)
 {
 	slotChanged(container, RepairMenu::INPUT_SLOT, container->getSlot(0)->getItem());
 }
 
-void IUIScene_AnvilMenu::slotChanged(AbstractContainerMenu *container, int slotIndex, std::shared_ptr<ItemInstance> item)
+void IUIScene_AnvilMenu::slotChanged(AbstractContainerMenu *container, int slotIndex, shared_ptr<ItemInstance> item)
 {
 	if (slotIndex == RepairMenu::INPUT_SLOT)
 	{

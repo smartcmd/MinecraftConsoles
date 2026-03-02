@@ -32,7 +32,7 @@ UIScene_InventoryMenu::UIScene_InventoryMenu(int iPad, void *_initData, UILayer 
 		m_previousTutorialState = gameMode->getTutorial()->getCurrentState();
 		gameMode->getTutorial()->changeTutorialState(e_Tutorial_State_Inventory_Menu, this);
 	}
-
+	
 	InventoryMenu *menu = (InventoryMenu *)initData->player->inventoryMenu;
 
 	initData->player->awardStat(GenericStats::openInventory(),GenericStats::param_openInventory());
@@ -251,7 +251,7 @@ void UIScene_InventoryMenu::updateEffectsDisplay()
 {
 	// Update with the current effects
 	Minecraft *pMinecraft = Minecraft::GetInstance();
-	std::shared_ptr<MultiplayerLocalPlayer> player = pMinecraft->localplayers[m_iPad];
+	shared_ptr<MultiplayerLocalPlayer> player = pMinecraft->localplayers[m_iPad];
 
 	if(player == NULL) return;
 
@@ -262,7 +262,7 @@ void UIScene_InventoryMenu::updateEffectsDisplay()
 	IggyDataValue *UpdateValue = new IggyDataValue[activeEffects->size()*2];
 
 	for(AUTO_VAR(it, activeEffects->begin()); it != activeEffects->end(); ++it)
-	{
+	{	
 		MobEffectInstance *effect = *it;
 
 		if(effect->getDuration() >= m_bEffectTime[effect->getId()])

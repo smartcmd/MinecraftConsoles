@@ -32,7 +32,7 @@ Icon *StoneSlabTile::getTexture(int face, int data)
 	case STONE_SLAB:
 		if (face == Facing::UP || face == Facing::DOWN) return icon;
 		return iconSide;
-		break;
+		break;	
 	case SAND_SLAB:
 		return Tile::sandStone->getTexture(face);
 	case WOOD_SLAB:
@@ -48,7 +48,7 @@ Icon *StoneSlabTile::getTexture(int face, int data)
 	case QUARTZ_SLAB:
 		return Tile::quartzBlock->getTexture(face);
 	}
-
+	
 	return icon;
 }
 
@@ -69,16 +69,16 @@ unsigned int StoneSlabTile::getDescriptionId(int iData /*= -1*/)
 	return StoneSlabTile::SLAB_NAMES[iData];
 }
 
-int StoneSlabTile::getAuxName(int auxValue)
+int StoneSlabTile::getAuxName(int auxValue) 
 {
-	if (auxValue < 0 || auxValue >= SLAB_NAMES_LENGTH)
+	if (auxValue < 0 || auxValue >= SLAB_NAMES_LENGTH) 
 	{
 		auxValue = 0;
 	}
 	return SLAB_NAMES[auxValue];//super.getDescriptionId() + "." + SLAB_NAMES[auxValue];
 }
 
-std::shared_ptr<ItemInstance> StoneSlabTile::getSilkTouchItemInstance(int data)
+shared_ptr<ItemInstance> StoneSlabTile::getSilkTouchItemInstance(int data)
 {
-	return std::shared_ptr<ItemInstance>(new ItemInstance(Tile::stoneSlabHalf_Id, 2, data & TYPE_MASK));
+	return shared_ptr<ItemInstance>(new ItemInstance(Tile::stoneSlabHalf_Id, 2, data & TYPE_MASK));
 }

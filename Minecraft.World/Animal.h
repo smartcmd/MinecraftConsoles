@@ -26,10 +26,10 @@ public:
 	virtual void aiStep();
 
 protected:
-	virtual void checkHurtTarget(std::shared_ptr<Entity> target, float d);
+	virtual void checkHurtTarget(shared_ptr<Entity> target, float d);
 
 private:
-	virtual void breedWith(std::shared_ptr<Animal> target);
+	virtual void breedWith(shared_ptr<Animal> target);
 
 public:
 	virtual float getWalkTargetValue(int x, int y, int z);
@@ -40,7 +40,7 @@ public:
 	virtual void readAdditionalSaveData(CompoundTag *tag);
 
 protected:
-	virtual std::shared_ptr<Entity> findAttackTarget();
+	virtual shared_ptr<Entity> findAttackTarget();
 
 public:
 	virtual bool canSpawn();
@@ -48,22 +48,22 @@ public:
 
 protected:
 	virtual bool removeWhenFarAway();
-	virtual int getExperienceReward(std::shared_ptr<Player> killedBy);
+	virtual int getExperienceReward(shared_ptr<Player> killedBy);
 
 public:
-	virtual bool isFood(std::shared_ptr<ItemInstance> itemInstance);
-	virtual bool interact(std::shared_ptr<Player> player);
+	virtual bool isFood(shared_ptr<ItemInstance> itemInstance);
+	virtual bool interact(shared_ptr<Player> player);
 
 protected:
 	int getInLoveValue();					// 4J added
 
 public:
 	void setInLoveValue(int value); // 4J added
-	void setInLove(std::shared_ptr<Player> player);			// 4J added, then modified to match latest Java for XboxOne achievements
-	std::shared_ptr<Player> getLoveCause();
+	void setInLove(shared_ptr<Player> player);			// 4J added, then modified to match latest Java for XboxOne achievements
+	shared_ptr<Player> getLoveCause();
 	bool isInLove();
     void resetLove();
-    virtual bool canMate(std::shared_ptr<Animal> partner);
+    virtual bool canMate(shared_ptr<Animal> partner);
 
 	// 4J added for determining whether animals are enclosed or not
 private:

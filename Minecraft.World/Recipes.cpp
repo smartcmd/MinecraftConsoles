@@ -45,7 +45,7 @@ void Recipes::_init()
 	recipies = new RecipyList();
 }
 
-Recipes::Recipes()
+Recipes::Recipes() 
 {
 	int iCount=0;
 	_init();
@@ -55,7 +55,7 @@ Recipes::Recipes()
 	pFoodRecipies		= new FoodRecipies;
 	pOreRecipies		= new OreRecipies;
 	pStructureRecipies	= new StructureRecipies;
-	pToolRecipies		= new ToolRecipies;
+	pToolRecipies		= new ToolRecipies;	
 	pWeaponRecipies		= new WeaponRecipies;
 
 	// 4J Stu - These just don't work with our crafting menu
@@ -74,8 +74,8 @@ Recipes::Recipes()
 		L"#", //
 
 		L'#', new ItemInstance(Tile::treeTrunk, 1, TreeTile::BIRCH_TRUNK),
-		L'S');
-
+		L'S');	
+	
 	addShapedRecipy(new ItemInstance(Tile::wood, 4, TreeTile::DARK_TRUNK), //
 		L"sczg",
 		L"#", //
@@ -99,7 +99,7 @@ Recipes::Recipes()
 		L'S');
 
 	pToolRecipies->addRecipes(this);
-	pFoodRecipies->addRecipes(this);
+	pFoodRecipies->addRecipes(this);	
 	pStructureRecipies->addRecipes(this);
 
 
@@ -146,8 +146,8 @@ Recipes::Recipes()
 		L"#W#", //
 
 		L'#', Item::stick, L'W', Tile::wood,
-		L'S');
-
+		L'S');		
+	
 	addShapedRecipy(new ItemInstance(Tile::fence, 2), //
 		L"sscig",
 		L"###", //
@@ -155,7 +155,7 @@ Recipes::Recipes()
 
 		L'#', Item::stick,
 		L'S');
-
+	
 	addShapedRecipy(new ItemInstance(Tile::netherFence, 6), //
 		L"ssctg",
 		L"###", //
@@ -303,10 +303,10 @@ Recipes::Recipes()
 		L'#', Tile::quartzBlock,
 		L'S');
 
-	pArmorRecipes->addRecipes(this);
+	pArmorRecipes->addRecipes(this);	
 	//iCount=getRecipies()->size();
 
-	pClothDyeRecipes->addRecipes(this);
+	pClothDyeRecipes->addRecipes(this);	
 
 
 	addShapedRecipy(new ItemInstance(Tile::snow, 1), //
@@ -363,14 +363,14 @@ Recipes::Recipes()
 		L"###", //
 
 		L'#', Tile::rock,
-		L'S');
+		L'S');	
 	addShapedRecipy(new ItemInstance(Tile::stoneSlabHalf, 6, StoneSlabTile::COBBLESTONE_SLAB), //
 		L"sctg",
 		L"###", //
 
 		L'#', Tile::stoneBrick,
 		L'S');
-
+	
 	addShapedRecipy(new ItemInstance(Tile::stoneSlabHalf, 6, StoneSlabTile::BRICK_SLAB), //
 		L"sctg",
 		L"###", //
@@ -556,7 +556,7 @@ Recipes::Recipes()
 		L"# X", //
 		L" #X", //
 
-		L'X', Item::string,//
+		L'X', Item::string,// 
 		L'#', Item::stick,
 		L'T');
 
@@ -566,8 +566,8 @@ Recipes::Recipes()
 		L"#", //
 		L"Y", //
 
-		L'Y', Item::feather,//
-		L'X', Item::flint,//
+		L'Y', Item::feather,// 
+		L'X', Item::flint,// 
 		L'#', Item::stick,
 		L'T');
 
@@ -715,7 +715,7 @@ Recipes::Recipes()
 
 		L'#', Item::paper, L'X', Item::compass,
 		L'T');
-
+	
 	addShapedRecipy(new ItemInstance(Tile::button, 1), //
 		L"sctg",
 		L"#", //
@@ -844,7 +844,7 @@ Recipes::Recipes()
 		L'#', Item::stick, L'X', Item::leather,
 		L'D');
 
-	pOreRecipies->addRecipes(this);
+	pOreRecipies->addRecipes(this);	
 
 	addShapedRecipy(new ItemInstance(Item::goldIngot), //
 		L"ssscig",
@@ -894,17 +894,17 @@ Recipes::Recipes()
 
 	// Sort so the largest recipes get checked first!
 	/* 4J-PB - TODO
-	Collections.sort(recipies, new Comparator<Recipy>()
+	Collections.sort(recipies, new Comparator<Recipy>() 
 	{
-	public: int compare(Recipy r0, Recipy r1)
+	public: int compare(Recipy r0, Recipy r1) 
 			{
 
 				// shapeless recipes are put in the back of the list
-				if (r0 instanceof ShapelessRecipy && r1 instanceof ShapedRecipy)
+				if (r0 instanceof ShapelessRecipy && r1 instanceof ShapedRecipy) 
 				{
 					return 1;
 				}
-				if (r1 instanceof ShapelessRecipy && r0 instanceof ShapedRecipy)
+				if (r1 instanceof ShapelessRecipy && r0 instanceof ShapedRecipy) 
 				{
 					return -1;
 				}
@@ -957,7 +957,7 @@ ShapedRecipy *Recipes::addShapedRecipy(ItemInstance *result, ...)
 
 	wchTypes = va_arg(vl,wchar_t *);
 
-	for(int i = 0; wchTypes[i] != L'\0'; ++i )
+	for(int i = 0; wchTypes[i] != L'\0'; ++i ) 
 	{
 		if(wchTypes[i+1]==L'\0' && wchTypes[i]!=L'g')
 		{
@@ -1051,15 +1051,15 @@ ShapedRecipy *Recipes::addShapedRecipy(ItemInstance *result, ...)
 
 		ids = new ItemInstance *[width * height];
 
-		for (int j = 0; j < width * height; j++)
+		for (int j = 0; j < width * height; j++) 
 		{
 			wchar_t ch = map[j];
 			myMap::iterator it=mappings->find(ch);
-			if (it != mappings->end())
+			if (it != mappings->end()) 
 			{
 				ids[j] =it->second;
-			}
-			else
+			} 
+			else 
 			{
 				ids[j] = NULL;
 			}
@@ -1073,7 +1073,7 @@ ShapedRecipy *Recipes::addShapedRecipy(ItemInstance *result, ...)
 	return recipe;
 }
 
-void Recipes::addShapelessRecipy(ItemInstance *result,... )
+void Recipes::addShapelessRecipy(ItemInstance *result,... ) 
 {
 	va_list vl;
 	wchar_t *szTypes;
@@ -1092,7 +1092,7 @@ void Recipes::addShapelessRecipy(ItemInstance *result,... )
 	// t - Tile *
 	szTypes = va_arg(vl,wchar_t *);
 
-	for(int i = 0; szTypes[i] != L'\0'; ++i )
+	for(int i = 0; szTypes[i] != L'\0'; ++i ) 
 	{
 		switch(szTypes[i])
 		{
@@ -1143,17 +1143,17 @@ void Recipes::addShapelessRecipy(ItemInstance *result,... )
 			break;		}
 	}
 
-	recipies->push_back(new ShapelessRecipy(result, ingredients, group));
+	recipies->push_back(new ShapelessRecipy(result, ingredients, group));	
 }
 
-std::shared_ptr<ItemInstance> Recipes::getItemFor(std::shared_ptr<CraftingContainer> craftSlots, Level *level)
+shared_ptr<ItemInstance> Recipes::getItemFor(shared_ptr<CraftingContainer> craftSlots, Level *level) 
 {
 	int count = 0;
-	std::shared_ptr<ItemInstance> first = nullptr;
-	std::shared_ptr<ItemInstance> second = nullptr;
+	shared_ptr<ItemInstance> first = nullptr;
+	shared_ptr<ItemInstance> second = nullptr;
 	for (int i = 0; i < craftSlots->getContainerSize(); i++)
 	{
-		std::shared_ptr<ItemInstance> item = craftSlots->getItem(i);
+		shared_ptr<ItemInstance> item = craftSlots->getItem(i);
 		if (item != NULL)
 		{
 			if (count == 0) first = item;
@@ -1170,7 +1170,7 @@ std::shared_ptr<ItemInstance> Recipes::getItemFor(std::shared_ptr<CraftingContai
 		int remaining = (remaining1 + remaining2) + item->getMaxDamage() * 5 / 100;
 		int resultDamage = item->getMaxDamage() - remaining;
 		if (resultDamage < 0) resultDamage = 0;
-		return std::shared_ptr<ItemInstance>( new ItemInstance(first->id, 1, resultDamage) );
+		return shared_ptr<ItemInstance>( new ItemInstance(first->id, 1, resultDamage) );
 	}
 
 	AUTO_VAR(itEnd, recipies->end());
@@ -1182,13 +1182,13 @@ std::shared_ptr<ItemInstance> Recipes::getItemFor(std::shared_ptr<CraftingContai
 	return nullptr;
 }
 
-vector <Recipy *> *Recipes::getRecipies()
+vector <Recipy *> *Recipes::getRecipies() 
 {
 	return recipies;
 }
 
 // 4J-PB - added to deal with Xb0x 'crafting'
-std::shared_ptr<ItemInstance> Recipes::getItemForRecipe(Recipy *r)
+shared_ptr<ItemInstance> Recipes::getItemForRecipe(Recipy *r) 
 {
 	return r->assemble(nullptr);
 }
@@ -1204,9 +1204,9 @@ void Recipes::buildRecipeIngredientsArray(void)
 
 	int iCount=0;
 	AUTO_VAR(itEndRec, recipies->end());
-	for (AUTO_VAR(it, recipies->begin()); it != itEndRec; it++)
+	for (AUTO_VAR(it, recipies->begin()); it != itEndRec; it++) 
 	{
-		Recipy *recipe = *it;
+		Recipy *recipe = *it; 
 		//wprintf(L"RECIPE - [%d] is %w\n",iCount,recipe->getResultItem()->getItem()->getName());
 		recipe->requires(&m_pRecipeIngredientsRequired[iCount++]);
 	}

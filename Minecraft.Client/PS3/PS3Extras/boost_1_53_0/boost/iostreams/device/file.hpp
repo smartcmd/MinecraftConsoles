@@ -21,7 +21,7 @@
 #include <boost/iostreams/detail/ios.hpp>       // openmode, seekdir, int types.
 #include <boost/iostreams/detail/fstream.hpp>
 #include <boost/iostreams/operations.hpp>       // seek.
-#include <boost/std::shared_ptr.hpp>
+#include <boost/shared_ptr.hpp>      
 
 // Must come last.
 #include <boost/iostreams/detail/config/disable_warnings.hpp>  // MSVC.
@@ -46,8 +46,8 @@ public:
     std::streamsize read(char_type* s, std::streamsize n);
     bool putback(char_type c);
     std::streamsize write(const char_type* s, std::streamsize n);
-    std::streampos seek( stream_offset off, BOOST_IOS::seekdir way,
-                         BOOST_IOS::openmode which =
+    std::streampos seek( stream_offset off, BOOST_IOS::seekdir way, 
+                         BOOST_IOS::openmode which = 
                              BOOST_IOS::in | BOOST_IOS::out );
     void open( const std::string& path,
                BOOST_IOS::openmode mode =
@@ -67,7 +67,7 @@ private:
         ~impl() { if (file_.is_open()) file_.close(); }
         BOOST_IOSTREAMS_BASIC_FILEBUF(Ch) file_;
     };
-    std::shared_ptr<impl> pimpl_;
+    shared_ptr<impl> pimpl_;
 };
 
 typedef basic_file<char>     file;
@@ -87,7 +87,7 @@ struct basic_file_source : private basic_file<Ch> {
     using basic_file<Ch>::is_open;
     using basic_file<Ch>::close;
     basic_file_source( const std::string& path,
-                       BOOST_IOS::openmode mode =
+                       BOOST_IOS::openmode mode = 
                            BOOST_IOS::in )
         : basic_file<Ch>(path, mode & ~BOOST_IOS::out, BOOST_IOS::in)
         { }
@@ -128,29 +128,29 @@ struct basic_file_sink : private basic_file<Ch> {
 
 typedef basic_file_sink<char>     file_sink;
 typedef basic_file_sink<wchar_t>  wfile_sink;
-
+                                 
 //------------------Implementation of basic_file------------------------------//
 
 template<typename Ch>
 basic_file<Ch>::basic_file
-    ( const std::string& path, BOOST_IOS::openmode mode,
+    ( const std::string& path, BOOST_IOS::openmode mode, 
       BOOST_IOS::openmode base_mode )
-{
+{ 
     open(path, mode, base_mode);
 }
 
 template<typename Ch>
 inline std::streamsize basic_file<Ch>::read
     (char_type* s, std::streamsize n)
-{
-    std::streamsize result = pimpl_->file_.sgetn(s, n);
+{ 
+    std::streamsize result = pimpl_->file_.sgetn(s, n); 
     return result != 0 ? result : -1;
 }
 
 template<typename Ch>
 inline bool basic_file<Ch>::putback(char_type c)
-{
-    return !!pimpl_->file_.sputbackc(c);
+{ 
+    return !!pimpl_->file_.sputbackc(c); 
 }
 
 template<typename Ch>
@@ -160,15 +160,15 @@ inline std::streamsize basic_file<Ch>::write
 
 template<typename Ch>
 std::streampos basic_file<Ch>::seek
-    ( stream_offset off, BOOST_IOS::seekdir way,
+    ( stream_offset off, BOOST_IOS::seekdir way, 
       BOOST_IOS::openmode )
 { return iostreams::seek(pimpl_->file_, off, way); }
 
 template<typename Ch>
 void basic_file<Ch>::open
-    ( const std::string& path, BOOST_IOS::openmode mode,
+    ( const std::string& path, BOOST_IOS::openmode mode, 
       BOOST_IOS::openmode base_mode )
-{
+{ 
     pimpl_.reset(new impl(path, mode | base_mode));
 }
 

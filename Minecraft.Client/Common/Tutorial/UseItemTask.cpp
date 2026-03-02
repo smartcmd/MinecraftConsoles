@@ -16,7 +16,7 @@ bool UseItemTask::isCompleted()
 	return bIsCompleted;
 }
 
-void UseItemTask::useItem(std::shared_ptr<ItemInstance> item,bool bTestUseOnly)
+void UseItemTask::useItem(shared_ptr<ItemInstance> item,bool bTestUseOnly)
 {
 	if(bTestUseOnly) return;
 

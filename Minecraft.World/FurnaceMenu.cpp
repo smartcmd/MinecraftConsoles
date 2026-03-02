@@ -8,7 +8,7 @@
 #include "FurnaceMenu.h"
 #include "FurnaceRecipes.h"
 
-FurnaceMenu::FurnaceMenu(std::shared_ptr<Inventory> inventory, std::shared_ptr<FurnaceTileEntity> furnace) : AbstractContainerMenu()
+FurnaceMenu::FurnaceMenu(shared_ptr<Inventory> inventory, shared_ptr<FurnaceTileEntity> furnace) : AbstractContainerMenu()
 {
 	tc = 0;
 	lt = 0;
@@ -18,7 +18,7 @@ FurnaceMenu::FurnaceMenu(std::shared_ptr<Inventory> inventory, std::shared_ptr<F
 
 	addSlot(new Slot(furnace, 0, 52 + 4, 13 + 4));
 	addSlot(new Slot(furnace, 1, 52 + 4, 49 + 4));
-	addSlot(new FurnaceResultSlot( std::dynamic_pointer_cast<Player>( inventory->player->shared_from_this() ), furnace, 2, 112 + 4, 31 + 4));
+	addSlot(new FurnaceResultSlot( dynamic_pointer_cast<Player>( inventory->player->shared_from_this() ), furnace, 2, 112 + 4, 31 + 4));
 
 	for (int y = 0; y < 3; y++)
 	{
@@ -44,12 +44,12 @@ void FurnaceMenu::addSlotListener(ContainerListener *listener)
 void FurnaceMenu::broadcastChanges()
 {
 	AbstractContainerMenu::broadcastChanges();
-
+	
 	AUTO_VAR(itEnd, containerListeners->end());
 	for (AUTO_VAR(it, containerListeners->begin()); it != itEnd; it++)
 	{
 		ContainerListener *listener = *it; //containerListeners->at(i);
-		if (tc != furnace->tickCount)
+		if (tc != furnace->tickCount) 
 		{
 			listener->setContainerData(this, 0, furnace->tickCount);
 		}
@@ -57,7 +57,7 @@ void FurnaceMenu::broadcastChanges()
 		{
 			listener->setContainerData(this, 1, furnace->litTime);
 		}
-		if (ld != furnace->litDuration)
+		if (ld != furnace->litDuration) 
 		{
 			listener->setContainerData(this, 2, furnace->litDuration);
 		}
@@ -75,14 +75,14 @@ void FurnaceMenu::setData(int id, int value)
 	if (id == 2) furnace->litDuration = value;
 }
 
-bool FurnaceMenu::stillValid(std::shared_ptr<Player> player)
+bool FurnaceMenu::stillValid(shared_ptr<Player> player)
 {
 	return furnace->stillValid(player);
 }
 
-std::shared_ptr<ItemInstance> FurnaceMenu::quickMoveStack(std::shared_ptr<Player> player, int slotIndex)
+shared_ptr<ItemInstance> FurnaceMenu::quickMoveStack(shared_ptr<Player> player, int slotIndex)
 {
-	std::shared_ptr<ItemInstance> clicked = nullptr;
+	shared_ptr<ItemInstance> clicked = nullptr;
 	Slot *slot = slots->at(slotIndex);
 	//Slot *IngredientSlot = slots->at(INGREDIENT_SLOT);
 
@@ -90,7 +90,7 @@ std::shared_ptr<ItemInstance> FurnaceMenu::quickMoveStack(std::shared_ptr<Player
 
 	if (slot != NULL && slot->hasItem())
 	{
-		std::shared_ptr<ItemInstance> stack = slot->getItem();
+		shared_ptr<ItemInstance> stack = slot->getItem();
 		clicked = stack->copy();
 
 		if (slotIndex == RESULT_SLOT)
@@ -160,11 +160,11 @@ std::shared_ptr<ItemInstance> FurnaceMenu::quickMoveStack(std::shared_ptr<Player
 	return clicked;
 }
 
-std::shared_ptr<ItemInstance> FurnaceMenu::clicked(int slotIndex, int buttonNum, int clickType, std::shared_ptr<Player> player)
+shared_ptr<ItemInstance> FurnaceMenu::clicked(int slotIndex, int buttonNum, int clickType, shared_ptr<Player> player)
 {
 	bool charcoalUsed = furnace->wasCharcoalUsed();
 
-	std::shared_ptr<ItemInstance> out = AbstractContainerMenu::clicked(slotIndex, buttonNum, clickType, player);
+	shared_ptr<ItemInstance> out = AbstractContainerMenu::clicked(slotIndex, buttonNum, clickType, player);
 
 #ifdef _EXTENDED_ACHIEVEMENTS
 	if ( charcoalUsed && (out!=nullptr) && (buttonNum==0 || buttonNum==1) && clickType==CLICK_PICKUP

@@ -19,7 +19,7 @@ void FallingTile::_init()
 	data = 0;
 	time = 0;
 	dropItem = true;
-
+	
 	cancelDrop = false;
 	hurtEntities = false;
 	fallDamageMax = 40;
@@ -134,7 +134,7 @@ void FallingTile::tick()
 				}
 				else
 				{
-					if(dropItem && !cancelDrop) spawnAtLocation( std::shared_ptr<ItemInstance>(new ItemInstance(tile, 1, Tile::tiles[tile]->getSpawnResourcesAuxValue(data))), 0);
+					if(dropItem && !cancelDrop) spawnAtLocation( shared_ptr<ItemInstance>(new ItemInstance(tile, 1, Tile::tiles[tile]->getSpawnResourcesAuxValue(data))), 0);
 				}
 			}
 		}
@@ -153,7 +153,7 @@ void FallingTile::causeFallDamage(float distance)
 		int dmg = Mth::ceil(distance - 1);
 		if (dmg > 0)
 		{
-			vector<std::shared_ptr<Entity> > *entities = level->getEntities(shared_from_this(), bb);
+			vector<shared_ptr<Entity> > *entities = level->getEntities(shared_from_this(), bb);
 			DamageSource *source = tile == Tile::anvil_Id ? DamageSource::anvil : DamageSource::fallingBlock;
 
 			//for (Entity entity : entities)

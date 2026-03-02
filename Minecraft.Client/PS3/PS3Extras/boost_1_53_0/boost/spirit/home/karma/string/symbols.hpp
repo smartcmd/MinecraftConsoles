@@ -21,7 +21,7 @@
 #include <boost/spirit/home/karma/detail/get_casetag.hpp>
 #include <boost/spirit/home/karma/detail/string_generate.hpp>
 #include <boost/config.hpp>
-#include <boost/std::shared_ptr.hpp>
+#include <boost/shared_ptr.hpp>
 #include <boost/mpl/if.hpp>
 #include <map>
 #include <set>
@@ -451,7 +451,7 @@ namespace boost { namespace spirit { namespace karma
 
         adder add;
         remover remove;
-        std::shared_ptr<Lookup> lookup;
+        shared_ptr<Lookup> lookup;
         std::string name_;
     };
 
@@ -710,7 +710,7 @@ namespace boost { namespace spirit { namespace karma
 
         adder add;
         remover remove;
-        std::shared_ptr<Lookup> lookup;
+        shared_ptr<Lookup> lookup;
         std::string name_;
     };
 

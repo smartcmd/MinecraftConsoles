@@ -18,7 +18,7 @@
 #include <boost/asio/detail/config.hpp>
 #include <cstring>
 #include <boost/asio/detail/noncopyable.hpp>
-#include <boost/asio/detail/std::shared_ptr.hpp>
+#include <boost/asio/detail/shared_ptr.hpp>
 
 #include <boost/asio/detail/push_options.hpp>
 
@@ -39,7 +39,7 @@ protected:
   // main, and therefore before any other threads can get started. The do_init
   // instance must be static in this function to ensure that it gets
   // initialised before any other global objects try to use it.
-  BOOST_ASIO_DECL static boost::asio::detail::std::shared_ptr<do_init> instance();
+  BOOST_ASIO_DECL static boost::asio::detail::shared_ptr<do_init> instance();
 };
 
 template <bool Do_Init = true>
@@ -68,7 +68,7 @@ private:
 
   // Reference to singleton do_init object to ensure that openssl does not get
   // cleaned up until the last user has finished with it.
-  boost::asio::detail::std::shared_ptr<do_init> ref_;
+  boost::asio::detail::shared_ptr<do_init> ref_;
 };
 
 template <bool Do_Init>

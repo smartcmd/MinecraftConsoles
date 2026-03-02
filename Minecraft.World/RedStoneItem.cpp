@@ -10,7 +10,7 @@ RedStoneItem::RedStoneItem(int id) : Item(id)
 {
 }
 
-bool RedStoneItem::useOn(std::shared_ptr<ItemInstance> itemInstance, std::shared_ptr<Player> player, Level *level, int x, int y, int z, int face, float clickX, float clickY, float clickZ, bool bTestUseOnOnly)
+bool RedStoneItem::useOn(shared_ptr<ItemInstance> itemInstance, shared_ptr<Player> player, Level *level, int x, int y, int z, int face, float clickX, float clickY, float clickZ, bool bTestUseOnOnly) 
 {
 	// 4J-PB - Adding a test only version to allow tooltips to be displayed
 	if (level->getTile(x, y, z) != Tile::topSnow_Id)
@@ -27,7 +27,7 @@ bool RedStoneItem::useOn(std::shared_ptr<ItemInstance> itemInstance, std::shared
 	if (Tile::redStoneDust->mayPlace(level, x, y, z))
 	{
 		if(!bTestUseOnOnly)
-		{
+		{	
 			// 4J-JEV: Hook for durango 'BlockPlaced' event.
 			player->awardStat(GenericStats::blocksPlaced(Tile::redStoneDust_Id), GenericStats::param_blocksPlaced(Tile::redStoneDust_Id,itemInstance->getAuxValue(),1));
 

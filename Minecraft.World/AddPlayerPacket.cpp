@@ -32,7 +32,7 @@ AddPlayerPacket::~AddPlayerPacket()
 	if(unpack != NULL) delete unpack;
 }
 
-AddPlayerPacket::AddPlayerPacket(std::shared_ptr<Player> player, PlayerUID xuid, PlayerUID OnlineXuid,int xp, int yp, int zp, int yRotp, int xRotp, int yHeadRotp)
+AddPlayerPacket::AddPlayerPacket(shared_ptr<Player> player, PlayerUID xuid, PlayerUID OnlineXuid,int xp, int yp, int zp, int yRotp, int xRotp, int yHeadRotp) 
 {
 	id = player->entityId;
 	name = player->name;
@@ -50,7 +50,7 @@ AddPlayerPacket::AddPlayerPacket(std::shared_ptr<Player> player, PlayerUID xuid,
 
 	//printf("%d: New add player (%f,%f,%f) : (%d,%d,%d) : xRot %d, yRot %d\n",id,player->x,player->y,player->z,x,y,z,xRot,yRot);
 
-	std::shared_ptr<ItemInstance> itemInstance = player->inventory->getSelected();
+	shared_ptr<ItemInstance> itemInstance = player->inventory->getSelected();
 	carriedItem = itemInstance == NULL ? 0 : itemInstance->id;
 
 	this->xuid = xuid;
@@ -72,14 +72,14 @@ void AddPlayerPacket::read(DataInputStream *dis) //throws IOException
 	y = dis->readInt();
 	z = dis->readInt();
 	yRot = dis->readByte();
-	xRot = dis->readByte();
+	xRot = dis->readByte();	
 	yHeadRot = dis->readByte(); // 4J Added
 	carriedItem = dis->readShort();
 	xuid = dis->readPlayerUID();
 	OnlineXuid = dis->readPlayerUID();
 	m_playerIndex = dis->readByte();
 	INT skinId = dis->readInt();
-	m_skinId = *(DWORD *)&skinId;
+	m_skinId = *(DWORD *)&skinId;	
 	INT capeId = dis->readInt();
 	m_capeId = *(DWORD *)&capeId;
 	INT privileges = dis->readInt();
@@ -132,7 +132,7 @@ int AddPlayerPacket::getEstimatedSize()
 	return iSize;
 }
 
-vector<std::shared_ptr<SynchedEntityData::DataItem> > *AddPlayerPacket::getUnpackedData()
+vector<shared_ptr<SynchedEntityData::DataItem> > *AddPlayerPacket::getUnpackedData() 
 {
 	if (unpack == NULL)
 	{

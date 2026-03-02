@@ -111,7 +111,7 @@ bool ProcedureCompoundTask::isCompleted()
 	return allCompleted;
 }
 
-void ProcedureCompoundTask::onCrafted(std::shared_ptr<ItemInstance> item)
+void ProcedureCompoundTask::onCrafted(shared_ptr<ItemInstance> item)
 {
 	AUTO_VAR(itEnd, m_taskSequence.end());
 	for(AUTO_VAR(it, m_taskSequence.begin()); it < itEnd; ++it)
@@ -222,7 +222,7 @@ bool ProcedureCompoundTask::AllowFade()
 	return allowFade;
 }
 
-void ProcedureCompoundTask::useItemOn(Level *level, std::shared_ptr<ItemInstance> item, int x, int y, int z,bool bTestUseOnly)
+void ProcedureCompoundTask::useItemOn(Level *level, shared_ptr<ItemInstance> item, int x, int y, int z,bool bTestUseOnly)
 {
 	AUTO_VAR(itEnd, m_taskSequence.end());
 	for(AUTO_VAR(it, m_taskSequence.begin()); it < itEnd; ++it)
@@ -232,7 +232,7 @@ void ProcedureCompoundTask::useItemOn(Level *level, std::shared_ptr<ItemInstance
 	}
 }
 
-void ProcedureCompoundTask::useItem(std::shared_ptr<ItemInstance> item, bool bTestUseOnly)
+void ProcedureCompoundTask::useItem(shared_ptr<ItemInstance> item, bool bTestUseOnly)
 {
 	AUTO_VAR(itEnd, m_taskSequence.end());
 	for(AUTO_VAR(it, m_taskSequence.begin()); it < itEnd; ++it)
@@ -242,7 +242,7 @@ void ProcedureCompoundTask::useItem(std::shared_ptr<ItemInstance> item, bool bTe
 	}
 }
 
-void ProcedureCompoundTask::onTake(std::shared_ptr<ItemInstance> item, unsigned int invItemCountAnyAux, unsigned int invItemCountThisAux)
+void ProcedureCompoundTask::onTake(shared_ptr<ItemInstance> item, unsigned int invItemCountAnyAux, unsigned int invItemCountThisAux)
 {
 	AUTO_VAR(itEnd, m_taskSequence.end());
 	for(AUTO_VAR(it, m_taskSequence.begin()); it < itEnd; ++it)

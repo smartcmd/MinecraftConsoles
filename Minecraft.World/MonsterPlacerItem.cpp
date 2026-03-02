@@ -18,7 +18,7 @@ MonsterPlacerItem::MonsterPlacerItem(int id) : Item(id)
 	overlay = NULL;
 }
 
-wstring MonsterPlacerItem::getHoverName(std::shared_ptr<ItemInstance> itemInstance)
+wstring MonsterPlacerItem::getHoverName(shared_ptr<ItemInstance> itemInstance)
 {
 	wstring elementName = getDescription();
 
@@ -29,14 +29,14 @@ wstring MonsterPlacerItem::getHoverName(std::shared_ptr<ItemInstance> itemInstan
 		//elementName += " " + I18n.get("entity." + encodeId + ".name");
 	}
 	else
-	{
+	{		
 		elementName = replaceAll(elementName,L"{*CREATURE*}",L"");
 	}
 
 	return elementName;
 }
 
-int MonsterPlacerItem::getColor(std::shared_ptr<ItemInstance> item, int spriteLayer)
+int MonsterPlacerItem::getColor(shared_ptr<ItemInstance> item, int spriteLayer)
 {
 	AUTO_VAR(it, EntityIO::idsSpawnableInCreative.find(item->getAuxValue()));
 	if (it != EntityIO::idsSpawnableInCreative.end())
@@ -65,9 +65,9 @@ Icon *MonsterPlacerItem::getLayerIcon(int auxValue, int spriteLayer)
 }
 
 // 4J-PB - added for dispenser
-std::shared_ptr<Entity> MonsterPlacerItem::canSpawn(int iAuxVal, Level *level, int *piResult)
+shared_ptr<Entity> MonsterPlacerItem::canSpawn(int iAuxVal, Level *level, int *piResult)
 {
-	std::shared_ptr<Entity> newEntity = EntityIO::newById(iAuxVal, level);
+	shared_ptr<Entity> newEntity = EntityIO::newById(iAuxVal, level);
 	if (newEntity != NULL)
 	{
 		bool canSpawn = false;
@@ -166,7 +166,7 @@ std::shared_ptr<Entity> MonsterPlacerItem::canSpawn(int iAuxVal, Level *level, i
 	return nullptr;
 }
 
-bool MonsterPlacerItem::useOn(std::shared_ptr<ItemInstance> itemInstance, std::shared_ptr<Player> player, Level *level, int x, int y, int z, int face, float clickX, float clickY, float clickZ, bool bTestUseOnOnly)
+bool MonsterPlacerItem::useOn(shared_ptr<ItemInstance> itemInstance, shared_ptr<Player> player, Level *level, int x, int y, int z, int face, float clickX, float clickY, float clickZ, bool bTestUseOnOnly)
 {
 	if (level->isClientSide)
 	{
@@ -181,7 +181,7 @@ bool MonsterPlacerItem::useOn(std::shared_ptr<ItemInstance> itemInstance, std::s
 		// 4J Stu - Force adding this as a tile update
 		level->setTile(x,y,z,0);
 		level->setTile(x,y,z,Tile::mobSpawner_Id);
-		std::shared_ptr<MobSpawnerTileEntity> mste = std::dynamic_pointer_cast<MobSpawnerTileEntity>( level->getTileEntity(x,y,z) );
+		shared_ptr<MobSpawnerTileEntity> mste = dynamic_pointer_cast<MobSpawnerTileEntity>( level->getTileEntity(x,y,z) );
 		if(mste != NULL)
 		{
 			mste->setEntityId( EntityIO::getEncodeId(itemInstance->getAuxValue()) );
@@ -193,7 +193,7 @@ bool MonsterPlacerItem::useOn(std::shared_ptr<ItemInstance> itemInstance, std::s
 	x += Facing::STEP_X[face];
 	y += Facing::STEP_Y[face];
 	z += Facing::STEP_Z[face];
-
+	
 	double yOff = 0;
 	// 4J-PB - missing parentheses added
 	if (face == Facing::UP && (tile == Tile::fence_Id || tile == Tile::netherFence_Id))
@@ -211,11 +211,11 @@ bool MonsterPlacerItem::useOn(std::shared_ptr<ItemInstance> itemInstance, std::s
 	}
 
 	if (spawned)
-	{
+	{		
 		if (!player->abilities.instabuild)
 		{
 			itemInstance->count--;
-		}
+		}		
 	}
 	else
 	{
@@ -254,20 +254,20 @@ bool MonsterPlacerItem::useOn(std::shared_ptr<ItemInstance> itemInstance, std::s
 	return true;
 }
 
-std::shared_ptr<Entity> MonsterPlacerItem::spawnMobAt(Level *level, int mobId, double x, double y, double z, int *piResult)
+shared_ptr<Entity> MonsterPlacerItem::spawnMobAt(Level *level, int mobId, double x, double y, double z, int *piResult)
 {
 	if (EntityIO::idsSpawnableInCreative.find(mobId) == EntityIO::idsSpawnableInCreative.end())
 	{
 		return nullptr;
 	}
 
-	std::shared_ptr<Entity> newEntity = nullptr;
+	shared_ptr<Entity> newEntity = nullptr;
 
 	for (int i = 0; i < SPAWN_COUNT; i++)
 	{
 		newEntity = canSpawn(mobId, level, piResult);
 
-		std::shared_ptr<Mob> mob = std::dynamic_pointer_cast<Mob>(newEntity);
+		shared_ptr<Mob> mob = dynamic_pointer_cast<Mob>(newEntity);
 		if (mob)
 		{
 			newEntity->moveTo(x, y, z, Mth::wrapDegrees(level->random->nextFloat() * 360), 0);

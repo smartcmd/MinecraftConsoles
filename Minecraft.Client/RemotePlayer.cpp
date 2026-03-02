@@ -66,7 +66,7 @@ void RemotePlayer::tick()
 
 	if (!hasStartedUsingItem && isUsingItemFlag() && inventory->items[inventory->selected] != NULL)
 	{
-		std::shared_ptr<ItemInstance> item = inventory->items[inventory->selected];
+		shared_ptr<ItemInstance> item = inventory->items[inventory->selected];
 		startUsingItem(inventory->items[inventory->selected], Item::items[item->id]->getUseDuration(item));
 		hasStartedUsingItem = true;
 	}
@@ -129,7 +129,7 @@ void RemotePlayer::aiStep()
 }
 
 // 4J Stu - Brought forward change from 1.3 to fix #64688 - Customer Encountered: TU7: Content: Art: Aura of enchanted item is not displayed for other players in online game
-void RemotePlayer::setEquippedSlot(int slot, std::shared_ptr<ItemInstance> item)
+void RemotePlayer::setEquippedSlot(int slot, shared_ptr<ItemInstance> item)
 {
     if (slot == 0)
 	{

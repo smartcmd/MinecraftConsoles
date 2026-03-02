@@ -7,9 +7,9 @@
 #include "net.minecraft.world.item.enchantment.h"
 #include "EnchantmentMenu.h"
 
-EnchantmentMenu::EnchantmentMenu(std::shared_ptr<Inventory> inventory, Level *level, int xt, int yt, int zt)
+EnchantmentMenu::EnchantmentMenu(shared_ptr<Inventory> inventory, Level *level, int xt, int yt, int zt)
 {
-	enchantSlots = std::shared_ptr<EnchantmentContainer>( new EnchantmentContainer(this) );
+	enchantSlots = shared_ptr<EnchantmentContainer>( new EnchantmentContainer(this) );
 
 	for(int i = 0; i < 3; ++i)
 	{
@@ -77,9 +77,9 @@ void EnchantmentMenu::setData(int id, int value)
 	}
 }
 
-void EnchantmentMenu::slotsChanged() // 4J used to take a std::shared_ptr<Container> container but wasn't using it, so removed to simplify things
+void EnchantmentMenu::slotsChanged() // 4J used to take a shared_ptr<Container> container but wasn't using it, so removed to simplify things
 {
-	std::shared_ptr<ItemInstance> item = enchantSlots->getItem(0);
+	shared_ptr<ItemInstance> item = enchantSlots->getItem(0);
 
 	if (item == NULL || !item->isEnchantable())
 	{
@@ -150,9 +150,9 @@ void EnchantmentMenu::slotsChanged() // 4J used to take a std::shared_ptr<Contai
 	}
 }
 
-bool EnchantmentMenu::clickMenuButton(std::shared_ptr<Player> player, int i)
+bool EnchantmentMenu::clickMenuButton(shared_ptr<Player> player, int i)
 {
-	std::shared_ptr<ItemInstance> item = enchantSlots->getItem(0);
+	shared_ptr<ItemInstance> item = enchantSlots->getItem(0);
 	if (costs[i] > 0 && item != NULL && (player->experienceLevel >= costs[i] || player->abilities.instabuild) )
 	{
 		if (!level->isClientSide)
@@ -194,34 +194,34 @@ bool EnchantmentMenu::clickMenuButton(std::shared_ptr<Player> player, int i)
 }
 
 
-void EnchantmentMenu::removed(std::shared_ptr<Player> player)
+void EnchantmentMenu::removed(shared_ptr<Player> player)
 {
 	AbstractContainerMenu::removed(player);
 	if (level->isClientSide) return;
 
-	std::shared_ptr<ItemInstance> item = enchantSlots->removeItemNoUpdate(0);
+	shared_ptr<ItemInstance> item = enchantSlots->removeItemNoUpdate(0);
 	if (item != NULL)
 	{
 		player->drop(item);
 	}
 }
 
-bool EnchantmentMenu::stillValid(std::shared_ptr<Player> player)
+bool EnchantmentMenu::stillValid(shared_ptr<Player> player) 
 {
 	if (level->getTile(x, y, z) != Tile::enchantTable_Id) return false;
 	if (player->distanceToSqr(x + 0.5, y + 0.5, z + 0.5) > 8 * 8) return false;
 	return true;
 }
 
-std::shared_ptr<ItemInstance> EnchantmentMenu::quickMoveStack(std::shared_ptr<Player> player, int slotIndex)
+shared_ptr<ItemInstance> EnchantmentMenu::quickMoveStack(shared_ptr<Player> player, int slotIndex)
 {
-	std::shared_ptr<ItemInstance> clicked = nullptr;
+	shared_ptr<ItemInstance> clicked = nullptr;
 	Slot *slot = slots->at(slotIndex);
 	Slot *IngredientSlot = slots->at(INGREDIENT_SLOT);
 
 	if (slot != NULL && slot->hasItem())
 	{
-		std::shared_ptr<ItemInstance> stack = slot->getItem();
+		shared_ptr<ItemInstance> stack = slot->getItem();
 		clicked = stack->copy();
 
 		if (slotIndex == INGREDIENT_SLOT)
@@ -238,8 +238,8 @@ std::shared_ptr<ItemInstance> EnchantmentMenu::quickMoveStack(std::shared_ptr<Pl
 		else if (slotIndex >= INV_SLOT_START && slotIndex < INV_SLOT_END)
 		{
 			// if the item is an enchantable tool
-
-			if(stack->isEnchantable() && (!IngredientSlot->hasItem() )  )
+			
+			if(stack->isEnchantable() && (!IngredientSlot->hasItem() )  ) 
 			{
 				if(!moveItemStackTo(stack, INGREDIENT_SLOT, INGREDIENT_SLOT+1, false))
 				{
@@ -258,7 +258,7 @@ std::shared_ptr<ItemInstance> EnchantmentMenu::quickMoveStack(std::shared_ptr<Pl
 		{
 			// if the item is an enchantable tool
 
-			if(stack->isEnchantable() && (!IngredientSlot->hasItem() )  )
+			if(stack->isEnchantable() && (!IngredientSlot->hasItem() )  ) 
 			{
 				if(!moveItemStackTo(stack, INGREDIENT_SLOT, INGREDIENT_SLOT+1, false))
 				{

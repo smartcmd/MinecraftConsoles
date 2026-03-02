@@ -41,10 +41,10 @@ public:
 	virtual ~FurnaceTileEntity();
 
 	virtual unsigned int getContainerSize();
-	virtual std::shared_ptr<ItemInstance> getItem(unsigned int slot);
-	virtual std::shared_ptr<ItemInstance> removeItem(unsigned int slot, int count);
-	virtual std::shared_ptr<ItemInstance> removeItemNoUpdate(int slot);
-	virtual void setItem(unsigned int slot, std::shared_ptr<ItemInstance> item);
+	virtual shared_ptr<ItemInstance> getItem(unsigned int slot);
+	virtual shared_ptr<ItemInstance> removeItem(unsigned int slot, int count);
+	virtual shared_ptr<ItemInstance> removeItemNoUpdate(int slot);
+	virtual void setItem(unsigned int slot, shared_ptr<ItemInstance> item);
 	virtual int getName();
 	virtual void load(CompoundTag *base);
 	virtual void save(CompoundTag *base);
@@ -60,18 +60,18 @@ private:
 public:
 	void burn();
 
-	static int getBurnDuration(std::shared_ptr<ItemInstance> itemInstance);
-	static bool isFuel(std::shared_ptr<ItemInstance> item);
+	static int getBurnDuration(shared_ptr<ItemInstance> itemInstance);
+	static bool isFuel(shared_ptr<ItemInstance> item);
 
 public:
-	virtual bool stillValid(std::shared_ptr<Player> player);
+	virtual bool stillValid(shared_ptr<Player> player);
 	virtual void setChanged();
 
     void startOpen();
     void stopOpen();
 
 	// 4J Added
-	virtual std::shared_ptr<TileEntity> clone();
+	virtual shared_ptr<TileEntity> clone();
 
 	// 4J-JEV: Added for 'Renewable Energy' achievement.
 	bool wasCharcoalUsed() { return m_charcoalUsed; }

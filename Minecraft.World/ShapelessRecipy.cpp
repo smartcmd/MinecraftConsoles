@@ -1,7 +1,7 @@
 // package net.minecraft.world.item.crafting;
-//
+// 
 // import java.util.*;
-//
+// 
 // import net.minecraft.world.inventory.CraftingContainer;
 // import net.minecraft.world.item.ItemInstance;
 #include "stdafx.h"
@@ -19,27 +19,27 @@ ShapelessRecipy::ShapelessRecipy(ItemInstance *result, vector<ItemInstance *> *i
 {
 }
 
-const int ShapelessRecipy::getGroup()
-{
+const int ShapelessRecipy::getGroup() 
+{	
 	return group;
 }
 
-const ItemInstance *ShapelessRecipy::getResultItem()
+const ItemInstance *ShapelessRecipy::getResultItem() 
 {
 	return result;
 }
 
-bool ShapelessRecipy::matches(std::shared_ptr<CraftingContainer> craftSlots, Level *level)
+bool ShapelessRecipy::matches(shared_ptr<CraftingContainer> craftSlots, Level *level) 
 {
 	vector <ItemInstance *> tempList = *ingredients;
-
-	for (int y = 0; y < 3; y++)
+	
+	for (int y = 0; y < 3; y++) 
 	{
-		for (int x = 0; x < 3; x++)
+		for (int x = 0; x < 3; x++) 
 		{
-			std::shared_ptr<ItemInstance> item = craftSlots->getItem(x, y);
+			shared_ptr<ItemInstance> item = craftSlots->getItem(x, y);
 
-			if (item != NULL)
+			if (item != NULL) 
 			{
 				bool found = false;
 
@@ -47,7 +47,7 @@ bool ShapelessRecipy::matches(std::shared_ptr<CraftingContainer> craftSlots, Lev
 				for (AUTO_VAR(cit, ingredients->begin()); cit != citEnd; ++cit)
 				{
 					ItemInstance *ingredient = *cit;
-					if (item->id == ingredient->id && (ingredient->getAuxValue() == Recipes::ANY_AUX_VALUE || item->getAuxValue() == ingredient->getAuxValue()))
+					if (item->id == ingredient->id && (ingredient->getAuxValue() == Recipes::ANY_AUX_VALUE || item->getAuxValue() == ingredient->getAuxValue())) 
 					{
 						found = true;
 						AUTO_VAR( it, find(tempList.begin(), tempList.end(), ingredient ) );
@@ -56,7 +56,7 @@ bool ShapelessRecipy::matches(std::shared_ptr<CraftingContainer> craftSlots, Lev
 					}
 				}
 
-				if (!found)
+				if (!found) 
 				{
 					return false;
 				}
@@ -67,18 +67,18 @@ bool ShapelessRecipy::matches(std::shared_ptr<CraftingContainer> craftSlots, Lev
 	return tempList.empty();
 }
 
-std::shared_ptr<ItemInstance> ShapelessRecipy::assemble(std::shared_ptr<CraftingContainer> craftSlots)
+shared_ptr<ItemInstance> ShapelessRecipy::assemble(shared_ptr<CraftingContainer> craftSlots) 
 {
 	return result->copy();
 }
 
-int ShapelessRecipy::size()
+int ShapelessRecipy::size() 
 {
 	return (int)ingredients->size();
 }
 
 // 4J-PB
-bool ShapelessRecipy::requires(int iRecipe)
+bool ShapelessRecipy::requires(int iRecipe) 
 {
 	vector <ItemInstance *> *tempList = new vector<ItemInstance *>;
 
@@ -91,7 +91,7 @@ bool ShapelessRecipy::requires(int iRecipe)
 	for (vector<ItemInstance *>::iterator ingredient = ingredients->begin(); ingredient != citEnd; ingredient++)
 	{
 		//printf("\tIngredient %d is %d\n",iCount++,(*ingredient)->id);
-		//if (item->id == (*ingredient)->id && ((*ingredient)->getAuxValue() == Recipes::ANY_AUX_VALUE || item->getAuxValue() == (*ingredient)->getAuxValue()))
+		//if (item->id == (*ingredient)->id && ((*ingredient)->getAuxValue() == Recipes::ANY_AUX_VALUE || item->getAuxValue() == (*ingredient)->getAuxValue())) 
 		tempList->erase(ingredient);
 	}
 
@@ -99,7 +99,7 @@ bool ShapelessRecipy::requires(int iRecipe)
 	return false;
 }
 
-void ShapelessRecipy::requires(INGREDIENTS_REQUIRED *pIngReq)
+void ShapelessRecipy::requires(INGREDIENTS_REQUIRED *pIngReq) 
 {
 	int iCount=0;
 	bool bFound;
@@ -125,8 +125,8 @@ void ShapelessRecipy::requires(INGREDIENTS_REQUIRED *pIngReq)
 	{
 		ItemInstance *expected = *ingredient;
 
-		if (expected!=NULL)
-		{
+		if (expected!=NULL) 
+		{			
 			int iAuxVal = (*ingredient)->getAuxValue();
 			TempIngReq.uiGridA[iCount++]=expected->id | iAuxVal<<24;
 			// 4J-PB - put the ingredients in boxes 1,2,4,5 so we can see them in a 2x2 crafting screen

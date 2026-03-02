@@ -2,7 +2,7 @@
 #include "net.minecraft.network.packet.h"
 #include "TileDestructionPacket.h"
 
-TileDestructionPacket::TileDestructionPacket()
+TileDestructionPacket::TileDestructionPacket() 
 {
 	id = 0;
 	x = 0;
@@ -78,8 +78,8 @@ bool TileDestructionPacket::canBeInvalidated()
 	return true;
 }
 
-bool TileDestructionPacket::isInvalidatedBy(std::shared_ptr<Packet> packet)
+bool TileDestructionPacket::isInvalidatedBy(shared_ptr<Packet> packet)
 {
-	std::shared_ptr<TileDestructionPacket> target = std::dynamic_pointer_cast<TileDestructionPacket>(packet);
+	shared_ptr<TileDestructionPacket> target = dynamic_pointer_cast<TileDestructionPacket>(packet);
 	return target->id == id;
 }

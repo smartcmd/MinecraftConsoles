@@ -100,15 +100,15 @@ private:
 	bool hasGapsToCheck;
 public:
 
-    unordered_map<TilePos, std::shared_ptr<TileEntity>, TilePosKeyHash, TilePosKeyEq> tileEntities;
-    vector<std::shared_ptr<Entity> > **entityBlocks;
-
+    unordered_map<TilePos, shared_ptr<TileEntity>, TilePosKeyHash, TilePosKeyEq> tileEntities;
+    vector<shared_ptr<Entity> > **entityBlocks;
+	
 	static const int sTerrainPopulatedFromHere		= 2;
 	static const int sTerrainPopulatedFromW			= 4;
 	static const int sTerrainPopulatedFromS			= 8;
 	static const int sTerrainPopulatedFromSW		= 16;
 	static const int sTerrainPopulatedAllAffecting	= 30;			// All the post-processing that can actually place tiles in this chunk are complete
-	static const int sTerrainPopulatedFromNW		= 32;
+	static const int sTerrainPopulatedFromNW		= 32;		
 	static const int sTerrainPopulatedFromN			= 64;
 	static const int sTerrainPopulatedFromNE		= 128;
 	static const int sTerrainPopulatedFromE			= 256;
@@ -134,8 +134,8 @@ public:
 	void stopSharingTilesAndData();					// 4J added
 	virtual void reSyncLighting();					// 4J added
 	void startSharingTilesAndData(int forceMs = 0);	// 4J added
-	int64_t lastUnsharedTime;						// 4J added
-    int64_t lastSaveTime;
+	__int64 lastUnsharedTime;						// 4J added
+    __int64 lastSaveTime;
 	bool seenByPlayer;
 
 #ifdef _LARGE_WORLDS
@@ -188,14 +188,14 @@ public:
 	virtual void getNeighbourBrightnesses(int *brightnesses, LightLayer::variety layer, int x, int y, int z);	// 4J added
     virtual void setBrightness(LightLayer::variety layer, int x, int y, int z, int brightness);
     virtual int getRawBrightness(int x, int y, int z, int skyDampen);
-    virtual void addEntity(std::shared_ptr<Entity> e);
-    virtual void removeEntity(std::shared_ptr<Entity> e);
-    virtual void removeEntity(std::shared_ptr<Entity> e, int yc);
+    virtual void addEntity(shared_ptr<Entity> e);
+    virtual void removeEntity(shared_ptr<Entity> e);
+    virtual void removeEntity(shared_ptr<Entity> e, int yc);
     virtual bool isSkyLit(int x, int y, int z);
     virtual void skyBrightnessChanged();
-    virtual std::shared_ptr<TileEntity> getTileEntity(int x, int y, int z);
-    virtual void addTileEntity(std::shared_ptr<TileEntity> te);
-    virtual void setTileEntity(int x, int y, int z, std::shared_ptr<TileEntity> tileEntity);
+    virtual shared_ptr<TileEntity> getTileEntity(int x, int y, int z);
+    virtual void addTileEntity(shared_ptr<TileEntity> te);
+    virtual void setTileEntity(int x, int y, int z, shared_ptr<TileEntity> tileEntity);
     virtual void removeTileEntity(int x, int y, int z);
     virtual void load();
     virtual void unload(bool unloadTileEntities) ;	// 4J - added parameter
@@ -203,8 +203,8 @@ public:
 	virtual bool isUnloaded();
 #endif
     virtual void markUnsaved();
-    virtual void getEntities(std::shared_ptr<Entity> except, AABB *bb, vector<std::shared_ptr<Entity> > &es);
-	virtual void getEntitiesOfClass(const type_info& ec, AABB *bb, vector<std::shared_ptr<Entity> > &es);
+    virtual void getEntities(shared_ptr<Entity> except, AABB *bb, vector<shared_ptr<Entity> > &es);
+	virtual void getEntitiesOfClass(const type_info& ec, AABB *bb, vector<shared_ptr<Entity> > &es);
     virtual int countEntities();
     virtual bool shouldSave(bool force);
     virtual int getBlocksAndData(byteArray *data, int x0, int y0, int z0, int x1, int y1, int z1, int p, bool includeLighting = true);	// 4J - added includeLighting parameter
@@ -213,7 +213,7 @@ public:
 	virtual bool testSetBlocksAndData(byteArray data, int x0, int y0, int z0, int x1, int y1, int z1, int p);	// 4J added
 	virtual void setCheckAllLight();
 
-    virtual Random *getRandom(int64_t l);
+    virtual Random *getRandom(__int64 l);
     virtual bool isEmpty();
     virtual void attemptCompression();
 
@@ -238,9 +238,9 @@ public:
 	byteArray getBiomes();
 	void setBiomes(byteArray biomes);
 	bool biomeHasRain(int x, int z);	// 4J added
-	bool biomeHasSnow(int x, int z);	// 4J added
+	bool biomeHasSnow(int x, int z);	// 4J added	
 private:
-	void updateBiomeFlags(int x, int z);	// 4J added
+	void updateBiomeFlags(int x, int z);	// 4J added	
 public:
 	void compressLighting();		// 4J added
 	void compressBlocks();			// 4J added

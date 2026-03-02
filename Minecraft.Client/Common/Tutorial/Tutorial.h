@@ -11,7 +11,7 @@ using namespace std;
 // #define TUTORIAL_MINIMUM_DISPLAY_MESSAGE_TIME 2000
 // #define TUTORIAL_REMINDER_TIME (TUTORIAL_DISPLAY_MESSAGE_TIME + 20000)
 // #define TUTORIAL_CONSTRAINT_DELAY_REMOVE_TICKS 15
-//
+// 
 // // 0-24000
 // #define TUTORIAL_FREEZE_TIME_VALUE 8000
 
@@ -151,19 +151,19 @@ public:
 
 	void showTutorialPopup(bool show);
 
-	void useItemOn(Level *level, std::shared_ptr<ItemInstance> item, int x, int y, int z,bool bTestUseOnly=false);
-	void useItemOn(std::shared_ptr<ItemInstance> item, bool bTestUseOnly=false);
-	void completeUsingItem(std::shared_ptr<ItemInstance> item);
-	void startDestroyBlock(std::shared_ptr<ItemInstance> item, Tile *tile);
+	void useItemOn(Level *level, shared_ptr<ItemInstance> item, int x, int y, int z,bool bTestUseOnly=false);
+	void useItemOn(shared_ptr<ItemInstance> item, bool bTestUseOnly=false);
+	void completeUsingItem(shared_ptr<ItemInstance> item);
+	void startDestroyBlock(shared_ptr<ItemInstance> item, Tile *tile);
 	void destroyBlock(Tile *tile);
-	void attack(std::shared_ptr<Player> player, std::shared_ptr<Entity> entity);
-	void itemDamaged(std::shared_ptr<ItemInstance> item);
+	void attack(shared_ptr<Player> player, shared_ptr<Entity> entity);
+	void itemDamaged(shared_ptr<ItemInstance> item);
 
 	void handleUIInput(int iAction);
-	void createItemSelected(std::shared_ptr<ItemInstance> item, bool canMake);
-	void onCrafted(std::shared_ptr<ItemInstance> item);
-	void onTake(std::shared_ptr<ItemInstance> item, unsigned int invItemCountAnyAux, unsigned int invItemCountThisAux);
-	void onSelectedItemChanged(std::shared_ptr<ItemInstance> item);
+	void createItemSelected(shared_ptr<ItemInstance> item, bool canMake);
+	void onCrafted(shared_ptr<ItemInstance> item);
+	void onTake(shared_ptr<ItemInstance> item, unsigned int invItemCountAnyAux, unsigned int invItemCountThisAux);
+	void onSelectedItemChanged(shared_ptr<ItemInstance> item);
 	void onLookAt(int id, int iData=0);
 	void onLookAtEntity(eINSTANCEOF type);
 	void onEffectChanged(MobEffect *effect, bool bRemoved=false);

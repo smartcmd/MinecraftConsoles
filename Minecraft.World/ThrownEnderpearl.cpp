@@ -16,7 +16,7 @@ ThrownEnderpearl::ThrownEnderpearl(Level *level) : Throwable(level)
 	this->defineSynchedData();
 }
 
-ThrownEnderpearl::ThrownEnderpearl(Level *level, std::shared_ptr<Mob> mob) : Throwable(level,mob)
+ThrownEnderpearl::ThrownEnderpearl(Level *level, shared_ptr<Mob> mob) : Throwable(level,mob)
 {
 	// 4J Stu - This function call had to be moved here from the Entity ctor to ensure that
 	// the derived version of the function is called
@@ -47,7 +47,7 @@ void ThrownEnderpearl::onHit(HitResult *res)
 	{
 		// Fix for #67486 - TCR #001: BAS Game Stability: Customer Encountered: TU8: Code: Gameplay: The title crashes on Host's console when Client Player leaves the game before the Ender Pearl thrown by him touches the ground.
 		// If the owner has been removed, then ignore
-		std::shared_ptr<ServerPlayer> serverPlayer = std::dynamic_pointer_cast<ServerPlayer>(owner);
+		shared_ptr<ServerPlayer> serverPlayer = dynamic_pointer_cast<ServerPlayer>(owner);
 		if (serverPlayer != NULL && !serverPlayer->removed)
 		{
 			if(!serverPlayer->connection->done && serverPlayer->level == this->level)

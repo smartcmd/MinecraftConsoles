@@ -23,11 +23,11 @@ void ItemFrameRenderer::registerTerrainTextures(IconRegister *iconRegister)
 	backTexture = iconRegister->registerIcon(L"itemframe_back");
 }
 
-void ItemFrameRenderer::render(std::shared_ptr<Entity>  _itemframe, double x, double y, double z, float rot, float a)
+void ItemFrameRenderer::render(shared_ptr<Entity>  _itemframe, double x, double y, double z, float rot, float a) 
 {
-	// 4J - original version used generics and thus had an input parameter of type EnderCrystal rather than std::shared_ptr<Entity>  we have here -
+	// 4J - original version used generics and thus had an input parameter of type EnderCrystal rather than shared_ptr<Entity>  we have here - 
 	// do some casting around instead
-	std::shared_ptr<ItemFrame> itemFrame = std::dynamic_pointer_cast<ItemFrame>(_itemframe);
+	shared_ptr<ItemFrame> itemFrame = dynamic_pointer_cast<ItemFrame>(_itemframe);
 
 	glPushMatrix();
 	float xOffs = (float) (itemFrame->x - x) - 0.5f;
@@ -47,7 +47,7 @@ void ItemFrameRenderer::render(std::shared_ptr<Entity>  _itemframe, double x, do
 }
 
 
-void ItemFrameRenderer::drawFrame(std::shared_ptr<ItemFrame> itemFrame)
+void ItemFrameRenderer::drawFrame(shared_ptr<ItemFrame> itemFrame) 
 {
 	Minecraft *pMinecraft=Minecraft::GetInstance();
 
@@ -102,14 +102,14 @@ void ItemFrameRenderer::drawFrame(std::shared_ptr<ItemFrame> itemFrame)
 	glPopMatrix();
 }
 
-void ItemFrameRenderer::drawItem(std::shared_ptr<ItemFrame> entity)
+void ItemFrameRenderer::drawItem(shared_ptr<ItemFrame> entity) 
 {
 	Minecraft *pMinecraft=Minecraft::GetInstance();
 
-	std::shared_ptr<ItemInstance> instance = entity->getItem();
+	shared_ptr<ItemInstance> instance = entity->getItem();
 	if (instance == NULL) return;
 
-	std::shared_ptr<ItemEntity> itemEntity = std::shared_ptr<ItemEntity>(new ItemEntity(entity->level, 0, 0, 0, instance));
+	shared_ptr<ItemEntity> itemEntity = shared_ptr<ItemEntity>(new ItemEntity(entity->level, 0, 0, 0, instance));
 	itemEntity->getItem()->count = 1;
 	itemEntity->bobOffs = 0;
 
@@ -119,7 +119,7 @@ void ItemFrameRenderer::drawItem(std::shared_ptr<ItemFrame> entity)
 	glRotatef(180 + entity->yRot, 0, 1, 0);
 	glRotatef(-90 * entity->getRotation(), 0, 0, 1);
 
-	switch (entity->getRotation())
+	switch (entity->getRotation()) 
 	{
 	case 1:
 		glTranslatef(-0.16f, -0.16f, 0);
@@ -132,7 +132,7 @@ void ItemFrameRenderer::drawItem(std::shared_ptr<ItemFrame> entity)
 		break;
 	}
 
-	if (itemEntity->getItem()->getItem() == Item::map)
+	if (itemEntity->getItem()->getItem() == Item::map) 
 	{
 		entityRenderDispatcher->textures->bindTexture(TN_MISC_MAPBG);
 		Tesselator *t = Tesselator::getInstance();
@@ -150,13 +150,13 @@ void ItemFrameRenderer::drawItem(std::shared_ptr<ItemFrame> entity)
 		t->vertexUV(0 - vo, 0 - vo, 0, 0, 0);
 		t->end();
 
- 		std::shared_ptr<MapItemSavedData> data = Item::map->getSavedData(itemEntity->getItem(), entity->level);
- 		if (data != NULL)
+ 		shared_ptr<MapItemSavedData> data = Item::map->getSavedData(itemEntity->getItem(), entity->level);
+ 		if (data != NULL) 
  		{
 			entityRenderDispatcher->itemInHandRenderer->minimap->render(nullptr, entityRenderDispatcher->textures, data, entity->entityId);
  		}
-	}
-	else
+	} 
+	else 
 	{
 		if (itemEntity->getItem()->getItem() == Item::compass)
 		{
@@ -178,7 +178,7 @@ void ItemFrameRenderer::drawItem(std::shared_ptr<ItemFrame> entity)
 			ct->cycleFrames();
 		}
 	}
-
+	
 	glPopMatrix();
 }
 

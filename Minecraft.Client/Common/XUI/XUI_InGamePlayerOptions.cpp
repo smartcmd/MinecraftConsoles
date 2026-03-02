@@ -141,7 +141,7 @@ HRESULT CScene_InGamePlayerOptions::OnInit( XUIMessageInit* pInitData, BOOL& bHa
 			m_checkboxes[eControl_HostInvisible].SetText( app.GetString(IDS_CAN_INVISIBLE) );
 			m_checkboxes[eControl_HostInvisible].SetCheck(checked);
 
-
+			
 			bool inCreativeMode = Player::getPlayerGamePrivilege(m_playerPrivileges,Player::ePlayerGamePrivilege_CreativeMode) != 0;
 			if(inCreativeMode)
 			{
@@ -191,7 +191,7 @@ HRESULT CScene_InGamePlayerOptions::OnInit( XUIMessageInit* pInitData, BOOL& bHa
 
 	ui.SetTooltips( m_iPad, IDS_TOOLTIPS_SELECT,IDS_TOOLTIPS_BACK);
 
-	CXuiSceneBase::ShowLogo( m_iPad, FALSE );
+	CXuiSceneBase::ShowLogo( m_iPad, FALSE );	
 
 	g_NetworkManager.RegisterPlayerChangedCallback(m_iPad, &CScene_InGamePlayerOptions::OnPlayerChanged, this);
 
@@ -276,11 +276,11 @@ HRESULT CScene_InGamePlayerOptions::OnKeyDown(XUIMessageInput* pInputData, BOOL&
 			if(originalPrivileges != m_playerPrivileges)
 			{
 				// Send update settings packet to server
-				Minecraft *pMinecraft = Minecraft::GetInstance();
-				std::shared_ptr<MultiplayerLocalPlayer> player = pMinecraft->localplayers[m_iPad];
+				Minecraft *pMinecraft = Minecraft::GetInstance();				
+				shared_ptr<MultiplayerLocalPlayer> player = pMinecraft->localplayers[m_iPad];
 				if(player != NULL && player->connection)
 				{
-					player->connection->send( std::shared_ptr<PlayerInfoPacket>( new PlayerInfoPacket( m_networkSmallId, -1, m_playerPrivileges) ) );
+					player->connection->send( shared_ptr<PlayerInfoPacket>( new PlayerInfoPacket( m_networkSmallId, -1, m_playerPrivileges) ) );
 				}
 			}
 
@@ -334,12 +334,12 @@ int CScene_InGamePlayerOptions::KickPlayerReturned(void *pParam,int iPad,C4JStor
 	delete pParam;
 
 	if(result==C4JStorage::EMessage_ResultAccept)
-	{
+	{		
 		Minecraft *pMinecraft = Minecraft::GetInstance();
-		std::shared_ptr<MultiplayerLocalPlayer> localPlayer = pMinecraft->localplayers[iPad];
+		shared_ptr<MultiplayerLocalPlayer> localPlayer = pMinecraft->localplayers[iPad];
 		if(localPlayer != NULL && localPlayer->connection)
 		{
-			localPlayer->connection->send( std::shared_ptr<KickPlayerPacket>( new KickPlayerPacket(smallId) ) );
+			localPlayer->connection->send( shared_ptr<KickPlayerPacket>( new KickPlayerPacket(smallId) ) );
 		}
 
 		// Fix for #61494 - [CRASH]: TU7: Code: Multiplayer: Title may crash while kicking a player from an online game.
@@ -478,22 +478,22 @@ void CScene_InGamePlayerOptions::resetCheatCheckboxes()
 	if (!m_editingSelf)
 	{
 		m_checkboxes[eControl_HostInvisible].SetEnable(isModerator);
-		m_checkboxes[eControl_HostInvisible].SetCheck( isModerator
+		m_checkboxes[eControl_HostInvisible].SetCheck( isModerator 
 												&& (Player::getPlayerGamePrivilege(m_playerPrivileges, Player::ePlayerGamePrivilege_CanToggleInvisible) != 0) );
 
 		// NOT CREATIVE MODE.
 		{
 			m_checkboxes[eControl_HostFly].SetEnable(isModerator);
-			m_checkboxes[eControl_HostFly].SetCheck( isModerator
+			m_checkboxes[eControl_HostFly].SetCheck( isModerator 
 													&& (Player::getPlayerGamePrivilege(m_playerPrivileges, Player::ePlayerGamePrivilege_CanToggleFly) != 0) );
 
 			m_checkboxes[eControl_HostHunger].SetEnable(isModerator);
-			m_checkboxes[eControl_HostHunger].SetCheck( isModerator
+			m_checkboxes[eControl_HostHunger].SetCheck( isModerator 
 													&& (Player::getPlayerGamePrivilege(m_playerPrivileges, Player::ePlayerGamePrivilege_CanToggleClassicHunger) != 0) );
 		}
 
 		m_checkboxes[eControl_CheatTeleport].SetEnable(isModerator);
-		m_checkboxes[eControl_CheatTeleport].SetCheck( isModerator
+		m_checkboxes[eControl_CheatTeleport].SetCheck( isModerator 
 												&& (Player::getPlayerGamePrivilege(m_playerPrivileges, Player::ePlayerGamePrivilege_CanTeleport) != 0) );
 	}
 }

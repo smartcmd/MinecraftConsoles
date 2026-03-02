@@ -85,7 +85,7 @@ void UIScene_SignEntryMenu::tick()
 		for(int i=0;i<4;i++)
 		{
 			wstring temp=m_textInputLines[i].getLabel();
-			m_sign->SetMessage(i,temp);
+			m_sign->SetMessage(i,temp);		
 		}
 
 		m_sign->setChanged();
@@ -94,10 +94,10 @@ void UIScene_SignEntryMenu::tick()
 		// need to send the new data
 		if (pMinecraft->level->isClientSide)
 		{
-			std::shared_ptr<MultiplayerLocalPlayer> player = pMinecraft->localplayers[m_iPad];
+			shared_ptr<MultiplayerLocalPlayer> player = pMinecraft->localplayers[m_iPad];
 			if(player != NULL && player->connection && player->connection->isStarted())
 			{
-				player->connection->send( std::shared_ptr<SignUpdatePacket>( new SignUpdatePacket(m_sign->x, m_sign->y, m_sign->z, m_sign->IsVerified(), m_sign->IsCensored(), m_sign->GetMessages()) ) );
+				player->connection->send( shared_ptr<SignUpdatePacket>( new SignUpdatePacket(m_sign->x, m_sign->y, m_sign->z, m_sign->IsVerified(), m_sign->IsCensored(), m_sign->GetMessages()) ) );
 			}
 		}
 		ui.CloseUIScenes(m_iPad);

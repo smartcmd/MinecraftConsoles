@@ -11,10 +11,10 @@ private:
 	int xt, yt, zt;
 
 public:
-	RepairResultSlot(RepairMenu *menu, int xt, int yt, int zt, std::shared_ptr<Container> container, int slot, int x, int y);
+	RepairResultSlot(RepairMenu *menu, int xt, int yt, int zt, shared_ptr<Container> container, int slot, int x, int y);
 
-	bool mayPlace(std::shared_ptr<ItemInstance> item);
-	bool mayPickup(std::shared_ptr<Player> player);
-	void onTake(std::shared_ptr<Player> player, std::shared_ptr<ItemInstance> carried);
-	virtual bool mayCombine(std::shared_ptr<ItemInstance> item); // 4J Added
+	bool mayPlace(shared_ptr<ItemInstance> item);
+	bool mayPickup(shared_ptr<Player> player);
+	void onTake(shared_ptr<Player> player, shared_ptr<ItemInstance> carried);
+	virtual bool mayCombine(shared_ptr<ItemInstance> item); // 4J Added
 };

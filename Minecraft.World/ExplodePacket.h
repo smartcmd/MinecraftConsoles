@@ -11,7 +11,7 @@ public:
     float r;
     vector<TilePos> toBlow;		// 4J - was an unorderedset but doesn't require any features of that apart from making it match the ctor toBlow type
 	bool m_bKnockbackOnly;
-
+	
 	private:
 		float knockbackX;
 		float knockbackY;
@@ -32,6 +32,6 @@ public:
 	float getKnockbackZ();
 
 public:
-	static std::shared_ptr<Packet> create() { return std::shared_ptr<Packet>(new ExplodePacket()); }
+	static shared_ptr<Packet> create() { return shared_ptr<Packet>(new ExplodePacket()); }
 	virtual int getId() { return 60; }
 };

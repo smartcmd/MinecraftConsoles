@@ -36,7 +36,7 @@ void sp_scalar_destructor_hook(void * p);
 //  scoped_ptr mimics a built-in pointer except that it guarantees deletion
 //  of the object pointed to, either on destruction of the scoped_ptr or via
 //  an explicit reset(). scoped_ptr is a simple solution for simple needs;
-//  use std::shared_ptr or std::auto_ptr if your needs are more complex.
+//  use shared_ptr or std::auto_ptr if your needs are more complex.
 
 template<class T> class scoped_ptr // noncopyable
 {

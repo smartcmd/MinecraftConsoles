@@ -22,7 +22,7 @@ private:
 
 public:
 	ThrownPotion(Level *level);
-	ThrownPotion(Level *level, std::shared_ptr<Mob> mob, int potionValue);
+	ThrownPotion(Level *level, shared_ptr<Mob> mob, int potionValue);
 	ThrownPotion(Level *level, double x, double y, double z, int potionValue);
 
 protected:

@@ -11,7 +11,7 @@ public:
 
 	ContainerSetContentPacket();
 	~ContainerSetContentPacket();
-	ContainerSetContentPacket(int containerId, vector<std::shared_ptr<ItemInstance> > *newItems);
+	ContainerSetContentPacket(int containerId, vector<shared_ptr<ItemInstance> > *newItems);
 
 	virtual void read(DataInputStream *dis);
 	virtual void write(DataOutputStream *dos);
@@ -19,7 +19,7 @@ public:
 	virtual int getEstimatedSize();
 
 public:
-	static std::shared_ptr<Packet> create() { return std::shared_ptr<Packet>(new ContainerSetContentPacket()); }
+	static shared_ptr<Packet> create() { return shared_ptr<Packet>(new ContainerSetContentPacket()); }
 	virtual int getId() { return 104; }
 };
 

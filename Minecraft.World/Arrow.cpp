@@ -52,12 +52,12 @@ Arrow::Arrow(Level *level) : Entity( level )
 	this->setSize(0.5f, 0.5f);
 }
 
-Arrow::Arrow(Level *level, std::shared_ptr<Mob> mob, std::shared_ptr<Mob> target, float power, float uncertainty) : Entity( level )
+Arrow::Arrow(Level *level, shared_ptr<Mob> mob, shared_ptr<Mob> target, float power, float uncertainty) : Entity( level )
 {
 	_init();
 
 	this->owner = mob;
-	if ( std::dynamic_pointer_cast<Player>( mob ) != NULL) pickup = PICKUP_ALLOWED;
+	if ( dynamic_pointer_cast<Player>( mob ) != NULL) pickup = PICKUP_ALLOWED;
 
 	y = mob->y + mob->getHeadHeight() - 0.1f;
 
@@ -88,13 +88,13 @@ Arrow::Arrow(Level *level, double x, double y, double z) : Entity( level )
 	this->setPos(x, y, z);
 	this->heightOffset = 0;
 }
-
-Arrow::Arrow(Level *level, std::shared_ptr<Mob> mob, float power) : Entity( level )
+ 
+Arrow::Arrow(Level *level, shared_ptr<Mob> mob, float power) : Entity( level )
 {
 	_init();
 
 	this->owner = mob;
-	if ( std::dynamic_pointer_cast<Player>( mob ) != NULL) pickup = PICKUP_ALLOWED;
+	if ( dynamic_pointer_cast<Player>( mob ) != NULL) pickup = PICKUP_ALLOWED;
 
 	setSize(0.5f, 0.5f);
 
@@ -171,12 +171,12 @@ void Arrow::lerpMotion(double xd, double yd, double zd)
 	}
 }
 
-void Arrow::tick()
+void Arrow::tick() 
 {
 	Entity::tick();
 
 
-	if (xRotO == 0 && yRotO == 0)
+	if (xRotO == 0 && yRotO == 0) 
 	{
 		double sd = sqrt(xd * xd + zd * zd);
 		yRotO = this->yRot = (float) (atan2(xd, zd) * 180 / PI);
@@ -214,17 +214,17 @@ void Arrow::tick()
 			life = 0;
 			flightTime = 0;
 			return;
-		}
+		} 
 
-		else
+		else 
 		{
 			life++;
 			if (life == 20 * 60) remove();
 			return;
 		}
-	}
-
-	else
+	} 
+	
+	else 
 	{
 		flightTime++;
 	}
@@ -239,13 +239,13 @@ void Arrow::tick()
 	{
 		to = Vec3::newTemp(res->pos->x, res->pos->y, res->pos->z);
 	}
-	std::shared_ptr<Entity> hitEntity = nullptr;
-	vector<std::shared_ptr<Entity> > *objects = level->getEntities(shared_from_this(), this->bb->expand(xd, yd, zd)->grow(1, 1, 1));
+	shared_ptr<Entity> hitEntity = nullptr;
+	vector<shared_ptr<Entity> > *objects = level->getEntities(shared_from_this(), this->bb->expand(xd, yd, zd)->grow(1, 1, 1));
 	double nearest = 0;
 	AUTO_VAR(itEnd, objects->end());
 	for (AUTO_VAR(it, objects->begin()); it != itEnd; it++)
 	{
-		std::shared_ptr<Entity> e = *it; //objects->at(i);
+		shared_ptr<Entity> e = *it; //objects->at(i);
 		if (!e->isPickable() || (e == owner && flightTime < 5)) continue;
 
 		float rr = 0.3f;
@@ -281,11 +281,11 @@ void Arrow::tick()
 			DamageSource *damageSource = NULL;
 			if (owner == NULL)
 			{
-				damageSource = DamageSource::arrow(std::dynamic_pointer_cast<Arrow>(shared_from_this()), shared_from_this());
+				damageSource = DamageSource::arrow(dynamic_pointer_cast<Arrow>(shared_from_this()), shared_from_this());
 			}
 			else
 			{
-				damageSource = DamageSource::arrow(std::dynamic_pointer_cast<Arrow>(shared_from_this()), owner);
+				damageSource = DamageSource::arrow(dynamic_pointer_cast<Arrow>(shared_from_this()), owner);
 			}
 
 			if(res->entity->hurt(damageSource, dmg))
@@ -299,7 +299,7 @@ void Arrow::tick()
 					res->entity->setOnFire(5);
 				}
 
-				std::shared_ptr<Mob> mob = std::dynamic_pointer_cast<Mob>(res->entity);
+				shared_ptr<Mob> mob = dynamic_pointer_cast<Mob>(res->entity);
 				if (mob != NULL)
 				{
 					mob->arrowCount++;
@@ -319,12 +319,12 @@ void Arrow::tick()
 				}
 
 				// 4J : WESTY : For award, need to track if creeper was killed by arrow from the player.
-				if ( (std::dynamic_pointer_cast<Player>(owner) != NULL ) &&				// arrow owner is a player
+				if ( (dynamic_pointer_cast<Player>(owner) != NULL ) &&				// arrow owner is a player
 					( res->entity->isAlive() == false ) &&							// target is now dead
-					( std::dynamic_pointer_cast<Creeper>( res->entity ) != NULL ) )		// target is a creeper
+					( dynamic_pointer_cast<Creeper>( res->entity ) != NULL ) )		// target is a creeper
 
 				{
-					std::dynamic_pointer_cast<Player>(owner)->awardStat(
+					dynamic_pointer_cast<Player>(owner)->awardStat(
 						GenericStats::arrowKillCreeper(),
 						GenericStats::param_arrowKillCreeper()
 						);
@@ -333,7 +333,7 @@ void Arrow::tick()
 				// 4J - sound change brought forward from 1.2.3
 				level->playSound(shared_from_this(), eSoundType_RANDOM_BOW_HIT, 1.0f, 1.2f / (random->nextFloat() * 0.2f + 0.9f));
 				remove();
-			}
+			}			
 			else
 			{
 				xd *= -0.1f;
@@ -343,7 +343,7 @@ void Arrow::tick()
 				yRotO += 180;
 				flightTime = 0;
 			}
-
+			
 			delete damageSource;
 		}
 		else
@@ -464,7 +464,7 @@ void Arrow::readAdditionalSaveData(CompoundTag *tag)
 	}
 }
 
-void Arrow::playerTouch(std::shared_ptr<Player> player)
+void Arrow::playerTouch(shared_ptr<Player> player)
 {
 	if (level->isClientSide || !inGround || shakeTime > 0) return;
 
@@ -472,7 +472,7 @@ void Arrow::playerTouch(std::shared_ptr<Player> player)
 
 	if (pickup == PICKUP_ALLOWED)
 	{
-		if (!player->inventory->add( std::shared_ptr<ItemInstance>( new ItemInstance(Item::arrow, 1) ) ))
+		if (!player->inventory->add( shared_ptr<ItemInstance>( new ItemInstance(Item::arrow, 1) ) ))
 		{
 			bRemove = false;
 		}

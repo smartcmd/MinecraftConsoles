@@ -10,12 +10,12 @@ EnderpearlItem::EnderpearlItem(int id) : Item(id)
 	this->maxStackSize = 16;
 }
 
-bool EnderpearlItem::TestUse(Level *level, std::shared_ptr<Player> player)
+bool EnderpearlItem::TestUse(Level *level, shared_ptr<Player> player)
 {
 	return true;
 }
 
-std::shared_ptr<ItemInstance> EnderpearlItem::use(std::shared_ptr<ItemInstance> instance, Level *level, std::shared_ptr<Player> player)
+shared_ptr<ItemInstance> EnderpearlItem::use(shared_ptr<ItemInstance> instance, Level *level, shared_ptr<Player> player)
 {
 	// 4J-PB - Not sure why this was disabled for creative mode, so commenting out
 	//if (player->abilities.instabuild) return instance;
@@ -26,9 +26,9 @@ std::shared_ptr<ItemInstance> EnderpearlItem::use(std::shared_ptr<ItemInstance> 
 	}
 
 	level->playSound(player, eSoundType_RANDOM_BOW, 0.5f, 0.4f / (random->nextFloat() * 0.4f + 0.8f));
-	if (!level->isClientSide)
+	if (!level->isClientSide) 
 	{
-		level->addEntity( std::shared_ptr<ThrownEnderpearl>( new ThrownEnderpearl(level, player) ) );
+		level->addEntity( shared_ptr<ThrownEnderpearl>( new ThrownEnderpearl(level, player) ) );
 	}
 	return instance;
 }

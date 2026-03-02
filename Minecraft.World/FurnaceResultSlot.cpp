@@ -9,18 +9,18 @@
 #include "FurnaceResultSlot.h"
 
 
-FurnaceResultSlot::FurnaceResultSlot(std::shared_ptr<Player> player, std::shared_ptr<Container> container, int slot, int x, int y) : Slot( container, slot, x, y )
+FurnaceResultSlot::FurnaceResultSlot(shared_ptr<Player> player, shared_ptr<Container> container, int slot, int x, int y) : Slot( container, slot, x, y )
 {
 	this->player = player;
 	removeCount = 0;
 }
 
-bool FurnaceResultSlot::mayPlace(std::shared_ptr<ItemInstance> item)
+bool FurnaceResultSlot::mayPlace(shared_ptr<ItemInstance> item)
 {
 	return false;
 }
 
-std::shared_ptr<ItemInstance> FurnaceResultSlot::remove(int c)
+shared_ptr<ItemInstance> FurnaceResultSlot::remove(int c)
 {
 	if (hasItem())
 	{
@@ -29,24 +29,24 @@ std::shared_ptr<ItemInstance> FurnaceResultSlot::remove(int c)
 	return Slot::remove(c);
 }
 
-void FurnaceResultSlot::onTake(std::shared_ptr<Player> player, std::shared_ptr<ItemInstance> carried)
+void FurnaceResultSlot::onTake(shared_ptr<Player> player, shared_ptr<ItemInstance> carried)
 {
 	checkTakeAchievements(carried);
 	Slot::onTake(player, carried);
 }
 
-void FurnaceResultSlot::onQuickCraft(std::shared_ptr<ItemInstance> picked, int count)
+void FurnaceResultSlot::onQuickCraft(shared_ptr<ItemInstance> picked, int count)
 {
 	removeCount += count;
 	checkTakeAchievements(picked);
 }
 
-bool FurnaceResultSlot::mayCombine(std::shared_ptr<ItemInstance> second)
+bool FurnaceResultSlot::mayCombine(shared_ptr<ItemInstance> second)
 {
 	return false;
 }
 
-void FurnaceResultSlot::checkTakeAchievements(std::shared_ptr<ItemInstance> carried)
+void FurnaceResultSlot::checkTakeAchievements(shared_ptr<ItemInstance> carried)
 {
 	carried->onCraftedBy(player->level, player, removeCount);
 	// spawn xp right on top of the player
@@ -73,7 +73,7 @@ void FurnaceResultSlot::checkTakeAchievements(std::shared_ptr<ItemInstance> carr
 		{
 			int newCount = ExperienceOrb::getExperienceValue(amount);
 			amount -= newCount;
-			player->level->addEntity(std::shared_ptr<ExperienceOrb>( new ExperienceOrb(player->level, player->x, player->y + .5, player->z + .5, newCount) ));
+			player->level->addEntity(shared_ptr<ExperienceOrb>( new ExperienceOrb(player->level, player->x, player->y + .5, player->z + .5, newCount) ));
 		}
 	}
 

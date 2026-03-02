@@ -10,7 +10,7 @@ public:
 	int id, x, y, z, action;
 
 	EntityActionAtPositionPacket();
-	EntityActionAtPositionPacket(std::shared_ptr<Entity> e, int action, int x, int y, int z);
+	EntityActionAtPositionPacket(shared_ptr<Entity> e, int action, int x, int y, int z);
 
 	virtual void read(DataInputStream *dis);
 	virtual void write(DataOutputStream *dos);
@@ -18,6 +18,6 @@ public:
 	virtual int getEstimatedSize();
 
 public:
-	static std::shared_ptr<Packet> create() { return std::shared_ptr<Packet>(new EntityActionAtPositionPacket()); }
+	static shared_ptr<Packet> create() { return shared_ptr<Packet>(new EntityActionAtPositionPacket()); }
 	virtual int getId() { return 17; }
 };

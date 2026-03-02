@@ -7,7 +7,7 @@
 #endif
 
 /////////1/////////2/////////3/////////4/////////5/////////6/////////7/////////8
-// std::shared_ptr.hpp: serialization for boost shared pointer
+// shared_ptr.hpp: serialization for boost shared pointer
 
 // (C) Copyright 2004 Robert Ramey and Martin Ecker
 // Use, modification and distribution is subject to the Boost Software
@@ -17,7 +17,7 @@
 //  See http://www.boost.org for updates, documentation, and revision history.
 
 #include <boost/weak_ptr.hpp>
-#include <boost/serialization/std::shared_ptr.hpp>
+#include <boost/serialization/shared_ptr.hpp>
 
 namespace boost {
 namespace serialization{
@@ -28,7 +28,7 @@ inline void save(
     const boost::weak_ptr< T > &t,
     const unsigned int /* file_version */
 ){
-    const boost::std::shared_ptr< T > sp = t.lock();
+    const boost::shared_ptr< T > sp = t.lock();
     ar << boost::serialization::make_nvp("weak_ptr", sp);
 }
 
@@ -38,7 +38,7 @@ inline void load(
     boost::weak_ptr< T > &t,
     const unsigned int /* file_version */
 ){
-    boost::std::shared_ptr< T > sp;
+    boost::shared_ptr< T > sp;
     ar >> boost::serialization::make_nvp("weak_ptr", sp);
     t = sp;
 }

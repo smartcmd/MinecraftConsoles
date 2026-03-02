@@ -60,8 +60,10 @@ public:
 	//    void crash(CrashReport crash);
 	//    public abstract void onCrash(CrashReport crash);
 
+private:
 	static Minecraft *m_instance;
 
+public:
 	MultiPlayerGameMode *gameMode;
 
 private:
@@ -69,7 +71,7 @@ private:
 	bool hasCrashed;
 
 	C4JThread::EventQueue* levelTickEventQueue;
-
+	
 	static void levelTickUpdateFunc(void* pParam);
 	static void levelTickThreadInitFunc();
 
@@ -88,11 +90,11 @@ public:
 
 	MultiPlayerLevel *level;
 	LevelRenderer *levelRenderer;
-	std::shared_ptr<MultiplayerLocalPlayer> player;
+	shared_ptr<MultiplayerLocalPlayer> player;
 
 	MultiPlayerLevelArray levels;
 
-	std::shared_ptr<MultiplayerLocalPlayer> localplayers[XUSER_MAX_COUNT];
+	shared_ptr<MultiplayerLocalPlayer> localplayers[XUSER_MAX_COUNT];
 	MultiPlayerGameMode *localgameModes[XUSER_MAX_COUNT];
 	int localPlayerIdx;
 	ItemInHandRenderer *localitemInHandRenderers[XUSER_MAX_COUNT];
@@ -108,7 +110,7 @@ public:
 	void addPendingLocalConnection(int idx, ClientConnection *connection);
 	void connectionDisconnected(int idx, DisconnectPacket::eDisconnectReason reason) { m_connectionFailed[idx] = true; m_connectionFailedReason[idx] = reason; }
 
-	std::shared_ptr<MultiplayerLocalPlayer> createExtraLocalPlayer(int idx, const wstring& name, int pad, int iDimension, ClientConnection *clientConnection = NULL,MultiPlayerLevel *levelpassedin=NULL);
+	shared_ptr<MultiplayerLocalPlayer> createExtraLocalPlayer(int idx, const wstring& name, int pad, int iDimension, ClientConnection *clientConnection = NULL,MultiPlayerLevel *levelpassedin=NULL);
 	void createPrimaryLocalPlayer(int iPad);
 	bool setLocalPlayerIdx(int idx);
 	int getLocalPlayerIdx();
@@ -117,7 +119,7 @@ public:
 	void updatePlayerViewportAssignments();
 	int unoccupiedQuadrant;	// 4J - added
 
-	std::shared_ptr<Mob> cameraTargetPlayer;
+	shared_ptr<Mob> cameraTargetPlayer;
 	ParticleEngine *particleEngine;
 	User *user;
 	wstring serverDomain;
@@ -163,11 +165,11 @@ private:
 	LevelStorageSource *levelSource;
 public:
 	static const int frameTimes_length = 512;
-	static int64_t frameTimes[frameTimes_length];
+	static __int64 frameTimes[frameTimes_length];
 	static const int tickTimes_length = 512;
-	static int64_t tickTimes[tickTimes_length];
+	static __int64 tickTimes[tickTimes_length];
 	static int frameTimePos;
-	static int64_t warezTime;
+	static __int64 warezTime;
 private:
 	int rightClickDelay;
 public:
@@ -228,9 +230,9 @@ private:
 	//    String grabHugeScreenshot(File workDir2, int width, int height, int ssWidth, int ssHeight);	// 4J - removed
 
 	// 4J - per player thing?
-	int64_t lastTimer;
+	__int64 lastTimer;
 
-	void renderFpsMeter(int64_t tickTime);
+	void renderFpsMeter(__int64 tickTime);
 public:
 	void stop();
 	// 4J removed
@@ -251,7 +253,7 @@ public:
 	//bool isRaining ;
 
 	// 4J - Moved to per player
-	//int64_t lastTickTime;
+	//__int64 lastTickTime;
 
 private:
 	// 4J- per player?
@@ -274,7 +276,7 @@ public:
 	// 4J Stu - Added the doForceStatsSave param
 	//void setLevel(Level *level, bool doForceStatsSave = true);
 	//void setLevel(Level *level, const wstring& message, bool doForceStatsSave = true);
-	void setLevel(MultiPlayerLevel *level, int message = -1, std::shared_ptr<Player> forceInsertPlayer = nullptr, bool doForceStatsSave = true,bool bPrimaryPlayerSignedOut=false);
+	void setLevel(MultiPlayerLevel *level, int message = -1, shared_ptr<Player> forceInsertPlayer = nullptr, bool doForceStatsSave = true,bool bPrimaryPlayerSignedOut=false);
 	// 4J-PB - added to force in the 'other' level when the main player creates the level at game load time
 	void forceaddLevel(MultiPlayerLevel *level);
 	void prepareLevel(int title);	// 4J - changed to public
@@ -299,7 +301,7 @@ public:
 
 	static int maxSupportedTextureSize();
 	void delayTextureReload();
-	static int64_t currentTimeMillis();
+	static __int64 currentTimeMillis();
 
 #ifdef _DURANGO
 	static void inGameSignInCheckAllPrivilegesCallback(LPVOID lpParam, bool hasPrivileges, int iPad);

@@ -50,7 +50,7 @@ HRESULT CScene_InGameHostOptions::OnInit( XUIMessageInit* pInitData, BOOL& bHand
 
 	CXuiSceneBase::ShowLogo( m_iPad, FALSE );
 
-
+	
 	//SentientManager.RecordMenuShown(m_iPad, eUIScene_CreateWorldMenu, 0);
 
 	return S_OK;
@@ -74,11 +74,11 @@ HRESULT CScene_InGameHostOptions::OnKeyDown(XUIMessageInput* pInputData, BOOL& r
 			// Send update settings packet to server
 			if(hostOptions != app.GetGameHostOption(eGameHostOption_All) )
 			{
-				Minecraft *pMinecraft = Minecraft::GetInstance();
-				std::shared_ptr<MultiplayerLocalPlayer> player = pMinecraft->localplayers[m_iPad];
+				Minecraft *pMinecraft = Minecraft::GetInstance();				
+				shared_ptr<MultiplayerLocalPlayer> player = pMinecraft->localplayers[m_iPad];
 				if(player != NULL && player->connection)
 				{
-					player->connection->send( std::shared_ptr<ServerSettingsChangedPacket>( new ServerSettingsChangedPacket( ServerSettingsChangedPacket::HOST_IN_GAME_SETTINGS, hostOptions) ) );
+					player->connection->send( shared_ptr<ServerSettingsChangedPacket>( new ServerSettingsChangedPacket( ServerSettingsChangedPacket::HOST_IN_GAME_SETTINGS, hostOptions) ) );
 				}
 			}
 

@@ -40,7 +40,7 @@ GameRuleDefinition *CompoundGameRuleDefinition::addChild(ConsoleGameRules::EGame
 		rule = new UseTileRuleDefinition();
 	}
 	else if(ruleType == ConsoleGameRules::eGameRuleType_UpdatePlayerRule)
-	{
+	{		
 		rule = new UpdatePlayerRuleDefinition();
 	}
 	else
@@ -91,7 +91,7 @@ bool CompoundGameRuleDefinition::onUseTile(GameRule *rule, int tileId, int x, in
 	return statusChanged;
 }
 
-bool CompoundGameRuleDefinition::onCollectItem(GameRule *rule, std::shared_ptr<ItemInstance> item)
+bool CompoundGameRuleDefinition::onCollectItem(GameRule *rule, shared_ptr<ItemInstance> item)
 {
 	bool statusChanged = false;
 	for(AUTO_VAR(it, rule->m_parameters.begin()); it != rule->m_parameters.end(); ++it)
@@ -100,7 +100,7 @@ bool CompoundGameRuleDefinition::onCollectItem(GameRule *rule, std::shared_ptr<I
 		{
 			bool changed = it->second.gr->getGameRuleDefinition()->onCollectItem(it->second.gr,item);
 			if(!statusChanged && changed)
-			{
+			{				
 				m_lastRuleStatusChanged = it->second.gr->getGameRuleDefinition();
 				statusChanged = true;
 			}
@@ -109,7 +109,7 @@ bool CompoundGameRuleDefinition::onCollectItem(GameRule *rule, std::shared_ptr<I
 	return statusChanged;
 }
 
-void CompoundGameRuleDefinition::postProcessPlayer(std::shared_ptr<Player> player)
+void CompoundGameRuleDefinition::postProcessPlayer(shared_ptr<Player> player)
 {
 	for(AUTO_VAR(it, m_children.begin()); it != m_children.end(); ++it)
 	{

@@ -119,14 +119,14 @@ bool PistonBaseTile::isSolidRender(bool isServerLevel)
 	return false;
 }
 
-bool PistonBaseTile::use(Level *level, int x, int y, int z, std::shared_ptr<Player> player, int clickedFace, float clickX, float clickY, float clickZ, bool soundOnly/*=false*/) // 4J added soundOnly param
+bool PistonBaseTile::use(Level *level, int x, int y, int z, shared_ptr<Player> player, int clickedFace, float clickX, float clickY, float clickZ, bool soundOnly/*=false*/) // 4J added soundOnly param
 {
 	return false;
 }
 
-void PistonBaseTile::setPlacedBy(Level *level, int x, int y, int z, std::shared_ptr<Mob> by)
+void PistonBaseTile::setPlacedBy(Level *level, int x, int y, int z, shared_ptr<Mob> by)
 {
-    int targetData = getNewFacing(level, x, y, z, std::dynamic_pointer_cast<Player>(by) );
+    int targetData = getNewFacing(level, x, y, z, dynamic_pointer_cast<Player>(by) );
     level->setData(x, y, z, targetData);
     if (!level->isClientSide && !ignoreUpdate())
 	{
@@ -180,7 +180,7 @@ void PistonBaseTile::checkIfExtend(Level *level, int x, int y, int z)
     * This method checks neighbor signals for this block and the block above,
     * and directly beneath. However, it avoids checking blocks that would be
     * pushed by this block.
-    *
+    * 
     * @param level
     * @param x
     * @param y
@@ -249,10 +249,10 @@ void PistonBaseTile::triggerEvent(Level *level, int x, int y, int z, int param1,
 	else if (param1 == TRIGGER_CONTRACT)
 	{
 		PIXBeginNamedEvent(0,"Contract phase A\n");
-        std::shared_ptr<TileEntity> prevTileEntity = level->getTileEntity(x + Facing::STEP_X[facing], y + Facing::STEP_Y[facing], z + Facing::STEP_Z[facing]);
-        if (prevTileEntity != NULL && std::dynamic_pointer_cast<PistonPieceEntity>(prevTileEntity) != NULL)
+        shared_ptr<TileEntity> prevTileEntity = level->getTileEntity(x + Facing::STEP_X[facing], y + Facing::STEP_Y[facing], z + Facing::STEP_Z[facing]);
+        if (prevTileEntity != NULL && dynamic_pointer_cast<PistonPieceEntity>(prevTileEntity) != NULL)
 		{
-            std::dynamic_pointer_cast<PistonPieceEntity>(prevTileEntity)->finalTick();
+            dynamic_pointer_cast<PistonPieceEntity>(prevTileEntity)->finalTick();
         }
 
 		stopSharingIfServer(level, x, y, z);	// 4J added
@@ -280,10 +280,10 @@ void PistonBaseTile::triggerEvent(Level *level, int x, int y, int z, int param1,
                 // the block two steps away is a moving piston block piece,
                 // so replace it with the real data, since it's probably
                 // this piston which is changing too fast
-                std::shared_ptr<TileEntity> tileEntity = level->getTileEntity(twoX, twoY, twoZ);
-                if (tileEntity != NULL && std::dynamic_pointer_cast<PistonPieceEntity>(tileEntity) != NULL )
+                shared_ptr<TileEntity> tileEntity = level->getTileEntity(twoX, twoY, twoZ);
+                if (tileEntity != NULL && dynamic_pointer_cast<PistonPieceEntity>(tileEntity) != NULL )
 				{
-                    std::shared_ptr<PistonPieceEntity> ppe = std::dynamic_pointer_cast<PistonPieceEntity>(tileEntity);
+                    shared_ptr<PistonPieceEntity> ppe = dynamic_pointer_cast<PistonPieceEntity>(tileEntity);
 
                     if (ppe->getFacing() == facing && ppe->isExtending())
 					{
@@ -337,7 +337,7 @@ void PistonBaseTile::triggerEvent(Level *level, int x, int y, int z, int param1,
 	ignoreUpdate(false);
 }
 
-void PistonBaseTile::updateShape(LevelSource *level, int x, int y, int z, int forceData, std::shared_ptr<TileEntity> forceEntity) // 4J added forceData, forceEntity param
+void PistonBaseTile::updateShape(LevelSource *level, int x, int y, int z, int forceData, shared_ptr<TileEntity> forceEntity) // 4J added forceData, forceEntity param
 {
     int data = (forceData == -1 ) ? level->getData(x, y, z) : forceData;
 
@@ -377,7 +377,7 @@ void PistonBaseTile::updateDefaultShape()
 	setShape(0, 0, 0, 1, 1, 1);
 }
 
-void PistonBaseTile::addAABBs(Level *level, int x, int y, int z, AABB *box, AABBList *boxes, std::shared_ptr<Entity> source)
+void PistonBaseTile::addAABBs(Level *level, int x, int y, int z, AABB *box, AABBList *boxes, shared_ptr<Entity> source)
 {
     setShape(0, 0, 0, 1, 1, 1);
     Tile::addAABBs(level, x, y, z, box, boxes, source);
@@ -404,9 +404,9 @@ bool PistonBaseTile::isExtended(int data)
 	return (data & EXTENDED_BIT) != 0;
 }
 
-int PistonBaseTile::getNewFacing(Level *level, int x, int y, int z, std::shared_ptr<Player> player)
+int PistonBaseTile::getNewFacing(Level *level, int x, int y, int z, shared_ptr<Player> player)
 {
-    if (Mth::abs((float) player->x - x) < 2 && Mth::abs((float) player->z - z) < 2)
+    if (Mth::abs((float) player->x - x) < 2 && Mth::abs((float) player->z - z) < 2) 
 	{
         // If the player is above the block, the slot is on the top
         double py = player->y + 1.82 - player->heightOffset;
@@ -456,7 +456,7 @@ bool PistonBaseTile::isPushable(int block, Level *level, int cx, int cy, int cz,
 		{
             return false;
         }
-
+            
         if (!allowDestroyable && Tile::tiles[block]->getPistonPushReaction() == Material::PUSH_DESTROY)
 		{
             return false;
@@ -486,7 +486,7 @@ bool PistonBaseTile::canPush(Level *level, int sx, int sy, int sz, int facing)
             // out of bounds
             return false;
         }
-
+		
 		// 4J - added to also check for out of bounds in x/z for our finite world
 		int minXZ = - (level->dimension->getXZSize() * 16 ) / 2;
 		int maxXZ = (level->dimension->getXZSize() * 16 ) / 2 - 1;
@@ -529,7 +529,7 @@ bool PistonBaseTile::canPush(Level *level, int sx, int sy, int sz, int facing)
 void PistonBaseTile::stopSharingIfServer(Level *level, int x, int y, int z)
 {
 	if( !level->isClientSide )
-	{
+	{ 
 		MultiPlayerLevel *clientLevel = Minecraft::GetInstance()->getLevel(level->dimension->id);
 		if( clientLevel )
 		{
@@ -552,7 +552,7 @@ bool PistonBaseTile::createPush(Level *level, int sx, int sy, int sz, int facing
             // out of bounds
             return false;
         }
-
+		
 		// 4J - added to also check for out of bounds in x/z for our finite world
 		int minXZ = - (level->dimension->getXZSize() * 16 ) / 2;
 		int maxXZ = (level->dimension->getXZSize() * 16 ) / 2 - 1;

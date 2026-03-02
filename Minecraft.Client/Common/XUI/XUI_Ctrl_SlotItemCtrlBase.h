@@ -29,9 +29,9 @@ private:
 public:
 	// We define a lot of functions as virtual. These should be implemented to call the protected version by
 	// passing in the HXUIOBJ of the control as the first parameter. We do not have access to that normally
-	// due to the inheritance structure
+	// due to the inheritance structure	
 	virtual HRESULT OnInit( XUIMessageInit* pInitData, BOOL& bHandled ) = 0;
-
+	
 	virtual HRESULT OnDestroy() = 0;
 
 	virtual HRESULT OnCustomMessage_GetSlotItem(CustomMessage_GetSlotItem_Struct *pData, BOOL& bHandled) = 0;
@@ -49,7 +49,7 @@ public:
 
 	wstring GetItemDescription( HXUIOBJ hObj, vector<wstring> &unformattedStrings );
 
-	std::shared_ptr<ItemInstance> getItemInstance( HXUIOBJ hObj );
+	shared_ptr<ItemInstance> getItemInstance( HXUIOBJ hObj );
 	Slot *getSlot( HXUIOBJ hObj );
 
 	// 4J WESTY : Pointer Prototype : Added to support prototype only.
@@ -64,9 +64,9 @@ public:
 	// 4J WESTY : Pointer Prototype : Added to support prototype only.
 	bool	IsSameItemAs( HXUIOBJ hThisObj, HXUIOBJ hOtherObj );
 
-protected:
+protected:	
 	HRESULT OnInit( HXUIOBJ hObj, XUIMessageInit* pInitData, BOOL& bHandled );
-
+	
 	HRESULT OnDestroy( HXUIOBJ hObj );
 
 	HRESULT OnCustomMessage_GetSlotItem(HXUIOBJ hObj, CustomMessage_GetSlotItem_Struct *pData, BOOL& bHandled);

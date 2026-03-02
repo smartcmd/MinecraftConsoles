@@ -21,7 +21,7 @@ int SmoothStoneBrickTileItem::getLevelDataForAuxValue(int auxValue)
 	return auxValue;
 }
 
-unsigned int SmoothStoneBrickTileItem::getDescriptionId(std::shared_ptr<ItemInstance> instance)
+unsigned int SmoothStoneBrickTileItem::getDescriptionId(shared_ptr<ItemInstance> instance)
 {
 	int auxValue = instance->getAuxValue();
 	if (auxValue < 0 || auxValue >= SmoothStoneBrickTile::SMOOTH_STONE_BRICK_NAMES_LENGTH)

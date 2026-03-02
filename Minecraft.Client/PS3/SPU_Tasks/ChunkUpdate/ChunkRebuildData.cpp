@@ -3,7 +3,7 @@
 #ifndef SN_TARGET_PS3_SPU
 // 	#include "..\..\..\stdafx.h"
 #endif
-#endif
+#endif 
 
 #include "ChunkRebuildData.h"
 #include "Tesselator_SPU.h"
@@ -13,7 +13,7 @@
 #include "..\..\..\..\Minecraft.World\Tile.h"
 #include "..\..\..\..\Minecraft.World\Level.h"
 #include "..\..\..\..\Minecraft.World\Dimension.h"
-//
+// 
 // #include "..\..\..\Chunk.h"
 // #include "..\..\..\TileRenderer.h"
 // #include "..\..\..\TileEntityRenderDispatcher.h"
@@ -26,13 +26,13 @@
 #include "..\..\..\..\Minecraft.World\BiomeSource.h"
 
 #else
-
+ 
 #include "..\Common\spu_assert.h"
 
 #endif //SN_TARGET_PS3_SPU
 
 static const int Level_maxBuildHeight = 256;
-static const int Level_MAX_LEVEL_SIZE = 30000000;
+static const int Level_MAX_LEVEL_SIZE = 30000000; 
 static const int Level_MAX_BRIGHTNESS = 15;
 
 
@@ -53,7 +53,7 @@ int ChunkRebuildData::getGrassColor( int x, int z )				{	return m_grassColor[get
 int ChunkRebuildData::getFoliageColor( int x, int z )			{	return m_foliageColor[getTileIdx(x,z)]; }
 int ChunkRebuildData::getFlags(int x, int y, int z)				{	return m_data_flags[getTileIdx(x,y,z)] >> 4; }
 void ChunkRebuildData::setFlag(int x, int y, int z, int flag)	{	m_data_flags[getTileIdx(x,y,z)] |= (flag<<4);}
-#endif
+#endif 
 
 
 
@@ -77,7 +77,7 @@ void ChunkRebuildData::disableUnseenTiles()
 				int tileID = getTile(iX,iY,iZ);
 				if( tileID == 0 )  continue;
 				m_flags &= ~e_flag_EmptyChunk;
-
+				
 
 				// Don't bother trying to work out neighbours for this tile if we are at the edge of the chunk - apart from the very
 				// bottom of the world where we shouldn't ever be able to see
@@ -120,7 +120,7 @@ void ChunkRebuildData::disableUnseenTiles()
 		}
 	}
 }
-
+ 
 #ifndef SN_TARGET_PS3_SPU
 
 void setIconSPUFromIcon(Icon_SPU* iconSpu, Icon* icon)
@@ -145,78 +145,78 @@ void ChunkRebuildData::buildMaterial(int matSPUIndex, Material* mat)
 
 void ChunkRebuildData::buildMaterials()
 {
-	buildMaterial(Material_SPU::air_Id,					Material::air);
-	buildMaterial(Material_SPU::grass_Id,				Material::grass);
-	buildMaterial(Material_SPU::dirt_Id,				Material::dirt);
-	buildMaterial(Material_SPU::wood_Id,				Material::wood);
-	buildMaterial(Material_SPU::stone_Id,				Material::stone);
-	buildMaterial(Material_SPU::metal_Id,				Material::metal);
-	buildMaterial(Material_SPU::water_Id,				Material::water);
-	buildMaterial(Material_SPU::lava_Id,				Material::lava);
-	buildMaterial(Material_SPU::leaves_Id,				Material::leaves);
-	buildMaterial(Material_SPU::plant_Id,				Material::plant);
-	buildMaterial(Material_SPU::replaceable_plant_Id,	Material::replaceable_plant);
-	buildMaterial(Material_SPU::sponge_Id,				Material::sponge);
-	buildMaterial(Material_SPU::cloth_Id,				Material::cloth);
-	buildMaterial(Material_SPU::fire_Id,				Material::fire);
-	buildMaterial(Material_SPU::sand_Id,				Material::sand);
-	buildMaterial(Material_SPU::decoration_Id,			Material::decoration);
-	buildMaterial(Material_SPU::clothDecoration_Id,		Material::clothDecoration);
-	buildMaterial(Material_SPU::glass_Id,				Material::glass);
-	buildMaterial(Material_SPU::explosive_Id,			Material::explosive);
-	buildMaterial(Material_SPU::coral_Id,				Material::coral);
-	buildMaterial(Material_SPU::ice_Id,					Material::ice);
-	buildMaterial(Material_SPU::topSnow_Id,				Material::topSnow);
-	buildMaterial(Material_SPU::snow_Id,				Material::snow);
-	buildMaterial(Material_SPU::cactus_Id,				Material::cactus);
-	buildMaterial(Material_SPU::clay_Id,				Material::clay);
-	buildMaterial(Material_SPU::vegetable_Id,			Material::vegetable);
-	buildMaterial(Material_SPU::egg_Id,					Material::egg);
-	buildMaterial(Material_SPU::portal_Id,				Material::portal);
-	buildMaterial(Material_SPU::cake_Id,				Material::cake);
-	buildMaterial(Material_SPU::web_Id,					Material::web);
-	buildMaterial(Material_SPU::piston_Id,				Material::piston);
-	buildMaterial(Material_SPU::buildable_glass_Id,		Material::buildable_glass);
-	buildMaterial(Material_SPU::heavyMetal_Id,			Material::heavyMetal);
+	buildMaterial(Material_SPU::air_Id,					Material::air);					
+	buildMaterial(Material_SPU::grass_Id,				Material::grass);				
+	buildMaterial(Material_SPU::dirt_Id,				Material::dirt);				
+	buildMaterial(Material_SPU::wood_Id,				Material::wood);				
+	buildMaterial(Material_SPU::stone_Id,				Material::stone);				
+	buildMaterial(Material_SPU::metal_Id,				Material::metal);				
+	buildMaterial(Material_SPU::water_Id,				Material::water);				
+	buildMaterial(Material_SPU::lava_Id,				Material::lava);				
+	buildMaterial(Material_SPU::leaves_Id,				Material::leaves);				
+	buildMaterial(Material_SPU::plant_Id,				Material::plant);				
+	buildMaterial(Material_SPU::replaceable_plant_Id,	Material::replaceable_plant);	
+	buildMaterial(Material_SPU::sponge_Id,				Material::sponge);				
+	buildMaterial(Material_SPU::cloth_Id,				Material::cloth);				
+	buildMaterial(Material_SPU::fire_Id,				Material::fire);				
+	buildMaterial(Material_SPU::sand_Id,				Material::sand);				
+	buildMaterial(Material_SPU::decoration_Id,			Material::decoration);		
+	buildMaterial(Material_SPU::clothDecoration_Id,		Material::clothDecoration);		
+	buildMaterial(Material_SPU::glass_Id,				Material::glass);				
+	buildMaterial(Material_SPU::explosive_Id,			Material::explosive);			
+	buildMaterial(Material_SPU::coral_Id,				Material::coral);				
+	buildMaterial(Material_SPU::ice_Id,					Material::ice);					
+	buildMaterial(Material_SPU::topSnow_Id,				Material::topSnow);				
+	buildMaterial(Material_SPU::snow_Id,				Material::snow);				
+	buildMaterial(Material_SPU::cactus_Id,				Material::cactus);				
+	buildMaterial(Material_SPU::clay_Id,				Material::clay);				
+	buildMaterial(Material_SPU::vegetable_Id,			Material::vegetable);			
+	buildMaterial(Material_SPU::egg_Id,					Material::egg);					
+	buildMaterial(Material_SPU::portal_Id,				Material::portal);				
+	buildMaterial(Material_SPU::cake_Id,				Material::cake);				
+	buildMaterial(Material_SPU::web_Id,					Material::web);					
+	buildMaterial(Material_SPU::piston_Id,				Material::piston);				
+	buildMaterial(Material_SPU::buildable_glass_Id,		Material::buildable_glass);				
+	buildMaterial(Material_SPU::heavyMetal_Id,			Material::heavyMetal);				
 }
 
 int ChunkRebuildData::getMaterialID(Tile* pTile)
 {
 	Material* m = pTile->material;
-	if(m == Material::air)  			return Material_SPU::air_Id;
-	if(m == Material::grass)  			return Material_SPU::grass_Id;
-	if(m == Material::dirt)  			return Material_SPU::dirt_Id;
-	if(m == Material::wood)  			return Material_SPU::wood_Id;
-	if(m == Material::stone)  			return Material_SPU::stone_Id;
-	if(m == Material::metal)  			return Material_SPU::metal_Id;
-	if(m == Material::water)  			return Material_SPU::water_Id;
-	if(m == Material::lava)  			return Material_SPU::lava_Id;
-	if(m == Material::leaves)  			return Material_SPU::leaves_Id;
-	if(m == Material::plant)  			return Material_SPU::plant_Id;
-	if(m == Material::replaceable_plant)return Material_SPU::replaceable_plant_Id;
-	if(m == Material::sponge)  			return Material_SPU::sponge_Id;
-	if(m == Material::cloth)  			return Material_SPU::cloth_Id;
-	if(m == Material::fire)  			return Material_SPU::fire_Id;
-	if(m == Material::sand)  			return Material_SPU::sand_Id;
-	if(m == Material::decoration)  		return Material_SPU::decoration_Id;
-	if(m == Material::clothDecoration)  return Material_SPU::clothDecoration_Id;
+	if(m == Material::air)  			return Material_SPU::air_Id;					
+	if(m == Material::grass)  			return Material_SPU::grass_Id;					
+	if(m == Material::dirt)  			return Material_SPU::dirt_Id;				
+	if(m == Material::wood)  			return Material_SPU::wood_Id;				
+	if(m == Material::stone)  			return Material_SPU::stone_Id;					
+	if(m == Material::metal)  			return Material_SPU::metal_Id;					
+	if(m == Material::water)  			return Material_SPU::water_Id;					
+	if(m == Material::lava)  			return Material_SPU::lava_Id;				
+	if(m == Material::leaves)  			return Material_SPU::leaves_Id;					
+	if(m == Material::plant)  			return Material_SPU::plant_Id;					
+	if(m == Material::replaceable_plant)return Material_SPU::replaceable_plant_Id;		
+	if(m == Material::sponge)  			return Material_SPU::sponge_Id;					
+	if(m == Material::cloth)  			return Material_SPU::cloth_Id;					
+	if(m == Material::fire)  			return Material_SPU::fire_Id;				
+	if(m == Material::sand)  			return Material_SPU::sand_Id;				
+	if(m == Material::decoration)  		return Material_SPU::decoration_Id;			
+	if(m == Material::clothDecoration)  return Material_SPU::clothDecoration_Id;			
 	if(m == Material::glass)  			return Material_SPU::glass_Id;
-	if(m == Material::explosive)  		return Material_SPU::explosive_Id;
-	if(m == Material::coral)  			return Material_SPU::coral_Id;
-	if(m == Material::ice)  			return Material_SPU::ice_Id;
-	if(m == Material::topSnow)  		return Material_SPU::topSnow_Id;
-	if(m == Material::snow)  			return Material_SPU::snow_Id;
-	if(m == Material::cactus)  			return Material_SPU::cactus_Id;
-	if(m == Material::clay)  			return Material_SPU::clay_Id;
-	if(m == Material::vegetable)  		return Material_SPU::vegetable_Id;
-	if(m == Material::egg)  			return Material_SPU::egg_Id;
-	if(m == Material::portal)  			return Material_SPU::portal_Id;
-	if(m == Material::cake)  			return Material_SPU::cake_Id;
-	if(m == Material::web)  			return Material_SPU::web_Id;
-	if(m == Material::piston)  			return Material_SPU::piston_Id;
+	if(m == Material::explosive)  		return Material_SPU::explosive_Id;				
+	if(m == Material::coral)  			return Material_SPU::coral_Id;					
+	if(m == Material::ice)  			return Material_SPU::ice_Id;					
+	if(m == Material::topSnow)  		return Material_SPU::topSnow_Id;				
+	if(m == Material::snow)  			return Material_SPU::snow_Id;				
+	if(m == Material::cactus)  			return Material_SPU::cactus_Id;					
+	if(m == Material::clay)  			return Material_SPU::clay_Id;				
+	if(m == Material::vegetable)  		return Material_SPU::vegetable_Id;				
+	if(m == Material::egg)  			return Material_SPU::egg_Id;					
+	if(m == Material::portal)  			return Material_SPU::portal_Id;					
+	if(m == Material::cake)  			return Material_SPU::cake_Id;				
+	if(m == Material::web)  			return Material_SPU::web_Id;					
+	if(m == Material::piston)  			return Material_SPU::piston_Id;					
 	if(m == Material::buildable_glass)	return Material_SPU::buildable_glass_Id;
 	if(m == Material::heavyMetal)		return Material_SPU::heavyMetal_Id;
-	assert(0);
+	assert(0);	
 	return Material_SPU::air_Id;
 }
 
@@ -364,12 +364,12 @@ void ChunkRebuildData::createTileData()
 	// recordPlayer
 	setIconSPUFromIcon(&m_tileData.recordPlayer_iconTop, ((RecordPlayerTile*)Tile::recordPlayer)->iconTop);
 
-	// pumpkin
+	// pumpkin 
 	setIconSPUFromIcon(&m_tileData.pumpkinTile_iconTop, ((PumpkinTile*)Tile::pumpkin)->iconTop);
 	setIconSPUFromIcon(&m_tileData.pumpkinTile_iconFace, ((PumpkinTile*)Tile::pumpkin)->iconFace);
 	setIconSPUFromIcon(&m_tileData.pumpkinTile_iconFaceLit, ((PumpkinTile*)Tile::litPumpkin)->iconFace);
 
-	// cakeTile
+	// cakeTile 
 	setIconSPUFromIcon(&m_tileData.cakeTile_iconTop, ((CakeTile*)Tile::cake)->iconTop);
 	setIconSPUFromIcon(&m_tileData.cakeTile_iconBottom, ((CakeTile*)Tile::cake)->iconBottom);
 	setIconSPUFromIcon(&m_tileData.cakeTile_iconInner, ((CakeTile*)Tile::cake)->iconInner);
@@ -509,7 +509,7 @@ void ChunkRebuildData::buildForChunk( Region* region, Level* level, int x0, int 
 //			assert(index < 400);
 			int cacheBlockIndex = (cacheMap[iZ-m_z0]*3) + cacheMap[iX-m_x0];
 			BiomeCache::Block* pCacheBlock = cacheBlocks[cacheBlockIndex];
-//			assert(region->getBiomeSource()->getBlockAt(iX, iZ) == pCacheBlock);
+//			assert(region->getBiomeSource()->getBlockAt(iX, iZ) == pCacheBlock);		
 			Biome* pBiome = pCacheBlock->getBiome(iX, iZ);
 			m_grassColor[index] = pColourTable->getColor(pBiome->m_grassColor);
 			m_foliageColor[index] =  pColourTable->getColor(pBiome->m_foliageColor);
@@ -537,7 +537,7 @@ void ChunkRebuildData::copyFromTesselator()
 	m_tesselator.m_PPUOffset = 0;
 
 	// copy tesselator vars over
-	m_tesselator.vertices = t->vertices;
+	m_tesselator.vertices = t->vertices;																																																																																																																					
 	m_tesselator.u = t->u;
 	m_tesselator.v = t->v;
 	m_tesselator._tex2 = t->_tex2;
@@ -588,7 +588,7 @@ void ChunkRebuildData::storeInTesselator()
 	Tesselator* t = Tesselator::getInstance(); // 4J - added - static initialiser being set at the wrong time
 
 	// copy tesselator vars over
-	t->vertices = m_tesselator.vertices;
+	t->vertices = m_tesselator.vertices;																																																																																																																					
 	t->u = m_tesselator.u;
 	t->v = m_tesselator.v;
 	t->_tex2 = m_tesselator._tex2;
@@ -647,7 +647,7 @@ void ChunkRebuildData::tesselateAllTiles(TileRenderer_SPU* pTileRenderer)
 				{
 // 					if (m_currentLayer == 0 && m_tileData.isEntityTile[tileId])
 // 					{
-// 						std::shared_ptr<TileEntity> et = region->getTileEntity(x, y, z);
+// 						shared_ptr<TileEntity> et = region->getTileEntity(x, y, z);
 // 						if (TileEntityRenderDispatcher::instance->hasRenderer(et))
 // 						{
 // 							renderableTileEntities.push_back(et);
@@ -801,7 +801,7 @@ int ChunkRebuildData::getBrightnessPropagate(LightLayer::variety layer, int x, i
 	if(layer == LightLayer::Sky)
 		return getBrightnessSky(x, y, z);
 	return getBrightnessBlock(x, y, z);
-
+	
 }
 int ChunkRebuildData::getLightColor(int x, int y, int z, int emitt)	// 4J - change brought forward from 1.8.2
 {
@@ -865,7 +865,7 @@ int ChunkRebuildData::getRawBrightness(int x, int y, int z, bool propagate)
 int ChunkRebuildData::LevelChunk_getRawBrightness(int x, int y, int z, int skyDampen)
 {
 	   int light = (m_flags & e_flag_HasCeiling) ? 0 : getBrightnessSky(x, y, z);
-    if (light > 0)
+    if (light > 0) 
 		m_flags |= e_flag_TouchedSky;
     light -= skyDampen;
     int block = getBrightnessBlock(x, y, z);

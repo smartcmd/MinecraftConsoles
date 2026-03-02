@@ -41,7 +41,7 @@ bool EntityRenderer::bindTexture(const wstring& urlTexture, int backupTexture)
     Textures *t = entityRenderDispatcher->textures;
 
 	// 4J-PB - no http textures on the xbox, mem textures instead
-
+	
 	//int id = t->loadHttpTexture(urlTexture, backupTexture);
 	int id = t->loadMemTexture(urlTexture, backupTexture);
 
@@ -62,7 +62,7 @@ bool EntityRenderer::bindTexture(const wstring& urlTexture, const wstring& backu
     Textures *t = entityRenderDispatcher->textures;
 
 	// 4J-PB - no http textures on the xbox, mem textures instead
-
+	
 	//int id = t->loadHttpTexture(urlTexture, backupTexture);
 	int id = t->loadMemTexture(urlTexture, backupTexture);
 
@@ -78,7 +78,7 @@ bool EntityRenderer::bindTexture(const wstring& urlTexture, const wstring& backu
     }
 }
 
-void EntityRenderer::renderFlame(std::shared_ptr<Entity> e, double x, double y, double z, float a)
+void EntityRenderer::renderFlame(shared_ptr<Entity> e, double x, double y, double z, float a)
 {
     glDisable(GL_LIGHTING);
 
@@ -146,7 +146,7 @@ void EntityRenderer::renderFlame(std::shared_ptr<Entity> e, double x, double y, 
     glEnable(GL_LIGHTING);
 
 }
-void EntityRenderer::renderShadow(std::shared_ptr<Entity> e, double x, double y, double z, float pow, float a)
+void EntityRenderer::renderShadow(shared_ptr<Entity> e, double x, double y, double z, float pow, float a)
 {
 	glDisable(GL_LIGHTING);
     glEnable(GL_BLEND);
@@ -160,17 +160,17 @@ void EntityRenderer::renderShadow(std::shared_ptr<Entity> e, double x, double y,
 
     glDepthMask(false);
     float r = shadowRadius;
-	std::shared_ptr<Mob> mob = std::dynamic_pointer_cast<Mob>(e);
+	shared_ptr<Mob> mob = dynamic_pointer_cast<Mob>(e);
 	bool isLocalPlayer = false;
 	float fYLocalPlayerShadowOffset=0.0f;
 
-	//if (std::dynamic_pointer_cast<Mob>(e) != NULL)
+	//if (dynamic_pointer_cast<Mob>(e) != NULL)
 	if (mob != NULL)
 	{
-		//std::shared_ptr<Mob> mob = std::dynamic_pointer_cast<Mob>(e);
+		//shared_ptr<Mob> mob = dynamic_pointer_cast<Mob>(e);
 		r *= mob->getSizeScale();
 
-		std::shared_ptr<Animal> animal = std::dynamic_pointer_cast<Animal>(mob);
+		shared_ptr<Animal> animal = dynamic_pointer_cast<Animal>(mob);
 		if (animal != NULL)
 		{
 			if (animal->isBaby())
@@ -179,7 +179,7 @@ void EntityRenderer::renderShadow(std::shared_ptr<Entity> e, double x, double y,
 			}
 		}
 
-		if(std::dynamic_pointer_cast<LocalPlayer>(mob)!=NULL)
+		if(dynamic_pointer_cast<LocalPlayer>(mob)!=NULL)
 		{
 			isLocalPlayer=true;
 		}
@@ -213,12 +213,12 @@ void EntityRenderer::renderShadow(std::shared_ptr<Entity> e, double x, double y,
     for (int xt = x0; xt <= x1; xt++)
         for (int yt = y0; yt <= y1; yt++)
             for (int zt = z0; zt <= z1; zt++)
-			{
+			{				
 				int t = level->getTile(xt, yt - 1, zt);
 				if (t > 0 && level->getRawBrightness(xt, yt, zt) > 3)
 				{
 					renderTileShadow(Tile::tiles[t], x, y + e->getShadowHeightOffs() + fYLocalPlayerShadowOffset, z, xt, yt , zt, pow, r, xo, yo + e->getShadowHeightOffs() + fYLocalPlayerShadowOffset, zo);
-				}
+				}			
             }
     tt->end();
 
@@ -242,7 +242,7 @@ void EntityRenderer::renderTileShadow(Tile *tt, double x, double y, double z, in
     double a = ((pow - (y - (yt + yo)) / 2) * 0.5f) * getLevel()->getBrightness(xt, yt, zt);
     if (a < 0) return;
     if (a > 1) a = 1;
-
+	
     t->color(1.0f, 1.0f, 1.0f, (float) a);
     // glColor4f(1, 1, 1, (float) a);
 
@@ -383,7 +383,7 @@ void EntityRenderer::init(EntityRenderDispatcher *entityRenderDispatcher)
 	this->entityRenderDispatcher = entityRenderDispatcher;
 }
 
-void EntityRenderer::postRender(std::shared_ptr<Entity> entity, double x, double y, double z, float rot, float a, bool bRenderPlayerShadow)
+void EntityRenderer::postRender(shared_ptr<Entity> entity, double x, double y, double z, float rot, float a, bool bRenderPlayerShadow)
 {
 	if( !entityRenderDispatcher->isGuiRender )		// 4J - added, don't render shadow in gui as it uses its own blending, and we have globally enabled blending for interface opacity
 	{

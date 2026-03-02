@@ -26,12 +26,12 @@ TheEndPortal::TheEndPortal(int id, Material *material) : EntityTile(id, material
     this->setLightEmission(1.0f);
 }
 
-std::shared_ptr<TileEntity> TheEndPortal::newTileEntity(Level *level)
+shared_ptr<TileEntity> TheEndPortal::newTileEntity(Level *level)
 {
-	return std::shared_ptr<TileEntity>(new TheEndPortalTileEntity());
+	return shared_ptr<TileEntity>(new TheEndPortalTileEntity());
 }
 
-void TheEndPortal::updateShape(LevelSource *level, int x, int y, int z, int forceData, std::shared_ptr<TileEntity> forceEntity) // 4J added forceData, forceEntity param
+void TheEndPortal::updateShape(LevelSource *level, int x, int y, int z, int forceData, shared_ptr<TileEntity> forceEntity) // 4J added forceData, forceEntity param
 {
     float r = 1 / 16.0f;
     this->setShape(0, 0, 0, 1, r, 1);
@@ -43,7 +43,7 @@ bool TheEndPortal::shouldRenderFace(LevelSource *level, int x, int y, int z, int
     return EntityTile::shouldRenderFace(level, x, y, z, face);
 }
 
-void TheEndPortal::addAABBs(Level *level, int x, int y, int z, AABB *box, AABBList *boxes, std::shared_ptr<Entity> source)
+void TheEndPortal::addAABBs(Level *level, int x, int y, int z, AABB *box, AABBList *boxes, shared_ptr<Entity> source)
 {
 }
 
@@ -62,11 +62,11 @@ int TheEndPortal::getResourceCount(Random *random)
 	return 0;
 }
 
-void TheEndPortal::entityInside(Level *level, int x, int y, int z, std::shared_ptr<Entity> entity)
+void TheEndPortal::entityInside(Level *level, int x, int y, int z, shared_ptr<Entity> entity)
 {
     if (entity->riding == NULL && entity->rider.lock() == NULL)
 	{
-        if (std::dynamic_pointer_cast<Player>(entity) != NULL)
+        if (dynamic_pointer_cast<Player>(entity) != NULL)
 		{
             if (!level->isClientSide)
 			{
@@ -80,7 +80,7 @@ void TheEndPortal::entityInside(Level *level, int x, int y, int z, std::shared_p
 					level->getLevelData()->setHasStrongholdEndPortal();
 				}
 
-                (std::dynamic_pointer_cast<Player>(entity))->changeDimension(1);
+                (dynamic_pointer_cast<Player>(entity))->changeDimension(1);
             }
         }
     }

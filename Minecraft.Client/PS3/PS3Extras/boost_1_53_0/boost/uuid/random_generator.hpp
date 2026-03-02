@@ -14,7 +14,7 @@
 #include <boost/random/variate_generator.hpp>
 #include <boost/random/mersenne_twister.hpp>
 #include <boost/assert.hpp>
-#include <boost/std::shared_ptr.hpp>
+#include <boost/shared_ptr.hpp>
 #include <limits>
 
 namespace boost {
@@ -34,7 +34,7 @@ private:
 
 public:
     typedef uuid result_type;
-
+    
     // default constructor creates the random number generator
     basic_random_generator()
         : pURNG(new UniformRandomNumberGenerator)
@@ -49,7 +49,7 @@ public:
         // seed the random number generator
         detail::seed(*pURNG);
     }
-
+    
     // keep a reference to a random number generator
     // don't seed a given random number generator
     explicit basic_random_generator(UniformRandomNumberGenerator& gen)
@@ -62,7 +62,7 @@ public:
             )
           )
     {}
-
+    
     // keep a pointer to a random number generator
     // don't seed a given random number generator
     explicit basic_random_generator(UniformRandomNumberGenerator* pGen)
@@ -77,11 +77,11 @@ public:
     {
         BOOST_ASSERT(pURNG);
     }
-
+    
     uuid operator()()
     {
         uuid u;
-
+        
         int i=0;
         unsigned long random_value = generator();
         for (uuid::iterator it=u.begin(); it!=u.end(); ++it, ++i) {
@@ -108,7 +108,7 @@ public:
     }
 
 private:
-    std::shared_ptr<UniformRandomNumberGenerator> pURNG;
+    shared_ptr<UniformRandomNumberGenerator> pURNG;
     generator_type generator;
 };
 

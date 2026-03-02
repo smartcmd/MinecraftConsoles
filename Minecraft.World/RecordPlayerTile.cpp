@@ -23,14 +23,14 @@ Icon *RecordPlayerTile::getTexture(int face, int data)
 }
 
 // 4J-PB - Adding a TestUse for tooltip display
-bool RecordPlayerTile::TestUse(Level *level, int x, int y, int z, std::shared_ptr<Player> player)
+bool RecordPlayerTile::TestUse(Level *level, int x, int y, int z, shared_ptr<Player> player)
 {
 	// if the jukebox is empty, return true
 	if (level->getData(x, y, z) == 0) return false;
 	return true;
 }
 
-bool RecordPlayerTile::use(Level *level, int x, int y, int z, std::shared_ptr<Player> player, int clickedFace, float clickX, float clickY, float clickZ, bool soundOnly/*=false*/) // 4J added soundOnly param
+bool RecordPlayerTile::use(Level *level, int x, int y, int z, shared_ptr<Player> player, int clickedFace, float clickX, float clickY, float clickZ, bool soundOnly/*=false*/) // 4J added soundOnly param
 {
 	if (soundOnly) return false;
     if (level->getData(x, y, z) == 0) return false;
@@ -42,7 +42,7 @@ void RecordPlayerTile::setRecord(Level *level, int x, int y, int z, int record)
 {
     if (level->isClientSide) return;
 
-    std::shared_ptr<RecordPlayerTile::Entity> rte = std::dynamic_pointer_cast<RecordPlayerTile::Entity>( level->getTileEntity(x, y, z) );
+    shared_ptr<RecordPlayerTile::Entity> rte = dynamic_pointer_cast<RecordPlayerTile::Entity>( level->getTileEntity(x, y, z) );
     rte->record = record;
     rte->setChanged();
 
@@ -53,7 +53,7 @@ void RecordPlayerTile::dropRecording(Level *level, int x, int y, int z)
 {
     if (level->isClientSide) return;
 
-    std::shared_ptr<RecordPlayerTile::Entity> rte = std::dynamic_pointer_cast<RecordPlayerTile::Entity>( level->getTileEntity(x, y, z) );
+    shared_ptr<RecordPlayerTile::Entity> rte = dynamic_pointer_cast<RecordPlayerTile::Entity>( level->getTileEntity(x, y, z) );
 	if( rte == NULL ) return;
 
     int oldRecord = rte->record;
@@ -71,7 +71,7 @@ void RecordPlayerTile::dropRecording(Level *level, int x, int y, int z)
     double xo = level->random->nextFloat() * s + (1 - s) * 0.5;
     double yo = level->random->nextFloat() * s + (1 - s) * 0.2 + 0.6;
     double zo = level->random->nextFloat() * s + (1 - s) * 0.5;
-    std::shared_ptr<ItemEntity> item = std::shared_ptr<ItemEntity>( new ItemEntity(level, x + xo, y + yo, z + zo, std::shared_ptr<ItemInstance>( new ItemInstance(oldRecord, 1, 0) ) ) );
+    shared_ptr<ItemEntity> item = shared_ptr<ItemEntity>( new ItemEntity(level, x + xo, y + yo, z + zo, shared_ptr<ItemInstance>( new ItemInstance(oldRecord, 1, 0) ) ) );
     item->throwTime = 10;
     level->addEntity(item);
 }
@@ -88,9 +88,9 @@ void RecordPlayerTile::spawnResources(Level *level, int x, int y, int z, int dat
     Tile::spawnResources(level, x, y, z, data, odds, 0);
 }
 
-std::shared_ptr<TileEntity> RecordPlayerTile::newTileEntity(Level *level)
+shared_ptr<TileEntity> RecordPlayerTile::newTileEntity(Level *level)
 {
-	return std::shared_ptr<RecordPlayerTile::Entity>( new RecordPlayerTile::Entity() );
+	return shared_ptr<RecordPlayerTile::Entity>( new RecordPlayerTile::Entity() );
 }
 
 void RecordPlayerTile::registerIcons(IconRegister *iconRegister)

@@ -7,10 +7,10 @@ class Inventory;
 class FurnaceScreen : public AbstractContainerScreen
 {
 private:
-	std::shared_ptr<FurnaceTileEntity> furnace;
+	shared_ptr<FurnaceTileEntity> furnace;
 
 public:
-	FurnaceScreen(std::shared_ptr<Inventory> inventory, std::shared_ptr<FurnaceTileEntity> furnace);
+	FurnaceScreen(shared_ptr<Inventory> inventory, shared_ptr<FurnaceTileEntity> furnace);
 protected:
 	virtual void renderLabels();
 	virtual void renderBg(float a);

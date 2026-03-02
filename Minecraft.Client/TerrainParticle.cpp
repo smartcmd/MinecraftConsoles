@@ -14,24 +14,24 @@ TerrainParticle::TerrainParticle(Level *level, double x, double y, double z, dou
     size /= 2;
 }
 
-std::shared_ptr<TerrainParticle> TerrainParticle::init(int x, int y, int z, int data)	// 4J - added data parameter
+shared_ptr<TerrainParticle> TerrainParticle::init(int x, int y, int z, int data)	// 4J - added data parameter
 {
-    if (tile == Tile::grass) return std::dynamic_pointer_cast<TerrainParticle>( shared_from_this() );
+    if (tile == Tile::grass) return dynamic_pointer_cast<TerrainParticle>( shared_from_this() );
     int col = tile->getColor(level, x, y, z, data);	// 4J - added data parameter
     rCol *= ((col >> 16) & 0xff) / 255.0f;
     gCol *= ((col >> 8) & 0xff) / 255.0f;
     bCol *= ((col) & 0xff) / 255.0f;
-    return std::dynamic_pointer_cast<TerrainParticle>( shared_from_this() );
+    return dynamic_pointer_cast<TerrainParticle>( shared_from_this() );
 }
 
-std::shared_ptr<TerrainParticle> TerrainParticle::init(int data)
+shared_ptr<TerrainParticle> TerrainParticle::init(int data)
 {
-	if (tile == Tile::grass) return std::dynamic_pointer_cast<TerrainParticle>( shared_from_this() );
+	if (tile == Tile::grass) return dynamic_pointer_cast<TerrainParticle>( shared_from_this() );
 	int col = tile->getColor(data);
 	rCol *= ((col >> 16) & 0xff) / 255.0f;
 	gCol *= ((col >> 8) & 0xff) / 255.0f;
 	bCol *= ((col) & 0xff) / 255.0f;
-	return std::dynamic_pointer_cast<TerrainParticle>( shared_from_this() );
+	return dynamic_pointer_cast<TerrainParticle>( shared_from_this() );
 }
 
 int TerrainParticle::getParticleTexture()
@@ -59,7 +59,7 @@ void TerrainParticle::render(Tesselator *t, float a, float xa, float ya, float z
     float y = (float) (yo + (this->y - yo) * a - yOff);
     float z = (float) (zo + (this->z - zo) * a - zOff);
 
-	// 4J - don't render terrain particles that are less than a metre away, to try and avoid large particles that are causing us problems with
+	// 4J - don't render terrain particles that are less than a metre away, to try and avoid large particles that are causing us problems with 
 	// photosensitivity testing
 	float distSq = (x*x + y*y + z*z);
 	if( distSq < 1.0f ) return;

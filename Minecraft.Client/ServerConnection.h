@@ -20,8 +20,8 @@ private:
 	int connectionCounter;
 private:
 	CRITICAL_SECTION pending_cs;	// 4J added
-	vector< std::shared_ptr<PendingConnection> > pending;
-    vector< std::shared_ptr<PlayerConnection> > players;
+	vector< shared_ptr<PendingConnection> > pending;
+    vector< shared_ptr<PlayerConnection> > players;
 
 	// 4J - When the server requests a texture, it should add it to here while we are waiting for it
 	vector<wstring> m_pendingTextureRequests;
@@ -34,9 +34,9 @@ public:
 	void NewIncomingSocket(Socket *socket);	// 4J - added
 
 	void removeSpamProtection(Socket *socket) { }// 4J Stu - Not implemented as not required
-    void addPlayerConnection(std::shared_ptr<PlayerConnection> uc);
+    void addPlayerConnection(shared_ptr<PlayerConnection> uc);
 private:
-	void handleConnection(std::shared_ptr<PendingConnection> uc);
+	void handleConnection(shared_ptr<PendingConnection> uc);
 public:
 	void stop();
     void tick();
@@ -45,5 +45,5 @@ public:
 	bool addPendingTextureRequest(const wstring &textureName);
 	void handleTextureReceived(const wstring &textureName);
 	void handleTextureAndGeometryReceived(const wstring &textureName);
-	void handleServerSettingsChanged(std::shared_ptr<ServerSettingsChangedPacket> packet);
+	void handleServerSettingsChanged(shared_ptr<ServerSettingsChangedPacket> packet);
 };

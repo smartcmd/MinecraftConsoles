@@ -6,7 +6,7 @@
 # define INHERITANCE_DWA200216_HPP
 
 # include <boost/python/type_id.hpp>
-# include <boost/std::shared_ptr.hpp>
+# include <boost/shared_ptr.hpp>
 # include <boost/mpl/if.hpp>
 # include <boost/type_traits/is_polymorphic.hpp>
 # include <boost/type_traits/is_base_and_derived.hpp>
@@ -88,7 +88,7 @@ struct dynamic_cast_generator
         return dynamic_cast<Target*>(
             static_cast<Source*>(source));
     }
-
+        
 };
 
 template <class Source, class Target>

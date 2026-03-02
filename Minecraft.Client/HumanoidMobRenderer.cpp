@@ -36,12 +36,12 @@ void HumanoidMobRenderer::createArmorParts()
 	armorParts2 = new HumanoidModel(0.5f);
 }
 
-void HumanoidMobRenderer::additionalRendering(std::shared_ptr<Mob> mob, float a)
+void HumanoidMobRenderer::additionalRendering(shared_ptr<Mob> mob, float a)
 {
 	float brightness = SharedConstants::TEXTURE_LIGHTING ? 1 : mob->getBrightness(a);
 	glColor3f(brightness, brightness, brightness);
-    std::shared_ptr<ItemInstance> item = mob->getCarriedItem();
-	std::shared_ptr<ItemInstance> headGear = mob->getArmor(3);
+    shared_ptr<ItemInstance> item = mob->getCarriedItem();
+	shared_ptr<ItemInstance> headGear = mob->getArmor(3);
 
 	if (headGear != NULL)
 	{
@@ -49,7 +49,7 @@ void HumanoidMobRenderer::additionalRendering(std::shared_ptr<Mob> mob, float a)
 		// 4J-PB - need to disable rendering armour/skulls/pumpkins for some special skins (Daleks)
 
 		if((mob->getAnimOverrideBitmask()&(1<<HumanoidModel::eAnim_DontRenderArmour))==0)
-		{
+		{	
 			glPushMatrix();
 			humanoidModel->head->translateTo(1 / 16.0f);
 
@@ -138,13 +138,13 @@ void HumanoidMobRenderer::additionalRendering(std::shared_ptr<Mob> mob, float a)
 		{
 			this->entityRenderDispatcher->itemInHandRenderer->renderItem(mob, item, 1);
 		}
-
+		
         glPopMatrix();
     }
 
 }
 
-void HumanoidMobRenderer::scale(std::shared_ptr<Mob> mob, float a)
+void HumanoidMobRenderer::scale(shared_ptr<Mob> mob, float a)
 {
 	glScalef(_scale, _scale, _scale);
 }

@@ -10,8 +10,8 @@ private:
 public:
 	MilkBucketItem(int id);
 
-	virtual std::shared_ptr<ItemInstance> useTimeDepleted(std::shared_ptr<ItemInstance> instance, Level *level, std::shared_ptr<Player> player);
-	virtual int getUseDuration(std::shared_ptr<ItemInstance> itemInstance);
-	virtual UseAnim getUseAnimation(std::shared_ptr<ItemInstance> itemInstance);
-	virtual std::shared_ptr<ItemInstance> use(std::shared_ptr<ItemInstance> instance, Level *level, std::shared_ptr<Player> player);
+	virtual shared_ptr<ItemInstance> useTimeDepleted(shared_ptr<ItemInstance> instance, Level *level, shared_ptr<Player> player);
+	virtual int getUseDuration(shared_ptr<ItemInstance> itemInstance);
+	virtual UseAnim getUseAnimation(shared_ptr<ItemInstance> itemInstance);
+	virtual shared_ptr<ItemInstance> use(shared_ptr<ItemInstance> instance, Level *level, shared_ptr<Player> player);
 };

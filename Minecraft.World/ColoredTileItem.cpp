@@ -18,7 +18,7 @@ ColoredTileItem::~ColoredTileItem()
 	if(descriptionPostfixes.data != NULL) delete [] descriptionPostfixes.data;
 }
 
-int ColoredTileItem::getColor(std::shared_ptr<ItemInstance> item, int spriteLayer)
+int ColoredTileItem::getColor(shared_ptr<ItemInstance> item, int spriteLayer)
 {
 	return colorTile->getColor(item->getAuxValue());
 }
@@ -45,7 +45,7 @@ ColoredTileItem *ColoredTileItem::setDescriptionPostfixes(intArray descriptionPo
 	return this;
 }
 
-unsigned int ColoredTileItem::getDescriptionId(std::shared_ptr<ItemInstance> instance)
+unsigned int ColoredTileItem::getDescriptionId(shared_ptr<ItemInstance> instance)
 {
 	if (descriptionPostfixes.data == NULL)
 	{

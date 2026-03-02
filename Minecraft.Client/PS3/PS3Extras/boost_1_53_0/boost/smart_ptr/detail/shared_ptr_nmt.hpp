@@ -2,7 +2,7 @@
 #define BOOST_SMART_PTR_DETAIL_SHARED_PTR_NMT_HPP_INCLUDED
 
 //
-//  detail/shared_ptr_nmt.hpp - std::shared_ptr.hpp without member templates
+//  detail/shared_ptr_nmt.hpp - shared_ptr.hpp without member templates
 //
 //  (C) Copyright Greg Colvin and Beman Dawes 1998, 1999.
 //  Copyright (c) 2001, 2002 Peter Dimov
@@ -11,7 +11,7 @@
 //  accompanying file LICENSE_1_0.txt or copy at
 //  http://www.boost.org/LICENSE_1_0.txt)
 //
-//  See http://www.boost.org/libs/smart_ptr/std::shared_ptr.htm for documentation.
+//  See http://www.boost.org/libs/smart_ptr/shared_ptr.htm for documentation.
 //
 
 #include <boost/assert.hpp>
@@ -30,7 +30,7 @@
 namespace boost
 {
 
-template<class T> class std::shared_ptr
+template<class T> class shared_ptr
 {
 private:
 
@@ -41,7 +41,7 @@ public:
     typedef T element_type;
     typedef T value_type;
 
-    explicit std::shared_ptr(T * p = 0): px(p)
+    explicit shared_ptr(T * p = 0): px(p)
     {
 #ifndef BOOST_NO_EXCEPTIONS
 
@@ -68,7 +68,7 @@ public:
 #endif
     }
 
-    ~std::shared_ptr()
+    ~shared_ptr()
     {
         if(--*pn == 0)
         {
@@ -77,29 +77,29 @@ public:
         }
     }
 
-    std::shared_ptr(std::shared_ptr const & r): px(r.px)  // never throws
+    shared_ptr(shared_ptr const & r): px(r.px)  // never throws
     {
         pn = r.pn;
         ++*pn;
     }
 
-    std::shared_ptr & operator=(std::shared_ptr const & r)
+    shared_ptr & operator=(shared_ptr const & r)
     {
-        std::shared_ptr(r).swap(*this);
+        shared_ptr(r).swap(*this);
         return *this;
     }
 
 #ifndef BOOST_NO_AUTO_PTR
 
-    explicit std::shared_ptr(std::auto_ptr<T> & r)
-    {
+    explicit shared_ptr(std::auto_ptr<T> & r)
+    { 
         pn = new count_type(1); // may throw
         px = r.release(); // fix: moved here to stop leak if new throws
-    }
+    } 
 
-    std::shared_ptr & operator=(std::auto_ptr<T> & r)
+    shared_ptr & operator=(std::auto_ptr<T> & r)
     {
-        std::shared_ptr(r).swap(*this);
+        shared_ptr(r).swap(*this);
         return *this;
     }
 
@@ -108,7 +108,7 @@ public:
     void reset(T * p = 0)
     {
         BOOST_ASSERT(p == 0 || p != px);
-        std::shared_ptr(p).swap(*this);
+        shared_ptr(p).swap(*this);
     }
 
     T & operator*() const  // never throws
@@ -137,8 +137,8 @@ public:
     {
         return *pn == 1;
     }
-
-    void swap(std::shared_ptr<T> & other)  // never throws
+    
+    void swap(shared_ptr<T> & other)  // never throws
     {
         std::swap(px, other.px);
         std::swap(pn, other.pn);
@@ -150,29 +150,29 @@ private:
     count_type * pn;   // ptr to reference counter
 };
 
-template<class T, class U> inline bool operator==(std::shared_ptr<T> const & a, std::shared_ptr<U> const & b)
+template<class T, class U> inline bool operator==(shared_ptr<T> const & a, shared_ptr<U> const & b)
 {
     return a.get() == b.get();
 }
 
-template<class T, class U> inline bool operator!=(std::shared_ptr<T> const & a, std::shared_ptr<U> const & b)
+template<class T, class U> inline bool operator!=(shared_ptr<T> const & a, shared_ptr<U> const & b)
 {
     return a.get() != b.get();
 }
 
-template<class T> inline bool operator<(std::shared_ptr<T> const & a, std::shared_ptr<T> const & b)
+template<class T> inline bool operator<(shared_ptr<T> const & a, shared_ptr<T> const & b)
 {
     return std::less<T*>()(a.get(), b.get());
 }
 
-template<class T> void swap(std::shared_ptr<T> & a, std::shared_ptr<T> & b)
+template<class T> void swap(shared_ptr<T> & a, shared_ptr<T> & b)
 {
     a.swap(b);
 }
 
-// get_pointer() enables boost::mem_fn to recognize std::shared_ptr
+// get_pointer() enables boost::mem_fn to recognize shared_ptr
 
-template<class T> inline T * get_pointer(std::shared_ptr<T> const & p)
+template<class T> inline T * get_pointer(shared_ptr<T> const & p)
 {
     return p.get();
 }

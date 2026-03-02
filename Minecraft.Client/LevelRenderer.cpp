@@ -454,7 +454,7 @@ void LevelRenderer::allChanged(int playerIndex)
 	zMaxChunk = zChunks;
 
 	// 4J removed - we now only fully clear this on exiting the game (setting level to NULL). Apart from that, the chunk rebuilding is responsible for maintaining this
-	//	renderableTileEntities.clear();
+	//	renderableTileEntities.clear();	
 
 	for (int x = 0; x < xChunks; x++)
 	{
@@ -475,7 +475,7 @@ void LevelRenderer::allChanged(int playerIndex)
 
 	if (level != NULL)
 	{
-		std::shared_ptr<Entity> player = mc->cameraTargetPlayer;
+		shared_ptr<Entity> player = mc->cameraTargetPlayer;
 		if (player != NULL)
 		{
 			this->resortChunks(Mth::floor(player->x), Mth::floor(player->y), Mth::floor(player->z));
@@ -509,7 +509,7 @@ void LevelRenderer::renderEntities(Vec3 *cam, Culler *culler, float a)
 	renderedEntities = 0;
 	culledEntities = 0;
 
-	std::shared_ptr<Entity> player = mc->cameraTargetPlayer;
+	shared_ptr<Entity> player = mc->cameraTargetPlayer;
 
 	EntityRenderDispatcher::xOff = (player->xOld + (player->x - player->xOld) * a);
 	EntityRenderDispatcher::yOff = (player->yOld + (player->y - player->yOld) * a);
@@ -520,13 +520,13 @@ void LevelRenderer::renderEntities(Vec3 *cam, Culler *culler, float a)
 
 	mc->gameRenderer->turnOnLightLayer(a);		// 4J - brought forward from 1.8.2
 
-	vector<std::shared_ptr<Entity> > entities = level[playerIndex]->getAllEntities();
+	vector<shared_ptr<Entity> > entities = level[playerIndex]->getAllEntities();
 	totalEntities = (int)entities.size();
 
 	AUTO_VAR(itEndGE, level[playerIndex]->globalEntities.end());
 	for (AUTO_VAR(it, level[playerIndex]->globalEntities.begin()); it != itEndGE; it++)
 	{
-		std::shared_ptr<Entity> entity = *it; //level->globalEntities[i];
+		shared_ptr<Entity> entity = *it; //level->globalEntities[i];
 		renderedEntities++;
 		if (entity->shouldRender(cam)) EntityRenderDispatcher::instance->render(entity, a);
 	}
@@ -534,13 +534,13 @@ void LevelRenderer::renderEntities(Vec3 *cam, Culler *culler, float a)
 	AUTO_VAR(itEndEnts, entities.end());
 	for (AUTO_VAR(it, entities.begin()); it != itEndEnts; it++)
 	{
-		std::shared_ptr<Entity> entity = *it; //entities[i];
+		shared_ptr<Entity> entity = *it; //entities[i];
 
 		if ((entity->shouldRender(cam) && (entity->noCulling || culler->isVisible(entity->bb))))
 		{
 			// 4J-PB - changing this to be per player
 			//if (entity == mc->cameraTargetPlayer && !mc->options->thirdPersonView && !mc->cameraTargetPlayer->isSleeping()) continue;
-			std::shared_ptr<LocalPlayer> localplayer = std::dynamic_pointer_cast<LocalPlayer>(mc->cameraTargetPlayer);
+			shared_ptr<LocalPlayer> localplayer = dynamic_pointer_cast<LocalPlayer>(mc->cameraTargetPlayer);
 
 			if (localplayer && entity == mc->cameraTargetPlayer && !localplayer->ThirdPersonView() && !mc->cameraTargetPlayer->isSleeping()) continue;
 
@@ -565,7 +565,7 @@ void LevelRenderer::renderEntities(Vec3 *cam, Culler *culler, float a)
 
 		for( AUTO_VAR(it2, it->second.begin()); it2 != it->second.end(); it2++)
 		{
-			TileEntityRenderDispatcher::instance->render(*it2, a);
+			TileEntityRenderDispatcher::instance->render(*it2, a);			
 		}
 	}
 
@@ -669,7 +669,7 @@ void LevelRenderer::resortChunks(int xc, int yc, int zc)
 	LeaveCriticalSection(&m_csDirtyChunks);
 }
 
-int LevelRenderer::render(std::shared_ptr<Mob> player, int layer, double alpha, bool updateChunks)
+int LevelRenderer::render(shared_ptr<Mob> player, int layer, double alpha, bool updateChunks)
 {
 	int playerIndex = mc->player->GetXboxPad();
 
@@ -741,7 +741,7 @@ int LevelRenderer::renderChunks(int from, int to, int layer, double alpha)
 #if 1
 	// 4J - cut down version, we're not using offsetted render lists, or a sorted chunk list, anymore
 	mc->gameRenderer->turnOnLightLayer(alpha);		// 4J - brought forward from 1.8.2
-	std::shared_ptr<Mob> player = mc->cameraTargetPlayer;
+	shared_ptr<Mob> player = mc->cameraTargetPlayer;
 	double xOff = player->xOld + (player->x - player->xOld) * alpha;
 	double yOff = player->yOld + (player->y - player->yOld) * alpha;
 	double zOff = player->zOld + (player->z - player->zOld) * alpha;
@@ -854,7 +854,7 @@ int LevelRenderer::renderChunks(int from, int to, int layer, double alpha)
 		}
 	}
 
-	std::shared_ptr<Mob> player = mc->cameraTargetPlayer;
+	shared_ptr<Mob> player = mc->cameraTargetPlayer;
 	double xOff = player->xOld + (player->x - player->xOld) * alpha;
 	double yOff = player->yOld + (player->y - player->yOld) * alpha;
 	double zOff = player->zOld + (player->z - player->zOld) * alpha;
@@ -895,7 +895,7 @@ int LevelRenderer::renderChunks(int from, int to, int layer, double alpha)
 }
 
 
-void LevelRenderer::renderSameAsLast(int layer, double alpha)
+void LevelRenderer::renderSameAsLast(int layer, double alpha) 
 {
 	for (int i = 0; i < RENDERLISTS_LENGTH; i++)
 	{
@@ -1127,7 +1127,7 @@ void LevelRenderer::renderSky(float alpha)
 		glPopMatrix();
 
 		// 4J - can't work out what this big black box is for. Taking it out until someone misses it... it causes a big black box to visible appear in 3rd person mode whilst under the ground.
-#if 0
+#if 0        
 		float ss = 1;
 		float yo = -(float) (yy + 65);
 		float y0 = -ss;
@@ -1200,7 +1200,7 @@ void LevelRenderer::renderHaloRing(float alpha)
 
 	// Rough lumninance calculation
 	float Y = (sr+sr+sb+sg+sg+sg)/6;
-	float br = 0.6f + (Y*0.4f);
+	float br = 0.6f + (Y*0.4f); 
 	//app.DebugPrintf("Luminance = %f, brightness = %f\n", Y, br);
 	glColor3f(br,br,br);
 
@@ -1369,7 +1369,7 @@ void LevelRenderer::createCloudMesh()
 					t->vertexUV(x0, y0, z0, u, v );
 					t->vertexUV(x1, y0, z0, u, v );
 					t->vertexUV(x1, y0, z1, u, v );
-					t->vertexUV(x0, y0, z1, u, v );
+					t->vertexUV(x0, y0, z1, u, v );				
 				}
 			}
 			t->end();
@@ -1469,7 +1469,7 @@ void LevelRenderer::createCloudMesh()
 					t->vertexUV(x0, y1, z0, u, v );
 					t->vertexUV(x1, y1, z0, u, v );
 					t->vertexUV(x1, y0, z0, u, v );
-					t->vertexUV(x0, y0, z0, u, v );
+					t->vertexUV(x0, y0, z0, u, v );								
 				}
 			}
 			t->end();
@@ -1491,10 +1491,10 @@ void LevelRenderer::createCloudMesh()
 					float z1 = z0 + 1.0f;
 					t->color(0.8f, 0.8f, 0.8f, 0.8f);
 					t->normal(1, 0, 0);
-					t->vertexUV(x0, y0, z1, u, v );
+					t->vertexUV(x0, y0, z1, u, v );		
 					t->vertexUV(x1, y0, z1, u, v );
 					t->vertexUV(x1, y1, z1, u, v );
-					t->vertexUV(x0, y1, z1, u, v );
+					t->vertexUV(x0, y1, z1, u, v );								
 				}
 			}
 			t->end();
@@ -1773,7 +1773,7 @@ void LevelRenderer::renderAdvancedClouds(float alpha)
 				t->end();
 #endif
 			}
-		}
+		}			
 	}
 
 	glColor4f(1, 1, 1, 1.0f);
@@ -1909,15 +1909,15 @@ bool LevelRenderer::updateDirtyChunks()
 		for( int p = 0; p < XUSER_MAX_COUNT; p++ )
 		{
 			// It's possible that the localplayers member can be set to NULL on the main thread when a player chooses to exit the game
-			// So take a reference to the player object now. As it is a std::shared_ptr it should live as long as we need it
-			std::shared_ptr<LocalPlayer> player = mc->localplayers[p];
+			// So take a reference to the player object now. As it is a shared_ptr it should live as long as we need it
+			shared_ptr<LocalPlayer> player = mc->localplayers[p]; 
 			if( player == NULL ) continue;
 			if( chunks[p].data == NULL ) continue;
 			if( level[p] == NULL ) continue;
 			if( chunks[p].length != xChunks * zChunks * CHUNK_Y_COUNT ) continue;
 			int px = (int)player->x;
 			int py = (int)player->y;
-			int pz = (int)player->z;
+			int pz = (int)player->z;		
 
 //			app.DebugPrintf("!! %d %d %d, %d %d %d {%d,%d} ",px,py,pz,stackChunkDirty,nonStackChunkDirty,onlyRebuild, xChunks, zChunks);
 
@@ -1932,7 +1932,7 @@ bool LevelRenderer::updateDirtyChunks()
 						ClipChunk *pClipChunk = &chunks[p][(z * yChunks + y) * xChunks + x];
 						// Get distance to this chunk - deliberately not calling the chunk's method of doing this to avoid overheads (passing entitie, type conversion etc.) that this involves
 						int xd = pClipChunk->xm - px;
-						int yd = pClipChunk->ym - py;
+						int yd = pClipChunk->ym - py;		
 						int zd = pClipChunk->zm - pz;
 						int distSq = xd * xd + yd * yd + zd * zd;
 						int distSqWeighted = xd * xd + yd * yd * 4 + zd * zd;  // Weighting against y to prioritise things in same x/z plane as player first
@@ -1974,7 +1974,7 @@ bool LevelRenderer::updateDirtyChunks()
 									// emptiness without actually testing as many data items as uncompressed data would.
 									Chunk *chunk = pClipChunk->chunk;
 									LevelChunk *lc = level[p]->getChunkAt(chunk->x,chunk->z);
-									if( !lc->isRenderChunkEmpty(y * 16) )
+									if( !lc->isRenderChunkEmpty(y * 16) ) 
 									{
 										nearChunk = pClipChunk;
 										minDistSq = distSqWeighted;
@@ -2014,7 +2014,7 @@ bool LevelRenderer::updateDirtyChunks()
 		PIXEndNamedEvent();
 	}
 
-
+	
 
 	Chunk *chunk = NULL;
 #ifdef _LARGE_WORLDS
@@ -2058,21 +2058,21 @@ bool LevelRenderer::updateDirtyChunks()
 			if((veryNearCount > 0))
 				bAtomic = true;		//MGH -  if veryNearCount, then we're trying to rebuild atomically, so do it all on the main thread
 
-			if( bAtomic || (index == 0) )
+			if( bAtomic || (index == 0) ) 
 			{
 				//PIXBeginNamedEvent(0,"Rebuilding near chunk %d %d %d",chunk->x, chunk->y, chunk->z);
-				//		static int64_t totalTime = 0;
-				//		static int64_t countTime = 0;
-				//		int64_t startTime = System::currentTimeMillis();
+				//		static __int64 totalTime = 0;
+				//		static __int64 countTime = 0;
+				//		__int64 startTime = System::currentTimeMillis();
 
 				//app.DebugPrintf("Rebuilding permaChunk %d\n", index);
 
-				permaChunk[index].rebuild();
+				permaChunk[index].rebuild();	
 
-				if(index !=0)
+				if(index !=0)			
 					s_rebuildCompleteEvents->Set(index-1);		// MGH - this rebuild happening on the main thread instead, mark the thread it should have been running on as complete
 
-				//		int64_t endTime = System::currentTimeMillis();
+				//		__int64 endTime = System::currentTimeMillis();
 				//		totalTime += (endTime - startTime);
 				//		countTime++;
 				//		printf("%d : %f\n", countTime, (float)totalTime / (float)countTime);
@@ -2111,11 +2111,11 @@ bool LevelRenderer::updateDirtyChunks()
 		static Chunk permaChunk;
 		permaChunk.makeCopyForRebuild(chunk);
 		LeaveCriticalSection(&m_csDirtyChunks);
-		//		static int64_t totalTime = 0;
-		//		static int64_t countTime = 0;
-		//		int64_t startTime = System::currentTimeMillis();
+		//		static __int64 totalTime = 0;
+		//		static __int64 countTime = 0;
+		//		__int64 startTime = System::currentTimeMillis();
 		permaChunk.rebuild();
-		//		int64_t endTime = System::currentTimeMillis();
+		//		__int64 endTime = System::currentTimeMillis();
 		//		totalTime += (endTime - startTime);
 		//		countTime++;
 		//		printf("%d : %f\n", countTime, (float)totalTime / (float)countTime);
@@ -2161,7 +2161,7 @@ bool LevelRenderer::updateDirtyChunks()
 }
 
 
-void LevelRenderer::renderHit(std::shared_ptr<Player> player, HitResult *h, int mode, std::shared_ptr<ItemInstance> inventoryItem, float a)
+void LevelRenderer::renderHit(shared_ptr<Player> player, HitResult *h, int mode, shared_ptr<ItemInstance> inventoryItem, float a)
 {
 	Tesselator *t = Tesselator::getInstance();
 	glEnable(GL_BLEND);
@@ -2180,7 +2180,7 @@ void LevelRenderer::renderHit(std::shared_ptr<Player> player, HitResult *h, int 
 	glDisable(GL_ALPHA_TEST);
 }
 
-void LevelRenderer::renderDestroyAnimation(Tesselator *t, std::shared_ptr<Player> player, float a)
+void LevelRenderer::renderDestroyAnimation(Tesselator *t, shared_ptr<Player> player, float a)
 {
 	double xo = player->xOld + (player->x - player->xOld) * a;
 	double yo = player->yOld + (player->y - player->yOld) * a;
@@ -2246,7 +2246,7 @@ void LevelRenderer::renderDestroyAnimation(Tesselator *t, std::shared_ptr<Player
 	}
 }
 
-void LevelRenderer::renderHitOutline(std::shared_ptr<Player> player, HitResult *h, int mode, std::shared_ptr<ItemInstance> inventoryItem, float a)
+void LevelRenderer::renderHitOutline(shared_ptr<Player> player, HitResult *h, int mode, shared_ptr<ItemInstance> inventoryItem, float a)
 {
 
 	if (mode == 0 && h->type == HitResult::TILE)
@@ -2315,7 +2315,7 @@ void LevelRenderer::setDirty(int x0, int y0, int z0, int x1, int y1, int z1, Lev
 {
 	// 4J - level is passed if this is coming from setTilesDirty, which could come from when connection is being ticked outside of normal level tick, and player won't
 	// be set up
-	if( level == NULL ) level = this->level[mc->player->GetXboxPad()];
+	if( level == NULL ) level = this->level[mc->player->GetXboxPad()];		
 	//	EnterCriticalSection(&m_csDirtyChunks);
 	int _x0 = Mth::intFloorDiv(x0, CHUNK_XZSIZE);
 	int _y0 = Mth::intFloorDiv(y0, CHUNK_SIZE);
@@ -2346,10 +2346,10 @@ void LevelRenderer::setDirty(int x0, int y0, int z0, int x1, int y1, int z1, Lev
 
 					// AP - by the time we reach this function the area passed in has a 1 block border added to it to make sure geometry and lighting is updated correctly.
 					// Some of those blocks will only need lighting updated so it is acceptable to not have those blocks grouped in the deferral system as the mismatch
-					// will hardly be noticable. The blocks that need geometry updated will be adjacent to the original, non-bordered area.
+					// will hardly be noticable. The blocks that need geometry updated will be adjacent to the original, non-bordered area. 
 					// This bit of code will mark a chunk as 'non-critical' if all of the blocks inside it are NOT adjacent to the original area. This has the greatest effect
 					// when digging a single block. Only 6 of the blocks out of the possible 26 are actually adjacent to the original block. The other 20 only need lighting updated.
-					// Note I have noticed a new side effect of this system where it's possible to see into the sides of water but this is acceptable compared to seeing through
+					// Note I have noticed a new side effect of this system where it's possible to see into the sides of water but this is acceptable compared to seeing through 
 					// the entire landscape.
 					// is the left or right most block just inside this chunk
 					if( ((x0 & 15) == 15 && x == _x0) || ((x1 & 15) == 0 && x == _x1) )
@@ -2376,7 +2376,7 @@ void LevelRenderer::setDirty(int x0, int y0, int z0, int x1, int y1, int z1, Lev
 
 					dirtyChunksLockFreeStack.Push((int *)(index));
 #else
-					dirtyChunksLockFreeStack.Push((int *)(index + 2));
+					dirtyChunksLockFreeStack.Push((int *)(index + 2));		
 #endif
 
 #ifdef _XBOX
@@ -2489,7 +2489,7 @@ void LevelRenderer::cull_SPU(int playerIndex, Culler *culler, float a)
 	m_jobPort_CullSPU->submitSync();
 	// 	static int doSort = false;
 	// 	if(doSort)
-	{
+	{	 
 		m_jobPort_CullSPU->submitJob(&sortJob);
 	}
 	// 	doSort ^= 1;
@@ -2586,12 +2586,12 @@ void LevelRenderer::playSound(int iSound, double x, double y, double z, float vo
 	}	*/
 }
 
-void LevelRenderer::playSound(std::shared_ptr<Entity> entity,int iSound, double x, double y, double z, float volume, float pitch, float fSoundClipDist)
+void LevelRenderer::playSound(shared_ptr<Entity> entity,int iSound, double x, double y, double z, float volume, float pitch, float fSoundClipDist)
 {
 }
 
 // 4J-PB - original function. I've changed to an enum instead of string compares
-// 4J removed -
+// 4J removed - 
 /*
 void LevelRenderer::addParticle(const wstring& name, double x, double y, double z, double xa, double ya, double za)
 {
@@ -2606,21 +2606,21 @@ if (xd * xd + yd * yd + zd * zd > particleDistance * particleDistance) return;
 
 int playerIndex = mc->player->GetXboxPad();	// 4J added
 
-if (name== L"bubble") mc->particleEngine->add(std::shared_ptr<BubbleParticle>( new BubbleParticle(level[playerIndex], x, y, z, xa, ya, za) ) );
-else if (name== L"smoke") mc->particleEngine->add(std::shared_ptr<SmokeParticle>( new SmokeParticle(level[playerIndex], x, y, z, xa, ya, za) ) );
-else if (name== L"note") mc->particleEngine->add(std::shared_ptr<NoteParticle>( new NoteParticle(level[playerIndex], x, y, z, xa, ya, za) ) );
-else if (name== L"portal") mc->particleEngine->add(std::shared_ptr<PortalParticle>( new PortalParticle(level[playerIndex], x, y, z, xa, ya, za) ) );
-else if (name== L"explode") mc->particleEngine->add(std::shared_ptr<ExplodeParticle>( new ExplodeParticle(level[playerIndex], x, y, z, xa, ya, za) ) );
-else if (name== L"flame") mc->particleEngine->add(std::shared_ptr<FlameParticle>( new FlameParticle(level[playerIndex], x, y, z, xa, ya, za) ) );
-else if (name== L"lava") mc->particleEngine->add(std::shared_ptr<LavaParticle>( new LavaParticle(level[playerIndex], x, y, z) ) );
-else if (name== L"footstep") mc->particleEngine->add(std::shared_ptr<FootstepParticle>( new FootstepParticle(textures, level[playerIndex], x, y, z) ) );
-else if (name== L"splash") mc->particleEngine->add(std::shared_ptr<SplashParticle>( new SplashParticle(level[playerIndex], x, y, z, xa, ya, za) ) );
-else if (name== L"largesmoke") mc->particleEngine->add(std::shared_ptr<SmokeParticle>( new SmokeParticle(level[playerIndex], x, y, z, xa, ya, za, 2.5f) ) );
-else if (name== L"reddust") mc->particleEngine->add(std::shared_ptr<RedDustParticle>( new RedDustParticle(level[playerIndex], x, y, z, (float) xa, (float) ya, (float) za) ) );
-else if (name== L"snowballpoof") mc->particleEngine->add(std::shared_ptr<BreakingItemParticle>( new BreakingItemParticle(level[playerIndex], x, y, z, Item::snowBall) ) );
-else if (name== L"snowshovel") mc->particleEngine->add(std::shared_ptr<SnowShovelParticle>( new SnowShovelParticle(level[playerIndex], x, y, z, xa, ya, za) ) );
-else if (name== L"slime") mc->particleEngine->add(std::shared_ptr<BreakingItemParticle>( new BreakingItemParticle(level[playerIndex], x, y, z, Item::slimeBall)) ) ;
-else if (name== L"heart") mc->particleEngine->add(std::shared_ptr<HeartParticle>( new HeartParticle(level[playerIndex], x, y, z, xa, ya, za) ) );
+if (name== L"bubble") mc->particleEngine->add(shared_ptr<BubbleParticle>( new BubbleParticle(level[playerIndex], x, y, z, xa, ya, za) ) );
+else if (name== L"smoke") mc->particleEngine->add(shared_ptr<SmokeParticle>( new SmokeParticle(level[playerIndex], x, y, z, xa, ya, za) ) );
+else if (name== L"note") mc->particleEngine->add(shared_ptr<NoteParticle>( new NoteParticle(level[playerIndex], x, y, z, xa, ya, za) ) );
+else if (name== L"portal") mc->particleEngine->add(shared_ptr<PortalParticle>( new PortalParticle(level[playerIndex], x, y, z, xa, ya, za) ) );
+else if (name== L"explode") mc->particleEngine->add(shared_ptr<ExplodeParticle>( new ExplodeParticle(level[playerIndex], x, y, z, xa, ya, za) ) );
+else if (name== L"flame") mc->particleEngine->add(shared_ptr<FlameParticle>( new FlameParticle(level[playerIndex], x, y, z, xa, ya, za) ) );
+else if (name== L"lava") mc->particleEngine->add(shared_ptr<LavaParticle>( new LavaParticle(level[playerIndex], x, y, z) ) );
+else if (name== L"footstep") mc->particleEngine->add(shared_ptr<FootstepParticle>( new FootstepParticle(textures, level[playerIndex], x, y, z) ) );
+else if (name== L"splash") mc->particleEngine->add(shared_ptr<SplashParticle>( new SplashParticle(level[playerIndex], x, y, z, xa, ya, za) ) );
+else if (name== L"largesmoke") mc->particleEngine->add(shared_ptr<SmokeParticle>( new SmokeParticle(level[playerIndex], x, y, z, xa, ya, za, 2.5f) ) );
+else if (name== L"reddust") mc->particleEngine->add(shared_ptr<RedDustParticle>( new RedDustParticle(level[playerIndex], x, y, z, (float) xa, (float) ya, (float) za) ) );
+else if (name== L"snowballpoof") mc->particleEngine->add(shared_ptr<BreakingItemParticle>( new BreakingItemParticle(level[playerIndex], x, y, z, Item::snowBall) ) );
+else if (name== L"snowshovel") mc->particleEngine->add(shared_ptr<SnowShovelParticle>( new SnowShovelParticle(level[playerIndex], x, y, z, xa, ya, za) ) );
+else if (name== L"slime") mc->particleEngine->add(shared_ptr<BreakingItemParticle>( new BreakingItemParticle(level[playerIndex], x, y, z, Item::slimeBall)) ) ;
+else if (name== L"heart") mc->particleEngine->add(shared_ptr<HeartParticle>( new HeartParticle(level[playerIndex], x, y, z, xa, ya, za) ) );
 }
 */
 
@@ -2629,7 +2629,7 @@ void LevelRenderer::addParticle(ePARTICLE_TYPE eParticleType, double x, double y
 	addParticleInternal( eParticleType, x, y, z, xa, ya, za );
 }
 
-std::shared_ptr<Particle> LevelRenderer::addParticleInternal(ePARTICLE_TYPE eParticleType, double x, double y, double z, double xa, double ya, double za)
+shared_ptr<Particle> LevelRenderer::addParticleInternal(ePARTICLE_TYPE eParticleType, double x, double y, double z, double xa, double ya, double za)
 {
 	if (mc == NULL || mc->cameraTargetPlayer == NULL || mc->particleEngine == NULL)
 	{
@@ -2683,7 +2683,7 @@ std::shared_ptr<Particle> LevelRenderer::addParticleInternal(ePARTICLE_TYPE ePar
 		bool inRange = false;
 		for(unsigned int i = 0; i < XUSER_MAX_COUNT; ++i)
 		{
-			std::shared_ptr<Player> thisPlayer = mc->localplayers[i];
+			shared_ptr<Player> thisPlayer = mc->localplayers[i];
 			if(thisPlayer != NULL && level[i] == lev)
 			{
 				xd = thisPlayer->x - x;
@@ -2706,35 +2706,35 @@ std::shared_ptr<Particle> LevelRenderer::addParticleInternal(ePARTICLE_TYPE ePar
 		return nullptr;
 	}
 
-	std::shared_ptr<Particle> particle;
+	shared_ptr<Particle> particle;
 
 	switch(eParticleType)
 	{
 	case eParticleType_hugeexplosion:
-		particle = std::shared_ptr<Particle>(new HugeExplosionSeedParticle(lev, x, y, z, xa, ya, za));
+		particle = shared_ptr<Particle>(new HugeExplosionSeedParticle(lev, x, y, z, xa, ya, za));
 		break;
 	case eParticleType_largeexplode:
-		particle = std::shared_ptr<Particle>(new HugeExplosionParticle(textures, lev, x, y, z, xa, ya, za));
+		particle = shared_ptr<Particle>(new HugeExplosionParticle(textures, lev, x, y, z, xa, ya, za));
 		break;
 
 	case eParticleType_bubble:
-		particle = std::shared_ptr<Particle>( new BubbleParticle(lev, x, y, z, xa, ya, za) );
+		particle = shared_ptr<Particle>( new BubbleParticle(lev, x, y, z, xa, ya, za) );
 		break;
 
 	case eParticleType_suspended:
-		particle = std::shared_ptr<Particle>( new SuspendedParticle(lev, x, y, z, xa, ya, za) );
+		particle = shared_ptr<Particle>( new SuspendedParticle(lev, x, y, z, xa, ya, za) );
 		break;
 	case eParticleType_depthsuspend:
-		particle = std::shared_ptr<Particle>( new SuspendedTownParticle(lev, x, y, z, xa, ya, za) );
+		particle = shared_ptr<Particle>( new SuspendedTownParticle(lev, x, y, z, xa, ya, za) );
 		break;
 	case eParticleType_townaura:
-		particle = std::shared_ptr<Particle>( new SuspendedTownParticle(lev, x, y, z, xa, ya, za) );
+		particle = shared_ptr<Particle>( new SuspendedTownParticle(lev, x, y, z, xa, ya, za) );
 		break;
 	case eParticleType_crit:
 		{
-			std::shared_ptr<CritParticle2> critParticle2 = std::shared_ptr<CritParticle2>(new CritParticle2(lev, x, y, z, xa, ya, za));
+			shared_ptr<CritParticle2> critParticle2 = shared_ptr<CritParticle2>(new CritParticle2(lev, x, y, z, xa, ya, za));
 			critParticle2->CritParticle2PostConstructor();
-			particle = std::shared_ptr<Particle>( critParticle2 );
+			particle = shared_ptr<Particle>( critParticle2 );
 			// request from 343 to set pink for the needler in the Halo Texture Pack
 			// Set particle colour from colour-table.
 			unsigned int cStart = Minecraft::GetInstance()->getColourTable()->getColor( eMinecraftColour_Particle_CritStart );
@@ -2751,22 +2751,22 @@ std::shared_ptr<Particle> LevelRenderer::addParticleInternal(ePARTICLE_TYPE ePar
 				float fStart=((float)(cStart&0xFF));
 				float fDiff=(float)((cEnd-cStart)&0xFF);
 
-				float fCol =  (fStart + (Math::random() * fDiff))/255.0f;
+				float fCol =  (fStart + (Math::random() * fDiff))/255.0f;				
 				particle->setColor( fCol, fCol, fCol );
 			}
 		}
 		break;
 	case eParticleType_magicCrit:
 		{
-			std::shared_ptr<CritParticle2> critParticle2 = std::shared_ptr<CritParticle2>(new CritParticle2(lev, x, y, z, xa, ya, za));
+			shared_ptr<CritParticle2> critParticle2 = shared_ptr<CritParticle2>(new CritParticle2(lev, x, y, z, xa, ya, za));
 			critParticle2->CritParticle2PostConstructor();
-			particle = std::shared_ptr<Particle>(critParticle2);
+			particle = shared_ptr<Particle>(critParticle2);
 			particle->setColor(particle->getRedCol() * 0.3f, particle->getGreenCol() * 0.8f, particle->getBlueCol());
 			particle->setNextMiscAnimTex();
 		}
 		break;
 	case eParticleType_smoke:
-		particle = std::shared_ptr<Particle>( new SmokeParticle(lev, x, y, z, xa, ya, za) );
+		particle = shared_ptr<Particle>( new SmokeParticle(lev, x, y, z, xa, ya, za) );
 		break;
 	case eParticleType_endportal: // 4J - Added.
 		{
@@ -2776,94 +2776,94 @@ std::shared_ptr<Particle> LevelRenderer::addParticleInternal(ePARTICLE_TYPE ePar
 			unsigned int col = Minecraft::GetInstance()->getColourTable()->getColor( eMinecraftColour_Particle_EnderPortal );
 			tmp->setColor( ( (col>>16)&0xFF )/255.0f, ( (col>>8)&0xFF )/255.0, ( col&0xFF )/255.0 );
 
-			particle = std::shared_ptr<Particle>(tmp);
+			particle = shared_ptr<Particle>(tmp);
 		}
 		break;
 	case eParticleType_mobSpell:
-		particle = std::shared_ptr<Particle>(new SpellParticle(lev, x, y, z, 0, 0, 0));
+		particle = shared_ptr<Particle>(new SpellParticle(lev, x, y, z, 0, 0, 0));
 		particle->setColor((float) xa, (float) ya, (float) za);
 		break;
 	case eParticleType_spell:
-		particle = std::shared_ptr<Particle>( new SpellParticle(lev, x, y, z, xa, ya, za) );
+		particle = shared_ptr<Particle>( new SpellParticle(lev, x, y, z, xa, ya, za) );
 		break;
 	case eParticleType_instantSpell:
-		particle = std::shared_ptr<Particle>(new SpellParticle(lev, x, y, z, xa, ya, za));
-		std::dynamic_pointer_cast<SpellParticle>(particle)->setBaseTex(9 * 16);
+		particle = shared_ptr<Particle>(new SpellParticle(lev, x, y, z, xa, ya, za));
+		dynamic_pointer_cast<SpellParticle>(particle)->setBaseTex(9 * 16);
 		break;
 	case eParticleType_note:
-		particle = std::shared_ptr<Particle>( new NoteParticle(lev, x, y, z, xa, ya, za) );
+		particle = shared_ptr<Particle>( new NoteParticle(lev, x, y, z, xa, ya, za) );
 		break;
 	case eParticleType_netherportal:
-		particle = std::shared_ptr<Particle>( new NetherPortalParticle(lev, x, y, z, xa, ya, za) );
+		particle = shared_ptr<Particle>( new NetherPortalParticle(lev, x, y, z, xa, ya, za) );
 		break;
 	case eParticleType_ender:
-		particle = std::shared_ptr<Particle>( new EnderParticle(lev, x, y, z, xa, ya, za) );
+		particle = shared_ptr<Particle>( new EnderParticle(lev, x, y, z, xa, ya, za) );
 		break;
 	case eParticleType_enchantmenttable:
-		particle = std::shared_ptr<Particle>(new EchantmentTableParticle(lev, x, y, z, xa, ya, za) );
+		particle = shared_ptr<Particle>(new EchantmentTableParticle(lev, x, y, z, xa, ya, za) );
 		break;
 	case eParticleType_explode:
-		particle = std::shared_ptr<Particle>( new ExplodeParticle(lev, x, y, z, xa, ya, za) );
+		particle = shared_ptr<Particle>( new ExplodeParticle(lev, x, y, z, xa, ya, za) );
 		break;
 	case eParticleType_flame:
-		particle = std::shared_ptr<Particle>( new FlameParticle(lev, x, y, z, xa, ya, za) );
+		particle = shared_ptr<Particle>( new FlameParticle(lev, x, y, z, xa, ya, za) );
 		break;
 	case eParticleType_lava:
-		particle = std::shared_ptr<Particle>( new LavaParticle(lev, x, y, z) );
+		particle = shared_ptr<Particle>( new LavaParticle(lev, x, y, z) );
 		break;
 	case eParticleType_footstep:
-		particle = std::shared_ptr<Particle>( new FootstepParticle(textures, lev, x, y, z) );
+		particle = shared_ptr<Particle>( new FootstepParticle(textures, lev, x, y, z) );
 		break;
 	case eParticleType_splash:
-		particle = std::shared_ptr<Particle>( new SplashParticle(lev, x, y, z, xa, ya, za) );
+		particle = shared_ptr<Particle>( new SplashParticle(lev, x, y, z, xa, ya, za) );
 		break;
 	case eParticleType_largesmoke:
-		particle = std::shared_ptr<Particle>( new SmokeParticle(lev, x, y, z, xa, ya, za, 2.5f) );
+		particle = shared_ptr<Particle>( new SmokeParticle(lev, x, y, z, xa, ya, za, 2.5f) );
 		break;
 	case eParticleType_reddust:
-		particle = std::shared_ptr<Particle>( new RedDustParticle(lev, x, y, z, (float) xa, (float) ya, (float) za) );
+		particle = shared_ptr<Particle>( new RedDustParticle(lev, x, y, z, (float) xa, (float) ya, (float) za) );
 		break;
 	case eParticleType_snowballpoof:
-		particle = std::shared_ptr<Particle>( new BreakingItemParticle(lev, x, y, z, Item::snowBall, textures) );
+		particle = shared_ptr<Particle>( new BreakingItemParticle(lev, x, y, z, Item::snowBall, textures) );
 		break;
 	case eParticleType_dripWater:
-		particle = std::shared_ptr<Particle>( new DripParticle(lev, x, y, z, Material::water) );
+		particle = shared_ptr<Particle>( new DripParticle(lev, x, y, z, Material::water) );
 		break;
 	case eParticleType_dripLava:
-		particle = std::shared_ptr<Particle>( new DripParticle(lev, x, y, z, Material::lava) );
+		particle = shared_ptr<Particle>( new DripParticle(lev, x, y, z, Material::lava) );
 		break;
 	case eParticleType_snowshovel:
-		particle = std::shared_ptr<Particle>( new SnowShovelParticle(lev, x, y, z, xa, ya, za) );
+		particle = shared_ptr<Particle>( new SnowShovelParticle(lev, x, y, z, xa, ya, za) );
 		break;
 	case eParticleType_slime:
-		particle = std::shared_ptr<Particle>( new BreakingItemParticle(lev, x, y, z, Item::slimeBall, textures));
+		particle = shared_ptr<Particle>( new BreakingItemParticle(lev, x, y, z, Item::slimeBall, textures));
 		break;
 	case eParticleType_heart:
-		particle = std::shared_ptr<Particle>( new HeartParticle(lev, x, y, z, xa, ya, za) );
+		particle = shared_ptr<Particle>( new HeartParticle(lev, x, y, z, xa, ya, za) );
 		break;
 	case eParticleType_angryVillager:
-		particle = std::shared_ptr<Particle>( new HeartParticle(lev, x, y + 0.5f, z, xa, ya, za) );
+		particle = shared_ptr<Particle>( new HeartParticle(lev, x, y + 0.5f, z, xa, ya, za) );
 		particle->setMiscTex(1 + 16 * 5);
 		particle->setColor(1, 1, 1);
 		break;
 	case eParticleType_happyVillager:
-		particle = std::shared_ptr<Particle>( new SuspendedTownParticle(lev, x, y, z, xa, ya, za) );
+		particle = shared_ptr<Particle>( new SuspendedTownParticle(lev, x, y, z, xa, ya, za) );
 		particle->setMiscTex(2 + 16 * 5);
 		particle->setColor(1, 1, 1);
 		break;
 	case eParticleType_dragonbreath:
-		particle = std::shared_ptr<Particle>( new DragonBreathParticle(lev, x, y, z, xa, ya, za) );
+		particle = shared_ptr<Particle>( new DragonBreathParticle(lev, x, y, z, xa, ya, za) );
 		break;
 	default:
 		if( ( eParticleType >= eParticleType_iconcrack_base ) &&  ( eParticleType <= eParticleType_iconcrack_last )  )
 		{
 			int id = PARTICLE_CRACK_ID(eParticleType), data = PARTICLE_CRACK_DATA(eParticleType);
-			particle = std::shared_ptr<Particle>(new BreakingItemParticle(lev, x, y, z, xa, ya, za, Item::items[id], textures, data));
+			particle = shared_ptr<Particle>(new BreakingItemParticle(lev, x, y, z, xa, ya, za, Item::items[id], textures, data));
 		}
 		else if( ( eParticleType >= eParticleType_tilecrack_base ) &&  ( eParticleType <= eParticleType_tilecrack_last )  )
 		{
 			int id = PARTICLE_CRACK_ID(eParticleType), data = PARTICLE_CRACK_DATA(eParticleType);
-			particle = std::dynamic_pointer_cast<Particle>( std::shared_ptr<TerrainParticle>(new TerrainParticle(lev, x, y, z, xa, ya, za, Tile::tiles[id], 0, data, textures))->init(data) );
+			particle = dynamic_pointer_cast<Particle>( shared_ptr<TerrainParticle>(new TerrainParticle(lev, x, y, z, xa, ya, za, Tile::tiles[id], 0, data, textures))->init(data) );
 		}
 	}
 
@@ -2875,7 +2875,7 @@ std::shared_ptr<Particle> LevelRenderer::addParticleInternal(ePARTICLE_TYPE ePar
 	return particle;
 }
 
-void LevelRenderer::entityAdded(std::shared_ptr<Entity> entity)
+void LevelRenderer::entityAdded(shared_ptr<Entity> entity)
 {
 	entity->prepareCustomTextures();
 	// 4J - these empty string comparisons used to check for NULL references, but we don't have string pointers (currently) in entities,
@@ -2885,11 +2885,11 @@ void LevelRenderer::entityAdded(std::shared_ptr<Entity> entity)
 	//if (entity->customTextureUrl2 != L"") textures->addHttpTexture(entity->customTextureUrl2, new MobSkinTextureProcessor());
 
 	// 4J-PB - adding these from global title storage
-	if (entity->customTextureUrl != L"")
+	if (entity->customTextureUrl != L"") 
 	{
 		textures->addMemTexture(entity->customTextureUrl, new MobSkinMemTextureProcessor());
 	}
-	if (entity->customTextureUrl2 != L"")
+	if (entity->customTextureUrl2 != L"") 
 	{
 		textures->addMemTexture(entity->customTextureUrl2, new MobSkinMemTextureProcessor());
 	}
@@ -2899,17 +2899,17 @@ void LevelRenderer::entityAdded(std::shared_ptr<Entity> entity)
 
 }
 
-void LevelRenderer::entityRemoved(std::shared_ptr<Entity> entity)
+void LevelRenderer::entityRemoved(shared_ptr<Entity> entity)
 {
 	/* 4J - removed temp
 	if (entity->customTextureUrl != L"") textures->removeHttpTexture(entity->customTextureUrl);
 	if (entity->customTextureUrl2 != L"") textures->removeHttpTexture(entity->customTextureUrl2);
 	*/
-	if (entity->customTextureUrl != L"")
+	if (entity->customTextureUrl != L"") 
 	{
 		textures->removeMemTexture(entity->customTextureUrl);
 	}
-	if (entity->customTextureUrl2 != L"")
+	if (entity->customTextureUrl2 != L"") 
 	{
 		textures->removeMemTexture(entity->customTextureUrl2);
 	}
@@ -2936,7 +2936,7 @@ void LevelRenderer::clear()
 	MemoryTracker::releaseLists(chunkLists);
 }
 
-void LevelRenderer::levelEvent(std::shared_ptr<Player> source, int type, int x, int y, int z, int data)
+void LevelRenderer::levelEvent(shared_ptr<Player> source, int type, int x, int y, int z, int data)
 {
 	int playerIndex = mc->player->GetXboxPad();	// 4J added
 	Random *random = level[playerIndex]->random;
@@ -2944,7 +2944,7 @@ void LevelRenderer::levelEvent(std::shared_ptr<Player> source, int type, int x, 
 	{
 		//case LevelEvent::SOUND_WITHER_BOSS_SPAWN:
 	case LevelEvent::SOUND_DRAGON_DEATH:
-		if (mc->cameraTargetPlayer != NULL)
+		if (mc->cameraTargetPlayer != NULL) 
 		{
 			// play the sound at an offset from the player
 			double dx = x - mc->cameraTargetPlayer->x;
@@ -2956,7 +2956,7 @@ void LevelRenderer::levelEvent(std::shared_ptr<Player> source, int type, int x, 
 			double sy = mc->cameraTargetPlayer->y;
 			double sz = mc->cameraTargetPlayer->z;
 
-			if (len > 0)
+			if (len > 0) 
 			{
 				sx += (dx / len) * 2;
 				sy += (dy / len) * 2;
@@ -3048,7 +3048,7 @@ void LevelRenderer::levelEvent(std::shared_ptr<Player> source, int type, int x, 
 				double ys = 0.01 + random->nextDouble() * 0.5;
 				double zs = sin(angle) * dist;
 
-				std::shared_ptr<Particle> spellParticle = addParticleInternal(particleName, xp + xs * 0.1, yp + 0.3, zp + zs * 0.1, xs, ys, zs);
+				shared_ptr<Particle> spellParticle = addParticleInternal(particleName, xp + xs * 0.1, yp + 0.3, zp + zs * 0.1, xs, ys, zs);
 				if (spellParticle != NULL)
 				{
 					float randBrightness = 0.75f + random->nextFloat() * 0.25f;
@@ -3075,7 +3075,7 @@ void LevelRenderer::levelEvent(std::shared_ptr<Player> source, int type, int x, 
 				double ys = 0.01 + random->nextDouble() * 0.5;
 				double zs = sin(angle) * dist;
 
-				std::shared_ptr<Particle> acidParticle = addParticleInternal(particleName, xp + xs * 0.1, yp + 0.3, zp + zs * 0.1, xs, ys, zs);
+				shared_ptr<Particle> acidParticle = addParticleInternal(particleName, xp + xs * 0.1, yp + 0.3, zp + zs * 0.1, xs, ys, zs);
 				if (acidParticle != NULL)
 				{
 					float randBrightness = 0.75f + random->nextFloat() * 0.25f;
@@ -3185,7 +3185,7 @@ void LevelRenderer::destroyTileProgress(int id, int x, int y, int z, int progres
 	if (progress < 0 || progress >= 10)
 	{
 		AUTO_VAR(it, destroyingBlocks.find(id));
-		if(it != destroyingBlocks.end())
+		if(it != destroyingBlocks.end()) 
 		{
 			delete it->second;
 			destroyingBlocks.erase(it);
@@ -3373,7 +3373,7 @@ unsigned char LevelRenderer::incGlobalChunkRefCount(int x, int y, int z, Level *
 		unsigned char refCount = (flags >> CHUNK_FLAG_REF_SHIFT ) & CHUNK_FLAG_REF_MASK;
 		refCount++;
 		flags &= ~(CHUNK_FLAG_REF_MASK<<CHUNK_FLAG_REF_SHIFT);
-		flags |= refCount << CHUNK_FLAG_REF_SHIFT;
+		flags |= refCount << CHUNK_FLAG_REF_SHIFT;	
 		globalChunkFlags[ index ] = flags;
 
 		return refCount;
@@ -3545,7 +3545,7 @@ void LevelRenderer::DestroyedTileManager::addAABBs( Level *level, AABB *box, AAB
 				// without worrying about the lifespan of the copy we've passed out
 				if( m_destroyedTiles[i]->boxes[j]->intersects( box ) )
 				{
-					boxes->push_back(AABB::newTemp( m_destroyedTiles[i]->boxes[j]->x0,
+					boxes->push_back(AABB::newTemp( m_destroyedTiles[i]->boxes[j]->x0, 
 						m_destroyedTiles[i]->boxes[j]->y0,
 						m_destroyedTiles[i]->boxes[j]->z0,
 						m_destroyedTiles[i]->boxes[j]->x1,

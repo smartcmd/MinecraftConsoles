@@ -21,7 +21,7 @@
 #include <iterator>
 #include <string>
 #include <vector>
-#include <boost/asio/detail/std::shared_ptr.hpp>
+#include <boost/asio/detail/shared_ptr.hpp>
 #include <boost/asio/detail/socket_ops.hpp>
 #include <boost/asio/detail/socket_types.hpp>
 #include <boost/asio/ip/basic_resolver_entry.hpp>
@@ -184,7 +184,7 @@ private:
   }
 
   typedef std::vector<basic_resolver_entry<InternetProtocol> > values_type;
-  boost::asio::detail::std::shared_ptr<values_type> values_;
+  boost::asio::detail::shared_ptr<values_type> values_;
   std::size_t index_;
 };
 

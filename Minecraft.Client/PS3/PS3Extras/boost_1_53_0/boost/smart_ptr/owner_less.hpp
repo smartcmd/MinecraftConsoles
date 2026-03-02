@@ -17,7 +17,7 @@
 
 namespace boost
 {
-  template<typename T> class std::shared_ptr;
+  template<typename T> class shared_ptr;
   template<typename T> class weak_ptr;
 
   namespace detail
@@ -43,13 +43,13 @@ namespace boost
   template<typename T> struct owner_less;
 
   template<typename T>
-    struct owner_less<std::shared_ptr<T> >:
-    public detail::generic_owner_less<std::shared_ptr<T>, weak_ptr<T> >
+    struct owner_less<shared_ptr<T> >:
+    public detail::generic_owner_less<shared_ptr<T>, weak_ptr<T> >
   {};
 
   template<typename T>
     struct owner_less<weak_ptr<T> >:
-    public detail::generic_owner_less<weak_ptr<T>, std::shared_ptr<T> >
+    public detail::generic_owner_less<weak_ptr<T>, shared_ptr<T> >
   {};
 
 } // namespace boost

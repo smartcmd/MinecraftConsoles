@@ -33,10 +33,10 @@ namespace boost {
       // manages call depth
       class BOOST_SIGNALS_DECL call_notification {
       public:
-        call_notification(const std::shared_ptr<signal_base_impl>&);
+        call_notification(const shared_ptr<signal_base_impl>&);
         ~call_notification();
 
-        std::shared_ptr<signal_base_impl> impl;
+        shared_ptr<signal_base_impl> impl;
       };
 
       // Implementation of base class for all signals. It handles the
@@ -87,7 +87,7 @@ namespace boost {
 
         connection connect_slot(const any& slot,
                                 const stored_group& name,
-                                std::shared_ptr<slot_base::data_t> data,
+                                shared_ptr<slot_base::data_t> data,
                                 connect_position at);
 
       private:
@@ -138,7 +138,7 @@ namespace boost {
       protected:
         connection connect_slot(const any& slot,
                                 const stored_group& name,
-                                std::shared_ptr<slot_base::data_t> data,
+                                shared_ptr<slot_base::data_t> data,
                                 connect_position at)
         {
           return impl->connect_slot(slot, name, data, at);
@@ -146,7 +146,7 @@ namespace boost {
 
         typedef named_slot_map::iterator iterator;
 
-        std::shared_ptr<signal_base_impl> impl;
+        shared_ptr<signal_base_impl> impl;
       };
     } // end namespace detail
   } // end namespace BOOST_SIGNALS_NAMESPACE

@@ -137,7 +137,7 @@ LevelChunk* Region::getLevelChunk(int x, int y, int z)
 
 
 
-std::shared_ptr<TileEntity> Region::getTileEntity(int x, int y, int z)
+shared_ptr<TileEntity> Region::getTileEntity(int x, int y, int z)
 {
 	int xc = (x >> 4) - xc1;
 	int zc = (z >> 4) - zc1;

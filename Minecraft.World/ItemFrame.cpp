@@ -33,58 +33,58 @@ ItemFrame::ItemFrame(Level *level, int xTile, int yTile, int zTile, int dir) : H
 	setDir(dir);
 }
 
-void ItemFrame::defineSynchedData()
+void ItemFrame::defineSynchedData() 
 {
 	getEntityData()->defineNULL(DATA_ITEM, NULL);
 	getEntityData()->define(DATA_ROTATION, (byte) 0);
 }
 
-void ItemFrame::dropItem()
+void ItemFrame::dropItem() 
 {
-	spawnAtLocation(std::shared_ptr<ItemInstance>(new ItemInstance(Item::frame)), 0.0f);
-	std::shared_ptr<ItemInstance> item = getItem();
-	if (item != NULL)
+	spawnAtLocation(shared_ptr<ItemInstance>(new ItemInstance(Item::frame)), 0.0f);
+	shared_ptr<ItemInstance> item = getItem();
+	if (item != NULL) 
 	{
-		std::shared_ptr<MapItemSavedData> data = Item::map->getSavedData(item, level);
+		shared_ptr<MapItemSavedData> data = Item::map->getSavedData(item, level);
 		data->removeItemFrameDecoration(item);
 
-		std::shared_ptr<ItemInstance> itemToDrop = item->copy();
+		shared_ptr<ItemInstance> itemToDrop = item->copy();
 		itemToDrop->setFramed(nullptr);
 		spawnAtLocation(itemToDrop, 0.0f);
 	}
 }
 
-std::shared_ptr<ItemInstance> ItemFrame::getItem()
+shared_ptr<ItemInstance> ItemFrame::getItem() 
 {
 	return getEntityData()->getItemInstance(DATA_ITEM);
 }
 
-void ItemFrame::setItem(std::shared_ptr<ItemInstance> item)
+void ItemFrame::setItem(shared_ptr<ItemInstance> item) 
 {
 	if(item != NULL)
 	{
 		item = item->copy();
 		item->count = 1;
 
-		item->setFramed(std::dynamic_pointer_cast<ItemFrame>( shared_from_this() ));
+		item->setFramed(dynamic_pointer_cast<ItemFrame>( shared_from_this() ));
 	}
 	getEntityData()->set(DATA_ITEM, item);
 	getEntityData()->markDirty(DATA_ITEM);
 }
 
-int ItemFrame::getRotation()
+int ItemFrame::getRotation() 
 {
 	return getEntityData()->getByte(DATA_ROTATION);
 }
 
-void ItemFrame::setRotation(int rotation)
+void ItemFrame::setRotation(int rotation) 
 {
 	getEntityData()->set(DATA_ROTATION, (byte) (rotation % 4));
 }
 
-void ItemFrame::addAdditonalSaveData(CompoundTag *tag)
+void ItemFrame::addAdditonalSaveData(CompoundTag *tag) 
 {
-	if (getItem() != NULL)
+	if (getItem() != NULL) 
 	{
 		tag->putCompound(L"Item", getItem()->save(new CompoundTag()));
 		tag->putByte(L"ItemRotation", (byte) getRotation());
@@ -93,10 +93,10 @@ void ItemFrame::addAdditonalSaveData(CompoundTag *tag)
 	HangingEntity::addAdditonalSaveData(tag);
 }
 
-void ItemFrame::readAdditionalSaveData(CompoundTag *tag)
+void ItemFrame::readAdditionalSaveData(CompoundTag *tag) 
 {
 	CompoundTag *itemTag = tag->getCompound(L"Item");
-	if (itemTag != NULL && !itemTag->isEmpty())
+	if (itemTag != NULL && !itemTag->isEmpty()) 
 	{
 		setItem(ItemInstance::fromTag(itemTag));
 		setRotation(tag->getByte(L"ItemRotation"));
@@ -106,36 +106,36 @@ void ItemFrame::readAdditionalSaveData(CompoundTag *tag)
 	HangingEntity::readAdditionalSaveData(tag);
 }
 
-bool ItemFrame::interact(std::shared_ptr<Player> player)
+bool ItemFrame::interact(shared_ptr<Player> player) 
 {
 	if(!player->isAllowedToInteract(shared_from_this()))
 	{
 		return false;
 	}
 
-	if (getItem() == NULL)
+	if (getItem() == NULL) 
 	{
-		std::shared_ptr<ItemInstance> item = player->getCarriedItem();
+		shared_ptr<ItemInstance> item = player->getCarriedItem();
 
-		if (item != NULL)
+		if (item != NULL) 
 		{
-			if (!level->isClientSide)//isClientSide)
+			if (!level->isClientSide)//isClientSide) 
 			{
 				setItem(item);
 
-				if (!player->abilities.instabuild)
+				if (!player->abilities.instabuild) 
 				{
- 					if (--item->count <= 0)
+ 					if (--item->count <= 0) 
  					{
  						player->inventory->setItem(player->inventory->selected, nullptr);
  					}
 				}
 			}
 		}
-	}
-	else
+	} 
+	else 
 	{
-		if (!level->isClientSide)//isClientSide)
+		if (!level->isClientSide)//isClientSide) 
 		{
 			setRotation(getRotation() + 1);
 		}

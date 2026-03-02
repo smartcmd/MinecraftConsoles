@@ -56,7 +56,7 @@ void Boat::defineSynchedData()
 }
 
 
-AABB *Boat::getCollideAgainstBox(std::shared_ptr<Entity> entity)
+AABB *Boat::getCollideAgainstBox(shared_ptr<Entity> entity)
 {
 	return entity->bb;
 }
@@ -98,10 +98,10 @@ bool Boat::hurt(DamageSource *source, int hurtDamage)
 	// Untrusted players shouldn't be able to damage minecarts or boats.
 	if (dynamic_cast<EntityDamageSource *>(source) != NULL)
 	{
-		std::shared_ptr<Entity> attacker = source->getDirectEntity();
+		shared_ptr<Entity> attacker = source->getDirectEntity();
 
-		if (std::dynamic_pointer_cast<Player>(attacker) != NULL &&
-			!std::dynamic_pointer_cast<Player>(attacker)->isAllowedToHurtEntity( shared_from_this() ))
+		if (dynamic_pointer_cast<Player>(attacker) != NULL && 
+			!dynamic_pointer_cast<Player>(attacker)->isAllowedToHurtEntity( shared_from_this() ))
 			return false;
 	}
 
@@ -117,7 +117,7 @@ bool Boat::hurt(DamageSource *source, int hurtDamage)
 	markHurt();
 
 	// 4J Stu - Brought froward from 12w36 to fix #46611 - TU5: Gameplay: Minecarts and boat requires more hits than one to be destroyed in creative mode
-	std::shared_ptr<Player> player = std::dynamic_pointer_cast<Player>(source->getEntity());
+	shared_ptr<Player> player = dynamic_pointer_cast<Player>(source->getEntity());
 	if (player != NULL && player->abilities.instabuild) setDamage(100);
 
 	if (getDamage() > 20 * 2)
@@ -394,13 +394,13 @@ void Boat::tick()
 
 	if(level->isClientSide) return;
 
-	vector<std::shared_ptr<Entity> > *entities = level->getEntities(shared_from_this(), this->bb->grow(0.2f, 0, 0.2f));
+	vector<shared_ptr<Entity> > *entities = level->getEntities(shared_from_this(), this->bb->grow(0.2f, 0, 0.2f));
 	if (entities != NULL && !entities->empty())
 	{
 		AUTO_VAR(itEnd, entities->end());
 		for (AUTO_VAR(it, entities->begin()); it != itEnd; it++)
 		{
-			std::shared_ptr<Entity> e = (*it); // entities->at(i);
+			shared_ptr<Entity> e = (*it); // entities->at(i);
 			if (e != rider.lock() && e->isPushable() && e->GetType() ==  eTYPE_BOAT)
 			{
 				e->push(shared_from_this());
@@ -467,9 +467,9 @@ wstring Boat::getName()
 	return L"Boat";
 }
 
-bool Boat::interact(std::shared_ptr<Player> player)
+bool Boat::interact(shared_ptr<Player> player)
 {
-	if (rider.lock() != NULL && std::dynamic_pointer_cast<Player>(rider.lock())!=NULL && rider.lock() != player) return true;
+	if (rider.lock() != NULL && dynamic_pointer_cast<Player>(rider.lock())!=NULL && rider.lock() != player) return true;
 	if (!level->isClientSide)
 	{
 		// 4J HEG - Fixed issue with player not being able to dismount boat (issue #4446)

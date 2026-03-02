@@ -100,12 +100,12 @@ const int MobSpawner::tick(ServerLevel *level, bool spawnEnemies, bool spawnFrie
 	}
 	MemSect(20);
 	chunksToPoll.clear();
-
+	
 #if 0
 	AUTO_VAR(itEnd, level->players.end());
 	for (AUTO_VAR(it, level->players.begin()); it != itEnd; it++)
 	{
-		std::shared_ptr<Player> player = *it; //level->players.at(i);
+		shared_ptr<Player> player = *it; //level->players.at(i);
 		int xx = Mth::floor(player->x / 16);
 		int zz = Mth::floor(player->z / 16);
 
@@ -125,7 +125,7 @@ const int MobSpawner::tick(ServerLevel *level, bool spawnEnemies, bool spawnFrie
 	int *zz = new int[playerCount];
 	for (int i = 0; i < playerCount; i++)
 	{
-		std::shared_ptr<Player> player = level->players[i];
+		shared_ptr<Player> player = level->players[i];
 		xx[i] = Mth::floor(player->x / 16);
 		zz[i] = Mth::floor(player->z / 16);
 #ifdef __PSVITA__
@@ -164,20 +164,20 @@ const int MobSpawner::tick(ServerLevel *level, bool spawnEnemies, bool spawnFrie
 #ifdef __PSVITA__
 					ChunkPos cp = ChunkPos( ( xx[i] - r  ) + l , ( zz[i] - r ));
 					if( chunksToPoll.find( cp ) )	chunksToPoll.insert(cp, true);
-					cp = ChunkPos( ( xx[i] + r ), ( zz[i] - r ) + l    );
+					cp = ChunkPos( ( xx[i] + r ), ( zz[i] - r ) + l    );												 
 					if( chunksToPoll.find( cp ) )	chunksToPoll.insert(cp, true);
-					cp = ChunkPos( ( xx[i] + r ) - l , ( zz[i] + r ));
+					cp = ChunkPos( ( xx[i] + r ) - l , ( zz[i] + r ));													 
 					if( chunksToPoll.find( cp ) )	chunksToPoll.insert(cp, true);
-					cp = ChunkPos( ( xx[i] - r ), ( zz[i] + r ) - l);
+					cp = ChunkPos( ( xx[i] - r ), ( zz[i] + r ) - l);													 
 					if( chunksToPoll.find( cp ) )	chunksToPoll.insert(cp, true);
 #else
 					ChunkPos cp = ChunkPos( ( xx[i] - r  ) + l , ( zz[i] - r ));
 					if( chunksToPoll.find( cp ) == chunksToPoll.end() )	chunksToPoll.insert(std::pair<ChunkPos,bool>(cp, true));
-					cp = ChunkPos( ( xx[i] + r ), ( zz[i] - r ) + l    );
+					cp = ChunkPos( ( xx[i] + r ), ( zz[i] - r ) + l    );												 
 					if( chunksToPoll.find( cp ) == chunksToPoll.end() )	chunksToPoll.insert(std::pair<ChunkPos,bool>(cp, true));
-					cp = ChunkPos( ( xx[i] + r ) - l , ( zz[i] + r ));
+					cp = ChunkPos( ( xx[i] + r ) - l , ( zz[i] + r ));													 
 					if( chunksToPoll.find( cp ) == chunksToPoll.end() )	chunksToPoll.insert(std::pair<ChunkPos,bool>(cp, true));
-					cp = ChunkPos( ( xx[i] - r ), ( zz[i] + r ) - l);
+					cp = ChunkPos( ( xx[i] - r ), ( zz[i] + r ) - l);													 
 					if( chunksToPoll.find( cp ) == chunksToPoll.end() )	chunksToPoll.insert(std::pair<ChunkPos,bool>(cp, true));
 #endif
 
@@ -193,7 +193,7 @@ const int MobSpawner::tick(ServerLevel *level, bool spawnEnemies, bool spawnFrie
 	MemSect(31);
 	Pos *spawnPos = level->getSharedSpawnPos();
 	MemSect(0);
-
+	
 	for (unsigned int i = 0; i < MobCategory::values.length; i++)
 	{
 		MobCategory *mobCategory = MobCategory::values[i];
@@ -288,13 +288,13 @@ const int MobSpawner::tick(ServerLevel *level, bool spawnEnemies, bool spawnFrie
                                 }
                             }
 
-						   std::shared_ptr<Mob> mob;
+						   shared_ptr<Mob> mob;
 						   // 4J - removed try/catch
 //						   try
 //						   {
 	MemSect(29);
 							   //mob = type.mobClass.getConstructor(Level.class).newInstance(level);
-							   mob = std::dynamic_pointer_cast<Mob>(EntityIO::newByEnumType(currentMobType->mobClass, level));
+							   mob = dynamic_pointer_cast<Mob>(EntityIO::newByEnumType(currentMobType->mobClass, level));
 	MemSect(0);
 //						   }
 //						   catch (exception e)
@@ -391,7 +391,7 @@ bool MobSpawner::isSpawnPositionOk(MobCategory *category, Level *level, int x, i
 		// 4J - changed to spawn water things only in deep water
 		int yo = 0;
 		int liquidCount = 0;
-
+		
 		while( ( y - yo ) >= 0 && ( yo < 5 ) )
 		{
 			if( level->getMaterial(x, y - yo, z)->isLiquid() ) liquidCount++;
@@ -423,26 +423,26 @@ bool MobSpawner::isSpawnPositionOk(MobCategory *category, Level *level, int x, i
 }
 
 
-void MobSpawner::finalizeMobSettings(std::shared_ptr<Mob> mob, Level *level, float xx, float yy, float zz)
+void MobSpawner::finalizeMobSettings(shared_ptr<Mob> mob, Level *level, float xx, float yy, float zz)
 {
-	if (std::dynamic_pointer_cast<Spider>( mob ) != NULL && level->random->nextInt(100) == 0)
+	if (dynamic_pointer_cast<Spider>( mob ) != NULL && level->random->nextInt(100) == 0)
 	{
-		std::shared_ptr<Skeleton> skeleton = std::shared_ptr<Skeleton>( new Skeleton(level) );
+		shared_ptr<Skeleton> skeleton = shared_ptr<Skeleton>( new Skeleton(level) );
 		skeleton->moveTo(xx, yy, zz, mob->yRot, 0);
 		level->addEntity(skeleton);
 		skeleton->ride(mob);
 	}
-	else if (std::dynamic_pointer_cast<Sheep >( mob ) != NULL)
+	else if (dynamic_pointer_cast<Sheep >( mob ) != NULL)
 	{
-		(std::dynamic_pointer_cast<Sheep>( mob ))->setColor(Sheep::getSheepColor(level->random));
+		(dynamic_pointer_cast<Sheep>( mob ))->setColor(Sheep::getSheepColor(level->random));
 	}
-	else if (std::dynamic_pointer_cast<Ozelot >( mob ) != NULL)
+	else if (dynamic_pointer_cast<Ozelot >( mob ) != NULL)
 	{
 		if (level->random->nextInt(7) == 0)
 		{
 			for (int kitten = 0; kitten < 2; kitten++)
 			{
-				std::shared_ptr<Ozelot> ozelot = std::shared_ptr<Ozelot>(new Ozelot(level));
+				shared_ptr<Ozelot> ozelot = shared_ptr<Ozelot>(new Ozelot(level));
 				ozelot->moveTo(xx, yy, zz, mob->yRot, 0);
 				ozelot->setAge(-20 * 60 * 20);
 				level->addEntity(ozelot);
@@ -459,7 +459,7 @@ eINSTANCEOF MobSpawner::bedEnemies[bedEnemyCount] = {
 };
 
 
-bool MobSpawner::attackSleepingPlayers(Level *level, vector<std::shared_ptr<Player> > *players)
+bool MobSpawner::attackSleepingPlayers(Level *level, vector<shared_ptr<Player> > *players)
 {
 
 	bool somebodyWokeUp = false;
@@ -469,7 +469,7 @@ bool MobSpawner::attackSleepingPlayers(Level *level, vector<std::shared_ptr<Play
 	AUTO_VAR(itEnd, players->end());
 	for (AUTO_VAR(it, players->begin()); it != itEnd; it++)
 	{
-		std::shared_ptr<Player> player = (*it);
+		shared_ptr<Player> player = (*it);
 
 		bool nextPlayer = false;
 
@@ -514,13 +514,13 @@ bool MobSpawner::attackSleepingPlayers(Level *level, vector<std::shared_ptr<Play
 					float yy = (float) y;
 					float zz = z + 0.5f;
 
-					std::shared_ptr<Mob> mob;
+					shared_ptr<Mob> mob;
 // 4J - removed try/catch
 //					try
 //					{
 						//mob = classes[type].getConstructor(Level.class).newInstance(level);
 						// 4J - there was a classes array here which duplicated the bedEnemies array but have removed it
-						mob = std::dynamic_pointer_cast<Mob>(EntityIO::newByEnumType(bedEnemies[type], level ));
+						mob = dynamic_pointer_cast<Mob>(EntityIO::newByEnumType(bedEnemies[type], level ));
 //					}
 //					catch (exception e)
 //					{
@@ -619,9 +619,9 @@ void MobSpawner::postProcessSpawnMobs(Level *level, Biome *biome, int xo, int zo
 					float yy = (float)y;
 					float zz = z + 0.5f;
 
-					std::shared_ptr<Mob> mob;
+					shared_ptr<Mob> mob;
 					//try {
-					mob = std::dynamic_pointer_cast<Mob>( EntityIO::newByEnumType(type->mobClass, level ) );
+					mob = dynamic_pointer_cast<Mob>( EntityIO::newByEnumType(type->mobClass, level ) );
 					//} catch (Exception e) {
 					//	e.printStackTrace();
 					//	continue;

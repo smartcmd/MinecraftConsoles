@@ -21,7 +21,7 @@ bool RandomStrollGoal::canUse()
 	{
 		if (mob->getRandom()->nextInt(120) == 0)
 		{
-			Vec3 *pos = RandomPos::getPos(std::dynamic_pointer_cast<PathfinderMob>(mob->shared_from_this()), 10, 7);
+			Vec3 *pos = RandomPos::getPos(dynamic_pointer_cast<PathfinderMob>(mob->shared_from_this()), 10, 7);
 			if (pos == NULL) return false;
 			wantedX = pos->x;
 			wantedY = pos->y;
@@ -37,7 +37,7 @@ bool RandomStrollGoal::canUse()
 
 		if( mob->isExtraWanderingEnabled() )
 		{
-			Vec3 *pos = RandomPos::getPos(std::dynamic_pointer_cast<PathfinderMob>(mob->shared_from_this()), 10, 7,mob->getWanderingQuadrant());
+			Vec3 *pos = RandomPos::getPos(dynamic_pointer_cast<PathfinderMob>(mob->shared_from_this()), 10, 7,mob->getWanderingQuadrant());
 			if (pos == NULL) return false;
 			wantedX = pos->x;
 			wantedY = pos->y;

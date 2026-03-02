@@ -15,7 +15,7 @@
 #include <boost/exception/exception.hpp>
 #include <boost/exception/detail/error_info_impl.hpp>
 #include <boost/exception/detail/type_info.hpp>
-#include <boost/std::shared_ptr.hpp>
+#include <boost/shared_ptr.hpp>
 
 namespace
 boost
@@ -32,7 +32,7 @@ boost
             get( exception const & x )
                 {
                 if( exception_detail::error_info_container * c=x.data_.get() )
-                    if( std::shared_ptr<exception_detail::error_info_base> eib = c->get(BOOST_EXCEPTION_STATIC_TYPEID(ErrorInfo)) )
+                    if( shared_ptr<exception_detail::error_info_base> eib = c->get(BOOST_EXCEPTION_STATIC_TYPEID(ErrorInfo)) )
                         {
 #ifndef BOOST_NO_RTTI
                         BOOST_ASSERT( 0!=dynamic_cast<ErrorInfo *>(eib.get()) );

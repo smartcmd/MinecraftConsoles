@@ -21,7 +21,7 @@ UIScene_CreativeMenu::UIScene_CreativeMenu(int iPad, void *_initData, UILayer *p
 
 	InventoryScreenInput *initData = (InventoryScreenInput *)_initData;
 
-	std::shared_ptr<SimpleContainer> creativeContainer = std::shared_ptr<SimpleContainer>(new SimpleContainer( 0, TabSpec::MAX_SIZE ));
+	shared_ptr<SimpleContainer> creativeContainer = shared_ptr<SimpleContainer>(new SimpleContainer( 0, TabSpec::MAX_SIZE ));
 	itemPickerMenu = new ItemPickerMenu(creativeContainer, initData->player->inventory);
 
 	Initialize( initData->iPad, itemPickerMenu, false, -1, eSectionInventoryCreativeUsing, eSectionInventoryCreativeMax, initData->bNavigateBack);
@@ -96,7 +96,7 @@ void UIScene_CreativeMenu::handleTouchInput(unsigned int iPad, S32 x, S32 y, int
 	{
 		// calculate relative touch position on slider
 		float fPosition = ((float)y - (float)m_TouchInput[ETouchInput_TouchSlider].getYPos() - m_controlMainPanel.getYPos()) /  (float)m_TouchInput[ETouchInput_TouchSlider].getHeight();
-
+		
 		// clamp
 		if(fPosition > 1)
 			fPosition = 1.0f;
@@ -105,7 +105,7 @@ void UIScene_CreativeMenu::handleTouchInput(unsigned int iPad, S32 x, S32 y, int
 
 		// calculate page position according to page count
 		int iCurrentPage = Math::round(fPosition * (specs[m_curTab]->getPageCount() - 1));
-
+		
 		// set tab page
 		m_tabPage[m_curTab] = iCurrentPage;
 
@@ -208,7 +208,7 @@ void UIScene_CreativeMenu::handleInput(int iPad, int key, bool repeat, bool pres
 		dir = -1;
 		// Fall through intentional
 	case VK_PAD_RSHOULDER:
-		{
+		{		
 			ECreativeInventoryTabs tab = (ECreativeInventoryTabs)(m_curTab + dir);
 			if (tab < 0) tab = (ECreativeInventoryTabs)(eCreativeInventoryTab_COUNT - 1);
 			if (tab >= eCreativeInventoryTab_COUNT) tab = eCreativeInventoryTab_BuildingBlocks;

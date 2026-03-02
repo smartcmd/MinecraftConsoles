@@ -16,7 +16,7 @@ PanicGoal::PanicGoal(PathfinderMob *mob, float speed)
 bool PanicGoal::canUse()
 {
 	if (mob->getLastHurtByMob() == NULL) return false;
-	Vec3 *pos = RandomPos::getPos(std::dynamic_pointer_cast<PathfinderMob>(mob->shared_from_this()), 5, 4);
+	Vec3 *pos = RandomPos::getPos(dynamic_pointer_cast<PathfinderMob>(mob->shared_from_this()), 5, 4);
 	if (pos == NULL) return false;
 	posX = pos->x;
 	posY = pos->y;

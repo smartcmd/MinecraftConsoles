@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "SlimeRenderer.h"
+#include "SlimeRenderer.h"	
 #include "..\Minecraft.World\net.minecraft.world.entity.monster.h"
 
 SlimeRenderer::SlimeRenderer(Model *model, Model *armor, float shadow) : MobRenderer(model, shadow)
@@ -7,10 +7,10 @@ SlimeRenderer::SlimeRenderer(Model *model, Model *armor, float shadow) : MobRend
 	this->armor = armor;
 }
 
-int SlimeRenderer::prepareArmor(std::shared_ptr<Mob> _slime, int layer, float a)
+int SlimeRenderer::prepareArmor(shared_ptr<Mob> _slime, int layer, float a)
 {
 	// 4J - dynamic cast required because we aren't using templates/generics in our version
-	std::shared_ptr<Slime> slime = std::dynamic_pointer_cast<Slime>(_slime);
+	shared_ptr<Slime> slime = dynamic_pointer_cast<Slime>(_slime);
 
 	if (slime->isInvisible()) return 0;
 
@@ -32,10 +32,10 @@ int SlimeRenderer::prepareArmor(std::shared_ptr<Mob> _slime, int layer, float a)
     return -1;
 }
 
-void SlimeRenderer::scale(std::shared_ptr<Mob> _slime, float a)
+void SlimeRenderer::scale(shared_ptr<Mob> _slime, float a)
 {
 	// 4J - dynamic cast required because we aren't using templates/generics in our version
-	std::shared_ptr<Slime> slime = std::dynamic_pointer_cast<Slime>(_slime);
+	shared_ptr<Slime> slime = dynamic_pointer_cast<Slime>(_slime);
 
     float size = (float) slime->getSize();
     float ss = (slime->oSquish + (slime->squish - slime->oSquish) * a) / (size * 0.5f + 1);

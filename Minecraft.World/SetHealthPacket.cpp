@@ -25,7 +25,7 @@ SetHealthPacket::SetHealthPacket(int health, int food, float saturation, ETeleme
 	this->damageSource = damageSource;
 }
 
-void SetHealthPacket::read(DataInputStream *dis) //throws IOException
+void SetHealthPacket::read(DataInputStream *dis) //throws IOException 
 {
 	health = dis->readShort();
 	food = dis->readShort();
@@ -35,7 +35,7 @@ void SetHealthPacket::read(DataInputStream *dis) //throws IOException
 	damageSource = (ETelemetryChallenges)dis->readByte();
 }
 
-void SetHealthPacket::write(DataOutputStream *dos) //throws IOException
+void SetHealthPacket::write(DataOutputStream *dos) //throws IOException 
 {
 	dos->writeShort(health);
 	dos->writeShort(food);
@@ -45,7 +45,7 @@ void SetHealthPacket::write(DataOutputStream *dos) //throws IOException
 	dos->writeByte(damageSource);
 }
 
-void SetHealthPacket::handle(PacketListener *listener)
+void SetHealthPacket::handle(PacketListener *listener) 
 {
 	listener->handleSetHealth(shared_from_this());
 }
@@ -60,7 +60,7 @@ bool SetHealthPacket::canBeInvalidated()
 	return true;
 }
 
-bool SetHealthPacket::isInvalidatedBy(std::shared_ptr<Packet> packet)
+bool SetHealthPacket::isInvalidatedBy(shared_ptr<Packet> packet)
 {
 	return true;
 }

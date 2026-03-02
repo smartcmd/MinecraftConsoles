@@ -12,10 +12,10 @@ FallingTileRenderer::FallingTileRenderer() : EntityRenderer()
 	this->shadowRadius = 0.5f;
 }
 
-void FallingTileRenderer::render(std::shared_ptr<Entity> _tile, double x, double y, double z, float rot, float a)
+void FallingTileRenderer::render(shared_ptr<Entity> _tile, double x, double y, double z, float rot, float a)
 {
 	// 4J - dynamic cast required because we aren't using templates/generics in our version
-	std::shared_ptr<FallingTile> tile = std::dynamic_pointer_cast<FallingTile>(_tile);
+	shared_ptr<FallingTile> tile = dynamic_pointer_cast<FallingTile>(_tile);
 	glPushMatrix();
 	glTranslatef((float) x, (float) y, (float) z);
 

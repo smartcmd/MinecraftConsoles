@@ -1,6 +1,6 @@
 //  (C) Copyright Gennadiy Rozental 2005-2008.
-//  Use, modification, and distribution are subject to the
-//  Boost Software License, Version 1.0. (See accompanying file
+//  Use, modification, and distribution are subject to the 
+//  Boost Software License, Version 1.0. (See accompanying file 
 //  LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
 
 //  See http://www.boost.org/libs/test for the library home page.
@@ -19,7 +19,7 @@
 #include <boost/test/utils/runtime/config.hpp>
 
 // Boost
-#include <boost/std::shared_ptr.hpp>
+#include <boost/shared_ptr.hpp>
 
 namespace boost {
 
@@ -29,9 +29,9 @@ namespace cla {
 
 class parser;
 class parameter;
-typedef std::shared_ptr<parameter> parameter_ptr;
+typedef shared_ptr<parameter> parameter_ptr;
 class naming_policy;
-typedef std::shared_ptr<naming_policy> naming_policy_ptr;
+typedef shared_ptr<naming_policy> naming_policy_ptr;
 class argv_traverser;
 
 namespace rt_cla_detail {
