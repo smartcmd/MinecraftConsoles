@@ -66,7 +66,11 @@ bool InfoTask::isCompleted()
 			bool current = (*it).second;
 			if(!current)
 			{
-				if( InputManager.GetValue(pMinecraft->player->GetXboxPad(), (*it).first) > 0 || KMInput.IsKeyDown(VK_SPACE))
+#ifdef _WINDOWS64
+				if (InputManager.GetValue(pMinecraft->player->GetXboxPad(), (*it).first) > 0 || KMInput.IsKeyDown(VK_SPACE))
+#else
+				if( InputManager.GetValue(pMinecraft->player->GetXboxPad(), (*it).first) > 0)
+#endif
 				{
 					(*it).second = true;
 					bAllComplete=true;

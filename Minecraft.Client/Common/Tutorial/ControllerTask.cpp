@@ -66,7 +66,11 @@ bool ControllerTask::isCompleted()
 				}
 				else
 				{
+#ifdef _WINDOWS64
 					bAllComplete = true;
+#else
+					bAllComplete = false;
+#endif
 				}
 			}
 			iCurrent++;
@@ -87,7 +91,11 @@ bool ControllerTask::isCompleted()
 				}
 				else
 				{
+#ifdef _WINDOWS64
 					bAllComplete = true;
+#else
+					bAllComplete = false;
+#endif
 				}
 			}
 			iCurrent++;
