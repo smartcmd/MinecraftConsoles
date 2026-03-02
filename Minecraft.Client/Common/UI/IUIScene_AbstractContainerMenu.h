@@ -125,6 +125,7 @@ protected:
 	eTutorial_State m_previousTutorialState;
 
 	UIVec2D m_pointerPos;
+	bool m_bPointerDrivenByMouse;
 
 	// Offset from pointer image top left to centre (we use the centre as the actual pointer).
 	float	m_fPointerImageOffsetX;

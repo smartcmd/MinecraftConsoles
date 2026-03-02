@@ -21,6 +21,7 @@ IUIScene_AbstractContainerMenu::IUIScene_AbstractContainerMenu()
 
 	m_pointerPos.x = 0.0f;
 	m_pointerPos.y = 0.0f;
+	m_bPointerDrivenByMouse = false;
 
 }
 
@@ -357,6 +358,7 @@ void IUIScene_AbstractContainerMenu::onMouseTick()
 	// If there is any input on sticks, move the pointer.
 	if ( ( fabs( fInputX ) >= 0.01f ) || ( fabs( fInputY ) >= 0.01f ) )
 	{
+		m_bPointerDrivenByMouse = false;
 		fInputDirX = ( fInputX > 0.0f ) ? 1.0f : ( fInputX < 0.0f )?-1.0f : 0.0f;
 		fInputDirY = ( fInputY > 0.0f ) ? 1.0f : ( fInputY < 0.0f )?-1.0f : 0.0f;
 
@@ -692,7 +694,7 @@ void IUIScene_AbstractContainerMenu::onMouseTick()
 
 			// If there is no stick input, and we are over a slot, then snap pointer to slot centre.
 			// 4J - TomK - only if this particular component allows so!
-			if(CanHaveFocus(eSectionUnderPointer))
+			if(!m_bPointerDrivenByMouse && CanHaveFocus(eSectionUnderPointer))
 			{
 				vPointerPos.x = vSnapPos.x;
 				vPointerPos.y = vSnapPos.y;
