@@ -12,13 +12,13 @@
 
 const wchar_t File::pathSeparator = L'\\';
 #ifdef _XBOX
-const wstring File::pathRoot = L"GAME:"; // Path root after pathSeparator has been removed
+const std::wstring File::pathRoot = L"GAME:"; // Path root after pathSeparator has been removed
 #else
-const wstring File::pathRoot = L""; // Path root after pathSeparator has been removed
+const std::wstring File::pathRoot = L""; // Path root after pathSeparator has been removed
 #endif
 
 //Creates a new File instance from a parent abstract pathname and a child pathname string.
-File::File( const File &parent, const wstring& child )
+File::File( const File &parent, const std::wstring& child )
 {
 	m_abstractPathName = parent.getPath() + pathSeparator + child;
 }
@@ -67,7 +67,7 @@ File::File( const wstring& pathname ) //: parent( NULL )
 	*/
 }
 
-File::File( const wstring& parent, const wstring& child  ) //: m_abstractPathName( child  )
+File::File( const std::wstring& parent, const std::wstring& child  ) //: m_abstractPathName( child  )
 {
 	m_abstractPathName = pathRoot + pathSeparator + parent + pathSeparator + child;
 	//this->parent = new File( parent );
@@ -149,9 +149,9 @@ bool File::mkdir() const
 //
 bool File::mkdirs() const
 {
-	vector<wstring> path = stringSplit( m_abstractPathName, pathSeparator );
+	std::vector<std::wstring> path = stringSplit( m_abstractPathName, pathSeparator );
 
-	wstring pathToHere = L"";
+	std::wstring pathToHere = L"";
 	AUTO_VAR(itEnd, path.end());
 	for( AUTO_VAR(it, path.begin()); it != itEnd; it++ )
 	{
@@ -237,7 +237,7 @@ bool File::renameTo(File dest)
 	// 4J Stu - The wstringtofilename function returns a pointer to the same location in memory every time it is
 	// called, therefore we were getting sourcePath and destPath having the same value. The solution here is to
 	// make a copy of the sourcePath by storing it in a std::string
-	string sourcePath = wstringtofilename(getPath());
+	std::string sourcePath = wstringtofilename(getPath());
 	const char *destPath = wstringtofilename(dest.getPath());
 #ifdef _DURANGO
 	__debugbreak();	// TODO
@@ -272,9 +272,9 @@ bool File::renameTo(File dest)
 //An array of abstract pathnames denoting the files and directories in the directory denoted by this abstract pathname.
 //The array will be empty if the directory is empty. Returns null if this abstract pathname does not denote a directory,
 //or if an I/O error occurs.
-vector<File *> *File::listFiles() const
+std::vector<File *> *File::listFiles() const
 {
-	vector<File *> *vOutput = new vector<File *>();
+	std::vector<File *> *vOutput = new vector<File *>();
 
 	// TODO 4J Stu - Also need to check for I/O errors?
 	if( !isDirectory() )
@@ -386,8 +386,8 @@ vector<File *> *File::listFiles() const
 		FindClose( hFind);
 	}
 #else
-	char path[MAX_PATH];
-	sprintf( path, "%s\\*", wstringtofilename( getPath() ) );
+	char path[MAX_PATH] {};
+	snprintf( path, MAX_PATH, "%s\\*", wstringtofilename( getPath() ) );
 	HANDLE hFind = FindFirstFile( path, &wfd);
 	if(hFind != INVALID_HANDLE_VALUE)
 	{
@@ -415,13 +415,13 @@ vector<File *> *File::listFiles() const
 //Returns:
 //An array of abstract pathnames denoting the files and directories in the directory denoted by this abstract pathname.
 //The array will be empty if the directory is empty. Returns null if this abstract pathname does not denote a directory, or if an I/O error occurs.
-vector<File *> *File::listFiles(FileFilter *filter) const
+std::vector<File *> *File::listFiles(FileFilter *filter) const
 {
 	// TODO 4J Stu - Also need to check for I/O errors?
 	if( !isDirectory() )
 		return NULL;
 
-	vector<File *> *vOutput = new vector<File *>();
+	std::vector<File *> *vOutput = new std::vector<File *>();
 
 #ifdef __PS3__
 	const char *lpFileName=wstringtofilename(getPath());
@@ -521,7 +521,7 @@ bool File::isDirectory() const
 //Returns the length of the file denoted by this abstract pathname. The return value is unspecified if this pathname denotes a directory.
 //Returns:
 //The length, in bytes, of the file denoted by this abstract pathname, or 0L if the file does not exist
-__int64 File::length()
+int64_t File::length()
 {
 #ifdef __PS3__
 	//extern const char* getPS3HomePath();
@@ -624,7 +624,7 @@ __int64 File::length()
 //Returns:
 //A long value representing the time the file was last modified, measured in milliseconds since the epoch (00:00:00 GMT, January 1, 1970),
 //or 0L if the file does not exist or if an I/O error occurs
-__int64 File::lastModified()
+int64_t File::lastModified()
 {
 	WIN32_FILE_ATTRIBUTE_DATA fileInfoBuffer;
 #ifdef _UNICODE
@@ -657,7 +657,7 @@ __int64 File::lastModified()
 	}
 }
 
-const wstring File::getPath() const
+const std::wstring File::getPath() const
 {
 	/*
 	wstring path;
@@ -672,7 +672,7 @@ const wstring File::getPath() const
 	return m_abstractPathName;
 }
 
-wstring File::getName() const
+std::wstring File::getName() const
 {
 	unsigned int sep = (unsigned int )(m_abstractPathName.find_last_of( this->pathSeparator ));
 	return m_abstractPathName.substr( sep + 1, m_abstractPathName.length() );
@@ -700,3 +700,9 @@ int File::hash_fnct(const File &k)
 
 	return (int) hashCode;
 }
+
+int FileKeyHash::operator() (const File &k) const 
+{ return File::hash_fnct(k); }
+
+bool FileKeyEq::operator() (const File &x, const File &y) const 
+{ return File::eq_test(x,y); }

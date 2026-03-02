@@ -1,5 +1,7 @@
 # MinecraftConsoles
 
+# [DOWNLOAD THE GAME](https://github.com/smartcmd/MinecraftConsoles/releases/tag/nightly)
+
 [![Discord](https://img.shields.io/badge/Discord-Join%20Server-5865F2?logo=discord&logoColor=white)](https://discord.gg/5CSzhc9t)
 
 ![img.png](.github/IMG_8725.png)
@@ -14,8 +16,6 @@ This project contains the source code of Minecraft Legacy Console Edition v1.3.0
 - Added support for keyboard and mouse input
 - Added fullscreen mode support (toggle using F11)
 - Disabled V-Sync for better performance
-- Auto-detect native monitor resolution with DPI awareness, resulting in sharper visuals on high-resolution displays
-- Full support for keyboard and mouse input
 
 ## Controls (Keyboard & Mouse)
 
@@ -33,6 +33,10 @@ This project contains the source code of Minecraft Legacy Console Edition v1.3.0
 - **Attack / Destroy**: `Left Click`
 - **Use / Place**: `Right Click`
 - **Select Item**: `Mouse Wheel` or keys `1` to `9`
+- **Accept or Decline Tutorial hints**: `Enter` to accept and `B` to decline
+- **Host Options**: `TAB`
+- **Toggle Debug Info**: `F3`
+- **Open Debug Overlay**: `F4`
 
 ## Build & Run
 

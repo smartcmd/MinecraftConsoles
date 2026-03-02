@@ -424,3 +424,9 @@ Minecraft.World/Release/
 Minecraft.World/x64_Release/
 
 build/*
+
+# Existing build output files
+!x64/**/Effects.msscmp
+!x64/**/iggy_w64.dll
+!x64/**/mss64.dll
+!x64/**/redist64/
