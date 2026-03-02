@@ -1396,7 +1396,19 @@ void CGameNetworkManager::CreateSocket( INetworkPlayer *pNetworkPlayer, bool loc
 	Minecraft *pMinecraft = Minecraft::GetInstance();
 
 	Socket *socket = NULL;
-	shared_ptr<MultiplayerLocalPlayer> mpPlayer = pMinecraft->localplayers[pNetworkPlayer->GetUserIndex()];
+	int localUserIndex = -1;
+	shared_ptr<MultiplayerLocalPlayer> mpPlayer;
+	if (localPlayer)
+	{
+		localUserIndex = pNetworkPlayer->GetUserIndex();
+#ifdef _WINDOWS64
+		// Win64 client local user is always the primary pad, not the network small-id slot.
+		if (!g_NetworkManager.IsHost())
+			localUserIndex = ProfileManager.GetPrimaryPad();
+#endif
+		if (localUserIndex >= 0 && localUserIndex < XUSER_MAX_COUNT)
+			mpPlayer = pMinecraft->localplayers[localUserIndex];
+	}
 	if( localPlayer && mpPlayer != NULL && mpPlayer->connection != NULL)
 	{
 		// If we already have a MultiplayerLocalPlayer here then we are doing a session type change
@@ -1425,7 +1437,14 @@ void CGameNetworkManager::CreateSocket( INetworkPlayer *pNetworkPlayer, bool loc
 		// the player in to the game server
 		if( localPlayer && g_NetworkManager.IsInGameplay() )
 		{
-			int idx = pNetworkPlayer->GetUserIndex();
+			int idx = localUserIndex;
+			if (idx < 0 || idx >= XUSER_MAX_COUNT)
+				idx = ProfileManager.GetPrimaryPad();
+			if (idx < 0 || idx >= XUSER_MAX_COUNT)
+			{
+				app.DebugPrintf("CreateSocket: invalid local user index %d\n", idx);
+				return;
+			}
 			app.DebugPrintf("Creating new client connection for idx: %d\n", idx);
 
 			ClientConnection *connection;

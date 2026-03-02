@@ -397,11 +397,12 @@ bool WinsockNetLayer::SendToSmallId(BYTE targetSmallId, const void *data, int da
 SOCKET WinsockNetLayer::GetSocketForSmallId(BYTE smallId)
 {
 	EnterCriticalSection(&s_connectionsLock);
-	for (size_t i = 0; i < s_connections.size(); i++)
+	for (size_t i = s_connections.size(); i > 0; i--)
 	{
-		if (s_connections[i].smallId == smallId && s_connections[i].active)
+		Win64RemoteConnection &conn = s_connections[i - 1];
+		if (conn.smallId == smallId && conn.active && conn.tcpSocket != INVALID_SOCKET)
 		{
-			SOCKET sock = s_connections[i].tcpSocket;
+			SOCKET sock = conn.tcpSocket;
 			LeaveCriticalSection(&s_connectionsLock);
 			return sock;
 		}
@@ -492,8 +493,25 @@ DWORD WINAPI WinsockNetLayer::AcceptThreadProc(LPVOID param)
 		{
 			app.DebugPrintf("Failed to send small ID to client\n");
 			closesocket(clientSocket);
+			PushFreeSmallId(assignedSmallId);
 			continue;
 		}
+
+		// If an old slot for this smallId somehow remains, retire it before reusing the id.
+		EnterCriticalSection(&s_connectionsLock);
+		for (size_t i = 0; i < s_connections.size(); i++)
+		{
+			if (s_connections[i].smallId == assignedSmallId)
+			{
+				s_connections[i].active = false;
+				if (s_connections[i].tcpSocket != INVALID_SOCKET)
+				{
+					closesocket(s_connections[i].tcpSocket);
+					s_connections[i].tcpSocket = INVALID_SOCKET;
+				}
+			}
+		}
+		LeaveCriticalSection(&s_connectionsLock);
 
 		Win64RemoteConnection conn;
 		conn.tcpSocket = clientSocket;
@@ -574,17 +592,20 @@ DWORD WINAPI WinsockNetLayer::RecvThreadProc(LPVOID param)
 	delete[] recvBuf;
 
 	EnterCriticalSection(&s_connectionsLock);
-	for (size_t i = 0; i < s_connections.size(); i++)
+	if (connIdx < (DWORD)s_connections.size())
 	{
-		if (s_connections[i].smallId == clientSmallId)
+		s_connections[connIdx].active = false;
+		if (s_connections[connIdx].tcpSocket != INVALID_SOCKET)
 		{
-			s_connections[i].active = false;
-			closesocket(s_connections[i].tcpSocket);
-			s_connections[i].tcpSocket = INVALID_SOCKET;
-			break;
+			closesocket(s_connections[connIdx].tcpSocket);
+			s_connections[connIdx].tcpSocket = INVALID_SOCKET;
 		}
 	}
 	LeaveCriticalSection(&s_connectionsLock);
+
+	// Return this id immediately so rapid reconnect attempts don't exhaust the id pool
+	// while the game thread catches up with disconnect processing.
+	PushFreeSmallId(clientSmallId);
 
 	EnterCriticalSection(&s_disconnectLock);
 	s_disconnectedSmallIds.push_back(clientSmallId);
@@ -609,8 +630,21 @@ bool WinsockNetLayer::PopDisconnectedSmallId(BYTE *outSmallId)
 
 void WinsockNetLayer::PushFreeSmallId(BYTE smallId)
 {
+	if (smallId == 0 || smallId >= MINECRAFT_NET_MAX_PLAYERS)
+		return;
+
 	EnterCriticalSection(&s_freeSmallIdLock);
-	s_freeSmallIds.push_back(smallId);
+	bool found = false;
+	for (size_t i = 0; i < s_freeSmallIds.size(); i++)
+	{
+		if (s_freeSmallIds[i] == smallId)
+		{
+			found = true;
+			break;
+		}
+	}
+	if (!found)
+		s_freeSmallIds.push_back(smallId);
 	LeaveCriticalSection(&s_freeSmallIdLock);
 }
 

@@ -270,25 +270,44 @@ void CPlatformNetworkManagerStub::DoWork()
 	// Keep LAN search ticking whenever the join menu callback is active, even if QNet state
 	// is not idle due to prior connection attempts.
 	TickSearch();
-	if (_iQNetStubState == QNET_STATE_GAME_PLAY && m_pIQNet->IsHost())
+	if (m_pIQNet->IsHost())
 	{
 		BYTE disconnectedSmallId;
 		while (WinsockNetLayer::PopDisconnectedSmallId(&disconnectedSmallId))
 		{
-			IQNetPlayer *qnetPlayer = m_pIQNet->GetPlayerBySmallId(disconnectedSmallId);
-			if (qnetPlayer != NULL && qnetPlayer->m_smallId == disconnectedSmallId)
+			if (disconnectedSmallId == 0 || disconnectedSmallId >= MINECRAFT_NET_MAX_PLAYERS)
+				continue;
+
+			app.DebugPrintf("Win64 LAN: Processing disconnected smallId=%d\n", disconnectedSmallId);
+
+			IQNetPlayer *qnetPlayer = &IQNet::m_player[disconnectedSmallId];
+			if (qnetPlayer->m_smallId == disconnectedSmallId)
 			{
-				NotifyPlayerLeaving(qnetPlayer);
+				if (qnetPlayer->GetCustomDataValue() != 0)
+				{
+					NotifyPlayerLeaving(qnetPlayer);
+				}
+				else
+				{
+					app.DebugPrintf("Win64 LAN: smallId=%d had no active network player object\n", disconnectedSmallId);
+				}
 				qnetPlayer->m_smallId = 0;
 				qnetPlayer->m_isRemote = false;
 				qnetPlayer->m_isHostPlayer = false;
 				qnetPlayer->m_gamertag[0] = 0;
 				qnetPlayer->SetCustomDataValue(0);
-				WinsockNetLayer::PushFreeSmallId(disconnectedSmallId);
-				if (IQNet::s_playerCount > 1)
-					IQNet::s_playerCount--;
 			}
+			WinsockNetLayer::PushFreeSmallId(disconnectedSmallId);
 		}
+
+		// Keep player-count in sync with active remote slots.
+		DWORD highestUsedIndex = 0;
+		for (DWORD i = 1; i < MINECRAFT_NET_MAX_PLAYERS; i++)
+		{
+			if (IQNet::m_player[i].GetCustomDataValue() != 0)
+				highestUsedIndex = i;
+		}
+		IQNet::s_playerCount = highestUsedIndex + 1;
 	}
 #endif
 }
