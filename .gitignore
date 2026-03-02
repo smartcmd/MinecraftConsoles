@@ -422,3 +422,5 @@ Minecraft.World/Debug/
 Minecraft.World/x64_Debug/
 Minecraft.World/Release/
 Minecraft.World/x64_Release/
+
+build/*

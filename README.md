@@ -43,6 +43,13 @@ This project contains the source code of Minecraft Legacy Console Edition v1.3.0
 4. Make sure `Minecraft.Client` is set as the Startup Project
 5. Set the build configuration to **Debug** (Release is also OK but has some bugs) and the target platform to **Windows64**, then build and run
 
+### CMake (Windows x64)
+
+```powershell
+cmake -S . -B build -G "Visual Studio 17 2022" -A x64
+cmake --build build --config Debug --target MinecraftClient
+```
+
 ## Known Issues
 
 - Builds for other platforms have not been tested and are most likely non-functional
