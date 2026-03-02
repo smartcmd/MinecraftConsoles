@@ -30,7 +30,8 @@ public:
 	int compareTo(const TextureHolder *other) const;
 };
 
-typedef struct
+struct TextureHolderLessThan
 {
-	bool operator() (const TextureHolder *first, const TextureHolder *second) const { return first->compareTo(second) >= 0; }
-} TextureHolderLessThan;
+	inline bool operator()(const TextureHolder *first, const TextureHolder *second) const 
+	{ return first->compareTo(second) >= 0; }
+};

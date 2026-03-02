@@ -443,7 +443,7 @@ ATOM MyRegisterClass(HINSTANCE hInstance)
 	wcex.hbrBackground	= (HBRUSH)(COLOR_WINDOW+1);
 	wcex.lpszMenuName	= "Minecraft";
 	wcex.lpszClassName	= "MinecraftClass";
-	wcex.hIconSm		= LoadIcon(wcex.hInstance, MAKEINTRESOURCE(IDI_SMALL));
+	wcex.hIconSm		= LoadIcon(wcex.hInstance, MAKEINTRESOURCE(IDI_MINECRAFTWINDOWS));
 
 	return RegisterClassEx(&wcex);
 }
@@ -716,6 +716,7 @@ int APIENTRY _tWinMain(_In_ HINSTANCE hInstance,
 	UNREFERENCED_PARAMETER(hPrevInstance);
 	UNREFERENCED_PARAMETER(lpCmdLine);
 
+	/*
 	// Declare DPI awareness so GetSystemMetrics returns physical pixels
 	SetProcessDPIAware();
 	g_iScreenWidth = GetSystemMetrics(SM_CXSCREEN);
@@ -726,6 +727,8 @@ int APIENTRY _tWinMain(_In_ HINSTANCE hInstance,
 		sprintf(buf, "Screen resolution: %dx%d\n", g_iScreenWidth, g_iScreenHeight);
 		OutputDebugStringA(buf);
 	}
+	*/
+
 
 	if(lpCmdLine)
 	{
@@ -1220,7 +1223,17 @@ int APIENTRY _tWinMain(_In_ HINSTANCE hInstance,
 			ToggleFullscreen();
 		}
 
-#ifdef _DEBUG_MENUS_ENABLED
+		// TAB opens host options menu. - Vvis :3
+		if (KMInput.IsKeyPressed(VK_TAB))
+		{
+			if (Minecraft* pMinecraft = Minecraft::GetInstance())
+			{
+				{
+					ui.NavigateToScene(0, eUIScene_InGameHostOptionsMenu);
+				}
+			}
+		}
+
 		// F3 toggles onscreen debug info
 		if (KMInput.IsKeyPressed(VK_F3))
 		{
