@@ -716,6 +716,7 @@ int APIENTRY _tWinMain(_In_ HINSTANCE hInstance,
 	UNREFERENCED_PARAMETER(hPrevInstance);
 	UNREFERENCED_PARAMETER(lpCmdLine);
 
+	/*
 	// Declare DPI awareness so GetSystemMetrics returns physical pixels
 	SetProcessDPIAware();
 	g_iScreenWidth = GetSystemMetrics(SM_CXSCREEN);
@@ -726,6 +727,8 @@ int APIENTRY _tWinMain(_In_ HINSTANCE hInstance,
 		sprintf(buf, "Screen resolution: %dx%d\n", g_iScreenWidth, g_iScreenHeight);
 		OutputDebugStringA(buf);
 	}
+	*/
+
 
 	if(lpCmdLine)
 	{
@@ -1218,6 +1221,17 @@ int APIENTRY _tWinMain(_In_ HINSTANCE hInstance,
 		if (KMInput.IsKeyPressed(VK_F11))
 		{
 			ToggleFullscreen();
+		}
+
+		// TAB opens host options menu. - Vvis :3
+		if (KMInput.IsKeyPressed(VK_TAB))
+		{
+			if (Minecraft* pMinecraft = Minecraft::GetInstance())
+			{
+				{
+					ui.NavigateToScene(0, eUIScene_InGameHostOptionsMenu);
+				}
+			}
 		}
 
 #if 0
