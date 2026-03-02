@@ -26,6 +26,42 @@ void IUIScene_CreativeMenu::staticCtor()
 {
 	vector< shared_ptr<ItemInstance> > *list;
 
+	// Other items
+	DEF(eCreativeInventory_Other)
+		ITEM(Tile::unbreakable_Id)            // Bedrock
+
+		ITEM(Tile::water_Id)
+		ITEM(Tile::calmWater_Id)
+		ITEM(Tile::lava_Id)
+		ITEM(Tile::calmLava_Id)
+
+		ITEM(Tile::pistonExtensionPiece_Id)
+		ITEM(Tile::pistonMovingPiece_Id)
+
+		ITEM(Tile::fire_Id)
+		ITEM(Tile::mobSpawner_Id)
+
+		ITEM(Tile::furnace_lit_Id)
+		ITEM(Tile::wallSign_Id)
+
+		ITEM(Tile::redStoneOre_lit_Id)
+		ITEM(Tile::redstoneTorch_off_Id)
+
+		ITEM(Tile::portalTile_Id)
+		ITEM(Tile::endPortalTile_Id)
+
+		ITEM(Tile::diode_on_Id)
+		ITEM(Tile::comparator_on_Id)
+
+		ITEM(Tile::tripWire_Id)
+
+		ITEM(Tile::pumpkinStem_Id)
+		ITEM(Tile::melonStem_Id)
+		ITEM(Tile::netherStalk_Id)
+		ITEM(Tile::cocoa_Id)
+
+		ITEM(Tile::dragonEgg_Id)
+		ITEM(Tile::commandBlock_Id)
 
 	// Building Blocks
 	DEF(eCreativeInventory_BuildingBlocks)
@@ -748,6 +784,11 @@ void IUIScene_CreativeMenu::staticCtor()
 	ECreative_Inventory_Groups miscGroup[] = {eCreativeInventory_Misc};
 	specs[eCreativeInventoryTab_Misc] = new TabSpec(L"Misc", IDS_GROUPNAME_MISCELLANEOUS, 1, miscGroup);
 #endif
+
+	ECreative_Inventory_Groups otherGroup[] = { eCreativeInventory_Other };
+
+	specs[eCreativeInventoryTab_Other] =
+		new TabSpec(L"Other", IDS_GROUPNAME_MISCELLANEOUS, 1, otherGroup);
 }
 
 IUIScene_CreativeMenu::IUIScene_CreativeMenu()

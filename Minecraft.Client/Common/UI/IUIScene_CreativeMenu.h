@@ -19,6 +19,7 @@ public:
 		eCreativeInventoryTab_ToolsWeaponsArmor,
 		eCreativeInventoryTab_Brewing,
 		eCreativeInventoryTab_Misc,
+		eCreativeInventoryTab_Other,
 		eCreativeInventoryTab_COUNT,
 	};
 
@@ -40,6 +41,7 @@ public:
 		eCreativeInventory_Misc,
 		eCreativeInventory_ArtToolsDecorations,
 		eCreativeInventory_ArtToolsMisc,
+		eCreativeInventory_Other,
 		eCreativeInventoryGroupsCount
 	};
 
