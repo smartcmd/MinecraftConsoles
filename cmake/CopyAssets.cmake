@@ -10,42 +10,30 @@ string(REPLACE "\"" "" CONFIGURATION "${CONFIGURATION}")
 set(_project_dir "${PROJECT_SOURCE_DIR}/Minecraft.Client")
 
 function(copy_tree_if_exists src_rel dst_rel)
-  set(include_sources FALSE)
-  if(ARGC GREATER 2)
-    set(include_sources "${ARGV2}")
-  endif()
-
   set(_src "${_project_dir}/${src_rel}")
   set(_dst "${OUTPUT_DIR}/${dst_rel}")
 
   if(EXISTS "${_src}")
     file(MAKE_DIRECTORY "${_dst}")
+    file(GLOB_RECURSE _files RELATIVE "${_src}" "${_src}/*")
 
-    if(include_sources)
-      execute_process(
-        COMMAND "${CMAKE_COMMAND}" -E copy_directory "${_src}" "${_dst}"
-      )
-    else()
-      file(GLOB_RECURSE _files RELATIVE "${_src}" "${_src}/*")
+    foreach(_file IN LISTS _files) # if not a source file 
+      if(NOT _file MATCHES "\\.(cpp|c|h|hpp)$")
+        set(_full_src "${_src}/${_file}")
+        set(_full_dst "${_dst}/${_file}")
 
-      foreach(_file IN LISTS _files) # if not a source file and doesn't start with Media, copy it
-        if(NOT _file MATCHES "\\.(cpp|c|h|hpp)$")
-          set(_full_src "${_src}/${_file}")
-          set(_full_dst "${_dst}/${_file}")
-
-          if(IS_DIRECTORY "${_full_src}")
-            file(MAKE_DIRECTORY "${_full_dst}")
-          else()
-            get_filename_component(_dst_dir "${_full_dst}" DIRECTORY)
-            file(MAKE_DIRECTORY "${_dst_dir}")
-            execute_process(
-              COMMAND "${CMAKE_COMMAND}" -E copy_if_different
-              "${_full_src}" "${_full_dst}"
-            )
-          endif()
+        if(IS_DIRECTORY "${_full_src}")
+          file(MAKE_DIRECTORY "${_full_dst}")
+        else()
+          get_filename_component(_dst_dir "${_full_dst}" DIRECTORY)
+          file(MAKE_DIRECTORY "${_dst_dir}")
+          execute_process(
+            COMMAND "${CMAKE_COMMAND}" -E copy_if_different
+            "${_full_src}" "${_full_dst}"
+          )
         endif()
-      endforeach()
-    endif()
+      endif()
+    endforeach()
   endif()
 endfunction()
 
