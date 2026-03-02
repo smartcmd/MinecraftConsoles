@@ -7,7 +7,7 @@ class TilePos;
 // The maximum number of chunks that we can store
 #ifdef _LARGE_WORLDS
 // 4J Stu - Our default map (at zoom level 3) is 1024x1024 blocks (or 64 chunks)
-#define LEVEL_MAX_WIDTH (5*64) //(6*54)
+#define LEVEL_MAX_WIDTH (64*64) //(6*54) I have tested up to 512x64, but the game was using 16gb of ram to do so, so probably don't set it this high. I am leaving this at 64*64 for now, but feel free to change it lol
 #else
 #define LEVEL_MAX_WIDTH 54
 #endif
