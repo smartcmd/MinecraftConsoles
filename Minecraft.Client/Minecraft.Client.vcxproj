@@ -1302,8 +1302,14 @@ if not exist "$(TargetDir)\savedata" mkdir "$(TargetDir)\savedata"</Command>
       <ForceFileOutput>MultiplyDefinedSymbolOnly</ForceFileOutput>
     </Link>
     <PostBuildEvent>
-      <Message>Run postbuild script</Message>
-      <Command>powershell -ExecutionPolicy Bypass -File "$(ProjectDir)postbuild.ps1" -OutDir "$(OutDir)/" -ProjectDir "$(ProjectDir)/"</Command>
+      <Message>Copying sound assets to output directory</Message>
+      <Command>xcopy /q /y /i /s /e "$(ProjectDir)Durango\Sound" "$(OutDir)Durango\Sound"
+xcopy /q /y /i /s /e "$(ProjectDir)music" "$(OutDir)music"
+xcopy /q /y /i /s /e "$(ProjectDir)Windows64\GameHDD" "$(OutDir)Windows64\GameHDD"
+xcopy /q /y /i /s /e "$(ProjectDir)Common\Media" "$(OutDir)Common\Media"
+xcopy /q /y /i /s /e "$(ProjectDir)Common\res" "$(OutDir)Common\res"
+xcopy /q /y /i /s /e "$(ProjectDir)Common\Trial" "$(OutDir)Common\Trial"
+xcopy /q /y /i /s /e "$(ProjectDir)Common\Tutorial" "$(OutDir)Common\Tutorial"</Command>
     </PostBuildEvent>
     <ImageXex>
       <ConfigurationFile>$(ProjectDir)xbox\xex-dev.xml</ConfigurationFile>
@@ -1434,8 +1440,25 @@ xcopy /q /y /i /s /e $(ProjectDir)Durango\CU  $(LayoutDir)Image\Loose\CU</Comman
       <SuppressStartupBanner>false</SuppressStartupBanner>
     </Link>
     <PostBuildEvent>
-      <Message>Run postbuild script</Message>
-      <Command>powershell -ExecutionPolicy Bypass -File "$(ProjectDir)postbuild.ps1" -OutDir "$(OutDir)/" -ProjectDir "$(ProjectDir)/"</Command>
+      <Message>Copying game assets to output directory</Message>
+      <Command>mkdir "$(OutDir)music" 2&gt;nul
+mkdir "$(OutDir)Windows64\GameHDD" 2&gt;nul
+mkdir "$(OutDir)Common\Media" 2&gt;nul
+mkdir "$(OutDir)Common\res" 2&gt;nul
+mkdir "$(OutDir)Common\Trial" 2&gt;nul
+mkdir "$(OutDir)Common\Tutorial" 2&gt;nul
+mkdir "$(OutDir)Windows64Media" 2&gt;nul
+
+xcopy /q /y /i /s /e "$(ProjectDir)music" "$(OutDir)music" || exit /b 0
+xcopy /q /y /i /s /e "$(ProjectDir)Windows64\GameHDD" "$(OutDir)Windows64\GameHDD" || exit /b 0
+xcopy /q /y /i /s /e "$(ProjectDir)Common\Media" "$(OutDir)Common\Media" || exit /b 0
+xcopy /q /y /i /s /e "$(ProjectDir)Common\res" "$(OutDir)Common\res" || exit /b 0
+xcopy /q /y /i /s /e "$(ProjectDir)Common\Trial" "$(OutDir)Common\Trial" || exit /b 0
+xcopy /q /y /i /s /e "$(ProjectDir)Common\Tutorial" "$(OutDir)Common\Tutorial" || exit /b 0
+xcopy /q /y /i /s /e "$(ProjectDir)DurangoMedia" "$(OutDir)Windows64Media" || exit /b 0
+xcopy /q /y /i /s /e "$(ProjectDir)Windows64Media" "$(OutDir)Windows64Media" || exit /b 0
+
+exit /b 0</Command>
     </PostBuildEvent>
     <ImageXex>
       <ConfigurationFile>$(ProjectDir)xbox\xex-dev.xml</ConfigurationFile>
