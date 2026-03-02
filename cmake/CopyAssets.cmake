@@ -18,7 +18,7 @@ function(copy_tree_if_exists src_rel dst_rel)
     file(GLOB_RECURSE _files RELATIVE "${_src}" "${_src}/*")
 
     foreach(_file IN LISTS _files) # if not a source file 
-      if(NOT _file MATCHES "\\.(cpp|c|h|hpp)$")
+      if(NOT _file MATCHES "\\.(cpp|c|h|hpp|xml|lang)$")
         set(_full_src "${_src}/${_file}")
         set(_full_dst "${_dst}/${_file}")
 
@@ -70,6 +70,13 @@ function(copy_first_existing dst_rel)
   endif()
 endfunction()
 
+function(remove_directory_if_exists rel_path)
+  set(_dir "${OUTPUT_DIR}/${rel_path}")
+  if(EXISTS "${_dir}")
+    file(REMOVE_RECURSE "${_dir}")
+  endif()
+endfunction()
+
 if(CONFIGURATION STREQUAL "Debug")
   copy_tree_if_exists("Durango/Sound" "Windows64/Sound")
   copy_tree_if_exists("music" "music")
@@ -78,17 +85,19 @@ if(CONFIGURATION STREQUAL "Debug")
   copy_tree_if_exists("Common/res" "Common/res")
   copy_tree_if_exists("Common/Trial" "Common/Trial")
   copy_tree_if_exists("Common/Tutorial" "Common/Tutorial")
+
+  remove_directory_if_exists("Windows64Media/Layout")
 else()
   copy_tree_if_exists("music" "music")
   copy_tree_if_exists("Windows64/GameHDD" "Windows64/GameHDD")
-  #copy_tree_if_exists("Common/Media" "Common/Media")
-  # we only need Common/Media/MediaWindows64.arc
   copy_file_if_exists("Minecraft.Client/Common/Media/MediaWindows64.arc" "Common/Media/MediaWindows64.arc")
   copy_tree_if_exists("Common/res" "Common/res")
   copy_tree_if_exists("Common/Trial" "Common/Trial")
   copy_tree_if_exists("Common/Tutorial" "Common/Tutorial")
   copy_tree_if_exists("DurangoMedia" "Windows64Media")
   copy_tree_if_exists("Windows64Media" "Windows64Media")
+
+  remove_directory_if_exists("Windows64Media/Layout")
 endif()
 
 # Some runtime code asserts if this directory tree is missing.
