@@ -406,6 +406,9 @@ FodyWeavers.xsd
 
 enc_temp_folder/
 
+# Dlls
+x64/
+
 # Game data / assets
 Minecraft.Client/Schematics/
 Minecraft.Client/Windows64/GameHDD/
