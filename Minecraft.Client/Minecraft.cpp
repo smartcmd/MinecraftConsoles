@@ -105,6 +105,11 @@ int QuickSelectBoxWidth[3]=
 };
 #endif
 
+extern "C" __declspec(dllexport) Minecraft* GetGameInstance()
+{
+	return Minecraft::m_instance;
+}
+
 Minecraft::Minecraft(Component *mouseComponent, Canvas *parent, MinecraftApplet *minecraftApplet, int width, int height, bool fullscreen)
 {
 	// 4J - added this block of initialisers
