@@ -6,12 +6,12 @@
 #include "BasicTypeContainers.h"
 #include "FollowParentGoal.h"
 
-FollowParentGoal::FollowParentGoal(Animal *animal, float speed)
+FollowParentGoal::FollowParentGoal(Animal *animal, double speedModifier)
 {
 	timeToRecalcPath = 0;
 
 	this->animal = animal;
-	this->speed = speed;
+	this->speedModifier = speedModifier;
 }
 
 bool FollowParentGoal::canUse()
@@ -61,5 +61,5 @@ void FollowParentGoal::tick()
 {
 	if (--timeToRecalcPath > 0) return;
 	timeToRecalcPath = 10;
-	animal->getNavigation()->moveTo(parent.lock(), speed);
+	animal->getNavigation()->moveTo(parent.lock(), speedModifier);
 }

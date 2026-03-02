@@ -96,6 +96,8 @@ public:
 #ifdef _XBOX_ONE
 	virtual void HandleDLCLicenseChange();
 #endif
+	virtual void HandleMessage(EUIMessage message, void *data);
+
 	bool IsFullscreenGroup();
 
 	void handleUnlockFullVersion();

@@ -1,6 +1,8 @@
 #include "stdafx.h"
 #include "com.mojang.nbt.h"
+#include "net.minecraft.world.entity.ai.attributes.h"
 #include "net.minecraft.world.entity.ai.goal.h"
+#include "net.minecraft.world.entity.monster.h"
 #include "net.minecraft.world.level.tile.h"
 #include "net.minecraft.world.phys.h"
 #include "net.minecraft.world.level.h"
@@ -24,22 +26,19 @@ Chicken::Chicken(Level *level) : Animal( level )
 {
 	// 4J Stu - This function call had to be moved here from the Entity ctor to ensure that the derived version of the function is called
 	this->defineSynchedData();
-
-	// 4J Stu - This function call had to be moved here from the Entity ctor to ensure that the derived version of the function is called
-	health = getMaxHealth();
+	registerAttributes();
+	setHealth(getMaxHealth());
 
 	_init();
-	this->textureIdx = TN_MOB_CHICKEN;	// 4J - was L"/mob/chicken.png";
-	this->setSize(0.3f, 0.7f); // 4J Changed from 0.4 to 0.7 in 1.8.2
+	setSize(0.3f, 0.7f); // 4J Changed from 0.4 to 0.7 in 1.8.2
 	eggTime = random->nextInt(20 * 60 * 5) + 20 * 60 * 5;
 
-	float walkSpeed = 0.25f;
 	goalSelector.addGoal(0, new FloatGoal(this));
-	goalSelector.addGoal(1, new PanicGoal(this, 0.38f));
-	goalSelector.addGoal(2, new BreedGoal(this, walkSpeed));
-	goalSelector.addGoal(3, new TemptGoal(this, 0.25f, Item::seeds_wheat_Id, false));
-	goalSelector.addGoal(4, new FollowParentGoal(this, 0.28f));
-	goalSelector.addGoal(5, new RandomStrollGoal(this, walkSpeed));
+	goalSelector.addGoal(1, new PanicGoal(this, 1.4));
+	goalSelector.addGoal(2, new BreedGoal(this, 1.0));
+	goalSelector.addGoal(3, new TemptGoal(this, 1.0, Item::seeds_wheat_Id, false));
+	goalSelector.addGoal(4, new FollowParentGoal(this, 1.1));
+	goalSelector.addGoal(5, new RandomStrollGoal(this, 1.0));
 	goalSelector.addGoal(6, new LookAtPlayerGoal(this, typeid(Player), 6));
 	goalSelector.addGoal(7, new RandomLookAroundGoal(this));
 }
@@ -49,9 +48,12 @@ bool Chicken::useNewAi()
 	return true;
 }
 
-int Chicken::getMaxHealth()
+void Chicken::registerAttributes()
 {
-	return 4;
+	Animal::registerAttributes();
+
+	getAttribute(SharedMonsterAttributes::MAX_HEALTH)->setBaseValue(4);
+	getAttribute(SharedMonsterAttributes::MOVEMENT_SPEED)->setBaseValue(0.25f);
 }
 
 void Chicken::aiStep()
@@ -79,7 +81,7 @@ void Chicken::aiStep()
 	{
 		if (!level->isClientSide && --eggTime <= 0) 
 		{
-			level->playSound(shared_from_this(), eSoundType_MOB_CHICKENPLOP, 1.0f, (random->nextFloat() - random->nextFloat()) * 0.2f + 1.0f);
+			playSound( eSoundType_MOB_CHICKENPLOP, 1.0f, (random->nextFloat() - random->nextFloat()) * 0.2f + 1.0f);
 			spawnAtLocation(Item::egg->id, 1);
 			eggTime = random->nextInt(20 * 60 * 5) + 20 * 60 * 5;
 		}
@@ -105,6 +107,11 @@ int Chicken::getHurtSound()
 int Chicken::getDeathSound() 
 {
 	return eSoundType_MOB_CHICKEN_HURT;
+}
+
+void Chicken::playStepSound(int xt, int yt, int zt, int t)
+{
+	playSound(eSoundType_MOB_CHICKEN_STEP, 0.15f, 1);
 }
 
 int Chicken::getDeathLoot() 
@@ -146,5 +153,5 @@ shared_ptr<AgableMob> Chicken::getBreedOffspring(shared_ptr<AgableMob> target)
 
 bool Chicken::isFood(shared_ptr<ItemInstance> itemInstance)
 {
-	return (itemInstance->id == Item::seeds_wheat_Id) || (itemInstance->id == Item::netherStalkSeeds_Id) || (itemInstance->id == Item::seeds_melon_Id) || (itemInstance->id == Item::seeds_pumpkin_Id);
+	return (itemInstance->id == Item::seeds_wheat_Id) || (itemInstance->id == Item::netherwart_seeds_Id) || (itemInstance->id == Item::seeds_melon_Id) || (itemInstance->id == Item::seeds_pumpkin_Id);
 }

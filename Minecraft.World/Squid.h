@@ -29,14 +29,15 @@ private:
 
 public:
 	Squid(Level *level);
-	virtual int getMaxHealth();
 
 protected:
+	virtual void registerAttributes();
 	virtual int getAmbientSound();
 	virtual int getHurtSound();
 	virtual int getDeathSound();
 	virtual float getSoundVolume();
 	virtual int getDeathLoot();
+	virtual bool makeStepSound();
 	virtual void dropDeathLoot(bool wasKilledByPlayer, int playerBonusLevel);
 
 public:

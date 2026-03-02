@@ -61,6 +61,7 @@ public:
 	StringTable(void);
 	StringTable(PBYTE pbData, DWORD dwSize);
 	~StringTable(void);
+	void ReloadStringTable();
 
 	void getData(PBYTE *ppbData, UINT *pdwSize);
 
@@ -73,6 +74,7 @@ public:
 
 private:
 	//wstring getLangId(DWORD dwLanguage=0);
+	void ProcessStringTableData(void);
 
 };
 

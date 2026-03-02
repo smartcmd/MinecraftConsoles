@@ -3,7 +3,7 @@
 #include "InputOutputStream.h"
 #include "SharedConstants.h"
 
-const wstring SharedConstants::VERSION_STRING = L"1.2.3";
+const wstring SharedConstants::VERSION_STRING = L"1.6.4";
 const bool SharedConstants::TEXTURE_LIGHTING = true;
 
 wstring SharedConstants::readAcceptableChars()

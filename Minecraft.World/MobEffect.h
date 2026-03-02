@@ -1,8 +1,11 @@
 #pragma once
 using namespace std;
 
+#include "AttributeModifier.h"
+
 class Mob;
 class MobEffectInstance;
+class Attribute;
 
 class MobEffect
 {
@@ -27,6 +30,9 @@ public:
 		e_MobEffectIcon_Strength,
 		e_MobEffectIcon_WaterBreathing,
 		e_MobEffectIcon_Weakness,
+		e_MobEffectIcon_Wither,
+		e_MobEffectIcon_HealthBoost,
+		e_MobEffectIcon_Absorption,
 
 		e_MobEffectIcon_COUNT,
 	};
@@ -34,42 +40,45 @@ public:
 	static const int NUM_EFFECTS = 32;
 	static MobEffect *effects[NUM_EFFECTS];
 
-    static MobEffect *voidEffect;
-    static MobEffect *movementSpeed;
-    static MobEffect *movementSlowdown;
-    static MobEffect *digSpeed;
-    static MobEffect *digSlowdown;
-    static MobEffect *damageBoost;
-    static MobEffect *heal;
-    static MobEffect *harm;
-    static MobEffect *jump;
-    static MobEffect *confusion;
-    static MobEffect *regeneration;
-    static MobEffect *damageResistance;
-    static MobEffect *fireResistance;
-    static MobEffect *waterBreathing;
-    static MobEffect *invisibility;
-    static MobEffect *blindness;
-    static MobEffect *nightVision;
-    static MobEffect *hunger;
-    static MobEffect *weakness;
-    static MobEffect *poison;
-    static MobEffect *reserved_20;
-    static MobEffect *reserved_21;
-    static MobEffect *reserved_22;
-    static MobEffect *reserved_23;
-    static MobEffect *reserved_24;
-    static MobEffect *reserved_25;
-    static MobEffect *reserved_26;
-    static MobEffect *reserved_27;
-    static MobEffect *reserved_28;
-    static MobEffect *reserved_29;
-    static MobEffect *reserved_30;
-    static MobEffect *reserved_31;
+	static MobEffect *voidEffect;
+	static MobEffect *movementSpeed;
+	static MobEffect *movementSlowdown;
+	static MobEffect *digSpeed;
+	static MobEffect *digSlowdown;
+	static MobEffect *damageBoost;
+	static MobEffect *heal;
+	static MobEffect *harm;
+	static MobEffect *jump;
+	static MobEffect *confusion;
+	static MobEffect *regeneration;
+	static MobEffect *damageResistance;
+	static MobEffect *fireResistance;
+	static MobEffect *waterBreathing;
+	static MobEffect *invisibility;
+	static MobEffect *blindness;
+	static MobEffect *nightVision;
+	static MobEffect *hunger;
+	static MobEffect *weakness;
+	static MobEffect *poison;
+	static MobEffect *wither;
+	static MobEffect *healthBoost;
+	static MobEffect *absorption;
+	static MobEffect *saturation;
+	static MobEffect *reserved_24;
+	static MobEffect *reserved_25;
+	static MobEffect *reserved_26;
+	static MobEffect *reserved_27;
+	static MobEffect *reserved_28;
+	static MobEffect *reserved_29;
+	static MobEffect *reserved_30;
+	static MobEffect *reserved_31;
 
-    const int id;
+	const int id;
+
+	static void staticCtor();
 
 private:
+	unordered_map<Attribute *, AttributeModifier *> attributeModifiers;
 	int descriptionId;
 	int m_postfixDescriptionId; // 4J added
 	EMobEffectIcon icon; // 4J changed type
@@ -85,15 +94,15 @@ protected:
 	MobEffect *setIcon(EMobEffectIcon icon);
 
 public:
-	int getId();
-    void applyEffectTick(shared_ptr<Mob> mob, int amplification);
-	void applyInstantenousEffect(shared_ptr<Mob> source, shared_ptr<Mob> mob, int amplification, double scale);
-    virtual bool isInstantenous();
-    virtual bool isDurationEffectTick(int remainingDuration, int amplification);
+	virtual int getId();
+	virtual void applyEffectTick(shared_ptr<LivingEntity> mob, int amplification);
+	virtual void applyInstantenousEffect(shared_ptr<LivingEntity> source, shared_ptr<LivingEntity> mob, int amplification, double scale);
+	virtual bool isInstantenous();
+	virtual bool isDurationEffectTick(int remainingDuration, int amplification);
 
 	MobEffect *setDescriptionId(unsigned int id);
 	unsigned int getDescriptionId(int iData = -1);
-	
+
 	// 4J Added
 	MobEffect *setPostfixDescriptionId(unsigned int id);
 	unsigned int getPostfixDescriptionId(int iData = -1);
@@ -107,8 +116,14 @@ protected:
 	MobEffect *setDurationModifier(double durationModifier);
 
 public:
-	double getDurationModifier();
-	MobEffect *setDisabled();
-	bool isDisabled();
-	eMinecraftColour getColor();
+	virtual double getDurationModifier();
+	virtual MobEffect *setDisabled();
+	virtual bool isDisabled();
+	virtual eMinecraftColour getColor();
+
+	virtual MobEffect *addAttributeModifier(Attribute *attribute, eMODIFIER_ID id, double amount, int operation);
+	virtual unordered_map<Attribute *, AttributeModifier *> *getAttributeModifiers();
+	virtual void removeAttributeModifiers(shared_ptr<LivingEntity> entity, BaseAttributeMap *attributes, int amplifier);
+	virtual void addAttributeModifiers(shared_ptr<LivingEntity> entity, BaseAttributeMap *attributes, int amplifier);
+	virtual double getAttributeModifierValue(int amplifier, AttributeModifier *original);
 };

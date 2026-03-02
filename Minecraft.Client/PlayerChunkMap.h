@@ -45,6 +45,7 @@ public:
         int zChangeMin, zChangeMax;
 		int ticksToNextRegionUpdate;	// 4J added
 		bool prioritised;				// 4J added
+		__int64 firstInhabitedTime;
 
 	public:
 		PlayerChunk(int x, int z, PlayerChunkMap *pcm);
@@ -53,6 +54,12 @@ public:
 		// 4J Added sendPacket param so we can aggregate the initial send into one much smaller packet
         void add(shared_ptr<ServerPlayer> player, bool sendPacket = true);
         void remove(shared_ptr<ServerPlayer> player);
+		void updateInhabitedTime();
+
+	private:
+		void updateInhabitedTime(LevelChunk *chunk);
+
+	public:
         void tileChanged(int x, int y, int z);
 		void prioritiseTileChanges();	// 4J added
         void broadcast(shared_ptr<Packet> packet);
@@ -68,12 +75,14 @@ public:
 private:
 	unordered_map<__int64,PlayerChunk *,LongKeyHash,LongKeyEq> chunks;	// 4J - was LongHashMap
     vector<PlayerChunk *> changedChunks;
+	vector<PlayerChunk *> knownChunks;
 	vector<PlayerChunkAddRequest> addRequests; // 4J added
 	void tickAddRequests(shared_ptr<ServerPlayer> player);	// 4J added
 
     ServerLevel *level;
     int radius;
 	int dimension;
+	__int64 lastInhabitedUpdate;
 
 public:
 	PlayerChunkMap(ServerLevel *level, int dimension, int radius);

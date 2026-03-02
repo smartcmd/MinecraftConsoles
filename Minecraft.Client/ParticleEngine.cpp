@@ -2,14 +2,18 @@
 #include "ParticleEngine.h"
 #include "Particle.h"
 #include "Textures.h"
+#include "TextureAtlas.h"
 #include "Tesselator.h"
 #include "TerrainParticle.h"
+#include "ResourceLocation.h"
 #include "Camera.h"
 #include "..\Minecraft.World\net.minecraft.world.entity.player.h"
 #include "..\Minecraft.World\net.minecraft.world.level.tile.h"
 #include "..\Minecraft.World\net.minecraft.world.level.h"
 #include "..\Minecraft.World\StringHelpers.h"
 #include "..\Minecraft.World\net.minecraft.world.level.dimension.h"
+
+ResourceLocation ParticleEngine::PARTICLES_LOCATION = ResourceLocation(TN_PARTICLES);
 
 ParticleEngine::ParticleEngine(Level *level, Textures *textures)
 {
@@ -31,8 +35,26 @@ void ParticleEngine::add(shared_ptr<Particle> p)
 {
     int t = p->getParticleTexture();
 	int l = p->level->dimension->id == 0 ? 0 : ( p->level->dimension->id == -1 ? 1 : 2);
-    if ( (t != DRAGON_BREATH_TEXTURE && particles[l][t].size() >= MAX_PARTICLES_PER_LAYER) || particles[l][t].size() >= MAX_DRAGON_BREATH_PARTICLES) particles[l][t].pop_front();//particles[l][t].erase(particles[l][t].begin());
-    particles[l][t].push_back(p);
+	int maxParticles;
+	switch(p->GetType())
+	{
+		case eTYPE_DRAGONBREATHPARTICLE:
+			maxParticles = MAX_DRAGON_BREATH_PARTICLES;
+			break;
+		case eType_FIREWORKSSPARKPARTICLE:
+			maxParticles = MAX_FIREWORK_SPARK_PARTICLES;
+			break;
+		default:
+			maxParticles = MAX_PARTICLES_PER_LAYER;
+			break;
+	}
+    int list = p->getAlpha() != 1.0f ? TRANSLUCENT_LIST : OPAQUE_LIST;		// 4J - Brought forward from Java 1.8
+
+	if(	particles[l][t][list].size() >= maxParticles)
+	{
+		particles[l][t][list].pop_front();
+	}
+    particles[l][t][list].push_back(p);
 }
 
 void ParticleEngine::tick()
@@ -41,22 +63,25 @@ void ParticleEngine::tick()
 	{
 		for (int tt = 0; tt < TEXTURE_COUNT; tt++)
 		{
-			for (unsigned int i = 0; i < particles[l][tt].size(); i++)
+			for( int list = 0; list < LIST_COUNT; list++ )		// 4J - Brought forward from Java 1.8
 			{
-				shared_ptr<Particle> p = particles[l][tt][i];
-				p->tick();
-				if (p->removed)
+				for (unsigned int i = 0; i < particles[l][tt][list].size(); i++)
 				{
-					particles[l][tt][i] = particles[l][tt].back();
-					particles[l][tt].pop_back();
-					i--;
+					shared_ptr<Particle> p = particles[l][tt][list][i];
+					p->tick();
+					if (p->removed)
+					{
+						particles[l][tt][list][i] = particles[l][tt][list].back();
+						particles[l][tt][list].pop_back();
+						i--;
+					}
 				}
 			}
 		}
 	}
 }
 
-void ParticleEngine::render(shared_ptr<Entity> player, float a)
+void ParticleEngine::render(shared_ptr<Entity> player, float a, int list)
 {
 	// 4J - change brought forward from 1.2.3
     float xa = Camera::xa;
@@ -70,55 +95,61 @@ void ParticleEngine::render(shared_ptr<Entity> player, float a)
     Particle::yOff = (player->yOld + (player->y - player->yOld) * a);
     Particle::zOff = (player->zOld + (player->z - player->zOld) * a);
 	int l = level->dimension->id == 0 ? 0 : ( level->dimension->id == -1 ? 1 : 2 );
-    for (int tt = 0; tt < TEXTURE_COUNT; tt++)
+
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	glAlphaFunc(GL_GREATER, 1.0f / 255.0f);
+
+	for (int tt = 0; tt < TEXTURE_COUNT; tt++)
 	{
 		if(tt == ENTITY_PARTICLE_TEXTURE) continue;
 
-        if (particles[l][tt].empty()) continue;
-
-		MemSect(31);
-        if (tt == MISC_TEXTURE || tt == DRAGON_BREATH_TEXTURE) textures->bindTexture(TN_PARTICLES);	// 4J was L"/particles.png"
-        if (tt == TERRAIN_TEXTURE)  textures->bindTexture(TN_TERRAIN);	// 4J was L"/terrain.png"
-        if (tt == ITEM_TEXTURE) textures->bindTexture(TN_GUI_ITEMS);	// 4J was L"/gui/items.png"
-		MemSect(0);
-        Tesselator *t = Tesselator::getInstance();
-        glColor4f(1.0f, 1.0f, 1.0f, 1);
-#if 0
-		// Note that these changes were brought in from java (1.5ish), but as with the java version, break rendering of the particles
-		// next to water - removing for now
-		glDepthMask(false);
-		glEnable(GL_BLEND);
-		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-		glAlphaFunc(GL_GREATER, 1.0f / 255.0f);
-#endif
-        t->begin();
-        for (unsigned int i = 0; i < particles[l][tt].size(); i++)
+		if (!particles[l][tt][list].empty())
 		{
-			if(t->hasMaxVertices())
+            switch (list)
 			{
-				t->end();
-				t->begin();
-			}
-            shared_ptr<Particle> p = particles[l][tt][i];
-
-            if (SharedConstants::TEXTURE_LIGHTING)		// 4J - change brought forward from 1.8.2
-			{
-                t->tex2(p->getLightColor(a));
+				case TRANSLUCENT_LIST:
+					glDepthMask(false);
+					break;
+				case OPAQUE_LIST:
+					 glDepthMask(true);
+					break;
             }
-            p->render(t, a, xa, ya, za, xa2, za2);
-        }
-        t->end();
-#if 0
-		// See comment in previous removed section
-		glDisable(GL_BLEND);
-		glDepthMask(true);
-		glAlphaFunc(GL_GREATER, .1f);
-#endif
+
+			MemSect(31);
+			if (tt == MISC_TEXTURE || tt == DRAGON_BREATH_TEXTURE) textures->bindTexture(&PARTICLES_LOCATION);
+			if (tt == TERRAIN_TEXTURE)  textures->bindTexture(&TextureAtlas::LOCATION_BLOCKS);
+			if (tt == ITEM_TEXTURE) textures->bindTexture(&TextureAtlas::LOCATION_ITEMS);
+			MemSect(0);
+			Tesselator *t = Tesselator::getInstance();
+			glColor4f(1.0f, 1.0f, 1.0f, 1);
+
+			t->begin();
+			for (unsigned int i = 0; i < particles[l][tt][list].size(); i++)
+			{
+				if(t->hasMaxVertices())
+				{
+					t->end();
+					t->begin();
+				}
+				shared_ptr<Particle> p = particles[l][tt][list][i];
+
+				if (SharedConstants::TEXTURE_LIGHTING)		// 4J - change brought forward from 1.8.2
+				{
+					t->tex2(p->getLightColor(a));
+				}
+				p->render(t, a, xa, ya, za, xa2, za2);
+			}
+			t->end();
+		}
     }
 
+	glDisable(GL_BLEND);
+	glDepthMask(true);
+	glAlphaFunc(GL_GREATER, .1f);
 }
 
-void ParticleEngine::renderLit(shared_ptr<Entity> player, float a)
+void ParticleEngine::renderLit(shared_ptr<Entity> player, float a, int list)
 {
 	// 4J - added. We call this before ParticleEngine::render in the general render per player, so if we
 	// don't set this here then the offsets will be from the previous player - a single frame lag for the
@@ -137,19 +168,21 @@ void ParticleEngine::renderLit(shared_ptr<Entity> player, float a)
 
 	int l = level->dimension->id == 0 ? 0 : ( level->dimension->id == -1 ? 1 : 2 );
     int tt = ENTITY_PARTICLE_TEXTURE;
-    if (particles[l][tt].empty()) return;
 
-    Tesselator *t = Tesselator::getInstance();
-    for (unsigned int i = 0; i < particles[l][tt].size(); i++)
+	if( !particles[l][tt][list].empty() )
 	{
-        shared_ptr<Particle> p = particles[l][tt][i];
-
-		if (SharedConstants::TEXTURE_LIGHTING)		// 4J - change brought forward from 1.8.2
+		Tesselator *t = Tesselator::getInstance();
+		for (unsigned int i = 0; i < particles[l][tt][list].size(); i++)
 		{
-            t->tex2(p->getLightColor(a));
-        }
-        p->render(t, a, xa, ya, za, xa2, za2);
-    }
+			shared_ptr<Particle> p = particles[l][tt][list][i];
+
+			if (SharedConstants::TEXTURE_LIGHTING)		// 4J - change brought forward from 1.8.2
+			{
+				t->tex2(p->getLightColor(a));
+			}
+			p->render(t, a, xa, ya, za, xa2, za2);
+		}
+	}
 }
 
 void ParticleEngine::setLevel(Level *level)
@@ -162,7 +195,10 @@ void ParticleEngine::setLevel(Level *level)
 		{
 			for (int tt = 0; tt < TEXTURE_COUNT; tt++)
 			{
-				particles[l][tt].clear();
+				for( int list = 0; list < LIST_COUNT; list++ )
+				{
+					particles[l][tt][list].clear();
+				}
 			}
 		}
 	}
@@ -205,8 +241,41 @@ void ParticleEngine::crack(int x, int y, int z, int face)
 
 }
 
+void ParticleEngine::markTranslucent(shared_ptr<Particle> particle)
+{
+    moveParticleInList(particle, OPAQUE_LIST, TRANSLUCENT_LIST);
+}
+
+void ParticleEngine::markOpaque(shared_ptr<Particle> particle)
+{
+	moveParticleInList(particle, TRANSLUCENT_LIST, OPAQUE_LIST);
+}
+
+void ParticleEngine::moveParticleInList(shared_ptr<Particle> particle, int source, int destination)
+{
+	int l = particle->level->dimension->id == 0 ? 0 : ( particle->level->dimension->id == -1 ? 1 : 2);
+    for (int tt = 0; tt < TEXTURE_COUNT; tt++)
+	{
+		AUTO_VAR(it, find(particles[l][tt][source].begin(), particles[l][tt][source].end(), particle) );
+		if(it != particles[l][tt][source].end() )
+		{
+			(*it) = particles[l][tt][source].back();
+			particles[l][tt][source].pop_back();
+			particles[l][tt][destination].push_back(particle);
+		}
+    }
+}
+
 wstring ParticleEngine::countParticles()
 {
 	int l = level->dimension->id == 0 ? 0 : (level->dimension->id == -1 ? 1 : 2 );
-	return _toString<int>((int)(particles[l][0].size() + particles[l][1].size() + particles[l][2].size()));
+	int total = 0;
+	for( int tt = 0; tt < TEXTURE_COUNT; tt++ )
+	{
+		for( int list = 0; list < LIST_COUNT; list++ )
+		{
+			total += particles[l][tt][list].size();
+		}
+	}
+	return _toString<int>(total);
 }

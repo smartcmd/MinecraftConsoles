@@ -5,6 +5,7 @@ NetworkPlayerSony::NetworkPlayerSony(SQRNetworkPlayer *qnetPlayer)
 {
 	m_sqrPlayer = qnetPlayer;
 	m_pSocket = NULL;
+	m_lastChunkPacketTime = 0;
 }
 
 unsigned char NetworkPlayerSony::GetSmallId()
@@ -12,10 +13,10 @@ unsigned char NetworkPlayerSony::GetSmallId()
 	return m_sqrPlayer->GetSmallId();
 }
 
-void NetworkPlayerSony::SendData(INetworkPlayer *player, const void *pvData, int dataSize, bool lowPriority)
+void NetworkPlayerSony::SendData(INetworkPlayer *player, const void *pvData, int dataSize, bool lowPriority, bool ack)
 {
 	// TODO - handle priority
-	m_sqrPlayer->SendData( ((NetworkPlayerSony *)player)->m_sqrPlayer, pvData, dataSize );
+	m_sqrPlayer->SendData( ((NetworkPlayerSony *)player)->m_sqrPlayer, pvData, dataSize, ack );
 }
 
 bool NetworkPlayerSony::IsSameSystem(INetworkPlayer *player)
@@ -23,14 +24,19 @@ bool NetworkPlayerSony::IsSameSystem(INetworkPlayer *player)
 	return m_sqrPlayer->IsSameSystem(((NetworkPlayerSony *)player)->m_sqrPlayer);
 }
 
+int NetworkPlayerSony::GetOutstandingAckCount()
+{
+	return m_sqrPlayer->GetOutstandingAckCount();
+}
+
 int NetworkPlayerSony::GetSendQueueSizeBytes( INetworkPlayer *player, bool lowPriority )
 {
-	return 0;			// TODO
+	return m_sqrPlayer->GetSendQueueSizeBytes();
 }
 
 int NetworkPlayerSony::GetSendQueueSizeMessages( INetworkPlayer *player, bool lowPriority )
 {
-	return 0;			// TODO
+	return m_sqrPlayer->GetSendQueueSizeMessages();
 }
 
 int NetworkPlayerSony::GetCurrentRtt()
@@ -111,4 +117,21 @@ PlayerUID NetworkPlayerSony::GetUID()
 void NetworkPlayerSony::SetUID(PlayerUID UID)
 {
 	m_sqrPlayer->SetUID(UID);
+}
+
+void NetworkPlayerSony::SentChunkPacket()
+{
+	m_lastChunkPacketTime = System::currentTimeMillis();
+}
+
+int NetworkPlayerSony::GetTimeSinceLastChunkPacket_ms()
+{
+	// If we haven't ever sent a packet, return maximum
+	if( m_lastChunkPacketTime == 0 )
+	{
+		return INT_MAX;
+	}
+
+	__int64 currentTime = System::currentTimeMillis();
+	return (int)( currentTime - m_lastChunkPacketTime );
 }

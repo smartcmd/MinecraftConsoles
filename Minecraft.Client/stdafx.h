@@ -211,10 +211,10 @@ typedef XUID GameSessionUID;
 #include "Common\XUI\XUI_Scene_Base.h"
 #endif
 
+#include "Common\App_defines.h"
 #include "Common\UI\UIEnums.h"
 #include "Common\UI\UIStructs.h"
 // #ifdef _XBOX
-#include "Common\App_defines.h"
 #include "Common\App_enums.h"
 #include "Common\Tutorial\TutorialEnum.h"
 #include "Common\App_structs.h"

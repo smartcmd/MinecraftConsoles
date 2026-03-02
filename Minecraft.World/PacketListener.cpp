@@ -139,7 +139,7 @@ void PacketListener::handleSetEntityData(shared_ptr<SetEntityDataPacket> packet)
 	onUnhandledPacket( (shared_ptr<Packet> ) packet);
 }
 
-void PacketListener::handleRidePacket(shared_ptr<SetRidingPacket> packet) 
+void PacketListener::handleEntityLinkPacket(shared_ptr<SetEntityLinkPacket> packet) 
 {
 	onUnhandledPacket( (shared_ptr<Packet> ) packet);
 }
@@ -384,6 +384,48 @@ void PacketListener::handleClientCommand(shared_ptr<ClientCommandPacket> packet)
 //}
 
 bool PacketListener::canHandleAsyncPackets()
+{
+	return false;
+}
+
+
+
+// 1.6.4
+void PacketListener::handleAddObjective(shared_ptr<SetObjectivePacket> packet)
+{
+	onUnhandledPacket(packet);
+}
+
+void PacketListener::handleSetScore(shared_ptr<SetScorePacket> packet)
+{
+	onUnhandledPacket(packet);
+}
+
+void PacketListener::handleSetDisplayObjective(shared_ptr<SetDisplayObjectivePacket> packet)
+{
+	onUnhandledPacket(packet);
+}
+
+void PacketListener::handleSetPlayerTeamPacket(shared_ptr<SetPlayerTeamPacket> packet)
+{
+	onUnhandledPacket(packet);
+}
+
+void PacketListener::handleParticleEvent(shared_ptr<LevelParticlesPacket> packet)
+{
+	onUnhandledPacket(packet);
+}
+
+void PacketListener::handleUpdateAttributes(shared_ptr<UpdateAttributesPacket> packet)
+{
+	onUnhandledPacket(packet);
+}
+
+void PacketListener::handleTileEditorOpen(shared_ptr<TileEditorOpenPacket> tileEditorOpenPacket)
+{
+}
+
+bool PacketListener::isDisconnected()
 {
 	return false;
 }

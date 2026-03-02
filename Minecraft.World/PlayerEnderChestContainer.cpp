@@ -1,10 +1,16 @@
 #include "stdafx.h"
 #include "net.minecraft.world.level.tile.entity.h"
+#include "ContainerOpenPacket.h"
 #include "PlayerEnderChestContainer.h"
 
-PlayerEnderChestContainer::PlayerEnderChestContainer() : SimpleContainer(IDS_TILE_ENDERCHEST, 9 * 3)
+PlayerEnderChestContainer::PlayerEnderChestContainer() : SimpleContainer(IDS_TILE_ENDERCHEST, L"", false, 9 * 3)
 {
 	activeChest = nullptr;
+}
+
+int PlayerEnderChestContainer::getContainerType()
+{
+	return ContainerOpenPacket::ENDER_CHEST;
 }
 
 void PlayerEnderChestContainer::setActiveChest(shared_ptr<EnderChestTileEntity> activeChest)
@@ -69,4 +75,9 @@ void PlayerEnderChestContainer::stopOpen()
 	}
 	SimpleContainer::stopOpen();
 	activeChest = nullptr;
+}
+
+bool PlayerEnderChestContainer::canPlaceItem(int slot, shared_ptr<ItemInstance> item)
+{
+	return true;
 }

@@ -24,14 +24,14 @@ PendingConnection::PendingConnection(MinecraftServer *server, Socket *socket, co
 {
 	// 4J - added initialisers
 	done = false;
-    _tick = 0;
-    name = L"";
-    acceptedLogin = nullptr;
+	_tick = 0;
+	name = L"";
+	acceptedLogin = nullptr;
 	loginKey = L"";
 
-    this->server = server;
-    connection = new Connection(socket, id, this);
-    connection->fakeLag = FAKE_LAG;
+	this->server = server;
+	connection = new Connection(socket, id, this);
+	connection->fakeLag = FAKE_LAG;
 }
 
 PendingConnection::~PendingConnection()
@@ -41,50 +41,50 @@ PendingConnection::~PendingConnection()
 
 void PendingConnection::tick()
 {
-    if (acceptedLogin != NULL)
+	if (acceptedLogin != NULL)
 	{
-        this->handleAcceptedLogin(acceptedLogin);
-        acceptedLogin = nullptr;
-    }
-    if (_tick++ == MAX_TICKS_BEFORE_LOGIN)
+		this->handleAcceptedLogin(acceptedLogin);
+		acceptedLogin = nullptr;
+	}
+	if (_tick++ == MAX_TICKS_BEFORE_LOGIN)
 	{
-        disconnect(DisconnectPacket::eDisconnect_LoginTooLong);
-    }
+		disconnect(DisconnectPacket::eDisconnect_LoginTooLong);
+	}
 	else
 	{
-        connection->tick();
-    }
+		connection->tick();
+	}
 }
 
 void PendingConnection::disconnect(DisconnectPacket::eDisconnectReason reason)
 {
- //   try {	// 4J - removed try/catch
-//        logger.info("Disconnecting " + getName() + ": " + reason);
-		app.DebugPrintf("Pending connection disconnect: %d\n", reason );
-        connection->send( shared_ptr<DisconnectPacket>( new DisconnectPacket(reason) ) );
-        connection->sendAndQuit();
-        done = true;
-//    } catch (Exception e) {
-//        e.printStackTrace();
-//    }
+	//   try {	// 4J - removed try/catch
+	//        logger.info("Disconnecting " + getName() + ": " + reason);
+	app.DebugPrintf("Pending connection disconnect: %d\n", reason );
+	connection->send( shared_ptr<DisconnectPacket>( new DisconnectPacket(reason) ) );
+	connection->sendAndQuit();
+	done = true;
+	//    } catch (Exception e) {
+	//        e.printStackTrace();
+	//    }
 }
 
 void PendingConnection::handlePreLogin(shared_ptr<PreLoginPacket> packet)
 {
-    if (packet->m_netcodeVersion != MINECRAFT_NET_VERSION)
+	if (packet->m_netcodeVersion != MINECRAFT_NET_VERSION)
 	{
 		app.DebugPrintf("Netcode version is %d not equal to %d\n", packet->m_netcodeVersion, MINECRAFT_NET_VERSION);
-        if (packet->m_netcodeVersion > MINECRAFT_NET_VERSION)
+		if (packet->m_netcodeVersion > MINECRAFT_NET_VERSION)
 		{
-            disconnect(DisconnectPacket::eDisconnect_OutdatedServer);
-        }
+			disconnect(DisconnectPacket::eDisconnect_OutdatedServer);
+		}
 		else
 		{
-            disconnect(DisconnectPacket::eDisconnect_OutdatedClient);
-        }
-        return;
-    }
-//	printf("Server: handlePreLogin\n");
+			disconnect(DisconnectPacket::eDisconnect_OutdatedClient);
+		}
+		return;
+	}
+	//	printf("Server: handlePreLogin\n");
 	name = packet->loginKey; // 4J Stu - Change from the login packet as we know better on client end during the pre-login packet
 	sendPreLoginResponse();
 }
@@ -106,7 +106,7 @@ void PendingConnection::sendPreLoginResponse()
 		shared_ptr<ServerPlayer> player = *it;
 		// If the offline Xuid is invalid but the online one is not then that's guest which we should ignore
 		// If the online Xuid is invalid but the offline one is not then we are definitely an offline game so dont care about UGC
-		
+
 		// PADDY - this is failing when a local player with chat restrictions joins an online game
 
 		if( player != NULL && player->connection->m_offlineXUID != INVALID_XUID && player->connection->m_onlineXUID != INVALID_XUID )
@@ -125,37 +125,37 @@ void PendingConnection::sendPreLoginResponse()
 	}
 
 #if 0
-    if (false)//	server->onlineMode) // 4J - removed
+	if (false)//	server->onlineMode) // 4J - removed
 	{
-        loginKey = L"TOIMPLEMENT"; // 4J - todo Long.toHexString(random.nextLong());
-        connection->send( shared_ptr<PreLoginPacket>( new PreLoginPacket(loginKey, ugcXuids, ugcXuidCount, ugcFriendsOnlyBits, server->m_ugcPlayersVersion, szUniqueMapName,app.GetGameHostOption(eGameHostOption_All),hostIndex) ) );
-    }
+		loginKey = L"TOIMPLEMENT"; // 4J - todo Long.toHexString(random.nextLong());
+		connection->send( shared_ptr<PreLoginPacket>( new PreLoginPacket(loginKey, ugcXuids, ugcXuidCount, ugcFriendsOnlyBits, server->m_ugcPlayersVersion, szUniqueMapName,app.GetGameHostOption(eGameHostOption_All),hostIndex) ) );
+	}
 	else
 #endif
 	{
-        connection->send( shared_ptr<PreLoginPacket>( new PreLoginPacket(L"-", ugcXuids, ugcXuidCount, ugcFriendsOnlyBits, server->m_ugcPlayersVersion,szUniqueMapName,app.GetGameHostOption(eGameHostOption_All),hostIndex, server->m_texturePackId) ) );
-    }
+		connection->send( shared_ptr<PreLoginPacket>( new PreLoginPacket(L"-", ugcXuids, ugcXuidCount, ugcFriendsOnlyBits, server->m_ugcPlayersVersion,szUniqueMapName,app.GetGameHostOption(eGameHostOption_All),hostIndex, server->m_texturePackId) ) );
+	}
 }
 
 void PendingConnection::handleLogin(shared_ptr<LoginPacket> packet)
 {
-//	printf("Server: handleLogin\n");
-    //name = packet->userName;
-    if (packet->clientVersion != SharedConstants::NETWORK_PROTOCOL_VERSION)
+	//	printf("Server: handleLogin\n");
+	//name = packet->userName;
+	if (packet->clientVersion != SharedConstants::NETWORK_PROTOCOL_VERSION)
 	{
 		app.DebugPrintf("Client version is %d not equal to %d\n", packet->clientVersion, SharedConstants::NETWORK_PROTOCOL_VERSION);
-        if (packet->clientVersion > SharedConstants::NETWORK_PROTOCOL_VERSION)
+		if (packet->clientVersion > SharedConstants::NETWORK_PROTOCOL_VERSION)
 		{
-            disconnect(DisconnectPacket::eDisconnect_OutdatedServer);
-        }
+			disconnect(DisconnectPacket::eDisconnect_OutdatedServer);
+		}
 		else
 		{
-            disconnect(DisconnectPacket::eDisconnect_OutdatedClient);
-        }
-        return;
-    }
+			disconnect(DisconnectPacket::eDisconnect_OutdatedClient);
+		}
+		return;
+	}
 
-    //if (true)// 4J removed !server->onlineMode)
+	//if (true)// 4J removed !server->onlineMode)
 	bool sentDisconnect = false;
 
 	if( sentDisconnect )
@@ -168,33 +168,33 @@ void PendingConnection::handleLogin(shared_ptr<LoginPacket> packet)
 	}
 	else
 	{
-        handleAcceptedLogin(packet);
-    }
+		handleAcceptedLogin(packet);
+	}
 	//else
 	{
 		//4J - removed
 #if 0 
-        new Thread() {
-            public void run() {
-                try {
-                    String key = loginKey;
-                    URL url = new URL("http://www.minecraft.net/game/checkserver.jsp?user=" + URLEncoder.encode(packet.userName, "UTF-8") + "&serverId=" + URLEncoder.encode(key, "UTF-8"));
-                    BufferedReader br = new BufferedReader(new InputStreamReader(url.openStream()));
-                    String msg = br.readLine();
-                    br.close();
-                    if (msg.equals("YES")) {
-                        acceptedLogin = packet;
-                    } else {
-                        disconnect("Failed to verify username!");
-                    }
-                } catch (Exception e) {
-                    disconnect("Failed to verify username! [internal error " + e + "]");
-                    e.printStackTrace();
-                }
-            }
-        }.start();
+		new Thread() {
+			public void run() {
+				try {
+					String key = loginKey;
+					URL url = new URL("http://www.minecraft.net/game/checkserver.jsp?user=" + URLEncoder.encode(packet.userName, "UTF-8") + "&serverId=" + URLEncoder.encode(key, "UTF-8"));
+					BufferedReader br = new BufferedReader(new InputStreamReader(url.openStream()));
+					String msg = br.readLine();
+					br.close();
+					if (msg.equals("YES")) {
+						acceptedLogin = packet;
+					} else {
+						disconnect("Failed to verify username!");
+					}
+				} catch (Exception e) {
+					disconnect("Failed to verify username! [internal error " + e + "]");
+					e.printStackTrace();
+				}
+			}
+		}.start();
 #endif
-    }
+	}
 
 }
 
@@ -211,20 +211,20 @@ void PendingConnection::handleAcceptedLogin(shared_ptr<LoginPacket> packet)
 	PlayerUID playerXuid = packet->m_offlineXuid;
 	if(playerXuid == INVALID_XUID) playerXuid = packet->m_onlineXuid;
 
-    shared_ptr<ServerPlayer> playerEntity = server->getPlayers()->getPlayerForLogin(this, name, playerXuid,packet->m_onlineXuid);
-    if (playerEntity != NULL)
+	shared_ptr<ServerPlayer> playerEntity = server->getPlayers()->getPlayerForLogin(this, name, playerXuid,packet->m_onlineXuid);
+	if (playerEntity != NULL)
 	{
-        server->getPlayers()->placeNewPlayer(connection, playerEntity, packet);
+		server->getPlayers()->placeNewPlayer(connection, playerEntity, packet);
 		connection = NULL;	// We've moved responsibility for this over to the new PlayerConnection, NULL so we don't delete our reference to it here in our dtor
-    }
-    done = true;
+	}
+	done = true;
 
 }
 
 void PendingConnection::onDisconnect(DisconnectPacket::eDisconnectReason reason, void *reasonObjects)
 {
-//    logger.info(getName() + " lost connection");
-    done = true;
+	//    logger.info(getName() + " lost connection");
+	done = true;
 }
 
 void PendingConnection::handleGetInfo(shared_ptr<GetInfoPacket> packet)
@@ -259,11 +259,16 @@ void PendingConnection::send(shared_ptr<Packet> packet)
 wstring PendingConnection::getName()
 {
 	return L"Unimplemented";
-//        if (name != null) return name + " [" + connection.getRemoteAddress().toString() + "]";
-//        return connection.getRemoteAddress().toString();
+	//        if (name != null) return name + " [" + connection.getRemoteAddress().toString() + "]";
+	//        return connection.getRemoteAddress().toString();
 }
 
 bool PendingConnection::isServerPacketListener()
 {
 	return true;
+}
+
+bool PendingConnection::isDisconnected()
+{
+	return done;
 }

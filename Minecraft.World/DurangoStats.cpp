@@ -45,8 +45,8 @@ bool DsItemEvent::onLeaderboard(ELeaderboardId leaderboard, eAcquisitionMethod m
 		switch (param->itemId)
 		{
 		case Item::egg_Id:
-		case Tile::mushroom1_Id:
-		case Tile::mushroom2_Id:
+		case Tile::mushroom_brown_Id:
+		case Tile::mushroom_red_Id:
 			return leaderboard == eLeaderboardId_FARMING;
 		}
 		break;
@@ -57,13 +57,13 @@ bool DsItemEvent::onLeaderboard(ELeaderboardId leaderboard, eAcquisitionMethod m
 		case Tile::dirt_Id:	
 		case Tile::stoneBrick_Id:
 		case Tile::sand_Id:	
-		case Tile::rock_Id:
+		case Tile::stone_Id:
 		case Tile::gravel_Id:
 		case Tile::clay_Id:
 		case Tile::obsidian_Id:
 			return leaderboard == eLeaderboardId_MINING;
 
-		case Tile::crops_Id:
+		case Tile::wheat_Id:
 		case Tile::pumpkin_Id:
 		case Tile::reeds_Id:
 			return leaderboard == eLeaderboardId_FARMING;
@@ -83,9 +83,9 @@ int DsItemEvent::mergeIds(int itemId)
 	default:
 		return itemId;
 
-	case Tile::mushroom1_Id:
-	case Tile::mushroom2_Id:
-		return Tile::mushroom1_Id;
+	case Tile::mushroom_brown_Id:
+	case Tile::mushroom_red_Id:
+		return Tile::mushroom_brown_Id;
 
 	case Tile::dirt_Id:
 	case Tile::grass_Id:
@@ -267,11 +267,11 @@ byteArray DsMobKilled::createParamBlob(shared_ptr<Player> player, shared_ptr<Mob
 	// 4J-JEV: Get the id we use for Durango Server Stats.
 	int mob_networking_id;
 	eINSTANCEOF mobEType = mob->GetType();
-	if ( (mobEType == eTYPE_SPIDER) && (mob->rider.lock() != NULL) && (mob->rider.lock()->GetType() == eTYPE_SKELETON) )
+	if ( (mobEType == eTYPE_SPIDER) && (mob->rider.lock() != NULL) && (mob->rider.lock()->GetType() == eTYPE_SKELETON) && mob->rider.lock()->isAlive() )
 	{
 		mob_networking_id = SPIDER_JOCKEY_ID; // Spider jockey only a concept for leaderboards.
 	}
-	else if ( (mobEType == eTYPE_SKELETON) && (mob->riding != NULL) && (mob->riding->GetType() == eTYPE_SPIDER) )
+	else if ( (mobEType == eTYPE_SKELETON) && (mob->riding != NULL) && (mob->riding->GetType() == eTYPE_SPIDER) && mob->riding->isAlive() )
 	{
 		mob_networking_id = SPIDER_JOCKEY_ID; // Spider jockey only a concept for leaderboards.
 	}
@@ -769,7 +769,7 @@ Stat* DurangoStats::get_pigOneM()
 
 Stat *DurangoStats::get_cowsMilked()
 {
-	return get_itemsCrafted(Item::milk_Id);
+	return get_itemsCrafted(Item::bucket_milk_Id);
 }
 
 Stat* DurangoStats::get_killMob()
@@ -930,7 +930,7 @@ byteArray DurangoStats::getParam_pigOneM(int distance)
 
 byteArray DurangoStats::getParam_cowsMilked()
 {
-	return DsItemEvent::createParamBlob(DsItemEvent::eAcquisitionMethod_Crafted, Item::milk_Id, 0, 1);
+	return DsItemEvent::createParamBlob(DsItemEvent::eAcquisitionMethod_Crafted, Item::bucket_milk_Id, 0, 1);
 }
 
 byteArray DurangoStats::getParam_blocksPlaced(int blockId, int data, int count)

@@ -5,8 +5,8 @@
 
 GroundBushFeature::GroundBushFeature(int trunkType, int leafType)
 {
-	this->trunkTileType = trunkType;
-	this->leafTileType = leafType;
+	trunkTileType = trunkType;
+	leafTileType = leafType;
 }
 
 bool GroundBushFeature::place(Level *level, Random *random, int x, int y, int z)

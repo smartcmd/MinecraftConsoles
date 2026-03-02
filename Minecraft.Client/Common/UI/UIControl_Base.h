@@ -1,6 +1,7 @@
 #pragma once
 
 #include "UIControl.h"
+#include "UIString.h"
 
 // This class maps to the FJ_Base class in actionscript
 class UIControl_Base : public UIControl
@@ -12,7 +13,8 @@ protected:
 	IggyName m_funcCheckLabelWidths;
 
 	bool m_bLabelChanged;
-	wstring m_label;
+	UIString m_label;
+
 public:
 	UIControl_Base();
 
@@ -20,8 +22,9 @@ public:
 
 	virtual void tick();
 
-	virtual void setLabel(const wstring &label, bool instant = false, bool force = false);
-	virtual void setLabel(const string &label);
+	virtual void setLabel(UIString label, bool instant = false, bool force = false);
+	//virtual void setLabel(wstring label, bool instant = false, bool force = false) { this->setLabel(UIString::CONSTANT(label), instant, force); }
+
 	const wchar_t* getLabel();
 	virtual void setAllPossibleLabels(int labelCount, wchar_t labels[][256]);
 	int getId() { return m_id; }

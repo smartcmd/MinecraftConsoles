@@ -48,23 +48,24 @@ public:
 	void upgradeRenderRemoveStage(); // 4J added
 	bool shouldRemoveForRender();	// 4J added
 
-	Level *getLevel();
-	void setLevel(Level *level);
-	bool hasLevel();
+	virtual Level *getLevel();
+	virtual void setLevel(Level *level);
+	virtual bool hasLevel();
 	virtual void load(CompoundTag *tag);
 	virtual void save(CompoundTag *tag);
 	virtual void tick();
 	static shared_ptr<TileEntity> loadStatic(CompoundTag *tag);
-	int getData();
-	void setData(int data);
-	void setChanged();
-	double distanceToSqr(double xPlayer, double yPlayer, double zPlayer);
-	Tile *getTile();
+	virtual int getData();
+	virtual void setData(int data, int updateFlags);
+	virtual void setChanged();
+	virtual double distanceToSqr(double xPlayer, double yPlayer, double zPlayer);
+	virtual double getViewDistance();
+	virtual Tile *getTile();
 	virtual shared_ptr<Packet> getUpdatePacket();
 	virtual bool isRemoved();
 	virtual void setRemoved();
 	virtual void clearRemoved();
-	virtual void triggerEvent(int b0, int b1);
+	virtual bool triggerEvent(int b0, int b1);
 	virtual void clearCache();
 
 	// 4J Added

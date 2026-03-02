@@ -11,7 +11,7 @@
 ContainerMenu::ContainerMenu(shared_ptr<Container> inventory, shared_ptr<Container> container) : AbstractContainerMenu()
 {
 	this->container = container;
-	this->containerRows = container->getContainerSize() / 9;
+	containerRows = container->getContainerSize() / 9;
 	container->startOpen();
 
 	int yo = (containerRows - 4) * 18;
@@ -45,7 +45,7 @@ bool ContainerMenu::stillValid(shared_ptr<Player> player)
 shared_ptr<ItemInstance> ContainerMenu::quickMoveStack(shared_ptr<Player> player, int slotIndex)
 {
 	shared_ptr<ItemInstance> clicked = nullptr;
-	Slot *slot = slots->at(slotIndex);
+	Slot *slot = slots.at(slotIndex);
 	if (slot != NULL && slot->hasItem())
 	{
 		shared_ptr<ItemInstance> stack = slot->getItem();
@@ -53,7 +53,7 @@ shared_ptr<ItemInstance> ContainerMenu::quickMoveStack(shared_ptr<Player> player
 
 		if (slotIndex < containerRows * 9)
 		{
-			if(!moveItemStackTo(stack, containerRows * 9, (int)slots->size(), true))
+			if(!moveItemStackTo(stack, containerRows * 9, (int)slots.size(), true))
 			{
 				// 4J Stu - Brought forward from 1.2
 				return nullptr;
@@ -85,9 +85,14 @@ void ContainerMenu::removed(shared_ptr<Player> player)
 	container->stopOpen();
 }
 
-shared_ptr<ItemInstance> ContainerMenu::clicked(int slotIndex, int buttonNum, int clickType, shared_ptr<Player> player)
+shared_ptr<Container> ContainerMenu::getContainer()
 {
-	shared_ptr<ItemInstance> out = AbstractContainerMenu::clicked(slotIndex, buttonNum, clickType, player);
+	return container;
+}
+
+shared_ptr<ItemInstance> ContainerMenu::clicked(int slotIndex, int buttonNum, int clickType, shared_ptr<Player> player, bool looped) // 4J Added looped param
+{
+	shared_ptr<ItemInstance> out = AbstractContainerMenu::clicked(slotIndex, buttonNum, clickType, player, looped);
 
 #ifdef _EXTENDED_ACHIEVEMENTS
 	shared_ptr<LocalPlayer> localPlayer = dynamic_pointer_cast<LocalPlayer>(player);
@@ -98,7 +103,7 @@ shared_ptr<ItemInstance> ContainerMenu::clicked(int slotIndex, int buttonNum, in
 		for (int i = 0; i < container->getContainerSize(); i++)
 		{
 			shared_ptr<ItemInstance> item = container->getItem(i);
-			if ( (item != nullptr) && (item->id == Tile::stoneBrick_Id) )
+			if ( (item != nullptr) && (item->id == Tile::cobblestone_Id) )
 			{
 				cobblecount += item->GetCount();
 			}
@@ -107,7 +112,7 @@ shared_ptr<ItemInstance> ContainerMenu::clicked(int slotIndex, int buttonNum, in
 		// 4J-JEV: This check performed on XboxOne servers, for other platforms check here.
 #ifndef _DURANGO
 		StatsCounter *sc = Minecraft::GetInstance()->stats[localPlayer->GetXboxPad()];
-		int minedCount = sc->getTotalValue(GenericStats::blocksMined(Tile::rock_Id)) + sc->getTotalValue(GenericStats::blocksMined(Tile::stoneBrick_Id));
+		int minedCount = sc->getTotalValue(GenericStats::blocksMined(Tile::stone_Id)) + sc->getTotalValue(GenericStats::blocksMined(Tile::cobblestone_Id));
 		if (cobblecount >= 1728 && minedCount >= 1728 )
 #endif
 		{

@@ -23,7 +23,7 @@ public:
 	virtual int getMinCost(int level);
 	virtual int getMaxCost(int level);
 	virtual int getMaxLevel();
-	virtual int getDamageBonus(int level, shared_ptr<Mob> target);
+	virtual float getDamageBonus(int level, shared_ptr<LivingEntity> target);
 	virtual int getDescriptionId();
 	virtual bool isCompatibleWith(Enchantment *other) const;
 	virtual bool canEnchant(shared_ptr<ItemInstance> item);

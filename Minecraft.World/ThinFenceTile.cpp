@@ -32,7 +32,7 @@ bool ThinFenceTile::isCubeShaped()
 
 int ThinFenceTile::getRenderShape()
 {
-	return Tile::SHAPE_IRON_FENCE;
+	return material == Material::glass ? Tile::SHAPE_THIN_PANE : Tile::SHAPE_IRON_FENCE;
 }
 
 bool ThinFenceTile::shouldRenderFace(LevelSource *level, int x, int y, int z, int face)
@@ -134,7 +134,7 @@ Icon *ThinFenceTile::getEdgeTexture()
 
 bool ThinFenceTile::attachsTo(int tile)
 {
-	return Tile::solid[tile] || tile == id || tile == Tile::glass_Id;
+	return Tile::solid[tile] || tile == id || tile == Tile::glass_Id || tile == Tile::stained_glass_Id || tile == Tile::stained_glass_pane_Id;
 }
 
 bool ThinFenceTile::isSilkTouchable()

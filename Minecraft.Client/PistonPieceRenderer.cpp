@@ -1,11 +1,14 @@
 #include "stdafx.h"
 #include "PistonPieceRenderer.h"
-#include "Tesselator.h"
 #include "Lighting.h"
+#include "Tesselator.h"
+#include "TextureAtlas.h"
 #include "TileRenderer.h"
 #include "..\Minecraft.World\net.minecraft.world.level.h"
 #include "..\Minecraft.World\PistonPieceEntity.h"
 #include "..\Minecraft.World\net.minecraft.world.level.tile.h"
+
+ResourceLocation PistonPieceRenderer::SIGN_LOCATION = ResourceLocation(TN_ITEM_SIGN);
 
 PistonPieceRenderer::PistonPieceRenderer()
 {
@@ -21,7 +24,7 @@ void PistonPieceRenderer::render(shared_ptr<TileEntity> _entity, double x, doubl
     if (tile != NULL && entity->getProgress(a) <= 1)	// 4J - changed condition from < to <= as our chunk update is async to main thread and so we can have to render these with progress of 1
 	{
         Tesselator *t = Tesselator::getInstance();
-        bindTexture(TN_TERRAIN);
+        bindTexture(&TextureAtlas::LOCATION_BLOCKS);
 
         Lighting::turnOff();
 		glColor4f(1, 1, 1, 1);	// 4J added - this wouldn't be needed in real opengl as the block render has vertex colours and so this isn't use, but our pretend gl always modulates with this

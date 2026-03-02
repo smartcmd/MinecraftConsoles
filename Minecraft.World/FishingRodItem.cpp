@@ -13,8 +13,6 @@
 #include "FishingRodItem.h"
 #include "SoundTypes.h"
 
-const wstring FishingRodItem::TEXTURE_EMPTY = L"fishingRod_empty";
-
 FishingRodItem::FishingRodItem(int id) : Item(id)
 {
 	setMaxDamage(64);
@@ -37,12 +35,12 @@ shared_ptr<ItemInstance> FishingRodItem::use(shared_ptr<ItemInstance> instance, 
 	if (player->fishing != NULL) 
 	{
 		int dmg = player->fishing->retrieve();
-		instance->hurt(dmg, player);
+		instance->hurtAndBreak(dmg, player);
 		player->swing();
 	} 
 	else 
 	{
-		level->playSound(player, eSoundType_RANDOM_BOW, 0.5f, 0.4f / (random->nextFloat() * 0.4f + 0.8f));
+		level->playEntitySound(player, eSoundType_RANDOM_BOW, 0.5f, 0.4f / (random->nextFloat() * 0.4f + 0.8f));
 		if (!level->isClientSide) 
 		{
 			// 4J Stu - Move the player->fishing out of the ctor as we cannot reference 'this'
@@ -57,8 +55,8 @@ shared_ptr<ItemInstance> FishingRodItem::use(shared_ptr<ItemInstance> instance, 
 
 void FishingRodItem::registerIcons(IconRegister *iconRegister)
 {
-	Item::registerIcons(iconRegister);
-	emptyIcon = iconRegister->registerIcon(TEXTURE_EMPTY);
+        icon = iconRegister->registerIcon(getIconName() + L"_uncast");
+	emptyIcon = iconRegister->registerIcon(getIconName() + L"_cast");
 }
 
 Icon *FishingRodItem::getEmptyIcon()

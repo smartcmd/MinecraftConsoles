@@ -1,8 +1,12 @@
 #include "stdafx.h"
 #include "EndermanRenderer.h"
 #include "EndermanModel.h"
+#include "TextureAtlas.h"
 #include "..\Minecraft.World\net.minecraft.world.entity.monster.h"
 #include "..\Minecraft.World\net.minecraft.world.level.tile.h"
+
+ResourceLocation EndermanRenderer::ENDERMAN_EYES_LOCATION = ResourceLocation(TN_MOB_ENDERMAN_EYES);
+ResourceLocation EndermanRenderer::ENDERMAN_LOCATION = ResourceLocation(TN_MOB_ENDERMAN);
 
 EndermanRenderer::EndermanRenderer() : MobRenderer(new EndermanModel(), 0.5f)
 {
@@ -29,7 +33,12 @@ void EndermanRenderer::render(shared_ptr<Entity> _mob, double x, double y, doubl
 	MobRenderer::render(mob, x, y, z, rot, a);
 }
 
-void EndermanRenderer::additionalRendering(shared_ptr<Mob> _mob, float a)
+ResourceLocation *EndermanRenderer::getTextureLocation(shared_ptr<Entity> mob)
+{
+    return &ENDERMAN_LOCATION;
+}
+
+void EndermanRenderer::additionalRendering(shared_ptr<LivingEntity> _mob, float a)
 {
 	// 4J - original version used generics and thus had an input parameter of type Boat rather than shared_ptr<Entity>  we have here - 
 	// do some casting around instead
@@ -47,7 +56,7 @@ void EndermanRenderer::additionalRendering(shared_ptr<Mob> _mob, float a)
 		s *= 1.00f;
 		glRotatef(20, 1, 0, 0);
 		glRotatef(45, 0, 1, 0);
-		glScalef(s, -s, s);
+		glScalef(-s, -s, s);
 
 
 		if (SharedConstants::TEXTURE_LIGHTING)
@@ -61,14 +70,14 @@ void EndermanRenderer::additionalRendering(shared_ptr<Mob> _mob, float a)
 		}
 
 		glColor4f(1, 1, 1, 1);
-		bindTexture(TN_TERRAIN);	// 4J was L"/terrain.png"
+		bindTexture(&TextureAtlas::LOCATION_BLOCKS);	// TODO: bind by icon
 		tileRenderer->renderTile(Tile::tiles[mob->getCarryingTile()], mob->getCarryingData(), 1);
 		glPopMatrix();
 		glDisable(GL_RESCALE_NORMAL);
 	}
 }
 
-int EndermanRenderer::prepareArmor(shared_ptr<Mob> _mob, int layer, float a)
+int EndermanRenderer::prepareArmor(shared_ptr<LivingEntity> _mob, int layer, float a)
 {
 	// 4J - original version used generics and thus had an input parameter of type Boat rather than shared_ptr<Entity>  we have here - 
 	// do some casting around instead
@@ -76,7 +85,7 @@ int EndermanRenderer::prepareArmor(shared_ptr<Mob> _mob, int layer, float a)
 
 	if (layer != 0) return -1;
 
-	bindTexture(TN_MOB_ENDERMAN_EYES);	// 4J was L"/mob/enderman_eyes.png"
+	bindTexture(&ENDERMAN_EYES_LOCATION);	// 4J was L"/mob/enderman_eyes.png"
 	float br = 1;
 	glEnable(GL_BLEND);
 	// 4J Stu - We probably don't need to do this on 360 either (as we force it back on the renderer)
@@ -88,8 +97,14 @@ int EndermanRenderer::prepareArmor(shared_ptr<Mob> _mob, int layer, float a)
 	glBlendFunc(GL_ONE, GL_ONE);
 	glDisable(GL_LIGHTING);
 
-	if (mob->isInvisible())	glDepthMask(false);
-    else					glDepthMask(true);
+	if (mob->isInvisible())
+	{
+		glDepthMask(false);
+	}
+    else
+	{
+		glDepthMask(true);
+	}
 
 	if (SharedConstants::TEXTURE_LIGHTING)
 	{

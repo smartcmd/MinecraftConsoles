@@ -1,50 +1,50 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <root>
-	<data name="IDS_NOFREESPACE_TEXT">
-		<value>El almacenamiento del sistema no tiene suficiente espacio libre para guardar una partida.</value>
-	</data>
-	<data name="IDS_PRO_RETURNEDTOTITLESCREEN_TEXT">
-		<value>Has vuelto a la pantalla de título porque has cerrado sesión en "PSN".</value>
-	</data>
-	<data name="IDS_PRO_RETURNEDTOMENU_TEXT">
-		<value>La partida ha finalizado porque has cerrado sesión en "PSN".</value>
-	</data>
-	<data name="IDS_PRO_NOTONLINE_TITLE">
-		<value>No estás conectado.</value>
-	</data>
-	<data name="IDS_PRO_NOTONLINE_TEXT">
-		<value>Este juego ofrece funciones que requieren estar conectado a "PSN", pero en estos momentos estás desconectado.</value>
-	</data>
-	<data name="IDS_PRO_NOTADHOCONLINE_TITLE">
-		<value>Red Ad hoc sin conexión.</value>
-	</data>
-	<data name="IDS_PRO_NOTADHOCONLINE_TEXT">
-		<value>Este juego contiene algunas características que necesitan una conexión de red Ad hoc, pero actualmente te encuentras sin conexión.</value>
-	</data>
-	<data name="IDS_PRO_XBOXLIVE_NOTIFICATION">
-		<value>Esta función requiere haber iniciado sesión en "PSN".</value>
-	</data>
-	<data name="IDS_PRO_NOTONLINE_ACCEPT">
-		<value>Conectarse a "PSN"</value>
-	</data>
-	<data name="IDS_PRO_NOTADHOCONLINE_ACCEPT">
-		<value>Conectar a red Ad hoc</value>
-	</data>
-	<data name="IDS_PRO_ACHIEVEMENTPROBLEM_TITLE">
-		<value>Problema con el trofeo</value>
-	</data>
-	<data name="IDS_PRO_ACHIEVEMENTPROBLEM_TEXT">
-		<value>Se ha producido un problema al acceder a tu cuenta Sony Entertainment Network. No se puede conceder tu trofeo en este momento.</value>
+	<data name="IDS_PRO_NOPROFILEOPTIONS_TEXT">
+		<value>Se ha producido un error al guardar la configuración en la cuenta Sony Entertainment Network.</value>
 	</data>
 	<data name="IDS_PRO_NOPROFILE_TITLE">
 		<value>Problema con la cuenta Sony Entertainment Network</value>
 	</data>
-	<data name="IDS_PRO_NOPROFILEOPTIONS_TEXT">
-		<value>Se ha producido un error al guardar la configuración en la cuenta Sony Entertainment Network.</value>
+	<data name="IDS_PRO_ACHIEVEMENTPROBLEM_TEXT">
+		<value>Se ha producido un problema al acceder a tu cuenta Sony Entertainment Network. No se puede conceder tu trofeo en este momento.</value>
 	</data>
 	<data name="IDS_PRO_UNLOCKGAME_TEXT">
 		<value>Esta es la versión de prueba de Minecraft: PlayStation®3 Edition. Si tuvieras el juego completo, ¡habrías conseguido un trofeo! 
 Desbloquea el juego completo para vivir toda la emoción de Minecraft: PlayStation®3 Edition y jugar con amigos de todo el mundo a través de "PSN".
 ¿Te gustaría desbloquear el juego completo?</value>
+	</data>
+	<data name="IDS_PRO_NOTADHOCONLINE_ACCEPT">
+		<value>Conectar a red Ad hoc</value>
+	</data>
+	<data name="IDS_PRO_NOTADHOCONLINE_TEXT">
+		<value>Este juego contiene algunas características que necesitan una conexión de red Ad hoc, pero actualmente te encuentras sin conexión.</value>
+	</data>
+	<data name="IDS_PRO_NOTADHOCONLINE_TITLE">
+		<value>Red Ad hoc sin conexión.</value>
+	</data>
+	<data name="IDS_PRO_ACHIEVEMENTPROBLEM_TITLE">
+		<value>Problema con el trofeo</value>
+	</data>
+	<data name="IDS_PRO_RETURNEDTOMENU_TEXT">
+		<value>La partida ha finalizado porque has cerrado sesión en "PSN".</value>
+	</data>
+	<data name="IDS_PRO_RETURNEDTOTITLESCREEN_TEXT">
+		<value>Has vuelto a la pantalla de título porque has cerrado sesión en "PSN".</value>
+	</data>
+	<data name="IDS_NOFREESPACE_TEXT">
+		<value>El almacenamiento del sistema no tiene suficiente espacio libre para guardar una partida.</value>
+	</data>
+	<data name="IDS_PRO_NOTONLINE_TITLE">
+		<value>No estás conectado.</value>
+	</data>
+	<data name="IDS_PRO_NOTONLINE_ACCEPT">
+		<value>Conectarse a "PSN"</value>
+	</data>
+	<data name="IDS_PRO_XBOXLIVE_NOTIFICATION">
+		<value>Esta función requiere haber iniciado sesión en "PSN".</value>
+	</data>
+	<data name="IDS_PRO_NOTONLINE_TEXT">
+		<value>Este juego ofrece funciones que requieren estar conectado a "PSN", pero en estos momentos estás desconectado.</value>
 	</data>
 </root>

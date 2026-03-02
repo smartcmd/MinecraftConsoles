@@ -16,18 +16,22 @@
 #include "CreativeMode.h"
 #include "GameRenderer.h"
 #include "ItemInHandRenderer.h"
+#include "..\Minecraft.World\AttributeInstance.h"
 #include "..\Minecraft.World\LevelData.h"
 #include "..\Minecraft.World\net.minecraft.world.damagesource.h"
 #include "..\Minecraft.World\net.minecraft.world.item.h"
 #include "..\Minecraft.World\net.minecraft.world.food.h"
 #include "..\Minecraft.World\net.minecraft.world.effect.h"
 #include "..\Minecraft.World\net.minecraft.world.entity.player.h"
+#include "..\Minecraft.World\net.minecraft.world.entity.monster.h"
 #include "..\Minecraft.World\ItemEntity.h"
 #include "..\Minecraft.World\net.minecraft.world.level.h"
+#include "..\Minecraft.World\net.minecraft.world.level.tile.entity.h"
 #include "..\Minecraft.World\net.minecraft.world.phys.h"
 #include "..\Minecraft.World\net.minecraft.stats.h"
 #include "..\Minecraft.World\com.mojang.nbt.h"
 #include "..\Minecraft.World\Random.h"
+#include "..\Minecraft.World\TileEntity.h"
 #include "..\Minecraft.World\Mth.h"
 #include "AchievementPopup.h"
 #include "CritParticle.h"
@@ -55,7 +59,7 @@
 
 
 
-LocalPlayer::LocalPlayer(Minecraft *minecraft, Level *level, User *user, int dimension) : Player(level)
+LocalPlayer::LocalPlayer(Minecraft *minecraft, Level *level, User *user, int dimension) : Player(level, user->name)
 {
 	flyX = flyY = flyZ = 0.0f;	// 4J added
 	m_awardedThisSession = 0;
@@ -65,20 +69,23 @@ LocalPlayer::LocalPlayer(Minecraft *minecraft, Level *level, User *user, int dim
 	twoJumpsRegistered = false;
 	sprintTime = 0;
 	m_uiInactiveTicks=0;
+	portalTime = 0.0f;
+	oPortalTime = 0.0f;
+	jumpRidingTicks = 0;
+	jumpRidingScale = 0.0f;
 
 	yBob = xBob = yBobO = xBobO = 0.0f;
 
-    this->minecraft = minecraft;
-    this->dimension = dimension;
+	this->minecraft = minecraft;
+	this->dimension = dimension;
 
-    if (user != NULL && user->name.length() > 0)
+	if (user != NULL && user->name.length() > 0)
 	{
-        customTextureUrl = L"http://s3.amazonaws.com/MinecraftSkins/" + user->name + L".png";
-    }
+		customTextureUrl = L"http://s3.amazonaws.com/MinecraftSkins/" + user->name + L".png";
+	}
 	if( user != NULL )
 	{
 		this->name = user->name;
-		m_UUID = name;
 		//wprintf(L"Created LocalPlayer with name %ls\n", name.c_str() );
 		// check to see if this player's xuid is in the list of special players
 		MOJANG_DATA *pMojangData=app.GetMojangDataForXuid(getOnlineXuid());
@@ -121,50 +128,20 @@ LocalPlayer::~LocalPlayer()
 		delete input;
 }
 
-// 4J - added noEntityCubes parameter
-void LocalPlayer::move(double xa, double ya, double za, bool noEntityCubes)
-{
-    if (ClientConstants::DEADMAU5_CAMERA_CHEATS)
-	{
-        if (shared_from_this() == minecraft->player && minecraft->options->isFlying)
-		{
-            noPhysics = true;
-            float tmp = walkDist; // update
-            calculateFlight((float) xa, (float) ya, (float) za);
-            fallDistance = 0.0f;
-            yd = 0.0f;
-            Player::move(flyX, flyY, flyZ, noEntityCubes);
-            onGround = true;
-            walkDist = tmp;
-        }
-		else
-		{
-            noPhysics = false;
-            Player::move(xa, ya, za, noEntityCubes);
-        }
-    }
-	else
-	{
-        Player::move(xa, ya, za, noEntityCubes);
-    }
-
-}
-
 void LocalPlayer::calculateFlight(float xa, float ya, float za)
 {
-    xa = xa * minecraft->options->flySpeed;
-    ya = 0;
-    za = za * minecraft->options->flySpeed;
+	xa = xa * minecraft->options->flySpeed;
+	ya = 0;
+	za = za * minecraft->options->flySpeed;
 
-    flyX = smoothFlyX.getNewDeltaValue(xa, .35f * minecraft->options->sensitivity);
-    flyY = smoothFlyY.getNewDeltaValue(ya, .35f * minecraft->options->sensitivity);
-    flyZ = smoothFlyZ.getNewDeltaValue(za, .35f * minecraft->options->sensitivity);
-
+	flyX = smoothFlyX.getNewDeltaValue(xa, .35f * minecraft->options->sensitivity);
+	flyY = smoothFlyY.getNewDeltaValue(ya, .35f * minecraft->options->sensitivity);
+	flyZ = smoothFlyZ.getNewDeltaValue(za, .35f * minecraft->options->sensitivity);
 }
 
 void LocalPlayer::serverAiStep()
 {
-    Player::serverAiStep();
+	Player::serverAiStep();
 	
 	if( abilities.flying && abilities.mayfly )
 	{
@@ -199,7 +176,7 @@ void LocalPlayer::serverAiStep()
 		this->xxa = input->xa;
 		this->yya = input->ya;
 	}
-    this->jumping = input->jumping;
+	this->jumping = input->jumping;
 
 	yBobO = yBob;
 	xBobO = xBob;
@@ -211,7 +188,7 @@ void LocalPlayer::serverAiStep()
 	//	mapPlayerChunk(8);
 }
 
-bool LocalPlayer::isEffectiveAI()
+bool LocalPlayer::isEffectiveAi()
 {
 	return true;
 }
@@ -237,26 +214,26 @@ void LocalPlayer::aiStep()
 		y = 68.5;
 		return;
 	}
-    oPortalTime = portalTime;
-    if (isInsidePortal)
+	oPortalTime = portalTime;
+	if (isInsidePortal)
 	{
-        if (!level->isClientSide)
+		if (!level->isClientSide)
 		{
-            if (riding != NULL) this->ride(nullptr);
-        }
-        if (minecraft->screen != NULL) minecraft->setScreen(NULL);
+			if (riding != NULL) this->ride(nullptr);
+		}
+		if (minecraft->screen != NULL) minecraft->setScreen(NULL);
 
-        if (portalTime == 0)
+		if (portalTime == 0)
 		{
-            minecraft->soundEngine->playUI(eSoundType_PORTAL_TRIGGER, 1, random->nextFloat() * 0.4f + 0.8f);
-        }
-        portalTime += 1 / 80.0f;
-        if (portalTime >= 1)
+			minecraft->soundEngine->playUI(eSoundType_PORTAL_TRIGGER, 1, random->nextFloat() * 0.4f + 0.8f);
+		}
+		portalTime += 1 / 80.0f;
+		if (portalTime >= 1)
 		{
-            portalTime = 1;
-        }
-        isInsidePortal = false;
-    }
+			portalTime = 1;
+		}
+		isInsidePortal = false;
+	}
 	else if (hasEffect(MobEffect::confusion) && getEffect(MobEffect::confusion)->getDuration() > (SharedConstants::TICKS_PER_SECOND * 3))
 	{
 		portalTime += 1 / 150.0f;
@@ -267,11 +244,11 @@ void LocalPlayer::aiStep()
 	}
 	else
 	{
-        if (portalTime > 0) portalTime -= 1 / 20.0f;
-        if (portalTime < 0) portalTime = 0;
-    }
+		if (portalTime > 0) portalTime -= 1 / 20.0f;
+		if (portalTime < 0) portalTime = 0;
+	}
 
-    if (changingDimensionDelay > 0) changingDimensionDelay--;
+	if (changingDimensionDelay > 0) changingDimensionDelay--;
 	bool wasJumping = input->jumping;
 	float runTreshold = 0.8f;
 	float sprintForward = input->sprintForward;
@@ -281,22 +258,22 @@ void LocalPlayer::aiStep()
 	// 4J-PB - make it a localplayer
 	input->tick( this );
 	sprintForward = input->sprintForward;
-	if (isUsingItem())
+	if (isUsingItem() && !isRiding())
 	{
 		input->xa *= 0.2f;
 		input->ya *= 0.2f;
 		sprintTriggerTime = 0;
 	}
-    // this.heightOffset = input.sneaking?1.30f:1.62f;	// 4J - this was already commented out
-    if (input->sneaking)	// 4J - removed - TODO replace
+	// this.heightOffset = input.sneaking?1.30f:1.62f;	// 4J - this was already commented out
+	if (input->sneaking)	// 4J - removed - TODO replace
 	{
-        if (ySlideOffset < 0.2f) ySlideOffset = 0.2f;
-    }
+		if (ySlideOffset < 0.2f) ySlideOffset = 0.2f;
+	}
 
-    checkInTile(x - bbWidth * 0.35, bb->y0 + 0.5, z + bbWidth * 0.35);
-    checkInTile(x - bbWidth * 0.35, bb->y0 + 0.5, z - bbWidth * 0.35);
-    checkInTile(x + bbWidth * 0.35, bb->y0 + 0.5, z - bbWidth * 0.35);
-    checkInTile(x + bbWidth * 0.35, bb->y0 + 0.5, z + bbWidth * 0.35);
+	checkInTile(x - bbWidth * 0.35, bb->y0 + 0.5, z + bbWidth * 0.35);
+	checkInTile(x - bbWidth * 0.35, bb->y0 + 0.5, z - bbWidth * 0.35);
+	checkInTile(x + bbWidth * 0.35, bb->y0 + 0.5, z - bbWidth * 0.35);
+	checkInTile(x + bbWidth * 0.35, bb->y0 + 0.5, z + bbWidth * 0.35);
 
 	bool enoughFoodToSprint = getFoodData()->getFoodLevel() > FoodConstants::MAX_FOOD * FoodConstants::FOOD_SATURATION_LOW;
 
@@ -427,7 +404,49 @@ void LocalPlayer::aiStep()
 		}
 	}
 
-    Player::aiStep();
+	if (isRidingJumpable())
+	{
+		if (jumpRidingTicks < 0)
+		{
+			jumpRidingTicks++;
+			if (jumpRidingTicks == 0)
+			{
+				// reset scale (for gui)
+				jumpRidingScale = 0;
+			}
+		}
+		if (wasJumping && !input->jumping)
+		{
+			// jump release
+			jumpRidingTicks = -10;
+			sendRidingJump();
+		}
+		else if (!wasJumping && input->jumping)
+		{
+			// jump press
+			jumpRidingTicks = 0;
+			jumpRidingScale = 0;
+		}
+		else if (wasJumping)
+		{
+			// calc jump scale
+			jumpRidingTicks++;
+			if (jumpRidingTicks < 10)
+			{
+				jumpRidingScale = (float) jumpRidingTicks * .1f;
+			}
+			else 
+			{
+				jumpRidingScale = .8f + (2.f / ((float) (jumpRidingTicks - 9))) * .1f;
+			}
+		}
+	}
+	else
+	{
+		jumpRidingScale = 0;
+	}
+
+	Player::aiStep();
 
 	// 4J-PB - If we're in Creative Mode, allow flying on ground
 	if(!abilities.mayfly && !isAllowedToFly() )
@@ -494,7 +513,7 @@ void LocalPlayer::aiStep()
 		fallDistance = 0.0f;
 		yd = 0.0f;
 		onGround = true;
-    }
+	}
 
 	// Check if the player is idle and the rich presence needs updated
 	if( !m_bIsIdle && InputManager.GetIdleSeconds( m_iPad ) > PLAYER_IDLE_TIME )
@@ -561,7 +580,9 @@ float LocalPlayer::getFieldOfViewModifier()
 
 	// modify for movement
 	if (abilities.flying) targetFov *= 1.1f;
-	targetFov *= ((walkingSpeed * getWalkingSpeedModifier()) / defaultWalkSpeed + 1) / 2;
+
+	AttributeInstance *speed = getAttribute(SharedMonsterAttributes::MOVEMENT_SPEED);
+	targetFov *= (speed->getValue() / abilities.getWalkingSpeed() + 1) / 2;
 
 	// modify for bow =)
 	if (isUsingItem() && getUseItem()->id == Item::bow->id)
@@ -584,20 +605,20 @@ float LocalPlayer::getFieldOfViewModifier()
 
 void LocalPlayer::addAdditonalSaveData(CompoundTag *entityTag)
 {
-    Player::addAdditonalSaveData(entityTag);
-    entityTag->putInt(L"Score", score);
+	Player::addAdditonalSaveData(entityTag);
+	//entityTag->putInt(L"Score", score);
 }
 
 void LocalPlayer::readAdditionalSaveData(CompoundTag *entityTag)
 {
-    Player::readAdditionalSaveData(entityTag);
-    score = entityTag->getInt(L"Score");
+	Player::readAdditionalSaveData(entityTag);
+	//score = entityTag->getInt(L"Score");
 }
 
 void LocalPlayer::closeContainer()
 {
-    Player::closeContainer();
-    minecraft->setScreen(NULL);
+	Player::closeContainer();
+	minecraft->setScreen(NULL);
 
 	// 4J - Close any xui here
 	// Fix for #9164 - CRASH: MP: Title crashes upon opening a chest and having another user destroy it.
@@ -605,9 +626,19 @@ void LocalPlayer::closeContainer()
 	ui.CloseUIScenes( m_iPad );
 }
 
-void LocalPlayer::openTextEdit(shared_ptr<SignTileEntity> sign)
+void LocalPlayer::openTextEdit(shared_ptr<TileEntity> tileEntity)
 {
-	bool success = app.LoadSignEntryMenu(GetXboxPad(), sign );
+	bool success;
+
+	if (tileEntity->GetType() == eTYPE_SIGNTILEENTITY)
+	{
+		success = app.LoadSignEntryMenu(GetXboxPad(), dynamic_pointer_cast<SignTileEntity>(tileEntity));
+	}
+	else if (tileEntity->GetType() == eTYPE_COMMANDBLOCKTILEENTITY)
+	{
+		success = app.LoadCommandBlockMenu(GetXboxPad(), dynamic_pointer_cast<CommandBlockEntity>(tileEntity));
+	}
+
 	if( success ) ui.PlayUISFX(eSFX_Press);
 	//minecraft->setScreen(new TextEditScreen(sign));
 }
@@ -620,6 +651,30 @@ bool LocalPlayer::openContainer(shared_ptr<Container> container)
 	return success;
 }
 
+bool LocalPlayer::openHopper(shared_ptr<HopperTileEntity> container)
+{
+	//minecraft->setScreen(new HopperScreen(inventory, container));
+	bool success = app.LoadHopperMenu(GetXboxPad(), inventory, container );
+	if( success ) ui.PlayUISFX(eSFX_Press);
+	return success;
+}
+
+bool LocalPlayer::openHopper(shared_ptr<MinecartHopper> container)
+{
+	//minecraft->setScreen(new HopperScreen(inventory, container));
+	bool success = app.LoadHopperMenu(GetXboxPad(), inventory, container );
+	if( success ) ui.PlayUISFX(eSFX_Press);
+	return success;
+}
+
+bool LocalPlayer::openHorseInventory(shared_ptr<EntityHorse> horse, shared_ptr<Container> container)
+{
+	//minecraft->setScreen(new HorseInventoryScreen(inventory, container, horse));
+	bool success = app.LoadHorseMenu(GetXboxPad(), inventory, container, horse);
+	if( success ) ui.PlayUISFX(eSFX_Press);
+	return success;
+}
+
 bool LocalPlayer::startCrafting(int x, int y, int z)
 {
 	bool success = app.LoadCrafting3x3Menu(GetXboxPad(), dynamic_pointer_cast<LocalPlayer>( shared_from_this() ), x, y, z );
@@ -629,9 +684,16 @@ bool LocalPlayer::startCrafting(int x, int y, int z)
 	return success;
 }
 
-bool LocalPlayer::startEnchanting(int x, int y, int z)
+bool LocalPlayer::openFireworks(int x, int y, int z)
 {
-	bool success = app.LoadEnchantingMenu(GetXboxPad(), inventory, x, y, z, level );
+	bool success = app.LoadFireworksMenu(GetXboxPad(), dynamic_pointer_cast<LocalPlayer>( shared_from_this() ), x, y, z );
+	if( success ) ui.PlayUISFX(eSFX_Press);
+	return success;
+}
+
+bool LocalPlayer::startEnchanting(int x, int y, int z, const wstring &name)
+{
+	bool success = app.LoadEnchantingMenu(GetXboxPad(), inventory, x, y, z, level, name);
 	if( success ) ui.PlayUISFX(eSFX_Press);
 	//minecraft.setScreen(new EnchantmentScreen(inventory, level, x, y, z));
 	return success;
@@ -661,6 +723,14 @@ bool LocalPlayer::openBrewingStand(shared_ptr<BrewingStandTileEntity> brewingSta
 	return success;
 }
 
+bool LocalPlayer::openBeacon(shared_ptr<BeaconTileEntity> beacon)
+{
+	//minecraft->setScreen(new BeaconScreen(inventory, beacon));
+	bool success = app.LoadBeaconMenu(GetXboxPad(), inventory, beacon);
+	if( success ) ui.PlayUISFX(eSFX_Press);
+	return success;
+}
+
 bool LocalPlayer::openTrap(shared_ptr<DispenserTileEntity> trap)
 {
 	bool success = app.LoadTrapMenu(GetXboxPad(),inventory, trap);
@@ -669,9 +739,9 @@ bool LocalPlayer::openTrap(shared_ptr<DispenserTileEntity> trap)
 	return success;
 }
 
-bool LocalPlayer::openTrading(shared_ptr<Merchant> traderTarget)
+bool LocalPlayer::openTrading(shared_ptr<Merchant> traderTarget, const wstring &name)
 {
-	bool success = app.LoadTradingMenu(GetXboxPad(),inventory, traderTarget, level);
+	bool success = app.LoadTradingMenu(GetXboxPad(),inventory, traderTarget, level, name);
 	if( success ) ui.PlayUISFX(eSFX_Press);
 	//minecraft.setScreen(new MerchantScreen(inventory, traderTarget, level));
 	return success;
@@ -705,30 +775,30 @@ bool LocalPlayer::isSneaking()
 	return input->sneaking && !m_isSleeping;
 }
 
-void LocalPlayer::hurtTo(int newHealth, ETelemetryChallenges damageSource)
+void LocalPlayer::hurtTo(float newHealth, ETelemetryChallenges damageSource)
 {
-    int dmg = getHealth() - newHealth;
-    if (dmg <= 0)
+	float dmg = getHealth() - newHealth;
+	if (dmg <= 0)
 	{
-        setHealth(newHealth);
-        if (dmg < 0)
+		setHealth(newHealth);
+		if (dmg < 0)
 		{
-            invulnerableTime = invulnerableDuration / 2;
-        }
-    }
+			invulnerableTime = invulnerableDuration / 2;
+		}
+	}
 	else
 	{
-        lastHurt = dmg;
-        setHealth(getHealth());
-        invulnerableTime = invulnerableDuration;
-        actuallyHurt(DamageSource::genericSource,dmg);
-        hurtTime = hurtDuration = 10;
-    }
+		lastHurt = dmg;
+		setHealth(getHealth());
+		invulnerableTime = invulnerableDuration;
+		actuallyHurt(DamageSource::genericSource,dmg);
+		hurtTime = hurtDuration = 10;
+	}
 
 
-	if( this->health <= 0)
+	if( this->getHealth() <= 0)
 	{
-		int deathTime = (int)(level->getTime() % Level::TICKS_PER_DAY)/1000;
+		int deathTime = (int)(level->getGameTime() % Level::TICKS_PER_DAY)/1000;
 		int carriedId = inventory->getSelected() == NULL ? 0 : inventory->getSelected()->id;
 		TelemetryManager->RecordPlayerDiedOrFailed(GetXboxPad(), 0, y, 0, 0, carriedId, 0, damageSource);
 
@@ -774,16 +844,16 @@ void LocalPlayer::awardStat(Stat *stat, byteArray param)
 	delete [] param.data;
 
 	if (!app.CanRecordStatsAndAchievements())	return;
-    if (stat == NULL)							return;
+	if (stat == NULL)							return;
 
-    if (stat->isAchievement())
+	if (stat->isAchievement())
 	{
-        Achievement *ach = (Achievement *) stat;
+		Achievement *ach = (Achievement *) stat;
 		// 4J-PB - changed to attempt to award everytime - the award may need a storage device, so needs a primary player, and the player may not have been a primary player when they first 'got' the award
 		// so let the award manager figure it out
-        //if (!minecraft->stats[m_iPad]->hasTaken(ach))
+		//if (!minecraft->stats[m_iPad]->hasTaken(ach))
 		{
-            // 4J-PB - Don't display the java popup
+			// 4J-PB - Don't display the java popup
 			//minecraft->achievementPopup->popup(ach);
 
 			// 4J Stu - Added this function in the libraries as some achievements don't get awarded to all players
@@ -811,14 +881,14 @@ void LocalPlayer::awardStat(Stat *stat, byteArray param)
 				if (ProfileManager.IsFullVersion())
 					m_awardedThisSession |= achBit;
 			}
-        }
+		}
 		minecraft->stats[m_iPad]->award(stat, level->difficulty, count);
-    }
+	}
 	else
 	{
 		// 4J : WESTY : Added for new achievements.
 		StatsCounter* pStats = minecraft->stats[m_iPad];
-        pStats->award(stat, level->difficulty, count);
+		pStats->award(stat, level->difficulty, count);
 
 		// 4J-JEV: Check achievements for unlocks.
 
@@ -1035,7 +1105,7 @@ void LocalPlayer::awardStat(Stat *stat, byteArray param)
 			bool justPickedupWool = false;
 			
 			for (int i=0; i<16; i++)
-				if ( stat == GenericStats::itemsCollected(Tile::cloth_Id, i) )
+				if ( stat == GenericStats::itemsCollected(Tile::wool_Id, i) )
 					justPickedupWool = true;
 
 			if (justPickedupWool)
@@ -1044,7 +1114,7 @@ void LocalPlayer::awardStat(Stat *stat, byteArray param)
 			
 				for (unsigned int i = 0; i < 16; i++)
 				{
-					if (pStats->getTotalValue(GenericStats::itemsCollected(Tile::cloth_Id, i)) > 0)
+					if (pStats->getTotalValue(GenericStats::itemsCollected(Tile::wool_Id, i)) > 0)
 						woolCount++;
 				}
 
@@ -1085,51 +1155,51 @@ bool LocalPlayer::isSolidBlock(int x, int y, int z)
 
 bool LocalPlayer::checkInTile(double x, double y, double z)
 {
-    int xTile = Mth::floor(x);
-    int yTile = Mth::floor(y);
-    int zTile = Mth::floor(z);
+	int xTile = Mth::floor(x);
+	int yTile = Mth::floor(y);
+	int zTile = Mth::floor(z);
 
-    double xd = x - xTile;
-    double zd = z - zTile;
+	double xd = x - xTile;
+	double zd = z - zTile;
 
-    if (isSolidBlock(xTile, yTile, zTile) || isSolidBlock(xTile, yTile + 1, zTile))
+	if (isSolidBlock(xTile, yTile, zTile) || isSolidBlock(xTile, yTile + 1, zTile))
 	{
-        bool west = !isSolidBlock(xTile - 1, yTile, zTile) && !isSolidBlock(xTile - 1, yTile + 1, zTile);
-        bool east = !isSolidBlock(xTile + 1, yTile, zTile) && !isSolidBlock(xTile + 1, yTile + 1, zTile);
-        bool north = !isSolidBlock(xTile, yTile, zTile - 1) && !isSolidBlock(xTile, yTile + 1, zTile - 1);
-        bool south = !isSolidBlock(xTile, yTile, zTile + 1) && !isSolidBlock(xTile, yTile + 1, zTile + 1);
+		bool west = !isSolidBlock(xTile - 1, yTile, zTile) && !isSolidBlock(xTile - 1, yTile + 1, zTile);
+		bool east = !isSolidBlock(xTile + 1, yTile, zTile) && !isSolidBlock(xTile + 1, yTile + 1, zTile);
+		bool north = !isSolidBlock(xTile, yTile, zTile - 1) && !isSolidBlock(xTile, yTile + 1, zTile - 1);
+		bool south = !isSolidBlock(xTile, yTile, zTile + 1) && !isSolidBlock(xTile, yTile + 1, zTile + 1);
 
-        int dir = -1;
-        double closest = 9999;
-        if (west && xd < closest)
+		int dir = -1;
+		double closest = 9999;
+		if (west && xd < closest)
 		{
-            closest = xd;
-            dir = 0;
-        }
-        if (east && 1 - xd < closest)
+			closest = xd;
+			dir = 0;
+		}
+		if (east && 1 - xd < closest)
 		{
-            closest = 1 - xd;
-            dir = 1;
-        }
-        if (north && zd < closest)
+			closest = 1 - xd;
+			dir = 1;
+		}
+		if (north && zd < closest)
 		{
-            closest = zd;
-            dir = 4;
-        }
-        if (south && 1 - zd < closest)
+			closest = zd;
+			dir = 4;
+		}
+		if (south && 1 - zd < closest)
 		{
-            closest = 1 - zd;
-            dir = 5;
-        }
+			closest = 1 - zd;
+			dir = 5;
+		}
 
-        float speed = 0.1f;
-        if (dir == 0) this->xd = -speed;
-        if (dir == 1) this->xd = +speed;
-        if (dir == 4) this->zd = -speed;
-        if (dir == 5) this->zd = +speed;
-    }
+		float speed = 0.1f;
+		if (dir == 0) this->xd = -speed;
+		if (dir == 1) this->xd = +speed;
+		if (dir == 4) this->zd = -speed;
+		if (dir == 5) this->zd = +speed;
+	}
 
-    return false;
+	return false;
 
 }
 
@@ -1142,9 +1212,44 @@ void LocalPlayer::setSprinting(bool value)
 
 void LocalPlayer::setExperienceValues(float experienceProgress, int totalExp, int experienceLevel)
 {
- 	this->experienceProgress = experienceProgress;
- 	this->totalExperience = totalExp;
- 	this->experienceLevel = experienceLevel;
+	this->experienceProgress = experienceProgress;
+	this->totalExperience = totalExp;
+	this->experienceLevel = experienceLevel;
+}
+
+// 4J: removed
+//void LocalPlayer::sendMessage(ChatMessageComponent *message)
+//{
+//	minecraft->gui->getChat()->addMessage(message.toString(true));
+//}
+
+Pos LocalPlayer::getCommandSenderWorldPosition()
+{
+	return new Pos(floor(x + .5), floor(y + .5), floor(z + .5));
+}
+
+shared_ptr<ItemInstance> LocalPlayer::getCarriedItem()
+{
+	return inventory->getSelected();
+}
+
+void LocalPlayer::playSound(int soundId, float volume, float pitch)
+{
+	level->playLocalSound(x, y - heightOffset, z, soundId, volume, pitch, false);
+}
+
+bool LocalPlayer::isRidingJumpable()
+{
+	return riding != NULL && riding->GetType() == eTYPE_HORSE;
+}
+
+float LocalPlayer::getJumpRidingScale()
+{
+	return jumpRidingScale;
+}
+
+void LocalPlayer::sendRidingJump()
+{
 }
 
 bool LocalPlayer::hasPermission(EGameCommand command)
@@ -1215,14 +1320,14 @@ void LocalPlayer::handleMouseDown(int button, bool down)
 	{
 		return;
 	}
-    if (!down) missTime = 0;
-    if (button == 0 && missTime > 0) return;
+	if (!down) missTime = 0;
+	if (button == 0 && missTime > 0) return;
 
-    if (down && minecraft->hitResult != NULL && minecraft->hitResult->type == HitResult::TILE && button == 0)
+	if (down && minecraft->hitResult != NULL && minecraft->hitResult->type == HitResult::TILE && button == 0)
 	{
-        int x = minecraft->hitResult->x;
-        int y = minecraft->hitResult->y;
-        int z = minecraft->hitResult->z;
+		int x = minecraft->hitResult->x;
+		int y = minecraft->hitResult->y;
+		int z = minecraft->hitResult->z;
 
 		// 4J - addition to stop layer mining out of the top or bottom of the world
 		// 4J Stu - Allow this for The End
@@ -1230,16 +1335,16 @@ void LocalPlayer::handleMouseDown(int button, bool down)
 
 		minecraft->gameMode->continueDestroyBlock(x, y, z, minecraft->hitResult->f);
 		
-		if(mayBuild(x,y,z))
+		if(mayDestroyBlockAt(x,y,z))
 		{
 			minecraft->particleEngine->crack(x, y, z, minecraft->hitResult->f);
 			swing();
 		}
-    }
+	}
 	else
 	{
-        minecraft->gameMode->stopDestroyBlock();
-    }
+		minecraft->gameMode->stopDestroyBlock();
+	}
 }
 
 bool LocalPlayer::creativeModeHandleMouseClick(int button, bool buttonPressed)
@@ -1550,15 +1655,15 @@ void LocalPlayer::updateRichPresence()
 		{
 			app.SetRichPresenceContext(m_iPad,CONTEXT_GAME_STATE_MAP);
 		}	
-		else if(riding != NULL && dynamic_pointer_cast<Minecart>(riding) != NULL)
+		else if ( (riding != NULL) && riding->instanceof(eTYPE_MINECART) )
 		{
 			app.SetRichPresenceContext(m_iPad,CONTEXT_GAME_STATE_RIDING_MINECART);
 		}
-		else if(riding != NULL && dynamic_pointer_cast<Boat>(riding) != NULL)
+		else if ( (riding != NULL) && riding->instanceof(eTYPE_BOAT) )
 		{
 			app.SetRichPresenceContext(m_iPad,CONTEXT_GAME_STATE_BOATING);
 		}
-		else if(riding != NULL && dynamic_pointer_cast<Pig>(riding) != NULL)
+		else if ( (riding != NULL) && riding->instanceof(eTYPE_PIG) )
 		{
 			app.SetRichPresenceContext(m_iPad,CONTEXT_GAME_STATE_RIDING_PIG);
 		}

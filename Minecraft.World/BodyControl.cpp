@@ -5,7 +5,7 @@
 
 const float BodyControl::maxClampAngle = 75.0f;
 
-BodyControl::BodyControl(Mob *mob)
+BodyControl::BodyControl(LivingEntity *mob)
 {
 	this->mob = mob;
 

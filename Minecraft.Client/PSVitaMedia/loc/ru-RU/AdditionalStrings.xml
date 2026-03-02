@@ -48,6 +48,12 @@
 	<data name="IDS_CORRUPT_OPTIONS">
 		<value>Файл настроек поврежден, необходимо удалить его.</value>
 	</data>
+	<data name="IDS_CORRUPT_OPTIONS_DELETE">
+		<value>Удалить файл настроек.</value>
+	</data>
+	<data name="IDS_CORRUPT_OPTIONS_RETRY">
+		<value>Повторить попытку загрузки файла настроек.</value>
+	</data>
 	<data name="IDS_CORRUPT_SAVECACHE">
 		<value>Кэш сохранений поврежден, необходимо удалить его.</value>
 	</data>
@@ -75,6 +81,9 @@
 	<data name="IDS_CONTENT_RESTRICTION_MULTIPLAYER">
 		<value>Сетевые возможности для вашей учетной записи Sony Entertainment Network отключены в соответствии с настройками родительского контроля одного из  локальных игроков.</value>
 	</data>
+	<data name="IDS_CONTENT_RESTRICTION_PATCH_AVAILABLE">
+		<value>Сетевые функции отключены, поскольку доступно обновление игры.</value>
+	</data>
 	<data name="IDS_NO_DLCCATEGORIES">
 		<value>В данный момент для этой игры нет загружаемого контента.</value>
 	</data>
@@ -83,8 +92,5 @@
 	</data>
 	<data name="IDS_INVITATION_BODY">
 		<value>Пожалуйста, зайдите и поиграйте немного в Minecraft: PlayStation®Vita Edition!</value>
-	</data>
-	<data name="IDS_CONTENT_RESTRICTION_PATCH_AVAILABLE">
-		<value>Сетевые функции отключены, поскольку доступно обновление игры.</value>
 	</data>
 </root>

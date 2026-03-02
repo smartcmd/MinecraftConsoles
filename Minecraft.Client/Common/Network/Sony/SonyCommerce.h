@@ -170,4 +170,8 @@ public:
 	virtual void CheckForTrialUpgradeKey() = 0;
 	virtual bool LicenseChecked() = 0;
 
+#if defined __ORBIS__ || defined __PSVITA__
+	virtual void ShowPsStoreIcon() = 0;
+	virtual void HidePsStoreIcon() = 0;
+#endif
 };

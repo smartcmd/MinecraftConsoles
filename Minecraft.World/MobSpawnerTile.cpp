@@ -3,7 +3,7 @@
 #include "net.minecraft.world.level.tile.entity.h"
 #include "MobSpawnerTile.h"
 
-MobSpawnerTile::MobSpawnerTile(int id) : EntityTile(id, Material::stone, isSolidRender() )
+MobSpawnerTile::MobSpawnerTile(int id) : BaseEntityTile(id, Material::stone, isSolidRender() )
 {
 }
 

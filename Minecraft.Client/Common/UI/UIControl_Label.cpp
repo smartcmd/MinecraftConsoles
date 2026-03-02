@@ -5,6 +5,7 @@
 
 UIControl_Label::UIControl_Label()
 {
+	m_reinitEnabled = true;
 }
 
 bool UIControl_Label::setupControl(UIScene *scene, IggyValuePath *parent, const string &controlName)
@@ -17,7 +18,7 @@ bool UIControl_Label::setupControl(UIScene *scene, IggyValuePath *parent, const 
 	return success;
 }
 
-void UIControl_Label::init(const wstring &label)
+void UIControl_Label::init(UIString label)
 {
 	m_label = label;
 
@@ -32,22 +33,13 @@ void UIControl_Label::init(const wstring &label)
 	IggyResult out = IggyPlayerCallMethodRS ( m_parentScene->getMovie() , &result, getIggyValuePath() , m_initFunc , 1 , value );
 }
 
-void UIControl_Label::init(const string &label)
-{
-	m_label = convStringToWstring(label);
-	IggyDataValue result;
-	IggyDataValue value[1];
-	value[0].type = IGGY_DATATYPE_string_UTF8;
-	IggyStringUTF8 stringVal;
-
-	stringVal.string = (char *)label.c_str();
-	stringVal.length = label.length();
-	value[0].string8 = stringVal;
-	IggyResult out = IggyPlayerCallMethodRS ( m_parentScene->getMovie() , &result, getIggyValuePath() , m_initFunc , 1 , value );
-}
-
 void UIControl_Label::ReInit()
 {
 	UIControl_Base::ReInit();
-	init(m_label);
+	
+	// 4J-JEV: This can't be reinitialised.
+	if (m_reinitEnabled)
+	{
+		init(m_label);
+	}
 }

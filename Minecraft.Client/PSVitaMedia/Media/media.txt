@@ -1,5 +1,4 @@
 languages.loc
-Tutorial.pck
 skinVita.swf
 DLCOffersMenuVita.swf
 DefaultOptionsImage320x176.png

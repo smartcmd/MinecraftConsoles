@@ -40,9 +40,9 @@ int VillagerZombieModel::version()
 	return 10;
 }
 
-void VillagerZombieModel::setupAnim(float time, float r, float bob, float yRot, float xRot, float scale, unsigned int uiBitmaskOverrideAnim)
+void VillagerZombieModel::setupAnim(float time, float r, float bob, float yRot, float xRot, float scale, shared_ptr<Entity> entity, unsigned int uiBitmaskOverrideAnim)
 {
-	HumanoidModel::setupAnim(time, r, bob, yRot, xRot, scale, uiBitmaskOverrideAnim);
+	HumanoidModel::setupAnim(time, r, bob, yRot, xRot, scale, entity, uiBitmaskOverrideAnim);
 
 	float attack2 = Mth::sin(attackTime * PI);
 	float attack = Mth::sin((1 - (1 - attackTime) * (1 - attackTime)) * PI);

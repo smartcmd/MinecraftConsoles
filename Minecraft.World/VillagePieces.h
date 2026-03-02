@@ -8,9 +8,9 @@ class VillagePieces
 
 private:
 	static const int MAX_DEPTH = 50;
-    static const int BASE_ROAD_DEPTH = 3;
-    // the dungeon starts at 64 and traverses downwards to this point
-    static const int LOWEST_Y_POSITION = 10;
+	static const int BASE_ROAD_DEPTH = 3;
+	// the dungeon starts at 64 and traverses downwards to this point
+	static const int LOWEST_Y_POSITION = 10;
 
 public:
 	static const int SIZE_SMALL = 0;
@@ -31,19 +31,22 @@ public:
 		EPieceClass_TwoRoomHouse
 	};
 
-    class PieceWeight {
+	static void loadStatic();
+
+	class PieceWeight
+	{
 	public:
 		EPieceClass pieceClass;		// 4J - EPieceClass was Class<? extends VillagePiece>
-        const int weight;
-        int placeCount;
-        int maxPlaceCount;
+		const int weight;
+		int placeCount;
+		int maxPlaceCount;
 
-        PieceWeight(EPieceClass pieceClass, int weight, int maxPlaceCount);	// 4J - EPieceClass was Class<? extends VillagePiece>
-        bool doPlace(int depth);
-        bool isValid();
-    };
+		PieceWeight(EPieceClass pieceClass, int weight, int maxPlaceCount);	// 4J - EPieceClass was Class<? extends VillagePiece>
+		bool doPlace(int depth);
+		bool isValid();
+	};
 
-    static list<PieceWeight *> *createPieceSet(Random *random, int villageSize);		// 4J - was ArrayList
+	static list<PieceWeight *> *createPieceSet(Random *random, int villageSize);		// 4J - was ArrayList
 
 	class StartPiece;
 private:
@@ -55,19 +58,25 @@ private:
 	static StructurePiece *generateAndAddRoadPiece(StartPiece *startPiece, list<StructurePiece *> *pieces, Random *random, int footX, int footY, int footZ, int direction, int depth);
 
 
-    /**
-     * 
-     *
-     */
+	/**
+	* 
+	*
+	*/
 private:
 	class VillagePiece : public StructurePiece
 	{
+	protected:
+		int heightPosition;
 	private:
 		int spawnedVillagerCount;
+		bool isDesertVillage;
 	protected:
 		StartPiece *startPiece;
 
+		VillagePiece();
 		VillagePiece(StartPiece *startPiece, int genDepth);
+		virtual void addAdditonalSaveData(CompoundTag *tag);
+		virtual void readAdditonalSaveData(CompoundTag *tag);
 		StructurePiece *generateHouseNorthernLeft(StartPiece *startPiece, list<StructurePiece *> *pieces, Random *random, int yOff, int zOff);
 		StructurePiece *generateHouseNorthernRight(StartPiece *startPiece, list<StructurePiece *> *pieces, Random *random, int yOff, int zOff);
 		int getAverageGroundHeight(Level *level, BoundingBox *chunkBB);
@@ -79,108 +88,136 @@ private:
 		virtual void placeBlock(Level *level, int block, int data, int x, int y, int z, BoundingBox *chunkBB);
 		virtual void generateBox(Level *level, BoundingBox *chunkBB, int x0, int y0, int z0, int x1, int y1, int z1, int edgeTile, int fillTile, bool skipAir);
 		virtual void fillColumnDown(Level *level, int block, int data, int x, int startY, int z, BoundingBox *chunkBB);
-    };
+	};
 
-    /**
-     * 
-     *
-     */
+	/**
+	* 
+	*
+	*/
 public:
 	class Well : public VillagePiece
 	{
+	public:
+		static StructurePiece *Create() { return new Well(); }
+		virtual EStructurePiece GetType() { return eStructurePiece_Well; }
+
 	private:
 		static const int width = 6;
 		static const int height = 15;
 		static const int depth = 6;
-		
-		const bool isSource;
-		int heightPosition;
 
 	public:
+		Well();
 		Well(StartPiece *startPiece, int genDepth, Random *random, int west, int north);
-
-        Well(StartPiece *startPiece, int genDepth, Random *random, BoundingBox *stairsBox, int direction);
-        virtual void addChildren(StructurePiece *startPiece, list<StructurePiece *> *pieces, Random *random);
-        //static Well *createPiece(list<StructurePiece *> *pieces, Random *random, int footX, int footY, int footZ, int direction, int genDepth);
-        virtual bool postProcess(Level *level, Random *random, BoundingBox *chunkBB);
-    };
+		Well(StartPiece *startPiece, int genDepth, Random *random, BoundingBox *stairsBox, int direction);
+		virtual void addChildren(StructurePiece *startPiece, list<StructurePiece *> *pieces, Random *random);
+		virtual bool postProcess(Level *level, Random *random, BoundingBox *chunkBB);
+	};
 
 public:
 	class StartPiece : public Well
 	{
 	public:
+		virtual EStructurePiece GetType() { return eStructurePiece_VillageStartPiece; }
+
+	public:
+		// these fields are only used in generation step and aren't serialized :{
 		BiomeSource *biomeSource;
 		bool isDesertVillage;
 
 		int villageSize;
 		bool isLibraryAdded;
 		PieceWeight *previousPiece;
-		list<PieceWeight *> *pieceSet;		// 4J - was ArrayList
+		list<PieceWeight *> *pieceSet;
 		Level *m_level;
 
-        // these queues are used so that the addChildren calls are
-        // called in a random order
-		vector<StructurePiece *> pendingHouses;		// 4J - was ArrayList
-		vector<StructurePiece *> pendingRoads;		// 4J - was ArrayList
-		
+		// these queues are used so that the addChildren calls are called in a random order
+		vector<StructurePiece *> pendingHouses;
+		vector<StructurePiece *> pendingRoads;
+
+		StartPiece();
 		StartPiece(BiomeSource *biomeSource, int genDepth, Random *random, int west, int north, list<PieceWeight *> *pieceSet, int villageSize, Level *level); // 4J Added level param
 		virtual ~StartPiece();
-		
+
 		BiomeSource *getBiomeSource();
 
-    };
+	};
 
 public:
 	class VillageRoadPiece : public VillagePiece
 	{
-	protected :
+	protected:
+		VillageRoadPiece() {}
 		VillageRoadPiece(StartPiece *startPiece, int genDepth) : VillagePiece(startPiece, genDepth) {}
-    };
+	};
 
-    /**
-     * 
-     *
-     */
+	/**
+	* 
+	*
+	*/
 public:
 	class StraightRoad : public VillageRoadPiece
 	{
+	public:
+		static StructurePiece *Create() { return new StraightRoad(); }
+		virtual EStructurePiece GetType() { return eStructurePiece_StraightRoad; }
 
 	private:
 		static const int width = 3;
 		int length;
 	public:
+		StraightRoad();
 		StraightRoad(StartPiece *startPiece, int genDepth, Random *random, BoundingBox *stairsBox, int direction);
+
+	protected:
+		void addAdditonalSaveData(CompoundTag *tag);
+		void readAdditonalSaveData(CompoundTag *tag);
+
+	public:
 		virtual void addChildren(StructurePiece *startPiece, list<StructurePiece *> *pieces, Random *random);
 		static BoundingBox *findPieceBox(StartPiece *startPiece, list<StructurePiece *> *pieces, Random *random, int footX, int footY, int footZ, int direction);
 		virtual bool postProcess(Level *level, Random *random, BoundingBox *chunkBB);
-    };
+	};
 
-    /**
-     * 
-     *
-     */
+	/**
+	* 
+	*
+	*/
 public:
 	class SimpleHouse : public VillagePiece
 	{
+	public:
+		static StructurePiece *Create() { return new SimpleHouse(); }
+		virtual EStructurePiece GetType() { return eStructurePiece_SimpleHouse; }
+
 	private:
 		static const int width = 5;
 		static const int height = 6;
 		static const int depth = 5;
 
 	private:
-		int heightPosition;
-		const bool hasTerrace;
+		bool hasTerrace;
 
 	public:
+		SimpleHouse();
 		SimpleHouse(StartPiece *startPiece, int genDepth, Random *random, BoundingBox *stairsBox, int direction);
+
+	protected:
+		void addAdditonalSaveData(CompoundTag *tag);
+		void readAdditonalSaveData(CompoundTag *tag);
+
 	public:
 		static SimpleHouse *createPiece(StartPiece *startPiece, list<StructurePiece *> *pieces, Random *random, int footX, int footY, int footZ, int direction, int genDepth);
-    virtual bool postProcess(Level *level, Random *random, BoundingBox *chunkBB);
+		virtual bool postProcess(Level *level, Random *random, BoundingBox *chunkBB);
 	};
 
 public:
 	class SmallTemple : public VillagePiece
 	{
+	public:
+		static StructurePiece *Create() { return new SmallTemple(); }
+		virtual EStructurePiece GetType() { return eStructurePiece_SmallTemple; }
+
 	private:
 		static const int width = 5;
 		static const int height = 12;
@@ -189,6 +226,7 @@ public:
 		int heightPosition;
 
 	public:
+		SmallTemple();
 		SmallTemple(StartPiece *startPiece, int genDepth, Random *random, BoundingBox *stairsBox, int direction);
 
 		static SmallTemple *createPiece(StartPiece *startPiece, list<StructurePiece *> *pieces, Random *random, int footX, int footY, int footZ, int direction, int genDepth);
@@ -199,6 +237,10 @@ public:
 public:
 	class BookHouse : public VillagePiece
 	{
+	public:
+		static StructurePiece *Create() { return new BookHouse(); }
+		virtual EStructurePiece GetType() { return eStructurePiece_BookHouse; }
+
 	private:
 		static const int width = 9;
 		static const int height = 9;
@@ -207,6 +249,7 @@ public:
 		int heightPosition;
 
 	public:
+		BookHouse();
 		BookHouse(StartPiece *startPiece, int genDepth, Random *random, BoundingBox *stairsBox, int direction);
 
 		static BookHouse *createPiece(StartPiece *startPiece, list<StructurePiece *> *pieces, Random *random, int footX, int footY, int footZ, int direction, int genDepth);
@@ -214,37 +257,50 @@ public:
 		virtual int getVillagerProfession(int villagerNumber);
 	};
 
+public:
+	class SmallHut : public VillagePiece
+	{
 	public:
-		class SmallHut : public VillagePiece
-		{
+		static StructurePiece *Create() { return new SmallHut(); }
+		virtual EStructurePiece GetType() { return eStructurePiece_SmallHut; }
 
-		private:
-			static const int width = 4;
-			static const int height = 6;
-			static const int depth = 5;
 
-			int heightPosition;
-			const bool lowCeiling;
-			const int tablePlacement;
+	private:
+		static const int width = 4;
+		static const int height = 6;
+		static const int depth = 5;
 
-		public:
-			SmallHut(StartPiece *startPiece, int genDepth, Random *random, BoundingBox *stairsBox, int direction);
-			static SmallHut *createPiece(StartPiece *startPiece, list<StructurePiece *> *pieces, Random *random, int footX, int footY, int footZ, int direction, int genDepth);
-	        virtual bool postProcess(Level *level, Random *random, BoundingBox *chunkBB);
-    };
+		bool lowCeiling;
+		int tablePlacement;
+
+	public:
+		SmallHut();
+		SmallHut(StartPiece *startPiece, int genDepth, Random *random, BoundingBox *stairsBox, int direction);
+
+	protected:
+		virtual void addAdditonalSaveData(CompoundTag *tag);
+		virtual void readAdditonalSaveData(CompoundTag *tag);
+
+	public:
+		static SmallHut *createPiece(StartPiece *startPiece, list<StructurePiece *> *pieces, Random *random, int footX, int footY, int footZ, int direction, int genDepth);
+		virtual bool postProcess(Level *level, Random *random, BoundingBox *chunkBB);
+	};
 
 public:
 	class PigHouse : public VillagePiece
 	{
+	public:
+		static StructurePiece *Create() { return new PigHouse(); }
+		virtual EStructurePiece GetType() { return eStructurePiece_PigHouse; }
+
 
 	private:
 		static const int width = 9;
 		static const int height = 7;
 		static const int depth = 11;
 
-		int heightPosition;
-
 	public:
+		PigHouse();
 		PigHouse(StartPiece *startPiece, int genDepth, Random *random, BoundingBox *stairsBox, int direction);
 		static PigHouse *createPiece(StartPiece *startPiece, list<StructurePiece *> *pieces, Random *random, int footX, int footY, int footZ, int direction, int genDepth);
 		virtual bool postProcess(Level *level, Random *random, BoundingBox *chunkBB);
@@ -254,6 +310,10 @@ public:
 public:
 	class TwoRoomHouse : public VillagePiece
 	{
+	public:
+		static StructurePiece *Create() { return new TwoRoomHouse(); }
+		virtual EStructurePiece GetType() { return eStructurePiece_TwoRoomHouse; }
+
 	private:
 		static const int width = 9;
 		static const int height = 7;
@@ -262,21 +322,25 @@ public:
 		int heightPosition;
 
 	public:
+		TwoRoomHouse();
 		TwoRoomHouse(StartPiece *startPiece, int genDepth, Random *random, BoundingBox *stairsBox, int direction);
 		static TwoRoomHouse *createPiece(StartPiece *startPiece, list<StructurePiece *> *pieces, Random *random, int footX, int footY, int footZ, int direction, int genDepth);
 		virtual  bool postProcess(Level *level, Random *random, BoundingBox *chunkBB);
 	};
 
 public:
-    class Smithy : public VillagePiece
+	class Smithy : public VillagePiece
 	{
+	public:
+		static StructurePiece *Create() { return new Smithy(); }
+		virtual EStructurePiece GetType() { return eStructurePiece_Smithy; }
+
 
 	private:
 		static const int width = 10;
 		static const int height = 6;
 		static const int depth = 7;
 
-        int heightPosition;
 		bool hasPlacedChest;
 
 		static WeighedTreasureArray treasureItems;
@@ -284,22 +348,31 @@ public:
 	public:
 		static void staticCtor();
 
+		Smithy();
 		Smithy(StartPiece *startPiece, int genDepth, Random *random, BoundingBox *stairsBox, int direction);
-        static Smithy *createPiece(StartPiece *startPiece, list<StructurePiece *> *pieces, Random *random, int footX, int footY, int footZ, int direction, int genDepth);
-        virtual bool postProcess(Level *level, Random *random, BoundingBox *chunkBB);
+		static Smithy *createPiece(StartPiece *startPiece, list<StructurePiece *> *pieces, Random *random, int footX, int footY, int footZ, int direction, int genDepth);
+
+	protected:
+		void addAdditonalSaveData(CompoundTag *tag);
+		void readAdditonalSaveData(CompoundTag *tag);
+
+	public:
+		virtual bool postProcess(Level *level, Random *random, BoundingBox *chunkBB);
 		virtual int getVillagerProfession(int villagerNumber);
-    };
+	};
 
 public:
 	class Farmland : public VillagePiece
 	{
+	public:
+		static StructurePiece *Create() { return new Farmland(); }
+		virtual EStructurePiece GetType() { return eStructurePiece_Farmland; }
+
 
 	private:
 		static const int width = 7;
 		static const int height = 4;
 		static const int depth = 9;
-		
-		int heightPosition;
 
 		int cropsA;
 		int cropsB;
@@ -307,19 +380,30 @@ public:
 		int selectCrops(Random *random);
 
 	public:
+		Farmland();
 		Farmland(StartPiece *startPiece, int genDepth, Random *random, BoundingBox *stairsBox, int direction);
-        static Farmland *createPiece(StartPiece *startPiece, list<StructurePiece *> *pieces, Random *random, int footX, int footY, int footZ, int direction, int genDepth);
+
+	protected:
+		virtual void addAdditonalSaveData(CompoundTag *tag);
+		virtual void readAdditonalSaveData(CompoundTag *tag);
+
+	public:
+		static Farmland *createPiece(StartPiece *startPiece, list<StructurePiece *> *pieces, Random *random, int footX, int footY, int footZ, int direction, int genDepth);
 		virtual bool postProcess(Level *level, Random *random, BoundingBox *chunkBB);
-    };
+	};
 
 public:
 	class DoubleFarmland : public VillagePiece
 	{
+	public:
+		static StructurePiece *Create() { return new DoubleFarmland(); }
+		virtual EStructurePiece GetType() { return eStructurePiece_DoubleFarmland; }
+
 	private:
 		static const int width = 13;
 		static const int height = 4;
 		static const int depth = 9;
-		
+
 		int heightPosition;
 
 		int cropsA;
@@ -330,24 +414,36 @@ public:
 		int selectCrops(Random *random);
 
 	public:
+		DoubleFarmland();
 		DoubleFarmland(StartPiece *startPiece, int genDepth, Random *random, BoundingBox *stairsBox, int direction);
-        static DoubleFarmland *createPiece(StartPiece *startPiece, list<StructurePiece *> *pieces, Random *random, int footX, int footY, int footZ, int direction, int genDepth);
+
+	protected:
+		virtual void addAdditonalSaveData(CompoundTag *tag);
+		virtual void readAdditonalSaveData(CompoundTag *tag);
+
+	public:
+		static DoubleFarmland *createPiece(StartPiece *startPiece, list<StructurePiece *> *pieces, Random *random, int footX, int footY, int footZ, int direction, int genDepth);
 		virtual bool postProcess(Level *level, Random *random, BoundingBox *chunkBB);
-    };
+	};
 
 public:
 	class LightPost : public VillagePiece
 	{
+	public:
+		static StructurePiece *Create() { return new LightPost(); }
+		virtual EStructurePiece GetType() { return eStructurePiece_LightPost; }
+
 	private:
 		static const int width = 3;
-        static const int height = 4;
-        static const int depth = 2;
+		static const int height = 4;
+		static const int depth = 2;
 
-        int heightPosition;
+		int heightPosition;
 
 	public:
+		LightPost();
 		LightPost(StartPiece *startPiece, int genDepth, Random *random, BoundingBox *box, int direction);
-        static BoundingBox *findPieceBox(StartPiece *startPiece, list<StructurePiece *> *pieces, Random *random, int footX, int footY, int footZ, int direction);
-        virtual bool postProcess(Level *level, Random *random, BoundingBox *chunkBB);
-    };
+		static BoundingBox *findPieceBox(StartPiece *startPiece, list<StructurePiece *> *pieces, Random *random, int footX, int footY, int footZ, int direction);
+		virtual bool postProcess(Level *level, Random *random, BoundingBox *chunkBB);
+	};
 };

@@ -239,7 +239,8 @@ void OldChunkStorage::save(LevelChunk *lc, Level *level, DataOutputStream *dos)
 	dos->writeShort(SAVE_FILE_VERSION_NUMBER);
 	dos->writeInt(lc->x);
 	dos->writeInt(lc->z);
-	dos->writeLong(level->getTime());
+	dos->writeLong(level->getGameTime());
+	dos->writeLong(lc->inhabitedTime);
 
 	PIXBeginNamedEvent(0,"Getting block data");
 	lc->writeCompressedBlockData(dos);
@@ -283,7 +284,7 @@ void OldChunkStorage::save(LevelChunk *lc, Level *level, DataOutputStream *dos)
 	vector<TickNextTickData > *ticksInChunk = level->fetchTicksInChunk(lc, false);
 	if (ticksInChunk != NULL)
 	{
-		__int64 levelTime = level->getTime();
+		__int64 levelTime = level->getGameTime();
 
 		ListTag<CompoundTag> *tickTags = new ListTag<CompoundTag>();
 		for( int i = 0; i < ticksInChunk->size(); i++ )
@@ -313,7 +314,8 @@ void OldChunkStorage::save(LevelChunk *lc, Level *level, CompoundTag *tag)
 	level->checkSession();
 	tag->putInt(L"xPos", lc->x);
 	tag->putInt(L"zPos", lc->z);
-	tag->putLong(L"LastUpdate", level->getTime());
+	tag->putLong(L"LastUpdate", level->getGameTime());
+	tag->putLong(L"InhabitedTime", lc->inhabitedTime);
 	// 4J - changes here for new storage. Now have static storage for getting lighting data for block, data, and sky & block lighting. This
 	// wasn't required in the original version as we could just reference the information in the level itself, but with our new storage system
 	// the full  data doesn't normally exist & so getSkyLightData/getBlockLightData etc. need somewhere to output this data. Making this static so
@@ -372,7 +374,7 @@ void OldChunkStorage::save(LevelChunk *lc, Level *level, CompoundTag *tag)
 	vector<TickNextTickData > *ticksInChunk = level->fetchTicksInChunk(lc, false);
 	if (ticksInChunk != NULL)
 	{
-		__int64 levelTime = level->getTime();
+		__int64 levelTime = level->getGameTime();
 
 		ListTag<CompoundTag> *tickTags = new ListTag<CompoundTag>();
 		for( int i = 0; i < ticksInChunk->size(); i++ )
@@ -384,6 +386,7 @@ void OldChunkStorage::save(LevelChunk *lc, Level *level, CompoundTag *tag)
 			teTag->putInt(L"y", td.y);
 			teTag->putInt(L"z", td.z);
 			teTag->putInt(L"t", (int) (td.m_delay - levelTime));
+			teTag->putInt(L"p", td.priorityTilt);
 
 			tickTags->add(teTag);
 		}
@@ -428,12 +431,18 @@ void OldChunkStorage::loadEntities(LevelChunk *lc, Level *level, CompoundTag *ta
 
 LevelChunk *OldChunkStorage::load(Level *level, DataInputStream *dis)
 {
+	PIXBeginNamedEvent(0,"Loading chunk");
 	short version = dis->readShort();
 	int x = dis->readInt();
 	int z = dis->readInt();
 	int time = dis->readLong();
 
 	LevelChunk *levelChunk = new LevelChunk(level, x, z);
+
+	if (version >= SAVE_FILE_VERSION_CHUNK_INHABITED_TIME)
+	{
+		levelChunk->inhabitedTime = dis->readLong();
+	}
 
 	levelChunk->readCompressedBlockData(dis);
 	levelChunk->readCompressedDataData(dis);
@@ -451,7 +460,19 @@ LevelChunk *OldChunkStorage::load(Level *level, DataInputStream *dis)
 		levelChunk->terrainPopulated |= LevelChunk::sTerrainPostPostProcessed;
 	}
 
-	dis->readFully(levelChunk->biomes);
+#ifndef _CONTENT_PACKAGE
+	if(app.DebugSettingsOn() && app.GetGameSettingsDebugMask(ProfileManager.GetPrimaryPad())&(1L<<eDebugSetting_EnableBiomeOverride))
+	{
+		// Read the biome data from the stream, but don't use it
+		byteArray dummyBiomes(levelChunk->biomes.length);
+		dis->readFully(dummyBiomes);
+		delete [] dummyBiomes.data;
+	}
+	else
+#endif
+	{
+		dis->readFully(levelChunk->biomes);
+	}
 
 	CompoundTag *tag = NbtIo::read(dis);
 
@@ -459,6 +480,7 @@ LevelChunk *OldChunkStorage::load(Level *level, DataInputStream *dis)
 
 	if (tag->contains(L"TileTicks"))
 	{
+		PIXBeginNamedEvent(0,"Loading TileTicks");
 		ListTag<CompoundTag> *tileTicks = (ListTag<CompoundTag> *) tag->getList(L"TileTicks");
 
 		if (tileTicks != NULL)
@@ -467,12 +489,15 @@ LevelChunk *OldChunkStorage::load(Level *level, DataInputStream *dis)
 			{
 				CompoundTag *teTag = tileTicks->get(i);
 
-				level->forceAddTileTick(teTag->getInt(L"x"), teTag->getInt(L"y"), teTag->getInt(L"z"), teTag->getInt(L"i"), teTag->getInt(L"t"));
+				level->forceAddTileTick(teTag->getInt(L"x"), teTag->getInt(L"y"), teTag->getInt(L"z"), teTag->getInt(L"i"), teTag->getInt(L"t"), teTag->getInt(L"p"));
 			}
 		}
+		PIXEndNamedEvent();
 	}
 
 	delete tag;
+
+	PIXEndNamedEvent();
 
 	return levelChunk;
 }
@@ -556,9 +581,18 @@ LevelChunk *OldChunkStorage::load(Level *level, CompoundTag *tag)
 	}
 #endif
 
-	if (tag->contains(L"Biomes"))
+#ifndef _CONTENT_PACKAGE
+	if(app.DebugSettingsOn() && app.GetGameSettingsDebugMask(ProfileManager.GetPrimaryPad())&(1L<<eDebugSetting_EnableBiomeOverride))
 	{
-		levelChunk->setBiomes(tag->getByteArray(L"Biomes"));
+		// Do nothing
+	}
+	else
+#endif
+	{
+		if (tag->contains(L"Biomes"))
+		{
+			levelChunk->setBiomes(tag->getByteArray(L"Biomes"));
+		}
 	}
 
 	loadEntities(levelChunk, level, tag);
@@ -573,7 +607,7 @@ LevelChunk *OldChunkStorage::load(Level *level, CompoundTag *tag)
 			{
 				CompoundTag *teTag = tileTicks->get(i);
 
-				level->forceAddTileTick(teTag->getInt(L"x"), teTag->getInt(L"y"), teTag->getInt(L"z"), teTag->getInt(L"i"), teTag->getInt(L"t"));
+				level->forceAddTileTick(teTag->getInt(L"x"), teTag->getInt(L"y"), teTag->getInt(L"z"), teTag->getInt(L"i"), teTag->getInt(L"t"), teTag->getInt(L"p"));
 			}
 		}
 	}

@@ -4,7 +4,6 @@
 
 ResultContainer::ResultContainer() : Container()
 {
-	items = new ItemInstanceArray(1);
 }
 
 unsigned int ResultContainer::getContainerSize()
@@ -14,20 +13,30 @@ unsigned int ResultContainer::getContainerSize()
 
 shared_ptr<ItemInstance> ResultContainer::getItem(unsigned int slot)
 {
-	return (*items)[0];
+	return items[0];
 }
 
-int ResultContainer::getName()
+wstring ResultContainer::getName()
 {
-	return 0;
+	return L"";
+}
+
+wstring ResultContainer::getCustomName()
+{
+	return L"";
+}
+
+bool ResultContainer::hasCustomName()
+{
+	return false;
 }
 
 shared_ptr<ItemInstance> ResultContainer::removeItem(unsigned int slot, int count)
 {
-	if ((*items)[0] != NULL)
+	if (items[0] != NULL)
 	{
-		shared_ptr<ItemInstance> item = (*items)[0];
-		(*items)[0] = nullptr;
+		shared_ptr<ItemInstance> item = items[0];
+		items[0] = nullptr;
 		return item;
 	}
 	return nullptr;
@@ -35,10 +44,10 @@ shared_ptr<ItemInstance> ResultContainer::removeItem(unsigned int slot, int coun
 
 shared_ptr<ItemInstance> ResultContainer::removeItemNoUpdate(int slot)
 {
-	if ((*items)[0] != NULL)
+	if (items[0] != NULL)
 	{
-		shared_ptr<ItemInstance> item = (*items)[0];
-		(*items)[0] = nullptr;
+		shared_ptr<ItemInstance> item = items[0];
+		items[0] = nullptr;
 		return item;
 	}
 	return nullptr;
@@ -46,7 +55,7 @@ shared_ptr<ItemInstance> ResultContainer::removeItemNoUpdate(int slot)
 
 void ResultContainer::setItem(unsigned int slot, shared_ptr<ItemInstance> item)
 {
-	(*items)[0] = item;
+	items[0] = item;
 }
 
 int ResultContainer::getMaxStackSize()
@@ -59,6 +68,11 @@ void ResultContainer::setChanged()
 }
 
 bool ResultContainer::stillValid(shared_ptr<Player> player)
+{
+	return true;
+}
+
+bool ResultContainer::canPlaceItem(int slot, shared_ptr<ItemInstance> item)
 {
 	return true;
 }

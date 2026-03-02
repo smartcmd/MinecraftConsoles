@@ -14,10 +14,10 @@ UIScene_BrewingStandMenu::UIScene_BrewingStandMenu(int iPad, void *_initData, UI
 	m_progressBrewingArrow.init(L"",0,0,PotionBrewing::BREWING_TIME_SECONDS * SharedConstants::TICKS_PER_SECOND,0);
 	m_progressBrewingBubbles.init(L"",0,0,30,0);
 
-	m_labelBrewingStand.init( app.GetString(IDS_BREWING_STAND) );
-
 	BrewingScreenInput *initData = (BrewingScreenInput *)_initData;
 	m_brewingStand = initData->brewingStand;
+
+	m_labelBrewingStand.init( m_brewingStand->getName() );
 
 	Minecraft *pMinecraft = Minecraft::GetInstance();
 	if( pMinecraft->localgameModes[initData->iPad] != NULL )

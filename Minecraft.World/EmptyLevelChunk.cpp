@@ -26,7 +26,7 @@ bool EmptyLevelChunk::isAt(int x, int z)
 
 int EmptyLevelChunk::getHeightmap(int x, int z)
 {
-	 return 0;
+	return 0;
 }
 
 void EmptyLevelChunk::recalcBlockLights()
@@ -140,15 +140,20 @@ void EmptyLevelChunk::unload(bool unloadTileEntities)	// 4J - added parameter
 {
 }
 
+bool EmptyLevelChunk::containsPlayer()
+{
+	return false;
+}
+
 void EmptyLevelChunk::markUnsaved()
 {
 }
 
-void EmptyLevelChunk::getEntities(shared_ptr<Entity> except, AABB bb, vector<shared_ptr<Entity> > &es)
+void EmptyLevelChunk::getEntities(shared_ptr<Entity> except, AABB bb, vector<shared_ptr<Entity> > &es, EntitySelector *selector)
 {
 }
 
-void EmptyLevelChunk::getEntitiesOfClass(const type_info& ec, AABB bb, vector<shared_ptr<Entity> > &es)
+void EmptyLevelChunk::getEntitiesOfClass(const type_info& ec, AABB bb, vector<shared_ptr<Entity> > &es, EntitySelector *selector)
 {
 }
 
@@ -168,12 +173,12 @@ void EmptyLevelChunk::setBlocks(byteArray newBlocks, int sub)
 
 int EmptyLevelChunk::getBlocksAndData(byteArray data, int x0, int y0, int z0, int x1, int y1, int z1, int p, bool includeLighting/* = true*/)
 {
-    int xs = x1 - x0;
-    int ys = y1 - y0;
-    int zs = z1 - z0;
+	int xs = x1 - x0;
+	int ys = y1 - y0;
+	int zs = z1 - z0;
 
-    int s = xs * ys * zs;
-    int len;
+	int s = xs * ys * zs;
+	int len;
 	if( includeLighting )
 	{
 		len = s + s / 2 * 3;
@@ -184,20 +189,20 @@ int EmptyLevelChunk::getBlocksAndData(byteArray data, int x0, int y0, int z0, in
 	}
 
 
-    Arrays::fill(data, p, p + len, (byte) 0);
-    return len;
+	Arrays::fill(data, p, p + len, (byte) 0);
+	return len;
 }
 
 int EmptyLevelChunk::setBlocksAndData(byteArray data, int x0, int y0, int z0, int x1, int y1, int z1, int p, bool includeLighting/* = true*/)
 {
-    int xs = x1 - x0;
-    int ys = y1 - y0;
-    int zs = z1 - z0;
+	int xs = x1 - x0;
+	int ys = y1 - y0;
+	int zs = z1 - z0;
 
-    int s = xs * ys * zs;
+	int s = xs * ys * zs;
 	if( includeLighting )
 	{
-	    return s + s / 2 * 3;
+		return s + s / 2 * 3;
 	}
 	else
 	{

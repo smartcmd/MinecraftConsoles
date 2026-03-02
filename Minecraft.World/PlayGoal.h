@@ -6,13 +6,13 @@ class PlayGoal : public Goal
 {
 private:
 	Villager *mob;
-	weak_ptr<Mob> followFriend;
-	float speed;
+	weak_ptr<LivingEntity> followFriend;
+	double speedModifier;
 	double wantedX, wantedY, wantedZ;
 	int playTime;
 
 public:
-	PlayGoal(Villager *mob, float speed);
+	PlayGoal(Villager *mob, double speedModifier);
 
 	virtual bool canUse();
 	virtual bool canContinueToUse();

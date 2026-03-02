@@ -33,12 +33,12 @@ void ReedTile::tick(Level *level, int x, int y, int z, Random* random)
 			int age = level->getData(x, y, z);
 			if (age == 15) 
 			{
-				level->setTile(x, y + 1, z, id);
-				level->setData(x, y, z, 0);
+				level->setTileAndUpdate(x, y + 1, z, id);
+				level->setData(x, y, z, 0, Tile::UPDATE_NONE);
 			} 
 			else 
 			{
-				level->setData(x, y, z, age + 1);
+				level->setData(x, y, z, age + 1, Tile::UPDATE_NONE);
 			}
 		}
 	}
@@ -66,8 +66,8 @@ const void ReedTile::checkAlive(Level *level, int x, int y, int z)
 {
 	if (!canSurvive(level, x, y, z)) 
 	{
-		this->spawnResources(level, x, y, z, level->getData(x, y, z), 0);
-		level->setTile(x, y, z, 0);
+		spawnResources(level, x, y, z, level->getData(x, y, z), 0);
+		level->removeTile(x, y, z);
 	}
 }
 
@@ -113,5 +113,5 @@ int ReedTile::cloneTileId(Level *level, int x, int y, int z)
 
 bool ReedTile::shouldTileTick(Level *level, int x,int y,int z)
 {
-    return level->isEmptyTile(x, y + 1, z);
+	return level->isEmptyTile(x, y + 1, z);
 }

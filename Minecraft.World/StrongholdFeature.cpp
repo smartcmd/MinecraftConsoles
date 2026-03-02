@@ -4,8 +4,13 @@
 #include "net.minecraft.world.level.h"
 #include "net.minecraft.world.level.biome.h"
 #include "net.minecraft.world.level.dimension.h"
+#include "Mth.h"
 #include "FileHeader.h"
 #include "JavaMath.h"
+
+const wstring StrongholdFeature::OPTION_DISTANCE = L"distance";
+const wstring StrongholdFeature::OPTION_COUNT = L"count";
+const wstring StrongholdFeature::OPTION_SPREAD = L"spread";
 
 vector<Biome *> StrongholdFeature::allowedBiomes;
 
@@ -26,33 +31,69 @@ void StrongholdFeature::staticCtor()
 	allowedBiomes.push_back(Biome::jungleHills);
 };
 
-
-StrongholdFeature::StrongholdFeature() : StructureFeature()
+void StrongholdFeature::_init()
 {
+	distance = 32;
+	spread = 3;
+
 	// 4J added initialisers
-    for (int i = 0; i < strongholdPos_length; i++)
+	for (int i = 0; i < strongholdPos_length; i++)
 	{
 		strongholdPos[i] = NULL;
 	}
 	isSpotSelected = false;
 }
 
+StrongholdFeature::StrongholdFeature() : StructureFeature()
+{
+	_init();
+}
+
+StrongholdFeature::StrongholdFeature(unordered_map<wstring, wstring> options)
+{
+	_init();
+
+	for (AUTO_VAR(it, options.begin()); it != options.end(); ++it)
+	{
+		if (it->first.compare(OPTION_DISTANCE) == 0)
+		{
+			distance = Mth::getDouble(it->second, distance, 1);
+		}
+		else if (it->first.compare(OPTION_COUNT) == 0)
+		{
+			// 4J-JEV: Removed, we only have the one stronghold.
+			//strongholdPos = new ChunkPos[ Mth::getInt(it->second, strongholdPos_length, 1) ];
+			assert(false);
+		}
+		else if (it->first.compare(OPTION_SPREAD) == 0)
+		{
+			spread = Mth::getInt(it->second, spread, 1);
+		}
+	}
+}
+
 StrongholdFeature::~StrongholdFeature()
 {
-    for (int i = 0; i < strongholdPos_length; i++)
+	for (int i = 0; i < strongholdPos_length; i++)
 	{
 		delete strongholdPos[i];
 	}
 }
 
+wstring StrongholdFeature::getFeatureName()
+{
+	return LargeFeature::STRONGHOLD;
+}
+
 bool StrongholdFeature::isFeatureChunk(int x, int z,bool bIsSuperflat)
 {
-    if (!isSpotSelected)
+	if (!isSpotSelected)
 	{
 		Random random;
 
-        random.setSeed(level->getSeed());
+		random.setSeed(level->getSeed());
 		double angle = random.nextDouble() * PI * 2.0;
+		int circle = 1;
 
 		// 4J Stu - Changed so that we keep trying more until we have found somewhere in the world to place a stronghold
 		bool hasFoundValidPos = false;
@@ -71,7 +112,7 @@ bool StrongholdFeature::isFeatureChunk(int x, int z,bool bIsSuperflat)
 				else
 				{
 					// Original Java
-					dist = (1.25 + random.nextDouble()) * 32.0;
+					dist = (1.25 * circle + random.nextDouble()) * (distance * circle);
 				}
 #else
 				// 4J Stu - Design change: Original spawns at *32 chunks rather than *10 chunks from (0,0) but that is outside our world
@@ -118,10 +159,6 @@ bool StrongholdFeature::isFeatureChunk(int x, int z,bool bIsSuperflat)
 					// 4J Added
 					hasFoundValidPos = true;
 					delete position;
-				} 
-				else 
-				{
-					app.DebugPrintf("Placed stronghold in INVALID biome at (%d, %d)\n", selectedX, selectedZ);
 				}
 
 				delete strongholdPos[i];
@@ -135,7 +172,7 @@ bool StrongholdFeature::isFeatureChunk(int x, int z,bool bIsSuperflat)
 
 			// 4J Stu - Randomise the angles for retries as well
 #ifdef _LARGE_WORLDS
-			angle = random.nextDouble() * PI * 2.0;
+			angle = random.nextDouble() * PI * 2.0 * circle / (double) spread;
 #endif
 		} 
 		while(!hasFoundValidPos && findAttempts < MAX_STRONGHOLD_ATTEMPTS);
@@ -148,8 +185,8 @@ bool StrongholdFeature::isFeatureChunk(int x, int z,bool bIsSuperflat)
 		}
 
 		isSpotSelected = true;
-    }
-	
+	}
+
 	for (int i = 0; i < strongholdPos_length; i++)
 	{
 		bool forcePlacement = false;
@@ -160,65 +197,70 @@ bool StrongholdFeature::isFeatureChunk(int x, int z,bool bIsSuperflat)
 		}
 
 		ChunkPos *pos = strongholdPos[i];
-        if (forcePlacement || (pos && x == pos->x && z == pos->z) )
+		if (forcePlacement || (pos && x == pos->x && z == pos->z) )
 		{
-            return true;
-        }
+			return true;
+		}
 	}
-    return false;
+	return false;
 }
 
 vector<TilePos> *StrongholdFeature::getGuesstimatedFeaturePositions()
 {
-    vector<TilePos> *positions = new vector<TilePos>();
+	vector<TilePos> *positions = new vector<TilePos>();
 	for( int i = 0; i < strongholdPos_length; i++ )
 	{
 		ChunkPos *chunkPos = strongholdPos[i];
-        if (chunkPos != NULL)
+		if (chunkPos != NULL)
 		{
 			positions->push_back(chunkPos->getMiddleBlockPosition(64));
-        }
-    }
-    return positions;
+		}
+	}
+	return positions;
 }
 
 StructureStart *StrongholdFeature::createStructureStart(int x, int z)
 {
 
-    StrongholdStart *start = new StrongholdStart(level, random, x, z);
+	StrongholdStart *start = new StrongholdStart(level, random, x, z);
 
 	// 4J - front() was get(0)
 	while (start->getPieces()->empty() || ((StrongholdPieces::StartPiece *) start->getPieces()->front())->portalRoomPiece == NULL)
 	{
 		delete start;
-        // regenerate stronghold without changing seed
-        start = new StrongholdStart(level, random, x, z);
-    }
+		// regenerate stronghold without changing seed
+		start = new StrongholdStart(level, random, x, z);
+	}
 
-    return start;
+	return start;
 
-    // System.out.println("Creating stronghold at (" + x + ", " + z + ")");
-   // return new StrongholdStart(level, random, x, z);
+	// System.out.println("Creating stronghold at (" + x + ", " + z + ")");
+	// return new StrongholdStart(level, random, x, z);
 }
 
-StrongholdFeature::StrongholdStart::StrongholdStart(Level *level, Random *random, int chunkX, int chunkZ) : StructureStart()
+StrongholdFeature::StrongholdStart::StrongholdStart()
 {
-    StrongholdPieces::resetPieces();
+	// for reflection
+}
 
-    StrongholdPieces::StartPiece *startRoom = new StrongholdPieces::StartPiece(0, random, (chunkX << 4) + 2, (chunkZ << 4) + 2, level);
-    pieces.push_back(startRoom);
-    startRoom->addChildren(startRoom, &pieces, random);
+StrongholdFeature::StrongholdStart::StrongholdStart(Level *level, Random *random, int chunkX, int chunkZ) : StructureStart(chunkX, chunkZ)
+{
+	StrongholdPieces::resetPieces();
 
-    vector<StructurePiece *> *pendingChildren = &startRoom->pendingChildren;
-    while (!pendingChildren->empty())
+	StrongholdPieces::StartPiece *startRoom = new StrongholdPieces::StartPiece(0, random, (chunkX << 4) + 2, (chunkZ << 4) + 2, level);
+	pieces.push_back(startRoom);
+	startRoom->addChildren(startRoom, &pieces, random);
+
+	vector<StructurePiece *> *pendingChildren = &startRoom->pendingChildren;
+	while (!pendingChildren->empty())
 	{
-        int pos = random->nextInt((int)pendingChildren->size());
+		int pos = random->nextInt((int)pendingChildren->size());
 		AUTO_VAR(it, pendingChildren->begin() + pos);
 		StructurePiece *structurePiece = *it;
 		pendingChildren->erase(it);
-        structurePiece->addChildren(startRoom, &pieces, random);
-    }
+		structurePiece->addChildren(startRoom, &pieces, random);
+	}
 
-    calculateBoundingBox();
-    moveBelowSeaLevel(level, random, 10);
+	calculateBoundingBox();
+	moveBelowSeaLevel(level, random, 10);
 }

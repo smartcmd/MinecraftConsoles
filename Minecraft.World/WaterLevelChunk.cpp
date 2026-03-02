@@ -94,6 +94,11 @@ void WaterLevelChunk::unload(bool unloadTileEntities)	// 4J - added parameter
 {
 }
 
+bool WaterLevelChunk::containsPlayer()
+{
+	return false;
+}
+
 void WaterLevelChunk::markUnsaved()
 {
 }

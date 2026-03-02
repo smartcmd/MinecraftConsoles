@@ -8,7 +8,7 @@
 #include "BasicTypeContainers.h"
 #include "Village.h"
 
-Village::Aggressor::Aggressor(shared_ptr<Mob> mob, int timeStamp)
+Village::Aggressor::Aggressor(shared_ptr<LivingEntity> mob, int timeStamp)
 {
 	this->mob = mob;
 	this->timeStamp = timeStamp;
@@ -248,7 +248,7 @@ bool Village::canRemove()
 	return doorInfos.empty();
 }
 
-void Village::addAggressor(shared_ptr<Mob> mob)
+void Village::addAggressor(shared_ptr<LivingEntity> mob)
 {
 	//for (Aggressor a : aggressors)
 	for(AUTO_VAR(it, aggressors.begin()); it != aggressors.end(); ++it)
@@ -263,7 +263,7 @@ void Village::addAggressor(shared_ptr<Mob> mob)
 	aggressors.push_back(new Aggressor(mob, _tick));
 }
 
-shared_ptr<Mob> Village::getClosestAggressor(shared_ptr<Mob> from)
+shared_ptr<LivingEntity> Village::getClosestAggressor(shared_ptr<LivingEntity> from)
 {
 	double closestSqr = Double::MAX_VALUE;
 	Aggressor *closest = NULL;
@@ -279,7 +279,7 @@ shared_ptr<Mob> Village::getClosestAggressor(shared_ptr<Mob> from)
 	return closest != NULL ? closest->mob : nullptr;
 }
 
-shared_ptr<Player> Village::getClosestBadStandingPlayer(shared_ptr<Mob> from) // 4J Stu - Should be LivingEntity when we add that
+shared_ptr<Player> Village::getClosestBadStandingPlayer(shared_ptr<LivingEntity> from)
 {
 	double closestSqr = Double::MAX_VALUE;
 	shared_ptr<Player> closest = nullptr;

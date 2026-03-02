@@ -15,4 +15,5 @@ public:
 	EnchantmentContainer(EnchantmentMenu *menu);
 	virtual int getMaxStackSize();
 	virtual void setChanged();
+	virtual bool canPlaceItem(int slot, shared_ptr<ItemInstance> item);
 };

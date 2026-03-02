@@ -30,6 +30,33 @@ void GoalSelector::addGoal(int prio, Goal *goal, bool canDeletePointer /*= true*
 	goals.push_back(new InternalGoal(prio, goal, canDeletePointer));
 }
 
+void GoalSelector::removeGoal(Goal *toRemove)
+{
+	for(AUTO_VAR(it, goals.begin()); it != goals.end(); )
+	{
+		InternalGoal *ig = *it;
+		Goal *goal = ig->goal;
+
+		if (goal == toRemove)
+		{
+			AUTO_VAR(it2, find(usingGoals.begin(), usingGoals.end(), ig) );
+			if (it2 != usingGoals.end())
+			{
+				goal->stop();
+				usingGoals.erase(it2);
+			}
+
+			if(ig->canDeletePointer) delete ig->goal;
+			delete ig;
+			it = goals.erase(it);
+		}
+		else
+		{
+			++it;
+		}
+	}
+}
+
 void GoalSelector::tick()
 {
 	vector<InternalGoal *> toStart;

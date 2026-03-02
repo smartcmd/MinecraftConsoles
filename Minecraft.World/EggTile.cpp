@@ -10,12 +10,12 @@ EggTile::EggTile(int id) : Tile(id, Material::egg, isSolidRender())
 
 void EggTile::onPlace(Level *level, int x, int y, int z)
 {
-	level->addToTickNextTick(x, y, z, id, getTickDelay());
+	level->addToTickNextTick(x, y, z, id, getTickDelay(level));
 }
 
 void EggTile::neighborChanged(Level *level, int x, int y, int z, int type)
 {
-	level->addToTickNextTick(x, y, z, id, getTickDelay());
+	level->addToTickNextTick(x, y, z, id, getTickDelay(level));
 }
 
 void EggTile::tick(Level *level, int x, int y, int z, Random *random)
@@ -30,12 +30,12 @@ void EggTile::checkSlide(Level *level, int x, int y, int z)
 		int r = 32;
 		if (HeavyTile::instaFall || !level->hasChunksAt(x - r, y - r, z - r, x + r, y + r, z + r))
 		{
-			level->setTile(x, y, z, 0);
+			level->removeTile(x, y, z);
 			while (HeavyTile::isFree(level, x, y - 1, z) && y > 0)
 				y--;
 			if (y > 0)
 			{
-				level->setTile(x, y, z, id);
+				level->setTileAndData(x, y, z, id, 0, Tile::UPDATE_CLIENTS);
 			}
 		}
 		else
@@ -50,8 +50,8 @@ bool EggTile::use(Level *level, int x, int y, int z, shared_ptr<Player> player, 
 {
 	if(soundOnly) return false;
 
-    teleport(level, x, y, z);
-    return true;
+	teleport(level, x, y, z);
+	return true;
 }
 
 void EggTile::attack(Level *level, int x, int y, int z, shared_ptr<Player> player)
@@ -74,8 +74,8 @@ void EggTile::teleport(Level *level, int x, int y, int z)
 			// Don't set tiles on client, and don't create particles on the server (matches later change in Java)
 			if(!level->isClientSide)
 			{
-				level->setTileAndData(xt, yt, zt, id, level->getData(x, y, z));
-				level->setTile(x, y, z, 0);
+				level->setTileAndData(xt, yt, zt, id, level->getData(x, y, z), Tile::UPDATE_CLIENTS);
+				level->removeTile(x, y, z);
 
 				// 4J Stu - The PC version is wrong as the particles calculated on the client side will point towards a different
 				// location to the one where the egg has actually moved. As the deltas are all small we can pack them into an int
@@ -90,31 +90,31 @@ void EggTile::teleport(Level *level, int x, int y, int z)
 
 			// 4J Stu - This code will not work correctly on the client as it will show the particles going in the wrong direction
 			// and only for the player who attacks the egg
-		//	else
-		//	{
-		//		int count = 128;
-		//		for (int j = 0; j < count; j++)
-		//		{
-		//			double d = level->random->nextDouble(); // j < count / 2 ? 0 :
-		//// 1;
-		//			float xa = (level->random->nextFloat() - 0.5f) * 0.2f;
-		//			float ya = (level->random->nextFloat() - 0.5f) * 0.2f;
-		//			float za = (level->random->nextFloat() - 0.5f) * 0.2f;
+			//	else
+			//	{
+			//		int count = 128;
+			//		for (int j = 0; j < count; j++)
+			//		{
+			//			double d = level->random->nextDouble(); // j < count / 2 ? 0 :
+			//// 1;
+			//			float xa = (level->random->nextFloat() - 0.5f) * 0.2f;
+			//			float ya = (level->random->nextFloat() - 0.5f) * 0.2f;
+			//			float za = (level->random->nextFloat() - 0.5f) * 0.2f;
 
-		//			double _x = xt + (x - xt) * d + (level->random->nextDouble() - 0.5) * 1 + 0.5f;
-		//			double _y = yt + (y - yt) * d + level->random->nextDouble() * 1 - 0.5f;
-		//			double _z = zt + (z - zt) * d + (level->random->nextDouble() - 0.5) * 1 + 0.5f;
-		//			level->addParticle(eParticleType_ender, _x, _y, _z, xa, ya, za);
-		//		}
-		//	}
+			//			double _x = xt + (x - xt) * d + (level->random->nextDouble() - 0.5) * 1 + 0.5f;
+			//			double _y = yt + (y - yt) * d + level->random->nextDouble() * 1 - 0.5f;
+			//			double _z = zt + (z - zt) * d + (level->random->nextDouble() - 0.5) * 1 + 0.5f;
+			//			level->addParticle(eParticleType_ender, _x, _y, _z, xa, ya, za);
+			//		}
+			//	}
 			return;
 		}
 	}
 }
 
-int EggTile::getTickDelay()
+int EggTile::getTickDelay(Level *level)
 {
-	return 3;
+	return 5;
 }
 
 bool EggTile::blocksLight()
@@ -130,6 +130,11 @@ bool EggTile::isSolidRender(bool isServerLevel)
 bool EggTile::isCubeShaped()
 {
 	return false;
+}
+
+bool EggTile::shouldRenderFace(LevelSource *level, int x, int y, int z, int face) 
+{
+	return true;
 }
 
 int EggTile::getRenderShape()
@@ -165,9 +170,4 @@ void EggTile::generateTeleportParticles(Level *level,int xt,int yt, int zt,int d
 		double _z = zt + deltaZ * d + (level->random->nextDouble() - 0.5) * 1 + 0.5f;
 		level->addParticle(eParticleType_ender, _x, _y, _z, xa, ya, za);
 	}
-}
-
-bool EggTile::shouldRenderFace(LevelSource *level, int x, int y, int z, int face) 
-{
-	return true;
 }

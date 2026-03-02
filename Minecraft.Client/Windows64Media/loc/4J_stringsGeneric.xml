@@ -178,13 +178,12 @@
 	<data name="IDS_PRO_NOPROFILEOPTIONS_TEXT">
 		<value>Saving of settings to gamer profile has failed.</value>
 	</data>	
-
 	<data name="IDS_PRO_GUESTPROFILE_TITLE">
-		<value>Guest Gamer Profile</value>
+		<value>Guest Player</value>
 	</data>	
 
 	<data name="IDS_PRO_GUESTPROFILE_TEXT">
-		<value>Guest gamer profile cannot access this feature. Please use a different gamer profile.</value>
+		<value>Guest players cannot access the "PSN".</value>
 	</data>	
 
 	<data name="IDS_STO_SAVING_SHORT">
@@ -192,13 +191,12 @@
 	</data>	
 
 	<data name="IDS_STO_SAVING_LONG">
-		<value>Saving content. Please don't turn off your console.</value>
+		<value>Saving content. Please don't turn off your system.</value>
 	</data>	
 
 	<data name="IDS_PRO_UNLOCKGAME_TITLE">
 		<value>Unlock Full Game</value>
 	</data>	
-
 	<data name="IDS_PRO_UNLOCKGAME_TEXT">
 		<value>This is the Minecraft trial game. If you had the full game, you would just have earned an achievement! 
 Unlock the full game to experience the joy of Minecraft and to play with your friends across the globe through Xbox LIVE.

@@ -68,6 +68,8 @@ public:
 	DWORD getLicenseMask( ) { return m_dwLicenseMask; }
 	
 	wstring getName() { return m_packName; }
+
+	void UpdateLanguage();
 #ifdef _XBOX_ONE
 	wstring getPurchaseOfferId() { return m_wsProductId; }
 #else

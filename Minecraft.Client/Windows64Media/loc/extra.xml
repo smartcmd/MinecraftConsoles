@@ -1,0 +1,14 @@
+﻿<root>
+	<data name="IDS_INCREASE_WORLD_SIZE">
+		<value>Increase World Size</value>
+	</data>	
+	<data name="IDS_INCREASE_WORLD_SIZE_OVERWRITE_EDGES">
+		<value>Overwrite Edges</value>
+	</data>	
+	<data name="IDS_GAMEOPTION_INCREASE_WORLD_SIZE">
+		<value>Increase World Size</value>
+	</data>	
+	<data name="IDS_GAMEOPTION_INCREASE_WORLD_SIZE_OVERWRITE_EDGES">
+		<value>Overwrite Edges</value>
+	</data>	
+</root>

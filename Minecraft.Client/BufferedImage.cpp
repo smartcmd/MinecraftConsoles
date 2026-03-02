@@ -162,7 +162,7 @@ BufferedImage::BufferedImage(const wstring& File, bool filenameHasExtension /*=f
 
 		const char *pchTextureName=wstringtofilename(name);
 
-#ifdef _DEBUG
+#ifndef _CONTENT_PACKAGE
 		app.DebugPrintf("\n--- Loading TEXTURE - %s\n\n",pchTextureName);
 #endif
 

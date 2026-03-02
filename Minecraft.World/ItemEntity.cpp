@@ -94,7 +94,7 @@ void ItemEntity::tick()
 			xd = (random->nextFloat() - random->nextFloat()) * 0.2f;
 			zd = (random->nextFloat() - random->nextFloat()) * 0.2f;
 			MemSect(31);
-			level->playSound(shared_from_this(), eSoundType_RANDOM_FIZZ, 0.4f, 2.0f + random->nextFloat() * 0.4f);
+			playSound(eSoundType_RANDOM_FIZZ, 0.4f, 2.0f + random->nextFloat() * 0.4f);
 			MemSect(0);
 		}
 
@@ -184,13 +184,15 @@ void ItemEntity::burn(int dmg)
 }
 
 
-bool ItemEntity::hurt(DamageSource *source, int damage)
+bool ItemEntity::hurt(DamageSource *source, float damage)
 {
 	// 4J - added next line: found whilst debugging an issue with item entities getting into a bad state when being created by a cactus, since entities insides cactuses get hurt
 	// and therefore depending on the timing of things they could get removed from the client when they weren't supposed to be. Are there really any cases were we would want
 	// an itemEntity to be locally hurt?
-	if (level->isClientSide ) return false;		
+	if (level->isClientSide ) return false;	
 
+	if (isInvulnerable()) return false;
+	if (getItem() != NULL && getItem()->id == Item::netherStar_Id && source->isExplosion()) return false;
 	markHurt();
 	health -= damage;
 	if (health <= 0)
@@ -254,7 +256,7 @@ void ItemEntity::playerTouch(shared_ptr<Player> player)
 		if (item->id == Item::blazeRod_Id) 
 			player->awardStat(GenericStats::blazeRod(), GenericStats::param_blazeRod());
 
-		level->playSound(shared_from_this(), eSoundType_RANDOM_POP, 0.2f, ((random->nextFloat() - random->nextFloat()) * 0.7f + 1.0f) * 2.0f);
+		playSound(eSoundType_RANDOM_POP, 0.2f, ((random->nextFloat() - random->nextFloat()) * 0.7f + 1.0f) * 2.0f);
 		player->take(shared_from_this(), orgCount);
 		//            System.out.println(item.count + ", " + orgCount);
 		if (item->count <= 0) remove();
@@ -265,6 +267,13 @@ wstring ItemEntity::getAName()
 {
 	return L"";//L"item." + getItem()->getDescriptionId();
 	//return I18n.get("item." + item.getDescriptionId());
+}
+
+void ItemEntity::changeDimension(int i)
+{
+	Entity::changeDimension(i);
+
+	if (!level->isClientSide) mergeWithNeighbours();
 }
 
 shared_ptr<ItemInstance> ItemEntity::getItem()
@@ -278,7 +287,7 @@ shared_ptr<ItemInstance> ItemEntity::getItem()
 			app.DebugPrintf("Item entity %d has no item?!\n", entityId);
 			//level.getLogger().severe("Item entity " + entityId + " has no item?!");
 		}
-		return shared_ptr<ItemInstance>(new ItemInstance(Tile::rock));
+		return shared_ptr<ItemInstance>(new ItemInstance(Tile::stone));
 	}
 
 	return result;

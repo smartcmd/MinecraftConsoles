@@ -38,5 +38,5 @@ protected:
 public:
 	virtual float getShadowHeightOffs();
 	virtual bool isPickable();
-	virtual bool hurt(DamageSource *source, int damage);
+	virtual bool hurt(DamageSource *source, float damage);
 };

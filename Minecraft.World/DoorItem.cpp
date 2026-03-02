@@ -28,7 +28,7 @@ bool DoorItem::useOn(shared_ptr<ItemInstance> instance, shared_ptr<Player> playe
 	if (material == Material::wood) tile = Tile::door_wood;
 	else tile = Tile::door_iron;
 
-	if (!player->mayBuild(x, y, z) || !player->mayBuild(x, y + 1, z)) return false;
+	if (!player->mayUseItemAt(x, y, z, face, instance) || !player->mayUseItemAt(x, y + 1, z, face, instance)) return false;
 	if (!tile->mayPlace(level, x, y, z)) return false;
 
 	// 4J-PB - Adding a test only version to allow tooltips to be displayed
@@ -65,10 +65,8 @@ void DoorItem::place(Level *level, int x, int y, int z, int dir, Tile *tile)
 	if (doorLeft && !doorRight) flip = true;
 	else if (solidRight > solidLeft) flip = true;
 
-	level->noNeighborUpdate = true;
-	level->setTileAndData(x, y, z, tile->id, dir);
-	level->setTileAndData(x, y + 1, z, tile->id, 8 | (flip ? 1 : 0));
-	level->noNeighborUpdate = false;
+	level->setTileAndData(x, y, z, tile->id, dir, Tile::UPDATE_CLIENTS);
+	level->setTileAndData(x, y + 1, z, tile->id, 8 | (flip ? 1 : 0), Tile::UPDATE_CLIENTS);
 	level->updateNeighborsAt(x, y, z, tile->id);
 	level->updateNeighborsAt(x, y + 1, z, tile->id);
 }

@@ -201,6 +201,10 @@ wchar_t *ColourTable::ColourTableElements[eMinecraftColour_COUNT] =
 	L"Effect_Hunger",
 	L"Effect_Weakness",
 	L"Effect_Poison",
+	L"Effect_Wither",
+	L"Effect_HealthBoost",
+	L"Effect_Absorption",
+	L"Effect_Saturation",
 
 	L"Potion_BaseColour",
 
@@ -246,6 +250,12 @@ wchar_t *ColourTable::ColourTableElements[eMinecraftColour_COUNT] =
 	L"Mob_Ocelot_Colour2",
 	L"Mob_Villager_Colour1",
 	L"Mob_Villager_Colour2",
+	L"Mob_Bat_Colour1",
+	L"Mob_Bat_Colour2",
+	L"Mob_Witch_Colour1",
+	L"Mob_Witch_Colour2",
+	L"Mob_Horse_Colour1",
+	L"Mob_Horse_Colour2",
 
 	L"Armour_Default_Leather_Colour",
 	L"Under_Water_Clear_Colour",
@@ -262,6 +272,11 @@ wchar_t *ColourTable::ColourTableElements[eMinecraftColour_COUNT] =
 
 	L"Sign_Text",
 	L"Map_Text",
+
+	L"Leash_Light_Colour",
+	L"Leash_Dark_Colour",
+
+	L"Fire_Overlay",
 	
 	L"HTMLColor_0",
 	L"HTMLColor_1",

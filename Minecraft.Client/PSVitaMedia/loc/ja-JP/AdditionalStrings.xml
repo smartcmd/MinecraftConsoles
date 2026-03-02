@@ -7,7 +7,7 @@
 		<value>隠す</value>
 	</data>
 	<data name="IDS_GAMENAME">
-		<value>Minecraft: PlayStation(R)3 Edition</value>
+		<value>Minecraft: "PlayStation 3" Edition</value>
 	</data>
 	<data name="IDS_OPTIONSFILE">
 		<value>オプション</value>
@@ -48,6 +48,12 @@
 	<data name="IDS_CORRUPT_OPTIONS">
 		<value>オプションファイルが破損しているため、削除する必要があります</value>
 	</data>
+	<data name="IDS_CORRUPT_OPTIONS_DELETE">
+		<value>オプションファイルを削除</value>
+	</data>
+	<data name="IDS_CORRUPT_OPTIONS_RETRY">
+		<value>オプションファイルのロードを再試行</value>
+	</data>
 	<data name="IDS_CORRUPT_SAVECACHE">
 		<value>保存したキャッシュファイルが破損しているため、削除する必要があります</value>
 	</data>
@@ -75,6 +81,9 @@
 	<data name="IDS_CONTENT_RESTRICTION_MULTIPLAYER">
 		<value>サブアカウントの利用制限を受けているプレイヤーがいるため、Sony Entertainment Networkアカウントのオンラインサービスが無効になっています。</value>
 	</data>
+	<data name="IDS_CONTENT_RESTRICTION_PATCH_AVAILABLE">
+		<value>ゲームのアップデートが利用可能なため、オンライン機能が無効になっています。</value>
+	</data>
 	<data name="IDS_NO_DLCCATEGORIES">
 		<value>現在、このタイトルでダウンロードできるコンテンツはありません</value>
 	</data>
@@ -82,9 +91,6 @@
 		<value>招待</value>
 	</data>
 	<data name="IDS_INVITATION_BODY">
-		<value>さあ、今すぐ Minecraft: PlayStation(R)Vita Edition に参加してみよう!</value>
-	</data>
-	<data name="IDS_CONTENT_RESTRICTION_PATCH_AVAILABLE">
-		<value>ゲームのアップデートが利用可能なため、オンライン機能が無効になっています。</value>
+		<value>さあ、今すぐ Minecraft: "PlayStation Vita" Edition に参加してみよう!</value>
 	</data>
 </root>

@@ -191,7 +191,8 @@ DLCFile *DLCPack::addFile(DLCManager::EDLCType type, const wstring &path)
 	{
 	case DLCManager::e_DLCType_Skin:
 		{
-			std::vector<std::wstring> splitPath = stringSplit(path,L'/');
+			wstring newPath = replaceAll(path, L"\\", L"/");
+			std::vector<std::wstring> splitPath = stringSplit(newPath,L'/');
 			wstring strippedPath = splitPath.back();
 
 			newFile = new DLCSkinFile(strippedPath);
@@ -211,7 +212,8 @@ DLCFile *DLCPack::addFile(DLCManager::EDLCType type, const wstring &path)
 		break;
 	case DLCManager::e_DLCType_Cape:
 		{
-			std::vector<std::wstring> splitPath = stringSplit(path,L'/');
+			wstring newPath = replaceAll(path, L"\\", L"/");
+			std::vector<std::wstring> splitPath = stringSplit(newPath,L'/');
 			wstring strippedPath = splitPath.back();
 			newFile = new DLCCapeFile(strippedPath);
 		}
@@ -410,4 +412,20 @@ bool DLCPack::hasPurchasedFile(DLCManager::EDLCType type, const wstring &path)
 		//purchased
 		return true;
 	}*/
+}
+
+void  DLCPack::UpdateLanguage()
+{
+	// find the language file
+	DLCManager::e_DLCType_LocalisationData;
+	DLCFile *file = NULL;
+
+	if(m_files[DLCManager::e_DLCType_LocalisationData].size() > 0)
+	{
+		file = m_files[DLCManager::e_DLCType_LocalisationData][0];
+		DLCLocalisationFile *localisationFile = (DLCLocalisationFile *)getFile(DLCManager::e_DLCType_LocalisationData, L"languages.loc");
+		StringTable *strTable = localisationFile->getStringTable();
+		strTable->ReloadStringTable();
+	}
+
 }

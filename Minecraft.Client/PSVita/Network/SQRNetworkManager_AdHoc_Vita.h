@@ -104,7 +104,6 @@ public:
 	static void										GetInviteDataAndProcess(sce::Toolkit::NP::MessageAttachment* pInvite);
 	static bool										GetAdhocStatus() { return m_adhocStatus; }
 
-
 	int sendDataPacket(SceNetInAddr addr, EAdhocDataTag tag, void* data, int dataSize);
 	int sendDataPacket(SceNetInAddr addr, void* data, int dataSize);
 
@@ -125,6 +124,7 @@ private:
 	bool											m_nextIdleReasonIsFull;
 	bool											m_isHosting;
 	SceNetInAddr									m_localIPAddr;
+	SceNetInAddr									m_hostIPAddr;
 	SceNpMatching2RoomMemberId						m_localMemberId;
 	SceNpMatching2RoomMemberId						m_hostMemberId; // if we're not the host
 	int												m_localPlayerCount;
@@ -316,6 +316,7 @@ private:
 
 public:
 	static void										AttemptPSNSignIn(int (*SignInCompleteCallbackFn)(void *pParam, bool bContinue, int pad), void *pParam, bool callIfFailed = false);
+	static void										AttemptAdhocSignIn(int (*SignInCompleteCallbackFn)(void *pParam, bool bContinue, int pad), void *pParam, bool callIfFailed = false);
 	static int										(*s_SignInCompleteCallbackFn)(void *pParam, bool bContinue, int pad);
 	static bool										s_signInCompleteCallbackIfFailed;
 	static void										*s_SignInCompleteParam;

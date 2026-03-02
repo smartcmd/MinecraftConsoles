@@ -42,7 +42,7 @@ public:
 	AABB *set(double x0, double y0, double z0, double x1, double y1, double z1);
 	AABB *expand(double xa, double ya, double za);
 	AABB *grow(double xa, double ya, double za);
-public:
+	AABB *minmax(AABB *other);
 	AABB *cloneMove(double xa, double ya, double za);
 	double clipXCollide(AABB *c, double xa);
 	double clipYCollide(AABB *c, double ya);

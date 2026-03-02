@@ -3,6 +3,8 @@
 #include "ModelPart.h"
 #include "EnderChestRenderer.h"
 
+ResourceLocation EnderChestRenderer::ENDER_CHEST_LOCATION = ResourceLocation(TN_TILE_ENDER_CHEST);
+
 void EnderChestRenderer::render(shared_ptr<TileEntity>  _chest, double x, double y, double z, float a, bool setColor, float alpha, bool useCompiled)
 {
 	// 4J Convert as we aren't using a templated class
@@ -15,7 +17,7 @@ void EnderChestRenderer::render(shared_ptr<TileEntity>  _chest, double x, double
 		data = chest->getData();
 	}
 
-	bindTexture(TN_TILE_ENDER_CHEST); //"/item/enderchest.png");
+	bindTexture(&ENDER_CHEST_LOCATION);
 
 	glPushMatrix();
 	glEnable(GL_RESCALE_NORMAL);
@@ -31,12 +33,6 @@ void EnderChestRenderer::render(shared_ptr<TileEntity>  _chest, double x, double
 	if (data == 4) rot = 90;
 	if (data == 5) rot = -90;
 
-	//        if (data == 2) {
-	//            glTranslatef(1, 0, 0);
-	//        }
-	//        if (data == 5) {
-	//            glTranslatef(0, 0, -1);
-	//        }
 	glRotatef(rot, 0, 1, 0);
 	glTranslatef(-0.5f, -0.5f, -0.5f);
 

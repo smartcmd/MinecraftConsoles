@@ -26,13 +26,13 @@ AddGlobalEntityPacket::AddGlobalEntityPacket(shared_ptr<Entity> e)
     x = Mth::floor(e->x * 32);
     y = Mth::floor(e->y * 32);
     z = Mth::floor(e->z * 32);
-	if (dynamic_pointer_cast<LightningBolt>(e) != NULL) 
+	if ( e->instanceof(eTYPE_LIGHTNINGBOLT) ) 
 	{
-		this->type = LIGHTNING;
+		type = LIGHTNING;
 	}
 	else
 	{
-		this->type = 0;
+		type = 0;
 	}
 }
 

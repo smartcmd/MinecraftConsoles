@@ -16,10 +16,16 @@ public:
 	eINSTANCEOF GetType() { return eTYPE_CHESTTILEENTITY; }
 	static TileEntity *create() { return new ChestTileEntity(); }
 
-using TileEntity::setChanged;
+	int getContainerType(); // 4J-Added;
+
+	using TileEntity::setChanged;
+
+private:
+	void _init(bool isBonusChest);
 
 public:
 	ChestTileEntity(bool isBonusChest = false);		// 4J added param
+	ChestTileEntity(int type, bool isBonusChest = false);		// 4J added param
 	virtual ~ChestTileEntity();
 
 private:
@@ -28,15 +34,18 @@ private:
 public:
 	bool isBonusChest;					// 4J added
 	bool hasCheckedNeighbors;
-    weak_ptr<ChestTileEntity> n;
-    weak_ptr<ChestTileEntity> e;
-    weak_ptr<ChestTileEntity> w;
-    weak_ptr<ChestTileEntity> s;
+	weak_ptr<ChestTileEntity> n;
+	weak_ptr<ChestTileEntity> e;
+	weak_ptr<ChestTileEntity> w;
+	weak_ptr<ChestTileEntity> s;
 
 	float openness, oOpenness;
 	int openCount;
 private:
 	int tickInterval;
+
+	int type;
+	wstring name;
 
 public:
 	virtual unsigned int getContainerSize();
@@ -44,19 +53,34 @@ public:
 	virtual shared_ptr<ItemInstance> removeItem(unsigned int slot, int count);
 	virtual shared_ptr<ItemInstance> removeItemNoUpdate(int slot);
 	virtual void setItem(unsigned int slot, shared_ptr<ItemInstance> item);
-	virtual int getName();
+	virtual wstring getName();
+	virtual wstring getCustomName();
+	virtual bool hasCustomName();
+	virtual void setCustomName(const wstring &name);
 	virtual void load(CompoundTag *base);
 	virtual void save(CompoundTag *base);
 	virtual int getMaxStackSize();
 	virtual bool stillValid(shared_ptr<Player> player);
 	virtual void setChanged();
 	virtual void clearCache();
-    virtual void checkNeighbors();
-    virtual void tick();
-    virtual void triggerEvent(int b0, int b1);
-    virtual void startOpen();
-    virtual void stopOpen();
-    virtual void setRemoved();
+
+private:
+	virtual void heyImYourNeighbor(shared_ptr<ChestTileEntity> neighbor, int from);
+
+public:
+	virtual void checkNeighbors();
+
+private:
+	bool isSameChest(int x, int y, int z);
+
+public:
+	virtual void tick();
+	virtual bool triggerEvent(int b0, int b1);
+	virtual void startOpen();
+	virtual void stopOpen();
+	virtual bool canPlaceItem(int slot, shared_ptr<ItemInstance> item);
+	virtual void setRemoved();
+	virtual int getType();
 
 	// 4J Added
 	virtual shared_ptr<TileEntity> clone();

@@ -4,7 +4,7 @@
 
 FixedBiomeSource::FixedBiomeSource(Biome *fixed, float temperature, float downfall)
 {
-	this->biome = fixed;
+	biome = fixed;
 	this->temperature = temperature;
 	this->downfall = downfall;
 }
@@ -45,9 +45,9 @@ floatArray FixedBiomeSource::getTemperatureBlock(int x, int z, int w, int h) con
 // 4J - note that caller is responsible for deleting returned array. temperatures array is for output only.
 void FixedBiomeSource::getTemperatureBlock(doubleArray& temperatures, int x, int z, int w, int h) const
 {
-    temperatures = doubleArray(w * h);
+	temperatures = doubleArray(w * h);
 
-    Arrays::fill(temperatures, 0, w * h, (double)temperature);
+	Arrays::fill(temperatures, 0, w * h, (double)temperature);
 }
 
 void FixedBiomeSource::getDownfallBlock(floatArray &downfalls, int x, int z, int w, int h) const

@@ -2,17 +2,19 @@
 #include "net.minecraft.world.h"
 #include "net.minecraft.world.level.h"
 #include "net.minecraft.world.entity.item.h"
+#include "net.minecraft.world.entity.animal.h"
 #include "net.minecraft.world.entity.player.h"
 #include "net.minecraft.world.item.h"
+#include "net.minecraft.world.level.redstone.h"
 #include "net.minecraft.world.level.tile.entity.h"
 #include "net.minecraft.world.phys.h"
 #include "ChestTile.h"
 #include "Facing.h"
-#include "Ozelot.h"
 
-ChestTile::ChestTile(int id) : EntityTile(id, Material::wood, isSolidRender() )
+ChestTile::ChestTile(int id, int type) : BaseEntityTile(id, Material::wood, isSolidRender() )
 {
 	random = new Random();
+	this->type = type;
 
 	setShape(1 / 16.0f, 0, 1 / 16.0f, 15 / 16.0f, 14 / 16.0f, 15 / 16.0f);
 }
@@ -63,150 +65,155 @@ void ChestTile::updateShape(LevelSource *level, int x, int y, int z, int forceDa
 
 void ChestTile::onPlace(Level *level, int x, int y, int z)
 {
-    EntityTile::onPlace(level, x, y, z);
-    recalcLockDir(level, x, y, z);
+	BaseEntityTile::onPlace(level, x, y, z);
+	recalcLockDir(level, x, y, z);
 
-    int n = level->getTile(x, y, z - 1); // face = 2
-    int s = level->getTile(x, y, z + 1); // face = 3
-    int w = level->getTile(x - 1, y, z); // face = 4
-    int e = level->getTile(x + 1, y, z); // face = 5
-    if (n == id) recalcLockDir(level, x, y, z - 1);
-    if (s == id) recalcLockDir(level, x, y, z + 1);
-    if (w == id) recalcLockDir(level, x - 1, y, z);
-    if (e == id) recalcLockDir(level, x + 1, y, z);
+	int n = level->getTile(x, y, z - 1); // face = 2
+	int s = level->getTile(x, y, z + 1); // face = 3
+	int w = level->getTile(x - 1, y, z); // face = 4
+	int e = level->getTile(x + 1, y, z); // face = 5
+	if (n == id) recalcLockDir(level, x, y, z - 1);
+	if (s == id) recalcLockDir(level, x, y, z + 1);
+	if (w == id) recalcLockDir(level, x - 1, y, z);
+	if (e == id) recalcLockDir(level, x + 1, y, z);
 }
 
-void ChestTile::setPlacedBy(Level *level, int x, int y, int z, shared_ptr<Mob> by)
+void ChestTile::setPlacedBy(Level *level, int x, int y, int z, shared_ptr<LivingEntity> by, shared_ptr<ItemInstance> itemInstance)
 {
-    int n = level->getTile(x, y, z - 1); // face = 2
-    int s = level->getTile(x, y, z + 1); // face = 3
-    int w = level->getTile(x - 1, y, z); // face = 4
-    int e = level->getTile(x + 1, y, z); // face = 5
+	int n = level->getTile(x, y, z - 1); // face = 2
+	int s = level->getTile(x, y, z + 1); // face = 3
+	int w = level->getTile(x - 1, y, z); // face = 4
+	int e = level->getTile(x + 1, y, z); // face = 5
 
-    int facing = 0;
-    int dir = (Mth::floor(by->yRot * 4 / (360) + 0.5)) & 3;
+	int facing = 0;
+	int dir = (Mth::floor(by->yRot * 4 / (360) + 0.5)) & 3;
 
-    if (dir == 0) facing = Facing::NORTH;
-    if (dir == 1) facing = Facing::EAST;
-    if (dir == 2) facing = Facing::SOUTH;
-    if (dir == 3) facing = Facing::WEST;
+	if (dir == 0) facing = Facing::NORTH;
+	if (dir == 1) facing = Facing::EAST;
+	if (dir == 2) facing = Facing::SOUTH;
+	if (dir == 3) facing = Facing::WEST;
 
-    if (n != id && s != id && w != id && e != id)
+	if (n != id && s != id && w != id && e != id)
 	{
-        level->setData(x, y, z, facing);
-    }
+		level->setData(x, y, z, facing, Tile::UPDATE_ALL);
+	}
 	else
 	{
-        if ((n == id || s == id) && (facing == Facing::WEST || facing == Facing::EAST))
+		if ((n == id || s == id) && (facing == Facing::WEST || facing == Facing::EAST))
 		{
-            if (n == id) level->setData(x, y, z - 1, facing);
-            else level->setData(x, y, z + 1, facing);
-            level->setData(x, y, z, facing);
-        }
-        if ((w == id || e == id) && (facing == Facing::NORTH || facing == Facing::SOUTH))
+			if (n == id) level->setData(x, y, z - 1, facing, Tile::UPDATE_ALL);
+			else level->setData(x, y, z + 1, facing, Tile::UPDATE_ALL);
+			level->setData(x, y, z, facing, Tile::UPDATE_ALL);
+		}
+		if ((w == id || e == id) && (facing == Facing::NORTH || facing == Facing::SOUTH))
 		{
-            if (w == id) level->setData(x - 1, y, z, facing);
-            else level->setData(x + 1, y, z, facing);
-            level->setData(x, y, z, facing);
-        }
-    }
+			if (w == id) level->setData(x - 1, y, z, facing, Tile::UPDATE_ALL);
+			else level->setData(x + 1, y, z, facing, Tile::UPDATE_ALL);
+			level->setData(x, y, z, facing, Tile::UPDATE_ALL);
+		}
+	}
+
+	if (itemInstance->hasCustomHoverName())
+	{
+		dynamic_pointer_cast<ChestTileEntity>( level->getTileEntity(x, y, z))->setCustomName(itemInstance->getHoverName());
+	}
 
 }
 
 void ChestTile::recalcLockDir(Level *level, int x, int y, int z)
 {
-    if (level->isClientSide)
+	if (level->isClientSide)
 	{
-        return;
-    }
+		return;
+	}
 
-    int n = level->getTile(x, y, z - 1); // face = 2
-    int s = level->getTile(x, y, z + 1); // face = 3
-    int w = level->getTile(x - 1, y, z); // face = 4
-    int e = level->getTile(x + 1, y, z); // face = 5
+	int n = level->getTile(x, y, z - 1); // face = 2
+	int s = level->getTile(x, y, z + 1); // face = 3
+	int w = level->getTile(x - 1, y, z); // face = 4
+	int e = level->getTile(x + 1, y, z); // face = 5
 
-    // Long!
-    int lockDir = 4;
-    if (n == id || s == id)
+	// Long!
+	int lockDir = 4;
+	if (n == id || s == id)
 	{
-        int w2 = level->getTile(x - 1, y, n == id ? z - 1 : z + 1);
-        int e2 = level->getTile(x + 1, y, n == id ? z - 1 : z + 1);
+		int w2 = level->getTile(x - 1, y, n == id ? z - 1 : z + 1);
+		int e2 = level->getTile(x + 1, y, n == id ? z - 1 : z + 1);
 
-        lockDir = 5;
+		lockDir = 5;
 
-        int otherDir = -1;
-        if (n == id) otherDir = level->getData(x, y, z - 1);
-        else otherDir = level->getData(x, y, z + 1);
-        if (otherDir == 4) lockDir = 4;
+		int otherDir = -1;
+		if (n == id) otherDir = level->getData(x, y, z - 1);
+		else otherDir = level->getData(x, y, z + 1);
+		if (otherDir == 4) lockDir = 4;
 
-        if ((Tile::solid[w] || Tile::solid[w2]) && !Tile::solid[e] && !Tile::solid[e2]) lockDir = 5;
-        if ((Tile::solid[e] || Tile::solid[e2]) && !Tile::solid[w] && !Tile::solid[w2]) lockDir = 4;
-    }
+		if ((Tile::solid[w] || Tile::solid[w2]) && !Tile::solid[e] && !Tile::solid[e2]) lockDir = 5;
+		if ((Tile::solid[e] || Tile::solid[e2]) && !Tile::solid[w] && !Tile::solid[w2]) lockDir = 4;
+	}
 	else if (w == id || e == id)
 	{
-        int n2 = level->getTile(w == id ? x - 1 : x + 1, y, z - 1);
-        int s2 = level->getTile(w == id ? x - 1 : x + 1, y, z + 1);
+		int n2 = level->getTile(w == id ? x - 1 : x + 1, y, z - 1);
+		int s2 = level->getTile(w == id ? x - 1 : x + 1, y, z + 1);
 
-        lockDir = 3;
-        int otherDir = -1;
-        if (w == id) otherDir = level->getData(x - 1, y, z);
-        else otherDir = level->getData(x + 1, y, z);
-        if (otherDir == 2) lockDir = 2;
+		lockDir = 3;
+		int otherDir = -1;
+		if (w == id) otherDir = level->getData(x - 1, y, z);
+		else otherDir = level->getData(x + 1, y, z);
+		if (otherDir == 2) lockDir = 2;
 
-        if ((Tile::solid[n] || Tile::solid[n2]) && !Tile::solid[s] && !Tile::solid[s2]) lockDir = 3;
-        if ((Tile::solid[s] || Tile::solid[s2]) && !Tile::solid[n] && !Tile::solid[n2]) lockDir = 2;
-    }
+		if ((Tile::solid[n] || Tile::solid[n2]) && !Tile::solid[s] && !Tile::solid[s2]) lockDir = 3;
+		if ((Tile::solid[s] || Tile::solid[s2]) && !Tile::solid[n] && !Tile::solid[n2]) lockDir = 2;
+	}
 	else
 	{
-        lockDir = 3;
-        if (Tile::solid[n] && !Tile::solid[s]) lockDir = 3;
-        if (Tile::solid[s] && !Tile::solid[n]) lockDir = 2;
-        if (Tile::solid[w] && !Tile::solid[e]) lockDir = 5;
-        if (Tile::solid[e] && !Tile::solid[w]) lockDir = 4;
-    }
+		lockDir = 3;
+		if (Tile::solid[n] && !Tile::solid[s]) lockDir = 3;
+		if (Tile::solid[s] && !Tile::solid[n]) lockDir = 2;
+		if (Tile::solid[w] && !Tile::solid[e]) lockDir = 5;
+		if (Tile::solid[e] && !Tile::solid[w]) lockDir = 4;
+	}
 
-    level->setData(x, y, z, lockDir);
+	level->setData(x, y, z, lockDir, Tile::UPDATE_ALL);
 }
 
 bool ChestTile::mayPlace(Level *level, int x, int y, int z)
 {
-    int chestCount = 0;
+	int chestCount = 0;
 
-    if (level->getTile(x - 1, y, z) == id) chestCount++;
-    if (level->getTile(x + 1, y, z) == id) chestCount++;
-    if (level->getTile(x, y, z - 1) == id) chestCount++;
-    if (level->getTile(x, y, z + 1) == id) chestCount++;
+	if (level->getTile(x - 1, y, z) == id) chestCount++;
+	if (level->getTile(x + 1, y, z) == id) chestCount++;
+	if (level->getTile(x, y, z - 1) == id) chestCount++;
+	if (level->getTile(x, y, z + 1) == id) chestCount++;
 
-    if (chestCount > 1) return false;
+	if (chestCount > 1) return false;
 
-    if (isFullChest(level, x - 1, y, z)) return false;
-    if (isFullChest(level, x + 1, y, z)) return false;
-    if (isFullChest(level, x, y, z - 1)) return false;
-    if (isFullChest(level, x, y, z + 1)) return false;
-    return true;
+	if (isFullChest(level, x - 1, y, z)) return false;
+	if (isFullChest(level, x + 1, y, z)) return false;
+	if (isFullChest(level, x, y, z - 1)) return false;
+	if (isFullChest(level, x, y, z + 1)) return false;
+	return true;
 
 }
 
 bool ChestTile::isFullChest(Level *level, int x, int y, int z)
 {
-    if (level->getTile(x, y, z) != id) return false;
-    if (level->getTile(x - 1, y, z) == id) return true;
-    if (level->getTile(x + 1, y, z) == id) return true;
-    if (level->getTile(x, y, z - 1) == id) return true;
-    if (level->getTile(x, y, z + 1) == id) return true;
-    return false;
+	if (level->getTile(x, y, z) != id) return false;
+	if (level->getTile(x - 1, y, z) == id) return true;
+	if (level->getTile(x + 1, y, z) == id) return true;
+	if (level->getTile(x, y, z - 1) == id) return true;
+	if (level->getTile(x, y, z + 1) == id) return true;
+	return false;
 }
 
 void ChestTile::neighborChanged(Level *level, int x, int y, int z, int type)
 {
-    EntityTile::neighborChanged(level, x, y, z, type);
-    shared_ptr<ChestTileEntity>(cte) = dynamic_pointer_cast<ChestTileEntity>(level->getTileEntity(x, y, z));
-    if (cte != NULL) cte->clearCache();
+	BaseEntityTile::neighborChanged(level, x, y, z, type);
+	shared_ptr<ChestTileEntity>(cte) = dynamic_pointer_cast<ChestTileEntity>(level->getTileEntity(x, y, z));
+	if (cte != NULL) cte->clearCache();
 }
 
 void ChestTile::onRemove(Level *level, int x, int y, int z, int id, int data)
 {
-    shared_ptr<Container> container = dynamic_pointer_cast<ChestTileEntity>( level->getTileEntity(x, y, z) );
+	shared_ptr<Container> container = dynamic_pointer_cast<ChestTileEntity>( level->getTileEntity(x, y, z) );
 	if (container != NULL )
 	{
 		for (unsigned int i = 0; i < container->getContainerSize(); i++)
@@ -231,10 +238,10 @@ void ChestTile::onRemove(Level *level, int x, int y, int z, int id, int data)
 					itemEntity->xd = (float) random->nextGaussian() * pow;
 					itemEntity->yd = (float) random->nextGaussian() * pow + 0.2f;
 					itemEntity->zd = (float) random->nextGaussian() * pow;
-                    if (item->hasTag())
+					if (item->hasTag())
 					{
-                        itemEntity->getItem()->setTag((CompoundTag *) item->getTag()->copy());
-                    }
+						itemEntity->getItem()->setTag((CompoundTag *) item->getTag()->copy());
+					}
 
 					level->addEntity(itemEntity);
 				}
@@ -243,8 +250,9 @@ void ChestTile::onRemove(Level *level, int x, int y, int z, int id, int data)
 				container->setItem(i,nullptr);
 			}
 		}
+		level->updateNeighbourForOutputSignal(x, y, z, id);
 	}
-    EntityTile::onRemove(level, x, y, z, id, data);
+	BaseEntityTile::onRemove(level, x, y, z, id, data);
 }
 
 // 4J-PB - Adding a TestUse for tooltip display
@@ -258,46 +266,39 @@ bool ChestTile::use(Level *level, int x, int y, int z, shared_ptr<Player> player
 {
 	if( soundOnly ) return true;
 
-    if (level->isClientSide)
+	if (level->isClientSide)
 	{
-        return true;
-    }
+		return true;
+	}
+	shared_ptr<Container> container = getContainer(level, x, y, z);
 
-    shared_ptr<Container> container = dynamic_pointer_cast<ChestTileEntity>( level->getTileEntity(x, y, z) );
-	if (container == NULL) return true;
-
-	if (level->isSolidBlockingTile(x, y + 1, z)) return true;
-	if (isCatSittingOnChest(level,x, y, z)) return true;	
-
-    if (level->getTile(x - 1, y, z) == id && (level->isSolidBlockingTile(x - 1, y + 1, z) || isCatSittingOnChest(level, x - 1, y, z))) return true;
-    if (level->getTile(x + 1, y, z) == id && (level->isSolidBlockingTile(x + 1, y + 1, z) || isCatSittingOnChest(level, x + 1, y, z))) return true;
-    if (level->getTile(x, y, z - 1) == id && (level->isSolidBlockingTile(x, y + 1, z - 1) || isCatSittingOnChest(level, x, y, z - 1))) return true;
-    if (level->getTile(x, y, z + 1) == id && (level->isSolidBlockingTile(x, y + 1, z + 1) || isCatSittingOnChest(level, x, y, z + 1))) return true;
-
-    if (level->getTile(x - 1, y, z) == id) container = shared_ptr<Container>( new CompoundContainer(IDS_CHEST_LARGE, dynamic_pointer_cast<ChestTileEntity>( level->getTileEntity(x - 1, y, z) ), container) );
-    if (level->getTile(x + 1, y, z) == id) container = shared_ptr<Container>( new CompoundContainer(IDS_CHEST_LARGE, container, dynamic_pointer_cast<ChestTileEntity>( level->getTileEntity(x + 1, y, z) )) );
-    if (level->getTile(x, y, z - 1) == id) container = shared_ptr<Container>( new CompoundContainer(IDS_CHEST_LARGE, dynamic_pointer_cast<ChestTileEntity>( level->getTileEntity(x, y, z - 1) ), container) );
-    if (level->getTile(x, y, z + 1) == id) container = shared_ptr<Container>( new CompoundContainer(IDS_CHEST_LARGE, container, dynamic_pointer_cast<ChestTileEntity>( level->getTileEntity(x, y, z + 1) )) );
-
-    player->openContainer(container);
-
-    return true;
-}
-
-// 4J-PB - added from 1.5
-bool ChestTile::isCatSittingOnChest(Level *level, int x, int y, int z) 
-{
-	vector<shared_ptr<Entity> > *entities = level->getEntitiesOfClass(typeid(Ozelot), AABB::newTemp(x, y + 1, z, x + 1, y + 2, z + 1));
-	for(AUTO_VAR(it, entities->begin()); it != entities->end(); ++it)
+	if (container != NULL)
 	{
-		shared_ptr<Ozelot> ocelot = dynamic_pointer_cast<Ozelot>(*it);
-		if(ocelot->isSitting())
-		{
-			return true;
-		}
+		player->openContainer(container);
 	}
 
-	return false;
+	return true;
+}
+
+shared_ptr<Container> ChestTile::getContainer(Level *level, int x, int y, int z)
+{
+	shared_ptr<Container> container = dynamic_pointer_cast<ChestTileEntity>( level->getTileEntity(x, y, z) );
+	if (container == NULL) return nullptr;
+
+	if (level->isSolidBlockingTile(x, y + 1, z)) return nullptr;
+	if (isCatSittingOnChest(level,x, y, z)) return nullptr;	
+
+	if (level->getTile(x - 1, y, z) == id && (level->isSolidBlockingTile(x - 1, y + 1, z) || isCatSittingOnChest(level, x - 1, y, z))) return nullptr;
+	if (level->getTile(x + 1, y, z) == id && (level->isSolidBlockingTile(x + 1, y + 1, z) || isCatSittingOnChest(level, x + 1, y, z))) return nullptr;
+	if (level->getTile(x, y, z - 1) == id && (level->isSolidBlockingTile(x, y + 1, z - 1) || isCatSittingOnChest(level, x, y, z - 1))) return nullptr;
+	if (level->getTile(x, y, z + 1) == id && (level->isSolidBlockingTile(x, y + 1, z + 1) || isCatSittingOnChest(level, x, y, z + 1))) return nullptr;
+
+	if (level->getTile(x - 1, y, z) == id) container = shared_ptr<Container>( new CompoundContainer(IDS_CHEST_LARGE, dynamic_pointer_cast<ChestTileEntity>( level->getTileEntity(x - 1, y, z) ), container) );
+	if (level->getTile(x + 1, y, z) == id) container = shared_ptr<Container>( new CompoundContainer(IDS_CHEST_LARGE, container, dynamic_pointer_cast<ChestTileEntity>( level->getTileEntity(x + 1, y, z) )) );
+	if (level->getTile(x, y, z - 1) == id) container = shared_ptr<Container>( new CompoundContainer(IDS_CHEST_LARGE, dynamic_pointer_cast<ChestTileEntity>( level->getTileEntity(x, y, z - 1) ), container) );
+	if (level->getTile(x, y, z + 1) == id) container = shared_ptr<Container>( new CompoundContainer(IDS_CHEST_LARGE, container, dynamic_pointer_cast<ChestTileEntity>( level->getTileEntity(x, y, z + 1) )) );
+
+	return container;
 }
 
 shared_ptr<TileEntity> ChestTile::newTileEntity(Level *level)
@@ -308,9 +309,60 @@ shared_ptr<TileEntity> ChestTile::newTileEntity(Level *level)
 	return retval;
 }
 
+bool ChestTile::isSignalSource()
+{
+	return type == TYPE_TRAP;
+}
+
+int ChestTile::getSignal(LevelSource *level, int x, int y, int z, int dir)
+{
+	if (!isSignalSource()) return Redstone::SIGNAL_NONE;
+
+	int openCount = dynamic_pointer_cast<ChestTileEntity>( level->getTileEntity(x, y, z))->openCount;
+	return Mth::clamp(openCount, Redstone::SIGNAL_NONE, Redstone::SIGNAL_MAX);
+}
+
+int ChestTile::getDirectSignal(LevelSource *level, int x, int y, int z, int dir)
+{
+	if (dir == Facing::UP)
+	{
+		return getSignal(level, x, y, z, dir);
+	}
+	else
+	{
+		return Redstone::SIGNAL_NONE;
+	}
+}
+
+bool ChestTile::isCatSittingOnChest(Level *level, int x, int y, int z) 
+{
+	vector<shared_ptr<Entity> > *entities = level->getEntitiesOfClass(typeid(Ocelot), AABB::newTemp(x, y + 1, z, x + 1, y + 2, z + 1));
+	for(AUTO_VAR(it, entities->begin()); it != entities->end(); ++it)
+	{
+		shared_ptr<Ocelot> ocelot = dynamic_pointer_cast<Ocelot>(*it);
+		if(ocelot->isSitting())
+		{
+			delete entities;
+			return true;
+		}
+	}
+	delete entities;
+	return false;
+}
+
+bool ChestTile::hasAnalogOutputSignal()
+{
+	return true;
+}
+
+int ChestTile::getAnalogOutputSignal(Level *level, int x, int y, int z, int dir)
+{
+	return AbstractContainerMenu::getRedstoneSignalFromContainer(getContainer(level, x, y, z));
+}
+
 void ChestTile::registerIcons(IconRegister *iconRegister) 
 {
 	// Register wood as the chest's icon, because it's used by the particles
 	// when destroying the chest
-	icon = iconRegister->registerIcon(L"wood");
+	icon = iconRegister->registerIcon(L"planks_oak");
 }

@@ -5,6 +5,9 @@
 #include "net.minecraft.world.level.biome.h"
 #include "net.minecraft.world.level.dimension.h"
 
+const wstring VillageFeature::OPTION_SIZE_MODIFIER = L"size";
+const wstring VillageFeature::OPTION_SPACING = L"distance";
+
 vector<Biome *> VillageFeature::allowedBiomes;
 
 void VillageFeature::staticCtor()
@@ -13,67 +16,88 @@ void VillageFeature::staticCtor()
 	allowedBiomes.push_back( Biome::desert );
 }
 
-
-VillageFeature::VillageFeature(int villageSizeModifier, int iXZSize) : StructureFeature(), villageSizeModifier(villageSizeModifier)
+void VillageFeature::_init(int iXZSize)
 {
+	villageSizeModifier = 0;
+	townSpacing = 32;
+	minTownSeparation = 8;
+
 	m_iXZSize=iXZSize;
+}
+
+VillageFeature::VillageFeature(int iXZSize)
+{
+	_init(iXZSize);
+}
+
+VillageFeature::VillageFeature(unordered_map<wstring, wstring> options, int iXZSize)
+{
+	_init(iXZSize);
+
+	for (AUTO_VAR(it,options.begin()); it != options.end(); ++it)
+	{
+		if (it->first.compare(OPTION_SIZE_MODIFIER) == 0)
+		{
+			villageSizeModifier = Mth::getInt(it->second, villageSizeModifier, 0);
+		}
+		else if (it->first.compare(OPTION_SPACING) == 0)
+		{
+			townSpacing = Mth::getInt(it->second, townSpacing, minTownSeparation + 1);
+		}
+	}
+}
+
+wstring VillageFeature::getFeatureName()
+{
+	return L"Village";
 }
 
 bool VillageFeature::isFeatureChunk(int x, int z,bool bIsSuperflat)
 {
-    int townSpacing;
+	int townSpacing = this->townSpacing;
 
+	if(!bIsSuperflat
 #ifdef _LARGE_WORLDS
-	if(level->dimension->getXZSize() > 128)
-	{
-		townSpacing = 32;
-	}
-	else
+		&& level->dimension->getXZSize() < 128
 #endif
-	if(bIsSuperflat) 
-	{
-		townSpacing= 32;
-	}
-	else
-	{
-		townSpacing= 16;// 4J change 32;
-	}
-
-    int minTownSeparation = 8;
-
-    int xx = x;
-    int zz = z;
-    if (x < 0) x -= townSpacing - 1;
-    if (z < 0) z -= townSpacing - 1;
-
-    int xCenterTownChunk = x / townSpacing;
-    int zCenterTownChunk = z / townSpacing;
-    Random *r = level->getRandomFor(xCenterTownChunk, zCenterTownChunk, 10387312);
-    xCenterTownChunk *= townSpacing;
-    zCenterTownChunk *= townSpacing;
-    xCenterTownChunk += r->nextInt(townSpacing - minTownSeparation);
-    zCenterTownChunk += r->nextInt(townSpacing - minTownSeparation);
-    x = xx;
-    z = zz;
-
-	bool forcePlacement = false;
-	LevelGenerationOptions *levelGenOptions = app.getLevelGenerationOptions();
-	if( levelGenOptions != NULL )
-	{
-		forcePlacement = levelGenOptions->isFeatureChunk(x,z,eFeature_Village);
-	}
-
-    if (forcePlacement || (x == xCenterTownChunk && z == zCenterTownChunk) )
-	{
-        bool biomeOk = level->getBiomeSource()->containsOnly(x * 16 + 8, z * 16 + 8, 0, allowedBiomes);
-        if (biomeOk)
+		) 
 		{
-			//app.DebugPrintf("Biome ok for Village at %d, %d\n",(x * 16 + 8),(z * 16 + 8));
-            return true;
-        }
-    }
+			townSpacing= 16;// 4J change 32;
+		}
 
-    return false;
+		int xx = x;
+		int zz = z;
+		if (x < 0) x -= townSpacing - 1;
+		if (z < 0) z -= townSpacing - 1;
+
+		int xCenterTownChunk = x / townSpacing;
+		int zCenterTownChunk = z / townSpacing;
+		Random *r = level->getRandomFor(xCenterTownChunk, zCenterTownChunk, 10387312);
+		xCenterTownChunk *= townSpacing;
+		zCenterTownChunk *= townSpacing;
+		xCenterTownChunk += r->nextInt(townSpacing - minTownSeparation);
+		zCenterTownChunk += r->nextInt(townSpacing - minTownSeparation);
+		x = xx;
+		z = zz;
+
+		bool forcePlacement = false;
+		LevelGenerationOptions *levelGenOptions = app.getLevelGenerationOptions();
+		if( levelGenOptions != NULL )
+		{
+			forcePlacement = levelGenOptions->isFeatureChunk(x,z,eFeature_Village);
+		}
+
+		if (forcePlacement || (x == xCenterTownChunk && z == zCenterTownChunk) )
+		{
+			bool biomeOk = level->getBiomeSource()->containsOnly(x * 16 + 8, z * 16 + 8, 0, allowedBiomes);
+			if (biomeOk)
+			{
+				//app.DebugPrintf("Biome ok for Village at %d, %d\n",(x * 16 + 8),(z * 16 + 8));
+				return true;
+			}
+		}
+
+		return false;
 }
 
 StructureStart *VillageFeature::createStructureStart(int x, int z)
@@ -84,51 +108,58 @@ StructureStart *VillageFeature::createStructureStart(int x, int z)
 	return new VillageStart(level, random, x, z, villageSizeModifier, m_iXZSize);
 }
 
+VillageFeature::VillageStart::VillageStart()
+{
+	valid = false;	// 4J added initialiser
+	m_iXZSize = 0;
+	// for reflection
+}
+
 VillageFeature::VillageStart::VillageStart(Level *level, Random *random, int chunkX, int chunkZ, int villageSizeModifier, int iXZSize)
 {
 	valid = false;	// 4J added initialiser
 	m_iXZSize=iXZSize;
 
-    list<VillagePieces::PieceWeight *> *pieceSet = VillagePieces::createPieceSet(random, villageSizeModifier);
+	list<VillagePieces::PieceWeight *> *pieceSet = VillagePieces::createPieceSet(random, villageSizeModifier);
 
-    VillagePieces::StartPiece *startRoom = new VillagePieces::StartPiece(level->getBiomeSource(), 0, random, (chunkX << 4) + 2, (chunkZ << 4) + 2, pieceSet, villageSizeModifier, level);
+	VillagePieces::StartPiece *startRoom = new VillagePieces::StartPiece(level->getBiomeSource(), 0, random, (chunkX << 4) + 2, (chunkZ << 4) + 2, pieceSet, villageSizeModifier, level);
 	pieces.push_back(startRoom);
-    startRoom->addChildren(startRoom, &pieces, random);
+	startRoom->addChildren(startRoom, &pieces, random);
 
-    vector<StructurePiece *> *pendingRoads = &startRoom->pendingRoads;
-    vector<StructurePiece *> *pendingHouses = &startRoom->pendingHouses;
-    while (!pendingRoads->empty() || !pendingHouses->empty())
+	vector<StructurePiece *> *pendingRoads = &startRoom->pendingRoads;
+	vector<StructurePiece *> *pendingHouses = &startRoom->pendingHouses;
+	while (!pendingRoads->empty() || !pendingHouses->empty())
 	{
 
-        // prioritize roads
-        if (pendingRoads->empty())
+		// prioritize roads
+		if (pendingRoads->empty())
 		{
-            int pos = random->nextInt((int)pendingHouses->size());
+			int pos = random->nextInt((int)pendingHouses->size());
 			AUTO_VAR(it, pendingHouses->begin() + pos);
-            StructurePiece *structurePiece = *it;
+			StructurePiece *structurePiece = *it;
 			pendingHouses->erase(it);
-            structurePiece->addChildren(startRoom, &pieces, random);
-        }
+			structurePiece->addChildren(startRoom, &pieces, random);
+		}
 		else
 		{
-            int pos = random->nextInt((int)pendingRoads->size());
+			int pos = random->nextInt((int)pendingRoads->size());
 			AUTO_VAR(it, pendingRoads->begin() + pos);
-            StructurePiece *structurePiece = *it;
+			StructurePiece *structurePiece = *it;
 			pendingRoads->erase(it);
-            structurePiece->addChildren(startRoom, &pieces, random);
-        }
-    }
+			structurePiece->addChildren(startRoom, &pieces, random);
+		}
+	}
 
-    calculateBoundingBox();
+	calculateBoundingBox();
 
-    int count = 0;
+	int count = 0;
 	for( AUTO_VAR(it, pieces.begin()); it != pieces.end(); it++ )
 	{
 		StructurePiece *piece = *it;
-        if (dynamic_cast<VillagePieces::VillageRoadPiece *>(piece) == NULL)
+		if (dynamic_cast<VillagePieces::VillageRoadPiece *>(piece) == NULL)
 		{
-            count++;
-        }
+			count++;
+		}
 	}
 	valid = count > 2;
 }
@@ -141,4 +172,17 @@ bool VillageFeature::VillageStart::isValid()
 		valid=false;
 	}
 	return valid;
+}
+
+void VillageFeature::VillageStart::addAdditonalSaveData(CompoundTag *tag)
+{
+	StructureStart::addAdditonalSaveData(tag);
+
+	tag->putBoolean(L"Valid", valid);
+}
+
+void VillageFeature::VillageStart::readAdditonalSaveData(CompoundTag *tag)
+{
+	StructureStart::readAdditonalSaveData(tag);
+	valid = tag->getBoolean(L"Valid");
 }

@@ -48,12 +48,41 @@ class SQRNetworkPlayer
 		SNP_TYPE_REMOTE,	// On host - this player's m_rupdCtx can be used to communicate from between the host and this player. On clients - this is a remote player that cannot be communicated with
 	} eSQRNetworkPlayerType;
 
+	enum AckFlags
+	{
+		e_flag_AckUnknown,
+		e_flag_AckNotRequested,
+		e_flag_AckRequested,
+		e_flag_AckReturning
+	};
+
+	class DataPacketHeader
+	{
+		unsigned short m_dataSize;
+		unsigned short m_ackFlags;
+	public:
+		DataPacketHeader() : m_dataSize(0), m_ackFlags(e_flag_AckUnknown) {}
+		DataPacketHeader(int dataSize, AckFlags ackFlags) : m_dataSize(dataSize), m_ackFlags(ackFlags) { }
+		AckFlags GetAckFlags() { return (AckFlags)m_ackFlags;}
+		int GetDataSize() { return m_dataSize; }
+	};
+
+#ifndef _CONTENT_PACKAGE
+	std::vector<__int64> m_ackStats;
+	int m_minAckTime;
+	int m_maxAckTime;
+	int m_totalAcks;
+	__int64 m_totalAckTime;
+	int m_averageAckTime;
+#endif
+
 	class QueuedSendBlock
 	{
 	public:
 		unsigned char *start;
 		unsigned char *end;
 		unsigned char *current;
+		AckFlags ack;
 	};
 
 	class InitSendData
@@ -75,11 +104,26 @@ class SQRNetworkPlayer
 	void						InitialDataReceived(InitSendData *ISD);	// Only for remote players as viewed from the host, this is set when the host has received confirmation that the client has received the small id for this player, ie it is now safe to send data to
 	bool						HasSmallIdConfirmed();
 
-	void						SendData( SQRNetworkPlayer *pPlayerTarget, const void *data, unsigned int dataSize );
+	void						SendData( SQRNetworkPlayer *pPlayerTarget, const void *data, unsigned int dataSize, bool ack );
 
 	void						ConfirmReady();
-	void						SendInternal(const void *data, unsigned int dataSize);
+	void						SendInternal(const void *data, unsigned int dataSize, AckFlags ackFlags);
 	void						SendMoreInternal();
+	int							GetPacketDataSize();
+	int							ReadDataPacket(void* data, int dataSize);
+	int							WriteDataPacket(const void* data, int dataSize, AckFlags ackFlags);
+	void						ReadAck();
+	void						WriteAck();
+	
+	int							GetOutstandingAckCount();
+	int							GetSendQueueSizeBytes();
+	int							GetSendQueueSizeMessages();
+
+	int							GetTotalOutstandingAckCount();
+	int							GetTotalSendQueueBytes();
+	int							GetTotalSendQueueMessages();
+
+
 #ifdef __PSVITA__
 	void						SendInternal_VitaAdhoc(const void *data, unsigned int dataSize, EAdhocDataTag tag = e_dataTag_Normal);
 	void						SendMoreInternal_VitaAdhoc();
@@ -99,5 +143,9 @@ class SQRNetworkPlayer
 	wchar_t						m_name[21];
 	uintptr_t					m_customData;
 	CRITICAL_SECTION			m_csQueue;
+	CRITICAL_SECTION			m_csAcks;
 	std::queue<QueuedSendBlock>	m_sendQueue;
+	int							m_totalBytesInSendQueue;
+
+	int							m_acksOutstanding;
 };

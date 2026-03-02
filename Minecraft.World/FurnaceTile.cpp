@@ -3,6 +3,7 @@
 #include "net.minecraft.world.entity.item.h"
 #include "net.minecraft.world.entity.player.h"
 #include "net.minecraft.world.item.h"
+#include "net.minecraft.world.inventory.h"
 #include "net.minecraft.world.level.tile.entity.h"
 #include "net.minecraft.world.h"
 #include "FurnaceTile.h"
@@ -11,7 +12,7 @@
 
 bool FurnaceTile::noDrop = false;
 
-FurnaceTile::FurnaceTile(int id, bool lit) : EntityTile(id, Material::stone)
+FurnaceTile::FurnaceTile(int id, bool lit) : BaseEntityTile(id, Material::stone)
 {
 	random = new Random();
 	this->lit = lit;
@@ -27,7 +28,7 @@ int FurnaceTile::getResource(int data, Random *random, int playerBonusLevel)
 
 void FurnaceTile::onPlace(Level *level, int x, int y, int z)
 {
-	EntityTile::onPlace(level, x, y, z);
+	BaseEntityTile::onPlace(level, x, y, z);
 	recalcLockDir(level, x, y, z);
 }
 
@@ -48,7 +49,7 @@ void FurnaceTile::recalcLockDir(Level *level, int x, int y, int z)
 	if (Tile::solid[s] && !Tile::solid[n]) lockDir = 2;
 	if (Tile::solid[w] && !Tile::solid[e]) lockDir = 5;
 	if (Tile::solid[e] && !Tile::solid[w]) lockDir = 4;
-	level->setData(x, y, z, lockDir);
+	level->setData(x, y, z, lockDir, Tile::UPDATE_CLIENTS);
 }
 
 Icon *FurnaceTile::getTexture(int face, int data)
@@ -83,15 +84,18 @@ void FurnaceTile::animateTick(Level *level, int xt, int yt, int zt, Random *rand
 	{
 		level->addParticle(eParticleType_smoke, x - r, y, z + ss, 0, 0, 0);
 		level->addParticle(eParticleType_flame, x - r, y, z + ss, 0, 0, 0);
-	} else if (dir == 5)
+	}
+	else if (dir == 5)
 	{
 		level->addParticle(eParticleType_smoke, x + r, y, z + ss, 0, 0, 0);
 		level->addParticle(eParticleType_flame, x + r, y, z + ss, 0, 0, 0);
-	} else if (dir == 2)
+	}
+	else if (dir == 2)
 	{
 		level->addParticle(eParticleType_smoke, x + ss, y, z - r, 0, 0, 0);
 		level->addParticle(eParticleType_flame, x + ss, y, z - r, 0, 0, 0);
-	} else if (dir == 3)
+	}
+	else if (dir == 3)
 	{
 		level->addParticle(eParticleType_smoke, x + ss, y, z + r, 0, 0, 0);
 		level->addParticle(eParticleType_flame, x + ss, y, z + r, 0, 0, 0);
@@ -123,11 +127,11 @@ void FurnaceTile::setLit(bool lit, Level *level, int x, int y, int z)
 	shared_ptr<TileEntity> te = level->getTileEntity(x, y, z);
 
 	noDrop = true;
-	if (lit) level->setTile(x, y, z, Tile::furnace_lit_Id);
-	else level->setTile(x, y, z, Tile::furnace_Id);
+	if (lit) level->setTileAndUpdate(x, y, z, Tile::furnace_lit_Id);
+	else level->setTileAndUpdate(x, y, z, Tile::furnace_Id);
 	noDrop = false;
 
-	level->setData(x, y, z, data);
+	level->setData(x, y, z, data, Tile::UPDATE_CLIENTS);
 	if( te != NULL )
 	{
 		te->clearRemoved();
@@ -140,14 +144,19 @@ shared_ptr<TileEntity> FurnaceTile::newTileEntity(Level *level)
 	return shared_ptr<FurnaceTileEntity>( new FurnaceTileEntity() );
 }
 
-void FurnaceTile::setPlacedBy(Level *level, int x, int y, int z, shared_ptr<Mob> by)
+void FurnaceTile::setPlacedBy(Level *level, int x, int y, int z, shared_ptr<LivingEntity> by, shared_ptr<ItemInstance> itemInstance)
 {
 	int dir = (Mth::floor(by->yRot * 4 / (360) + 0.5)) & 3;
 
-	if (dir == 0) level->setData(x, y, z, Facing::NORTH);
-	if (dir == 1) level->setData(x, y, z, Facing::EAST);
-	if (dir == 2) level->setData(x, y, z, Facing::SOUTH);
-	if (dir == 3) level->setData(x, y, z, Facing::WEST);
+	if (dir == 0) level->setData(x, y, z, Facing::NORTH, Tile::UPDATE_CLIENTS);
+	if (dir == 1) level->setData(x, y, z, Facing::EAST, Tile::UPDATE_CLIENTS);
+	if (dir == 2) level->setData(x, y, z, Facing::SOUTH, Tile::UPDATE_CLIENTS);
+	if (dir == 3) level->setData(x, y, z, Facing::WEST, Tile::UPDATE_CLIENTS);
+
+	if (itemInstance->hasCustomHoverName())
+	{
+		dynamic_pointer_cast<FurnaceTileEntity>( level->getTileEntity(x, y, z))->setCustomName(itemInstance->getHoverName());
+	}
 }
 
 void FurnaceTile::onRemove(Level *level, int x, int y, int z, int id, int data)
@@ -201,8 +210,24 @@ void FurnaceTile::onRemove(Level *level, int x, int y, int z, int id, int data)
 					container->setItem(i,nullptr);
 				}
 			}
+			level->updateNeighbourForOutputSignal(x, y, z, id);
 		}
 	}
-	EntityTile::onRemove(level, x, y, z, id, data);
+	BaseEntityTile::onRemove(level, x, y, z, id, data);
 
+}
+
+bool FurnaceTile::hasAnalogOutputSignal()
+{
+	return true;
+}
+
+int FurnaceTile::getAnalogOutputSignal(Level *level, int x, int y, int z, int dir)
+{
+	return AbstractContainerMenu::getRedstoneSignalFromContainer(dynamic_pointer_cast<Container>( level->getTileEntity(x, y, z)) );
+}
+
+int FurnaceTile::cloneTileId(Level *level, int x, int y, int z)
+{
+	return Tile::furnace_Id;
 }

@@ -9,14 +9,19 @@ void MobSpawnerRenderer::render(shared_ptr<TileEntity> _spawner, double x, doubl
 {
 	// 4J - dynamic cast required because we aren't using templates/generics in our version
 	shared_ptr<MobSpawnerTileEntity> spawner = dynamic_pointer_cast<MobSpawnerTileEntity>(_spawner);
+	render(spawner->getSpawner(), x, y, z, a);
+    glPopMatrix();
+}
 
+void MobSpawnerRenderer::render(BaseMobSpawner *spawner, double x, double y, double z, float a)
+{
 	glPushMatrix();
     glTranslatef((float) x + 0.5f, (float) y, (float) z + 0.5f);
 
     shared_ptr<Entity> e = spawner->getDisplayEntity();
     if (e != NULL)
 	{
-        e->setLevel(spawner->level);
+        e->setLevel(spawner->getLevel());
         float s = 7 / 16.0f;
         glTranslatef(0, 0.4f, 0);
         glRotatef((float) (spawner->oSpin + (spawner->spin - spawner->oSpin) * a) * 10, 0, 1, 0);
@@ -26,5 +31,4 @@ void MobSpawnerRenderer::render(shared_ptr<TileEntity> _spawner, double x, doubl
         e->moveTo(x, y, z, 0, 0);
         EntityRenderDispatcher::instance->render(e, 0, 0, 0, 0, a);
     }
-    glPopMatrix();
 }

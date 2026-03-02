@@ -15,8 +15,9 @@ public:
 
 	virtual bool stillValid(shared_ptr<Player> player);
 	virtual shared_ptr<ItemInstance> quickMoveStack(shared_ptr<Player> player, int slotIndex);
-	void removed(shared_ptr<Player> player);
+	virtual void removed(shared_ptr<Player> player);
+	virtual shared_ptr<Container> getContainer();
 
 	// 4J ADDED,
-	virtual shared_ptr<ItemInstance> clicked(int slotIndex, int buttonNum, int clickType, shared_ptr<Player> player);
+	virtual shared_ptr<ItemInstance> clicked(int slotIndex, int buttonNum, int clickType, shared_ptr<Player> player, bool looped = false);
 };

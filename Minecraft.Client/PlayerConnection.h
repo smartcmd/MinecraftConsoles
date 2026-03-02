@@ -94,6 +94,7 @@ public:
     virtual bool isServerPacketListener();
 	virtual void handlePlayerAbilities(shared_ptr<PlayerAbilitiesPacket> playerAbilitiesPacket);
 	virtual void handleCustomPayload(shared_ptr<CustomPayloadPacket> customPayloadPacket);
+	virtual bool isDisconnected();
 
 	// 4J Added	
 	virtual void handleCraftItem(shared_ptr<CraftItemPacket> packet);

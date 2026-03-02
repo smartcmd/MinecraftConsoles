@@ -59,35 +59,35 @@ Vec3 *Vec3::newTemp(double x, double y, double z)
 	Vec3 *thisVec = &tls->pool[tls->poolPointer];
 	thisVec->set(x, y, z);
 	tls->poolPointer = ( tls->poolPointer + 1 ) % ThreadStorage::POOL_SIZE;
-    return thisVec;
+	return thisVec;
 }
 
 Vec3::Vec3(double x, double y, double z)
 {
-    if (x == -0.0) x = 0.0;
-    if (y == -0.0) y = 0.0;
-    if (z == -0.0) z = 0.0;
-    this->x = x;
-    this->y = y;
-    this->z = z;
+	if (x == -0.0) x = 0.0;
+	if (y == -0.0) y = 0.0;
+	if (z == -0.0) z = 0.0;
+	this->x = x;
+	this->y = y;
+	this->z = z;
 }
 
 Vec3 *Vec3::set(double x, double y, double z)
 {
-    this->x = x;
-    this->y = y;
-    this->z = z;
-    return this;
+	this->x = x;
+	this->y = y;
+	this->z = z;
+	return this;
 }
 
 
 Vec3 *Vec3::interpolateTo(Vec3 *t, double p)
 {
-    double xt = x + (t->x - x) * p;
-    double yt = y + (t->y - y) * p;
-    double zt = z + (t->z - z) * p;
+	double xt = x + (t->x - x) * p;
+	double yt = y + (t->y - y) * p;
+	double zt = z + (t->z - z) * p;
 
-    return Vec3::newTemp(xt, yt, zt);
+	return Vec3::newTemp(xt, yt, zt);
 }
 
 Vec3 *Vec3::vectorTo(Vec3 *p)
@@ -97,9 +97,9 @@ Vec3 *Vec3::vectorTo(Vec3 *p)
 
 Vec3 *Vec3::normalize()
 {
-    double dist = (double) (sqrt(x * x + y * y + z * z));
-    if (dist < 0.0001) return Vec3::newTemp(0, 0, 0);
-    return Vec3::newTemp(x / dist, y / dist, z / dist);
+	double dist = (double) (sqrt(x * x + y * y + z * z));
+	if (dist < 0.0001) return Vec3::newTemp(0, 0, 0);
+	return Vec3::newTemp(x / dist, y / dist, z / dist);
 }
 
 double Vec3::dot(Vec3 *p)
@@ -119,26 +119,26 @@ Vec3 *Vec3::add(double x, double y, double z)
 
 double Vec3::distanceTo(Vec3 *p)
 {
-    double xd = p->x - x;
-    double yd = p->y - y;
-    double zd = p->z - z;
-    return (double) sqrt(xd * xd + yd * yd + zd * zd);
+	double xd = p->x - x;
+	double yd = p->y - y;
+	double zd = p->z - z;
+	return (double) sqrt(xd * xd + yd * yd + zd * zd);
 }
 
 double Vec3::distanceToSqr(Vec3 *p)
 {
-    double xd = p->x - x;
-    double yd = p->y - y;
-    double zd = p->z - z;
-    return xd * xd + yd * yd + zd * zd;
+	double xd = p->x - x;
+	double yd = p->y - y;
+	double zd = p->z - z;
+	return xd * xd + yd * yd + zd * zd;
 }
 
 double Vec3::distanceToSqr(double x2, double y2, double z2)
 {
-    double xd = x2 - x;
-    double yd = y2 - y;
-    double zd = z2 - z;
-    return xd * xd + yd * yd + zd * zd;
+	double xd = x2 - x;
+	double yd = y2 - y;
+	double zd = z2 - z;
+	return xd * xd + yd * yd + zd * zd;
 }
 
 Vec3 *Vec3::scale(double l)
@@ -153,41 +153,41 @@ double Vec3::length()
 
 Vec3 *Vec3::clipX(Vec3 *b, double xt)
 {
-    double xd = b->x - x;
-    double yd = b->y - y;
-    double zd = b->z - z;
+	double xd = b->x - x;
+	double yd = b->y - y;
+	double zd = b->z - z;
 
-    if (xd * xd < 0.0000001f) return NULL;
+	if (xd * xd < 0.0000001f) return NULL;
 
-    double d = (xt - x) / xd;
-    if (d < 0 || d > 1) return NULL;
-    return Vec3::newTemp(x + xd * d, y + yd * d, z + zd * d);
+	double d = (xt - x) / xd;
+	if (d < 0 || d > 1) return NULL;
+	return Vec3::newTemp(x + xd * d, y + yd * d, z + zd * d);
 }
 
 Vec3 *Vec3::clipY(Vec3 *b, double yt)
 {
-    double xd = b->x - x;
-    double yd = b->y - y;
-    double zd = b->z - z;
+	double xd = b->x - x;
+	double yd = b->y - y;
+	double zd = b->z - z;
 
-    if (yd * yd < 0.0000001f) return NULL;
+	if (yd * yd < 0.0000001f) return NULL;
 
-    double d = (yt - y) / yd;
-    if (d < 0 || d > 1) return NULL;
-    return Vec3::newTemp(x + xd * d, y + yd * d, z + zd * d);
+	double d = (yt - y) / yd;
+	if (d < 0 || d > 1) return NULL;
+	return Vec3::newTemp(x + xd * d, y + yd * d, z + zd * d);
 }
 
 Vec3 *Vec3::clipZ(Vec3 *b, double zt)
 {
-    double xd = b->x - x;
-    double yd = b->y - y;
-    double zd = b->z - z;
+	double xd = b->x - x;
+	double yd = b->y - y;
+	double zd = b->z - z;
 
-    if (zd * zd < 0.0000001f) return NULL;
+	if (zd * zd < 0.0000001f) return NULL;
 
-    double d = (zt - z) / zd;
-    if (d < 0 || d > 1) return NULL;
-    return Vec3::newTemp(x + xd * d, y + yd * d, z + zd * d);
+	double d = (zt - z) / zd;
+	if (d < 0 || d > 1) return NULL;
+	return Vec3::newTemp(x + xd * d, y + yd * d, z + zd * d);
 }
 
 wstring Vec3::toString()
@@ -204,44 +204,44 @@ Vec3 *Vec3::lerp(Vec3 *v, double a)
 
 void Vec3::xRot(float degs)
 {
-    double _cos = cos(degs);		// 4J - cos/sin were floats but seems pointless wasting precision here
-    double _sin = sin(degs);
+	double _cos = cos(degs);		// 4J - cos/sin were floats but seems pointless wasting precision here
+	double _sin = sin(degs);
 
-    double xx = x;
-    double yy = y * _cos + z * _sin;
-    double zz = z * _cos - y * _sin;
+	double xx = x;
+	double yy = y * _cos + z * _sin;
+	double zz = z * _cos - y * _sin;
 
-    this->x = xx;
-    this->y = yy;
-    this->z = zz;
+	x = xx;
+	y = yy;
+	z = zz;
 }
 
 void Vec3::yRot(float degs)
 {
 	double _cos = cos(degs);		// 4J - cos/sin were floats but seems pointless wasting precision here
-    double _sin = sin(degs);
+	double _sin = sin(degs);
 
-    double xx = x * _cos + z * _sin;
-    double yy = y;
-    double zz = z * _cos - x * _sin;
+	double xx = x * _cos + z * _sin;
+	double yy = y;
+	double zz = z * _cos - x * _sin;
 
-    this->x = xx;
-    this->y = yy;
-    this->z = zz;
+	x = xx;
+	y = yy;
+	z = zz;
 }
 
 void Vec3::zRot(float degs)
 {
 	double _cos = cos(degs);		// 4J - cos/sin were floats but seems pointless wasting precision here
-    double _sin = sin(degs);
+	double _sin = sin(degs);
 
-    double xx = x * _cos + y * _sin;
-    double yy = y * _cos - x * _sin;
-    double zz = z;
+	double xx = x * _cos + y * _sin;
+	double yy = y * _cos - x * _sin;
+	double zz = z;
 
-    this->x = xx;
-    this->y = yy;
-    this->z = zz;
+	x = xx;
+	y = yy;
+	z = zz;
 }
 
 // Returns 0 if this point is within the box
@@ -262,4 +262,31 @@ double Vec3::distanceTo(AABB *box)
 	else if( z > box->z1) zd = z - box->z1;
 
 	return sqrt(xd * xd + yd * yd + zd * zd);
+}
+
+
+
+Vec3* Vec3::closestPointOnLine(Vec3* p1, Vec3* p2)
+{
+	Vec3* diff = newTemp(x-p1->x, y-p1->y, z-p1->z);
+	Vec3* dir = newTemp(p2->x-p1->x, p2->y-p1->y, p2->z-p1->z);
+	float dot1 = diff->dot(dir);
+	if (dot1 <= 0.0f) 
+		return p1;
+
+	float dot2 = dir->dot(dir);
+
+	if (dot2 <= dot1) 
+		return p2;
+
+	float t=dot1/dot2;
+	return newTemp(p1->x + t * dir->x, p1->y + t * dir->y, p1->z + t * dir->z);
+}
+
+
+double Vec3::distanceFromLine(Vec3* p1, Vec3* p2)
+{
+	Vec3* closestPoint = closestPointOnLine(p1, p2);
+	Vec3* diff = newTemp(x-closestPoint->x, y-closestPoint->y, z-closestPoint->z);
+	return diff->length();
 }

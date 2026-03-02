@@ -36,7 +36,7 @@ SlimeModel::SlimeModel(int vOffs)
 
 void SlimeModel::render(shared_ptr<Entity> entity, float time, float r, float bob, float yRot, float xRot, float scale, bool usecompiled)
 {
-    setupAnim(time, r, bob, yRot, xRot, scale);
+    setupAnim(time, r, bob, yRot, xRot, scale, entity);
 
     cube->render(scale,usecompiled);
     if (eye0!=NULL)

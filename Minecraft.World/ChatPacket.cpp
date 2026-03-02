@@ -13,13 +13,31 @@ ChatPacket::ChatPacket()
 	m_messageType = e_ChatCustom;
 }
 
-// Old chat packet constructor, adds message, custom data and additional message to arg vectors
-ChatPacket::ChatPacket(const wstring& message, EChatPacketMessage type /*= e_ChatCustom*/, int customData /*= -1*/, const wstring& additionalMessage /*= L""*/)
+ChatPacket::ChatPacket(const wstring& message, EChatPacketMessage type /*= e_ChatCustom*/, int customData /*= -1*/)
 {
 	m_messageType = type;
 	if (customData != -1) m_intArgs.push_back(customData);
-	if (message != L"" || additionalMessage != L"") m_stringArgs.push_back(message);
-	if (additionalMessage != L"") m_stringArgs.push_back(additionalMessage);
+
+	m_stringArgs.push_back(message);
+}
+
+ChatPacket::ChatPacket(const wstring& message, EChatPacketMessage type, int sourceEntityType, const wstring& sourceName)
+{
+	m_messageType = type;
+	if (sourceEntityType != -1) m_intArgs.push_back(sourceEntityType);
+
+	m_stringArgs.push_back(message);
+	m_stringArgs.push_back(sourceName);
+}
+
+ChatPacket::ChatPacket(const wstring& message, EChatPacketMessage type, int sourceEntityType, const wstring& sourceName, const wstring& itemName)
+{
+	m_messageType = type;
+	if (sourceEntityType != -1) m_intArgs.push_back(sourceEntityType);
+
+	m_stringArgs.push_back(message);
+	m_stringArgs.push_back(sourceName);
+	m_stringArgs.push_back(itemName);
 }
 
 // Read chat packet (throws IOException)
@@ -56,7 +74,7 @@ void ChatPacket::write(DataOutputStream *dos)
 	for(int i = 0; i < m_stringArgs.size(); i++)
 	{
 		writeUtf(m_stringArgs[i], dos);
-}
+	}
 
 	for(int i = 0; i < m_intArgs.size(); i++)
 	{

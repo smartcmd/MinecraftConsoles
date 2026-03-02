@@ -1,37 +1,124 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <root>
-	<data name="IDS_TIPS_GAMETIP_0">
-		<value>NOT USED</value>
+	<data name="IDS_SIGNIN_PSN">
+		<value>Wil je je nu aanmelden bij "PSN"?</value>
 	</data>
-	<data name="IDS_TIPS_GAMETIP_1">
-		<value>Gebruik het touchscreen van het PlayStation®Vita-systeem om door de menu's te bladeren.</value>
+	<data name="IDS_KICK_PLAYER_DESCRIPTION">
+		<value>Met deze optie verwijder je een speler op een ander PlayStation®Vita-systeem en eventuele andere spelers op dat PlayStation®Vita-systeem. Deze spelers kunnen pas weer meedoen als de game opnieuw wordt gestart.</value>
 	</data>
-	<data name="IDS_TIPS_GAMETIP_48">
-		<value>Op minecraftforum is er een speciaal gedeelte voor de PlayStation®Vita Edition.</value>
+	<data name="IDS_BACK_BUTTON">
+		<value>SELECT</value>
 	</data>
-	<data name="IDS_TIPS_GAMETIP_44">
-		<value>Volg @4JStudios en @Kappische op Twitter voor het laatste nieuws over deze game!</value>
+	<data name="IDS_HOST_OPTION_DISABLES_ACHIEVEMENTS">
+		<value>Hiermee worden trofeeën en klassementen tijdens het spelen niet bijgewerkt. Deze instelling blijft ook van kracht als je deze wereld opslaat en afsluit, en later weer laadt.</value>
 	</data>
-	<data name="IDS_TIPS_GAMETIP_45">
-		<value>Kijk een Einder-man nooit aan!</value>
+	<data name="IDS_PLATFORM_NAME">
+		<value>PlayStation®Vita-systeem</value>
 	</data>
-	<data name="IDS_TIPS_TRIVIA_4">
-		<value>We weten het niet zeker, maar we vermoeden dat 4J Studios Herobrine uit de PlayStation®Vita-versie heeft verwijderd.</value>
+	<data name="IDS_SELECT_NETWORK_MODE_TEXT">
+		<value>Kies Ad hoc-netwerk om verbinding te maken met andere PlayStation®Vita-systemen in de buurt. Kies "PSN" om verbinding te maken met spelers over de hele wereld.</value>
 	</data>
-	<data name="IDS_TIPS_TRIVIA_17">
-		<value>Minecraft: PlayStation®Vita Edition heeft veel records gebroken!</value>
+	<data name="IDS_NETWORK_ADHOC">
+		<value>Ad hoc-netwerk</value>
 	</data>
-	<data name="IDS_HOW_TO_PLAY_MULTIPLAYER">
-		<value>{*T3*}INSTRUCTIES: MULTIPLAYER{*ETW*}{*B*}{*B*}
-Minecraft voor het PlayStation®Vita-systeem heeft geweldige multiplayer-mogelijkheden.{*B*}{*B*}
-Mensen op je vriendenlijst zien wanneer je een online game start of je je bij een andere game aansluit (tenzij je als host de optie 'Alleen op uitnodiging' hebt ingeschakeld). Als je vrienden zich bij je game aansluiten, is dat ook te zien voor mensen op hun vriendenlijst (als je de optie 'Vrienden van vrienden toestaan' hebt ingeschakeld).{*B*}
-Eenmaal in een game kun je op de SELECT-toets drukken voor een lijst van alle andere spelers in de game. Je kunt daar ook spelers verwijderen.</value>
+	<data name="IDS_TOOLTIP_CHANGE_NETWORK_MODE">
+		<value>Netwerkmodus wijzigen</value>
 	</data>
-	<data name="IDS_HOW_TO_PLAY_SOCIALMEDIA">
-		<value>{*T3*}INSTRUCTIES: SCREENSHOTS DELEN{*ETW*}{*B*}{*B*}
-Je kunt een screenshot maken en delen op Facebook door in het pauzemenu op{*CONTROLLER_VK_Y*} te drukken. Je ziet een kleine versie van je screenshot en kunt de tekst van het bijbehorende Facebook-bericht aanpassen.{*B*}{*B*}
-Er is een speciaal cameraperspectief voor screenshots, waarbij je je personage van voren ziet. Kies dat perspectief door op{*CONTROLLER_ACTION_CAMERA*} te drukken totdat je je personage van voren ziet en druk vervolgens op{*CONTROLLER_VK_Y*} om je screenshot te delen.{*B*}{*B*}
-Online-id's worden niet weergegeven op screenshots.</value>
+	<data name="IDS_SELECT_NETWORK_MODE_TITLE">
+		<value>Kies Netwerk</value>
+	</data>
+	<data name="IDS_CHECKBOX_DISPLAY_SPLITSCREENGAMERTAGS">
+		<value>Online-id's op gedeeld scherm</value>
+	</data>
+	<data name="IDS_ACHIEVEMENTS">
+		<value>Trofeeën</value>
+	</data>
+	<data name="IDS_SAVE_ICON_MESSAGE">
+		<value>Deze game slaat werelden automatisch op. Als je bovenstaand pictogram ziet, worden je spelgegevens opgeslagen.
+Schakel je PlayStation®Vita-systeem niet uit als dit pictogram wordt weergegeven.</value>
+	</data>
+	<data name="IDS_GAMEOPTION_HOST_PRIVILEGES">
+		<value>Als deze optie is ingeschakeld, kunnen hosts via het game-menu hun vermogen om te vliegen aan- en uitzetten, uitputting uitschakelen en zichzelf onzichtbaar maken. Hiermee worden trofeeën en klassementen uitgeschakeld.</value>
+	</data>
+	<data name="IDS_LABEL_GAMERTAGS">
+		<value>Online-id's:</value>
+	</data>
+	<data name="IDS_USING_TRIAL_TEXUREPACK_WARNING">
+		<value>Je gebruikt de testversie van een texturepakket. Je hebt toegang tot de volledige inhoud van het texturepakket, maar je kunt je voortgang niet opslaan.
+Als je probeert op te slaan tijdens het gebruik van de testversie, krijg je de mogelijkheid om de volledige versie te kopen.
+    </value>
+	</data>
+	<data name="IDS_TITLE_UPDATE_NAME">
+		<value>Patch 1.04 (titel-update 14)</value>
+	</data>
+	<data name="IDS_IN_GAME_GAMERTAGS">
+		<value>Online-id's in de game</value>
+	</data>
+	<data name="IDS_SOCIAL_DEFAULT_DESCRIPTION">
+		<value>Kijk eens wat ik heb gemaakt in Minecraft: PlayStation®Vita Edition!</value>
+	</data>
+	<data name="IDS_SAVE_TRANSFER_DOWNLOADFAILED">
+		<value>Download mislukt. Probeer het later opnieuw.</value>
+	</data>
+	<data name="IDS_DISCONNECTED_NAT_TYPE_MISMATCH">
+		<value>Aansluiten bij de game is mislukt wegens een beperkend NAT-type. Controleer je netwerkinstellingen.</value>
+	</data>
+	<data name="IDS_SAVE_TRANSFER_UPLOADFAILED">
+		<value>Upload mislukt. Probeer het later opnieuw.</value>
+	</data>
+	<data name="IDS_SAVE_TRANSFER_DOWNLOADCOMPLETE">
+		<value>Download voltooid!</value>
+	</data>
+	<data name="IDS_SAVE_TRANSFER_NOT_AVAILABLE_TEXT">
+		<value>
+Er zijn op dit moment geen opslagbestanden beschikbaar op de overdrachtslocatie.
+Je kunt in Minecraft: PlayStation®3 Edition een opgeslagen wereld uploaden naar de overdrachtslocatie en deze vervolgens downloaden in Minecraft: PlayStation®Vita Edition.
+   </value>
+	</data>
+	<data name="IDS_SAVE_INCOMPLETE_TITLE">
+		<value>Opslaan niet voltooid</value>
+	</data>
+	<data name="IDS_SAVE_INCOMPLETE_EXPLANATION_QUOTA">
+		<value>Minecraft: PlayStation®Vita Edition beschikt niet over genoeg ruimte voor opslaggegevens. Verwijder andere opslagbestanden van Minecraft: PlayStation®Vita Edition om ruimte te maken.</value>
+	</data>
+	<data name="IDS_CANCEL_UPLOAD_TITLE">
+		<value>Uploaden geannuleerd</value>
+	</data>
+	<data name="IDS_CANCEL_UPLOAD_TEXT">
+		<value>Je hebt het uploaden van dit opslagbestand naar de overdrachtslocatie geannuleerd.</value>
+	</data>
+	<data name="IDS_TOOLTIPS_SAVETRANSFER_UPLOAD">
+		<value>Opslagbestand voor PS3™/PS4™ uploaden</value>
+	</data>
+	<data name="IDS_SAVETRANSFER_STAGE_PUT_DATA">
+		<value>Gegevens uploaden: %d%%</value>
+	</data>
+	<data name="IDS__NETWORK_PSN">
+		<value>"PSN"</value>
+	</data>
+	<data name="IDS_TOOLTIPS_SAVETRANSFER_DOWNLOAD">
+		<value>PS3™-data downloaden</value>
+	</data>
+	<data name="IDS_SAVETRANSFER_STAGE_GET_DATA">
+		<value>Gegevens downloaden: %d%%</value>
+	</data>
+	<data name="IDS_SAVETRANSFER_STAGE_SAVING">
+		<value>Opslaan...</value>
+	</data>
+	<data name="IDS_SAVE_TRANSFER_UPLOADCOMPLETE">
+		<value>Upload voltooid!</value>
+	</data>
+	<data name="IDS_SAVE_TRANSFER_TEXT">
+		<value>Weet je zeker dat je dit opslagbestand wilt uploaden? Als de overdrachtslocatie al een opslagbestand bevat, wordt dit overschreven.</value>
+	</data>
+	<data name="IDS_SAVETRANSFER_STAGE_CONVERTING">
+		<value>Gegevens converteren...</value>
+	</data>
+	<data name="IDS_TOOLTIPS_SELECTDEVICE">
+		<value>NIET GEBRUIKT</value>
+	</data>
+	<data name="IDS_TOOLTIPS_CHANGEDEVICE">
+		<value>NIET GEBRUIKT</value>
 	</data>
 	<data name="IDS_HOW_TO_PLAY_CREATIVE">
 		<value>{*T3*}INSTRUCTIES: SPELTYPE CREATIEF{*ETW*}{*B*}{*B*}
@@ -46,20 +133,8 @@ naar links gaan met{*CONTROLLER_ACTION_DPAD_LEFT*} en naar rechts gaan met{*CONT
 		<value>Druk twee keer kort op{*CONTROLLER_ACTION_JUMP*} om te vliegen. Doe hetzelfde om te stoppen met vliegen. Om sneller te vliegen, duw je{*CONTROLLER_ACTION_MOVE*} twee keer kort naar voren. 
 Terwijl je vliegt, hou je{*CONTROLLER_ACTION_JUMP*} ingedrukt om te stijgen en{*CONTROLLER_ACTION_SNEAK*} om te dalen. Je kunt ook de richtingstoetsen gebruiken om te stijgen, te dalen en naar links en rechts te gaan.</value>
 	</data>
-	<data name="IDS_TOOLTIPS_SELECTDEVICE">
-		<value>NIET GEBRUIKT</value>
-	</data>
-	<data name="IDS_TOOLTIPS_CHANGEDEVICE">
-		<value>NIET GEBRUIKT</value>
-	</data>
 	<data name="IDS_TOOLTIPS_VIEW_GAMERCARD">
 		<value>"NIET GEBRUIKT"  </value>
-	</data>
-	<data name="IDS_TOOLTIPS_VIEW_GAMERPROFILE">
-		<value>"NIET GEBRUIKT"</value>
-	</data>
-	<data name="IDS_TOOLTIPS_INVITE_PARTY">
-		<value>Vrienden uitnodigen</value>
 	</data>
 	<data name="IDS_CONFIRM_START_CREATIVE">
 		<value>In werelden die worden gemaakt, geladen of opgeslagen in het speltype Creatief zijn geen trofeeën en klassementen beschikbaar, zelfs niet als de wereld daarna als Survival-game wordt geladen. Weet je zeker dat je verder wilt gaan?</value>
@@ -67,11 +142,71 @@ Terwijl je vliegt, hou je{*CONTROLLER_ACTION_JUMP*} ingedrukt om te stijgen en{*
 	<data name="IDS_CONFIRM_START_SAVEDINCREATIVE">
 		<value>Deze wereld is al eens opgeslagen in het speltype Creatief, waardoor trofeeën en klassementen zijn uitgeschakeld. Weet je zeker dat je verder wilt gaan?</value>
 	</data>
-	<data name="IDS_CONFIRM_START_SAVEDINCREATIVE_CONTINUE">
-		<value>Deze wereld is al eens opgeslagen in het speltype Creatief, waardoor trofeeën en klassementen zijn uitgeschakeld.</value>
+	<data name="IDS_TOOLTIPS_VIEW_GAMERPROFILE">
+		<value>"NIET GEBRUIKT"</value>
 	</data>
-	<data name="IDS_CONFIRM_START_HOST_PRIVILEGES">
-		<value>Als je een wereld maakt, laadt of opslaat met ingeschakelde privileges voor de host, zijn trofeeën en klassementen uitgeschakeld, ook al laad je de wereld daarna zonder privileges. Weet je zeker dat je verder wilt gaan?</value>
+	<data name="IDS_TOOLTIPS_INVITE_PARTY">
+		<value>Vrienden uitnodigen</value>
+	</data>
+	<data name="IDS_TIPS_GAMETIP_48">
+		<value>Op minecraftforum is er een speciaal gedeelte voor de PlayStation®Vita Edition.</value>
+	</data>
+	<data name="IDS_TIPS_GAMETIP_44">
+		<value>Volg @4JStudios en @Kappische op Twitter voor het laatste nieuws over deze game!</value>
+	</data>
+	<data name="IDS_TIPS_GAMETIP_0">
+		<value>NOT USED</value>
+	</data>
+	<data name="IDS_TIPS_GAMETIP_1">
+		<value>Gebruik het touchscreen van het PlayStation®Vita-systeem om door de menu's te bladeren.</value>
+	</data>
+	<data name="IDS_TIPS_GAMETIP_45">
+		<value>Kijk een Einder-man nooit aan!</value>
+	</data>
+	<data name="IDS_HOW_TO_PLAY_MULTIPLAYER">
+		<value>{*T3*}INSTRUCTIES: MULTIPLAYER{*ETW*}{*B*}{*B*}
+Minecraft voor het PlayStation®Vita-systeem heeft geweldige multiplayer-mogelijkheden.{*B*}{*B*}
+Mensen op je vriendenlijst zien wanneer je een online game start of je je bij een andere game aansluit (tenzij je als host de optie 'Alleen op uitnodiging' hebt ingeschakeld). Als je vrienden zich bij je game aansluiten, is dat ook te zien voor mensen op hun vriendenlijst (als je de optie 'Vrienden van vrienden toestaan' hebt ingeschakeld).{*B*}
+Eenmaal in een game kun je op de SELECT-toets drukken voor een lijst van alle andere spelers in de game. Je kunt daar ook spelers verwijderen.</value>
+	</data>
+	<data name="IDS_HOW_TO_PLAY_SOCIALMEDIA">
+		<value>{*T3*}INSTRUCTIES: SCREENSHOTS DELEN{*ETW*}{*B*}{*B*}
+Je kunt een screenshot maken en delen op Facebook door in het pauzemenu op{*CONTROLLER_VK_Y*} te drukken. Je ziet een kleine versie van je screenshot en kunt de tekst van het bijbehorende Facebook-bericht aanpassen.{*B*}{*B*}
+Er is een speciaal cameraperspectief voor screenshots, waarbij je je personage van voren ziet. Kies dat perspectief door op{*CONTROLLER_ACTION_CAMERA*} te drukken totdat je je personage van voren ziet en druk vervolgens op{*CONTROLLER_VK_Y*} om je screenshot te delen.{*B*}{*B*}
+Online-id's worden niet weergegeven op screenshots.</value>
+	</data>
+	<data name="IDS_TIPS_TRIVIA_4">
+		<value>We weten het niet zeker, maar we vermoeden dat 4J Studios Herobrine uit de PlayStation®Vita-versie heeft verwijderd.</value>
+	</data>
+	<data name="IDS_TIPS_TRIVIA_17">
+		<value>Minecraft: PlayStation®Vita Edition heeft veel records gebroken!</value>
+	</data>
+	<data name="IDS_TRIALOVER_TEXT">
+		<value>De testversie van Minecraft: PlayStation®Vita Edition is verlopen! Wil je de volledige versie kopen, zodat je verder kunt spelen?</value>
+	</data>
+	<data name="IDS_FATAL_ERROR_TEXT">
+		<value>"Minecraft: PlayStation®Vita Edition" kan niet worden geladen en kan niet verdergaan.</value>
+	</data>
+	<data name="IDS_GROUPNAME_POTIONS_480">
+		<value>Brouwen</value>
+	</data>
+	<data name="IDS_RETURNEDTOTITLESCREEN_TEXT">
+		<value>Je bent terug in het titelscherm omdat je bent afgemeld bij "PSN".</value>
+	</data>
+	<data name="IDS_NO_MULTIPLAYER_PRIVILEGE_JOIN_TEXT">
+		<value>De game kan niet worden geladen omdat een of meer spelers niet online mogen spelen wegens chatbeperkingen van hun Sony Entertainment Network-account.</value>
+	</data>
+	<data name="IDS_NO_USER_CREATED_CONTENT_PRIVILEGE_ALL_LOCAL">
+		<value>Je kunt je niet aansluiten bij deze game-sessie omdat een van je lokale medespelers niet online mag spelen wegens chatbeperkingen van zijn of haar Sony Entertainment Network-account. Ga naar 'Meer opties' en schakel 'Online game' uit om te beginnen met een offline game.</value>
+	</data>
+	<data name="IDS_NO_USER_CREATED_CONTENT_PRIVILEGE_CREATE">
+		<value>Je kunt deze game-sessie niet maken omdat een van je lokale medespelers niet online mag spelen wegens chatbeperkingen van zijn of haar Sony Entertainment Network-account. Ga naar 'Meer opties' en schakel 'Online game' uit om te beginnen met een offline game.</value>
+	</data>
+	<data name="IDS_NO_MULTIPLAYER_PRIVILEGE_HOST_TEXT">
+		<value>De online game kan niet worden gemaakt omdat een of meer spelers niet online mogen spelen wegens chatbeperkingen van hun Sony Entertainment Network-account. Ga naar 'Meer opties' en schakel 'Online game' uit om te beginnen met een offline game.</value>
+	</data>
+	<data name="IDS_NO_USER_CREATED_CONTENT_PRIVILEGE_SINGLE_LOCAL">
+		<value>Je kunt je niet aansluiten bij deze game-sessie omdat je niet online mag spelen wegens chatbeperkingen van je Sony Entertainment Network-account.</value>
 	</data>
 	<data name="IDS_CONNECTION_LOST_LIVE">
 		<value>Verbinding met "PSN" is verbroken. Terug naar het hoofdmenu.</value>
@@ -79,9 +214,21 @@ Terwijl je vliegt, hou je{*CONTROLLER_ACTION_JUMP*} ingedrukt om te stijgen en{*
 	<data name="IDS_CONNECTION_LOST_LIVE_NO_EXIT">
 		<value>Verbinding met "PSN" is verbroken.</value>
 	</data>
+	<data name="IDS_CONFIRM_START_SAVEDINCREATIVE_CONTINUE">
+		<value>Deze wereld is al eens opgeslagen in het speltype Creatief, waardoor trofeeën en klassementen zijn uitgeschakeld.</value>
+	</data>
+	<data name="IDS_CONFIRM_START_HOST_PRIVILEGES">
+		<value>Als je een wereld maakt, laadt of opslaat met ingeschakelde privileges voor de host, zijn trofeeën en klassementen uitgeschakeld, ook al laad je de wereld daarna zonder privileges. Weet je zeker dat je verder wilt gaan?</value>
+	</data>
 	<data name="IDS_UNLOCK_ACHIEVEMENT_TEXT">
 		<value>Dit is de testversie van Minecraft: PlayStation®Vita Edition. Als je de volledige versie had, zou je nu een trofee krijgen!
 Koop de volledige game om optimaal te genieten van Minecraft: PlayStation®Vita Edition en samen te spelen met je vrienden uit de hele wereld via "PSN". Wil je nu de volledige versie kopen?</value>
+	</data>
+	<data name="IDS_UNLOCK_GUEST_TEXT">
+		<value>Gastspelers kunnen de volledige game niet ontgrendelen. Meld je aan met een Sony Entertainment Network-account.</value>
+	</data>
+	<data name="IDS_LEADERBOARD_GAMERTAG">
+		<value>Online-id</value>
 	</data>
 	<data name="IDS_UNLOCK_THEME_TEXT">
 		<value>Dit is de testversie van Minecraft: PlayStation®Vita Edition. Als je de volledige versie had, zou je nu een thema krijgen!
@@ -92,151 +239,7 @@ Wil je nu de volledige versie kopen?</value>
 		<value>Dit is de testversie van Minecraft: PlayStation®Vita Edition. Je kunt deze uitnodiging alleen accepteren als je de volledige versie hebt. 
 Wil je nu de volledige versie kopen?</value>
 	</data>
-	<data name="IDS_UNLOCK_GUEST_TEXT">
-		<value>Gastspelers kunnen de volledige game niet ontgrendelen. Meld je aan met een Sony Entertainment Network-account.</value>
-	</data>
-	<data name="IDS_LEADERBOARD_GAMERTAG">
-		<value>Online-id</value>
-	</data>
-	<data name="IDS_GROUPNAME_POTIONS_480">
-		<value>Brouwen</value>
-	</data>
-	<data name="IDS_RETURNEDTOTITLESCREEN_TEXT">
-		<value>Je bent terug in het titelscherm omdat je bent afgemeld bij "PSN".</value>
-	</data>
-	<data name="IDS_TRIALOVER_TEXT">
-		<value>De testversie van Minecraft: PlayStation®Vita Edition is verlopen! Wil je de volledige versie kopen, zodat je verder kunt spelen?</value>
-	</data>
-	<data name="IDS_FATAL_ERROR_TEXT">
-		<value>"Minecraft: PlayStation®Vita Edition" kan niet worden geladen en kan niet verdergaan.</value>
-	</data>
-	<data name="IDS_NO_MULTIPLAYER_PRIVILEGE_JOIN_TEXT">
-		<value>De game kan niet worden geladen omdat een of meer spelers niet online mogen spelen wegens chatbeperkingen van hun Sony Entertainment Network-account.</value>
-	</data>
-	<data name="IDS_NO_MULTIPLAYER_PRIVILEGE_HOST_TEXT">
-		<value>De online game kan niet worden gemaakt omdat een of meer spelers niet online mogen spelen wegens chatbeperkingen van hun Sony Entertainment Network-account. Ga naar 'Meer opties' en schakel 'Online game' uit om te beginnen met een offline game.</value>
-	</data>
-	<data name="IDS_NO_USER_CREATED_CONTENT_PRIVILEGE_SINGLE_LOCAL">
-		<value>Je kunt je niet aansluiten bij deze game-sessie omdat je niet online mag spelen wegens chatbeperkingen van je Sony Entertainment Network-account.</value>
-	</data>
-	<data name="IDS_NO_USER_CREATED_CONTENT_PRIVILEGE_ALL_LOCAL">
-		<value>Je kunt je niet aansluiten bij deze game-sessie omdat een van je lokale medespelers niet online mag spelen wegens chatbeperkingen van zijn of haar Sony Entertainment Network-account. Ga naar 'Meer opties' en schakel 'Online game' uit om te beginnen met een offline game.</value>
-	</data>
-	<data name="IDS_NO_USER_CREATED_CONTENT_PRIVILEGE_CREATE">
-		<value>Je kunt deze game-sessie niet maken omdat een van je lokale medespelers niet online mag spelen wegens chatbeperkingen van zijn of haar Sony Entertainment Network-account. Ga naar 'Meer opties' en schakel 'Online game' uit om te beginnen met een offline game.</value>
-	</data>
-	<data name="IDS_SAVE_ICON_MESSAGE">
-		<value>Deze game slaat werelden automatisch op. Als je bovenstaand pictogram ziet, worden je spelgegevens opgeslagen.
-Schakel je PlayStation®Vita-systeem niet uit als dit pictogram wordt weergegeven.</value>
-	</data>
-	<data name="IDS_GAMEOPTION_HOST_PRIVILEGES">
-		<value>Als deze optie is ingeschakeld, kunnen hosts via het game-menu hun vermogen om te vliegen aan- en uitzetten, uitputting uitschakelen en zichzelf onzichtbaar maken. Hiermee worden trofeeën en klassementen uitgeschakeld.</value>
-	</data>
-	<data name="IDS_CHECKBOX_DISPLAY_SPLITSCREENGAMERTAGS">
-		<value>Online-id's op gedeeld scherm</value>
-	</data>
-	<data name="IDS_ACHIEVEMENTS">
-		<value>Trofeeën</value>
-	</data>
-	<data name="IDS_LABEL_GAMERTAGS">
-		<value>Online-id's:</value>
-	</data>
-	<data name="IDS_IN_GAME_GAMERTAGS">
-		<value>Online-id's in de game</value>
-	</data>
-	<data name="IDS_SOCIAL_DEFAULT_DESCRIPTION">
-		<value>Kijk eens wat ik heb gemaakt in Minecraft: PlayStation®Vita Edition!</value>
-	</data>
-	<data name="IDS_USING_TRIAL_TEXUREPACK_WARNING">
-		<value>Je gebruikt de testversie van een texturepakket. Je hebt toegang tot de volledige inhoud van het texturepakket, maar je kunt je voortgang niet opslaan.
-Als je probeert op te slaan tijdens het gebruik van de testversie, krijg je de mogelijkheid om de volledige versie te kopen.
-    </value>
-	</data>
-	<data name="IDS_TITLE_UPDATE_NAME">
-		<value>Patch 1.04 (titel-update 14)</value>
-	</data>
-	<data name="IDS_BACK_BUTTON">
-		<value>SELECT</value>
-	</data>
-	<data name="IDS_HOST_OPTION_DISABLES_ACHIEVEMENTS">
-		<value>Hiermee worden trofeeën en klassementen tijdens het spelen niet bijgewerkt. Deze instelling blijft ook van kracht als je deze wereld opslaat en afsluit, en later weer laadt.</value>
-	</data>
-	<data name="IDS_SIGNIN_PSN">
-		<value>Wil je je nu aanmelden bij "PSN"?</value>
-	</data>
-	<data name="IDS_KICK_PLAYER_DESCRIPTION">
-		<value>Met deze optie verwijder je een speler op een ander PlayStation®Vita-systeem en eventuele andere spelers op dat PlayStation®Vita-systeem. Deze spelers kunnen pas weer meedoen als de game opnieuw wordt gestart.</value>
-	</data>
-	<data name="IDS_PLATFORM_NAME">
-		<value>PlayStation®Vita-systeem</value>
-	</data>
-	<data name="IDS_TOOLTIP_CHANGE_NETWORK_MODE">
-		<value>Netwerkmodus wijzigen</value>
-	</data>
-	<data name="IDS_SELECT_NETWORK_MODE_TITLE">
-		<value>Kies Netwerk</value>
-	</data>
-	<data name="IDS_SELECT_NETWORK_MODE_TEXT">
-		<value>Kies Ad hoc-netwerk om verbinding te maken met andere PlayStation®Vita-systemen in de buurt. Kies "PSN" om verbinding te maken met spelers over de hele wereld.</value>
-	</data>
-	<data name="IDS_NETWORK_ADHOC">
-		<value>Ad hoc-netwerk</value>
-	</data>
-	<data name="IDS__NETWORK_PSN">
-		<value>"PSN"</value>
-	</data>
-	<data name="IDS_TOOLTIPS_SAVETRANSFER_DOWNLOAD">
-		<value>PlayStation®3-systeem data downloaden</value>
-	</data>
-	<data name="IDS_TOOLTIPS_SAVETRANSFER_UPLOAD">
-		<value>Opslagbestand voor PlayStation®3/PlayStation®4-systeem uploaden</value>
-	</data>
-	<data name="IDS_CANCEL_UPLOAD_TITLE">
-		<value>Uploaden geannuleerd</value>
-	</data>
-	<data name="IDS_CANCEL_UPLOAD_TEXT">
-		<value>Je hebt het uploaden van dit opslagbestand naar de overdrachtslocatie geannuleerd.</value>
-	</data>
-	<data name="IDS_SAVETRANSFER_STAGE_PUT_DATA">
-		<value>Gegevens uploaden: %d%%</value>
-	</data>
-	<data name="IDS_SAVETRANSFER_STAGE_GET_DATA">
-		<value>Gegevens downloaden: %d%%</value>
-	</data>
-	<data name="IDS_SAVE_TRANSFER_TEXT">
-		<value>Weet je zeker dat je dit opslagbestand wilt uploaden? Als de overdrachtslocatie al een opslagbestand bevat, wordt dit overschreven.</value>
-	</data>
-	<data name="IDS_SAVETRANSFER_STAGE_CONVERTING">
-		<value>Gegevens converteren...</value>
-	</data>
-	<data name="IDS_SAVETRANSFER_STAGE_SAVING">
-		<value>Opslaan...</value>
-	</data>
-	<data name="IDS_SAVE_TRANSFER_UPLOADCOMPLETE">
-		<value>Upload voltooid!</value>
-	</data>
-	<data name="IDS_SAVE_TRANSFER_UPLOADFAILED">
-		<value>Upload mislukt. Probeer het later opnieuw.</value>
-	</data>
-	<data name="IDS_SAVE_TRANSFER_DOWNLOADCOMPLETE">
-		<value>Download voltooid!</value>
-	</data>
-	<data name="IDS_SAVE_TRANSFER_DOWNLOADFAILED">
-		<value>Download mislukt. Probeer het later opnieuw.</value>
-	</data>
-	<data name="IDS_DISCONNECTED_NAT_TYPE_MISMATCH">
-		<value>Aansluiten bij de game is mislukt wegens een beperkend NAT-type. Controleer je netwerkinstellingen.</value>
-	</data>
-	<data name="IDS_SAVE_TRANSFER_NOT_AVAILABLE_TEXT">
-		<value>
-      Er zijn op dit moment geen opslagbestanden beschikbaar op de overdrachtslocatie.
-      Je kunt in Minecraft: PlayStation®3 Edition een opgeslagen wereld uploaden naar de overdrachtslocatie en deze vervolgens downloaden in Minecraft: PlayStation®Vita Edition.
-    </value>
-	</data>
-	<data name="IDS_SAVE_INCOMPLETE_TITLE">
-		<value>Opslaan niet voltooid</value>
-	</data>
-	<data name="IDS_SAVE_INCOMPLETE_EXPLANATION_QUOTA">
-		<value>Minecraft: PlayStation®Vita Edition beschikt niet over genoeg ruimte voor opslaggegevens. Verwijder andere opslagbestanden van Minecraft: PlayStation®Vita Edition om ruimte te maken.</value>
+	<data name="IDS_SAVE_TRANSFER_WRONG_VERSION">
+		<value>Het opslagbestand in de overdrachtslocatie heeft een versienummer die nog niet door Minecraft: PlayStation®Vita Edition wordt ondersteund.</value>
 	</data>
 </root>

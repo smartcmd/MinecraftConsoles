@@ -7,14 +7,14 @@
   <!-- Used by: End Poem (first character) -->
   <colour name="HTMLColor_3" value="109e9e" />
   <colour name="HTMLColor_4" value="aa0000" />
-  <colour name="HTMLColor_5" value="aa00aa" />
+  <colour name="HTMLColor_5" value="DE5BD9" />
   <colour name="HTMLColor_6" value="ffaa00" />
   <!-- Used by: Potion effects -->
   <colour name="HTMLColor_7" value="aaaaaa" />
   <!-- Used by: End Poem random text -->
   <colour name="HTMLColor_8" value="555555" />
   <!-- Used by: End Poem random text -->
-  <colour name="HTMLColor_9" value="5555ff" />
+  <colour name="HTMLColor_9" value="7878FF" />
   <!-- Used by: End Poem random text -->
   <colour name="HTMLColor_a" value="55ff55" />
   <!-- Used by: Rare items (golden apple, enchanted items, music discs) -->

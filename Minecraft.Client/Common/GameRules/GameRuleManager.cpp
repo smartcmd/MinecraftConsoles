@@ -106,17 +106,14 @@ void GameRuleManager::loadGameRules(DLCPack *pack)
 		DWORD dSize;
 		byte *dData = dlcHeader->getData(dSize);
 
-		LevelGenerationOptions *createdLevelGenerationOptions = new LevelGenerationOptions();
+		LevelGenerationOptions *createdLevelGenerationOptions = new LevelGenerationOptions(pack);
 		//	= loadGameRules(dData, dSize); //, strings);
 
 		createdLevelGenerationOptions->setGrSource( dlcHeader );
+		createdLevelGenerationOptions->setSrc( LevelGenerationOptions::eSrc_fromDLC );
 
 		readRuleFile(createdLevelGenerationOptions, dData, dSize, strings);
 
-		createdLevelGenerationOptions->setSrc( LevelGenerationOptions::eSrc_fromDLC );
-		
-
-		//createdLevelGenerationOptions->setSrc( LevelGenerationOptions::eSrc_fromDLC );
 		dlcHeader->lgo = createdLevelGenerationOptions;
 	}
 
@@ -128,15 +125,13 @@ void GameRuleManager::loadGameRules(DLCPack *pack)
 		DWORD dSize;
 		byte *dData = dlcFile->getData(dSize);
 
-		LevelGenerationOptions *createdLevelGenerationOptions = new LevelGenerationOptions();
+		LevelGenerationOptions *createdLevelGenerationOptions = new LevelGenerationOptions(pack);
 		//	= loadGameRules(dData, dSize); //, strings);
 		
 		createdLevelGenerationOptions->setGrSource( new JustGrSource() );
-		readRuleFile(createdLevelGenerationOptions, dData, dSize, strings);
-
 		createdLevelGenerationOptions->setSrc( LevelGenerationOptions::eSrc_tutorial );
-		
-		//createdLevelGenerationOptions->set_DLCGameRulesFile( dlcFile );
+
+		readRuleFile(createdLevelGenerationOptions, dData, dSize, strings);
 
 		createdLevelGenerationOptions->setLoadedData();
 	}
@@ -659,6 +654,25 @@ void GameRuleManager::loadDefaultGameRules()
 
 #else // _XBOX
 
+#ifdef _WINDOWS64
+	File packedTutorialFile(L"Windows64Media\\Tutorial\\Tutorial.pck");
+	if(!packedTutorialFile.exists()) packedTutorialFile = File(L"Windows64\\Tutorial\\Tutorial.pck");
+#elif defined(__ORBIS__)
+	File packedTutorialFile(L"/app0/orbis/Tutorial/Tutorial.pck");
+#elif defined(__PSVITA__)
+	File packedTutorialFile(L"PSVita/Tutorial/Tutorial.pck");
+#elif defined(__PS3__)
+	File packedTutorialFile(L"PS3/Tutorial/Tutorial.pck");
+#else
+	File packedTutorialFile(L"Tutorial\\Tutorial.pck");
+#endif
+	if(loadGameRulesPack(&packedTutorialFile))
+	{
+		m_levelGenerators.getLevelGenerators()->at(0)->setWorldName(app.GetString(IDS_PLAY_TUTORIAL));
+		//m_levelGenerators.getLevelGenerators()->at(0)->setDefaultSaveName(L"Tutorial");
+		m_levelGenerators.getLevelGenerators()->at(0)->setDefaultSaveName(app.GetString(IDS_TUTORIALSAVENAME));
+	}
+#if 0
 	wstring fpTutorial = L"Tutorial.pck";
 	if(app.getArchiveFileSize(fpTutorial) >= 0)
 	{
@@ -667,25 +681,18 @@ void GameRuleManager::loadDefaultGameRules()
 		if ( app.m_dlcManager.readDLCDataFile(dwFilesProcessed,fpTutorial,pack,true) )
 		{
 			app.m_dlcManager.addPack(pack);
-			m_levelGenerators.getLevelGenerators()->at(0)->setWorldName(app.GetString(IDS_PLAY_TUTORIAL));
-			m_levelGenerators.getLevelGenerators()->at(0)->setDefaultSaveName(app.GetString(IDS_TUTORIALSAVENAME));
+			//m_levelGenerators.getLevelGenerators()->at(0)->setWorldName(app.GetString(IDS_PLAY_TUTORIAL));
+			//m_levelGenerators.getLevelGenerators()->at(0)->setDefaultSaveName(app.GetString(IDS_TUTORIALSAVENAME));
 		}
 		else delete pack;
 	}
-	/*StringTable *strings = new StringTable(baStrings.data, baStrings.length);
-	LevelGenerationOptions *lgo = new LevelGenerationOptions();
-	lgo->setGrSource( new JustGrSource() );
-	lgo->setSrc( LevelGenerationOptions::eSrc_tutorial );
-	readRuleFile(lgo, tutorial.data, tutorial.length, strings);
-	lgo->setLoadedData();*/
-
+#endif
 #endif
 }
 
 bool GameRuleManager::loadGameRulesPack(File *path)
 {
 	bool success = false;
-#ifdef _XBOX
 	if(path->exists())
 	{
 		DLCPack *pack = new DLCPack(L"",0xffffffff);
@@ -700,12 +707,13 @@ bool GameRuleManager::loadGameRulesPack(File *path)
 			delete pack;
 		}
 	}
-#endif
 	return success;
 }
 
 void GameRuleManager::setLevelGenerationOptions(LevelGenerationOptions *levelGen)
 {
+	unloadCurrentGameRules();
+
 	m_currentGameRuleDefinitions = NULL;
 	m_currentLevelGenerationOptions = levelGen;
 

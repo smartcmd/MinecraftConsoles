@@ -10,15 +10,24 @@ public:
 
 public:
 	int time;
-    float flip, oFlip, flipT, flipA;
-    float open, oOpen;
-    float rot, oRot, tRot;
+	float flip, oFlip, flipT, flipA;
+	float open, oOpen;
+	float rot, oRot, tRot;
 private:
 	Random *random;
+	wstring name;
+
 public:
 	EnchantmentTableEntity();
 	~EnchantmentTableEntity();
-    virtual void tick();
+
+	virtual void save(CompoundTag *base);
+	virtual void load(CompoundTag *base);
+	virtual void tick();
+	virtual wstring getName();
+	virtual wstring getCustomName();
+	virtual bool hasCustomName();
+	virtual void setCustomName(const wstring &name);
 
 	// 4J Added
 	virtual shared_ptr<TileEntity> clone();

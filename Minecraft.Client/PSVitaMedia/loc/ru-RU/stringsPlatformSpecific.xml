@@ -1,36 +1,125 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <root>
-	<data name="IDS_TIPS_GAMETIP_0">
+	<data name="IDS_SIGNIN_PSN">
+		<value>Вы хотите войти в "PSN"?</value>
+	</data>
+	<data name="IDS_KICK_PLAYER_DESCRIPTION">
+		<value>Данный пункт позволяет исключить игрока, система PlayStation®Vita которого отличается от системы хоста. Все остальные игроки, использующие его систему PlayStation®Vita, также будут отключены. Игрок не сможет присоединиться до тех пор, пока игра не будет запущена заново.
+</value>
+	</data>
+	<data name="IDS_BACK_BUTTON">
+		<value>SELECT</value>
+	</data>
+	<data name="IDS_HOST_OPTION_DISABLES_ACHIEVEMENTS">
+		<value>Эта функция отключает обновление призов и списков лидеров для данного мира на время игры. Если эта функция включена во время сохранения, призы и списки лидеров будут отключены и после загрузки данного мира.</value>
+	</data>
+	<data name="IDS_PLATFORM_NAME">
+		<value>система PlayStation®Vita</value>
+	</data>
+	<data name="IDS_SELECT_NETWORK_MODE_TEXT">
+		<value>Выберите подключение к сети в специальном режиме, чтобы установить соединение с другими системами PlayStation®Vita поблизости, или "PSN", чтобы играть с друзьями по всему миру.</value>
+	</data>
+	<data name="IDS_NETWORK_ADHOC">
+		<value>Специальный режим</value>
+	</data>
+	<data name="IDS_TOOLTIP_CHANGE_NETWORK_MODE">
+		<value>Изменить сетевой режим</value>
+	</data>
+	<data name="IDS_SELECT_NETWORK_MODE_TITLE">
+		<value>Выбрать сетевой режим</value>
+	</data>
+	<data name="IDS_CHECKBOX_DISPLAY_SPLITSCREENGAMERTAGS">
+		<value>Сетевые идентификаторы на раздел. экране</value>
+	</data>
+	<data name="IDS_ACHIEVEMENTS">
+		<value>Призы</value>
+	</data>
+	<data name="IDS_SAVE_ICON_MESSAGE">
+		<value>В игре имеется функция автосохранения уровня. Если на экране появляется этот значок, идет сохранение игры.
+Пока вы его видите, не выключайте вашу систему PlayStation®Vita.</value>
+	</data>
+	<data name="IDS_GAMEOPTION_HOST_PRIVILEGES">
+		<value>Если эта функция включена, хост может включить или отключить в главном меню полеты, усталость и невидимость. Включение этой функции отключает призы и обновления списков лидеров.</value>
+	</data>
+	<data name="IDS_LABEL_GAMERTAGS">
+		<value>Сетевые идентификаторы:</value>
+	</data>
+	<data name="IDS_USING_TRIAL_TEXUREPACK_WARNING">
+		<value>Вы используете пробную версию набора текстур. У вас будет доступ ко всему содержимому набора, но не будет возможности сохранить свою игру.
+При попытке сохранения с использованием пробной версии вам будет предложено купить полную версию набора.
+    </value>
+	</data>
+	<data name="IDS_TITLE_UPDATE_NAME">
+		<value>Версия 1.04 (обновление 14)</value>
+	</data>
+	<data name="IDS_IN_GAME_GAMERTAGS">
+		<value>Сетевые идентификаторы</value>
+	</data>
+	<data name="IDS_SOCIAL_DEFAULT_DESCRIPTION">
+		<value>Взгляните на мое творение в Minecraft: PlayStation®Vita Edition!</value>
+	</data>
+	<data name="IDS_SAVE_TRANSFER_DOWNLOADFAILED">
+		<value>Не удалось завершить загрузку. Повторите попытку позже.</value>
+	</data>
+	<data name="IDS_DISCONNECTED_NAT_TYPE_MISMATCH">
+		<value>Не удалось присоединиться к игре из-за ограничений NAT. Пожалуйста, проверьте настройки сети.</value>
+	</data>
+	<data name="IDS_SAVE_TRANSFER_UPLOADFAILED">
+		<value>Не удалось завершить передачу. Повторите попытку позже.</value>
+	</data>
+	<data name="IDS_SAVE_TRANSFER_DOWNLOADCOMPLETE">
+		<value>Загрузка завершена!</value>
+	</data>
+	<data name="IDS_SAVE_TRANSFER_NOT_AVAILABLE_TEXT">
+		<value>
+В настоящий момент в области переноса сохранений нет доступных сохранений.
+Вы можете передать сохраненный мир в область переноса сохранений из игры Minecraft: PlayStation®3 Edition, а затем загрузить его в игру Minecraft: PlayStation®Vita Edition.
+    </value>
+	</data>
+	<data name="IDS_SAVE_INCOMPLETE_TITLE">
+		<value>Сохранение не завершено</value>
+	</data>
+	<data name="IDS_SAVE_INCOMPLETE_EXPLANATION_QUOTA">
+		<value>Игре Minecraft: PlayStation®Vita Edition не хватает места для записи сохранений. Чтобы освободить место, удалите существующие сохранения Minecraft: PlayStation®Vita Edition.</value>
+	</data>
+	<data name="IDS_CANCEL_UPLOAD_TITLE">
+		<value>Передача отменена</value>
+	</data>
+	<data name="IDS_CANCEL_UPLOAD_TEXT">
+		<value>Вы отменили передачу  сохраненного мира в область переноса сохранений.</value>
+	</data>
+	<data name="IDS_TOOLTIPS_SAVETRANSFER_UPLOAD">
+		<value>Передать сохранение для PS3™/PS4™</value>
+	</data>
+	<data name="IDS_SAVETRANSFER_STAGE_PUT_DATA">
+		<value>Передача данных: %d%%</value>
+	</data>
+	<data name="IDS__NETWORK_PSN">
+		<value>"PSN"</value>
+	</data>
+	<data name="IDS_TOOLTIPS_SAVETRANSFER_DOWNLOAD">
+		<value>Загрузить сохранение с PS3™</value>
+	</data>
+	<data name="IDS_SAVETRANSFER_STAGE_GET_DATA">
+		<value>Загрузка данных: %d%%</value>
+	</data>
+	<data name="IDS_SAVETRANSFER_STAGE_SAVING">
+		<value>Сохранение</value>
+	</data>
+	<data name="IDS_SAVE_TRANSFER_UPLOADCOMPLETE">
+		<value>Передача завершена!</value>
+	</data>
+	<data name="IDS_SAVE_TRANSFER_TEXT">
+		<value>Вы уверены, что хотите передать это сохранение и заменить текущее сохранение, хранящееся в области переноса сохранений?</value>
+	</data>
+	<data name="IDS_SAVETRANSFER_STAGE_CONVERTING">
+		<value>Преобразование данных</value>
+	</data>
+	<data name="IDS_TOOLTIPS_SELECTDEVICE">
 		<value>NOT USED</value>
 	</data>
-	<data name="IDS_TIPS_GAMETIP_1">
-		<value>Вы можете использовать сенсорный экран на системе PlayStation®Vita для навигации по меню!</value>
-	</data>
-	<data name="IDS_TIPS_GAMETIP_48">
-		<value>На форуме Minecraft есть раздел, посвященный версии PlayStation®Vita Edition.</value>
-	</data>
-	<data name="IDS_TIPS_GAMETIP_44">
-		<value>Самые свежие новости об игре можно узнать в твит-лентах @4JStudios и @Kappische!</value>
-	</data>
-	<data name="IDS_TIPS_GAMETIP_45">
-		<value>Не смотрите заокраиннику в глаза!</value>
-	</data>
-	<data name="IDS_TIPS_TRIVIA_4">
-		<value>Нам кажется, что студия 4J Studios удалила Геробрина из версии игры для системы PlayStation®Vita, но мы не уверены.</value>
-	</data>
-	<data name="IDS_TIPS_TRIVIA_17">
-		<value>Minecraft: PlayStation®Vita Edition побила множество рекордов!</value>
-	</data>
-	<data name="IDS_HOW_TO_PLAY_MULTIPLAYER">
-		<value>{*T3*}ОБУЧЕНИЕ: СЕТЕВАЯ ИГРА{*ETW*}{*B*}{*B*}
-Minecraft на системе PlayStation®Vita по умолчанию является сетевой игрой.{*B*}{*B*}
-Если вы начинаете сетевую игру или присоединяетесь к ней, вас увидят люди из вашего списка друзей (если при создании игры вы не выбрали параметр "Только по приглашению"). А если ваши друзья присоединятся к игре, тогда ее смогут увидеть и их друзья (если выбран параметр "Пускать друзей друзей").{*B*}Когда вы в игре, нажмите кнопку SELECT, чтобы открыть список пользователей, которые находятся в игре, и исключить кого-то из них.</value>
-	</data>
-	<data name="IDS_HOW_TO_PLAY_SOCIALMEDIA">
-		<value>{*T3*}ОБУЧЕНИЕ: ПУБЛИКАЦИЯ СКРИНШОТОВ{*ETW*}{*B*}{*B*}
-Чтобы сделать скриншот, откройте меню паузы. Нажмите {*CONTROLLER_VK_Y*}, чтобы выложить скриншот в Facebook. На экране появится миниатюрная версия скриншота, и вы сможете изменить текст, который будет сопровождать это сообщение в Facebook.{*B*}{*B*}
-В игре есть особый режим камеры, предназначенный для скриншотов. Чтобы поместить своего персонажа в кадр, нажимайте {*CONTROLLER_ACTION_CAMERA*} до тех пор, пока не увидите персонажа, а затем нажмите {*CONTROLLER_VK_Y*}, чтобы выложить скриншот.{*B*}{*B*}
-Ваш сетевой идентификатор не будет отображен.</value>
+	<data name="IDS_TOOLTIPS_CHANGEDEVICE">
+		<value>NOT USED</value>
 	</data>
 	<data name="IDS_HOW_TO_PLAY_CREATIVE">
 		<value>{*T3*}ОБУЧЕНИЕ: ТВОРЧЕСТВО{*ETW*}{*B*}{*B*}
@@ -44,20 +133,8 @@ Minecraft на системе PlayStation®Vita по умолчанию явля
 		<value>Чтобы летать, быстро дважды нажмите{*CONTROLLER_ACTION_JUMP*}. Если нужно выйти из режима полета, повторите это действие. Чтобы ускориться в полете, быстро дважды наклоните вперед {*CONTROLLER_ACTION_MOVE*}. 
 Во время полета наклоните вниз и удерживайте{*CONTROLLER_ACTION_JUMP*}, чтобы лететь вверх, {*CONTROLLER_ACTION_SNEAK*}, чтобы лететь вниз, или используйте кнопки направлений, чтобы лететь вверх, вниз, вправо или влево.</value>
 	</data>
-	<data name="IDS_TOOLTIPS_SELECTDEVICE">
-		<value>NOT USED</value>
-	</data>
-	<data name="IDS_TOOLTIPS_CHANGEDEVICE">
-		<value>NOT USED</value>
-	</data>
 	<data name="IDS_TOOLTIPS_VIEW_GAMERCARD">
 		<value>"NOT USED"</value>
-	</data>
-	<data name="IDS_TOOLTIPS_VIEW_GAMERPROFILE">
-		<value>"NOT USED"</value>
-	</data>
-	<data name="IDS_TOOLTIPS_INVITE_PARTY">
-		<value>Пригласить друзей</value>
 	</data>
 	<data name="IDS_CONFIRM_START_CREATIVE">
 		<value>Если создать, загрузить или сохранить мир в режиме "Творчество", призы и обновления списка лидеров в нем будут отключены, даже если затем загрузить мир в режиме "Выживание". Продолжить?</value>
@@ -65,11 +142,70 @@ Minecraft на системе PlayStation®Vita по умолчанию явля
 	<data name="IDS_CONFIRM_START_SAVEDINCREATIVE">
 		<value>Этот мир был сохранен в режиме "Творчество", поэтому призы и обновления списка лидеров в нем будут отключены. Продолжить?</value>
 	</data>
-	<data name="IDS_CONFIRM_START_SAVEDINCREATIVE_CONTINUE">
-		<value>Этот мир был сохранен в режиме "Творчество", поэтому призы и обновления списка лидеров в нем будут отключены.</value>
+	<data name="IDS_TOOLTIPS_VIEW_GAMERPROFILE">
+		<value>"NOT USED"</value>
 	</data>
-	<data name="IDS_CONFIRM_START_HOST_PRIVILEGES">
-		<value>Если создать, загрузить или сохранить мир со включенными привилегиями хоста, призы и обновления списка лидеров в нем будут отключены, даже если затем загрузить игру, отключив эти параметры. Продолжить?</value>
+	<data name="IDS_TOOLTIPS_INVITE_PARTY">
+		<value>Пригласить друзей</value>
+	</data>
+	<data name="IDS_TIPS_GAMETIP_48">
+		<value>На форуме Minecraft есть раздел, посвященный версии PlayStation®Vita Edition.</value>
+	</data>
+	<data name="IDS_TIPS_GAMETIP_44">
+		<value>Самые свежие новости об игре можно узнать в твит-лентах @4JStudios и @Kappische!</value>
+	</data>
+	<data name="IDS_TIPS_GAMETIP_0">
+		<value>NOT USED</value>
+	</data>
+	<data name="IDS_TIPS_GAMETIP_1">
+		<value>Вы можете использовать сенсорный экран на системе PlayStation®Vita для навигации по меню!</value>
+	</data>
+	<data name="IDS_TIPS_GAMETIP_45">
+		<value>Не смотрите заокраиннику в глаза!</value>
+	</data>
+	<data name="IDS_HOW_TO_PLAY_MULTIPLAYER">
+		<value>{*T3*}ОБУЧЕНИЕ: СЕТЕВАЯ ИГРА{*ETW*}{*B*}{*B*}
+Minecraft на системе PlayStation®Vita по умолчанию является сетевой игрой.{*B*}{*B*}
+Если вы начинаете сетевую игру или присоединяетесь к ней, вас увидят люди из вашего списка друзей (если при создании игры вы не выбрали параметр "Только по приглашению"). А если ваши друзья присоединятся к игре, тогда ее смогут увидеть и их друзья (если выбран параметр "Пускать друзей друзей").{*B*}Когда вы в игре, нажмите кнопку SELECT, чтобы открыть список пользователей, которые находятся в игре, и исключить кого-то из них.</value>
+	</data>
+	<data name="IDS_HOW_TO_PLAY_SOCIALMEDIA">
+		<value>{*T3*}ОБУЧЕНИЕ: ПУБЛИКАЦИЯ СКРИНШОТОВ{*ETW*}{*B*}{*B*}
+Чтобы сделать скриншот, откройте меню паузы. Нажмите {*CONTROLLER_VK_Y*}, чтобы выложить скриншот в Facebook. На экране появится миниатюрная версия скриншота, и вы сможете изменить текст, который будет сопровождать это сообщение в Facebook.{*B*}{*B*}
+В игре есть особый режим камеры, предназначенный для скриншотов. Чтобы поместить своего персонажа в кадр, нажимайте {*CONTROLLER_ACTION_CAMERA*} до тех пор, пока не увидите персонажа, а затем нажмите {*CONTROLLER_VK_Y*}, чтобы выложить скриншот.{*B*}{*B*}
+Ваш сетевой идентификатор не будет отображен.</value>
+	</data>
+	<data name="IDS_TIPS_TRIVIA_4">
+		<value>Нам кажется, что студия 4J Studios удалила Геробрина из версии игры для системы PlayStation®Vita, но мы не уверены.</value>
+	</data>
+	<data name="IDS_TIPS_TRIVIA_17">
+		<value>Minecraft: PlayStation®Vita Edition побила множество рекордов!</value>
+	</data>
+	<data name="IDS_TRIALOVER_TEXT">
+		<value>Вы играли в пробную версию Minecraft: PlayStation®Vita Edition в течение максимально разрешенного времени. Хотите получить доступ к полной версии игры, чтобы продолжить веселье?</value>
+	</data>
+	<data name="IDS_FATAL_ERROR_TEXT">
+		<value>Не удалось загрузить игру "Minecraft: PlayStation®Vita Edition". Продолжить загрузку невозможно.</value>
+	</data>
+	<data name="IDS_GROUPNAME_POTIONS_480">
+		<value>Создание зелья</value>
+	</data>
+	<data name="IDS_RETURNEDTOTITLESCREEN_TEXT">
+		<value>Вы вернулись на главный экран, так как вышли из "PSN".</value>
+	</data>
+	<data name="IDS_NO_MULTIPLAYER_PRIVILEGE_JOIN_TEXT">
+		<value>Не удалось присоединиться к игре, так как одному или нескольким игрокам не разрешено участвовать в сетевых играх из-за ограничений чата в учетной записи Sony Entertainment Network.</value>
+	</data>
+	<data name="IDS_NO_USER_CREATED_CONTENT_PRIVILEGE_ALL_LOCAL">
+		<value>Вам не разрешено присоединиться к этой игре, так как у одного из локальных игроков отключены сетевые возможности учетной записи Sony Entertainment Network в силу ограничений чата. Снимите метку в окошке "Сетевая игра" в разделе "Другие настройки", чтобы начать игру вне сети.</value>
+	</data>
+	<data name="IDS_NO_USER_CREATED_CONTENT_PRIVILEGE_CREATE">
+		<value>Вам не разрешено создать эту игру, так как у одного из локальных игроков отключены сетевые возможности учетной записи Sony Entertainment Network в силу ограничений чата. Снимите метку в окошке "Сетевая игра" в разделе "Другие настройки", чтобы начать игру вне сети.</value>
+	</data>
+	<data name="IDS_NO_MULTIPLAYER_PRIVILEGE_HOST_TEXT">
+		<value>Не удалось создать сетевую игру, так как одному или нескольким игрокам не разрешено участвовать в сетевых играх из-за ограничений чата в учетной записи Sony Entertainment Network. Снимите метку в окошке "Сетевая игра" в разделе "Другие настройки", чтобы начать игру вне сети.</value>
+	</data>
+	<data name="IDS_NO_USER_CREATED_CONTENT_PRIVILEGE_SINGLE_LOCAL">
+		<value>Вам не разрешено присоединиться к этой игре, так сетевые возможности вашей учетной записи Sony Entertainment Network отключены в силу ограничений чата.</value>
 	</data>
 	<data name="IDS_CONNECTION_LOST_LIVE">
 		<value>Соединение с "PSN" потеряно. Сейчас вы вернетесь в главное меню.</value>
@@ -77,10 +213,22 @@ Minecraft на системе PlayStation®Vita по умолчанию явля
 	<data name="IDS_CONNECTION_LOST_LIVE_NO_EXIT">
 		<value>Соединение с "PSN" потеряно.</value>
 	</data>
+	<data name="IDS_CONFIRM_START_SAVEDINCREATIVE_CONTINUE">
+		<value>Этот мир был сохранен в режиме "Творчество", поэтому призы и обновления списка лидеров в нем будут отключены.</value>
+	</data>
+	<data name="IDS_CONFIRM_START_HOST_PRIVILEGES">
+		<value>Если создать, загрузить или сохранить мир со включенными привилегиями хоста, призы и обновления списка лидеров в нем будут отключены, даже если затем загрузить игру, отключив эти параметры. Продолжить?</value>
+	</data>
 	<data name="IDS_UNLOCK_ACHIEVEMENT_TEXT">
 		<value>Это пробная версия игры Minecraft: PlayStation®Vita Edition. Будь у вас полная версия, вы бы только что получили приз!
 Получите доступ к полной версии, чтобы наслаждаться Minecraft: PlayStation®Vita Edition и играть с друзьями со всего мира посредством "PSN".
 Получить доступ к полной версии игры?</value>
+	</data>
+	<data name="IDS_UNLOCK_GUEST_TEXT">
+		<value>Игроки-гости не могут получить доступ к полной версии игры. Пожалуйста, зайдите под своей учетной записью в Sony Entertainment Network.</value>
+	</data>
+	<data name="IDS_LEADERBOARD_GAMERTAG">
+		<value>Сетевой идентификатор</value>
 	</data>
 	<data name="IDS_UNLOCK_THEME_TEXT">
 		<value>Это пробная версия игры Minecraft: PlayStation®Vita Edition. Будь у вас полная версия, вы бы только что получили тему!
@@ -91,154 +239,7 @@ Minecraft на системе PlayStation®Vita по умолчанию явля
 		<value>Это пробная версия игры Minecraft: PlayStation®Vita Edition. Если вы хотите принять это приглашение, необходимо получить доступ к полной версии.
 Получить доступ к полной версии игры?</value>
 	</data>
-	<data name="IDS_UNLOCK_GUEST_TEXT">
-		<value>Игроки-гости не могут получить доступ к полной версии игры. Пожалуйста, зайдите под своей учетной записью в Sony Entertainment Network.</value>
-	</data>
-	<data name="IDS_LEADERBOARD_GAMERTAG">
-		<value>Сетевой идентификатор</value>
-	</data>
-	<data name="IDS_GROUPNAME_POTIONS_480">
-		<value>Создание зелья</value>
-	</data>
-	<data name="IDS_RETURNEDTOTITLESCREEN_TEXT">
-		<value>Вы вернулись на главный экран, так как вышли из "PSN".
-</value>
-	</data>
-	<data name="IDS_TRIALOVER_TEXT">
-		<value>Вы играли в пробную версию Minecraft: PlayStation®Vita Edition в течение максимально разрешенного времени. Хотите получить доступ к полной версии игры, чтобы продолжить веселье?</value>
-	</data>
-	<data name="IDS_FATAL_ERROR_TEXT">
-		<value>Не удалось загрузить игру "Minecraft: PlayStation®Vita Edition". Продолжить загрузку невозможно.</value>
-	</data>
-	<data name="IDS_NO_MULTIPLAYER_PRIVILEGE_JOIN_TEXT">
-		<value>Не удалось присоединиться к игре, так как одному или нескольким игрокам не разрешено участвовать в сетевых играх из-за ограничений чата в учетной записи Sony Entertainment Network.</value>
-	</data>
-	<data name="IDS_NO_MULTIPLAYER_PRIVILEGE_HOST_TEXT">
-		<value>Не удалось создать сетевую игру, так как одному или нескольким игрокам не разрешено участвовать в сетевых играх из-за ограничений чата в учетной записи Sony Entertainment Network. Снимите метку в окошке "Сетевая игра" в разделе "Другие настройки", чтобы начать игру вне сети.</value>
-	</data>
-	<data name="IDS_NO_USER_CREATED_CONTENT_PRIVILEGE_SINGLE_LOCAL">
-		<value>Вам не разрешено присоединиться к этой игре, так сетевые возможности вашей учетной записи Sony Entertainment Network отключены в силу ограничений чата.</value>
-	</data>
-	<data name="IDS_NO_USER_CREATED_CONTENT_PRIVILEGE_ALL_LOCAL">
-		<value>Вам не разрешено присоединиться к этой игре, так как у одного из локальных игроков отключены сетевые возможности учетной записи Sony Entertainment Network в силу ограничений чата. Снимите метку в окошке "Сетевая игра" в разделе "Другие настройки", чтобы начать игру вне сети.</value>
-	</data>
-	<data name="IDS_NO_USER_CREATED_CONTENT_PRIVILEGE_CREATE">
-		<value>Вам не разрешено создать эту игру, так как у одного из локальных игроков отключены сетевые возможности учетной записи Sony Entertainment Network в силу ограничений чата. Снимите метку в окошке "Сетевая игра" в разделе "Другие настройки", чтобы начать игру вне сети.</value>
-	</data>
-	<data name="IDS_SAVE_ICON_MESSAGE">
-		<value>В игре имеется функция автосохранения уровня. Если на экране появляется этот значок, идет сохранение игры.
-Пока вы его видите, не выключайте вашу систему PlayStation®Vita.</value>
-	</data>
-	<data name="IDS_GAMEOPTION_HOST_PRIVILEGES">
-		<value>Если эта функция включена, хост может включить или отключить в главном меню полеты, усталость и невидимость. Включение этой функции отключает призы и обновления списков лидеров.</value>
-	</data>
-	<data name="IDS_CHECKBOX_DISPLAY_SPLITSCREENGAMERTAGS">
-		<value>Сетевые идентификаторы на раздел. экране</value>
-	</data>
-	<data name="IDS_ACHIEVEMENTS">
-		<value>Призы</value>
-	</data>
-	<data name="IDS_LABEL_GAMERTAGS">
-		<value>Сетевые идентификаторы:</value>
-	</data>
-	<data name="IDS_IN_GAME_GAMERTAGS">
-		<value>Сетевые идентификаторы</value>
-	</data>
-	<data name="IDS_SOCIAL_DEFAULT_DESCRIPTION">
-		<value>Взгляните на мое творение в Minecraft: PlayStation®Vita Edition!</value>
-	</data>
-	<data name="IDS_USING_TRIAL_TEXUREPACK_WARNING">
-		<value>Вы используете пробную версию набора текстур. У вас будет доступ ко всему содержимому набора, но не будет возможности сохранить свою игру.
-При попытке сохранения с использованием пробной версии вам будет предложено купить полную версию набора.
-    </value>
-	</data>
-	<data name="IDS_TITLE_UPDATE_NAME">
-		<value>Версия 1.04 (обновление 14)</value>
-	</data>
-	<data name="IDS_BACK_BUTTON">
-		<value>SELECT</value>
-	</data>
-	<data name="IDS_HOST_OPTION_DISABLES_ACHIEVEMENTS">
-		<value>Эта функция отключает обновление призов и списков лидеров для данного мира на время игры. Если эта функция включена во время сохранения, призы и списки лидеров будут отключены и после загрузки данного мира.</value>
-	</data>
-	<data name="IDS_SIGNIN_PSN">
-		<value>Вы хотите войти в "PSN"?</value>
-	</data>
-	<data name="IDS_KICK_PLAYER_DESCRIPTION">
-		<value>Данный пункт позволяет исключить игрока, система PlayStation®Vita которого отличается от системы хоста. Все остальные игроки, использующие его систему PlayStation®Vita, также будут отключены. Игрок не сможет присоединиться до тех пор, пока игра не будет запущена заново.
-</value>
-	</data>
-	<data name="IDS_PLATFORM_NAME">
-		<value>система PlayStation®Vita</value>
-	</data>
-	<data name="IDS_TOOLTIP_CHANGE_NETWORK_MODE">
-		<value>Изменить сетевой режим</value>
-	</data>
-	<data name="IDS_SELECT_NETWORK_MODE_TITLE">
-		<value>Выбрать сетевой режим</value>
-	</data>
-	<data name="IDS_SELECT_NETWORK_MODE_TEXT">
-		<value>Выберите подключение к сети в специальном режиме, чтобы установить соединение с другими системами PlayStation®Vita поблизости, или "PSN", чтобы играть с друзьями по всему миру.</value>
-	</data>
-	<data name="IDS_NETWORK_ADHOC">
-		<value>Специальный режим</value>
-	</data>
-	<data name="IDS__NETWORK_PSN">
-		<value>"PSN"</value>
-	</data>
-	<data name="IDS_TOOLTIPS_SAVETRANSFER_DOWNLOAD">
-		<value>Загрузить сохранение с системы Playstation®3
-</value>
-	</data>
-	<data name="IDS_TOOLTIPS_SAVETRANSFER_UPLOAD">
-		<value>Передать сохранение для система PlayStation®3/PlayStation®4</value>
-	</data>
-	<data name="IDS_CANCEL_UPLOAD_TITLE">
-		<value>Передача отменена</value>
-	</data>
-	<data name="IDS_CANCEL_UPLOAD_TEXT">
-		<value>Вы отменили передачу  сохраненного мира в область переноса сохранений.</value>
-	</data>
-	<data name="IDS_SAVETRANSFER_STAGE_PUT_DATA">
-		<value>Передача данных: %d%%</value>
-	</data>
-	<data name="IDS_SAVETRANSFER_STAGE_GET_DATA">
-		<value>Загрузка данных: %d%%</value>
-	</data>
-	<data name="IDS_SAVE_TRANSFER_TEXT">
-		<value>Вы уверены, что хотите передать это сохранение и заменить текущее сохранение, хранящееся в области переноса сохранений?</value>
-	</data>
-	<data name="IDS_SAVETRANSFER_STAGE_CONVERTING">
-		<value>Преобразование данных</value>
-	</data>
-	<data name="IDS_SAVETRANSFER_STAGE_SAVING">
-		<value>Сохранение</value>
-	</data>
-	<data name="IDS_SAVE_TRANSFER_UPLOADCOMPLETE">
-		<value>Передача завершена!</value>
-	</data>
-	<data name="IDS_SAVE_TRANSFER_UPLOADFAILED">
-		<value>Не удалось завершить передачу. Повторите попытку позже.</value>
-	</data>
-	<data name="IDS_SAVE_TRANSFER_DOWNLOADCOMPLETE">
-		<value>Загрузка завершена!</value>
-	</data>
-	<data name="IDS_SAVE_TRANSFER_DOWNLOADFAILED">
-		<value>Не удалось завершить загрузку. Повторите попытку позже.</value>
-	</data>
-	<data name="IDS_DISCONNECTED_NAT_TYPE_MISMATCH">
-		<value>Не удалось присоединиться к игре из-за ограничений NAT. Пожалуйста, проверьте настройки сети.</value>
-	</data>
-	<data name="IDS_SAVE_TRANSFER_NOT_AVAILABLE_TEXT">
-		<value>
-      В настоящий момент в области переноса сохранений нет доступных сохранений.
-      Вы можете передать сохраненный мир в область переноса сохранений из игры Minecraft: PlayStation®3 Edition, а затем загрузить его в игру Minecraft: PlayStation®Vita Edition.
-    </value>
-	</data>
-	<data name="IDS_SAVE_INCOMPLETE_TITLE">
-		<value>Сохранение не завершено</value>
-	</data>
-	<data name="IDS_SAVE_INCOMPLETE_EXPLANATION_QUOTA">
-		<value>Игре Minecraft: PlayStation®Vita Edition не хватает места для записи сохранений. Чтобы освободить место, удалите существующие сохранения Minecraft: PlayStation®Vita Edition.</value>
+	<data name="IDS_SAVE_TRANSFER_WRONG_VERSION">
+		<value>Версия файла сохранения в области переноса сохранений пока не поддерживается Minecraft: PlayStation®Vita Edition.</value>
 	</data>
 </root>

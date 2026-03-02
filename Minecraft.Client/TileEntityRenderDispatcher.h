@@ -25,7 +25,7 @@ public:
 
     Textures *textures;
     Level *level;
-    shared_ptr<Mob> cameraEntity;
+    shared_ptr<LivingEntity> cameraEntity;
     float playerRotY;
     float playerRotX;
     double xPlayer, yPlayer, zPlayer;
@@ -37,7 +37,7 @@ public:
 	TileEntityRenderer *getRenderer(eINSTANCEOF e);
     bool hasRenderer(shared_ptr<TileEntity> e);
     TileEntityRenderer * getRenderer(shared_ptr<TileEntity> e);
-	void prepare(Level *level, Textures *textures, Font *font, shared_ptr<Mob> player, float a);
+	void prepare(Level *level, Textures *textures, Font *font, shared_ptr<LivingEntity> player, float a);
 	void render(shared_ptr<TileEntity> e, float a, bool setColor = true);
 	void render(shared_ptr<TileEntity> entity, double x, double y, double z, float a, bool setColor = true, float alpha=1.0f, bool useCompiled = true); // 4J Added useCompiled
 	void setLevel(Level *level);

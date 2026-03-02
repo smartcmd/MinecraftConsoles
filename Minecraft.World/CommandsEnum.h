@@ -3,6 +3,7 @@
 enum EGameCommand
 {
 	eGameCommand_DefaultGameMode,
+	eGameCommand_Effect,
 	eGameCommand_EnchantItem,
 	eGameCommand_Experience,
 	eGameCommand_GameMode,

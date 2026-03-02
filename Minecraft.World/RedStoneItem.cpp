@@ -23,7 +23,7 @@ bool RedStoneItem::useOn(shared_ptr<ItemInstance> itemInstance, shared_ptr<Playe
 		if (face == 5) x++;
 		if (!level->isEmptyTile(x, y, z)) return false;
 	}
-	if (!player->mayBuild(x, y, z)) return false;
+	if (!player->mayUseItemAt(x, y, z, face, itemInstance)) return false;
 	if (Tile::redStoneDust->mayPlace(level, x, y, z))
 	{
 		if(!bTestUseOnOnly)
@@ -32,7 +32,7 @@ bool RedStoneItem::useOn(shared_ptr<ItemInstance> itemInstance, shared_ptr<Playe
 			player->awardStat(GenericStats::blocksPlaced(Tile::redStoneDust_Id), GenericStats::param_blocksPlaced(Tile::redStoneDust_Id,itemInstance->getAuxValue(),1));
 
 			itemInstance->count--;
-			level->setTile(x, y, z, Tile::redStoneDust_Id);
+			level->setTileAndUpdate(x, y, z, Tile::redStoneDust_Id);
 		}
 	}
 

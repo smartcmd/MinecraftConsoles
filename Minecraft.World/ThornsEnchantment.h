@@ -16,5 +16,5 @@ public:
 	virtual bool canEnchant(shared_ptr<ItemInstance> item);
 	static bool shouldHit(int level, Random *random);
 	static int getDamage(int level, Random *random);
-	static void doThornsAfterAttack(shared_ptr<Entity> source, shared_ptr<Mob> target, Random *random);
+	static void doThornsAfterAttack(shared_ptr<Entity> source, shared_ptr<LivingEntity> target, Random *random);
 };

@@ -7,7 +7,7 @@ using namespace std;
 class StartFeature : public GameRuleDefinition
 {
 private:
-	int m_chunkX, m_chunkZ;
+	int m_chunkX, m_chunkZ, m_orientation;
 	StructureFeature::EFeatureTypes m_feature;
 
 public:
@@ -18,5 +18,5 @@ public:
 	virtual void writeAttributes(DataOutputStream *dos, UINT numAttrs);
 	virtual void addAttribute(const wstring &attributeName, const wstring &attributeValue);
 
-	bool isFeatureChunk(int chunkX, int chunkZ, StructureFeature::EFeatureTypes feature);
+	bool isFeatureChunk(int chunkX, int chunkZ, StructureFeature::EFeatureTypes feature, int *orientation);
 };

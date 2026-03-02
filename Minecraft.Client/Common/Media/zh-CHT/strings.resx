@@ -287,19 +287,40 @@ Xbox One 主機上的 Minecraft 預設為多人遊戲。如果您選擇高畫質
 當載入或建立世界時，您可以按下 [更多選項] 按鈕，來選擇更多遊戲的相關設定。{*B*}{*B*}
 
 	{*T2*}玩家 vs 玩家{*ETW*}{*B*}
-	啟用此選項時，玩家對其他玩家可以造成傷害。此選項只在生存模式下可使用。{*B*}{*B*}
+	啟用此選項時，玩家可以對其他玩家造成傷害。此選項只在生存模式下可使用。{*B*}{*B*}
 	
 	{*T2*}信任玩家{*ETW*}{*B*}
-	停用此選項時，會限制加入遊戲的玩家只能從事限定的活動。他們無法進行開採或使用項目、放置方塊、使用門與開關、使用容器、攻擊玩家，或攻擊動物。您可以使用遊戲選單為特定玩家變更上述的選項。{*B*}{*B*}
+	停用此選項會限制加入遊戲的玩家可以進行的活動。他們無法進行開採或使用項目、放置方塊、使用門與開關、使用容器、攻擊玩家或動物。您可以使用遊戲選單為特定玩家變更上述的選項。{*B*}{*B*}
 	
 	{*T2*}火會蔓延{*ETW*}{*B*}
-	啟用此選項時，火會蔓延到附近易燃的方塊。可以從遊戲中變更此選項。{*B*}{*B*}
+	啟用此選項時，火會蔓延到附近易燃的方塊。您也可以從遊戲中變更此選項。{*B*}{*B*}
 	
 	{*T2*}炸藥會爆炸{*ETW*}{*B*}
-	啟用此選項時，引爆炸藥時會爆炸。可以從遊戲中變更此選項。{*B*}{*B*}
+	啟用此選項時，引爆炸藥後就會發生爆炸。您也可以從遊戲中變更此選項。{*B*}{*B*}
 	
 	{*T2*}主持人特權{*ETW*}{*B*}
 	啟用此選項時，主持人可以在遊戲中切換自己的飛翔能力、停用疲勞功能，或是讓自己隱形。{*DISABLES_ACHIEVEMENTS*}{*B*}{*B*}
+
+	{*T2*}日光循環{*ETW*}{*B*}
+	停用此選項時，一日當中的時間不會改變。{*B*}{*B*}
+
+	{*T2*}保留庫存{*ETW*}{*B*}
+	啟用此選項時，玩家在死時會保留他們的庫存。{*B*}{*B*}
+
+	{*T2*}暴徒產卵{*ETW*}{*B*}
+	停用此選項會讓暴徒無法自然產卵。{*B*}{*B*}
+
+	{*T2*}暴徒破壞{*ETW*}{*B*}
+	停用此選項時，可防止怪獸與動物變更方塊 (例如，爬行動物爆炸無法摧毀方塊，羊群也不會清除牧草) ，或拾取項目。{*B*}{*B*}
+
+	{*T2*}暴徒劫掠{*ETW*}{*B*}
+	停用此選項時，怪獸與動物無法撒下劫掠物 (例如：Creeper 無法撒下火藥) 。{*B*}{*B*}
+
+	{*T2*}磚瓦拋落{*ETW*}{*B*}
+	停用此選項時，方塊無法被摧毀時拋落項目 (例如：石頭方塊無法拋落鵝卵石) 。{*B*}{*B*}
+
+	{*T2*}自然再生{*ETW*}{*B*}
+	停用此選項時，玩家無法自然回復健康。{*B*}{*B*}
 
 {*T1*}產生新世界選項{*ETW*}{*B*}
 建立新世界時，有些額外的選項可使用。{*B*}{*B*}
@@ -311,56 +332,59 @@ Xbox One 主機上的 Minecraft 預設為多人遊戲。如果您選擇高畫質
 	啟用此選項時，會在地上世界與地獄世界中產生完全平坦的世界。{*B*}{*B*}
 	
 	{*T2*}贈品箱{*ETW*}{*B*}
-	啟用此選項時，會在玩家再生點附近創造內含一些有用項目的贈品箱。{*B*}{*B*}
+	啟用此選項時，玩家再生點附近會出現一個放了有用物品的箱子。{*B*}{*B*}
 	
 	{*T2*}重設地獄{*ETW*}{*B*}
 	啟用此選項時，會再度產生地獄。如果您的舊存檔中沒有地獄要塞，這將會很有用。{*B*}{*B*}
 
-	{*T1*}遊戲中選項{*ETW*}{*B*}
-	玩遊戲時，按下 BACK 鍵可以叫出遊戲中功能表，存取某些選項。{*B*}{*B*}
+	 {*T1*}遊戲中選項{*ETW*}{*B*}
+	玩遊戲時，按下 {*BACK_BUTTON*} 鍵可以叫出遊戲中功能表，存取某些選項。{*B*}{*B*}
 	
 	{*T2*}主持人選項{*ETW*}{*B*}
-	玩家主持人或設定為管理員的玩家，可以存取 [主持人選項] 功能表。這些人可以啟用或取消「火會蔓延」及「炸藥會爆炸」的選項。{*B*}{*B*}
+	玩家主持人及設定為管理員的玩家，可以存取 [主持人選項] 功能表。這些人可以啟用或取消「火會蔓延」及「炸藥會爆炸」的選項。{*B*}{*B*}
 
 {*T1*}玩家選項{*ETW*}{*B*}
 若要修改玩家的特權，可以選取玩家的名字並按下 {*CONTROLLER_VK_A*}，這會叫出玩家特權功能表，您可以使用列出的選項。{*B*}{*B*}
 
 	{*T2*}可以建造和開採{*ETW*}{*B*}
-	只有在關閉信任玩家時才可以使用此選項。啟用此選項時，玩家可以像是在正常狀況下一樣與世界互動。取消使用此選項時，玩家將無法放置或摧毀方塊，並無法與許多項目及方塊互動。{*B*}{*B*}
+	只有在「信任玩家」選項已關閉時才可以使用此選項。啟用此選項時，玩家可以在正常狀況下與世界互動。停止使用此選項後，玩家將無法放置或摧毀方塊，並無法與項目及方塊互動。{*B*}{*B*}
 	
 	{*T2*}可以使用門與開關{*ETW*}{*B*}
-	只有在關閉信任玩家時才可以使用此選項。停用此選項時，玩家將無法使用門與開關。{*B*}{*B*}
+	只有在「信任玩家」選項已關閉時才可以使用此選項。停用此選項時，玩家將無法使用門與開關。{*B*}{*B*}
 	
 	{*T2*}可以打開容器{*ETW*}{*B*}
-	只有在關閉信任玩家時才可以使用此選項。停用此選項時，玩家將無法打開箱子等容器。{*B*}{*B*}
+	只有在「信任玩家」選項已關閉時才可以使用此選項。停用此選項時，玩家將無法打開箱子等容器。{*B*}{*B*}
 	
-	 {*T2*}可以攻擊玩家{*ETW*}{*B*}
-	只有在關閉信任玩家時才可以使用此選項。取消使用此選項時，玩家將無法對其他玩家造成傷害。{*B*}{*B*}
+	{*T2*}可以攻擊玩家{*ETW*}{*B*}
+	只有在「信任玩家」選項已關閉時才可以使用此選項。停用此選項時，玩家將無法傷害其他玩家。{*B*}{*B*}
 	
 	{*T2*}可以攻擊動物{*ETW*}{*B*}
-	只有在關閉信任玩家時才可以使用此選項。停用此選項時，玩家將無法對動物造成傷害。{*B*}{*B*}
+	只有在「信任玩家」選項已關閉時才可以使用此選項。停用此選項時，玩家將無法傷害動物。{*B*}{*B*}
 	
 	{*T2*}管理員{*ETW*}{*B*}
-	啟用此選項時，玩家可以修改主持人以外其他玩家的特權 (在「信任玩家」關閉的狀態下)、踢出玩家，並啟用或停用「火會蔓延」及「炸藥會爆炸」功能。{*B*}{*B*}
+	啟用此選項時，玩家可以修改主持人以外其他玩家的特權 (在「信任玩家」選項關閉的狀態下)、踢出玩家，並啟用或停用「火會蔓延」及「炸藥會爆炸」功能。{*B*}{*B*}
 	
 	{*T2*}踢出玩家{*ETW*}{*B*}
-	對使用與主持人玩家不同 {*PLATFORM_NAME*} 主機的玩家選取此選項，會將該玩家或使用其他 {*PLATFORM_NAME*} 主機的玩家踢出遊戲。除非重新啟動，否則被踢出的玩家無法再加入遊戲。{*B*}{*B*}
+	{*KICK_PLAYER_DESCRIPTION*}主機的玩家選取此選項，會將該玩家或使用其他 {*PLATFORM_NAME*} 主機的玩家踢出遊戲。除非重新啟動，否則被踢出的玩家無法再加入遊戲。{*B*}{*B*}
 
 {*T1*}主持人玩家選項{*ETW*}{*B*}
-如果已經啟用主持人特權，則主持人玩家可以修改自己的某些特權。若要修改玩家的特權，可以選取玩家的名字並按下 {*CONTROLLER_VK_A*}，這會叫出玩家特權功能表，您可以使用列出的選項。{*B*}{*B*}
+如果主持人特權已經啟用，主持人玩家可以修改自己的某些特權。若要修改玩家的特權，可以選取玩家的名字並按下 {*CONTROLLER_VK_A*}，這會叫出玩家特權功能表，您可以使用下列選項。{*B*}{*B*}
 
 	{*T2*}可以飛翔{*ETW*}{*B*}
-	啟用此選項時，玩家可以擁有飛翔的能力。只能在生存模式中選擇是否使用此選項。在創造模式中，所有的玩家都有飛翔的能力。{*B*}{*B*}
+	啟用此選項時，玩家可以擁有飛翔的能力。您只能在生存模式中選擇是否使用此選項，因為在創造模式中，所有的玩家都有飛翔的能力。{*B*}{*B*}
 	
 	{*T2*}停用疲勞{*ETW*}{*B*}
-	只能在生存模式中選擇是否使用此選項。啟用時，消耗體力的活動 (行走/奔跑/跳躍等等) 不會讓食物列減少。然而，如果玩家受傷，在玩家回復生命值期間，食物列會緩慢減少。{*B*}{*B*}
+	只能在生存模式中選擇是否使用此選項。啟用時，消耗體力的活動 (行走/奔跑/跳躍等等) 不會讓食物列減少。然而，如果玩家受傷，在玩家回復生命值期間，食物列會慢慢減少。{*B*}{*B*}
 	
 	{*T2*}隱形{*ETW*}{*B*}
-	啟用此選項時，其他玩家將無法看見玩家，且玩家會變成刀槍不入。{*B*}{*B*}
-    {*T2*}可以傳送{*ETW*}{*B*}
-	這可以讓玩家傳送其他玩家或者他自己到其他玩家身邊。
+	啟用此選項時，其他玩家將無法看見玩家，而且玩家會變成刀槍不入。{*B*}{*B*}
+ 
+	{*T2*}可以傳送{*ETW*}{*B*}
+	這可以讓玩家在世界中傳送其他玩家或者他自己到其他玩家身邊。
 </value>
 </data>
+<data name="IDS_KICK_PLAYER_DESCRIPTION"><value>不是同一個玩家{*PLATFORM_NAME*}主控台為主機播放程式中，選取此選項將踢出玩家的遊戲和其他玩家在其{*PLATFORM_NAME*}主控台。這位玩家不能再加入遊戲，直到重新啟動。</value>
+  </data>
 <data name="IDS_HOW_TO_PLAY_NEXT"><value>下一頁</value>
   </data>
 <data name="IDS_HOW_TO_PLAY_PREV"><value>上一頁</value>
@@ -379,7 +403,7 @@ Xbox One 主機上的 Minecraft 預設為多人遊戲。如果您選擇高畫質
   </data>
 <data name="IDS_HOW_TO_PLAY_MENU_DISPENSER"><value>發射器</value>
 	  </data>
-<data name="IDS_HOW_TO_PLAY_MENU_FARMANIMALS"><value>豢養動物</value>
+<data name="IDS_HOW_TO_PLAY_MENU_FARMANIMALS"><value>飼養動物</value>
 </data>
 <data name="IDS_HOW_TO_PLAY_MENU_BREEDANIMALS"><value>繁殖動物</value>
 </data>
@@ -425,60 +449,92 @@ Xbox One 主機上的 Minecraft 預設為多人遊戲。如果您選擇高畫質
 <data name="IDS_HOW_TO_PLAY_MENU_WHATSNEW"><value>最新資訊</value>
   </data>
 <data name="IDS_HOW_TO_PLAY_WHATSNEW"><value>{*T3*}變更及新增功能{*ETW*}{*B*}{*B*}
-- 新增物品：翡翠、翡翠原礦、翡翠方塊、終界箱、絆線鉤、附魔金蘋果、鐵砧、鵝卵石牆、青苔卵石牆、凋零骷髏的畫像、馬鈴薯、烤馬鈴薯、有毒馬鈴薯、金色胡蘿蔔、「願者上鉤」
-南瓜派、夜視藥水、隱形藥水、獄石英、獄石英原礦、石英方塊、石英板、石英階梯、雕刻石英方塊、希臘圓柱石英方塊、附魔小冊、各種地毯。{*B*}
-- 新增平滑沙岩和雕刻沙岩的配方。{*B*}
-- 新增怪物：殭屍村民。{*B*}
-- 新增生成地形特色建築：沙漠神廟、沙漠村落、叢林神廟。{*B*}
-- 新增村民交易功能。{*B*}
-- 新增鐵砧介面{*B*}
-- 可以將皮甲染色。{*B*}
-- 可以將狼項圈染色。{*B*}
-- 在騎乘豬隻時可以使用「願者上鉤」來控制方向。{*B*}
-- 在贈品箱中加入更多物品。{*B*}
-- 變更一般擺設半格方塊以及兩個半格方塊的擺設機制。{*B*}
-- 變更樓梯以及石、木板上下顛倒的擺設。{*B*}
-- 新增不同的村民職業。{*B*}
-- 若使用角色蛋產生村民，其職業將為亂數設置。{*B*}
-- 新增木頭的橫擺配置。{*B*}
-- 可在熔爐中使用木質工具作為燃料。{*B*}
-- 可以使用聚寶特殊能力收取冰塊和玻璃片。{*B*}
-- 木質按鈕和木質壓板可以透過射箭啟動。{*B*}
-- 地獄中的怪物可以穿過傳送門來到地上世界。{*B*}
-- Creeper 和蜘蛛會攻擊最後一個對他們出手的玩家。{*B*}
-- 創造模式下的怪物短時間後會回到中立特性。{*B*}
-- 移除溺水時發生的擊退效果。{*B*}
-- 被殭屍打壞的門會顯示傷害。{*B*}
-- 冰塊會在地獄中融化。{*B*}
-- 水槽在大雨中會自動補水。{*B*}
-- 活塞動作的更新時間延長一倍。{*B*}
-- 殺掉豬後會得到馬鞍（如果豬身上裝了馬鞍）。{*B*}
-- 變更終界天空的顏色。{*B*}
-- 可以擺置絲線使成為絆線。{*B*}
-- 雨滴會穿過樹葉了。{*B*}
-- 拉桿可以安裝在方塊的底部。{*B*}
-- 炸藥的傷害會依據遊戲難度改變。{*B*}
-- 變更書本的製作配方。{*B*}
-- 船撞上睡蓮葉不會損壞了，而不是船撞上睡蓮葉就解體。{*B*}
-- 殺死豬後會得到更多豬肉。{*B*}
-- 史萊姆現在比較不會在非常平坦類型的世界中出現。{*B*}
-- Creeper 自爆造成的傷害會依遊戲難度而變動，擊退距離也會更遠。{*B*}
-- 修正 Endermen 不會張開嘴巴的問題。{*B*}
-- 新增玩家傳送的功能 (請見遊戲內的 BACK 鍵選單)。{*B*}
-- 新增遠端設定玩家飛行、隱身、無敵的主持人選項功能。{*B*}
-- 因應本次更新新增物品，在教學模式中加入新的物品與功能教學。{*B*}
-- 更新唱片箱子在教學模式中的位置。{*B*}
-</value>
+- 新增物品：硬化黏土、染色黏土、煤炭方塊、乾草捆、啟動鐵軌、紅石方塊、陽光感測器、投擲器、漏斗、漏斗礦車、火藥礦車、紅石比較器、測重壓力板、燈塔、陷阱儲物箱、煙火火箭、煙火星、幽冥星、繩索、馬鎧、名牌、馬重生蛋。{*B*}
+- 新增生物：凋零怪、凋零骷髏、女巫、蝙蝠、馬、驢和騾。{*B*}
+- 新增地形生成功能：女巫屋。{*B*}
+- 新增燈塔介面。{*B*}
+- 新增馬介面。{*B*}
+- 新增漏斗介面。{*B*}
+- 新增煙火：您擁有製作煙火星或煙火火箭的材料時，可以從工作台進入煙火介面。{*B*}
+- 新增「冒險模式」：您只能用正確的工具打破方塊。{*B*}
+- 新增許多聲音。{*B*}
+- 生物、物品和投射物現在能通過入口。{*B*}
+- 現在只要用另一個中繼器為中繼器供電，就可以把它鎖起來。{*B*}
+- 殭屍和骷髏現在可以用不同的武器和護甲重生。{*B*}
+- 新死亡訊息。{*B*}
+- 用命名牌為生物命名，以及在功能表開啟時為容器重新命名來變更標題。{*B*}
+- 骨粉不再讓每樣東西立即完全長大，而是會隨機讓每樣東西於不同的階段生長。{*B*}
+- 直接朝儲物箱、釀造台、發射器和唱片機放置紅石比較器，即可偵測到說明這些東西裡面內容物的紅石訊號。{*B*}
+- 發射器可以朝任何方向。{*B*}
+- 玩家於吃下金蘋果之後，就能短暫獲得額外的生命值去「吸收」傷害。{*B*}
+- 您在某個區域停留時間越久，在該區域重生的怪物越難被打敗。{*B*}</value>
 </data>
 <data name="IDS_TITLEUPDATE"><value>{*ETB*}歡迎回來！或許您還沒有注意到，您的 Minecraft 已經更新了。{*B*}{*B*}
-我們為您和您的好友新增了許多功能，我們在此為您重點列舉幾，趕快瞭解並開始遊戲吧！{*B*}{*B*} 
-{*T1*}新物品{*ETB*} - 翡翠、翡翠原礦、翡翠方塊、終界箱、絆線鉤、附魔金蘋果、鐵砧、花盆、鵝卵石牆、青苔卵石牆、凋零骷髏的畫像、馬鈴薯、烤馬鈴薯、有毒馬鈴薯、金色胡蘿蔔、「願者上鉤」、
-南瓜派、夜視藥水、隱形藥水、獄石英、獄石英原礦、石英方塊、石英板、石英階梯、雕刻石英方塊、希臘圓柱石英方塊、附魔小冊、各種地毯。{*B*}{*B*}
-{*T1*}新生物{*ETB*} - 殭屍村民.{*B*}{*B*}
-{*T1*}新功能{*ETB*} - 和村民交易、透過鐵砧修理武器和工具，或是增加特殊能力，在終界箱裡儲存物品、在騎乘小豬的時候使用「願者上鉤」來控制豬的移動方向！{*B*}{*B*}
-{*T1*}新的迷你教學課程{*ETB*} – 在教學世界裡學習如何使用新功能！{*B*}{*B*}
-{*T1*}新的彩蛋{*ETB*} – 我們已經移動了在教學世界裡的秘密唱片，看看您是否能再次找出它們！{*B*}{*B*}
+我們為您和您的好友新增了許多功能，我們在此為您重點列舉幾項，趕快瞭解並開始遊戲吧！{*B*}{*B*}
+{*T1*}新物品{*ETB*}：硬化黏土、染色黏土、煤炭方塊、乾草捆、啟動鐵軌、紅石方塊、陽光感測器、投擲器、漏斗、漏斗礦車、火藥礦車、紅石比較器、測重壓力板、燈塔、陷阱儲物箱、煙火火箭、煙火星、幽冥星、繩索、馬鎧、名牌、馬重生蛋。{*B*}{*B*}
+{*T1*}新生物{*ETB*}：凋零怪、凋零骷髏、女巫、蝙蝠、馬、驢和騾。{*B*}{*B*}
+{*T1*}新功能{*ETB*}：馴服馬後騎上馬背、製作煙火及惡搞一番、用名牌為動物和怪物命名、建立更進階的紅石電路，還有主持人選項協助控制世界訪客的能耐！{*B*}{*B*}
+{*T1*}新的教學世界{*ETB*}：在教學世界中學習新舊功能的使用方式。看您是否有能耐把藏在世界中的所有神祕唱片都找出來！{*B*}{*B*}
 </value>
+</data>
+<data name="IDS_HOW_TO_PLAY_MENU_HORSES"><value>馬</value>
+</data>
+<data name="IDS_HOW_TO_PLAY_HORSES"><value>{*T3*}遊戲方式：馬{*ETW*}{*B*}{*B*}    
+馬和驢主要居住在開闊的平原。騾是驢和馬的後代，但本身不具生殖能力。{*B*}
+所有成年的馬、驢和騾都可供人騎乘，但是只有馬能夠穿上護甲，只有騾和驢可以裝上鞍囊去運輸物品。{*B*}{*B*}
+馬、驢和騾必須先馴服才可以使用。馴服馬的方式是騎上去，然後騎士必須想辦法不被馬摔下馬背。{*B*}
+當愛心出現在馬的周圍時，牠已經被馴服，再也不會把玩家摔下馬背。玩家必須幫馬裝上馬鞍，才能操縱一匹馬。{*B*}{*B*}
+您可以向村民購買，或是從藏在世界中的儲物箱尋找馬鞍。{*B*}
+若要為已馴服的驢和騾加鞍囊，玩家要把儲物箱裝在牠們身上。之後騎乘或蹲伏時玩家就能使用這些鞍囊.{*B*}{*B*}    
+使用金蘋果或金蘿蔔餵食馬和驢即可繁殖牠們，就像繁殖其他動物一樣，但是騾就不行。{*B*}
+小馬經過一段時間就會長成成年馬，不過給牠們餵食小麥或乾草就會加速生長。{*B*}
+	</value>
+</data>
+<data name="IDS_HOW_TO_PLAY_MENU_BEACONS"><value>燈塔</value>
+</data>
+<data name="IDS_HOW_TO_PLAY_BEACONS"><value>{*T3*}遊戲方式：燈塔{*ETW*}{*B*}{*B*}
+啟動的燈塔會向天空投射明亮的光束，賦予附近的玩家力量。{*B*}
+製作燈塔的材料包括玻璃、黑曜石和幽冥星，擊敗凋零怪即可獲得。{*B*}{*B*}
+燈塔必須放置，白天才能沐浴在陽光之下。燈塔必須放置於鐵、黃金、翡翠或鑽石金字塔上。{*B*}
+用來放置燈塔的材料不會影響燈塔的力量。{*B*}{*B*}
+您可以在燈塔選單中，為燈塔選取一種主要的力量。金字塔越多層，可供選擇的力量越多。{*B*}
+至少有四層的金字塔上的燈塔，還能夠讓您選擇再生次要力量或是更強大的主要力量。{*B*}{*B*}
+您必須在付費空格奉上翡翠、鑽石、黃金或鐵塊，才能設定燈塔的力量。{*B*}
+設定後，燈塔就會無限期發出力量。{*B*}
+    </value>
+</data>
+<data name="IDS_HOW_TO_PLAY_MENU_FIREWORKS"><value>煙火</value>
+</data>
+<data name="IDS_HOW_TO_PLAY_FIREWORKS"><value>{*T3*}遊戲方式︰煙火{*ETW*}{*B*}{*B*}
+煙火屬於裝飾品，可以手動或利用發射器發射，製作的材料包括紙、火藥，也有人會選擇加入幾顆煙火星。{*B*}
+煙火星的顏色、淡化、形狀、大小與效果 (例如尾巴和閃爍) 可自訂，方法是在製作時加入額外材料。{*B*}{*B*}
+若要製作煙火，請將火藥和紙放在庫存上方的 3x3 工作台。{*B*}
+您可以選擇在工作台放置多顆煙火星，加入煙火。{*B*}
+用火藥在工作台填滿的空格越多，所有煙火星會爆炸的高度越高。{*B*}{*B*}
+然後您便可從輸出空格取出製作的煙火。{*B*}{*B*}
+將火藥和染料放進工作台，即可製作煙火星。{*B*}
+ - 染料會決定煙火星爆炸的顏色。{*B*}
+ - 煙火星的形狀則是取決於加入火焰彈、金塊、羽毛或生物的頭。{*B*}
+ - 使用鑽石或螢光粉即可新增尾巴或閃爍。{*B*}{*B*}
+煙火星製作完成後，以染料製作即可決定煙火星的淡出顏色。
+	</value>
+	</data>	
+<data name="IDS_HOW_TO_PLAY_MENU_HOPPERS"><value>漏斗</value>
+</data>
+<data name="IDS_HOW_TO_PLAY_HOPPERS"><value>{*T3*}遊戲方式：漏斗{*ETW*}{*B*}{*B*}
+您可以使用漏斗將物品插入容器或是從容器移除物品，以及自動拾取丟入容器的物品。{*B*}
+漏斗能夠影響釀造台、儲物箱、發射器、投擲器、運輸礦車、漏斗礦車及其他漏斗。{*B*}{*B*}
+漏斗會一直嘗試從放在上方的合適容器吸取物品，還會嘗試將儲存的物品插入輸出容器。{*B*}
+如果漏斗是用紅石發電就會停用，並且停止吸取和插入物品。{*B*}{*B*}
+漏斗會指向嘗試輸出物品的方向。若要讓漏斗指向特定方塊，淺行時將漏斗放在背對該方塊的位置即可。{*B*}
+    </value>
+</data>
+<data name="IDS_HOW_TO_PLAY_MENU_DROPPERS"><value>投擲器</value>
+</data>
+<data name="IDS_HOW_TO_PLAY_DROPPERS"><value>{*T3*}遊戲方式︰投擲器{*ETW*}{*B*}{*B*}
+投擲器由紅石供電時，會隨機掉落一件物品至地面。使用 {*CONTROLLER_ACTION_USE*} 即可開啟投擲器，然後即可將庫存中的物品裝進投擲器。{*B*}
+如果投擲器朝向儲物箱或另一種容器，物品則會放進那裡面。您可以打造投擲器的長鏈子運輸物品，但是必須交替開啟關閉電源才能發揮功能。
+	</value>
 </data>
 <data name="IDS_DESC_SWORD"><value>能造成比用手劈砍更大的傷害。</value>
   </data>
@@ -605,10 +661,36 @@ Xbox One 主機上的 Minecraft 預設為多人遊戲。如果您選擇高畫質
   </data>
 <data name="IDS_DESC_MAP"><value>用手握住時，會顯示某個地區中已探索區域的影像。可讓您用來尋找能前往某個地點的路。</value>
   </data>
+<data name="IDS_DESC_MAP_EMPTY"><value>使用後會成為您身處世界的地圖，而且會隨著您的探索腳步填滿。</value>
+  </data>
 <data name="IDS_DESC_BOW"><value>可射出箭來遠距攻擊。</value>
   </data>
 <data name="IDS_DESC_ARROW"><value>可與弓組成武器。</value>
   </data>
+<data name="IDS_DESC_NETHER_STAR"><value>凋零怪所扔下，用於製作燈塔。</value>
+</data>
+<data name="IDS_DESC_FIREWORKS"><value>啟動時，建立彩色爆炸。顏色、效果、形狀和淡出取決於建立煙火時使用的煙火星。</value>
+</data>
+<data name="IDS_DESC_FIREWORKS_CHARGE"><value>用來決定煙火的顏色、效果和形狀。</value>
+</data>
+<data name="IDS_DESC_COMPARATOR"><value>用於紅石電路，以維持、比較或除去信號強度，或是測量若干方塊的狀態。</value>
+</data>
+<data name="IDS_DESC_MINECART_TNT"><value>屬於一種貨物礦車類型，功能是移動的 TNT 方塊。</value>
+</data>
+<data name="IDS_DESC_DAYLIGHT_DETECTOR"><value>是根據陽光 (或缺乏陽光) 發出紅石信號的方塊。</value>
+</data>		
+<data name="IDS_DESC_MINECART_HOPPER"><value>屬於特殊的貨物礦車類型，功能類似漏斗，會收集軌道上的物品以及上方容器內的物品。</value>
+</data>
+<data name="IDS_DESC_IRON_HORSE_ARMOR"><value>特殊護甲類型，可以裝在馬上。提供 5 護甲。</value>
+</data>
+<data name="IDS_DESC_GOLD_HORSE_ARMOR"><value>特殊護甲類型，可以裝在馬上。提供 7 護甲。</value>
+</data>
+<data name="IDS_DESC_DIAMOND_HORSE_ARMOR"><value>特殊護甲類型，可以裝在馬上。提供 11 護甲。</value>
+</data>
+<data name="IDS_DESC_LEAD"><value>用來將生物拴在玩家或柵欄柱</value>
+</data>
+<data name="IDS_DESC_NAME_TAG"><value>用來為世界上的生物命名。</value>
+</data>
 <data name="IDS_DESC_BREAD"><value>可回復 2.5 個 {*ICON_SHANK_01*}。</value>
   </data>
 <data name="IDS_DESC_CAKE"><value>使用 1 次可回復 1 個 {*ICON_SHANK_01*}，總共能使用 6 次。</value>
@@ -933,205 +1015,263 @@ Xbox One 主機上的 Minecraft 預設為多人遊戲。如果您選擇高畫質
   </data>
 <data name="IDS_DESC_SKULL"><value>生物頭顱可當裝飾品或當做面具戴在頭盔空格中。</value>
   </data>
+<data name="IDS_DESC_COMMAND_BLOCK"><value>用來執行指令。</value>
+	</data>
+<data name="IDS_DESC_BEACON"><value>朝天空發射光束，而且能夠為附近玩家提供狀態效果。</value>
+	</data>
+<data name="IDS_DESC_CHEST_TRAP"><value>將方塊和物品儲存在裡面。將兩個儲物箱並排在一起，即可建立兩倍容量的大型儲物箱。陷阱儲物箱還會在開啟時建立紅石彈。</value>
+	</data>
+<data name="IDS_DESC_WEIGHTED_PLATE_LIGHT"><value>提供紅石彈，當板上的物品越多，彈的力量越強大。</value>
+	</data>
+<data name="IDS_DESC_WEIGHTED_PLATE_HEAVY"><value>提供紅石彈，板上物品越多越強大。相較於輕型板子，需要更多重量。</value>
+	</data>
+<data name="IDS_DESC_REDSTONE_BLOCK"><value>用來當成紅石能源。可製作還原回紅石。</value>
+	</data>
+<data name="IDS_DESC_HOPPER"><value>用來接住物品，或是將物品送進容器或從容器取出。</value>
+	</data>
+<data name="IDS_DESC_ACTIVATOR_RAIL"><value>這種類型的軌道能夠啟用或停用漏斗礦車，以及觸發 TNT 礦車。</value>
+	</data>
+<data name="IDS_DESC_DROPPER"><value>用來裝物品及扔下物品，或是在獲得紅石彈時，將物品推入另一個容器。</value>
+	</data>
+<data name="IDS_DESC_STAINED_CLAY"><value>為硬化黏土染色，即可製作彩色方塊。</value>
+	</data>
+<data name="IDS_DESC_HAY"><value>能夠餵食馬、驢或騾，最多治癒 10 顆心。加快小馬和小驢生長的速度。</value>
+	</data>
+<data name="IDS_DESC_HARDENED_CLAY"><value>在熔爐熔黏土即可製造出來。</value>
+	</data>
+<data name="IDS_DESC_STAINED_GLASS"><value>用玻璃和染料製作。</value>
+	</data>
+<data name="IDS_DESC_STAINED_GLASS_PANE"><value>用彩繪玻璃製作</value>
+	</data>
+<data name="IDS_DESC_COAL_BLOCK"><value>儲存煤的壓縮方法。可以當做爐的燃料。</value>
+	 </data>
 <data name="IDS_SQUID"><value>烏賊</value>
-  </data>
+	</data>
 <data name="IDS_DESC_SQUID"><value>被殺死時會掉落墨囊。</value>
-  </data>
+	</data>
 <data name="IDS_COW"><value>乳牛</value>
-  </data>
+	</data>
 <data name="IDS_DESC_COW"><value>被殺死時會掉落皮革。您也可以用桶子來擠牛奶。</value>
-  </data>
+	</data>
 <data name="IDS_SHEEP"><value>綿羊</value>
-  </data>
+	</data>
 <data name="IDS_DESC_SHEEP"><value>被剪羊毛時會掉落羊毛 (前提是牠的羊毛還沒被剪掉)。可染色來讓綿羊擁有不同色彩的羊毛。</value>
-  </data>
+	</data>
 <data name="IDS_CHICKEN"><value>雞</value>
-  </data>
+	</data>
 <data name="IDS_DESC_CHICKEN"><value>被殺死時會掉落羽毛，還會隨機生蛋。</value>
-  </data>
+	</data>
 <data name="IDS_PIG"><value>豬</value>
-  </data>
+	</data>
 <data name="IDS_DESC_PIG"><value>被殺死時會掉落豬肉。您還可以使用鞍座來騎在豬上。</value>
-  </data>
+	</data>
 <data name="IDS_WOLF"><value>狼</value>
-  </data>
+	</data>
 <data name="IDS_DESC_WOLF"><value>狼是溫馴的動物，但當您攻擊牠時，牠就會攻擊您。您可以使用骨頭來馴服狼，這會讓牠跟著您走，並攻擊任何在攻擊您的東西。</value>
-  </data>
+	</data>
 <data name="IDS_CREEPER"><value>Creeper</value>
-  </data>
+	</data>
 <data name="IDS_DESC_CREEPER"><value>如果您靠太近就會爆炸！</value>
-  </data>
+	</data>
 <data name="IDS_SKELETON"><value>骷髏</value>
-  </data>
+	</data>
 <data name="IDS_DESC_SKELETON"><value>會對您射箭，被殺死時會掉落箭。</value>
-  </data>
+	</data>
 <data name="IDS_SPIDER"><value>蜘蛛</value>
-  </data>
+	</data>
 <data name="IDS_DESC_SPIDER"><value>如果您靠近蜘蛛，牠就會攻擊您。蜘蛛會爬牆，被殺死時會掉落絲線。</value>
-  </data>
+	</data>
 <data name="IDS_ZOMBIE"><value>殭屍</value>
-  </data>
+	</data>
 <data name="IDS_DESC_ZOMBIE"><value>如果您靠近殭屍，殭屍就會攻擊您。</value>
-  </data>
+	</data>
 <data name="IDS_PIGZOMBIE"><value>殭屍 Pigman</value>
-  </data>
+	</data>
 <data name="IDS_DESC_PIGZOMBIE"><value>殭屍 Pigman 是溫馴的怪物，但如果您攻擊整群殭屍 Pigman 中的一個，整群殭屍 Pigman 就會開始攻擊您。</value>
-  </data>
+	</data>
 <data name="IDS_GHAST"><value>Ghast</value>
-  </data>
+	</data>
 <data name="IDS_DESC_GHAST"><value>會對您發射火球，而且火球碰到東西時會爆炸。</value>
-  </data>
+	</data>
 <data name="IDS_SLIME"><value>史萊姆</value>
-  </data>
+	</data>
 <data name="IDS_DESC_SLIME"><value>受傷害時會分裂成數個小史萊姆。</value>
-  </data>
+	</data>
 <data name="IDS_ENDERMAN"><value>Enderman</value>
-  </data>
+	</data>
 <data name="IDS_DESC_ENDERMAN"><value>如果您直視 Enderman，Enderman 就會攻擊您，而且還會到處移動方塊。</value>
-  </data>
+	</data>
 <data name="IDS_SILVERFISH"><value>Silverfish</value>
-  </data>
+	</data>
 <data name="IDS_DESC_SILVERFISH"><value>當 Silverfish 受到攻擊時，會引來躲在附近的 Silverfish。牠們會躲在石頭方塊中。</value>
-  </data>
+	</data>
 <data name="IDS_CAVE_SPIDER"><value>穴蜘蛛</value>
-  </data>
+	</data>
 <data name="IDS_DESC_CAVE_SPIDER"><value>擁有毒牙。</value>
-  </data>
+	</data>
 <data name="IDS_MUSHROOM_COW"><value>Mooshroom</value>
-  </data>
+	</data>
 <data name="IDS_DESC_MUSHROOM_COW"><value>與碗一起使用可用來燉蘑菇，剪毛後會掉落蘑菇，且會變成普通的乳牛。</value>
-  </data>
+	</data>
 <data name="IDS_SNOWMAN"><value>雪人</value>
-  </data>
+	</data>
 <data name="IDS_DESC_SNOWMAN"><value>玩家可用白雪方塊和南瓜製作雪人。雪人會對製作者的敵人投擲雪球。</value>
-  </data>
+	</data>
 <data name="IDS_ENDERDRAGON"><value>終界龍</value>
-  </data>
+	</data>
 <data name="IDS_DESC_ENDERDRAGON"><value>這是出現在終界的巨大黑龍。</value>
-  </data>
+	</data>
 <data name="IDS_BLAZE"><value>Blaze</value>
-  </data>
+	</data>
 <data name="IDS_DESC_BLAZE"><value>Blaze 是地獄裡的敵人，絕大部分皆分布在地獄要塞中。當 Blaze 被殺死時會掉落 Blaze 棒。</value>
-  </data>
+	</data>
 <data name="IDS_LAVA_SLIME"><value>熔岩怪</value>
-  </data>
+	</data>
 <data name="IDS_DESC_LAVA_SLIME"><value>熔岩怪出現於地獄，被殺死時會分裂成很多小熔岩怪，這點跟史蘭姆很像。</value>
-  </data>
+	</data>
 <data name="IDS_VILLAGER"><value>村民</value>
-  </data>
+	</data>
 <data name="IDS_OZELOT"><value>豹貓</value>
-  </data>
+	</data>
 <data name="IDS_DESC_OZELOT"><value>分布在熱帶叢林中，餵生魚就能馴服牠們。但前提是必須讓豹貓靠近您，畢竟任何一個突然的動作都會嚇跑牠們。</value>
-  </data>
+	</data>
 <data name="IDS_IRONGOLEM"><value>鐵傀儡</value>
-  </data>
+	</data>
 <data name="IDS_DESC_IRONGOLEM"><value>出現來保護村落，可以用鐵塊跟南瓜製作。</value>
-  </data>
-<data name="IDS_CREDITS_EXPLODANIM"><value>Explosives Animator</value>
+	</data>
+<data name="IDS_BAT"><value>蝙蝠</value>
+	</data>
+<data name="IDS_DESC_BAT"><value>這些飛行生物居住在洞窟或其他大型封閉空間。</value>
+	</data>
+<data name="IDS_WITCH"><value>女巫</value>
+	</data>
+<data name="IDS_DESC_WITCH"><value>這些敵人居住在沼澤，她們會投擲藥水攻擊您。當您殺死她們，藥水就會掉下來。</value>
+	</data>
+<data name="IDS_HORSE"><value>馬</value>
+	</data>
+<data name="IDS_DESC_HORSE"><value>這些動物能夠馴服，接著便可供騎乘。</value>
+	</data>
+<data name="IDS_DONKEY"><value>驢</value>
+	</data>
+<data name="IDS_DESC_DONKEY"><value>這些動物能夠馴服，接著便可供騎乘，而且可以裝上儲物箱。</value>
+	</data>
+<data name="IDS_MULE"><value>騾</value>
+	</data>
+<data name="IDS_DESC_MULE"><value>馬和驢的後代。這些動物能夠被馴服，接著便可供人騎乘、穿戴護甲並攜帶儲物箱。</value>
+	</data>
+<data name="IDS_ZOMBIE_HORSE"><value>殭屍馬</value>
+	</data>
+<data name="IDS_SKELETON_HORSE"><value>骷髏馬</value>
+	</data>
+<data name="IDS_WITHER"><value>凋零怪</value>
+	</data>
+<data name="IDS_DESC_WITHER"><value>製作原料包括凋零骷髏頭和靈魂沙，他們會朝您發射爆炸骷髏頭。</value>
+	</data>
+<data name="IDS_CREDITS_EXPLODANIM"><value>爆炸動畫繪製者</value>
 </data>
-<data name="IDS_CREDITS_CONCEPTART"><value>Concept Artist</value>
+<data name="IDS_CREDITS_CONCEPTART"><value>概念藝術家</value>
 </data>
-<data name="IDS_CREDITS_CRUNCHER"><value>Number Crunching and Statistics</value>
+<data name="IDS_CREDITS_CRUNCHER"><value>數字運算與統計數據</value>
 </data>
-<data name="IDS_CREDITS_BULLYCOORD"><value>Bully Coordinator</value>
+<data name="IDS_CREDITS_BULLYCOORD"><value>欺負協調者</value>
 </data>
-<data name="IDS_CREDITS_ORIGINALDESIGN"><value>Original Design and Code by</value>
+<data name="IDS_CREDITS_ORIGINALDESIGN"><value>原始設計與編碼者</value>
   </data>
-<data name="IDS_CREDITS_PMPROD"><value>Project Manager/Producer</value>
+<data name="IDS_CREDITS_PMPROD"><value>專案經理/製作者</value>
   </data>
-<data name="IDS_CREDITS_RESTOFMOJANG"><value>Rest of Mojang Office</value>
+<data name="IDS_CREDITS_RESTOFMOJANG"><value>其餘 Mojang 辦公室</value>
   </data>
-<data name="IDS_CREDITS_LEADPC"><value>Lead Game Programmer Minecraft PC</value>
+<data name="IDS_CREDITS_LEADPC"><value>領導遊戲程式設計師 Minecraft PC</value>
 </data>
-<data name="IDS_CREDITS_CODENINJA"><value>Ninja Coder</value>
+<data name="IDS_CREDITS_CODENINJA"><value>Ninja 程式編碼者</value>
   </data>
-<data name="IDS_CREDITS_CEO"><value>CEO</value>
+<data name="IDS_CREDITS_CEO"><value>首席執行長</value>
   </data>
-<data name="IDS_CREDITS_WCW"><value>White Collar Worker</value>
+<data name="IDS_CREDITS_WCW"><value>白領勞工</value>
   </data>
-<data name="IDS_CREDITS_CUSTOMERSUPPORT"><value>Customer Support</value>
+<data name="IDS_CREDITS_CUSTOMERSUPPORT"><value>客戶支援</value>
   </data>
-<data name="IDS_CREDITS_OFFICEDJ"><value>Office DJ</value>
+<data name="IDS_CREDITS_OFFICEDJ"><value>辦公室 DJ</value>
 </data>
-<data name="IDS_CREDITS_DESPROG"><value>Designer/Programmer Minecraft - Pocket Edition</value>
+<data name="IDS_CREDITS_DESPROG"><value>設計者/程式設計師 Minecraft - 袖珍版</value>
 </data>
-<data name="IDS_CREDITS_DEVELOPER"><value>Developer</value>
+<data name="IDS_CREDITS_DEVELOPER"><value>開發者</value>
 </data>
-<data name="IDS_CREDITS_CHIEFARCHITECT"><value>Chief Architect</value>
+<data name="IDS_CREDITS_CHIEFARCHITECT"><value>首席建築師</value>
   </data>
-<data name="IDS_CREDITS_ARTDEVELOPER"><value>Art Developer</value>
+<data name="IDS_CREDITS_ARTDEVELOPER"><value>藝術開發者</value>
   </data>  
-<data name="IDS_CREDITS_GAMECRAFTER"><value>Game Crafter</value>
+<data name="IDS_CREDITS_GAMECRAFTER"><value>遊戲加工者</value>
   </data>
-<data name="IDS_CREDITS_DOF"><value>Director of Fun</value>
+<data name="IDS_CREDITS_DOF"><value>有趣董事</value>
   </data>
-<data name="IDS_CREDITS_MUSICANDSOUNDS"><value>Music and Sounds</value>
+<data name="IDS_CREDITS_MUSICANDSOUNDS"><value>音樂與聲音</value>
   </data>
-<data name="IDS_CREDITS_PROGRAMMING"><value>Programming</value>
+<data name="IDS_CREDITS_PROGRAMMING"><value>程式設計</value>
   </data>
-<data name="IDS_CREDITS_ART"><value>Art</value>
+<data name="IDS_CREDITS_ART"><value>藝術</value>
   </data>
 <data name="IDS_CREDITS_QA"><value>QA</value>
   </data>
-<data name="IDS_CREDITS_EXECPRODUCER"><value>Executive Producer</value>
+<data name="IDS_CREDITS_EXECPRODUCER"><value>執行製作者</value>
   </data>
-<data name="IDS_CREDITS_LEADPRODUCER"><value>Lead Producer</value>
+<data name="IDS_CREDITS_LEADPRODUCER"><value>主管製作者</value>
   </data>
-<data name="IDS_CREDITS_PRODUCER"><value>Producer</value>
+<data name="IDS_CREDITS_PRODUCER"><value>製作者</value>
   </data>
-<data name="IDS_CREDITS_TESTLEAD"><value>Test Lead</value>
+<data name="IDS_CREDITS_TESTLEAD"><value>測試主管</value>
   </data>
-<data name="IDS_CREDITS_LEADTESTER"><value>Lead Tester</value>
+<data name="IDS_CREDITS_LEADTESTER"><value>主管測試員</value>
   </data>
-<data name="IDS_CREDITS_DESIGNTEAM"><value>Design Team</value>
+<data name="IDS_CREDITS_DESIGNTEAM"><value>設計團隊</value>
   </data>
-<data name="IDS_CREDITS_DEVELOPMENTTEAM"><value>Development Team</value>
+<data name="IDS_CREDITS_DEVELOPMENTTEAM"><value>開發團隊</value>
   </data>
-<data name="IDS_CREDITS_RELEASEMANAGEMENT"><value>Release Management</value>
+<data name="IDS_CREDITS_RELEASEMANAGEMENT"><value>發布管理</value>
   </data>
-<data name="IDS_CREDITS_XBLADIRECTOR"><value>Director, XBLA Publishing</value>
+<data name="IDS_CREDITS_XBLADIRECTOR"><value>董事， XBLA 公佈</value>
   </data>
-<data name="IDS_CREDITS_BIZDEV"><value>Business Development</value>
+<data name="IDS_CREDITS_BIZDEV"><value>業務開發</value>
   </data>
-<data name="IDS_CREDITS_PORTFOLIODIRECTOR"><value>Portfolio Director</value>
+<data name="IDS_CREDITS_PORTFOLIODIRECTOR"><value>投資董事</value>
   </data>
-<data name="IDS_CREDITS_PRODUCTMANAGER"><value>Product Manager</value>
+<data name="IDS_CREDITS_PRODUCTMANAGER"><value>製作經理</value>
   </data>
-<data name="IDS_CREDITS_MARKETING"><value>Marketing</value>
+<data name="IDS_CREDITS_MARKETING"><value>行銷</value>
   </data>
-<data name="IDS_CREDITS_COMMUNITYMANAGER"><value> Community Manager</value>
+<data name="IDS_CREDITS_COMMUNITYMANAGER"><value>社群經理</value>
   </data>
-<data name="IDS_CREDITS_EUROPELOC"><value>Europe Localization Team</value>
+<data name="IDS_CREDITS_EUROPELOC"><value>歐洲在地化團隊</value>
   </data>
-<data name="IDS_CREDITS_REDMONDLOC"><value>Redmond Localization Team</value>
+<data name="IDS_CREDITS_REDMONDLOC"><value>Redmond 在地化團隊</value>
   </data>
-<data name="IDS_CREDITS_ASIALOC"><value>Asia Localization Team</value>
+<data name="IDS_CREDITS_ASIALOC"><value>亞洲在地化團隊</value>
   </data>
-<data name="IDS_CREDITS_USERRESEARCH"><value>User Research Team</value>
+<data name="IDS_CREDITS_USERRESEARCH"><value>使用者研究團隊</value>
   </data>
-<data name="IDS_CREDITS_MGSCENTRAL"><value>MGS Central Teams</value>
+<data name="IDS_CREDITS_MGSCENTRAL"><value>MGS 中心團隊</value>
   </data>
-<data name="IDS_CREDITS_MILESTONEACCEPT"><value>Milestone Acceptance Tester</value>
+<data name="IDS_CREDITS_MILESTONEACCEPT"><value>里程碑驗收測試員</value>
   </data>
-<data name="IDS_CREDITS_SPECIALTHANKS"><value>Special Thanks</value>
+<data name="IDS_CREDITS_SPECIALTHANKS"><value>特別感謝</value>
   </data>
-<data name="IDS_CREDITS_TESTMANAGER"><value>Test Manager</value>
+<data name="IDS_CREDITS_TESTMANAGER"><value>測試經理</value>
   </data>
-<data name="IDS_CREDITS_SRTESTLEAD"><value>Senior Test Lead</value>
+<data name="IDS_CREDITS_SRTESTLEAD"><value>資深測試主管</value>
   </data>
 <data name="IDS_CREDITS_SDET"><value>SDET</value>
   </data>
-<data name="IDS_CREDITS_PROJECT"><value>Project STE</value>
+<data name="IDS_CREDITS_PROJECT"><value>專案 STE</value>
   </data>
-<data name="IDS_CREDITS_ADDITIONALSTE"><value>Additional STE</value>
+<data name="IDS_CREDITS_ADDITIONALSTE"><value>其他 STE</value>
   </data>
-<data name="IDS_CREDITS_TESTASSOCIATES"><value>Test Associates</value>
+<data name="IDS_CREDITS_TESTASSOCIATES"><value>測試相關</value>
   </data>
 <data name="IDS_CREDITS_JON_KAGSTROM"><value>Jon Kagstrom</value>
   </data>
-<data name="IDS_CREDITS_TOBIAS_MOLLSTAM"><value>Tobias Mollstam</value>
+<data name="IDS_CREDITS_TOBIAS_MOLLSTAM"><value>Tobias Möllstam</value>
   </data>
-<data name="IDS_CREDITS_RISE_LUGO"><value>Rise Lugo</value>
+<data name="IDS_CREDITS_RISE_LUGO"><value>Risë Lugo</value>
   </data>
 <data name="IDS_ITEM_SWORD_WOOD"><value>木劍</value>
   </data>
@@ -1373,6 +1513,8 @@ Xbox One 主機上的 Minecraft 預設為多人遊戲。如果您選擇高畫質
   </data>
 <data name="IDS_ITEM_MAP"><value>地圖</value>
   </data>
+<data name="IDS_ITEM_MAP_EMPTY"><value>空白地圖</value>
+  </data>
 <data name="IDS_ITEM_RECORD_01"><value>唱片：13</value>
   </data>
 <data name="IDS_ITEM_RECORD_02"><value>唱片：Cat</value>
@@ -1475,6 +1617,28 @@ Xbox One 主機上的 Minecraft 預設為多人遊戲。如果您選擇高畫質
   </data>
 <data name="IDS_ITEM_SKULL_CREEPER"><value>Creeper 頭顱</value>
   </data>
+<data name="IDS_NETHER_STAR"><value>幽冥星</value>
+  </data>
+<data name="IDS_FIREWORKS"><value>煙火火箭</value>
+  </data>
+<data name="IDS_FIREWORKS_CHARGE"><value>煙火星</value>
+  </data>
+<data name="IDS_ITEM_COMPARATOR"><value>紅石比較器</value>
+  </data>
+<data name="IDS_ITEM_MINECART_TNT"><value>TNT 礦車</value>
+  </data>
+<data name="IDS_ITEM_MINECART_HOPPER"><value>漏斗礦車</value>
+  </data>
+<data name="IDS_ITEM_IRON_HORSE_ARMOR"><value>鐵馬鎧</value>
+  </data>
+<data name="IDS_ITEM_GOLD_HORSE_ARMOR"><value>黃金馬鎧</value>
+  </data>
+<data name="IDS_ITEM_DIAMOND_HORSE_ARMOR"><value>鑽石馬鎧</value>
+  </data>
+<data name="IDS_ITEM_LEAD"><value>繩索</value>
+  </data>
+<data name="IDS_ITEM_NAME_TAG"><value>名牌</value>
+  </data>
 <data name="IDS_TILE_STONE"><value>石頭</value>
   </data>
 <data name="IDS_TILE_GRASS"><value>青草方塊</value>
@@ -1490,6 +1654,8 @@ Xbox One 主機上的 Minecraft 預設為多人遊戲。如果您選擇高畫質
 <data name="IDS_TILE_BIRCHWOOD_PLANKS"><value>樺樹厚木板</value>
   </data>
 <data name="IDS_TILE_JUNGLE_PLANKS"><value>熱帶叢林厚木板</value>
+  </data>
+<data name="IDS_TILE_PLANKS"><value>木材厚木板 (任何類型)</value>
   </data>
 <data name="IDS_TILE_SAPLING"><value>樹苗</value>
   </data>
@@ -1827,6 +1993,193 @@ Xbox One 主機上的 Minecraft 預設為多人遊戲。如果您選擇高畫質
   </data>
 <data name="IDS_TILE_SKULL"><value>骷髏</value>
   </data>
+<data name="IDS_TILE_COMMAND_BLOCK"><value>指令方塊</value>
+  </data>
+<data name="IDS_TILE_BEACON"><value>燈塔</value>
+  </data>
+<data name="IDS_TILE_CHEST_TRAP"><value>陷阱儲物箱</value>
+  </data>
+<data name="IDS_TILE_WEIGHTED_PLATE_LIGHT"><value>測重壓力板（輕型）</value>
+  </data>
+<data name="IDS_TILE_WEIGHTED_PLATE_HEAVY"><value>測重壓力板（重型）</value>
+  </data>
+<data name="IDS_TILE_COMPARATOR"><value>紅石比較器</value>
+  </data>
+<data name="IDS_TILE_DAYLIGHT_DETECTOR"><value>陽光感測器</value>
+  </data>
+<data name="IDS_TILE_REDSTONE_BLOCK"><value>紅石方塊</value>
+  </data>
+<data name="IDS_TILE_HOPPER"><value>漏斗</value>
+  </data>
+<data name="IDS_TILE_ACTIVATOR_RAIL"><value>啟動鐵軌</value>
+  </data>
+<data name="IDS_TILE_DROPPER"><value>投擲器</value>
+  </data>
+<data name="IDS_TILE_STAINED_CLAY"><value>染色黏土塊</value>
+  </data>
+<data name="IDS_TILE_HAY"><value>乾草捆</value>
+  </data>
+<data name="IDS_TILE_HARDENED_CLAY"><value>硬化黏土</value>
+  </data>
+<data name="IDS_TILE_COAL"><value>煤炭塊</value>
+  </data>
+<data name="IDS_TILE_STAINED_CLAY_BLACK"><value>黑色染色黏土塊</value>
+  </data>
+<data name="IDS_TILE_STAINED_CLAY_RED"><value>紅色染色黏土塊</value>
+  </data>
+<data name="IDS_TILE_STAINED_CLAY_GREEN"><value>綠色染色黏土塊</value>
+  </data>
+<data name="IDS_TILE_STAINED_CLAY_BROWN"><value>棕色染色黏土塊</value>
+  </data>
+<data name="IDS_TILE_STAINED_CLAY_BLUE"><value>藍色染色黏土塊</value>
+  </data>
+<data name="IDS_TILE_STAINED_CLAY_PURPLE"><value>紫色染色黏土塊</value>
+  </data>
+<data name="IDS_TILE_STAINED_CLAY_CYAN"><value>青綠色染色黏土塊</value>
+  </data>
+<data name="IDS_TILE_STAINED_CLAY_SILVER"><value>淺灰色染色黏土塊</value>
+  </data>
+<data name="IDS_TILE_STAINED_CLAY_GRAY"><value>灰色染色黏土塊</value>
+  </data>
+<data name="IDS_TILE_STAINED_CLAY_PINK"><value>粉紅色染色黏土塊</value>
+  </data>
+<data name="IDS_TILE_STAINED_CLAY_LIME"><value>淡黃綠色染色黏土塊</value>
+  </data>
+<data name="IDS_TILE_STAINED_CLAY_YELLOW"><value>黃色染色黏土塊</value>
+  </data>
+<data name="IDS_TILE_STAINED_CLAY_LIGHT_BLUE"><value>淺藍色染色黏土塊</value>
+  </data>
+<data name="IDS_TILE_STAINED_CLAY_MAGENTA"><value>洋紅色染色黏土塊</value>
+  </data>
+<data name="IDS_TILE_STAINED_CLAY_ORANGE"><value>橘色染色黏土塊</value>
+  </data>
+<data name="IDS_TILE_STAINED_CLAY_WHITE"><value>白色染色黏土塊</value>
+  </data>
+<data name="IDS_TILE_STAINED_GLASS"><value>彩繪玻璃</value>
+  </data>
+<data name="IDS_TILE_STAINED_GLASS_BLACK"><value>黑色彩繪玻璃</value>
+  </data>
+<data name="IDS_TILE_STAINED_GLASS_RED"><value>紅色彩繪玻璃</value>
+  </data>
+<data name="IDS_TILE_STAINED_GLASS_GREEN"><value>綠色彩繪玻璃</value>
+  </data>
+<data name="IDS_TILE_STAINED_GLASS_BROWN"><value>棕色彩繪玻璃</value>
+  </data>
+<data name="IDS_TILE_STAINED_GLASS_BLUE"><value>藍色彩繪玻璃</value>
+  </data>
+<data name="IDS_TILE_STAINED_GLASS_PURPLE"><value>紫色彩繪玻璃</value>
+  </data>
+<data name="IDS_TILE_STAINED_GLASS_CYAN"><value>青綠色彩繪玻璃</value>
+  </data>
+<data name="IDS_TILE_STAINED_GLASS_SILVER"><value>淺灰色彩繪玻璃</value>
+  </data>
+<data name="IDS_TILE_STAINED_GLASS_GRAY"><value>灰色彩繪玻璃</value>
+  </data>
+<data name="IDS_TILE_STAINED_GLASS_PINK"><value>粉紅色彩繪玻璃</value>
+  </data>
+<data name="IDS_TILE_STAINED_GLASS_LIME"><value>淡黃綠色彩繪玻璃</value>
+  </data>
+<data name="IDS_TILE_STAINED_GLASS_YELLOW"><value>黃色彩繪玻璃</value>
+  </data>
+<data name="IDS_TILE_STAINED_GLASS_LIGHT_BLUE"><value>淺藍色彩繪玻璃</value>
+  </data>
+<data name="IDS_TILE_STAINED_GLASS_MAGENTA"><value>洋紅色彩繪玻璃</value>
+  </data>
+<data name="IDS_TILE_STAINED_GLASS_ORANGE"><value>橘色彩繪玻璃</value>
+  </data>
+<data name="IDS_TILE_STAINED_GLASS_WHITE"><value>白色彩繪玻璃</value>
+  </data>
+<data name="IDS_TILE_STAINED_GLASS_PANE"><value>彩繪玻璃窗格
+</value>
+  </data>
+<data name="IDS_TILE_STAINED_GLASS_PANE_BLACK"><value>黑色彩繪玻璃窗格
+</value>
+  </data>
+<data name="IDS_TILE_STAINED_GLASS_PANE_RED"><value>紅色彩繪玻璃窗格
+</value>
+  </data>
+<data name="IDS_TILE_STAINED_GLASS_PANE_GREEN"><value>綠色彩繪玻璃窗格</value>
+  </data>
+<data name="IDS_TILE_STAINED_GLASS_PANE_BROWN"><value>棕色彩繪玻璃窗格</value>
+  </data>
+<data name="IDS_TILE_STAINED_GLASS_PANE_BLUE"><value>藍色彩繪玻璃窗格</value>
+  </data>
+<data name="IDS_TILE_STAINED_GLASS_PANE_PURPLE"><value>紫色彩繪玻璃窗格</value>
+  </data>
+<data name="IDS_TILE_STAINED_GLASS_PANE_CYAN"><value>青綠色彩繪玻璃窗格</value>
+  </data>
+<data name="IDS_TILE_STAINED_GLASS_PANE_SILVER"><value>淺灰色彩繪玻璃窗格</value>
+  </data>
+<data name="IDS_TILE_STAINED_GLASS_PANE_GRAY"><value>灰色彩繪玻璃窗格</value>
+  </data>
+<data name="IDS_TILE_STAINED_GLASS_PANE_PINK"><value>粉紅色彩繪玻璃窗格</value>
+  </data>
+<data name="IDS_TILE_STAINED_GLASS_PANE_LIME"><value>淡黃綠色彩繪玻璃窗格</value>
+  </data>
+<data name="IDS_TILE_STAINED_GLASS_PANE_YELLOW"><value>黃色彩繪玻璃窗格</value>
+  </data>
+<data name="IDS_TILE_STAINED_GLASS_PANE_LIGHT_BLUE"><value>淺藍色彩繪玻璃窗格</value>
+  </data>
+<data name="IDS_TILE_STAINED_GLASS_PANE_MAGENTA"><value>洋紅色彩繪玻璃窗格</value>
+  </data>
+<data name="IDS_TILE_STAINED_GLASS_PANE_ORANGE"><value>橘色彩繪玻璃窗格</value>
+  </data>
+<data name="IDS_TILE_STAINED_GLASS_PANE_WHITE"><value>白色彩繪玻璃窗格</value>
+  </data>
+<data name="IDS_FIREWORKS_CHARGE_TYPE_0"><value>小球</value>
+  </data>
+<data name="IDS_FIREWORKS_CHARGE_TYPE_1"><value>大球</value>
+  </data>
+<data name="IDS_FIREWORKS_CHARGE_TYPE_2"><value>星型</value>
+  </data>
+<data name="IDS_FIREWORKS_CHARGE_TYPE_3"><value>Creeper 型</value>
+  </data>
+<data name="IDS_FIREWORKS_CHARGE_TYPE_4"><value>爆裂</value>
+  </data>
+<data name="IDS_FIREWORKS_CHARGE_TYPE"><value>不明形狀</value>
+  </data>
+<data name="IDS_FIREWORKS_CHARGE_BLACK"><value>黑色</value>
+  </data>
+<data name="IDS_FIREWORKS_CHARGE_RED"><value>紅色</value>
+  </data>
+<data name="IDS_FIREWORKS_CHARGE_GREEN"><value>綠色</value>
+  </data>
+<data name="IDS_FIREWORKS_CHARGE_BROWN"><value>棕色</value>
+  </data>
+<data name="IDS_FIREWORKS_CHARGE_BLUE"><value>藍色</value>
+  </data>
+<data name="IDS_FIREWORKS_CHARGE_PURPLE"><value>紫色</value>
+  </data>
+<data name="IDS_FIREWORKS_CHARGE_CYAN"><value>青綠色</value>
+  </data>
+<data name="IDS_FIREWORKS_CHARGE_SILVER"><value>淺灰色</value>
+  </data>
+<data name="IDS_FIREWORKS_CHARGE_GRAY"><value>灰色</value>
+  </data>
+<data name="IDS_FIREWORKS_CHARGE_PINK"><value>粉紅色</value>
+  </data>
+<data name="IDS_FIREWORKS_CHARGE_LIME"><value>淡黃綠色</value>
+  </data>
+<data name="IDS_FIREWORKS_CHARGE_YELLOW"><value>黃色</value>
+  </data>
+<data name="IDS_FIREWORKS_CHARGE_LIGHT_BLUE"><value>淺藍色</value>
+  </data>
+<data name="IDS_FIREWORKS_CHARGE_MAGENTA"><value>洋紅色</value>
+  </data>
+<data name="IDS_FIREWORKS_CHARGE_ORANGE"><value>橘色</value>
+  </data>
+<data name="IDS_FIREWORKS_CHARGE_WHITE"><value>白色</value>
+  </data>
+<data name="IDS_FIREWORKS_CHARGE_CUSTOM"><value>自訂</value>
+  </data>
+<data name="IDS_FIREWORKS_CHARGE_FADE_TO"><value>淡化</value>
+  </data>
+<data name="IDS_FIREWORKS_CHARGE_FLICKER"><value>閃爍</value>
+  </data>
+<data name="IDS_FIREWORKS_CHARGE_TRAIL"><value>鐵軌</value>
+  </data>
+<data name="IDS_ITEM_FIREWORKS_FLIGHT"><value>戰鬥持續時間：</value>
+  </data>﻿
 <data name="IDS_CURRENT_LAYOUT"><value>目前的控制方式</value>
   </data>
 <data name="IDS_CONTROLS_LAYOUT"><value>配置</value>
@@ -2004,8 +2357,7 @@ Xbox One 主機上的 Minecraft 預設為多人遊戲。如果您選擇高畫質
   </data>
 <data name="IDS_TUTORIAL_TASK_INV_OVERVIEW"><value>
       這是您的物品欄。這裡會顯示可在您手中使用的物品，以及您身上的所有其他物品。您穿戴的護甲也會顯示在這裡。
-    </value>
-  </data>
+    </value></data>
 <data name="IDS_TUTORIAL_PROMPT_INV_OVERVIEW"><value>{*B*}
       請按下 {*CONTROLLER_VK_A*} 來繼續。{*B*}
       如果您已經了解物品欄的使用方式，請按下 {*CONTROLLER_VK_B*}。
@@ -2026,7 +2378,7 @@ Xbox One 主機上的 Minecraft 預設為多人遊戲。如果您選擇高畫質
     </value>
   </data>
 <data name="IDS_TUTORIAL_TASK_INV_INFO"><value>
-      如果您想知道某個物品的詳細資訊，只要把游標移動到該物品上面，然後按下 {*CONTROLLER_VK_RT*} 即可。
+      如果您想知道某個物品的詳細資訊，只要把游標移動到該物品上面，然後按下{*CONTROLLER_ACTION_MENU_PAGEDOWN*}即可。
     </value>
   </data>
 <data name="IDS_TUTORIAL_TASK_INV_EXIT"><value>
@@ -2060,7 +2412,7 @@ Xbox One 主機上的 Minecraft 預設為多人遊戲。如果您選擇高畫質
     </value>
   </data>
 <data name="IDS_TUTORIAL_TASK_CREATIVE_INV_INFO"><value>
-      如果您想知道某個物品的詳細資訊，只要把游標移動到該物品上面，然後按下 {*CONTROLLER_VK_RT*} 即可。
+      如果您想知道某個物品的詳細資訊，只要把游標移動到該物品上面，然後按下{*CONTROLLER_ACTION_MENU_PAGEDOWN*}即可。
     </value>
   </data>
 <data name="IDS_TUTORIAL_TASK_CREATIVE_INV_EXIT"><value>
@@ -2606,6 +2958,211 @@ Xbox One 主機上的 Minecraft 預設為多人遊戲。如果您選擇高畫質
       如果您已經了解食物列的使用方式，以及吃東西的方法，請按下 {*CONTROLLER_VK_B*} 。
     </value>
   </data>
+<data name="IDS_TUTORIAL_TASK_HORSE_MENU_OVERVIEW"><value>
+			這是馬的物品欄介面。
+		</value>
+	</data>
+<data name="IDS_TUTORIAL_PROMPT_HORSE_MENU_OVERVIEW"><value>
+			{*B*}按下{*CONTROLLER_VK_A*} 繼續。
+			{*B*}如果您已經知道如何使用馬物品欄，請按下{*CONTROLLER_VK_B*}。
+		</value>
+	</data>
+<data name="IDS_TUTORIAL_TASK_HORSE_MENU_LAYOUT"><value>
+			馬物品欄能讓您傳送或安裝物品至馬、驢或騾身上。
+		</value>
+	</data>
+<data name="IDS_TUTORIAL_TASK_HORSE_MENU_EQUIPMENT"><value>
+			在馬鞍空格放置馬鞍，即可為馬裝上馬鞍。在護甲空格放置馬護甲，即可為馬裝上護甲。
+		</value>
+	</data>
+<data name="IDS_TUTORIAL_TASK_HORSE_MENU_SADDLEBAGS"><value>
+			您還可以在這個選單中，於自己的物品欄與綁在驢和騾的鞍囊之間傳送物品。
+		</value>
+	</data>
+<data name="IDS_TUTORIAL_TASK_HORSE_OVERVIEW"><value>您發現了一匹馬。</value>
+	</data>
+<data name="IDS_TUTORIAL_TASK_DONKEY_OVERVIEW"><value>您發現了一匹驢。</value>
+	</data>
+<data name="IDS_TUTORIAL_TASK_MULE_OVERVIEW"><value>您發現了一匹騾。</value>
+	</data>	
+<data name="IDS_TUTORIAL_PROMPT_HORSE_OVERVIEW"><value>
+		  {*B*}按下{*CONTROLLER_VK_A*} 進一步瞭解馬、驢和騾。
+		  {*B*}如果您已經瞭解馬、驢和騾，請按下{*CONTROLLER_VK_B*}。
+		</value>
+	</data>
+<data name="IDS_TUTORIAL_TASK_HORSE_INTRO"><value>
+			馬和驢居住在開闊的平原。驢和馬交配即可產下騾，但是本身不具生育能力。
+		</value>
+	</data>
+<data name="IDS_TUTORIAL_TASK_HORSE_PURPOSE"><value>
+			所有成年的馬、驢和騾都可供騎乘，但是只有馬能夠穿上護甲，只有騾和驢可以裝上鞍囊運輸物品。
+		</value>
+	</data>
+<data name="IDS_TUTORIAL_TASK_HORSE_TAMING"><value>
+			馬、驢和騾必須先馴服才堪用。馴服馬的方式是騎上去，過程中馬會想辦法將騎士摔下馬背，騎士必須想辦法留在馬背上。
+		</value>
+	</data>
+<data name="IDS_TUTORIAL_TASK_HORSE_TAMING2"><value>
+			當愛心出現在馬的周圍時，牠已經被馴服，再也不會把玩家摔下馬背。
+		</value>
+	</data>
+<data name="IDS_TUTORIAL_TASK_HORSE_RIDE"><value>
+			馬上嘗試騎這匹馬。手上不要拿物品或工具，使用 {*CONTROLLER_ACTION_USE*} 騎上馬背。
+		</value>
+	</data>
+<data name="IDS_TUTORIAL_TASK_HORSE_SADDLES"><value>
+			您必須幫馬裝上馬鞍，才能操縱馬的方向。馬鞍可以向村民購買，或是從藏在世界中的儲物箱尋找。
+		</value>
+	</data>
+<data name="IDS_TUTORIAL_TASK_HORSE_SADDLEBAGS"><value>
+			裝上儲物箱，就能為馴服的驢和騾加鞍囊。騎乘或潛行時就能使用這些鞍囊。
+		</value>
+	</data>
+<data name="IDS_TUTORIAL_TASK_HORSE_BREEDING"><value>
+			餵食金蘋果或金蘿蔔即可繁殖馬和驢，就像繁殖其他動物一樣（但是騾不行）。小馬經過一段時間就會長成成年馬，不過如果餵食小麥或乾草就會加速長大。
+		</value>
+	</data>
+<data name="IDS_TUTORIAL_TASK_HORSE_AREA"><value>
+			您可以嘗試在這裡馴服馬和驢，這裡附近的儲物箱裡面，還有馬鞍、馬鎧及其他實用的馬相關物品。
+		</value>
+	</data>
+<data name="IDS_TUTORIAL_TASK_BEACON_MENU_OVERVIEW"><value>
+			這是燈塔介面，可用來選擇燈塔要授與哪種力量。
+		</value>
+	</data>
+<data name="IDS_TUTORIAL_PROMPT_BEACON_MENU_OVERVIEW"><value>
+			{*B*}按下{*CONTROLLER_VK_A*} 繼續。
+			{*B*}如果您已經知道如何使用燈塔介面，請按下{*CONTROLLER_VK_B*}。
+		</value>
+	</data>
+<data name="IDS_TUTORIAL_TASK_BEACON_MENU_PRIMARY_POWERS"><value>
+			您可以在燈塔選單中，為燈塔選取一種主要的力量。金字塔越多層，可供選擇的力量越多。
+		</value>
+	</data>
+<data name="IDS_TUTORIAL_TASK_BEACON_MENU_SECONDARY_POWER"><value>
+			至少有四層的金字塔上的燈塔，還能夠讓您選擇再生次要力量或是更強大的主要力量。
+		</value>
+	</data>
+<data name="IDS_TUTORIAL_TASK_BEACON_MENU_ACTIVATION"><value>
+			您必須在付費空格奉上翡翠、鑽石、黃金或鐵塊，才能設定燈塔的力量。設定後，燈塔就會無限期發出力量。
+		</value>
+	</data>
+<data name="IDS_TUTORIAL_TASK_BEACON_OVERVIEW"><value>這座金字塔上方有停用的燈塔。</value>
+	</data>
+<data name="IDS_TUTORIAL_PROMPT_BEACON_OVERVIEW"><value>
+		  {*B*}按下{*CONTROLLER_VK_A*} 進一步瞭解燈塔。
+		  {*B*}如果您已經瞭解燈塔，請按下{*CONTROLLER_VK_B*}。
+		</value>
+	</data>
+<data name="IDS_TUTORIAL_TASK_BEACON_PURPOSE"><value>
+			啟動的燈塔會向天空投射明亮的光束，賦予附近的玩家力量。製作燈塔的材料包括玻璃、黑曜石和幽冥星，擊敗凋零怪即可獲得。
+		</value>
+	</data>
+<data name="IDS_TUTORIAL_TASK_BEACON_DESIGN"><value>
+			燈塔必須放置，白天才能在沐浴在陽光之下。燈塔必須放置於鐵、黃金、翡翠或鑽石金字塔上，不過選擇的材料不會影響燈塔的力量。
+		</value>
+	</data>
+<data name="IDS_TUTORIAL_TASK_BEACON_CHOOSING_POWERS"><value>
+			嘗試用燈塔設定它所賦予的力量，您可以拿隨附鐵塊支付必要費用。
+		</value>
+	</data>
+<data name="IDS_TUTORIAL_TASK_HOPPER_OVERVIEW"><value>這個房間內有漏斗</value>
+	</data>
+<data name="IDS_TUTORIAL_PROMPT_HOPPER_OVERVIEW"><value>
+		  {*B*}按下{*CONTROLLER_VK_A*} 進一步瞭解漏斗。
+		  {*B*}如果您已經瞭解漏斗，請按下{*CONTROLLER_VK_B*}。
+		</value>
+	</data>
+<data name="IDS_TUTORIAL_TASK_HOPPER_PURPOSE"><value>
+			您可以使用漏斗將物品插入容器或是從容器移除物品，以及自動拾取丟入容器的物品。
+		</value>
+	</data>
+<data name="IDS_TUTORIAL_TASK_HOPPER_CONTAINERS"><value>
+			漏斗能夠影響釀造台、儲物箱、發射器、投擲器、運輸礦車、漏斗礦車及其他漏斗。
+		</value>
+	</data>
+<data name="IDS_TUTORIAL_TASK_HOPPER_MECHANICS"><value>
+			漏斗會一直嘗試從放在上方的合適容器吸取物品，還會嘗試將儲存的物品插入輸出容器。
+		</value>
+	</data>
+<data name="IDS_TUTORIAL_TASK_HOPPER_REDSTONE"><value>
+			然而，如果漏斗是用紅石發電就會停用，並且停止吸取和插入物品。
+		</value>
+	</data>
+<data name="IDS_TUTORIAL_TASK_HOPPER_OUTPUT"><value>
+			漏斗會指向嘗試輸出物品的方向。若要讓漏斗指向特定方塊，潛行時將漏斗放在背對該方塊的位置即可。
+		</value>
+	</data>
+<data name="IDS_TUTORIAL_TASK_HOPPER_AREA"><value>
+			在這個房間裡面，有好幾種實用的漏斗配置供您參考與實驗。
+		</value>
+	</data>
+<data name="IDS_TUTORIAL_TASK_FIREWORK_MENU_OVERVIEW"><value>
+			這是煙火介面，可以用來製作煙火和煙火星。
+		</value>
+	</data>
+<data name="IDS_TUTORIAL_PROMPT_FIREWORK_MENU_OVERVIEW"><value>
+			{*B*}按下{*CONTROLLER_VK_A*} 繼續。
+			{*B*}如果您已經知道如何使用燈塔介面，請按下{*CONTROLLER_VK_B*}。
+		</value>
+	</data>
+<data name="IDS_TUTORIAL_TASK_FIREWORK_MENU_BASIC_START"><value>
+		\若要製作煙火，請將火藥和紙放在庫存上方的 3x3 工作台。
+		</value>
+	</data>
+<data name="IDS_TUTORIAL_TASK_FIREWORK_MENU_BASIC_STARS"><value>
+		\您可以選擇在工作台放置多顆煙火星，加入煙火。
+		</value>
+	</data>
+<data name="IDS_TUTORIAL_TASK_FIREWORK_MENU_BASIC_HEIGHT"><value>
+			用火藥在工作台填滿的空格越多，所有煙火星會爆炸的高度越高。
+		</value>
+	</data>
+<data name="IDS_TUTORIAL_TASK_FIREWORK_MENU_BASIC_CRAFT"><value>
+			然後等您想製作時，便可從輸出空格取出製作的煙火。
+		</value>
+	</data>
+<data name="IDS_TUTORIAL_TASK_FIREWORK_MENU_ADV_START"><value>
+			將火藥和染料放進工作台，即可製作煙火星。
+		</value>
+	</data>
+<data name="IDS_TUTORIAL_TASK_FIREWORK_MENU_ADV_COLOUR"><value>
+			染料會決定煙火星爆炸的顏色。
+		</value>
+	</data>
+<data name="IDS_TUTORIAL_TASK_FIREWORK_MENU_ADV_SHAPE"><value>
+			煙火星的形狀取決於加入火焰彈、金塊、羽毛或生物的頭。
+		</value>
+	</data>
+<data name="IDS_TUTORIAL_TASK_FIREWORK_MENU_ADV_EFFECT"><value>
+			使用鑽石或螢光粉即可新增尾巴或閃爍。
+		</value>
+	</data>
+<data name="IDS_TUTORIAL_TASK_FIREWORK_MENU_ADV_FADE"><value>
+			煙火星製作完成後，以染料製作即可決定煙火星的淡出顏色。
+		</value>
+	</data>
+<data name="IDS_TUTORIAL_TASK_FIREWORK_OVERVIEW"><value>
+			此處儲物箱內有製作煙火用的各種物品！
+		</value>
+	</data>
+<data name="IDS_TUTORIAL_PROMPT_FIREWORK_OVERVIEW"><value>
+		  {*B*}按下{*CONTROLLER_VK_A*} 即可進一步瞭解煙火。
+		  {*B*}如果您已經瞭解煙火，請按下{*CONTROLLER_VK_B*}。
+		</value>
+	</data>
+<data name="IDS_TUTORIAL_TASK_FIREWORK_PURPOSE"><value>
+			煙火屬於裝飾品，可以手動或利用發射器發射，製作的材料包括紙、火藥，也有人會選擇加入幾顆煙火星。
+		</value>
+	</data>
+<data name="IDS_TUTORIAL_TASK_FIREWORK_CUSTOMISE"><value>
+			 煙火星的顏色、淡化、形狀、大小與效果 (例如尾巴和閃爍) 可自訂，方法是在製作時加入額外材料。
+		</value>
+	</data>
+<data name="IDS_TUTORIAL_TASK_FIREWORK_CRAFTING"><value>
+			嘗試用儲物箱內的各式各樣材料製作煙火。
+		</value>
+	</data>﻿
 <data name="IDS_TOOLTIPS_SELECT"><value>選取</value>
   </data>
 <data name="IDS_TOOLTIPS_USE"><value>使用</value>
@@ -2724,7 +3281,7 @@ Xbox One 主機上的 Minecraft 預設為多人遊戲。如果您選擇高畫質
   </data>
 <data name="IDS_TOOLTIPS_PLAY"><value>播放</value>
   </data>
-<data name="IDS_TOOLTIPS_RIDE"><value>騎/搭乘</value>
+<data name="IDS_TOOLTIPS_RIDE"><value>搭乘</value>
   </data>
 <data name="IDS_TOOLTIPS_SAIL"><value>乘船</value>
   </data>
@@ -2828,6 +3385,22 @@ Xbox One 主機上的 Minecraft 預設為多人遊戲。如果您選擇高畫質
 </data>
 <data name="IDS_TOOLTIPS_SAVETRANSFER_UPLOAD"><value>上傳供 Xbox One 使用的存檔</value>
   </data>
+<data name="IDS_TOOLTIPS_MOUNT"><value>騎上</value>
+</data>
+<data name="IDS_TOOLTIPS_DISMOUNT"><value>下馬</value>
+</data>
+<data name="IDS_TOOLTIPS_SADDLEBAGS"><value>騎下</value>
+</data>
+<data name="IDS_TOOLTIPS_FIREWORK_LAUNCH"><value>發射</value>
+</data>
+<data name="IDS_TOOLTIPS_LEASH"><value>栓住</value>
+</data>
+<data name="IDS_TOOLTIPS_UNLEASH"><value>射箭</value>
+</data>
+<data name="IDS_TOOLTIPS_ATTACH"><value>裝上</value>
+</data>
+<data name="IDS_TOOLTIPS_NAME"><value>命名</value>
+</data>
 <data name="IDS_CONFIRM_OK"><value>確定</value>
   </data>
 <data name="IDS_CONFIRM_CANCEL"><value>取消</value>
@@ -3142,6 +3715,20 @@ Xbox One 主機上的 Minecraft 預設為多人遊戲。如果您選擇高畫質
   </data>
 <data name="IDS_DISPENSER"><value>發射器</value>
   </data>
+<data name="IDS_CONTAINER_ANIMAL"><value>馬</value>
+  </data>
+<data name="IDS_CONTAINER_DROPPER"><value>投擲器</value>
+  </data>
+<data name="IDS_CONTAINER_HOPPER"><value>漏斗</value>
+  </data>
+<data name="IDS_CONTAINER_BEACON"><value>燈塔</value>
+  </data>
+<data name="IDS_CONTAINER_BEACON_PRIMARY_POWER"><value>主要力量</value>
+  </data>
+<data name="IDS_CONTAINER_BEACON_SECONDARY_POWER"><value>次要力量</value>
+  </data>
+<data name="IDS_CONTAINER_MINECART"><value>礦車</value>
+  </data>
 <data name="IDS_NO_DLCOFFERS"><value>這款遊戲目前沒有此類型的下載內容。</value>
   </data>
 <data name="IDS_PLAYER_JOINED"><value>%s 已經加入遊戲。</value>
@@ -3301,9 +3888,13 @@ Xbox One 主機上的 Minecraft 預設為多人遊戲。如果您選擇高畫質
  </data>
 <data name="IDS_GAMEMODE_CREATIVE"><value>遊戲模式：創造</value>
  </data>
+<data name="IDS_GAMEMODE_ADVENTURE"><value>遊戲模式：冒險</value>
+ </data>
 <data name="IDS_SURVIVAL"><value>生存</value>
  </data>
 <data name="IDS_CREATIVE"><value>創造</value>
+ </data>
+<data name="IDS_ADVENTURE"><value>冒險</value>
  </data>
 <data name="IDS_CREATED_IN_SURVIVAL"><value>在生存模式中建立</value>
  </data>
@@ -3324,6 +3915,8 @@ Xbox One 主機上的 Minecraft 預設為多人遊戲。如果您選擇高畫質
 <data name="IDS_LEVELTYPE_NORMAL"><value>普通</value>
 </data>
 <data name="IDS_LEVELTYPE_SUPERFLAT"><value>非常平坦</value>
+</data>
+<data name="IDS_GAMEOPTION_SEED"><value>輸入種子，再度產生相同的地形。留白會隨機挑選世界。</value>
 </data>
 <data name="IDS_GAMEOPTION_ONLINE"><value>啟用時，本遊戲將成為線上遊戲。</value>
 </data>
@@ -3348,6 +3941,20 @@ Xbox One 主機上的 Minecraft 預設為多人遊戲。如果您選擇高畫質
 <data name="IDS_GAMEOPTION_SUPERFLAT"><value>啟用時，會在地上世界與地獄世界中產生完全平坦的世界。</value>
 </data>
 <data name="IDS_GAMEOPTION_BONUS_CHEST"><value>啟用時，玩家的再生點附近會有個裝著有用物品的箱子。</value>
+</data>
+<data name="IDS_GAMEOPTION_MOB_GRIEFING"><value>停用時，怪物和動物無法變更方塊（例如：Creeper 爆炸不會摧毀方塊，綿羊無法移除草）或拾起物品</value>
+</data>
+<data name="IDS_GAMEOPTION_KEEP_INVENTORY"><value>啟用時，玩家死掉時可以保留物品欄。</value>
+</data>
+<data name="IDS_GAMEOPTION_MOB_SPAWNING"><value>停用時，生物不會自然重生。</value>
+</data>
+<data name="IDS_GAMEOPTION_MOB_LOOT"><value>停用時，怪物和動物不會落下戰利品（例如：Creeper 不會落下火藥）。</value>
+</data>
+<data name="IDS_GAMEOPTION_TILE_DROPS"><value>停用時，方塊摧毀時不會落下物品（例如，石頭方塊不會落下鵝卵石）。</value>
+</data>
+<data name="IDS_GAMEOPTION_NATURAL_REGEN"><value>停用時，玩家不會自然恢復生命值。</value>
+</data>
+<data name="IDS_GAMEOPTION_DAYLIGHT_CYCLE"><value>停用時，時間不會更改。</value>
 </data>
 <data name="IDS_DLC_MENU_SKINPACKS"><value>角色外觀套件</value>
 </data>
@@ -3397,7 +4004,49 @@ Xbox One 主機上的 Minecraft 預設為多人遊戲。如果您選擇高畫質
 </data>
 <data name="IDS_DEATH_THROWN"><value>{*PLAYER*} 被 {*SOURCE*} 的拳頭打死了</value>
 </data>
-<data name="IDS_DEATH_INDIRECT_MAGIC"><value>{*PLAYER*} 已被 {*SOURCE*} 殺死。</value>
+<data name="IDS_DEATH_INDIRECT_MAGIC"><value>{*PLAYER*} 已被 {*SOURCE*} 用魔法殺死</value>
+</data>
+<data name="IDS_DEATH_FELL_ACCIDENT_LADDER"><value>{*PLAYER*} 從梯子跌落</value>
+</data>
+<data name="IDS_DEATH_FELL_ACCIDENT_VINES"><value>{*PLAYER*} 從藤蔓跌落</value>
+</data>
+<data name="IDS_DEATH_FELL_ACCIDENT_WATER"><value>{*PLAYER*} 從水中掉出來</value>
+</data>
+<data name="IDS_DEATH_FELL_ACCIDENT_GENERIC"><value>{*PLAYER*} 從高處跌落</value>
+</data>
+<data name="IDS_DEATH_FELL_KILLER"><value>{*PLAYER*} 受到 {*SOURCE*} 的跌落詛咒</value>
+</data>
+<data name="IDS_DEATH_FELL_ASSIST"><value>{*PLAYER*} 受到 {*SOURCE*} 的跌落詛咒</value>
+</data>
+<data name="IDS_DEATH_FELL_ASSIST_ITEM"><value>{*PLAYER*} 受到 {*SOURCE*} 利用 {*ITEM*} 的跌落詛咒</value>
+</data>
+<data name="IDS_DEATH_FELL_FINISH"><value>{*PLAYER*} 跌落距離太遠，遭到 {*SOURCE*} 消滅</value>
+</data>
+<data name="IDS_DEATH_FELL_FINISH_ITEM"><value>{*PLAYER*} 跌落距離太遠，遭到 {*SOURCE*} 用 {*ITEM*} 消滅</value>
+</data>
+<data name="IDS_DEATH_INFIRE_PLAYER"><value>{*PLAYER*} 在與 {*SOURCE*} 作戰時走入火中</value>
+</data>
+<data name="IDS_DEATH_ONFIRE_PLAYER"><value>{*PLAYER*} 在與 {*SOURCE*} 作戰時燒成灰燼</value>
+</data>
+<data name="IDS_DEATH_LAVA_PLAYER"><value>{*PLAYER*} 嘗試在岩漿中游泳，以逃離 {*SOURCE*}</value>
+</data>
+<data name="IDS_DEATH_DROWN_PLAYER"><value>{*PLAYER*} 在嘗試逃離 {*SOURCE*} 時溺水</value>
+</data>
+<data name="IDS_DEATH_CACTUS_PLAYER"><value>{*PLAYER*} 在嘗試逃離 {*SOURCE*} 時走入仙人掌</value>
+</data>
+<data name="IDS_DEATH_EXPLOSION_PLAYER"><value>{*PLAYER*} 遭 {*SOURCE*} 轟炸</value>
+</data>
+<data name="IDS_DEATH_WITHER"><value>{*PLAYER*} 已凋零</value>
+</data>
+<data name="IDS_DEATH_PLAYER_ITEM"><value>{*PLAYER*} 已被 {*SOURCE*} 用 {*ITEM*} 屠殺</value>
+</data>
+<data name="IDS_DEATH_ARROW_ITEM"><value>{*PLAYER*} 已被 {*SOURCE*} 用 {*ITEM*} 射死</value>
+</data>
+<data name="IDS_DEATH_FIREBALL_ITEM"><value>{*PLAYER*} 已被 {*SOURCE*} 用 {*ITEM*} 遭火球擊中</value>
+</data>
+<data name="IDS_DEATH_THROWN_ITEM"><value>{*PLAYER*} 已被 {*SOURCE*} 用 {*ITEM*} 搥打</value>
+</data>
+<data name="IDS_DEATH_INDIRECT_MAGIC_ITEM"><value>{*PLAYER*} 已被 {*SOURCE*} 用 {*ITEM*} 殺死</value>
 </data>
 <data name="IDS_CHECKBOX_RENDER_BEDROCKFOG"><value>基岩迷霧</value>
 </data>
@@ -3574,6 +4223,8 @@ Xbox One 主機上的 Minecraft 預設為多人遊戲。如果您選擇高畫質
 </data>
 <data name="IDS_MAX_SQUID_SPAWNED"><value>目前已達到遊戲世界的烏賊數量上限，無法使用角色蛋。</value>
 </data>
+<data name="IDS_MAX_BATS_SPAWNED"><value>目前已達到遊戲世界的村民數量上限，無法使用角色蛋。</value>
+</data>
 <data name="IDS_MAX_ENEMIES_SPAWNED"><value>目前已達到遊戲世界的敵人數量上限，無法使用角色蛋。</value>
 </data>
 <data name="IDS_MAX_VILLAGERS_SPAWNED"><value>目前已達到遊戲世界的村民數量上限，無法使用角色蛋。</value>
@@ -3588,6 +4239,8 @@ Xbox One 主機上的 Minecraft 預設為多人遊戲。如果您選擇高畫質
 </data>
 <data name="IDS_MAX_CHICKENS_BRED"><value>雞已達到繁殖數量上限，該動物無法進入戀愛模式。</value>
 </data>
+<data name="IDS_MAX_HORSES_BRED"><value>這種動物不能進入愛情模式，已經達到繁殖馬的數量上限。</value>
+  </data>
 <data name="IDS_MAX_MUSHROOMCOWS_BRED"><value>Mooshrooms 已達到繁殖數量上限，該動物無法進入戀愛模式。</value>
 </data>
 <data name="IDS_MAX_BOATS"><value>目前這個世界的小船已達到數量上限。</value>
@@ -3615,27 +4268,43 @@ Xbox One 主機上的 Minecraft 預設為多人遊戲。如果您選擇高畫質
 <data name="IDS_CREDITS"><value>製作群</value>
   </data>
 <data name="IDS_REINSTALL_CONTENT"><value>重新安裝內容</value>
-  </data>
+	</data>
 <data name="IDS_DEBUG_SETTINGS"><value>偵錯設定</value>
-  </data>
+	</data>
 <data name="IDS_FIRE_SPREADS"><value>火會蔓延</value>
-  </data>
+	</data>
 <data name="IDS_TNT_EXPLODES"><value>炸藥會爆炸</value>
-  </data>
+	</data>
 <data name="IDS_PLAYER_VS_PLAYER"><value>玩家對玩家</value>
-  </data>
+	</data>
 <data name="IDS_TRUST_PLAYERS"><value>信任玩家</value>
-  </data>
+	</data>
 <data name="IDS_HOST_PRIVILEGES"><value>主持人特權</value>
-  </data>
+	</data>
 <data name="IDS_GENERATE_STRUCTURES"><value>產生建築</value>
-  </data>
+	</data>
 <data name="IDS_SUPERFLAT_WORLD"><value>非常平坦的世界</value>
-  </data>
+	</data>
 <data name="IDS_BONUS_CHEST"><value>贈品箱</value>
-  </data>
+	</data>
 <data name="IDS_WORLD_OPTIONS"><value>世界選項</value>
-  </data>
+	</data>
+<data name="IDS_GAME_OPTIONS"><value>遊戲選項</value>
+	</data>
+<data name="IDS_MOB_GRIEFING"><value>生物惡意破壞</value>
+	</data>
+<data name="IDS_KEEP_INVENTORY"><value>保留物品欄</value>
+	</data>
+<data name="IDS_MOB_SPAWNING"><value>生物重生</value>
+	</data>
+<data name="IDS_MOB_LOOT"><value>生物戰利品</value>
+	</data>
+<data name="IDS_TILE_DROPS"><value>磚塊掉落</value>
+	</data>
+<data name="IDS_NATURAL_REGEN"><value>自然再生</value>
+	</data>
+<data name="IDS_DAYLIGHT_CYCLE"><value>陽光循環</value>
+	</data>
 <data name="IDS_CAN_BUILD_AND_MINE"><value>可以建造和開採</value>
   </data>
 <data name="IDS_CAN_USE_DOORS_AND_SWITCHES"><value>可以使用門與開關</value>
@@ -3822,6 +4491,14 @@ Xbox One 主機上的 Minecraft 預設為多人遊戲。如果您選擇高畫質
   </data>
 <data name="IDS_POTION_POISON"><value>巨毒</value>
   </data>
+<data name="IDS_POTION_WITHER"><value>凋零怪</value>
+  </data>
+<data name="IDS_POTION_HEALTHBOOST"><value>生命值加乘</value>
+  </data>
+<data name="IDS_POTION_ABSORPTION"><value>吸收</value>
+  </data>
+<data name="IDS_POTION_SATURATION"><value>飽和</value>
+  </data>
 <data name="IDS_POTION_MOVESPEED_POSTFIX"><value>敏捷</value>
   </data>
 <data name="IDS_POTION_MOVESLOWDOWN_POSTFIX"><value>緩慢</value>
@@ -3859,6 +4536,14 @@ Xbox One 主機上的 Minecraft 預設為多人遊戲。如果您選擇高畫質
 <data name="IDS_POTION_HUNGER_POSTFIX"><value>飢餓</value>
   </data>
 <data name="IDS_POTION_POISON_POSTFIX"><value>巨毒</value>
+  </data>
+<data name="IDS_POTION_WITHER_POSTFIX"><value>腐朽</value>
+  </data>
+<data name="IDS_POTION_HEALTHBOOST_POSTFIX"><value>生命值加乘</value>
+  </data>
+<data name="IDS_POTION_ABSORPTION_POSTFIX"><value>吸收</value>
+  </data>
+<data name="IDS_POTION_SATURATION_POSTFIX"><value>飽和</value>
   </data>
 <data name="IDS_POTION_POTENCY_0"><value></value>
   </data>
@@ -3956,6 +4641,22 @@ Xbox One 主機上的 Minecraft 預設為多人遊戲。如果您選擇高畫質
   </data>
 <data name="IDS_POTION_DESC_POISON"><value>隨著時間自動減少受影響玩家、動物和怪物的生命值。</value>
   </data>
+<data name="IDS_POTION_EFFECTS_WHENDRANK"><value>套用時：</value>
+  </data>
+<data name="IDS_ATTRIBUTE_NAME_HORSE_JUMPSTRENGTH"><value>馬跳躍力量</value>
+  </data>
+<data name="IDS_ATTRIBUTE_NAME_ZOMBIE_SPAWNREINFORCEMENTS"><value>殭屍援軍</value>
+  </data>
+<data name="IDS_ATTRIBUTE_NAME_GENERIC_MAXHEALTH"><value>生命值上限</value>
+  </data>
+<data name="IDS_ATTRIBUTE_NAME_GENERIC_FOLLOWRANGE"><value>生物跟蹤範圍</value>
+  </data>
+<data name="IDS_ATTRIBUTE_NAME_GENERIC_KNOCKBACKRESISTANCE"><value>擊退防禦力</value>
+  </data>
+<data name="IDS_ATTRIBUTE_NAME_GENERIC_MOVEMENTSPEED"><value>速度</value>
+  </data>
+<data name="IDS_ATTRIBUTE_NAME_GENERIC_ATTACKDAMAGE"><value>攻擊殺傷力</value>
+  </data>
 <data name="IDS_ENCHANTMENT_DAMAGE_ALL"><value>鋒利</value>
   </data>
 <data name="IDS_ENCHANTMENT_DAMAGE_UNDEAD"><value>重擊</value>
@@ -4046,7 +4747,7 @@ Xbox One 主機上的 Minecraft 預設為多人遊戲。如果您選擇高畫質
   </data>
 <data name="IDS_DESC_POTATO_BAKED"><value>可回復 3 點 {*ICON_SHANK_01*}。在熔爐中烹煮馬鈴薯即可獲得。</value>
   </data>
-<data name="IDS_DESC_POTATO_POISONOUS"><value>可回復 1 個 {*ICON_SHANK_01*}，或可在熔爐中烹煮。可以栽種在農地上。食用可能會讓您中毒。</value>
+<data name="IDS_DESC_POTATO_POISONOUS"><value>可回復 1 個 {*ICON_SHANK_01*}。 吃這個可能會讓您中毒。</value>
   </data>
 <data name="IDS_DESC_CARROT_GOLDEN"><value>可回復 3 個 {*ICON_SHANK_01*}。用胡蘿蔔和碎金塊精製而成。</value>
   </data>

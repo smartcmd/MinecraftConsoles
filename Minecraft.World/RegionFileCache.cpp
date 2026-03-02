@@ -120,3 +120,9 @@ DataOutputStream *RegionFileCache::_getChunkDataOutputStream(ConsoleSaveFile *sa
 		return r->getChunkDataOutputStream(chunkX & 31, chunkZ & 31);
 	}
 }
+
+
+RegionFileCache::~RegionFileCache()
+{
+	_clear();
+}

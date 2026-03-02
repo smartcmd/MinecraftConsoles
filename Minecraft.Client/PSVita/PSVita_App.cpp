@@ -17,7 +17,7 @@
 #include "PSVita/Network/PSVita_NPToolkit.h"
 #include <message_dialog.h>
 #include <savedata_dialog.h>
-
+#include "Common\UI\UI.h"
 #include "PSVita\PSVitaExtras\PSVitaStrings.h"
 
 #define VITA_COMMERCE_ENABLED
@@ -110,6 +110,17 @@ SONYDLC *CConsoleMinecraftApp::GetSONYDLCInfo(char *pchTitle)
 
 	return pTemp;*/
 }
+
+SONYDLC *CConsoleMinecraftApp::GetSONYDLCInfo(int iTexturePackID)
+{
+	for ( AUTO_VAR(it, m_SONYDLCMap.begin()); it != m_SONYDLCMap.end(); ++it )
+	{
+		if(it->second->iConfig == iTexturePackID)
+			return it->second;
+	}
+	return NULL;
+}
+
 
 #define WRAPPED_READFILE(hFile,lpBuffer,nNumberOfBytesToRead,lpNumberOfBytesRead,lpOverlapped) {if(ReadFile(hFile,lpBuffer,nNumberOfBytesToRead,lpNumberOfBytesRead,lpOverlapped)==FALSE) { return FALSE;}}
 BOOL CConsoleMinecraftApp::ReadProductCodes()
@@ -332,6 +343,14 @@ void CConsoleMinecraftApp::TemporaryCreateGameStart()
 	app.SetGameHostOption(eGameHostOption_HostCanFly, 1);
 	app.SetGameHostOption(eGameHostOption_HostCanChangeHunger, 1);
 	app.SetGameHostOption(eGameHostOption_HostCanBeInvisible, 1 );
+
+	app.SetGameHostOption(eGameHostOption_MobGriefing, 1 );
+	app.SetGameHostOption(eGameHostOption_KeepInventory, 0 );
+	app.SetGameHostOption(eGameHostOption_DoMobSpawning, 1 );
+	app.SetGameHostOption(eGameHostOption_DoMobLoot, 1 );
+	app.SetGameHostOption(eGameHostOption_DoTileDrops, 1 );
+	app.SetGameHostOption(eGameHostOption_NaturalRegeneration, 1 );
+	app.SetGameHostOption(eGameHostOption_DoDaylightCycle, 1 );
 
 	param->settings = app.GetGameHostOption( eGameHostOption_All );
 
@@ -650,7 +669,7 @@ bool CConsoleMinecraftApp::UpgradeTrial()
 	{
 		UINT uiIDA[1];
 		uiIDA[0]=IDS_CONFIRM_OK;
-		C4JStorage::EMessageResult result = ui.RequestMessageBox( IDS_PRO_UNLOCKGAME_TITLE, IDS_NO_DLCOFFERS, uiIDA,1,ProfileManager.GetPrimaryPad());
+		C4JStorage::EMessageResult result = ui.RequestErrorMessage( IDS_PRO_UNLOCKGAME_TITLE, IDS_NO_DLCOFFERS, uiIDA,1,ProfileManager.GetPrimaryPad());
 		return true;
 	}
 	else
@@ -1057,19 +1076,22 @@ bool CConsoleMinecraftApp::CheckForEmptyStore(int iPad)
 	SonyCommerce::CategoryInfo *pCategories=app.GetCategoryInfo();
 
 	bool bEmptyStore=true;
-	if(pCategories->countOfProducts>0)
-	{
-		bEmptyStore=false;
-	}
-	else
-	{
-		for(int i=0;i<pCategories->countOfSubCategories;i++)
+	if(pCategories!=NULL)
+	{	
+		if(pCategories->countOfProducts>0)
 		{
-			std::vector<SonyCommerce::ProductInfo>*pvProductInfo=app.GetProductList(i);
-			if(pvProductInfo->size()>0)
+			bEmptyStore=false;
+		}
+		else
+		{
+			for(int i=0;i<pCategories->countOfSubCategories;i++)
 			{
-				bEmptyStore=false;
-				break;
+				std::vector<SonyCommerce::ProductInfo>*pvProductInfo=app.GetProductList(i);
+				if(pvProductInfo->size()>0)
+				{
+					bEmptyStore=false;
+					break;
+				}
 			}
 		}
 	}
@@ -1197,7 +1219,7 @@ void CConsoleMinecraftApp::SaveDataTick()
 	{
 		UINT uiIDA[1];
 		uiIDA[0]=IDS_CONFIRM_OK;
-		C4JStorage::EMessageResult res = ui.RequestMessageBox( IDS_SAVE_INCOMPLETE_TITLE, IDS_SAVE_INCOMPLETE_EXPLANATION_QUOTA, uiIDA, 1, ProfileManager.GetPrimaryPad(), NULL, NULL, app.GetStringTable());
+		C4JStorage::EMessageResult res = ui.RequestErrorMessage( IDS_SAVE_INCOMPLETE_TITLE, IDS_SAVE_INCOMPLETE_EXPLANATION_QUOTA, uiIDA, 1, ProfileManager.GetPrimaryPad());
 		if( res != C4JStorage::EMessage_Busy )
 		{
 			//Clear the error now it's been dealt with
@@ -1217,18 +1239,30 @@ void CConsoleMinecraftApp::Callback_SaveGameIncomplete(void *pParam, C4JStorage:
 
 	if (saveIncompleteType == C4JStorage::ESaveIncomplete_OutOfQuota || saveIncompleteType == C4JStorage::ESaveIncomplete_OutOfLocalStorage)
 	{
-		// 4J Stu - If it's quota then we definitely have to delete our saves, so don't show the system UI for this case
-		if(saveIncompleteType == C4JStorage::ESaveIncomplete_OutOfQuota) blocksRequired = -1;
-		UINT uiIDA[2];
-		uiIDA[0]=IDS_CONFIRM_OK;
-		uiIDA[1]=IDS_CONFIRM_CANCEL;
-		C4JStorage::EMessageResult res = ui.RequestMessageBox( IDS_SAVE_INCOMPLETE_TITLE, IDS_SAVE_INCOMPLETE_EXPLANATION_QUOTA, uiIDA, 2, ProfileManager.GetPrimaryPad(), &NoSaveSpaceReturned, (void *)blocksRequired, app.GetStringTable());
+		if(UIScene_LoadOrJoinMenu::isSaveTransferRunning())
+		{
+			// 4J MGH - if we're trying to save from the save transfer stuff, only show "ok", and we won't try to save again
+			if(saveIncompleteType == C4JStorage::ESaveIncomplete_OutOfQuota) blocksRequired = -1;
+			UINT uiIDA[1];
+			uiIDA[0]=IDS_CONFIRM_OK;
+			C4JStorage::EMessageResult res = ui.RequestErrorMessage( IDS_SAVE_INCOMPLETE_TITLE, IDS_SAVE_INCOMPLETE_EXPLANATION_QUOTA, uiIDA, 1, ProfileManager.GetPrimaryPad(), &NoSaveSpaceReturned, (void *)blocksRequired);
+
+		}
+		else
+		{
+			// 4J Stu - If it's quota then we definitely have to delete our saves, so don't show the system UI for this case
+			if(saveIncompleteType == C4JStorage::ESaveIncomplete_OutOfQuota) blocksRequired = -1;
+			UINT uiIDA[2];
+			uiIDA[0]=IDS_CONFIRM_OK;
+			uiIDA[1]=IDS_CONFIRM_CANCEL;
+			C4JStorage::EMessageResult res = ui.RequestErrorMessage( IDS_SAVE_INCOMPLETE_TITLE, IDS_SAVE_INCOMPLETE_EXPLANATION_QUOTA, uiIDA, 2, ProfileManager.GetPrimaryPad(), &NoSaveSpaceReturned, (void *)blocksRequired);
+		}
 	}
 }
 
 int	CConsoleMinecraftApp::NoSaveSpaceReturned(void *pParam,int iPad,C4JStorage::EMessageResult result)
 {
-	if(result==C4JStorage::EMessage_ResultAccept) 
+	if(result==C4JStorage::EMessage_ResultAccept && !UIScene_LoadOrJoinMenu::isSaveTransferRunning())		// MGH - we won't try to save again during a save tranfer 
 	{
 		int blocksRequired = (int)pParam;
 		if(blocksRequired > 0)
@@ -1489,12 +1523,11 @@ void CConsoleMinecraftApp::updateSaveDataDeleteDialog()
 								IDS_CONFIRM_OK
 							};
 
-							ui.RequestMessageBox(
+							ui.RequestErrorMessage(
 								IDS_TOOLTIPS_DELETESAVE, IDS_TEXT_DELETE_SAVE, 
 								uiIDA, 2,
 								0,
-								&cbConfirmDeleteMessageBox, this,
-								app.GetStringTable()
+								&cbConfirmDeleteMessageBox, this
 								);
 
 							m_bSaveDataDeleteDialogState = eSaveDataDeleteState_userConfirmation;

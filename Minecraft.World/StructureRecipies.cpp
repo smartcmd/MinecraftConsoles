@@ -63,7 +63,7 @@ void StructureRecipies::addRecipes(Recipes *r)
 		L"# #", //
 		L"###", //
 
-		L'#', Tile::stoneBrick,
+		L'#', Tile::cobblestone,
 		L'S');
 
 	r->addShapedRecipy(new ItemInstance((Tile*)Tile::chest), //
@@ -75,6 +75,13 @@ void StructureRecipies::addRecipes(Recipes *r)
 		L'#', Tile::wood,
 		L'S');
 
+	r->addShapedRecipy(new ItemInstance(Tile::chest_trap), //
+		L"sctctg",
+		L"#-", //
+
+		L'#', Tile::chest, L'-', Tile::tripWireSource,
+		L'S');
+
 	r->addShapedRecipy(new ItemInstance(Tile::enderChest), //
 		L"sssctcig",
 		L"###", //
@@ -84,12 +91,12 @@ void StructureRecipies::addRecipes(Recipes *r)
 		L'#', Tile::obsidian, L'E', Item::eyeOfEnder,
 		L'S');
 
-	r->addShapedRecipy(new ItemInstance(Tile::stoneBrickSmooth, 4), //
+	r->addShapedRecipy(new ItemInstance(Tile::stoneBrick, 4), //
 		L"ssctg",
 		L"##", //
 		L"##", //
 
-		L'#', Tile::rock,
+		L'#', Tile::stone,
 		L'S');
 
 	// 4J Stu - Move this into "Recipes" to change the order things are displayed on the crafting menu
@@ -122,7 +129,15 @@ void StructureRecipies::addRecipes(Recipes *r)
 		L" R ", //
 		L"RGR", //
 		L" R ", //
-		L'R', Item::redStone, 'G', Tile::lightGem,
+		L'R', Item::redStone, 'G', Tile::glowstone,
 		L'M');
 
+	r->addShapedRecipy(new ItemInstance(Tile::beacon, 1), //
+		L"sssctcictg",
+		L"GGG", //
+		L"GSG", //
+		L"OOO", //
+
+		L'G', Tile::glass, L'S', Item::netherStar, L'O', Tile::obsidian,
+		L'M');
 }

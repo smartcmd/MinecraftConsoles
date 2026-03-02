@@ -6,17 +6,6 @@
 #include "net.minecraft.stats.h"
 #include "Facing.h"
 
-/*package net.minecraft.world.level.tile;
-
-import java.util.*;
-
-import net.minecraft.Facing;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.level.*;
-import net.minecraft.world.level.material.Material;
-import net.minecraft.world.phys.AABB;*/
-
-
 
 HalfSlabTile::HalfSlabTile(int id, bool fullSize, Material *material) : Tile(id, material, fullSize)
 {
@@ -98,41 +87,41 @@ int HalfSlabTile::getResourceCount(Random *random)
 
 int HalfSlabTile::getSpawnResourcesAuxValue(int data) 
 {
-		return data & TYPE_MASK;
+	return data & TYPE_MASK;
 }
 
 bool HalfSlabTile::isCubeShaped() 
 {
-		return fullSize;
+	return fullSize;
 }
 
 bool HalfSlabTile::shouldRenderFace(LevelSource *level, int x, int y, int z, int face) 
 {
-		if (fullSize) return Tile::shouldRenderFace(level, x, y, z, face);
+	if (fullSize) return Tile::shouldRenderFace(level, x, y, z, face);
 
-		if (face != Facing::UP && face != Facing::DOWN && !Tile::shouldRenderFace(level, x, y, z, face)) 
-		{
-			return false;
-		}
+	if (face != Facing::UP && face != Facing::DOWN && !Tile::shouldRenderFace(level, x, y, z, face)) 
+	{
+		return false;
+	}
 
-		int ox = x, oy = y, oz = z;
-		ox += Facing::STEP_X[Facing::OPPOSITE_FACING[face]];
-		oy += Facing::STEP_Y[Facing::OPPOSITE_FACING[face]];
-		oz += Facing::STEP_Z[Facing::OPPOSITE_FACING[face]];
+	int ox = x, oy = y, oz = z;
+	ox += Facing::STEP_X[Facing::OPPOSITE_FACING[face]];
+	oy += Facing::STEP_Y[Facing::OPPOSITE_FACING[face]];
+	oz += Facing::STEP_Z[Facing::OPPOSITE_FACING[face]];
 
-		boolean isUpper = (level->getData(ox, oy, oz) & TOP_SLOT_BIT) != 0;
-		if (isUpper) 
-		{
-			if (face == Facing::DOWN) return true;
-			if (face == Facing::UP && Tile::shouldRenderFace(level, x, y, z, face)) return true;
-			return !(isHalfSlab(level->getTile(x, y, z)) && (level->getData(x, y, z) & TOP_SLOT_BIT) != 0);
-		} 
-		else 
-		{
-			if (face == Facing::UP) return true;
-			if (face == Facing::DOWN && Tile::shouldRenderFace(level, x, y, z, face)) return true;
-			return !(isHalfSlab(level->getTile(x, y, z)) && (level->getData(x, y, z) & TOP_SLOT_BIT) == 0);
-		}
+	boolean isUpper = (level->getData(ox, oy, oz) & TOP_SLOT_BIT) != 0;
+	if (isUpper) 
+	{
+		if (face == Facing::DOWN) return true;
+		if (face == Facing::UP && Tile::shouldRenderFace(level, x, y, z, face)) return true;
+		return !(isHalfSlab(level->getTile(x, y, z)) && (level->getData(x, y, z) & TOP_SLOT_BIT) != 0);
+	} 
+	else 
+	{
+		if (face == Facing::UP) return true;
+		if (face == Facing::DOWN && Tile::shouldRenderFace(level, x, y, z, face)) return true;
+		return !(isHalfSlab(level->getTile(x, y, z)) && (level->getData(x, y, z) & TOP_SLOT_BIT) == 0);
+	}
 }
 
 bool HalfSlabTile::isHalfSlab(int tileId) 
@@ -140,4 +129,24 @@ bool HalfSlabTile::isHalfSlab(int tileId)
 	return tileId == Tile::stoneSlabHalf_Id || tileId == Tile::woodSlabHalf_Id;
 }
 
+int HalfSlabTile::cloneTileData(Level *level, int x, int y, int z)
+{
+	return Tile::cloneTileData(level, x, y, z) & TYPE_MASK;
+}
 
+int HalfSlabTile::cloneTileId(Level *level, int x, int y, int z)
+{
+	if (isHalfSlab(id))
+	{
+		return id;
+	}
+	if (id == Tile::stoneSlab_Id)
+	{
+		return Tile::stoneSlabHalf_Id;
+	}
+	if (id == Tile::woodSlab_Id)
+	{
+		return Tile::woodSlabHalf_Id;
+	}
+	return Tile::stoneSlabHalf_Id;
+}

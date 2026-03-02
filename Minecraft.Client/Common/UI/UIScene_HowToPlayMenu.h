@@ -28,6 +28,11 @@ private:
 		eHTPButton_FarmingAnimals,
 		eHTPButton_Breeding,
 		eHTPButton_Trading,
+		eHTPButton_Horses,
+		eHTPButton_Beacons,
+		eHTPButton_Fireworks,
+		eHTPButton_Hoppers,
+		eHTPButton_Droppers,
 		eHTPButton_NetherPortal,
 		eHTPButton_TheEnd,
 #ifdef _XBOX

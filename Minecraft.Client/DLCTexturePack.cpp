@@ -132,7 +132,7 @@ bool DLCTexturePack::isTerrainUpdateCompatible()
 	return true;
 }
 
-wstring DLCTexturePack::getPath(bool bTitleUpdateTexture /*= false*/)
+wstring DLCTexturePack::getPath(bool bTitleUpdateTexture /*= false*/, const char *pchBDPatchFilename)
 {
 	return L"";
 }
@@ -482,8 +482,8 @@ int DLCTexturePack::packMounted(LPVOID pParam,int iPad,DWORD dwErr,DWORD dwLicen
 					iEndStart=iOverworldC+iNetherC;
 					iEndC=dlcFile->GetCountofType(DLCAudioFile::e_AudioType_End);
 
-					Minecraft::GetInstance()->soundEngine->SetStreamingSounds(iOverworldStart,iOverworldStart+iOverworldC,
-						iNetherStart,iNetherStart+iNetherC,iEndStart,iEndStart+iEndC,iEndStart+iEndC); // push the CD start to after
+					Minecraft::GetInstance()->soundEngine->SetStreamingSounds(iOverworldStart,iOverworldStart+iOverworldC-1,
+						iNetherStart,iNetherStart+iNetherC-1,iEndStart,iEndStart+iEndC-1,iEndStart+iEndC); // push the CD start to after
 				}
 #endif
 }

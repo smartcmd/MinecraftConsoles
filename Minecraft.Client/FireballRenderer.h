@@ -13,5 +13,6 @@ public:
 
 private:
 	// 4J Added override
-	virtual void renderFlame(shared_ptr<Entity> e, double x, double y, double z, float a);
+	virtual void renderFlame(shared_ptr<Entity> entity, double x, double y, double z, float a);
+	virtual ResourceLocation *getTextureLocation(shared_ptr<Entity> mob);
 };

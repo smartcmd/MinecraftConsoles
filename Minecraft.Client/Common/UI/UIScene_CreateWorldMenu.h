@@ -8,7 +8,6 @@ private:
 	enum EControls
 	{
 		eControl_EditWorldName,
-		eControl_EditSeed,
 		eControl_TexturePackList,
 		eControl_GameModeToggle,
 		eControl_Difficulty,
@@ -24,14 +23,11 @@ private:
 	wstring m_seed;
 
 	UIControl m_controlMainPanel;
-	UIControl_Label m_labelWorldName, m_labelSeed, m_labelRandomSeed;
+	UIControl_Label m_labelWorldName;
 	UIControl_Button m_buttonGamemode, m_buttonMoreOptions, m_buttonCreateWorld;
-	UIControl_TextInput m_editWorldName, m_editSeed;
+	UIControl_TextInput m_editWorldName;
 	UIControl_Slider m_sliderDifficulty;
-	
-#if defined _XBOX_ONE || defined __ORBIS__ || defined _WINDOWS64
 	UIControl_CheckBox m_checkboxOnline;
-#endif
 
 	UIControl_BitmapIcon m_bitmapIcon, m_bitmapComparison;
 
@@ -40,22 +36,17 @@ private:
 		UI_BEGIN_MAP_CHILD_ELEMENTS( m_controlMainPanel )
 			UI_MAP_ELEMENT( m_labelWorldName, "WorldName")
 			UI_MAP_ELEMENT( m_editWorldName, "EditWorldName")
-			UI_MAP_ELEMENT( m_labelSeed, "Seed")
-			UI_MAP_ELEMENT( m_editSeed, "EditSeed")
-			UI_MAP_ELEMENT( m_labelRandomSeed, "RandomSeed")
 			UI_MAP_ELEMENT( m_texturePackList, "TexturePackSelector")
 			UI_MAP_ELEMENT( m_buttonGamemode, "GameModeToggle")
-			
-#if defined _XBOX_ONE || defined __ORBIS__ || defined _WINDOWS64
 			UI_MAP_ELEMENT( m_checkboxOnline, "CheckboxOnline")
-#endif
 			UI_MAP_ELEMENT( m_buttonMoreOptions, "MoreOptions")
 			UI_MAP_ELEMENT( m_buttonCreateWorld, "NewWorld")
 			UI_MAP_ELEMENT( m_sliderDifficulty, "Difficulty")
 		UI_END_MAP_CHILD_ELEMENTS()
 	UI_END_MAP_ELEMENTS_AND_NAMES()
 
-	bool m_bGameModeSurvival;
+	bool m_bGameModeCreative;
+	int m_iGameModeId;
 	bool m_bMultiplayerAllowed;
 	DLCPack * m_pDLCPack;
 	bool m_bRebuildTouchBoxes;
@@ -97,7 +88,6 @@ private:
 
 protected:
 	static int KeyboardCompleteWorldNameCallback(LPVOID lpParam,const bool bRes);
-	static int KeyboardCompleteSeedCallback(LPVOID lpParam,const bool bRes);
 	void handlePress(F64 controlId, F64 childId);
 	void handleSliderMove(F64 sliderId, F64 currentValue);
 	

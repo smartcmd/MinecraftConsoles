@@ -7,11 +7,11 @@ class FleeSunGoal : public Goal
 private:
 	PathfinderMob *mob; // Owner of this goal
 	double wantedX, wantedY, wantedZ;
-	float speed;
+	double speedModifier;
 	Level *level;
 
 public:
-	FleeSunGoal(PathfinderMob *mob, float speed);
+	FleeSunGoal(PathfinderMob *mob, double speedModifier);
 
 	virtual bool canUse();
 	virtual bool canContinueToUse();

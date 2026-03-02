@@ -177,6 +177,18 @@ void UIComponent_Tooltips::tick()
 		fVal=0.01f*(float)ucAlpha;
 	}
 	setOpacity(fVal);
+
+	bool layoutChanges = false;
+	for (int i = 0; i < eToolTipNumButtons; i++)
+	{
+		if ( !ui.IsReloadingSkin() && m_tooltipValues[i].show && m_tooltipValues[i].label.needsUpdating() )
+		{
+			layoutChanges = true;
+			_SetTooltip(i, m_tooltipValues[i].label, m_tooltipValues[i].show, true);	
+			m_tooltipValues[i].label.setUpdated();
+		}
+	}
+	if (layoutChanges) _Relayout();
 }
 
 void UIComponent_Tooltips::render(S32 width, S32 height, C4JRender::eViewportType viewport)
@@ -272,7 +284,7 @@ void UIComponent_Tooltips::ShowTooltip( unsigned int tooltip, bool show )
 	}
 }
 
-void UIComponent_Tooltips::SetTooltips( int iA, int iB, int iX, int iY , int iLT, int iRT, int iLB, int iRB, int iLS, bool forceUpdate)
+void UIComponent_Tooltips::SetTooltips( int iA, int iB, int iX, int iY , int iLT, int iRT, int iLB, int iRB, int iLS, int iRS, int iBack, bool forceUpdate)
 {
 	bool needsRelayout = false;
 	needsRelayout = _SetTooltip( eToolTipButtonA, iA ) || needsRelayout;
@@ -284,8 +296,10 @@ void UIComponent_Tooltips::SetTooltips( int iA, int iB, int iX, int iY , int iLT
 	needsRelayout = _SetTooltip( eToolTipButtonLB, iLB ) || needsRelayout;
 	needsRelayout = _SetTooltip( eToolTipButtonRB, iRB ) || needsRelayout;
 	needsRelayout = _SetTooltip( eToolTipButtonLS, iLS ) || needsRelayout;
-
-	if(needsRelayout)_Relayout();
+	needsRelayout = _SetTooltip( eToolTipButtonRS, iRS ) || needsRelayout;
+	needsRelayout = _SetTooltip( eToolTipButtonRS, iRS ) || needsRelayout;
+	needsRelayout = _SetTooltip( eToolTipButtonBack, iBack ) || needsRelayout;
+	if (needsRelayout) _Relayout();
 }
 
 void UIComponent_Tooltips::EnableTooltip( unsigned int tooltip, bool enable )
@@ -299,20 +313,21 @@ bool UIComponent_Tooltips::_SetTooltip(unsigned int iToolTip, int iTextID)
 	{
 		m_tooltipValues[iToolTip].iString = iTextID;
 		changed = true;
-		if(iTextID > -1) _SetTooltip(iToolTip, app.GetString(iTextID), true);
-		else if(iTextID == -2) _SetTooltip(iToolTip, L"", true);
-		else _SetTooltip(iToolTip, L"", false);
+		if(iTextID > -1)		_SetTooltip(iToolTip, iTextID, true);
+		else if(iTextID == -2)	_SetTooltip(iToolTip, L"", true);
+		else					_SetTooltip(iToolTip, L"", false);
 	}
 	return changed;
 }
 
-void UIComponent_Tooltips::_SetTooltip(unsigned int iToolTipId, const wstring &label, bool show, bool force)
+void UIComponent_Tooltips::_SetTooltip(unsigned int iToolTipId, UIString label, bool show, bool force)
 {
 	if(!force && !show && !m_tooltipValues[iToolTipId].show)
 	{
 		return;
 	}
 	m_tooltipValues[iToolTipId].show = show;
+	m_tooltipValues[iToolTipId].label = label;
 
 	IggyDataValue result;
 	IggyDataValue value[3];
@@ -330,7 +345,7 @@ void UIComponent_Tooltips::_SetTooltip(unsigned int iToolTipId, const wstring &l
 	value[2].boolval = show;
 	IggyResult out = IggyPlayerCallMethodRS ( getMovie() , &result, IggyPlayerRootPath( getMovie() ), m_funcSetTooltip , 3 , value );
 
-	app.DebugPrintf("Actual tooltip update!\n");
+	//app.DebugPrintf("Actual tooltip update!\n");
 }
 
 void UIComponent_Tooltips::_Relayout()
@@ -350,6 +365,10 @@ void UIComponent_Tooltips::handleTouchInput(unsigned int iPad, S32 x, S32 y, int
 	//app.DebugPrintf("ToolTip Touch ID = %i\n", iId);
 	bool handled = false;
 
+	// 4J - TomK no tooltips no touch!
+	if((!ui.GetMenuDisplayed(ProfileManager.GetPrimaryPad())) && (app.GetGameSettings(ProfileManager.GetPrimaryPad(),eGameSetting_Tooltips) == 0))
+		return;
+
 	// perform action on release
 	if(bReleased)
 	{
@@ -357,11 +376,17 @@ void UIComponent_Tooltips::handleTouchInput(unsigned int iPad, S32 x, S32 y, int
 		{
 			case ETouchInput_Touch_A:
 				app.DebugPrintf("ToolTip Map Touch to _PSV_JOY_BUTTON_X\n", iId);
-				InputManager.MapTouchInput(iPad, _PSV_JOY_BUTTON_X);
+				if(InputManager.IsCircleCrossSwapped())
+					InputManager.MapTouchInput(iPad, _PSV_JOY_BUTTON_O);
+				else
+					InputManager.MapTouchInput(iPad, _PSV_JOY_BUTTON_X);
 				break;
 			case ETouchInput_Touch_B:
 				app.DebugPrintf("ToolTip Map Touch to _PSV_JOY_BUTTON_O\n", iId);
-				InputManager.MapTouchInput(iPad, _PSV_JOY_BUTTON_O);
+				if(InputManager.IsCircleCrossSwapped())
+					InputManager.MapTouchInput(iPad, _PSV_JOY_BUTTON_X);
+				else
+					InputManager.MapTouchInput(iPad, _PSV_JOY_BUTTON_O);
 				break;
 			case ETouchInput_Touch_X:
 				app.DebugPrintf("ToolTip Map Touch to _PSV_JOY_BUTTON_SQUARE\n", iId);
@@ -376,8 +401,8 @@ void UIComponent_Tooltips::handleTouchInput(unsigned int iPad, S32 x, S32 y, int
 				app.DebugPrintf("ToolTip no action\n", iId);
 				break;
 			case ETouchInput_Touch_RightTrigger:
-				app.DebugPrintf("ToolTip Map Touch to _PSV_JOY_BUTTON_SELECT\n", iId);
-				InputManager.MapTouchInput(iPad, _PSV_JOY_BUTTON_SELECT);
+				app.DebugPrintf("ToolTip no action\n", iId);
+				/* no action */
 				break;
 			case ETouchInput_Touch_LeftBumper:
 				app.DebugPrintf("ToolTip Map Touch to _PSV_JOY_BUTTON_L1\n", iId);
@@ -390,6 +415,14 @@ void UIComponent_Tooltips::handleTouchInput(unsigned int iPad, S32 x, S32 y, int
 			case ETouchInput_Touch_LeftStick:
 				app.DebugPrintf("ToolTip no action\n", iId);
 				/* no action */
+				break;
+			case ETouchInput_Touch_RightStick:
+				app.DebugPrintf("ToolTip Map Touch to _PSV_JOY_BUTTON_DPAD_DOWN\n", iId);
+				InputManager.MapTouchInput(iPad, _PSV_JOY_BUTTON_DPAD_DOWN);
+				break;
+			case ETouchInput_Touch_Select:
+				app.DebugPrintf("ToolTip Map Touch to _PSV_JOY_BUTTON_SELECT\n", iId);
+				InputManager.MapTouchInput(iPad, _PSV_JOY_BUTTON_SELECT);
 				break;
 		}
 	}
@@ -413,14 +446,14 @@ void UIComponent_Tooltips::handleReload()
 
 	for(unsigned int i = 0; i < eToolTipNumButtons; ++i)
 	{
-		_SetTooltip(i,app.GetString(m_tooltipValues[i].iString), m_tooltipValues[i].show, true);
+		_SetTooltip(i, m_tooltipValues[i].iString, m_tooltipValues[i].show, true);
 	}
 	_Relayout();
 }
 
 void UIComponent_Tooltips::handleInput(int iPad, int key, bool repeat, bool pressed, bool released, bool &handled)
 {
-	if(m_overrideSFX[iPad][key])
+	if( (0 <= iPad) && (iPad <= 3) && m_overrideSFX[iPad][key] )
 	{
 		// don't play a sound for this action
 		switch(key)

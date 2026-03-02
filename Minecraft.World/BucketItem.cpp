@@ -24,12 +24,8 @@ BucketItem::BucketItem(int id, int content) : Item( id )
 	this->content = content;
 }
 
-bool BucketItem::TestUse(Level *level, shared_ptr<Player> player)
+bool BucketItem::TestUse(shared_ptr<ItemInstance> itemInstance, Level *level, shared_ptr<Player> player)
 {
-// 	double x = player->xo + (player->x - player->xo);
-// 	double y = player->yo + (player->y - player->yo) + 1.62 - player->heightOffset;
-// 	double z = player->zo + (player->z - player->zo);
-
 	bool pickLiquid = content == 0;
 	HitResult *hr = getPlayerPOVHitResult(level, player, pickLiquid);
 	if (hr == NULL) return false;
@@ -48,7 +44,7 @@ bool BucketItem::TestUse(Level *level, shared_ptr<Player> player)
 
 		if (content == 0)
 		{			
-			if (!player->mayBuild(xt, yt, zt)) return false;
+			if (!player->mayUseItemAt(xt, yt, zt, hr->f, itemInstance)) return false;
 			if (level->getMaterial(xt, yt, zt) == Material::water && level->getData(xt, yt, zt) == 0)
 			{
 				delete hr;
@@ -73,8 +69,8 @@ bool BucketItem::TestUse(Level *level, shared_ptr<Player> player)
 			if (hr->f == 3) zt++;
 			if (hr->f == 4) xt--;
 			if (hr->f == 5) xt++;
-			
-			if (!player->mayBuild(xt, yt, zt)) return false;
+
+			if (!player->mayUseItemAt(xt, yt, zt, hr->f, itemInstance)) return false;
 
 			if (level->isEmptyTile(xt, yt, zt) || !level->getMaterial(xt, yt, zt)->isSolid())
 			{
@@ -126,17 +122,17 @@ shared_ptr<ItemInstance> BucketItem::use(shared_ptr<ItemInstance> itemInstance, 
 				app.DebugPrintf("Sending ChatPacket::e_ChatCannotPlaceLava to player\n");
 				servPlayer->connection->send( shared_ptr<ChatPacket>( new ChatPacket(L"", ChatPacket::e_ChatCannotPlaceLava ) ) );
 			}
-			
+
 			delete hr;
 			return itemInstance;
 		}
 
 		if (content == 0)
 		{		
-			if (!player->mayBuild(xt, yt, zt)) return itemInstance;
+			if (!player->mayUseItemAt(xt, yt, zt, hr->f, itemInstance)) return itemInstance;
 			if (level->getMaterial(xt, yt, zt) == Material::water && level->getData(xt, yt, zt) == 0)
 			{
-				level->setTile(xt, yt, zt, 0);
+				level->removeTile(xt, yt, zt);
 				delete hr;
 				if (player->abilities.instabuild)
 				{
@@ -160,11 +156,11 @@ shared_ptr<ItemInstance> BucketItem::use(shared_ptr<ItemInstance> itemInstance, 
 			{
 				if( level->dimension->id == -1 )
 					player->awardStat(
-						GenericStats::netherLavaCollected(), 
-						GenericStats::param_noArgs()
-						);
+					GenericStats::netherLavaCollected(), 
+					GenericStats::param_noArgs()
+					);
 
-				level->setTile(xt, yt, zt, 0);
+				level->removeTile(xt, yt, zt);
 				delete hr;
 				if (player->abilities.instabuild)
 				{
@@ -197,65 +193,50 @@ shared_ptr<ItemInstance> BucketItem::use(shared_ptr<ItemInstance> itemInstance, 
 			if (hr->f == 3) zt++;
 			if (hr->f == 4) xt--;
 			if (hr->f == 5) xt++;
-			
-			if (!player->mayBuild(xt, yt, zt)) return itemInstance;
+
+			if (!player->mayUseItemAt(xt, yt, zt, hr->f, itemInstance)) return itemInstance;
 
 
-			if (emptyBucket(level, x, y, z, xt, yt, zt) && !player->abilities.instabuild)
+			if (emptyBucket(level, xt, yt, zt) && !player->abilities.instabuild)
 			{
 				return shared_ptr<ItemInstance>( new ItemInstance(Item::bucket_empty) );
 			}
 
 		}
 	}
-	else
-	{
-		if (content == 0)
-		{
-			if (hr->entity->GetType() == eTYPE_COW)
-			{
-				delete hr;
-				if (--itemInstance->count <= 0)
-				{
-					return shared_ptr<ItemInstance>( new ItemInstance(Item::milk) );
-				}
-				else
-				{
-					if (!player->inventory->add(shared_ptr<ItemInstance>( new ItemInstance(Item::milk))))
-					{
-						player->drop(shared_ptr<ItemInstance>(new ItemInstance(Item::milk_Id, 1, 0)));
-					}
-					return itemInstance;
-				}
-			}
-		}
-	}
 	delete hr;
 	return itemInstance;
 }
 
-bool BucketItem::emptyBucket(Level *level, double x, double y, double z, int xt, int yt, int zt) 
+bool BucketItem::emptyBucket(Level *level, int xt, int yt, int zt) 
 {
-    if (content <= 0) return false;
+	if (content <= 0) return false;
 
-    if (level->isEmptyTile(xt, yt, zt) || !level->getMaterial(xt, yt, zt)->isSolid()) 
+	Material *material = level->getMaterial(xt, yt, zt);
+	bool nonSolid = !material->isSolid();
+
+	if (level->isEmptyTile(xt, yt, zt) || nonSolid) 
 	{
-        if (level->dimension->ultraWarm && content == Tile::water_Id) 
+		if (level->dimension->ultraWarm && content == Tile::water_Id) 
 		{
-			level->playSound(x + 0.5f, y + 0.5f, z + 0.5f, eSoundType_RANDOM_FIZZ, 0.5f, 2.6f + (level->random->nextFloat() - level->random->nextFloat()) * 0.8f);
+			level->playSound(xt + 0.5f, yt + 0.5f, zt + 0.5f, eSoundType_RANDOM_FIZZ, 0.5f, 2.6f + (level->random->nextFloat() - level->random->nextFloat()) * 0.8f);
 
-            for (int i = 0; i < 8; i++) 
+			for (int i = 0; i < 8; i++) 
 			{
- 				level->addParticle(eParticleType_largesmoke, xt + Math::random(), yt + Math::random(), zt + Math::random(), 0, 0, 0);
-            }
-        } 
+				level->addParticle(eParticleType_largesmoke, xt + Math::random(), yt + Math::random(), zt + Math::random(), 0, 0, 0);
+			}
+		} 
 		else 
 		{
-            level->setTileAndData(xt, yt, zt, content, 0);
-        }
+			if (!level->isClientSide && nonSolid && !material->isLiquid())
+			{
+				level->destroyTile(xt, yt, zt, true);
+			}
+			level->setTileAndData(xt, yt, zt, content, 0, Tile::UPDATE_ALL);
+		}
 
-        return true;
-    }
+		return true;
+	}
 
-    return false;
+	return false;
 }

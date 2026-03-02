@@ -7,19 +7,24 @@
 #include "..\Minecraft.World\FloatBuffer.h"
 #include "TheEndPortalRenderer.h"
 
+ResourceLocation TheEndPortalRenderer::END_SKY_LOCATION = ResourceLocation(TN_MISC_TUNNEL);
+ResourceLocation TheEndPortalRenderer::END_PORTAL_LOCATION = ResourceLocation(TN_MISC_PARTICLEFIELD);
+int TheEndPortalRenderer::RANDOM_SEED = 31100;
+Random TheEndPortalRenderer::RANDOM = Random(RANDOM_SEED);
+
 void TheEndPortalRenderer::render(shared_ptr<TileEntity> _table, double x, double y, double z, float a, bool setColor, float alpha, bool useCompiled)
 {
 	// 4J Convert as we aren't using a templated class
 	shared_ptr<TheEndPortalTileEntity> table = dynamic_pointer_cast<TheEndPortalTileEntity>(_table);
-	float xx = (float) (tileEntityRenderDispatcher->xPlayer);
-	float yy = (float) (tileEntityRenderDispatcher->yPlayer);
-	float zz = (float) (tileEntityRenderDispatcher->zPlayer);
+	float xx = (float) tileEntityRenderDispatcher->xPlayer;
+	float yy = (float) tileEntityRenderDispatcher->yPlayer;
+	float zz = (float) tileEntityRenderDispatcher->zPlayer;
 
 	glDisable(GL_LIGHTING);
 
-	Random random(31100);
+	RANDOM.setSeed(RANDOM_SEED);
 
-	float hoff = (12) / 16.0f;
+	float hoff = 12 / 16.0f;
 	for (int i = 0; i < 16; i++)
 	{
 		glPushMatrix();
@@ -30,7 +35,7 @@ void TheEndPortalRenderer::render(shared_ptr<TileEntity> _table, double x, doubl
 		float br = 1.0f / (dist + 1);
 		if (i == 0)
 		{
-			this->bindTexture(TN_MISC_TUNNEL); // 4J was "/misc/tunnel.png"
+			this->bindTexture(&END_SKY_LOCATION);
 			br = 0.1f;
 			dist = 65;
 			sscale = 1 / 8.0f;
@@ -39,7 +44,7 @@ void TheEndPortalRenderer::render(shared_ptr<TileEntity> _table, double x, doubl
 		}
 		if (i == 1)
 		{
-			this->bindTexture(TN_MISC_PARTICLEFIELD); // 4J was "/misc/particlefield.png"
+			this->bindTexture(&END_PORTAL_LOCATION);
 			glEnable(GL_BLEND);
 			glBlendFunc(GL_ONE, GL_ONE);
 			sscale = 1 / 2.0f;
@@ -78,7 +83,7 @@ void TheEndPortalRenderer::render(shared_ptr<TileEntity> _table, double x, doubl
 		glPushMatrix();
 		glLoadIdentity();
 
-		glTranslatef(0, (System::currentTimeMillis() % 700000 / 700000.0f), 0);
+		glTranslatef(0, System::currentTimeMillis() % 700000 / 700000.0f, 0);
 		glScalef(sscale, sscale, sscale);
 		glTranslatef(0.5f, 0.5f, 0);
 		glRotatef((i * i * 4321 + i * 9) * 2.0f, 0, 0, 1);
@@ -91,9 +96,9 @@ void TheEndPortalRenderer::render(shared_ptr<TileEntity> _table, double x, doubl
 		t->useProjectedTexture(true);				// 4J added - turns on both the generation of texture coordinates in the vertex shader & perspective divide of the texture coord in the pixel shader
 		t->begin();
 
-		float r = random.nextFloat() * 0.5f + 0.1f;
-		float g = random.nextFloat() * 0.5f + 0.4f;
-		float b = random.nextFloat() * 0.5f + 0.5f;
+		float r = RANDOM.nextFloat() * 0.5f + 0.1f;
+		float g = RANDOM.nextFloat() * 0.5f + 0.4f;
+		float b = RANDOM.nextFloat() * 0.5f + 0.5f;
 		if (i == 0) r = g = b = 1;
 		t->color(r * br, g * br, b * br, 1.0f);
 		t->vertex(x, y + hoff, z);

@@ -3,12 +3,19 @@
 #include "VillagerModel.h"
 #include "VillagerRenderer.h"
 
+ResourceLocation VillagerRenderer::VILLAGER_LOCATION = ResourceLocation(TN_MOB_VILLAGER_VILLAGER);
+ResourceLocation VillagerRenderer::VILLAGER_FARMER_LOCATION = ResourceLocation(TN_MOB_VILLAGER_FARMER);
+ResourceLocation VillagerRenderer::VILLAGER_LIBRARIAN_LOCATION = ResourceLocation(TN_MOB_VILLAGER_LIBRARIAN);
+ResourceLocation VillagerRenderer::VILLAGER_PRIEST_LOCATION = ResourceLocation(TN_MOB_VILLAGER_PRIEST);
+ResourceLocation VillagerRenderer::VILLAGER_SMITH_LOCATION = ResourceLocation(TN_MOB_VILLAGER_SMITH);
+ResourceLocation VillagerRenderer::VILLAGER_BUTCHER_LOCATION = ResourceLocation(TN_MOB_VILLAGER_BUTCHER);
+
 VillagerRenderer::VillagerRenderer() : MobRenderer(new VillagerModel(0), 0.5f)
 {
 	villagerModel = (VillagerModel *) model;
 }
 
-int VillagerRenderer::prepareArmor(shared_ptr<Mob> villager, int layer, float a)
+int VillagerRenderer::prepareArmor(shared_ptr<LivingEntity> villager, int layer, float a)
 {
 	return -1;
 }
@@ -18,16 +25,33 @@ void VillagerRenderer::render(shared_ptr<Entity> mob, double x, double y, double
 	MobRenderer::render(mob, x, y, z, rot, a);
 }
 
-void VillagerRenderer::renderName(shared_ptr<Mob> mob, double x, double y, double z)
+ResourceLocation *VillagerRenderer::getTextureLocation(shared_ptr<Entity> _mob)
 {
+	shared_ptr<Villager> mob = dynamic_pointer_cast<Villager>(_mob);
+
+	switch (mob->getProfession())
+	{
+	case Villager::PROFESSION_FARMER:
+		return &VILLAGER_FARMER_LOCATION;
+	case Villager::PROFESSION_LIBRARIAN:
+		return &VILLAGER_LIBRARIAN_LOCATION;
+	case Villager::PROFESSION_PRIEST:
+		return &VILLAGER_PRIEST_LOCATION;
+	case Villager::PROFESSION_SMITH:
+		return &VILLAGER_SMITH_LOCATION;
+	case Villager::PROFESSION_BUTCHER:
+		return &VILLAGER_BUTCHER_LOCATION;
+	default:
+		return &VILLAGER_LOCATION;
+	}
 }
 
-void VillagerRenderer::additionalRendering(shared_ptr<Mob> mob, float a)
+void VillagerRenderer::additionalRendering(shared_ptr<LivingEntity> mob, float a)
 {
 	MobRenderer::additionalRendering(mob, a);
 }
 
-void VillagerRenderer::scale(shared_ptr<Mob> _mob, float a)
+void VillagerRenderer::scale(shared_ptr<LivingEntity> _mob, float a)
 {
 	// 4J - original version used generics and thus had an input parameter of type Blaze rather than shared_ptr<Entity>  we have here - 
 	// do some casting around instead

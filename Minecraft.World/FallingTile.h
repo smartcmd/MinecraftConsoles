@@ -25,8 +25,12 @@ private:
 	void _init();
 
 public:
+	CompoundTag *tileData;
+
+
 	FallingTile(Level *level);
 	FallingTile(Level *level, double x, double y, double z, int tile, int data = 0);
+	~FallingTile();
 
 protected:
 	virtual bool makeStepSound();

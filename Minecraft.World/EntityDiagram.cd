@@ -1,0 +1,805 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="Entity" Collapsed="true">
+    <Position X="42.75" Y="1.25" Width="2.25" />
+    <Compartments>
+      <Compartment Name="Fields" Collapsed="true" />
+      <Compartment Name="Methods" Collapsed="true" />
+    </Compartments>
+    <TypeIdentifier>
+      <HashCode>lk9By8fuVr+s9Vq2ZZrRsbv3c3+a+rkZfp7902m71mE=</HashCode>
+      <FileName>Entity.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="LivingEntity" Collapsed="true">
+    <Position X="41.75" Y="3" Width="1.5" />
+    <InheritanceLine Type="Entity" ManuallyRouted="true">
+      <Path>
+        <Point X="43.875" Y="1.941" />
+        <Point X="43.875" Y="2.643" />
+        <Point X="42.5" Y="2.643" />
+        <Point X="42.5" Y="3" />
+      </Path>
+    </InheritanceLine>
+    <TypeIdentifier>
+      <HashCode>IkXwEshzVK9k0lP3eIozMydyc56b0ZNv9VTruo1/COQ=</HashCode>
+      <FileName>livingentity.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Mob" Collapsed="true">
+    <Position X="38.5" Y="7.5" Width="1.5" />
+    <InheritanceLine Type="LivingEntity" ManuallyRouted="true">
+      <Path>
+        <Point X="42.5" Y="3.691" />
+        <Point X="42.5" Y="6.882" />
+        <Point X="39.25" Y="6.882" />
+        <Point X="39.25" Y="7.5" />
+      </Path>
+    </InheritanceLine>
+    <TypeIdentifier>
+      <HashCode>UAlyxmP2UGIgHDSYIll6BnYGw1UcADEHoAPyGCoBCMA=</HashCode>
+      <FileName>mob.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="PigZombie" Collapsed="true">
+    <Position X="59" Y="18.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>EBBIAgACgAIAkgAQQAgQAAQAAwAAAAECgADAAgIgAIA=</HashCode>
+      <FileName>PigZombie.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Zombie" Collapsed="true">
+    <Position X="59" Y="17.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>kABEAiYAlAIA2gQQAABSoAwgQiAIAAEA0BDAgAEgAsA=</HashCode>
+      <FileName>Zombie.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Monster" Collapsed="true">
+    <Position X="59" Y="15.5" Width="1.5" />
+    <InheritanceLine Type="PathfinderMob" ManuallyRouted="true">
+      <Path>
+        <Point X="49.5" Y="12.691" />
+        <Point X="49.5" Y="14.647" />
+        <Point X="59.75" Y="14.647" />
+        <Point X="59.75" Y="15.5" />
+      </Path>
+    </InheritanceLine>
+    <TypeIdentifier>
+      <HashCode>EAJAAAAAAAAAAAAAAAAQAEAgAAAIAAECAgDAAAAgAAA=</HashCode>
+      <FileName>monster.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="PathfinderMob" Collapsed="true">
+    <Position X="48.75" Y="12" Width="1.5" />
+    <InheritanceLine Type="Mob" ManuallyRouted="true">
+      <Path>
+        <Point X="39.25" Y="8.191" />
+        <Point X="39.25" Y="11.427" />
+        <Point X="43.667" Y="11.589" Type="JumpStart" />
+        <Point X="43.833" Y="11.595" Type="JumpEnd" />
+        <Point X="49.5" Y="11.802" />
+        <Point X="49.5" Y="12.375" />
+      </Path>
+    </InheritanceLine>
+    <TypeIdentifier>
+      <HashCode>ECKEBAAAAAAEAgCGAAASOQAgBBAAAAACEAIBQAEgAUQ=</HashCode>
+      <FileName>PathfinderMob.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Giant" Collapsed="true">
+    <Position X="56.75" Y="17.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAIAAAAAAAAAAAAAEAAQAAAAAAAAAAEAAABAAAAAAAA=</HashCode>
+      <FileName>Giant.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Wolf" Collapsed="true">
+    <Position X="41.25" Y="22.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>wABwAgAQQUYBkAQUAlQQACAoQyCJIEEDwgPCEYglAMA=</HashCode>
+      <FileName>Wolf.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="TamableAnimal" Collapsed="true">
+    <Position X="42.5" Y="20.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAQgAAAEAoAAAAQAABAAAQAUACBAQBAABIACCABAEA=</HashCode>
+      <FileName>TamableAnimal.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Animal" Collapsed="true">
+    <Position X="44.75" Y="18.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>EAICgQAAIBIgAAQwgiAAAIAAThgJAAADIACCAIAhAEA=</HashCode>
+      <FileName>Animal.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="AgableMob" Collapsed="true">
+    <Position X="44" Y="15.5" Width="1.5" />
+    <InheritanceLine Type="PathfinderMob" ManuallyRouted="true">
+      <Path>
+        <Point X="49.5" Y="13.066" />
+        <Point X="49.5" Y="14.622" />
+        <Point X="44.75" Y="14.622" />
+        <Point X="44.75" Y="15.5" />
+      </Path>
+    </InheritanceLine>
+    <TypeIdentifier>
+      <HashCode>AIgAAEAAAQIAAAgQQAACAAAAQgAICEEGAAAAAAAEAAA=</HashCode>
+      <FileName>AgableMob.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Chicken" Collapsed="true">
+    <Position X="50.75" Y="20.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAkAABAYoYAAAEASAJAAEAgABAAABlAIA=</HashCode>
+      <FileName>Chicken.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Cow" Collapsed="true">
+    <Position X="48.5" Y="20.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAkAAAAAAQAAAAAyGAAAEAgABAAAAkAIA=</HashCode>
+      <FileName>Cow.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Golem" Collapsed="true">
+    <Position X="48.75" Y="15.5" Width="1.5" />
+    <InheritanceLine Type="PathfinderMob" ManuallyRouted="true">
+      <Path>
+        <Point X="49.5" Y="12.691" />
+        <Point X="49.5" Y="14.621" />
+        <Point X="49.5" Y="14.621" />
+        <Point X="49.5" Y="15.5" />
+      </Path>
+    </InheritanceLine>
+    <TypeIdentifier>
+      <HashCode>AAAAgAAAAAAAkAQAAAAAAAAAAAAAAAAAAAAAAAAlAAA=</HashCode>
+      <FileName>Golem.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="MushroomCow" Collapsed="true">
+    <Position X="48.5" Y="21.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>EAAAAQAAAAAAAAAAAAAAAAAAAgAAAAEAAABAAAAEAAA=</HashCode>
+      <FileName>mushroomcow.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Ocelot" Collapsed="true">
+    <Position X="43.5" Y="22.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>EAAECgAACAIQkIQwAAAQABAgSwCBAAFBoADCAIA1AYA=</HashCode>
+      <FileName>ocelot.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Pig" Collapsed="true">
+    <Position X="46.5" Y="20.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>QAAAQEACAAIEkAAQAAASABAAQyABAAECgABAQAAlAIA=</HashCode>
+      <FileName>Pig.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Sheep" Collapsed="true">
+    <Position X="44.75" Y="20.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>BAAAQhAiAAIQkAAQAEAQAIAQQyAoAAGAgABAgAQsAsA=</HashCode>
+      <FileName>Sheep.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SnowMan" Collapsed="true">
+    <Position X="49.75" Y="17.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAQAAAgAQAIAAEAgCBAAAAAAIA=</HashCode>
+      <FileName>SnowMan.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Squid" Collapsed="true">
+    <Position X="40.5" Y="17" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>FEAAAABEAgBAkQAgCAgQAAABAYCIAwEAgBBAAAAgAkA=</HashCode>
+      <FileName>Squid.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="WaterAnimal" Collapsed="true">
+    <Position X="40.5" Y="15.5" Width="1.5" />
+    <InheritanceLine Type="PathfinderMob" ManuallyRouted="true">
+      <Path>
+        <Point X="49.5" Y="12.691" />
+        <Point X="49.5" Y="14.643" />
+        <Point X="41.25" Y="14.643" />
+        <Point X="41.25" Y="15.5" />
+      </Path>
+    </InheritanceLine>
+    <TypeIdentifier>
+      <HashCode>EAAAgAAAAAEAAAQAAAIAAAAAABAAAAAAAAAAAAABAAA=</HashCode>
+      <FileName>WaterAnimal.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="VillagerGolem" Collapsed="true">
+    <Position X="47.75" Y="17.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>QEIACCAAECIAkAAwEAAQAAAiQSAIgAEAFADCBAAgAMA=</HashCode>
+      <FileName>VillagerGolem.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="AmbientCreature" Collapsed="true">
+    <Position X="38" Y="11.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAQAAAAAAAAAAAAAAkAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>AmbientCreature.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Bat" Collapsed="true">
+    <Position X="38" Y="13" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>EABAEAACAAoAkAAwAAAQIAEAUQCAgAkAAADAAAIxAIA=</HashCode>
+      <FileName>Bat.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="WitherBoss" Collapsed="true">
+    <Position X="61.25" Y="17.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>QABiQAADwAMA0gCQJAARAQAgQwAoAgEAEBDRCBCxBZA=</HashCode>
+      <FileName>WitherBoss.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="NetherSphere" Collapsed="true">
+    <Position X="36.25" Y="3" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAIAAAAQAAEAAAAAQAAAAAEAAAAAAAAAAAA=</HashCode>
+      <FileName>nethersphere.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="EnderDragon" Collapsed="true">
+    <Position X="45.75" Y="11.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AUQkhQAAyxJqEAAeUAkdPDLp8bCIIAURQADhQQg6A0g=</HashCode>
+      <FileName>EnderDragon.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="EnderCrystal" Collapsed="true">
+    <Position X="38.25" Y="3" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>gAFBQABAAAIAEQAwAAgAAAABQAAAAAEAAADAAAAAAAA=</HashCode>
+      <FileName>EnderCrystal.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="MultiEntityMobPart" Collapsed="true">
+    <Position X="33.75" Y="3" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAIAEEAQAAAAAAAAQAAQAAEAQACAAAAAAgA=</HashCode>
+      <FileName>MultiEntityMobPart.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="GlobalEntity" Collapsed="true">
+    <Position X="31" Y="3" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>GlobalEntity.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="LightningBolt" Collapsed="true">
+    <Position X="31" Y="4.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAFAAMAAAAIAQgAQAAAAAAAAQAAgAAEAAAAAAAAAAAE=</HashCode>
+      <FileName>lightningbolt.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Boat" Collapsed="true">
+    <Position X="19.75" Y="3" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AoRASBACFAIAEUAwIAgRgAMAUASAACVAEADUAAAECCQ=</HashCode>
+      <FileName>Boat.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="FallingTile" Collapsed="true">
+    <Position X="22" Y="3" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AABBQAAACAIgEQAwAAlAAAIAQAAAAAEAIABRAAAhQAA=</HashCode>
+      <FileName>FallingTile.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ItemEntity" Collapsed="true">
+    <Position X="24" Y="3" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AABAAIBExAIAQEAwAUgABAAAQAAAQAEAKAXAAEAEAAg=</HashCode>
+      <FileName>ItemEntity.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Minecart" Collapsed="true">
+    <Position X="48.5" Y="3.25" Width="1.5" />
+    <InheritanceLine Type="Entity" ManuallyRouted="true">
+      <Path>
+        <Point X="43.875" Y="1.941" />
+        <Point X="43.875" Y="2.643" />
+        <Point X="49.25" Y="2.643" />
+        <Point X="49.25" Y="3.25" />
+      </Path>
+    </InheritanceLine>
+    <TypeIdentifier>
+      <HashCode>AoBgSAICEEKAcUQ0YCgDgGMAUQaMAIFAOCCaQGBAKCw=</HashCode>
+      <FileName>minecart.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="MinecartChest" Collapsed="true">
+    <Position X="47.75" Y="6.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AACAAAAAAAAAAAAAAAAAAEAAAQAIAAEAgCBAAAAAAAA=</HashCode>
+      <FileName>minecartchest.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="MinecartContainer" Collapsed="true">
+    <Position X="45.25" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAIAAAkQAIAABAUAAgAAEACAQAAACAACAAUAAAAAAA=</HashCode>
+      <FileName>minecartcontainer.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="MinecartHopper" Collapsed="true">
+    <Position X="45.75" Y="6.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AADAAgAAAAIAASAQAgmAAUAAAQAIAKEAACBAgAAABgA=</HashCode>
+      <FileName>minecarthopper.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="MinecartRideable" Collapsed="true">
+    <Position X="47.25" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAQAAACEAAABAAAAAACA=</HashCode>
+      <FileName>minecartrideable.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="MinecartSpawner" Collapsed="true">
+    <Position X="49.5" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>EABABAAAAAIABAAQAAAAAAAAAQAIAAEAgABAAAAAAEA=</HashCode>
+      <FileName>minecartspawner.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="MinecartTNT" Collapsed="true">
+    <Position X="51.5" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>CARAAAAAAAIAAAAQSAgAAEAAAUEIBIUAAABAEAABAEA=</HashCode>
+      <FileName>MinecartTNT.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="PrimedTnt" Collapsed="true">
+    <Position X="26.25" Y="3" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAFAwAAAAAIAkQAwCAgAAAAAQAEAAAEAAABAAAAAAAA=</HashCode>
+      <FileName>PrimedTnt.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Blaze" Collapsed="true">
+    <Position X="63.75" Y="17.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>gAAAAAAAEAAAkAAAAAARAMIAQQAICAEAgABEABAhACA=</HashCode>
+      <FileName>Blaze.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CaveSpider" Collapsed="true">
+    <Position X="66.25" Y="18.75" Width="1.5" />
+    <InheritanceLine Type="Spider" ManuallyRouted="true" FixedFromPoint="true">
+      <Path>
+        <Point X="67" Y="18.441" />
+        <Point X="67" Y="18.75" />
+      </Path>
+    </InheritanceLine>
+    <TypeIdentifier>
+      <HashCode>AAIAAgAAAAAAAAAAAAAQAAAgAAAAAAEAAABAAAAAAAA=</HashCode>
+      <FileName>CaveSpider.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Spider" Collapsed="true">
+    <Position X="66.25" Y="17.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AABAIgQAEAAAsAAAAAAQAAAAQSASAAEGgBBQAAAgAAA=</HashCode>
+      <FileName>Spider.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Creeper" Collapsed="true">
+    <Position X="69" Y="17.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AoBAQAAQAjIAgAAQICgQgAAgQAAAAAEAgEpAAAAhAIA=</HashCode>
+      <FileName>Creeper.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="EnderMan" Collapsed="true">
+    <Position X="71" Y="17.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>IIgoAIAAgAIAkIAUQAAUADoAQQAIAAEGgADAgAEgCIA=</HashCode>
+      <FileName>EnderMan.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Ghast" Collapsed="true">
+    <Position X="40.75" Y="13" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>EAgABAAAgAYAkAQSMAgQAAAAQQCAAAEAgIDEAQggAEA=</HashCode>
+      <FileName>Ghast.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="FlyingMob" Collapsed="true">
+    <Position X="40.75" Y="11.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAIAAAAIACAAIAAAAAAAABAAA=</HashCode>
+      <FileName>FlyingMob.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="LavaSlime" Collapsed="true">
+    <Position X="43" Y="13" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>EAAAAAgAACAAgAgAAAARAIAAJQgACAEAkABQEBAhAAA=</HashCode>
+      <FileName>lavaslime.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Slime" Collapsed="true">
+    <Position X="43" Y="11.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>EABAAAgABIIAgAgUBBgAAAAAZACAAAMApEBQABAiAFA=</HashCode>
+      <FileName>Slime.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Silverfish" Collapsed="true">
+    <Position X="54.75" Y="17.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>EAJAAAAAAAAAkAAgAAAQAEAAACAAQAECgBDAAAAggEA=</HashCode>
+      <FileName>Silverfish.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Skeleton" Collapsed="true">
+    <Position X="52.75" Y="17.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AEACAgCAACIgkAAYAKAQAAQhQSgIBAEAgBBBAQAgAYA=</HashCode>
+      <FileName>Skeleton.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Witch" Collapsed="true">
+    <Position X="73" Y="17.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAABAACAAAAkAEAEAAQCAAgQQAIAAEAAEBAAQAiAOA=</HashCode>
+      <FileName>Witch.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Villager" Collapsed="true">
+    <Position X="42.5" Y="18.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AJEAGgEYQWMAkASxMBgYgGBQUkAgBhEJUSDCCEAmEcA=</HashCode>
+      <FileName>Villager.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Player" Collapsed="true">
+    <Position X="32.25" Y="7.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>tnzh7119+X+pYpq2sMm9VykjcZ9d6HXvO5y/lb7N/3c=</HashCode>
+      <FileName>Player.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Arrow" Collapsed="true">
+    <Position X="28.5" Y="3" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>ABFAQAhOBIIggQIwoAoABABAQgACIAEAAChAIAAABCg=</HashCode>
+      <FileName>Arrow.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="DragonFireball" Collapsed="true">
+    <Position X="56.75" Y="5.25" Width="1.5" />
+    <InheritanceLine Type="Fireball" ManuallyRouted="true">
+      <Path>
+        <Point X="56.75" Y="4.191" />
+        <Point X="56.75" Y="4.636" />
+        <Point X="57.5" Y="4.636" />
+        <Point X="57.5" Y="5.25" />
+      </Path>
+    </InheritanceLine>
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAgEAAAAAAAAgAAAAEAAAEAAADAQBAAAAA=</HashCode>
+      <FileName>DragonFireball.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Fireball" Collapsed="true">
+    <Position X="56" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>ABFAQEgMAAIAkAAQAAoBBQAAQAEACAEEAACQSAAAAAE=</HashCode>
+      <FileName>Fireball.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="EyeOfEnderSignal" Collapsed="true">
+    <Position X="11.5" Y="3" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>BAFAQABGAAIAAAAQCAgDAAAAQAAACAEAADBAAAAAAAA=</HashCode>
+      <FileName>EyeOfEnderSignal.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="FireworksRocketEntity" Collapsed="true">
+    <Position X="13.5" Y="3" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAFAwABGAAIAAAAQAAABAAAAQAAACAEAAABAAABAIEA=</HashCode>
+      <FileName>FireworksRocketEntity.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="FishingHook" Collapsed="true">
+    <Position X="15.75" Y="3" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>ABHAQAgOAAIAgECUAAoABAAAUAAAAAEAECAAAACAACQ=</HashCode>
+      <FileName>FishingHook.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="LargeFireball" Collapsed="true">
+    <Position X="55.5" Y="6.75" Width="1.5" />
+    <InheritanceLine Type="Fireball" ManuallyRouted="true">
+      <Path>
+        <Point X="56.75" Y="4.191" />
+        <Point X="56.75" Y="4.616" />
+        <Point X="56.25" Y="4.616" />
+        <Point X="56.25" Y="6.75" />
+      </Path>
+    </InheritanceLine>
+    <TypeIdentifier>
+      <HashCode>CAAAAAAAAAIAAAAQAAAAAAAAAAAAAAEAAABAQAAAAAA=</HashCode>
+      <FileName>largefireball.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SmallFireball" Collapsed="true">
+    <Position X="57.75" Y="6.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAEAEAAAAAAAAAAAAAAAEAAADAQAAAAAA=</HashCode>
+      <FileName>SmallFireball.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Snowball" Collapsed="true">
+    <Position X="60.5" Y="5.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAgAAEAAAAAAAAEAAABAQAAAAAA=</HashCode>
+      <FileName>Snowball.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Throwable" Collapsed="true">
+    <Position X="63" Y="3.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>ABFAwAgOAAIAgFAQAAIABAAEQAAAAAMAACAAQgAAAAA=</HashCode>
+      <FileName>Throwable.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ThrownEgg" Collapsed="true">
+    <Position X="63" Y="5.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAgAAAAQAAAAAAEAAAAAQAAAAAA=</HashCode>
+      <FileName>ThrownEgg.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ThrownEnderpearl" Collapsed="true">
+    <Position X="64" Y="7.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAQAAAAAAAAAAAAAAAAAAAEAAABAQAAAAAA=</HashCode>
+      <FileName>ThrownEnderpearl.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ThrownExpBottle" Collapsed="true">
+    <Position X="65.25" Y="5.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AEAAAAAAAAAAgBAAAAAAAAAAAAAAAAEAAABAQgAAAAA=</HashCode>
+      <FileName>ThrownExpBottle.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ThrownPotion" Collapsed="true">
+    <Position X="62" Y="7.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAIggBAQAAgAAgAAAAAAIgEAAABQQgEAAAA=</HashCode>
+      <FileName>ThrownPotion.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="WitherSkull" Collapsed="true">
+    <Position X="54.5" Y="5.25" Width="1.5" />
+    <InheritanceLine Type="Fireball" ManuallyRouted="true">
+      <Path>
+        <Point X="56.75" Y="4.191" />
+        <Point X="56.75" Y="4.616" />
+        <Point X="55.25" Y="4.616" />
+        <Point X="55.25" Y="5.25" />
+      </Path>
+    </InheritanceLine>
+    <TypeIdentifier>
+      <HashCode>AAAAAEAIAAAAEAAAAAAAAIAAQgEAAAEAAADARAAAIAA=</HashCode>
+      <FileName>WitherSkull.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="DelayedRelease" Collapsed="true">
+    <Position X="17.75" Y="3" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>BABAAAAAAAIAAAAwAEAAAAgAQAAAAAEAAACAAAAAAAA=</HashCode>
+      <FileName>DelayedRelease.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ExperienceOrb" Collapsed="true">
+    <Position X="9.25" Y="3" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AABAgMBABAIAQCAwABgJAAAAQAIAACEAAATCAAAUAAg=</HashCode>
+      <FileName>ExperienceOrb.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="HangingEntity" Collapsed="true">
+    <Position X="70.5" Y="3.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>QBBAAAAIACIAEgCQAAoAACIAwBEAQAEAAACIAAAoAAA=</HashCode>
+      <FileName>HangingEntity.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ItemFrame" Collapsed="true">
+    <Position X="70.5" Y="6" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>QAAIAIAEQAIAAEAQAAgAAAAASAAAQCFAAABAAAQggAA=</HashCode>
+      <FileName>ItemFrame.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="LeashFenceKnotEntity" Collapsed="true">
+    <Position X="68.5" Y="6" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>QAAIAAAEAAqAAAAQAAgAAAIAwAAAQCEAAABACAAgAAA=</HashCode>
+      <FileName>leashfenceknotentity.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Painting" Collapsed="true">
+    <Position X="72.5" Y="6" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>QAAAAAAAAAIAAEAQAAgAAQAgAAAAQAEAAABAAAAgAAA=</HashCode>
+      <FileName>Painting.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="LocalPlayer" Collapsed="true">
+    <Position X="28.5" Y="9.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>Mh4VJEJMQKcF4KAXixAFjgAkYcMfAR3KuAoZDsCBDmI=</HashCode>
+      <FileName>c:\users\james\documents\work2\storiespark\minecraft\minecraftconsoles-dev-branch-1.6.4\minecraft.client\localplayer.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ServerPlayer" Collapsed="true">
+    <Position X="30.75" Y="9.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>IjjhQugN4T4hcAiyCQEFsChhAgJRAAECaZ6AVIotPjI=</HashCode>
+      <FileName>c:\users\james\documents\work2\storiespark\minecraft\minecraftconsoles-dev-branch-1.6.4\minecraft.client\serverplayer.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="EntityHorse" Collapsed="true">
+    <Position X="40" Y="20.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>WZjVmhMVAOcMt1dRYs4aD5EBV/2vlC9CtyDQNqwvnNA=</HashCode>
+      <FileName>EntityHorse.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="TileEntity" Collapsed="true">
+    <Position X="44.25" Y="28.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>ANFRCAAAwIKBIBgEASEAAAggAAEAAWEAAgBxEQEABAg=</HashCode>
+      <FileName>TileEntity.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="BeaconTileEntity" Collapsed="true">
+    <Position X="32.25" Y="31.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AADIAAAGQICIiBQEBUEAIDAiCVEMAAEAAEheEAAAAAA=</HashCode>
+      <FileName>BeaconTileEntity.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="BrewingStandTileEntity" Collapsed="true">
+    <Position X="34.5" Y="31.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AADoIAAEQIGkIJDMAAgCAAACAwAEAgEAAABWGQAAQAA=</HashCode>
+      <FileName>BrewingStandTileEntity.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ChestTileEntity" Collapsed="true">
+    <Position X="36.75" Y="31.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AADIAAAERYCCABAkCQgAAAAGASAFAQECEIhXEAAABAg=</HashCode>
+      <FileName>ChestTileEntity.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CommandBlockEntity" Collapsed="true">
+    <Position X="38.75" Y="31.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAICAAAAABAgAAAAgARQEAANAIEBEAAAEBCA=</HashCode>
+      <FileName>CommandBlockEntity.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ComparatorTileEntity" Collapsed="true">
+    <Position X="40.75" Y="31.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAICAAAAAAAAAABAACAEAAAEAAABAAAAAAAA=</HashCode>
+      <FileName>ComparatorTileEntity.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="DaylightDetectorTileEntity" Collapsed="true">
+    <Position X="42.75" Y="31.25" Width="1.5" />
+    <InheritanceLine Type="TileEntity" ManuallyRouted="true">
+      <Path>
+        <Point X="45" Y="29.191" />
+        <Point X="45" Y="30.846" />
+        <Point X="43.5" Y="30.846" />
+        <Point X="43.5" Y="31.25" />
+      </Path>
+    </InheritanceLine>
+    <TypeIdentifier>
+      <HashCode>AABAAAAAAAABAAAAAAAAAAAAAAAAAAEAAABAAAAAAAA=</HashCode>
+      <FileName>DaylightDetectorTileEntity.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="DispenserTileEntity" Collapsed="true">
+    <Position X="44.75" Y="31.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AACIAAAEQICAABAEAAiAKAACAwAECAEAAAVWEAAAAAA=</HashCode>
+      <FileName>dispensertileentity.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="DropperTileEntity" Collapsed="true">
+    <Position X="42.75" Y="33.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAABEEAAAAAA=</HashCode>
+      <FileName>DropperTileEntity.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="EnchantmentTableEntity" Collapsed="true">
+    <Position X="47" Y="31.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AIFBAAAAAIGIAAAAISAQAAQCAAAEAAEAAARWEBAAAAA=</HashCode>
+      <FileName>EnchantmentTableEntity.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="EnderChestTileEntity" Collapsed="true">
+    <Position X="49" Y="31.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AABIAAAAAAACABIgAAAAAAACACAAAQEAAABQEAAABAA=</HashCode>
+      <FileName>EnderChestTileEntity.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="FurnaceTileEntity" Collapsed="true">
+    <Position X="51" Y="31.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AgDsAIEEQoCAABWMABgCoMASAQCEBAMAIARWEAABAAA=</HashCode>
+      <FileName>furnacetileentity.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="HopperTileEntity" Collapsed="true">
+    <Position X="53" Y="31.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AADJAgAkRICAADAEAgmAAQACAQAEAAEAQBBWEAyFJgA=</HashCode>
+      <FileName>HopperTileEntity.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="MobSpawnerTileEntity" Collapsed="true">
+    <Position X="30" Y="31.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AABABAAAAICABAAAAAAAAAAgAQAAAQEAAQBAEAAAAAA=</HashCode>
+      <FileName>mobspawnertileentity.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="MusicTileEntity" Collapsed="true">
+    <Position X="55" Y="31.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AQAAgAwAAICAAAAQAAAAAAAAAAAAAAEAAABAEAAAAAA=</HashCode>
+      <FileName>musictileentity.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SignTileEntity" Collapsed="true">
+    <Position X="27.75" Y="31.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>ACABYAAAQICAEgCgAAAAgAIwEGABEAEACBhQEQCAAAA=</HashCode>
+      <FileName>SignTileEntity.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SkullTileEntity" Collapsed="true">
+    <Position X="25.5" Y="31.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAIiAgICAAAAAgACAAAAiCCCAAAEAAABAFAAABCg=</HashCode>
+      <FileName>SkullTileEntity.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="TheEndPortalTileEntity" Collapsed="true">
+    <Position X="23.5" Y="31.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAABAEAAAAAA=</HashCode>
+      <FileName>TheEndPortalTileEntity.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

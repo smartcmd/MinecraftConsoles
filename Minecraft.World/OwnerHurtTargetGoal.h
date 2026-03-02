@@ -8,7 +8,8 @@ class OwnerHurtTargetGoal : public TargetGoal
 {
 private:
 	TamableAnimal *tameAnimal; // Owner of this goal
-	weak_ptr<Mob> ownerLastHurt;
+	weak_ptr<LivingEntity> ownerLastHurt;
+	int timestamp;
 
 public:
 	OwnerHurtTargetGoal(TamableAnimal *tameAnimal);

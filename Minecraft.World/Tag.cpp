@@ -79,6 +79,11 @@ Tag *Tag::setName(const wstring& name)
 
 Tag *Tag::readNamedTag(DataInput *dis)
 {
+	return readNamedTag(dis,0);
+}
+
+Tag *Tag::readNamedTag(DataInput *dis, int tagDepth)
+{
 	byte type = dis->readByte();
 	if (type == 0) return new EndTag();
 
@@ -99,7 +104,7 @@ Tag *Tag::readNamedTag(DataInput *dis)
 	//        byte[] bytes = new byte[length];
 	//        dis.readFully(bytes);
 
-	tag->load(dis);
+	tag->load(dis, tagDepth);
 	return tag;
 }
 

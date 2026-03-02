@@ -1,17 +1,16 @@
 #pragma once
-
 #include "MobRenderer.h"
 
 class LavaSlimeRenderer : public MobRenderer
 {
 private:
 	int modelVersion;
+	static ResourceLocation MAGMACUBE_LOCATION;
 
 public:
 	LavaSlimeRenderer();
-
-	virtual void render(shared_ptr<Entity> _mob, double x, double y, double z, float rot, float a);
+	virtual ResourceLocation *getTextureLocation(shared_ptr<Entity> mob);	
 
 protected:
-	virtual void scale(shared_ptr<Mob> _slime, float a);
+	virtual void scale(shared_ptr<LivingEntity> _slime, float a);
 };

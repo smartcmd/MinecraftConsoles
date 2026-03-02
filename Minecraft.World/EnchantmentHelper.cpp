@@ -88,6 +88,7 @@ void EnchantmentHelper::setEnchantments(unordered_map<int, int> *enchantments, s
 
 int EnchantmentHelper::getEnchantmentLevel(int enchantmentId, ItemInstanceArray inventory)
 {
+	if (inventory.data == NULL) return 0;
 	int bestLevel = 0;
 	//for (ItemInstance piece : inventory)
 	for(unsigned int i = 0; i < inventory.length; ++i)
@@ -147,12 +148,12 @@ EnchantmentHelper::GetDamageProtectionIteration EnchantmentHelper::getDamageProt
 * @param source
 * @return
 */
-int EnchantmentHelper::getDamageProtection(shared_ptr<Inventory> inventory, DamageSource *source)
+int EnchantmentHelper::getDamageProtection(ItemInstanceArray armor, DamageSource *source)
 {
 	getDamageProtectionIteration.sum = 0;
 	getDamageProtectionIteration.source = source;
 
-	runIterationOnInventory(getDamageProtectionIteration, inventory->armor);
+	runIterationOnInventory(getDamageProtectionIteration, armor);
 
 	if (getDamageProtectionIteration.sum > 25)
 	{
@@ -177,72 +178,68 @@ EnchantmentHelper::GetDamageBonusIteration EnchantmentHelper::getDamageBonusIter
 * @param target
 * @return
 */
-int EnchantmentHelper::getDamageBonus(shared_ptr<Inventory> inventory, shared_ptr<Mob> target)
+float EnchantmentHelper::getDamageBonus(shared_ptr<LivingEntity> source, shared_ptr<LivingEntity> target)
 {
 
 	getDamageBonusIteration.sum = 0;
 	getDamageBonusIteration.target = target;
 
-	runIterationOnItem(getDamageBonusIteration, inventory->getSelected());
+	runIterationOnItem(getDamageBonusIteration, source->getCarriedItem() );
 
-	if (getDamageBonusIteration.sum > 0)
-	{
-		return 1 + random.nextInt(getDamageBonusIteration.sum);
-	}
-	return 0;
+	return getDamageBonusIteration.sum;
 }
 
-int EnchantmentHelper::getKnockbackBonus(shared_ptr<Inventory> inventory, shared_ptr<Mob> target)
+int EnchantmentHelper::getKnockbackBonus(shared_ptr<LivingEntity> source, shared_ptr<LivingEntity> target)
 {
-	return getEnchantmentLevel(Enchantment::knockback->id, inventory->getSelected());
+	return getEnchantmentLevel(Enchantment::knockback->id, source->getCarriedItem() );
 }
 
-int EnchantmentHelper::getFireAspect(shared_ptr<Mob> source)
+int EnchantmentHelper::getFireAspect(shared_ptr<LivingEntity> source)
 {
 	return getEnchantmentLevel(Enchantment::fireAspect->id, source->getCarriedItem());
 }
 
-int EnchantmentHelper::getOxygenBonus(shared_ptr<Inventory> inventory)
+int EnchantmentHelper::getOxygenBonus(shared_ptr<LivingEntity> source)
 {
-	return getEnchantmentLevel(Enchantment::drownProtection->id, inventory->armor);
+	return getEnchantmentLevel(Enchantment::drownProtection->id, source->getEquipmentSlots() );
 }
 
-int EnchantmentHelper::getDiggingBonus(shared_ptr<Inventory> inventory)
+int EnchantmentHelper::getDiggingBonus(shared_ptr<LivingEntity> source)
 {
-	return getEnchantmentLevel(Enchantment::diggingBonus->id, inventory->getSelected());
+	return getEnchantmentLevel(Enchantment::diggingBonus->id, source->getCarriedItem() );
 }
 
-int EnchantmentHelper::getDigDurability(shared_ptr<Inventory> inventory)
+int EnchantmentHelper::getDigDurability(shared_ptr<LivingEntity> source)
 {
-	return getEnchantmentLevel(Enchantment::digDurability->id, inventory->getSelected());
+	return getEnchantmentLevel(Enchantment::digDurability->id, source->getCarriedItem() );
 }
 
-bool EnchantmentHelper::hasSilkTouch(shared_ptr<Inventory> inventory)
+bool EnchantmentHelper::hasSilkTouch(shared_ptr<LivingEntity> source)
 {
-	return getEnchantmentLevel(Enchantment::untouching->id, inventory->getSelected()) > 0;
+	return getEnchantmentLevel(Enchantment::untouching->id, source->getCarriedItem() ) > 0;
 }
 
-int EnchantmentHelper::getDiggingLootBonus(shared_ptr<Inventory> inventory)
+int EnchantmentHelper::getDiggingLootBonus(shared_ptr<LivingEntity> source)
 {
-	return getEnchantmentLevel(Enchantment::resourceBonus->id, inventory->getSelected());
+	return getEnchantmentLevel(Enchantment::resourceBonus->id, source->getCarriedItem() );
 }
 
-int EnchantmentHelper::getKillingLootBonus(shared_ptr<Inventory> inventory)
+int EnchantmentHelper::getKillingLootBonus(shared_ptr<LivingEntity> source)
 {
-	return getEnchantmentLevel(Enchantment::lootBonus->id, inventory->getSelected());
+	return getEnchantmentLevel(Enchantment::lootBonus->id, source->getCarriedItem() );
 }
 
-bool EnchantmentHelper::hasWaterWorkerBonus(shared_ptr<Inventory> inventory)
+bool EnchantmentHelper::hasWaterWorkerBonus(shared_ptr<LivingEntity> source)
 {
-	return getEnchantmentLevel(Enchantment::waterWorker->id, inventory->armor) > 0;
+	return getEnchantmentLevel(Enchantment::waterWorker->id, source->getEquipmentSlots() ) > 0;
 }
 
-int EnchantmentHelper::getArmorThorns(shared_ptr<Mob> source)
+int EnchantmentHelper::getArmorThorns(shared_ptr<LivingEntity> source)
 {
 	return getEnchantmentLevel(Enchantment::thorns->id, source->getEquipmentSlots());
 }
 
-shared_ptr<ItemInstance> EnchantmentHelper::getRandomItemWith(Enchantment *enchantment, shared_ptr<Mob> source)
+shared_ptr<ItemInstance> EnchantmentHelper::getRandomItemWith(Enchantment *enchantment, shared_ptr<LivingEntity> source)
 {
 	ItemInstanceArray items = source->getEquipmentSlots();
 	for(unsigned int i = 0; i < items.length; ++i)

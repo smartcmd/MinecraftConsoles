@@ -429,6 +429,27 @@ When loading or creating a world, you can press the "More Options" button to ent
 	{*T2*}Host Privileges{*ETW*}{*B*}
 	When enabled, the host can toggle their ability to fly, disable exhaustion, and make themselves invisible from the in-game menu. {*DISABLES_ACHIEVEMENTS*}{*B*}{*B*}
 
+	{*T2*}Daylight Cycle{*ETW*}{*B*}
+	When disabled, the time of day will not change.{*B*}{*B*}
+
+	{*T2*}Keep Inventory{*ETW*}{*B*}
+	When enabled, players will keep their inventory when they die.{*B*}{*B*}
+
+	{*T2*}Mob Spawning{*ETW*}{*B*}
+	When disabled, mobs will not spawn naturally.{*B*}{*B*}
+
+	{*T2*}Mob Griefing{*ETW*}{*B*}
+	When disabled, prevents monsters and animals from changing blocks (for example, Creeper explosions won't destroy blocks and Sheep won't remove Grass) or picking up items.{*B*}{*B*}
+
+	{*T2*}Mob Loot{*ETW*}{*B*}
+	When disabled, monsters and animals will not drop loot (for example, Creepers won't drop gunpowder).{*B*}{*B*}
+
+	{*T2*}Tile Drops{*ETW*}{*B*}
+	When disabled, blocks will not drop items when destroyed (for example, Stone blocks won't drop Cobblestone).{*B*}{*B*}
+
+	{*T2*}Natural Regeneration{*ETW*}{*B*}
+	When disabled, players will not regenerate health naturally.{*B*}{*B*}
+
 {*T1*}World Generation Options{*ETW*}{*B*}
 When creating a new world there are some additional options.{*B*}{*B*}
 
@@ -472,20 +493,20 @@ To modify the privileges for a player, select their name and press{*CONTROLLER_V
 	When this option is enabled, the player is able to change privileges for other players (except the host) if "Trust Players" is turned off, kick players and they can enable and disable fire spreading and TNT exploding.{*B*}{*B*}
 	
 	{*T2*}Kick Player{*ETW*}{*B*}
-	For players that are not on the same {*PLATFORM_NAME*} console as the host player, selecting this option will kick the player from the game and any other players on their {*PLATFORM_NAME*} console. This player will not be able to rejoin the game until it is restarted.{*B*}{*B*}
+	{*KICK_PLAYER_DESCRIPTION*}{*B*}{*B*}
 
 {*T1*}Host Player Options{*ETW*}{*B*}
 If "Host Privileges" is enabled the host player can modify some privileges for themselves. To modify the privileges for a player, select their name and press{*CONTROLLER_VK_A*} to bring up the player privileges menu where you can use the following options.{*B*}{*B*}
 
 	{*T2*}Can Fly{*ETW*}{*B*}
 	When this option is enabled, the player is able to fly. This option is only relevant to Survival mode, as flying is enabled for all players in Creative mode.{*B*}{*B*}
-	
+
 	{*T2*}Disable Exhaustion{*ETW*}{*B*}
 	This option only affects Survival mode. When enabled, physical activities (walking/sprinting/jumping etc.) do not decrease the food bar. However, if the player becomes injured, the food bar will slowly decrease while the player is healing.{*B*}{*B*}
-	
+
 	{*T2*}Invisible{*ETW*}{*B*}
 	When this option is enabled, the player is not visible to other players and is invulnerable.{*B*}{*B*}
-  
+
 	{*T2*}Can Teleport{*ETW*}{*B*}
 	This allows the player to move players or themselves to other players in the world.
 </value>
@@ -583,7 +604,7 @@ If "Host Privileges" is enabled the host player can modify some privileges for t
 		<value>{*T3*}HOW TO PLAY : THE END{*ETW*}{*B*}{*B*}
 The End is another dimension in the game, which is reached through an active End Portal. The End Portal can be found in a Stronghold, which is deep underground in the Overworld.{*B*}
 To activate the End Portal, you'll need to put an Eye of Ender into any End Portal Frame without one.{*B*}
-Once the portal is active, jump into it to go to The End.{*B*}{*B*}
+Once the portal is active, jump in to it to go to The End.{*B*}{*B*}
 In The End you will meet the Ender Dragon, a fierce and powerful enemy, along with many Enderman, so you will have to be well prepared for the battle before going there!{*B*}{*B*}
 You'll find that there are Ender Crystals on top of eight Obsidian spikes that the Ender Dragon uses to heal itself, 
 so the first step in the battle is to destroy each of these.{*B*}
@@ -605,65 +626,116 @@ so they can easily join you.
 	</data>	
 
 	<data name="IDS_HOW_TO_PLAY_WHATSNEW">
-		<value>
-{*T3*}{*TITLE_UPDATE_NAME*}{*ETW*}{*B*}{*B*}
-{*T3*}Changes and Additions{*ETW*}{*B*}{*B*}
-- Added new items - Emerald, Emerald Ore, Block of Emerald, Ender Chest, Tripwire Hook, Enchanted Golden Apple, Anvil, Flower Pot, Cobblestone Walls, Mossy Cobblestone Walls, Wither Painting, Potato, Baked Potato, Poisonous Potato, Carrot, Golden Carrot, Carrot on a Stick, 
-Pumpkin Pie, Night Vision Potion, Invisibility Potion, Nether Quartz, Nether Quartz Ore, Block of Quartz, Quartz Slab, Quartz Stair, Chiseled Quartz Block, Pillar Quartz Block, Enchanted Book, Carpet.{*B*}
-- Added new recipes for Smooth Sandstone and Chiselled Sandstone.{*B*}
-- Added new Mobs - Zombie Villagers.{*B*}
-- Added new terrain generation features - Desert Temples, Desert Villages, Jungle Temples.{*B*}
-- Added Trading with villagers.{*B*}
-- Added Anvil interface.{*B*}
-- Can dye leather armor.{*B*}
-- Can dye wolf collars.{*B*}
-- Can control riding a pig with a Carrot on a Stick.{*B*}
-- Updated Bonus Chest content with more items.{*B*}
-- Changed placement of half blocks and other blocks on half blocks.{*B*}
-- Changed placement of upside down stairs and slabs.{*B*}
-- Added different villager professions.{*B*}
-- Villagers spawned from a spawn egg will have a random profession.{*B*}
-- Added sideways log placement.{*B*}
-- Furnaces can use wooden tools as a fuel.{*B*}
-- Ice and Glass panes can be collected with silk touch enchanted tools.{*B*}
-- Wooden Buttons and Wooden Pressure Plates can be activated with Arrows.{*B*}
-- Nether mobs can spawn in the Overworld from Portals.{*B*}
-- Creepers and Spiders are aggressive towards the last player that hit them.{*B*}
-- Mobs in Creative mode become neutral again after a short period.{*B*}
-- Remove knockback when drowning.{*B*}
-- Doors being broken by zombies show damage.{*B*}
-- Ice melts in the nether.{*B*}
-- Cauldrons fill up when out in the rain.{*B*}
-- Pistons take twice as long to update.{*B*}
-- Pig drops Saddle when killed (if has one).{*B*}
-- Sky color in The End changed.{*B*}
-- String can be placed (for Tripwires).{*B*}
-- Rain drips through leaves.{*B*}
-- Levers can be placed on the bottom of blocks.{*B*}
-- TNT does variable damage depending on difficulty setting.{*B*}
-- Book recipe changed.{*B*}
-- Boats break Lilypads, instead of Lilypads breaking Boats.{*B*}
-- Pigs drop more Porkchops.{*B*}
-- Slimes spawn less in Superflat worlds.{*B*}
-- Creeper damage variable based on difficulty setting, more knockback.{*B*}
-- Fixed Endermen not opening their jaws.{*B*}
-- Added teleporting of players (using the {*BACK_BUTTON*} menu in-game).{*B*}
-- Added new Host Options for flying, invisibility and invulnerability for remote players.{*B*}
-- Added new tutorials to the Tutorial World for new items and features.{*B*}
-- Updated the positions of the Music Disc Chests in the Tutorial World.{*B*}
+		<value>{*T3*}Changes and Additions{*ETW*}{*B*}{*B*}
+- Added new items - Hardened Clay, Stained Clay, Block of Coal, Hay Bale, Activator Rail, Block of Redstone, Daylight Sensor, Dropper, Hopper, Minecart with Hopper, Minecart with TNT, Redstone Comparator, Weighted Pressure Plate, Beacon, Trapped Chest, Firework Rocket, Firework Star, Nether Star, Lead, Horse Armor, Name Tag, Horse Spawn Egg{*B*}
+- Added new Mobs - Wither, Wither Skeletons, Witches, Bats, Horses, Donkeys and Mules{*B*}
+- Added new terrain generation features - Witch Huts.{*B*}
+- Added Beacon interface.{*B*}
+- Added Horse interface.{*B*}
+- Added Hopper interface.{*B*}
+- Added Fireworks - Fireworks interface is accessible from the Crafting Table when you have the ingredients to craft a Firework Star or Firework Rocket.{*B*}
+- Added 'Adventure Mode' - You can only break blocks with the correct tools.{*B*}
+- Added lots of new sounds.{*B*}
+- Mobs, items and projectiles can now pass through portals.{*B*}
+- Repeaters can now be locked by powering their sides with another Repeater.{*B*}
+- Zombies and Skeletons can now spawn with different weapons and armor.{*B*}
+- New death messages.{*B*}
+- Name mobs with a Name Tag, and rename containers to change the title when the menu is open.{*B*}
+- Bonemeal no longer instantly grows everything to full size, and instead randomly grows in stages.{*B*}
+- A Redstone signal describing the contents of Chests, Brewing Stands, Dispensers and Jukeboxes can be detected by placing a Redstone Comparator directly against them.{*B*}
+- Dispensers can face in any direction.{*B*}
+- Eating a Golden Apple gives the player extra "absorption" health  for a short period.{*B*}
+- The longer you remain in an area the harder the monsters that spawn in that area will be.{*B*}
 </value>
 	</data>	
 
 	<data name="IDS_TITLEUPDATE">
 		<value>{*ETB*}Welcome back! You may not have noticed but your Minecraft has just been updated.{*B*}{*B*}
-There are lots of new features for you and friends to play with so here’s just a few highlights. Have a read and then go and have fun!{*B*}{*B*} 
-{*T1*}New Items{*ETB*} - Emerald, Emerald Ore, Block of Emerald, Ender Chest, Tripwire Hook, Enchanted Golden Apple, Anvil, Flower Pot, Cobblestone Walls, Mossy Cobblestone Walls, Wither Painting, Potato, Baked Potato, Poisonous Potato, Carrot, Golden Carrot, Carrot on a Stick, 
-Pumpkin Pie, Night Vision Potion, Invisibility Potion, Nether Quartz, Nether Quartz Ore, Block of Quartz, Quartz Slab, Quartz Stair, Chiseled Quartz Block, Pillar Quartz Block, Enchanted Book, Carpet.{*B*}{*B*}
- {*T1*}New Mobs{*ETB*} - Zombie Villagers.{*B*}{*B*}
-{*T1*}New Features{*ETB*} -  Trade with villagers, repair or enchant weapons and tools with an Anvil, store items in an Ender Chest, control a pig while riding it using a Carrot on a Stick!{*B*}{*B*}
-{*T1*}New Mini-Tutorials{*ETB*} – Learn how to use the new features in the Tutorial World!{*B*}{*B*}
-{*T1*}New 'Easter Eggs'{*ETB*} – We've moved all the secret Music Discs in the Tutorial World. See if you can find them again!{*B*}{*B*}
-</value>
+There are lots of new features for you and friends to play with so here’s just a few highlights. Have a read and then go and have fun!{*B*}{*B*}
+{*T1*}New Items{*ETB*} - Hardened Clay, Stained Clay, Block of Coal, Hay Bale, Activator Rail, Block of Redstone, Daylight Sensor, Dropper, Hopper, Minecart with Hopper, Minecart with TNT, Redstone Comparator, Weighted Pressure Plate, Beacon, Trapped Chest, Firework Rocket, Firework Star, Nether Star, Lead, Horse Armor, Name Tag, Horse Spawn Egg{*B*}{*B*}
+{*T1*}New Mobs{*ETB*} - Wither, Wither Skeletons, Witches, Bats, Horses, Donkeys and Mules{*B*}{*B*}
+{*T1*}New Features{*ETB*} -  Tame and ride a horse, craft fireworks and put on a show, name animals and monsters with a Name Tag, create more advanced Redstone circuits, and new Host Options to help control what guests to your world can do!{*B*}{*B*}
+{*T1*}New Tutorial World{*ETB*} – Learn how to use the old and new features in the Tutorial World. See if you can find all the secret Music Discs hidden in the world!{*B*}{*B*}
+    </value>
+	</data>	
+
+	<data name="IDS_HOW_TO_PLAY_MENU_HORSES">
+		<value>Horses</value>
+	</data>	
+
+	<data name="IDS_HOW_TO_PLAY_HORSES">
+		<value>{*T3*}HOW TO PLAY : HORSES{*ETW*}{*B*}{*B*}
+Horses and Donkeys are found mainly in open plains. Mules are the offspring of a Donkey and a Horse, but are infertile themselves.{*B*}
+All adult Horses, Donkeys and Mules can be ridden. However only Horses can be armored, and only Mules and Donkeys may be equipped with saddlebags for transporting items.{*B*}{*B*}
+Horses, Donkeys and Mules must be tamed before they can be used. A horse is tamed by attempting to ride it, and managing to stay on the horse while it attempts to throw the rider off.{*B*}
+When Love Hearts appear around the horse,  it is tame, and will no longer attempt to throw the player off. To steer a horse, the player must equip the horse with a Saddle.{*B*}{*B*}
+Saddles can be bought from villagers or found inside Chests hidden in the world.{*B*}
+Tame Donkeys and Mules can be given saddlebags by attaching a Chest. These saddlebags can then be accessed whilst riding or sneaking.{*B*}{*B*}
+Horses and Donkeys (but not Mules) can be bred like other animals using Golden Apples or Golden Carrots.{*B*}
+Foals will grow into adult horses over time, although feeding them Wheat or Hay will speed this up.{*B*}
+	</value>
+	</data>	
+
+	<data name="IDS_HOW_TO_PLAY_MENU_BEACONS">
+		<value>Beacons</value>
+	</data>	
+
+	<data name="IDS_HOW_TO_PLAY_BEACONS">
+		<value>{*T3*}HOW TO PLAY : BEACONS{*ETW*}{*B*}{*B*}
+Active Beacons project a bright beam of light into the sky and grant powers to nearby players.{*B*}
+They are crafted with Glass, Obsidian and Nether Stars, which can be obtained by defeating the Wither.{*B*}{*B*}
+Beacons must be placed so that they are in sunlight during the day. Beacons must be placed on Pyramids of Iron, Gold, Emerald or Diamond.{*B*}
+The material the Beacon is placed on has no effect on the power of the Beacon.{*B*}{*B*}
+In the Beacon menu you can select one primary power for your Beacon. The more tiers your pyramid has the more powers you will have to choose from.{*B*}
+A Beacon on a pyramid with at least four tiers also gives the option of either the Regeneration secondary power or a stronger primary power.{*B*}{*B*}
+To set the powers of your Beacon you must sacrifice an Emerald, Diamond, Gold or Iron Ingot in the payment slot.{*B*}
+Once set, the powers will emanate from the Beacon indefinitely.{*B*}
+	</value>
+	</data>	
+
+	<data name="IDS_HOW_TO_PLAY_MENU_FIREWORKS">
+		<value>Fireworks</value>
+	</data>	
+
+	<data name="IDS_HOW_TO_PLAY_FIREWORKS">
+		<value>{*T3*}HOW TO PLAY : FIREWORKS{*ETW*}{*B*}{*B*}
+Fireworks are decorative items that can be launched by hand or from Dispensers. They are crafted using Paper, Gunpowder and optionally a number of Firework Stars.{*B*}
+The colors, fade, shape, size, and effects (such as trails and twinkle) of Firework Stars can be customized by including additional ingredients when crafting.{*B*}{*B*}
+To craft a Firework place Gunpowder and Paper in the 3x3 crafting grid that is shown above your inventory.{*B*}
+You can optionally place multiple Firework Stars in the crafting grid to add them to the Firework.{*B*}
+Filling more slots in the crafting grid with Gunpowder will increase the height at which all the Firework Stars will explode.{*B*}{*B*}
+You can then take the crafted Firework out of the output slot.{*B*}{*B*}
+Firework Stars can be crafted by placing Gunpowder and Dye into the crafting grid.{*B*}
+ - The Dye will set the color of the explosion of the Firework Star.{*B*}
+ - The shape of the Firework Star is set by adding either a Fire Charge, Gold Nugget, Feather or Mob Head.{*B*}
+ - A trail or a twinkle can be added using Diamonds or Glowstone Dust.{*B*}{*B*}
+After a Firework Star has been crafted, you can set the fade color of the Firework Star by crafting it with Dye.
+	</value>
+	</data>	
+
+	<data name="IDS_HOW_TO_PLAY_MENU_HOPPERS">
+		<value>Hoppers</value>
+	</data>	
+
+	<data name="IDS_HOW_TO_PLAY_HOPPERS">
+		<value>{*T3*}HOW TO PLAY : HOPPERS{*ETW*}{*B*}{*B*}
+Hoppers are used to insert or remove items from containers, and to automatically pick up items thrown into them.{*B*}
+They can affect Brewing Stands, Chests, Dispensers, Droppers, Minecarts with Chests, Minecarts with Hoppers, as well as other Hoppers.{*B*}{*B*}
+Hoppers will continuously attempt to suck items out of a suitable container placed above them. They will also attempt to insert stored items into an output container.{*B*}
+If a Hopper is powered by Redstone it will become inactive and stop both sucking and inserting items.{*B*}{*B*}
+A Hopper points in the direction it tries to output items. To make a Hopper point to a particular block, place the Hopper against that block whilst sneaking.{*B*}
+	</value>
+	</data>	
+
+	<data name="IDS_HOW_TO_PLAY_MENU_DROPPERS">
+		<value>Droppers</value>
+	</data>	
+
+	<data name="IDS_HOW_TO_PLAY_DROPPERS">
+		<value>{*T3*}HOW TO PLAY : DROPPERS{*ETW*}{*B*}{*B*}
+When powered by Redstone, Droppers will drop a single random item contained within them onto the ground. Use {*CONTROLLER_ACTION_USE*} to open the Dropper and then you can load the Dropper with items from your inventory.{*B*}
+If the Dropper is facing a Chest or another type of Container, the item will be placed into that instead. Long chains of Droppers can be constructed to transport items over a distance, but for this to work they will have to be alternately powered on and off.
+	</value>
 	</data>	
 
 	<data name="IDS_DESC_SWORD">
@@ -692,100 +764,103 @@ Pumpkin Pie, Night Vision Potion, Invisibility Potion, Nether Quartz, Nether Qua
 
 	<data name="IDS_DESC_DOOR_IRON">
 		<value>Iron doors can only be opened by Redstone, buttons or switches.</value>
-	</data>
+	</data>	
 
-  <data name="IDS_DESC_HELMET">
-    <value>NOT USED</value>
-  </data>
-  <data name="IDS_DESC_CHESTPLATE">
-    <value>NOT USED</value>
-  </data>
-  <data name="IDS_DESC_LEGGINGS">
-    <value>NOT USED</value>
-  </data>
-  <data name="IDS_DESC_BOOTS">
-    <value>NOT USED</value>
-  </data>
-  
-  <data name="IDS_DESC_HELMET_LEATHER">
-    <value>Gives the user 1 Armor when worn.</value>
-  </data>
+	<data name="IDS_DESC_HELMET">
+		<value>NOT USED</value>
+	</data>	
 
-  <data name="IDS_DESC_CHESTPLATE_LEATHER">
-    <value>Gives the user 3 Armor when worn.</value>
-  </data>
+	<data name="IDS_DESC_CHESTPLATE">
+		<value>NOT USED</value>
+	</data>	
 
-  <data name="IDS_DESC_LEGGINGS_LEATHER">
-    <value>Gives the user 2 Armor when worn.</value>
-  </data>
+	<data name="IDS_DESC_LEGGINGS">
+		<value>NOT USED</value>
+	</data>	
 
-  <data name="IDS_DESC_BOOTS_LEATHER">
-    <value>Gives the user 1 Armor when worn.</value>
-  </data>
+	<data name="IDS_DESC_BOOTS">
+		<value>NOT USED</value>
+	</data>	
 
-  <data name="IDS_DESC_HELMET_CHAIN">
-    <value>Gives the user 2 Armor when worn.</value>
-  </data>
+	<data name="IDS_DESC_HELMET_LEATHER">
+		<value>Gives the user 1 Armor when worn.</value>
+	</data>	
 
-  <data name="IDS_DESC_CHESTPLATE_CHAIN">
-    <value>Gives the user 5 Armor when worn.</value>
-  </data>
+	<data name="IDS_DESC_CHESTPLATE_LEATHER">
+		<value>Gives the user 3 Armor when worn.</value>
+	</data>	
 
-  <data name="IDS_DESC_LEGGINGS_CHAIN">
-    <value>Gives the user 4 Armor when worn.</value>
-  </data>
+	<data name="IDS_DESC_LEGGINGS_LEATHER">
+		<value>Gives the user 2 Armor when worn.</value>
+	</data>	
 
-  <data name="IDS_DESC_BOOTS_CHAIN">
-    <value>Gives the user 1 Armor when worn.</value>
-  </data>
+	<data name="IDS_DESC_BOOTS_LEATHER">
+		<value>Gives the user 1 Armor when worn.</value>
+	</data>	
 
-  <data name="IDS_DESC_HELMET_IRON">
-    <value>Gives the user 2 Armor when worn.</value>
-  </data>
+	<data name="IDS_DESC_HELMET_CHAIN">
+		<value>Gives the user 2 Armor when worn.</value>
+	</data>	
 
-  <data name="IDS_DESC_CHESTPLATE_IRON">
-    <value>Gives the user 6 Armor when worn.</value>
-  </data>
+	<data name="IDS_DESC_CHESTPLATE_CHAIN">
+		<value>Gives the user 5 Armor when worn.</value>
+	</data>	
 
-  <data name="IDS_DESC_LEGGINGS_IRON">
-    <value>Gives the user 5 Armor when worn.</value>
-  </data>
+	<data name="IDS_DESC_LEGGINGS_CHAIN">
+		<value>Gives the user 4 Armor when worn.</value>
+	</data>	
 
-  <data name="IDS_DESC_BOOTS_IRON">
-    <value>Gives the user 2 Armor when worn.</value>
-  </data>
+	<data name="IDS_DESC_BOOTS_CHAIN">
+		<value>Gives the user 1 Armor when worn.</value>
+	</data>	
 
-  <data name="IDS_DESC_HELMET_GOLD">
-    <value>Gives the user 2 Armor when worn.</value>
-  </data>
+	<data name="IDS_DESC_HELMET_IRON">
+		<value>Gives the user 2 Armor when worn.</value>
+	</data>	
 
-  <data name="IDS_DESC_CHESTPLATE_GOLD">
-    <value>Gives the user 5 Armor when worn.</value>
-  </data>
+	<data name="IDS_DESC_CHESTPLATE_IRON">
+		<value>Gives the user 6 Armor when worn.</value>
+	</data>	
 
-  <data name="IDS_DESC_LEGGINGS_GOLD">
-    <value>Gives the user 3 Armor when worn.</value>
-  </data>
+	<data name="IDS_DESC_LEGGINGS_IRON">
+		<value>Gives the user 5 Armor when worn.</value>
+	</data>	
 
-  <data name="IDS_DESC_BOOTS_GOLD">
-    <value>Gives the user 1 Armor when worn.</value>
-  </data>
+	<data name="IDS_DESC_BOOTS_IRON">
+		<value>Gives the user 2 Armor when worn.</value>
+	</data>	
 
-  <data name="IDS_DESC_HELMET_DIAMOND">
-    <value>Gives the user 3 Armor when worn.</value>
-  </data>
+	<data name="IDS_DESC_HELMET_GOLD">
+		<value>Gives the user 2 Armor when worn.</value>
+	</data>	
 
-  <data name="IDS_DESC_CHESTPLATE_DIAMOND">
-    <value>Gives the user 8 Armor when worn.</value>
-  </data>
+	<data name="IDS_DESC_CHESTPLATE_GOLD">
+		<value>Gives the user 5 Armor when worn.</value>
+	</data>	
 
-  <data name="IDS_DESC_LEGGINGS_DIAMOND">
-    <value>Gives the user 6 Armor when worn.</value>
-  </data>
+	<data name="IDS_DESC_LEGGINGS_GOLD">
+		<value>Gives the user 3 Armor when worn.</value>
+	</data>	
 
-  <data name="IDS_DESC_BOOTS_DIAMOND">
-    <value>Gives the user 3 Armor when worn.</value>
-  </data>
+	<data name="IDS_DESC_BOOTS_GOLD">
+		<value>Gives the user 1 Armor when worn.</value>
+	</data>	
+
+	<data name="IDS_DESC_HELMET_DIAMOND">
+		<value>Gives the user 3 Armor when worn.</value>
+	</data>	
+
+	<data name="IDS_DESC_CHESTPLATE_DIAMOND">
+		<value>Gives the user 8 Armor when worn.</value>
+	</data>	
+
+	<data name="IDS_DESC_LEGGINGS_DIAMOND">
+		<value>Gives the user 6 Armor when worn.</value>
+	</data>	
+
+	<data name="IDS_DESC_BOOTS_DIAMOND">
+		<value>Gives the user 3 Armor when worn.</value>
+	</data>	
 
 	<data name="IDS_DESC_INGOT">
 		<value>A shiny ingot which can be used to craft tools made from this material. Created by smelting ore in a furnace.</value>
@@ -912,12 +987,64 @@ The colors of the bed are always the same, regardless of the colors of wool used
 		<value>Will create an image of an area explored while held. This can be used for path-finding.</value>
 	</data>	
 
+	<data name="IDS_DESC_MAP_EMPTY">
+		<value>When used becomes a map of the part of the world that you are in, and gets filled in as you explore.</value>
+	</data>	
+
 	<data name="IDS_DESC_BOW">
 		<value>Allows for ranged attacks by using arrows.</value>
 	</data>	
 
 	<data name="IDS_DESC_ARROW">
 		<value>Used as ammunition for bows.</value>
+	</data>	
+
+	<data name="IDS_DESC_NETHER_STAR">
+		<value>Dropped by the Wither, used in crafting Beacons.</value>
+	</data>	
+
+	<data name="IDS_DESC_FIREWORKS">
+		<value>When activated, create colorful explosions. The color, effect, shape and fade are determined by the Firework Star used when the Firework is created.</value>
+	</data>	
+
+	<data name="IDS_DESC_FIREWORKS_CHARGE">
+		<value>Used to determine the color, effect and shape of a Firework.</value>
+	</data>	
+
+	<data name="IDS_DESC_COMPARATOR">
+		<value>Used in Redstone circuits to maintain, compare, or subtract signal strength, or to measure certain block states.</value>
+	</data>	
+
+	<data name="IDS_DESC_MINECART_TNT">
+		<value>Is a type of Minecart that acts as a moving TNT block.</value>
+	</data>	
+
+	<data name="IDS_DESC_DAYLIGHT_DETECTOR">
+		<value>Is a block that outputs a Redstone signal based on sunlight (or lack of sunlight).</value>
+	</data>	
+
+	<data name="IDS_DESC_MINECART_HOPPER">
+		<value>Is a special type of Minecart that functions similarly to a Hopper. It will collect items lying on tracks and from containers above it.</value>
+	</data>	
+
+	<data name="IDS_DESC_IRON_HORSE_ARMOR">
+		<value>A special type of Armor that can be equipped to a horse. Provides 5 Armor.</value>
+	</data>	
+
+	<data name="IDS_DESC_GOLD_HORSE_ARMOR">
+		<value>A special type of Armor that can be equipped to a horse. Provides 7 Armor.</value>
+	</data>	
+
+	<data name="IDS_DESC_DIAMOND_HORSE_ARMOR">
+		<value>A special type of Armor that can be equipped to a horse. Provides 11 Armor.</value>
+	</data>	
+
+	<data name="IDS_DESC_LEAD">
+		<value>Used to leash mobs to the player or Fence posts.</value>
+	</data>	
+
+	<data name="IDS_DESC_NAME_TAG">
+		<value>Used to name mobs in the world.</value>
 	</data>	
 
 	<data name="IDS_DESC_BREAD">
@@ -1022,7 +1149,7 @@ Can also be used for low-level lighting.</value>
 	</data>	
 
 	<data name="IDS_DESC_DETECTORRAIL">
-		<value>Functions like a Pressure Plate (sends a Redstone signal when powered) but can only be activated by a minecart.</value>
+		<value>Functions like a Pressure Plate (sends a Redstone signal when powered) but can only be activated by a Minecart.</value>
 	</data>	
 
 	<data name="IDS_DESC_MINECART">
@@ -1566,6 +1693,66 @@ Can also be used for low-level lighting.</value>
 		<value>Mob Heads can be placed as a decoration, or worn as a mask in the helmet slot.</value>
 	</data>	
 
+	<data name="IDS_DESC_COMMAND_BLOCK">
+		<value>Used to execute commands.</value>
+	</data>	
+
+	<data name="IDS_DESC_BEACON">
+		<value>Projects a beam of light into the sky and can provide Status Effects to nearby players.</value>
+	</data>	
+
+	<data name="IDS_DESC_CHEST_TRAP">
+		<value>Stores blocks and items inside. Place two chest side by side to create a larger chest with double capacity. The trapped chest also creates a Redstone charge when opened.</value>
+	</data>	
+
+	<data name="IDS_DESC_WEIGHTED_PLATE_LIGHT">
+		<value>Provides a Redstone charge. The charge will be stronger if more items are on the plate.</value>
+	</data>	
+
+	<data name="IDS_DESC_WEIGHTED_PLATE_HEAVY">
+		<value>Provides a Redstone charge. The charge will be stronger if more items are on the plate. Requires more weight than the light plate.</value>
+	</data>	
+
+	<data name="IDS_DESC_REDSTONE_BLOCK">
+		<value>Used as a redstone power source. Can be crafted back into Redstone.</value>
+	</data>	
+
+	<data name="IDS_DESC_HOPPER">
+		<value>Used to catch items or to transfer items into and out of containers.</value>
+	</data>	
+
+	<data name="IDS_DESC_ACTIVATOR_RAIL">
+		<value>A type of rail that can enable or disable Minecarts with Hoppers and trigger Minecarts with TNT.</value>
+	</data>	
+
+	<data name="IDS_DESC_DROPPER">
+		<value>Used to hold and drop items, or push items into another container, when given a Redstone charge.</value>
+	</data>	
+
+	<data name="IDS_DESC_STAINED_CLAY">
+		<value>Colorful blocks crafted by dyeing Hardened clay.</value>
+	</data>	
+
+	<data name="IDS_DESC_HAY">
+		<value>Can be fed to Horses, Donkeys or Mules to heal up to 10 Hearts. Speeds up the growth of foals.</value>
+	</data>	
+
+	<data name="IDS_DESC_HARDENED_CLAY">
+		<value>Created by smelting Clay in a furnace.</value>
+	</data>	
+
+	<data name="IDS_DESC_STAINED_GLASS">
+		<value>Crafted from glass and a dye.</value>
+	</data>	
+
+	<data name="IDS_DESC_STAINED_GLASS_PANE">
+		<value>Crafted from Stained Glass</value>
+	</data>	
+
+	<data name="IDS_DESC_COAL_BLOCK">
+		<value>A compact way of storing Coal. Can be used as fuel in a Furnace.</value>
+	</data>	
+
 	<data name="IDS_SQUID">
 		<value>Squid</value>
 	</data>	
@@ -1752,6 +1939,62 @@ Can also be used for low-level lighting.</value>
 
 	<data name="IDS_DESC_IRONGOLEM">
 		<value>Appear in Villages to protect them, and can be created using Iron Blocks and Pumpkins.</value>
+	</data>	
+
+	<data name="IDS_BAT">
+		<value>Bat</value>
+	</data>	
+
+	<data name="IDS_DESC_BAT">
+		<value>These flying creatures are found in caverns or other large enclosed spaces.</value>
+	</data>	
+
+	<data name="IDS_WITCH">
+		<value>Witch</value>
+	</data>	
+
+	<data name="IDS_DESC_WITCH">
+		<value>These enemies can be found in swamps and attack you by throwing Potions. They drop Potions when killed.</value>
+	</data>	
+
+	<data name="IDS_HORSE">
+		<value>Horse</value>
+	</data>	
+
+	<data name="IDS_DESC_HORSE">
+		<value>These animals can be tamed and can then be ridden.</value>
+	</data>	
+
+	<data name="IDS_DONKEY">
+		<value>Donkey</value>
+	</data>	
+
+	<data name="IDS_DESC_DONKEY">
+		<value>These animals can be tamed and can then be ridden. They can have a chest attached.</value>
+	</data>	
+
+	<data name="IDS_MULE">
+		<value>Mule</value>
+	</data>	
+
+	<data name="IDS_DESC_MULE">
+		<value>Born when a Horse and a Donkey breed. These animals can be tamed and can then be ridden and carry chests.</value>
+	</data>	
+
+	<data name="IDS_ZOMBIE_HORSE">
+		<value>Zombie Horse</value>
+	</data>	
+
+	<data name="IDS_SKELETON_HORSE">
+		<value>Skeleton Horse</value>
+	</data>	
+
+	<data name="IDS_WITHER">
+		<value>Wither</value>
+	</data>	
+
+	<data name="IDS_DESC_WITHER">
+		<value>These are crafted from Wither Skulls and Soul Sand. They fire exploding skulls at you.</value>
 	</data>	
 
 	<data name="IDS_CREDITS_EXPLODANIM">
@@ -2446,6 +2689,10 @@ Can also be used for low-level lighting.</value>
 		<value>Map</value>
 	</data>	
 
+	<data name="IDS_ITEM_MAP_EMPTY">
+		<value>Empty Map</value>
+	</data>	
+
 	<data name="IDS_ITEM_RECORD_01">
 		<value>Music Disc - "13"</value>
 	</data>	
@@ -2650,6 +2897,50 @@ Can also be used for low-level lighting.</value>
 		<value>Creeper Head</value>
 	</data>	
 
+	<data name="IDS_NETHER_STAR">
+		<value>Nether Star</value>
+	</data>	
+
+	<data name="IDS_FIREWORKS">
+		<value>Firework Rocket</value>
+	</data>	
+
+	<data name="IDS_FIREWORKS_CHARGE">
+		<value>Firework Star</value>
+	</data>	
+
+	<data name="IDS_ITEM_COMPARATOR">
+		<value>Redstone Comparator</value>
+	</data>	
+
+	<data name="IDS_ITEM_MINECART_TNT">
+		<value>Minecart with TNT</value>
+	</data>	
+
+	<data name="IDS_ITEM_MINECART_HOPPER">
+		<value>Minecart with Hopper</value>
+	</data>	
+
+	<data name="IDS_ITEM_IRON_HORSE_ARMOR">
+		<value>Iron Horse Armor</value>
+	</data>	
+
+	<data name="IDS_ITEM_GOLD_HORSE_ARMOR">
+		<value>Gold Horse Armor</value>
+	</data>	
+
+	<data name="IDS_ITEM_DIAMOND_HORSE_ARMOR">
+		<value>Diamond Horse Armor</value>
+	</data>	
+
+	<data name="IDS_ITEM_LEAD">
+		<value>Lead</value>
+	</data>	
+
+	<data name="IDS_ITEM_NAME_TAG">
+		<value>Name Tag</value>
+	</data>	
+
 	<data name="IDS_TILE_STONE">
 		<value>Stone</value>
 	</data>	
@@ -2680,6 +2971,10 @@ Can also be used for low-level lighting.</value>
 
 	<data name="IDS_TILE_JUNGLE_PLANKS">
 		<value>Jungle Wood Planks</value>
+	</data>	
+
+	<data name="IDS_TILE_PLANKS">
+		<value>Wood Planks (any type)</value>
 	</data>	
 
 	<data name="IDS_TILE_SAPLING">
@@ -2880,22 +3175,21 @@ Can also be used for low-level lighting.</value>
 
 	<data name="IDS_TILE_BLOCK_GOLD">
 		<value>Block of Gold</value>
-	</data>
+	</data>	
 
-  <data name="IDS_DESC_BLOCK_GOLD">
-    <value>A compact way of storing Gold.</value>
-  </data>
+	<data name="IDS_DESC_BLOCK_GOLD">
+		<value>A compact way of storing Gold.</value>
+	</data>	
 
-  <data name="IDS_TILE_BLOCK_IRON">
+	<data name="IDS_DESC_BLOCK_IRON">
+		<value>A compact way of storing Iron.</value>
+	</data>	
+
+	<data name="IDS_TILE_BLOCK_IRON">
 		<value>Block of Iron</value>
-	</data>
+	</data>	
 
-  <data name="IDS_DESC_BLOCK_IRON">
-    <value>A compact way of storing Iron.</value>
-  </data>
-
-
-  <data name="IDS_TILE_STONESLAB">
+	<data name="IDS_TILE_STONESLAB">
 		<value>Stone Slab</value>
 	</data>	
 
@@ -3001,14 +3295,13 @@ Can also be used for low-level lighting.</value>
 
 	<data name="IDS_TILE_BLOCK_DIAMOND">
 		<value>Block of Diamond</value>
-	</data>
+	</data>	
 
-  <data name="IDS_DESC_BLOCK_DIAMOND">
-    <value>A compact way of storing Diamonds.</value>
-  </data>
+	<data name="IDS_DESC_BLOCK_DIAMOND">
+		<value>A compact way of storing Diamonds.</value>
+	</data>	
 
-
-  <data name="IDS_TILE_WORKBENCH">
+	<data name="IDS_TILE_WORKBENCH">
 		<value>Crafting Table</value>
 	</data>	
 
@@ -3134,14 +3427,13 @@ Can also be used for low-level lighting.</value>
 
 	<data name="IDS_TILE_BLOCK_LAPIS">
 		<value>Lapis Lazuli Block</value>
-	</data>
+	</data>	
 
-  <data name="IDS_DESC_BLOCK_LAPIS">
-    <value>A compact way of storing Lapis Lazuli.</value>
-  </data>
+	<data name="IDS_DESC_BLOCK_LAPIS">
+		<value>A compact way of storing Lapis Lazuli.</value>
+	</data>	
 
-
-  <data name="IDS_TILE_DISPENSER">
+	<data name="IDS_TILE_DISPENSER">
 		<value>Dispenser</value>
 	</data>	
 
@@ -3357,6 +3649,374 @@ Can also be used for low-level lighting.</value>
 		<value>Skull</value>
 	</data>	
 
+	<data name="IDS_TILE_COMMAND_BLOCK">
+		<value>Command Block</value>
+	</data>	
+
+	<data name="IDS_TILE_BEACON">
+		<value>Beacon</value>
+	</data>	
+
+	<data name="IDS_TILE_CHEST_TRAP">
+		<value>Trapped Chest</value>
+	</data>	
+
+	<data name="IDS_TILE_WEIGHTED_PLATE_LIGHT">
+		<value>Weighted Pressure Plate (Light)</value>
+	</data>	
+
+	<data name="IDS_TILE_WEIGHTED_PLATE_HEAVY">
+		<value>Weighted Pressure Plate (Heavy)</value>
+	</data>	
+
+	<data name="IDS_TILE_COMPARATOR">
+		<value>Redstone Comparator</value>
+	</data>	
+
+	<data name="IDS_TILE_DAYLIGHT_DETECTOR">
+		<value>Daylight Sensor</value>
+	</data>	
+
+	<data name="IDS_TILE_REDSTONE_BLOCK">
+		<value>Block of Redstone</value>
+	</data>	
+
+	<data name="IDS_TILE_HOPPER">
+		<value>Hopper</value>
+	</data>	
+
+	<data name="IDS_TILE_ACTIVATOR_RAIL">
+		<value>Activator Rail</value>
+	</data>	
+
+	<data name="IDS_TILE_DROPPER">
+		<value>Dropper</value>
+	</data>	
+
+	<data name="IDS_TILE_STAINED_CLAY">
+		<value>Stained Clay</value>
+	</data>	
+
+	<data name="IDS_TILE_HAY">
+		<value>Hay Bale</value>
+	</data>	
+
+	<data name="IDS_TILE_HARDENED_CLAY">
+		<value>Hardened Clay</value>
+	</data>	
+
+	<data name="IDS_TILE_COAL">
+		<value>Block of Coal</value>
+	</data>	
+
+	<data name="IDS_TILE_STAINED_CLAY_BLACK">
+		<value>Black Stained Clay</value>
+	</data>	
+
+	<data name="IDS_TILE_STAINED_CLAY_RED">
+		<value>Red Stained Clay</value>
+	</data>	
+
+	<data name="IDS_TILE_STAINED_CLAY_GREEN">
+		<value>Green Stained Clay</value>
+	</data>	
+
+	<data name="IDS_TILE_STAINED_CLAY_BROWN">
+		<value>Brown Stained Clay</value>
+	</data>	
+
+	<data name="IDS_TILE_STAINED_CLAY_BLUE">
+		<value>Blue Stained Clay</value>
+	</data>	
+
+	<data name="IDS_TILE_STAINED_CLAY_PURPLE">
+		<value>Purple Stained Clay</value>
+	</data>	
+
+	<data name="IDS_TILE_STAINED_CLAY_CYAN">
+		<value>Cyan Stained Clay</value>
+	</data>	
+
+	<data name="IDS_TILE_STAINED_CLAY_SILVER">
+		<value>Light Gray Stained Clay</value>
+	</data>	
+
+	<data name="IDS_TILE_STAINED_CLAY_GRAY">
+		<value>Gray Stained Clay</value>
+	</data>	
+
+	<data name="IDS_TILE_STAINED_CLAY_PINK">
+		<value>Pink Stained Clay</value>
+	</data>	
+
+	<data name="IDS_TILE_STAINED_CLAY_LIME">
+		<value>Lime Stained Clay</value>
+	</data>	
+
+	<data name="IDS_TILE_STAINED_CLAY_YELLOW">
+		<value>Yellow Stained Clay</value>
+	</data>	
+
+	<data name="IDS_TILE_STAINED_CLAY_LIGHT_BLUE">
+		<value>Light Blue Stained Clay</value>
+	</data>	
+
+	<data name="IDS_TILE_STAINED_CLAY_MAGENTA">
+		<value>Magenta Stained Clay</value>
+	</data>	
+
+	<data name="IDS_TILE_STAINED_CLAY_ORANGE">
+		<value>Orange Stained Clay</value>
+	</data>	
+
+	<data name="IDS_TILE_STAINED_CLAY_WHITE">
+		<value>White Stained Clay</value>
+	</data>	
+
+	<data name="IDS_TILE_STAINED_GLASS">
+		<value>Stained Glass</value>
+	</data>	
+
+	<data name="IDS_TILE_STAINED_GLASS_BLACK">
+		<value>Black Stained Glass</value>
+	</data>	
+
+	<data name="IDS_TILE_STAINED_GLASS_RED">
+		<value>Red Stained Glass</value>
+	</data>	
+
+	<data name="IDS_TILE_STAINED_GLASS_GREEN">
+		<value>Green Stained Glass</value>
+	</data>	
+
+	<data name="IDS_TILE_STAINED_GLASS_BROWN">
+		<value>Brown Stained Glass</value>
+	</data>	
+
+	<data name="IDS_TILE_STAINED_GLASS_BLUE">
+		<value>Blue Stained Glass</value>
+	</data>	
+
+	<data name="IDS_TILE_STAINED_GLASS_PURPLE">
+		<value>Purple Stained Glass</value>
+	</data>	
+
+	<data name="IDS_TILE_STAINED_GLASS_CYAN">
+		<value>Cyan Stained Glass</value>
+	</data>	
+
+	<data name="IDS_TILE_STAINED_GLASS_SILVER">
+		<value>Light Gray Stained Glass</value>
+	</data>	
+
+	<data name="IDS_TILE_STAINED_GLASS_GRAY">
+		<value>Gray Stained Glass</value>
+	</data>	
+
+	<data name="IDS_TILE_STAINED_GLASS_PINK">
+		<value>Pink Stained Glass</value>
+	</data>	
+
+	<data name="IDS_TILE_STAINED_GLASS_LIME">
+		<value>Lime Stained Glass</value>
+	</data>	
+
+	<data name="IDS_TILE_STAINED_GLASS_YELLOW">
+		<value>Yellow Stained Glass</value>
+	</data>	
+
+	<data name="IDS_TILE_STAINED_GLASS_LIGHT_BLUE">
+		<value>Light Blue Stained Glass</value>
+	</data>	
+
+	<data name="IDS_TILE_STAINED_GLASS_MAGENTA">
+		<value>Magenta Stained Glass</value>
+	</data>	
+
+	<data name="IDS_TILE_STAINED_GLASS_ORANGE">
+		<value>Orange Stained Glass</value>
+	</data>	
+
+	<data name="IDS_TILE_STAINED_GLASS_WHITE">
+		<value>White Stained Glass</value>
+	</data>	
+
+	<data name="IDS_TILE_STAINED_GLASS_PANE">
+		<value>Stained Glass Pane</value>
+	</data>	
+
+	<data name="IDS_TILE_STAINED_GLASS_PANE_BLACK">
+		<value>Black Stained Glass Pane</value>
+	</data>	
+
+	<data name="IDS_TILE_STAINED_GLASS_PANE_RED">
+		<value>Red Stained Glass Pane</value>
+	</data>	
+
+	<data name="IDS_TILE_STAINED_GLASS_PANE_GREEN">
+		<value>Green Stained Glass Pane</value>
+	</data>	
+
+	<data name="IDS_TILE_STAINED_GLASS_PANE_BROWN">
+		<value>Brown Stained Glass Pane</value>
+	</data>	
+
+	<data name="IDS_TILE_STAINED_GLASS_PANE_BLUE">
+		<value>Blue Stained Glass Pane</value>
+	</data>	
+
+	<data name="IDS_TILE_STAINED_GLASS_PANE_PURPLE">
+		<value>Purple Stained Glass Pane</value>
+	</data>	
+
+	<data name="IDS_TILE_STAINED_GLASS_PANE_CYAN">
+		<value>Cyan Stained Glass Pane</value>
+	</data>	
+
+	<data name="IDS_TILE_STAINED_GLASS_PANE_SILVER">
+		<value>Light Gray Stained Glass Pane</value>
+	</data>	
+
+	<data name="IDS_TILE_STAINED_GLASS_PANE_GRAY">
+		<value>Gray Stained Glass Pane</value>
+	</data>	
+
+	<data name="IDS_TILE_STAINED_GLASS_PANE_PINK">
+		<value>Pink Stained Glass Pane</value>
+	</data>	
+
+	<data name="IDS_TILE_STAINED_GLASS_PANE_LIME">
+		<value>Lime Stained Glass Pane</value>
+	</data>	
+
+	<data name="IDS_TILE_STAINED_GLASS_PANE_YELLOW">
+		<value>Yellow Stained Glass Pane</value>
+	</data>	
+
+	<data name="IDS_TILE_STAINED_GLASS_PANE_LIGHT_BLUE">
+		<value>Light Blue Stained Glass Pane</value>
+	</data>	
+
+	<data name="IDS_TILE_STAINED_GLASS_PANE_MAGENTA">
+		<value>Magenta Stained Glass Pane</value>
+	</data>	
+
+	<data name="IDS_TILE_STAINED_GLASS_PANE_ORANGE">
+		<value>Orange Stained Glass Pane</value>
+	</data>	
+
+	<data name="IDS_TILE_STAINED_GLASS_PANE_WHITE">
+		<value>White Stained Glass Pane</value>
+	</data>	
+
+	<data name="IDS_FIREWORKS_CHARGE_TYPE_0">
+		<value>Small Ball</value>
+	</data>	
+
+	<data name="IDS_FIREWORKS_CHARGE_TYPE_1">
+		<value>Large Ball</value>
+	</data>	
+
+	<data name="IDS_FIREWORKS_CHARGE_TYPE_2">
+		<value>Star-shaped</value>
+	</data>	
+
+	<data name="IDS_FIREWORKS_CHARGE_TYPE_3">
+		<value>Creeper-shaped</value>
+	</data>	
+
+	<data name="IDS_FIREWORKS_CHARGE_TYPE_4">
+		<value>Burst</value>
+	</data>	
+
+	<data name="IDS_FIREWORKS_CHARGE_TYPE">
+		<value>Unknown Shape</value>
+	</data>	
+
+	<data name="IDS_FIREWORKS_CHARGE_BLACK">
+		<value>Black</value>
+	</data>	
+
+	<data name="IDS_FIREWORKS_CHARGE_RED">
+		<value>Red</value>
+	</data>	
+
+	<data name="IDS_FIREWORKS_CHARGE_GREEN">
+		<value>Green</value>
+	</data>	
+
+	<data name="IDS_FIREWORKS_CHARGE_BROWN">
+		<value>Brown</value>
+	</data>	
+
+	<data name="IDS_FIREWORKS_CHARGE_BLUE">
+		<value>Blue</value>
+	</data>	
+
+	<data name="IDS_FIREWORKS_CHARGE_PURPLE">
+		<value>Purple</value>
+	</data>	
+
+	<data name="IDS_FIREWORKS_CHARGE_CYAN">
+		<value>Cyan</value>
+	</data>	
+
+	<data name="IDS_FIREWORKS_CHARGE_SILVER">
+		<value>Light Gray</value>
+	</data>	
+
+	<data name="IDS_FIREWORKS_CHARGE_GRAY">
+		<value>Gray</value>
+	</data>	
+
+	<data name="IDS_FIREWORKS_CHARGE_PINK">
+		<value>Pink</value>
+	</data>	
+
+	<data name="IDS_FIREWORKS_CHARGE_LIME">
+		<value>Lime</value>
+	</data>	
+
+	<data name="IDS_FIREWORKS_CHARGE_YELLOW">
+		<value>Yellow</value>
+	</data>	
+
+	<data name="IDS_FIREWORKS_CHARGE_LIGHT_BLUE">
+		<value>Light Blue</value>
+	</data>	
+
+	<data name="IDS_FIREWORKS_CHARGE_MAGENTA">
+		<value>Magenta</value>
+	</data>	
+
+	<data name="IDS_FIREWORKS_CHARGE_ORANGE">
+		<value>Orange</value>
+	</data>	
+
+	<data name="IDS_FIREWORKS_CHARGE_WHITE">
+		<value>White</value>
+	</data>	
+
+	<data name="IDS_FIREWORKS_CHARGE_CUSTOM">
+		<value>Custom</value>
+	</data>	
+
+	<data name="IDS_FIREWORKS_CHARGE_FADE_TO">
+		<value>Fade to</value>
+	</data>	
+
+	<data name="IDS_FIREWORKS_CHARGE_FLICKER">
+		<value>Twinkle</value>
+	</data>	
+
+	<data name="IDS_FIREWORKS_CHARGE_TRAIL">
+		<value>Trail</value>
+	</data>	
+
+	<data name="IDS_ITEM_FIREWORKS_FLIGHT">
+		<value>Flight Duration:</value>
+	</data>	
+
 	<data name="IDS_CURRENT_LAYOUT">
 		<value>Current Controls</value>
 	</data>	
@@ -3527,7 +4187,7 @@ Can also be used for low-level lighting.</value>
 
 	<data name="IDS_TUTORIAL_PROMPT_START_TUTORIAL">
 		<value>{*B*}Press{*CONTROLLER_VK_A*} to start the tutorial.{*B*}
-      Press{*CONTROLLER_VK_B*} if you think you are ready to play on your own.</value>
+Press{*CONTROLLER_VK_B*} if you think you are ready to play on your own.</value>
 	</data>	
 
 	<data name="IDS_TUTORIAL_TASK_OVERVIEW">
@@ -3565,7 +4225,7 @@ At night monsters come out, make sure to build a shelter before that happens.</v
 
 	<data name="IDS_TUTORIAL_TASK_INVENTORY">
 		<value>As you collect and craft more items, your inventory will fill up.{*B*}
-    Press{*CONTROLLER_ACTION_INVENTORY*} to open the inventory.</value>
+Press{*CONTROLLER_ACTION_INVENTORY*} to open the inventory.</value>
 	</data>	
 
 	<data name="IDS_TUTORIAL_TASK_FOOD_BAR_DEPLETE">
@@ -3629,21 +4289,15 @@ At night monsters come out, make sure to build a shelter before that happens.</v
 	</data>	
 
 	<data name="IDS_TUTORIAL_TASK_NIGHT_DANGER">
-		<value>
-      Night time can approach quickly, and it is dangerous to be outside unprepared. You can craft armor and weapons, but it is sensible to have a safe shelter.
-    </value>
+		<value>Night time can approach quickly, and it is dangerous to be outside unprepared. You can craft armor and weapons, but it is sensible to have a safe shelter.</value>
 	</data>	
 
 	<data name="IDS_TUTORIAL_TASK_NEARBY_SHELTER">
-		<value>
-      Nearby there is an abandoned Miner's shelter that you can complete to be safe overnight.
-    </value>
+		<value>Nearby there is an abandoned Miner's shelter that you can complete to be safe overnight.</value>
 	</data>	
 
 	<data name="IDS_TUTORIAL_TASK_COLLECT_RESOURCES">
-		<value>
-      You will need to collect the resources to complete the shelter. Walls and roof can be made of any tile type, but you will want to create a door, some windows and lighting.
-    </value>
+		<value>You will need to collect the resources to complete the shelter. Walls and roof can be made of any tile type, but you will want to create a door, some windows and lighting.</value>
 	</data>	
 
 	<data name="IDS_TUTORIAL_TASK_MINE_STONE">
@@ -3679,179 +4333,128 @@ At night monsters come out, make sure to build a shelter before that happens.</v
 	</data>	
 
 	<data name="IDS_TUTORIAL_TASK_BASIC_COMPLETE">
-		<value>
-      You have completed the first part of the tutorial.
-    </value>
+		<value>You have completed the first part of the tutorial.</value>
 	</data>	
 
 	<data name="IDS_TUTORIAL_PROMPT_BASIC_COMPLETE">
-		<value>
-      {*B*}
-      Press{*CONTROLLER_VK_A*} to continue with the tutorial.{*B*}
-      Press{*CONTROLLER_VK_B*} if you think you are ready to play on your own.
-    </value>
+		<value>{*B*}
+Press{*CONTROLLER_VK_A*} to continue with the tutorial.{*B*}
+Press{*CONTROLLER_VK_B*} if you think you are ready to play on your own.</value>
 	</data>	
 
 	<data name="IDS_TUTORIAL_TASK_INV_OVERVIEW">
-		<value>
-      This is your inventory. It shows items available for use in your hand, and all the other items that you are carrying. Your armor is also shown here.
-    </value>
+		<value>This is your inventory. It shows items available for use in your hand, and all the other items that you are carrying. Your armor is also shown here.</value>
 	</data>	
 
 	<data name="IDS_TUTORIAL_PROMPT_INV_OVERVIEW">
 		<value>{*B*}
-      Press{*CONTROLLER_VK_A*} to continue.{*B*}
-      Press{*CONTROLLER_VK_B*} if you already know how to use the inventory.
-    </value>
+Press{*CONTROLLER_VK_A*} to continue.{*B*}
+Press{*CONTROLLER_VK_B*} if you already know how to use the inventory.</value>
 	</data>	
 
 	<data name="IDS_TUTORIAL_TASK_INV_PICK_UP">
-		<value>
-      Use{*CONTROLLER_MENU_NAVIGATE*} to move the pointer. Use{*CONTROLLER_VK_A*} to pick an item under the pointer.
-      If there is more than one item here this will pick them all up, or you can use{*CONTROLLER_VK_X*} to pick up just half of them.
-    </value>
+		<value>Use{*CONTROLLER_MENU_NAVIGATE*} to move the pointer. Use{*CONTROLLER_VK_A*} to pick an item under the pointer.
+If there is more than one item here this will pick them all up, or you can use{*CONTROLLER_VK_X*} to pick up just half of them.</value>
 	</data>	
 
 	<data name="IDS_TUTORIAL_TASK_INV_MOVE">
-		<value>
-      Move this item with the pointer over another space in the inventory and place it down using{*CONTROLLER_VK_A*}.
-      With multiple items on the pointer, use{*CONTROLLER_VK_A*} to place them all, or{*CONTROLLER_VK_X*} to place just one.
-    </value>
+		<value>Move this item with the pointer over another space in the inventory and place it down using{*CONTROLLER_VK_A*}.
+With multiple items on the pointer, use{*CONTROLLER_VK_A*} to place them all, or{*CONTROLLER_VK_X*} to place just one.</value>
 	</data>	
 
 	<data name="IDS_TUTORIAL_TASK_INV_DROP">
-		<value>
-      If you move the pointer outside the edge of the interface with an item on the pointer, you can drop the item.
-    </value>
+		<value>If you move the pointer outside the edge of the interface with an item on the pointer, you can drop the item.</value>
 	</data>	
 
 	<data name="IDS_TUTORIAL_TASK_INV_INFO">
-		<value>
-      If you want more information about an item, move the pointer over the item and press{*CONTROLLER_VK_RT*} .
-    </value>
+		<value>If you want more information about an item, move the pointer over the item and press{*CONTROLLER_ACTION_MENU_PAGEDOWN*} .</value>
 	</data>	
 
 	<data name="IDS_TUTORIAL_TASK_INV_EXIT">
-		<value>
-      Press{*CONTROLLER_VK_B*} now to exit the inventory.
-    </value>
+		<value>Press{*CONTROLLER_VK_B*} now to exit the inventory.</value>
 	</data>	
 
 	<data name="IDS_TUTORIAL_TASK_CREATIVE_INV_OVERVIEW">
-		<value>
-      This is the creative mode inventory. It shows items available for use in your hand, and all the other items that you can choose from.
-    </value>
+		<value>This is the creative mode inventory. It shows items available for use in your hand, and all the other items that you can choose from.</value>
 	</data>	
 
 	<data name="IDS_TUTORIAL_PROMPT_CREATIVE_INV_OVERVIEW">
 		<value>{*B*}
-      Press{*CONTROLLER_VK_A*} to continue.{*B*}
-      Press{*CONTROLLER_VK_B*} if you already know how to use the creative mode inventory.
-    </value>
+Press{*CONTROLLER_VK_A*} to continue.{*B*}
+Press{*CONTROLLER_VK_B*} if you already know how to use the creative mode inventory.</value>
 	</data>	
 
 	<data name="IDS_TUTORIAL_TASK_CREATIVE_INV_PICK_UP">
-		<value>
-      Use{*CONTROLLER_MENU_NAVIGATE*} to move the pointer.
-	  When on the item list, use{*CONTROLLER_VK_A*} to pick an item under the pointer, and use{*CONTROLLER_VK_Y*} to pick up a full stack of that item.
-    </value>
+		<value>Use{*CONTROLLER_MENU_NAVIGATE*} to move the pointer.
+When on the item list, use{*CONTROLLER_VK_A*} to pick an item under the pointer, and use{*CONTROLLER_VK_Y*} to pick up a full stack of that item.</value>
 	</data>	
 
 	<data name="IDS_TUTORIAL_TASK_CREATIVE_INV_MOVE">
-		<value>
-      The pointer will automatically move over a space in the use row. You can place it down using{*CONTROLLER_VK_A*}. Once you have placed the item, the pointer will return to the item list where you can select another item.
-    </value>
+		<value>The pointer will automatically move over a space in the use row. You can place it down using{*CONTROLLER_VK_A*}. Once you have placed the item, the pointer will return to the item list where you can select another item.</value>
 	</data>	
 
 	<data name="IDS_TUTORIAL_TASK_CREATIVE_INV_DROP">
-		<value>
-      If you move the pointer outside the edge of the interface with an item on the pointer, you can drop the item into the world. To clear all items in the quick select bar, press{*CONTROLLER_VK_X*}.
-    </value>
+		<value>If you move the pointer outside the edge of the interface with an item on the pointer, you can drop the item into the world. To clear all items in the quick select bar, press{*CONTROLLER_VK_X*}.</value>
 	</data>	
 
 	<data name="IDS_TUTORIAL_TASK_CREATIVE_INV_NAV">
-		<value>
-      Scroll through the Group Type tabs at the top using{*CONTROLLER_VK_LB*} and{*CONTROLLER_VK_RB*} to select the group type of the item you wish to pickup.
-    </value>
+		<value>Scroll through the Group Type tabs at the top using{*CONTROLLER_VK_LB*} and{*CONTROLLER_VK_RB*} to select the group type of the item you wish to pickup.</value>
 	</data>	
 
 	<data name="IDS_TUTORIAL_TASK_CREATIVE_INV_INFO">
-		<value>
-      If you want more information about an item, move the pointer over the item and press{*CONTROLLER_VK_RT*} .
-    </value>
+		<value>If you want more information about an item, move the pointer over the item and press{*CONTROLLER_ACTION_MENU_PAGEDOWN*} .</value>
 	</data>	
 
 	<data name="IDS_TUTORIAL_TASK_CREATIVE_INV_EXIT">
-		<value>
-      Press{*CONTROLLER_VK_B*} now to exit the creative mode inventory.
-    </value>
+		<value>Press{*CONTROLLER_VK_B*} now to exit the creative mode inventory.</value>
 	</data>	
 
 	<data name="IDS_TUTORIAL_TASK_CRAFT_OVERVIEW">
-		<value>
-      This is the crafting interface. This interface allows you to combine the items you've collected to make new items.
-    </value>
+		<value>This is the crafting interface. This interface allows you to combine the items you've collected to make new items.</value>
 	</data>	
 
 	<data name="IDS_TUTORIAL_PROMPT_CRAFT_OVERVIEW">
-		<value>{*B*}
-      Press{*CONTROLLER_VK_A*} to continue.{*B*}
-      Press{*CONTROLLER_VK_B*} if you already know how to craft.
-    </value>
+		<value>{*B*}Press{*CONTROLLER_VK_A*} to continue.{*B*}
+Press{*CONTROLLER_VK_B*} if you already know how to craft.</value>
 	</data>	
 
 	<data name="IDS_TUTORIAL_PROMPT_PRESS_X_TO_TOGGLE_DESCRIPTION">
 		<value>{*B*}
-      Press{*CONTROLLER_VK_X*} to show the item description.
-    </value>
+Press{*CONTROLLER_VK_X*} to show the item description.</value>
 	</data>	
 
 	<data name="IDS_TUTORIAL_PROMPT_PRESS_X_TO_TOGGLE_INGREDIENTS">
 		<value>{*B*}
-      Press{*CONTROLLER_VK_X*} to show the ingredients required to make the current item.
-    </value>
+Press{*CONTROLLER_VK_X*} to show the ingredients required to make the current item.</value>
 	</data>	
 
 	<data name="IDS_TUTORIAL_PROMPT_PRESS_X_TO_TOGGLE_INVENTORY">
 		<value>{*B*}
-      Press{*CONTROLLER_VK_X*} to show the inventory again.
-    </value>
+Press{*CONTROLLER_VK_X*} to show the inventory again.</value>
 	</data>	
 
 	<data name="IDS_TUTORIAL_TASK_CRAFT_NAV">
-		<value>
-      Scroll through the Group Type tabs at the top using{*CONTROLLER_VK_LB*} and{*CONTROLLER_VK_RB*} to select the group type of the item you wish to craft, then use{*CONTROLLER_MENU_NAVIGATE*} to select the item to craft.
-    </value>
+		<value>Scroll through the Group Type tabs at the top using{*CONTROLLER_VK_LB*} and{*CONTROLLER_VK_RB*} to select the group type of the item you wish to craft, then use{*CONTROLLER_MENU_NAVIGATE*} to select the item to craft.</value>
 	</data>	
 
 	<data name="IDS_TUTORIAL_TASK_CRAFT_CREATE">
-		<value>
-      The crafting area shows the items you require in order to craft the new item. Press{*CONTROLLER_VK_A*} to craft the item and place it in your inventory.
-    </value>
+		<value>The crafting area shows the items you require in order to craft the new item. Press{*CONTROLLER_VK_A*} to craft the item and place it in your inventory.</value>
 	</data>	
 
 	<data name="IDS_TUTORIAL_TASK_CRAFT_CRAFT_TABLE">
-		<value>
-      You can craft a larger selection of items using a crafting table. Crafting on a table works in the same way as basic crafting, but you have a larger crafting area allowing more combinations of ingredients.
-    </value>
+		<value>You can craft a larger selection of items using a crafting table. Crafting on a table works in the same way as basic crafting, but you have a larger crafting area allowing more combinations of ingredients.</value>
 	</data>	
 
 	<data name="IDS_TUTORIAL_TASK_CRAFT_INVENTORY">
-		<value>
-      The bottom right part of the crafting interface shows your inventory. This area can also show a description of the currently selected item, and the ingredients required to craft it.
-    </value>
+		<value>The bottom right part of the crafting interface shows your inventory. This area can also show a description of the currently selected item, and the ingredients required to craft it.</value>
 	</data>	
 
 	<data name="IDS_TUTORIAL_TASK_CRAFT_DESCRIPTION">
-		<value>
-      The description of the currently selected item is now displayed. The description can give you an idea of what the item can be used for.
-    </value>
+		<value>The description of the currently selected item is now displayed. The description can give you an idea of what the item can be used for.</value>
 	</data>	
 
 	<data name="IDS_TUTORIAL_TASK_CRAFT_INGREDIENTS">
-		<value>
-      The list of ingredients required to craft the selected item are now displayed.
-    </value>
+		<value>The list of ingredients required to craft the selected item are now displayed.</value>
 	</data>	
 
 	<data name="IDS_TUTORIAL_TASK_CRAFT_CREATE_PLANKS">
@@ -3859,516 +4462,356 @@ At night monsters come out, make sure to build a shelter before that happens.</v
 	</data>	
 
 	<data name="IDS_TUTORIAL_TASK_CRAFT_EXIT_AND_PLACE_TABLE">
-		<value>
-      Now you have built a crafting table you should place it in the world to enable you to build a larger selection of items.{*B*}
-      Press{*CONTROLLER_VK_B*} now to exit the crafting interface.
-    </value>
+		<value>Now you have built a crafting table you should place it in the world to enable you to build a larger selection of items.{*B*}
+Press{*CONTROLLER_VK_B*} now to exit the crafting interface.</value>
 	</data>	
 
 	<data name="IDS_TUTORIAL_TASK_CRAFT_SELECT_TOOLS">
-		<value>
-      Press{*CONTROLLER_VK_LB*} and{*CONTROLLER_VK_RB*} to change to the group type of the items you wish to craft. Select the tools group.{*ToolsIcon*}
-    </value>
+		<value>Press{*CONTROLLER_VK_LB*} and{*CONTROLLER_VK_RB*} to change to the group type of the items you wish to craft. Select the tools group.{*ToolsIcon*}</value>
 	</data>	
 
 	<data name="IDS_TUTORIAL_TASK_CRAFT_SELECT_STRUCTURES">
-		<value>
-      Press{*CONTROLLER_VK_LB*} and{*CONTROLLER_VK_RB*} to change to the group type of the items you wish to craft. Select the structures group.{*StructuresIcon*}
-    </value>
+		<value>Press{*CONTROLLER_VK_LB*} and{*CONTROLLER_VK_RB*} to change to the group type of the items you wish to craft. Select the structures group.{*StructuresIcon*}</value>
 	</data>	
 
 	<data name="IDS_TUTORIAL_TASK_CRAFT_SELECT_WOODEN_SHOVEL">
-		<value>
-      Use{*CONTROLLER_MENU_NAVIGATE*} to change to the item you wish to craft. Some items have multiple versions depending on the materials used. Select the wooden shovel.{*WoodenShovelIcon*}
-    </value>
+		<value>Use{*CONTROLLER_MENU_NAVIGATE*} to change to the item you wish to craft. Some items have multiple versions depending on the materials used. Select the wooden shovel.{*WoodenShovelIcon*}</value>
 	</data>	
 
 	<data name="IDS_TUTORIAL_TASK_CRAFT_SELECT_CRAFTING_TABLE">
-		<value>
-      A lot of crafting can involve multiple steps. Now that you have some planks there are more items that you can craft. Use{*CONTROLLER_MENU_NAVIGATE*} to change to the item you wish to craft. Select the crafting table.{*CraftingTableIcon*}
-    </value>
+		<value>A lot of crafting can involve multiple steps. Now that you have some planks there are more items that you can craft. Use{*CONTROLLER_MENU_NAVIGATE*} to change to the item you wish to craft. Select the crafting table.{*CraftingTableIcon*}</value>
 	</data>	
 
 	<data name="IDS_TUTORIAL_TASK_CRAFT_TOOLS_BUILT">
-		<value>
-      With the tools you have built you are off to a great start, and are able to collect a variety of different materials more efficiently.{*B*}
-      Press{*CONTROLLER_VK_B*} now to exit the crafting interface.
-    </value>
+		<value>With the tools you have built you are off to a great start, and are able to collect a variety of different materials more efficiently.{*B*}
+Press{*CONTROLLER_VK_B*} now to exit the crafting interface.</value>
 	</data>	
 
 	<data name="IDS_TUTORIAL_TASK_CRAFT_CREATE_FURNACE">
-		<value>
-      Some items can not be created using the crafting table, but require a furnace. Craft a furnace now.{*FurnaceIcon*}
-    </value>
+		<value>Some items can not be created using the crafting table, but require a furnace. Craft a furnace now.{*FurnaceIcon*}</value>
 	</data>	
 
 	<data name="IDS_TUTORIAL_TASK_CRAFT_EXIT_AND_PLACE_FURNACE">
-		<value>
-      Place the furnace you have crafted in the world. You will want to put this inside your shelter.{*B*}
-      Press{*CONTROLLER_VK_B*} now to exit the crafting interface.
-    </value>
+		<value>Place the furnace you have crafted in the world. You will want to put this inside your shelter.{*B*}
+Press{*CONTROLLER_VK_B*} now to exit the crafting interface.</value>
 	</data>	
 
 	<data name="IDS_TUTORIAL_TASK_FURNACE_OVERVIEW">
-		<value>
-      This is the furnace interface. A furnace allows you to change items by firing them. For example, you can turn iron ore into iron ingots in the furnace.
-    </value>
+		<value>This is the furnace interface. A furnace allows you to change items by firing them. For example, you can turn iron ore into iron ingots in the furnace.</value>
 	</data>	
 
 	<data name="IDS_TUTORIAL_PROMPT_FURNACE_OVERVIEW">
 		<value>{*B*}
-      Press{*CONTROLLER_VK_A*} to continue.{*B*}
-      Press{*CONTROLLER_VK_B*} if you already know how to use a furnace.
-    </value>
+Press{*CONTROLLER_VK_A*} to continue.{*B*}
+Press{*CONTROLLER_VK_B*} if you already know how to use a furnace.</value>
 	</data>	
 
 	<data name="IDS_TUTORIAL_TASK_FURNACE_METHOD">
-		<value>
-      You need to put some fuel into the bottom slot of the furnace, and the item to be changed in the top slot. The furnace will then fire up and start working, putting the result in the right-hand slot.
-    </value>
+		<value>You need to put some fuel into the bottom slot of the furnace, and the item to be changed in the top slot. The furnace will then fire up and start working, putting the result in the right-hand slot.</value>
 	</data>	
 
 	<data name="IDS_TUTORIAL_TASK_FURNACE_FUELS">
-		<value>
-      Many wooden items can be used as fuels, but not everything burns for the same time. You may also discover other items in the world that can be used as a fuel.
-    </value>
+		<value>Many wooden items can be used as fuels, but not everything burns for the same time. You may also discover other items in the world that can be used as a fuel.</value>
 	</data>	
 
 	<data name="IDS_TUTORIAL_TASK_FURNACE_INGREDIENTS">
-		<value>
-      When your items have been fired, you can move them from the output area into your inventory. You should experiment with different ingredients to see what you can make.
-    </value>
+		<value>When your items have been fired, you can move them from the output area into your inventory. You should experiment with different ingredients to see what you can make.</value>
 	</data>	
 
 	<data name="IDS_TUTORIAL_TASK_FURNACE_CREATE_CHARCOAL">
-		<value>
-      If you use wood as the ingredient then you can make charcoal. Put some fuel in the furnace and wood in the ingredient slot. It can take some time for the furnace to create the charcoal, so feel free to do something else and come back to check the progress.
-    </value>
+		<value>If you use wood as the ingredient then you can make charcoal. Put some fuel in the furnace and wood in the ingredient slot. It can take some time for the furnace to create the charcoal, so feel free to do something else and come back to check the progress.</value>
 	</data>	
 
 	<data name="IDS_TUTORIAL_TASK_FURNACE_CHARCOAL_USES">
-		<value>
-      Charcoal can be used as a fuel, as well as being crafted into a torch with a stick.
-    </value>
+		<value>Charcoal can be used as a fuel, as well as being crafted into a torch with a stick.</value>
 	</data>	
 
 	<data name="IDS_TUTORIAL_TASK_FURNACE_CREATE_GLASS">
-		<value>
-      Placing sand in the ingredient slot allows you to make glass. Create some glass blocks to use as windows in your shelter.
-    </value>
+		<value>Placing sand in the ingredient slot allows you to make glass. Create some glass blocks to use as windows in your shelter.</value>
 	</data>	
 
 	<data name="IDS_TUTORIAL_TASK_BREWING_MENU_OVERVIEW">
-		<value>
-      This is the brewing interface. You can use this to create potions that have a variety of different effects.
-    </value>
+		<value>This is the brewing interface. You can use this to create potions that have a variety of different effects.</value>
 	</data>	
 
 	<data name="IDS_TUTORIAL_PROMPT_BREWING_MENU_OVERVIEW">
 		<value>{*B*}
-      Press{*CONTROLLER_VK_A*} to continue.{*B*}
-      Press{*CONTROLLER_VK_B*} if you already know how to use the brewing stand.
-    </value>
+Press{*CONTROLLER_VK_A*} to continue.{*B*}
+Press{*CONTROLLER_VK_B*} if you already know how to use the brewing stand.</value>
 	</data>	
 
 	<data name="IDS_TUTORIAL_TASK_BREWING_MENU_METHOD">
-		<value>
-      You brew potions by placing an ingredient in the top slot, and a potion or water bottle in the bottom slots (up to 3 can be brewed at one time). Once a valid combination is entered the brewing process will start and create the potion after a short time.
-    </value>
+		<value>You brew potions by placing an ingredient in the top slot, and a potion or water bottle in the bottom slots (up to 3 can be brewed at one time). Once a valid combination is entered the brewing process will start and create the potion after a short time.</value>
 	</data>	
 
 	<data name="IDS_TUTORIAL_TASK_BREWING_MENU_BASIC_INGREDIENTS">
-		<value>
-      All potions start with a Water Bottle. Most potions are created by first using a Nether Wart to make an Awkward Potion, and will require at least one more ingredient to make the final potion.
-    </value>
+		<value>All potions start with a Water Bottle. Most potions are created by first using a Nether Wart to make an Awkward Potion, and will require at least one more ingredient to make the final potion.</value>
 	</data>	
 
 	<data name="IDS_TUTORIAL_TASK_BREWING_MENU_EXTENDED_INGREDIENTS">
-		<value>
-      Once you have a potion you can modify its effects. Adding Redstone Dust increases the duration of its effect and adding Glowstone Dust can make its effect more powerful.
-    </value>
+		<value>Once you have a potion you can modify its effects. Adding Redstone Dust increases the duration of its effect and adding Glowstone Dust can make its effect more powerful.</value>
 	</data>	
 
 	<data name="IDS_TUTORIAL_TASK_BREWING_MENU_EXTENDED_INGREDIENTS_2">
-		<value>
-      Adding Fermented Spider Eye corrupts the potion and can turn it into a potion with the opposite effect, and adding Gunpowder turns the potion into a Splash Potion which can be thrown to apply its affect to a nearby area.
-    </value>
+		<value>Adding Fermented Spider Eye corrupts the potion and can turn it into a potion with the opposite effect, and adding Gunpowder turns the potion into a Splash Potion which can be thrown to apply its affect to a nearby area.</value>
 	</data>	
 
 	<data name="IDS_TUTORIAL_TASK_BREWING_MENU_CREATE_FIRE_POTION">
-		<value>
-      Create a Potion of Fire Resistance by first adding Nether Wart to a Water Bottle, and then adding Magma Cream.
-    </value>
+		<value>Create a Potion of Fire Resistance by first adding Nether Wart to a Water Bottle, and then adding Magma Cream.</value>
 	</data>	
 
 	<data name="IDS_TUTORIAL_TASK_BREWING_MENU_EXIT">
-		<value>
-      Press{*CONTROLLER_VK_B*} now to exit the brewing interface.
-    </value>
+		<value>Press{*CONTROLLER_VK_B*} now to exit the brewing interface.</value>
 	</data>	
 
 	<data name="IDS_TUTORIAL_TASK_BREWING_OVERVIEW">
-		<value>
-      In this area there is a Brewing Stand, a Cauldron and a chest full of items for brewing.
-    </value>
+		<value>In this area there is a Brewing Stand, a Cauldron and a chest full of items for brewing.</value>
 	</data>	
 
 	<data name="IDS_TUTORIAL_PROMPT_BREWING_OVERVIEW">
 		<value>{*B*}
-      Press{*CONTROLLER_VK_A*} to learn more about brewing and potions.{*B*}
-      Press{*CONTROLLER_VK_B*} if you already know about brewing and potions.
-    </value>
+Press{*CONTROLLER_VK_A*} to learn more about brewing and potions.{*B*}
+Press{*CONTROLLER_VK_B*} if you already know about brewing and potions.</value>
 	</data>	
 
 	<data name="IDS_TUTORIAL_TASK_BREWING_GET_GLASS_BOTTLE">
-		<value>
-      The first step in brewing a potion is to create a Water Bottle. Take a Glass Bottle from the chest.
-    </value>
+		<value>The first step in brewing a potion is to create a Water Bottle. Take a Glass Bottle from the chest.</value>
 	</data>	
 
 	<data name="IDS_TUTORIAL_TASK_BREWING_FILL_GLASS_BOTTLE">
-		<value>
-      You can fill a glass bottle from a Cauldron that has water in it, or from a block of water. Fill your glass bottle now by pointing at a water source and pressing{*CONTROLLER_ACTION_USE*}.
-    </value>
+		<value>You can fill a glass bottle from a Cauldron that has water in it, or from a block of water. Fill your glass bottle now by pointing at a water source and pressing{*CONTROLLER_ACTION_USE*}.</value>
 	</data>	
 
 	<data name="IDS_TUTORIAL_TASK_BREWING_FILL_CAULDRON">
-		<value>
-      If a cauldron becomes empty, you can refill it with a Water Bucket.
-    </value>
+		<value>If a cauldron becomes empty, you can refill it with a Water Bucket.</value>
 	</data>	
 
 	<data name="IDS_TUTORIAL_TASK_BREWING_CREATE_FIRE_POTION">
-		<value>
-      Use the Brewing Stand to create a Potion of Fire Resistance. You will need a Water Bottle, Nether Wart and Magma Cream.
-    </value>
+		<value>Use the Brewing Stand to create a Potion of Fire Resistance. You will need a Water Bottle, Nether Wart and Magma Cream.</value>
 	</data>	
 
 	<data name="IDS_TUTORIAL_TASK_BREWING_USE_POTION">
-		<value>
-      With a potion in your hand, hold{*CONTROLLER_ACTION_USE*} to use it. For a normal potion you will drink it and apply the effect to yourself, and for a Splash potion you will throw it and apply the effect to creatures near where it hits. 
-	  Splash potions can be created by adding gunpowder to normal potions.
-    </value>
+		<value>With a potion in your hand, hold{*CONTROLLER_ACTION_USE*} to use it. For a normal potion you will drink it and apply the effect to yourself, and for a Splash potion you will throw it and apply the effect to creatures near where it hits. 
+Splash potions can be created by adding gunpowder to normal potions.</value>
 	</data>	
 
 	<data name="IDS_TUTORIAL_TASK_BREWING_DRINK_FIRE_POTION">
-		<value>
-      Use your Potion of Fire Resistance on yourself.
-    </value>
+		<value>Use your Potion of Fire Resistance on yourself.</value>
 	</data>	
 
 	<data name="IDS_TUTORIAL_TASK_BREWING_USE_EFFECTS">
-		<value>
-      Now that you are resistant to fire and lava, you should see if there are places you can get to that you couldn't before.
-    </value>
+		<value>Now that you are resistant to fire and lava, you should see if there are places you can get to that you couldn't before.</value>
 	</data>	
 
 	<data name="IDS_TUTORIAL_TASK_ENCHANTING_MENU_OVERVIEW">
-		<value>
-      This is the enchanting interface which you can use to add enchantments to weapons, armor and some tools.
-    </value>
+		<value>This is the enchanting interface which you can use to add enchantments to weapons, armor and some tools.</value>
 	</data>	
 
 	<data name="IDS_TUTORIAL_PROMPT_ENCHANTING_MENU_OVERVIEW">
 		<value>{*B*}
-      Press{*CONTROLLER_VK_A*} to learn more about the enchanting interface.{*B*}
-      Press{*CONTROLLER_VK_B*} if you already know about the enchanting interface.
-    </value>
+Press{*CONTROLLER_VK_A*} to learn more about the enchanting interface.{*B*}
+Press{*CONTROLLER_VK_B*} if you already know about the enchanting interface.</value>
 	</data>	
 
 	<data name="IDS_TUTORIAL_TASK_ENCHANTING_MENU_START">
-		<value>
-      To enchant an item, first place it in the enchanting slot. Weapons, armor and some tools can be enchanted to add special effects such as improved damage resistance or increasing the number of items produced when mining a block.
-    </value>
+		<value>To enchant an item, first place it in the enchanting slot. Weapons, armor and some tools can be enchanted to add special effects such as improved damage resistance or increasing the number of items produced when mining a block.</value>
 	</data>	
 
 	<data name="IDS_TUTORIAL_TASK_ENCHANTING_MENU_ENCHANTMENTS">
-		<value>
-      When an item is placed in the enchanting slot, the buttons on the right will change to show a selection of random enchantments.
-    </value>
+		<value>When an item is placed in the enchanting slot, the buttons on the right will change to show a selection of random enchantments.</value>
 	</data>	
 
 	<data name="IDS_TUTORIAL_TASK_ENCHANTING_MENU_COST">
-		<value>
-      The number on the button represents the cost in experience levels to apply that enchantment to the item. If you do not have a high enough level the button will be disabled.
-    </value>
+		<value>The number on the button represents the cost in experience levels to apply that enchantment to the item. If you do not have a high enough level the button will be disabled.</value>
 	</data>	
 
 	<data name="IDS_TUTORIAL_TASK_ENCHANTING_MENU_ENCHANT">
-		<value>
-      Select an enchantment and press{*CONTROLLER_VK_A*} to enchant the item. This will decrease your experience level by the cost of the enchantment.
-    </value>
+		<value>Select an enchantment and press{*CONTROLLER_VK_A*} to enchant the item. This will decrease your experience level by the cost of the enchantment.</value>
 	</data>	
 
 	<data name="IDS_TUTORIAL_TASK_ENCHANTING_MENU_BETTER_ENCHANTMENTS">
-		<value>
-      Although the enchantments are all random, some of the better enchantments are only available when you have a high experience level and have lots of bookcases around the Enchantment Table to increase its power.
-    </value>
+		<value>Although the enchantments are all random, some of the better enchantments are only available when you have a high experience level and have lots of bookcases around the Enchantment Table to increase its power.</value>
 	</data>	
 
 	<data name="IDS_TUTORIAL_TASK_ENCHANTING_OVERVIEW">
-		<value>
-      In this area there is an Enchantment Table and some other items to help you learn about enchanting.
-    </value>
+		<value>In this area there is an Enchantment Table and some other items to help you learn about enchanting.</value>
 	</data>	
 
 	<data name="IDS_TUTORIAL_PROMPT_ENCHANTING_OVERVIEW">
 		<value>{*B*}
-      Press{*CONTROLLER_VK_A*} to learn more about enchanting.{*B*}
-      Press{*CONTROLLER_VK_B*} if you already know about enchanting.
-    </value>
+Press{*CONTROLLER_VK_A*} to learn more about enchanting.{*B*}
+Press{*CONTROLLER_VK_B*} if you already know about enchanting.</value>
 	</data>	
 
 	<data name="IDS_TUTORIAL_TASK_ENCHANTING_SUMMARY">
-		<value>
-      Using an Enchantment Table allows you to add special effects such as increasing the number of items produced when mining a block, or improved damage resistance for weapons, armor and some tools.
-    </value>
+		<value>Using an Enchantment Table allows you to add special effects such as increasing the number of items produced when mining a block, or improved damage resistance for weapons, armor and some tools.</value>
 	</data>	
 
 	<data name="IDS_TUTORIAL_TASK_ENCHANTING_BOOKCASES">
-		<value>
-      Placing bookcases around the Enchantment Table increases its power and allows access to higher level enchantments.
-    </value>
+		<value>Placing bookcases around the Enchantment Table increases its power and allows access to higher level enchantments.</value>
 	</data>	
 
 	<data name="IDS_TUTORIAL_TASK_ENCHANTING_EXPERIENCE">
-		<value>
-      Enchanting items costs Experience Levels, which can be built up by collecting Experience Orbs which are produced by killing monsters and animals, mining ores, breeding animals, fishing and smelting/cooking some things in a furnace.
-    </value>
+		<value>Enchanting items costs Experience Levels, which can be built up by collecting Experience Orbs which are produced by killing monsters and animals, mining ores, breeding animals, fishing and smelting/cooking some things in a furnace.</value>
 	</data>	
 
 	<data name="IDS_TUTORIAL_TASK_ENCHANTING_BOTTLE_O_ENCHANTING">
-		<value>
-      You can also build experience levels using a Bottle O' Enchanting, which, when thrown, creates Experience Orbs around where it lands. These orbs can then be collected.
-    </value>
+		<value>You can also build experience levels using a Bottle O' Enchanting, which, when thrown, creates Experience Orbs around where it lands. These orbs can then be collected.</value>
 	</data>	
 
 	<data name="IDS_TUTORIAL_TASK_ENCHANTING_USE_CHESTS">
-		<value>
-      In the chests in this area you can find some enchanted items, Bottles O' Enchanting, and some items that have yet to be enchanted for you to experiment with at the Enchantment Table.
-    </value>
+		<value>In the chests in this area you can find some enchanted items, Bottles O' Enchanting, and some items that have yet to be enchanted for you to experiment with at the Enchantment Table.</value>
 	</data>	
 
 	<data name="IDS_TUTORIAL_TASK_MINECART_OVERVIEW">
-		<value>
-      You are now riding in a minecart. To exit the minecart, point the cursor at it and press{*CONTROLLER_ACTION_USE*} .{*MinecartIcon*}
-    </value>
+		<value>You are now riding in a minecart. To exit the minecart, point the cursor at it and press{*CONTROLLER_ACTION_USE*} .{*MinecartIcon*}</value>
 	</data>	
 
 	<data name="IDS_TUTORIAL_PROMPT_MINECART_OVERVIEW">
 		<value>{*B*}
-      Press{*CONTROLLER_VK_A*} to learn more about minecarts.{*B*}
-      Press{*CONTROLLER_VK_B*} if you already know about minecarts.
-    </value>
+Press{*CONTROLLER_VK_A*} to learn more about minecarts.{*B*}
+Press{*CONTROLLER_VK_B*} if you already know about minecarts.</value>
 	</data>	
 
 	<data name="IDS_TUTORIAL_TASK_MINECART_RAILS">
-		<value>
-      A minecart runs on rails. You can also craft a powered minecart with a furnace and a minecart with a chest in it.
-      {*RailIcon*}
-    </value>
+		<value>A minecart runs on rails. You can also craft a powered minecart with a furnace and a minecart with a chest in it.{*RailIcon*}</value>
 	</data>	
 
 	<data name="IDS_TUTORIAL_TASK_MINECART_POWERED_RAILS">
-		<value>
-      You can also craft powered rails, which take power from redstone torches and circuits to accelerate the cart. These can be connected to switches, levers and pressure plates to make complex systems.
-      {*PoweredRailIcon*}
-    </value>
+		<value>You can also craft powered rails, which take power from redstone torches and circuits to accelerate the cart. These can be connected to switches, levers and pressure plates to make complex systems.{*PoweredRailIcon*}</value>
 	</data>	
 
 	<data name="IDS_TUTORIAL_TASK_BOAT_OVERVIEW">
-		<value>
-      You are now sailing a boat. To exit the boat, point the cursor at it and press{*CONTROLLER_ACTION_USE*} .{*BoatIcon*}
-    </value>
+		<value>You are now sailing a boat. To exit the boat, point the cursor at it and press{*CONTROLLER_ACTION_USE*} .{*BoatIcon*}</value>
 	</data>	
 
 	<data name="IDS_TUTORIAL_PROMPT_BOAT_OVERVIEW">
-		<value>
-      {*B*}
-      Press{*CONTROLLER_VK_A*} to learn more about boats.{*B*}
-      Press{*CONTROLLER_VK_B*} if you already know about boats.
-    </value>
+		<value>{*B*}
+Press{*CONTROLLER_VK_A*} to learn more about boats.{*B*}
+Press{*CONTROLLER_VK_B*} if you already know about boats.</value>
 	</data>	
 
 	<data name="IDS_TUTORIAL_TASK_BOAT_STEER">
-		<value>
-      A boat allows you to travel quicker over water. You can steer it using{*CONTROLLER_ACTION_MOVE*} and{*CONTROLLER_ACTION_LOOK*}.
-      {*BoatIcon*}
-    </value>
+		<value>A boat allows you to travel quicker over water. You can steer it using{*CONTROLLER_ACTION_MOVE*} and{*CONTROLLER_ACTION_LOOK*}.{*BoatIcon*}</value>
 	</data>	
 
 	<data name="IDS_TUTORIAL_TASK_FISHING_OVERVIEW">
-		<value>
-      You are now using a fishing rod. Press{*CONTROLLER_ACTION_USE*} to use it.{*FishingRodIcon*}
-    </value>
+		<value>You are now using a fishing rod. Press{*CONTROLLER_ACTION_USE*} to use it.{*FishingRodIcon*}</value>
 	</data>	
 
 	<data name="IDS_TUTORIAL_PROMPT_FISHING_OVERVIEW">
-		<value>
-      {*B*}
-      Press{*CONTROLLER_VK_A*} to learn more about fishing.{*B*}
-      Press{*CONTROLLER_VK_B*} if you already know about fishing.
-    </value>
+		<value>{*B*}
+Press{*CONTROLLER_VK_A*} to learn more about fishing.{*B*}
+Press{*CONTROLLER_VK_B*} if you already know about fishing.</value>
 	</data>	
 
 	<data name="IDS_TUTORIAL_TASK_FISHING_CAST">
-		<value>
-      Press{*CONTROLLER_ACTION_USE*} to cast your line and start fishing. Press{*CONTROLLER_ACTION_USE*} again to reel in the fishing line.
-      {*FishingRodIcon*}
-    </value>
+		<value>Press{*CONTROLLER_ACTION_USE*} to cast your line and start fishing. Press{*CONTROLLER_ACTION_USE*} again to reel in the fishing line.{*FishingRodIcon*}</value>
 	</data>	
 
 	<data name="IDS_TUTORIAL_TASK_FISHING_FISH">
-		<value>
-      If you wait until the float sinks below the surface of the water before reeling in you can catch a fish. Fish can be eaten raw, or cooked by a furnace, to restore health.
-      {*FishIcon*}
-    </value>
+		<value>If you wait until the float sinks below the surface of the water before reeling in you can catch a fish. Fish can be eaten raw, or cooked by a furnace, to restore health.{*FishIcon*}</value>
 	</data>	
 
 	<data name="IDS_TUTORIAL_TASK_FISHING_USES">
-		<value>
-      As with many other tools a fishing rod has a fixed number of uses. Those uses are not limited to catching fish though. You should experiment with it to see what else can be caught or activated...
-      {*FishingRodIcon*}
-    </value>
+		<value>As with many other tools a fishing rod has a fixed number of uses. Those uses are not limited to catching fish though. You should experiment with it to see what else can be caught or activated...{*FishingRodIcon*}</value>
 	</data>	
 
 	<data name="IDS_TUTORIAL_TASK_BED_OVERVIEW">
-		<value>
-      This is a bed. Press{*CONTROLLER_ACTION_USE*} while pointing at it at night to sleep through the night and awake in the morning.{*ICON*}355{*/ICON*}
-    </value>
+		<value>This is a bed. Press{*CONTROLLER_ACTION_USE*} while pointing at it at night to sleep through the night and awake in the morning.{*ICON*}355{*/ICON*}</value>
 	</data>	
 
 	<data name="IDS_TUTORIAL_PROMPT_BED_OVERVIEW">
-		<value>
-      {*B*}
-      Press{*CONTROLLER_VK_A*} to learn more about beds.{*B*}
-      Press{*CONTROLLER_VK_B*} if you already know about beds.
-    </value>
+		<value>{*B*}
+Press{*CONTROLLER_VK_A*} to learn more about beds.{*B*}
+Press{*CONTROLLER_VK_B*} if you already know about beds.</value>
 	</data>	
 
 	<data name="IDS_TUTORIAL_TASK_BED_PLACEMENT">
-		<value>
-      A bed should be placed in a safe, well-lit place so that monsters do not wake you in the middle of the night. Once you have used a bed, if you die you will respawn at that bed.
-      {*ICON*}355{*/ICON*}
-    </value>
+		<value>A bed should be placed in a safe, well-lit place so that monsters do not wake you in the middle of the night. Once you have used a bed, if you die you will respawn at that bed.
+{*ICON*}355{*/ICON*}</value>
 	</data>	
 
 	<data name="IDS_TUTORIAL_TASK_BED_MULTIPLAYER">
-		<value>
-      If there are other players in your game, everyone must be in a bed at the same time to be able to sleep.
-      {*ICON*}355{*/ICON*}
-    </value>
+		<value>If there are other players in your game, everyone must be in a bed at the same time to be able to sleep.
+{*ICON*}355{*/ICON*}</value>
 	</data>	
 
 	<data name="IDS_TUTORIAL_REDSTONE_OVERVIEW">
-		<value>
-      In this area there are some simple Redstone and Piston circuits, and a chest with more items to extend these circuits.
-    </value>
+		<value>In this area there are some simple Redstone and Piston circuits, and a chest with more items to extend these circuits.</value>
 	</data>	
 
 	<data name="IDS_TUTORIAL_PROMPT_REDSTONE_OVERVIEW">
-		<value>
-      {*B*}
-      Press{*CONTROLLER_VK_A*} to learn more about Redstone circuits and Pistons.{*B*}
-      Press{*CONTROLLER_VK_B*} if you already know about Redstone circuits and Pistons.
-    </value>
+		<value>{*B*}
+Press{*CONTROLLER_VK_A*} to learn more about Redstone circuits and Pistons.{*B*}
+Press{*CONTROLLER_VK_B*} if you already know about Redstone circuits and Pistons.</value>
 	</data>	
 
 	<data name="IDS_TUTORIAL_TASK_REDSTONE_POWER_SOURCES">
-		<value>
-      Levers, Buttons, Pressure Plates and Redstone Torches can all provide power to circuits, either by directly attaching them to the item you want to activate or by connecting them with Redstone dust.
-    </value>
+		<value>Levers, Buttons, Pressure Plates and Redstone Torches can all provide power to circuits, either by directly attaching them to the item you want to activate or by connecting them with Redstone dust.</value>
 	</data>	
 
 	<data name="IDS_TUTORIAL_TASK_REDSTONE_POWER_SOURCES_POSITION">
-		<value>
-      The position and direction that you place a power source can change how it affects the surrounding blocks. For example a Redstone torch on the side of a block can be turned off if the block is powered by another source.
-    </value>
+		<value>The position and direction that you place a power source can change how it affects the surrounding blocks. For example a Redstone torch on the side of a block can be turned off if the block is powered by another source.</value>
 	</data>	
 
 	<data name="IDS_TUTORIAL_TASK_REDSTONE_DUST">
-		<value>
-      Redstone dust is collected by mining redstone ore with a pickaxe made of Iron, Diamond or Gold. You can use it to carry power up to 15 blocks, and it can travel up or down one block in height.
-	  {*ICON*}331{*/ICON*}
-    </value>
+		<value>Redstone dust is collected by mining redstone ore with a pickaxe made of Iron, Diamond or Gold. You can use it to carry power up to 15 blocks, and it can travel up or down one block in height.
+{*ICON*}331{*/ICON*}</value>
 	</data>	
 
 	<data name="IDS_TUTORIAL_TASK_REDSTONE_REPEATER">
-		<value>
-      Redstone repeaters can be used to extend the distance that the power is carried, or put a delay in a circuit.
-	  {*ICON*}356{*/ICON*}
-    </value>
+		<value>Redstone repeaters can be used to extend the distance that the power is carried, or put a delay in a circuit.
+{*ICON*}356{*/ICON*}</value>
 	</data>	
 
 	<data name="IDS_TUTORIAL_TASK_PISTONS">
-		<value>
-      When powered, a Piston will extend, pushing up to 12 blocks. When they retract, Sticky Pistons can pull back one block of most types.
-	  {*ICON*}33{*/ICON*}
-    </value>
+		<value>When powered, a Piston will extend, pushing up to 12 blocks. When they retract, Sticky Pistons can pull back one block of most types.
+{*ICON*}33{*/ICON*}</value>
 	</data>	
 
 	<data name="IDS_TUTORIAL_TASK_TRY_IT">
-		<value>
-      In the chest in this area there are some components for making circuits with pistons. Try using or completing the circuits in this area, or put together your own. There are more examples outside the tutorial area.
-    </value>
+		<value>In the chest in this area there are some components for making circuits with pistons. Try using or completing the circuits in this area, or put together your own. There are more examples outside the tutorial area.</value>
 	</data>	
 
 	<data name="IDS_TUTORIAL_PORTAL_OVERVIEW">
-		<value>
-      In this area there is a Portal to the Nether!
-    </value>
+		<value>In this area there is a Portal to the Nether!</value>
 	</data>	
 
 	<data name="IDS_TUTORIAL_PROMPT_PORTAL_OVERVIEW">
-		<value>
-      {*B*}
-      Press{*CONTROLLER_VK_A*} to learn more about Portals and The Nether.{*B*}
-      Press{*CONTROLLER_VK_B*} if you already know about Portals and The Nether.
-    </value>
+		<value>{*B*}
+Press{*CONTROLLER_VK_A*} to learn more about Portals and The Nether.{*B*}
+Press{*CONTROLLER_VK_B*} if you already know about Portals and The Nether.</value>
 	</data>	
 
 	<data name="IDS_TUTORIAL_TASK_BUILD_PORTAL">
-		<value>
-      Portals are created by placing Obsidian blocks into a frame four blocks wide and five blocks tall. The corner blocks are not required.
-    </value>
+		<value>Portals are created by placing Obsidian blocks into a frame four blocks wide and five blocks tall. The corner blocks are not required.</value>
 	</data>	
 
 	<data name="IDS_TUTORIAL_TASK_ACTIVATE_PORTAL">
-		<value>
-      To activate a Nether Portal, set fire to the Obsidian blocks inside the frame with a Flint and Steel. Portals can be deactivated if their frame is broken, an explosion happens nearby or a liquid flows through them.
-    </value>
+		<value>To activate a Nether Portal, set fire to the Obsidian blocks inside the frame with a Flint and Steel. Portals can be deactivated if their frame is broken, an explosion happens nearby or a liquid flows through them.</value>
 	</data>	
 
 	<data name="IDS_TUTORIAL_TASK_USE_PORTAL">
-		<value>
-      To use a Nether Portal, stand inside it. Your screen will go purple and a sound will play. After a few seconds you will be transported to another dimension.
-    </value>
+		<value>To use a Nether Portal, stand inside it. Your screen will go purple and a sound will play. After a few seconds you will be transported to another dimension.</value>
 	</data>	
 
 	<data name="IDS_TUTORIAL_TASK_NETHER">
-		<value>
-      The Nether can be a dangerous place, full of lava, but can be useful to collect Netherrack which burns forever when lit, and Glowstone which produces light.
-    </value>
+		<value>The Nether can be a dangerous place, full of lava, but can be useful to collect Netherrack which burns forever when lit, and Glowstone which produces light.</value>
 	</data>	
 
 	<data name="IDS_TUTORIAL_TASK_NETHER_FAST_TRAVEL">
-		<value>
-      The Nether world can be used to fast-travel in the Overworld - traveling one block distance in the Nether is equivalent to traveling 3 blocks in the Overworld.
-    </value>
+		<value>The Nether world can be used to fast-travel in the Overworld - traveling one block distance in the Nether is equivalent to traveling 3 blocks in the Overworld.</value>
 	</data>	
 
 	<data name="IDS_TUTORIAL_CREATIVE_OVERVIEW">
-		<value>
-      You are now in Creative mode.
-    </value>
+		<value>You are now in Creative mode.</value>
 	</data>	
 
 	<data name="IDS_TUTORIAL_PROMPT_CREATIVE_OVERVIEW">
-		<value>
-      {*B*}
-      Press{*CONTROLLER_VK_A*} to learn more about Creative mode.{*B*}
-      Press{*CONTROLLER_VK_B*} if you already know about Creative mode.
-    </value>
+		<value>{*B*}
+Press{*CONTROLLER_VK_A*} to learn more about Creative mode.{*B*}
+Press{*CONTROLLER_VK_B*} if you already know about Creative mode.</value>
 	</data>	
 
 	<data name="IDS_TUTORIAL_TASK_CREATIVE_MODE">
@@ -4388,17 +4831,13 @@ At night monsters come out, make sure to build a shelter before that happens.</v
 	</data>	
 
 	<data name="IDS_TUTORIAL_FARMING_OVERVIEW">
-		<value>
-      In this area a farm has been set up. Farming enables you to create a renewable source of food and other items.
-    </value>
+		<value>In this area a farm has been set up. Farming enables you to create a renewable source of food and other items.</value>
 	</data>	
 
 	<data name="IDS_TUTORIAL_PROMPT_FARMING_OVERVIEW">
-		<value>
-      {*B*}
-      Press{*CONTROLLER_VK_A*} to learn more about farming.{*B*}
-      Press{*CONTROLLER_VK_B*} if you already know about farming.
-    </value>
+		<value>{*B*}
+Press{*CONTROLLER_VK_A*} to learn more about farming.{*B*}
+Press{*CONTROLLER_VK_B*} if you already know about farming.</value>
 	</data>	
 
 	<data name="IDS_TUTORIAL_TASK_FARMING_SEEDS">
@@ -4438,17 +4877,13 @@ At night monsters come out, make sure to build a shelter before that happens.</v
 	</data>	
 
 	<data name="IDS_TUTORIAL_BREEDING_OVERVIEW">
-		<value>
-      In this area animals have been penned in. You can breed animals to produce baby versions of themselves.
-    </value>
+		<value>In this area animals have been penned in. You can breed animals to produce baby versions of themselves.</value>
 	</data>	
 
 	<data name="IDS_TUTORIAL_PROMPT_BREEDING_OVERVIEW">
-		<value>
-      {*B*}
-      Press{*CONTROLLER_VK_A*} to learn more about animals and breeding.{*B*}
-      Press{*CONTROLLER_VK_B*} if you already know about animals and breeding.
-    </value>
+		<value>{*B*}
+Press{*CONTROLLER_VK_A*} to learn more about animals and breeding.{*B*}
+Press{*CONTROLLER_VK_B*} if you already know about animals and breeding.</value>
 	</data>	
 
 	<data name="IDS_TUTORIAL_TASK_BREEDING_FEED">
@@ -4472,9 +4907,7 @@ At night monsters come out, make sure to build a shelter before that happens.</v
 	</data>	
 
 	<data name="IDS_TUTORIAL_TASK_BREEDING_WOLF_TAMING">
-		<value>
-        Wild wolves can be tamed by giving them bones. Once tamed Love Hearts will appear around them. Tamed wolves will follow the player and defend them if they haven't been commanded to sit.
-    </value>
+		<value>Wild wolves can be tamed by giving them bones. Once tamed Love Hearts will appear around them. Tamed wolves will follow the player and defend them if they haven't been commanded to sit.</value>
 	</data>	
 
 	<data name="IDS_TUTORIAL_TASK_BREEDING_COMPLETE">
@@ -4482,17 +4915,13 @@ At night monsters come out, make sure to build a shelter before that happens.</v
 	</data>	
 
 	<data name="IDS_TUTORIAL_GOLEM_OVERVIEW">
-		<value>
-      In this area are some pumpkins and blocks to make a Snow Golem and an Iron Golem.
-    </value>
+		<value>In this area are some pumpkins and blocks to make a Snow Golem and an Iron Golem.</value>
 	</data>	
 
 	<data name="IDS_TUTORIAL_PROMPT_GOLEM_OVERVIEW">
-		<value>
-      {*B*}
-      Press{*CONTROLLER_VK_A*} to learn more about Golems.{*B*}
-      Press{*CONTROLLER_VK_B*} if you already know about Golems.
-    </value>
+		<value>{*B*}
+Press{*CONTROLLER_VK_A*} to learn more about Golems.{*B*}
+Press{*CONTROLLER_VK_B*} if you already know about Golems.</value>
 	</data>	
 
 	<data name="IDS_TUTORIAL_TASK_GOLEM_PUMPKIN">
@@ -4568,9 +4997,7 @@ At night monsters come out, make sure to build a shelter before that happens.</v
 	</data>	
 
 	<data name="IDS_TUTORIAL_COMPLETED">
-		<value>
-      Congratulations, you have completed the tutorial. Time in the game is now passing normally, and you don't have long until night time and the monsters come out! Finish your shelter!
-    </value>
+		<value>Congratulations, you have completed the tutorial. Time in the game is now passing normally, and you don't have long until night time and the monsters come out! Finish your shelter!</value>
 	</data>	
 
 	<data name="IDS_TUTORIAL_COMPLETED_EXPLORE">
@@ -4591,7 +5018,7 @@ At night monsters come out, make sure to build a shelter before that happens.</v
 
 	<data name="IDS_TUTORIAL_PROMPT_NEW_FEATURES_CHOICE">
 		<value>{*B*}Press{*CONTROLLER_VK_A*} to play through the tutorial as normal.{*B*}
-      Press{*CONTROLLER_VK_B*} to skip the main tutorial.</value>
+Press{*CONTROLLER_VK_B*} to skip the main tutorial.</value>
 	</data>	
 
 	<data name="IDS_TUTORIAL_FEATURES_IN_THIS_AREA">
@@ -4603,17 +5030,233 @@ At night monsters come out, make sure to build a shelter before that happens.</v
 	</data>	
 
 	<data name="IDS_TUTORIAL_TASK_FOOD_BAR_OVERVIEW">
-		<value>
-      Your food bar has depleted to a level where you will no longer heal.
-    </value>
+		<value>Your food bar has depleted to a level where you will no longer heal.</value>
 	</data>	
 
 	<data name="IDS_TUTORIAL_PROMPT_FOOD_BAR_OVERVIEW">
-		<value>
-      {*B*}
-      Press{*CONTROLLER_VK_A*} to learn more about the food bar and eating food.{*B*}
-      Press{*CONTROLLER_VK_B*} if you already know about the food bar and eating food.
-    </value>
+		<value>{*B*}
+Press{*CONTROLLER_VK_A*} to learn more about the food bar and eating food.{*B*}
+Press{*CONTROLLER_VK_B*} if you already know about the food bar and eating food.</value>
+	</data>	
+
+	<data name="IDS_TUTORIAL_TASK_HORSE_MENU_OVERVIEW">
+		<value>This is the horse inventory interface.</value>
+	</data>	
+
+	<data name="IDS_TUTORIAL_PROMPT_HORSE_MENU_OVERVIEW">
+		<value>{*B*}Press{*CONTROLLER_VK_A*} to continue.
+{*B*}Press{*CONTROLLER_VK_B*} if you already know how to use the horse inventory.</value>
+	</data>	
+
+	<data name="IDS_TUTORIAL_TASK_HORSE_MENU_LAYOUT">
+		<value>The horse inventory allows you to transfer, or equip items to your Horse, Donkey or Mule.</value>
+	</data>	
+
+	<data name="IDS_TUTORIAL_TASK_HORSE_MENU_EQUIPMENT">
+		<value>Saddle your Horse by placing a Saddle in the saddle slot. Horses can be given armor by placing Horse Armor in the armor slot.</value>
+	</data>	
+
+	<data name="IDS_TUTORIAL_TASK_HORSE_MENU_SADDLEBAGS">
+		<value>You can also transfer items between your own inventory and the saddlebags strapped to Donkeys and Mules in this menu.</value>
+	</data>	
+
+	<data name="IDS_TUTORIAL_TASK_HORSE_OVERVIEW">
+		<value>You have found a Horse.</value>
+	</data>	
+
+	<data name="IDS_TUTORIAL_TASK_DONKEY_OVERVIEW">
+		<value>You have found a Donkey.</value>
+	</data>	
+
+	<data name="IDS_TUTORIAL_TASK_MULE_OVERVIEW">
+		<value>You have found a Mule.</value>
+	</data>	
+
+	<data name="IDS_TUTORIAL_PROMPT_HORSE_OVERVIEW">
+		<value>{*B*}Press{*CONTROLLER_VK_A*} to learn more about Horses, Donkeys and Mules.
+{*B*}Press{*CONTROLLER_VK_B*} if you already know about Horses, Donkeys and Mules.</value>
+	</data>	
+
+	<data name="IDS_TUTORIAL_TASK_HORSE_INTRO">
+		<value>Horses and Donkeys are found mainly in open plains. Mules can be bred from a Donkey and a Horse, but are infertile themselves.</value>
+	</data>	
+
+	<data name="IDS_TUTORIAL_TASK_HORSE_PURPOSE">
+		<value>All adult Horses, Donkeys and Mules can be ridden. However only Horses can be armored, and only Mules and Donkeys may be equipped with saddlebags for transporting items.</value>
+	</data>	
+
+	<data name="IDS_TUTORIAL_TASK_HORSE_TAMING">
+		<value>Horses, Donkeys and Mules must be tamed before they can be used. A horse is tamed by attempting to ride it, and managing to stay on the horse while it attempts to throw the rider off. </value>
+	</data>	
+
+	<data name="IDS_TUTORIAL_TASK_HORSE_TAMING2">
+		<value>When tamed Love Hearts will appear around them and they will no longer buck the player off.  </value>
+	</data>	
+
+	<data name="IDS_TUTORIAL_TASK_HORSE_RIDE">
+		<value>Try to ride this horse now. Use {*CONTROLLER_ACTION_USE*} with no items or tools in your hand to mount it.</value>
+	</data>	
+
+	<data name="IDS_TUTORIAL_TASK_HORSE_SADDLES">
+		<value>To steer a horse they must then be equipped with a saddle, which can be bought from villagers or found inside chests hidden in the world.</value>
+	</data>	
+
+	<data name="IDS_TUTORIAL_TASK_HORSE_SADDLEBAGS">
+		<value>Tame Donkeys and Mules can be given saddlebags by attaching a chest. These bags can be accessed whilst riding or when sneaking.</value>
+	</data>	
+
+	<data name="IDS_TUTORIAL_TASK_HORSE_BREEDING">
+		<value>Horses and Donkeys (but not Mules) can be bred like other animals using Golden Apples or Golden Carrots. Foals will grow into adult horses over time, although feeding them wheat or hay will speed this up.</value>
+	</data>	
+
+	<data name="IDS_TUTORIAL_TASK_HORSE_AREA">
+		<value>You can try to tame the Horses and Donkeys here, and there are Saddles, Horse Armor and other useful items for Horses in chests around here too.</value>
+	</data>	
+
+	<data name="IDS_TUTORIAL_TASK_BEACON_MENU_OVERVIEW">
+		<value>This is the Beacon interface, which you can use to choose powers for your Beacon to grant.</value>
+	</data>	
+
+	<data name="IDS_TUTORIAL_PROMPT_BEACON_MENU_OVERVIEW">
+		<value>{*B*}
+Press{*CONTROLLER_VK_A*} to continue.{*B*}
+Press{*CONTROLLER_VK_B*} if you already know how to use the Beacon interface.</value>
+	</data>	
+
+	<data name="IDS_TUTORIAL_TASK_BEACON_MENU_PRIMARY_POWERS">
+		<value>In the Beacon menu you can select 1 primary power for your Beacon. The more tiers your pyramid has the more powers you will have to choose from.</value>
+	</data>	
+
+	<data name="IDS_TUTORIAL_TASK_BEACON_MENU_SECONDARY_POWER">
+		<value>A Beacon on a pyramid with at least 4 tiers grants an additional option of either the Regeneration secondary power or a stronger primary power.</value>
+	</data>	
+
+	<data name="IDS_TUTORIAL_TASK_BEACON_MENU_ACTIVATION">
+		<value>To set the powers of your Beacon you must sacrifice an Emerald, Diamond, Gold or Iron Ingot in the payment slot. Once set, the powers will emanate from the Beacon indefinitely.</value>
+	</data>	
+
+	<data name="IDS_TUTORIAL_TASK_BEACON_OVERVIEW">
+		<value>At the top of this pyramid there is an inactivate Beacon.</value>
+	</data>	
+
+	<data name="IDS_TUTORIAL_PROMPT_BEACON_OVERVIEW">
+		<value>{*B*}
+Press{*CONTROLLER_VK_A*} to learn more about Beacons.{*B*}
+Press{*CONTROLLER_VK_B*} if you already know about Beacons.</value>
+	</data>	
+
+	<data name="IDS_TUTORIAL_TASK_BEACON_PURPOSE">
+		<value>Active Beacons project a bright beam of light into the sky and grant powers to nearby players. They are crafted with Glass, Obsidian and Nether Stars, which can be obtained by defeating the Wither.</value>
+	</data>	
+
+	<data name="IDS_TUTORIAL_TASK_BEACON_DESIGN">
+		<value>Beacons must be placed so that they are in sunlight during the day. Beacons must be placed on Pyramids of Iron, Gold, Emerald or Diamond. However the choice of material has no effect on the power of the beacon.</value>
+	</data>	
+
+	<data name="IDS_TUTORIAL_TASK_BEACON_CHOOSING_POWERS">
+		<value>Try using the Beacon to set the powers it grants, you can use the Iron Ingots provided as the necessary payment.</value>
+	</data>	
+
+	<data name="IDS_TUTORIAL_TASK_HOPPER_OVERVIEW">
+		<value>This room contains Hoppers</value>
+	</data>	
+
+	<data name="IDS_TUTORIAL_PROMPT_HOPPER_OVERVIEW">
+		<value>{*B*}
+Press{*CONTROLLER_VK_A*} to learn more about Hoppers.{*B*}
+Press{*CONTROLLER_VK_B*} if you already know about Hoppers.</value>
+	</data>	
+
+	<data name="IDS_TUTORIAL_TASK_HOPPER_PURPOSE">
+		<value>Hoppers are used to insert or remove items from containers, and to automatically pick-up items thrown into them.</value>
+	</data>	
+
+	<data name="IDS_TUTORIAL_TASK_HOPPER_CONTAINERS">
+		<value>They can affect Brewing Stands, Chests, Dispensers, Droppers, Minecarts with Chests, Minecarts with Hoppers, as well as other Hoppers.</value>
+	</data>	
+
+	<data name="IDS_TUTORIAL_TASK_HOPPER_MECHANICS">
+		<value>Hoppers will continuously attempt to suck items out of suitable container placed above them. It will also attempt to insert stored items into an output container.</value>
+	</data>	
+
+	<data name="IDS_TUTORIAL_TASK_HOPPER_REDSTONE">
+		<value>However if a Hopper is powered by Redstone it will become inactive and stop both sucking and inserting items.</value>
+	</data>	
+
+	<data name="IDS_TUTORIAL_TASK_HOPPER_OUTPUT">
+		<value>A Hopper points in the direction it tries to output items. To make a Hopper point to a particular block, place the Hopper against that block whilst sneaking.</value>
+	</data>	
+
+	<data name="IDS_TUTORIAL_TASK_HOPPER_AREA">
+		<value>There are various useful Hopper layouts for you to see and experiment with in this room.</value>
+	</data>	
+
+	<data name="IDS_TUTORIAL_TASK_FIREWORK_MENU_OVERVIEW">
+		<value>This is the Firework interface, which you can use to craft Fireworks and Firework Stars.</value>
+	</data>	
+
+	<data name="IDS_TUTORIAL_PROMPT_FIREWORK_MENU_OVERVIEW">
+		<value>{*B*}
+Press{*CONTROLLER_VK_A*} to continue.{*B*}
+Press{*CONTROLLER_VK_B*} if you already know how to use the Firework interface.</value>
+	</data>	
+
+	<data name="IDS_TUTORIAL_TASK_FIREWORK_MENU_BASIC_START">
+		<value>To craft a Firework, place Gunpowder and Paper in the 3x3 crafting grid that is shown above your inventory.</value>
+	</data>	
+
+	<data name="IDS_TUTORIAL_TASK_FIREWORK_MENU_BASIC_STARS">
+		<value>You can optionally place multiple Firework Stars in the crafting grid to add them to the Firework.</value>
+	</data>	
+
+	<data name="IDS_TUTORIAL_TASK_FIREWORK_MENU_BASIC_HEIGHT">
+		<value>Filling more slots in the crafting grid with Gunpowder will increase the height at which all the Firework Stars will explode.</value>
+	</data>	
+
+	<data name="IDS_TUTORIAL_TASK_FIREWORK_MENU_BASIC_CRAFT">
+		<value>You can then take the crafted Firework out of the output slot when you wish to craft it.</value>
+	</data>	
+
+	<data name="IDS_TUTORIAL_TASK_FIREWORK_MENU_ADV_START">
+		<value>Firework Stars can be crafted by placing Gunpowder and Dye into the crafting grid.</value>
+	</data>	
+
+	<data name="IDS_TUTORIAL_TASK_FIREWORK_MENU_ADV_COLOUR">
+		<value>The Dye will set the color of the explosion of the Firework Star.</value>
+	</data>	
+
+	<data name="IDS_TUTORIAL_TASK_FIREWORK_MENU_ADV_SHAPE">
+		<value>The shape of the Firework Star is set by adding either a Fire Charge, Gold Nugget, Feather or Mob Head.</value>
+	</data>	
+
+	<data name="IDS_TUTORIAL_TASK_FIREWORK_MENU_ADV_EFFECT">
+		<value>A trail or a twinkle can be added using Diamonds or Glowstone Dust.</value>
+	</data>	
+
+	<data name="IDS_TUTORIAL_TASK_FIREWORK_MENU_ADV_FADE">
+		<value>After a Firework Star has been crafted, you can set the fade color of the Firework Star by crafting it with Dye.</value>
+	</data>	
+
+	<data name="IDS_TUTORIAL_TASK_FIREWORK_OVERVIEW">
+		<value>Contained within the chests here there are various items used in the creation of FIREWORKS!</value>
+	</data>	
+
+	<data name="IDS_TUTORIAL_PROMPT_FIREWORK_OVERVIEW">
+		<value>{*B*}
+Press{*CONTROLLER_VK_A*} to learn more about Fireworks. {*B*}
+Press{*CONTROLLER_VK_B*} if you already know about Fireworks.</value>
+	</data>	
+
+	<data name="IDS_TUTORIAL_TASK_FIREWORK_PURPOSE">
+		<value>Fireworks are decorative items that can be launched by hand or from Dispensers. They are crafted using Paper, Gunpowder and optionally a number of Firework Stars.</value>
+	</data>	
+
+	<data name="IDS_TUTORIAL_TASK_FIREWORK_CUSTOMISE">
+		<value>The colors, fade, shape, size, and effects (such as trails and twinkles) of Firework Stars can be customized by including additional ingredients when crafting.</value>
+	</data>	
+
+	<data name="IDS_TUTORIAL_TASK_FIREWORK_CRAFTING">
+		<value>Try crafting a Firework at the Crafting Table using an assortment of ingredients from the chests.</value>
 	</data>	
 
 	<data name="IDS_TOOLTIPS_SELECT">
@@ -5032,6 +5675,38 @@ At night monsters come out, make sure to build a shelter before that happens.</v
 		<value>Clear All Slots</value>
 	</data>	
 
+	<data name="IDS_TOOLTIPS_MOUNT">
+		<value>Mount</value>
+	</data>	
+
+	<data name="IDS_TOOLTIPS_DISMOUNT">
+		<value>Dismount</value>
+	</data>	
+
+	<data name="IDS_TOOLTIPS_SADDLEBAGS">
+		<value>Attach Chest</value>
+	</data>	
+
+	<data name="IDS_TOOLTIPS_FIREWORK_LAUNCH">
+		<value>Launch</value>
+	</data>	
+
+	<data name="IDS_TOOLTIPS_LEASH">
+		<value>Leash</value>
+	</data>	
+
+	<data name="IDS_TOOLTIPS_UNLEASH">
+		<value>Release</value>
+	</data>	
+
+	<data name="IDS_TOOLTIPS_ATTACH">
+		<value>Attach</value>
+	</data>	
+
+	<data name="IDS_TOOLTIPS_NAME">
+		<value>Name</value>
+	</data>	
+
 	<data name="IDS_CONFIRM_OK">
 		<value>OK</value>
 	</data>	
@@ -5329,6 +6004,10 @@ Would you like to unlock the full game now?</value>
 		<value>Leaving The END</value>
 	</data>	
 
+	<data name="IDS_PROGRESS_NEW_WORLD_SEED">
+		<value>Finding Seed for the World Generator</value>
+	</data>	
+
 	<data name="IDS_TILE_BED_OCCUPIED">
 		<value>This bed is occupied</value>
 	</data>	
@@ -5547,6 +6226,34 @@ Would you like to unlock the full game now?</value>
 
 	<data name="IDS_DISPENSER">
 		<value>Dispenser</value>
+	</data>	
+
+	<data name="IDS_CONTAINER_ANIMAL">
+		<value>Horse</value>
+	</data>	
+
+	<data name="IDS_CONTAINER_DROPPER">
+		<value>Dropper</value>
+	</data>	
+
+	<data name="IDS_CONTAINER_HOPPER">
+		<value>Hopper</value>
+	</data>	
+
+	<data name="IDS_CONTAINER_BEACON">
+		<value>Beacon</value>
+	</data>	
+
+	<data name="IDS_CONTAINER_BEACON_PRIMARY_POWER">
+		<value>Primary Power</value>
+	</data>	
+
+	<data name="IDS_CONTAINER_BEACON_SECONDARY_POWER">
+		<value>Secondary Power</value>
+	</data>	
+
+	<data name="IDS_CONTAINER_MINECART">
+		<value>Minecart</value>
 	</data>	
 
 	<data name="IDS_NO_DLCOFFERS">
@@ -5827,12 +6534,20 @@ Would you like to install the mash-up pack or texture pack now?</value>
 		<value>Game Mode: Creative</value>
 	</data>	
 
+	<data name="IDS_GAMEMODE_ADVENTURE">
+		<value>Game Mode: Adventure</value>
+	</data>	
+
 	<data name="IDS_SURVIVAL">
 		<value>Survival</value>
 	</data>	
 
 	<data name="IDS_CREATIVE">
 		<value>Creative</value>
+	</data>	
+
+	<data name="IDS_ADVENTURE">
+		<value>Adventure</value>
 	</data>	
 
 	<data name="IDS_CREATED_IN_SURVIVAL">
@@ -5873,6 +6588,10 @@ Would you like to install the mash-up pack or texture pack now?</value>
 
 	<data name="IDS_LEVELTYPE_SUPERFLAT">
 		<value>Superflat</value>
+	</data>	
+
+	<data name="IDS_GAMEOPTION_SEED">
+		<value>Enter a seed to generate the same terrain again. Leave blank for a random world.</value>
 	</data>	
 
 	<data name="IDS_GAMEOPTION_ONLINE">
@@ -5917,6 +6636,34 @@ Would you like to install the mash-up pack or texture pack now?</value>
 
 	<data name="IDS_GAMEOPTION_BONUS_CHEST">
 		<value>When enabled, a chest containing some useful items will be created near the player spawn point.</value>
+	</data>	
+
+	<data name="IDS_GAMEOPTION_MOB_GRIEFING">
+		<value>When disabled, prevents monsters and animals from changing blocks (for example, Creeper explosions won't destroy blocks and Sheep won't remove Grass) or picking up items.</value>
+	</data>	
+
+	<data name="IDS_GAMEOPTION_KEEP_INVENTORY">
+		<value>When enabled, players will keep their inventory when they die.</value>
+	</data>	
+
+	<data name="IDS_GAMEOPTION_MOB_SPAWNING">
+		<value>When disabled, mobs will not spawn naturally.</value>
+	</data>	
+
+	<data name="IDS_GAMEOPTION_MOB_LOOT">
+		<value>When disabled, monsters and animals will not drop loot (for example, Creepers won't drop gunpowder).</value>
+	</data>	
+
+	<data name="IDS_GAMEOPTION_TILE_DROPS">
+		<value>When disabled, blocks will not drop items when destroyed (for example, Stone blocks won't drop Cobblestone).</value>
+	</data>	
+
+	<data name="IDS_GAMEOPTION_NATURAL_REGEN">
+		<value>When disabled, players will not regenerate health naturally.</value>
+	</data>	
+
+	<data name="IDS_GAMEOPTION_DAYLIGHT_CYCLE">
+		<value>When disabled, the time of day will not change.</value>
 	</data>	
 
 	<data name="IDS_DLC_MENU_SKINPACKS">
@@ -6016,7 +6763,91 @@ Would you like to install the mash-up pack or texture pack now?</value>
 	</data>	
 
 	<data name="IDS_DEATH_INDIRECT_MAGIC">
-		<value>{*PLAYER*} was killed by {*SOURCE*}</value>
+		<value>{*PLAYER*} was killed by {*SOURCE*} using magic</value>
+	</data>	
+
+	<data name="IDS_DEATH_FELL_ACCIDENT_LADDER">
+		<value>{*PLAYER*} fell off a ladder</value>
+	</data>	
+
+	<data name="IDS_DEATH_FELL_ACCIDENT_VINES">
+		<value>{*PLAYER*} fell off some vines</value>
+	</data>	
+
+	<data name="IDS_DEATH_FELL_ACCIDENT_WATER">
+		<value>{*PLAYER*} fell out of the water</value>
+	</data>	
+
+	<data name="IDS_DEATH_FELL_ACCIDENT_GENERIC">
+		<value>{*PLAYER*} fell from a high place</value>
+	</data>	
+
+	<data name="IDS_DEATH_FELL_KILLER">
+		<value>{*PLAYER*} was doomed to fall by {*SOURCE*}</value>
+	</data>	
+
+	<data name="IDS_DEATH_FELL_ASSIST">
+		<value>{*PLAYER*} was doomed to fall by {*SOURCE*}</value>
+	</data>	
+
+	<data name="IDS_DEATH_FELL_ASSIST_ITEM">
+		<value>{*PLAYER*} was doomed to fall by {*SOURCE*} using {*ITEM*}</value>
+	</data>	
+
+	<data name="IDS_DEATH_FELL_FINISH">
+		<value>{*PLAYER*} fell too far and was finished by {*SOURCE*}</value>
+	</data>	
+
+	<data name="IDS_DEATH_FELL_FINISH_ITEM">
+		<value>{*PLAYER*} fell too far and was finished by {*SOURCE*} using {*ITEM*}</value>
+	</data>	
+
+	<data name="IDS_DEATH_INFIRE_PLAYER">
+		<value>{*PLAYER*} walked into fire whilst fighting {*SOURCE*}</value>
+	</data>	
+
+	<data name="IDS_DEATH_ONFIRE_PLAYER">
+		<value>{*PLAYER*} was burnt to a crisp whilst fighting {*SOURCE*}</value>
+	</data>	
+
+	<data name="IDS_DEATH_LAVA_PLAYER">
+		<value>{*PLAYER*} tried to swim in lava to escape {*SOURCE*}</value>
+	</data>	
+
+	<data name="IDS_DEATH_DROWN_PLAYER">
+		<value>{*PLAYER*} drowned whilst trying to escape {*SOURCE*}</value>
+	</data>	
+
+	<data name="IDS_DEATH_CACTUS_PLAYER">
+		<value>{*PLAYER*} walked into a cactus whilst trying to escape {*SOURCE*}</value>
+	</data>	
+
+	<data name="IDS_DEATH_EXPLOSION_PLAYER">
+		<value>{*PLAYER*} was blown up by {*SOURCE*}</value>
+	</data>	
+
+	<data name="IDS_DEATH_WITHER">
+		<value>{*PLAYER*} withered away</value>
+	</data>	
+
+	<data name="IDS_DEATH_PLAYER_ITEM">
+		<value>{*PLAYER*} was slain by {*SOURCE*} using {*ITEM*}</value>
+	</data>	
+
+	<data name="IDS_DEATH_ARROW_ITEM">
+		<value>{*PLAYER*} was shot by {*SOURCE*} using {*ITEM*}</value>
+	</data>	
+
+	<data name="IDS_DEATH_FIREBALL_ITEM">
+		<value>{*PLAYER*} was fireballed by {*SOURCE*} using {*ITEM*}</value>
+	</data>	
+
+	<data name="IDS_DEATH_THROWN_ITEM">
+		<value>{*PLAYER*} was pummeled by {*SOURCE*} using {*ITEM*}</value>
+	</data>	
+
+	<data name="IDS_DEATH_INDIRECT_MAGIC_ITEM">
+		<value>{*PLAYER*} was killed by {*SOURCE*} using {*ITEM*}</value>
 	</data>	
 
 	<data name="IDS_CHECKBOX_RENDER_BEDROCKFOG">
@@ -6263,11 +7094,11 @@ Would you like to install the mash-up pack or texture pack now?</value>
 	</data>	
 
 	<data name="IDS_CANT_SHEAR_MOOSHROOM">
-		<value>Can't shear this Mooshroom at the moment. The maximum number of Pigs, Sheep, Cows and Cats has been reached.</value>
+		<value>Can't shear this Mooshroom at the moment. The maximum number of Pigs, Sheep, Cows, Cats and Horses has been reached.</value>
 	</data>	
 
 	<data name="IDS_MAX_PIGS_SHEEP_COWS_CATS_SPAWNED">
-		<value>Can't use Spawn Egg at the moment. The maximum number of Pigs, Sheep, Cows and Cats has been reached.</value>
+		<value>Can't use Spawn Egg at the moment. The maximum number of Pigs, Sheep, Cows, Cats and Horses has been reached.</value>
 	</data>	
 
 	<data name="IDS_MAX_MOOSHROOMS_SPAWNED">
@@ -6284,6 +7115,10 @@ Would you like to install the mash-up pack or texture pack now?</value>
 
 	<data name="IDS_MAX_SQUID_SPAWNED">
 		<value>Can't use Spawn Egg at the moment. The maximum number of Squid in a world has been reached.</value>
+	</data>	
+
+	<data name="IDS_MAX_BATS_SPAWNED">
+		<value>Can't use Spawn Egg at the moment. The maximum number of Bats in a world has been reached.</value>
 	</data>	
 
 	<data name="IDS_MAX_ENEMIES_SPAWNED">
@@ -6303,7 +7138,7 @@ Would you like to install the mash-up pack or texture pack now?</value>
 	</data>	
 
 	<data name="IDS_MAX_PIGS_SHEEP_COWS_CATS_BRED">
-		<value>This animal can't enter Love Mode. The maximum number of breeding Pigs, Sheep, Cows and Cats has been reached.</value>
+		<value>This animal can't enter Love Mode. The maximum number of breeding Pigs, Sheep, Cows, Cats and Horses has been reached.</value>
 	</data>	
 
 	<data name="IDS_MAX_WOLVES_BRED">
@@ -6312,6 +7147,10 @@ Would you like to install the mash-up pack or texture pack now?</value>
 
 	<data name="IDS_MAX_CHICKENS_BRED">
 		<value>This animal can't enter Love Mode. The maximum number of breeding Chickens has been reached.</value>
+	</data>	
+
+	<data name="IDS_MAX_HORSES_BRED">
+		<value>This animal can't enter Love Mode. The maximum number of breeding horses has been reached.</value>
 	</data>	
 
 	<data name="IDS_MAX_MUSHROOMCOWS_BRED">
@@ -6362,6 +7201,10 @@ Would you like to install the mash-up pack or texture pack now?</value>
 		<value>Settings</value>
 	</data>	
 
+  <data name="IDS_LANGUAGE_SELECTOR">
+    <value>Languages</value>
+  </data>
+
 	<data name="IDS_CREDITS">
 		<value>Credits</value>
 	</data>	
@@ -6408,6 +7251,38 @@ Would you like to install the mash-up pack or texture pack now?</value>
 
 	<data name="IDS_WORLD_OPTIONS">
 		<value>World Options</value>
+	</data>	
+
+	<data name="IDS_GAME_OPTIONS">
+		<value>Game Options</value>
+	</data>	
+
+	<data name="IDS_MOB_GRIEFING">
+		<value>Mob Griefing</value>
+	</data>	
+
+	<data name="IDS_KEEP_INVENTORY">
+		<value>Keep Inventory</value>
+	</data>	
+
+	<data name="IDS_MOB_SPAWNING">
+		<value>Mob Spawning</value>
+	</data>	
+
+	<data name="IDS_MOB_LOOT">
+		<value>Mob Loot</value>
+	</data>	
+
+	<data name="IDS_TILE_DROPS">
+		<value>Tile Drops</value>
+	</data>	
+
+	<data name="IDS_NATURAL_REGEN">
+		<value>Natural Regeneration</value>
+	</data>	
+
+	<data name="IDS_DAYLIGHT_CYCLE">
+		<value>Daylight Cycle</value>
 	</data>	
 
 	<data name="IDS_CAN_BUILD_AND_MINE">
@@ -6738,6 +7613,22 @@ Would you like to install the mash-up pack or texture pack now?</value>
 		<value>Poison</value>
 	</data>	
 
+	<data name="IDS_POTION_WITHER">
+		<value>Wither</value>
+	</data>	
+
+	<data name="IDS_POTION_HEALTHBOOST">
+		<value>Health Boost</value>
+	</data>	
+
+	<data name="IDS_POTION_ABSORPTION">
+		<value>Absorption</value>
+	</data>	
+
+	<data name="IDS_POTION_SATURATION">
+		<value>Saturation</value>
+	</data>	
+
 	<data name="IDS_POTION_MOVESPEED_POSTFIX">
 		<value>of Swiftness</value>
 	</data>	
@@ -6812,6 +7703,22 @@ Would you like to install the mash-up pack or texture pack now?</value>
 
 	<data name="IDS_POTION_POISON_POSTFIX">
 		<value>of Poison</value>
+	</data>	
+
+	<data name="IDS_POTION_WITHER_POSTFIX">
+		<value>of Decay</value>
+	</data>	
+
+	<data name="IDS_POTION_HEALTHBOOST_POSTFIX">
+		<value>of Health Boost</value>
+	</data>	
+
+	<data name="IDS_POTION_ABSORPTION_POSTFIX">
+		<value>of Absorption</value>
+	</data>	
+
+	<data name="IDS_POTION_SATURATION_POSTFIX">
+		<value>of Saturation</value>
 	</data>	
 
 	<data name="IDS_POTION_POTENCY_0">
@@ -7007,6 +7914,38 @@ Would you like to install the mash-up pack or texture pack now?</value>
 		<value>Reduces health of the affected players, animals and monsters over time.</value>
 	</data>	
 
+	<data name="IDS_POTION_EFFECTS_WHENDRANK">
+		<value>When Applied:</value>
+	</data>	
+
+	<data name="IDS_ATTRIBUTE_NAME_HORSE_JUMPSTRENGTH">
+		<value>Horse Jump Strength</value>
+	</data>	
+
+	<data name="IDS_ATTRIBUTE_NAME_ZOMBIE_SPAWNREINFORCEMENTS">
+		<value>Zombie Reinforcements</value>
+	</data>	
+
+	<data name="IDS_ATTRIBUTE_NAME_GENERIC_MAXHEALTH">
+		<value>Max Health</value>
+	</data>	
+
+	<data name="IDS_ATTRIBUTE_NAME_GENERIC_FOLLOWRANGE">
+		<value>Mob Follow Range</value>
+	</data>	
+
+	<data name="IDS_ATTRIBUTE_NAME_GENERIC_KNOCKBACKRESISTANCE">
+		<value>Knockback Resistance</value>
+	</data>	
+
+	<data name="IDS_ATTRIBUTE_NAME_GENERIC_MOVEMENTSPEED">
+		<value>Speed</value>
+	</data>	
+
+	<data name="IDS_ATTRIBUTE_NAME_GENERIC_ATTACKDAMAGE">
+		<value>Attack Damage</value>
+	</data>	
+
 	<data name="IDS_ENCHANTMENT_DAMAGE_ALL">
 		<value>Sharpness</value>
 	</data>	
@@ -7188,7 +8127,7 @@ Would you like to install the mash-up pack or texture pack now?</value>
 	</data>	
 
 	<data name="IDS_DESC_POTATO_POISONOUS">
-		<value>Restores 1{*ICON_SHANK_01*}, or can be cooked in a furnace. This can be planted in farmland. Eating this can cause you to be poisoned.</value>
+		<value>Restores 1{*ICON_SHANK_01*}. Eating this can cause you to become poisoned.</value>
 	</data>	
 
 	<data name="IDS_DESC_CARROT_GOLDEN">
@@ -7871,8 +8810,5 @@ All Ender Chests in a world are linked. Items placed into an Ender Chest are acc
 
 	<data name="IDS_TOOLTIPS_CURE">
 		<value>Cure</value>
-	</data>
-  <data name="IDS_PROGRESS_NEW_WORLD_SEED">
-    <value>Finding Seed for the World Generator</value>
-  </data>
+	</data>	
 </root>

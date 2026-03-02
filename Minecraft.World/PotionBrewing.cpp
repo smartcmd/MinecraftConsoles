@@ -218,6 +218,17 @@ int PotionBrewing::getColorValue(vector<MobEffectInstance *> *effects)
 	return ((int) red) << 16 | ((int) green) << 8 | ((int) blue);
 }
 
+bool PotionBrewing::areAllEffectsAmbient(vector<MobEffectInstance *> *effects)
+{
+	for(AUTO_VAR(it, effects->begin()); it != effects->end(); ++it)
+	{
+		MobEffectInstance *effect = *it;
+		if (!effect->isAmbient()) return false;
+	}
+
+	return true;
+}
+
 int PotionBrewing::getColorValue(int brew, bool includeDisabledEffects)
 {
 	if (!includeDisabledEffects)
@@ -598,7 +609,9 @@ vector<MobEffectInstance *> *PotionBrewing::getEffects(int brew, bool includeDis
 			{
 				list = new vector<MobEffectInstance *>();
 			}
-			list->push_back(new MobEffectInstance(effect->getId(), duration, amplifier));
+			MobEffectInstance *instance = new MobEffectInstance(effect->getId(), duration, amplifier);
+			if ((brew & THROWABLE_MASK) != 0) instance->setSplash(true);
+			list->push_back(instance);
 		}
 	}
 

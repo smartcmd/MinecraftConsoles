@@ -30,6 +30,8 @@ SignTileEntity::SignTileEntity() : TileEntity()
 	m_iSelectedLine = -1;
 
 	_isEditable = true;
+
+	playerWhoMayEdit = nullptr;
 }
 
 SignTileEntity::~SignTileEntity()
@@ -102,6 +104,20 @@ bool SignTileEntity::isEditable()
 void SignTileEntity::setEditable(bool isEditable)
 {
 	this->_isEditable = isEditable;
+	if (!isEditable)
+	{
+		playerWhoMayEdit = nullptr;
+	}
+}
+
+void SignTileEntity::setAllowedPlayerEditor(shared_ptr<Player> player)
+{
+	playerWhoMayEdit = player;
+}
+
+shared_ptr<Player> SignTileEntity::getPlayerWhoMayEdit()
+{
+	return playerWhoMayEdit;
 }
 
 void SignTileEntity::setChanged()

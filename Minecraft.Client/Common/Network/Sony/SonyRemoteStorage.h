@@ -40,6 +40,7 @@ public:
 
 	PSAVE_INFO m_setSaveDataInfo;
 	SceRemoteStorageData* m_remoteFileInfo;
+	char m_saveFileDesc[128];
 
 	class DescriptionData
 	{ 
@@ -52,6 +53,47 @@ public:
 		char			m_saveNameUTF8[128];
 	};
 
+	class DescriptionData_V2
+	{ 
+		// this stuff is read from a JSON query, so it all has to be text based, max 256 bytes
+	public:
+		char			m_platformNone[4];  // set to no platform, to indicate we're using the newer version of the data
+		char			m_descDataVersion[8]; // 4 bytes as hex	- version number will be 2 in this case
+		char			m_platform[4];
+		char			m_seed[16]; // 8 bytes as hex
+		char			m_hostOptions[8]; // 4 bytes as hex
+		char			m_texturePack[8]; // 4 bytes as hex
+		char			m_saveVersion[8]; // 4 bytes as hex
+		char			m_futureData[64]; // some space for future data in case we need to expand this at all
+		char			m_saveNameUTF8[128];
+	};
+
+	class DescriptionDataParsed
+	{
+	public:
+		int				m_descDataVersion;
+		ESavePlatform	m_savePlatform;
+		__int64			m_seed;
+		uint32_t		m_hostOptions;
+		uint32_t		m_texturePack;
+		uint32_t		m_saveVersion;
+		char			m_saveNameUTF8[128];
+	};
+
+	static const int sc_CurrentDescDataVersion = 2;
+
+	void GetDescriptionData(char* descData);
+	void GetDescriptionData(DescriptionData& descData);
+	void GetDescriptionData(DescriptionData_V2& descData);
+	uint32_t GetU32FromHexBytes(char* hexBytes);
+	uint64_t GetU64FromHexBytes(char* hexBytes);
+
+	void SetU32HexBytes(char* hexBytes, uint32_t u32);
+	void SetU64HexBytes(char* hexBytes, uint64_t u64);
+
+	DescriptionDataParsed m_retrievedDescData;
+	void SetRetrievedDescData();
+
 	CallbackFunc	m_callbackFunc;
 	void*			m_callbackParam;
 
@@ -62,6 +104,7 @@ public:
 	void getSaveInfo();
 	bool waitingForSaveInfo() { return (m_getInfoStatus == e_gettingInfo); }
 	bool saveIsAvailable();
+	bool saveVersionSupported();
 
 	int getSaveFilesize();
 	bool getSaveData(const char* localDirname, CallbackFunc cb, LPVOID lpParam);
@@ -115,6 +158,6 @@ protected:
 
 	bool m_bAborting;
 	bool m_bTransferStarted;
-
+	int m_uploadSaveSize;
 };
 

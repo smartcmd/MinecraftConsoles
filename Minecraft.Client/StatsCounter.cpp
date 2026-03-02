@@ -461,9 +461,9 @@ void StatsCounter::writeStats()
 		scores[viewCount].m_commentData.m_statsType = LeaderboardManager::eStatsType_Mining;
 
 		scores[viewCount].m_commentData.m_mining.m_dirt = getValue(Stats::blocksMined[Tile::dirt->id],				eDifficulty_Peaceful); 
-		scores[viewCount].m_commentData.m_mining.m_cobblestone = getValue(Stats::blocksMined[Tile::stoneBrick->id],	eDifficulty_Peaceful); 
+		scores[viewCount].m_commentData.m_mining.m_cobblestone = getValue(Stats::blocksMined[Tile::cobblestone->id],	eDifficulty_Peaceful); 
 		scores[viewCount].m_commentData.m_mining.m_sand = getValue(Stats::blocksMined[Tile::sand->id],				eDifficulty_Peaceful); 
-		scores[viewCount].m_commentData.m_mining.m_stone = getValue(Stats::blocksMined[Tile::rock->id],				eDifficulty_Peaceful); 
+		scores[viewCount].m_commentData.m_mining.m_stone = getValue(Stats::blocksMined[Tile::stone->id],				eDifficulty_Peaceful); 
 		scores[viewCount].m_commentData.m_mining.m_gravel = getValue(Stats::blocksMined[Tile::gravel->id],			eDifficulty_Peaceful); 
 		scores[viewCount].m_commentData.m_mining.m_clay = getValue(Stats::blocksMined[Tile::clay->id],				eDifficulty_Peaceful); 
 		scores[viewCount].m_commentData.m_mining.m_obsidian = getValue(Stats::blocksMined[Tile::obsidian->id],		eDifficulty_Peaceful);
@@ -489,9 +489,9 @@ void StatsCounter::writeStats()
 		scores[viewCount].m_commentData.m_statsType = LeaderboardManager::eStatsType_Mining;
 
 		scores[viewCount].m_commentData.m_mining.m_dirt = getValue(Stats::blocksMined[Tile::dirt->id],				eDifficulty_Easy); 
-		scores[viewCount].m_commentData.m_mining.m_cobblestone = getValue(Stats::blocksMined[Tile::stoneBrick->id],	eDifficulty_Easy); 
+		scores[viewCount].m_commentData.m_mining.m_cobblestone = getValue(Stats::blocksMined[Tile::cobblestone->id],	eDifficulty_Easy); 
 		scores[viewCount].m_commentData.m_mining.m_sand = getValue(Stats::blocksMined[Tile::sand->id],				eDifficulty_Easy); 
-		scores[viewCount].m_commentData.m_mining.m_stone = getValue(Stats::blocksMined[Tile::rock->id],				eDifficulty_Easy); 
+		scores[viewCount].m_commentData.m_mining.m_stone = getValue(Stats::blocksMined[Tile::stone->id],				eDifficulty_Easy); 
 		scores[viewCount].m_commentData.m_mining.m_gravel = getValue(Stats::blocksMined[Tile::gravel->id],			eDifficulty_Easy); 
 		scores[viewCount].m_commentData.m_mining.m_clay = getValue(Stats::blocksMined[Tile::clay->id],				eDifficulty_Easy); 
 		scores[viewCount].m_commentData.m_mining.m_obsidian = getValue(Stats::blocksMined[Tile::obsidian->id],		eDifficulty_Easy);
@@ -517,9 +517,9 @@ void StatsCounter::writeStats()
 		scores[viewCount].m_commentData.m_statsType = LeaderboardManager::eStatsType_Mining;
 
 		scores[viewCount].m_commentData.m_mining.m_dirt = getValue(Stats::blocksMined[Tile::dirt->id],				eDifficulty_Normal); 
-		scores[viewCount].m_commentData.m_mining.m_cobblestone = getValue(Stats::blocksMined[Tile::stoneBrick->id],	eDifficulty_Normal); 
+		scores[viewCount].m_commentData.m_mining.m_cobblestone = getValue(Stats::blocksMined[Tile::cobblestone->id],	eDifficulty_Normal); 
 		scores[viewCount].m_commentData.m_mining.m_sand = getValue(Stats::blocksMined[Tile::sand->id],				eDifficulty_Normal); 
-		scores[viewCount].m_commentData.m_mining.m_stone = getValue(Stats::blocksMined[Tile::rock->id],				eDifficulty_Normal); 
+		scores[viewCount].m_commentData.m_mining.m_stone = getValue(Stats::blocksMined[Tile::stone->id],				eDifficulty_Normal); 
 		scores[viewCount].m_commentData.m_mining.m_gravel = getValue(Stats::blocksMined[Tile::gravel->id],			eDifficulty_Normal); 
 		scores[viewCount].m_commentData.m_mining.m_clay = getValue(Stats::blocksMined[Tile::clay->id],				eDifficulty_Normal); 
 		scores[viewCount].m_commentData.m_mining.m_obsidian = getValue(Stats::blocksMined[Tile::obsidian->id],		eDifficulty_Normal);
@@ -545,9 +545,9 @@ void StatsCounter::writeStats()
 		scores[viewCount].m_commentData.m_statsType = LeaderboardManager::eStatsType_Mining;
 
 		scores[viewCount].m_commentData.m_mining.m_dirt = getValue(Stats::blocksMined[Tile::dirt->id],				eDifficulty_Hard); 
-		scores[viewCount].m_commentData.m_mining.m_cobblestone = getValue(Stats::blocksMined[Tile::stoneBrick->id],	eDifficulty_Hard); 
+		scores[viewCount].m_commentData.m_mining.m_cobblestone = getValue(Stats::blocksMined[Tile::cobblestone->id],	eDifficulty_Hard); 
 		scores[viewCount].m_commentData.m_mining.m_sand = getValue(Stats::blocksMined[Tile::sand->id],				eDifficulty_Hard); 
-		scores[viewCount].m_commentData.m_mining.m_stone = getValue(Stats::blocksMined[Tile::rock->id],				eDifficulty_Hard); 
+		scores[viewCount].m_commentData.m_mining.m_stone = getValue(Stats::blocksMined[Tile::stone->id],				eDifficulty_Hard); 
 		scores[viewCount].m_commentData.m_mining.m_gravel = getValue(Stats::blocksMined[Tile::gravel->id],			eDifficulty_Hard); 
 		scores[viewCount].m_commentData.m_mining.m_clay = getValue(Stats::blocksMined[Tile::clay->id],				eDifficulty_Hard); 
 		scores[viewCount].m_commentData.m_mining.m_obsidian = getValue(Stats::blocksMined[Tile::obsidian->id],		eDifficulty_Hard);
@@ -573,8 +573,8 @@ void StatsCounter::writeStats()
 		scores[viewCount].m_commentData.m_statsType = LeaderboardManager::eStatsType_Farming;
 
 		scores[viewCount].m_commentData.m_farming.m_eggs = getValue(Stats::itemsCollected[Item::egg->id],			eDifficulty_Peaceful);
-		scores[viewCount].m_commentData.m_farming.m_wheat = getValue(Stats::blocksMined[Tile::crops_Id],			eDifficulty_Peaceful);
-		scores[viewCount].m_commentData.m_farming.m_mushroom = getValue(Stats::blocksMined[Tile::mushroom1_Id],		eDifficulty_Peaceful); 
+		scores[viewCount].m_commentData.m_farming.m_wheat = getValue(Stats::blocksMined[Tile::wheat_Id],			eDifficulty_Peaceful);
+		scores[viewCount].m_commentData.m_farming.m_mushroom = getValue(Stats::blocksMined[Tile::mushroom_brown_Id],		eDifficulty_Peaceful); 
 		scores[viewCount].m_commentData.m_farming.m_sugarcane = getValue(Stats::blocksMined[Tile::reeds_Id],		eDifficulty_Peaceful);
 		scores[viewCount].m_commentData.m_farming.m_milk = getValue(Stats::cowsMilked,								eDifficulty_Peaceful);
 		scores[viewCount].m_commentData.m_farming.m_pumpkin = getValue(Stats::itemsCollected[Tile::pumpkin->id],	eDifficulty_Peaceful);
@@ -599,8 +599,8 @@ void StatsCounter::writeStats()
 		scores[viewCount].m_commentData.m_statsType = LeaderboardManager::eStatsType_Farming;
 
 		scores[viewCount].m_commentData.m_farming.m_eggs = getValue(Stats::itemsCollected[Item::egg->id],			eDifficulty_Easy);
-		scores[viewCount].m_commentData.m_farming.m_wheat = getValue(Stats::blocksMined[Tile::crops_Id],			eDifficulty_Easy);
-		scores[viewCount].m_commentData.m_farming.m_mushroom = getValue(Stats::blocksMined[Tile::mushroom1_Id],		eDifficulty_Easy); 
+		scores[viewCount].m_commentData.m_farming.m_wheat = getValue(Stats::blocksMined[Tile::wheat_Id],			eDifficulty_Easy);
+		scores[viewCount].m_commentData.m_farming.m_mushroom = getValue(Stats::blocksMined[Tile::mushroom_brown_Id],		eDifficulty_Easy); 
 		scores[viewCount].m_commentData.m_farming.m_sugarcane = getValue(Stats::blocksMined[Tile::reeds_Id],		eDifficulty_Easy);
 		scores[viewCount].m_commentData.m_farming.m_milk = getValue(Stats::cowsMilked,								eDifficulty_Easy);
 		scores[viewCount].m_commentData.m_farming.m_pumpkin = getValue(Stats::itemsCollected[Tile::pumpkin->id],	eDifficulty_Easy);
@@ -625,8 +625,8 @@ void StatsCounter::writeStats()
 		scores[viewCount].m_commentData.m_statsType = LeaderboardManager::eStatsType_Farming;
 
 		scores[viewCount].m_commentData.m_farming.m_eggs = getValue(Stats::itemsCollected[Item::egg->id],			eDifficulty_Normal);
-		scores[viewCount].m_commentData.m_farming.m_wheat = getValue(Stats::blocksMined[Tile::crops_Id],			eDifficulty_Normal);
-		scores[viewCount].m_commentData.m_farming.m_mushroom = getValue(Stats::blocksMined[Tile::mushroom1_Id],		eDifficulty_Normal); 
+		scores[viewCount].m_commentData.m_farming.m_wheat = getValue(Stats::blocksMined[Tile::wheat_Id],			eDifficulty_Normal);
+		scores[viewCount].m_commentData.m_farming.m_mushroom = getValue(Stats::blocksMined[Tile::mushroom_brown_Id],		eDifficulty_Normal); 
 		scores[viewCount].m_commentData.m_farming.m_sugarcane = getValue(Stats::blocksMined[Tile::reeds_Id],		eDifficulty_Normal);
 		scores[viewCount].m_commentData.m_farming.m_milk = getValue(Stats::cowsMilked,								eDifficulty_Normal);
 		scores[viewCount].m_commentData.m_farming.m_pumpkin = getValue(Stats::itemsCollected[Tile::pumpkin->id],	eDifficulty_Normal);
@@ -651,8 +651,8 @@ void StatsCounter::writeStats()
 		scores[viewCount].m_commentData.m_statsType = LeaderboardManager::eStatsType_Farming;
 
 		scores[viewCount].m_commentData.m_farming.m_eggs = getValue(Stats::itemsCollected[Item::egg->id],			eDifficulty_Hard);
-		scores[viewCount].m_commentData.m_farming.m_wheat = getValue(Stats::blocksMined[Tile::crops_Id],			eDifficulty_Hard);
-		scores[viewCount].m_commentData.m_farming.m_mushroom = getValue(Stats::blocksMined[Tile::mushroom1_Id],		eDifficulty_Hard); 
+		scores[viewCount].m_commentData.m_farming.m_wheat = getValue(Stats::blocksMined[Tile::wheat_Id],			eDifficulty_Hard);
+		scores[viewCount].m_commentData.m_farming.m_mushroom = getValue(Stats::blocksMined[Tile::mushroom_brown_Id],		eDifficulty_Hard); 
 		scores[viewCount].m_commentData.m_farming.m_sugarcane = getValue(Stats::blocksMined[Tile::reeds_Id],		eDifficulty_Hard);
 		scores[viewCount].m_commentData.m_farming.m_milk = getValue(Stats::cowsMilked,								eDifficulty_Hard);
 		scores[viewCount].m_commentData.m_farming.m_pumpkin = getValue(Stats::itemsCollected[Tile::pumpkin->id],	eDifficulty_Hard);
@@ -774,6 +774,10 @@ void StatsCounter::writeStats()
 		{
 			app.DebugPrintf("Successfully wrote %d leadeboard views\n", viewCount);
 		}
+	}
+	else
+	{
+		delete [] scores;
 	}
 
 #elif defined _XBOX
@@ -907,17 +911,17 @@ void StatsCounter::writeStats()
 			
 		rating = 
 			getValue(Stats::blocksMined[Tile::dirt->id],		eDifficulty_Peaceful) + 
-			getValue(Stats::blocksMined[Tile::stoneBrick->id],	eDifficulty_Peaceful) + 
+			getValue(Stats::blocksMined[Tile::cobblestone->id],	eDifficulty_Peaceful) + 
 			getValue(Stats::blocksMined[Tile::sand->id],		eDifficulty_Peaceful) + 
-			getValue(Stats::blocksMined[Tile::rock->id],		eDifficulty_Peaceful) + 
+			getValue(Stats::blocksMined[Tile::stone->id],		eDifficulty_Peaceful) + 
 			getValue(Stats::blocksMined[Tile::gravel->id],		eDifficulty_Peaceful) + 
 			getValue(Stats::blocksMined[Tile::clay->id],		eDifficulty_Peaceful) + 
 			getValue(Stats::blocksMined[Tile::obsidian->id],	eDifficulty_Peaceful);
 	
 		setLeaderboardProperty( &miningBlocksPeacefulProperties[LeaderboardManager::eProperty_Mining_Dirt		], PROPERTY_MINED_DIRT,			getValue(Stats::blocksMined[Tile::dirt->id],		eDifficulty_Peaceful) );
-		setLeaderboardProperty( &miningBlocksPeacefulProperties[LeaderboardManager::eProperty_Mining_Stone		], PROPERTY_MINED_STONE,		getValue(Stats::blocksMined[Tile::stoneBrick->id],	eDifficulty_Peaceful) );
+		setLeaderboardProperty( &miningBlocksPeacefulProperties[LeaderboardManager::eProperty_Mining_Stone		], PROPERTY_MINED_STONE,		getValue(Stats::blocksMined[Tile::cobblestone->id],	eDifficulty_Peaceful) );
 		setLeaderboardProperty( &miningBlocksPeacefulProperties[LeaderboardManager::eProperty_Mining_Sand		], PROPERTY_MINED_SAND,			getValue(Stats::blocksMined[Tile::sand->id],		eDifficulty_Peaceful) );
-		setLeaderboardProperty( &miningBlocksPeacefulProperties[LeaderboardManager::eProperty_Mining_Cobblestone], PROPERTY_MINED_COBBLESTONE,	getValue(Stats::blocksMined[Tile::rock->id],		eDifficulty_Peaceful) );
+		setLeaderboardProperty( &miningBlocksPeacefulProperties[LeaderboardManager::eProperty_Mining_Cobblestone], PROPERTY_MINED_COBBLESTONE,	getValue(Stats::blocksMined[Tile::stone->id],		eDifficulty_Peaceful) );
 		setLeaderboardProperty( &miningBlocksPeacefulProperties[LeaderboardManager::eProperty_Mining_Gravel		], PROPERTY_MINED_GRAVEL,		getValue(Stats::blocksMined[Tile::gravel->id],		eDifficulty_Peaceful) );
 		setLeaderboardProperty( &miningBlocksPeacefulProperties[LeaderboardManager::eProperty_Mining_Clay		], PROPERTY_MINED_CLAY,			getValue(Stats::blocksMined[Tile::clay->id],		eDifficulty_Peaceful) );
 		setLeaderboardProperty( &miningBlocksPeacefulProperties[LeaderboardManager::eProperty_Mining_Obsidian	], PROPERTY_MINED_OBSIDIAN,		getValue(Stats::blocksMined[Tile::obsidian->id],	eDifficulty_Peaceful) );
@@ -935,17 +939,17 @@ void StatsCounter::writeStats()
 			
 		rating = 
 			getValue(Stats::blocksMined[Tile::dirt->id],		eDifficulty_Easy) + 
-			getValue(Stats::blocksMined[Tile::stoneBrick->id],	eDifficulty_Easy) + 
+			getValue(Stats::blocksMined[Tile::cobblestone->id],	eDifficulty_Easy) + 
 			getValue(Stats::blocksMined[Tile::sand->id],		eDifficulty_Easy) + 
-			getValue(Stats::blocksMined[Tile::rock->id],		eDifficulty_Easy) + 
+			getValue(Stats::blocksMined[Tile::stone->id],		eDifficulty_Easy) + 
 			getValue(Stats::blocksMined[Tile::gravel->id],		eDifficulty_Easy) + 
 			getValue(Stats::blocksMined[Tile::clay->id],		eDifficulty_Easy) + 
 			getValue(Stats::blocksMined[Tile::obsidian->id],	eDifficulty_Easy);
 	
 		setLeaderboardProperty( &miningBlocksEasyProperties[LeaderboardManager::eProperty_Mining_Dirt		], PROPERTY_MINED_DIRT,			getValue(Stats::blocksMined[Tile::dirt->id],		eDifficulty_Easy) );
-		setLeaderboardProperty( &miningBlocksEasyProperties[LeaderboardManager::eProperty_Mining_Stone		], PROPERTY_MINED_STONE,		getValue(Stats::blocksMined[Tile::stoneBrick->id],	eDifficulty_Easy) );
+		setLeaderboardProperty( &miningBlocksEasyProperties[LeaderboardManager::eProperty_Mining_Stone		], PROPERTY_MINED_STONE,		getValue(Stats::blocksMined[Tile::cobblestone->id],	eDifficulty_Easy) );
 		setLeaderboardProperty( &miningBlocksEasyProperties[LeaderboardManager::eProperty_Mining_Sand		], PROPERTY_MINED_SAND,			getValue(Stats::blocksMined[Tile::sand->id],		eDifficulty_Easy) );
-		setLeaderboardProperty( &miningBlocksEasyProperties[LeaderboardManager::eProperty_Mining_Cobblestone], PROPERTY_MINED_COBBLESTONE,	getValue(Stats::blocksMined[Tile::rock->id],		eDifficulty_Easy) );
+		setLeaderboardProperty( &miningBlocksEasyProperties[LeaderboardManager::eProperty_Mining_Cobblestone], PROPERTY_MINED_COBBLESTONE,	getValue(Stats::blocksMined[Tile::stone->id],		eDifficulty_Easy) );
 		setLeaderboardProperty( &miningBlocksEasyProperties[LeaderboardManager::eProperty_Mining_Gravel		], PROPERTY_MINED_GRAVEL,		getValue(Stats::blocksMined[Tile::gravel->id],		eDifficulty_Easy) );
 		setLeaderboardProperty( &miningBlocksEasyProperties[LeaderboardManager::eProperty_Mining_Clay		], PROPERTY_MINED_CLAY,			getValue(Stats::blocksMined[Tile::clay->id],		eDifficulty_Easy) );
 		setLeaderboardProperty( &miningBlocksEasyProperties[LeaderboardManager::eProperty_Mining_Obsidian	], PROPERTY_MINED_OBSIDIAN,		getValue(Stats::blocksMined[Tile::obsidian->id],	eDifficulty_Easy) );
@@ -963,17 +967,17 @@ void StatsCounter::writeStats()
 			
 		rating = 
 			getValue(Stats::blocksMined[Tile::dirt->id],		eDifficulty_Normal) + 
-			getValue(Stats::blocksMined[Tile::stoneBrick->id],	eDifficulty_Normal) + 
+			getValue(Stats::blocksMined[Tile::cobblestone->id],	eDifficulty_Normal) + 
 			getValue(Stats::blocksMined[Tile::sand->id],		eDifficulty_Normal) + 
-			getValue(Stats::blocksMined[Tile::rock->id],		eDifficulty_Normal) + 
+			getValue(Stats::blocksMined[Tile::stone->id],		eDifficulty_Normal) + 
 			getValue(Stats::blocksMined[Tile::gravel->id],		eDifficulty_Normal) + 
 			getValue(Stats::blocksMined[Tile::clay->id],		eDifficulty_Normal) + 
 			getValue(Stats::blocksMined[Tile::obsidian->id],	eDifficulty_Normal);
 	
 		setLeaderboardProperty( &miningBlocksNormalProperties[LeaderboardManager::eProperty_Mining_Dirt			], PROPERTY_MINED_DIRT,			getValue(Stats::blocksMined[Tile::dirt->id],		eDifficulty_Normal) );
-		setLeaderboardProperty( &miningBlocksNormalProperties[LeaderboardManager::eProperty_Mining_Stone		], PROPERTY_MINED_STONE,		getValue(Stats::blocksMined[Tile::stoneBrick->id],	eDifficulty_Normal) );
+		setLeaderboardProperty( &miningBlocksNormalProperties[LeaderboardManager::eProperty_Mining_Stone		], PROPERTY_MINED_STONE,		getValue(Stats::blocksMined[Tile::cobblestone->id],	eDifficulty_Normal) );
 		setLeaderboardProperty( &miningBlocksNormalProperties[LeaderboardManager::eProperty_Mining_Sand			], PROPERTY_MINED_SAND,			getValue(Stats::blocksMined[Tile::sand->id],		eDifficulty_Normal) );
-		setLeaderboardProperty( &miningBlocksNormalProperties[LeaderboardManager::eProperty_Mining_Cobblestone	], PROPERTY_MINED_COBBLESTONE,	getValue(Stats::blocksMined[Tile::rock->id],		eDifficulty_Normal) );
+		setLeaderboardProperty( &miningBlocksNormalProperties[LeaderboardManager::eProperty_Mining_Cobblestone	], PROPERTY_MINED_COBBLESTONE,	getValue(Stats::blocksMined[Tile::stone->id],		eDifficulty_Normal) );
 		setLeaderboardProperty( &miningBlocksNormalProperties[LeaderboardManager::eProperty_Mining_Gravel		], PROPERTY_MINED_GRAVEL,		getValue(Stats::blocksMined[Tile::gravel->id],		eDifficulty_Normal) );
 		setLeaderboardProperty( &miningBlocksNormalProperties[LeaderboardManager::eProperty_Mining_Clay			], PROPERTY_MINED_CLAY,			getValue(Stats::blocksMined[Tile::clay->id],		eDifficulty_Normal) );
 		setLeaderboardProperty( &miningBlocksNormalProperties[LeaderboardManager::eProperty_Mining_Obsidian		], PROPERTY_MINED_OBSIDIAN,		getValue(Stats::blocksMined[Tile::obsidian->id],	eDifficulty_Normal) );
@@ -991,17 +995,17 @@ void StatsCounter::writeStats()
 			
 		rating = 
 			getValue(Stats::blocksMined[Tile::dirt->id],		eDifficulty_Hard) + 
-			getValue(Stats::blocksMined[Tile::stoneBrick->id],	eDifficulty_Hard) + 
+			getValue(Stats::blocksMined[Tile::cobblestone->id],	eDifficulty_Hard) + 
 			getValue(Stats::blocksMined[Tile::sand->id],		eDifficulty_Hard) + 
-			getValue(Stats::blocksMined[Tile::rock->id],		eDifficulty_Hard) + 
+			getValue(Stats::blocksMined[Tile::stone->id],		eDifficulty_Hard) + 
 			getValue(Stats::blocksMined[Tile::gravel->id],		eDifficulty_Hard) + 
 			getValue(Stats::blocksMined[Tile::clay->id],		eDifficulty_Hard) + 
 			getValue(Stats::blocksMined[Tile::obsidian->id],	eDifficulty_Hard);
 	
 		setLeaderboardProperty( &miningBlocksHardProperties[LeaderboardManager::eProperty_Mining_Dirt		], PROPERTY_MINED_DIRT,			getValue(Stats::blocksMined[Tile::dirt->id],		eDifficulty_Hard) );
-		setLeaderboardProperty( &miningBlocksHardProperties[LeaderboardManager::eProperty_Mining_Stone		], PROPERTY_MINED_STONE,		getValue(Stats::blocksMined[Tile::stoneBrick->id],	eDifficulty_Hard) );
+		setLeaderboardProperty( &miningBlocksHardProperties[LeaderboardManager::eProperty_Mining_Stone		], PROPERTY_MINED_STONE,		getValue(Stats::blocksMined[Tile::cobblestone->id],	eDifficulty_Hard) );
 		setLeaderboardProperty( &miningBlocksHardProperties[LeaderboardManager::eProperty_Mining_Sand		], PROPERTY_MINED_SAND,			getValue(Stats::blocksMined[Tile::sand->id],		eDifficulty_Hard) );
-		setLeaderboardProperty( &miningBlocksHardProperties[LeaderboardManager::eProperty_Mining_Cobblestone], PROPERTY_MINED_COBBLESTONE,	getValue(Stats::blocksMined[Tile::rock->id],		eDifficulty_Hard) );
+		setLeaderboardProperty( &miningBlocksHardProperties[LeaderboardManager::eProperty_Mining_Cobblestone], PROPERTY_MINED_COBBLESTONE,	getValue(Stats::blocksMined[Tile::stone->id],		eDifficulty_Hard) );
 		setLeaderboardProperty( &miningBlocksHardProperties[LeaderboardManager::eProperty_Mining_Gravel		], PROPERTY_MINED_GRAVEL,		getValue(Stats::blocksMined[Tile::gravel->id],		eDifficulty_Hard) );
 		setLeaderboardProperty( &miningBlocksHardProperties[LeaderboardManager::eProperty_Mining_Clay		], PROPERTY_MINED_CLAY,			getValue(Stats::blocksMined[Tile::clay->id],		eDifficulty_Hard) );
 		setLeaderboardProperty( &miningBlocksHardProperties[LeaderboardManager::eProperty_Mining_Obsidian	], PROPERTY_MINED_OBSIDIAN,		getValue(Stats::blocksMined[Tile::obsidian->id],	eDifficulty_Hard) );
@@ -1019,15 +1023,15 @@ void StatsCounter::writeStats()
 			
 		rating = 
 			getValue(Stats::itemsCollected[Item::egg->id],		eDifficulty_Peaceful) + 
-			getValue(Stats::blocksMined[Tile::crops_Id],		eDifficulty_Peaceful) + 
-			getValue(Stats::blocksMined[Tile::mushroom1_Id],	eDifficulty_Peaceful) + 
+			getValue(Stats::blocksMined[Tile::wheat_Id],		eDifficulty_Peaceful) + 
+			getValue(Stats::blocksMined[Tile::mushroom_brown_Id],	eDifficulty_Peaceful) + 
 			getValue(Stats::blocksMined[Tile::reeds_Id],		eDifficulty_Peaceful) + 
 			getValue(Stats::cowsMilked,							eDifficulty_Peaceful) + 
 			getValue(Stats::itemsCollected[Tile::pumpkin->id],	eDifficulty_Peaceful);
 	
 		setLeaderboardProperty( &farmingPeacefulProperties[LeaderboardManager::eProperty_Farming_Egg		], PROPERTY_COLLECTED_EGG,			getValue(Stats::itemsCollected[Item::egg->id],		eDifficulty_Peaceful) );
-		setLeaderboardProperty( &farmingPeacefulProperties[LeaderboardManager::eProperty_Farming_Wheat		], PROPERTY_COLLECTED_WHEAT,		getValue(Stats::blocksMined[Tile::crops_Id],		eDifficulty_Peaceful) );
-		setLeaderboardProperty( &farmingPeacefulProperties[LeaderboardManager::eProperty_Farming_Mushroom	], PROPERTY_COLLECTED_MUSHROOM,		getValue(Stats::blocksMined[Tile::mushroom1_Id],	eDifficulty_Peaceful) );
+		setLeaderboardProperty( &farmingPeacefulProperties[LeaderboardManager::eProperty_Farming_Wheat		], PROPERTY_COLLECTED_WHEAT,		getValue(Stats::blocksMined[Tile::wheat_Id],		eDifficulty_Peaceful) );
+		setLeaderboardProperty( &farmingPeacefulProperties[LeaderboardManager::eProperty_Farming_Mushroom	], PROPERTY_COLLECTED_MUSHROOM,		getValue(Stats::blocksMined[Tile::mushroom_brown_Id],	eDifficulty_Peaceful) );
 		setLeaderboardProperty( &farmingPeacefulProperties[LeaderboardManager::eProperty_Farming_Sugarcane	], PROPERTY_COLLECTED_SUGARCANE,	getValue(Stats::blocksMined[Tile::reeds_Id],		eDifficulty_Peaceful) );
 		setLeaderboardProperty( &farmingPeacefulProperties[LeaderboardManager::eProperty_Farming_Milk		], PROPERTY_COLLECTED_MILK,			getValue(Stats::cowsMilked,							eDifficulty_Peaceful) );
 		setLeaderboardProperty( &farmingPeacefulProperties[LeaderboardManager::eProperty_Farming_Pumpkin	], PROPERTY_COLLECTED_PUMPKIN,		getValue(Stats::itemsCollected[Tile::pumpkin->id],	eDifficulty_Peaceful) );
@@ -1045,15 +1049,15 @@ void StatsCounter::writeStats()
 			
 		rating = 
 			getValue(Stats::itemsCollected[Item::egg->id],		eDifficulty_Easy) + 
-			getValue(Stats::blocksMined[Tile::crops_Id],		eDifficulty_Easy) + 
-			getValue(Stats::blocksMined[Tile::mushroom1_Id],	eDifficulty_Easy) + 
+			getValue(Stats::blocksMined[Tile::wheat_Id],		eDifficulty_Easy) + 
+			getValue(Stats::blocksMined[Tile::mushroom_brown_Id],	eDifficulty_Easy) + 
 			getValue(Stats::blocksMined[Tile::reeds_Id],		eDifficulty_Easy) + 
 			getValue(Stats::cowsMilked,							eDifficulty_Easy) + 
 			getValue(Stats::itemsCollected[Tile::pumpkin->id],	eDifficulty_Easy);
 
 		setLeaderboardProperty( &farmingEasyProperties[LeaderboardManager::eProperty_Farming_Egg		], PROPERTY_COLLECTED_EGG,			getValue(Stats::itemsCollected[Item::egg->id],		eDifficulty_Easy) );
-		setLeaderboardProperty( &farmingEasyProperties[LeaderboardManager::eProperty_Farming_Wheat		], PROPERTY_COLLECTED_WHEAT,		getValue(Stats::blocksMined[Tile::crops_Id],		eDifficulty_Easy) );
-		setLeaderboardProperty( &farmingEasyProperties[LeaderboardManager::eProperty_Farming_Mushroom	], PROPERTY_COLLECTED_MUSHROOM,		getValue(Stats::blocksMined[Tile::mushroom1_Id],	eDifficulty_Easy) );
+		setLeaderboardProperty( &farmingEasyProperties[LeaderboardManager::eProperty_Farming_Wheat		], PROPERTY_COLLECTED_WHEAT,		getValue(Stats::blocksMined[Tile::wheat_Id],		eDifficulty_Easy) );
+		setLeaderboardProperty( &farmingEasyProperties[LeaderboardManager::eProperty_Farming_Mushroom	], PROPERTY_COLLECTED_MUSHROOM,		getValue(Stats::blocksMined[Tile::mushroom_brown_Id],	eDifficulty_Easy) );
 		setLeaderboardProperty( &farmingEasyProperties[LeaderboardManager::eProperty_Farming_Sugarcane	], PROPERTY_COLLECTED_SUGARCANE,	getValue(Stats::blocksMined[Tile::reeds_Id],		eDifficulty_Easy) );
 		setLeaderboardProperty( &farmingEasyProperties[LeaderboardManager::eProperty_Farming_Milk		], PROPERTY_COLLECTED_MILK,			getValue(Stats::cowsMilked,							eDifficulty_Easy) );
 		setLeaderboardProperty( &farmingEasyProperties[LeaderboardManager::eProperty_Farming_Pumpkin	], PROPERTY_COLLECTED_PUMPKIN,		getValue(Stats::itemsCollected[Tile::pumpkin->id],	eDifficulty_Easy) );
@@ -1071,15 +1075,15 @@ void StatsCounter::writeStats()
 			
 		rating = 
 			getValue(Stats::itemsCollected[Item::egg->id],		eDifficulty_Normal) + 
-			getValue(Stats::blocksMined[Tile::crops_Id],		eDifficulty_Normal) + 
-			getValue(Stats::blocksMined[Tile::mushroom1_Id],	eDifficulty_Normal) + 
+			getValue(Stats::blocksMined[Tile::wheat_Id],		eDifficulty_Normal) + 
+			getValue(Stats::blocksMined[Tile::mushroom_brown_Id],	eDifficulty_Normal) + 
 			getValue(Stats::blocksMined[Tile::reeds_Id],		eDifficulty_Normal) + 
 			getValue(Stats::cowsMilked,							eDifficulty_Normal) + 
 			getValue(Stats::itemsCollected[Tile::pumpkin->id],	eDifficulty_Normal);
 
 		setLeaderboardProperty( &farmingNormalProperties[LeaderboardManager::eProperty_Farming_Egg		], PROPERTY_COLLECTED_EGG,			getValue(Stats::itemsCollected[Item::egg->id],		eDifficulty_Normal) );
-		setLeaderboardProperty( &farmingNormalProperties[LeaderboardManager::eProperty_Farming_Wheat	], PROPERTY_COLLECTED_WHEAT,		getValue(Stats::blocksMined[Tile::crops_Id],		eDifficulty_Normal) );
-		setLeaderboardProperty( &farmingNormalProperties[LeaderboardManager::eProperty_Farming_Mushroom	], PROPERTY_COLLECTED_MUSHROOM,		getValue(Stats::blocksMined[Tile::mushroom1_Id],	eDifficulty_Normal) );
+		setLeaderboardProperty( &farmingNormalProperties[LeaderboardManager::eProperty_Farming_Wheat	], PROPERTY_COLLECTED_WHEAT,		getValue(Stats::blocksMined[Tile::wheat_Id],		eDifficulty_Normal) );
+		setLeaderboardProperty( &farmingNormalProperties[LeaderboardManager::eProperty_Farming_Mushroom	], PROPERTY_COLLECTED_MUSHROOM,		getValue(Stats::blocksMined[Tile::mushroom_brown_Id],	eDifficulty_Normal) );
 		setLeaderboardProperty( &farmingNormalProperties[LeaderboardManager::eProperty_Farming_Sugarcane], PROPERTY_COLLECTED_SUGARCANE,	getValue(Stats::blocksMined[Tile::reeds_Id],		eDifficulty_Normal) );
 		setLeaderboardProperty( &farmingNormalProperties[LeaderboardManager::eProperty_Farming_Milk		], PROPERTY_COLLECTED_MILK,			getValue(Stats::cowsMilked,							eDifficulty_Normal) );
 		setLeaderboardProperty( &farmingNormalProperties[LeaderboardManager::eProperty_Farming_Pumpkin	], PROPERTY_COLLECTED_PUMPKIN,		getValue(Stats::itemsCollected[Tile::pumpkin->id],	eDifficulty_Normal) );
@@ -1097,15 +1101,15 @@ void StatsCounter::writeStats()
 			
 		rating = 
 			getValue(Stats::itemsCollected[Item::egg->id],		eDifficulty_Hard) + 
-			getValue(Stats::blocksMined[Tile::crops_Id],		eDifficulty_Hard) + 
-			getValue(Stats::blocksMined[Tile::mushroom1_Id],	eDifficulty_Hard) + 
+			getValue(Stats::blocksMined[Tile::wheat_Id],		eDifficulty_Hard) + 
+			getValue(Stats::blocksMined[Tile::mushroom_brown_Id],	eDifficulty_Hard) + 
 			getValue(Stats::blocksMined[Tile::reeds_Id],		eDifficulty_Hard) + 
 			getValue(Stats::cowsMilked,							eDifficulty_Hard) + 
 			getValue(Stats::itemsCollected[Tile::pumpkin->id],	eDifficulty_Hard);
 
 		setLeaderboardProperty( &farmingHardProperties[LeaderboardManager::eProperty_Farming_Egg		], PROPERTY_COLLECTED_EGG,			getValue(Stats::itemsCollected[Item::egg->id],		eDifficulty_Hard) );
-		setLeaderboardProperty( &farmingHardProperties[LeaderboardManager::eProperty_Farming_Wheat		], PROPERTY_COLLECTED_WHEAT,		getValue(Stats::blocksMined[Tile::crops_Id],		eDifficulty_Hard) );
-		setLeaderboardProperty( &farmingHardProperties[LeaderboardManager::eProperty_Farming_Mushroom	], PROPERTY_COLLECTED_MUSHROOM,		getValue(Stats::blocksMined[Tile::mushroom1_Id],	eDifficulty_Hard) );
+		setLeaderboardProperty( &farmingHardProperties[LeaderboardManager::eProperty_Farming_Wheat		], PROPERTY_COLLECTED_WHEAT,		getValue(Stats::blocksMined[Tile::wheat_Id],		eDifficulty_Hard) );
+		setLeaderboardProperty( &farmingHardProperties[LeaderboardManager::eProperty_Farming_Mushroom	], PROPERTY_COLLECTED_MUSHROOM,		getValue(Stats::blocksMined[Tile::mushroom_brown_Id],	eDifficulty_Hard) );
 		setLeaderboardProperty( &farmingHardProperties[LeaderboardManager::eProperty_Farming_Sugarcane	], PROPERTY_COLLECTED_SUGARCANE,	getValue(Stats::blocksMined[Tile::reeds_Id],		eDifficulty_Hard) );
 		setLeaderboardProperty( &farmingHardProperties[LeaderboardManager::eProperty_Farming_Milk		], PROPERTY_COLLECTED_MILK,			getValue(Stats::cowsMilked,							eDifficulty_Hard) );
 		setLeaderboardProperty( &farmingHardProperties[LeaderboardManager::eProperty_Farming_Pumpkin	], PROPERTY_COLLECTED_PUMPKIN,		getValue(Stats::itemsCollected[Tile::pumpkin->id],	eDifficulty_Hard) );
@@ -1249,16 +1253,16 @@ void StatsCounter::setupStatBoards()
 	statBoards.insert( make_pair(Stats::killsSlime, LEADERBOARD_KILLS_PEACEFUL) );
 
 	statBoards.insert( make_pair(Stats::blocksMined[Tile::dirt->id], LEADERBOARD_MININGBLOCKS_PEACEFUL) );
-	statBoards.insert( make_pair(Stats::blocksMined[Tile::stoneBrick->id], LEADERBOARD_MININGBLOCKS_PEACEFUL) );
+	statBoards.insert( make_pair(Stats::blocksMined[Tile::cobblestone->id], LEADERBOARD_MININGBLOCKS_PEACEFUL) );
 	statBoards.insert( make_pair(Stats::blocksMined[Tile::sand->id], LEADERBOARD_MININGBLOCKS_PEACEFUL) );
-	statBoards.insert( make_pair(Stats::blocksMined[Tile::rock->id], LEADERBOARD_MININGBLOCKS_PEACEFUL) );
+	statBoards.insert( make_pair(Stats::blocksMined[Tile::stone->id], LEADERBOARD_MININGBLOCKS_PEACEFUL) );
 	statBoards.insert( make_pair(Stats::blocksMined[Tile::gravel->id], LEADERBOARD_MININGBLOCKS_PEACEFUL) );
 	statBoards.insert( make_pair(Stats::blocksMined[Tile::clay->id], LEADERBOARD_MININGBLOCKS_PEACEFUL) );
 	statBoards.insert( make_pair(Stats::blocksMined[Tile::obsidian->id], LEADERBOARD_MININGBLOCKS_PEACEFUL) );
  
 	statBoards.insert( make_pair(Stats::itemsCollected[Item::egg->id], LEADERBOARD_FARMING_PEACEFUL) );
-	statBoards.insert( make_pair(Stats::blocksMined[Tile::crops_Id], LEADERBOARD_FARMING_PEACEFUL) );
-	statBoards.insert( make_pair(Stats::blocksMined[Tile::mushroom1_Id], LEADERBOARD_FARMING_PEACEFUL) );
+	statBoards.insert( make_pair(Stats::blocksMined[Tile::wheat_Id], LEADERBOARD_FARMING_PEACEFUL) );
+	statBoards.insert( make_pair(Stats::blocksMined[Tile::mushroom_brown_Id], LEADERBOARD_FARMING_PEACEFUL) );
 	statBoards.insert( make_pair(Stats::blocksMined[Tile::reeds_Id], LEADERBOARD_FARMING_PEACEFUL) );
 	statBoards.insert( make_pair(Stats::cowsMilked, LEADERBOARD_FARMING_PEACEFUL) );
 	statBoards.insert( make_pair(Stats::itemsCollected[Tile::pumpkin->id], LEADERBOARD_FARMING_PEACEFUL) );

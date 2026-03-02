@@ -15,6 +15,8 @@
 
 #include "C4JThread_SPU.h"
 #include "C4JSpursJob.h"
+//#define DISABLE_SPU_CODE
+
 #endif
 
 int Chunk::updates = 0;
@@ -233,7 +235,7 @@ void Chunk::rebuild()
 	byteArray tileArray = byteArray(tileIds, 16 * 16 * Level::maxBuildHeight);
 	level->getChunkAt(x,z)->getBlockData(tileArray);		// 4J - TODO - now our data has been re-arranged, we could just extra the vertical slice of this chunk rather than the whole thing
 
-	LevelSource *region = new Region(level, x0 - r, y0 - r, z0 - r, x1 + r, y1 + r, z1 + r);
+	LevelSource *region = new Region(level, x0 - r, y0 - r, z0 - r, x1 + r, y1 + r, z1 + r, r);
 	TileRenderer *tileRenderer = new TileRenderer(region, this->x, this->y, this->z, tileIds);
 
 	// AP - added a caching system for Chunk::rebuild to take advantage of
@@ -278,15 +280,15 @@ void Chunk::rebuild()
 				
 				// Establish whether this tile and its neighbours are all made of rock, dirt, unbreakable tiles, or have already
 				// been determined to meet this criteria themselves and have a tile of 255 set.
-				if( !( ( tileId == Tile::rock_Id ) || ( tileId == Tile::dirt_Id ) || ( tileId == Tile::unbreakable_Id ) || ( tileId == 255) ) ) continue;
+				if( !( ( tileId == Tile::stone_Id ) || ( tileId == Tile::dirt_Id ) || ( tileId == Tile::unbreakable_Id ) || ( tileId == 255) ) ) continue;
 				tileId = tileIds[ offset + ( ( ( xx - 1 ) << 11 ) | ( ( zz + 0 ) << 7 ) | ( indexY + 0 )) ];
-				if( !( ( tileId == Tile::rock_Id ) || ( tileId == Tile::dirt_Id ) || ( tileId == Tile::unbreakable_Id ) || ( tileId == 255) ) ) continue;
+				if( !( ( tileId == Tile::stone_Id ) || ( tileId == Tile::dirt_Id ) || ( tileId == Tile::unbreakable_Id ) || ( tileId == 255) ) ) continue;
 				tileId = tileIds[ offset + ( ( ( xx + 1 ) << 11 ) | ( ( zz + 0 ) << 7 ) | ( indexY + 0 )) ];
-				if( !( ( tileId == Tile::rock_Id ) || ( tileId == Tile::dirt_Id ) || ( tileId == Tile::unbreakable_Id ) || ( tileId == 255) ) ) continue;
+				if( !( ( tileId == Tile::stone_Id ) || ( tileId == Tile::dirt_Id ) || ( tileId == Tile::unbreakable_Id ) || ( tileId == 255) ) ) continue;
 				tileId = tileIds[ offset + ( ( ( xx + 0 ) << 11 ) | ( ( zz - 1 ) << 7 ) | ( indexY + 0 )) ];
-				if( !( ( tileId == Tile::rock_Id ) || ( tileId == Tile::dirt_Id ) || ( tileId == Tile::unbreakable_Id ) || ( tileId == 255) ) ) continue;
+				if( !( ( tileId == Tile::stone_Id ) || ( tileId == Tile::dirt_Id ) || ( tileId == Tile::unbreakable_Id ) || ( tileId == 255) ) ) continue;
 				tileId = tileIds[ offset + ( ( ( xx + 0 ) << 11 ) | ( ( zz + 1 ) << 7 ) | ( indexY + 0 )) ];
-				if( !( ( tileId == Tile::rock_Id ) || ( tileId == Tile::dirt_Id ) || ( tileId == Tile::unbreakable_Id ) || ( tileId == 255) ) ) continue;
+				if( !( ( tileId == Tile::stone_Id ) || ( tileId == Tile::dirt_Id ) || ( tileId == Tile::unbreakable_Id ) || ( tileId == 255) ) ) continue;
 				// Treat the bottom of the world differently - we shouldn't ever be able to look up at this, so consider tiles as invisible
 				// if they are surrounded on sides other than the bottom
 				if( yy > 0 )
@@ -299,7 +301,7 @@ void Chunk::rebuild()
 						yMinusOneOffset = Level::COMPRESSED_CHUNK_SECTION_TILES;
 					}
 					tileId = tileIds[ yMinusOneOffset + ( ( ( xx + 0 ) << 11 ) | ( ( zz + 0 ) << 7 ) | indexYMinusOne ) ];
-					if( !( ( tileId == Tile::rock_Id ) || ( tileId == Tile::dirt_Id ) || ( tileId == Tile::unbreakable_Id ) || ( tileId == 255) ) ) continue;
+					if( !( ( tileId == Tile::stone_Id ) || ( tileId == Tile::dirt_Id ) || ( tileId == Tile::unbreakable_Id ) || ( tileId == 255) ) ) continue;
 				}
 				int indexYPlusOne = yy + 1;
 				int yPlusOneOffset = 0;
@@ -309,7 +311,7 @@ void Chunk::rebuild()
 					yPlusOneOffset = Level::COMPRESSED_CHUNK_SECTION_TILES;
 				}
 				tileId = tileIds[ yPlusOneOffset + ( ( ( xx + 0 ) << 11 ) | ( ( zz + 0 ) << 7 ) | indexYPlusOne ) ];
-				if( !( ( tileId == Tile::rock_Id ) || ( tileId == Tile::dirt_Id ) || ( tileId == Tile::unbreakable_Id ) || ( tileId == 255) ) ) continue;
+				if( !( ( tileId == Tile::stone_Id ) || ( tileId == Tile::dirt_Id ) || ( tileId == Tile::unbreakable_Id ) || ( tileId == 255) ) ) continue;
 
 				// This tile is surrounded. Flag it as not requiring to be rendered by setting its id to 255.
 				tileIds[ offset + ( ( ( xx + 0 ) << 11 ) | ( ( zz + 0 ) << 7 ) | ( indexY + 0 ) ) ] = 0xff;
@@ -618,8 +620,6 @@ ChunkRebuildData g_rebuildDataOut __attribute__((__aligned__(16)));
 TileCompressData_SPU g_tileCompressDataIn __attribute__((__aligned__(16)));
 unsigned char* g_tileCompressDataOut = (unsigned char*)&g_rebuildDataIn.m_tileIds;
 
-#define TILE_RENDER_SPU
-
 
 void RunSPURebuild()
 {
@@ -667,7 +667,7 @@ void Chunk::rebuild_SPU()
 
 	int r = 1;
 
-	Region region(level, x0 - r, y0 - r, z0 - r, x1 + r, y1 + r, z1 + r);
+	Region region(level, x0 - r, y0 - r, z0 - r, x1 + r, y1 + r, z1 + r, r);
 	TileRenderer tileRenderer(&region);
 
 	int lists = levelRenderer->getGlobalIndexForChunk(this->x,this->y,this->z,level) * 2;
@@ -722,19 +722,12 @@ void Chunk::rebuild_SPU()
 		intArray_SPU tesselatorArray((unsigned int*)g_rebuildDataIn.m_tesselator.m_PPUArray);
 		g_rebuildDataIn.m_tesselator._array = &tesselatorArray;
 		g_rebuildDataIn.m_currentLayer = currentLayer;
-	#ifdef TILE_RENDER_SPU
 		g_tileCompressDataIn.setForChunk(&region, x0, y0, z0);
 		RunSPURebuild();
  		g_rebuildDataOut.storeInTesselator();
 		pOutData = &g_rebuildDataOut;
-	#else
-		g_rebuildDataIn.disableUnseenTiles();
-		TileRenderer_SPU *pTileRenderer = new TileRenderer_SPU(&g_rebuildDataIn);
-		g_rebuildDataIn.tesselateAllTiles(pTileRenderer);
-		g_rebuildDataIn.storeInTesselator();
-		pOutData = &g_rebuildDataIn;
-	#endif
- 		if(pOutData->m_flags & ChunkRebuildData::e_flag_Rendered)
+
+		if(pOutData->m_flags & ChunkRebuildData::e_flag_Rendered)
 			rendered = true;
 
 				// 4J - changed loop order here to leave y as the innermost loop for better cache performance

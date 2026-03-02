@@ -7,7 +7,7 @@ public:
 	EndTag() : Tag(L"") {}
 	EndTag(const wstring &name) : Tag(name) {}
 
-	void load(DataInput *dis) {};
+	void load(DataInput *dis, int tagDepth) {};
 	void write(DataOutput *dos) {};
 
 	byte getId() { return TAG_End; }

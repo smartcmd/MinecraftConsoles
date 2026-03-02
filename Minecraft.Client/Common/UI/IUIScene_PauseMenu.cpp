@@ -11,15 +11,23 @@
 #include "..\..\DLCTexturePack.h"
 #include "..\..\..\Minecraft.World\StringHelpers.h"
 
+#ifndef _XBOX
+#include "UI.h"
+#endif
+
 
 int IUIScene_PauseMenu::ExitGameDialogReturned(void *pParam,int iPad,C4JStorage::EMessageResult result)
 {
-	IUIScene_PauseMenu *scene = (IUIScene_PauseMenu *)pParam;
+#ifdef _XBOX
+	IUIScene_PauseMenu *pScene = (IUIScene_PauseMenu *)pParam;
+#else
+	IUIScene_PauseMenu *pScene = dynamic_cast<IUIScene_PauseMenu *>(ui.GetSceneFromCallbackId((size_t)pParam));
+#endif
 
 	// Results switched for this dialog
 	if(result==C4JStorage::EMessage_ResultDecline) 
 	{
-		scene->SetIgnoreInput(true);
+		if(pScene) pScene->SetIgnoreInput(true);
 		app.SetAction(iPad,eAppAction_ExitWorld);
 	}
 	return 0;
@@ -28,7 +36,11 @@ int IUIScene_PauseMenu::ExitGameDialogReturned(void *pParam,int iPad,C4JStorage:
 
 int IUIScene_PauseMenu::ExitGameSaveDialogReturned(void *pParam,int iPad,C4JStorage::EMessageResult result)
 {
-	IUIScene_PauseMenu *scene = (IUIScene_PauseMenu *)pParam;
+#ifdef _XBOX
+	IUIScene_PauseMenu *pScene = (IUIScene_PauseMenu *)pParam;
+#else
+	IUIScene_PauseMenu *pScene = dynamic_cast<IUIScene_PauseMenu *>(ui.GetSceneFromCallbackId((size_t)pParam));
+#endif
 
 	// Exit with or without saving
 	// Decline means save in this dialog
@@ -62,7 +74,7 @@ int IUIScene_PauseMenu::ExitGameSaveDialogReturned(void *pParam,int iPad,C4JStor
 					uiIDA[1]=IDS_CONFIRM_CANCEL;
 
 					// Give the player a warning about the trial version of the texture pack
-					ui.RequestMessageBox(IDS_WARNING_DLC_TRIALTEXTUREPACK_TITLE, IDS_WARNING_DLC_TRIALTEXTUREPACK_TEXT, uiIDA, 2, ProfileManager.GetPrimaryPad() , &IUIScene_PauseMenu::WarningTrialTexturePackReturned, scene,app.GetStringTable(), NULL, 0, false);
+					ui.RequestAlertMessage(IDS_WARNING_DLC_TRIALTEXTUREPACK_TITLE, IDS_WARNING_DLC_TRIALTEXTUREPACK_TEXT, uiIDA, 2, ProfileManager.GetPrimaryPad() , &IUIScene_PauseMenu::WarningTrialTexturePackReturned, pParam);
 
 					return S_OK;					
 				}
@@ -78,7 +90,7 @@ int IUIScene_PauseMenu::ExitGameSaveDialogReturned(void *pParam,int iPad,C4JStor
 				UINT uiIDA[2];
 				uiIDA[0]=IDS_CONFIRM_CANCEL;
 				uiIDA[1]=IDS_CONFIRM_OK;
-				ui.RequestMessageBox(IDS_TITLE_SAVE_GAME, IDS_CONFIRM_SAVE_GAME, uiIDA, 2, ProfileManager.GetPrimaryPad(), &IUIScene_PauseMenu::ExitGameAndSaveReturned, scene, app.GetStringTable(), NULL, 0, false);
+				ui.RequestAlertMessage(IDS_TITLE_SAVE_GAME, IDS_CONFIRM_SAVE_GAME, uiIDA, 2, ProfileManager.GetPrimaryPad(), &IUIScene_PauseMenu::ExitGameAndSaveReturned, pParam);
 				return 0;
 			}
 			else
@@ -95,11 +107,11 @@ int IUIScene_PauseMenu::ExitGameSaveDialogReturned(void *pParam,int iPad,C4JStor
 			UINT uiIDA[2];
 			uiIDA[0]=IDS_CONFIRM_CANCEL;
 			uiIDA[1]=IDS_CONFIRM_OK;
-			ui.RequestMessageBox(IDS_TITLE_DECLINE_SAVE_GAME, IDS_CONFIRM_DECLINE_SAVE_GAME, uiIDA, 2, ProfileManager.GetPrimaryPad(), &IUIScene_PauseMenu::ExitGameDeclineSaveReturned, scene, app.GetStringTable(), NULL, 0, false);
+			ui.RequestAlertMessage(IDS_TITLE_DECLINE_SAVE_GAME, IDS_CONFIRM_DECLINE_SAVE_GAME, uiIDA, 2, ProfileManager.GetPrimaryPad(), &IUIScene_PauseMenu::ExitGameDeclineSaveReturned, pParam);
 			return 0;
 		}
 
-		scene->SetIgnoreInput(true);
+		if(pScene) pScene->SetIgnoreInput(true);
 
 		app.SetAction(iPad,eAppAction_ExitWorld);
 	}
@@ -110,7 +122,11 @@ int IUIScene_PauseMenu::ExitGameSaveDialogReturned(void *pParam,int iPad,C4JStor
 int IUIScene_PauseMenu::ExitGameAndSaveReturned(void *pParam,int iPad,C4JStorage::EMessageResult result)
 {
 	// 4J-PB - we won't come in here if we have a trial texture pack
-	IUIScene_PauseMenu *scene = (IUIScene_PauseMenu *)pParam;
+#ifdef _XBOX
+	IUIScene_PauseMenu *pScene = (IUIScene_PauseMenu *)pParam;
+#else
+	IUIScene_PauseMenu *pScene = dynamic_cast<IUIScene_PauseMenu *>(ui.GetSceneFromCallbackId((size_t)pParam));
+#endif
 
 	// results switched for this dialog
 	if(result==C4JStorage::EMessage_ResultDecline) 
@@ -121,7 +137,7 @@ int IUIScene_PauseMenu::ExitGameAndSaveReturned(void *pParam,int iPad,C4JStorage
 #if defined(_XBOX_ONE) || defined(__ORBIS__)
 		StorageManager.SetSaveDisabled(false);
 #endif
-		scene->SetIgnoreInput(true);
+		if(pScene) pScene->SetIgnoreInput(true);
 		MinecraftServer::getInstance()->setSaveOnExit( true );
 		// flag a app action of exit game
 		app.SetAction(iPad,eAppAction_ExitWorld);
@@ -139,11 +155,11 @@ int IUIScene_PauseMenu::ExitGameAndSaveReturned(void *pParam,int iPad,C4JStorage
 
 			if(g_NetworkManager.GetPlayerCount()>1)
 			{
-				ui.RequestMessageBox(IDS_EXIT_GAME, IDS_CONFIRM_EXIT_GAME_CONFIRM_DISCONNECT_SAVE, uiIDA, 3, ProfileManager.GetPrimaryPad(), &IUIScene_PauseMenu::ExitGameSaveDialogReturned, scene, app.GetStringTable(), NULL, 0, false);
+				ui.RequestAlertMessage(IDS_EXIT_GAME, IDS_CONFIRM_EXIT_GAME_CONFIRM_DISCONNECT_SAVE, uiIDA, 3, ProfileManager.GetPrimaryPad(), &IUIScene_PauseMenu::ExitGameSaveDialogReturned, pParam);
 			}
 			else
 			{
-				ui.RequestMessageBox(IDS_EXIT_GAME, IDS_CONFIRM_EXIT_GAME, uiIDA, 3, ProfileManager.GetPrimaryPad(), &IUIScene_PauseMenu::ExitGameSaveDialogReturned, scene, app.GetStringTable(), NULL, 0, false);
+				ui.RequestAlertMessage(IDS_EXIT_GAME, IDS_CONFIRM_EXIT_GAME, uiIDA, 3, ProfileManager.GetPrimaryPad(), &IUIScene_PauseMenu::ExitGameSaveDialogReturned, pParam);
 			}
 		}
 	}
@@ -154,7 +170,11 @@ int IUIScene_PauseMenu::ExitGameAndSaveReturned(void *pParam,int iPad,C4JStorage
 
 int IUIScene_PauseMenu::ExitGameDeclineSaveReturned(void *pParam,int iPad,C4JStorage::EMessageResult result)
 {
-	IUIScene_PauseMenu *scene = (IUIScene_PauseMenu *)pParam;
+#ifdef _XBOX
+	IUIScene_PauseMenu *pScene = (IUIScene_PauseMenu *)pParam;
+#else
+	IUIScene_PauseMenu *pScene = dynamic_cast<IUIScene_PauseMenu *>(ui.GetSceneFromCallbackId((size_t)pParam));
+#endif
 
 	// results switched for this dialog
 	if(result==C4JStorage::EMessage_ResultDecline) 
@@ -163,7 +183,7 @@ int IUIScene_PauseMenu::ExitGameDeclineSaveReturned(void *pParam,int iPad,C4JSto
 		// Don't do this here, as it will still try and save some things even though it shouldn't!
 		//StorageManager.SetSaveDisabled(false);
 #endif
-		scene->SetIgnoreInput(true);
+		if(pScene) pScene->SetIgnoreInput(true);
 		MinecraftServer::getInstance()->setSaveOnExit( false );
 		// flag a app action of exit game
 		app.SetAction(iPad,eAppAction_ExitWorld);
@@ -181,11 +201,11 @@ int IUIScene_PauseMenu::ExitGameDeclineSaveReturned(void *pParam,int iPad,C4JSto
 
 			if(g_NetworkManager.GetPlayerCount()>1)
 			{
-				ui.RequestMessageBox(IDS_EXIT_GAME, IDS_CONFIRM_EXIT_GAME_CONFIRM_DISCONNECT_SAVE, uiIDA, 3, ProfileManager.GetPrimaryPad(),&IUIScene_PauseMenu::ExitGameSaveDialogReturned, scene, app.GetStringTable(), NULL, 0, false);
+				ui.RequestAlertMessage(IDS_EXIT_GAME, IDS_CONFIRM_EXIT_GAME_CONFIRM_DISCONNECT_SAVE, uiIDA, 3, ProfileManager.GetPrimaryPad(),&IUIScene_PauseMenu::ExitGameSaveDialogReturned, pParam);
 			}
 			else
 			{
-				ui.RequestMessageBox(IDS_EXIT_GAME, IDS_CONFIRM_EXIT_GAME, uiIDA, 3, ProfileManager.GetPrimaryPad(),&IUIScene_PauseMenu::ExitGameSaveDialogReturned, scene, app.GetStringTable(), NULL, 0, false);
+				ui.RequestAlertMessage(IDS_EXIT_GAME, IDS_CONFIRM_EXIT_GAME, uiIDA, 3, ProfileManager.GetPrimaryPad(),&IUIScene_PauseMenu::ExitGameSaveDialogReturned, pParam);
 			}
 		}
 
@@ -214,7 +234,7 @@ int IUIScene_PauseMenu::WarningTrialTexturePackReturned(void *pParam,int iPad,C4
 			{
 				UINT uiIDA[1];
 				uiIDA[0]=IDS_CONFIRM_OK;
-				ui.RequestMessageBox(IDS_ONLINE_SERVICE_TITLE, IDS_CONTENT_RESTRICTION, uiIDA, 1, iPad,NULL,&app, app.GetStringTable(), NULL, 0, false);
+				ui.RequestAlertMessage(IDS_ONLINE_SERVICE_TITLE, IDS_CONTENT_RESTRICTION, uiIDA, 1, iPad);
 			}
 			else
 			{
@@ -288,7 +308,7 @@ int IUIScene_PauseMenu::WarningTrialTexturePackReturned(void *pParam,int iPad,C4
 			{	
 				// 4J-JEV: Fix for XB1: #165863 - XR-074: Compliance: With no active network connection user is unable to convert from Trial to Full texture pack and is not messaged why.
 				UINT uiIDA[1] = { IDS_CONFIRM_OK };
-				ui.RequestMessageBox(IDS_PRO_NOTONLINE_TITLE, IDS_PRO_XBOXLIVE_NOTIFICATION, uiIDA, 1, iPad, NULL, NULL, app.GetStringTable()); 
+				ui.RequestErrorMessage(IDS_PRO_NOTONLINE_TITLE, IDS_PRO_XBOXLIVE_NOTIFICATION, uiIDA, 1, iPad); 
 			}
 		}
 	}
@@ -498,7 +518,7 @@ void IUIScene_PauseMenu::_ExitWorld(LPVOID lpParameter)
 			uiIDA[0]=IDS_CONFIRM_OK;
 			// 4J Stu - Fix for #48669 - TU5: Code: Compliance: TCR #15: Incorrect/misleading messages after signing out a profile during online game session.
 			// If the primary player is signed out, then that is most likely the cause of the disconnection so don't display a message box. This will allow the message box requested by the libraries to be brought up
-			if( ProfileManager.IsSignedIn(ProfileManager.GetPrimaryPad())) ui.RequestMessageBox( exitReasonTitleId, exitReasonStringId, uiIDA,1,ProfileManager.GetPrimaryPad(),NULL,NULL, app.GetStringTable());
+			if( ProfileManager.IsSignedIn(ProfileManager.GetPrimaryPad())) ui.RequestErrorMessage( exitReasonTitleId, exitReasonStringId, uiIDA,1,ProfileManager.GetPrimaryPad());
 			exitReasonStringId = -1;
 
 			// 4J - Force a disconnection, this handles the situation that the server has already disconnected
@@ -596,7 +616,7 @@ void IUIScene_PauseMenu::_ExitWorld(LPVOID lpParameter)
 			
 			UINT uiIDA[1];
 			uiIDA[0]=IDS_CONFIRM_OK;
-			ui.RequestMessageBox( exitReasonTitleId, exitReasonStringId, uiIDA,1,ProfileManager.GetPrimaryPad(),NULL,NULL, app.GetStringTable());
+			ui.RequestErrorMessage( exitReasonTitleId, exitReasonStringId, uiIDA,1,ProfileManager.GetPrimaryPad());
 			exitReasonStringId = -1;
 		}
 	}
@@ -644,7 +664,7 @@ int IUIScene_PauseMenu::SaveGameDialogReturned(void *pParam,int iPad,C4JStorage:
 		UINT uiIDA[2];
 		uiIDA[0]=IDS_CONFIRM_CANCEL;
 		uiIDA[1]=IDS_CONFIRM_OK;
-		ui.RequestMessageBox(IDS_TITLE_ENABLE_AUTOSAVE, IDS_CONFIRM_ENABLE_AUTOSAVE, uiIDA, 2, iPad,&IUIScene_PauseMenu::EnableAutosaveDialogReturned,pParam, app.GetStringTable(), NULL, 0, false);
+		ui.RequestAlertMessage(IDS_TITLE_ENABLE_AUTOSAVE, IDS_CONFIRM_ENABLE_AUTOSAVE, uiIDA, 2, iPad,&IUIScene_PauseMenu::EnableAutosaveDialogReturned,pParam);
 #else
 		// flag a app action of save game
 		app.SetAction(iPad,eAppAction_SaveGame);

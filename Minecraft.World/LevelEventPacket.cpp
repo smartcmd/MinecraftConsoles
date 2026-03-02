@@ -15,13 +15,14 @@ LevelEventPacket::LevelEventPacket()
 	z = 0;
 }
 
-LevelEventPacket::LevelEventPacket(int type, int x, int y, int z, int data)
+LevelEventPacket::LevelEventPacket(int type, int x, int y, int z, int data, bool globalEvent)
 {
 	this->type = type;
 	this->x = x;
 	this->y = y;
 	this->z = z;
 	this->data = data;
+	this->globalEvent = globalEvent;
 }
 
 void LevelEventPacket::read(DataInputStream *dis) //throws IOException
@@ -31,6 +32,7 @@ void LevelEventPacket::read(DataInputStream *dis) //throws IOException
 	y = dis->readByte() & 0xff;
 	z = dis->readInt();
 	data = dis->readInt();
+	globalEvent = dis->readBoolean();
 }
 
 void LevelEventPacket::write(DataOutputStream *dos) //throws IOException
@@ -40,6 +42,7 @@ void LevelEventPacket::write(DataOutputStream *dos) //throws IOException
 	dos->writeByte(y & 0xff);
 	dos->writeInt(z);
 	dos->writeInt(data);
+	dos->writeBoolean(globalEvent);
 }
 
 void LevelEventPacket::handle(PacketListener *listener) 
@@ -52,3 +55,7 @@ int LevelEventPacket::getEstimatedSize()
 	return 4 * 5 + 1;
 }
 
+bool LevelEventPacket::isGlobalEvent()
+{
+	return globalEvent;
+}

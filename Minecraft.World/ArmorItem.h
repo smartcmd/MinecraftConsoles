@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Item.h"
+#include "DefaultDispenseItemBehavior.h"
 
 class ArmorItem : public Item
 {
@@ -17,6 +18,13 @@ private:
 
 public:
 	static const wstring TEXTURE_EMPTY_SLOTS[];
+
+private:
+	class ArmorDispenseItemBehavior : public DefaultDispenseItemBehavior
+	{
+	protected:
+		virtual shared_ptr<ItemInstance> execute(BlockSource *source, shared_ptr<ItemInstance> dispensed, eOUTCOME &outcome);
+	};
 
 public:
 	class ArmorMaterial
@@ -64,27 +72,20 @@ private:
 public:
 	ArmorItem(int id, const ArmorMaterial *armorType, int icon, int slot);
 
-	//@Override
-	int getColor(shared_ptr<ItemInstance> item, int spriteLayer);
 
-	//@Override
-	bool hasMultipleSpriteLayers();
-
+	virtual int getColor(shared_ptr<ItemInstance> item, int spriteLayer);
+	virtual bool hasMultipleSpriteLayers();
 	virtual int getEnchantmentValue();
+	virtual const ArmorMaterial *getMaterial();
+	virtual bool hasCustomColor(shared_ptr<ItemInstance> item);
+	virtual int getColor(shared_ptr<ItemInstance> item);
 
-	const ArmorMaterial *getMaterial();
-	bool hasCustomColor(shared_ptr<ItemInstance> item);
-	int getColor(shared_ptr<ItemInstance> item);
+	virtual Icon *getLayerIcon(int auxValue, int spriteLayer);
+	virtual void clearColor(shared_ptr<ItemInstance> item);
+	virtual void setColor(shared_ptr<ItemInstance> item, int color);
 
-	//@Override
-	Icon *getLayerIcon(int auxValue, int spriteLayer);
-	void clearColor(shared_ptr<ItemInstance> item);
-	void setColor(shared_ptr<ItemInstance> item, int color);
-
-	bool isValidRepairItem(shared_ptr<ItemInstance> source, shared_ptr<ItemInstance> repairItem);
-
-	//@Override
-	void registerIcons(IconRegister *iconRegister);
+	virtual bool isValidRepairItem(shared_ptr<ItemInstance> source, shared_ptr<ItemInstance> repairItem);
+	virtual void registerIcons(IconRegister *iconRegister);
 
 	static Icon *getEmptyIcon(int slot);
 };

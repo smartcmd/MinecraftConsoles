@@ -43,6 +43,10 @@ shared_ptr<SavedData> SavedDataStorage::get(const type_info& clazz, const wstrin
 			{
 				data = dynamic_pointer_cast<SavedData>( shared_ptr<Villages>(new Villages(id) ) );
 			}
+			else if( clazz == typeid(StructureFeatureSavedData) )
+			{
+				data = dynamic_pointer_cast<SavedData>( shared_ptr<StructureFeatureSavedData>( new StructureFeatureSavedData(id) ) );
+			}
 			else
 			{
 				// Handling of new SavedData class required

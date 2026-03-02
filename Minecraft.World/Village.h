@@ -19,10 +19,10 @@ private:
 	class Aggressor
 	{
 	public:
-		shared_ptr<Mob> mob;
+		shared_ptr<LivingEntity> mob;
 		int timeStamp;
 
-		Aggressor(shared_ptr<Mob> mob, int timeStamp);
+		Aggressor(shared_ptr<LivingEntity> mob, int timeStamp);
 	};
 
 	vector<Aggressor *> aggressors;
@@ -57,9 +57,9 @@ public:
 	shared_ptr<DoorInfo> getDoorInfo(int x, int y, int z);
 	void addDoorInfo(shared_ptr<DoorInfo> di);
 	bool canRemove();
-	void addAggressor(shared_ptr<Mob> mob);
-	shared_ptr<Mob> getClosestAggressor(shared_ptr<Mob> from);
-	shared_ptr<Player> getClosestBadStandingPlayer(shared_ptr<Mob> from); // 4J Stu - Should be LivingEntity when we add that
+	void addAggressor(shared_ptr<LivingEntity> mob);
+	shared_ptr<LivingEntity> getClosestAggressor(shared_ptr<LivingEntity> from);
+	shared_ptr<Player> getClosestBadStandingPlayer(shared_ptr<LivingEntity> from);
 
 private:
 	void updateAggressors();

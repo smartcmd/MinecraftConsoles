@@ -47,6 +47,7 @@ class Double
 {
 public:
 	static const double MAX_VALUE;
+	static const double MIN_NORMAL;
 
 	static bool isNaN( double a ) {
 #ifdef __PS3__

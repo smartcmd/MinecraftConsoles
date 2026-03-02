@@ -2,6 +2,8 @@
 #include "SquidRenderer.h"
 #include "..\Minecraft.World\net.minecraft.world.entity.animal.h"
 
+ResourceLocation SquidRenderer::SQUID_LOCATION = ResourceLocation(TN_MOB_SQUID);
+
 SquidRenderer::SquidRenderer(Model *model, float shadow) : MobRenderer(model, shadow)
 {
 }
@@ -11,7 +13,7 @@ void SquidRenderer::render(shared_ptr<Entity> mob, double x, double y, double z,
 	MobRenderer::render(mob, x, y, z, rot, a);
 }
 
-void SquidRenderer::setupRotations(shared_ptr<Mob> _mob, float bob, float bodyRot, float a)
+void SquidRenderer::setupRotations(shared_ptr<LivingEntity> _mob, float bob, float bodyRot, float a)
 {
 	// 4J - dynamic cast required because we aren't using templates/generics in our version
 	shared_ptr<Squid> mob = dynamic_pointer_cast<Squid>(_mob);
@@ -26,10 +28,15 @@ void SquidRenderer::setupRotations(shared_ptr<Mob> _mob, float bob, float bodyRo
     glTranslatef(0, -1.2f, 0);
 }
 
-float SquidRenderer::getBob(shared_ptr<Mob> _mob, float a)
+float SquidRenderer::getBob(shared_ptr<LivingEntity> _mob, float a)
 {
 	// 4J - dynamic cast required because we aren't using templates/generics in our version
 	shared_ptr<Squid> mob = dynamic_pointer_cast<Squid>(_mob);
 
     return mob->oldTentacleAngle + (mob->tentacleAngle - mob->oldTentacleAngle) * a;
+}
+
+ResourceLocation *SquidRenderer::getTextureLocation(shared_ptr<Entity> mob)
+{
+    return &SQUID_LOCATION;
 }

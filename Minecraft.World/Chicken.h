@@ -24,7 +24,11 @@ private:
 public:
 	Chicken(Level *level);
 	virtual bool useNewAi();
-	virtual int getMaxHealth();
+
+protected:
+	void registerAttributes();
+
+public:
 	virtual void aiStep();	
 
 protected:
@@ -32,6 +36,7 @@ protected:
 	virtual int getAmbientSound();
     virtual int getHurtSound();
     virtual int getDeathSound();
+	virtual void playStepSound(int xt, int yt, int zt, int t);
     virtual int getDeathLoot();
 	virtual void dropDeathLoot(bool wasKilledByPlayer, int playerBonusLevel);
 

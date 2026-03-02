@@ -11,6 +11,9 @@
 #include <queue>
 
 #include <unordered_map>
+#if defined __PSVITA__
+#include "..\..\Minecraft.Client\PSVita\4JLibs\inc\4J_Profile.h"
+#endif
 
 class SQRNetworkPlayer;
 class ISQRNetworkManagerListener;
@@ -30,7 +33,9 @@ public:
 protected:
 	friend class SQRNetworkPlayer;
 	friend class SonyVoiceChat;
-
+#ifdef __PSVITA__
+	friend class HelloSyncInfo;
+#endif
 
 	static const int MAX_FRIENDS = 100;
 #ifdef __PS3__
@@ -231,6 +236,8 @@ protected:
 	std::queue<StateChangeInfo>						m_stateChangeQueue;
 	CRITICAL_SECTION								m_csStateChangeQueue;
 	CRITICAL_SECTION								m_csMatching;
+	CRITICAL_SECTION								m_csAckQueue;
+	std::queue<int>									m_queuedAckRequests;
 
 	typedef enum
 	{
@@ -294,6 +301,13 @@ public:
 	virtual int							GetSessionIndex(SQRNetworkPlayer *player) = 0;
 
 	static void							SafeToRespondToGameBootInvite();
+
+	int									GetOutstandingAckCount(SQRNetworkPlayer *pSonyPlayer);
+	int									GetSendQueueSizeBytes();
+	int									GetSendQueueSizeMessages();
+	void								RequestWriteAck(int smallId);
+	void								TickWriteAcks();
+
 
 };
 

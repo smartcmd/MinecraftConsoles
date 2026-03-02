@@ -3,7 +3,7 @@
 #include "net.minecraft.world.inventory.h"
 #include "ClientSideMerchant.h"
 
-ClientSideMerchant::ClientSideMerchant(shared_ptr<Player> source, int name)
+ClientSideMerchant::ClientSideMerchant(shared_ptr<Player> source, const wstring &name)
 {
 	this->source = source;
 	// 4J Stu - Need to do this after creating as a shared_ptr
@@ -58,7 +58,7 @@ void ClientSideMerchant::notifyTradeUpdated(shared_ptr<ItemInstance> item)
 {
 }
 
-int ClientSideMerchant::getDisplayName()
+wstring ClientSideMerchant::getDisplayName()
 {
 	return m_name;
 }

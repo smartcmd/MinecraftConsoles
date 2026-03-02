@@ -146,7 +146,10 @@ void PistonPieceEntity::finalTick()
 		level->removeTileEntity(x, y, z);
 		setRemoved();
 		if (level->getTile(x, y, z) == Tile::pistonMovingPiece_Id)
-			level->setTileAndData(x, y, z, id, data);
+		{
+			level->setTileAndData(x, y, z, id, data, Tile::UPDATE_ALL);
+			level->neighborChanged(x, y, z, id);
+		}
 	}
 }
 
@@ -160,7 +163,10 @@ void PistonPieceEntity::tick()
 		level->removeTileEntity(x, y, z);
 		setRemoved();
 		if (level->getTile(x, y, z) == Tile::pistonMovingPiece_Id)
-			level->setTileAndData(x, y, z, id, data);
+		{
+			level->setTileAndData(x, y, z, id, data, Tile::UPDATE_ALL);
+			level->neighborChanged(x, y, z, id);
+		}
 		return;
 	}
 

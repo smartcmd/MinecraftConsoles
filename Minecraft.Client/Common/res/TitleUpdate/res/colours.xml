@@ -218,6 +218,10 @@ if __name__=="__main__": notecolors()
   <colour name="Effect_Hunger" value="587653"/>
   <colour name="Effect_Weakness" value="484d48"/>
   <colour name="Effect_Poison" value="4e9331"/>
+  <colour name="Effect_Wither" value="352a27"/>
+  <colour name="Effect_HealthBoost" value="f87d23"/>
+  <colour name="Effect_Absorption" value="2552a5"/>
+  <colour name="Effect_Saturation" value="f82423"/>
   <colour name="Potion_BaseColour" value="385dc6"/>
 
   <!-- Mob Egg colours -->
@@ -263,6 +267,12 @@ if __name__=="__main__": notecolors()
   <colour name="Mob_Ocelot_Colour2" value="564434"/>
   <colour name="Mob_Villager_Colour1" value="563c33"/>
   <colour name="Mob_Villager_Colour2" value="bd8b72"/>
+  <colour name="Mob_Bat_Colour1" value="4c3e30"/>
+  <colour name="Mob_Bat_Colour2" value="0f0f0f"/>
+  <colour name="Mob_Witch_Colour1" value="340000"/>
+  <colour name="Mob_Witch_Colour2" value="51a03e"/>
+  <colour name="Mob_Horse_Colour1" value="C09E7D"/>
+  <colour name="Mob_Horse_Colour2" value="EEE500"/>
 
   <colour name="Armour_Default_Leather_Colour" value="A06540"/>
 
@@ -280,4 +290,10 @@ if __name__=="__main__": notecolors()
   
   <colour name="Sign_Text" value="000000"/>
   <colour name="Map_Text" value="ff000000"/>
+
+  <colour name="Leash_Light_Colour" value="80664d"/>
+  <colour name="Leash_Dark_Colour" value="5a4736"/>
+
+  <!-- ARGB -->
+  <colour name="Fire_Overlay" value="E5ffffff"/>
 </root>

@@ -1,4 +1,5 @@
 #include "stdafx.h"
+#include "net.minecraft.world.entity.ai.attributes.h"
 #include "net.minecraft.world.entity.ai.control.h"
 #include "net.minecraft.world.entity.ai.goal.h"
 #include "net.minecraft.world.entity.ai.goal.target.h"
@@ -23,34 +24,30 @@ VillagerGolem::VillagerGolem(Level *level) : Golem(level)
 	// 4J Stu - This function call had to be moved here from the Entity ctor to ensure that
 	// the derived version of the function is called
 	this->defineSynchedData();
-
-	// 4J Stu - This function call had to be moved here from the Entity ctor to ensure that the derived version of the function is called
-	health = getMaxHealth();
+	registerAttributes();
+	setHealth(getMaxHealth());
 
 	villageUpdateInterval = 0;
 	village = weak_ptr<Village>();
 	attackAnimationTick = 0;
 	offerFlowerTick = 0;
 
-	this->textureIdx = TN_MOB_VILLAGER_GOLEM; // "/mob/villager_golem.png";
-	this->setSize(1.4f, 2.9f);
+	setSize(1.4f, 2.9f);
 
 	getNavigation()->setAvoidWater(true);
 
-	// 4J-JEV: These speed values are as they appear before 1.6.4 (1.5),
-	// as the movement speed system changes then. (Mob attributes added)
-	goalSelector.addGoal(1, new MeleeAttackGoal(this, 0.25f, true));
-	goalSelector.addGoal(2, new MoveTowardsTargetGoal(this, 0.22f, 32));
-	goalSelector.addGoal(3, new MoveThroughVillageGoal(this, 0.16f, true));
-	goalSelector.addGoal(4, new MoveTowardsRestrictionGoal(this, 0.16f));
+	goalSelector.addGoal(1, new MeleeAttackGoal(this, 1.0, true));
+	goalSelector.addGoal(2, new MoveTowardsTargetGoal(this, 0.9, 32));
+	goalSelector.addGoal(3, new MoveThroughVillageGoal(this, 0.6, true));
+	goalSelector.addGoal(4, new MoveTowardsRestrictionGoal(this, 1.0));
 	goalSelector.addGoal(5, new OfferFlowerGoal(this));
-	goalSelector.addGoal(6, new RandomStrollGoal(this, 0.16f));
+	goalSelector.addGoal(6, new RandomStrollGoal(this, 0.6));
 	goalSelector.addGoal(7, new LookAtPlayerGoal(this, typeid(Player), 6));
 	goalSelector.addGoal(8, new RandomLookAroundGoal(this));
 
 	targetSelector.addGoal(1, new DefendVillageTargetGoal(this));
 	targetSelector.addGoal(2, new HurtByTargetGoal(this, false));
-	targetSelector.addGoal(3, new NearestAttackableTargetGoal(this, typeid(Monster), 16, 0, false, true));
+	targetSelector.addGoal(3, new NearestAttackableTargetGoal(this, typeid(Mob), 0, false, true, Enemy::ENEMY_SELECTOR));
 }
 
 void VillagerGolem::defineSynchedData()
@@ -82,15 +79,30 @@ void VillagerGolem::serverAiMobStep()
 	Golem::serverAiMobStep();
 }
 
-int VillagerGolem::getMaxHealth()
+void VillagerGolem::registerAttributes()
 {
-	return 100;
+	Golem::registerAttributes();
+
+	getAttribute(SharedMonsterAttributes::MAX_HEALTH)->setBaseValue(100);
+	getAttribute(SharedMonsterAttributes::MOVEMENT_SPEED)->setBaseValue(0.25f);
 }
 
 int VillagerGolem::decreaseAirSupply(int currentSupply)
 {
 	// infinite air supply
 	return currentSupply;
+}
+
+void VillagerGolem::doPush(shared_ptr<Entity> e)
+{
+	if ( e->instanceof(eTYPE_ENEMY) )
+	{
+		if (getRandom()->nextInt(20) == 0)
+		{
+			setTarget(dynamic_pointer_cast<LivingEntity>(e));
+		}
+	}
+	Golem::doPush(e);
 }
 
 void VillagerGolem::aiStep()
@@ -103,7 +115,7 @@ void VillagerGolem::aiStep()
 	if (xd * xd + zd * zd > MoveControl::MIN_SPEED_SQR && random->nextInt(5) == 0)
 	{
 		int xt = Mth::floor(x);
-		int yt = Mth::floor(y - 0.2f - this->heightOffset);
+		int yt = Mth::floor(y - 0.2f - heightOffset);
 		int zt = Mth::floor(z);
 		int t = level->getTile(xt, yt, zt);
 		int d = level->getData(xt, yt, zt);
@@ -139,7 +151,7 @@ bool VillagerGolem::doHurtTarget(shared_ptr<Entity> target)
 	level->broadcastEntityEvent(shared_from_this(), EntityEvent::START_ATTACKING);
 	bool hurt = target->hurt(DamageSource::mobAttack(dynamic_pointer_cast<Mob>(shared_from_this())), 7 + random->nextInt(15));
 	if (hurt) target->yd += 0.4f;
-	level->playSound(shared_from_this(), eSoundType_MOB_IRONGOLEM_THROW, 1, 1);
+	playSound(eSoundType_MOB_IRONGOLEM_THROW, 1, 1);
 	return hurt;
 }
 
@@ -148,7 +160,7 @@ void VillagerGolem::handleEntityEvent(byte id)
 	if (id == EntityEvent::START_ATTACKING)
 	{
 		attackAnimationTick = 10;
-		level->playSound(shared_from_this(), eSoundType_MOB_IRONGOLEM_THROW, 1, 1);
+		playSound(eSoundType_MOB_IRONGOLEM_THROW, 1, 1);
 	}
 	else if (id == EntityEvent::OFFER_FLOWER)
 	{
@@ -190,7 +202,7 @@ int VillagerGolem::getDeathSound()
 
 void VillagerGolem::playStepSound(int xt, int yt, int zt, int t)
 {
-	level->playSound(shared_from_this(), eSoundType_MOB_IRONGOLEM_WALK, 1, 1);
+	playSound(eSoundType_MOB_IRONGOLEM_WALK, 1, 1);
 }
 
 void VillagerGolem::dropDeathLoot(bool wasKilledByPlayer, int playerBonusLevel)
@@ -237,4 +249,20 @@ void VillagerGolem::die(DamageSource *source)
 		village.lock()->modifyStanding(lastHurtByPlayer->getName(), -5);
 	}
 	Golem::die(source);
+}
+
+bool VillagerGolem::hurt(DamageSource *source, float dmg) 
+{
+	// 4J: Protect owned golem from untrusted players
+	if (isPlayerCreated())
+	{
+		shared_ptr<Entity> entity = source->getDirectEntity();
+		if (entity != NULL && entity->instanceof(eTYPE_PLAYER))
+		{
+			shared_ptr<Player> player = dynamic_pointer_cast<Player>(entity);
+			if (!player->isAllowedToAttackPlayers()) return false;
+		}
+	}
+
+	return Golem::hurt(source, dmg);
 }

@@ -1,53 +1,53 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <root>
-	<data name="IDS_NOFREESPACE_TEXT">
-		<value>Ο χώρος αποθήκευσης του συστήματός σας δεν διαθέτει επαρκή ελεύθερο χώρο για τη δημιουργία αποθήκευσης παιχνιδιού.</value>
-	</data>
-	<data name="IDS_PRO_RETURNEDTOTITLESCREEN_TEXT">
-		<value>Επιστρέψατε στην οθόνη τίτλων, επειδή αποσυνδεθήκατε από το "PSN"</value>
-	</data>
-	<data name="IDS_PRO_RETURNEDTOMENU_TEXT">
-		<value>Ο αγώνας τελείωσε, επειδή αποσυνδεθήκατε από το "PSN"
-</value>
-	</data>
-	<data name="IDS_PRO_NOTONLINE_TITLE">
-		<value>Αυτήν τη στιγμή δεν είστε συνδεδεμένοι.
-                              </value>
-	</data>
-	<data name="IDS_PRO_NOTONLINE_TEXT">
-		<value>Αυτό το παιχνίδι διαθέτει ορισμένες λειτουργίες για τις οποίες απαιτείται να είστε συνδεδεμένοι στο "PSN", όμως προς το παρόν βρίσκεστε εκτός σύνδεσης.</value>
-	</data>
-	<data name="IDS_PRO_NOTADHOCONLINE_TITLE">
-		<value>Το Δίκτυο Ad Hoc είναι εκτός σύνδεσης.</value>
-	</data>
-	<data name="IDS_PRO_NOTADHOCONLINE_TEXT">
-		<value>Το παιχνίδι έχει ορισμένες λειτουργίες που απαιτούν σύνδεση δικτύου Ad Hoc, αλλά αυτήν τη στιγμή είστε εκτός σύνδεσης.</value>
-	</data>
-	<data name="IDS_PRO_XBOXLIVE_NOTIFICATION">
-		<value>Για αυτήν τη λειτουργία απαιτείται σύνδεση στο "PSN".
-</value>
-	</data>
-	<data name="IDS_PRO_NOTONLINE_ACCEPT">
-		<value>Σύνδεση στο "PSN"</value>
-	</data>
-	<data name="IDS_PRO_NOTADHOCONLINE_ACCEPT">
-		<value>Συνδεδεμένο στο Δίκτυο Ad Hoc</value>
-	</data>
-	<data name="IDS_PRO_ACHIEVEMENTPROBLEM_TITLE">
-		<value>Πρόβλημα με τα Τρόπαια</value>
-	</data>
-	<data name="IDS_PRO_ACHIEVEMENTPROBLEM_TEXT">
-		<value>Προέκυψε πρόβλημα με την πρόσβαση στο λογαριασμό σας στο Sony Entertainment Network. Δεν είναι δυνατή η απονομή του τροπαίου σας προς το παρόν.</value>
+	<data name="IDS_PRO_NOPROFILEOPTIONS_TEXT">
+		<value>Η αποθήκευση των ρυθμίσεων στο λογαριασμό σας στο Sony Entertainment Network απέτυχε.</value>
 	</data>
 	<data name="IDS_PRO_NOPROFILE_TITLE">
 		<value>Πρόβλημα με το λογαριασμό στο Sony Entertainment Network</value>
 	</data>
-	<data name="IDS_PRO_NOPROFILEOPTIONS_TEXT">
-		<value>Η αποθήκευση των ρυθμίσεων στο λογαριασμό σας στο Sony Entertainment Network απέτυχε.</value>
+	<data name="IDS_PRO_ACHIEVEMENTPROBLEM_TEXT">
+		<value>Προέκυψε πρόβλημα με την πρόσβαση στο λογαριασμό σας στο Sony Entertainment Network. Δεν είναι δυνατή η απονομή του τροπαίου σας προς το παρόν.</value>
 	</data>
 	<data name="IDS_PRO_UNLOCKGAME_TEXT">
 		<value>Αυτό είναι το δοκιμαστικό παιχνίδι του Minecraft: PlayStation®3 Edition. Αν είχατε το πλήρες παιχνίδι, θα είχατε μόλις κερδίσει ένα τρόπαιο! 
 Ξεκλειδώστε το πλήρες παιχνίδι, για να απολαύσετε το Minecraft: PlayStation®3 Edition και να παίξετε με τους φίλους σας σε όλο τον κόσμο μέσω του "PSN".
 Θέλετε να ξεκλειδώσετε το πλήρες παιχνίδι;</value>
+	</data>
+	<data name="IDS_PRO_NOTADHOCONLINE_ACCEPT">
+		<value>Συνδεδεμένο στο Δίκτυο Ad Hoc</value>
+	</data>
+	<data name="IDS_PRO_NOTADHOCONLINE_TEXT">
+		<value>Το παιχνίδι έχει ορισμένες λειτουργίες που απαιτούν σύνδεση δικτύου Ad Hoc, αλλά αυτήν τη στιγμή είστε εκτός σύνδεσης.</value>
+	</data>
+	<data name="IDS_PRO_NOTADHOCONLINE_TITLE">
+		<value>Το Δίκτυο Ad Hoc είναι εκτός σύνδεσης.</value>
+	</data>
+	<data name="IDS_PRO_ACHIEVEMENTPROBLEM_TITLE">
+		<value>Πρόβλημα με τα Τρόπαια</value>
+	</data>
+	<data name="IDS_PRO_RETURNEDTOMENU_TEXT">
+		<value>Ο αγώνας τελείωσε, επειδή αποσυνδεθήκατε από το "PSN"
+</value>
+	</data>
+	<data name="IDS_PRO_RETURNEDTOTITLESCREEN_TEXT">
+		<value>Επιστρέψατε στην οθόνη τίτλων, επειδή αποσυνδεθήκατε από το "PSN"</value>
+	</data>
+	<data name="IDS_NOFREESPACE_TEXT">
+		<value>Ο χώρος αποθήκευσης του συστήματός σας δεν διαθέτει επαρκή ελεύθερο χώρο για τη δημιουργία αποθήκευσης παιχνιδιού.</value>
+	</data>
+	<data name="IDS_PRO_NOTONLINE_TITLE">
+		<value>Αυτήν τη στιγμή δεν είστε συνδεδεμένοι.
+                              </value>
+	</data>
+	<data name="IDS_PRO_NOTONLINE_ACCEPT">
+		<value>Σύνδεση στο "PSN"</value>
+	</data>
+	<data name="IDS_PRO_XBOXLIVE_NOTIFICATION">
+		<value>Για αυτήν τη λειτουργία απαιτείται σύνδεση στο "PSN".
+</value>
+	</data>
+	<data name="IDS_PRO_NOTONLINE_TEXT">
+		<value>Αυτό το παιχνίδι διαθέτει ορισμένες λειτουργίες για τις οποίες απαιτείται να είστε συνδεδεμένοι στο "PSN", όμως προς το παρόν βρίσκεστε εκτός σύνδεσης.</value>
 	</data>
 </root>

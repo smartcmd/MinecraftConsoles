@@ -67,7 +67,7 @@ void TakeFlowerGoal::tick()
 	villager->getLookControl()->setLookAt(golem.lock(), 30, 30);
 	if (golem.lock()->getOfferFlowerTick() == pickupTick)
 	{
-		villager->getNavigation()->moveTo(golem.lock(), 0.15f);
+		villager->getNavigation()->moveTo(golem.lock(), 0.5f);
 		takeFlower = true;
 	}
 

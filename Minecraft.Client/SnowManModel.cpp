@@ -36,9 +36,9 @@ SnowManModel::SnowManModel() : Model()
 	piece2->compile(1.0f/16.0f);
 }
 
-void SnowManModel::setupAnim(float time, float r, float bob, float yRot, float xRot, float scale, unsigned int uiBitmaskOverrideAnim)
+void SnowManModel::setupAnim(float time, float r, float bob, float yRot, float xRot, float scale, shared_ptr<Entity> entity, unsigned int uiBitmaskOverrideAnim)
 {
-    Model::setupAnim(time, r, bob, yRot, xRot, scale);
+    Model::setupAnim(time, r, bob, yRot, xRot, scale, entity);
 	head->yRot = yRot / (float) (180 / PI);
 	head->xRot = xRot / (float) (180 / PI);
     piece1->yRot = (yRot / (float) (180 / PI)) * 0.25f;
@@ -60,7 +60,7 @@ void SnowManModel::setupAnim(float time, float r, float bob, float yRot, float x
 
 void SnowManModel::render(shared_ptr<Entity> entity, float time, float r, float bob, float yRot, float xRot, float scale, bool usecompiled) 
 {
-	setupAnim(time, r, bob, yRot, xRot, scale);
+	setupAnim(time, r, bob, yRot, xRot, scale, entity);
 
 	piece1->render(scale,usecompiled);
 	piece2->render(scale,usecompiled);

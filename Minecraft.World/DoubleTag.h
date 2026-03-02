@@ -10,7 +10,7 @@ public:
 	DoubleTag(const wstring &name, double data) : Tag(name) {this->data = data; }
 	
 	void write(DataOutput *dos) { dos->writeDouble(data); }
-	void load(DataInput *dis) { data = dis->readDouble(); }
+	void load(DataInput *dis, int tagDepth) { data = dis->readDouble(); }
 
 	byte getId() { return TAG_Double; }
 	wstring toString()

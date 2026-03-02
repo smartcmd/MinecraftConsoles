@@ -22,10 +22,8 @@ private:
 	UIControl_Button m_buttonGamemode, m_buttonMoreOptions, m_buttonLoadWorld;
 	UIControl_Slider m_sliderDifficulty;
 	UIControl_BitmapIcon m_bitmapIcon;
-	
-#if defined _XBOX_ONE || defined __ORBIS__ || defined _WINDOWS64
+
 	UIControl_CheckBox m_checkboxOnline;
-#endif
 
 	UI_BEGIN_MAP_ELEMENTS_AND_NAMES(IUIScene_StartGame)
 		UI_MAP_ELEMENT( m_controlMainPanel, "MainPanel" )
@@ -35,10 +33,7 @@ private:
 			UI_MAP_ELEMENT( m_labelSeed, "Seed")
 			UI_MAP_ELEMENT( m_texturePackList, "TexturePackSelector")
 			UI_MAP_ELEMENT( m_buttonGamemode, "GameModeToggle")
-			
-#if defined _XBOX_ONE || defined __ORBIS__ || defined _WINDOWS64
 			UI_MAP_ELEMENT( m_checkboxOnline, "CheckboxOnline")
-#endif
 			UI_MAP_ELEMENT( m_buttonMoreOptions, "MoreOptions")
 			UI_MAP_ELEMENT( m_buttonLoadWorld, "LoadSettings")
 			UI_MAP_ELEMENT( m_sliderDifficulty, "Difficulty")
@@ -51,8 +46,10 @@ private:
 	
 	int m_iSaveGameInfoIndex;
 	int m_CurrentDifficulty;
-	bool m_bGameModeSurvival;
+	bool m_bGameModeCreative;
+	int m_iGameModeId;
 	bool m_bHasBeenInCreative;
+	bool m_bIsSaveOwner;
 	bool m_bRetrievingSaveThumbnail;
 	bool m_bSaveThumbnailReady;
 	bool m_bMultiplayerAllowed;
@@ -104,7 +101,6 @@ protected:
 private:
 	void StartSharedLaunchFlow();
 	virtual void checkStateAndStartGame();
-	void LoadLevelGen(LevelGenerationOptions *levelGen);
 	void LaunchGame(void);
 
 #ifdef _DURANGO

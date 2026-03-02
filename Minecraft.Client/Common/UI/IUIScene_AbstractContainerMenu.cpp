@@ -104,7 +104,7 @@ int	IUIScene_AbstractContainerMenu::GetSectionDimensions( ESceneSection eSection
 	return( ( *piNumRows ) * ( *piNumColumns ) );
 }
 
-void IUIScene_AbstractContainerMenu::updateSlotPosition( ESceneSection eSection, ESceneSection newSection, ETapState eTapDirection, int *piTargetX, int *piTargetY, int xOffset )
+void IUIScene_AbstractContainerMenu::updateSlotPosition( ESceneSection eSection, ESceneSection newSection, ETapState eTapDirection, int *piTargetX, int *piTargetY, int xOffset, int yOffset  )
 {
 	// Update the target slot based on the size of the current section
 	int columns, rows;
@@ -124,9 +124,18 @@ void IUIScene_AbstractContainerMenu::updateSlotPosition( ESceneSection eSection,
 		{
 			(*piTargetY) = 0;
 		}
-		if( (*piTargetY) < 0 )
+		int offsetY = (*piTargetY) - yOffset;
+		if( offsetY < 0 )
 		{
 			(*piTargetY) = 0;
+		}
+		else if(offsetY >= rows)
+		{
+			(*piTargetY) = rows - 1;
+		}
+		else
+		{
+			(*piTargetY) = offsetY;
 		}
 
 		// Update X
@@ -340,124 +349,124 @@ void IUIScene_AbstractContainerMenu::onMouseTick()
 	{
 		// reset the touch flag
 		m_bFirstTouchStored[iPad]=false;
-
+	
 #endif
 
 
 
-		// If there is any input on sticks, move the pointer.
-		if ( ( fabs( fInputX ) >= 0.01f ) || ( fabs( fInputY ) >= 0.01f ) )
+	// If there is any input on sticks, move the pointer.
+	if ( ( fabs( fInputX ) >= 0.01f ) || ( fabs( fInputY ) >= 0.01f ) )
+	{
+		fInputDirX = ( fInputX > 0.0f ) ? 1.0f : ( fInputX < 0.0f )?-1.0f : 0.0f;
+		fInputDirY = ( fInputY > 0.0f ) ? 1.0f : ( fInputY < 0.0f )?-1.0f : 0.0f;
+
+#ifdef TAP_DETECTION
+		// Check for potential tap input to jump slot.
+		ETapState eNewTapInput = GetTapInputType( fInputX, fInputY );
+
+		switch( m_eCurrTapState )
 		{
-			fInputDirX = ( fInputX > 0.0f ) ? 1.0f : ( fInputX < 0.0f )?-1.0f : 0.0f;
-			fInputDirY = ( fInputY > 0.0f ) ? 1.0f : ( fInputY < 0.0f )?-1.0f : 0.0f;
+		case eTapStateNoInput:
+			m_eCurrTapState = eNewTapInput;
+			break;
 
-#ifdef TAP_DETECTION
-			// Check for potential tap input to jump slot.
-			ETapState eNewTapInput = GetTapInputType( fInputX, fInputY );
-
-			switch( m_eCurrTapState )
+		case eTapStateUp:
+		case eTapStateDown:
+		case eTapStateLeft:
+		case eTapStateRight:
+			if ( ( eNewTapInput != m_eCurrTapState ) && ( eNewTapInput != eTapStateNoInput ) )
 			{
-			case eTapStateNoInput:
-				m_eCurrTapState = eNewTapInput;
-				break;
-
-			case eTapStateUp:
-			case eTapStateDown:
-			case eTapStateLeft:
-			case eTapStateRight:
-				if ( ( eNewTapInput != m_eCurrTapState ) && ( eNewTapInput != eTapStateNoInput ) )
-				{
-					// Input is no longer suitable for tap.
-					m_eCurrTapState = eTapNone;
-				}
-				break;
-
-			case eTapNone:
-				/// Nothing to do, input is not a tap.
-				break;
-			}
-#endif // TAP_DETECTION
-
-			// Square it so we get more precision for small inputs.
-			fInputX = fInputX * fInputX * fInputDirX * POINTER_SPEED_FACTOR;
-			fInputY = fInputY * fInputY * fInputDirY * POINTER_SPEED_FACTOR;
-			//fInputX = fInputX * POINTER_SPEED_FACTOR;
-			//fInputY = fInputY * POINTER_SPEED_FACTOR;
-			float fInputScale = 1.0f;
-
-			// Ramp up input from zero when new input is recieved over INPUT_TICKS_FOR_SCALING ticks. This is to try to improve tapping stick to move 1 box.
-			if ( m_iConsectiveInputTicks < MAX_INPUT_TICKS_FOR_SCALING )
-			{
-				++m_iConsectiveInputTicks;
-				fInputScale = ( (float)( m_iConsectiveInputTicks) / (float)(MAX_INPUT_TICKS_FOR_SCALING) );
-			}
-#ifdef TAP_DETECTION
-			else if ( m_iConsectiveInputTicks < MAX_INPUT_TICKS_FOR_TAPPING )
-			{
-				++m_iConsectiveInputTicks;
-			}
-			else
-			{
+				// Input is no longer suitable for tap.
 				m_eCurrTapState = eTapNone;
 			}
-#endif
-			// 4J Stu - The cursor moves too fast in SD mode
-			// The SD/splitscreen scenes are approximately 0.6 times the size of the fullscreen on
-			if(!RenderManager.IsHiDef() || app.GetLocalPlayerCount() > 1) fInputScale *= 0.6f;
+			break;
 
-			fInputX *= fInputScale;
-			fInputY *= fInputScale;
+		case eTapNone:
+			/// Nothing to do, input is not a tap.
+			break;
+		}
+#endif // TAP_DETECTION
 
-#ifdef USE_POINTER_ACCEL
-			m_fPointerAccelX += fInputX / 50.0f;
-			m_fPointerAccelY += fInputY / 50.0f;
+		// Square it so we get more precision for small inputs.
+		fInputX = fInputX * fInputX * fInputDirX * POINTER_SPEED_FACTOR;
+		fInputY = fInputY * fInputY * fInputDirY * POINTER_SPEED_FACTOR;
+		//fInputX = fInputX * POINTER_SPEED_FACTOR;
+		//fInputY = fInputY * POINTER_SPEED_FACTOR;
+		float fInputScale = 1.0f;
 
-			if ( fabsf( fInputX ) > fabsf( m_fPointerVelX + m_fPointerAccelX ) )
-			{
-				m_fPointerVelX += m_fPointerAccelX;
-			}
-			else
-			{
-				m_fPointerAccelX = fInputX - m_fPointerVelX;
-				m_fPointerVelX = fInputX;
-			}
-
-			if ( fabsf( fInputY ) > fabsf( m_fPointerVelY + m_fPointerAccelY ) )
-			{
-				m_fPointerVelY += m_fPointerAccelY;
-			}
-			else
-			{
-				m_fPointerAccelY = fInputY - m_fPointerVelY;
-				m_fPointerVelY = fInputY;
-			}
-			//printf( "IN %.2f  VEL %.2f  ACC %.2f\n", fInputY, m_fPointerVelY, m_fPointerAccelY );
-
-			vPointerPos.x += m_fPointerVelX;
-			vPointerPos.y -= m_fPointerVelY;
-#else
-			// Add input to pointer position.
-			vPointerPos.x += fInputX;
-			vPointerPos.y -= fInputY;
-#endif
-			// Clamp to pointer extents.
-			if ( vPointerPos.x < m_fPointerMinX )				vPointerPos.x = m_fPointerMinX;
-			else if ( vPointerPos.x > m_fPointerMaxX )		vPointerPos.x = m_fPointerMaxX;
-			if ( vPointerPos.y < m_fPointerMinY )				vPointerPos.y = m_fPointerMinY;
-			else if ( vPointerPos.y > m_fPointerMaxY )		vPointerPos.y = m_fPointerMaxY;
-
-			bStickInput = true;
+		// Ramp up input from zero when new input is recieved over INPUT_TICKS_FOR_SCALING ticks. This is to try to improve tapping stick to move 1 box.
+		if ( m_iConsectiveInputTicks < MAX_INPUT_TICKS_FOR_SCALING )
+		{
+			++m_iConsectiveInputTicks;
+			fInputScale = ( (float)( m_iConsectiveInputTicks) / (float)(MAX_INPUT_TICKS_FOR_SCALING) );
+		}
+#ifdef TAP_DETECTION
+		else if ( m_iConsectiveInputTicks < MAX_INPUT_TICKS_FOR_TAPPING )
+		{
+			++m_iConsectiveInputTicks;
 		}
 		else
 		{
-			m_iConsectiveInputTicks = 0;
-#ifdef USE_POINTER_ACCEL
-			m_fPointerVelX = 0.0f;
-			m_fPointerVelY = 0.0f;
-			m_fPointerAccelX = 0.0f;
-			m_fPointerAccelY = 0.0f;
-#endif
+			m_eCurrTapState = eTapNone;
 		}
+#endif
+		// 4J Stu - The cursor moves too fast in SD mode
+		// The SD/splitscreen scenes are approximately 0.6 times the size of the fullscreen on
+		if(!RenderManager.IsHiDef() || app.GetLocalPlayerCount() > 1) fInputScale *= 0.6f;
+
+		fInputX *= fInputScale;
+		fInputY *= fInputScale;
+
+#ifdef USE_POINTER_ACCEL		
+		m_fPointerAccelX += fInputX / 50.0f;
+		m_fPointerAccelY += fInputY / 50.0f;
+
+		if ( fabsf( fInputX ) > fabsf( m_fPointerVelX + m_fPointerAccelX ) )
+		{
+			m_fPointerVelX += m_fPointerAccelX;
+		}
+		else
+		{
+			m_fPointerAccelX = fInputX - m_fPointerVelX;
+			m_fPointerVelX = fInputX;
+		}
+
+		if ( fabsf( fInputY ) > fabsf( m_fPointerVelY + m_fPointerAccelY ) )
+		{
+			m_fPointerVelY += m_fPointerAccelY;
+		}
+		else
+		{
+			m_fPointerAccelY = fInputY - m_fPointerVelY;
+			m_fPointerVelY = fInputY;
+		}
+		//printf( "IN %.2f  VEL %.2f  ACC %.2f\n", fInputY, m_fPointerVelY, m_fPointerAccelY );
+
+		vPointerPos.x += m_fPointerVelX;
+		vPointerPos.y -= m_fPointerVelY;
+#else
+		// Add input to pointer position.
+		vPointerPos.x += fInputX;
+		vPointerPos.y -= fInputY;
+#endif
+		// Clamp to pointer extents.
+		if ( vPointerPos.x < m_fPointerMinX )				vPointerPos.x = m_fPointerMinX;
+		else if ( vPointerPos.x > m_fPointerMaxX )		vPointerPos.x = m_fPointerMaxX;
+		if ( vPointerPos.y < m_fPointerMinY )				vPointerPos.y = m_fPointerMinY;
+		else if ( vPointerPos.y > m_fPointerMaxY )		vPointerPos.y = m_fPointerMaxY;
+
+		bStickInput = true;
+	}
+	else
+	{
+		m_iConsectiveInputTicks = 0;
+#ifdef USE_POINTER_ACCEL	
+		m_fPointerVelX = 0.0f;
+		m_fPointerVelY = 0.0f;
+		m_fPointerAccelX = 0.0f;
+		m_fPointerAccelY = 0.0f;
+#endif		
+	}
 
 #ifdef __ORBIS__
 	}
@@ -588,6 +597,9 @@ void IUIScene_AbstractContainerMenu::onMouseTick()
 			}
 		}
 	}
+
+	// 4J - TomK - set to section none if this is a non-visible section
+	if(!IsVisible(eSectionUnderPointer)) eSectionUnderPointer = eSectionNone;
 
 	// If we are not over any slot, set focus elsewhere.
 	if ( eSectionUnderPointer == eSectionNone )
@@ -768,20 +780,26 @@ void IUIScene_AbstractContainerMenu::onMouseTick()
 
 	if( bPointerIsOverSlot && bSlotHasItem )
 	{
-		vector<wstring> unformattedStrings;
-		wstring desc = GetItemDescription( slot, unformattedStrings );
-		SetPointerText(desc, unformattedStrings, slot != m_lastPointerLabelSlot);
+		vector<HtmlString> *desc = GetItemDescription(slot);
+		SetPointerText(desc, slot != m_lastPointerLabelSlot);
 		m_lastPointerLabelSlot = slot;
+		delete desc;
+	}
+	else if (eSectionUnderPointer != eSectionNone && !IsSectionSlotList(eSectionUnderPointer) )
+	{
+		vector<HtmlString> *desc = GetSectionHoverText(eSectionUnderPointer);
+		SetPointerText(desc, false);
+		m_lastPointerLabelSlot = NULL;
+		delete desc;
 	}
 	else
 	{
-		vector<wstring> unformattedStrings;
-		SetPointerText(L"", unformattedStrings, false);
+		SetPointerText(NULL, false);
 		m_lastPointerLabelSlot = NULL;
 	}
 
-	EToolTipItem buttonA, buttonX, buttonY, buttonRT;
-	buttonA = buttonX = buttonY = buttonRT = eToolTipNone;
+	EToolTipItem buttonA, buttonX, buttonY, buttonRT, buttonBack;
+	buttonA = buttonX = buttonY = buttonRT = buttonBack = eToolTipNone;
 	if ( bPointerIsOverSlot )
 	{
 		SetPointerOutsideMenu( false );
@@ -865,13 +883,22 @@ void IUIScene_AbstractContainerMenu::onMouseTick()
 				if ( iSlotCount == 1 )
 				{
 					buttonA = eToolTipPickUpGeneric;
-					buttonRT = eToolTipWhatIsThis;
 				}
 				else
 				{
 					// Multiple items in slot.
 					buttonA = eToolTipPickUpAll;
 					buttonX = eToolTipPickUpHalf;
+				}
+
+#ifdef __PSVITA__
+				if (!InputManager.IsVitaTV())
+				{
+					buttonBack = eToolTipWhatIsThis;
+				}
+				else
+#endif
+				{
 					buttonRT = eToolTipWhatIsThis;
 				}
 			}
@@ -1051,7 +1078,7 @@ void IUIScene_AbstractContainerMenu::onMouseTick()
 				bool bValidIngredient=false;
 				//bool bValidIngredientBottom=false;
 
-				if(Item::items[iId]->hasPotionBrewingFormula() || (iId == Item::netherStalkSeeds_Id))
+				if(Item::items[iId]->hasPotionBrewingFormula() || (iId == Item::netherwart_seeds_Id))
 				{
 					bValidIngredient=true;
 				}
@@ -1124,10 +1151,10 @@ void IUIScene_AbstractContainerMenu::onMouseTick()
 							buttonY=eToolTipQuickMoveWeapon;
 							break;
 
-						case Item::helmet_cloth_Id:
-						case Item::chestplate_cloth_Id:
-						case Item::leggings_cloth_Id:
-						case Item::boots_cloth_Id:
+						case Item::helmet_leather_Id:
+						case Item::chestplate_leather_Id:
+						case Item::leggings_leather_Id:
+						case Item::boots_leather_Id:
 
 						case Item::helmet_chain_Id:
 						case Item::chestplate_chain_Id:
@@ -1201,13 +1228,13 @@ void IUIScene_AbstractContainerMenu::onMouseTick()
 
 	shared_ptr<ItemInstance> item = nullptr;
 	if(bPointerIsOverSlot && bSlotHasItem) item = getSlotItem(eSectionUnderPointer, iNewSlotIndex);
-	overrideTooltips(eSectionUnderPointer, item, bIsItemCarried, bSlotHasItem, bCarriedIsSameAsSlot, iSlotStackSizeRemaining, buttonA, buttonX, buttonY, buttonRT);
+	overrideTooltips(eSectionUnderPointer, item, bIsItemCarried, bSlotHasItem, bCarriedIsSameAsSlot, iSlotStackSizeRemaining, buttonA, buttonX, buttonY, buttonRT, buttonBack);
 
 	SetToolTip( eToolTipButtonA, buttonA );
 	SetToolTip( eToolTipButtonX, buttonX );
 	SetToolTip( eToolTipButtonY, buttonY );
 	SetToolTip( eToolTipButtonRT, buttonRT );
-
+	SetToolTip( eToolTipButtonBack, buttonBack );
 
 	// Offset back to image top left.
 	vPointerPos.x -= m_fPointerImageOffsetX;
@@ -1278,7 +1305,7 @@ bool IUIScene_AbstractContainerMenu::handleKeyDown(int iPad, int iAction, bool b
 	BOOL quickKeyHeld=FALSE; // Represents shift key on PC
 
 	BOOL validKeyPress = FALSE;
-	//BOOL itemEditorKeyPress = FALSE;
+	bool itemEditorKeyPress = false;
 
 	// Ignore input from other players
 	//if(pMinecraft->player->GetXboxPad()!=pInputData->UserIndex) return S_OK;
@@ -1286,11 +1313,9 @@ bool IUIScene_AbstractContainerMenu::handleKeyDown(int iPad, int iAction, bool b
 	switch(iAction)
 	{
 #ifdef _DEBUG_MENUS_ENABLED
-#if TO_BE_IMPLEMENTED
-	case VK_PAD_RTHUMB_PRESS:
+	case ACTION_MENU_OTHER_STICK_PRESS:
 		itemEditorKeyPress = TRUE;
 		break;
-#endif
 #endif
 	case ACTION_MENU_A:
 #ifdef __ORBIS__
@@ -1323,7 +1348,15 @@ bool IUIScene_AbstractContainerMenu::handleKeyDown(int iPad, int iAction, bool b
 			// Standard right click
 			buttonNum = 1;
 			quickKeyHeld = FALSE;
-			ui.PlayUISFX(eSFX_Press);
+
+			if( IsSectionSlotList( m_eCurrSection ) )
+			{
+				int currentIndex = getCurrentIndex( m_eCurrSection ) - getSectionStartOffset(m_eCurrSection);
+
+				bool bSlotHasItem = !isSlotEmpty(m_eCurrSection, currentIndex);
+				if ( bSlotHasItem )
+					ui.PlayUISFX(eSFX_Press);
+			}
 		}
 		break;
 	case ACTION_MENU_Y:
@@ -1342,7 +1375,14 @@ bool IUIScene_AbstractContainerMenu::handleKeyDown(int iPad, int iAction, bool b
 				// Shift and left click
 				buttonNum = 0;
 				quickKeyHeld = TRUE;
-				ui.PlayUISFX(eSFX_Press);
+				if( IsSectionSlotList( m_eCurrSection ) )
+				{
+					int currentIndex = getCurrentIndex( m_eCurrSection ) - getSectionStartOffset(m_eCurrSection);
+
+					bool bSlotHasItem = !isSlotEmpty(m_eCurrSection, currentIndex);
+					if ( bSlotHasItem )
+						ui.PlayUISFX(eSFX_Press);
+				}
 			}
 		}
 		break;
@@ -1404,13 +1444,7 @@ bool IUIScene_AbstractContainerMenu::handleKeyDown(int iPad, int iAction, bool b
 			bHandled = true;
 		}
 		break;
-#ifdef __PSVITA__
-		//CD - Vita uses select for What's this - key 40
-	case MINECRAFT_ACTION_GAME_INFO:
-#else
 	case ACTION_MENU_PAGEDOWN:
-#endif
-
 		{
 			if( IsSectionSlotList( m_eCurrSection ) )
 			{
@@ -1476,46 +1510,18 @@ bool IUIScene_AbstractContainerMenu::handleKeyDown(int iPad, int iAction, bool b
 		bHandled = true;
 	}
 #ifdef _DEBUG_MENUS_ENABLED
-#if TO_BE_IMPLEMENTED
 	else if(itemEditorKeyPress == TRUE)
 	{
-		HXUIOBJ hFocusObject = GetFocus(pInputData->UserIndex);
-		HXUIOBJ hFocusObjectParent;
-		XuiElementGetParent( hFocusObject, &hFocusObjectParent );
-
-		HXUICLASS hClassCXuiCtrlSlotList;
-
-		// TODO Define values for these
-		hClassCXuiCtrlSlotList = XuiFindClass( L"CXuiCtrlSlotList" );
-
-		// If the press comes from a SlotList, cast it up then send a clicked call to it's menu
-		if( XuiIsInstanceOf( hFocusObjectParent, hClassCXuiCtrlSlotList ) )
-		{
-			CXuiCtrlSlotList* slotList;
-			VOID *pObj;
-			XuiObjectFromHandle( hFocusObjectParent, &pObj );
-			slotList = (CXuiCtrlSlotList *)pObj;
-
-			int currentIndex = slotList->GetCurSel();
-
-			CXuiCtrlSlotItemListItem* pCXuiCtrlSlotItem;
-			slotList->GetCXuiCtrlSlotItem( currentIndex, &( pCXuiCtrlSlotItem ) );
-
-			//Minecraft *pMinecraft = Minecraft::GetInstance();
-
-			CScene_DebugItemEditor::ItemEditorInput *initData = new CScene_DebugItemEditor::ItemEditorInput();
-			initData->iPad = m_iPad;
-			initData->slot = pCXuiCtrlSlotItem->getSlot( pCXuiCtrlSlotItem->m_hObj );
+		if( IsSectionSlotList( m_eCurrSection ) )
+		{			
+			ItemEditorInput *initData = new ItemEditorInput();
+			initData->iPad = getPad();
+			initData->slot = getSlot( m_eCurrSection, getCurrentIndex(m_eCurrSection) );
 			initData->menu = m_menu;
 
-			// Add timer to poll controller stick input at 60Hz
-			HRESULT timerResult = KillTimer( POINTER_INPUT_TIMER_ID );
-			assert( timerResult == S_OK );
-
-			app.NavigateToScene(m_iPad,eUIScene_DebugItemEditor,(void *)initData,false,TRUE);
+			ui.NavigateToScene(getPad(),eUIScene_DebugItemEditor,(void *)initData);
 		}
 	}
-#endif
 #endif
 	else
 	{
@@ -1537,7 +1543,7 @@ void IUIScene_AbstractContainerMenu::handleOutsideClicked(int iPad, int buttonNu
 	// Drop items.
 
 	//pMinecraft->localgameModes[m_iPad]->handleInventoryMouseClick(menu->containerId, AbstractContainerMenu::CLICKED_OUTSIDE, buttonNum, quickKeyHeld?true:false, pMinecraft->localplayers[m_iPad] );
-	slotClicked(AbstractContainerMenu::CLICKED_OUTSIDE, buttonNum, quickKeyHeld?true:false);
+	slotClicked(AbstractContainerMenu::SLOT_CLICKED_OUTSIDE, buttonNum, quickKeyHeld?true:false);
 }
 
 void IUIScene_AbstractContainerMenu::handleOtherClicked(int iPad, ESceneSection eSection, int buttonNum, bool quickKey)
@@ -1582,8 +1588,7 @@ bool IUIScene_AbstractContainerMenu::IsSameItemAs(shared_ptr<ItemInstance> itemA
 {
 	if(itemA == NULL || itemB == NULL) return false;
 
-	bool bStackedByData = itemA->isStackedByData();
-	return ( ( itemA->id == itemB->id ) && ( (bStackedByData && itemA->getAuxValue() == itemB->getAuxValue()) || !bStackedByData ) );
+	return (itemA->id == itemB->id && (!itemB->isStackedByData() || itemB->getAuxValue() == itemA->getAuxValue()) && ItemInstance::tagMatches(itemB, itemA) );
 }
 
 int IUIScene_AbstractContainerMenu::GetEmptyStackSpace(Slot *slot)
@@ -1607,38 +1612,27 @@ int IUIScene_AbstractContainerMenu::GetEmptyStackSpace(Slot *slot)
 	return iResult;
 }
 
-wstring IUIScene_AbstractContainerMenu::GetItemDescription(Slot *slot, vector<wstring> &unformattedStrings)
+vector<HtmlString> *IUIScene_AbstractContainerMenu::GetItemDescription(Slot *slot)
 {
-	if(slot == NULL) return L"";
+	if(slot == NULL) return NULL;
 
-	wstring desc = L"";
-	vector<wstring> *strings = slot->getItem()->getHoverText(nullptr, false, unformattedStrings);
-	bool firstLine = true;
-	for(AUTO_VAR(it, strings->begin()); it != strings->end(); ++it)
+	vector<HtmlString> *lines = slot->getItem()->getHoverText(nullptr, false);
+
+	// Add rarity to first line
+	if (lines->size() > 0)
 	{
-		wstring thisString = *it;
-		if(!firstLine)
-		{
-			desc.append( L"<br />" );
-		}
-		else
-		{
-			firstLine = false;
-			wchar_t formatted[256];
-			eMinecraftColour rarityColour = slot->getItem()->getRarity()->color;
-			int colour = app.GetHTMLColour(rarityColour);
+		lines->at(0).color = slot->getItem()->getRarity()->color;
 
-			if(slot->getItem()->hasCustomHoverName())
-			{
-				colour = app.GetHTMLColour(eTextColor_RenamedItemTitle);
-			}
-
-			swprintf(formatted, 256, L"<font color=\"#%08x\">%ls</font>",colour,thisString.c_str());
-			thisString = formatted;
+		if(slot->getItem()->hasCustomHoverName())
+		{
+			lines->at(0).color = eTextColor_RenamedItemTitle;
 		}
-		desc.append( thisString );
 	}
-	strings->clear();
-	delete strings;
-	return desc;
+
+	return lines;
+}
+
+vector<HtmlString> *IUIScene_AbstractContainerMenu::GetSectionHoverText(ESceneSection eSection)
+{
+	return NULL;
 }

@@ -48,6 +48,12 @@
 	<data name="IDS_CORRUPT_OPTIONS">
 		<value>Je optiebestand is beschadigd en moet worden verwijderd.</value>
 	</data>
+	<data name="IDS_CORRUPT_OPTIONS_DELETE">
+		<value>Optiesbestand verwijderen.</value>
+	</data>
+	<data name="IDS_CORRUPT_OPTIONS_RETRY">
+		<value>Optiesbestand opnieuw laden.</value>
+	</data>
 	<data name="IDS_CORRUPT_SAVECACHE">
 		<value>Je tijdelijke opslagbestand is beschadigd en moet worden verwijderd.</value>
 	</data>
@@ -75,6 +81,9 @@
 	<data name="IDS_CONTENT_RESTRICTION_MULTIPLAYER">
 		<value>Je mag niet online spelen met je Sony Entertainment Network-account door de instellingen voor ouderlijk toezicht van een van je lokale medespelers.</value>
 	</data>
+	<data name="IDS_CONTENT_RESTRICTION_PATCH_AVAILABLE">
+		<value>Online functies zijn uitgeschakeld omdat er een game-update beschikbaar is. </value>
+	</data>
 	<data name="IDS_NO_DLCCATEGORIES">
 		<value>Er is op dit moment geen downloadbare content beschikbaar voor deze titel.</value>
 	</data>
@@ -82,9 +91,6 @@
 		<value>Uitnodiging</value>
 	</data>
 	<data name="IDS_INVITATION_BODY">
-		<value>Kom je Minecraft: PlayStation®Vita Edition met me spelen?</value>
-	</data>
-	<data name="IDS_CONTENT_RESTRICTION_PATCH_AVAILABLE">
-		<value>Online functies zijn uitgeschakeld omdat er een game-update beschikbaar is. </value>
+		<value>Kom je  Minecraft: PlayStation®Vita Edition met me spelen?</value>
 	</data>
 </root>

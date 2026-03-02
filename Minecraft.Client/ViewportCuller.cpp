@@ -49,7 +49,7 @@ bool ViewportCuller::Face::fullyInFront(double x0, double y0, double z0, double 
     return true;
 }
 
-ViewportCuller::ViewportCuller(shared_ptr<Mob> mob, double fogDistance, float a)
+ViewportCuller::ViewportCuller(shared_ptr<LivingEntity> mob, double fogDistance, float a)
 {
 	float yRot = mob->yRotO+(mob->yRot-mob->yRotO)*a;
 	float xRot = mob->xRotO+(mob->xRot-mob->xRotO)*a;

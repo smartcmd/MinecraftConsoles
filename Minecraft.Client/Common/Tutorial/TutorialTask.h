@@ -6,6 +6,7 @@ class Level;
 class Tutorial;
 class TutorialConstraint;
 class MobEffect;
+class Entity;
 
 // A class that represents each individual task in the tutorial.
 //
@@ -33,7 +34,7 @@ protected:
 	vector<TutorialConstraint *> constraints;
 	bool areConstraintsEnabled;
 public:
-	TutorialTask(Tutorial *tutorial, int descriptionId, bool enablePreCompletion, vector<TutorialConstraint *> *inConstraints, bool bShowMinimumTime=false,  bool bAllowFade=true, bool m_bTaskReminders=true );
+	TutorialTask(Tutorial *tutorial, int descriptionId, bool enablePreCompletion, vector<TutorialConstraint *> *inConstraints, bool bShowMinimumTime=false,  bool bAllowFade=true, bool bTaskReminders=true );
 	virtual ~TutorialTask();
 
 	virtual int getDescriptionId() { return descriptionId; }
@@ -60,4 +61,7 @@ public:
 	virtual void onTake(shared_ptr<ItemInstance> item, unsigned int invItemCountAnyAux, unsigned int invItemCountThisAux) { }
 	virtual void onStateChange(eTutorial_State newState) { }
 	virtual void onEffectChanged(MobEffect *effect, bool bRemoved=false) { }
+
+	virtual void onLookAtEntity(shared_ptr<Entity> entity) { }
+	virtual void onRideEntity(shared_ptr<Entity> entity) { }
 };

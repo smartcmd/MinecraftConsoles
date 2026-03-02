@@ -3,6 +3,7 @@
 #include "net.minecraft.world.item.alchemy.h"
 #include "net.minecraft.world.effect.h"
 #include "net.minecraft.world.level.h"
+#include "net.minecraft.world.entity.ai.attributes.h"
 #include "net.minecraft.world.entity.player.h"
 #include "net.minecraft.world.entity.projectile.h"
 #include "net.minecraft.world.h"
@@ -32,7 +33,33 @@ PotionItem::PotionItem(int id) : Item(id)
 
 vector<MobEffectInstance *> *PotionItem::getMobEffects(shared_ptr<ItemInstance> potion)
 {
-	return getMobEffects(potion->getAuxValue());
+	if (!potion->hasTag() || !potion->getTag()->contains(L"CustomPotionEffects"))
+	{
+		vector<MobEffectInstance *> *effects = NULL;
+		AUTO_VAR(it, cachedMobEffects.find(potion->getAuxValue()));
+		if(it != cachedMobEffects.end()) effects = it->second;
+		if (effects == NULL)
+		{
+			effects = PotionBrewing::getEffects(potion->getAuxValue(), false);
+			cachedMobEffects[potion->getAuxValue()] = effects;
+		}
+
+		// Result should be a new (unmanaged) vector, so create a new one
+		return effects == NULL ? NULL : new vector<MobEffectInstance *>(*effects);
+	}
+	else
+	{
+		vector<MobEffectInstance *> *effects = new vector<MobEffectInstance *>();
+		ListTag<CompoundTag> *customList = (ListTag<CompoundTag> *) potion->getTag()->getList(L"CustomPotionEffects");
+
+		for (int i = 0; i < customList->size(); i++)
+		{
+			CompoundTag *tag = customList->get(i);
+			effects->push_back(MobEffectInstance::load(tag));
+		}
+
+		return effects;
+	}
 }
 
 vector<MobEffectInstance *> *PotionItem::getMobEffects(int auxValue)
@@ -89,7 +116,7 @@ UseAnim PotionItem::getUseAnimation(shared_ptr<ItemInstance> itemInstance)
 	return UseAnim_drink;
 }
 
-bool PotionItem::TestUse(Level *level, shared_ptr<Player> player)
+bool PotionItem::TestUse(shared_ptr<ItemInstance> itemInstance, Level *level, shared_ptr<Player> player)
 {
 	return true;
 }
@@ -99,7 +126,7 @@ shared_ptr<ItemInstance> PotionItem::use(shared_ptr<ItemInstance> instance, Leve
 	if (isThrowable(instance->getAuxValue()))
 	{
 		if (!player->abilities.instabuild) instance->count--;
-		level->playSound(player, eSoundType_RANDOM_BOW, 0.5f, 0.4f / (random->nextFloat() * 0.4f + 0.8f));
+		level->playEntitySound(player, eSoundType_RANDOM_BOW, 0.5f, 0.4f / (random->nextFloat() * 0.4f + 0.8f));
 		if (!level->isClientSide) level->addEntity(shared_ptr<ThrownPotion>( new ThrownPotion(level, player, instance->getAuxValue()) ));
 		return instance;
 	}
@@ -212,20 +239,39 @@ wstring PotionItem::getHoverName(shared_ptr<ItemInstance> itemInstance)
 	return elementName;
 }
 
-void PotionItem::appendHoverText(shared_ptr<ItemInstance> itemInstance, shared_ptr<Player> player, vector<wstring> *lines, bool advanced, vector<wstring> &unformattedStrings)
+void PotionItem::appendHoverText(shared_ptr<ItemInstance> itemInstance, shared_ptr<Player> player, vector<HtmlString> *lines, bool advanced)
 {
 	if (itemInstance->getAuxValue() == 0)
 	{
 		return;
 	}
 	vector<MobEffectInstance *> *effects = ((PotionItem *) Item::potion)->getMobEffects(itemInstance);
+	attrAttrModMap modifiers;
 	if (effects != NULL && !effects->empty())
 	{
 		//for (MobEffectInstance effect : effects)
 		for(AUTO_VAR(it, effects->begin()); it != effects->end(); ++it)
 		{
 			MobEffectInstance *effect = *it;
-			wstring effectString = app.GetString( effect->getDescriptionId() );//I18n.get(effect.getDescriptionId()).trim();
+			wstring effectString = app.GetString( effect->getDescriptionId() );
+
+			MobEffect *mobEffect = MobEffect::effects[effect->getId()];
+			unordered_map<Attribute*, AttributeModifier*> *effectModifiers = mobEffect->getAttributeModifiers();
+
+			if (effectModifiers != NULL && effectModifiers->size() > 0)
+			{
+				for(AUTO_VAR(it, effectModifiers->begin()); it != effectModifiers->end(); ++it)
+				{
+					// 4J - anonymous modifiers added here are destroyed shortly?
+					AttributeModifier *original = it->second;
+					AttributeModifier *modifier = new AttributeModifier(mobEffect->getAttributeModifierValue(effect->getAmplifier(), original), original->getOperation());
+					modifiers.insert( std::pair<eATTRIBUTE_ID, AttributeModifier*>( it->first->getId(), modifier) );
+				}
+			}
+
+			// Don't want to delete this (that's a pointer to mobEffects internal vector of modifiers)
+			// delete effectModifiers;
+
 			if (effect->getAmplifier() > 0)
 			{
 				wstring potencyString = L"";
@@ -247,37 +293,46 @@ void PotionItem::appendHoverText(shared_ptr<ItemInstance> itemInstance, shared_p
 					potencyString = app.GetString( IDS_POTION_POTENCY_0 );
 					break;
 				}
-				effectString += potencyString;// + I18n.get("potion.potency." + effect.getAmplifier()).trim();
+				effectString += potencyString; // + I18n.get("potion.potency." + effect.getAmplifier()).trim();
 			}
 			if (effect->getDuration() > SharedConstants::TICKS_PER_SECOND)
 			{
 				effectString += L" (" + MobEffect::formatDuration(effect) + L")";
 			}
-			unformattedStrings.push_back(effectString);
-			wchar_t formatted[256];
-			ZeroMemory(formatted, 256 * sizeof(wchar_t));
-			eMinecraftColour colour = eMinecraftColour_NOT_SET;
-			if (MobEffect::effects[effect->getId()]->isHarmful())
+
+			eMinecraftColour color = eMinecraftColour_NOT_SET;
+
+			if (mobEffect->isHarmful())
 			{
-				colour = eHTMLColor_c;
-				//lines->push_back(L"§c + effectString); //"§c" 
+				color = eHTMLColor_c;
 			}
 			else
 			{
-				colour = eHTMLColor_7;
-				//lines->push_back(L"§7" + effectString); //"§7"
+				color = eHTMLColor_7;
 			}
-			swprintf(formatted, 256, L"<font color=\"#%08x\">%ls</font>",app.GetHTMLColour(colour),effectString.c_str());
-			lines->push_back(formatted);
+
+			lines->push_back(HtmlString(effectString, color));
 		}
 	}
 	else
 	{
 		wstring effectString = app.GetString(IDS_POTION_EMPTY); //I18n.get("potion.empty").trim();
-		//eHTMLColor_7
-		wchar_t formatted[256];
-		swprintf(formatted,256,L"<font color=\"#%08x\">%ls</font>",app.GetHTMLColour(eHTMLColor_7),effectString.c_str());
-		lines->push_back(formatted); //"§7"
+
+		lines->push_back(HtmlString(effectString, eHTMLColor_7)); //"§7"
+	}
+
+	if (!modifiers.empty())
+	{
+		// Add new line
+		lines->push_back(HtmlString(L""));
+		lines->push_back(HtmlString(app.GetString(IDS_POTION_EFFECTS_WHENDRANK), eHTMLColor_5));
+
+		// Add modifier descriptions
+		for (AUTO_VAR(it, modifiers.begin()); it != modifiers.end(); ++it)
+		{
+			// 4J: Moved modifier string building to AttributeModifier
+			lines->push_back(it->second->getHoverText(it->first));
+		}
 	}
 }
 
@@ -290,11 +345,6 @@ bool PotionItem::isFoil(shared_ptr<ItemInstance> itemInstance)
 unsigned int PotionItem::getUseDescriptionId(shared_ptr<ItemInstance> instance)
 {
 	int brew = instance->getAuxValue();
-
-	
-#define MACRO_POTION_IS_NIGHTVISION(aux)		((aux & 0x200F)									== MASK_NIGHTVISION)
-#define MACRO_POTION_IS_INVISIBILITY(aux)		((aux & 0x200F)									== MASK_INVISIBILITY)
-
 	if(brew == 0) return IDS_POTION_DESC_WATER_BOTTLE;
 	else if( MACRO_POTION_IS_REGENERATION(brew)) return IDS_POTION_DESC_REGENERATION;
 	else if( MACRO_POTION_IS_SPEED(brew)	) return IDS_POTION_DESC_MOVESPEED;

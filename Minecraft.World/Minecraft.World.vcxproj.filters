@@ -39,9 +39,6 @@
     <Filter Include="net\minecraft\network\packet">
       <UniqueIdentifier>{0a1baf2e-2c84-488f-afd0-f5ddba3ac849}</UniqueIdentifier>
     </Filter>
-    <Filter Include="net\minecraft\world\entity">
-      <UniqueIdentifier>{bf44f635-1f68-4c61-a946-acc2cca87955}</UniqueIdentifier>
-    </Filter>
     <Filter Include="net\minecraft\world\inventory">
       <UniqueIdentifier>{b734aa5c-6770-4181-b8ab-e86980054dca}</UniqueIdentifier>
     </Filter>
@@ -53,24 +50,6 @@
     </Filter>
     <Filter Include="net\minecraft\world\phys">
       <UniqueIdentifier>{b17885f1-37c1-481f-94b1-a74f0c886b29}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="net\minecraft\world\entity\animal">
-      <UniqueIdentifier>{6252deb7-1b31-4ba0-83b7-db11fa2123eb}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="net\minecraft\world\entity\global">
-      <UniqueIdentifier>{0954c9e3-8650-4c2c-b51c-1ab9a4476b14}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="net\minecraft\world\entity\item">
-      <UniqueIdentifier>{1152442e-07f2-4ec9-85c0-7e3b040eee40}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="net\minecraft\world\entity\monster">
-      <UniqueIdentifier>{0023db14-c89d-4ce1-b0d3-b4d83c742c35}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="net\minecraft\world\entity\player">
-      <UniqueIdentifier>{becb642b-be13-43a9-90e2-61d563c35682}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="net\minecraft\world\entity\projectile">
-      <UniqueIdentifier>{be720f83-accf-4b92-8831-c890ef2fa69d}</UniqueIdentifier>
     </Filter>
     <Filter Include="net\minecraft\world\item\crafting">
       <UniqueIdentifier>{c29b0728-1151-40d1-ae10-4b5d1bd136cd}</UniqueIdentifier>
@@ -147,15 +126,6 @@
     <Filter Include="net\minecraft\world\level\newbiome\layer">
       <UniqueIdentifier>{2ac6971f-ddc3-438b-921a-315ea5e3ad5a}</UniqueIdentifier>
     </Filter>
-    <Filter Include="net\minecraft\world\entity\boss">
-      <UniqueIdentifier>{a81770a3-9c91-487b-9321-e39f63998514}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="net\minecraft\world\entity\boss\enderdragon">
-      <UniqueIdentifier>{5abf2525-8223-4c6b-bb6b-5c9446334868}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="net\minecraft\world\entity\npc">
-      <UniqueIdentifier>{24e2f412-a3f1-447a-bbea-7aa6561a93eb}</UniqueIdentifier>
-    </Filter>
     <Filter Include="net\minecraft\world\item\enchantment">
       <UniqueIdentifier>{05f1cf3e-10f1-40a0-a72d-99bdd4d783d4}</UniqueIdentifier>
     </Filter>
@@ -174,30 +144,6 @@
     <Filter Include="ConsoleHelpers\ConsoleSaveFileIO">
       <UniqueIdentifier>{c87ae9ac-b823-48e4-b007-39d45aff76e6}</UniqueIdentifier>
     </Filter>
-    <Filter Include="net\minecraft\world\entity\ai">
-      <UniqueIdentifier>{bd03576a-c1b3-4c04-bc52-d67abed85da4}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="net\minecraft\world\entity\ai\control">
-      <UniqueIdentifier>{1bcefe01-a252-4ec6-8dab-7fcebbefda00}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="net\minecraft\world\entity\ai\goal">
-      <UniqueIdentifier>{83228256-d4e1-447b-8102-4f824d131ff0}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="net\minecraft\world\entity\ai\navigation">
-      <UniqueIdentifier>{5c2a5df8-8116-4e7e-ae85-c688843e36bc}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="net\minecraft\world\entity\ai\goal\target">
-      <UniqueIdentifier>{569feaf7-5d52-44fc-883d-87c10196ea2f}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="net\minecraft\world\entity\ai\sensing">
-      <UniqueIdentifier>{c554494b-5cc6-4251-8d1f-c70afdb4ba2d}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="net\minecraft\world\entity\ai\util">
-      <UniqueIdentifier>{fe68c974-acb2-44f5-b82b-2c4057194780}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="net\minecraft\world\entity\ai\village">
-      <UniqueIdentifier>{19721528-fc70-4673-8183-d9329e751555}</UniqueIdentifier>
-    </Filter>
     <Filter Include="net\minecraft\world\item\trading">
       <UniqueIdentifier>{e61b6eae-3e06-4649-86f6-ab1a6624833f}</UniqueIdentifier>
     </Filter>
@@ -209,6 +155,84 @@
     </Filter>
     <Filter Include="net\minecraft\commands\common">
       <UniqueIdentifier>{1aaaae5f-20f2-4dea-9182-c5263a8085a6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="net\minecraft\core">
+      <UniqueIdentifier>{5a6edf15-80d1-4d0f-b1a9-17073737227c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="net\minecraft\world\entity">
+      <UniqueIdentifier>{bf44f635-1f68-4c61-a946-acc2cca87955}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="net\minecraft\world\entity\animal">
+      <UniqueIdentifier>{6252deb7-1b31-4ba0-83b7-db11fa2123eb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="net\minecraft\world\entity\global">
+      <UniqueIdentifier>{0954c9e3-8650-4c2c-b51c-1ab9a4476b14}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="net\minecraft\world\entity\item">
+      <UniqueIdentifier>{1152442e-07f2-4ec9-85c0-7e3b040eee40}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="net\minecraft\world\entity\monster">
+      <UniqueIdentifier>{0023db14-c89d-4ce1-b0d3-b4d83c742c35}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="net\minecraft\world\entity\player">
+      <UniqueIdentifier>{becb642b-be13-43a9-90e2-61d563c35682}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="net\minecraft\world\entity\projectile">
+      <UniqueIdentifier>{be720f83-accf-4b92-8831-c890ef2fa69d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="net\minecraft\world\entity\boss">
+      <UniqueIdentifier>{a81770a3-9c91-487b-9321-e39f63998514}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="net\minecraft\world\entity\boss\enderdragon">
+      <UniqueIdentifier>{5abf2525-8223-4c6b-bb6b-5c9446334868}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="net\minecraft\world\entity\npc">
+      <UniqueIdentifier>{24e2f412-a3f1-447a-bbea-7aa6561a93eb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="net\minecraft\world\entity\ai">
+      <UniqueIdentifier>{bd03576a-c1b3-4c04-bc52-d67abed85da4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="net\minecraft\world\entity\ai\control">
+      <UniqueIdentifier>{1bcefe01-a252-4ec6-8dab-7fcebbefda00}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="net\minecraft\world\entity\ai\goal">
+      <UniqueIdentifier>{83228256-d4e1-447b-8102-4f824d131ff0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="net\minecraft\world\entity\ai\goal\target">
+      <UniqueIdentifier>{569feaf7-5d52-44fc-883d-87c10196ea2f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="net\minecraft\world\entity\ai\navigation">
+      <UniqueIdentifier>{5c2a5df8-8116-4e7e-ae85-c688843e36bc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="net\minecraft\world\entity\ai\sensing">
+      <UniqueIdentifier>{c554494b-5cc6-4251-8d1f-c70afdb4ba2d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="net\minecraft\world\entity\ai\util">
+      <UniqueIdentifier>{fe68c974-acb2-44f5-b82b-2c4057194780}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="net\minecraft\world\entity\ai\village">
+      <UniqueIdentifier>{19721528-fc70-4673-8183-d9329e751555}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="net\minecraft\world\entity\ai\attributes">
+      <UniqueIdentifier>{ef8aa915-dc0f-44c6-8533-1250c461b636}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="net\minecraft\world\entity\ambient">
+      <UniqueIdentifier>{be58a6fd-f674-4c0d-b7e9-94dc4bab4cae}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="net\minecraft\world\entity\boss\wither">
+      <UniqueIdentifier>{d5c9e9a6-4945-40d7-8b19-f9c53ac83815}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="net\minecraft\world\scores">
+      <UniqueIdentifier>{e76a4209-219e-4f30-8758-82af8ea845e2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="net\minecraft\world\level\levelgen\flat">
+      <UniqueIdentifier>{b3d1eb81-7216-4d46-b742-3053cee0940b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="net\minecraft\world\level\redstone">
+      <UniqueIdentifier>{8589c074-b333-49e2-bd6e-bb49f7052b70}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="net\minecraft\world\scores\criteria">
+      <UniqueIdentifier>{fabb7f9b-01fe-446a-ac67-f231110fec0a}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -236,6 +260,10 @@
     <None Include="net.minecraft.world.damagesource.h">
       <Filter>net\minecraft\world\damageSource</Filter>
     </None>
+    <None Include="net.minecraft.core.h">
+      <Filter>net\minecraft\core</Filter>
+    </None>
+    <None Include="EntityDiagram.cd" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -553,9 +581,6 @@
     <ClInclude Include="ClayTile.h">
       <Filter>net\minecraft\world\level\tile</Filter>
     </ClInclude>
-    <ClInclude Include="ClothTile.h">
-      <Filter>net\minecraft\world\level\tile</Filter>
-    </ClInclude>
     <ClInclude Include="CoralTile.h">
       <Filter>net\minecraft\world\level\tile</Filter>
     </ClInclude>
@@ -565,13 +590,7 @@
     <ClInclude Include="HalfTransparentTile.h">
       <Filter>net\minecraft\world\level\tile</Filter>
     </ClInclude>
-    <ClInclude Include="EntityTile.h">
-      <Filter>net\minecraft\world\level\tile</Filter>
-    </ClInclude>
     <ClInclude Include="DeadBushTile.h">
-      <Filter>net\minecraft\world\level\tile</Filter>
-    </ClInclude>
-    <ClInclude Include="RailTile.h">
       <Filter>net\minecraft\world\level\tile</Filter>
     </ClInclude>
     <ClInclude Include="DetectorRailTile.h">
@@ -613,12 +632,6 @@
     <ClInclude Include="GravelTile.h">
       <Filter>net\minecraft\world\level\tile</Filter>
     </ClInclude>
-    <ClInclude Include="HellSandTile.h">
-      <Filter>net\minecraft\world\level\tile</Filter>
-    </ClInclude>
-    <ClInclude Include="HellStoneTile.h">
-      <Filter>net\minecraft\world\level\tile</Filter>
-    </ClInclude>
     <ClInclude Include="IceTile.h">
       <Filter>net\minecraft\world\level\tile</Filter>
     </ClInclude>
@@ -643,9 +656,6 @@
     <ClInclude Include="LeverTile.h">
       <Filter>net\minecraft\world\level\tile</Filter>
     </ClInclude>
-    <ClInclude Include="LightGemTile.h">
-      <Filter>net\minecraft\world\level\tile</Filter>
-    </ClInclude>
     <ClInclude Include="LiquidTile.h">
       <Filter>net\minecraft\world\level\tile</Filter>
     </ClInclude>
@@ -665,9 +675,6 @@
       <Filter>net\minecraft\world\level\tile</Filter>
     </ClInclude>
     <ClInclude Include="Mushroom.h">
-      <Filter>net\minecraft\world\level\tile</Filter>
-    </ClInclude>
-    <ClInclude Include="MusicTile.h">
       <Filter>net\minecraft\world\level\tile</Filter>
     </ClInclude>
     <ClInclude Include="NotGateTile.h">
@@ -692,9 +699,6 @@
       <Filter>net\minecraft\world\level\tile</Filter>
     </ClInclude>
     <ClInclude Include="PumpkinTile.h">
-      <Filter>net\minecraft\world\level\tile</Filter>
-    </ClInclude>
-    <ClInclude Include="RecordPlayerTile.h">
       <Filter>net\minecraft\world\level\tile</Filter>
     </ClInclude>
     <ClInclude Include="RedStoneDustTile.h">
@@ -1003,9 +1007,6 @@
     <ClInclude Include="Sponge.h">
       <Filter>net\minecraft\world\level\tile</Filter>
     </ClInclude>
-    <ClInclude Include="SpringTile.h">
-      <Filter>net\minecraft\world\level\tile</Filter>
-    </ClInclude>
     <ClInclude Include="StairTile.h">
       <Filter>net\minecraft\world\level\tile</Filter>
     </ClInclude>
@@ -1072,9 +1073,6 @@
     <ClInclude Include="net.minecraft.world.level.tile.entity.h">
       <Filter>net\minecraft\world\level\tile\entity</Filter>
     </ClInclude>
-    <ClInclude Include="ClothTileItem.h">
-      <Filter>net\minecraft\world\item</Filter>
-    </ClInclude>
     <ClInclude Include="TileItem.h">
       <Filter>net\minecraft\world\item</Filter>
     </ClInclude>
@@ -1085,9 +1083,6 @@
       <Filter>net\minecraft\world\entity</Filter>
     </ClInclude>
     <ClInclude Include="WeaponItem.h">
-      <Filter>net\minecraft\world\item</Filter>
-    </ClInclude>
-    <ClInclude Include="TreeTileItem.h">
       <Filter>net\minecraft\world\item</Filter>
     </ClInclude>
     <ClInclude Include="StoneSlabTileItem.h">
@@ -1337,9 +1332,6 @@
       <Filter>net\minecraft\network\packet</Filter>
     </ClInclude>
     <ClInclude Include="SetHealthPacket.h">
-      <Filter>net\minecraft\network\packet</Filter>
-    </ClInclude>
-    <ClInclude Include="SetRidingPacket.h">
       <Filter>net\minecraft\network\packet</Filter>
     </ClInclude>
     <ClInclude Include="SetSpawnPositionPacket.h">
@@ -1936,9 +1928,6 @@
     <ClInclude Include="BonusChestFeature.h">
       <Filter>net\minecraft\world\level\levelgen\feature</Filter>
     </ClInclude>
-    <ClInclude Include="StoneMonsterTileItem.h">
-      <Filter>net\minecraft\world\item</Filter>
-    </ClInclude>
     <ClInclude Include="IceBiome.h">
       <Filter>net\minecraft\world\level\biome</Filter>
     </ClInclude>
@@ -1988,9 +1977,6 @@
       <Filter>net\minecraft\world\entity\boss\enderdragon</Filter>
     </ClInclude>
     <ClInclude Include="BossMob.h">
-      <Filter>net\minecraft\world\entity\boss</Filter>
-    </ClInclude>
-    <ClInclude Include="BossMobPart.h">
       <Filter>net\minecraft\world\entity\boss</Filter>
     </ClInclude>
     <ClInclude Include="NetherSphere.h">
@@ -2155,9 +2141,6 @@
     <ClInclude Include="MycelTile.h">
       <Filter>net\minecraft\world\level\tile</Filter>
     </ClInclude>
-    <ClInclude Include="NetherStalkTile.h">
-      <Filter>net\minecraft\world\level\tile</Filter>
-    </ClInclude>
     <ClInclude Include="TheEndPortal.h">
       <Filter>net\minecraft\world\level\tile</Filter>
     </ClInclude>
@@ -2202,9 +2185,6 @@
     </ClInclude>
     <ClInclude Include="TextureAndGeometryChangePacket.h">
       <Filter>net\minecraft\network\packet</Filter>
-    </ClInclude>
-    <ClInclude Include="SmoothStoneBrickTileItem.h">
-      <Filter>net\minecraft\world\item</Filter>
     </ClInclude>
     <ClInclude Include="XZPacket.h">
       <Filter>net\minecraft\network\packet</Filter>
@@ -2314,9 +2294,6 @@
     <ClInclude Include="PathNavigation.h">
       <Filter>net\minecraft\world\entity\ai\navigation</Filter>
     </ClInclude>
-    <ClInclude Include="MonsterPlacerItem.h">
-      <Filter>net\minecraft\world\item</Filter>
-    </ClInclude>
     <ClInclude Include="BeachBiome.h">
       <Filter>net\minecraft\world\level\biome</Filter>
     </ClInclude>
@@ -2389,9 +2366,6 @@
     <ClInclude Include="OwnerHurtTargetGoal.h">
       <Filter>net\minecraft\world\entity\ai\goal\target</Filter>
     </ClInclude>
-    <ClInclude Include="ArrowAttackGoal.h">
-      <Filter>net\minecraft\world\entity\ai\goal</Filter>
-    </ClInclude>
     <ClInclude Include="AvoidPlayerGoal.h">
       <Filter>net\minecraft\world\entity\ai\goal</Filter>
     </ClInclude>
@@ -2444,9 +2418,6 @@
       <Filter>net\minecraft\world\entity\ai\goal</Filter>
     </ClInclude>
     <ClInclude Include="OpenDoorGoal.h">
-      <Filter>net\minecraft\world\entity\ai\goal</Filter>
-    </ClInclude>
-    <ClInclude Include="OzelotAttackGoal.h">
       <Filter>net\minecraft\world\entity\ai\goal</Filter>
     </ClInclude>
     <ClInclude Include="PanicGoal.h">
@@ -2502,12 +2473,6 @@
     </ClInclude>
     <ClInclude Include="AgableMob.h">
       <Filter>net\minecraft\world\entity</Filter>
-    </ClInclude>
-    <ClInclude Include="TamableAnimal.h">
-      <Filter>net\minecraft\world\entity\animal</Filter>
-    </ClInclude>
-    <ClInclude Include="Ozelot.h">
-      <Filter>net\minecraft\world\entity\animal</Filter>
     </ClInclude>
     <ClInclude Include="VillagerGolem.h">
       <Filter>net\minecraft\world\entity\animal</Filter>
@@ -2650,9 +2615,6 @@
     <ClInclude Include="ControlledByPlayerGoal.h">
       <Filter>net\minecraft\world\entity\ai\goal</Filter>
     </ClInclude>
-    <ClInclude Include="RepairMenu.h">
-      <Filter>net\minecraft\world\inventory</Filter>
-    </ClInclude>
     <ClInclude Include="RepairContainer.h">
       <Filter>net\minecraft\world\inventory</Filter>
     </ClInclude>
@@ -2767,14 +2729,473 @@
     <ClInclude Include="ConsoleSaveFileOriginal.h">
       <Filter>ConsoleHelpers\ConsoleSaveFileIO</Filter>
     </ClInclude>
-    <ClInclude Include="ConsoleSaveFileSplit.h">
-      <Filter>ConsoleHelpers\ConsoleSaveFileIO</Filter>
-    </ClInclude>
     <ClInclude Include="ConsoleSaveFileConverter.h">
       <Filter>ConsoleHelpers\ConsoleSaveFileIO</Filter>
     </ClInclude>
     <ClInclude Include="PerformanceTimer.h">
       <Filter>ConsoleHelpers</Filter>
+    </ClInclude>
+    <ClInclude Include="EffectCommand.h">
+      <Filter>net\minecraft\commands\common</Filter>
+    </ClInclude>
+    <ClInclude Include="GameDifficultyCommand.h">
+      <Filter>net\minecraft\commands\common</Filter>
+    </ClInclude>
+    <ClInclude Include="GameRuleCommand.h">
+      <Filter>net\minecraft\commands\common</Filter>
+    </ClInclude>
+    <ClInclude Include="PlaySoundCommand.h">
+      <Filter>net\minecraft\commands\common</Filter>
+    </ClInclude>
+    <ClInclude Include="SetPlayerTimeoutCommand.h">
+      <Filter>net\minecraft\commands\common</Filter>
+    </ClInclude>
+    <ClInclude Include="ShowSeedCommand.h">
+      <Filter>net\minecraft\commands\common</Filter>
+    </ClInclude>
+    <ClInclude Include="SpreadPlayersCommand.h">
+      <Filter>net\minecraft\commands\common</Filter>
+    </ClInclude>
+    <ClInclude Include="WeatherCommand.h">
+      <Filter>net\minecraft\commands\common</Filter>
+    </ClInclude>
+    <ClInclude Include="PlayerSelector.h">
+      <Filter>net\minecraft\commands</Filter>
+    </ClInclude>
+    <ClInclude Include="Behavior.h">
+      <Filter>net\minecraft\core</Filter>
+    </ClInclude>
+    <ClInclude Include="BlockSource.h">
+      <Filter>net\minecraft\core</Filter>
+    </ClInclude>
+    <ClInclude Include="BlockSourceImpl.h">
+      <Filter>net\minecraft\core</Filter>
+    </ClInclude>
+    <ClInclude Include="DispenseItemBehavior.h">
+      <Filter>net\minecraft\core</Filter>
+    </ClInclude>
+    <ClInclude Include="FacingEnum.h">
+      <Filter>net\minecraft\core</Filter>
+    </ClInclude>
+    <ClInclude Include="DefaultDispenseItemBehavior.h">
+      <Filter>net\minecraft\core</Filter>
+    </ClInclude>
+    <ClInclude Include="LocatableSource.h">
+      <Filter>net\minecraft\core</Filter>
+    </ClInclude>
+    <ClInclude Include="Location.h">
+      <Filter>net\minecraft\core</Filter>
+    </ClInclude>
+    <ClInclude Include="Position.h">
+      <Filter>net\minecraft\core</Filter>
+    </ClInclude>
+    <ClInclude Include="PositionImpl.h">
+      <Filter>net\minecraft\core</Filter>
+    </ClInclude>
+    <ClInclude Include="Source.h">
+      <Filter>net\minecraft\core</Filter>
+    </ClInclude>
+    <ClInclude Include="LevelParticlesPacket.h">
+      <Filter>net\minecraft\network\packet</Filter>
+    </ClInclude>
+    <ClInclude Include="SetDisplayObjectivePacket.h">
+      <Filter>net\minecraft\network\packet</Filter>
+    </ClInclude>
+    <ClInclude Include="SetEntityLinkPacket.h">
+      <Filter>net\minecraft\network\packet</Filter>
+    </ClInclude>
+    <ClInclude Include="SetScorePacket.h">
+      <Filter>net\minecraft\network\packet</Filter>
+    </ClInclude>
+    <ClInclude Include="SetObjectivePacket.h">
+      <Filter>net\minecraft\network\packet</Filter>
+    </ClInclude>
+    <ClInclude Include="SetPlayerTeamPacket.h">
+      <Filter>net\minecraft\network\packet</Filter>
+    </ClInclude>
+    <ClInclude Include="TileEditorOpenPacket.h">
+      <Filter>net\minecraft\network\packet</Filter>
+    </ClInclude>
+    <ClInclude Include="UpdateAttributesPacket.h">
+      <Filter>net\minecraft\network\packet</Filter>
+    </ClInclude>
+    <ClInclude Include="CombatEntry.h">
+      <Filter>net\minecraft\world\damageSource</Filter>
+    </ClInclude>
+    <ClInclude Include="CombatTracker.h">
+      <Filter>net\minecraft\world\damageSource</Filter>
+    </ClInclude>
+    <ClInclude Include="AbsoptionMobEffect.h">
+      <Filter>net\minecraft\world\effect</Filter>
+    </ClInclude>
+    <ClInclude Include="AttackDamageMobEffect.h">
+      <Filter>net\minecraft\world\effect</Filter>
+    </ClInclude>
+    <ClInclude Include="HealthBoostMobEffect.h">
+      <Filter>net\minecraft\world\effect</Filter>
+    </ClInclude>
+    <ClInclude Include="EntitySelector.h">
+      <Filter>net\minecraft\world\entity</Filter>
+    </ClInclude>
+    <ClInclude Include="LeashFenceKnotEntity.h">
+      <Filter>net\minecraft\world\entity</Filter>
+    </ClInclude>
+    <ClInclude Include="LivingEntity.h">
+      <Filter>net\minecraft\world\entity</Filter>
+    </ClInclude>
+    <ClInclude Include="MobGroupData.h">
+      <Filter>net\minecraft\world\entity</Filter>
+    </ClInclude>
+    <ClInclude Include="OwnableEntity.h">
+      <Filter>net\minecraft\world\entity</Filter>
+    </ClInclude>
+    <ClInclude Include="TamableAnimal.h">
+      <Filter>net\minecraft\world\entity</Filter>
+    </ClInclude>
+    <ClInclude Include="net.minecraft.world.entity.ai.attributes.h">
+      <Filter>net\minecraft\world\entity\ai\attributes</Filter>
+    </ClInclude>
+    <ClInclude Include="Attribute.h">
+      <Filter>net\minecraft\world\entity\ai\attributes</Filter>
+    </ClInclude>
+    <ClInclude Include="AttributeInstance.h">
+      <Filter>net\minecraft\world\entity\ai\attributes</Filter>
+    </ClInclude>
+    <ClInclude Include="AttributeModifier.h">
+      <Filter>net\minecraft\world\entity\ai\attributes</Filter>
+    </ClInclude>
+    <ClInclude Include="BaseAttribute.h">
+      <Filter>net\minecraft\world\entity\ai\attributes</Filter>
+    </ClInclude>
+    <ClInclude Include="BaseAttributeMap.h">
+      <Filter>net\minecraft\world\entity\ai\attributes</Filter>
+    </ClInclude>
+    <ClInclude Include="ModifiableAttributeInstance.h">
+      <Filter>net\minecraft\world\entity\ai\attributes</Filter>
+    </ClInclude>
+    <ClInclude Include="RangedAttribute.h">
+      <Filter>net\minecraft\world\entity\ai\attributes</Filter>
+    </ClInclude>
+    <ClInclude Include="ServersideAttributeMap.h">
+      <Filter>net\minecraft\world\entity\ai\attributes</Filter>
+    </ClInclude>
+    <ClInclude Include="OcelotAttackGoal.h">
+      <Filter>net\minecraft\world\entity\ai\goal</Filter>
+    </ClInclude>
+    <ClInclude Include="RangedAttackGoal.h">
+      <Filter>net\minecraft\world\entity\ai\goal</Filter>
+    </ClInclude>
+    <ClInclude Include="RunAroundLikeCrazyGoal.h">
+      <Filter>net\minecraft\world\entity\ai\goal</Filter>
+    </ClInclude>
+    <ClInclude Include="net.minecraft.world.entity.ambient.h">
+      <Filter>net\minecraft\world\entity\ambient</Filter>
+    </ClInclude>
+    <ClInclude Include="AmbientCreature.h">
+      <Filter>net\minecraft\world\entity\ambient</Filter>
+    </ClInclude>
+    <ClInclude Include="Bat.h">
+      <Filter>net\minecraft\world\entity\ambient</Filter>
+    </ClInclude>
+    <ClInclude Include="EntityHorse.h">
+      <Filter>net\minecraft\world\entity\animal</Filter>
+    </ClInclude>
+    <ClInclude Include="MultiEntityMob.h">
+      <Filter>net\minecraft\world\entity\boss</Filter>
+    </ClInclude>
+    <ClInclude Include="MultiEntityMobPart.h">
+      <Filter>net\minecraft\world\entity\boss</Filter>
+    </ClInclude>
+    <ClInclude Include="WitherBoss.h">
+      <Filter>net\minecraft\world\entity\boss\wither</Filter>
+    </ClInclude>
+    <ClInclude Include="MinecartChest.h">
+      <Filter>net\minecraft\world\entity\item</Filter>
+    </ClInclude>
+    <ClInclude Include="MinecartContainer.h">
+      <Filter>net\minecraft\world\entity\item</Filter>
+    </ClInclude>
+    <ClInclude Include="MinecartHopper.h">
+      <Filter>net\minecraft\world\entity\item</Filter>
+    </ClInclude>
+    <ClInclude Include="MinecartRideable.h">
+      <Filter>net\minecraft\world\entity\item</Filter>
+    </ClInclude>
+    <ClInclude Include="MinecartSpawner.h">
+      <Filter>net\minecraft\world\entity\item</Filter>
+    </ClInclude>
+    <ClInclude Include="MinecartTNT.h">
+      <Filter>net\minecraft\world\entity\item</Filter>
+    </ClInclude>
+    <ClInclude Include="Ocelot.h">
+      <Filter>net\minecraft\world\entity\animal</Filter>
+    </ClInclude>
+    <ClInclude Include="RangedAttackMob.h">
+      <Filter>net\minecraft\world\entity\monster</Filter>
+    </ClInclude>
+    <ClInclude Include="SharedMonsterAttributes.h">
+      <Filter>net\minecraft\world\entity\monster</Filter>
+    </ClInclude>
+    <ClInclude Include="Witch.h">
+      <Filter>net\minecraft\world\entity\monster</Filter>
+    </ClInclude>
+    <ClInclude Include="FireworksRocketEntity.h">
+      <Filter>net\minecraft\world\entity\projectile</Filter>
+    </ClInclude>
+    <ClInclude Include="LargeFireball.h">
+      <Filter>net\minecraft\world\entity\projectile</Filter>
+    </ClInclude>
+    <ClInclude Include="Projectile.h">
+      <Filter>net\minecraft\world\entity\projectile</Filter>
+    </ClInclude>
+    <ClInclude Include="WitherSkull.h">
+      <Filter>net\minecraft\world\entity\projectile</Filter>
+    </ClInclude>
+    <ClInclude Include="ScoreHolder.h">
+      <Filter>net\minecraft\world\scores</Filter>
+    </ClInclude>
+    <ClInclude Include="AnimalChest.h">
+      <Filter>net\minecraft\world\inventory</Filter>
+    </ClInclude>
+    <ClInclude Include="AnvilMenu.h">
+      <Filter>net\minecraft\world\inventory</Filter>
+    </ClInclude>
+    <ClInclude Include="BeaconMenu.h">
+      <Filter>net\minecraft\world\inventory</Filter>
+    </ClInclude>
+    <ClInclude Include="HopperMenu.h">
+      <Filter>net\minecraft\world\inventory</Filter>
+    </ClInclude>
+    <ClInclude Include="HorseInventoryMenu.h">
+      <Filter>net\minecraft\world\inventory</Filter>
+    </ClInclude>
+    <ClInclude Include="FireworksRecipe.h">
+      <Filter>net\minecraft\world\item\crafting</Filter>
+    </ClInclude>
+    <ClInclude Include="MapCloningRecipe.h">
+      <Filter>net\minecraft\world\item\crafting</Filter>
+    </ClInclude>
+    <ClInclude Include="MapExtendingRecipe.h">
+      <Filter>net\minecraft\world\item\crafting</Filter>
+    </ClInclude>
+    <ClInclude Include="WoolTileItem.h">
+      <Filter>net\minecraft\world\item</Filter>
+    </ClInclude>
+    <ClInclude Include="EmptyMapItem.h">
+      <Filter>net\minecraft\world\item</Filter>
+    </ClInclude>
+    <ClInclude Include="FireworksChargeItem.h">
+      <Filter>net\minecraft\world\item</Filter>
+    </ClInclude>
+    <ClInclude Include="FireworksItem.h">
+      <Filter>net\minecraft\world\item</Filter>
+    </ClInclude>
+    <ClInclude Include="LeashItem.h">
+      <Filter>net\minecraft\world\item</Filter>
+    </ClInclude>
+    <ClInclude Include="SpawnEggItem.h">
+      <Filter>net\minecraft\world\item</Filter>
+    </ClInclude>
+    <ClInclude Include="NameTagItem.h">
+      <Filter>net\minecraft\world\item</Filter>
+    </ClInclude>
+    <ClInclude Include="SimpleFoiledItem.h">
+      <Filter>net\minecraft\world\item</Filter>
+    </ClInclude>
+    <ClInclude Include="SnowItem.h">
+      <Filter>net\minecraft\world\item</Filter>
+    </ClInclude>
+    <ClInclude Include="WrittenBookItem.h">
+      <Filter>net\minecraft\world\item</Filter>
+    </ClInclude>
+    <ClInclude Include="FlatGeneratorInfo.h">
+      <Filter>net\minecraft\world\level\levelgen\flat</Filter>
+    </ClInclude>
+    <ClInclude Include="net.minecraft.world.level.levelgen.flat.h">
+      <Filter>net\minecraft\world\level\levelgen\flat</Filter>
+    </ClInclude>
+    <ClInclude Include="FlatLayerInfo.h">
+      <Filter>net\minecraft\world\level\levelgen\flat</Filter>
+    </ClInclude>
+    <ClInclude Include="StructureFeatureIO.h">
+      <Filter>net\minecraft\world\level\levelgen\structure</Filter>
+    </ClInclude>
+    <ClInclude Include="StructureFeatureSavedData.h">
+      <Filter>net\minecraft\world\level\levelgen\structure</Filter>
+    </ClInclude>
+    <ClInclude Include="net.minecraft.world.level.redstone.h">
+      <Filter>net\minecraft\world\level\redstone</Filter>
+    </ClInclude>
+    <ClInclude Include="Redstone.h">
+      <Filter>net\minecraft\world\level\redstone</Filter>
+    </ClInclude>
+    <ClInclude Include="BeaconTileEntity.h">
+      <Filter>net\minecraft\world\level\tile\entity</Filter>
+    </ClInclude>
+    <ClInclude Include="CommandBlockEntity.h">
+      <Filter>net\minecraft\world\level\tile\entity</Filter>
+    </ClInclude>
+    <ClInclude Include="ComparatorTileEntity.h">
+      <Filter>net\minecraft\world\level\tile\entity</Filter>
+    </ClInclude>
+    <ClInclude Include="DaylightDetectorTileEntity.h">
+      <Filter>net\minecraft\world\level\tile\entity</Filter>
+    </ClInclude>
+    <ClInclude Include="DropperTileEntity.h">
+      <Filter>net\minecraft\world\level\tile\entity</Filter>
+    </ClInclude>
+    <ClInclude Include="Hopper.h">
+      <Filter>net\minecraft\world\level\tile\entity</Filter>
+    </ClInclude>
+    <ClInclude Include="HopperTileEntity.h">
+      <Filter>net\minecraft\world\level\tile\entity</Filter>
+    </ClInclude>
+    <ClInclude Include="BaseEntityTile.h">
+      <Filter>net\minecraft\world\level\tile</Filter>
+    </ClInclude>
+    <ClInclude Include="BasePressurePlateTile.h">
+      <Filter>net\minecraft\world\level\tile</Filter>
+    </ClInclude>
+    <ClInclude Include="BaseRailTile.h">
+      <Filter>net\minecraft\world\level\tile</Filter>
+    </ClInclude>
+    <ClInclude Include="BeaconTile.h">
+      <Filter>net\minecraft\world\level\tile</Filter>
+    </ClInclude>
+    <ClInclude Include="ColoredTile.h">
+      <Filter>net\minecraft\world\level\tile</Filter>
+    </ClInclude>
+    <ClInclude Include="CommandBlock.h">
+      <Filter>net\minecraft\world\level\tile</Filter>
+    </ClInclude>
+    <ClInclude Include="ComparatorTile.h">
+      <Filter>net\minecraft\world\level\tile</Filter>
+    </ClInclude>
+    <ClInclude Include="DaylightDetectorTile.h">
+      <Filter>net\minecraft\world\level\tile</Filter>
+    </ClInclude>
+    <ClInclude Include="DropperTile.h">
+      <Filter>net\minecraft\world\level\tile</Filter>
+    </ClInclude>
+    <ClInclude Include="EntityTile.h">
+      <Filter>net\minecraft\world\level\tile</Filter>
+    </ClInclude>
+    <ClInclude Include="GlowstoneTile.h">
+      <Filter>net\minecraft\world\level\tile</Filter>
+    </ClInclude>
+    <ClInclude Include="HayBlockTile.h">
+      <Filter>net\minecraft\world\level\tile</Filter>
+    </ClInclude>
+    <ClInclude Include="SoulSandTile.h">
+      <Filter>net\minecraft\world\level\tile</Filter>
+    </ClInclude>
+    <ClInclude Include="NetherrackTile.h">
+      <Filter>net\minecraft\world\level\tile</Filter>
+    </ClInclude>
+    <ClInclude Include="HopperTile.h">
+      <Filter>net\minecraft\world\level\tile</Filter>
+    </ClInclude>
+    <ClInclude Include="JukeboxTile.h">
+      <Filter>net\minecraft\world\level\tile</Filter>
+    </ClInclude>
+    <ClInclude Include="NoteBlockTile.h">
+      <Filter>net\minecraft\world\level\tile</Filter>
+    </ClInclude>
+    <ClInclude Include="NetherWartTile.h">
+      <Filter>net\minecraft\world\level\tile</Filter>
+    </ClInclude>
+    <ClInclude Include="PoweredMetalTile.h">
+      <Filter>net\minecraft\world\level\tile</Filter>
+    </ClInclude>
+    <ClInclude Include="PoweredRailTile.h">
+      <Filter>net\minecraft\world\level\tile</Filter>
+    </ClInclude>
+    <ClInclude Include="RailTile.h">
+      <Filter>net\minecraft\world\level\tile</Filter>
+    </ClInclude>
+    <ClInclude Include="RepeaterTile.h">
+      <Filter>net\minecraft\world\level\tile</Filter>
+    </ClInclude>
+    <ClInclude Include="RotatedPillarTile.h">
+      <Filter>net\minecraft\world\level\tile</Filter>
+    </ClInclude>
+    <ClInclude Include="StoneButtonTile.h">
+      <Filter>net\minecraft\world\level\tile</Filter>
+    </ClInclude>
+    <ClInclude Include="WeightedPressurePlateTile.h">
+      <Filter>net\minecraft\world\level\tile</Filter>
+    </ClInclude>
+    <ClInclude Include="WoodButtonTile.h">
+      <Filter>net\minecraft\world\level\tile</Filter>
+    </ClInclude>
+    <ClInclude Include="WorldlyContainer.h">
+      <Filter>net\minecraft\world</Filter>
+    </ClInclude>
+    <ClInclude Include="BehaviorRegistry.h">
+      <Filter>net\minecraft\core</Filter>
+    </ClInclude>
+    <ClInclude Include="ItemDispenseBehaviors.h">
+      <Filter>net\minecraft\core</Filter>
+    </ClInclude>
+    <ClInclude Include="DummyCriteria.h">
+      <Filter>net\minecraft\world\scores\criteria</Filter>
+    </ClInclude>
+    <ClInclude Include="net.minecraft.world.scores.criteria.h">
+      <Filter>net\minecraft\world\scores\criteria</Filter>
+    </ClInclude>
+    <ClInclude Include="HealthCriteria.h">
+      <Filter>net\minecraft\world\scores\criteria</Filter>
+    </ClInclude>
+    <ClInclude Include="ObjectiveCriteria.h">
+      <Filter>net\minecraft\world\scores\criteria</Filter>
+    </ClInclude>
+    <ClInclude Include="net.minecraft.world.scores.h">
+      <Filter>net\minecraft\world\scores</Filter>
+    </ClInclude>
+    <ClInclude Include="Objective.h">
+      <Filter>net\minecraft\world\scores</Filter>
+    </ClInclude>
+    <ClInclude Include="PlayerTeam.h">
+      <Filter>net\minecraft\world\scores</Filter>
+    </ClInclude>
+    <ClInclude Include="Score.h">
+      <Filter>net\minecraft\world\scores</Filter>
+    </ClInclude>
+    <ClInclude Include="Scoreboard.h">
+      <Filter>net\minecraft\world\scores</Filter>
+    </ClInclude>
+    <ClInclude Include="ScoreboardSaveData.h">
+      <Filter>net\minecraft\world\scores</Filter>
+    </ClInclude>
+    <ClInclude Include="Team.h">
+      <Filter>net\minecraft\world\scores</Filter>
+    </ClInclude>
+    <ClInclude Include="AbstractProjectileDispenseBehavior.h">
+      <Filter>net\minecraft\core</Filter>
+    </ClInclude>
+    <ClInclude Include="BaseMobSpawner.h">
+      <Filter>net\minecraft\world\level</Filter>
+    </ClInclude>
+    <ClInclude Include="GameRules.h">
+      <Filter>net\minecraft\world\level</Filter>
+    </ClInclude>
+    <ClInclude Include="Calendar.h">
+      <Filter>net\minecraft\world\level</Filter>
+    </ClInclude>
+    <ClInclude Include="MinecartFurnace.h">
+      <Filter>net\minecraft\world\entity\item</Filter>
+    </ClInclude>
+    <ClInclude Include="StainedGlassBlock.h">
+      <Filter>net\minecraft\world\level\tile</Filter>
+    </ClInclude>
+    <ClInclude Include="StainedGlassPaneBlock.h">
+      <Filter>net\minecraft\world\level\tile</Filter>
+    </ClInclude>
+    <ClInclude Include="HtmlString.h">
+      <Filter>net\minecraft\util</Filter>
+    </ClInclude>
+    <ClInclude Include="FireworksMenu.h">
+      <Filter>net\minecraft\world\inventory</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -3006,9 +3427,6 @@
     <ClCompile Include="ClayTile.cpp">
       <Filter>net\minecraft\world\level\tile</Filter>
     </ClCompile>
-    <ClCompile Include="ClothTile.cpp">
-      <Filter>net\minecraft\world\level\tile</Filter>
-    </ClCompile>
     <ClCompile Include="CoralTile.cpp">
       <Filter>net\minecraft\world\level\tile</Filter>
     </ClCompile>
@@ -3018,13 +3436,7 @@
     <ClCompile Include="HalfTransparentTile.cpp">
       <Filter>net\minecraft\world\level\tile</Filter>
     </ClCompile>
-    <ClCompile Include="EntityTile.cpp">
-      <Filter>net\minecraft\world\level\tile</Filter>
-    </ClCompile>
     <ClCompile Include="DeadBushTile.cpp">
-      <Filter>net\minecraft\world\level\tile</Filter>
-    </ClCompile>
-    <ClCompile Include="RailTile.cpp">
       <Filter>net\minecraft\world\level\tile</Filter>
     </ClCompile>
     <ClCompile Include="DetectorRailTile.cpp">
@@ -3066,12 +3478,6 @@
     <ClCompile Include="GravelTile.cpp">
       <Filter>net\minecraft\world\level\tile</Filter>
     </ClCompile>
-    <ClCompile Include="HellSandTile.cpp">
-      <Filter>net\minecraft\world\level\tile</Filter>
-    </ClCompile>
-    <ClCompile Include="HellStoneTile.cpp">
-      <Filter>net\minecraft\world\level\tile</Filter>
-    </ClCompile>
     <ClCompile Include="IceTile.cpp">
       <Filter>net\minecraft\world\level\tile</Filter>
     </ClCompile>
@@ -3090,9 +3496,6 @@
     <ClCompile Include="LeverTile.cpp">
       <Filter>net\minecraft\world\level\tile</Filter>
     </ClCompile>
-    <ClCompile Include="LightGemTile.cpp">
-      <Filter>net\minecraft\world\level\tile</Filter>
-    </ClCompile>
     <ClCompile Include="LiquidTileDynamic.cpp">
       <Filter>net\minecraft\world\level\tile</Filter>
     </ClCompile>
@@ -3109,9 +3512,6 @@
       <Filter>net\minecraft\world\level\tile</Filter>
     </ClCompile>
     <ClCompile Include="Mushroom.cpp">
-      <Filter>net\minecraft\world\level\tile</Filter>
-    </ClCompile>
-    <ClCompile Include="MusicTile.cpp">
       <Filter>net\minecraft\world\level\tile</Filter>
     </ClCompile>
     <ClCompile Include="TorchTile.cpp">
@@ -3136,9 +3536,6 @@
       <Filter>net\minecraft\world\level\tile</Filter>
     </ClCompile>
     <ClCompile Include="PumpkinTile.cpp">
-      <Filter>net\minecraft\world\level\tile</Filter>
-    </ClCompile>
-    <ClCompile Include="RecordPlayerTile.cpp">
       <Filter>net\minecraft\world\level\tile</Filter>
     </ClCompile>
     <ClCompile Include="RedStoneDustTile.cpp">
@@ -3375,9 +3772,6 @@
     <ClCompile Include="Sponge.cpp">
       <Filter>net\minecraft\world\level\tile</Filter>
     </ClCompile>
-    <ClCompile Include="SpringTile.cpp">
-      <Filter>net\minecraft\world\level\tile</Filter>
-    </ClCompile>
     <ClCompile Include="StairTile.cpp">
       <Filter>net\minecraft\world\level\tile</Filter>
     </ClCompile>
@@ -3426,9 +3820,6 @@
     <ClCompile Include="WaterColor.cpp">
       <Filter>net\minecraft\world\level</Filter>
     </ClCompile>
-    <ClCompile Include="ClothTileItem.cpp">
-      <Filter>net\minecraft\world\item</Filter>
-    </ClCompile>
     <ClCompile Include="TileItem.cpp">
       <Filter>net\minecraft\world\item</Filter>
     </ClCompile>
@@ -3439,9 +3830,6 @@
       <Filter>net\minecraft\world\entity</Filter>
     </ClCompile>
     <ClCompile Include="WeaponItem.cpp">
-      <Filter>net\minecraft\world\item</Filter>
-    </ClCompile>
-    <ClCompile Include="TreeTileItem.cpp">
       <Filter>net\minecraft\world\item</Filter>
     </ClCompile>
     <ClCompile Include="StoneSlabTileItem.cpp">
@@ -3666,9 +4054,6 @@
     <ClCompile Include="SetHealthPacket.cpp">
       <Filter>net\minecraft\network\packet</Filter>
     </ClCompile>
-    <ClCompile Include="SetRidingPacket.cpp">
-      <Filter>net\minecraft\network\packet</Filter>
-    </ClCompile>
     <ClCompile Include="SetSpawnPositionPacket.cpp">
       <Filter>net\minecraft\network\packet</Filter>
     </ClCompile>
@@ -3827,9 +4212,6 @@
     </ClCompile>
     <ClCompile Include="Mth.cpp">
       <Filter>net\minecraft\util</Filter>
-    </ClCompile>
-    <ClCompile Include="Container.cpp">
-      <Filter>net\minecraft\world</Filter>
     </ClCompile>
     <ClCompile Include="Creature.cpp">
       <Filter>net\minecraft\world\entity</Filter>
@@ -4194,9 +4576,6 @@
     <ClCompile Include="BonusChestFeature.cpp">
       <Filter>net\minecraft\world\level\levelgen\feature</Filter>
     </ClCompile>
-    <ClCompile Include="StoneMonsterTileItem.cpp">
-      <Filter>net\minecraft\world\item</Filter>
-    </ClCompile>
     <ClCompile Include="IceBiome.cpp">
       <Filter>net\minecraft\world\level\biome</Filter>
     </ClCompile>
@@ -4238,12 +4617,6 @@
     </ClCompile>
     <ClCompile Include="SnowMan.cpp">
       <Filter>net\minecraft\world\entity\animal</Filter>
-    </ClCompile>
-    <ClCompile Include="BossMob.cpp">
-      <Filter>net\minecraft\world\entity\boss</Filter>
-    </ClCompile>
-    <ClCompile Include="BossMobPart.cpp">
-      <Filter>net\minecraft\world\entity\boss</Filter>
     </ClCompile>
     <ClCompile Include="NetherSphere.cpp">
       <Filter>net\minecraft\world\entity\boss\enderdragon</Filter>
@@ -4348,9 +4721,6 @@
       <Filter>net\minecraft\world\level\tile</Filter>
     </ClCompile>
     <ClCompile Include="MycelTile.cpp">
-      <Filter>net\minecraft\world\level\tile</Filter>
-    </ClCompile>
-    <ClCompile Include="NetherStalkTile.cpp">
       <Filter>net\minecraft\world\level\tile</Filter>
     </ClCompile>
     <ClCompile Include="TheEndPortal.cpp">
@@ -4509,9 +4879,6 @@
     <ClCompile Include="PathNavigation.cpp">
       <Filter>net\minecraft\world\entity\ai\navigation</Filter>
     </ClCompile>
-    <ClCompile Include="MonsterPlacerItem.cpp">
-      <Filter>net\minecraft\world\item</Filter>
-    </ClCompile>
     <ClCompile Include="BeachBiome.cpp">
       <Filter>net\minecraft\world\level\biome</Filter>
     </ClCompile>
@@ -4535,9 +4902,6 @@
     </ClCompile>
     <ClCompile Include="ItemFrame.cpp">
       <Filter>net\minecraft\world\entity</Filter>
-    </ClCompile>
-    <ClCompile Include="SmoothStoneBrickTileItem.cpp">
-      <Filter>net\minecraft\world\item</Filter>
     </ClCompile>
     <ClCompile Include="FlippedIcon.cpp">
       <Filter>net\minecraft\world</Filter>
@@ -4577,9 +4941,6 @@
     </ClCompile>
     <ClCompile Include="OwnerHurtTargetGoal.cpp">
       <Filter>net\minecraft\world\entity\ai\goal\target</Filter>
-    </ClCompile>
-    <ClCompile Include="ArrowAttackGoal.cpp">
-      <Filter>net\minecraft\world\entity\ai\goal</Filter>
     </ClCompile>
     <ClCompile Include="AvoidPlayerGoal.cpp">
       <Filter>net\minecraft\world\entity\ai\goal</Filter>
@@ -4635,9 +4996,6 @@
     <ClCompile Include="OpenDoorGoal.cpp">
       <Filter>net\minecraft\world\entity\ai\goal</Filter>
     </ClCompile>
-    <ClCompile Include="OzelotAttackGoal.cpp">
-      <Filter>net\minecraft\world\entity\ai\goal</Filter>
-    </ClCompile>
     <ClCompile Include="PanicGoal.cpp">
       <Filter>net\minecraft\world\entity\ai\goal</Filter>
     </ClCompile>
@@ -4682,12 +5040,6 @@
     </ClCompile>
     <ClCompile Include="AgableMob.cpp">
       <Filter>net\minecraft\world\entity</Filter>
-    </ClCompile>
-    <ClCompile Include="TamableAnimal.cpp">
-      <Filter>net\minecraft\world\entity\animal</Filter>
-    </ClCompile>
-    <ClCompile Include="Ozelot.cpp">
-      <Filter>net\minecraft\world\entity\animal</Filter>
     </ClCompile>
     <ClCompile Include="VillagerGolem.cpp">
       <Filter>net\minecraft\world\entity\animal</Filter>
@@ -4812,9 +5164,6 @@
     <ClCompile Include="ControlledByPlayerGoal.cpp">
       <Filter>net\minecraft\world\entity\ai\goal</Filter>
     </ClCompile>
-    <ClCompile Include="RepairMenu.cpp">
-      <Filter>net\minecraft\world\inventory</Filter>
-    </ClCompile>
     <ClCompile Include="RepairContainer.cpp">
       <Filter>net\minecraft\world\inventory</Filter>
     </ClCompile>
@@ -4914,14 +5263,368 @@
     <ClCompile Include="ConsoleSaveFileOriginal.cpp">
       <Filter>ConsoleHelpers\ConsoleSaveFileIO</Filter>
     </ClCompile>
-    <ClCompile Include="ConsoleSaveFileSplit.cpp">
-      <Filter>ConsoleHelpers\ConsoleSaveFileIO</Filter>
-    </ClCompile>
     <ClCompile Include="ConsoleSaveFileConverter.cpp">
       <Filter>ConsoleHelpers\ConsoleSaveFileIO</Filter>
     </ClCompile>
     <ClCompile Include="PerformanceTimer.cpp">
       <Filter>ConsoleHelpers</Filter>
+    </ClCompile>
+    <ClCompile Include="EffectCommand.cpp">
+      <Filter>net\minecraft\commands\common</Filter>
+    </ClCompile>
+    <ClCompile Include="BlockSourceImpl.cpp">
+      <Filter>net\minecraft\core</Filter>
+    </ClCompile>
+    <ClCompile Include="DefaultDispenseItemBehavior.cpp">
+      <Filter>net\minecraft\core</Filter>
+    </ClCompile>
+    <ClCompile Include="DispenseItemBehavior.cpp">
+      <Filter>net\minecraft\core</Filter>
+    </ClCompile>
+    <ClCompile Include="FacingEnum.cpp">
+      <Filter>net\minecraft\core</Filter>
+    </ClCompile>
+    <ClCompile Include="LevelParticlesPacket.cpp">
+      <Filter>net\minecraft\network\packet</Filter>
+    </ClCompile>
+    <ClCompile Include="SetDisplayObjectivePacket.cpp">
+      <Filter>net\minecraft\network\packet</Filter>
+    </ClCompile>
+    <ClCompile Include="SetEntityLinkPacket.cpp">
+      <Filter>net\minecraft\network\packet</Filter>
+    </ClCompile>
+    <ClCompile Include="SetScorePacket.cpp">
+      <Filter>net\minecraft\network\packet</Filter>
+    </ClCompile>
+    <ClCompile Include="SetObjectivePacket.cpp">
+      <Filter>net\minecraft\network\packet</Filter>
+    </ClCompile>
+    <ClCompile Include="SetPlayerTeamPacket.cpp">
+      <Filter>net\minecraft\network\packet</Filter>
+    </ClCompile>
+    <ClCompile Include="TileEditorOpenPacket.cpp">
+      <Filter>net\minecraft\network\packet</Filter>
+    </ClCompile>
+    <ClCompile Include="UpdateAttributesPacket.cpp">
+      <Filter>net\minecraft\network\packet</Filter>
+    </ClCompile>
+    <ClCompile Include="CombatEntry.cpp">
+      <Filter>net\minecraft\world\damageSource</Filter>
+    </ClCompile>
+    <ClCompile Include="CombatTracker.cpp">
+      <Filter>net\minecraft\world\damageSource</Filter>
+    </ClCompile>
+    <ClCompile Include="AbsoptionMobEffect.cpp">
+      <Filter>net\minecraft\world\effect</Filter>
+    </ClCompile>
+    <ClCompile Include="AttackDamageMobEffect.cpp">
+      <Filter>net\minecraft\world\effect</Filter>
+    </ClCompile>
+    <ClCompile Include="HealthBoostMobEffect.cpp">
+      <Filter>net\minecraft\world\effect</Filter>
+    </ClCompile>
+    <ClCompile Include="EntitySelector.cpp">
+      <Filter>net\minecraft\world\entity</Filter>
+    </ClCompile>
+    <ClCompile Include="LeashFenceKnotEntity.cpp">
+      <Filter>net\minecraft\world\entity</Filter>
+    </ClCompile>
+    <ClCompile Include="LivingEntity.cpp">
+      <Filter>net\minecraft\world\entity</Filter>
+    </ClCompile>
+    <ClCompile Include="TamableAnimal.cpp">
+      <Filter>net\minecraft\world\entity</Filter>
+    </ClCompile>
+    <ClCompile Include="AttributeModifier.cpp">
+      <Filter>net\minecraft\world\entity\ai\attributes</Filter>
+    </ClCompile>
+    <ClCompile Include="BaseAttribute.cpp">
+      <Filter>net\minecraft\world\entity\ai\attributes</Filter>
+    </ClCompile>
+    <ClCompile Include="BaseAttributeMap.cpp">
+      <Filter>net\minecraft\world\entity\ai\attributes</Filter>
+    </ClCompile>
+    <ClCompile Include="ModifiableAttributeInstance.cpp">
+      <Filter>net\minecraft\world\entity\ai\attributes</Filter>
+    </ClCompile>
+    <ClCompile Include="RangedAttribute.cpp">
+      <Filter>net\minecraft\world\entity\ai\attributes</Filter>
+    </ClCompile>
+    <ClCompile Include="ServersideAttributeMap.cpp">
+      <Filter>net\minecraft\world\entity\ai\attributes</Filter>
+    </ClCompile>
+    <ClCompile Include="OcelotAttackGoal.cpp">
+      <Filter>net\minecraft\world\entity\ai\goal</Filter>
+    </ClCompile>
+    <ClCompile Include="RangedAttackGoal.cpp">
+      <Filter>net\minecraft\world\entity\ai\goal</Filter>
+    </ClCompile>
+    <ClCompile Include="RunAroundLikeCrazyGoal.cpp">
+      <Filter>net\minecraft\world\entity\ai\goal</Filter>
+    </ClCompile>
+    <ClCompile Include="AmbientCreature.cpp">
+      <Filter>net\minecraft\world\entity\ambient</Filter>
+    </ClCompile>
+    <ClCompile Include="Bat.cpp">
+      <Filter>net\minecraft\world\entity\ambient</Filter>
+    </ClCompile>
+    <ClCompile Include="EntityHorse.cpp">
+      <Filter>net\minecraft\world\entity\animal</Filter>
+    </ClCompile>
+    <ClCompile Include="MultiEntityMobPart.cpp">
+      <Filter>net\minecraft\world\entity\boss</Filter>
+    </ClCompile>
+    <ClCompile Include="WitherBoss.cpp">
+      <Filter>net\minecraft\world\entity\boss\wither</Filter>
+    </ClCompile>
+    <ClCompile Include="MinecartChest.cpp">
+      <Filter>net\minecraft\world\entity\item</Filter>
+    </ClCompile>
+    <ClCompile Include="MinecartContainer.cpp">
+      <Filter>net\minecraft\world\entity\item</Filter>
+    </ClCompile>
+    <ClCompile Include="MinecartHopper.cpp">
+      <Filter>net\minecraft\world\entity\item</Filter>
+    </ClCompile>
+    <ClCompile Include="MinecartRideable.cpp">
+      <Filter>net\minecraft\world\entity\item</Filter>
+    </ClCompile>
+    <ClCompile Include="MinecartSpawner.cpp">
+      <Filter>net\minecraft\world\entity\item</Filter>
+    </ClCompile>
+    <ClCompile Include="MinecartTNT.cpp">
+      <Filter>net\minecraft\world\entity\item</Filter>
+    </ClCompile>
+    <ClCompile Include="Ocelot.cpp">
+      <Filter>net\minecraft\world\entity\animal</Filter>
+    </ClCompile>
+    <ClCompile Include="SharedMonsterAttributes.cpp">
+      <Filter>net\minecraft\world\entity\monster</Filter>
+    </ClCompile>
+    <ClCompile Include="Witch.cpp">
+      <Filter>net\minecraft\world\entity\monster</Filter>
+    </ClCompile>
+    <ClCompile Include="FireworksRocketEntity.cpp">
+      <Filter>net\minecraft\world\entity\projectile</Filter>
+    </ClCompile>
+    <ClCompile Include="LargeFireball.cpp">
+      <Filter>net\minecraft\world\entity\projectile</Filter>
+    </ClCompile>
+    <ClCompile Include="WitherSkull.cpp">
+      <Filter>net\minecraft\world\entity\projectile</Filter>
+    </ClCompile>
+    <ClCompile Include="AnimalChest.cpp">
+      <Filter>net\minecraft\world\inventory</Filter>
+    </ClCompile>
+    <ClCompile Include="AnvilMenu.cpp">
+      <Filter>net\minecraft\world\inventory</Filter>
+    </ClCompile>
+    <ClCompile Include="BeaconMenu.cpp">
+      <Filter>net\minecraft\world\inventory</Filter>
+    </ClCompile>
+    <ClCompile Include="HopperMenu.cpp">
+      <Filter>net\minecraft\world\inventory</Filter>
+    </ClCompile>
+    <ClCompile Include="HorseInventoryMenu.cpp">
+      <Filter>net\minecraft\world\inventory</Filter>
+    </ClCompile>
+    <ClCompile Include="FireworksRecipe.cpp">
+      <Filter>net\minecraft\world\item\crafting</Filter>
+    </ClCompile>
+    <ClCompile Include="WoolTileItem.cpp">
+      <Filter>net\minecraft\world\item</Filter>
+    </ClCompile>
+    <ClCompile Include="FireworksChargeItem.cpp">
+      <Filter>net\minecraft\world\item</Filter>
+    </ClCompile>
+    <ClCompile Include="FireworksItem.cpp">
+      <Filter>net\minecraft\world\item</Filter>
+    </ClCompile>
+    <ClCompile Include="LeashItem.cpp">
+      <Filter>net\minecraft\world\item</Filter>
+    </ClCompile>
+    <ClCompile Include="SpawnEggItem.cpp">
+      <Filter>net\minecraft\world\item</Filter>
+    </ClCompile>
+    <ClCompile Include="NameTagItem.cpp">
+      <Filter>net\minecraft\world\item</Filter>
+    </ClCompile>
+    <ClCompile Include="SimpleFoiledItem.cpp">
+      <Filter>net\minecraft\world\item</Filter>
+    </ClCompile>
+    <ClCompile Include="SnowItem.cpp">
+      <Filter>net\minecraft\world\item</Filter>
+    </ClCompile>
+    <ClCompile Include="FlatGeneratorInfo.cpp">
+      <Filter>net\minecraft\world\level\levelgen\flat</Filter>
+    </ClCompile>
+    <ClCompile Include="FlatLayerInfo.cpp">
+      <Filter>net\minecraft\world\level\levelgen\flat</Filter>
+    </ClCompile>
+    <ClCompile Include="StructureFeatureIO.cpp">
+      <Filter>net\minecraft\world\level\levelgen\structure</Filter>
+    </ClCompile>
+    <ClCompile Include="StructureFeatureSavedData.cpp">
+      <Filter>net\minecraft\world\level\levelgen\structure</Filter>
+    </ClCompile>
+    <ClCompile Include="BeaconTileEntity.cpp">
+      <Filter>net\minecraft\world\level\tile\entity</Filter>
+    </ClCompile>
+    <ClCompile Include="CommandBlockEntity.cpp">
+      <Filter>net\minecraft\world\level\tile\entity</Filter>
+    </ClCompile>
+    <ClCompile Include="ComparatorTileEntity.cpp">
+      <Filter>net\minecraft\world\level\tile\entity</Filter>
+    </ClCompile>
+    <ClCompile Include="DaylightDetectorTileEntity.cpp">
+      <Filter>net\minecraft\world\level\tile\entity</Filter>
+    </ClCompile>
+    <ClCompile Include="DropperTileEntity.cpp">
+      <Filter>net\minecraft\world\level\tile\entity</Filter>
+    </ClCompile>
+    <ClCompile Include="HopperTileEntity.cpp">
+      <Filter>net\minecraft\world\level\tile\entity</Filter>
+    </ClCompile>
+    <ClCompile Include="BaseEntityTile.cpp">
+      <Filter>net\minecraft\world\level\tile</Filter>
+    </ClCompile>
+    <ClCompile Include="BasePressurePlateTile.cpp">
+      <Filter>net\minecraft\world\level\tile</Filter>
+    </ClCompile>
+    <ClCompile Include="BaseRailTile.cpp">
+      <Filter>net\minecraft\world\level\tile</Filter>
+    </ClCompile>
+    <ClCompile Include="BeaconTile.cpp">
+      <Filter>net\minecraft\world\level\tile</Filter>
+    </ClCompile>
+    <ClCompile Include="ColoredTile.cpp">
+      <Filter>net\minecraft\world\level\tile</Filter>
+    </ClCompile>
+    <ClCompile Include="CommandBlock.cpp">
+      <Filter>net\minecraft\world\level\tile</Filter>
+    </ClCompile>
+    <ClCompile Include="ComparatorTile.cpp">
+      <Filter>net\minecraft\world\level\tile</Filter>
+    </ClCompile>
+    <ClCompile Include="DaylightDetectorTile.cpp">
+      <Filter>net\minecraft\world\level\tile</Filter>
+    </ClCompile>
+    <ClCompile Include="DropperTile.cpp">
+      <Filter>net\minecraft\world\level\tile</Filter>
+    </ClCompile>
+    <ClCompile Include="GlowstoneTile.cpp">
+      <Filter>net\minecraft\world\level\tile</Filter>
+    </ClCompile>
+    <ClCompile Include="HayBlockTile.cpp">
+      <Filter>net\minecraft\world\level\tile</Filter>
+    </ClCompile>
+    <ClCompile Include="SoulSandTile.cpp">
+      <Filter>net\minecraft\world\level\tile</Filter>
+    </ClCompile>
+    <ClCompile Include="NetherrackTile.cpp">
+      <Filter>net\minecraft\world\level\tile</Filter>
+    </ClCompile>
+    <ClCompile Include="HopperTile.cpp">
+      <Filter>net\minecraft\world\level\tile</Filter>
+    </ClCompile>
+    <ClCompile Include="JukeboxTile.cpp">
+      <Filter>net\minecraft\world\level\tile</Filter>
+    </ClCompile>
+    <ClCompile Include="NoteBlockTile.cpp">
+      <Filter>net\minecraft\world\level\tile</Filter>
+    </ClCompile>
+    <ClCompile Include="NetherWartTile.cpp">
+      <Filter>net\minecraft\world\level\tile</Filter>
+    </ClCompile>
+    <ClCompile Include="PoweredMetalTile.cpp">
+      <Filter>net\minecraft\world\level\tile</Filter>
+    </ClCompile>
+    <ClCompile Include="PoweredRailTile.cpp">
+      <Filter>net\minecraft\world\level\tile</Filter>
+    </ClCompile>
+    <ClCompile Include="RailTile.cpp">
+      <Filter>net\minecraft\world\level\tile</Filter>
+    </ClCompile>
+    <ClCompile Include="RepeaterTile.cpp">
+      <Filter>net\minecraft\world\level\tile</Filter>
+    </ClCompile>
+    <ClCompile Include="RotatedPillarTile.cpp">
+      <Filter>net\minecraft\world\level\tile</Filter>
+    </ClCompile>
+    <ClCompile Include="StoneButtonTile.cpp">
+      <Filter>net\minecraft\world\level\tile</Filter>
+    </ClCompile>
+    <ClCompile Include="WeightedPressurePlateTile.cpp">
+      <Filter>net\minecraft\world\level\tile</Filter>
+    </ClCompile>
+    <ClCompile Include="WoodButtonTile.cpp">
+      <Filter>net\minecraft\world\level\tile</Filter>
+    </ClCompile>
+    <ClCompile Include="BehaviorRegistry.cpp">
+      <Filter>net\minecraft\core</Filter>
+    </ClCompile>
+    <ClCompile Include="ItemDispenseBehaviors.cpp">
+      <Filter>net\minecraft\core</Filter>
+    </ClCompile>
+    <ClCompile Include="DummyCriteria.cpp">
+      <Filter>net\minecraft\world\scores\criteria</Filter>
+    </ClCompile>
+    <ClCompile Include="HealthCriteria.cpp">
+      <Filter>net\minecraft\world\scores\criteria</Filter>
+    </ClCompile>
+    <ClCompile Include="ObjectiveCriteria.cpp">
+      <Filter>net\minecraft\world\scores\criteria</Filter>
+    </ClCompile>
+    <ClCompile Include="Objective.cpp">
+      <Filter>net\minecraft\world\scores</Filter>
+    </ClCompile>
+    <ClCompile Include="PlayerTeam.cpp">
+      <Filter>net\minecraft\world\scores</Filter>
+    </ClCompile>
+    <ClCompile Include="Score.cpp">
+      <Filter>net\minecraft\world\scores</Filter>
+    </ClCompile>
+    <ClCompile Include="Scoreboard.cpp">
+      <Filter>net\minecraft\world\scores</Filter>
+    </ClCompile>
+    <ClCompile Include="Team.cpp">
+      <Filter>net\minecraft\world\scores</Filter>
+    </ClCompile>
+    <ClCompile Include="AbstractProjectileDispenseBehavior.cpp">
+      <Filter>net\minecraft\core</Filter>
+    </ClCompile>
+    <ClCompile Include="BaseMobSpawner.cpp">
+      <Filter>net\minecraft\world\level</Filter>
+    </ClCompile>
+    <ClCompile Include="GameRules.cpp">
+      <Filter>net\minecraft\world\level</Filter>
+    </ClCompile>
+    <ClCompile Include="Calendar.cpp">
+      <Filter>net\minecraft\world\level</Filter>
+    </ClCompile>
+    <ClCompile Include="MinecartFurnace.cpp">
+      <Filter>net\minecraft\world\entity\item</Filter>
+    </ClCompile>
+    <ClCompile Include="StainedGlassBlock.cpp">
+      <Filter>net\minecraft\world\level\tile</Filter>
+    </ClCompile>
+    <ClCompile Include="StainedGlassPaneBlock.cpp">
+      <Filter>net\minecraft\world\level\tile</Filter>
+    </ClCompile>
+    <ClCompile Include="Redstone.cpp">
+      <Filter>net\minecraft\world\level\redstone</Filter>
+    </ClCompile>
+    <ClCompile Include="Attribute.cpp">
+      <Filter>net\minecraft\world\entity\ai\attributes</Filter>
+    </ClCompile>
+    <ClCompile Include="HtmlString.cpp">
+      <Filter>net\minecraft\util</Filter>
+    </ClCompile>
+    <ClCompile Include="FireworksMenu.cpp">
+      <Filter>net\minecraft\world\inventory</Filter>
+    </ClCompile>
+    <ClCompile Include="EmptyMapItem.cpp">
+      <Filter>net\minecraft\world\item</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

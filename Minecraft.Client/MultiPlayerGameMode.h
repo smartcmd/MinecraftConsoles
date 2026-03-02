@@ -10,8 +10,8 @@ private:
 	int xDestroyBlock;
     int yDestroyBlock;
     int zDestroyBlock;
+	shared_ptr<ItemInstance> destroyingItem;
     float destroyProgress;
-    float oDestroyProgress;
     int destroyTicks;		// 4J was float but doesn't seem to need to be
     int destroyDelay;
     bool isDestroying;
@@ -39,6 +39,7 @@ private:
 	int carriedItem;
 
 private:
+	bool sameDestroyTarget(int x, int y, int z);
 	void ensureHasSentCarriedItem();
 public:
     virtual bool useItemOn(shared_ptr<Player> player, Level *level, shared_ptr<ItemInstance> item, int x, int y, int z, int face, Vec3 *hit, bool bTestUseOnly=false, bool *pbUsedItem=NULL);
@@ -55,6 +56,7 @@ public:
 	virtual bool hasMissTime();
 	virtual bool hasInfiniteItems();
 	virtual bool hasFarPickRange();
+	virtual bool isServerControlledInventory();
 	
 	// 4J Stu - Added so we can send packets for this in the network game
 	virtual bool handleCraftItem(int recipe, shared_ptr<Player> player);

@@ -1,43 +1,21 @@
 #include "stdafx.h"
 
-#include "Packet.h"
-#include "MaterialColor.h"
-#include "Material.h"
-#include "Tile.h"
-#include "HatchetItem.h"
-#include "PickaxeItem.h"
-#include "ShovelItem.h"
-#include "BlockReplacements.h"
-#include "Biome.h"
-#include "Item.h"
-#include "FurnaceRecipes.h"
-#include "Recipes.h"
-#include "Stats.h"
-#include "Achievements.h"
-#include "Skeleton.h"
-#include "PigZombie.h"
-#include "TileEntity.h"
-#include "EntityIO.h"
-#include "SharedConstants.h"
-#include "MobCategory.h"
-#include "LevelChunk.h"
-#include "MineShaftPieces.h"
-#include "StrongholdFeature.h"
-#include "VillageFeature.h"
-#include "LevelType.h"
-#include "EnderMan.h"
-#include "PotionBrewing.h"
-#include "Enchantment.h"
-#include "VillagePieces.h"
-#include "RandomScatteredLargeFeature.h"
+#include "net.minecraft.world.item.h"
+#include "net.minecraft.world.item.alchemy.h"
+#include "net.minecraft.world.item.crafting.h"
+#include "net.minecraft.world.item.enchantment.h"
+#include "net.minecraft.world.level.chunk.h"
+#include "net.minecraft.world.level.chunk.storage.h"
+#include "net.minecraft.world.level.levelgen.structure.h"
+#include "net.minecraft.world.level.tile.h"
+#include "net.minecraft.world.level.tile.entity.h"
+#include "net.minecraft.world.entity.h"
+#include "net.minecraft.world.entity.monster.h"
+#include "net.minecraft.world.entity.npc.h"
+#include "net.minecraft.world.effect.h"
 
 #include "Minecraft.World.h"
 #include "..\Minecraft.Client\ServerLevel.h"
-#include "SparseLightStorage.h"
-#include "SparseDataStorage.h"
-#include "McRegionChunkStorage.h"
-#include "Villager.h"
-#include "LevelSettings.h"
 
 #ifdef _DURANGO
 #include "DurangoStats.h"
@@ -60,7 +38,8 @@ void MinecraftWorld_RunStaticCtors()
 		PickaxeItem::staticCtor();
 		ShovelItem::staticCtor();
 		BlockReplacements::staticCtor();
-		Biome::staticCtor();	
+		Biome::staticCtor();
+		MobEffect::staticCtor();
 		Item::staticCtor();
 		FurnaceRecipes::staticCtor();
 		Recipes::staticCtor();	
@@ -71,8 +50,6 @@ void MinecraftWorld_RunStaticCtors()
 		Stats::staticCtor();
 #endif
 		//Achievements::staticCtor(); // 4J Stu - This is now called from within the Stats::staticCtor()
-		Skeleton::staticCtor();
-		PigZombie::staticCtor();
 		TileEntity::staticCtor();
 		EntityIO::staticCtor();
 		MobCategory::staticCtor();
@@ -82,11 +59,15 @@ void MinecraftWorld_RunStaticCtors()
 
 		LevelType::staticCtor();
 
-		MineShaftPieces::staticCtor();
-		StrongholdFeature::staticCtor();
-		VillagePieces::Smithy::staticCtor();
-		VillageFeature::staticCtor();
-		RandomScatteredLargeFeature::staticCtor();
+		{
+			StructureFeatureIO::staticCtor();
+
+			MineShaftPieces::staticCtor();
+			StrongholdFeature::staticCtor();
+			VillagePieces::Smithy::staticCtor();
+			VillageFeature::staticCtor();
+			RandomScatteredLargeFeature::staticCtor();
+		}
 	}
 	EnderMan::staticCtor();
 	PotionBrewing::staticCtor();
@@ -101,4 +82,5 @@ void MinecraftWorld_RunStaticCtors()
 	McRegionChunkStorage::staticCtor();
 	Villager::staticCtor();
 	GameType::staticCtor();
+	BeaconTileEntity::staticCtor();
 }

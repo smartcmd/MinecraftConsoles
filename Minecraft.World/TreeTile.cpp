@@ -7,23 +7,18 @@
 
 #include "TreeTile.h"
 
-const unsigned int TreeTile::TREE_NAMES[TREE_NAMES_LENGTH] = {	IDS_TILE_LOG_OAK,
+const unsigned int TreeTile::TREE_NAMES[ TreeTile::TREE_NAMES_LENGTH] = {	IDS_TILE_LOG_OAK,
 													IDS_TILE_LOG_SPRUCE,
 													IDS_TILE_LOG_BIRCH,
 													IDS_TILE_LOG_JUNGLE
 												};
 
+const wstring  TreeTile::TREE_STRING_NAMES[ TreeTile::TREE_NAMES_LENGTH] = {L"oak", L"spruce", L"birch", L"jungle"};
+
 const wstring TreeTile::TREE_TEXTURES[] = {L"tree_side", L"tree_spruce", L"tree_birch", L"tree_jungle"};
 
-TreeTile::TreeTile(int id) : Tile(id, Material::wood)
+TreeTile::TreeTile(int id) : RotatedPillarTile(id, Material::wood)
 {
-	icons = NULL;
-	iconTop = NULL;
-}
-
-int TreeTile::getRenderShape()
-{
-	return Tile::SHAPE_TREE;
 }
 
 int TreeTile::getResourceCount(Random *random)
@@ -53,58 +48,13 @@ void TreeTile::onRemove(Level *level, int x, int y, int z, int id, int data)
 						int currentData = level->getData(x + xo, y + yo, z + zo);
 						if ((currentData & LeafTile::UPDATE_LEAF_BIT) == 0)
 						{
-							level->setDataNoUpdate(x + xo, y + yo, z + zo, currentData | LeafTile::UPDATE_LEAF_BIT);
+							level->setData(x + xo, y + yo, z + zo, currentData | LeafTile::UPDATE_LEAF_BIT, Tile::UPDATE_NONE);
 						}
 					}
 				}
 	}
 }
 
-void TreeTile::setPlacedBy(Level *level, int x, int y, int z, shared_ptr<Mob> by)
-{
-	int type = level->getData(x, y, z) & MASK_TYPE;
-	int dir = PistonBaseTile::getNewFacing(level, x, y, z, dynamic_pointer_cast<Player>(by));
-	int facing = 0;
-
-	switch (dir)
-	{
-	case Facing::NORTH:
-	case Facing::SOUTH:
-		facing = FACING_Z;
-		break;
-	case Facing::EAST:
-	case Facing::WEST:
-		facing = FACING_X;
-		break;
-	case Facing::UP:
-	case Facing::DOWN:
-		facing = FACING_Y;
-		break;
-	}
-
-	level->setData(x, y, z, type | facing);
-}
-
-Icon *TreeTile::getTexture(int face, int data)
-{
-	int dir = data & MASK_FACING;
-	int type = data & MASK_TYPE;
-
-	if (dir == FACING_Y && (face == Facing::UP || face == Facing::DOWN))
-	{
-		return iconTop;
-	} 
-	else if (dir == FACING_X && (face == Facing::EAST || face == Facing::WEST))
-	{
-		return iconTop;
-	}
-	else if (dir == FACING_Z && (face == Facing::NORTH || face == Facing::SOUTH))
-	{
-		return iconTop;
-	}
-
-	return icons[type];
-}
 
 unsigned int TreeTile::getDescriptionId(int iData /*= -1*/)
 {
@@ -113,9 +63,14 @@ unsigned int TreeTile::getDescriptionId(int iData /*= -1*/)
 	return TreeTile::TREE_NAMES[type];
 }
 
-int TreeTile::getSpawnResourcesAuxValue(int data)
+Icon *TreeTile::getTypeTexture(int type)
 {
-	return data & MASK_TYPE;
+	return icons_side[type];
+}
+
+Icon *TreeTile::getTopTexture(int type)
+{
+	return icons_top[type];
 }
 
 int TreeTile::getWoodType(int data)
@@ -131,11 +86,9 @@ shared_ptr<ItemInstance> TreeTile::getSilkTouchItemInstance(int data)
 
 void TreeTile::registerIcons(IconRegister *iconRegister)
 {
-	iconTop = iconRegister->registerIcon(L"tree_top");
-	icons = new Icon*[TREE_NAMES_LENGTH];
-
 	for (int i = 0; i < TREE_NAMES_LENGTH; i++)
 	{
-		icons[i] = iconRegister->registerIcon(TREE_TEXTURES[i]);
+		icons_side[i] = iconRegister->registerIcon(getIconName() + L"_" + TREE_STRING_NAMES[i]);
+		icons_top[i] = iconRegister->registerIcon(getIconName() + L"_" + TREE_STRING_NAMES[i] + L"_top");
 	}
 }

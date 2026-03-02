@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.24)
 
-project(MinecraftConsoles LANGUAGES C CXX)
+project(MinecraftConsoles LANGUAGES C CXX ASM_MASM)
 
 if(NOT WIN32)
   message(FATAL_ERROR "This CMake build currently supports Windows only.")
@@ -28,7 +28,11 @@ target_compile_definitions(MinecraftWorld PRIVATE
   $<$<NOT:$<CONFIG:Debug>>:_LARGE_WORLDS;_DEBUG_MENUS_ENABLED;_LIB;_CRT_NON_CONFORMING_SWPRINTFS;_CRT_SECURE_NO_WARNINGS;_WINDOWS64>
 )
 if(MSVC)
-  target_compile_options(MinecraftWorld PRIVATE /W3 /MP /EHsc)
+  target_compile_options(MinecraftWorld PRIVATE
+    $<$<COMPILE_LANGUAGE:C,CXX>:/W3>
+    $<$<COMPILE_LANGUAGE:C,CXX>:/MP>
+    $<$<COMPILE_LANGUAGE:CXX>:/EHsc>
+  )
 endif()
 
 add_executable(MinecraftClient WIN32 ${MINECRAFT_CLIENT_SOURCES})
@@ -43,7 +47,11 @@ target_compile_definitions(MinecraftClient PRIVATE
   $<$<NOT:$<CONFIG:Debug>>:_LARGE_WORLDS;_DEBUG_MENUS_ENABLED;_CRT_NON_CONFORMING_SWPRINTFS;_CRT_SECURE_NO_WARNINGS;_WINDOWS64>
 )
 if(MSVC)
-  target_compile_options(MinecraftClient PRIVATE /W3 /MP /EHsc)
+  target_compile_options(MinecraftClient PRIVATE
+    $<$<COMPILE_LANGUAGE:C,CXX>:/W3>
+    $<$<COMPILE_LANGUAGE:C,CXX>:/MP>
+    $<$<COMPILE_LANGUAGE:CXX>:/EHsc>
+  )
 endif()
 
 set_target_properties(MinecraftClient PROPERTIES
@@ -54,19 +62,20 @@ target_link_libraries(MinecraftClient PRIVATE
   MinecraftWorld
   d3d11
   XInput9_1_0
-  Shcore
+  wsock32
+  legacy_stdio_definitions
   "${CMAKE_CURRENT_SOURCE_DIR}/Minecraft.Client/Windows64/Iggy/lib/iggy_w64.lib"
+  "${CMAKE_CURRENT_SOURCE_DIR}/Minecraft.Client/Windows64/Iggy/lib/iggyperfmon_w64.lib"
+  "${CMAKE_CURRENT_SOURCE_DIR}/Minecraft.Client/Windows64/Iggy/lib/iggyexpruntime_w64.lib"
   "${CMAKE_CURRENT_SOURCE_DIR}/Minecraft.Client/Windows64/Miles/lib/mss64.lib"
   $<$<CONFIG:Debug>:
     "${CMAKE_CURRENT_SOURCE_DIR}/Minecraft.Client/Windows64/4JLibs/libs/4J_Input_d.lib"
     "${CMAKE_CURRENT_SOURCE_DIR}/Minecraft.Client/Windows64/4JLibs/libs/4J_Storage_d.lib"
-    "${CMAKE_CURRENT_SOURCE_DIR}/Minecraft.Client/Windows64/4JLibs/libs/4J_Profile_d.lib"
     "${CMAKE_CURRENT_SOURCE_DIR}/Minecraft.Client/Windows64/4JLibs/libs/4J_Render_PC_d.lib"
   >
   $<$<NOT:$<CONFIG:Debug>>:
-    "${CMAKE_CURRENT_SOURCE_DIR}/Minecraft.Client/Windows64/4JLibs/libs/4J_Input_r.lib"
-    "${CMAKE_CURRENT_SOURCE_DIR}/Minecraft.Client/Windows64/4JLibs/libs/4J_Storage_r.lib"
-    "${CMAKE_CURRENT_SOURCE_DIR}/Minecraft.Client/Windows64/4JLibs/libs/4J_Profile_r.lib"
+    "${CMAKE_CURRENT_SOURCE_DIR}/Minecraft.Client/Windows64/4JLibs/libs/4J_Input.lib"
+    "${CMAKE_CURRENT_SOURCE_DIR}/Minecraft.Client/Windows64/4JLibs/libs/4J_Storage.lib"
     "${CMAKE_CURRENT_SOURCE_DIR}/Minecraft.Client/Windows64/4JLibs/libs/4J_Render_PC.lib"
   >
 )

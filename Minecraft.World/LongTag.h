@@ -9,7 +9,7 @@ public:
 	LongTag(const wstring &name, __int64 data) : Tag(name) {this->data = data; }
 	
 	void write(DataOutput *dos) { dos->writeLong(data); }
-	void load(DataInput *dis) { data = dis->readLong(); }
+	void load(DataInput *dis, int tagDepth) { data = dis->readLong(); }
 
 	byte getId() { return TAG_Long; }
 	wstring toString()

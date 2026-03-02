@@ -18,7 +18,7 @@ public:
 
 	virtual bool setupControl(UIScene *scene, IggyValuePath *parent, const string &controlName);
 
-	void init(const wstring &label, int id, __int64 min, __int64 max);
+	void init(UIString label, int id, __int64 min, __int64 max);
 	virtual void ReInit();
 	void reset();
 

@@ -7,13 +7,17 @@ class AgableMob : public PathfinderMob
 private:
 	static const int DATA_AGE_ID = 12;
 
+public:
+	static const int BABY_START_AGE = -20 * 60 * 20;
+
+private:
 	float registeredBBWidth;
 	float registeredBBHeight;
 
 public:
 	AgableMob(Level *level);
 
-	virtual bool interact(shared_ptr<Player> player);
+	virtual bool mobInteract(shared_ptr<Player> player);
 
 protected:
 	virtual void defineSynchedData();
@@ -21,6 +25,7 @@ protected:
 public:
 	virtual shared_ptr<AgableMob> getBreedOffspring(shared_ptr<AgableMob> target) = 0;
 	virtual int getAge();
+	virtual void ageUp(int seconds);
 	virtual void setAge(int age);
 	virtual void addAdditonalSaveData(CompoundTag *tag);
 	virtual void readAdditionalSaveData(CompoundTag *tag);

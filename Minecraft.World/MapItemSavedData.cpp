@@ -31,6 +31,8 @@ MapItemSavedData::HoldingPlayer::HoldingPlayer(shared_ptr<Player> player, const 
 
 	tick = 0;
 	sendPosTick = 0;
+	step = 0;
+	hasSentInitial = false;
 
 	// java ctor
 	//this->player = player;
@@ -50,6 +52,15 @@ MapItemSavedData::HoldingPlayer::~HoldingPlayer()
 
 charArray MapItemSavedData::HoldingPlayer::nextUpdatePacket(shared_ptr<ItemInstance> itemInstance)
 {
+	if (!hasSentInitial)
+	{
+		charArray data(2);
+		data[0] = HEADER_METADATA;
+		data[1] = parent->scale;
+
+		hasSentInitial = true;
+		return data;
+	}
 	if (--sendPosTick < 0)
 	{
 		sendPosTick = 4;
@@ -128,8 +139,7 @@ charArray MapItemSavedData::HoldingPlayer::nextUpdatePacket(shared_ptr<ItemInsta
 	shared_ptr<ServerPlayer> servPlayer = dynamic_pointer_cast<ServerPlayer>(player);
 	for (int d = 0; d < 10; d++)
 	{
-		int column = (tick * 11) % (MapItem::IMAGE_WIDTH);
-		tick++;
+		int column = (tick++ * 11) % (MapItem::IMAGE_WIDTH);
 
 		if (rowsDirtyMin[column] >= 0)
 		{
@@ -137,7 +147,7 @@ charArray MapItemSavedData::HoldingPlayer::nextUpdatePacket(shared_ptr<ItemInsta
 			int min = rowsDirtyMin[column];
 
 			charArray data = charArray(len + 3);
-			data[0] = 0;
+			data[0] = HEADER_COLOURS;
 			data[1] = (char) column;
 			data[2] = (char) min;
 			for (unsigned int y = 0; y < data.length - 3; y++)
@@ -159,7 +169,6 @@ MapItemSavedData::MapItemSavedData(const wstring& id) : SavedData( id )
 	dimension = 0;
 	scale = 0;
 	colors = byteArray( MapItem::IMAGE_WIDTH * MapItem::IMAGE_HEIGHT );
-	step = 0;
 }
 
 MapItemSavedData::~MapItemSavedData()
@@ -178,7 +187,7 @@ void MapItemSavedData::load(CompoundTag *tag)
 	z = tag->getInt(L"zCenter");
 	scale = tag->getByte(L"scale");
 	if (scale < 0) scale = 0;
-	if (scale > 4) scale = 4;
+	if (scale > MAX_SCALE) scale = MAX_SCALE;
 
 	int width = tag->getShort(L"width");
 	int height = tag->getShort(L"height");
@@ -332,7 +341,7 @@ void MapItemSavedData::tickCarriedBy(shared_ptr<Player> player, shared_ptr<ItemI
 					char rot = (char) ( (item->getFrame()->dir * 90) * 16 / 360);
 					if (dimension < 0)
 					{
-						int s = step / 10;
+						int s = (int) (playerLevel->getLevelData()->getDayTime() / 10);
 						rot = (char) ((s * s * 34187121 + s * 121) >> 15 & 15);
 					}
 #ifdef _LARGE_WORLDS
@@ -412,7 +421,7 @@ void MapItemSavedData::tickCarriedBy(shared_ptr<Player> player, shared_ptr<ItemI
 							rot = (char) (decorationPlayer->yRot * 16 / 360 + 0.5);
 							if (dimension < 0)
 							{
-								int s = step / 10;
+								int s = (int) (playerLevel->getLevelData()->getDayTime() / 10);
 								rot = (char) ((s * s * 34187121 + s * 121) >> 15 & 15);
 							}
 
@@ -494,7 +503,7 @@ void MapItemSavedData::setDirty(int x, int y0, int y1)
 
 void MapItemSavedData::handleComplexItemData(charArray &data)
 {
-	if (data[0] == 0)
+	if (data[0] == HEADER_COLOURS)
 	{
 		int xx = data[1] & 0xff;
 		int yy = data[2] & 0xff;
@@ -505,7 +514,7 @@ void MapItemSavedData::handleComplexItemData(charArray &data)
 		setDirty();
 
 	}
-	else if (data[0] == 1)
+	else if (data[0] == HEADER_DECORATIONS)
 	{
 		for( unsigned int i = 0; i < decorations.size(); i++ )
 		{
@@ -529,6 +538,29 @@ void MapItemSavedData::handleComplexItemData(charArray &data)
 			decorations.push_back(new MapDecoration(img, x, y, rot, entityId, visible));
 		}
 	}
+	else if (data[0] == HEADER_METADATA)
+	{
+		scale = data[1];
+	}
+}
+
+shared_ptr<MapItemSavedData::HoldingPlayer> MapItemSavedData::getHoldingPlayer(shared_ptr<Player> player)
+{
+	shared_ptr<HoldingPlayer> hp = nullptr;
+	AUTO_VAR(it,carriedByPlayers.find(player));
+
+	if (it == carriedByPlayers.end())
+	{
+		hp = shared_ptr<HoldingPlayer>( new HoldingPlayer(player, this) );
+		carriedByPlayers[player] = hp;
+		carriedBy.push_back(hp);
+	}
+	else
+	{
+		hp = it->second;
+	}
+
+	return hp;
 }
 
 // 4J Added

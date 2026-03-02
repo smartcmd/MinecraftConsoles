@@ -29,7 +29,6 @@ private:
 	int m_getDataProgress;
 	int m_setDataProgress;
 	char m_saveFilename[SCE_REMOTE_STORAGE_DATA_NAME_MAX_LEN];
-	char m_saveFileDesc[SCE_REMOTE_STORAGE_DATA_DESCRIPTION_MAX_LEN];
 	char m_remoteFilename[SCE_REMOTE_STORAGE_DATA_NAME_MAX_LEN];
 
 

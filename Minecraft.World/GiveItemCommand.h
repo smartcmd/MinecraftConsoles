@@ -8,6 +8,7 @@ class GiveItemCommand : public Command
 {
 public:
 	virtual EGameCommand getId();
+	virtual int getPermissionLevel();
 	virtual void execute(shared_ptr<CommandSender> source, byteArray commandData);
 
 public:

@@ -13,7 +13,7 @@ bool LockedChestTile::mayPlace(Level *level, int x, int y, int z)
 
 void LockedChestTile::tick(Level *level, int x, int y, int z, Random *random)
 {
-	level->setTile(x,y,z,0);
+	level->removeTile(x, y, z);
 }
 
 void LockedChestTile::registerIcons(IconRegister *iconRegister)

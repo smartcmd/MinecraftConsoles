@@ -7,6 +7,13 @@
 #include "net.minecraft.world.level.h"
 #include "LevelData.h"
 
+StructureFeature::StructureFeature()
+{
+#ifdef ENABLE_STRUCTURE_SAVING
+	savedData = nullptr;
+#endif
+}
+
 StructureFeature::~StructureFeature()
 {
 	for( AUTO_VAR(it, cachedStructures.begin()); it != cachedStructures.end(); it++ )
@@ -17,82 +24,95 @@ StructureFeature::~StructureFeature()
 
 void StructureFeature::addFeature(Level *level, int x, int z, int xOffs, int zOffs, byteArray blocks)
 {
-    // this method is called for each chunk within 8 chunk's distance from
-    // the chunk being generated, but not all chunks are the sources of
-    // structures
+	// this method is called for each chunk within 8 chunk's distance from
+	// the chunk being generated, but not all chunks are the sources of
+	// structures
+
+	restoreSavedData(level);
 
 	if (cachedStructures.find(ChunkPos::hashCode(x, z)) != cachedStructures.end())
 	{
-        return;
-    }
+		return;
+	}
 
-    // clear random key
-    random->nextInt();
+	// clear random key
+	random->nextInt();
 	// 4J-PB - want to know if it's a superflat land, so we don't generate so many villages - we've changed the distance required between villages on the xbox
-    if (isFeatureChunk(x, z,level->getLevelData()->getGenerator() == LevelType::lvl_flat))
+	if (isFeatureChunk(x, z,level->getLevelData()->getGenerator() == LevelType::lvl_flat))
 	{
-        StructureStart *start = createStructureStart(x, z);
-        cachedStructures[ChunkPos::hashCode(x, z)] = start;
-    }
+		StructureStart *start = createStructureStart(x, z);
+		cachedStructures[ChunkPos::hashCode(x, z)] = start;
+		saveFeature(x, z, start);
+	}
 }
 
 bool StructureFeature::postProcess(Level *level, Random *random, int chunkX, int chunkZ)
 {
+	restoreSavedData(level);
+
 	// 4J Stu - The x and z used to be offset by (+8) here, but that means we can miss out half structures on the edge of the world
 	// Normal feature generation offsets generation by half a chunk to ensure that it can generate the entire feature in chunks already created
 	// Structure features don't need this, as the PlaceBlock function only places blocks inside the BoundingBox specified, and parts
 	// of a struture piece can be added in more than one post-process call
-    int cx = (chunkX << 4); // + 8;
-    int cz = (chunkZ << 4); // + 8;
+	int cx = (chunkX << 4); // + 8;
+	int cz = (chunkZ << 4); // + 8;
 
-    bool intersection = false;
+	bool intersection = false;
 	for( AUTO_VAR(it, cachedStructures.begin()); it != cachedStructures.end(); it++ )
 	{
 		StructureStart *structureStart = it->second;
 
-        if (structureStart->isValid())
+		if (structureStart->isValid())
 		{
-            if (structureStart->getBoundingBox()->intersects(cx, cz, cx + 15, cz + 15))
+			if (structureStart->getBoundingBox()->intersects(cx, cz, cx + 15, cz + 15))
 			{
 				BoundingBox *bb = new BoundingBox(cx, cz, cx + 15, cz + 15);
-                structureStart->postProcess(level, random, bb);
+				structureStart->postProcess(level, random, bb);
 				delete bb;
-                intersection = true;
-            }
-        }
-    }
+				intersection = true;
 
-    return intersection;
+				// because some feature pieces are modified in the postProcess step, we need to save them again
+				saveFeature(structureStart->getChunkX(), structureStart->getChunkZ(), structureStart);
+			}
+		}
+	}
+
+	return intersection;
 }
 
 bool StructureFeature::isIntersection(int cellX, int cellZ)
 {
+	restoreSavedData(level);
+
 	for( AUTO_VAR(it, cachedStructures.begin()); it != cachedStructures.end(); it++ )
 	{
 		StructureStart *structureStart = it->second;
-        if (structureStart->isValid())
+		if (structureStart->isValid())
 		{
-            if (structureStart->getBoundingBox()->intersects(cellX, cellZ, cellX, cellZ))
+			if (structureStart->getBoundingBox()->intersects(cellX, cellZ, cellX, cellZ))
 			{
 				AUTO_VAR(it2, structureStart->getPieces()->begin());
 				while( it2 != structureStart->getPieces()->end() )
 				{
-                    StructurePiece *next = *it2++;
-                    if (next->getBoundingBox()->intersects(cellX, cellZ, cellX, cellZ))
+					StructurePiece *next = *it2++;
+					if (next->getBoundingBox()->intersects(cellX, cellZ, cellX, cellZ))
 					{
-                        return true;
-                    }
-                }
-            }
-        }
-    }
-    return false;
+						return true;
+					}
+				}
+			}
+		}
+	}
+	return false;
 }
 
-///////////////////////////////////////////
-// 4J-PB - Below functions added from 1.2.3
-///////////////////////////////////////////
 bool StructureFeature::isInsideFeature(int cellX, int cellY, int cellZ) 
+{
+	restoreSavedData(level);
+	return getStructureAt(cellX, cellY, cellZ) != NULL;
+}
+
+StructureStart *StructureFeature::getStructureAt(int cellX, int cellY, int cellZ)
 {
 	//for (StructureStart structureStart : cachedStructures.values()) 
 	for(AUTO_VAR(it, cachedStructures.begin()); it != cachedStructures.end(); ++it)
@@ -118,10 +138,25 @@ bool StructureFeature::isInsideFeature(int cellX, int cellY, int cellZ)
 					StructurePiece* piece = *it2;
 					if ( piece->getBoundingBox()->isInside(cellX, cellY, cellZ)  )
 					{
-						return true;
+						return pStructureStart;
 					}
 				}
 			}
+		}
+	}
+	return NULL;
+}
+
+bool StructureFeature::isInsideBoundingFeature(int cellX, int cellY, int cellZ)
+{
+	restoreSavedData(level);
+
+	for(AUTO_VAR(it, cachedStructures.begin()); it != cachedStructures.end(); ++it)
+	{
+		StructureStart *structureStart = it->second;
+		if (structureStart->isValid())
+		{
+			return (structureStart->getBoundingBox()->intersects(cellX, cellZ, cellX, cellZ));
 		}
 	}
 	return false;
@@ -129,10 +164,11 @@ bool StructureFeature::isInsideFeature(int cellX, int cellY, int cellZ)
 
 TilePos *StructureFeature::getNearestGeneratedFeature(Level *level, int cellX, int cellY, int cellZ) 
 {
-
 	// this is a hack that will "force" the feature to generate positions
 	// even if the player hasn't generated new chunks yet
 	this->level = level;
+
+	restoreSavedData(level);
 
 	random->setSeed(level->getSeed());
 	__int64 xScale = random->nextLong();
@@ -160,7 +196,7 @@ TilePos *StructureFeature::getNearestGeneratedFeature(Level *level, int cellX, i
 			int dx = locatorPosition->x - cellX;
 			int dy = locatorPosition->y - cellY;
 			int dz = locatorPosition->z - cellZ;
-			double dist = dx + dx * dy * dy + dz * dz;
+			double dist = dx * dx + dy * dy + dz * dz;
 
 			if (dist < minDistance) 
 			{
@@ -178,14 +214,14 @@ TilePos *StructureFeature::getNearestGeneratedFeature(Level *level, int cellX, i
 		vector<TilePos> *guesstimatedFeaturePositions = getGuesstimatedFeaturePositions();
 		if (guesstimatedFeaturePositions != NULL) 
 		{
- 			TilePos *pSelectedPos = new TilePos(0,0,0);
+			TilePos *pSelectedPos = new TilePos(0,0,0);
 
 			for(AUTO_VAR(it, guesstimatedFeaturePositions->begin()); it != guesstimatedFeaturePositions->end(); ++it)
 			{
 				int dx = (*it).x - cellX;
 				int dy = (*it).y - cellY;
 				int dz = (*it).z - cellZ;
-				double dist = dx + dx * dy * dy + dz * dz;
+				double dist = dx * dx + dy * dy + dz * dz;
 
 				if (dist < minDistance) 
 				{
@@ -205,4 +241,53 @@ TilePos *StructureFeature::getNearestGeneratedFeature(Level *level, int cellX, i
 vector<TilePos> *StructureFeature::getGuesstimatedFeaturePositions() 
 {
 	return NULL;
+}
+
+void StructureFeature::restoreSavedData(Level *level)
+{
+#ifdef ENABLE_STRUCTURE_SAVING
+	if (savedData == NULL)
+	{
+		savedData = dynamic_pointer_cast<StructureFeatureSavedData>( level->getSavedData(typeid(StructureFeatureSavedData), getFeatureName()) );
+
+		if (savedData == NULL)
+		{
+			savedData = shared_ptr<StructureFeatureSavedData>( new StructureFeatureSavedData(getFeatureName()) );
+			level->setSavedData(getFeatureName(), savedData);
+		}
+		else
+		{
+			CompoundTag *fullTag = savedData->getFullTag();
+
+			vector<Tag *> *allTags = fullTag->getAllTags();
+			for (AUTO_VAR(it,allTags->begin()); it != allTags->end(); ++it)
+			{
+				Tag *featureTag = *it;
+				if (featureTag->getId() == Tag::TAG_Compound)
+				{
+					CompoundTag *ct = (CompoundTag *) featureTag;
+
+					if (ct->contains(L"ChunkX") && ct->contains(L"ChunkZ"))
+					{
+						int cx = ct->getInt(L"ChunkX");
+						int cz = ct->getInt(L"ChunkZ");
+
+						StructureStart *start = StructureFeatureIO::loadStaticStart(ct, level);
+						// System.out.println("Loaded " + start.getClass().getSimpleName() + " from file");
+						cachedStructures[ChunkPos::hashCode(cx, cz)] = start;
+					}
+				}
+			}
+			delete allTags;
+		}
+	}
+#endif
+}
+
+void StructureFeature::saveFeature(int chunkX, int chunkZ, StructureStart *feature)
+{
+#ifdef ENABLE_STRUCTURE_SAVING
+	savedData->putFeatureTag(feature->createTag(chunkX, chunkZ), chunkX, chunkZ);
+	savedData->setDirty();
+#endif
 }

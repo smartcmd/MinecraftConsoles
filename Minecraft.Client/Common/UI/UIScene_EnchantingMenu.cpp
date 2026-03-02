@@ -10,13 +10,13 @@ UIScene_EnchantingMenu::UIScene_EnchantingMenu(int iPad, void *_initData, UILaye
 	// Setup all the Iggy references we need for this scene
 	initialiseMovie();
 
-	m_labelEnchant.init(app.GetString(IDS_ENCHANT));
-
 	m_enchantButton[0].init(0);
 	m_enchantButton[1].init(1);
 	m_enchantButton[2].init(2);
 
 	EnchantingScreenInput *initData = (EnchantingScreenInput *)_initData;
+	
+	m_labelEnchant.init( initData->name.empty() ? app.GetString(IDS_ENCHANT) : initData->name );
 
 	Minecraft *pMinecraft = Minecraft::GetInstance();
 	if( pMinecraft->localgameModes[initData->iPad] != NULL )

@@ -15,8 +15,8 @@ AABB *LadderTile::getAABB(Level *level, int x, int y, int z)
 
 AABB *LadderTile::getTileAABB(Level *level, int x, int y, int z)
 {
-    updateShape(level, x, y, z);
-    return Tile::getTileAABB(level, x, y, z);
+	updateShape(level, x, y, z);
+	return Tile::getTileAABB(level, x, y, z);
 }
 
 void LadderTile::updateShape(LevelSource *level, int x, int y, int z, int forceData, shared_ptr<TileEntity> forceEntity) // 4J added forceData, forceEntity param
@@ -57,53 +57,53 @@ int LadderTile::getRenderShape()
 
 bool LadderTile::mayPlace(Level *level, int x, int y, int z)
 {
-    if (level->isSolidBlockingTile(x - 1, y, z))
+	if (level->isSolidBlockingTile(x - 1, y, z))
 	{
-        return true;
-    }
+		return true;
+	}
 	else if (level->isSolidBlockingTile(x + 1, y, z))
 	{
-        return true;
+		return true;
 	}
 	else if (level->isSolidBlockingTile(x, y, z - 1))
 	{
-        return true;
-    }
+		return true;
+	}
 	else if (level->isSolidBlockingTile(x, y, z + 1))
 	{
-        return true;
-    }
-    return false;
+		return true;
+	}
+	return false;
 }
 
 int LadderTile::getPlacedOnFaceDataValue(Level *level, int x, int y, int z, int face, float clickX, float clickY, float clickZ, int itemValue)
 {
-    int dir = level->getData(x, y, z);
+	int dir = level->getData(x, y, z);
 
-    if ((dir == 0 || face == 2) && level->isSolidBlockingTile(x, y, z + 1)) dir = 2;
-    if ((dir == 0 || face == 3) && level->isSolidBlockingTile(x, y, z - 1)) dir = 3;
-    if ((dir == 0 || face == 4) && level->isSolidBlockingTile(x + 1, y, z)) dir = 4;
-    if ((dir == 0 || face == 5) && level->isSolidBlockingTile(x - 1, y, z)) dir = 5;
+	if ((dir == 0 || face == 2) && level->isSolidBlockingTile(x, y, z + 1)) dir = 2;
+	if ((dir == 0 || face == 3) && level->isSolidBlockingTile(x, y, z - 1)) dir = 3;
+	if ((dir == 0 || face == 4) && level->isSolidBlockingTile(x + 1, y, z)) dir = 4;
+	if ((dir == 0 || face == 5) && level->isSolidBlockingTile(x - 1, y, z)) dir = 5;
 
-    return dir;
+	return dir;
 }
 
 void LadderTile::neighborChanged(Level *level, int x, int y, int z, int type)
 {
-    int face = level->getData(x, y, z);
-    bool ok = false;
+	int face = level->getData(x, y, z);
+	bool ok = false;
 
-    if (face == 2 && level->isSolidBlockingTile(x, y, z + 1)) ok = true;
-    if (face == 3 && level->isSolidBlockingTile(x, y, z - 1)) ok = true;
-    if (face == 4 && level->isSolidBlockingTile(x + 1, y, z)) ok = true;
-    if (face == 5 && level->isSolidBlockingTile(x - 1, y, z)) ok = true;
-    if (!ok)
+	if (face == 2 && level->isSolidBlockingTile(x, y, z + 1)) ok = true;
+	if (face == 3 && level->isSolidBlockingTile(x, y, z - 1)) ok = true;
+	if (face == 4 && level->isSolidBlockingTile(x + 1, y, z)) ok = true;
+	if (face == 5 && level->isSolidBlockingTile(x - 1, y, z)) ok = true;
+	if (!ok)
 	{
-        spawnResources(level, x, y, z, face, 0);
-        level->setTile(x, y, z, 0);
-    }
+		spawnResources(level, x, y, z, face, 0);
+		level->removeTile(x, y, z);
+	}
 
-    Tile::neighborChanged(level, x, y, z, type);
+	Tile::neighborChanged(level, x, y, z, type);
 }
 
 int LadderTile::getResourceCount(Random* random)

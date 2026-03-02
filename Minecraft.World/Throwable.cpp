@@ -2,6 +2,7 @@
 #include "net.minecraft.world.phys.h"
 #include "net.minecraft.world.entity.h"
 #include "net.minecraft.world.level.h"
+#include "net.minecraft.world.level.tile.h"
 #include "com.mojang.nbt.h"
 #include "Throwable.h"
 
@@ -18,6 +19,7 @@ void Throwable::_throwableInit()
 	owner = nullptr;
 	life = 0;
 	flightTime = 0;
+	ownerName = L"";
 }
 
 Throwable::Throwable(Level *level) : Entity(level)
@@ -37,21 +39,21 @@ bool Throwable::shouldRenderAtSqrDistance(double distance)
 	return distance < size * size;
 }
 
-Throwable::Throwable(Level *level, shared_ptr<Mob> mob) : Entity(level)
+Throwable::Throwable(Level *level, shared_ptr<LivingEntity> mob) : Entity(level)
 {
 	_throwableInit();
-	this->owner = mob;
+	owner = mob;
 
 	setSize(4 / 16.0f, 4 / 16.0f);
 
-	this->moveTo(mob->x, mob->y + mob->getHeadHeight(), mob->z, mob->yRot, mob->xRot);
+	moveTo(mob->x, mob->y + mob->getHeadHeight(), mob->z, mob->yRot, mob->xRot);
 
 
 	x -= cos(yRot / 180 * PI) * 0.16f;
 	y -= 0.1f;
 	z -= sin(yRot / 180 * PI) * 0.16f;
-	this->setPos(x, y, z);
-	this->heightOffset = 0;
+	setPos(x, y, z);
+	heightOffset = 0;
 
 
 	float speed = 0.4f;
@@ -69,8 +71,8 @@ Throwable::Throwable(Level *level, double x, double y, double z) : Entity(level)
 
 	setSize(4 / 16.0f, 4 / 16.0f);
 
-	this->setPos(x, y, z);
-	this->heightOffset = 0;
+	setPos(x, y, z);
+	heightOffset = 0;
 }
 
 
@@ -106,8 +108,8 @@ void Throwable::shoot(double xd, double yd, double zd, float pow, float uncertai
 
 	float sd = (float) sqrt(xd * xd + zd * zd);
 
-	yRotO = this->yRot = (float) (atan2(xd, zd) * 180 / PI);
-	xRotO = this->xRot = (float) (atan2(yd, (double)sd) * 180 / PI);
+	yRotO = yRot = (float) (atan2(xd, zd) * 180 / PI);
+	xRotO = xRot = (float) (atan2(yd, (double)sd) * 180 / PI);
 	life = 0;
 }
 
@@ -119,8 +121,8 @@ void Throwable::lerpMotion(double xd, double yd, double zd)
 	if (xRotO == 0 && yRotO == 0)
 	{
 		float sd = (float) sqrt(xd * xd + zd * zd);
-		yRotO = this->yRot = (float) (atan2(xd, zd) * 180 / PI);
-		xRotO = this->xRot = (float) (atan2(yd, (double)sd) * 180 / PI);
+		yRotO = yRot = (float) (atan2(xd, zd) * 180 / PI);
+		xRotO = xRot = (float) (atan2(yd, (double)sd) * 180 / PI);
 	}
 }
 
@@ -172,8 +174,9 @@ void Throwable::tick()
 	if (!level->isClientSide)
 	{
 		shared_ptr<Entity> hitEntity = nullptr;
-		vector<shared_ptr<Entity> > *objects = level->getEntities(shared_from_this(), this->bb->expand(xd, yd, zd)->grow(1, 1, 1));
+		vector<shared_ptr<Entity> > *objects = level->getEntities(shared_from_this(), bb->expand(xd, yd, zd)->grow(1, 1, 1));
 		double nearest = 0;
+		shared_ptr<LivingEntity> owner = getOwner();
 		for (int i = 0; i < objects->size(); i++)
 		{
 			shared_ptr<Entity> e = objects->at(i);
@@ -203,7 +206,14 @@ void Throwable::tick()
 
 	if (res != NULL)
 	{
-		onHit(res);
+		if ( (res->type == HitResult::TILE) && (level->getTile(res->x, res->y, res->z) == Tile::portalTile_Id) )
+		{
+			handleInsidePortal();
+		}
+		else
+		{
+			onHit(res);
+		}
 		delete res;
 	}
 	x += xd;
@@ -263,6 +273,13 @@ void Throwable::addAdditonalSaveData(CompoundTag *tag)
 	tag->putByte(L"inTile", (byte) lastTile);
 	tag->putByte(L"shake", (byte) shakeTime);
 	tag->putByte(L"inGround", (byte) (inGround ? 1 : 0));
+
+	if (ownerName.empty() && (owner != NULL) && owner->instanceof(eTYPE_PLAYER) )
+	{
+		ownerName = owner->getAName();
+	}
+
+	tag->putString(L"ownerName", ownerName.empty() ? L"" : ownerName);
 }
 
 void Throwable::readAdditionalSaveData(CompoundTag *tag)
@@ -273,9 +290,20 @@ void Throwable::readAdditionalSaveData(CompoundTag *tag)
 	lastTile = tag->getByte(L"inTile") & 0xff;
 	shakeTime = tag->getByte(L"shake") & 0xff;
 	inGround = tag->getByte(L"inGround") == 1;
+	ownerName = tag->getString(L"ownerName");
+	if (ownerName.empty() ) ownerName = L"";
 }
 
 float Throwable::getShadowHeightOffs()
 {
 	return 0;
+}
+
+shared_ptr<LivingEntity> Throwable::getOwner()
+{
+	if (owner == NULL && !ownerName.empty() )
+	{
+		owner = level->getPlayerByName(ownerName);
+	}
+	return owner;
 }

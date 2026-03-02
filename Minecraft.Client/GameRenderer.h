@@ -11,9 +11,14 @@ class SparseDataStorage;
 
 #include "..\Minecraft.World\SmoothFloat.h"
 #include "..\Minecraft.World\C4JThread.h"
+#include "ResourceLocation.h"
 
 class GameRenderer
 {
+private:
+	static ResourceLocation RAIN_LOCATION;
+    static ResourceLocation SNOW_LOCATION;
+
 public:
 	static bool anaglyph3d;
     static int anaglyphPass;
@@ -63,6 +68,9 @@ private:
 	float fov[4];
 	float oFov[4];
 	float tFov[4];
+
+	float darkenWorldAmount;
+    float darkenWorldAmountO;
 
     bool isInClouds;
 
@@ -116,6 +124,7 @@ public:
 private:
 	Random *random;
     int rainSoundTime;
+	void prepareAndRenderClouds(LevelRenderer *levelRenderer, float a);
     void tickRain();
 private:
 	// 4J - brought forward from 1.8.2

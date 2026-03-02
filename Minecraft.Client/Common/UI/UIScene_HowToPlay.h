@@ -39,6 +39,14 @@ public:
 		eHowToPlay_LabelTrading_Offer1,
 		eHowToPlay_LabelTrading_NeededForTrade,
 		eHowToPlay_LabelTrading_VillagerOffers,
+		eHowToPlay_LabelBeacon_PrimaryPower,
+		eHowToPlay_LabelBeacon_SecondaryPower,
+		eHowToPlay_LabelFireworksText,
+		eHowToPlay_LabelFireworksInventory,
+		eHowToPlay_LabelHopperText,
+		eHowToPlay_LabelHopperInventory,
+		eHowToPlay_LabelDropperText,
+		eHowToPlay_LabelDropperInventory,
 		eHowToPlay_NumLabels
 	};
 
@@ -99,6 +107,18 @@ private:
 		UI_MAP_ELEMENT( m_labels[ eHowToPlay_LabelAnvil_ARepairAndName ] , "Label1_21" )
 		UI_MAP_ELEMENT( m_labels[ eHowToPlay_LabelAnvil_Cost ] , "Label2_21" )
 		UI_MAP_ELEMENT( m_labels[ eHowToPlay_LabelAnvil_Inventory ] , "Label3_21" )
+
+		UI_MAP_ELEMENT( m_labels[ eHowToPlay_LabelBeacon_PrimaryPower ] , "Label1_25" )
+		UI_MAP_ELEMENT( m_labels[ eHowToPlay_LabelBeacon_SecondaryPower ] , "Label2_25" )
+
+		UI_MAP_ELEMENT( m_labels[ eHowToPlay_LabelFireworksText ] , "Label1_26" )
+		UI_MAP_ELEMENT( m_labels[ eHowToPlay_LabelFireworksInventory ] , "Label2_26" )
+
+		UI_MAP_ELEMENT( m_labels[ eHowToPlay_LabelHopperText ] , "Label1_27" )
+		UI_MAP_ELEMENT( m_labels[ eHowToPlay_LabelHopperInventory ] , "Label2_27" )
+
+		UI_MAP_ELEMENT( m_labels[ eHowToPlay_LabelDropperText ] , "Label1_28" )
+		UI_MAP_ELEMENT( m_labels[ eHowToPlay_LabelDropperInventory ] , "Label2_28" )
 		
 		UI_MAP_NAME(m_funcLoadPage, L"LoadHowToPlayPage")
 	UI_END_MAP_ELEMENTS_AND_NAMES()

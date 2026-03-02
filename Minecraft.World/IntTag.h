@@ -9,7 +9,7 @@ public:
 	IntTag(const wstring &name, int data) : Tag(name) {this->data = data; }
 	
 	void write(DataOutput *dos) { dos->writeInt(data); }
-	void load(DataInput *dis) { data = dis->readInt(); }
+	void load(DataInput *dis, int tagDepth) { data = dis->readInt(); }
 
 	byte getId() { return TAG_Int; }
 	wstring toString()

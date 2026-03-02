@@ -5,5 +5,7 @@
 
 InputStream *InputStream::getResourceAsStream(const wstring &fileName)
 {
-	return new FileInputStream( File( fileName ) );
+	File file( fileName );
+
+	return file.exists() ? new FileInputStream( file ) : NULL;
 }

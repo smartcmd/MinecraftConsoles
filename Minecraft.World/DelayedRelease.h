@@ -21,7 +21,7 @@ protected:
 
 public:
 	virtual void tick();
-	virtual bool hurt(DamageSource *source, int damage);
+	virtual bool hurt(DamageSource *source, float damage);
 
 protected:
 	virtual void defineSynchedData();

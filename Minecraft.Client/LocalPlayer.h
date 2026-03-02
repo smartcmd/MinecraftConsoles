@@ -23,6 +23,8 @@ class LocalPlayer : public Player
 public:
 	static const int SPRINT_DURATION = 20 * 30;
 
+	eINSTANCEOF GetType() { return eTYPE_LOCALPLAYER; }
+
 	Input *input;
 protected:
 	Minecraft *minecraft;
@@ -43,15 +45,15 @@ public:
 	float yBob, xBob;
 	float yBobO, xBobO;
 
+	float portalTime;
+	float oPortalTime;
+
 	LocalPlayer(Minecraft *minecraft, Level *level, User *user, int dimension);
 	virtual ~LocalPlayer();
 
-    void move(double xa, double ya, double za, bool noEntityCubes=false);	// 4J - added noEntityCubes parameter
-
-	
 	int m_iScreenSection; // assuming 4player splitscreen for now, or -1 for single player
 	__uint64 ullButtonsPressed; // Stores the button presses, since the inputmanager can be ticked faster than the minecraft 
-									// player tick, and a button press and release combo can be missed in the minecraft::tick
+	// player tick, and a button press and release combo can be missed in the minecraft::tick
 
 	__uint64 ullDpad_last;
 	__uint64 ullDpad_this;
@@ -68,7 +70,10 @@ public:
 
 private:
 	float flyX, flyY, flyZ;
-	
+
+	int jumpRidingTicks;
+	float jumpRidingScale;
+
 protected:
 	// 4J-PB - player's xbox pad
 	int m_iPad;
@@ -76,49 +81,54 @@ protected:
 	bool m_bIsIdle;
 
 private:
-    // local player fly
-    // --------------------------------------------------------------------------
-    // smooth camera settings
+	// local player fly
+	// --------------------------------------------------------------------------
+	// smooth camera settings
 
 	SmoothFloat smoothFlyX;
-    SmoothFloat smoothFlyY;
-    SmoothFloat smoothFlyZ;
+	SmoothFloat smoothFlyY;
+	SmoothFloat smoothFlyZ;
 
-    void calculateFlight(float xa, float ya, float za);
+	void calculateFlight(float xa, float ya, float za);
 
 public:
 	virtual void serverAiStep();
 
 protected:
-	bool isEffectiveAI();
+	bool isEffectiveAi();
 
 public:
-    virtual void aiStep();
+	virtual void aiStep();
 	virtual void changeDimension(int i);
 	virtual float getFieldOfViewModifier();
-    virtual void addAdditonalSaveData(CompoundTag *entityTag);
-    virtual void readAdditionalSaveData(CompoundTag *entityTag);
-    virtual void closeContainer();
-    virtual void openTextEdit(shared_ptr<SignTileEntity> sign);
-    virtual bool openContainer(shared_ptr<Container> container);		// 4J added bool return
-    virtual bool startCrafting(int x, int y, int z);					// 4J added bool return
-	virtual bool startEnchanting(int x, int y, int z);					// 4J added bool return
+	virtual void addAdditonalSaveData(CompoundTag *entityTag);
+	virtual void readAdditionalSaveData(CompoundTag *entityTag);
+	virtual void closeContainer();
+	virtual void openTextEdit(shared_ptr<TileEntity> sign);
+	virtual bool openContainer(shared_ptr<Container> container); // 4J added bool return	
+	virtual bool openHopper(shared_ptr<HopperTileEntity> container); // 4J added bool return
+	virtual bool openHopper(shared_ptr<MinecartHopper> container); // 4J added bool return
+	virtual bool openHorseInventory(shared_ptr<EntityHorse> horse, shared_ptr<Container> container); // 4J added bool return
+	virtual bool startCrafting(int x, int y, int z);					// 4J added bool return
+	virtual bool openFireworks(int x, int y, int z);					// 4J added
+	virtual bool startEnchanting(int x, int y, int z, const wstring &name);					// 4J added bool return
 	virtual bool startRepairing(int x, int y, int z);
-    virtual bool openFurnace(shared_ptr<FurnaceTileEntity> furnace);	// 4J added bool return
+	virtual bool openFurnace(shared_ptr<FurnaceTileEntity> furnace); // 4J added bool return
 	virtual bool openBrewingStand(shared_ptr<BrewingStandTileEntity> brewingStand); // 4J added bool return
-    virtual bool openTrap(shared_ptr<DispenserTileEntity> trap);		// 4J added bool return
-	virtual bool openTrading(shared_ptr<Merchant> traderTarget);
+	virtual bool openBeacon(shared_ptr<BeaconTileEntity> beacon); // 4J added bool return
+	virtual bool openTrap(shared_ptr<DispenserTileEntity> trap);		// 4J added bool return
+	virtual bool openTrading(shared_ptr<Merchant> traderTarget, const wstring &name);
 	virtual void crit(shared_ptr<Entity> e);
 	virtual void magicCrit(shared_ptr<Entity> e);
-    virtual void take(shared_ptr<Entity> e, int orgCount);
-    virtual void chat(const wstring& message);
+	virtual void take(shared_ptr<Entity> e, int orgCount);
+	virtual void chat(const wstring& message);
 	virtual bool isSneaking();
 	//virtual bool isIdle();
-    virtual void hurtTo(int newHealth, ETelemetryChallenges damageSource);
-    virtual void respawn();
-    virtual void animateRespawn();
-    virtual void displayClientMessage(int messageId);
-    virtual void awardStat(Stat *stat, byteArray param);
+	virtual void hurtTo(float newHealth, ETelemetryChallenges damageSource);
+	virtual void respawn();
+	virtual void animateRespawn();
+	virtual void displayClientMessage(int messageId);
+	virtual void awardStat(Stat *stat, byteArray param);
 	virtual int	ThirdPersonView()	{ return m_iThirdPersonView;}
 	// 4J - have changed 3rd person view to be 0 if not enabled, 1 for mode like original, 2 reversed mode
 	virtual void SetThirdPersonView(int val)	{m_iThirdPersonView=val;}
@@ -175,6 +185,17 @@ public:
 	void setSprinting(bool value);
 	void setExperienceValues(float experienceProgress, int totalExp, int experienceLevel);
 
+	// virtual void sendMessage(ChatMessageComponent *message); // 4J: removed
+	virtual Pos getCommandSenderWorldPosition();
+	virtual shared_ptr<ItemInstance> getCarriedItem();
+	virtual void playSound(int soundId, float volume, float pitch);
+	bool isRidingJumpable();
+	float getJumpRidingScale();
+
+protected:
+	virtual void sendRidingJump();
+
+public:
 	bool hasPermission(EGameCommand command);
 
 	void updateRichPresence();
@@ -183,7 +204,6 @@ public:
 	float m_sessionTimeStart;
 	float m_dimensionTimeStart;
 
-public:
 	void SetSessionTimerStart(void);
 	float getSessionTimer(void);
 

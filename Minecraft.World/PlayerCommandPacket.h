@@ -7,12 +7,14 @@ class PlayerCommandPacket : public Packet, public enable_shared_from_this<Player
 {
 public:
 	static const int START_SNEAKING;
-    static const int STOP_SNEAKING;
+	static const int STOP_SNEAKING;
 	static const int STOP_SLEEPING;
 	static const int START_SPRINTING;
 	static const int STOP_SPRINTING;
 	static const int START_IDLEANIM;
 	static const int STOP_IDLEANIM;
+	static const int RIDING_JUMP;
+	static const int OPEN_INVENTORY;
 
 	// 4J Added
 	// 4J-PB - Making this host only setting
@@ -21,11 +23,13 @@ public:
 	static const int HIDE_ON_MAPS;
 	*/
 
-    int id;
-    int action;
+	int id;
+	int action;
+	int data;
 
 	PlayerCommandPacket();
 	PlayerCommandPacket(shared_ptr<Entity> e, int action);
+	PlayerCommandPacket(shared_ptr<Entity> e, int action, int data);
 
 	virtual void read(DataInputStream *dis);
 	virtual void write(DataOutputStream *dos);

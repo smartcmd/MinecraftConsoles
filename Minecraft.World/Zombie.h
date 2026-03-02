@@ -3,6 +3,7 @@ using namespace std;
 
 #include "Monster.h"
 #include "SharedConstants.h"
+#include "MobGroupData.h"
 
 class Zombie : public Monster
 {
@@ -10,14 +11,25 @@ private:
 	static const int VILLAGER_CONVERSION_WAIT_MIN = SharedConstants::TICKS_PER_SECOND * 60 * 3;
 	static const int VILLAGER_CONVERSION_WAIT_MAX = SharedConstants::TICKS_PER_SECOND * 60 * 5;
 
+protected:
+	static Attribute *SPAWN_REINFORCEMENTS_CHANCE;
+
+private:
+	static AttributeModifier *SPEED_MODIFIER_BABY;
+
+
 	static const int DATA_BABY_ID = 12;
 	static const int DATA_VILLAGER_ID = 13;
 	static const int DATA_CONVERTING_ID = 14;
 
-	int villagerConversionTime;
+public:
+	static const float ZOMBIE_LEADER_CHANCE;
+	static const int REINFORCEMENT_ATTEMPTS = 50;
+	static const int REINFORCEMENT_RANGE_MAX = 40;
+	static const int REINFORCEMENT_RANGE_MIN = 7;
 
-	float registeredBBWidth;
-	float registeredBBHeight;
+private:
+	int villagerConversionTime;
 
 public:
 	static const int MAX_SPECIAL_BLOCKS_COUNT = 14;
@@ -28,61 +40,71 @@ public:
 	static Entity *create(Level *level) { return new Zombie(level); }
 
 	Zombie(Level *level);
-	virtual float getWalkingSpeedModifier();
 
 protected:
+	virtual void registerAttributes();
 	virtual void defineSynchedData();
 
 public:
-	virtual int getTexture();
-	virtual int getMaxHealth();
-	int getArmorValue();
+	virtual int getArmorValue();
 
 protected:
 	virtual bool useNewAi();
 
 public:
-	bool isBaby();
-	void setBaby(bool baby);
-	bool isVillager();
-	void setVillager(bool villager);
-    virtual void aiStep();
-    virtual void tick();
-	
+	virtual bool isBaby();
+	virtual void setBaby(bool baby);
+	virtual bool isVillager();
+	virtual void setVillager(bool villager);
+	virtual void aiStep();
+	virtual bool hurt(DamageSource *source, float dmg);
+	virtual void tick();
+	virtual bool doHurtTarget(shared_ptr<Entity> target);
+
 protected:
 	virtual int getAmbientSound();
-    virtual int getHurtSound();
-    virtual int getDeathSound();
-    virtual int getDeathLoot();
+	virtual int getHurtSound();
+	virtual int getDeathSound();
+	virtual int getDeathLoot();
+	virtual void playStepSound(int xt, int yt, int zt, int t);
 
 public:
-	MobType getMobType();
+	virtual MobType getMobType();
 
 protected:
 	virtual void dropRareDeathLoot(int rareLootLevel);
+	virtual void populateDefaultEquipmentSlots();
 
 public:
 	virtual void addAdditonalSaveData(CompoundTag *tag);
 	virtual void readAdditionalSaveData(CompoundTag *tag);
-	void killed(shared_ptr<Mob> mob);
-	virtual void finalizeMobSpawn();
-	bool interact(shared_ptr<Player> player);
+	virtual void killed(shared_ptr<LivingEntity> mob);
+	virtual MobGroupData *finalizeMobSpawn(MobGroupData *groupData, int extraData = 0); // 4J Added extraData param
+	virtual bool mobInteract(shared_ptr<Player> player);
 
 protected:
-	void startConverting(int time);
+	virtual void startConverting(int time);
 
 public:
-	void handleEntityEvent(byte id);
-	bool isConverting();
+	virtual void handleEntityEvent(byte id);
 
 protected:
-	void finishConversion();
-	int getConversionProgress();
+	virtual bool removeWhenFarAway();
 
 public:
-	virtual void updateSize(bool isBaby);
+	virtual bool isConverting();
 
 protected:
-	virtual void setSize(float w, float h);
-	void internalSetSize(float scale);
+	virtual void finishConversion();
+	virtual int getConversionProgress();
+
+private:
+	class ZombieGroupData : public MobGroupData
+	{
+	public:
+		bool isBaby;
+		bool isVillager;
+
+		ZombieGroupData(bool baby, bool villager);
+	};
 };

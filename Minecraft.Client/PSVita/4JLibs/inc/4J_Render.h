@@ -2,6 +2,8 @@
 
 #include <gxm.h>
 
+
+
 class ImageFileBuffer 
 {
 public:
@@ -57,7 +59,7 @@ public:
 	void Set_matrixDirty();
 
 	// Core
-	void Initialise(ID3D11Device *pDevice, IDXGISwapChain *pSwapChain);
+	void Initialise();
 	void InitialiseContext();
 	void StartFrame();
 	void Present();
@@ -79,6 +81,8 @@ public:
 		VERTEX_TYPE_COMPRESSED,					// Compressed format - see comment at top of VS_PS3_TS2_CS1.hlsl for description of layout
 		VERTEX_TYPE_PF3_TF2_CB4_NB4_XW1_LIT,	// as VERTEX_TYPE_PF3_TF2_CB4_NB4_XW1 with lighting applied,
 		VERTEX_TYPE_PF3_TF2_CB4_NB4_XW1_TEXGEN, // as VERTEX_TYPE_PF3_TF2_CB4_NB4_XW1 with tex gen
+		VERTEX_TYPE_COMPRESSED_FOG_1,
+		VERTEX_TYPE_COMPRESSED_FOG_2,
 		VERTEX_TYPE_COUNT
 	} eVertexType;
 
@@ -86,6 +90,9 @@ public:
 	typedef enum
 	{
 		PIXEL_SHADER_TYPE_STANDARD,
+		PIXEL_SHADER_TYPE_STANDARD2,
+		PIXEL_SHADER_TYPE_STANDARD3,
+		PIXEL_SHADER_TYPE_STANDARD4,
 		PIXEL_SHADER_TYPE_PROJECTION,
 		PIXEL_SHADER_COUNT
 	} ePixelShaderType;
@@ -151,6 +158,7 @@ public:
 	int TextureCreate();
 	void TextureFree(int idx);
 	void TextureBind(int idx);
+	void TextureBind(int layer, int idx);
 	void TextureBindVertex(int idx);
 	void TextureSetTextureLevels(int levels);
 	int  TextureGetTextureLevels();

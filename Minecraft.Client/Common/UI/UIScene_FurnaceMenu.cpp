@@ -10,15 +10,15 @@ UIScene_FurnaceMenu::UIScene_FurnaceMenu(int iPad, void *_initData, UILayer *par
 	// Setup all the Iggy references we need for this scene
 	initialiseMovie();
 
-	m_labelFurnace.init(app.GetString(IDS_FURNACE));
+	FurnaceScreenInput *initData = (FurnaceScreenInput *)_initData;
+	m_furnace = initData->furnace;
+
+	m_labelFurnace.init(m_furnace->getName());
 	m_labelIngredient.init(app.GetString(IDS_INGREDIENT));
 	m_labelFuel.init(app.GetString(IDS_FUEL));
 
 	m_progressFurnaceFire.init(L"",0,0,12,0);
 	m_progressFurnaceArrow.init(L"",0,0,24,0);
-
-	FurnaceScreenInput *initData = (FurnaceScreenInput *)_initData;
-	m_furnace = initData->furnace;
 
 	Minecraft *pMinecraft = Minecraft::GetInstance();
 	if( pMinecraft->localgameModes[initData->iPad] != NULL )

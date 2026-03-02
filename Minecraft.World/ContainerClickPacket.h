@@ -11,11 +11,11 @@ public:
     int buttonNum;
     short uid;
     shared_ptr<ItemInstance> item;
-    bool quickKey;
+    int clickType;
 
 	ContainerClickPacket();
 	~ContainerClickPacket();
-    ContainerClickPacket(int containerId, int slotNum, int buttonNum, bool quickKey, shared_ptr<ItemInstance> item, short uid);
+    ContainerClickPacket(int containerId, int slotNum, int buttonNum, int clickType, shared_ptr<ItemInstance> item, short uid);
 
 	virtual void handle(PacketListener *listener);
 	virtual void read(DataInputStream *dis);

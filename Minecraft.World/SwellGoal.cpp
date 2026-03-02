@@ -7,7 +7,7 @@
 
 SwellGoal::SwellGoal(Creeper *creeper)
 {
-	target = weak_ptr<Mob>();
+	target = weak_ptr<LivingEntity>();
 
 	this->creeper = creeper;
 	setRequiredControlFlags(Control::MoveControlFlag);
@@ -15,19 +15,19 @@ SwellGoal::SwellGoal(Creeper *creeper)
 
 bool SwellGoal::canUse()
 {
-	shared_ptr<Mob> target = creeper->getTarget();
+	shared_ptr<LivingEntity> target = creeper->getTarget();
 	return creeper->getSwellDir() > 0 || (target != NULL && (creeper->distanceToSqr(target) < 3 * 3));
 }
 
 void SwellGoal::start()
 {
 	creeper->getNavigation()->stop();
-	target = weak_ptr<Mob>(creeper->getTarget());
+	target = weak_ptr<LivingEntity>(creeper->getTarget());
 }
 
 void SwellGoal::stop()
 {
-	target = weak_ptr<Mob>();
+	target = weak_ptr<LivingEntity>();
 }
 
 void SwellGoal::tick()

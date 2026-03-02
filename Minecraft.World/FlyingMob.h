@@ -11,6 +11,7 @@ public:
 
 protected:
 	virtual void causeFallDamage(float distance);
+	virtual void checkFallDamage(double ya, bool onGround);
 
 public:
 	virtual void travel(float xa, float ya);

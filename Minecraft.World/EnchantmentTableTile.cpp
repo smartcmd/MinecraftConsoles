@@ -9,10 +9,10 @@ const wstring EnchantmentTableTile::TEXTURE_SIDE = L"enchantment_side";
 const wstring EnchantmentTableTile::TEXTURE_TOP = L"enchantment_top";
 const wstring EnchantmentTableTile::TEXTURE_BOTTOM = L"enchantment_bottom";
 
-EnchantmentTableTile::EnchantmentTableTile(int id) : EntityTile(id, Material::stone, isSolidRender())
+EnchantmentTableTile::EnchantmentTableTile(int id) : BaseEntityTile(id, Material::stone, isSolidRender())
 {
 	updateDefaultShape();
-    setLightBlock(0);
+	setLightBlock(0);
 
 	iconTop = NULL;
 	iconBottom = NULL;
@@ -21,7 +21,7 @@ EnchantmentTableTile::EnchantmentTableTile(int id) : EntityTile(id, Material::st
 // 4J Added override
 void EnchantmentTableTile::updateDefaultShape()
 {
-    setShape(0, 0, 0, 1, 12 / 16.0f, 1);
+	setShape(0, 0, 0, 1, 12 / 16.0f, 1);
 }
 
 bool EnchantmentTableTile::isCubeShaped()
@@ -31,28 +31,28 @@ bool EnchantmentTableTile::isCubeShaped()
 
 void EnchantmentTableTile::animateTick(Level *level, int x, int y, int z, Random *random)
 {
-    EntityTile::animateTick(level, x, y, z, random);
+	BaseEntityTile::animateTick(level, x, y, z, random);
 
-    for (int xx = x - 2; xx <= x + 2; xx++)
+	for (int xx = x - 2; xx <= x + 2; xx++)
 	{
-        for (int zz = z - 2; zz <= z + 2; zz++)
+		for (int zz = z - 2; zz <= z + 2; zz++)
 		{
-            if (xx > x - 2 && xx < x + 2 && zz == z - 1)
+			if (xx > x - 2 && xx < x + 2 && zz == z - 1)
 			{
-                zz = z + 2;
-            }
-            if (random->nextInt(16) != 0) continue;
-            for (int yy = y; yy <= y + 1; yy++)
+				zz = z + 2;
+			}
+			if (random->nextInt(16) != 0) continue;
+			for (int yy = y; yy <= y + 1; yy++)
 			{
-                if (level->getTile(xx, yy, zz) == Tile::bookshelf_Id)
+				if (level->getTile(xx, yy, zz) == Tile::bookshelf_Id)
 				{
-                    if (!level->isEmptyTile((xx - x) / 2 + x, yy, (zz - z) / 2 + z)) break;
+					if (!level->isEmptyTile((xx - x) / 2 + x, yy, (zz - z) / 2 + z)) break;
 
-                    level->addParticle(eParticleType_enchantmenttable, x + 0.5, y + 2.0, z + 0.5, xx - x + random->nextFloat() - 0.5, yy - y - random->nextFloat() - 1, zz - z + random->nextFloat() - 0.5);
-                }
-            }
-        }
-    }
+					level->addParticle(eParticleType_enchantmenttable, x + 0.5, y + 2.0, z + 0.5, xx - x + random->nextFloat() - 0.5, yy - y - random->nextFloat() - 1, zz - z + random->nextFloat() - 0.5);
+				}
+			}
+		}
+	}
 }
 
 bool EnchantmentTableTile::isSolidRender(bool isServerLevel)
@@ -76,12 +76,22 @@ bool EnchantmentTableTile::use(Level *level, int x, int y, int z, shared_ptr<Pla
 {
 	if(soundOnly) return false;
 
-    if (level->isClientSide)
+	if (level->isClientSide)
 	{
-        return true;
-    }
-    player->startEnchanting(x, y, z);
-    return true;
+		return true;
+	}
+	shared_ptr<EnchantmentTableEntity> table = dynamic_pointer_cast<EnchantmentTableEntity>( level->getTileEntity(x, y, z) );
+	player->startEnchanting(x, y, z, table->hasCustomName() ? table->getName() : L"");
+	return true;
+}
+
+void EnchantmentTableTile::setPlacedBy(Level *level, int x, int y, int z, shared_ptr<LivingEntity> by, shared_ptr<ItemInstance> itemInstance)
+{
+	BaseEntityTile::setPlacedBy(level, x, y, z, by, itemInstance);
+	if (itemInstance->hasCustomHoverName())
+	{
+		dynamic_pointer_cast<EnchantmentTableEntity>( level->getTileEntity(x, y, z))->setCustomName(itemInstance->getHoverName());
+	}
 }
 
 void EnchantmentTableTile::registerIcons(IconRegister *iconRegister)

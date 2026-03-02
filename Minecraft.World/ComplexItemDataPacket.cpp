@@ -32,7 +32,7 @@ void ComplexItemDataPacket::read(DataInputStream *dis) //throws IOException
 	itemType = dis->readShort();
 	itemId = dis->readShort();
 
-	data = charArray(dis->readShort() & 0xffff);
+	data = charArray(dis->readUnsignedShort() & 0xffff);
 	dis->readFully(data);
 }
 
@@ -40,7 +40,7 @@ void ComplexItemDataPacket::write(DataOutputStream *dos) //throws IOException
 {
 	dos->writeShort(itemType);
 	dos->writeShort(itemId);
-	dos->writeShort(data.length);
+	dos->writeUnsignedShort(data.length);
 
 	byteArray ba( (byte*)data.data, data.length );
 	dos->write(ba);

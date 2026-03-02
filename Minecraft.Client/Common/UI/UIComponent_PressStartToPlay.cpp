@@ -21,18 +21,15 @@ UIComponent_PressStartToPlay::UIComponent_PressStartToPlay(int iPad, void *initD
 	m_labelTrialTimer.init(L"");
 	m_labelTrialTimer.setVisible(false);
 
+	// 4J-JEV: This object is persistent, so this string needs to be able to handle language changes.
 #ifdef __ORBIS__
-	wstring text = app.GetString(IDS_PRESS_X_TO_JOIN);
-	text = replaceAll(text, L"{*CONTROLLER_VK_A*}",					app.GetVKReplacement(VK_PAD_A) );
-
-	m_labelPressStart.init(text.c_str());
+	m_labelPressStart.init( (UIString) [] { return replaceAll(app.GetString(IDS_PRESS_X_TO_JOIN), L"{*CONTROLLER_VK_A*}", app.GetVKReplacement(VK_PAD_A) ); });
 #elif defined _XBOX_ONE
-	wstring text = app.GetString(IDS_PRESS_START_TO_JOIN);
-	text = replaceAll(text, L"{*CONTROLLER_VK_START*}",			app.GetVKReplacement(VK_PAD_START) );
-	m_labelPressStart.init(text.c_str());
+	m_labelPressStart.init( (UIString) [] { return replaceAll(app.GetString(IDS_PRESS_START_TO_JOIN), L"{*CONTROLLER_VK_START*}", app.GetVKReplacement(VK_PAD_START) ); });
 #else
-	m_labelPressStart.init(app.GetString(IDS_PRESS_START_TO_JOIN));
+	m_labelPressStart.init(IDS_PRESS_START_TO_JOIN);
 #endif
+
 	m_controlSaveIcon.setVisible(false);
 	m_controlPressStartPanel.setVisible(false);
 	m_playerDisplayName.setVisible(false);

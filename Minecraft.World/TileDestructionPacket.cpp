@@ -26,7 +26,7 @@ void TileDestructionPacket::read(DataInputStream *dis)
 	x = dis->readInt();
 	y = dis->readInt();
 	z = dis->readInt();
-	state = dis->read();
+	state = dis->readUnsignedByte();
 }
 
 void TileDestructionPacket::write(DataOutputStream *dos)

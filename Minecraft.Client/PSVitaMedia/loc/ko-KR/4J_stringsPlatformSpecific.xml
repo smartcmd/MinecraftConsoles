@@ -1,50 +1,50 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <root>
-	<data name="IDS_NOFREESPACE_TEXT">
-		<value>본체 스토리지에 공간이 부족하여 게임 저장 데이터를 만들 수 없습니다.</value>
-	</data>
-	<data name="IDS_PRO_RETURNEDTOTITLESCREEN_TEXT">
-		<value>"PSN"에서 로그아웃했으므로 타이틀 화면으로 돌아갑니다.</value>
-	</data>
-	<data name="IDS_PRO_RETURNEDTOMENU_TEXT">
-		<value>"PSN"에서 로그아웃했으므로 매치가 종료됐습니다.</value>
-	</data>
-	<data name="IDS_PRO_NOTONLINE_TITLE">
-		<value>현재 오프라인 상태입니다.</value>
-	</data>
-	<data name="IDS_PRO_NOTONLINE_TEXT">
-		<value>이 게임 기능 중 일부는 "PSN"에 로그인해야 이용할 수 있습니다. 현재는 오프라인 상태입니다.</value>
-	</data>
-	<data name="IDS_PRO_NOTADHOCONLINE_TITLE">
-		<value>애드혹 네트워크 오프라인</value>
-	</data>
-	<data name="IDS_PRO_NOTADHOCONLINE_TEXT">
-		<value>이 게임에는 애드혹 네트워크 연결이 필요한 기능이 있지만 현재 오프라인 상태입니다.</value>
-	</data>
-	<data name="IDS_PRO_XBOXLIVE_NOTIFICATION">
-		<value>이 기능을 이용하려면 "PSN"에 로그인해야 합니다.</value>
-	</data>
-	<data name="IDS_PRO_NOTONLINE_ACCEPT">
-		<value>"PSN" 연결</value>
-	</data>
-	<data name="IDS_PRO_NOTADHOCONLINE_ACCEPT">
-		<value>애드혹 네트워크에 연결</value>
-	</data>
-	<data name="IDS_PRO_ACHIEVEMENTPROBLEM_TITLE">
-		<value>트로피 문제</value>
-	</data>
-	<data name="IDS_PRO_ACHIEVEMENTPROBLEM_TEXT">
-		<value>플레이어의 Sony Entertainment Network 계정에 접속하는 중에 문제가 발생했습니다. 트로피가 지급되지 않습니다.</value>
+	<data name="IDS_PRO_NOPROFILEOPTIONS_TEXT">
+		<value>Sony Entertainment Network 계정에 설정을 저장하지 못했습니다.</value>
 	</data>
 	<data name="IDS_PRO_NOPROFILE_TITLE">
 		<value>Sony Entertainment Network 계정 문제</value>
 	</data>
-	<data name="IDS_PRO_NOPROFILEOPTIONS_TEXT">
-		<value>Sony Entertainment Network 계정에 설정을 저장하지 못했습니다.</value>
+	<data name="IDS_PRO_ACHIEVEMENTPROBLEM_TEXT">
+		<value>플레이어의 Sony Entertainment Network 계정에 접속하는 중에 문제가 발생했습니다. 트로피가 지급되지 않습니다.</value>
 	</data>
 	<data name="IDS_PRO_UNLOCKGAME_TEXT">
-		<value>이 Minecraft: PlayStation(R)3 Edition은 평가판입니다. 정식 버전 게임에서는 트로피를 획득할 수 있습니다.
-정식 버전 게임을 구매하면 Minecraft: PlayStation(R)3 Edition의 모든 기능을 이용하고 "PSN"을 통해 전 세계의 친구들과 함께 게임을 즐길 수 있습니다.
+		<value>이 Minecraft: "PlayStation 3" Edition은 평가판입니다. 정식 버전 게임에서는 트로피를 획득할 수 있습니다.
+정식 버전 게임을 구매하면 Minecraft: "PlayStation 3" Edition의 모든 기능을 이용하고 "PSN"을 통해 전 세계의 친구들과 함께 게임을 즐길 수 있습니다.
 정식 버전 게임을 구매하시겠습니까?</value>
+	</data>
+	<data name="IDS_PRO_NOTADHOCONLINE_ACCEPT">
+		<value>애드혹 네트워크에 연결</value>
+	</data>
+	<data name="IDS_PRO_NOTADHOCONLINE_TEXT">
+		<value>이 게임에는 애드혹 네트워크 연결이 필요한 기능이 있지만 현재 오프라인 상태입니다.</value>
+	</data>
+	<data name="IDS_PRO_NOTADHOCONLINE_TITLE">
+		<value>애드혹 네트워크 오프라인</value>
+	</data>
+	<data name="IDS_PRO_ACHIEVEMENTPROBLEM_TITLE">
+		<value>트로피 문제</value>
+	</data>
+	<data name="IDS_PRO_RETURNEDTOMENU_TEXT">
+		<value>"PSN"에서 로그아웃했으므로 매치가 종료됐습니다.</value>
+	</data>
+	<data name="IDS_PRO_RETURNEDTOTITLESCREEN_TEXT">
+		<value>"PSN"에서 로그아웃했으므로 타이틀 화면으로 돌아갑니다.</value>
+	</data>
+	<data name="IDS_NOFREESPACE_TEXT">
+		<value>본체 스토리지에 공간이 부족하여 게임 저장 데이터를 만들 수 없습니다.</value>
+	</data>
+	<data name="IDS_PRO_NOTONLINE_TITLE">
+		<value>현재 오프라인 상태입니다.</value>
+	</data>
+	<data name="IDS_PRO_NOTONLINE_ACCEPT">
+		<value>"PSN" 연결</value>
+	</data>
+	<data name="IDS_PRO_XBOXLIVE_NOTIFICATION">
+		<value>이 기능을 이용하려면 "PSN"에 로그인해야 합니다.</value>
+	</data>
+	<data name="IDS_PRO_NOTONLINE_TEXT">
+		<value>이 게임 기능 중 일부는 "PSN"에 로그인해야 이용할 수 있습니다. 현재는 오프라인 상태입니다.</value>
 	</data>
 </root>

@@ -17,7 +17,7 @@ DragonFireball::DragonFireball(Level *level) : Fireball(level)
 	setSize(5 / 16.0f, 5 / 16.0f);
 }
 
-DragonFireball::DragonFireball(Level *level, shared_ptr<Mob> mob, double xa, double ya, double za) : Fireball(level, mob, xa, ya, za)
+DragonFireball::DragonFireball(Level *level, shared_ptr<LivingEntity> mob, double xa, double ya, double za) : Fireball(level, mob, xa, ya, za)
 {
 	setSize(5 / 16.0f, 5 / 16.0f);
 }
@@ -32,7 +32,7 @@ void DragonFireball::onHit(HitResult *res)
 	if (!level->isClientSide)
 	{
 		AABB *aoe = bb->grow(SPLASH_RANGE, SPLASH_RANGE / 2, SPLASH_RANGE);
-		vector<shared_ptr<Entity> > *entitiesOfClass = level->getEntitiesOfClass(typeid(Mob), aoe);
+		vector<shared_ptr<Entity> > *entitiesOfClass = level->getEntitiesOfClass(typeid(LivingEntity), aoe);
 
 		if (entitiesOfClass != NULL && !entitiesOfClass->empty())
 		{
@@ -40,7 +40,7 @@ void DragonFireball::onHit(HitResult *res)
 			for( AUTO_VAR(it, entitiesOfClass->begin()); it != entitiesOfClass->end(); ++it)
 			{
 				//shared_ptr<Entity> e = *it;
-				shared_ptr<Mob> e = dynamic_pointer_cast<Mob>( *it );
+				shared_ptr<LivingEntity> e = dynamic_pointer_cast<LivingEntity>( *it );
 				double dist = distanceToSqr(e);
 				if (dist < SPLASH_RANGE_SQ)
 				{
@@ -65,22 +65,17 @@ bool DragonFireball::isPickable()
 	return false;
 }
 
-bool DragonFireball::hurt(DamageSource *source, int damage)
+bool DragonFireball::hurt(DamageSource *source, float damage)
 {
 	return false;
-}
-
-bool DragonFireball::shouldBurn()
-{
-	return false;
-}
-
-int DragonFireball::getIcon()
-{
-	return 15 + 14 * 16;
 }
 
 ePARTICLE_TYPE DragonFireball::getTrailParticleType()
 {
 	return eParticleType_dragonbreath;
+}
+
+bool DragonFireball::shouldBurn()
+{
+	return false;
 }

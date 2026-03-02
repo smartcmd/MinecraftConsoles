@@ -7,6 +7,7 @@
 #include "MinecraftServer.h"
 #include "..\Minecraft.World\net.minecraft.network.packet.h"
 #include "..\Minecraft.World\net.minecraft.world.level.h"
+#include "..\Minecraft.World\net.minecraft.world.level.chunk.h"
 #include "..\Minecraft.World\net.minecraft.world.level.tile.h"
 #include "..\Minecraft.World\ArrayWithLength.h"
 #include "..\Minecraft.World\System.h"
@@ -23,12 +24,9 @@ PlayerChunkMap::PlayerChunk::PlayerChunk(int x, int z, PlayerChunkMap *pcm) : po
 	parent = pcm;	// 4J added
 	ticksToNextRegionUpdate = 0;	// 4J added
 	prioritised = false;	// 4J added
+	firstInhabitedTime = 0;
 
     parent->getLevel()->cache->create(x, z);
-	// 4J - added make sure our lights are up to date as soon as we make it. This is of particular concern for local clients, who have their data
-	// shared as soon as the chunkvisibilitypacket is sent, and so could potentially create render data for this chunk before it has been properly lit.
-	while( parent->getLevel()->updateLights() )
-		;
 }
 
 PlayerChunkMap::PlayerChunk::~PlayerChunk()
@@ -68,6 +66,11 @@ void PlayerChunkMap::PlayerChunk::add(shared_ptr<ServerPlayer> player, bool send
 	// 4J Added the sendPacket check. See PlayerChunkMap::add for the usage
 	if( sendPacket ) player->connection->send( shared_ptr<ChunkVisibilityPacket>( new ChunkVisibilityPacket(pos.x, pos.z, true) ) );
 
+	if (players.empty())
+	{
+		firstInhabitedTime = parent->level->getGameTime();
+	}
+
 	players.push_back(player);
 	
 	player->chunksToSend.push_back(pos);
@@ -93,6 +96,12 @@ void PlayerChunkMap::PlayerChunk::remove(shared_ptr<ServerPlayer> player)
     players.erase(it);
     if (players.size() == 0)
 	{
+		{
+			LevelChunk *chunk = parent->level->getChunk(pos.x, pos.z);
+			updateInhabitedTime(chunk);
+			AUTO_VAR(it, find(parent->knownChunks.begin(), parent->knownChunks.end(),this));
+			if(it != parent->knownChunks.end()) parent->knownChunks.erase(it);
+		}
         __int64 id = (pos.x + 0x7fffffffLL) | ((pos.z + 0x7fffffffLL) << 32);
 		AUTO_VAR(it, parent->chunks.find(id));
 		if( it != parent->chunks.end() )
@@ -142,6 +151,18 @@ void PlayerChunkMap::PlayerChunk::remove(shared_ptr<ServerPlayer> player)
     }
 
 	delete toDelete;
+}
+
+void PlayerChunkMap::PlayerChunk::updateInhabitedTime()
+{
+	updateInhabitedTime(parent->level->getChunk(pos.x, pos.z));
+}
+
+void PlayerChunkMap::PlayerChunk::updateInhabitedTime(LevelChunk *chunk)
+{
+	chunk->inhabitedTime += parent->level->getGameTime() - firstInhabitedTime;
+
+	firstInhabitedTime = parent->level->getGameTime();
 }
 
 void PlayerChunkMap::PlayerChunk::tileChanged(int x, int y, int z)
@@ -380,6 +401,7 @@ PlayerChunkMap::PlayerChunkMap(ServerLevel *level, int dimension, int radius)
     this->radius = radius;
     this->level = level;
 	this->dimension = dimension;
+	lastInhabitedUpdate = 0;
 }
 
 PlayerChunkMap::~PlayerChunkMap()
@@ -397,6 +419,23 @@ ServerLevel *PlayerChunkMap::getLevel()
 
 void PlayerChunkMap::tick()
 {
+	__int64 time = level->getGameTime();
+
+	if (time - lastInhabitedUpdate > Level::TICKS_PER_DAY / 3)
+	{
+        lastInhabitedUpdate = time;
+
+        for (int i = 0; i < knownChunks.size(); i++)
+		{
+            PlayerChunk *chunk = knownChunks.at(i);
+
+			// 4J Stu - Going to let our changeChunks handler below deal with this
+            //chunk.broadcastChanges();
+
+            chunk->updateInhabitedTime();
+        }
+    }
+
 	// 4J - some changes here so that we only send one region update per tick. The chunks themselves also
 	// limit their resend rate to once every MIN_TICKS_BETWEEN_REGION_UPDATE ticks
 	bool regionUpdateSent = false;
@@ -451,6 +490,7 @@ PlayerChunkMap::PlayerChunk *PlayerChunkMap::getChunk(int x, int z, bool create)
 	{
         chunk = new PlayerChunk(x, z, this);
         chunks[id] = chunk;
+		knownChunks.push_back(chunk);
     }
 
 	return chunk;
@@ -528,7 +568,6 @@ void PlayerChunkMap::tickAddRequests(shared_ptr<ServerPlayer> player)
 		{
 			getChunk(itNearest->x, itNearest->z, true)->add(itNearest->player);
 			addRequests.erase(itNearest);
-			return;
 		}
 	}
 }
@@ -605,6 +644,12 @@ void PlayerChunkMap::add(shared_ptr<ServerPlayer> player)
 	minX = maxX = xc;
 	minZ = maxZ = zc;
 
+	// 4J - added so that we don't fully create/send every chunk at this stage. Particularly since moving on to large worlds, where
+	// we can be adding 1024 chunks here of which a large % might need to be fully created, this can take a long time. Instead use
+	// the getChunkAndAddPlayer for anything but the central region of chunks, which adds them to a queue of chunks which are added
+	// one per tick per player.
+	const int maxLegSizeToAddNow = 14;
+
     // All but the last leg
     for (int legSize = 1; legSize <= size * 2; legSize++)
 	{
@@ -620,12 +665,21 @@ void PlayerChunkMap::add(shared_ptr<ServerPlayer> player)
 				int targetX, targetZ;
 				targetX = xc + dx;
 				targetZ = zc + dz;
-				if( targetX > maxX ) maxX = targetX;
-				if( targetX < minX ) minX = targetX;
-				if( targetZ > maxZ ) maxZ = targetZ;
-				if( targetZ < minZ ) minZ = targetZ;
 
-                getChunk(targetX, targetZ, true)->add(player, false);
+				if( ( legSize < maxLegSizeToAddNow ) ||
+					( ( legSize == maxLegSizeToAddNow ) && ( ( leg == 0 ) || ( k < ( legSize - 1 ) ) ) ) )
+				{
+					if( targetX > maxX ) maxX = targetX;
+					if( targetX < minX ) minX = targetX;
+					if( targetZ > maxZ ) maxZ = targetZ;
+					if( targetZ < minZ ) minZ = targetZ;
+
+					getChunk(targetX, targetZ, true)->add(player, false);
+				}
+				else
+				{
+					getChunkAndAddPlayer(targetX, targetZ, player);
+				}
             }
         }
     }
@@ -640,12 +694,19 @@ void PlayerChunkMap::add(shared_ptr<ServerPlayer> player)
 		int targetX, targetZ;
 		targetX = xc + dx;
 		targetZ = zc + dz;
-		if( targetX > maxX ) maxX = targetX;
-		if( targetX < minX ) minX = targetX;
-		if( targetZ > maxZ ) maxZ = targetZ;
-		if( targetZ < minZ ) minZ = targetZ;
+		if( ( size * 2 ) <= maxLegSizeToAddNow )
+		{
+			if( targetX > maxX ) maxX = targetX;
+			if( targetX < minX ) minX = targetX;
+			if( targetZ > maxZ ) maxZ = targetZ;
+			if( targetZ < minZ ) minZ = targetZ;
 
-        getChunk(targetX, targetZ, true)->add(player, false);
+			getChunk(targetX, targetZ, true)->add(player, false);
+		}
+		else
+		{
+			getChunkAndAddPlayer(targetX, targetZ, player);
+		}
     }
     // CraftBukkit end
 

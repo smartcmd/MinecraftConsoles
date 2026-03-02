@@ -39,4 +39,5 @@ public:
 	void finalizeExplosion(bool generateParticles, vector<TilePos> *toBlowDirect = NULL);   // 4J - added toBlow parameter
 	playerVec3Map *getHitPlayers();
 	Vec3 *getHitPlayerKnockback( shared_ptr<Player> player );
+	shared_ptr<LivingEntity> getSourceMob();
 };

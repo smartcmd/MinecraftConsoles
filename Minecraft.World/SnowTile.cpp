@@ -25,11 +25,11 @@ void SnowTile::tick(Level *level, int x, int y, int z, Random *random)
 	if (level->getBrightness(LightLayer::Block, x, y, z) > 11)
 	{
 		this->spawnResources(level, x, y, z, level->getData(x, y, z), 0);
-		level->setTile(x, y, z, 0);
+		level->removeTile(x, y, z);
 	}
 }
 
 bool SnowTile::shouldTileTick(Level *level, int x,int y,int z)
 {
-    return level->getBrightness(LightLayer::Block, x, y, z) > 11;
+	return level->getBrightness(LightLayer::Block, x, y, z) > 11;
 }

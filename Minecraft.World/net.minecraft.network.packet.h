@@ -45,7 +45,7 @@
 #include "SetEntityMotionPacket.h"
 #include "SetEquippedItemPacket.h"
 #include "SetHealthPacket.h"
-#include "SetRidingPacket.h"
+#include "SetEntityLinkPacket.h"
 #include "SetSpawnPositionPacket.h"
 #include "SetTimePacket.h"
 #include "SignUpdatePacket.h"
@@ -83,6 +83,15 @@
 #include "PlayerAbilitiesPacket.h"
 #include "ServerAuthDataPacket.h"
 #include "TileDestructionPacket.h"
+
+// 1.6.4
+#include "LevelParticlesPacket.h"
+#include "SetDisplayObjectivePacket.h"
+#include "SetObjectivePacket.h"
+#include "SetPlayerTeamPacket.h"
+#include "SetScorePacket.h"
+#include "TileEditorOpenPacket.h"
+#include "UpdateAttributesPacket.h"
 
 // 4J Added
 #include "CraftItemPacket.h"

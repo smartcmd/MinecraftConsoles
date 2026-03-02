@@ -13,7 +13,7 @@ public:
 		dos->writeUTF(data);
 	}
 
-	void load(DataInput *dis)
+	void load(DataInput *dis, int tagDepth)
 	{
 		data = dis->readUTF();
 	}

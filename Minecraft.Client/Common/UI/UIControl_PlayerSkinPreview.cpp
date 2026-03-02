@@ -217,7 +217,7 @@ void UIControl_PlayerSkinPreview::render(IggyCustomDrawCallbackRegion *region)
 	pMinecraft->options->hideGui = true;
 
 	//EntityRenderDispatcher::instance->render(pMinecraft->localplayers[0], 0, 0, 0, 0, 1);
-	EntityRenderer *renderer = EntityRenderDispatcher::instance->getRenderer(eTYPE_PLAYER);
+	EntityRenderer *renderer = EntityRenderDispatcher::instance->getRenderer(eTYPE_LOCALPLAYER);
 	if (renderer != NULL)
 	{
 		// 4J-PB - any additional parts to turn on for this player (skin dependent)
@@ -335,7 +335,12 @@ void UIControl_PlayerSkinPreview::render(EntityRenderer *renderer, double x, dou
 	float s = 15 / 16.0f;
 	glScalef(s, s, s);
 
+	// 4J - TomK - pull up character a bit more to make sure extra geo around feet doesn't cause rendering problems on PSVita
+#ifdef __PSVITA__
+	glTranslatef(0, -24 * _scale - 1.0f / 16.0f, 0);
+#else
 	glTranslatef(0, -24 * _scale - 0.125f / 16.0f, 0);
+#endif
 
 #ifdef SKIN_PREVIEW_WALKING_ANIM
 	m_walkAnimSpeedO = m_walkAnimSpeed;

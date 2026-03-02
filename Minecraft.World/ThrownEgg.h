@@ -15,7 +15,7 @@ private:
 
 public:
 	ThrownEgg(Level *level);
-	ThrownEgg(Level *level, shared_ptr<Mob> mob);
+	ThrownEgg(Level *level, shared_ptr<LivingEntity> mob);
 	ThrownEgg(Level *level, double x, double y, double z);
 
 protected:

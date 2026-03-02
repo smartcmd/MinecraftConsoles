@@ -1,10 +1,17 @@
 #pragma once
 
+#include "BeaconTileEntity.h"
 #include "BrewingStandTileEntity.h"
 #include "ChestTileEntity.h"
+#include "CommandBlockEntity.h"
+#include "ComparatorTileEntity.h"
+#include "DaylightDetectorTileEntity.h"
 #include "DispenserTileEntity.h"
+#include "DropperTileEntity.h"
 #include "EnchantmentTableEntity.h"
 #include "FurnaceTileEntity.h"
+#include "Hopper.h"
+#include "HopperTileEntity.h"
 #include "MobSpawnerTileEntity.h"
 #include "MusicTileEntity.h"
 #include "SignTileEntity.h"

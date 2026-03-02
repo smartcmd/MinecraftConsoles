@@ -26,9 +26,9 @@ Icon *WallTile::getTexture(int face, int data)
 {
 	if (data == TYPE_MOSSY)
 	{
-		return Tile::mossStone->getTexture(face);
+		return Tile::mossyCobblestone->getTexture(face);
 	}
-	return Tile::stoneBrick->getTexture(face);
+	return Tile::cobblestone->getTexture(face);
 }
 
 int WallTile::getRenderShape()

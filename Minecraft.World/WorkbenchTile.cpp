@@ -40,5 +40,6 @@ bool WorkbenchTile::use(Level *level, int x, int y, int z, shared_ptr<Player> pl
 		return true;
 	}
 	player->startCrafting(x, y, z);
+	//player->openFireworks(x, y, z);
 	return true;
 }

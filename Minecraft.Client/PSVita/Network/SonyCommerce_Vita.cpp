@@ -54,6 +54,7 @@ sce::Toolkit::NP::Utilities::Future<sce::Toolkit::NP::CategoryInfo>					g_catego
 sce::Toolkit::NP::Utilities::Future<sce::Toolkit::NP::ProductInfoDetailed>			g_detailedProductInfo;
 
 //sce::Toolkit::NP::Utilities::Future<SceAppUtilBgdlStatus> g_bgdlStatus;
+static bool s_showingPSStoreIcon = false;
 
 
 SonyCommerce_Vita::ProductInfoDetailed s_trialUpgradeProductInfoDetailed;
@@ -186,7 +187,10 @@ int SonyCommerce_Vita::TickLoop(void* lpParam)
 			if(m_iClearDLCCountdown == 0)
 			{
 				app.ClearDLCInstalled();
-				ui.HandleDLCInstalled(0);
+				if(g_NetworkManager.IsInSession()) // we're in-game, could be a purchase of a pack after joining an invite from another player
+					app.StartInstallDLCProcess(0);
+				else
+					ui.HandleDLCInstalled(0);
 			}
 
 		}
@@ -591,7 +595,7 @@ void SonyCommerce_Vita::UpgradeTrialCallback2(LPVOID lpParam,int err)
 	{
 		UINT uiIDA[1];
 		uiIDA[0]=IDS_CONFIRM_OK;
-		C4JStorage::EMessageResult result = ui.RequestMessageBox( IDS_PRO_UNLOCKGAME_TITLE, IDS_NO_DLCOFFERS, uiIDA,1,ProfileManager.GetPrimaryPad());
+		C4JStorage::EMessageResult result = ui.RequestErrorMessage( IDS_PRO_UNLOCKGAME_TITLE, IDS_NO_DLCOFFERS, uiIDA,1,ProfileManager.GetPrimaryPad());
 	}
 	m_trialUpgradeCallbackFunc(m_trialUpgradeCallbackParam, m_errorCode);
 }
@@ -618,7 +622,7 @@ void SonyCommerce_Vita::UpgradeTrialCallback1(LPVOID lpParam,int err)
 	{
 		UINT uiIDA[1];
 		uiIDA[0]=IDS_CONFIRM_OK;
-		C4JStorage::EMessageResult result = ui.RequestMessageBox( IDS_PRO_UNLOCKGAME_TITLE, IDS_NO_DLCOFFERS, uiIDA,1,ProfileManager.GetPrimaryPad());
+		C4JStorage::EMessageResult result = ui.RequestErrorMessage( IDS_PRO_UNLOCKGAME_TITLE, IDS_NO_DLCOFFERS, uiIDA,1,ProfileManager.GetPrimaryPad());
 		m_trialUpgradeCallbackFunc(m_trialUpgradeCallbackParam, m_errorCode);
 	}
 }
@@ -1458,6 +1462,27 @@ bool SonyCommerce_Vita::getDLCUpgradePending()
 		return true;
 	return false;
 }
+
+
+void SonyCommerce_Vita::ShowPsStoreIcon()
+{
+	if(!s_showingPSStoreIcon)
+	{
+		sceNpCommerce2ShowPsStoreIcon(SCE_NP_COMMERCE2_ICON_DISP_RIGHT);
+		s_showingPSStoreIcon = true;
+	}
+}
+
+void SonyCommerce_Vita::HidePsStoreIcon()
+{
+	if(s_showingPSStoreIcon)
+	{
+		sceNpCommerce2HidePsStoreIcon();
+		s_showingPSStoreIcon = false;
+	}
+}
+
+
 
 /*
 bool g_bDoCommerceCreateSession = false;

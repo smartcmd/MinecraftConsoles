@@ -73,6 +73,7 @@ enum eXuiAction
 	eAppAction_LevelInBanLevelList,
 
 	eAppAction_ReloadTexturePack,
+	eAppAction_ReloadFont,
 	eAppAction_TexturePackRequired, // when the user has joined from invite, but doesn't have the texture pack
 
 #ifdef __ORBIS__
@@ -380,6 +381,10 @@ enum eMinecraftColour
 	eMinecraftColour_Effect_Hunger,
 	eMinecraftColour_Effect_Weakness,
 	eMinecraftColour_Effect_Poison,
+	eMinecraftColour_Effect_Wither,
+	eMinecraftColour_Effect_HealthBoost,
+	eMinecraftColour_Effect_Absoprtion,
+	eMinecraftColour_Effect_Saturation,
 
 	eMinecraftColour_Potion_BaseColour,
 
@@ -425,6 +430,12 @@ enum eMinecraftColour
 	eMinecraftColour_Mob_Ocelot_Colour2,
 	eMinecraftColour_Mob_Villager_Colour1,
 	eMinecraftColour_Mob_Villager_Colour2,
+	eMinecraftColour_Mob_Bat_Colour1,
+	eMinecraftColour_Mob_Bat_Colour2,
+	eMinecraftColour_Mob_Witch_Colour1,
+	eMinecraftColour_Mob_Witch_Colour2,
+	eMinecraftColour_Mob_Horse_Colour1,
+	eMinecraftColour_Mob_Horse_Colour2,
 
 	eMinecraftColour_Armour_Default_Leather_Colour,
 
@@ -442,6 +453,11 @@ enum eMinecraftColour
 
 	eMinecraftColour_Sign_Text,
 	eMinecraftColour_Map_Text,
+
+	eMinecraftColour_Leash_Light_Colour,
+	eMinecraftColour_Leash_Dark_Colour,
+
+	eMinecraftColour_Fire_Overlay,
 
 	eHTMLColor_0,
 	eHTMLColor_1,
@@ -487,20 +503,20 @@ enum eMinecraftColour
 	eTextColor_RenamedItemTitle,
 
 	//eHTMLColor_0 = 0x000000, //r:0 , g: 0, b: 0, i: 0
-	//eHTMLColor_1 = 0x0000aa, //r:0 , g: 0, b: aa, i: 1
-	//eHTMLColor_2 = 0x109e10, // Changed by request of Dave //0x00aa00, //r:0 , g: aa, b: 0, i: 2
-	//eHTMLColor_3 = 0x109e9e, // Changed by request of Dave //0x00aaaa, //r:0 , g: aa, b: aa, i: 3
-	//eHTMLColor_4 = 0xaa0000, //r:aa , g: 0, b: 0, i: 4
-	//eHTMLColor_5 = 0xaa00aa, //r:aa , g: 0, b: aa, i: 5
-	//eHTMLColor_6 = 0xffaa00, //r:ff , g: aa, b: 0, i: 6
-	//eHTMLColor_7 = 0xaaaaaa, //r:aa , g: aa, b: aa, i: 7
-	//eHTMLColor_8 = 0x555555, //r:55 , g: 55, b: 55, i: 8
-	//eHTMLColor_9 = 0x5555ff, //r:55 , g: 55, b: ff, i: 9
-	//eHTMLColor_a = 0x55ff55, //r:55 , g: ff, b: 55, i: a
-	//eHTMLColor_b = 0x55ffff, //r:55 , g: ff, b: ff, i: b
-	//eHTMLColor_c = 0xff5555, //r:ff , g: 55, b: 55, i: c
-	//eHTMLColor_d = 0xff55ff, //r:ff , g: 55, b: ff, i: d
-	//eHTMLColor_e = 0xffff55, //r:ff , g: ff, b: 55, i: e
+	//eHTMLColor_1 = 0x0000aa, //r:0 , g: 0, b: aa, i: 1 // blue, quite dark
+	//eHTMLColor_2 = 0x109e10, // Changed by request of Dave //0x00aa00, //r:0 , g: aa, b: 0, i: 2 // green
+	//eHTMLColor_3 = 0x109e9e, // Changed by request of Dave //0x00aaaa, //r:0 , g: aa, b: aa, i: 3 // cyan
+	//eHTMLColor_4 = 0xaa0000, //r:aa , g: 0, b: 0, i: 4 // red
+	//eHTMLColor_5 = 0xaa00aa, //r:aa , g: 0, b: aa, i: 5 // purple
+	//eHTMLColor_6 = 0xffaa00, //r:ff , g: aa, b: 0, i: 6 // orange
+	//eHTMLColor_7 = 0xaaaaaa, //r:aa , g: aa, b: aa, i: 7 // light gray
+	//eHTMLColor_8 = 0x555555, //r:55 , g: 55, b: 55, i: 8 // gray
+	//eHTMLColor_9 = 0x5555ff, //r:55 , g: 55, b: ff, i: 9 // blue
+	//eHTMLColor_a = 0x55ff55, //r:55 , g: ff, b: 55, i: a // green
+	//eHTMLColor_b = 0x55ffff, //r:55 , g: ff, b: ff, i: b // cyan
+	//eHTMLColor_c = 0xff5555, //r:ff , g: 55, b: 55, i: c // red pink
+	//eHTMLColor_d = 0xff55ff, //r:ff , g: 55, b: ff, i: d // bright pink
+	//eHTMLColor_e = 0xffff55, //r:ff , g: ff, b: 55, i: e // yellow
 	//eHTMLColor_f = 0xffffff, //r:ff , g: ff, b: ff, i: f
 	//eHTMLColor_0_dark = 0x000000, //r:0 , g: 0, b: 0, i: 10
 	//eHTMLColor_1_dark = 0x00002a, //r:0 , g: 0, b: 2a, i: 11
@@ -509,12 +525,12 @@ enum eMinecraftColour
 	//eHTMLColor_4_dark = 0x2a0000, //r:2a , g: 0, b: 0, i: 14
 	//eHTMLColor_5_dark = 0x2a002a, //r:2a , g: 0, b: 2a, i: 15
 	//eHTMLColor_6_dark = 0x2a2a00, //r:2a , g: 2a, b: 0, i: 16
-	//eHTMLColor_7_dark = 0x2a2a2a, //r:2a , g: 2a, b: 2a, i: 17
+	//eHTMLColor_7_dark = 0x2a2a2a, //r:2a , g: 2a, b: 2a, i: 17 // dark gray
 	//eHTMLColor_8_dark = 0x151515, //r:15 , g: 15, b: 15, i: 18
 	//eHTMLColor_9_dark = 0x15153f, //r:15 , g: 15, b: 3f, i: 19
 	//eHTMLColor_a_dark = 0x153f15, //r:15 , g: 3f, b: 15, i: 1a
 	//eHTMLColor_b_dark = 0x153f3f, //r:15 , g: 3f, b: 3f, i: 1b
-	//eHTMLColor_c_dark = 0x3f1515, //r:3f , g: 15, b: 15, i: 1c
+	//eHTMLColor_c_dark = 0x3f1515, //r:3f , g: 15, b: 15, i: 1c // brown
 	//eHTMLColor_d_dark = 0x3f153f, //r:3f , g: 15, b: 3f, i: 1d
 	//eHTMLColor_e_dark = 0x3f3f15, //r:3f , g: 3f, b: 15, i: 1e
 	//eHTMLColor_f_dark = 0x3f3f3f, //r:3f , g: 3f, b: 3f, i: 1f
@@ -617,9 +633,19 @@ enum eGameHostOption
 	eGameHostOption_HostCanBeInvisible,
 	eGameHostOption_BedrockFog,
 	eGameHostOption_NoHUD,
+	eGameHostOption_WorldSize,
 	eGameHostOption_All,
 
 	eGameHostOption_DisableSaving,
+	eGameHostOption_WasntSaveOwner, // Added for PS3 save transfer, so we can add a nice message in the future instead of the creative mode one
+
+	eGameHostOption_MobGriefing,
+	eGameHostOption_KeepInventory,
+	eGameHostOption_DoMobSpawning,
+	eGameHostOption_DoMobLoot,
+	eGameHostOption_DoTileDrops,
+	eGameHostOption_NaturalRegeneration,
+	eGameHostOption_DoDaylightCycle,
 };
 
 // 4J-PB - If any new DLC items are added to the TMSFiles, this array needs updated
@@ -639,6 +665,8 @@ enum _TMSFILES
 	TMS_SPM,
 	TMS_SPI,
 	TMS_SPG,
+	TMS_SPD1,
+	TMS_SPSW1,
 
 	TMS_THST,
 	TMS_THIR,
@@ -748,6 +776,8 @@ enum _TMSFILES
 	TMS_MPSR_DAT,
 	TMS_MPHA,
 	TMS_MPHA_DAT,
+	TMS_MPFE,
+	TMS_MPFE_DAT,
 
 	TMS_TP01,
 	TMS_TP01_DAT,
@@ -761,6 +791,8 @@ enum _TMSFILES
 	TMS_TP06_DAT,
 	TMS_TP07,
 	TMS_TP07_DAT,
+	TMS_TP08,
+	TMS_TP08_DAT,
 
 	TMS_COUNT
 };
@@ -875,7 +907,7 @@ enum eMCLang
 	eMCLang_plPL,
 	eMCLang_trTR,
 	eMCLang_elEL,
-	eMCLang_zhCHS,
+	eMCLang_csCS,
 	eMCLang_zhCHT,
 	eMCLang_laLAS,
 
@@ -910,4 +942,7 @@ enum eMCLang
 	eMCLang_elGR,
 	eMCLang_nnNO,
 	eMCLang_skSK,
+
+	eMCLang_hans,
+	eMCLang_hant,
 };

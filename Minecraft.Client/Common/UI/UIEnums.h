@@ -54,7 +54,7 @@ enum EUIScene
 	eUIScene_DebugOptions,
 	eUIScene_DebugTips,
 	eUIScene_HelpAndOptionsMenu,
-	eUIScene_HowToPlay,			
+	eUIScene_HowToPlay,
 	eUIScene_HowToPlayMenu,
 	eUIScene_ControlsMenu,
 	eUIScene_SettingsOptionsMenu,
@@ -94,13 +94,23 @@ enum EUIScene
 	eUIScene_TradingMenu,
 	eUIScene_AnvilMenu,
 	eUIScene_TeleportMenu,
+	eUIScene_HopperMenu,
+	eUIScene_BeaconMenu,
+	eUIScene_HorseMenu,
+	eUIScene_FireworksMenu,
 
 #ifdef _XBOX
 //	eUIScene_TransferToXboxOne,
 #endif
 
+	// ****************************************
+	// ****************************************
+	// **********  IMPORTANT ******************
+	// ****************************************
+	// ****************************************
 	// When adding new scenes here, you must also update the switches in CConsoleMinecraftApp::NavigateToScene
 	// There are quite a few so you need to check them all
+	// Also update UILayer::updateFocusState
 
 #ifndef _XBOX
 	// Anything non-xbox should be added here. The ordering of scenes above is required for sentient reporting on xbox 360 to continue to be accurate
@@ -117,6 +127,7 @@ enum EUIScene
 	eUIScene_Timer,
 	eUIScene_EULA,
 	eUIScene_InGameSaveManagementMenu,
+	eUIScene_LanguageSelector,
 #endif // ndef _XBOX
 
 #ifdef _DEBUG_MENUS_ENABLED
@@ -154,6 +165,8 @@ enum EToolTipButton
 	eToolTipButtonLB,
 	eToolTipButtonRB,
 	eToolTipButtonLS,
+	eToolTipButtonRS,
+	eToolTipButtonBack,
 	eToolTipNumButtons
 };
 
@@ -209,6 +222,12 @@ enum EHowToPlayPage
 	eHowToPlay_Breeding,
 	eHowToPlay_Trading,
 
+	eHowToPlay_Horses,
+	eHowToPlay_Beacons,
+	eHowToPlay_Fireworks,
+	eHowToPlay_Hoppers,
+	eHowToPlay_Droppers,
+
 	eHowToPlay_NetherPortal,
 	eHowToPlay_TheEnd,
 #ifdef _XBOX
@@ -227,6 +246,13 @@ enum ECreditTextTypes
 	eMediumText,
 	eSmallText,
 	eNumTextTypes
+};
+
+enum EUIMessage
+{
+	eUIMessage_InventoryUpdated,
+
+	eUIMessage_COUNT,
 };
 
 #define NO_TRANSLATED_STRING	( -1 )			// String ID used to indicate that we are using non localised string.

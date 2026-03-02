@@ -43,9 +43,14 @@ int DerivedLevelData::getZSpawn()
 	return wrapped->getZSpawn();
 }
 
-__int64 DerivedLevelData::getTime()
+__int64 DerivedLevelData::getGameTime()
 {
-	return wrapped->getTime();
+	return wrapped->getGameTime();
+}
+
+__int64 DerivedLevelData::getDayTime()
+{
+	return wrapped->getDayTime();
 }
 
 __int64 DerivedLevelData::getSizeOnDisk()
@@ -114,7 +119,11 @@ void DerivedLevelData::setZSpawn(int zSpawn)
 {
 }
 
-void DerivedLevelData::setTime(__int64 time)
+void DerivedLevelData::setGameTime(__int64 time)
+{
+}
+
+void DerivedLevelData::setDayTime(__int64 time)
 {
 }
 
@@ -196,6 +205,11 @@ bool DerivedLevelData::isInitialized()
 
 void DerivedLevelData::setInitialized(bool initialized)
 {
+}
+
+GameRules *DerivedLevelData::getGameRules()
+{
+	return wrapped->getGameRules();
 }
 
 int DerivedLevelData::getXZSize()

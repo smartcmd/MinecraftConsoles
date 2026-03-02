@@ -26,6 +26,11 @@ public:
 	void stop();
 	bool canUse();
 	void tick();
+
+private:
+	bool isNoJumpTile(int tile);
+
+public:
 	bool isBoosting();
 	void boost();
 	bool canBoost();

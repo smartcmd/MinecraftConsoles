@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "com.mojang.nbt.h"
+#include "net.minecraft.h"
 #include "net.minecraft.world.entity.player.h"
 #include "net.minecraft.world.item.h"
 #include "net.minecraft.world.item.crafting.h"
@@ -8,40 +9,43 @@
 #include "Material.h"
 #include "FurnaceTileEntity.h"
 
+int furnaceSlotsForUp [] = { FurnaceTileEntity::SLOT_INPUT };
+int furnaceSlotsForDown [] = { FurnaceTileEntity::SLOT_RESULT, FurnaceTileEntity::SLOT_FUEL };
+int furnaceSlotsForSides [] = { FurnaceTileEntity::SLOT_FUEL };
 
+const intArray FurnaceTileEntity::SLOTS_FOR_UP = intArray(furnaceSlotsForUp, 1);
+const intArray FurnaceTileEntity::SLOTS_FOR_DOWN = intArray(furnaceSlotsForDown, 2);
+const intArray FurnaceTileEntity::SLOTS_FOR_SIDES = intArray(furnaceSlotsForSides, 1);
 
 const int FurnaceTileEntity::BURN_INTERVAL = 10 * 20;
 
 // 4J Stu - Need a ctor to initialise member variables
 FurnaceTileEntity::FurnaceTileEntity() : TileEntity()
 {
-	items = new ItemInstanceArray(3);
+	items = ItemInstanceArray(3);
 
 	litTime = 0;
-
 	litDuration = 0;
-
 	tickCount = 0;
-
 	m_charcoalUsed = false;
+	name = L"";
 }
 
 FurnaceTileEntity::~FurnaceTileEntity()
 {
-	delete[] items->data;
-	delete items;
+	delete[] items.data;
 }
 
 
 unsigned int FurnaceTileEntity::getContainerSize()
 {
-	return items->length;
+	return items.length;
 }
 
 
 shared_ptr<ItemInstance> FurnaceTileEntity::getItem(unsigned int slot)
 {
-	return (*items)[slot];
+	return items[slot];
 }
 
 
@@ -49,20 +53,20 @@ shared_ptr<ItemInstance> FurnaceTileEntity::removeItem(unsigned int slot, int co
 {
 	m_charcoalUsed = false;
 
-	if ((*items)[slot] != NULL)
+	if (items[slot] != NULL)
 	{
-		if ((*items)[slot]->count <= count)
+		if (items[slot]->count <= count)
 		{
-			shared_ptr<ItemInstance> item = (*items)[slot];
-			(*items)[slot] = nullptr;
+			shared_ptr<ItemInstance> item = items[slot];
+			items[slot] = nullptr;
 			// 4J Stu - Fix for duplication glitch
 			if(item->count <= 0) return nullptr;
 			return item;
 		}
 		else
 		{
-			shared_ptr<ItemInstance> i = (*items)[slot]->remove(count);
-			if ((*items)[slot]->count == 0) (*items)[slot] = nullptr;
+			shared_ptr<ItemInstance> i = items[slot]->remove(count);
+			if (items[slot]->count == 0) items[slot] = nullptr;
 			// 4J Stu - Fix for duplication glitch
 			if(i->count <= 0) return nullptr;
 			return i;
@@ -75,10 +79,10 @@ shared_ptr<ItemInstance> FurnaceTileEntity::removeItemNoUpdate(int slot)
 {
 	m_charcoalUsed = false;
 
-	if (items->data[slot] != NULL)
+	if (items[slot] != NULL)
 	{
-		shared_ptr<ItemInstance> item = items->data[slot];
-		items->data[slot] = nullptr;
+		shared_ptr<ItemInstance> item = items[slot];
+		items[slot] = nullptr;
 		return item;
 	}
 	return nullptr;
@@ -87,32 +91,48 @@ shared_ptr<ItemInstance> FurnaceTileEntity::removeItemNoUpdate(int slot)
 
 void FurnaceTileEntity::setItem(unsigned int slot, shared_ptr<ItemInstance> item)
 {
-	(*items)[slot] = item;
+	items[slot] = item;
 	if (item != NULL && item->count > getMaxStackSize()) item->count = getMaxStackSize();
 }
 
 
-int FurnaceTileEntity::getName()
+wstring FurnaceTileEntity::getName()
 {
-	return IDS_TILE_FURNACE;
+	return hasCustomName() ? name : app.GetString(IDS_TILE_FURNACE);
+}
+
+wstring FurnaceTileEntity::getCustomName()
+{
+	return hasCustomName() ? name : L"";
+}
+
+bool FurnaceTileEntity::hasCustomName()
+{
+	return !name.empty();
+}
+
+void FurnaceTileEntity::setCustomName(const wstring &name)
+{
+	this->name = name;
 }
 
 void FurnaceTileEntity::load(CompoundTag *base)
 {
 	TileEntity::load(base);
 	ListTag<CompoundTag> *inventoryList = (ListTag<CompoundTag> *) base->getList(L"Items");
-	items = new ItemInstanceArray(getContainerSize());
+	delete[] items.data;
+	items = ItemInstanceArray(getContainerSize());
 	for (int i = 0; i < inventoryList->size(); i++)
 	{
 		CompoundTag *tag = inventoryList->get(i);
 		unsigned int slot = tag->getByte(L"Slot");
-		if (slot >= 0 && slot < items->length) (*items)[slot] = ItemInstance::fromTag(tag);
+		if (slot >= 0 && slot < items.length) items[slot] = ItemInstance::fromTag(tag);
 	}
 
 	litTime = base->getShort(L"BurnTime");
 	tickCount = base->getShort(L"CookTime");
-	litDuration = getBurnDuration((*items)[FUEL_SLOT]);
-
+	litDuration = getBurnDuration(items[SLOT_FUEL]);
+	if (base->contains(L"CustomName")) name = base->getString(L"CustomName");
 	m_charcoalUsed = base->getBoolean(L"CharcoalUsed");
 }
 
@@ -124,18 +144,18 @@ void FurnaceTileEntity::save(CompoundTag *base)
 	base->putShort(L"CookTime", (short) (tickCount));
 	ListTag<CompoundTag> *listTag = new ListTag<CompoundTag>();
 
-	for (unsigned int i = 0; i < items->length; i++)
+	for (unsigned int i = 0; i < items.length; i++)
 	{
-		if ((*items)[i] != NULL)
+		if (items[i] != NULL)
 		{
 			CompoundTag *tag = new CompoundTag();
 			tag->putByte(L"Slot", (byte) i);
-			(*items)[i]->save(tag);
+			items[i]->save(tag);
 			listTag->add(tag);
 		}
 	}
 	base->put(L"Items", listTag);
-
+	if (hasCustomName()) base->putString(L"CustomName", name);
 	base->putBoolean(L"CharcoalUsed", m_charcoalUsed);
 }
 
@@ -178,24 +198,24 @@ void FurnaceTileEntity::tick()
 	{
 		if (litTime == 0 && canBurn())
 		{
-			litDuration = litTime = getBurnDuration((*items)[FUEL_SLOT]);
+			litDuration = litTime = getBurnDuration(items[SLOT_FUEL]);
 			if (litTime > 0)
 			{
 				changed = true;
-				if ((*items)[FUEL_SLOT] != NULL)
+				if (items[SLOT_FUEL] != NULL)
 				{
 					// 4J Added: Keep track of whether charcoal was used in production of current stack.
-					if ( (*items)[FUEL_SLOT]->getItem()->id == Item::coal_Id 
-						&& (*items)[FUEL_SLOT]->getAuxValue() == CoalItem::CHAR_COAL)
+					if ( items[SLOT_FUEL]->getItem()->id == Item::coal_Id 
+						&& items[SLOT_FUEL]->getAuxValue() == CoalItem::CHAR_COAL)
 					{
 						m_charcoalUsed = true;
 					}
 
-					(*items)[FUEL_SLOT]->count--;
-					if ((*items)[FUEL_SLOT]->count == 0)
+					items[SLOT_FUEL]->count--;
+					if (items[SLOT_FUEL]->count == 0)
 					{
-						Item *remaining = (*items)[FUEL_SLOT]->getItem()->getCraftingRemainingItem();
-						(*items)[FUEL_SLOT] = remaining != NULL ? shared_ptr<ItemInstance>(new ItemInstance(remaining)) : nullptr;
+						Item *remaining = items[SLOT_FUEL]->getItem()->getCraftingRemainingItem();
+						items[SLOT_FUEL] = remaining != NULL ? shared_ptr<ItemInstance>(new ItemInstance(remaining)) : nullptr;
 					}
 				}
 			}
@@ -229,13 +249,13 @@ void FurnaceTileEntity::tick()
 
 bool FurnaceTileEntity::canBurn()
 {
-	if ((*items)[INPUT_SLOT] == NULL) return false;
-	ItemInstance *burnResult = FurnaceRecipes::getInstance()->getResult((*items)[0]->getItem()->id);
+	if (items[SLOT_INPUT] == NULL) return false;
+	ItemInstance *burnResult = FurnaceRecipes::getInstance()->getResult(items[SLOT_INPUT]->getItem()->id);
 	if (burnResult == NULL) return false;
-	if ((*items)[RESULT_SLOT] == NULL) return true;
-	if (!(*items)[RESULT_SLOT]->sameItem_not_shared(burnResult)) return false;
-	if ((*items)[RESULT_SLOT]->count < getMaxStackSize() && (*items)[RESULT_SLOT]->count < (*items)[RESULT_SLOT]->getMaxStackSize()) return true;
-	if ((*items)[RESULT_SLOT]->count < burnResult->getMaxStackSize()) return true;
+	if (items[SLOT_RESULT] == NULL) return true;
+	if (!items[SLOT_RESULT]->sameItem_not_shared(burnResult)) return false;
+	if (items[SLOT_RESULT]->count < getMaxStackSize() && items[SLOT_RESULT]->count < items[SLOT_RESULT]->getMaxStackSize()) return true;
+	if (items[SLOT_RESULT]->count < burnResult->getMaxStackSize()) return true;
 	return false;
 }
 
@@ -244,12 +264,12 @@ void FurnaceTileEntity::burn()
 {
 	if (!canBurn()) return;
 
-	ItemInstance *result = FurnaceRecipes::getInstance()->getResult((*items)[0]->getItem()->id);
-	if ((*items)[RESULT_SLOT] == NULL) (*items)[RESULT_SLOT] = result->copy();
-	else if ((*items)[RESULT_SLOT]->id == result->id) (*items)[RESULT_SLOT]->count++;
+	ItemInstance *result = FurnaceRecipes::getInstance()->getResult(items[SLOT_INPUT]->getItem()->id);
+	if (items[SLOT_RESULT] == NULL) items[SLOT_RESULT] = result->copy();
+	else if (items[SLOT_RESULT]->id == result->id) items[SLOT_RESULT]->count++;
 
-	(*items)[INPUT_SLOT]->count--;
-	if ((*items)[INPUT_SLOT]->count <= 0) (*items)[INPUT_SLOT] = nullptr;
+	items[SLOT_INPUT]->count--;
+	if (items[SLOT_INPUT]->count <= 0) items[SLOT_INPUT] = nullptr;
 }
 
 
@@ -272,6 +292,11 @@ int FurnaceTileEntity::getBurnDuration(shared_ptr<ItemInstance> itemInstance)
 		if (tile->material == Material::wood)
 		{
 			return BURN_INTERVAL * 3 / 2;
+		}
+
+		if (tile == Tile::coalBlock)
+		{
+			return BURN_INTERVAL * 8 * 10;
 		}
 	}
 
@@ -329,6 +354,45 @@ void FurnaceTileEntity::stopOpen()
 {
 }
 
+bool FurnaceTileEntity::canPlaceItem(int slot, shared_ptr<ItemInstance> item)
+{
+	if (slot == SLOT_RESULT) return false;
+	if (slot == SLOT_FUEL) return isFuel(item);
+	return true;
+}
+
+intArray FurnaceTileEntity::getSlotsForFace(int face)
+{
+	if (face == Facing::DOWN)
+	{
+		return SLOTS_FOR_DOWN;
+	}
+	else if (face == Facing::UP)
+	{
+		return SLOTS_FOR_UP;
+	}
+	else
+	{
+		return SLOTS_FOR_SIDES;
+	}
+}
+
+bool FurnaceTileEntity::canPlaceItemThroughFace(int slot, shared_ptr<ItemInstance> item, int face)
+{
+	return canPlaceItem(slot, item);
+
+}
+
+bool FurnaceTileEntity::canTakeItemThroughFace(int slot, shared_ptr<ItemInstance> item, int face)
+{
+	if (face == Facing::DOWN && slot == SLOT_FUEL)
+	{
+		if (item->id != Item::bucket_empty_Id) return false;
+	}
+
+	return true;
+}
+
 // 4J Added
 shared_ptr<TileEntity> FurnaceTileEntity::clone()
 {
@@ -339,11 +403,11 @@ shared_ptr<TileEntity> FurnaceTileEntity::clone()
 	result->tickCount = tickCount;
 	result->litDuration = litDuration;
 
-	for (unsigned int i = 0; i < items->length; i++)
+	for (unsigned int i = 0; i < items.length; i++)
 	{
-		if ((*items)[i] != NULL)
+		if (items[i] != NULL)
 		{
-			(*result->items)[i] = ItemInstance::clone((*items)[i]);
+			result->items[i] = ItemInstance::clone(items[i]);
 		}
 	}
 	return result;

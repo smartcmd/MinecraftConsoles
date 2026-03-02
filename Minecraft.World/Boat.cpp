@@ -52,7 +52,7 @@ void Boat::defineSynchedData()
 {
 	entityData->define(DATA_ID_HURT, 0);
 	entityData->define(DATA_ID_HURTDIR, 1);
-	entityData->define(DATA_ID_DAMAGE, 0);
+	entityData->define(DATA_ID_DAMAGE, 0.0f);
 }
 
 
@@ -90,8 +90,9 @@ double Boat::getRideHeight()
 	return bbHeight * 0.0f - 0.3f;
 }
 
-bool Boat::hurt(DamageSource *source, int hurtDamage)
+bool Boat::hurt(DamageSource *source, float hurtDamage)
 {
+	if (isInvulnerable()) return false;
 	if (level->isClientSide || removed) return true;
 
 	// 4J-JEV: Fix for #88212,
@@ -100,9 +101,10 @@ bool Boat::hurt(DamageSource *source, int hurtDamage)
 	{
 		shared_ptr<Entity> attacker = source->getDirectEntity();
 
-		if (dynamic_pointer_cast<Player>(attacker) != NULL && 
-			!dynamic_pointer_cast<Player>(attacker)->isAllowedToHurtEntity( shared_from_this() ))
+		if ( attacker->instanceof(eTYPE_PLAYER) && !dynamic_pointer_cast<Player>(attacker)->isAllowedToHurtEntity( shared_from_this() ))
+		{
 			return false;
+		}
 	}
 
 	setHurtDir(-getHurtDir());
@@ -117,13 +119,13 @@ bool Boat::hurt(DamageSource *source, int hurtDamage)
 	markHurt();
 
 	// 4J Stu - Brought froward from 12w36 to fix #46611 - TU5: Gameplay: Minecarts and boat requires more hits than one to be destroyed in creative mode
-	shared_ptr<Player> player = dynamic_pointer_cast<Player>(source->getEntity());
-	if (player != NULL && player->abilities.instabuild) setDamage(100);
+	// 4J-PB - Fix for XB1 #175735 - [CRASH] [Multi-Plat]: Code: Gameplay: Placing a boat on harmful surfaces causes the game to crash
+	bool creativePlayer = (source->getEntity() != NULL) && source->getEntity()->instanceof(eTYPE_PLAYER) && dynamic_pointer_cast<Player>(source->getEntity())->abilities.instabuild;
 
-	if (getDamage() > 20 * 2)
+	if (creativePlayer || getDamage() > 20 * 2)
 	{
 		if (rider.lock() != NULL) rider.lock()->ride( shared_from_this() );
-		spawnAtLocation(Item::boat_Id, 1, 0);
+		if (!creativePlayer) spawnAtLocation(Item::boat_Id, 1, 0);
 		remove();
 	}
 	return true;
@@ -171,9 +173,9 @@ void Boat::lerpTo(double x, double y, double z, float yRot, float xRot, int step
 	lyr = yRot;
 	lxr = xRot;
 
-	this->xd = lxd;
-	this->yd = lyd;
-	this->zd = lzd;
+	xd = lxd;
+	yd = lyd;
+	zd = lzd;
 }
 
 void Boat::lerpMotion(double xd, double yd, double zd)
@@ -247,8 +249,8 @@ void Boat::tick()
 			xRot += (float) ( (lxr - xRot) / lSteps );
 
 			lSteps--;
-			this->setPos(xt, yt, zt);
-			this->setRot(yRot, xRot);
+			setPos(xt, yt, zt);
+			setRot(yRot, xRot);
 		}
 		else
 		{
@@ -260,7 +262,7 @@ void Boat::tick()
 			//this->setPos(xt, yt, zt);
 
 			// 4J Stu - Fix for various boat bugs, ensure that we check collision on client-side movement
-			this->move(xd,yd,zd);
+			move(xd,yd,zd);
 
 			if (onGround)
 			{
@@ -317,10 +319,18 @@ void Boat::tick()
 	}
 
 
-	if (rider.lock() != NULL)
+	if ( rider.lock() != NULL && rider.lock()->instanceof(eTYPE_LIVINGENTITY) )
 	{
-		xd += rider.lock()->xd * acceleration;
-		zd += rider.lock()->zd * acceleration;
+		shared_ptr<LivingEntity> livingRider = dynamic_pointer_cast<LivingEntity>(rider.lock());
+		double forward = livingRider->yya;
+
+		if (forward > 0)
+		{
+			double riderXd = -sin(livingRider->yRot * PI / 180);
+			double riderZd = cos(livingRider->yRot * PI / 180);
+			xd += riderXd * acceleration * 0.05f;
+			zd += riderZd * acceleration * 0.05f;
+		}
 	}
 
 	double curSpeed = sqrt(xd * xd + zd * zd);
@@ -355,7 +365,7 @@ void Boat::tick()
 
 	if ((horizontalCollision && lastSpeed > 0.20))
 	{
-		if (!level->isClientSide)
+		if (!level->isClientSide && !removed)
 		{
 			remove();
 			for (int i = 0; i < 3; i++)
@@ -394,7 +404,7 @@ void Boat::tick()
 
 	if(level->isClientSide) return;
 
-	vector<shared_ptr<Entity> > *entities = level->getEntities(shared_from_this(), this->bb->grow(0.2f, 0, 0.2f));
+	vector<shared_ptr<Entity> > *entities = level->getEntities(shared_from_this(), bb->grow(0.2f, 0, 0.2f));
 	if (entities != NULL && !entities->empty())
 	{
 		AUTO_VAR(itEnd, entities->end());
@@ -417,16 +427,14 @@ void Boat::tick()
 		{
 			int yy = Mth::floor(y) + j;
 			int tile = level->getTile(xx, yy, zz);
-			int data = level->getData(xx, yy, zz);
 
 			if (tile == Tile::topSnow_Id)
 			{
-				level->setTile(xx, yy, zz, 0);
+				level->removeTile(xx, yy, zz);
 			}
 			else if (tile == Tile::waterLily_Id)
 			{
-				Tile::waterLily->spawnResources(level, xx, yy, zz, data, 0.3f, 0);
-				level->setTile(xx, yy, zz, 0);
+				level->destroyTile(xx, yy, zz, true);
 			}
 		}
 
@@ -469,7 +477,7 @@ wstring Boat::getName()
 
 bool Boat::interact(shared_ptr<Player> player)
 {
-	if (rider.lock() != NULL && dynamic_pointer_cast<Player>(rider.lock())!=NULL && rider.lock() != player) return true;
+	if ( (rider.lock() != NULL) && rider.lock()->instanceof(eTYPE_PLAYER) && (rider.lock() != player) ) return true;
 	if (!level->isClientSide)
 	{
 		// 4J HEG - Fixed issue with player not being able to dismount boat (issue #4446)
@@ -478,14 +486,14 @@ bool Boat::interact(shared_ptr<Player> player)
 	return true;
 }
 
-void Boat::setDamage(int damage)
+void Boat::setDamage(float damage)
 {
 	entityData->set(DATA_ID_DAMAGE, damage);
 }
 
-int Boat::getDamage()
+float Boat::getDamage()
 {
-	return entityData->getInteger(DATA_ID_DAMAGE);
+	return entityData->getFloat(DATA_ID_DAMAGE);
 }
 
 void Boat::setHurtTime(int hurtTime)

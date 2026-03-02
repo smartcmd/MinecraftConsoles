@@ -174,8 +174,10 @@ void Connection::send(shared_ptr<Packet> packet)
 void Connection::queueSend(shared_ptr<Packet> packet)
 {
 	if (quitting) return;
+	EnterCriticalSection(&writeLock);
 	estimatedRemaining += packet->getEstimatedSize() + 1;
 	outgoing_slow.push(packet);
+	LeaveCriticalSection(&writeLock);
 }
 
 bool Connection::writeTick()
@@ -204,8 +206,20 @@ bool Connection::writeTick()
 
 #ifndef _CONTENT_PACKAGE
 		// 4J Added for debugging
+		int playerId = 0;
 		if( !socket->isLocal() ) 
-			Packet::recordOutgoingPacket(packet);
+		{
+			Socket *socket = getSocket();
+			if( socket )
+			{
+				INetworkPlayer *player = socket->getPlayer();
+				if( player )
+				{
+					playerId = player->GetSmallId();
+				}
+			}
+			Packet::recordOutgoingPacket(packet,playerId);
+		}
 #endif
 
 		// 4J Stu - Changed this so that rather than writing to the network stream through a buffered stream we want to:
@@ -241,7 +255,11 @@ bool Connection::writeTick()
 			// 4J Stu - Changed this so that rather than writing to the network stream through a buffered stream we want to:
 			// a) Only push whole "game" packets to QNet, rather than amalgamated chunks of data that may include many packets, and partial packets
 			// b) To be able to change the priority and queue of a packet if required
+#ifdef _XBOX
 			int flags = QNET_SENDDATA_LOW_PRIORITY | QNET_SENDDATA_SECONDARY;
+#else
+			int flags = NON_QNET_SENDDATA_ACK_REQUIRED;
+#endif
 			sos->writeWithFlags( baos->buf, 0, baos->size(), flags  );
 			baos->reset();
 		}
@@ -253,7 +271,22 @@ bool Connection::writeTick()
 #ifndef _CONTENT_PACKAGE
 		// 4J Added for debugging
 		if( !socket->isLocal() ) 
-			Packet::recordOutgoingPacket(packet);
+		{
+			int playerId = 0;
+			if( !socket->isLocal() ) 
+			{
+				Socket *socket = getSocket();
+				if( socket )
+				{
+					INetworkPlayer *player = socket->getPlayer();
+					if( player )
+					{
+						playerId = player->GetSmallId();
+					}
+				}
+				Packet::recordOutgoingPacket(packet,playerId);
+			}
+		}
 #endif	
 
 		writeSizes[packet->getId()] += packet->getEstimatedSize() + 1;

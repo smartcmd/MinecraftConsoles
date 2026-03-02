@@ -20,7 +20,7 @@ public:
 
 	// Returns true if lower scenes in this scenes layer, or in any layer below this scenes layers should be hidden
 	virtual bool hidesLowerScenes() { return true; }
-	virtual void reloadMovie();
+	virtual void reloadMovie(bool force);
 	virtual bool needsReloaded();
 
 protected:

@@ -10,9 +10,10 @@
 
 NetherBridgeFeature::NetherBridgeFeature() : StructureFeature()
 {
-    bridgeEnemies.push_back(new Biome::MobSpawnerData(eTYPE_BLAZE, 10, 2, 3));
-    bridgeEnemies.push_back(new Biome::MobSpawnerData(eTYPE_PIGZOMBIE, 10, 4, 4));
-    bridgeEnemies.push_back(new Biome::MobSpawnerData(eTYPE_LAVASLIME, 3, 4, 4));	
+	bridgeEnemies.push_back(new Biome::MobSpawnerData(eTYPE_BLAZE, 10, 2, 3));
+	bridgeEnemies.push_back(new Biome::MobSpawnerData(eTYPE_PIGZOMBIE, 5, 4, 4));
+	bridgeEnemies.push_back(new Biome::MobSpawnerData(eTYPE_SKELETON, 10, 4, 4));
+	bridgeEnemies.push_back(new Biome::MobSpawnerData(eTYPE_LAVASLIME, 3, 4, 4));	
 	isSpotSelected=false;
 	netherFortressPos = NULL;
 
@@ -21,6 +22,11 @@ NetherBridgeFeature::NetherBridgeFeature() : StructureFeature()
 NetherBridgeFeature::~NetherBridgeFeature()
 {
 	if( netherFortressPos != NULL ) delete netherFortressPos;
+}
+
+wstring NetherBridgeFeature::getFeatureName()
+{
+	return L"Fortress";
 }
 
 vector<Biome::MobSpawnerData *> *NetherBridgeFeature::getBridgeEnemies()
@@ -48,7 +54,7 @@ bool NetherBridgeFeature::isFeatureChunk(int x, int z, bool bIsSuperflat)
 
 		isSpotSelected = true;
 	}
-	
+
 	bool forcePlacement = false;
 	LevelGenerationOptions *levelGenOptions = app.getLevelGenerationOptions();
 	if( levelGenOptions != NULL )
@@ -57,7 +63,7 @@ bool NetherBridgeFeature::isFeatureChunk(int x, int z, bool bIsSuperflat)
 	}
 
 	if(forcePlacement || (x == netherFortressPos->x && z == netherFortressPos->z) ) return true;
-	
+
 #ifdef _LARGE_WORLDS
 	int xzSize = level->dimension->getXZSize();
 	if(xzSize > 30)
@@ -90,7 +96,7 @@ bool NetherBridgeFeature::isFeatureChunk(int x, int z, bool bIsSuperflat)
 
 StructureStart *NetherBridgeFeature::createStructureStart(int x, int z)
 {
-	 return new NetherBridgeStart(level, random, x, z);
+	return new NetherBridgeStart(level, random, x, z);
 }
 
 void NetherBridgeFeature::clearCachedBuildings()
@@ -98,22 +104,27 @@ void NetherBridgeFeature::clearCachedBuildings()
 	cachedStructures.clear();
 }
 
-NetherBridgeFeature::NetherBridgeStart::NetherBridgeStart(Level *level, Random *random, int chunkX, int chunkZ) : StructureStart()
+NetherBridgeFeature::NetherBridgeStart::NetherBridgeStart()
 {
-    NetherBridgePieces::StartPiece *start = new NetherBridgePieces::StartPiece(random, (chunkX << 4) + 2, (chunkZ << 4) + 2, level);
-    pieces.push_back(start);
-    start->addChildren(start, &pieces, random);
+	// for reflection
+}
 
-    vector<StructurePiece *> *pendingChildren = &start->pendingChildren;
-    while (!pendingChildren->empty())
+NetherBridgeFeature::NetherBridgeStart::NetherBridgeStart(Level *level, Random *random, int chunkX, int chunkZ) : StructureStart(chunkX, chunkZ)
+{
+	NetherBridgePieces::StartPiece *start = new NetherBridgePieces::StartPiece(random, (chunkX << 4) + 2, (chunkZ << 4) + 2, level);
+	pieces.push_back(start);
+	start->addChildren(start, &pieces, random);
+
+	vector<StructurePiece *> *pendingChildren = &start->pendingChildren;
+	while (!pendingChildren->empty())
 	{
-        int pos = random->nextInt((int)pendingChildren->size());
+		int pos = random->nextInt((int)pendingChildren->size());
 		AUTO_VAR(it, pendingChildren->begin() + pos);
-        StructurePiece *structurePiece = *it;
+		StructurePiece *structurePiece = *it;
 		pendingChildren->erase(it);
-        structurePiece->addChildren(start, &pieces, random);
-    }
+		structurePiece->addChildren(start, &pieces, random);
+	}
 
-    calculateBoundingBox();
-    moveInsideHeights(level, random, 48, 70);
+	calculateBoundingBox();
+	moveInsideHeights(level, random, 48, 70);
 }

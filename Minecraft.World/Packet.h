@@ -21,26 +21,26 @@ public:
 		int count;
 		int totalSize;
 
-		// 4J Added
-		__int64 countSamples[512];
-		__int64 sizeSamples[512];
-		int samplesPos;
-		__int64 firstSampleTime;
+		static const int TOTAL_TICKS = 100;
 
+		// 4J Added
+		__int64 countSamples[TOTAL_TICKS];
+		__int64 sizeSamples[TOTAL_TICKS];
+		__int64 timeSamples[TOTAL_TICKS];
+		int samplesPos;
 
 	public:
 		const int id;
 
 	public:
-		PacketStatistics(int id) : id( id ), count( 0 ), totalSize( 0 ), samplesPos( 0 ), firstSampleTime( 0 ) { countSamples[0] = 0; sizeSamples[0] = 0; }
+		PacketStatistics(int id);
 		void addPacket(int bytes);
 		int getCount();
+		int getTotalSize();
 		double getAverageSize();
-
-		// 4J Added
-		void renderStats();
-		__int64 getCountSample(int samplePos);
-		wstring getLegendString();
+		__int64 getRunningTotal();
+		__int64 getRunningCount();
+		void IncrementPos();
 	};
 
 	// 4J JEV, replaces the static blocks.
@@ -80,12 +80,8 @@ private:
 	static vector<PacketStatistics *> renderableStats;
 	static int renderPos;
 public:
-	static void recordOutgoingPacket(shared_ptr<Packet> packet);
-	static void renderPacketStats(int id);
-	static void renderAllPacketStats();
-	static void renderAllPacketStatsKey();
-	static __int64 getIndexedStatValue(unsigned int samplePos, unsigned int renderableId);
-
+	static void recordOutgoingPacket(shared_ptr<Packet> packet, int playerIndex);
+	static void updatePacketStatsPIX();
 private :
 	static unordered_map<int, PacketStatistics *> statistics;
 	//static int nextPrint;

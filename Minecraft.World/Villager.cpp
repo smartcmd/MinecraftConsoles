@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "com.mojang.nbt.h"
+#include "net.minecraft.world.entity.ai.attributes.h"
 #include "net.minecraft.world.entity.ai.goal.h"
 #include "net.minecraft.world.entity.ai.navigation.h"
 #include "net.minecraft.world.entity.ai.village.h"
@@ -24,14 +25,11 @@ void Villager::_init(int profession)
 	// 4J Stu - This function call had to be moved here from the Entity ctor to ensure that
 	// the derived version of the function is called
 	this->defineSynchedData();
-
-	// 4J Stu - This function call had to be moved here from the Entity ctor to ensure that the derived version of the function is called
-	health = getMaxHealth();
+	registerAttributes();
+	setHealth(getMaxHealth());
 
 	setProfession(profession);
 	setSize(.6f, 1.8f);
-
-	runSpeed = 0.5f;
 
 	villageUpdateInterval = 0;
 	inLove = false;
@@ -43,27 +41,27 @@ void Villager::_init(int profession)
 	updateMerchantTimer = 0;
 	addRecipeOnUpdate = false;
 	riches = 0;
-    lastPlayerTradeName = L"";
-    rewardPlayersOnFirstVillage = false;
+	lastPlayerTradeName = L"";
+	rewardPlayersOnFirstVillage = false;
 	baseRecipeChanceMod = 0.0f;
 
 	getNavigation()->setCanOpenDoors(true);
 	getNavigation()->setAvoidWater(true);
 
 	goalSelector.addGoal(0, new FloatGoal(this));
-	goalSelector.addGoal(1, new AvoidPlayerGoal(this, typeid(Zombie), 8, 0.3f, 0.35f));
+	goalSelector.addGoal(1, new AvoidPlayerGoal(this, typeid(Zombie), 8, 0.6, 0.6));
 	goalSelector.addGoal(1, new TradeWithPlayerGoal(this));
 	goalSelector.addGoal(1, new LookAtTradingPlayerGoal(this));
 	goalSelector.addGoal(2, new MoveIndoorsGoal(this));
 	goalSelector.addGoal(3, new RestrictOpenDoorGoal(this));
 	goalSelector.addGoal(4, new OpenDoorGoal(this, true));
-	goalSelector.addGoal(5, new MoveTowardsRestrictionGoal(this, 0.3f));
+	goalSelector.addGoal(5, new MoveTowardsRestrictionGoal(this, 0.6));
 	goalSelector.addGoal(6, new MakeLoveGoal(this));
 	goalSelector.addGoal(7, new TakeFlowerGoal(this));
-	goalSelector.addGoal(8, new PlayGoal(this, 0.32f));
+	goalSelector.addGoal(8, new PlayGoal(this, 0.32));
 	goalSelector.addGoal(9, new InteractGoal(this, typeid(Player), 3, 1.f));
 	goalSelector.addGoal(9, new InteractGoal(this, typeid(Villager), 5, 0.02f));
-	goalSelector.addGoal(9, new RandomStrollGoal(this, 0.3f));
+	goalSelector.addGoal(9, new RandomStrollGoal(this, 0.6));
 	goalSelector.addGoal(10, new LookAtPlayerGoal(this, typeid(Mob), 8));
 }
 
@@ -80,6 +78,13 @@ Villager::Villager(Level *level, int profession) : AgableMob(level)
 Villager::~Villager()
 {
 	delete offers;
+}
+
+void Villager::registerAttributes()
+{
+	AgableMob::registerAttributes();
+
+	getAttribute(SharedMonsterAttributes::MOVEMENT_SPEED)->setBaseValue(0.5f);
 }
 
 bool Villager::useNewAi()
@@ -145,11 +150,11 @@ void Villager::serverAiMobStep()
 	AgableMob::serverAiMobStep();
 }
 
-bool Villager::interact(shared_ptr<Player> player)
+bool Villager::mobInteract(shared_ptr<Player> player)
 {
 	// [EB]: Truly dislike this code but I don't see another easy way
 	shared_ptr<ItemInstance> item = player->inventory->getSelected();
-	bool holdingSpawnEgg = item != NULL && item->id == Item::monsterPlacer_Id;
+	bool holdingSpawnEgg = item != NULL && item->id == Item::spawnEgg_Id;
 
 	if (!holdingSpawnEgg && isAlive() && !isTrading() && !isBaby())
 	{
@@ -157,22 +162,19 @@ bool Villager::interact(shared_ptr<Player> player)
 		{
 			// note: stop() logic is controlled by trading ai goal
 			setTradingPlayer(player);
-			player->openTrading(dynamic_pointer_cast<Merchant>(shared_from_this()));
+
+			// 4J-JEV: Villagers in PC game don't display professions.
+			player->openTrading(dynamic_pointer_cast<Merchant>(shared_from_this()), getDisplayName() );
 		}
 		return true;
 	}
-	return AgableMob::interact(player);
+	return AgableMob::mobInteract(player);
 }
 
 void Villager::defineSynchedData()
 {
 	AgableMob::defineSynchedData();
 	entityData->define(DATA_PROFESSION_ID, 0);
-}
-
-int Villager::getMaxHealth()
-{
-	return 20;
 }
 
 void Villager::addAdditonalSaveData(CompoundTag *tag)
@@ -197,34 +199,6 @@ void Villager::readAdditionalSaveData(CompoundTag *tag)
 		delete offers;
 		offers = new MerchantRecipeList(compound);
 	}
-}
-
-int Villager::getTexture()
-{
-	// 4J Made switch
-	switch(getProfession())
-	{
-	case PROFESSION_FARMER:
-		return TN_MOB_VILLAGER_FARMER; // 4J was "/mob/villager/farmer.png";
-		break;
-	case PROFESSION_LIBRARIAN:
-		return TN_MOB_VILLAGER_LIBRARIAN; // 4J was "/mob/villager/librarian.png";
-		break;
-	case PROFESSION_PRIEST:
-		return TN_MOB_VILLAGER_PRIEST; // 4J was "/mob/villager/priest.png";
-		break;
-	case PROFESSION_SMITH:
-		return TN_MOB_VILLAGER_SMITH; // 4J was "/mob/villager/smith.png";
-		break;
-	case PROFESSION_BUTCHER:
-		return TN_MOB_VILLAGER_BUTCHER; // 4J was "/mob/villager/butcher.png";
-		break;
-		//default:
-		//	return TN_MOB_VILLAGER_VILLAGER; // 4J was "/mob/villager/villager.png";
-		//	break;
-	}
-
-	return AgableMob::getTexture();
 }
 
 bool Villager::removeWhenFarAway()
@@ -281,7 +255,7 @@ bool Villager::isChasing()
 	return chasing;
 }
 
-void Villager::setLastHurtByMob(shared_ptr<Mob> mob)
+void Villager::setLastHurtByMob(shared_ptr<LivingEntity> mob)
 {
 	AgableMob::setLastHurtByMob(mob);
 	shared_ptr<Village> _village = village.lock();
@@ -289,15 +263,14 @@ void Villager::setLastHurtByMob(shared_ptr<Mob> mob)
 	{
 		_village->addAggressor(mob);
 
-		shared_ptr<Player> player = dynamic_pointer_cast<Player>(mob);
-		if (player)
+		if ( mob->instanceof(eTYPE_PLAYER) )
 		{
 			int amount = -1;
 			if (isBaby())
 			{
 				amount = -3;
 			}
-			_village->modifyStanding(player->getName(), amount);
+			_village->modifyStanding( dynamic_pointer_cast<Player>(mob)->getName(), amount );
 			if (isAlive())
 			{
 				level->broadcastEntityEvent(shared_from_this(), EntityEvent::VILLAGER_ANGRY);
@@ -314,12 +287,11 @@ void Villager::die(DamageSource *source)
 		shared_ptr<Entity> sourceEntity = source->getEntity();
 		if (sourceEntity != NULL)
 		{
-			if ((sourceEntity->GetType() & eTYPE_PLAYER) == eTYPE_PLAYER)
+			if ( sourceEntity->instanceof(eTYPE_PLAYER) )
 			{
-				shared_ptr<Player> player = dynamic_pointer_cast<Player>(sourceEntity);
-				_village->modifyStanding(player->getName(), -2);
+				_village->modifyStanding( dynamic_pointer_cast<Player>(sourceEntity)->getName(), -2 );
 			}
-			else if ((sourceEntity->GetType() & eTYPE_ENEMY) == eTYPE_ENEMY)
+			else if ( sourceEntity->instanceof(eTYPE_ENEMY) )
 			{
 				_village->resetNoBreedTimer();
 			}
@@ -423,7 +395,7 @@ void Villager::addOffers(int addCount)
 	{
 	case PROFESSION_FARMER:
 		addItemForTradeIn(newOffers, Item::wheat_Id, random, getRecipeChance(.9f));
-		addItemForTradeIn(newOffers, Tile::cloth_Id, random, getRecipeChance(.5f));
+		addItemForTradeIn(newOffers, Tile::wool_Id, random, getRecipeChance(.5f));
 		addItemForTradeIn(newOffers, Item::chicken_raw_Id, random, getRecipeChance(.5f));
 		addItemForTradeIn(newOffers, Item::fish_cooked_Id, random, getRecipeChance(.4f));
 		addItemForPurchase(newOffers, Item::bread_Id, random, getRecipeChance(.9f));
@@ -434,9 +406,9 @@ void Villager::addOffers(int addCount)
 		addItemForPurchase(newOffers, Item::flintAndSteel_Id, random, getRecipeChance(.3f));
 		addItemForPurchase(newOffers, Item::chicken_cooked_Id, random, getRecipeChance(.3f));
 		addItemForPurchase(newOffers, Item::arrow_Id, random, getRecipeChance(.5f));
-		if (random->nextFloat() < .5f)
+		if (random->nextFloat() < getRecipeChance(.5f))
 		{
-			newOffers->push_back(new MerchantRecipe(shared_ptr<ItemInstance>( new ItemInstance(Tile::gravel, 10) ), shared_ptr<ItemInstance>( new ItemInstance(Item::emerald) ), shared_ptr<ItemInstance>( new ItemInstance(Item::flint_Id, 2 + random->nextInt(2), 0))));
+			newOffers->push_back(new MerchantRecipe(shared_ptr<ItemInstance>( new ItemInstance(Tile::gravel, 10) ), shared_ptr<ItemInstance>( new ItemInstance(Item::emerald) ), shared_ptr<ItemInstance>( new ItemInstance(Item::flint_Id, 4 + random->nextInt(2), 0))));
 		}
 		break;
 	case PROFESSION_BUTCHER:
@@ -444,10 +416,10 @@ void Villager::addOffers(int addCount)
 		addItemForTradeIn(newOffers, Item::porkChop_raw_Id, random, getRecipeChance(.5f));
 		addItemForTradeIn(newOffers, Item::beef_raw_Id, random, getRecipeChance(.5f));
 		addItemForPurchase(newOffers, Item::saddle_Id, random, getRecipeChance(.1f));
-		addItemForPurchase(newOffers, Item::chestplate_cloth_Id, random, getRecipeChance(.3f));
-		addItemForPurchase(newOffers, Item::boots_cloth_Id, random, getRecipeChance(.3f));
-		addItemForPurchase(newOffers, Item::helmet_cloth_Id, random, getRecipeChance(.3f));
-		addItemForPurchase(newOffers, Item::leggings_cloth_Id, random, getRecipeChance(.3f));
+		addItemForPurchase(newOffers, Item::chestplate_leather_Id, random, getRecipeChance(.3f));
+		addItemForPurchase(newOffers, Item::boots_leather_Id, random, getRecipeChance(.3f));
+		addItemForPurchase(newOffers, Item::helmet_leather_Id, random, getRecipeChance(.3f));
+		addItemForPurchase(newOffers, Item::leggings_leather_Id, random, getRecipeChance(.3f));
 		addItemForPurchase(newOffers, Item::porkChop_cooked_Id, random, getRecipeChance(.3f));
 		addItemForPurchase(newOffers, Item::beef_cooked_Id, random, getRecipeChance(.3f));
 		break;
@@ -503,7 +475,7 @@ void Villager::addOffers(int addCount)
 		addItemForPurchase(newOffers, Item::eyeOfEnder_Id, random, getRecipeChance(.3f));
 		addItemForPurchase(newOffers, Item::expBottle_Id, random, getRecipeChance(.2f));
 		addItemForPurchase(newOffers, Item::redStone_Id, random, getRecipeChance(.4f));
-		addItemForPurchase(newOffers, Tile::lightGem_Id, random, getRecipeChance(.3f));
+		addItemForPurchase(newOffers, Tile::glowstone_Id, random, getRecipeChance(.3f));
 		{
 			int enchantItems[] = {
 				Item::sword_iron_Id, Item::sword_diamond_Id, Item::chestplate_iron_Id, Item::chestplate_diamond_Id, Item::hatchet_iron_Id, Item::hatchet_diamond_Id, Item::pickAxe_iron_Id,
@@ -570,7 +542,7 @@ void Villager::staticCtor()
 	MIN_MAX_VALUES[Item::seeds_melon_Id] = pair<int,int>(30, 38);
 	MIN_MAX_VALUES[Item::seeds_pumpkin_Id] = pair<int,int>(30, 38);
 	MIN_MAX_VALUES[Item::wheat_Id] = pair<int,int>(18, 22);
-	MIN_MAX_VALUES[Tile::cloth_Id] = pair<int,int>(14, 22);
+	MIN_MAX_VALUES[Tile::wool_Id] = pair<int,int>(14, 22);
 	MIN_MAX_VALUES[Item::rotten_flesh_Id] = pair<int,int>(36, 64);
 
 	MIN_MAX_PRICES[Item::flintAndSteel_Id] = pair<int,int>(3, 4);
@@ -603,16 +575,16 @@ void Villager::staticCtor()
 	MIN_MAX_PRICES[Item::cookie_Id] = pair<int,int>(-10, -7);
 	MIN_MAX_PRICES[Tile::glass_Id] = pair<int,int>(-5, -3);
 	MIN_MAX_PRICES[Tile::bookshelf_Id] = pair<int,int>(3, 4);
-	MIN_MAX_PRICES[Item::chestplate_cloth_Id] = pair<int,int>(4, 5);
-	MIN_MAX_PRICES[Item::boots_cloth_Id] = pair<int,int>(2, 4);
-	MIN_MAX_PRICES[Item::helmet_cloth_Id] = pair<int,int>(2, 4);
-	MIN_MAX_PRICES[Item::leggings_cloth_Id] = pair<int,int>(2, 4);
+	MIN_MAX_PRICES[Item::chestplate_leather_Id] = pair<int,int>(4, 5);
+	MIN_MAX_PRICES[Item::boots_leather_Id] = pair<int,int>(2, 4);
+	MIN_MAX_PRICES[Item::helmet_leather_Id] = pair<int,int>(2, 4);
+	MIN_MAX_PRICES[Item::leggings_leather_Id] = pair<int,int>(2, 4);
 	MIN_MAX_PRICES[Item::saddle_Id] = pair<int,int>(6, 8);
 	MIN_MAX_PRICES[Item::expBottle_Id] = pair<int,int>(-4, -1);
 	MIN_MAX_PRICES[Item::redStone_Id] = pair<int,int>(-4, -1);
 	MIN_MAX_PRICES[Item::compass_Id] = pair<int,int>(10, 12);
 	MIN_MAX_PRICES[Item::clock_Id] = pair<int,int>(10, 12);
-	MIN_MAX_PRICES[Tile::lightGem_Id] = pair<int,int>(-3, -1);
+	MIN_MAX_PRICES[Tile::glowstone_Id] = pair<int,int>(-3, -1);
 	MIN_MAX_PRICES[Item::porkChop_cooked_Id] = pair<int,int>(-7, -5);
 	MIN_MAX_PRICES[Item::beef_cooked_Id] = pair<int,int>(-7, -5);
 	MIN_MAX_PRICES[Item::chicken_cooked_Id] = pair<int,int>(-8, -6);
@@ -732,9 +704,13 @@ void Villager::addParticlesAroundSelf(ePARTICLE_TYPE particle)
 	}
 }
 
-void Villager::finalizeMobSpawn()
+MobGroupData *Villager::finalizeMobSpawn(MobGroupData *groupData, int extraData /*= 0*/) // 4J Added extraData param
 {
-	setProfession(level->random->nextInt(Villager::PROFESSION_MAX));
+	groupData = AgableMob::finalizeMobSpawn(groupData);
+
+	setProfession(level->random->nextInt(PROFESSION_MAX));
+
+	return groupData;
 }
 
 void Villager::setRewardPlayersInVillage()
@@ -748,7 +724,7 @@ shared_ptr<AgableMob> Villager::getBreedOffspring(shared_ptr<AgableMob> target)
 	if(level->canCreateMore(GetType(), Level::eSpawnType_Breed) )
 	{
 		shared_ptr<Villager> villager = shared_ptr<Villager>(new Villager(level));
-		villager->finalizeMobSpawn();
+		villager->finalizeMobSpawn(NULL);
 		return villager;
 	}
 	else
@@ -757,8 +733,15 @@ shared_ptr<AgableMob> Villager::getBreedOffspring(shared_ptr<AgableMob> target)
 	}
 }
 
-int Villager::getDisplayName()
+bool Villager::canBeLeashed()
 {
+	return false;
+}
+
+wstring Villager::getDisplayName()
+{
+	if (hasCustomName()) return getCustomName();
+
 	int name = IDS_VILLAGER;
 	switch(getProfession())
 	{
@@ -778,5 +761,5 @@ int Villager::getDisplayName()
 		name = IDS_VILLAGER_BUTCHER;
 		break;
 	};
-	return name;
+	return app.GetString(name);
 }

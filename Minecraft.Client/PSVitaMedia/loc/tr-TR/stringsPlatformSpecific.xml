@@ -1,38 +1,123 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <root>
-	<data name="IDS_TIPS_GAMETIP_0">
-		<value>NOT USED</value>
+	<data name="IDS_SIGNIN_PSN">
+		<value>"PSN" e giriş yapmak ister misin?
+</value>
 	</data>
-	<data name="IDS_TIPS_GAMETIP_1">
-		<value>PlayStation®Vita sisteminde menüler arasında geçiş yapmak için dokunmatik ekranı kullanabilirsiniz!</value>
+	<data name="IDS_KICK_PLAYER_DESCRIPTION">
+		<value>Kurucu ile aynı PlayStation®Vita sisteminde bulunmayan oyuncular için, bu seçeneği seçmek oyuncuyu ve aynı PlayStation®Vita sistemindeki diğer oyuncuları oyundan atar. Bu oyuncu oyun baştan başlayana kadar oyuna tekrar giremez.</value>
 	</data>
-	<data name="IDS_TIPS_GAMETIP_48">
-		<value>minecraftforum'da PlayStation®Vita Edition için bir bölüm bulunmaktadır.</value>
+	<data name="IDS_BACK_BUTTON">
+		<value>SELECT</value>
 	</data>
-	<data name="IDS_TIPS_GAMETIP_44">
-		<value>Bu oyun hakkındaki en son haberlere @4JStudios ve @Kappische ile Twitter'dan ulaşabilirsin!</value>
+	<data name="IDS_HOST_OPTION_DISABLES_ACHIEVEMENTS">
+		<value>Bu seçenek, oyunu oynarken ya da bu seçenek açıkken kaydedilip yeniden yüklendiğinde, bu dünya için kupaları ve sıralama tablosunu devre dışı bırakır.</value>
 	</data>
-	<data name="IDS_TIPS_GAMETIP_45">
-		<value>Bir Sonveren Adam'ın gözlerinin içine bakma!</value>
+	<data name="IDS_PLATFORM_NAME">
+		<value>PlayStation®Vita sistemi</value>
 	</data>
-	<data name="IDS_TIPS_TRIVIA_4">
-		<value>4J Studios'un Herobrine'ı PlayStation®4 sistemi oyunundan çıkardığını düşünüyoruz ama emin değiliz.</value>
+	<data name="IDS_SELECT_NETWORK_MODE_TEXT">
+		<value>Yakındaki PlayStation®Vita sistemleri ile bağlantı kurmak için Ad Hoc Ağını seçin veya "PSN" yolu ile dünyanın dört bir yanındaki arkadaşlarınızla oynayın.</value>
 	</data>
-	<data name="IDS_TIPS_TRIVIA_17">
-		<value>Minecraft: PlayStation®Vita Edition birçok rekor kırdı!</value>
+	<data name="IDS_NETWORK_ADHOC">
+		<value>Ad Hoc Ağı</value>
 	</data>
-	<data name="IDS_HOW_TO_PLAY_MULTIPLAYER">
-		<value>{*T3*}NASIL OYNANIR : ÇOK OYUNCULU{*ETW*}{*B*}{*B*}
-Minecraft, PlayStation®Vita sisteminde varsayılan olarak çok oyunculu bir oyundur.{*B*}{*B*}
-Çevrimiçi bir oyun başlatır veya bir oyuna katılırsanız, oyun arkadaş listenizdeki kişilere görünür olur (oyunu kurarken Sadece Davetliler seçeneğini seçmediğiniz sürece) ve onlar bir oyuna katılırsa, onların arkadaş listelerindeki insanlar da bunu görebilecektir (Arkadaşların Arkadaşlarına İzin ver seçeneğini seçerseniz).{*B*}
-Bir oyundayken, oyundaki tüm oyuncuların listesini görmek için SELECT düğmesine basabilir ve oyuncuları oyundan atabilirsiniz.</value>
+	<data name="IDS_TOOLTIP_CHANGE_NETWORK_MODE">
+		<value>Ağ Modunu Değiştir</value>
 	</data>
-	<data name="IDS_HOW_TO_PLAY_SOCIALMEDIA">
-		<value>{*T3*}NASIL OYNANIR : EKRAN GÖRÜNTÜSÜ PAYLAŞMAK{*ETW*}{*B*}{*B*}
-Duraklatma Menüsünü açarak oyundan bir ekran görüntüsü alabilir,{*CONTROLLER_VK_Y*} düğmesine basarak Facebook'ta paylaşabilirsiniz. Ekran Görüntünüzün küçük bir halini göreceksiniz ve Facebook gönderisinin metnini değiştirebileceksiniz.{*B*}{*B*}
-Ekran görüntüsü almak için özel bir kamera modu vardır, bu şekilde karakterinizin önünü görürsünüz - karakterinizin ön görüntüsünü görene kadar {*CONTROLLER_ACTION_CAMERA*} düğmesine basılı tutun sonra da Paylaşmak için {*CONTROLLER_VK_Y*} düğmesine basın.{*B*}{*B*}
-
-Çevrimiçi Kimlikler ekran görüntüsünde çıkmaz.</value>
+	<data name="IDS_SELECT_NETWORK_MODE_TITLE">
+		<value>Ağ Modu Seç</value>
+	</data>
+	<data name="IDS_CHECKBOX_DISPLAY_SPLITSCREENGAMERTAGS">
+		<value>Bölünmüş Ekran Çevrimiçi Kimlikleri</value>
+	</data>
+	<data name="IDS_ACHIEVEMENTS">
+		<value>Kupalar</value>
+	</data>
+	<data name="IDS_SAVE_ICON_MESSAGE">
+		<value>Bu oyunun seviyeyi otomatik kayıt etme özelliği vardır. Üstteki simgeyi gördüğünüzde oyun verilerinizi kaydeder.
+Lütfen bu simge ekrandayken PlayStation®Vita sisteminizi kapatmayın.</value>
+	</data>
+	<data name="IDS_GAMEOPTION_HOST_PRIVILEGES">
+		<value>Etkinleştirildiğinde, kurucu; uçmak, yorgunluğu devre dışı bırakmak ve kendini görünmez yapmak gibi seçenekleri oyun içi menüsünden seçebilir. Kupaları ve sıralama tablosu güncellemesini devre dışı bırakır.</value>
+	</data>
+	<data name="IDS_LABEL_GAMERTAGS">
+		<value>Çevirimiçi Kimlikler:</value>
+	</data>
+	<data name="IDS_USING_TRIAL_TEXUREPACK_WARNING">
+		<value>Bir doku paketinin deneme sürümünü kullanıyorsun. Doku paketinin tüm içeriğine erişimin olacak ancak ilerlemeni kaydedemeyececeksin. Deneme sürümünü kullanırken oyunu kaydetmeye çalışırsan, tam sürümü satın alma seçeneği sunulacak.
+    </value>
+	</data>
+	<data name="IDS_TITLE_UPDATE_NAME">
+		<value>Yama 1.04 (Oyun Güncellemesi 14)</value>
+	</data>
+	<data name="IDS_IN_GAME_GAMERTAGS">
+		<value>Oyun İçi Çevrimiçi Kimlikler</value>
+	</data>
+	<data name="IDS_SOCIAL_DEFAULT_DESCRIPTION">
+		<value>Minecraft: PlayStation®Vita Edition oyununda neler yaptığıma bakın!</value>
+	</data>
+	<data name="IDS_SAVE_TRANSFER_DOWNLOADFAILED">
+		<value>İndirme başarısız oldu. Lütfen daha sonra tekrar deneyin.</value>
+	</data>
+	<data name="IDS_DISCONNECTED_NAT_TYPE_MISMATCH">
+		<value>Kısıtlı NAT türü sebebiyle oyuna katılım başarısız oldu. Lütfen ağ ayarlarınızı kontrol edin.</value>
+	</data>
+	<data name="IDS_SAVE_TRANSFER_UPLOADFAILED">
+		<value>Yükleme başarısız oldu. Lütfen daha sonra tekrar deneyin.</value>
+	</data>
+	<data name="IDS_SAVE_TRANSFER_DOWNLOADCOMPLETE">
+		<value>İndirme Tamamlandı!</value>
+	</data>
+	<data name="IDS_SAVE_TRANSFER_NOT_AVAILABLE_TEXT">
+		<value>Şu an bu kayıt aktarım alanı içinde mevcut kayıt bulunmamaktadır.
+Minecraft: PlayStation®3 Edition kullanarak kayıt aktarım alanına bir dünya kaydını yükleyebilir ve ardından Minecraft: PlayStation®Vita Edition ile bunu indirebilirsiniz.
+    </value>
+	</data>
+	<data name="IDS_SAVE_INCOMPLETE_TITLE">
+		<value>Kayıt tamamlanmadı</value>
+	</data>
+	<data name="IDS_SAVE_INCOMPLETE_EXPLANATION_QUOTA">
+		<value>Minecraft: PlayStation®Vita Edition, kayıt verisi için yeterli alana sahip değil. Alan açmak için diğer Minecraft: PlayStation®Vita Edition kayıtlarını silin.</value>
+	</data>
+	<data name="IDS_CANCEL_UPLOAD_TITLE">
+		<value>Yükleme İptal Edildi</value>
+	</data>
+	<data name="IDS_CANCEL_UPLOAD_TEXT">
+		<value>Kayıt taşıma bölgesine bu kaydı yüklemeyi iptal ettiniz.</value>
+	</data>
+	<data name="IDS_TOOLTIPS_SAVETRANSFER_UPLOAD">
+		<value>PS3™/PS4™ için kayıt yükle</value>
+	</data>
+	<data name="IDS_SAVETRANSFER_STAGE_PUT_DATA">
+		<value>Veri yükleniyor: %d%%</value>
+	</data>
+	<data name="IDS__NETWORK_PSN">
+		<value>"PSN"</value>
+	</data>
+	<data name="IDS_TOOLTIPS_SAVETRANSFER_DOWNLOAD">
+		<value>PS3™ kaydı indir </value>
+	</data>
+	<data name="IDS_SAVETRANSFER_STAGE_GET_DATA">
+		<value>Veri indiriliyor: %d%%</value>
+	</data>
+	<data name="IDS_SAVETRANSFER_STAGE_SAVING">
+		<value>Kaydediliyor</value>
+	</data>
+	<data name="IDS_SAVE_TRANSFER_UPLOADCOMPLETE">
+		<value>Yükleme Tamamlandı!</value>
+	</data>
+	<data name="IDS_SAVE_TRANSFER_TEXT">
+		<value>Bu kaydı yüklemek ve mevcut kayıt alanındaki kaydın üzerine yazmak istediğinizden emin misiniz?</value>
+	</data>
+	<data name="IDS_SAVETRANSFER_STAGE_CONVERTING">
+		<value>Veri Dönüştürülüyor</value>
+	</data>
+	<data name="IDS_TOOLTIPS_SELECTDEVICE">
+		<value>KULLANILMIYOR</value>
+	</data>
+	<data name="IDS_TOOLTIPS_CHANGEDEVICE">
+		<value>KULLANILMIYOR</value>
 	</data>
 	<data name="IDS_HOW_TO_PLAY_CREATIVE">
 		<value>{*T3*}NASIL OYNANIR : YARATICILIK MODU{*ETW*}{*B*}{*B*}
@@ -48,20 +133,8 @@ Uçuş modunda, yukarı çıkmak için {*CONTROLLER_ACTION_JUMP*} düğmesini ba
 
 Uçuş modunda, yukarı çıkmak için {*CONTROLLER_ACTION_JUMP*} düğmesini basılı tutabilir ve aşağı inmek için {*CONTROLLER_ACTION_SNEAK*} düğmesini basılı tutabilir veya yukarı, aşağı, sola veya sağa hareket etmek için yön düğmeleri kullanabilirsiniz.</value>
 	</data>
-	<data name="IDS_TOOLTIPS_SELECTDEVICE">
-		<value>KULLANILMIYOR</value>
-	</data>
-	<data name="IDS_TOOLTIPS_CHANGEDEVICE">
-		<value>KULLANILMIYOR</value>
-	</data>
 	<data name="IDS_TOOLTIPS_VIEW_GAMERCARD">
 		<value>"KULLANILMIYOR"</value>
-	</data>
-	<data name="IDS_TOOLTIPS_VIEW_GAMERPROFILE">
-		<value>"KULLANILMIYOR"</value>
-	</data>
-	<data name="IDS_TOOLTIPS_INVITE_PARTY">
-		<value>Arkadaş Davet Et</value>
 	</data>
 	<data name="IDS_CONFIRM_START_CREATIVE">
 		<value>Yaratıcılık Modunda bir dünyayı yaratır, yükler veya kaydedersen, Sağ Kalma Modunda tekrar yüklesen bile kupalar ve sıralama tablosu güncellemesi devre dışı kalır. Devam etmek istediğinden emin misin?</value>
@@ -69,38 +142,45 @@ Uçuş modunda, yukarı çıkmak için {*CONTROLLER_ACTION_JUMP*} düğmesini ba
 	<data name="IDS_CONFIRM_START_SAVEDINCREATIVE">
 		<value>Bu dünya daha önce Yaratıcılık Modunda kaydedilmiş ve kupalar ile sıralama tablosu güncellemesi devre dışı. Devam etmek istediğinden emin misin?</value>
 	</data>
-	<data name="IDS_CONFIRM_START_SAVEDINCREATIVE_CONTINUE">
-		<value>Bu dünya daha önce Yaratıcılık Modunda kaydedilmiş ve kupalar ile sıralama tablosu güncellemesi devre dışı.</value>
+	<data name="IDS_TOOLTIPS_VIEW_GAMERPROFILE">
+		<value>"KULLANILMIYOR"</value>
 	</data>
-	<data name="IDS_CONFIRM_START_HOST_PRIVILEGES">
-		<value>Bir dünyayı Kurucu Ayrıcalıkları etkinken yükler veya kaydedersen, bu özellikli kapattığında tekrar yüklesen bile kupalar ve sıralama tablosu güncellemesi devre dışı kalır. Devam etmek istediğinden emin misin?</value>
+	<data name="IDS_TOOLTIPS_INVITE_PARTY">
+		<value>Arkadaş Davet Et</value>
 	</data>
-	<data name="IDS_CONNECTION_LOST_LIVE">
-		<value>"PSN" bağlantısı koptu. Ana menüye dönülüyor.</value>
+	<data name="IDS_TIPS_GAMETIP_48">
+		<value>minecraftforum'da PlayStation®Vita Edition için bir bölüm bulunmaktadır.</value>
 	</data>
-	<data name="IDS_CONNECTION_LOST_LIVE_NO_EXIT">
-		<value>"PSN" bağlantısı koptu.</value>
+	<data name="IDS_TIPS_GAMETIP_44">
+		<value>Bu oyun hakkındaki en son haberlere @4JStudios ve @Kappische ile Twitter'dan ulaşabilirsin!</value>
 	</data>
-	<data name="IDS_UNLOCK_ACHIEVEMENT_TEXT">
-		<value>Bu oyun Minecraft: PlayStation®Vita Edition deneme oyunudur. Eğer tam oyuna sahip olsaydınız, bir kupa kazanacaktınız! PlayStation®Vita Edition keyfini sürmek için tam oyunun kilidini açın ve "PSN" sayesinde dünyanın dört bir yanındaki arkadaşlarınızla oynayın. Tam sürüm oyunu açmak ister misiniz?</value>
+	<data name="IDS_TIPS_GAMETIP_0">
+		<value>NOT USED</value>
 	</data>
-	<data name="IDS_UNLOCK_THEME_TEXT">
-		<value>Bu oyun Minecraft: PlayStation®Vita Edition deneme oyunudur. Eğer tam oyuna sahip olsaydınız, bir tema kazanacaktınız! PlayStation®Vita Edition keyfini sürmek için tam oyunun kilidini açın ve "PSN" sayesinde dünyanın dört bir yanındaki arkadaşlarınızla oynayın. Tam sürüm oyunu açmak ister misiniz?</value>
+	<data name="IDS_TIPS_GAMETIP_1">
+		<value>PlayStation®Vita sisteminde menüler arasında geçiş yapmak için dokunmatik ekranı kullanabilirsiniz!</value>
 	</data>
-	<data name="IDS_UNLOCK_ACCEPT_INVITE">
-		<value>Bu oyun Minecraft: PlayStation®Vita Edition deneme oyunudur. Bu daveti kabul edebilmek için tam sürüm oyun gerekmektedir. Tam sürüm oyunu açmak ister misiniz?</value>
+	<data name="IDS_TIPS_GAMETIP_45">
+		<value>Bir Sonveren Adam'ın gözlerinin içine bakma!</value>
 	</data>
-	<data name="IDS_UNLOCK_GUEST_TEXT">
-		<value>Misafir oyuncular tam sürüm oyunu açamaz. Lütfen Sony Entertainment Network hesabınız ile giriş yapın.</value>
+	<data name="IDS_HOW_TO_PLAY_MULTIPLAYER">
+		<value>{*T3*}NASIL OYNANIR : ÇOK OYUNCULU{*ETW*}{*B*}{*B*}
+Minecraft, PlayStation®Vita sisteminde varsayılan olarak çok oyunculu bir oyundur.{*B*}{*B*}
+Çevrimiçi bir oyun başlatır veya bir oyuna katılırsanız, oyun arkadaş listenizdeki kişilere görünür olur (oyunu kurarken Sadece Davetliler seçeneğini seçmediğiniz sürece) ve onlar bir oyuna katılırsa, onların arkadaş listelerindeki insanlar da bunu görebilecektir (Arkadaşların Arkadaşlarına İzin ver seçeneğini seçerseniz).{*B*}
+Bir oyundayken, oyundaki tüm oyuncuların listesini görmek için SELECT düğmesine basabilir ve oyuncuları oyundan atabilirsiniz.</value>
 	</data>
-	<data name="IDS_LEADERBOARD_GAMERTAG">
-		<value>Çevrimiçi Kimlik</value>
+	<data name="IDS_HOW_TO_PLAY_SOCIALMEDIA">
+		<value>{*T3*}NASIL OYNANIR : EKRAN GÖRÜNTÜSÜ PAYLAŞMAK{*ETW*}{*B*}{*B*}
+Duraklatma Menüsünü açarak oyundan bir ekran görüntüsü alabilir,{*CONTROLLER_VK_Y*} düğmesine basarak Facebook'ta paylaşabilirsiniz. Ekran Görüntünüzün küçük bir halini göreceksiniz ve Facebook gönderisinin metnini değiştirebileceksiniz.{*B*}{*B*}
+Ekran görüntüsü almak için özel bir kamera modu vardır, bu şekilde karakterinizin önünü görürsünüz - karakterinizin ön görüntüsünü görene kadar {*CONTROLLER_ACTION_CAMERA*} düğmesine basılı tutun sonra da Paylaşmak için {*CONTROLLER_VK_Y*} düğmesine basın.{*B*}{*B*}
+
+Çevrimiçi Kimlikler ekran görüntüsünde çıkmaz.</value>
 	</data>
-	<data name="IDS_GROUPNAME_POTIONS_480">
-		<value>Simya</value>
+	<data name="IDS_TIPS_TRIVIA_4">
+		<value>4J Studios'un Herobrine'ı PlayStation®4 sistemi oyunundan çıkardığını düşünüyoruz ama emin değiliz.</value>
 	</data>
-	<data name="IDS_RETURNEDTOTITLESCREEN_TEXT">
-		<value>"PSN" hesabınızdan çıkış yaptığınızdan dolayı ana ekrana döndürüldünüz.</value>
+	<data name="IDS_TIPS_TRIVIA_17">
+		<value>Minecraft: PlayStation®Vita Edition birçok rekor kırdı!</value>
 	</data>
 	<data name="IDS_TRIALOVER_TEXT">
 		<value>Minecraft oynuyorsunuz: PlayStation®Vita Edition Deneme Oyununu izin verilen en fazla süre boyunca oynadınız! Eğlenceye devam etmek için tam sürüm oyunu açmak ister misiniz?</value>
@@ -108,14 +188,14 @@ Uçuş modunda, yukarı çıkmak için {*CONTROLLER_ACTION_JUMP*} düğmesini ba
 	<data name="IDS_FATAL_ERROR_TEXT">
 		<value>"Minecraft: PlayStation®Vita" Edition yüklenemedi ve devam edemiyor.</value>
 	</data>
+	<data name="IDS_GROUPNAME_POTIONS_480">
+		<value>Simya</value>
+	</data>
+	<data name="IDS_RETURNEDTOTITLESCREEN_TEXT">
+		<value>"PSN" hesabınızdan çıkış yaptığınızdan dolayı ana ekrana döndürüldünüz.</value>
+	</data>
 	<data name="IDS_NO_MULTIPLAYER_PRIVILEGE_JOIN_TEXT">
 		<value>Oyuna katılınamıyor çünkü bir veya daha fazla oyuncu Sony Entertainment Network hesabı sohbet kısıtlamaları yüzünden Çevrimiçi oyun oynayamıyor.</value>
-	</data>
-	<data name="IDS_NO_MULTIPLAYER_PRIVILEGE_HOST_TEXT">
-		<value>Çevrimiçi oyun kurulamıyor çünkü bir veya daha fazla oyuncu Sony Entertainment Network hesabı sohbet kısıtlamaları yüzünden Çevrimiçi oyun oynayamıyor. "Daha Fazla Seçenek" bölümündeki "Çevrimiçi Oyun" seçimini kaldırarak çevrimdışı bir oyun başlatın.</value>
-	</data>
-	<data name="IDS_NO_USER_CREATED_CONTENT_PRIVILEGE_SINGLE_LOCAL">
-		<value>Bu oyuna katılamazsınız çünkü sohbet kısıtlamalarından dolayı Sony Entertainment Network hesabınız Çevrimiçi oyunlara giremiyor.</value>
 	</data>
 	<data name="IDS_NO_USER_CREATED_CONTENT_PRIVILEGE_ALL_LOCAL">
 		<value>Bu oyuna katılamazsınız çünkü sohbet kısıtlamalarından dolayı bir yerel oyuncunuzun Sony Entertainment Network hesabı Çevrimiçi oyunlara giremiyor. "Daha Fazla Seçenek" bölümündeki "Çevrimiçi Oyun" seçimini kaldırarak çevrimdışı bir oyun başlatın.
@@ -124,116 +204,40 @@ Uçuş modunda, yukarı çıkmak için {*CONTROLLER_ACTION_JUMP*} düğmesini ba
 	<data name="IDS_NO_USER_CREATED_CONTENT_PRIVILEGE_CREATE">
 		<value>Bu oyunu kuramazsınız çünkü sohbet kısıtlamalarından dolayı bir yerel oyuncunuzun Sony Entertainment Network hesabı Çevrimiçi oyunlara giremiyor. "Daha Fazla Seçenek" bölümündeki "Çevrimiçi Oyun" seçimini kaldırarak çevrimdışı bir oyun başlatın.</value>
 	</data>
-	<data name="IDS_SAVE_ICON_MESSAGE">
-		<value>Bu oyunun seviyeyi otomatik kayıt etme özelliği vardır. Üstteki simgeyi gördüğünüzde oyun verilerinizi kaydeder.
-Lütfen bu simge ekrandayken PlayStation®Vita sisteminizi kapatmayın.</value>
+	<data name="IDS_NO_MULTIPLAYER_PRIVILEGE_HOST_TEXT">
+		<value>Çevrimiçi oyun kurulamıyor çünkü bir veya daha fazla oyuncu Sony Entertainment Network hesabı sohbet kısıtlamaları yüzünden Çevrimiçi oyun oynayamıyor. "Daha Fazla Seçenek" bölümündeki "Çevrimiçi Oyun" seçimini kaldırarak çevrimdışı bir oyun başlatın.</value>
 	</data>
-	<data name="IDS_GAMEOPTION_HOST_PRIVILEGES">
-		<value>Etkinleştirildiğinde, kurucu; uçmak, yorgunluğu devre dışı bırakmak ve kendini görünmez yapmak gibi seçenekleri oyun içi menüsünden seçebilir. Kupaları ve sıralama tablosu güncellemesini devre dışı bırakır.</value>
+	<data name="IDS_NO_USER_CREATED_CONTENT_PRIVILEGE_SINGLE_LOCAL">
+		<value>Bu oyuna katılamazsınız çünkü sohbet kısıtlamalarından dolayı Sony Entertainment Network hesabınız Çevrimiçi oyunlara giremiyor.</value>
 	</data>
-	<data name="IDS_CHECKBOX_DISPLAY_SPLITSCREENGAMERTAGS">
-		<value>Bölünmüş Ekran Çevrimiçi Kimlikleri</value>
+	<data name="IDS_CONNECTION_LOST_LIVE">
+		<value>"PSN" bağlantısı koptu. Ana menüye dönülüyor.</value>
 	</data>
-	<data name="IDS_ACHIEVEMENTS">
-		<value>Kupalar</value>
+	<data name="IDS_CONNECTION_LOST_LIVE_NO_EXIT">
+		<value>"PSN" bağlantısı koptu.</value>
 	</data>
-	<data name="IDS_LABEL_GAMERTAGS">
-		<value>Çevirimiçi Kimlikler:</value>
+	<data name="IDS_CONFIRM_START_SAVEDINCREATIVE_CONTINUE">
+		<value>Bu dünya daha önce Yaratıcılık Modunda kaydedilmiş ve kupalar ile sıralama tablosu güncellemesi devre dışı.</value>
 	</data>
-	<data name="IDS_IN_GAME_GAMERTAGS">
-		<value>Oyun İçi Çevrimiçi Kimlikler</value>
+	<data name="IDS_CONFIRM_START_HOST_PRIVILEGES">
+		<value>Bir dünyayı Kurucu Ayrıcalıkları etkinken yükler veya kaydedersen, bu özellikli kapattığında tekrar yüklesen bile kupalar ve sıralama tablosu güncellemesi devre dışı kalır. Devam etmek istediğinden emin misin?</value>
 	</data>
-	<data name="IDS_SOCIAL_DEFAULT_DESCRIPTION">
-		<value>Minecraft: PlayStation®Vita Edition oyununda neler yaptığıma bakın!</value>
+	<data name="IDS_UNLOCK_ACHIEVEMENT_TEXT">
+		<value>Bu oyun Minecraft: PlayStation®Vita Edition deneme oyunudur. Eğer tam oyuna sahip olsaydınız, bir kupa kazanacaktınız! PlayStation®Vita Edition keyfini sürmek için tam oyunun kilidini açın ve "PSN" sayesinde dünyanın dört bir yanındaki arkadaşlarınızla oynayın. Tam sürüm oyunu açmak ister misiniz?</value>
 	</data>
-	<data name="IDS_USING_TRIAL_TEXUREPACK_WARNING">
-		<value>Bir doku paketinin deneme sürümünü kullanıyorsun. Doku paketinin tüm içeriğine erişimin olacak ancak ilerlemeni kaydedemeyececeksin. Deneme sürümünü kullanırken oyunu kaydetmeye çalışırsan, tam sürümü satın alma seçeneği sunulacak.
-    </value>
+	<data name="IDS_UNLOCK_GUEST_TEXT">
+		<value>Misafir oyuncular tam sürüm oyunu açamaz. Lütfen Sony Entertainment Network hesabınız ile giriş yapın.</value>
 	</data>
-	<data name="IDS_TITLE_UPDATE_NAME">
-		<value>Yama 1.04 (Oyun Güncellemesi 14)</value>
+	<data name="IDS_LEADERBOARD_GAMERTAG">
+		<value>Çevrimiçi Kimlik</value>
 	</data>
-	<data name="IDS_BACK_BUTTON">
-		<value>SELECT</value>
+	<data name="IDS_UNLOCK_THEME_TEXT">
+		<value>Bu oyun Minecraft: PlayStation®Vita Edition deneme oyunudur. Eğer tam oyuna sahip olsaydınız, bir tema kazanacaktınız! PlayStation®Vita Edition keyfini sürmek için tam oyunun kilidini açın ve "PSN" sayesinde dünyanın dört bir yanındaki arkadaşlarınızla oynayın. Tam sürüm oyunu açmak ister misiniz?</value>
 	</data>
-	<data name="IDS_HOST_OPTION_DISABLES_ACHIEVEMENTS">
-		<value>Bu seçenek, oyunu oynarken ya da bu seçenek açıkken kaydedilip yeniden yüklendiğinde, bu dünya için kupaları ve sıralama tablosunu devre dışı bırakır.</value>
+	<data name="IDS_UNLOCK_ACCEPT_INVITE">
+		<value>Bu oyun Minecraft: PlayStation®Vita Edition deneme oyunudur. Bu daveti kabul edebilmek için tam sürüm oyun gerekmektedir. Tam sürüm oyunu açmak ister misiniz?</value>
 	</data>
-	<data name="IDS_SIGNIN_PSN">
-		<value>"PSN" e giriş yapmak ister misin?
-</value>
-	</data>
-	<data name="IDS_KICK_PLAYER_DESCRIPTION">
-		<value>Kurucu ile aynı PlayStation®Vita sisteminde bulunmayan oyuncular için, bu seçeneği seçmek oyuncuyu ve aynı PlayStation®Vita sistemindeki diğer oyuncuları oyundan atar. Bu oyuncu oyun baştan başlayana kadar oyuna tekrar giremez.</value>
-	</data>
-	<data name="IDS_PLATFORM_NAME">
-		<value>PlayStation®Vita sistemi</value>
-	</data>
-	<data name="IDS_TOOLTIP_CHANGE_NETWORK_MODE">
-		<value>Ağ Modunu Değiştir</value>
-	</data>
-	<data name="IDS_SELECT_NETWORK_MODE_TITLE">
-		<value>Ağ Modu Seç</value>
-	</data>
-	<data name="IDS_SELECT_NETWORK_MODE_TEXT">
-		<value>Yakındaki PlayStation®Vita sistemleri ile bağlantı kurmak için Ad Hoc Ağını seçin veya "PSN" yolu ile dünyanın dört bir yanındaki arkadaşlarınızla oynayın.</value>
-	</data>
-	<data name="IDS_NETWORK_ADHOC">
-		<value>Ad Hoc Ağı</value>
-	</data>
-	<data name="IDS__NETWORK_PSN">
-		<value>"PSN"</value>
-	</data>
-	<data name="IDS_TOOLTIPS_SAVETRANSFER_DOWNLOAD">
-		<value>PlayStation®3 sistemi Kaydını İndir</value>
-	</data>
-	<data name="IDS_TOOLTIPS_SAVETRANSFER_UPLOAD">
-		<value>PlayStation®3/PlayStation®4 sistemi için Kayıt Yükle</value>
-	</data>
-	<data name="IDS_CANCEL_UPLOAD_TITLE">
-		<value>Yükleme İptal Edildi</value>
-	</data>
-	<data name="IDS_CANCEL_UPLOAD_TEXT">
-		<value>Kayıt taşıma bölgesine bu kaydı yüklemeyi iptal ettiniz.</value>
-	</data>
-	<data name="IDS_SAVETRANSFER_STAGE_PUT_DATA">
-		<value>Veri yükleniyor: %d%%</value>
-	</data>
-	<data name="IDS_SAVETRANSFER_STAGE_GET_DATA">
-		<value>Veri indiriliyor: %d%%</value>
-	</data>
-	<data name="IDS_SAVE_TRANSFER_TEXT">
-		<value>Bu kaydı yüklemek ve mevcut kayıt alanındaki kaydın üzerine yazmak istediğinizden emin misiniz?</value>
-	</data>
-	<data name="IDS_SAVETRANSFER_STAGE_CONVERTING">
-		<value>Veri Dönüştürülüyor</value>
-	</data>
-	<data name="IDS_SAVETRANSFER_STAGE_SAVING">
-		<value>Kaydediliyor</value>
-	</data>
-	<data name="IDS_SAVE_TRANSFER_UPLOADCOMPLETE">
-		<value>Yükleme Tamamlandı!</value>
-	</data>
-	<data name="IDS_SAVE_TRANSFER_UPLOADFAILED">
-		<value>Yükleme başarısız oldu. Lütfen daha sonra tekrar deneyin.</value>
-	</data>
-	<data name="IDS_SAVE_TRANSFER_DOWNLOADCOMPLETE">
-		<value>İndirme Tamamlandı!</value>
-	</data>
-	<data name="IDS_SAVE_TRANSFER_DOWNLOADFAILED">
-		<value>İndirme başarısız oldu. Lütfen daha sonra tekrar deneyin.</value>
-	</data>
-	<data name="IDS_DISCONNECTED_NAT_TYPE_MISMATCH">
-		<value>Kısıtlı NAT türü sebebiyle oyuna katılım başarısız oldu. Lütfen ağ ayarlarınızı kontrol edin.</value>
-	</data>
-	<data name="IDS_SAVE_TRANSFER_NOT_AVAILABLE_TEXT">
-		<value>Şu an bu kayıt aktarım alanı içinde mevcut kayıt bulunmamaktadır. Minecraft: PlayStation®3 Edition kullanarak kayıt aktarım alanına bir dünya kaydını yükleyebilir ve ardından Minecraft: PlayStation®Vita Edition ile bunu indirebilirsiniz.
-    </value>
-	</data>
-	<data name="IDS_SAVE_INCOMPLETE_TITLE">
-		<value>Kayıt tamamlanmadı</value>
-	</data>
-	<data name="IDS_SAVE_INCOMPLETE_EXPLANATION_QUOTA">
-		<value>Minecraft: PlayStation®Vita Edition, kayıt verisi için yeterli alana sahip değil. Alan açmak için diğer Minecraft: PlayStation®Vita Edition kayıtlarını silin.</value>
+	<data name="IDS_SAVE_TRANSFER_WRONG_VERSION">
+		<value>Kayıt aktarım alanındaki kayıt dosyası, Minecraft: PlayStation®Vita Edition'ın henüz desteklemediği bir versiyon numarasına sahip.</value>
 	</data>
 </root>

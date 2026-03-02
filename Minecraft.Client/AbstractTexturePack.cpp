@@ -187,30 +187,34 @@ wstring AbstractTexturePack::getAnimationString(const wstring &textureName, cons
 	wstring animationDefinitionFile = textureName + L".txt";
 
 	bool requiresFallback = !hasFile(L"\\" + textureName + L".png", false);
-
-	InputStream *fileStream = getResource(L"\\" + path + animationDefinitionFile, requiresFallback);
-
-	//Minecraft::getInstance()->getLogger().info("Found animation info for: " + animationDefinitionFile);
-#ifndef _CONTENT_PACKAGE
-	wprintf(L"Found animation info for: %ls\n", animationDefinitionFile.c_str() );
-#endif
-	InputStreamReader isr(fileStream);
-	BufferedReader br(&isr);
 	
 	wstring result = L"";
 
-	wstring line = br.readLine();
-	while (!line.empty())
+	InputStream *fileStream = getResource(L"\\" + path + animationDefinitionFile, requiresFallback);
+
+	if(fileStream)
 	{
-		line = trimString(line);
-		if (line.length() > 0)
+		//Minecraft::getInstance()->getLogger().info("Found animation info for: " + animationDefinitionFile);
+#ifndef _CONTENT_PACKAGE
+		app.DebugPrintf("Found animation info for: %ls\n", animationDefinitionFile.c_str() );
+#endif
+		InputStreamReader isr(fileStream);
+		BufferedReader br(&isr);
+
+
+		wstring line = br.readLine();
+		while (!line.empty())
 		{
-			result.append(L",");
-			result.append(line);
+			line = trimString(line);
+			if (line.length() > 0)
+			{
+				result.append(L",");
+				result.append(line);
+			}
+			line = br.readLine();
 		}
-		line = br.readLine();
+		delete fileStream;
 	}
-	delete fileStream;
 
 	return result;
 }
@@ -253,7 +257,14 @@ void AbstractTexturePack::loadColourTable()
 void AbstractTexturePack::loadDefaultColourTable()
 {
 	// Load the file
+#ifdef __PS3__
+	// need to check if it's a BD build, so pass in the name
+	File coloursFile(AbstractTexturePack::getPath(true,app.GetBootedFromDiscPatch()?"colours.col":NULL).append(L"res/colours.col"));
+
+#else
 	File coloursFile(AbstractTexturePack::getPath(true).append(L"res/colours.col"));
+#endif
+
 
 	if(coloursFile.exists())
 	{

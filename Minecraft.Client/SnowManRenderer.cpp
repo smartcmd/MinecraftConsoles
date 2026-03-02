@@ -7,13 +7,15 @@
 #include "EntityRenderDispatcher.h"
 #include "SnowManRenderer.h"
 
+ResourceLocation SnowManRenderer::SNOWMAN_LOCATION = ResourceLocation(TN_MOB_SNOWMAN);
+
 SnowManRenderer::SnowManRenderer() : MobRenderer(new SnowManModel(), 0.5f)
 {
 	model = (SnowManModel *) MobRenderer::model;
 	this->setArmor(model);
 }
 
-void SnowManRenderer::additionalRendering(shared_ptr<Mob> _mob, float a)
+void SnowManRenderer::additionalRendering(shared_ptr<LivingEntity> _mob, float a)
 {
 	// 4J - original version used generics and thus had an input parameter of type SnowMan rather than shared_ptr<Mob>  we have here - 
 	// do some casting around instead
@@ -34,8 +36,13 @@ void SnowManRenderer::additionalRendering(shared_ptr<Mob> _mob, float a)
 			glScalef(s, -s, s);
 		}
 
-		this->entityRenderDispatcher->itemInHandRenderer->renderItem(mob, headGear, 0);
+		entityRenderDispatcher->itemInHandRenderer->renderItem(mob, headGear, 0);
 
 		glPopMatrix();
 	}
+}
+
+ResourceLocation *SnowManRenderer::getTextureLocation(shared_ptr<Entity> mob)
+{
+	return &SNOWMAN_LOCATION;
 }

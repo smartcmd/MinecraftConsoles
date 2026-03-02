@@ -19,3 +19,8 @@
 // 1.0.1
 #include "Blaze.h"
 #include "LavaSlime.h"
+
+// 1.6.4
+#include "RangedAttackMob.h"
+#include "SharedMonsterAttributes.h"
+#include "Witch.h"

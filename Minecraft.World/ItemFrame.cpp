@@ -20,6 +20,8 @@ void ItemFrame::_init()
 	// 4J Stu - This function call had to be moved here from the Entity ctor to ensure that
 	// the derived version of the function is called
 	this->defineSynchedData();
+
+	dropChance = 1;
 }
 
 ItemFrame::ItemFrame(Level *level) : HangingEntity( level )
@@ -39,19 +41,45 @@ void ItemFrame::defineSynchedData()
 	getEntityData()->define(DATA_ROTATION, (byte) 0);
 }
 
-void ItemFrame::dropItem() 
+bool ItemFrame::shouldRenderAtSqrDistance(double distance)
 {
-	spawnAtLocation(shared_ptr<ItemInstance>(new ItemInstance(Item::frame)), 0.0f);
-	shared_ptr<ItemInstance> item = getItem();
-	if (item != NULL) 
-	{
-		shared_ptr<MapItemSavedData> data = Item::map->getSavedData(item, level);
-		data->removeItemFrameDecoration(item);
+	double size = 16;
+	size *= 64.0f * viewScale;
+	return distance < size * size;
+}
 
-		shared_ptr<ItemInstance> itemToDrop = item->copy();
-		itemToDrop->setFramed(nullptr);
-		spawnAtLocation(itemToDrop, 0.0f);
+void ItemFrame::dropItem(shared_ptr<Entity> causedBy) 
+{
+	shared_ptr<ItemInstance> item = getItem();
+
+	if (causedBy != NULL && causedBy->instanceof(eTYPE_PLAYER))
+	{
+		if (dynamic_pointer_cast<Player>(causedBy)->abilities.instabuild)
+		{
+			removeFramedMap(item);
+			return;
+		}
 	}
+
+	spawnAtLocation( shared_ptr<ItemInstance>(new ItemInstance(Item::frame) ), 0);
+	if ( (item != NULL) && (random->nextFloat() < dropChance) )
+	{
+		item = item->copy();
+		removeFramedMap(item);
+		spawnAtLocation(item, 0);
+	}
+}
+
+void ItemFrame::removeFramedMap(shared_ptr<ItemInstance> item)
+{
+	if (item == NULL) return;
+	if (item->id == Item::map_Id)
+	{
+		shared_ptr<MapItemSavedData> mapItemSavedData = Item::map->getSavedData(item, level);
+		mapItemSavedData->removeItemFrameDecoration(item);
+		//mapItemSavedData.decorations.remove("frame-" + entityId);
+	}
+	item->setFramed(nullptr);
 }
 
 shared_ptr<ItemInstance> ItemFrame::getItem() 
@@ -88,7 +116,7 @@ void ItemFrame::addAdditonalSaveData(CompoundTag *tag)
 	{
 		tag->putCompound(L"Item", getItem()->save(new CompoundTag()));
 		tag->putByte(L"ItemRotation", (byte) getRotation());
-		//tag->putFloat(L"ItemDropChance", dropChance);
+		tag->putFloat(L"ItemDropChance", dropChance);
 	}
 	HangingEntity::addAdditonalSaveData(tag);
 }
@@ -101,7 +129,7 @@ void ItemFrame::readAdditionalSaveData(CompoundTag *tag)
 		setItem(ItemInstance::fromTag(itemTag));
 		setRotation(tag->getByte(L"ItemRotation"));
 
-		//if (tag->contains(L"ItemDropChance")) dropChance = tag->getFloat(L"ItemDropChance");
+		if (tag->contains(L"ItemDropChance")) dropChance = tag->getFloat(L"ItemDropChance");
 	}
 	HangingEntity::readAdditionalSaveData(tag);
 }
@@ -125,10 +153,10 @@ bool ItemFrame::interact(shared_ptr<Player> player)
 
 				if (!player->abilities.instabuild) 
 				{
- 					if (--item->count <= 0) 
- 					{
- 						player->inventory->setItem(player->inventory->selected, nullptr);
- 					}
+					if (--item->count <= 0) 
+					{
+						player->inventory->setItem(player->inventory->selected, nullptr);
+					}
 				}
 			}
 		}

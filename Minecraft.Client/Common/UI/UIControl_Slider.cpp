@@ -22,7 +22,7 @@ bool UIControl_Slider::setupControl(UIScene *scene, IggyValuePath *parent, const
 	return success;
 }
 
-void UIControl_Slider::init(const wstring &label, int id, int min, int max, int current)
+void UIControl_Slider::init(UIString label, int id, int min, int max, int current)
 {
 	m_label = label;
 	m_id = id;
@@ -104,6 +104,7 @@ S32 UIControl_Slider::GetRealWidth()
 
 void UIControl_Slider::setAllPossibleLabels(int labelCount, wchar_t labels[][256])
 {
+	m_allPossibleLabels.clear();
 	for(unsigned int i = 0; i < labelCount; ++i)
 	{
 		m_allPossibleLabels.push_back(labels[i]);
