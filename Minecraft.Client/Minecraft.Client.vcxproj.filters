@@ -4779,6 +4779,9 @@
     <ClCompile Include="Windows64\Windows64_App.cpp">
       <Filter>Windows64</Filter>
     </ClCompile>
+    <ClCompile Include="Windows64\Network\WinsockNetLayer.cpp">
+      <Filter>Windows64\Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="Durango\ApplicationView.cpp">
       <Filter>Durango\Source Files</Filter>
     </ClCompile>

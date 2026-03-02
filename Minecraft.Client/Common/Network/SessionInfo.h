@@ -63,12 +63,19 @@ typedef struct _GameSessionData
 #else
 typedef struct _GameSessionData
 {
-	unsigned short netVersion;										//   2 bytes
-	unsigned int m_uiGameHostSettings;								//   4 bytes
-	unsigned int texturePackParentId;								//   4 bytes
-	unsigned char subTexturePackId;									//   1 byte
+	unsigned short netVersion;
+	unsigned int m_uiGameHostSettings;
+	unsigned int texturePackParentId;
+	unsigned char subTexturePackId;
 
-	bool isReadyToJoin;												//   1 byte
+	bool isReadyToJoin;
+	bool isJoinable;
+
+	char hostIP[64];
+	int hostPort;
+	wchar_t hostName[XUSER_NAME_SIZE];
+	unsigned char playerCount;
+	unsigned char maxPlayers;
 
 	_GameSessionData()
 	{
@@ -76,6 +83,13 @@ typedef struct _GameSessionData
 		m_uiGameHostSettings = 0;
 		texturePackParentId = 0;
 		subTexturePackId = 0;
+		isReadyToJoin = false;
+		isJoinable = true;
+		memset(hostIP, 0, sizeof(hostIP));
+		hostPort = 0;
+		memset(hostName, 0, sizeof(hostName));
+		playerCount = 0;
+		maxPlayers = MINECRAFT_NET_MAX_PLAYERS;
 	}
 } GameSessionData;
 #endif
@@ -108,6 +122,6 @@ public:
 	~FriendSessionInfo()
 	{
 		if(displayLabel!=NULL)
-			delete displayLabel;
+			delete [] displayLabel;
 	}
 };

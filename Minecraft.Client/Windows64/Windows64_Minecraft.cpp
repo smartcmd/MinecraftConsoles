@@ -37,6 +37,7 @@
 #include "Resource.h"
 #include "..\..\Minecraft.World\compression.h"
 #include "..\..\Minecraft.World\OldChunkStorage.h"
+#include "Network\WinsockNetLayer.h"
 
 #include "Xbox/resource.h"
 
@@ -83,10 +84,36 @@ BOOL g_bWidescreen = TRUE;
 
 int g_iScreenWidth = 1920;
 int g_iScreenHeight = 1080;
+char g_Win64Username[17] = {0};
+wchar_t g_Win64UsernameW[17] = {0};
 
 // Fullscreen toggle state
 static bool g_isFullscreen = false;
 static WINDOWPLACEMENT g_wpPrev = { sizeof(g_wpPrev) };
+
+static bool Win64_GetCmdArgValue(const char *cmdLine, const char *keyWithSpace, char *outValue, int outValueLen)
+{
+	if (cmdLine == NULL || keyWithSpace == NULL || outValue == NULL || outValueLen <= 0)
+		return false;
+
+	const char *found = strstr(cmdLine, keyWithSpace);
+	if (found == NULL)
+		return false;
+
+	found += strlen(keyWithSpace);
+	while (*found == ' ') found++;
+	if (*found == 0)
+		return false;
+
+	int i = 0;
+	while (found[i] != 0 && found[i] != ' ' && i < (outValueLen - 1))
+	{
+		outValue[i] = found[i];
+		i++;
+	}
+	outValue[i] = 0;
+	return (i > 0);
+}
 
 void DefineActions(void)
 {
@@ -743,7 +770,85 @@ int APIENTRY _tWinMain(_In_ HINSTANCE hInstance,
 			//g_iScreenWidth = 960;
 			//g_iScreenHeight = 544;
 		}
+
+		char cmdLineA[1024];
+		strncpy_s(cmdLineA, sizeof(cmdLineA), lpCmdLine, _TRUNCATE);
+
+		char *nameArg = strstr(cmdLineA, "-name ");
+		if (nameArg)
+		{
+			nameArg += 6;
+			while (*nameArg == ' ') nameArg++;
+			char nameBuf[17];
+			int n = 0;
+			while (nameArg[n] && nameArg[n] != ' ' && n < 16) { nameBuf[n] = nameArg[n]; n++; }
+			nameBuf[n] = 0;
+			strncpy_s(g_Win64Username, 17, nameBuf, _TRUNCATE);
+		}
+
+		char targetToken[256] = {0};
+		if (Win64_GetCmdArgValue(cmdLineA, "-target ", targetToken, sizeof(targetToken)))
+		{
+			// CLI format: -target IP:PORT
+			// This does not auto-join; it adds one explicit endpoint candidate to discovery.
+			const char *ipStart = targetToken;
+			const char *colon = strchr(targetToken, ':');
+			if (colon != NULL)
+			{
+				char ipOnly[256] = {0};
+				size_t ipLen = (size_t)(colon - ipStart);
+				if (ipLen >= sizeof(ipOnly)) ipLen = sizeof(ipOnly) - 1;
+				memcpy(ipOnly, ipStart, ipLen);
+				ipOnly[ipLen] = 0;
+
+				strncpy_s(g_Win64TargetIP, sizeof(g_Win64TargetIP), ipOnly, _TRUNCATE);
+				g_Win64TargetPort = atoi(colon + 1);
+			}
+			else
+			{
+				strncpy_s(g_Win64TargetIP, sizeof(g_Win64TargetIP), targetToken, _TRUNCATE);
+			}
+			if (g_Win64TargetPort <= 0) g_Win64TargetPort = WIN64_NET_DEFAULT_PORT;
+			g_Win64TargetEnabled = true;
+			app.DebugPrintf("Win64 LAN: Target server set to %s:%d\n", g_Win64TargetIP, g_Win64TargetPort);
+		}
+
+		char hostToken[256] = {0};
+		if (Win64_GetCmdArgValue(cmdLineA, "-host ", hostToken, sizeof(hostToken)))
+		{
+			// CLI format: -host IP:PORT
+			const char *ipStart = hostToken;
+			const char *colon = strchr(hostToken, ':');
+			if (colon != NULL)
+			{
+				char ipOnly[256] = {0};
+				size_t ipLen = (size_t)(colon - ipStart);
+				if (ipLen >= sizeof(ipOnly)) ipLen = sizeof(ipOnly) - 1;
+				memcpy(ipOnly, ipStart, ipLen);
+				ipOnly[ipLen] = 0;
+
+				strncpy_s(g_Win64HostBindIP, sizeof(g_Win64HostBindIP), ipOnly, _TRUNCATE);
+				g_Win64HostBindPort = atoi(colon + 1);
+			}
+			else
+			{
+				strncpy_s(g_Win64HostBindIP, sizeof(g_Win64HostBindIP), hostToken, _TRUNCATE);
+			}
+			if (g_Win64HostBindPort <= 0) g_Win64HostBindPort = WIN64_NET_DEFAULT_PORT;
+			g_Win64HostBindSpecified = true;
+			app.DebugPrintf("Win64 LAN: Host bind target set to %s:%d\n", g_Win64HostBindIP, g_Win64HostBindPort);
+		}
 	}
+
+	if (g_Win64Username[0] == 0)
+	{
+		DWORD sz = 17;
+		if (!GetUserNameA(g_Win64Username, &sz))
+			strncpy_s(g_Win64Username, 17, "Player", _TRUNCATE);
+		g_Win64Username[16] = 0;
+	}
+
+	MultiByteToWideChar(CP_ACP, 0, g_Win64Username, -1, g_Win64UsernameW, 17);
 
 
 	// Initialize global strings
@@ -910,7 +1015,17 @@ int APIENTRY _tWinMain(_In_ HINSTANCE hInstance,
 	// ProfileManager for XN_LIVE_INVITE_ACCEPTED for QNet.
 	g_NetworkManager.Initialise();
 
+	for (int i = 0; i < MINECRAFT_NET_MAX_PLAYERS; i++)
+	{
+		IQNet::m_player[i].m_smallId = (BYTE)i;
+		IQNet::m_player[i].m_isRemote = false;
+		IQNet::m_player[i].m_isHostPlayer = (i == 0);
+		swprintf_s(IQNet::m_player[i].m_gamertag, 32, L"Player%d", i);
+	}
+	extern wchar_t g_Win64UsernameW[17];
+	wcscpy_s(IQNet::m_player[0].m_gamertag, 32, g_Win64UsernameW);
 
+	WinsockNetLayer::Initialize();
 
 	// 4J-PB moved further down
 	//app.InitGameSettings();

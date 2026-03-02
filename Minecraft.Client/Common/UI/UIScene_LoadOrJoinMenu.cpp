@@ -285,10 +285,9 @@ UIScene_LoadOrJoinMenu::~UIScene_LoadOrJoinMenu()
 
     if(m_currentSessions)
     {
-        for(AUTO_VAR(it, m_currentSessions->begin()); it < m_currentSessions->end(); ++it)
-        {
-            delete (*it);
-        }
+        // Session entries are owned by the platform network manager.
+        delete m_currentSessions;
+        m_currentSessions = NULL;
     }
 
 #if TO_BE_IMPLEMENTED
@@ -300,7 +299,7 @@ UIScene_LoadOrJoinMenu::~UIScene_LoadOrJoinMenu()
     {
         for(int i = 0; i < m_iSaveDetailsCount; ++i)
         {
-            delete m_saveDetails[i].pbThumbnailData;
+            delete [] m_saveDetails[i].pbThumbnailData;
         }
         delete [] m_saveDetails;
     }
@@ -595,10 +594,10 @@ void UIScene_LoadOrJoinMenu::tick()
                     {
                         if(m_saveDetails[i].pbThumbnailData!=NULL)
                         {
-                            delete m_saveDetails[i].pbThumbnailData;
+                            delete [] m_saveDetails[i].pbThumbnailData;
                         }
                     }
-                    delete m_saveDetails;
+                    delete [] m_saveDetails;
                 }
                 m_saveDetails = new SaveListDetails[m_pSaveDetails->iSaveC];
 

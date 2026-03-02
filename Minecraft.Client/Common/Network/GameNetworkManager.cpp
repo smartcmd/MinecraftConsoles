@@ -166,7 +166,12 @@ bool CGameNetworkManager::_RunNetworkGame(LPVOID lpParameter)
 			return true;
 		}
 	}
-	
+		else
+	{
+		// Client needs QNET_STATE_GAME_PLAY so that IsInGameplay() returns true.
+		s_pPlatformNetworkManager->SetGamePlayState();
+	}
+
 	if( g_NetworkManager.IsLeavingGame() ) return false;
 
 	app.SetGameStarted(true);
@@ -1396,7 +1401,7 @@ void CGameNetworkManager::CreateSocket( INetworkPlayer *pNetworkPlayer, bool loc
 	{
 		// If we already have a MultiplayerLocalPlayer here then we are doing a session type change
 		socket = mpPlayer->connection->getSocket();
-
+		
 		// Pair this socket and network player
 		pNetworkPlayer->SetSocket( socket);
 		if( socket )

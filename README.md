@@ -18,6 +18,35 @@ This project contains the source code of Minecraft Legacy Console Edition v1.3.0
 - Disabled V-Sync for better performance
 - Added a high-resolution timer path on Windows for smoother high-FPS gameplay timing
 - Device's screen resolution will be used as the game resolution instead of using a fixed resolution (1920x1080)
+- Added Windows64 LAN & Target Server multiplayer (host/join via in-game Join Game menu)
+
+## Multiplayer (Windows64)
+
+The multiplayer implementation was added with reference to:
+
+- [LCEMP/LCEMP](https://github.com/LCEMP/LCEMP)
+
+### Command Line Options
+
+- `-name <PlayerName>`: Set the local player name (max 16 chars)
+- `-host <IP:PORT>`: Set host bind address/port when creating a game (default port: `25565`)
+- `-target <IP:PORT>`: Add a direct server candidate to the Join Game list (default port: `25565`)
+
+### Usage Example
+
+Host:
+
+```powershell
+Minecraft.Client.exe -name HostPlayer -host 0.0.0.0:25565
+```
+
+Join:
+
+```powershell
+Minecraft.Client.exe -name ClientPlayer -target 192.168.0.10:25565
+```
+
+Then open **Play Game** -> **Join Game** in-game and select the discovered/target session.
 
 ## Controls (Keyboard & Mouse)
 

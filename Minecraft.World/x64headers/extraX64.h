@@ -215,9 +215,16 @@ public:
 	int GetUserIndex();
 	void SetCustomDataValue(ULONG_PTR ulpCustomDataValue);
 	ULONG_PTR GetCustomDataValue();
+
+	BYTE m_smallId;
+	bool m_isRemote;
+	bool m_isHostPlayer;
+	wchar_t m_gamertag[32];
 private:
 	ULONG_PTR m_customData;
 };
+
+void Win64_SetupRemoteQNetPlayer(IQNetPlayer *player, BYTE smallId, bool isHost, bool isLocal);
 
 const int QNET_GETSENDQUEUESIZE_SECONDARY_TYPE = 0;
 const int QNET_GETSENDQUEUESIZE_MESSAGES = 0;
@@ -309,9 +316,12 @@ public:
 	bool IsHost();
 	HRESULT JoinGameFromInviteInfo(DWORD dwUserIndex, DWORD dwUserMask, const INVITE_INFO *pInviteInfo);
 	void HostGame();
+	void ClientJoinGame();
 	void EndGame();
 
-	static IQNetPlayer m_player[4];
+	static IQNetPlayer m_player[MINECRAFT_NET_MAX_PLAYERS];
+	static DWORD s_playerCount;
+	static bool s_isHosting;
 };
 
 #ifdef _DURANGO

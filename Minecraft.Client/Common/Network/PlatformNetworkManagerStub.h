@@ -161,8 +161,9 @@ public:
 	virtual void GetFullFriendSessionInfo( FriendSessionInfo *foundSession, void (* FriendSessionUpdatedFn)(bool success, void *pParam), void *pParam );
 	virtual void ForceFriendsSessionRefresh();
 
-private:
+public:
 	void NotifyPlayerJoined( IQNetPlayer *pQNetPlayer );
+	void NotifyPlayerLeaving( IQNetPlayer *pQNetPlayer );
 
 #ifndef _XBOX
 	void FakeLocalPlayerJoined() { NotifyPlayerJoined(m_pIQNet->GetLocalPlayerByUserIndex(0)); }

@@ -387,10 +387,7 @@ HRESULT CScene_MultiGameJoinLoad::OnDestroy()
 {
 	g_NetworkManager.SetSessionsUpdatedCallback( NULL, NULL );
 
-	for(AUTO_VAR(it, currentSessions.begin()); it < currentSessions.end(); ++it)
-	{
-		delete (*it);
-	}
+	currentSessions.clear();
 
 	if(m_bSaveTransferInProgress)
 	{
@@ -1145,10 +1142,6 @@ void CScene_MultiGameJoinLoad::UpdateGamesList()
 	if( pSelectedSession != NULL )selectedSessionId = pSelectedSession->sessionId;
 	pSelectedSession = NULL;
 
-	for(AUTO_VAR(it, currentSessions.begin()); it < currentSessions.end(); ++it)
-	{
-		delete (*it);
-	}
 	currentSessions.clear();
 	
 	m_NetGamesListTimer.SetShow( FALSE );
@@ -1210,7 +1203,12 @@ void CScene_MultiGameJoinLoad::UpdateGamesList()
 		ui.SetTooltips( DEFAULT_XUI_MENU_USER, IDS_TOOLTIPS_SELECT, IDS_TOOLTIPS_BACK, IDS_TOOLTIPS_CHANGEDEVICE, iY,-1,-1,iLB,iRB);
 	}
 
-	currentSessions = *g_NetworkManager.GetSessionList( m_iPad, m_localPlayers, m_bShowingPartyGamesOnly );
+	vector<FriendSessionInfo *> *pSessionList = g_NetworkManager.GetSessionList( m_iPad, m_localPlayers, m_bShowingPartyGamesOnly );
+	if(pSessionList != NULL)
+	{
+		currentSessions = *pSessionList;
+		delete pSessionList;
+	}
 
 	// Update the xui list displayed
 	unsigned int xuiListSize = m_pGamesList->GetItemCount();
