@@ -313,6 +313,10 @@ bool UILayer::NavigateToScene(int iPad, EUIScene scene, void *initData)
 		newScene = new UIScene_InGameInfoMenu(iPad, initData, this);
 		break;
 	case eUIScene_InGameHostOptionsMenu:
+		if (IsSceneInStack(eUIScene_InGameHostOptionsMenu)) {
+			app.DebugPrintf("Skipped eUIScene_InGameHostOptionsMenu, we have already this tab!");
+			return false;
+		}
 		newScene = new UIScene_InGameHostOptionsMenu(iPad, initData, this);
 		break;
 	case eUIScene_InGamePlayerOptionsMenu:
