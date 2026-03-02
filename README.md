@@ -59,3 +59,7 @@ cmake --build build --config Debug --target MinecraftClient
 
 - Builds for other platforms have not been tested and are most likely non-functional
 - There are some render bugs in the Release mode build
+
+## Star History
+
+[![Star History Chart](https://api.star-history.com/svg?repos=smartcmd/MinecraftConsoles&type=date&legend=top-left)](https://www.star-history.com/?spm=a2c6h.12873639.article-detail.7.7b9d7fabjNxTRk#smartcmd/MinecraftConsoles&type=date&legend=top-left)
