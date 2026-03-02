@@ -1234,6 +1234,7 @@ int APIENTRY _tWinMain(_In_ HINSTANCE hInstance,
 			}
 		}
 
+#ifdef _DEBUG_MENUS_ENABLED
 		// F3 toggles onscreen debug info
 		if (KMInput.IsKeyPressed(VK_F3))
 		{
@@ -1258,7 +1259,6 @@ int APIENTRY _tWinMain(_In_ HINSTANCE hInstance,
 				}
 			}
 		}
-
 #endif
 
 #if 0
