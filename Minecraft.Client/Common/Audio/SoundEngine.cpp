@@ -1329,10 +1329,10 @@ void SoundEngine::playMusicUpdate()
 			else
 			{
 				const char* extensions[] = { ".wav" }; // only wav works outside of binka files to my knowledge, i've only tested ogg, wav, mp3 and only wav worked out of the bunch
-				int count = sizeof(extensions) / sizeof(extensions[0]);
+				size_t count = sizeof(extensions) / sizeof(extensions[0]);
 				bool found = false;
 
-				for (int i = 0; i < count; i++)
+				for (size_t i = 0; i < count; i++)
 				{
 					int n = sprintf_s(reinterpret_cast<char*>(m_szStreamName), 512, "%s%s%s%s", m_szMusicPath, folder, m_szStreamFileA[m_musicID], extensions[i]);
 					if (n < 0) continue;
