@@ -37,6 +37,7 @@
 #include "Resource.h"
 #include "..\..\Minecraft.World\compression.h"
 #include "..\..\Minecraft.World\OldChunkStorage.h"
+#include "Network\WinsockNetLayer.h"
 
 #include "Xbox/resource.h"
 
@@ -84,6 +85,8 @@ BOOL g_bWidescreen = TRUE;
 int g_iScreenWidth = 1920;
 int g_iScreenHeight = 1080;
 
+char g_Win64Username[17] = { 0 };
+wchar_t g_Win64UsernameW[17] = { 0 };
 UINT g_ScreenWidth = 1920;
 UINT g_ScreenHeight = 1080;
 
@@ -850,8 +853,41 @@ int APIENTRY _tWinMain(_In_ HINSTANCE hInstance,
 			//g_iScreenWidth = 960;
 			//g_iScreenHeight = 544;
 		}
+
+		char cmdLineA[1024];
+		strncpy_s(cmdLineA, sizeof(cmdLineA), lpCmdLine, _TRUNCATE);
+
+		char* nameArg = strstr(cmdLineA, "-name ");
+		if (nameArg)
+		{
+			nameArg += 6;
+			while (*nameArg == ' ') nameArg++;
+			char nameBuf[17];
+			int n = 0;
+			while (nameArg[n] && nameArg[n] != ' ' && n < 16) { nameBuf[n] = nameArg[n]; n++; }
+			nameBuf[n] = 0;
+			strncpy_s(g_Win64Username, 17, nameBuf, _TRUNCATE);
+		}
 	}
 
+	if (g_Win64Username[0] == 0)
+	{
+		DWORD sz = 17;
+		static bool seeded = false;
+		if (!seeded)
+		{
+			seeded = true;
+			srand((unsigned int)time(NULL));
+		}
+
+		int r = rand() % 10000; // 0�9999
+
+		snprintf(g_Win64Username, 17, "Player%04d", r);
+
+		g_Win64Username[16] = 0;
+	}
+
+	MultiByteToWideChar(CP_ACP, 0, g_Win64Username, -1, g_Win64UsernameW, 17);
 
 	// Initialize global strings
 	MyRegisterClass(hInstance);
@@ -1017,7 +1053,17 @@ int APIENTRY _tWinMain(_In_ HINSTANCE hInstance,
 	// ProfileManager for XN_LIVE_INVITE_ACCEPTED for QNet.
 	g_NetworkManager.Initialise();
 
+	for (int i = 0; i < MINECRAFT_NET_MAX_PLAYERS; i++)
+	{
+		IQNet::m_player[i].m_smallId = (BYTE)i;
+		IQNet::m_player[i].m_isRemote = false;
+		IQNet::m_player[i].m_isHostPlayer = (i == 0);
+		swprintf_s(IQNet::m_player[i].m_gamertag, 32, L"Player%d", i);
+	}
+	extern wchar_t g_Win64UsernameW[17];
+	wcscpy_s(IQNet::m_player[0].m_gamertag, 32, g_Win64UsernameW);
 
+	WinsockNetLayer::Initialize();
 
 	// 4J-PB moved further down
 	//app.InitGameSettings();
@@ -1189,7 +1235,7 @@ int APIENTRY _tWinMain(_In_ HINSTANCE hInstance,
 		PIXEndNamedEvent();
 
 		PIXBeginNamedEvent(0,"Network manager do work #1");
-		//		g_NetworkManager.DoWork();
+		g_NetworkManager.DoWork();
 		PIXEndNamedEvent();
 
 		//		LeaderboardManager::Instance()->Tick();

@@ -25,7 +25,7 @@
 #include "..\Minecraft.World\net.minecraft.world.level.saveddata.h"
 #include "..\Minecraft.World\JavaMath.h"
 #include "..\Minecraft.World\EntityIO.h"
-#ifdef _XBOX
+#if defined(_XBOX) || defined(_WINDOWS64)
 #include "Xbox\Network\NetworkPlayerXbox.h"
 #elif defined(__PS3__) || defined(__ORBIS__)
 #include "Common\Network\Sony\NetworkPlayerSony.h"
@@ -56,6 +56,11 @@ PlayerList::PlayerList(MinecraftServer *server)
 	maxPlayers = server->settings->getInt(L"max-players", 20);
 	doWhiteList = false;
 
+#ifdef _WINDOWS64
+	maxPlayers = MINECRAFT_NET_MAX_PLAYERS;
+#else
+	maxPlayers = server->settings->getInt(L"max-players", 20);
+#endif
 	InitializeCriticalSection(&m_kickPlayersCS);
 	InitializeCriticalSection(&m_closePlayersCS);
 }
@@ -100,7 +105,14 @@ void PlayerList::placeNewPlayer(Connection *connection, shared_ptr<ServerPlayer>
 		}
 	}
 #endif
-
+#ifdef _WINDOWS64
+	if (networkPlayer != NULL && !networkPlayer->IsLocal())
+	{
+		NetworkPlayerXbox* nxp = (NetworkPlayerXbox*)networkPlayer;
+		IQNetPlayer* qnp = nxp->GetQNetPlayer();
+		wcsncpy_s(qnp->m_gamertag, 32, player->name.c_str(), _TRUNCATE);
+	}
+#endif
 	// 4J Stu - TU-1 hotfix
 	// Fix for #13150 - When a player loads/joins a game after saving/leaving in the nether, sometimes they are spawned on top of the nether and cannot mine down
 	validatePlayerSpawnPosition(player);
@@ -227,7 +239,7 @@ void PlayerList::placeNewPlayer(Connection *connection, shared_ptr<ServerPlayer>
 	sendLevelInfo(player, level);
 
 	// 4J-PB - removed, since it needs to be localised in the language the client is in
-	//server->players->broadcastAll( shared_ptr<ChatPacket>( new ChatPacket(L"§e" + playerEntity->name + L" joined the game.") ) );
+	//server->players->broadcastAll( shared_ptr<ChatPacket>( new ChatPacket(L"ï¿½e" + playerEntity->name + L" joined the game.") ) );
 	broadcastAll( shared_ptr<ChatPacket>( new ChatPacket(player->name, ChatPacket::e_ChatPlayerJoinedGame) ) );
 
 	MemSect(14);
@@ -428,7 +440,7 @@ void PlayerList::add(shared_ptr<ServerPlayer> player)
 	// Some code from here has been moved to the above validatePlayerSpawnPosition function
 
 	// 4J Stu - Swapped these lines about so that we get the chunk visiblity packet way ahead of all the add tracked entity packets
-	// Fix for #9169 - ART : Sign text is replaced with the words “Awaiting approval”.
+	// Fix for #9169 - ART : Sign text is replaced with the words ï¿½Awaiting approvalï¿½.
 	changeDimension(player, NULL);
 	level->addEntity(player);
 
@@ -469,14 +481,12 @@ void PlayerList::remove(shared_ptr<ServerPlayer> player)
 	//4J Stu - We don't want to save the map data for guests, so when we are sure that the player is gone delete the map
 	if(player->isGuest()) playerIo->deleteMapFilesForPlayer(player);
 	ServerLevel *level = player->getLevel();
-	if (player->riding != NULL)
+if (player->riding != NULL)
 	{
-		// remove mount first because the player unmounts when being
-		// removed, also remove mount because it's saved in the player's
-		// save tag
 		level->removeEntityImmediately(player->riding);
 		app.DebugPrintf("removing player mount");
 	}
+	level->getTracker()->removeEntity(player);
 	level->removeEntity(player);
 	level->getChunkMap()->remove(player);
 	AUTO_VAR(it, find(players.begin(),players.end(),player));
@@ -497,17 +507,30 @@ void PlayerList::remove(shared_ptr<ServerPlayer> player)
 
 shared_ptr<ServerPlayer> PlayerList::getPlayerForLogin(PendingConnection *pendingConnection, const wstring& userName, PlayerUID xuid, PlayerUID onlineXuid)
 {
-	if (players.size() >= maxPlayers)
+#ifdef _WINDOWS64
+	if (players.size() >= (unsigned int)MINECRAFT_NET_MAX_PLAYERS)
+#else
+	if (players.size() >= (unsigned int)maxPlayers)
+#endif
 	{
 		pendingConnection->disconnect(DisconnectPacket::eDisconnect_ServerFull);
 		return shared_ptr<ServerPlayer>();
 	}
-
 	shared_ptr<ServerPlayer> player = shared_ptr<ServerPlayer>(new ServerPlayer(server, server->getLevel(0), userName, new ServerPlayerGameMode(server->getLevel(0)) ));
 	player->gameMode->player = player; // 4J added as had to remove this assignment from ServerPlayer ctor
 	player->setXuid( xuid ); // 4J Added
 	player->setOnlineXuid( onlineXuid ); // 4J Added
-
+#ifdef _WINDOWS64
+	{
+		INetworkPlayer* np = pendingConnection->connection->getSocket()->getPlayer();
+		if (np != NULL)
+		{
+			PlayerUID realXuid = np->GetUID();
+			player->setXuid(realXuid);
+			player->setOnlineXuid(realXuid);
+		}
+	}
+#endif
 	// Work out the base server player settings
 	INetworkPlayer *networkPlayer = pendingConnection->connection->getSocket()->getPlayer();
 	if(networkPlayer != NULL && !networkPlayer->IsHost())

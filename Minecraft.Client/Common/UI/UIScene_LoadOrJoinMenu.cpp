@@ -284,13 +284,8 @@ UIScene_LoadOrJoinMenu::~UIScene_LoadOrJoinMenu()
     g_NetworkManager.SetSessionsUpdatedCallback( NULL, NULL );
     app.SetLiveLinkRequired( false );
 
-    if(m_currentSessions)
-    {
-        for(AUTO_VAR(it, m_currentSessions->begin()); it < m_currentSessions->end(); ++it)
-        {
-            delete (*it);
-        }
-    }
+    delete m_currentSessions;
+    m_currentSessions = NULL;
 
 #if TO_BE_IMPLEMENTED
     // Reset the background downloading, in case we changed it by attempting to download a texture pack

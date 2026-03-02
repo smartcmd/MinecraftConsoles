@@ -723,8 +723,12 @@
     <Filter Include="PSVita\Miles Sound System\lib">
       <UniqueIdentifier>{0061db22-43de-4b54-a161-c43958cdcd7e}</UniqueIdentifier>
     </Filter>
-    <Filter Include="net\minecraft\client\resources">
+      <Filter Include="net\minecraft\client\resources">
       <UniqueIdentifier>{889a84db-3009-4a7c-8234-4bf93d412690}</UniqueIdentifier>
+    </Filter>
+      <Filter Include="Windows64\Source Files\Network">
+      <UniqueIdentifier>{e5d7fb24-25b8-413c-84ec-974bf0d4a3d1}</UniqueIdentifier>
+    </Filter>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -3613,7 +3617,7 @@
     <ClInclude Include="Common\UI\UIScene_Keyboard.h">
       <Filter>Common\Source Files\UI\Scenes</Filter>
     </ClInclude>
-    <ClInclude Include="Common\Leaderboards\SonyLeaderboardManager.h">
+<ClInclude Include="Common\Leaderboards\SonyLeaderboardManager.h">
       <Filter>Common\Source Files\Leaderboards</Filter>
     </ClInclude>
     <ClInclude Include="Common\Leaderboards\base64.h">
@@ -3768,6 +3772,9 @@
     </ClInclude>
     <ClInclude Include="Common\Leaderboards\LeaderboardInterface.h">
       <Filter>Common\Source Files\Leaderboards</Filter>
+    </ClInclude>
+    <ClInclude Include="Windows64\Network\WinsockNetLayer.h">
+      <Filter>Windows64\Source Files\Network</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -5915,6 +5922,9 @@
     </ClCompile>
     <ClCompile Include="compat_shims.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Windows64\Network\WinsockNetLayer.cpp">
+      <Filter>Windows64\Source Files\Network</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
