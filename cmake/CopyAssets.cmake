@@ -10,11 +10,42 @@ string(REPLACE "\"" "" CONFIGURATION "${CONFIGURATION}")
 set(_project_dir "${PROJECT_SOURCE_DIR}/Minecraft.Client")
 
 function(copy_tree_if_exists src_rel dst_rel)
+  set(include_sources FALSE)
+  if(ARGC GREATER 2)
+    set(include_sources "${ARGV2}")
+  endif()
+
   set(_src "${_project_dir}/${src_rel}")
   set(_dst "${OUTPUT_DIR}/${dst_rel}")
+
   if(EXISTS "${_src}")
     file(MAKE_DIRECTORY "${_dst}")
-    execute_process(COMMAND "${CMAKE_COMMAND}" -E copy_directory "${_src}" "${_dst}")
+
+    if(include_sources)
+      execute_process(
+        COMMAND "${CMAKE_COMMAND}" -E copy_directory "${_src}" "${_dst}"
+      )
+    else()
+      file(GLOB_RECURSE _files RELATIVE "${_src}" "${_src}/*")
+
+      foreach(_file IN LISTS _files) # if not a source file and doesn't start with Media, copy it
+        if(NOT _file MATCHES "\\.(cpp|c|h|hpp)$")
+          set(_full_src "${_src}/${_file}")
+          set(_full_dst "${_dst}/${_file}")
+
+          if(IS_DIRECTORY "${_full_src}")
+            file(MAKE_DIRECTORY "${_full_dst}")
+          else()
+            get_filename_component(_dst_dir "${_full_dst}" DIRECTORY)
+            file(MAKE_DIRECTORY "${_dst_dir}")
+            execute_process(
+              COMMAND "${CMAKE_COMMAND}" -E copy_if_different
+              "${_full_src}" "${_full_dst}"
+            )
+          endif()
+        endif()
+      endforeach()
+    endif()
   endif()
 endfunction()
 
@@ -25,10 +56,15 @@ endfunction()
 function(copy_file_if_exists src_rel dst_rel)
   set(_src "${PROJECT_SOURCE_DIR}/${src_rel}")
   set(_dst "${OUTPUT_DIR}/${dst_rel}")
+
+  get_filename_component(_dst_dir "${_dst}" DIRECTORY)
+  file(MAKE_DIRECTORY "${_dst_dir}")
+
   if(EXISTS "${_src}")
-    get_filename_component(_dst_dir "${_dst}" DIRECTORY)
-    file(MAKE_DIRECTORY "${_dst_dir}")
-    execute_process(COMMAND "${CMAKE_COMMAND}" -E copy_if_different "${_src}" "${_dst}")
+    execute_process(
+      COMMAND "${CMAKE_COMMAND}" -E copy_if_different
+      "${_src}" "${_dst}"
+    )
   endif()
 endfunction()
 
@@ -47,7 +83,7 @@ function(copy_first_existing dst_rel)
 endfunction()
 
 if(CONFIGURATION STREQUAL "Debug")
-  copy_tree_if_exists("Durango/Sound" "Durango/Sound")
+  copy_tree_if_exists("Durango/Sound" "Windows64/Sound")
   copy_tree_if_exists("music" "music")
   copy_tree_if_exists("Windows64/GameHDD" "Windows64/GameHDD")
   copy_tree_if_exists("Common/Media" "Common/Media")
@@ -57,7 +93,9 @@ if(CONFIGURATION STREQUAL "Debug")
 else()
   copy_tree_if_exists("music" "music")
   copy_tree_if_exists("Windows64/GameHDD" "Windows64/GameHDD")
-  copy_tree_if_exists("Common/Media" "Common/Media")
+  #copy_tree_if_exists("Common/Media" "Common/Media")
+  # we only need Common/Media/MediaWindows64.arc
+  copy_file_if_exists("Minecraft.Client/Common/Media/MediaWindows64.arc" "Common/Media/MediaWindows64.arc")
   copy_tree_if_exists("Common/res" "Common/res")
   copy_tree_if_exists("Common/Trial" "Common/Trial")
   copy_tree_if_exists("Common/Tutorial" "Common/Tutorial")
