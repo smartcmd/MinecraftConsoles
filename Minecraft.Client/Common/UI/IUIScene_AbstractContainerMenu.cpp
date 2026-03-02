@@ -73,7 +73,7 @@ void IUIScene_AbstractContainerMenu::Initialize(int iPad, AbstractContainerMenu*
 	m_iCurrSlotX = 0;
 	m_iCurrSlotY = 0;
 #endif // TAP_DETECTION
-	// 
+	//
 	// 	for(int i=0;i<XUSER_MAX_COUNT;i++)
 	// 	{
 	// 		m_bFirstTouchStored[i]=false;
@@ -101,7 +101,7 @@ int	IUIScene_AbstractContainerMenu::GetSectionDimensions( ESceneSection eSection
 		*piNumRows = 0;
 		*piNumColumns = 0;
 	}
-	return( ( *piNumRows ) * ( *piNumColumns ) ); 
+	return( ( *piNumRows ) * ( *piNumColumns ) );
 }
 
 void IUIScene_AbstractContainerMenu::updateSlotPosition( ESceneSection eSection, ESceneSection newSection, ETapState eTapDirection, int *piTargetX, int *piTargetY, int xOffset )
@@ -205,7 +205,7 @@ void IUIScene_AbstractContainerMenu::SetToolTip( EToolTipButton eButton, EToolTi
 void IUIScene_AbstractContainerMenu::UpdateTooltips()
 {
 	// Table gives us text id for tooltip.
-	static const DWORD kaToolTipextIds[ eNumToolTips ] = 
+	static const DWORD kaToolTipextIds[ eNumToolTips ] =
 	{
 		IDS_TOOLTIPS_PICKUPPLACE,			//eToolTipPickupPlace_OLD
 		IDS_TOOLTIPS_EXIT,					// eToolTipExit
@@ -307,7 +307,7 @@ void IUIScene_AbstractContainerMenu::onMouseTick()
 
 		float fNewX=(((float)pTouchPadData->touch[0].x)-m_oldvTouchPos.x) * m_fTouchPadMulX;
 		float fNewY=(((float)pTouchPadData->touch[0].y)-m_oldvTouchPos.y) * m_fTouchPadMulY;
-		// relative positions - needs a deadzone 
+		// relative positions - needs a deadzone
 
 		if(fNewX>m_fTouchPadDeadZoneX)
 		{
@@ -320,11 +320,11 @@ void IUIScene_AbstractContainerMenu::onMouseTick()
 
 		if(fNewY>m_fTouchPadDeadZoneY)
 		{
-			vPointerPos.y=m_oldvPointerPos.y+((fNewY-m_fTouchPadDeadZoneY)*((float)app.GetGameSettings(iPad,eGameSetting_Sensitivity_InMenu)/100.0f));		
+			vPointerPos.y=m_oldvPointerPos.y+((fNewY-m_fTouchPadDeadZoneY)*((float)app.GetGameSettings(iPad,eGameSetting_Sensitivity_InMenu)/100.0f));
 		}
 		else if(fNewY<-m_fTouchPadDeadZoneY)
 		{
-			vPointerPos.y=m_oldvPointerPos.y+((fNewY+m_fTouchPadDeadZoneY)*((float)app.GetGameSettings(iPad,eGameSetting_Sensitivity_InMenu)/100.0f));		
+			vPointerPos.y=m_oldvPointerPos.y+((fNewY+m_fTouchPadDeadZoneY)*((float)app.GetGameSettings(iPad,eGameSetting_Sensitivity_InMenu)/100.0f));
 		}
 
 		// Clamp to pointer extents.
@@ -334,7 +334,7 @@ void IUIScene_AbstractContainerMenu::onMouseTick()
 		else if ( vPointerPos.y > m_fPointerMaxY )			vPointerPos.y = m_fPointerMaxY;
 
 		bStickInput = true;
-		m_eCurrTapState=eTapStateNoInput;	
+		m_eCurrTapState=eTapStateNoInput;
 	}
 	else
 	{
@@ -408,7 +408,7 @@ void IUIScene_AbstractContainerMenu::onMouseTick()
 			fInputX *= fInputScale;
 			fInputY *= fInputScale;
 
-#ifdef USE_POINTER_ACCEL		
+#ifdef USE_POINTER_ACCEL
 			m_fPointerAccelX += fInputX / 50.0f;
 			m_fPointerAccelY += fInputY / 50.0f;
 
@@ -451,12 +451,12 @@ void IUIScene_AbstractContainerMenu::onMouseTick()
 		else
 		{
 			m_iConsectiveInputTicks = 0;
-#ifdef USE_POINTER_ACCEL	
+#ifdef USE_POINTER_ACCEL
 			m_fPointerVelX = 0.0f;
 			m_fPointerVelY = 0.0f;
 			m_fPointerAccelX = 0.0f;
 			m_fPointerAccelY = 0.0f;
-#endif		
+#endif
 		}
 
 #ifdef __ORBIS__
@@ -501,7 +501,7 @@ void IUIScene_AbstractContainerMenu::onMouseTick()
 					( vPointerPos.y >= sectionPos.y ) && ( vPointerPos.y <= itemMax.y ) )
 				{
 					// Pointer is over this control!
-					eSectionUnderPointer = eSection;						
+					eSectionUnderPointer = eSection;
 
 					vSnapPos.x = itemPos.x + ( itemSize.x / 2.0f );
 					vSnapPos.y = itemPos.y + ( itemSize.y / 2.0f );
@@ -590,7 +590,7 @@ void IUIScene_AbstractContainerMenu::onMouseTick()
 	}
 
 	// If we are not over any slot, set focus elsewhere.
-	if ( eSectionUnderPointer == eSectionNone ) 
+	if ( eSectionUnderPointer == eSectionNone )
 	{
 		setFocusToPointer( getPad() );
 #ifdef TAP_DETECTION
@@ -790,7 +790,7 @@ void IUIScene_AbstractContainerMenu::onMouseTick()
 			if ( bSlotHasItem )
 			{
 				// Item in hand and item in slot ... is item in slot the same as in out hand? If so, can we stack on to it?
-				if ( bCarriedIsSameAsSlot ) 
+				if ( bCarriedIsSameAsSlot )
 				{
 					// Can we stack more into this slot?
 					if ( iSlotStackSizeRemaining == 0 )
@@ -919,7 +919,7 @@ void IUIScene_AbstractContainerMenu::onMouseTick()
 						else
 						{
 							buttonY = eToolTipQuickMove;
-						}								
+						}
 						break;
 					case ArmorRecipes::eArmorType_Leggings:
 						if(isSlotEmpty(eSectionInventoryArmor,2))
@@ -1077,15 +1077,15 @@ void IUIScene_AbstractContainerMenu::onMouseTick()
 						// ingredient slot empty
 						buttonY = eToolTipQuickMoveIngredient;
 					}
-				}						
+				}
 				else
 				{
 					// valid potion? Glass bottle with water in it is a 'potion' too.
 					if(iId==Item::potion_Id)
 					{
 						// space available?
-						if(isSlotEmpty(eSectionBrewingBottle1,0) || 
-							isSlotEmpty(eSectionBrewingBottle2,0) || 
+						if(isSlotEmpty(eSectionBrewingBottle1,0) ||
+							isSlotEmpty(eSectionBrewingBottle2,0) ||
 							isSlotEmpty(eSectionBrewingBottle3,0))
 						{
 							buttonY = eToolTipQuickMoveIngredient;
@@ -1112,8 +1112,8 @@ void IUIScene_AbstractContainerMenu::onMouseTick()
 				{
 					// is there already something in the ingredient slot?
 					if(isSlotEmpty(eSectionEnchantSlot,0))
-					{					
-						// tool slot empty	
+					{
+						// tool slot empty
 						switch(iId)
 						{
 						case Item::bow_Id:
@@ -1155,7 +1155,7 @@ void IUIScene_AbstractContainerMenu::onMouseTick()
 							buttonY = eToolTipQuickMove;
 							break;
 						default:
-							buttonY=eToolTipQuickMoveTool;									
+							buttonY=eToolTipQuickMoveTool;
 							break;
 						}
 					}
@@ -1163,10 +1163,10 @@ void IUIScene_AbstractContainerMenu::onMouseTick()
 					{
 						buttonY = eToolTipQuickMove;
 					}
-				}						
+				}
 				else
 				{
-					buttonY=eToolTipQuickMove;							
+					buttonY=eToolTipQuickMove;
 				}
 			}
 			else
@@ -1303,7 +1303,16 @@ bool IUIScene_AbstractContainerMenu::handleKeyDown(int iPad, int iAction, bool b
 			// Standard left click
 			buttonNum = 0;
 			quickKeyHeld = FALSE;
-			ui.PlayUISFX(eSFX_Press);
+
+			if( IsSectionSlotList( m_eCurrSection ) )
+			{
+				int currentIndex = getCurrentIndex( m_eCurrSection ) - getSectionStartOffset(m_eCurrSection);
+
+				bool bSlotHasItem = !isSlotEmpty(m_eCurrSection, currentIndex);
+				if ( bSlotHasItem )
+					ui.PlayUISFX(eSFX_Press);
+			}
+			//
 		}
 		break;
 	case ACTION_MENU_X:
@@ -1358,7 +1367,7 @@ bool IUIScene_AbstractContainerMenu::handleKeyDown(int iPad, int iAction, bool b
 			}
 			else
 			{
-				ui.CloseUIScenes(iPad);      
+				ui.CloseUIScenes(iPad);
 			}
 
 			bHandled = true;
@@ -1456,7 +1465,7 @@ bool IUIScene_AbstractContainerMenu::handleKeyDown(int iPad, int iAction, bool b
 				{
 					handleOutsideClicked(iPad, buttonNum, quickKeyHeld);
 				}
-				else // 
+				else //
 				{
 					// over empty space or something else???
 					handleOtherClicked(iPad,m_eCurrSection,buttonNum,quickKeyHeld?true:false);
@@ -1614,7 +1623,7 @@ wstring IUIScene_AbstractContainerMenu::GetItemDescription(Slot *slot, vector<ws
 		}
 		else
 		{
-			firstLine = false;				
+			firstLine = false;
 			wchar_t formatted[256];
 			eMinecraftColour rarityColour = slot->getItem()->getRarity()->color;
 			int colour = app.GetHTMLColour(rarityColour);
@@ -1624,7 +1633,7 @@ wstring IUIScene_AbstractContainerMenu::GetItemDescription(Slot *slot, vector<ws
 				colour = app.GetHTMLColour(eTextColor_RenamedItemTitle);
 			}
 
-			swprintf(formatted, 256, L"<font color=\"#%08x\">%ls</font>",colour,thisString.c_str());				
+			swprintf(formatted, 256, L"<font color=\"#%08x\">%ls</font>",colour,thisString.c_str());
 			thisString = formatted;
 		}
 		desc.append( thisString );
