@@ -1441,22 +1441,14 @@ xcopy /q /y /i /s /e $(ProjectDir)Durango\CU  $(LayoutDir)Image\Loose\CU</Comman
     </Link>
     <PostBuildEvent>
       <Message>Copying game assets to output directory</Message>
-      <Command>mkdir "$(OutDir)music" 2&gt;nul
-mkdir "$(OutDir)Windows64\GameHDD" 2&gt;nul
-mkdir "$(OutDir)Common\Media" 2&gt;nul
-mkdir "$(OutDir)Common\res" 2&gt;nul
-mkdir "$(OutDir)Common\Trial" 2&gt;nul
-mkdir "$(OutDir)Common\Tutorial" 2&gt;nul
-mkdir "$(OutDir)Windows64Media" 2&gt;nul
-
-xcopy /q /y /i /s /e "$(ProjectDir)music" "$(OutDir)music" || exit /b 0
-xcopy /q /y /i /s /e "$(ProjectDir)Windows64\GameHDD" "$(OutDir)Windows64\GameHDD" || exit /b 0
-xcopy /q /y /i /s /e "$(ProjectDir)Common\Media" "$(OutDir)Common\Media" || exit /b 0
-xcopy /q /y /i /s /e "$(ProjectDir)Common\res" "$(OutDir)Common\res" || exit /b 0
-xcopy /q /y /i /s /e "$(ProjectDir)Common\Trial" "$(OutDir)Common\Trial" || exit /b 0
-xcopy /q /y /i /s /e "$(ProjectDir)Common\Tutorial" "$(OutDir)Common\Tutorial" || exit /b 0
-xcopy /q /y /i /s /e "$(ProjectDir)DurangoMedia" "$(OutDir)Windows64Media" || exit /b 0
-xcopy /q /y /i /s /e "$(ProjectDir)Windows64Media" "$(OutDir)Windows64Media" || exit /b 0
+      <Command>robocopy "$(ProjectDir)music" "$(OutDir)music" /e /r:0 /w:0 &gt;nul
+robocopy "$(ProjectDir)Windows64\GameHDD" "$(OutDir)Windows64\GameHDD" /e /r:0 /w:0 &gt;nul
+robocopy "$(ProjectDir)Common\Media" "$(OutDir)Common\Media" /e /r:0 /w:0 &gt;nul
+robocopy "$(ProjectDir)Common\res" "$(OutDir)Common\res" /e /r:0 /w:0 &gt;nul
+robocopy "$(ProjectDir)Common\Trial" "$(OutDir)Common\Trial" /e /r:0 /w:0 &gt;nul
+robocopy "$(ProjectDir)Common\Tutorial" "$(OutDir)Common\Tutorial" /e /r:0 /w:0 &gt;nul
+robocopy "$(ProjectDir)DurangoMedia" "$(OutDir)Windows64Media" /e /r:0 /w:0 &gt;nul
+robocopy "$(ProjectDir)Windows64Media" "$(OutDir)Windows64Media" /e /r:0 /w:0 &gt;nul
 
 exit /b 0</Command>
     </PostBuildEvent>
