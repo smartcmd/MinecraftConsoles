@@ -23,7 +23,7 @@ DispenserTileEntity::~DispenserTileEntity()
 	delete random;
 }
 
-unsigned int DispenserTileEntity::getContainerSize() 
+unsigned int DispenserTileEntity::getContainerSize()
 {
 	return 9;
 }
@@ -33,7 +33,7 @@ shared_ptr<ItemInstance> DispenserTileEntity::getItem(unsigned int slot)
 	return items[slot];
 }
 
-shared_ptr<ItemInstance> DispenserTileEntity::removeItem(unsigned int slot, int count) 
+shared_ptr<ItemInstance> DispenserTileEntity::removeItem(unsigned int slot, int count)
 {
 	if (items[slot] != NULL)
 	{
@@ -45,8 +45,8 @@ shared_ptr<ItemInstance> DispenserTileEntity::removeItem(unsigned int slot, int 
 			// 4J Stu - Fix for duplication glitch
 			if(item->count <= 0) return nullptr;
 			return item;
-		} 
-		else 
+		}
+		else
 		{
 			shared_ptr<ItemInstance> i = items[slot]->remove(count);
 			if (items[slot]->count == 0) items[slot] = nullptr;
@@ -71,7 +71,7 @@ shared_ptr<ItemInstance> DispenserTileEntity::removeItemNoUpdate(int slot)
 }
 
 // 4J-PB added for spawn eggs not being useable due to limits, so add them in again
-void DispenserTileEntity::AddItemBack(shared_ptr<ItemInstance>item, unsigned int slot) 
+void DispenserTileEntity::AddItemBack(shared_ptr<ItemInstance>item, unsigned int slot)
 {
 	if (items[slot] != NULL)
 	{
@@ -80,7 +80,7 @@ void DispenserTileEntity::AddItemBack(shared_ptr<ItemInstance>item, unsigned int
 		{
 			items[slot]->count++;
 			setChanged();
-		}	
+		}
 	}
 	else
 	{
@@ -91,7 +91,7 @@ void DispenserTileEntity::AddItemBack(shared_ptr<ItemInstance>item, unsigned int
 }
 /**
 * Removes an item with the given id and returns true if one was found.
-* 
+*
 * @param itemId
 * @return
 */
@@ -114,7 +114,7 @@ int DispenserTileEntity::getRandomSlot()
 	int replaceOdds = 1;
 	for (unsigned int i = 0; i < items.length; i++)
 	{
-		if (items[i] != NULL && random->nextInt(replaceOdds++) == 0) 
+		if (items[i] != NULL && random->nextInt(replaceOdds++) == 0)
 		{
 			replaceSlot = i;
 		}
@@ -123,7 +123,7 @@ int DispenserTileEntity::getRandomSlot()
 	return replaceSlot;
 }
 
-void DispenserTileEntity::setItem(unsigned int slot, shared_ptr<ItemInstance> item) 
+void DispenserTileEntity::setItem(unsigned int slot, shared_ptr<ItemInstance> item)
 {
 	items[slot] = item;
 	if (item != NULL && item->count > getMaxStackSize()) item->count = getMaxStackSize();
@@ -144,7 +144,7 @@ int DispenserTileEntity::addItem(shared_ptr<ItemInstance> item)
 	return -1;
 }
 
-wstring DispenserTileEntity::getName() 
+wstring DispenserTileEntity::getName()
 {
 	return hasCustomName() ? name : app.GetString(IDS_TILE_DISPENSER);
 }
@@ -184,7 +184,7 @@ void DispenserTileEntity::save(CompoundTag *base)
 	TileEntity::save(base);
 	ListTag<CompoundTag> *listTag = new ListTag<CompoundTag>;
 
-	for (unsigned int i = 0; i < items.length; i++) 
+	for (unsigned int i = 0; i < items.length; i++)
 	{
 		if (items[i] != NULL)
 		{
@@ -198,7 +198,7 @@ void DispenserTileEntity::save(CompoundTag *base)
 	if (hasCustomName()) base->putString(L"CustomName", name);
 }
 
-int DispenserTileEntity::getMaxStackSize() 
+int DispenserTileEntity::getMaxStackSize() const
 {
 	return Container::LARGE_MAX_STACK_SIZE;
 }

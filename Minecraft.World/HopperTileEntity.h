@@ -35,7 +35,7 @@ public:
 	virtual wstring getCustomName();
 	virtual bool hasCustomName();
 	virtual void setCustomName(const wstring &name);
-	virtual int getMaxStackSize();
+	virtual int getMaxStackSize() const;
 	virtual bool stillValid(shared_ptr<Player> player);
 	virtual void startOpen();
 	virtual void stopOpen();

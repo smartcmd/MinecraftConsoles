@@ -903,7 +903,7 @@ void GameRenderer::updateLightTexture(float a)
 			if (_g > 1) _g = 1;
 			if (_b > 1) _b = 1;
 
-			float brightness = 0.0f;	// 4J - TODO - was mc->options->gamma;
+			float brightness = mc->options->gamma;
 
 			float ir = 1 - _r;
 			float ig = 1 - _g;

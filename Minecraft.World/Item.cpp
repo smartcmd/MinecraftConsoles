@@ -291,12 +291,12 @@ void Item::staticCtor()
 	Item::helmet_iron		= (ArmorItem *) ( ( new ArmorItem(50, ArmorItem::ArmorMaterial::IRON, 2, ArmorItem::SLOT_HEAD) )			->setBaseItemTypeAndMaterial(eBaseItemType_helmet,	eMaterial_iron)			->setIconName(L"helmetIron")->setDescriptionId(IDS_ITEM_HELMET_IRON)->setUseDescriptionId(IDS_DESC_HELMET_IRON) );
 	Item::helmet_diamond	= (ArmorItem *) ( ( new ArmorItem(54, ArmorItem::ArmorMaterial::DIAMOND, 3, ArmorItem::SLOT_HEAD) )			->setBaseItemTypeAndMaterial(eBaseItemType_helmet,	eMaterial_diamond)		->setIconName(L"helmetDiamond")->setDescriptionId(IDS_ITEM_HELMET_DIAMOND)->setUseDescriptionId(IDS_DESC_HELMET_DIAMOND) );
 	Item::helmet_gold		= (ArmorItem *) ( ( new ArmorItem(58, ArmorItem::ArmorMaterial::GOLD, 4, ArmorItem::SLOT_HEAD) )			->setBaseItemTypeAndMaterial(eBaseItemType_helmet,	eMaterial_gold)			->setIconName(L"helmetGold")->setDescriptionId(IDS_ITEM_HELMET_GOLD)->setUseDescriptionId(IDS_DESC_HELMET_GOLD) );
-	
+
 	Item::chestplate_leather	= (ArmorItem *) ( ( new ArmorItem(43, ArmorItem::ArmorMaterial::CLOTH, 0, ArmorItem::SLOT_TORSO) )			->setBaseItemTypeAndMaterial(eBaseItemType_chestplate,	eMaterial_cloth)	->setIconName(L"chestplateCloth")->setDescriptionId(IDS_ITEM_CHESTPLATE_CLOTH)->setUseDescriptionId(IDS_DESC_CHESTPLATE_LEATHER) );
 	Item::chestplate_iron		= (ArmorItem *) ( ( new ArmorItem(51, ArmorItem::ArmorMaterial::IRON, 2, ArmorItem::SLOT_TORSO) )			->setBaseItemTypeAndMaterial(eBaseItemType_chestplate,	eMaterial_iron)		->setIconName(L"chestplateIron")->setDescriptionId(IDS_ITEM_CHESTPLATE_IRON)->setUseDescriptionId(IDS_DESC_CHESTPLATE_IRON) );
 	Item::chestplate_diamond	= (ArmorItem *) ( ( new ArmorItem(55, ArmorItem::ArmorMaterial::DIAMOND, 3, ArmorItem::SLOT_TORSO) )		->setBaseItemTypeAndMaterial(eBaseItemType_chestplate,	eMaterial_diamond)	->setIconName(L"chestplateDiamond")->setDescriptionId(IDS_ITEM_CHESTPLATE_DIAMOND)->setUseDescriptionId(IDS_DESC_CHESTPLATE_DIAMOND) );
 	Item::chestplate_gold		= (ArmorItem *) ( ( new ArmorItem(59, ArmorItem::ArmorMaterial::GOLD, 4, ArmorItem::SLOT_TORSO) )			->setBaseItemTypeAndMaterial(eBaseItemType_chestplate,	eMaterial_gold)		->setIconName(L"chestplateGold")->setDescriptionId(IDS_ITEM_CHESTPLATE_GOLD)->setUseDescriptionId(IDS_DESC_CHESTPLATE_GOLD) );
-	
+
 	Item::leggings_leather	= (ArmorItem *) ( ( new ArmorItem(44, ArmorItem::ArmorMaterial::CLOTH, 0, ArmorItem::SLOT_LEGS) )			->setBaseItemTypeAndMaterial(eBaseItemType_leggings,	eMaterial_cloth)	->setIconName(L"leggingsCloth")->setDescriptionId(IDS_ITEM_LEGGINGS_CLOTH)->setUseDescriptionId(IDS_DESC_LEGGINGS_LEATHER) );
 	Item::leggings_iron		= (ArmorItem *) ( ( new ArmorItem(52, ArmorItem::ArmorMaterial::IRON, 2, ArmorItem::SLOT_LEGS) )			->setBaseItemTypeAndMaterial(eBaseItemType_leggings,	eMaterial_iron)		->setIconName(L"leggingsIron")->setDescriptionId(IDS_ITEM_LEGGINGS_IRON)->setUseDescriptionId(IDS_DESC_LEGGINGS_IRON) );
 	Item::leggings_diamond	= (ArmorItem *) ( ( new ArmorItem(56, ArmorItem::ArmorMaterial::DIAMOND, 3, ArmorItem::SLOT_LEGS) )			->setBaseItemTypeAndMaterial(eBaseItemType_leggings,	eMaterial_diamond)	->setIconName(L"leggingsDiamond")->setDescriptionId(IDS_ITEM_LEGGINGS_DIAMOND)->setUseDescriptionId(IDS_DESC_LEGGINGS_DIAMOND) );
@@ -319,14 +319,14 @@ void Item::staticCtor()
 	// 4J-PB - todo - add materials and base types to the ones below
 	Item::bucket_empty		= ( new BucketItem(69, 0) )					->setBaseItemTypeAndMaterial(eBaseItemType_utensil,	eMaterial_water)->setIconName(L"bucket")->setDescriptionId(IDS_ITEM_BUCKET)->setUseDescriptionId(IDS_DESC_BUCKET)->setMaxStackSize(16);
 	Item::bowl = ( new Item(25) )										->setBaseItemTypeAndMaterial(eBaseItemType_utensil,	eMaterial_wood)->setIconName(L"bowl")->setDescriptionId(IDS_ITEM_BOWL)->setUseDescriptionId(IDS_DESC_BOWL)->setMaxStackSize(64);
-	
+
 	Item::bucket_water		= ( new BucketItem(70, Tile::water_Id) )	->setIconName(L"bucketWater")->setDescriptionId(IDS_ITEM_BUCKET_WATER)->setCraftingRemainingItem(Item::bucket_empty)->setUseDescriptionId(IDS_DESC_BUCKET_WATER);
 	Item::bucket_lava		= ( new BucketItem(71, Tile::lava_Id) )		->setIconName(L"bucketLava")->setDescriptionId(IDS_ITEM_BUCKET_LAVA)->setCraftingRemainingItem(Item::bucket_empty)->setUseDescriptionId(IDS_DESC_BUCKET_LAVA);
 	Item::bucket_milk				= ( new MilkBucketItem(79) )->setIconName(L"milk")->setDescriptionId(IDS_ITEM_BUCKET_MILK)->setCraftingRemainingItem(Item::bucket_empty)->setUseDescriptionId(IDS_DESC_BUCKET_MILK);
 
 	Item::bow = (BowItem *)( new BowItem(5) )										->setIconName(L"bow")->setBaseItemTypeAndMaterial(eBaseItemType_bow,	eMaterial_bow)		->setDescriptionId(IDS_ITEM_BOW)->setUseDescriptionId(IDS_DESC_BOW);
 	Item::arrow = ( new Item(6) )													->setIconName(L"arrow")->setBaseItemTypeAndMaterial(eBaseItemType_bow,	eMaterial_arrow)	->setDescriptionId(IDS_ITEM_ARROW)->setUseDescriptionId(IDS_DESC_ARROW);
-	
+
 	Item::compass = ( new CompassItem(89) )											->setIconName(L"compass")->setBaseItemTypeAndMaterial(eBaseItemType_pockettool,	eMaterial_compass)		->setDescriptionId(IDS_ITEM_COMPASS)->setUseDescriptionId(IDS_DESC_COMPASS);
 	Item::clock = ( new ClockItem(91) )												->setIconName(L"clock")->setBaseItemTypeAndMaterial(eBaseItemType_pockettool,	eMaterial_clock)		->setDescriptionId(IDS_ITEM_CLOCK)->setUseDescriptionId(IDS_DESC_CLOCK);
 	Item::map = (MapItem *) ( new MapItem(102) )									->setIconName(L"map")->setBaseItemTypeAndMaterial(eBaseItemType_pockettool,	eMaterial_map)		->setDescriptionId(IDS_ITEM_MAP)->setUseDescriptionId(IDS_DESC_MAP);
@@ -357,7 +357,7 @@ void Item::staticCtor()
 																										->setBaseItemTypeAndMaterial(eBaseItemType_giltFruit,eMaterial_apple)->setIconName(L"appleGold")->setDescriptionId(IDS_ITEM_APPLE_GOLD);//->setUseDescriptionId(IDS_DESC_GOLDENAPPLE);
 
 	Item::sign = ( new SignItem(67) )															->setBaseItemTypeAndMaterial(eBaseItemType_HangingItem, eMaterial_wood)->setIconName(L"sign")->setDescriptionId(IDS_ITEM_SIGN)->setUseDescriptionId(IDS_DESC_SIGN);
-	
+
 
 
 	Item::minecart = ( new MinecartItem(72, Minecart::TYPE_RIDEABLE) )		->setIconName(L"minecart")->setDescriptionId(IDS_ITEM_MINECART)->setUseDescriptionId(IDS_DESC_MINECART);
@@ -396,7 +396,7 @@ void Item::staticCtor()
 	Item::cookie = ( new FoodItem(101, 2, FoodConstants::FOOD_SATURATION_POOR, false) )	->setIconName(L"cookie")->setDescriptionId(IDS_ITEM_COOKIE)->setUseDescriptionId(IDS_DESC_COOKIE);
 
 
-	Item::shears = (ShearsItem *)( new ShearsItem(103) )								->setIconName(L"shears")->setBaseItemTypeAndMaterial(eBaseItemType_devicetool,	eMaterial_shears)->setDescriptionId(IDS_ITEM_SHEARS)->setUseDescriptionId(IDS_DESC_SHEARS);	
+	Item::shears = (ShearsItem *)( new ShearsItem(103) )								->setIconName(L"shears")->setBaseItemTypeAndMaterial(eBaseItemType_devicetool,	eMaterial_shears)->setDescriptionId(IDS_ITEM_SHEARS)->setUseDescriptionId(IDS_DESC_SHEARS);
 
 	Item::melon = (new FoodItem(104, 2, FoodConstants::FOOD_SATURATION_LOW, false))		->setIconName(L"melon")->setDescriptionId(IDS_ITEM_MELON_SLICE)->setUseDescriptionId(IDS_DESC_MELON_SLICE);
 
@@ -455,7 +455,7 @@ void Item::staticCtor()
 	// putting the fire charge in as a torch, so that it stacks without being near the middle of the selection boxes
 	Item::fireball =			(new FireChargeItem(129))											->setBaseItemTypeAndMaterial(eBaseItemType_torch,	eMaterial_setfire)->setIconName(L"fireball")->setDescriptionId(IDS_ITEM_FIREBALL)->setUseDescriptionId(IDS_DESC_FIREBALL);
 	Item::frame =				(new HangingEntityItem(133,eTYPE_ITEM_FRAME))						->setBaseItemTypeAndMaterial(eBaseItemType_HangingItem,	eMaterial_glass)->setIconName(L"frame")->setDescriptionId(IDS_ITEM_ITEMFRAME)->setUseDescriptionId(IDS_DESC_ITEMFRAME);
-	
+
 
 	// TU12
 	Item::skull =				(new SkullItem(141))												->setIconName(L"skull")->setDescriptionId(IDS_ITEM_SKULL)->setUseDescriptionId(IDS_DESC_SKULL);
@@ -501,7 +501,7 @@ void Item::staticCtor()
 void Item::staticInit()
 {
 	Stats::buildItemStats();
-} 
+}
 
 
 _Tier::Tier(int level, int uses, float speed, float damage, int enchantmentValue) :
@@ -668,7 +668,7 @@ shared_ptr<ItemInstance> Item::useTimeDepleted(shared_ptr<ItemInstance> itemInst
 	return itemInstance;
 }
 
-int Item::getMaxStackSize()
+int Item::getMaxStackSize() const
 {
 	return maxStackSize;
 }
@@ -711,7 +711,7 @@ bool Item::canBeDepleted()
 
 /**
 * Returns true when the item was used to deal more than default damage
-* 
+*
 * @param itemInstance
 * @param mob
 * @param attacker
@@ -724,7 +724,7 @@ bool Item::hurtEnemy(shared_ptr<ItemInstance> itemInstance, shared_ptr<LivingEnt
 
 /**
 * Returns true when the item was used to mine more efficiently
-* 
+*
 * @param itemInstance
 * @param tile
 * @param x

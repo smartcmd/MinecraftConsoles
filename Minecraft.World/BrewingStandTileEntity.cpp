@@ -10,7 +10,7 @@
 int slotsForUp [] = { BrewingStandTileEntity::INGREDIENT_SLOT };
 int slotsForOtherFaces [] = { 0, 1, 2 };
 
-intArray BrewingStandTileEntity::SLOTS_FOR_UP = intArray(slotsForUp, 1);		
+intArray BrewingStandTileEntity::SLOTS_FOR_UP = intArray(slotsForUp, 1);
 intArray BrewingStandTileEntity::SLOTS_FOR_OTHER_FACES = intArray(slotsForOtherFaces, 3);
 
 BrewingStandTileEntity::BrewingStandTileEntity()
@@ -156,7 +156,7 @@ bool BrewingStandTileEntity::isBrewable()
 	}
 	else
 	{
-		if (!Item::items[ingredient->id]->hasPotionBrewingFormula() && ingredient->id != Item::bucket_water_Id && ingredient->id != Item::netherwart_seeds_Id) 
+		if (!Item::items[ingredient->id]->hasPotionBrewingFormula() && ingredient->id != Item::bucket_water_Id && ingredient->id != Item::netherwart_seeds_Id)
 		{
 			return false;
 		}
@@ -327,7 +327,7 @@ void BrewingStandTileEntity::save(CompoundTag *base)
 
 	for (int i = 0; i < items.length; i++)
 	{
-		if (items[i] != NULL) 
+		if (items[i] != NULL)
 		{
 			CompoundTag *tag = new CompoundTag();
 			tag->putByte(L"Slot", (byte) i);
@@ -356,7 +356,7 @@ shared_ptr<ItemInstance> BrewingStandTileEntity::removeItem(unsigned int slot, i
 
 	if (slot >= 0 && slot < items.length && items[slot] != NULL)
 	{
-		if (items[slot]->count <= count) 
+		if (items[slot]->count <= count)
 		{
 			shared_ptr<ItemInstance> item = items[slot];
 			items[slot] = nullptr;
@@ -364,8 +364,8 @@ shared_ptr<ItemInstance> BrewingStandTileEntity::removeItem(unsigned int slot, i
 			// 4J Stu - Fix for duplication glitch
 			if(item->count <= 0) return nullptr;
 			return item;
-		} 
-		else 
+		}
+		else
 		{
 			shared_ptr<ItemInstance> i = items[slot]->remove(count);
 			if (items[slot]->count == 0) items[slot] = nullptr;
@@ -397,7 +397,7 @@ void BrewingStandTileEntity::setItem(unsigned int slot, shared_ptr<ItemInstance>
 	}
 }
 
-int BrewingStandTileEntity::getMaxStackSize()
+int BrewingStandTileEntity::getMaxStackSize() const
 {
 	// this value is not used for the potion slots
 	return 64;

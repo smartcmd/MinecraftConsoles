@@ -346,7 +346,7 @@ void BeaconTileEntity::setCustomName(const wstring &name)
 	this->name = name;
 }
 
-int BeaconTileEntity::getMaxStackSize()
+int BeaconTileEntity::getMaxStackSize() const
 {
 	return 1;
 }

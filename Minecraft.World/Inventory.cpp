@@ -87,7 +87,7 @@ int Inventory::getSlotWithRemainingSpace(shared_ptr<ItemInstance> item)
 {
 	for (unsigned int i = 0; i < items.length; i++)
 	{
-		if (items[i] != NULL && items[i]->id == item->id && items[i]->isStackable() 
+		if (items[i] != NULL && items[i]->id == item->id && items[i]->isStackable()
 			&& items[i]->count < items[i]->getMaxStackSize() && items[i]->count < getMaxStackSize()
 			&& (!items[i]->isStackedByData() || items[i]->getAuxValue() == item->getAuxValue())
 			&& ItemInstance::tagMatches(items[i], item))
@@ -228,7 +228,7 @@ int Inventory::addResource(shared_ptr<ItemInstance> itemInstance)
 		if (slot < 0) return count;
 		if (items[slot] == NULL)
 		{
-			items[slot] = ItemInstance::clone(itemInstance);			
+			items[slot] = ItemInstance::clone(itemInstance);
 			player->handleCollectItem(itemInstance);
 		}
 		return 0;
@@ -299,14 +299,14 @@ bool Inventory::removeResource(int type,int iAuxVal)
 
 void Inventory::removeResources(shared_ptr<ItemInstance> item)
 {
-	if(item == NULL) return; 
+	if(item == NULL) return;
 
 	int countToRemove = item->count;
 	for (unsigned int i = 0; i < items.length; i++)
 	{
 		if (items[i] != NULL && items[i]->sameItemWithTags(item))
 		{
-			int slotCount = items[i]->count;			
+			int slotCount = items[i]->count;
 			items[i]->count -= countToRemove;
 			if(slotCount < countToRemove)
 			{
@@ -387,7 +387,7 @@ bool Inventory::add(shared_ptr<ItemInstance> item)
 	{
 		player->handleCollectItem(item);
 
-		player->awardStat(	
+		player->awardStat(
 			GenericStats::itemsCollected(item->id, item->getAuxValue()),
 			GenericStats::param_itemsCollected(item->id, item->getAuxValue(), item->GetCount()));
 
@@ -475,7 +475,7 @@ void Inventory::setItem(unsigned int slot, shared_ptr<ItemInstance> item)
 	else
 	{
 		items[slot] = item;
-	}	
+	}
 	player->handleCollectItem(item);
 	/*
 	ItemInstanceArray& pile = items;
@@ -592,7 +592,7 @@ bool Inventory::hasCustomName()
 	return false;
 }
 
-int Inventory::getMaxStackSize()
+int Inventory::getMaxStackSize() const
 {
 	return MAX_INVENTORY_STACK_SIZE;
 }

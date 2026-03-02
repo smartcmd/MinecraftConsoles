@@ -31,17 +31,17 @@ void ItemInstance::_init(int id, int count, int auxValue)
 	this->m_bForceNumberDisplay=false;
 }
 
-ItemInstance::ItemInstance(Tile *tile) 
+ItemInstance::ItemInstance(Tile *tile)
 {
 	_init(tile->id, 1, 0);
 }
 
-ItemInstance::ItemInstance(Tile *tile, int count) 
+ItemInstance::ItemInstance(Tile *tile, int count)
 {
 	_init(tile->id, count, 0);
 }
 // 4J-PB - added
-ItemInstance::ItemInstance(MapItem *item, int count) 
+ItemInstance::ItemInstance(MapItem *item, int count)
 {
 	_init(item->id, count, 0);
 }
@@ -51,19 +51,19 @@ ItemInstance::ItemInstance(Tile *tile, int count, int auxValue)
 	_init(tile->id, count, auxValue);
 }
 
-ItemInstance::ItemInstance(Item *item) 
+ItemInstance::ItemInstance(Item *item)
 {
 	_init(item->id, 1, 0);
 }
 
 
 
-ItemInstance::ItemInstance(Item *item, int count) 
+ItemInstance::ItemInstance(Item *item, int count)
 {
 	_init(item->id, count, 0);
 }
 
-ItemInstance::ItemInstance(Item *item, int count, int auxValue) 
+ItemInstance::ItemInstance(Item *item, int count, int auxValue)
 {
 	_init(item->id, count, auxValue);
 }
@@ -89,7 +89,7 @@ ItemInstance::~ItemInstance()
 	if(tag != NULL) delete tag;
 }
 
-shared_ptr<ItemInstance> ItemInstance::remove(int count) 
+shared_ptr<ItemInstance> ItemInstance::remove(int count)
 {
 	shared_ptr<ItemInstance> ii = shared_ptr<ItemInstance>( new ItemInstance(id, count, auxValue) );
 	if (tag != NULL) ii->tag = (CompoundTag *) tag->copy();
@@ -123,17 +123,17 @@ bool ItemInstance::useOn(shared_ptr<Player> player, Level *level, int x, int y, 
 	return getItem()->useOn(shared_from_this(), player, level, x, y, z, face, clickX, clickY, clickZ, bTestUseOnOnly);
 }
 
-float ItemInstance::getDestroySpeed(Tile *tile) 
+float ItemInstance::getDestroySpeed(Tile *tile)
 {
 	return getItem()->getDestroySpeed(shared_from_this(), tile);
 }
 
-bool ItemInstance::TestUse(shared_ptr<ItemInstance> itemInstance, Level *level, shared_ptr<Player> player) 
+bool ItemInstance::TestUse(shared_ptr<ItemInstance> itemInstance, Level *level, shared_ptr<Player> player)
 {
 	return getItem()->TestUse( itemInstance, level, player);
 }
 
-shared_ptr<ItemInstance> ItemInstance::use(Level *level, shared_ptr<Player> player) 
+shared_ptr<ItemInstance> ItemInstance::use(Level *level, shared_ptr<Player> player)
 {
 	return getItem()->use(shared_from_this(), level, player);
 }
@@ -143,7 +143,7 @@ shared_ptr<ItemInstance> ItemInstance::useTimeDepleted(Level *level, shared_ptr<
 	return getItem()->useTimeDepleted(shared_from_this(), level, player);
 }
 
-CompoundTag *ItemInstance::save(CompoundTag *compoundTag) 
+CompoundTag *ItemInstance::save(CompoundTag *compoundTag)
 {
 	compoundTag->putShort(L"id", (short) id);
 	compoundTag->putByte(L"Count", (byte) count);
@@ -169,7 +169,7 @@ void ItemInstance::load(CompoundTag *compoundTag)
 	}
 }
 
-int ItemInstance::getMaxStackSize()
+int ItemInstance::getMaxStackSize() const
 {
 	return getItem()->getMaxStackSize();
 }
@@ -179,7 +179,7 @@ bool ItemInstance::isStackable()
 	return getMaxStackSize() > 1 && (!isDamageableItem() || !isDamaged());
 }
 
-bool ItemInstance::isDamageableItem() 
+bool ItemInstance::isDamageableItem()
 {
 	return Item::items[id]->getMaxDamage() > 0;
 }
@@ -187,7 +187,7 @@ bool ItemInstance::isDamageableItem()
 /**
 * Returns true if this item type only can be stacked with items that have
 * the same auxValue data.
-* 
+*
 * @return
 */
 
@@ -196,7 +196,7 @@ bool ItemInstance::isStackedByData()
 	return Item::items[id]->isStackedByData();
 }
 
-bool ItemInstance::isDamaged() 
+bool ItemInstance::isDamaged()
 {
 	return isDamageableItem() && auxValue > 0;
 }
@@ -280,13 +280,13 @@ void ItemInstance::hurtAndBreak(int dmg, shared_ptr<LivingEntity> owner)
 
 void ItemInstance::hurtEnemy(shared_ptr<LivingEntity> mob, shared_ptr<Player> attacker)
 {
-	//bool used = 
+	//bool used =
 	Item::items[id]->hurtEnemy(shared_from_this(), mob, attacker);
 }
 
-void ItemInstance::mineBlock(Level *level, int tile, int x, int y, int z, shared_ptr<Player> owner) 
+void ItemInstance::mineBlock(Level *level, int tile, int x, int y, int z, shared_ptr<Player> owner)
 {
-	//bool used = 
+	//bool used =
 	Item::items[id]->mineBlock( shared_from_this(), level, tile, x, y, z, owner);
 }
 
@@ -342,7 +342,7 @@ bool ItemInstance::tagMatches(shared_ptr<ItemInstance> a, shared_ptr<ItemInstanc
 	return true;
 }
 
-bool ItemInstance::matches(shared_ptr<ItemInstance> a, shared_ptr<ItemInstance> b) 
+bool ItemInstance::matches(shared_ptr<ItemInstance> a, shared_ptr<ItemInstance> b)
 {
 	if (a == NULL && b == NULL) return true;
 	if (a == NULL || b == NULL) return false;
@@ -368,7 +368,7 @@ bool ItemInstance::matches(shared_ptr<ItemInstance> b)
 /**
 * Checks if this item is the same item as the other one, disregarding the
 * 'count' value.
-* 
+*
 * @param b
 * @return
 */
@@ -393,17 +393,17 @@ bool ItemInstance::sameItemWithTags(shared_ptr<ItemInstance> b)
 }
 
 // 4J Stu - Added this for the one time when we compare with a non-shared pointer
-bool ItemInstance::sameItem_not_shared(ItemInstance *b)
+bool ItemInstance::sameItem_not_shared(const ItemInstance *b)
 {
 	return id == b->id && auxValue == b->auxValue;
 }
 
-unsigned int ItemInstance::getUseDescriptionId() 
+unsigned int ItemInstance::getUseDescriptionId()
 {
 	return Item::items[id]->getUseDescriptionId(shared_from_this());
 }
 
-unsigned int ItemInstance::getDescriptionId(int iData /*= -1*/) 
+unsigned int ItemInstance::getDescriptionId(int iData /*= -1*/)
 {
 	return Item::items[id]->getDescriptionId(shared_from_this());
 }
@@ -420,7 +420,7 @@ shared_ptr<ItemInstance> ItemInstance::clone(shared_ptr<ItemInstance> item)
 	return item == NULL ? nullptr : item->copy();
 }
 
-wstring ItemInstance::toString() 
+wstring ItemInstance::toString()
 {
 	//return count + "x" + Item::items[id]->getDescriptionId() + "@" + auxValue;
 
@@ -661,7 +661,7 @@ vector<HtmlString> *ItemInstance::getHoverText(shared_ptr<Player> player, bool a
 			lines->push_back(it->second->getHoverText(it->first));
 		}
 	}
-	
+
 	// Delete modifiers map
 	for (AUTO_VAR(it, modifiers->begin()); it != modifiers->end(); ++it)
 	{
@@ -760,17 +760,17 @@ bool ItemInstance::mayBePlacedInAdventureMode()
 	return getItem()->mayBePlacedInAdventureMode();
 }
 
-bool ItemInstance::isFramed() 
+bool ItemInstance::isFramed()
 {
 	return frame != NULL;
 }
 
-void ItemInstance::setFramed(shared_ptr<ItemFrame> frame) 
+void ItemInstance::setFramed(shared_ptr<ItemFrame> frame)
 {
 	this->frame = frame;
 }
 
-shared_ptr<ItemFrame> ItemInstance::getFrame() 
+shared_ptr<ItemFrame> ItemInstance::getFrame()
 {
 	return frame;
 }
@@ -807,8 +807,8 @@ attrAttrModMap *ItemInstance::getAttributeModifiers()
 			CompoundTag *entry = entries->get(i);
 			AttributeModifier *attribute = SharedMonsterAttributes::loadAttributeModifier(entry);
 
-			// 4J Not sure why but this is a check that the attribute ID is not empty 
-			/*if (attribute->getId()->getLeastSignificantBits() != 0 && attribute->getId()->getMostSignificantBits() != 0) 
+			// 4J Not sure why but this is a check that the attribute ID is not empty
+			/*if (attribute->getId()->getLeastSignificantBits() != 0 && attribute->getId()->getMostSignificantBits() != 0)
 			{*/
 			result->insert(std::pair<eATTRIBUTE_ID, AttributeModifier *>(static_cast<eATTRIBUTE_ID>(entry->getInt(L"ID")), attribute));
 			/*}*/
@@ -848,7 +848,7 @@ int ItemInstance::get4JData()
 	}
 }
 // 4J Added - to show strength on potions
-bool ItemInstance::hasPotionStrengthBar() 
+bool ItemInstance::hasPotionStrengthBar()
 {
 	// exclude a bottle of water from this
 	if((id==Item::potion_Id) && (auxValue !=0))// && (!MACRO_POTION_IS_AKWARD(auxValue))) 4J-PB leaving the bar on an awkward potion so we can differentiate it from a water bottle
@@ -859,7 +859,7 @@ bool ItemInstance::hasPotionStrengthBar()
 	return false;
 }
 
-int ItemInstance::GetPotionStrength() 
+int ItemInstance::GetPotionStrength()
 {
 	if(MACRO_POTION_IS_INSTANTDAMAGE(auxValue) || MACRO_POTION_IS_INSTANTHEALTH(auxValue) )
 	{

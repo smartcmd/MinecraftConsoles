@@ -95,7 +95,7 @@ void CraftingContainer::setItem(unsigned int slot, shared_ptr<ItemInstance> item
 	if(menu) menu->slotsChanged();
 }
 
-int CraftingContainer::getMaxStackSize()
+int CraftingContainer::getMaxStackSize() const
 {
 	return Container::LARGE_MAX_STACK_SIZE;
 }

@@ -14,7 +14,7 @@ private:
 		PaymentSlot(shared_ptr<Container> container, int slot, int x, int y);
 
 		bool mayPlace(shared_ptr<ItemInstance> item);
-		int getMaxStackSize();
+		int getMaxStackSize() const;
 	};
 
 public:

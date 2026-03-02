@@ -45,7 +45,7 @@ public:
 	virtual bool hasCustomName();
 	virtual void load(CompoundTag *base);
 	virtual void save(CompoundTag *base);
-	virtual int getMaxStackSize();
+	virtual int getMaxStackSize() const;
 	virtual bool stillValid(shared_ptr<Player> player);
 	virtual void setChanged();
 
@@ -55,5 +55,5 @@ public:
 
 	// 4J Added
 	virtual shared_ptr<TileEntity> clone();
-	void AddItemBack(shared_ptr<ItemInstance>item, unsigned int slot); 
+	void AddItemBack(shared_ptr<ItemInstance>item, unsigned int slot);
 };

@@ -131,7 +131,7 @@ void HopperTileEntity::setCustomName(const wstring &name)
 	this->name = name;
 }
 
-int HopperTileEntity::getMaxStackSize()
+int HopperTileEntity::getMaxStackSize() const
 {
 	return Container::LARGE_MAX_STACK_SIZE;
 }

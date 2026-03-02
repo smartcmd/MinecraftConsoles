@@ -12,7 +12,7 @@ public:
 
 private:
 	ItemInstanceArray items;
-	static intArray SLOTS_FOR_UP;		
+	static intArray SLOTS_FOR_UP;
 	static intArray SLOTS_FOR_OTHER_FACES;
 
 	int brewTime;
@@ -37,7 +37,7 @@ private:
 	void doBrew();
 
 	int applyIngredient(int currentBrew, shared_ptr<ItemInstance> ingredient);
-   
+
 public:
 	virtual void load(CompoundTag *base);
 	virtual void save(CompoundTag *base);
@@ -45,7 +45,7 @@ public:
 	virtual shared_ptr<ItemInstance> removeItem(unsigned int slot, int i);
 	virtual shared_ptr<ItemInstance> removeItemNoUpdate(int slot);
 	virtual void setItem(unsigned int slot, shared_ptr<ItemInstance> item);
-	virtual int getMaxStackSize();
+	virtual int getMaxStackSize() const;
 	virtual bool stillValid(shared_ptr<Player> player);
 	virtual void startOpen();
 	virtual void stopOpen();

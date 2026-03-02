@@ -2,11 +2,11 @@
 
 [![Discord](https://img.shields.io/badge/Discord-Join%20Server-5865F2?logo=discord&logoColor=white)](https://discord.gg/5CSzhc9t)
 
-![Tutorial World](.github/IMG_8725.png)
+![Tutorial World](.github/TutorialWorld.png)
 
 ## Introduction
 
-This project contains the source code of Minecraft Legacy Console Edition v1.3.0494.0 from https://archive.org/details/minecraft-legacy-console-edition-source-code, with some fixes and improvements applied
+This project contains the source code of Minecraft Legacy Console Edition v1.6.0560.0 (TU19) from https://archive.org/details/minecraft-legacy-console-edition-source-code, with some fixes and improvements applied
 
 [Nightly Build](https://github.com/smartcmd/MinecraftConsoles/releases/tag/nightly)
 
@@ -42,7 +42,7 @@ This project contains the source code of Minecraft Legacy Console Edition v1.3.0
 - **Use / Place**: `Right Click`
 - **Select Item**: `Mouse Wheel` or keys `1` to `9`
 - **Accept or Decline Tutorial hints**: `Enter` to accept and `B` to decline
-- **Host Options**: `TAB`
+- **Game Info (Player list and Host Options)**: `TAB`
 - **Toggle Debug Info**: `F3`
 - **Open Debug Overlay**: `F4`
 

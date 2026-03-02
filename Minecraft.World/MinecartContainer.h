@@ -26,7 +26,7 @@ public:
 	virtual void stopOpen();
 	virtual bool canPlaceItem(int slot, shared_ptr<ItemInstance> item);
 	virtual wstring getName();
-	virtual int getMaxStackSize();
+	virtual int getMaxStackSize() const;
 	virtual void changeDimension(int i);
 	virtual void remove();
 
@@ -41,7 +41,7 @@ protected:
 	virtual void applyNaturalSlowdown();
 
 public:
-	
+
 	// 4J Stu - For container
 	virtual bool hasCustomName() { return Minecart::hasCustomName(); }
 	virtual wstring getCustomName() { return Minecart::getCustomName(); }

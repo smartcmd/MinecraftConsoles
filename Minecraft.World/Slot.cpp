@@ -91,7 +91,7 @@ void Slot::setChanged()
 	container->setChanged();
 }
 
-int Slot::getMaxStackSize()
+int Slot::getMaxStackSize() const
 {
 	return container->getMaxStackSize();
 }

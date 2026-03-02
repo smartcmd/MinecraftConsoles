@@ -101,7 +101,7 @@ shared_ptr<ItemInstance> BrewingStandMenu::quickMoveStack(shared_ptr<Player> pla
 		else if (slotIndex >= INV_SLOT_START && slotIndex < INV_SLOT_END)
 		{
 			// 4J-PB - if the item is an ingredient, quickmove it into the ingredient slot
-			if( (Item::items[stack->id]->hasPotionBrewingFormula() || (stack->id == Item::netherwart_seeds_Id) ) && 
+			if( (Item::items[stack->id]->hasPotionBrewingFormula() || (stack->id == Item::netherwart_seeds_Id) ) &&
 				(!IngredientSlot->hasItem() || (stack->id==IngredientSlot->getItem()->id) ) )
 			{
 				if(!moveItemStackTo(stack, INGREDIENT_SLOT, INGREDIENT_SLOT+1, false))
@@ -125,7 +125,7 @@ shared_ptr<ItemInstance> BrewingStandMenu::quickMoveStack(shared_ptr<Player> pla
 		else if (slotIndex >= USE_ROW_SLOT_START && slotIndex < USE_ROW_SLOT_END)
 		{
 			// 4J-PB - if the item is an ingredient, quickmove it into the ingredient slot
-			if((Item::items[stack->id]->hasPotionBrewingFormula() || (stack->id == Item::netherwart_seeds_Id)) && 
+			if((Item::items[stack->id]->hasPotionBrewingFormula() || (stack->id == Item::netherwart_seeds_Id)) &&
 				(!IngredientSlot->hasItem() || (stack->id==IngredientSlot->getItem()->id) ))
 			{
 				if(!moveItemStackTo(stack, INGREDIENT_SLOT, INGREDIENT_SLOT+1, false))
@@ -140,7 +140,7 @@ shared_ptr<ItemInstance> BrewingStandMenu::quickMoveStack(shared_ptr<Player> pla
 				{
 					return nullptr;
 				}
-			}			
+			}
 			else if (!moveItemStackTo(stack, INV_SLOT_START, INV_SLOT_END, false))
 			{
 				return nullptr;
@@ -183,7 +183,7 @@ bool BrewingStandMenu::PotionSlot::mayPlace(shared_ptr<ItemInstance> item)
 	return mayPlaceItem(item);
 }
 
-int BrewingStandMenu::PotionSlot::getMaxStackSize()
+int BrewingStandMenu::PotionSlot::getMaxStackSize() const
 {
 	return 1;
 }
@@ -231,7 +231,7 @@ bool BrewingStandMenu::IngredientsSlot::mayCombine(shared_ptr<ItemInstance> seco
 	return false;
 }
 
-int BrewingStandMenu::IngredientsSlot::getMaxStackSize()
+int BrewingStandMenu::IngredientsSlot::getMaxStackSize() const
 {
 	return 64;
 }

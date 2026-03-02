@@ -33,7 +33,7 @@ public:
 	wstring getName();
 	wstring getCustomName();
 	bool hasCustomName();
-	int getMaxStackSize();
+	int getMaxStackSize() const;
 	bool stillValid(shared_ptr<Player> player);
 	void startOpen();
 	void stopOpen();
