@@ -101,9 +101,7 @@ ServerLevel::ServerLevel(MinecraftServer *server, shared_ptr<LevelStorage>levelS
 
 	// 4J - this this used to be called in parent ctor via a virtual fn
 	chunkSource = createChunkSource();
-	// 4J - optimisation - keep direct reference of underlying cache here
-	chunkSourceCache = chunkSource->getCache();
-	chunkSourceXZSize = chunkSource->m_XZSize;
+	// chunkSourceCache/chunkSourceXZSize removed: infinite worlds use virtual dispatch
 
 	// 4J - The listener used to be added in MinecraftServer::loadLevel but we need it to be set up before we do the next couple of things, or else chunks get loaded before we have the entity tracker set up to listen to them
 	this->server = server;
@@ -758,8 +756,8 @@ void ServerLevel::setInitialSpawn(LevelSettings *levelSettings)
 	int xSpawn = 0; // (Level.MAX_LEVEL_SIZE - 100) * 0;
 	int ySpawn = dimension->getSpawnYPosition();
 	int zSpawn = 0; // (Level.MAX_LEVEL_SIZE - 100) * 0;
-	int minXZ = - (dimension->getXZSize() * 16 ) / 2;
-	int maxXZ = (dimension->getXZSize() * 16 ) / 2 - 1;
+	int minXZ = -Level::MAX_LEVEL_SIZE;
+	int maxXZ = Level::MAX_LEVEL_SIZE - 1;
 
 	if (findBiome != NULL)
 	{

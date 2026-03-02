@@ -65,8 +65,8 @@ ServerPlayer::ServerPlayer(MinecraftServer *server, Level *level, const wstring&
 		int attemptCount = 0;
 		int xx2, yy2, zz2;
 
-		int minXZ = - (level->dimension->getXZSize() * 16 ) / 2;
-		int maxXZ = (level->dimension->getXZSize() * 16 ) / 2 - 1;
+		int minXZ = -Level::MAX_LEVEL_SIZE;
+		int maxXZ = Level::MAX_LEVEL_SIZE - 1;
 
 		bool playerNear = false;
 		do

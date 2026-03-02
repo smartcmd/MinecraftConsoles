@@ -317,9 +317,8 @@ bool VillagePieces::VillagePiece::isOkBox(BoundingBox *box, StartPiece *startRoo
 	{
 		if( box->y0 > LOWEST_Y_POSITION ) bIsOk = true;
 
-		int xzSize = startRoom->m_level->getLevelData()->getXZSize();
-		int blockMin = -( (xzSize << 4) / 2) + 1;
-		int blockMax = ( (xzSize << 4) / 2 ) - 1;
+		int blockMin = -Level::MAX_LEVEL_SIZE + 1;
+		int blockMax = Level::MAX_LEVEL_SIZE - 1;
 
 		if(box->x0 <= blockMin) bIsOk = false;
 		if(box->z0 <= blockMin) bIsOk = false;

@@ -365,9 +365,8 @@ bool StrongholdPieces::StrongholdPiece::isOkBox(BoundingBox *box, StartPiece *st
 
 		if( startRoom != NULL && startRoom->m_level->getOriginalSaveVersion() >= SAVE_FILE_VERSION_MOVED_STRONGHOLD )
 		{
-			int xzSize = startRoom->m_level->getLevelData()->getXZSize();
-			int blockMin = -( (xzSize << 4) / 2) + 1;
-			int blockMax = ( (xzSize << 4) / 2 ) - 1;
+			int blockMin = -Level::MAX_LEVEL_SIZE + 1;
+			int blockMax = Level::MAX_LEVEL_SIZE - 1;
 
 			if(box->x0 <= blockMin) bIsOk = false;
 			if(box->z0 <= blockMin) bIsOk = false;

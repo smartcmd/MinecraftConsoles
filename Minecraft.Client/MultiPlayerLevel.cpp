@@ -30,9 +30,7 @@ MultiPlayerLevel::MultiPlayerLevel(ClientConnection *connection, LevelSettings *
 
 	// 4J - this this used to be called in parent ctor via a virtual fn
 	chunkSource = createChunkSource();
-	// 4J - optimisation - keep direct reference of underlying cache here
-	chunkSourceCache = chunkSource->getCache();
-	chunkSourceXZSize = chunkSource->m_XZSize;
+	// chunkSourceCache/chunkSourceXZSize removed: infinite worlds use virtual dispatch
 
 	// This also used to be called in parent ctor, but can't be called until chunkSource is created. Call now if required.
 	if (!levelData->isInitialized())
@@ -56,10 +54,8 @@ MultiPlayerLevel::MultiPlayerLevel(ClientConnection *connection, LevelSettings *
 	{
 		this->savedDataStorage = connection->savedDataStorage;
 	}
-	unshareCheckX = 0;
-	unshareCheckZ = 0;
-	compressCheckX = 0;
-	compressCheckZ = 0;
+	unshareCheckIdx = 0;
+	compressCheckIdx = 0;
 
 	// 4J Added, as there are some times when we don't want to add tile updates to the updatesToReset vector
 	m_bEnableResetChanges = true;
@@ -156,55 +152,42 @@ void MultiPlayerLevel::tick()
 	// 4J - added this section. Each tick we'll check a different block, and force it to share data if it has been
 	// more than 2 minutes since we last wanted to unshare it. This shouldn't really ever happen, and is added
 	// here as a safe guard against accumulated memory leaks should a lot of chunks become unshared over time.
-	
-	int ls = dimension->getXZSize();
+
+	// Infinite-worlds fix: iterate loaded chunk list directly instead of scanning up to
+	// ls=1,875,000 coordinate slots.
+
+	// Unshare check: visit one loaded chunk per tick, cycling through all loaded chunks.
 	if( g_NetworkManager.IsHost() )
 	{
-		if( Level::reallyHasChunk(unshareCheckX - ( ls / 2), unshareCheckZ - ( ls / 2 ) ) )
+		const vector<LevelChunk *>& loaded = chunkCache->getLoadedChunkList();
+		int n = (int)loaded.size();
+		if( n > 0 )
 		{
-			LevelChunk *lc = Level::getChunk(unshareCheckX - ( ls / 2), unshareCheckZ - ( ls / 2 ));
-			if( g_NetworkManager.IsHost() )
-			{
+			if( unshareCheckIdx >= n ) unshareCheckIdx = 0;
+			LevelChunk *lc = loaded[unshareCheckIdx];
+			if( lc )
 				lc->startSharingTilesAndData(1000 * 60 * 2);
-			}
-		}
-
-		unshareCheckX++;
-		if( unshareCheckX >= ls )
-		{
-			unshareCheckX = 0;
-			unshareCheckZ++;
-			if( unshareCheckZ >= ls )
-			{
-				unshareCheckZ = 0;
-			}
+			unshareCheckIdx = ( unshareCheckIdx + 1 ) % n;
 		}
 	}
 
-	// 4J added - also similar thing tosee if we can compress the lighting in any of these chunks. This is slightly different
-	// as it does try to make sure that at least one chunk has something done to it.
-
-	// At most loop round at least one row the chunks, so we should be able to at least find a non-empty chunk to do something with in 2.7 seconds of ticks, and process the whole thing in about 2.4 minutes.
-	for( int i = 0; i < ls; i++ )
+	// 4J added - also similar thing to see if we can compress the lighting in any of these chunks.
+	// Infinite-worlds fix: step through loadedChunkList (O(1) per tick) instead of scanning
+	// a 1,875,000-wide coordinate grid cuz thats stupid.
 	{
-		compressCheckX++;
-		if( compressCheckX >= ls )
+		const vector<LevelChunk *>& loaded = chunkCache->getLoadedChunkList();
+		int n = (int)loaded.size();
+		if( n > 0 )
 		{
-			compressCheckX = 0;
-			compressCheckZ++;
-			if( compressCheckZ >= ls )
+			if( compressCheckIdx >= n ) compressCheckIdx = 0;
+			LevelChunk *lc = loaded[compressCheckIdx];
+			if( lc )
 			{
-				compressCheckZ = 0;
+				lc->compressLighting();
+				lc->compressBlocks();
+				lc->compressData();
 			}
-		}
-
-		if( Level::reallyHasChunk(compressCheckX - ( ls / 2), compressCheckZ - ( ls / 2 ) ) )
-		{
-			LevelChunk *lc = Level::getChunk(compressCheckX - ( ls / 2), compressCheckZ - ( ls / 2 ));
-			lc->compressLighting();
-			lc->compressBlocks();
-			lc->compressData();
-			break;
+			compressCheckIdx = ( compressCheckIdx + 1 ) % n;
 		}
 	}
 

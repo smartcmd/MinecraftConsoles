@@ -77,13 +77,15 @@ C4JThread *LevelRenderer::rebuildThreads[MAX_CHUNK_REBUILD_THREADS];
 C4JThread::EventArray *LevelRenderer::s_rebuildCompleteEvents;
 C4JThread::Event *LevelRenderer::s_activationEventA[MAX_CHUNK_REBUILD_THREADS];
 
-// This defines the maximum size of renderable level, must be big enough to cope with actual size of level + view distance at each side
-// so that we can render the "infinite" sea at the edges. Currently defined as:
-const int overworldSize = LEVEL_MAX_WIDTH + LevelRenderer::PLAYER_VIEW_DISTANCE + LevelRenderer::PLAYER_VIEW_DISTANCE;
-const int netherSize = HELL_LEVEL_MAX_WIDTH + 2; // 4J Stu - The plus 2 is really just to make our total chunk count a multiple of 8 for the flags, we will never see these in the nether
+// For infinite worlds the overworld AND nether render sizes use the rolling view window.
+// Nether is also effectively infinite with _LARGE_WORLDS; End remains a fixed small island.
+const int netherSize = LevelRenderer::PLAYER_VIEW_DISTANCE * 2;  // rolling window, same as overworld
 const int endSize = END_LEVEL_MAX_WIDTH;
-const int LevelRenderer::MAX_LEVEL_RENDER_SIZE[3] = { overworldSize, netherSize, endSize };
-const int LevelRenderer::DIMENSION_OFFSETS[3] = { 0, (overworldSize * overworldSize * CHUNK_Y_COUNT) ,  (overworldSize * overworldSize * CHUNK_Y_COUNT) + ( netherSize * netherSize * CHUNK_Y_COUNT ) };
+// MAX_LEVEL_RENDER_SIZE[0] is overridden at runtime in getGlobalIndexForChunk / getGlobalChunkCount.
+// Use PLAYER_VIEW_DISTANCE*2 as the compile-time upper bound for static array sizing only.
+const int overworldSizeMax = LevelRenderer::PLAYER_VIEW_DISTANCE * 2;
+const int LevelRenderer::MAX_LEVEL_RENDER_SIZE[3] = { overworldSizeMax, netherSize, endSize };
+const int LevelRenderer::DIMENSION_OFFSETS[3] = { 0, (overworldSizeMax * overworldSizeMax * CHUNK_Y_COUNT), (overworldSizeMax * overworldSizeMax * CHUNK_Y_COUNT) + (netherSize * netherSize * CHUNK_Y_COUNT) };
 #else
 // This defines the maximum size of renderable level, must be big enough to cope with actual size of level + view distance at each side
 // so that we can render the "infinite" sea at the edges. Currently defined as:
@@ -3236,21 +3238,44 @@ int LevelRenderer::getGlobalIndexForChunk(int x, int y, int z, Level *level)
 int LevelRenderer::getGlobalIndexForChunk(int x, int y, int z, int dimensionId)
 {
 	int dimIdx = getDimensionIndexFromId(dimensionId);
-	int xx = ( x / CHUNK_XZSIZE ) + ( MAX_LEVEL_RENDER_SIZE[dimIdx] / 2 );
-	int yy = y / CHUNK_SIZE;
-	int zz = ( z / CHUNK_XZSIZE )  + ( MAX_LEVEL_RENDER_SIZE[dimIdx] / 2 );
 
-	if( ( xx < 0 ) || ( xx >= MAX_LEVEL_RENDER_SIZE[dimIdx] ) ) return -1;
-	if( ( zz < 0 ) || ( zz >= MAX_LEVEL_RENDER_SIZE[dimIdx] ) ) return -1;
+	int yy = y / CHUNK_SIZE;
 	if( ( yy < 0 ) || ( yy >= CHUNK_Y_COUNT ) ) return -1;
 
-	int dimOffset = DIMENSION_OFFSETS[dimIdx];
-
-	int offset = dimOffset;												// Offset caused by current dimension
-	offset += ( zz * MAX_LEVEL_RENDER_SIZE[dimIdx] + xx ) * CHUNK_Y_COUNT;			// Offset by x/z pos
-	offset += yy;														// Offset by y pos
-
-	return offset;
+	if( dimIdx == 0 )
+	{
+		// Overworld: use rolling window modulo so the index is always within [0, xChunks*yChunks*zChunks)
+		// Chunk::levelRenderer is the singleton LevelRenderer instance.
+		LevelRenderer *lr = Chunk::levelRenderer;
+		if( lr == NULL || lr->xChunks == 0 ) return -1;
+		int sz = lr->xChunks; // xChunks == zChunks
+		int xx = ((x / CHUNK_XZSIZE) % sz + sz) % sz;
+		int zz = ((z / CHUNK_XZSIZE) % sz + sz) % sz;
+		int offset = ( zz * sz + xx ) * CHUNK_Y_COUNT + yy;
+		return offset;
+	}
+	else if( dimIdx == 1 )
+	{
+		// Nether: also rolling window (infinite nether with _LARGE_WORLDS)
+		int sz = MAX_LEVEL_RENDER_SIZE[1]; // = PLAYER_VIEW_DISTANCE * 2
+		int xx = ((x / CHUNK_XZSIZE) % sz + sz) % sz;
+		int zz = ((z / CHUNK_XZSIZE) % sz + sz) % sz;
+		int dimOffset = DIMENSION_OFFSETS[1];
+		int offset = dimOffset + ( zz * sz + xx ) * CHUNK_Y_COUNT + yy;
+		return offset;
+	}
+	else
+	{
+		// End: fixed small world, use centre-offset indexing as before
+		int sz = MAX_LEVEL_RENDER_SIZE[dimIdx];
+		int xx = ( x / CHUNK_XZSIZE ) + ( sz / 2 );
+		int zz = ( z / CHUNK_XZSIZE ) + ( sz / 2 );
+		if( ( xx < 0 ) || ( xx >= sz ) ) return -1;
+		if( ( zz < 0 ) || ( zz >= sz ) ) return -1;
+		int dimOffset = DIMENSION_OFFSETS[dimIdx];
+		int offset = dimOffset + ( zz * sz + xx ) * CHUNK_Y_COUNT + yy;
+		return offset;
+	}
 }
 
 bool LevelRenderer::isGlobalIndexInSameDimension( int idx, Level *level)
@@ -3264,14 +3289,19 @@ bool LevelRenderer::isGlobalIndexInSameDimension( int idx, Level *level)
 
 int LevelRenderer::getGlobalChunkCount()
 {
-	return  ( MAX_LEVEL_RENDER_SIZE[0] * MAX_LEVEL_RENDER_SIZE[0] * CHUNK_Y_COUNT ) +
-		( MAX_LEVEL_RENDER_SIZE[1] * MAX_LEVEL_RENDER_SIZE[1] * CHUNK_Y_COUNT ) +
-		( MAX_LEVEL_RENDER_SIZE[2] * MAX_LEVEL_RENDER_SIZE[2] * CHUNK_Y_COUNT );
+	// Overworld uses the rolling view window (xChunks x yChunks x zChunks).
+	// Nether and End are fixed small sizes.
+	LevelRenderer *lr = Chunk::levelRenderer;
+	int overworldCount = ( lr && lr->xChunks > 0 ) ? ( lr->xChunks * CHUNK_Y_COUNT * lr->zChunks ) : ( overworldSizeMax * overworldSizeMax * CHUNK_Y_COUNT );
+	return overworldCount
+		+ ( MAX_LEVEL_RENDER_SIZE[1] * MAX_LEVEL_RENDER_SIZE[1] * CHUNK_Y_COUNT )
+		+ ( MAX_LEVEL_RENDER_SIZE[2] * MAX_LEVEL_RENDER_SIZE[2] * CHUNK_Y_COUNT );
 }
 
 int LevelRenderer::getGlobalChunkCountForOverworld()
 {
-	return ( MAX_LEVEL_RENDER_SIZE[0] * MAX_LEVEL_RENDER_SIZE[0] * CHUNK_Y_COUNT );
+	LevelRenderer *lr = Chunk::levelRenderer;
+	return ( lr && lr->xChunks > 0 ) ? ( lr->xChunks * CHUNK_Y_COUNT * lr->zChunks ) : ( overworldSizeMax * overworldSizeMax * CHUNK_Y_COUNT );
 }
 
 unsigned char LevelRenderer::getGlobalChunkFlags(int x, int y, int z, Level *level)

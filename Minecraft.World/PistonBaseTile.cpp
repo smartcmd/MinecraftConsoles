@@ -486,11 +486,9 @@ bool PistonBaseTile::canPush(Level *level, int sx, int sy, int sz, int facing)
             // out of bounds
             return false;
         }
-		
-		// 4J - added to also check for out of bounds in x/z for our finite world
-		int minXZ = - (level->dimension->getXZSize() * 16 ) / 2;
-		int maxXZ = (level->dimension->getXZSize() * 16 ) / 2 - 1;
-		if( ( cx <= minXZ ) || ( cx >= maxXZ ) || ( cz <= minXZ ) || ( cz >= maxXZ ) )
+
+		// Infinite worlds: use Level::MAX_LEVEL_SIZE instead of finite world boundary
+		if( ( cx <= -Level::MAX_LEVEL_SIZE ) || ( cx >= Level::MAX_LEVEL_SIZE ) || ( cz <= -Level::MAX_LEVEL_SIZE ) || ( cz >= Level::MAX_LEVEL_SIZE ) )
 		{
 			return false;
 		}
@@ -552,11 +550,9 @@ bool PistonBaseTile::createPush(Level *level, int sx, int sy, int sz, int facing
             // out of bounds
             return false;
         }
-		
-		// 4J - added to also check for out of bounds in x/z for our finite world
-		int minXZ = - (level->dimension->getXZSize() * 16 ) / 2;
-		int maxXZ = (level->dimension->getXZSize() * 16 ) / 2 - 1;
-		if( ( cx <= minXZ ) || ( cx >= maxXZ ) || ( cz <= minXZ ) || ( cz >= maxXZ ) )
+
+		// Infinite worlds: use Level::MAX_LEVEL_SIZE instead of finite world boundary
+		if( ( cx <= -Level::MAX_LEVEL_SIZE ) || ( cx >= Level::MAX_LEVEL_SIZE ) || ( cz <= -Level::MAX_LEVEL_SIZE ) || ( cz >= Level::MAX_LEVEL_SIZE ) )
 		{
 			return false;
 		}

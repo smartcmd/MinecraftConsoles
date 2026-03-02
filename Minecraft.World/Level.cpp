@@ -1273,19 +1273,8 @@ int Level::getBrightnessPropagate(LightLayer::variety layer, int x, int y, int z
 
 int Level::getBrightness(LightLayer::variety layer, int x, int y, int z)
 {
-	// 4J - optimised. Not doing checks on x/z that are no longer necessary, and directly checking the cache within
-	// the ServerChunkCache/MultiplayerChunkCache rather than going through wrappers & virtual functions.
-	int xc = x >> 4;
-	int zc = z >> 4;
-
-	int ix = xc + (chunkSourceXZSize/2);
-	int iz = zc + (chunkSourceXZSize/2);
-
-	if( ( ix < 0 ) || ( ix >= chunkSourceXZSize ) ) return 0;
-	if( ( iz < 0 ) || ( iz >= chunkSourceXZSize ) ) return 0;
-	int idx = ix * chunkSourceXZSize + iz;
-	LevelChunk *c = chunkSourceCache[idx];
-
+	// Infinite worlds: use virtual dispatch through chunkSource (no fixed-size flat array cache)
+	LevelChunk *c = chunkSource->getChunk(x >> 4, z >> 4);
 	if( c == NULL ) return (int)layer;
 
     if (y < 0) y = 0;
@@ -1294,7 +1283,7 @@ int Level::getBrightness(LightLayer::variety layer, int x, int y, int z)
 	return c->getBrightness(layer, x & 15, y, z & 15);
 }
 
-// 4J added as optimisation - if all the neighbouring brightesses are going to be in the one chunk, just get
+// 4J added as optimisation - if all the neighbouring brightnesses are going to be in the one chunk, just get
 // the level chunk once
 void Level::getNeighbourBrightnesses(int *brightnesses, LightLayer::variety layer, int x, int y, int z)
 {
@@ -1302,7 +1291,7 @@ void Level::getNeighbourBrightnesses(int *brightnesses, LightLayer::variety laye
 		( ( ( z & 15 ) == 0 ) || ( ( z & 15 ) == 15 ) ) ||
 		( ( y <= 0 ) || ( y >= 127 ) ) )
 	{
-		// We're spanning more than one chunk, just fall back on original java method here
+		// We're spanning more than one chunk, just fall back on original method here
 		brightnesses[0] = getBrightness(layer, x - 1, y, z);
 		brightnesses[1] = getBrightness(layer, x + 1, y, z);
 		brightnesses[2] = getBrightness(layer, x, y - 1, z);
@@ -1312,42 +1301,17 @@ void Level::getNeighbourBrightnesses(int *brightnesses, LightLayer::variety laye
 	}
 	else
 	{
-		// All in one chunk - just get the chunk once, and do a single call to get the results
-		int xc = x >> 4;
-		int zc = z >> 4;
+		// All in one chunk - get the chunk once via virtual dispatch
+		LevelChunk *c = chunkSource->getChunk(x >> 4, z >> 4);
 
-		int ix = xc + (chunkSourceXZSize/2);
-		int iz = zc + (chunkSourceXZSize/2);
-
-		// 4J Stu - The java LightLayer was an enum class type with a member "surrounding" which is what we
-		// were returning here. Surrounding has the same value as the enum value in our C++ code, so just cast
-		// it to an int
-		if( ( ( ix < 0 ) || ( ix >= chunkSourceXZSize ) ) ||
-			( ( iz < 0 ) || ( iz >= chunkSourceXZSize ) ) )
-		{
-			for( int i = 0; i < 6; i++ )
-			{
-				brightnesses[i] = (int)layer;
-			}
-			return;
-		}
-
-		int idx = ix * chunkSourceXZSize + iz;
-		LevelChunk *c = chunkSourceCache[idx];
-
-		// 4J Stu - The java LightLayer was an enum class type with a member "surrounding" which is what we
-		// were returning here. Surrounding has the same value as the enum value in our C++ code, so just cast
-		// it to an int
 		if( c == NULL )
 		{
 			for( int i = 0; i < 6; i++ )
-			{
 				brightnesses[i] = (int)layer;
-			}
 			return;
 		}
 
-		// Single call to the levelchunk too to avoid overhead of virtual fn calls
+		// Single call to the levelchunk to get all 6 neighbour brightnesses
 		c->getNeighbourBrightnesses(brightnesses, layer, x & 15, y, z & 15);
 	}
 }
@@ -1833,8 +1797,8 @@ AABBList *Level::getCubes(shared_ptr<Entity> source, AABB *box, bool noEntities,
 	int z0 = Mth::floor(box->z0);
 	int z1 = Mth::floor(box->z1 + 1);
 
-	int maxxz = ( dimension->getXZSize() * 16 ) / 2;
-	int minxz = -maxxz;
+	int maxxz = MAX_LEVEL_SIZE;
+	int minxz = -MAX_LEVEL_SIZE;
 	for (int x = x0; x < x1; x++)
 		for (int z = z0; z < z1; z++)
 		{
@@ -3466,14 +3430,6 @@ void Level::checkLight(LightLayer::variety layer, int xc, int yc, int zc, bool f
 	//int darktcc = 0;
 
 
-	// 4J - added
-	int minXZ = - (dimension->getXZSize() * 16 ) / 2;
-	int maxXZ = (dimension->getXZSize() * 16 ) / 2 - 1;
-	if( ( xc > maxXZ ) || ( xc < minXZ ) || ( zc > maxXZ ) || ( zc < minXZ ) )
-	{
-		LeaveCriticalSection(&m_checkLightCS);
-		return;
-	}
 
 	// Lock 128K of cache (containing all the lighting cache + first 112K of toCheck array) on L2 to try and stop any cached data getting knocked out of L2 by other non-cached reads (or vice-versa)
 //	if( cache ) XLockL2(XLOCKL2_INDEX_TITLE, cache, 128 * 1024, XLOCKL2_LOCK_SIZE_1_WAY, 0 );
@@ -3587,9 +3543,6 @@ void Level::checkLight(LightLayer::variety layer, int xc, int yc, int zc, bool f
                                     int xx = x + ((j / 2) % 3 / 2) * flip;
                                     int yy = y + ((j / 2 + 1) % 3 / 2) * flip;
                                     int zz = z + ((j / 2 + 2) % 3 / 2) * flip;
-
-									// 4J - added - don't let this lighting creep out of the normal fixed world and into the infinite water chunks beyond
-									if( ( xx > maxXZ ) || ( xx < minXZ ) || ( zz > maxXZ ) || ( zz < minXZ ) ) continue;
 									if( ( yy < 0 ) || ( yy >= maxBuildHeight ) ) continue;
 
                                     o = getBrightnessCached(cache, layer, xx, yy, zz);
@@ -3678,13 +3631,13 @@ void Level::checkLight(LightLayer::variety layer, int xc, int yc, int zc, bool f
                 if (zd < 0) zd = -zd;
                 if (xd + yd + zd < 17 && tcc < (32 * 32 * 32) - 6)		// 4J - 32 * 32 * 32 was toCheck.length
 				{
-					// 4J - added extra checks here to stop lighting updates moving out of the actual fixed world and into the infinite water chunks
-					if( ( x - 1 ) >= minXZ ) { if (getBrightnessCached(cache, layer, x - 1, y, z) < expected) toCheck[tcc++] = (((x - 1 - xc) + 32)) + (((y - yc) + 32) << 6) + (((z - zc) + 32) << 12); }
-					if( ( x + 1 ) <= maxXZ ) { if (getBrightnessCached(cache, layer, x + 1, y, z) < expected) toCheck[tcc++] = (((x + 1 - xc) + 32)) + (((y - yc) + 32) << 6) + (((z - zc) + 32) << 12); }
+					// Infinite worlds: propagate lighting in all directions without boundary restrictions
+					if (getBrightnessCached(cache, layer, x - 1, y, z) < expected) toCheck[tcc++] = (((x - 1 - xc) + 32)) + (((y - yc) + 32) << 6) + (((z - zc) + 32) << 12);
+					if (getBrightnessCached(cache, layer, x + 1, y, z) < expected) toCheck[tcc++] = (((x + 1 - xc) + 32)) + (((y - yc) + 32) << 6) + (((z - zc) + 32) << 12);
 					if( ( y - 1 ) >= 0 )     { if (getBrightnessCached(cache, layer, x, y - 1, z) < expected) toCheck[tcc++] = (((x - xc) + 32)) + (((y - 1 - yc) + 32) << 6) + (((z - zc) + 32) << 12); }
 					if( ( y + 1 ) < maxBuildHeight ) { if (getBrightnessCached(cache, layer, x, y + 1, z) < expected) toCheck[tcc++] = (((x - xc) + 32)) + (((y + 1 - yc) + 32) << 6) + (((z - zc) + 32) << 12); }
-					if( ( z - 1 ) >= minXZ ) { if (getBrightnessCached(cache, layer, x, y, z - 1) < expected) toCheck[tcc++] = (((x - xc) + 32)) + (((y - yc) + 32) << 6) + (((z - 1 - zc) + 32) << 12); }
-					if( ( z + 1 ) <= maxXZ ) { if (getBrightnessCached(cache, layer, x, y, z + 1) < expected) toCheck[tcc++] = (((x - xc) + 32)) + (((y - yc) + 32) << 6) + (((z + 1 - zc) + 32) << 12); }
+					if (getBrightnessCached(cache, layer, x, y, z - 1) < expected) toCheck[tcc++] = (((x - xc) + 32)) + (((y - yc) + 32) << 6) + (((z - 1 - zc) + 32) << 12);
+					if (getBrightnessCached(cache, layer, x, y, z + 1) < expected) toCheck[tcc++] = (((x - xc) + 32)) + (((y - yc) + 32) << 6) + (((z + 1 - zc) + 32) << 12);
                 }
             }
         }
