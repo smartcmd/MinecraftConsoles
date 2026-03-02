@@ -84,6 +84,9 @@ BOOL g_bWidescreen = TRUE;
 int g_iScreenWidth = 1920;
 int g_iScreenHeight = 1080;
 
+UINT g_ScreenWidth = 1920;
+UINT g_ScreenHeight = 1080;
+
 // Fullscreen toggle state
 static bool g_isFullscreen = false;
 static WINDOWPLACEMENT g_wpPrev = { sizeof(g_wpPrev) };
@@ -425,7 +428,90 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			return TRUE;
 		}
 		return DefWindowProc(hWnd, message, wParam, lParam);
+	case WM_SIZE:
+	{
+		if (wParam == SIZE_MINIMIZED)
+			return 0;
 
+		UINT width = LOWORD(lParam);
+		UINT height = HIWORD(lParam);
+
+		if (width == 0 || height == 0)
+			return 0;
+
+		g_ScreenWidth = width;
+		g_ScreenHeight = height;
+
+		if (g_pSwapChain)
+		{
+			g_pImmediateContext->OMSetRenderTargets(0, 0, 0);
+			g_pImmediateContext->ClearState();
+			g_pImmediateContext->Flush();
+
+			if (g_pRenderTargetView)
+			{
+				g_pRenderTargetView->Release();
+				g_pRenderTargetView = nullptr;
+			}
+
+			if (g_pDepthStencilView)
+			{
+				g_pDepthStencilView->Release();
+				g_pDepthStencilView = nullptr;
+			}
+
+			if (g_pDepthStencilBuffer)
+			{
+				g_pDepthStencilBuffer->Release();
+				g_pDepthStencilBuffer = nullptr;
+			}
+
+			HRESULT hr = g_pSwapChain->ResizeBuffers(
+				0,
+				width,
+				height,
+				DXGI_FORMAT_UNKNOWN,
+				0
+			);
+
+			if (FAILED(hr))
+			{
+				app.DebugPrintf("ResizeBuffers Failed! HRESULT: 0x%X\n", hr);
+				return 0;
+			}
+
+			ID3D11Texture2D* pBackBuffer = nullptr;
+			g_pSwapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), (void**)&pBackBuffer);
+
+			g_pd3dDevice->CreateRenderTargetView(pBackBuffer, NULL, &g_pRenderTargetView);
+			pBackBuffer->Release();
+
+			D3D11_TEXTURE2D_DESC descDepth = {};
+			descDepth.Width = width;
+			descDepth.Height = height;
+			descDepth.MipLevels = 1;
+			descDepth.ArraySize = 1;
+			descDepth.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
+			descDepth.SampleDesc.Count = 1;
+			descDepth.BindFlags = D3D11_BIND_DEPTH_STENCIL;
+
+			g_pd3dDevice->CreateTexture2D(&descDepth, NULL, &g_pDepthStencilBuffer);
+			g_pd3dDevice->CreateDepthStencilView(g_pDepthStencilBuffer, NULL, &g_pDepthStencilView);
+
+			g_pImmediateContext->OMSetRenderTargets(1, &g_pRenderTargetView, g_pDepthStencilView);
+
+			D3D11_VIEWPORT vp = {};
+			vp.Width = (FLOAT)width;
+			vp.Height = (FLOAT)height;
+			vp.MinDepth = 0.0f;
+			vp.MaxDepth = 1.0f;
+			vp.TopLeftX = 0;
+			vp.TopLeftY = 0;
+
+			g_pImmediateContext->RSSetViewports(1, &vp);
+		}
+	}
+	break;
 	default:
 		return DefWindowProc(hWnd, message, wParam, lParam);
 	}
