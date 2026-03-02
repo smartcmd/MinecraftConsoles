@@ -51,13 +51,13 @@ HRESULT CDurangoTelemetryManager::Flush()
 bool CDurangoTelemetryManager::RecordPlayerSessionStart(int iPad)
 {
 	durangoStats()->generatePlayerSession();
-
+	
 	return true;
 }
 
 bool CDurangoTelemetryManager::RecordPlayerSessionExit(int iPad, int exitStatus)
 {
-	PlayerUID puid; std::shared_ptr<Player> plr;
+	PlayerUID puid; shared_ptr<Player> plr;
 	ProfileManager.GetXUID(iPad, &puid, true);
 	plr = Minecraft::GetInstance()->localplayers[iPad];
 
@@ -123,11 +123,11 @@ bool CDurangoTelemetryManager::RecordPlayerSessionExit(int iPad, int exitStatus)
 bool CDurangoTelemetryManager::RecordLevelStart(int iPad, ESen_FriendOrMatch friendsOrMatch, ESen_CompeteOrCoop competeOrCoop, int difficulty, int numberOfLocalPlayers, int numberOfOnlinePlayers)
 {
 	CTelemetryManager::RecordLevelStart(iPad, friendsOrMatch, competeOrCoop, difficulty, numberOfLocalPlayers, numberOfOnlinePlayers);
-
+	
 	ULONG hr = 0;
 
 	// Grab player info.
-	PlayerUID puid; std::shared_ptr<Player> plr;
+	PlayerUID puid; shared_ptr<Player> plr;
 	ProfileManager.GetXUID(iPad, &puid, true);
 	plr = Minecraft::GetInstance()->localplayers[iPad];
 
@@ -191,10 +191,10 @@ bool CDurangoTelemetryManager::RecordLevelStart(int iPad, ESen_FriendOrMatch fri
 		GetSubLevelId(iPad),
 		GetLevelInstanceID(),
 		&ZERO_GUID,
-		friendsOrMatch,
-		competeOrCoop,
-		difficulty,
-		numberOfLocalPlayers,
+		friendsOrMatch, 
+		competeOrCoop, 
+		difficulty, 
+		numberOfLocalPlayers, 
 		numberOfOnlinePlayers,
 		&ZERO_GUID
 		);
@@ -219,10 +219,10 @@ bool CDurangoTelemetryManager::RecordLevelStart(int iPad, ESen_FriendOrMatch fri
 			// Durango //
 			/* GUID */	guid2str(DurangoStats::getPlayerSession()).c_str(),
 			/* WSTR */	DurangoStats::getMultiplayerCorrelationId(),
-			/* int */	friendsOrMatch,
-			/* int */	competeOrCoop,
-			/* int */	difficulty,
-			/* int */	numberOfLocalPlayers,
+			/* int */	friendsOrMatch, 
+			/* int */	competeOrCoop, 
+			/* int */	difficulty, 
+			/* int */	numberOfLocalPlayers, 
 			/* int */	numberOfOnlinePlayers
 
 			);
@@ -577,7 +577,7 @@ bool CDurangoTelemetryManager::RecordMediaShareUpload(int iPad, ESen_MediaDestin
 		mediaDestination,
 		mediaType
 		);
-#else
+#else 
 	ULONG hr = -1;
 #endif
 

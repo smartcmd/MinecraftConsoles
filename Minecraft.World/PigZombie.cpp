@@ -14,11 +14,11 @@
 
 
 
-std::shared_ptr<ItemInstance> PigZombie::sword;
+shared_ptr<ItemInstance> PigZombie::sword;
 
 void PigZombie::staticCtor()
 {
-	PigZombie::sword = std::shared_ptr<ItemInstance>( new ItemInstance(Item::sword_gold, 1) );
+	PigZombie::sword = shared_ptr<ItemInstance>( new ItemInstance(Item::sword_gold, 1) );
 }
 
 void PigZombie::_init()
@@ -51,7 +51,7 @@ bool PigZombie::useNewAi()
 	return false;
 }
 
-int PigZombie::getTexture()
+int PigZombie::getTexture() 
 {
 	return textureIdx;
 }
@@ -69,7 +69,7 @@ void PigZombie::tick()
     Zombie::tick();
 }
 
-bool PigZombie::canSpawn()
+bool PigZombie::canSpawn() 
 {
     return level->difficulty > Difficulty::PEACEFUL && level->isUnobstructed(bb) && level->getCubes(shared_from_this(), bb)->empty() && !level->containsAnyLiquid(bb);
 }
@@ -86,13 +86,13 @@ void PigZombie::readAdditionalSaveData(CompoundTag *tag)
     angerTime = tag->getShort(L"Anger");
 }
 
-std::shared_ptr<Entity> PigZombie::findAttackTarget()
+shared_ptr<Entity> PigZombie::findAttackTarget()
 {
 #ifndef _FINAL_BUILD
 #ifdef _DEBUG_MENUS_ENABLED
 	if(app.GetMobsDontAttackEnabled())
 	{
-		return std::shared_ptr<Player>();
+		return shared_ptr<Player>();
 	}
 #endif
 #endif
@@ -103,17 +103,17 @@ std::shared_ptr<Entity> PigZombie::findAttackTarget()
 
 bool PigZombie::hurt(DamageSource *source, int dmg)
 {
-	std::shared_ptr<Entity> sourceEntity = source->getEntity();
+	shared_ptr<Entity> sourceEntity = source->getEntity();
     if (dynamic_pointer_cast<Player>(sourceEntity) != NULL)
 	{
-        vector<std::shared_ptr<Entity> > *nearby = level->getEntities( shared_from_this(), bb->grow(32, 32, 32));
+        vector<shared_ptr<Entity> > *nearby = level->getEntities( shared_from_this(), bb->grow(32, 32, 32));		
 		AUTO_VAR(itEnd, nearby->end());
 		for (AUTO_VAR(it, nearby->begin()); it != itEnd; it++)
 		{
-            std::shared_ptr<Entity> e = *it; //nearby->at(i);
+            shared_ptr<Entity> e = *it; //nearby->at(i);
             if (dynamic_pointer_cast<PigZombie>(e) != NULL)
 			{
-                std::shared_ptr<PigZombie> pigZombie = dynamic_pointer_cast<PigZombie>(e);
+                shared_ptr<PigZombie> pigZombie = dynamic_pointer_cast<PigZombie>(e);
                 pigZombie->alert(sourceEntity);
             }
         }
@@ -122,7 +122,7 @@ bool PigZombie::hurt(DamageSource *source, int dmg)
     return Zombie::hurt(source, dmg);
 }
 
-void PigZombie::alert(std::shared_ptr<Entity> target)
+void PigZombie::alert(shared_ptr<Entity> target)
 {
     this->attackTarget = target;
     angerTime = 20 * 20 + random->nextInt(20 * 20);
@@ -162,7 +162,7 @@ void PigZombie::dropRareDeathLoot(int rareLootLevel)
 {
 	if (rareLootLevel > 0)
 	{
-		std::shared_ptr<ItemInstance> sword = std::shared_ptr<ItemInstance>( new ItemInstance(Item::sword_gold) );
+		shared_ptr<ItemInstance> sword = shared_ptr<ItemInstance>( new ItemInstance(Item::sword_gold) );
 		EnchantmentHelper::enchantItem(random, sword, 5);
 		spawnAtLocation(sword, 0);
 	}
@@ -195,8 +195,8 @@ void PigZombie::finalizeMobSpawn()
 	setVillager(false);
 }
 
-std::shared_ptr<ItemInstance> PigZombie::getCarriedItem()
+shared_ptr<ItemInstance> PigZombie::getCarriedItem()
 {
-	// TODO 4J - could be of const std::shared_ptr<ItemInstance>  type.
-    return (std::shared_ptr<ItemInstance> ) sword;
+	// TODO 4J - could be of const shared_ptr<ItemInstance>  type.
+    return (shared_ptr<ItemInstance> ) sword;
 }

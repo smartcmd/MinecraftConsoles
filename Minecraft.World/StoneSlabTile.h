@@ -35,5 +35,5 @@ public:
 	virtual unsigned int getDescriptionId(int iData = -1);
 	virtual int getAuxName(int auxValue);
 protected:
-	virtual std::shared_ptr<ItemInstance> getSilkTouchItemInstance(int data);
+	virtual shared_ptr<ItemInstance> getSilkTouchItemInstance(int data);
 };

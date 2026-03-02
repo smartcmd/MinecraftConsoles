@@ -24,7 +24,7 @@ ChangeStateConstraint::ChangeStateConstraint( Tutorial *tutorial, eTutorial_Stat
 	m_tutorial = tutorial;
 	m_targetState = targetState;
 	m_sourceStatesCount = sourceStatesCount;
-
+	
 	m_bHasChanged = false;
 	m_changedFromState = e_Tutorial_State_None;
 
@@ -59,11 +59,11 @@ void ChangeStateConstraint::tick(int iPad)
 			if(originalPrivileges != playerPrivs)
 			{
 				// Send update settings packet to server
-				Minecraft *pMinecraft = Minecraft::GetInstance();
-				std::shared_ptr<MultiplayerLocalPlayer> player = minecraft->localplayers[iPad];
+				Minecraft *pMinecraft = Minecraft::GetInstance();				
+				shared_ptr<MultiplayerLocalPlayer> player = minecraft->localplayers[iPad];
 				if(player != NULL && player->connection && player->connection->getNetworkPlayer() != NULL)
 				{
-					player->connection->send( std::shared_ptr<PlayerInfoPacket>( new PlayerInfoPacket( player->connection->getNetworkPlayer()->GetSmallId(), -1, playerPrivs) ) );
+					player->connection->send( shared_ptr<PlayerInfoPacket>( new PlayerInfoPacket( player->connection->getNetworkPlayer()->GetSmallId(), -1, playerPrivs) ) );
 				}
 			}
 		}
@@ -100,11 +100,11 @@ void ChangeStateConstraint::tick(int iPad)
 				if(originalPrivileges != playerPrivs)
 				{
 					// Send update settings packet to server
-					Minecraft *pMinecraft = Minecraft::GetInstance();
-					std::shared_ptr<MultiplayerLocalPlayer> player = minecraft->localplayers[iPad];
+					Minecraft *pMinecraft = Minecraft::GetInstance();				
+					shared_ptr<MultiplayerLocalPlayer> player = minecraft->localplayers[iPad];
 					if(player != NULL && player->connection && player->connection->getNetworkPlayer() != NULL)
 					{
-						player->connection->send( std::shared_ptr<PlayerInfoPacket>( new PlayerInfoPacket( player->connection->getNetworkPlayer()->GetSmallId(), -1, playerPrivs) ) );
+						player->connection->send( shared_ptr<PlayerInfoPacket>( new PlayerInfoPacket( player->connection->getNetworkPlayer()->GetSmallId(), -1, playerPrivs) ) );
 					}
 				}
 			}
@@ -124,11 +124,11 @@ void ChangeStateConstraint::tick(int iPad)
 			if(originalPrivileges != playerPrivs)
 			{
 				// Send update settings packet to server
-				Minecraft *pMinecraft = Minecraft::GetInstance();
-				std::shared_ptr<MultiplayerLocalPlayer> player = minecraft->localplayers[iPad];
+				Minecraft *pMinecraft = Minecraft::GetInstance();				
+				shared_ptr<MultiplayerLocalPlayer> player = minecraft->localplayers[iPad];
 				if(player != NULL && player->connection && player->connection->getNetworkPlayer() != NULL)
 				{
-					player->connection->send( std::shared_ptr<PlayerInfoPacket>( new PlayerInfoPacket( player->connection->getNetworkPlayer()->GetSmallId(), -1, playerPrivs) ) );
+					player->connection->send( shared_ptr<PlayerInfoPacket>( new PlayerInfoPacket( player->connection->getNetworkPlayer()->GetSmallId(), -1, playerPrivs) ) );
 				}
 			}
 		}

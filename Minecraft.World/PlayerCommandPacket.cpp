@@ -22,19 +22,19 @@ PlayerCommandPacket::PlayerCommandPacket()
 	action = 0;
 }
 
-PlayerCommandPacket::PlayerCommandPacket(std::shared_ptr<Entity> e, int action)
+PlayerCommandPacket::PlayerCommandPacket(shared_ptr<Entity> e, int action)
 {
 	id = e->entityId;
 	this->action = action;
 }
 
-void PlayerCommandPacket::read(DataInputStream *dis) //throws IOException
+void PlayerCommandPacket::read(DataInputStream *dis) //throws IOException 
 {
 	id = dis->readInt();
 	action = dis->readByte();
 }
 
-void PlayerCommandPacket::write(DataOutputStream *dos) //throws IOException
+void PlayerCommandPacket::write(DataOutputStream *dos) //throws IOException 
 {
 	dos->writeInt(id);
 	dos->writeByte(action);
@@ -45,7 +45,7 @@ void PlayerCommandPacket::handle(PacketListener *listener)
 	listener->handlePlayerCommand(shared_from_this());
 }
 
-int PlayerCommandPacket::getEstimatedSize()
+int PlayerCommandPacket::getEstimatedSize() 
 {
 	return 5;
 }

@@ -49,7 +49,7 @@ void UIScene_AbstractContainerMenu::handleDestroy()
 	}
 
 	// 4J Stu - Fix for #11302 - TCR 001: Network Connectivity: Host crashed after being killed by the client while accessing a chest during burst packet loss.
-	// We need to make sure that we call closeContainer() anytime this menu is closed, even if it is forced to close by some other reason (like the player dying)
+	// We need to make sure that we call closeContainer() anytime this menu is closed, even if it is forced to close by some other reason (like the player dying)	
 	if(pMinecraft->localplayers[m_iPad] != NULL) pMinecraft->localplayers[m_iPad]->closeContainer();
 
 	ui.OverrideSFX(m_iPad,ACTION_MENU_A,false);
@@ -90,7 +90,7 @@ void UIScene_AbstractContainerMenu::PlatformInitialize(int iPad, int startIndex)
 	// We may have varying depths of controls here, so base off the pointers parent
 #if TO_BE_IMPLEMENTED
 	HXUIOBJ parent;
-	XuiElementGetBounds( m_pointerControl->m_hObj, &fPointerWidth, &fPointerHeight );
+	XuiElementGetBounds( m_pointerControl->m_hObj, &fPointerWidth, &fPointerHeight );	
 #else
 	fPointerWidth = 50;
 	fPointerHeight = 50;
@@ -103,7 +103,7 @@ void UIScene_AbstractContainerMenu::PlatformInitialize(int iPad, int startIndex)
 	// Get size of pointer
 	m_fPointerImageOffsetX = 0; //floor(fPointerWidth/2.0f);
 	m_fPointerImageOffsetY = 0; //floor(fPointerHeight/2.0f);
-
+	
 	m_fPanelMinX = fPanelX;
 	m_fPanelMaxX = fPanelX + fPanelWidth;
 	m_fPanelMinY = fPanelY;
@@ -111,9 +111,9 @@ void UIScene_AbstractContainerMenu::PlatformInitialize(int iPad, int startIndex)
 
 #ifdef __ORBIS__
 	// we need to map the touchpad rectangle to the UI rectangle. While it works great for the creative menu, it is much too sensitive for the smaller menus.
-	//X coordinate of the touch point (0 to 1919)
-	//Y coordinate of the touch point (0 to 941: DUALSHOCK�4 wireless controllers and the CUH-ZCT1J/CAP-ZCT1J/CAP-ZCT1U controllers for the PlayStation�4 development tool,
-	//0 to 753: JDX-1000x series controllers for the PlayStation�4 development tool,)
+	//X coordinate of the touch point (0 to 1919)    
+	//Y coordinate of the touch point (0 to 941: DUALSHOCK�4 wireless controllers and the CUH-ZCT1J/CAP-ZCT1J/CAP-ZCT1U controllers for the PlayStation�4 development tool,    
+	//0 to 753: JDX-1000x series controllers for the PlayStation�4 development tool,)     
 	m_fTouchPadMulX=fPanelWidth/1919.0f;
 	m_fTouchPadMulY=fPanelHeight/941.0f;
 	m_fTouchPadDeadZoneX=15.0f*m_fTouchPadMulX;
@@ -161,13 +161,13 @@ void UIScene_AbstractContainerMenu::PlatformInitialize(int iPad, int startIndex)
 	S32 width, height;
 	m_parentLayer->getRenderDimensions(width, height);
 	S32 x = m_pointerPos.x*((float)width/m_movieWidth);
-	S32 y = m_pointerPos.y*((float)height/m_movieHeight);
+	S32 y = m_pointerPos.y*((float)height/m_movieHeight); 
 	IggyMakeEventMouseMove( &mouseEvent, x, y);
 
 	IggyEventResult result;
 	IggyPlayerDispatchEventRS ( getMovie() , &mouseEvent , &result );
 
-#ifdef USE_POINTER_ACCEL
+#ifdef USE_POINTER_ACCEL	
 	m_fPointerVelX = 0.0f;
 	m_fPointerVelY = 0.0f;
 	m_fPointerAccelX = 0.0f;
@@ -332,9 +332,9 @@ void UIScene_AbstractContainerMenu::customDraw(IggyCustomDrawCallbackRegion *reg
 	Minecraft *pMinecraft = Minecraft::GetInstance();
 	if(pMinecraft->localplayers[m_iPad] == NULL || pMinecraft->localgameModes[m_iPad] == NULL) return;
 
-	std::shared_ptr<ItemInstance> item = nullptr;
+	shared_ptr<ItemInstance> item = nullptr;
 	if(wcscmp((wchar_t *)region->name,L"pointerIcon")==0)
-	{
+	{		
 		m_cacheSlotRenders = false;
 		item = pMinecraft->localplayers[m_iPad]->inventory->getCarried();
 	}
@@ -347,7 +347,7 @@ void UIScene_AbstractContainerMenu::customDraw(IggyCustomDrawCallbackRegion *reg
 			app.DebugPrintf("This is not the control we are looking for\n");
 		}
 		else
-		{
+		{			
 			m_cacheSlotRenders = true;
 			Slot *slot = m_menu->getSlot(slotId);
 			item = slot->getItem();
@@ -398,7 +398,7 @@ void UIScene_AbstractContainerMenu::setFocusToPointer(int iPad)
 	m_focusSection = eSectionNone;
 }
 
-std::shared_ptr<ItemInstance> UIScene_AbstractContainerMenu::getSlotItem(ESceneSection eSection, int iSlot)
+shared_ptr<ItemInstance> UIScene_AbstractContainerMenu::getSlotItem(ESceneSection eSection, int iSlot)
 {
 	Slot *slot = m_menu->getSlot( getSectionStartOffset(eSection) + iSlot );
 	if(slot) return slot->getItem();

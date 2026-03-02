@@ -7,20 +7,20 @@ class LevelSummary
 {
 	const wstring levelId;
     const wstring levelName;
-    const int64_t lastPlayed;
-    const int64_t sizeOnDisk;
+    const __int64 lastPlayed;
+    const __int64 sizeOnDisk;
     const bool requiresConversion;
 	GameType *gameMode;
 	const bool hardcore;
 	const bool _hasCheats;
 
 public:
-	LevelSummary(const wstring& levelId, const wstring& levelName, int64_t lastPlayed, int64_t sizeOnDisk,  GameType *gameMode, bool requiresConversion, bool hardcore, bool hasCheats);
+	LevelSummary(const wstring& levelId, const wstring& levelName, __int64 lastPlayed, __int64 sizeOnDisk,  GameType *gameMode, bool requiresConversion, bool hardcore, bool hasCheats);
     wstring getLevelId();
     wstring getLevelName();
-    int64_t getSizeOnDisk();
+    __int64 getSizeOnDisk();
     bool isRequiresConversion();
-    int64_t getLastPlayed();
+    __int64 getLastPlayed();
     int compareTo(LevelSummary *rhs);
 	GameType *getGameMode();
 	bool isHardcore();

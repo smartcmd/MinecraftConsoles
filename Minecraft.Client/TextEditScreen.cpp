@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "TextEditScreen.h"
+#include "TextEditScreen.h"	
 #include "Button.h"
 #include "TileEntityRenderDispatcher.h"
 #include "ClientConnection.h"
@@ -13,7 +13,7 @@
 
 const wstring TextEditScreen::allowedChars = SharedConstants::acceptableLetters;;
 
-TextEditScreen::TextEditScreen(std::shared_ptr<SignTileEntity> sign)
+TextEditScreen::TextEditScreen(shared_ptr<SignTileEntity> sign)
 {
 	// 4J - added initialisers
 	line = 0;
@@ -35,7 +35,7 @@ void TextEditScreen::removed()
     Keyboard::enableRepeatEvents(false);
     if (minecraft->level->isClientSide)
 	{
-        minecraft->getConnection(0)->send( std::shared_ptr<SignUpdatePacket>( new SignUpdatePacket(sign->x, sign->y, sign->z, sign->IsVerified(), sign->IsCensored(), sign->GetMessages()) ) );
+        minecraft->getConnection(0)->send( shared_ptr<SignUpdatePacket>( new SignUpdatePacket(sign->x, sign->y, sign->z, sign->IsVerified(), sign->IsCensored(), sign->GetMessages()) ) );
     }
 
 }

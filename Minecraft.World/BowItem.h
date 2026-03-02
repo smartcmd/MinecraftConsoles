@@ -18,11 +18,11 @@ private:
 public:
 	BowItem(int id);
 
-	virtual void releaseUsing(std::shared_ptr<ItemInstance> itemInstance, Level *level, std::shared_ptr<Player> player, int durationLeft);
-	virtual std::shared_ptr<ItemInstance> useTimeDepleted(std::shared_ptr<ItemInstance> instance, Level *level, std::shared_ptr<Player> player);
-	virtual int getUseDuration(std::shared_ptr<ItemInstance> itemInstance);
-	virtual UseAnim getUseAnimation(std::shared_ptr<ItemInstance> itemInstance);
-	virtual std::shared_ptr<ItemInstance> use(std::shared_ptr<ItemInstance> instance, Level *level, std::shared_ptr<Player> player);
+	virtual void releaseUsing(shared_ptr<ItemInstance> itemInstance, Level *level, shared_ptr<Player> player, int durationLeft);
+	virtual shared_ptr<ItemInstance> useTimeDepleted(shared_ptr<ItemInstance> instance, Level *level, shared_ptr<Player> player);
+	virtual int getUseDuration(shared_ptr<ItemInstance> itemInstance);
+	virtual UseAnim getUseAnimation(shared_ptr<ItemInstance> itemInstance);
+	virtual shared_ptr<ItemInstance> use(shared_ptr<ItemInstance> instance, Level *level, shared_ptr<Player> player);
 	virtual int getEnchantmentValue();
 
 	//@Override

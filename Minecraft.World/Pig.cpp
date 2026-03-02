@@ -56,49 +56,49 @@ int Pig::getMaxHealth()
 
 bool Pig::canBeControlledByRider()
 {
-	std::shared_ptr<ItemInstance> item = dynamic_pointer_cast<Player>(rider.lock())->getCarriedItem();
+	shared_ptr<ItemInstance> item = dynamic_pointer_cast<Player>(rider.lock())->getCarriedItem();
 
 	return item != NULL && item->id == Item::carrotOnAStick_Id;
 }
 
-void Pig::defineSynchedData()
+void Pig::defineSynchedData() 
 {
 	Animal::defineSynchedData();
 	entityData->define(DATA_SADDLE_ID, (byte) 0);
 }
 
-void Pig::addAdditonalSaveData(CompoundTag *tag)
+void Pig::addAdditonalSaveData(CompoundTag *tag) 
 {
 	Animal::addAdditonalSaveData(tag);
 	tag->putBoolean(L"Saddle", hasSaddle());
 }
 
-void Pig::readAdditionalSaveData(CompoundTag *tag)
+void Pig::readAdditionalSaveData(CompoundTag *tag) 
 {
 	Animal::readAdditionalSaveData(tag);
 	setSaddle(tag->getBoolean(L"Saddle"));
 }
 
-int Pig::getAmbientSound()
+int Pig::getAmbientSound() 
 {
 	return eSoundType_MOB_PIG_AMBIENT;
 }
 
-int Pig::getHurtSound()
+int Pig::getHurtSound() 
 {
 	return eSoundType_MOB_PIG_AMBIENT;
 }
 
-int Pig::getDeathSound()
+int Pig::getDeathSound() 
 {
 	return eSoundType_MOB_PIG_DEATH;
 }
 
-bool Pig::interact(std::shared_ptr<Player> player)
+bool Pig::interact(shared_ptr<Player> player)
 {
 	if(!Animal::interact(player))
 	{
-		if (hasSaddle() && !level->isClientSide && (rider.lock() == NULL || rider.lock() == player))
+		if (hasSaddle() && !level->isClientSide && (rider.lock() == NULL || rider.lock() == player)) 
 		{
 			// 4J HEG - Fixed issue with player not being able to dismount pig (issue #4479)
 			player->ride( rider.lock() == player ? nullptr : shared_from_this() );
@@ -109,7 +109,7 @@ bool Pig::interact(std::shared_ptr<Player> player)
 	return true;
 }
 
-int Pig::getDeathLoot()
+int Pig::getDeathLoot() 
 {
 	if (this->isOnFire() ) return Item::porkChop_cooked->id;
 	return Item::porkChop_raw_Id;
@@ -133,18 +133,18 @@ void Pig::dropDeathLoot(bool wasKilledByPlayer, int playerBonusLevel)
 	if (hasSaddle()) spawnAtLocation(Item::saddle_Id, 1);
 }
 
-bool Pig::hasSaddle()
+bool Pig::hasSaddle() 
 {
 	return (entityData->getByte(DATA_SADDLE_ID) & 1) != 0;
 }
 
-void Pig::setSaddle(bool value)
+void Pig::setSaddle(bool value) 
 {
-	if (value)
+	if (value) 
 	{
 		entityData->set(DATA_SADDLE_ID, (byte) 1);
-	}
-	else
+	} 
+	else 
 	{
 		entityData->set(DATA_SADDLE_ID, (byte) 0);
 	}
@@ -153,13 +153,13 @@ void Pig::setSaddle(bool value)
 void Pig::thunderHit(const LightningBolt *lightningBolt)
 {
 	if (level->isClientSide) return;
-	std::shared_ptr<PigZombie> pz = std::shared_ptr<PigZombie>( new PigZombie(level) );
+	shared_ptr<PigZombie> pz = shared_ptr<PigZombie>( new PigZombie(level) );
 	pz->moveTo(x, y, z, yRot, xRot);
 	level->addEntity(pz);
 	remove();
 }
 
-void Pig::causeFallDamage(float distance)
+void Pig::causeFallDamage(float distance) 
 {
 	Animal::causeFallDamage(distance);
 	if (distance > 5 && dynamic_pointer_cast<Player>( rider.lock() ) != NULL)
@@ -168,12 +168,12 @@ void Pig::causeFallDamage(float distance)
 	}
 }
 
-std::shared_ptr<AgableMob> Pig::getBreedOffspring(std::shared_ptr<AgableMob> target)
+shared_ptr<AgableMob> Pig::getBreedOffspring(shared_ptr<AgableMob> target)
 {
 	// 4J - added limit to number of animals that can be bred
 	if( level->canCreateMore( GetType(), Level::eSpawnType_Breed) )
 	{
-		return std::shared_ptr<Pig>( new Pig(level) );
+		return shared_ptr<Pig>( new Pig(level) );
 	}
 	else
 	{
@@ -181,7 +181,7 @@ std::shared_ptr<AgableMob> Pig::getBreedOffspring(std::shared_ptr<AgableMob> tar
 	}
 }
 
-bool Pig::isFood(std::shared_ptr<ItemInstance> itemInstance)
+bool Pig::isFood(shared_ptr<ItemInstance> itemInstance)
 {
 	return itemInstance != NULL && itemInstance->id == Item::carrots_Id;
 }

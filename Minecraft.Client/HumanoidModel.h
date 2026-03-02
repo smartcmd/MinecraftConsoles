@@ -5,7 +5,7 @@ class HumanoidModel : public Model
 {
 public:
 	ModelPart *head, *hair, *body, *arm0, *arm1, *leg0, *leg1, *ear, *cloak;
-	//ModelPart *hat;
+	//ModelPart *hat; 
 
 	int holdingLeftHand;
     int holdingRightHand;
@@ -53,11 +53,11 @@ public:
     HumanoidModel();
     HumanoidModel(float g);
     HumanoidModel(float g, float yOffset, int texWidth, int texHeight);
-	virtual void render(std::shared_ptr<Entity> entity, float time, float r, float bob, float yRot, float xRot, float scale, bool usecompiled);
+	virtual void render(shared_ptr<Entity> entity, float time, float r, float bob, float yRot, float xRot, float scale, bool usecompiled);
     virtual void setupAnim(float time, float r, float bob, float yRot, float xRot, float scale, unsigned int uiBitmaskOverrideAnim=0);
     void renderHair(float scale, bool usecompiled);
     void renderEars(float scale, bool usecompiled);
-    void renderCloak(float scale, bool usecompiled);
+    void renderCloak(float scale, bool usecompiled); 
     void render(HumanoidModel *model, float scale, bool usecompiled);
 
 // Add new bits to models

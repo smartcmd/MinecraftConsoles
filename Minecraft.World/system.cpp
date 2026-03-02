@@ -21,7 +21,7 @@ void System::arraycopy(arrayWithLength<BYTE> src, unsigned int srcPos, arrayWith
 	assert( srcPos >=0 && srcPos <= src.length);
 	assert( srcPos + length <= src.length );
 	assert( dstPos + length <= dst->length );
-
+	
 	memcpy( dst->data + dstPos, src.data + srcPos, length);
 }
 
@@ -30,7 +30,7 @@ void System::arraycopy(arrayWithLength<int> src, unsigned int srcPos, arrayWithL
 	assert( srcPos >=0 && srcPos <= src.length);
 	assert( srcPos + length <= src.length );
 	assert( dstPos + length <= dst->length );
-
+	
 	memcpy( dst->data + dstPos, src.data + srcPos, length * sizeof(int) );
 }
 
@@ -47,10 +47,10 @@ void System::arraycopy(arrayWithLength<int> src, unsigned int srcPos, arrayWithL
 //   long startTime = System.nanoTime();
 //   // ... the code being measured ...
 //   long estimatedTime = System.nanoTime() - startTime;
-//
+// 
 //Returns:
 //The current value of the system timer, in nanoseconds.
-int64_t System::nanoTime()
+__int64 System::nanoTime()
 {
 	return GetTickCount() * 1000000LL;
 }
@@ -58,21 +58,21 @@ int64_t System::nanoTime()
 //Returns the current time in milliseconds. Note that while the unit of time of the return value is a millisecond,
 //the granularity of the value depends on the underlying operating system and may be larger. For example,
 //many operating systems measure time in units of tens of milliseconds.
-//See the description of the class Date for a discussion of slight discrepancies that may arise between "computer time"
+//See the description of the class Date for a discussion of slight discrepancies that may arise between "computer time" 
 //and coordinated universal time (UTC).
 //
 //Returns:
 //the difference, measured in milliseconds, between the current time and midnight, January 1, 1970 UTC.
-int64_t System::currentTimeMillis()
+__int64 System::currentTimeMillis()
 {
 #ifdef __PS3__
-//	sys_time_get_current_time() obtains the elapsed time since Epoch (1970/01/01 00:00:00 UTC).
-//	The value is separated into two parts: sec stores the elapsed time in seconds, and nsec
+//	sys_time_get_current_time() obtains the elapsed time since Epoch (1970/01/01 00:00:00 UTC). 
+//	The value is separated into two parts: sec stores the elapsed time in seconds, and nsec 
 //  stores the value that is smaller than a second in nanoseconds.
 	sys_time_sec_t sec;
 	sys_time_nsec_t nsec;
 	sys_time_get_current_time(&sec, &nsec);
-	int64_t msec = (sec * 1000) + (nsec / (1000*1000));
+	__int64 msec = (sec * 1000) + (nsec / (1000*1000));
 	return msec;
 
 #elif defined __ORBIS__
@@ -85,7 +85,7 @@ int64_t System::currentTimeMillis()
 	return sceKernelGetProcessTimeWide() / 1000;
 /*	SceDateTime Time;
 	sceRtcGetCurrentClockLocalTime(&Time);
-	int64_t systTime = (((((((Time.day * 24) + Time.hour) * 60) + Time.minute) * 60) + Time.second) * 1000) + (Time.microsecond / 1000);
+	__int64 systTime = (((((((Time.day * 24) + Time.hour) * 60) + Time.minute) * 60) + Time.second) * 1000) + (Time.microsecond / 1000);
 	return systTime;*/
 
 #else
@@ -106,12 +106,12 @@ int64_t System::currentTimeMillis()
 }
 
 // 4J Stu - Added this so that we can use real-world timestamps in PSVita saves. Particularly required for the save transfers to be smooth
-int64_t System::currentRealTimeMillis()
+__int64 System::currentRealTimeMillis()
 {
 #ifdef __PSVITA__
 	SceDateTime Time;
 	sceRtcGetCurrentClockLocalTime(&Time);
-	int64_t systTime = (((((((Time.day * 24) + Time.hour) * 60) + Time.minute) * 60) + Time.second) * 1000) + (Time.microsecond / 1000);
+	__int64 systTime = (((((((Time.day * 24) + Time.hour) * 60) + Time.minute) * 60) + Time.second) * 1000) + (Time.microsecond / 1000);
 	return systTime;
 #else
 	return currentTimeMillis();
@@ -175,9 +175,9 @@ void System::ReverseINT(int *piVal)
 	pchVal1[3]=pchVal2[0];
 }
 
-void System::ReverseULONGLONG(int64_t *pullVal)
+void System::ReverseULONGLONG(__int64 *pullVal)
 {
-	int64_t ullValue=*pullVal;
+	__int64 ullValue=*pullVal;
 	unsigned char *pchVal1=(unsigned char *)pullVal;
 	unsigned char *pchVal2=(unsigned char *)&ullValue;
 

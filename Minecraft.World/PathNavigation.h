@@ -37,8 +37,8 @@ public:
 	void setCanFloat(bool canFloat);
 	Path *createPath(double x, double y, double z);
 	bool moveTo(double x, double y, double z, float speed);
-	Path *createPath(std::shared_ptr<Mob> target);
-	bool moveTo(std::shared_ptr<Mob> target, float speed);
+	Path *createPath(shared_ptr<Mob> target);
+	bool moveTo(shared_ptr<Mob> target, float speed);
 	bool moveTo(Path *newPath, float speed);
 	Path *getPath();
 	void tick();

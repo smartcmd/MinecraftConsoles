@@ -13,7 +13,7 @@ Path::~Path()
 	}
 }
 
-Path::Path(NodeArray nodes)
+Path::Path(NodeArray nodes) 
 {
 	index = 0;
 
@@ -30,26 +30,26 @@ Path::Path(NodeArray nodes)
 	}
 }
 
-void Path::next()
+void Path::next() 
 {
 	index++;
 }
 
-bool Path::isDone()
+bool Path::isDone() 
 {
 	return index >= length;
 }
 
-Node *Path::last()
+Node *Path::last() 
 {
-	if (length > 0)
+	if (length > 0) 
 	{
 		return nodes[length - 1];
 	}
 	return NULL;
 }
 
-Node *Path::get(int i)
+Node *Path::get(int i) 
 {
 	return nodes[i];
 }
@@ -74,7 +74,7 @@ void Path::setIndex(int index)
 	this->index = index;
 }
 
-Vec3 *Path::getPos(std::shared_ptr<Entity> e, int index)
+Vec3 *Path::getPos(shared_ptr<Entity> e, int index) 
 {
 	double x = nodes[index]->x + (int) (e->bbWidth + 1) * 0.5;
 	double y = nodes[index]->y;
@@ -82,7 +82,7 @@ Vec3 *Path::getPos(std::shared_ptr<Entity> e, int index)
 	return Vec3::newTemp(x, y, z);
 }
 
-Vec3 *Path::currentPos(std::shared_ptr<Entity> e)
+Vec3 *Path::currentPos(shared_ptr<Entity> e)
 {
 	return getPos(e, index);
 }

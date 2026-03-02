@@ -14,5 +14,5 @@ protected:
 
 public:
 	virtual bool isComplex();
-	virtual std::shared_ptr<Packet> getUpdatePacket(std::shared_ptr<ItemInstance> itemInstance, Level *level, std::shared_ptr<Player> player);
+	virtual shared_ptr<Packet> getUpdatePacket(shared_ptr<ItemInstance> itemInstance, Level *level, shared_ptr<Player> player);
 };

@@ -26,5 +26,5 @@ public:
 	virtual GameRuleDefinition *addChild(ConsoleGameRules::EGameRuleType ruleType);
 	virtual void addAttribute(const wstring &attributeName, const wstring &attributeValue);
 
-	bool addItemToContainer(std::shared_ptr<Container> container, int slotId);
+	bool addItemToContainer(shared_ptr<Container> container, int slotId);
 };

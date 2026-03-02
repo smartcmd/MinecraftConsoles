@@ -23,7 +23,7 @@ bool TakeFlowerGoal::canUse()
 	if (villager->getAge() >= 0) return false;
 	if (!villager->level->isDay()) return false;
 
-	vector<std::shared_ptr<Entity> > *golems = villager->level->getEntitiesOfClass(typeid(VillagerGolem), villager->bb->grow(6, 2, 6));
+	vector<shared_ptr<Entity> > *golems = villager->level->getEntitiesOfClass(typeid(VillagerGolem), villager->bb->grow(6, 2, 6));
 	if (golems->size() == 0)
 	{
 		delete golems;
@@ -33,7 +33,7 @@ bool TakeFlowerGoal::canUse()
 	//for (Entity e : golems)
 	for(AUTO_VAR(it,golems->begin()); it != golems->end(); ++it)
 	{
-		std::shared_ptr<VillagerGolem> vg = dynamic_pointer_cast<VillagerGolem>(*it);
+		shared_ptr<VillagerGolem> vg = dynamic_pointer_cast<VillagerGolem>(*it);
 		if (vg->getOfferFlowerTick() > 0)
 		{
 			golem = weak_ptr<VillagerGolem>(vg);

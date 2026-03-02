@@ -19,8 +19,8 @@ public:
     virtual void startDestroyBlock(int x, int y, int z, int face);
     virtual bool destroyBlock(int x, int y, int z, int face);
     virtual void tick();
-    virtual bool useItemOn(std::shared_ptr<Player> player, Level *level, std::shared_ptr<ItemInstance> item, int x, int y, int z, int face, Vec3 *hit, bool bTestUseOnly=false, bool *pbUsedItem=NULL);
-    virtual void attack(std::shared_ptr<Player> player, std::shared_ptr<Entity> entity);
+    virtual bool useItemOn(shared_ptr<Player> player, Level *level, shared_ptr<ItemInstance> item, int x, int y, int z, int face, Vec3 *hit, bool bTestUseOnly=false, bool *pbUsedItem=NULL);
+    virtual void attack(shared_ptr<Player> player, shared_ptr<Entity> entity);
 
 	virtual bool isInputAllowed(int mapping);
 

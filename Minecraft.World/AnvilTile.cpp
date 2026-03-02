@@ -55,7 +55,7 @@ void AnvilTile::registerIcons(IconRegister *iconRegister)
 	}
 }
 
-void AnvilTile::setPlacedBy(Level *level, int x, int y, int z, std::shared_ptr<Mob> by)
+void AnvilTile::setPlacedBy(Level *level, int x, int y, int z, shared_ptr<Mob> by)
 {
 	int dir = (Mth::floor(by->yRot * 4 / (360) + 0.5)) & 3;
 	int dmg = level->getData(x, y, z) >> 2;
@@ -67,7 +67,7 @@ void AnvilTile::setPlacedBy(Level *level, int x, int y, int z, std::shared_ptr<M
 	if (dir == 3) level->setData(x, y, z, Direction::WEST | (dmg << 2));
 }
 
-bool AnvilTile::use(Level *level, int x, int y, int z, std::shared_ptr<Player> player, int clickedFace, float clickX, float clickY, float clickZ, bool soundOnly)
+bool AnvilTile::use(Level *level, int x, int y, int z, shared_ptr<Player> player, int clickedFace, float clickX, float clickY, float clickZ, bool soundOnly)
 {
 	if (level->isClientSide)
 	{
@@ -87,7 +87,7 @@ int AnvilTile::getSpawnResourcesAuxValue(int data)
 	return data >> 2;
 }
 
-void AnvilTile::updateShape(LevelSource *level, int x, int y, int z, int forceData, std::shared_ptr<TileEntity> forceEntity)
+void AnvilTile::updateShape(LevelSource *level, int x, int y, int z, int forceData, shared_ptr<TileEntity> forceEntity)
 {
 	int dir = level->getData(x, y, z) & 3;
 
@@ -101,7 +101,7 @@ void AnvilTile::updateShape(LevelSource *level, int x, int y, int z, int forceDa
 	}
 }
 
-void AnvilTile::falling(std::shared_ptr<FallingTile> entity)
+void AnvilTile::falling(shared_ptr<FallingTile> entity)
 {
 	entity->setHurtsEntities(true);
 }

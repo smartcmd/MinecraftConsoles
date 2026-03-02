@@ -29,17 +29,17 @@ private:
 	bool isBrewable();
     void doBrew();
 
-	int applyIngredient(int currentBrew, std::shared_ptr<ItemInstance> ingredient);
-
+	int applyIngredient(int currentBrew, shared_ptr<ItemInstance> ingredient);
+   
 public:
 	virtual void load(CompoundTag *base);
     virtual void save(CompoundTag *base);
-    virtual std::shared_ptr<ItemInstance> getItem(unsigned int slot);
-    virtual std::shared_ptr<ItemInstance> removeItem(unsigned int slot, int i);
-	virtual std::shared_ptr<ItemInstance> removeItemNoUpdate(int slot);
-    virtual void setItem(unsigned int slot, std::shared_ptr<ItemInstance> item);
+    virtual shared_ptr<ItemInstance> getItem(unsigned int slot);
+    virtual shared_ptr<ItemInstance> removeItem(unsigned int slot, int i);
+	virtual shared_ptr<ItemInstance> removeItemNoUpdate(int slot);
+    virtual void setItem(unsigned int slot, shared_ptr<ItemInstance> item);
     virtual int getMaxStackSize();
-    virtual bool stillValid(std::shared_ptr<Player> player);
+    virtual bool stillValid(shared_ptr<Player> player);
     virtual void startOpen();
     virtual void stopOpen();
     virtual void setBrewTime(int value);
@@ -47,5 +47,5 @@ public:
     int getPotionBits();
 
 	// 4J Added
-	virtual std::shared_ptr<TileEntity> clone();
+	virtual shared_ptr<TileEntity> clone();
 };

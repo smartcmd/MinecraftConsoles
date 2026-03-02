@@ -6,7 +6,7 @@ class Button;
 class InventoryScreen : public AbstractContainerScreen
 {
 public:
-	InventoryScreen(std::shared_ptr<Player> player);
+	InventoryScreen(shared_ptr<Player> player);
     virtual void init();
 protected:
 	virtual void renderLabels();

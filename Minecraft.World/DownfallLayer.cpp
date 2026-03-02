@@ -2,7 +2,7 @@
 #include "net.minecraft.world.level.biome.h"
 #include "net.minecraft.world.level.newbiome.layer.h"
 
-DownfallLayer::DownfallLayer(std::shared_ptr<Layer>parent) : Layer(0)
+DownfallLayer::DownfallLayer(shared_ptr<Layer>parent) : Layer(0)
 {
 	this->parent = parent;
 }

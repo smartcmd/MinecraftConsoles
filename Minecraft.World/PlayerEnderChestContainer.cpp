@@ -7,7 +7,7 @@ PlayerEnderChestContainer::PlayerEnderChestContainer() : SimpleContainer(IDS_TIL
 	activeChest = nullptr;
 }
 
-void PlayerEnderChestContainer::setActiveChest(std::shared_ptr<EnderChestTileEntity> activeChest)
+void PlayerEnderChestContainer::setActiveChest(shared_ptr<EnderChestTileEntity> activeChest)
 {
 	this->activeChest = activeChest;
 }
@@ -31,7 +31,7 @@ ListTag<CompoundTag> *PlayerEnderChestContainer::createTag()
 	ListTag<CompoundTag> *items = new ListTag<CompoundTag>(L"EnderItems");
 	for (int i = 0; i < getContainerSize(); i++)
 	{
-		std::shared_ptr<ItemInstance> item = getItem(i);
+		shared_ptr<ItemInstance> item = getItem(i);
 		if (item != NULL)
 		{
 			CompoundTag *tag = new CompoundTag();
@@ -43,7 +43,7 @@ ListTag<CompoundTag> *PlayerEnderChestContainer::createTag()
 	return items;
 }
 
-bool PlayerEnderChestContainer::stillValid(std::shared_ptr<Player> player)
+bool PlayerEnderChestContainer::stillValid(shared_ptr<Player> player)
 {
 	if (activeChest != NULL && !activeChest->stillValid(player))
 	{

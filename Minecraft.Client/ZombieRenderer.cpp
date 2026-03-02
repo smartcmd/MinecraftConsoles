@@ -34,28 +34,28 @@ void ZombieRenderer::createArmorParts()
 	villagerArmorParts2 = new VillagerZombieModel(0.5f, 0, true);
 }
 
-int ZombieRenderer::prepareArmor(std::shared_ptr<Mob> _mob, int layer, float a)
+int ZombieRenderer::prepareArmor(shared_ptr<Mob> _mob, int layer, float a)
 {
-	std::shared_ptr<Zombie> mob = dynamic_pointer_cast<Zombie>(_mob);
+	shared_ptr<Zombie> mob = dynamic_pointer_cast<Zombie>(_mob);
 	swapArmor(mob);
 	return HumanoidMobRenderer::prepareArmor(_mob, layer, a);
 }
 
-void ZombieRenderer::render(std::shared_ptr<Entity> _mob, double x, double y, double z, float rot, float a)
+void ZombieRenderer::render(shared_ptr<Entity> _mob, double x, double y, double z, float rot, float a)
 {
-	std::shared_ptr<Zombie> mob = dynamic_pointer_cast<Zombie>(_mob);
+	shared_ptr<Zombie> mob = dynamic_pointer_cast<Zombie>(_mob);
 	swapArmor(mob);
 	HumanoidMobRenderer::render(_mob, x, y, z, rot, a);
 }
 
-void ZombieRenderer::additionalRendering(std::shared_ptr<Mob> _mob, float a)
+void ZombieRenderer::additionalRendering(shared_ptr<Mob> _mob, float a)
 {
-	std::shared_ptr<Zombie> mob = dynamic_pointer_cast<Zombie>(_mob);
+	shared_ptr<Zombie> mob = dynamic_pointer_cast<Zombie>(_mob);
 	swapArmor(mob);
 	HumanoidMobRenderer::additionalRendering(_mob, a);
 }
 
-void ZombieRenderer::swapArmor(std::shared_ptr<Zombie> mob)
+void ZombieRenderer::swapArmor(shared_ptr<Zombie> mob)
 {
 	if (mob->isVillager())
 	{
@@ -80,9 +80,9 @@ void ZombieRenderer::swapArmor(std::shared_ptr<Zombie> mob)
 	humanoidModel = (HumanoidModel *) model;
 }
 
-void ZombieRenderer::setupRotations(std::shared_ptr<Mob> _mob, float bob, float bodyRot, float a)
+void ZombieRenderer::setupRotations(shared_ptr<Mob> _mob, float bob, float bodyRot, float a)
 {
-	std::shared_ptr<Zombie> mob = dynamic_pointer_cast<Zombie>(_mob);
+	shared_ptr<Zombie> mob = dynamic_pointer_cast<Zombie>(_mob);
 	if (mob->isConverting())
 	{
 		bodyRot += (float) (cos(mob->tickCount * 3.25) * PI * .25f);

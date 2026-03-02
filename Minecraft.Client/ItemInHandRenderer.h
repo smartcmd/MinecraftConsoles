@@ -11,7 +11,7 @@ class ItemInHandRenderer
 {
 private:
 	Minecraft *mc;
-    std::shared_ptr<ItemInstance> selectedItem;
+    shared_ptr<ItemInstance> selectedItem;
     float height;
     float oHeight;
     TileRenderer *tileRenderer;
@@ -23,7 +23,7 @@ public:
 
 public:
 	ItemInHandRenderer(Minecraft *mc, bool optimisedMinimap = true); // 4J Added optimisedMinimap param
-    void renderItem(std::shared_ptr<Mob> mob, std::shared_ptr<ItemInstance> item, int layer, bool setColor = true);	// 4J added setColor parameter
+    void renderItem(shared_ptr<Mob> mob, shared_ptr<ItemInstance> item, int layer, bool setColor = true);	// 4J added setColor parameter
 	static void renderItem3D(Tesselator *t, float u0, float v0, float u1, float v1, int width, int height, float depth, bool isGlint);	// 4J added isGlint parameter
 public:
     void render(float a);

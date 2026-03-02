@@ -26,7 +26,7 @@
 #include <boost/thread/lock_algorithms.hpp>
 #include <boost/thread/lock_types.hpp>
 #include <boost/exception_ptr.hpp>
-#include <boost/std::shared_ptr.hpp>
+#include <boost/shared_ptr.hpp>
 #include <boost/scoped_ptr.hpp>
 #include <boost/type_traits/is_fundamental.hpp>
 #include <boost/thread/detail/is_convertible.hpp>
@@ -236,9 +236,9 @@ namespace boost
             bool thread_was_interrupted;
 //#endif
 #if defined BOOST_THREAD_PROVIDES_FUTURE_CONTINUATION
-            std::shared_ptr<future_continuation_base> continuation_ptr;
+            shared_ptr<future_continuation_base> continuation_ptr;
 #else
-            std::shared_ptr<void> continuation_ptr;
+            shared_ptr<void> continuation_ptr;
 #endif
             future_object_base():
                 done(false),
@@ -998,11 +998,11 @@ namespace boost
 
             struct registered_waiter
             {
-                boost::std::shared_ptr<detail::future_object_base> future_;
+                boost::shared_ptr<detail::future_object_base> future_;
                 detail::future_object_base::waiter_list::iterator wait_iterator;
                 count_type index;
 
-                registered_waiter(boost::std::shared_ptr<detail::future_object_base> const& a_future,
+                registered_waiter(boost::shared_ptr<detail::future_object_base> const& a_future,
                                   detail::future_object_base::waiter_list::iterator wait_iterator_,
                                   count_type index_):
                     future_(a_future),wait_iterator(wait_iterator_),index(index_)
@@ -1236,7 +1236,7 @@ namespace boost
       {
       protected:
 
-        typedef boost::std::shared_ptr<detail::future_object<R> > future_ptr;
+        typedef boost::shared_ptr<detail::future_object<R> > future_ptr;
 
         future_ptr future_;
 
@@ -1566,7 +1566,7 @@ namespace boost
     template <typename R>
     class promise
     {
-        typedef boost::std::shared_ptr<detail::future_object<R> > future_ptr;
+        typedef boost::shared_ptr<detail::future_object<R> > future_ptr;
 
         future_ptr future_;
         bool future_obtained;
@@ -1729,7 +1729,7 @@ namespace boost
     template <typename R>
     class promise<R&>
     {
-        typedef boost::std::shared_ptr<detail::future_object<R&> > future_ptr;
+        typedef boost::shared_ptr<detail::future_object<R&> > future_ptr;
 
         future_ptr future_;
         bool future_obtained;
@@ -1871,7 +1871,7 @@ namespace boost
     template <>
     class promise<void>
     {
-        typedef boost::std::shared_ptr<detail::future_object<void> > future_ptr;
+        typedef boost::shared_ptr<detail::future_object<void> > future_ptr;
 
         future_ptr future_;
         bool future_obtained;
@@ -1927,7 +1927,7 @@ namespace boost
         promise(BOOST_THREAD_RV_REF(promise) rhs) BOOST_NOEXCEPT :
             future_(BOOST_THREAD_RV(rhs).future_),future_obtained(BOOST_THREAD_RV(rhs).future_obtained)
         {
-          // we need to release the future as std::shared_ptr doesn't implements move semantics
+          // we need to release the future as shared_ptr doesn't implements move semantics
             BOOST_THREAD_RV(rhs).future_.reset();
             BOOST_THREAD_RV(rhs).future_obtained=false;
         }
@@ -2461,21 +2461,21 @@ namespace boost
     template<typename R, typename ...ArgTypes>
     class packaged_task<R(ArgTypes...)>
     {
-      typedef boost::std::shared_ptr<detail::task_base<R(ArgTypes...)> > task_ptr;
-      boost::std::shared_ptr<detail::task_base<R(ArgTypes...)> > task;
+      typedef boost::shared_ptr<detail::task_base<R(ArgTypes...)> > task_ptr;
+      boost::shared_ptr<detail::task_base<R(ArgTypes...)> > task;
   #else
     template<typename R>
     class packaged_task<R()>
     {
-      typedef boost::std::shared_ptr<detail::task_base<R()> > task_ptr;
-      boost::std::shared_ptr<detail::task_base<R()> > task;
+      typedef boost::shared_ptr<detail::task_base<R()> > task_ptr;
+      boost::shared_ptr<detail::task_base<R()> > task;
   #endif
 #else
     template<typename R>
     class packaged_task
     {
-      typedef boost::std::shared_ptr<detail::task_base<R> > task_ptr;
-      boost::std::shared_ptr<detail::task_base<R> > task;
+      typedef boost::shared_ptr<detail::task_base<R> > task_ptr;
+      boost::shared_ptr<detail::task_base<R> > task;
 #endif
         bool future_obtained;
         struct dummy;
@@ -2806,7 +2806,7 @@ namespace boost
     BOOST_THREAD_FUTURE<Rp>
     make_future_deferred_object(BOOST_THREAD_FWD_REF(Fp) f)
     {
-      std::shared_ptr<future_deferred_object<Rp, Fp> >
+      shared_ptr<future_deferred_object<Rp, Fp> >
           h(new future_deferred_object<Rp, Fp>(boost::forward<Fp>(f)));
       return BOOST_THREAD_FUTURE<Rp>(h);
     }
@@ -2818,7 +2818,7 @@ namespace boost
     BOOST_THREAD_FUTURE<Rp>
     make_future_async_object(BOOST_THREAD_FWD_REF(Fp) f)
     {
-      std::shared_ptr<future_async_object<Rp, Fp> >
+      shared_ptr<future_async_object<Rp, Fp> >
           h(new future_async_object<Rp, Fp>(boost::forward<Fp>(f)));
       return BOOST_THREAD_FUTURE<Rp>(h);
     }

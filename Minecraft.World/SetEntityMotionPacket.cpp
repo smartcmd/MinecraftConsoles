@@ -32,22 +32,22 @@ void SetEntityMotionPacket::_init(int id, double xd, double yd, double zd)
 	}
 }
 
-SetEntityMotionPacket::SetEntityMotionPacket()
+SetEntityMotionPacket::SetEntityMotionPacket() 
 {
 	_init(0, 0.0f, 0.0f, 0.0f);
 }
 
-SetEntityMotionPacket::SetEntityMotionPacket(std::shared_ptr<Entity> e)
+SetEntityMotionPacket::SetEntityMotionPacket(shared_ptr<Entity> e)
 {
 	_init(e->entityId, e->xd, e->yd, e->zd);
 }
 
 SetEntityMotionPacket::SetEntityMotionPacket(int id, double xd, double yd, double zd)
 {
-	_init(id, xd, yd, zd);
+	_init(id, xd, yd, zd);   
 }
 
-void SetEntityMotionPacket::read(DataInputStream *dis) //throws IOException
+void SetEntityMotionPacket::read(DataInputStream *dis) //throws IOException 
 {
 	short idAndFlag = dis->readShort();
 	id = idAndFlag & 0x07ff;
@@ -73,7 +73,7 @@ void SetEntityMotionPacket::read(DataInputStream *dis) //throws IOException
 	}
 }
 
-void SetEntityMotionPacket::write(DataOutputStream *dos) //throws IOException
+void SetEntityMotionPacket::write(DataOutputStream *dos) //throws IOException 
 {
 	if( useBytes )
 	{
@@ -106,8 +106,8 @@ bool SetEntityMotionPacket::canBeInvalidated()
 	return true;
 }
 
-bool SetEntityMotionPacket::isInvalidatedBy(std::shared_ptr<Packet> packet)
+bool SetEntityMotionPacket::isInvalidatedBy(shared_ptr<Packet> packet)
 {
-	std::shared_ptr<SetEntityMotionPacket> target = dynamic_pointer_cast<SetEntityMotionPacket>(packet);
+	shared_ptr<SetEntityMotionPacket> target = dynamic_pointer_cast<SetEntityMotionPacket>(packet);
 	return target->id == id;
 }

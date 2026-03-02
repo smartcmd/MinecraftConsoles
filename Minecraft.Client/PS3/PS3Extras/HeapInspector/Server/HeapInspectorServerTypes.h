@@ -16,8 +16,8 @@ typedef unsigned int uint32;
 	typedef unsigned long long uint64;
 	typedef long long int64;
 #else
-	typedef uint64_t uint64;
-	typedef int64_t int64;
+	typedef unsigned __int64 uint64;
+	typedef __int64 int64;
 #endif
 
 typedef char int8;

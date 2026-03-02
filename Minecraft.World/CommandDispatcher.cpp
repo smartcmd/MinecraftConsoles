@@ -2,7 +2,7 @@
 #include "net.minecraft.commands.h"
 #include "CommandDispatcher.h"
 
-void CommandDispatcher::performCommand(std::shared_ptr<CommandSender> sender, EGameCommand command, byteArray commandData)
+void CommandDispatcher::performCommand(shared_ptr<CommandSender> sender, EGameCommand command, byteArray commandData)
 {
 	AUTO_VAR(it, commandsById.find(command));
 

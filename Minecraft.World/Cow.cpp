@@ -47,27 +47,27 @@ int Cow::getMaxHealth()
 	return 10;
 }
 
-int Cow::getAmbientSound()
+int Cow::getAmbientSound() 
 {
 	return eSoundType_MOB_COW_AMBIENT;
 }
 
-int Cow::getHurtSound()
+int Cow::getHurtSound() 
 {
 	return eSoundType_MOB_COW_HURT;
 }
 
-int Cow::getDeathSound()
+int Cow::getDeathSound() 
 {
 	return eSoundType_MOB_COW_HURT;
 }
 
-float Cow::getSoundVolume()
+float Cow::getSoundVolume() 
 {
 	return 0.4f;
 }
 
-int Cow::getDeathLoot()
+int Cow::getDeathLoot() 
 {
 	return Item::leather->id;
 }
@@ -95,33 +95,33 @@ void Cow::dropDeathLoot(bool wasKilledByPlayer, int playerBonusLevel)
 	}
 }
 
-bool Cow::interact(std::shared_ptr<Player> player)
+bool Cow::interact(shared_ptr<Player> player) 
 {
-	std::shared_ptr<ItemInstance> item = player->inventory->getSelected();
-	if (item != NULL && item->id == Item::bucket_empty->id)
+	shared_ptr<ItemInstance> item = player->inventory->getSelected();
+	if (item != NULL && item->id == Item::bucket_empty->id) 
 	{
 		player->awardStat(GenericStats::cowsMilked(),GenericStats::param_cowsMilked());
 
-		if (--item->count <= 0)
+		if (--item->count <= 0) 
 		{
-			player->inventory->setItem(player->inventory->selected, std::shared_ptr<ItemInstance>( new ItemInstance(Item::milk) ) );
-		}
-		else if (!player->inventory->add(std::shared_ptr<ItemInstance>( new ItemInstance(Item::milk) )))
+			player->inventory->setItem(player->inventory->selected, shared_ptr<ItemInstance>( new ItemInstance(Item::milk) ) );
+		} 
+		else if (!player->inventory->add(shared_ptr<ItemInstance>( new ItemInstance(Item::milk) ))) 
 		{
-			player->drop(std::shared_ptr<ItemInstance>( new ItemInstance(Item::milk) ));
+			player->drop(shared_ptr<ItemInstance>( new ItemInstance(Item::milk) ));
 		}
-
+		
 		return true;
 	}
 	return Animal::interact(player);
 }
 
-std::shared_ptr<AgableMob> Cow::getBreedOffspring(std::shared_ptr<AgableMob> target)
+shared_ptr<AgableMob> Cow::getBreedOffspring(shared_ptr<AgableMob> target)
 {
 	// 4J - added limit to number of animals that can be bred
 	if( level->canCreateMore( GetType(), Level::eSpawnType_Breed) )
 	{
-		return std::shared_ptr<Cow>( new Cow(level) );
+		return shared_ptr<Cow>( new Cow(level) );
 	}
 	else
 	{

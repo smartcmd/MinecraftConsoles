@@ -100,7 +100,7 @@ HRESULT CXuiCtrlEnchantmentBook::OnRender(XUIMessageRender *pRenderData, BOOL &b
 
 	// Annoyingly, XUI renders everything to a z of 0 so if we want to render anything that needs the z-buffer on top of it, then we need to clear it.
 	// Clear just the region required for this control.
-	D3DRECT clearRect;
+	D3DRECT clearRect; 
 	clearRect.x1 = (int)(matrix._41) - 2;
 	clearRect.y1 = (int)(matrix._42) - 2;
 	clearRect.x2 = (int)(matrix._41 + ( bwidth  * matrix._11 )) + 2;
@@ -201,7 +201,7 @@ HRESULT CXuiCtrlEnchantmentBook::OnRender(XUIMessageRender *pRenderData, BOOL &b
 //HRESULT CXuiCtrlEnchantmentBook::OnRender(XUIMessageRender *pRenderData, BOOL &bHandled )
 //{
 //	HXUIDC hDC = pRenderData->hDC;
-//
+//	
 //	RenderManager.Set_matrixDirty();
 //
 //	Minecraft *minecraft = Minecraft::GetInstance();
@@ -306,7 +306,7 @@ HRESULT CXuiCtrlEnchantmentBook::OnRender(XUIMessageRender *pRenderData, BOOL &b
 void CXuiCtrlEnchantmentBook::tickBook()
 {
 	EnchantmentMenu *menu = m_containerScene->getMenu();
-	std::shared_ptr<ItemInstance> current = menu->getSlot(0)->getItem();
+	shared_ptr<ItemInstance> current = menu->getSlot(0)->getItem();
 	if (!ItemInstance::matches(current, last))
 	{
         last = current;
@@ -328,7 +328,7 @@ void CXuiCtrlEnchantmentBook::tickBook()
 		{
             shouldBeOpen = true;
         }
-    }
+    } 
 
     if (shouldBeOpen) open += 0.2f;
     else open -= 0.2f;

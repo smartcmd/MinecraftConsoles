@@ -119,10 +119,10 @@ void PistonPieceEntity::moveCollidedEntities(float progress, float amount)
 	AABB *aabb = Tile::pistonMovingPiece->getAABB(level, x, y, z, id, progress, facing);
 	if (aabb != NULL)
 	{
-		vector<std::shared_ptr<Entity> > *entities = level->getEntities(nullptr, aabb);
+		vector<shared_ptr<Entity> > *entities = level->getEntities(nullptr, aabb);
 		if (!entities->empty())
 		{
-			vector< std::shared_ptr<Entity> > collisionHolder;
+			vector< shared_ptr<Entity> > collisionHolder;
 			for( AUTO_VAR(it, entities->begin()); it != entities->end(); it++ )
 			{
 				collisionHolder.push_back(*it);
@@ -199,9 +199,9 @@ void PistonPieceEntity::save(CompoundTag *tag)
 }
 
 // 4J Added
-std::shared_ptr<TileEntity> PistonPieceEntity::clone()
+shared_ptr<TileEntity> PistonPieceEntity::clone()
 {
-	std::shared_ptr<PistonPieceEntity> result = std::shared_ptr<PistonPieceEntity>( new PistonPieceEntity() );
+	shared_ptr<PistonPieceEntity> result = shared_ptr<PistonPieceEntity>( new PistonPieceEntity() );
 	TileEntity::clone(result);
 
 	result->id = id;

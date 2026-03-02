@@ -17,13 +17,13 @@ int RedStoneOreTile::getTickDelay()
 	return 30;
 }
 
-void RedStoneOreTile::attack(Level *level, int x, int y, int z, std::shared_ptr<Player> player)
+void RedStoneOreTile::attack(Level *level, int x, int y, int z, shared_ptr<Player> player)
 {
 	interact(level, x, y, z);
 	Tile::attack(level, x, y, z, player);
 }
 
-void RedStoneOreTile::stepOn(Level *level, int x, int y, int z, std::shared_ptr<Entity> entity)
+void RedStoneOreTile::stepOn(Level *level, int x, int y, int z, shared_ptr<Entity> entity)
 {
 	interact(level, x, y, z);
 	Tile::stepOn(level, x, y, z, entity);
@@ -35,7 +35,7 @@ bool RedStoneOreTile::TestUse()
 	return true;
 }
 
-bool RedStoneOreTile::use(Level *level, int x, int y, int z, std::shared_ptr<Player> player, int clickedFace, float clickX, float clickY, float clickZ, bool soundOnly/*=false*/) // 4J added soundOnly param
+bool RedStoneOreTile::use(Level *level, int x, int y, int z, shared_ptr<Player> player, int clickedFace, float clickX, float clickY, float clickZ, bool soundOnly/*=false*/) // 4J added soundOnly param
 {
 	if (soundOnly) return false;
 	interact(level, x, y, z);
@@ -122,7 +122,7 @@ bool RedStoneOreTile::shouldTileTick(Level *level, int x,int y,int z)
     return id == Tile::redStoneOre_lit_Id;
 }
 
-std::shared_ptr<ItemInstance> RedStoneOreTile::getSilkTouchItemInstance(int data)
+shared_ptr<ItemInstance> RedStoneOreTile::getSilkTouchItemInstance(int data)
 {
-	return std::shared_ptr<ItemInstance>(new ItemInstance(Tile::redStoneOre));
+	return shared_ptr<ItemInstance>(new ItemInstance(Tile::redStoneOre));
 }

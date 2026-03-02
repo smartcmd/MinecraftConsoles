@@ -78,8 +78,8 @@ public:
    real_concept(boost::ulong_long_type c) : m_value(static_cast<real_concept_base_type>(c)){}
    real_concept(boost::long_long_type c) : m_value(static_cast<real_concept_base_type>(c)){}
 #elif defined(BOOST_HAS_MS_INT64)
-   real_concept(uint64_t c) : m_value(static_cast<real_concept_base_type>(c)){}
-   real_concept(int64_t c) : m_value(static_cast<real_concept_base_type>(c)){}
+   real_concept(unsigned __int64 c) : m_value(static_cast<real_concept_base_type>(c)){}
+   real_concept(__int64 c) : m_value(static_cast<real_concept_base_type>(c)){}
 #endif
    real_concept(float c) : m_value(c){}
    real_concept(double c) : m_value(c){}
@@ -366,7 +366,7 @@ inline concepts::real_concept epsilon<concepts::real_concept>(BOOST_MATH_EXPLICI
 
 template <>
 inline int digits<concepts::real_concept>(BOOST_MATH_EXPLICIT_TEMPLATE_TYPE_SPEC(concepts::real_concept))
-{
+{ 
    // Assume number of significand bits is same as real_concept_base_type,
    // unless std::numeric_limits<T>::is_specialized to provide digits.
    return tools::digits<concepts::real_concept_base_type>();
@@ -432,7 +432,7 @@ inline long double real_cast<long double, concepts::real_concept>(concepts::real
 
 #if BOOST_WORKAROUND(BOOST_MSVC, <= 1310)
 //
-// For some strange reason ADL sometimes fails to find the
+// For some strange reason ADL sometimes fails to find the 
 // correct overloads, unless we bring these declarations into scope:
 //
 using concepts::itrunc;

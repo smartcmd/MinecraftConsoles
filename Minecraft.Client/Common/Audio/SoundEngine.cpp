@@ -22,17 +22,17 @@
 #ifdef __ORBIS__
 #include <audioout.h>
 //#define __DISABLE_MILES__			// MGH disabled for now as it crashes if we call sceNpMatching2Initialize
-#endif
+#endif 
 
 // take out Orbis until they are done
-#if defined _XBOX
+#if defined _XBOX 
 
 SoundEngine::SoundEngine() {}
 void SoundEngine::init(Options *pOptions)
 {
 }
 
-void SoundEngine::tick(std::shared_ptr<Mob> *players, float a)
+void SoundEngine::tick(shared_ptr<Mob> *players, float a)
 {
 }
 void SoundEngine::destroy() {}
@@ -95,7 +95,7 @@ char SoundEngine::m_szRedistName[]={"redist"};
 
 #endif
 
-F32 AILCALLBACK custom_falloff_function (HSAMPLE   S,
+F32 AILCALLBACK custom_falloff_function (HSAMPLE   S, 
 										 F32       distance,
 										 F32       rolloff_factor,
 										 F32       min_dist,
@@ -124,7 +124,7 @@ char *SoundEngine::m_szStreamFileA[eStream_Max]=
 	"menu2",
 	"menu3",
 	"menu4",
-#endif
+#endif	
 	"piano1",
 	"piano2",
 	"piano3",
@@ -209,7 +209,7 @@ void SoundEngine::init(Options *pOptions)
 #endif
 #ifdef __ORBIS__
 	C4JThread::PushAffinityAllCores();
-#endif
+#endif 
 #if defined _DURANGO || defined __ORBIS__ || defined __PS3__ || defined __PSVITA__
 	Register_RIB(BinkADec);
 #endif
@@ -226,8 +226,8 @@ void SoundEngine::init(Options *pOptions)
 	int iNumberOfChannels=initAudioHardware(8);
 
 	// Create a driver to render our audio - 44khz, 16 bit,
-#ifdef __PS3__
-	//	On the Sony PS3, the driver is always opened in 48 kHz, 32-bit floating point. The only meaningful configurations are MSS_MC_STEREO, MSS_MC_51_DISCRETE, and MSS_MC_71_DISCRETE.
+#ifdef __PS3__	
+	//	On the Sony PS3, the driver is always opened in 48 kHz, 32-bit floating point. The only meaningful configurations are MSS_MC_STEREO, MSS_MC_51_DISCRETE, and MSS_MC_71_DISCRETE. 
 	m_hDriver = AIL_open_digital_driver( 48000, 16, iNumberOfChannels, AIL_OPEN_DIGITAL_USE_SPU0 );
 #elif defined __PSVITA__
 
@@ -236,7 +236,7 @@ void SoundEngine::init(Options *pOptions)
 
 	m_hDriver = AIL_open_digital_driver( 48000, 16, MSS_MC_STEREO, 0 );
 
-	// AP - For some reason the submit thread defaults to a priority of zero (invalid). Make sure it has the highest priority to avoid audio breakup.
+	// AP - For some reason the submit thread defaults to a priority of zero (invalid). Make sure it has the highest priority to avoid audio breakup. 
 	SceUID		threadID;
 	AIL_platform_property( m_hDriver, PSP2_SUBMIT_THREAD, &threadID, 0, 0);
 	S32 g_DefaultCPU = sceKernelGetThreadCpuAffinityMask(threadID);
@@ -260,7 +260,7 @@ void SoundEngine::init(Options *pOptions)
 		AIL_shutdown();
 #ifdef __ORBIS__
 		C4JThread::PopAffinity();
-#endif
+#endif 
 		return;
 	}
 	app.DebugPrintf("---SoundEngine::init - driver opened\n");
@@ -289,12 +289,12 @@ void SoundEngine::init(Options *pOptions)
 		AIL_shutdown();
 #ifdef __ORBIS__
 		C4JThread::PopAffinity();
-#endif
+#endif 
 		app.DebugPrintf("---SoundEngine::init - AIL_startup_event_system failed\n");
 		return;
 	}
 	char szBankName[255];
-#if defined __PS3__
+#if defined __PS3__ 
 	if(app.GetBootedFromDiscPatch())
 	{
 		char szTempSoundFilename[255];
@@ -308,7 +308,7 @@ void SoundEngine::init(Options *pOptions)
 	{
 		sprintf(szBankName,"%s/%s",getUsrDirPath(), m_szSoundPath );
 	}
-
+	
 #elif defined __PSVITA__
 	sprintf(szBankName,"%s/%s",getUsrDirPath(), m_szSoundPath );
 #elif defined __ORBIS__
@@ -329,7 +329,7 @@ void SoundEngine::init(Options *pOptions)
 		AIL_shutdown();
 #ifdef __ORBIS__
 		C4JThread::PopAffinity();
-#endif
+#endif 
 		return;
 	}
 
@@ -362,7 +362,7 @@ void SoundEngine::init(Options *pOptions)
 #endif
 
 #ifdef __PSVITA__
-	// AP - By default the mixer won't start up and nothing will process. Kick off a blank sample to force the mixer to start up.
+	// AP - By default the mixer won't start up and nothing will process. Kick off a blank sample to force the mixer to start up. 
 	HSAMPLE Sample = AIL_allocate_sample_handle(m_hDriver);
 	AIL_init_sample(Sample, DIG_F_STEREO_16);
 	static U64 silence = 0;
@@ -403,7 +403,7 @@ void SoundEngine::SetStreamingSounds(int iOverworldMin, int iOverWorldMax, int i
 // AP - moved to a separate function so it can be called from the mixer callback on Vita
 void SoundEngine::updateMiles()
 {
-#ifdef __PSVITA__
+#ifdef __PSVITA__ 
 	//CD - We must check for Background Music [BGM] at any point
 	//If it's playing disable our audio, otherwise enable
 	int NoBGMPlaying = sceAudioOutGetAdopt(SCE_AUDIO_OUT_PORT_TYPE_BGM);
@@ -463,7 +463,7 @@ void SoundEngine::updateMiles()
 			{
 				isThunder = true;
 			}
-			if(game_data->volume>1)
+			if(game_data->volume>1) 
 			{
 				game_data->volume=1;
 			}
@@ -477,7 +477,7 @@ void SoundEngine::updateMiles()
 				AIL_register_falloff_function_callback(SoundInfo.Sample,&custom_falloff_function);
 
 				if(game_data->bIs3D)
-				{
+				{			
 					AIL_set_sample_is_3D( SoundInfo.Sample, 1 );
 
 					int iSound = game_data->iSound - eSFX_MAX;
@@ -518,7 +518,7 @@ void SoundEngine::updateMiles()
 				}
 
 				if(game_data->bIs3D)
-				{
+				{			
 					if(m_validListenerCount>1)
 					{
 						float fClosest=10000.0f;
@@ -562,7 +562,7 @@ void SoundEngine::updateMiles()
 
 			default:
 				if(game_data->bIs3D)
-				{
+				{	
 					if(m_validListenerCount>1)
 					{
 						float fClosest=10000.0f;
@@ -600,9 +600,9 @@ void SoundEngine::updateMiles()
 					{
 						AIL_set_sample_3D_position( SoundInfo.Sample, game_data->x, game_data->y, -game_data->z );  // Flipped sign of z as Miles is expecting left handed coord system
 					}
-				}
+				}				
 				break;
-			}
+			}			
 		}
 	}
 	AIL_complete_event_queue_processing();
@@ -622,7 +622,7 @@ static float fVal=0.0f;
 static S32 running = AIL_ms_count();
 #endif
 
-void SoundEngine::tick(std::shared_ptr<Mob> *players, float a)
+void SoundEngine::tick(shared_ptr<Mob> *players, float a)
 {
 #ifdef __DISABLE_MILES__
 	return;
@@ -657,7 +657,7 @@ void SoundEngine::tick(std::shared_ptr<Mob> *players, float a)
 				// store the listener positions for splitscreen
 				m_ListenerA[i].vPosition.x = x;
 				m_ListenerA[i].vPosition.y = y;
-				m_ListenerA[i].vPosition.z = z;
+				m_ListenerA[i].vPosition.z = z;  
 
 				m_ListenerA[i].vOrientFront.x = ySin;
 				m_ListenerA[i].vOrientFront.y = 0;
@@ -707,7 +707,7 @@ SoundEngine::SoundEngine()
 	m_hStream=0;
 	m_StreamState=eMusicStreamState_Idle;
 	m_iMusicDelay=0;
-	m_validListenerCount=0;
+	m_validListenerCount=0; 
 
 	m_bHeardTrackA=NULL;
 
@@ -763,7 +763,7 @@ void SoundEngine::play(int iSound, float x, float y, float z, float volume, floa
 
 	// AP removed old counting system. Now relying on Miles' Play Count Limit
 	/*	// if we are already playing loads of this sounds ignore this one
-	if(CurrentSoundsPlaying[iSound+eSFX_MAX]>MAX_SAME_SOUNDS_PLAYING)
+	if(CurrentSoundsPlaying[iSound+eSFX_MAX]>MAX_SAME_SOUNDS_PLAYING) 
 	{
 	// 		wstring name = wchSoundNames[iSound];
 	// 		char *SoundName = (char *)ConvertSoundPathToName(name);
@@ -810,7 +810,7 @@ void SoundEngine::play(int iSound, float x, float y, float z, float volume, floa
 //	playUI
 //
 /////////////////////////////////////////////
-void SoundEngine::playUI(int iSound, float volume, float pitch)
+void SoundEngine::playUI(int iSound, float volume, float pitch) 
 {
 	U8 szSoundName[256];
 	wstring name;
@@ -956,7 +956,7 @@ int SoundEngine::GetRandomishTrack(int iStart,int iEnd)
 	int iVal=iStart;
 	for(int i=iStart;i<=iEnd;i++)
 	{
-		if(m_bHeardTrackA[i]==false)
+		if(m_bHeardTrackA[i]==false) 
 		{
 			bAllTracksHeard=false;
 			app.DebugPrintf("Not heard all tracks yet\n");
@@ -974,7 +974,7 @@ int SoundEngine::GetRandomishTrack(int iStart,int iEnd)
 		}
 	}
 
-	// trying to get a track we haven't heard, but not too hard
+	// trying to get a track we haven't heard, but not too hard		
 	for(int i=0;i<=((iEnd-iStart)/2);i++)
 	{
 		// random->nextInt(1) will always return 0
@@ -1111,7 +1111,7 @@ void SoundEngine::updateSystemMusicPlaying(bool isPlaying)
 //	updateSoundEffectVolume
 //
 /////////////////////////////////////////////
-void SoundEngine::updateSoundEffectVolume(float fVal)
+void SoundEngine::updateSoundEffectVolume(float fVal) 
 {
 	m_MasterEffectsVolume=fVal;
 	//AIL_set_variable_float(0,"UserEffectVol",fVal);
@@ -1137,7 +1137,7 @@ int SoundEngine::OpenStreamThreadProc( void* lpParameter )
 //	playMusicTick
 //
 /////////////////////////////////////////////
-void SoundEngine::playMusicTick()
+void SoundEngine::playMusicTick() 
 {
 // AP - vita will update the music during the mixer callback
 #ifndef __PSVITA__
@@ -1146,7 +1146,7 @@ void SoundEngine::playMusicTick()
 }
 
 // AP - moved to a separate function so it can be called from the mixer callback on Vita
-void SoundEngine::playMusicUpdate()
+void SoundEngine::playMusicUpdate() 
 {
 	//return;
 	static bool firstCall = true;
@@ -1179,7 +1179,7 @@ void SoundEngine::playMusicUpdate()
 			// 4J-PB - Need to check if we are a patched BD build
 			if(app.GetBootedFromDiscPatch())
 			{
-				sprintf(m_szStreamName,"%s/%s",app.GetBDUsrDirPath(m_szMusicPath), m_szMusicPath );
+				sprintf(m_szStreamName,"%s/%s",app.GetBDUsrDirPath(m_szMusicPath), m_szMusicPath );		
 				app.DebugPrintf("SoundEngine::playMusicUpdate - (booted from disc patch) music path - %s",m_szStreamName);
 			}
 			else
@@ -1214,7 +1214,7 @@ void SoundEngine::playMusicUpdate()
 					SetIsPlayingStreamingCDMusic(false);
 					m_MusicType=eMusicType_Game;
 					m_StreamingAudioInfo.bIs3D=false;
-
+				
 #ifdef _XBOX_ONE
 					wstring &wstrSoundName=dlcAudioFile->GetSoundName(m_musicID);
 					wstring wstrFile=L"TPACK:\\Data\\" + wstrSoundName +L".binka";
@@ -1244,7 +1244,7 @@ void SoundEngine::playMusicUpdate()
 				}
 			}
 			else
-			{
+			{	
 				// 4J-PB - if this is a PS3 disc patch, we have to check if the music file is in the patch data
 #ifdef __PS3__
 				if(app.GetBootedFromDiscPatch() && (m_musicID<m_iStream_CD_1))
@@ -1256,7 +1256,7 @@ void SoundEngine::playMusicUpdate()
 					strcat((char *)m_szStreamName,".binka");
 
 					// check if this is in the patch data
-					sprintf(m_szStreamName,"%s/%s",app.GetBDUsrDirPath(m_szStreamName), m_szMusicPath );
+					sprintf(m_szStreamName,"%s/%s",app.GetBDUsrDirPath(m_szStreamName), m_szMusicPath );		
 					strcat((char *)m_szStreamName,"music/");
 					strcat((char *)m_szStreamName,m_szStreamFileA[m_musicID]);
 					strcat((char *)m_szStreamName,".binka");
@@ -1289,7 +1289,7 @@ void SoundEngine::playMusicUpdate()
 					strcat((char *)m_szStreamName,m_szStreamFileA[m_musicID]);
 					strcat((char *)m_szStreamName,".binka");
 				}
-#else
+#else						
 				if(m_musicID<m_iStream_CD_1)
 				{
 					SetIsPlayingStreamingGameMusic(true);
@@ -1310,7 +1310,7 @@ void SoundEngine::playMusicUpdate()
 				}
 				strcat((char *)m_szStreamName,m_szStreamFileA[m_musicID]);
 				strcat((char *)m_szStreamName,".binka");
-
+				
 #endif
 			}
 
@@ -1321,7 +1321,7 @@ void SoundEngine::playMusicUpdate()
 
 			app.DebugPrintf("Starting streaming - %s\n",m_szStreamName);
 
-			// Don't actually open in this thread, as it can block for ~300ms.
+			// Don't actually open in this thread, as it can block for ~300ms. 
 			m_openStreamThread = new C4JThread(OpenStreamThreadProc, this, "OpenStreamThreadProc");
 			m_openStreamThread->Run();
 			m_StreamState = eMusicStreamState_Opening;
@@ -1335,7 +1335,7 @@ void SoundEngine::playMusicUpdate()
 			delete m_openStreamThread;
 			m_openStreamThread = NULL;
 
-			HSAMPLE hSample = AIL_stream_sample_handle( m_hStream);
+			HSAMPLE hSample = AIL_stream_sample_handle( m_hStream); 
 
 			// 4J-PB - causes the falloff to be calculated on the PPU instead of the SPU, and seems to resolve our distorted sound issue
 			AIL_register_falloff_function_callback(hSample,&custom_falloff_function);
@@ -1383,12 +1383,12 @@ void SoundEngine::playMusicUpdate()
 			else
 			{
 				// clear the 3d flag on the stream after a jukebox finishes and streaming music starts
-				AIL_set_sample_is_3D( hSample, 0 );
+				AIL_set_sample_is_3D( hSample, 0 );	
 			}
 			// set the pitch
 			app.DebugPrintf("Sample rate:%d\n", AIL_sample_playback_rate(hSample));
 			AIL_set_sample_playback_rate_factor(hSample,m_StreamingAudioInfo.pitch);
-			// set the volume
+			// set the volume		
 			AIL_set_sample_volume_levels( hSample, m_StreamingAudioInfo.volume*getMasterMusicVolume(), m_StreamingAudioInfo.volume*getMasterMusicVolume());
 
 			AIL_start_stream( m_hStream );
@@ -1447,7 +1447,7 @@ void SoundEngine::playMusicUpdate()
 					// Set the end track
 					m_musicID = getMusicID(LevelData::DIMENSION_END);
 					SetIsPlayingEndMusic(true);
-					SetIsPlayingNetherMusic(false);
+					SetIsPlayingNetherMusic(false);					
 				}
 				else if(!playerInEnd && GetIsPlayingEndMusic())
 				{
@@ -1458,7 +1458,7 @@ void SoundEngine::playMusicUpdate()
 						// Set the end track
 						m_musicID = getMusicID(LevelData::DIMENSION_NETHER);
 						SetIsPlayingEndMusic(false);
-						SetIsPlayingNetherMusic(true);
+						SetIsPlayingNetherMusic(true);					
 					}
 					else
 					{
@@ -1467,7 +1467,7 @@ void SoundEngine::playMusicUpdate()
 						// Set the end track
 						m_musicID = getMusicID(LevelData::DIMENSION_OVERWORLD);
 						SetIsPlayingEndMusic(false);
-						SetIsPlayingNetherMusic(false);
+						SetIsPlayingNetherMusic(false);					
 					}
 				}
 				else if (playerInNether && !GetIsPlayingNetherMusic())
@@ -1502,7 +1502,7 @@ void SoundEngine::playMusicUpdate()
 				if(fMusicVol!=getMasterMusicVolume())
 				{
 					fMusicVol=getMasterMusicVolume();
-					HSAMPLE hSample = AIL_stream_sample_handle( m_hStream);
+					HSAMPLE hSample = AIL_stream_sample_handle( m_hStream); 
 					//AIL_set_sample_3D_position( hSample, m_StreamingAudioInfo.x, m_StreamingAudioInfo.y, m_StreamingAudioInfo.z );
 					AIL_set_sample_volume_levels( hSample, fMusicVol, fMusicVol);
 				}
@@ -1545,7 +1545,7 @@ void SoundEngine::playMusicUpdate()
 					}
 
 					// our distances in the world aren't very big, so floats rather than casts to doubles should be fine
-					HSAMPLE hSample = AIL_stream_sample_handle( m_hStream);
+					HSAMPLE hSample = AIL_stream_sample_handle( m_hStream); 
 					fDist=sqrtf((fClosestX*fClosestX)+(fClosestY*fClosestY)+(fClosestZ*fClosestZ));
 					AIL_set_sample_3D_position( hSample, 0, 0, fDist );
 				}
@@ -1555,7 +1555,7 @@ void SoundEngine::playMusicUpdate()
 		break;
 
 	case eMusicStreamState_Completed:
-		{
+		{	
 			// random delay of up to 3 minutes for music
 			m_iMusicDelay = random->nextInt(20 * 60 * 3);//random->nextInt(20 * 60 * 10) + 20 * 60 * 10;
 			// Check if we have a local player in The Nether or in The End, and play that music if they are
@@ -1644,7 +1644,7 @@ char *SoundEngine::ConvertSoundPathToName(const wstring& name, bool bConvertSpac
 #endif
 
 
-F32 AILCALLBACK custom_falloff_function (HSAMPLE   S,
+F32 AILCALLBACK custom_falloff_function (HSAMPLE   S, 
 										 F32       distance,
 										 F32       rolloff_factor,
 										 F32       min_dist,

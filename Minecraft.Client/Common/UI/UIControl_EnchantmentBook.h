@@ -19,7 +19,7 @@ private:
 	//BOOL m_bDirty;
 	//float m_fScale,m_fAlpha;
 	//int	m_iPad;
-	std::shared_ptr<ItemInstance> last;
+	shared_ptr<ItemInstance> last;
 
 	//float m_fScreenWidth,m_fScreenHeight;
 	//float m_fRawWidth,m_fRawHeight;

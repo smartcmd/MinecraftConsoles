@@ -17,9 +17,9 @@ public:
     float passedTime;
 
 private:
-    int64_t lastMs;
-    int64_t lastMsSysTime;
-    int64_t accumMs;
+    __int64 lastMs;
+    __int64 lastMsSysTime;
+    __int64 accumMs;
 
 	double adjustTime;
 

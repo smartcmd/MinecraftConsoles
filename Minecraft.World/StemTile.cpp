@@ -145,7 +145,7 @@ void StemTile::updateDefaultShape()
     this->setShape(0.5f - ss, 0, 0.5f - ss, 0.5f + ss, 0.25f, 0.5f + ss);
 }
 
-void StemTile::updateShape(LevelSource *level, int x, int y, int z, int forceData, std::shared_ptr<TileEntity> forceEntity) // 4J added forceData, forceEntity param
+void StemTile::updateShape(LevelSource *level, int x, int y, int z, int forceData, shared_ptr<TileEntity> forceEntity) // 4J added forceData, forceEntity param
 {
 	ThreadStorage *tls = (ThreadStorage *)TlsGetValue(Tile::tlsIdxShape);
     tls->yy1 = (level->getData(x, y, z) * 2 + 2) / 16.0f;
@@ -192,7 +192,7 @@ void StemTile::spawnResources(Level *level, int x, int y, int z, int data, float
         float xo = level->random->nextFloat() * s + (1 - s) * 0.5f;
         float yo = level->random->nextFloat() * s + (1 - s) * 0.5f;
         float zo = level->random->nextFloat() * s + (1 - s) * 0.5f;
-        std::shared_ptr<ItemEntity> item = std::shared_ptr<ItemEntity>(new ItemEntity(level, x + xo, y + yo, z + zo, std::shared_ptr<ItemInstance>(new ItemInstance(seed))));
+        shared_ptr<ItemEntity> item = shared_ptr<ItemEntity>(new ItemEntity(level, x + xo, y + yo, z + zo, shared_ptr<ItemInstance>(new ItemInstance(seed))));
         item->throwTime = 10;
         level->addEntity(item);
     }

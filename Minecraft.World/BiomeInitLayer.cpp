@@ -4,7 +4,7 @@
 #include "net.minecraft.world.level.h"
 #include "BiomeInitLayer.h"
 
-BiomeInitLayer::BiomeInitLayer(int64_t seed, std::shared_ptr<Layer>parent, LevelType *levelType) : Layer(seed)
+BiomeInitLayer::BiomeInitLayer(__int64 seed, shared_ptr<Layer>parent, LevelType *levelType) : Layer(seed)
 {
 	this->parent = parent;
 

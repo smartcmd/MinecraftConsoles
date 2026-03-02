@@ -12,7 +12,7 @@ public:
     virtual int getRenderShape() { return SHAPE_PISTON_BASE; }
     virtual bool isSolidRender(bool isServerLevel = false) { return false; }
 
-	//     virtual void updateShape(LevelSource *level, int x, int y, int z, int forceData = -1, std::shared_ptr<TileEntity> forceEntity = std::shared_ptr<TileEntity>());	// 4J added forceData, forceEntity param
+	//     virtual void updateShape(LevelSource *level, int x, int y, int z, int forceData = -1, shared_ptr<TileEntity> forceEntity = shared_ptr<TileEntity>());	// 4J added forceData, forceEntity param
 //     virtual void updateDefaultShape();
 
 };

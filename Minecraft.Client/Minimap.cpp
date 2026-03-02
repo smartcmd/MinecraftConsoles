@@ -85,7 +85,7 @@ void Minimap::reloadColours()
 			LUT[i] =  255 << 24 | r << 16 | g << 8 | b;
 #elif defined __ORBIS__
 			r >>= 3; g >>= 3; b >>= 3;
-			LUT[i] = 1 << 15 | ( r << 10 ) | ( g << 5 ) | b;
+			LUT[i] = 1 << 15 | ( r << 10 ) | ( g << 5 ) | b; 
 #else
 			LUT[i] =  r << 24 | g << 16 | b << 8 | 255;
 #endif
@@ -98,7 +98,7 @@ void Minimap::reloadColours()
 }
 
 // 4J added entityId
-void Minimap::render(std::shared_ptr<Player> player, Textures *textures, std::shared_ptr<MapItemSavedData> data, int entityId)
+void Minimap::render(shared_ptr<Player> player, Textures *textures, shared_ptr<MapItemSavedData> data, int entityId)
 {
 	// 4J - only update every 8 renders, as an optimisation
 	// We don't want to use this for ItemFrame renders of maps, as then we can't have different maps together
@@ -203,7 +203,7 @@ void Minimap::render(std::shared_ptr<Player> player, Textures *textures, std::sh
 	for( AUTO_VAR(it,m_edgeIcons.begin()); it != m_edgeIcons.end(); it++ )
 	{
 		MapItemSavedData::MapDecoration *dec = *it;
-
+		
 		char imgIndex = dec->img;
 		imgIndex -= 16;
 
@@ -253,7 +253,7 @@ void Minimap::render(std::shared_ptr<Player> player, Textures *textures, std::sh
 		int posy = floor(player->y);
 		int posz = floor(player->z);
 		swprintf(playerPosText, 32, L"X: %d, Y: %d, Z: %d", posx, posy, posz);
-
+		
 		font->draw(playerPosText, x, y, Minecraft::GetInstance()->getColourTable()->getColour(eMinecraftColour_Map_Text));
 	}
 //#endif

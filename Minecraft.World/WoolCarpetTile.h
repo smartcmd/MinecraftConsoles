@@ -15,7 +15,7 @@ public:
 	bool isSolidRender(bool isServerLevel = false);
 	bool isCubeShaped();
 	void updateDefaultShape();
-	void updateShape(LevelSource *level, int x, int y, int z, int forceData = -1, std::shared_ptr<TileEntity> forceEntity = std::shared_ptr<TileEntity>());
+	void updateShape(LevelSource *level, int x, int y, int z, int forceData = -1, shared_ptr<TileEntity> forceEntity = shared_ptr<TileEntity>());
 
 protected:
 	void updateShape(int data);

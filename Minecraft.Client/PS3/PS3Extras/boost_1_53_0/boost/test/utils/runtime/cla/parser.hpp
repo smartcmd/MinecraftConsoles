@@ -1,6 +1,6 @@
 //  (C) Copyright Gennadiy Rozental 2005-2008.
-//  Use, modification, and distribution are subject to the
-//  Boost Software License, Version 1.0. (See accompanying file
+//  Use, modification, and distribution are subject to the 
+//  Boost Software License, Version 1.0. (See accompanying file 
 //  LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
 
 //  See http://www.boost.org/libs/test for the library home page.
@@ -52,7 +52,7 @@ public:
 
     template<typename Param>
     global_mod_parser const&
-    operator<<( std::shared_ptr<Param> param ) const
+    operator<<( shared_ptr<Param> param ) const
     {
         param->accept_modifier( m_modifiers );
 
@@ -103,7 +103,7 @@ public:
 
     // arguments access
     const_argument_ptr  operator[]( cstring string_id ) const;
-    cstring             get( cstring string_id ) const;
+    cstring             get( cstring string_id ) const;    
 
     template<typename T>
     T const&            get( cstring string_id ) const

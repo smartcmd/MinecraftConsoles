@@ -12,7 +12,7 @@
 #include <iterator>
 #include <utility>
 #include <boost/random/uniform_int.hpp>
-#include <boost/std::shared_ptr.hpp>
+#include <boost/shared_ptr.hpp>
 #include <boost/graph/graph_traits.hpp>
 #include <vector>
 #include <map>
@@ -21,7 +21,7 @@
 
 namespace boost {
   template<typename RandomGenerator>
-  class out_directed_plod_iterator
+  class out_directed_plod_iterator 
   {
   public:
     typedef std::forward_iterator_tag            iterator_category;
@@ -32,10 +32,10 @@ namespace boost {
 
     out_directed_plod_iterator() : gen(0), at_end(true) { }
 
-    out_directed_plod_iterator(RandomGenerator& gen, std::size_t n,
-                               double alpha, double beta,
+    out_directed_plod_iterator(RandomGenerator& gen, std::size_t n,  
+                               double alpha, double beta, 
                                bool allow_self_loops)
-      : gen(&gen), n(n), alpha(alpha), beta(beta),
+      : gen(&gen), n(n), alpha(alpha), beta(beta), 
         allow_self_loops(allow_self_loops), at_end(false), degree(0),
         current(0, 0)
     {
@@ -50,7 +50,7 @@ namespace boost {
     pointer operator->() const { return &current; }
 
     out_directed_plod_iterator& operator++()
-    {
+    { 
       using std::pow;
 
       uniform_int<std::size_t> x(0, n-1);
@@ -66,7 +66,7 @@ namespace boost {
         }
 
         std::size_t xv = x(*gen);
-        degree = (xv == 0? 0 : std::size_t(beta * pow(xv, -alpha)));
+        degree = (xv == 0? 0 : std::size_t(beta * pow(xv, -alpha)));      
       }
 
       do {
@@ -85,16 +85,16 @@ namespace boost {
     }
 
     bool operator==(const out_directed_plod_iterator& other) const
-    {
-      return at_end == other.at_end;
+    { 
+      return at_end == other.at_end; 
     }
 
     bool operator!=(const out_directed_plod_iterator& other) const
-    {
-      return !(*this == other);
+    { 
+      return !(*this == other); 
     }
 
-  private:
+  private:    
     RandomGenerator* gen;
     std::size_t n;
     double alpha;
@@ -106,7 +106,7 @@ namespace boost {
   };
 
   template<typename RandomGenerator>
-  class undirected_plod_iterator
+  class undirected_plod_iterator 
   {
     typedef std::vector<std::pair<std::size_t, std::size_t> > out_degrees_t;
 
@@ -117,11 +117,11 @@ namespace boost {
     typedef const value_type*                    pointer;
     typedef std::ptrdiff_t                       difference_type;
 
-    undirected_plod_iterator()
+    undirected_plod_iterator() 
       : gen(0), out_degrees(), degrees_left(0), allow_self_loops(false) { }
 
-    undirected_plod_iterator(RandomGenerator& gen, std::size_t n,
-                             double alpha, double beta,
+    undirected_plod_iterator(RandomGenerator& gen, std::size_t n,  
+                             double alpha, double beta, 
                              bool allow_self_loops = false)
       : gen(&gen), n(n), out_degrees(new out_degrees_t),
         degrees_left(0), allow_self_loops(allow_self_loops)
@@ -145,7 +145,7 @@ namespace boost {
     pointer operator->() const { return &current; }
 
     undirected_plod_iterator& operator++()
-    {
+    { 
       next();
       return *this;
     }
@@ -158,8 +158,8 @@ namespace boost {
     }
 
     bool operator==(const undirected_plod_iterator& other) const
-    {
-      return degrees_left == other.degrees_left;
+    { 
+      return degrees_left == other.degrees_left; 
     }
 
     bool operator!=(const undirected_plod_iterator& other) const
@@ -192,7 +192,7 @@ namespace boost {
           (*out_degrees)[source] = out_degrees->back();
           out_degrees->pop_back();
           continue;
-        }
+        } 
 
         // Select target vertex
         target = x(*gen);
@@ -200,7 +200,7 @@ namespace boost {
           (*out_degrees)[target] = out_degrees->back();
           out_degrees->pop_back();
           continue;
-        } else if (source != target
+        } else if (source != target 
                    || (allow_self_loops && (*out_degrees)[source].second > 2)) {
           break;
         }
@@ -217,7 +217,7 @@ namespace boost {
 
     RandomGenerator* gen;
     std::size_t n;
-    std::shared_ptr<out_degrees_t> out_degrees;
+    shared_ptr<out_degrees_t> out_degrees;
     std::size_t degrees_left;
     bool allow_self_loops;
     value_type current;
@@ -243,7 +243,7 @@ namespace boost {
   public:
     plod_iterator() : inherited() { }
 
-    plod_iterator(RandomGenerator& gen, std::size_t n,
+    plod_iterator(RandomGenerator& gen, std::size_t n,  
                   double alpha, double beta, bool allow_self_loops = false)
       : inherited(gen, n, alpha, beta, allow_self_loops) { }
   };

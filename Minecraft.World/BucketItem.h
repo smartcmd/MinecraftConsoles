@@ -13,8 +13,8 @@ private:
 public:
 	BucketItem(int id, int content);
 
-	virtual bool TestUse(Level *level, std::shared_ptr<Player> player);
-	virtual std::shared_ptr<ItemInstance> use(std::shared_ptr<ItemInstance> itemInstance, Level *level, std::shared_ptr<Player> player);
+	virtual bool TestUse(Level *level, shared_ptr<Player> player);
+	virtual shared_ptr<ItemInstance> use(shared_ptr<ItemInstance> itemInstance, Level *level, shared_ptr<Player> player);
 
 	// TU9
 	bool emptyBucket(Level *level, double x, double y, double z, int xt, int yt, int zt);

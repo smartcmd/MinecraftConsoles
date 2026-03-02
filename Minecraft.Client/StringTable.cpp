@@ -30,12 +30,12 @@ StringTable::StringTable(PBYTE pbData, DWORD dwSize)
 	app.getLocale(locales);
 
 	bool foundLang = false;
-	int64_t bytesToSkip = 0;
+	__int64 bytesToSkip = 0;
 	int dataSize = 0;
 
 	//
 	for(	AUTO_VAR(it_locales, locales.begin());
-			it_locales!=locales.end() && (!foundLang);
+			it_locales!=locales.end() && (!foundLang); 
 			it_locales++
 		)
 	{
@@ -72,8 +72,8 @@ StringTable::StringTable(PBYTE pbData, DWORD dwSize)
 
 		// Read the language file for the selected language
 		int langVersion = dis2.readInt();
-
-		isStatic = false;     // 4J-JEV: Versions 1 and up could use
+	
+		isStatic = false;     // 4J-JEV: Versions 1 and up could use 
 		if (langVersion > 0)  // integers rather than wstrings as keys.
 			isStatic = dis2.readBoolean();
 
@@ -109,7 +109,7 @@ StringTable::StringTable(PBYTE pbData, DWORD dwSize)
 
 		isStatic = false;
 	}
-
+	
 	// We can't delete this data in the dtor, so clear the reference
 	bais.reset();
 }

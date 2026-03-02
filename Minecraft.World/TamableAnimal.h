@@ -33,6 +33,6 @@ public:
 	virtual void setSitting(bool value);
 	virtual wstring getOwnerUUID();
 	virtual void setOwnerUUID(const wstring &name);
-	virtual std::shared_ptr<Mob> getOwner();
+	virtual shared_ptr<Mob> getOwner();
 	virtual SitGoal *getSitGoal();
 };

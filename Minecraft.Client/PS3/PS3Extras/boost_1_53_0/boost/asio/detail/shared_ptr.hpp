@@ -1,5 +1,5 @@
 //
-// detail/std::shared_ptr.hpp
+// detail/shared_ptr.hpp
 // ~~~~~~~~~~~~~~~~~~~~~
 //
 // Copyright (c) 2003-2012 Christopher M. Kohlhoff (chris at kohlhoff dot com)
@@ -20,7 +20,7 @@
 #if defined(BOOST_ASIO_HAS_STD_SHARED_PTR)
 # include <memory>
 #else // defined(BOOST_ASIO_HAS_STD_SHARED_PTR)
-# include <boost/std::shared_ptr.hpp>
+# include <boost/shared_ptr.hpp>
 #endif // defined(BOOST_ASIO_HAS_STD_SHARED_PTR)
 
 namespace boost {
@@ -30,7 +30,7 @@ namespace detail {
 #if defined(BOOST_ASIO_HAS_STD_SHARED_PTR)
 using std::shared_ptr;
 #else // defined(BOOST_ASIO_HAS_STD_SHARED_PTR)
-using boost::std::shared_ptr;
+using boost::shared_ptr;
 #endif // defined(BOOST_ASIO_HAS_STD_SHARED_PTR)
 
 } // namespace detail

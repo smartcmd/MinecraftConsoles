@@ -40,7 +40,7 @@ struct critical_section
     void * OwningThread;
     void * LockSemaphore;
 #if defined(_WIN64)
-    uint64_t SpinCount;
+    unsigned __int64 SpinCount;
 #else
     unsigned long SpinCount;
 #endif

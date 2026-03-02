@@ -1,6 +1,6 @@
 /*
     Copyright 2005-2007 Adobe Systems Incorporated
-
+   
     Use, modification and distribution are subject to the Boost Software License,
     Version 1.0. (See accompanying file LICENSE_1_0.txt or copy at
     http://www.boost.org/LICENSE_1_0.txt).
@@ -31,7 +31,7 @@
 #include <string>
 #include <stdio.h>
 #include <boost/mpl/bool.hpp>
-#include <boost/std::shared_ptr.hpp>
+#include <boost/shared_ptr.hpp>
 #include "../dynamic_image/dynamic_image_all.hpp"
 #include "io_error.hpp"
 #include "png_io.hpp"
@@ -81,7 +81,7 @@ class png_reader_dynamic : public png_reader {
 public:
     png_reader_dynamic(FILE* file)           : png_reader(file)    {}
     png_reader_dynamic(const char* filename) : png_reader(filename){}
-
+    
     template <typename Images>
     void read_image(any_image<Images>& im) {
         png_uint_32 width, height;
@@ -99,7 +99,7 @@ public:
     }
 };
 
-} // namespace detail
+} // namespace detail 
 
 /// \ingroup PNG_IO
 /// \brief reads a PNG image into a run-time instantiated image
@@ -121,7 +121,7 @@ inline void png_read_image(const std::string& filename,any_image<Images>& im) {
 
 /// \ingroup PNG_IO
 /// \brief Saves the currently instantiated view to a png file specified by the given png image file name.
-/// Throws std::ios_base::failure if the currently instantiated view type is not supported for writing by the I/O extension
+/// Throws std::ios_base::failure if the currently instantiated view type is not supported for writing by the I/O extension 
 /// or if it fails to create the file.
 template <typename Views>
 inline void png_write_view(const char* filename,const any_image_view<Views>& runtime_view) {

@@ -13,7 +13,7 @@ private:
 
 	bool m_bUpdateHealth, m_bUpdateFood, m_bUpdateYRot, m_bUpdateInventory;
 	int m_health;
-	int m_food;
+	int m_food;	
 	Pos *m_spawnPos;
 	float m_yRot;
 
@@ -22,12 +22,12 @@ public:
 	~UpdatePlayerRuleDefinition();
 
 	virtual ConsoleGameRules::EGameRuleType getActionType() { return ConsoleGameRules::eGameRuleType_UpdatePlayerRule; }
-
+	
 	virtual void getChildren(vector<GameRuleDefinition *> *children);
 	virtual GameRuleDefinition *addChild(ConsoleGameRules::EGameRuleType ruleType);
 
 	virtual void writeAttributes(DataOutputStream *dos, UINT numAttributes);
 	virtual void addAttribute(const wstring &attributeName, const wstring &attributeValue);
 
-	virtual void postProcessPlayer(std::shared_ptr<Player> player);
+	virtual void postProcessPlayer(shared_ptr<Player> player);
 };

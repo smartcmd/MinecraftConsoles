@@ -61,7 +61,7 @@ HRESULT CScene_Teleport::OnInit( XUIMessageInit* pInitData, BOOL& bHandled )
 	g_NetworkManager.RegisterPlayerChangedCallback(m_iPad, &CScene_Teleport::OnPlayerChanged, this);
 
 	ui.SetTooltips( m_iPad, IDS_TOOLTIPS_SELECT,IDS_TOOLTIPS_BACK);
-
+	
 	CXuiSceneBase::ShowDarkOverlay( m_iPad, TRUE );
 
 	return S_OK;
@@ -104,11 +104,11 @@ HRESULT CScene_Teleport::OnNotifyPressEx(HXUIOBJ hObjPressed, XUINotifyPress* pN
 	ui.AnimateKeyPress(pNotifyPressData->UserIndex, VK_PAD_A);
 
 	if( hObjPressed == playersList )
-	{
+	{	
 		INetworkPlayer *selectedPlayer = g_NetworkManager.GetPlayerBySmallId( m_players[ playersList.GetCurSel() ] );
 		INetworkPlayer *thisPlayer = g_NetworkManager.GetLocalPlayerByUserIndex(m_iPad);
-
-		std::shared_ptr<GameCommandPacket> packet;
+		
+		shared_ptr<GameCommandPacket> packet;
 		if(m_teleportToPlayer)
 		{
 			packet = TeleportCommand::preparePacket(thisPlayer->GetUID(),selectedPlayer->GetUID());
@@ -186,7 +186,7 @@ HRESULT CScene_Teleport::OnGetSourceDataText(XUIMessageGetSourceText *pGetSource
 			}
 
 			HRESULT hr;
-			HXUIOBJ hButton, hVisual, hPlayerIcon, hVoiceIcon;
+			HXUIOBJ hButton, hVisual, hPlayerIcon, hVoiceIcon;			
 			hButton = playersList.GetItemControl(pGetSourceTextData->iItem);
 			hr=XuiControlGetVisual(hButton,&hVisual);
 
@@ -271,7 +271,7 @@ HRESULT CScene_Teleport::OnGetSourceDataText(XUIMessageGetSourceText *pGetSource
 					XuiElementFindNamedFrame(hVoiceIcon, L"NotSpeaking", &playFrame);
 				}
 			}
-
+			
 			if(playFrame < 0)
 			{
 				XuiElementFindNamedFrame(hVoiceIcon, L"Normal", &playFrame);

@@ -10,12 +10,12 @@ public:
 	int id;
 
 private:
-	vector<std::shared_ptr<SynchedEntityData::DataItem> > *packedItems;
+	vector<shared_ptr<SynchedEntityData::DataItem> > *packedItems;
 
 public:
 	SetEntityDataPacket();
 	~SetEntityDataPacket();
-	SetEntityDataPacket(int id, std::shared_ptr<SynchedEntityData>, bool notJustDirty);
+	SetEntityDataPacket(int id, shared_ptr<SynchedEntityData>, bool notJustDirty);
 
 	virtual void read(DataInputStream *dis);
 	virtual void write(DataOutputStream *dos);
@@ -23,9 +23,9 @@ public:
 	virtual int getEstimatedSize();
 	virtual bool isAync();
 
-	vector<std::shared_ptr<SynchedEntityData::DataItem> > *getUnpackedData();
+	vector<shared_ptr<SynchedEntityData::DataItem> > *getUnpackedData();
 
 public:
-	static std::shared_ptr<Packet> create() { return std::shared_ptr<Packet>(new SetEntityDataPacket()); }
+	static shared_ptr<Packet> create() { return shared_ptr<Packet>(new SetEntityDataPacket()); }
 	virtual int getId() { return 40; }
 };

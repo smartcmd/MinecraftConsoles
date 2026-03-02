@@ -22,10 +22,10 @@ void HurtByTargetGoal::start()
 
 	if (alertSameType)
 	{
-		vector<std::shared_ptr<Entity> > *nearby = mob->level->getEntitiesOfClass(typeid(*mob), AABB::newTemp(mob->x, mob->y, mob->z, mob->x + 1, mob->y + 1, mob->z + 1)->grow(within, 4, within));
+		vector<shared_ptr<Entity> > *nearby = mob->level->getEntitiesOfClass(typeid(*mob), AABB::newTemp(mob->x, mob->y, mob->z, mob->x + 1, mob->y + 1, mob->z + 1)->grow(within, 4, within));
 		for(AUTO_VAR(it, nearby->begin()); it != nearby->end(); ++it)
 		{
-			std::shared_ptr<Mob> other = dynamic_pointer_cast<Mob>(*it);
+			shared_ptr<Mob> other = dynamic_pointer_cast<Mob>(*it);
 			if (this->mob->shared_from_this() == other) continue;
 			if (other->getTarget() != NULL) continue;
 			other->setTarget(mob->getLastHurtByMob());

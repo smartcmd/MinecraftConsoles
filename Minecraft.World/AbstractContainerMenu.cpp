@@ -8,7 +8,7 @@
 // TODO Make sure all derived classes also call this
 AbstractContainerMenu::AbstractContainerMenu()
 {
-	lastSlots = new vector<std::shared_ptr<ItemInstance> >();
+	lastSlots = new vector<shared_ptr<ItemInstance> >();
 	slots = new vector<Slot *>();
 	containerId = 0;
 
@@ -49,15 +49,15 @@ void AbstractContainerMenu::addSlotListener(ContainerListener *listener)
 	containerListeners->push_back(listener);
 
 
-	vector<std::shared_ptr<ItemInstance> > *items = getItems();
+	vector<shared_ptr<ItemInstance> > *items = getItems();
 	listener->refreshContainer(this, items);
 	delete items;
 	broadcastChanges();
 }
 
-vector<std::shared_ptr<ItemInstance> > *AbstractContainerMenu::getItems()
+vector<shared_ptr<ItemInstance> > *AbstractContainerMenu::getItems()
 {
-	vector<std::shared_ptr<ItemInstance> > *items = new vector<std::shared_ptr<ItemInstance> >();
+	vector<shared_ptr<ItemInstance> > *items = new vector<shared_ptr<ItemInstance> >();
 	AUTO_VAR(itEnd, slots->end());
 	for (AUTO_VAR(it, slots->begin()); it != itEnd; it++)
 	{
@@ -79,8 +79,8 @@ void AbstractContainerMenu::broadcastChanges()
 {
 	for (unsigned int i = 0; i < slots->size(); i++)
 	{
-		std::shared_ptr<ItemInstance> current = slots->at(i)->getItem();
-		std::shared_ptr<ItemInstance> expected = lastSlots->at(i);
+		shared_ptr<ItemInstance> current = slots->at(i)->getItem();
+		shared_ptr<ItemInstance> expected = lastSlots->at(i);
 		if (!ItemInstance::matches(expected, current))
 		{
 			expected = current == NULL ? nullptr : current->copy();
@@ -103,8 +103,8 @@ bool AbstractContainerMenu::needsRendered()
 
 	for (unsigned int i = 0; i < slots->size(); i++)
 	{
-		std::shared_ptr<ItemInstance> current = slots->at(i)->getItem();
-		std::shared_ptr<ItemInstance> expected = lastSlots->at(i);
+		shared_ptr<ItemInstance> current = slots->at(i)->getItem();
+		shared_ptr<ItemInstance> expected = lastSlots->at(i);
 		if (!ItemInstance::matches(expected, current))
 		{
 			expected = current == NULL ? nullptr : current->copy();
@@ -116,12 +116,12 @@ bool AbstractContainerMenu::needsRendered()
 	return needsRendered;
 }
 
-bool AbstractContainerMenu::clickMenuButton(std::shared_ptr<Player> player, int buttonId)
+bool AbstractContainerMenu::clickMenuButton(shared_ptr<Player> player, int buttonId)
 {
 	return false;
 }
 
-Slot *AbstractContainerMenu::getSlotFor(std::shared_ptr<Container> c, int index)
+Slot *AbstractContainerMenu::getSlotFor(shared_ptr<Container> c, int index)
 {
 	AUTO_VAR(itEnd, slots->end());
 	for (AUTO_VAR(it, slots->begin()); it != itEnd; it++)
@@ -140,7 +140,7 @@ Slot *AbstractContainerMenu::getSlot(int index)
 	return slots->at(index);
 }
 
-std::shared_ptr<ItemInstance> AbstractContainerMenu::quickMoveStack(std::shared_ptr<Player> player, int slotIndex)
+shared_ptr<ItemInstance> AbstractContainerMenu::quickMoveStack(shared_ptr<Player> player, int slotIndex)
 {
 	Slot *slot = slots->at(slotIndex);
 	if (slot != NULL)
@@ -150,10 +150,10 @@ std::shared_ptr<ItemInstance> AbstractContainerMenu::quickMoveStack(std::shared_
 	return nullptr;
 }
 
-std::shared_ptr<ItemInstance> AbstractContainerMenu::clicked(int slotIndex, int buttonNum, int clickType, std::shared_ptr<Player> player)
+shared_ptr<ItemInstance> AbstractContainerMenu::clicked(int slotIndex, int buttonNum, int clickType, shared_ptr<Player> player)
 {
-	std::shared_ptr<ItemInstance> clickedEntity = nullptr;
-	std::shared_ptr<Inventory> inventory = player->inventory;
+	shared_ptr<ItemInstance> clickedEntity = nullptr;
+	shared_ptr<Inventory> inventory = player->inventory;
 
 	if ((clickType == CLICK_PICKUP || clickType == CLICK_QUICK_MOVE) && (buttonNum == 0 || buttonNum == 1))
 	{
@@ -182,7 +182,7 @@ std::shared_ptr<ItemInstance> AbstractContainerMenu::clicked(int slotIndex, int 
 			Slot *slot = slots->at(slotIndex);
 			if(slot != NULL && slot->mayPickup(player))
 			{
-				std::shared_ptr<ItemInstance> piiClicked = quickMoveStack(player, slotIndex);
+				shared_ptr<ItemInstance> piiClicked = quickMoveStack(player, slotIndex);
 				if (piiClicked != NULL)
 				{
 					//int oldSize = piiClicked->count; // 4J - Commented 1.8.2 and replaced with below
@@ -208,8 +208,8 @@ std::shared_ptr<ItemInstance> AbstractContainerMenu::clicked(int slotIndex, int 
 			Slot *slot = slots->at(slotIndex);
 			if (slot != NULL)
 			{
-				std::shared_ptr<ItemInstance> clicked = slot->getItem();
-				std::shared_ptr<ItemInstance> carried = inventory->getCarried();
+				shared_ptr<ItemInstance> clicked = slot->getItem();
+				shared_ptr<ItemInstance> carried = inventory->getCarried();
 
 				if (clicked != NULL)
 				{
@@ -235,7 +235,7 @@ std::shared_ptr<ItemInstance> AbstractContainerMenu::clicked(int slotIndex, int 
 				// 4J Added for dyable armour and combinining damaged items
 				else if (buttonNum == 1 && mayCombine(slot, carried))
 				{
-					std::shared_ptr<ItemInstance> combined = slot->combine(carried);
+					shared_ptr<ItemInstance> combined = slot->combine(carried);
 					if(combined != NULL)
 					{
 						slot->set(combined);
@@ -252,7 +252,7 @@ std::shared_ptr<ItemInstance> AbstractContainerMenu::clicked(int slotIndex, int 
 					{
 						// pick up to empty hand
 						int c = buttonNum == 0 ? clicked->count : (clicked->count + 1) / 2;
-						std::shared_ptr<ItemInstance> removed = slot->remove(c);
+						shared_ptr<ItemInstance> removed = slot->remove(c);
 
 						inventory->setCarried(removed);
 						if (clicked->count == 0)
@@ -321,7 +321,7 @@ std::shared_ptr<ItemInstance> AbstractContainerMenu::clicked(int slotIndex, int 
 		Slot *slot = slots->at(slotIndex);
 		if (slot->mayPickup(player))
 		{
-			std::shared_ptr<ItemInstance> current = inventory->getItem(buttonNum);
+			shared_ptr<ItemInstance> current = inventory->getItem(buttonNum);
 			bool canMove = current == NULL || (slot->container == inventory && slot->mayPlace(current));
 			int freeSlot = -1;
 
@@ -333,7 +333,7 @@ std::shared_ptr<ItemInstance> AbstractContainerMenu::clicked(int slotIndex, int 
 
 			if (slot->hasItem() && canMove)
 			{
-				std::shared_ptr<ItemInstance> taking = slot->getItem();
+				shared_ptr<ItemInstance> taking = slot->getItem();
 				inventory->setItem(buttonNum, taking);
 
 				if ((slot->container == inventory && slot->mayPlace(current)) || current == NULL)
@@ -362,7 +362,7 @@ std::shared_ptr<ItemInstance> AbstractContainerMenu::clicked(int slotIndex, int 
 		Slot *slot = slots->at(slotIndex);
 		if (slot != NULL && slot->hasItem())
 		{
-			std::shared_ptr<ItemInstance> copy = slot->getItem()->copy();
+			shared_ptr<ItemInstance> copy = slot->getItem()->copy();
 			copy->count = copy->getMaxStackSize();
 			inventory->setCarried(copy);
 		}
@@ -371,19 +371,19 @@ std::shared_ptr<ItemInstance> AbstractContainerMenu::clicked(int slotIndex, int 
 }
 
 // 4J Stu - Brought forward from 1.2 to fix infinite recursion bug in creative
-void AbstractContainerMenu::loopClick(int slotIndex, int buttonNum, bool quickKeyHeld, std::shared_ptr<Player> player)
+void AbstractContainerMenu::loopClick(int slotIndex, int buttonNum, bool quickKeyHeld, shared_ptr<Player> player)
 {
 	clicked(slotIndex, buttonNum, CLICK_QUICK_MOVE, player);
 }
 
-bool AbstractContainerMenu::mayCombine(Slot *slot, std::shared_ptr<ItemInstance> item)
+bool AbstractContainerMenu::mayCombine(Slot *slot, shared_ptr<ItemInstance> item)
 {
 	return false;
 }
 
-void AbstractContainerMenu::removed(std::shared_ptr<Player> player)
+void AbstractContainerMenu::removed(shared_ptr<Player> player)
 {
-	std::shared_ptr<Inventory> inventory = player->inventory;
+	shared_ptr<Inventory> inventory = player->inventory;
 	if (inventory->getCarried() != NULL)
 	{
 		player->drop(inventory->getCarried());
@@ -391,7 +391,7 @@ void AbstractContainerMenu::removed(std::shared_ptr<Player> player)
 	}
 }
 
-void AbstractContainerMenu::slotsChanged()// 4J used to take a std::shared_ptr<Container> but wasn't using it, so removed to simplify things
+void AbstractContainerMenu::slotsChanged()// 4J used to take a shared_ptr<Container> but wasn't using it, so removed to simplify things
 {
 	broadcastChanges();
 }
@@ -401,14 +401,14 @@ bool AbstractContainerMenu::isPauseScreen()
 	return false;
 }
 
-void AbstractContainerMenu::setItem(unsigned int slot, std::shared_ptr<ItemInstance> item)
+void AbstractContainerMenu::setItem(unsigned int slot, shared_ptr<ItemInstance> item)
 {
 	getSlot(slot)->set(item);
 }
 
 void AbstractContainerMenu::setAll(ItemInstanceArray *items)
 {
-	for (unsigned int i = 0; i < items->length; i++)
+	for (unsigned int i = 0; i < items->length; i++) 
 	{
 		getSlot(i)->set( (*items)[i] );
 	}
@@ -418,18 +418,18 @@ void AbstractContainerMenu::setData(int id, int value)
 {
 }
 
-short AbstractContainerMenu::backup(std::shared_ptr<Inventory> inventory)
+short AbstractContainerMenu::backup(shared_ptr<Inventory> inventory)
 {
 	changeUid++;
 	return changeUid;
 }
 
-bool AbstractContainerMenu::isSynched(std::shared_ptr<Player> player)
+bool AbstractContainerMenu::isSynched(shared_ptr<Player> player)
 {
 	return !(unSynchedPlayers.find(player) != unSynchedPlayers.end());
 }
 
-void AbstractContainerMenu::setSynched(std::shared_ptr<Player> player, bool synched)
+void AbstractContainerMenu::setSynched(shared_ptr<Player> player, bool synched)
 {
 	if (synched)
 	{
@@ -444,7 +444,7 @@ void AbstractContainerMenu::setSynched(std::shared_ptr<Player> player, bool sync
 }
 
 // 4J Stu - Brought a few changes in this function forward from 1.2 to make it return a bool
-bool AbstractContainerMenu::moveItemStackTo(std::shared_ptr<ItemInstance> itemStack, int startSlot, int endSlot, bool backwards)
+bool AbstractContainerMenu::moveItemStackTo(shared_ptr<ItemInstance> itemStack, int startSlot, int endSlot, bool backwards)
 {
 	bool anythingChanged = false;
 
@@ -461,7 +461,7 @@ bool AbstractContainerMenu::moveItemStackTo(std::shared_ptr<ItemInstance> itemSt
 		{
 
 			Slot *slot = slots->at(destSlot);
-			std::shared_ptr<ItemInstance> target = slot->getItem();
+			shared_ptr<ItemInstance> target = slot->getItem();
 			if (target != NULL && target->id == itemStack->id && (!itemStack->isStackedByData() || itemStack->getAuxValue() == target->getAuxValue())
 				&& ItemInstance::tagMatches(itemStack, target) )
 			{
@@ -507,7 +507,7 @@ bool AbstractContainerMenu::moveItemStackTo(std::shared_ptr<ItemInstance> itemSt
 		while ((!backwards && destSlot < endSlot) || (backwards && destSlot >= startSlot))
 		{
 			Slot *slot = slots->at(destSlot);
-			std::shared_ptr<ItemInstance> target = slot->getItem();
+			shared_ptr<ItemInstance> target = slot->getItem();
 
 			if (target == NULL)
 			{

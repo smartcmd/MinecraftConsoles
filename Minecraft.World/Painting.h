@@ -73,7 +73,7 @@ public:
 
 public:
 // 	int dir;
-//
+// 
 // 	int xTile, yTile, zTile;
 
 	Motive *motive;
@@ -87,7 +87,7 @@ public:
 	Painting(Level *level, int xTile, int yTile, int zTile, int dir);
 	Painting(Level *level, int x, int y, int z, int dir, wstring motiveName);
 
-	// 4J Stu - Added this so that we can use some std::shared_ptr functions that were needed in the ctor
+	// 4J Stu - Added this so that we can use some shared_ptr functions that were needed in the ctor
 	void PaintingPostConstructor(int dir);
 
 protected:

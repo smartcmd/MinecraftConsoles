@@ -443,7 +443,7 @@ ATOM MyRegisterClass(HINSTANCE hInstance)
 	wcex.hbrBackground	= (HBRUSH)(COLOR_WINDOW+1);
 	wcex.lpszMenuName	= "Minecraft";
 	wcex.lpszClassName	= "MinecraftClass";
-	wcex.hIconSm		= LoadIcon(wcex.hInstance, MAKEINTRESOURCE(IDI_SMALL));
+	wcex.hIconSm		= LoadIcon(wcex.hInstance, MAKEINTRESOURCE(IDI_MINECRAFTWINDOWS));
 
 	return RegisterClassEx(&wcex);
 }

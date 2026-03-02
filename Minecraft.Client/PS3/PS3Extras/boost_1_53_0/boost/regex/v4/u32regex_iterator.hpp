@@ -3,8 +3,8 @@
  * Copyright (c) 2003
  * John Maddock
  *
- * Use, modification and distribution are subject to the
- * Boost Software License, Version 1.0. (See accompanying file
+ * Use, modification and distribution are subject to the 
+ * Boost Software License, Version 1.0. (See accompanying file 
  * LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
  *
  */
@@ -26,7 +26,7 @@ namespace boost{
 #endif
 
 template <class BidirectionalIterator>
-class u32regex_iterator_implementation
+class u32regex_iterator_implementation 
 {
    typedef u32regex regex_type;
 
@@ -71,31 +71,31 @@ private:
 };
 
 template <class BidirectionalIterator>
-class u32regex_iterator
+class u32regex_iterator 
 #ifndef BOOST_NO_STD_ITERATOR
    : public std::iterator<
-         std::forward_iterator_tag,
+         std::forward_iterator_tag, 
          match_results<BidirectionalIterator>,
          typename re_detail::regex_iterator_traits<BidirectionalIterator>::difference_type,
          const match_results<BidirectionalIterator>*,
-         const match_results<BidirectionalIterator>& >
+         const match_results<BidirectionalIterator>& >         
 #endif
 {
 private:
    typedef u32regex_iterator_implementation<BidirectionalIterator> impl;
-   typedef std::shared_ptr<impl> pimpl;
+   typedef shared_ptr<impl> pimpl;
 public:
    typedef          u32regex                                                regex_type;
    typedef          match_results<BidirectionalIterator>                    value_type;
-   typedef typename re_detail::regex_iterator_traits<BidirectionalIterator>::difference_type
+   typedef typename re_detail::regex_iterator_traits<BidirectionalIterator>::difference_type 
                                                                             difference_type;
    typedef          const value_type*                                       pointer;
-   typedef          const value_type&                                       reference;
+   typedef          const value_type&                                       reference; 
    typedef          std::forward_iterator_tag                               iterator_category;
-
+   
    u32regex_iterator(){}
-   u32regex_iterator(BidirectionalIterator a, BidirectionalIterator b,
-                  const regex_type& re,
+   u32regex_iterator(BidirectionalIterator a, BidirectionalIterator b, 
+                  const regex_type& re, 
                   match_flag_type m = match_default)
                   : pdata(new impl(&re, b, m))
    {
@@ -112,10 +112,10 @@ public:
       return *this;
    }
    bool operator==(const u32regex_iterator& that)const
-   {
+   { 
       if((pdata.get() == 0) || (that.pdata.get() == 0))
          return pdata.get() == that.pdata.get();
-      return pdata->compare(*(that.pdata.get()));
+      return pdata->compare(*(that.pdata.get())); 
    }
    bool operator!=(const u32regex_iterator& that)const
    { return !(*this == that); }

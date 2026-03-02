@@ -37,7 +37,7 @@ protected:
 	virtual int getDeathSound();
 
 public:
-	virtual bool interact(std::shared_ptr<Player> player);
+	virtual bool interact(shared_ptr<Player> player);
 
 protected:
 	virtual int getDeathLoot();
@@ -52,7 +52,7 @@ protected:
 	virtual void causeFallDamage(float distance);
 
 public:
-	virtual std::shared_ptr<AgableMob> getBreedOffspring(std::shared_ptr<AgableMob> target);
-	bool isFood(std::shared_ptr<ItemInstance> itemInstance);
+	virtual shared_ptr<AgableMob> getBreedOffspring(shared_ptr<AgableMob> target);
+	bool isFood(shared_ptr<ItemInstance> itemInstance);
 	ControlledByPlayerGoal *getControlGoal();
 };

@@ -7,14 +7,14 @@
 #include "..\..\Minecraft.h"
 #include "..\..\MultiplayerLocalPlayer.h"
 
-TutorialHint::TutorialHint(eTutorial_Hint id, Tutorial *tutorial, int descriptionId, eHintType type, bool allowFade /*= true*/)
+TutorialHint::TutorialHint(eTutorial_Hint id, Tutorial *tutorial, int descriptionId, eHintType type, bool allowFade /*= true*/) 
 	: m_id( id ), m_tutorial(tutorial), m_descriptionId( descriptionId ), m_type( type ), m_counter( 0 ),
 	m_lastTile( NULL ), m_hintNeeded( true ), m_allowFade(allowFade)
 {
 	tutorial->addMessage(descriptionId, type != e_Hint_NoIngredients);
 }
 
-int TutorialHint::startDestroyBlock(std::shared_ptr<ItemInstance> item, Tile *tile)
+int TutorialHint::startDestroyBlock(shared_ptr<ItemInstance> item, Tile *tile)
 {
 	int returnVal = -1;
 	switch(m_type)
@@ -59,7 +59,7 @@ int TutorialHint::destroyBlock(Tile *tile)
 	return returnVal;
 }
 
-int TutorialHint::attack(std::shared_ptr<ItemInstance> item, std::shared_ptr<Entity> entity)
+int TutorialHint::attack(shared_ptr<ItemInstance> item, shared_ptr<Entity> entity)
 {
 	/*
 	switch(m_type)
@@ -71,7 +71,7 @@ int TutorialHint::attack(std::shared_ptr<ItemInstance> item, std::shared_ptr<Ent
 	return -1;
 }
 
-int TutorialHint::createItemSelected(std::shared_ptr<ItemInstance> item, bool canMake)
+int TutorialHint::createItemSelected(shared_ptr<ItemInstance> item, bool canMake)
 {
 	int returnVal = -1;
 	switch(m_type)
@@ -86,7 +86,7 @@ int TutorialHint::createItemSelected(std::shared_ptr<ItemInstance> item, bool ca
 	return returnVal;
 }
 
-int TutorialHint::itemDamaged(std::shared_ptr<ItemInstance> item)
+int TutorialHint::itemDamaged(shared_ptr<ItemInstance> item)
 {
 	int returnVal = -1;
 	switch(m_type)
@@ -100,7 +100,7 @@ int TutorialHint::itemDamaged(std::shared_ptr<ItemInstance> item)
 	return returnVal;
 }
 
-bool TutorialHint::onTake( std::shared_ptr<ItemInstance> item )
+bool TutorialHint::onTake( shared_ptr<ItemInstance> item )
 {
 	return false;
 }
@@ -121,7 +121,7 @@ int TutorialHint::tick()
 	switch(m_type)
 	{
 	case e_Hint_SwimUp:
-		if( Minecraft::GetInstance()->localplayers[m_tutorial->getPad()]->isUnderLiquid(Material::water) ) returnVal = m_descriptionId;
+		if( Minecraft::GetInstance()->localplayers[m_tutorial->getPad()]->isUnderLiquid(Material::water) ) returnVal = m_descriptionId; 
 		break;
 	}
 	return returnVal;

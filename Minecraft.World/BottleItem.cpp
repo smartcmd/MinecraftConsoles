@@ -15,7 +15,7 @@ Icon *BottleItem::getIcon(int auxValue)
 	return Item::potion->getIcon(0);
 }
 
-std::shared_ptr<ItemInstance> BottleItem::use(std::shared_ptr<ItemInstance> itemInstance, Level *level, std::shared_ptr<Player> player)
+shared_ptr<ItemInstance> BottleItem::use(shared_ptr<ItemInstance> itemInstance, Level *level, shared_ptr<Player> player)
 {
 	HitResult *hr = getPlayerPOVHitResult(level, player, true);
 	if (hr == NULL) return itemInstance;
@@ -40,13 +40,13 @@ std::shared_ptr<ItemInstance> BottleItem::use(std::shared_ptr<ItemInstance> item
 			itemInstance->count--;
 			if (itemInstance->count <= 0)
 			{
-				return std::shared_ptr<ItemInstance>( new ItemInstance( (Item *)Item::potion) );
+				return shared_ptr<ItemInstance>( new ItemInstance( (Item *)Item::potion) );
 			}
 			else
 			{
-				if (!player->inventory->add(std::shared_ptr<ItemInstance>( new ItemInstance( (Item *)Item::potion) )))
+				if (!player->inventory->add(shared_ptr<ItemInstance>( new ItemInstance( (Item *)Item::potion) )))
 				{
-					player->drop( std::shared_ptr<ItemInstance>( new ItemInstance(Item::potion_Id, 1, 0) ));
+					player->drop( shared_ptr<ItemInstance>( new ItemInstance(Item::potion_Id, 1, 0) ));
 				}
 			}
 		}
@@ -60,7 +60,7 @@ std::shared_ptr<ItemInstance> BottleItem::use(std::shared_ptr<ItemInstance> item
 }
 
 // 4J-PB - added to allow tooltips
-bool BottleItem::TestUse(Level *level, std::shared_ptr<Player> player)
+bool BottleItem::TestUse(Level *level, shared_ptr<Player> player)
 {
 	HitResult *hr = getPlayerPOVHitResult(level, player, true);
 	if (hr == NULL) return false;

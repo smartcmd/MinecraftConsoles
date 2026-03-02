@@ -69,7 +69,7 @@ void VillagerGolem::serverAiMobStep()
 	if (--villageUpdateInterval <= 0)
 	{
 		villageUpdateInterval = 70 + random->nextInt(50);
-		std::shared_ptr<Village> _village = level->villages->getClosestVillage(Mth::floor(x), Mth::floor(y), Mth::floor(z), Villages::MaxDoorDist);
+		shared_ptr<Village> _village = level->villages->getClosestVillage(Mth::floor(x), Mth::floor(y), Mth::floor(z), Villages::MaxDoorDist);
 		village = _village;
 		if (_village == NULL) clearRestriction();
 		else
@@ -133,7 +133,7 @@ void VillagerGolem::readAdditionalSaveData(CompoundTag *tag)
 	setPlayerCreated(tag->getBoolean(L"PlayerCreated"));
 }
 
-bool VillagerGolem::doHurtTarget(std::shared_ptr<Entity> target)
+bool VillagerGolem::doHurtTarget(shared_ptr<Entity> target)
 {
 	attackAnimationTick = 10;
 	level->broadcastEntityEvent(shared_from_this(), EntityEvent::START_ATTACKING);
@@ -157,7 +157,7 @@ void VillagerGolem::handleEntityEvent(byte id)
 	else Golem::handleEntityEvent(id);
 }
 
-std::shared_ptr<Village> VillagerGolem::getVillage()
+shared_ptr<Village> VillagerGolem::getVillage()
 {
 	return village.lock();
 }

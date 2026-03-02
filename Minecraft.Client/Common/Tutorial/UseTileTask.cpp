@@ -25,7 +25,7 @@ bool UseTileTask::isCompleted()
 	return bIsCompleted;
 }
 
-void UseTileTask::useItemOn(Level *level, std::shared_ptr<ItemInstance> item, int x, int y, int z,bool bTestUseOnly)
+void UseTileTask::useItemOn(Level *level, shared_ptr<ItemInstance> item, int x, int y, int z,bool bTestUseOnly)
 {
 	if(bTestUseOnly) return;
 

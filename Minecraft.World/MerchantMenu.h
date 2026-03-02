@@ -25,22 +25,22 @@ public:
 
 
 private:
-	std::shared_ptr<Merchant> trader;
-	std::shared_ptr<MerchantContainer> tradeContainer;
+	shared_ptr<Merchant> trader;
+	shared_ptr<MerchantContainer> tradeContainer;
 	Level *level;
 
 public:
-	MerchantMenu(std::shared_ptr<Inventory> inventory, std::shared_ptr<Merchant> merchant, Level *level);
+	MerchantMenu(shared_ptr<Inventory> inventory, shared_ptr<Merchant> merchant, Level *level);
 
-	std::shared_ptr<MerchantContainer> getTradeContainer();
+	shared_ptr<MerchantContainer> getTradeContainer();
 	void addSlotListener(ContainerListener *listener);
 	void broadcastChanges();
-	void slotsChanged(); // 4J used to take a std::shared_ptr<Container> but wasn't using it, so removed to simplify things
+	void slotsChanged(); // 4J used to take a shared_ptr<Container> but wasn't using it, so removed to simplify things
 	void setSelectionHint(int hint);
 	void setData(int id, int value);
-	bool stillValid(std::shared_ptr<Player> player);
-	std::shared_ptr<ItemInstance> quickMoveStack(std::shared_ptr<Player> player, int slotIndex);
-	void removed(std::shared_ptr<Player> player);
+	bool stillValid(shared_ptr<Player> player);
+	shared_ptr<ItemInstance> quickMoveStack(shared_ptr<Player> player, int slotIndex);
+	void removed(shared_ptr<Player> player);
 
-	std::shared_ptr<Merchant> getMerchant(); // 4J Added
+	shared_ptr<Merchant> getMerchant(); // 4J Added
 };

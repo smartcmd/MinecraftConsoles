@@ -18,7 +18,7 @@
 #include <boost/interprocess/detail/config_begin.hpp>
 #include <boost/interprocess/detail/workaround.hpp>
 
-#include <boost/interprocess/smart_ptr/std::shared_ptr.hpp>
+#include <boost/interprocess/smart_ptr/shared_ptr.hpp>
 #include <boost/detail/no_exceptions_support.hpp>
 #include <boost/interprocess/allocators/allocator.hpp>
 #include <boost/interprocess/smart_ptr/deleter.hpp>
@@ -31,13 +31,13 @@ namespace boost{
 namespace interprocess{
 
 //!The weak_ptr class template stores a "weak reference" to an object
-//!that's already managed by a std::shared_ptr. To access the object, a weak_ptr
-//!can be converted to a std::shared_ptr using  the std::shared_ptr constructor or the
-//!member function  lock. When the last std::shared_ptr to the object goes away
-//!and the object is deleted, the attempt to obtain a std::shared_ptr from the
+//!that's already managed by a shared_ptr. To access the object, a weak_ptr
+//!can be converted to a shared_ptr using  the shared_ptr constructor or the
+//!member function  lock. When the last shared_ptr to the object goes away
+//!and the object is deleted, the attempt to obtain a shared_ptr from the
 //!weak_ptr instances that refer to the deleted object will fail: the constructor
 //!will throw an exception of type bad_weak_ptr, and weak_ptr::lock will
-//!return an empty std::shared_ptr.
+//!return an empty shared_ptr.
 //!
 //!Every weak_ptr meets the CopyConstructible and Assignable requirements
 //!of the C++ Standard Library, and so can be used in standard library containers.
@@ -100,9 +100,9 @@ class weak_ptr
    weak_ptr(weak_ptr<Y, A, D> const & r)
       : m_pn(r.m_pn) // never throws
    {
-      //Construct a temporary std::shared_ptr so that nobody
+      //Construct a temporary shared_ptr so that nobody
       //can destroy the value while constructing this
-      const std::shared_ptr<T, A, D> &ref = r.lock();
+      const shared_ptr<T, A, D> &ref = r.lock();
       m_pn.set_pointer(ref.get());
    }
 
@@ -114,7 +114,7 @@ class weak_ptr
    //!
    //!Throws: nothing.
    template<class Y>
-   weak_ptr(std::shared_ptr<Y, A, D> const & r)
+   weak_ptr(shared_ptr<Y, A, D> const & r)
       : m_pn(r.m_pn) // never throws
    {}
 
@@ -127,9 +127,9 @@ class weak_ptr
    template<class Y>
    weak_ptr & operator=(weak_ptr<Y, A, D> const & r) // never throws
    {
-      //Construct a temporary std::shared_ptr so that nobody
+      //Construct a temporary shared_ptr so that nobody
       //can destroy the value while constructing this
-      const std::shared_ptr<T, A, D> &ref = r.lock();
+      const shared_ptr<T, A, D> &ref = r.lock();
       m_pn = r.m_pn;
       m_pn.set_pointer(ref.get());
       return *this;
@@ -142,30 +142,30 @@ class weak_ptr
    //!Notes: The implementation is free to meet the effects (and the
    //!implied guarantees) via different means, without creating a temporary.
    template<class Y>
-   weak_ptr & operator=(std::shared_ptr<Y, A, D> const & r) // never throws
+   weak_ptr & operator=(shared_ptr<Y, A, D> const & r) // never throws
    {  m_pn = r.m_pn;  return *this;  }
 
-   //!Returns: expired()? std::shared_ptr<T>(): std::shared_ptr<T>(*this).
+   //!Returns: expired()? shared_ptr<T>(): shared_ptr<T>(*this).
    //!
    //!Throws: nothing.
-   std::shared_ptr<T, A, D> lock() const // never throws
+   shared_ptr<T, A, D> lock() const // never throws
    {
       // optimization: avoid throw overhead
       if(expired()){
-         return std::shared_ptr<element_type, A, D>();
+         return shared_ptr<element_type, A, D>();
       }
       BOOST_TRY{
-         return std::shared_ptr<element_type, A, D>(*this);
+         return shared_ptr<element_type, A, D>(*this);
       }
       BOOST_CATCH(bad_weak_ptr const &){
          // Q: how can we get here?
          // A: another thread may have invalidated r after the use_count test above.
-         return std::shared_ptr<element_type, A, D>();
+         return shared_ptr<element_type, A, D>();
       }
       BOOST_CATCH_END
    }
 
-   //!Returns: 0 if *this is empty; otherwise, the number of std::shared_ptr objects
+   //!Returns: 0 if *this is empty; otherwise, the number of shared_ptr objects
    //!that share ownership with *this.
    //!
    //!Throws: nothing.
@@ -209,7 +209,7 @@ class weak_ptr
 
    private:
 
-   template<class T2, class A2, class D2> friend class std::shared_ptr;
+   template<class T2, class A2, class D2> friend class shared_ptr;
    template<class T2, class A2, class D2> friend class weak_ptr;
 
    ipcdetail::weak_count<T, A, D> m_pn;      // reference counter

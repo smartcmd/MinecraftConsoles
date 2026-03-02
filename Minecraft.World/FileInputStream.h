@@ -12,7 +12,7 @@ public:
 	virtual int read(byteArray b);
 	virtual int read(byteArray b, unsigned int offset, unsigned int length);
 	virtual void close();
-	virtual int64_t skip(int64_t n);
+	virtual __int64 skip(__int64 n);
 
 private:
 	HANDLE m_fileHandle;

@@ -610,7 +610,7 @@ struct interprocess_section_basic_information
 {
   void *          base_address;
   unsigned long   section_attributes;
-  int64_t         section_size;
+  __int64         section_size;
 };
 
 struct interprocess_filetime
@@ -778,9 +778,9 @@ union system_timeofday_information
 {
    struct data_t
    {
-      int64_t liKeBootTime;
-      int64_t liKeSystemTime;
-      int64_t liExpTimeZoneBias;
+      __int64 liKeBootTime;
+      __int64 liKeSystemTime;
+      __int64 liExpTimeZoneBias;
       unsigned long uCurrentTimeZoneId;
       unsigned long dwReserved;
    } data;
@@ -877,7 +877,7 @@ extern "C" __declspec(dllimport) int __stdcall FlushViewOfFile (void *, std::siz
 extern "C" __declspec(dllimport) int __stdcall VirtualUnlock (void *, std::size_t);
 extern "C" __declspec(dllimport) int __stdcall VirtualProtect (void *, std::size_t, unsigned long, unsigned long *);
 extern "C" __declspec(dllimport) int __stdcall FlushFileBuffers (void *);
-extern "C" __declspec(dllimport) int __stdcall GetFileSizeEx (void *, int64_t *size);
+extern "C" __declspec(dllimport) int __stdcall GetFileSizeEx (void *, __int64 *size);
 extern "C" __declspec(dllimport) unsigned long __stdcall FormatMessageA
    (unsigned long dwFlags,       const void *lpSource,   unsigned long dwMessageId,
    unsigned long dwLanguageId,   char *lpBuffer,         unsigned long nSize,
@@ -888,9 +888,9 @@ extern "C" __declspec(dllimport) int __stdcall CreateDirectoryA(const char *, in
 extern "C" __declspec(dllimport) int __stdcall RemoveDirectoryA(const char *lpPathName);
 extern "C" __declspec(dllimport) int __stdcall GetTempPathA(unsigned long length, char *buffer);
 extern "C" __declspec(dllimport) int __stdcall CreateDirectory(const char *, interprocess_security_attributes*);
-extern "C" __declspec(dllimport) int __stdcall SetFileValidData(void *, int64_t size);
+extern "C" __declspec(dllimport) int __stdcall SetFileValidData(void *, __int64 size);
 extern "C" __declspec(dllimport) int __stdcall SetEndOfFile(void *);
-extern "C" __declspec(dllimport) int __stdcall SetFilePointerEx(void *, int64_t distance, int64_t *new_file_pointer, unsigned long move_method);
+extern "C" __declspec(dllimport) int __stdcall SetFilePointerEx(void *, __int64 distance, __int64 *new_file_pointer, unsigned long move_method);
 extern "C" __declspec(dllimport) int __stdcall LockFile  (void *hnd, unsigned long offset_low, unsigned long offset_high, unsigned long size_low, unsigned long size_high);
 extern "C" __declspec(dllimport) int __stdcall UnlockFile(void *hnd, unsigned long offset_low, unsigned long offset_high, unsigned long size_low, unsigned long size_high);
 extern "C" __declspec(dllimport) int __stdcall LockFileEx(void *hnd, unsigned long flags, unsigned long reserved, unsigned long size_low, unsigned long size_high, interprocess_overlapped* overlapped);
@@ -908,7 +908,7 @@ extern "C" __declspec(dllimport) unsigned long __stdcall GetMappedFileNameW(void
 extern "C" __declspec(dllimport) long __stdcall RegOpenKeyExA(void *, const char *, unsigned long, unsigned long, void **);
 extern "C" __declspec(dllimport) long __stdcall RegQueryValueExA(void *, const char *, unsigned long*, unsigned long*, unsigned char *, unsigned long*);
 extern "C" __declspec(dllimport) long __stdcall RegCloseKey(void *);
-extern "C" __declspec(dllimport) int  __stdcall QueryPerformanceCounter(int64_t *lpPerformanceCount);
+extern "C" __declspec(dllimport) int  __stdcall QueryPerformanceCounter(__int64 *lpPerformanceCount);
 
 //COM API
 extern "C" __declspec(dllimport) long __stdcall CoInitializeEx(void *pvReserved, unsigned long dwCoInit);
@@ -1091,7 +1091,7 @@ class interprocess_all_access_security
    {  return &sa; }
 };
 
-inline void * create_file_mapping (void * handle, unsigned long access, uint64_t file_offset, const char * name, interprocess_security_attributes *psec)
+inline void * create_file_mapping (void * handle, unsigned long access, unsigned __int64 file_offset, const char * name, interprocess_security_attributes *psec)
 {
    const unsigned long high_size(file_offset >> 32), low_size((boost::uint32_t)file_offset);
    return CreateFileMappingA (handle, psec, access, high_size, low_size, name);
@@ -1100,9 +1100,9 @@ inline void * create_file_mapping (void * handle, unsigned long access, uint64_t
 inline void * open_file_mapping (unsigned long access, const char *name)
 {  return OpenFileMappingA (access, 0, name);   }
 
-inline void *map_view_of_file_ex(void *handle, unsigned long file_access, uint64_t offset, std::size_t numbytes, void *base_addr)
+inline void *map_view_of_file_ex(void *handle, unsigned long file_access, unsigned __int64 offset, std::size_t numbytes, void *base_addr)
 {
-   const unsigned long offset_low  = (unsigned long)(offset & ((uint64_t)0xFFFFFFFF));
+   const unsigned long offset_low  = (unsigned long)(offset & ((unsigned __int64)0xFFFFFFFF));
    const unsigned long offset_high = offset >> 32;
    return MapViewOfFileEx(handle, file_access, offset_high, offset_low, numbytes, base_addr);
 }
@@ -1146,7 +1146,7 @@ inline bool virtual_protect(void *base_addr, std::size_t numbytes, unsigned long
 inline bool flush_file_buffers(void *handle)
 {  return 0 != FlushFileBuffers(handle); }
 
-inline bool get_file_size(void *handle, int64_t &size)
+inline bool get_file_size(void *handle, __int64 &size)
 {  return 0 != GetFileSizeEx(handle, &size);  }
 
 inline bool create_directory(const char *name)
@@ -1164,7 +1164,7 @@ inline unsigned long get_temp_path(unsigned long length, char *buffer)
 inline int set_end_of_file(void *handle)
 {  return 0 != SetEndOfFile(handle);   }
 
-inline bool set_file_pointer_ex(void *handle, int64_t distance, int64_t *new_file_pointer, unsigned long move_method)
+inline bool set_file_pointer_ex(void *handle, __int64 distance, __int64 *new_file_pointer, unsigned long move_method)
 {  return 0 != SetFilePointerEx(handle, distance, new_file_pointer, move_method);   }
 
 inline bool lock_file_ex(void *hnd, unsigned long flags, unsigned long reserved, unsigned long size_low, unsigned long size_high, interprocess_overlapped *overlapped)
@@ -1225,7 +1225,7 @@ inline long reg_query_value_ex(void *hKey, const char *lpValueName, unsigned lon
 inline long reg_close_key(void *hKey)
 {  return RegCloseKey(hKey); }
 
-inline bool query_performance_counter(int64_t *lpPerformanceCount)
+inline bool query_performance_counter(__int64 *lpPerformanceCount)
 {
    return 0 != QueryPerformanceCounter(lpPerformanceCount);
 }
@@ -1812,7 +1812,7 @@ inline bool is_directory(const char *path)
 	        (attrib & file_attribute_directory));
 }
 
-inline bool get_file_mapping_size(void *file_mapping_hnd, int64_t &size)
+inline bool get_file_mapping_size(void *file_mapping_hnd, __int64 &size)
 {
    NtQuerySection_t pNtQuerySection =
       (NtQuerySection_t)dll_func::get(dll_func::NtQuerySection);

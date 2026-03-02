@@ -8,7 +8,7 @@ class InventoryMenu;
 class UIScene_FurnaceMenu : public UIScene_AbstractContainerMenu, public IUIScene_FurnaceMenu
 {
 private:
-	std::shared_ptr<FurnaceTileEntity> m_furnace;
+	shared_ptr<FurnaceTileEntity> m_furnace;
 
 public:
 	UIScene_FurnaceMenu(int iPad, void *initData, UILayer *parentLayer);

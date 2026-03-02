@@ -46,11 +46,11 @@ namespace boost {
   // Algorithms", and the application to connected components is
   // similar to the algorithm described in Ch. 22 of "Intro to
   // Algorithms" by Cormen, et. all.
-  //
+  //  
 
   // An implementation of disjoint sets can be found in
   // boost/pending/disjoint_sets.hpp
-
+  
   template <class EdgeListGraph, class DisjointSets>
   void incremental_components(EdgeListGraph& g, DisjointSets& ds)
   {
@@ -58,35 +58,35 @@ namespace boost {
     for (boost::tie(e,end) = edges(g); e != end; ++e)
       ds.union_set(source(*e,g),target(*e,g));
   }
-
+  
   template <class ParentIterator>
   void compress_components(ParentIterator first, ParentIterator last)
   {
-    for (ParentIterator current = first; current != last; ++current)
+    for (ParentIterator current = first; current != last; ++current) 
       detail::find_representative_with_full_compression(first, current-first);
   }
-
+  
   template <class ParentIterator>
   typename boost::detail::iterator_traits<ParentIterator>::difference_type
   component_count(ParentIterator first, ParentIterator last)
   {
     std::ptrdiff_t count = 0;
-    for (ParentIterator current = first; current != last; ++current)
-      if (*current == current - first) ++count;
+    for (ParentIterator current = first; current != last; ++current) 
+      if (*current == current - first) ++count; 
     return count;
   }
-
+  
   // This algorithm can be applied to the result container of the
   // connected_components algorithm to normalize
   // the components.
   template <class ParentIterator>
   void normalize_components(ParentIterator first, ParentIterator last)
   {
-    for (ParentIterator current = first; current != last; ++current)
+    for (ParentIterator current = first; current != last; ++current) 
       detail::normalize_node(first, current - first);
   }
-
-  template <class VertexListGraph, class DisjointSets>
+  
+  template <class VertexListGraph, class DisjointSets> 
   void initialize_incremental_components(VertexListGraph& G, DisjointSets& ds)
   {
     typename graph_traits<VertexListGraph>
@@ -129,7 +129,7 @@ namespace boost {
       m_index_list(make_shared<IndexContainer>(m_num_elements)) {
 
       build_index_lists(parent_start, index_map);
-
+      
     } // component_index
 
     template <typename ParentIterator>
@@ -222,10 +222,10 @@ namespace boost {
 
   protected:
     IndexType m_num_elements;
-    std::shared_ptr<IndexContainer> m_components, m_index_list;
+    shared_ptr<IndexContainer> m_components, m_index_list;
 
   }; // class component_index
-
+ 
 } // namespace boost
 
 #endif // BOOST_INCREMENTAL_COMPONENTS_HPP

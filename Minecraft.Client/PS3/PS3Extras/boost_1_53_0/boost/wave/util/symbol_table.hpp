@@ -14,14 +14,14 @@
 #include <map>
 
 #include <boost/wave/wave_config.hpp>
-#include <boost/intrusive_ptr.hpp>
+#include <boost/intrusive_ptr.hpp> 
 
 #if BOOST_WAVE_SERIALIZATION != 0
 #include <boost/serialization/serialization.hpp>
 #include <boost/serialization/map.hpp>
-#include <boost/std::shared_ptr.hpp>
+#include <boost/shared_ptr.hpp>
 #else
-#include <boost/intrusive_ptr.hpp>
+#include <boost/intrusive_ptr.hpp> 
 #endif
 
 #include <boost/iterator/transform_iterator.hpp>
@@ -38,27 +38,27 @@ namespace util {
 
 ///////////////////////////////////////////////////////////////////////////////
 //
-//  The symbol_table class is used for the storage of defined macros.
+//  The symbol_table class is used for the storage of defined macros. 
 //
 ///////////////////////////////////////////////////////////////////////////////
 
 template <typename StringT, typename MacroDefT>
-struct symbol_table
+struct symbol_table 
 #if BOOST_WAVE_SERIALIZATION != 0
-:   public std::map<StringT, boost::std::shared_ptr<MacroDefT> >
+:   public std::map<StringT, boost::shared_ptr<MacroDefT> > 
 #else
-:   public std::map<StringT, boost::intrusive_ptr<MacroDefT> >
+:   public std::map<StringT, boost::intrusive_ptr<MacroDefT> > 
 #endif
 {
 #if BOOST_WAVE_SERIALIZATION != 0
-    typedef std::map<StringT, boost::std::shared_ptr<MacroDefT> > base_type;
+    typedef std::map<StringT, boost::shared_ptr<MacroDefT> > base_type;
 #else
     typedef std::map<StringT, boost::intrusive_ptr<MacroDefT> > base_type;
 #endif
     typedef typename base_type::iterator iterator_type;
     typedef typename base_type::const_iterator const_iterator_type;
 
-    symbol_table(long uid_ = 0)
+    symbol_table(long uid_ = 0) 
     {}
 
 #if BOOST_WAVE_SERIALIZATION != 0
@@ -68,7 +68,7 @@ private:
     void serialize(Archive &ar, const unsigned int version)
     {
         using namespace boost::serialization;
-        ar & make_nvp("symbol_table",
+        ar & make_nvp("symbol_table", 
             boost::serialization::base_object<base_type>(*this));
     }
 #endif
@@ -76,7 +76,7 @@ private:
 private:
     ///////////////////////////////////////////////////////////////////////////
     //
-    //  This is a special iterator allowing to iterate the names of all defined
+    //  This is a special iterator allowing to iterate the names of all defined 
     //  macros.
     //
     ///////////////////////////////////////////////////////////////////////////
@@ -94,13 +94,13 @@ private:
     typedef get_first<StringT> unary_functor;
 
 public:
-    typedef transform_iterator<unary_functor, iterator_type>
+    typedef transform_iterator<unary_functor, iterator_type> 
         name_iterator;
-    typedef transform_iterator<unary_functor, const_iterator_type>
+    typedef transform_iterator<unary_functor, const_iterator_type> 
         const_name_iterator;
 
     template <typename Iterator>
-    static
+    static 
     transform_iterator<unary_functor, Iterator> make_iterator(Iterator it)
     {
         return boost::make_transform_iterator<unary_functor>(it);

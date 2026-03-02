@@ -19,7 +19,7 @@ HangingEntityItem::HangingEntityItem(int id, eINSTANCEOF eClassType) : Item(id)
 	// setItemCategory(CreativeModeTab.TAB_DECORATIONS);
 }
 
-bool HangingEntityItem::useOn(std::shared_ptr<ItemInstance> instance, std::shared_ptr<Player> player, Level *level, int xt, int yt, int zt, int face, float clickX, float clickY, float clickZ, bool bTestOnly)
+bool HangingEntityItem::useOn(shared_ptr<ItemInstance> instance, shared_ptr<Player> player, Level *level, int xt, int yt, int zt, int face, float clickX, float clickY, float clickZ, bool bTestOnly)
 {
 	if (face == Facing::DOWN) return false;
 	if (face == Facing::UP) return false;
@@ -33,14 +33,14 @@ bool HangingEntityItem::useOn(std::shared_ptr<ItemInstance> instance, std::share
 
 	int dir = Direction::FACING_DIRECTION[face];
 
-	std::shared_ptr<HangingEntity> entity = createEntity(level, xt, yt, zt, dir);
+	shared_ptr<HangingEntity> entity = createEntity(level, xt, yt, zt, dir);
 
 	//if (!player->mayUseItemAt(xt, yt, zt, face, instance)) return false;
 	if (!player->mayBuild(xt, yt, zt)) return false;
 
-	if (entity != NULL && entity->survives())
+	if (entity != NULL && entity->survives()) 
 	{
-		if (!level->isClientSide)
+		if (!level->isClientSide) 
 		{
 			if(level->addEntity(entity)==TRUE)
 			{
@@ -65,22 +65,22 @@ bool HangingEntityItem::useOn(std::shared_ptr<ItemInstance> instance, std::share
 }
 
 
-std::shared_ptr<HangingEntity> HangingEntityItem::createEntity(Level *level, int x, int y, int z, int dir)
+shared_ptr<HangingEntity> HangingEntityItem::createEntity(Level *level, int x, int y, int z, int dir) 
 {
-	if (eType == eTYPE_PAINTING)
+	if (eType == eTYPE_PAINTING) 
 	{
-		std::shared_ptr<Painting> painting = std::shared_ptr<Painting>(new Painting(level, x, y, z, dir));
+		shared_ptr<Painting> painting = shared_ptr<Painting>(new Painting(level, x, y, z, dir));
 		painting->PaintingPostConstructor(dir);
-
+		
 		return dynamic_pointer_cast<HangingEntity> (painting);
-	}
-	else if (eType == eTYPE_ITEM_FRAME)
+	} 
+	else if (eType == eTYPE_ITEM_FRAME) 
 	{
-		std::shared_ptr<ItemFrame> itemFrame = std::shared_ptr<ItemFrame>(new ItemFrame(level, x, y, z, dir));
+		shared_ptr<ItemFrame> itemFrame = shared_ptr<ItemFrame>(new ItemFrame(level, x, y, z, dir));
 
 		return dynamic_pointer_cast<HangingEntity> (itemFrame);
-	}
-	else
+	} 
+	else 
 	{
 		return nullptr;
 	}

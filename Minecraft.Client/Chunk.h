@@ -38,22 +38,22 @@ public:
 	static void ReleaseThreadStorage();
 	static unsigned char *GetTileIdsStorage();
 #endif
-
+	
 public:
 	static int updates;
 
     int x, y, z;
     int xRender, yRender, zRender;
     int xRenderOffs, yRenderOffs, zRenderOffs;
-
+ 
     int xm, ym, zm;
     AABB *bb;
 	ClipChunk *clipChunk;
 
     int id;
 //public:
-//	vector<std::shared_ptr<TileEntity> > renderableTileEntities;		// 4J - removed
-
+//	vector<shared_ptr<TileEntity> > renderableTileEntities;		// 4J - removed
+    
 private:
 	LevelRenderer::rteMap			*globalRenderableTileEntities;
 	CRITICAL_SECTION				*globalRenderableTileEntities_cs;
@@ -71,8 +71,8 @@ public:
 #ifdef __PS3__
 	void rebuild_SPU();
 #endif // __PS3__
-	float distanceToSqr(std::shared_ptr<Entity> player) const;
-    float squishedDistanceToSqr(std::shared_ptr<Entity> player);
+	float distanceToSqr(shared_ptr<Entity> player) const;
+    float squishedDistanceToSqr(shared_ptr<Entity> player);
     void reset();
     void _delete();
 

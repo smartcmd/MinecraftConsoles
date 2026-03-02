@@ -47,27 +47,27 @@ int Squid::getMaxHealth()
 	return 10;
 }
 
-int Squid::getAmbientSound()
+int Squid::getAmbientSound() 
 {
 	return -1;
 }
 
-int Squid::getHurtSound()
+int Squid::getHurtSound() 
 {
 	return -1;
 }
 
-int Squid::getDeathSound()
+int Squid::getDeathSound() 
 {
 	return -1;
 }
 
-float Squid::getSoundVolume()
+float Squid::getSoundVolume() 
 {
 	return 0.4f;
 }
 
-int Squid::getDeathLoot()
+int Squid::getDeathLoot() 
 {
 	return 0;
 }
@@ -75,18 +75,18 @@ int Squid::getDeathLoot()
 void Squid::dropDeathLoot(bool wasKilledByPlayer, int playerBonusLevel)
 {
 	int count = random->nextInt(3 + playerBonusLevel) + 1;
-	for (int i = 0; i < count; i++)
+	for (int i = 0; i < count; i++) 
 	{
-		spawnAtLocation(std::shared_ptr<ItemInstance>( new ItemInstance(Item::dye_powder, 1, DyePowderItem::BLACK) ), 0.0f);
+		spawnAtLocation(shared_ptr<ItemInstance>( new ItemInstance(Item::dye_powder, 1, DyePowderItem::BLACK) ), 0.0f);
 	}
 }
 
-bool Squid::isInWater()
+bool Squid::isInWater() 
 {
 	return level->checkAndHandleWater(bb->grow(0, -0.6f, 0), Material::water, shared_from_this() );
 }
 
-void Squid::aiStep()
+void Squid::aiStep() 
 {
 	WaterAnimal::aiStep();
 
@@ -97,37 +97,37 @@ void Squid::aiStep()
 	oldTentacleAngle = tentacleAngle;
 
 	tentacleMovement += tentacleSpeed;
-	if (tentacleMovement > (float) PI * 2.0f)
+	if (tentacleMovement > (float) PI * 2.0f) 
 	{
 		tentacleMovement -= (float) PI * 2.0f;
 		if (random->nextInt(10) == 0) tentacleSpeed = 1 / (random->nextFloat() + 1) * 0.2f;
 	}
 
-	if (isInWater())
+	if (isInWater()) 
 	{
-		if (tentacleMovement < PI)
+		if (tentacleMovement < PI) 
 		{
 			float tentacleScale = tentacleMovement / PI;
 			tentacleAngle = Mth::sin(tentacleScale * tentacleScale * PI) * PI * 0.25f;
 
-			if (tentacleScale > .75)
+			if (tentacleScale > .75) 
 			{
 				speed = 1.0f;
 				rotateSpeed = 1.0f;
-			}
-			else
+			} 
+			else 
 			{
 				rotateSpeed = rotateSpeed * 0.8f;
 			}
-		}
-		else
+		} 
+		else 
 		{
 			tentacleAngle = 0.0f;
 			speed = speed * 0.9f;
 			rotateSpeed = rotateSpeed * 0.99f;
 		}
 
-		if (!level->isClientSide)
+		if (!level->isClientSide) 
 		{
 			xd = tx * speed;
 			yd = ty * speed;
@@ -141,11 +141,11 @@ void Squid::aiStep()
 		zBodyRot = zBodyRot + (float) PI * rotateSpeed * 1.5f;
 		xBodyRot += ((-(float) atan2(horizontalMovement, this->yd) * 180 / PI) - xBodyRot) * 0.1f;
 	}
-	else
+	else 
 	{
 		tentacleAngle = Mth::abs(Mth::sin(tentacleMovement)) * PI * 0.25f;
 
-		if (!level->isClientSide)
+		if (!level->isClientSide) 
 		{
 			// unable to move, apply gravity
 			xd = 0.0f;
@@ -173,7 +173,7 @@ void Squid::serverAiStep()
 	{
 		tx = ty = tz = 0;
 	}
-	else if (random->nextInt(50) == 0 || !wasInWater || (tx == 0 && ty == 0 && tz == 0))
+	else if (random->nextInt(50) == 0 || !wasInWater || (tx == 0 && ty == 0 && tz == 0)) 
 	{
 		float angle = random->nextFloat() * PI * 2.0f;
 		tx = Mth::cos(angle) * 0.2f;

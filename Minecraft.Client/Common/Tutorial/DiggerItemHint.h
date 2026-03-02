@@ -13,6 +13,6 @@ private:
 
 public:
 	DiggerItemHint(eTutorial_Hint id, Tutorial *tutorial, int descriptionId, int items[], unsigned int itemsLength);
-	virtual int startDestroyBlock(std::shared_ptr<ItemInstance> item, Tile *tile);
-	virtual int attack(std::shared_ptr<ItemInstance> item, std::shared_ptr<Entity> entity);
+	virtual int startDestroyBlock(shared_ptr<ItemInstance> item, Tile *tile);
+	virtual int attack(shared_ptr<ItemInstance> item, shared_ptr<Entity> entity);
 };

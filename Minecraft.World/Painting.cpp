@@ -73,7 +73,7 @@ Painting::Painting(Level *level, int xTile, int yTile, int zTile, int dir) : Han
 	// 4J Stu - If you use this ctor, then you need to call the PaintingPostConstructor
 }
 
-// 4J Stu - Added this so that we can use some std::shared_ptr functions that were needed in the ctor
+// 4J Stu - Added this so that we can use some shared_ptr functions that were needed in the ctor
 void Painting::PaintingPostConstructor(int dir)
 {
 	vector<Motive *> *survivableMotives = new vector<Motive *>();
@@ -132,17 +132,17 @@ void Painting::readAdditionalSaveData(CompoundTag *tag)
 	HangingEntity::readAdditionalSaveData(tag);
 }
 
-int Painting::getWidth()
+int Painting::getWidth() 
 {
 	return motive->w;
 }
 
-int Painting::getHeight()
+int Painting::getHeight() 
 {
 	return motive->h;
 }
 
-void Painting::dropItem()
+void Painting::dropItem() 
 {
-	spawnAtLocation(std::shared_ptr<ItemInstance>(new ItemInstance(Item::painting)), 0.0f);
+	spawnAtLocation(shared_ptr<ItemInstance>(new ItemInstance(Item::painting)), 0.0f);
 }

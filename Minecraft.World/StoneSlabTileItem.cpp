@@ -17,24 +17,24 @@ StoneSlabTileItem::StoneSlabTileItem(int id, HalfSlabTile *halfTile, HalfSlabTil
 	setStackedByData(true);
 }
 
-Icon *StoneSlabTileItem::getIcon(int itemAuxValue)
+Icon *StoneSlabTileItem::getIcon(int itemAuxValue) 
 {
 	return Tile::tiles[id]->getTexture(2, itemAuxValue);
 }
 
-int StoneSlabTileItem::getLevelDataForAuxValue(int auxValue)
+int StoneSlabTileItem::getLevelDataForAuxValue(int auxValue) 
 {
 	return auxValue;
 }
 
-unsigned int StoneSlabTileItem::getDescriptionId(std::shared_ptr<ItemInstance> instance)
+unsigned int StoneSlabTileItem::getDescriptionId(shared_ptr<ItemInstance> instance) 
 {
 	return halfTile->getAuxName(instance->getAuxValue());
 }
 
-bool StoneSlabTileItem::useOn(std::shared_ptr<ItemInstance> instance, std::shared_ptr<Player> player, Level *level, int x, int y, int z, int face, float clickX, float clickY, float clickZ, bool bTestUseOnOnly)
+bool StoneSlabTileItem::useOn(shared_ptr<ItemInstance> instance, shared_ptr<Player> player, Level *level, int x, int y, int z, int face, float clickX, float clickY, float clickZ, bool bTestUseOnOnly)
 {
-	if (isFull)
+	if (isFull) 
 	{
 		return TileItem::useOn(instance, player, level, x, y, z, face, clickX, clickY, clickZ, bTestUseOnOnly);
 	}
@@ -47,14 +47,14 @@ bool StoneSlabTileItem::useOn(std::shared_ptr<ItemInstance> instance, std::share
 	int slabType = currentData & HalfSlabTile::TYPE_MASK;
 	bool isUpper = (currentData & HalfSlabTile::TOP_SLOT_BIT) != 0;
 
-	if (((face == Facing::UP && !isUpper) || (face == Facing::DOWN && isUpper)) && currentTile == halfTile->id && slabType == instance->getAuxValue())
+	if (((face == Facing::UP && !isUpper) || (face == Facing::DOWN && isUpper)) && currentTile == halfTile->id && slabType == instance->getAuxValue()) 
 	{
 		if(bTestUseOnOnly)
 		{
 			return true;
 		}
 
-		if (level->isUnobstructed(fullTile->getAABB(level, x, y, z)) && level->setTileAndData(x, y, z, fullTile->id, slabType))
+		if (level->isUnobstructed(fullTile->getAABB(level, x, y, z)) && level->setTileAndData(x, y, z, fullTile->id, slabType)) 
 		{
 // 			level.playSound(x + 0.5f, y + 0.5f, z + 0.5f, fullTile.soundType.getPlaceSound(), (fullTile.soundType.getVolume() + 1) / 2, fullTile.soundType.getPitch() * 0.8f);
 // 			instance.count--;
@@ -62,19 +62,19 @@ bool StoneSlabTileItem::useOn(std::shared_ptr<ItemInstance> instance, std::share
 			instance->count--;
 		}
 		return true;
-	}
-	else if (tryConvertTargetTile(instance, player, level, x, y, z, face, bTestUseOnOnly))
+	} 
+	else if (tryConvertTargetTile(instance, player, level, x, y, z, face, bTestUseOnOnly)) 
 	{
 		return true;
-	}
-	else
+	} 
+	else 
 	{
 		return TileItem::useOn(instance, player, level, x, y, z, face, clickX, clickY, clickZ, bTestUseOnOnly);
 	}
 }
 
 
-bool StoneSlabTileItem::mayPlace(Level *level, int x, int y, int z, int face,std::shared_ptr<Player> player, std::shared_ptr<ItemInstance> item)
+bool StoneSlabTileItem::mayPlace(Level *level, int x, int y, int z, int face,shared_ptr<Player> player, shared_ptr<ItemInstance> item) 
 {
 	int ox = x, oy = y, oz = z;
 
@@ -83,7 +83,7 @@ bool StoneSlabTileItem::mayPlace(Level *level, int x, int y, int z, int face,std
 	int slabType = currentData & HalfSlabTile::TYPE_MASK;
 	boolean isUpper = (currentData & HalfSlabTile::TOP_SLOT_BIT) != 0;
 
-	if (((face == Facing::UP && !isUpper) || (face == Facing::DOWN && isUpper)) && currentTile == halfTile->id && slabType == item->getAuxValue())
+	if (((face == Facing::UP && !isUpper) || (face == Facing::DOWN && isUpper)) && currentTile == halfTile->id && slabType == item->getAuxValue()) 
 	{
 		return true;
 	}
@@ -100,7 +100,7 @@ bool StoneSlabTileItem::mayPlace(Level *level, int x, int y, int z, int face,std
 	slabType = currentData & HalfSlabTile::TYPE_MASK;
 	isUpper = (currentData & HalfSlabTile::TOP_SLOT_BIT) != 0;
 
-	if (currentTile == halfTile->id && slabType == item->getAuxValue())
+	if (currentTile == halfTile->id && slabType == item->getAuxValue()) 
 	{
 		return true;
 	}
@@ -108,7 +108,7 @@ bool StoneSlabTileItem::mayPlace(Level *level, int x, int y, int z, int face,std
 	return TileItem::mayPlace(level, ox, oy, oz, face, player, item);
 }
 
-bool StoneSlabTileItem::tryConvertTargetTile(std::shared_ptr<ItemInstance> instance, std::shared_ptr<Player> player, Level *level, int x, int y, int z, int face, bool bTestUseOnOnly)
+bool StoneSlabTileItem::tryConvertTargetTile(shared_ptr<ItemInstance> instance, shared_ptr<Player> player, Level *level, int x, int y, int z, int face, bool bTestUseOnOnly) 
 {
 	if (face == 0) y--;
 	if (face == 1) y++;
@@ -121,17 +121,17 @@ bool StoneSlabTileItem::tryConvertTargetTile(std::shared_ptr<ItemInstance> insta
 	int currentData = level->getData(x, y, z);
 	int slabType = currentData & HalfSlabTile::TYPE_MASK;
 
-	if (currentTile == halfTile->id && slabType == instance->getAuxValue())
+	if (currentTile == halfTile->id && slabType == instance->getAuxValue()) 
 	{
 		if(bTestUseOnOnly)
 		{
 			return true;
-		}
-		if (level->isUnobstructed(fullTile->getAABB(level, x, y, z)) && level->setTileAndData(x, y, z, fullTile->id, slabType))
+		}			
+		if (level->isUnobstructed(fullTile->getAABB(level, x, y, z)) && level->setTileAndData(x, y, z, fullTile->id, slabType)) 
 		{
 			//level.playSound(x + 0.5f, y + 0.5f, z + 0.5f, fullTile.soundType.getPlaceSound(), (fullTile.soundType.getVolume() + 1) / 2, fullTile.soundType.getPitch() * 0.8f);
 			level->playSound(x + 0.5f, y + 0.5f, z + 0.5f, fullTile->soundType->getStepSound(), (fullTile->soundType->getVolume() + 1) / 2, fullTile->soundType->getPitch() * 0.8f);
-			instance->count--;
+			instance->count--;	
 		}
 		return true;
 	}

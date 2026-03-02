@@ -6,22 +6,22 @@ ChunkPos::ChunkPos(int x, int z) : x( x ), z( z )
 {
 }
 
-int64_t ChunkPos::hashCode(int x, int z)
+__int64 ChunkPos::hashCode(int x, int z)
 {
-	int64_t xx = x;
-	int64_t zz = z;
+	__int64 xx = x;
+	__int64 zz = z;
 	return (xx & 0xffffffffl) | ((zz & 0xffffffffl) << 32l);
 }
 
 int ChunkPos::hashCode()
 {
-	int64_t hash = hashCode(x, z);
+	__int64 hash = hashCode(x, z);
 	int h1 = (int) (hash);
 	int h2 = (int) (hash >> 32l);
 	return h1 ^ h2;
 }
 
-double ChunkPos::distanceToSqr(std::shared_ptr<Entity> e)
+double ChunkPos::distanceToSqr(shared_ptr<Entity> e)
 {
 	double xPos = x * 16 + 8;
 	double zPos = z * 16 + 8;
@@ -53,7 +53,7 @@ int ChunkPos::getMiddleBlockZ()
 	return ( z << 4 ) + 8;
 }
 
-TilePos ChunkPos::getMiddleBlockPosition(int y)
+TilePos ChunkPos::getMiddleBlockPosition(int y) 
 {
 	return TilePos(getMiddleBlockX(), y, getMiddleBlockZ());
 }
@@ -63,7 +63,7 @@ wstring ChunkPos::toString()
     return L"[" + _toString<int>(x) + L", " + _toString<int>(z) + L"]";
 }
 
-int64_t ChunkPos::hash_fnct(const ChunkPos &k)
+__int64 ChunkPos::hash_fnct(const ChunkPos &k)
 {
 	return k.hashCode(k.x,k.z);
 }

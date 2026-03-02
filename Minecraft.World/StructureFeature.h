@@ -16,7 +16,7 @@ public:
 	};
 
 protected:
-	unordered_map<int64_t, StructureStart *> cachedStructures;
+	unordered_map<__int64, StructureStart *> cachedStructures;
 
 public:
 	~StructureFeature();
@@ -29,12 +29,12 @@ public:
 	bool isInsideFeature(int cellX, int cellY, int cellZ);
 	TilePos *getNearestGeneratedFeature(Level *level, int cellX, int cellY, int cellZ);
 protected:
-	vector<TilePos> *getGuesstimatedFeaturePositions();
+	vector<TilePos> *getGuesstimatedFeaturePositions(); 
 
     /**
      * Returns true if the given chunk coordinates should hold a structure
      * source.
-     *
+     * 
      * @param x
      *            chunk x
      * @param z
@@ -47,7 +47,7 @@ protected:
     /**
      * Creates a new instance of a structure source at the given chunk
      * coordinates.
-     *
+     * 
      * @param x
      *            chunk x
      * @param z

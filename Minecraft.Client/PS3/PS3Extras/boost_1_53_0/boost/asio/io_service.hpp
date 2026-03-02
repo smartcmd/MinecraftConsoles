@@ -232,19 +232,19 @@ public:
    * <tt>delete static_cast<io_service::service*>(svc)</tt>.
    *
    * @note The destruction sequence described above permits programs to
-   * simplify their resource management by using @c std::shared_ptr<>. Where an
+   * simplify their resource management by using @c shared_ptr<>. Where an
    * object's lifetime is tied to the lifetime of a connection (or some other
-   * sequence of asynchronous operations), a @c std::shared_ptr to the object would
+   * sequence of asynchronous operations), a @c shared_ptr to the object would
    * be bound into the handlers for all asynchronous operations associated with
    * it. This works as follows:
    *
    * @li When a single connection ends, all associated asynchronous operations
    * complete. The corresponding handler objects are destroyed, and all
-   * @c std::shared_ptr references to the objects are destroyed.
+   * @c shared_ptr references to the objects are destroyed.
    *
    * @li To shut down the whole program, the io_service function stop() is
    * called to terminate any run() calls as soon as possible. The io_service
-   * destructor defined above destroys all handlers, causing all @c std::shared_ptr
+   * destructor defined above destroys all handlers, causing all @c shared_ptr
    * references to all connection objects to be destroyed.
    */
   BOOST_ASIO_DECL ~io_service();

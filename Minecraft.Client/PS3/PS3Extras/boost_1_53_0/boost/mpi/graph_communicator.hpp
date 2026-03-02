@@ -59,7 +59,7 @@ class BOOST_MPI_DECL graph_communicator : public communicator
    * underlying MPI_Comm. This operation is used for "casting" from a
    * communicator to a graph communicator.
    */
-  explicit graph_communicator(const std::shared_ptr<MPI_Comm>& comm_ptr)
+  explicit graph_communicator(const shared_ptr<MPI_Comm>& comm_ptr)
   {
 #ifndef BOOST_DISABLE_ASSERTS
     int status;
@@ -99,7 +99,7 @@ public:
    */
   graph_communicator(const MPI_Comm& comm, comm_create_kind kind)
     : communicator(comm, kind)
-  {
+  { 
 #ifndef BOOST_DISABLE_ASSERTS
     int status;
     BOOST_MPI_CHECK_RESULT(MPI_Topo_test, ((MPI_Comm)*this, &status));
@@ -116,8 +116,8 @@ public:
    *  resulting communicator will be a NULL communicator.
    *
    *  @param comm The communicator that the new, graph communicator
-   *  will be based on.
-   *
+   *  will be based on. 
+   * 
    *  @param graph Any type that meets the requirements of the
    *  Incidence Graph and Vertex List Graph concepts from the Boost Graph
    *  Library. This structure of this graph will become the topology
@@ -130,8 +130,8 @@ public:
    *  within the original communicator.
    */
   template<typename Graph>
-  explicit
-  graph_communicator(const communicator& comm, const Graph& graph,
+  explicit 
+  graph_communicator(const communicator& comm, const Graph& graph, 
                      bool reorder = false);
 
   /**
@@ -145,7 +145,7 @@ public:
    *  @param comm The communicator that the new, graph communicator
    *  will be based on. The ranks in @c rank refer to the processes in
    *  this communicator.
-   *
+   * 
    *  @param graph Any type that meets the requirements of the
    *  Incidence Graph and Vertex List Graph concepts from the Boost Graph
    *  Library. This structure of this graph will become the topology
@@ -164,8 +164,8 @@ public:
    *  within the original communicator.
    */
   template<typename Graph, typename RankMap>
-  explicit
-  graph_communicator(const communicator& comm, const Graph& graph,
+  explicit 
+  graph_communicator(const communicator& comm, const Graph& graph, 
                      RankMap rank, bool reorder = false);
 
 protected:
@@ -177,7 +177,7 @@ protected:
    */
   template<typename Graph, typename RankMap>
   void
-  setup_graph(const communicator& comm, const Graph& graph, RankMap rank,
+  setup_graph(const communicator& comm, const Graph& graph, RankMap rank, 
               bool reorder);
 };
 
@@ -186,16 +186,16 @@ protected:
  ****************************************************************************/
 
 template<typename Graph>
-graph_communicator::graph_communicator(const communicator& comm,
-                                       const Graph& graph,
+graph_communicator::graph_communicator(const communicator& comm, 
+                                       const Graph& graph, 
                                        bool reorder)
 {
   this->setup_graph(comm, graph, get(vertex_index, graph), reorder);
 }
 
 template<typename Graph, typename RankMap>
-graph_communicator::graph_communicator(const communicator& comm,
-                                       const Graph& graph,
+graph_communicator::graph_communicator(const communicator& comm, 
+                                       const Graph& graph, 
                                        RankMap rank, bool reorder)
 {
   this->setup_graph(comm, graph, rank, reorder);
@@ -204,7 +204,7 @@ graph_communicator::graph_communicator(const communicator& comm,
 
 template<typename Graph, typename RankMap>
 void
-graph_communicator::setup_graph(const communicator& comm, const Graph& graph,
+graph_communicator::setup_graph(const communicator& comm, const Graph& graph, 
                                 RankMap rank, bool reorder)
 {
   typedef typename graph_traits<Graph>::vertex_descriptor vertex_descriptor;
@@ -234,7 +234,7 @@ graph_communicator::setup_graph(const communicator& comm, const Graph& graph,
   // Create the new communicator
   MPI_Comm newcomm;
   BOOST_MPI_CHECK_RESULT(MPI_Graph_create,
-                         ((MPI_Comm)comm,
+                         ((MPI_Comm)comm, 
                           nvertices,
                           &indices[0],
                           edges.empty()? (int*)0 : &edges[0],
@@ -254,10 +254,10 @@ namespace detail {
    *  communicator's graph topology.
    */
   class comm_out_edge_iterator
-    : public iterator_facade<comm_out_edge_iterator,
+    : public iterator_facade<comm_out_edge_iterator, 
                              std::pair<int, int>,
                              random_access_traversal_tag,
-                             const std::pair<int, int>&,
+                             const std::pair<int, int>&, 
                              int>
   {
   public:
@@ -304,10 +304,10 @@ namespace detail {
    *  communicator's graph topology.
    */
   class comm_adj_iterator
-    : public iterator_facade<comm_adj_iterator,
+    : public iterator_facade<comm_adj_iterator, 
                              int,
                              random_access_traversal_tag,
-                             int,
+                             int, 
                              int>
   {
   public:
@@ -349,10 +349,10 @@ namespace detail {
    *  topology.
    */
   class comm_edge_iterator
-    : public iterator_facade<comm_edge_iterator,
+    : public iterator_facade<comm_edge_iterator, 
                              std::pair<int, int>,
                              forward_traversal_tag,
-                             const std::pair<int, int>&,
+                             const std::pair<int, int>&, 
                              int>
   {
   public:
@@ -381,9 +381,9 @@ namespace detail {
       return edge_index == other.edge_index;
     }
 
-    void increment()
-    {
-      ++edge_index;
+    void increment() 
+    { 
+      ++edge_index; 
     }
 
     shared_array<int> indices;
@@ -478,7 +478,7 @@ int num_edges(const graph_communicator& comm);
 
 /**
  *  @brief Returns a property map that maps from vertices in a
- *  communicator's graph topology to their index values.
+ *  communicator's graph topology to their index values. 
  *
  *  Since the vertices are ranks in the communicator, the returned
  *  property map is the identity property map.
@@ -522,16 +522,16 @@ struct graph_traits<mpi::graph_communicator> {
   typedef std::pair<int, int>        edge_descriptor;
   typedef directed_tag               directed_category;
   typedef disallow_parallel_edge_tag edge_parallel_category;
-
+  
   /**
    * INTERNAL ONLY
    */
   struct traversal_category
-    : incidence_graph_tag,
-      adjacency_graph_tag,
-      vertex_list_graph_tag,
-      edge_list_graph_tag
-  {
+    : incidence_graph_tag, 
+      adjacency_graph_tag, 
+      vertex_list_graph_tag, 
+      edge_list_graph_tag 
+  { 
   };
 
   /**

@@ -9,9 +9,9 @@ private:
 public:
 	FireballRenderer(float scale);
 
-	virtual void render(std::shared_ptr<Entity> _fireball, double x, double y, double z, float rot, float a);
+	virtual void render(shared_ptr<Entity> _fireball, double x, double y, double z, float rot, float a);
 
 private:
 	// 4J Added override
-	virtual void renderFlame(std::shared_ptr<Entity> e, double x, double y, double z, float a);
+	virtual void renderFlame(shared_ptr<Entity> e, double x, double y, double z, float a);
 };

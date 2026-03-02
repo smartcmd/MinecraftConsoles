@@ -20,7 +20,7 @@
 #define SEND_OOB_BSEND
 
 #include <boost/optional.hpp>
-#include <boost/std::shared_ptr.hpp>
+#include <boost/shared_ptr.hpp>
 #include <boost/weak_ptr.hpp>
 #include <utility>
 #include <memory>
@@ -48,7 +48,7 @@ class mpi_process_group
    * The type of a "receive" handler, that will be provided with
    * (source, tag) pairs when a message is received. Users can provide a
    * receive handler for a distributed data structure, for example, to
-   * automatically pick up and respond to messages as needed.
+   * automatically pick up and respond to messages as needed.  
    */
   typedef function<void(int source, int tag)> receiver_type;
 
@@ -75,7 +75,7 @@ class mpi_process_group
 
   /// Classification of the capabilities of this process group
   struct communication_category
-    : virtual parallel::bsp_process_group_tag,
+    : virtual parallel::bsp_process_group_tag, 
       virtual mpi_process_group_tag { };
 
   // TBD: We can eliminate the "source" field and possibly the
@@ -92,7 +92,7 @@ class mpi_process_group
 
     /// The length of the message in the buffer, in bytes
     std::size_t bytes;
-
+    
     template <class Archive>
     void serialize(Archive& ar, int)
     {
@@ -113,14 +113,14 @@ class mpi_process_group
 
     std::vector<message_header> headers;
     buffer_type                 buffer;
-
+    
     template <class Archive>
     void serialize(Archive& ar, int)
     {
       ar & headers & buffer;
     }
-
-    void swap(outgoing_messages& x)
+    
+    void swap(outgoing_messages& x) 
     {
       headers.swap(x.headers);
       buffer.swap(x.buffer);
@@ -137,21 +137,21 @@ private:
   public:
     explicit trigger_base(int tag) : tag_(tag) { }
 
-    /// Retrieve the tag associated with this trigger
+    /// Retrieve the tag associated with this trigger  
     int tag() const { return tag_; }
 
     virtual ~trigger_base() { }
 
     /**
-     * Invoked to receive a message that matches a particular trigger.
+     * Invoked to receive a message that matches a particular trigger. 
      *
      * @param source      the source of the message
      * @param tag         the (local) tag of the message
      * @param context     the context under which the trigger is being
      *                    invoked
      */
-    virtual void
-    receive(mpi_process_group const& pg, int source, int tag,
+    virtual void 
+    receive(mpi_process_group const& pg, int source, int tag, 
             trigger_receive_context context, int block=-1) const = 0;
 
   protected:
@@ -162,19 +162,19 @@ private:
   /**
    * Launches a specific handler in response to a trigger. This
    * function object wraps up the handler function object and a buffer
-   * for incoming data.
+   * for incoming data. 
    */
   template<typename Type, typename Handler>
   class trigger_launcher : public trigger_base
   {
   public:
-    explicit trigger_launcher(mpi_process_group& self, int tag,
-                              const Handler& handler)
-      : trigger_base(tag), self(self), handler(handler)
+    explicit trigger_launcher(mpi_process_group& self, int tag, 
+                              const Handler& handler) 
+      : trigger_base(tag), self(self), handler(handler) 
       {}
 
-    void
-    receive(mpi_process_group const& pg, int source, int tag,
+    void 
+    receive(mpi_process_group const& pg, int source, int tag,  
             trigger_receive_context context, int block=-1) const;
 
   private:
@@ -191,13 +191,13 @@ private:
   class reply_trigger_launcher : public trigger_base
   {
   public:
-    explicit reply_trigger_launcher(mpi_process_group& self, int tag,
-                                    const Handler& handler)
-      : trigger_base(tag), self(self), handler(handler)
+    explicit reply_trigger_launcher(mpi_process_group& self, int tag, 
+                                    const Handler& handler) 
+      : trigger_base(tag), self(self), handler(handler) 
       {}
 
-    void
-    receive(mpi_process_group const& pg, int source, int tag,
+    void 
+    receive(mpi_process_group const& pg, int source, int tag, 
             trigger_receive_context context, int block=-1) const;
 
   private:
@@ -209,14 +209,14 @@ private:
   class global_trigger_launcher : public trigger_base
   {
   public:
-    explicit global_trigger_launcher(mpi_process_group& self, int tag,
-                              const Handler& handler)
-      : trigger_base(tag), handler(handler)
-      {
+    explicit global_trigger_launcher(mpi_process_group& self, int tag, 
+                              const Handler& handler) 
+      : trigger_base(tag), handler(handler) 
+      { 
       }
 
-    void
-    receive(mpi_process_group const& pg, int source, int tag,
+    void 
+    receive(mpi_process_group const& pg, int source, int tag, 
             trigger_receive_context context, int block=-1) const;
 
   private:
@@ -229,15 +229,15 @@ private:
   class global_irecv_trigger_launcher : public trigger_base
   {
   public:
-    explicit global_irecv_trigger_launcher(mpi_process_group& self, int tag,
-                              const Handler& handler, int sz)
+    explicit global_irecv_trigger_launcher(mpi_process_group& self, int tag, 
+                              const Handler& handler, int sz) 
       : trigger_base(tag), handler(handler), buffer_size(sz)
-      {
+      { 
         prepare_receive(self,tag);
       }
 
-    void
-    receive(mpi_process_group const& pg, int source, int tag,
+    void 
+    receive(mpi_process_group const& pg, int source, int tag, 
             trigger_receive_context context, int block=-1) const;
 
   private:
@@ -249,32 +249,32 @@ private:
   };
 
 public:
-  /**
+  /** 
    * Construct a new BSP process group from an MPI communicator. The
    * MPI communicator will be duplicated to create a new communicator
    * for this process group to use.
    */
   mpi_process_group(communicator_type parent_comm = communicator_type());
 
-  /**
+  /** 
    * Construct a new BSP process group from an MPI communicator. The
    * MPI communicator will be duplicated to create a new communicator
    * for this process group to use. This constructor allows to tune the
    * size of message batches.
-   *
+   *    
    *   @param num_headers The maximum number of headers in a message batch
    *
    *   @param buffer_size The maximum size of the message buffer in a batch.
    *
    */
-  mpi_process_group( std::size_t num_headers, std::size_t buffer_size,
+  mpi_process_group( std::size_t num_headers, std::size_t buffer_size, 
                      communicator_type parent_comm = communicator_type());
 
   /**
    * Construct a copy of the BSP process group for a new distributed
    * data structure. This data structure will synchronize with all
    * other members of the process group's equivalence class (including
-   * @p other), but will have its own set of tags.
+   * @p other), but will have its own set of tags. 
    *
    *   @param other The process group that this new process group will
    *   be based on, using a different set of tags within the same
@@ -296,9 +296,9 @@ public:
    * Construct a copy of the BSP process group for a new distributed
    * data structure. This data structure will synchronize with all
    * other members of the process group's equivalence class (including
-   * @p other), but will have its own set of tags.
+   * @p other), but will have its own set of tags. 
    */
-  mpi_process_group(const mpi_process_group& other,
+  mpi_process_group(const mpi_process_group& other, 
                     attach_distributed_object,
                     bool out_of_band_receive = false);
 
@@ -335,7 +335,7 @@ public:
   void
   replace_on_synchronize_handler(const on_synchronize_event_type& handler = 0);
 
-  /**
+  /** 
    * Return the block number of the current data structure. A value of
    * 0 indicates that this particular instance of the process group is
    * not associated with any distributed data structure.
@@ -350,7 +350,7 @@ public:
   { return block_num * max_tags + tag; }
 
   /**
-   * Decode an encoded tag into a block number/tag pair.
+   * Decode an encoded tag into a block number/tag pair. 
    */
   std::pair<int, int> decode_tag(int encoded_tag) const
   { return std::make_pair(encoded_tag / max_tags, encoded_tag % max_tags); }
@@ -366,13 +366,13 @@ public:
    */
   int allocate_block(bool out_of_band_receive = false);
 
-  /** Potentially emit a receive event out of band. Returns true if an event
-   *  was actually sent, false otherwise.
+  /** Potentially emit a receive event out of band. Returns true if an event 
+   *  was actually sent, false otherwise. 
    */
   bool maybe_emit_receive(int process, int encoded_tag) const;
 
   /** Emit a receive event. Returns true if an event was actually
-   * sent, false otherwise.
+   * sent, false otherwise. 
    */
   bool emit_receive(int process, int encoded_tag) const;
 
@@ -450,7 +450,7 @@ public:
   void trigger_with_reply(int tag, const Handler& handler);
 
   template<typename Type, typename Handler>
-  void global_trigger(int tag, const Handler& handler, std::size_t buffer_size=0);
+  void global_trigger(int tag, const Handler& handler, std::size_t buffer_size=0); 
 
 
 
@@ -468,7 +468,7 @@ public:
    * @param synchronizing whether we are currently synchronizing the
    *                      process group
    */
-  optional<std::pair<int, int> >
+  optional<std::pair<int, int> > 
   poll(bool wait = false, int block = -1, bool synchronizing = false) const;
 
   /**
@@ -489,11 +489,11 @@ public:
   ///
   /// Determine the actual communicator and tag will be used for a
   /// transmission with the given tag.
-  std::pair<boost::mpi::communicator, int>
+  std::pair<boost::mpi::communicator, int> 
   actual_communicator_and_tag(int tag, int block) const;
 
   /// set the size of the message buffer used for buffered oob sends
-
+  
   static void set_message_buffer_size(std::size_t s);
 
   /// get the size of the message buffer used for buffered oob sends
@@ -503,12 +503,12 @@ public:
   static void* old_buffer;
 private:
 
-  void install_trigger(int tag, int block,
-      std::shared_ptr<trigger_base> const& launcher);
+  void install_trigger(int tag, int block, 
+      shared_ptr<trigger_base> const& launcher); 
 
   void poll_requests(int block=-1) const;
 
-
+  
   // send a batch if the buffer is full now or would get full
   void maybe_send_batch(process_id_type dest) const;
 
@@ -527,7 +527,7 @@ private:
   void receive_batch(boost::mpi::status& status) const;
 
   //void free_finished_sends() const;
-
+          
   /// Status messages used internally by the process group
   enum status_messages {
     /// the first of the reserved message tags
@@ -557,13 +557,13 @@ private:
     /// Handler for receive events
     receiver_type     on_receive;
 
-    /// Handler executed at the start of  synchronization
+    /// Handler executed at the start of  synchronization 
     on_synchronize_event_type  on_synchronize;
 
     /// Individual message triggers. Note: at present, this vector is
     /// indexed by the (local) tag of the trigger.  Any tags that
     /// don't have triggers will have NULL pointers in that spot.
-    std::vector<std::shared_ptr<trigger_base> > triggers;
+    std::vector<shared_ptr<trigger_base> > triggers;
   };
 
   /**
@@ -581,7 +581,7 @@ private:
    * @c block_num.
    */
   struct deallocate_block;
-
+  
   static std::vector<char> message_buffer;
 
 public:
@@ -589,17 +589,17 @@ public:
    * Data associated with the process group and all of its attached
    * distributed data structures.
    */
-  std::shared_ptr<impl> impl_;
+  shared_ptr<impl> impl_;
 
   /**
    * When non-null, indicates that this copy of the process group is
    * associated with a particular distributed data structure. The
    * integer value contains the block number (a value > 0) associated
-   * with that data structure. The deleter for this @c std::shared_ptr is a
+   * with that data structure. The deleter for this @c shared_ptr is a
    * @c deallocate_block object that will deallocate the associated
    * block in @c impl_->blocks.
    */
-  std::shared_ptr<int>  block_num;
+  shared_ptr<int>  block_num;
 
   /**
    * Rank of this process, to avoid having to call rank() repeatedly.
@@ -615,11 +615,11 @@ public:
 
 
 
-inline mpi_process_group::process_id_type
+inline mpi_process_group::process_id_type 
 process_id(const mpi_process_group& pg)
 { return pg.rank; }
 
-inline mpi_process_group::process_size_type
+inline mpi_process_group::process_size_type 
 num_processes(const mpi_process_group& pg)
 { return pg.size; }
 
@@ -683,7 +683,7 @@ process_subgroup(const mpi_process_group& pg,
 
 template<typename T>
 void
-broadcast(const mpi_process_group& pg, T& val,
+broadcast(const mpi_process_group& pg, T& val, 
           mpi_process_group::process_id_type root);
 
 
@@ -705,15 +705,15 @@ send_oob(const mpi_process_group& pg, mpi_process_group::process_id_type dest,
 
 #ifdef SEND_OOB_BSEND
   if (mpi_process_group::message_buffer_size()) {
-    MPI_Bsend(const_cast<T*>(&value), 1, get_mpi_datatype<T>(value), dest,
+    MPI_Bsend(const_cast<T*>(&value), 1, get_mpi_datatype<T>(value), dest, 
               actual.second, actual.first);
     return;
   }
 #endif
   MPI_Request request;
-  MPI_Isend(const_cast<T*>(&value), 1, get_mpi_datatype<T>(value), dest,
+  MPI_Isend(const_cast<T*>(&value), 1, get_mpi_datatype<T>(value), dest, 
             actual.second, actual.first, &request);
-
+  
   int done=0;
   do {
     pg.poll();
@@ -759,24 +759,24 @@ send_oob(const mpi_process_group& pg, mpi_process_group::process_id_type dest,
 
 template<typename T>
 typename enable_if<boost::mpi::is_mpi_datatype<T> >::type
-receive_oob(const mpi_process_group& pg,
+receive_oob(const mpi_process_group& pg, 
             mpi_process_group::process_id_type source, int tag, T& value, int block=-1);
 
 template<typename T>
 typename disable_if<boost::mpi::is_mpi_datatype<T> >::type
-receive_oob(const mpi_process_group& pg,
+receive_oob(const mpi_process_group& pg, 
             mpi_process_group::process_id_type source, int tag, T& value, int block=-1);
 
 template<typename SendT, typename ReplyT>
 typename enable_if<boost::mpi::is_mpi_datatype<ReplyT> >::type
-send_oob_with_reply(const mpi_process_group& pg,
+send_oob_with_reply(const mpi_process_group& pg, 
                     mpi_process_group::process_id_type dest,
                     int tag, const SendT& send_value, ReplyT& reply_value,
                     int block = -1);
 
 template<typename SendT, typename ReplyT>
 typename disable_if<boost::mpi::is_mpi_datatype<ReplyT> >::type
-send_oob_with_reply(const mpi_process_group& pg,
+send_oob_with_reply(const mpi_process_group& pg, 
                     mpi_process_group::process_id_type dest,
                     int tag, const SendT& send_value, ReplyT& reply_value,
                     int block = -1);
@@ -791,7 +791,7 @@ namespace boost { namespace mpi {
 
 namespace std {
 /// optimized swap for outgoing messages
-inline void
+inline void 
 swap(boost::graph::distributed::mpi_process_group::outgoing_messages& x,
      boost::graph::distributed::mpi_process_group::outgoing_messages& y)
 {

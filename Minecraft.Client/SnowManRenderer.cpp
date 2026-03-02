@@ -13,14 +13,14 @@ SnowManRenderer::SnowManRenderer() : MobRenderer(new SnowManModel(), 0.5f)
 	this->setArmor(model);
 }
 
-void SnowManRenderer::additionalRendering(std::shared_ptr<Mob> _mob, float a)
+void SnowManRenderer::additionalRendering(shared_ptr<Mob> _mob, float a)
 {
-	// 4J - original version used generics and thus had an input parameter of type SnowMan rather than std::shared_ptr<Mob>  we have here -
+	// 4J - original version used generics and thus had an input parameter of type SnowMan rather than shared_ptr<Mob>  we have here - 
 	// do some casting around instead
-	std::shared_ptr<SnowMan> mob = dynamic_pointer_cast<SnowMan>(_mob);
+	shared_ptr<SnowMan> mob = dynamic_pointer_cast<SnowMan>(_mob);
 
 	MobRenderer::additionalRendering(mob, a);
-	std::shared_ptr<ItemInstance> headGear = std::shared_ptr<ItemInstance>( new ItemInstance(Tile::pumpkin, 1) );
+	shared_ptr<ItemInstance> headGear = shared_ptr<ItemInstance>( new ItemInstance(Tile::pumpkin, 1) );
 	if (headGear != NULL && headGear->getItem()->id < 256)
 	{
 		glPushMatrix();

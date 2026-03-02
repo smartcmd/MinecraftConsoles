@@ -26,6 +26,6 @@ public:
     virtual Icon *getTexture(int face, int data);
     virtual void onPlace(Level *level, int x, int y, int z);
     virtual bool mayPlace(Level *level, int x, int y, int z);
-    virtual void setPlacedBy(Level *level, int x, int y, int z, std::shared_ptr<Mob> by);
+    virtual void setPlacedBy(Level *level, int x, int y, int z, shared_ptr<Mob> by);
 	void registerIcons(IconRegister *iconRegister);
 };

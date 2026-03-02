@@ -16,7 +16,7 @@ private:
 	int life;
 
 public:
-	int64_t seed;
+	__int64 seed;
 
 private:
 	int flashes;

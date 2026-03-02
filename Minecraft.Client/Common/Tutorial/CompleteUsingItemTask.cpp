@@ -4,7 +4,7 @@
 
 CompleteUsingItemTask::CompleteUsingItemTask(Tutorial *tutorial, int descriptionId, int itemIds[], unsigned int itemIdsLength, bool enablePreCompletion)
 	: TutorialTask( tutorial, descriptionId, enablePreCompletion, NULL)
-{
+{	
 	m_iValidItemsA= new int [itemIdsLength];
 	for(int i=0;i<itemIdsLength;i++)
 	{
@@ -23,7 +23,7 @@ bool CompleteUsingItemTask::isCompleted()
 	return bIsCompleted;
 }
 
-void CompleteUsingItemTask::completeUsingItem(std::shared_ptr<ItemInstance> item)
+void CompleteUsingItemTask::completeUsingItem(shared_ptr<ItemInstance> item)
 {
 	if(!hasBeenActivated() && !isPreCompletionEnabled()) return;
 	for(int i=0;i<m_iValidItemsCount;i++)

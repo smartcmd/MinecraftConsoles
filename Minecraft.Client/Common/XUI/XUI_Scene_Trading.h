@@ -83,7 +83,7 @@ protected:
 				MAP_OVERRIDE(IDC_Inventory, m_inventoryControl)
 				MAP_OVERRIDE(IDC_UseRow, m_useRowControl)
 			END_MAP_CHILD_CONTROLS()
-		END_MAP_CHILD_CONTROLS()
+		END_MAP_CHILD_CONTROLS()		
 	END_CONTROL_MAP()
 
 	HRESULT OnInit( XUIMessageInit* pInitData, BOOL& bHandled );
@@ -120,9 +120,9 @@ protected:
 	virtual void setRequest2RedBox(bool show);
 	virtual void setTradeRedBox(int index, bool show);
 
-	virtual void setRequest1Item(std::shared_ptr<ItemInstance> item);
-	virtual void setRequest2Item(std::shared_ptr<ItemInstance> item);
-	virtual void setTradeItem(int index, std::shared_ptr<ItemInstance> item);
-
+	virtual void setRequest1Item(shared_ptr<ItemInstance> item);
+	virtual void setRequest2Item(shared_ptr<ItemInstance> item);
+	virtual void setTradeItem(int index, shared_ptr<ItemInstance> item);
+	
 	virtual void setOfferDescription(const wstring &name, vector<wstring> &unformattedStrings);
 };

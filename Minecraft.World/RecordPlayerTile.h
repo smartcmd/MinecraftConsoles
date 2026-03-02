@@ -37,9 +37,9 @@ public:
         }
 
 		 // 4J Added
-		 std::shared_ptr<TileEntity> clone()
+		 shared_ptr<TileEntity> clone()
 		 {
-			 std::shared_ptr<RecordPlayerTile::Entity> result = std::shared_ptr<RecordPlayerTile::Entity>( new RecordPlayerTile::Entity() );
+			 shared_ptr<RecordPlayerTile::Entity> result = shared_ptr<RecordPlayerTile::Entity>( new RecordPlayerTile::Entity() );
 			 TileEntity::clone(result);
 
 			 result->record = record;
@@ -56,13 +56,13 @@ protected:
 
 public:
 	virtual Icon *getTexture(int face, int data);
-	virtual bool TestUse(Level *level, int x, int y, int z, std::shared_ptr<Player> player);
-    virtual bool use(Level *level, int x, int y, int z, std::shared_ptr<Player> player, int clickedFace, float clickX, float clickY, float clickZ, bool soundOnly = false); // 4J added soundOnly param
+	virtual bool TestUse(Level *level, int x, int y, int z, shared_ptr<Player> player);
+    virtual bool use(Level *level, int x, int y, int z, shared_ptr<Player> player, int clickedFace, float clickX, float clickY, float clickZ, bool soundOnly = false); // 4J added soundOnly param
     void setRecord(Level *level, int x, int y, int z, int record);
     void dropRecording(Level *level, int x, int y, int z);
     virtual void onRemove(Level *level, int x, int y, int z, int id, int data);
     virtual void spawnResources(Level *level, int x, int y, int z, int data, float odds, int playerBonus);
 
-	virtual std::shared_ptr<TileEntity> newTileEntity(Level *level);
+	virtual shared_ptr<TileEntity> newTileEntity(Level *level);
 	void registerIcons(IconRegister *iconRegister);
 };

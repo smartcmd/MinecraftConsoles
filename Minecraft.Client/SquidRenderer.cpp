@@ -6,15 +6,15 @@ SquidRenderer::SquidRenderer(Model *model, float shadow) : MobRenderer(model, sh
 {
 }
 
-void SquidRenderer::render(std::shared_ptr<Entity> mob, double x, double y, double z, float rot, float a)
+void SquidRenderer::render(shared_ptr<Entity> mob, double x, double y, double z, float rot, float a)
 {
 	MobRenderer::render(mob, x, y, z, rot, a);
 }
 
-void SquidRenderer::setupRotations(std::shared_ptr<Mob> _mob, float bob, float bodyRot, float a)
+void SquidRenderer::setupRotations(shared_ptr<Mob> _mob, float bob, float bodyRot, float a)
 {
 	// 4J - dynamic cast required because we aren't using templates/generics in our version
-	std::shared_ptr<Squid> mob = dynamic_pointer_cast<Squid>(_mob);
+	shared_ptr<Squid> mob = dynamic_pointer_cast<Squid>(_mob);
 
     float bodyXRot = (mob->xBodyRotO + (mob->xBodyRot - mob->xBodyRotO) * a);
     float bodyZRot = (mob->zBodyRotO + (mob->zBodyRot - mob->zBodyRotO) * a);
@@ -26,10 +26,10 @@ void SquidRenderer::setupRotations(std::shared_ptr<Mob> _mob, float bob, float b
     glTranslatef(0, -1.2f, 0);
 }
 
-float SquidRenderer::getBob(std::shared_ptr<Mob> _mob, float a)
+float SquidRenderer::getBob(shared_ptr<Mob> _mob, float a)
 {
 	// 4J - dynamic cast required because we aren't using templates/generics in our version
-	std::shared_ptr<Squid> mob = dynamic_pointer_cast<Squid>(_mob);
+	shared_ptr<Squid> mob = dynamic_pointer_cast<Squid>(_mob);
 
     return mob->oldTentacleAngle + (mob->tentacleAngle - mob->oldTentacleAngle) * a;
 }

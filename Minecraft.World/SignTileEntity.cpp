@@ -40,7 +40,7 @@ SignTileEntity::~SignTileEntity()
 #endif
 }
 
-void SignTileEntity::save(CompoundTag *tag)
+void SignTileEntity::save(CompoundTag *tag) 
 {
 	TileEntity::save(tag);
 	tag->putString(L"Text1", m_wsmessages[0] );
@@ -61,7 +61,7 @@ void SignTileEntity::load(CompoundTag *tag)
 {
 	_isEditable = false;
 	TileEntity::load(tag);
-	for (int i = 0; i < MAX_SIGN_LINES; i++)
+	for (int i = 0; i < MAX_SIGN_LINES; i++) 
 	{
 		wchar_t *buf = new wchar_t[256];
 		swprintf(buf, 256, L"Text%d", (i+1) );
@@ -84,17 +84,17 @@ void SignTileEntity::load(CompoundTag *tag)
 	setChanged();
 }
 
-std::shared_ptr<Packet> SignTileEntity::getUpdatePacket()
+shared_ptr<Packet> SignTileEntity::getUpdatePacket()
 {
 	wstring copy[MAX_SIGN_LINES];
-	for (int i = 0; i < MAX_SIGN_LINES; i++)
+	for (int i = 0; i < MAX_SIGN_LINES; i++) 
 	{
 		copy[i] = m_wsmessages[i];
 	}
-	return std::shared_ptr<SignUpdatePacket>( new SignUpdatePacket(x, y, z, m_bVerified, m_bCensored, copy) );
+	return shared_ptr<SignUpdatePacket>( new SignUpdatePacket(x, y, z, m_bVerified, m_bCensored, copy) );
 }
 
-bool SignTileEntity::isEditable()
+bool SignTileEntity::isEditable() 
 {
 	return _isEditable;
 }
@@ -115,10 +115,10 @@ void SignTileEntity::setChanged()
 	//if (pMinecraft->level->isClientSide)
 	{
 		WCHAR *wcMessages[MAX_SIGN_LINES];
-		for (int i = 0; i < MAX_SIGN_LINES; ++i)
+		for (int i = 0; i < MAX_SIGN_LINES; ++i) 
 		{
 			wcMessages[i]=new WCHAR [MAX_LINE_LENGTH+1];
-			ZeroMemory(wcMessages[i],sizeof(WCHAR)*(MAX_LINE_LENGTH+1));
+			ZeroMemory(wcMessages[i],sizeof(WCHAR)*(MAX_LINE_LENGTH+1));	
 			if(m_wsmessages[i].length()>0)
 			{
 				memcpy(wcMessages[i],m_wsmessages[i].c_str(),m_wsmessages[i].length()*sizeof(WCHAR));
@@ -149,8 +149,8 @@ void SignTileEntity::setChanged()
 }
 
 
-void SignTileEntity::SetMessage(int iIndex,wstring &wsText)
-{
+void SignTileEntity::SetMessage(int iIndex,wstring &wsText) 
+{ 
 	m_wsmessages[iIndex]=wsText;
 
 }
@@ -183,9 +183,9 @@ int SignTileEntity::StringVerifyCallback(LPVOID lpParam,STRING_VERIFY_RESPONSE *
 }
 
 // 4J Added
-std::shared_ptr<TileEntity> SignTileEntity::clone()
+shared_ptr<TileEntity> SignTileEntity::clone()
 {
-	std::shared_ptr<SignTileEntity> result = std::shared_ptr<SignTileEntity>( new SignTileEntity() );
+	shared_ptr<SignTileEntity> result = shared_ptr<SignTileEntity>( new SignTileEntity() );
 	TileEntity::clone(result);
 
 	result->m_wsmessages[0] = m_wsmessages[0];

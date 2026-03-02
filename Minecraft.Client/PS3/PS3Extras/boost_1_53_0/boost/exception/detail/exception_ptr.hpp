@@ -21,7 +21,7 @@
 #include <boost/exception/diagnostic_information.hpp>
 #include <boost/exception/detail/type_info.hpp>
 #include <boost/exception/detail/clone_current_exception.hpp>
-#include <boost/std::shared_ptr.hpp>
+#include <boost/shared_ptr.hpp>
 #include <stdexcept>
 #include <new>
 #include <ios>
@@ -37,7 +37,7 @@ boost
     class
     exception_ptr
         {
-        typedef boost::std::shared_ptr<exception_detail::clone_base const> impl;
+        typedef boost::shared_ptr<exception_detail::clone_base const> impl;
         impl ptr_;
         friend void rethrow_exception( exception_ptr const & );
         typedef exception_detail::clone_base const * (impl::*unspecified_bool_type)() const;
@@ -122,7 +122,7 @@ boost
                 throw_function(BOOST_CURRENT_FUNCTION) <<
                 throw_file(__FILE__) <<
                 throw_line(__LINE__);
-            static exception_ptr ep(std::shared_ptr<exception_detail::clone_base const>(new exception_detail::clone_impl<Exception>(c)));
+            static exception_ptr ep(shared_ptr<exception_detail::clone_base const>(new exception_detail::clone_impl<Exception>(c)));
             return ep;
             }
 
@@ -305,7 +305,7 @@ boost
                 success:
                     {
                     BOOST_ASSERT(e!=0);
-                    return exception_ptr(std::shared_ptr<exception_detail::clone_base const>(e));
+                    return exception_ptr(shared_ptr<exception_detail::clone_base const>(e));
                     }
                 case exception_detail::clone_current_exception_result::
                 bad_alloc:
@@ -332,7 +332,7 @@ boost
                     catch(
                     exception_detail::clone_base & e )
                         {
-                        return exception_ptr(std::shared_ptr<exception_detail::clone_base const>(e.clone()));
+                        return exception_ptr(shared_ptr<exception_detail::clone_base const>(e.clone()));
                         }
                     catch(
                     std::domain_error & e )

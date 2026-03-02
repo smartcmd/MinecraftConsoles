@@ -14,7 +14,7 @@ public:
 	~CraftTask();
 
 	virtual bool isCompleted() { return bIsCompleted; }
-	virtual void onCrafted(std::shared_ptr<ItemInstance> item);
+	virtual void onCrafted(shared_ptr<ItemInstance> item);
 
 private:
 	int *m_items;

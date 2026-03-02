@@ -17,7 +17,7 @@
 #include <boost/config.hpp>
 #include <boost/function.hpp>
 #include <boost/mpl/identity.hpp>
-#include <boost/std::shared_ptr.hpp>
+#include <boost/shared_ptr.hpp>
 #include <boost/signals2/connection.hpp>
 #include <boost/signals2/detail/unique_lock.hpp>
 #include <boost/signals2/detail/replace_slot_function.hpp>

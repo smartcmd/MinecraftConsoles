@@ -11,5 +11,5 @@ public:
 	EntityPos(double x, double y, double z, float yRot, float xRot);
 	EntityPos(double x, double y, double z);
 	EntityPos(float yRot, float xRot);
-	EntityPos *lerp(std::shared_ptr<Entity> e, float f);
+	EntityPos *lerp(shared_ptr<Entity> e, float f);
 };

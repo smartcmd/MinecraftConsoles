@@ -12,7 +12,7 @@
 using namespace Windows::Foundation;
 using namespace Windows::Xbox::System;
 
-// To integrate the Chat DLL in your game, you can use this ChatIntegrationLayer class with modifications,
+// To integrate the Chat DLL in your game, you can use this ChatIntegrationLayer class with modifications, 
 // or create your own design your own class using the code in this file a guide.
 std::shared_ptr<ChatIntegrationLayer> GetChatIntegrationLayer()
 {
@@ -25,12 +25,12 @@ std::shared_ptr<ChatIntegrationLayer> GetChatIntegrationLayer()
     return chatIntegrationLayerInstance;
 }
 
-ChatIntegrationLayer::ChatIntegrationLayer()
+ChatIntegrationLayer::ChatIntegrationLayer() 
 {
     ZeroMemory( m_chatVoicePacketsStatistic, sizeof(m_chatVoicePacketsStatistic) );
 }
 
-void ChatIntegrationLayer::InitializeChatManager(
+void ChatIntegrationLayer::InitializeChatManager( 
     __in bool combineCaptureBuffersIntoSinglePacket,
     __in bool useKinectAsCaptureSource,
     __in bool applySoundEffectsToCapturedAudio,
@@ -69,9 +69,9 @@ void ChatIntegrationLayer::InitializeChatManager(
     m_chatManager->ChatSettings->PerformanceCountersEnabled = true;
 #endif
 
-    // Upon enter constrained mode, mute everyone.
+    // Upon enter constrained mode, mute everyone.  
     // Upon leaving constrained mode, unmute everyone who was previously muted.
-    m_tokenResourceAvailabilityChanged = Windows::ApplicationModel::Core::CoreApplication::ResourceAvailabilityChanged +=
+    m_tokenResourceAvailabilityChanged = Windows::ApplicationModel::Core::CoreApplication::ResourceAvailabilityChanged += 
         ref new EventHandler< Platform::Object^ >( [weakPtrToThis] (Platform::Object^, Platform::Object^ )
     {
         // Using a std::weak_ptr instead of 'this' to avoid dangling pointer if caller class is released.
@@ -99,7 +99,7 @@ void ChatIntegrationLayer::InitializeChatManager(
         }
     });
 
-    m_tokenOnDebugMessage = m_chatManager->OnDebugMessage +=
+    m_tokenOnDebugMessage = m_chatManager->OnDebugMessage += 
         ref new Windows::Foundation::EventHandler<Microsoft::Xbox::GameChat::DebugMessageEventArgs^>(
             [weakPtrToThis] ( Platform::Object^, Microsoft::Xbox::GameChat::DebugMessageEventArgs^ args )
     {
@@ -112,8 +112,8 @@ void ChatIntegrationLayer::InitializeChatManager(
         }
     });
 
-    m_tokenOnOutgoingChatPacketReady = m_chatManager->OnOutgoingChatPacketReady +=
-        ref new Windows::Foundation::EventHandler<Microsoft::Xbox::GameChat::ChatPacketEventArgs^>(
+    m_tokenOnOutgoingChatPacketReady = m_chatManager->OnOutgoingChatPacketReady += 
+        ref new Windows::Foundation::EventHandler<Microsoft::Xbox::GameChat::ChatPacketEventArgs^>( 
             [weakPtrToThis] ( Platform::Object^, Microsoft::Xbox::GameChat::ChatPacketEventArgs^ args )
     {
         // Using a std::weak_ptr instead of 'this' to avoid dangling pointer if caller class is released.
@@ -125,16 +125,16 @@ void ChatIntegrationLayer::InitializeChatManager(
         }
     });
 
-    m_tokenOnCompareUniqueConsoleIdentifiers = m_chatManager->OnCompareUniqueConsoleIdentifiers +=
-        ref new Microsoft::Xbox::GameChat::CompareUniqueConsoleIdentifiersHandler(
-            [weakPtrToThis] ( Platform::Object^ obj1, Platform::Object^ obj2 )
-    {
+    m_tokenOnCompareUniqueConsoleIdentifiers = m_chatManager->OnCompareUniqueConsoleIdentifiers += 
+        ref new Microsoft::Xbox::GameChat::CompareUniqueConsoleIdentifiersHandler( 
+            [weakPtrToThis] ( Platform::Object^ obj1, Platform::Object^ obj2 ) 
+    { 
         // Using a std::weak_ptr instead of 'this' to avoid dangling pointer if caller class is released.
         // Simply unregistering the callback in the destructor isn't enough to prevent a dangling pointer
         std::shared_ptr<ChatIntegrationLayer> sharedPtrToThis(weakPtrToThis.lock());
         if( sharedPtrToThis != nullptr )
         {
-            return sharedPtrToThis->CompareUniqueConsoleIdentifiers(obj1, obj2);
+            return sharedPtrToThis->CompareUniqueConsoleIdentifiers(obj1, obj2); 
         }
         else
         {
@@ -142,10 +142,10 @@ void ChatIntegrationLayer::InitializeChatManager(
         }
     });
 
-	m_tokenUserAudioDeviceAdded = WXS::User::AudioDeviceAdded +=
+	m_tokenUserAudioDeviceAdded = WXS::User::AudioDeviceAdded += 
 		ref new Windows::Foundation::EventHandler<WXS::AudioDeviceAddedEventArgs^>(
-            [weakPtrToThis] ( Platform::Object^, WXS::AudioDeviceAddedEventArgs^ value )
-    {
+            [weakPtrToThis] ( Platform::Object^, WXS::AudioDeviceAddedEventArgs^ value ) 
+    { 
 		std::shared_ptr<ChatIntegrationLayer> sharedPtrToThis(weakPtrToThis.lock());
 		if( sharedPtrToThis != nullptr )
 		{
@@ -153,10 +153,10 @@ void ChatIntegrationLayer::InitializeChatManager(
 		}
     });
 
-	m_tokenUserAudioDeviceRemoved = WXS::User::AudioDeviceRemoved +=
+	m_tokenUserAudioDeviceRemoved = WXS::User::AudioDeviceRemoved += 
 		ref new Windows::Foundation::EventHandler<WXS::AudioDeviceRemovedEventArgs^>(
-            [weakPtrToThis] ( Platform::Object^, WXS::AudioDeviceRemovedEventArgs^ value )
-    {
+            [weakPtrToThis] ( Platform::Object^, WXS::AudioDeviceRemovedEventArgs^ value ) 
+    { 
 		std::shared_ptr<ChatIntegrationLayer> sharedPtrToThis(weakPtrToThis.lock());
 		if( sharedPtrToThis != nullptr )
 		{
@@ -164,10 +164,10 @@ void ChatIntegrationLayer::InitializeChatManager(
 		}
     });
 
-	m_tokenUserAudioDeviceChanged = WXS::User::AudioDeviceChanged +=
+	m_tokenUserAudioDeviceChanged = WXS::User::AudioDeviceChanged += 
 		ref new Windows::Foundation::EventHandler<WXS::AudioDeviceChangedEventArgs^>(
-            [weakPtrToThis] ( Platform::Object^, WXS::AudioDeviceChangedEventArgs^ value )
-    {
+            [weakPtrToThis] ( Platform::Object^, WXS::AudioDeviceChangedEventArgs^ value ) 
+    { 
 		std::shared_ptr<ChatIntegrationLayer> sharedPtrToThis(weakPtrToThis.lock());
 		if( sharedPtrToThis != nullptr )
 		{
@@ -175,16 +175,16 @@ void ChatIntegrationLayer::InitializeChatManager(
 		}
     });
 
-    //m_tokenSuspending = Windows::ApplicationModel::Core::CoreApplication::Suspending +=
+    //m_tokenSuspending = Windows::ApplicationModel::Core::CoreApplication::Suspending += 
     //    ref new EventHandler< Windows::ApplicationModel::SuspendingEventArgs^ >( [weakPtrToThis] (Platform::Object^, Windows::ApplicationModel::SuspendingEventArgs^ args)
     //{
-    //    // Upon Suspending, nothing needs to be done
+    //    // Upon Suspending, nothing needs to be done  
     //});
 
-    //m_tokenResuming = Windows::ApplicationModel::Core::CoreApplication::Resuming +=
+    //m_tokenResuming = Windows::ApplicationModel::Core::CoreApplication::Resuming += 
     //    ref new EventHandler< Platform::Object^ >( [weakPtrToThis] (Platform::Object^, Windows::ApplicationModel::SuspendingEventArgs^ args)
     //{
-    //    // Upon Resuming, re-initialize the network, and reinitialize the chat session
+    //    // Upon Resuming, re-initialize the network, and reinitialize the chat session 
     //});
 }
 
@@ -215,14 +215,14 @@ void ChatIntegrationLayer::Shutdown()
     }
 }
 
-void ChatIntegrationLayer::OnDebugMessageReceived(
-    __in Microsoft::Xbox::GameChat::DebugMessageEventArgs^ args
+void ChatIntegrationLayer::OnDebugMessageReceived( 
+    __in Microsoft::Xbox::GameChat::DebugMessageEventArgs^ args 
     )
 {
-    // To integrate the Chat DLL in your game,
-    // change this to false and remove the LogComment calls,
+    // To integrate the Chat DLL in your game, 
+    // change this to false and remove the LogComment calls, 
     // or integrate with your game's own UI/debug message logging system
-    bool outputToUI = false;
+    bool outputToUI = false; 
 
     if( outputToUI )
     {
@@ -237,14 +237,14 @@ void ChatIntegrationLayer::OnDebugMessageReceived(
     }
     else
     {
-        // The string appear in the Visual Studio Output window
+        // The string appear in the Visual Studio Output window 
 #ifndef _CONTENT_PACKAGE
         OutputDebugString( args->Message->Data() );
 #endif
     }
 }
 
-void ChatIntegrationLayer::GameUI_RecordPacketStatistic(
+void ChatIntegrationLayer::GameUI_RecordPacketStatistic( 
     __in Microsoft::Xbox::GameChat::ChatMessageType messageType,
     __in ChatPacketType chatPacketType
     )
@@ -261,7 +261,7 @@ void ChatIntegrationLayer::GameUI_RecordPacketStatistic(
     }
 }
 
-int ChatIntegrationLayer::GameUI_GetPacketStatistic(
+int ChatIntegrationLayer::GameUI_GetPacketStatistic( 
     __in Microsoft::Xbox::GameChat::ChatMessageType messageType,
     __in ChatPacketType chatPacketType
     )
@@ -278,8 +278,8 @@ int ChatIntegrationLayer::GameUI_GetPacketStatistic(
     }
 }
 
-void ChatIntegrationLayer::OnOutgoingChatPacketReady(
-    __in Microsoft::Xbox::GameChat::ChatPacketEventArgs^ args
+void ChatIntegrationLayer::OnOutgoingChatPacketReady( 
+    __in Microsoft::Xbox::GameChat::ChatPacketEventArgs^ args 
     )
 {
 	byte *bytes;
@@ -298,7 +298,7 @@ void ChatIntegrationLayer::OnOutgoingChatPacketReady(
 
 }
 
-void ChatIntegrationLayer::OnIncomingChatMessage(
+void ChatIntegrationLayer::OnIncomingChatMessage( 
 	unsigned int sessionAddress,
 	Platform::Array<byte>^ message
     )
@@ -308,8 +308,8 @@ void ChatIntegrationLayer::OnIncomingChatMessage(
     // Instead your title should upon receiving a packet, extract the chat message from it, and then call m_chatManager->ProcessIncomingChatMessage as shown below
     // You will need to isolate chat messages to be unique from the rest of you game's other message types.
 
-    // uniqueRemoteConsoleIdentifier is a Platform::Object^ and can be cast or unboxed to most types.
-    // What exactly you use doesn't matter, but optimally it would be something that uniquely identifies a console on in the session.
+    // uniqueRemoteConsoleIdentifier is a Platform::Object^ and can be cast or unboxed to most types. 
+    // What exactly you use doesn't matter, but optimally it would be something that uniquely identifies a console on in the session. 
     // A Windows::Xbox::Networking::SecureDeviceAssociation^ is perfect to use if you have access to it.
 
     // This is how you would convert from byte array to a IBuffer^
@@ -331,7 +331,7 @@ void ChatIntegrationLayer::OnIncomingChatMessage(
     {
         Microsoft::Xbox::GameChat::ChatMessageType chatMessageType = m_chatManager->ProcessIncomingChatMessage(chatMessage, uniqueRemoteConsoleIdentifier);
 
-        GameUI_RecordPacketStatistic( chatMessageType, ChatPacketType::IncomingPacket );
+        GameUI_RecordPacketStatistic( chatMessageType, ChatPacketType::IncomingPacket ); 
     }
 }
 
@@ -341,7 +341,7 @@ void ChatIntegrationLayer::AddAllLocallySignedInUsersToChatClient(
     __in Windows::Foundation::Collections::IVectorView<Windows::Xbox::System::User^>^ locallySignedInUsers
     )
 {
-    // To integrate the Chat DLL in your game,
+    // To integrate the Chat DLL in your game, 
     // add all locally signed in users to the chat client
     for each( Windows::Xbox::System::User^ user in locallySignedInUsers )
     {
@@ -486,10 +486,10 @@ void ChatIntegrationLayer::AddLocalUserToChatChannel(
     __in Windows::Xbox::System::IUser^ user
     )
 {
-    // Adds a local user to a specific channel.
+    // Adds a local user to a specific channel.  
 
-    // This is helper function waits for the task to cm_chatManageromplete so shouldn't be called from the UI thread
-    // Remove the .wait() and return the result of concurrency::create_task() if you want to call it from the UI thread
+    // This is helper function waits for the task to cm_chatManageromplete so shouldn't be called from the UI thread 
+    // Remove the .wait() and return the result of concurrency::create_task() if you want to call it from the UI thread 
     // and chain PPL tasks together
 
 	m_pDQRNet->LogComment( L">>>>>>>>>>>>> AddLocalUserToChatChannel" );
@@ -502,7 +502,7 @@ void ChatIntegrationLayer::AddLocalUserToChatChannel(
             // Error handling
             try
             {
-                t.get();
+                t.get();                
             }
             catch ( Platform::Exception^ ex )
             {
@@ -513,19 +513,19 @@ void ChatIntegrationLayer::AddLocalUserToChatChannel(
     }
 }
 
-void ChatIntegrationLayer::RemoveRemoteConsole(
+void ChatIntegrationLayer::RemoveRemoteConsole( 
     unsigned int address
     )
 {
-    // uniqueConsoleIdentifier is a Platform::Object^ and can be cast or unboxed to most types.
-    // What exactly you use doesn't matter, but optimally it would be something that uniquely identifies a console on in the session.
+    // uniqueConsoleIdentifier is a Platform::Object^ and can be cast or unboxed to most types. 
+    // What exactly you use doesn't matter, but optimally it would be something that uniquely identifies a console on in the session. 
     // A Windows::Xbox::Networking::SecureDeviceAssociation^ is perfect to use if you have access to it.
 
     // This is how you would convert from an int to a Platform::Object^
     // Platform::Object obj = IntToPlatformObject(5);
 
-    // This is helper function waits for the task to complete so shouldn't be called from the UI thread
-    // Remove the .wait() and return the result of concurrency::create_task() if you want to call it from the UI thread
+    // This is helper function waits for the task to complete so shouldn't be called from the UI thread 
+    // Remove the .wait() and return the result of concurrency::create_task() if you want to call it from the UI thread 
     // and chain PPL tasks together
 
 	Platform::Object^ uniqueRemoteConsoleIdentifier = (Platform::Object^)address;
@@ -538,7 +538,7 @@ void ChatIntegrationLayer::RemoveRemoteConsole(
             // Error handling
             try
             {
-                t.get();
+                t.get();                
             }
             catch ( Platform::Exception^ ex )
             {
@@ -549,15 +549,15 @@ void ChatIntegrationLayer::RemoveRemoteConsole(
     }
 }
 
-void ChatIntegrationLayer::RemoveUserFromChatChannel(
+void ChatIntegrationLayer::RemoveUserFromChatChannel( 
     __in uint8 channelIndex,
-    __in Windows::Xbox::System::IUser^ user
+    __in Windows::Xbox::System::IUser^ user 
     )
 {
     if( m_chatManager != nullptr )
     {
-        // This is helper function waits for the task to complete so shouldn't be called from the UI thread
-        // Remove the .wait() and return the result of concurrency::create_task() if you want to call it from the UI thread
+        // This is helper function waits for the task to complete so shouldn't be called from the UI thread 
+        // Remove the .wait() and return the result of concurrency::create_task() if you want to call it from the UI thread 
         // and chain PPL tasks together
 
         auto asyncOp = m_chatManager->RemoveLocalUserFromChatChannelAsync( channelIndex, user );
@@ -577,13 +577,13 @@ void ChatIntegrationLayer::RemoveUserFromChatChannel(
     }
 }
 
-void ChatIntegrationLayer::OnNewSessionAddressAdded(
+void ChatIntegrationLayer::OnNewSessionAddressAdded( 
     __in unsigned int address
     )
 {
 	m_pDQRNet->LogCommentFormat( L">>>>>>>>>>>>> OnNewSessionAddressAdded (%d)",address );
 	Platform::Object^ uniqueConsoleIdentifier = (Platform::Object^)address;
-    /// Call this when a new console connects.
+    /// Call this when a new console connects.  
     /// This adds this console to the chat layer
     if( m_chatManager != nullptr )
     {
@@ -611,8 +611,8 @@ bool ChatIntegrationLayer::HasMicFocus()
     return false;
 }
 
-Platform::Object^ ChatIntegrationLayer::IntToPlatformObject(
-    __in int val
+Platform::Object^ ChatIntegrationLayer::IntToPlatformObject( 
+    __in int val 
     )
 {
     return (Platform::Object^)val;
@@ -621,23 +621,23 @@ Platform::Object^ ChatIntegrationLayer::IntToPlatformObject(
     //return Windows::Foundation::PropertyValue::CreateInt32(val);
 }
 
-int ChatIntegrationLayer::PlatformObjectToInt(
-    __in Platform::Object^ uniqueRemoteConsoleIdentifier
+int ChatIntegrationLayer::PlatformObjectToInt( 
+    __in Platform::Object^ uniqueRemoteConsoleIdentifier 
     )
 {
-    return safe_cast<int>( uniqueRemoteConsoleIdentifier );
+    return safe_cast<int>( uniqueRemoteConsoleIdentifier ); 
 
     // You can also do the same using a PropertyValue.
     //return safe_cast<Windows::Foundation::IPropertyValue^>(uniqueRemoteConsoleIdentifier)->GetInt32();
 }
 
-void ChatIntegrationLayer::HandleChatChannelChanged(
-    __in uint8 oldChatChannelIndex,
-    __in uint8 newChatChannelIndex,
-    __in Microsoft::Xbox::GameChat::ChatUser^ chatUser
+void ChatIntegrationLayer::HandleChatChannelChanged( 
+    __in uint8 oldChatChannelIndex, 
+    __in uint8 newChatChannelIndex, 
+    __in Microsoft::Xbox::GameChat::ChatUser^ chatUser 
     )
 {
-    // We remember if the local user was currently muted from all channels. And when we switch channels,
+    // We remember if the local user was currently muted from all channels. And when we switch channels, 
     // we ensure that the state persists. For remote users, title should implement this themselves
     // based on title game design if they want to persist the muting state.
 
@@ -674,8 +674,8 @@ void ChatIntegrationLayer::HandleChatChannelChanged(
     }
 }
 
-void ChatIntegrationLayer::ChangeChatUserMuteState(
-    __in Microsoft::Xbox::GameChat::ChatUser^ chatUser
+void ChatIntegrationLayer::ChangeChatUserMuteState( 
+    __in Microsoft::Xbox::GameChat::ChatUser^ chatUser 
     )
 {
     /// Helper function to swap the mute state of a specific chat user
@@ -692,8 +692,8 @@ void ChatIntegrationLayer::ChangeChatUserMuteState(
     }
 }
 
-Microsoft::Xbox::GameChat::ChatUser^ ChatIntegrationLayer::GetChatUserByXboxUserId(
-    __in Platform::String^ xboxUserId
+Microsoft::Xbox::GameChat::ChatUser^ ChatIntegrationLayer::GetChatUserByXboxUserId( 
+    __in Platform::String^ xboxUserId 
     )
 {
     Windows::Foundation::Collections::IVectorView<Microsoft::Xbox::GameChat::ChatUser^>^ chatUsers = GetChatUsers();
@@ -704,14 +704,14 @@ Microsoft::Xbox::GameChat::ChatUser^ ChatIntegrationLayer::GetChatUserByXboxUser
             return chatUser;
         }
     }
-
+    
     return nullptr;
 }
 
 
-bool ChatIntegrationLayer::CompareUniqueConsoleIdentifiers(
-    __in Platform::Object^ uniqueRemoteConsoleIdentifier1,
-    __in Platform::Object^ uniqueRemoteConsoleIdentifier2
+bool ChatIntegrationLayer::CompareUniqueConsoleIdentifiers( 
+    __in Platform::Object^ uniqueRemoteConsoleIdentifier1, 
+    __in Platform::Object^ uniqueRemoteConsoleIdentifier2 
     )
 {
     if (uniqueRemoteConsoleIdentifier1 == nullptr || uniqueRemoteConsoleIdentifier2 == nullptr)
@@ -719,7 +719,7 @@ bool ChatIntegrationLayer::CompareUniqueConsoleIdentifiers(
         return false;
     }
 
-    // uniqueRemoteConsoleIdentifier is a Platform::Object^ and can be cast or unboxed to most types.
+    // uniqueRemoteConsoleIdentifier is a Platform::Object^ and can be cast or unboxed to most types. 
 	// We're using XRNS addresses, which are unsigned ints
     unsigned int address1 = safe_cast<unsigned int>(uniqueRemoteConsoleIdentifier1);
     unsigned int address2 = safe_cast<unsigned int>(uniqueRemoteConsoleIdentifier2);

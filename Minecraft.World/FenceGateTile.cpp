@@ -37,7 +37,7 @@ AABB *FenceGateTile::getAABB(Level *level, int x, int y, int z)
 }
 
 // 4J - Brought forward from 1.2.3 to fix hit box rotation
-void FenceGateTile::updateShape(LevelSource *level, int x, int y, int z, int forceData, std::shared_ptr<TileEntity> forceEntity) // 4J added forceData, forceEntity param
+void FenceGateTile::updateShape(LevelSource *level, int x, int y, int z, int forceData, shared_ptr<TileEntity> forceEntity) // 4J added forceData, forceEntity param
 {
 	int data = getDirection(level->getData(x, y, z));
 	if (data == Direction::NORTH || data == Direction::SOUTH)
@@ -75,13 +75,13 @@ int FenceGateTile::getRenderShape()
 	return Tile::SHAPE_FENCE_GATE;
 }
 
-void FenceGateTile::setPlacedBy(Level *level, int x, int y, int z, std::shared_ptr<Mob> by)
+void FenceGateTile::setPlacedBy(Level *level, int x, int y, int z, shared_ptr<Mob> by)
 {
     int dir = (((Mth::floor(by->yRot * 4 / (360) + 0.5)) & 3)) % 4;
     level->setData(x, y, z, dir);
 }
 
-bool FenceGateTile::use(Level *level, int x, int y, int z, std::shared_ptr<Player> player, int clickedFace, float clickX, float clickY, float clickZ, bool soundOnly/*=false*/) // 4J added soundOnly param
+bool FenceGateTile::use(Level *level, int x, int y, int z, shared_ptr<Player> player, int clickedFace, float clickX, float clickY, float clickZ, bool soundOnly/*=false*/) // 4J added soundOnly param
 {
 	if( soundOnly )
 	{

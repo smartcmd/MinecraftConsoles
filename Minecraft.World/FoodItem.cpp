@@ -33,7 +33,7 @@ FoodItem::FoodItem(int id, int nutrition, bool isMeat)
 	_init();
 }
 
-std::shared_ptr<ItemInstance> FoodItem::useTimeDepleted(std::shared_ptr<ItemInstance> instance, Level *level, std::shared_ptr<Player> player)
+shared_ptr<ItemInstance> FoodItem::useTimeDepleted(shared_ptr<ItemInstance> instance, Level *level, shared_ptr<Player> player)
 {
 	instance->count--;
 	player->getFoodData()->eat(this);
@@ -45,7 +45,7 @@ std::shared_ptr<ItemInstance> FoodItem::useTimeDepleted(std::shared_ptr<ItemInst
 	return instance;
 }
 
-void FoodItem::addEatEffect(std::shared_ptr<ItemInstance> instance, Level *level, std::shared_ptr<Player> player)
+void FoodItem::addEatEffect(shared_ptr<ItemInstance> instance, Level *level, shared_ptr<Player> player)
 {
 	if (!level->isClientSide && effectId > 0 && level->random->nextFloat() < effectProbability)
 	{
@@ -54,17 +54,17 @@ void FoodItem::addEatEffect(std::shared_ptr<ItemInstance> instance, Level *level
 
 }
 
-int FoodItem::getUseDuration(std::shared_ptr<ItemInstance> itemInstance)
+int FoodItem::getUseDuration(shared_ptr<ItemInstance> itemInstance)
 {
 	return EAT_DURATION;
 }
 
-UseAnim FoodItem::getUseAnimation(std::shared_ptr<ItemInstance> itemInstance)
+UseAnim FoodItem::getUseAnimation(shared_ptr<ItemInstance> itemInstance)
 {
 	return UseAnim_eat;
 }
 
-std::shared_ptr<ItemInstance> FoodItem::use(std::shared_ptr<ItemInstance> instance, Level *level, std::shared_ptr<Player> player)
+shared_ptr<ItemInstance> FoodItem::use(shared_ptr<ItemInstance> instance, Level *level, shared_ptr<Player> player)
 {
 	if (player->canEat(canAlwaysEat))
 	{
@@ -73,7 +73,7 @@ std::shared_ptr<ItemInstance> FoodItem::use(std::shared_ptr<ItemInstance> instan
 
 	// 4J : WESTY : Other award ... eating cooked pork chop.
 	// 4J-JEV: This is just for an avatar award on the xbox.
-#ifdef _XBOX
+#ifdef _XBOX 
 	if ( instance->getItem() == Item::porkChop_cooked )
 	{
 		player->awardStat(GenericStats::eatPorkChop(),GenericStats::param_eatPorkChop());
@@ -114,7 +114,7 @@ FoodItem *FoodItem::setCanAlwaysEat()
 }
 
 // 4J Added
-bool FoodItem::canEat(std::shared_ptr<Player> player)
+bool FoodItem::canEat(shared_ptr<Player> player)
 {
 	return player->canEat(canAlwaysEat);
 }

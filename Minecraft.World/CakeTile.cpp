@@ -18,7 +18,7 @@ CakeTile::CakeTile(int id) : Tile(id, Material::cake,isSolidRender())
 	iconInner = NULL;
 }
 
-void CakeTile::updateShape(LevelSource *level, int x, int y, int z, int forceData, std::shared_ptr<TileEntity> forceEntity) // 4J added forceData, forceEntity param
+void CakeTile::updateShape(LevelSource *level, int x, int y, int z, int forceData, shared_ptr<TileEntity> forceEntity) // 4J added forceData, forceEntity param
 {
     int d = level->getData(x, y, z);
     float r = 1 / 16.0f;
@@ -84,19 +84,19 @@ bool CakeTile::TestUse()
 	return true;
 }
 
-bool CakeTile::use(Level *level, int x, int y, int z, std::shared_ptr<Player> player, int clickedFace, float clickX, float clickY, float clickZ, bool soundOnly/*=false*/) // 4J added soundOnly param
+bool CakeTile::use(Level *level, int x, int y, int z, shared_ptr<Player> player, int clickedFace, float clickX, float clickY, float clickZ, bool soundOnly/*=false*/) // 4J added soundOnly param
 {
 	if( soundOnly ) return false;
     eat(level, x, y, z, player);
     return true;
 }
 
-void CakeTile::attack(Level *level, int x, int y, int z, std::shared_ptr<Player> player)
+void CakeTile::attack(Level *level, int x, int y, int z, shared_ptr<Player> player)
 {
 	eat(level, x, y, z, player);
 }
 
-void CakeTile::eat(Level *level, int x, int y, int z, std::shared_ptr<Player> player)
+void CakeTile::eat(Level *level, int x, int y, int z, shared_ptr<Player> player)
 {
     if (player->canEat(false))
 	{

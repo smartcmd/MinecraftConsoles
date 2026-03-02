@@ -19,7 +19,7 @@ Snowball::Snowball(Level *level) : Throwable(level)
 	_init();
 }
 
-Snowball::Snowball(Level *level, std::shared_ptr<Mob> mob) : Throwable(level,mob)
+Snowball::Snowball(Level *level, shared_ptr<Mob> mob) : Throwable(level,mob)
 {
 	_init();
 }

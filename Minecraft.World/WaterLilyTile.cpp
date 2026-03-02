@@ -23,7 +23,7 @@ int WaterlilyTile::getRenderShape()
 	 return Tile::SHAPE_LILYPAD;
 }
 
-void WaterlilyTile::addAABBs(Level *level, int x, int y, int z, AABB *box, AABBList *boxes, std::shared_ptr<Entity> source)
+void WaterlilyTile::addAABBs(Level *level, int x, int y, int z, AABB *box, AABBList *boxes, shared_ptr<Entity> source)
 {
 	if (source == NULL || !(dynamic_pointer_cast<Boat>(source)))
 	{

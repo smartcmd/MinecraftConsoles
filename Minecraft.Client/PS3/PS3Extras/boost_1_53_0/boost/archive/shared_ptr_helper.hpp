@@ -22,7 +22,7 @@
 #include <cstddef> // NULL
 
 #include <boost/config.hpp>
-#include <boost/std::shared_ptr.hpp>
+#include <boost/shared_ptr.hpp>
 
 #include <boost/type_traits/is_polymorphic.hpp>
 #include <boost/serialization/type_info_implementation.hpp>
@@ -35,16 +35,16 @@
 #include <boost/archive/detail/abi_prefix.hpp> // must be the last headern
 
 namespace boost_132 {
-    template<class T> class std::shared_ptr;
+    template<class T> class shared_ptr;
 }
 namespace boost {
-    template<class T> class std::shared_ptr;
+    template<class T> class shared_ptr;
     namespace serialization {
         class extended_type_info;
         template<class Archive, class T>
         inline void load(
             Archive & ar,
-            boost::std::shared_ptr< T > &t,
+            boost::shared_ptr< T > &t,
             const unsigned int file_version
         );
     }
@@ -57,14 +57,14 @@ namespace detail {
 class shared_ptr_helper {
     struct collection_type_compare {
         bool operator()(
-            const std::shared_ptr<const void> &lhs,
-            const std::shared_ptr<const void> &rhs
+            const shared_ptr<const void> &lhs,
+            const shared_ptr<const void> &rhs
         )const{
             return lhs.get() < rhs.get();
         }
     };
     typedef std::set<
-        boost::std::shared_ptr<const void>,
+        boost::shared_ptr<const void>,
         collection_type_compare
     > collection_type;
     typedef collection_type::const_iterator iterator_type;
@@ -72,7 +72,7 @@ class shared_ptr_helper {
     // is used to "match up" shared pointers loaded at different
     // points in the archive. Note, we delay construction until
     // it is actually used since this is by default included as
-    // a "mix-in" even if std::shared_ptr isn't used.
+    // a "mix-in" even if shared_ptr isn't used.
     collection_type * m_pointers;
 
     struct null_deleter {
@@ -95,7 +95,7 @@ public:
     template<class Archive, class T>
     friend inline void boost::serialization::load(
         Archive & ar,
-        boost::std::shared_ptr< T > &t,
+        boost::shared_ptr< T > &t,
         const unsigned int file_version
     );
 #endif
@@ -109,44 +109,44 @@ public:
     // new system which is disjoint from this set.  This is implemented
     // by a change in load_construct_data below.  It makes this file suitable
     // only for loading pointers into a 1.33 or later boost system.
-    std::list<boost_132::std::shared_ptr<const void> > * m_pointers_132;
+    std::list<boost_132::shared_ptr<const void> > * m_pointers_132;
 //  #endif
 
     // returns pointer to object and an indicator whether this is a
     // new entry (true) or a previous one (false)
-    BOOST_ARCHIVE_DECL(std::shared_ptr<void>)
+    BOOST_ARCHIVE_DECL(shared_ptr<void>) 
     get_od(
         const void * od,
-        const boost::serialization::extended_type_info * true_type,
+        const boost::serialization::extended_type_info * true_type, 
         const boost::serialization::extended_type_info * this_type
     );
 
     BOOST_ARCHIVE_DECL(void)
-    append(const boost::std::shared_ptr<const void> &);
+    append(const boost::shared_ptr<const void> &);
 
     template<class T>
     struct non_polymorphic {
-        static const boost::serialization::extended_type_info *
+        static const boost::serialization::extended_type_info * 
         get_object_identifier(T &){
             return & boost::serialization::singleton<
-                BOOST_DEDUCED_TYPENAME
+                BOOST_DEDUCED_TYPENAME 
                 boost::serialization::type_info_implementation< T >::type
             >::get_const_instance();
         }
     };
     template<class T>
     struct polymorphic {
-        static const boost::serialization::extended_type_info *
+        static const boost::serialization::extended_type_info * 
         get_object_identifier(T & t){
             return boost::serialization::singleton<
-                BOOST_DEDUCED_TYPENAME
+                BOOST_DEDUCED_TYPENAME 
                 boost::serialization::type_info_implementation< T >::type
             >::get_const_instance().get_derived_extended_type_info(t);
         }
     };
 public:
     template<class T>
-    void reset(std::shared_ptr< T > & s, T * t){
+    void reset(shared_ptr< T > & s, T * t){
         if(NULL == t){
             s.reset();
             return;
@@ -175,9 +175,9 @@ public:
                     this_type->get_debug_info()
                 )
             );
-        std::shared_ptr<void> r =
+        shared_ptr<void> r =
             get_od(
-                static_cast<const void *>(t),
+                static_cast<const void *>(t), 
                 true_type,
                 this_type
             );
@@ -188,11 +188,11 @@ public:
                 *this_type,
                 static_cast<const void *>(t)
             );
-            std::shared_ptr<const void> sp(s, od);
+            shared_ptr<const void> sp(s, od);
             append(sp);
         }
         else{
-            s = std::shared_ptr< T >(
+            s = shared_ptr< T >(
                 r,
                 static_cast<T *>(r.get())
             );
@@ -201,7 +201,7 @@ public:
 
 //  #ifdef BOOST_SERIALIZATION_SHARED_PTR_132_HPP
     BOOST_ARCHIVE_DECL(void)
-    append(const boost_132::std::shared_ptr<const void> & t);
+    append(const boost_132::shared_ptr<const void> & t);
 //  #endif
 public:
     BOOST_ARCHIVE_DECL(BOOST_PP_EMPTY())

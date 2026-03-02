@@ -15,7 +15,7 @@
 #include <boost/exception/exception.hpp>
 #include <boost/exception/to_string_stub.hpp>
 #include <boost/exception/detail/error_info_impl.hpp>
-#include <boost/std::shared_ptr.hpp>
+#include <boost/shared_ptr.hpp>
 #include <boost/config.hpp>
 #include <map>
 
@@ -82,26 +82,26 @@ boost
                 }
 
             void
-            set( std::shared_ptr<error_info_base> const & x, type_info_ const & typeid_ )
+            set( shared_ptr<error_info_base> const & x, type_info_ const & typeid_ )
                 {
                 BOOST_ASSERT(x);
                 info_[typeid_] = x;
                 diagnostic_info_str_.clear();
                 }
 
-            std::shared_ptr<error_info_base>
+            shared_ptr<error_info_base>
             get( type_info_ const & ti ) const
                 {
                 error_info_map::const_iterator i=info_.find(ti);
                 if( info_.end()!=i )
                     {
-                    std::shared_ptr<error_info_base> const & p = i->second;
+                    shared_ptr<error_info_base> const & p = i->second;
 #ifndef BOOST_NO_RTTI
                     BOOST_ASSERT( *BOOST_EXCEPTION_DYNAMIC_TYPEID(*p).type_==*ti.type_ );
 #endif
                     return p;
                     }
-                return std::shared_ptr<error_info_base>();
+                return shared_ptr<error_info_base>();
                 }
 
             char const *
@@ -125,7 +125,7 @@ boost
 
             friend class boost::exception;
 
-            typedef std::map< type_info_, std::shared_ptr<error_info_base> > error_info_map;
+            typedef std::map< type_info_, shared_ptr<error_info_base> > error_info_map;
             error_info_map info_;
             mutable std::string diagnostic_info_str_;
             mutable int count_;
@@ -168,7 +168,7 @@ boost
         set_info( E const & x, error_info<Tag,T> const & v )
             {
             typedef error_info<Tag,T> error_info_tag_t;
-            std::shared_ptr<error_info_tag_t> p( new error_info_tag_t(v) );
+            shared_ptr<error_info_tag_t> p( new error_info_tag_t(v) );
             exception_detail::error_info_container * c=x.data_.get();
             if( !c )
                 x.data_.adopt(c=new exception_detail::error_info_container_impl);

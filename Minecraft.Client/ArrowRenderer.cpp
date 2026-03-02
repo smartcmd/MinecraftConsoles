@@ -3,11 +3,11 @@
 #include "..\Minecraft.World\net.minecraft.world.entity.projectile.h"
 #include "..\Minecraft.World\Mth.h"
 
-void ArrowRenderer::render(std::shared_ptr<Entity> _arrow, double x, double y, double z, float rot, float a)
+void ArrowRenderer::render(shared_ptr<Entity> _arrow, double x, double y, double z, float rot, float a)
 {
-	// 4J - original version used generics and thus had an input parameter of type Arrow rather than std::shared_ptr<Entity>  we have here -
+	// 4J - original version used generics and thus had an input parameter of type Arrow rather than shared_ptr<Entity>  we have here - 
 	// do some casting around instead
-	std::shared_ptr<Arrow> arrow = dynamic_pointer_cast<Arrow>(_arrow);
+	shared_ptr<Arrow> arrow = dynamic_pointer_cast<Arrow>(_arrow);
     bindTexture(TN_ITEM_ARROWS); // 4J - was L"/item/arrows.png"
 
     glPushMatrix();

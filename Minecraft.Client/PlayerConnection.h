@@ -24,22 +24,22 @@ public:
 
 private:
 	MinecraftServer *server;
-    std::shared_ptr<ServerPlayer> player;
+    shared_ptr<ServerPlayer> player;
     int tickCount;
     int aboveGroundTickCount;
 
     bool didTick;
 	int lastKeepAliveId;
-	int64_t lastKeepAliveTime;
+	__int64 lastKeepAliveTime;
 	static Random random;
-	int64_t lastKeepAliveTick;
+	__int64 lastKeepAliveTick;
 	int chatSpamTickCount;
 	int dropSpamTickCount;
 
 	bool m_bHasClientTickedOnce;
 
 public:
-	PlayerConnection(MinecraftServer *server, Connection *connection, std::shared_ptr<ServerPlayer> player);
+	PlayerConnection(MinecraftServer *server, Connection *connection, shared_ptr<ServerPlayer> player);
 	~PlayerConnection();
     void tick();
     void disconnect(DisconnectPacket::eDisconnectReason reason);
@@ -49,71 +49,71 @@ private:
     bool synched;
 
 public:
-	virtual void handlePlayerInput(std::shared_ptr<PlayerInputPacket> packet);
-    virtual void handleMovePlayer(std::shared_ptr<MovePlayerPacket> packet);
+	virtual void handlePlayerInput(shared_ptr<PlayerInputPacket> packet);
+    virtual void handleMovePlayer(shared_ptr<MovePlayerPacket> packet);
     void teleport(double x, double y, double z, float yRot, float xRot, bool sendPacket = true); // 4J Added sendPacket param
-    virtual void handlePlayerAction(std::shared_ptr<PlayerActionPacket> packet);
-    virtual void handleUseItem(std::shared_ptr<UseItemPacket> packet);
+    virtual void handlePlayerAction(shared_ptr<PlayerActionPacket> packet);
+    virtual void handleUseItem(shared_ptr<UseItemPacket> packet);
     virtual void onDisconnect(DisconnectPacket::eDisconnectReason reason, void *reasonObjects);
-    virtual void onUnhandledPacket(std::shared_ptr<Packet> packet);
-    void send(std::shared_ptr<Packet> packet);
-	void queueSend(std::shared_ptr<Packet> packet); // 4J Added
-    virtual void handleSetCarriedItem(std::shared_ptr<SetCarriedItemPacket> packet);
-    virtual void handleChat(std::shared_ptr<ChatPacket> packet);
+    virtual void onUnhandledPacket(shared_ptr<Packet> packet);
+    void send(shared_ptr<Packet> packet);
+	void queueSend(shared_ptr<Packet> packet); // 4J Added
+    virtual void handleSetCarriedItem(shared_ptr<SetCarriedItemPacket> packet);
+    virtual void handleChat(shared_ptr<ChatPacket> packet);
 private:
 	void handleCommand(const wstring& message);
 public:
-	virtual void handleAnimate(std::shared_ptr<AnimatePacket> packet);
-    virtual void handlePlayerCommand(std::shared_ptr<PlayerCommandPacket> packet);
-    virtual void handleDisconnect(std::shared_ptr<DisconnectPacket> packet);
+	virtual void handleAnimate(shared_ptr<AnimatePacket> packet);
+    virtual void handlePlayerCommand(shared_ptr<PlayerCommandPacket> packet);
+    virtual void handleDisconnect(shared_ptr<DisconnectPacket> packet);
     int countDelayedPackets();
     virtual void info(const wstring& string);
     virtual void warn(const wstring& string);
     virtual wstring getConsoleName();
-    virtual void handleInteract(std::shared_ptr<InteractPacket> packet);
+    virtual void handleInteract(shared_ptr<InteractPacket> packet);
 	bool canHandleAsyncPackets();
-	virtual void handleClientCommand(std::shared_ptr<ClientCommandPacket> packet);
-    virtual void handleRespawn(std::shared_ptr<RespawnPacket> packet);
-    virtual void handleContainerClose(std::shared_ptr<ContainerClosePacket> packet);
+	virtual void handleClientCommand(shared_ptr<ClientCommandPacket> packet);
+    virtual void handleRespawn(shared_ptr<RespawnPacket> packet);
+    virtual void handleContainerClose(shared_ptr<ContainerClosePacket> packet);
 
 private:
 	unordered_map<int, short, IntKeyHash, IntKeyEq> expectedAcks;
 
 public:
 	// 4J Stu - Handlers only valid in debug mode
-#ifndef _CONTENT_PACKAGE
-    virtual void handleContainerSetSlot(std::shared_ptr<ContainerSetSlotPacket> packet);
+#ifndef _CONTENT_PACKAGE	
+    virtual void handleContainerSetSlot(shared_ptr<ContainerSetSlotPacket> packet);
 #endif
-	virtual void handleContainerClick(std::shared_ptr<ContainerClickPacket> packet);
-	virtual void handleContainerButtonClick(std::shared_ptr<ContainerButtonClickPacket> packet);
-	virtual void handleSetCreativeModeSlot(std::shared_ptr<SetCreativeModeSlotPacket> packet);
-    virtual void handleContainerAck(std::shared_ptr<ContainerAckPacket> packet);
-    virtual void handleSignUpdate(std::shared_ptr<SignUpdatePacket> packet);
-	virtual void handleKeepAlive(std::shared_ptr<KeepAlivePacket> packet);
-	virtual void handlePlayerInfo(std::shared_ptr<PlayerInfoPacket> packet); // 4J Added
+	virtual void handleContainerClick(shared_ptr<ContainerClickPacket> packet);
+	virtual void handleContainerButtonClick(shared_ptr<ContainerButtonClickPacket> packet);
+	virtual void handleSetCreativeModeSlot(shared_ptr<SetCreativeModeSlotPacket> packet);
+    virtual void handleContainerAck(shared_ptr<ContainerAckPacket> packet);
+    virtual void handleSignUpdate(shared_ptr<SignUpdatePacket> packet);
+	virtual void handleKeepAlive(shared_ptr<KeepAlivePacket> packet);	
+	virtual void handlePlayerInfo(shared_ptr<PlayerInfoPacket> packet); // 4J Added
     virtual bool isServerPacketListener();
-	virtual void handlePlayerAbilities(std::shared_ptr<PlayerAbilitiesPacket> playerAbilitiesPacket);
-	virtual void handleCustomPayload(std::shared_ptr<CustomPayloadPacket> customPayloadPacket);
+	virtual void handlePlayerAbilities(shared_ptr<PlayerAbilitiesPacket> playerAbilitiesPacket);
+	virtual void handleCustomPayload(shared_ptr<CustomPayloadPacket> customPayloadPacket);
 
-	// 4J Added
-	virtual void handleCraftItem(std::shared_ptr<CraftItemPacket> packet);
-	virtual void handleTradeItem(std::shared_ptr<TradeItemPacket> packet);
-	virtual void handleDebugOptions(std::shared_ptr<DebugOptionsPacket> packet);
-	virtual void handleTexture(std::shared_ptr<TexturePacket> packet);
-	virtual void handleTextureAndGeometry(std::shared_ptr<TextureAndGeometryPacket> packet);
-	virtual void handleTextureChange(std::shared_ptr<TextureChangePacket> packet);
-	virtual void handleTextureAndGeometryChange(std::shared_ptr<TextureAndGeometryChangePacket> packet);
-	virtual void handleServerSettingsChanged(std::shared_ptr<ServerSettingsChangedPacket> packet);
-	virtual void handleKickPlayer(std::shared_ptr<KickPlayerPacket> packet);
-	virtual void handleGameCommand(std::shared_ptr<GameCommandPacket> packet);
+	// 4J Added	
+	virtual void handleCraftItem(shared_ptr<CraftItemPacket> packet);
+	virtual void handleTradeItem(shared_ptr<TradeItemPacket> packet);
+	virtual void handleDebugOptions(shared_ptr<DebugOptionsPacket> packet);
+	virtual void handleTexture(shared_ptr<TexturePacket> packet);
+	virtual void handleTextureAndGeometry(shared_ptr<TextureAndGeometryPacket> packet);
+	virtual void handleTextureChange(shared_ptr<TextureChangePacket> packet);
+	virtual void handleTextureAndGeometryChange(shared_ptr<TextureAndGeometryChangePacket> packet);
+	virtual void handleServerSettingsChanged(shared_ptr<ServerSettingsChangedPacket> packet);
+	virtual void handleKickPlayer(shared_ptr<KickPlayerPacket> packet);
+	virtual void handleGameCommand(shared_ptr<GameCommandPacket> packet);
 
 	INetworkPlayer *getNetworkPlayer();
 	bool isLocal();
 	bool isGuest();
 
 	// 4J Added as we need to set this from outside sometimes
-	void setPlayer(std::shared_ptr<ServerPlayer> player) { this->player = player; }
-	std::shared_ptr<ServerPlayer> getPlayer() { return player; }
+	void setPlayer(shared_ptr<ServerPlayer> player) { this->player = player; }
+	shared_ptr<ServerPlayer> getPlayer() { return player; }
 
 	// 4J Added to signal a disconnect from another thread
 	void closeOnTick() { m_bCloseOnTick = true; }

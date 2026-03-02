@@ -13,7 +13,7 @@ private:
     wstring title;
     wstring desc;
     Achievement *ach;
-    int64_t startTime;
+    __int64 startTime;
     ItemRenderer *ir;
     bool isHelper;
 

@@ -42,7 +42,7 @@ private:
 	float m_fScale,m_fAlpha;
 	int	m_iPad;
 	CXuiSceneEnchant *m_containerScene;
-	std::shared_ptr<ItemInstance> last;
+	shared_ptr<ItemInstance> last;
 
 	float m_fScreenWidth,m_fScreenHeight;
 	float m_fRawWidth,m_fRawHeight;

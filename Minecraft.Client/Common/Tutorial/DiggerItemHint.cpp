@@ -20,7 +20,7 @@ DiggerItemHint::DiggerItemHint(eTutorial_Hint id, Tutorial *tutorial, int descri
 	tutorial->addMessage(IDS_TUTORIAL_HINT_ATTACK_WITH_TOOL, true);
 }
 
-int DiggerItemHint::startDestroyBlock(std::shared_ptr<ItemInstance> item, Tile *tile)
+int DiggerItemHint::startDestroyBlock(shared_ptr<ItemInstance> item, Tile *tile)
 {
 	if(item != NULL)
 	{
@@ -46,7 +46,7 @@ int DiggerItemHint::startDestroyBlock(std::shared_ptr<ItemInstance> item, Tile *
 	return -1;
 }
 
-int DiggerItemHint::attack(std::shared_ptr<ItemInstance> item, std::shared_ptr<Entity> entity)
+int DiggerItemHint::attack(shared_ptr<ItemInstance> item, shared_ptr<Entity> entity)
 {
 	if(item != NULL)
 	{

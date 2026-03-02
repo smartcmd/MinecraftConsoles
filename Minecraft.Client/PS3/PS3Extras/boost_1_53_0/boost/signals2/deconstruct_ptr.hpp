@@ -1,7 +1,7 @@
 // DEPRECATED in favor of adl_postconstruct and adl_predestruct with
 // deconstruct<T>().
-// A factory function for creating a std::shared_ptr that enhances the plain
-// std::shared_ptr constructors by adding support for postconstructors
+// A factory function for creating a shared_ptr that enhances the plain
+// shared_ptr constructors by adding support for postconstructors
 // and predestructors through the boost::signals2::postconstructible and
 // boost::signals2::predestructible base classes.
 //
@@ -19,7 +19,7 @@
 #include <boost/checked_delete.hpp>
 #include <boost/signals2/postconstructible.hpp>
 #include <boost/signals2/predestructible.hpp>
-#include <boost/std::shared_ptr.hpp>
+#include <boost/shared_ptr.hpp>
 
 namespace boost
 {
@@ -63,17 +63,17 @@ namespace boost
     };
 
     template<typename T>
-    std::shared_ptr<T> deconstruct_ptr(T *ptr)
+    shared_ptr<T> deconstruct_ptr(T *ptr)
     {
-      if(ptr == 0) return std::shared_ptr<T>(ptr);
-      std::shared_ptr<T> shared(ptr, boost::signals2::predestructing_deleter<T>());
+      if(ptr == 0) return shared_ptr<T>(ptr);
+      shared_ptr<T> shared(ptr, boost::signals2::predestructing_deleter<T>());
       detail::do_postconstruct(ptr);
       return shared;
     }
     template<typename T, typename D>
-    std::shared_ptr<T> deconstruct_ptr(T *ptr, D deleter)
+    shared_ptr<T> deconstruct_ptr(T *ptr, D deleter)
     {
-      std::shared_ptr<T> shared(ptr, deleter);
+      shared_ptr<T> shared(ptr, deleter);
       if(ptr == 0) return shared;
       detail::do_postconstruct(ptr);
       return shared;

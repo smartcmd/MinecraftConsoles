@@ -177,7 +177,7 @@ public:
     inline file_iterator& operator=(const base_t& iter);
     file_iterator make_end(void);
 
-    // operator bool. This borrows a trick from boost::std::shared_ptr to avoid
+    // operator bool. This borrows a trick from boost::shared_ptr to avoid
     //   to interfere with arithmetic operations.
     bool operator_bool(void) const
     { return this->base(); }

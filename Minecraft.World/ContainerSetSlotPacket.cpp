@@ -18,19 +18,19 @@ ContainerSetSlotPacket::ContainerSetSlotPacket()
 	item = nullptr;
 }
 
-ContainerSetSlotPacket::ContainerSetSlotPacket(int containerId, int slot, std::shared_ptr<ItemInstance> item)
+ContainerSetSlotPacket::ContainerSetSlotPacket(int containerId, int slot, shared_ptr<ItemInstance> item) 
 {
 	this->containerId = containerId;
 	this->slot = slot;
 	this->item = item == NULL ? item : item->copy();
 }
 
-void ContainerSetSlotPacket::handle(PacketListener *listener)
+void ContainerSetSlotPacket::handle(PacketListener *listener) 
 {
 	listener->handleContainerSetSlot(shared_from_this());
 }
 
-void ContainerSetSlotPacket::read(DataInputStream *dis) //throws IOException
+void ContainerSetSlotPacket::read(DataInputStream *dis) //throws IOException 
 {
 	// 4J Stu - TU-1 hotfix
 	// Fix for #13142 - Holding down the A button on the furnace ingredient slot causes the UI to display incorrect item counts

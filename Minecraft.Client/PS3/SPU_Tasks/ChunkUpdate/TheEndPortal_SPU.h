@@ -6,7 +6,7 @@ class TheEndPortal_SPU : public EntityTile_SPU
 public:
 	TheEndPortal_SPU(int id) : EntityTile_SPU(id) {}
 
-//     virtual void updateShape(LevelSource *level, int x, int y, int z, int forceData = -1, std::shared_ptr<TileEntity> forceEntity = std::shared_ptr<TileEntity>());	// 4J added forceData, forceEntity param
+//     virtual void updateShape(LevelSource *level, int x, int y, int z, int forceData = -1, shared_ptr<TileEntity> forceEntity = shared_ptr<TileEntity>());	// 4J added forceData, forceEntity param
     virtual bool shouldRenderFace(ChunkRebuildData *level, int x, int y, int z, int face)
 	{
 		if (face != 0) return false;

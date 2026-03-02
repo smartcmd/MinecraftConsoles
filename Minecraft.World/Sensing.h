@@ -11,5 +11,5 @@ public:
 	Sensing(Mob *mob);
 
 	void tick();
-	bool canSee(std::shared_ptr<Entity> target);
+	bool canSee(shared_ptr<Entity> target);
 };

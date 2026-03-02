@@ -17,10 +17,10 @@ public:
 	static const int USE_ROW_SLOT_END = FurnaceMenu::USE_ROW_SLOT_START + 9;
 
 private:
-	std::shared_ptr<FurnaceTileEntity> furnace;
+	shared_ptr<FurnaceTileEntity> furnace;
 
 public:
-	FurnaceMenu(std::shared_ptr<Inventory> inventory, std::shared_ptr<FurnaceTileEntity> furnace);
+	FurnaceMenu(shared_ptr<Inventory> inventory, shared_ptr<FurnaceTileEntity> furnace);
 
 private:
 	int tc;
@@ -31,8 +31,8 @@ public:
 	virtual void addSlotListener(ContainerListener *listener);
 	virtual void broadcastChanges();
 	virtual void setData(int id, int value);
-	virtual bool stillValid(std::shared_ptr<Player> player);
-	virtual std::shared_ptr<ItemInstance> quickMoveStack(std::shared_ptr<Player> player, int slotIndex);
+	virtual bool stillValid(shared_ptr<Player> player);
+	virtual shared_ptr<ItemInstance> quickMoveStack(shared_ptr<Player> player, int slotIndex);
 
-	virtual std::shared_ptr<ItemInstance> clicked(int slotIndex, int buttonNum, int clickType, std::shared_ptr<Player> player);
+	virtual shared_ptr<ItemInstance> clicked(int slotIndex, int buttonNum, int clickType, shared_ptr<Player> player);
 };

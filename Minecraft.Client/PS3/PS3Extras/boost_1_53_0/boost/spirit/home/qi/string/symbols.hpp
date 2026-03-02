@@ -27,7 +27,7 @@
 #include <boost/fusion/include/at.hpp>
 #include <boost/range.hpp>
 #include <boost/type_traits/add_reference.hpp>
-#include <boost/std::shared_ptr.hpp>
+#include <boost/shared_ptr.hpp>
 
 #if defined(BOOST_MSVC)
 # pragma warning(push)
@@ -373,7 +373,7 @@ public:
 
         adder add;
         remover remove;
-        std::shared_ptr<Lookup> lookup;
+        shared_ptr<Lookup> lookup;
         std::string name_;
     };
 

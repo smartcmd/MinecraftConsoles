@@ -15,7 +15,7 @@ int EnchantItemCommand::getPermissionLevel()
 	return 0; //aLEVEL_GAMEMASTERS;
 }
 
-void EnchantItemCommand::execute(std::shared_ptr<CommandSender> source, byteArray commandData)
+void EnchantItemCommand::execute(shared_ptr<CommandSender> source, byteArray commandData)
 {
 	ByteArrayInputStream bais(commandData);
 	DataInputStream dis(&bais);
@@ -26,11 +26,11 @@ void EnchantItemCommand::execute(std::shared_ptr<CommandSender> source, byteArra
 
 	bais.reset();
 
-	std::shared_ptr<ServerPlayer> player = getPlayer(uid);
+	shared_ptr<ServerPlayer> player = getPlayer(uid);
 
 	if(player == NULL) return;
 
-	std::shared_ptr<ItemInstance> selectedItem = player->getSelectedItem();
+	shared_ptr<ItemInstance> selectedItem = player->getSelectedItem();
 
 	if(selectedItem == NULL) return;
 
@@ -70,7 +70,7 @@ void EnchantItemCommand::execute(std::shared_ptr<CommandSender> source, byteArra
 	logAdminAction(source, ChatPacket::e_ChatCustom, L"commands.enchant.success");
 }
 
-std::shared_ptr<GameCommandPacket> EnchantItemCommand::preparePacket(std::shared_ptr<Player> player, int enchantmentId, int enchantmentLevel)
+shared_ptr<GameCommandPacket> EnchantItemCommand::preparePacket(shared_ptr<Player> player, int enchantmentId, int enchantmentLevel)
 {
 	if(player == NULL) return nullptr;
 
@@ -81,5 +81,5 @@ std::shared_ptr<GameCommandPacket> EnchantItemCommand::preparePacket(std::shared
 	dos.writeInt(enchantmentId);
 	dos.writeInt(enchantmentLevel);
 
-	return std::shared_ptr<GameCommandPacket>( new GameCommandPacket(eGameCommand_EnchantItem, baos.toByteArray() ));
+	return shared_ptr<GameCommandPacket>( new GameCommandPacket(eGameCommand_EnchantItem, baos.toByteArray() ));
 }

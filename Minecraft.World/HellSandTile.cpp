@@ -14,7 +14,7 @@ AABB *HellSandTile::getAABB(Level *level, int x, int y, int z)
     return AABB::newTemp(x, y, z, x + 1, y + 1 - r, z + 1);
 }
 
-void HellSandTile::entityInside(Level *level, int x, int y, int z, std::shared_ptr<Entity> entity)
+void HellSandTile::entityInside(Level *level, int x, int y, int z, shared_ptr<Entity> entity)
 {
     entity->xd*=0.4;
     entity->zd*=0.4;

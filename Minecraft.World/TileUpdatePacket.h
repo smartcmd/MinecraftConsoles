@@ -18,6 +18,6 @@ public:
 	virtual void handle(PacketListener *listener);
 	virtual int getEstimatedSize();
 public:
-	static std::shared_ptr<Packet> create() { return std::shared_ptr<Packet>(new TileUpdatePacket()); }
+	static shared_ptr<Packet> create() { return shared_ptr<Packet>(new TileUpdatePacket()); }
 	virtual int getId() { return 53; }
 };

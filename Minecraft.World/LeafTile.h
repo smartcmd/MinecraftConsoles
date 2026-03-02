@@ -54,7 +54,7 @@ public:
 	// 4J DCR: Brought forward from 1.2
 	virtual void spawnResources(Level *level, int x, int y, int z, int data, float odds, int playerBonusLevel);
 
-	virtual void playerDestroy(Level *level, std::shared_ptr<Player> player, int x, int y, int z, int data);
+	virtual void playerDestroy(Level *level, shared_ptr<Player> player, int x, int y, int z, int data);
 protected:
 	virtual int getSpawnResourcesAuxValue(int data);
 public:
@@ -63,11 +63,11 @@ public:
     void setFancy(bool fancyGraphics);
 
 protected:
-	virtual std::shared_ptr<ItemInstance> getSilkTouchItemInstance(int data);
+	virtual shared_ptr<ItemInstance> getSilkTouchItemInstance(int data);
 
 public:
-    virtual void stepOn(Level *level, int x, int y, int z, std::shared_ptr<Entity> entity);
-
+    virtual void stepOn(Level *level, int x, int y, int z, shared_ptr<Entity> entity);
+	
 	// 4J Added so we can check before we try to add a tile to the tick list if it's actually going to do seomthing
 	virtual bool shouldTileTick(Level *level, int x,int y,int z);
 

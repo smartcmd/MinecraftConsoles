@@ -43,14 +43,14 @@ void AddEnchantmentRuleDefinition::addAttribute(const wstring &attributeName, co
 	}
 }
 
-bool AddEnchantmentRuleDefinition::enchantItem(std::shared_ptr<ItemInstance> item)
+bool AddEnchantmentRuleDefinition::enchantItem(shared_ptr<ItemInstance> item)
 {
 	bool enchanted = false;
 	if (item != NULL)
 	{
 		// 4J-JEV: Ripped code from enchantmenthelpers
 		// Maybe we want to add an addEnchantment method to EnchantmentHelpers
-		if (item->id == Item::enchantedBook_Id)
+		if (item->id == Item::enchantedBook_Id) 
 		{
 			Item::enchantedBook->addEnchantment( item, new EnchantmentInstance(m_enchantmentId, m_enchantmentLevel) );
 		}

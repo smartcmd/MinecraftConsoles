@@ -26,7 +26,7 @@ public:
     Textures *textures;
     ItemInHandRenderer *itemInHandRenderer;
     Level *level;
-    std::shared_ptr<Mob> cameraEntity;
+    shared_ptr<Mob> cameraEntity;
     float playerRotY;
     float playerRotX;
     Options *options;
@@ -38,10 +38,10 @@ private:
 	EntityRenderDispatcher();
 public:
 	EntityRenderer *getRenderer(eINSTANCEOF e);
-    EntityRenderer *getRenderer(std::shared_ptr<Entity> e);
-    void prepare(Level *level, Textures *textures, Font *font, std::shared_ptr<Mob> player, Options *options, float a);
-    void render(std::shared_ptr<Entity> entity, float a);
-    void render(std::shared_ptr<Entity> entity, double x, double y, double z, float rot, float a, bool bItemFrame = false, bool bRenderPlayerShadow = true);
+    EntityRenderer *getRenderer(shared_ptr<Entity> e);
+    void prepare(Level *level, Textures *textures, Font *font, shared_ptr<Mob> player, Options *options, float a);
+    void render(shared_ptr<Entity> entity, float a);
+    void render(shared_ptr<Entity> entity, double x, double y, double z, float rot, float a, bool bItemFrame = false, bool bRenderPlayerShadow = true);
     void setLevel(Level *level);
     double distanceToSqr(double x, double y, double z);
     Font *getFont();

@@ -21,11 +21,11 @@ public:
 	static const int USE_ROW_SLOT_END = USE_ROW_SLOT_START + 9;
 
 private:
-	std::shared_ptr<BrewingStandTileEntity> brewingStand;
+	shared_ptr<BrewingStandTileEntity> brewingStand;
 	Slot *ingredientSlot;
 
 public:
-	BrewingStandMenu(std::shared_ptr<Inventory> inventory, std::shared_ptr<BrewingStandTileEntity> brewingStand);
+	BrewingStandMenu(shared_ptr<Inventory> inventory, shared_ptr<BrewingStandTileEntity> brewingStand);
 
 private:
 	int tc;
@@ -34,32 +34,32 @@ public:
 	virtual void addSlotListener(ContainerListener *listener);
 	virtual void broadcastChanges();
 	virtual void setData(int id, int value);
-	virtual bool stillValid(std::shared_ptr<Player> player);
-	virtual std::shared_ptr<ItemInstance> quickMoveStack(std::shared_ptr<Player> player, int slotIndex);
+	virtual bool stillValid(shared_ptr<Player> player);
+	virtual shared_ptr<ItemInstance> quickMoveStack(shared_ptr<Player> player, int slotIndex);
 
 private:
 	class PotionSlot : public Slot
 	{
 	private:
-		std::shared_ptr<Player> player;
+		shared_ptr<Player> player;
 
 	public:
-		PotionSlot(std::shared_ptr<Player> player, std::shared_ptr<Container> container, int slot, int x, int y);
+		PotionSlot(shared_ptr<Player> player, shared_ptr<Container> container, int slot, int x, int y);
 
-		virtual bool mayPlace(std::shared_ptr<ItemInstance> item);
+		virtual bool mayPlace(shared_ptr<ItemInstance> item);
 		virtual int getMaxStackSize();
-		virtual void onTake(std::shared_ptr<Player> player, std::shared_ptr<ItemInstance> carried);
-		static bool mayPlaceItem(std::shared_ptr<ItemInstance> item);
-		virtual bool mayCombine(std::shared_ptr<ItemInstance> item); // 4J Added
+		virtual void onTake(shared_ptr<Player> player, shared_ptr<ItemInstance> carried);
+		static bool mayPlaceItem(shared_ptr<ItemInstance> item);
+		virtual bool mayCombine(shared_ptr<ItemInstance> item); // 4J Added
 	};
 
 	class IngredientsSlot : public Slot
 	{
 	public:
-		IngredientsSlot(std::shared_ptr<Container> container, int slot, int x, int y);
+		IngredientsSlot(shared_ptr<Container> container, int slot, int x, int y);
 
-		virtual bool mayPlace(std::shared_ptr<ItemInstance> item);
+		virtual bool mayPlace(shared_ptr<ItemInstance> item);
 		virtual int getMaxStackSize();
-		virtual bool mayCombine(std::shared_ptr<ItemInstance> item); // 4J Added
+		virtual bool mayCombine(shared_ptr<ItemInstance> item); // 4J Added
 	};
 };

@@ -14,33 +14,33 @@ TextureChangePacket::TextureChangePacket()
 	path = L"";
 }
 
-TextureChangePacket::TextureChangePacket(std::shared_ptr<Entity> e, ETextureChangeType action, const wstring &path)
+TextureChangePacket::TextureChangePacket(shared_ptr<Entity> e, ETextureChangeType action, const wstring &path)
 {
 	id = e->entityId;
 	this->action = action;
 	this->path = path;
 }
 
-void TextureChangePacket::read(DataInputStream *dis) //throws IOException
+void TextureChangePacket::read(DataInputStream *dis) //throws IOException 
 {
 	id = dis->readInt();
 	action = (ETextureChangeType)dis->readByte();
 	path = dis->readUTF();
 }
 
-void TextureChangePacket::write(DataOutputStream *dos) //throws IOException
+void TextureChangePacket::write(DataOutputStream *dos) //throws IOException 
 {
 	dos->writeInt(id);
 	dos->writeByte(action);
 	dos->writeUTF(path);
 }
 
-void TextureChangePacket::handle(PacketListener *listener)
+void TextureChangePacket::handle(PacketListener *listener) 
 {
 	listener->handleTextureChange(shared_from_this());
 }
 
-int TextureChangePacket::getEstimatedSize()
+int TextureChangePacket::getEstimatedSize() 
 {
 	return 5 + (int)path.size();
 }

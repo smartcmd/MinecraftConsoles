@@ -17,7 +17,7 @@
 #endif
 
 #include <cstdio>
-#include <boost/std::shared_ptr.hpp>
+#include <boost/shared_ptr.hpp>
 
 #ifdef BOOST_SPIRIT_FILEITERATOR_WINDOWS
 #  include <boost/type_traits/remove_pointer.hpp>
@@ -48,7 +48,7 @@ namespace fileiter_impl {
 //  the base components on which the iterator is built (through the
 //  iterator adaptor library).
 //
-//  The opened file stream (FILE) is held with a std::shared_ptr<>, whose
+//  The opened file stream (FILE) is held with a shared_ptr<>, whose
 //  custom deleter invokes fcose(). This makes the syntax of the class
 //  very easy, especially everything related to copying.
 //
@@ -93,7 +93,7 @@ public:
     }
 
     // Nasty bug in Comeau up to 4.3.0.1, we need explicit boolean context
-    //  for std::shared_ptr to evaluate correctly
+    //  for shared_ptr to evaluate correctly
     operator bool() const
     { return m_file ? true : false; }
 
@@ -140,7 +140,7 @@ public:
     }
 
 private:
-    boost::std::shared_ptr<std::FILE> m_file;
+    boost::shared_ptr<std::FILE> m_file;
     std::size_t m_pos;
     CharT m_curChar;
     bool m_eof;
@@ -236,7 +236,7 @@ public:
         //  a reference is hold by the filemap object).
         ::CloseHandle(hFile);
 
-        // Store the handles inside the std::shared_ptr (with the custom destructors)
+        // Store the handles inside the shared_ptr (with the custom destructors)
         m_mem.reset(static_cast<CharT*>(pMem), ::UnmapViewOfFile);
 
         // Start of the file
@@ -256,7 +256,7 @@ public:
     }
 
     // Nasty bug in Comeau up to 4.3.0.1, we need explicit boolean context
-    //  for std::shared_ptr to evaluate correctly
+    //  for shared_ptr to evaluate correctly
     operator bool() const
     { return m_mem ? true : false; }
 
@@ -291,7 +291,7 @@ private:
     typedef void handle_t;
 #endif
 
-    boost::std::shared_ptr<CharT> m_mem;
+    boost::shared_ptr<CharT> m_mem;
     std::size_t m_filesize;
     CharT* m_curChar;
 };
@@ -403,7 +403,7 @@ public:
     }
 
     // Nasty bug in Comeau up to 4.3.0.1, we need explicit boolean context
-    //  for std::shared_ptr to evaluate correctly
+    //  for shared_ptr to evaluate correctly
     operator bool() const
     { return m_mem ? true : false; }
 
@@ -432,7 +432,7 @@ public:
 
 private:
 
-    boost::std::shared_ptr<mapping> m_mem;
+    boost::shared_ptr<mapping> m_mem;
     CharT const* m_curChar;
 };
 

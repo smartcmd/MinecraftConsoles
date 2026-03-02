@@ -94,7 +94,7 @@ void Villager::serverAiMobStep()
 		level->villages->queryUpdateAround(Mth::floor(x), Mth::floor(y), Mth::floor(z));
 		villageUpdateInterval = 70 + random->nextInt(50);
 
-		std::shared_ptr<Village> _village = level->villages->getClosestVillage(Mth::floor(x), Mth::floor(y), Mth::floor(z), Villages::MaxDoorDist);
+		shared_ptr<Village> _village = level->villages->getClosestVillage(Mth::floor(x), Mth::floor(y), Mth::floor(z), Villages::MaxDoorDist);
 		village = _village;
 		if (_village == NULL) clearRestriction();
 		else
@@ -145,10 +145,10 @@ void Villager::serverAiMobStep()
 	AgableMob::serverAiMobStep();
 }
 
-bool Villager::interact(std::shared_ptr<Player> player)
+bool Villager::interact(shared_ptr<Player> player)
 {
 	// [EB]: Truly dislike this code but I don't see another easy way
-	std::shared_ptr<ItemInstance> item = player->inventory->getSelected();
+	shared_ptr<ItemInstance> item = player->inventory->getSelected();
 	bool holdingSpawnEgg = item != NULL && item->id == Item::monsterPlacer_Id;
 
 	if (!holdingSpawnEgg && isAlive() && !isTrading() && !isBaby())
@@ -281,15 +281,15 @@ bool Villager::isChasing()
 	return chasing;
 }
 
-void Villager::setLastHurtByMob(std::shared_ptr<Mob> mob)
+void Villager::setLastHurtByMob(shared_ptr<Mob> mob)
 {
 	AgableMob::setLastHurtByMob(mob);
-	std::shared_ptr<Village> _village = village.lock();
+	shared_ptr<Village> _village = village.lock();
 	if (_village != NULL && mob != NULL)
 	{
 		_village->addAggressor(mob);
 
-		std::shared_ptr<Player> player = dynamic_pointer_cast<Player>(mob);
+		shared_ptr<Player> player = dynamic_pointer_cast<Player>(mob);
 		if (player)
 		{
 			int amount = -1;
@@ -308,15 +308,15 @@ void Villager::setLastHurtByMob(std::shared_ptr<Mob> mob)
 
 void Villager::die(DamageSource *source)
 {
-	std::shared_ptr<Village> _village = village.lock();
+	shared_ptr<Village> _village = village.lock();
 	if (_village != NULL)
 	{
-		std::shared_ptr<Entity> sourceEntity = source->getEntity();
+		shared_ptr<Entity> sourceEntity = source->getEntity();
 		if (sourceEntity != NULL)
 		{
 			if ((sourceEntity->GetType() & eTYPE_PLAYER) == eTYPE_PLAYER)
 			{
-				std::shared_ptr<Player> player = dynamic_pointer_cast<Player>(sourceEntity);
+				shared_ptr<Player> player = dynamic_pointer_cast<Player>(sourceEntity);
 				_village->modifyStanding(player->getName(), -2);
 			}
 			else if ((sourceEntity->GetType() & eTYPE_ENEMY) == eTYPE_ENEMY)
@@ -328,7 +328,7 @@ void Villager::die(DamageSource *source)
 		{
 			// if the villager was killed by the world (such as lava or falling), blame
 			// the nearest player by not reproducing for a while
-			std::shared_ptr<Player> nearestPlayer = level->getNearestPlayer(shared_from_this(), 16.0f);
+			shared_ptr<Player> nearestPlayer = level->getNearestPlayer(shared_from_this(), 16.0f);
 			if (nearestPlayer != NULL)
 			{
 				_village->resetNoBreedTimer();
@@ -339,12 +339,12 @@ void Villager::die(DamageSource *source)
 	AgableMob::die(source);
 }
 
-void Villager::setTradingPlayer(std::shared_ptr<Player> player)
+void Villager::setTradingPlayer(shared_ptr<Player> player)
 {
 	tradingPlayer = weak_ptr<Player>(player);
 }
 
-std::shared_ptr<Player> Villager::getTradingPlayer()
+shared_ptr<Player> Villager::getTradingPlayer()
 {
 	return tradingPlayer.lock();
 }
@@ -381,7 +381,7 @@ void Villager::notifyTrade(MerchantRecipe *activeRecipe)
 	}
 }
 
-void Villager::notifyTradeUpdated(std::shared_ptr<ItemInstance> item)
+void Villager::notifyTradeUpdated(shared_ptr<ItemInstance> item)
 {
 	if (!level->isClientSide && (ambientSoundTime > (-getAmbientSoundInterval() + SharedConstants::TICKS_PER_SECOND)))
 	{
@@ -397,7 +397,7 @@ void Villager::notifyTradeUpdated(std::shared_ptr<ItemInstance> item)
 	}
 }
 
-MerchantRecipeList *Villager::getOffers(std::shared_ptr<Player> forPlayer)
+MerchantRecipeList *Villager::getOffers(shared_ptr<Player> forPlayer)
 {
 	if (offers == NULL)
 	{
@@ -436,7 +436,7 @@ void Villager::addOffers(int addCount)
 		addItemForPurchase(newOffers, Item::arrow_Id, random, getRecipeChance(.5f));
 		if (random->nextFloat() < .5f)
 		{
-			newOffers->push_back(new MerchantRecipe(std::shared_ptr<ItemInstance>( new ItemInstance(Tile::gravel, 10) ), std::shared_ptr<ItemInstance>( new ItemInstance(Item::emerald) ), std::shared_ptr<ItemInstance>( new ItemInstance(Item::flint_Id, 2 + random->nextInt(2), 0))));
+			newOffers->push_back(new MerchantRecipe(shared_ptr<ItemInstance>( new ItemInstance(Tile::gravel, 10) ), shared_ptr<ItemInstance>( new ItemInstance(Item::emerald) ), shared_ptr<ItemInstance>( new ItemInstance(Item::flint_Id, 2 + random->nextInt(2), 0))));
 		}
 		break;
 	case PROFESSION_BUTCHER:
@@ -493,10 +493,10 @@ void Villager::addOffers(int addCount)
 		{
 			Enchantment *enchantment = Enchantment::validEnchantments[random->nextInt(Enchantment::validEnchantments.size())];
 			int level = Mth::nextInt(random, enchantment->getMinLevel(), enchantment->getMaxLevel());
-			std::shared_ptr<ItemInstance> book = Item::enchantedBook->createForEnchantment(new EnchantmentInstance(enchantment, level));
+			shared_ptr<ItemInstance> book = Item::enchantedBook->createForEnchantment(new EnchantmentInstance(enchantment, level));
 			int cost = 2 + random->nextInt(5 + (level * 10)) + 3 * level;
 
-			newOffers->push_back(new MerchantRecipe(std::shared_ptr<ItemInstance>(new ItemInstance(Item::book)), std::shared_ptr<ItemInstance>(new ItemInstance(Item::emerald, cost)), book));
+			newOffers->push_back(new MerchantRecipe(shared_ptr<ItemInstance>(new ItemInstance(Item::book)), shared_ptr<ItemInstance>(new ItemInstance(Item::emerald, cost)), book));
 		}
 		break;
 	case PROFESSION_PRIEST:
@@ -514,9 +514,9 @@ void Villager::addOffers(int addCount)
 				int id = enchantItems[i];
 				if (random->nextFloat() < getRecipeChance(.05f))
 				{
-					newOffers->push_back(new MerchantRecipe(std::shared_ptr<ItemInstance>(new ItemInstance(id, 1, 0)),
-						std::shared_ptr<ItemInstance>(new ItemInstance(Item::emerald, 2 + random->nextInt(3), 0)),
-						EnchantmentHelper::enchantItem(random, std::shared_ptr<ItemInstance>(new ItemInstance(id, 1, 0)), 5 + random->nextInt(15))));
+					newOffers->push_back(new MerchantRecipe(shared_ptr<ItemInstance>(new ItemInstance(id, 1, 0)),
+						shared_ptr<ItemInstance>(new ItemInstance(Item::emerald, 2 + random->nextInt(3), 0)),
+						EnchantmentHelper::enchantItem(random, shared_ptr<ItemInstance>(new ItemInstance(id, 1, 0)), 5 + random->nextInt(15))));
 				}
 			}
 		}
@@ -636,9 +636,9 @@ void Villager::addItemForTradeIn(MerchantRecipeList *list, int itemId, Random *r
 	}
 }
 
-std::shared_ptr<ItemInstance> Villager::getItemTradeInValue(int itemId, Random *random)
+shared_ptr<ItemInstance> Villager::getItemTradeInValue(int itemId, Random *random)
 {
-	return std::shared_ptr<ItemInstance>(new ItemInstance(itemId, getTradeInValue(itemId, random), 0));
+	return shared_ptr<ItemInstance>(new ItemInstance(itemId, getTradeInValue(itemId, random), 0));
 }
 
 int Villager::getTradeInValue(int itemId, Random *random)
@@ -670,17 +670,17 @@ void Villager::addItemForPurchase(MerchantRecipeList *list, int itemId, Random *
 	if (random->nextFloat() < likelyHood)
 	{
 		int purchaseCost = getPurchaseCost(itemId, random);
-		std::shared_ptr<ItemInstance> rubyItem;
-		std::shared_ptr<ItemInstance> resultItem;
+		shared_ptr<ItemInstance> rubyItem;
+		shared_ptr<ItemInstance> resultItem;
 		if (purchaseCost < 0)
 		{
-			rubyItem = std::shared_ptr<ItemInstance>( new ItemInstance(Item::emerald_Id, 1, 0) );
-			resultItem = std::shared_ptr<ItemInstance>( new ItemInstance(itemId, -purchaseCost, 0) );
+			rubyItem = shared_ptr<ItemInstance>( new ItemInstance(Item::emerald_Id, 1, 0) );
+			resultItem = shared_ptr<ItemInstance>( new ItemInstance(itemId, -purchaseCost, 0) );
 		}
 		else
 		{
-			rubyItem = std::shared_ptr<ItemInstance>( new ItemInstance(Item::emerald_Id, purchaseCost, 0) );
-			resultItem = std::shared_ptr<ItemInstance>( new ItemInstance(itemId, 1, 0) );
+			rubyItem = shared_ptr<ItemInstance>( new ItemInstance(Item::emerald_Id, purchaseCost, 0) );
+			resultItem = shared_ptr<ItemInstance>( new ItemInstance(itemId, 1, 0) );
 		}
 		list->push_back(new MerchantRecipe(rubyItem, resultItem));
 	}
@@ -705,7 +705,7 @@ void Villager::handleEntityEvent(byte id)
 {
 	if (id == EntityEvent::LOVE_HEARTS)
 	{
-		addParticlesAroundSelf(eParticleType_heart);
+		addParticlesAroundSelf(eParticleType_heart);	
 	}
 	else if (id == EntityEvent::VILLAGER_ANGRY)
 	{
@@ -742,12 +742,12 @@ void Villager::setRewardPlayersInVillage()
 	rewardPlayersOnFirstVillage = true;
 }
 
-std::shared_ptr<AgableMob> Villager::getBreedOffspring(std::shared_ptr<AgableMob> target)
+shared_ptr<AgableMob> Villager::getBreedOffspring(shared_ptr<AgableMob> target)
 {
 	// 4J - added limit to villagers that can be bred
 	if(level->canCreateMore(GetType(), Level::eSpawnType_Breed) )
 	{
-		std::shared_ptr<Villager> villager = std::shared_ptr<Villager>(new Villager(level));
+		shared_ptr<Villager> villager = shared_ptr<Villager>(new Villager(level));
 		villager->finalizeMobSpawn();
 		return villager;
 	}

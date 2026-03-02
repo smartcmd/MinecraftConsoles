@@ -29,7 +29,7 @@ void FoodData::eat(FoodItem *item)
 	eat(item->getNutrition(), item->getSaturationModifier());
 }
 
-void FoodData::tick(std::shared_ptr<Player> player)
+void FoodData::tick(shared_ptr<Player> player)
 {
 
 	int difficulty = player->level->difficulty;

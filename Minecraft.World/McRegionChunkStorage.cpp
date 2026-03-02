@@ -32,7 +32,7 @@ McRegionChunkStorage::McRegionChunkStorage(ConsoleSaveFile *saveFile, const wstr
 		m_saveFile->createFile(ConsoleSavePath(L"r.-1.0.mcr"));
 	}
 
-
+	
 #ifdef SPLIT_SAVES
 	ConsoleSavePath currentFile = ConsoleSavePath( m_prefix + wstring( L"entities.dat" ) );
 
@@ -45,7 +45,7 @@ McRegionChunkStorage::McRegionChunkStorage(ConsoleSaveFile *saveFile, const wstr
 
 		for(int i = 0; i < count; ++i)
 		{
-			int64_t index = dis.readLong();
+			__int64 index = dis.readLong();
 			CompoundTag *tag = NbtIo::read(&dis);
 
 			ByteArrayOutputStream bos;
@@ -78,7 +78,7 @@ LevelChunk *McRegionChunkStorage::load(Level *level, int x, int z)
 	// If we can't find the chunk in the save file, then we should remove any entities we might have for that chunk
 	if(regionChunkInputStream == NULL)
 	{
-		int64_t index = ((int64_t)(x) << 32) | (((int64_t)(z))&0x00000000FFFFFFFF);
+		__int64 index = ((__int64)(x) << 32) | (((__int64)(z))&0x00000000FFFFFFFF);
 
 		AUTO_VAR(it, m_entityData.find(index));
 		if(it != m_entityData.end())
@@ -235,7 +235,7 @@ void McRegionChunkStorage::saveEntities(Level *level, LevelChunk *levelChunk)
 {
 #ifdef SPLIT_SAVES
 	PIXBeginNamedEvent(0,"Saving entities");
-	int64_t index = ((int64_t)(levelChunk->x) << 32) | (((int64_t)(levelChunk->z))&0x00000000FFFFFFFF);
+	__int64 index = ((__int64)(levelChunk->x) << 32) | (((__int64)(levelChunk->z))&0x00000000FFFFFFFF);
 
 	delete m_entityData[index].data;
 
@@ -269,8 +269,8 @@ void McRegionChunkStorage::saveEntities(Level *level, LevelChunk *levelChunk)
 void McRegionChunkStorage::loadEntities(Level *level, LevelChunk *levelChunk)
 {
 #ifdef SPLIT_SAVES
-	int64_t index = ((int64_t)(levelChunk->x) << 32) | (((int64_t)(levelChunk->z))&0x00000000FFFFFFFF);
-
+	__int64 index = ((__int64)(levelChunk->x) << 32) | (((__int64)(levelChunk->z))&0x00000000FFFFFFFF);
+	
 	AUTO_VAR(it, m_entityData.find(index));
 	if(it != m_entityData.end())
 	{

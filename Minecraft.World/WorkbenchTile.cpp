@@ -32,7 +32,7 @@ bool WorkbenchTile::TestUse()
 	return true;
 }
 
-bool WorkbenchTile::use(Level *level, int x, int y, int z, std::shared_ptr<Player> player, int clickedFace, float clickX, float clickY, float clickZ, bool soundOnly/*=false*/) // 4J added soundOnly param
+bool WorkbenchTile::use(Level *level, int x, int y, int z, shared_ptr<Player> player, int clickedFace, float clickX, float clickY, float clickZ, bool soundOnly/*=false*/) // 4J added soundOnly param
 {
 	if( soundOnly ) return false;
 	if (level->isClientSide)

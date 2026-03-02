@@ -10,5 +10,5 @@ public:
 	virtual int getMinCost(int level);
 	virtual int getMaxCost(int level);
 	virtual int getMaxLevel();
-	virtual bool canEnchant(std::shared_ptr<ItemInstance> item);
+	virtual bool canEnchant(shared_ptr<ItemInstance> item);
 };

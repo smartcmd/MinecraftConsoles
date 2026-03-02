@@ -8,13 +8,13 @@
 #define XM_INVENTORYUPDATED_MESSAGE			XM_USER + 5
 #define XM_TMS_DLCFILE_RETRIEVED_MESSAGE	XM_USER + 6
 #define XM_TMS_BANFILE_RETRIEVED_MESSAGE	XM_USER + 7
-#define XM_TMS_ALLFILES_RETRIEVED_MESSAGE	XM_USER + 8
+#define XM_TMS_ALLFILES_RETRIEVED_MESSAGE	XM_USER + 8	
 #define XM_CUSTOMTICKSCENE_MESSAGE			XM_USER + 9
 #define XM_GETSLOTITEM_MESSAGE				XM_USER + 10
 
 typedef struct
 {
-	std::shared_ptr<ItemInstance> item;
+	shared_ptr<ItemInstance> item;
 
 	// Legacy values for compatibility
 	int iDataBitField;

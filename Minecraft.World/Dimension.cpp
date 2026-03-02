@@ -41,11 +41,11 @@ void Dimension::init()
 	}
 	else
 #endif
-	if (level->getLevelData()->getGenerator() == LevelType::lvl_flat)
+	if (level->getLevelData()->getGenerator() == LevelType::lvl_flat) 
 	{
 		biomeSource = new FixedBiomeSource(Biome::plains, 0.5f, 0.5f);
 	}
-	else
+	else 
 	{
 		biomeSource = new BiomeSource(level);
 	}
@@ -77,11 +77,11 @@ ChunkSource *Dimension::createRandomLevelSource() const
 	}
 	else
 #endif
-	if (levelType == LevelType::lvl_flat)
+	if (levelType == LevelType::lvl_flat) 
 	{
 		return new FlatLevelSource(level, level->getSeed(), level->getLevelData()->isGenerateMapFeatures());
-	}
-	else
+	} 
+	else 
 	{
 		return new RandomLevelSource(level, level->getSeed(), level->getLevelData()->isGenerateMapFeatures());
 	}
@@ -106,7 +106,7 @@ bool Dimension::isValidSpawn(int x, int z) const
     return true;
 }
 
-float Dimension::getTimeOfDay(int64_t time, float a) const
+float Dimension::getTimeOfDay(__int64 time, float a) const
 {
     int dayStep = (int) (time % Level::TICKS_PER_DAY);
     float td = (dayStep + a) / Level::TICKS_PER_DAY - 0.25f;
@@ -118,7 +118,7 @@ float Dimension::getTimeOfDay(int64_t time, float a) const
     return td;
 }
 
-int Dimension::getMoonPhase(int64_t time, float a) const
+int Dimension::getMoonPhase(__int64 time, float a) const
 {
     return ((int) (time / Level::TICKS_PER_DAY)) % 8;
 }
@@ -162,7 +162,7 @@ Vec3 *Dimension::getFogColor(float td, float a) const
     float br = Mth::cos(td * PI * 2) * 2 + 0.5f;
     if (br < 0.0f) br = 0.0f;
     if (br > 1.0f) br = 1.0f;
-
+	
 	unsigned int baseFogColour = Minecraft::GetInstance()->getColourTable()->getColor( eMinecraftColour_Default_Fog_Colour );
     float r = ((baseFogColour >> 16) & 0xff) / 255.0f;
     float g = ((baseFogColour >> 8) & 0xff) / 255.0f;
@@ -203,16 +203,16 @@ Pos *Dimension::getSpawnPos()
 	return NULL;
 }
 
-int Dimension::getSpawnYPosition()
+int Dimension::getSpawnYPosition() 
 {
-	if (levelType == LevelType::lvl_flat)
+	if (levelType == LevelType::lvl_flat) 
 	{
 		return 4;
 	}
 	return Level::genDepth / 2;
 }
 
-bool Dimension::hasBedrockFog()
+bool Dimension::hasBedrockFog() 
 {
 	// 4J-PB - turn off bedrock fog if the host player doesn't want it
 	if(app.GetGameHostOption(eGameHostOption_BedrockFog)==0)
@@ -223,9 +223,9 @@ bool Dimension::hasBedrockFog()
 	return (levelType != LevelType::lvl_flat && !hasCeiling);
 }
 
-double Dimension::getClearColorScale()
+double Dimension::getClearColorScale() 
 {
-	if (levelType == LevelType::lvl_flat)
+	if (levelType == LevelType::lvl_flat) 
 	{
 		return 1.0;
 	}

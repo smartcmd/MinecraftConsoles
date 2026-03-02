@@ -9,7 +9,7 @@ ShearsItem::ShearsItem(int itemId) : Item(itemId)
 	setMaxDamage(238);
 }
 
-bool ShearsItem::mineBlock(std::shared_ptr<ItemInstance> itemInstance, Level *level, int tile, int x, int y, int z, std::shared_ptr<Mob> owner)
+bool ShearsItem::mineBlock(shared_ptr<ItemInstance> itemInstance, Level *level, int tile, int x, int y, int z, shared_ptr<Mob> owner)
 {
     if (tile == Tile::leaves_Id || tile == Tile::web_Id || tile == Tile::tallgrass_Id || tile == Tile::vine_Id || tile == Tile::tripWire_Id)
 	{
@@ -24,7 +24,7 @@ bool ShearsItem::canDestroySpecial(Tile *tile)
 	return tile->id == Tile::web_Id || tile->id == Tile::redStoneDust_Id || tile->id == Tile::tripWire_Id;
 }
 
-float ShearsItem::getDestroySpeed(std::shared_ptr<ItemInstance> itemInstance, Tile *tile)
+float ShearsItem::getDestroySpeed(shared_ptr<ItemInstance> itemInstance, Tile *tile)
 {
     if (tile->id == Tile::web_Id || tile->id == Tile::leaves_Id)
 	{

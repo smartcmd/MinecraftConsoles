@@ -5,7 +5,7 @@ using namespace std;
 
 class MapItemSavedData;
 
-class MapItem : public ComplexItem
+class MapItem : public ComplexItem 
 {
 public:
 	static const int IMAGE_WIDTH = 128;
@@ -14,10 +14,10 @@ public:
 public: // 4J Stu - Was protected in Java, but then we can't access it where we need it
 	MapItem(int id);
 
-	static std::shared_ptr<MapItemSavedData> getSavedData(short idNum, Level *level);
-	std::shared_ptr<MapItemSavedData> getSavedData(std::shared_ptr<ItemInstance> itemInstance, Level *level);
-	void update(Level *level, std::shared_ptr<Entity> player, std::shared_ptr<MapItemSavedData> data);
-	virtual void inventoryTick(std::shared_ptr<ItemInstance> itemInstance, Level *level, std::shared_ptr<Entity> owner, int slot, bool selected);
-	virtual void onCraftedBy(std::shared_ptr<ItemInstance> itemInstance, Level *level, std::shared_ptr<Player> player);
-	std::shared_ptr<Packet> getUpdatePacket(std::shared_ptr<ItemInstance> itemInstance, Level *level, std::shared_ptr<Player> player);
+	static shared_ptr<MapItemSavedData> getSavedData(short idNum, Level *level);
+	shared_ptr<MapItemSavedData> getSavedData(shared_ptr<ItemInstance> itemInstance, Level *level);
+	void update(Level *level, shared_ptr<Entity> player, shared_ptr<MapItemSavedData> data);
+	virtual void inventoryTick(shared_ptr<ItemInstance> itemInstance, Level *level, shared_ptr<Entity> owner, int slot, bool selected);
+	virtual void onCraftedBy(shared_ptr<ItemInstance> itemInstance, Level *level, shared_ptr<Player> player);
+	shared_ptr<Packet> getUpdatePacket(shared_ptr<ItemInstance> itemInstance, Level *level, shared_ptr<Player> player);
 };

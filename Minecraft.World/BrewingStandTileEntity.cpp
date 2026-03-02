@@ -79,7 +79,7 @@ bool BrewingStandTileEntity::isBrewable()
 	{
         return false;
     }
-    std::shared_ptr<ItemInstance> ingredient = items[INGREDIENT_SLOT];
+    shared_ptr<ItemInstance> ingredient = items[INGREDIENT_SLOT];
     if (PotionBrewing::SIMPLIFIED_BREWING)
 	{
         if (!Item::items[ingredient->id]->hasPotionBrewingFormula())
@@ -135,7 +135,7 @@ bool BrewingStandTileEntity::isBrewable()
     }
 	else
 	{
-        if (!Item::items[ingredient->id]->hasPotionBrewingFormula() && ingredient->id != Item::bucket_water_Id && ingredient->id != Item::netherStalkSeeds_Id)
+        if (!Item::items[ingredient->id]->hasPotionBrewingFormula() && ingredient->id != Item::bucket_water_Id && ingredient->id != Item::netherStalkSeeds_Id) 
 		{
             return false;
         }
@@ -172,7 +172,7 @@ void BrewingStandTileEntity::doBrew()
         return;
     }
 
-    std::shared_ptr<ItemInstance> ingredient = items[INGREDIENT_SLOT];
+    shared_ptr<ItemInstance> ingredient = items[INGREDIENT_SLOT];
 
     if (PotionBrewing::SIMPLIFIED_BREWING)
 	{
@@ -233,14 +233,14 @@ void BrewingStandTileEntity::doBrew()
             }
 			else if (isWater && items[dest] != NULL && items[dest]->id == Item::glassBottle_Id)
 			{
-                items[dest] = std::shared_ptr<ItemInstance>(new ItemInstance(Item::potion));
+                items[dest] = shared_ptr<ItemInstance>(new ItemInstance(Item::potion));
             }
         }
     }
 
     if (Item::items[ingredient->id]->hasCraftingRemainingItem())
 	{
-        items[INGREDIENT_SLOT] = std::shared_ptr<ItemInstance>(new ItemInstance(Item::items[ingredient->id]->getCraftingRemainingItem()));
+        items[INGREDIENT_SLOT] = shared_ptr<ItemInstance>(new ItemInstance(Item::items[ingredient->id]->getCraftingRemainingItem()));
     }
 	else
 	{
@@ -252,7 +252,7 @@ void BrewingStandTileEntity::doBrew()
     }
 }
 
-int BrewingStandTileEntity::applyIngredient(int currentBrew, std::shared_ptr<ItemInstance> ingredient)
+int BrewingStandTileEntity::applyIngredient(int currentBrew, shared_ptr<ItemInstance> ingredient)
 {
 	if (ingredient == NULL)
 	{
@@ -278,7 +278,7 @@ int BrewingStandTileEntity::applyIngredient(int currentBrew, std::shared_ptr<Ite
 	}
 	return currentBrew;
 }
-
+   
 void BrewingStandTileEntity::load(CompoundTag *base)
 {
     TileEntity::load(base);
@@ -305,7 +305,7 @@ void BrewingStandTileEntity::save(CompoundTag *base)
 
     for (int i = 0; i < items.length; i++)
 	{
-        if (items[i] != NULL)
+        if (items[i] != NULL) 
 		{
             CompoundTag *tag = new CompoundTag();
             tag->putByte(L"Slot", (byte) i);
@@ -316,7 +316,7 @@ void BrewingStandTileEntity::save(CompoundTag *base)
     base->put(L"Items", listTag);
 }
 
-std::shared_ptr<ItemInstance> BrewingStandTileEntity::getItem(unsigned int slot)
+shared_ptr<ItemInstance> BrewingStandTileEntity::getItem(unsigned int slot)
 {
 	if (slot >= 0 && slot < items.length)
 	{
@@ -325,7 +325,7 @@ std::shared_ptr<ItemInstance> BrewingStandTileEntity::getItem(unsigned int slot)
 	return nullptr;
 }
 
-std::shared_ptr<ItemInstance> BrewingStandTileEntity::removeItem(unsigned int slot, int count)
+shared_ptr<ItemInstance> BrewingStandTileEntity::removeItem(unsigned int slot, int count)
 {
 	// 4J Stu - Changed the implementation of this function to be the same as ChestTileEntity to enable the "Pickup Half"
 	// option on the ingredients slot
@@ -333,18 +333,18 @@ std::shared_ptr<ItemInstance> BrewingStandTileEntity::removeItem(unsigned int sl
 
 	if (slot >= 0 && slot < items.length && items[slot] != NULL)
 	{
-		if (items[slot]->count <= count)
+		if (items[slot]->count <= count) 
 		{
-			std::shared_ptr<ItemInstance> item = items[slot];
+			shared_ptr<ItemInstance> item = items[slot];
 			items[slot] = nullptr;
 			this->setChanged();
 			// 4J Stu - Fix for duplication glitch
 			if(item->count <= 0) return nullptr;
 			return item;
-		}
-		else
+		} 
+		else 
 		{
-			std::shared_ptr<ItemInstance> i = items[slot]->remove(count);
+			shared_ptr<ItemInstance> i = items[slot]->remove(count);
 			if (items[slot]->count == 0) items[slot] = nullptr;
 			this->setChanged();
 			// 4J Stu - Fix for duplication glitch
@@ -354,19 +354,19 @@ std::shared_ptr<ItemInstance> BrewingStandTileEntity::removeItem(unsigned int sl
 	}
 	return nullptr;
 }
-
-std::shared_ptr<ItemInstance> BrewingStandTileEntity::removeItemNoUpdate(int slot)
+	
+shared_ptr<ItemInstance> BrewingStandTileEntity::removeItemNoUpdate(int slot)
 {
 	if (slot >= 0 && slot < items.length)
 	{
-		std::shared_ptr<ItemInstance> item = items[slot];
+		shared_ptr<ItemInstance> item = items[slot];
 		items[slot] = nullptr;
 		return item;
 	}
 	return nullptr;
 }
 
-void BrewingStandTileEntity::setItem(unsigned int slot, std::shared_ptr<ItemInstance> item)
+void BrewingStandTileEntity::setItem(unsigned int slot, shared_ptr<ItemInstance> item)
 {
     if (slot >= 0 && slot < items.length)
 	{
@@ -379,7 +379,7 @@ int BrewingStandTileEntity::getMaxStackSize()
 	return 1;
 }
 
-bool BrewingStandTileEntity::stillValid(std::shared_ptr<Player> player)
+bool BrewingStandTileEntity::stillValid(shared_ptr<Player> player)
 {
     if (level->getTileEntity(x, y, z) != shared_from_this()) return false;
     if (player->distanceToSqr(x + 0.5, y + 0.5, z + 0.5) > 8 * 8) return false;
@@ -413,9 +413,9 @@ int BrewingStandTileEntity::getPotionBits()
 }
 
 // 4J Added
-std::shared_ptr<TileEntity> BrewingStandTileEntity::clone()
+shared_ptr<TileEntity> BrewingStandTileEntity::clone()
 {
-	std::shared_ptr<BrewingStandTileEntity> result = std::shared_ptr<BrewingStandTileEntity>( new BrewingStandTileEntity() );
+	shared_ptr<BrewingStandTileEntity> result = shared_ptr<BrewingStandTileEntity>( new BrewingStandTileEntity() );
 	TileEntity::clone(result);
 
 	result->brewTime = brewTime;

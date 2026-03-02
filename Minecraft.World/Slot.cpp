@@ -5,7 +5,7 @@
 #include "net.minecraft.world.item.crafting.h"
 #include "Slot.h"
 
-Slot::Slot(std::shared_ptr<Container> container, int slot, int x, int y) : container( container ), slot( slot )
+Slot::Slot(shared_ptr<Container> container, int slot, int x, int y) : container( container ), slot( slot )
 {
 	this->x = x;
 	this->y = y;
@@ -13,7 +13,7 @@ Slot::Slot(std::shared_ptr<Container> container, int slot, int x, int y) : conta
 	this->index = 0;
 }
 
-void Slot::onQuickCraft(std::shared_ptr<ItemInstance> picked, std::shared_ptr<ItemInstance> original)
+void Slot::onQuickCraft(shared_ptr<ItemInstance> picked, shared_ptr<ItemInstance> original)
 {
 	if (picked == NULL || original == NULL)
 	{
@@ -31,18 +31,18 @@ void Slot::onQuickCraft(std::shared_ptr<ItemInstance> picked, std::shared_ptr<It
 }
 
 
-void Slot::onQuickCraft(std::shared_ptr<ItemInstance> picked, int count)
+void Slot::onQuickCraft(shared_ptr<ItemInstance> picked, int count)
 {
 }
 
-void Slot::checkTakeAchievements(std::shared_ptr<ItemInstance> picked)
+void Slot::checkTakeAchievements(shared_ptr<ItemInstance> picked)
 {
 }
 
 void Slot::swap(Slot *other)
 {
-	std::shared_ptr<ItemInstance> item1 = container->getItem(slot);
-	std::shared_ptr<ItemInstance> item2 = other->container->getItem(other->slot);
+	shared_ptr<ItemInstance> item1 = container->getItem(slot);
+	shared_ptr<ItemInstance> item2 = other->container->getItem(other->slot);
 
 	if (item1 != NULL && item1->count > other->getMaxStackSize())
 	{
@@ -60,17 +60,17 @@ void Slot::swap(Slot *other)
 	setChanged();
 }
 
-void Slot::onTake(std::shared_ptr<Player> player, std::shared_ptr<ItemInstance> carried)
+void Slot::onTake(shared_ptr<Player> player, shared_ptr<ItemInstance> carried)
 {
 	setChanged();
 }
 
-bool Slot::mayPlace(std::shared_ptr<ItemInstance> item)
+bool Slot::mayPlace(shared_ptr<ItemInstance> item)
 {
 	return true;
 }
 
-std::shared_ptr<ItemInstance> Slot::getItem()
+shared_ptr<ItemInstance> Slot::getItem()
 {
 	return container->getItem(slot);
 }
@@ -80,7 +80,7 @@ bool Slot::hasItem()
 	return getItem() != NULL;
 }
 
-void Slot::set(std::shared_ptr<ItemInstance> item)
+void Slot::set(shared_ptr<ItemInstance> item)
 {
 	container->setItem(slot, item);
 	setChanged();
@@ -101,24 +101,24 @@ Icon *Slot::getNoItemIcon()
 	return NULL;
 }
 
-std::shared_ptr<ItemInstance> Slot::remove(int c)
+shared_ptr<ItemInstance> Slot::remove(int c)
 {
 	return container->removeItem(slot, c);
 }
 
-bool Slot::isAt(std::shared_ptr<Container> c, int s)
+bool Slot::isAt(shared_ptr<Container> c, int s)
 {
 	return c == container && s == slot;
 }
 
-bool Slot::mayPickup(std::shared_ptr<Player> player)
+bool Slot::mayPickup(shared_ptr<Player> player)
 {
 	return true;
 }
 
-bool Slot::mayCombine(std::shared_ptr<ItemInstance> second)
+bool Slot::mayCombine(shared_ptr<ItemInstance> second)
 {
-	std::shared_ptr<ItemInstance> first = getItem();
+	shared_ptr<ItemInstance> first = getItem();
 
 	if(first == NULL || second == NULL) return false;
 
@@ -138,12 +138,12 @@ bool Slot::mayCombine(std::shared_ptr<ItemInstance> second)
 	return false;
 }
 
-std::shared_ptr<ItemInstance> Slot::combine(std::shared_ptr<ItemInstance> item)
+shared_ptr<ItemInstance> Slot::combine(shared_ptr<ItemInstance> item)
 {
-	std::shared_ptr<ItemInstance> result = nullptr;
-	std::shared_ptr<ItemInstance> first = getItem();
+	shared_ptr<ItemInstance> result = nullptr;
+	shared_ptr<ItemInstance> first = getItem();
 
-	std::shared_ptr<CraftingContainer> craftSlots = std::shared_ptr<CraftingContainer>( new CraftingContainer(NULL, 2, 2) );
+	shared_ptr<CraftingContainer> craftSlots = shared_ptr<CraftingContainer>( new CraftingContainer(NULL, 2, 2) );
 	craftSlots->setItem(0, item);
 	craftSlots->setItem(1, first);
 

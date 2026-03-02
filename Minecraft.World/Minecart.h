@@ -49,7 +49,7 @@ protected:
 	virtual void defineSynchedData();
 
 public:
-	virtual AABB *getCollideAgainstBox(std::shared_ptr<Entity> entity);
+	virtual AABB *getCollideAgainstBox(shared_ptr<Entity> entity);
 	virtual AABB *getCollideBox();
 	virtual bool isPushable();
 
@@ -75,16 +75,16 @@ protected:
 
 public:
 	virtual float getShadowHeightOffs();
-	virtual void push(std::shared_ptr<Entity> e);
+	virtual void push(shared_ptr<Entity> e);
 	virtual unsigned int getContainerSize();
-	virtual std::shared_ptr<ItemInstance> getItem(unsigned int slot);
-	virtual std::shared_ptr<ItemInstance> removeItem(unsigned int slot, int count);
-	virtual std::shared_ptr<ItemInstance> removeItemNoUpdate(int slot);
-	virtual void setItem(unsigned int slot, std::shared_ptr<ItemInstance> item);
+	virtual shared_ptr<ItemInstance> getItem(unsigned int slot);
+	virtual shared_ptr<ItemInstance> removeItem(unsigned int slot, int count);
+	virtual shared_ptr<ItemInstance> removeItemNoUpdate(int slot);
+	virtual void setItem(unsigned int slot, shared_ptr<ItemInstance> item);
 	int getName();
 	virtual int getMaxStackSize();
 	virtual void setChanged();
-	virtual bool interact(std::shared_ptr<Player> player);
+	virtual bool interact(shared_ptr<Player> player);
 	virtual float getLootContent();
 
 private:
@@ -95,7 +95,7 @@ private:
 public:
 	virtual void lerpTo(double x, double y, double z, float yRot, float xRot, int steps);
 	virtual void lerpMotion(double xd, double yd, double zd);
-	virtual bool stillValid(std::shared_ptr<Player> player);
+	virtual bool stillValid(shared_ptr<Player> player);
 
 protected:
 	bool hasFuel();

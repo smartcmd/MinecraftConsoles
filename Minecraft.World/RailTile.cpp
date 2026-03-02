@@ -397,7 +397,7 @@ HitResult *RailTile::clip(Level *level, int xt, int yt, int zt, Vec3 *a, Vec3 *b
 	return Tile::clip(level, xt, yt, zt, a, b);
 }
 
-void RailTile::updateShape(LevelSource *level, int x, int y, int z, int forceData, std::shared_ptr<TileEntity> forceEntity) // 4J added forceData, forceEntity param
+void RailTile::updateShape(LevelSource *level, int x, int y, int z, int forceData, shared_ptr<TileEntity> forceEntity) // 4J added forceData, forceEntity param
 {
 	int data = level->getData(x, y, z);
 	if (data >= 2 && data <= 5)

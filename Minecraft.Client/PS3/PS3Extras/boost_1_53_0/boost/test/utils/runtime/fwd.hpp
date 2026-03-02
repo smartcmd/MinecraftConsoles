@@ -1,6 +1,6 @@
 //  (C) Copyright Gennadiy Rozental 2005-2008.
 //  Distributed under the Boost Software License, Version 1.0.
-//  (See accompanying file LICENSE_1_0.txt or copy at
+//  (See accompanying file LICENSE_1_0.txt or copy at 
 //  http://www.boost.org/LICENSE_1_0.txt)
 
 //  See http://www.boost.org/libs/test for the library home page.
@@ -19,7 +19,7 @@
 #include <boost/test/utils/runtime/config.hpp>
 
 // Boost
-#include <boost/std::shared_ptr.hpp>
+#include <boost/shared_ptr.hpp>
 
 namespace boost {
 
@@ -28,8 +28,8 @@ namespace BOOST_RT_PARAM_NAMESPACE {
 class parameter;
 
 class argument;
-typedef std::shared_ptr<argument> argument_ptr;
-typedef std::shared_ptr<argument const> const_argument_ptr;
+typedef shared_ptr<argument> argument_ptr;
+typedef shared_ptr<argument const> const_argument_ptr;
 
 template<typename T> class value_interpreter;
 template<typename T> class typed_argument;

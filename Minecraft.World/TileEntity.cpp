@@ -89,14 +89,14 @@ void TileEntity::tick()
 {
 }
 
-std::shared_ptr<TileEntity> TileEntity::loadStatic(CompoundTag *tag)
+shared_ptr<TileEntity> TileEntity::loadStatic(CompoundTag *tag)
 {
-	std::shared_ptr<TileEntity> entity = nullptr;
+	shared_ptr<TileEntity> entity = nullptr;
 
 	//try
 	//{
 		AUTO_VAR(it, idCreateMap.find(tag->getString(L"id")));
-		if (it != idCreateMap.end() ) entity = std::shared_ptr<TileEntity>(it->second());
+		if (it != idCreateMap.end() ) entity = shared_ptr<TileEntity>(it->second());
 	//}
 	//catch (Exception e)
 	//{
@@ -152,7 +152,7 @@ Tile *TileEntity::getTile()
 	return tile;
 }
 
-std::shared_ptr<Packet> TileEntity::getUpdatePacket()
+shared_ptr<Packet> TileEntity::getUpdatePacket()
 {
 	return nullptr;
 }
@@ -200,7 +200,7 @@ void TileEntity::upgradeRenderRemoveStage()
 }
 
 // 4J Added
-void TileEntity::clone(std::shared_ptr<TileEntity> tileEntity)
+void TileEntity::clone(shared_ptr<TileEntity> tileEntity)
 {
 	tileEntity->level = this->level;
 	tileEntity->x = this->x;

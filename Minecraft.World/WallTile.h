@@ -22,7 +22,7 @@ public:
 	bool isCubeShaped();
 	bool isPathfindable(LevelSource *level, int x, int y, int z);
 	bool isSolidRender(bool isServerLevel = false);
-	void updateShape(LevelSource *level, int x, int y, int z, int forceData = -1, std::shared_ptr<TileEntity> forceEntity = std::shared_ptr<TileEntity>());
+	void updateShape(LevelSource *level, int x, int y, int z, int forceData = -1, shared_ptr<TileEntity> forceEntity = shared_ptr<TileEntity>());
 	AABB *getAABB(Level *level, int x, int y, int z);
 	bool connectsTo(LevelSource *level, int x, int y, int z);
 	int getSpawnResourcesAuxValue(int data);

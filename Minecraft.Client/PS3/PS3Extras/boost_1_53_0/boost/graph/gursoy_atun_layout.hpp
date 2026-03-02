@@ -26,13 +26,13 @@
 #include <boost/graph/properties.hpp>
 #include <boost/random/uniform_01.hpp>
 #include <boost/random/linear_congruential.hpp>
-#include <boost/std::shared_ptr.hpp>
+#include <boost/shared_ptr.hpp>
 #include <boost/graph/breadth_first_search.hpp>
 #include <boost/graph/dijkstra_shortest_paths.hpp>
 #include <boost/graph/named_function_params.hpp>
 #include <boost/graph/topology.hpp>
 
-namespace boost {
+namespace boost { 
 
 namespace detail {
 
@@ -62,12 +62,12 @@ struct update_position_visitor {
                           double distance_limit,
                           double learning_constant,
                           double falloff_ratio):
-    position_map(position_map), node_distance(node_distance),
+    position_map(position_map), node_distance(node_distance), 
     space(space),
     input_vector(input_vector), distance_limit(distance_limit),
     learning_constant(learning_constant), falloff_ratio(falloff_ratio) {}
 
-  void operator()(vertex_descriptor v, const Graph&) const
+  void operator()(vertex_descriptor v, const Graph&) const 
   {
 #ifndef BOOST_NO_STDC_NAMESPACE
     using std::pow;
@@ -77,7 +77,7 @@ struct update_position_visitor {
       BOOST_THROW_EXCEPTION(over_distance_limit());
     Point old_position = get(position_map, v);
     double distance = get(node_distance, v);
-    double fraction =
+    double fraction = 
       learning_constant * pow(falloff_ratio, distance * distance);
     put(position_map, v,
         space.move_position_toward(old_position, fraction, input_vector));
@@ -88,7 +88,7 @@ template<typename EdgeWeightMap>
 struct gursoy_shortest
 {
   template<typename Graph, typename NodeDistanceMap, typename UpdatePosition>
-  static inline void
+  static inline void 
   run(const Graph& g, typename graph_traits<Graph>::vertex_descriptor s,
       NodeDistanceMap node_distance,  UpdatePosition& update_position,
       EdgeWeightMap weight)
@@ -104,7 +104,7 @@ template<>
 struct gursoy_shortest<dummy_property_map>
 {
   template<typename Graph, typename NodeDistanceMap, typename UpdatePosition>
-  static inline void
+  static inline void 
   run(const Graph& g, typename graph_traits<Graph>::vertex_descriptor s,
       NodeDistanceMap node_distance,  UpdatePosition& update_position,
       dummy_property_map)
@@ -119,11 +119,11 @@ struct gursoy_shortest<dummy_property_map>
 } // namespace detail
 
 template <typename VertexListAndIncidenceGraph,  typename Topology,
-          typename PositionMap, typename Diameter, typename VertexIndexMap,
+          typename PositionMap, typename Diameter, typename VertexIndexMap, 
           typename EdgeWeightMap>
-void
+void 
 gursoy_atun_step
-  (const VertexListAndIncidenceGraph& graph,
+  (const VertexListAndIncidenceGraph& graph,  
    const Topology& space,
    PositionMap position,
    Diameter diameter,
@@ -143,21 +143,21 @@ gursoy_atun_step
   typedef typename Topology::point_type point_type;
   vertex_iterator i, iend;
   std::vector<double> distance_from_input_vector(num_vertices(graph));
-  typedef boost::iterator_property_map<std::vector<double>::iterator,
+  typedef boost::iterator_property_map<std::vector<double>::iterator, 
                                        VertexIndexMap,
                                        double, double&>
     DistanceFromInputMap;
   DistanceFromInputMap distance_from_input(distance_from_input_vector.begin(),
                                            vertex_index_map);
   std::vector<double> node_distance_map_vector(num_vertices(graph));
-  typedef boost::iterator_property_map<std::vector<double>::iterator,
+  typedef boost::iterator_property_map<std::vector<double>::iterator, 
                                        VertexIndexMap,
                                        double, double&>
     NodeDistanceMap;
   NodeDistanceMap node_distance(node_distance_map_vector.begin(),
                                 vertex_index_map);
   point_type input_vector = space.random_point();
-  vertex_descriptor min_distance_loc
+  vertex_descriptor min_distance_loc 
     = graph_traits<VertexListAndIncidenceGraph>::null_vertex();
   double min_distance = 0.0;
   bool min_distance_unset = true;
@@ -173,24 +173,24 @@ gursoy_atun_step
   BOOST_ASSERT (!min_distance_unset); // Graph must have at least one vertex
   boost::detail::update_position_visitor<
       PositionMap, NodeDistanceMap, Topology,
-      VertexListAndIncidenceGraph>
+      VertexListAndIncidenceGraph> 
     update_position(position, node_distance, space,
-                    input_vector, diameter, learning_constant,
+                    input_vector, diameter, learning_constant, 
                     exp(-1. / (2 * diameter * diameter)));
   std::fill(node_distance_map_vector.begin(), node_distance_map_vector.end(), 0);
   try {
     typedef detail::gursoy_shortest<EdgeWeightMap> shortest;
     shortest::run(graph, min_distance_loc, node_distance, update_position,
-                  weight);
-  } catch (detail::over_distance_limit) {
-    /* Thrown to break out of BFS or Dijkstra early */
+                  weight);    
+  } catch (detail::over_distance_limit) { 
+    /* Thrown to break out of BFS or Dijkstra early */ 
   }
 }
 
 template <typename VertexListAndIncidenceGraph,  typename Topology,
-          typename PositionMap, typename VertexIndexMap,
+          typename PositionMap, typename VertexIndexMap, 
           typename EdgeWeightMap>
-void gursoy_atun_refine(const VertexListAndIncidenceGraph& graph,
+void gursoy_atun_refine(const VertexListAndIncidenceGraph& graph,  
                         const Topology& space,
                         PositionMap position,
                         int nsteps,
@@ -199,7 +199,7 @@ void gursoy_atun_refine(const VertexListAndIncidenceGraph& graph,
                         double learning_constant_initial,
                         double learning_constant_final,
                         VertexIndexMap vertex_index_map,
-                        EdgeWeightMap weight)
+                        EdgeWeightMap weight) 
 {
 #ifndef BOOST_NO_STDC_NAMESPACE
   using std::pow;
@@ -213,17 +213,17 @@ void gursoy_atun_refine(const VertexListAndIncidenceGraph& graph,
   typedef typename Topology::point_type point_type;
   vertex_iterator i, iend;
   double diameter_ratio = (double)diameter_final / diameter_initial;
-  double learning_constant_ratio =
+  double learning_constant_ratio = 
     learning_constant_final / learning_constant_initial;
   std::vector<double> distance_from_input_vector(num_vertices(graph));
-  typedef boost::iterator_property_map<std::vector<double>::iterator,
+  typedef boost::iterator_property_map<std::vector<double>::iterator, 
                                        VertexIndexMap,
                                        double, double&>
     DistanceFromInputMap;
   DistanceFromInputMap distance_from_input(distance_from_input_vector.begin(),
                                            vertex_index_map);
   std::vector<int> node_distance_map_vector(num_vertices(graph));
-  typedef boost::iterator_property_map<std::vector<int>::iterator,
+  typedef boost::iterator_property_map<std::vector<int>::iterator, 
                                        VertexIndexMap, double, double&>
     NodeDistanceMap;
   NodeDistanceMap node_distance(node_distance_map_vector.begin(),
@@ -231,17 +231,17 @@ void gursoy_atun_refine(const VertexListAndIncidenceGraph& graph,
   for (int round = 0; round < nsteps; ++round) {
     double part_done = (double)round / (nsteps - 1);
     int diameter = (int)(diameter_initial * pow(diameter_ratio, part_done));
-    double learning_constant =
+    double learning_constant = 
       learning_constant_initial * pow(learning_constant_ratio, part_done);
-    gursoy_atun_step(graph, space, position, diameter, learning_constant,
+    gursoy_atun_step(graph, space, position, diameter, learning_constant, 
                      vertex_index_map, weight);
   }
 }
 
 template <typename VertexListAndIncidenceGraph,  typename Topology,
-          typename PositionMap, typename VertexIndexMap,
+          typename PositionMap, typename VertexIndexMap, 
           typename EdgeWeightMap>
-void gursoy_atun_layout(const VertexListAndIncidenceGraph& graph,
+void gursoy_atun_layout(const VertexListAndIncidenceGraph& graph,  
                         const Topology& space,
                         PositionMap position,
                         int nsteps,
@@ -260,14 +260,14 @@ void gursoy_atun_layout(const VertexListAndIncidenceGraph& graph,
   }
   gursoy_atun_refine(graph, space,
                      position, nsteps,
-                     diameter_initial, diameter_final,
+                     diameter_initial, diameter_final, 
                      learning_constant_initial, learning_constant_final,
                      vertex_index_map, weight);
 }
 
 template <typename VertexListAndIncidenceGraph,  typename Topology,
           typename PositionMap, typename VertexIndexMap>
-void gursoy_atun_layout(const VertexListAndIncidenceGraph& graph,
+void gursoy_atun_layout(const VertexListAndIncidenceGraph& graph,  
                         const Topology& space,
                         PositionMap position,
                         int nsteps,
@@ -277,15 +277,15 @@ void gursoy_atun_layout(const VertexListAndIncidenceGraph& graph,
                         double learning_constant_final,
                         VertexIndexMap vertex_index_map)
 {
-  gursoy_atun_layout(graph, space, position, nsteps,
-                     diameter_initial, diameter_final,
-                     learning_constant_initial, learning_constant_final,
+  gursoy_atun_layout(graph, space, position, nsteps, 
+                     diameter_initial, diameter_final, 
+                     learning_constant_initial, learning_constant_final, 
                      vertex_index_map, dummy_property_map());
 }
 
 template <typename VertexListAndIncidenceGraph, typename Topology,
           typename PositionMap>
-void gursoy_atun_layout(const VertexListAndIncidenceGraph& graph,
+void gursoy_atun_layout(const VertexListAndIncidenceGraph& graph,  
                         const Topology& space,
                         PositionMap position,
                         int nsteps,
@@ -293,15 +293,15 @@ void gursoy_atun_layout(const VertexListAndIncidenceGraph& graph,
                         double diameter_final = 1.0,
                         double learning_constant_initial = 0.8,
                         double learning_constant_final = 0.2)
-{
+{ 
   gursoy_atun_layout(graph, space, position, nsteps, diameter_initial,
                      diameter_final, learning_constant_initial,
-                     learning_constant_final, get(vertex_index, graph));
+                     learning_constant_final, get(vertex_index, graph)); 
 }
 
 template <typename VertexListAndIncidenceGraph, typename Topology,
           typename PositionMap>
-void gursoy_atun_layout(const VertexListAndIncidenceGraph& graph,
+void gursoy_atun_layout(const VertexListAndIncidenceGraph& graph,  
                         const Topology& space,
                         PositionMap position,
                         int nsteps)
@@ -310,13 +310,13 @@ void gursoy_atun_layout(const VertexListAndIncidenceGraph& graph,
   using std::sqrt;
 #endif
 
-  gursoy_atun_layout(graph, space, position, nsteps,
+  gursoy_atun_layout(graph, space, position, nsteps, 
                      sqrt((double)num_vertices(graph)));
 }
 
 template <typename VertexListAndIncidenceGraph, typename Topology,
           typename PositionMap>
-void gursoy_atun_layout(const VertexListAndIncidenceGraph& graph,
+void gursoy_atun_layout(const VertexListAndIncidenceGraph& graph,  
                         const Topology& space,
                         PositionMap position)
 {
@@ -325,8 +325,8 @@ void gursoy_atun_layout(const VertexListAndIncidenceGraph& graph,
 
 template<typename VertexListAndIncidenceGraph, typename Topology,
          typename PositionMap, typename P, typename T, typename R>
-void
-gursoy_atun_layout(const VertexListAndIncidenceGraph& graph,
+void 
+gursoy_atun_layout(const VertexListAndIncidenceGraph& graph,  
                    const Topology& space,
                    PositionMap position,
                    const bgl_named_params<P,T,R>& params)
@@ -340,17 +340,17 @@ gursoy_atun_layout(const VertexListAndIncidenceGraph& graph,
   gursoy_atun_layout(graph, space, position,
                      choose_param(get_param(params, iterations_t()),
                                   num_vertices(graph)),
-                     choose_param(get_param(params, diameter_range_t()),
+                     choose_param(get_param(params, diameter_range_t()), 
                                   diam).first,
-                     choose_param(get_param(params, diameter_range_t()),
+                     choose_param(get_param(params, diameter_range_t()), 
                                   diam).second,
-                     choose_param(get_param(params, learning_constant_range_t()),
+                     choose_param(get_param(params, learning_constant_range_t()), 
                                   learn).first,
-                     choose_param(get_param(params, learning_constant_range_t()),
+                     choose_param(get_param(params, learning_constant_range_t()), 
                                   learn).second,
                      choose_const_pmap(get_param(params, vertex_index), graph,
                                        vertex_index),
-                     choose_param(get_param(params, edge_weight),
+                     choose_param(get_param(params, edge_weight), 
                                   dummy_property_map()));
 }
 

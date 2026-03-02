@@ -40,12 +40,12 @@ public:
 	byte yRot,xRot;	// 4J added
 
 private:
-	void _init(std::shared_ptr<Entity> e, int type, int data, int xp, int yp, int zp, int yRotp, int xRotp );
+	void _init(shared_ptr<Entity> e, int type, int data, int xp, int yp, int zp, int yRotp, int xRotp );
 
 public:
 	AddEntityPacket();
-    AddEntityPacket(std::shared_ptr<Entity> e, int type, int yRotp, int xRotp, int xp, int yp, int zp);
-	AddEntityPacket(std::shared_ptr<Entity> e, int type, int data, int yRotp, int xRotp, int xp, int yp, int zp );
+    AddEntityPacket(shared_ptr<Entity> e, int type, int yRotp, int xRotp, int xp, int yp, int zp);
+	AddEntityPacket(shared_ptr<Entity> e, int type, int data, int yRotp, int xRotp, int xp, int yp, int zp );
 
 	virtual void read(DataInputStream *dis);
 	virtual void write(DataOutputStream *dos);
@@ -53,6 +53,6 @@ public:
 	virtual int getEstimatedSize();
 
 public:
-	static std::shared_ptr<Packet> create() { return std::shared_ptr<Packet>(new AddEntityPacket()); }
+	static shared_ptr<Packet> create() { return shared_ptr<Packet>(new AddEntityPacket()); }
 	virtual int getId() { return 23; }
 };

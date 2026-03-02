@@ -12,7 +12,7 @@ class File;
 
 class ConsoleSaveFile;
 
-class LevelStorage
+class LevelStorage 
 {
 public:
 	static const wstring NETHER_FOLDER;
@@ -21,7 +21,7 @@ public:
     virtual LevelData *prepareLevel() = 0;
     virtual void checkSession() = 0;
     virtual ChunkStorage *createChunkStorage(Dimension *dimension) = 0;
-    virtual void saveLevelData(LevelData *levelData, vector<std::shared_ptr<Player> > *players) = 0;
+    virtual void saveLevelData(LevelData *levelData, vector<shared_ptr<Player> > *players) = 0;
     virtual void saveLevelData(LevelData *levelData) = 0;
     virtual PlayerIO *getPlayerIO() = 0;
     virtual void closeAll() = 0;

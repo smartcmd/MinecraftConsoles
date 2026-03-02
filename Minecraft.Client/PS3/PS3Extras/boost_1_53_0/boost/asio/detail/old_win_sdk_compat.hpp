@@ -41,7 +41,7 @@ namespace detail {
 enum
 {
   sockaddr_storage_maxsize = 128, // Maximum size.
-  sockaddr_storage_alignsize = (sizeof(int64_t)), // Desired alignment.
+  sockaddr_storage_alignsize = (sizeof(__int64)), // Desired alignment.
   sockaddr_storage_pad1size = (sockaddr_storage_alignsize - sizeof(short)),
   sockaddr_storage_pad2size = (sockaddr_storage_maxsize -
       (sizeof(short) + sockaddr_storage_pad1size + sockaddr_storage_alignsize))
@@ -51,7 +51,7 @@ struct sockaddr_storage_emulation
 {
   short ss_family;
   char __ss_pad1[sockaddr_storage_pad1size];
-  int64_t __ss_align;
+  __int64 __ss_align;
   char __ss_pad2[sockaddr_storage_pad2size];
 };
 

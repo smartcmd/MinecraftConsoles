@@ -4,7 +4,7 @@
 
 
 
-DelayedRelease::DelayedRelease(Level *level, std::shared_ptr<Entity> toRelease, int delay) : Entity(level)
+DelayedRelease::DelayedRelease(Level *level, shared_ptr<Entity> toRelease, int delay) : Entity(level)
 {
 	moveTo(toRelease->x, toRelease->y, toRelease->z, 0, 0);
 	this->toRelease = toRelease;
@@ -37,7 +37,7 @@ void DelayedRelease::defineSynchedData()
 {
 }
 
-void DelayedRelease::readAdditionalSaveData(CompoundTag *tag)
+void DelayedRelease::readAdditionalSaveData(CompoundTag *tag) 
 {
 }
 

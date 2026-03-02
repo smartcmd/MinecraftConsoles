@@ -44,7 +44,7 @@ vector<LevelSummary *> *McRegionLevelStorageSource::getLevelList()
 	{
 		file = *it; //subFolders->at(i);
 
-		if (file->isDirectory())
+		if (file->isDirectory()) 
 		{
 			continue;
 		}
@@ -74,13 +74,13 @@ void McRegionLevelStorageSource::clearAll()
 {
 }
 
-std::shared_ptr<LevelStorage> McRegionLevelStorageSource::selectLevel(ConsoleSaveFile *saveFile, const wstring& levelId, bool createPlayerDir)
+shared_ptr<LevelStorage> McRegionLevelStorageSource::selectLevel(ConsoleSaveFile *saveFile, const wstring& levelId, bool createPlayerDir) 
 {
 	//        return new LevelStorageProfilerDecorator(new McRegionLevelStorage(baseDir, levelId, createPlayerDir));
-	return std::shared_ptr<LevelStorage>(new McRegionLevelStorage(saveFile, baseDir, levelId, createPlayerDir));
+	return shared_ptr<LevelStorage>(new McRegionLevelStorage(saveFile, baseDir, levelId, createPlayerDir));
 }
 
-bool McRegionLevelStorageSource::isConvertible(ConsoleSaveFile *saveFile, const wstring& levelId)
+bool McRegionLevelStorageSource::isConvertible(ConsoleSaveFile *saveFile, const wstring& levelId) 
 {
 	// check if there is old file format level data
 	LevelData *levelData = getDataTagFor(saveFile, levelId);
@@ -145,7 +145,7 @@ bool McRegionLevelStorageSource::convertLevel(ConsoleSaveFile *saveFile, const w
     }
 
 	int totalCount = normalRegions->size() + netherRegions->size() + enderRegions.size() + normalBaseFolders->size() + netherBaseFolders->size() + enderBaseFolders.size();
-
+	
 	// System.out.println("Total conversion count is " + totalCount); 4J Jev, TODO
 
 	// convert normal world
@@ -173,7 +173,7 @@ bool McRegionLevelStorageSource::convertLevel(ConsoleSaveFile *saveFile, const w
 
 #if 0
 // 4J - not required anymore
-void McRegionLevelStorageSource::addRegions(File &baseFolder, vector<ChunkFile *> *dest, vector<File *> *firstLevelFolders)
+void McRegionLevelStorageSource::addRegions(File &baseFolder, vector<ChunkFile *> *dest, vector<File *> *firstLevelFolders) 
 {
 	FolderFilter folderFilter;
 	ChunkFilter chunkFilter;
@@ -210,7 +210,7 @@ void McRegionLevelStorageSource::addRegions(File &baseFolder, vector<ChunkFile *
 }
 #endif
 
-void McRegionLevelStorageSource::convertRegions(File &baseFolder, vector<ChunkFile *> *chunkFiles, int currentCount, int totalCount, ProgressListener *progress)
+void McRegionLevelStorageSource::convertRegions(File &baseFolder, vector<ChunkFile *> *chunkFiles, int currentCount, int totalCount, ProgressListener *progress) 
 {
 	assert( false );
 
@@ -238,7 +238,7 @@ void McRegionLevelStorageSource::convertRegions(File &baseFolder, vector<ChunkFi
 		int z = chunkFile->getZ();
 
 		RegionFile *region = RegionFileCache::getRegionFile(baseFolder, x, z);
-		if (!region->hasChunk(x & 31, z & 31))
+		if (!region->hasChunk(x & 31, z & 31)) 
 		{
 			FileInputStream fis = new BufferedInputStream(FileInputStream(*chunkFile->getFile()));
 			DataInputStream istream = DataInputStream(&fis); // 4J - was new GZIPInputStream as well
@@ -289,7 +289,7 @@ void McRegionLevelStorageSource::eraseFolders(vector<File *> *folders, int curre
 
 #if 0
 // 4J - not required anymore
-bool McRegionLevelStorageSource::FolderFilter::accept(File *file)
+bool McRegionLevelStorageSource::FolderFilter::accept(File *file) 
 {
 	if (file->isDirectory())
 	{
@@ -300,23 +300,23 @@ bool McRegionLevelStorageSource::FolderFilter::accept(File *file)
 }
 
 
-bool McRegionLevelStorageSource::ChunkFilter::accept(File *dir, const wstring& name)
+bool McRegionLevelStorageSource::ChunkFilter::accept(File *dir, const wstring& name) 
 {
 	Matcher matcher( chunkFilePattern, name );
 	return matcher.matches();
 }
 
 
-McRegionLevelStorageSource::ChunkFile::ChunkFile(File *file)
+McRegionLevelStorageSource::ChunkFile::ChunkFile(File *file) 
 {
 	this->file = file;
 
 	Matcher matcher( ChunkFilter::chunkFilePattern, file->getName() );
-	if (matcher.matches())
+	if (matcher.matches()) 
 	{
 		x = Integer::parseInt(matcher.group(1), 36);
 		z = Integer::parseInt(matcher.group(2), 36);
-	}
+	} 
 	else
 	{
 		x = 0;
@@ -348,17 +348,17 @@ bool McRegionLevelStorageSource::ChunkFile::operator<( ChunkFile *b )
 	return compareTo( b ) < 0;
 }
 
-File *McRegionLevelStorageSource::ChunkFile::getFile()
+File *McRegionLevelStorageSource::ChunkFile::getFile() 
 {
 	return (File *) file;
 }
 
-int McRegionLevelStorageSource::ChunkFile::getX()
+int McRegionLevelStorageSource::ChunkFile::getX() 
 {
 	return x;
 }
 
-int McRegionLevelStorageSource::ChunkFile::getZ()
+int McRegionLevelStorageSource::ChunkFile::getZ() 
 {
 	return z;
 }

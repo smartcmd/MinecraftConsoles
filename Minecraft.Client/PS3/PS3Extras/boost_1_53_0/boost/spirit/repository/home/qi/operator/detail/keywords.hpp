@@ -15,10 +15,10 @@
 #include <boost/fusion/include/at.hpp>
 namespace boost { namespace spirit { namespace repository { namespace qi { namespace detail {
         // Variant visitor class which handles dispatching the parsing to the selected parser
-        // This also handles passing the correct attributes and flags/counters to the subject parsers
+        // This also handles passing the correct attributes and flags/counters to the subject parsers       
     template<typename T>
     struct is_distinct : T::distinct { };
-
+ 
     template<typename T, typename Action>
     struct is_distinct< spirit::qi::action<T,Action> > : T::distinct { };
 
@@ -38,22 +38,22 @@ namespace boost { namespace spirit { namespace repository { namespace qi { names
             typedef Skipper skipper_type;
             typedef Elements elements_type;
 
-            typedef typename add_reference<Attribute>::type attr_reference;
+            typedef typename add_reference<Attribute>::type attr_reference; 
             public:
             parse_dispatcher(const Elements &elements,Iterator& first, Iterator const& last
           , Context& context, Skipper const& skipper
-          , Flags &flags, Counters &counters, attr_reference attr) :
+          , Flags &flags, Counters &counters, attr_reference attr) : 
                  elements(elements), first(first), last(last)
                , context(context), skipper(skipper)
                , flags(flags),counters(counters), attr(attr)
             {}
-
+            
             template<typename T> bool operator()(T& idx) const
-            {
+            {    
                 return call(idx,typename traits::not_is_unused<Attribute>::type());
             }
-
-            template <typename Subject,typename Index>
+            
+            template <typename Subject,typename Index> 
             bool call_subject_unused(
                   Subject const &subject, Iterator &first, Iterator const &last
                 , Context& context, Skipper const& skipper
@@ -62,25 +62,25 @@ namespace boost { namespace spirit { namespace repository { namespace qi { names
                 Iterator save = first;
                     skipper_keyword_marker<Skipper,NoCasePass>
                         marked_skipper(skipper,flags[Index::value],counters[Index::value]);
-
+                
                 if(subject.parse(first,last,context,marked_skipper,unused))
                 {
                         return true;
                 }
                 save = save;
                 return false;
-            }
-
-
-            template <typename Subject,typename Index>
+            }            
+ 
+            
+            template <typename Subject,typename Index> 
             bool call_subject(
                   Subject const &subject, Iterator &first, Iterator const &last
                 , Context& context, Skipper const& skipper
                 , Index& idx ) const
             {
-
+               
                 Iterator save = first;
-                    skipper_keyword_marker<Skipper,NoCasePass>
+                    skipper_keyword_marker<Skipper,NoCasePass> 
                         marked_skipper(skipper,flags[Index::value],counters[Index::value]);
                 if(subject.parse(first,last,context,marked_skipper,fusion::at_c<Index::value>(attr)))
                 {
@@ -91,8 +91,8 @@ namespace boost { namespace spirit { namespace repository { namespace qi { names
             }
 
             // Handle unused attributes
-            template <typename T> bool call(T &idx, mpl::false_) const{
-
+            template <typename T> bool call(T &idx, mpl::false_) const{                            
+ 
                 typedef typename mpl::at<Elements,T>::type ElementType;
                 if(
                        (!is_distinct<ElementType>::value)
@@ -114,7 +114,7 @@ namespace boost { namespace spirit { namespace repository { namespace qi { names
             }
                 return false;
             }
-
+            
             const Elements &elements;
             Iterator &first;
             const Iterator &last;
@@ -132,7 +132,7 @@ namespace boost { namespace spirit { namespace repository { namespace qi { names
             typedef typename
                 spirit::detail::as_variant<
                 IndexList >::type        parser_index_type;
-
+      
             ///////////////////////////////////////////////////////////////////////////
             // build_char_type_sequence
             //
@@ -351,7 +351,7 @@ namespace boost { namespace spirit { namespace repository { namespace qi { names
             {
                 typedef int result_type;
 
-                keyword_entry_adder(std::shared_ptr<keywords_type> lookup,FlagsType &flags, Elements &elements) :
+                keyword_entry_adder(shared_ptr<keywords_type> lookup,FlagsType &flags, Elements &elements) :
                     lookup(lookup)
                     ,flags(flags)
                     ,elements(elements)
@@ -421,7 +421,7 @@ namespace boost { namespace spirit { namespace repository { namespace qi { names
 
 
 
-                std::shared_ptr<keywords_type> lookup;
+                shared_ptr<keywords_type> lookup;
                 FlagsType & flags;
                 Elements &elements;
             };
@@ -443,7 +443,7 @@ namespace boost { namespace spirit { namespace repository { namespace qi { names
                 {
                     if(parser_index_type* val_ptr =
                             lookup->find(first,last,first_pass_filter_type()))
-                    {
+                    {                        
                         if(!apply_visitor(parse_visitor,*val_ptr)){
                             return false;
                         }
@@ -481,7 +481,7 @@ namespace boost { namespace spirit { namespace repository { namespace qi { names
                     }
                     return false;
                 }
-            std::shared_ptr<keywords_type> lookup;
+            shared_ptr<keywords_type> lookup;
 
 
         };

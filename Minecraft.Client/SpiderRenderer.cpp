@@ -8,15 +8,15 @@ SpiderRenderer::SpiderRenderer() : MobRenderer(new SpiderModel(), 1.0f)
 	this->setArmor(new SpiderModel());
 }
 
-float SpiderRenderer::getFlipDegrees(std::shared_ptr<Mob> spider)
+float SpiderRenderer::getFlipDegrees(shared_ptr<Mob> spider)
 {
 	return 180;
 }
 
-int SpiderRenderer::prepareArmor(std::shared_ptr<Mob> _spider, int layer, float a)
+int SpiderRenderer::prepareArmor(shared_ptr<Mob> _spider, int layer, float a)
 {
 	// 4J - dynamic cast required because we aren't using templates/generics in our version
-	std::shared_ptr<Spider> spider = dynamic_pointer_cast<Spider>(_spider);
+	shared_ptr<Spider> spider = dynamic_pointer_cast<Spider>(_spider);
 
     if (layer!=0) return -1;
 	MemSect(31);
@@ -40,7 +40,7 @@ int SpiderRenderer::prepareArmor(std::shared_ptr<Mob> _spider, int layer, float 
 	{
 		// 4J - was 0xf0f0 but that looks like it is a mistake - maybe meant to be 0xf000f0 to enable both sky & block lighting? choosing 0x00f0 here instead
 		// as most likely replicates what the java game does, without breaking our lighting (which doesn't like UVs out of the 0 to 255 range)
-        int col = 0x00f0;
+        int col = 0x00f0;			
         int u = col % 65536;
         int v = col / 65536;
 
@@ -52,10 +52,10 @@ int SpiderRenderer::prepareArmor(std::shared_ptr<Mob> _spider, int layer, float 
     return 1;
 }
 
-void SpiderRenderer::scale(std::shared_ptr<Mob> _mob, float a)
+void SpiderRenderer::scale(shared_ptr<Mob> _mob, float a)
 {
 	// 4J - dynamic cast required because we aren't using templates/generics in our version
-	std::shared_ptr<Spider> mob = dynamic_pointer_cast<Spider>(_mob);
+	shared_ptr<Spider> mob = dynamic_pointer_cast<Spider>(_mob);
 	float scale = mob->getModelScale();
 	glScalef(scale, scale, scale);
 }

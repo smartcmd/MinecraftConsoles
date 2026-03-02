@@ -27,7 +27,7 @@ bool UntouchingEnchantment::isCompatibleWith(Enchantment *other) const
 	return Enchantment::isCompatibleWith(other) && other->id != resourceBonus->id;
 }
 
-bool UntouchingEnchantment::canEnchant(std::shared_ptr<ItemInstance> item)
+bool UntouchingEnchantment::canEnchant(shared_ptr<ItemInstance> item)
 {
 	if (item->getItem()->id == Item::shears_Id) return true;
 	return Enchantment::canEnchant(item);

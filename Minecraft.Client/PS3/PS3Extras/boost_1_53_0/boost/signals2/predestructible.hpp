@@ -2,7 +2,7 @@
 // A simple framework for creating objects with predestructors.
 // The objects must inherit from boost::signals2::predestructible, and
 // have their lifetimes managed by
-// boost::std::shared_ptr created with the boost::signals2::deconstruct_ptr()
+// boost::shared_ptr created with the boost::signals2::deconstruct_ptr()
 // function.
 //
 // Copyright Frank Mori Hess 2007-2008.
@@ -29,7 +29,7 @@ namespace boost
         predestructible() {}
       public:
         template<typename T>
-          friend void adl_postconstruct(const std::shared_ptr<T> &, ...)
+          friend void adl_postconstruct(const shared_ptr<T> &, ...)
         {}
         friend void adl_predestruct(predestructible *p)
         {

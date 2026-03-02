@@ -5,14 +5,14 @@
 #include "net.minecraft.world.item.crafting.h"
 #include "ArmorDyeRecipe.h"
 
-bool ArmorDyeRecipe::matches(std::shared_ptr<CraftingContainer> craftSlots, Level *level)
+bool ArmorDyeRecipe::matches(shared_ptr<CraftingContainer> craftSlots, Level *level)
 {
-	std::shared_ptr<ItemInstance> target = nullptr;
-	vector<std::shared_ptr<ItemInstance> > dyes;
+	shared_ptr<ItemInstance> target = nullptr;
+	vector<shared_ptr<ItemInstance> > dyes;
 
 	for (int slot = 0; slot < craftSlots->getContainerSize(); slot++)
 	{
-		std::shared_ptr<ItemInstance> item = craftSlots->getItem(slot);
+		shared_ptr<ItemInstance> item = craftSlots->getItem(slot);
 		if (item == NULL) continue;
 
 		ArmorItem *armor = dynamic_cast<ArmorItem *>(item->getItem());
@@ -40,9 +40,9 @@ bool ArmorDyeRecipe::matches(std::shared_ptr<CraftingContainer> craftSlots, Leve
 	return target != NULL && !dyes.empty();
 }
 
-std::shared_ptr<ItemInstance> ArmorDyeRecipe::assembleDyedArmor(std::shared_ptr<CraftingContainer> craftSlots)
+shared_ptr<ItemInstance> ArmorDyeRecipe::assembleDyedArmor(shared_ptr<CraftingContainer> craftSlots)
 {
-	std::shared_ptr<ItemInstance> target = nullptr;
+	shared_ptr<ItemInstance> target = nullptr;
 	int colorTotals[3];
 	colorTotals[0] = 0;
 	colorTotals[1] = 0;
@@ -55,7 +55,7 @@ std::shared_ptr<ItemInstance> ArmorDyeRecipe::assembleDyedArmor(std::shared_ptr<
 	{
 		for (int slot = 0; slot < craftSlots->getContainerSize(); slot++)
 		{
-			std::shared_ptr<ItemInstance> item = craftSlots->getItem(slot);
+			shared_ptr<ItemInstance> item = craftSlots->getItem(slot);
 			if (item == NULL) continue;
 
 			armor = dynamic_cast<ArmorItem *>(item->getItem());
@@ -128,7 +128,7 @@ std::shared_ptr<ItemInstance> ArmorDyeRecipe::assembleDyedArmor(std::shared_ptr<
 	return target;
 }
 
-std::shared_ptr<ItemInstance> ArmorDyeRecipe::assemble(std::shared_ptr<CraftingContainer> craftSlots)
+shared_ptr<ItemInstance> ArmorDyeRecipe::assemble(shared_ptr<CraftingContainer> craftSlots)
 {
 	return ArmorDyeRecipe::assembleDyedArmor(craftSlots);
 }
@@ -181,8 +181,8 @@ void ArmorDyeRecipe::requires(INGREDIENTS_REQUIRED *pIngReq)
 	{
 		ItemInstance *expected = *ingredient;
 
-		if (expected!=NULL)
-		{
+		if (expected!=NULL) 
+		{			
 			int iAuxVal = (*ingredient)->getAuxValue();
 			TempIngReq.uiGridA[iCount++]=expected->id | iAuxVal<<24;
 			// 4J-PB - put the ingredients in boxes 1,2,4,5 so we can see them in a 2x2 crafting screen

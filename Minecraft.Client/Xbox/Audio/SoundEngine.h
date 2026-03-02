@@ -86,7 +86,7 @@ public:
 	virtual void updateSystemMusicPlaying(bool isPlaying);
 	virtual void updateSoundEffectVolume(float fVal);
 	virtual void init(Options *);
-	virtual void tick(std::shared_ptr<Mob> *players, float a);	// 4J - updated to take array of local players rather than single one
+	virtual void tick(shared_ptr<Mob> *players, float a);	// 4J - updated to take array of local players rather than single one
 	virtual void add(const wstring& name, File *file);
 	virtual void addMusic(const wstring& name, File *file);
 	virtual void addStreaming(const wstring& name, File *file);
@@ -107,4 +107,4 @@ private:
 #ifndef __PS3__
 	static void XACTNotificationCallback( const XACT_NOTIFICATION* pNotification );
 #endif // __PS3__
-};
+}; 

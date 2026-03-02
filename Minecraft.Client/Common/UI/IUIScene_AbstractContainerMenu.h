@@ -10,7 +10,7 @@
 // Uncomment to enable acceleration on pointer input.
 //#define USE_POINTER_ACCEL
 
-#define POINTER_INPUT_TIMER_ID		(0)		// Arbitrary timer ID.
+#define POINTER_INPUT_TIMER_ID		(0)		// Arbitrary timer ID. 
 #define POINTER_SPEED_FACTOR		(13.0f)		// Speed of pointer.
 //#define POINTER_PANEL_OVER_REACH	(42.0f)		// Amount beyond edge of panel which pointer can go over to drop items. - comes from the pointer size in the scene
 
@@ -32,19 +32,19 @@ protected:
 		eSectionContainerInventory,
 		eSectionContainerChest,
 		eSectionContainerMax,
-
+		
 		eSectionFurnaceUsing,
 		eSectionFurnaceInventory,
 		eSectionFurnaceIngredient,
 		eSectionFurnaceFuel,
 		eSectionFurnaceResult,
 		eSectionFurnaceMax,
-
+		
 		eSectionInventoryUsing,
 		eSectionInventoryInventory,
 		eSectionInventoryArmor,
 		eSectionInventoryMax,
-
+		
 		eSectionTrapUsing,
 		eSectionTrapInventory,
 		eSectionTrapTrap,
@@ -64,7 +64,7 @@ protected:
 		eSectionInventoryCreativeSlider,
 #endif
 		eSectionInventoryCreativeMax,
-
+		
 		eSectionEnchantUsing,
 		eSectionEnchantInventory,
 		eSectionEnchantSlot,
@@ -151,7 +151,7 @@ protected:
 	// 4J - WESTY  - Added for pointer prototype.
 	// Current tooltip settings.
 	EToolTipItem	m_aeToolTipSettings[ eToolTipNumButtons ];
-
+	
 	// 4J - WESTY  - Added for pointer prototype.
 	// Indicates if pointer is outside UI window (used to drop items).
 	bool			m_bPointerOutsideMenu;
@@ -159,7 +159,7 @@ protected:
 
 	bool m_bSplitscreen;
 	bool	m_bNavigateBack; // should we exit the xuiscenes or just navigate back on exit?
-
+	
 	virtual bool IsSectionSlotList( ESceneSection eSection ) { return eSection != eSectionNone; }
 	virtual bool CanHaveFocus( ESceneSection eSection ) { return true; }
 	int	GetSectionDimensions( ESceneSection eSection, int* piNumColumns, int* piNumRows );
@@ -180,7 +180,7 @@ protected:
 
 	// 4J - WESTY  - Added for pointer prototype.
 	void SetPointerOutsideMenu( bool bOutside )		{ m_bPointerOutsideMenu = bOutside; }
-
+	
 	void Initialize(int m_iPad, AbstractContainerMenu* menu, bool autoDeleteMenu, int startIndex,ESceneSection firstSection,ESceneSection maxSection, bool bNavigateBack=FALSE);
 	virtual void PlatformInitialize(int iPad, int startIndex) = 0;
 	virtual void InitDataAssociations(int iPad, AbstractContainerMenu *menu, int startIndex = 0) = 0;
@@ -201,15 +201,15 @@ protected:
 	virtual void setSectionSelectedSlot(ESceneSection eSection, int x, int y) = 0;
 	virtual void setFocusToPointer(int iPad) = 0;
 	virtual void SetPointerText(const wstring &description, vector<wstring> &unformattedStrings, bool newSlot) = 0;
-	virtual std::shared_ptr<ItemInstance> getSlotItem(ESceneSection eSection, int iSlot) = 0;
+	virtual shared_ptr<ItemInstance> getSlotItem(ESceneSection eSection, int iSlot) = 0;
 	virtual bool isSlotEmpty(ESceneSection eSection, int iSlot) = 0;
 	virtual void adjustPointerForSafeZone() = 0;
 
-	virtual bool overrideTooltips(ESceneSection sectionUnderPointer, std::shared_ptr<ItemInstance> itemUnderPointer, bool bIsItemCarried, bool bSlotHasItem, bool bCarriedIsSameAsSlot, int iSlotStackSizeRemaining,
+	virtual bool overrideTooltips(ESceneSection sectionUnderPointer, shared_ptr<ItemInstance> itemUnderPointer, bool bIsItemCarried, bool bSlotHasItem, bool bCarriedIsSameAsSlot, int iSlotStackSizeRemaining,
 		EToolTipItem &buttonA, EToolTipItem &buttonX, EToolTipItem &buttonY, EToolTipItem &buttonRT) { return false; }
 
 private:
-	bool IsSameItemAs(std::shared_ptr<ItemInstance> itemA, std::shared_ptr<ItemInstance> itemB);
+	bool IsSameItemAs(shared_ptr<ItemInstance> itemA, shared_ptr<ItemInstance> itemB);
 	int GetEmptyStackSpace(Slot *slot);
 	wstring GetItemDescription(Slot *slot, vector<wstring> &unformattedStrings);
 

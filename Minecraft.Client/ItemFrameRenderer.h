@@ -9,9 +9,9 @@ private:
 	//@Override
 public:
 	void registerTerrainTextures(IconRegister *iconRegister);
-	virtual void render(std::shared_ptr<Entity> _itemframe, double x, double y, double z, float rot, float a);
+	virtual void render(shared_ptr<Entity> _itemframe, double x, double y, double z, float rot, float a); 
 
 private:
- 	void drawFrame(std::shared_ptr<ItemFrame> itemFrame);
- 	void drawItem(std::shared_ptr<ItemFrame> entity);
+ 	void drawFrame(shared_ptr<ItemFrame> itemFrame);
+ 	void drawItem(shared_ptr<ItemFrame> entity); 
 };

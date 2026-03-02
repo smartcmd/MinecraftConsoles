@@ -19,7 +19,7 @@ MerchantRecipeList::~MerchantRecipeList()
 	}
 }
 
-MerchantRecipe *MerchantRecipeList::getRecipeFor(std::shared_ptr<ItemInstance> buyA, std::shared_ptr<ItemInstance> buyB, int selectionHint)
+MerchantRecipe *MerchantRecipeList::getRecipeFor(shared_ptr<ItemInstance> buyA, shared_ptr<ItemInstance> buyB, int selectionHint)
 {
 	if (selectionHint > 0 && selectionHint < m_recipes.size())
 	{
@@ -67,7 +67,7 @@ bool MerchantRecipeList::addIfNewOrBetter(MerchantRecipe *recipe)
 	return true;
 }
 
-MerchantRecipe *MerchantRecipeList::getMatchingRecipeFor(std::shared_ptr<ItemInstance> buy, std::shared_ptr<ItemInstance> buyB, std::shared_ptr<ItemInstance> sell)
+MerchantRecipe *MerchantRecipeList::getMatchingRecipeFor(shared_ptr<ItemInstance> buy, shared_ptr<ItemInstance> buyB, shared_ptr<ItemInstance> sell)
 {
 	for (int i = 0; i < m_recipes.size(); i++)
 	{
@@ -92,7 +92,7 @@ void MerchantRecipeList::writeToStream(DataOutputStream *stream)
 		Packet::writeItem(r->getBuyAItem(), stream);
 		Packet::writeItem(r->getSellItem(), stream);
 
-		std::shared_ptr<ItemInstance> buyBItem = r->getBuyBItem();
+		shared_ptr<ItemInstance> buyBItem = r->getBuyBItem();
 		stream->writeBoolean(buyBItem != NULL);
 		if (buyBItem != NULL)
 		{
@@ -111,10 +111,10 @@ MerchantRecipeList *MerchantRecipeList::createFromStream(DataInputStream *stream
 	int count = (int) (stream->readByte() & 0xff);
 	for (int i = 0; i < count; i++)
 	{
-		std::shared_ptr<ItemInstance> buy = Packet::readItem(stream);
-		std::shared_ptr<ItemInstance> sell = Packet::readItem(stream);
+		shared_ptr<ItemInstance> buy = Packet::readItem(stream);
+		shared_ptr<ItemInstance> sell = Packet::readItem(stream);
 
-		std::shared_ptr<ItemInstance> buyB = nullptr;
+		shared_ptr<ItemInstance> buyB = nullptr;
 		if (stream->readBoolean())
 		{
 			buyB = Packet::readItem(stream);

@@ -67,7 +67,7 @@ UIScene_InGameInfoMenu::UIScene_InGameInfoMenu(int iPad, void *initData, UILayer
 			m_playersVoiceState[i] = voiceStatus;
 			m_playersColourState[i] = app.GetPlayerColour( m_players[i] );
 			m_playerNames[i] = playerName;
-			m_playerList.addItem( playerName, app.GetPlayerColour( m_players[i] ), voiceStatus);
+			m_playerList.addItem( playerName, app.GetPlayerColour( m_players[i] ), voiceStatus); 
 		}
 	}
 
@@ -78,7 +78,7 @@ UIScene_InGameInfoMenu::UIScene_InGameInfoMenu(int iPad, void *initData, UILayer
 	if(thisPlayer != NULL) m_isHostPlayer = thisPlayer->IsHost() == TRUE;
 
 	Minecraft *pMinecraft = Minecraft::GetInstance();
-	std::shared_ptr<MultiplayerLocalPlayer> localPlayer = pMinecraft->localplayers[m_iPad];
+	shared_ptr<MultiplayerLocalPlayer> localPlayer = pMinecraft->localplayers[m_iPad];
 	if(!m_isHostPlayer && !localPlayer->isModerator() )
 	{
 		removeControl( &m_buttonGameOptions, false );
@@ -131,7 +131,7 @@ void UIScene_InGameInfoMenu::updateTooltips()
 
 	int keyA = -1;
 	Minecraft *pMinecraft = Minecraft::GetInstance();
-	std::shared_ptr<MultiplayerLocalPlayer> localPlayer = pMinecraft->localplayers[m_iPad];
+	shared_ptr<MultiplayerLocalPlayer> localPlayer = pMinecraft->localplayers[m_iPad];
 
 	bool isOp = m_isHostPlayer || localPlayer->isModerator();
 	bool cheats = app.GetGameHostOption(eGameHostOption_CheatsEnabled) != 0;
@@ -161,7 +161,7 @@ void UIScene_InGameInfoMenu::updateTooltips()
 			}
 		}
 	}
-
+	
 #if defined(__PS3__) || defined(__ORBIS__)
 	if(m_iPad == ProfileManager.GetPrimaryPad() ) ikeyY = IDS_TOOLTIPS_GAME_INVITES;
 #else
@@ -243,7 +243,7 @@ void UIScene_InGameInfoMenu::handleReload()
 			m_playersVoiceState[i] = voiceStatus;
 			m_playersColourState[i] = app.GetPlayerColour( m_players[i] );
 			m_playerNames[i] = playerName;
-			m_playerList.addItem( playerName, app.GetPlayerColour( m_players[i] ), voiceStatus);
+			m_playerList.addItem( playerName, app.GetPlayerColour( m_players[i] ), voiceStatus); 
 		}
 	}
 
@@ -252,7 +252,7 @@ void UIScene_InGameInfoMenu::handleReload()
 	if(thisPlayer != NULL) m_isHostPlayer = thisPlayer->IsHost() == TRUE;
 
 	Minecraft *pMinecraft = Minecraft::GetInstance();
-	std::shared_ptr<MultiplayerLocalPlayer> localPlayer = pMinecraft->localplayers[m_iPad];
+	shared_ptr<MultiplayerLocalPlayer> localPlayer = pMinecraft->localplayers[m_iPad];
 	if(!m_isHostPlayer && !localPlayer->isModerator() )
 	{
 		removeControl( &m_buttonGameOptions, false );
@@ -367,7 +367,7 @@ void UIScene_InGameInfoMenu::handleInput(int iPad, int key, bool repeat, bool pr
 #else // __PS3__
 				int ret = sceNpBasicRecvMessageCustom(SCE_NP_BASIC_MESSAGE_MAIN_TYPE_INVITE, SCE_NP_BASIC_RECV_MESSAGE_OPTIONS_INCLUDE_BOOTABLE, SYS_MEMORY_CONTAINER_ID_INVALID);
 				app.DebugPrintf("sceNpBasicRecvMessageCustom return %d ( %08x )\n", ret, ret);
-#endif
+#endif 
 			}
 		}
 #else
@@ -397,7 +397,7 @@ void UIScene_InGameInfoMenu::handleInput(int iPad, int key, bool repeat, bool pr
 		if(pressed && !repeat && !g_NetworkManager.IsLocalGame() )
 		{
 #ifdef __PSVITA__
-			if(CGameNetworkManager::usingAdhocMode() == false)
+			if(CGameNetworkManager::usingAdhocMode() == false) 
 				g_NetworkManager.SendInviteGUI(iPad);
 #else
 			g_NetworkManager.SendInviteGUI(iPad);
@@ -431,7 +431,7 @@ void UIScene_InGameInfoMenu::handlePress(F64 controlId, F64 childId)
 		INetworkPlayer *selectedPlayer = g_NetworkManager.GetPlayerBySmallId( m_players[ currentSelection ] );
 
 		Minecraft *pMinecraft = Minecraft::GetInstance();
-		std::shared_ptr<MultiplayerLocalPlayer> localPlayer = pMinecraft->localplayers[m_iPad];
+		shared_ptr<MultiplayerLocalPlayer> localPlayer = pMinecraft->localplayers[m_iPad];
 
 		bool isOp = m_isHostPlayer || localPlayer->isModerator();
 		bool cheats = app.GetGameHostOption(eGameHostOption_CheatsEnabled) != 0;
@@ -544,7 +544,7 @@ void UIScene_InGameInfoMenu::OnPlayerChanged(void *callbackParam, INetworkPlayer
 			}
 		}
 
-		scene->m_playerList.addItem( playerName, app.GetPlayerColour( scene->m_players[scene->m_playersCount - 1] ), voiceStatus);
+		scene->m_playerList.addItem( playerName, app.GetPlayerColour( scene->m_players[scene->m_playersCount - 1] ), voiceStatus); 
 	}
 }
 
@@ -554,12 +554,12 @@ int UIScene_InGameInfoMenu::KickPlayerReturned(void *pParam,int iPad,C4JStorage:
 	delete pParam;
 
 	if(result==C4JStorage::EMessage_ResultAccept)
-	{
+	{		
 		Minecraft *pMinecraft = Minecraft::GetInstance();
-		std::shared_ptr<MultiplayerLocalPlayer> localPlayer = pMinecraft->localplayers[iPad];
+		shared_ptr<MultiplayerLocalPlayer> localPlayer = pMinecraft->localplayers[iPad];
 		if(localPlayer->connection)
 		{
-			localPlayer->connection->send( std::shared_ptr<KickPlayerPacket>( new KickPlayerPacket(smallId) ) );
+			localPlayer->connection->send( shared_ptr<KickPlayerPacket>( new KickPlayerPacket(smallId) ) );
 		}
 	}
 
@@ -571,7 +571,7 @@ int UIScene_InGameInfoMenu::MustSignInReturnedPSN(void *pParam,int iPad,C4JStora
 {
 	UIScene_InGameInfoMenu* pClass = (UIScene_InGameInfoMenu*)pParam;
 
-	if(result==C4JStorage::EMessage_ResultAccept)
+	if(result==C4JStorage::EMessage_ResultAccept) 
 	{
 #ifdef __PS3__
 		SQRNetworkManager_PS3::AttemptPSNSignIn(&UIScene_InGameInfoMenu::ViewInvites_SignInReturned, pClass);

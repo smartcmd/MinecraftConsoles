@@ -6,19 +6,19 @@
 
 WeighedTreasure::WeighedTreasure(int itemId, int auxValue, int minCount, int maxCount, int weight) : WeighedRandomItem(weight)
 {
-	this->item = std::shared_ptr<ItemInstance>( new ItemInstance(itemId, 1, auxValue) );
+	this->item = shared_ptr<ItemInstance>( new ItemInstance(itemId, 1, auxValue) );
 	this->minCount = minCount;
 	this->maxCount = maxCount;
 }
 
-WeighedTreasure::WeighedTreasure(std::shared_ptr<ItemInstance> item, int minCount, int maxCount, int weight) : WeighedRandomItem(weight)
+WeighedTreasure::WeighedTreasure(shared_ptr<ItemInstance> item, int minCount, int maxCount, int weight) : WeighedRandomItem(weight)
 {
 	this->item = item;
 	this->minCount = minCount;
 	this->maxCount = maxCount;
 }
 
-void WeighedTreasure::addChestItems(Random *random, WeighedTreasureArray items, std::shared_ptr<ChestTileEntity> dest, int numRolls)
+void WeighedTreasure::addChestItems(Random *random, WeighedTreasureArray items, shared_ptr<ChestTileEntity> dest, int numRolls)
 {
 	for (int r = 0; r < numRolls; r++)
 	{
@@ -27,7 +27,7 @@ void WeighedTreasure::addChestItems(Random *random, WeighedTreasureArray items, 
 		int count = treasure->minCount + random->nextInt(treasure->maxCount - treasure->minCount + 1);
 		if (treasure->item->getMaxStackSize() >= count)
 		{
-			std::shared_ptr<ItemInstance> copy = treasure->item->copy();
+			shared_ptr<ItemInstance> copy = treasure->item->copy();
 			copy->count = count;
 			dest->setItem(random->nextInt(dest->getContainerSize()), copy);
 		}
@@ -36,7 +36,7 @@ void WeighedTreasure::addChestItems(Random *random, WeighedTreasureArray items, 
 			// use multiple slots
 			for (int c = 0; c < count; c++)
 			{
-				std::shared_ptr<ItemInstance> copy = treasure->item->copy();
+				shared_ptr<ItemInstance> copy = treasure->item->copy();
 				copy->count = 1;
 				dest->setItem(random->nextInt(dest->getContainerSize()), copy);
 			}
@@ -44,7 +44,7 @@ void WeighedTreasure::addChestItems(Random *random, WeighedTreasureArray items, 
 	}
 }
 
-void WeighedTreasure::addDispenserItems(Random *random, WeighedTreasureArray items, std::shared_ptr<DispenserTileEntity> dest, int numRolls)
+void WeighedTreasure::addDispenserItems(Random *random, WeighedTreasureArray items, shared_ptr<DispenserTileEntity> dest, int numRolls)
 {
 	for (int r = 0; r < numRolls; r++)
 	{
@@ -53,7 +53,7 @@ void WeighedTreasure::addDispenserItems(Random *random, WeighedTreasureArray ite
 		int count = treasure->minCount + random->nextInt(treasure->maxCount - treasure->minCount + 1);
 		if (treasure->item->getMaxStackSize() >= count)
 		{
-			std::shared_ptr<ItemInstance> copy = treasure->item->copy();
+			shared_ptr<ItemInstance> copy = treasure->item->copy();
 			copy->count = count;
 			dest->setItem(random->nextInt(dest->getContainerSize()), copy);
 		}
@@ -62,7 +62,7 @@ void WeighedTreasure::addDispenserItems(Random *random, WeighedTreasureArray ite
 			// use multiple slots
 			for (int c = 0; c < count; c++)
 			{
-				std::shared_ptr<ItemInstance> copy = treasure->item->copy();
+				shared_ptr<ItemInstance> copy = treasure->item->copy();
 				copy->count = 1;
 				dest->setItem(random->nextInt(dest->getContainerSize()), copy);
 			}

@@ -35,14 +35,14 @@ public:
 	bool isSolidRender(bool isServerLevel = false);
 	Icon *getTexture(int face, int data);
 	void registerIcons(IconRegister *iconRegister);
-	void setPlacedBy(Level *level, int x, int y, int z, std::shared_ptr<Mob> by);
-	bool use(Level *level, int x, int y, int z, std::shared_ptr<Player> player, int clickedFace, float clickX, float clickY, float clickZ, bool soundOnly = false);
+	void setPlacedBy(Level *level, int x, int y, int z, shared_ptr<Mob> by);
+	bool use(Level *level, int x, int y, int z, shared_ptr<Player> player, int clickedFace, float clickX, float clickY, float clickZ, bool soundOnly = false);
 	int getRenderShape();
 	int getSpawnResourcesAuxValue(int data);
-	void updateShape(LevelSource *level, int x, int y, int z, int forceData = -1, std::shared_ptr<TileEntity> forceEntity = std::shared_ptr<TileEntity>());
+	void updateShape(LevelSource *level, int x, int y, int z, int forceData = -1, shared_ptr<TileEntity> forceEntity = shared_ptr<TileEntity>());
 
 protected:
-	void falling(std::shared_ptr<FallingTile> entity);
+	void falling(shared_ptr<FallingTile> entity);
 
 public:
 	void onLand(Level *level, int xt, int yt, int zt, int data);

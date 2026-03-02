@@ -32,7 +32,7 @@ namespace boost { namespace xpressive { namespace detail
     ///////////////////////////////////////////////////////////////////////////////
     // static_compile_impl2
     template<typename Xpr, typename BidiIter, typename Traits>
-    void static_compile_impl2(Xpr const &xpr, std::shared_ptr<regex_impl<BidiIter> > const &impl, Traits const &tr)
+    void static_compile_impl2(Xpr const &xpr, shared_ptr<regex_impl<BidiIter> > const &impl, Traits const &tr)
     {
         typedef typename iterator_value<BidiIter>::type char_type;
         impl->tracking_clear();
@@ -70,7 +70,7 @@ namespace boost { namespace xpressive { namespace detail
     // static_compile_impl1
     template<typename Xpr, typename BidiIter>
     typename disable_if<proto::matches<Xpr, XpressiveLocaleModifier> >::type
-    static_compile_impl1(Xpr const &xpr, std::shared_ptr<regex_impl<BidiIter> > const &impl)
+    static_compile_impl1(Xpr const &xpr, shared_ptr<regex_impl<BidiIter> > const &impl)
     {
         // use default traits
         typedef typename iterator_value<BidiIter>::type char_type;
@@ -83,7 +83,7 @@ namespace boost { namespace xpressive { namespace detail
     // static_compile_impl1
     template<typename Xpr, typename BidiIter>
     typename enable_if<proto::matches<Xpr, XpressiveLocaleModifier> >::type
-    static_compile_impl1(Xpr const &xpr, std::shared_ptr<regex_impl<BidiIter> > const &impl)
+    static_compile_impl1(Xpr const &xpr, shared_ptr<regex_impl<BidiIter> > const &impl)
     {
         // use specified traits
         typedef typename proto::result_of::value<typename proto::result_of::left<Xpr>::type>::type::locale_type locale_type;
@@ -94,7 +94,7 @@ namespace boost { namespace xpressive { namespace detail
     ///////////////////////////////////////////////////////////////////////////////
     // static_compile
     template<typename Xpr, typename BidiIter>
-    void static_compile(Xpr const &xpr, std::shared_ptr<regex_impl<BidiIter> > const &impl)
+    void static_compile(Xpr const &xpr, shared_ptr<regex_impl<BidiIter> > const &impl)
     {
         static_compile_impl1(xpr, impl);
     }

@@ -16,14 +16,14 @@ private:
 
 public:
 	EnchantmentTableTile(int id);
-
+	
     virtual void updateDefaultShape(); // 4J Added override
 	bool isCubeShaped();
     void animateTick(Level *level, int x, int y, int z, Random *random);
     bool isSolidRender(bool isServerLevel = false);
     Icon *getTexture(int face, int data);
-    std::shared_ptr<TileEntity> newTileEntity(Level *level);
-    bool use(Level *level, int x, int y, int z, std::shared_ptr<Player> player, int clickedFace, float clickX, float clickY, float clickZ, bool soundOnly = false); // 4J added soundOnly param
+    shared_ptr<TileEntity> newTileEntity(Level *level);
+    bool use(Level *level, int x, int y, int z, shared_ptr<Player> player, int clickedFace, float clickX, float clickY, float clickZ, bool soundOnly = false); // 4J added soundOnly param
 	//@Override
 	void registerIcons(IconRegister *iconRegister);
 };

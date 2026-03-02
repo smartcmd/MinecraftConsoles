@@ -14,17 +14,17 @@ private:
         double cullOffs;
 	public:
 		Face() {}	// 4J - added so we can declare an array of these (unitialised) in the class
-		Face(double x, double y, double z, float yRot, float xRot);
+		Face(double x, double y, double z, float yRot, float xRot);  
         bool inFront(double x, double y, double z, double r);
         bool inFront(double x0, double y0, double z0, double x1, double y1, double z1);
-        bool fullyInFront(double x0, double y0, double z0, double x1, double y1, double z1);
+        bool fullyInFront(double x0, double y0, double z0, double x1, double y1, double z1);      
     };
 
 private:
 	Face faces[6];
     double xOff, yOff, zOff;
 public:
-	ViewportCuller(std::shared_ptr<Mob> mob, double fogDistance, float a);
+	ViewportCuller(shared_ptr<Mob> mob, double fogDistance, float a);
     virtual bool isVisible(AABB bb);
     virtual bool cubeInFrustum(double x0, double y0, double z0, double x1, double y1, double z1);
     virtual bool cubeFullyInFrustum(double x0, double y0, double z0, double x1, double y1, double z1);

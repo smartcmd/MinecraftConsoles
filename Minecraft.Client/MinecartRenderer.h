@@ -8,5 +8,5 @@ protected:
 
 public:
 	MinecartRenderer();
-    void render(std::shared_ptr<Entity> _cart, double x, double y, double z, float rot, float a);
+    void render(shared_ptr<Entity> _cart, double x, double y, double z, float rot, float a);
 };

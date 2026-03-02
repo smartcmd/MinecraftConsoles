@@ -9,18 +9,18 @@ class Player;
 class EntityDamageSource : public DamageSource
 {
 protected:
-	std::shared_ptr<Entity> entity;
+	shared_ptr<Entity> entity;
 
 public:
-	//EntityDamageSource(const wstring &msgId, std::shared_ptr<Entity> entity);
-	EntityDamageSource(ChatPacket::EChatPacketMessage msgId, std::shared_ptr<Entity> entity);
+	//EntityDamageSource(const wstring &msgId, shared_ptr<Entity> entity);
+	EntityDamageSource(ChatPacket::EChatPacketMessage msgId, shared_ptr<Entity> entity);
 	virtual ~EntityDamageSource() { }
 
-    std::shared_ptr<Entity> getEntity();
+    shared_ptr<Entity> getEntity();
 
 	// 4J Stu - Made return a packet
-	//virtual wstring getLocalizedDeathMessage(std::shared_ptr<Player> player);
-	virtual std::shared_ptr<ChatPacket> getDeathMessagePacket(std::shared_ptr<Player> player);
+	//virtual wstring getLocalizedDeathMessage(shared_ptr<Player> player);
+	virtual shared_ptr<ChatPacket> getDeathMessagePacket(shared_ptr<Player> player);
 
 	virtual bool scalesWithDifficulty();
 };

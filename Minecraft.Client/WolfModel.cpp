@@ -57,12 +57,12 @@ WolfModel::WolfModel()
     tail->compile(1.0f/16.0f);
 }
 
-void WolfModel::render(std::shared_ptr<Entity> entity, float time, float r, float bob, float yRot, float xRot, float scale, bool usecompiled)
+void WolfModel::render(shared_ptr<Entity> entity, float time, float r, float bob, float yRot, float xRot, float scale, bool usecompiled)
 {
     Model::render(entity, time, r, bob, yRot, xRot, scale, usecompiled);
     setupAnim(time, r, bob, yRot, xRot, scale);
 
-	if (young)
+	if (young) 
 	{
 		float ss = 2;
 		glPushMatrix();
@@ -80,8 +80,8 @@ void WolfModel::render(std::shared_ptr<Entity> entity, float time, float r, floa
 		tail->renderRollable(scale, usecompiled);
 		upperBody->render(scale, usecompiled);
 		glPopMatrix();
-	}
-	else
+	} 
+	else 
 	{
 		head->renderRollable(scale, usecompiled);
 		body->render(scale, usecompiled);
@@ -94,9 +94,9 @@ void WolfModel::render(std::shared_ptr<Entity> entity, float time, float r, floa
 	}
 }
 
-void WolfModel::prepareMobModel(std::shared_ptr<Mob> mob, float time, float r, float a)
+void WolfModel::prepareMobModel(shared_ptr<Mob> mob, float time, float r, float a)
 {
-    std::shared_ptr<Wolf> wolf = dynamic_pointer_cast<Wolf>(mob);
+    shared_ptr<Wolf> wolf = dynamic_pointer_cast<Wolf>(mob);
 
     if (wolf->isAngry())
 	{

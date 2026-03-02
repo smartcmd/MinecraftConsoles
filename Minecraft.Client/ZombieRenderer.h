@@ -25,17 +25,17 @@ public:
 
 protected:
 	void createArmorParts();
-	int prepareArmor(std::shared_ptr<Mob> _mob, int layer, float a);
+	int prepareArmor(shared_ptr<Mob> _mob, int layer, float a);
 
 public:
-	void render(std::shared_ptr<Entity> _mob, double x, double y, double z, float rot, float a);
+	void render(shared_ptr<Entity> _mob, double x, double y, double z, float rot, float a);
 
 protected:
-	void additionalRendering(std::shared_ptr<Mob> _mob, float a);
+	void additionalRendering(shared_ptr<Mob> _mob, float a);
 
 private:
-	void swapArmor(std::shared_ptr<Zombie> mob);
+	void swapArmor(shared_ptr<Zombie> mob);
 
 protected:
-	void setupRotations(std::shared_ptr<Mob> _mob, float bob, float bodyRot, float a);
+	void setupRotations(shared_ptr<Mob> _mob, float bob, float bodyRot, float a);
 };

@@ -22,33 +22,33 @@ FishingRodItem::FishingRodItem(int id) : Item(id)
 	emptyIcon = NULL;
 }
 
-bool FishingRodItem::isHandEquipped()
+bool FishingRodItem::isHandEquipped() 
 {
 	return true;
 }
 
-bool FishingRodItem::isMirroredArt()
+bool FishingRodItem::isMirroredArt() 
 {
 	return true;
 }
 
-std::shared_ptr<ItemInstance> FishingRodItem::use(std::shared_ptr<ItemInstance> instance, Level *level, std::shared_ptr<Player> player)
+shared_ptr<ItemInstance> FishingRodItem::use(shared_ptr<ItemInstance> instance, Level *level, shared_ptr<Player> player) 
 {
-	if (player->fishing != NULL)
+	if (player->fishing != NULL) 
 	{
 		int dmg = player->fishing->retrieve();
 		instance->hurt(dmg, player);
 		player->swing();
-	}
-	else
+	} 
+	else 
 	{
 		level->playSound(player, eSoundType_RANDOM_BOW, 0.5f, 0.4f / (random->nextFloat() * 0.4f + 0.8f));
-		if (!level->isClientSide)
+		if (!level->isClientSide) 
 		{
 			// 4J Stu - Move the player->fishing out of the ctor as we cannot reference 'this'
-			std::shared_ptr<FishingHook> hook = std::shared_ptr<FishingHook>( new FishingHook(level, player) );
+			shared_ptr<FishingHook> hook = shared_ptr<FishingHook>( new FishingHook(level, player) );
 			player->fishing = hook;
-			level->addEntity( std::shared_ptr<FishingHook>( hook ) );
+			level->addEntity( shared_ptr<FishingHook>( hook ) );
 		}
 		player->swing();
 	}

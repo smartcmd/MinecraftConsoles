@@ -14,7 +14,7 @@
 #endif
 
 #include <boost/ref.hpp>
-#include <boost/std::shared_ptr.hpp>
+#include <boost/shared_ptr.hpp>
 #include <boost/xpressive/detail/detail_fwd.hpp>
 #include <boost/xpressive/detail/core/regex_impl.hpp>
 #include <boost/xpressive/detail/static/transmogrify.hpp>
@@ -27,7 +27,7 @@ namespace boost { namespace xpressive { namespace detail
     template<typename BidiIter>
     struct xpression_visitor_base
     {
-        explicit xpression_visitor_base(std::shared_ptr<regex_impl<BidiIter> > const &self)
+        explicit xpression_visitor_base(shared_ptr<regex_impl<BidiIter> > const &self)
           : self_(self)
         {
         }
@@ -51,7 +51,7 @@ namespace boost { namespace xpressive { namespace detail
             }
         }
 
-        std::shared_ptr<regex_impl<BidiIter> > &self()
+        shared_ptr<regex_impl<BidiIter> > &self()
         {
             return this->self_;
         }
@@ -94,7 +94,7 @@ namespace boost { namespace xpressive { namespace detail
         }
 
     private:
-        std::shared_ptr<regex_impl<BidiIter> > self_;
+        shared_ptr<regex_impl<BidiIter> > self_;
     };
 
     ///////////////////////////////////////////////////////////////////////////////
@@ -108,7 +108,7 @@ namespace boost { namespace xpressive { namespace detail
         typedef Traits traits_type;
         typedef typename boost::iterator_value<BidiIter>::type char_type;
 
-        explicit xpression_visitor(Traits const &tr, std::shared_ptr<regex_impl<BidiIter> > const &self)
+        explicit xpression_visitor(Traits const &tr, shared_ptr<regex_impl<BidiIter> > const &self)
           : xpression_visitor_base<BidiIter>(self)
           , traits_(tr)
         {

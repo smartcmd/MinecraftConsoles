@@ -1,5 +1,5 @@
 // package net.minecraft.world.item.crafting;
-//
+// 
 // import net.minecraft.world.inventory.CraftingContainer;
 // import net.minecraft.world.item.ItemInstance;
 
@@ -10,7 +10,7 @@
 #define RECIPE_TYPE_2x2	0
 #define RECIPE_TYPE_3x3 1
 
-class Recipy
+class Recipy 
 {
 public:
 	enum _eGroupType
@@ -28,7 +28,7 @@ public:
 	eGroupType; // to class the item produced by the recipe
 
 	// 4J-PB - we'll classing an ingredient ID with a different aux value as a different IngID AuxVal pair
-	typedef struct
+	typedef struct 
 	{
 		int iIngC;
 		int iType; // Can be a 2x2 or a 3x3. Inventory crafting can only make a 2x2.
@@ -42,11 +42,11 @@ public:
 	}
 	INGREDIENTS_REQUIRED;
 	~Recipy() {}
-	virtual bool matches(std::shared_ptr<CraftingContainer> craftSlots, Level *level) = 0;
-	virtual std::shared_ptr<ItemInstance> assemble(std::shared_ptr<CraftingContainer> craftSlots) = 0;
+	virtual bool matches(shared_ptr<CraftingContainer> craftSlots, Level *level) = 0;
+	virtual shared_ptr<ItemInstance> assemble(shared_ptr<CraftingContainer> craftSlots) = 0;
 	virtual int size() = 0;
 	virtual const ItemInstance *getResultItem() = 0;
-	virtual const int getGroup()	 = 0;
+	virtual const int getGroup()	 = 0;		
 
 	// 4J-PB
 	virtual bool requires(int iRecipe) = 0;

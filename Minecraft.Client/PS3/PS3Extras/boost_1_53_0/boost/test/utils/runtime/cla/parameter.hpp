@@ -1,6 +1,6 @@
 //  (C) Copyright Gennadiy Rozental 2005-2008.
-//  Use, modification, and distribution are subject to the
-//  Boost Software License, Version 1.0. (See accompanying file
+//  Use, modification, and distribution are subject to the 
+//  Boost Software License, Version 1.0. (See accompanying file 
 //  LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
 
 //  See http://www.boost.org/libs/test for the library home page.
@@ -88,12 +88,12 @@ public:
     bool            conflict_with( parameter const& p ) const
     {
         return (id_2_report() == p.id_2_report() && !id_2_report().is_empty())  ||
-               m_id_policy.conflict_with( p.m_id_policy )                       ||
+               m_id_policy.conflict_with( p.m_id_policy )                       || 
                ((m_id_policy.p_type_id != p.m_id_policy.p_type_id) && p.m_id_policy.conflict_with( m_id_policy ));
     }
     cstring         id_2_report() const                         { return m_id_policy.id_2_report(); }
     void            usage_info( format_stream& fs ) const
-    {
+    { 
         m_id_policy.usage_info( fs );
         if( p_optional_value )
             fs << BOOST_RT_PARAM_LITERAL( '[' );
@@ -131,8 +131,8 @@ private:
 //____________________________________________________________________________//
 
 template<typename Parameter,typename Modifier>
-inline std::shared_ptr<Parameter>
-operator-( std::shared_ptr<Parameter> p, Modifier const& m )
+inline shared_ptr<Parameter>
+operator-( shared_ptr<Parameter> p, Modifier const& m )
 {
     p->accept_modifier( m );
 

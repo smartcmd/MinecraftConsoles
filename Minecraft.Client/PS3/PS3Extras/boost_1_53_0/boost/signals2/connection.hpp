@@ -17,7 +17,7 @@
 #include <boost/function.hpp>
 #include <boost/mpl/bool.hpp>
 #include <boost/noncopyable.hpp>
-#include <boost/std::shared_ptr.hpp>
+#include <boost/shared_ptr.hpp>
 #include <boost/signals2/detail/null_output_iterator.hpp>
 #include <boost/signals2/detail/unique_lock.hpp>
 #include <boost/signals2/slot.hpp>
@@ -48,11 +48,11 @@ namespace boost
           _connected = false;
         }
         virtual bool connected() const = 0;
-        std::shared_ptr<void> get_blocker()
+        shared_ptr<void> get_blocker()
         {
           unique_lock<connection_body_base> local_lock(*this);
-          std::shared_ptr<void> blocker = _weak_blocker.lock();
-          if(blocker == std::shared_ptr<void>())
+          shared_ptr<void> blocker = _weak_blocker.lock();
+          if(blocker == shared_ptr<void>())
           {
             blocker.reset(this, &null_deleter);
             _weak_blocker = blocker;
@@ -161,26 +161,26 @@ namespace boost
       ~connection() {}
       void disconnect() const
       {
-        boost::std::shared_ptr<detail::connection_body_base> connectionBody(_weak_connection_body.lock());
+        boost::shared_ptr<detail::connection_body_base> connectionBody(_weak_connection_body.lock());
         if(connectionBody == 0) return;
         connectionBody->disconnect();
       }
       bool connected() const
       {
-        boost::std::shared_ptr<detail::connection_body_base> connectionBody(_weak_connection_body.lock());
+        boost::shared_ptr<detail::connection_body_base> connectionBody(_weak_connection_body.lock());
         if(connectionBody == 0) return false;
         return connectionBody->connected();
       }
       bool blocked() const
       {
-        boost::std::shared_ptr<detail::connection_body_base> connectionBody(_weak_connection_body.lock());
+        boost::shared_ptr<detail::connection_body_base> connectionBody(_weak_connection_body.lock());
         if(connectionBody == 0) return true;
         return connectionBody->blocked();
       }
       bool operator==(const connection& other) const
       {
-        boost::std::shared_ptr<detail::connection_body_base> connectionBody(_weak_connection_body.lock());
-        boost::std::shared_ptr<detail::connection_body_base> otherConnectionBody(other._weak_connection_body.lock());
+        boost::shared_ptr<detail::connection_body_base> connectionBody(_weak_connection_body.lock());
+        boost::shared_ptr<detail::connection_body_base> otherConnectionBody(other._weak_connection_body.lock());
         return connectionBody == otherConnectionBody;
       }
       bool operator!=(const connection& other) const
@@ -189,8 +189,8 @@ namespace boost
       }
       bool operator<(const connection& other) const
       {
-        boost::std::shared_ptr<detail::connection_body_base> connectionBody(_weak_connection_body.lock());
-        boost::std::shared_ptr<detail::connection_body_base> otherConnectionBody(other._weak_connection_body.lock());
+        boost::shared_ptr<detail::connection_body_base> connectionBody(_weak_connection_body.lock());
+        boost::shared_ptr<detail::connection_body_base> otherConnectionBody(other._weak_connection_body.lock());
         return connectionBody < otherConnectionBody;
       }
       void swap(connection &other)

@@ -17,6 +17,6 @@ public:
 	~McRegionLevelStorage();
 
     virtual ChunkStorage *createChunkStorage(Dimension *dimension);
-    virtual void saveLevelData(LevelData *levelData, vector<std::shared_ptr<Player> > *players);
+    virtual void saveLevelData(LevelData *levelData, vector<shared_ptr<Player> > *players);
     virtual void closeAll();
 };

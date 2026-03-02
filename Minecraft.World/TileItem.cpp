@@ -17,13 +17,13 @@ using namespace std;
 #include <xuiapp.h>
 
 
-TileItem::TileItem(int id) : Item(id)
+TileItem::TileItem(int id) : Item(id) 
 {
         this->tileId = id + 256;
 		itemIcon = NULL;
 }
 
-int TileItem::getTileId()
+int TileItem::getTileId() 
 {
         return tileId;
 }
@@ -46,18 +46,18 @@ Icon *TileItem::getIcon(int auxValue)
 	return Tile::tiles[tileId]->getTexture(Facing::UP, auxValue);
 }
 
-bool TileItem::useOn(std::shared_ptr<ItemInstance> instance, std::shared_ptr<Player> player, Level *level, int x, int y, int z, int face, float clickX, float clickY, float clickZ, bool bTestUseOnOnly)
+bool TileItem::useOn(shared_ptr<ItemInstance> instance, shared_ptr<Player> player, Level *level, int x, int y, int z, int face, float clickX, float clickY, float clickZ, bool bTestUseOnOnly) 
 {
 	// 4J-PB - Adding a test only version to allow tooltips to be displayed
 	int currentTile = level->getTile(x, y, z);
-    if (currentTile == Tile::topSnow_Id)
+    if (currentTile == Tile::topSnow_Id) 
 	{
         face = Facing::UP;
 	}
 	else if (currentTile == Tile::vine_Id || currentTile == Tile::tallgrass_Id || currentTile == Tile::deadBush_Id)
 	{
 	}
-	else
+	else 
 	{
         if (face == 0) y--;
         if (face == 1) y++;
@@ -75,7 +75,7 @@ bool TileItem::useOn(std::shared_ptr<ItemInstance> instance, std::shared_ptr<Pla
 
 	int undertile = level->getTile(x,y-1,z); // For 'BodyGuard' achievement.
 
-    if (level->mayPlace(tileId, x, y, z, false, face, player))
+    if (level->mayPlace(tileId, x, y, z, false, face, player)) 
 	{
 		if(!bTestUseOnOnly)
 		{
@@ -83,7 +83,7 @@ bool TileItem::useOn(std::shared_ptr<ItemInstance> instance, std::shared_ptr<Pla
 			// 4J - Adding this from 1.6
             int itemValue = getLevelDataForAuxValue(instance->getAuxValue());
             int dataValue = Tile::tiles[tileId]->getPlacedOnFaceDataValue(level, x, y, z, face, clickX, clickY, clickZ, itemValue);
-			if (level->setTileAndData(x, y, z, tileId, dataValue))
+			if (level->setTileAndData(x, y, z, tileId, dataValue)) 
 			{
 				// 4J-JEV: Snow/Iron Golems do not have owners apparently.
 				int newTileId = level->getTile(x,y,z);
@@ -115,7 +115,7 @@ bool TileItem::useOn(std::shared_ptr<ItemInstance> instance, std::shared_ptr<Pla
 					Tile::tiles[tileId]->setPlacedBy(level, x, y, z, player);
                     Tile::tiles[tileId]->finalizePlacement(level, x, y, z, dataValue);
 				}
-
+				
 				// 4J-PB - Java 1.4 change - getStepSound replaced with getPlaceSound
 				//level->playSound(x + 0.5f, y + 0.5f, z + 0.5f, tile->soundType->getStepSound(), (tile->soundType->getVolume() + 1) / 2, tile->soundType->getPitch() * 0.8f);
 #ifdef _DEBUG
@@ -125,7 +125,7 @@ bool TileItem::useOn(std::shared_ptr<ItemInstance> instance, std::shared_ptr<Pla
 // 				char szPlaceSoundName[256];
 // 				char szStepSoundName[256];
 // 				Minecraft *pMinecraft = Minecraft::GetInstance();
-//
+// 
 // 				if(iPlaceSound==-1)
 // 				{
 // 					strcpy(szPlaceSoundName,"NULL");
@@ -162,14 +162,14 @@ bool TileItem::useOn(std::shared_ptr<ItemInstance> instance, std::shared_ptr<Pla
 }
 
 
-bool TileItem::mayPlace(Level *level, int x, int y, int z, int face, std::shared_ptr<Player> player, std::shared_ptr<ItemInstance> item)
+bool TileItem::mayPlace(Level *level, int x, int y, int z, int face, shared_ptr<Player> player, shared_ptr<ItemInstance> item) 
 {
 	int currentTile = level->getTile(x, y, z);
-	if (currentTile == Tile::topSnow_Id)
+	if (currentTile == Tile::topSnow_Id) 
 	{
 		face = Facing::UP;
-	}
-	else if (currentTile != Tile::vine_Id && currentTile != Tile::tallgrass_Id && currentTile != Tile::deadBush_Id)
+	} 
+	else if (currentTile != Tile::vine_Id && currentTile != Tile::tallgrass_Id && currentTile != Tile::deadBush_Id) 
 	{
 		if (face == 0) y--;
 		if (face == 1) y++;
@@ -188,25 +188,25 @@ int TileItem::getColor(int itemAuxValue, int spriteLayer)
 	return Tile::tiles[tileId]->getColor();
 }
 
-unsigned int TileItem::getDescriptionId(std::shared_ptr<ItemInstance> instance)
+unsigned int TileItem::getDescriptionId(shared_ptr<ItemInstance> instance) 
 {
     return Tile::tiles[tileId]->getDescriptionId();
 }
 
 
-unsigned int TileItem::getDescriptionId(int iData /*= -1*/)
+unsigned int TileItem::getDescriptionId(int iData /*= -1*/) 
 {
         return Tile::tiles[tileId]->getDescriptionId(iData);
 }
 
 
-unsigned int TileItem::getUseDescriptionId(std::shared_ptr<ItemInstance> instance)
+unsigned int TileItem::getUseDescriptionId(shared_ptr<ItemInstance> instance) 
 {
     return Tile::tiles[tileId]->getUseDescriptionId();
 }
 
 
-unsigned int TileItem::getUseDescriptionId()
+unsigned int TileItem::getUseDescriptionId() 
 {
         return Tile::tiles[tileId]->getUseDescriptionId();
 }

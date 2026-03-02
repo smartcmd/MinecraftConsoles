@@ -118,14 +118,14 @@ float Tile_SPU::getBrightness(ChunkRebuildData *level, int x, int y, int z)
 {
 	return level->getBrightness(x, y, z, ms_pTileData->lightEmission[id]);
 }
-//
+// 
 // // 4J - brought forward from 1.8.2
 int Tile_SPU::getLightColor(ChunkRebuildData *level, int x, int y, int z)
 {
 	int tileID = level->getTile(x, y, z);
 	return level->getLightColor(x, y, z, ms_pTileData->lightEmission[tileID]);
 }
-//
+// 
 // bool Tile_SPU::isFaceVisible(Level *level, int x, int y, int z, int f)
 // {
 // 	if (f == 0) y--;
@@ -136,7 +136,7 @@ int Tile_SPU::getLightColor(ChunkRebuildData *level, int x, int y, int z)
 // 	if (f == 5) x++;
 // 	return !level->isSolidRenderTile(x, y, z);
 // }
-//
+// 
 bool Tile_SPU::shouldRenderFace(ChunkRebuildData *level, int x, int y, int z, int face)
 {
 	if (face == 0 && getShapeY0() > 0) return true;
@@ -147,7 +147,7 @@ bool Tile_SPU::shouldRenderFace(ChunkRebuildData *level, int x, int y, int z, in
 	if (face == 5 && getShapeX1() < 1) return true;
 	return (!level->isSolidRenderTile(x, y, z));
 }
-//
+// 
 bool Tile_SPU::isSolidFace(ChunkRebuildData *level, int x, int y, int z, int face)
 {
 	return (level->getMaterial(x, y, z)->isSolid());
@@ -196,39 +196,39 @@ Icon_SPU *Tile_SPU::getTexture(ChunkRebuildData *level, int x, int y, int z, int
 	}
 	return getTexture(face, tileData);
 }
-//
+// 
 Icon_SPU *Tile_SPU::getTexture(int face, int data)
 {
 	return &ms_pTileData->iconData[id];
 }
-//
+// 
 Icon_SPU *Tile_SPU::getTexture(int face)
 {
 	return getTexture(face, 0);
 }
-//
+// 
 // AABB *Tile_SPU::getTileAABB(Level *level, int x, int y, int z)
 // {
 // 	return AABB::newTemp(x + xx0, y + yy0, z + zz0, x + xx1, y + yy1, z + zz1);
 // }
-//
-// void Tile_SPU::addAABBs(Level *level, int x, int y, int z, AABB *box, AABBList *boxes, Entity *source)
+// 
+// void Tile_SPU::addAABBs(Level *level, int x, int y, int z, AABB *box, AABBList *boxes, Entity *source) 
 // {
 // 	AABB *aabb = getAABB(level, x, y, z);
 // 	if (aabb != NULL && box->intersects(aabb)) boxes->push_back(aabb);
 // }
-//
+// 
 // void Tile_SPU::addAABBs(Level *level, int x, int y, int z, AABB *box, AABBList *boxes)
 // {
 // 	AABB *aabb = getAABB(level, x, y, z);
 // 	if (aabb != NULL && box->intersects(aabb)) boxes->push_back(aabb);
 // }
-//
+// 
 // AABB *Tile_SPU::getAABB(Level *level, int x, int y, int z)
 // {
 // 	return AABB::newTemp(x + xx0, y + yy0, z + zz0, x + xx1, y + yy1, z + zz1);
 // }
-//
+// 
  bool Tile_SPU::isSolidRender(bool isServerLevel)
  {
  	return true;
@@ -239,67 +239,67 @@ Icon_SPU *Tile_SPU::getTexture(int face)
 // {
 // 	return mayPick();
 // }
-//
+// 
 // bool Tile_SPU::mayPick()
 // {
 // 	return true;
 // }
-//
+// 
 // void Tile_SPU::tick(Level *level, int x, int y, int z, Random *random)
 // {
 // }
-//
+// 
 // void Tile_SPU::animateTick(Level *level, int x, int y, int z, Random *random)
 // {
 // }
-//
+// 
 // void Tile_SPU::destroy(Level *level, int x, int y, int z, int data)
 // {
 // }
-//
+// 
 // void Tile_SPU::neighborChanged(Level *level, int x, int y, int z, int type)
 // {
 // }
-//
+// 
 // void Tile_SPU::addLights(Level *level, int x, int y, int z)
 // {
 // }
-//
+// 
 // int Tile_SPU::getTickDelay()
 // {
 // 	return 10;
 // }
-//
+// 
 // void Tile_SPU::onPlace(Level *level, int x, int y, int z)
 // {
 // }
-//
+// 
 // void Tile_SPU::onRemove(Level *level, int x, int y, int z)
 // {
 // }
-//
+// 
 // int Tile_SPU::getResourceCount(Random *random)
 // {
 // 	return 1;
 // }
-//
+// 
 // int Tile_SPU::getResource(int data, Random *random, int playerBonusLevel)
 // {
 // 	return id;
 // }
-//
-// float Tile_SPU::getDestroyProgress(std::shared_ptr<Player> player)
+// 
+// float Tile_SPU::getDestroyProgress(shared_ptr<Player> player)
 // {
 // 	if (destroySpeed < 0) return 0;
 // 	if (!player->canDestroy(this)) return 1 / destroySpeed / 100.0f;
 // 	return (player->getDestroySpeed(this) / destroySpeed) / 30;
 // }
-//
+// 
 // void Tile_SPU::spawnResources(Level *level, int x, int y, int z, int data, int playerBonusLevel)
 // {
 // 	spawnResources(level, x, y, z, data, 1, playerBonusLevel);
 // }
-//
+// 
 // void Tile_SPU::spawnResources(Level *level, int x, int y, int z, int data, float odds, int playerBonusLevel)
 // {
 // 	if (level->isClientSide) return;
@@ -309,24 +309,24 @@ Icon_SPU *Tile_SPU::getTexture(int face)
 // 		if (level->random->nextFloat() > odds) continue;
 // 		int type = getResource(data, level->random, playerBonusLevel);
 // 		if (type <= 0) continue;
-//
-// 		popResource(level, x, y, z, std::shared_ptr<ItemInstance>( new ItemInstance(type, 1, getSpawnResourcesAuxValue(data) ) ) );
+// 
+// 		popResource(level, x, y, z, shared_ptr<ItemInstance>( new ItemInstance(type, 1, getSpawnResourcesAuxValue(data) ) ) );
 // 	}
 // }
-//
-// void Tile_SPU::popResource(Level *level, int x, int y, int z, std::shared_ptr<ItemInstance> itemInstance)
+// 
+// void Tile_SPU::popResource(Level *level, int x, int y, int z, shared_ptr<ItemInstance> itemInstance)
 // {
 // 	if( level->isClientSide ) return;
-//
+// 
 // 	float s = 0.7f;
 // 	double xo = level->random->nextFloat() * s + (1 - s) * 0.5;
 // 	double yo = level->random->nextFloat() * s + (1 - s) * 0.5;
 // 	double zo = level->random->nextFloat() * s + (1 - s) * 0.5;
-// 	std::shared_ptr<ItemEntity> item = std::shared_ptr<ItemEntity>( new ItemEntity(level, x + xo, y + yo, z + zo, itemInstance ) );
+// 	shared_ptr<ItemEntity> item = shared_ptr<ItemEntity>( new ItemEntity(level, x + xo, y + yo, z + zo, itemInstance ) );
 // 	item->throwTime = 10;
 // 	level->addEntity(item);
 // }
-//
+// 
 // // Brought forward for TU7
 // void Tile_SPU::popExperience(Level *level, int x, int y, int z, int amount)
 // {
@@ -336,182 +336,182 @@ Icon_SPU *Tile_SPU::getTexture(int face)
 // 		{
 // 			int newCount = ExperienceOrb::getExperienceValue(amount);
 // 			amount -= newCount;
-// 			level->addEntity(std::shared_ptr<ExperienceOrb>( new ExperienceOrb(level, x + .5, y + .5, z + .5, newCount)));
+// 			level->addEntity(shared_ptr<ExperienceOrb>( new ExperienceOrb(level, x + .5, y + .5, z + .5, newCount)));
 // 		}
 // 	}
 // }
-//
+// 
 // int Tile_SPU::getSpawnResourcesAuxValue(int data)
 // {
 // 	return 0;
 // }
-//
-// float Tile_SPU::getExplosionResistance(std::shared_ptr<Entity> source)
+// 
+// float Tile_SPU::getExplosionResistance(shared_ptr<Entity> source)
 // {
 // 	return explosionResistance / 5.0f;
 // }
-//
+// 
 // HitResult *Tile_SPU::clip(Level *level, int xt, int yt, int zt, Vec3 *a, Vec3 *b)
 // {
 // 	EnterCriticalSection(&m_csShape);
 // 	updateShape(level, xt, yt, zt);
-//
+// 
 // 	a = a->add(-xt, -yt, -zt);
 // 	b = b->add(-xt, -yt, -zt);
-//
+// 
 // 	Vec3 *xh0 = a->clipX(b, xx0);
 // 	Vec3 *xh1 = a->clipX(b, xx1);
-//
+// 
 // 	Vec3 *yh0 = a->clipY(b, yy0);
 // 	Vec3 *yh1 = a->clipY(b, yy1);
-//
+// 
 // 	Vec3 *zh0 = a->clipZ(b, zz0);
 // 	Vec3 *zh1 = a->clipZ(b, zz1);
-//
+// 
 // 	Vec3 *closest = NULL;
-//
+// 
 // 	if (containsX(xh0) && (closest == NULL || a->distanceTo(xh0) < a->distanceTo(closest))) closest = xh0;
 // 	if (containsX(xh1) && (closest == NULL || a->distanceTo(xh1) < a->distanceTo(closest))) closest = xh1;
 // 	if (containsY(yh0) && (closest == NULL || a->distanceTo(yh0) < a->distanceTo(closest))) closest = yh0;
 // 	if (containsY(yh1) && (closest == NULL || a->distanceTo(yh1) < a->distanceTo(closest))) closest = yh1;
 // 	if (containsZ(zh0) && (closest == NULL || a->distanceTo(zh0) < a->distanceTo(closest))) closest = zh0;
 // 	if (containsZ(zh1) && (closest == NULL || a->distanceTo(zh1) < a->distanceTo(closest))) closest = zh1;
-//
+// 
 // 	LeaveCriticalSection(&m_csShape);
-//
+// 
 // 	if (closest == NULL) return NULL;
-//
+// 
 // 	int face = -1;
-//
+// 
 // 	if (closest == xh0) face = 4;
 // 	if (closest == xh1) face = 5;
 // 	if (closest == yh0) face = 0;
 // 	if (closest == yh1) face = 1;
 // 	if (closest == zh0) face = 2;
 // 	if (closest == zh1) face = 3;
-//
+// 
 // 	return new HitResult(xt, yt, zt, face, closest->add(xt, yt, zt));
 // }
-//
+// 
 // bool Tile_SPU::containsX(Vec3 *v)
 // {
 // 	if( v == NULL) return false;
 // 	return v->y >= yy0 && v->y <= yy1 && v->z >= zz0 && v->z <= zz1;
 // }
-//
+// 
 // bool Tile_SPU::containsY(Vec3 *v)
 // {
 // 	if( v == NULL) return false;
 // 	return v->x >= xx0 && v->x <= xx1 && v->z >= zz0 && v->z <= zz1;
 // }
-//
+// 
 // bool Tile_SPU::containsZ(Vec3 *v)
 // {
 // 	if( v == NULL) return false;
 // 	return v->x >= xx0 && v->x <= xx1 && v->y >= yy0 && v->y <= yy1;
 // }
-//
+// 
 // void Tile_SPU::wasExploded(Level *level, int x, int y, int z)
 // {
 // }
-//
+// 
 int Tile_SPU::getRenderLayer()
 {
 	return 0;
 }
-//
+// 
 // bool Tile_SPU::mayPlace(Level *level, int x, int y, int z, int face)
 // {
 // 	return mayPlace(level, x, y, z);
 // }
-//
+// 
 // bool Tile_SPU::mayPlace(Level *level, int x, int y, int z)
 // {
 // 	int t = level->getTile(x, y, z);
 // 	return t == 0 || Tile_SPU::tiles[t]->material->isReplaceable();
 // }
-//
+// 
 // // 4J-PB - Adding a TestUse for tooltip display
 // bool Tile_SPU::TestUse()
 // {
 // 	return false;
 // }
-//
-// bool Tile_SPU::TestUse(Level *level, int x, int y, int z, std::shared_ptr<Player> player)
+// 
+// bool Tile_SPU::TestUse(Level *level, int x, int y, int z, shared_ptr<Player> player)
 // {
 // 	return false;
 // }
-//
-// bool Tile_SPU::use(Level *level, int x, int y, int z, std::shared_ptr<Player> player, int clickedFace, float clickX, float clickY, float clickZ, bool soundOnly/*=false*/) // 4J added soundOnly param
+// 
+// bool Tile_SPU::use(Level *level, int x, int y, int z, shared_ptr<Player> player, int clickedFace, float clickX, float clickY, float clickZ, bool soundOnly/*=false*/) // 4J added soundOnly param
 // {
 // 	return false;
 // }
-//
-// void Tile_SPU::stepOn(Level *level, int x, int y, int z, std::shared_ptr<Entity> entity)
+// 
+// void Tile_SPU::stepOn(Level *level, int x, int y, int z, shared_ptr<Entity> entity)
 // {
 // }
-//
+// 
 // void Tile_SPU::setPlacedOnFace(Level *level, int x, int y, int z, int face)
 // {
 // }
-//
+// 
 // void Tile_SPU::prepareRender(Level *level, int x, int y, int z)
 // {
 // }
-//
-// void Tile_SPU::attack(Level *level, int x, int y, int z, std::shared_ptr<Player> player)
+// 
+// void Tile_SPU::attack(Level *level, int x, int y, int z, shared_ptr<Player> player)
 // {
 // }
-//
-// void Tile_SPU::handleEntityInside(Level *level, int x, int y, int z, std::shared_ptr<Entity> e, Vec3 *current)
+// 
+// void Tile_SPU::handleEntityInside(Level *level, int x, int y, int z, shared_ptr<Entity> e, Vec3 *current)
 // {
 // }
-//
+// 
 void Tile_SPU::updateShape(ChunkRebuildData *level, int x, int y, int z, int forceData, TileEntity* forceEntity) // 4J added forceData, forceEntity param
 {
 }
-//
+// 
 
 int Tile_SPU::getColor(ChunkRebuildData *level, int x, int y, int z)
 {
 	return 0xffffff;
 }
 
-//
+// 
 // int Tile_SPU::getColor(LevelSource *level, int x, int y, int z, int data)
 // {
 // 	return 0xffffff;
 // }
-//
+// 
 // bool Tile_SPU::getSignal(LevelSource *level, int x, int y, int z)
 // {
 // 	return false;
 // }
-//
+// 
 // bool Tile_SPU::getSignal(LevelSource *level, int x, int y, int z, int dir)
 // {
 // 	return false;
 // }
-//
+// 
 // bool Tile_SPU::isSignalSource()
 // {
 // 	return false;
 // }
-//
-// void Tile_SPU::entityInside(Level *level, int x, int y, int z, std::shared_ptr<Entity> entity)
+// 
+// void Tile_SPU::entityInside(Level *level, int x, int y, int z, shared_ptr<Entity> entity)
 // {
 // }
-//
+// 
 // bool Tile_SPU::getDirectSignal(Level *level, int x, int y, int z, int dir)
 // {
 // 	return false;
 // }
-//
+// 
 void Tile_SPU::updateDefaultShape()
 {
 }
-//
-// void Tile_SPU::playerDestroy(Level *level, std::shared_ptr<Player> player, int x, int y, int z, int data)
+// 
+// void Tile_SPU::playerDestroy(Level *level, shared_ptr<Player> player, int x, int y, int z, int data)
 // {
 // 	// 4J Stu - Special case - only record a crop destroy if is fully grown
 // 	if(id==Tile_SPU::crops_Id)
@@ -525,14 +525,14 @@ void Tile_SPU::updateDefaultShape()
 // 	}
 // 	player->awardStat(Stats::totalBlocksMined, 1);	// 4J : WESTY : Added for other award.
 // 	player->causeFoodExhaustion(FoodConstants::EXHAUSTION_MINE);
-//
+// 
 // 	if( id == Tile_SPU::treeTrunk_Id )
 // 		player->awardStat(Achievements::mineWood);
-//
-//
+// 
+// 
 //     if (isCubeShaped() && !isEntityTile[id] && EnchantmentHelper::hasSilkTouch(player->inventory))
 // 	{
-//         std::shared_ptr<ItemInstance> item = getSilkTouchItemInstance(data);
+//         shared_ptr<ItemInstance> item = getSilkTouchItemInstance(data);
 //         if (item != NULL)
 // 		{
 //             popResource(level, x, y, z, item);
@@ -544,78 +544,78 @@ void Tile_SPU::updateDefaultShape()
 //         spawnResources(level, x, y, z, data, playerBonusLevel);
 //     }
 // }
-//
-// std::shared_ptr<ItemInstance> Tile_SPU::getSilkTouchItemInstance(int data)
+// 
+// shared_ptr<ItemInstance> Tile_SPU::getSilkTouchItemInstance(int data)
 // {
 //     int popData = 0;
 //     if (id >= 0 && id < Item::items.length && Item::items[id]->isStackedByData())
 // 	{
 //         popData = data;
 //     }
-//     return std::shared_ptr<ItemInstance>(new ItemInstance(id, 1, popData));
+//     return shared_ptr<ItemInstance>(new ItemInstance(id, 1, popData));
 // }
-//
+// 
 // int Tile_SPU::getResourceCountForLootBonus(int bonusLevel, Random *random)
 // {
 // 	return getResourceCount(random);
 // }
-//
+// 
 // bool Tile_SPU::canSurvive(Level *level, int x, int y, int z)
 // {
 // 	return true;
 // }
-//
-// void Tile_SPU::setPlacedBy(Level *level, int x, int y, int z, std::shared_ptr<Mob> by)
+// 
+// void Tile_SPU::setPlacedBy(Level *level, int x, int y, int z, shared_ptr<Mob> by)
 // {
 // }
-//
+// 
 // Tile *Tile_SPU::setDescriptionId(unsigned int id)
 // {
 // 	this->descriptionId = id;
 // 	return this;
 // }
-//
+// 
 // wstring Tile_SPU::getName()
 // {
 // 	return I18n::get(getDescriptionId() + L".name");
 // }
-//
+// 
 // unsigned int Tile_SPU::getDescriptionId(int iData /*= -1*/)
 // {
 // 	return descriptionId;
 // }
-//
+// 
 // Tile *Tile_SPU::setUseDescriptionId(unsigned int id)
 // {
 // 	this->useDescriptionId = id;
 // 	return this;
 // }
-//
+// 
 // unsigned int Tile_SPU::getUseDescriptionId()
 // {
 // 	return useDescriptionId;
 // }
-//
+// 
 // void Tile_SPU::triggerEvent(Level *level, int x, int y, int z, int b0, int b1)
 // {
 // }
-//
+// 
 // bool Tile_SPU::isCollectStatistics()
 // {
 // 	return collectStatistics;
 // }
-//
+// 
 // Tile *Tile_SPU::setNotCollectStatistics()
 // {
 // 	collectStatistics = false;
 // 	return this;
 // }
-//
+// 
 // int Tile_SPU::getPistonPushReaction()
 // {
 // 	return material->getPushReaction();
 // }
-//
+// 
 // // 4J - brought forward from 1.8.2
 float Tile_SPU::getShadeBrightness(ChunkRebuildData *level, int x, int y, int z)
 {
@@ -629,37 +629,37 @@ Tile_SPU* Tile_SPU::createFromID( int tileID )
 
 	if(m_tiles[tileID].id != -1)
 		return &m_tiles[tileID];
-
+	
 #ifndef SN_TARGET_PS3_SPU
 	app.DebugPrintf("missing tile ID %d\n", tileID);
 #else
 	spu_print("missing tile ID %d\n", tileID);
-#endif
+#endif	
 	return &m_tiles[1];
 
 }
 
 Material_SPU* Tile_SPU::getMaterial()
 {
-	int matID = ms_pTileData->materialIDs[id];
+	int matID = ms_pTileData->materialIDs[id]; 
 	return &ms_pTileData->materials[matID];
 }
 
-//
-// void Tile_SPU::fallOn(Level *level, int x, int y, int z, std::shared_ptr<Entity> entity, float fallDistance)
+// 
+// void Tile_SPU::fallOn(Level *level, int x, int y, int z, shared_ptr<Entity> entity, float fallDistance)
 // {
 // }
-//
+// 
 // void Tile_SPU::registerIcons(IconRegister *iconRegister)
 // {
 // 	icon = iconRegister->registerIcon(m_textureName);
 // }
-//
+// 
 // wstring Tile_SPU::getTileItemIconName()
 // {
 // 	return L"";
 // }
-//
+// 
 // Tile *Tile_SPU::setTextureName(const wstring &name)
 // {
 // 	m_textureName = name;
@@ -690,7 +690,7 @@ void Tile_SPU::initTilePointers()
 
 	CREATE_TILE_TYPE(stairs_wood_Id, StairTile_SPU);
 	CREATE_TILE_TYPE(stairs_stone_Id, StairTile_SPU);
-	CREATE_TILE_TYPE(stairs_bricks_Id, StairTile_SPU);
+	CREATE_TILE_TYPE(stairs_bricks_Id, StairTile_SPU);	
 	CREATE_TILE_TYPE(stairs_stoneBrickSmooth_Id, StairTile_SPU);
 	CREATE_TILE_TYPE(stairs_netherBricks_Id, StairTile_SPU);
 	CREATE_TILE_TYPE(stairs_sandstone_Id, StairTile_SPU);
@@ -863,7 +863,7 @@ void Tile_SPU::initTilePointers()
 	CREATE_TILE_TYPE(goldOre_Id, Tile_SPU);		// OreTile
 	CREATE_TILE_TYPE(ironOre_Id, Tile_SPU); 		// OreTile
 	CREATE_TILE_TYPE(coalOre_Id, Tile_SPU); 		// OreTile
-	CREATE_TILE_TYPE(lapisOre_Id, Tile_SPU); 		// OreTile
+	CREATE_TILE_TYPE(lapisOre_Id, Tile_SPU); 		// OreTile	
 	CREATE_TILE_TYPE(diamondOre_Id, Tile_SPU); 	// OreTile
 	CREATE_TILE_TYPE(clay_Id, Tile_SPU);			// ClayTile
 	CREATE_TILE_TYPE(redStoneOre_Id, Tile_SPU);	// RedStoneOreTile
@@ -884,7 +884,7 @@ void Tile_SPU::initTilePointers()
 	CREATE_TILE_TYPE(enderChest_Id, EnderChestTile_SPU);
 	CREATE_TILE_TYPE(tripWireSource_Id, TripWireSourceTile_SPU);
 	CREATE_TILE_TYPE(tripWire_Id, TripWireTile_SPU);
-//
+// 
 	CREATE_TILE_TYPE(emeraldBlock_Id, Tile_SPU);	// MetalTile
 	CREATE_TILE_TYPE(cobbleWall_Id, WallTile_SPU);
 	CREATE_TILE_TYPE(flowerPot_Id, FlowerPotTile_SPU);

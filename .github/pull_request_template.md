@@ -1,7 +1,9 @@
 # Pull Request
 
+## Note: IF YOUR PR CHANGES THE GAME BEHAVIOR VISIBLY, REMEMBER TO ATTACH A GAMEPLAY FOOTAGE (or at least a screenshot) OF YOU *ACTUALLY* PLAYING THE GAME WITH YOUR CHANGES. Untested PRs are *NOT* welcome. Please don't forget to describe what did you do in each commit in your PR.
+
 ## Description
-Briefly describe the changes this PR introduces.
+Briefly describe the changes this PR introduces. 
 
 ## Changes
 

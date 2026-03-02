@@ -68,7 +68,7 @@ void Chicken::aiStep()
 	if (!onGround && flapping < 1) flapping = 1;
 	flapping *= 0.9;
 
-	if (!onGround && yd < 0)
+	if (!onGround && yd < 0) 
 	{
 		yd *= 0.6;
 	}
@@ -77,7 +77,7 @@ void Chicken::aiStep()
 
 	if (!isBaby())
 	{
-		if (!level->isClientSide && --eggTime <= 0)
+		if (!level->isClientSide && --eggTime <= 0) 
 		{
 			level->playSound(shared_from_this(), eSoundType_MOB_CHICKENPLOP, 1.0f, (random->nextFloat() - random->nextFloat()) * 0.2f + 1.0f);
 			spawnAtLocation(Item::egg->id, 1);
@@ -87,27 +87,27 @@ void Chicken::aiStep()
 
 }
 
-void Chicken::causeFallDamage(float distance)
+void Chicken::causeFallDamage(float distance) 
 {
 }
 
 
-int Chicken::getAmbientSound()
+int Chicken::getAmbientSound() 
 {
 	return eSoundType_MOB_CHICKEN_AMBIENT;
 }
 
-int Chicken::getHurtSound()
+int Chicken::getHurtSound() 
 {
 	return eSoundType_MOB_CHICKEN_HURT;
 }
 
-int Chicken::getDeathSound()
+int Chicken::getDeathSound() 
 {
 	return eSoundType_MOB_CHICKEN_HURT;
 }
 
-int Chicken::getDeathLoot()
+int Chicken::getDeathLoot() 
 {
 	return Item::feather->id;
 }
@@ -121,7 +121,7 @@ void Chicken::dropDeathLoot(bool wasKilledByPlayer, int playerBonusLevel)
 		spawnAtLocation(Item::feather_Id, 1);
 	}
 	// and some meat
-	if (this->isOnFire())
+	if (this->isOnFire()) 
 	{
 		spawnAtLocation(Item::chicken_cooked_Id, 1);
 	}
@@ -131,12 +131,12 @@ void Chicken::dropDeathLoot(bool wasKilledByPlayer, int playerBonusLevel)
 	}
 }
 
-std::shared_ptr<AgableMob> Chicken::getBreedOffspring(std::shared_ptr<AgableMob> target)
+shared_ptr<AgableMob> Chicken::getBreedOffspring(shared_ptr<AgableMob> target)
 {
 	// 4J - added limit to chickens that can be bred
 	if( level->canCreateMore( GetType(), Level::eSpawnType_Breed) )
 	{
-		return std::shared_ptr<Chicken>(new Chicken(level));
+		return shared_ptr<Chicken>(new Chicken(level));
 	}
 	else
 	{
@@ -144,7 +144,7 @@ std::shared_ptr<AgableMob> Chicken::getBreedOffspring(std::shared_ptr<AgableMob>
 	}
 }
 
-bool Chicken::isFood(std::shared_ptr<ItemInstance> itemInstance)
+bool Chicken::isFood(shared_ptr<ItemInstance> itemInstance)
 {
 	return (itemInstance->id == Item::seeds_wheat_Id) || (itemInstance->id == Item::netherStalkSeeds_Id) || (itemInstance->id == Item::seeds_melon_Id) || (itemInstance->id == Item::seeds_pumpkin_Id);
 }

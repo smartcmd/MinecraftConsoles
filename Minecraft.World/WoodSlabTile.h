@@ -6,7 +6,7 @@
 class Player;
 
 class WoodSlabTile : HalfSlabTile
-{
+{	
 
 	friend class Tile;
 public:
@@ -18,11 +18,11 @@ public:
 	WoodSlabTile(int id, bool fullSize);
 	virtual Icon *getTexture(int face, int data);
 	virtual int getResource(int data, Random *random, int playerBonusLevel);
-	virtual int getAuxName(int auxValue);
+	virtual int getAuxName(int auxValue); 
 
-	virtual std::shared_ptr<ItemInstance> getSilkTouchItemInstance(int data);
+	virtual shared_ptr<ItemInstance> getSilkTouchItemInstance(int data);
 	void registerIcons(IconRegister *iconRegister);
-
+	
 	// 4J added
 	virtual unsigned int getDescriptionId(int iData = -1);
 };

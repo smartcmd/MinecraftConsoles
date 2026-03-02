@@ -16,13 +16,13 @@ private:
 	};
 
 	static int m_iDifficultyTitleSettingA[4];
-
+	
 	UIControl m_controlMainPanel;
 	UIControl_Label m_labelGameName, m_labelSeed, m_labelCreatedMode;
 	UIControl_Button m_buttonGamemode, m_buttonMoreOptions, m_buttonLoadWorld;
 	UIControl_Slider m_sliderDifficulty;
 	UIControl_BitmapIcon m_bitmapIcon;
-
+	
 #if defined _XBOX_ONE || defined __ORBIS__ || defined _WINDOWS64
 	UIControl_CheckBox m_checkboxOnline;
 #endif
@@ -35,7 +35,7 @@ private:
 			UI_MAP_ELEMENT( m_labelSeed, "Seed")
 			UI_MAP_ELEMENT( m_texturePackList, "TexturePackSelector")
 			UI_MAP_ELEMENT( m_buttonGamemode, "GameModeToggle")
-
+			
 #if defined _XBOX_ONE || defined __ORBIS__ || defined _WINDOWS64
 			UI_MAP_ELEMENT( m_checkboxOnline, "CheckboxOnline")
 #endif
@@ -48,7 +48,7 @@ private:
 
 	LevelGenerationOptions *m_levelGen;
 	DLCPack * m_pDLCPack;
-
+	
 	int m_iSaveGameInfoIndex;
 	int m_CurrentDifficulty;
 	bool m_bGameModeSurvival;
@@ -61,7 +61,7 @@ private:
 	bool m_bRequestQuadrantSignin;
 	bool m_bIsCorrupt;
 	bool m_bThumbnailGetFailed;
-	int64_t m_seed;
+	__int64 m_seed;
 
 #ifdef __PS3__
 	std::vector<SonyCommerce::ProductInfo>*m_pvProductInfo;
@@ -75,7 +75,7 @@ private:
 	bool m_bRebuildTouchBoxes;
 public:
 	UIScene_LoadMenu(int iPad, void *initData, UILayer *parentLayer);
-
+	
 	virtual void updateTooltips();
 	virtual void updateComponents();
 
@@ -110,7 +110,7 @@ private:
 #ifdef _DURANGO
 	static void checkPrivilegeCallback(LPVOID lpParam, bool hasPrivilege, int iPad);
 #endif
-
+	
 	static int ConfirmLoadReturned(void *pParam,int iPad,C4JStorage::EMessageResult result);
 	static void StartGameFromSave(UIScene_LoadMenu* pClass, DWORD dwLocalUsersMask);
 	static int LoadSaveDataReturned(void *pParam,bool bIsCorrupt, bool bIsOwner);

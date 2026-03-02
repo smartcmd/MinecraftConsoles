@@ -3,7 +3,7 @@
 #include "net.minecraft.world.item.trading.h"
 #include "MerchantResultSlot.h"
 
-MerchantResultSlot::MerchantResultSlot(Player *player, std::shared_ptr<Merchant> merchant, std::shared_ptr<MerchantContainer> slots, int id, int x, int y) : Slot(slots, id, x, y)
+MerchantResultSlot::MerchantResultSlot(Player *player, shared_ptr<Merchant> merchant, shared_ptr<MerchantContainer> slots, int id, int x, int y) : Slot(slots, id, x, y)
 {
 	this->player = player;
 	this->merchant = merchant;
@@ -11,12 +11,12 @@ MerchantResultSlot::MerchantResultSlot(Player *player, std::shared_ptr<Merchant>
 	removeCount = 0;
 }
 
-bool MerchantResultSlot::mayPlace(std::shared_ptr<ItemInstance> item)
+bool MerchantResultSlot::mayPlace(shared_ptr<ItemInstance> item)
 {
 	return false;
 }
 
-std::shared_ptr<ItemInstance> MerchantResultSlot::remove(int c)
+shared_ptr<ItemInstance> MerchantResultSlot::remove(int c)
 {
 	if (hasItem())
 	{
@@ -25,27 +25,27 @@ std::shared_ptr<ItemInstance> MerchantResultSlot::remove(int c)
 	return Slot::remove(c);
 }
 
-void MerchantResultSlot::onQuickCraft(std::shared_ptr<ItemInstance> picked, int count)
+void MerchantResultSlot::onQuickCraft(shared_ptr<ItemInstance> picked, int count)
 {
 	removeCount += count;
 	checkTakeAchievements(picked);
 }
 
-void MerchantResultSlot::checkTakeAchievements(std::shared_ptr<ItemInstance> carried)
+void MerchantResultSlot::checkTakeAchievements(shared_ptr<ItemInstance> carried)
 {
 	carried->onCraftedBy(player->level, dynamic_pointer_cast<Player>(player->shared_from_this()), removeCount);
 	removeCount = 0;
 }
 
-void MerchantResultSlot::onTake(std::shared_ptr<Player> player, std::shared_ptr<ItemInstance> carried)
+void MerchantResultSlot::onTake(shared_ptr<Player> player, shared_ptr<ItemInstance> carried)
 {
 	checkTakeAchievements(carried);
 
 	MerchantRecipe *activeRecipe = slots->getActiveRecipe();
 	if (activeRecipe != NULL)
 	{
-		std::shared_ptr<ItemInstance> item1 = slots->getItem(MerchantMenu::PAYMENT1_SLOT);
-		std::shared_ptr<ItemInstance> item2 = slots->getItem(MerchantMenu::PAYMENT2_SLOT);
+		shared_ptr<ItemInstance> item1 = slots->getItem(MerchantMenu::PAYMENT1_SLOT);
+		shared_ptr<ItemInstance> item2 = slots->getItem(MerchantMenu::PAYMENT2_SLOT);
 
 		// remove payment items, but remember slots may have switched
 		if (removePaymentItemsIfMatching(activeRecipe, item1, item2) || removePaymentItemsIfMatching(activeRecipe, item2, item1))
@@ -66,15 +66,15 @@ void MerchantResultSlot::onTake(std::shared_ptr<Player> player, std::shared_ptr<
 	}
 }
 
-bool MerchantResultSlot::mayCombine(std::shared_ptr<ItemInstance> second)
+bool MerchantResultSlot::mayCombine(shared_ptr<ItemInstance> second)
 {
 	return false;
 }
 
-bool MerchantResultSlot::removePaymentItemsIfMatching(MerchantRecipe *activeRecipe, std::shared_ptr<ItemInstance> a, std::shared_ptr<ItemInstance> b)
+bool MerchantResultSlot::removePaymentItemsIfMatching(MerchantRecipe *activeRecipe, shared_ptr<ItemInstance> a, shared_ptr<ItemInstance> b)
 {
-	std::shared_ptr<ItemInstance> buyA = activeRecipe->getBuyAItem();
-	std::shared_ptr<ItemInstance> buyB = activeRecipe->getBuyBItem();
+	shared_ptr<ItemInstance> buyA = activeRecipe->getBuyAItem();
+	shared_ptr<ItemInstance> buyB = activeRecipe->getBuyBItem();
 
 	if (a != NULL && a->id == buyA->id)
 	{

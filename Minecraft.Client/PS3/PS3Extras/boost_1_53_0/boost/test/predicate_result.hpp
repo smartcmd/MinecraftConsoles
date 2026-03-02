@@ -1,6 +1,6 @@
 //  (C) Copyright Gennadiy Rozental 2001-2008.
 //  Distributed under the Boost Software License, Version 1.0.
-//  (See accompanying file LICENSE_1_0.txt or copy at
+//  (See accompanying file LICENSE_1_0.txt or copy at 
 //  http://www.boost.org/LICENSE_1_0.txt)
 
 //  See http://www.boost.org/libs/test for the library home page.
@@ -21,7 +21,7 @@
 #include <boost/test/utils/basic_cstring/basic_cstring.hpp>
 
 // Boost
-#include <boost/std::shared_ptr.hpp>
+#include <boost/shared_ptr.hpp>
 #include <boost/detail/workaround.hpp>
 
 // STL
@@ -46,7 +46,7 @@ class BOOST_TEST_DECL predicate_result {
 
 public:
     // Constructor
-    predicate_result( bool pv_ )
+    predicate_result( bool pv_ ) 
     : p_predicate_value( pv_ )
     {}
 
@@ -74,7 +74,7 @@ public:
 
 private:
     // Data members
-    std::shared_ptr<wrap_stringstream> m_message;
+    shared_ptr<wrap_stringstream> m_message;
 };
 
 } // namespace test_tools

@@ -12,7 +12,7 @@ void MusicTile::neighborChanged(Level *level, int x, int y, int z, int type)
 {
 	app.DebugPrintf("-------- Neighbour changed type %d\n", type);
 	bool signal = level->hasNeighborSignal(x, y, z);
-	std::shared_ptr<MusicTileEntity> mte = dynamic_pointer_cast<MusicTileEntity>( level->getTileEntity(x, y, z) );
+	shared_ptr<MusicTileEntity> mte = dynamic_pointer_cast<MusicTileEntity>( level->getTileEntity(x, y, z) );
 	app.DebugPrintf("-------- Signal is %s, tile is currently %s\n",signal?"TRUE":"FALSE", mte->on?"ON":"OFF");
 	if (mte != NULL && mte->on != signal)
 	{
@@ -30,11 +30,11 @@ bool MusicTile::TestUse()
 	return true;
 }
 
-bool MusicTile::use(Level *level, int x, int y, int z, std::shared_ptr<Player> player, int clickedFace, float clickX, float clickY, float clickZ, bool soundOnly/*=false*/) // 4J added soundOnly param
+bool MusicTile::use(Level *level, int x, int y, int z, shared_ptr<Player> player, int clickedFace, float clickX, float clickY, float clickZ, bool soundOnly/*=false*/) // 4J added soundOnly param
 {
 	if (soundOnly) return false;
     if (level->isClientSide) return true;
-    std::shared_ptr<MusicTileEntity> mte = dynamic_pointer_cast<MusicTileEntity>( level->getTileEntity(x, y, z) );
+    shared_ptr<MusicTileEntity> mte = dynamic_pointer_cast<MusicTileEntity>( level->getTileEntity(x, y, z) );
 	if (mte != NULL )
 	{
 		mte->tune();
@@ -43,16 +43,16 @@ bool MusicTile::use(Level *level, int x, int y, int z, std::shared_ptr<Player> p
     return true;
 }
 
-void MusicTile::attack(Level *level, int x, int y, int z, std::shared_ptr<Player> player)
+void MusicTile::attack(Level *level, int x, int y, int z, shared_ptr<Player> player)
 {
     if (level->isClientSide) return;
-    std::shared_ptr<MusicTileEntity> mte = dynamic_pointer_cast<MusicTileEntity>( level->getTileEntity(x, y, z) );
+    shared_ptr<MusicTileEntity> mte = dynamic_pointer_cast<MusicTileEntity>( level->getTileEntity(x, y, z) );
     if( mte != NULL ) mte->playNote(level, x, y, z);
 }
 
-std::shared_ptr<TileEntity> MusicTile::newTileEntity(Level *level)
+shared_ptr<TileEntity> MusicTile::newTileEntity(Level *level)
 {
-	return std::shared_ptr<MusicTileEntity>( new MusicTileEntity() );
+	return shared_ptr<MusicTileEntity>( new MusicTileEntity() );
 }
 
 void MusicTile::triggerEvent(Level *level, int x, int y, int z, int i, int note)

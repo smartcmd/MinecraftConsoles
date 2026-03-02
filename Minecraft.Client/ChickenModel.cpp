@@ -49,10 +49,10 @@ ChickenModel::ChickenModel() : Model()
     wing1->compile(1.0f/16.0f);
 }
 
-void ChickenModel::render(std::shared_ptr<Entity> entity, float time, float r, float bob, float yRot, float xRot, float scale, bool usecompiled)
+void ChickenModel::render(shared_ptr<Entity> entity, float time, float r, float bob, float yRot, float xRot, float scale, bool usecompiled)
 {
     setupAnim(time, r, bob, yRot, xRot, scale);
-	if (young)
+	if (young) 
 	{
 		float ss = 2;
 		glPushMatrix();
@@ -70,8 +70,8 @@ void ChickenModel::render(std::shared_ptr<Entity> entity, float time, float r, f
 		wing0->render(scale,usecompiled);
 		wing1->render(scale,usecompiled);
 		glPopMatrix();
-	}
-	else
+	} 
+	else 
 	{
 		head->render(scale,usecompiled);
 		beak->render(scale,usecompiled);
@@ -88,13 +88,13 @@ void ChickenModel::setupAnim(float time, float r, float bob, float yRot, float x
 {
 	head->xRot = xRot / (float) (180 / PI);
 	head->yRot = yRot / (float) (180 / PI);
-
+        
 	beak->xRot = head->xRot;
 	beak->yRot = head->yRot;
-
+        
 	redThing->xRot = head->xRot;
 	redThing->yRot = head->yRot;
-
+        
 	body->xRot = 90 / (float) (180 / PI);
 
 	leg0->xRot = (Mth::cos(time * 0.6662f) * 1.4f) * r;

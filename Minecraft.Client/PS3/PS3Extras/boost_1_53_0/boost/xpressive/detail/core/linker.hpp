@@ -20,7 +20,7 @@
 #include <stack>
 #include <limits>
 #include <typeinfo>
-#include <boost/std::shared_ptr.hpp>
+#include <boost/shared_ptr.hpp>
 #include <boost/type_traits/is_same.hpp>
 #include <boost/version.hpp>
 

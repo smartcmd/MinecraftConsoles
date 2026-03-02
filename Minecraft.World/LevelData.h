@@ -11,14 +11,14 @@ class LevelData
 {
 	friend class DerivedLevelData;
 private:
-	int64_t seed;
+	__int64 seed;
 	LevelType *m_pGenerator;// = LevelType.normal;
     int xSpawn;
     int ySpawn;
     int zSpawn;
-    int64_t time;
-    int64_t lastPlayed;
-    int64_t sizeOnDisk;
+    __int64 time;
+    __int64 lastPlayed;
+    __int64 sizeOnDisk;
 //    CompoundTag *loadedPlayerTag;	// 4J removed
     int dimension;
     wstring levelName;
@@ -58,7 +58,7 @@ public:
     LevelData(LevelSettings *levelSettings, const wstring& levelName);
     LevelData(LevelData *copy);
     CompoundTag *createTag();
-    CompoundTag *createTag(vector<std::shared_ptr<Player> > *players);
+    CompoundTag *createTag(vector<shared_ptr<Player> > *players);
 
 	enum
 	{
@@ -71,7 +71,7 @@ protected:
 	virtual void setTagData(CompoundTag *tag);		// 4J - removed  CompoundTag *playerTag
 
 public:
-	virtual  int64_t getSeed();
+	virtual  __int64 getSeed();
 	virtual  int getXSpawn();
 	virtual  int getYSpawn();
 	virtual  int getZSpawn();
@@ -79,11 +79,11 @@ public:
 	virtual  int getZStronghold();
 	virtual  int getXStrongholdEndPortal();
 	virtual  int getZStrongholdEndPortal();
-	virtual  int64_t getTime();
-    virtual  int64_t getSizeOnDisk();
+	virtual  __int64 getTime();
+    virtual  __int64 getSizeOnDisk();
     virtual  CompoundTag *getLoadedPlayerTag();
     //int getDimension(); // 4J Removed TU 9 as it's never accurate
-    virtual  void setSeed(int64_t seed);
+    virtual  void setSeed(__int64 seed);
     virtual  void setXSpawn(int xSpawn);
     virtual  void setYSpawn(int ySpawn);
     virtual  void setZSpawn(int zSpawn);
@@ -96,8 +96,8 @@ public:
 	virtual  void setXStrongholdEndPortal(int xStrongholdEndPortal);
 	virtual  void setZStrongholdEndPortal(int zStrongholdEndPortal);
 
-    virtual  void setTime(int64_t time);
-    virtual  void setSizeOnDisk(int64_t sizeOnDisk);
+    virtual  void setTime(__int64 time);
+    virtual  void setSizeOnDisk(__int64 sizeOnDisk);
     virtual  void setLoadedPlayerTag(CompoundTag *loadedPlayerTag);
     //void setDimension(int dimension); // 4J Removed TU 9 as it's never used
     virtual  void setSpawn(int xSpawn, int ySpawn, int zSpawn);
@@ -105,7 +105,7 @@ public:
     virtual  void setLevelName(const wstring& levelName);
     virtual  int getVersion();
     virtual  void setVersion(int version);
-    virtual  int64_t getLastPlayed();
+    virtual  __int64 getLastPlayed();
     virtual  bool isThundering();
     virtual  void setThundering(bool thundering);
     virtual  int getThunderTime();

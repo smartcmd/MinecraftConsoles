@@ -22,7 +22,7 @@ private:
 	 static const int SEND_PLAYER_INFO_INTERVAL = 20 * 10;	// 4J - brought forward from 1.2.3
 //    public static Logger logger = Logger.getLogger("Minecraft");
 public:
-	vector<std::shared_ptr<ServerPlayer> > players;
+	vector<shared_ptr<ServerPlayer> > players;
 
 private:
 	MinecraftServer *server;
@@ -51,60 +51,60 @@ private:
 	int sendAllPlayerInfoIn;
 
 	// 4J Added to maintain which players in which dimensions can receive all packet types
-	vector<std::shared_ptr<ServerPlayer> > receiveAllPlayers[3];
+	vector<shared_ptr<ServerPlayer> > receiveAllPlayers[3];
 private:
-	std::shared_ptr<ServerPlayer> findAlivePlayerOnSystem(std::shared_ptr<ServerPlayer> currentPlayer);
+	shared_ptr<ServerPlayer> findAlivePlayerOnSystem(shared_ptr<ServerPlayer> currentPlayer);
 
 public:
-	void removePlayerFromReceiving(std::shared_ptr<ServerPlayer> player, bool usePlayerDimension = true, int dimension = 0);
-	void addPlayerToReceiving(std::shared_ptr<ServerPlayer> player);
-	bool canReceiveAllPackets(std::shared_ptr<ServerPlayer> player);
+	void removePlayerFromReceiving(shared_ptr<ServerPlayer> player, bool usePlayerDimension = true, int dimension = 0);
+	void addPlayerToReceiving(shared_ptr<ServerPlayer> player);
+	bool canReceiveAllPackets(shared_ptr<ServerPlayer> player);
 
 public:
 	PlayerList(MinecraftServer *server);
 	~PlayerList();
-	void placeNewPlayer(Connection *connection, std::shared_ptr<ServerPlayer> player, std::shared_ptr<LoginPacket> packet);
+	void placeNewPlayer(Connection *connection, shared_ptr<ServerPlayer> player, shared_ptr<LoginPacket> packet);
     void setLevel(ServerLevelArray levels);
-    void changeDimension(std::shared_ptr<ServerPlayer> player, ServerLevel *from);
+    void changeDimension(shared_ptr<ServerPlayer> player, ServerLevel *from);
     int getMaxRange();
-	bool load(std::shared_ptr<ServerPlayer> player); // 4J Changed return val to bool to check if new player or loaded player
+	bool load(shared_ptr<ServerPlayer> player); // 4J Changed return val to bool to check if new player or loaded player
 protected:
-	void save(std::shared_ptr<ServerPlayer> player);
+	void save(shared_ptr<ServerPlayer> player);
 public:
-	void validatePlayerSpawnPosition(std::shared_ptr<ServerPlayer> player); // 4J Added
-    void add(std::shared_ptr<ServerPlayer> player);
-    void move(std::shared_ptr<ServerPlayer> player);
-    void remove(std::shared_ptr<ServerPlayer> player);
-    std::shared_ptr<ServerPlayer> getPlayerForLogin(PendingConnection *pendingConnection, const wstring& userName, PlayerUID xuid, PlayerUID OnlineXuid);
-    std::shared_ptr<ServerPlayer> respawn(std::shared_ptr<ServerPlayer> serverPlayer, int targetDimension, bool keepAllPlayerData);
-    void toggleDimension(std::shared_ptr<ServerPlayer> player, int targetDimension);
+	void validatePlayerSpawnPosition(shared_ptr<ServerPlayer> player); // 4J Added
+    void add(shared_ptr<ServerPlayer> player);
+    void move(shared_ptr<ServerPlayer> player);
+    void remove(shared_ptr<ServerPlayer> player);
+    shared_ptr<ServerPlayer> getPlayerForLogin(PendingConnection *pendingConnection, const wstring& userName, PlayerUID xuid, PlayerUID OnlineXuid);
+    shared_ptr<ServerPlayer> respawn(shared_ptr<ServerPlayer> serverPlayer, int targetDimension, bool keepAllPlayerData);
+    void toggleDimension(shared_ptr<ServerPlayer> player, int targetDimension);
     void tick();
 	bool isTrackingTile(int x, int y, int z, int dimension);		// 4J added
 	void prioritiseTileChanges(int x, int y, int z, int dimension);	// 4J added
-    void broadcastAll(std::shared_ptr<Packet> packet);
-    void broadcastAll(std::shared_ptr<Packet> packet, int dimension);
+    void broadcastAll(shared_ptr<Packet> packet);
+    void broadcastAll(shared_ptr<Packet> packet, int dimension);
 
     wstring getPlayerNames();
 
 public:
 	bool isWhiteListed(const wstring& name);
     bool isOp(const wstring& name);
-	bool isOp(std::shared_ptr<ServerPlayer> player); // 4J Added
-    std::shared_ptr<ServerPlayer> getPlayer(const wstring& name);
-	std::shared_ptr<ServerPlayer> getPlayer(PlayerUID uid);
+	bool isOp(shared_ptr<ServerPlayer> player); // 4J Added
+    shared_ptr<ServerPlayer> getPlayer(const wstring& name);
+	shared_ptr<ServerPlayer> getPlayer(PlayerUID uid);
     void sendMessage(const wstring& name, const wstring& message);
-    void broadcast(double x, double y, double z, double range, int dimension, std::shared_ptr<Packet> packet);
-    void broadcast(std::shared_ptr<Player> except, double x, double y, double z, double range, int dimension, std::shared_ptr<Packet> packet);
+    void broadcast(double x, double y, double z, double range, int dimension, shared_ptr<Packet> packet);
+    void broadcast(shared_ptr<Player> except, double x, double y, double z, double range, int dimension, shared_ptr<Packet> packet);
     void broadcastToAllOps(const wstring& message);
-    bool sendTo(const wstring& name, std::shared_ptr<Packet> packet);
+    bool sendTo(const wstring& name, shared_ptr<Packet> packet);
 	// 4J Added ProgressListener *progressListener param and bDeleteGuestMaps param
     void saveAll(ProgressListener *progressListener, bool bDeleteGuestMaps = false);
     void whiteList(const wstring& playerName);
     void blackList(const wstring& playerName);
 //    Set<String> getWhiteList();		/ 4J removed
     void reloadWhitelist();
-    void sendLevelInfo(std::shared_ptr<ServerPlayer> player, ServerLevel *level);
-    void sendAllPlayerInfo(std::shared_ptr<ServerPlayer> player);
+    void sendLevelInfo(shared_ptr<ServerPlayer> player, ServerLevel *level);
+    void sendAllPlayerInfo(shared_ptr<ServerPlayer> player);
 	int getPlayerCount();
 	int getPlayerCount(ServerLevel *level); // 4J Added
 	int getMaxPlayers();
@@ -113,7 +113,7 @@ public:
 	void setOverrideGameMode(GameType *gameMode);
 
 private:
-	void updatePlayerGameMode(std::shared_ptr<ServerPlayer> newPlayer, std::shared_ptr<ServerPlayer> oldPlayer, Level *level);
+	void updatePlayerGameMode(shared_ptr<ServerPlayer> newPlayer, shared_ptr<ServerPlayer> oldPlayer, Level *level);
 
 public:
 	void setAllowCheatsForAllPlayers(bool allowCommands);

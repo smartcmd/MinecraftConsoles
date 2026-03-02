@@ -23,7 +23,7 @@ HRESULT CScene_TutorialPopup::OnInit( XUIMessageInit* pInitData, BOOL& bHandled 
 	// if we are in splitscreen, then we need to figure out if we want to move this scene
 	if(app.GetLocalPlayerCount()>1)
 	{
-		app.AdjustSplitscreenScene(m_hObj,&m_OriginalPosition,m_iPad);
+		app.AdjustSplitscreenScene(m_hObj,&m_OriginalPosition,m_iPad);	
 	}
 
 	m_textFontSize = _fromString<int>( m_fontSizeControl.GetText() );
@@ -143,7 +143,7 @@ void CScene_TutorialPopup::UpdateInteractScenePosition(bool visible)
 }
 
 HRESULT CScene_TutorialPopup::_SetDescription(CXuiScene *interactScene, LPCWSTR desc, LPCWSTR title, bool allowFade, bool isReminder)
-{
+{	
 	HRESULT hr = S_OK;
 	m_interactScene = interactScene;
 	if( interactScene != m_lastInteractSceneMoved ) m_lastInteractSceneMoved = NULL;
@@ -289,7 +289,7 @@ wstring CScene_TutorialPopup::_SetIcon(int icon, int iAuxVal, bool isFoil, LPCWS
 	if( icon != TUTORIAL_NO_ICON )
 	{
 		bool itemIsFoil = false;
-		itemIsFoil = (std::shared_ptr<ItemInstance>(new ItemInstance(icon,1,iAuxVal)))->isFoil();
+		itemIsFoil = (shared_ptr<ItemInstance>(new ItemInstance(icon,1,iAuxVal)))->isFoil();
 		if(!itemIsFoil) itemIsFoil = isFoil;
 
 		m_pCraftingPic->SetIcon(m_iPad, icon,iAuxVal,1,10,31,false,itemIsFoil);
@@ -322,7 +322,7 @@ wstring CScene_TutorialPopup::_SetIcon(int icon, int iAuxVal, bool isFoil, LPCWS
 				}
 
 				bool itemIsFoil = false;
-				itemIsFoil = (std::shared_ptr<ItemInstance>(new ItemInstance(iconId,1,iAuxVal)))->isFoil();
+				itemIsFoil = (shared_ptr<ItemInstance>(new ItemInstance(iconId,1,iAuxVal)))->isFoil();
 				if(!itemIsFoil) itemIsFoil = isFoil;
 
 				m_pCraftingPic->SetIcon(m_iPad, iconId,iAuxVal,1,10,31,false,itemIsFoil);
@@ -330,7 +330,7 @@ wstring CScene_TutorialPopup::_SetIcon(int icon, int iAuxVal, bool isFoil, LPCWS
 				temp.replace(iconTagStartPos, iconEndPos - iconTagStartPos + closeTag.length(), L"");
 			}
 		}
-
+	
 		// remove any icon text
 		else if(temp.find(L"{*CraftingTableIcon*}")!=wstring::npos)
 		{
@@ -410,7 +410,7 @@ wstring CScene_TutorialPopup::_SetIcon(int icon, int iAuxVal, bool isFoil, LPCWS
 			m_pCraftingPic->SetIcon(m_iPad, 0,0,0,0,0,false,false,FALSE);
 		}
 	}
-
+	
 	BOOL iconShowAtEnd = m_pCraftingPic->IsShown();
 	if(iconShowAtStart != iconShowAtEnd)
 	{
@@ -432,7 +432,7 @@ wstring CScene_TutorialPopup::_SetIcon(int icon, int iAuxVal, bool isFoil, LPCWS
 		}
 		m_description.SetBounds(fDescWidth, fDescHeight);
 	}
-
+	
 	return temp;
 }
 
@@ -463,7 +463,7 @@ wstring CScene_TutorialPopup::_SetImage(wstring &desc)
 		// hide the icon slot
 		m_image.SetShow( FALSE );
 	}
-
+	
 	BOOL imageShowAtEnd = m_image.IsShown();
 	if(imageShowAtStart != imageShowAtEnd)
 	{
@@ -485,7 +485,7 @@ wstring CScene_TutorialPopup::_SetImage(wstring &desc)
 		}
 		m_description.SetBounds(fDescWidth, fDescHeight);
 	}
-
+	
 	return desc;
 }
 

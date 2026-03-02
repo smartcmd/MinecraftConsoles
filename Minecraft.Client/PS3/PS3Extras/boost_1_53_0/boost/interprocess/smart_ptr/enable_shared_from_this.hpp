@@ -19,7 +19,7 @@
 
 #include <boost/assert.hpp>
 #include <boost/interprocess/smart_ptr/weak_ptr.hpp>
-#include <boost/interprocess/smart_ptr/std::shared_ptr.hpp>
+#include <boost/interprocess/smart_ptr/shared_ptr.hpp>
 
 //!\file
 //!Describes an utility to form a shared pointer from this
@@ -27,10 +27,10 @@
 namespace boost{
 namespace interprocess{
 
-//!This class is used as a base class that allows a std::shared_ptr to the current
+//!This class is used as a base class that allows a shared_ptr to the current
 //!object to be obtained from within a member function.
 //!enable_shared_from_this defines two member functions called shared_from_this
-//!that return a std::shared_ptr<T> and std::shared_ptr<T const>, depending on constness, to this.
+//!that return a shared_ptr<T> and shared_ptr<T const>, depending on constness, to this.
 template<class T, class A, class D>
 class enable_shared_from_this
 {
@@ -50,16 +50,16 @@ class enable_shared_from_this
    /// @endcond
 
    public:
-   std::shared_ptr<T, A, D> shared_from_this()
+   shared_ptr<T, A, D> shared_from_this()
    {
-      std::shared_ptr<T, A, D> p(_internal_weak_this);
+      shared_ptr<T, A, D> p(_internal_weak_this);
       BOOST_ASSERT(ipcdetail::to_raw_pointer(p.get()) == this);
       return p;
    }
 
-   std::shared_ptr<T const, A, D> shared_from_this() const
+   shared_ptr<T const, A, D> shared_from_this() const
    {
-      std::shared_ptr<T const, A, D> p(_internal_weak_this);
+      shared_ptr<T const, A, D> p(_internal_weak_this);
       BOOST_ASSERT(ipcdetail::to_raw_pointer(p.get()) == this);
       return p;
    }

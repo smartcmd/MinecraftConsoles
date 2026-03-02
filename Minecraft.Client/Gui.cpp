@@ -58,7 +58,7 @@ void Gui::render(float a, bool mouseFree, int xMouse, int yMouse)
 {
 	// 4J Stu - I have copied this code for XUI_BaseScene. If/when it gets changed it should be broken out
 	// 4J - altered to force full screen mode to 3X scaling, and any split screen modes to 2X scaling. This is so that the further scaling by 0.5 that
-	// happens in split screen modes results in a final scaling of 1 rather than 1.5.
+	// happens in split screen modes results in a final scaling of 1 rather than 1.5. 
 	int splitYOffset;// = 20;	// This offset is applied when doing the 2X scaling above to move the gui out of the way of the tool tips
 	int guiScale;// = ( minecraft->player->m_iScreenSection == C4JRender::VIEWPORT_TYPE_FULLSCREEN ? 3 : 2 );
 	int iPad=minecraft->player->GetXboxPad();
@@ -97,7 +97,7 @@ void Gui::render(float a, bool mouseFree, int xMouse, int yMouse)
 	default: // 2
 		splitYOffset = 10;
 		break;
-	}
+	}  	
 
 	// Check which screen section this player is in
 	switch(minecraft->player->m_iScreenSection)
@@ -136,7 +136,7 @@ void Gui::render(float a, bool mouseFree, int xMouse, int yMouse)
 		currentGuiScaleFactor *= 0.5f;
 		break;
 	case C4JRender::VIEWPORT_TYPE_SPLIT_RIGHT:
-		iSafezoneXHalf = 0;
+		iSafezoneXHalf = 0; 
 		iSafezoneYHalf = splitYOffset + screenHeight/10;// 5% (need to treat the whole screen is 2x this screen)
 		fScaleFactorHeight=0.5f;
 		iHeightOffset=screenHeight;
@@ -151,7 +151,7 @@ void Gui::render(float a, bool mouseFree, int xMouse, int yMouse)
 		currentGuiScaleFactor *= 0.5f;
 		break;
 	case C4JRender::VIEWPORT_TYPE_QUADRANT_TOP_RIGHT:
-		iSafezoneXHalf = 0;
+		iSafezoneXHalf = 0; 
 		iSafezoneYHalf = splitYOffset; // 5%
 		iTooltipsYOffset=44;
 		currentGuiScaleFactor *= 0.5f;
@@ -163,27 +163,27 @@ void Gui::render(float a, bool mouseFree, int xMouse, int yMouse)
 		currentGuiScaleFactor *= 0.5f;
 		break;
 	case C4JRender::VIEWPORT_TYPE_QUADRANT_BOTTOM_RIGHT:
-		iSafezoneXHalf = 0;
+		iSafezoneXHalf = 0; 
 		iSafezoneYHalf = splitYOffset + screenHeight/10; // 5%  (the whole screen is 2x this screen)
 		iTooltipsYOffset=44;
 		currentGuiScaleFactor *= 0.5f;
 		break;
-
+		
 	}
 
 	// 4J-PB - turn off the slot display if a xui menu is up, or if we're autosaving
 	bool bDisplayGui=!ui.GetMenuDisplayed(iPad) && !(app.GetXuiAction(iPad)==eAppAction_AutosaveSaveGameCapturedThumbnail);
 
 	// if tooltips are off, set the y offset to zero
-	if(app.GetGameSettings(iPad,eGameSetting_Tooltips)==0 && bDisplayGui)
+	if(app.GetGameSettings(iPad,eGameSetting_Tooltips)==0 && bDisplayGui)	
 	{
 		switch(minecraft->player->m_iScreenSection)
 		{
 		case C4JRender::VIEWPORT_TYPE_FULLSCREEN:
-			iTooltipsYOffset=screenHeight/10;
+			iTooltipsYOffset=screenHeight/10;			
 			break;
 		default:
-			//iTooltipsYOffset=screenHeight/10;
+			//iTooltipsYOffset=screenHeight/10;			
 			switch(guiScale)
 			{
 			case 3:
@@ -195,11 +195,11 @@ void Gui::render(float a, bool mouseFree, int xMouse, int yMouse)
 			default: // 2
 				iTooltipsYOffset=14;//screenHeight/10;
 				break;
-			}
+			}  	
 			break;
 		}
 	}
-
+	
 	// 4J-PB - Turn off interface if eGameSetting_DisplayHUD is off - for screen shots/videos.
 	if ( app.GetGameSettings(iPad,eGameSetting_DisplayHUD)==0 )
 	{
@@ -210,13 +210,13 @@ void Gui::render(float a, bool mouseFree, int xMouse, int yMouse)
 
 
     minecraft->gameRenderer->setupGuiScreen(guiScale);
-
+	
 
 
     glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);	// 4J - added - this did actually get set in renderVignette but that code is currently commented out
 
-    if (Minecraft::useFancyGraphics())
+    if (Minecraft::useFancyGraphics()) 
 	{
 		renderVignette(minecraft->player->getBrightness(a), screenWidth, screenHeight);
 	}
@@ -225,7 +225,7 @@ void Gui::render(float a, bool mouseFree, int xMouse, int yMouse)
 	// Display the pumpkin screen effect
 	/////////////////////////////////////////////////////////////////////////////////////
 
-    std::shared_ptr<ItemInstance> headGear = minecraft->player->inventory->getArmor(3);
+    shared_ptr<ItemInstance> headGear = minecraft->player->inventory->getArmor(3);
 
 	// 4J-PB - changing this to be per player
 	//if (!minecraft->options->thirdPersonView && headGear != NULL && headGear->id == Tile::pumpkin_Id) renderPumpkin(screenWidth, screenHeight);
@@ -244,7 +244,7 @@ void Gui::render(float a, bool mouseFree, int xMouse, int yMouse)
 		if(bDisplayGui && bTwoPlayerSplitscreen)
 		{
 			// need to apply scale factors depending on the mode
-			glPushMatrix();
+			glPushMatrix();		
 			glScalef(fScaleFactorWidth, fScaleFactorHeight, fScaleFactorWidth);
 		}
 #if RENDER_HUD
@@ -302,15 +302,15 @@ void Gui::render(float a, bool mouseFree, int xMouse, int yMouse)
 			minecraft->textures->bindTexture(TN_GUI_GUI);	// 4J was L"/gui/gui.png"
 			MemSect(0);
 
-			std::shared_ptr<Inventory> inventory = minecraft->player->inventory;
+			shared_ptr<Inventory> inventory = minecraft->player->inventory;
 			if(bTwoPlayerSplitscreen)
 			{
 				// need to apply scale factors depending on the mode
 
 				// 4J Stu - Moved this push and scale further up as we still need to do it for the few HUD components not replaced by xui
-				//glPushMatrix();
+				//glPushMatrix();		
 				//glScalef(fScaleFactorWidth, fScaleFactorHeight, fScaleFactorWidth);
-
+			
 				// 4J-PB - move into the safe zone, and account for 2 player splitscreen
 				blit(iWidthOffset + (screenWidth - quickSelectWidth)/2, iHeightOffset + screenHeight - iSafezoneYHalf - iTooltipsYOffset , 0, 0, 182, 22);
 				blit(iWidthOffset + (screenWidth - quickSelectWidth)/2 - 1 + inventory->selected * 20, iHeightOffset + screenHeight - iSafezoneYHalf - iTooltipsYOffset  - 1, 0, 22, 24, 22);
@@ -358,13 +358,13 @@ void Gui::render(float a, bool mouseFree, int xMouse, int yMouse)
 		int food = foodData->getFoodLevel();
 		int oldFood = foodData->getLastFoodLevel();
 
-// 		if (false) //(true)
+// 		if (false) //(true) 
 // 		{
 // 			renderBossHealth();
 // 		}
 
 		/////////////////////////////////////////////////////////////////////////////////////
-		// Display the experience, food, armour, health and the air bubbles
+		// Display the experience, food, armour, health and the air bubbles 
 		/////////////////////////////////////////////////////////////////////////////////////
 		if(bDisplayGui)
 		{
@@ -451,7 +451,7 @@ void Gui::render(float a, bool mouseFree, int xMouse, int yMouse)
 					if (blink) bg = 1;
 					int xo = xLeft + i * 8;
 					int yo = yLine1;
-
+				
 					if (iHealth <= 4)
 					{
 						yo += random->nextInt(2);
@@ -538,12 +538,12 @@ void Gui::render(float a, bool mouseFree, int xMouse, int yMouse)
 			glEnable(GL_RESCALE_NORMAL);
 
 			Lighting::turnOnGui();
-
+			
 
 			int x,y;
 
 			for (int i = 0; i < 9; i++)
-			{
+			{					
 				if(bTwoPlayerSplitscreen)
 				{
 					x = iWidthOffset + screenWidth / 2 - 9 * 10 + i * 20 + 2;
@@ -580,11 +580,11 @@ void Gui::render(float a, bool mouseFree, int xMouse, int yMouse)
 			else if( minecraft->player->isSprinting() )
 			{
 				characterDisplayTimer[iPad] = 30;
-			}
+			}			
 			else if( minecraft->player->abilities.flying)
 			{
 				characterDisplayTimer[iPad] = 5; // quickly get rid of the player display if they stop flying
-			}
+			}			
 			else if( characterDisplayTimer[iPad] > 0 )
 			{
 				--characterDisplayTimer[iPad];
@@ -670,7 +670,7 @@ void Gui::render(float a, bool mouseFree, int xMouse, int yMouse)
 
 				minecraft->player->onFire = 0;
 				minecraft->player->setSharedFlag(Entity::FLAG_ONFIRE, false);
-
+					
 				glTranslatef(0, minecraft->player->heightOffset, 0);
 				EntityRenderDispatcher::instance->playerRotY = 180;
 				EntityRenderDispatcher::instance->isGuiRender = true;
@@ -712,7 +712,7 @@ void Gui::render(float a, bool mouseFree, int xMouse, int yMouse)
 			{
 				y-=13;
 			}
-
+			 
 			if(bTwoPlayerSplitscreen)
 			{
 				y+=iHeightOffset;
@@ -784,7 +784,7 @@ void Gui::render(float a, bool mouseFree, int xMouse, int yMouse)
         glPushMatrix();
         if (Minecraft::warezTime > 0) glTranslatef(0, 32, 0);
         font->drawShadow(ClientConstants::VERSION_STRING + L" (" + minecraft->fpsString + L")", iSafezoneXHalf+2, 20, 0xffffff);
-        font->drawShadow(L"Seed: " + _toString<int64_t>(minecraft->level->getLevelData()->getSeed() ), iSafezoneXHalf+2, 32 + 00, 0xffffff);
+        font->drawShadow(L"Seed: " + _toString<__int64>(minecraft->level->getLevelData()->getSeed() ), iSafezoneXHalf+2, 32 + 00, 0xffffff);
         font->drawShadow(minecraft->gatherStats1(), iSafezoneXHalf+2, 32 + 10, 0xffffff);
         font->drawShadow(minecraft->gatherStats2(), iSafezoneXHalf+2, 32 + 20, 0xffffff);
         font->drawShadow(minecraft->gatherStats3(), iSafezoneXHalf+2, 32 + 30, 0xffffff);
@@ -866,7 +866,7 @@ void Gui::render(float a, bool mouseFree, int xMouse, int yMouse)
         float t = overlayMessageTime - a;
         int alpha = (int) (t * 256 / 20);
         if (alpha > 255) alpha = 255;
-        if (alpha > 0)
+        if (alpha > 0) 
 		{
             glPushMatrix();
 
@@ -893,7 +893,7 @@ void Gui::render(float a, bool mouseFree, int xMouse, int yMouse)
         }
     }
 #endif
-
+	
     unsigned int max = 10;
     bool isChatting = false;
     if (dynamic_cast<ChatScreen *>(minecraft->screen) != NULL)
@@ -1026,35 +1026,35 @@ void Gui::render(float a, bool mouseFree, int xMouse, int yMouse)
 // void Gui::renderBossHealth(void)
 // {
 // 	if (EnderDragonRenderer::bossInstance == NULL) return;
-//
-// 	std::shared_ptr<EnderDragon> boss = EnderDragonRenderer::bossInstance;
+// 
+// 	shared_ptr<EnderDragon> boss = EnderDragonRenderer::bossInstance;
 // 	EnderDragonRenderer::bossInstance = NULL;
-//
+// 
 // 	Minecraft *pMinecraft=Minecraft::GetInstance();
-//
+// 
 // 	Font *font = pMinecraft->font;
-//
+// 
 // 	ScreenSizeCalculator ssc(pMinecraft->options, pMinecraft->width_phys, pMinecraft->height_phys);
 // 	int screenWidth = ssc.getWidth();
-//
+// 
 // 	int w = 182;
 // 	int xLeft = screenWidth / 2 - w / 2;
-//
+// 
 // 	int progress = (int) (boss->getSynchedHealth() / (float) boss->getMaxHealth() * (float) (w + 1));
-//
+// 
 // 	int yo = 12;
 // 	blit(xLeft, yo, 0, 74, w, 5);
 // 	blit(xLeft, yo, 0, 74, w, 5);
-// 	if (progress > 0)
+// 	if (progress > 0) 
 // 	{
 // 		blit(xLeft, yo, 0, 79, progress, 5);
 // 	}
-//
+// 
 // 	wstring msg = L"Boss health - NON LOCALISED";
 // 	font->drawShadow(msg, screenWidth / 2 - font->width(msg) / 2, yo - 10, 0xff00ff);
 // 	glColor4f(1, 1, 1, 1);
 // 	glBindTexture(GL_TEXTURE_2D, pMinecraft->textures->loadTexture(TN_GUI_ICONS) );//"/gui/icons.png"));
-//
+// 
 // }
 
 void Gui::renderPumpkin(int w, int h)
@@ -1081,7 +1081,7 @@ void Gui::renderPumpkin(int w, int h)
     glColor4f(1, 1, 1, 1);
 
 }
-
+		
 void Gui::renderVignette(float br, int w, int h)
 {
     br = 1 - br;
@@ -1126,7 +1126,7 @@ void Gui::renderTp(float br, int w, int h)
 	MemSect(31);
     minecraft->textures->bindTexture(TN_TERRAIN);//L"/terrain.png"));
 	MemSect(0);
-
+	
 	Icon *slot = Tile::portalTile->getTexture(Facing::UP);
     float u0 = slot->getU0();
     float v0 = slot->getV0();
@@ -1148,7 +1148,7 @@ void Gui::renderTp(float br, int w, int h)
 
 void Gui::renderSlot(int slot, int x, int y, float a)
 {
-    std::shared_ptr<ItemInstance> item = minecraft->player->inventory->items[slot];
+    shared_ptr<ItemInstance> item = minecraft->player->inventory->items[slot];
     if (item == NULL) return;
 
     float pop = item->popTime - a;
@@ -1178,7 +1178,7 @@ void Gui::tick()
     tickCount++;
 
 	for(int iPad=0;iPad<XUSER_MAX_COUNT;iPad++)
-	{
+	{	
 		// 4J Stu - Fix for #10929 - MP LAB: Network Disconnects: Host does not receive an error message stating the client left the game when viewing the Pause Menu.
 		// We don't show the guiMessages when a menu is up, so don't fade them out
 		if(!ui.GetMenuDisplayed(iPad))
@@ -1202,7 +1202,7 @@ void Gui::clearMessages(int iPad)
 			{
 				guiMessages[i].clear();
 			}
-		}
+		}	
 	}
 	else
 	{
@@ -1391,7 +1391,7 @@ void Gui::displayClientMessage(int messageId, int iPad)
 }
 
 // 4J Added
-void Gui::renderGraph(int dataLength, int dataPos, int64_t *dataA, float dataAScale, int dataAWarning, int64_t *dataB, float dataBScale, int dataBWarning)
+void Gui::renderGraph(int dataLength, int dataPos, __int64 *dataA, float dataAScale, int dataAWarning, __int64 *dataB, float dataBScale, int dataBWarning)
 {
 	int height = minecraft->height;
 	// This causes us to cover xScale*dataLength pixels in the horizontal
@@ -1430,12 +1430,12 @@ void Gui::renderGraph(int dataLength, int dataPos, int64_t *dataA, float dataASc
 				t->color(0xff000000 + cc * 256);
 			}
 
-			int64_t aVal = dataA[i] / dataAScale;
+			__int64 aVal = dataA[i] / dataAScale;
 
 			t->vertex((float)(xScale*i + 0.5f), (float)( height - aVal + 0.5f), (float)( 0));
 			t->vertex((float)(xScale*i + 0.5f), (float)( height + 0.5f), (float)( 0));
 		}
-
+		
 		if( dataB != NULL )
 		{
 			if (dataB[i]>dataBWarning)
@@ -1447,7 +1447,7 @@ void Gui::renderGraph(int dataLength, int dataPos, int64_t *dataA, float dataASc
 				t->color(0xff808080 + cc/2 * 256);
 			}
 
-			int64_t bVal = dataB[i] / dataBScale;
+			__int64 bVal = dataB[i] / dataBScale;
 
 			t->vertex((float)(xScale*i + (xScale - 1) + 0.5f), (float)( height - bVal + 0.5f), (float)( 0));
 			t->vertex((float)(xScale*i + (xScale - 1) + 0.5f), (float)( height + 0.5f), (float)( 0));
@@ -1458,7 +1458,7 @@ void Gui::renderGraph(int dataLength, int dataPos, int64_t *dataA, float dataASc
 	glEnable(GL_TEXTURE_2D);
 }
 
-void Gui::renderStackedGraph(int dataPos, int dataLength, int dataSources, int64_t (*func)(unsigned int dataPos, unsigned int dataSource) )
+void Gui::renderStackedGraph(int dataPos, int dataLength, int dataSources, __int64 (*func)(unsigned int dataPos, unsigned int dataSource) )
 {
 	int height = minecraft->height;
 
@@ -1475,8 +1475,8 @@ void Gui::renderStackedGraph(int dataPos, int dataLength, int dataSources, int64
 	Tesselator *t = Tesselator::getInstance();
 
 	t->begin(GL_LINES);
-	int64_t thisVal = 0;
-	int64_t topVal = 0;
+	__int64 thisVal = 0;
+	__int64 topVal = 0;
 	for (int i = 0; i < dataLength; i++)
 	{
 		thisVal = 0;

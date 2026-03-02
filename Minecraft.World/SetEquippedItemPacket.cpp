@@ -14,7 +14,7 @@ SetEquippedItemPacket::SetEquippedItemPacket()
 	item = nullptr;
 }
 
-SetEquippedItemPacket::SetEquippedItemPacket(int entity, int slot, std::shared_ptr<ItemInstance> item)
+SetEquippedItemPacket::SetEquippedItemPacket(int entity, int slot, shared_ptr<ItemInstance> item) 
 {
 	this->entity = entity;
 	this->slot = slot;
@@ -23,7 +23,7 @@ SetEquippedItemPacket::SetEquippedItemPacket(int entity, int slot, std::shared_p
 	this->item = item == NULL ? nullptr : item->copy();
 }
 
-void SetEquippedItemPacket::read(DataInputStream *dis) //throws IOException
+void SetEquippedItemPacket::read(DataInputStream *dis) //throws IOException 
 {
 	entity = dis->readInt();
 	slot = dis->readShort();
@@ -32,7 +32,7 @@ void SetEquippedItemPacket::read(DataInputStream *dis) //throws IOException
 	item = readItem(dis);
 }
 
-void SetEquippedItemPacket::write(DataOutputStream *dos) //throws IOException
+void SetEquippedItemPacket::write(DataOutputStream *dos) //throws IOException 
 {
 	dos->writeInt(entity);
 	dos->writeShort(slot);
@@ -41,7 +41,7 @@ void SetEquippedItemPacket::write(DataOutputStream *dos) //throws IOException
 	writeItem(item, dos);
 }
 
-void SetEquippedItemPacket::handle(PacketListener *listener)
+void SetEquippedItemPacket::handle(PacketListener *listener) 
 {
 	listener->handleSetEquippedItem(shared_from_this());
 }
@@ -52,7 +52,7 @@ int SetEquippedItemPacket::getEstimatedSize()
 }
 
 // 4J Stu - Brought forward from 1.3 to fix #64688 - Customer Encountered: TU7: Content: Art: Aura of enchanted item is not displayed for other players in online game
-std::shared_ptr<ItemInstance> SetEquippedItemPacket::getItem()
+shared_ptr<ItemInstance> SetEquippedItemPacket::getItem()
 {
 	return item;
 }
@@ -62,8 +62,8 @@ bool SetEquippedItemPacket::canBeInvalidated()
 	return true;
 }
 
-bool SetEquippedItemPacket::isInvalidatedBy(std::shared_ptr<Packet> packet)
+bool SetEquippedItemPacket::isInvalidatedBy(shared_ptr<Packet> packet)
 {
-	std::shared_ptr<SetEquippedItemPacket> target = dynamic_pointer_cast<SetEquippedItemPacket>(packet);
+	shared_ptr<SetEquippedItemPacket> target = dynamic_pointer_cast<SetEquippedItemPacket>(packet);
 	return target->entity == entity && target->slot == slot;
 }

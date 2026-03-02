@@ -11,7 +11,7 @@
 // 4J Stu - There are changes to this class for 1.8.2, but since we never use it anyway lets not worry about it
 
 const int ZonedChunkStorage::BIT_TERRAIN_POPULATED = 0x0000001;
-
+		   
 const int ZonedChunkStorage::CHUNKS_PER_ZONE_BITS = 5; // = 32
 const int ZonedChunkStorage::CHUNKS_PER_ZONE = 1 << ZonedChunkStorage::CHUNKS_PER_ZONE_BITS; // ^2
 
@@ -50,7 +50,7 @@ ZoneFile *ZonedChunkStorage::getZoneFile(int x, int z, bool create)
 
     int xZone = x >> CHUNKS_PER_ZONE_BITS;
     int zZone = z >> CHUNKS_PER_ZONE_BITS;
-    int64_t key = xZone + (zZone << 20l);
+    __int64 key = xZone + (zZone << 20l);
 	// 4J - was !zoneFiles.containsKey(key)
     if (zoneFiles.find(key) == zoneFiles.end())
 	{
@@ -107,8 +107,8 @@ LevelChunk *ZonedChunkStorage::load(Level *level, int x, int z)
     header->flip();
     int xOrg = header->getInt();
     int zOrg = header->getInt();
-    int64_t time = header->getLong();
-    int64_t flags = header->getLong();
+    __int64 time = header->getLong();
+    __int64 flags = header->getLong();
 
     lc->terrainPopulated = (flags & BIT_TERRAIN_POPULATED) != 0;
 
@@ -121,7 +121,7 @@ LevelChunk *ZonedChunkStorage::load(Level *level, int x, int z)
 
 void ZonedChunkStorage::save(Level *level, LevelChunk *lc)
 {
-    int64_t flags = 0;
+    __int64 flags = 0;
     if (lc->terrainPopulated) flags |= BIT_TERRAIN_POPULATED;
 
     ByteBuffer *header = ByteBuffer::allocate(CHUNK_HEADER_SIZE);
@@ -147,10 +147,10 @@ void ZonedChunkStorage::tick()
     tickCount++;
     if (tickCount % (20 * 10) == 4)
 	{
-		vector<int64_t> toClose;
+		vector<__int64> toClose;
 
 		AUTO_VAR(itEndZF, zoneFiles.end());
-		for( unordered_map<int64_t, ZoneFile *>::iterator it = zoneFiles.begin(); it != itEndZF; it++ )
+		for( unordered_map<__int64, ZoneFile *>::iterator it = zoneFiles.begin(); it != itEndZF; it++ )
 		{
 			ZoneFile *zoneFile = it->second;
             if (tickCount - zoneFile->lastUse > 20 * 60)
@@ -158,11 +158,11 @@ void ZonedChunkStorage::tick()
                 toClose.push_back(zoneFile->key);
             }
 		}
-
+		
 		AUTO_VAR(itEndTC, toClose.end());
 		for (AUTO_VAR(it, toClose.begin()); it != itEndTC; it++)
 		{
-			int64_t key = *it ; //toClose[i];
+			__int64 key = *it ; //toClose[i];
 			// 4J - removed try/catch
 //            try {
 			char buf[256];
@@ -181,7 +181,7 @@ void ZonedChunkStorage::tick()
 void ZonedChunkStorage::flush()
 {
 	AUTO_VAR(itEnd, zoneFiles.end());
-	for( unordered_map<int64_t, ZoneFile *>::iterator it = zoneFiles.begin(); it != itEnd; it++ )
+	for( unordered_map<__int64, ZoneFile *>::iterator it = zoneFiles.begin(); it != itEnd; it++ )
 	{
 		ZoneFile *zoneFile = it->second;
 		// 4J - removed try/catch
@@ -207,12 +207,12 @@ void ZonedChunkStorage::loadEntities(Level *level, LevelChunk *lc)
         int type = tag->getInt(L"_TYPE");
         if (type == 0)
 		{
-            std::shared_ptr<Entity> e = EntityIO::loadStatic(tag, level);
+            shared_ptr<Entity> e = EntityIO::loadStatic(tag, level);
             if (e != NULL) lc->addEntity(e);
         }
 		else if (type == 1)
 		{
-            std::shared_ptr<TileEntity> te = TileEntity::loadStatic(tag);
+            shared_ptr<TileEntity> te = TileEntity::loadStatic(tag);
             if (te != NULL) lc->addTileEntity(te);
         }
     }
@@ -232,12 +232,12 @@ void ZonedChunkStorage::saveEntities(Level *level, LevelChunk *lc)
 #endif
     for (int i = 0; i < LevelChunk::ENTITY_BLOCKS_LENGTH; i++)
 	{
-        vector<std::shared_ptr<Entity> > *entities = lc->entityBlocks[i];
+        vector<shared_ptr<Entity> > *entities = lc->entityBlocks[i];
 
 		AUTO_VAR(itEndTags, entities->end());
 		for (AUTO_VAR(it, entities->begin()); it != itEndTags; it++)
 		{
-            std::shared_ptr<Entity> e = *it; //entities->at(j);
+            shared_ptr<Entity> e = *it; //entities->at(j);
             CompoundTag *cp = new CompoundTag();
             cp->putInt(L"_TYPE", 0);
             e->save(cp);
@@ -250,10 +250,10 @@ void ZonedChunkStorage::saveEntities(Level *level, LevelChunk *lc)
 	LeaveCriticalSection(&lc->m_csEntities);
 #endif
 
-	for( unordered_map<TilePos, std::shared_ptr<TileEntity> , TilePosKeyHash, TilePosKeyEq>::iterator it = lc->tileEntities.begin();
+	for( unordered_map<TilePos, shared_ptr<TileEntity> , TilePosKeyHash, TilePosKeyEq>::iterator it = lc->tileEntities.begin();
 		it != lc->tileEntities.end(); it++)
 	{
-		std::shared_ptr<TileEntity> te = it->second;
+		shared_ptr<TileEntity> te = it->second;
         CompoundTag *cp = new CompoundTag();
         cp->putInt(L"_TYPE", 1);
         te->save(cp);

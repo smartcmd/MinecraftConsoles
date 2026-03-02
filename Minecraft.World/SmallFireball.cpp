@@ -11,7 +11,7 @@ SmallFireball::SmallFireball(Level *level) : Fireball(level)
 	setSize(5 / 16.0f, 5 / 16.0f);
 }
 
-SmallFireball::SmallFireball(Level *level, std::shared_ptr<Mob> mob, double xa, double ya, double za) : Fireball(level, mob, xa, ya, za)
+SmallFireball::SmallFireball(Level *level, shared_ptr<Mob> mob, double xa, double ya, double za) : Fireball(level, mob, xa, ya, za)
 {
 	setSize(5 / 16.0f, 5 / 16.0f);
 }

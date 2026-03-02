@@ -35,7 +35,7 @@ public:
 
 	virtual int getResource(int data, Random *random, int playerBonusLevel);
 	virtual int getResourceCountForLootBonus(int bonusLevel, Random *random);
-	virtual void playerDestroy(Level *level, std::shared_ptr<Player> player, int x, int y, int z, int data);
+	virtual void playerDestroy(Level *level, shared_ptr<Player> player, int x, int y, int z, int data);
 	virtual int cloneTileData(Level *level, int x, int y, int z);
 	virtual unsigned int getDescriptionId(int iData = -1);
 

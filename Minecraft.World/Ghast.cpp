@@ -49,7 +49,7 @@ bool Ghast::hurt(DamageSource *source, int dmg)
 {
 	if (source->getMsgId() == ChatPacket::e_ChatDeathFireball)
 	{
-		std::shared_ptr<Player> player = dynamic_pointer_cast<Player>( source->getEntity() );
+		shared_ptr<Player> player = dynamic_pointer_cast<Player>( source->getEntity() );
 		if (player != NULL)
 		{
 			// reflected fireball, kill the ghast
@@ -62,7 +62,7 @@ bool Ghast::hurt(DamageSource *source, int dmg)
 	return FlyingMob::hurt(source, dmg);
 }
 
-void Ghast::defineSynchedData()
+void Ghast::defineSynchedData() 
 {
     FlyingMob::defineSynchedData();
 
@@ -82,7 +82,7 @@ void Ghast::tick()
 	this->textureIdx = current == 1 ? TN_MOB_GHAST_FIRE : TN_MOB_GHAST;
 }
 
-void Ghast::serverAiStep()
+void Ghast::serverAiStep() 
 {
     if (!level->isClientSide && level->difficulty == Difficulty::PEACEFUL) remove();
     checkDespawn();
@@ -107,7 +107,7 @@ void Ghast::serverAiStep()
 
 		dd = sqrt(dd);
 
-        if (canReach(xTarget, yTarget, zTarget, dd))
+        if (canReach(xTarget, yTarget, zTarget, dd)) 
 		{
             this->xd += xd / dd * 0.1;
             this->yd += yd / dd * 0.1;
@@ -125,14 +125,14 @@ void Ghast::serverAiStep()
     if (target == NULL || retargetTime-- <= 0)
 	{
         target = level->getNearestAttackablePlayer(shared_from_this(), 100);
-        if (target != NULL)
+        if (target != NULL) 
 		{
             retargetTime = 20;
         }
     }
 
     double maxDist = 64.0f;
-    if (target != NULL && target->distanceToSqr(shared_from_this()) < maxDist * maxDist)
+    if (target != NULL && target->distanceToSqr(shared_from_this()) < maxDist * maxDist) 
 	{
         double xdd = target->x - x;
         double ydd = (target->bb->y0 + target->bbHeight / 2) - (y + bbHeight / 2);
@@ -151,7 +151,7 @@ void Ghast::serverAiStep()
 			{
 				// 4J - change brought forward from 1.2.3
 				level->levelEvent(nullptr, LevelEvent::SOUND_GHAST_FIREBALL, (int) x, (int) y, (int) z, 0);
-                std::shared_ptr<Fireball> ie = std::shared_ptr<Fireball>( new Fireball(level, dynamic_pointer_cast<Mob>( shared_from_this() ), xdd, ydd, zdd) );
+                shared_ptr<Fireball> ie = shared_ptr<Fireball>( new Fireball(level, dynamic_pointer_cast<Mob>( shared_from_this() ), xdd, ydd, zdd) );
                 double d = 4;
                 Vec3 *v = getViewVector(1);
                 ie->x = x + v->x * d;
@@ -160,8 +160,8 @@ void Ghast::serverAiStep()
                 level->addEntity(ie);
                 charge = -40;
             }
-        }
-		else
+        } 
+		else 
 		{
             if (charge > 0) charge--;
         }
@@ -172,7 +172,7 @@ void Ghast::serverAiStep()
         if (charge > 0) charge--;
     }
 
-    if (!level->isClientSide)
+    if (!level->isClientSide) 
 	{
         byte old = entityData->getByte(DATA_IS_CHARGING);
         byte current = (byte) (charge > 10 ? 1 : 0);
@@ -183,7 +183,7 @@ void Ghast::serverAiStep()
     }
 }
 
-bool Ghast::canReach(double xt, double yt, double zt, double dist)
+bool Ghast::canReach(double xt, double yt, double zt, double dist) 
 {
 	double xd = (xTarget - x) / dist;
 	double yd = (yTarget - y) / dist;
@@ -214,7 +214,7 @@ int Ghast::getDeathSound()
     return eSoundType_MOB_GHAST_DEATH;
 }
 
-int Ghast::getDeathLoot()
+int Ghast::getDeathLoot() 
 {
     return Item::sulphur->id;
 }

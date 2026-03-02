@@ -17,7 +17,7 @@
 //  See http://www.boost.org for updates, documentation, and revision history.
 
 #include <cstddef> // std::size_t
-#include <climits> // ULONG_MAX
+#include <climits> // ULONG_MAX 
 #include <string>
 
 #include <boost/config.hpp>
@@ -40,7 +40,7 @@ namespace std{
 
 namespace boost {
 template<class T>
-class std::shared_ptr;
+class shared_ptr;
 namespace serialization {
     class extended_type_info;
 } // namespace serialization
@@ -83,8 +83,8 @@ public:
     virtual void load(boost::long_long_type & t) = 0;
     virtual void load(boost::ulong_long_type & t) = 0;
     #elif defined(BOOST_HAS_MS_INT64)
-    virtual void load(int64_t & t) = 0;
-    virtual void load(uint64_t & t) = 0;
+    virtual void load(__int64 & t) = 0;
+    virtual void load(unsigned __int64 & t) = 0;
     #endif
 
     virtual void load(float & t) = 0;
@@ -155,16 +155,16 @@ public:
 
 #include <boost/archive/detail/abi_suffix.hpp> // pops abi_suffix.hpp pragmas
 
-// note special treatment of std::shared_ptr. This type needs a special
+// note special treatment of shared_ptr. This type needs a special
 // structure associated with every archive.  We created a "mix-in"
-// class to provide this functionality.  Since std::shared_ptr holds a
+// class to provide this functionality.  Since shared_ptr holds a
 // special esteem in the boost library - we included it here by default.
 #include <boost/archive/shared_ptr_helper.hpp>
 
-namespace boost {
+namespace boost { 
 namespace archive {
 
-class polymorphic_iarchive :
+class polymorphic_iarchive : 
     public polymorphic_iarchive_impl,
     public detail::shared_ptr_helper
 {

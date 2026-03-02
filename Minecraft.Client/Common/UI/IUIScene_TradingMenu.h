@@ -7,7 +7,7 @@ class IUIScene_TradingMenu
 {
 protected:
 	MerchantMenu *m_menu;
-	std::shared_ptr<Merchant> m_merchant;
+	shared_ptr<Merchant> m_merchant;
 	vector< pair<MerchantRecipe *,int> > m_activeOffers;
 
 	int m_validOffersCount;
@@ -39,20 +39,20 @@ protected:
 	virtual void setRequest1RedBox(bool show) = 0;
 	virtual void setRequest2RedBox(bool show) = 0;
 	virtual void setTradeRedBox(int index, bool show) = 0;
-
+	
 	virtual void setOfferDescription(const wstring &name, vector<wstring> &unformattedStrings) = 0;
 
-	virtual void setRequest1Item(std::shared_ptr<ItemInstance> item);
-	virtual void setRequest2Item(std::shared_ptr<ItemInstance> item);
-	virtual void setTradeItem(int index, std::shared_ptr<ItemInstance> item);
+	virtual void setRequest1Item(shared_ptr<ItemInstance> item);
+	virtual void setRequest2Item(shared_ptr<ItemInstance> item);
+	virtual void setTradeItem(int index, shared_ptr<ItemInstance> item);
 
 private:
 	void updateDisplay();
 	bool canMake(MerchantRecipe *recipe);
-	wstring GetItemDescription(std::shared_ptr<ItemInstance> item, vector<wstring> &unformattedStrings);
+	wstring GetItemDescription(shared_ptr<ItemInstance> item, vector<wstring> &unformattedStrings);
 
 public:
-	std::shared_ptr<Merchant> getMerchant();
+	shared_ptr<Merchant> getMerchant();
 
 	virtual int getPad() = 0;
 };

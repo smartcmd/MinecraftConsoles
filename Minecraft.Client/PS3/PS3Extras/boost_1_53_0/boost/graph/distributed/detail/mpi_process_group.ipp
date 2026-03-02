@@ -40,7 +40,7 @@ namespace boost { namespace graph { namespace distributed {
 
 struct mpi_process_group::impl
 {
-
+  
   typedef mpi_process_group::message_header message_header;
   typedef mpi_process_group::outgoing_messages outgoing_messages;
 
@@ -71,7 +71,7 @@ struct mpi_process_group::impl
   std::size_t batch_header_number;
   std::size_t batch_buffer_size;
   std::size_t batch_message_size;
-
+  
   /**
    * The actual MPI communicator used to transmit data.
    */
@@ -90,19 +90,19 @@ struct mpi_process_group::impl
 
   /// The numbers of processors that have entered a synchronization stage
   std::vector<int> processors_synchronizing_stage;
-
+  
   /// The synchronization stage of a processor
   std::vector<int> synchronizing_stage;
 
   /// Number of processors still sending messages
   std::vector<int> synchronizing_unfinished;
-
+  
   /// Number of batches sent since last synchronization stage
   std::vector<int> number_sent_batches;
-
+  
   /// Number of batches received minus number of expected batches
   std::vector<int> number_received_batches;
-
+  
 
   /// The context of the currently-executing trigger, or @c trc_none
   /// if no trigger is executing.
@@ -124,7 +124,7 @@ struct mpi_process_group::impl
 
   /// The MPI requests for posted sends of oob messages
   std::vector<MPI_Request> requests;
-
+  
   /// The MPI buffers for posted irecvs of oob messages
   std::map<int,buffer_type> buffers;
 
@@ -144,14 +144,14 @@ struct mpi_process_group::impl
   std::stack<std::size_t> free_batches;
 
   void free_sent_batches();
-
+  
   // Tag allocator
   detail::tag_allocator allocated_tags;
 
   impl(std::size_t num_headers, std::size_t buffers_size,
        communicator_type parent_comm);
   ~impl();
-
+  
 private:
   void set_batch_size(std::size_t header_num, std::size_t buffer_sz);
 };
@@ -175,7 +175,7 @@ mpi_process_group::send_impl(int dest, int tag, const T& value,
   header.source = process_id(*this);
   header.tag = tag;
   header.offset = outgoing.buffer.size();
-
+  
   boost::mpi::packed_oarchive oa(impl_->comm, outgoing.buffer);
   oa << value;
 
@@ -237,7 +237,7 @@ send(const mpi_process_group& pg, mpi_process_group::process_id_type dest,
      int tag, const T values[], std::size_t n)
 {
   pg.send_impl(dest, pg.encode_tag(pg.my_block_number(), tag),
-                 boost::serialization::make_array(values,n),
+                 boost::serialization::make_array(values,n), 
                  boost::mpl::true_());
 }
 
@@ -279,7 +279,7 @@ typename disable_if<boost::mpi::is_mpi_datatype<T>, void>::type
 send(const mpi_process_group& pg, mpi_process_group::process_id_type dest,
      int tag, const T values[], std::size_t n)
 {
-  pg.array_send_impl(dest, pg.encode_tag(pg.my_block_number(), tag),
+  pg.array_send_impl(dest, pg.encode_tag(pg.my_block_number(), tag), 
                      values, n);
 }
 
@@ -316,7 +316,7 @@ mpi_process_group::receive_impl(int source, int tag, T& value,
 
   // Unpack the data
   if (header->bytes > 0) {
-    boost::mpi::packed_iarchive ia(impl_->comm, incoming.buffer,
+    boost::mpi::packed_iarchive ia(impl_->comm, incoming.buffer, 
                                    archive::no_header, header->offset);
     ia >> value;
   }
@@ -364,7 +364,7 @@ mpi_process_group::receive_impl(int source, int tag, T& value,
   if (header == incoming.headers.end()) return false;
 
   // Deserialize the data
-  boost::mpi::packed_iarchive in(impl_->comm, incoming.buffer,
+  boost::mpi::packed_iarchive in(impl_->comm, incoming.buffer, 
                                  archive::no_header, header->offset);
   in >> value;
 
@@ -411,7 +411,7 @@ array_receive_impl(int source, int tag, T* values, std::size_t& n) const
   if (header == incoming.headers.end()) return false;
 
   // Deserialize the data
-  boost::mpi::packed_iarchive in(impl_->comm, incoming.buffer,
+  boost::mpi::packed_iarchive in(impl_->comm, incoming.buffer, 
                                  archive::no_header, header->offset);
   std::size_t num_sent;
   in >> num_sent;
@@ -455,7 +455,7 @@ template<typename Type, typename Handler>
 void mpi_process_group::trigger(int tag, const Handler& handler)
 {
   BOOST_ASSERT(block_num);
-  install_trigger(tag,my_block_number(),std::shared_ptr<trigger_base>(
+  install_trigger(tag,my_block_number(),shared_ptr<trigger_base>(
     new trigger_launcher<Type, Handler>(*this, tag, handler)));
 }
 
@@ -463,28 +463,28 @@ template<typename Type, typename Handler>
 void mpi_process_group::trigger_with_reply(int tag, const Handler& handler)
 {
   BOOST_ASSERT(block_num);
-  install_trigger(tag,my_block_number(),std::shared_ptr<trigger_base>(
+  install_trigger(tag,my_block_number(),shared_ptr<trigger_base>(
     new reply_trigger_launcher<Type, Handler>(*this, tag, handler)));
 }
 
 template<typename Type, typename Handler>
-void mpi_process_group::global_trigger(int tag, const Handler& handler,
+void mpi_process_group::global_trigger(int tag, const Handler& handler, 
       std::size_t sz)
 {
   if (sz==0) // normal trigger
-    install_trigger(tag,0,std::shared_ptr<trigger_base>(
+    install_trigger(tag,0,shared_ptr<trigger_base>(
       new global_trigger_launcher<Type, Handler>(*this, tag, handler)));
   else // trigger with irecv
-    install_trigger(tag,0,std::shared_ptr<trigger_base>(
+    install_trigger(tag,0,shared_ptr<trigger_base>(
       new global_irecv_trigger_launcher<Type, Handler>(*this, tag, handler,sz)));
-
+  
 }
 
 namespace detail {
 
 template<typename Type>
 void  do_oob_receive(mpi_process_group const& self,
-    int source, int tag, Type& data, mpl::true_ /*is_mpi_datatype*/)
+    int source, int tag, Type& data, mpl::true_ /*is_mpi_datatype*/) 
 {
   using boost::mpi::get_mpi_datatype;
 
@@ -495,7 +495,7 @@ void  do_oob_receive(mpi_process_group const& self,
 
 template<typename Type>
 void do_oob_receive(mpi_process_group const& self,
-    int source, int tag, Type& data, mpl::false_ /*is_mpi_datatype*/)
+    int source, int tag, Type& data, mpl::false_ /*is_mpi_datatype*/) 
 {
   //  self.impl_->comm.recv(source,tag,data);
   // Receive the size of the data packet
@@ -521,7 +521,7 @@ void do_oob_receive(mpi_process_group const& self,
 }
 
 template<typename Type>
-void do_oob_receive(mpi_process_group const& self, int source, int tag, Type& data)
+void do_oob_receive(mpi_process_group const& self, int source, int tag, Type& data) 
 {
   do_oob_receive(self, source, tag, data,
                            boost::mpi::is_mpi_datatype<Type>());
@@ -532,13 +532,13 @@ void do_oob_receive(mpi_process_group const& self, int source, int tag, Type& da
 
 
 template<typename Type, typename Handler>
-void
+void 
 mpi_process_group::trigger_launcher<Type, Handler>::
-receive(mpi_process_group const&, int source, int tag,
+receive(mpi_process_group const&, int source, int tag, 
         trigger_receive_context context, int block) const
 {
 #ifdef PBGL_PROCESS_GROUP_DEBUG
-  std::cerr << (out_of_band? "OOB trigger" : "Trigger")
+  std::cerr << (out_of_band? "OOB trigger" : "Trigger") 
             << " receive from source " << source << " and tag " << tag
         << " in block " << (block == -1 ? self.my_block_number() : block) << std::endl;
 #endif
@@ -560,13 +560,13 @@ receive(mpi_process_group const&, int source, int tag,
 }
 
 template<typename Type, typename Handler>
-void
+void 
 mpi_process_group::reply_trigger_launcher<Type, Handler>::
-receive(mpi_process_group const&, int source, int tag,
+receive(mpi_process_group const&, int source, int tag, 
         trigger_receive_context context, int block) const
 {
 #ifdef PBGL_PROCESS_GROUP_DEBUG
-  std::cerr << (out_of_band? "OOB reply trigger" : "Reply trigger")
+  std::cerr << (out_of_band? "OOB reply trigger" : "Reply trigger") 
             << " receive from source " << source << " and tag " << tag
         << " in block " << (block == -1 ? self.my_block_number() : block) << std::endl;
 #endif
@@ -581,18 +581,18 @@ receive(mpi_process_group const&, int source, int tag,
 
   // Pass the message off to the handler and send the result back to
   // the source.
-  send_oob(self, source, data.first,
+  send_oob(self, source, data.first, 
            handler(source, tag, data.second, context), -2);
 }
 
 template<typename Type, typename Handler>
-void
+void 
 mpi_process_group::global_trigger_launcher<Type, Handler>::
-receive(mpi_process_group const& self, int source, int tag,
+receive(mpi_process_group const& self, int source, int tag, 
         trigger_receive_context context, int block) const
 {
 #ifdef PBGL_PROCESS_GROUP_DEBUG
-  std::cerr << (out_of_band? "OOB trigger" : "Trigger")
+  std::cerr << (out_of_band? "OOB trigger" : "Trigger") 
             << " receive from source " << source << " and tag " << tag
         << " in block " << (block == -1 ? self.my_block_number() : block) << std::endl;
 #endif
@@ -615,13 +615,13 @@ receive(mpi_process_group const& self, int source, int tag,
 
 
 template<typename Type, typename Handler>
-void
+void 
 mpi_process_group::global_irecv_trigger_launcher<Type, Handler>::
-receive(mpi_process_group const& self, int source, int tag,
+receive(mpi_process_group const& self, int source, int tag, 
         trigger_receive_context context, int block) const
 {
 #ifdef PBGL_PROCESS_GROUP_DEBUG
-  std::cerr << (out_of_band? "OOB trigger" : "Trigger")
+  std::cerr << (out_of_band? "OOB trigger" : "Trigger") 
             << " receive from source " << source << " and tag " << tag
         << " in block " << (block == -1 ? self.my_block_number() : block) << std::endl;
 #endif
@@ -644,12 +644,12 @@ receive(mpi_process_group const& self, int source, int tag,
 
 
 template<typename Type, typename Handler>
-void
+void 
 mpi_process_group::global_irecv_trigger_launcher<Type, Handler>::
 prepare_receive(mpi_process_group const& self, int tag, bool force) const
 {
 #ifdef PBGL_PROCESS_GROUP_DEBUG
- std::cerr << ("Posting Irecv for trigger")
+ std::cerr << ("Posting Irecv for trigger") 
       << " receive with tag " << tag << std::endl;
 #endif
   if (self.impl_->buffers.find(tag) == self.impl_->buffers.end()) {
@@ -657,7 +657,7 @@ prepare_receive(mpi_process_group const& self, int tag, bool force) const
     force = true;
   }
   BOOST_ASSERT(static_cast<int>(self.impl_->buffers[tag].size()) >= buffer_size);
-
+  
   //BOOST_MPL_ASSERT(mpl::not_<is_mpi_datatype<Type> >);
   if (force) {
     self.impl_->requests.push_back(MPI_Request());
@@ -681,8 +681,8 @@ receive(const mpi_process_group& pg, int tag, T& value)
 }
 
 template<typename T>
-typename
-  enable_if<boost::mpi::is_mpi_datatype<T>,
+typename 
+  enable_if<boost::mpi::is_mpi_datatype<T>, 
             std::pair<mpi_process_group::process_id_type, std::size_t> >::type
 receive(const mpi_process_group& pg, int tag, T values[], std::size_t n)
 {
@@ -691,15 +691,15 @@ receive(const mpi_process_group& pg, int tag, T values[], std::size_t n)
       pg.receive_impl(source, pg.encode_tag(pg.my_block_number(), tag),
                  boost::serialization::make_array(values,n),
                  boost::mpl::true_());
-    if (result)
+    if (result) 
       return std::make_pair(source, n);
   }
   BOOST_ASSERT(false);
 }
 
 template<typename T>
-typename
-  disable_if<boost::mpi::is_mpi_datatype<T>,
+typename 
+  disable_if<boost::mpi::is_mpi_datatype<T>, 
              std::pair<mpi_process_group::process_id_type, std::size_t> >::type
 receive(const mpi_process_group& pg, int tag, T values[], std::size_t n)
 {
@@ -730,14 +730,14 @@ receive(const mpi_process_group& pg,
 }
 
 template<typename T>
-typename
-  enable_if<boost::mpi::is_mpi_datatype<T>,
+typename 
+  enable_if<boost::mpi::is_mpi_datatype<T>, 
             std::pair<mpi_process_group::process_id_type, std::size_t> >::type
-receive(const mpi_process_group& pg, int source, int tag, T values[],
+receive(const mpi_process_group& pg, int source, int tag, T values[], 
         std::size_t n)
 {
   if (pg.receive_impl(source, pg.encode_tag(pg.my_block_number(), tag),
-                      boost::serialization::make_array(values,n),
+                      boost::serialization::make_array(values,n), 
                       boost::mpl::true_()))
     return std::make_pair(source,n);
   else {
@@ -751,10 +751,10 @@ receive(const mpi_process_group& pg, int source, int tag, T values[],
 }
 
 template<typename T>
-typename
-  disable_if<boost::mpi::is_mpi_datatype<T>,
+typename 
+  disable_if<boost::mpi::is_mpi_datatype<T>, 
              std::pair<mpi_process_group::process_id_type, std::size_t> >::type
-receive(const mpi_process_group& pg, int source, int tag, T values[],
+receive(const mpi_process_group& pg, int source, int tag, T values[], 
         std::size_t n)
 {
   pg.array_receive_impl(source, pg.encode_tag(pg.my_block_number(), tag),
@@ -775,7 +775,7 @@ all_reduce(const mpi_process_group& pg, T* first, T* last, T* out,
   if (inplace) out = new T [last-first];
 
   boost::mpi::all_reduce(boost::mpi::communicator(communicator(pg),
-                                                  boost::mpi::comm_attach),
+                                                  boost::mpi::comm_attach), 
                          first, last-first, out, bin_op);
 
   if (inplace) {
@@ -789,10 +789,10 @@ all_reduce(const mpi_process_group& pg, T* first, T* last, T* out,
 
 template<typename T>
 void
-broadcast(const mpi_process_group& pg, T& val,
+broadcast(const mpi_process_group& pg, T& val, 
           mpi_process_group::process_id_type root)
 {
-  // broadcast the seed
+  // broadcast the seed  
   boost::mpi::communicator comm(communicator(pg),boost::mpi::comm_attach);
   boost::mpi::broadcast(comm,val,root);
 }
@@ -914,7 +914,7 @@ Receiver* mpi_process_group::get_receiver()
 
 template<typename T>
 typename enable_if<boost::mpi::is_mpi_datatype<T> >::type
-receive_oob(const mpi_process_group& pg,
+receive_oob(const mpi_process_group& pg, 
             mpi_process_group::process_id_type source, int tag, T& value, int block)
 {
   using boost::mpi::get_mpi_datatype;
@@ -926,8 +926,8 @@ receive_oob(const mpi_process_group& pg,
 
   // Post a non-blocking receive that waits until we complete this request.
   MPI_Request request;
-  MPI_Irecv(&value, 1, get_mpi_datatype<T>(value),
-            source, actual.second, actual.first, &request);
+  MPI_Irecv(&value, 1, get_mpi_datatype<T>(value),  
+            source, actual.second, actual.first, &request); 
 
   int done = 0;
   do {
@@ -939,7 +939,7 @@ receive_oob(const mpi_process_group& pg,
 
 template<typename T>
 typename disable_if<boost::mpi::is_mpi_datatype<T> >::type
-receive_oob(const mpi_process_group& pg,
+receive_oob(const mpi_process_group& pg, 
             mpi_process_group::process_id_type source, int tag, T& value, int block)
 {
   // Determine the actual message we expect to receive, and which
@@ -967,11 +967,11 @@ receive_oob(const mpi_process_group& pg,
   MPI_Get_count(&mpi_status, MPI_PACKED, &size);
   in.resize(size);
 #endif
-
+  
   // Receive the message data
   MPI_Recv(in.address(), in.size(), MPI_PACKED,
            status->source(), status->tag(), actual.first, MPI_STATUS_IGNORE);
-
+  
   // Unpack the message data
   in >> value;
 }
@@ -979,7 +979,7 @@ receive_oob(const mpi_process_group& pg,
 
 template<typename SendT, typename ReplyT>
 typename enable_if<boost::mpi::is_mpi_datatype<ReplyT> >::type
-send_oob_with_reply(const mpi_process_group& pg,
+send_oob_with_reply(const mpi_process_group& pg, 
                     mpi_process_group::process_id_type dest,
                     int tag, const SendT& send_value, ReplyT& reply_value,
                     int block)
@@ -992,14 +992,14 @@ send_oob_with_reply(const mpi_process_group& pg,
 
 template<typename SendT, typename ReplyT>
 typename disable_if<boost::mpi::is_mpi_datatype<ReplyT> >::type
-send_oob_with_reply(const mpi_process_group& pg,
+send_oob_with_reply(const mpi_process_group& pg, 
                     mpi_process_group::process_id_type dest,
                     int tag, const SendT& send_value, ReplyT& reply_value,
                     int block)
 {
   detail::tag_allocator::token reply_tag = pg.impl_->allocated_tags.get_tag();
-  send_oob(pg, dest, tag,
-           boost::parallel::detail::make_untracked_pair((int)reply_tag,
+  send_oob(pg, dest, tag, 
+           boost::parallel::detail::make_untracked_pair((int)reply_tag, 
                                                         send_value), block);
   receive_oob(pg, dest, reply_tag, reply_value);
 }

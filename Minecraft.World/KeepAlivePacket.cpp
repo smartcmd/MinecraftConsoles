@@ -21,7 +21,7 @@ void KeepAlivePacket::handle(PacketListener *listener)
 	listener->handleKeepAlive(shared_from_this());
 }
 
-void KeepAlivePacket::read(DataInputStream *dis) //throws IOException
+void KeepAlivePacket::read(DataInputStream *dis) //throws IOException 
 {
 	id = dis->readInt();
 }
@@ -31,7 +31,7 @@ void KeepAlivePacket::write(DataOutputStream *dos) //throws IOException
 	dos->writeInt(id);
 }
 
-int KeepAlivePacket::getEstimatedSize()
+int KeepAlivePacket::getEstimatedSize() 
 {
 	return 4;
 }
@@ -41,7 +41,7 @@ bool KeepAlivePacket::canBeInvalidated()
 	return true;
 }
 
-bool KeepAlivePacket::isInvalidatedBy(std::shared_ptr<Packet> packet)
+bool KeepAlivePacket::isInvalidatedBy(shared_ptr<Packet> packet)
 {
 	return true;
 }

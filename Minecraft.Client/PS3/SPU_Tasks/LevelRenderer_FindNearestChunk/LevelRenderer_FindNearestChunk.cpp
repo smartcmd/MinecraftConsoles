@@ -21,7 +21,7 @@ PlayStation(R)3 Programmer Tool Runtime Library 430.001
 
 // #define SPU_HEAPSIZE (128*1024)
 // #define SPU_STACKSIZE (16*1024)
-//
+// 
 // CELL_SPU_LS_PARAM(128*1024, 16*1024);	// can't use #defines here as it seems to  create an asm instruction
 
 
@@ -132,7 +132,7 @@ bool LevelRenderer_FindNearestChunk_DataIn::MultiplayerChunkCache::getChunkEmpty
 }
 
 
-bool LevelRenderer_FindNearestChunk_DataIn::CompressedTileStorage::isRenderChunkEmpty(int y)	// y == 0, 16, 32... 112 (representing a 16 byte range)
+bool LevelRenderer_FindNearestChunk_DataIn::CompressedTileStorage::isRenderChunkEmpty(int y)	// y == 0, 16, 32... 112 (representing a 16 byte range) 
 {
 	int blockIdx;
 	unsigned short *blockIndices = (unsigned short *)indicesAndData;
@@ -162,30 +162,30 @@ void LevelRenderer_FindNearestChunk_DataIn::findNearestChunk()
  	unsigned char* globalChunkFlags = (unsigned char*)alloca(numGlobalChunks);		// 164K !!!
  	DmaData_SPU::getAndWait(globalChunkFlags, (uintptr_t)pGlobalChunkFlags, sizeof(unsigned char)*numGlobalChunks);
 
-
+	
 	nearChunk = NULL;			// Nearest chunk that is dirty
 	veryNearCount = 0;
 	int minDistSq = 0x7fffffff;		// Distances to this chunk
 
-
+	
 	// Find nearest chunk that is dirty
 	for( int p = 0; p < 4; p++ )
 	{
 		// It's possible that the localplayers member can be set to NULL on the main thread when a player chooses to exit the game
-		// So take a reference to the player object now. As it is a std::shared_ptr it should live as long as we need it
-		PlayerData* player = &playerData[p];
+		// So take a reference to the player object now. As it is a shared_ptr it should live as long as we need it
+		PlayerData* player = &playerData[p]; 
 		if( player->bValid == NULL ) continue;
 		if( chunks[p] == NULL ) continue;
 		if( level[p] == NULL ) continue;
 		if( chunkLengths[p] != xChunks * zChunks * CHUNK_Y_COUNT ) continue;
 		int px = (int)player->x;
 		int py = (int)player->y;
-		int pz = (int)player->z;
+		int pz = (int)player->z;		
 
 		ClipChunk clipChunk[512];
 
 		for( int z = 0; z < zChunks; z++ )
-		{
+		{ 
 			uintptr_t ClipChunkX_PPU = (uintptr_t)&chunks[p][(z * yChunks + 0) * xChunks + 0];
 			DmaData_SPU::getAndWait(&clipChunk[0], ClipChunkX_PPU, sizeof(ClipChunk) * xChunks*CHUNK_Y_COUNT);
 			for( int y = 0; y < CHUNK_Y_COUNT; y++ )
@@ -196,7 +196,7 @@ void LevelRenderer_FindNearestChunk_DataIn::findNearestChunk()
 
 					// Get distance to this chunk - deliberately not calling the chunk's method of doing this to avoid overheads (passing entitie, type conversion etc.) that this involves
 					int xd = pClipChunk->xm - px;
-					int yd = pClipChunk->ym - py;
+					int yd = pClipChunk->ym - py;		
 					int zd = pClipChunk->zm - pz;
 					int distSq = xd * xd + yd * yd + zd * zd;
 					int distSqWeighted = xd * xd + yd * yd * 4 + zd * zd;  // Weighting against y to prioritise things in same x/z plane as player first
@@ -257,12 +257,12 @@ void cellSpursJobQueueMain(CellSpursJobContext2 *pContext, CellSpursJob256 *pJob
 		spu_print("LevelRenderer_cull [SPU#%u] start\n", idSpu);
 
 	g_pSpursJobContext = pContext;
-	uint32_t eaDataIn = pJob->workArea.userData[0];
+	uint32_t eaDataIn = pJob->workArea.userData[0];						
 // 	uint32_t eaDataOut =pJob->workArea.userData[1];
 
 	LevelRenderer_FindNearestChunk_DataIn dataIn;
 	DmaData_SPU::getAndWait(&dataIn, eaDataIn, sizeof(LevelRenderer_FindNearestChunk_DataIn));
-
+	
 	dataIn.findNearestChunk();
 
  	DmaData_SPU::putAndWait(&dataIn, eaDataIn, sizeof(LevelRenderer_FindNearestChunk_DataIn));

@@ -161,7 +161,7 @@ void UIScene_HUD::tick()
 			}
 			else
 			{
-				std::shared_ptr<EnderDragon> boss = EnderDragonRenderer::bossInstance;
+				shared_ptr<EnderDragon> boss = EnderDragonRenderer::bossInstance;
 				// 4J Stu - Don't clear this here as it's wiped for other players
 				//EnderDragonRenderer::bossInstance = nullptr;
 				m_ticksWithNoBoss = 0;
@@ -191,7 +191,7 @@ void UIScene_HUD::customDraw(IggyCustomDrawCallbackRegion *region)
 	else
 	{
 		Slot *invSlot = pMinecraft->localplayers[m_iPad]->inventoryMenu->getSlot(InventoryMenu::USE_ROW_SLOT_START + slot);
-		std::shared_ptr<ItemInstance> item = invSlot->getItem();
+		shared_ptr<ItemInstance> item = invSlot->getItem();
 		if(item != NULL)
 		{
 			unsigned char ucAlpha=app.GetGameSettings(ProfileManager.GetPrimaryPad(),eGameSetting_InterfaceOpacity);
@@ -265,7 +265,7 @@ void UIScene_HUD::handleReload()
 	}
 	m_labelJukebox.init(L"");
 
-	int iGuiScale;
+	int iGuiScale;	
 	Minecraft *pMinecraft = Minecraft::GetInstance();
 	if(pMinecraft->localplayers[m_iPad] == NULL || pMinecraft->localplayers[m_iPad]->m_iScreenSection == C4JRender::VIEWPORT_TYPE_FULLSCREEN)
 	{
@@ -629,7 +629,7 @@ void UIScene_HUD::render(S32 width, S32 height, C4JRender::eViewportType viewpor
 		}
 
 		IggyPlayerSetDisplaySize( getMovie(), m_movieWidth, m_movieHeight );
-
+		
 		m_renderWidth = tileWidth;
 		m_renderHeight = tileHeight;
 
@@ -639,7 +639,7 @@ void UIScene_HUD::render(S32 width, S32 height, C4JRender::eViewportType viewpor
 			tileYStart ,
 			tileXStart + tileWidth ,
 			tileYStart + tileHeight ,
-			0 );
+			0 ); 
 		IggyPlayerDrawTilesEnd ( getMovie() );
 	}
 	else
@@ -651,7 +651,7 @@ void UIScene_HUD::render(S32 width, S32 height, C4JRender::eViewportType viewpor
 void UIScene_HUD::handleTimerComplete(int id)
 {
 	Minecraft *pMinecraft = Minecraft::GetInstance();
-
+	
 	bool anyVisible = false;
 	if(pMinecraft->localplayers[m_iPad]!= NULL)
 	{
@@ -735,7 +735,7 @@ void UIScene_HUD::SetDisplayName(const wstring &displayName)
 	if(displayName.compare(m_displayName) != 0)
 	{
 		m_displayName = displayName;
-
+		
 		IggyDataValue result;
 		IggyDataValue value[1];
 		IggyStringUTF16 stringVal;
@@ -775,7 +775,7 @@ void UIScene_HUD::handleGameTick()
 		}
 		m_parentLayer->showComponent(m_iPad, eUIScene_HUD,true);
 
-		int iGuiScale;
+		int iGuiScale;	
 
 		if(pMinecraft->localplayers[m_iPad]->m_iScreenSection == C4JRender::VIEWPORT_TYPE_FULLSCREEN)
 		{
@@ -788,7 +788,7 @@ void UIScene_HUD::handleGameTick()
 		SetHudSize(iGuiScale);
 
 		SetDisplayName(ProfileManager.GetDisplayName(m_iPad));
-
+		
 		SetTooltipsEnabled(((ui.GetMenuDisplayed(ProfileManager.GetPrimaryPad())) || (app.GetGameSettings(ProfileManager.GetPrimaryPad(),eGameSetting_Tooltips) != 0)));
 
 #if TO_BE_IMPLEMENTED
@@ -797,8 +797,8 @@ void UIScene_HUD::handleGameTick()
 		{
 			int iTooltipsYOffset = 0;
 			// if tooltips are off, set the y offset to zero
-			if(app.GetGameSettings(m_iPad,eGameSetting_Tooltips)==0)
-			{
+			if(app.GetGameSettings(m_iPad,eGameSetting_Tooltips)==0)	
+			{	
 				switch(iGuiScale)
 				{
 				case 0:
@@ -987,11 +987,11 @@ void UIScene_HUD::handleGameTick()
 		bool bDisplayGui=app.GetGameStarted() && !ui.GetMenuDisplayed(m_iPad) && !(app.GetXuiAction(m_iPad)==eAppAction_AutosaveSaveGameCapturedThumbnail) && app.GetGameSettings(m_iPad,eGameSetting_DisplayHUD)!=0;
 		if(bDisplayGui && pMinecraft->localplayers[m_iPad] != NULL)
 		{
-			setVisible(true);
+			setVisible(true);			
 		}
 		else
 		{
-			setVisible(false);
+			setVisible(false);	
 		}
 	}
 }

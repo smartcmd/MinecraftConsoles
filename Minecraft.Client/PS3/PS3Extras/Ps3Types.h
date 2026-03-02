@@ -25,7 +25,7 @@ using std::tr1::const_pointer_cast;
 using std::tr1::dynamic_pointer_cast;
 using std::tr1::enable_shared_from_this;
 using std::tr1::get_deleter;
-using std::tr1::std::shared_ptr;
+using std::tr1::shared_ptr;
 using std::tr1::static_pointer_cast;
 using std::tr1::swap;
 using std::tr1::weak_ptr;
@@ -35,22 +35,22 @@ using boost::hash;
 
 
 // user the pool_allocator for all unordered_set and unordered_map instances
-// template <	class T, class H = hash<T>, class P = std::equal_to<T>, class A = boost::pool_allocator<T> >
-// 	class unordered_set : public std::tr1::unordered_set<T, H, P, A >
+// template <	class T, class H = hash<T>, class P = std::equal_to<T>, class A = boost::pool_allocator<T> > 
+// 	class unordered_set : public std::tr1::unordered_set<T, H, P, A > 
 // {};
-//
-// template <class K, class T, class H = hash<K>, class P = std::equal_to<K>, class A = boost::pool_allocator<std::pair<const K,T> > >
-// 	class unordered_map : public std::tr1::unordered_map<K, T, H, P, A >
+// 
+// template <class K, class T, class H = hash<K>, class P = std::equal_to<K>, class A = boost::pool_allocator<std::pair<const K,T> > > 
+// 	class unordered_map : public std::tr1::unordered_map<K, T, H, P, A > 
 // {};
 
 
 
-// template <	class T, class H = hash<T>, class P = std::equal_to<T>, class A = C4JPoolAllocator<T> >
-// class unordered_set : public std::tr1::unordered_set<T, H, P, A >
+// template <	class T, class H = hash<T>, class P = std::equal_to<T>, class A = C4JPoolAllocator<T> > 
+// class unordered_set : public std::tr1::unordered_set<T, H, P, A > 
 // {};
-//
-// template <class K, class T, class H = hash<K>, class P = std::equal_to<K>, class A = C4JPoolAllocator<std::pair<const K,T> > >
-// class unordered_map : public std::tr1::unordered_map<K, T, H, P, A >
+// 
+// template <class K, class T, class H = hash<K>, class P = std::equal_to<K>, class A = C4JPoolAllocator<std::pair<const K,T> > > 
+// class unordered_map : public std::tr1::unordered_map<K, T, H, P, A > 
 // {};
 
 
@@ -62,7 +62,7 @@ using boost::hash;
 class Cnullptr{
 public:
 	template<typename T>
-	operator std::shared_ptr<T>() { return std::shared_ptr<T>(); }
+	operator shared_ptr<T>() { return shared_ptr<T>(); }
 };
 
 extern Cnullptr nullptr;
@@ -111,19 +111,21 @@ typedef unsigned int        *PUINT;
 
 
 typedef unsigned char		byte;
+typedef long long				__int64;
+typedef unsigned long long		__uint64;
 typedef unsigned long		DWORD;
 typedef int                 INT;
 typedef unsigned long ULONG_PTR, *PULONG_PTR;
 typedef ULONG_PTR SIZE_T, *PSIZE_T;
 
-typedef int64_t LONG64, *PLONG64;
+typedef __int64 LONG64, *PLONG64;
 
 #define VOID void
 typedef char CHAR;
 typedef short SHORT;
 typedef long LONG;
-typedef long long LONGLONG;
-typedef unsigned long long ULONGLONG;
+typedef __int64 LONGLONG;
+typedef __uint64 ULONGLONG;
 
 
 #define CONST               const

@@ -10,8 +10,8 @@ class AddPlayerPacket : public Packet, public enable_shared_from_this<AddPlayerP
 {
 
 private:
-	std::shared_ptr<SynchedEntityData> entityData;
-    vector<std::shared_ptr<SynchedEntityData::DataItem> > *unpack;
+	shared_ptr<SynchedEntityData> entityData;
+    vector<shared_ptr<SynchedEntityData::DataItem> > *unpack;
 
 public:
 	int id;
@@ -29,15 +29,15 @@ public:
 
 	AddPlayerPacket();
 	~AddPlayerPacket();
-	AddPlayerPacket(std::shared_ptr<Player> player, PlayerUID xuid, PlayerUID OnlineXuid,int xp, int yp, int zp, int yRotp, int xRotp, int yHeadRotp);
+	AddPlayerPacket(shared_ptr<Player> player, PlayerUID xuid, PlayerUID OnlineXuid,int xp, int yp, int zp, int yRotp, int xRotp, int yHeadRotp);
 
 	virtual void read(DataInputStream *dis);
 	virtual void write(DataOutputStream *dos);
 	virtual void handle(PacketListener *listener);
 	virtual int getEstimatedSize();
 
-	vector<std::shared_ptr<SynchedEntityData::DataItem> > *getUnpackedData();
+	vector<shared_ptr<SynchedEntityData::DataItem> > *getUnpackedData();
 public:
-	static std::shared_ptr<Packet> create() { return std::shared_ptr<Packet>(new AddPlayerPacket()); }
+	static shared_ptr<Packet> create() { return shared_ptr<Packet>(new AddPlayerPacket()); }
 	virtual int getId() { return 20; }
 };

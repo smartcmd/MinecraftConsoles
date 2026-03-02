@@ -84,12 +84,12 @@ bool MonsterRoomFeature::place(Level *level, Random *random, int x, int y, int z
 			if (count != 1) continue;
 
 			level->setTile(xc, yc, zc, Tile::chest_Id);
-			std::shared_ptr<ChestTileEntity> chest = dynamic_pointer_cast<ChestTileEntity >( level->getTileEntity(xc, yc, zc) );
+			shared_ptr<ChestTileEntity> chest = dynamic_pointer_cast<ChestTileEntity >( level->getTileEntity(xc, yc, zc) );
 			if (chest != NULL )
 			{
 				for (int j = 0; j < 8; j++)
 				{
-					std::shared_ptr<ItemInstance> item = randomItem(random);
+					shared_ptr<ItemInstance> item = randomItem(random);
 					if (item != NULL) chest->setItem(random->nextInt(chest->getContainerSize()), item);
 				}
 			}
@@ -100,7 +100,7 @@ bool MonsterRoomFeature::place(Level *level, Random *random, int x, int y, int z
 
 
 	level->setTile(x, y, z, Tile::mobSpawner_Id);
-	std::shared_ptr<MobSpawnerTileEntity> entity = dynamic_pointer_cast<MobSpawnerTileEntity>( level->getTileEntity(x, y, z) );
+	shared_ptr<MobSpawnerTileEntity> entity = dynamic_pointer_cast<MobSpawnerTileEntity>( level->getTileEntity(x, y, z) );
 	if( entity != NULL )
 	{
 		entity->setEntityId(randomEntityId(random));
@@ -110,23 +110,23 @@ bool MonsterRoomFeature::place(Level *level, Random *random, int x, int y, int z
 
 }
 
-std::shared_ptr<ItemInstance> MonsterRoomFeature::randomItem(Random *random)
+shared_ptr<ItemInstance> MonsterRoomFeature::randomItem(Random *random)
 {
 	int type = random->nextInt(12);
-	if (type == 0) return std::shared_ptr<ItemInstance>( new ItemInstance(Item::saddle) );
-	if (type == 1) return std::shared_ptr<ItemInstance>( new ItemInstance(Item::ironIngot, random->nextInt(4) + 1) );
-	if (type == 2) return std::shared_ptr<ItemInstance>( new ItemInstance(Item::bread) );
-	if (type == 3) return std::shared_ptr<ItemInstance>( new ItemInstance(Item::wheat, random->nextInt(4) + 1) );
-	if (type == 4) return std::shared_ptr<ItemInstance>( new ItemInstance(Item::sulphur, random->nextInt(4) + 1) );
-	if (type == 5) return std::shared_ptr<ItemInstance>( new ItemInstance(Item::string, random->nextInt(4) + 1) );
-	if (type == 6) return std::shared_ptr<ItemInstance>( new ItemInstance(Item::bucket_empty) );
-	if (type == 7 && random->nextInt(100) == 0) return std::shared_ptr<ItemInstance>( new ItemInstance(Item::apple_gold) );
-	if (type == 8 && random->nextInt(2) == 0) return std::shared_ptr<ItemInstance>( new ItemInstance(Item::redStone, random->nextInt(4) + 1) );
-	if (type == 9 && random->nextInt(10) == 0) return std::shared_ptr<ItemInstance>( new ItemInstance( Item::items[Item::record_01->id + random->nextInt(2)]) );
-	if (type == 10) return std::shared_ptr<ItemInstance>( new ItemInstance(Item::dye_powder, 1, DyePowderItem::BROWN) );
+	if (type == 0) return shared_ptr<ItemInstance>( new ItemInstance(Item::saddle) );
+	if (type == 1) return shared_ptr<ItemInstance>( new ItemInstance(Item::ironIngot, random->nextInt(4) + 1) );
+	if (type == 2) return shared_ptr<ItemInstance>( new ItemInstance(Item::bread) );
+	if (type == 3) return shared_ptr<ItemInstance>( new ItemInstance(Item::wheat, random->nextInt(4) + 1) );
+	if (type == 4) return shared_ptr<ItemInstance>( new ItemInstance(Item::sulphur, random->nextInt(4) + 1) );
+	if (type == 5) return shared_ptr<ItemInstance>( new ItemInstance(Item::string, random->nextInt(4) + 1) );
+	if (type == 6) return shared_ptr<ItemInstance>( new ItemInstance(Item::bucket_empty) );
+	if (type == 7 && random->nextInt(100) == 0) return shared_ptr<ItemInstance>( new ItemInstance(Item::apple_gold) );
+	if (type == 8 && random->nextInt(2) == 0) return shared_ptr<ItemInstance>( new ItemInstance(Item::redStone, random->nextInt(4) + 1) );
+	if (type == 9 && random->nextInt(10) == 0) return shared_ptr<ItemInstance>( new ItemInstance( Item::items[Item::record_01->id + random->nextInt(2)]) );
+	if (type == 10) return shared_ptr<ItemInstance>( new ItemInstance(Item::dye_powder, 1, DyePowderItem::BROWN) );
 	if (type == 11) return Item::enchantedBook->createForRandomLoot(random);
 
-	return std::shared_ptr<ItemInstance>();
+	return shared_ptr<ItemInstance>();
 }
 
 wstring MonsterRoomFeature::randomEntityId(Random *random)

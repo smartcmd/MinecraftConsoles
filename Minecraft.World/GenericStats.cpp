@@ -58,51 +58,51 @@ Stat* GenericStats::get_netherLavaCollected()
 
 Stat* GenericStats::get_killMob()
 {
-	return NULL;
+	return NULL; 
 }
 
 Stat* GenericStats::get_killsZombie()
-{
+{ 
+	return NULL; 
+}
+
+Stat* GenericStats::get_killsSkeleton() 
+{ 
+	return NULL; 
+}
+
+Stat* GenericStats::get_killsCreeper() 
+{ 
 	return NULL;
 }
 
-Stat* GenericStats::get_killsSkeleton()
-{
+Stat* GenericStats::get_killsSpider() 
+{ 
+	return NULL; 
+}
+
+Stat* GenericStats::get_killsSpiderJockey() 
+{ 
 	return NULL;
 }
 
-Stat* GenericStats::get_killsCreeper()
-{
+Stat* GenericStats::get_killsZombiePigman() 
+{ 
+	return NULL; 
+}
+
+Stat* GenericStats::get_killsSlime() 
+{ 
 	return NULL;
 }
 
-Stat* GenericStats::get_killsSpider()
-{
+Stat* GenericStats::get_killsGhast() 
+{ 
 	return NULL;
 }
 
-Stat* GenericStats::get_killsSpiderJockey()
-{
-	return NULL;
-}
-
-Stat* GenericStats::get_killsZombiePigman()
-{
-	return NULL;
-}
-
-Stat* GenericStats::get_killsSlime()
-{
-	return NULL;
-}
-
-Stat* GenericStats::get_killsGhast()
-{
-	return NULL;
-}
-
-Stat* GenericStats::get_killsNetherZombiePigman()
-{
+Stat* GenericStats::get_killsNetherZombiePigman() 
+{ 
 	return NULL;
 }
 
@@ -173,7 +173,7 @@ Stat* GenericStats::get_itemsUsed(int itemId)
 
 Stat *GenericStats::get_itemsBought(int itemId)
 {
-	return NULL;
+	return NULL;	
 }
 
 Stat* GenericStats::get_killsEnderdragon()
@@ -201,87 +201,87 @@ Stat* GenericStats::get_achievement(eAward achievementId)
 	return NULL;
 }
 
-Stat* GenericStats::openInventory()
+Stat* GenericStats::openInventory() 
 {
-	return instance->get_achievement( eAward_TakingInventory );
+	return instance->get_achievement( eAward_TakingInventory ); 
 }
 
-Stat* GenericStats::mineWood()
+Stat* GenericStats::mineWood() 
 {
-	return instance->get_achievement( eAward_GettingWood );
+	return instance->get_achievement( eAward_GettingWood ); 
 }
 
-Stat* GenericStats::buildWorkbench()
+Stat* GenericStats::buildWorkbench() 
 {
-	return instance->get_achievement( eAward_Benchmarking );
+	return instance->get_achievement( eAward_Benchmarking ); 
 }
 
-Stat* GenericStats::buildPickaxe()
+Stat* GenericStats::buildPickaxe() 
 {
-	return instance->get_achievement( eAward_TimeToMine);
+	return instance->get_achievement( eAward_TimeToMine); 
 }
 
-Stat* GenericStats::buildFurnace()
+Stat* GenericStats::buildFurnace() 
 {
-	return instance->get_achievement( eAward_HotTopic );
+	return instance->get_achievement( eAward_HotTopic ); 
 }
 
-Stat* GenericStats::acquireIron()
+Stat* GenericStats::acquireIron() 
 {
-	return instance->get_achievement( eAward_AquireHardware );
+	return instance->get_achievement( eAward_AquireHardware ); 
 }
 
-Stat* GenericStats::buildHoe()
+Stat* GenericStats::buildHoe() 
 {
-	return instance->get_achievement( eAward_TimeToFarm );
+	return instance->get_achievement( eAward_TimeToFarm ); 
 }
 
-Stat* GenericStats::makeBread()
+Stat* GenericStats::makeBread() 
 {
-	return instance->get_achievement( eAward_BakeBread );
+	return instance->get_achievement( eAward_BakeBread ); 
 }
 
-Stat* GenericStats::bakeCake()
+Stat* GenericStats::bakeCake() 
 {
-	return instance->get_achievement( eAward_TheLie );
+	return instance->get_achievement( eAward_TheLie ); 
 }
 
-Stat* GenericStats::buildBetterPickaxe()
+Stat* GenericStats::buildBetterPickaxe() 
 {
-	return instance->get_achievement( eAward_GettingAnUpgrade );
+	return instance->get_achievement( eAward_GettingAnUpgrade ); 
 }
 
-Stat* GenericStats::cookFish()
+Stat* GenericStats::cookFish() 
 {
 	return instance->get_achievement( eAward_DeliciousFish );
 }
 
-Stat* GenericStats::onARail()
+Stat* GenericStats::onARail() 
 {
 	return instance->get_achievement( eAward_OnARail );
 }
 
-Stat* GenericStats::buildSword()
+Stat* GenericStats::buildSword() 
 {
 	return instance->get_achievement( eAward_TimeToStrike );
 }
 
-Stat* GenericStats::killEnemy()
+Stat* GenericStats::killEnemy() 
 {
 	return instance->get_achievement( eAward_MonsterHunter );
 }
 
-Stat* GenericStats::killCow()
+Stat* GenericStats::killCow() 
 {
 	return instance->get_achievement( eAward_CowTipper );
 }
 
-Stat* GenericStats::flyPig()
+Stat* GenericStats::flyPig() 
 {
 	return instance->get_achievement( eAward_WhenPigsFly );
 }
 
-Stat* GenericStats::snipeSkeleton()
+Stat* GenericStats::snipeSkeleton() 
 {
 #ifndef _XBOX
 	return instance->get_achievement( eAward_snipeSkeleton );
@@ -290,7 +290,7 @@ Stat* GenericStats::snipeSkeleton()
 #endif
 }
 
-Stat* GenericStats::diamonds()
+Stat* GenericStats::diamonds() 
 {
 #ifndef _XBOX
 	return instance->get_achievement( eAward_diamonds );
@@ -299,7 +299,7 @@ Stat* GenericStats::diamonds()
 #endif
 }
 
-Stat* GenericStats::ghast()
+Stat* GenericStats::ghast() 
 {
 #ifndef _XBOX
 	return instance->get_achievement( eAward_ghast );
@@ -308,7 +308,7 @@ Stat* GenericStats::ghast()
 #endif
 }
 
-Stat* GenericStats::blazeRod()
+Stat* GenericStats::blazeRod() 
 {
 #ifndef _XBOX
 	return instance->get_achievement( eAward_blazeRod );
@@ -317,7 +317,7 @@ Stat* GenericStats::blazeRod()
 #endif
 }
 
-Stat* GenericStats::potion()
+Stat* GenericStats::potion() 
 {
 #ifndef _XBOX
 	return instance->get_achievement( eAward_potion );
@@ -326,7 +326,7 @@ Stat* GenericStats::potion()
 #endif
 }
 
-Stat* GenericStats::theEnd()
+Stat* GenericStats::theEnd() 
 {
 #ifndef _XBOX
 	return instance->get_achievement( eAward_theEnd );
@@ -335,7 +335,7 @@ Stat* GenericStats::theEnd()
 #endif
 }
 
-Stat* GenericStats::winGame()
+Stat* GenericStats::winGame() 
 {
 #ifndef _XBOX
 	return instance->get_achievement( eAward_winGame );
@@ -344,7 +344,7 @@ Stat* GenericStats::winGame()
 #endif
 }
 
-Stat* GenericStats::enchantments()
+Stat* GenericStats::enchantments() 
 {
 #ifndef _XBOX
 	return instance->get_achievement( eAward_enchantments );
@@ -353,7 +353,7 @@ Stat* GenericStats::enchantments()
 #endif
 }
 
-Stat* GenericStats::overkill()
+Stat* GenericStats::overkill() 
 {
 #ifdef _EXTENDED_ACHIEVEMENTS
 	return instance->get_achievement( eAward_overkill );
@@ -371,52 +371,52 @@ Stat* GenericStats::bookcase()
 #endif
 }
 
-Stat* GenericStats::leaderOfThePack()
+Stat* GenericStats::leaderOfThePack() 
 {
 	return instance->get_achievement( eAward_LeaderOfThePack );
 }
 
-Stat* GenericStats::MOARTools()
+Stat* GenericStats::MOARTools() 
 {
 	return instance->get_achievement( eAward_MOARTools );
 }
 
-Stat* GenericStats::dispenseWithThis()
+Stat* GenericStats::dispenseWithThis() 
 {
 	return instance->get_achievement( eAward_DispenseWithThis );
 }
 
-Stat* GenericStats::InToTheNether()
+Stat* GenericStats::InToTheNether() 
 {
 	return instance->get_achievement( eAward_InToTheNether );
 }
 
-Stat* GenericStats::socialPost()
+Stat* GenericStats::socialPost() 
 {
 	return instance->get_achievement( eAward_socialPost );
 }
 
-Stat* GenericStats::eatPorkChop()
+Stat* GenericStats::eatPorkChop() 
 {
 	return instance->get_achievement( eAward_eatPorkChop );
 }
 
-Stat* GenericStats::play100Days()
+Stat* GenericStats::play100Days() 
 {
 	return instance->get_achievement( eAward_play100Days );
 }
 
-Stat* GenericStats::arrowKillCreeper()
+Stat* GenericStats::arrowKillCreeper() 
 {
 	return instance->get_achievement( eAward_arrowKillCreeper );
 }
 
-Stat* GenericStats::mine100Blocks()
+Stat* GenericStats::mine100Blocks() 
 {
 	return instance->get_achievement( eAward_mine100Blocks );
 }
 
-Stat* GenericStats::kill10Creepers()
+Stat* GenericStats::kill10Creepers() 
 {
 	return instance->get_achievement( eAward_kill10Creepers );
 }
@@ -666,7 +666,7 @@ byteArray GenericStats::getParam_itemsSmelted(int id, int aux, int count)
 	return this->getParam_itemsCrafted(id,aux,count);
 }
 
-byteArray GenericStats::getParam_itemsUsed(std::shared_ptr<Player> plr, std::shared_ptr<ItemInstance> itm)
+byteArray GenericStats::getParam_itemsUsed(shared_ptr<Player> plr, shared_ptr<ItemInstance> itm)
 {
 	return getParam_noArgs(); // Really just a count on most platforms.
 }
@@ -676,7 +676,7 @@ byteArray GenericStats::getParam_itemsBought(int id, int aux, int count)
 	return getParam_noArgs();
 }
 
-byteArray GenericStats::getParam_mobKill(std::shared_ptr<Player> plr, std::shared_ptr<Mob> mob, DamageSource *dmgSrc)
+byteArray GenericStats::getParam_mobKill(shared_ptr<Player> plr, shared_ptr<Mob> mob, DamageSource *dmgSrc)
 {
 	return getParam_noArgs(); // Really just a count on most platforms.
 }
@@ -819,13 +819,13 @@ byteArray GenericStats::param_blocksMined(int id, int data, int count)
 }
 
 byteArray GenericStats::param_itemsCollected(int id, int aux, int count)
-{
-	return instance->getParam_itemsCollected(id,aux,count);
+{ 
+	return instance->getParam_itemsCollected(id,aux,count); 
 }
 
 byteArray GenericStats::param_itemsCrafted(int id, int aux, int count)
-{
-	return instance->getParam_itemsCrafted(id,aux,count);
+{ 
+	return instance->getParam_itemsCrafted(id,aux,count); 
 }
 
 byteArray GenericStats::param_itemsSmelted(int id, int aux, int count)
@@ -833,7 +833,7 @@ byteArray GenericStats::param_itemsSmelted(int id, int aux, int count)
 	return instance->getParam_itemsSmelted(id,aux,count);
 }
 
-byteArray GenericStats::param_itemsUsed(std::shared_ptr<Player> plr, std::shared_ptr<ItemInstance> itm)
+byteArray GenericStats::param_itemsUsed(shared_ptr<Player> plr, shared_ptr<ItemInstance> itm)
 {
 	if ( (plr != NULL) && (itm != NULL) )	return instance->getParam_itemsUsed(plr, itm);
 	else									return instance->getParam_noArgs();
@@ -844,9 +844,9 @@ byteArray GenericStats::param_itemsBought(int id, int aux, int count)
 	return instance->getParam_itemsBought(id,aux,count);
 }
 
-byteArray GenericStats::param_mobKill(std::shared_ptr<Player> plr, std::shared_ptr<Mob> mob, DamageSource *dmgSrc)
+byteArray GenericStats::param_mobKill(shared_ptr<Player> plr, shared_ptr<Mob> mob, DamageSource *dmgSrc)
 {
-	if ( (plr != NULL) && (mob != NULL) )	return instance->getParam_mobKill(plr, mob, dmgSrc);
+	if ( (plr != NULL) && (mob != NULL) )	return instance->getParam_mobKill(plr, mob, dmgSrc);	
 	else									return instance->getParam_noArgs();
 }
 
@@ -891,8 +891,8 @@ byteArray GenericStats::param_enteredBiome(int biomeId)
 }
 
 byteArray GenericStats::param_noArgs()
-{
-	return instance->getParam_noArgs();
+{ 
+	return instance->getParam_noArgs(); 
 }
 
 byteArray GenericStats::param_openInventory()

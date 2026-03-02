@@ -3,7 +3,7 @@
 
 
 
-EnderCrystalModel::EnderCrystalModel(float g)
+EnderCrystalModel::EnderCrystalModel(float g) 
 {
 	glass = new ModelPart(this, L"glass");
 	glass->texOffs(0, 0)->addBox(-4, -4, -4, 8, 8, 8);
@@ -21,7 +21,7 @@ EnderCrystalModel::EnderCrystalModel(float g)
 }
 
 
-void EnderCrystalModel::render(std::shared_ptr<Entity> entity, float time, float r, float bob, float yRot, float xRot, float scale, bool usecompiled)
+void EnderCrystalModel::render(shared_ptr<Entity> entity, float time, float r, float bob, float yRot, float xRot, float scale, bool usecompiled)
 {
 	glPushMatrix();
 	glScalef(2, 2, 2);

@@ -20,10 +20,10 @@
 namespace boost {
 
     template<typename Type>
-    class std::shared_ptr;
+    class shared_ptr;
 
     ///
-    /// \brief This is the main namespace that encloses all localization classes
+    /// \brief This is the main namespace that encloses all localization classes 
     ///
     namespace locale {
 
@@ -39,7 +39,7 @@ namespace boost {
         static const uint32_t character_first_facet = char_facet;  ///< First facet specific for character type
         static const uint32_t character_last_facet = char32_t_facet; ///< Last facet specific for character type
         static const uint32_t all_characters = 0xFFFF;     ///< Special mask -- generate all
-
+        
         typedef uint32_t character_facet_type; ///<type that specifies the character type that locales can be generated for
 
         static const uint32_t     convert_facet   = 1 << 0;   ///< Generate conversion facets
@@ -49,19 +49,19 @@ namespace boost {
         static const uint32_t     message_facet   = 1 << 4;   ///< Generate message facets
         static const uint32_t     codepage_facet  = 1 << 5;   ///< Generate character set conversion facets (derived from std::codecvt)
         static const uint32_t     boundary_facet  = 1 << 6;   ///< Generate boundary analysis facet
-
+            
         static const uint32_t     per_character_facet_first = convert_facet; ///< First facet specific for character
         static const uint32_t     per_character_facet_last = boundary_facet; ///< Last facet specific for character
 
         static const uint32_t     calendar_facet  = 1 << 16;   ///< Generate boundary analysis facet
         static const uint32_t     information_facet = 1 << 17;   ///< Generate general locale information facet
 
-        static const uint32_t    non_character_facet_first = calendar_facet; ///< First character independent facet
-        static const uint32_t    non_character_facet_last = information_facet;///< Last character independent facet
+        static const uint32_t    non_character_facet_first = calendar_facet; ///< First character independent facet 
+        static const uint32_t    non_character_facet_last = information_facet;///< Last character independent facet 
 
-
+            
         static const uint32_t    all_categories  = 0xFFFFFFFFu;   ///< Generate all of them
-
+        
         typedef uint32_t locale_category_type; ///< a type used for more fine grained generation of facets
 
         ///
@@ -75,11 +75,11 @@ namespace boost {
         public:
 
             ///
-            /// Create new generator using global localization_backend_manager
+            /// Create new generator using global localization_backend_manager 
             ///
             generator();
             ///
-            /// Create new generator using specific localization_backend_manager
+            /// Create new generator using specific localization_backend_manager 
             ///
             generator(localization_backend_manager const &);
 
@@ -93,7 +93,7 @@ namespace boost {
             /// Get types of facets that should be generated, default all
             ///
             locale_category_type categories() const;
-
+            
             ///
             /// Set the characters type for which the facets should be generated, default all supported
             ///
@@ -142,13 +142,13 @@ namespace boost {
             ///
             /// - Under the Windows platform the path is treated as a path in the locale's encoding so
             ///   if you create locale "en_US.windows-1251" then path would be treated as cp1255,
-            ///   and if it is en_US.UTF-8 it is treated as UTF-8. File name is always opened with
+            ///   and if it is en_US.UTF-8 it is treated as UTF-8. File name is always opened with 
             ///   a wide file name as wide file names are the native file name on Windows.
             ///
             /// - Under POSIX platforms all paths passed as-is regardless of encoding as narrow
             ///   encodings are the native encodings for POSIX platforms.
-            ///
-            ///
+            ///   
+            /// 
             void add_messages_path(std::string const &path);
 
             ///
@@ -201,7 +201,7 @@ namespace boost {
             {
                 return generate(id);
             }
-
+            
             ///
             /// Set backend specific option
             ///
@@ -214,7 +214,7 @@ namespace boost {
 
         private:
 
-            void set_all_options(std::shared_ptr<localization_backend> backend,std::string const &id) const;
+            void set_all_options(shared_ptr<localization_backend> backend,std::string const &id) const;
 
             generator(generator const &);
             void operator=(generator const &);
@@ -231,5 +231,5 @@ namespace boost {
 
 
 #endif
-// vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4
+// vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 
 

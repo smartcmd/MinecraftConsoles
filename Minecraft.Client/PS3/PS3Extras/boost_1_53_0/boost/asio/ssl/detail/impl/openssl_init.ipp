@@ -37,7 +37,7 @@ public:
   do_init()
   {
     ::SSL_library_init();
-    ::SSL_load_error_strings();
+    ::SSL_load_error_strings();        
     ::OpenSSL_add_all_algorithms();
 
     mutexes_.resize(::CRYPTO_num_locks());
@@ -75,7 +75,7 @@ private:
 #endif // defined(BOOST_WINDOWS) || defined(__CYGWIN__)
   }
 
-  static void openssl_locking_func(int mode, int n,
+  static void openssl_locking_func(int mode, int n, 
     const char* /*file*/, int /*line*/)
   {
     if (mode & CRYPTO_LOCK)
@@ -85,7 +85,7 @@ private:
   }
 
   // Mutexes to be used in locking callbacks.
-  std::vector<boost::asio::detail::std::shared_ptr<
+  std::vector<boost::asio::detail::shared_ptr<
         boost::asio::detail::mutex> > mutexes_;
 
 #if !defined(BOOST_WINDOWS) && !defined(__CYGWIN__)
@@ -94,10 +94,10 @@ private:
 #endif // !defined(BOOST_WINDOWS) && !defined(__CYGWIN__)
 };
 
-boost::asio::detail::std::shared_ptr<openssl_init_base::do_init>
+boost::asio::detail::shared_ptr<openssl_init_base::do_init>
 openssl_init_base::instance()
 {
-  static boost::asio::detail::std::shared_ptr<do_init> init(new do_init);
+  static boost::asio::detail::shared_ptr<do_init> init(new do_init);
   return init;
 }
 

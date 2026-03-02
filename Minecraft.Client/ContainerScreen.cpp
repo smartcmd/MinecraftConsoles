@@ -3,7 +3,7 @@
 #include "Textures.h"
 #include "..\Minecraft.World\net.minecraft.world.inventory.h"
 
-ContainerScreen::ContainerScreen(std::shared_ptr<Container> inventory, std::shared_ptr<Container> container) : AbstractContainerScreen(new ContainerMenu(inventory, container))
+ContainerScreen::ContainerScreen(shared_ptr<Container> inventory, shared_ptr<Container> container) : AbstractContainerScreen(new ContainerMenu(inventory, container))
 {
 	this->inventory = inventory;
 	this->container = container;

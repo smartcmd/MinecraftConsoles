@@ -10,17 +10,17 @@ EnchantedBookItem::EnchantedBookItem(int id) : Item(id)
 {
 }
 
-bool EnchantedBookItem::isFoil(std::shared_ptr<ItemInstance> itemInstance)
+bool EnchantedBookItem::isFoil(shared_ptr<ItemInstance> itemInstance)
 {
 	return true;
 }
 
-bool EnchantedBookItem::isEnchantable(std::shared_ptr<ItemInstance> itemInstance)
+bool EnchantedBookItem::isEnchantable(shared_ptr<ItemInstance> itemInstance)
 {
 	return false;
 }
 
-const Rarity *EnchantedBookItem::getRarity(std::shared_ptr<ItemInstance> itemInstance)
+const Rarity *EnchantedBookItem::getRarity(shared_ptr<ItemInstance> itemInstance)
 {
 	ListTag<CompoundTag> *enchantments = getEnchantments(itemInstance);
 	if (enchantments && enchantments->size() > 0)
@@ -33,7 +33,7 @@ const Rarity *EnchantedBookItem::getRarity(std::shared_ptr<ItemInstance> itemIns
 	}
 }
 
-ListTag<CompoundTag> *EnchantedBookItem::getEnchantments(std::shared_ptr<ItemInstance> item)
+ListTag<CompoundTag> *EnchantedBookItem::getEnchantments(shared_ptr<ItemInstance> item)
 {
 	if (item->tag == NULL || !item->tag->contains((wchar_t *)TAG_STORED_ENCHANTMENTS.c_str()))
 	{
@@ -43,7 +43,7 @@ ListTag<CompoundTag> *EnchantedBookItem::getEnchantments(std::shared_ptr<ItemIns
 	return (ListTag<CompoundTag> *) item->tag->get((wchar_t *)TAG_STORED_ENCHANTMENTS.c_str());
 }
 
-void EnchantedBookItem::appendHoverText(std::shared_ptr<ItemInstance> itemInstance, std::shared_ptr<Player> player, vector<wstring> *lines, bool advanced, vector<wstring> &unformattedStrings)
+void EnchantedBookItem::appendHoverText(shared_ptr<ItemInstance> itemInstance, shared_ptr<Player> player, vector<wstring> *lines, bool advanced, vector<wstring> &unformattedStrings)
 {
 	Item::appendHoverText(itemInstance, player, lines, advanced, unformattedStrings);
 
@@ -66,7 +66,7 @@ void EnchantedBookItem::appendHoverText(std::shared_ptr<ItemInstance> itemInstan
 	}
 }
 
-void EnchantedBookItem::addEnchantment(std::shared_ptr<ItemInstance> item, EnchantmentInstance *enchantment)
+void EnchantedBookItem::addEnchantment(shared_ptr<ItemInstance> item, EnchantmentInstance *enchantment)
 {
 	ListTag<CompoundTag> *enchantments = getEnchantments(item);
 	bool add = true;
@@ -101,14 +101,14 @@ void EnchantedBookItem::addEnchantment(std::shared_ptr<ItemInstance> item, Encha
 	item->getTag()->put((wchar_t *)TAG_STORED_ENCHANTMENTS.c_str(), enchantments);
 }
 
-std::shared_ptr<ItemInstance> EnchantedBookItem::createForEnchantment(EnchantmentInstance *enchant)
+shared_ptr<ItemInstance> EnchantedBookItem::createForEnchantment(EnchantmentInstance *enchant)
 {
-	std::shared_ptr<ItemInstance> item = std::shared_ptr<ItemInstance>(new ItemInstance(this));
+	shared_ptr<ItemInstance> item = shared_ptr<ItemInstance>(new ItemInstance(this));
 	addEnchantment(item, enchant);
 	return item;
 }
 
-void EnchantedBookItem::createForEnchantment(Enchantment *enchant, vector<std::shared_ptr<ItemInstance> > *items)
+void EnchantedBookItem::createForEnchantment(Enchantment *enchant, vector<shared_ptr<ItemInstance> > *items)
 {
 	for (int i = enchant->getMinLevel(); i <= enchant->getMaxLevel(); i++)
 	{
@@ -116,10 +116,10 @@ void EnchantedBookItem::createForEnchantment(Enchantment *enchant, vector<std::s
 	}
 }
 
-std::shared_ptr<ItemInstance> EnchantedBookItem::createForRandomLoot(Random *random)
+shared_ptr<ItemInstance> EnchantedBookItem::createForRandomLoot(Random *random)
 {
 	Enchantment *enchantment = Enchantment::validEnchantments[random->nextInt(Enchantment::validEnchantments.size())];
-	std::shared_ptr<ItemInstance> book = std::shared_ptr<ItemInstance>(new ItemInstance(id, 1, 0));
+	shared_ptr<ItemInstance> book = shared_ptr<ItemInstance>(new ItemInstance(id, 1, 0));
 	int level = Mth::nextInt(random, enchantment->getMinLevel(), enchantment->getMaxLevel());
 
 	addEnchantment(book, new EnchantmentInstance(enchantment, level));
@@ -135,7 +135,7 @@ WeighedTreasure *EnchantedBookItem::createForRandomTreasure(Random *random)
 WeighedTreasure *EnchantedBookItem::createForRandomTreasure(Random *random, int minCount, int maxCount, int weight)
 {
 	Enchantment *enchantment = Enchantment::validEnchantments[random->nextInt(Enchantment::validEnchantments.size())];
-	std::shared_ptr<ItemInstance> book = std::shared_ptr<ItemInstance>(new ItemInstance(id, 1, 0));
+	shared_ptr<ItemInstance> book = shared_ptr<ItemInstance>(new ItemInstance(id, 1, 0));
 	int level = Mth::nextInt(random, enchantment->getMinLevel(), enchantment->getMaxLevel());
 
 	addEnchantment(book, new EnchantmentInstance(enchantment, level));

@@ -30,12 +30,12 @@ protected:
 
 public:
 
-	std::shared_ptr<ItemInstance> getItem();
-	void setItem(std::shared_ptr<ItemInstance> item);
+	shared_ptr<ItemInstance> getItem();
+	void setItem(shared_ptr<ItemInstance> item);
 	int getRotation();
 	void setRotation(int rotation);
 
 	virtual void addAdditonalSaveData(CompoundTag *tag);
 	virtual void readAdditionalSaveData(CompoundTag *tag);
-	virtual bool interact(std::shared_ptr<Player> player);
+	virtual bool interact(shared_ptr<Player> player);
 };

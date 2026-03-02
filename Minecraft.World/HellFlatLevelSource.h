@@ -26,7 +26,7 @@ private:
 	Level *level;
 
 public:
-    HellFlatLevelSource(Level *level, int64_t seed);
+    HellFlatLevelSource(Level *level, __int64 seed);
 	~HellFlatLevelSource();
 
 private:

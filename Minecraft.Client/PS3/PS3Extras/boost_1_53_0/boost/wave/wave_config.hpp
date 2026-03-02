@@ -2,7 +2,7 @@
     Boost.Wave: A Standard compliant C++ preprocessor library
 
     Global application configuration
-
+    
     http://www.boost.org/
 
     Copyright (c) 2001-2012 Hartmut Kaiser. Distributed under the Boost
@@ -20,10 +20,10 @@
 #include <boost/wave/wave_version.hpp>
 
 ///////////////////////////////////////////////////////////////////////////////
-//  Define the maximal include nesting depth allowed. If this value isn't
+//  Define the maximal include nesting depth allowed. If this value isn't 
 //  defined it defaults to 1024
 //
-//  To define a new initial include nesting define the following constant
+//  To define a new initial include nesting define the following constant 
 //  before including this file.
 //
 #if !defined(BOOST_WAVE_MAX_INCLUDE_LEVEL_DEPTH)
@@ -33,7 +33,7 @@
 ///////////////////////////////////////////////////////////////////////////////
 //  Decide, whether to support variadics and placemarkers
 //
-//  To implement support variadics and placemarkers define the following to
+//  To implement support variadics and placemarkers define the following to 
 //  something not equal to zero.
 //
 #if !defined(BOOST_WAVE_SUPPORT_VARIADICS_PLACEMARKERS)
@@ -41,10 +41,10 @@
 #endif
 
 ///////////////////////////////////////////////////////////////////////////////
-//  Decide, whether to implement a #warning directive as an extension to the
+//  Decide, whether to implement a #warning directive as an extension to the 
 //  C++ Standard (same as #error, but emits a warning, not an error)
 //
-//  To disable the implementation of #warning directives, define the following
+//  To disable the implementation of #warning directives, define the following 
 //  constant as zero before including this file.
 //
 #if !defined(BOOST_WAVE_SUPPORT_WARNING_DIRECTIVE)
@@ -52,9 +52,9 @@
 #endif
 
 ///////////////////////////////////////////////////////////////////////////////
-//  Decide, whether to implement #pragma once
+//  Decide, whether to implement #pragma once 
 //
-//  To disable the implementation of #pragma once, define the following
+//  To disable the implementation of #pragma once, define the following 
 //  constant as zero before including this file.
 //
 #if !defined(BOOST_WAVE_SUPPORT_PRAGMA_ONCE)
@@ -62,9 +62,9 @@
 #endif
 
 ///////////////////////////////////////////////////////////////////////////////
-//  Decide, whether to implement #pragma message("")
+//  Decide, whether to implement #pragma message("") 
 //
-//  To disable the implementation of #pragma message(""), define the following
+//  To disable the implementation of #pragma message(""), define the following 
 //  constant as zero before including this file.
 //
 #if !defined(BOOST_WAVE_SUPPORT_PRAGMA_MESSAGE)
@@ -75,7 +75,7 @@
 //  Decide, whether to implement #include_next
 //  Please note, that this is an extension to the C++ Standard.
 //
-//  To disable the implementation of #include_next, define the following
+//  To disable the implementation of #include_next, define the following 
 //  constant as zero before including this file.
 //
 #if !defined(BOOST_WAVE_SUPPORT_INCLUDE_NEXT)
@@ -85,7 +85,7 @@
 ///////////////////////////////////////////////////////////////////////////////
 //  Decide, whether to support C++11
 //
-//  To implement C++11 keywords and preprocessor semantics define the following
+//  To implement C++11 keywords and preprocessor semantics define the following 
 //  to something not equal to zero.
 //
 #if !defined(BOOST_WAVE_SUPPORT_CPP0X)
@@ -96,11 +96,11 @@
 
 ///////////////////////////////////////////////////////////////////////////////
 //  Undefine the following, to enable some MS specific language extensions:
-//  __int8, __int16, __int32, int64_t, __based, __declspec, __cdecl,
+//  __int8, __int16, __int32, __int64, __based, __declspec, __cdecl, 
 //  __fastcall, __stdcall, __try, __except, __finally, __leave, __inline,
 //  __asm, #region, #endregion
 //
-//  Note: By default this is enabled for Windows based systems, otherwise it's
+//  Note: By default this is enabled for Windows based systems, otherwise it's 
 //        disabled.
 #if !defined(BOOST_WAVE_SUPPORT_MS_EXTENSIONS)
 #if defined(BOOST_WINDOWS)
@@ -111,10 +111,10 @@
 #endif
 
 ///////////////////////////////////////////////////////////////////////////////
-//  Allow the message body of the #error and #warning directives to be
+//  Allow the message body of the #error and #warning directives to be 
 //  preprocessed before the diagnostic is issued.
 //
-//  To disable preprocessing of the body of #error and #warning directives,
+//  To disable preprocessing of the body of #error and #warning directives, 
 //  define the following constant as zero before including this file.
 //
 #if !defined(BOOST_WAVE_PREPROCESS_ERROR_MESSAGE_BODY)
@@ -122,10 +122,10 @@
 #endif
 
 ///////////////////////////////////////////////////////////////////////////////
-//  Allow the #pragma directives to be returned to the caller (optionally after
-//  preprocessing the body)
+//  Allow the #pragma directives to be returned to the caller (optionally after 
+//  preprocessing the body) 
 //
-//  To disable the library to emit unknown #pragma directives, define the
+//  To disable the library to emit unknown #pragma directives, define the 
 //  following constant as zero before including this file.
 //
 #if !defined(BOOST_WAVE_EMIT_PRAGMA_DIRECTIVES)
@@ -133,10 +133,10 @@
 #endif
 
 ///////////////////////////////////////////////////////////////////////////////
-//  Allow the body of a #pragma directive to be preprocessed before the
+//  Allow the body of a #pragma directive to be preprocessed before the 
 //  directive is returned to the caller.
 //
-//  To disable the preprocessing of the body of #pragma directives, define the
+//  To disable the preprocessing of the body of #pragma directives, define the 
 //  following constant as zero before including this file.
 //
 #if !defined(BOOST_WAVE_PREPROCESS_PRAGMA_BODY)
@@ -146,7 +146,7 @@
 ///////////////////////////////////////////////////////////////////////////////
 //  Allow to define macros with the command line syntax (-DMACRO(x)=definition)
 //
-//  To disable the possibility to define macros based on the command line
+//  To disable the possibility to define macros based on the command line 
 //  syntax, define the following constant as zero before including this file.
 //
 #if !defined(BOOST_WAVE_ENABLE_COMMANDLINE_MACROS)
@@ -155,27 +155,27 @@
 
 ///////////////////////////////////////////////////////////////////////////////
 //  Define the pragma keyword to be used by the library to recognize its own
-//  pragma's. If nothing else is defined, then 'wave' will be used as the
-//  default keyword, i.e. the library recognizes all
+//  pragma's. If nothing else is defined, then 'wave' will be used as the 
+//  default keyword, i.e. the library recognizes all 
 //
 //      #pragma wave option [(argument)]
 //
-//  and dispatches the handling to the interpret_pragma() preprocessing hook
+//  and dispatches the handling to the interpret_pragma() preprocessing hook 
 //  function (see file: preprocessing_hooks.hpp). The arguments part of the
 //  pragma is optional.
 //  The BOOST_WAVE_PRAGMA_KEYWORD constant needs to be defined to
 //  resolve as a string literal value.
 #if !defined(BOOST_WAVE_PRAGMA_KEYWORD)
 #define BOOST_WAVE_PRAGMA_KEYWORD "wave"
-#endif
+#endif 
 
 ///////////////////////////////////////////////////////////////////////////////
-//  Configure Wave thread support, Boost.Spirit and Boost.Pool are configured
+//  Configure Wave thread support, Boost.Spirit and Boost.Pool are configured 
 //  based on these settings automatically
 //
-//  If BOOST_WAVE_SUPPORT_THREADING is not defined, Wave will use the global
+//  If BOOST_WAVE_SUPPORT_THREADING is not defined, Wave will use the global 
 //  Boost build settings (BOOST_HAS_THREADS), if it is defined its value
-//  defines, whether threading will be enabled or not (should be set to '0'
+//  defines, whether threading will be enabled or not (should be set to '0' 
 //  or '1').
 #if !defined(BOOST_WAVE_SUPPORT_THREADING)
 #if defined(BOOST_HAS_THREADS)
@@ -185,7 +185,7 @@
 #endif
 #endif
 
-#if BOOST_WAVE_SUPPORT_THREADING != 0
+#if BOOST_WAVE_SUPPORT_THREADING != 0 
 #define BOOST_SPIRIT_THREADSAFE 1
 #define PHOENIX_THREADSAFE 1
 #else
@@ -194,18 +194,18 @@
 #endif
 
 ///////////////////////////////////////////////////////////////////////////////
-//  Define the string type to be used to store the token values and the file
+//  Define the string type to be used to store the token values and the file 
 //  names inside a file_position template class
 //
 #if !defined(BOOST_WAVE_STRINGTYPE)
 
-// VC7 isn't able to compile the flex_string class, fall back to std::string
+// VC7 isn't able to compile the flex_string class, fall back to std::string 
 // CW up to 8.3 chokes as well *sigh*
 // Tru64/CXX has linker problems when using flex_string
 #if BOOST_WORKAROUND(BOOST_MSVC, <= 1300) || \
     BOOST_WORKAROUND(__MWERKS__, < 0x3200) || \
     (defined(__DECCXX) && defined(__alpha)) || \
-    defined(BOOST_WAVE_STRINGTYPE_USE_STDSTRING)
+    defined(BOOST_WAVE_STRINGTYPE_USE_STDSTRING) 
 
 #define BOOST_WAVE_STRINGTYPE std::string
 
@@ -223,8 +223,8 @@
         >                                                                     \
     >                                                                         \
     /**/
-
-//  This include is needed for the flex_string class used in the
+    
+//  This include is needed for the flex_string class used in the 
 //  BOOST_WAVE_STRINGTYPE above.
 #include <boost/wave/util/flex_string.hpp>
 
@@ -237,13 +237,13 @@
 // #define BOOST_SPIRIT_USE_LIST_FOR_TREES
 
 ///////////////////////////////////////////////////////////////////////////////
-//  The following definition forces the Spirit tree code to use boost pool
+//  The following definition forces the Spirit tree code to use boost pool 
 //  allocators instead of the std::allocator for the vector/list's.
 // #define BOOST_SPIRIT_USE_BOOST_ALLOCATOR_FOR_TREES
 
 ///////////////////////////////////////////////////////////////////////////////
-//  Uncomment the following, if you need debug output, the
-//  BOOST_SPIRIT_DEBUG_FLAGS_CPP constants below help to fine control the
+//  Uncomment the following, if you need debug output, the 
+//  BOOST_SPIRIT_DEBUG_FLAGS_CPP constants below help to fine control the 
 //  amount of the generated debug output.
 //#define BOOST_SPIRIT_DEBUG
 
@@ -262,16 +262,16 @@
 
 #if !defined(BOOST_SPIRIT_DEBUG_FLAGS_CPP)
 #define BOOST_SPIRIT_DEBUG_FLAGS_CPP    0    // default is no debugging
-#endif
+#endif 
 
 ///////////////////////////////////////////////////////////////////////////////
 //
-//  For all recognized preprocessor statements the output parse trees
-//  formatted as xml are printed. The formatted parse trees are streamed to the
+//  For all recognized preprocessor statements the output parse trees 
+//  formatted as xml are printed. The formatted parse trees are streamed to the 
 //  std::ostream defined by the WAVE_DUMP_PARSE_TREE_OUT constant.
 //
-//  To enable the output of these parse trees, define the following constant
-//  as zero something not equal to zero before including this file.
+//  To enable the output of these parse trees, define the following constant 
+//  as zero something not equal to zero before including this file. 
 //
 #if !defined(BOOST_WAVE_DUMP_PARSE_TREE)
 #define BOOST_WAVE_DUMP_PARSE_TREE 0
@@ -283,10 +283,10 @@
 ///////////////////////////////////////////////////////////////////////////////
 //
 //  For all #if and #elif directives the preprocessed expressions are printed.
-//  These expressions are streamed to the std::ostream defined by the
+//  These expressions are streamed to the std::ostream defined by the 
 //  BOOST_WAVE_DUMP_CONDITIONAL_EXPRESSIONS_OUT constant.
 //
-//  To enable the output of the preprocessed expressions, define the following
+//  To enable the output of the preprocessed expressions, define the following 
 //  constant as something not equal to zero before including this file.
 //
 #if !defined(BOOST_WAVE_DUMP_CONDITIONAL_EXPRESSIONS)
@@ -298,14 +298,14 @@
 #endif
 
 ///////////////////////////////////////////////////////////////////////////////
-//  Decide, whether to use the separate compilation model for the instantiation
+//  Decide, whether to use the separate compilation model for the instantiation 
 //  of the C++ lexer objects.
 //
 //  If this is defined, you should explicitly instantiate the C++ lexer
 //  template with the correct parameters in a separate compilation unit of
-//  your program (see the file instantiate_re2c_lexer.cpp).
+//  your program (see the file instantiate_re2c_lexer.cpp). 
 //
-//  To use the lexer inclusion model, define the following constant as
+//  To use the lexer inclusion model, define the following constant as 
 //  something not equal to zero before including this file.
 //
 #if !defined(BOOST_WAVE_SEPARATE_LEXER_INSTANTIATION)
@@ -313,14 +313,14 @@
 #endif
 
 ///////////////////////////////////////////////////////////////////////////////
-//  Decide, whether to use the separate compilation model for the instantiation
+//  Decide, whether to use the separate compilation model for the instantiation 
 //  of the grammar objects.
 //
 //  If this is defined, you should explicitly instantiate the grammar
 //  templates with the correct parameters in a separate compilation unit of
-//  your program (see the files instantiate_cpp_grammar.cpp et.al.).
+//  your program (see the files instantiate_cpp_grammar.cpp et.al.). 
 //
-//  To use the grammar inclusion model, define the following constant as
+//  To use the grammar inclusion model, define the following constant as 
 //  something not equal to zero before including this file.
 //
 #if !defined(BOOST_WAVE_SEPARATE_GRAMMAR_INSTANTIATION)
@@ -329,9 +329,9 @@
 
 ///////////////////////////////////////////////////////////////////////////////
 //  Decide whether to use a strict C++ lexer.
-//
-//  If this is defined to something != 0, then the C++ lexers recognize the
-//  strict C99/C++ basic source character set. If it is not defined or defined
+//  
+//  If this is defined to something != 0, then the C++ lexers recognize the 
+//  strict C99/C++ basic source character set. If it is not defined or defined 
 //  to zero, the C++ lexers recognize the '$' character as part of identifiers.
 //
 //  The default is to recognize the '$' character as part of identifiers.
@@ -341,14 +341,14 @@
 #endif
 
 ///////////////////////////////////////////////////////////////////////////////
-//  Decide, whether the serialization of the wave::context class should be
+//  Decide, whether the serialization of the wave::context class should be 
 //  supported
 //
 //  If this is defined to something not equal to zero the generated code will
-//  expose routines allowing to store and reload the internal state of the
+//  expose routines allowing to store and reload the internal state of the 
 //  wave::context object.
 //
-//  To enable the availability of the serialization functionality, define the
+//  To enable the availability of the serialization functionality, define the 
 //  following constant as something not equal to zero before including this file.
 //
 #if !defined(BOOST_WAVE_SERIALIZATION)
@@ -368,19 +368,19 @@
 ///////////////////////////////////////////////////////////////////////////////
 //  Decide, whether to support long long integers in the preprocessor.
 //
-//  The C++ standard requires the preprocessor to use one of the following
-//  types for integer literals: long or unsigned long depending on an optional
+//  The C++ standard requires the preprocessor to use one of the following 
+//  types for integer literals: long or unsigned long depending on an optional 
 //  suffix ('u', 'l', 'ul', or 'lu')
 //
 //  Sometimes it's required to preprocess integer literals bigger than that
-//  (i.e. long long or unsigned long long). In this case you need to define the
+//  (i.e. long long or unsigned long long). In this case you need to define the 
 //  BOOST_WAVE_SUPPORT_LONGLONG_INTEGER_LITERALS to something not equal to zero.
 //
-//  This pp constant is effective only, if your target platform supports
+//  This pp constant is effective only, if your target platform supports 
 //  long long integers (BOOST_HAS_LONG_LONG is defined).
 //
 //  Please note, that this setting doesn't relate to the Wave support option
-//  support_option_long_long, which enables the recognition of 'll' suffixes
+//  support_option_long_long, which enables the recognition of 'll' suffixes 
 //  only.
 //
 //  Defining this pp constant enables the recognition of long long integers
@@ -390,7 +390,7 @@
 #define BOOST_WAVE_SUPPORT_LONGLONG_INTEGER_LITERALS 0
 #endif
 
-namespace boost { namespace wave
+namespace boost { namespace wave 
 {
 #if defined(BOOST_HAS_LONG_LONG) && \
     BOOST_WAVE_SUPPORT_LONGLONG_INTEGER_LITERALS != 0
@@ -404,7 +404,7 @@ namespace boost { namespace wave
 
 ///////////////////////////////////////////////////////////////////////////////
 //  On some platforms Wave will not be able to properly detect whether wchar_t
-//  is representing a signed or unsigned integral data type. Use the
+//  is representing a signed or unsigned integral data type. Use the 
 //  configuration constants below to force wchar_t being signed or unsigned, as
 //  appropriate.
 //
@@ -424,7 +424,7 @@ namespace boost { namespace wave
 #define PHOENIX_LIMIT 6
 #endif
 #if PHOENIX_LIMIT < 6
-// boost/home/classic/spirit/classic_attribute.hpp sets PHOENIX_LIMIT to 3!
+// boost/home/classic/spirit/classic_attribute.hpp sets PHOENIX_LIMIT to 3! 
 #error "Boost.Wave: the constant PHOENIX_LIMIT must be at least defined to 6" \
 " to compile the library."
 #endif
@@ -433,12 +433,12 @@ namespace boost { namespace wave
 //  Set up dll import/export options
 #if (defined(BOOST_WAVE_DYN_LINK) || defined(BOOST_ALL_DYN_LINK)) && \
     !defined(BOOST_WAVE_STATIC_LINK)
-
+    
 #if defined(BOOST_WAVE_SOURCE)
-#define BOOST_WAVE_DECL BOOST_SYMBOL_EXPORT
+#define BOOST_WAVE_DECL BOOST_SYMBOL_EXPORT 
 #define BOOST_WAVE_BUILD_DLL
 #else
-#define BOOST_WAVE_DECL BOOST_SYMBOL_IMPORT
+#define BOOST_WAVE_DECL BOOST_SYMBOL_IMPORT 
 #endif
 
 #endif // building a shared library
@@ -449,7 +449,7 @@ namespace boost { namespace wave
 
 ///////////////////////////////////////////////////////////////////////////////
 //  Auto library naming
-#if BOOST_VERSION >= 103100
+#if BOOST_VERSION >= 103100   
 // auto link features work beginning from Boost V1.31.0
 #if !defined(BOOST_WAVE_SOURCE) && !defined(BOOST_ALL_NO_LIB) && \
     !defined(BOOST_WAVE_NO_LIB)
@@ -467,15 +467,15 @@ namespace boost { namespace wave
 #endif  // BOOST_VERSION
 
 ///////////////////////////////////////////////////////////////////////////////
-//  Compatibility macros
+//  Compatibility macros 
 //  (ensure interface compatibility to older Wave versions)
 ///////////////////////////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////////////////////////
 //  The preprocessing hook signatures changed after the Boost V1.34.0 release
 //
-//  To use the preprocessing hook signatures as released with Boost V1.34.0
-//  you need to define the BOOST_WAVE_USE_DEPRECIATED_PREPROCESSING_HOOKS
+//  To use the preprocessing hook signatures as released with Boost V1.34.0 
+//  you need to define the BOOST_WAVE_USE_DEPRECIATED_PREPROCESSING_HOOKS 
 //  constant to something not equal zero.
 //
 //  To force using the new interface define this constant to zero.

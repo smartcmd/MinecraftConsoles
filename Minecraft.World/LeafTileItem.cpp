@@ -18,11 +18,11 @@ int LeafTileItem::getLevelDataForAuxValue(int auxValue)
 
 Icon *LeafTileItem::getIcon(int itemAuxValue)
 {
-	return Tile::leaves->getTexture(0, itemAuxValue);
+	return Tile::leaves->getTexture(0, itemAuxValue);	
 }
 
 
-int LeafTileItem::getColor(std::shared_ptr<ItemInstance> item, int spriteLayer)
+int LeafTileItem::getColor(shared_ptr<ItemInstance> item, int spriteLayer)
 {
 	int data = item->getAuxValue();
     if ((data & LeafTile::EVERGREEN_LEAF) == LeafTile::EVERGREEN_LEAF)
@@ -36,7 +36,7 @@ int LeafTileItem::getColor(std::shared_ptr<ItemInstance> item, int spriteLayer)
     return FoliageColor::getDefaultColor();
 }
 
-unsigned int LeafTileItem::getDescriptionId(std::shared_ptr<ItemInstance> instance)
+unsigned int LeafTileItem::getDescriptionId(shared_ptr<ItemInstance> instance)
 {
 	int auxValue = instance->getAuxValue();
 	if (auxValue < 0 || auxValue >= LeafTile::LEAF_NAMES_LENGTH)

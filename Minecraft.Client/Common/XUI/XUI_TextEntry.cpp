@@ -53,7 +53,7 @@ HRESULT CScene_TextEntry::OnNotifyValueChanged (HXUIOBJ hObjSource, XUINotifyVal
 	if(pValueChangedData->nValue==10)
 	{
 		LPCWSTR pText = m_EditText.GetText();
-
+		
 		if(pText)
 		{
 			wstring wText = pText;
@@ -61,7 +61,7 @@ HRESULT CScene_TextEntry::OnNotifyValueChanged (HXUIOBJ hObjSource, XUINotifyVal
 		}
 
 		app.NavigateBack(m_iPad);
-		rfHandled = TRUE;
+		rfHandled = TRUE;		
 	}
 
 	return S_OK;
@@ -86,7 +86,7 @@ HRESULT CScene_TextEntry::OnKeyDown(XUIMessageInput* pInputData, BOOL& rfHandled
 
 			app.NavigateBack(m_iPad);
 			rfHandled = TRUE;
-		}
+		}		
 		break;
 
 	case VK_PAD_B:
@@ -125,7 +125,7 @@ HRESULT CScene_TextEntry::InterpretString(wstring &wsText)
 		case eCommand_Teleport:
 			{
 				int x,z;
-
+				
 #ifdef __PS3__
 				// 4J Stu - The Xbox version uses swscanf_s which isn't available in GCC.
 				swscanf(wsText.c_str(), L"%40s%c%d%c%d", wchCommand,wchSep,&x,wchSep,&z);
@@ -146,9 +146,9 @@ HRESULT CScene_TextEntry::InterpretString(wstring &wsText)
 			}
 			break;
 		case eCommand_Give:
-			{
+			{		
 				int iItem,iCount;
-
+				
 #ifdef __PS3__
 				// 4J Stu - The Xbox version uses swscanf_s which isn't available in GCC.
 				swscanf(wsText.c_str(), L"%40s%c%d%c%d", wchCommand,wchSep,&iItem,wchSep,&iCount);
@@ -158,7 +158,7 @@ HRESULT CScene_TextEntry::InterpretString(wstring &wsText)
 				app.DebugPrintf("eCommand_Give, item=%d count=%d\n",iItem,iCount);
 				Minecraft *pMinecraft=Minecraft::GetInstance();
 				for(int i=0;i<iCount;i++)
-				pMinecraft->localplayers[m_iPad]->drop(); // std::shared_ptr<ItemInstance>(new ItemInstance( iItem, 1, 0 )) );
+				pMinecraft->localplayers[m_iPad]->drop(); // shared_ptr<ItemInstance>(new ItemInstance( iItem, 1, 0 )) );
 			}
 
 			break;

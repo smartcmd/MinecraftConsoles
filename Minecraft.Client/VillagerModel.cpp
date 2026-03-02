@@ -55,7 +55,7 @@ VillagerModel::VillagerModel(float g, float yOffset) : Model()
 	_init(g,yOffset);
 }
 
-void VillagerModel::render(std::shared_ptr<Entity> entity, float time, float r, float bob, float yRot, float xRot, float scale, bool usecompiled)
+void VillagerModel::render(shared_ptr<Entity> entity, float time, float r, float bob, float yRot, float xRot, float scale, bool usecompiled) 
 {
     setupAnim(time, r, bob, yRot, xRot, scale);
 
@@ -70,11 +70,11 @@ void VillagerModel::setupAnim(float time, float r, float bob, float yRot, float 
 {
 	head->yRot = yRot / (float) (180 / PI);
 	head->xRot = xRot / (float) (180 / PI);
-
+		
     arms->y = 3;
     arms->z = -1;
     arms->xRot = -0.75f;
-
+		
     leg0->xRot = ((float) Mth::cos(time * 0.6662f) * 1.4f) * r * 0.5f;
     leg1->xRot = ((float) Mth::cos(time * 0.6662f + PI) * 1.4f) * r * 0.5f;
     leg0->yRot = 0;

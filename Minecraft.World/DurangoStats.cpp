@@ -54,9 +54,9 @@ bool DsItemEvent::onLeaderboard(ELeaderboardId leaderboard, eAcquisitionMethod m
 	case eAcquisitionMethod_Mined:
 		switch (param->itemId)
 		{
-		case Tile::dirt_Id:
+		case Tile::dirt_Id:	
 		case Tile::stoneBrick_Id:
-		case Tile::sand_Id:
+		case Tile::sand_Id:	
 		case Tile::rock_Id:
 		case Tile::gravel_Id:
 		case Tile::clay_Id:
@@ -102,7 +102,7 @@ int DsItemEvent::mergeIds(int itemId)
 	}
 }
 
-void DsItemEvent::handleParamBlob(std::shared_ptr<LocalPlayer> player, byteArray paramBlob)
+void DsItemEvent::handleParamBlob(shared_ptr<LocalPlayer> player, byteArray paramBlob)
 {
 	if (paramBlob.length == sizeof(Param))
 	{
@@ -170,7 +170,7 @@ void DsItemEvent::handleParamBlob(std::shared_ptr<LocalPlayer> player, byteArray
 		else
 		{
 			EventWriteMcItemAcquired(
-				DurangoStats::getUserId(player),
+				DurangoStats::getUserId(player), 
 				0, // TODO
 				DurangoStats::getPlayerSession(),
 				0,
@@ -205,7 +205,7 @@ byteArray DsItemEvent::createParamBlob(eAcquisitionMethod eMethod, int itemId, i
 
 DsMobKilled::DsMobKilled(int id, const wstring &name) : Stat(id,name) {}
 
-void DsMobKilled::handleParamBlob(std::shared_ptr<LocalPlayer> player, byteArray paramBlob)
+void DsMobKilled::handleParamBlob(shared_ptr<LocalPlayer> player, byteArray paramBlob)
 {
 	if (paramBlob.length == sizeof(Param))
 	{
@@ -222,7 +222,7 @@ void DsMobKilled::handleParamBlob(std::shared_ptr<LocalPlayer> player, byteArray
 							DurangoStats::getPlayerSession(), // ROUND ID
 							0,
 							param->weaponId,
-							param->mobType,
+							param->mobType, 
 							param->isRanged?1:0,
 							0, 0, 0, // (x,y,z),
 							0,
@@ -231,7 +231,7 @@ void DsMobKilled::handleParamBlob(std::shared_ptr<LocalPlayer> player, byteArray
 			== 0)
 		{
 			app.DebugPrintf("<%ls>\t%s(%i:%i:%i:%i)\n", DurangoStats::getUserId(player),
-				(param->isRanged?"mobShotWithEntity":"mobKilledInMelee"),
+				(param->isRanged?"mobShotWithEntity":"mobKilledInMelee"), 
 				param->mobType, param->weaponId, param->distance, param->damage);
 		}
 
@@ -262,7 +262,7 @@ void DsMobKilled::handleParamBlob(std::shared_ptr<LocalPlayer> player, byteArray
 	}
 }
 
-byteArray DsMobKilled::createParamBlob(std::shared_ptr<Player> player, std::shared_ptr<Mob> mob, DamageSource *dmgSrc)
+byteArray DsMobKilled::createParamBlob(shared_ptr<Player> player, shared_ptr<Mob> mob, DamageSource *dmgSrc)
 {
 	// 4J-JEV: Get the id we use for Durango Server Stats.
 	int mob_networking_id;
@@ -286,25 +286,25 @@ byteArray DsMobKilled::createParamBlob(std::shared_ptr<Player> player, std::shar
 	{
 		byteArray output;
 		Param param = {
-			DsMobKilled::RANGED,
+			DsMobKilled::RANGED, 
 			mob_networking_id,
 			EntityIO::eTypeToIoid(dmgSrc->getDirectEntity()->GetType()),
-			mob->distanceTo(player->x, player->y, player->z),
+			mob->distanceTo(player->x, player->y, player->z), 
 			0/*not needed*/
 		};
 		output.data = (byte*) new Param(param);
 		output.length = sizeof(Param);
 		return output;
 	}
-
+	
 	// Kill made in melee, use itemInHand as weapon.
-	std::shared_ptr<ItemInstance> item = player->getCarriedItem();
+	shared_ptr<ItemInstance> item = player->getCarriedItem();
 	byteArray output;
 	Param param = {
-		DsMobKilled::MELEE,
-		mob_networking_id,
+		DsMobKilled::MELEE, 
+		mob_networking_id, 
 		(item != NULL ? item->getItem()->id : 0),
-		mob->distanceTo(player->x, player->y, player->z),
+		mob->distanceTo(player->x, player->y, player->z), 
 		0/*not needed*/
 	};
 	output.data = (byte*) new Param(param);
@@ -323,7 +323,7 @@ string DsMobInteract::nameInteract[] = {
 
 DsMobInteract::DsMobInteract(int id, const wstring &name) : Stat(id,name) {}
 
-void DsMobInteract::handleParamBlob(std::shared_ptr<LocalPlayer> player, byteArray paramBlob)
+void DsMobInteract::handleParamBlob(shared_ptr<LocalPlayer> player, byteArray paramBlob)
 {
 	if (paramBlob.length == sizeof(Param))
 	{
@@ -336,8 +336,8 @@ void DsMobInteract::handleParamBlob(std::shared_ptr<LocalPlayer> player, byteArr
 
 		EventWriteMobInteract(
 			DurangoStats::getUserId(player),
-			DurangoStats::getPlayerSession(),
-			param->mobId,
+			DurangoStats::getPlayerSession(), 
+			param->mobId, 
 			param->interactionType );
 	}
 }
@@ -368,7 +368,7 @@ unsigned int DsTravel::CACHE_SIZES[eMethod_MAX] =
 		0,			//  FALL - Meters? - Fall event naturally only sends on land, no caching necessary.
 		10,			// CLIMB - Meters?
 		70,			//  CART - Meters?
-		70,			//  BOAT - Meters?
+		70,			//  BOAT - Meters?	
 		10,			//   PIG - Meters?
 		20*60*5,	//  TIME - GameTicks (20*60*5 ~ 5 mins)
 	};
@@ -378,7 +378,7 @@ DsTravel::DsTravel(int id, const wstring &name) : Stat(id,name)
 	ZeroMemory(&param_cache, sizeof(unsigned int)*eMethod_MAX*MAX_LOCAL_PLAYERS);
 }
 
-void DsTravel::handleParamBlob(std::shared_ptr<LocalPlayer> player, byteArray paramBlob)
+void DsTravel::handleParamBlob(shared_ptr<LocalPlayer> player, byteArray paramBlob)
 {
 	if (paramBlob.length == sizeof(Param))
 	{
@@ -416,7 +416,7 @@ int DsTravel::cache(int iPad, Param &param)
 	return 0;
 }
 
-void DsTravel::flush(std::shared_ptr<LocalPlayer> player)
+void DsTravel::flush(shared_ptr<LocalPlayer> player)
 {
 	int iPad = player->GetXboxPad();
 	for (int i = 0; i < eMethod_MAX; i++)
@@ -429,7 +429,7 @@ void DsTravel::flush(std::shared_ptr<LocalPlayer> player)
 	}
 }
 
-void DsTravel::write(std::shared_ptr<LocalPlayer> player, eMethod method, int distance)
+void DsTravel::write(shared_ptr<LocalPlayer> player, eMethod method, int distance)
 {
 	if (player == nullptr) return;
 
@@ -477,7 +477,7 @@ void DsTravel::write(std::shared_ptr<LocalPlayer> player, eMethod method, int di
 
 DsItemUsed::DsItemUsed(int id, const wstring &name) : Stat(id,name) {}
 
-void DsItemUsed::handleParamBlob(std::shared_ptr<LocalPlayer> player, byteArray paramBlob)
+void DsItemUsed::handleParamBlob(shared_ptr<LocalPlayer> player, byteArray paramBlob)
 {
 	if (paramBlob.length == sizeof(Param))
 	{
@@ -520,14 +520,14 @@ byteArray DsItemUsed::createParamBlob(int itemId, int aux, int count, int health
 
 DsAchievement::DsAchievement(int id, const wstring &name) : Stat(id,name) {}
 
-void DsAchievement::handleParamBlob(std::shared_ptr<LocalPlayer> player, byteArray paramBlob)
+void DsAchievement::handleParamBlob(shared_ptr<LocalPlayer> player, byteArray paramBlob)
 {
 	if (paramBlob.length == sizeof(SmallParam))
 	{
 		SmallParam *paramS = (SmallParam*) paramBlob.data;
 		assert( DurangoStats::binaryAchievement(paramS->award) );
 		app.DebugPrintf("<%ls>\tAchievement(%i)\n", DurangoStats::getUserId(player), paramS->award);
-
+		
 		bool canAward = true;
 		if(paramS->award == eAward_stayinFrosty)
 		{
@@ -616,12 +616,12 @@ byteArray DsAchievement::createLargeParamBlob(eAward award, int count)
 
 DsChangedDimension::DsChangedDimension(int id, const wstring &name) : Stat(id,name) {}
 
-void DsChangedDimension::handleParamBlob(std::shared_ptr<LocalPlayer> player, byteArray paramBlob)
+void DsChangedDimension::handleParamBlob(shared_ptr<LocalPlayer> player, byteArray paramBlob)
 {
 	if (paramBlob.length == sizeof(Param))
 	{
 		Param *param = (Param*) paramBlob.data;
-		app.DebugPrintf("<%ls>\tchangedDimension(%i:%i)\n", DurangoStats::getUserId(player),
+		app.DebugPrintf("<%ls>\tchangedDimension(%i:%i)\n", DurangoStats::getUserId(player), 
 			param->fromDimId, param->toDimId);
 
 		// No longer used.
@@ -644,7 +644,7 @@ byteArray DsChangedDimension::createParamBlob(int fromDimId, int toDimId)
 
 DsEnteredBiome::DsEnteredBiome(int id, const wstring &name) : Stat(id,name) {}
 
-void DsEnteredBiome::handleParamBlob(std::shared_ptr<LocalPlayer> player, byteArray paramBlob)
+void DsEnteredBiome::handleParamBlob(shared_ptr<LocalPlayer> player, byteArray paramBlob)
 {
 	if (paramBlob.length == sizeof(Param))
 	{
@@ -713,7 +713,7 @@ DurangoStats::~DurangoStats()
 
 Stat *DurangoStats::get_stat(int i)
 {
-	switch (i)
+	switch (i) 
 	{
 	case itemsAcquired_Id:			return (Stat*) itemsAcquired;
 	case itemUsed_Id:				return (Stat*) itemUsed;
@@ -826,7 +826,7 @@ Stat* DurangoStats::get_itemsCrafted(int itemId)
 {
 	switch (itemId)
 	{
-	// 4J-JEV:	These items can be crafted trivially to and from their block equivalents,
+	// 4J-JEV:	These items can be crafted trivially to and from their block equivalents, 
 	//	'Acquire Hardware' also relies on 'Count_Crafted(IronIngot) == Count_Forged(IronIngot)" on the Stats server.
 	case Item::ironIngot_Id:
 	case Item::goldIngot_Id:
@@ -839,7 +839,7 @@ Stat* DurangoStats::get_itemsCrafted(int itemId)
 	default:
 		return (Stat*) itemsAcquired;
 	}
-
+	
 }
 
 Stat* DurangoStats::get_itemsSmelted(int itemId)
@@ -871,7 +871,7 @@ Stat* DurangoStats::get_enteredBiome(int biomeId)
 Stat* DurangoStats::get_achievement(eAward achievementId)
 {
 	// Special case for 'binary' achievements.
-	if ( binaryAchievement(achievementId)
+	if ( binaryAchievement(achievementId) 
 		|| enhancedAchievement(achievementId) )
 	{
 		switch (achievementId)
@@ -888,43 +888,43 @@ Stat* DurangoStats::get_achievement(eAward achievementId)
 	{
 		return get_curedEntity(eTYPE_ZOMBIE);
 	}
-
+	
 	// Other achievements awarded through more detailed generic events.
 	return NULL;
 }
 
 byteArray DurangoStats::getParam_walkOneM(int distance)
-{
+{	
 	return DsTravel::createParamBlob(DsTravel::eMethod_walk, distance);
 }
 
 byteArray DurangoStats::getParam_swimOneM(int distance)
-{
+{	
 	return DsTravel::createParamBlob(DsTravel::eMethod_swim,distance);
 }
 
 byteArray DurangoStats::getParam_fallOneM(int distance)
-{
+{	
 	return DsTravel::createParamBlob(DsTravel::eMethod_fall,distance);
 }
 
 byteArray DurangoStats::getParam_climbOneM(int distance)
-{
+{	
 	return DsTravel::createParamBlob(DsTravel::eMethod_climb,distance);
 }
 
 byteArray DurangoStats::getParam_minecartOneM(int distance)
-{
+{	
 	return DsTravel::createParamBlob(DsTravel::eMethod_minecart,distance);
 }
 
 byteArray DurangoStats::getParam_boatOneM(int distance)
-{
+{	
 	return DsTravel::createParamBlob(DsTravel::eMethod_boat,distance);
 }
 
 byteArray DurangoStats::getParam_pigOneM(int distance)
-{
+{	
 	return DsTravel::createParamBlob(DsTravel::eMethod_pig,distance);
 }
 
@@ -953,10 +953,10 @@ byteArray DurangoStats::getParam_itemsCrafted(int id, int aux, int count)
 	return DsItemEvent::createParamBlob(DsItemEvent::eAcquisitionMethod_Crafted, id, aux, count);
 }
 
-byteArray DurangoStats::getParam_itemsUsed(std::shared_ptr<Player> player, std::shared_ptr<ItemInstance> itm)
+byteArray DurangoStats::getParam_itemsUsed(shared_ptr<Player> player, shared_ptr<ItemInstance> itm)
 {
 	return DsItemUsed::createParamBlob(
-		itm->getItem()->id, itm->getAuxValue(), itm->GetCount(),
+		itm->getItem()->id, itm->getAuxValue(), itm->GetCount(), 
 		player->getHealth(), player->getFoodData()->getFoodLevel()
 		);
 }
@@ -966,7 +966,7 @@ byteArray DurangoStats::getParam_itemsBought(int id, int aux, int count)
 	return DsItemEvent::createParamBlob(DsItemEvent::eAcquisitionMethod_Bought, id, aux, count);
 }
 
-byteArray DurangoStats::getParam_mobKill(std::shared_ptr<Player> player, std::shared_ptr<Mob> mob, DamageSource *dmgSrc)
+byteArray DurangoStats::getParam_mobKill(shared_ptr<Player> player, shared_ptr<Mob> mob, DamageSource *dmgSrc)
 {
 	return DsMobKilled::createParamBlob(player,mob,dmgSrc);
 }
@@ -993,7 +993,7 @@ byteArray DurangoStats::getParam_craftedEntity(eINSTANCEOF entityId)
 
 byteArray DurangoStats::getParam_shearedEntity(eINSTANCEOF entityId)
 {
-	return DsMobInteract::createParamBlob(DsMobInteract::eInteract_Sheared, entityId);
+	return DsMobInteract::createParamBlob(DsMobInteract::eInteract_Sheared, entityId);	
 }
 
 byteArray DurangoStats::getParam_time(int timediff)
@@ -1016,7 +1016,7 @@ byteArray DurangoStats::getParam_achievement(eAward id)
 	if (binaryAchievement(id))
 	{
 		return DsAchievement::createSmallParamBlob(id);
-	}
+	} 
 	else if (enhancedAchievement(id))
 	{
 		assert(false); // Should be calling the appropriate getParam function.
@@ -1071,7 +1071,7 @@ bool DurangoStats::binaryAchievement(eAward achievementId)
 }
 
 /**	4J-JEV,
-		Basically achievements with an inconsequential extra parameter
+		Basically achievements with an inconsequential extra parameter 
 		that I thought best not to / prefered not to / couldn't be bothered to make class handlers for.
 		(Motivation: it would be nice for players to see how close they were/are to achieving these things).
 */
@@ -1114,7 +1114,7 @@ LPCWSTR DurangoStats::getMultiplayerCorrelationId()
 	return ((DurangoStats*)GenericStats::getInstance())->multiplayerCorrelationId->Data();
 }
 
-LPCWSTR DurangoStats::getUserId(std::shared_ptr<LocalPlayer> player)
+LPCWSTR DurangoStats::getUserId(shared_ptr<LocalPlayer> player)
 {
 	return getUserId(player->GetXboxPad());
 }
@@ -1128,12 +1128,12 @@ LPCWSTR DurangoStats::getUserId(int iPad)
 	return cache.c_str();
 }
 
-void DurangoStats::playerSessionStart(PlayerUID uid, std::shared_ptr<Player> plr)
+void DurangoStats::playerSessionStart(PlayerUID uid, shared_ptr<Player> plr)
 {
 	if (plr != NULL && plr->level != NULL && plr->level->getLevelData() != NULL)
 	{
 		//wprintf(uid.toString().c_str());
-
+		
 		//EventWritePlayerSessionStart(
 		app.DebugPrintf(">>>\tPlayerSessionStart(%ls,%s,%ls,%i,%i)\n",
 			uid.toString(),
@@ -1155,7 +1155,7 @@ void DurangoStats::playerSessionStart(PlayerUID uid, std::shared_ptr<Player> plr
 
 void DurangoStats::playerSessionStart(int iPad)
 {
-	PlayerUID puid; std::shared_ptr<Player> plr;
+	PlayerUID puid; shared_ptr<Player> plr;
 	ProfileManager.GetXUID(iPad, &puid, true);
 	plr = Minecraft::GetInstance()->localplayers[iPad];
 	playerSessionStart(puid,plr);
@@ -1163,7 +1163,7 @@ void DurangoStats::playerSessionStart(int iPad)
 
 void DurangoStats::playerSessionPause(int iPad)
 {
-	std::shared_ptr<MultiplayerLocalPlayer> plr = Minecraft::GetInstance()->localplayers[iPad];
+	shared_ptr<MultiplayerLocalPlayer> plr = Minecraft::GetInstance()->localplayers[iPad];
 	if (plr != NULL && plr->level != NULL && plr->level->getLevelData() != NULL)
 	{
 		PlayerUID puid;
@@ -1186,7 +1186,7 @@ void DurangoStats::playerSessionPause(int iPad)
 
 void DurangoStats::playerSessionResume(int iPad)
 {
-	std::shared_ptr<MultiplayerLocalPlayer> plr = Minecraft::GetInstance()->localplayers[iPad];
+	shared_ptr<MultiplayerLocalPlayer> plr = Minecraft::GetInstance()->localplayers[iPad];
 	if (plr != NULL && plr->level != NULL && plr->level->getLevelData() != NULL)
 	{
 		PlayerUID puid;
@@ -1213,7 +1213,7 @@ void DurangoStats::playerSessionResume(int iPad)
 
 void DurangoStats::playerSessionEnd(int iPad)
 {
-	std::shared_ptr<MultiplayerLocalPlayer> plr = Minecraft::GetInstance()->localplayers[iPad];
+	shared_ptr<MultiplayerLocalPlayer> plr = Minecraft::GetInstance()->localplayers[iPad];
 	if (plr != NULL)
 	{
 		DurangoStats::getInstance()->travel->flush(plr);

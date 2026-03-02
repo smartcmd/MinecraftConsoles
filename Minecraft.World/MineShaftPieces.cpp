@@ -440,19 +440,19 @@ bool MineShaftPieces::MineShaftCorridor::postProcess(Level *level, Random *rando
 			{
 				hasPlacedSpider = true;
 				level->setTile(x, y, newZ, Tile::mobSpawner_Id);
-				std::shared_ptr<MobSpawnerTileEntity> entity = dynamic_pointer_cast<MobSpawnerTileEntity>( level->getTileEntity(x, y, newZ) );
+				shared_ptr<MobSpawnerTileEntity> entity = dynamic_pointer_cast<MobSpawnerTileEntity>( level->getTileEntity(x, y, newZ) );
 				if (entity != NULL) entity->setEntityId(L"CaveSpider");
 			}
 		}
 	}
 
 	// prevent air floating
-	for (int x = x0; x <= x1; x++)
+	for (int x = x0; x <= x1; x++) 
 	{
-		for (int z = 0; z <= length; z++)
+		for (int z = 0; z <= length; z++) 
 		{
 			int block = getBlock(level, x, -1, z, chunkBB);
-			if (block == 0)
+			if (block == 0) 
 			{
 				placeBlock(level, Tile::wood_Id, 0, x, -1, z, chunkBB);
 			}
@@ -594,12 +594,12 @@ bool MineShaftPieces::MineShaftCrossing::postProcess(Level *level, Random *rando
 	// prevent air floating
 	// note: use world coordinates because the corridor hasn't defined
 	// orientation
-	for (int x = boundingBox->x0; x <= boundingBox->x1; x++)
+	for (int x = boundingBox->x0; x <= boundingBox->x1; x++) 
 	{
-		for (int z = boundingBox->z0; z <= boundingBox->z1; z++)
+		for (int z = boundingBox->z0; z <= boundingBox->z1; z++) 
 		{
 			int block = getBlock(level, x, boundingBox->y0 - 1, z, chunkBB);
-			if (block == 0)
+			if (block == 0) 
 			{
 				placeBlock(level, Tile::wood_Id, 0, x, boundingBox->y0 - 1, z, chunkBB);
 			}

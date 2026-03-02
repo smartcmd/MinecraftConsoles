@@ -17,7 +17,7 @@ TakeItemHint::TakeItemHint(eTutorial_Hint id, Tutorial *tutorial, int items[], u
 	}
 }
 
-bool TakeItemHint::onTake(std::shared_ptr<ItemInstance> item)
+bool TakeItemHint::onTake(shared_ptr<ItemInstance> item)
 {
 	if(item != NULL)
 	{

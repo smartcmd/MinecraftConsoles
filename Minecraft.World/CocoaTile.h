@@ -4,7 +4,7 @@
 
 class CocoaTile : public DirectionalTile
 {
-public:
+public:	
 	static const int COCOA_TEXTURES_LENGTH = 3;
 	static const wstring TEXTURE_AGES[];
 
@@ -25,8 +25,8 @@ public:
 	virtual bool isSolidRender(bool isServerLevel = false);
 	virtual AABB *getAABB(Level *level, int x, int y, int z);
 	virtual AABB *getTileAABB(Level *level, int x, int y, int z);
-	virtual void updateShape(LevelSource *level, int x, int y, int z, int forceData = -1, std::shared_ptr<TileEntity> forceEntity = std::shared_ptr<TileEntity>());
-	virtual void setPlacedBy(Level *level, int x, int y, int z, std::shared_ptr<Mob> by, std::shared_ptr<ItemInstance> itemInstance);
+	virtual void updateShape(LevelSource *level, int x, int y, int z, int forceData = -1, shared_ptr<TileEntity> forceEntity = shared_ptr<TileEntity>());
+	virtual void setPlacedBy(Level *level, int x, int y, int z, shared_ptr<Mob> by, shared_ptr<ItemInstance> itemInstance);
 	virtual int getPlacedOnFaceDataValue(Level *level, int x, int y, int z, int face, float clickX, float clickY, float clickZ, int itemValue);
 	virtual void neighborChanged(Level *level, int x, int y, int z, int type);
 	static int getAge(int data);

@@ -15,7 +15,7 @@ class UIControl;
 class UIController : public IUIController
 {
 public:
-	static int64_t iggyAllocCount;
+	static __int64 iggyAllocCount;
 
 	// MGH - added to prevent crash loading Iggy movies while the skins were being reloaded
 	static CRITICAL_SECTION ms_reloadSkinCS;
@@ -29,7 +29,7 @@ private:
 	CRITICAL_SECTION m_navigationLock;
 
 	static const int UI_REPEAT_KEY_DELAY_MS = 300; // How long from press until the first repeat
-	static const int UI_REPEAT_KEY_REPEAT_RATE_MS = 100; // How long in between repeats
+	static const int UI_REPEAT_KEY_REPEAT_RATE_MS = 100; // How long in between repeats	
 	DWORD m_actionRepeatTimer[XUSER_MAX_COUNT][ACTION_MAX_MENU+1];
 
 	float m_fScreenWidth;
@@ -45,7 +45,7 @@ private:
 	// 4J-PB - ui element type for PSVita touch control
 #ifdef __PSVITA__
 
-	typedef struct
+	typedef struct  
 	{
 		UIControl *pControl;
 		S32 x1,y1,x2,y2;
@@ -110,7 +110,7 @@ private:
 
 	C4JRender::eViewportType m_currentRenderViewport;
 	bool m_bCustomRenderPosition;
-
+	
 	static DWORD				m_dwTrialTimerLimitSecs;
 
 	unordered_map<wstring, byteArray> m_substitutionTextures;
@@ -118,7 +118,7 @@ private:
 	typedef struct _CachedMovieData
 	{
 		byteArray m_ba;
-		int64_t m_expiry;
+		__int64 m_expiry;
 	} CachedMovieData;
 	unordered_map<wstring, CachedMovieData> m_cachedMovieData;
 
@@ -179,7 +179,7 @@ protected:
 	void postInit();
 
 
-public:
+public:	
 	CRITICAL_SECTION m_Allocatorlock;
 	void SetupFont();
 public:
@@ -208,7 +208,7 @@ private:
 	void tickInput();
 	void handleInput();
 	void handleKeyPress(unsigned int iPad, unsigned int key);
-
+	
 protected:
 	static rrbool RADLINK ExternalFunctionCallback( void * user_callback_data , Iggy * player , IggyExternalFunctionCallUTF16 * call );
 
@@ -278,7 +278,7 @@ private:
 public:
 	void CloseAllPlayersScenes();
 	void CloseUIScenes(int iPad, bool forceIPad = false);
-
+	
 	virtual bool IsPauseMenuDisplayed(int iPad);
 	virtual bool IsContainerMenuDisplayed(int iPad);
 	virtual bool IsIgnorePlayerJoinMenuDisplayed(int iPad);

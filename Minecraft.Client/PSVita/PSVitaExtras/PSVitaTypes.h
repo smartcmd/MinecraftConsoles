@@ -34,12 +34,14 @@ typedef unsigned int        *PUINT;
 
 
 typedef unsigned char		byte;
+typedef long long 			__int64;
+typedef unsigned long long	__uint64;
 typedef unsigned int		DWORD;
 typedef int                 INT;
 typedef unsigned long		ULONG_PTR, *PULONG_PTR;
 typedef ULONG_PTR SIZE_T, *PSIZE_T;
 
-typedef int64_t LONG64, *PLONG64;
+typedef __int64 LONG64, *PLONG64;
 
 #define VOID void
 typedef char CHAR;

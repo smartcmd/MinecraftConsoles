@@ -10,10 +10,10 @@
 
 // 4J - removal of separate temperature & downfall layers brought forward from 1.2.3
 void BiomeSource::_init()
-{
+{	
     layer = nullptr;
 	zoomedLayer = nullptr;
-
+	
 	cache = new BiomeCache(this);
 
 	playerSpawnBiomes.push_back(Biome::forest);
@@ -26,7 +26,7 @@ void BiomeSource::_init()
 	playerSpawnBiomes.push_back(Biome::jungleHills);
 }
 
-void BiomeSource::_init(int64_t seed, LevelType *generator)
+void BiomeSource::_init(__int64 seed, LevelType *generator)
 {
 	_init();
 
@@ -43,7 +43,7 @@ BiomeSource::BiomeSource()
 }
 
 // 4J added
-BiomeSource::BiomeSource(int64_t seed, LevelType *generator)
+BiomeSource::BiomeSource(__int64 seed, LevelType *generator)
 {
 	_init(seed, generator);
 }
@@ -271,7 +271,7 @@ void BiomeSource::getBiomeIndexBlock(byteArray& biomeIndices, int x, int z, int 
 /**
 * Checks if an area around a block contains only the specified biomes.
 * Useful for placing elements like towns.
-*
+* 
 * This is a bit of a rough check, to make it as fast as possible. To ensure
 * NO other biomes, add a margin of at least four blocks to the radius
 */
@@ -298,7 +298,7 @@ bool BiomeSource::containsOnly(int x, int z, int r, vector<Biome *> allowed)
 /**
 * Checks if an area around a block contains only the specified biome.
 * Useful for placing elements like towns.
-*
+* 
 * This is a bit of a rough check, to make it as fast as possible. To ensure
 * NO other biomes, add a margin of at least four blocks to the radius
 */
@@ -308,7 +308,7 @@ bool BiomeSource::containsOnly(int x, int z, int r, Biome *allowed)
 	int z0 = ((z - r) >> 2);
 	int x1 = ((x + r) >> 2);
 	int z1 = ((z + r) >> 2);
-
+	
 	int w = x1 - x0;
 	int h = z1 - z0;
 	int biomesCount = w*h;
@@ -325,7 +325,7 @@ bool BiomeSource::containsOnly(int x, int z, int r, Biome *allowed)
 /**
 * Finds the specified biome within the radius. This will return a random
 * position if several are found. This test is fairly rough.
-*
+* 
 * Returns null if the biome wasn't found
 */
 TilePos *BiomeSource::findBiome(int x, int z, int r, Biome *toFind, Random *random)
@@ -362,7 +362,7 @@ TilePos *BiomeSource::findBiome(int x, int z, int r, Biome *toFind, Random *rand
 /**
 * Finds one of the specified biomes within the radius. This will return a
 * random position if several are found. This test is fairly rough.
-*
+* 
 * Returns null if the biome wasn't found
 */
 TilePos *BiomeSource::findBiome(int x, int z, int r, vector<Biome *> allowed, Random *random)
@@ -408,13 +408,13 @@ void BiomeSource::update()
 
 // 4J added - find a seed for this biomesource that matches certain criteria
 #ifdef __PSVITA__
-int64_t BiomeSource::findSeed(LevelType *generator, bool* pServerRunning)	// MGH - added pRunning, so we can early out of this on Vita as it can take up to 60 secs
+__int64 BiomeSource::findSeed(LevelType *generator, bool* pServerRunning)	// MGH - added pRunning, so we can early out of this on Vita as it can take up to 60 secs
 #else
-int64_t BiomeSource::findSeed(LevelType *generator)
+__int64 BiomeSource::findSeed(LevelType *generator)	
 #endif
 {
 
-	int64_t bestSeed = 0;
+	__int64 bestSeed = 0;
 
 	ProgressRenderer *mcprogress = Minecraft::GetInstance()->progressRenderer;
 	mcprogress->progressStage(IDS_PROGRESS_NEW_WORLD_SEED);
@@ -452,7 +452,7 @@ int64_t BiomeSource::findSeed(LevelType *generator)
 			// Just keeping trying to generate seeds until we find one that matches our criteria
 			do
 			{
-				int64_t seed = pr->nextLong();
+				__int64 seed = pr->nextLong();
 				BiomeSource *biomeSource = new BiomeSource(seed,generator);
 
 				biomeSource->getRawBiomeIndices(indices, biomeOffset, biomeOffset, biomeWidth, biomeWidth);
@@ -484,7 +484,7 @@ int64_t BiomeSource::findSeed(LevelType *generator)
 
 			unsigned int *pixels = new unsigned int[54 * 16 * 54 * 16];
 			for(int i = 0; i < 54 * 16 * 54 * 16; i++ )
-			{
+			{			
 				int id = biomes[i]->id;
 
 				// Create following colours:
@@ -560,7 +560,7 @@ void BiomeSource::getFracs(intArray indices, float *fracs)
 bool BiomeSource::getIsMatch(float *frac)
 {
 	// A true for a particular biome type here marks it as one that *has* to be present
-	static const bool critical[Biome::BIOME_COUNT] = {
+	static const bool critical[Biome::BIOME_COUNT] = { 
 										true,	// ocean
 										true,	// plains
 										true,	// desert

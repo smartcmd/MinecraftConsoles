@@ -38,12 +38,12 @@ private:
 public:
 	virtual void save(CompoundTag *tag);
 	virtual void load(CompoundTag *tag);
-	virtual std::shared_ptr<Packet> getUpdatePacket();
+	virtual shared_ptr<Packet> getUpdatePacket();
 	bool isEditable();
 	void setEditable(bool isEditable);
 	virtual void setChanged();
 	static int StringVerifyCallback(LPVOID lpParam,STRING_VERIFY_RESPONSE *pResults);
 
 	// 4J Added
-	virtual std::shared_ptr<TileEntity> clone();
+	virtual shared_ptr<TileEntity> clone();
 };

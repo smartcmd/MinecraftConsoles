@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "PickupTask.h"
 
-void PickupTask::onTake(std::shared_ptr<ItemInstance> item, unsigned int invItemCountAnyAux, unsigned int invItemCountThisAux)
+void PickupTask::onTake(shared_ptr<ItemInstance> item, unsigned int invItemCountAnyAux, unsigned int invItemCountThisAux)
 {
 	if(item->id == m_itemId)
 	{

@@ -10,8 +10,8 @@ class EntityTileRenderer
 	 static EntityTileRenderer *instance;
 
  private:
-	 std::shared_ptr<ChestTileEntity> chest;
-	 std::shared_ptr<EnderChestTileEntity> enderChest;
+	 shared_ptr<ChestTileEntity> chest;
+	 shared_ptr<EnderChestTileEntity> enderChest;
 
  public:
 	 EntityTileRenderer();

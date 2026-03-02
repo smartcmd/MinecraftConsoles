@@ -1,6 +1,6 @@
 //  (C) Copyright Gennadiy Rozental 2005-2008.
-//  Use, modification, and distribution are subject to the
-//  Boost Software License, Version 1.0. (See accompanying file
+//  Use, modification, and distribution are subject to the 
+//  Boost Software License, Version 1.0. (See accompanying file 
 //  LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
 
 //  See http://www.boost.org/libs/test for the library home page.
@@ -66,18 +66,18 @@ public:
 //____________________________________________________________________________//
 
 template<typename T>
-inline std::shared_ptr<char_parameter_t<T> >
+inline shared_ptr<char_parameter_t<T> >
 char_parameter( char_type name )
 {
-    return std::shared_ptr<char_parameter_t<T> >( new char_parameter_t<T>( name ) );
+    return shared_ptr<char_parameter_t<T> >( new char_parameter_t<T>( name ) );
 }
 
 //____________________________________________________________________________//
 
-inline std::shared_ptr<char_parameter_t<cstring> >
+inline shared_ptr<char_parameter_t<cstring> >
 char_parameter( char_type name )
 {
-    return std::shared_ptr<char_parameter_t<cstring> >( new char_parameter_t<cstring>( name ) );
+    return shared_ptr<char_parameter_t<cstring> >( new char_parameter_t<cstring>( name ) );
 }
 
 //____________________________________________________________________________//

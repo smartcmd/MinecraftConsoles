@@ -15,7 +15,7 @@ TextureAndGeometryChangePacket::TextureAndGeometryChangePacket()
 	dwSkinID = 0;
 }
 
-TextureAndGeometryChangePacket::TextureAndGeometryChangePacket(std::shared_ptr<Entity> e, const wstring &path)
+TextureAndGeometryChangePacket::TextureAndGeometryChangePacket(shared_ptr<Entity> e, const wstring &path)
 {
 	id = e->entityId;
 	this->path = path;
@@ -28,26 +28,26 @@ TextureAndGeometryChangePacket::TextureAndGeometryChangePacket(std::shared_ptr<E
 
 }
 
-void TextureAndGeometryChangePacket::read(DataInputStream *dis) //throws IOException
+void TextureAndGeometryChangePacket::read(DataInputStream *dis) //throws IOException 
 {
 	id = dis->readInt();
 	dwSkinID = dis->readInt();
 	path = dis->readUTF();
 }
 
-void TextureAndGeometryChangePacket::write(DataOutputStream *dos) //throws IOException
+void TextureAndGeometryChangePacket::write(DataOutputStream *dos) //throws IOException 
 {
 	dos->writeInt(id);
 	dos->writeInt(dwSkinID);
 	dos->writeUTF(path);
 }
 
-void TextureAndGeometryChangePacket::handle(PacketListener *listener)
+void TextureAndGeometryChangePacket::handle(PacketListener *listener) 
 {
 	listener->handleTextureAndGeometryChange(shared_from_this());
 }
 
-int TextureAndGeometryChangePacket::getEstimatedSize()
+int TextureAndGeometryChangePacket::getEstimatedSize() 
 {
 	return 8 + (int)path.size();
 }

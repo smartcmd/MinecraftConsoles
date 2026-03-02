@@ -9,11 +9,11 @@ private:
 public:
 	CreativeMode(Minecraft *minecraft);
 	virtual void init();
-	static void enableCreativeForPlayer(std::shared_ptr<Player> player);
-	static void disableCreativeForPlayer(std::shared_ptr<Player> player);
-	virtual void adjustPlayer(std::shared_ptr<Player> player);
+	static void enableCreativeForPlayer(shared_ptr<Player> player);
+	static void disableCreativeForPlayer(shared_ptr<Player> player);
+	virtual void adjustPlayer(shared_ptr<Player> player);
 	static void creativeDestroyBlock(Minecraft *minecraft, GameMode *gameMode, int x, int y, int z, int face);
-	virtual bool useItemOn(std::shared_ptr<Player> player, Level *level, std::shared_ptr<ItemInstance> item, int x, int y, int z, int face, bool bTestUseOnOnly=false, bool *pbUsedItem = NULL);
+	virtual bool useItemOn(shared_ptr<Player> player, Level *level, shared_ptr<ItemInstance> item, int x, int y, int z, int face, bool bTestUseOnOnly=false, bool *pbUsedItem = NULL);
 	virtual void startDestroyBlock(int x, int y, int z, int face);
 	virtual void continueDestroyBlock(int x, int y, int z, int face);
 	virtual void stopDestroyBlock();

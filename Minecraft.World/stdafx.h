@@ -9,7 +9,9 @@
 #define AUTO_VAR(_var, _val) auto _var = _val
 #endif
 
-#include <cstdint>
+#if ( defined _XBOX || defined _WINDOWS64  || defined _DURANGO )
+typedef unsigned __int64 __uint64;
+#endif
 
 #ifdef _WINDOWS64
 #define WIN32_LEAN_AND_MEAN             // Exclude rarely-used stuff from Windows headers

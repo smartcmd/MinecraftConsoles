@@ -11,7 +11,7 @@ UIScene_TradingMenu::UIScene_TradingMenu(int iPad, void *_initData, UILayer *par
 {
 	// Setup all the Iggy references we need for this scene
 	initialiseMovie();
-
+	
 	m_showingLeftArrow = true;
 	m_showingRightArrow = true;
 
@@ -36,7 +36,7 @@ UIScene_TradingMenu::UIScene_TradingMenu(int iPad, void *_initData, UILayer *par
 	}
 
 	m_menu = new MerchantMenu( initData->inventory, initData->trader, initData->level );
-
+	
 	Minecraft::GetInstance()->localplayers[iPad]->containerMenu = m_menu;
 
 	m_slotListRequest1.addSlots(BUY_A,1);
@@ -93,7 +93,7 @@ void UIScene_TradingMenu::handleDestroy()
 	}
 
 	// 4J Stu - Fix for #11302 - TCR 001: Network Connectivity: Host crashed after being killed by the client while accessing a chest during burst packet loss.
-	// We need to make sure that we call closeContainer() anytime this menu is closed, even if it is forced to close by some other reason (like the player dying)
+	// We need to make sure that we call closeContainer() anytime this menu is closed, even if it is forced to close by some other reason (like the player dying)	
 	if(pMinecraft->localplayers[m_iPad] != NULL) pMinecraft->localplayers[m_iPad]->closeContainer();
 
 	ui.OverrideSFX(m_iPad,ACTION_MENU_A,false);
@@ -147,12 +147,12 @@ void UIScene_TradingMenu::customDraw(IggyCustomDrawCallbackRegion *region)
 	Minecraft *pMinecraft = Minecraft::GetInstance();
 	if(pMinecraft->localplayers[m_iPad] == NULL || pMinecraft->localgameModes[m_iPad] == NULL) return;
 
-	std::shared_ptr<ItemInstance> item = nullptr;
+	shared_ptr<ItemInstance> item = nullptr;
 	int slotId = -1;
 	swscanf((wchar_t*)region->name,L"slot_%d",&slotId);
 
 	if(slotId < MerchantMenu::USE_ROW_SLOT_END)
-	{
+	{			
 		Slot *slot = m_menu->getSlot(slotId);
 		item = slot->getItem();
 	}

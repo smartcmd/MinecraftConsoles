@@ -34,7 +34,7 @@ EntityPos::EntityPos(float yRot, float xRot)
 	move = false;
 }
 
-EntityPos *EntityPos::lerp(std::shared_ptr<Entity> e, float f)
+EntityPos *EntityPos::lerp(shared_ptr<Entity> e, float f)
 {
 	double xd = e->x+(x-e->x)*f;
 	double yd = e->y+(y-e->y)*f;

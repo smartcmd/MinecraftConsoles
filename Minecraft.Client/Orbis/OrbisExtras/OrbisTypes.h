@@ -34,6 +34,8 @@ typedef unsigned int        *PUINT;
 
 
 typedef unsigned char		byte;
+typedef long 			    __int64;
+typedef unsigned long		__uint64;
 typedef unsigned int		DWORD;
 typedef int                 INT;
 typedef unsigned long		ULONG_PTR, *PULONG_PTR;

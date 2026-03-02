@@ -26,12 +26,12 @@ EntityTracker::EntityTracker(ServerLevel *level)
     maxRange = level->getServer()->getPlayers()->getMaxRange();
 }
 
-void EntityTracker::addEntity(std::shared_ptr<Entity> e)
+void EntityTracker::addEntity(shared_ptr<Entity> e)
 {
     if (e->GetType() == eTYPE_SERVERPLAYER)
 	{
         addEntity(e, 32 * 16, 2);
-        std::shared_ptr<ServerPlayer> player = dynamic_pointer_cast<ServerPlayer>(e);
+        shared_ptr<ServerPlayer> player = dynamic_pointer_cast<ServerPlayer>(e);
 		for( AUTO_VAR(it, entities.begin()); it != entities.end(); it++ )
 		{
 			if( (*it)->e != player )
@@ -65,12 +65,12 @@ void EntityTracker::addEntity(std::shared_ptr<Entity> e)
 	else if (e->GetType() == eTYPE_ITEM_FRAME) addEntity(e, 16 * 10, INT_MAX, false);
 }
 
-void EntityTracker::addEntity(std::shared_ptr<Entity> e, int range, int updateInterval)
+void EntityTracker::addEntity(shared_ptr<Entity> e, int range, int updateInterval)
 {
 	addEntity(e, range, updateInterval, false);
 }
 
-void EntityTracker::addEntity(std::shared_ptr<Entity> e, int range, int updateInterval, bool trackDeltas)
+void EntityTracker::addEntity(shared_ptr<Entity> e, int range, int updateInterval, bool trackDeltas)
 {
     if (range > maxRange) range = maxRange;
     if (entityMap.find(e->entityId) != entityMap.end())
@@ -81,7 +81,7 @@ void EntityTracker::addEntity(std::shared_ptr<Entity> e, int range, int updateIn
 	{
 		__debugbreak();
 	}
-    std::shared_ptr<TrackedEntity> te = std::shared_ptr<TrackedEntity>( new TrackedEntity(e, range, updateInterval, trackDeltas) );
+    shared_ptr<TrackedEntity> te = shared_ptr<TrackedEntity>( new TrackedEntity(e, range, updateInterval, trackDeltas) );
 	entities.insert(te);
     entityMap[e->entityId] = te;
     te->updatePlayers(this, &level->players);
@@ -89,23 +89,23 @@ void EntityTracker::addEntity(std::shared_ptr<Entity> e, int range, int updateIn
 
 // 4J - have split removeEntity into two bits - it used to do the equivalent of EntityTracker::removePlayer followed by EntityTracker::removeEntity.
 // This is to allow us to now choose to remove the player as a "seenBy" only when the player has actually been removed from the level's own player array
-void EntityTracker::removeEntity(std::shared_ptr<Entity> e)
+void EntityTracker::removeEntity(shared_ptr<Entity> e)
 {
 	AUTO_VAR(it, entityMap.find(e->entityId));
 	if( it != entityMap.end() )
 	{
-		std::shared_ptr<TrackedEntity> te = it->second;
+		shared_ptr<TrackedEntity> te = it->second;
 		entityMap.erase(it);
 		entities.erase(te);
 		te->broadcastRemoved();
 	}
 }
 
-void EntityTracker::removePlayer(std::shared_ptr<Entity> e)
+void EntityTracker::removePlayer(shared_ptr<Entity> e)
 {
     if (e->GetType() == eTYPE_SERVERPLAYER)
 	{
-        std::shared_ptr<ServerPlayer> player = dynamic_pointer_cast<ServerPlayer>(e);
+        shared_ptr<ServerPlayer> player = dynamic_pointer_cast<ServerPlayer>(e);
 		for( AUTO_VAR(it, entities.begin()); it != entities.end(); it++ )
 		{
 			(*it)->removePlayer(player);
@@ -115,10 +115,10 @@ void EntityTracker::removePlayer(std::shared_ptr<Entity> e)
 
 void EntityTracker::tick()
 {
-    vector<std::shared_ptr<ServerPlayer> > movedPlayers;
+    vector<shared_ptr<ServerPlayer> > movedPlayers;
 	for( AUTO_VAR(it, entities.begin()); it != entities.end(); it++ )
 	{
-		std::shared_ptr<TrackedEntity> te = *it;
+		shared_ptr<TrackedEntity> te = *it;
         te->tick(this, &level->players);
         if (te->moved && te->e->GetType() == eTYPE_SERVERPLAYER)
 		{
@@ -132,7 +132,7 @@ void EntityTracker::tick()
 	MinecraftServer *server = MinecraftServer::getInstance();
 	for( unsigned int i = 0; i < server->getPlayers()->players.size(); i++ )
 	{
-		std::shared_ptr<ServerPlayer> ep = server->getPlayers()->players[i];
+		shared_ptr<ServerPlayer> ep = server->getPlayers()->players[i];			
 		if( ep->dimension != level->dimension->id ) continue;
 
 		if( ep->connection == NULL ) continue;
@@ -142,7 +142,7 @@ void EntityTracker::tick()
 		bool addPlayer = false;
 		for (unsigned int j = 0; j < movedPlayers.size(); j++)
 		{
-			std::shared_ptr<ServerPlayer> sp = movedPlayers[j];
+			shared_ptr<ServerPlayer> sp = movedPlayers[j];
 
 			if( sp == ep ) break;
 
@@ -153,17 +153,17 @@ void EntityTracker::tick()
 				addPlayer = true;
 				break;
 			}
-		}
+		}		
 		if( addPlayer ) movedPlayers.push_back( ep );
 	}
 
     for (unsigned int i = 0; i < movedPlayers.size(); i++)
 	{
-        std::shared_ptr<ServerPlayer> player = movedPlayers[i];
+        shared_ptr<ServerPlayer> player = movedPlayers[i];
 		if(player->connection == NULL) continue;
 		for( AUTO_VAR(it, entities.begin()); it != entities.end(); it++ )
 		{
-			std::shared_ptr<TrackedEntity> te = *it;
+			shared_ptr<TrackedEntity> te = *it;
             if (te->e != player)
 			{
                 te->updatePlayer(this, player);
@@ -174,7 +174,7 @@ void EntityTracker::tick()
 	// 4J Stu - We want to do this for dead players as they don't tick normally
 	for(AUTO_VAR(it, level->players.begin()); it != level->players.end(); ++it)
 	{
-        std::shared_ptr<ServerPlayer> player = dynamic_pointer_cast<ServerPlayer>(*it);
+        shared_ptr<ServerPlayer> player = dynamic_pointer_cast<ServerPlayer>(*it);
 		if(!player->isAlive())
 		{
 			player->flushEntitiesToRemove();
@@ -182,31 +182,31 @@ void EntityTracker::tick()
 	}
 }
 
-void EntityTracker::broadcast(std::shared_ptr<Entity> e, std::shared_ptr<Packet> packet)
+void EntityTracker::broadcast(shared_ptr<Entity> e, shared_ptr<Packet> packet)
 {
 	AUTO_VAR(it, entityMap.find( e->entityId ));
 	if( it != entityMap.end() )
 	{
-		std::shared_ptr<TrackedEntity> te = it->second;
+		shared_ptr<TrackedEntity> te = it->second;
 		te->broadcast(packet);
 	}
 }
 
-void EntityTracker::broadcastAndSend(std::shared_ptr<Entity> e, std::shared_ptr<Packet> packet)
+void EntityTracker::broadcastAndSend(shared_ptr<Entity> e, shared_ptr<Packet> packet)
 {
 	AUTO_VAR(it, entityMap.find( e->entityId ));
 	if( it != entityMap.end() )
 	{
-		std::shared_ptr<TrackedEntity> te = it->second;
+		shared_ptr<TrackedEntity> te = it->second;
 		te->broadcastAndSend(packet);
 	}
 }
 
-void EntityTracker::clear(std::shared_ptr<ServerPlayer> serverPlayer)
+void EntityTracker::clear(shared_ptr<ServerPlayer> serverPlayer)
 {
 	for( AUTO_VAR(it, entities.begin()); it != entities.end(); it++ )
 	{
-		std::shared_ptr<TrackedEntity> te = *it;
+		shared_ptr<TrackedEntity> te = *it;
 		te->clear(serverPlayer);
 	}
 }
@@ -218,7 +218,7 @@ void EntityTracker::updateMaxRange()
 }
 
 
-std::shared_ptr<TrackedEntity> EntityTracker::getTracker(std::shared_ptr<Entity> e)
+shared_ptr<TrackedEntity> EntityTracker::getTracker(shared_ptr<Entity> e)
 {
 	AUTO_VAR(it, entityMap.find(e->entityId));
 	if( it != entityMap.end() )

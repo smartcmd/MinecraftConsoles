@@ -5,18 +5,18 @@
 #include "..\Minecraft.World\LavaSlime.h"
 
 
-LavaSlimeModel::LavaSlimeModel()
+LavaSlimeModel::LavaSlimeModel() 
 {
-    for (int i = 0; i < BODYCUBESLENGTH; i++)
+    for (int i = 0; i < BODYCUBESLENGTH; i++) 
 	{
         int u = 0;
         int v = i;
-        if (i == 2)
+        if (i == 2) 
 		{
             u = 24;
             v = 10;
-        }
-		else if (i == 3)
+        } 
+		else if (i == 3) 
 		{
             u = 24;
             v = 19;
@@ -36,33 +36,33 @@ LavaSlimeModel::LavaSlimeModel()
 	}
 }
 
-int LavaSlimeModel::getModelVersion()
+int LavaSlimeModel::getModelVersion() 
 {
         return 5;
 }
 
-void LavaSlimeModel::prepareMobModel(std::shared_ptr<Mob> mob, float time, float r, float a)
+void LavaSlimeModel::prepareMobModel(shared_ptr<Mob> mob, float time, float r, float a) 
 {
-	 std::shared_ptr<LavaSlime> lavaSlime = dynamic_pointer_cast<LavaSlime>(mob);
+	 shared_ptr<LavaSlime> lavaSlime = dynamic_pointer_cast<LavaSlime>(mob);
 
     float slimeSquish = (lavaSlime->oSquish + (lavaSlime->squish - lavaSlime->oSquish) * a);
-    if (slimeSquish < 0)
+    if (slimeSquish < 0) 
 	{
         slimeSquish = 0.0f;
     }
 
-    for (int i = 0; i < BODYCUBESLENGTH; i++)
+    for (int i = 0; i < BODYCUBESLENGTH; i++) 
 	{
         bodyCubes[i]->y = -(4 - i) * slimeSquish * 1.7f;
     }
 }
 
-void LavaSlimeModel::render(std::shared_ptr<Entity> entity, float time, float r, float bob, float yRot, float xRot, float scale, bool usecompiled)
+void LavaSlimeModel::render(shared_ptr<Entity> entity, float time, float r, float bob, float yRot, float xRot, float scale, bool usecompiled) 
 {
 	setupAnim(time, r, bob, yRot, xRot, scale);
 
 	insideCube->render(scale, usecompiled);
-	for (int i = 0; i < BODYCUBESLENGTH; i++)
+	for (int i = 0; i < BODYCUBESLENGTH; i++) 
 	{
 		bodyCubes[i]->render(scale, usecompiled);
 	}

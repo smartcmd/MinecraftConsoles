@@ -37,7 +37,7 @@ AABB *PortalTile::getAABB(Level *level, int x, int y, int z)
 	return NULL;
 }
 
-void PortalTile::updateShape(LevelSource *level, int x, int y, int z, int forceData, std::shared_ptr<TileEntity> forceEntity) // 4J added forceData, forceEntity param
+void PortalTile::updateShape(LevelSource *level, int x, int y, int z, int forceData, shared_ptr<TileEntity> forceEntity) // 4J added forceData, forceEntity param
 {
     if (level->getTile(x - 1, y, z) == id || level->getTile(x + 1, y, z) == id)
 	{
@@ -195,7 +195,7 @@ int PortalTile::getRenderLayer()
 	return 1;
 }
 
-void PortalTile::entityInside(Level *level, int x, int y, int z, std::shared_ptr<Entity> entity)
+void PortalTile::entityInside(Level *level, int x, int y, int z, shared_ptr<Entity> entity)
 {
 	if (entity->riding == NULL && entity->rider.lock() == NULL) entity->handleInsidePortal();
 }

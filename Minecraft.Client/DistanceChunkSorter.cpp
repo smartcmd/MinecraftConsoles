@@ -3,7 +3,7 @@
 #include "../Minecraft.World/net.minecraft.world.entity.player.h"
 #include "Chunk.h"
 
-DistanceChunkSorter::DistanceChunkSorter(std::shared_ptr<Entity> player)
+DistanceChunkSorter::DistanceChunkSorter(shared_ptr<Entity> player)
 {
     ix = -player->x;
     iy = -player->y;
@@ -15,7 +15,7 @@ bool DistanceChunkSorter::operator()(const Chunk *c0, const Chunk *c1) const
     double xd0 = c0->xm + ix;
     double yd0 = c0->ym + iy;
     double zd0 = c0->zm + iz;
-
+				   
     double xd1 = c1->xm + ix;
     double yd1 = c1->ym + iy;
     double zd1 = c1->zm + iz;

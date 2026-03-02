@@ -13,7 +13,7 @@
 MusicTileEntity::MusicTileEntity() : TileEntity()
 {
     note = 0;
-
+    
 	on = false;
 }
 
@@ -23,7 +23,7 @@ void MusicTileEntity::save(CompoundTag *tag)
 	tag->putByte(L"note", note);
 }
 
-void MusicTileEntity::load(CompoundTag *tag)
+void MusicTileEntity::load(CompoundTag *tag) 
 {
 	TileEntity::load(tag);
 	note = tag->getByte(L"note");
@@ -31,7 +31,7 @@ void MusicTileEntity::load(CompoundTag *tag)
 	if (note > 24) note = 24;
 }
 
-void MusicTileEntity::tune()
+void MusicTileEntity::tune() 
 {
 	note = (byte) ((note + 1) % 25);
 	setChanged();
@@ -53,9 +53,9 @@ void MusicTileEntity::playNote(Level *level, int x, int y, int z)
 }
 
 // 4J Added
-std::shared_ptr<TileEntity> MusicTileEntity::clone()
+shared_ptr<TileEntity> MusicTileEntity::clone()
 {
-	std::shared_ptr<MusicTileEntity> result = std::shared_ptr<MusicTileEntity>( new MusicTileEntity() );
+	shared_ptr<MusicTileEntity> result = shared_ptr<MusicTileEntity>( new MusicTileEntity() );
 	TileEntity::clone(result);
 
 	result->note = note;

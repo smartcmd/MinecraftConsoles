@@ -187,7 +187,7 @@ void ExperienceOrb::readAdditionalSaveData(CompoundTag *tag)
 	value = tag->getShort(L"Value");
 }
 
-void ExperienceOrb::playerTouch(std::shared_ptr<Player> player)
+void ExperienceOrb::playerTouch(shared_ptr<Player> player)
 {
 	if (level->isClientSide) return;
 
@@ -258,7 +258,7 @@ int ExperienceOrb::getIcon()
 * Fetches the biggest possible experience orb value based on a maximum
 * value. The current algorithm is next prime which is at least twice more
 * than the previous one.
-*
+* 
 * @param maxValue
 * @return
 */

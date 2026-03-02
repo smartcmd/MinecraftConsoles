@@ -17,7 +17,7 @@ public:
     virtual wstring getName();
     virtual vector<LevelSummary *> *getLevelList();
     virtual void clearAll();
-    virtual std::shared_ptr<LevelStorage> selectLevel(ConsoleSaveFile *saveFile, const wstring& levelId, bool createPlayerDir);
+    virtual shared_ptr<LevelStorage> selectLevel(ConsoleSaveFile *saveFile, const wstring& levelId, bool createPlayerDir);
     virtual bool isConvertible(ConsoleSaveFile *saveFile, const wstring& levelId);
     virtual bool requiresConversion(ConsoleSaveFile *saveFile, const wstring& levelId);
     virtual bool convertLevel(ConsoleSaveFile *saveFile, const wstring& levelId, ProgressListener *progress);
@@ -33,14 +33,14 @@ private:
 public:
 #if 0
 	// 4J - not required anymore
-    static class FolderFilter : public FileFilter
+    static class FolderFilter : public FileFilter 
 	{
 	public:
 		static const std::tr1::wregex chunkFolderPattern; // was Pattern
 		bool accept(File *file);
     };
 
-    static class ChunkFilter : public FilenameFilter
+    static class ChunkFilter : public FilenameFilter 
 	{
 	public:
 		static const std::tr1::wregex chunkFilePattern; // was Pattern

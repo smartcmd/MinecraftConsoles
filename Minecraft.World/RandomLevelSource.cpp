@@ -23,7 +23,7 @@ static PerlinNoise_DataIn g_depthNoise_SPU __attribute__((__aligned__(16)));
 const double RandomLevelSource::SNOW_SCALE = 0.3;
 const double RandomLevelSource::SNOW_CUTOFF = 0.5;
 
-RandomLevelSource::RandomLevelSource(Level *level, int64_t seed, bool generateStructures) : generateStructures( generateStructures )
+RandomLevelSource::RandomLevelSource(Level *level, __int64 seed, bool generateStructures) : generateStructures( generateStructures )
 {
 	m_XZSize = level->getLevelData()->getXZSize();
 
@@ -274,7 +274,7 @@ void RandomLevelSource::buildSurfaces(int xOffs, int zOffs, byteArray blocks, Bi
                             run = runDepth;
                             if (y >= waterHeight - 1) blocks[offs] = top;
                             else blocks[offs] = material;
-                        }
+                        } 
 						else if (run > 0)
 						{
                             run--;
@@ -343,7 +343,7 @@ LevelChunk *RandomLevelSource::getChunk(int xOffs, int zOffs)
     // addCaves(xOffs, zOffs, blocks);
     // addTowns(xOffs, zOffs, blocks);
 
-//    levelChunk->recalcHeightmap();		// 4J - removed & moved into its own method
+//    levelChunk->recalcHeightmap();		// 4J - removed & moved into its own method	
 
 	// 4J - this now creates compressed block data from the blocks array passed in, so moved it until after the blocks are actually finalised. We also
 	// now need to free the passed in blocks as the LevelChunk doesn't use the passed in allocation anymore.
@@ -458,7 +458,7 @@ doubleArray RandomLevelSource::getHeights(doubleArray buffer, int x, int y, int 
 
 			sss = sss * 0.9f + 0.1f;
 			ddd = (ddd * 4 - 1) / 8.0f;
-
+			
             double rdepth = (dr[pp] / 8000.0);
             if (rdepth < 0) rdepth = -rdepth * 0.3;
             rdepth = rdepth * 3.0 - 2.0;
@@ -469,7 +469,7 @@ doubleArray RandomLevelSource::getHeights(doubleArray buffer, int x, int y, int 
                 if (rdepth < -1) rdepth = -1;
                 rdepth = rdepth / 1.4;
                 rdepth /= 2;
-            }
+            } 
 			else
 			{
                 if (rdepth > 1) rdepth = 1;
@@ -606,8 +606,8 @@ void RandomLevelSource::postProcess(ChunkSource *parent, int xt, int zt)
     }
 
 	pprandom->setSeed(level->getSeed());
-	int64_t xScale = pprandom->nextLong() / 2 * 2 + 1;
-	int64_t zScale = pprandom->nextLong() / 2 * 2 + 1;
+	__int64 xScale = pprandom->nextLong() / 2 * 2 + 1;
+	__int64 zScale = pprandom->nextLong() / 2 * 2 + 1;
 	pprandom->setSeed(((xt * xScale) + (zt * zScale)) ^ level->getSeed());
 
 	bool hasVillage = false;
@@ -666,7 +666,7 @@ void RandomLevelSource::postProcess(ChunkSource *parent, int xt, int zt)
 	PIXBeginNamedEvent(0,"Biome decorate");
 	biome->decorate(level, pprandom, xo, zo);
 	PIXEndNamedEvent();
-
+	
 	app.processSchematics(parent->getChunk(xt,zt));
 
 	MobSpawner::postProcessSpawnMobs(level, biome, xo + 8, zo + 8, 16, 16, pprandom);

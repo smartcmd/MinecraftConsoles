@@ -33,14 +33,14 @@ bool AvoidPlayerGoal::canUse()
 {
 	if (avoidType == typeid(Player))
 	{
-		std::shared_ptr<TamableAnimal> tamableAnimal = dynamic_pointer_cast<TamableAnimal>(mob->shared_from_this());
+		shared_ptr<TamableAnimal> tamableAnimal = dynamic_pointer_cast<TamableAnimal>(mob->shared_from_this());
 		if (tamableAnimal != NULL && tamableAnimal->isTame()) return false;
 		toAvoid = weak_ptr<Entity>(mob->level->getNearestPlayer(mob->shared_from_this(), maxDist));
 		if (toAvoid.lock() == NULL) return false;
 	}
 	else
 	{
-		vector<std::shared_ptr<Entity> > *entities = mob->level->getEntitiesOfClass(avoidType, mob->bb->grow(maxDist, 3, maxDist));
+		vector<shared_ptr<Entity> > *entities = mob->level->getEntitiesOfClass(avoidType, mob->bb->grow(maxDist, 3, maxDist));
 		if (entities->empty())
 		{
 			delete entities;

@@ -9,7 +9,7 @@ NearestAttackableTargetGoal::DistComp::DistComp(Entity *source)
 	this->source = source;
 }
 
-bool NearestAttackableTargetGoal::DistComp::operator() (std::shared_ptr<Entity> e1, std::shared_ptr<Entity> e2)
+bool NearestAttackableTargetGoal::DistComp::operator() (shared_ptr<Entity> e1, shared_ptr<Entity> e2)
 {
 	// Should return true if e1 comes before e2 in the sorted list
 	double distSqr1 = source->distanceToSqr(e1);
@@ -38,7 +38,7 @@ bool NearestAttackableTargetGoal::canUse()
 	if (randomInterval > 0 && mob->getRandom()->nextInt(randomInterval) != 0) return false;
 	if (targetType == typeid(Player))
 	{
-		std::shared_ptr<Mob> potentialTarget = mob->level->getNearestAttackablePlayer(mob->shared_from_this(), within);
+		shared_ptr<Mob> potentialTarget = mob->level->getNearestAttackablePlayer(mob->shared_from_this(), within);
 		if (canAttack(potentialTarget, false))
 		{
 			target = weak_ptr<Mob>(potentialTarget);
@@ -47,12 +47,12 @@ bool NearestAttackableTargetGoal::canUse()
 	}
 	else
 	{
-		vector<std::shared_ptr<Entity> > *entities = mob->level->getEntitiesOfClass(targetType, mob->bb->grow(within, 4, within));
+		vector<shared_ptr<Entity> > *entities = mob->level->getEntitiesOfClass(targetType, mob->bb->grow(within, 4, within));
 		//Collections.sort(entities, distComp);
 		std::sort(entities->begin(), entities->end(), *distComp);
 		for(AUTO_VAR(it, entities->begin()); it != entities->end(); ++it)
 		{
-			std::shared_ptr<Mob> potTarget = dynamic_pointer_cast<Mob>(*it);
+			shared_ptr<Mob> potTarget = dynamic_pointer_cast<Mob>(*it);
 			if (canAttack(potTarget, false))
 			{
 				target = weak_ptr<Mob>(potTarget);

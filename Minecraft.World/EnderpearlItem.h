@@ -7,7 +7,7 @@ class EnderpearlItem : public Item
 public:
 	EnderpearlItem(int id);
 
-	virtual std::shared_ptr<ItemInstance> use(std::shared_ptr<ItemInstance> instance, Level *level, std::shared_ptr<Player> player);
+	virtual shared_ptr<ItemInstance> use(shared_ptr<ItemInstance> instance, Level *level, shared_ptr<Player> player);
 	// 4J added
-	virtual bool TestUse(Level *level, std::shared_ptr<Player> player);
+	virtual bool TestUse(Level *level, shared_ptr<Player> player);
 };

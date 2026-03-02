@@ -138,7 +138,7 @@ class windows_named_condition_any
 
    class named_cond_callbacks : public windows_named_sync_interface
    {
-      typedef int64_t sem_count_t;
+      typedef __int64 sem_count_t;
       mutable sem_count_t sem_counts [2];
 
       public:

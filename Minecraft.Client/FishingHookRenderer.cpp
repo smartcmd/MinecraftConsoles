@@ -8,10 +8,10 @@
 #include "..\Minecraft.World\Mth.h"
 #include "MultiPlayerLocalPlayer.h"
 
-void FishingHookRenderer::render(std::shared_ptr<Entity> _hook, double x, double y, double z, float rot, float a)
+void FishingHookRenderer::render(shared_ptr<Entity> _hook, double x, double y, double z, float rot, float a)
 {
 	// 4J - dynamic cast required because we aren't using templates/generics in our version
-	std::shared_ptr<FishingHook> hook = dynamic_pointer_cast<FishingHook>(_hook);
+	shared_ptr<FishingHook> hook = dynamic_pointer_cast<FishingHook>(_hook);
 
     glPushMatrix();
 

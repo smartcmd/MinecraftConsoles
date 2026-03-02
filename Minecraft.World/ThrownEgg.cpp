@@ -21,7 +21,7 @@ ThrownEgg::ThrownEgg(Level *level) : Throwable(level)
 	_init();
 }
 
-ThrownEgg::ThrownEgg(Level *level, std::shared_ptr<Mob> mob) : Throwable(level,mob)
+ThrownEgg::ThrownEgg(Level *level, shared_ptr<Mob> mob) : Throwable(level,mob)
 {
 	_init();
 }
@@ -47,7 +47,7 @@ void ThrownEgg::onHit(HitResult *res)
 			if (random->nextInt(32) == 0) count = 4;
 			for (int i = 0; i < count; i++)
 			{
-				std::shared_ptr<Chicken> chicken = std::shared_ptr<Chicken>( new Chicken(level) );
+				shared_ptr<Chicken> chicken = shared_ptr<Chicken>( new Chicken(level) );
 				chicken->setAge(-20 * 60 * 20);
 
 				chicken->moveTo(x, y, z, yRot, 0);

@@ -52,7 +52,7 @@ int ProtectionEnchantment::getDescriptionId()
 }
 
 bool ProtectionEnchantment::isCompatibleWith(Enchantment *other) const
-{
+{		
 	ProtectionEnchantment *pe = dynamic_cast<ProtectionEnchantment *>( other );
 	if (pe != NULL)
 	{
@@ -69,7 +69,7 @@ bool ProtectionEnchantment::isCompatibleWith(Enchantment *other) const
 	return Enchantment::isCompatibleWith(other);
 }
 
-int ProtectionEnchantment::getFireAfterDampener(std::shared_ptr<Entity> entity, int time)
+int ProtectionEnchantment::getFireAfterDampener(shared_ptr<Entity> entity, int time)
 {
 	int level = EnchantmentHelper::getEnchantmentLevel(Enchantment::fireProtection->id, entity->getEquipmentSlots());
 
@@ -81,7 +81,7 @@ int ProtectionEnchantment::getFireAfterDampener(std::shared_ptr<Entity> entity, 
 	return time;
 }
 
-double ProtectionEnchantment::getExplosionKnockbackAfterDampener(std::shared_ptr<Entity> entity, double power)
+double ProtectionEnchantment::getExplosionKnockbackAfterDampener(shared_ptr<Entity> entity, double power)
 {
 	int level = EnchantmentHelper::getEnchantmentLevel(Enchantment::explosionProtection->id, entity->getEquipmentSlots());
 
