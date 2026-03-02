@@ -1321,26 +1321,23 @@ void SoundEngine::playMusicUpdate()
 			const bool isCD = (m_musicID >= m_iStream_CD_1);
 			const char* folder = isCD ? "cds/" : "music/";
 
-			FILE* pFile = fopen((char*)m_szStreamName, "rb");
-			if (pFile)
+			FILE* pFile = nullptr;
+			if (fopen_s(&pFile, reinterpret_cast<char*>(m_szStreamName), "rb") == 0 && pFile)
 			{
 				fclose(pFile);
 			}
 			else
 			{
 				const char* extensions[] = { ".wav" }; // only wav works outside of binka files to my knowledge, i've only tested ogg, wav, mp3 and only wav worked out of the bunch
-
+				int count = sizeof(extensions) / sizeof(extensions[0]);
 				bool found = false;
 
-				for (int i = 0; i < 2; i++)
+				for (int i = 0; i < count; i++)
 				{
-					strcpy((char*)m_szStreamName, m_szMusicPath);
-					strcat((char*)m_szStreamName, folder);
-					strcat((char*)m_szStreamName, m_szStreamFileA[m_musicID]);
-					strcat((char*)m_szStreamName, extensions[i]);
+					int n = sprintf_s(reinterpret_cast<char*>(m_szStreamName), 512, "%s%s%s%s", m_szMusicPath, folder, m_szStreamFileA[m_musicID], extensions[i]);
+					if (n < 0) continue;
 
-					pFile = fopen((char*)m_szStreamName, "rb");
-					if (pFile) // probably a better way to check if the file exists
+					if (fopen_s(&pFile, reinterpret_cast<char*>(m_szStreamName), "rb") == 0 && pFile)
 					{
 						fclose(pFile);
 						found = true;
@@ -1353,7 +1350,6 @@ void SoundEngine::playMusicUpdate()
 					return;
 				}
 			}
-
 
 			app.DebugPrintf("Starting streaming - %s\n",m_szStreamName);
 
