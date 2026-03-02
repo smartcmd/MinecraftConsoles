@@ -54,6 +54,7 @@ target_link_libraries(MinecraftClient PRIVATE
   MinecraftWorld
   d3d11
   XInput9_1_0
+  Shcore
   "${CMAKE_CURRENT_SOURCE_DIR}/Minecraft.Client/Windows64/Iggy/lib/iggy_w64.lib"
   "${CMAKE_CURRENT_SOURCE_DIR}/Minecraft.Client/Windows64/Miles/lib/mss64.lib"
   $<$<CONFIG:Debug>:
