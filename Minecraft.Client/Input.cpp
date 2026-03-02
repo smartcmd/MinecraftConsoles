@@ -169,6 +169,45 @@ void Input::tick(LocalPlayer *player)
 	if (iPad == 0 && KMInput.IsKeyDown(VK_SPACE) && pMinecraft->localgameModes[iPad]->isInputAllowed(MINECRAFT_ACTION_JUMP))
 		jumping = true;
 #endif
+	
+#ifdef _WINDOWS64
+    // Keyboard drop (Q)
+    // Press Q to drop one item. Hold Ctrl+Q to drop the whole stack.
+    if (iPad == 0 && KMInput.ConsumeKeyPress('Q') && pMinecraft->localgameModes[iPad]->isInputAllowed(MINECRAFT_ACTION_DROP) && !menuOpen)
+	{
+		// Prevent dropping while actively destroying a block (fix crash)
+		MultiPlayerGameMode *mpgm = nullptr;
+		if (pMinecraft->localgameModes[iPad] != NULL)
+		{
+			mpgm = dynamic_cast<MultiPlayerGameMode *>(pMinecraft->localgameModes[iPad]);
+		}
+		if (mpgm != nullptr && mpgm->IsDestroying())
+		{
+			// ignore drop while destroying
+		}
+		else
+		{
+		if (player != NULL)
+		{
+			// If CTRL is held, drop the entire stack
+			if (KMInput.IsKeyDown(VK_CONTROL))
+			{
+				shared_ptr<ItemInstance> sel = player->inventory->getSelected();
+				if (sel != NULL)
+				{
+					shared_ptr<ItemInstance> toDrop = player->inventory->removeItem(player->inventory->selected, sel->count);
+					if (toDrop != NULL) player->drop(toDrop, false);
+				}
+			}
+			else
+			{
+				// Drop a single item (Player::drop() will remove 1 from selected)
+				player->drop();
+			}
+		}
+		}
+	}
+#endif
 
 #ifndef _CONTENT_PACKAGE
 	if (app.GetFreezePlayers())	jumping = false;
