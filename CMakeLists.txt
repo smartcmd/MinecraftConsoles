@@ -62,7 +62,6 @@ target_link_libraries(MinecraftClient PRIVATE
   MinecraftWorld
   d3d11
   XInput9_1_0
-  Shcore
   wsock32
   legacy_stdio_definitions
   "${CMAKE_CURRENT_SOURCE_DIR}/Minecraft.Client/Windows64/Iggy/lib/iggy_w64.lib"
