@@ -426,7 +426,7 @@ void UIController::loadSkins()
 #elif defined __PSVITA__
 	platformSkinPath = L"skinVita.swf";
 #elif defined _WINDOWS64
-	if(m_fScreenHeight>=1080.0f)
+	if(m_fScreenHeight>720.0f)
 	{
 		platformSkinPath = L"skinHDWin.swf";
 	}
@@ -435,7 +435,7 @@ void UIController::loadSkins()
 		platformSkinPath = L"skinWin.swf";
 	}
 #elif defined _DURANGO
-	if(m_fScreenHeight>=1080.0f)
+	if(m_fScreenHeight>720.0f)
 	{
 		platformSkinPath = L"skinHDDurango.swf";
 	}
@@ -444,7 +444,7 @@ void UIController::loadSkins()
 		platformSkinPath = L"skinDurango.swf";
 	}
 #elif defined __ORBIS__
-	if(m_fScreenHeight>=1080.0f)
+	if(m_fScreenHeight>720.0f)
 	{
 		platformSkinPath = L"skinHDOrbis.swf";
 	}
@@ -455,7 +455,7 @@ void UIController::loadSkins()
 
 #endif
 	// Every platform has one of these, so nothing shared
-	if(m_fScreenHeight>=1080.0f)
+	if(m_fScreenHeight>720.0f)
 	{
 		m_iggyLibraries[eLibrary_Platform] = loadSkin(platformSkinPath, L"platformskinHD.swf");
 	}
