@@ -33,9 +33,9 @@ public:
 	void sendPosition();
 
 	using Player::drop;
-    virtual std::shared_ptr<ItemEntity> drop();
+    virtual shared_ptr<ItemEntity> drop();
 protected:
-	virtual void reallyDrop(std::shared_ptr<ItemEntity> itemEntity);
+	virtual void reallyDrop(shared_ptr<ItemEntity> itemEntity);
 public:
 	virtual void chat(const wstring& message);
     virtual void swing();
@@ -62,7 +62,7 @@ public:
 	//void CustomSkin(PBYTE pbData, DWORD dwBytes);
 
 	// 4J Overriding this so we can flag an event for the tutorial
-	virtual void ride(std::shared_ptr<Entity> e);
+	virtual void ride(shared_ptr<Entity> e);
 
 	// 4J - added for the Stop Sleeping
 	virtual void StopSleeping();

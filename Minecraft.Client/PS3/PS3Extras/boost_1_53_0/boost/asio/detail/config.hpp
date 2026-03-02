@@ -144,7 +144,7 @@
 # endif // defined(BOOST_MSVC)
 #endif // !defined(BOOST_ASIO_DISABLE_STD_ARRAY)
 
-// Standard library support for std::shared_ptr and weak_ptr.
+// Standard library support for shared_ptr and weak_ptr.
 #if !defined(BOOST_ASIO_DISABLE_STD_SHARED_PTR)
 # if defined(__GNUC__)
 #  if ((__GNUC__ == 4) && (__GNUC_MINOR__ >= 3)) || (__GNUC__ > 4)

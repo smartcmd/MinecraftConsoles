@@ -27,7 +27,7 @@ int ThornsEnchantment::getMaxLevel()
 	return 3;
 }
 
-bool ThornsEnchantment::canEnchant(std::shared_ptr<ItemInstance> item)
+bool ThornsEnchantment::canEnchant(shared_ptr<ItemInstance> item)
 {
 	ArmorItem *armor = dynamic_cast<ArmorItem *>(item->getItem());
 	if (armor) return true;
@@ -52,10 +52,10 @@ int ThornsEnchantment::getDamage(int level, Random *random)
 	}
 }
 
-void ThornsEnchantment::doThornsAfterAttack(std::shared_ptr<Entity> source, std::shared_ptr<Mob> target, Random *random)
+void ThornsEnchantment::doThornsAfterAttack(shared_ptr<Entity> source, shared_ptr<Mob> target, Random *random)
 {
 	int level = EnchantmentHelper::getArmorThorns(target);
-	std::shared_ptr<ItemInstance> item = EnchantmentHelper::getRandomItemWith(Enchantment::thorns, target);
+	shared_ptr<ItemInstance> item = EnchantmentHelper::getRandomItemWith(Enchantment::thorns, target);
 
 	if (shouldHit(level, random))
 	{

@@ -61,13 +61,13 @@ bool Spider::makeStepSound()
 	return false;
 }
 
-std::shared_ptr<Entity> Spider::findAttackTarget()
+shared_ptr<Entity> Spider::findAttackTarget()
 {
 #ifndef _FINAL_BUILD
 #ifdef _DEBUG_MENUS_ENABLED
 	if(app.GetMobsDontAttackEnabled())
 	{
-		return std::shared_ptr<Player>();
+		return shared_ptr<Player>();
 	}
 #endif
 #endif
@@ -78,7 +78,7 @@ std::shared_ptr<Entity> Spider::findAttackTarget()
 		double maxDist = 16;
 		return level->getNearestAttackablePlayer(shared_from_this(), maxDist);
 	}
-	return std::shared_ptr<Entity>();
+	return shared_ptr<Entity>();
 }
 
 int Spider::getAmbientSound()
@@ -96,7 +96,7 @@ int Spider::getDeathSound()
 	return eSoundType_MOB_SPIDER_DEATH;
 }
 
-void Spider::checkHurtTarget(std::shared_ptr<Entity> target, float d)
+void Spider::checkHurtTarget(shared_ptr<Entity> target, float d) 
 {
 	float br = getBrightness(1);
 	if (br > 0.5f && random->nextInt(100) == 0)
@@ -107,7 +107,7 @@ void Spider::checkHurtTarget(std::shared_ptr<Entity> target, float d)
 
 	if (d > 2 && d < 6 && random->nextInt(10) == 0)
 	{
-		if (onGround)
+		if (onGround) 
 		{
 			double xdd = target->x - x;
 			double zdd = target->z - z;
@@ -116,7 +116,7 @@ void Spider::checkHurtTarget(std::shared_ptr<Entity> target, float d)
 			zd = (zdd / dd * 0.5f) * 0.8f + zd * 0.2f;
 			yd = 0.4f;
 		}
-	}
+	} 
 	else
 	{
 		Monster::checkHurtTarget(target, d);
@@ -143,11 +143,11 @@ void Spider::dropDeathLoot(bool wasKilledByPlayer, int playerBonusLevel)
  * to climb walls.
  */
 
-bool Spider::onLadder()
+bool Spider::onLadder() 
 {
 	return isClimbing();
 }
-
+	
 void Spider::makeStuckInWeb()
 {
 	// do nothing - spiders don't get stuck in web

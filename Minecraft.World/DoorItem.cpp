@@ -18,7 +18,7 @@ DoorItem::DoorItem(int id, Material *material) :  Item(id)
 	maxStackSize = 1;
 }
 
-bool DoorItem::useOn(std::shared_ptr<ItemInstance> instance, std::shared_ptr<Player> player, Level *level, int x, int y, int z, int face, float clickX, float clickY, float clickZ, bool bTestUseOnOnly)
+bool DoorItem::useOn(shared_ptr<ItemInstance> instance, shared_ptr<Player> player, Level *level, int x, int y, int z, int face, float clickX, float clickY, float clickZ, bool bTestUseOnOnly) 
 {
 	if (face != Facing::UP) return false;
 	y++;

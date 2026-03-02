@@ -246,7 +246,7 @@ void SelectWorldScreen::WorldSelectionList::selectItem(int item, bool doubleClic
     parent->deleteButton->active = active;
     parent->renameButton->active = active;
 
-    if (doubleClick && active)
+    if (doubleClick && active) 
 	{
         parent->worldSelected(item);
     }
@@ -294,7 +294,7 @@ void SelectWorldScreen::WorldSelectionList::renderItem(int i, int x, int y, int 
 	swprintf(buffer,20,L"%d/%d/%d %d:%02d",time.wDay, time.wMonth, time.wYear, time.wHour, time.wMinute); // 4J - TODO Localise this
     id = id + L" (" + buffer;
 
-    int64_t size = levelSummary->getSizeOnDisk();
+    __int64 size = levelSummary->getSizeOnDisk();
     id = id + L", " + _toString<float>(size / 1024 * 100 / 1024 / 100.0f) + L" MB)";
     wstring info;
 

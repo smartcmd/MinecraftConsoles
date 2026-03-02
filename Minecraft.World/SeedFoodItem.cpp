@@ -11,7 +11,7 @@ SeedFoodItem::SeedFoodItem(int id, int nutrition, float saturationMod, int resul
 
 }
 
-bool SeedFoodItem::useOn(std::shared_ptr<ItemInstance> instance, std::shared_ptr<Player> player, Level *level, int x, int y, int z, int face, float clickX, float clickY, float clickZ, bool bTestUseOnOnly)
+bool SeedFoodItem::useOn(shared_ptr<ItemInstance> instance, shared_ptr<Player> player, Level *level, int x, int y, int z, int face, float clickX, float clickY, float clickZ, bool bTestUseOnOnly)
 {
 	if (face != Facing::UP) return false;
 

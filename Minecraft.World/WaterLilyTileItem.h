@@ -8,7 +8,7 @@ public:
 	using ColoredTileItem::getColor;
 	WaterLilyTileItem(int id);
 
-	virtual std::shared_ptr<ItemInstance> use(std::shared_ptr<ItemInstance> itemInstance, Level *level, std::shared_ptr<Player> player);
-	virtual bool TestUse(Level *level, std::shared_ptr<Player> player);
+	virtual shared_ptr<ItemInstance> use(shared_ptr<ItemInstance> itemInstance, Level *level, shared_ptr<Player> player);
+	virtual bool TestUse(Level *level, shared_ptr<Player> player);
 	virtual int getColor(int data, int spriteLayer);
 };

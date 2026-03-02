@@ -14,7 +14,7 @@
 #include "boost/date_time/local_time/dst_transition_day_rules.hpp"
 #include "boost/date_time/string_convert.hpp"
 //#include "boost/date_time/special_defs.hpp"
-#include "boost/std::shared_ptr.hpp"
+#include "boost/shared_ptr.hpp"
 
 namespace boost {
 namespace local_time {
@@ -22,7 +22,7 @@ namespace local_time {
   //typedef boost::date_time::time_zone_names time_zone_names;
   typedef boost::date_time::dst_adjustment_offsets<boost::posix_time::time_duration> dst_adjustment_offsets;
   //typedef boost::date_time::time_zone_base<boost::posix_time::ptime> time_zone;
-  typedef boost::std::shared_ptr<dst_calc_rule> dst_calc_rule_ptr;
+  typedef boost::shared_ptr<dst_calc_rule> dst_calc_rule_ptr;
 
   //! A real time zone
   template<class CharT>
@@ -38,7 +38,7 @@ namespace local_time {
     custom_time_zone_base(const time_zone_names& zone_names,
                      const time_duration_type& utc_offset,
                      const dst_adjustment_offsets& dst_shift,
-                     boost::std::shared_ptr<dst_calc_rule> calc_rule) :
+                     boost::shared_ptr<dst_calc_rule> calc_rule) :
       zone_names_(zone_names),
       base_utc_offset_(utc_offset),
       dst_offsets_(dst_shift),
@@ -100,7 +100,7 @@ namespace local_time {
       // std offset dst [offset],start[/time],end[/time] - w/o spaces
       stringstream_type ss;
       ss.fill('0');
-      boost::std::shared_ptr<dst_calc_rule> no_rules;
+      boost::shared_ptr<dst_calc_rule> no_rules;
       // std
       ss << std_zone_abbrev();
       // offset
@@ -157,7 +157,7 @@ namespace local_time {
     bool has_dst_;
     time_duration_type base_utc_offset_;
     dst_adjustment_offsets dst_offsets_;
-    boost::std::shared_ptr<dst_calc_rule> dst_calc_rules_;
+    boost::shared_ptr<dst_calc_rule> dst_calc_rules_;
   };
 
   typedef custom_time_zone_base<char> custom_time_zone;

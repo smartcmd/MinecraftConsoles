@@ -18,18 +18,18 @@ public:
 	static const int USE_ROW_SLOT_END;
 
 public:
-	std::shared_ptr<CraftingContainer> craftSlots;
-	std::shared_ptr<Container> resultSlots;
+	shared_ptr<CraftingContainer> craftSlots;
+	shared_ptr<Container> resultSlots;
 
 private:
 	Level *level;
 	int x, y, z;
 
 public:
-	CraftingMenu(std::shared_ptr<Inventory> inventory, Level *level, int xt, int yt, int zt);
+	CraftingMenu(shared_ptr<Inventory> inventory, Level *level, int xt, int yt, int zt);
 
-	virtual void slotsChanged();// 4J used to take a std::shared_ptr<Container> but wasn't using it, so removed to simplify things
-	virtual void removed(std::shared_ptr<Player> player);
-	virtual bool stillValid(std::shared_ptr<Player> player);
-	virtual std::shared_ptr<ItemInstance> quickMoveStack(std::shared_ptr<Player> player, int slotIndex);
+	virtual void slotsChanged();// 4J used to take a shared_ptr<Container> but wasn't using it, so removed to simplify things
+	virtual void removed(shared_ptr<Player> player);
+	virtual bool stillValid(shared_ptr<Player> player);
+	virtual shared_ptr<ItemInstance> quickMoveStack(shared_ptr<Player> player, int slotIndex);
 };

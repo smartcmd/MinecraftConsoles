@@ -40,7 +40,7 @@ public:
 	//@Override
 	void registerIcons(IconRegister *iconRegister);
 	virtual bool TestUse();
-    virtual bool use(Level *level, int x, int y, int z, std::shared_ptr<Player> player, int clickedFace, float clickX, float clickY, float clickZ, bool soundOnly = false); // 4J added soundOnly param
+    virtual bool use(Level *level, int x, int y, int z, shared_ptr<Player> player, int clickedFace, float clickX, float clickY, float clickZ, bool soundOnly = false); // 4J added soundOnly param
 
 private:
 	void fireArrow(Level *level, int x, int y, int z, Random *random);
@@ -48,11 +48,11 @@ private:
 public:
 	virtual void neighborChanged(Level *level, int x, int y, int z, int type);
     virtual void tick(Level *level, int x, int y, int z, Random *random);
-	virtual std::shared_ptr<TileEntity> newTileEntity(Level *level);
-	virtual void setPlacedBy(Level *level, int x, int y, int z, std::shared_ptr<Mob> by);
+	virtual shared_ptr<TileEntity> newTileEntity(Level *level);
+	virtual void setPlacedBy(Level *level, int x, int y, int z, shared_ptr<Mob> by);
     virtual void onRemove(Level *level, int x, int y, int z, int id, int data);
 
 private:
-	static void throwItem(Level *level, std::shared_ptr<ItemInstance> item, Random *random, int accuracy, int xd, int zd, double xp, double yp, double zp);
-	static int dispenseItem(std::shared_ptr<DispenserTileEntity> trap, Level *level, std::shared_ptr<ItemInstance> item, Random *random, int x, int y, int z, int xd, int zd, double xp, double yp, double zp);
+	static void throwItem(Level *level, shared_ptr<ItemInstance> item, Random *random, int accuracy, int xd, int zd, double xp, double yp, double zp);
+	static int dispenseItem(shared_ptr<DispenserTileEntity> trap, Level *level, shared_ptr<ItemInstance> item, Random *random, int x, int y, int z, int xd, int zd, double xp, double yp, double zp);
 };

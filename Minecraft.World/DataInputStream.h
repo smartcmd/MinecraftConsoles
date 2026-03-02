@@ -24,12 +24,12 @@ public:
 	virtual double readDouble();
 	virtual float readFloat();
 	virtual int readInt();
-	virtual int64_t readLong();
+	virtual __int64 readLong();
 	virtual short readShort();
 	virtual wstring readUTF();
 	void deleteChildStream();
 	virtual int readUTFChar();
 	virtual PlayerUID readPlayerUID(); // 4J Added
-	virtual int64_t skip(int64_t n);
+	virtual __int64 skip(__int64 n);
 	virtual int skipBytes(int n);
 };

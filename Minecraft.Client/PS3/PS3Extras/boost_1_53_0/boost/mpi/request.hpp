@@ -14,7 +14,7 @@
 
 #include <boost/mpi/config.hpp>
 #include <boost/optional.hpp>
-#include <boost/std::shared_ptr.hpp>
+#include <boost/shared_ptr.hpp>
 #include <boost/mpi/packed_iarchive.hpp>
 
 namespace boost { namespace mpi {
@@ -29,7 +29,7 @@ class communicator;
  *  receive and will be returned from @c isend or @c irecv,
  *  respectively.
  */
-class BOOST_MPI_DECL request
+class BOOST_MPI_DECL request 
 {
  public:
   /**
@@ -62,7 +62,7 @@ class BOOST_MPI_DECL request
 
  private:
   enum request_action { ra_wait, ra_test, ra_cancel };
-  typedef optional<status> (*handler_type)(request* self,
+  typedef optional<status> (*handler_type)(request* self, 
                                            request_action action);
 
   /**
@@ -71,7 +71,7 @@ class BOOST_MPI_DECL request
    * Handles the non-blocking receive of a serialized value.
    */
   template<typename T>
-  static optional<status>
+  static optional<status> 
   handle_serialized_irecv(request* self, request_action action);
 
   /**
@@ -80,7 +80,7 @@ class BOOST_MPI_DECL request
    * Handles the non-blocking receive of an array of  serialized values.
    */
   template<typename T>
-  static optional<status>
+  static optional<status> 
   handle_serialized_array_irecv(request* self, request_action action);
 
  public: // template friends are not portable
@@ -92,7 +92,7 @@ class BOOST_MPI_DECL request
   handler_type m_handler;
 
   /// INTERNAL ONLY
-  std::shared_ptr<void> m_data;
+  shared_ptr<void> m_data;
 
   friend class communicator;
 };

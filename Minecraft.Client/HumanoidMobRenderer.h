@@ -7,7 +7,7 @@ class HumanoidMobRenderer : public MobRenderer
 {
 protected:
 	HumanoidModel *humanoidModel;
-	float _scale;
+	float _scale;	
 	HumanoidModel *armorParts1;
 	HumanoidModel *armorParts2;
 
@@ -17,6 +17,6 @@ public:
 	HumanoidMobRenderer(HumanoidModel *humanoidModel, float shadow, float scale);
 protected:
 	virtual void createArmorParts();
-	virtual void additionalRendering(std::shared_ptr<Mob> mob, float a);
-	void scale(std::shared_ptr<Mob> mob, float a);
+	virtual void additionalRendering(shared_ptr<Mob> mob, float a);
+	void scale(shared_ptr<Mob> mob, float a);
 };

@@ -4,7 +4,7 @@
 
 class HangingEntity;
 
-class HangingEntityItem : public Item
+class HangingEntityItem : public Item 
 {
 private:
 	//final Class<? extends HangingEntity> clazz;
@@ -13,9 +13,9 @@ private:
 public:
 	HangingEntityItem(int id, eINSTANCEOF eClassType);
 
-    virtual bool useOn(std::shared_ptr<ItemInstance> instance, std::shared_ptr<Player> player, Level *level, int xt, int yt, int zt, int face, float clickX, float clickY, float clickZ, bool bTestUseOnOnly);//, float clickX, float clickY, float clickZ);
-
+    virtual bool useOn(shared_ptr<ItemInstance> instance, shared_ptr<Player> player, Level *level, int xt, int yt, int zt, int face, float clickX, float clickY, float clickZ, bool bTestUseOnOnly);//, float clickX, float clickY, float clickZ); 
+	
 private:
-	std::shared_ptr<HangingEntity> createEntity(Level *level, int x, int y, int z, int dir) ;
+	shared_ptr<HangingEntity> createEntity(Level *level, int x, int y, int z, int dir) ;
 
 };

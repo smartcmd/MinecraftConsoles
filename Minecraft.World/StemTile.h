@@ -29,7 +29,7 @@ public:
 
     virtual int getColor(LevelSource *level, int x, int y, int z);
     virtual void updateDefaultShape();
-    virtual void updateShape(LevelSource *level, int x, int y, int z, int forceData = -1, std::shared_ptr<TileEntity> forceEntity = std::shared_ptr<TileEntity>());	// 4J added forceData, forceEntity param
+    virtual void updateShape(LevelSource *level, int x, int y, int z, int forceData = -1, shared_ptr<TileEntity> forceEntity = shared_ptr<TileEntity>());	// 4J added forceData, forceEntity param
     virtual int getRenderShape();
 
     int getConnectDir(LevelSource *level, int x, int y, int z);

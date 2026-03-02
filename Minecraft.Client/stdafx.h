@@ -34,7 +34,7 @@
 #include <kernel.h>
 #include <unordered_map>
 #include <unordered_set>
-#include <vector>
+#include <vector> 
 #include <fios2.h>
 #include <message_dialog.h>
 #include <game_live_streaming.h>
@@ -49,7 +49,7 @@
 #include <kernel.h>
 #include <unordered_map>
 #include <unordered_set>
-#include <vector>
+#include <vector> 
 #include <touch.h>
 #include "PSVitaTypes.h"
 #include "PSVitaStubs.h"
@@ -59,7 +59,7 @@
 #include <unordered_map>
 #include <unordered_set>
 #include <vector>
-#include <cstdint>
+typedef unsigned __int64 __uint64;
 #endif
 
 #ifdef  _WINDOWS64
@@ -72,7 +72,7 @@
 // TODO: reference additional headers your program requires here
 #include <d3d11.h>
 #include <DirectXMath.h>
-using namespace DirectX;
+using namespace DirectX; 
 
 #define HRESULT_SUCCEEDED(hr) (((HRESULT)(hr)) >= 0)
 
@@ -87,7 +87,7 @@ using namespace DirectX;
 #include <DirectXMath.h>
 #include <ppltasks.h>
 #include <collection.h>
-using namespace DirectX;
+using namespace DirectX; 
 #include <pix.h>
 #include "DurangoStubs.h"
 #define HRESULT_SUCCEEDED(hr) (((HRESULT)(hr)) >= 0)
@@ -182,12 +182,12 @@ typedef XUID GameSessionUID;
 	#include "Windows64\4JLibs\inc\4J_Storage.h"
 	#include "Windows64\KeyboardMouseInput.h"
 #elif defined __PSVITA__
-	#include "PSVita\4JLibs\inc\4J_Input.h"
+	#include "PSVita\4JLibs\inc\4J_Input.h"	
 	#include "PSVita\4JLibs\inc\4J_Profile.h"
 	#include "PSVita\4JLibs\inc\4J_Render.h"
 	#include "PSVita\4JLibs\inc\4J_Storage.h"
 #else
-	#include "Orbis\4JLibs\inc\4J_Input.h"
+	#include "Orbis\4JLibs\inc\4J_Input.h"	
 	#include "Orbis\4JLibs\inc\4J_Profile.h"
 	#include "Orbis\4JLibs\inc\4J_Render.h"
 	#include "Orbis\4JLibs\inc\4J_Storage.h"
@@ -258,7 +258,7 @@ typedef XUID GameSessionUID;
 	#include "Durango\Sentient\MinecraftTelemetry.h"
 	#include "DurangoMedia\strings.h"
 	#include "Durango\Durango_App.h"
-	#include "Durango\Sentient\DynamicConfigurations.h"
+	#include "Durango\Sentient\DynamicConfigurations.h"	
 	#include "Durango\Sentient\TelemetryEnum.h"
 	#include "Durango\Sentient\SentientTelemetryCommon.h"
 	#include "Durango\PresenceIds.h"
@@ -276,7 +276,7 @@ typedef XUID GameSessionUID;
 	#include "Windows64\Sentient\DynamicConfigurations.h"
 	#include "Windows64\Sentient\SentientTelemetryCommon.h"
 	#include "Windows64\GameConfig\Minecraft.spa.h"
-	#include "Windows64\XML\ATGXmlParser.h"
+	#include "Windows64\XML\ATGXmlParser.h"	
 	#include "Windows64\Social\SocialManager.h"
 	#include "Common\Audio\SoundEngine.h"
 	#include "Windows64\Iggy\include\iggy.h"
@@ -303,7 +303,7 @@ typedef XUID GameSessionUID;
 	#include "Orbis\Sentient\DynamicConfigurations.h"
 	#include "Orbis\GameConfig\Minecraft.spa.h"
 	#include "OrbisMedia\4J_strings.h"
-	#include "Orbis\XML\ATGXmlParser.h"
+	#include "Orbis\XML\ATGXmlParser.h"	
 	#include "Windows64\Social\SocialManager.h"
 	#include "Common\Audio\SoundEngine.h"
 	#include "Orbis\Iggy\include\iggy.h"

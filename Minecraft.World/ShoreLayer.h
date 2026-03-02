@@ -4,6 +4,6 @@
 class ShoreLayer : public Layer
 {
 public:
-    ShoreLayer(int64_t seed, std::shared_ptr<Layer> parent);
+    ShoreLayer(__int64 seed, shared_ptr<Layer> parent);
     virtual intArray getArea(int xo, int yo, int w, int h);
 };

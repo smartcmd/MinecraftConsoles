@@ -31,7 +31,7 @@ protected:
 			UI_MAP_ELEMENT( m_labelInventory, "inventoryLabel")
 		UI_END_MAP_CHILD_ELEMENTS()
 	UI_END_MAP_ELEMENTS_AND_NAMES()
-
+	
 public:
 	UIScene_AbstractContainerMenu(int iPad, UILayer *parentLayer);
 	~UIScene_AbstractContainerMenu();
@@ -49,7 +49,7 @@ protected:
 	virtual void setSectionFocus(ESceneSection eSection, int iPad);
 	void setFocusToPointer(int iPad);
 	void SetPointerText(const wstring &description, vector<wstring> &unformattedStrings, bool newSlot);
-	virtual std::shared_ptr<ItemInstance> getSlotItem(ESceneSection eSection, int iSlot);
+	virtual shared_ptr<ItemInstance> getSlotItem(ESceneSection eSection, int iSlot);
 	virtual bool isSlotEmpty(ESceneSection eSection, int iSlot);
 	virtual void adjustPointerForSafeZone();
 
@@ -57,7 +57,7 @@ protected:
 
 public:
 	virtual void tick();
-
+	
 	virtual void render(S32 width, S32 height, C4JRender::eViewportType viewpBort);
 	virtual void customDraw(IggyCustomDrawCallbackRegion *region);
 

@@ -19,12 +19,12 @@ public:
 
 	void removeListener(net_minecraft_world::ContainerListener *listener);
 
-	std::shared_ptr<ItemInstance> getItem(unsigned int slot);
+	shared_ptr<ItemInstance> getItem(unsigned int slot);
 
-	std::shared_ptr<ItemInstance> removeItem(unsigned int slot, int count);
-	std::shared_ptr<ItemInstance> removeItemNoUpdate(int slot);
+	shared_ptr<ItemInstance> removeItem(unsigned int slot, int count);
+	shared_ptr<ItemInstance> removeItemNoUpdate(int slot);
 
-	void setItem(unsigned int slot, std::shared_ptr<ItemInstance> item);
+	void setItem(unsigned int slot, shared_ptr<ItemInstance> item);
 
 	unsigned int getContainerSize();
 
@@ -34,7 +34,7 @@ public:
 
 	void setChanged();
 
-	bool stillValid(std::shared_ptr<Player> player);
+	bool stillValid(shared_ptr<Player> player);
 
 	void startOpen() { } // TODO Auto-generated method stub
 	void stopOpen() { } // TODO Auto-generated method stub

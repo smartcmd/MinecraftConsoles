@@ -19,7 +19,7 @@ private:
 
 public:
 	int shakeTime;
-	std::shared_ptr<Player> owner;
+	shared_ptr<Player> owner;
 
 private:
 	int life;
@@ -27,15 +27,15 @@ private:
 	int nibble;
 
 public:
-	std::shared_ptr<Entity> hookedIn;
+	shared_ptr<Entity> hookedIn;
 
 private:
 	void _init();
 
 public:
 	FishingHook(Level *level);
-	FishingHook(Level *level, double x, double y, double z, std::shared_ptr<Player> owner);
-	FishingHook(Level *level, std::shared_ptr<Player> mob);
+	FishingHook(Level *level, double x, double y, double z, shared_ptr<Player> owner);
+	FishingHook(Level *level, shared_ptr<Player> mob);
 
 protected:
 	virtual void defineSynchedData();

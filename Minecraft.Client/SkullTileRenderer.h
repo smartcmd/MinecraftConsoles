@@ -18,7 +18,7 @@ public:
 	SkullTileRenderer();
 	~SkullTileRenderer();
 
-	void render(std::shared_ptr<TileEntity> skull, double x, double y, double z, float a, bool setColor, float alpha, bool useCompiled = true);
+	void render(shared_ptr<TileEntity> skull, double x, double y, double z, float a, bool setColor, float alpha, bool useCompiled = true);
 	void init(TileEntityRenderDispatcher *tileEntityRenderDispatcher);
 	void renderSkull(float x, float y, float z, int face, float rot, int type, const wstring &extra);
 };

@@ -25,7 +25,7 @@ protected:
 	CXuiCtrlSlotList* m_useRowControl;
 	CXuiCtrlSlotItem* m_pointerControl;
 	CXuiControl m_InventoryText;
-
+	
 	HRESULT OnKeyDown(XUIMessageInput *pInputData, BOOL& bHandled);
 	// Timer function to poll stick input and update pointer position.
 	HRESULT OnTimer( XUIMessageTimer *pTimer, BOOL& bHandled );
@@ -64,7 +64,7 @@ public:
 	HXUIOBJ m_hPointerText;
 	HXUIOBJ m_hPointerTextBkg;
 	HXUIOBJ m_hPointerImg;
-
+	
 	virtual int getSectionColumns(ESceneSection eSection);
 	virtual int getSectionRows(ESceneSection eSection);
 	virtual CXuiControl*	GetSectionControl( ESceneSection eSection ) = 0;
@@ -77,7 +77,7 @@ public:
 	void setSectionSelectedSlot(ESceneSection eSection, int x, int y);
 	void setFocusToPointer(int iPad);
 	void SetPointerText(const wstring &description, vector<wstring> &unformattedStrings, bool newSlot);
-	virtual std::shared_ptr<ItemInstance> getSlotItem(ESceneSection eSection, int iSlot);
+	virtual shared_ptr<ItemInstance> getSlotItem(ESceneSection eSection, int iSlot);
 	virtual bool isSlotEmpty(ESceneSection eSection, int iSlot);
 	virtual void adjustPointerForSafeZone();
 };

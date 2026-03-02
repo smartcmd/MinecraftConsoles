@@ -3,8 +3,8 @@
 
 //  deconstruct.hpp
 //
-// A factory function for creating a std::shared_ptr which creates
-// an object and its owning std::shared_ptr with one allocation, similar
+// A factory function for creating a shared_ptr which creates
+// an object and its owning shared_ptr with one allocation, similar
 // to make_shared<T>().  It also supports postconstructors
 // and predestructors through unqualified calls of adl_postconstruct() and
 // adl_predestruct, relying on argument-dependent
@@ -25,7 +25,7 @@
 //  for more information
 
 #include <boost/config.hpp>
-#include <boost/std::shared_ptr.hpp>
+#include <boost/shared_ptr.hpp>
 #include <boost/signals2/deconstruct_ptr.hpp>
 #include <boost/type_traits/alignment_of.hpp>
 #include <boost/type_traits/remove_const.hpp>
@@ -50,11 +50,11 @@ template<typename T>
     class postconstructor_invoker
 {
 public:
-    operator const std::shared_ptr<T> & () const
+    operator const shared_ptr<T> & () const
     {
         return postconstruct();
     }
-    const std::shared_ptr<T>& postconstruct() const
+    const shared_ptr<T>& postconstruct() const
     {
         if(!_postconstructed)
         {
@@ -65,7 +65,7 @@ public:
     }
 #if !defined(BOOST_NO_CXX11_VARIADIC_TEMPLATES) && !defined(BOOST_NO_CXX11_RVALUE_REFERENCES)
     template<class... Args>
-      const std::shared_ptr<T>& postconstruct(Args && ... args)
+      const shared_ptr<T>& postconstruct(Args && ... args)
     {
         if(!_postconstructed)
         {
@@ -77,7 +77,7 @@ public:
     }
 #else // !defined(BOOST_NO_CXX11_VARIADIC_TEMPLATES) && !defined(BOOST_NO_CXX11_RVALUE_REFERENCES)
     template<typename A1>
-      const std::shared_ptr<T>& postconstruct(const A1 &a1) const
+      const shared_ptr<T>& postconstruct(const A1 &a1) const
     {
         if(!_postconstructed)
         {
@@ -88,7 +88,7 @@ public:
         return _sp;
     }
     template<typename A1, typename A2>
-      const std::shared_ptr<T>& postconstruct(const A1 &a1, const A2 &a2) const
+      const shared_ptr<T>& postconstruct(const A1 &a1, const A2 &a2) const
     {
         if(!_postconstructed)
         {
@@ -99,7 +99,7 @@ public:
         return _sp;
     }
     template<typename A1, typename A2, typename A3>
-      const std::shared_ptr<T>& postconstruct(const A1 &a1, const A2 &a2, const A3 &a3) const
+      const shared_ptr<T>& postconstruct(const A1 &a1, const A2 &a2, const A3 &a3) const
     {
         if(!_postconstructed)
         {
@@ -110,7 +110,7 @@ public:
         return _sp;
     }
     template<typename A1, typename A2, typename A3, typename A4>
-      const std::shared_ptr<T>& postconstruct(const A1 &a1, const A2 &a2, const A3 &a3, const A4 &a4) const
+      const shared_ptr<T>& postconstruct(const A1 &a1, const A2 &a2, const A3 &a3, const A4 &a4) const
     {
         if(!_postconstructed)
         {
@@ -121,7 +121,7 @@ public:
         return _sp;
     }
     template<typename A1, typename A2, typename A3, typename A4, typename A5>
-      const std::shared_ptr<T>& postconstruct(const A1 &a1, const A2 &a2, const A3 &a3, const A4 &a4, const A5 &a5) const
+      const shared_ptr<T>& postconstruct(const A1 &a1, const A2 &a2, const A3 &a3, const A4 &a4, const A5 &a5) const
     {
         if(!_postconstructed)
         {
@@ -133,7 +133,7 @@ public:
     }
     template<typename A1, typename A2, typename A3, typename A4, typename A5,
       typename A6>
-      const std::shared_ptr<T>& postconstruct(const A1 &a1, const A2 &a2, const A3 &a3, const A4 &a4, const A5 &a5,
+      const shared_ptr<T>& postconstruct(const A1 &a1, const A2 &a2, const A3 &a3, const A4 &a4, const A5 &a5,
       const A6 &a6) const
     {
         if(!_postconstructed)
@@ -146,7 +146,7 @@ public:
     }
     template<typename A1, typename A2, typename A3, typename A4, typename A5,
       typename A6, typename A7>
-      const std::shared_ptr<T>& postconstruct(const A1 &a1, const A2 &a2, const A3 &a3, const A4 &a4, const A5 &a5,
+      const shared_ptr<T>& postconstruct(const A1 &a1, const A2 &a2, const A3 &a3, const A4 &a4, const A5 &a5,
       const A6 &a6, const A7 &a7) const
     {
         if(!_postconstructed)
@@ -159,7 +159,7 @@ public:
     }
     template<typename A1, typename A2, typename A3, typename A4, typename A5,
       typename A6, typename A7, typename A8>
-      const std::shared_ptr<T>& postconstruct(const A1 &a1, const A2 &a2, const A3 &a3, const A4 &a4, const A5 &a5,
+      const shared_ptr<T>& postconstruct(const A1 &a1, const A2 &a2, const A3 &a3, const A4 &a4, const A5 &a5,
       const A6 &a6, const A7 &a7, const A8 &a8) const
     {
         if(!_postconstructed)
@@ -172,7 +172,7 @@ public:
     }
     template<typename A1, typename A2, typename A3, typename A4, typename A5,
       typename A6, typename A7, typename A8, typename A9>
-      const std::shared_ptr<T>& postconstruct(const A1 &a1, const A2 &a2, const A3 &a3, const A4 &a4, const A5 &a5,
+      const shared_ptr<T>& postconstruct(const A1 &a1, const A2 &a2, const A3 &a3, const A4 &a4, const A5 &a5,
       const A6 &a6, const A7 &a7, const A8 &a8, const A9 &a9) const
     {
         if(!_postconstructed)
@@ -186,10 +186,10 @@ public:
 #endif // !defined(BOOST_NO_CXX11_VARIADIC_TEMPLATES) && !defined(BOOST_NO_CXX11_RVALUE_REFERENCES)
 private:
     friend class boost::signals2::deconstruct_access;
-    postconstructor_invoker(const std::shared_ptr<T> & sp):
+    postconstructor_invoker(const shared_ptr<T> & sp):
         _sp(sp), _postconstructed(false)
     {}
-    std::shared_ptr<T> _sp;
+    shared_ptr<T> _sp;
     mutable bool _postconstructed;
 };
 
@@ -269,7 +269,7 @@ public:
     template< class T >
     static postconstructor_invoker<T> deconstruct()
     {
-        boost::std::shared_ptr< T > pt( static_cast< T* >( 0 ), detail::deconstruct_deleter< T >() );
+        boost::shared_ptr< T > pt( static_cast< T* >( 0 ), detail::deconstruct_deleter< T >() );
 
         detail::deconstruct_deleter< T > * pd = boost::get_deleter< detail::deconstruct_deleter< T > >( pt );
 
@@ -278,7 +278,7 @@ public:
         new( pv ) T();
         pd->set_initialized();
 
-        boost::std::shared_ptr< T > retval( pt, static_cast< T* >( pv ) );
+        boost::shared_ptr< T > retval( pt, static_cast< T* >( pv ) );
         boost::detail::sp_enable_shared_from_this(&retval, retval.get(), retval.get());
         return retval;
 
@@ -291,7 +291,7 @@ public:
     template< class T, class... Args >
     static postconstructor_invoker<T> deconstruct( Args && ... args )
     {
-        boost::std::shared_ptr< T > pt( static_cast< T* >( 0 ), detail::deconstruct_deleter< T >() );
+        boost::shared_ptr< T > pt( static_cast< T* >( 0 ), detail::deconstruct_deleter< T >() );
 
         detail::deconstruct_deleter< T > * pd = boost::get_deleter< detail::deconstruct_deleter< T > >( pt );
 
@@ -300,7 +300,7 @@ public:
         new( pv ) T( std::forward<Args>( args )... );
         pd->set_initialized();
 
-        boost::std::shared_ptr< T > retval( pt, static_cast< T* >( pv ) );
+        boost::shared_ptr< T > retval( pt, static_cast< T* >( pv ) );
         boost::detail::sp_enable_shared_from_this(&retval, retval.get(), retval.get());
         return retval;
     }
@@ -310,7 +310,7 @@ public:
     template< class T, class A1 >
     static postconstructor_invoker<T> deconstruct( A1 const & a1 )
     {
-        boost::std::shared_ptr< T > pt( static_cast< T* >( 0 ), detail::deconstruct_deleter< T >() );
+        boost::shared_ptr< T > pt( static_cast< T* >( 0 ), detail::deconstruct_deleter< T >() );
 
         detail::deconstruct_deleter< T > * pd = boost::get_deleter< detail::deconstruct_deleter< T > >( pt );
 
@@ -319,7 +319,7 @@ public:
         new( pv ) T( a1 );
         pd->set_initialized();
 
-        boost::std::shared_ptr< T > retval( pt, static_cast< T* >( pv ) );
+        boost::shared_ptr< T > retval( pt, static_cast< T* >( pv ) );
         boost::detail::sp_enable_shared_from_this(&retval, retval.get(), retval.get());
         return retval;
     }
@@ -327,7 +327,7 @@ public:
     template< class T, class A1, class A2 >
     static postconstructor_invoker<T> deconstruct( A1 const & a1, A2 const & a2 )
     {
-        boost::std::shared_ptr< T > pt( static_cast< T* >( 0 ), detail::deconstruct_deleter< T >() );
+        boost::shared_ptr< T > pt( static_cast< T* >( 0 ), detail::deconstruct_deleter< T >() );
 
         detail::deconstruct_deleter< T > * pd = boost::get_deleter< detail::deconstruct_deleter< T > >( pt );
 
@@ -336,7 +336,7 @@ public:
         new( pv ) T( a1, a2 );
         pd->set_initialized();
 
-        boost::std::shared_ptr< T > retval( pt, static_cast< T* >( pv ) );
+        boost::shared_ptr< T > retval( pt, static_cast< T* >( pv ) );
         boost::detail::sp_enable_shared_from_this(&retval, retval.get(), retval.get());
         return retval;
     }
@@ -344,7 +344,7 @@ public:
     template< class T, class A1, class A2, class A3 >
     static postconstructor_invoker<T> deconstruct( A1 const & a1, A2 const & a2, A3 const & a3 )
     {
-        boost::std::shared_ptr< T > pt( static_cast< T* >( 0 ), detail::deconstruct_deleter< T >() );
+        boost::shared_ptr< T > pt( static_cast< T* >( 0 ), detail::deconstruct_deleter< T >() );
 
         detail::deconstruct_deleter< T > * pd = boost::get_deleter< detail::deconstruct_deleter< T > >( pt );
 
@@ -353,7 +353,7 @@ public:
         new( pv ) T( a1, a2, a3 );
         pd->set_initialized();
 
-        boost::std::shared_ptr< T > retval( pt, static_cast< T* >( pv ) );
+        boost::shared_ptr< T > retval( pt, static_cast< T* >( pv ) );
         boost::detail::sp_enable_shared_from_this(&retval, retval.get(), retval.get());
         return retval;
     }
@@ -361,7 +361,7 @@ public:
     template< class T, class A1, class A2, class A3, class A4 >
     static postconstructor_invoker<T> deconstruct( A1 const & a1, A2 const & a2, A3 const & a3, A4 const & a4 )
     {
-        boost::std::shared_ptr< T > pt( static_cast< T* >( 0 ), detail::deconstruct_deleter< T >() );
+        boost::shared_ptr< T > pt( static_cast< T* >( 0 ), detail::deconstruct_deleter< T >() );
 
         detail::deconstruct_deleter< T > * pd = boost::get_deleter< detail::deconstruct_deleter< T > >( pt );
 
@@ -370,7 +370,7 @@ public:
         new( pv ) T( a1, a2, a3, a4 );
         pd->set_initialized();
 
-        boost::std::shared_ptr< T > retval( pt, static_cast< T* >( pv ) );
+        boost::shared_ptr< T > retval( pt, static_cast< T* >( pv ) );
         boost::detail::sp_enable_shared_from_this(&retval, retval.get(), retval.get());
         return retval;
     }
@@ -378,7 +378,7 @@ public:
     template< class T, class A1, class A2, class A3, class A4, class A5 >
     static postconstructor_invoker<T> deconstruct( A1 const & a1, A2 const & a2, A3 const & a3, A4 const & a4, A5 const & a5 )
     {
-        boost::std::shared_ptr< T > pt( static_cast< T* >( 0 ), detail::deconstruct_deleter< T >() );
+        boost::shared_ptr< T > pt( static_cast< T* >( 0 ), detail::deconstruct_deleter< T >() );
 
         detail::deconstruct_deleter< T > * pd = boost::get_deleter< detail::deconstruct_deleter< T > >( pt );
 
@@ -387,7 +387,7 @@ public:
         new( pv ) T( a1, a2, a3, a4, a5 );
         pd->set_initialized();
 
-        boost::std::shared_ptr< T > retval( pt, static_cast< T* >( pv ) );
+        boost::shared_ptr< T > retval( pt, static_cast< T* >( pv ) );
         boost::detail::sp_enable_shared_from_this(&retval, retval.get(), retval.get());
         return retval;
     }
@@ -395,7 +395,7 @@ public:
     template< class T, class A1, class A2, class A3, class A4, class A5, class A6 >
     static postconstructor_invoker<T> deconstruct( A1 const & a1, A2 const & a2, A3 const & a3, A4 const & a4, A5 const & a5, A6 const & a6 )
     {
-        boost::std::shared_ptr< T > pt( static_cast< T* >( 0 ), detail::deconstruct_deleter< T >() );
+        boost::shared_ptr< T > pt( static_cast< T* >( 0 ), detail::deconstruct_deleter< T >() );
 
         detail::deconstruct_deleter< T > * pd = boost::get_deleter< detail::deconstruct_deleter< T > >( pt );
 
@@ -404,7 +404,7 @@ public:
         new( pv ) T( a1, a2, a3, a4, a5, a6 );
         pd->set_initialized();
 
-        boost::std::shared_ptr< T > retval( pt, static_cast< T* >( pv ) );
+        boost::shared_ptr< T > retval( pt, static_cast< T* >( pv ) );
         boost::detail::sp_enable_shared_from_this(&retval, retval.get(), retval.get());
         return retval;
     }
@@ -412,7 +412,7 @@ public:
     template< class T, class A1, class A2, class A3, class A4, class A5, class A6, class A7 >
     static postconstructor_invoker<T> deconstruct( A1 const & a1, A2 const & a2, A3 const & a3, A4 const & a4, A5 const & a5, A6 const & a6, A7 const & a7 )
     {
-        boost::std::shared_ptr< T > pt( static_cast< T* >( 0 ), detail::deconstruct_deleter< T >() );
+        boost::shared_ptr< T > pt( static_cast< T* >( 0 ), detail::deconstruct_deleter< T >() );
 
         detail::deconstruct_deleter< T > * pd = boost::get_deleter< detail::deconstruct_deleter< T > >( pt );
 
@@ -421,7 +421,7 @@ public:
         new( pv ) T( a1, a2, a3, a4, a5, a6, a7 );
         pd->set_initialized();
 
-        boost::std::shared_ptr< T > retval( pt, static_cast< T* >( pv ) );
+        boost::shared_ptr< T > retval( pt, static_cast< T* >( pv ) );
         boost::detail::sp_enable_shared_from_this(&retval, retval.get(), retval.get());
         return retval;
     }
@@ -429,7 +429,7 @@ public:
     template< class T, class A1, class A2, class A3, class A4, class A5, class A6, class A7, class A8 >
     static postconstructor_invoker<T> deconstruct( A1 const & a1, A2 const & a2, A3 const & a3, A4 const & a4, A5 const & a5, A6 const & a6, A7 const & a7, A8 const & a8 )
     {
-        boost::std::shared_ptr< T > pt( static_cast< T* >( 0 ), detail::deconstruct_deleter< T >() );
+        boost::shared_ptr< T > pt( static_cast< T* >( 0 ), detail::deconstruct_deleter< T >() );
 
         detail::deconstruct_deleter< T > * pd = boost::get_deleter< detail::deconstruct_deleter< T > >( pt );
 
@@ -438,7 +438,7 @@ public:
         new( pv ) T( a1, a2, a3, a4, a5, a6, a7, a8 );
         pd->set_initialized();
 
-        boost::std::shared_ptr< T > retval( pt, static_cast< T* >( pv ) );
+        boost::shared_ptr< T > retval( pt, static_cast< T* >( pv ) );
         boost::detail::sp_enable_shared_from_this(&retval, retval.get(), retval.get());
         return retval;
     }
@@ -446,7 +446,7 @@ public:
     template< class T, class A1, class A2, class A3, class A4, class A5, class A6, class A7, class A8, class A9 >
     static postconstructor_invoker<T> deconstruct( A1 const & a1, A2 const & a2, A3 const & a3, A4 const & a4, A5 const & a5, A6 const & a6, A7 const & a7, A8 const & a8, A9 const & a9 )
     {
-        boost::std::shared_ptr< T > pt( static_cast< T* >( 0 ), detail::deconstruct_deleter< T >() );
+        boost::shared_ptr< T > pt( static_cast< T* >( 0 ), detail::deconstruct_deleter< T >() );
 
         detail::deconstruct_deleter< T > * pd = boost::get_deleter< detail::deconstruct_deleter< T > >( pt );
 
@@ -455,7 +455,7 @@ public:
         new( pv ) T( a1, a2, a3, a4, a5, a6, a7, a8, a9 );
         pd->set_initialized();
 
-        boost::std::shared_ptr< T > retval( pt, static_cast< T* >( pv ) );
+        boost::shared_ptr< T > retval( pt, static_cast< T* >( pv ) );
         boost::detail::sp_enable_shared_from_this(&retval, retval.get(), retval.get());
         return retval;
     }

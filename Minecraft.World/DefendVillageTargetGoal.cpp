@@ -11,7 +11,7 @@ DefendVillageTargetGoal::DefendVillageTargetGoal(VillagerGolem *golem) : TargetG
 
 bool DefendVillageTargetGoal::canUse()
 {
-	std::shared_ptr<Village> village = golem->getVillage();
+	shared_ptr<Village> village = golem->getVillage();
 	if (village == NULL) return false;
 	potentialTarget = weak_ptr<Mob>(village->getClosestAggressor(dynamic_pointer_cast<Mob>(golem->shared_from_this())));
 	return canAttack(potentialTarget.lock(), false);

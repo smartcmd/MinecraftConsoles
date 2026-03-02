@@ -13,7 +13,7 @@ public:
 	public:
 		DistComp(Entity *source);
 
-		bool operator() (std::shared_ptr<Entity> e1, std::shared_ptr<Entity> e2);
+		bool operator() (shared_ptr<Entity> e1, shared_ptr<Entity> e2);
 	};
 
 private:

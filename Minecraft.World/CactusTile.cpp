@@ -18,7 +18,7 @@ CactusTile::CactusTile(int id) : Tile(id, Material::cactus,isSolidRender())
 void CactusTile::tick(Level *level, int x, int y, int z, Random *random)
 {
 	if (level->isEmptyTile(x, y + 1, z))
-	{
+	{ 
 		int height = 1;
 		while (level->getTile(x, y - height, z) == id)
 		{
@@ -100,7 +100,7 @@ bool CactusTile::canSurvive(Level *level, int x, int y, int z)
     return below == Tile::cactus_Id || below == Tile::sand_Id;
 }
 
-void CactusTile::entityInside(Level *level, int x, int y, int z, std::shared_ptr<Entity> entity)
+void CactusTile::entityInside(Level *level, int x, int y, int z, shared_ptr<Entity> entity)
 {
 	entity->hurt(DamageSource::cactus, 1);
 }

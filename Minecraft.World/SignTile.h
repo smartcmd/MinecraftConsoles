@@ -21,14 +21,14 @@ public:
     virtual void updateDefaultShape();
 	AABB *getAABB(Level *level, int x, int y, int z);
 	AABB *getTileAABB(Level *level, int x, int y, int z);
-	void updateShape(LevelSource *level, int x, int y, int z, int forceData = -1, std::shared_ptr<TileEntity> forceEntity = std::shared_ptr<TileEntity>());	// 4J added forceData, forceEntity param
+	void updateShape(LevelSource *level, int x, int y, int z, int forceData = -1, shared_ptr<TileEntity> forceEntity = shared_ptr<TileEntity>());	// 4J added forceData, forceEntity param
 	int getRenderShape();
 	bool isCubeShaped();
 	virtual bool isPathfindable(LevelSource *level, int x, int y, int z);
 	bool isSolidRender(bool isServerLevel = false);
 
 protected:
-	std::shared_ptr<TileEntity> newTileEntity(Level *level);
+	shared_ptr<TileEntity> newTileEntity(Level *level);
 
 public:
 	int getResource(int data, Random *random, int playerBonusLevel);

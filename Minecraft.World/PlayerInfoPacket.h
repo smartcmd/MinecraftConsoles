@@ -19,7 +19,7 @@ class PlayerInfoPacket : public Packet, public enable_shared_from_this<PlayerInf
 		PlayerInfoPacket();
 		//PlayerInfoPacket(const wstring &name, bool add, int latency);
 		PlayerInfoPacket(BYTE networkSmallId, short playerColourIndex, unsigned int playerPrivileges = 0);
-		PlayerInfoPacket(std::shared_ptr<ServerPlayer> player);
+		PlayerInfoPacket(shared_ptr<ServerPlayer> player);
 
 		virtual void read(DataInputStream *dis);
 		virtual void write(DataOutputStream *dos);
@@ -27,6 +27,6 @@ class PlayerInfoPacket : public Packet, public enable_shared_from_this<PlayerInf
 		virtual int getEstimatedSize();
 
 public:
-	static std::shared_ptr<Packet> create() { return std::shared_ptr<Packet>(new PlayerInfoPacket()); }
+	static shared_ptr<Packet> create() { return shared_ptr<Packet>(new PlayerInfoPacket()); }
 	virtual int getId() { return 201; }
 };

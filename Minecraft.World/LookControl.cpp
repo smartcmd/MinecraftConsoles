@@ -13,10 +13,10 @@ LookControl::LookControl(Mob *mob)
 	this->mob = mob;
 }
 
-void LookControl::setLookAt(std::shared_ptr<Entity> target, float yMax, float xMax)
+void LookControl::setLookAt(shared_ptr<Entity> target, float yMax, float xMax)
 {
 	this->wantedX = target->x;
-	std::shared_ptr<Mob> targetMob = dynamic_pointer_cast<Mob>(target);
+	shared_ptr<Mob> targetMob = dynamic_pointer_cast<Mob>(target);
 	if (targetMob != NULL) this->wantedY = target->y + targetMob->getHeadHeight();
 	else this->wantedY = (target->bb->y0 + target->bb->y1) / 2;
 	this->wantedZ = target->z;
@@ -54,7 +54,7 @@ void LookControl::tick()
 		mob->yHeadRot = rotlerp(mob->yHeadRot, yRotD, yMax);
 	}
 	else
-	{
+	{		
 		mob->yHeadRot = rotlerp(mob->yHeadRot, mob->yBodyRot, 10);
 	}
 

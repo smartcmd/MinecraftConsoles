@@ -15,7 +15,7 @@
 */
 
 #include <boost/cstdint.hpp>
-#include <boost/std::shared_ptr.hpp>
+#include <boost/shared_ptr.hpp>
 #include <boost/detail/workaround.hpp>
 #include <boost/date_time/compiler_config.hpp>
 #include <boost/date_time/c_time.hpp>
@@ -50,7 +50,7 @@ namespace date_time {
     //! return a local time object for the given zone, based on computer clock
     //JKG -- looks like we could rewrite this against universal_time
     template<class time_zone_type>
-    static time_type local_time(std::shared_ptr<time_zone_type> tz_ptr)
+    static time_type local_time(shared_ptr<time_zone_type> tz_ptr)
     {
       typedef typename time_type::utc_time_type utc_time_type;
       typedef second_clock<utc_time_type> second_clock;

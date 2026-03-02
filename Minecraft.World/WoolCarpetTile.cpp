@@ -46,7 +46,7 @@ void WoolCarpetTile::updateDefaultShape()
 	updateShape(0);
 }
 
-void WoolCarpetTile::updateShape(LevelSource *level, int x, int y, int z, int forceData, std::shared_ptr<TileEntity> forceEntity)
+void WoolCarpetTile::updateShape(LevelSource *level, int x, int y, int z, int forceData, shared_ptr<TileEntity> forceEntity)
 {
 	updateShape(level->getData(x, y, z));
 }

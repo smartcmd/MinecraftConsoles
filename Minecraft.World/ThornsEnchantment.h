@@ -13,8 +13,8 @@ public:
 	virtual int getMinCost(int level);
 	virtual int getMaxCost(int level);
 	virtual int getMaxLevel();
-	virtual bool canEnchant(std::shared_ptr<ItemInstance> item);
+	virtual bool canEnchant(shared_ptr<ItemInstance> item);
 	static bool shouldHit(int level, Random *random);
 	static int getDamage(int level, Random *random);
-	static void doThornsAfterAttack(std::shared_ptr<Entity> source, std::shared_ptr<Mob> target, Random *random);
+	static void doThornsAfterAttack(shared_ptr<Entity> source, shared_ptr<Mob> target, Random *random);
 };

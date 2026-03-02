@@ -23,7 +23,7 @@ public:
 	bool isSolidRender(bool isServerLevel = false);
 	int getRenderShape();
 	bool isCubeShaped();
-	bool use(Level *level, int x, int y, int z, std::shared_ptr<Player> player, int clickedFace, float clickX, float clickY, float clickZ, bool soundOnly = false);
+	bool use(Level *level, int x, int y, int z, shared_ptr<Player> player, int clickedFace, float clickX, float clickY, float clickZ, bool soundOnly = false);
 	int cloneTileId(Level *level, int x, int y, int z);
 	int cloneTileData(Level *level, int x, int y, int z);
 	bool useOwnCloneData();
@@ -32,6 +32,6 @@ public:
 	using Tile::spawnResources;
 	void spawnResources(Level *level, int x, int y, int z, int data, float odds, int playerBonusLevel);
 	int getResource(int data, Random *random, int playerBonusLevel);
-	static std::shared_ptr<ItemInstance> getItemFromType(int type);
-	static int getTypeFromItem(std::shared_ptr<ItemInstance> item);
+	static shared_ptr<ItemInstance> getItemFromType(int type);
+	static int getTypeFromItem(shared_ptr<ItemInstance> item);
 };

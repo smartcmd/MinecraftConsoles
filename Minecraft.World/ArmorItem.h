@@ -65,7 +65,7 @@ public:
 	ArmorItem(int id, const ArmorMaterial *armorType, int icon, int slot);
 
 	//@Override
-	int getColor(std::shared_ptr<ItemInstance> item, int spriteLayer);
+	int getColor(shared_ptr<ItemInstance> item, int spriteLayer);
 
 	//@Override
 	bool hasMultipleSpriteLayers();
@@ -73,15 +73,15 @@ public:
 	virtual int getEnchantmentValue();
 
 	const ArmorMaterial *getMaterial();
-	bool hasCustomColor(std::shared_ptr<ItemInstance> item);
-	int getColor(std::shared_ptr<ItemInstance> item);
+	bool hasCustomColor(shared_ptr<ItemInstance> item);
+	int getColor(shared_ptr<ItemInstance> item);
 
 	//@Override
 	Icon *getLayerIcon(int auxValue, int spriteLayer);
-	void clearColor(std::shared_ptr<ItemInstance> item);
-	void setColor(std::shared_ptr<ItemInstance> item, int color);
+	void clearColor(shared_ptr<ItemInstance> item);
+	void setColor(shared_ptr<ItemInstance> item, int color);
 
-	bool isValidRepairItem(std::shared_ptr<ItemInstance> source, std::shared_ptr<ItemInstance> repairItem);
+	bool isValidRepairItem(shared_ptr<ItemInstance> source, shared_ptr<ItemInstance> repairItem);
 
 	//@Override
 	void registerIcons(IconRegister *iconRegister);

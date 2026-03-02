@@ -13,8 +13,8 @@ void DemoMode::tick()
     SurvivalMode::tick();
 
 /* 4J - TODO - seems unlikely we need this demo mode anyway
-    int64_t time = minecraft->level->getTime();
-    int64_t day = (time / Level::TICKS_PER_DAY) + 1;
+    __int64 time = minecraft->level->getTime();
+    __int64 day = (time / Level::TICKS_PER_DAY) + 1;
 
     demoHasEnded = (time > (500 + Level::TICKS_PER_DAY * DEMO_DAYS));
     if (demoHasEnded)
@@ -26,7 +26,7 @@ void DemoMode::tick()
 	{
         if (day <= (DEMO_DAYS + 1))
 		{
-            minecraft->gui->displayClientMessage(L"demo.day." + _toString<int64_t>(day));
+            minecraft->gui->displayClientMessage(L"demo.day." + _toString<__int64>(day));
         }
     }
 	else if (day == 1)
@@ -95,7 +95,7 @@ bool DemoMode::destroyBlock(int x, int y, int z, int face)
     return SurvivalMode::destroyBlock(x, y, z, face);
 }
 
-bool DemoMode::useItem(std::shared_ptr<Player> player, Level *level, std::shared_ptr<ItemInstance> item)
+bool DemoMode::useItem(shared_ptr<Player> player, Level *level, shared_ptr<ItemInstance> item)
 {
     if (demoHasEnded)
 	{
@@ -105,7 +105,7 @@ bool DemoMode::useItem(std::shared_ptr<Player> player, Level *level, std::shared
     return SurvivalMode::useItem(player, level, item);
 }
 
-bool DemoMode::useItemOn(std::shared_ptr<Player> player, Level *level, std::shared_ptr<ItemInstance> item, int x, int y, int z, int face)
+bool DemoMode::useItemOn(shared_ptr<Player> player, Level *level, shared_ptr<ItemInstance> item, int x, int y, int z, int face)
 {
     if (demoHasEnded) {
         outputDemoReminder();
@@ -114,7 +114,7 @@ bool DemoMode::useItemOn(std::shared_ptr<Player> player, Level *level, std::shar
     return SurvivalMode::useItemOn(player, level, item, x, y, z, face);
 }
 
-void DemoMode::attack(std::shared_ptr<Player> player, std::shared_ptr<Entity> entity)
+void DemoMode::attack(shared_ptr<Player> player, shared_ptr<Entity> entity)
 {
     if (demoHasEnded)
 	{

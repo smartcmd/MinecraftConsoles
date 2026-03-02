@@ -11,7 +11,7 @@ public:
 	DWORD dwBytes;
 
 	TexturePacket();
-	~TexturePacket();
+	~TexturePacket(); 
 	TexturePacket(const wstring &textureName, PBYTE pbData, DWORD dwBytes);
 
 	virtual void handle(PacketListener *listener);
@@ -20,6 +20,6 @@ public:
 	virtual int getEstimatedSize();
 
 public:
-	static std::shared_ptr<Packet> create() { return std::shared_ptr<Packet>(new TexturePacket()); }
+	static shared_ptr<Packet> create() { return shared_ptr<Packet>(new TexturePacket()); }
 	virtual int getId() { return 154; }
 };

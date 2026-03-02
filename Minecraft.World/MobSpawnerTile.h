@@ -9,7 +9,7 @@ class MobSpawnerTile : public EntityTile
 protected:
 	MobSpawnerTile(int id);
 public:
-    virtual std::shared_ptr<TileEntity> newTileEntity(Level *level);
+    virtual shared_ptr<TileEntity> newTileEntity(Level *level);
 	virtual int getResource(int data, Random *random, int playerBonusLevel);
     virtual int getResourceCount(Random *random);
     virtual bool isSolidRender(bool isServerLevel = false);

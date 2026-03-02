@@ -30,12 +30,12 @@ HRESULT CXuiSceneContainer::OnInit( XUIMessageInit* pInitData, BOOL& bHandled )
 	Minecraft *pMinecraft = Minecraft::GetInstance();
 
 	ContainerScreenInput* initData = (ContainerScreenInput*)pInitData->pvInitData;
-
+	
 	XuiControlSetText(m_ChestText,app.GetString(initData->container->getName()));
 
 	ContainerMenu* menu = new ContainerMenu( initData->inventory, initData->container );
 
-	std::shared_ptr<Container> container = initData->container;
+	shared_ptr<Container> container = initData->container;
 	m_iPad=initData->iPad;
 	m_bSplitscreen=initData->bSplitscreen;
 
@@ -61,7 +61,7 @@ HRESULT CXuiSceneContainer::OnInit( XUIMessageInit* pInitData, BOOL& bHandled )
 
 	// Adjust the height to show the correct number of container rows
 	float height, width;
-	this->GetBounds( &width, &height );
+	this->GetBounds( &width, &height );	
 	int rowDiff = CONTAINER_DEFAULT_ROWS - rows;
 	//height = height - (rowDiff * ROW_HEIGHT);
 	height = height - (rowDiff * fPointerHeight);
@@ -103,7 +103,7 @@ HRESULT CXuiSceneContainer::OnDestroy()
 #endif
 
 	// 4J Stu - Fix for #11302 - TCR 001: Network Connectivity: Host crashed after being killed by the client while accessing a chest during burst packet loss.
-	// We need to make sure that we call closeContainer() anytime this menu is closed, even if it is forced to close by some other reason (like the player dying)
+	// We need to make sure that we call closeContainer() anytime this menu is closed, even if it is forced to close by some other reason (like the player dying)	
 	if(Minecraft::GetInstance()->localplayers[m_iPad] != NULL) Minecraft::GetInstance()->localplayers[m_iPad]->closeContainer();
 	return S_OK;
 }
@@ -156,7 +156,7 @@ void CXuiSceneContainer::InitDataAssociations(int iPad, AbstractContainerMenu *m
 
 	// TODO Inventory dimensions need defined as constants
 	m_containerControl->SetData( iPad, menu, rows, 9, 0 );
-
+	
 	CXuiSceneAbstractContainer::InitDataAssociations(iPad, menu, containerSize);
 }
 

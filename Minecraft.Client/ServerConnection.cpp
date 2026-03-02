@@ -26,16 +26,16 @@ ServerConnection::~ServerConnection()
 // 4J - added to handle incoming connections, to replace thread that original used to have
 void ServerConnection::NewIncomingSocket(Socket *socket)
 {
-	std::shared_ptr<PendingConnection> unconnectedClient = std::shared_ptr<PendingConnection>(new PendingConnection(server, socket, L"Connection #" + _toString<int>(connectionCounter++)));
-	handleConnection(unconnectedClient);
+	shared_ptr<PendingConnection> unconnectedClient = shared_ptr<PendingConnection>(new PendingConnection(server, socket, L"Connection #" + _toString<int>(connectionCounter++)));
+	handleConnection(unconnectedClient);	
 }
 
-void ServerConnection::addPlayerConnection(std::shared_ptr<PlayerConnection> uc)
+void ServerConnection::addPlayerConnection(shared_ptr<PlayerConnection> uc)
 {
 	players.push_back(uc);
 }
 
-void ServerConnection::handleConnection(std::shared_ptr<PendingConnection> uc)
+void ServerConnection::handleConnection(shared_ptr<PendingConnection> uc)
 {
 	EnterCriticalSection(&pending_cs);
 	pending.push_back(uc);
@@ -47,14 +47,14 @@ void ServerConnection::stop()
 	EnterCriticalSection(&pending_cs);
     for (unsigned int i = 0; i < pending.size(); i++)
 	{
-        std::shared_ptr<PendingConnection> uc = pending[i];
+        shared_ptr<PendingConnection> uc = pending[i];
         uc->connection->close(DisconnectPacket::eDisconnect_Closed);
     }
 	LeaveCriticalSection(&pending_cs);
 
     for (unsigned int i = 0; i < players.size(); i++)
 	{
-        std::shared_ptr<PlayerConnection> player = players[i];
+        shared_ptr<PlayerConnection> player = players[i];
         player->connection->close(DisconnectPacket::eDisconnect_Closed);
     }
 }
@@ -64,12 +64,12 @@ void ServerConnection::tick()
 	{
 		// MGH - changed this so that the the CS lock doesn't cover the tick (was causing a lockup when 2 players tried to join)
 		EnterCriticalSection(&pending_cs);
-		vector< std::shared_ptr<PendingConnection> > tempPending = pending;
+		vector< shared_ptr<PendingConnection> > tempPending = pending;
 		LeaveCriticalSection(&pending_cs);
 
 		for (unsigned int i = 0; i < tempPending.size(); i++)
 		{
-			std::shared_ptr<PendingConnection> uc = tempPending[i];
+			shared_ptr<PendingConnection> uc = tempPending[i];
 	//        try {	// 4J - removed try/catch
 				uc->tick();
 	//        } catch (Exception e) {
@@ -92,8 +92,8 @@ void ServerConnection::tick()
 
     for (unsigned int i = 0; i < players.size(); i++)
 	{
-        std::shared_ptr<PlayerConnection> player = players[i];
-		std::shared_ptr<ServerPlayer> serverPlayer = player->getPlayer();
+        shared_ptr<PlayerConnection> player = players[i];
+		shared_ptr<ServerPlayer> serverPlayer = player->getPlayer();
 		if( serverPlayer )
 		{
 			serverPlayer->doChunkSendingTick(false);
@@ -138,7 +138,7 @@ void ServerConnection::handleTextureReceived(const wstring &textureName)
 	}
 	for (unsigned int i = 0; i < players.size(); i++)
 	{
-        std::shared_ptr<PlayerConnection> player = players[i];
+        shared_ptr<PlayerConnection> player = players[i];
         if (!player->done)
 		{
 			player->handleTextureReceived(textureName);
@@ -155,7 +155,7 @@ void ServerConnection::handleTextureAndGeometryReceived(const wstring &textureNa
 	}
 	for (unsigned int i = 0; i < players.size(); i++)
 	{
-		std::shared_ptr<PlayerConnection> player = players[i];
+		shared_ptr<PlayerConnection> player = players[i];
 		if (!player->done)
 		{
 			player->handleTextureAndGeometryReceived(textureName);
@@ -163,7 +163,7 @@ void ServerConnection::handleTextureAndGeometryReceived(const wstring &textureNa
 	}
 }
 
-void ServerConnection::handleServerSettingsChanged(std::shared_ptr<ServerSettingsChangedPacket> packet)
+void ServerConnection::handleServerSettingsChanged(shared_ptr<ServerSettingsChangedPacket> packet)
 {
 	Minecraft *pMinecraft = Minecraft::GetInstance();
 
@@ -176,7 +176,7 @@ void ServerConnection::handleServerSettingsChanged(std::shared_ptr<ServerSetting
 				app.DebugPrintf("ClientConnection::handleServerSettingsChanged - Difficulty = %d",packet->data);
 				pMinecraft->levels[i]->difficulty = packet->data;
 			}
-		}
+		}	
 	}
 // 	else if(packet->action==ServerSettingsChangedPacket::HOST_IN_GAME_SETTINGS)// options
 // 	{
@@ -194,11 +194,11 @@ void ServerConnection::handleServerSettingsChanged(std::shared_ptr<ServerSetting
 // 		{
 // 			pMinecraft->options->SetGamertagSetting(false);
 // 		}
-//
+// 
 // 		for (unsigned int i = 0; i < players.size(); i++)
 // 		{
-// 			std::shared_ptr<PlayerConnection> playerconnection = players[i];
-// 			playerconnection->setShowOnMaps(pMinecraft->options->GetGamertagSetting());
+// 			shared_ptr<PlayerConnection> playerconnection = players[i];
+// 			playerconnection->setShowOnMaps(pMinecraft->options->GetGamertagSetting());				
 // 		}
 // 	}
 }

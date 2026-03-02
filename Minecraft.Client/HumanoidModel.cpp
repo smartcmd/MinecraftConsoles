@@ -4,7 +4,7 @@
 #include "..\Minecraft.World\Entity.h"
 #include "ModelPart.h"
 
-// 4J added
+// 4J added 
 
 ModelPart * HumanoidModel::AddOrRetrievePart(SKIN_BOX *pBox)
 {
@@ -49,9 +49,9 @@ ModelPart * HumanoidModel::AddOrRetrievePart(SKIN_BOX *pBox)
 
 		pNewBox = new ModelPart(this, (int)pBox->fU, (int)pBox->fV);
 		pNewBox->visible=false;
-		pNewBox->addHumanoidBox(pBox->fX, pBox->fY, pBox->fZ, pBox->fW, pBox->fH, pBox->fD, 0);
+		pNewBox->addHumanoidBox(pBox->fX, pBox->fY, pBox->fZ, pBox->fW, pBox->fH, pBox->fD, 0); 
 		// 4J-PB - don't compile here, since the lighting isn't set up. It'll be compiled on first use.
-		//pNewBox->compile(1.0f/16.0f);
+		//pNewBox->compile(1.0f/16.0f);	
 		pAttachTo->addChild(pNewBox);
 	}
 
@@ -69,7 +69,7 @@ void HumanoidModel::_init(float g, float yOffset, int texWidth, int texHeight)
 
     ear = new ModelPart(this, 24, 0);
     ear->addHumanoidBox(-3, -6, -1, 6, 6, 1, g); // Ear
-
+        
     head = new ModelPart(this, 0, 0);
     head->addHumanoidBox(-4, -8, -4, 8, 8, 8, g); // Head
     head->setPos(0, 0 + yOffset, 0);
@@ -140,8 +140,8 @@ HumanoidModel::HumanoidModel(float g, float yOffset, int texWidth, int texHeight
 	_init(g,yOffset,texWidth,texHeight);
 }
 
-void HumanoidModel::render(std::shared_ptr<Entity> entity, float time, float r, float bob, float yRot, float xRot, float scale, bool usecompiled)
-{
+void HumanoidModel::render(shared_ptr<Entity> entity, float time, float r, float bob, float yRot, float xRot, float scale, bool usecompiled)
+{	
 	if(entity!=NULL)
 	{
 		m_uiAnimOverrideBitmask=entity->getAnimOverrideBitmask();
@@ -183,7 +183,7 @@ void HumanoidModel::render(std::shared_ptr<Entity> entity, float time, float r, 
 void HumanoidModel::setupAnim(float time, float r, float bob, float yRot, float xRot, float scale, unsigned int uiBitmaskOverrideAnim)
 {
 	//bool bIsAttacking = (attackTime > -9990.0f);
-
+	
 	{
 		head->yRot = yRot / (float) (180.0f / PI);
 		head->xRot = xRot / (float) (180.0f / PI);
@@ -253,7 +253,7 @@ void HumanoidModel::setupAnim(float time, float r, float bob, float yRot, float 
 			leg1->xRot = -HALF_PI;
 			leg0->yRot = HALF_PI * 0.2f;
 			leg1->yRot = -HALF_PI * 0.2f;
-		}
+		}		
 		else if(uiBitmaskOverrideAnim&(1<<eAnim_NoLegAnim))
 		{
 			leg0->xRot=0.0f;
@@ -261,7 +261,7 @@ void HumanoidModel::setupAnim(float time, float r, float bob, float yRot, float 
 			leg1->xRot=0.0f;
 			leg1->zRot=0.0f;
 			leg0->yRot = 0.0f;
-			leg1->yRot = 0.0f;
+			leg1->yRot = 0.0f;		
 		}
 		else if(uiBitmaskOverrideAnim&(1<<eAnim_SingleLegs))
 		{
@@ -275,11 +275,11 @@ void HumanoidModel::setupAnim(float time, float r, float bob, float yRot, float 
 		}
 
 
-		if (holdingLeftHand != 0)
+		if (holdingLeftHand != 0) 
 		{
 			arm1->xRot = arm1->xRot * 0.5f - HALF_PI * 0.2f * holdingLeftHand;
 		}
-		if (holdingRightHand != 0)
+		if (holdingRightHand != 0) 
 		{
 			arm0->xRot = arm0->xRot * 0.5f - HALF_PI * 0.2f * holdingRightHand;
 		}
@@ -305,7 +305,7 @@ void HumanoidModel::setupAnim(float time, float r, float bob, float yRot, float 
 			float aa = Mth::sin(swing * PI);
 			float bb = Mth::sin(attackTime * PI) * -(head->xRot - 0.7f) * 0.75f;
 			arm0->xRot -= aa * 1.2f + bb;	// 4J - changed 1.2 -> 1.2f
-			arm0->yRot += body->yRot * 2.0f;
+			arm0->yRot += body->yRot * 2.0f;         
 
 			if((uiBitmaskOverrideAnim&(1<<eAnim_StatueOfLiberty))&& (holdingRightHand==0) && (attackTime==0.0f))
 			{
@@ -389,7 +389,7 @@ void HumanoidModel::setupAnim(float time, float r, float bob, float yRot, float 
 		arm0->xRot += ((Mth::sin(bob * 0.067f)) * 0.05f);
 		arm1->xRot -= ((Mth::sin(bob * 0.067f)) * 0.05f);
 
-		if (bowAndArrow)
+		if (bowAndArrow) 
 		{
 			float attack2 = 0.0f;
 			float attack = 0.0f;
@@ -441,15 +441,15 @@ void HumanoidModel::render(HumanoidModel *model, float scale, bool usecompiled)
     hair->xRot = head->xRot;
 
     body->yRot = model->body->yRot;
-
+							
     arm0->xRot = model->arm0->xRot;
     arm0->yRot = model->arm0->yRot;
     arm0->zRot = model->arm0->zRot;
-
+						  
     arm1->xRot = model->arm1->xRot;
     arm1->yRot = model->arm1->yRot;
     arm1->zRot = model->arm1->zRot;
-
+						  
     leg0->xRot = model->leg0->xRot;
     leg1->xRot = model->leg1->xRot;
 

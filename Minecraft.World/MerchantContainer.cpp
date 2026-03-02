@@ -3,7 +3,7 @@
 #include "MerchantMenu.h"
 #include "MerchantContainer.h"
 
-MerchantContainer::MerchantContainer(std::shared_ptr<Player> player, std::shared_ptr<Merchant> villager)
+MerchantContainer::MerchantContainer(shared_ptr<Player> player, shared_ptr<Merchant> villager)
 {
 	this->player = player;
 	merchant = villager;
@@ -25,24 +25,24 @@ unsigned int MerchantContainer::getContainerSize()
 	return items.length;
 }
 
-std::shared_ptr<ItemInstance> MerchantContainer::getItem(unsigned int slot)
+shared_ptr<ItemInstance> MerchantContainer::getItem(unsigned int slot)
 {
 	return items[slot];
 }
 
-std::shared_ptr<ItemInstance> MerchantContainer::removeItem(unsigned int slot, int count)
+shared_ptr<ItemInstance> MerchantContainer::removeItem(unsigned int slot, int count)
 {
 	if (items[slot] != NULL)
 	{
 		if (slot == MerchantMenu::RESULT_SLOT)
 		{
-			std::shared_ptr<ItemInstance> item = items[slot];
+			shared_ptr<ItemInstance> item = items[slot];
 			items[slot] = nullptr;
 			return item;
 		}
 		if (items[slot]->count <= count)
 		{
-			std::shared_ptr<ItemInstance> item = items[slot];
+			shared_ptr<ItemInstance> item = items[slot];
 			items[slot] = nullptr;
 			if (isPaymentSlot(slot))
 			{
@@ -52,7 +52,7 @@ std::shared_ptr<ItemInstance> MerchantContainer::removeItem(unsigned int slot, i
 		}
 		else
 		{
-			std::shared_ptr<ItemInstance> i = items[slot]->remove(count);
+			shared_ptr<ItemInstance> i = items[slot]->remove(count);
 			if (items[slot]->count == 0) items[slot] = nullptr;
 			if (isPaymentSlot(slot))
 			{
@@ -69,18 +69,18 @@ bool MerchantContainer::isPaymentSlot(int slot)
 	return slot == MerchantMenu::PAYMENT1_SLOT || slot == MerchantMenu::PAYMENT2_SLOT;
 }
 
-std::shared_ptr<ItemInstance> MerchantContainer::removeItemNoUpdate(int slot)
+shared_ptr<ItemInstance> MerchantContainer::removeItemNoUpdate(int slot)
 {
 	if (items[slot] != NULL)
 	{
-		std::shared_ptr<ItemInstance> item = items[slot];
+		shared_ptr<ItemInstance> item = items[slot];
 		items[slot] = nullptr;
 		return item;
 	}
 	return nullptr;
 }
 
-void MerchantContainer::setItem(unsigned int slot, std::shared_ptr<ItemInstance> item)
+void MerchantContainer::setItem(unsigned int slot, shared_ptr<ItemInstance> item)
 {
 	items[slot] = item;
 	if (item != NULL && item->count > getMaxStackSize()) item->count = getMaxStackSize();
@@ -100,7 +100,7 @@ int MerchantContainer::getMaxStackSize()
 	return Container::LARGE_MAX_STACK_SIZE;
 }
 
-bool MerchantContainer::stillValid(std::shared_ptr<Player> player)
+bool MerchantContainer::stillValid(shared_ptr<Player> player)
 {
 	return merchant->getTradingPlayer() == player;
 }
@@ -122,8 +122,8 @@ void MerchantContainer::updateSellItem()
 {
 	activeRecipe = NULL;
 
-	std::shared_ptr<ItemInstance> buyItem1 = items[MerchantMenu::PAYMENT1_SLOT];
-	std::shared_ptr<ItemInstance> buyItem2 = items[MerchantMenu::PAYMENT2_SLOT];
+	shared_ptr<ItemInstance> buyItem1 = items[MerchantMenu::PAYMENT1_SLOT];
+	shared_ptr<ItemInstance> buyItem2 = items[MerchantMenu::PAYMENT2_SLOT];
 
 	if (buyItem1 == NULL)
 	{

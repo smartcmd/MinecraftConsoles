@@ -21,12 +21,12 @@ public:
 	//@Override
 	void registerIcons(IconRegister *iconRegister);
 	static Icon *getTexture(const wstring &name);
-	virtual void addAABBs(Level *level, int x, int y, int z, AABB *box, AABBList *boxes, std::shared_ptr<Entity> source);
+	virtual void addAABBs(Level *level, int x, int y, int z, AABB *box, AABBList *boxes, shared_ptr<Entity> source);
 	virtual void updateDefaultShape();
 	virtual bool isSolidRender(bool isServerLevel = false);
 	virtual int getRenderShape();
 	virtual bool isCubeShaped();
-	virtual bool use(Level *level, int x, int y, int z, std::shared_ptr<Player> player, int clickedFace, float clickX, float clickY, float clickZ, bool soundOnly = false); // 4J added soundOnly param
+	virtual bool use(Level *level, int x, int y, int z, shared_ptr<Player> player, int clickedFace, float clickX, float clickY, float clickZ, bool soundOnly = false); // 4J added soundOnly param
 	virtual void handleRain(Level *level, int x, int y, int z);
 	virtual int getResource(int data, Random *random, int playerBonusLevel);
 	virtual int cloneTileId(Level *level, int x, int y, int z);

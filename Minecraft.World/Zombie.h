@@ -48,7 +48,7 @@ public:
 	void setVillager(bool villager);
     virtual void aiStep();
     virtual void tick();
-
+	
 protected:
 	virtual int getAmbientSound();
     virtual int getHurtSound();
@@ -64,9 +64,9 @@ protected:
 public:
 	virtual void addAdditonalSaveData(CompoundTag *tag);
 	virtual void readAdditionalSaveData(CompoundTag *tag);
-	void killed(std::shared_ptr<Mob> mob);
+	void killed(shared_ptr<Mob> mob);
 	virtual void finalizeMobSpawn();
-	bool interact(std::shared_ptr<Player> player);
+	bool interact(shared_ptr<Player> player);
 
 protected:
 	void startConverting(int time);

@@ -12,7 +12,7 @@ public:
 
 public:
 	SmallFireball(Level *level);
-	SmallFireball(Level *level, std::shared_ptr<Mob> mob, double xa, double ya, double za);
+	SmallFireball(Level *level, shared_ptr<Mob> mob, double xa, double ya, double za);
 	SmallFireball(Level *level, double x, double y, double z, double xa, double ya, double za);
 
 protected:

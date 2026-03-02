@@ -18,7 +18,7 @@ public:
 	virtual int getDescriptionId();
 	virtual int getPromptId();
 	virtual bool isCompleted();
-	virtual void onCrafted(std::shared_ptr<ItemInstance> item);
+	virtual void onCrafted(shared_ptr<ItemInstance> item);
 	virtual void handleUIInput(int iAction);
 	virtual void setAsCurrentTask(bool active = true);
 	virtual bool ShowMinimumTime();
@@ -26,9 +26,9 @@ public:
 	virtual void setShownForMinimumTime();
 	virtual bool AllowFade();
 
-	virtual void useItemOn(Level *level, std::shared_ptr<ItemInstance> item, int x, int y, int z, bool bTestUseOnly=false);
-	virtual void useItem(std::shared_ptr<ItemInstance> item, bool bTestUseOnly=false);
-	virtual void onTake(std::shared_ptr<ItemInstance> item, unsigned int invItemCountAnyAux, unsigned int invItemCountThisAux);
+	virtual void useItemOn(Level *level, shared_ptr<ItemInstance> item, int x, int y, int z, bool bTestUseOnly=false);
+	virtual void useItem(shared_ptr<ItemInstance> item, bool bTestUseOnly=false);
+	virtual void onTake(shared_ptr<ItemInstance> item, unsigned int invItemCountAnyAux, unsigned int invItemCountThisAux);
 	virtual void onStateChange(eTutorial_State newState);
 
 private:

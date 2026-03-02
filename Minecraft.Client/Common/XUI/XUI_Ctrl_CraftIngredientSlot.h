@@ -16,7 +16,7 @@ public:
 	virtual ~CXuiCtrlCraftIngredientSlot() { };
 	void SetRedBox(BOOL bVal);
 	void SetIcon(int iPad, int iId,int iAuxVal, int iCount, int iScale, unsigned int uiAlpha, bool bDecorations, bool isFoil = false, BOOL bShow=TRUE);
-	void SetIcon(int iPad, std::shared_ptr<ItemInstance> item, int iScale, unsigned int uiAlpha,bool bDecorations, BOOL bShow=TRUE);
+	void SetIcon(int iPad, shared_ptr<ItemInstance> item, int iScale, unsigned int uiAlpha,bool bDecorations, BOOL bShow=TRUE);
 	void SetDescription(LPCWSTR Desc);
 protected:
 
@@ -31,7 +31,7 @@ protected:
 	HRESULT OnInit(XUIMessageInit* pInitData, BOOL& rfHandled);
 
 private:
-	std::shared_ptr<ItemInstance> m_item;
+	shared_ptr<ItemInstance> m_item;
 	int m_iID;
 	int m_iAuxVal;
 	int m_iCount;

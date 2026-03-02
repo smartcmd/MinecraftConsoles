@@ -28,7 +28,7 @@ float CaveSpider::getModelScale()
 }
 
 
-bool CaveSpider::doHurtTarget(std::shared_ptr<Entity> target)
+bool CaveSpider::doHurtTarget(shared_ptr<Entity> target)
 {
 	if (Spider::doHurtTarget(target))
 	{

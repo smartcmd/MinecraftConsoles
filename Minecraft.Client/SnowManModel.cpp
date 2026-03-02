@@ -26,7 +26,7 @@ SnowManModel::SnowManModel() : Model()
 
     piece2 = (new ModelPart(this, 0, 36))->setTexSize(64, 64);
     piece2->addBox(-6, -12, -6, 12, 12, 12, g - 0.5f); // lower body
-    piece2->setPos(0, 0 + yOffset + 20, 0);
+    piece2->setPos(0, 0 + yOffset + 20, 0);  
 
 	// 4J added - compile now to avoid random performance hit first time cubes are rendered
 	head->compile(1.0f/16.0f);
@@ -53,12 +53,12 @@ void SnowManModel::setupAnim(float time, float r, float bob, float yRot, float x
 
 	arm1->x = (c) * 5;
 	arm1->z = (-s) * 5;
-
+	
 	arm2->x = (-c) * 5;
 	arm2->z = (s) * 5;
 }
 
-void SnowManModel::render(std::shared_ptr<Entity> entity, float time, float r, float bob, float yRot, float xRot, float scale, bool usecompiled)
+void SnowManModel::render(shared_ptr<Entity> entity, float time, float r, float bob, float yRot, float xRot, float scale, bool usecompiled) 
 {
 	setupAnim(time, r, bob, yRot, xRot, scale);
 

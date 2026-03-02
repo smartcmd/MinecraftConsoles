@@ -12,7 +12,7 @@
 #include <iomanip>
 #include <sstream>
 #include <stdexcept>
-#include <boost/std::shared_ptr.hpp>
+#include <boost/shared_ptr.hpp>
 #include <boost/throw_exception.hpp>
 #include <boost/date_time/time.hpp>
 #include <boost/date_time/posix_time/posix_time.hpp> //todo remove?
@@ -57,7 +57,7 @@ namespace local_time {
    * to wall clock time are made as needed. This approach allows for
    * operations between wall-clock times in different time zones, and
    * daylight savings time considerations, to be made. Time zones are
-   * required to be in the form of a boost::std::shared_ptr<time_zone_base>.
+   * required to be in the form of a boost::shared_ptr<time_zone_base>.
    */
   template<class utc_time_=posix_time::ptime,
            class tz_type=date_time::time_zone_base<utc_time_,char> >
@@ -79,7 +79,7 @@ namespace local_time {
      *@param tz Timezone for to adjust the UTC time to.
      */
     local_date_time_base(utc_time_type t,
-                         boost::std::shared_ptr<tz_type> tz) :
+                         boost::shared_ptr<tz_type> tz) :
       date_time::base_time<utc_time_type, time_system_type>(t),
       zone_(tz)
     {
@@ -99,12 +99,12 @@ namespace local_time {
      */
     local_date_time_base(date_type d,
                          time_duration_type td,
-                         boost::std::shared_ptr<tz_type> tz,
+                         boost::shared_ptr<tz_type> tz,
                          bool dst_flag) : //necessary for constr_adj()
       date_time::base_time<utc_time_type,time_system_type>(construction_adjustment(utc_time_type(d, td), tz, dst_flag)),
       zone_(tz)
     {
-      if(tz != boost::std::shared_ptr<tz_type>() && tz->has_dst()){
+      if(tz != boost::shared_ptr<tz_type>() && tz->has_dst()){
 
         // d & td are already local so we use them
         time_is_dst_result result = check_dst(d, td, tz);
@@ -140,7 +140,7 @@ namespace local_time {
      */
     local_date_time_base(date_type d,
                          time_duration_type td,
-                         boost::std::shared_ptr<tz_type> tz,
+                         boost::shared_ptr<tz_type> tz,
                          DST_CALC_OPTIONS calc_option) :
       // dummy value - time_ is set in constructor code
       date_time::base_time<utc_time_type,time_system_type>(utc_time_type(d,td)),
@@ -189,9 +189,9 @@ namespace local_time {
      */
     static time_is_dst_result check_dst(date_type d,
                                         time_duration_type td,
-                                        boost::std::shared_ptr<tz_type> tz)
+                                        boost::shared_ptr<tz_type> tz)
     {
-      if(tz != boost::std::shared_ptr<tz_type>() && tz->has_dst()) {
+      if(tz != boost::shared_ptr<tz_type>() && tz->has_dst()) {
         typedef typename date_time::dst_calculator<date_type, time_duration_type> dst_calculator;
         return dst_calculator::local_is_dst(
             d, td,
@@ -218,20 +218,20 @@ namespace local_time {
 
     //! Special values constructor
     explicit local_date_time_base(const boost::date_time::special_values sv,
-                                  boost::std::shared_ptr<tz_type> tz = boost::std::shared_ptr<tz_type>()) :
+                                  boost::shared_ptr<tz_type> tz = boost::shared_ptr<tz_type>()) :
       date_time::base_time<utc_time_type, time_system_type>(utc_time_type(sv)),
       zone_(tz)
     {}
 
     //! returns time zone associated with calling instance
-    boost::std::shared_ptr<tz_type> zone() const
+    boost::shared_ptr<tz_type> zone() const
     {
       return zone_;
     }
     //! returns false is time_zone is NULL and if time value is a special_value
     bool is_dst() const
     {
-      if(zone_ != boost::std::shared_ptr<tz_type>() && zone_->has_dst() && !this->is_special()) {
+      if(zone_ != boost::shared_ptr<tz_type>() && zone_->has_dst() && !this->is_special()) {
         // check_dst takes a local time, *this is utc
         utc_time_type lt(this->time_);
         lt += zone_->base_utc_offset();
@@ -265,7 +265,7 @@ namespace local_time {
     //! Returns object's time value as a local representation
     utc_time_type local_time() const
     {
-      if(zone_ != boost::std::shared_ptr<tz_type>()){
+      if(zone_ != boost::shared_ptr<tz_type>()){
         utc_time_type lt = this->utc_time() + zone_->base_utc_offset();
         if (is_dst()) {
           lt += zone_->dst_offset();
@@ -286,7 +286,7 @@ namespace local_time {
         ss << utc_time();
         return ss.str();
       }
-      if(zone_ == boost::std::shared_ptr<tz_type>()) {
+      if(zone_ == boost::shared_ptr<tz_type>()) {
         ss << utc_time() << " UTC";
         return ss.str();
       }
@@ -306,7 +306,7 @@ namespace local_time {
     }
     /*! returns a local_date_time_base in the given time zone with the
      * optional time_duration added. */
-    local_date_time_base local_time_in(boost::std::shared_ptr<tz_type> new_tz,
+    local_date_time_base local_time_in(boost::shared_ptr<tz_type> new_tz,
                                        time_duration_type td=time_duration_type(0,0,0)) const
     {
       return local_date_time_base(utc_time_type(this->time_) + td, new_tz);
@@ -318,7 +318,7 @@ namespace local_time {
      * classes that do not use a time_zone */
     std::string zone_name(bool as_offset=false) const
     {
-      if(zone_ == boost::std::shared_ptr<tz_type>()) {
+      if(zone_ == boost::shared_ptr<tz_type>()) {
         if(as_offset) {
           return std::string("Z");
         }
@@ -352,7 +352,7 @@ namespace local_time {
      * that do not use a time_zone */
     std::string zone_abbrev(bool as_offset=false) const
     {
-      if(zone_ == boost::std::shared_ptr<tz_type>()) {
+      if(zone_ == boost::shared_ptr<tz_type>()) {
         if(as_offset) {
           return std::string("Z");
         }
@@ -384,7 +384,7 @@ namespace local_time {
     //! returns a posix_time_zone string for the associated time_zone. If no time_zone, "UTC+00" is returned.
     std::string zone_as_posix_string() const
     {
-      if(zone_ == std::shared_ptr<tz_type>()) {
+      if(zone_ == shared_ptr<tz_type>()) {
         return std::string("UTC+00");
       }
       return zone_->to_posix_string();
@@ -477,16 +477,16 @@ namespace local_time {
       return utc_time_type(this->time_) - utc_time_type(rhs.time_);
     }
   private:
-    boost::std::shared_ptr<tz_type> zone_;
+    boost::shared_ptr<tz_type> zone_;
     //bool is_dst_;
 
     /*! Adjust the passed in time to UTC?
      */
     utc_time_type construction_adjustment(utc_time_type t,
-                                          boost::std::shared_ptr<tz_type> z,
+                                          boost::shared_ptr<tz_type> z,
                                           bool dst_flag)
     {
-      if(z != boost::std::shared_ptr<tz_type>()) {
+      if(z != boost::shared_ptr<tz_type>()) {
         if(dst_flag && z->has_dst()) {
           t -= z->dst_offset();
         } // else no adjust

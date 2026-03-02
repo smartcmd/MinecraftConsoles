@@ -20,13 +20,13 @@ AddGlobalEntityPacket::AddGlobalEntityPacket()
 	type = 0;
 }
 
-AddGlobalEntityPacket::AddGlobalEntityPacket(std::shared_ptr<Entity> e)
+AddGlobalEntityPacket::AddGlobalEntityPacket(shared_ptr<Entity> e) 
 {
 	id = e->entityId;
     x = Mth::floor(e->x * 32);
     y = Mth::floor(e->y * 32);
     z = Mth::floor(e->z * 32);
-	if (dynamic_pointer_cast<LightningBolt>(e) != NULL)
+	if (dynamic_pointer_cast<LightningBolt>(e) != NULL) 
 	{
 		this->type = LIGHTNING;
 	}
@@ -45,7 +45,7 @@ void AddGlobalEntityPacket::read(DataInputStream *dis) // throws IOException
 	z = dis->readInt();
 }
 
-void AddGlobalEntityPacket::write(DataOutputStream *dos) // throws IOException
+void AddGlobalEntityPacket::write(DataOutputStream *dos) // throws IOException 
 {
 	dos->writeInt(id);
 	dos->writeByte(type);

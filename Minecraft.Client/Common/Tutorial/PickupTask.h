@@ -17,7 +17,7 @@ public:
 	{}
 
 	virtual bool isCompleted() { return bIsCompleted; }
-	virtual void onTake(std::shared_ptr<ItemInstance> item, unsigned int invItemCountAnyAux, unsigned int invItemCountThisAux);
+	virtual void onTake(shared_ptr<ItemInstance> item, unsigned int invItemCountAnyAux, unsigned int invItemCountThisAux);
 
 private:
 	int m_itemId;

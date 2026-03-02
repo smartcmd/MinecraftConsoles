@@ -92,13 +92,13 @@ bool PathNavigation::moveTo(double x, double y, double z, float speed)
 	return moveTo(newPath, speed);
 }
 
-Path *PathNavigation::createPath(std::shared_ptr<Mob> target)
+Path *PathNavigation::createPath(shared_ptr<Mob> target)
 {
 	if (!canUpdatePath()) return NULL;
 	return level->findPath(mob->shared_from_this(), target, maxDist, _canPassDoors, _canOpenDoors, avoidWater, canFloat);
 }
 
-bool PathNavigation::moveTo(std::shared_ptr<Mob> target, float speed)
+bool PathNavigation::moveTo(shared_ptr<Mob> target, float speed)
 {
 	MemSect(53);
 	Path *newPath = createPath(target);

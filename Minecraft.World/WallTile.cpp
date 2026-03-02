@@ -51,7 +51,7 @@ bool WallTile::isSolidRender(bool isServerLevel)
 	return false;
 }
 
-void WallTile::updateShape(LevelSource *level, int x, int y, int z, int forceData, std::shared_ptr<TileEntity> forceEntity)
+void WallTile::updateShape(LevelSource *level, int x, int y, int z, int forceData, shared_ptr<TileEntity> forceEntity)
 {
 	bool n = connectsTo(level, x, y, z - 1);
 	bool s = connectsTo(level, x, y, z + 1);
@@ -131,7 +131,7 @@ AABB *WallTile::getAABB(Level *level, int x, int y, int z)
 
 	/*	4J-JEV:
 		Stopping the width changing here, it's causing cows/mobs/passers-by to 'jump' up when they are pressed against the
-		wall and then the wall section is upgraded to a wall post expanding the bounding box.
+		wall and then the wall section is upgraded to a wall post expanding the bounding box. 
 		It's only a 1/16 of a block difference, it shouldn't matter if we leave it a little larger.
 	*/
 	if (n && s && !w && !e)

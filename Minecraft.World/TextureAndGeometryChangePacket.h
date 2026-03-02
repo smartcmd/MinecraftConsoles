@@ -12,7 +12,7 @@ public:
 	DWORD dwSkinID;
 
 	TextureAndGeometryChangePacket();
-	TextureAndGeometryChangePacket(std::shared_ptr<Entity> e, const wstring &path);
+	TextureAndGeometryChangePacket(shared_ptr<Entity> e, const wstring &path);
 
 	virtual void read(DataInputStream *dis);
 	virtual void write(DataOutputStream *dos);
@@ -20,6 +20,6 @@ public:
 	virtual int getEstimatedSize();
 
 public:
-	static std::shared_ptr<Packet> create() { return std::shared_ptr<Packet>(new TextureAndGeometryChangePacket()); }
+	static shared_ptr<Packet> create() { return shared_ptr<Packet>(new TextureAndGeometryChangePacket()); }
 	virtual int getId() { return 161; }
 };

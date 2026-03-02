@@ -11,12 +11,12 @@ public:
 	const int x, y;
 	Achievement *requires;
 
-private:
+private: 
 	const wstring desc;
     DescFormatter *descFormatter;
 
 public:
-	const std::shared_ptr<ItemInstance> icon;
+	const shared_ptr<ItemInstance> icon;
 
 private:
     bool isGoldenVar;
@@ -25,7 +25,7 @@ private:
 public:
 	Achievement(int id, const wstring& name, int x, int y, Item *icon, Achievement *requires);
     Achievement(int id, const wstring& name, int x, int y, Tile *icon, Achievement *requires);
-    Achievement(int id, const wstring& name, int x, int y, std::shared_ptr<ItemInstance> icon, Achievement *requires);
+    Achievement(int id, const wstring& name, int x, int y, shared_ptr<ItemInstance> icon, Achievement *requires);
 
 	Achievement *setAwardLocallyOnly();
 	Achievement *setGolden();

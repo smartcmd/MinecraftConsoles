@@ -115,7 +115,7 @@ bool LiquidTile::isSolidFace(LevelSource *level, int x, int y, int z, int face)
     if (m == this->material) return false;
 	if (face == Facing::UP) return true;
     if (m == Material::ice) return false;
-
+    
     return Tile::isSolidFace(level, x, y, z, face);
 }
 
@@ -203,7 +203,7 @@ Vec3 *LiquidTile::getFlow(LevelSource *level, int x, int y, int z)
     return flow;
 }
 
-void LiquidTile::handleEntityInside(Level *level, int x, int y, int z, std::shared_ptr<Entity> e, Vec3 *current)
+void LiquidTile::handleEntityInside(Level *level, int x, int y, int z, shared_ptr<Entity> e, Vec3 *current)
 {
     Vec3 *flow = getFlow(level, x, y, z);
     current->x += flow->x;

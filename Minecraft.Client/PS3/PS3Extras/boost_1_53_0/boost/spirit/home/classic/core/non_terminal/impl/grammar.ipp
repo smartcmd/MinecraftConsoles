@@ -147,7 +147,7 @@ struct grammar_definition
         typedef typename grammar_definition<DerivedT, ScannerT>::type definition_t;
 
         typedef grammar_helper<grammar_t, derived_t, scanner_t> helper_t;
-        typedef boost::std::shared_ptr<helper_t> helper_ptr_t;
+        typedef boost::shared_ptr<helper_t> helper_ptr_t;
         typedef boost::weak_ptr<helper_t>   helper_weak_ptr_t;
 
         grammar_helper*

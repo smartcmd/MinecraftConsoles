@@ -7,6 +7,6 @@ class BookItem : public Item
 public:
 	BookItem(int id);
 
-	bool isEnchantable(std::shared_ptr<ItemInstance> itemInstance);
+	bool isEnchantable(shared_ptr<ItemInstance> itemInstance);
 	int getEnchantmentValue();
 };

@@ -7,11 +7,11 @@ class MenuBackup
 {
 private:
 	unordered_map<short, ItemInstanceArray *> *backups;
-	std::shared_ptr<Inventory> inventory;
+	shared_ptr<Inventory> inventory;
 	AbstractContainerMenu *menu;
 
 public:
-	MenuBackup(std::shared_ptr<Inventory> inventory, AbstractContainerMenu *menu);
+	MenuBackup(shared_ptr<Inventory> inventory, AbstractContainerMenu *menu);
 
 	void save(short changeUid);
 

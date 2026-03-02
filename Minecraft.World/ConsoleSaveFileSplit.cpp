@@ -41,7 +41,7 @@ ConsoleSaveFileSplit::RegionFileReference::~RegionFileReference()
 
 // Compress from data to dataCompressed. Uses a special compression method that is designed just to efficiently store runs of zeros, with little overhead on other stuff.
 // Compresed format is a 4 byte uncompressed size, followed by data as follows:
-//
+// 
 // Byte value												Meaning
 //
 // 1 - 255													Normal data
@@ -375,7 +375,7 @@ FileEntry *ConsoleSaveFileSplit::GetRegionFileEntry(unsigned int regionIndex)
 	int index = StorageManager.AddSubfile(regionIndex);
 	RegionFileReference *newRef = new RegionFileReference(index, regionIndex);
 	regionFiles[regionIndex] = newRef;
-
+	
 	return newRef->fileEntry;
 }
 
@@ -513,7 +513,7 @@ void ConsoleSaveFileSplit::_init(const wstring &fileName, LPVOID pvSaveData, DWO
 			StorageManager.GetSaveData( pvSaveMem, &storageLength );
 			app.DebugPrintf("Filesize - %d, Adjusted size - %d\n",fileSize,storageLength);
 			fileSize = storageLength;
-		}
+		} 
 
 		int compressed = *(int*)pvSaveMem;
 		if( compressed == 0 )
@@ -532,7 +532,7 @@ void ConsoleSaveFileSplit::_init(const wstring &fileName, LPVOID pvSaveData, DWO
 			else
 			{
 				unsigned char *buf = new unsigned char[decompSize];
-
+	
 				if( Compression::getCompression()->Decompress(buf, &decompSize, (unsigned char *)pvSaveMem+8, fileSize-8 ) == S_OK)
 				{
 
@@ -575,7 +575,7 @@ void ConsoleSaveFileSplit::_init(const wstring &fileName, LPVOID pvSaveData, DWO
 
 	}
 	else
-	{
+	{	
 		// Clear the first 8 bytes that reference the header
 		header.WriteHeader( pvSaveMem );
 	}
@@ -586,7 +586,7 @@ ConsoleSaveFileSplit::~ConsoleSaveFileSplit()
 	VirtualFree( pvHeap, MAX_PAGE_COUNT * CSF_PAGE_SIZE, MEM_DECOMMIT );
 	pagesCommitted = 0;
 	// Make sure we don't have any thumbnail data still waiting round - we can't need it now we've destroyed the save file anyway
-#if defined _XBOX
+#if defined _XBOX 
 	app.GetSaveThumbnail(NULL,NULL);
 #elif defined __PS3__
 	app.GetSaveThumbnail(NULL,NULL, NULL,NULL);
@@ -606,7 +606,7 @@ ConsoleSaveFileSplit::~ConsoleSaveFileSplit()
 FileEntry *ConsoleSaveFileSplit::createFile( const ConsoleSavePath &fileName )
 {
 	LockSaveAccess();
-
+	
 	// Determine if the file is a region file that should be split off into its own file
 	unsigned int regionFileIndex;
 	bool isRegionFile = GetNumericIdentifierFromName(fileName.getName(), &regionFileIndex);
@@ -942,7 +942,7 @@ void ConsoleSaveFileSplit::tick()
 		}
 	}
 
-	// Compile a vector of dirty regions.
+	// Compile a vector of dirty regions. 
 	vector<DirtyRegionFile> dirtyRegions;
 	for( AUTO_VAR(it, regionFiles.begin()); it != regionFiles.end(); it++ )
 	{
@@ -999,7 +999,7 @@ void ConsoleSaveFileSplit::tick()
 	{
 		unsigned int totalDirty = 0;
 		unsigned int totalDirtyBytes = 0;
-		int64_t oldestDirty = currentTime;
+		__int64 oldestDirty = currentTime;
 		for( AUTO_VAR(it, regionFiles.begin()); it != regionFiles.end(); it++ )
 		{
 			if( it->second->dirty )
@@ -1051,7 +1051,7 @@ void ConsoleSaveFileSplit::MoveDataBeyond(FileEntry *file, DWORD nNumberOfBytesT
 
 	// Only ReAlloc if we need to (we might already have enough) and align to 512 byte boundaries
 	DWORD currentHeapSize = pagesCommitted * CSF_PAGE_SIZE;
-
+	
 	DWORD desiredSize = header.GetFileSize() + nNumberOfBytesToWrite;
 
 	if( desiredSize > currentHeapSize )
@@ -1117,7 +1117,7 @@ void ConsoleSaveFileSplit::MoveDataBeyond(FileEntry *file, DWORD nNumberOfBytesT
 				if ( uiCopyEnd > uiFromEnd )
 				{
 					// Needs to be clamped to the end of our region
-					uiCopyEnd = uiFromEnd;
+					uiCopyEnd = uiFromEnd;					
 				}
 				XMemCpy( (void *)(uiCopyStart + nNumberOfBytesToWrite), ( void *)uiCopyStart, uiCopyEnd - uiCopyStart );
 			}
@@ -1381,7 +1381,7 @@ void ConsoleSaveFileSplit::Flush(bool autosave, bool updateThumbnail)
 		// Attempt to allocate the required memory
 		compData = (byte *)StorageManager.AllocateSaveData( compLength );
 	}
-
+	
 	if(compData != NULL)
 	{
 		// Re-compress all save data before we save it to disk
@@ -1421,7 +1421,7 @@ void ConsoleSaveFileSplit::Flush(bool autosave, bool updateThumbnail)
 			BYTE bTextMetadata[88];
 			ZeroMemory(bTextMetadata,88);
 
-			int64_t seed = 0;
+			__int64 seed = 0;
 			bool hasSeed = false;
 			if(MinecraftServer::getInstance()!= NULL && MinecraftServer::getInstance()->levels[0]!=NULL)
 			{
@@ -1436,7 +1436,7 @@ void ConsoleSaveFileSplit::Flush(bool autosave, bool updateThumbnail)
 			app.DebugPrintf("Save thumbnail size %d\n",dwThumbnailDataSize);
 
 		}
-
+		
 		INT saveOrCheckpointId = 0;
 		bool validSave = StorageManager.GetSaveUniqueNumber(&saveOrCheckpointId);
 		TelemetryManager->RecordLevelSaveOrCheckpoint(ProfileManager.GetPrimaryPad(), saveOrCheckpointId, compLength+8);
@@ -1459,7 +1459,7 @@ void ConsoleSaveFileSplit::Flush(bool autosave, bool updateThumbnail)
 int ConsoleSaveFileSplit::SaveSaveDataCallback(LPVOID lpParam,bool bRes)
 {
 	ConsoleSaveFileSplit *pClass=(ConsoleSaveFileSplit *)lpParam;
-
+	
 	// Don't save sub files on autosave (their always being saved anyway)
 	if (!pClass->m_autosave)
 	{
@@ -1472,7 +1472,7 @@ int ConsoleSaveFileSplit::SaveSaveDataCallback(LPVOID lpParam,bool bRes)
 int ConsoleSaveFileSplit::SaveRegionFilesCallback(LPVOID lpParam,bool bRes)
 {
 	ConsoleSaveFileSplit *pClass=(ConsoleSaveFileSplit *)lpParam;
-
+	
 	// This is called from the StorageManager.Tick() which should always be on the main thread
 	pClass->processSubfilesAfterWrite();
 

@@ -121,7 +121,7 @@ void NotGateTile::tick(Level *level, int x, int y, int z, Random *random)
 		}
 	}
 
-    if (on)
+    if (on) 
 	{
         if (neighborSignal)
 		{
@@ -152,7 +152,7 @@ void NotGateTile::tick(Level *level, int x, int y, int z, Random *random)
                 level->setTileAndData(x, y, z, Tile::notGate_on_Id, level->getData(x, y, z));
             }
 			else
-			{
+			{				
 				app.DebugPrintf("Torch at (%d,%d,%d) has toggled too many times\n",x,y,z);
 			}
         }
@@ -221,7 +221,7 @@ int NotGateTile::cloneTileId(Level *level, int x, int y, int z)
 	return Tile::notGate_on_Id;
 }
 
-void NotGateTile::levelTimeChanged(Level *level, int64_t delta, int64_t newTime)
+void NotGateTile::levelTimeChanged(Level *level, __int64 delta, __int64 newTime)
 {
 	deque<Toggle> *toggles = recentToggles[level];
 

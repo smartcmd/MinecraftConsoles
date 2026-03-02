@@ -31,5 +31,5 @@ private:
 public:
 	Minimap(Font *font, Options *options, Textures *textures, bool optimised = true); // 4J Added optimised param
 	static void reloadColours();
-    void render(std::shared_ptr<Player> player, Textures *textures, std::shared_ptr<MapItemSavedData> data, int entityId); // 4J added entityId param
+    void render(shared_ptr<Player> player, Textures *textures, shared_ptr<MapItemSavedData> data, int entityId); // 4J added entityId param
 };

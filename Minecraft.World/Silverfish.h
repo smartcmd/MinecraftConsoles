@@ -17,7 +17,7 @@ public:
 
 protected:
 	virtual bool makeStepSound();
-	virtual std::shared_ptr<Entity> findAttackTarget();
+	virtual shared_ptr<Entity> findAttackTarget();
 
 	virtual int getAmbientSound();
 	virtual int getHurtSound();
@@ -27,7 +27,7 @@ public:
 	virtual bool hurt(DamageSource *source, int dmg);
 
 protected:
-	virtual void checkHurtTarget(std::shared_ptr<Entity> target, float d);
+	virtual void checkHurtTarget(shared_ptr<Entity> target, float d);
 	virtual void playStepSound(int xt, int yt, int zt, int t);
 	virtual int getDeathLoot();
 

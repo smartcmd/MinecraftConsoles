@@ -145,7 +145,7 @@ boost
 #endif
 
     template <class T>
-    class std::shared_ptr;
+    class shared_ptr;
 
     namespace
     exception_detail
@@ -157,8 +157,8 @@ boost
         error_info_container
             {
             virtual char const * diagnostic_information( char const * ) const = 0;
-            virtual std::shared_ptr<error_info_base> get( type_info_ const & ) const = 0;
-            virtual void set( std::shared_ptr<error_info_base> const &, type_info_ const & ) = 0;
+            virtual shared_ptr<error_info_base> get( type_info_ const & ) const = 0;
+            virtual void set( shared_ptr<error_info_base> const &, type_info_ const & ) = 0;
             virtual void add_ref() const = 0;
             virtual bool release() const = 0;
             virtual refcount_ptr<exception_detail::error_info_container> clone() const = 0;

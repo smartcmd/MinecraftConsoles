@@ -17,7 +17,7 @@
 #define BOOST_SIGNALS2_TRACKABLE_HPP
 
 #include <boost/assert.hpp>
-#include <boost/std::shared_ptr.hpp>
+#include <boost/shared_ptr.hpp>
 
 namespace boost {
   namespace signals2 {
@@ -36,12 +36,12 @@ namespace boost {
       ~trackable() {}
     private:
       friend class detail::tracked_objects_visitor;
-      const std::shared_ptr<void>& get_shared_ptr() const
+      const shared_ptr<void>& get_shared_ptr() const
       {
           return _tracked_ptr;
       }
 
-      std::shared_ptr<void> _tracked_ptr;
+      shared_ptr<void> _tracked_ptr;
     };
   } // end namespace signals2
 } // end namespace boost

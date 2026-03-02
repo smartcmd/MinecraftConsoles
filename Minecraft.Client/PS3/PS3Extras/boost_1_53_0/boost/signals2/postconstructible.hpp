@@ -2,7 +2,7 @@
 // A simple framework for creating objects with postconstructors.
 // The objects must inherit from boost::signals2::postconstructible, and
 // have their lifetimes managed by
-// boost::std::shared_ptr created with the boost::signals2::deconstruct_ptr()
+// boost::shared_ptr created with the boost::signals2::deconstruct_ptr()
 // function.
 //
 // Copyright Frank Mori Hess 2007-2008.
@@ -17,7 +17,7 @@
 
 namespace boost
 {
-  template<typename T> class std::shared_ptr;
+  template<typename T> class shared_ptr;
 
   namespace signals2
   {
@@ -37,7 +37,7 @@ namespace boost
       public:
         friend void detail::do_postconstruct(const postconstructible *ptr);
         template<typename T>
-          friend void adl_postconstruct(const std::shared_ptr<T> &sp, postconstructible *p)
+          friend void adl_postconstruct(const shared_ptr<T> &sp, postconstructible *p)
         {
           p->postconstruct();
         }

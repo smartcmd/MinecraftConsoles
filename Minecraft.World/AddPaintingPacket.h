@@ -15,13 +15,13 @@ public:
 
 public:
 	AddPaintingPacket();
-	AddPaintingPacket(std::shared_ptr<Painting> e);
+	AddPaintingPacket(shared_ptr<Painting> e);
 
 	virtual void read(DataInputStream *dis);
 	virtual void write(DataOutputStream *dos);
 	virtual void handle(PacketListener *listener);
 	virtual int getEstimatedSize();
 public:
-	static std::shared_ptr<Packet> create() { return std::shared_ptr<Packet>(new AddPaintingPacket()); }
+	static shared_ptr<Packet> create() { return shared_ptr<Packet>(new AddPaintingPacket()); }
 	virtual int getId() { return 25; }
 };

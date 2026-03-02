@@ -21,7 +21,7 @@
 #include <boost/assert.hpp>
 #include <boost/iterator/counting_iterator.hpp>
 #include <boost/random/uniform_int.hpp>
-#include <boost/std::shared_ptr.hpp>
+#include <boost/shared_ptr.hpp>
 #include <typeinfo>
 
 namespace boost { namespace parallel {
@@ -86,13 +86,13 @@ public:
 
   size_type block_size(process_id_type id, size_type n) const
   { return distribution_->block_size(id, n); }
-
+  
   process_id_type operator()(size_type i) const
   { return distribution_->in_process(i); }
-
+  
   size_type local(size_type i) const
   { return distribution_->local(i); }
-
+  
   size_type global(size_type n) const
   { return distribution_->global(n); }
 
@@ -122,13 +122,13 @@ public:
   }
 
 private:
-  std::shared_ptr<basic_distribution> distribution_;
+  shared_ptr<basic_distribution> distribution_;
 };
 
 struct block
 {
   template<typename LinearProcessGroup>
-  explicit block(const LinearProcessGroup& pg, std::size_t n)
+  explicit block(const LinearProcessGroup& pg, std::size_t n) 
     : id(process_id(pg)), p(num_processes(pg)), n(n) { }
 
   // If there are n elements in the distributed data structure, returns the number of elements stored locally.
@@ -144,7 +144,7 @@ struct block
   // Returns the processor on which element with global index i is stored
   template<typename SizeType>
   SizeType operator()(SizeType i) const
-  {
+  { 
     SizeType cutoff_processor = n % p;
     SizeType cutoff = cutoff_processor * (n / p + 1);
 
@@ -165,7 +165,7 @@ struct block
   // Find the local index for the ith global element
   template<typename SizeType>
   SizeType local(SizeType i) const
-  {
+  { 
     SizeType owner = (*this)(i);
     return i - start(owner);
   }
@@ -192,9 +192,9 @@ struct uneven_block
   typedef std::vector<std::size_t>    size_vector;
 
   template<typename LinearProcessGroup>
-  explicit uneven_block(const LinearProcessGroup& pg, const std::vector<std::size_t>& local_sizes)
+  explicit uneven_block(const LinearProcessGroup& pg, const std::vector<std::size_t>& local_sizes) 
     : id(process_id(pg)), p(num_processes(pg)), local_sizes(local_sizes)
-  {
+  { 
     BOOST_ASSERT(local_sizes.size() == p);
     local_starts.resize(p + 1);
     local_starts[0] = 0;
@@ -204,7 +204,7 @@ struct uneven_block
 
   // To do maybe: enter local size in each process and gather in constructor (much handier)
   // template<typename LinearProcessGroup>
-  // explicit uneven_block(const LinearProcessGroup& pg, std::size_t my_local_size)
+  // explicit uneven_block(const LinearProcessGroup& pg, std::size_t my_local_size) 
 
   // If there are n elements in the distributed data structure, returns the number of elements stored locally.
   template<typename SizeType>
@@ -227,7 +227,7 @@ struct uneven_block
 
   // Find the starting index for processor with the given id
   template<typename ID>
-  std::size_t start(ID id) const
+  std::size_t start(ID id) const 
   {
     return local_starts[id];
   }
@@ -235,7 +235,7 @@ struct uneven_block
   // Find the local index for the ith global element
   template<typename SizeType>
   SizeType local(SizeType i) const
-  {
+  { 
     SizeType owner = (*this)(i);
     return i - start(owner);
   }
@@ -264,10 +264,10 @@ struct oned_block_cyclic
   template<typename LinearProcessGroup>
   explicit oned_block_cyclic(const LinearProcessGroup& pg, std::size_t size)
     : id(process_id(pg)), p(num_processes(pg)), size(size) { }
-
+      
   template<typename SizeType>
   SizeType block_size(SizeType n) const
-  {
+  { 
     return block_size(id, n);
   }
 
@@ -279,20 +279,20 @@ struct oned_block_cyclic
     SizeType everyone_gets = all_blocks / p;
     SizeType extra_blocks = all_blocks % p;
     SizeType my_blocks = everyone_gets + (p < extra_blocks? 1 : 0);
-    SizeType my_elements = my_blocks * size
+    SizeType my_elements = my_blocks * size 
                          + (p == extra_blocks? extra_elements : 0);
     return my_elements;
   }
 
   template<typename SizeType>
   SizeType operator()(SizeType i) const
-  {
+  { 
     return (i / size) % p;
   }
 
   template<typename SizeType>
   SizeType local(SizeType i) const
-  {
+  { 
     return ((i / size) / p) * size + i % size;
   }
 
@@ -302,7 +302,7 @@ struct oned_block_cyclic
 
   template<typename ProcessID, typename SizeType>
   SizeType global(ProcessID id, SizeType i) const
-  {
+  { 
     return ((i / size) * p + id) * size + i % size;
   }
 
@@ -318,14 +318,14 @@ struct twod_block_cyclic
   explicit twod_block_cyclic(const LinearProcessGroup& pg,
                              std::size_t block_rows, std::size_t block_columns,
                              std::size_t data_columns_per_row)
-    : id(process_id(pg)), p(num_processes(pg)),
-      block_rows(block_rows), block_columns(block_columns),
+    : id(process_id(pg)), p(num_processes(pg)), 
+      block_rows(block_rows), block_columns(block_columns), 
       data_columns_per_row(data_columns_per_row)
   { }
-
+      
   template<typename SizeType>
   SizeType block_size(SizeType n) const
-  {
+  { 
     return block_size(id, n);
   }
 
@@ -346,7 +346,7 @@ struct twod_block_cyclic
 
   template<typename SizeType>
   SizeType operator()(SizeType i) const
-  {
+  { 
     SizeType result = get_block_num(i) % p;
     //    std::cerr << "Item " << i << " goes on processor " << result << std::endl;
     return result;
@@ -354,7 +354,7 @@ struct twod_block_cyclic
 
   template<typename SizeType>
   SizeType local(SizeType i) const
-  {
+  { 
     // Compute the start of the block
     std::size_t block_num = get_block_num(i);
     //    std::cerr << "Item " << i << " is in block #" << block_num << std::endl;
@@ -362,11 +362,11 @@ struct twod_block_cyclic
     std::size_t local_block_num = block_num / p;
     std::size_t block_start = local_block_num * block_rows * block_columns;
 
-    // Compute the offset into the block
+    // Compute the offset into the block 
     std::size_t data_row = i / data_columns_per_row;
     std::size_t data_col = i % data_columns_per_row;
-    std::size_t block_offset = (data_row % block_rows) * block_columns
-                             + (data_col % block_columns);
+    std::size_t block_offset = (data_row % block_rows) * block_columns 
+                             + (data_col % block_columns);    
 
     //    std::cerr << "Item " << i << " maps to local index " << block_start+block_offset << std::endl;
     return block_start + block_offset;
@@ -374,7 +374,7 @@ struct twod_block_cyclic
 
   template<typename SizeType>
   SizeType global(SizeType i) const
-  {
+  { 
     // Compute the (global) block in which this element resides
     SizeType local_block_num = i / (block_rows * block_columns);
     SizeType block_offset = i % (block_rows * block_columns);
@@ -401,7 +401,7 @@ struct twod_block_cyclic
                     + row_in_block * block_rows + col_in_block;
 
 
-    std::cerr << "global(" << i << "@" << id << ") = " << result
+    std::cerr << "global(" << i << "@" << id << ") = " << result 
               << " =? " << local(result) << std::endl;
     BOOST_ASSERT(i == local(result));
     return result;
@@ -444,7 +444,7 @@ class twod_random
   private:
     RandomNumberGen& gen;
   };
-
+  
  public:
   template<typename LinearProcessGroup, typename RandomNumberGen>
   explicit twod_random(const LinearProcessGroup& pg,
@@ -452,11 +452,11 @@ class twod_random
                        std::size_t data_columns_per_row,
                        std::size_t n,
                        RandomNumberGen& gen)
-    : id(process_id(pg)), p(num_processes(pg)),
-      block_rows(block_rows), block_columns(block_columns),
+    : id(process_id(pg)), p(num_processes(pg)), 
+      block_rows(block_rows), block_columns(block_columns), 
       data_columns_per_row(data_columns_per_row),
       global_to_local(n / (block_rows * block_columns))
-  {
+  { 
     std::copy(make_counting_iterator(std::size_t(0)),
               make_counting_iterator(global_to_local.size()),
               global_to_local.begin());
@@ -464,10 +464,10 @@ class twod_random
     random_int<RandomNumberGen> rand(gen);
     std::random_shuffle(global_to_local.begin(), global_to_local.end(), rand);
   }
-
+      
   template<typename SizeType>
   SizeType block_size(SizeType n) const
-  {
+  { 
     return block_size(id, n);
   }
 
@@ -488,7 +488,7 @@ class twod_random
 
   template<typename SizeType>
   SizeType operator()(SizeType i) const
-  {
+  { 
     SizeType result = get_block_num(i) % p;
     //    std::cerr << "Item " << i << " goes on processor " << result << std::endl;
     return result;
@@ -496,7 +496,7 @@ class twod_random
 
   template<typename SizeType>
   SizeType local(SizeType i) const
-  {
+  { 
     // Compute the start of the block
     std::size_t block_num = get_block_num(i);
     //    std::cerr << "Item " << i << " is in block #" << block_num << std::endl;
@@ -504,11 +504,11 @@ class twod_random
     std::size_t local_block_num = block_num / p;
     std::size_t block_start = local_block_num * block_rows * block_columns;
 
-    // Compute the offset into the block
+    // Compute the offset into the block 
     std::size_t data_row = i / data_columns_per_row;
     std::size_t data_col = i % data_columns_per_row;
-    std::size_t block_offset = (data_row % block_rows) * block_columns
-                             + (data_col % block_columns);
+    std::size_t block_offset = (data_row % block_rows) * block_columns 
+                             + (data_col % block_columns);    
 
     //    std::cerr << "Item " << i << " maps to local index " << block_start+block_offset << std::endl;
     return block_start + block_offset;
@@ -552,7 +552,7 @@ class random_distribution
   private:
     RandomNumberGen& gen;
   };
-
+  
  public:
   template<typename LinearProcessGroup, typename RandomNumberGen>
   random_distribution(const LinearProcessGroup& pg, RandomNumberGen& gen,
@@ -565,7 +565,7 @@ class random_distribution
 
     random_int<RandomNumberGen> rand(gen);
     std::random_shuffle(local_to_global.begin(), local_to_global.end(), rand);
-
+                        
 
     for (std::vector<std::size_t>::size_type i = 0; i < n; ++i)
       global_to_local[local_to_global[i]] = i;
@@ -587,19 +587,19 @@ class random_distribution
 
   template<typename SizeType>
   SizeType local(SizeType i) const
-  {
+  { 
     return base.local(global_to_local[i]);
   }
 
   template<typename ProcessID, typename SizeType>
   SizeType global(ProcessID p, SizeType i) const
-  {
+  { 
     return local_to_global[base.global(p, i)];
   }
 
   template<typename SizeType>
   SizeType global(SizeType i) const
-  {
+  { 
     return local_to_global[base.global(i)];
   }
 

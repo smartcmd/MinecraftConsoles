@@ -12,9 +12,9 @@ private:
 	static Random random;
 
 public:
-	static int getEnchantmentLevel(int enchantmentId, std::shared_ptr<ItemInstance> piece);
-	static unordered_map<int, int> *getEnchantments(std::shared_ptr<ItemInstance> item);
-	static void setEnchantments(unordered_map<int, int> *enchantments, std::shared_ptr<ItemInstance> item);
+	static int getEnchantmentLevel(int enchantmentId, shared_ptr<ItemInstance> piece);
+	static unordered_map<int, int> *getEnchantments(shared_ptr<ItemInstance> item);
+	static void setEnchantments(unordered_map<int, int> *enchantments, shared_ptr<ItemInstance> item);
 
 	static int getEnchantmentLevel(int enchantmentId, ItemInstanceArray inventory);
 
@@ -27,7 +27,7 @@ private:
 		virtual void doEnchantment(Enchantment *enchantment, int level) = 0;
 	};
 
-	static void runIterationOnItem(EnchantmentIterationMethod &method, std::shared_ptr<ItemInstance> piece);
+	static void runIterationOnItem(EnchantmentIterationMethod &method, shared_ptr<ItemInstance> piece);
 	static void runIterationOnInventory(EnchantmentIterationMethod &method, ItemInstanceArray inventory);
 
 	class GetDamageProtectionIteration : public EnchantmentIterationMethod
@@ -43,20 +43,20 @@ private:
 
 	/**
 	* Fetches the protection value for enchanted items.
-	*
+	* 
 	* @param inventory
 	* @param source
 	* @return
 	*/
 public:
-	static int getDamageProtection(std::shared_ptr<Inventory> inventory, DamageSource *source);
+	static int getDamageProtection(shared_ptr<Inventory> inventory, DamageSource *source);
 
 private:
 	class GetDamageBonusIteration : public EnchantmentIterationMethod
 	{
 	public:
 		int sum;
-		std::shared_ptr<Mob> target;
+		shared_ptr<Mob> target;
 
 		virtual void doEnchantment(Enchantment *enchantment, int level);
 	};
@@ -64,27 +64,27 @@ private:
 	static GetDamageBonusIteration getDamageBonusIteration;
 
 	/**
-	*
+	* 
 	* @param inventory
 	* @param target
 	* @return
 	*/
 public:
-	static int getDamageBonus(std::shared_ptr<Inventory> inventory, std::shared_ptr<Mob> target);
-	static int getKnockbackBonus(std::shared_ptr<Inventory> inventory, std::shared_ptr<Mob> target);
-	static int getFireAspect(std::shared_ptr<Mob> source);
-	static int getOxygenBonus(std::shared_ptr<Inventory> inventory);
-	static int getDiggingBonus(std::shared_ptr<Inventory> inventory);
-	static int getDigDurability(std::shared_ptr<Inventory> inventory);
-	static bool hasSilkTouch(std::shared_ptr<Inventory> inventory);
-	static int getDiggingLootBonus(std::shared_ptr<Inventory> inventory);
-	static int getKillingLootBonus(std::shared_ptr<Inventory> inventory);
-	static bool hasWaterWorkerBonus(std::shared_ptr<Inventory> inventory);
-	static int getArmorThorns(std::shared_ptr<Mob> source);
-	static std::shared_ptr<ItemInstance> getRandomItemWith(Enchantment *enchantment, std::shared_ptr<Mob> source);
+	static int getDamageBonus(shared_ptr<Inventory> inventory, shared_ptr<Mob> target);
+	static int getKnockbackBonus(shared_ptr<Inventory> inventory, shared_ptr<Mob> target);
+	static int getFireAspect(shared_ptr<Mob> source);
+	static int getOxygenBonus(shared_ptr<Inventory> inventory);
+	static int getDiggingBonus(shared_ptr<Inventory> inventory);
+	static int getDigDurability(shared_ptr<Inventory> inventory);
+	static bool hasSilkTouch(shared_ptr<Inventory> inventory);
+	static int getDiggingLootBonus(shared_ptr<Inventory> inventory);
+	static int getKillingLootBonus(shared_ptr<Inventory> inventory);
+	static bool hasWaterWorkerBonus(shared_ptr<Inventory> inventory);
+	static int getArmorThorns(shared_ptr<Mob> source);
+	static shared_ptr<ItemInstance> getRandomItemWith(Enchantment *enchantment, shared_ptr<Mob> source);
 
 	/**
-	*
+	* 
 	* @param random
 	* @param slot
 	*            The table slot, 0-2
@@ -94,17 +94,17 @@ public:
 	*            Which item that is being enchanted.
 	* @return The enchantment cost, 0 means unchantable, 50 is max.
 	*/
-	static int getEnchantmentCost(Random *random, int slot, int bookcases, std::shared_ptr<ItemInstance> itemInstance);
+	static int getEnchantmentCost(Random *random, int slot, int bookcases, shared_ptr<ItemInstance> itemInstance);
 
-	static std::shared_ptr<ItemInstance> enchantItem(Random *random, std::shared_ptr<ItemInstance> itemInstance, int enchantmentCost);
+	static shared_ptr<ItemInstance> enchantItem(Random *random, shared_ptr<ItemInstance> itemInstance, int enchantmentCost);
 
 	/**
-	*
+	* 
 	* @param random
 	* @param itemInstance
 	* @param enchantmentCost
 	* @return
 	*/
-	static vector<EnchantmentInstance *> *selectEnchantment(Random *random, std::shared_ptr<ItemInstance> itemInstance, int enchantmentCost);
-	static unordered_map<int, EnchantmentInstance *> *getAvailableEnchantmentResults(int value, std::shared_ptr<ItemInstance> itemInstance);
+	static vector<EnchantmentInstance *> *selectEnchantment(Random *random, shared_ptr<ItemInstance> itemInstance, int enchantmentCost);
+	static unordered_map<int, EnchantmentInstance *> *getAvailableEnchantmentResults(int value, shared_ptr<ItemInstance> itemInstance);
 };

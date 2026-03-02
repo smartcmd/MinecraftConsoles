@@ -18,14 +18,14 @@ public:
     float flapping;
     int eggTime;
 
-private:
+private:	
 	void _init();
 
 public:
 	Chicken(Level *level);
 	virtual bool useNewAi();
 	virtual int getMaxHealth();
-	virtual void aiStep();
+	virtual void aiStep();	
 
 protected:
 	virtual void causeFallDamage(float distance);
@@ -36,7 +36,7 @@ protected:
 	virtual void dropDeathLoot(bool wasKilledByPlayer, int playerBonusLevel);
 
 public:
-	virtual std::shared_ptr<AgableMob> getBreedOffspring(std::shared_ptr<AgableMob> target);
-	virtual bool isFood(std::shared_ptr<ItemInstance> itemInstance);
+	virtual shared_ptr<AgableMob> getBreedOffspring(shared_ptr<AgableMob> target);
+	virtual bool isFood(shared_ptr<ItemInstance> itemInstance);
 
 };

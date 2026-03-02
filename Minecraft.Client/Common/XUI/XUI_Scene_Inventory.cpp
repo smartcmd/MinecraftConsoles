@@ -33,7 +33,7 @@ HRESULT CXuiSceneInventory::OnInit( XUIMessageInit *pInitData, BOOL &bHandled )
 	{
 		if(m_bSplitscreen)
 		{
-			app.AdjustSplitscreenScene(m_hObj,&m_OriginalPosition,m_iPad);
+			app.AdjustSplitscreenScene(m_hObj,&m_OriginalPosition,m_iPad);	
 		}
 	}
 
@@ -57,7 +57,7 @@ HRESULT CXuiSceneInventory::OnInit( XUIMessageInit *pInitData, BOOL &bHandled )
 	initData->player->awardStat(GenericStats::openInventory(), GenericStats::param_noArgs());
 
 	CXuiSceneAbstractContainer::Initialize( initData->iPad, menu, false, InventoryMenu::INV_SLOT_START, eSectionInventoryUsing, eSectionInventoryMax, initData->bNavigateBack );
-
+	
 	delete initData;
 
 	float fWidth;
@@ -86,7 +86,7 @@ HRESULT CXuiSceneInventory::OnDestroy()
 	}
 
 	// 4J Stu - Fix for #11302 - TCR 001: Network Connectivity: Host crashed after being killed by the client while accessing a chest during burst packet loss.
-	// We need to make sure that we call closeContainer() anytime this menu is closed, even if it is forced to close by some other reason (like the player dying)
+	// We need to make sure that we call closeContainer() anytime this menu is closed, even if it is forced to close by some other reason (like the player dying)	
 	if(Minecraft::GetInstance()->localplayers[m_iPad] != NULL) Minecraft::GetInstance()->localplayers[m_iPad]->closeContainer();
 	return S_OK;
 }
@@ -154,7 +154,7 @@ void CXuiSceneInventory::updateEffectsDisplay()
 {
 	// Update with the current effects
 	Minecraft *pMinecraft = Minecraft::GetInstance();
-	std::shared_ptr<LocalPlayer> player = pMinecraft->localplayers[m_iPad];
+	shared_ptr<LocalPlayer> player = pMinecraft->localplayers[m_iPad];
 
 	if(player == NULL) return;
 
@@ -185,7 +185,7 @@ void CXuiSceneInventory::updateEffectsDisplay()
 
 			if(i > 0) position.y -= fNextEffectYOffset; // Stack from the bottom
 			m_hEffectDisplayA[i]->SetPosition(&position);
-
+			
 			MobEffectInstance *effect = *it;
 
 			MobEffect *mobEffect = MobEffect::effects[effect->getId()];

@@ -11,7 +11,7 @@
 #define BOOST_SPIRIT_OBJECT_WITH_ID_IPP
 
 #include <vector>
-#include <boost/std::shared_ptr.hpp>
+#include <boost/shared_ptr.hpp>
 
 #ifdef BOOST_SPIRIT_THREADSAFE
 #include <boost/thread/mutex.hpp>
@@ -64,7 +64,7 @@ BOOST_SPIRIT_CLASSIC_NAMESPACE_BEGIN
             static void mutex_init();
 #endif
 
-            boost::std::shared_ptr<object_with_id_base_supply<IdT> > id_supply;
+            boost::shared_ptr<object_with_id_base_supply<IdT> > id_supply;
         };
 
         //////////////////////////////////
@@ -141,7 +141,7 @@ BOOST_SPIRIT_CLASSIC_NAMESPACE_BEGIN
                 boost::mutex &mutex = mutex_instance();
                 boost::mutex::scoped_lock lock(mutex);
 #endif
-                static boost::std::shared_ptr<object_with_id_base_supply<IdT> >
+                static boost::shared_ptr<object_with_id_base_supply<IdT> >
                     static_supply;
 
                 if (!static_supply.get())
@@ -174,7 +174,7 @@ BOOST_SPIRIT_CLASSIC_NAMESPACE_BEGIN
         //////////////////////////////////
 #ifdef BOOST_SPIRIT_THREADSAFE
         template <typename TagT, typename IdT>
-        inline void
+        inline void 
         object_with_id_base<TagT, IdT>::mutex_init()
         {
             mutex_instance();

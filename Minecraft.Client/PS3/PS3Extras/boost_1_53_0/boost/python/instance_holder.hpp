@@ -11,7 +11,7 @@
 # include <boost/python/type_id.hpp>
 # include <cstddef>
 
-namespace boost { namespace python {
+namespace boost { namespace python { 
 
 // Base class for all holders
 struct BOOST_PYTHON_DECL instance_holder : private noncopyable
@@ -19,13 +19,13 @@ struct BOOST_PYTHON_DECL instance_holder : private noncopyable
  public:
     instance_holder();
     virtual ~instance_holder();
-
+    
     // return the next holder in a chain
     instance_holder* next() const;
 
     // When the derived holder actually holds by [smart] pointer and
     // null_ptr_only is set, only report that the type is held when
-    // the pointer is null.  This is needed for proper std::shared_ptr
+    // the pointer is null.  This is needed for proper shared_ptr
     // support, to prevent holding shared_ptrs from being found when
     // converting from python so that we can use the conversion method
     // that always holds the Python object.
@@ -34,7 +34,7 @@ struct BOOST_PYTHON_DECL instance_holder : private noncopyable
     void install(PyObject* inst) throw();
 
     // These functions should probably be located elsewhere.
-
+    
     // Allocate storage for an object of the given size at the given
     // offset in the Python instance<> object if bytes are available
     // there. Otherwise allocate size bytes of heap memory.

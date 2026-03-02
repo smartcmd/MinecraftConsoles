@@ -40,13 +40,13 @@ void EggTile::checkSlide(Level *level, int x, int y, int z)
 		}
 		else
 		{
-			std::shared_ptr<FallingTile> e = std::shared_ptr<FallingTile>(new FallingTile(level, x + 0.5f, y + 0.5f, z + 0.5f, id));
+			shared_ptr<FallingTile> e = shared_ptr<FallingTile>(new FallingTile(level, x + 0.5f, y + 0.5f, z + 0.5f, id));
 			level->addEntity(e);
 		}
 	}
 }
 
-bool EggTile::use(Level *level, int x, int y, int z, std::shared_ptr<Player> player, int clickedFace, float clickX, float clickY, float clickZ, bool soundOnly/*=false*/) // 4J added soundOnly param
+bool EggTile::use(Level *level, int x, int y, int z, shared_ptr<Player> player, int clickedFace, float clickX, float clickY, float clickZ, bool soundOnly/*=false*/) // 4J added soundOnly param
 {
 	if(soundOnly) return false;
 
@@ -54,7 +54,7 @@ bool EggTile::use(Level *level, int x, int y, int z, std::shared_ptr<Player> pla
     return true;
 }
 
-void EggTile::attack(Level *level, int x, int y, int z, std::shared_ptr<Player> player)
+void EggTile::attack(Level *level, int x, int y, int z, shared_ptr<Player> player)
 {
 	teleport(level, x, y, z);
 }
@@ -167,7 +167,7 @@ void EggTile::generateTeleportParticles(Level *level,int xt,int yt, int zt,int d
 	}
 }
 
-bool EggTile::shouldRenderFace(LevelSource *level, int x, int y, int z, int face)
+bool EggTile::shouldRenderFace(LevelSource *level, int x, int y, int z, int face) 
 {
 	return true;
 }

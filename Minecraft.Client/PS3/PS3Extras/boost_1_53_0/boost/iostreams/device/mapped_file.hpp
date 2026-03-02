@@ -26,7 +26,7 @@
 #include <boost/iostreams/detail/path.hpp>
 #include <boost/iostreams/operations_fwd.hpp>
 #include <boost/iostreams/positioning.hpp>
-#include <boost/std::shared_ptr.hpp>
+#include <boost/shared_ptr.hpp>
 #include <boost/static_assert.hpp>
 #include <boost/throw_exception.hpp>
 #include <boost/type_traits/is_same.hpp>
@@ -54,25 +54,25 @@ public:
 };
 
 // Bitmask operations for mapped_file_base::mapmode
-mapped_file_base::mapmode
+mapped_file_base::mapmode 
 operator|(mapped_file_base::mapmode a, mapped_file_base::mapmode b);
 
-mapped_file_base::mapmode
+mapped_file_base::mapmode 
 operator&(mapped_file_base::mapmode a, mapped_file_base::mapmode b);
 
-mapped_file_base::mapmode
+mapped_file_base::mapmode 
 operator^(mapped_file_base::mapmode a, mapped_file_base::mapmode b);
 
-mapped_file_base::mapmode
+mapped_file_base::mapmode 
 operator~(mapped_file_base::mapmode a);
 
-mapped_file_base::mapmode
+mapped_file_base::mapmode 
 operator|=(mapped_file_base::mapmode& a, mapped_file_base::mapmode b);
 
-mapped_file_base::mapmode
+mapped_file_base::mapmode 
 operator&=(mapped_file_base::mapmode& a, mapped_file_base::mapmode b);
 
-mapped_file_base::mapmode
+mapped_file_base::mapmode 
 operator^=(mapped_file_base::mapmode& a, mapped_file_base::mapmode b);
 
 //------------------Definition of mapped_file_params--------------------------//
@@ -81,8 +81,8 @@ namespace detail {
 
 struct mapped_file_params_base {
     mapped_file_params_base()
-        : flags(static_cast<mapped_file_base::mapmode>(0)),
-          mode(), offset(0), length(static_cast<std::size_t>(-1)),
+        : flags(static_cast<mapped_file_base::mapmode>(0)), 
+          mode(), offset(0), length(static_cast<std::size_t>(-1)), 
           new_file_size(0), hint(0)
         { }
 private:
@@ -102,16 +102,16 @@ public:
 // This template allows Boost.Filesystem paths to be specified when creating or
 // reopening a memory mapped file, without creating a dependence on
 // Boost.Filesystem. Possible values of Path include std::string,
-// boost::filesystem::path, boost::filesystem::wpath,
+// boost::filesystem::path, boost::filesystem::wpath, 
 // and boost::iostreams::detail::path (used to store either a std::string or a
 // std::wstring).
 template<typename Path>
-struct basic_mapped_file_params
-    : detail::mapped_file_params_base
+struct basic_mapped_file_params 
+    : detail::mapped_file_params_base 
 {
     typedef detail::mapped_file_params_base base_type;
 
-    // For wide paths, instantiate basic_mapped_file_params
+    // For wide paths, instantiate basic_mapped_file_params 
     // with boost::filesystem::wpath
 #ifndef BOOST_IOSTREAMS_NO_WIDE_STREAMS
     BOOST_STATIC_ASSERT((!is_same<Path, std::wstring>::value));
@@ -215,7 +215,7 @@ private:
     void init();
     void open_impl(const param_type& p);
 
-    boost::std::shared_ptr<impl_type> pimpl_;
+    boost::shared_ptr<impl_type> pimpl_;
 };
 
 //------------------Definition of mapped_file---------------------------------//
@@ -253,7 +253,7 @@ public:
                  size_type length = max_length,
                  stream_offset offset = 0 );
 
-    // Constructor taking a list of parameters, including a
+    // Constructor taking a list of parameters, including a 
     // std::ios_base::openmode (deprecated)
     template<typename Path>
     explicit mapped_file( const Path& path,
@@ -283,7 +283,7 @@ public:
                size_type length = max_length,
                stream_offset offset = 0 );
 
-    // open overload taking a list of parameters, including a
+    // open overload taking a list of parameters, including a 
     // std::ios_base::openmode (deprecated)
     template<typename Path>
     void open( const Path& path,
@@ -387,7 +387,7 @@ mapped_file_source::mapped_file_source(const basic_mapped_file_params<Path>& p)
 { init(); open(p); }
 
 template<typename Path>
-mapped_file_source::mapped_file_source(
+mapped_file_source::mapped_file_source( 
     const Path& path, size_type length, boost::intmax_t offset)
 { init(); open(path, length, offset); }
 
@@ -423,14 +423,14 @@ mapped_file::mapped_file(const basic_mapped_file_params<Path>& p)
 { open(p); }
 
 template<typename Path>
-mapped_file::mapped_file(
-    const Path& path, mapmode flags,
+mapped_file::mapped_file( 
+    const Path& path, mapmode flags, 
     size_type length, stream_offset offset )
 { open(path, flags, length, offset); }
 
 template<typename Path>
-mapped_file::mapped_file(
-    const Path& path, BOOST_IOS::openmode mode,
+mapped_file::mapped_file( 
+    const Path& path, BOOST_IOS::openmode mode, 
     size_type length, stream_offset offset )
 { open(path, mode, length, offset); }
 
@@ -439,8 +439,8 @@ void mapped_file::open(const basic_mapped_file_params<Path>& p)
 { delegate_.open_impl(p); }
 
 template<typename Path>
-void mapped_file::open(
-    const Path& path, mapmode flags,
+void mapped_file::open( 
+    const Path& path, mapmode flags, 
     size_type length, stream_offset offset )
 {
     param_type p(path);
@@ -451,8 +451,8 @@ void mapped_file::open(
 }
 
 template<typename Path>
-void mapped_file::open(
-    const Path& path, BOOST_IOS::openmode mode,
+void mapped_file::open( 
+    const Path& path, BOOST_IOS::openmode mode, 
     size_type length, stream_offset offset )
 {
     param_type p(path);
@@ -462,7 +462,7 @@ void mapped_file::open(
     open(p);
 }
 
-inline char* mapped_file::data() const
+inline char* mapped_file::data() const 
 { return (flags() != readonly) ? const_cast<char*>(delegate_.data()) : 0; }
 
 //------------------Implementation of mapped_file_sink------------------------//
@@ -524,13 +524,13 @@ struct operations<mapped_file>
 {
     static std::pair<char*, char*>
     input_sequence(mapped_file& file)
-    {
-        return std::make_pair(file.begin(), file.end());
+    { 
+        return std::make_pair(file.begin(), file.end()); 
     }
     static std::pair<char*, char*>
     output_sequence(mapped_file& file)
-    {
-        return std::make_pair(file.begin(), file.end());
+    { 
+        return std::make_pair(file.begin(), file.end()); 
     }
 };
 
@@ -540,28 +540,28 @@ struct operations<mapped_file_sink>
 {
     static std::pair<char*, char*>
     output_sequence(mapped_file_sink& sink)
-    {
-        return std::make_pair(sink.begin(), sink.end());
+    { 
+        return std::make_pair(sink.begin(), sink.end()); 
     }
 };
-
+                    
 //------------------Definition of mapmode operators---------------------------//
 
-inline mapped_file::mapmode
+inline mapped_file::mapmode 
 operator|(mapped_file::mapmode a, mapped_file::mapmode b)
 {
     return static_cast<mapped_file::mapmode>
         (static_cast<int>(a) | static_cast<int>(b));
 }
 
-inline mapped_file::mapmode
+inline mapped_file::mapmode 
 operator&(mapped_file::mapmode a, mapped_file::mapmode b)
 {
     return static_cast<mapped_file::mapmode>
         (static_cast<int>(a) & static_cast<int>(b));
 }
 
-inline mapped_file::mapmode
+inline mapped_file::mapmode 
 operator^(mapped_file::mapmode a, mapped_file::mapmode b)
 {
     return static_cast<mapped_file::mapmode>
@@ -574,19 +574,19 @@ operator~(mapped_file::mapmode a)
     return static_cast<mapped_file::mapmode>(~static_cast<int>(a));
 }
 
-inline mapped_file::mapmode
+inline mapped_file::mapmode 
 operator|=(mapped_file::mapmode& a, mapped_file::mapmode b)
 {
     return a = a | b;
 }
 
-inline mapped_file::mapmode
+inline mapped_file::mapmode 
 operator&=(mapped_file::mapmode& a, mapped_file::mapmode b)
 {
     return a = a & b;
 }
 
-inline mapped_file::mapmode
+inline mapped_file::mapmode 
 operator^=(mapped_file::mapmode& a, mapped_file::mapmode b)
 {
     return a = a ^ b;

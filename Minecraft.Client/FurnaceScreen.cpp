@@ -6,7 +6,7 @@
 #include "..\Minecraft.World\net.minecraft.world.inventory.h"
 #include "..\Minecraft.World\FurnaceTileEntity.h"
 
-FurnaceScreen::FurnaceScreen(std::shared_ptr<Inventory> inventory, std::shared_ptr<FurnaceTileEntity> furnace) : AbstractContainerScreen(new FurnaceMenu(inventory, furnace))
+FurnaceScreen::FurnaceScreen(shared_ptr<Inventory> inventory, shared_ptr<FurnaceTileEntity> furnace) : AbstractContainerScreen(new FurnaceMenu(inventory, furnace))
 {
 	this->furnace = furnace;
 }

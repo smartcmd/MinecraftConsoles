@@ -17,7 +17,7 @@
 #endif
 
 #include <string>
-#include <boost/std::shared_ptr.hpp>
+#include <boost/shared_ptr.hpp>
 #include <boost/xpressive/detail/core/quant_style.hpp>
 #include <boost/xpressive/detail/core/regex_impl.hpp>
 

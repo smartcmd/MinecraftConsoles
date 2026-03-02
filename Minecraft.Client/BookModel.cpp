@@ -3,7 +3,7 @@
 #include "BookModel.h"
 #include "ModelPart.h"
 
-BookModel::BookModel()
+BookModel::BookModel() 
 {
 	leftLid = (new ModelPart(this))->texOffs(0, 0)->addBox(-6, -5, 0, 6, 10, 0);
 	rightLid = (new ModelPart(this))->texOffs(16, 0)->addBox(0, -5, 0, 6, 10, 0);
@@ -33,7 +33,7 @@ BookModel::BookModel()
 
 }
 
-void BookModel::render(std::shared_ptr<Entity> entity, float time, float r, float bob, float yRot, float xRot, float scale, bool usecompiled)
+void BookModel::render(shared_ptr<Entity> entity, float time, float r, float bob, float yRot, float xRot, float scale, bool usecompiled) 
 {
 	setupAnim(time, r, bob, yRot, xRot, scale);
 

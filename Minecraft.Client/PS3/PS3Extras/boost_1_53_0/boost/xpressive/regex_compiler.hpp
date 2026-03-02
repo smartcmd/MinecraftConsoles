@@ -375,7 +375,7 @@ private:
                   , "mismatched parenthesis"
                 );
                 basic_regex<BidiIter> &rex = this->rules_[name];
-                std::shared_ptr<detail::regex_impl<BidiIter> > impl = access::get_regex_impl(rex);
+                shared_ptr<detail::regex_impl<BidiIter> > impl = access::get_regex_impl(rex);
                 this->self_->track_reference(*impl);
                 return detail::make_dynamic<BidiIter>(detail::regex_byref_matcher<BidiIter>(impl));
             }
@@ -735,7 +735,7 @@ private:
     std::size_t hidden_mark_count_;
     CompilerTraits traits_;
     typename RegexTraits::char_class_type upper_;
-    std::shared_ptr<detail::regex_impl<BidiIter> > self_;
+    shared_ptr<detail::regex_impl<BidiIter> > self_;
     std::map<string_type, basic_regex<BidiIter> > rules_;
 };
 

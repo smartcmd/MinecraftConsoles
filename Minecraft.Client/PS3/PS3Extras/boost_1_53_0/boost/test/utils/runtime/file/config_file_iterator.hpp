@@ -1,6 +1,6 @@
 //  (C) Copyright Gennadiy Rozental 2005-2008.
-//  Use, modification, and distribution are subject to the
-//  Boost Software License, Version 1.0. (See accompanying file
+//  Use, modification, and distribution are subject to the 
+//  Boost Software License, Version 1.0. (See accompanying file 
 //  LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
 
 //  See http://www.boost.org/libs/test for the library home page.
@@ -26,7 +26,7 @@
 #include <boost/test/utils/named_params.hpp>
 
 // Boost
-#include <boost/std::shared_ptr.hpp>
+#include <boost/shared_ptr.hpp>
 
 namespace boost {
 
@@ -34,7 +34,7 @@ namespace BOOST_RT_PARAM_NAMESPACE {
 
 namespace file {
 
-// Public typedef
+// Public typedef 
 typedef std::pair<dstring,long> location;
 
 // ************************************************************************** //
@@ -154,7 +154,7 @@ private:
 
     // Data members
     struct Impl;
-    std::shared_ptr<Impl> m_pimpl;
+    shared_ptr<Impl> m_pimpl;
 };
 
 } // namespace file

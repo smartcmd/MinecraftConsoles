@@ -39,13 +39,13 @@ unsigned int FurnaceTileEntity::getContainerSize()
 }
 
 
-std::shared_ptr<ItemInstance> FurnaceTileEntity::getItem(unsigned int slot)
+shared_ptr<ItemInstance> FurnaceTileEntity::getItem(unsigned int slot)
 {
 	return (*items)[slot];
 }
 
 
-std::shared_ptr<ItemInstance> FurnaceTileEntity::removeItem(unsigned int slot, int count)
+shared_ptr<ItemInstance> FurnaceTileEntity::removeItem(unsigned int slot, int count)
 {
 	m_charcoalUsed = false;
 
@@ -53,7 +53,7 @@ std::shared_ptr<ItemInstance> FurnaceTileEntity::removeItem(unsigned int slot, i
 	{
 		if ((*items)[slot]->count <= count)
 		{
-			std::shared_ptr<ItemInstance> item = (*items)[slot];
+			shared_ptr<ItemInstance> item = (*items)[slot];
 			(*items)[slot] = nullptr;
 			// 4J Stu - Fix for duplication glitch
 			if(item->count <= 0) return nullptr;
@@ -61,7 +61,7 @@ std::shared_ptr<ItemInstance> FurnaceTileEntity::removeItem(unsigned int slot, i
 		}
 		else
 		{
-			std::shared_ptr<ItemInstance> i = (*items)[slot]->remove(count);
+			shared_ptr<ItemInstance> i = (*items)[slot]->remove(count);
 			if ((*items)[slot]->count == 0) (*items)[slot] = nullptr;
 			// 4J Stu - Fix for duplication glitch
 			if(i->count <= 0) return nullptr;
@@ -71,13 +71,13 @@ std::shared_ptr<ItemInstance> FurnaceTileEntity::removeItem(unsigned int slot, i
 	return nullptr;
 }
 
-std::shared_ptr<ItemInstance> FurnaceTileEntity::removeItemNoUpdate(int slot)
+shared_ptr<ItemInstance> FurnaceTileEntity::removeItemNoUpdate(int slot)
 {
 	m_charcoalUsed = false;
 
 	if (items->data[slot] != NULL)
 	{
-		std::shared_ptr<ItemInstance> item = items->data[slot];
+		shared_ptr<ItemInstance> item = items->data[slot];
 		items->data[slot] = nullptr;
 		return item;
 	}
@@ -85,7 +85,7 @@ std::shared_ptr<ItemInstance> FurnaceTileEntity::removeItemNoUpdate(int slot)
 }
 
 
-void FurnaceTileEntity::setItem(unsigned int slot, std::shared_ptr<ItemInstance> item)
+void FurnaceTileEntity::setItem(unsigned int slot, shared_ptr<ItemInstance> item)
 {
 	(*items)[slot] = item;
 	if (item != NULL && item->count > getMaxStackSize()) item->count = getMaxStackSize();
@@ -185,7 +185,7 @@ void FurnaceTileEntity::tick()
 				if ((*items)[FUEL_SLOT] != NULL)
 				{
 					// 4J Added: Keep track of whether charcoal was used in production of current stack.
-					if ( (*items)[FUEL_SLOT]->getItem()->id == Item::coal_Id
+					if ( (*items)[FUEL_SLOT]->getItem()->id == Item::coal_Id 
 						&& (*items)[FUEL_SLOT]->getAuxValue() == CoalItem::CHAR_COAL)
 					{
 						m_charcoalUsed = true;
@@ -195,7 +195,7 @@ void FurnaceTileEntity::tick()
 					if ((*items)[FUEL_SLOT]->count == 0)
 					{
 						Item *remaining = (*items)[FUEL_SLOT]->getItem()->getCraftingRemainingItem();
-						(*items)[FUEL_SLOT] = remaining != NULL ? std::shared_ptr<ItemInstance>(new ItemInstance(remaining)) : nullptr;
+						(*items)[FUEL_SLOT] = remaining != NULL ? shared_ptr<ItemInstance>(new ItemInstance(remaining)) : nullptr;
 					}
 				}
 			}
@@ -253,7 +253,7 @@ void FurnaceTileEntity::burn()
 }
 
 
-int FurnaceTileEntity::getBurnDuration(std::shared_ptr<ItemInstance> itemInstance)
+int FurnaceTileEntity::getBurnDuration(shared_ptr<ItemInstance> itemInstance)
 {
 	if (itemInstance == NULL) return 0;
 	int id = itemInstance->getItem()->id;
@@ -304,12 +304,12 @@ int FurnaceTileEntity::getBurnDuration(std::shared_ptr<ItemInstance> itemInstanc
 	return 0;
 }
 
-bool FurnaceTileEntity::isFuel(std::shared_ptr<ItemInstance> item)
+bool FurnaceTileEntity::isFuel(shared_ptr<ItemInstance> item)
 {
 	return getBurnDuration(item) > 0;
 }
 
-bool FurnaceTileEntity::stillValid(std::shared_ptr<Player> player)
+bool FurnaceTileEntity::stillValid(shared_ptr<Player> player)
 {
 	if (level->getTileEntity(x, y, z) != shared_from_this() ) return false;
 	if (player->distanceToSqr(x + 0.5, y + 0.5, z + 0.5) > 8 * 8) return false;
@@ -330,9 +330,9 @@ void FurnaceTileEntity::stopOpen()
 }
 
 // 4J Added
-std::shared_ptr<TileEntity> FurnaceTileEntity::clone()
+shared_ptr<TileEntity> FurnaceTileEntity::clone()
 {
-	std::shared_ptr<FurnaceTileEntity> result = std::shared_ptr<FurnaceTileEntity>( new FurnaceTileEntity() );
+	shared_ptr<FurnaceTileEntity> result = shared_ptr<FurnaceTileEntity>( new FurnaceTileEntity() );
 	TileEntity::clone(result);
 
 	result->litTime = litTime;

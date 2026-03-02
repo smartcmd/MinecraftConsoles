@@ -40,7 +40,7 @@ protected:
 	virtual void defineSynchedData();
 
 public:
-	virtual AABB *getCollideAgainstBox(std::shared_ptr<Entity> entity);
+	virtual AABB *getCollideAgainstBox(shared_ptr<Entity> entity);
 	virtual AABB *getCollideBox();
 	virtual bool isPushable();
 
@@ -69,7 +69,7 @@ protected:
 public:
 	virtual float getShadowHeightOffs();
 	wstring getName();
-	virtual bool interact(std::shared_ptr<Player> player);
+	virtual bool interact(shared_ptr<Player> player);
 
 	virtual void setDamage(int damage);
 	virtual int getDamage();

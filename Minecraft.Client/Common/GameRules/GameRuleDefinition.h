@@ -39,7 +39,7 @@ public:
 
 	virtual GameRuleDefinition *addChild(ConsoleGameRules::EGameRuleType ruleType);
 	virtual void addAttribute(const wstring &attributeName, const wstring &attributeValue);
-
+	
 	virtual void populateGameRule(GameRulesInstance::EGameRulesInstanceType type, GameRule *rule);
 
 	bool getComplete(GameRule *rule);
@@ -53,8 +53,8 @@ public:
 
 	// Here we should have functions for all the hooks, with a GameRule* as the first parameter
 	virtual bool onUseTile(GameRule *rule, int tileId, int x, int y, int z) { return false; }
-	virtual bool onCollectItem(GameRule *rule, std::shared_ptr<ItemInstance> item) { return false; }
-	virtual void postProcessPlayer(std::shared_ptr<Player> player) { }
+	virtual bool onCollectItem(GameRule *rule, shared_ptr<ItemInstance> item) { return false; }
+	virtual void postProcessPlayer(shared_ptr<Player> player) { }
 
 	vector<GameRuleDefinition *> *enumerate();
 	unordered_map<GameRuleDefinition *, int> *enumerateMap();

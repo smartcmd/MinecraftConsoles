@@ -1,6 +1,6 @@
 //  (C) Copyright Gennadiy Rozental 2001-2008.
 //  Distributed under the Boost Software License, Version 1.0.
-//  (See accompanying file LICENSE_1_0.txt or copy at
+//  (See accompanying file LICENSE_1_0.txt or copy at 
 //  http://www.boost.org/LICENSE_1_0.txt)
 
 //  See http://www.boost.org/libs/test for the library home page.
@@ -73,7 +73,7 @@ template<typename ParamType, typename ParamIter>
 class param_test_case_generator : public test_unit_generator {
 public:
     param_test_case_generator( callback1<ParamType> const&  test_func,
-                               const_string                 tc_name,
+                               const_string                 tc_name, 
                                ParamIter                    par_begin,
                                ParamIter                    par_end )
     : m_test_func( test_func )
@@ -110,13 +110,13 @@ struct user_param_tc_method_invoker {
     typedef void (UserTestCase::*test_method)( ParamType );
 
     // Constructor
-    user_param_tc_method_invoker( std::shared_ptr<UserTestCase> inst, test_method test_method )
+    user_param_tc_method_invoker( shared_ptr<UserTestCase> inst, test_method test_method )
     : m_inst( inst ), m_test_method( test_method ) {}
 
     void operator()( ParamType p ) { ((*m_inst).*m_test_method)( p ); }
 
     // Data members
-    std::shared_ptr<UserTestCase> m_inst;
+    shared_ptr<UserTestCase> m_inst;
     test_method              m_test_method;
 };
 
@@ -127,7 +127,7 @@ struct user_param_tc_method_invoker {
 template<typename ParamType, typename ParamIter>
 inline ut_detail::param_test_case_generator<ParamType,ParamIter>
 make_test_case( callback1<ParamType> const& test_func,
-                const_string   tc_name,
+                const_string   tc_name, 
                 ParamIter      par_begin,
                 ParamIter      par_end )
 {
@@ -140,7 +140,7 @@ template<typename ParamType, typename ParamIter>
 inline ut_detail::param_test_case_generator<
     BOOST_DEDUCED_TYPENAME remove_const<BOOST_DEDUCED_TYPENAME remove_reference<ParamType>::type>::type,ParamIter>
 make_test_case( void (*test_func)( ParamType ),
-                const_string  tc_name,
+                const_string  tc_name, 
                 ParamIter     par_begin,
                 ParamIter     par_end )
 {
@@ -155,13 +155,13 @@ inline ut_detail::param_test_case_generator<
     BOOST_DEDUCED_TYPENAME remove_const<BOOST_DEDUCED_TYPENAME remove_reference<ParamType>::type>::type,ParamIter>
 make_test_case( void (UserTestCase::*test_method )( ParamType ),
                 const_string                           tc_name,
-                boost::std::shared_ptr<UserTestCase> const& user_test_case,
+                boost::shared_ptr<UserTestCase> const& user_test_case,
                 ParamIter                              par_begin,
                 ParamIter                              par_end )
 {
     typedef BOOST_DEDUCED_TYPENAME remove_const<BOOST_DEDUCED_TYPENAME remove_reference<ParamType>::type>::type param_value_type;
-    return ut_detail::param_test_case_generator<param_value_type,ParamIter>(
-               ut_detail::user_param_tc_method_invoker<UserTestCase,ParamType>( user_test_case, test_method ),
+    return ut_detail::param_test_case_generator<param_value_type,ParamIter>( 
+               ut_detail::user_param_tc_method_invoker<UserTestCase,ParamType>( user_test_case, test_method ), 
                tc_name,
                par_begin,
                par_end );

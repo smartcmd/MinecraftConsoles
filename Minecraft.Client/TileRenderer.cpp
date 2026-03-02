@@ -244,7 +244,7 @@ void TileRenderer::tesselateInWorldFixedTexture( Tile* tile, int x, int y, int z
 }
 
 void TileRenderer::tesselateInWorldNoCulling( Tile* tile, int x, int y, int z, int forceData,
-											  std::shared_ptr< TileEntity > forceEntity )	// 4J added forceData, forceEntity param
+											  shared_ptr< TileEntity > forceEntity )	// 4J added forceData, forceEntity param
 {
 	noCulling = true;
 	tesselateInWorld( tile, x, y, z, forceData );
@@ -252,7 +252,7 @@ void TileRenderer::tesselateInWorldNoCulling( Tile* tile, int x, int y, int z, i
 }
 
 bool TileRenderer::tesselateInWorld( Tile* tt, int x, int y, int z, int forceData,
-									 std::shared_ptr< TileEntity > forceEntity )	// 4J added forceData, forceEntity param
+									 shared_ptr< TileEntity > forceEntity )	// 4J added forceData, forceEntity param
 {
 	Tesselator* t = Tesselator::getInstance();
 	int	shape = tt->getRenderShape();
@@ -3582,9 +3582,9 @@ bool TileRenderer::tesselateCrossInWorld( Tile* tt, int x, int y, int z )
 
 	if (tt == Tile::tallgrass)
 	{
-	    int64_t seed = (x * 3129871) ^ (z * 116129781l) ^ (y);
+	    __int64 seed = (x * 3129871) ^ (z * 116129781l) ^ (y);
 	    seed = seed * seed * 42317861 + seed * 11;
-
+	
 		xt += ((((seed >> 16) & 0xf) / 15.0f) - 0.5f) * 0.5f;
 		yt += ((((seed >> 20) & 0xf) / 15.0f) - 1.0f) * 0.2f;
 		zt += ((((seed >> 24) & 0xf) / 15.0f) - 0.5f) * 0.5f;
@@ -3821,7 +3821,7 @@ bool TileRenderer::tesselateLilypadInWorld(Tile *tt, int x, int y, int z)
 	float u1 = tex->getU1(true);
 	float v1 = tex->getV1(true);
 
-    int64_t seed = (x * 3129871) ^ (z * 116129781l) ^ (y);
+    __int64 seed = (x * 3129871) ^ (z * 116129781l) ^ (y);
     seed = seed * seed * 42317861 + seed * 11;
 
     int dir = (int) ((seed >> 16) & 0x3);
@@ -7155,7 +7155,7 @@ void TileRenderer::renderTile( Tile* tile, int data, float brightness, float fAl
 			data = Facing::UP;
 		}
 
-		tile->updateDefaultShape();
+		tile->updateDefaultShape();	
 		setShape(tile);
 		glRotatef(90, 0, 1, 0);
 

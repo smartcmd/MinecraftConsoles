@@ -17,7 +17,7 @@ AddPaintingPacket::AddPaintingPacket()
 	motive = L"";
 }
 
-AddPaintingPacket::AddPaintingPacket(std::shared_ptr<Painting> e)
+AddPaintingPacket::AddPaintingPacket(shared_ptr<Painting> e)
 {
 	id = e->entityId;
 	x = e->xTile;

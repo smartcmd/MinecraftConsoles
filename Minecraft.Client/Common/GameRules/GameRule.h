@@ -14,7 +14,7 @@ public:
 	typedef struct _ValueType
 	{
 		union{
-			int64_t				i64;
+			__int64				i64;
 			int					i;
 			char				c;
 			bool				b;
@@ -44,14 +44,14 @@ public:
 	virtual ~GameRule();
 
 	Connection *getConnection() { return m_connection; }
-
+	
 	ValueType getParameter(const wstring &parameterName);
 	void setParameter(const wstring &parameterName,ValueType value);
 	GameRuleDefinition *getGameRuleDefinition();
 
 	// All the hooks go here
 	void onUseTile(int tileId, int x, int y, int z);
-	void onCollectItem(std::shared_ptr<ItemInstance> item);
+	void onCollectItem(shared_ptr<ItemInstance> item);
 
 	// 4J-JEV: For saving.
 	//CompoundTag *toTags(unordered_map<GameRuleDefinition *, int> *map);

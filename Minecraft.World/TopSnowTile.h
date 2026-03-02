@@ -32,7 +32,7 @@ public:
 
 public:
 	void updateDefaultShape();
-	void updateShape(LevelSource *level, int x, int y, int z, int forceData = -1, std::shared_ptr<TileEntity> forceEntity = std::shared_ptr<TileEntity>());	// 4J added forceData, forceEntity param
+	void updateShape(LevelSource *level, int x, int y, int z, int forceData = -1, shared_ptr<TileEntity> forceEntity = shared_ptr<TileEntity>());	// 4J added forceData, forceEntity param
 
 protected:
 	void updateShape(int data);
@@ -47,7 +47,7 @@ private:
 	bool checkCanSurvive(Level *level, int x, int y, int z);
 
 public:
-	void playerDestroy(Level *level, std::shared_ptr<Player> player, int x, int y, int z, int data);
+	void playerDestroy(Level *level, shared_ptr<Player> player, int x, int y, int z, int data);
 
 public:
 	int getResource(int data, Random *random, int playerBonusLevel);
@@ -60,7 +60,7 @@ public:
 
 public:
 	bool shouldRenderFace(LevelSource *level, int x, int y, int z, int face);
-
+	
 	// 4J Added so we can check before we try to add a tile to the tick list if it's actually going to do seomthing
 	virtual bool shouldTileTick(Level *level, int x,int y,int z);
 };

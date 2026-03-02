@@ -3,21 +3,21 @@
 class Random
 {
 private:
-	int64_t seed;
+	__int64 seed;
 	bool haveNextNextGaussian;
 	double nextNextGaussian;
 protected:
 	int next(int bits);
 public:
 	Random();
-	Random(int64_t seed);
-	void setSeed(int64_t s);
+	Random(__int64 seed);
+	void setSeed(__int64 s);
 	void nextBytes(byte *bytes, unsigned int count);
 	double nextDouble();
 	double nextGaussian();
 	int nextInt();
 	int nextInt(int to);
 	float nextFloat();
-	int64_t nextLong();
+	__int64 nextLong();
 	bool nextBoolean();
 };

@@ -11,7 +11,7 @@ public:
     virtual void updateDefaultShape(); // 4J Added override
 
 	virtual int getRenderShape();
-	virtual void addAABBs(Level *level, int x, int y, int z, AABB *box, AABBList *boxes, std::shared_ptr<Entity> source);
+	virtual void addAABBs(Level *level, int x, int y, int z, AABB *box, AABBList *boxes, shared_ptr<Entity> source);
     virtual AABB *getAABB(Level *level, int x, int y, int z);
     virtual int getColor() const;
     virtual int getColor(int auxData);

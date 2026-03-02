@@ -129,7 +129,7 @@ int Enchantment::getDamageProtection(int level, DamageSource *source)
 	return 0;
 }
 
-int Enchantment::getDamageBonus(int level, std::shared_ptr<Mob> target)
+int Enchantment::getDamageBonus(int level, shared_ptr<Mob> target)
 {
 	return 0;
 }
@@ -154,12 +154,12 @@ wstring Enchantment::getFullname(int level,wstring &unformatted)
 {
 	wchar_t formatted[256];
 	swprintf(formatted,256,L"%ls %ls",app.GetString( getDescriptionId() ), getLevelString(level).c_str());
-	unformatted = formatted;
+	unformatted = formatted;	
 	swprintf(formatted,256,L"<font color=\"#%08x\">%ls</font>",app.GetHTMLColour(eHTMLColor_f),unformatted.c_str());
 	return formatted;
 }
 
-bool Enchantment::canEnchant(std::shared_ptr<ItemInstance> item)
+bool Enchantment::canEnchant(shared_ptr<ItemInstance> item)
 {
 	return category->canEnchant(item->getItem());
 }

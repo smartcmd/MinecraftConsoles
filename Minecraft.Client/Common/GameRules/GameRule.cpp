@@ -53,7 +53,7 @@ GameRuleDefinition *GameRule::getGameRuleDefinition()
 }
 
 void GameRule::onUseTile(int tileId, int x, int y, int z) { m_definition->onUseTile(this,tileId,x,y,z); }
-void GameRule::onCollectItem(std::shared_ptr<ItemInstance> item) { m_definition->onCollectItem(this,item); }
+void GameRule::onCollectItem(shared_ptr<ItemInstance> item) { m_definition->onCollectItem(this,item); }
 
 void GameRule::write(DataOutputStream *dos)
 {
@@ -63,7 +63,7 @@ void GameRule::write(DataOutputStream *dos)
 	{
 		wstring pName = (*it).first;
 		ValueType vType = (*it).second;
-
+		
 		dos->writeUTF( (*it).first );
 		dos->writeBoolean( vType.isPointer );
 
@@ -80,7 +80,7 @@ void GameRule::read(DataInputStream *dis)
 	for (int i = 0; i < savedParams; i++)
 	{
 		wstring pNames = dis->readUTF();
-
+		
 		ValueType vType = getParameter(pNames);
 
 		if (dis->readBoolean())

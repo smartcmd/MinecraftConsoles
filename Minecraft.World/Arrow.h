@@ -36,7 +36,7 @@ private:
 public:
 	int pickup;
     int shakeTime;
-    std::shared_ptr<Entity> owner;
+    shared_ptr<Entity> owner;
 
 private:
 	double baseDamage;
@@ -52,9 +52,9 @@ private:
 
 public:
 	Arrow(Level *level);
-	Arrow(Level *level, std::shared_ptr<Mob> mob, std::shared_ptr<Mob> target, float power, float uncertainty);
+	Arrow(Level *level, shared_ptr<Mob> mob, shared_ptr<Mob> target, float power, float uncertainty);
     Arrow(Level *level, double x, double y, double z);
-    Arrow(Level *level, std::shared_ptr<Mob> mob, float power);
+    Arrow(Level *level, shared_ptr<Mob> mob, float power);
 
 protected:
 	virtual void defineSynchedData();
@@ -66,7 +66,7 @@ public:
     virtual void tick();
     virtual void addAdditonalSaveData(CompoundTag *tag);
     virtual void readAdditionalSaveData(CompoundTag *tag);
-    virtual void playerTouch(std::shared_ptr<Player> player);
+    virtual void playerTouch(shared_ptr<Player> player);
     virtual float getShadowHeightOffs();
 
 	void setBaseDamage(double baseDamage);

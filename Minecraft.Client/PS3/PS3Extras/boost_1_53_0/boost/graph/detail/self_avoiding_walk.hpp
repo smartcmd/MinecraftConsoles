@@ -10,19 +10,19 @@
 #define BOOST_SELF_AVOIDING_WALK_HPP
 
 /*
-  This file defines necessary components for SAW.
+  This file defines necessary components for SAW. 
 
   mesh language: (defined by myself to clearify what is what)
   A triangle in mesh is called an triangle.
-  An edge in mesh is called an line.
+  An edge in mesh is called an line. 
   A vertex in mesh is called a point.
 
   A triangular mesh corresponds to a graph in which a vertex is a
-  triangle and an edge(u, v) stands for triangle u and triangle v
+  triangle and an edge(u, v) stands for triangle u and triangle v 
   share an line.
 
   After this point, a vertex always refers to vertex in graph,
-  therefore it is a traingle in mesh.
+  therefore it is a traingle in mesh. 
 
  */
 
@@ -43,7 +43,7 @@ namespace boost {
     triple(const T1& a, const T2& b, const T3& c) : first(a), second(b), third(c) {}
     triple() : first(SAW_SENTINAL), second(SAW_SENTINAL), third(SAW_SENTINAL) {}
   };
-
+ 
   typedef triple<int, int, int> Triple;
 
   /* Define a vertex property which has a triangle inside. Triangle is
@@ -70,14 +70,14 @@ namespace boost {
       if ( a.second == b.second || a.second == b.third )
         l.second = a.second;
       else if ( a.third == b.second || a.third == b.third )
-        l.second = a.third;
+        l.second = a.third; 
 
     }  else if ( a.first == b.second ) {
       l.first = a.first;
       if ( a.second == b.third )
         l.second = a.second;
       else if ( a.third == b.third )
-        l.second = a.third;
+        l.second = a.third; 
 
     } else if ( a.first == b.third ) {
       l.first = a.first;
@@ -90,17 +90,17 @@ namespace boost {
 
     } else if ( a.second == b.second ) {
       l.first = a.second;
-      if ( a.third == b.third )
+      if ( a.third == b.third ) 
         l.second = a.third;
 
     } else if ( a.second == b.third ) {
       l.first = a.second;
 
 
-    } else if ( a.third == b.first
-                || a.third == b.second
+    } else if ( a.third == b.first 
+                || a.third == b.second  
                 || a.third == b.third )
-      l.first = a.third;
+      l.first = a.third; 
 
     /*Make it in order*/
     if ( l.first > l.second ) {
@@ -132,7 +132,7 @@ namespace boost {
     }
     TriangleDecorator td;
   };
-
+  
   /* HList has to be a handle of data holder so that pass-by-value is
    * in right logic.
    *
@@ -146,7 +146,7 @@ namespace boost {
     : public bfs_visitor<>, public dfs_visitor<>
   {
     typedef typename boost::property_traits<IteratorD>::value_type iter;
-    /*use boost std::shared_ptr*/
+    /*use boost shared_ptr*/
     typedef typename HList::element_type::value_type::second_type     Line;
   public:
 
@@ -176,12 +176,12 @@ namespace boost {
           using std::make_pair;
       typedef typename boost::graph_traits<Graph>::vertex_descriptor Vertex;
       Vertex tau = target(e, G);
-      Vertex i   = source(e, G);
+      Vertex i   = source(e, G); 
 
       get_vertex_sharing<TriangleDecorator, Vertex, Line> get_sharing_line(td);
-
+      
       Line tau_i = get_sharing_line(tau, i);
-
+      
       iter w_end = hlist->end();
 
       iter w_i = iter_d[i];
@@ -197,7 +197,7 @@ namespace boost {
        *b       w(i) |- w(i+1)    w(i) ~> w(i+1) or no w(i+1) yet
        *----------------------------------------------------------
        */
-
+      
       bool a = false, b = false;
 
       --w_i_m_1;
@@ -206,13 +206,13 @@ namespace boost {
 
       if ( w_i_m_1 != w_end ) {
         a = ( w_i_m_1->second.first != SAW_SENTINAL );
-      }
-
+      }      
+      
       if ( a ) {
-
+        
         if ( b ) {
-          /*Case 1:
-
+          /*Case 1: 
+            
             w(i-1) |- w(i) |- w(i+1)
           */
           Line l1 = get_sharing_line(*w_i_m_1, tau);
@@ -221,7 +221,7 @@ namespace boost {
           --w_i_m_2;
 
           bool c = true;
-
+          
           if ( w_i_m_2 != w_end ) {
             c = w_i_m_2->second != l1;
           }
@@ -230,11 +230,11 @@ namespace boost {
             /*extension: w(i-1) -> tau |- w(i) */
             w_i_m_1->second = l1;
             /*insert(pos, const T&) is to insert before pos*/
-            iter_d[tau] = hlist->insert(w_i, make_pair(tau, tau_i));
-
+            iter_d[tau] = hlist->insert(w_i, make_pair(tau, tau_i));  
+            
           } else {  /* w(i-1) ^ tau == w(i-2) ^ w(i-1)  */
             /*must be w(i-2) ~> w(i-1) */
-
+            
             bool d = true;
             //need to handle the case when w_i_p_1 is null
             Line l3 = get_sharing_line(*w_i_p_1, tau);
@@ -261,15 +261,15 @@ namespace boost {
                 ;
               }
             }
-
+            
           }
-        } else {
+        } else { 
           /*Case 2:
-
+            
             w(i-1) |- w(i) ~> w(1+1)
           */
-
-          if ( w_i->second.second == tau_i.first
+          
+          if ( w_i->second.second == tau_i.first 
                || w_i->second.second == tau_i.second ) {  /*w(i) ^ w(i+1) < w(i) ^ tau*/
             /*extension: w(i) |- tau -> w(i+1) */
             w_i->second = tau_i;
@@ -296,23 +296,23 @@ namespace boost {
               iter_d[w_i_m_1->first] = hlist->insert(w_i_p_1, *w_i_m_1);
               hlist->erase(w_i_m_1);
             }
-
-          }
-
+            
+          }    
+          
         }
-
+        
       } else {
-
+        
         if ( b ) {
           /*Case 3:
-
+            
             w(i-1) ~> w(i) |- w(i+1)
           */
           bool c = false;
           if ( w_i_m_1 != w_end )
             c = ( w_i_m_1->second.second == tau_i.first)
               || ( w_i_m_1->second.second == tau_i.second);
-
+          
           if ( c ) {  /*w(i-1) ^ w(i) < w(i) ^ tau*/
             /* extension: w(i-1) -> tau |- w(i) */
             if ( w_i_m_1 != w_end )
@@ -336,7 +336,7 @@ namespace boost {
               /*extension: w(i-1) -> w(i+1) |- w(i) |- tau -> w(i+2) */
               iter w_i_p_2 = w_i_p_1;
               ++w_i_p_2;
-
+              
               w_i_p_1->second = w_i->second;
               iter_d[i] = hlist->insert(w_i_p_2, make_pair(i, tau_i));
               hlist->erase(w_i);
@@ -344,16 +344,16 @@ namespace boost {
               iter_d[tau] = hlist->insert(w_i_p_2, make_pair(tau, l2));
             }
           }
-
+          
         } else {
           /*Case 4:
-
+            
             w(i-1) ~> w(i) ~> w(i+1)
-
+            
           */
           bool c = false;
           if ( w_i_m_1 != w_end ) {
-            c = (w_i_m_1->second.second == tau_i.first)
+            c = (w_i_m_1->second.second == tau_i.first) 
               || (w_i_m_1->second.second == tau_i.second);
           }
           if ( c ) {   /*w(i-1) ^ w(i) < w(i) ^ tau */
@@ -361,48 +361,48 @@ namespace boost {
             if ( w_i_m_1 != w_end )
               w_i_m_1->second = get_sharing_line(*w_i_m_1, tau);
             iter_d[tau] = hlist->insert(w_i, make_pair(tau, tau_i));
-          } else {
+          } else { 
             /*extension: w(i) |- tau -> w(i+1) */
             w_i->second = tau_i;
             Line l1;
             l1.first = SAW_SENTINAL;
             l1.second = SAW_SENTINAL;
-            if ( w_i_p_1 != w_end )
+            if ( w_i_p_1 != w_end ) 
               l1 = get_sharing_line(*w_i_p_1, tau);
             iter_d[tau] = hlist->insert(w_i_p_1, make_pair(tau, l1));
           }
         }
-
+        
       }
 
       return true;
     }
-
+    
   protected:
     TriangleDecorator td; /*a decorator for vertex*/
     HList             hlist;
     /*This must be a handle of list to record the SAW
       The element type of the list is pair<Vertex, Line>
      */
-
-    IteratorD         iter_d;
+   
+    IteratorD         iter_d; 
     /*Problem statement: Need a fast access to w for triangle i.
-     *Possible solution: mantain an array to record.
-     iter_d[i] will return an iterator
+     *Possible solution: mantain an array to record. 
+     iter_d[i] will return an iterator 
      which points to w(i), where i is a vertex
      representing triangle i.
     */
   };
 
   template <class Triangle, class HList, class Iterator>
-  inline
+  inline 
   SAW_visitor<Triangle, HList, Iterator>
   visit_SAW(Triangle t, HList hl, Iterator i) {
     return SAW_visitor<Triangle, HList, Iterator>(t, hl, i);
   }
 
   template <class Tri, class HList, class Iter>
-  inline
+  inline 
   SAW_visitor< random_access_iterator_property_map<Tri*,Tri,Tri&>,
     HList, random_access_iterator_property_map<Iter*,Iter,Iter&> >
   visit_SAW_ptr(Tri* t, HList hl, Iter* i) {
@@ -412,7 +412,7 @@ namespace boost {
   }
 
   // should also have combo's of pointers, and also const :(
-
+  
 }
 
 #endif /*BOOST_SAW_H*/

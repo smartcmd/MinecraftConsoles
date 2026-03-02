@@ -16,7 +16,7 @@ public:
 
 private:
 	static const int DATA_ID_SYNCHED_HEALTH = 16;
-
+	
 	// 4J Added for new behaviours
 	static const int DATA_ID_SYNCHED_ACTION = 17;
 
@@ -28,15 +28,15 @@ public:
 	int posPointer;
 
 	//BossMobPart[] subEntities;
-	vector<std::shared_ptr<Entity> > subEntities;
-	std::shared_ptr<BossMobPart> head;
-	std::shared_ptr<BossMobPart> neck; // 4J Added
-	std::shared_ptr<BossMobPart> body;
-	std::shared_ptr<BossMobPart> tail1;
-	std::shared_ptr<BossMobPart> tail2;
-	std::shared_ptr<BossMobPart> tail3;
-	std::shared_ptr<BossMobPart> wing1;
-	std::shared_ptr<BossMobPart> wing2;
+	vector<shared_ptr<Entity> > subEntities;
+	shared_ptr<BossMobPart> head;
+	shared_ptr<BossMobPart> neck; // 4J Added
+	shared_ptr<BossMobPart> body;
+	shared_ptr<BossMobPart> tail1;
+	shared_ptr<BossMobPart> tail2;
+	shared_ptr<BossMobPart> tail3;
+	shared_ptr<BossMobPart> wing1;
+	shared_ptr<BossMobPart> wing2;
 
 	float oFlapTime;
 	float flapTime;
@@ -99,13 +99,13 @@ private:
 	static const int PODIUM_Z_POS = 0;
 
 private:
-	std::shared_ptr<Entity> attackTarget;
+	shared_ptr<Entity> attackTarget;
 
 public:
 	int dragonDeathTime;
 
 public:
-	std::shared_ptr<EnderCrystal> nearestCrystal;
+	shared_ptr<EnderCrystal> nearestCrystal;
 
 private:
 	void _init();
@@ -126,14 +126,14 @@ private:
 
 	void checkCrystals();
 	void checkAttack();
-	void knockBack(vector<std::shared_ptr<Entity> > *entities);
-	void hurt(vector<std::shared_ptr<Entity> > *entities);
+	void knockBack(vector<shared_ptr<Entity> > *entities);
+	void hurt(vector<shared_ptr<Entity> > *entities);
 	void findNewTarget();
 	float rotWrap(double d);
 	bool checkWalls(AABB *bb);
 
 public:
-	virtual bool hurt(std::shared_ptr<BossMobPart> bossMobPart, DamageSource *source, int damage);
+	virtual bool hurt(shared_ptr<BossMobPart> bossMobPart, DamageSource *source, int damage);
 
 protected:
 	virtual void tickDeath();
@@ -145,7 +145,7 @@ protected:
 	virtual void checkDespawn();
 	virtual int getHurtSound();
 public:
-	virtual vector<std::shared_ptr<Entity> > *getSubEntities();
+	virtual vector<shared_ptr<Entity> > *getSubEntities();
 	virtual bool isPickable();
 	virtual int getSynchedHealth();
 
@@ -161,10 +161,10 @@ private:
 	void strafeAttackTarget();
 	void navigateToNextPathNode();
 
-public:
+public:	
 	virtual void addAdditonalSaveData(CompoundTag *entityTag);
 	virtual void readAdditionalSaveData(CompoundTag *tag);
-
+	
 public:
 	void handleCrystalDestroyed(DamageSource *source);
 

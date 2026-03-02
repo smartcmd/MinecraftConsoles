@@ -10,10 +10,10 @@ TntRenderer::TntRenderer()
 	this->shadowRadius = 0.5f;
 }
 
-void TntRenderer::render(std::shared_ptr<Entity> _tnt, double x, double y, double z, float rot, float a)
+void TntRenderer::render(shared_ptr<Entity> _tnt, double x, double y, double z, float rot, float a)
 {
 	// 4J - dynamic cast required because we aren't using templates/generics in our version
-	std::shared_ptr<PrimedTnt> tnt = dynamic_pointer_cast<PrimedTnt>(_tnt);
+	shared_ptr<PrimedTnt> tnt = dynamic_pointer_cast<PrimedTnt>(_tnt);
 
 	glPushMatrix();
     glTranslatef((float) x, (float) y, (float) z);

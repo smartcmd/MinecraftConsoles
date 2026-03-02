@@ -62,12 +62,12 @@ private:
 	eINSTANCEOF eType;
 };
 
-class Recipes
+class Recipes 
 {
 public:
 	static const int ANY_AUX_VALUE = -1;
 
-private:
+private: 
 	static Recipes *instance;
 
 	vector <Recipy *> *recipies;
@@ -75,25 +75,25 @@ private:
 public:
 	static void staticCtor();
 
-public:
-	static Recipes *getInstance()
+public: 
+	static Recipes *getInstance() 
 	{
 		return instance;
 	}
 
-private:
+private: 
 	void _init(); // 4J add
 	Recipes();
 
 public:
 	ShapedRecipy *addShapedRecipy(ItemInstance *, ... );
-	void addShapelessRecipy(ItemInstance *result,... );
+	void addShapelessRecipy(ItemInstance *result,... ); 
 
-	std::shared_ptr<ItemInstance> getItemFor(std::shared_ptr<CraftingContainer> craftSlots, Level *level);
+	shared_ptr<ItemInstance> getItemFor(shared_ptr<CraftingContainer> craftSlots, Level *level);
 	vector <Recipy *> *getRecipies();
 
 	// 4J-PB - Added all below for new Xbox 'crafting'
-	std::shared_ptr<ItemInstance> getItemForRecipe(Recipy *r);
+	shared_ptr<ItemInstance> getItemForRecipe(Recipy *r);
 	Recipy::INGREDIENTS_REQUIRED *getRecipeIngredientsArray();
 
 private:

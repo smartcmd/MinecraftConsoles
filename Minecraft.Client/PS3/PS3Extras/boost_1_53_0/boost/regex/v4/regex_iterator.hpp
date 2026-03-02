@@ -3,8 +3,8 @@
  * Copyright (c) 2003
  * John Maddock
  *
- * Use, modification and distribution are subject to the
- * Boost Software License, Version 1.0. (See accompanying file
+ * Use, modification and distribution are subject to the 
+ * Boost Software License, Version 1.0. (See accompanying file 
  * LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
  *
  */
@@ -19,7 +19,7 @@
 #ifndef BOOST_REGEX_V4_REGEX_ITERATOR_HPP
 #define BOOST_REGEX_V4_REGEX_ITERATOR_HPP
 
-#include <boost/std::shared_ptr.hpp>
+#include <boost/shared_ptr.hpp>
 
 namespace boost{
 
@@ -34,10 +34,10 @@ namespace boost{
 #pragma warning(pop)
 #endif
 
-template <class BidirectionalIterator,
+template <class BidirectionalIterator, 
           class charT,
           class traits>
-class regex_iterator_implementation
+class regex_iterator_implementation 
 {
    typedef basic_regex<charT, traits> regex_type;
 
@@ -81,34 +81,34 @@ private:
    regex_iterator_implementation& operator=(const regex_iterator_implementation&);
 };
 
-template <class BidirectionalIterator,
+template <class BidirectionalIterator, 
           class charT = BOOST_DEDUCED_TYPENAME re_detail::regex_iterator_traits<BidirectionalIterator>::value_type,
           class traits = regex_traits<charT> >
-class regex_iterator
+class regex_iterator 
 #ifndef BOOST_NO_STD_ITERATOR
    : public std::iterator<
-         std::forward_iterator_tag,
+         std::forward_iterator_tag, 
          match_results<BidirectionalIterator>,
          typename re_detail::regex_iterator_traits<BidirectionalIterator>::difference_type,
          const match_results<BidirectionalIterator>*,
-         const match_results<BidirectionalIterator>& >
+         const match_results<BidirectionalIterator>& >         
 #endif
 {
 private:
    typedef regex_iterator_implementation<BidirectionalIterator, charT, traits> impl;
-   typedef std::shared_ptr<impl> pimpl;
+   typedef shared_ptr<impl> pimpl;
 public:
    typedef          basic_regex<charT, traits>                   regex_type;
    typedef          match_results<BidirectionalIterator>                    value_type;
-   typedef typename re_detail::regex_iterator_traits<BidirectionalIterator>::difference_type
+   typedef typename re_detail::regex_iterator_traits<BidirectionalIterator>::difference_type 
                                                                             difference_type;
    typedef          const value_type*                                       pointer;
-   typedef          const value_type&                                       reference;
+   typedef          const value_type&                                       reference; 
    typedef          std::forward_iterator_tag                               iterator_category;
-
+   
    regex_iterator(){}
-   regex_iterator(BidirectionalIterator a, BidirectionalIterator b,
-                  const regex_type& re,
+   regex_iterator(BidirectionalIterator a, BidirectionalIterator b, 
+                  const regex_type& re, 
                   match_flag_type m = match_default)
                   : pdata(new impl(&re, b, m))
    {
@@ -125,10 +125,10 @@ public:
       return *this;
    }
    bool operator==(const regex_iterator& that)const
-   {
+   { 
       if((pdata.get() == 0) || (that.pdata.get() == 0))
          return pdata.get() == that.pdata.get();
-      return pdata->compare(*(that.pdata.get()));
+      return pdata->compare(*(that.pdata.get())); 
    }
    bool operator!=(const regex_iterator& that)const
    { return !(*this == that); }

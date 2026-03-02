@@ -31,7 +31,7 @@
 #include <boost/mpi/detail/forward_skeleton_oarchive.hpp>
 #include <boost/mpi/detail/ignore_iprimitive.hpp>
 #include <boost/mpi/detail/ignore_oprimitive.hpp>
-#include <boost/std::shared_ptr.hpp>
+#include <boost/shared_ptr.hpp>
 #include <boost/archive/detail/register_archive.hpp>
 
 namespace boost { namespace mpi {
@@ -197,7 +197,7 @@ public:
   }
 
 private:
-  boost::std::shared_ptr<detail::mpi_datatype_holder> holder;
+  boost::shared_ptr<detail::mpi_datatype_holder> holder;
 };
 
 /** @brief Returns the content of an object, suitable for transmission

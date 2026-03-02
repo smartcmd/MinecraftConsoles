@@ -13,30 +13,30 @@ AnimatePacket::AnimatePacket()
 	action = 0;
 }
 
-AnimatePacket::AnimatePacket(std::shared_ptr<Entity> e, int action)
+AnimatePacket::AnimatePacket(shared_ptr<Entity> e, int action)
 {
 	id = e->entityId;
 	this->action = action;
 }
 
-void AnimatePacket::read(DataInputStream *dis) //throws IOException
+void AnimatePacket::read(DataInputStream *dis) //throws IOException 
 {
 	id = dis->readInt();
 	action = dis->readByte();
 }
 
-void AnimatePacket::write(DataOutputStream *dos) //throws IOException
+void AnimatePacket::write(DataOutputStream *dos) //throws IOException 
 {
 	dos->writeInt(id);
 	dos->writeByte(action);
 }
 
-void AnimatePacket::handle(PacketListener *listener)
+void AnimatePacket::handle(PacketListener *listener) 
 {
 	listener->handleAnimate(shared_from_this());
 }
 
-int AnimatePacket::getEstimatedSize()
+int AnimatePacket::getEstimatedSize() 
 {
 	return 5;
 }

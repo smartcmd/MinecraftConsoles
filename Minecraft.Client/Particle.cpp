@@ -61,7 +61,7 @@ Particle::Particle(Level *level, double x, double y, double z, double xa, double
     yd = yd / dd * speed * 0.4f + 0.1f;
     zd = zd / dd * speed * 0.4f;}
 
-std::shared_ptr<Particle> Particle::setPower(float power)
+shared_ptr<Particle> Particle::setPower(float power)
 {
     xd *= power;
     yd = (yd - 0.1f) * power + 0.1f;
@@ -69,7 +69,7 @@ std::shared_ptr<Particle> Particle::setPower(float power)
     return dynamic_pointer_cast<Particle>( shared_from_this() );
 }
 
-std::shared_ptr<Particle> Particle::scale(float scale)
+shared_ptr<Particle> Particle::scale(float scale)
 {
     setSize(0.2f * scale, 0.2f * scale);
     size *= scale;
@@ -168,9 +168,9 @@ void Particle::render(Tesselator *t, float a, float xa, float ya, float za, floa
 #ifdef __PSVITA__
 	// AP - this will set up the 4 vertices in half the time.
 	t->tileParticleQuad((float)(x - xa * r - xa2 * r), (float)( y - ya * r), (float)( z - za * r - za2 * r), (float)( u1), (float)( v1),
-					(float)(x - xa * r + xa2 * r), (float)( y + ya * r), (float)( z - za * r + za2 * r), (float)( u1), (float)( v0),
-					(float)(x + xa * r + xa2 * r), (float)( y + ya * r), (float)( z + za * r + za2 * r), (float)( u0), (float)( v0),
-					(float)(x + xa * r - xa2 * r), (float)( y - ya * r), (float)( z + za * r - za2 * r), (float)( u0), (float)( v1),
+					(float)(x - xa * r + xa2 * r), (float)( y + ya * r), (float)( z - za * r + za2 * r), (float)( u1), (float)( v0), 
+					(float)(x + xa * r + xa2 * r), (float)( y + ya * r), (float)( z + za * r + za2 * r), (float)( u0), (float)( v0), 
+					(float)(x + xa * r - xa2 * r), (float)( y - ya * r), (float)( z + za * r - za2 * r), (float)( u0), (float)( v1), 
 					rCol * br, gCol * br, bCol * br, alpha);
 #else
     t->color(rCol * br, gCol * br, bCol * br, alpha);

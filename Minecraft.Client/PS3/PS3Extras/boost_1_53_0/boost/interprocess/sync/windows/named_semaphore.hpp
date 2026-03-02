@@ -66,7 +66,7 @@ class windows_named_semaphore
    class named_sem_callbacks : public windows_named_sync_interface
    {
       public:
-      typedef int64_t sem_count_t;
+      typedef __int64 sem_count_t;
       named_sem_callbacks(winapi_semaphore_wrapper &sem_wrapper, sem_count_t sem_cnt)
          : m_sem_wrapper(sem_wrapper), m_sem_count(sem_cnt)
       {}

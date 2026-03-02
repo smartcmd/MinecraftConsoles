@@ -21,11 +21,11 @@ bool CarrotOnAStickItem::isMirroredArt()
 	return true;
 }
 
-std::shared_ptr<ItemInstance> CarrotOnAStickItem::use(std::shared_ptr<ItemInstance> itemInstance, Level *level, std::shared_ptr<Player> player)
+shared_ptr<ItemInstance> CarrotOnAStickItem::use(shared_ptr<ItemInstance> itemInstance, Level *level, shared_ptr<Player> player)
 {
 	if (player->isRiding())
 	{
-		std::shared_ptr<Pig> pig = dynamic_pointer_cast<Pig>(player->riding);
+		shared_ptr<Pig> pig = dynamic_pointer_cast<Pig>(player->riding);
 		if(pig)
 		{
 			if (pig->getControlGoal()->canBoost() && itemInstance->getMaxDamage() - itemInstance->getAuxValue() >= 7)
@@ -35,7 +35,7 @@ std::shared_ptr<ItemInstance> CarrotOnAStickItem::use(std::shared_ptr<ItemInstan
 
 				if (itemInstance->count == 0)
 				{
-					std::shared_ptr<ItemInstance> replacement = std::shared_ptr<ItemInstance>(new ItemInstance(Item::fishingRod));
+					shared_ptr<ItemInstance> replacement = shared_ptr<ItemInstance>(new ItemInstance(Item::fishingRod));
 					replacement->setTag(itemInstance->tag);
 					return replacement;
 				}

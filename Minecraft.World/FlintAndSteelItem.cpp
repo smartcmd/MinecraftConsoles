@@ -15,7 +15,7 @@ FlintAndSteelItem::FlintAndSteelItem(int id) : Item( id )
 	setMaxDamage(64);
 }
 
-bool FlintAndSteelItem::useOn(std::shared_ptr<ItemInstance> instance, std::shared_ptr<Player> player, Level *level, int x, int y, int z, int face, float clickX, float clickY, float clickZ, bool bTestUseOnOnly)
+bool FlintAndSteelItem::useOn(shared_ptr<ItemInstance> instance, shared_ptr<Player> player, Level *level, int x, int y, int z, int face, float clickX, float clickY, float clickZ, bool bTestUseOnOnly) 
 {
 	// 4J-PB - Adding a test only version to allow tooltips to be displayed
 	if (face == 0) y--;
@@ -24,14 +24,14 @@ bool FlintAndSteelItem::useOn(std::shared_ptr<ItemInstance> instance, std::share
 	if (face == 3) z++;
 	if (face == 4) x--;
 	if (face == 5) x++;
-
+	
 	if (!player->mayBuild(x, y, z)) return false;
 
 	int targetType = level->getTile(x, y, z);
 
 	if(!bTestUseOnOnly)
-	{
-		if (targetType == 0)
+	{	
+		if (targetType == 0) 
 		{
 			if( level->getTile(x, y-1, z) == Tile::obsidian_Id )
 			{

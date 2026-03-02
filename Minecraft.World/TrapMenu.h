@@ -12,11 +12,11 @@ private:
 	static const int USE_ROW_SLOT_START = INV_SLOT_END;
 	static const int USE_ROW_SLOT_END = USE_ROW_SLOT_START + 9;
 private:
-	std::shared_ptr<DispenserTileEntity> trap;
+	shared_ptr<DispenserTileEntity> trap;
 
 public:
-	TrapMenu(std::shared_ptr<Container> inventory, std::shared_ptr<DispenserTileEntity> trap);
+	TrapMenu(shared_ptr<Container> inventory, shared_ptr<DispenserTileEntity> trap);
 
-	virtual bool stillValid(std::shared_ptr<Player> player);
-	virtual std::shared_ptr<ItemInstance> quickMoveStack(std::shared_ptr<Player> player, int slotIndex);
+	virtual bool stillValid(shared_ptr<Player> player);
+	virtual shared_ptr<ItemInstance> quickMoveStack(shared_ptr<Player> player, int slotIndex);
 };

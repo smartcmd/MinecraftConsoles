@@ -13,5 +13,5 @@ private:
 public:
 	EnderCrystalRenderer();
 
-	virtual void render(std::shared_ptr<Entity> _crystal, double x, double y, double z, float rot, float a);
+	virtual void render(shared_ptr<Entity> _crystal, double x, double y, double z, float rot, float a);
 };

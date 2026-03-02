@@ -28,7 +28,7 @@
 
 #include <vector>
 
-#include <boost/std::shared_ptr.hpp>
+#include <boost/shared_ptr.hpp>
 #include <boost/concept_check.hpp>
 #include <boost/graph/graph_traits.hpp>
 #include <boost/graph/graph_as_tree.hpp>

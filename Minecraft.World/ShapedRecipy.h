@@ -1,6 +1,6 @@
 #pragma once
 
-class ShapedRecipy : public Recipy
+class ShapedRecipy : public Recipy 
 {
 private:
 	int width, height, group;
@@ -15,13 +15,13 @@ public:
 
 	virtual const ItemInstance *getResultItem();
 	virtual const int getGroup();
-	virtual bool matches(std::shared_ptr<CraftingContainer> craftSlots, Level *level);
+	virtual bool matches(shared_ptr<CraftingContainer> craftSlots, Level *level);
 
 private:
-	bool matches(std::shared_ptr<CraftingContainer> craftSlots, int xOffs, int yOffs, bool xFlip);
+	bool matches(shared_ptr<CraftingContainer> craftSlots, int xOffs, int yOffs, bool xFlip);
 
 public:
-	virtual std::shared_ptr<ItemInstance> assemble(std::shared_ptr<CraftingContainer> craftSlots);
+	virtual shared_ptr<ItemInstance> assemble(shared_ptr<CraftingContainer> craftSlots);
 	virtual int size();
 	ShapedRecipy *keepTag();
 

@@ -20,7 +20,7 @@ OzelotAttackGoal::OzelotAttackGoal(Mob *mob)
 
 bool OzelotAttackGoal::canUse()
 {
-	std::shared_ptr<Mob> bestTarget = mob->getTarget();
+	shared_ptr<Mob> bestTarget = mob->getTarget();
 	if (bestTarget == NULL) return false;
 	target = weak_ptr<Mob>(bestTarget);
 	return true;

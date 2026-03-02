@@ -32,7 +32,7 @@ void DisconnectPacket::handle(PacketListener *listener)
 	listener->handleDisconnect(shared_from_this());
 }
 
-int DisconnectPacket::getEstimatedSize()
+int DisconnectPacket::getEstimatedSize() 
 {
 	return sizeof(eDisconnectReason);
 }
@@ -42,7 +42,7 @@ bool DisconnectPacket::canBeInvalidated()
 	return true;
 }
 
-bool DisconnectPacket::isInvalidatedBy(std::shared_ptr<Packet> packet)
+bool DisconnectPacket::isInvalidatedBy(shared_ptr<Packet> packet)
 {
 	return true;
 }

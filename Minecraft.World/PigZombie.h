@@ -5,7 +5,7 @@ using namespace std;
 
 class DamageSource;
 
-// SKIN BY XaPhobia Chris Beidler
+// SKIN BY XaPhobia Chris Beidler  
 class PigZombie : public Zombie
 {
 public:
@@ -32,13 +32,13 @@ public:
     virtual void readAdditionalSaveData(CompoundTag *tag);
 
 protected:
-	virtual std::shared_ptr<Entity> findAttackTarget();
+	virtual shared_ptr<Entity> findAttackTarget();
 
 public:
     virtual bool hurt(DamageSource *source, int dmg);
 
 private:
-	void alert(std::shared_ptr<Entity> target);
+	void alert(shared_ptr<Entity> target);
 
 protected:
 	virtual int getAmbientSound();
@@ -49,12 +49,12 @@ protected:
     virtual int getDeathLoot();
 
 private:
-	static std::shared_ptr<ItemInstance> sword;
+	static shared_ptr<ItemInstance> sword;
 
 public:
 	virtual void finalizeMobSpawn();
 
-	std::shared_ptr<ItemInstance> getCarriedItem();
+	shared_ptr<ItemInstance> getCarriedItem();
 
 	static void staticCtor();
 };

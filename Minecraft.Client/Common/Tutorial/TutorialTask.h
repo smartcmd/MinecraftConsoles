@@ -26,7 +26,7 @@ protected:
 	bool m_bAllowFade;
 	bool m_bTaskReminders;
 	bool m_bShowMinimumTime;
-
+	
 protected:
 	bool bIsCompleted;
 	bool m_bShownForMinimumTime;
@@ -43,7 +43,7 @@ public:
 	virtual eTutorial_CompletionAction getCompletionAction() { return e_Tutorial_Completion_None; }
 	virtual bool isPreCompletionEnabled() { return enablePreCompletion; }
 	virtual void taskCompleted();
-	virtual void enableConstraints(bool enable, bool delayRemove = false);
+	virtual void enableConstraints(bool enable, bool delayRemove = false);	
 	virtual void setAsCurrentTask(bool active = true);
 
 	virtual void setShownForMinimumTime() { m_bShownForMinimumTime = true; }
@@ -52,12 +52,12 @@ public:
 	bool TaskReminders()	{ return m_bTaskReminders;}
 	virtual bool ShowMinimumTime()	{ return m_bShowMinimumTime;}
 
-	virtual void useItemOn(Level *level, std::shared_ptr<ItemInstance> item, int x, int y, int z, bool bTestUseOnly=false) { }
-	virtual void useItem(std::shared_ptr<ItemInstance> item,bool bTestUseOnly=false) { }
-	virtual void completeUsingItem(std::shared_ptr<ItemInstance> item) { }
+	virtual void useItemOn(Level *level, shared_ptr<ItemInstance> item, int x, int y, int z, bool bTestUseOnly=false) { }
+	virtual void useItem(shared_ptr<ItemInstance> item,bool bTestUseOnly=false) { }
+	virtual void completeUsingItem(shared_ptr<ItemInstance> item) { }
 	virtual void handleUIInput(int iAction) { }
-	virtual void onCrafted(std::shared_ptr<ItemInstance> item) { }
-	virtual void onTake(std::shared_ptr<ItemInstance> item, unsigned int invItemCountAnyAux, unsigned int invItemCountThisAux) { }
+	virtual void onCrafted(shared_ptr<ItemInstance> item) { }
+	virtual void onTake(shared_ptr<ItemInstance> item, unsigned int invItemCountAnyAux, unsigned int invItemCountThisAux) { }
 	virtual void onStateChange(eTutorial_State newState) { }
 	virtual void onEffectChanged(MobEffect *effect, bool bRemoved=false) { }
 };

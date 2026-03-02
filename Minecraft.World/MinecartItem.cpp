@@ -12,18 +12,18 @@ MinecartItem::MinecartItem(int id, int type) : Item(id)
 	this->type = type;
 }
 
-bool MinecartItem::useOn(std::shared_ptr<ItemInstance> instance, std::shared_ptr<Player> player, Level *level, int x, int y, int z, int face, float clickX, float clickY, float clickZ, bool bTestUseOnOnly)
+bool MinecartItem::useOn(shared_ptr<ItemInstance> instance, shared_ptr<Player> player, Level *level, int x, int y, int z, int face, float clickX, float clickY, float clickZ, bool bTestUseOnOnly)
 {
 	// 4J-PB - Adding a test only version to allow tooltips to be displayed
 	int targetType = level->getTile(x, y, z);
 
-	if (RailTile::isRail(targetType))
+	if (RailTile::isRail(targetType)) 
 	{
 		if(!bTestUseOnOnly)
 		{
-			if (!level->isClientSide)
+			if (!level->isClientSide) 
 			{
-				level->addEntity(std::shared_ptr<Minecart>( new Minecart(level, x + 0.5f, y + 0.5f, z + 0.5f, type) ) );
+				level->addEntity(shared_ptr<Minecart>( new Minecart(level, x + 0.5f, y + 0.5f, z + 0.5f, type) ) );
 			}
 			instance->count--;
 		}

@@ -22,13 +22,13 @@ int DigDurabilityEnchantment::getMaxLevel()
 	return 3;
 }
 
-bool DigDurabilityEnchantment::canEnchant(std::shared_ptr<ItemInstance> item)
+bool DigDurabilityEnchantment::canEnchant(shared_ptr<ItemInstance> item)
 {
 	if (item->isDamageableItem()) return true;
 	return Enchantment::canEnchant(item);
 }
 
-bool DigDurabilityEnchantment::shouldIgnoreDurabilityDrop(std::shared_ptr<ItemInstance> item, int level, Random *random)
+bool DigDurabilityEnchantment::shouldIgnoreDurabilityDrop(shared_ptr<ItemInstance> item, int level, Random *random)
 {
 	ArmorItem *armor = dynamic_cast<ArmorItem *>(item->getItem());
 	if (armor && random->nextFloat() < 0.6f) return false;

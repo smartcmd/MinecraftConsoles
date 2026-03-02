@@ -142,7 +142,7 @@ void ServerPlayer::flagEntitiesToBeRemoved(unsigned int *flags, bool *removedFou
 			unsigned int j = index % 32;
 			unsigned int uiMask = 0x80000000 >> j;
 
-			flags[i] |= uiMask;
+			flags[i] |= uiMask;			
 		}
 	}
 }
@@ -236,10 +236,10 @@ void ServerPlayer::tick()
 
     for (int i = 0; i < 5; i++)
 	{
-        std::shared_ptr<ItemInstance> currentCarried = getCarried(i);
+        shared_ptr<ItemInstance> currentCarried = getCarried(i);
         if (currentCarried != lastCarried[i])
 		{
-            getLevel()->getTracker()->broadcast(shared_from_this(), std::shared_ptr<SetEquippedItemPacket>( new SetEquippedItemPacket(this->entityId, i, currentCarried) ) );
+            getLevel()->getTracker()->broadcast(shared_from_this(), shared_ptr<SetEquippedItemPacket>( new SetEquippedItemPacket(this->entityId, i, currentCarried) ) );
             lastCarried[i] = currentCarried;
         }
     }
@@ -264,7 +264,7 @@ void ServerPlayer::flushEntitiesToRemove()
 			it = entitiesToRemove.erase(it);
 		}
 
-		connection->send(std::shared_ptr<RemoveEntitiesPacket>(new RemoveEntitiesPacket(ids)));
+		connection->send(shared_ptr<RemoveEntitiesPacket>(new RemoveEntitiesPacket(ids)));
 	}
 }
 
@@ -286,14 +286,14 @@ void ServerPlayer::doTickA()
 
     for (unsigned int i = 0; i < inventory->getContainerSize(); i++)
 	{
-        std::shared_ptr<ItemInstance> ie = inventory->getItem(i);
+        shared_ptr<ItemInstance> ie = inventory->getItem(i);
         if (ie != NULL)
 		{
 			// 4J - removed condition. These were getting lower priority than tile update packets etc. on the slow outbound queue, and so were extremely slow to send sometimes,
 			// particularly at the start of a game. They don't typically seem to be massive and shouldn't be send when there isn't actually any updating to do.
             if (Item::items[ie->id]->isComplex() ) // && connection->countDelayedPackets() <= 2)
 			{
-                std::shared_ptr<Packet> packet = (dynamic_cast<ComplexItem *>(Item::items[ie->id])->getUpdatePacket(ie, level, dynamic_pointer_cast<Player>( shared_from_this() ) ) );
+                shared_ptr<Packet> packet = (dynamic_cast<ComplexItem *>(Item::items[ie->id])->getUpdatePacket(ie, level, dynamic_pointer_cast<Player>( shared_from_this() ) ) );
                 if (packet != NULL)
 				{
                     connection->send(packet);
@@ -345,14 +345,14 @@ void ServerPlayer::doChunkSendingTick(bool dontDelayChunks)
 			else
 			{
 				bool canSendOnSlowQueue = MinecraftServer::canSendOnSlowQueue(connection->getNetworkPlayer());
-
+				
 //				app.DebugPrintf("%ls: canSendOnSlowQueue %d, countDelayedPackets %d GetSendQueueSizeBytes %d done: %d",
 //					connection->getNetworkPlayer()->GetUID().toString().c_str(),
 //					canSendOnSlowQueue, connection->countDelayedPackets(),
 //					g_NetworkManager.GetHostPlayer()->GetSendQueueSizeBytes( NULL, true ),
 //					connection->done);
-
-				if( dontDelayChunks ||
+	
+				if( dontDelayChunks || 
 					(canSendOnSlowQueue &&
 					(connection->countDelayedPackets() < 4 )&&
 #ifdef _XBOX_ONE
@@ -361,7 +361,7 @@ void ServerPlayer::doChunkSendingTick(bool dontDelayChunks)
 					(g_NetworkManager.GetHostPlayer()->GetSendQueueSizeBytes( NULL, true ) < 8192 )&&
 #else
 					(g_NetworkManager.GetHostPlayer()->GetSendQueueSizeMessages( NULL, true ) < 4 )&&
-#endif
+#endif 
 					//(tickCount - lastBrupSendTickCount) > (connection->getNetworkPlayer()->GetCurrentRtt()>>4) &&
 					!connection->done) )
 				{
@@ -369,9 +369,9 @@ void ServerPlayer::doChunkSendingTick(bool dontDelayChunks)
 					okToSend = true;
 					MinecraftServer::s_slowQueuePacketSent = true;
 
-//					static unordered_map<wstring,int64_t> mapLastTime;
-//					int64_t thisTime = System::currentTimeMillis();
-//					int64_t lastTime = mapLastTime[connection->getNetworkPlayer()->GetUID().toString()];
+//					static unordered_map<wstring,__int64> mapLastTime;
+//					__int64 thisTime = System::currentTimeMillis();
+//					__int64 lastTime = mapLastTime[connection->getNetworkPlayer()->GetUID().toString()];
 //					app.DebugPrintf(" - OK to send (%d ms since last)\n", thisTime - lastTime);
 //					mapLastTime[connection->getNetworkPlayer()->GetUID().toString()] = thisTime;
 				}
@@ -402,7 +402,7 @@ void ServerPlayer::doChunkSendingTick(bool dontDelayChunks)
 					{
 //						app.DebugPrintf("Creating BRUP for %d %d\n",nearest.x, nearest.z);
 						PIXBeginNamedEvent(0,"Creation BRUP for sending\n");
-						std::shared_ptr<BlockRegionUpdatePacket> packet = std::shared_ptr<BlockRegionUpdatePacket>( new BlockRegionUpdatePacket(nearest.x * 16, 0, nearest.z * 16, 16, Level::maxBuildHeight, 16, level) );
+						shared_ptr<BlockRegionUpdatePacket> packet = shared_ptr<BlockRegionUpdatePacket>( new BlockRegionUpdatePacket(nearest.x * 16, 0, nearest.z * 16, 16, Level::maxBuildHeight, 16, level) );
 						PIXEndNamedEvent();
 						if( dontDelayChunks ) packet->shouldDelay = false;
 
@@ -441,11 +441,11 @@ void ServerPlayer::doChunkSendingTick(bool dontDelayChunks)
 				// Don't send TileEntity data until we have sent the block data
 				if( connection->isLocal() || chunkDataSent)
 				{
-					vector<std::shared_ptr<TileEntity> > *tes = level->getTileEntitiesInRegion(nearest.x * 16, 0, nearest.z * 16, nearest.x * 16 + 16, Level::maxBuildHeight, nearest.z * 16 + 16);
+					vector<shared_ptr<TileEntity> > *tes = level->getTileEntitiesInRegion(nearest.x * 16, 0, nearest.z * 16, nearest.x * 16 + 16, Level::maxBuildHeight, nearest.z * 16 + 16);
 					for (unsigned int i = 0; i < tes->size(); i++)
 					{
 						// 4J Stu - Added delay param to ensure that these arrive after the BRUPs from above
-						// Fix for #9169 - ART : Sign text is replaced with the words ï¿½Awaiting approvalï¿½.
+						// Fix for #9169 - ART : Sign text is replaced with the words “Awaiting approval”.
 						broadcast(tes->at(i), !connection->isLocal() && !dontDelayChunks);
 					}
 					delete tes;
@@ -462,7 +462,7 @@ void ServerPlayer::doTickB(bool ignorePortal)
 	if(app.GetGameSettingsDebugMask(ProfileManager.GetPrimaryPad())&(1L<<eDebugSetting_GoToNether))
 	{
 		if(level->dimension->id == 0 )
-		{
+		{		
 			ignorePortal=false;
 			isInsidePortal=true;
 			portalTime=1;
@@ -473,7 +473,7 @@ void ServerPlayer::doTickB(bool ignorePortal)
 // 	else if (app.GetGameSettingsDebugMask(ProfileManager.GetPrimaryPad())&(1L<<eDebugSetting_GoToEnd))
 // 	{
 // 		if(level->dimension->id == 0 )
-// 		{
+// 		{		
 // 			server->players->toggleDimension( dynamic_pointer_cast<ServerPlayer>( shared_from_this() ), 1 );
 // 		}
 // 		unsigned int uiVal=app.GetGameSettingsDebugMask(ProfileManager.GetPrimaryPad());
@@ -482,7 +482,7 @@ void ServerPlayer::doTickB(bool ignorePortal)
 	else if (app.GetGameSettingsDebugMask(ProfileManager.GetPrimaryPad())&(1L<<eDebugSetting_GoToOverworld))
 	{
 		if(level->dimension->id != 0 )
-		{
+		{		
 			ignorePortal=false;
 			isInsidePortal=true;
 			portalTime=1;
@@ -541,7 +541,7 @@ void ServerPlayer::doTickB(bool ignorePortal)
     if (getHealth() != lastSentHealth || lastSentFood != foodData.getFoodLevel() || ((foodData.getSaturationLevel() == 0) != lastFoodSaturationZero))
 	{
 		// 4J Stu - Added m_lastDamageSource for telemetry
-		connection->send( std::shared_ptr<SetHealthPacket>( new SetHealthPacket(getHealth(), foodData.getFoodLevel(), foodData.getSaturationLevel(), m_lastDamageSource) ) );
+		connection->send( shared_ptr<SetHealthPacket>( new SetHealthPacket(getHealth(), foodData.getFoodLevel(), foodData.getSaturationLevel(), m_lastDamageSource) ) );
         lastSentHealth = getHealth();
 		lastSentFood = foodData.getFoodLevel();
 		lastFoodSaturationZero = foodData.getSaturationLevel() == 0;
@@ -550,12 +550,12 @@ void ServerPlayer::doTickB(bool ignorePortal)
 	if (totalExperience != lastSentExp)
 	{
 		lastSentExp = totalExperience;
-		connection->send( std::shared_ptr<SetExperiencePacket>( new SetExperiencePacket(experienceProgress, totalExperience, experienceLevel) ) );
+		connection->send( shared_ptr<SetExperiencePacket>( new SetExperiencePacket(experienceProgress, totalExperience, experienceLevel) ) );
 	}
 
 }
 
-std::shared_ptr<ItemInstance> ServerPlayer::getCarried(int slot)
+shared_ptr<ItemInstance> ServerPlayer::getCarried(int slot)
 {
     if (slot == 0) return inventory->getSelected();
     return inventory->armor[slot - 1];
@@ -575,9 +575,9 @@ bool ServerPlayer::hurt(DamageSource *dmgSource, int dmg)
 	{
 		// 4J Stu - Fix for #46422 - TU5: Crash: Gameplay: Crash when being hit by a trap using a dispenser
 		// getEntity returns the owner of projectiles, and this would never be the arrow. The owner is sometimes NULL.
-		std::shared_ptr<Entity> source = dmgSource->getDirectEntity();
+		shared_ptr<Entity> source = dmgSource->getDirectEntity();
 
-
+		
 		if (dynamic_pointer_cast<Player>(source) != NULL &&	(!server->pvp || !dynamic_pointer_cast<Player>(source)->isAllowedToAttackPlayers()) )
 		{
 			return false;
@@ -585,7 +585,7 @@ bool ServerPlayer::hurt(DamageSource *dmgSource, int dmg)
 
 		if (source != NULL && source->GetType() == eTYPE_ARROW)
 		{
-			std::shared_ptr<Arrow> arrow = dynamic_pointer_cast<Arrow>(source);
+			shared_ptr<Arrow> arrow = dynamic_pointer_cast<Arrow>(source);
 			if (dynamic_pointer_cast<Player>(arrow->owner) != NULL && (!server->pvp || !dynamic_pointer_cast<Player>(arrow->owner)->isAllowedToAttackPlayers()) )
 			{
 				return false;
@@ -595,7 +595,7 @@ bool ServerPlayer::hurt(DamageSource *dmgSource, int dmg)
     bool returnVal = Player::hurt(dmgSource, dmg);
 
 	if( returnVal )
-	{
+	{		
 		// 4J Stu - Work out the source of this damage for telemetry
 		m_lastDamageSource = eTelemetryChallenges_Unknown;
 
@@ -608,7 +608,7 @@ bool ServerPlayer::hurt(DamageSource *dmgSource, int dmg)
 		else if(dmgSource == DamageSource::cactus) m_lastDamageSource = eTelemetryPlayerDeathSource_Cactus;
 		else
 		{
-			std::shared_ptr<Entity> source = dmgSource->getEntity();
+			shared_ptr<Entity> source = dmgSource->getEntity();
 			if( source != NULL )
 			{
 				switch(source->GetType())
@@ -647,7 +647,7 @@ bool ServerPlayer::hurt(DamageSource *dmgSource, int dmg)
 				case eTYPE_ARROW:
 					if ((dynamic_pointer_cast<Arrow>(source))->owner != NULL)
 						{
-						std::shared_ptr<Entity> attacker = (dynamic_pointer_cast<Arrow>(source))->owner;
+						shared_ptr<Entity> attacker = (dynamic_pointer_cast<Arrow>(source))->owner;
 						if (attacker != NULL)
 						{
 							switch(attacker->GetType())
@@ -667,7 +667,7 @@ bool ServerPlayer::hurt(DamageSource *dmgSource, int dmg)
 					m_lastDamageSource = eTelemetryPlayerDeathSource_Ghast;
 					break;
 				};
-			}
+			}		
 		};
 	}
 
@@ -696,19 +696,19 @@ void ServerPlayer::changeDimension(int i)
 			level->removeEntity(shared_from_this());
 			wonGame = true;
 			m_enteredEndExitPortal = true; // We only flag this for the player in the portal
-			connection->send( std::shared_ptr<GameEventPacket>( new GameEventPacket(GameEventPacket::WIN_GAME, thisPlayer->GetUserIndex()) ) );
+			connection->send( shared_ptr<GameEventPacket>( new GameEventPacket(GameEventPacket::WIN_GAME, thisPlayer->GetUserIndex()) ) );
 			app.DebugPrintf("Sending packet to %d\n", thisPlayer->GetUserIndex());
 		}
 		if(thisPlayer != NULL)
 		{
 			for(AUTO_VAR(it, MinecraftServer::getInstance()->getPlayers()->players.begin()); it != MinecraftServer::getInstance()->getPlayers()->players.end(); ++it)
 			{
-				std::shared_ptr<ServerPlayer> servPlayer = *it;
+				shared_ptr<ServerPlayer> servPlayer = *it;
 				INetworkPlayer *checkPlayer = servPlayer->connection->getNetworkPlayer();
 				if(thisPlayer != checkPlayer && checkPlayer != NULL && thisPlayer->IsSameSystem( checkPlayer ) && !servPlayer->wonGame )
 				{
-					servPlayer->wonGame = true;
-					servPlayer->connection->send( std::shared_ptr<GameEventPacket>( new GameEventPacket(GameEventPacket::WIN_GAME, thisPlayer->GetUserIndex() ) ) );
+					servPlayer->wonGame = true;					
+					servPlayer->connection->send( shared_ptr<GameEventPacket>( new GameEventPacket(GameEventPacket::WIN_GAME, thisPlayer->GetUserIndex() ) ) );
 					app.DebugPrintf("Sending packet to %d\n", thisPlayer->GetUserIndex());
 				}
 			}
@@ -733,11 +733,11 @@ void ServerPlayer::changeDimension(int i)
 }
 
 // 4J Added delay param
-void ServerPlayer::broadcast(std::shared_ptr<TileEntity> te, bool delay /*= false*/)
+void ServerPlayer::broadcast(shared_ptr<TileEntity> te, bool delay /*= false*/)
 {
     if (te != NULL)
 	{
-        std::shared_ptr<Packet> p = te->getUpdatePacket();
+        shared_ptr<Packet> p = te->getUpdatePacket();
         if (p != NULL)
 		{
 			p->shouldDelay = delay;
@@ -747,22 +747,22 @@ void ServerPlayer::broadcast(std::shared_ptr<TileEntity> te, bool delay /*= fals
     }
 }
 
-void ServerPlayer::take(std::shared_ptr<Entity> e, int orgCount)
+void ServerPlayer::take(shared_ptr<Entity> e, int orgCount)
 {
     if (!e->removed)
 	{
         EntityTracker *entityTracker = getLevel()->getTracker();
         if (e->GetType() == eTYPE_ITEMENTITY)
 		{
-            entityTracker->broadcast(e, std::shared_ptr<TakeItemEntityPacket>( new TakeItemEntityPacket(e->entityId, entityId) ) );
+            entityTracker->broadcast(e, shared_ptr<TakeItemEntityPacket>( new TakeItemEntityPacket(e->entityId, entityId) ) );
         }
         if (e->GetType() == eTYPE_ARROW)
 		{
-            entityTracker->broadcast(e, std::shared_ptr<TakeItemEntityPacket>( new TakeItemEntityPacket(e->entityId, entityId) ) );
-        }
+            entityTracker->broadcast(e, shared_ptr<TakeItemEntityPacket>( new TakeItemEntityPacket(e->entityId, entityId) ) );
+        }		
         if (e->GetType() == eTYPE_EXPERIENCEORB)
 		{
-            entityTracker->broadcast(e, std::shared_ptr<TakeItemEntityPacket>( new TakeItemEntityPacket(e->entityId, entityId) ) );
+            entityTracker->broadcast(e, shared_ptr<TakeItemEntityPacket>( new TakeItemEntityPacket(e->entityId, entityId) ) );
         }
     }
     Player::take(e, orgCount);
@@ -775,7 +775,7 @@ void ServerPlayer::swing()
 	{
         swingTime = -1;
         swinging = true;
-        getLevel()->getTracker()->broadcast(shared_from_this(), std::shared_ptr<AnimatePacket>( new AnimatePacket(shared_from_this(), AnimatePacket::SWING) ) );
+        getLevel()->getTracker()->broadcast(shared_from_this(), shared_ptr<AnimatePacket>( new AnimatePacket(shared_from_this(), AnimatePacket::SWING) ) );
     }
 }
 
@@ -784,7 +784,7 @@ Player::BedSleepingResult ServerPlayer::startSleepInBed(int x, int y, int z, boo
     BedSleepingResult result = Player::startSleepInBed(x, y, z, bTestUse);
     if (result == OK)
 	{
-        std::shared_ptr<Packet> p = std::shared_ptr<EntityActionAtPositionPacket>( new EntityActionAtPositionPacket(shared_from_this(), EntityActionAtPositionPacket::START_SLEEP, x, y, z) );
+        shared_ptr<Packet> p = shared_ptr<EntityActionAtPositionPacket>( new EntityActionAtPositionPacket(shared_from_this(), EntityActionAtPositionPacket::START_SLEEP, x, y, z) );
         getLevel()->getTracker()->broadcast(shared_from_this(), p);
         connection->teleport(this->x, this->y, this->z, yRot, xRot);
         connection->send(p);
@@ -796,16 +796,16 @@ void ServerPlayer::stopSleepInBed(bool forcefulWakeUp, bool updateLevelList, boo
 {
     if (isSleeping())
 	{
-        getLevel()->getTracker()->broadcastAndSend(shared_from_this(), std::shared_ptr<AnimatePacket>( new AnimatePacket(shared_from_this(), AnimatePacket::WAKE_UP) ) );
+        getLevel()->getTracker()->broadcastAndSend(shared_from_this(), shared_ptr<AnimatePacket>( new AnimatePacket(shared_from_this(), AnimatePacket::WAKE_UP) ) );
     }
     Player::stopSleepInBed(forcefulWakeUp, updateLevelList, saveRespawnPoint);
     if (connection != NULL) connection->teleport(x, y, z, yRot, xRot);
 }
 
-void ServerPlayer::ride(std::shared_ptr<Entity> e)
+void ServerPlayer::ride(shared_ptr<Entity> e)
 {
     Player::ride(e);
-    connection->send( std::shared_ptr<SetRidingPacket>( new SetRidingPacket(shared_from_this(), riding) ) );
+    connection->send( shared_ptr<SetRidingPacket>( new SetRidingPacket(shared_from_this(), riding) ) );
 
 	// 4J Removed this - The act of riding will be handled on the client and will change the position
 	// of the player. If we also teleport it then we can end up with a repeating movements, e.g. bouncing
@@ -832,7 +832,7 @@ bool ServerPlayer::startCrafting(int x, int y, int z)
 	if(containerMenu == inventoryMenu)
 	{
 		nextContainerCounter();
-		connection->send( std::shared_ptr<ContainerOpenPacket>( new ContainerOpenPacket(containerCounter, ContainerOpenPacket::WORKBENCH, 0, 9) ) );
+		connection->send( shared_ptr<ContainerOpenPacket>( new ContainerOpenPacket(containerCounter, ContainerOpenPacket::WORKBENCH, 0, 9) ) );
 		containerMenu = new CraftingMenu(inventory, level, x, y, z);
 		containerMenu->containerId = containerCounter;
 		containerMenu->addSlotListener(this);
@@ -841,7 +841,7 @@ bool ServerPlayer::startCrafting(int x, int y, int z)
 	{
 		app.DebugPrintf("ServerPlayer tried to open crafting container when one was already open\n");
 	}
-
+	
 	return true;
 }
 
@@ -850,7 +850,7 @@ bool ServerPlayer::startEnchanting(int x, int y, int z)
 	if(containerMenu == inventoryMenu)
 	{
 		nextContainerCounter();
-		connection->send(std::shared_ptr<ContainerOpenPacket>( new ContainerOpenPacket(containerCounter, ContainerOpenPacket::ENCHANTMENT, 0, 9) ));
+		connection->send(shared_ptr<ContainerOpenPacket>( new ContainerOpenPacket(containerCounter, ContainerOpenPacket::ENCHANTMENT, 0, 9) ));
 		containerMenu = new EnchantmentMenu(inventory, level, x, y, z);
 		containerMenu->containerId = containerCounter;
 		containerMenu->addSlotListener(this);
@@ -858,7 +858,7 @@ bool ServerPlayer::startEnchanting(int x, int y, int z)
 	else
 	{
 		app.DebugPrintf("ServerPlayer tried to open enchanting container when one was already open\n");
-	}
+	}	
 
 	return true;
 }
@@ -868,7 +868,7 @@ bool ServerPlayer::startRepairing(int x, int y, int z)
 	if(containerMenu == inventoryMenu)
 	{
 		nextContainerCounter();
-		connection->send(std::shared_ptr<ContainerOpenPacket> ( new ContainerOpenPacket(containerCounter, ContainerOpenPacket::REPAIR_TABLE, 0, 9)) );
+		connection->send(shared_ptr<ContainerOpenPacket> ( new ContainerOpenPacket(containerCounter, ContainerOpenPacket::REPAIR_TABLE, 0, 9)) );
 		containerMenu = new RepairMenu(inventory, level, x, y, z, dynamic_pointer_cast<Player>(shared_from_this()));
 		containerMenu->containerId = containerCounter;
 		containerMenu->addSlotListener(this);
@@ -876,17 +876,17 @@ bool ServerPlayer::startRepairing(int x, int y, int z)
 	else
 	{
 		app.DebugPrintf("ServerPlayer tried to open enchanting container when one was already open\n");
-	}
+	}	
 
 	return true;
 }
 
-bool ServerPlayer::openContainer(std::shared_ptr<Container> container)
+bool ServerPlayer::openContainer(shared_ptr<Container> container)
 {
 	if(containerMenu == inventoryMenu)
 	{
 		nextContainerCounter();
-		connection->send( std::shared_ptr<ContainerOpenPacket>( new ContainerOpenPacket(containerCounter, ContainerOpenPacket::CONTAINER, container->getName(), container->getContainerSize()) ) );
+		connection->send( shared_ptr<ContainerOpenPacket>( new ContainerOpenPacket(containerCounter, ContainerOpenPacket::CONTAINER, container->getName(), container->getContainerSize()) ) );
 
 		containerMenu = new ContainerMenu(inventory, container);
 		containerMenu->containerId = containerCounter;
@@ -900,12 +900,12 @@ bool ServerPlayer::openContainer(std::shared_ptr<Container> container)
 	return true;
 }
 
-bool ServerPlayer::openFurnace(std::shared_ptr<FurnaceTileEntity> furnace)
+bool ServerPlayer::openFurnace(shared_ptr<FurnaceTileEntity> furnace)
 {
 	if(containerMenu == inventoryMenu)
 	{
 		nextContainerCounter();
-		connection->send( std::shared_ptr<ContainerOpenPacket>( new ContainerOpenPacket(containerCounter, ContainerOpenPacket::FURNACE, 0, furnace->getContainerSize()) ) );
+		connection->send( shared_ptr<ContainerOpenPacket>( new ContainerOpenPacket(containerCounter, ContainerOpenPacket::FURNACE, 0, furnace->getContainerSize()) ) );
 		containerMenu = new FurnaceMenu(inventory, furnace);
 		containerMenu->containerId = containerCounter;
 		containerMenu->addSlotListener(this);
@@ -918,12 +918,12 @@ bool ServerPlayer::openFurnace(std::shared_ptr<FurnaceTileEntity> furnace)
 	return true;
 }
 
-bool ServerPlayer::openTrap(std::shared_ptr<DispenserTileEntity> trap)
+bool ServerPlayer::openTrap(shared_ptr<DispenserTileEntity> trap)
 {
 	if(containerMenu == inventoryMenu)
 	{
 		nextContainerCounter();
-		connection->send( std::shared_ptr<ContainerOpenPacket>( new ContainerOpenPacket(containerCounter, ContainerOpenPacket::TRAP, 0, trap->getContainerSize()) ) );
+		connection->send( shared_ptr<ContainerOpenPacket>( new ContainerOpenPacket(containerCounter, ContainerOpenPacket::TRAP, 0, trap->getContainerSize()) ) );
 		containerMenu = new TrapMenu(inventory, trap);
 		containerMenu->containerId = containerCounter;
 		containerMenu->addSlotListener(this);
@@ -932,16 +932,16 @@ bool ServerPlayer::openTrap(std::shared_ptr<DispenserTileEntity> trap)
 	{
 		app.DebugPrintf("ServerPlayer tried to open dispenser when one was already open\n");
 	}
-
+	
 	return true;
 }
 
-bool ServerPlayer::openBrewingStand(std::shared_ptr<BrewingStandTileEntity> brewingStand)
+bool ServerPlayer::openBrewingStand(shared_ptr<BrewingStandTileEntity> brewingStand)
 {
 	if(containerMenu == inventoryMenu)
 	{
 		nextContainerCounter();
-		connection->send(std::shared_ptr<ContainerOpenPacket>( new ContainerOpenPacket(containerCounter, ContainerOpenPacket::BREWING_STAND, 0, brewingStand->getContainerSize())));
+		connection->send(shared_ptr<ContainerOpenPacket>( new ContainerOpenPacket(containerCounter, ContainerOpenPacket::BREWING_STAND, 0, brewingStand->getContainerSize())));
 		containerMenu = new BrewingStandMenu(inventory, brewingStand);
 		containerMenu->containerId = containerCounter;
 		containerMenu->addSlotListener(this);
@@ -954,7 +954,7 @@ bool ServerPlayer::openBrewingStand(std::shared_ptr<BrewingStandTileEntity> brew
 	return true;
 }
 
-bool ServerPlayer::openTrading(std::shared_ptr<Merchant> traderTarget)
+bool ServerPlayer::openTrading(shared_ptr<Merchant> traderTarget)
 {
 	if(containerMenu == inventoryMenu)
 	{
@@ -962,9 +962,9 @@ bool ServerPlayer::openTrading(std::shared_ptr<Merchant> traderTarget)
 		containerMenu = new MerchantMenu(inventory, traderTarget, level);
 		containerMenu->containerId = containerCounter;
 		containerMenu->addSlotListener(this);
-		std::shared_ptr<Container> container = ((MerchantMenu *) containerMenu)->getTradeContainer();
+		shared_ptr<Container> container = ((MerchantMenu *) containerMenu)->getTradeContainer();
 
-		connection->send(std::shared_ptr<ContainerOpenPacket>(new ContainerOpenPacket(containerCounter, ContainerOpenPacket::TRADER_NPC, container->getName(), container->getContainerSize())));
+		connection->send(shared_ptr<ContainerOpenPacket>(new ContainerOpenPacket(containerCounter, ContainerOpenPacket::TRADER_NPC, container->getName(), container->getContainerSize())));
 
 		MerchantRecipeList *offers = traderTarget->getOffers(dynamic_pointer_cast<Player>(shared_from_this()));
 		if (offers != NULL)
@@ -976,7 +976,7 @@ bool ServerPlayer::openTrading(std::shared_ptr<Merchant> traderTarget)
 				output.writeInt(containerCounter);
 				offers->writeToStream(&output);
 
-				connection->send(std::shared_ptr<CustomPayloadPacket>( new CustomPayloadPacket(CustomPayloadPacket::TRADER_LIST_PACKET, rawOutput.toByteArray())));
+				connection->send(shared_ptr<CustomPayloadPacket>( new CustomPayloadPacket(CustomPayloadPacket::TRADER_LIST_PACKET, rawOutput.toByteArray())));
 		}
 	}
 	else
@@ -987,7 +987,7 @@ bool ServerPlayer::openTrading(std::shared_ptr<Merchant> traderTarget)
 	return true;
 }
 
-void ServerPlayer::slotChanged(AbstractContainerMenu *container, int slotIndex, std::shared_ptr<ItemInstance> item)
+void ServerPlayer::slotChanged(AbstractContainerMenu *container, int slotIndex, shared_ptr<ItemInstance> item)
 {
     if (dynamic_cast<ResultSlot *>(container->getSlot(slotIndex)))
 	{
@@ -1004,21 +1004,21 @@ void ServerPlayer::slotChanged(AbstractContainerMenu *container, int slotIndex, 
         return;
     }
 
-    connection->send( std::shared_ptr<ContainerSetSlotPacket>( new ContainerSetSlotPacket(container->containerId, slotIndex, item) ) );
+    connection->send( shared_ptr<ContainerSetSlotPacket>( new ContainerSetSlotPacket(container->containerId, slotIndex, item) ) );
 
 }
 
 void ServerPlayer::refreshContainer(AbstractContainerMenu *menu)
 {
-	vector<std::shared_ptr<ItemInstance> > *items = menu->getItems();
+	vector<shared_ptr<ItemInstance> > *items = menu->getItems();
 	refreshContainer(menu, items);
 	delete items;
 }
 
-void ServerPlayer::refreshContainer(AbstractContainerMenu *container, vector<std::shared_ptr<ItemInstance> > *items)
+void ServerPlayer::refreshContainer(AbstractContainerMenu *container, vector<shared_ptr<ItemInstance> > *items)
 {
-    connection->send( std::shared_ptr<ContainerSetContentPacket>( new ContainerSetContentPacket(container->containerId, items) ) );
-    connection->send( std::shared_ptr<ContainerSetSlotPacket>( new ContainerSetSlotPacket(-1, -1, inventory->getCarried()) ) );
+    connection->send( shared_ptr<ContainerSetContentPacket>( new ContainerSetContentPacket(container->containerId, items) ) );
+    connection->send( shared_ptr<ContainerSetSlotPacket>( new ContainerSetSlotPacket(-1, -1, inventory->getCarried()) ) );
 }
 
 void ServerPlayer::setContainerData(AbstractContainerMenu *container, int id, int value)
@@ -1033,12 +1033,12 @@ void ServerPlayer::setContainerData(AbstractContainerMenu *container, int id, in
         // client again.
         return;
     }
-	connection->send( std::shared_ptr<ContainerSetDataPacket>( new ContainerSetDataPacket(container->containerId, id, value) ) );
+	connection->send( shared_ptr<ContainerSetDataPacket>( new ContainerSetDataPacket(container->containerId, id, value) ) );
 }
 
 void ServerPlayer::closeContainer()
 {
-    connection->send( std::shared_ptr<ContainerClosePacket>( new ContainerClosePacket(containerMenu->containerId) ) );
+    connection->send( shared_ptr<ContainerClosePacket>( new ContainerClosePacket(containerMenu->containerId) ) );
     doCloseContainer();
 }
 
@@ -1052,7 +1052,7 @@ void ServerPlayer::broadcastCarriedItem()
         // client again.
         return;
     }
-    connection->send( std::shared_ptr<ContainerSetSlotPacket>( new ContainerSetSlotPacket(-1, -1, inventory->getCarried()) ) );
+    connection->send( shared_ptr<ContainerSetSlotPacket>( new ContainerSetSlotPacket(-1, -1, inventory->getCarried()) ) );
 }
 
 void ServerPlayer::doCloseContainer()
@@ -1087,12 +1087,12 @@ void ServerPlayer::awardStat(Stat *stat, byteArray param)
 
         while (count > 100)
 		{
-            connection->send( std::shared_ptr<AwardStatPacket>( new AwardStatPacket(stat->id, 100) ) );
+            connection->send( shared_ptr<AwardStatPacket>( new AwardStatPacket(stat->id, 100) ) );
             count -= 100;
         }
-		connection->send( std::shared_ptr<AwardStatPacket>( new AwardStatPacket(stat->id, count) ) );
+		connection->send( shared_ptr<AwardStatPacket>( new AwardStatPacket(stat->id, count) ) );
 #else
-		connection->send( std::shared_ptr<AwardStatPacket>( new AwardStatPacket(stat->id, param) ) );
+		connection->send( shared_ptr<AwardStatPacket>( new AwardStatPacket(stat->id, param) ) );
 		// byteArray deleted in AwardStatPacket destructor.
 #endif
     }
@@ -1122,33 +1122,33 @@ void ServerPlayer::displayClientMessage(int messageId)
 	{
 	case IDS_TILE_BED_OCCUPIED:
 		messageType = ChatPacket::e_ChatBedOccupied;
-		connection->send( std::shared_ptr<ChatPacket>( new ChatPacket(L"", messageType) ) );
+		connection->send( shared_ptr<ChatPacket>( new ChatPacket(L"", messageType) ) );
 		break;
 	case IDS_TILE_BED_NO_SLEEP:
 		messageType = ChatPacket::e_ChatBedNoSleep;
-		connection->send( std::shared_ptr<ChatPacket>( new ChatPacket(L"", messageType) ) );
+		connection->send( shared_ptr<ChatPacket>( new ChatPacket(L"", messageType) ) );
 		break;
 	case IDS_TILE_BED_NOT_VALID:
 		messageType = ChatPacket::e_ChatBedNotValid;
-		connection->send( std::shared_ptr<ChatPacket>( new ChatPacket(L"", messageType) ) );
+		connection->send( shared_ptr<ChatPacket>( new ChatPacket(L"", messageType) ) );
 		break;
 	case IDS_TILE_BED_NOTSAFE:
 		messageType = ChatPacket::e_ChatBedNotSafe;
-		connection->send( std::shared_ptr<ChatPacket>( new ChatPacket(L"", messageType) ) );
+		connection->send( shared_ptr<ChatPacket>( new ChatPacket(L"", messageType) ) );
 		break;
 	case IDS_TILE_BED_PLAYERSLEEP:
 		messageType = ChatPacket::e_ChatBedPlayerSleep;
 		// broadcast to all the other players in the game
 		for (unsigned int i = 0; i < server->getPlayers()->players.size(); i++)
 		{
-			std::shared_ptr<ServerPlayer> player = server->getPlayers()->players[i];
+			shared_ptr<ServerPlayer> player = server->getPlayers()->players[i];
 			if(shared_from_this()!=player)
 			{
-				player->connection->send(std::shared_ptr<ChatPacket>( new ChatPacket(name, ChatPacket::e_ChatBedPlayerSleep)));
+				player->connection->send(shared_ptr<ChatPacket>( new ChatPacket(name, ChatPacket::e_ChatBedPlayerSleep)));
 			}
 			else
 			{
-				player->connection->send(std::shared_ptr<ChatPacket>( new ChatPacket(name, ChatPacket::e_ChatBedMeSleep)));
+				player->connection->send(shared_ptr<ChatPacket>( new ChatPacket(name, ChatPacket::e_ChatBedMeSleep)));
 			}
 		}
 		return;
@@ -1156,85 +1156,85 @@ void ServerPlayer::displayClientMessage(int messageId)
 	case IDS_PLAYER_ENTERED_END:
 		for (unsigned int i = 0; i < server->getPlayers()->players.size(); i++)
 		{
-			std::shared_ptr<ServerPlayer> player = server->getPlayers()->players[i];
+			shared_ptr<ServerPlayer> player = server->getPlayers()->players[i];
 			if(shared_from_this()!=player)
 			{
-				player->connection->send(std::shared_ptr<ChatPacket>( new ChatPacket(name, ChatPacket::e_ChatPlayerEnteredEnd)));
+				player->connection->send(shared_ptr<ChatPacket>( new ChatPacket(name, ChatPacket::e_ChatPlayerEnteredEnd)));
 			}
 		}
 		break;
 	case IDS_PLAYER_LEFT_END:
 		for (unsigned int i = 0; i < server->getPlayers()->players.size(); i++)
 		{
-			std::shared_ptr<ServerPlayer> player = server->getPlayers()->players[i];
+			shared_ptr<ServerPlayer> player = server->getPlayers()->players[i];
 			if(shared_from_this()!=player)
 			{
-				player->connection->send(std::shared_ptr<ChatPacket>( new ChatPacket(name, ChatPacket::e_ChatPlayerLeftEnd)));
+				player->connection->send(shared_ptr<ChatPacket>( new ChatPacket(name, ChatPacket::e_ChatPlayerLeftEnd)));
 			}
 		}
 		break;
 	case IDS_TILE_BED_MESLEEP:
 		messageType = ChatPacket::e_ChatBedMeSleep;
-		connection->send( std::shared_ptr<ChatPacket>( new ChatPacket(L"", messageType) ) );
+		connection->send( shared_ptr<ChatPacket>( new ChatPacket(L"", messageType) ) );
 		break;
 
 	case IDS_MAX_PIGS_SHEEP_COWS_CATS_SPAWNED:
 		for (unsigned int i = 0; i < server->getPlayers()->players.size(); i++)
 		{
-			std::shared_ptr<ServerPlayer> player = server->getPlayers()->players[i];
+			shared_ptr<ServerPlayer> player = server->getPlayers()->players[i];
 			if(shared_from_this()==player)
 			{
-				player->connection->send(std::shared_ptr<ChatPacket>( new ChatPacket(name, ChatPacket::e_ChatPlayerMaxPigsSheepCows)));
+				player->connection->send(shared_ptr<ChatPacket>( new ChatPacket(name, ChatPacket::e_ChatPlayerMaxPigsSheepCows)));
 			}
 		}
 		break;
 	case IDS_MAX_CHICKENS_SPAWNED:
 		for (unsigned int i = 0; i < server->getPlayers()->players.size(); i++)
 		{
-			std::shared_ptr<ServerPlayer> player = server->getPlayers()->players[i];
+			shared_ptr<ServerPlayer> player = server->getPlayers()->players[i];
 			if(shared_from_this()==player)
 			{
-				player->connection->send(std::shared_ptr<ChatPacket>( new ChatPacket(name, ChatPacket::e_ChatPlayerMaxChickens)));
+				player->connection->send(shared_ptr<ChatPacket>( new ChatPacket(name, ChatPacket::e_ChatPlayerMaxChickens)));
 			}
 		}
 		break;
 	case IDS_MAX_SQUID_SPAWNED:
 		for (unsigned int i = 0; i < server->getPlayers()->players.size(); i++)
 		{
-			std::shared_ptr<ServerPlayer> player = server->getPlayers()->players[i];
+			shared_ptr<ServerPlayer> player = server->getPlayers()->players[i];
 			if(shared_from_this()==player)
 			{
-				player->connection->send(std::shared_ptr<ChatPacket>( new ChatPacket(name, ChatPacket::e_ChatPlayerMaxSquid)));
+				player->connection->send(shared_ptr<ChatPacket>( new ChatPacket(name, ChatPacket::e_ChatPlayerMaxSquid)));
 			}
 		}
 		break;
 	case IDS_MAX_WOLVES_SPAWNED:
 		for (unsigned int i = 0; i < server->getPlayers()->players.size(); i++)
 		{
-			std::shared_ptr<ServerPlayer> player = server->getPlayers()->players[i];
+			shared_ptr<ServerPlayer> player = server->getPlayers()->players[i];
 			if(shared_from_this()==player)
 			{
-				player->connection->send(std::shared_ptr<ChatPacket>( new ChatPacket(name, ChatPacket::e_ChatPlayerMaxWolves)));
+				player->connection->send(shared_ptr<ChatPacket>( new ChatPacket(name, ChatPacket::e_ChatPlayerMaxWolves)));
 			}
 		}
 		break;
 	case IDS_MAX_MOOSHROOMS_SPAWNED:
 		for (unsigned int i = 0; i < server->getPlayers()->players.size(); i++)
 		{
-			std::shared_ptr<ServerPlayer> player = server->getPlayers()->players[i];
+			shared_ptr<ServerPlayer> player = server->getPlayers()->players[i];
 			if(shared_from_this()==player)
 			{
-				player->connection->send(std::shared_ptr<ChatPacket>( new ChatPacket(name, ChatPacket::e_ChatPlayerMaxMooshrooms)));
+				player->connection->send(shared_ptr<ChatPacket>( new ChatPacket(name, ChatPacket::e_ChatPlayerMaxMooshrooms)));
 			}
 		}
 		break;
 	case IDS_MAX_ENEMIES_SPAWNED:
 		for (unsigned int i = 0; i < server->getPlayers()->players.size(); i++)
 		{
-			std::shared_ptr<ServerPlayer> player = server->getPlayers()->players[i];
+			shared_ptr<ServerPlayer> player = server->getPlayers()->players[i];
 			if(shared_from_this()==player)
 			{
-				player->connection->send(std::shared_ptr<ChatPacket>( new ChatPacket(name, ChatPacket::e_ChatPlayerMaxEnemies)));
+				player->connection->send(shared_ptr<ChatPacket>( new ChatPacket(name, ChatPacket::e_ChatPlayerMaxEnemies)));		
 			}
 		}
 		break;
@@ -1242,40 +1242,40 @@ void ServerPlayer::displayClientMessage(int messageId)
 	case IDS_MAX_VILLAGERS_SPAWNED:
 		for (unsigned int i = 0; i < server->getPlayers()->players.size(); i++)
 		{
-			std::shared_ptr<ServerPlayer> player = server->getPlayers()->players[i];
+			shared_ptr<ServerPlayer> player = server->getPlayers()->players[i];
 			if(shared_from_this()==player)
 			{
-				player->connection->send(std::shared_ptr<ChatPacket>( new ChatPacket(name, ChatPacket::e_ChatPlayerMaxVillagers)));
+				player->connection->send(shared_ptr<ChatPacket>( new ChatPacket(name, ChatPacket::e_ChatPlayerMaxVillagers)));		
 			}
 		}
 		break;
 	case IDS_MAX_PIGS_SHEEP_COWS_CATS_BRED:
 		for (unsigned int i = 0; i < server->getPlayers()->players.size(); i++)
 		{
-			std::shared_ptr<ServerPlayer> player = server->getPlayers()->players[i];
+			shared_ptr<ServerPlayer> player = server->getPlayers()->players[i];
 			if(shared_from_this()==player)
 			{
-				player->connection->send(std::shared_ptr<ChatPacket>( new ChatPacket(name, ChatPacket::e_ChatPlayerMaxBredPigsSheepCows)));
+				player->connection->send(shared_ptr<ChatPacket>( new ChatPacket(name, ChatPacket::e_ChatPlayerMaxBredPigsSheepCows)));		
 			}
 		}
 		break;
 	case IDS_MAX_CHICKENS_BRED:
 		for (unsigned int i = 0; i < server->getPlayers()->players.size(); i++)
 		{
-			std::shared_ptr<ServerPlayer> player = server->getPlayers()->players[i];
+			shared_ptr<ServerPlayer> player = server->getPlayers()->players[i];
 			if(shared_from_this()==player)
 			{
-				player->connection->send(std::shared_ptr<ChatPacket>( new ChatPacket(name, ChatPacket::e_ChatPlayerMaxBredChickens)));
+				player->connection->send(shared_ptr<ChatPacket>( new ChatPacket(name, ChatPacket::e_ChatPlayerMaxBredChickens)));		
 			}
 		}
 		break;
 	case IDS_MAX_MUSHROOMCOWS_BRED:
 		for (unsigned int i = 0; i < server->getPlayers()->players.size(); i++)
 		{
-			std::shared_ptr<ServerPlayer> player = server->getPlayers()->players[i];
+			shared_ptr<ServerPlayer> player = server->getPlayers()->players[i];
 			if(shared_from_this()==player)
 			{
-				player->connection->send(std::shared_ptr<ChatPacket>( new ChatPacket(name, ChatPacket::e_ChatPlayerMaxBredMooshrooms)));
+				player->connection->send(shared_ptr<ChatPacket>( new ChatPacket(name, ChatPacket::e_ChatPlayerMaxBredMooshrooms)));		
 			}
 		}
 		break;
@@ -1283,10 +1283,10 @@ void ServerPlayer::displayClientMessage(int messageId)
 	case IDS_MAX_WOLVES_BRED:
 		for (unsigned int i = 0; i < server->getPlayers()->players.size(); i++)
 		{
-			std::shared_ptr<ServerPlayer> player = server->getPlayers()->players[i];
+			shared_ptr<ServerPlayer> player = server->getPlayers()->players[i];
 			if(shared_from_this()==player)
 			{
-				player->connection->send(std::shared_ptr<ChatPacket>( new ChatPacket(name, ChatPacket::e_ChatPlayerMaxBredWolves)));
+				player->connection->send(shared_ptr<ChatPacket>( new ChatPacket(name, ChatPacket::e_ChatPlayerMaxBredWolves)));		
 			}
 		}
 		break;
@@ -1294,10 +1294,10 @@ void ServerPlayer::displayClientMessage(int messageId)
 	case IDS_CANT_SHEAR_MOOSHROOM:
 		for (unsigned int i = 0; i < server->getPlayers()->players.size(); i++)
 		{
-			std::shared_ptr<ServerPlayer> player = server->getPlayers()->players[i];
+			shared_ptr<ServerPlayer> player = server->getPlayers()->players[i];
 			if(shared_from_this()==player)
 			{
-				player->connection->send(std::shared_ptr<ChatPacket>( new ChatPacket(name, ChatPacket::e_ChatPlayerCantShearMooshroom)));
+				player->connection->send(shared_ptr<ChatPacket>( new ChatPacket(name, ChatPacket::e_ChatPlayerCantShearMooshroom)));		
 			}
 		}
 		break;
@@ -1306,33 +1306,33 @@ void ServerPlayer::displayClientMessage(int messageId)
 	case IDS_MAX_HANGINGENTITIES:
 		for (unsigned int i = 0; i < server->getPlayers()->players.size(); i++)
 		{
-			std::shared_ptr<ServerPlayer> player = server->getPlayers()->players[i];
+			shared_ptr<ServerPlayer> player = server->getPlayers()->players[i];
 			if(shared_from_this()==player)
 			{
-				player->connection->send(std::shared_ptr<ChatPacket>( new ChatPacket(name, ChatPacket::e_ChatPlayerMaxHangingEntities)));
+				player->connection->send(shared_ptr<ChatPacket>( new ChatPacket(name, ChatPacket::e_ChatPlayerMaxHangingEntities)));
 			}
 		}
 		break;
 	case IDS_CANT_SPAWN_IN_PEACEFUL:
 		for (unsigned int i = 0; i < server->getPlayers()->players.size(); i++)
 		{
-			std::shared_ptr<ServerPlayer> player = server->getPlayers()->players[i];
+			shared_ptr<ServerPlayer> player = server->getPlayers()->players[i];
 			if(shared_from_this()==player)
 			{
-				player->connection->send(std::shared_ptr<ChatPacket>( new ChatPacket(name, ChatPacket::e_ChatPlayerCantSpawnInPeaceful)));
+				player->connection->send(shared_ptr<ChatPacket>( new ChatPacket(name, ChatPacket::e_ChatPlayerCantSpawnInPeaceful)));
 			}
-		}
+		}		
 		break;
 
 	case IDS_MAX_BOATS:
 		for (unsigned int i = 0; i < server->getPlayers()->players.size(); i++)
 		{
-			std::shared_ptr<ServerPlayer> player = server->getPlayers()->players[i];
+			shared_ptr<ServerPlayer> player = server->getPlayers()->players[i];
 			if(shared_from_this()==player)
 			{
-				player->connection->send(std::shared_ptr<ChatPacket>( new ChatPacket(name, ChatPacket::e_ChatPlayerMaxBoats)));
+				player->connection->send(shared_ptr<ChatPacket>( new ChatPacket(name, ChatPacket::e_ChatPlayerMaxBoats)));
 			}
-		}
+		}				
 		break;
 
 	default:
@@ -1343,26 +1343,26 @@ void ServerPlayer::displayClientMessage(int messageId)
 
     //Language *language = Language::getInstance();
     //wstring languageString = app.GetString(messageId);//language->getElement(messageId);
-    //connection->send( std::shared_ptr<ChatPacket>( new ChatPacket(L"", messageType) ) );
+    //connection->send( shared_ptr<ChatPacket>( new ChatPacket(L"", messageType) ) );
 }
 
 void ServerPlayer::completeUsingItem()
 {
-	connection->send(std::shared_ptr<EntityEventPacket>( new EntityEventPacket(entityId, EntityEvent::USE_ITEM_COMPLETE) ) );
+	connection->send(shared_ptr<EntityEventPacket>( new EntityEventPacket(entityId, EntityEvent::USE_ITEM_COMPLETE) ) );
 	Player::completeUsingItem();
 }
 
-void ServerPlayer::startUsingItem(std::shared_ptr<ItemInstance> instance, int duration)
+void ServerPlayer::startUsingItem(shared_ptr<ItemInstance> instance, int duration)
 {
 	Player::startUsingItem(instance, duration);
 
 	if (instance != NULL && instance->getItem() != NULL && instance->getItem()->getUseAnimation(instance) == UseAnim_eat)
 	{
-		getLevel()->getTracker()->broadcastAndSend(shared_from_this(), std::shared_ptr<AnimatePacket>( new AnimatePacket(shared_from_this(), AnimatePacket::EAT) ) );
+		getLevel()->getTracker()->broadcastAndSend(shared_from_this(), shared_ptr<AnimatePacket>( new AnimatePacket(shared_from_this(), AnimatePacket::EAT) ) );
 	}
 }
 
-void ServerPlayer::restoreFrom(std::shared_ptr<Player> oldPlayer, bool restoreAll)
+void ServerPlayer::restoreFrom(shared_ptr<Player> oldPlayer, bool restoreAll)
 {
 	Player::restoreFrom(oldPlayer, restoreAll);
 	lastSentExp = -1;
@@ -1374,42 +1374,42 @@ void ServerPlayer::restoreFrom(std::shared_ptr<Player> oldPlayer, bool restoreAl
 void ServerPlayer::onEffectAdded(MobEffectInstance *effect)
 {
 	Player::onEffectAdded(effect);
-	connection->send(std::shared_ptr<UpdateMobEffectPacket>( new UpdateMobEffectPacket(entityId, effect) ) );
+	connection->send(shared_ptr<UpdateMobEffectPacket>( new UpdateMobEffectPacket(entityId, effect) ) );
 }
 
 
 void ServerPlayer::onEffectUpdated(MobEffectInstance *effect)
 {
 	Player::onEffectUpdated(effect);
-	connection->send(std::shared_ptr<UpdateMobEffectPacket>( new UpdateMobEffectPacket(entityId, effect) ) );
+	connection->send(shared_ptr<UpdateMobEffectPacket>( new UpdateMobEffectPacket(entityId, effect) ) );
 }
 
 
 void ServerPlayer::onEffectRemoved(MobEffectInstance *effect)
 {
 	Player::onEffectRemoved(effect);
-	connection->send(std::shared_ptr<RemoveMobEffectPacket>( new RemoveMobEffectPacket(entityId, effect) ) );
+	connection->send(shared_ptr<RemoveMobEffectPacket>( new RemoveMobEffectPacket(entityId, effect) ) );
 }
 
-void ServerPlayer::teleportTo(double x, double y, double z)
+void ServerPlayer::teleportTo(double x, double y, double z) 
 {
 	connection->teleport(x, y, z, yRot, xRot);
 }
 
-void ServerPlayer::crit(std::shared_ptr<Entity> entity)
+void ServerPlayer::crit(shared_ptr<Entity> entity)
 {
-	getLevel()->getTracker()->broadcastAndSend(shared_from_this(), std::shared_ptr<AnimatePacket>( new AnimatePacket(entity, AnimatePacket::CRITICAL_HIT) ));
+	getLevel()->getTracker()->broadcastAndSend(shared_from_this(), shared_ptr<AnimatePacket>( new AnimatePacket(entity, AnimatePacket::CRITICAL_HIT) ));
 }
 
-void ServerPlayer::magicCrit(std::shared_ptr<Entity> entity)
+void ServerPlayer::magicCrit(shared_ptr<Entity> entity)
 {
-	getLevel()->getTracker()->broadcastAndSend(shared_from_this(), std::shared_ptr<AnimatePacket>( new AnimatePacket(entity, AnimatePacket::MAGIC_CRITICAL_HIT) ));
+	getLevel()->getTracker()->broadcastAndSend(shared_from_this(), shared_ptr<AnimatePacket>( new AnimatePacket(entity, AnimatePacket::MAGIC_CRITICAL_HIT) ));
 }
 
 void ServerPlayer::onUpdateAbilities()
 {
 	if (connection == NULL) return;
-	connection->send(std::shared_ptr<PlayerAbilitiesPacket>(new PlayerAbilitiesPacket(&abilities)));
+	connection->send(shared_ptr<PlayerAbilitiesPacket>(new PlayerAbilitiesPacket(&abilities)));
 }
 
 ServerLevel *ServerPlayer::getLevel()
@@ -1420,12 +1420,12 @@ ServerLevel *ServerPlayer::getLevel()
 void ServerPlayer::setGameMode(GameType *mode)
 {
 	gameMode->setGameModeForPlayer(mode);
-	connection->send(std::shared_ptr<GameEventPacket>(new GameEventPacket(GameEventPacket::CHANGE_GAME_MODE, mode->getId())));
+	connection->send(shared_ptr<GameEventPacket>(new GameEventPacket(GameEventPacket::CHANGE_GAME_MODE, mode->getId())));
 }
 
 void ServerPlayer::sendMessage(const wstring& message, ChatPacket::EChatPacketMessage type /*= e_ChatCustom*/, int customData /*= -1*/, const wstring& additionalMessage /*= L""*/)
 {
-	connection->send(std::shared_ptr<ChatPacket>(new ChatPacket(message,type,customData,additionalMessage)));
+	connection->send(shared_ptr<ChatPacket>(new ChatPacket(message,type,customData,additionalMessage)));
 }
 
 bool ServerPlayer::hasPermission(EGameCommand command)
@@ -1434,7 +1434,7 @@ bool ServerPlayer::hasPermission(EGameCommand command)
 }
 
 // 4J - Don't use
-//void ServerPlayer::updateOptions(std::shared_ptr<ClientInformationPacket> packet)
+//void ServerPlayer::updateOptions(shared_ptr<ClientInformationPacket> packet)
 //{
 //	// 4J - Don't need
 //	//if (language.getLanguageList().containsKey(packet.getLanguage()))
@@ -1502,13 +1502,13 @@ int ServerPlayer::getPlayerViewDistanceModifier()
 	return value;
 }
 
-void ServerPlayer::handleCollectItem(std::shared_ptr<ItemInstance> item)
+void ServerPlayer::handleCollectItem(shared_ptr<ItemInstance> item)
 {
 	if(gameMode->getGameRules() != NULL) gameMode->getGameRules()->onCollectItem(item);
 }
 
 #ifndef _CONTENT_PACKAGE
-void ServerPlayer::debug_setPosition(double x, double y, double z, double nYRot, double nXRot)
+void ServerPlayer::debug_setPosition(double x, double y, double z, double nYRot, double nXRot) 
 {
 	connection->teleport(x, y, z, nYRot, nXRot);
 }

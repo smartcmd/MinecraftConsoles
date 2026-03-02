@@ -2,7 +2,7 @@
 #define BOOST_SHARED_PTR_132_HPP_INCLUDED
 
 //
-//  std::shared_ptr.hpp
+//  shared_ptr.hpp
 //
 //  (C) Copyright Greg Colvin and Beman Dawes 1998, 1999.
 //  Copyright (c) 2001, 2002, 2003 Peter Dimov
@@ -11,7 +11,7 @@
 //  accompanying file LICENSE_1_0.txt or copy at
 //  http://www.boost.org/LICENSE_1_0.txt)
 //
-//  See http://www.boost.org/libs/smart_ptr/std::shared_ptr.htm for documentation.
+//  See http://www.boost.org/libs/smart_ptr/shared_ptr.htm for documentation.
 //
 
 #include <boost/config.hpp>   // for broken compiler workarounds
@@ -96,18 +96,18 @@ inline void sp_enable_shared_from_this( shared_count const & /*pn*/, ... )
 
 
 //
-//  std::shared_ptr
+//  shared_ptr
 //
 //  An enhanced relative of scoped_ptr with reference counted copy semantics.
-//  The object pointed to is deleted when the last std::shared_ptr pointing to it
+//  The object pointed to is deleted when the last shared_ptr pointing to it
 //  is destroyed or reset.
 //
 
-template<class T> class std::shared_ptr
+template<class T> class shared_ptr
 {
 private:
     // Borland 5.5.1 specific workaround
-    typedef std::shared_ptr< T > this_type;
+    typedef shared_ptr< T > this_type;
 
 public:
 
@@ -116,16 +116,16 @@ public:
     typedef T * pointer;
     typedef BOOST_DEDUCED_TYPENAME detail::shared_ptr_traits< T >::reference reference;
 
-    std::shared_ptr(): px(0), pn() // never throws in 1.30+
+    shared_ptr(): px(0), pn() // never throws in 1.30+
     {
     }
 
 #if BOOST_WORKAROUND( __BORLANDC__, BOOST_TESTED_AT( 0x564) )
     template<class Y>
-    explicit std::shared_ptr(Y * p): px(p), pn(p, boost::checked_deleter<Y>()) // Y must be complete
+    explicit shared_ptr(Y * p): px(p), pn(p, boost::checked_deleter<Y>()) // Y must be complete
 #else
     template<class Y>
-    explicit std::shared_ptr(Y * p): px(p), pn(p, boost::checked_deleter<Y>()) // Y must be complete
+    explicit shared_ptr(Y * p): px(p), pn(p, boost::checked_deleter<Y>()) // Y must be complete
 #endif
     {
         detail::sp_enable_shared_from_this( pn, p, p );
@@ -134,10 +134,10 @@ public:
     //
     // Requirements: D's copy constructor must not throw
     //
-    // std::shared_ptr will release p by calling d(p)
+    // shared_ptr will release p by calling d(p)
     //
 
-    template<class Y, class D> std::shared_ptr(Y * p, D d): px(p), pn(p, d)
+    template<class Y, class D> shared_ptr(Y * p, D d): px(p), pn(p, d)
     {
         detail::sp_enable_shared_from_this( pn, p, p );
     }
@@ -147,7 +147,7 @@ public:
 //  except that Borland C++ has a bug, and g++ with -Wsynth warns
 #if defined(__BORLANDC__) || defined(__GNUC__)
 
-    std::shared_ptr & operator=(std::shared_ptr const & r) // never throws
+    shared_ptr & operator=(shared_ptr const & r) // never throws
     {
         px = r.px;
         pn = r.pn; // shared_count::op= doesn't throw
@@ -157,29 +157,29 @@ public:
 #endif
 
     template<class Y>
-    explicit std::shared_ptr(weak_ptr<Y> const & r): pn(r.pn) // may throw
+    explicit shared_ptr(weak_ptr<Y> const & r): pn(r.pn) // may throw
     {
         // it is now safe to copy r.px, as pn(r.pn) did not throw
         px = r.px;
     }
 
     template<class Y>
-    std::shared_ptr(std::shared_ptr<Y> const & r): px(r.px), pn(r.pn) // never throws
+    shared_ptr(shared_ptr<Y> const & r): px(r.px), pn(r.pn) // never throws
     {
     }
 
     template<class Y>
-    std::shared_ptr(std::shared_ptr<Y> const & r, detail::static_cast_tag): px(static_cast<element_type *>(r.px)), pn(r.pn)
+    shared_ptr(shared_ptr<Y> const & r, detail::static_cast_tag): px(static_cast<element_type *>(r.px)), pn(r.pn)
     {
     }
 
     template<class Y>
-    std::shared_ptr(std::shared_ptr<Y> const & r, detail::const_cast_tag): px(const_cast<element_type *>(r.px)), pn(r.pn)
+    shared_ptr(shared_ptr<Y> const & r, detail::const_cast_tag): px(const_cast<element_type *>(r.px)), pn(r.pn)
     {
     }
 
     template<class Y>
-    std::shared_ptr(std::shared_ptr<Y> const & r, detail::dynamic_cast_tag): px(dynamic_cast<element_type *>(r.px)), pn(r.pn)
+    shared_ptr(shared_ptr<Y> const & r, detail::dynamic_cast_tag): px(dynamic_cast<element_type *>(r.px)), pn(r.pn)
     {
         if(px == 0) // need to allocate new counter -- the cast failed
         {
@@ -188,7 +188,7 @@ public:
     }
 
     template<class Y>
-    std::shared_ptr(std::shared_ptr<Y> const & r, detail::polymorphic_cast_tag): px(dynamic_cast<element_type *>(r.px)), pn(r.pn)
+    shared_ptr(shared_ptr<Y> const & r, detail::polymorphic_cast_tag): px(dynamic_cast<element_type *>(r.px)), pn(r.pn)
     {
         if(px == 0)
         {
@@ -199,7 +199,7 @@ public:
 #ifndef BOOST_NO_AUTO_PTR
 
     template<class Y>
-    explicit std::shared_ptr(std::auto_ptr<Y> & r): px(r.get()), pn()
+    explicit shared_ptr(std::auto_ptr<Y> & r): px(r.get()), pn()
     {
         Y * tmp = r.get();
         pn = detail::shared_count(r);
@@ -211,7 +211,7 @@ public:
 #if !defined(BOOST_MSVC) || (BOOST_MSVC > 1200)
 
     template<class Y>
-    std::shared_ptr & operator=(std::shared_ptr<Y> const & r) // never throws
+    shared_ptr & operator=(shared_ptr<Y> const & r) // never throws
     {
         px = r.px;
         pn = r.pn; // shared_count::op= doesn't throw
@@ -223,7 +223,7 @@ public:
 #ifndef BOOST_NO_AUTO_PTR
 
     template<class Y>
-    std::shared_ptr & operator=(std::auto_ptr<Y> & r)
+    shared_ptr & operator=(std::auto_ptr<Y> & r)
     {
         this_type(r).swap(*this);
         return *this;
@@ -258,7 +258,7 @@ public:
         BOOST_ASSERT(px != 0);
         return px;
     }
-
+    
     T * get() const // never throws
     {
         return px;
@@ -275,13 +275,13 @@ public:
 
 #elif defined(__MWERKS__) && BOOST_WORKAROUND(__MWERKS__, BOOST_TESTED_AT(0x3003))
     typedef T * (this_type::*unspecified_bool_type)() const;
-
+    
     operator unspecified_bool_type() const // never throws
     {
         return px == 0? 0: &this_type::get;
     }
 
-#else
+#else 
 
     typedef T * this_type::*unspecified_bool_type;
 
@@ -309,13 +309,13 @@ public:
         return pn.use_count();
     }
 
-    void swap(std::shared_ptr< T > & other) // never throws
+    void swap(shared_ptr< T > & other) // never throws
     {
         std::swap(px, other.px);
         pn.swap(other.pn);
     }
 
-    template<class Y> bool _internal_less(std::shared_ptr<Y> const & rhs) const
+    template<class Y> bool _internal_less(shared_ptr<Y> const & rhs) const
     {
         return pn < rhs.pn;
     }
@@ -332,7 +332,7 @@ public:
 
 private:
 
-    template<class Y> friend class std::shared_ptr;
+    template<class Y> friend class shared_ptr;
     template<class Y> friend class weak_ptr;
 
 
@@ -341,14 +341,14 @@ public: // for serialization
     T * px;                     // contained pointer
     detail::shared_count pn;    // reference counter
 
-};  // std::shared_ptr
+};  // shared_ptr
 
-template<class T, class U> inline bool operator==(std::shared_ptr< T > const & a, std::shared_ptr<U> const & b)
+template<class T, class U> inline bool operator==(shared_ptr< T > const & a, shared_ptr<U> const & b)
 {
     return a.get() == b.get();
 }
 
-template<class T, class U> inline bool operator!=(std::shared_ptr< T > const & a, std::shared_ptr<U> const & b)
+template<class T, class U> inline bool operator!=(shared_ptr< T > const & a, shared_ptr<U> const & b)
 {
     return a.get() != b.get();
 }
@@ -357,64 +357,64 @@ template<class T, class U> inline bool operator!=(std::shared_ptr< T > const & a
 
 // Resolve the ambiguity between our op!= and the one in rel_ops
 
-template<class T> inline bool operator!=(std::shared_ptr< T > const & a, std::shared_ptr< T > const & b)
+template<class T> inline bool operator!=(shared_ptr< T > const & a, shared_ptr< T > const & b)
 {
     return a.get() != b.get();
 }
 
 #endif
 
-template<class T, class U> inline bool operator<(std::shared_ptr< T > const & a, std::shared_ptr<U> const & b)
+template<class T, class U> inline bool operator<(shared_ptr< T > const & a, shared_ptr<U> const & b)
 {
     return a._internal_less(b);
 }
 
-template<class T> inline void swap(std::shared_ptr< T > & a, std::shared_ptr< T > & b)
+template<class T> inline void swap(shared_ptr< T > & a, shared_ptr< T > & b)
 {
     a.swap(b);
 }
 
-template<class T, class U> std::shared_ptr< T > static_pointer_cast(std::shared_ptr<U> const & r)
+template<class T, class U> shared_ptr< T > static_pointer_cast(shared_ptr<U> const & r)
 {
-    return std::shared_ptr< T >(r, detail::static_cast_tag());
+    return shared_ptr< T >(r, detail::static_cast_tag());
 }
 
-template<class T, class U> std::shared_ptr< T > const_pointer_cast(std::shared_ptr<U> const & r)
+template<class T, class U> shared_ptr< T > const_pointer_cast(shared_ptr<U> const & r)
 {
-    return std::shared_ptr< T >(r, detail::const_cast_tag());
+    return shared_ptr< T >(r, detail::const_cast_tag());
 }
 
-template<class T, class U> std::shared_ptr< T > dynamic_pointer_cast(std::shared_ptr<U> const & r)
+template<class T, class U> shared_ptr< T > dynamic_pointer_cast(shared_ptr<U> const & r)
 {
-    return std::shared_ptr< T >(r, detail::dynamic_cast_tag());
+    return shared_ptr< T >(r, detail::dynamic_cast_tag());
 }
 
 // shared_*_cast names are deprecated. Use *_pointer_cast instead.
 
-template<class T, class U> std::shared_ptr< T > shared_static_cast(std::shared_ptr<U> const & r)
+template<class T, class U> shared_ptr< T > shared_static_cast(shared_ptr<U> const & r)
 {
-    return std::shared_ptr< T >(r, detail::static_cast_tag());
+    return shared_ptr< T >(r, detail::static_cast_tag());
 }
 
-template<class T, class U> std::shared_ptr< T > shared_dynamic_cast(std::shared_ptr<U> const & r)
+template<class T, class U> shared_ptr< T > shared_dynamic_cast(shared_ptr<U> const & r)
 {
-    return std::shared_ptr< T >(r, detail::dynamic_cast_tag());
+    return shared_ptr< T >(r, detail::dynamic_cast_tag());
 }
 
-template<class T, class U> std::shared_ptr< T > shared_polymorphic_cast(std::shared_ptr<U> const & r)
+template<class T, class U> shared_ptr< T > shared_polymorphic_cast(shared_ptr<U> const & r)
 {
-    return std::shared_ptr< T >(r, detail::polymorphic_cast_tag());
+    return shared_ptr< T >(r, detail::polymorphic_cast_tag());
 }
 
-template<class T, class U> std::shared_ptr< T > shared_polymorphic_downcast(std::shared_ptr<U> const & r)
+template<class T, class U> shared_ptr< T > shared_polymorphic_downcast(shared_ptr<U> const & r)
 {
     BOOST_ASSERT(dynamic_cast<T *>(r.get()) == r.get());
     return shared_static_cast< T >(r);
 }
 
-// get_pointer() enables boost::mem_fn to recognize std::shared_ptr
+// get_pointer() enables boost::mem_fn to recognize shared_ptr
 
-template<class T> inline T * get_pointer(std::shared_ptr< T > const & p)
+template<class T> inline T * get_pointer(shared_ptr< T > const & p)
 {
     return p.get();
 }
@@ -423,7 +423,7 @@ template<class T> inline T * get_pointer(std::shared_ptr< T > const & p)
 
 #if defined(__GNUC__) &&  (__GNUC__ < 3)
 
-template<class Y> std::ostream & operator<< (std::ostream & os, std::shared_ptr<Y> const & p)
+template<class Y> std::ostream & operator<< (std::ostream & os, shared_ptr<Y> const & p)
 {
     os << p.get();
     return os;
@@ -434,10 +434,10 @@ template<class Y> std::ostream & operator<< (std::ostream & os, std::shared_ptr<
 # if defined(BOOST_MSVC) && BOOST_WORKAROUND(BOOST_MSVC, <= 1200 && __SGI_STL_PORT)
 // MSVC6 has problems finding std::basic_ostream through the using declaration in namespace _STL
 using std::basic_ostream;
-template<class E, class T, class Y> basic_ostream<E, T> & operator<< (basic_ostream<E, T> & os, std::shared_ptr<Y> const & p)
+template<class E, class T, class Y> basic_ostream<E, T> & operator<< (basic_ostream<E, T> & os, shared_ptr<Y> const & p)
 # else
-template<class E, class T, class Y> std::basic_ostream<E, T> & operator<< (std::basic_ostream<E, T> & os, std::shared_ptr<Y> const & p)
-# endif
+template<class E, class T, class Y> std::basic_ostream<E, T> & operator<< (std::basic_ostream<E, T> & os, shared_ptr<Y> const & p)
+# endif 
 {
     os << p.get();
     return os;
@@ -452,7 +452,7 @@ template<class E, class T, class Y> std::basic_ostream<E, T> & operator<< (std::
 // g++ 2.9x doesn't allow static_cast<X const *>(void *)
 // apparently EDG 2.38 also doesn't accept it
 
-template<class D, class T> D * get_deleter(std::shared_ptr< T > const & p)
+template<class D, class T> D * get_deleter(shared_ptr< T > const & p)
 {
     void const * q = p._internal_get_deleter(typeid(D));
     return const_cast<D *>(static_cast<D const *>(q));
@@ -460,7 +460,7 @@ template<class D, class T> D * get_deleter(std::shared_ptr< T > const & p)
 
 #else
 
-template<class D, class T> D * get_deleter(std::shared_ptr< T > const & p)
+template<class D, class T> D * get_deleter(shared_ptr< T > const & p)
 {
     return static_cast<D *>(p._internal_get_deleter(typeid(D)));
 }
@@ -471,7 +471,7 @@ template<class D, class T> D * get_deleter(std::shared_ptr< T > const & p)
 
 #ifdef BOOST_MSVC
 # pragma warning(pop)
-#endif
+#endif    
 
 #endif  // #if defined(BOOST_NO_MEMBER_TEMPLATES) && !defined(BOOST_MSVC6_MEMBER_TEMPLATES)
 

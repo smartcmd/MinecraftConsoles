@@ -52,7 +52,7 @@ void TheEndPortalFrameTile::updateDefaultShape()
 	setShape(0, 0, 0, 1, 13.0f / 16.0f, 1);
 }
 
-void TheEndPortalFrameTile::addAABBs(Level *level, int x, int y, int z, AABB *box, AABBList *boxes, std::shared_ptr<Entity> source)
+void TheEndPortalFrameTile::addAABBs(Level *level, int x, int y, int z, AABB *box, AABBList *boxes, shared_ptr<Entity> source)
 {
     setShape(0, 0, 0, 1, 13.0f / 16.0f, 1);
     Tile::addAABBs(level, x, y, z, box, boxes, source);
@@ -76,7 +76,7 @@ int TheEndPortalFrameTile::getResource(int data, Random *random, int playerBonus
 	return 0;
 }
 
-void TheEndPortalFrameTile::setPlacedBy(Level *level, int x, int y, int z, std::shared_ptr<Mob> by)
+void TheEndPortalFrameTile::setPlacedBy(Level *level, int x, int y, int z, shared_ptr<Mob> by)
 {
     int dir = (((Mth::floor(by->yRot * 4 / (360) + 0.5)) & 3) + 2) % 4;
     level->setData(x, y, z, dir);

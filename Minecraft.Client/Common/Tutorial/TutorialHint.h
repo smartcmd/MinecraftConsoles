@@ -10,7 +10,7 @@ class Tutorial;
 
 class TutorialHint
 {
-public:
+public:	
 	enum eHintType
 	{
 		e_Hint_DiggerItem,
@@ -40,12 +40,12 @@ public:
 
 	eTutorial_Hint getId() { return m_id; }
 
-	virtual int startDestroyBlock(std::shared_ptr<ItemInstance> item, Tile *tile);
+	virtual int startDestroyBlock(shared_ptr<ItemInstance> item, Tile *tile);
 	virtual int destroyBlock(Tile *tile);
-	virtual int attack(std::shared_ptr<ItemInstance> item, std::shared_ptr<Entity> entity);
-	virtual int createItemSelected(std::shared_ptr<ItemInstance> item, bool canMake);
-	virtual int itemDamaged(std::shared_ptr<ItemInstance> item);
-	virtual bool onTake( std::shared_ptr<ItemInstance> item );
+	virtual int attack(shared_ptr<ItemInstance> item, shared_ptr<Entity> entity);
+	virtual int createItemSelected(shared_ptr<ItemInstance> item, bool canMake);
+	virtual int itemDamaged(shared_ptr<ItemInstance> item);
+	virtual bool onTake( shared_ptr<ItemInstance> item );
 	virtual bool onLookAt(int id, int iData=0);
 	virtual bool onLookAtEntity(eINSTANCEOF type);
 	virtual int tick();

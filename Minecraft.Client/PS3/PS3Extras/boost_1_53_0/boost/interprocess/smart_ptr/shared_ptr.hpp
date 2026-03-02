@@ -1,6 +1,6 @@
 //////////////////////////////////////////////////////////////////////////////
 //
-// This file is the adaptation for Interprocess of boost/std::shared_ptr.hpp
+// This file is the adaptation for Interprocess of boost/shared_ptr.hpp
 //
 // (C) Copyright Greg Colvin and Beman Dawes 1998, 1999.
 // (C) Copyright Peter Dimov 2001, 2002, 2003
@@ -37,7 +37,7 @@
 #include <iosfwd>               // for std::basic_ostream
 
 //!\file
-//!Describes the smart pointer std::shared_ptr
+//!Describes the smart pointer shared_ptr
 
 namespace boost{
 namespace interprocess{
@@ -66,11 +66,11 @@ inline void sp_enable_shared_from_this(shared_count<T, VoidAllocator, Deleter> c
 
 } // namespace ipcdetail
 
-//!std::shared_ptr stores a pointer to a dynamically allocated object.
-//!The object pointed to is guaranteed to be deleted when the last std::shared_ptr pointing to
+//!shared_ptr stores a pointer to a dynamically allocated object.
+//!The object pointed to is guaranteed to be deleted when the last shared_ptr pointing to
 //!it is destroyed or reset.
 //!
-//!std::shared_ptr is parameterized on
+//!shared_ptr is parameterized on
 //!T (the type of the object pointed to), VoidAllocator (the void allocator to be used
 //!to allocate the auxiliary data) and Deleter (the deleter whose
 //!operator() will be used to delete the object.
@@ -79,18 +79,18 @@ inline void sp_enable_shared_from_this(shared_count<T, VoidAllocator, Deleter> c
 //!VoidAllocator::pointer type (that is, if typename VoidAllocator::pointer is
 //!offset_ptr<void>, the internal pointer will be offset_ptr<T>).
 //!
-//!Because the implementation uses reference counting, cycles of std::shared_ptr
+//!Because the implementation uses reference counting, cycles of shared_ptr
 //!instances will not be reclaimed. For example, if main() holds a
-//!std::shared_ptr to A, which directly or indirectly holds a std::shared_ptr back
-//!to A, A's use count will be 2. Destruction of the original std::shared_ptr
+//!shared_ptr to A, which directly or indirectly holds a shared_ptr back
+//!to A, A's use count will be 2. Destruction of the original shared_ptr
 //!will leave A dangling with a use count of 1.
 //!Use weak_ptr to "break cycles."
 template<class T, class VoidAllocator, class Deleter>
-class std::shared_ptr
+class shared_ptr
 {
    /// @cond
    private:
-   typedef std::shared_ptr<T, VoidAllocator, Deleter> this_type;
+   typedef shared_ptr<T, VoidAllocator, Deleter> this_type;
    /// @endcond
 
    public:
@@ -111,19 +111,19 @@ class std::shared_ptr
       pointer_traits<typename VoidAllocator::pointer>::template
          rebind_pointer<const VoidAllocator>::type                         const_allocator_pointer;
 
-   BOOST_COPYABLE_AND_MOVABLE(std::shared_ptr)
+   BOOST_COPYABLE_AND_MOVABLE(shared_ptr)
    public:
 
-   //!Constructs an empty std::shared_ptr.
+   //!Constructs an empty shared_ptr.
    //!Use_count() == 0 && get()== 0.
-   std::shared_ptr()
+   shared_ptr()
       :  m_pn() // never throws
    {}
 
-   //!Constructs a std::shared_ptr that owns the pointer p. Auxiliary data will be allocated
+   //!Constructs a shared_ptr that owns the pointer p. Auxiliary data will be allocated
    //!with a copy of a and the object will be deleted with a copy of d.
    //!Requirements: Deleter and A's copy constructor must not throw.
-   explicit std::shared_ptr(const pointer&p, const VoidAllocator &a = VoidAllocator(), const Deleter &d = Deleter())
+   explicit shared_ptr(const pointer&p, const VoidAllocator &a = VoidAllocator(), const Deleter &d = Deleter())
       :  m_pn(p, a, d)
    {
       //Check that the pointer passed is of the same type that
@@ -137,55 +137,55 @@ class std::shared_ptr
       ipcdetail::sp_enable_shared_from_this<T, VoidAllocator, Deleter>( m_pn, ipcdetail::to_raw_pointer(p), ipcdetail::to_raw_pointer(p) );
    }
 
-   //!Copy constructs a std::shared_ptr. If r is empty, constructs an empty std::shared_ptr. Otherwise, constructs
-   //!a std::shared_ptr that shares ownership with r. Never throws.
-   std::shared_ptr(const std::shared_ptr &r)
+   //!Copy constructs a shared_ptr. If r is empty, constructs an empty shared_ptr. Otherwise, constructs
+   //!a shared_ptr that shares ownership with r. Never throws.
+   shared_ptr(const shared_ptr &r)
       :  m_pn(r.m_pn) // never throws
    {}
 
-   //!Constructs a std::shared_ptr that shares ownership with other and stores p.
+   //!Constructs a shared_ptr that shares ownership with other and stores p.
    //!Postconditions: get() == p && use_count() == r.use_count().
    //!Throws: nothing.
-   std::shared_ptr(const std::shared_ptr &other, const pointer &p)
+   shared_ptr(const shared_ptr &other, const pointer &p)
       :  m_pn(other.m_pn, p)
    {}
 
-   //!If r is empty, constructs an empty std::shared_ptr. Otherwise, constructs
-   //!a std::shared_ptr that shares ownership with r. Never throws.
+   //!If r is empty, constructs an empty shared_ptr. Otherwise, constructs
+   //!a shared_ptr that shares ownership with r. Never throws.
    template<class Y>
-   std::shared_ptr(std::shared_ptr<Y, VoidAllocator, Deleter> const & r)
+   shared_ptr(shared_ptr<Y, VoidAllocator, Deleter> const & r)
       :  m_pn(r.m_pn) // never throws
    {}
 
-   //!Constructs a std::shared_ptr that shares ownership with r and stores
+   //!Constructs a shared_ptr that shares ownership with r and stores
    //!a copy of the pointer stored in r.
    template<class Y>
-   explicit std::shared_ptr(weak_ptr<Y, VoidAllocator, Deleter> const & r)
+   explicit shared_ptr(weak_ptr<Y, VoidAllocator, Deleter> const & r)
       :  m_pn(r.m_pn) // may throw
    {}
 
-   //!Move-Constructs a std::shared_ptr that takes ownership of other resource and
+   //!Move-Constructs a shared_ptr that takes ownership of other resource and
    //!other is put in default-constructed state.
    //!Throws: nothing.
-   explicit std::shared_ptr(BOOST_RV_REF(std::shared_ptr) other)
+   explicit shared_ptr(BOOST_RV_REF(shared_ptr) other)
       :  m_pn()
    {  this->swap(other);   }
 
    /// @cond
    template<class Y>
-   std::shared_ptr(std::shared_ptr<Y, VoidAllocator, Deleter> const & r, ipcdetail::static_cast_tag)
+   shared_ptr(shared_ptr<Y, VoidAllocator, Deleter> const & r, ipcdetail::static_cast_tag)
       :  m_pn( pointer(static_cast<T*>(ipcdetail::to_raw_pointer(r.m_pn.to_raw_pointer())))
              , r.m_pn)
    {}
 
    template<class Y>
-   std::shared_ptr(std::shared_ptr<Y, VoidAllocator, Deleter> const & r, ipcdetail::const_cast_tag)
+   shared_ptr(shared_ptr<Y, VoidAllocator, Deleter> const & r, ipcdetail::const_cast_tag)
       :  m_pn( pointer(const_cast<T*>(ipcdetail::to_raw_pointer(r.m_pn.to_raw_pointer())))
              , r.m_pn)
    {}
 
    template<class Y>
-   std::shared_ptr(std::shared_ptr<Y, VoidAllocator, Deleter> const & r, ipcdetail::dynamic_cast_tag)
+   shared_ptr(shared_ptr<Y, VoidAllocator, Deleter> const & r, ipcdetail::dynamic_cast_tag)
       :  m_pn( pointer(dynamic_cast<T*>(ipcdetail::to_raw_pointer(r.m_pn.to_raw_pointer())))
              , r.m_pn)
    {
@@ -195,26 +195,26 @@ class std::shared_ptr
    }
    /// @endcond
 
-   //!Equivalent to std::shared_ptr(r).swap(*this).
+   //!Equivalent to shared_ptr(r).swap(*this).
    //!Never throws
    template<class Y>
-   std::shared_ptr & operator=(std::shared_ptr<Y, VoidAllocator, Deleter> const & r)
+   shared_ptr & operator=(shared_ptr<Y, VoidAllocator, Deleter> const & r)
    {
       m_pn = r.m_pn; // shared_count::op= doesn't throw
       return *this;
    }
 
-   //!Equivalent to std::shared_ptr(r).swap(*this).
+   //!Equivalent to shared_ptr(r).swap(*this).
    //!Never throws
-   std::shared_ptr & operator=(BOOST_COPY_ASSIGN_REF(std::shared_ptr) r)
+   shared_ptr & operator=(BOOST_COPY_ASSIGN_REF(shared_ptr) r)
    {
       m_pn = r.m_pn; // shared_count::op= doesn't throw
       return *this;
    }
 
-   //!Move-assignment. Equivalent to std::shared_ptr(other).swap(*this).
+   //!Move-assignment. Equivalent to shared_ptr(other).swap(*this).
    //!Never throws
-   std::shared_ptr & operator=(BOOST_RV_REF(std::shared_ptr) other) // never throws
+   shared_ptr & operator=(BOOST_RV_REF(shared_ptr) other) // never throws
    {
       this_type(other).swap(*this);
       return *this;
@@ -243,7 +243,7 @@ class std::shared_ptr
    }
 
    template<class Y>
-   void reset(std::shared_ptr<Y, VoidAllocator, Deleter> const & r, const pointer &p)
+   void reset(shared_ptr<Y, VoidAllocator, Deleter> const & r, const pointer &p)
    {
       this_type(r, p).swap(*this);
    }
@@ -282,7 +282,7 @@ class std::shared_ptr
    bool unique() const // never throws
    {  return m_pn.unique();  }
 
-   //!Returns the number of std::shared_ptr objects, *this included,
+   //!Returns the number of shared_ptr objects, *this included,
    //!that share ownership with *this, or an unspecified nonnegative
    //!value when *this is empty.
    //!use_count() is not necessarily efficient. Use only for
@@ -292,13 +292,13 @@ class std::shared_ptr
 
    //!Exchanges the contents of the two
    //!smart pointers.
-   void swap(std::shared_ptr<T, VoidAllocator, Deleter> & other) // never throws
+   void swap(shared_ptr<T, VoidAllocator, Deleter> & other) // never throws
    {  m_pn.swap(other.m_pn);   }
 
    /// @cond
 
    template<class T2, class A2, class Deleter2>
-   bool _internal_less(std::shared_ptr<T2, A2, Deleter2> const & rhs) const
+   bool _internal_less(shared_ptr<T2, A2, Deleter2> const & rhs) const
    {  return m_pn < rhs.m_pn;  }
 
    const_deleter_pointer get_deleter() const
@@ -309,50 +309,50 @@ class std::shared_ptr
 
    private:
 
-   template<class T2, class A2, class Deleter2> friend class std::shared_ptr;
+   template<class T2, class A2, class Deleter2> friend class shared_ptr;
    template<class T2, class A2, class Deleter2> friend class weak_ptr;
 
    ipcdetail::shared_count<T, VoidAllocator, Deleter>   m_pn;    // reference counter
    /// @endcond
-};  // std::shared_ptr
+};  // shared_ptr
 
 template<class T, class VoidAllocator, class Deleter, class U, class VoidAllocator2, class Deleter2> inline
-bool operator==(std::shared_ptr<T, VoidAllocator, Deleter> const & a, std::shared_ptr<U, VoidAllocator2, Deleter2> const & b)
+bool operator==(shared_ptr<T, VoidAllocator, Deleter> const & a, shared_ptr<U, VoidAllocator2, Deleter2> const & b)
 {  return a.get() == b.get(); }
 
 template<class T, class VoidAllocator, class Deleter, class U, class VoidAllocator2, class Deleter2> inline
-bool operator!=(std::shared_ptr<T, VoidAllocator, Deleter> const & a, std::shared_ptr<U, VoidAllocator2, Deleter2> const & b)
+bool operator!=(shared_ptr<T, VoidAllocator, Deleter> const & a, shared_ptr<U, VoidAllocator2, Deleter2> const & b)
 {  return a.get() != b.get(); }
 
 template<class T, class VoidAllocator, class Deleter, class U, class VoidAllocator2, class Deleter2> inline
-bool operator<(std::shared_ptr<T, VoidAllocator, Deleter> const & a, std::shared_ptr<U, VoidAllocator2, Deleter2> const & b)
+bool operator<(shared_ptr<T, VoidAllocator, Deleter> const & a, shared_ptr<U, VoidAllocator2, Deleter2> const & b)
 {  return a._internal_less(b);   }
 
 template<class T, class VoidAllocator, class Deleter> inline
-void swap(std::shared_ptr<T, VoidAllocator, Deleter> & a, std::shared_ptr<T, VoidAllocator, Deleter> & b)
+void swap(shared_ptr<T, VoidAllocator, Deleter> & a, shared_ptr<T, VoidAllocator, Deleter> & b)
 {  a.swap(b);  }
 
 template<class T, class VoidAllocator, class Deleter, class U> inline
-std::shared_ptr<T, VoidAllocator, Deleter> static_pointer_cast(std::shared_ptr<U, VoidAllocator, Deleter> const & r)
-{  return std::shared_ptr<T, VoidAllocator, Deleter>(r, ipcdetail::static_cast_tag());   }
+shared_ptr<T, VoidAllocator, Deleter> static_pointer_cast(shared_ptr<U, VoidAllocator, Deleter> const & r)
+{  return shared_ptr<T, VoidAllocator, Deleter>(r, ipcdetail::static_cast_tag());   }
 
 template<class T, class VoidAllocator, class Deleter, class U> inline
-std::shared_ptr<T, VoidAllocator, Deleter> const_pointer_cast(std::shared_ptr<U, VoidAllocator, Deleter> const & r)
-{  return std::shared_ptr<T, VoidAllocator, Deleter>(r, ipcdetail::const_cast_tag()); }
+shared_ptr<T, VoidAllocator, Deleter> const_pointer_cast(shared_ptr<U, VoidAllocator, Deleter> const & r)
+{  return shared_ptr<T, VoidAllocator, Deleter>(r, ipcdetail::const_cast_tag()); }
 
 template<class T, class VoidAllocator, class Deleter, class U> inline
-std::shared_ptr<T, VoidAllocator, Deleter> dynamic_pointer_cast(std::shared_ptr<U, VoidAllocator, Deleter> const & r)
-{  return std::shared_ptr<T, VoidAllocator, Deleter>(r, ipcdetail::dynamic_cast_tag());  }
+shared_ptr<T, VoidAllocator, Deleter> dynamic_pointer_cast(shared_ptr<U, VoidAllocator, Deleter> const & r)
+{  return shared_ptr<T, VoidAllocator, Deleter>(r, ipcdetail::dynamic_cast_tag());  }
 
-// to_raw_pointer() enables boost::mem_fn to recognize std::shared_ptr
+// to_raw_pointer() enables boost::mem_fn to recognize shared_ptr
 template<class T, class VoidAllocator, class Deleter> inline
-T * to_raw_pointer(std::shared_ptr<T, VoidAllocator, Deleter> const & p)
+T * to_raw_pointer(shared_ptr<T, VoidAllocator, Deleter> const & p)
 {  return p.get();   }
 
 // operator<<
 template<class E, class T, class Y, class VoidAllocator, class Deleter> inline
 std::basic_ostream<E, T> & operator<<
-   (std::basic_ostream<E, T> & os, std::shared_ptr<Y, VoidAllocator, Deleter> const & p)
+   (std::basic_ostream<E, T> & os, shared_ptr<Y, VoidAllocator, Deleter> const & p)
 {  os << p.get();   return os;   }
 
 //!Returns the type of a shared pointer
@@ -364,7 +364,7 @@ struct managed_shared_ptr
 {
    typedef typename ManagedMemory::template allocator<void>::type void_allocator;
    typedef typename ManagedMemory::template deleter<T>::type      deleter;
-   typedef std::shared_ptr< T, void_allocator, deleter>                type;
+   typedef shared_ptr< T, void_allocator, deleter>                type;
 };
 
 //!Returns an instance of a shared pointer constructed
@@ -407,9 +407,9 @@ inline typename managed_shared_ptr<T, ManagedMemory>::type
 /// @cond
 
 #if defined(_MSC_VER) && (_MSC_VER < 1400)
-// to_raw_pointer() enables boost::mem_fn to recognize std::shared_ptr
+// to_raw_pointer() enables boost::mem_fn to recognize shared_ptr
 template<class T, class VoidAllocator, class Deleter> inline
-T * to_raw_pointer(boost::interprocess::std::shared_ptr<T, VoidAllocator, Deleter> const & p)
+T * to_raw_pointer(boost::interprocess::shared_ptr<T, VoidAllocator, Deleter> const & p)
 {  return p.get();   }
 #endif
 

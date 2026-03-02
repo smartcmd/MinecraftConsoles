@@ -127,7 +127,7 @@ void UIScene_DebugOverlay::customDraw(IggyCustomDrawCallbackRegion *region)
 	}
 	else
 	{
-		std::shared_ptr<ItemInstance> item = std::shared_ptr<ItemInstance>( new ItemInstance(itemId,1,0) );
+		shared_ptr<ItemInstance> item = shared_ptr<ItemInstance>( new ItemInstance(itemId,1,0) );
 		if(item != NULL) customDrawSlotControl(region,m_iPad,item,1.0f,false,false);
 	}
 }
@@ -176,7 +176,7 @@ void UIScene_DebugOverlay::handlePress(F64 controlId, F64 childId)
 		{
 			int id = childId;
 			if(id<m_mobFactories.size())
-			{
+			{			
 				app.SetXuiServerAction(ProfileManager.GetPrimaryPad(),eXuiServerAction_SpawnMob,(void *)m_mobFactories[id]);
 			}
 		}

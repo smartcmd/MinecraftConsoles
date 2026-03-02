@@ -25,8 +25,8 @@ public:
 	Player *player; // This is owned by shared_ptrs, but we are owned by it
 
 private:
-	std::shared_ptr<ItemInstance> heldItem;
-	std::shared_ptr<ItemInstance> carried;
+	shared_ptr<ItemInstance> heldItem;
+	shared_ptr<ItemInstance> carried;
 
 public:
 	bool changed;
@@ -34,7 +34,7 @@ public:
 	Inventory(Player *player);
 	~Inventory();
 
-	std::shared_ptr<ItemInstance> getSelected();
+	shared_ptr<ItemInstance> getSelected();
 	// 4J-PB - Added for the in-game tooltips
 	bool IsHeldItem();
 
@@ -44,8 +44,8 @@ private:
 	int getSlot(int tileId);
 	int getSlot(int tileId, int data);
 
-	int getSlotWithRemainingSpace(std::shared_ptr<ItemInstance> item);
-
+	int getSlotWithRemainingSpace(shared_ptr<ItemInstance> item);
+	
 public:
 	int getFreeSlot();
 
@@ -58,7 +58,7 @@ public:
 	void replaceSlot(Item *item, int data);
 
 private:
-	int addResource(std::shared_ptr<ItemInstance> itemInstance);
+	int addResource(shared_ptr<ItemInstance> itemInstance);
 
 public:
 	void tick();
@@ -67,22 +67,22 @@ public:
 
 	// 4J-PB added to get the right resource from the inventory for removal
 	bool removeResource(int type,int iAuxVal);
-	void removeResources(std::shared_ptr<ItemInstance> item); // 4J Added for trading
-
+	void removeResources(shared_ptr<ItemInstance> item); // 4J Added for trading
+	
 	// 4J-Stu added to the get the item that would be affected by the removeResource functions
-	std::shared_ptr<ItemInstance> getResourceItem(int type);
-	std::shared_ptr<ItemInstance> getResourceItem(int type,int iAuxVal);
+	shared_ptr<ItemInstance> getResourceItem(int type);
+	shared_ptr<ItemInstance> getResourceItem(int type,int iAuxVal);
 
 	bool hasResource(int type);
 
 	void swapSlots(int from, int to);
 
-	bool add(std::shared_ptr<ItemInstance> item);
+	bool add(shared_ptr<ItemInstance> item);
 
-	std::shared_ptr<ItemInstance> removeItem(unsigned int slot, int count);
-	virtual std::shared_ptr<ItemInstance> removeItemNoUpdate(int slot);
+	shared_ptr<ItemInstance> removeItem(unsigned int slot, int count);
+	virtual shared_ptr<ItemInstance> removeItemNoUpdate(int slot);
 
-	void setItem(unsigned int slot, std::shared_ptr<ItemInstance> item);
+	void setItem(unsigned int slot, shared_ptr<ItemInstance> item);
 
 	float getDestroySpeed(Tile *tile);
 
@@ -92,17 +92,17 @@ public:
 
 	unsigned int getContainerSize();
 
-	std::shared_ptr<ItemInstance> getItem(unsigned int slot);
+	shared_ptr<ItemInstance> getItem(unsigned int slot);
 
 	int getName();
 
 	int getMaxStackSize();
 
-	int getAttackDamage(std::shared_ptr<Entity> entity);
+	int getAttackDamage(shared_ptr<Entity> entity);
 
 	bool canDestroy(Tile *tile);
 
-	std::shared_ptr<ItemInstance> getArmor(int layer);
+	shared_ptr<ItemInstance> getArmor(int layer);
 
 	int getArmorValue();
 
@@ -112,25 +112,25 @@ public:
 
 	void setChanged();
 
-	bool isSame(std::shared_ptr<Inventory> copy);
+	bool isSame(shared_ptr<Inventory> copy);
 
 private:
-	bool isSame(std::shared_ptr<ItemInstance> a, std::shared_ptr<ItemInstance> b);
+	bool isSame(shared_ptr<ItemInstance> a, shared_ptr<ItemInstance> b);
 
 public:
-	std::shared_ptr<Inventory> copy();
+	shared_ptr<Inventory> copy();
 
-	void setCarried(std::shared_ptr<ItemInstance> carried);
+	void setCarried(shared_ptr<ItemInstance> carried);
 
-	std::shared_ptr<ItemInstance> getCarried();
+	shared_ptr<ItemInstance> getCarried();
 
-	bool stillValid(std::shared_ptr<Player> player);
+	bool stillValid(shared_ptr<Player> player);
 
-	bool contains(std::shared_ptr<ItemInstance> itemInstance);
+	bool contains(shared_ptr<ItemInstance> itemInstance);
 
 	virtual void startOpen();
 	virtual void stopOpen();
-	void replaceWith(std::shared_ptr<Inventory> other);
+	void replaceWith(shared_ptr<Inventory> other);
 
-	int countMatches(std::shared_ptr<ItemInstance> itemInstance); // 4J Added
+	int countMatches(shared_ptr<ItemInstance> itemInstance); // 4J Added
 };

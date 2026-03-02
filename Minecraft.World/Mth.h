@@ -22,7 +22,7 @@ public :
     static float sqrt(float x);
     static float sqrt(double x);
     static int floor(float v);
-	static int64_t lfloor(double v);
+	static __int64 lfloor(double v);
     static int fastFloor(double x);
     static int floor(double v);
     static int absFloor(double v);

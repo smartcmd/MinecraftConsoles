@@ -8,10 +8,10 @@ SheepRenderer::SheepRenderer(Model *model, Model *armor, float shadow) : MobRend
 	setArmor(armor);
 }
 
-int SheepRenderer::prepareArmor(std::shared_ptr<Mob> _sheep, int layer, float a)
+int SheepRenderer::prepareArmor(shared_ptr<Mob> _sheep, int layer, float a)
 {
 	// 4J - dynamic cast required because we aren't using templates/generics in our version
-	std::shared_ptr<Sheep> sheep = dynamic_pointer_cast<Sheep>(_sheep);
+	shared_ptr<Sheep> sheep = dynamic_pointer_cast<Sheep>(_sheep);
 
     if (layer == 0 && !sheep->isSheared() &&
 		!sheep->isInvisibleTo(Minecraft::GetInstance()->player)) // 4J-JEV: Todo, merge with java fix (for invisible sheep armour) in '1.7.5'.
@@ -28,7 +28,7 @@ int SheepRenderer::prepareArmor(std::shared_ptr<Mob> _sheep, int layer, float a)
     return -1;
 }
 
-void SheepRenderer::render(std::shared_ptr<Entity> mob, double x, double y, double z, float rot, float a)
+void SheepRenderer::render(shared_ptr<Entity> mob, double x, double y, double z, float rot, float a)
 {
 	MobRenderer::render(mob, x, y, z, rot, a);
-}
+} 

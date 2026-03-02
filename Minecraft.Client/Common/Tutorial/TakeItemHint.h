@@ -15,5 +15,5 @@ public:
 	TakeItemHint(eTutorial_Hint id, Tutorial *tutorial, int items[], unsigned int itemsLength);
 	~TakeItemHint();
 
-	virtual bool onTake( std::shared_ptr<ItemInstance> item );
+	virtual bool onTake( shared_ptr<ItemInstance> item );
 };

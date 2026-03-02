@@ -1,6 +1,6 @@
 /*
     Copyright 2005-2007 Adobe Systems Incorporated
-
+   
     Use, modification and distribution are subject to the Boost Software License,
     Version 1.0. (See accompanying file LICENSE_1_0.txt or copy at
     http://www.boost.org/LICENSE_1_0.txt).
@@ -24,7 +24,7 @@
 #include <algorithm>
 #include <string>
 #include <boost/static_assert.hpp>
-#include <boost/std::shared_ptr.hpp>
+#include <boost/shared_ptr.hpp>
 extern "C" {
 #include <jpeglib.h>
 }
@@ -64,7 +64,7 @@ inline point2<std::ptrdiff_t> jpeg_read_dimensions(const std::string& filename) 
 /// \ingroup JPEG_IO
 /// \brief Loads the image specified by the given jpeg image file name into the given view.
 /// Triggers a compile assert if the view color space and channel depth are not supported by the JPEG library or by the I/O extension.
-/// Throws std::ios_base::failure if the file is not a valid JPEG file, or if its color space or channel depth are not
+/// Throws std::ios_base::failure if the file is not a valid JPEG file, or if its color space or channel depth are not 
 /// compatible with the ones specified by View, or if its dimensions don't match the ones of the view.
 template <typename View>
 inline void jpeg_read_view(const char* filename,const View& view) {
@@ -84,7 +84,7 @@ inline void jpeg_read_view(const std::string& filename,const View& view) {
 /// \ingroup JPEG_IO
 /// \brief Allocates a new image whose dimensions are determined by the given jpeg image file, and loads the pixels into it.
 /// Triggers a compile assert if the image color space or channel depth are not supported by the JPEG library or by the I/O extension.
-/// Throws std::ios_base::failure if the file is not a valid JPEG file, or if its color space or channel depth are not
+/// Throws std::ios_base::failure if the file is not a valid JPEG file, or if its color space or channel depth are not 
 /// compatible with the ones specified by Image
 template <typename Image>
 inline void jpeg_read_image(const char* filename,Image& im) {

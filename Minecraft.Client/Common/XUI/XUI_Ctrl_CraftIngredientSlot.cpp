@@ -8,7 +8,7 @@
 //-----------------------------------------------------------------------------
 
 //-----------------------------------------------------------------------------
-CXuiCtrlCraftIngredientSlot::CXuiCtrlCraftIngredientSlot()
+CXuiCtrlCraftIngredientSlot::CXuiCtrlCraftIngredientSlot() 
 {
 	m_iID=0;
 	m_Desc=NULL;
@@ -23,7 +23,7 @@ CXuiCtrlCraftIngredientSlot::CXuiCtrlCraftIngredientSlot()
 HRESULT CXuiCtrlCraftIngredientSlot::OnInit(XUIMessageInit* pInitData, BOOL& rfHandled)
 {
 	HRESULT hr=S_OK;
-
+	
 	return hr;
 }
 //-----------------------------------------------------------------------------
@@ -48,10 +48,10 @@ HRESULT CXuiCtrlCraftIngredientSlot::OnCustomMessage_GetSlotItem(CustomMessage_G
 }
 
 HRESULT CXuiCtrlCraftIngredientSlot::OnGetSourceText(XUIMessageGetSourceText *pGetSourceTextData,BOOL& bHandled)
-{
+{	
 	pGetSourceTextData->szText=m_Desc;
 	bHandled = TRUE;
-
+	
 	return S_OK;
 }
 
@@ -72,7 +72,7 @@ void CXuiCtrlCraftIngredientSlot::SetIcon(int iPad, int iId,int iAuxVal, int iCo
 	m_item = nullptr;
 	m_iID=iId;
 	m_iAuxVal=iAuxVal;
-
+	
 	// 4J Stu - For clocks and compasses we set the aux value to a special one that signals we should use a default texture
 	// rather than the dynamic one for the player
 	// not right... auxvals for diggables are damage values, can be a lot higher
@@ -92,7 +92,7 @@ void CXuiCtrlCraftIngredientSlot::SetIcon(int iPad, int iId,int iAuxVal, int iCo
 	XuiElementSetShow(m_hObj,bShow);
 }
 
-void CXuiCtrlCraftIngredientSlot::SetIcon(int iPad, std::shared_ptr<ItemInstance> item, int iScale, unsigned int uiAlpha,bool bDecorations, BOOL bShow)
+void CXuiCtrlCraftIngredientSlot::SetIcon(int iPad, shared_ptr<ItemInstance> item, int iScale, unsigned int uiAlpha,bool bDecorations, BOOL bShow)
 {
 	if(item == NULL) SetIcon(iPad, 0,0,0,0,0,false,false,bShow);
 	else

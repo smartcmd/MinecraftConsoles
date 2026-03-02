@@ -22,14 +22,14 @@ bool IceTile::shouldRenderFace(LevelSource *level, int x, int y, int z, int face
 	return HalfTransparentTile::shouldRenderFace(level, x, y, z, 1 - face);
 }
 
-void IceTile::playerDestroy(Level *level, std::shared_ptr<Player> player, int x, int y, int z, int data)
+void IceTile::playerDestroy(Level *level, shared_ptr<Player> player, int x, int y, int z, int data)
 {
 	player->awardStat(GenericStats::blocksMined(id), GenericStats::param_blocksMined(id,data,1) );
 	player->causeFoodExhaustion(FoodConstants::EXHAUSTION_MINE);
 
 	if (isSilkTouchable() && EnchantmentHelper::hasSilkTouch(player->inventory))
 	{
-		std::shared_ptr<ItemInstance> item = getSilkTouchItemInstance(data);
+		shared_ptr<ItemInstance> item = getSilkTouchItemInstance(data);
 		if (item != NULL)
 		{
 			popResource(level, x, y, z, item);

@@ -28,8 +28,8 @@ protected:
 	Particle(Level *level, double x, double y, double z);
 public:
     Particle(Level *level, double x, double y, double z, double xa, double ya, double za);
-    virtual std::shared_ptr<Particle> setPower(float power);
-    virtual std::shared_ptr<Particle> scale(float scale);
+    virtual shared_ptr<Particle> setPower(float power);
+    virtual shared_ptr<Particle> scale(float scale);
 	void setColor(float r, float g, float b);
 	void setAlpha(float alpha);
 	float getRedCol();

@@ -13,5 +13,5 @@ public:
 	SnowManRenderer();
 
 protected:
-	virtual void additionalRendering(std::shared_ptr<Mob> _mob, float a);
+	virtual void additionalRendering(shared_ptr<Mob> _mob, float a);
 };

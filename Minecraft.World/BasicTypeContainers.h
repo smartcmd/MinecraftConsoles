@@ -57,14 +57,14 @@ public:
 	}
 	static bool isInfinite( double a ) { return false; /*4J TODO*/ }
 
-	static double longBitsToDouble( int64_t bits )
+	static double longBitsToDouble( __int64 bits )
 	{
 		return *(double *)&bits;
 	}
 
-	static int64_t doubleToLongBits( double d )
+	static __int64 doubleToLongBits( double d )
 	{
-		return *(int64_t *)&d;
+		return *(__int64 *)&d;
 	}
 };
 

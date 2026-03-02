@@ -3,10 +3,10 @@
 #include "Tesselator.h"
 #include "..\Minecraft.World\net.minecraft.world.entity.global.h"
 
-void LightningBoltRenderer::render(std::shared_ptr<Entity> _bolt, double x, double y, double z, float rot, float a)
+void LightningBoltRenderer::render(shared_ptr<Entity> _bolt, double x, double y, double z, float rot, float a)
 {
 	// 4J - dynamic cast required because we aren't using templates/generics in our version
-	std::shared_ptr<LightningBolt> bolt = dynamic_pointer_cast<LightningBolt>(_bolt);
+	shared_ptr<LightningBolt> bolt = dynamic_pointer_cast<LightningBolt>(_bolt);
 
     Tesselator *t = Tesselator::getInstance();
 

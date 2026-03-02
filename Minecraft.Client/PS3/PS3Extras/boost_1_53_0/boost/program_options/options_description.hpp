@@ -13,7 +13,7 @@
 #include <boost/program_options/value_semantic.hpp>
 
 #include <boost/function.hpp>
-#include <boost/std::shared_ptr.hpp>
+#include <boost/shared_ptr.hpp>
 #include <boost/detail/workaround.hpp>
 #include <boost/any.hpp>
 
@@ -27,12 +27,12 @@
 
 #if defined(BOOST_MSVC)
 #   pragma warning (push)
-#   pragma warning (disable:4251) // class 'boost::std::shared_ptr<T>' needs to have dll-interface to be used by clients of class 'boost::program_options::option_description'
+#   pragma warning (disable:4251) // class 'boost::shared_ptr<T>' needs to have dll-interface to be used by clients of class 'boost::program_options::option_description'
 #endif
 
 
 /** Boost namespace */
-namespace boost {
+namespace boost { 
 /** Namespace for the library. */
 namespace program_options {
 
@@ -67,7 +67,7 @@ namespace program_options {
             So, we have to use plain old pointers. Besides, users are not
             expected to use the constructor directly.
 
-
+            
             The 'name' parameter is interpreted by the following rules:
             - if there's no "," character in 'name', it specifies long name
             - otherwise, the part before "," specifies long name and the part
@@ -76,7 +76,7 @@ namespace program_options {
         option_description(const char* name,
                            const value_semantic* s);
 
-        /** Initializes the class with the passed data.
+        /** Initializes the class with the passed data. 
          */
         option_description(const char* name,
                            const value_semantic* s,
@@ -118,9 +118,9 @@ namespace program_options {
         const std::string& description() const;
 
         /// Semantic of option's value
-        std::shared_ptr<const value_semantic> semantic() const;
-
-        /// Returns the option name, formatted suitably for usage message.
+        shared_ptr<const value_semantic> semantic() const;
+        
+        /// Returns the option name, formatted suitably for usage message. 
         std::string format_name() const;
 
         /** Returns the parameter name and properties, formatted suitably for
@@ -128,19 +128,19 @@ namespace program_options {
         std::string format_parameter() const;
 
     private:
-
+    
         option_description& set_name(const char* name);
 
         std::string m_short_name, m_long_name, m_description;
-        // std::shared_ptr is needed to simplify memory management in
+        // shared_ptr is needed to simplify memory management in
         // copy ctor and destructor.
-        std::shared_ptr<const value_semantic> m_value_semantic;
+        shared_ptr<const value_semantic> m_value_semantic;
     };
 
     class options_description;
 
-    /** Class which provides convenient creation syntax to option_description.
-     */
+    /** Class which provides convenient creation syntax to option_description. 
+     */        
     class BOOST_PROGRAM_OPTIONS_DECL options_description_easy_init {
     public:
         options_description_easy_init(options_description* owner);
@@ -152,12 +152,12 @@ namespace program_options {
         options_description_easy_init&
         operator()(const char* name,
                    const value_semantic* s);
-
+        
         options_description_easy_init&
         operator()(const char* name,
                    const value_semantic* s,
                    const char* description);
-
+       
     private:
         options_description* owner;
     };
@@ -166,14 +166,14 @@ namespace program_options {
     /** A set of option descriptions. This provides convenient interface for
         adding new option (the add_options) method, and facilities to search
         for options by name.
-
+        
         See @ref a_adding_options "here" for option adding interface discussion.
         @sa option_description
     */
     class BOOST_PROGRAM_OPTIONS_DECL options_description {
     public:
         static const unsigned m_default_line_length;
-
+        
         /** Creates the instance. */
         options_description(unsigned line_length = m_default_line_length,
                             unsigned min_description_length = m_default_line_length / 2);
@@ -188,11 +188,11 @@ namespace program_options {
                             unsigned line_length = m_default_line_length,
                             unsigned min_description_length = m_default_line_length / 2);
         /** Adds new variable description. Throws duplicate_variable_error if
-            either short or long name matches that of already present one.
+            either short or long name matches that of already present one. 
         */
-        void add(std::shared_ptr<option_description> desc);
+        void add(shared_ptr<option_description> desc);
         /** Adds a group of option description. This has the same
-            effect as adding all option_descriptions in 'desc'
+            effect as adding all option_descriptions in 'desc' 
             individually, except that output operator will show
             a separate group.
             Returns *this.
@@ -202,29 +202,29 @@ namespace program_options {
     public:
         /** Returns an object of implementation-defined type suitable for adding
             options to options_description. The returned object will
-            have overloaded operator() with parameter type matching
+            have overloaded operator() with parameter type matching 
             'option_description' constructors. Calling the operator will create
             new option_description instance and add it.
         */
         options_description_easy_init add_options();
 
-        const option_description& find(const std::string& name,
-                                       bool approx,
+        const option_description& find(const std::string& name, 
+                                       bool approx, 
                                        bool long_ignore_case = false,
                                        bool short_ignore_case = false) const;
 
-        const option_description* find_nothrow(const std::string& name,
+        const option_description* find_nothrow(const std::string& name, 
                                                bool approx,
                                                bool long_ignore_case = false,
                                                bool short_ignore_case = false) const;
 
 
-        const std::vector< std::shared_ptr<option_description> >& options() const;
+        const std::vector< shared_ptr<option_description> >& options() const;
 
         /** Produces a human readable output of 'desc', listing options,
             their descriptions and allowed parameters. Other options_description
             instances previously passed to add will be output separately. */
-        friend BOOST_PROGRAM_OPTIONS_DECL std::ostream& operator<<(std::ostream& os,
+        friend BOOST_PROGRAM_OPTIONS_DECL std::ostream& operator<<(std::ostream& os, 
                                              const options_description& desc);
 
         /** Outputs 'desc' to the specified stream, calling 'f' to output each
@@ -233,7 +233,7 @@ namespace program_options {
 
     private:
         typedef std::map<std::string, int>::const_iterator name2index_iterator;
-        typedef std::pair<name2index_iterator, name2index_iterator>
+        typedef std::pair<name2index_iterator, name2index_iterator> 
             approximation_range;
 
         //approximation_range find_approximation(const std::string& prefix) const;
@@ -241,11 +241,11 @@ namespace program_options {
         std::string m_caption;
         const unsigned m_line_length;
         const unsigned m_min_description_length;
-
+        
         // Data organization is chosen because:
         // - there could be two names for one option
         // - option_add_proxy needs to know the last added option
-        std::vector< std::shared_ptr<option_description> > m_options;
+        std::vector< shared_ptr<option_description> > m_options;
 
         // Whether the option comes from one of declared groups.
 #if BOOST_WORKAROUND(BOOST_DINKUMWARE_STDLIB, BOOST_TESTED_AT(313))
@@ -256,7 +256,7 @@ namespace program_options {
         std::vector<bool> belong_to_group;
 #endif
 
-        std::vector< std::shared_ptr<options_description> > groups;
+        std::vector< shared_ptr<options_description> > groups;
 
     };
 

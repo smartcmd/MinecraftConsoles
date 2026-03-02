@@ -8,7 +8,7 @@ class InventoryMenu;
 class UIScene_BrewingStandMenu : public UIScene_AbstractContainerMenu, public IUIScene_BrewingMenu
 {
 private:
-	std::shared_ptr<BrewingStandTileEntity> m_brewingStand;
+	shared_ptr<BrewingStandTileEntity> m_brewingStand;
 
 public:
 	UIScene_BrewingStandMenu(int iPad, void *initData, UILayer *parentLayer);

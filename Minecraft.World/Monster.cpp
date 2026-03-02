@@ -30,7 +30,7 @@ Monster::Monster(Level *level) : PathfinderMob( level )
 	xpReward = Enemy::XP_REWARD_MEDIUM;
 }
 
-void Monster::aiStep()
+void Monster::aiStep() 
 {
     float br = getBrightness(1);
     if (br > 0.5f)
@@ -47,28 +47,28 @@ void Monster::tick()
     if (!level->isClientSide && (level->difficulty == Difficulty::PEACEFUL || Minecraft::GetInstance()->isTutorial() ) ) remove();
 }
 
-std::shared_ptr<Entity> Monster::findAttackTarget()
+shared_ptr<Entity> Monster::findAttackTarget()
 {
 #ifndef _FINAL_BUILD
 	if(app.GetMobsDontAttackEnabled())
 	{
-		return std::shared_ptr<Player>();
+		return shared_ptr<Player>();
 	}
 #endif
 
-    std::shared_ptr<Player> player = level->getNearestAttackablePlayer(shared_from_this(), 16);
+    shared_ptr<Player> player = level->getNearestAttackablePlayer(shared_from_this(), 16);
 	if (player != NULL && canSee(player) ) return player;
-    return std::shared_ptr<Player>();
+    return shared_ptr<Player>();
 }
 
 bool Monster::hurt(DamageSource *source, int dmg)
 {
     if (PathfinderMob::hurt(source, dmg))
 	{
-		std::shared_ptr<Entity> sourceEntity = source->getEntity();
+		shared_ptr<Entity> sourceEntity = source->getEntity();
         if (rider.lock() == sourceEntity || riding == sourceEntity) return true;
 
-        if (sourceEntity != shared_from_this())
+        if (sourceEntity != shared_from_this()) 
 		{
             this->attackTarget = sourceEntity;
         }
@@ -79,11 +79,11 @@ bool Monster::hurt(DamageSource *source, int dmg)
 
 /**
 * Performs hurt action, returns if successful
-*
+* 
 * @param target
 * @return
 */
-bool Monster::doHurtTarget(std::shared_ptr<Entity> target)
+bool Monster::doHurtTarget(shared_ptr<Entity> target)
 {
 	int dmg = attackDamage;
 	if (hasEffect(MobEffect::damageBoost))
@@ -107,7 +107,7 @@ bool Monster::doHurtTarget(std::shared_ptr<Entity> target)
 			target->setOnFire(fireAspect * 4);
 		}
 
-		std::shared_ptr<Mob> mob = dynamic_pointer_cast<Mob>(target);
+		shared_ptr<Mob> mob = dynamic_pointer_cast<Mob>(target);
 		if (mob != NULL)
 		{
 			ThornsEnchantment::doThornsAfterAttack(shared_from_this(), mob, random);
@@ -117,7 +117,7 @@ bool Monster::doHurtTarget(std::shared_ptr<Entity> target)
 	return didHurt;
 }
 
-void Monster::checkHurtTarget(std::shared_ptr<Entity> target, float distance)
+void Monster::checkHurtTarget(shared_ptr<Entity> target, float distance)
 {
     if (attackTime <= 0 && distance < 2.0f && target->bb->y1 > bb->y0 && target->bb->y0 < bb->y1)
 	{
@@ -140,7 +140,7 @@ bool Monster::isDarkEnoughToSpawn()
 
     int br = level->getRawBrightness(xt, yt, zt);
 
-    if (level->isThundering())
+    if (level->isThundering()) 
 	{
         int tmp = level->skyDarken;
         level->skyDarken = 10;

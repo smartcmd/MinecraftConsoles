@@ -44,12 +44,12 @@ void SonyRemoteStorage_Vita::internalCallback(const SceRemoteStorageEvent event,
 		break;
 
 	case GET_DATA_RESULT:
-		if(retCode >= 0)
+		if(retCode >= 0) 
 		{
 			app.DebugPrintf("Get Data success \n");
 			m_status = e_getDataSucceeded;
-		}
-		else
+		} 
+		else 
 		{
 			app.DebugPrintf("An error occurred while Get Data was being processed. retCode: 0x%x \n", retCode);
 			m_status = e_error;
@@ -66,12 +66,12 @@ void SonyRemoteStorage_Vita::internalCallback(const SceRemoteStorageEvent event,
 		break;
 
 	case GET_STATUS_RESULT:
-		if(retCode >= 0)
+		if(retCode >= 0) 
 		{
 			app.DebugPrintf("Get Status success \n");
 			app.DebugPrintf("Remaining Syncs for this user: %llu\n", outputGetStatus->remainingSyncs);
 			app.DebugPrintf("Number of files on the cloud: %d\n", outputGetStatus->numFiles);
-			for(int i = 0; i < outputGetStatus->numFiles; i++)
+			for(int i = 0; i < outputGetStatus->numFiles; i++) 
 			{
 				app.DebugPrintf("\n*** File %d information: ***\n", (i + 1));
 				app.DebugPrintf("File name: %s \n", outputGetStatus->data[i].fileName);
@@ -82,8 +82,8 @@ void SonyRemoteStorage_Vita::internalCallback(const SceRemoteStorageEvent event,
 				app.DebugPrintf("Visibility: \"%s\" \n", (outputGetStatus->data[i].visibility ==  0)?"Private":((outputGetStatus->data[i].visibility ==  1)?"Public read only":"Public read and write"));
 			}
 			m_status = e_getStatusSucceeded;
-		}
-		else
+		} 
+		else 
 		{
 			app.DebugPrintf("An error occurred while Get Status was being processed. retCode: 0x%x \n", retCode);
 			m_status = e_error;
@@ -98,12 +98,12 @@ void SonyRemoteStorage_Vita::internalCallback(const SceRemoteStorageEvent event,
 		break;
 
 	case SET_DATA_RESULT:
-		if(retCode >= 0)
+		if(retCode >= 0) 
 		{
 			app.DebugPrintf("Set Data success \n");
 			m_status = e_setDataSucceeded;
-		}
-		else
+		} 
+		else 
 		{
 			app.DebugPrintf("An error occurred while Set Data was being processed. retCode: 0x%x \n", retCode);
 			m_status = e_error;
@@ -175,19 +175,19 @@ bool SonyRemoteStorage_Vita::init(CallbackFunc cb, LPVOID lpParam)
 
 // 	SceNpAuthorizationCode authCode;
 // 	memset(&authCode, 0x0, sizeof(authCode));
-
+ 
 	SceNpAuthGetAuthorizationCodeParameter authParams;
-	memset(&authParams, 0x0, sizeof(authParams));
+	memset(&authParams, 0x0, sizeof(authParams));	
 
 	authParams.size = sizeof(authParams);
-	authParams.pScope = AUTH_SCOPE;
+	authParams.pScope = AUTH_SCOPE;	
 
 	memcpy(clientId.id, CLIENT_ID, strlen(CLIENT_ID));
-	authParams.pClientId = &clientId;
+	authParams.pClientId = &clientId;	
 
 	int issuerId = 0;
 // 	ret = sceNpAuthGetAuthorizationCode(reqId, &authParams, &authCode, &issuerId);
-// 	if (ret < 0)
+// 	if (ret < 0) 
 // 	{
 // 		app.DebugPrintf("Failed to get auth code 0x%x\n", ret);
 // 		sceNpAuthDeleteOAuthRequest(reqId);
@@ -195,7 +195,7 @@ bool SonyRemoteStorage_Vita::init(CallbackFunc cb, LPVOID lpParam)
 // 	}
 
 	ret = sceNpAuthDeleteOAuthRequest(reqId);
-	if (ret < 0)
+	if (ret < 0) 
 	{
 		app.DebugPrintf("Couldn't delete auth request 0x%x\n", ret);
 		return false;
@@ -221,11 +221,11 @@ bool SonyRemoteStorage_Vita::init(CallbackFunc cb, LPVOID lpParam)
 	SceRemoteStorageAbortReqParams abortParams;
 
 	ret = sceRemoteStorageInit(params);
-	if(ret >= 0)
+	if(ret >= 0) 
 	{
 		abortParams.requestId = ret;
 		app.DebugPrintf("Session will be created \n");
-	}
+	} 
 	else if(ret == SCE_REMOTE_STORAGE_ERROR_ALREADY_INITIALISED)
 	{
 		app.DebugPrintf("Session already created \n");
@@ -251,12 +251,12 @@ bool SonyRemoteStorage_Vita::getRemoteFileInfo(SceRemoteStorageStatus* pInfo, Ca
 	reqId = sceRemoteStorageGetStatus(params, outputGetStatus);
 	m_status = e_getStatusInProgress;
 
-	if(reqId >= 0)
+	if(reqId >= 0) 
 	{
 		app.DebugPrintf("Get Status request sent \n");
 		return true;
-	}
-	else
+	} 
+	else 
 	{
 		app.DebugPrintf("Error sending Get Status request: 0x%x \n", reqId);
 		return false;
@@ -275,11 +275,11 @@ void SonyRemoteStorage_Vita::abort()
 		params.requestId = reqId;
 		int ret = sceRemoteStorageAbort(params);
 
-		if(ret >= 0)
+		if(ret >= 0) 
 		{
 			app.DebugPrintf("Abort request done \n");
-		}
-		else
+		} 
+		else 
 		{
 			app.DebugPrintf("Error in Abort request: 0x%x \n", ret);
 		}
@@ -317,7 +317,7 @@ bool SonyRemoteStorage_Vita::setDataInternal()
 		char seed[22];
 		app.GetImageTextData(m_thumbnailData, m_thumbnailDataSize,(unsigned char *)seed, uiHostOptions, bHostOptionsRead, uiTexturePack);
 
-		int64_t iSeed = strtoll(seed,NULL,10);
+		__int64 iSeed = strtoll(seed,NULL,10);
 		char seedHex[17];
 		sprintf(seedHex,"%016llx",iSeed);
 		memcpy(descData.m_seed,seedHex,16); // Don't copy null
@@ -345,13 +345,13 @@ bool SonyRemoteStorage_Vita::setDataInternal()
 	reqId = sceRemoteStorageSetData(params);
 
 	app.DebugPrintf("\n*******************************\n");
-	if(reqId >= 0)
+	if(reqId >= 0) 
 	{
 		app.DebugPrintf("Set Data request sent \n");
 		m_bTransferStarted = true;
 		return true;
-	}
-	else
+	} 
+	else 
 	{
 		app.DebugPrintf("Error sending Set Data request: 0x%x \n", reqId);
 		return false;
@@ -374,13 +374,13 @@ bool SonyRemoteStorage_Vita::getData( const char* remotePath, const char* localP
 	reqId = sceRemoteStorageGetData(params, &s_getDataOutput);
 
 	app.DebugPrintf("\n*******************************\n");
-	if(reqId >= 0)
+	if(reqId >= 0) 
 	{
 		app.DebugPrintf("Get Data request sent \n");
 		m_bTransferStarted = true;
 		return true;
-	}
-	else
+	} 
+	else 
 	{
 		app.DebugPrintf("Error sending Get Data request: 0x%x \n", reqId);
 		return false;

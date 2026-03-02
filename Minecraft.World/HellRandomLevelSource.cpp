@@ -7,7 +7,7 @@
 #include "BiomeSource.h"
 #include "HellRandomLevelSource.h"
 
-HellRandomLevelSource::HellRandomLevelSource(Level *level, int64_t seed)
+HellRandomLevelSource::HellRandomLevelSource(Level *level, __int64 seed)
 {
 	int xzSize = level->getLevelData()->getXZSize();
 	int hellScale = level->getLevelData()->getHellScale();
@@ -224,7 +224,7 @@ void HellRandomLevelSource::buildSurfaces(int xOffs, int zOffs, byteArray blocks
 									if(random->nextInt(16) == 0)
 									{
 										top = (byte) Tile::netherStalk_Id;
-
+										
 										// Place the nether wart on top of the soul sand
 										y += 1;
 										int genDepthMinusOne = Level::genDepthMinusOne; // Take into local int for PS4 as min takes a reference to the const int there and then needs the value to exist for the linker
@@ -430,8 +430,8 @@ void HellRandomLevelSource::postProcess(ChunkSource *parent, int xt, int zt)
 	// we need to use a separate random - have used the same initialisation code as used in RandomLevelSource::postProcess to make sure this random value
 	// is consistent for each world generation. Also changed all uses of random here to pprandom.
 	pprandom->setSeed(level->getSeed());
-	int64_t xScale = pprandom->nextLong() / 2 * 2 + 1;
-	int64_t zScale = pprandom->nextLong() / 2 * 2 + 1;
+	__int64 xScale = pprandom->nextLong() / 2 * 2 + 1;
+	__int64 zScale = pprandom->nextLong() / 2 * 2 + 1;
 	pprandom->setSeed(((xt * xScale) + (zt * zScale)) ^ level->getSeed());
 
 	netherBridgeFeature->postProcess(level, pprandom, xt, zt);
@@ -497,7 +497,7 @@ void HellRandomLevelSource::postProcess(ChunkSource *parent, int xt, int zt)
 	}
 
     HeavyTile::instaFall = false;
-
+	
 	app.processSchematics(parent->getChunk(xt,zt));
 
 }

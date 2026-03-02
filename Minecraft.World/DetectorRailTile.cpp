@@ -23,7 +23,7 @@ bool DetectorRailTile::isSignalSource()
 	return true;
 }
 
-void DetectorRailTile::entityInside(Level *level, int x, int y, int z, std::shared_ptr<Entity> entity)
+void DetectorRailTile::entityInside(Level *level, int x, int y, int z, shared_ptr<Entity> entity)
 {
     if (level->isClientSide)
 	{
@@ -69,7 +69,7 @@ void DetectorRailTile::checkPressed(Level *level, int x, int y, int z, int curre
     bool shouldBePressed = false;
 
     float b = 2 / 16.0f;
-	vector<std::shared_ptr<Entity> > *entities = level->getEntitiesOfClass(typeid(Minecart), AABB::newTemp(x + b, y, z + b, x + 1 - b, y + 1 - b, z + 1 - b));
+	vector<shared_ptr<Entity> > *entities = level->getEntitiesOfClass(typeid(Minecart), AABB::newTemp(x + b, y, z + b, x + 1 - b, y + 1 - b, z + 1 - b));
     if (!entities->empty())
 	{
         shouldBePressed = true;

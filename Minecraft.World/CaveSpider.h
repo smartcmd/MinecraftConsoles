@@ -13,6 +13,6 @@ class CaveSpider : public Spider
 
 		virtual int getMaxHealth();
 		virtual float getModelScale();
-		virtual bool doHurtTarget(std::shared_ptr<Entity> target);
+		virtual bool doHurtTarget(shared_ptr<Entity> target);
 		void finalizeMobSpawn();
 };

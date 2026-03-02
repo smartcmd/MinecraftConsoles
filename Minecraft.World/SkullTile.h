@@ -21,18 +21,18 @@ public:
 	int getRenderShape();
 	bool isSolidRender(bool isServerLevel = false);
 	bool isCubeShaped();
-	void updateShape(LevelSource *level, int x, int y, int z, int forceData = -1, std::shared_ptr<TileEntity> forceEntity = std::shared_ptr<TileEntity>());
+	void updateShape(LevelSource *level, int x, int y, int z, int forceData = -1, shared_ptr<TileEntity> forceEntity = shared_ptr<TileEntity>());
 	AABB *getAABB(Level *level, int x, int y, int z);
-	void setPlacedBy(Level *level, int x, int y, int z, std::shared_ptr<Mob> by);
-	std::shared_ptr<TileEntity> newTileEntity(Level *level);
+	void setPlacedBy(Level *level, int x, int y, int z, shared_ptr<Mob> by);
+	shared_ptr<TileEntity> newTileEntity(Level *level);
 	int cloneTileId(Level *level, int x, int y, int z);
 	int cloneTileData(Level *level, int x, int y, int z);
 	int getSpawnResourcesAuxValue(int data);
 	void spawnResources(Level *level, int x, int y, int z, int data, float odds, int playerBonusLevel);
-	void playerWillDestroy(Level *level, int x, int y, int z, int data, std::shared_ptr<Player> player);
+	void playerWillDestroy(Level *level, int x, int y, int z, int data, shared_ptr<Player> player);
 	void onRemove(Level *level, int x, int y, int z); //, int id, int data);
 	int getResource(int data, Random *random, int playerBonusLevel);
-	void checkMobSpawn(Level *level, int x, int y, int z, std::shared_ptr<SkullTileEntity> placedSkull);
+	void checkMobSpawn(Level *level, int x, int y, int z, shared_ptr<SkullTileEntity> placedSkull);
 
 private:
 	bool isSkullAt(Level *level, int x, int y, int z, int skullType);

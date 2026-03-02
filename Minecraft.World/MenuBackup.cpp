@@ -5,7 +5,7 @@
 #include "Slot.h"
 #include "MenuBackup.h"
 
-MenuBackup::MenuBackup(std::shared_ptr<Inventory> inventory, AbstractContainerMenu *menu)
+MenuBackup::MenuBackup(shared_ptr<Inventory> inventory, AbstractContainerMenu *menu)
 {
 	backups = new unordered_map<short, ItemInstanceArray *>();
 

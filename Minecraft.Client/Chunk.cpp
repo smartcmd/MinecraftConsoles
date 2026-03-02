@@ -103,7 +103,7 @@ void Chunk::setPos(int x, int y, int z)
 	{
 		bb = AABB::newPermanent(-g, -g, -g, XZSIZE+g, SIZE+g, XZSIZE+g);
 	}
- 	else
+ 	else 
  	{
 		// 4J MGH - bounds are relative to the position now, so the AABB will be setup already, either above, or from the tesselator bounds.
 // 		bb->set(-g, -g, -g, SIZE+g, SIZE+g, SIZE+g);
@@ -141,7 +141,7 @@ void Chunk::setPos(int x, int y, int z)
 
 	LeaveCriticalSection(&levelRenderer->m_csDirtyChunks);
 
-
+	
 }
 
 void Chunk::translateToPos()
@@ -173,7 +173,7 @@ void Chunk::makeCopyForRebuild(Chunk *source)
 	this->clipChunk = NULL;
 	this->id = source->id;
 	this->globalRenderableTileEntities = source->globalRenderableTileEntities;
-	this->globalRenderableTileEntities_cs = source->globalRenderableTileEntities_cs;
+	this->globalRenderableTileEntities_cs = source->globalRenderableTileEntities_cs;	
 }
 
 void Chunk::rebuild()
@@ -186,7 +186,7 @@ void Chunk::rebuild()
 
 //	if (!dirty) return;
 	PIXBeginNamedEvent(0,"Rebuild section A");
-
+	
 #ifdef _LARGE_WORLDS
 	Tesselator *t = Tesselator::getInstance();
 #else
@@ -204,10 +204,10 @@ void Chunk::rebuild()
 
 	LevelChunk::touchedSky = false;
 
-//	unordered_set<std::shared_ptr<TileEntity> > oldTileEntities(renderableTileEntities.begin(),renderableTileEntities.end());		// 4J removed this & next line
+//	unordered_set<shared_ptr<TileEntity> > oldTileEntities(renderableTileEntities.begin(),renderableTileEntities.end());		// 4J removed this & next line
 //	renderableTileEntities.clear();
 
-	vector<std::shared_ptr<TileEntity> > renderableTileEntities;	// 4J - added
+	vector<shared_ptr<TileEntity> > renderableTileEntities;	// 4J - added
 
 	int r = 1;
 
@@ -223,7 +223,7 @@ void Chunk::rebuild()
 	// Get the data for the level chunk that this render chunk is it (level chunk is 16 x 16 x 128,
 	// render chunk is 16 x 16 x 16. We wouldn't have to actually get all of it if the data was ordered differently, but currently
 	// it is ordered by x then z then y so just getting a small range of y out of it would involve getting the whole thing into
-	// the cache anyway.
+	// the cache anyway. 
 
 #ifdef _LARGE_WORLDS
 	unsigned char *tileIds = GetTileIdsStorage();
@@ -237,9 +237,9 @@ void Chunk::rebuild()
 	TileRenderer *tileRenderer = new TileRenderer(region, this->x, this->y, this->z, tileIds);
 
 	// AP - added a caching system for Chunk::rebuild to take advantage of
-	// Basically we're storing of copy of the tileIDs array inside the region so that calls to Region::getTile can grab data
-	// more quickly from this array rather than calling CompressedTileStorage. On the Vita the total thread time spent in
-	// Region::getTile went from 20% to 4%.
+	// Basically we're storing of copy of the tileIDs array inside the region so that calls to Region::getTile can grab data 
+	// more quickly from this array rather than calling CompressedTileStorage. On the Vita the total thread time spent in 
+	// Region::getTile went from 20% to 4%.	
 #ifdef __PSVITA__
 	int xc = x >> 4;
 	int zc = z >> 4;
@@ -275,7 +275,7 @@ void Chunk::rebuild()
 				if( yy == (Level::maxBuildHeight - 1) ) continue;
 				if(( xx == 0 ) || ( xx == 15 )) continue;
 				if(( zz == 0 ) || ( zz == 15 )) continue;
-
+				
 				// Establish whether this tile and its neighbours are all made of rock, dirt, unbreakable tiles, or have already
 				// been determined to meet this criteria themselves and have a tile of 255 set.
 				if( !( ( tileId == Tile::rock_Id ) || ( tileId == Tile::dirt_Id ) || ( tileId == Tile::unbreakable_Id ) || ( tileId == 255) ) ) continue;
@@ -337,7 +337,7 @@ void Chunk::rebuild()
 	PIXBeginNamedEvent(0,"Rebuild section C");
 	Tesselator::Bounds bounds;	// 4J MGH - added
 	{
-		// this was the old default clip bounds for the chunk, set in Chunk::setPos.
+		// this was the old default clip bounds for the chunk, set in Chunk::setPos. 
 		float g = 6.0f;
 		bounds.boundingBox[0] = -g;
 		bounds.boundingBox[1] = -g;
@@ -398,11 +398,11 @@ void Chunk::rebuild()
 							t->begin();
 							t->offset((float)(-this->x), (float)(-this->y), (float)(-this->z));
 						}
-
+						
 						Tile *tile = Tile::tiles[tileId];
 						if (currentLayer == 0 && tile->isEntityTile())
 						{
-							std::shared_ptr<TileEntity> et = region->getTileEntity(x, y, z);
+							shared_ptr<TileEntity> et = region->getTileEntity(x, y, z);
 							if (TileEntityRenderDispatcher::instance->hasRenderer(et))
 							{
 								renderableTileEntities.push_back(et);
@@ -465,7 +465,7 @@ void Chunk::rebuild()
 		{
 			levelRenderer->setGlobalChunkFlag(this->x, this->y, this->z, level, LevelRenderer::CHUNK_FLAG_EMPTY1);
 			RenderManager.CBuffClear(lists + 1);
-			break;
+			break;		
 		}
 	}
 
@@ -552,12 +552,12 @@ void Chunk::rebuild()
 		oldTileEntities.removeAll(renderableTileEntities);
 		globalRenderableTileEntities.removeAll(oldTileEntities);
 		*/
+        
 
-
-    unordered_set<std::shared_ptr<TileEntity> > newTileEntities(renderableTileEntities.begin(),renderableTileEntities.end());
-
+    unordered_set<shared_ptr<TileEntity> > newTileEntities(renderableTileEntities.begin(),renderableTileEntities.end());
+    
 	AUTO_VAR(endIt, oldTileEntities.end());
-	for( unordered_set<std::shared_ptr<TileEntity> >::iterator it = oldTileEntities.begin(); it != endIt; it++ )
+	for( unordered_set<shared_ptr<TileEntity> >::iterator it = oldTileEntities.begin(); it != endIt; it++ )
 	{
 		newTileEntities.erase(*it);
 	}
@@ -566,7 +566,7 @@ void Chunk::rebuild()
 
 	EnterCriticalSection(globalRenderableTileEntities_cs);
 	endIt = newTileEntities.end();
-	for( unordered_set<std::shared_ptr<TileEntity> >::iterator it = newTileEntities.begin(); it != endIt; it++ )
+	for( unordered_set<shared_ptr<TileEntity> >::iterator it = newTileEntities.begin(); it != endIt; it++ )
 	{
 		globalRenderableTileEntities->push_back(*it);
 	}
@@ -574,12 +574,12 @@ void Chunk::rebuild()
 	// 4J - All these new things added to globalRenderableTileEntities
 
 	AUTO_VAR(endItRTE, renderableTileEntities.end());
-	for( vector<std::shared_ptr<TileEntity> >::iterator it = renderableTileEntities.begin(); it != endItRTE; it++ )
+	for( vector<shared_ptr<TileEntity> >::iterator it = renderableTileEntities.begin(); it != endItRTE; it++ )
 	{
 		oldTileEntities.erase(*it);
 	}
 	// 4J - oldTileEntities is now the removed items
-	vector<std::shared_ptr<TileEntity> >::iterator it = globalRenderableTileEntities->begin();
+	vector<shared_ptr<TileEntity> >::iterator it = globalRenderableTileEntities->begin();
 	while(  it != globalRenderableTileEntities->end() )
 	{
 		if( oldTileEntities.find(*it) != oldTileEntities.end() )
@@ -656,10 +656,10 @@ void Chunk::rebuild_SPU()
 
 	LevelChunk::touchedSky = false;
 
-//	unordered_set<std::shared_ptr<TileEntity> > oldTileEntities(renderableTileEntities.begin(),renderableTileEntities.end());		// 4J removed this & next line
+//	unordered_set<shared_ptr<TileEntity> > oldTileEntities(renderableTileEntities.begin(),renderableTileEntities.end());		// 4J removed this & next line
 //	renderableTileEntities.clear();
 
-	vector<std::shared_ptr<TileEntity> > renderableTileEntities;	// 4J - added
+	vector<shared_ptr<TileEntity> > renderableTileEntities;	// 4J - added
 
 //        List<TileEntity> newTileEntities = new ArrayList<TileEntity>();
 //        newTileEntities.clear();
@@ -679,13 +679,13 @@ void Chunk::rebuild_SPU()
 	// Get the data for the level chunk that this render chunk is it (level chunk is 16 x 16 x 128,
 	// render chunk is 16 x 16 x 16. We wouldn't have to actually get all of it if the data was ordered differently, but currently
 	// it is ordered by x then z then y so just getting a small range of y out of it would involve getting the whole thing into
-	// the cache anyway.
+	// the cache anyway. 
 	ChunkRebuildData* pOutData = NULL;
 	g_rebuildDataIn.buildForChunk(&region, level, x0, y0, z0);
 
  	Tesselator::Bounds bounds;
 	{
-		// this was the old default clip bounds for the chunk, set in Chunk::setPos.
+		// this was the old default clip bounds for the chunk, set in Chunk::setPos. 
 		float g = 6.0f;
 		bounds.boundingBox[0] = -g;
 		bounds.boundingBox[1] = -g;
@@ -750,7 +750,7 @@ void Chunk::rebuild_SPU()
 					{
 						if (currentLayer == 0 && Tile::tiles[tileId]->isEntityTile())
 						{
-							std::shared_ptr<TileEntity> et = region.getTileEntity(x, y, z);
+							shared_ptr<TileEntity> et = region.getTileEntity(x, y, z);
 							if (TileEntityRenderDispatcher::instance->hasRenderer(et))
 							{
 								renderableTileEntities.push_back(et);
@@ -881,12 +881,12 @@ void Chunk::rebuild_SPU()
 		oldTileEntities.removeAll(renderableTileEntities);
 		globalRenderableTileEntities.removeAll(oldTileEntities);
 		*/
+        
 
-
-    unordered_set<std::shared_ptr<TileEntity> > newTileEntities(renderableTileEntities.begin(),renderableTileEntities.end());
-
+    unordered_set<shared_ptr<TileEntity> > newTileEntities(renderableTileEntities.begin(),renderableTileEntities.end());
+    
 	AUTO_VAR(endIt, oldTileEntities.end());
-	for( unordered_set<std::shared_ptr<TileEntity> >::iterator it = oldTileEntities.begin(); it != endIt; it++ )
+	for( unordered_set<shared_ptr<TileEntity> >::iterator it = oldTileEntities.begin(); it != endIt; it++ )
 	{
 		newTileEntities.erase(*it);
 	}
@@ -895,7 +895,7 @@ void Chunk::rebuild_SPU()
 
 	EnterCriticalSection(globalRenderableTileEntities_cs);
 	endIt = newTileEntities.end();
-	for( unordered_set<std::shared_ptr<TileEntity> >::iterator it = newTileEntities.begin(); it != endIt; it++ )
+	for( unordered_set<shared_ptr<TileEntity> >::iterator it = newTileEntities.begin(); it != endIt; it++ )
 	{
 		globalRenderableTileEntities.push_back(*it);
 	}
@@ -903,12 +903,12 @@ void Chunk::rebuild_SPU()
 	// 4J - All these new things added to globalRenderableTileEntities
 
 	AUTO_VAR(endItRTE, renderableTileEntities.end());
-	for( vector<std::shared_ptr<TileEntity> >::iterator it = renderableTileEntities.begin(); it != endItRTE; it++ )
+	for( vector<shared_ptr<TileEntity> >::iterator it = renderableTileEntities.begin(); it != endItRTE; it++ )
 	{
 		oldTileEntities.erase(*it);
 	}
 	// 4J - oldTileEntities is now the removed items
-	vector<std::shared_ptr<TileEntity> >::iterator it = globalRenderableTileEntities->begin();
+	vector<shared_ptr<TileEntity> >::iterator it = globalRenderableTileEntities->begin();
 	while(  it != globalRenderableTileEntities->end() )
 	{
 		if( oldTileEntities.find(*it) != oldTileEntities.end() )
@@ -941,7 +941,7 @@ void Chunk::rebuild_SPU()
 #endif // _PS3_
 
 
-float Chunk::distanceToSqr(std::shared_ptr<Entity> player) const
+float Chunk::distanceToSqr(shared_ptr<Entity> player) const
 {
 	float xd = (float) (player->x - xm);
 	float yd = (float) (player->y - ym);
@@ -949,7 +949,7 @@ float Chunk::distanceToSqr(std::shared_ptr<Entity> player) const
 	return xd * xd + yd * yd + zd * zd;
 }
 
-float Chunk::squishedDistanceToSqr(std::shared_ptr<Entity> player)
+float Chunk::squishedDistanceToSqr(shared_ptr<Entity> player)
 {
 	float xd = (float) (player->x - xm);
 	float yd = (float) (player->y - ym) * 2;

@@ -71,7 +71,7 @@ void PathfinderMob::serverAiStep()
 	}
 	else if (!holdGround && ((path == NULL && (random->nextInt(180) == 0) || fleeTime > 0) || (random->nextInt(120) == 0 || fleeTime > 0)))
 	{
-		if(noActionTime < SharedConstants::TICKS_PER_SECOND * 5)
+		if(noActionTime < SharedConstants::TICKS_PER_SECOND * 5) 
 		{
 			findRandomStrollLocation();
 		}
@@ -206,7 +206,7 @@ void PathfinderMob::findRandomStrollLocation(int quadrant/*=-1*/)	// 4J - added 
 	}
 }
 
-void PathfinderMob::checkHurtTarget(std::shared_ptr<Entity> target, float d)
+void PathfinderMob::checkHurtTarget(shared_ptr<Entity> target, float d)
 {
 }
 
@@ -215,9 +215,9 @@ float PathfinderMob::getWalkTargetValue(int x, int y, int z)
 	return 0;
 }
 
-std::shared_ptr<Entity> PathfinderMob::findAttackTarget()
+shared_ptr<Entity> PathfinderMob::findAttackTarget()
 {
-	return std::shared_ptr<Entity>();
+	return shared_ptr<Entity>();
 }
 
 
@@ -240,12 +240,12 @@ void PathfinderMob::setPath(Path *path)
 	this->path = path;
 }
 
-std::shared_ptr<Entity> PathfinderMob::getAttackTarget()
+shared_ptr<Entity> PathfinderMob::getAttackTarget()
 {
 	return attackTarget;
 }
 
-void PathfinderMob::setAttackTarget(std::shared_ptr<Entity> attacker)
+void PathfinderMob::setAttackTarget(shared_ptr<Entity> attacker)
 {
 	attackTarget = attacker;
 }

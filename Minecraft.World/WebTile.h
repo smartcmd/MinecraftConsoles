@@ -10,7 +10,7 @@ public:
 
 
 public:
-	void entityInside(Level *level, int x, int y, int z, std::shared_ptr<Entity> entity);
+	void entityInside(Level *level, int x, int y, int z, shared_ptr<Entity> entity);
 
 
 public:

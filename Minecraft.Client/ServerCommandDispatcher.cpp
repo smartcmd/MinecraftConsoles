@@ -52,13 +52,13 @@ ServerCommandDispatcher::ServerCommandDispatcher()
 	Command::setLogger(this);
 }
 
-void ServerCommandDispatcher::logAdminCommand(std::shared_ptr<CommandSender> source, int type, ChatPacket::EChatPacketMessage messageType, const wstring& message, int customData, const wstring& additionalMessage)
+void ServerCommandDispatcher::logAdminCommand(shared_ptr<CommandSender> source, int type, ChatPacket::EChatPacketMessage messageType, const wstring& message, int customData, const wstring& additionalMessage)
 {
 	PlayerList *playerList = MinecraftServer::getInstance()->getPlayers();
 	//for (Player player : MinecraftServer.getInstance().getPlayers().players)
 	for(AUTO_VAR(it, playerList->players.begin()); it != playerList->players.end(); ++it)
 	{
-		std::shared_ptr<ServerPlayer> player = *it;
+		shared_ptr<ServerPlayer> player = *it;
 		if (player != source && playerList->isOp(player))
 		{
 			// TODO: Change chat packet to be able to send more bits of data

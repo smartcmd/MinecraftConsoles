@@ -23,7 +23,7 @@ public:
 	virtual ~Region();
 	bool isAllEmpty();
 	int getTile(int x, int y, int z);
-	std::shared_ptr<TileEntity> getTileEntity(int x, int y, int z);
+	shared_ptr<TileEntity> getTileEntity(int x, int y, int z);
 	float getBrightness(int x, int y, int z, int emitt);
 	float getBrightness(int x, int y, int z);
 	int getLightColor(int x, int y, int z, int emitt, int tileId = -1);	// 4J - change brought forward from 1.8.2

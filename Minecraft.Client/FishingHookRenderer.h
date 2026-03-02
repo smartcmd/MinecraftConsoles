@@ -3,6 +3,6 @@
 
 class FishingHookRenderer : public EntityRenderer
 {
-public:
-	virtual void render(std::shared_ptr<Entity> _hook, double x, double y, double z, float rot, float a);
+public:	
+	virtual void render(shared_ptr<Entity> _hook, double x, double y, double z, float rot, float a);
 };

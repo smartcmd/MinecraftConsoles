@@ -13,7 +13,7 @@
 #include <boost/thread/mutex.hpp>
 #include <boost/thread/pthread/condition_variable_fwd.hpp>
 
-#include <boost/std::shared_ptr.hpp>
+#include <boost/shared_ptr.hpp>
 #include <boost/enable_shared_from_this.hpp>
 #include <boost/optional.hpp>
 #include <boost/assert.hpp>
@@ -87,17 +87,17 @@ namespace boost
         struct thread_exit_callback_node;
         struct tss_data_node
         {
-            boost::std::shared_ptr<boost::detail::tss_cleanup_function> func;
+            boost::shared_ptr<boost::detail::tss_cleanup_function> func;
             void* value;
 
-            tss_data_node(boost::std::shared_ptr<boost::detail::tss_cleanup_function> func_,
+            tss_data_node(boost::shared_ptr<boost::detail::tss_cleanup_function> func_,
                           void* value_):
                 func(func_),value(value_)
             {}
         };
 
         struct thread_data_base;
-        typedef boost::std::shared_ptr<thread_data_base> thread_data_ptr;
+        typedef boost::shared_ptr<thread_data_base> thread_data_ptr;
 
         struct BOOST_THREAD_DECL thread_data_base:
             enable_shared_from_this<thread_data_base>
@@ -121,7 +121,7 @@ namespace boost
             > notify_list_t;
             notify_list_t notify;
 
-            typedef std::vector<std::shared_ptr<future_object_base> > async_states_t;
+            typedef std::vector<shared_ptr<future_object_base> > async_states_t;
             async_states_t async_states_;
 
 //#if defined BOOST_THREAD_PROVIDES_INTERRUPTIONS
@@ -152,7 +152,7 @@ namespace boost
               notify.push_back(std::pair<condition_variable*, mutex*>(cv, m));
             }
 
-            void make_ready_at_thread_exit(std::shared_ptr<future_object_base> as)
+            void make_ready_at_thread_exit(shared_ptr<future_object_base> as)
             {
               async_states_.push_back(as);
             }

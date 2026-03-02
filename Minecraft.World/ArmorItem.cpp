@@ -88,7 +88,7 @@ ArmorItem::ArmorItem(int id, const ArmorMaterial *armorType, int icon, int slot)
 	maxStackSize = 1;
 }
 
-int ArmorItem::getColor(std::shared_ptr<ItemInstance> item, int spriteLayer)
+int ArmorItem::getColor(shared_ptr<ItemInstance> item, int spriteLayer)
 {
 	if (spriteLayer > 0)
 	{
@@ -116,7 +116,7 @@ const _ArmorMaterial *ArmorItem::getMaterial()
 	return armorType;
 }
 
-bool ArmorItem::hasCustomColor(std::shared_ptr<ItemInstance> item)
+bool ArmorItem::hasCustomColor(shared_ptr<ItemInstance> item)
 {
 	if (armorType != ArmorMaterial::CLOTH) return false;
 	if (!item->hasTag()) return false;
@@ -126,7 +126,7 @@ bool ArmorItem::hasCustomColor(std::shared_ptr<ItemInstance> item)
 	return true;
 }
 
-int ArmorItem::getColor(std::shared_ptr<ItemInstance> item)
+int ArmorItem::getColor(shared_ptr<ItemInstance> item)
 {
 	if (armorType != ArmorMaterial::CLOTH) return -1;
 
@@ -155,7 +155,7 @@ Icon *ArmorItem::getLayerIcon(int auxValue, int spriteLayer)
 	return Item::getLayerIcon(auxValue, spriteLayer);
 }
 
-void ArmorItem::clearColor(std::shared_ptr<ItemInstance> item)
+void ArmorItem::clearColor(shared_ptr<ItemInstance> item)
 {
 	if (armorType != ArmorMaterial::CLOTH) return;
 	CompoundTag *tag = item->getTag();
@@ -164,7 +164,7 @@ void ArmorItem::clearColor(std::shared_ptr<ItemInstance> item)
 	if (display->contains(L"color")) display->remove(L"color");
 }
 
-void ArmorItem::setColor(std::shared_ptr<ItemInstance> item, int color)
+void ArmorItem::setColor(shared_ptr<ItemInstance> item, int color)
 {
 	if (armorType != ArmorMaterial::CLOTH)
 	{
@@ -189,7 +189,7 @@ void ArmorItem::setColor(std::shared_ptr<ItemInstance> item, int color)
 	display->putInt(L"color", color);
 }
 
-bool ArmorItem::isValidRepairItem(std::shared_ptr<ItemInstance> source, std::shared_ptr<ItemInstance> repairItem)
+bool ArmorItem::isValidRepairItem(shared_ptr<ItemInstance> source, shared_ptr<ItemInstance> repairItem)
 {
 	if (armorType->getTierItemId() == repairItem->id)
 	{

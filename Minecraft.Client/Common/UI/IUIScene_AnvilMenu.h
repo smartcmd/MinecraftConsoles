@@ -16,7 +16,7 @@ class RepairMenu;
 class IUIScene_AnvilMenu : public virtual IUIScene_AbstractContainerMenu, public net_minecraft_world_inventory::ContainerListener
 {
 protected:
-	std::shared_ptr<Inventory> m_inventory;
+	shared_ptr<Inventory> m_inventory;
 	RepairMenu *m_repairMenu;
 	wstring m_itemName;
 
@@ -24,7 +24,7 @@ protected:
 	IUIScene_AnvilMenu();
 
 	virtual ESceneSection GetSectionAndSlotInDirection( ESceneSection eSection, ETapState eTapDirection, int *piTargetX, int *piTargetY );
-	int getSectionStartOffset(ESceneSection eSection);
+	int getSectionStartOffset(ESceneSection eSection);	
 	virtual void handleOtherClicked(int iPad, ESceneSection eSection, int buttonNum, bool quickKey);
 	bool IsSectionSlotList( ESceneSection eSection );
 
@@ -39,7 +39,7 @@ protected:
 	void updateItemName();
 
 	// ContainerListenr
-	void refreshContainer(AbstractContainerMenu *container, vector<std::shared_ptr<ItemInstance> > *items);
-	void slotChanged(AbstractContainerMenu *container, int slotIndex, std::shared_ptr<ItemInstance> item);
+	void refreshContainer(AbstractContainerMenu *container, vector<shared_ptr<ItemInstance> > *items);
+	void slotChanged(AbstractContainerMenu *container, int slotIndex, shared_ptr<ItemInstance> item);
 	void setContainerData(AbstractContainerMenu *container, int id, int value);
 };

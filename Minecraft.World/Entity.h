@@ -52,7 +52,7 @@ public:
 
 	bool blocksBuilding;
 	weak_ptr<Entity> rider;		// Changed to weak to avoid circular dependency between rider/riding entity
-	std::shared_ptr<Entity> riding;
+	shared_ptr<Entity> riding;
 
 	Level *level;
 	double xo, yo, zo;
@@ -118,7 +118,7 @@ protected:
 	bool fireImmune;
 
 	// values that need to be sent to clients in SMP
-	std::shared_ptr<SynchedEntityData> entityData;
+	shared_ptr<SynchedEntityData> entityData;
 
 private:
 	// shared flags that are sent to clients (max 8)
@@ -159,7 +159,7 @@ protected:
 	virtual void defineSynchedData() = 0;
 
 public:
-	std::shared_ptr<SynchedEntityData> getEntityData();
+	shared_ptr<SynchedEntityData> getEntityData();
 
 	/*
 	public bool equals(Object obj) {
@@ -243,12 +243,12 @@ public:
 	virtual void setLevel(Level *level);
 	void absMoveTo(double x, double y, double z, float yRot, float xRot);
 	void moveTo(double x, double y, double z, float yRot, float xRot);
-	float distanceTo(std::shared_ptr<Entity> e);
+	float distanceTo(shared_ptr<Entity> e);
 	double distanceToSqr(double x2, double y2, double z2);
 	double distanceTo(double x2, double y2, double z2);
-	double distanceToSqr(std::shared_ptr<Entity> e);
-	virtual void playerTouch(std::shared_ptr<Player> player);
-	virtual void push(std::shared_ptr<Entity> e);
+	double distanceToSqr(shared_ptr<Entity> e);
+	virtual void playerTouch(shared_ptr<Player> player);
+	virtual void push(shared_ptr<Entity> e);
 	virtual void push(double xa, double ya, double za);
 
 protected:
@@ -261,7 +261,7 @@ public:
 	virtual bool isPickable();
 	virtual bool isPushable();
 	virtual bool isShootable();
-	virtual void awardKillScore(std::shared_ptr<Entity> victim, int score);
+	virtual void awardKillScore(shared_ptr<Entity> victim, int score);
 	virtual bool shouldRender(Vec3 *c);
 	virtual bool shouldRenderAtSqrDistance(double distance);
 	virtual int getTexture();			// 4J - changed from wstring to int
@@ -283,20 +283,20 @@ protected:
 
 public:
 	virtual float getShadowHeightOffs();
-	std::shared_ptr<ItemEntity> spawnAtLocation(int resource, int count);
-	std::shared_ptr<ItemEntity> spawnAtLocation(int resource, int count, float yOffs);
-	std::shared_ptr<ItemEntity> spawnAtLocation(std::shared_ptr<ItemInstance> itemInstance, float yOffs);
+	shared_ptr<ItemEntity> spawnAtLocation(int resource, int count);
+	shared_ptr<ItemEntity> spawnAtLocation(int resource, int count, float yOffs);
+	shared_ptr<ItemEntity> spawnAtLocation(shared_ptr<ItemInstance> itemInstance, float yOffs);
 	virtual bool isAlive();
 	virtual bool isInWall();
-	virtual bool interact(std::shared_ptr<Player> player);
-	virtual AABB *getCollideAgainstBox(std::shared_ptr<Entity> entity);
+	virtual bool interact(shared_ptr<Player> player);
+	virtual AABB *getCollideAgainstBox(shared_ptr<Entity> entity);
 
 	virtual void rideTick();
 	virtual void positionRider();
 	virtual double getRidingHeight();
 	virtual double getRideHeight();
-	virtual void ride(std::shared_ptr<Entity> e);
-	virtual void findStandUpPosition(std::shared_ptr<Entity> vehicle); // 4J Stu - Brought forward from 12w36 to fix #46282 - TU5: Gameplay: Exiting the minecart in a tight corridor damages the player
+	virtual void ride(shared_ptr<Entity> e);
+	virtual void findStandUpPosition(shared_ptr<Entity> vehicle); // 4J Stu - Brought forward from 12w36 to fix #46282 - TU5: Gameplay: Exiting the minecart in a tight corridor damages the player
 	virtual void lerpTo(double x, double y, double z, float yRot, float xRot, int steps);
 	virtual float getPickRadius();
 	virtual Vec3 *getLookAngle();
@@ -306,7 +306,7 @@ public:
 	virtual void animateHurt();
 	virtual void prepareCustomTextures();
 	virtual ItemInstanceArray getEquipmentSlots(); // ItemInstance[]
-	virtual void setEquippedSlot(int slot, std::shared_ptr<ItemInstance> item); // 4J Stu - Brought forward change from 1.3 to fix #64688 - Customer Encountered: TU7: Content: Art: Aura of enchanted item is not displayed for other players in online game
+	virtual void setEquippedSlot(int slot, shared_ptr<ItemInstance> item); // 4J Stu - Brought forward change from 1.3 to fix #64688 - Customer Encountered: TU7: Content: Art: Aura of enchanted item is not displayed for other players in online game
 	virtual bool isOnFire();
 	virtual bool isRiding();
 	virtual bool isSneaking();
@@ -316,7 +316,7 @@ public:
 	virtual bool isSprinting();
 	virtual void setSprinting(bool value);
 	virtual bool isInvisible();
-	virtual bool isInvisibleTo(std::shared_ptr<Player> plr);
+	virtual bool isInvisibleTo(shared_ptr<Player> plr);
 	virtual void setInvisible(bool value);
 	virtual bool isUsingItemFlag();
 	virtual void setUsingItemFlag(bool value);
@@ -336,7 +336,7 @@ public:
 	void setAirSupply(int supply);
 
 	virtual void thunderHit(const LightningBolt *lightningBolt);
-	virtual void killed(std::shared_ptr<Mob> mob);
+	virtual void killed(shared_ptr<Mob> mob);
 
 protected:
 	bool checkInTile(double x, double y, double z);
@@ -347,7 +347,7 @@ public:
 	virtual wstring getAName();
 
 	// TU9
-	bool skipAttackInteraction(std::shared_ptr<Entity> source) {return false;}
+	bool skipAttackInteraction(shared_ptr<Entity> source) {return false;}
 
 	// 4J - added to manage allocation of small ids
 private:
@@ -374,14 +374,14 @@ public:
 	void considerForExtraWandering(bool enable);
 	bool isExtraWanderingEnabled();
 	int getWanderingQuadrant();
-
-	virtual vector<std::shared_ptr<Entity> > *getSubEntities();
-	virtual bool is(std::shared_ptr<Entity> other);
+	
+	virtual vector<shared_ptr<Entity> > *getSubEntities();
+	virtual bool is(shared_ptr<Entity> other);
 	virtual float getYHeadRot();
 	virtual void setYHeadRot(float yHeadRot);
 	virtual bool isAttackable();
 	virtual bool isInvulnerable();
-	virtual void copyPosition(std::shared_ptr<Entity> target);
+	virtual void copyPosition(shared_ptr<Entity> target);
 
 private:
 	unsigned int m_uiAnimOverrideBitmask;

@@ -26,7 +26,7 @@ private:
 public:
 	Wolf(Level *level);
 	virtual bool useNewAi();
-	virtual void setTarget(std::shared_ptr<Mob> target);
+	virtual void setTarget(shared_ptr<Mob> target);
 
 protected:
 	virtual void serverAiMobStep();
@@ -61,11 +61,11 @@ public:
 	float getHeadHeight();
 	int getMaxHeadXRot();
 	virtual bool hurt(DamageSource *source, int dmg);
-	virtual bool doHurtTarget(std::shared_ptr<Entity> target);
-	virtual bool interact(std::shared_ptr<Player> player);
+	virtual bool doHurtTarget(shared_ptr<Entity> target);
+	virtual bool interact(shared_ptr<Player> player);
 	virtual void handleEntityEvent(byte id);
 	float getTailAngle();
-	virtual bool isFood(std::shared_ptr<ItemInstance> item);
+	virtual bool isFood(shared_ptr<ItemInstance> item);
 	virtual int getMaxSpawnClusterSize();
 	bool isAngry();
 	void setAngry(bool value);
@@ -77,10 +77,10 @@ public:
 	int GetSynchedHealth();
 
 protected:
-	virtual std::shared_ptr<AgableMob> getBreedOffspring(std::shared_ptr<AgableMob> target);
+	virtual shared_ptr<AgableMob> getBreedOffspring(shared_ptr<AgableMob> target);
 
 public:
 	virtual void setIsInterested(bool isInterested);
-	virtual bool canMate(std::shared_ptr<Animal> animal);
+	virtual bool canMate(shared_ptr<Animal> animal);
 	bool isInterested();
 };

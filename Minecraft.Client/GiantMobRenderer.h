@@ -10,5 +10,5 @@ public:
 	GiantMobRenderer(Model *model, float shadow, float scale);
 
 protected:
-	virtual void scale(std::shared_ptr<Mob> mob, float a);
+	virtual void scale(shared_ptr<Mob> mob, float a);
 };

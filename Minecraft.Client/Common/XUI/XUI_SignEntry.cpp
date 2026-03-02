@@ -11,13 +11,13 @@
 HRESULT CScene_SignEntry::OnInit( XUIMessageInit* pInitData, BOOL& bHandled )
 {
 	MapChildControls();
-
+	
 	XuiControlSetText(m_ButtonDone,app.GetString(IDS_DONE));
 	XuiControlSetText(m_labelEditSign,app.GetString(IDS_EDIT_SIGN_MESSAGE));
 
 	SignEntryScreenInput* initData = (SignEntryScreenInput*)pInitData->pvInitData;
 	m_sign = initData->sign;
-
+	
 	CXuiSceneBase::ShowDarkOverlay( initData->iPad, TRUE );
 	CXuiSceneBase::ShowLogo( initData->iPad, FALSE);
 	ui.SetTooltips( initData->iPad, IDS_TOOLTIPS_SELECT,IDS_TOOLTIPS_BACK);
@@ -65,7 +65,7 @@ HRESULT CScene_SignEntry::OnNotifyPressEx(HXUIOBJ hObjPressed, XUINotifyPress* p
 		for(int i=0;i<4;i++)
 		{
 			wstring temp=m_signRows[i].GetText();
-			m_sign->SetMessage(i,temp);
+			m_sign->SetMessage(i,temp);		
 		}
 
 		m_sign->setChanged();
@@ -74,10 +74,10 @@ HRESULT CScene_SignEntry::OnNotifyPressEx(HXUIOBJ hObjPressed, XUINotifyPress* p
 		// need to send the new data
 		if (pMinecraft->level->isClientSide)
 		{
-			std::shared_ptr<MultiplayerLocalPlayer> player = pMinecraft->localplayers[pNotifyPressData->UserIndex];
+			shared_ptr<MultiplayerLocalPlayer> player = pMinecraft->localplayers[pNotifyPressData->UserIndex];
 			if(player != NULL && player->connection && player->connection->isStarted())
 			{
-				player->connection->send( std::shared_ptr<SignUpdatePacket>( new SignUpdatePacket(m_sign->x, m_sign->y, m_sign->z, m_sign->IsVerified(), m_sign->IsCensored(), m_sign->GetMessages()) ) );
+				player->connection->send( shared_ptr<SignUpdatePacket>( new SignUpdatePacket(m_sign->x, m_sign->y, m_sign->z, m_sign->IsVerified(), m_sign->IsCensored(), m_sign->GetMessages()) ) );
 			}
 		}
 		app.CloseXuiScenes(pNotifyPressData->UserIndex);
@@ -103,7 +103,7 @@ HRESULT CScene_SignEntry::OnKeyDown(XUIMessageInput* pInputData, BOOL& rfHandled
 
 			app.CloseXuiScenes(pInputData->UserIndex);
 			rfHandled = TRUE;
-
+	
 			CXuiSceneBase::PlayUISFX(eSFX_Back);
 		break;
 	}

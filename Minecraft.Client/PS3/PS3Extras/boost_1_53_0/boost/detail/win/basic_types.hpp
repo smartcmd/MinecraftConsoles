@@ -68,7 +68,7 @@ extern "C" {
 //~ #if defined(BOOST_NO_INT64_T)
     //~ typedef double LONGLONG_;
 //~ #else
-    //~ typedef int64_t LONGLONG_;
+    //~ typedef __int64 LONGLONG_;
 //~ #endif
 //~ #else
     //~ typedef double LONGLONG_;
@@ -80,7 +80,7 @@ extern "C" {
 #if defined(__CYGWIN__)
     typedef unsigned long ULONG_PTR_;
 #else
-    typedef uint64_t ULONG_PTR_;
+    typedef unsigned __int64 ULONG_PTR_;
 #endif
 # else
     typedef unsigned long ULONG_PTR_;

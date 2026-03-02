@@ -163,7 +163,7 @@ bool DiodeTile::getSourceSignal(Level *level, int x, int y, int z, int data)
         case Direction::EAST:
             return level->getSignal(x + 1, y, z, Facing::EAST) || (level->getTile(x + 1, y, z) == Tile::redStoneDust_Id && level->getData(x + 1, y, z) > 0);
         case Direction::WEST:
-            return level->getSignal(x - 1, y, z, Facing::WEST) || (level->getTile(x - 1, y, z) == Tile::redStoneDust_Id && level->getData(x - 1, y, z) > 0);
+            return level->getSignal(x - 1, y, z, Facing::WEST) || (level->getTile(x - 1, y, z) == Tile::redStoneDust_Id && level->getData(x - 1, y, z) > 0);   
 	}
 	return false;
 }
@@ -174,7 +174,7 @@ bool DiodeTile::TestUse()
 	return true;
 }
 
-bool DiodeTile::use(Level *level, int x, int y, int z, std::shared_ptr<Player> player, int clickedFace, float clickX, float clickY, float clickZ, bool soundOnly/*=false*/) // 4J added soundOnly param
+bool DiodeTile::use(Level *level, int x, int y, int z, shared_ptr<Player> player, int clickedFace, float clickX, float clickY, float clickZ, bool soundOnly/*=false*/) // 4J added soundOnly param
 {
 	if( soundOnly) return false;
 
@@ -191,7 +191,7 @@ bool DiodeTile::isSignalSource()
 	return true;
 }
 
-void DiodeTile::setPlacedBy(Level *level, int x, int y, int z, std::shared_ptr<Mob> by)
+void DiodeTile::setPlacedBy(Level *level, int x, int y, int z, shared_ptr<Mob> by)
 {
 	int dir = (((Mth::floor(by->yRot * 4 / (360) + 0.5)) & 3) + 2) % 4;
 	level->setData(x, y, z, dir);

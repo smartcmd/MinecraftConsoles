@@ -19,7 +19,7 @@ public:
 
 	void eat(int food, float saturationModifier);
 	void eat(FoodItem *item);
-	void tick(std::shared_ptr<Player> player);
+	void tick(shared_ptr<Player> player);
 	void readAdditionalSaveData(CompoundTag *entityTag);
 	void addAdditonalSaveData(CompoundTag *entityTag);
 	int getFoodLevel();

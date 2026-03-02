@@ -85,10 +85,10 @@ template <  >
 class integer_traits<  ::boost::ulong_long_type >;
 #elif !defined(BOOST_NO_INTEGRAL_INT64_T) && !defined(BOOST_NO_INT64_T) && defined(BOOST_HAS_MS_INT64)
 template <  >
-class integer_traits<int64_t>;
+class integer_traits<__int64>;
 
 template <  >
-class integer_traits<uint64_t>;
+class integer_traits<unsigned __int64>;
 #endif
 
 

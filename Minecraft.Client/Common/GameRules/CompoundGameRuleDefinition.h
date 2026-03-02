@@ -18,6 +18,6 @@ public:
 	virtual void populateGameRule(GameRulesInstance::EGameRulesInstanceType type, GameRule *rule);
 
 	virtual bool onUseTile(GameRule *rule, int tileId, int x, int y, int z);
-	virtual bool onCollectItem(GameRule *rule, std::shared_ptr<ItemInstance> item);
-	virtual void postProcessPlayer(std::shared_ptr<Player> player);
+	virtual bool onCollectItem(GameRule *rule, shared_ptr<ItemInstance> item);
+	virtual void postProcessPlayer(shared_ptr<Player> player);
 };

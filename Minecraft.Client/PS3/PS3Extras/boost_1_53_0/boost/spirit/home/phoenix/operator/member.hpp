@@ -2,7 +2,7 @@
     Copyright (c) 2005-2007 Dan Marsden
     Copyright (c) 2005-2007 Joel de Guzman
 
-    Distributed under the Boost Software License, Version 1.0. (See accompanying
+    Distributed under the Boost Software License, Version 1.0. (See accompanying 
     file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
 ==============================================================================*/
 
@@ -33,8 +33,8 @@
 
 #include <memory>
 
-namespace boost {
-    template<typename T> class std::shared_ptr;
+namespace boost { 
+    template<typename T> class shared_ptr;
     template<typename T> class scoped_ptr;
 
 namespace phoenix {
@@ -42,7 +42,7 @@ namespace phoenix {
     {
         template<typename T>
         struct member_type;
-
+        
         template<typename Class, typename MemberType>
         struct member_type<MemberType (Class::*)>
         {
@@ -52,7 +52,7 @@ namespace phoenix {
 
     namespace meta
     {
-        template<typename T>
+        template<typename T> 
         struct pointed_type;
 
         template<typename T>
@@ -62,11 +62,11 @@ namespace phoenix {
         };
 
         template<typename T>
-        struct pointed_type<std::shared_ptr<T> >
+        struct pointed_type<shared_ptr<T> >
         {
             typedef T type;
         };
-
+        
         template<typename T>
         struct pointed_type<scoped_ptr<T> >
         {
@@ -116,7 +116,7 @@ namespace phoenix {
             member_object_eval, actor<T0>,
             typename as_actor<MemObjPtr>::type>::type> >::type
         operator->*(
-            const actor<T0>& ptrActor,
+            const actor<T0>& ptrActor, 
             MemObjPtr memObjPtr)
         {
             return compose<member_object_eval>(

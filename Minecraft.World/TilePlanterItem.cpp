@@ -15,14 +15,14 @@ TilePlanterItem::TilePlanterItem(int id, Tile *tile) : Item(id)
     this->tileId = tile->id;
 }
 
-bool TilePlanterItem::useOn(std::shared_ptr<ItemInstance> instance, std::shared_ptr<Player> player, Level *level, int x, int y, int z, int face, float clickX, float clickY, float clickZ, bool bTestUseOnOnly)
+bool TilePlanterItem::useOn(shared_ptr<ItemInstance> instance, shared_ptr<Player> player, Level *level, int x, int y, int z, int face, float clickX, float clickY, float clickZ, bool bTestUseOnOnly)
 {
 	// 4J-PB - Adding a test only version to allow tooltips to be displayed
 	int currentTile = level->getTile(x, y, z);
-    if (currentTile == Tile::topSnow_Id)
+    if (currentTile == Tile::topSnow_Id) 
 	{
         face = Facing::UP;
-    }
+    } 
 	else if (currentTile == Tile::vine_Id || currentTile == Tile::tallgrass_Id || currentTile == Tile::deadBush_Id)
 	{
 	}
@@ -39,7 +39,7 @@ bool TilePlanterItem::useOn(std::shared_ptr<ItemInstance> instance, std::shared_
 	if (!player->mayBuild(x, y, z)) return false;
     if (instance->count == 0) return false;
 
-	if (level->mayPlace(tileId, x, y, z, false, face, nullptr))
+	if (level->mayPlace(tileId, x, y, z, false, face, nullptr)) 
 	{
 		if(!bTestUseOnOnly)
 		{
@@ -63,13 +63,13 @@ bool TilePlanterItem::useOn(std::shared_ptr<ItemInstance> instance, std::shared_
 				// 4J-PB - If we have the debug option on, don't reduce the number of this item
 	#ifndef _FINAL_BUILD
 				if(!(app.DebugSettingsOn() && app.GetGameSettingsDebugMask()&(1L<<eDebugSetting_CraftAnything)))
-	#endif
+	#endif				
 				{
 					instance->count--;
 				}
 
 			}
-		}
+		}		
 	}
 	else
 	{

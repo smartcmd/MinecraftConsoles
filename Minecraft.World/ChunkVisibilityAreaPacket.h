@@ -25,6 +25,6 @@ public:
 	virtual int getEstimatedSize();
 
 public:
-	static std::shared_ptr<Packet> create() { return std::shared_ptr<Packet>(new ChunkVisibilityAreaPacket()); }
+	static shared_ptr<Packet> create() { return shared_ptr<Packet>(new ChunkVisibilityAreaPacket()); }
 	virtual int getId() { return 155; }
 };

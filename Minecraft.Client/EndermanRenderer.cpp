@@ -10,11 +10,11 @@ EndermanRenderer::EndermanRenderer() : MobRenderer(new EndermanModel(), 0.5f)
 	this->setArmor(model);
 }
 
-void EndermanRenderer::render(std::shared_ptr<Entity> _mob, double x, double y, double z, float rot, float a)
+void EndermanRenderer::render(shared_ptr<Entity> _mob, double x, double y, double z, float rot, float a)
 {
-	// 4J - original version used generics and thus had an input parameter of type Boat rather than std::shared_ptr<Entity>  we have here -
+	// 4J - original version used generics and thus had an input parameter of type Boat rather than shared_ptr<Entity>  we have here - 
 	// do some casting around instead
-	std::shared_ptr<EnderMan> mob = dynamic_pointer_cast<EnderMan>(_mob);
+	shared_ptr<EnderMan> mob = dynamic_pointer_cast<EnderMan>(_mob);
 
 	model->carrying = mob->getCarryingTile() > 0;
 	model->creepy = mob->isCreepy();
@@ -29,11 +29,11 @@ void EndermanRenderer::render(std::shared_ptr<Entity> _mob, double x, double y, 
 	MobRenderer::render(mob, x, y, z, rot, a);
 }
 
-void EndermanRenderer::additionalRendering(std::shared_ptr<Mob> _mob, float a)
+void EndermanRenderer::additionalRendering(shared_ptr<Mob> _mob, float a)
 {
-	// 4J - original version used generics and thus had an input parameter of type Boat rather than std::shared_ptr<Entity>  we have here -
+	// 4J - original version used generics and thus had an input parameter of type Boat rather than shared_ptr<Entity>  we have here - 
 	// do some casting around instead
-	std::shared_ptr<EnderMan> mob = dynamic_pointer_cast<EnderMan>(_mob);
+	shared_ptr<EnderMan> mob = dynamic_pointer_cast<EnderMan>(_mob);
 
 	MobRenderer::additionalRendering(_mob, a);
 
@@ -68,11 +68,11 @@ void EndermanRenderer::additionalRendering(std::shared_ptr<Mob> _mob, float a)
 	}
 }
 
-int EndermanRenderer::prepareArmor(std::shared_ptr<Mob> _mob, int layer, float a)
+int EndermanRenderer::prepareArmor(shared_ptr<Mob> _mob, int layer, float a)
 {
-	// 4J - original version used generics and thus had an input parameter of type Boat rather than std::shared_ptr<Entity>  we have here -
+	// 4J - original version used generics and thus had an input parameter of type Boat rather than shared_ptr<Entity>  we have here - 
 	// do some casting around instead
-	std::shared_ptr<EnderMan> mob = dynamic_pointer_cast<EnderMan>(_mob);
+	shared_ptr<EnderMan> mob = dynamic_pointer_cast<EnderMan>(_mob);
 
 	if (layer != 0) return -1;
 

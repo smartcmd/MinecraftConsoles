@@ -19,7 +19,7 @@ class GrSource
 public:
 	// 4J-JEV:
 	// Moved all this here; I didn't like that all this header information
-	// was being mixed in with all the game information as they have
+	// was being mixed in with all the game information as they have 
 	// completely different lifespans.
 
 	virtual bool requiresTexturePack()=0;
@@ -146,7 +146,7 @@ public:
 
 private:
 	// This should match the "MapOptionsRule" definition in the XML schema
-	int64_t m_seed;
+	__int64 m_seed;
 	bool m_useFlatWorld;
 	Pos *m_spawnPos;
 	vector<ApplySchematicRuleDefinition *> m_schematicRules;
@@ -167,13 +167,13 @@ public:
 	~LevelGenerationOptions();
 
 	virtual ConsoleGameRules::EGameRuleType getActionType();
-
+	
 	virtual void writeAttributes(DataOutputStream *dos, UINT numAttributes);
 	virtual void getChildren(vector<GameRuleDefinition *> *children);
 	virtual GameRuleDefinition *addChild(ConsoleGameRules::EGameRuleType ruleType);
 	virtual void addAttribute(const wstring &attributeName, const wstring &attributeValue);
 
-	int64_t getLevelSeed();
+	__int64 getLevelSeed();
 	Pos *getSpawnPos();
 	bool getuseFlatWorld();
 
@@ -185,7 +185,7 @@ public:
 private:
 	void clearSchematics();
 
-public:
+public:	
 	ConsoleSchematicFile *loadSchematicFile(const wstring &filename, PBYTE pbData, DWORD dwLen);
 
 public:
@@ -203,7 +203,7 @@ public:
 	LPCWSTR getString(const wstring &key);
 
 	unordered_map<wstring, ConsoleSchematicFile *> *getUnfinishedSchematicFiles();
-
+	
 	// 4J-JEV:
 	// ApplySchematicRules contain limited state
 	// which needs to be reset BEFORE a new game starts.

@@ -17,7 +17,7 @@ bool CompleteAllRuleDefinition::onUseTile(GameRule *rule, int tileId, int x, int
 	return statusChanged;
 }
 
-bool CompleteAllRuleDefinition::onCollectItem(GameRule *rule, std::shared_ptr<ItemInstance> item)
+bool CompleteAllRuleDefinition::onCollectItem(GameRule *rule, shared_ptr<ItemInstance> item)
 {
 	bool statusChanged = CompoundGameRuleDefinition::onCollectItem(rule,item);
 	if(statusChanged) updateStatus(rule);
@@ -44,14 +44,14 @@ void CompleteAllRuleDefinition::updateStatus(GameRule *rule)
 
 		int icon = -1;
 		int auxValue = 0;
-
+		
 		if(m_lastRuleStatusChanged != NULL)
-		{
+		{	
 			icon = m_lastRuleStatusChanged->getIcon();
 			auxValue = m_lastRuleStatusChanged->getAuxValue();
 			m_lastRuleStatusChanged = NULL;
 		}
-		rule->getConnection()->send( std::shared_ptr<UpdateGameRuleProgressPacket>( new UpdateGameRuleProgressPacket(getActionType(), this->m_descriptionId,icon, auxValue, 0,&data,sizeof(PacketData))));
+		rule->getConnection()->send( shared_ptr<UpdateGameRuleProgressPacket>( new UpdateGameRuleProgressPacket(getActionType(), this->m_descriptionId,icon, auxValue, 0,&data,sizeof(PacketData))));
 	}
 	app.DebugPrintf("Updated CompleteAllRule - Completed %d of %d\n", progress, goal);
 }

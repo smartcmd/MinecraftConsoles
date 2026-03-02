@@ -31,8 +31,8 @@ typedef struct _UIVec2D
 // Brewing
 typedef struct _BrewingScreenInput
 {
-	std::shared_ptr<Inventory> inventory;
-	std::shared_ptr<BrewingStandTileEntity> brewingStand;
+	shared_ptr<Inventory> inventory;
+	shared_ptr<BrewingStandTileEntity> brewingStand;
 	int iPad;
 	bool bSplitscreen;
 } BrewingScreenInput;
@@ -40,8 +40,8 @@ typedef struct _BrewingScreenInput
 // Chest
 typedef struct _ContainerScreenInput
 {
-	std::shared_ptr<Container> inventory;
-	std::shared_ptr<Container> container;
+	shared_ptr<Container> inventory;
+	shared_ptr<Container> container;
 	int					  iPad;
 	bool bSplitscreen;
 } ContainerScreenInput;
@@ -49,8 +49,8 @@ typedef struct _ContainerScreenInput
 // Dispenser
 typedef struct _TrapScreenInput
 {
-	std::shared_ptr<Container> inventory;
-	std::shared_ptr<DispenserTileEntity> trap;
+	shared_ptr<Container> inventory;
+	shared_ptr<DispenserTileEntity> trap;
 	int iPad;
 	bool bSplitscreen;
 } TrapScreenInput;
@@ -58,16 +58,16 @@ typedef struct _TrapScreenInput
 // Inventory and creative inventory
 typedef struct _InventoryScreenInput
 {
-	std::shared_ptr<LocalPlayer> player;
+	shared_ptr<LocalPlayer> player;
 	bool bNavigateBack; // If we came here from the crafting screen, go back to it, rather than closing the xui menus
 	int iPad;
 	bool bSplitscreen;
 } InventoryScreenInput;
 
-// Enchanting
+// Enchanting		
 typedef struct _EnchantingScreenInput
 {
-	std::shared_ptr<Inventory> inventory;
+	shared_ptr<Inventory> inventory;
 	Level *level;
 	int x;
 	int y;
@@ -79,8 +79,8 @@ typedef struct _EnchantingScreenInput
 // Furnace
 typedef struct _FurnaceScreenInput
 {
-	std::shared_ptr<Inventory> inventory;
-	std::shared_ptr<FurnaceTileEntity> furnace;
+	shared_ptr<Inventory> inventory;
+	shared_ptr<FurnaceTileEntity> furnace;
 	int iPad;
 	bool bSplitscreen;
 } FurnaceScreenInput;
@@ -88,21 +88,21 @@ typedef struct _FurnaceScreenInput
 // Crafting
 typedef struct _CraftingPanelScreenInput
 {
-	std::shared_ptr<LocalPlayer> player;
+	shared_ptr<LocalPlayer> player;
 	int						iContainerType; // RECIPE_TYPE_2x2 or RECIPE_TYPE_3x3
 	bool					bSplitscreen;
 	int						iPad;
 	int						x;
 	int						y;
 	int						z;
-}
+} 
 CraftingPanelScreenInput;
 
 // Trading
 typedef struct _TradingScreenInput
 {
-	std::shared_ptr<Inventory> inventory;
-	std::shared_ptr<Merchant> trader;
+	shared_ptr<Inventory> inventory;
+	shared_ptr<Merchant> trader;
 	Level *level;
 	int iPad;
 	bool bSplitscreen;
@@ -112,7 +112,7 @@ TradingScreenInput;
 // Anvil
 typedef struct _AnvilScreenInput
 {
-	std::shared_ptr<Inventory> inventory;
+	shared_ptr<Inventory> inventory;
 	Level *level;
 	int x;
 	int y;
@@ -125,7 +125,7 @@ AnvilScreenInput;
 // Sign
 typedef struct _SignEntryScreenInput
 {
-	std::shared_ptr<SignTileEntity> sign;
+	shared_ptr<SignTileEntity> sign;
 	int iPad;
 } SignEntryScreenInput;
 
@@ -179,7 +179,7 @@ typedef struct _CreateWorldMenuInitData
 	BOOL bOnline;
 	BOOL bIsPrivate;
 	int iPad;
-}
+} 
 CreateWorldMenuInitData;
 
 // Join/Load saves list
@@ -223,7 +223,7 @@ typedef struct _LoadMenuInitData
 	int iSaveGameInfoIndex;
 	LevelGenerationOptions *levelGen;
 	SaveListDetails *saveDetails;
-}
+} 
 LoadMenuInitData;
 
 // Join Games
@@ -276,7 +276,7 @@ typedef struct _LaunchMoreOptionsMenuInitData
 		seed = L"";
 		bDisableSaving = false;
 	}
-}
+} 
 LaunchMoreOptionsMenuInitData;
 
 typedef struct _LoadingInputParams
@@ -352,7 +352,7 @@ typedef struct _SignInInfo
 } SignInInfo;
 
 // Credits
-typedef struct
+typedef struct 
 {
 	LPCWSTR				m_Text;				// Should contain string, optionally with %s to add in translated string ... e.g. "Andy West - %s"
 	int					m_iStringID[2];		// May be NO_TRANSLATED_STRING if we do not require to add any translated string.
@@ -379,8 +379,8 @@ typedef struct _DLCOffersParam
 {
 	int iPad;
 	int iOfferC;
-	int iType;
-}
+	int iType;		
+} 
 DLCOffersParam;
 
 typedef struct _InGamePlayerOptionsInitData

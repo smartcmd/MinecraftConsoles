@@ -14,6 +14,6 @@ private:
 	unordered_set<Command *> commands;
 
 public:
-	void performCommand(std::shared_ptr<CommandSender> sender, EGameCommand command, byteArray commandData);
+	void performCommand(shared_ptr<CommandSender> sender, EGameCommand command, byteArray commandData);
 	Command *addCommand(Command *command);
 };

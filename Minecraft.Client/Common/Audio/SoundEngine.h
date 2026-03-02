@@ -78,8 +78,8 @@ typedef struct
 {
 	F32 x,y,z,volume,pitch;
 	int iSound;
-	bool bIs3D;
-	bool bUseSoundsPitchVal;
+	bool bIs3D;	
+	bool bUseSoundsPitchVal;	
 #ifdef _DEBUG
 	char chName[64];
 #endif
@@ -103,7 +103,7 @@ public:
 	virtual void updateSystemMusicPlaying(bool isPlaying);
 	virtual void updateSoundEffectVolume(float fVal);
 	virtual void init(Options *);
-	virtual void tick(std::shared_ptr<Mob> *players, float a);	// 4J - updated to take array of local players rather than single one
+	virtual void tick(shared_ptr<Mob> *players, float a);	// 4J - updated to take array of local players rather than single one
 	virtual void add(const wstring& name, File *file);
 	virtual void addMusic(const wstring& name, File *file);
 	virtual void addStreaming(const wstring& name, File *file);
@@ -123,7 +123,7 @@ private:
 #else
 	int initAudioHardware(int iMinSpeakers)	{ return iMinSpeakers;}
 #endif
-
+	
 	int GetRandomishTrack(int iStart,int iEnd);
 
 	HMSOUNDBANK m_hBank;
@@ -165,4 +165,4 @@ private:
 #ifdef __ORBIS__
 	int32_t m_hBGMAudio;
 #endif
-};
+}; 

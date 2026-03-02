@@ -51,7 +51,7 @@ UIScene_CraftingMenu::UIScene_CraftingMenu(int iPad, void *_initData, UILayer *p
 	// if we are in splitscreen, then we need to figure out if we want to move this scene
 	if(m_bSplitscreen)
 	{
-		app.AdjustSplitscreenScene(m_hObj,&m_OriginalPosition,m_iPad);
+		app.AdjustSplitscreenScene(m_hObj,&m_OriginalPosition,m_iPad);	
 	}
 
 	XuiElementSetShow(m_hGrid,TRUE);
@@ -76,7 +76,7 @@ UIScene_CraftingMenu::UIScene_CraftingMenu(int iPad, void *_initData, UILayer *p
 #if TO_BE_IMPLEMENTED
 
 
-	// display the first group tab
+	// display the first group tab 
 	m_hTabGroupA[m_iGroupIndex].SetShow(TRUE);
 
 	// store the slot 0 position
@@ -196,7 +196,7 @@ void UIScene_CraftingMenu::handleDestroy()
 		if(gameMode != NULL) gameMode->getTutorial()->changeTutorialState(m_previousTutorialState);
 	}
 
-	// We need to make sure that we call closeContainer() anytime this menu is closed, even if it is forced to close by some other reason (like the player dying)
+	// We need to make sure that we call closeContainer() anytime this menu is closed, even if it is forced to close by some other reason (like the player dying)	
 	if(Minecraft::GetInstance()->localplayers[m_iPad] != NULL) Minecraft::GetInstance()->localplayers[m_iPad]->closeContainer();
 
 	ui.OverrideSFX(m_iPad,ACTION_MENU_A,false);
@@ -297,7 +297,7 @@ void UIScene_CraftingMenu::handleTouchInput(unsigned int iPad, S32 x, S32 y, int
 				else
 				{
 					iVSlotIndexA[1]--;
-				}
+				}		
 				ui.PlayUISFX(eSFX_Focus);
 
 				UpdateVerticalSlots();
@@ -349,7 +349,7 @@ void UIScene_CraftingMenu::handleTouchInput(unsigned int iPad, S32 x, S32 y, int
 			// clear the indices
 			iVSlotIndexA[0]=CanBeMadeA[m_iCurrentSlotHIndex].iCount-1;
 			iVSlotIndexA[1]=0;
-			iVSlotIndexA[2]=1;
+			iVSlotIndexA[2]=1;	
 
 			UpdateVerticalSlots();
 			UpdateHighlight();
@@ -435,7 +435,7 @@ void UIScene_CraftingMenu::customDraw(IggyCustomDrawCallbackRegion *region)
 	Minecraft *pMinecraft = Minecraft::GetInstance();
 	if(pMinecraft->localplayers[m_iPad] == NULL || pMinecraft->localgameModes[m_iPad] == NULL) return;
 
-	std::shared_ptr<ItemInstance> item = nullptr;
+	shared_ptr<ItemInstance> item = nullptr;
 	int slotId = -1;
 	float alpha = 1.0f;
 	bool decorations = true;
@@ -606,21 +606,21 @@ void UIScene_CraftingMenu::hideAllIngredientsSlots()
 	}
 }
 
-void UIScene_CraftingMenu::setCraftHSlotItem(int iPad, int iIndex, std::shared_ptr<ItemInstance> item, unsigned int uiAlpha)
+void UIScene_CraftingMenu::setCraftHSlotItem(int iPad, int iIndex, shared_ptr<ItemInstance> item, unsigned int uiAlpha)
 {
 	m_hSlotsInfo[iIndex].item = item;
 	m_hSlotsInfo[iIndex].alpha = uiAlpha;
 	m_hSlotsInfo[iIndex].show = true;
 }
 
-void UIScene_CraftingMenu::setCraftVSlotItem(int iPad, int iIndex, std::shared_ptr<ItemInstance> item, unsigned int uiAlpha)
+void UIScene_CraftingMenu::setCraftVSlotItem(int iPad, int iIndex, shared_ptr<ItemInstance> item, unsigned int uiAlpha)
 {
 	m_vSlotsInfo[iIndex].item = item;
 	m_vSlotsInfo[iIndex].alpha = uiAlpha;
 	m_vSlotsInfo[iIndex].show = true;
 }
 
-void UIScene_CraftingMenu::setCraftingOutputSlotItem(int iPad, std::shared_ptr<ItemInstance> item)
+void UIScene_CraftingMenu::setCraftingOutputSlotItem(int iPad, shared_ptr<ItemInstance> item)
 {
 	m_craftingOutputSlotInfo.item = item;
 	m_craftingOutputSlotInfo.alpha = 31;
@@ -632,7 +632,7 @@ void UIScene_CraftingMenu::setCraftingOutputSlotRedBox(bool show)
 	m_slotListCraftingOutput.showSlotRedBox(0,show);
 }
 
-void UIScene_CraftingMenu::setIngredientSlotItem(int iPad, int index, std::shared_ptr<ItemInstance> item)
+void UIScene_CraftingMenu::setIngredientSlotItem(int iPad, int index, shared_ptr<ItemInstance> item)
 {
 	m_ingredientsSlotsInfo[index].item = item;
 	m_ingredientsSlotsInfo[index].alpha = 31;
@@ -644,7 +644,7 @@ void UIScene_CraftingMenu::setIngredientSlotRedBox(int index, bool show)
 	m_slotListIngredientsLayout.showSlotRedBox(index,show);
 }
 
-void UIScene_CraftingMenu::setIngredientDescriptionItem(int iPad, int index, std::shared_ptr<ItemInstance> item)
+void UIScene_CraftingMenu::setIngredientDescriptionItem(int iPad, int index, shared_ptr<ItemInstance> item)
 {
 	m_ingredientsInfo[index].item = item;
 	m_ingredientsInfo[index].alpha = 31;
@@ -680,7 +680,7 @@ void UIScene_CraftingMenu::setShowCraftHSlot(int iIndex, bool show)
 void UIScene_CraftingMenu::showTabHighlight(int iIndex, bool show)
 {
 	if(show)
-	{
+	{	
 		IggyDataValue result;
 		IggyDataValue value[1];
 
@@ -729,7 +729,7 @@ void UIScene_CraftingMenu::scrollDescriptionDown()
 
 void UIScene_CraftingMenu::updateHighlightAndScrollPositions()
 {
-	{
+	{	
 		IggyDataValue result;
 		IggyDataValue value[2];
 

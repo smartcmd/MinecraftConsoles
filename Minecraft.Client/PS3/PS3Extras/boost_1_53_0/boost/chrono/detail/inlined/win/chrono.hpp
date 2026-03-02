@@ -100,7 +100,7 @@ namespace chrono_detail
   #endif
     return system_clock::time_point(
       system_clock::duration(
-        ((static_cast<int64_t>( ft.dwHighDateTime ) << 32) | ft.dwLowDateTime)
+        ((static_cast<__int64>( ft.dwHighDateTime ) << 32) | ft.dwLowDateTime)
        -116444736000000000LL
       )
     );
@@ -124,14 +124,14 @@ namespace chrono_detail
         ec.clear();
     }
     return time_point(duration(
-      (static_cast<int64_t>( ft.dwHighDateTime ) << 32) | ft.dwLowDateTime));
+      (static_cast<__int64>( ft.dwHighDateTime ) << 32) | ft.dwLowDateTime));
   }
 #endif
 
   BOOST_CHRONO_INLINE
   std::time_t system_clock::to_time_t(const system_clock::time_point& t) BOOST_NOEXCEPT
   {
-      int64_t temp = t.time_since_epoch().count();
+      __int64 temp = t.time_since_epoch().count();
 
       temp /= 10000000;
       return static_cast<std::time_t>( temp );
@@ -140,7 +140,7 @@ namespace chrono_detail
   BOOST_CHRONO_INLINE
   system_clock::time_point system_clock::from_time_t(std::time_t t) BOOST_NOEXCEPT
   {
-      int64_t temp = t;
+      __int64 temp = t;
       temp *= 10000000;
 
       return time_point(duration(temp));

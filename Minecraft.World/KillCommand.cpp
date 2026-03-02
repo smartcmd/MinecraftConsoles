@@ -9,9 +9,9 @@ EGameCommand KillCommand::getId()
 	return eGameCommand_Kill;
 }
 
-void KillCommand::execute(std::shared_ptr<CommandSender> source, byteArray commandData)
+void KillCommand::execute(shared_ptr<CommandSender> source, byteArray commandData)
 {
-	std::shared_ptr<Player> player = dynamic_pointer_cast<Player>(source);
+	shared_ptr<Player> player = dynamic_pointer_cast<Player>(source);
 
 	player->hurt(DamageSource::outOfWorld, 1000);
 

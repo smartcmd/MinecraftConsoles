@@ -17,7 +17,7 @@ Icon *RecordingItem::getIcon(int auxValue)
 	return icon;
 }
 
-bool RecordingItem::useOn(std::shared_ptr<ItemInstance> itemInstance, std::shared_ptr<Player> player, Level *level, int x, int y, int z, int face, float clickX, float clickY, float clickZ, bool bTestUseOnOnly)
+bool RecordingItem::useOn(shared_ptr<ItemInstance> itemInstance, shared_ptr<Player> player, Level *level, int x, int y, int z, int face, float clickX, float clickY, float clickZ, bool bTestUseOnOnly)
 {
 	// 4J-PB - Adding a test only version to allow tooltips to be displayed
 	if (level->getTile(x, y, z) == Tile::recordPlayer_Id && level->getData(x, y, z) == 0)
@@ -40,9 +40,9 @@ bool RecordingItem::useOn(std::shared_ptr<ItemInstance> itemInstance, std::share
 	return false;
 }
 
-void RecordingItem::appendHoverText(std::shared_ptr<ItemInstance> itemInstance, std::shared_ptr<Player> player, vector<wstring> *lines, bool advanced, vector<wstring> &unformattedStrings)
+void RecordingItem::appendHoverText(shared_ptr<ItemInstance> itemInstance, shared_ptr<Player> player, vector<wstring> *lines, bool advanced, vector<wstring> &unformattedStrings)
 {
-	eMinecraftColour rarityColour = getRarity(std::shared_ptr<ItemInstance>())->color;
+	eMinecraftColour rarityColour = getRarity(shared_ptr<ItemInstance>())->color;
 	int colour = app.GetHTMLColour(rarityColour);
 	wchar_t formatted[256];
 
@@ -53,7 +53,7 @@ void RecordingItem::appendHoverText(std::shared_ptr<ItemInstance> itemInstance, 
 	unformattedStrings.push_back(recording);
 }
 
-const Rarity *RecordingItem::getRarity(std::shared_ptr<ItemInstance> itemInstance)
+const Rarity *RecordingItem::getRarity(shared_ptr<ItemInstance> itemInstance)
 {
 	return (Rarity *)Rarity::rare;
 }

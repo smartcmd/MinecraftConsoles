@@ -43,7 +43,7 @@ HRESULT CXuiSceneInventoryCreative::OnInit( XUIMessageInit *pInitData, BOOL &bHa
 	{
 		if(m_bSplitscreen)
 		{
-			app.AdjustSplitscreenScene(m_hObj,&m_OriginalPosition,m_iPad);
+			app.AdjustSplitscreenScene(m_hObj,&m_OriginalPosition,m_iPad);	
 		}
 	}
 
@@ -60,12 +60,12 @@ HRESULT CXuiSceneInventoryCreative::OnInit( XUIMessageInit *pInitData, BOOL &bHa
 	initData->player->awardStat(GenericStats::openInventory(), GenericStats::param_noArgs());
 
 	// 4J JEV - Item Picker Menu
-	std::shared_ptr<SimpleContainer> creativeContainer = std::shared_ptr<SimpleContainer>(new SimpleContainer( 0, TabSpec::MAX_SIZE + 9 ));
+	shared_ptr<SimpleContainer> creativeContainer = shared_ptr<SimpleContainer>(new SimpleContainer( 0, TabSpec::MAX_SIZE + 9 ));
 	itemPickerMenu = new ItemPickerMenu(creativeContainer, initData->player->inventory);
-
+	
 	// 4J JEV - InitDataAssociations.
 	m_containerControl->SetData( initData->iPad, itemPickerMenu,  TabSpec::rows, TabSpec::columns,    0, TabSpec::MAX_SIZE );
-	m_useRowControl->SetData(    initData->iPad, itemPickerMenu,  1, 9,  TabSpec::MAX_SIZE, TabSpec::MAX_SIZE + 9 );
+	m_useRowControl->SetData(    initData->iPad, itemPickerMenu,  1, 9,  TabSpec::MAX_SIZE, TabSpec::MAX_SIZE + 9 );	
 	m_pointerControl->SetUserIndex(m_pointerControl->m_hObj, initData->iPad);
 
 	// Initialize superclass.
@@ -79,7 +79,7 @@ HRESULT CXuiSceneInventoryCreative::OnInit( XUIMessageInit *pInitData, BOOL &bHa
 	m_fPointerMinY += containerPos.y;
 
 	// 4J JEV - Settup Tabs
-	for (int i = 0; i < eCreativeInventoryTab_COUNT; i++)
+	for (int i = 0; i < eCreativeInventoryTab_COUNT; i++) 
 	{
 		m_hTabGroupA[i].SetShow(FALSE);
 	}
@@ -103,7 +103,7 @@ HRESULT CXuiSceneInventoryCreative::OnDestroy()
 #endif
 
 	// 4J Stu - Fix for #11302 - TCR 001: Network Connectivity: Host crashed after being killed by the client while accessing a chest during burst packet loss.
-	// We need to make sure that we call closeContainer() anytime this menu is closed, even if it is forced to close by some other reason (like the player dying)
+	// We need to make sure that we call closeContainer() anytime this menu is closed, even if it is forced to close by some other reason (like the player dying)	
 	if(Minecraft::GetInstance()->localplayers[m_iPad] != NULL) Minecraft::GetInstance()->localplayers[m_iPad]->closeContainer();
 	return S_OK;
 }
@@ -115,8 +115,8 @@ HRESULT CXuiSceneInventoryCreative::OnDestroy()
 //////////////////////////////////////////////////////////////////////////
 HRESULT CXuiSceneInventoryCreative::OnTransitionEnd( XUIMessageTransition *pTransData, BOOL& bHandled )
 {
-	// are we being destroyed? If so, don't do anything
-	if(pTransData->dwTransAction==XUI_TRANSITION_ACTION_DESTROY )
+	// are we being destroyed? If so, don't do anything 
+	if(pTransData->dwTransAction==XUI_TRANSITION_ACTION_DESTROY ) 
 	{
 		return S_OK;
 	}
@@ -199,7 +199,7 @@ void CXuiSceneInventoryCreative::updateScrollCurrentPage(int currentPage, int pa
 	m_scrollUp.SetShow(currentPage > 1);
 	m_scrollUp.PlayOptionalVisual(L"ScrollMore",L"EndScrollMore");
 
-
+	
 	m_scrollDown.SetShow(currentPage < pageCount);
 	m_scrollDown.PlayOptionalVisual(L"ScrollMore",L"EndScrollMore");
 

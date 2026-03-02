@@ -84,14 +84,14 @@ EnderDragon::EnderDragon(Level *level) : BossMob(level)
 {
 	_init();
 
-	head = std::shared_ptr<BossMobPart>( new BossMobPart(this, L"head", 6, 6) );
-	neck = std::shared_ptr<BossMobPart>( new BossMobPart(this, L"neck", 6, 6) ); // 4J Added
-	body = std::shared_ptr<BossMobPart>( new BossMobPart(this, L"body", 8, 8) );
-	tail1 = std::shared_ptr<BossMobPart>( new BossMobPart(this, L"tail", 4, 4) );
-	tail2 = std::shared_ptr<BossMobPart>( new BossMobPart(this, L"tail", 4, 4) );
-	tail3 = std::shared_ptr<BossMobPart>( new BossMobPart(this, L"tail", 4, 4) );
-	wing1 = std::shared_ptr<BossMobPart>( new BossMobPart(this, L"wing", 4, 4) );
-	wing2 = std::shared_ptr<BossMobPart>( new BossMobPart(this, L"wing", 4, 4) );
+	head = shared_ptr<BossMobPart>( new BossMobPart(this, L"head", 6, 6) );
+	neck = shared_ptr<BossMobPart>( new BossMobPart(this, L"neck", 6, 6) ); // 4J Added
+	body = shared_ptr<BossMobPart>( new BossMobPart(this, L"body", 8, 8) );
+	tail1 = shared_ptr<BossMobPart>( new BossMobPart(this, L"tail", 4, 4) );
+	tail2 = shared_ptr<BossMobPart>( new BossMobPart(this, L"tail", 4, 4) );
+	tail3 = shared_ptr<BossMobPart>( new BossMobPart(this, L"tail", 4, 4) );
+	wing1 = shared_ptr<BossMobPart>( new BossMobPart(this, L"wing", 4, 4) );
+	wing2 = shared_ptr<BossMobPart>( new BossMobPart(this, L"wing", 4, 4) );
 
 	subEntities.push_back(head);
 	subEntities.push_back(neck); // 4J Added
@@ -185,7 +185,7 @@ void EnderDragon::aiStep()
 		float flap = Mth::cos(flapTime * PI * 2);
 		float oldFlap = Mth::cos(oFlapTime * PI * 2);
 
-		if (oldFlap <= -0.3f && flap >= -0.3f)
+		if (oldFlap <= -0.3f && flap >= -0.3f) 
 		{
 			level->playLocalSound(x, y, z, eSoundType_MOB_ENDERDRAGON_MOVE, 1, 0.8f + random->nextFloat() * .3f, 100.0f);
 		}
@@ -352,7 +352,7 @@ void EnderDragon::aiStep()
 		double zdd = zTarget - z;
 
 		double dist = xdd * xdd + ydd * ydd + zdd * zdd;
-
+		
 		if( getSynchedAction() == e_EnderdragonAction_Sitting_Flaming )
 		{
 			--m_actionTicks;
@@ -379,7 +379,7 @@ void EnderDragon::aiStep()
 		else if( getSynchedAction() == e_EnderdragonAction_Sitting_Scanning )
 		{
 			attackTarget = level->getNearestPlayer( shared_from_this(), SITTING_ATTACK_VIEW_RANGE, SITTING_ATTACK_Y_VIEW_RANGE );
-
+			
 			++m_actionTicks;
 			if( attackTarget != NULL )
 			{
@@ -440,11 +440,11 @@ void EnderDragon::aiStep()
 		{
 			if( m_actionTicks < (FLAME_TICKS - 10) )
 			{
-				vector<std::shared_ptr<Entity> > *targets = level->getEntities(shared_from_this(), m_acidArea);
+				vector<shared_ptr<Entity> > *targets = level->getEntities(shared_from_this(), m_acidArea);
 
 				for( AUTO_VAR(it, targets->begin() ); it != targets->end(); ++it)
 				{
-					std::shared_ptr<Mob> e = dynamic_pointer_cast<Mob>( *it );
+					shared_ptr<Mob> e = dynamic_pointer_cast<Mob>( *it );
 					if (e != NULL)
 					{
 						//app.DebugPrintf("Attacking entity with acid\n");
@@ -685,7 +685,7 @@ void EnderDragon::aiStep()
 	// Curls/straightens the tail
 	for (int i = 0; i < 3; i++)
 	{
-		std::shared_ptr<BossMobPart> part = nullptr;
+		shared_ptr<BossMobPart> part = nullptr;
 
 		if (i == 0) part = tail1;
 		if (i == 1) part = tail2;
@@ -710,7 +710,7 @@ void EnderDragon::aiStep()
 	if (!level->isClientSide)
 	{
 		double maxDist = 64.0f;
-		if (getSynchedAction() == e_EnderdragonAction_StrafePlayer && attackTarget != NULL && attackTarget->distanceToSqr(shared_from_this()) < maxDist * maxDist)
+		if (getSynchedAction() == e_EnderdragonAction_StrafePlayer && attackTarget != NULL && attackTarget->distanceToSqr(shared_from_this()) < maxDist * maxDist) 
 		{
 			if (this->canSee(attackTarget))
 			{
@@ -734,14 +734,14 @@ void EnderDragon::aiStep()
 					double zdd = attackTarget->z - startingZ;
 
 					level->levelEvent(nullptr, LevelEvent::SOUND_GHAST_FIREBALL, (int) x, (int) y, (int) z, 0);
-					std::shared_ptr<DragonFireball> ie = std::shared_ptr<DragonFireball>( new DragonFireball(level, dynamic_pointer_cast<Mob>( shared_from_this() ), xdd, ydd, zdd) );
+					shared_ptr<DragonFireball> ie = shared_ptr<DragonFireball>( new DragonFireball(level, dynamic_pointer_cast<Mob>( shared_from_this() ), xdd, ydd, zdd) );
 					ie->x = startingX;
 					ie->y = startingY;
 					ie->z = startingZ;
 					level->addEntity(ie);
 					m_fireballCharge = 0;
 
-					app.DebugPrintf("Finding new target due to having fired a fireball\n");
+					app.DebugPrintf("Finding new target due to having fired a fireball\n");		
 					if( m_currentPath != NULL )
 					{
 						while(!m_currentPath->isDone())
@@ -752,8 +752,8 @@ void EnderDragon::aiStep()
 					newTarget = true;
 					findNewTarget();
 				}
-			}
-			else
+			} 
+			else 
 			{
 				if (m_fireballCharge > 0) m_fireballCharge--;
 			}
@@ -793,14 +793,14 @@ void EnderDragon::checkCrystals()
 	if (random->nextInt(10) == 0)
 	{
 		float maxDist = 32;
-		vector<std::shared_ptr<Entity> > *crystals = level->getEntitiesOfClass(typeid(EnderCrystal), bb->grow(maxDist, maxDist, maxDist));
+		vector<shared_ptr<Entity> > *crystals = level->getEntitiesOfClass(typeid(EnderCrystal), bb->grow(maxDist, maxDist, maxDist));
 
-		std::shared_ptr<EnderCrystal> crystal = nullptr;
+		shared_ptr<EnderCrystal> crystal = nullptr;
 		double nearest = Double::MAX_VALUE;
 		//for (Entity ec : crystals)
  		for(AUTO_VAR(it, crystals->begin()); it != crystals->end(); ++it)
 		{
-			std::shared_ptr<EnderCrystal> ec = dynamic_pointer_cast<EnderCrystal>( *it );
+			shared_ptr<EnderCrystal> ec = dynamic_pointer_cast<EnderCrystal>( *it );
 			double dist = ec->distanceToSqr(shared_from_this() );
 			if (dist < nearest)
 			{
@@ -809,7 +809,7 @@ void EnderDragon::checkCrystals()
 			}
 		}
 		delete crystals;
-
+		
 
 		nearestCrystal = crystal;
 	}
@@ -831,7 +831,7 @@ void EnderDragon::checkAttack()
 	}
 }
 
-void EnderDragon::knockBack(vector<std::shared_ptr<Entity> > *entities)
+void EnderDragon::knockBack(vector<shared_ptr<Entity> > *entities)
 {
 	double xm = (body->bb->x0 + body->bb->x1) / 2;
 	//        double ym = (body.bb.y0 + body.bb.y1) / 2;
@@ -840,7 +840,7 @@ void EnderDragon::knockBack(vector<std::shared_ptr<Entity> > *entities)
 	//for (Entity e : entities)
 	for(AUTO_VAR(it, entities->begin()); it != entities->end(); ++it)
 	{
-		std::shared_ptr<Mob> e = dynamic_pointer_cast<Mob>( *it );
+		shared_ptr<Mob> e = dynamic_pointer_cast<Mob>( *it );
 		if (e != NULL)//(e instanceof Mob)
 		{
 			double xd = e->x - xm;
@@ -851,12 +851,12 @@ void EnderDragon::knockBack(vector<std::shared_ptr<Entity> > *entities)
 	}
 }
 
-void EnderDragon::hurt(vector<std::shared_ptr<Entity> > *entities)
+void EnderDragon::hurt(vector<shared_ptr<Entity> > *entities)
 {
 	//for (int i = 0; i < entities->size(); i++)
 	for(AUTO_VAR(it, entities->begin()); it != entities->end(); ++it)
 	{
-		std::shared_ptr<Mob> e = dynamic_pointer_cast<Mob>( *it );//entities.get(i);
+		shared_ptr<Mob> e = dynamic_pointer_cast<Mob>( *it );//entities.get(i);
 		if (e != NULL) //(e instanceof Mob)
 		{
 			DamageSource *damageSource = DamageSource::mobAttack( dynamic_pointer_cast<Mob>( shared_from_this() ));
@@ -868,7 +868,7 @@ void EnderDragon::hurt(vector<std::shared_ptr<Entity> > *entities)
 
 void EnderDragon::findNewTarget()
 {
-	std::shared_ptr<Player> playerNearestToEgg = nullptr;
+	shared_ptr<Player> playerNearestToEgg = nullptr;
 
 	// Update current action
 	switch(getSynchedAction())
@@ -923,7 +923,7 @@ void EnderDragon::findNewTarget()
 //		app.DebugPrintf("Dragon action is now: SittingFlaming\n");
 //#endif
 //		m_actionTicks = FLAME_TICKS;
-
+		
 		m_flameAttacks = 0;
 		setSynchedAction(e_EnderdragonAction_Sitting_Scanning);
 		attackTarget = level->getNearestPlayer( shared_from_this(), SITTING_ATTACK_VIEW_RANGE, SITTING_ATTACK_Y_VIEW_RANGE );
@@ -948,7 +948,7 @@ void EnderDragon::findNewTarget()
 		if( m_currentPath == NULL || m_currentPath->isDone() )
 		{
 			int currentNodeIndex = findClosestNode();
-
+			
 			// To get the angle to the player correct when landing, head to a node diametrically opposite the player, then swoop in to 4,4
 			int eggHeight = max( level->seaLevel + 5, level->getTopSolidBlock(PODIUM_X_POS,PODIUM_Z_POS) ); //level->getHeightmap(4,4);
 			playerNearestToEgg = level->getNearestPlayer(PODIUM_X_POS, eggHeight, PODIUM_Z_POS, 128.0);
@@ -978,7 +978,7 @@ void EnderDragon::findNewTarget()
 		navigateToNextPathNode();
 
 		if(m_currentPath != NULL && m_currentPath->isDone())
-		{
+		{					
 			setSynchedAction(e_EnderdragonAction_Landing);
 #if PRINT_DRAGON_STATE_CHANGE_MESSAGES
 			app.DebugPrintf("Dragon action is now: Landing\n");
@@ -1033,7 +1033,7 @@ void EnderDragon::findNewTarget()
 			}
 
 			if(m_currentPath != NULL) delete m_currentPath;
-			m_currentPath = findPath(currentNodeIndex,targetNodeIndex);
+			m_currentPath = findPath(currentNodeIndex,targetNodeIndex);		
 
 			// Always skip the first node (as that's where we are already)
 			if(m_currentPath != NULL) m_currentPath->next();
@@ -1100,7 +1100,7 @@ bool EnderDragon::checkWalls(AABB *bb)
 	return hitWall;
 }
 
-bool EnderDragon::hurt(std::shared_ptr<BossMobPart> bossMobPart, DamageSource *source, int damage)
+bool EnderDragon::hurt(shared_ptr<BossMobPart> bossMobPart, DamageSource *source, int damage)
 {
 	if (bossMobPart != head)
 	{
@@ -1193,10 +1193,10 @@ void EnderDragon::tickDeath()
 			{
 				int newCount = ExperienceOrb::getExperienceValue(xpCount);
 				xpCount -= newCount;
-				level->addEntity(std::shared_ptr<ExperienceOrb>( new ExperienceOrb(level, x, y, z, newCount) ));
+				level->addEntity(shared_ptr<ExperienceOrb>( new ExperienceOrb(level, x, y, z, newCount) ));
 			}
 		}
-		if (dragonDeathTime == 1)
+		if (dragonDeathTime == 1) 
 		{
 			//level->globalLevelEvent(LevelEvent::SOUND_DRAGON_DEATH, (int) x, (int) y, (int) z, 0);
 			level->levelEvent(LevelEvent::SOUND_DRAGON_DEATH, (int) x, (int) y, (int) z, 0);
@@ -1214,7 +1214,7 @@ void EnderDragon::tickDeath()
 		{
 			int newCount = ExperienceOrb::getExperienceValue(xpCount);
 			xpCount -= newCount;
-			level->addEntity(std::shared_ptr<ExperienceOrb>( new ExperienceOrb(level, x, y, z, newCount)));
+			level->addEntity(shared_ptr<ExperienceOrb>( new ExperienceOrb(level, x, y, z, newCount)));
 		}
 		int xo = 5 + random->nextInt(2) * 2 - 1;
 		int zo = 5 + random->nextInt(2) * 2 - 1;
@@ -1312,7 +1312,7 @@ void EnderDragon::checkDespawn()
 {
 }
 
-vector<std::shared_ptr<Entity> > *EnderDragon::getSubEntities()
+vector<shared_ptr<Entity> > *EnderDragon::getSubEntities()
 {
 	return &subEntities;
 }
@@ -1323,7 +1323,7 @@ bool EnderDragon::isPickable()
 }
 
 // Fix for TU9 Enderdragon sound hits being the player sound hits - moved this forward from later version
-int EnderDragon::getHurtSound()
+int EnderDragon::getHurtSound() 
 {
 	return eSoundType_MOB_ENDERDRAGON_HIT;
 }
@@ -1435,7 +1435,7 @@ EnderDragon::EEnderdragonAction EnderDragon::getSynchedAction()
 void EnderDragon::handleCrystalDestroyed(DamageSource *source)
 {
 	AABB *tempBB = AABB::newTemp(PODIUM_X_POS,84.0,PODIUM_Z_POS,PODIUM_X_POS+1.0,85.0,PODIUM_Z_POS+1.0);
-	vector<std::shared_ptr<Entity> > *crystals = level->getEntitiesOfClass(typeid(EnderCrystal), tempBB->grow(48, 40, 48));
+	vector<shared_ptr<Entity> > *crystals = level->getEntitiesOfClass(typeid(EnderCrystal), tempBB->grow(48, 40, 48));
 	m_remainingCrystalsCount = (int)crystals->size() - 1;
 	if(m_remainingCrystalsCount < 0) m_remainingCrystalsCount = 0;
 	delete crystals;
@@ -1751,7 +1751,7 @@ Path *EnderDragon::reconstruct_path(Node *from, Node *to)
     NodeArray nodes = NodeArray(count);
     n = to;
     nodes.data[--count] = n;
-    while (n->cameFrom != NULL)
+    while (n->cameFrom != NULL) 
 	{
         n = n->cameFrom;
         nodes.data[--count] = n;
@@ -1761,7 +1761,7 @@ Path *EnderDragon::reconstruct_path(Node *from, Node *to)
     return ret;
 }
 
-void EnderDragon::addAdditonalSaveData(CompoundTag *entityTag)
+void EnderDragon::addAdditonalSaveData(CompoundTag *entityTag) 
 {
 	app.DebugPrintf("Adding EnderDragon additional save data\n");
 	entityTag->putShort(L"RemainingCrystals", m_remainingCrystalsCount);
@@ -1770,7 +1770,7 @@ void EnderDragon::addAdditonalSaveData(CompoundTag *entityTag)
 	BossMob::addAdditonalSaveData(entityTag);
 }
 
-void EnderDragon::readAdditionalSaveData(CompoundTag *tag)
+void EnderDragon::readAdditionalSaveData(CompoundTag *tag) 
 {
 	app.DebugPrintf("Reading EnderDragon additional save data\n");
 	m_remainingCrystalsCount = tag->getShort(L"RemainingCrystals");
@@ -1895,7 +1895,7 @@ double EnderDragon::getHeadPartYRotDiff(int partIndex, doubleArray bodyPos, doub
 Vec3 *EnderDragon::getHeadLookVector(float a)
 {
 	Vec3 *result = NULL;
-
+	
 	if( getSynchedAction() == e_EnderdragonAction_Landing || getSynchedAction() == e_EnderdragonAction_Takeoff )
 	{
 		int eggHeight = level->getTopSolidBlock(PODIUM_X_POS,PODIUM_Z_POS); //level->getHeightmap(4,4);
@@ -1903,7 +1903,7 @@ Vec3 *EnderDragon::getHeadLookVector(float a)
 		if( dist < 1.0f ) dist = 1.0f;
 		// The 6.0f is dragon->getHeadPartYOffset(6, start, p)
 		float yOffset = 6.0f / dist;
-
+		
 		double xRotTemp = xRot;
 		double rotScale = 1.5f;
 		xRot = -yOffset * rotScale * 5.0f;

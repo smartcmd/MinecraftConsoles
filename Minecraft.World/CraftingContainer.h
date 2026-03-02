@@ -16,15 +16,15 @@ public:
 	~CraftingContainer();
 
 	virtual unsigned int getContainerSize();
-	virtual std::shared_ptr<ItemInstance> getItem(unsigned int slot);
-	std::shared_ptr<ItemInstance> getItem(unsigned int x, unsigned int y);
+	virtual shared_ptr<ItemInstance> getItem(unsigned int slot);
+	shared_ptr<ItemInstance> getItem(unsigned int x, unsigned int y);
 	virtual int getName();
-	virtual std::shared_ptr<ItemInstance> removeItemNoUpdate(int slot);
-	virtual std::shared_ptr<ItemInstance> removeItem(unsigned int slot, int count);
-	virtual void setItem(unsigned int slot, std::shared_ptr<ItemInstance> item);
+	virtual shared_ptr<ItemInstance> removeItemNoUpdate(int slot);
+	virtual shared_ptr<ItemInstance> removeItem(unsigned int slot, int count);
+	virtual void setItem(unsigned int slot, shared_ptr<ItemInstance> item);
 	virtual int getMaxStackSize();
 	virtual void setChanged();
-	bool stillValid(std::shared_ptr<Player> player);
+	bool stillValid(shared_ptr<Player> player);
 
 	void startOpen() { } // TODO Auto-generated method stub
 	void stopOpen() { } // TODO Auto-generated method stub

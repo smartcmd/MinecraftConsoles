@@ -20,12 +20,12 @@
 //          // Consume as many characters as possible from the interval
 //          // [begin_in, end_in), without exhausting the output range
 //          // [begin_out, end_out). If flush is true, write as mush output
-//          // as possible.
-//          // A return value of true indicates that filter should be called
-//          // again. More precisely, if flush is false, a return value of
+//          // as possible. 
+//          // A return value of true indicates that filter should be called 
+//          // again. More precisely, if flush is false, a return value of 
 //          // false indicates that the natural end of stream has been reached
 //          // and that all filtered data has been forwarded; if flush is
-//          // true, a return value of false indicates that all filtered data
+//          // true, a return value of false indicates that all filtered data 
 //          // has been forwarded.
 //       }
 //       void close() { /* Reset filter's state. */ }
@@ -57,7 +57,7 @@
 #include <boost/preprocessor/punctuation/comma_if.hpp>
 #include <boost/preprocessor/repetition/enum_binary_params.hpp>
 #include <boost/preprocessor/repetition/enum_params.hpp>
-#include <boost/std::shared_ptr.hpp>
+#include <boost/shared_ptr.hpp>
 
 // Must come last.
 #include <boost/iostreams/detail/config/disable_warnings.hpp>  // MSVC.
@@ -188,7 +188,7 @@ public:
     string_type unconsumed_input() const;
 
 // Give impl access to buffer_type on Tru64
-#if !BOOST_WORKAROUND(__DECCXX_VER, BOOST_TESTED_AT(60590042))
+#if !BOOST_WORKAROUND(__DECCXX_VER, BOOST_TESTED_AT(60590042)) 
     private:
 #endif
     typedef detail::buffer<char_type, Alloc> buffer_type;
@@ -266,7 +266,7 @@ private:
         int          state_;
     };
 
-    std::shared_ptr<impl> pimpl_;
+    shared_ptr<impl> pimpl_;
 };
 BOOST_IOSTREAMS_PIPABLE(symmetric_filter, 2)
 

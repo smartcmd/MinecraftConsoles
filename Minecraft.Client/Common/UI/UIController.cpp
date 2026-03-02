@@ -124,7 +124,7 @@ extern "C" void *__real_malloc(size_t t);
 extern "C" void __real_free(void *t);
 #endif
 
-int64_t UIController::iggyAllocCount = 0;
+__int64 UIController::iggyAllocCount = 0;
 static unordered_map<void *,size_t> allocations;
 static void * RADLINK AllocateFunction ( void * alloc_callback_user_data , size_t size_requested , size_t * size_returned )
 {
@@ -272,7 +272,7 @@ void UIController::postInit()
 	IggySetTextureSubstitutionCallbacks ( &UIController::TextureSubstitutionCreateCallback , &UIController::TextureSubstitutionDestroyCallback, this );
 
 	SetupFont();
-	//
+	// 
 	loadSkins();
 
 	for(unsigned int i = 0; i < eUIGroup_COUNT; ++i)
@@ -402,7 +402,7 @@ void UIController::tick()
 	EnderDragonRenderer::bossInstance = nullptr;
 
 	// Clear out the cached movie file data
-	int64_t currentTime = System::currentTimeMillis();
+	__int64 currentTime = System::currentTimeMillis();
 	for(AUTO_VAR(it, m_cachedMovieData.begin()); it != m_cachedMovieData.end();)
 	{
 		if(it->second.m_expiry < currentTime)
@@ -522,7 +522,7 @@ IggyLibrary UIController::loadSkin(const wstring &skinPath, const wstring &skinN
 		IggyMemoryUseInfo memoryInfo;
 		rrbool res;
 		int iteration = 0;
-		int64_t totalStatic = 0;
+		__int64 totalStatic = 0;
 		while(res = IggyDebugGetMemoryUseInfo ( NULL ,
 			lib ,
 			"" ,
@@ -632,7 +632,7 @@ void UIController::CleanUpSkinReload()
 	{
 		if(!Minecraft::GetInstance()->skins->getSelected()->hasAudio())
 		{
-#ifdef _DURANGO
+#ifdef _DURANGO			
 			DWORD result = StorageManager.UnmountInstalledDLC(L"TPACK");
 #else
 			DWORD result = StorageManager.UnmountInstalledDLC("TPACK");
@@ -653,7 +653,7 @@ void UIController::CleanUpSkinReload()
 byteArray UIController::getMovieData(const wstring &filename)
 {
 	// Cache everything we load in the current tick
-	int64_t targetTime = System::currentTimeMillis() + (1000LL * 60);
+	__int64 targetTime = System::currentTimeMillis() + (1000LL * 60);
 	AUTO_VAR(it,m_cachedMovieData.find(filename));
 	if(it == m_cachedMovieData.end() )
 	{
@@ -699,7 +699,7 @@ void UIController::handleInput()
 	{
 #ifdef _DURANGO
 		// 4J-JEV: Added exception for primary play who migh've uttered speech commands.
-		if(iPad != ProfileManager.GetPrimaryPad()
+		if(iPad != ProfileManager.GetPrimaryPad() 
 			&& (!InputManager.IsPadConnected(iPad) || !InputManager.IsPadLocked(iPad)) ) continue;
 #endif
 		for(unsigned int key = 0; key <= ACTION_MAX_MENU; ++key)
@@ -775,7 +775,7 @@ void UIController::handleKeyPress(unsigned int iPad, unsigned int key)
 		{
 			// no active touch? clear active and highlighted touch UI elements
 			m_ActiveUIElement = NULL;
-			m_HighlightedUIElement = NULL;
+			m_HighlightedUIElement = NULL; 
 
 			// fullscreen first
 			UIScene *pScene=m_groups[(int)eUIGroup_Fullscreen]->getCurrentScene();
@@ -825,7 +825,7 @@ void UIController::handleKeyPress(unsigned int iPad, unsigned int key)
 					}
 				}
 			}
-		}
+		}	
 		else if(m_bTouchscreenPressed && pTouchData->reportNum==1)
 		{
 			// fullscreen first
@@ -1006,8 +1006,8 @@ void UIController::handleKeyPress(unsigned int iPad, unsigned int key)
 		//!(app.GetGameSettingsDebugMask(ProfileManager.GetPrimaryPad())&(1L<<eDebugSetting_ToggleFont)) &&
 		key == ACTION_MENU_STICK_PRESS)
 	{
-		int64_t totalStatic = 0;
-		int64_t totalDynamic = 0;
+		__int64 totalStatic = 0;
+		__int64 totalDynamic = 0;
 		app.DebugPrintf(app.USER_SR, "********************************\n");
 		app.DebugPrintf(app.USER_SR, "BEGIN TOTAL SWF MEMORY USAGE\n\n");
 		for(unsigned int i = 0; i < eUIGroup_COUNT; ++i)
@@ -1016,8 +1016,8 @@ void UIController::handleKeyPress(unsigned int iPad, unsigned int key)
 		}
 		for(unsigned int i = 0; i < eLibrary_Count; ++i)
 		{
-			int64_t libraryStatic = 0;
-			int64_t libraryDynamic = 0;
+			__int64 libraryStatic = 0;
+			__int64 libraryDynamic = 0;
 
 			if(m_iggyLibraries[i] != IGGY_INVALID_LIBRARY)
 			{
@@ -1045,8 +1045,8 @@ void UIController::handleKeyPress(unsigned int iPad, unsigned int key)
 		app.DebugPrintf(app.USER_SR, "Total static: %d , Total dynamic: %d\n", totalStatic, totalDynamic);
 		app.DebugPrintf(app.USER_SR, "\n\nEND TOTAL SWF MEMORY USAGE\n");
 		app.DebugPrintf(app.USER_SR, "********************************\n\n");
-	}
-	else
+	} 
+	else 
 #endif
 #endif
 #endif
@@ -1243,7 +1243,7 @@ void UIController::setupCustomDrawGameState()
 	glLoadIdentity();
 	glOrtho(0, m_fScreenWidth, m_fScreenHeight, 0, 1000, 3000);
 	glMatrixMode(GL_MODELVIEW);
-	glEnable(GL_ALPHA_TEST);
+	glEnable(GL_ALPHA_TEST);			
 	glAlphaFunc(GL_GREATER, 0.1f);
 	glEnable(GL_DEPTH_TEST);
 	glDepthFunc(GL_LEQUAL);
@@ -1343,10 +1343,10 @@ void RADLINK UIController::CustomDrawCallback(void *user_callback_data, Iggy *pl
 //Description
 //Callback to create a user-defined texture to replace SWF-defined textures.
 //Parameters
-//width - Input value: optional number of pixels wide specified from AS3, or -1 if not defined. Output value: the number of pixels wide to pretend to Iggy that the bitmap is. SWF and AS3 scales bitmaps based on their pixel dimensions, so you can use this to substitute a texture that is higher or lower resolution that ActionScript thinks it is.
-//height - Input value: optional number of pixels high specified from AS3, or -1 if not defined. Output value: the number of pixels high to pretend to Iggy that the bitmap is. SWF and AS3 scales bitmaps based on their pixel dimensions, so you can use this to substitute a texture that is higher or lower resolution that ActionScript thinks it is.
-//destroy_callback_data - Optional additional output value you can set; the value will be passed along to the corresponding Iggy_TextureSubstitutionDestroyCallback (e.g. you can store the pointer to your own internal structure here).
-//return - A platform-independent wrapped texture handle provided by GDraw, or NULL (NULL with throw an ActionScript 3 ArgumentError that the Flash developer can catch) Use by calling IggySetTextureSubstitutionCallbacks.
+//width - Input value: optional number of pixels wide specified from AS3, or -1 if not defined. Output value: the number of pixels wide to pretend to Iggy that the bitmap is. SWF and AS3 scales bitmaps based on their pixel dimensions, so you can use this to substitute a texture that is higher or lower resolution that ActionScript thinks it is.  
+//height - Input value: optional number of pixels high specified from AS3, or -1 if not defined. Output value: the number of pixels high to pretend to Iggy that the bitmap is. SWF and AS3 scales bitmaps based on their pixel dimensions, so you can use this to substitute a texture that is higher or lower resolution that ActionScript thinks it is.  
+//destroy_callback_data - Optional additional output value you can set; the value will be passed along to the corresponding Iggy_TextureSubstitutionDestroyCallback (e.g. you can store the pointer to your own internal structure here).  
+//return - A platform-independent wrapped texture handle provided by GDraw, or NULL (NULL with throw an ActionScript 3 ArgumentError that the Flash developer can catch) Use by calling IggySetTextureSubstitutionCallbacks.  
 //
 //Discussion
 //
@@ -1551,7 +1551,7 @@ bool UIController::NavigateBack(int iPad, bool forceUsePad, EUIScene eScene, EUI
 void UIController::NavigateToHomeMenu()
 {
 	ui.CloseAllPlayersScenes();
-
+	
 	// Alert the app the we no longer want to be informed of ethernet connections
 	app.SetLiveLinkRequired( false );
 
@@ -1714,7 +1714,7 @@ void UIController::CloseUIScenes(int iPad, bool forceIPad)
 
 	m_groups[(int)group]->closeAllScenes();
 	m_groups[(int)group]->getTooltips()->SetTooltips(-1);
-
+	
 	// This should cause the popup to dissappear
 	TutorialPopupInfo popupInfo;
 	if(m_groups[(int)group]->getTutorialPopup()) m_groups[(int)group]->getTutorialPopup()->SetTutorialDescription(&popupInfo);
@@ -1865,7 +1865,7 @@ void UIController::SetMenuDisplayed(int iPad,bool bVal)
 
 #ifdef _DURANGO
 			// 4J-JEV: When in-game, allow player to toggle the 'Pause' and 'IngameInfo' menus via Kinnect.
-			if (Minecraft::GetInstance()->running)
+			if (Minecraft::GetInstance()->running) 
 				InputManager.SetEnabledGtcButtons(_360_GTC_MENU | _360_GTC_PAUSE | _360_GTC_VIEW);
 #endif
 		}
@@ -2280,7 +2280,7 @@ void UIController::SetTrialTimerLimitSecs(unsigned int uiSeconds)
 
 void UIController::UpdateTrialTimer(unsigned int iPad)
 {
-	WCHAR wcTime[20];
+	WCHAR wcTime[20]; 
 
 	DWORD dwTimeTicks=(DWORD)app.getTrialTimer();
 
@@ -2342,7 +2342,7 @@ void UIController::ShowAutosaveCountdownTimer(bool show)
 void UIController::UpdateAutosaveCountdownTimer(unsigned int uiSeconds)
 {
 #if !(defined(_XBOX_ONE) || defined(__ORBIS__))
-	WCHAR wcAutosaveCountdown[100];
+	WCHAR wcAutosaveCountdown[100]; 
 	swprintf( wcAutosaveCountdown, 100, app.GetString(IDS_AUTOSAVE_COUNTDOWN),uiSeconds);
 	if(m_groups[(int)eUIGroup_Fullscreen]->getPressStartToPlay()) m_groups[(int)eUIGroup_Fullscreen]->getPressStartToPlay()->setTrialTimer(wcAutosaveCountdown);
 #endif
@@ -2507,7 +2507,7 @@ C4JStorage::EMessageResult UIController::RequestUGCMessageBox(UINT title/* = -1 
 #ifdef __ORBIS__
 	// Show the vague UGC system message in addition to our message
 	ProfileManager.DisplaySystemMessage( SCE_MSG_DIALOG_SYSMSG_TYPE_TRC_PSN_UGC_RESTRICTION, iPad );
-	return C4JStorage::EMessage_ResultAccept;
+	return C4JStorage::EMessage_ResultAccept; 
 #elif defined(__PSVITA__)
 	ProfileManager.ShowSystemMessage( SCE_MSG_DIALOG_SYSMSG_TYPE_TRC_PSN_CHAT_RESTRICTION, iPad );
 	UINT uiIDA[1];
@@ -2544,7 +2544,7 @@ C4JStorage::EMessageResult UIController::RequestContentRestrictedMessageBox(UINT
 #ifdef __ORBIS__
 	// Show the vague UGC system message in addition to our message
 	ProfileManager.DisplaySystemMessage( SCE_MSG_DIALOG_SYSMSG_TYPE_TRC_PSN_UGC_RESTRICTION, iPad );
-	return C4JStorage::EMessage_ResultAccept;
+	return C4JStorage::EMessage_ResultAccept; 
 #elif defined(__PSVITA__)
 	ProfileManager.ShowSystemMessage( SCE_MSG_DIALOG_SYSMSG_TYPE_TRC_PSN_AGE_RESTRICTION, iPad );
 	return C4JStorage::EMessage_ResultAccept;
@@ -2584,7 +2584,7 @@ void UIController::setFontCachingCalculationBuffer(int length)
 	}
 }
 
-// Returns the first scene of given type if it exists, NULL otherwise
+// Returns the first scene of given type if it exists, NULL otherwise 
 UIScene *UIController::FindScene(EUIScene sceneType)
 {
 	UIScene *pScene = NULL;
@@ -2723,7 +2723,7 @@ void UIController::TouchBoxesClear(UIScene *pUIScene)
 	for (AUTO_VAR(it, m_TouchBoxes[eUIGroup][eUILayer][eUIscene].begin()); it != itEnd; it++)
 	{
 		UIELEMENT *element=(UIELEMENT *)*it;
-		delete element;
+		delete element;		
 	}
 	m_TouchBoxes[eUIGroup][eUILayer][eUIscene].clear();
 }
@@ -2759,7 +2759,7 @@ bool UIController::TouchBoxHit(UIScene *pUIScene,S32 x, S32 y)
 					return true;
 				}
 			}
-		}
+		}			
 	}
 
 	//app.DebugPrintf("MISS at x = %i y = %i\n", (int)x, (int)y);

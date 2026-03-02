@@ -23,16 +23,16 @@ public:
 	int getResource(int data, Random *random, int playerBonusLevel);
 	int cloneTileId(Level *level, int x, int y, int z);
 	void neighborChanged(Level *level, int x, int y, int z, int type);
-	void updateShape(LevelSource *level, int x, int y, int z, int forceData = -1, std::shared_ptr<TileEntity> forceEntity = std::shared_ptr<TileEntity>());
+	void updateShape(LevelSource *level, int x, int y, int z, int forceData = -1, shared_ptr<TileEntity> forceEntity = shared_ptr<TileEntity>());
 	void onPlace(Level *level, int x, int y, int z);
 	void onRemove(Level *level, int x, int y, int z, int id, int data);
-	void playerWillDestroy(Level *level, int x, int y, int z, int data, std::shared_ptr<Player> player);
+	void playerWillDestroy(Level *level, int x, int y, int z, int data, shared_ptr<Player> player);
 
 private:
 	void updateSource(Level *level, int x, int y, int z, int data);
 
 public:
-	void entityInside(Level *level, int x, int y, int z, std::shared_ptr<Entity> entity);
+	void entityInside(Level *level, int x, int y, int z, shared_ptr<Entity> entity);
 	void tick(Level *level, int x, int y, int z, Random *random);
 
 private:

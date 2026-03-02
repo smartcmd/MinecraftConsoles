@@ -92,16 +92,16 @@ bool StructureFeature::isIntersection(int cellX, int cellZ)
 ///////////////////////////////////////////
 // 4J-PB - Below functions added from 1.2.3
 ///////////////////////////////////////////
-bool StructureFeature::isInsideFeature(int cellX, int cellY, int cellZ)
+bool StructureFeature::isInsideFeature(int cellX, int cellY, int cellZ) 
 {
-	//for (StructureStart structureStart : cachedStructures.values())
+	//for (StructureStart structureStart : cachedStructures.values()) 
 	for(AUTO_VAR(it, cachedStructures.begin()); it != cachedStructures.end(); ++it)
 	{
 		StructureStart *pStructureStart = it->second;
 
-		if (pStructureStart->isValid())
+		if (pStructureStart->isValid()) 
 		{
-			if (pStructureStart->getBoundingBox()->intersects(cellX, cellZ, cellX, cellZ))
+			if (pStructureStart->getBoundingBox()->intersects(cellX, cellZ, cellX, cellZ)) 
 			{
 				/*
 				Iterator<StructurePiece> it = structureStart.getPieces().iterator();
@@ -127,7 +127,7 @@ bool StructureFeature::isInsideFeature(int cellX, int cellY, int cellZ)
 	return false;
 }
 
-TilePos *StructureFeature::getNearestGeneratedFeature(Level *level, int cellX, int cellY, int cellZ)
+TilePos *StructureFeature::getNearestGeneratedFeature(Level *level, int cellX, int cellY, int cellZ) 
 {
 
 	// this is a hack that will "force" the feature to generate positions
@@ -135,10 +135,10 @@ TilePos *StructureFeature::getNearestGeneratedFeature(Level *level, int cellX, i
 	this->level = level;
 
 	random->setSeed(level->getSeed());
-	int64_t xScale = random->nextLong();
-	int64_t zScale = random->nextLong();
-	int64_t xx = (cellX >> 4) * xScale;
-	int64_t zz = (cellZ >> 4) * zScale;
+	__int64 xScale = random->nextLong();
+	__int64 zScale = random->nextLong();
+	__int64 xx = (cellX >> 4) * xScale;
+	__int64 zz = (cellZ >> 4) * zScale;
 	random->setSeed(xx ^ zz ^ level->getSeed());
 
 	addFeature(level, cellX >> 4, cellZ >> 4, 0, 0, byteArray());
@@ -150,7 +150,7 @@ TilePos *StructureFeature::getNearestGeneratedFeature(Level *level, int cellX, i
 	{
 		StructureStart *pStructureStart = it->second;
 
-		if (pStructureStart->isValid())
+		if (pStructureStart->isValid()) 
 		{
 
 			//StructurePiece *pStructurePiece = pStructureStart->getPieces().get(0);
@@ -162,21 +162,21 @@ TilePos *StructureFeature::getNearestGeneratedFeature(Level *level, int cellX, i
 			int dz = locatorPosition->z - cellZ;
 			double dist = dx + dx * dy * dy + dz * dz;
 
-			if (dist < minDistance)
+			if (dist < minDistance) 
 			{
 				minDistance = dist;
 				selected = locatorPosition;
 			}
 		}
 	}
-	if (selected != NULL)
+	if (selected != NULL) 
 	{
 		return selected;
-	}
-	else
+	} 
+	else 
 	{
 		vector<TilePos> *guesstimatedFeaturePositions = getGuesstimatedFeaturePositions();
-		if (guesstimatedFeaturePositions != NULL)
+		if (guesstimatedFeaturePositions != NULL) 
 		{
  			TilePos *pSelectedPos = new TilePos(0,0,0);
 
@@ -187,7 +187,7 @@ TilePos *StructureFeature::getNearestGeneratedFeature(Level *level, int cellX, i
 				int dz = (*it).z - cellZ;
 				double dist = dx + dx * dy * dy + dz * dz;
 
-				if (dist < minDistance)
+				if (dist < minDistance) 
 				{
 					minDistance = dist;
 					pSelectedPos->x = (*it).x;
@@ -202,7 +202,7 @@ TilePos *StructureFeature::getNearestGeneratedFeature(Level *level, int cellX, i
 	return NULL;
 }
 
-vector<TilePos> *StructureFeature::getGuesstimatedFeaturePositions()
+vector<TilePos> *StructureFeature::getGuesstimatedFeaturePositions() 
 {
 	return NULL;
 }

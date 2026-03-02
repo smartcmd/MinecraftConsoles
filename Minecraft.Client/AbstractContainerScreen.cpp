@@ -52,7 +52,7 @@ void AbstractContainerScreen::render(int xm, int ym, float a)
     glEnable(GL_RESCALE_NORMAL);
 
     Slot *hoveredSlot = NULL;
-
+	
 	AUTO_VAR(itEnd, menu->slots->end());
 	for (AUTO_VAR(it, menu->slots->begin()); it != itEnd; it++)
 	{
@@ -75,7 +75,7 @@ void AbstractContainerScreen::render(int xm, int ym, float a)
         }
     }
 
-    std::shared_ptr<Inventory> inventory = minecraft->player->inventory;
+    shared_ptr<Inventory> inventory = minecraft->player->inventory;
     if (inventory->getCarried() != NULL)
 	{
         glTranslatef(0, 0, 32);
@@ -128,7 +128,7 @@ void AbstractContainerScreen::renderSlot(Slot *slot)
 #if 0
     int x = slot->x;
     int y = slot->y;
-    std::shared_ptr<ItemInstance> item = slot->getItem();
+    shared_ptr<ItemInstance> item = slot->getItem();
 
     if (item == NULL)
 	{
@@ -218,7 +218,7 @@ void AbstractContainerScreen::removed()
     if (minecraft->player == NULL) return;
 }
 
-void AbstractContainerScreen::slotsChanged(std::shared_ptr<Container> container)
+void AbstractContainerScreen::slotsChanged(shared_ptr<Container> container)
 {
 }
 

@@ -11,7 +11,7 @@ UpdatePlayerRuleDefinition::UpdatePlayerRuleDefinition()
 {
 	m_bUpdateHealth = m_bUpdateFood = m_bUpdateYRot = false;;
 	m_health = 0;
-	m_food = 0;
+	m_food = 0;	
 	m_spawnPos = NULL;
 	m_yRot = 0.0f;
 }
@@ -130,7 +130,7 @@ void UpdatePlayerRuleDefinition::addAttribute(const wstring &attributeName, cons
 	}
 }
 
-void UpdatePlayerRuleDefinition::postProcessPlayer(std::shared_ptr<Player> player)
+void UpdatePlayerRuleDefinition::postProcessPlayer(shared_ptr<Player> player)
 {
 	if(m_bUpdateHealth)
 	{

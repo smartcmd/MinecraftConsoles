@@ -46,7 +46,7 @@ void CocoaTile::tick(Level *level, int x, int y, int z, Random *random)
 	}
 }
 
-bool CocoaTile::canSurvive(Level *level, int x, int y, int z)
+bool CocoaTile::canSurvive(Level *level, int x, int y, int z) 
 {
 	int dir = getDirection(level->getData(x, y, z));
 
@@ -84,7 +84,7 @@ AABB *CocoaTile::getTileAABB(Level *level, int x, int y, int z)
 	return DirectionalTile::getTileAABB(level, x, y, z);
 }
 
-void CocoaTile::updateShape(LevelSource *level, int x, int y, int z, int forceData, std::shared_ptr<TileEntity> forceEntity)
+void CocoaTile::updateShape(LevelSource *level, int x, int y, int z, int forceData, shared_ptr<TileEntity> forceEntity)
 {
 	int data = level->getData(x, y, z);
 	int dir = getDirection(data);
@@ -112,7 +112,7 @@ void CocoaTile::updateShape(LevelSource *level, int x, int y, int z, int forceDa
 	}
 }
 
-void CocoaTile::setPlacedBy(Level *level, int x, int y, int z, std::shared_ptr<Mob> by, std::shared_ptr<ItemInstance> itemInstance)
+void CocoaTile::setPlacedBy(Level *level, int x, int y, int z, shared_ptr<Mob> by, shared_ptr<ItemInstance> itemInstance)
 {
 	int dir = (((Mth::floor(by->yRot * 4 / (360) + 0.5)) & 3) + 0) % 4;
 	level->setData(x, y, z, dir);
@@ -127,7 +127,7 @@ int CocoaTile::getPlacedOnFaceDataValue(Level *level, int x, int y, int z, int f
 	return Direction::DIRECTION_OPPOSITE[Direction::FACING_DIRECTION[face]];
 }
 
-void CocoaTile::neighborChanged(Level *level, int x, int y, int z, int type)
+void CocoaTile::neighborChanged(Level *level, int x, int y, int z, int type) 
 {
 	if (!canSurvive(level, x, y, z))
 	{
@@ -151,7 +151,7 @@ void CocoaTile::spawnResources(Level *level, int x, int y, int z, int data, floa
 	}
 	for (int i = 0; i < count; i++)
 	{
-		popResource(level, x, y, z, std::shared_ptr<ItemInstance>( new ItemInstance(Item::dye_powder, 1, DyePowderItem::BROWN) ));
+		popResource(level, x, y, z, shared_ptr<ItemInstance>( new ItemInstance(Item::dye_powder, 1, DyePowderItem::BROWN) ));
 	}
 }
 

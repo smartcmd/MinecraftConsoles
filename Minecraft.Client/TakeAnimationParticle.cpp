@@ -5,7 +5,7 @@
 #include "..\Minecraft.World\net.minecraft.world.level.h"
 #include "..\Minecraft.World\Mth.h"
 
-TakeAnimationParticle::TakeAnimationParticle(Level *level, std::shared_ptr<Entity> item, std::shared_ptr<Entity> target, float yOffs) : Particle(level, item->x, item->y, item->z, item->xd, item->yd, item->zd)
+TakeAnimationParticle::TakeAnimationParticle(Level *level, shared_ptr<Entity> item, shared_ptr<Entity> target, float yOffs) : Particle(level, item->x, item->y, item->z, item->xd, item->yd, item->zd)
 {
 	// 4J - added initialisers
 	life = 0;
@@ -39,7 +39,7 @@ void TakeAnimationParticle::render(Tesselator *t, float a, float xa, float ya, f
     double xx = xo + (xt - xo) * time;
     double yy = yo + (yt - yo) * time;
     double zz = zo + (zt - zo) * time;
-
+        
     int xTile = Mth::floor(xx);
     int yTile = Mth::floor(yy + heightOffset / 2.0f);
     int zTile = Mth::floor(zz);
@@ -58,12 +58,12 @@ void TakeAnimationParticle::render(Tesselator *t, float a, float xa, float ya, f
 	    float br = level->getBrightness(xTile, yTile, zTile);
 		glColor4f(br, br, br, 1);
 	}
-
+        
     xx-=xOff;
     yy-=yOff;
     zz-=zOff;
-
-
+        
+    
     EntityRenderDispatcher::instance->render(item, (float)xx, (float)yy, (float)zz, item->yRot, a);
 
 }

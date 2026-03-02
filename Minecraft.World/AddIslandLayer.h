@@ -5,7 +5,7 @@
 class AddIslandLayer : public Layer
 {
 public:
-	AddIslandLayer(int64_t seedMixup, std::shared_ptr<Layer>parent);
+	AddIslandLayer(__int64 seedMixup, shared_ptr<Layer>parent);
 
 	intArray getArea(int xo, int yo, int w, int h);
 };

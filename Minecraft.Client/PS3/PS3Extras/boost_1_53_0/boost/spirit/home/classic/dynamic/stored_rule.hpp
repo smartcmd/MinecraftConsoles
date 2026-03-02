@@ -12,7 +12,7 @@
 #include <boost/spirit/home/classic/namespace.hpp>
 #include <boost/spirit/home/classic/core/non_terminal/impl/rule.ipp>
 #include <boost/spirit/home/classic/dynamic/rule_alias.hpp>
-#include <boost/std::shared_ptr.hpp>
+#include <boost/shared_ptr.hpp>
 
 #include <boost/spirit/home/classic/dynamic/stored_rule_fwd.hpp>
 
@@ -27,7 +27,7 @@ BOOST_SPIRIT_CLASSIC_NAMESPACE_BEGIN
     //
     ///////////////////////////////////////////////////////////////////////////
     template <
-        typename T0
+        typename T0 
       , typename T1
       , typename T2
       , bool EmbedByValue
@@ -113,10 +113,10 @@ BOOST_SPIRIT_CLASSIC_NAMESPACE_BEGIN
     private:
 #endif
 
-        stored_rule(std::shared_ptr<abstract_parser_t> const& ptr)
+        stored_rule(shared_ptr<abstract_parser_t> const& ptr)
         : ptr(ptr) {}
 
-        std::shared_ptr<abstract_parser_t> ptr;
+        shared_ptr<abstract_parser_t> ptr;
     };
 
 ///////////////////////////////////////////////////////////////////////////////

@@ -14,7 +14,7 @@
 */
 
 #include "boost/date_time/c_time.hpp"
-#include "boost/std::shared_ptr.hpp"
+#include "boost/shared_ptr.hpp"
 
 namespace boost {
 namespace date_time {
@@ -54,7 +54,7 @@ namespace date_time {
     }
 
     template<class time_zone_type>
-    static time_type local_time(boost::std::shared_ptr<time_zone_type> tz_ptr)
+    static time_type local_time(boost::shared_ptr<time_zone_type> tz_ptr)
     {
       typedef typename time_type::utc_time_type utc_time_type;
       utc_time_type utc_time = second_clock<utc_time_type>::universal_time();

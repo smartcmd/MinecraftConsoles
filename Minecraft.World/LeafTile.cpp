@@ -241,17 +241,17 @@ void LeafTile::spawnResources(Level *level, int x, int y, int z, int data, float
 		if (level->random->nextInt(chance) == 0)
 		{
 			int type = getResource(data, level->random,playerBonusLevel);
-			popResource(level, x, y, z, std::shared_ptr<ItemInstance>( new ItemInstance(type, 1, getSpawnResourcesAuxValue(data))));
+			popResource(level, x, y, z, shared_ptr<ItemInstance>( new ItemInstance(type, 1, getSpawnResourcesAuxValue(data))));
 		}
 
 		if ((data & LEAF_TYPE_MASK) == NORMAL_LEAF && level->random->nextInt(200) == 0)
 		{
-			popResource(level, x, y, z, std::shared_ptr<ItemInstance>(new ItemInstance(Item::apple_Id, 1, 0)));
+			popResource(level, x, y, z, shared_ptr<ItemInstance>(new ItemInstance(Item::apple_Id, 1, 0)));
 		}
 	}
 }
 
-void LeafTile::playerDestroy(Level *level, std::shared_ptr<Player> player, int x, int y, int z, int data)
+void LeafTile::playerDestroy(Level *level, shared_ptr<Player> player, int x, int y, int z, int data)
 {
     if (!level->isClientSide && player->getSelectedItem() != NULL && player->getSelectedItem()->id == Item::shears->id)
 	{
@@ -261,7 +261,7 @@ void LeafTile::playerDestroy(Level *level, std::shared_ptr<Player> player, int x
 			);
 
         // drop leaf block instead of sapling
-        popResource(level, x, y, z, std::shared_ptr<ItemInstance>(new ItemInstance(Tile::leaves_Id, 1, data & LEAF_TYPE_MASK)));
+        popResource(level, x, y, z, shared_ptr<ItemInstance>(new ItemInstance(Tile::leaves_Id, 1, data & LEAF_TYPE_MASK)));
     }
 	else
 	{
@@ -301,12 +301,12 @@ void LeafTile::setFancy(bool fancyGraphics)
     fancyTextureSet = (fancyGraphics ? 0 : 1);
 }
 
-std::shared_ptr<ItemInstance> LeafTile::getSilkTouchItemInstance(int data)
+shared_ptr<ItemInstance> LeafTile::getSilkTouchItemInstance(int data)
 {
-	return std::shared_ptr<ItemInstance>( new ItemInstance(id, 1, data & LEAF_TYPE_MASK) );
+	return shared_ptr<ItemInstance>( new ItemInstance(id, 1, data & LEAF_TYPE_MASK) );
 }
 
-void LeafTile::stepOn(Level *level, int x, int y, int z, std::shared_ptr<Entity> entity)
+void LeafTile::stepOn(Level *level, int x, int y, int z, shared_ptr<Entity> entity)
 {
 	TransparentTile::stepOn(level, x, y, z, entity);
 }

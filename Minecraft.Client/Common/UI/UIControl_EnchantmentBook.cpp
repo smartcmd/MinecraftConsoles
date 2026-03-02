@@ -100,7 +100,7 @@ void UIControl_EnchantmentBook::tickBook()
 {
 	UIScene_EnchantingMenu *m_containerScene = (UIScene_EnchantingMenu *)m_parentScene;
 	EnchantmentMenu *menu = m_containerScene->getMenu();
-	std::shared_ptr<ItemInstance> current = menu->getSlot(0)->getItem();
+	shared_ptr<ItemInstance> current = menu->getSlot(0)->getItem();
 	if (!ItemInstance::matches(current, last))
 	{
         last = current;
@@ -122,7 +122,7 @@ void UIControl_EnchantmentBook::tickBook()
 		{
             shouldBeOpen = true;
         }
-    }
+    } 
 
     if (shouldBeOpen) open += 0.2f;
     else open -= 0.2f;

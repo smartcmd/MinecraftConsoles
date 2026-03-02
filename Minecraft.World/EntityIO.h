@@ -44,12 +44,12 @@ private:
 
 public:
 	static void staticCtor();
-	static std::shared_ptr<Entity> newEntity(const wstring& id, Level *level);
-	static std::shared_ptr<Entity> loadStatic(CompoundTag *tag, Level *level);
-	static std::shared_ptr<Entity> newById(int id, Level *level);
-	static std::shared_ptr<Entity> newByEnumType(eINSTANCEOF eType, Level *level);
-	static int getId(std::shared_ptr<Entity> entity);
-	static wstring getEncodeId(std::shared_ptr<Entity> entity);
+	static shared_ptr<Entity> newEntity(const wstring& id, Level *level);
+	static shared_ptr<Entity> loadStatic(CompoundTag *tag, Level *level);
+	static shared_ptr<Entity> newById(int id, Level *level);
+	static shared_ptr<Entity> newByEnumType(eINSTANCEOF eType, Level *level);
+	static int getId(shared_ptr<Entity> entity);
+	static wstring getEncodeId(shared_ptr<Entity> entity);
 	static int getId(const wstring &encodeId);
 	static wstring getEncodeId(int entityIoValue);
 	static int getNameId(int entityIoValue);

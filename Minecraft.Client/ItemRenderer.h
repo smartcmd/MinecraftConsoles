@@ -18,20 +18,20 @@ public:
 
     ItemRenderer();
 	virtual ~ItemRenderer();
-    virtual void render(std::shared_ptr<Entity> _itemEntity, double x, double y, double z, float rot, float a);
+    virtual void render(shared_ptr<Entity> _itemEntity, double x, double y, double z, float rot, float a);
 
 private:
-	virtual void renderItemBillboard(std::shared_ptr<ItemEntity> entity, Icon *icon, int count, float a, float red, float green, float blue);
+	virtual void renderItemBillboard(shared_ptr<ItemEntity> entity, Icon *icon, int count, float a, float red, float green, float blue);
 
 public:
 	// 4J - original 2 interface variants
-	void renderGuiItem(Font *font, Textures *textures, std::shared_ptr<ItemInstance> item, int x, int y);
-    void renderAndDecorateItem(Font *font, Textures *textures, const std::shared_ptr<ItemInstance> item, int x, int y);
+	void renderGuiItem(Font *font, Textures *textures, shared_ptr<ItemInstance> item, int x, int y);
+    void renderAndDecorateItem(Font *font, Textures *textures, const shared_ptr<ItemInstance> item, int x, int y);
 	// 4J - new interfaces added
-	void renderGuiItem(Font *font, Textures *textures, std::shared_ptr<ItemInstance> item, float x, float y, float fScale, float fAlpha);
-	void renderGuiItem(Font *font, Textures *textures, std::shared_ptr<ItemInstance> item, float x, float y, float fScaleX,float fScaleY, float fAlpha, bool useCompiled); // 4J Added useCompiled
-	void renderAndDecorateItem(Font *font, Textures *textures, const std::shared_ptr<ItemInstance> item, float x, float y, float fScale, float fAlpha, bool isFoil);
-	void renderAndDecorateItem(Font *font, Textures *textures, const std::shared_ptr<ItemInstance> item, float x, float y, float fScaleX, float fScaleY, float fAlpha, bool isFoil, bool isConstantBlended, bool useCompiled = true);	// 4J - added isConstantBlended and useCompiled
+	void renderGuiItem(Font *font, Textures *textures, shared_ptr<ItemInstance> item, float x, float y, float fScale, float fAlpha);
+	void renderGuiItem(Font *font, Textures *textures, shared_ptr<ItemInstance> item, float x, float y, float fScaleX,float fScaleY, float fAlpha, bool useCompiled); // 4J Added useCompiled
+	void renderAndDecorateItem(Font *font, Textures *textures, const shared_ptr<ItemInstance> item, float x, float y, float fScale, float fAlpha, bool isFoil);
+	void renderAndDecorateItem(Font *font, Textures *textures, const shared_ptr<ItemInstance> item, float x, float y, float fScaleX, float fScaleY, float fAlpha, bool isFoil, bool isConstantBlended, bool useCompiled = true);	// 4J - added isConstantBlended and useCompiled
 
 	// 4J Added
 	virtual void SetItemFrame(bool bSet)	{m_bItemFrame=bSet;}
@@ -42,8 +42,8 @@ private:
 	void blitGlint(int id, float x, float y, float w, float h);		// 4J - changed x,y,w,h to floats
 
 public:
-    void renderGuiItemDecorations(Font *font, Textures *textures, std::shared_ptr<ItemInstance> item, int x, int y, float fAlpha = 1.0f);
-	void renderGuiItemDecorations(Font *font, Textures *textures, std::shared_ptr<ItemInstance> item, int x, int y, const wstring &countText, float fAlpha = 1.0f);
+    void renderGuiItemDecorations(Font *font, Textures *textures, shared_ptr<ItemInstance> item, int x, int y, float fAlpha = 1.0f);
+	void renderGuiItemDecorations(Font *font, Textures *textures, shared_ptr<ItemInstance> item, int x, int y, const wstring &countText, float fAlpha = 1.0f);
 private:
 	void fillRect(Tesselator *t, int x, int y, int w, int h, int c);
 public:

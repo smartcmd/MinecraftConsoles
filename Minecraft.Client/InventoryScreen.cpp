@@ -10,7 +10,7 @@
 #include "StatsScreen.h"
 #include "..\Minecraft.World\net.minecraft.stats.h"
 
-InventoryScreen::InventoryScreen(std::shared_ptr<Player> player) : AbstractContainerScreen(player->inventoryMenu)
+InventoryScreen::InventoryScreen(shared_ptr<Player> player) : AbstractContainerScreen(player->inventoryMenu)
 {
 	xMouse = yMouse = 0.0f; // 4J added
 

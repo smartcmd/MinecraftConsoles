@@ -47,7 +47,7 @@ private:
 	floatArray pows;
 
 public:
-	RandomLevelSource(Level *level, int64_t seed, bool generateStructures);
+	RandomLevelSource(Level *level, __int64 seed, bool generateStructures);
 	~RandomLevelSource();
 
 public:
@@ -88,5 +88,5 @@ public:
 
 public:
 	virtual vector<Biome::MobSpawnerData *> *getMobsAt(MobCategory *mobCategory, int x, int y, int z);
-	virtual TilePos *findNearestMapFeature(Level *level, const wstring& featureName, int x, int y, int z);
+	virtual TilePos *findNearestMapFeature(Level *level, const wstring& featureName, int x, int y, int z); 
 };

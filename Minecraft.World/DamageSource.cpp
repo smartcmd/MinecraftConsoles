@@ -24,22 +24,22 @@ DamageSource *DamageSource::wither = (new DamageSource(ChatPacket::e_ChatDeathWi
 DamageSource *DamageSource::anvil = (new DamageSource(ChatPacket::e_ChatDeathAnvil));
 DamageSource *DamageSource::fallingBlock = (new DamageSource(ChatPacket::e_ChatDeathFallingBlock));
 
-DamageSource *DamageSource::mobAttack(std::shared_ptr<Mob> mob)
+DamageSource *DamageSource::mobAttack(shared_ptr<Mob> mob)
 {
 	return new EntityDamageSource(ChatPacket::e_ChatDeathMob, mob);
 }
 
-DamageSource *DamageSource::playerAttack(std::shared_ptr<Player> player)
+DamageSource *DamageSource::playerAttack(shared_ptr<Player> player)
 {
 	return new EntityDamageSource(ChatPacket::e_ChatDeathPlayer, player);
 }
 
-DamageSource *DamageSource::arrow(std::shared_ptr<Arrow> arrow, std::shared_ptr<Entity> owner)
+DamageSource *DamageSource::arrow(shared_ptr<Arrow> arrow, shared_ptr<Entity> owner)
 {
 	return (new IndirectEntityDamageSource(ChatPacket::e_ChatDeathArrow, arrow, owner))->setProjectile();
 }
 
-DamageSource *DamageSource::fireball(std::shared_ptr<Fireball> fireball, std::shared_ptr<Entity> owner)
+DamageSource *DamageSource::fireball(shared_ptr<Fireball> fireball, shared_ptr<Entity> owner)
 {
 	if (owner == NULL)
 	{
@@ -48,17 +48,17 @@ DamageSource *DamageSource::fireball(std::shared_ptr<Fireball> fireball, std::sh
 	return (new IndirectEntityDamageSource(ChatPacket::e_ChatDeathFireball, fireball, owner))->setIsFire()->setProjectile();
 }
 
-DamageSource *DamageSource::thrown(std::shared_ptr<Entity> entity, std::shared_ptr<Entity> owner)
+DamageSource *DamageSource::thrown(shared_ptr<Entity> entity, shared_ptr<Entity> owner)
 {
 	return (new IndirectEntityDamageSource(ChatPacket::e_ChatDeathThrown, entity, owner))->setProjectile();
 }
 
-DamageSource *DamageSource::indirectMagic(std::shared_ptr<Entity> entity, std::shared_ptr<Entity> owner)
+DamageSource *DamageSource::indirectMagic(shared_ptr<Entity> entity, shared_ptr<Entity> owner)
 {
 	return (new IndirectEntityDamageSource(ChatPacket::e_ChatDeathIndirectMagic, entity, owner) )->bypassArmor()->setMagic();;
 }
 
-DamageSource *DamageSource::thorns(std::shared_ptr<Entity> source)
+DamageSource *DamageSource::thorns(shared_ptr<Entity> source)
 {
 	return (new EntityDamageSource(ChatPacket::e_ChatDeathThorns, source))->setMagic();
 }
@@ -106,14 +106,14 @@ DamageSource::DamageSource(ChatPacket::EChatPacketMessage msgId)
 	m_msgId = msgId;
 }
 
-std::shared_ptr<Entity> DamageSource::getDirectEntity()
+shared_ptr<Entity> DamageSource::getDirectEntity()
 {
 	return getEntity();
 }
 
-std::shared_ptr<Entity> DamageSource::getEntity()
+shared_ptr<Entity> DamageSource::getEntity()
 {
-	return std::shared_ptr<Entity>();
+	return shared_ptr<Entity>();
 }
 
 DamageSource *DamageSource::bypassArmor()
@@ -158,15 +158,15 @@ DamageSource *DamageSource::setMagic()
 	return this;
 }
 
-//wstring DamageSource::getLocalizedDeathMessage(std::shared_ptr<Player> player)
+//wstring DamageSource::getLocalizedDeathMessage(shared_ptr<Player> player)
 //{
 //	return L"death." + msgId + player->name;
 //	//return I18n.get(L"death." + msgId, player.name);
 //}
 
-std::shared_ptr<ChatPacket> DamageSource::getDeathMessagePacket(std::shared_ptr<Player> player)
+shared_ptr<ChatPacket> DamageSource::getDeathMessagePacket(shared_ptr<Player> player)
 {
-	return std::shared_ptr<ChatPacket>( new ChatPacket(player->name, m_msgId ) );
+	return shared_ptr<ChatPacket>( new ChatPacket(player->name, m_msgId ) );
 }
 
 bool DamageSource::isFire()

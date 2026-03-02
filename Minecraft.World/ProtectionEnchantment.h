@@ -28,6 +28,6 @@ public:
 	virtual int getDamageProtection(int level, DamageSource *source);
 	virtual int getDescriptionId();
 	virtual bool isCompatibleWith(Enchantment *other) const;
-	static int getFireAfterDampener(std::shared_ptr<Entity> entity, int time);
-	static double getExplosionKnockbackAfterDampener(std::shared_ptr<Entity> entity, double power);
+	static int getFireAfterDampener(shared_ptr<Entity> entity, int time);
+	static double getExplosionKnockbackAfterDampener(shared_ptr<Entity> entity, double power);
 };

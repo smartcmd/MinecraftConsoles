@@ -45,7 +45,7 @@ template<typename T>
 request
 communicator::isend(int dest, int tag, const skeleton_proxy<T>& proxy) const
 {
-  std::shared_ptr<packed_skeleton_oarchive>
+  shared_ptr<packed_skeleton_oarchive> 
     archive(new packed_skeleton_oarchive(*this));
 
   *archive << proxy.object;
@@ -58,13 +58,13 @@ namespace detail {
   template<typename T>
   struct serialized_irecv_data<const skeleton_proxy<T> >
   {
-    serialized_irecv_data(const communicator& comm, int source, int tag,
+    serialized_irecv_data(const communicator& comm, int source, int tag, 
                           skeleton_proxy<T> proxy)
-      : comm(comm), source(source), tag(tag), isa(comm),
+      : comm(comm), source(source), tag(tag), isa(comm), 
         ia(isa.get_skeleton()), proxy(proxy) { }
 
-    void deserialize(status& stat)
-    {
+    void deserialize(status& stat) 
+    { 
       isa >> proxy.object;
       stat.m_count = 1;
     }
@@ -84,7 +84,7 @@ namespace detail {
   {
     typedef serialized_irecv_data<const skeleton_proxy<T> > inherited;
 
-    serialized_irecv_data(const communicator& comm, int source, int tag,
+    serialized_irecv_data(const communicator& comm, int source, int tag, 
                           const skeleton_proxy<T>& proxy)
       : inherited(comm, source, tag, proxy) { }
   };

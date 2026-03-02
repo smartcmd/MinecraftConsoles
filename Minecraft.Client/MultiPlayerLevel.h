@@ -52,21 +52,21 @@ public:
     void setChunkVisible(int x, int z, bool visible);
 
 private:
-	unordered_map<int, std::shared_ptr<Entity>, IntKeyHash2, IntKeyEq> entitiesById;	// 4J - was IntHashMap
-    unordered_set<std::shared_ptr<Entity> > forced;
-    unordered_set<std::shared_ptr<Entity> > reEntries;
+	unordered_map<int, shared_ptr<Entity>, IntKeyHash2, IntKeyEq> entitiesById;	// 4J - was IntHashMap
+    unordered_set<shared_ptr<Entity> > forced;
+    unordered_set<shared_ptr<Entity> > reEntries;
 
 public:
-	virtual bool addEntity(std::shared_ptr<Entity> e);
-    virtual void removeEntity(std::shared_ptr<Entity> e);
+	virtual bool addEntity(shared_ptr<Entity> e);
+    virtual void removeEntity(shared_ptr<Entity> e);
 protected:
-	virtual void entityAdded(std::shared_ptr<Entity> e);
-    virtual void entityRemoved(std::shared_ptr<Entity> e);
+	virtual void entityAdded(shared_ptr<Entity> e);
+    virtual void entityRemoved(shared_ptr<Entity> e);
 public:
-	void putEntity(int id, std::shared_ptr<Entity> e);
-    std::shared_ptr<Entity> getEntity(int id);
-    std::shared_ptr<Entity> removeEntity(int id);
-	virtual void removeEntities(vector<std::shared_ptr<Entity> > *list); // 4J Added override
+	void putEntity(int id, shared_ptr<Entity> e);
+    shared_ptr<Entity> getEntity(int id);
+    shared_ptr<Entity> removeEntity(int id);
+	virtual void removeEntities(vector<shared_ptr<Entity> > *list); // 4J Added override
     virtual bool setDataNoUpdate(int x, int y, int z, int data);
     virtual bool setTileAndDataNoUpdate(int x, int y, int z, int tile, int data);
     virtual bool setTileNoUpdate(int x, int y, int z, int tile);
@@ -75,7 +75,7 @@ public:
 	void animateTick(int xt, int yt, int zt);
 protected:
 	virtual void tickWeather();
-
+	
 	static const int ANIMATE_TICK_MAX_PARTICLES = 500;
 
 public:
@@ -85,7 +85,7 @@ public:
 public:
 	void removeAllPendingEntityRemovals();
 
-	virtual void playSound(std::shared_ptr<Entity> entity, int iSound, float volume, float pitch);
+	virtual void playSound(shared_ptr<Entity> entity, int iSound, float volume, float pitch);
 
 	virtual void playLocalSound(double x, double y, double z, int iSound, float volume, float pitch, float fClipSoundDist=16.0f);
 

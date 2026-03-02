@@ -36,7 +36,7 @@ HRESULT CXuiCtrlSlotItemCtrlBase::OnDestroy( HXUIOBJ hObj )
 
 HRESULT CXuiCtrlSlotItemCtrlBase::OnCustomMessage_GetSlotItem(HXUIOBJ hObj, CustomMessage_GetSlotItem_Struct *pData, BOOL& bHandled)
 {
-	std::shared_ptr<ItemInstance> item = std::shared_ptr<ItemInstance>();
+	shared_ptr<ItemInstance> item = shared_ptr<ItemInstance>();
 
 	void* pvUserData;
 	XuiElementGetUserData( hObj, &pvUserData );
@@ -49,7 +49,7 @@ HRESULT CXuiCtrlSlotItemCtrlBase::OnCustomMessage_GetSlotItem(HXUIOBJ hObj, Cust
 	}
 	else if(pUserDataContainer->m_iPad >= 0 && pUserDataContainer->m_iPad < XUSER_MAX_COUNT)
 	{
-		std::shared_ptr<Player> player = dynamic_pointer_cast<Player>( Minecraft::GetInstance()->localplayers[pUserDataContainer->m_iPad] );
+		shared_ptr<Player> player = dynamic_pointer_cast<Player>( Minecraft::GetInstance()->localplayers[pUserDataContainer->m_iPad] );
 		if(player != NULL) item = player->inventory->getCarried();
 	}
 
@@ -64,7 +64,7 @@ HRESULT CXuiCtrlSlotItemCtrlBase::OnCustomMessage_GetSlotItem(HXUIOBJ hObj, Cust
 		// 11 bits - auxval
 		//  6 bits - count
 		//  6 bits - scale
-		pData->iDataBitField = MAKE_SLOTDISPLAY_DATA_BITMASK(pUserDataContainer->m_iPad, (int)(31*pUserDataContainer->m_fAlpha),true,item->GetCount(),7,item->popTime);
+		pData->iDataBitField = MAKE_SLOTDISPLAY_DATA_BITMASK(pUserDataContainer->m_iPad, (int)(31*pUserDataContainer->m_fAlpha),true,item->GetCount(),7,item->popTime); 
 	}
 	else
 	{
@@ -93,7 +93,7 @@ void CXuiCtrlSlotItemCtrlBase::SetUserIndex(  HXUIOBJ hObj, int iPad )
 	XuiElementGetUserData( hObj, &pvUserData );
 
 	SlotControlUserDataContainer* pUserDataContainer = (SlotControlUserDataContainer*)pvUserData;
-
+	
 	pUserDataContainer->m_iPad = iPad;
 }
 
@@ -103,7 +103,7 @@ void CXuiCtrlSlotItemCtrlBase::SetAlpha(  HXUIOBJ hObj, float fAlpha )
 	XuiElementGetUserData( hObj, &pvUserData );
 
 	SlotControlUserDataContainer* pUserDataContainer = (SlotControlUserDataContainer*)pvUserData;
-
+	
 	pUserDataContainer->m_fAlpha = fAlpha;
 }
 
@@ -119,7 +119,7 @@ bool CXuiCtrlSlotItemCtrlBase::isEmpty( HXUIOBJ hObj )
 	}
 	else if(pUserDataContainer->m_iPad >= 0 && pUserDataContainer->m_iPad < XUSER_MAX_COUNT)
 	{
-		std::shared_ptr<Player> player = dynamic_pointer_cast<Player>( Minecraft::GetInstance()->localplayers[pUserDataContainer->m_iPad] );
+		shared_ptr<Player> player = dynamic_pointer_cast<Player>( Minecraft::GetInstance()->localplayers[pUserDataContainer->m_iPad] );
 		if(player != NULL) return player->inventory->getCarried() == NULL;
 
 	}
@@ -146,7 +146,7 @@ wstring CXuiCtrlSlotItemCtrlBase::GetItemDescription( HXUIOBJ hObj, vector<wstri
 			}
 			else
 			{
-				firstLine = false;
+				firstLine = false;				
 				wchar_t formatted[256];
 				eMinecraftColour rarityColour = pUserDataContainer->slot->getItem()->getRarity()->color;
 				int colour = app.GetHTMLColour(rarityColour);
@@ -156,7 +156,7 @@ wstring CXuiCtrlSlotItemCtrlBase::GetItemDescription( HXUIOBJ hObj, vector<wstri
 					colour = app.GetHTMLColour(eTextColor_RenamedItemTitle);
 				}
 
-				swprintf(formatted, 256, L"<font color=\"#%08x\">%s</font>",colour,thisString.c_str());
+				swprintf(formatted, 256, L"<font color=\"#%08x\">%s</font>",colour,thisString.c_str());				
 				thisString = formatted;
 			}
 			desc.append( thisString );
@@ -167,10 +167,10 @@ wstring CXuiCtrlSlotItemCtrlBase::GetItemDescription( HXUIOBJ hObj, vector<wstri
 	}
 	else if(pUserDataContainer->m_iPad >= 0 && pUserDataContainer->m_iPad < XUSER_MAX_COUNT)
 	{
-		std::shared_ptr<Player> player = dynamic_pointer_cast<Player>( Minecraft::GetInstance()->localplayers[pUserDataContainer->m_iPad] );
+		shared_ptr<Player> player = dynamic_pointer_cast<Player>( Minecraft::GetInstance()->localplayers[pUserDataContainer->m_iPad] );
 		if(player != NULL)
 		{
-			std::shared_ptr<ItemInstance> item = player->inventory->getCarried();
+			shared_ptr<ItemInstance> item = player->inventory->getCarried();
 			if(item != NULL) return app.GetString( item->getDescriptionId() );
 		}
 
@@ -178,7 +178,7 @@ wstring CXuiCtrlSlotItemCtrlBase::GetItemDescription( HXUIOBJ hObj, vector<wstri
 	return L"";
 }
 
-std::shared_ptr<ItemInstance> CXuiCtrlSlotItemCtrlBase::getItemInstance( HXUIOBJ hObj )
+shared_ptr<ItemInstance> CXuiCtrlSlotItemCtrlBase::getItemInstance( HXUIOBJ hObj )
 {
 	void* pvUserData;
 	XuiElementGetUserData( hObj, &pvUserData );
@@ -190,7 +190,7 @@ std::shared_ptr<ItemInstance> CXuiCtrlSlotItemCtrlBase::getItemInstance( HXUIOBJ
 	}
 	else if(pUserDataContainer->m_iPad >= 0 && pUserDataContainer->m_iPad < XUSER_MAX_COUNT)
 	{
-		std::shared_ptr<Player> player = dynamic_pointer_cast<Player>( Minecraft::GetInstance()->localplayers[pUserDataContainer->m_iPad] );
+		shared_ptr<Player> player = dynamic_pointer_cast<Player>( Minecraft::GetInstance()->localplayers[pUserDataContainer->m_iPad] );
 		if(player != NULL) return player->inventory->getCarried();
 
 	}
@@ -221,7 +221,7 @@ HRESULT CXuiCtrlSlotItemCtrlBase::OnKeyDown(HXUIOBJ hObj, XUIMessageInput *pInpu
 
 		XUIMessage message;
 		XUIMessageInput messageInput;
-
+	
 		XuiMessageInput( &message, &messageInput, XUI_KEYDOWN, pInputData->dwKeyCode, pInputData->wch, pInputData->dwFlags, pInputData->UserIndex );
 
 		if (HRESULT_SUCCEEDED(hr))
@@ -268,7 +268,7 @@ int CXuiCtrlSlotItemCtrlBase::GetObjectCount( HXUIOBJ hObj )
 	}
 	else if(pUserDataContainer->m_iPad >= 0 && pUserDataContainer->m_iPad < XUSER_MAX_COUNT)
 	{
-		std::shared_ptr<Player> player = dynamic_pointer_cast<Player>( Minecraft::GetInstance()->localplayers[pUserDataContainer->m_iPad] );
+		shared_ptr<Player> player = dynamic_pointer_cast<Player>( Minecraft::GetInstance()->localplayers[pUserDataContainer->m_iPad] );
 		if(player != NULL && player->inventory->getCarried() != NULL)
 		{
 			iCount = player->inventory->getCarried()->count;
@@ -309,7 +309,7 @@ bool CXuiCtrlSlotItemCtrlBase::IsSameItemAs( HXUIOBJ hThisObj, HXUIOBJ hOtherObj
 	}
 	else if(pThisUserDataContainer->m_iPad >= 0 && pThisUserDataContainer->m_iPad < XUSER_MAX_COUNT)
 	{
-		std::shared_ptr<Player> player = dynamic_pointer_cast<Player>( Minecraft::GetInstance()->localplayers[pThisUserDataContainer->m_iPad] );
+		shared_ptr<Player> player = dynamic_pointer_cast<Player>( Minecraft::GetInstance()->localplayers[pThisUserDataContainer->m_iPad] );
 		if(player != NULL && player->inventory->getCarried() != NULL)
 		{
 			iThisID = player->inventory->getCarried()->id;
@@ -336,7 +336,7 @@ bool CXuiCtrlSlotItemCtrlBase::IsSameItemAs( HXUIOBJ hThisObj, HXUIOBJ hOtherObj
 	}
 	else if(pOtherUserDataContainer->m_iPad >= 0 && pOtherUserDataContainer->m_iPad < XUSER_MAX_COUNT)
 	{
-		std::shared_ptr<Player> player = dynamic_pointer_cast<Player>( Minecraft::GetInstance()->localplayers[pOtherUserDataContainer->m_iPad] );
+		shared_ptr<Player> player = dynamic_pointer_cast<Player>( Minecraft::GetInstance()->localplayers[pOtherUserDataContainer->m_iPad] );
 		if(player != NULL && player->inventory->getCarried() != NULL)
 		{
 			iOtherID = player->inventory->getCarried()->id;
@@ -358,7 +358,7 @@ bool CXuiCtrlSlotItemCtrlBase::IsSameItemAs( HXUIOBJ hThisObj, HXUIOBJ hOtherObj
 
 // 4J WESTY : Pointer Prototype : Added to support prototype only.
 // Returns number of items that can still be stacked into this slot.
-int	CXuiCtrlSlotItemCtrlBase::GetEmptyStackSpace( HXUIOBJ hObj )
+int	CXuiCtrlSlotItemCtrlBase::GetEmptyStackSpace( HXUIOBJ hObj )		
 {
 	int iResult = 0;
 

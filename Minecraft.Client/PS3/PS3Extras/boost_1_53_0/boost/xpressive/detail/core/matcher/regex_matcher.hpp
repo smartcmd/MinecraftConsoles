@@ -34,7 +34,7 @@ namespace boost { namespace xpressive { namespace detail
     {
         regex_impl<BidiIter> impl_;
 
-        regex_matcher(std::shared_ptr<regex_impl<BidiIter> > const &impl)
+        regex_matcher(shared_ptr<regex_impl<BidiIter> > const &impl)
           : impl_()
         {
             this->impl_.xpr_ = impl->xpr_;

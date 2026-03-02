@@ -124,7 +124,7 @@ HRESULT CXuiCtrlMinecraftSlot::OnGetSourceImage(XUIMessageGetSourceImage* pData,
 
 				// if the id is greater than or equal to 32000, then it's an xzp icon, not a game icon
 				if(m_iID<32000)
-				{
+				{		
 					// 4J Stu - Some parent controls may overide this, others will leave it as what we passed in
 
 					m_iPad	= GET_SLOTDISPLAY_USERINDEX_FROM_DATA_BITMASK(MsgGetSlotItem.iDataBitField);
@@ -188,7 +188,7 @@ HRESULT CXuiCtrlMinecraftSlot::OnRender(XUIMessageRender *pRenderData, BOOL &bHa
 	{
 		HXUIDC hDC = pRenderData->hDC;
 		CXuiControl xuiControl(m_hObj);
-		if(m_item == NULL) m_item = std::shared_ptr<ItemInstance>( new ItemInstance(m_iID, m_iCount, m_iAuxVal) );
+		if(m_item == NULL) m_item = shared_ptr<ItemInstance>( new ItemInstance(m_iID, m_iCount, m_iAuxVal) );
 
 		// build and render with the game call
 
@@ -208,15 +208,15 @@ HRESULT CXuiCtrlMinecraftSlot::OnRender(XUIMessageRender *pRenderData, BOOL &bHa
 		// we might want separate x & y scales here
 
 		float scaleX = bwidth / 16.0f;
-		float scaleY = bheight / 16.0f;
+		float scaleY = bheight / 16.0f;				
 
 		// apply any scale in the matrix too
 		scaleX *= matrix._11;
-		scaleY *= matrix._22;
+		scaleY *= matrix._22;					
 
 		// Annoyingly, XUI renders everything to a z of 0 so if we want to render anything that needs the z-buffer on top of it, then we need to clear it.
 		// Clear just the region required for this control.
-		D3DRECT clearRect;
+		D3DRECT clearRect; 
 		clearRect.x1 = (int)(matrix._41) - 2;
 		clearRect.y1 = (int)(matrix._42) - 2;
 		clearRect.x2 = (int)(matrix._41 + ( bwidth  * matrix._11 )) + 2;
@@ -253,7 +253,7 @@ HRESULT CXuiCtrlMinecraftSlot::OnRender(XUIMessageRender *pRenderData, BOOL &bHa
 
 		//Make sure that pMinecraft->player is the correct player so that player specific rendering
 		// eg clock and compass, are rendered correctly
-		std::shared_ptr<MultiplayerLocalPlayer> oldPlayer = pMinecraft->player;
+		shared_ptr<MultiplayerLocalPlayer> oldPlayer = pMinecraft->player;
 
 		if( m_iPad >= 0 && m_iPad < XUSER_MAX_COUNT ) pMinecraft->player = pMinecraft->localplayers[m_iPad];
 
@@ -281,8 +281,8 @@ HRESULT CXuiCtrlMinecraftSlot::OnRender(XUIMessageRender *pRenderData, BOOL &bHa
 		if(m_bDecorations)
 		{
 			if((scaleX!=1.0f) ||(scaleY!=1.0f))
-			{
-				glPushMatrix();
+			{				
+				glPushMatrix();		
 				glScalef(scaleX, scaleY, 1.0f);
 				int iX= (int)(0.5f+((float)x)/scaleX);
 				int iY= (int)(0.5f+((float)y)/scaleY);
@@ -317,7 +317,7 @@ void CXuiCtrlMinecraftSlot::SetIcon(int iPad, int iId,int iAuxVal, int iCount, i
 
 	// aux value for diggers can go as high as 1561
 	//const _Tier *_Tier::DIAMOND = new _Tier(3, 1561, 8, 3); //
-	// setMaxDamage(tier->getUses());
+	// setMaxDamage(tier->getUses()); 
 
 	// 	int ItemInstance::getDamageValue()
 	// 	{
@@ -343,7 +343,7 @@ void CXuiCtrlMinecraftSlot::SetIcon(int iPad, int iId,int iAuxVal, int iCount, i
 	XuiElementSetShow(m_hObj,bShow);
 }
 
-void CXuiCtrlMinecraftSlot::SetIcon(int iPad, std::shared_ptr<ItemInstance> item, int iScale, unsigned int uiAlpha,bool bDecorations, BOOL bShow)
+void CXuiCtrlMinecraftSlot::SetIcon(int iPad, shared_ptr<ItemInstance> item, int iScale, unsigned int uiAlpha,bool bDecorations, BOOL bShow)
 {
 	m_item = item;
 	m_isFoil = item->isFoil();

@@ -16,22 +16,22 @@ public:
 	byte yRot, xRot, yHeadRot;
 
 private:
-	std::shared_ptr<SynchedEntityData> entityData;
-	vector<std::shared_ptr<SynchedEntityData::DataItem> > *unpack;
+	shared_ptr<SynchedEntityData> entityData;
+	vector<shared_ptr<SynchedEntityData::DataItem> > *unpack;
 
 public:
 	AddMobPacket();
 	~AddMobPacket();
-	AddMobPacket(std::shared_ptr<Mob> mob, int yRotp, int xRotp, int xp, int yp, int zp, int yHeadRotp);
+	AddMobPacket(shared_ptr<Mob> mob, int yRotp, int xRotp, int xp, int yp, int zp, int yHeadRotp);
 
 	virtual void read(DataInputStream *dis);
 	virtual void write(DataOutputStream *dos);
 	virtual void handle(PacketListener *listener);
 	virtual int getEstimatedSize();
 
-	vector<std::shared_ptr<SynchedEntityData::DataItem> > *getUnpackedData();
+	vector<shared_ptr<SynchedEntityData::DataItem> > *getUnpackedData();
 
 public:
-	static std::shared_ptr<Packet> create() { return std::shared_ptr<Packet>(new AddMobPacket()); }
+	static shared_ptr<Packet> create() { return shared_ptr<Packet>(new AddMobPacket()); }
 	virtual int getId() { return 24; }
 };

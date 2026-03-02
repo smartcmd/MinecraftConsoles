@@ -8,7 +8,7 @@ class ProgressListener;
 class LevelData;
 class ConsoleSaveFile;
 
-class DirectoryLevelStorageSource : public LevelStorageSource
+class DirectoryLevelStorageSource : public LevelStorageSource 
 {
 protected:
 	const File baseDir;
@@ -27,7 +27,7 @@ protected:
 	static void deleteRecursive(vector<File *> *files);
 
 public:
-	virtual std::shared_ptr<LevelStorage> selectLevel(ConsoleSaveFile *saveFile, const wstring& levelId, bool createPlayerDir);
+	virtual shared_ptr<LevelStorage> selectLevel(ConsoleSaveFile *saveFile, const wstring& levelId, bool createPlayerDir);
     virtual bool isConvertible(ConsoleSaveFile *saveFile, const wstring& levelId);
     virtual bool requiresConversion(ConsoleSaveFile *saveFile, const wstring& levelId);
     virtual bool convertLevel(ConsoleSaveFile *saveFile, const wstring& levelId, ProgressListener *progress);

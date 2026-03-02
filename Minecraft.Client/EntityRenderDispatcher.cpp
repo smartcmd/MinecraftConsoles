@@ -168,12 +168,12 @@ EntityRenderer *EntityRenderDispatcher::getRenderer(eINSTANCEOF e)
 	return it->second;
 }
 
-EntityRenderer *EntityRenderDispatcher::getRenderer(std::shared_ptr<Entity> e)
+EntityRenderer *EntityRenderDispatcher::getRenderer(shared_ptr<Entity> e)
 {
 	return getRenderer(e->GetType());
 }
 
-void EntityRenderDispatcher::prepare(Level *level, Textures *textures, Font *font, std::shared_ptr<Mob> player, Options *options, float a)
+void EntityRenderDispatcher::prepare(Level *level, Textures *textures, Font *font, shared_ptr<Mob> player, Options *options, float a)
 {
     this->level = level;
     this->textures = textures;
@@ -197,7 +197,7 @@ void EntityRenderDispatcher::prepare(Level *level, Textures *textures, Font *fon
         playerRotX = player->xRotO + (player->xRot - player->xRotO) * a;
     }
 
-	std::shared_ptr<Player> pl = dynamic_pointer_cast<Player>(player);
+	shared_ptr<Player> pl = dynamic_pointer_cast<Player>(player);
 	if (pl->ThirdPersonView() == 2)
 	{
 		playerRotY += 180;
@@ -209,7 +209,7 @@ void EntityRenderDispatcher::prepare(Level *level, Textures *textures, Font *fon
 
 }
 
-void EntityRenderDispatcher::render(std::shared_ptr<Entity> entity, float a)
+void EntityRenderDispatcher::render(shared_ptr<Entity> entity, float a)
 {
     double x = entity->xOld + (entity->x - entity->xOld) * a;
     double y = entity->yOld + (entity->y - entity->yOld) * a;
@@ -230,7 +230,7 @@ void EntityRenderDispatcher::render(std::shared_ptr<Entity> entity, float a)
 		}
 	}
     float r = entity->yRotO + (rotDiff) * a;
-
+ 
     int col = entity->getLightColor(a);
 	if (entity->isOnFire())
 	{
@@ -244,13 +244,13 @@ void EntityRenderDispatcher::render(std::shared_ptr<Entity> entity, float a)
     render(entity, x - xOff, y - yOff, z - zOff, r, a);
 }
 
-void EntityRenderDispatcher::render(std::shared_ptr<Entity> entity, double x, double y, double z, float rot, float a, bool bItemFrame, bool bRenderPlayerShadow)
+void EntityRenderDispatcher::render(shared_ptr<Entity> entity, double x, double y, double z, float rot, float a, bool bItemFrame, bool bRenderPlayerShadow)
 {
 	EntityRenderer *renderer = getRenderer(entity);
     if (renderer != NULL)
-	{
+	{	
 		renderer->SetItemFrame(bItemFrame);
-
+		
 		renderer->render(entity, x, y, z, rot, a);
         renderer->postRender(entity, x, y, z, rot, a, bRenderPlayerShadow);
     }

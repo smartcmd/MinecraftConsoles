@@ -12,20 +12,20 @@ private:
 
 public:
 	ThinFenceTile(int id, const wstring &tex, const wstring &edgeTex, Material *material, bool dropsResources);
-	virtual int getResource(int data, Random *random, int playerBonusLevel);
+	virtual int getResource(int data, Random *random, int playerBonusLevel); 
 	virtual bool isSolidRender(bool isServerLevel = false);
     virtual bool isCubeShaped();
     virtual int getRenderShape();
     virtual bool shouldRenderFace(LevelSource *level, int x, int y, int z, int face);
-    virtual void addAABBs(Level *level, int x, int y, int z, AABB *box, AABBList *boxes, std::shared_ptr<Entity> source);
+    virtual void addAABBs(Level *level, int x, int y, int z, AABB *box, AABBList *boxes, shared_ptr<Entity> source);
     virtual void updateDefaultShape();
-    virtual void updateShape(LevelSource *level, int x, int y, int z, int forceData = -1, std::shared_ptr<TileEntity> forceEntity = std::shared_ptr<TileEntity>());	// 4J added forceData, forceEntity param
+    virtual void updateShape(LevelSource *level, int x, int y, int z, int forceData = -1, shared_ptr<TileEntity> forceEntity = shared_ptr<TileEntity>());	// 4J added forceData, forceEntity param
     virtual Icon *getEdgeTexture();
     bool attachsTo(int tile);
 
 protected:
 	bool isSilkTouchable();
-	std::shared_ptr<ItemInstance> getSilkTouchItemInstance(int data);
+	shared_ptr<ItemInstance> getSilkTouchItemInstance(int data);
 
 public:
 	void registerIcons(IconRegister *iconRegister);

@@ -6,7 +6,7 @@
 // (C) Copyright 2007-8 Anthony Williams
 
 #include <boost/thread/detail/config.hpp>
-#include <boost/std::shared_ptr.hpp>
+#include <boost/shared_ptr.hpp>
 #include <boost/thread/detail/thread_heap_alloc.hpp>
 
 #include <boost/config/abi_prefix.hpp>
@@ -19,11 +19,11 @@ namespace boost
         {
             virtual ~tss_cleanup_function()
             {}
-
+            
             virtual void operator()(void* data)=0;
         };
-
-        BOOST_THREAD_DECL void set_tss_data(void const* key,boost::std::shared_ptr<tss_cleanup_function> func,void* tss_data,bool cleanup_existing);
+        
+        BOOST_THREAD_DECL void set_tss_data(void const* key,boost::shared_ptr<tss_cleanup_function> func,void* tss_data,bool cleanup_existing);
         BOOST_THREAD_DECL void* get_tss_data(void const* key);
     }
 
@@ -42,16 +42,16 @@ namespace boost
                 delete static_cast<T*>(data);
             }
         };
-
+        
         struct run_custom_cleanup_function:
             detail::tss_cleanup_function
         {
             void (*cleanup_function)(T*);
-
+            
             explicit run_custom_cleanup_function(void (*cleanup_function_)(T*)):
                 cleanup_function(cleanup_function_)
             {}
-
+            
             void operator()(void* data)
             {
                 cleanup_function(static_cast<T*>(data));
@@ -59,11 +59,11 @@ namespace boost
         };
 
 
-        boost::std::shared_ptr<detail::tss_cleanup_function> cleanup;
-
+        boost::shared_ptr<detail::tss_cleanup_function> cleanup;
+        
     public:
         typedef T element_type;
-
+        
         thread_specific_ptr():
             cleanup(detail::heap_new<delete_data>(),detail::do_heap_delete<delete_data>())
         {}
@@ -76,7 +76,7 @@ namespace boost
         }
         ~thread_specific_ptr()
         {
-            detail::set_tss_data(this,boost::std::shared_ptr<detail::tss_cleanup_function>(),0,true);
+            detail::set_tss_data(this,boost::shared_ptr<detail::tss_cleanup_function>(),0,true);
         }
 
         T* get() const
@@ -94,7 +94,7 @@ namespace boost
         T* release()
         {
             T* const temp=get();
-            detail::set_tss_data(this,boost::std::shared_ptr<detail::tss_cleanup_function>(),0,false);
+            detail::set_tss_data(this,boost::shared_ptr<detail::tss_cleanup_function>(),0,false);
             return temp;
         }
         void reset(T* new_value=0)

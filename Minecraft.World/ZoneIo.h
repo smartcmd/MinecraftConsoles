@@ -7,10 +7,10 @@ class ZoneIo
 {
 private:
     HANDLE channel;
-    int64_t pos;
+    __int64 pos;
 
 public:
-	ZoneIo(HANDLE channel, int64_t pos);
+	ZoneIo(HANDLE channel, __int64 pos);
     void write(byteArray bb, int size);
     void write(ByteBuffer *bb, int size);
     ByteBuffer *read(int size);

@@ -12,5 +12,5 @@ protected:
 public:
     virtual void updateDefaultShape(); // 4J Added override
     virtual int getResource(int data, Random *random, int playerBonusLevel);
-	virtual void playerDestroy(Level *level, std::shared_ptr<Player> player, int x, int y, int z, int data);
+	virtual void playerDestroy(Level *level, shared_ptr<Player> player, int x, int y, int z, int data);
 };

@@ -18,7 +18,7 @@ EntityActionAtPositionPacket::EntityActionAtPositionPacket()
 	action = 0;
 }
 
-EntityActionAtPositionPacket::EntityActionAtPositionPacket(std::shared_ptr<Entity> e, int action, int x, int y, int z)
+EntityActionAtPositionPacket::EntityActionAtPositionPacket(shared_ptr<Entity> e, int action, int x, int y, int z)
 {
 	this->action = action;
 	this->x = x;
@@ -27,7 +27,7 @@ EntityActionAtPositionPacket::EntityActionAtPositionPacket(std::shared_ptr<Entit
 	this->id = e->entityId;
 }
 
-void EntityActionAtPositionPacket::read(DataInputStream *dis) //throws IOException
+void EntityActionAtPositionPacket::read(DataInputStream *dis) //throws IOException 
 {
 	id = dis->readInt();
 	action = dis->readByte();

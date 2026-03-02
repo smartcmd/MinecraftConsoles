@@ -307,7 +307,7 @@ void CConsoleMinecraftApp::TemporaryCreateGameStart()
 	wstring wWorldName = L"TestWorld";
 
 	bool isFlat = false;
-	int64_t seedValue = 0;//BiomeSource::findSeed(isFlat?LevelType::lvl_flat:LevelType::lvl_normal);	// 4J - was (new Random())->nextLong() - now trying to actually find a seed to suit our requirements
+	__int64 seedValue = 0;//BiomeSource::findSeed(isFlat?LevelType::lvl_flat:LevelType::lvl_normal);	// 4J - was (new Random())->nextLong() - now trying to actually find a seed to suit our requirements
 
 	NetworkGameInitData *param = new NetworkGameInitData();
 	param->seed = seedValue;
@@ -320,7 +320,7 @@ void CConsoleMinecraftApp::TemporaryCreateGameStart()
 	app.SetGameHostOption(eGameHostOption_Gamertags,1);
 	app.SetGameHostOption(eGameHostOption_BedrockFog,1);
 
-	app.SetGameHostOption(eGameHostOption_GameType,GameType::CREATIVE->getId());
+	app.SetGameHostOption(eGameHostOption_GameType,GameType::CREATIVE->getId());	
 	app.SetGameHostOption(eGameHostOption_LevelType, 0 );
 	app.SetGameHostOption(eGameHostOption_Structures, 1 );
 	app.SetGameHostOption(eGameHostOption_BonusChest, 0 );
@@ -391,7 +391,7 @@ void CConsoleMinecraftApp::CommerceTick()
 
 			break;
 		case eCommerce_State_GetProductList:
-			{
+			{	
 				m_eCommerce_State=eCommerce_State_GetProductList_Pending;
 				SonyCommerce::CategoryInfo *pCategories=app.GetCategoryInfo();
 				std::list<SonyCommerce::CategoryInfoSub>::iterator iter = pCategories->subCategories.begin();
@@ -407,7 +407,7 @@ void CConsoleMinecraftApp::CommerceTick()
 
 			break;
 		case eCommerce_State_AddProductInfoDetailed:
-			{
+			{	
 				m_eCommerce_State=eCommerce_State_AddProductInfoDetailed_Pending;
 
 				// for each of the products in the categories, get the detailed info. We really only need the long description and price info.
@@ -444,7 +444,7 @@ void CConsoleMinecraftApp::CommerceTick()
 			break;
 
 		case eCommerce_State_RegisterDLC:
-			{
+			{	
 				m_eCommerce_State=eCommerce_State_Online;
 				// register the DLC info
 				SonyCommerce::CategoryInfo *pCategories=app.GetCategoryInfo();
@@ -531,20 +531,20 @@ SonyCommerce::CategoryInfo *CConsoleMinecraftApp::GetCategoryInfo()
 
 	return &m_CategoryInfo;
 }
-#endif
+#endif 
 
 void CConsoleMinecraftApp::ClearCommerceDetails()
 {
 #ifdef VITA_COMMERCE_ENABLED
 	for(int i=0;i<m_ProductListCategoriesC;i++)
 	{
-		std::vector<SonyCommerce::ProductInfo>* pProductList=&m_ProductListA[i];
+		std::vector<SonyCommerce::ProductInfo>* pProductList=&m_ProductListA[i];	
 		pProductList->clear();
 	}
 
 	if(m_ProductListA!=NULL)
 	{
-		delete [] m_ProductListA;
+		delete [] m_ProductListA;	
 		m_ProductListA=NULL;
 	}
 
@@ -580,11 +580,11 @@ void CConsoleMinecraftApp::GetDLCSkuIDFromProductList(char * pchDLCProductID, ch
 			{
 				SonyCommerce::ProductInfo Info=*it;
 				if(strcmp(pchDLCProductID,Info.productId)==0)
-				{
+				{	
 					memcpy(pchSkuID,Info.skuId,SCE_NP_COMMERCE2_SKU_ID_LEN);
 					return;
 				}
-			}
+			}		
 		}
 	}
 	return;
@@ -607,18 +607,18 @@ void CConsoleMinecraftApp::Checkout(char *pchSkuID)
 			{
 				SonyCommerce::ProductInfo Info=*it;
 				if(strcmp(pchSkuID,Info.skuId)==0)
-				{
+				{	
 					productInfo = &(*it);
 					break;
 				}
-			}
+			}		
 		}
 	}
 
 	if(productInfo)
 	{
 		if(m_eCommerce_State==eCommerce_State_Online)
-		{
+		{	
 			strcpy(m_pchSkuID,productInfo->skuId);
 			m_pCheckoutProductInfo = productInfo;
 			m_eCommerce_State=eCommerce_State_Checkout;
@@ -633,7 +633,7 @@ void CConsoleMinecraftApp::Checkout(char *pchSkuID)
 void CConsoleMinecraftApp::DownloadAlreadyPurchased(char *pchSkuID)
 {
 	if(m_eCommerce_State==eCommerce_State_Online)
-	{
+	{	
 		strcpy(m_pchSkuID,pchSkuID);
 		m_eCommerce_State=eCommerce_State_DownloadAlreadyPurchased;
 	}
@@ -642,7 +642,7 @@ void CConsoleMinecraftApp::DownloadAlreadyPurchased(char *pchSkuID)
 bool CConsoleMinecraftApp::UpgradeTrial()
 {
 	if(m_eCommerce_State==eCommerce_State_Online)
-	{
+	{	
 		m_eCommerce_State=eCommerce_State_UpgradeTrial;
 		return true;
 	}
@@ -687,7 +687,7 @@ bool CConsoleMinecraftApp::DLCAlreadyPurchased(char *pchTitle)
 			{
 				SonyCommerce::ProductInfo Info=*it;
 				if(strcmp(pchTitle,Info.skuId)==0)
-				{
+				{				
 					if(Info.purchasabilityFlag==SCE_TOOLKIT_NP_COMMERCE_NOT_PURCHASED)
 					{
 						return false;
@@ -697,7 +697,7 @@ bool CConsoleMinecraftApp::DLCAlreadyPurchased(char *pchTitle)
 						return true;
 					}
 				}
-			}
+			}		
 		}
 	}
 #endif //#ifdef VITA_COMMERCE_ENABLED
@@ -734,7 +734,7 @@ void CConsoleMinecraftApp::CommerceGetCategoriesCallback(LPVOID lpParam,int err)
 	if(err==0)
 	{
 		pClass->m_ProductListCategoriesC=pClass->m_CategoryInfo.countOfSubCategories;
-		// allocate the memory for the product info for each categories
+		// allocate the memory for the product info for each categories 
 		if(pClass->m_CategoryInfo.countOfSubCategories>0)
 		{
 			pClass->m_ProductListA = (std::vector<SonyCommerce::ProductInfo> *) new std::vector<SonyCommerce::ProductInfo> [pClass->m_CategoryInfo.countOfSubCategories];
@@ -768,7 +768,7 @@ void CConsoleMinecraftApp::CommerceGetProductListCallback(LPVOID lpParam,int err
 		{
 			// we're done, so now retrieve the additional product details for each product
 			pClass->m_eCommerce_State=eCommerce_State_AddProductInfoDetailed;
-			pClass->m_bCommerceProductListRetrieved=true;
+			pClass->m_bCommerceProductListRetrieved=true;		
 		}
 		else
 		{
@@ -778,21 +778,21 @@ void CConsoleMinecraftApp::CommerceGetProductListCallback(LPVOID lpParam,int err
 	else
 	{
 		pClass->m_eCommerce_State=eCommerce_State_Error;
-		pClass->m_bCommerceProductListRetrieved=true;
+		pClass->m_bCommerceProductListRetrieved=true;		
 	}
 }
 
 // void CConsoleMinecraftApp::CommerceGetDetailedProductInfoCallback(LPVOID lpParam,int err)
 // {
 // 	CConsoleMinecraftApp *pScene=(CConsoleMinecraftApp *)lpParam;
-//
+// 
 // 	if(err==0)
 // 	{
 // 		pScene->m_eCommerce_State=eCommerce_State_Idle;
-// 		//pScene->m_bCommerceProductListRetrieved=true;
+// 		//pScene->m_bCommerceProductListRetrieved=true;		
 // 	}
 // 	//printf("Callback hit, error 0x%08x\n", err);
-//
+// 
 // }
 
 void CConsoleMinecraftApp::CommerceAddDetailedProductInfoCallback(LPVOID lpParam,int err)
@@ -812,7 +812,7 @@ void CConsoleMinecraftApp::CommerceAddDetailedProductInfoCallback(LPVOID lpParam
 		{
 			// MGH - change this to a while loop so we can skip empty categories.
 			do
-			{
+			{ 
 				pClass->m_iCurrentCategory++;
 			}while(pClass->m_ProductListA[pClass->m_iCurrentCategory].size() == 0 && pClass->m_iCurrentCategory<pClass->m_ProductListCategoriesC);
 
@@ -821,12 +821,12 @@ void CConsoleMinecraftApp::CommerceAddDetailedProductInfoCallback(LPVOID lpParam
 			{
 				// there are no more categories, so we're done
 				pClass->m_eCommerce_State=eCommerce_State_RegisterDLC;
-				pClass->m_bProductListAdditionalDetailsRetrieved=true;
+				pClass->m_bProductListAdditionalDetailsRetrieved=true;		
 			}
 			else
 			{
 				// continue with the next category
-				pClass->m_eCommerce_State=eCommerce_State_AddProductInfoDetailed;
+				pClass->m_eCommerce_State=eCommerce_State_AddProductInfoDetailed;				
 			}
 		}
 		else
@@ -838,7 +838,7 @@ void CConsoleMinecraftApp::CommerceAddDetailedProductInfoCallback(LPVOID lpParam
 	else
 	{
 		pClass->m_eCommerce_State=eCommerce_State_Error;
-		pClass->m_bProductListAdditionalDetailsRetrieved=true;
+		pClass->m_bProductListAdditionalDetailsRetrieved=true;	
 		pClass->m_iCurrentProduct=0;
 		pClass->m_iCurrentCategory=0;
 	}
@@ -1109,7 +1109,7 @@ void printSaveState()
 	case C4JStorage::ESaveGame_SaveCache:							strState = "ESaveGame_SaveCache"; break;
 	case C4JStorage::ESaveGame_ReconstructCache:					strState = "ESaveGame_ReconstructCache"; break;
 	}
-
+	
 	app.DebugPrintf("[printSaveState] GetSaveState == %s.\n", strState.c_str());
 #endif
 }
@@ -1156,7 +1156,7 @@ void CConsoleMinecraftApp::SaveDataTick()
 				{
 					app.DebugPrintf("[SaveDataTick] eSaveDataDeleteState_abort.\n");
 					StorageManager.CancelIncompleteOperation();
-				}
+				}	
 				else if (m_bSaveDataDeleteDialogState == eSaveDataDeleteState_continue)
 				{
 					app.DebugPrintf("[SaveDataTick] eSaveDataDeleteState_continue.\n");
@@ -1228,7 +1228,7 @@ void CConsoleMinecraftApp::Callback_SaveGameIncomplete(void *pParam, C4JStorage:
 
 int	CConsoleMinecraftApp::NoSaveSpaceReturned(void *pParam,int iPad,C4JStorage::EMessageResult result)
 {
-	if(result==C4JStorage::EMessage_ResultAccept)
+	if(result==C4JStorage::EMessage_ResultAccept) 
 	{
 		int blocksRequired = (int)pParam;
 		if(blocksRequired > 0)
@@ -1256,7 +1256,7 @@ int CConsoleMinecraftApp::cbConfirmDeleteMessageBox(void *pParam, int iPad, cons
 
 	if (pClass != NULL && pClass->m_pSaveToDelete != NULL)
 	{
-		if (result == C4JStorage::EMessage_ResultDecline)
+		if (result == C4JStorage::EMessage_ResultDecline) 
 		{
 			pClass->m_bSaveDataDeleteDialogState = eSaveDataDeleteState_deleting;
 			C4JStorage::ESaveGameState eDeleteStatus = StorageManager.DeleteSaveData(pClass->m_pSaveToDelete, cbSaveDataDeleted, pClass);
@@ -1290,7 +1290,7 @@ void CConsoleMinecraftApp::initSaveIncompleteDialog(int spaceNeeded)
 
 	param.sysMsgParam->sysMsgType = SCE_SAVEDATA_DIALOG_SYSMSG_TYPE_NOSPACE_CONTINUABLE;
 	param.sysMsgParam->value = (SceInt32) spaceNeeded;
-
+	
 	SceInt32 ret = sceSaveDataDialogInit(&param);
 	if (ret == SCE_OK)
 	{
@@ -1376,13 +1376,13 @@ void CConsoleMinecraftApp::initSaveDataDeleteDialog()
 		// Start getting saves data to use when deleting.
 		if (StorageManager.ReturnSavesInfo() == NULL)
 		{
-			C4JStorage::ESaveGameState eSGIStatus
-				= StorageManager.GetSavesInfo(
+			C4JStorage::ESaveGameState eSGIStatus 
+				= StorageManager.GetSavesInfo( 
 					ProfileManager.GetPrimaryPad(),
-					NULL,
-					this,
+					NULL, 
+					this, 
 					"save"
-				);
+				); 
 		}
 
 		// Dim background because sony doesn't do that.
@@ -1414,7 +1414,7 @@ void CConsoleMinecraftApp::updateSaveDataDeleteDialog()
 		{
 			SceSaveDataDialogResult dialogResult;
 			ZeroMemory(&dialogResult, sizeof(SceSaveDataDialogResult));
-
+		
 			SceInt32 ret = sceSaveDataDialogGetResult(&dialogResult);
 			if (ret == SCE_OK)
 			{
@@ -1438,7 +1438,7 @@ void CConsoleMinecraftApp::updateSaveDataDeleteDialog()
 				{
 					SceAppUtilSaveDataSlotParam slotParam;
 					ret = sceAppUtilSaveDataSlotGetParam( dialogResult.slotId, &slotParam, NULL );
-
+					
 					if (ret == SCE_OK)
 					{
 						int saveindex = -1;
@@ -1469,12 +1469,12 @@ void CConsoleMinecraftApp::updateSaveDataDeleteDialog()
 						{
 							app.DebugPrintf("[SaveDataDeleteDialog] ERROR: PERFORMING DELETE OPERATION, pSavesDetails is null.\n");
 						}
-
+					
 						if (pSaveInfo != NULL)
 						{
 							app.DebugPrintf(
 								"[SaveDataDeleteDialog] User wishes to delete slot_%d:\n\t"
-								"4jsaveindex=%d, filename='%s', title='%s', subtitle='%s', size=%dKiB.\n",
+								"4jsaveindex=%d, filename='%s', title='%s', subtitle='%s', size=%dKiB.\n", 
 								dialogResult.slotId,
 								saveindex,
 								pSaveInfo->UTF8SaveFilename,
@@ -1490,7 +1490,7 @@ void CConsoleMinecraftApp::updateSaveDataDeleteDialog()
 							};
 
 							ui.RequestMessageBox(
-								IDS_TOOLTIPS_DELETESAVE, IDS_TEXT_DELETE_SAVE,
+								IDS_TOOLTIPS_DELETESAVE, IDS_TEXT_DELETE_SAVE, 
 								uiIDA, 2,
 								0,
 								&cbConfirmDeleteMessageBox, this,
@@ -1498,7 +1498,7 @@ void CConsoleMinecraftApp::updateSaveDataDeleteDialog()
 								);
 
 							m_bSaveDataDeleteDialogState = eSaveDataDeleteState_userConfirmation;
-
+					
 							m_pSaveToDelete = pSaveInfo;
 						}
 						else
@@ -1571,7 +1571,7 @@ void CConsoleMinecraftApp::getSaveDataDeleteDialogParam(SceSaveDataDialogParam *
 		{
 			SceAppUtilSaveDataSlotParam slotParam;
 			int ret = sceAppUtilSaveDataSlotGetParam( i, &slotParam, NULL );
-
+		
 			if (ret == SCE_OK)
 			{
 				SceAppUtilSaveDataSlot slot;
@@ -1584,7 +1584,7 @@ void CConsoleMinecraftApp::getSaveDataDeleteDialogParam(SceSaveDataDialogParam *
 				slots.push_back( slot );
 			}
 		}
-
+		
 		SceAppUtilSaveDataSlot *pSavesList = new SceAppUtilSaveDataSlot[slots.size()];
 
 		int slotIndex = 0;
@@ -1618,7 +1618,7 @@ void CConsoleMinecraftApp::getSaveDataDeleteDialogParam(SceSaveDataDialogParam *
 
 	listParam.listTitle = (const SceChar8 *) strPtr;
 	listParam.itemStyle = SCE_SAVEDATA_DIALOG_LIST_ITEM_STYLE_TITLE_SUBTITLE_DATE;
-
+	
 	baseParam->mode = SCE_SAVEDATA_DIALOG_MODE_LIST;
 	baseParam->dispType = SCE_SAVEDATA_DIALOG_TYPE_DELETE;
 	baseParam->listParam = &listParam;
@@ -1659,10 +1659,10 @@ int CConsoleMinecraftApp::cbSaveDataDeleted( void *pParam, const bool success )
 void CConsoleMinecraftApp::finishedDeletingSaves(bool bContinue)
 {
 	app.DebugPrintf( "[finishedDeletingSaves] %s.\n", (bContinue?"Continuing":"Aborting") );
-
+	
 	StorageManager.SetSaveDisabled(false);
 	LeaveSaveNotificationSection();
-
+	
 	StorageManager.ClearSaveError();
 	StorageManager.ClearOptionsSaveError();
 

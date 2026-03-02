@@ -20,13 +20,13 @@ McRegionLevelStorage::~McRegionLevelStorage()
 	RegionFileCache::clear();
 }
 
-ChunkStorage *McRegionLevelStorage::createChunkStorage(Dimension *dimension)
+ChunkStorage *McRegionLevelStorage::createChunkStorage(Dimension *dimension) 
 {
     //File folder = getFolder();
 
     if (dynamic_cast<HellDimension *>(dimension) != NULL)
 	{
-
+ 
 		if(app.GetResetNether())
 		{
 #ifdef SPLIT_SAVES
@@ -43,7 +43,7 @@ ChunkStorage *McRegionLevelStorage::createChunkStorage(Dimension *dimension)
 #else
 			vector<FileEntry *> *netherFiles = m_saveFile->getFilesWithPrefix(LevelStorage::NETHER_FOLDER);
 			if(netherFiles!=NULL)
-			{
+			{		
 				for(AUTO_VAR(it, netherFiles->begin()); it != netherFiles->end(); ++it)
 				{
 					m_saveFile->deleteFile(*it);
@@ -56,13 +56,13 @@ ChunkStorage *McRegionLevelStorage::createChunkStorage(Dimension *dimension)
 
 		return new McRegionChunkStorage(m_saveFile, LevelStorage::NETHER_FOLDER);
     }
-
+	
 	if (dynamic_cast<TheEndDimension *>(dimension))
 	{
 		//File dir2 = new File(folder, LevelStorage.ENDER_FOLDER);
 		//dir2.mkdirs();
 		//return new ThreadedMcRegionChunkStorage(dir2);
-
+		
 		// 4J-PB - save version 0 at this point means it's a create new world
 		int iSaveVersion=m_saveFile->getSaveVersion();
 
@@ -75,7 +75,7 @@ ChunkStorage *McRegionLevelStorage::createChunkStorage(Dimension *dimension)
 
 			// 4J-PB - There will be no End in early saves
 			if(endFiles!=NULL)
-			{
+			{			
 				for(AUTO_VAR(it, endFiles->begin()); it != endFiles->end(); ++it)
 				{
 					m_saveFile->deleteFile(*it);
@@ -89,7 +89,7 @@ ChunkStorage *McRegionLevelStorage::createChunkStorage(Dimension *dimension)
     return new McRegionChunkStorage(m_saveFile, L"");
 }
 
-void McRegionLevelStorage::saveLevelData(LevelData *levelData, vector<std::shared_ptr<Player> > *players)
+void McRegionLevelStorage::saveLevelData(LevelData *levelData, vector<shared_ptr<Player> > *players) 
 {
     levelData->setVersion(MCREGION_VERSION_ID);
 	MemSect(38);
@@ -97,7 +97,7 @@ void McRegionLevelStorage::saveLevelData(LevelData *levelData, vector<std::share
 	MemSect(0);
 }
 
-void McRegionLevelStorage::closeAll()
+void McRegionLevelStorage::closeAll() 
 {
     RegionFileCache::clear();
 }

@@ -41,7 +41,7 @@ private:
 	int activeTileEventsList;
 public:
 	static void staticCtor();
-	ServerLevel(MinecraftServer *server, std::shared_ptr<LevelStorage>levelStorage, const wstring& levelName, int dimension, LevelSettings *levelSettings);
+	ServerLevel(MinecraftServer *server, shared_ptr<LevelStorage>levelStorage, const wstring& levelName, int dimension, LevelSettings *levelSettings);
 	~ServerLevel();
 	void tick();
 	Biome::MobSpawnerData *getRandomMobSpawnAt(MobCategory *mobCategory, int x, int y, int z);
@@ -65,15 +65,15 @@ public:
 	void tickEntities();
 	bool tickPendingTicks(bool force);
 	vector<TickNextTickData> *fetchTicksInChunk(LevelChunk *chunk, bool remove);
-    virtual void tick(std::shared_ptr<Entity> e, bool actual);
-    void forceTick(std::shared_ptr<Entity> e, bool actual);
+    virtual void tick(shared_ptr<Entity> e, bool actual);
+    void forceTick(shared_ptr<Entity> e, bool actual);
 	bool AllPlayersAreSleeping()			{ return allPlayersSleeping;} // 4J added for a message to other players
 	bool isAtLeastOnePlayerSleeping()		{ return m_bAtLeastOnePlayerSleeping;}
 protected:
 	ChunkSource *createChunkSource();	// 4J - was virtual, but was called from parent ctor
 public:
-	vector<std::shared_ptr<TileEntity> > *getTileEntitiesInRegion(int x0, int y0, int z0, int x1, int y1, int z1);
-    virtual bool mayInteract(std::shared_ptr<Player> player, int xt, int yt, int zt, int id);
+	vector<shared_ptr<TileEntity> > *getTileEntitiesInRegion(int x0, int y0, int z0, int x1, int y1, int z1);
+    virtual bool mayInteract(shared_ptr<Player> player, int xt, int yt, int zt, int id);
 protected:
 	virtual void initializeLevel(LevelSettings *settings);
 	virtual void setInitialSpawn(LevelSettings *settings);
@@ -90,16 +90,16 @@ public:
 private:
 	void saveLevelData();
 
-	typedef unordered_map<int, std::shared_ptr<Entity> , IntKeyHash2, IntKeyEq> intEntityMap;
+	typedef unordered_map<int, shared_ptr<Entity> , IntKeyHash2, IntKeyEq> intEntityMap;
 	intEntityMap entitiesById;	// 4J - was IntHashMap, using same hashing function as this uses
 protected:
-	virtual void entityAdded(std::shared_ptr<Entity> e);
-    virtual void entityRemoved(std::shared_ptr<Entity> e);
+	virtual void entityAdded(shared_ptr<Entity> e);
+    virtual void entityRemoved(shared_ptr<Entity> e);
 public:
-	std::shared_ptr<Entity> getEntity(int id);
-    virtual bool addGlobalEntity(std::shared_ptr<Entity> e);
-    void broadcastEntityEvent(std::shared_ptr<Entity> e, byte event);
-    virtual std::shared_ptr<Explosion> explode(std::shared_ptr<Entity> source, double x, double y, double z, float r, bool fire, bool destroyBlocks);
+	shared_ptr<Entity> getEntity(int id);
+    virtual bool addGlobalEntity(shared_ptr<Entity> e);
+    void broadcastEntityEvent(shared_ptr<Entity> e, byte event);
+    virtual shared_ptr<Explosion> explode(shared_ptr<Entity> source, double x, double y, double z, float r, bool fire, bool destroyBlocks);
     virtual void tileEvent(int x, int y, int z, int tile, int b0, int b1);
 
 private:
@@ -114,7 +114,7 @@ protected:
 public:
 	MinecraftServer *getServer();
 	EntityTracker *getTracker();
-	void setTimeAndAdjustTileTicks(int64_t newTime);
+	void setTimeAndAdjustTileTicks(__int64 newTime);
 	PlayerChunkMap *getChunkMap();
 
 	void queueSendTileUpdate(int x, int y, int z); // 4J Added
@@ -134,15 +134,15 @@ public:
 	int							m_primedTntCount;
 	int							m_fallingTileCount;
 	CRITICAL_SECTION			m_limiterCS;
-	list< std::shared_ptr<Entity> >	m_itemEntities;
-	list< std::shared_ptr<Entity> >	m_hangingEntities;
-	list< std::shared_ptr<Entity> >	m_arrowEntities;
-	list< std::shared_ptr<Entity> >	m_experienceOrbEntities;
+	list< shared_ptr<Entity> >	m_itemEntities;
+	list< shared_ptr<Entity> >	m_hangingEntities;
+	list< shared_ptr<Entity> >	m_arrowEntities;
+	list< shared_ptr<Entity> >	m_experienceOrbEntities;
 
-	virtual bool addEntity(std::shared_ptr<Entity> e);
-	void entityAddedExtra(std::shared_ptr<Entity> e);
-	void entityRemovedExtra(std::shared_ptr<Entity> e);
-
+	virtual bool addEntity(shared_ptr<Entity> e);
+	void entityAddedExtra(shared_ptr<Entity> e);
+	void entityRemovedExtra(shared_ptr<Entity> e);
+	
 	virtual bool newPrimedTntAllowed();
 	virtual bool newFallingTileAllowed();
 

@@ -15,7 +15,7 @@
 #include <boost/ref.hpp>
 #include <boost/noncopyable.hpp>
 #include <boost/intrusive_ptr.hpp>
-#include <boost/std::shared_ptr.hpp>
+#include <boost/shared_ptr.hpp>
 #include <boost/weak_ptr.hpp>
 #include <boost/bind.hpp>
 #include <boost/config.hpp> // BOOST_INTEL
@@ -65,7 +65,7 @@ class processor_container : noncopyable
 {
   typedef event_processor< Scheduler > processor_base_type;
   typedef std::auto_ptr< processor_base_type > processor_holder_type;
-  typedef std::shared_ptr< processor_holder_type > processor_holder_ptr_type;
+  typedef shared_ptr< processor_holder_type > processor_holder_ptr_type;
 
   public:
     //////////////////////////////////////////////////////////////////////////
@@ -426,8 +426,8 @@ class processor_container : noncopyable
       }
     }
 
-    typedef std::set<
-      processor_holder_ptr_type,
+    typedef std::set< 
+      processor_holder_ptr_type, 
       std::less< processor_holder_ptr_type >,
       typename boost::detail::allocator::rebind_to<
         Allocator, processor_holder_ptr_type >::type

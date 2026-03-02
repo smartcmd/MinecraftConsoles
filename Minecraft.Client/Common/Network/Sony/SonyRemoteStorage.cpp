@@ -25,11 +25,11 @@ static SceRemoteStorageStatus statParams;
 // {
 // 	app.DebugPrintf("remoteStorageGetCallback err : 0x%08x\n");
 // }
-//
+// 
 // void remoteStorageCallback(LPVOID lpParam, SonyRemoteStorage::Status s, int error_code)
 // {
 // 	app.DebugPrintf("remoteStorageCallback err : 0x%08x\n");
-//
+// 
 // 	app.getRemoteStorage()->getRemoteFileInfo(&statParams, remoteStorageGetInfoCallback, NULL);
 // }
 
@@ -161,17 +161,17 @@ ESavePlatform SonyRemoteStorage::getSavePlatform()
 
 }
 
-int64_t SonyRemoteStorage::getSaveSeed()
+__int64 SonyRemoteStorage::getSaveSeed()
 {
 	if(m_getInfoStatus != e_infoFound)
 		return 0;
 	DescriptionData* pDescData = (DescriptionData*)m_remoteFileInfo->fileDescription;
 
 	char seedString[17];
-	ZeroMemory(seedString,17);
+	ZeroMemory(seedString,17);	
 	memcpy(seedString, pDescData->m_seed,16);
 
-	uint64_t seed = 0;
+	__uint64 seed = 0;
 	std::stringstream ss;
 	ss << seedString;
 	ss >> std::hex >> seed;
@@ -185,7 +185,7 @@ unsigned int SonyRemoteStorage::getSaveHostOptions()
 	DescriptionData* pDescData = (DescriptionData*)m_remoteFileInfo->fileDescription;
 
 	char optionsString[9];
-	ZeroMemory(optionsString,9);
+	ZeroMemory(optionsString,9);	
 	memcpy(optionsString, pDescData->m_hostOptions,8);
 
 	unsigned int uiHostOptions = 0;
@@ -202,7 +202,7 @@ unsigned int SonyRemoteStorage::getSaveTexturePack()
 	DescriptionData* pDescData = (DescriptionData*)m_remoteFileInfo->fileDescription;
 
 	char textureString[9];
-	ZeroMemory(textureString,9);
+	ZeroMemory(textureString,9);	
 	memcpy(textureString, pDescData->m_texturePack,8);
 
 	unsigned int uiTexturePack = 0;
@@ -219,9 +219,9 @@ const char* SonyRemoteStorage::getRemoteSaveFilename()
 
 int SonyRemoteStorage::getSaveFilesize()
 {
-	if(m_getInfoStatus == e_infoFound)
+	if(m_getInfoStatus == e_infoFound) 
 	{
-		return m_remoteFileInfo->fileSize;
+		return m_remoteFileInfo->fileSize; 
 	}
 	return 0;
 }
@@ -284,9 +284,9 @@ bool SonyRemoteStorage::saveIsAvailable()
 	if(m_getInfoStatus != e_infoFound)
 		return false;
 #ifdef __PS3__
-	return (getSavePlatform() == SAVE_FILE_PLATFORM_PSVITA);
+	return (getSavePlatform() == SAVE_FILE_PLATFORM_PSVITA); 
 #elif defined __PSVITA__
-	return (getSavePlatform() == SAVE_FILE_PLATFORM_PS3);
+	return (getSavePlatform() == SAVE_FILE_PLATFORM_PS3); 
 #else // __ORBIS__
 	return true;
 #endif
@@ -294,7 +294,7 @@ bool SonyRemoteStorage::saveIsAvailable()
 
 int SonyRemoteStorage::getDataProgress()
 {
-	int64_t time = System::currentTimeMillis();
+	__int64 time = System::currentTimeMillis();
 	int elapsedSecs = (time - m_startTime) / 1000;
 	int progVal = m_dataProgress + (elapsedSecs/3);
 	if(progVal > 95)
@@ -310,15 +310,15 @@ bool SonyRemoteStorage::shutdown()
 	if(m_bInitialised)
 	{
 		int ret = sceRemoteStorageTerm();
-		if(ret >= 0)
+		if(ret >= 0) 
 		{
 			app.DebugPrintf("Term request done \n");
 			m_bInitialised = false;
 			free(m_memPoolBuffer);
 			m_memPoolBuffer = NULL;
 			return true;
-		}
-		else
+		} 
+		else 
 		{
 			app.DebugPrintf("Error in Term request: 0x%x \n", ret);
 			return false;

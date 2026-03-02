@@ -44,7 +44,7 @@ private:
 	void _init(int id, int count, int auxValue);
 
 	// TU9
-	std::shared_ptr<ItemFrame> frame;
+	shared_ptr<ItemFrame> frame;
 
 public:
 	ItemInstance(Tile *tile);
@@ -58,22 +58,22 @@ public:
 	ItemInstance(Item *item, int count, int auxValue);
 	ItemInstance(int id, int count, int damage);
 
-	static std::shared_ptr<ItemInstance> fromTag(CompoundTag *itemTag);
+	static shared_ptr<ItemInstance> fromTag(CompoundTag *itemTag);
 private:
 	ItemInstance()	{ _init(-1,0,0); }
 
 public:
 	~ItemInstance();
-	std::shared_ptr<ItemInstance> remove(int count);
+	shared_ptr<ItemInstance> remove(int count);
 
 	Item *getItem() const;
 	Icon *getIcon();
 	int getIconType();
-	bool useOn(std::shared_ptr<Player> player, Level *level, int x, int y, int z, int face, float clickX, float clickY, float clickZ, bool bTestUseOnOnly=false);
+	bool useOn(shared_ptr<Player> player, Level *level, int x, int y, int z, int face, float clickX, float clickY, float clickZ, bool bTestUseOnOnly=false);
 	float getDestroySpeed(Tile *tile);
-	bool TestUse(Level *level, std::shared_ptr<Player> player);
-	std::shared_ptr<ItemInstance> use(Level *level, std::shared_ptr<Player> player);
-	std::shared_ptr<ItemInstance> useTimeDepleted(Level *level, std::shared_ptr<Player> player);
+	bool TestUse(Level *level, shared_ptr<Player> player); 
+	shared_ptr<ItemInstance> use(Level *level, shared_ptr<Player> player);
+	shared_ptr<ItemInstance> useTimeDepleted(Level *level, shared_ptr<Player> player);
 	CompoundTag *save(CompoundTag *compoundTag);
 	void load(CompoundTag *compoundTag);
 	int getMaxStackSize();
@@ -85,16 +85,16 @@ public:
 	int getAuxValue() const;
 	void setAuxValue(int value);
 	int getMaxDamage();
-	void hurt(int i, std::shared_ptr<Mob> owner);
-	void hurtEnemy(std::shared_ptr<Mob> mob, std::shared_ptr<Player> attacker);
-	void mineBlock(Level *level, int tile, int x, int y, int z, std::shared_ptr<Player> owner);
-	int getAttackDamage(std::shared_ptr<Entity> entity);
+	void hurt(int i, shared_ptr<Mob> owner);
+	void hurtEnemy(shared_ptr<Mob> mob, shared_ptr<Player> attacker);
+	void mineBlock(Level *level, int tile, int x, int y, int z, shared_ptr<Player> owner);
+	int getAttackDamage(shared_ptr<Entity> entity);
 	bool canDestroySpecial(Tile *tile);
-	bool interactEnemy(std::shared_ptr<Mob> mob);
-	std::shared_ptr<ItemInstance> copy() const;
+	bool interactEnemy(shared_ptr<Mob> mob);
+	shared_ptr<ItemInstance> copy() const;
 	ItemInstance *copy_not_shared() const; // 4J Stu - Added for use in recipes
-	static bool tagMatches(std::shared_ptr<ItemInstance> a, std::shared_ptr<ItemInstance> b); // 4J Brought forward from 1.2
-	static bool matches(std::shared_ptr<ItemInstance> a, std::shared_ptr<ItemInstance> b);
+	static bool tagMatches(shared_ptr<ItemInstance> a, shared_ptr<ItemInstance> b); // 4J Brought forward from 1.2
+	static bool matches(shared_ptr<ItemInstance> a, shared_ptr<ItemInstance> b);
 
 	// 4J-PB
 	int GetCount() {return count;}
@@ -102,24 +102,24 @@ public:
 	bool GetForceNumberDisplay() {return m_bForceNumberDisplay;} // to force the display of 0 and 1 on the required trading items when you have o or 1 of the item
 
 private:
-	bool matches(std::shared_ptr<ItemInstance> b);
+	bool matches(shared_ptr<ItemInstance> b);
 
 public:
-	bool sameItem(std::shared_ptr<ItemInstance> b);
-	bool sameItemWithTags(std::shared_ptr<ItemInstance> b); //4J Added
+	bool sameItem(shared_ptr<ItemInstance> b);
+	bool sameItemWithTags(shared_ptr<ItemInstance> b); //4J Added
 	bool sameItem_not_shared(ItemInstance *b); // 4J Stu - Added this for the one time I need it
 	virtual unsigned int getUseDescriptionId(); // 4J Added
 	virtual unsigned int getDescriptionId(int iData = -1);
 	virtual ItemInstance *setDescriptionId(unsigned int id);
-	static std::shared_ptr<ItemInstance> clone(std::shared_ptr<ItemInstance> item);
+	static shared_ptr<ItemInstance> clone(shared_ptr<ItemInstance> item);
 	wstring toString();
-	void inventoryTick(Level *level, std::shared_ptr<Entity> owner, int slot, bool selected);
-	void onCraftedBy(Level *level, std::shared_ptr<Player> player, int craftCount);
-	bool equals(std::shared_ptr<ItemInstance> ii);
+	void inventoryTick(Level *level, shared_ptr<Entity> owner, int slot, bool selected);
+	void onCraftedBy(Level *level, shared_ptr<Player> player, int craftCount);
+	bool equals(shared_ptr<ItemInstance> ii);
 
 	int getUseDuration();
 	UseAnim getUseAnimation();
-	void releaseUsing(Level *level, std::shared_ptr<Player> player, int durationLeft);
+	void releaseUsing(Level *level, shared_ptr<Player> player, int durationLeft);
 
 	// 4J Stu - Brought forward these functions for enchanting/game rules
 	bool hasTag();
@@ -129,8 +129,8 @@ public:
 	wstring getHoverName();
 	void setHoverName(const wstring &name);
 	bool hasCustomHoverName();
-	vector<wstring> *getHoverText(std::shared_ptr<Player> player, bool advanced, vector<wstring> &unformattedStrings);
-	vector<wstring> *getHoverTextOnly(std::shared_ptr<Player> player, bool advanced, vector<wstring> &unformattedStrings); // 4J Added
+	vector<wstring> *getHoverText(shared_ptr<Player> player, bool advanced, vector<wstring> &unformattedStrings);
+	vector<wstring> *getHoverTextOnly(shared_ptr<Player> player, bool advanced, vector<wstring> &unformattedStrings); // 4J Added
 	bool isFoil();
 	const Rarity *getRarity();
 	bool isEnchantable();
@@ -146,8 +146,8 @@ public:
 
 	// TU9
 	bool isFramed();
-	void setFramed(std::shared_ptr<ItemFrame> frame);
-	std::shared_ptr<ItemFrame> getFrame();
+	void setFramed(shared_ptr<ItemFrame> frame);
+	shared_ptr<ItemFrame> getFrame();
 
 	int getBaseRepairCost();
 	void setRepairCost(int cost);

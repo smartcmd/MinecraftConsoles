@@ -18,12 +18,12 @@ private:
 public:
 	SkullItem(int id);
 
-	bool useOn(std::shared_ptr<ItemInstance> instance, std::shared_ptr<Player> player, Level *level, int x, int y, int z, int face, float clickX, float clickY, float clickZ, bool bTestUseOnOnly=false);
-	bool mayPlace(Level *level, int x, int y, int z, int face, std::shared_ptr<Player> player, std::shared_ptr<ItemInstance> item);
+	bool useOn(shared_ptr<ItemInstance> instance, shared_ptr<Player> player, Level *level, int x, int y, int z, int face, float clickX, float clickY, float clickZ, bool bTestUseOnOnly=false);
+	bool mayPlace(Level *level, int x, int y, int z, int face, shared_ptr<Player> player, shared_ptr<ItemInstance> item);
 	Icon *getIcon(int itemAuxValue);
 	int getLevelDataForAuxValue(int auxValue);
 	virtual unsigned int getDescriptionId(int iData = -1);
-	unsigned int getDescriptionId(std::shared_ptr<ItemInstance> instance);
-	wstring getHoverName(std::shared_ptr<ItemInstance> itemInstance);
+	unsigned int getDescriptionId(shared_ptr<ItemInstance> instance);
+	wstring getHoverName(shared_ptr<ItemInstance> itemInstance);
 	void registerIcons(IconRegister *iconRegister);
 };

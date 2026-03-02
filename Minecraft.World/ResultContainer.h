@@ -12,14 +12,14 @@ public:
 	ResultContainer();
 
 	virtual unsigned int getContainerSize();
-	virtual std::shared_ptr<ItemInstance> getItem(unsigned int slot);
+	virtual shared_ptr<ItemInstance> getItem(unsigned int slot);
 	virtual int getName();
-	virtual std::shared_ptr<ItemInstance> removeItem(unsigned int slot, int count);
-	virtual std::shared_ptr<ItemInstance> removeItemNoUpdate(int slot);
-	virtual void setItem(unsigned int slot, std::shared_ptr<ItemInstance> item);
+	virtual shared_ptr<ItemInstance> removeItem(unsigned int slot, int count);
+	virtual shared_ptr<ItemInstance> removeItemNoUpdate(int slot);
+	virtual void setItem(unsigned int slot, shared_ptr<ItemInstance> item);
 	virtual int getMaxStackSize();
 	virtual void setChanged();
-	virtual bool stillValid(std::shared_ptr<Player> player);
+	virtual bool stillValid(shared_ptr<Player> player);
 
 	void startOpen() { } // TODO Auto-generated method stub
 	void stopOpen() { } // TODO Auto-generated method stub

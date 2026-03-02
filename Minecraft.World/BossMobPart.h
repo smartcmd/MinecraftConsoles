@@ -23,5 +23,5 @@ protected:
 public:
 	virtual bool isPickable();
 	virtual bool hurt(DamageSource *source, int damage);
-	virtual bool is(std::shared_ptr<Entity> other);
+	virtual bool is(shared_ptr<Entity> other);
 };

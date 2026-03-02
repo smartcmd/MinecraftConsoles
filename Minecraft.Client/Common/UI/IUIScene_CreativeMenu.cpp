@@ -12,16 +12,16 @@
 // 4J JEV - Images for each tab.
 IUIScene_CreativeMenu::TabSpec **IUIScene_CreativeMenu::specs = NULL;
 
-vector< std::shared_ptr<ItemInstance> > IUIScene_CreativeMenu::categoryGroups[eCreativeInventoryGroupsCount];
+vector< shared_ptr<ItemInstance> > IUIScene_CreativeMenu::categoryGroups[eCreativeInventoryGroupsCount];
 
-#define ITEM(id) list->push_back( std::shared_ptr<ItemInstance>(new ItemInstance(id, 1, 0)) );
-#define ITEM_AUX(id, aux) list->push_back( std::shared_ptr<ItemInstance>(new ItemInstance(id, 1, aux)) );
+#define ITEM(id) list->push_back( shared_ptr<ItemInstance>(new ItemInstance(id, 1, 0)) );
+#define ITEM_AUX(id, aux) list->push_back( shared_ptr<ItemInstance>(new ItemInstance(id, 1, aux)) );
 #define DEF(index) list = &categoryGroups[index];
 
 
 void IUIScene_CreativeMenu::staticCtor()
 {
-	vector< std::shared_ptr<ItemInstance> > *list;
+	vector< shared_ptr<ItemInstance> > *list;
 
 
 	// Building Blocks
@@ -56,7 +56,7 @@ void IUIScene_CreativeMenu::staticCtor()
 		ITEM_AUX(Tile::treeTrunk_Id, 0)
 		ITEM_AUX(Tile::treeTrunk_Id, TreeTile::DARK_TRUNK)
 		ITEM_AUX(Tile::treeTrunk_Id, TreeTile::BIRCH_TRUNK)
-		ITEM_AUX(Tile::treeTrunk_Id, TreeTile::JUNGLE_TRUNK)
+		ITEM_AUX(Tile::treeTrunk_Id, TreeTile::JUNGLE_TRUNK)	
 		ITEM(Tile::gravel_Id)
 		ITEM(Tile::redBrick_Id)
 		ITEM(Tile::mossStone_Id)
@@ -118,7 +118,7 @@ void IUIScene_CreativeMenu::staticCtor()
 		ITEM(Tile::sponge_Id)
 		ITEM(Tile::melon_Id)
 		ITEM(Tile::pumpkin_Id)
-		ITEM(Tile::litPumpkin_Id)
+		ITEM(Tile::litPumpkin_Id)	
 		ITEM_AUX(Tile::sapling_Id, Sapling::TYPE_DEFAULT)
 		ITEM_AUX(Tile::sapling_Id, Sapling::TYPE_EVERGREEN)
 		ITEM_AUX(Tile::sapling_Id, Sapling::TYPE_BIRCH)
@@ -232,7 +232,7 @@ void IUIScene_CreativeMenu::staticCtor()
 		ITEM_AUX(Tile::cobbleWall_Id, WallTile::TYPE_MOSSY)
 		ITEM(Item::bed_Id)
 		ITEM(Item::bucket_empty_Id)
-		ITEM(Item::bucket_lava_Id)
+		ITEM(Item::bucket_lava_Id)	
 		ITEM(Item::bucket_water_Id)
 		ITEM(Item::milk_Id)
 		ITEM(Item::cauldron_Id)
@@ -292,7 +292,7 @@ void IUIScene_CreativeMenu::staticCtor()
 		ITEM(Item::beef_cooked_Id)
 		ITEM(Item::beef_raw_Id)
 		ITEM(Item::chicken_raw_Id)
-		ITEM(Item::chicken_cooked_Id)
+		ITEM(Item::chicken_cooked_Id)		
 		ITEM(Item::rotten_flesh_Id)
 		ITEM(Item::spiderEye_Id)
 		ITEM(Item::potato_Id)
@@ -314,7 +314,7 @@ void IUIScene_CreativeMenu::staticCtor()
 		ITEM(Item::pickAxe_wood_Id)
 		ITEM(Item::hatchet_wood_Id)
 		ITEM(Item::hoe_wood_Id)
-
+		
 		ITEM(Item::map_Id)
 		ITEM(Item::helmet_chain_Id)
 		ITEM(Item::chestplate_chain_Id)
@@ -325,7 +325,7 @@ void IUIScene_CreativeMenu::staticCtor()
 		ITEM(Item::pickAxe_stone_Id)
 		ITEM(Item::hatchet_stone_Id)
 		ITEM(Item::hoe_stone_Id)
-
+		
 		ITEM(Item::bow_Id)
 		ITEM(Item::helmet_iron_Id)
 		ITEM(Item::chestplate_iron_Id)
@@ -336,7 +336,7 @@ void IUIScene_CreativeMenu::staticCtor()
 		ITEM(Item::pickAxe_iron_Id)
 		ITEM(Item::hatchet_iron_Id)
 		ITEM(Item::hoe_iron_Id)
-
+		
 		ITEM(Item::arrow_Id)
 		ITEM(Item::helmet_gold_Id)
 		ITEM(Item::chestplate_gold_Id)
@@ -384,7 +384,7 @@ void IUIScene_CreativeMenu::staticCtor()
 		ITEM(Item::brick_Id)
 		ITEM(Item::netherbrick_Id)
 		ITEM(Item::stick_Id)
-		ITEM(Item::bowl_Id)
+		ITEM(Item::bowl_Id)		
 		ITEM(Item::bone_Id)
 		ITEM(Item::string_Id)
 		ITEM(Item::feather_Id)
@@ -393,13 +393,13 @@ void IUIScene_CreativeMenu::staticCtor()
 		ITEM(Item::sulphur_Id)
 		ITEM(Item::clay_Id)
 		ITEM(Item::yellowDust_Id)
-		ITEM(Item::seeds_wheat_Id)
+		ITEM(Item::seeds_wheat_Id)	
 		ITEM(Item::seeds_melon_Id)
 		ITEM(Item::seeds_pumpkin_Id)
 		ITEM(Item::wheat_Id)
 		ITEM(Item::reeds_Id)
 		ITEM(Item::egg_Id)
-		ITEM(Item::sugar_Id)
+		ITEM(Item::sugar_Id)		
 		ITEM(Item::slimeBall_Id)
 		ITEM(Item::blazeRod_Id)
 		ITEM(Item::goldNugget_Id)
@@ -432,7 +432,7 @@ void IUIScene_CreativeMenu::staticCtor()
 		ITEM(Item::magmaCream_Id)
 		ITEM(Item::speckledMelon_Id)
 		ITEM(Item::glassBottle_Id)
-		ITEM_AUX(Item::potion_Id,0) // Water bottle
+		ITEM_AUX(Item::potion_Id,0) // Water bottle		
 		//ITEM_AUX(Item::potion_Id,MACRO_MAKEPOTION_AUXVAL(0, 0, MASK_TYPE_AWKWARD)) // Awkward Potion
 
 
@@ -464,7 +464,7 @@ void IUIScene_CreativeMenu::staticCtor()
 			//ITEM_AUX(Item::potion_Id,MACRO_MAKEPOTION_AUXVAL(0, MASK_LEVEL2, MASK_INSTANTHEALTH))
 			//ITEM_AUX(Item::potion_Id,MACRO_MAKEPOTION_AUXVAL(0, MASK_LEVEL2, MASK_NIGHTVISION))
 			//ITEM_AUX(Item::potion_Id,MACRO_MAKEPOTION_AUXVAL(0, MASK_LEVEL2, MASK_INVISIBILITY))
-
+			
 			ITEM_AUX(Item::potion_Id,MACRO_MAKEPOTION_AUXVAL(0, 0, MASK_WEAKNESS))
 			ITEM_AUX(Item::potion_Id,MACRO_MAKEPOTION_AUXVAL(0, MASK_LEVEL2, MASK_STRENGTH))
 			ITEM_AUX(Item::potion_Id,MACRO_MAKEPOTION_AUXVAL(0, 0, MASK_SLOWNESS))
@@ -579,7 +579,7 @@ IUIScene_CreativeMenu::IUIScene_CreativeMenu()
 	m_creativeSlotX = m_creativeSlotY = m_inventorySlotX = m_inventorySlotY = 0;
 
 	// 4J JEV - Settup Tabs
-	for (int i = 0; i < eCreativeInventoryTab_COUNT; i++)
+	for (int i = 0; i < eCreativeInventoryTab_COUNT; i++) 
 	{
 		m_tabDynamicPos[i] = 0;
 		m_tabPage[i] = 0;
@@ -594,7 +594,7 @@ void IUIScene_CreativeMenu::switchTab(ECreativeInventoryTabs tab)
 	if(tab != m_curTab) updateTabHighlightAndText(tab);
 
 	m_curTab = tab;
-
+	
 	updateScrollCurrentPage(m_tabPage[m_curTab] + 1, specs[m_curTab]->getPageCount());
 
 	specs[tab]->populateMenu(itemPickerMenu,m_tabDynamicPos[m_curTab], m_tabPage[m_curTab]);
@@ -605,7 +605,7 @@ void IUIScene_CreativeMenu::switchTab(ECreativeInventoryTabs tab)
 IUIScene_CreativeMenu::TabSpec::TabSpec(LPCWSTR icon, int descriptionId, int staticGroupsCount, ECreative_Inventory_Groups *staticGroups, int dynamicGroupsCount, ECreative_Inventory_Groups *dynamicGroups)
 	: m_icon(icon), m_descriptionId(descriptionId), m_staticGroupsCount(staticGroupsCount), m_dynamicGroupsCount(dynamicGroupsCount)
 {
-
+	
 	m_pages = 0;
 	m_staticGroupsA = NULL;
 
@@ -708,10 +708,10 @@ unsigned int IUIScene_CreativeMenu::TabSpec::getPageCount()
 
 
 // 4J JEV - Item Picker Menu
-IUIScene_CreativeMenu::ItemPickerMenu::ItemPickerMenu(	std::shared_ptr<SimpleContainer> smp, std::shared_ptr<Inventory> inv ) : AbstractContainerMenu()
+IUIScene_CreativeMenu::ItemPickerMenu::ItemPickerMenu(	shared_ptr<SimpleContainer> smp, shared_ptr<Inventory> inv ) : AbstractContainerMenu()
 {
 	inventory = inv;
-	creativeContainer = smp;
+	creativeContainer = smp; 
 
 	//int startLength = slots->size();
 
@@ -734,7 +734,7 @@ IUIScene_CreativeMenu::ItemPickerMenu::ItemPickerMenu(	std::shared_ptr<SimpleCon
 	containerId = CONTAINER_ID_CREATIVE;
 }
 
-bool IUIScene_CreativeMenu::ItemPickerMenu::stillValid(std::shared_ptr<Player> player)
+bool IUIScene_CreativeMenu::ItemPickerMenu::stillValid(shared_ptr<Player> player)
 {
 	return true;
 }
@@ -752,7 +752,7 @@ IUIScene_AbstractContainerMenu::ESceneSection IUIScene_CreativeMenu::GetSectionA
 	switch( eSection )
 	{
 	case eSectionInventoryCreativeSelector:
-		if (eTapDirection == eTapStateDown || eTapDirection == eTapStateUp)
+		if (eTapDirection == eTapStateDown || eTapDirection == eTapStateUp) 
 		{
 			newSection = eSectionInventoryCreativeUsing;
 		}
@@ -794,7 +794,7 @@ bool IUIScene_CreativeMenu::handleValidKeyPress(int iPad, int buttonNum, BOOL qu
 		Minecraft *pMinecraft = Minecraft::GetInstance();
 		for(unsigned int i = TabSpec::MAX_SIZE; i < TabSpec::MAX_SIZE + 9; ++i)
 		{
-			std::shared_ptr<ItemInstance> newItem = m_menu->getSlot(i)->getItem();
+			shared_ptr<ItemInstance> newItem = m_menu->getSlot(i)->getItem();
 
 			if(newItem != NULL)
 			{
@@ -813,7 +813,7 @@ void IUIScene_CreativeMenu::handleOutsideClicked(int iPad, int buttonNum, BOOL q
 	// Drop items.
 	Minecraft *pMinecraft = Minecraft::GetInstance();
 
-	std::shared_ptr<Inventory> playerInventory = pMinecraft->localplayers[iPad]->inventory;
+	shared_ptr<Inventory> playerInventory = pMinecraft->localplayers[iPad]->inventory;
 	if (playerInventory->getCarried() != NULL)
 	{
 		if (buttonNum == 0)
@@ -823,7 +823,7 @@ void IUIScene_CreativeMenu::handleOutsideClicked(int iPad, int buttonNum, BOOL q
 		}
 		if (buttonNum == 1)
 		{
-			std::shared_ptr<ItemInstance> removedItem = playerInventory->getCarried()->remove(1);
+			shared_ptr<ItemInstance> removedItem = playerInventory->getCarried()->remove(1);
 			pMinecraft->localgameModes[iPad]->handleCreativeModeItemDrop(removedItem);
 			if (playerInventory->getCarried()->count == 0) playerInventory->setCarried(nullptr);
 		}
@@ -841,7 +841,7 @@ void IUIScene_CreativeMenu::handleAdditionalKeyPress(int iAction)
 		dir = -1;
 		// Fall through intentional
 	case ACTION_MENU_RIGHT_SCROLL:
-		{
+		{		
 			ECreativeInventoryTabs tab = (ECreativeInventoryTabs)(m_curTab + dir);
 			if (tab < 0) tab = (ECreativeInventoryTabs)(eCreativeInventoryTab_COUNT - 1);
 			if (tab >= eCreativeInventoryTab_COUNT) tab = eCreativeInventoryTab_BuildingBlocks;
@@ -894,9 +894,9 @@ void IUIScene_CreativeMenu::handleSlotListClicked(ESceneSection eSection, int bu
 		if (buttonNum == 0)
 		{
 
-			std::shared_ptr<Inventory> playerInventory = pMinecraft->localplayers[getPad()]->inventory;
-			std::shared_ptr<ItemInstance> carried = playerInventory->getCarried();
-			std::shared_ptr<ItemInstance> clicked = m_menu->getSlot(currentIndex)->getItem();
+			shared_ptr<Inventory> playerInventory = pMinecraft->localplayers[getPad()]->inventory;
+			shared_ptr<ItemInstance> carried = playerInventory->getCarried();
+			shared_ptr<ItemInstance> clicked = m_menu->getSlot(currentIndex)->getItem();
 			if (clicked != NULL)
 			{
 				playerInventory->setCarried(ItemInstance::clone(clicked));
@@ -928,7 +928,7 @@ void IUIScene_CreativeMenu::handleSlotListClicked(ESceneSection eSection, int bu
 			quickKeyHeld = FALSE;
 		}
 		m_menu->clicked(currentIndex, buttonNum, quickKeyHeld?AbstractContainerMenu::CLICK_QUICK_MOVE:AbstractContainerMenu::CLICK_PICKUP, pMinecraft->localplayers[getPad()]);
-		std::shared_ptr<ItemInstance> newItem = m_menu->getSlot(currentIndex)->getItem();
+		shared_ptr<ItemInstance> newItem = m_menu->getSlot(currentIndex)->getItem();
 		// call this function to synchronize multiplayer item bar
 		pMinecraft->localgameModes[getPad()]->handleCreativeModeItemAdd(newItem, currentIndex - (int)m_menu->slots->size() + 9 + InventoryMenu::USE_ROW_SLOT_START);
 
@@ -941,7 +941,7 @@ void IUIScene_CreativeMenu::handleSlotListClicked(ESceneSection eSection, int bu
 			m_iCurrSlotX = m_creativeSlotX;
 			m_iCurrSlotY = m_creativeSlotY;
 
-			std::shared_ptr<Inventory> playerInventory = pMinecraft->localplayers[getPad()]->inventory;
+			shared_ptr<Inventory> playerInventory = pMinecraft->localplayers[getPad()]->inventory;
 			playerInventory->setCarried(nullptr);
 			m_bCarryingCreativeItem = false;
 		}
@@ -970,14 +970,14 @@ bool IUIScene_CreativeMenu::CanHaveFocus( ESceneSection eSection )
 	return false;
 }
 
-bool IUIScene_CreativeMenu::getEmptyInventorySlot(std::shared_ptr<ItemInstance> item, int &slotX)
+bool IUIScene_CreativeMenu::getEmptyInventorySlot(shared_ptr<ItemInstance> item, int &slotX)
 {
 	bool sameItemFound = false;
 	bool emptySlotFound = false;
 	// Jump to the slot with this item already on it, if we can stack more
 	for(unsigned int i = TabSpec::MAX_SIZE; i < TabSpec::MAX_SIZE + 9; ++i)
 	{
-		std::shared_ptr<ItemInstance> slotItem = m_menu->getSlot(i)->getItem();
+		shared_ptr<ItemInstance> slotItem = m_menu->getSlot(i)->getItem();
 		if( slotItem != NULL && slotItem->sameItem(item) && (slotItem->GetCount() + item->GetCount() <= item->getMaxStackSize() ))
 		{
 			sameItemFound = true;
@@ -1020,7 +1020,7 @@ int IUIScene_CreativeMenu::getSectionStartOffset(ESceneSection eSection)
 	return offset;
 }
 
-bool IUIScene_CreativeMenu::overrideTooltips(ESceneSection sectionUnderPointer, std::shared_ptr<ItemInstance> itemUnderPointer, bool bIsItemCarried, bool bSlotHasItem, bool bCarriedIsSameAsSlot, int iSlotStackSizeRemaining,
+bool IUIScene_CreativeMenu::overrideTooltips(ESceneSection sectionUnderPointer, shared_ptr<ItemInstance> itemUnderPointer, bool bIsItemCarried, bool bSlotHasItem, bool bCarriedIsSameAsSlot, int iSlotStackSizeRemaining,
 	EToolTipItem &buttonA, EToolTipItem &buttonX, EToolTipItem &buttonY, EToolTipItem &buttonRT)
 {
 	bool _override = false;

@@ -15,7 +15,7 @@
 
 #include <memory> // boost.TR1 include order fix
 #include <boost/smart_ptr/detail/shared_count.hpp>
-#include <boost/smart_ptr/std::shared_ptr.hpp>
+#include <boost/smart_ptr/shared_ptr.hpp>
 
 namespace boost
 {
@@ -124,11 +124,11 @@ public:
     template<class Y>
 #if !defined( BOOST_SP_NO_SP_CONVERTIBLE )
 
-    weak_ptr( std::shared_ptr<Y> const & r, typename boost::detail::sp_enable_if_convertible<Y,T>::type = boost::detail::sp_empty() )
+    weak_ptr( shared_ptr<Y> const & r, typename boost::detail::sp_enable_if_convertible<Y,T>::type = boost::detail::sp_empty() )
 
 #else
 
-    weak_ptr( std::shared_ptr<Y> const & r )
+    weak_ptr( shared_ptr<Y> const & r )
 
 #endif
     BOOST_NOEXCEPT : px( r.px ), pn( r.pn )
@@ -161,7 +161,7 @@ public:
 #endif
 
     template<class Y>
-    weak_ptr & operator=( std::shared_ptr<Y> const & r ) BOOST_NOEXCEPT
+    weak_ptr & operator=( shared_ptr<Y> const & r ) BOOST_NOEXCEPT
     {
         boost::detail::sp_assert_convertible< Y, T >();
 
@@ -173,9 +173,9 @@ public:
 
 #endif
 
-    std::shared_ptr<T> lock() const BOOST_NOEXCEPT
+    shared_ptr<T> lock() const BOOST_NOEXCEPT
     {
-        return std::shared_ptr<T>( *this, boost::detail::sp_nothrow_tag() );
+        return shared_ptr<T>( *this, boost::detail::sp_nothrow_tag() );
     }
 
     long use_count() const BOOST_NOEXCEPT
@@ -216,7 +216,7 @@ public:
         return pn < rhs.pn;
     }
 
-    template<class Y> bool owner_before( std::shared_ptr<Y> const & rhs ) const BOOST_NOEXCEPT
+    template<class Y> bool owner_before( shared_ptr<Y> const & rhs ) const BOOST_NOEXCEPT
     {
         return pn < rhs.pn;
     }
@@ -229,7 +229,7 @@ public:
 private:
 
     template<class Y> friend class weak_ptr;
-    template<class Y> friend class std::shared_ptr;
+    template<class Y> friend class shared_ptr;
 
 #endif
 

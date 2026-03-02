@@ -3,10 +3,10 @@
 #include "ModelPart.h"
 #include "EnderChestRenderer.h"
 
-void EnderChestRenderer::render(std::shared_ptr<TileEntity>  _chest, double x, double y, double z, float a, bool setColor, float alpha, bool useCompiled)
+void EnderChestRenderer::render(shared_ptr<TileEntity>  _chest, double x, double y, double z, float a, bool setColor, float alpha, bool useCompiled)
 {
 	// 4J Convert as we aren't using a templated class
-	std::shared_ptr<EnderChestTileEntity> chest = dynamic_pointer_cast<EnderChestTileEntity>(_chest);
+	shared_ptr<EnderChestTileEntity> chest = dynamic_pointer_cast<EnderChestTileEntity>(_chest);
 
 	int data = 0;
 

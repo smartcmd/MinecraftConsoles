@@ -1,6 +1,6 @@
 //  (C) Copyright Gennadiy Rozental 2001-2008.
 //  Distributed under the Boost Software License, Version 1.0.
-//  (See accompanying file LICENSE_1_0.txt or copy at
+//  (See accompanying file LICENSE_1_0.txt or copy at 
 //  http://www.boost.org/LICENSE_1_0.txt)
 
 //  See http://www.boost.org/libs/test for the library home page.
@@ -25,7 +25,7 @@
 #include <boost/test/test_observer.hpp>
 
 // Boost
-#include <boost/std::shared_ptr.hpp>
+#include <boost/shared_ptr.hpp>
 #include <boost/mpl/for_each.hpp>
 #include <boost/mpl/identity.hpp>
 #include <boost/type.hpp>
@@ -70,7 +70,7 @@ public:
 
     // Public r/w properties
     readwrite_property<std::string>     p_name;                 // name for this test unit
-    readwrite_property<unsigned>        p_timeout;              // timeout for the test unit execution
+    readwrite_property<unsigned>        p_timeout;              // timeout for the test unit execution 
     readwrite_property<counter_t>       p_expected_failures;    // number of expected failures in this test unit
     mutable readwrite_property<bool>    p_enabled;              // enabled status for this unit
 
@@ -140,7 +140,7 @@ public:
     std::size_t     size() const { return m_members.size(); }
 
 protected:
-    friend BOOST_TEST_DECL
+    friend BOOST_TEST_DECL 
     void        traverse_test_tree( test_suite const&, test_tree_visitor& );
     friend class framework_impl;
     virtual     ~test_suite() {}
@@ -159,8 +159,8 @@ public:
     , argc( 0 )
     , argv( 0 )
     {}
-
-    // Data members
+    
+    // Data members    
     int      argc;
     char**   argv;
 };
@@ -236,12 +236,12 @@ template<typename InstanceType,typename UserTestCase>
 struct user_tc_method_invoker {
     typedef void (UserTestCase::*TestMethod )();
 
-    user_tc_method_invoker( std::shared_ptr<InstanceType> inst, TestMethod test_method )
+    user_tc_method_invoker( shared_ptr<InstanceType> inst, TestMethod test_method )
     : m_inst( inst ), m_test_method( test_method ) {}
 
     void operator()() { ((*m_inst).*m_test_method)(); }
 
-    std::shared_ptr<InstanceType> m_inst;
+    shared_ptr<InstanceType> m_inst;
     TestMethod               m_test_method;
 };
 
@@ -261,9 +261,9 @@ template<typename UserTestCase, typename InstanceType>
 inline test_case*
 make_test_case( void (UserTestCase::*           test_method )(),
                 const_string                    tc_name,
-                boost::std::shared_ptr<InstanceType> user_test_case )
+                boost::shared_ptr<InstanceType> user_test_case )
 {
-    return new test_case( ut_detail::normalize_test_case_name( tc_name ),
+    return new test_case( ut_detail::normalize_test_case_name( tc_name ), 
                           ut_detail::user_tc_method_invoker<InstanceType,UserTestCase>( user_test_case, test_method ) );
 }
 
@@ -299,10 +299,10 @@ struct auto_tc_exp_fail {
         instance() = this;
     }
 
-    static auto_tc_exp_fail*& instance()
+    static auto_tc_exp_fail*& instance() 
     {
-        static auto_tc_exp_fail     inst;
-        static auto_tc_exp_fail*    inst_ptr = &inst;
+        static auto_tc_exp_fail     inst; 
+        static auto_tc_exp_fail*    inst_ptr = &inst; 
 
         return inst_ptr;
     }
@@ -322,30 +322,30 @@ private:
 // **************                global_fixture                ************** //
 // ************************************************************************** //
 
-class BOOST_TEST_DECL global_fixture : public test_observer {
-public:
+class BOOST_TEST_DECL global_fixture : public test_observer { 
+public: 
     // Constructor
     global_fixture();
-};
+}; 
 
 //____________________________________________________________________________//
 
 namespace ut_detail {
 
-template<typename F>
+template<typename F> 
 struct global_fixture_impl : public global_fixture {
     // Constructor
     global_fixture_impl(): m_fixure( 0 )    {}
 
     // test observer interface
     virtual void    test_start( counter_t ) { m_fixure = new F; }
-    virtual void    test_finish()           { delete m_fixure; m_fixure = 0; }
-    virtual void    test_aborted()          { delete m_fixure; m_fixure = 0; }
+    virtual void    test_finish()           { delete m_fixure; m_fixure = 0; } 
+    virtual void    test_aborted()          { delete m_fixure; m_fixure = 0; } 
 
 private:
     // Data members
     F*  m_fixure;
-};
+}; 
 
 // ************************************************************************** //
 // **************          test_case_template_invoker          ************** //
@@ -379,7 +379,7 @@ struct generate_test_case_4_type {
             full_name += " const";
         full_name += '>';
 
-        m_holder.m_test_cases.push_back(
+        m_holder.m_test_cases.push_back( 
             new test_case( full_name, test_case_template_invoker<TestCaseTemplate,TestType>() ) );
     }
 
@@ -409,7 +409,7 @@ public:
     {
         if( m_test_cases.empty() )
             return 0;
-
+    
         test_unit* res = m_test_cases.front();
         m_test_cases.pop_front();
 

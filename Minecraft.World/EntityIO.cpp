@@ -43,7 +43,7 @@ void EntityIO::staticCtor()
 {
 	setId(ItemEntity::create, eTYPE_ITEMENTITY,  L"Item", 1);
 	setId(ExperienceOrb::create, eTYPE_EXPERIENCEORB, L"XPOrb", 2);
-
+	
     setId(Painting::create, eTYPE_PAINTING, L"Painting", 9);
     setId(Arrow::create, eTYPE_ARROW, L"Arrow", 10);
     setId(Snowball::create, eTYPE_SNOWBALL, L"Snowball", 11);
@@ -98,29 +98,29 @@ void EntityIO::staticCtor()
 	setId(DragonFireball::create, eTYPE_DRAGON_FIREBALL, L"DragonFireball", 1000);
 }
 
-std::shared_ptr<Entity> EntityIO::newEntity(const wstring& id, Level *level)
+shared_ptr<Entity> EntityIO::newEntity(const wstring& id, Level *level)
 {
-    std::shared_ptr<Entity> entity;
+    shared_ptr<Entity> entity;
 
 	AUTO_VAR(it, idCreateMap->find(id));
 	if(it != idCreateMap->end() )
 	{
 		entityCreateFn create = it->second;
-		if (create != NULL) entity = std::shared_ptr<Entity>(create(level));
+		if (create != NULL) entity = shared_ptr<Entity>(create(level));
 	}
 
     return entity;
 }
 
-std::shared_ptr<Entity> EntityIO::loadStatic(CompoundTag *tag, Level *level)
+shared_ptr<Entity> EntityIO::loadStatic(CompoundTag *tag, Level *level)
 {
-    std::shared_ptr<Entity> entity;
+    shared_ptr<Entity> entity;
 
 	AUTO_VAR(it, idCreateMap->find(tag->getString(L"id")));
 	if(it != idCreateMap->end() )
 	{
 		entityCreateFn create = it->second;
-		if (create != NULL) entity = std::shared_ptr<Entity>(create(level));
+		if (create != NULL) entity = shared_ptr<Entity>(create(level));
 	}
 
     if (entity != NULL)
@@ -136,15 +136,15 @@ std::shared_ptr<Entity> EntityIO::loadStatic(CompoundTag *tag, Level *level)
     return entity;
 }
 
-std::shared_ptr<Entity> EntityIO::newById(int id, Level *level)
+shared_ptr<Entity> EntityIO::newById(int id, Level *level)
 {
-    std::shared_ptr<Entity> entity;
+    shared_ptr<Entity> entity;
 
 	AUTO_VAR(it, numCreateMap->find(id));
 	if(it != numCreateMap->end() )
 	{
 		entityCreateFn create = it->second;
-		if (create != NULL) entity = std::shared_ptr<Entity>(create(level));
+		if (create != NULL) entity = shared_ptr<Entity>(create(level));
 	}
 
     if (entity != NULL)
@@ -157,9 +157,9 @@ std::shared_ptr<Entity> EntityIO::newById(int id, Level *level)
     return entity;
 }
 
-std::shared_ptr<Entity> EntityIO::newByEnumType(eINSTANCEOF eType, Level *level)
+shared_ptr<Entity> EntityIO::newByEnumType(eINSTANCEOF eType, Level *level)
 {
-    std::shared_ptr<Entity> entity;
+    shared_ptr<Entity> entity;
 
 	unordered_map<eINSTANCEOF, int, eINSTANCEOFKeyHash, eINSTANCEOFKeyEq>::iterator it = classNumMap->find( eType );
 	if( it != classNumMap->end() )
@@ -168,20 +168,20 @@ std::shared_ptr<Entity> EntityIO::newByEnumType(eINSTANCEOF eType, Level *level)
 		if(it2 != numCreateMap->end() )
 		{
 			entityCreateFn create = it2->second;
-			if (create != NULL) entity = std::shared_ptr<Entity>(create(level));
+			if (create != NULL) entity = shared_ptr<Entity>(create(level));
 		}
 	}
 
     return entity;
 }
 
-int EntityIO::getId(std::shared_ptr<Entity> entity)
+int EntityIO::getId(shared_ptr<Entity> entity)
 {
 	unordered_map<eINSTANCEOF, int, eINSTANCEOFKeyHash, eINSTANCEOFKeyEq>::iterator it = classNumMap->find( entity->GetType() );
 	return (*it).second;
 }
 
-wstring EntityIO::getEncodeId(std::shared_ptr<Entity> entity)
+wstring EntityIO::getEncodeId(shared_ptr<Entity> entity)
 {
 	unordered_map<eINSTANCEOF, wstring, eINSTANCEOFKeyHash, eINSTANCEOFKeyEq>::iterator it = classIdMap->find( entity->GetType() );
 	if( it != classIdMap->end() )
@@ -208,7 +208,7 @@ wstring EntityIO::getEncodeId(int entityIoValue)
 	//{
 	//return classIdMap.get(class1);
 	//}
-
+	
 	AUTO_VAR(it, numClassMap->find(entityIoValue));
 	if(it != numClassMap->end() )
 	{

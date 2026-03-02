@@ -7,7 +7,7 @@ EGameCommand DefaultGameModeCommand::getId()
 	return eGameCommand_DefaultGameMode;
 }
 
-void DefaultGameModeCommand::execute(std::shared_ptr<CommandSender> source, byteArray commandData)
+void DefaultGameModeCommand::execute(shared_ptr<CommandSender> source, byteArray commandData)
 {
 	//if (args.length > 0)
 	//{

@@ -82,11 +82,11 @@ int MobEffect::getId()
 * This method should perform periodic updates on the player. Mainly used
 * for regeneration effects and the like. Other effects, such as blindness,
 * are in effect for the whole duration of the effect.
-*
+* 
 * @param mob
 * @param amplification
 */
-void MobEffect::applyEffectTick(std::shared_ptr<Mob> mob, int amplification)
+void MobEffect::applyEffectTick(shared_ptr<Mob> mob, int amplification)
 {
 
 	// Maybe move this to separate class implementations in the future?
@@ -120,7 +120,7 @@ void MobEffect::applyEffectTick(std::shared_ptr<Mob> mob, int amplification)
 	}
 }
 
-void MobEffect::applyInstantenousEffect(std::shared_ptr<Mob> source, std::shared_ptr<Mob> mob, int amplification, double scale)
+void MobEffect::applyInstantenousEffect(shared_ptr<Mob> source, shared_ptr<Mob> mob, int amplification, double scale)
 {
 	if ((id == heal->id && !mob->isInvertedHealAndHarm()) || (id == harm->id && mob->isInvertedHealAndHarm()))
 	{
@@ -152,7 +152,7 @@ bool MobEffect::isInstantenous()
 * This parameter says if the applyEffect method should be called depending
 * on the remaining duration ticker. For instance, the regeneration will be
 * activated every 8 ticks, healing one point of health.
-*
+* 
 * @param remainingDuration
 * @param amplification
 *            Effect amplification, starts at 0 (weakest)

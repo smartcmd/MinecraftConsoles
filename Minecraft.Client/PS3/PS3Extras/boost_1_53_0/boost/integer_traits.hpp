@@ -239,15 +239,15 @@ class integer_traits< ::boost::ulong_long_type>
 #elif defined(BOOST_HAS_MS_INT64)
 
 template<>
-class integer_traits< int64_t>
-  : public std::numeric_limits< int64_t>,
-    public detail::integer_traits_base< int64_t, _I64_MIN, _I64_MAX>
+class integer_traits< __int64>
+  : public std::numeric_limits< __int64>,
+    public detail::integer_traits_base< __int64, _I64_MIN, _I64_MAX>
 { };
 
 template<>
-class integer_traits< uint64_t>
-  : public std::numeric_limits< uint64_t>,
-    public detail::integer_traits_base< uint64_t, 0, _UI64_MAX>
+class integer_traits< unsigned __int64>
+  : public std::numeric_limits< unsigned __int64>,
+    public detail::integer_traits_base< unsigned __int64, 0, _UI64_MAX>
 { };
 
 #endif

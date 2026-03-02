@@ -8,7 +8,7 @@ using namespace std;
 
 class CScene_DebugItemEditor : public CXuiSceneImpl
 {
-#ifdef _DEBUG_MENUS_ENABLED
+#ifdef _DEBUG_MENUS_ENABLED	
 public:
 	typedef struct _ItemEditorInput
 	{
@@ -18,7 +18,7 @@ public:
 	} ItemEditorInput;
 private:
 	int m_iPad;
-	std::shared_ptr<ItemInstance> m_item;
+	shared_ptr<ItemInstance> m_item;
 	Slot *m_slot;
 	AbstractContainerMenu *m_menu;
 

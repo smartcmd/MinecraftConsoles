@@ -19,6 +19,6 @@ public:
 	virtual int getEstimatedSize();
 
 public:
-	static std::shared_ptr<Packet> create() { return std::shared_ptr<Packet>(new ContainerSetDataPacket()); }
+	static shared_ptr<Packet> create() { return shared_ptr<Packet>(new ContainerSetDataPacket()); }
 	virtual int getId() { return 105; }
 };

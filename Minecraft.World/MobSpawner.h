@@ -30,7 +30,7 @@ public:
 	static bool isSpawnPositionOk(MobCategory *category, Level *level, int x, int y, int z);
 
 private:
-	static void finalizeMobSettings(std::shared_ptr<Mob> mob, Level *level, float xx, float yy, float zz);
+	static void finalizeMobSettings(shared_ptr<Mob> mob, Level *level, float xx, float yy, float zz);
 
 protected:
 	// 4J Stu TODO This was an array of Class type. I haven't made a base Class type yet, but don't need to
@@ -40,7 +40,7 @@ protected:
 
 
 public:
-	static bool attackSleepingPlayers(Level *level, vector<std::shared_ptr<Player> > *players);
+	static bool attackSleepingPlayers(Level *level, vector<shared_ptr<Player> > *players);
 
 	static void postProcessSpawnMobs(Level *level, Biome *biome, int xo, int zo, int cellWidth, int cellHeight, Random *random);
 };

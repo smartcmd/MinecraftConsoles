@@ -33,6 +33,6 @@ public:
 	virtual int getEstimatedSize();
 
 public:
-	static std::shared_ptr<Packet> create() { return std::shared_ptr<Packet>(new LevelSoundPacket()); }
+	static shared_ptr<Packet> create() { return shared_ptr<Packet>(new LevelSoundPacket()); }
 	virtual int getId() { return 62; }
 };

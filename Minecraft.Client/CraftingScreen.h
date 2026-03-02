@@ -6,7 +6,7 @@ class Level;
 class CraftingScreen : public AbstractContainerScreen
 {
 public:
-	CraftingScreen(std::shared_ptr<Inventory> inventory, Level *level, int x, int y, int z);
+	CraftingScreen(shared_ptr<Inventory> inventory, Level *level, int x, int y, int z);
 	virtual void removed();
 protected:
 	virtual void renderLabels();

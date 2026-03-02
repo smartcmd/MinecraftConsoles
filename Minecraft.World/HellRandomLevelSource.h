@@ -37,7 +37,7 @@ private:
 	Level *level;
 
 public:
-    HellRandomLevelSource(Level *level, int64_t seed);
+    HellRandomLevelSource(Level *level, __int64 seed);
 	~HellRandomLevelSource();
 
 	NetherBridgeFeature *netherBridgeFeature;
@@ -68,5 +68,5 @@ public:
     wstring gatherStats();
 
 	virtual vector<Biome::MobSpawnerData *> *getMobsAt(MobCategory *mobCategory, int x, int y, int z);
-	virtual TilePos *findNearestMapFeature(Level *level, const wstring& featureName, int x, int y, int z);
+	virtual TilePos *findNearestMapFeature(Level *level, const wstring& featureName, int x, int y, int z); 
 };

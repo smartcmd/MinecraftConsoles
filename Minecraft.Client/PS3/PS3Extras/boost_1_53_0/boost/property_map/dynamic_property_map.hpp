@@ -206,9 +206,9 @@ private:
 //
 struct dynamic_properties
 {
-  typedef std::multimap<std::string, boost::std::shared_ptr<dynamic_property_map> >
+  typedef std::multimap<std::string, boost::shared_ptr<dynamic_property_map> >
     property_maps_type;
-  typedef boost::function3<boost::std::shared_ptr<dynamic_property_map>,
+  typedef boost::function3<boost::shared_ptr<dynamic_property_map>,
                            const std::string&,
                            const boost::any&,
                            const boost::any&> generate_fn_type;
@@ -226,7 +226,7 @@ public:
   dynamic_properties&
   property(const std::string& name, PropertyMap property_map_)
   {
-    boost::std::shared_ptr<dynamic_property_map> pm(
+    boost::shared_ptr<dynamic_property_map> pm(
       boost::static_pointer_cast<dynamic_property_map>(
         boost::make_shared<detail::dynamic_property_map_adaptor<PropertyMap> >(property_map_)));
     property_maps.insert(property_maps_type::value_type(name, pm));
@@ -246,13 +246,13 @@ public:
   { return property_maps.lower_bound(name); }
 
   void
-  insert(const std::string& name, boost::std::shared_ptr<dynamic_property_map> pm)
+  insert(const std::string& name, boost::shared_ptr<dynamic_property_map> pm)
   {
     property_maps.insert(property_maps_type::value_type(name, pm));
   }
 
   template<typename Key, typename Value>
-  boost::std::shared_ptr<dynamic_property_map>
+  boost::shared_ptr<dynamic_property_map>
   generate(const std::string& name, const Key& key, const Value& value)
   {
     if(!generate_fn) {
@@ -280,7 +280,7 @@ put(const std::string& name, dynamic_properties& dp, const Key& key,
     }
   }
 
-  boost::std::shared_ptr<dynamic_property_map> new_map = dp.generate(name, key, value);
+  boost::shared_ptr<dynamic_property_map> new_map = dp.generate(name, key, value);
   if (new_map.get()) {
     new_map->put(key, value);
     dp.insert(name, new_map);
@@ -290,7 +290,7 @@ put(const std::string& name, dynamic_properties& dp, const Key& key,
   }
 }
 
-#ifndef BOOST_NO_EXPLICIT_FUNCTION_TEMPLATE_ARGUMENTS
+#ifndef BOOST_NO_EXPLICIT_FUNCTION_TEMPLATE_ARGUMENTS 
 template<typename Value, typename Key>
 Value
 get(const std::string& name, const dynamic_properties& dp, const Key& key)
@@ -333,11 +333,11 @@ get(const std::string& name, const dynamic_properties& dp, const Key& key)
 
 // The easy way to ignore properties.
 inline
-boost::std::shared_ptr<boost::dynamic_property_map>
+boost::shared_ptr<boost::dynamic_property_map> 
 ignore_other_properties(const std::string&,
                         const boost::any&,
                         const boost::any&) {
-  return boost::std::shared_ptr<boost::dynamic_property_map>();
+  return boost::shared_ptr<boost::dynamic_property_map>();
 }
 
 } // namespace boost

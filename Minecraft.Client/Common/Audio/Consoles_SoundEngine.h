@@ -43,7 +43,7 @@ class ConsoleSoundEngine
 public:
 
 	ConsoleSoundEngine() : m_bIsPlayingStreamingCDMusic(false),m_bIsPlayingStreamingGameMusic(false), m_bIsPlayingEndMusic(false),m_bIsPlayingNetherMusic(false){};
-	virtual void tick(std::shared_ptr<Mob> *players, float a) =0;
+	virtual void tick(shared_ptr<Mob> *players, float a) =0;
 	virtual void destroy()=0;
 	virtual void play(int iSound, float x, float y, float z, float volume, float pitch) =0;
 	virtual void playStreaming(const wstring& name, float x, float y , float z, float volume, float pitch, bool bMusicDelay=true) =0;

@@ -32,7 +32,7 @@ public:
 	virtual void aiStep();
 
 protected:
-	virtual void checkHurtTarget(std::shared_ptr<Entity> target, float d);
+	virtual void checkHurtTarget(shared_ptr<Entity> target, float d);
 	virtual void causeFallDamage(float distance);
 	virtual int getDeathLoot();
 

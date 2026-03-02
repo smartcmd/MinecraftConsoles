@@ -144,7 +144,7 @@ bool LeverTile::checkCanSurvive(Level *level, int x, int y, int z)
     return true;
 }
 
-void LeverTile::updateShape(LevelSource *level, int x, int y, int z, int forceData, std::shared_ptr<TileEntity> forceEntity) // 4J added forceData, forceEntity param
+void LeverTile::updateShape(LevelSource *level, int x, int y, int z, int forceData, shared_ptr<TileEntity> forceEntity) // 4J added forceData, forceEntity param
 {
     int dir = level->getData(x, y, z) & 7;
     float r = 3 / 16.0f;
@@ -176,7 +176,7 @@ void LeverTile::updateShape(LevelSource *level, int x, int y, int z, int forceDa
 	}
 }
 
-void LeverTile::attack(Level *level, int x, int y, int z, std::shared_ptr<Player> player)
+void LeverTile::attack(Level *level, int x, int y, int z, shared_ptr<Player> player)
 {
 	use(level, x, y, z, player, 0, 0, 0, 0);
 }
@@ -187,7 +187,7 @@ bool LeverTile::TestUse()
 	return true;
 }
 
-bool LeverTile::use(Level *level, int x, int y, int z, std::shared_ptr<Player> player, int clickedFace, float clickX, float clickY, float clickZ, bool soundOnly/*=false*/) // 4J added soundOnly param
+bool LeverTile::use(Level *level, int x, int y, int z, shared_ptr<Player> player, int clickedFace, float clickX, float clickY, float clickZ, bool soundOnly/*=false*/) // 4J added soundOnly param
 {
 	if( soundOnly )
 	{
@@ -290,7 +290,7 @@ bool LeverTile::getDirectSignal(Level *level, int x, int y, int z, int dir)
     int data = level->getData(x, y, z);
     if ((data & 8) == 0) return false;
     int myDir = data & 7;
-
+	
 	if (myDir == 0 && dir == 0) return true;
 	if (myDir == 7 && dir == 0) return true;
     if (myDir == 6 && dir == 1) return true;

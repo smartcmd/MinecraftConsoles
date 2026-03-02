@@ -22,7 +22,7 @@ XboxStructureActionPlaceContainer::~XboxStructureActionPlaceContainer()
 
 // 4J-JEV: Super class handles attr-facing fine.
 //void XboxStructureActionPlaceContainer::writeAttributes(DataOutputStream *dos, UINT numAttrs)
-
+	
 
 void XboxStructureActionPlaceContainer::getChildren(vector<GameRuleDefinition *> *children)
 {
@@ -78,8 +78,8 @@ bool XboxStructureActionPlaceContainer::placeContainerInLevel(StructurePiece *st
 		}
 
 		level->setTile( worldX, worldY, worldZ, m_tile );
-		std::shared_ptr<Container> container = dynamic_pointer_cast<Container>(level->getTileEntity( worldX, worldY, worldZ ));
-
+		shared_ptr<Container> container = dynamic_pointer_cast<Container>(level->getTileEntity( worldX, worldY, worldZ ));
+		
 		app.DebugPrintf("XboxStructureActionPlaceContainer - placing a container at (%d,%d,%d)\n", worldX, worldY, worldZ);
 		if ( container != NULL )
 		{

@@ -17,7 +17,7 @@ private:
 		eControl_Confirm
 	};
 
-	std::shared_ptr<SignTileEntity> m_sign;
+	shared_ptr<SignTileEntity> m_sign;
 	int m_iEditingLine;
 	bool m_bConfirmed;
 	bool m_bIgnoreInput;

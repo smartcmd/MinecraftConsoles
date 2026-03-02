@@ -184,7 +184,7 @@ namespace local_time{
       // std offset dst [offset],start[/time],end[/time] - w/o spaces
       stringstream_type ss;
       ss.fill('0');
-      boost::std::shared_ptr<dst_calc_rule> no_rules;
+      boost::shared_ptr<dst_calc_rule> no_rules;
       // std
       ss << std_zone_abbrev();
       // offset
@@ -241,7 +241,7 @@ namespace local_time{
     bool has_dst_;
     time_duration_type base_utc_offset_;
     dst_adjustment_offsets dst_offsets_;
-    boost::std::shared_ptr<dst_calc_rule> dst_calc_rules_;
+    boost::shared_ptr<dst_calc_rule> dst_calc_rules_;
 
     /*! Extract time zone abbreviations for STD & DST as well
      * as the offsets for the time shift that occurs and how
@@ -399,7 +399,7 @@ namespace local_time{
       ew = lexical_cast<unsigned short>(*it++);
       ed = lexical_cast<unsigned short>(*it);
 
-      dst_calc_rules_ = std::shared_ptr<dst_calc_rule>(
+      dst_calc_rules_ = shared_ptr<dst_calc_rule>(
         new nth_kday_dst_rule(
           nth_last_dst_rule::start_rule(
             static_cast<nkday::week_num>(sw),sd,sm),
@@ -427,7 +427,7 @@ namespace local_time{
         ed -= calendar::end_of_month_day(year,em++);
       }
 
-      dst_calc_rules_ = std::shared_ptr<dst_calc_rule>(
+      dst_calc_rules_ = shared_ptr<dst_calc_rule>(
         new partial_date_dst_rule(
           partial_date_dst_rule::start_rule(
             sd, static_cast<date_time::months_of_year>(sm)),
@@ -443,7 +443,7 @@ namespace local_time{
       int sd=0, ed=0;
       sd = lexical_cast<int>(s);
       ed = lexical_cast<int>(e);
-      dst_calc_rules_ = std::shared_ptr<dst_calc_rule>(
+      dst_calc_rules_ = shared_ptr<dst_calc_rule>(
         new partial_date_dst_rule(
           partial_date_dst_rule::start_rule(++sd),// args are 0-365
           partial_date_dst_rule::end_rule(++ed) // pd expects 1-366

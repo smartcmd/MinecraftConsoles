@@ -40,7 +40,7 @@ class UILayer;
 class UIScene
 {
 	friend class UILayer;
-public:
+public:	
 	IggyValuePath *m_rootPath;
 
 private:
@@ -80,7 +80,7 @@ public:
 
 protected:
 	ESceneResolution m_loadedResolution;
-
+	
 	bool m_bIsReloading;
 	bool m_bFocussedOnce;
 
@@ -96,7 +96,7 @@ protected:
 
 public:
 	virtual Iggy *getMovie() { return swf; }
-
+	
 	void destroyMovie();
 	virtual void reloadMovie(bool force = false);
 	virtual bool needsReloaded();
@@ -127,7 +127,7 @@ private:
 	void getDebugMemoryUseRecursive(const wstring &moviePath, IggyMemoryUseInfo &memoryInfo);
 
 public:
-	void PrintTotalMemoryUsage(int64_t &totalStatic, int64_t &totalDynamic);
+	void PrintTotalMemoryUsage(__int64 &totalStatic, __int64 &totalDynamic);
 
 public:
 	UIScene(int iPad, UILayer *parentLayer);
@@ -140,7 +140,7 @@ public:
 
 	IggyName registerFastName(const wstring &name);
 #ifdef __PSVITA__
-	void SetFocusToElement(int iID);
+	void SetFocusToElement(int iID); 
 	void UpdateSceneControls();
 #endif
 protected:
@@ -160,7 +160,7 @@ public:
 
 	void gainFocus();
 	void loseFocus();
-
+	
 	virtual void updateTooltips();
 	virtual void updateComponents() {}
 	virtual void handleGainFocus(bool navBack);
@@ -187,8 +187,8 @@ public:
 
 protected:
 	//void customDrawSlotControl(IggyCustomDrawCallbackRegion *region, int iPad, int iID, int iCount, int iAuxVal, float fAlpha, bool isFoil, bool bDecorations);
-	void customDrawSlotControl(IggyCustomDrawCallbackRegion *region, int iPad, std::shared_ptr<ItemInstance> item, float fAlpha, bool isFoil, bool bDecorations);
-
+	void customDrawSlotControl(IggyCustomDrawCallbackRegion *region, int iPad, shared_ptr<ItemInstance> item, float fAlpha, bool isFoil, bool bDecorations);
+	
 	bool m_cacheSlotRenders;
 	bool m_needsCacheRendered;
 	int m_expectedCachedSlotCount;
@@ -196,14 +196,14 @@ private:
 	typedef struct _CachedSlotDrawData
 	{
 		CustomDrawData *customDrawRegion;
-		std::shared_ptr<ItemInstance> item;
+		shared_ptr<ItemInstance> item;
 		float fAlpha;
 		bool isFoil;
 		bool bDecorations;
 	} CachedSlotDrawData;
 	vector<CachedSlotDrawData *> m_cachedSlotDraw;
 
-	void _customDrawSlotControl(CustomDrawData *region, int iPad, std::shared_ptr<ItemInstance> item, float fAlpha, bool isFoil, bool bDecorations, bool usingCommandBuffer);
+	void _customDrawSlotControl(CustomDrawData *region, int iPad, shared_ptr<ItemInstance> item, float fAlpha, bool isFoil, bool bDecorations, bool usingCommandBuffer);
 
 public:
 	// INPUT
@@ -260,7 +260,7 @@ public:
 
 
 protected:
-#ifdef _DURANGO
+#ifdef _DURANGO	
 	virtual long long getDefaultGtcButtons() { return _360_GTC_BACK; }
 #endif
 

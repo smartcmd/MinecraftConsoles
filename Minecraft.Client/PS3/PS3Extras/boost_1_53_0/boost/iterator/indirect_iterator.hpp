@@ -26,11 +26,11 @@
 #include <boost/mpl/has_xxx.hpp>
 
 #ifdef BOOST_MPL_CFG_NO_HAS_XXX
-# include <boost/std::shared_ptr.hpp>
+# include <boost/shared_ptr.hpp>
 # include <boost/scoped_ptr.hpp>
 # include <boost/mpl/bool.hpp>
 # include <memory>
-#endif
+#endif 
 
 #include <boost/iterator/detail/config_def.hpp> // must be last #include
 
@@ -45,7 +45,7 @@ namespace boost
     struct indirect_base
     {
         typedef typename iterator_traits<Iter>::value_type dereferenceable;
-
+        
         typedef iterator_adaptor<
             indirect_iterator<Iter, Value, Category, Reference, Difference>
           , Iter
@@ -69,7 +69,7 @@ namespace boost
     struct indirect_base<int, int, int, int, int> {};
   } // namespace detail
 
-
+    
   template <
       class Iterator
     , class Value = use_default
@@ -107,14 +107,14 @@ namespace boost
         : super_t(y.base())
       {}
 
-  private:
+  private:    
       typename super_t::reference dereference() const
       {
 # if BOOST_WORKAROUND(__BORLANDC__, < 0x5A0 )
           return const_cast<super_t::reference>(**this->base());
 # else
           return **this->base();
-# endif
+# endif 
       }
   };
 

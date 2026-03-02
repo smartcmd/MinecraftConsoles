@@ -24,7 +24,7 @@ namespace boost { namespace mpi {
  *
  * Forward declaration of the MPI "group" representation, for use in
  * the description of the @c intercommunicator class.
- */
+ */ 
 class group;
 
 /**
@@ -45,8 +45,8 @@ class group;
  * intercommunicators occurs between the processes in the local group
  * and the processes in the remote group; communication within a group
  * must use a different (intra-)communicator.
- *
- */
+ * 
+ */   
 class BOOST_MPI_DECL intercommunicator : public communicator
 {
 private:
@@ -59,7 +59,7 @@ private:
    * underlying MPI_Comm. This operation is used for "casting" from a
    * communicator to an intercommunicator.
    */
-  explicit intercommunicator(const std::shared_ptr<MPI_Comm>& cp)
+  explicit intercommunicator(const shared_ptr<MPI_Comm>& cp)
   {
     this->comm_ptr = cp;
   }
@@ -149,7 +149,7 @@ public:
    * Merge the local and remote groups in this intercommunicator into
    * a new intracommunicator containing the union of the processes in
    * both groups. This method is equivalent to @c MPI_Intercomm_merge.
-   *
+   *  
    * @param high Whether the processes in this group should have the
    * higher rank numbers than the processes in the other group. Each
    * of the processes within a particular group shall have the same

@@ -106,15 +106,15 @@ DragonModel::DragonModel(float g) : Model()
 	rearFoot->compile(1.0f/16.0f);
 }
 
-void DragonModel::prepareMobModel(std::shared_ptr<Mob> mob, float time, float r, float a)
+void DragonModel::prepareMobModel(shared_ptr<Mob> mob, float time, float r, float a) 
 {
 	this->a = a;
 }
 
-void DragonModel::render(std::shared_ptr<Entity> entity, float time, float r, float bob, float yRot, float xRot, float scale, bool usecompiled)
+void DragonModel::render(shared_ptr<Entity> entity, float time, float r, float bob, float yRot, float xRot, float scale, bool usecompiled)
 {
 	glPushMatrix();
-	std::shared_ptr<EnderDragon> dragon = dynamic_pointer_cast<EnderDragon>(entity);
+	shared_ptr<EnderDragon> dragon = dynamic_pointer_cast<EnderDragon>(entity);
 
 	float ttt = dragon->oFlapTime + (dragon->flapTime - dragon->oFlapTime) * a;
 	jaw->xRot = (float) (Mth::sin(ttt * PI * 2) + 1) * 0.2f;
@@ -153,7 +153,7 @@ void DragonModel::render(std::shared_ptr<Entity> entity, float time, float r, fl
 	double pComponents[3];
 	doubleArray p = doubleArray(pComponents,3);
 
-	for (int i = 0; i < 5; i++)
+	for (int i = 0; i < 5; i++) 
 	{
 		dragon->getLatencyPos(p, 5 - i, a);
 
@@ -185,9 +185,9 @@ void DragonModel::render(std::shared_ptr<Entity> entity, float time, float r, fl
 	glTranslatef(0, -1, 0);
 	body->zRot = 0;
 	body->render(scale,usecompiled);
-
+	
 	glEnable(GL_CULL_FACE);
-	for (int i = 0; i < 2; i++)
+	for (int i = 0; i < 2; i++) 
 	{
 		float flapTime = ttt * PI * 2;
 		wing->xRot = 0.125f - (float) (Mth::cos(flapTime)) * 0.2f;
@@ -206,7 +206,7 @@ void DragonModel::render(std::shared_ptr<Entity> entity, float time, float r, fl
 		frontLeg->render(scale,usecompiled);
 		rearLeg->render(scale,usecompiled);
 		glScalef(-1, 1, 1);
-		if (i == 0)
+		if (i == 0) 
 		{
 			glCullFace(GL_FRONT);
 		}
@@ -221,7 +221,7 @@ void DragonModel::render(std::shared_ptr<Entity> entity, float time, float r, fl
 	zz = 60;
 	xx = 0;
 	dragon->getLatencyPos(start, 11, a);
-	for (int i = 0; i < 12; i++)
+	for (int i = 0; i < 12; i++) 
 	{
 		dragon->getLatencyPos(p, 12 + i, a);
 		rr += Mth::sin(i * 0.45f + roff) * 0.05f;
@@ -238,7 +238,7 @@ void DragonModel::render(std::shared_ptr<Entity> entity, float time, float r, fl
 	}
 	glPopMatrix();
 }
-float DragonModel::rotWrap(double d)
+float DragonModel::rotWrap(double d) 
 {
 	while (d >= 180)
 		d -= 360;

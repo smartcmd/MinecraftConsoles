@@ -31,7 +31,7 @@ public:
 	virtual unsigned int getDescriptionId(int iData = -1);
 
 protected:
-	virtual std::shared_ptr<ItemInstance> getSilkTouchItemInstance(int data);
+	virtual shared_ptr<ItemInstance> getSilkTouchItemInstance(int data);
 
 public:
 	int cloneTileData(Level *level, int x, int y, int z);

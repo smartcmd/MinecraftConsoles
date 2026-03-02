@@ -25,13 +25,13 @@ public:
     int action;
 
 	PlayerCommandPacket();
-	PlayerCommandPacket(std::shared_ptr<Entity> e, int action);
+	PlayerCommandPacket(shared_ptr<Entity> e, int action);
 
 	virtual void read(DataInputStream *dis);
 	virtual void write(DataOutputStream *dos);
 	virtual void handle(PacketListener *listener);
 	virtual int getEstimatedSize();
 public:
-	static std::shared_ptr<Packet> create() { return std::shared_ptr<Packet>(new PlayerCommandPacket()); }
+	static shared_ptr<Packet> create() { return shared_ptr<Packet>(new PlayerCommandPacket()); }
 	virtual int getId() { return 19; }
 };

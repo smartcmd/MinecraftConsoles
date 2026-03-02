@@ -96,7 +96,7 @@ Connection::Connection(Socket *socket, const wstring& id, PacketListener *packet
 	}*/
 
 	dis = new DataInputStream(socket->getInputStream(packetListener->isServerPacketListener()));
-
+		
 	sos = socket->getOutputStream(packetListener->isServerPacketListener());
 	bufferedDos = new DataOutputStream(new BufferedOutputStream(sos, SEND_BUFFER_SIZE));
 	baos = new ByteArrayOutputStream( SEND_BUFFER_SIZE );
@@ -124,7 +124,7 @@ Connection::Connection(Socket *socket, const wstring& id, PacketListener *packet
 	writeThread->Run();
 
 
-	/* 4J JEV, java:
+	/* 4J JEV, java:	
 	new Thread(wstring(id).append(L" read thread")) {
 
 	};
@@ -145,7 +145,7 @@ void Connection::setListener(PacketListener *packetListener)
 	this->packetListener = packetListener;
 }
 
-void Connection::send(std::shared_ptr<Packet> packet)
+void Connection::send(shared_ptr<Packet> packet)
 {
 	if (quitting) 	return;
 
@@ -154,7 +154,7 @@ void Connection::send(std::shared_ptr<Packet> packet)
 	EnterCriticalSection(&writeLock);
 
 	estimatedRemaining += packet->getEstimatedSize() + 1;
-	if (packet->shouldDelay)
+	if (packet->shouldDelay) 
 	{
 		// 4J We have delayed it enough by putting it in the slow queue, so don't delay when we actually send it
 		packet->shouldDelay = false;
@@ -171,7 +171,7 @@ void Connection::send(std::shared_ptr<Packet> packet)
 }
 
 
-void Connection::queueSend(std::shared_ptr<Packet> packet)
+void Connection::queueSend(shared_ptr<Packet> packet)
 {
 	if (quitting) return;
 	estimatedRemaining += packet->getEstimatedSize() + 1;
@@ -189,7 +189,7 @@ bool Connection::writeTick()
 	// try {
 	if (!outgoing.empty() && (fakeLag == 0 || System::currentTimeMillis() - outgoing.front()->createTime >= fakeLag))
 	{
-		std::shared_ptr<Packet> packet;
+		shared_ptr<Packet> packet;
 
 		EnterCriticalSection(&writeLock);
 
@@ -200,11 +200,11 @@ bool Connection::writeTick()
 		LeaveCriticalSection(&writeLock);
 
 		Packet::writePacket(packet, bufferedDos);
-
+		
 
 #ifndef _CONTENT_PACKAGE
 		// 4J Added for debugging
-		if( !socket->isLocal() )
+		if( !socket->isLocal() ) 
 			Packet::recordOutgoingPacket(packet);
 #endif
 
@@ -220,7 +220,7 @@ bool Connection::writeTick()
 
 	if ((slowWriteDelay-- <= 0) && !outgoing_slow.empty() && (fakeLag == 0 || System::currentTimeMillis() - outgoing_slow.front()->createTime >= fakeLag))
 	{
-		std::shared_ptr<Packet> packet;
+		shared_ptr<Packet> packet;
 
 		//synchronized (writeLock) {
 
@@ -252,9 +252,9 @@ bool Connection::writeTick()
 
 #ifndef _CONTENT_PACKAGE
 		// 4J Added for debugging
-		if( !socket->isLocal() )
+		if( !socket->isLocal() ) 
 			Packet::recordOutgoingPacket(packet);
-#endif
+#endif	
 
 		writeSizes[packet->getId()] += packet->getEstimatedSize() + 1;
 		slowWriteDelay = 0;
@@ -290,7 +290,7 @@ bool Connection::readTick()
 
 	//try {
 
-	std::shared_ptr<Packet> packet = Packet::readPacket(dis, packetListener->isServerPacketListener());
+	shared_ptr<Packet> packet = Packet::readPacket(dis, packetListener->isServerPacketListener());
 
 	if (packet != NULL)
 	{
@@ -302,13 +302,13 @@ bool Connection::readTick()
 		}
 		LeaveCriticalSection(&incoming_cs);
 		didSomething = true;
-	}
+	} 
 	else
 	{
 //		printf("Con:0x%x readTick close EOS\n",this);
 
 		// 4J Stu - Remove this line
-		// Fix for #10410 - UI: If the player is removed from a splitscreened hostï¿½s game, the next game that player joins will produce a message stating that the host has left.
+		// Fix for #10410 - UI: If the player is removed from a splitscreened host’s game, the next game that player joins will produce a message stating that the host has left.
 		//close(DisconnectPacket::eDisconnect_EndOfStream);
 	}
 
@@ -362,7 +362,7 @@ void Connection::close(DisconnectPacket::eDisconnectReason reason, ...)
 
 	//	int count = 0, sum = 0, i = first;
 	//	va_list marker;
-	//
+	//	
 	//	va_start( marker, first );
 	//	while( i != -1 )
 	//	{
@@ -440,7 +440,7 @@ void Connection::tick()
 	tickCount++;
     if (tickCount % 20 == 0)
 	{
-        send( std::shared_ptr<KeepAlivePacket>( new KeepAlivePacket() ) );
+        send( shared_ptr<KeepAlivePacket>( new KeepAlivePacket() ) );
     }
 
 	// 4J Stu - 1.8.2 changed from 100 to 1000
@@ -455,10 +455,10 @@ void Connection::tick()
 
 	EnterCriticalSection(&incoming_cs);
 	// 4J Stu - If disconnected, then we shouldn't process incoming packets
-	std::vector< std::shared_ptr<Packet> > packetsToHandle;
+	std::vector< shared_ptr<Packet> > packetsToHandle;
 	while (!disconnected && !g_NetworkManager.IsLeavingGame() && g_NetworkManager.IsInSession() && !incoming.empty() && max-- >= 0)
 	{
-		std::shared_ptr<Packet> packet = incoming.front();
+		shared_ptr<Packet> packet = incoming.front();
 		packetsToHandle.push_back(packet);
 		incoming.pop();
 	}
@@ -607,8 +607,8 @@ int Connection::runWrite(void* lpParam)
 		while (con->writeTick())
 			;
 
-		//Sleep(100L);
-		// TODO - 4J Stu - 1.8.2 changes these sleeps to 2L, but not sure whether we should do that as well
+		//Sleep(100L);	
+		// TODO - 4J Stu - 1.8.2 changes these sleeps to 2L, but not sure whether we should do that as well	
 		waitResult = con->m_hWakeWriteThread->WaitForSignal(100L);
 
 		if (con->bufferedDos != NULL) con->bufferedDos->flush();

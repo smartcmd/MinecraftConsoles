@@ -18,7 +18,7 @@ BowItem::BowItem(int id) : Item( id )
 	icons = NULL;
 }
 
-void BowItem::releaseUsing(std::shared_ptr<ItemInstance> itemInstance, Level *level, std::shared_ptr<Player> player, int durationLeft)
+void BowItem::releaseUsing(shared_ptr<ItemInstance> itemInstance, Level *level, shared_ptr<Player> player, int durationLeft)
 {
 	bool infiniteArrows = player->abilities.instabuild || EnchantmentHelper::getEnchantmentLevel(Enchantment::arrowInfinite->id, itemInstance) > 0;
 
@@ -30,7 +30,7 @@ void BowItem::releaseUsing(std::shared_ptr<ItemInstance> itemInstance, Level *le
 		if (pow < 0.1) return;
 		if (pow > 1) pow = 1;
 
-		std::shared_ptr<Arrow> arrow = std::shared_ptr<Arrow>( new Arrow(level, player, pow * 2.0f) );
+		shared_ptr<Arrow> arrow = shared_ptr<Arrow>( new Arrow(level, player, pow * 2.0f) );
 		if (pow == 1) arrow->setCritArrow(true);
 		int damageBonus = EnchantmentHelper::getEnchantmentLevel(Enchantment::arrowBonus->id, itemInstance);
 		if (damageBonus > 0)
@@ -62,22 +62,22 @@ void BowItem::releaseUsing(std::shared_ptr<ItemInstance> itemInstance, Level *le
 	}
 }
 
-std::shared_ptr<ItemInstance> BowItem::useTimeDepleted(std::shared_ptr<ItemInstance> instance, Level *level, std::shared_ptr<Player> player)
+shared_ptr<ItemInstance> BowItem::useTimeDepleted(shared_ptr<ItemInstance> instance, Level *level, shared_ptr<Player> player)
 {
 	return instance;
 }
 
-int BowItem::getUseDuration(std::shared_ptr<ItemInstance> itemInstance)
+int BowItem::getUseDuration(shared_ptr<ItemInstance> itemInstance)
 {
 	return 20 * 60 * 60;
 }
 
-UseAnim BowItem::getUseAnimation(std::shared_ptr<ItemInstance> itemInstance)
+UseAnim BowItem::getUseAnimation(shared_ptr<ItemInstance> itemInstance)
 {
 	return UseAnim_bow;
 }
 
-std::shared_ptr<ItemInstance> BowItem::use(std::shared_ptr<ItemInstance> instance, Level *level, std::shared_ptr<Player> player)
+shared_ptr<ItemInstance> BowItem::use(shared_ptr<ItemInstance> instance, Level *level, shared_ptr<Player> player)
 {
 	if (player->abilities.instabuild || player->inventory->hasResource(Item::arrow_Id))
 	{

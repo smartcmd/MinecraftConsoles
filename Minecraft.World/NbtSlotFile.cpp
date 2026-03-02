@@ -4,7 +4,7 @@
 
 
 byteArray NbtSlotFile::READ_BUFFER(1024*1024);
-int64_t NbtSlotFile::largest = 0;
+__int64 NbtSlotFile::largest = 0;
 
 NbtSlotFile::NbtSlotFile(File file)
 {
@@ -144,12 +144,12 @@ int NbtSlotFile::getFreeSlot()
 //		fileSlot = toReplace->back();
 //		toReplace->pop_back();
 //    } else
-
+		
 	if (freeFileSlots.size() > 0)
 	{
         fileSlot = freeFileSlots.back();
 		freeFileSlots.pop_back();
-    }
+    } 
 	else
 	{
         fileSlot = totalFileSlots++;
@@ -164,7 +164,7 @@ void NbtSlotFile::replaceSlot(int slot, vector<CompoundTag *> *tags)
 	DWORD numberOfBytesWritten;
 	toReplace = fileSlotMap[slot];
     fileSlotMap[slot] = new vector<int>();
-
+	
 	AUTO_VAR(itEndTags, tags->end());
 	for (AUTO_VAR(it, tags->begin()); it != itEndTags; it++)
 	{
@@ -227,7 +227,7 @@ void NbtSlotFile::replaceSlot(int slot, vector<CompoundTag *> *tags)
         }
 		delete[] compressed.data;
     }
-
+	
 	AUTO_VAR(itEndToRep, toReplace->end());
 	for (AUTO_VAR(it, toReplace->begin()); it != itEndToRep; it++)
 	{

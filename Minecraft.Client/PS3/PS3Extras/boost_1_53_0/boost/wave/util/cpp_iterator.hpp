@@ -20,7 +20,7 @@
 #include <cctype>
 
 #include <boost/assert.hpp>
-#include <boost/std::shared_ptr.hpp>
+#include <boost/shared_ptr.hpp>
 #include <boost/filesystem/path.hpp>
 #include <boost/filesystem/operations.hpp>
 #include <boost/spirit/include/classic_multi_pass.hpp>
@@ -359,7 +359,7 @@ protected:
 
 private:
     ContextT &ctx;              // context, this iterator is associated with
-    boost::std::shared_ptr<base_iteration_context_type> iter_ctx;
+    boost::shared_ptr<base_iteration_context_type> iter_ctx;
 
     bool seen_newline;              // needed for recognizing begin of line
     bool skipped_newline;           // a newline has been skipped since last one
@@ -1608,7 +1608,7 @@ char const *current_name = 0;   // never try to match current file name
         ctx.set_current_directory(native_path_str.c_str());
 
     // preprocess the opened file
-    boost::std::shared_ptr<base_iteration_context_type> new_iter_ctx (
+    boost::shared_ptr<base_iteration_context_type> new_iter_ctx (
         new iteration_context_type(ctx, native_path_str.c_str(), act_pos,
             boost::wave::enable_prefer_pp_numbers(ctx.get_language()),
             is_system ? base_iteration_context_type::system_header :

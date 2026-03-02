@@ -11,7 +11,7 @@ PortalForcer::PortalForcer()
 }
 
 
-void PortalForcer::force(Level *level, std::shared_ptr<Entity> e)
+void PortalForcer::force(Level *level, shared_ptr<Entity> e)
 {
     if (level->dimension->id == 1)
 	{
@@ -54,7 +54,7 @@ void PortalForcer::force(Level *level, std::shared_ptr<Entity> e)
 }
 
 
-bool PortalForcer::findPortal(Level *level, std::shared_ptr<Entity> e)
+bool PortalForcer::findPortal(Level *level, shared_ptr<Entity> e)
 {
 	// 4J Stu - Decrease the range at which we search for a portal in the nether given our smaller nether
 	int r = 16;//* 8;
@@ -133,7 +133,7 @@ bool PortalForcer::findPortal(Level *level, std::shared_ptr<Entity> e)
 }
 
 
-bool PortalForcer::createPortal(Level *level, std::shared_ptr<Entity> e)
+bool PortalForcer::createPortal(Level *level, shared_ptr<Entity> e)
 {
 	// 4J Stu - Increase the range at which we try and create a portal to stop creating them floating in mid air over lava
 	int r = 16 * 3;
@@ -147,7 +147,7 @@ bool PortalForcer::createPortal(Level *level, std::shared_ptr<Entity> e)
 	int XZSIZE = level->dimension->getXZSize() * 16; // XZSize is chunks, convert to blocks
 	int XZOFFSET = (XZSIZE / 2) - 4; // Subtract 4 to stay away from the edges // TODO Make the 4 a constant in HellRandomLevelSource
 
-	// Move the positions that we want to check away from the edge of the world
+	// Move the positions that we want to check away from the edge of the world	
 	if( (xc - r) < -XZOFFSET )
 	{
 		app.DebugPrintf("Adjusting portal creation x due to being too close to the edge\n");
@@ -215,7 +215,7 @@ bool PortalForcer::createPortal(Level *level, std::shared_ptr<Entity> e)
 										int yt = y + h;
 										int zt = z + (s - 1) * za - b * xa;
 
-										// 4J Stu - Changes to stop Portals being created at the border of the nether inside the bedrock
+										// 4J Stu - Changes to stop Portals being created at the border of the nether inside the bedrock		
 										if( ( xt < -XZOFFSET ) || ( xt >= XZOFFSET ) || ( zt < -XZOFFSET ) || ( zt >= XZOFFSET ) )
 										{
 											app.DebugPrintf("Skipping possible portal location as at least one block is too close to the edge\n");
@@ -275,7 +275,7 @@ bool PortalForcer::createPortal(Level *level, std::shared_ptr<Entity> e)
 									int yt = y + h;
 									int zt = z + (s - 1) * za;
 
-									// 4J Stu - Changes to stop Portals being created at the border of the nether inside the bedrock
+									// 4J Stu - Changes to stop Portals being created at the border of the nether inside the bedrock		
 									if( ( xt < -XZOFFSET ) || ( xt >= XZOFFSET ) || ( zt < -XZOFFSET ) || ( zt >= XZOFFSET ) )
 									{
 										app.DebugPrintf("Skipping possible portal location as at least one block is too close to the edge\n");

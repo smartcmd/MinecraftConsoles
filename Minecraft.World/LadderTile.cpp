@@ -19,7 +19,7 @@ AABB *LadderTile::getTileAABB(Level *level, int x, int y, int z)
     return Tile::getTileAABB(level, x, y, z);
 }
 
-void LadderTile::updateShape(LevelSource *level, int x, int y, int z, int forceData, std::shared_ptr<TileEntity> forceEntity) // 4J added forceData, forceEntity param
+void LadderTile::updateShape(LevelSource *level, int x, int y, int z, int forceData, shared_ptr<TileEntity> forceEntity) // 4J added forceData, forceEntity param
 {
 	setShape(level->getData(x, y, z));
 }

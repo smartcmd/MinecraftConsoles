@@ -21,9 +21,9 @@ bool MoveIndoorsGoal::canUse()
 	if ((mob->level->isDay() && !mob->level->isRaining()) || mob->level->dimension->hasCeiling) return false;
 	if (mob->getRandom()->nextInt(50) != 0) return false;
 	if (insideX != -1 && mob->distanceToSqr(insideX, mob->y, insideZ) < 2 * 2) return false;
-	std::shared_ptr<Village> village = mob->level->villages->getClosestVillage(Mth::floor(mob->x), Mth::floor(mob->y), Mth::floor(mob->z), 14);
+	shared_ptr<Village> village = mob->level->villages->getClosestVillage(Mth::floor(mob->x), Mth::floor(mob->y), Mth::floor(mob->z), 14);
 	if (village == NULL) return false;
-	std::shared_ptr<DoorInfo> _doorInfo = village->getBestDoorInfo(Mth::floor(mob->x), Mth::floor(mob->y), Mth::floor(mob->z));
+	shared_ptr<DoorInfo> _doorInfo = village->getBestDoorInfo(Mth::floor(mob->x), Mth::floor(mob->y), Mth::floor(mob->z));
 	doorInfo = _doorInfo;
 	return _doorInfo != NULL;
 }
@@ -36,7 +36,7 @@ bool MoveIndoorsGoal::canContinueToUse()
 void MoveIndoorsGoal::start()
 {
 	insideX = -1;
-	std::shared_ptr<DoorInfo> _doorInfo = doorInfo.lock();
+	shared_ptr<DoorInfo> _doorInfo = doorInfo.lock();
 	if( _doorInfo == NULL )
 	{
 		doorInfo = weak_ptr<DoorInfo>();
@@ -52,7 +52,7 @@ void MoveIndoorsGoal::start()
 
 void MoveIndoorsGoal::stop()
 {
-	std::shared_ptr<DoorInfo> _doorInfo = doorInfo.lock();
+	shared_ptr<DoorInfo> _doorInfo = doorInfo.lock();
 	if( _doorInfo == NULL )
 	{
 		doorInfo = weak_ptr<DoorInfo>();

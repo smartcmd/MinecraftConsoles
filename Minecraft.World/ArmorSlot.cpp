@@ -6,7 +6,7 @@
 #include "net.minecraft.world.item.crafting.h"
 #include "ArmorSlot.h"
 
-ArmorSlot::ArmorSlot(int slotNum, std::shared_ptr<Container> container, int id, int x, int y)
+ArmorSlot::ArmorSlot(int slotNum, shared_ptr<Container> container, int id, int x, int y)
 	: Slot( container, id, x, y ),
 	slotNum( slotNum )
 {
@@ -17,7 +17,7 @@ int ArmorSlot::getMaxStackSize()
 	return 1;
 }
 
-bool ArmorSlot::mayPlace(std::shared_ptr<ItemInstance> item)
+bool ArmorSlot::mayPlace(shared_ptr<ItemInstance> item)
 {
 	if ( dynamic_cast<ArmorItem *>( item->getItem() ) != NULL)
 	{
@@ -36,9 +36,9 @@ Icon *ArmorSlot::getNoItemIcon()
 }
 
 //
-//bool ArmorSlot::mayCombine(std::shared_ptr<ItemInstance> item)
+//bool ArmorSlot::mayCombine(shared_ptr<ItemInstance> item)
 //{
-//	std::shared_ptr<ItemInstance> thisItemI = getItem();
+//	shared_ptr<ItemInstance> thisItemI = getItem();
 //	if(thisItemI == NULL || item == NULL) return false;
 //
 //	ArmorItem *thisItem = (ArmorItem *)thisItemI->getItem();
@@ -47,12 +47,12 @@ Icon *ArmorSlot::getNoItemIcon()
 //	return thisIsDyableArmor && itemIsDye;
 //}
 //
-//std::shared_ptr<ItemInstance> ArmorSlot::combine(std::shared_ptr<ItemInstance> item)
+//shared_ptr<ItemInstance> ArmorSlot::combine(shared_ptr<ItemInstance> item)
 //{
-//	std::shared_ptr<CraftingContainer> craftSlots = std::shared_ptr<CraftingContainer>( new CraftingContainer(NULL, 2, 2) );
+//	shared_ptr<CraftingContainer> craftSlots = shared_ptr<CraftingContainer>( new CraftingContainer(NULL, 2, 2) );
 //	craftSlots->setItem(0, item);
 //	craftSlots->setItem(1, getItem()); // Armour item needs to go second
-//	std::shared_ptr<ItemInstance> result = ArmorDyeRecipe::assembleDyedArmor(craftSlots);
+//	shared_ptr<ItemInstance> result = ArmorDyeRecipe::assembleDyedArmor(craftSlots);
 //	craftSlots->setItem(0, nullptr);
 //	craftSlots->setItem(1, nullptr);
 //	return result;

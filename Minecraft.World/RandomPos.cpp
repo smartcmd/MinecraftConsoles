@@ -5,12 +5,12 @@
 
 Vec3 *RandomPos::tempDir = Vec3::newPermanent(0, 0, 0);
 
-Vec3 *RandomPos::getPos(std::shared_ptr<PathfinderMob> mob, int xzDist, int yDist, int quadrant/*=-1*/)		// 4J - added quadrant
+Vec3 *RandomPos::getPos(shared_ptr<PathfinderMob> mob, int xzDist, int yDist, int quadrant/*=-1*/)		// 4J - added quadrant
 {
 	return generateRandomPos(mob, xzDist, yDist, NULL, quadrant);
 }
 
-Vec3 *RandomPos::getPosTowards(std::shared_ptr<PathfinderMob> mob, int xzDist, int yDist, Vec3 *towardsPos)
+Vec3 *RandomPos::getPosTowards(shared_ptr<PathfinderMob> mob, int xzDist, int yDist, Vec3 *towardsPos)
 {
 	tempDir->x = towardsPos->x - mob->x;
 	tempDir->y = towardsPos->y - mob->y;
@@ -18,7 +18,7 @@ Vec3 *RandomPos::getPosTowards(std::shared_ptr<PathfinderMob> mob, int xzDist, i
 	return generateRandomPos(mob, xzDist, yDist, tempDir);
 }
 
-Vec3 *RandomPos::getPosAvoid(std::shared_ptr<PathfinderMob> mob, int xzDist, int yDist, Vec3 *avoidPos)
+Vec3 *RandomPos::getPosAvoid(shared_ptr<PathfinderMob> mob, int xzDist, int yDist, Vec3 *avoidPos)
 {
 	tempDir->x = mob->x - avoidPos->x;
 	tempDir->y = mob->y - avoidPos->y;
@@ -26,7 +26,7 @@ Vec3 *RandomPos::getPosAvoid(std::shared_ptr<PathfinderMob> mob, int xzDist, int
 	return generateRandomPos(mob, xzDist, yDist, tempDir);
 }
 
-Vec3 *RandomPos::generateRandomPos(std::shared_ptr<PathfinderMob> mob, int xzDist, int yDist, Vec3 *dir, int quadrant/*=-1*/)		// 4J - added quadrant
+Vec3 *RandomPos::generateRandomPos(shared_ptr<PathfinderMob> mob, int xzDist, int yDist, Vec3 *dir, int quadrant/*=-1*/)		// 4J - added quadrant
 {
 	Random *random = mob->getRandom();
 	bool hasBest = false;

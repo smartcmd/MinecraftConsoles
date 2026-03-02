@@ -43,7 +43,7 @@ public:
 	AABB *getAABB(Level *level, int x, int y, int z);
 
 public:
-	void updateShape(LevelSource *level, int x, int y, int z, int forceData = -1, std::shared_ptr<TileEntity> forceEntity = std::shared_ptr<TileEntity>());	// 4J added forceData, forceEntity param
+	void updateShape(LevelSource *level, int x, int y, int z, int forceData = -1, shared_ptr<TileEntity> forceEntity = shared_ptr<TileEntity>());	// 4J added forceData, forceEntity param
 
 public:
 	void updateDefaultShape();
@@ -53,11 +53,11 @@ public:
 	void setShape(int data);
 
 public:
-	void attack(Level *level, int x, int y, int z, std::shared_ptr<Player> player);
+	void attack(Level *level, int x, int y, int z, shared_ptr<Player> player);
 
 public:
 	virtual bool TestUse();
-	bool use(Level *level, int x, int y, int z, std::shared_ptr<Player> player, int clickedFace, float clickX, float clickY, float clickZ, bool soundOnly = false); // 4J added soundOnly param
+	bool use(Level *level, int x, int y, int z, shared_ptr<Player> player, int clickedFace, float clickX, float clickY, float clickZ, bool soundOnly = false); // 4J added soundOnly param
 
 public:
 	void setOpen(Level *level, int x, int y, int z, bool shouldOpen);

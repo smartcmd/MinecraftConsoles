@@ -29,13 +29,13 @@ ItemRenderer::~ItemRenderer()
 	delete random;
 }
 
-void ItemRenderer::render(std::shared_ptr<Entity> _itemEntity, double x, double y, double z, float rot, float a)
+void ItemRenderer::render(shared_ptr<Entity> _itemEntity, double x, double y, double z, float rot, float a)
 {
 	// 4J - dynamic cast required because we aren't using templates/generics in our version
-	std::shared_ptr<ItemEntity> itemEntity = dynamic_pointer_cast<ItemEntity>(_itemEntity);
+	shared_ptr<ItemEntity> itemEntity = dynamic_pointer_cast<ItemEntity>(_itemEntity);
 
     random->setSeed(187);
-    std::shared_ptr<ItemInstance> item = itemEntity->getItem();
+    shared_ptr<ItemInstance> item = itemEntity->getItem();
 
     glPushMatrix();
     float bob = Mth::sin((itemEntity->age + a) / 10.0f + itemEntity->bobOffs) * 0.1f + 0.1f;
@@ -54,7 +54,7 @@ void ItemRenderer::render(std::shared_ptr<Entity> _itemEntity, double x, double 
 	{
         glRotatef(spin, 0, 1, 0);
 
-		if (m_bItemFrame)
+		if (m_bItemFrame) 
 		{
 			glScalef(1.25f, 1.25f, 1.25f);
 			glTranslatef(0, 0.05f, 0);
@@ -73,7 +73,7 @@ void ItemRenderer::render(std::shared_ptr<Entity> _itemEntity, double x, double 
         for (int i = 0; i < count; i++)
 		{
             glPushMatrix();
-            if (i > 0)
+            if (i > 0) 
 			{
                 float xo = (random->nextFloat() * 2 - 1) * 0.2f / s;
                 float yo = (random->nextFloat() * 2 - 1) * 0.2f / s;
@@ -88,13 +88,13 @@ void ItemRenderer::render(std::shared_ptr<Entity> _itemEntity, double x, double 
 	}
 	else if (item->getItem()->hasMultipleSpriteLayers())
 	{
-		if (m_bItemFrame)
+		if (m_bItemFrame) 
 		{
 			glScalef(1 / 1.95f, 1 / 1.95f, 1 / 1.95f);
 			glTranslatef(0, -0.05f, 0);
 			glDisable(GL_LIGHTING);
-		}
-		else
+		} 
+		else 
 		{
 			glScalef(1 / 2.0f, 1 / 2.0f, 1 / 2.0f);
 		}
@@ -124,17 +124,17 @@ void ItemRenderer::render(std::shared_ptr<Entity> _itemEntity, double x, double 
 	}
 	else
 	{
-		if (m_bItemFrame)
+		if (m_bItemFrame) 
 		{
 			glScalef(1 / 1.95f, 1 / 1.95f, 1 / 1.95f);
 			glTranslatef(0, -0.05f, 0);
 			glDisable(GL_LIGHTING);
-		}
-		else
+		} 
+		else 
 		{
 			glScalef(1 / 2.0f, 1 / 2.0f, 1 / 2.0f);
 		}
-
+		
 		// 4J Stu - For rendering the static compass, we give it a non-zero aux value
 		if(item->id == Item::compass_Id) item->setAuxValue(255);
 		Icon *icon = item->getIcon();
@@ -172,7 +172,7 @@ void ItemRenderer::render(std::shared_ptr<Entity> _itemEntity, double x, double 
 	}
 }
 
-void ItemRenderer::renderItemBillboard(std::shared_ptr<ItemEntity> entity, Icon *icon, int count, float a, float red, float green, float blue)
+void ItemRenderer::renderItemBillboard(shared_ptr<ItemEntity> entity, Icon *icon, int count, float a, float red, float green, float blue)
 {
     Tesselator *t = Tesselator::getInstance();
 
@@ -188,7 +188,7 @@ void ItemRenderer::renderItemBillboard(std::shared_ptr<ItemEntity> entity, Icon 
 
 	if (entityRenderDispatcher->options->fancyGraphics)
 	{
-		// Consider forcing the mipmap LOD level to use, if this is to be rendered from a larger than standard source texture.
+		// Consider forcing the mipmap LOD level to use, if this is to be rendered from a larger than standard source texture. 
 		int iconWidth = icon->getWidth();
 		int LOD = -1;	// Default to not doing anything special with LOD forcing
 		if( iconWidth == 32 )
@@ -213,7 +213,7 @@ void ItemRenderer::renderItemBillboard(std::shared_ptr<ItemEntity> entity, Icon 
 
 		float width = 1 / 16.0f;
 		float margin = 0.35f / 16.0f;
-		std::shared_ptr<ItemInstance> item = entity->getItem();
+		shared_ptr<ItemInstance> item = entity->getItem();
 		int items = item->count;
 
 		if (items < 2)
@@ -315,7 +315,7 @@ void ItemRenderer::renderItemBillboard(std::shared_ptr<ItemEntity> entity, Icon 
 }
 }
 
-void ItemRenderer::renderGuiItem(Font *font, Textures *textures, std::shared_ptr<ItemInstance> item, float x, float y, float fScale, float fAlpha)
+void ItemRenderer::renderGuiItem(Font *font, Textures *textures, shared_ptr<ItemInstance> item, float x, float y, float fScale, float fAlpha)
 {
 	renderGuiItem(font,textures,item,x,y,fScale,fScale,fAlpha, true);
 }
@@ -325,7 +325,7 @@ extern IDirect3DDevice9 *g_pD3DDevice;
 #endif
 
 // 4J - this used to take x and y as ints, and no scale and alpha - but this interface is now implemented as a wrapper round this more fully featured one
-void ItemRenderer::renderGuiItem(Font *font, Textures *textures, std::shared_ptr<ItemInstance> item, float x, float y, float fScaleX,float fScaleY, float fAlpha, bool useCompiled)
+void ItemRenderer::renderGuiItem(Font *font, Textures *textures, shared_ptr<ItemInstance> item, float x, float y, float fScaleX,float fScaleY, float fAlpha, bool useCompiled)
 {
 	int itemId = item->id;
 	int itemAuxValue = item->getAuxValue();
@@ -447,13 +447,13 @@ void ItemRenderer::renderGuiItem(Font *font, Textures *textures, std::shared_ptr
 }
 
 // 4J - original interface, now just a wrapper for preceding overload
-void ItemRenderer::renderGuiItem(Font *font, Textures *textures, std::shared_ptr<ItemInstance> item, int x, int y)
+void ItemRenderer::renderGuiItem(Font *font, Textures *textures, shared_ptr<ItemInstance> item, int x, int y)
 {
 	renderGuiItem(font, textures, item, (float)x, (float)y, 1.0f, 1.0f );
 }
 
 // 4J - this used to take x and y as ints, and no scale, alpha or foil - but this interface is now implemented as a wrapper round this more fully featured one
-void ItemRenderer::renderAndDecorateItem(Font *font, Textures *textures, const std::shared_ptr<ItemInstance> item, float x, float y,float fScale,float fAlpha, bool isFoil)
+void ItemRenderer::renderAndDecorateItem(Font *font, Textures *textures, const shared_ptr<ItemInstance> item, float x, float y,float fScale,float fAlpha, bool isFoil)
 {
 	if(item==NULL) return;
 	renderAndDecorateItem(font, textures, item, x, y,fScale, fScale, fAlpha, isFoil, true);
@@ -461,7 +461,7 @@ void ItemRenderer::renderAndDecorateItem(Font *font, Textures *textures, const s
 
 // 4J - added isConstantBlended and blendFactor parameters. This is true if the gui item is being rendered from a context where it already has blending enabled to do general interface fading
 // (ie from the gui rather than xui). In this case we dno't want to enable/disable blending, and do need to restore the blend state when we are done.
-void ItemRenderer::renderAndDecorateItem(Font *font, Textures *textures, const std::shared_ptr<ItemInstance> item, float x, float y,float fScaleX, float fScaleY,float fAlpha, bool isFoil, bool isConstantBlended, bool useCompiled)
+void ItemRenderer::renderAndDecorateItem(Font *font, Textures *textures, const shared_ptr<ItemInstance> item, float x, float y,float fScaleX, float fScaleY,float fAlpha, bool isFoil, bool isConstantBlended, bool useCompiled)	
 {
     if (item == NULL)
 	{
@@ -469,7 +469,7 @@ void ItemRenderer::renderAndDecorateItem(Font *font, Textures *textures, const s
     }
 
     renderGuiItem(font, textures, item, x, y,fScaleX,fScaleY,fAlpha, useCompiled);
-
+	
 	if (isFoil || item->isFoil())
 	{
 		glDepthFunc(GL_GREATER);
@@ -478,7 +478,7 @@ void ItemRenderer::renderAndDecorateItem(Font *font, Textures *textures, const s
 		textures->bindTexture(TN__BLUR__MISC_GLINT); // 4J was "%blur%/misc/glint.png"
 		blitOffset -= 50;
 		if( !isConstantBlended )	glEnable(GL_BLEND);
-
+		
 		glBlendFunc(GL_DST_COLOR, GL_ONE);		// 4J - changed blend equation from GL_DST_COLOR, GL_DST_COLOR so we can fade this out
 
 		float blendFactor = isConstantBlended ? Gui::currentGuiBlendFactor : 1.0f;
@@ -507,7 +507,7 @@ void ItemRenderer::renderAndDecorateItem(Font *font, Textures *textures, const s
 }
 
 // 4J - original interface, now just a wrapper for preceding overload
-void ItemRenderer::renderAndDecorateItem(Font *font, Textures *textures, const std::shared_ptr<ItemInstance> item, int x, int y)
+void ItemRenderer::renderAndDecorateItem(Font *font, Textures *textures, const shared_ptr<ItemInstance> item, int x, int y)
 {
 	renderAndDecorateItem( font, textures, item, (float)x, (float)y, 1.0f, 1.0f, item->isFoil() );
 }
@@ -560,18 +560,18 @@ void ItemRenderer::blitGlint(int id, float x, float y, float w, float h)
 	}
 }
 
-void ItemRenderer::renderGuiItemDecorations(Font *font, Textures *textures, std::shared_ptr<ItemInstance> item, int x, int y, float fAlpha)
+void ItemRenderer::renderGuiItemDecorations(Font *font, Textures *textures, shared_ptr<ItemInstance> item, int x, int y, float fAlpha)
 {
 	renderGuiItemDecorations(font, textures, item, x, y, L"", fAlpha);
 }
 
-void ItemRenderer::renderGuiItemDecorations(Font *font, Textures *textures, std::shared_ptr<ItemInstance> item, int x, int y, const wstring &countText, float fAlpha)
+void ItemRenderer::renderGuiItemDecorations(Font *font, Textures *textures, shared_ptr<ItemInstance> item, int x, int y, const wstring &countText, float fAlpha)
 {
     if (item == NULL)
 	{
         return;
     }
-
+	
 	glEnable(GL_BLEND);
 	RenderManager.StateSetBlendFactor(0xffffff |(((unsigned int)(fAlpha * 0xff))<<24));
 	glBlendFunc(GL_CONSTANT_ALPHA, GL_ONE_MINUS_CONSTANT_ALPHA);

@@ -14,18 +14,18 @@ LevelData::LevelData(CompoundTag *tag)
 {
     seed = tag->getLong(L"RandomSeed");
 	m_pGenerator = LevelType::lvl_normal;
-	if (tag->contains(L"generatorName"))
+	if (tag->contains(L"generatorName")) 
 	{
 		wstring generatorName = tag->getString(L"generatorName");
 		m_pGenerator = LevelType::getLevelType(generatorName);
-		if (m_pGenerator == NULL)
+		if (m_pGenerator == NULL) 
 		{
 			m_pGenerator = LevelType::lvl_normal;
-		}
-		else if (m_pGenerator->hasReplacement())
+		} 
+		else if (m_pGenerator->hasReplacement()) 
 		{
 			int generatorVersion = 0;
-			if (tag->contains(L"generatorVersion"))
+			if (tag->contains(L"generatorVersion")) 
 			{
 				generatorVersion = tag->getInt(L"generatorVersion");
 			}
@@ -80,7 +80,7 @@ LevelData::LevelData(CompoundTag *tag)
 	hasBeenInCreative = tag->getBoolean(L"hasBeenInCreative"); // 4J added so we can not award achievements to levels modified in creative
 
 	// 4J added - for stronghold position
-	bStronghold = tag->getBoolean(L"hasStronghold");
+	bStronghold = tag->getBoolean(L"hasStronghold"); 
 
 	if(bStronghold==false)
 	{
@@ -95,7 +95,7 @@ LevelData::LevelData(CompoundTag *tag)
 	}
 
 	// 4J added - for stronghold end portal position
-	bStrongholdEndPortal = tag->getBoolean(L"hasStrongholdEndPortal");
+	bStrongholdEndPortal = tag->getBoolean(L"hasStrongholdEndPortal"); 
 
 	if(bStrongholdEndPortal==false)
 	{
@@ -111,7 +111,7 @@ LevelData::LevelData(CompoundTag *tag)
 	// 4J Added
 	m_xzSize = tag->getInt(L"XZSize");
 	m_hellScale = tag->getInt(L"HellScale");
-
+	
 	m_xzSize = min(m_xzSize,LEVEL_MAX_WIDTH);
 	m_xzSize = max(m_xzSize,LEVEL_MIN_WIDTH);
 
@@ -126,20 +126,20 @@ LevelData::LevelData(CompoundTag *tag)
 	}
 
 	/* 4J - we don't store this anymore
-    if (tag->contains(L"Player"))
+    if (tag->contains(L"Player")) 
 	{
         loadedPlayerTag = tag->getCompound(L"Player");
         dimension = loadedPlayerTag->getInt(L"Dimension");
     }
 	else
-	{
+	{		
 		this->loadedPlayerTag = NULL;
 	}
 	*/
 	dimension = 0;
 }
 
-LevelData::LevelData(LevelSettings *levelSettings, const wstring& levelName)
+LevelData::LevelData(LevelSettings *levelSettings, const wstring& levelName) 
 {
     this->seed = levelSettings->getSeed();
     this->gameType = levelSettings->getGameType();
@@ -149,7 +149,7 @@ LevelData::LevelData(LevelSettings *levelSettings, const wstring& levelName)
 	this->m_pGenerator = levelSettings->getLevelType();
 	this->hardcore = levelSettings->isHardcore();
 
-	// 4J Stu - Default initers
+	// 4J Stu - Default initers	
     this->xSpawn = 0;
     this->ySpawn = 0;
     this->zSpawn = 0;
@@ -179,7 +179,7 @@ LevelData::LevelData(LevelSettings *levelSettings, const wstring& levelName)
 	this->bStrongholdEndPortal = false;
 	m_xzSize = levelSettings->getXZSize();
 	m_hellScale = levelSettings->getHellScale();
-
+	
 	m_xzSize = min(m_xzSize,LEVEL_MAX_WIDTH);
 	m_xzSize = max(m_xzSize,LEVEL_MIN_WIDTH);
 
@@ -243,13 +243,13 @@ CompoundTag *LevelData::createTag()
     return tag;
 }
 
-CompoundTag *LevelData::createTag(vector<std::shared_ptr<Player> > *players)
+CompoundTag *LevelData::createTag(vector<shared_ptr<Player> > *players) 
 {
 	// 4J - removed all code for storing tags for players
 	return createTag();
 }
 
-void LevelData::setTagData(CompoundTag *tag)
+void LevelData::setTagData(CompoundTag *tag) 
 {
     tag->putLong(L"RandomSeed", seed);
 	tag->putString(L"generatorName", m_pGenerator->getGeneratorName());
@@ -287,17 +287,17 @@ void LevelData::setTagData(CompoundTag *tag)
 	tag->putInt(L"HellScale", m_hellScale);
 }
 
-int64_t LevelData::getSeed()
+__int64 LevelData::getSeed() 
 {
     return seed;
 }
 
-int LevelData::getXSpawn()
+int LevelData::getXSpawn() 
 {
     return xSpawn;
 }
 
-int LevelData::getYSpawn()
+int LevelData::getYSpawn() 
 {
     return ySpawn;
 }
@@ -307,7 +307,7 @@ int LevelData::getZSpawn()
     return zSpawn;
 }
 
-int LevelData::getXStronghold()
+int LevelData::getXStronghold() 
 {
 	return xStronghold;
 }
@@ -318,7 +318,7 @@ int LevelData::getZStronghold()
 	return zStronghold;
 }
 
-int LevelData::getXStrongholdEndPortal()
+int LevelData::getXStrongholdEndPortal() 
 {
 	return xStrongholdEndPortal;
 }
@@ -329,12 +329,12 @@ int LevelData::getZStrongholdEndPortal()
 	return zStrongholdEndPortal;
 }
 
-int64_t LevelData::getTime()
+__int64 LevelData::getTime()
 {
     return time;
 }
 
-int64_t LevelData::getSizeOnDisk()
+__int64 LevelData::getSizeOnDisk()
 {
     return sizeOnDisk;
 }
@@ -350,7 +350,7 @@ CompoundTag *LevelData::getLoadedPlayerTag()
 //    return dimension;
 //}
 
-void LevelData::setSeed(int64_t seed)
+void LevelData::setSeed(__int64 seed)
 {
     this->seed = seed;
 }
@@ -360,7 +360,7 @@ void LevelData::setXSpawn(int xSpawn)
     this->xSpawn = xSpawn;
 }
 
-void LevelData::setYSpawn(int ySpawn)
+void LevelData::setYSpawn(int ySpawn) 
 {
     this->ySpawn = ySpawn;
 }
@@ -411,12 +411,12 @@ void LevelData::setZStrongholdEndPortal(int zStrongholdEndPortal)
 	this->zStrongholdEndPortal = zStrongholdEndPortal;
 }
 
-void LevelData::setTime(int64_t time)
+void LevelData::setTime(__int64 time)
 {
     this->time = time;
 }
 
-void LevelData::setSizeOnDisk(int64_t sizeOnDisk)
+void LevelData::setSizeOnDisk(__int64 sizeOnDisk)
 {
     this->sizeOnDisk = sizeOnDisk;
 }
@@ -428,7 +428,7 @@ void LevelData::setLoadedPlayerTag(CompoundTag *loadedPlayerTag)
 }
 
 // 4J Remove TU9 as it's never used
-//void LevelData::setDimension(int dimension)
+//void LevelData::setDimension(int dimension) 
 //{
 //    this->dimension = dimension;
 //}
@@ -440,7 +440,7 @@ void LevelData::setSpawn(int xSpawn, int ySpawn, int zSpawn)
     this->zSpawn = zSpawn;
 }
 
-wstring LevelData::getLevelName()
+wstring LevelData::getLevelName() 
 {
     return levelName;
 }
@@ -450,7 +450,7 @@ void LevelData::setLevelName(const wstring& levelName)
     this->levelName = levelName;
 }
 
-int LevelData::getVersion()
+int LevelData::getVersion() 
 {
     return version;
 }
@@ -460,7 +460,7 @@ void LevelData::setVersion(int version)
     this->version = version;
 }
 
-int64_t LevelData::getLastPlayed()
+__int64 LevelData::getLastPlayed()
 {
     return lastPlayed;
 }
@@ -485,7 +485,7 @@ void LevelData::setThunderTime(int thunderTime)
     this->thunderTime = thunderTime;
 }
 
-bool LevelData::isRaining()
+bool LevelData::isRaining() 
 {
     return raining;
 }
@@ -543,12 +543,12 @@ void LevelData::setHasBeenInCreative(bool value)
 	hasBeenInCreative = value;
 }
 
-LevelType *LevelData::getGenerator()
+LevelType *LevelData::getGenerator() 
 {
 	return m_pGenerator;
 }
 
-void LevelData::setGenerator(LevelType *generator)
+void LevelData::setGenerator(LevelType *generator) 
 {
 	m_pGenerator = generator;
 }

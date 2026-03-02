@@ -19,9 +19,9 @@ public:
 	{
 	public:
         int x, y, z;
-        int64_t when;
+        __int64 when;
 
-        Toggle(int x, int y, int z, int64_t when)
+        Toggle(int x, int y, int z, __int64 when)
 		{
             this->x = x;
             this->y = y;
@@ -61,7 +61,7 @@ public:
 public:
 	void animateTick(Level *level, int xt, int yt, int zt, Random *random);
 	int cloneTileId(Level *level, int x, int y, int z);
-    void levelTimeChanged(Level *level, int64_t delta, int64_t newTime);
+    void levelTimeChanged(Level *level, __int64 delta, __int64 newTime);
 
 	void registerIcons(IconRegister *iconRegister);
 };

@@ -28,7 +28,7 @@ void BedTile::updateDefaultShape()
 }
 
 // 4J-PB - Adding a TestUse for tooltip display
-bool BedTile::TestUse(Level *level, int x, int y, int z, std::shared_ptr<Player> player)
+bool BedTile::TestUse(Level *level, int x, int y, int z, shared_ptr<Player> player)
 {
 	//if (level->isClientSide) return true;
 
@@ -65,7 +65,7 @@ bool BedTile::TestUse(Level *level, int x, int y, int z, std::shared_ptr<Player>
 	return false;
 }
 
-bool BedTile::use(Level *level, int x, int y, int z, std::shared_ptr<Player> player, int clickedFace, float clickX, float clickY, float clickZ, bool soundOnly/*=false*/) // 4J added soundOnly param
+bool BedTile::use(Level *level, int x, int y, int z, shared_ptr<Player> player, int clickedFace, float clickX, float clickY, float clickZ, bool soundOnly/*=false*/) // 4J added soundOnly param
 {
 	if( soundOnly) return false;
     if (level->isClientSide) return true;
@@ -106,11 +106,11 @@ bool BedTile::use(Level *level, int x, int y, int z, std::shared_ptr<Player> pla
 
     if (BedTile::isOccupied(data))
 	{
-        std::shared_ptr<Player> sleepingPlayer = nullptr;
+        shared_ptr<Player> sleepingPlayer = nullptr;
 		AUTO_VAR(itEnd, level->players.end());
         for (AUTO_VAR(it, level->players.begin()); it != itEnd; it++ )
 		{
-			std::shared_ptr<Player> p = *it;
+			shared_ptr<Player> p = *it;
             if (p->isSleeping())
 			{
                 Pos pos = p->bedPosition;
@@ -128,7 +128,7 @@ bool BedTile::use(Level *level, int x, int y, int z, std::shared_ptr<Player> pla
 		else
 		{
 			player->displayClientMessage(IDS_TILE_BED_OCCUPIED );
-
+			
             return true;
         }
     }
@@ -142,7 +142,7 @@ bool BedTile::use(Level *level, int x, int y, int z, std::shared_ptr<Player> pla
 		if(level->AllPlayersAreSleeping()==false)
 		{
 			player->displayClientMessage(IDS_TILE_BED_PLAYERSLEEP);
-		}
+		}       
 		return true;
     }
 
@@ -211,7 +211,7 @@ bool BedTile::isSolidRender(bool isServerLevel)
 	return false;
 }
 
-void BedTile::updateShape(LevelSource *level, int x, int y, int z, int forceData, std::shared_ptr<TileEntity> forceEntity) // 4J added forceData, forceEntity param
+void BedTile::updateShape(LevelSource *level, int x, int y, int z, int forceData, shared_ptr<TileEntity> forceEntity) // 4J added forceData, forceEntity param
 {
 	setShape();
 }

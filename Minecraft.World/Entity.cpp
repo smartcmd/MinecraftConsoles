@@ -309,7 +309,7 @@ void Entity::_init(bool useSmallId)
 	fireImmune = false;
 
 	// values that need to be sent to clients in SMP
-	entityData = std::shared_ptr<SynchedEntityData>(new SynchedEntityData());
+	entityData = shared_ptr<SynchedEntityData>(new SynchedEntityData());
 
 	xRideRotA = yRideRotA = 0.0;
 	inChunk = false;
@@ -350,7 +350,7 @@ Entity::~Entity()
 	delete bb;
 }
 
-std::shared_ptr<SynchedEntityData> Entity::getEntityData()
+shared_ptr<SynchedEntityData> Entity::getEntityData()
 {
 	return entityData;
 }
@@ -372,7 +372,7 @@ void Entity::resetPos()
 {
 	if (level == NULL) return;
 
-	std::shared_ptr<Entity> sharedThis = shared_from_this();
+	shared_ptr<Entity> sharedThis = shared_from_this();
 	while (true && y > 0)
 	{
 		setPos(x, y, z);
@@ -392,7 +392,7 @@ void Entity::remove()
 
 void Entity::setSize(float w, float h)
 {
-	if (w != bbWidth || h != bbHeight)
+	if (w != bbWidth || h != bbHeight) 
 	{
 		float oldW = bbWidth;
 
@@ -403,7 +403,7 @@ void Entity::setSize(float w, float h)
 		bb->z1 = bb->z0 + bbWidth;
 		bb->y1 = bb->y0 + bbHeight;
 
-		if (bbWidth > oldW && !firstTick && !level->isClientSide)
+		if (bbWidth > oldW && !firstTick && !level->isClientSide) 
 		{
 			move(oldW - bbWidth, 0, oldW - bbWidth);
 		}
@@ -421,7 +421,7 @@ void Entity::setPos(EntityPos *pos)
 
 void Entity::setRot(float yRot, float xRot)
 {
-	/* JAVA:
+	/* JAVA:		
 	this->yRot = yRot % 360.0f;
 	this->xRot = xRot % 360.0f;
 
@@ -531,7 +531,7 @@ void Entity::baseTick()
 		fallDistance = 0;
 		wasInWater = true;
 		onFire = 0;
-	}
+	} 
 	else
 	{
 		wasInWater = false;
@@ -541,7 +541,7 @@ void Entity::baseTick()
 	{
 		onFire = 0;
 	}
-	else
+	else 
 	{
 		if (onFire > 0)
 		{
@@ -958,7 +958,7 @@ void Entity::playStepSound(int xt, int yt, int zt, int t)
 			}
 		}
 		else
-		{
+		{	
 			if (level->getTile(xt, yt + 1, zt) == Tile::topSnow_Id)
 			{
 				soundType = Tile::topSnow->soundType;
@@ -1020,7 +1020,7 @@ void Entity::checkFallDamage(double ya, bool onGround)
 			causeFallDamage(fallDistance);
 			fallDistance = 0;
 		}
-	}
+	} 
 	else
 	{
 		if (ya < 0) fallDistance -= (float) ya;
@@ -1169,7 +1169,7 @@ void Entity::moveTo(double x, double y, double z, float yRot, float xRot)
 	this->setPos(this->x, this->y, this->z);
 }
 
-float Entity::distanceTo(std::shared_ptr<Entity> e)
+float Entity::distanceTo(shared_ptr<Entity> e)
 {
 	float xd = (float) (x - e->x);
 	float yd = (float) (y - e->y);
@@ -1193,7 +1193,7 @@ double Entity::distanceTo(double x2, double y2, double z2)
 	return sqrt(xd * xd + yd * yd + zd * zd);
 }
 
-double Entity::distanceToSqr(std::shared_ptr<Entity> e)
+double Entity::distanceToSqr(shared_ptr<Entity> e)
 {
 	double xd = x - e->x;
 	double yd = y - e->y;
@@ -1201,11 +1201,11 @@ double Entity::distanceToSqr(std::shared_ptr<Entity> e)
 	return xd * xd + yd * yd + zd * zd;
 }
 
-void Entity::playerTouch(std::shared_ptr<Player> player)
+void Entity::playerTouch(shared_ptr<Player> player)
 {
 }
 
-void Entity::push(std::shared_ptr<Entity> e)
+void Entity::push(shared_ptr<Entity> e)
 {
 	if (e->rider.lock().get() == this || e->riding.get() == this) return;
 
@@ -1277,7 +1277,7 @@ bool Entity::isShootable()
 	return false;
 }
 
-void Entity::awardKillScore(std::shared_ptr<Entity> victim, int score)
+void Entity::awardKillScore(shared_ptr<Entity> victim, int score)
 {
 }
 
@@ -1437,19 +1437,19 @@ float Entity::getShadowHeightOffs()
 	return bbHeight / 2;
 }
 
-std::shared_ptr<ItemEntity> Entity::spawnAtLocation(int resource, int count)
+shared_ptr<ItemEntity> Entity::spawnAtLocation(int resource, int count)
 {
 	return spawnAtLocation(resource, count, 0);
 }
 
-std::shared_ptr<ItemEntity> Entity::spawnAtLocation(int resource, int count, float yOffs)
+shared_ptr<ItemEntity> Entity::spawnAtLocation(int resource, int count, float yOffs)
 {
-	return spawnAtLocation(std::shared_ptr<ItemInstance>( new ItemInstance(resource, count, 0) ), yOffs);
+	return spawnAtLocation(shared_ptr<ItemInstance>( new ItemInstance(resource, count, 0) ), yOffs);
 }
 
-std::shared_ptr<ItemEntity> Entity::spawnAtLocation(std::shared_ptr<ItemInstance> itemInstance, float yOffs)
+shared_ptr<ItemEntity> Entity::spawnAtLocation(shared_ptr<ItemInstance> itemInstance, float yOffs)
 {
-	std::shared_ptr<ItemEntity> ie = std::shared_ptr<ItemEntity>( new ItemEntity(level, x, y + yOffs, z, itemInstance) );
+	shared_ptr<ItemEntity> ie = shared_ptr<ItemEntity>( new ItemEntity(level, x, y + yOffs, z, itemInstance) );
 	ie->throwTime = 10;
 	level->addEntity(ie);
 	return ie;
@@ -1478,12 +1478,12 @@ bool Entity::isInWall()
 	return false;
 }
 
-bool Entity::interact(std::shared_ptr<Player> player)
+bool Entity::interact(shared_ptr<Player> player)
 {
 	return false;
 }
 
-AABB *Entity::getCollideAgainstBox(std::shared_ptr<Entity> entity)
+AABB *Entity::getCollideAgainstBox(shared_ptr<Entity> entity) 
 {
 	return NULL;
 }
@@ -1531,10 +1531,10 @@ void Entity::rideTick()
 
 void Entity::positionRider()
 {
-	std::shared_ptr<Entity> lockedRider = rider.lock();
+	shared_ptr<Entity> lockedRider = rider.lock();
 	if( lockedRider )
 	{
-		std::shared_ptr<Player> player = dynamic_pointer_cast<Player>(lockedRider);
+		shared_ptr<Player> player = dynamic_pointer_cast<Player>(lockedRider);
 		if (!(player && player->isLocalPlayer()))
 		{
 			lockedRider->xOld = xOld;
@@ -1555,7 +1555,7 @@ double Entity::getRideHeight()
 	return bbHeight * .75;
 }
 
-void Entity::ride(std::shared_ptr<Entity> e)
+void Entity::ride(shared_ptr<Entity> e)
 {
 	xRideRotA = 0;
 	yRideRotA = 0;
@@ -1580,7 +1580,7 @@ void Entity::ride(std::shared_ptr<Entity> e)
 }
 
 // 4J Stu - Brought forward from 12w36 to fix #46282 - TU5: Gameplay: Exiting the minecart in a tight corridor damages the player
-void Entity::findStandUpPosition(std::shared_ptr<Entity> vehicle)
+void Entity::findStandUpPosition(shared_ptr<Entity> vehicle)
 {
 	AABB *boundingBox;
 	double fallbackX = vehicle->x;
@@ -1690,7 +1690,7 @@ ItemInstanceArray Entity::getEquipmentSlots() // ItemInstance[]
 }
 
 // 4J Stu - Brought forward change from 1.3 to fix #64688 - Customer Encountered: TU7: Content: Art: Aura of enchanted item is not displayed for other players in online game
-void Entity::setEquippedSlot(int slot, std::shared_ptr<ItemInstance> item)
+void Entity::setEquippedSlot(int slot, shared_ptr<ItemInstance> item)
 {
 }
 
@@ -1739,7 +1739,7 @@ bool Entity::isInvisible()
 	return getSharedFlag(FLAG_INVISIBLE);
 }
 
-bool Entity::isInvisibleTo(std::shared_ptr<Player> plr)
+bool Entity::isInvisibleTo(shared_ptr<Player> plr)
 {
 	return isInvisible();
 }
@@ -1777,7 +1777,7 @@ bool Entity::getSharedFlag(int flag)
 void Entity::setSharedFlag(int flag, bool value)
 {
 	byte currentValue = entityData->getByte(DATA_SHARED_FLAGS_ID);
-	if (value)
+	if (value) 
 	{
 		entityData->set(DATA_SHARED_FLAGS_ID, (byte) (currentValue | (1 << flag)));
 	}
@@ -1806,7 +1806,7 @@ void Entity::thunderHit(const LightningBolt *lightningBolt)
 	if (onFire == 0) setOnFire(8);
 }
 
-void Entity::killed(std::shared_ptr<Mob> mob)
+void Entity::killed(shared_ptr<Mob> mob)
 {
 }
 
@@ -1892,12 +1892,12 @@ wstring Entity::getAName()
 	//return I18n.get("entity." + id + ".name");
 }
 
-vector<std::shared_ptr<Entity> > *Entity::getSubEntities()
+vector<shared_ptr<Entity> > *Entity::getSubEntities()
 {
 	return NULL;
 }
 
-bool Entity::is(std::shared_ptr<Entity> other)
+bool Entity::is(shared_ptr<Entity> other)
 {
 	return shared_from_this() == other;
 }
@@ -1921,18 +1921,18 @@ bool Entity::isInvulnerable()
 	return false;
 }
 
-void Entity::copyPosition(std::shared_ptr<Entity> target)
+void Entity::copyPosition(shared_ptr<Entity> target)
 {
 	moveTo(target->x, target->y, target->z, target->yRot, target->xRot);
 }
 
-void Entity::setAnimOverrideBitmask(unsigned int uiBitmask)
+void Entity::setAnimOverrideBitmask(unsigned int uiBitmask) 
 {
 	m_uiAnimOverrideBitmask=uiBitmask;
 	app.DebugPrintf("!!! Setting anim override bitmask to %d\n",uiBitmask);
 }
-unsigned int Entity::getAnimOverrideBitmask()
-{
+unsigned int Entity::getAnimOverrideBitmask() 
+{	
 	if(app.GetGameSettings(eGameSetting_CustomSkinAnim)==0 )
 	{
 		// We have a force animation for some skins (claptrap)

@@ -1,6 +1,6 @@
 /*
     Copyright 2005-2007 Adobe Systems Incorporated
-
+   
     Use, modification and distribution are subject to the Boost Software License,
     Version 1.0. (See accompanying file LICENSE_1_0.txt or copy at
     http://www.boost.org/LICENSE_1_0.txt).
@@ -20,7 +20,7 @@
 
 #include <ios>
 #include "../../gil_config.hpp"
-#include <boost/std::shared_ptr.hpp>
+#include <boost/shared_ptr.hpp>
 
 namespace boost { namespace gil {
 
@@ -30,7 +30,7 @@ inline void io_error_if(bool expr, const char* descr="") { if (expr) io_error(de
 namespace detail {
     class file_mgr {
     protected:
-        std::shared_ptr<FILE> _fp;
+        shared_ptr<FILE> _fp;
 
         struct null_deleter { void operator()(void const*) const {} };
         file_mgr(FILE* file) : _fp(file, null_deleter()) {}
@@ -38,7 +38,7 @@ namespace detail {
         file_mgr(const char* filename, const char* flags) {
             FILE* fp;
             io_error_if((fp=fopen(filename,flags))==NULL, "file_mgr: failed to open file");
-            _fp=std::shared_ptr<FILE>(fp,fclose);
+            _fp=shared_ptr<FILE>(fp,fclose);
         }
 
     public:

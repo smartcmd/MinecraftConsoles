@@ -12,7 +12,7 @@ public:
     int type;
 
 	AddGlobalEntityPacket();
-	AddGlobalEntityPacket(std::shared_ptr<Entity> e);
+	AddGlobalEntityPacket(shared_ptr<Entity> e);
 
 	virtual void read(DataInputStream *dis);
 	virtual void write(DataOutputStream *dos);
@@ -20,6 +20,6 @@ public:
 	virtual int getEstimatedSize();
 
 public:
-	static std::shared_ptr<Packet> create() { return std::shared_ptr<Packet>(new AddGlobalEntityPacket()); }
+	static shared_ptr<Packet> create() { return shared_ptr<Packet>(new AddGlobalEntityPacket()); }
 	virtual int getId() { return 71; }
 };

@@ -20,7 +20,7 @@ public:
 	enum eAcquisitionMethod
 	{
 		eAcquisitionMethod_None = 0,
-
+	
 		eAcquisitionMethod_Pickedup,
 		eAcquisitionMethod_Crafted,
 		eAcquisitionMethod_TakenFromChest,
@@ -30,7 +30,7 @@ public:
 		eAcquisitionMethod_Mined,
 
 		eAcquisitionMethod_Placed,
-
+	
 		eAcquisitionMethod_MAX
 	};
 
@@ -44,7 +44,7 @@ public:
 	bool onLeaderboard(ELeaderboardId leaderboard, eAcquisitionMethod methodId, Param *param);
 	int mergeIds(int itemId);
 
-	virtual void handleParamBlob(std::shared_ptr<LocalPlayer> plr, byteArray param);
+	virtual void handleParamBlob(shared_ptr<LocalPlayer> plr, byteArray param);
 	static byteArray createParamBlob(eAcquisitionMethod methodId, int itemId, int itemAux, int itemCount);
 };
 
@@ -59,8 +59,8 @@ public:
 	DsMobKilled(int id, const wstring &name);
 
 	typedef struct { bool isRanged; int mobType, weaponId, distance, damage; } Param;
-	virtual void handleParamBlob(std::shared_ptr<LocalPlayer> plr, byteArray param);
-	static byteArray createParamBlob(std::shared_ptr<Player> plr, std::shared_ptr<Mob> mob, DamageSource *dmgSrc);
+	virtual void handleParamBlob(shared_ptr<LocalPlayer> plr, byteArray param);
+	static byteArray createParamBlob(shared_ptr<Player> plr, shared_ptr<Mob> mob, DamageSource *dmgSrc);
 };
 
 class DsMobInteract : public Stat
@@ -82,7 +82,7 @@ public:
 	DsMobInteract(int id, const wstring &name);
 
 	typedef struct { int interactionType, mobId; } Param;
-	virtual void handleParamBlob(std::shared_ptr<LocalPlayer> plr, byteArray param);
+	virtual void handleParamBlob(shared_ptr<LocalPlayer> plr, byteArray param);
 	static byteArray createParamBlob(eInteract interactionId, int entityId);
 };
 
@@ -100,7 +100,7 @@ public:
 		eMethod_boat,
 		eMethod_pig,
 
-		eMethod_time, // Time is a dimension too right...
+		eMethod_time, // Time is a dimension too right... 
 
 		eMethod_MAX
 	};
@@ -110,15 +110,15 @@ public:
 	DsTravel(int id, const wstring &name);
 
 	typedef struct { eMethod method; int distance; } Param;
-	virtual void handleParamBlob(std::shared_ptr<LocalPlayer> plr, byteArray paramBlob);
+	virtual void handleParamBlob(shared_ptr<LocalPlayer> plr, byteArray paramBlob);
 	static byteArray createParamBlob(eMethod method, int distance);
 
-	void			flush(std::shared_ptr<LocalPlayer> plr);
+	void			flush(shared_ptr<LocalPlayer> plr);
 
 protected:
 	unsigned int	param_cache[MAX_LOCAL_PLAYERS][eMethod_MAX];
 	int				cache(int iPad, Param &param);
-	void			write(std::shared_ptr<LocalPlayer> plr, eMethod method, int distance);
+	void			write(shared_ptr<LocalPlayer> plr, eMethod method, int distance);
 };
 
 class DsItemUsed : public Stat
@@ -126,7 +126,7 @@ class DsItemUsed : public Stat
 public:
 	DsItemUsed(int id, const wstring &name);
 	typedef struct { int itemId, aux, count, health, hunger; } Param;
-	virtual void handleParamBlob(std::shared_ptr<LocalPlayer> plr, byteArray paramBlob);
+	virtual void handleParamBlob(shared_ptr<LocalPlayer> plr, byteArray paramBlob);
 	static byteArray createParamBlob(int itemId, int aux, int count, int health, int hunger);
 };
 
@@ -134,8 +134,8 @@ class DsAchievement : public Stat
 {
 public:
 	DsAchievement(int id, const wstring &name);
-
-	virtual void handleParamBlob(std::shared_ptr<LocalPlayer> plr, byteArray paramBlob);
+	
+	virtual void handleParamBlob(shared_ptr<LocalPlayer> plr, byteArray paramBlob);
 
 	typedef struct { eAward award; } SmallParam;
 	static byteArray createSmallParamBlob(eAward id);
@@ -149,7 +149,7 @@ class DsChangedDimension : public Stat
 public:
 	DsChangedDimension(int id, const wstring &name);
 	typedef struct { int fromDimId, toDimId; } Param;
-	virtual void handleParamBlob(std::shared_ptr<LocalPlayer> plr, byteArray paramBlob);
+	virtual void handleParamBlob(shared_ptr<LocalPlayer> plr, byteArray paramBlob);
 	static byteArray createParamBlob(int fromDimId, int toDimId);
 };
 
@@ -158,7 +158,7 @@ class DsEnteredBiome : public Stat
 public:
 	DsEnteredBiome(int id, const wstring &name);
 	typedef struct { int biomeId; } Param;
-	virtual void handleParamBlob(std::shared_ptr<LocalPlayer> plr, byteArray paramBlob);
+	virtual void handleParamBlob(shared_ptr<LocalPlayer> plr, byteArray paramBlob);
 	static byteArray createParamBlob(int biomeId);
 };
 
@@ -240,7 +240,7 @@ protected:
 	virtual Stat* get_changedDimension(int from, int to);
 	virtual Stat* get_enteredBiome(int biomeId);
 
-	// Achievements
+	// Achievements 
 
 	virtual Stat* get_achievement(eAward achievementId);
 
@@ -261,10 +261,10 @@ protected:
 	virtual byteArray getParam_blocksMined(int blockId, int data, int count);
 	virtual byteArray getParam_itemsCollected(int id, int aux, int count);
 	virtual byteArray getParam_itemsCrafted(int id, int aux, int count);
-	virtual byteArray getParam_itemsUsed(std::shared_ptr<Player> plr, std::shared_ptr<ItemInstance> itm);
+	virtual byteArray getParam_itemsUsed(shared_ptr<Player> plr, shared_ptr<ItemInstance> itm);
 	virtual byteArray getParam_itemsBought(int id, int aux, int count);
 
-	virtual byteArray getParam_mobKill(std::shared_ptr<Player> plr, std::shared_ptr<Mob> mob, DamageSource *dmgSrc);
+	virtual byteArray getParam_mobKill(shared_ptr<Player> plr, shared_ptr<Mob> mob, DamageSource *dmgSrc);
 
 	virtual byteArray getParam_breedEntity(eINSTANCEOF entityId);
 	virtual byteArray getParam_tamedEntity(eINSTANCEOF entityId);
@@ -300,10 +300,10 @@ public:
 	static void setMultiplayerCorrelationId(Platform::String^ mpcId);
 	static LPCWSTR getMultiplayerCorrelationId();
 
-	static LPCWSTR getUserId(std::shared_ptr<LocalPlayer> plr);
+	static LPCWSTR getUserId(shared_ptr<LocalPlayer> plr);
 	static LPCWSTR getUserId(int iPad);
 
-	static void playerSessionStart(PlayerUID,std::shared_ptr<Player>);
+	static void playerSessionStart(PlayerUID,shared_ptr<Player>);
 	static void playerSessionStart(int iPad);
 	static void playerSessionPause(int iPad);
 	static void playerSessionResume(int iPad);

@@ -5,7 +5,7 @@
 //  accompanying file LICENSE_1_0.txt or copy at
 //  http://www.boost.org/LICENSE_1_0.txt)
 
-//  See http://www.boost.org for updates, documentation, and revision history.
+//  See http://www.boost.org for updates, documentation, and revision history. 
 
 #ifndef BOOST_INTEGER_INTEGER_MASK_HPP
 #define BOOST_INTEGER_INTEGER_MASK_HPP
@@ -109,7 +109,7 @@ BOOST_LOW_BITS_MASK_SPECIALIZE( unsigned long );
     #endif
 #elif defined(BOOST_HAS_MS_INT64)
     #if 18446744073709551615ui64 > ULONG_MAX
-    BOOST_LOW_BITS_MASK_SPECIALIZE( uint64_t );
+    BOOST_LOW_BITS_MASK_SPECIALIZE( unsigned __int64 );
     #endif
 #endif
 

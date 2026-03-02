@@ -68,9 +68,9 @@ Sheep::Sheep(Level *level) : Animal( level )
 	goalSelector.addGoal(7, new LookAtPlayerGoal(this, typeid(Player), 6));
 	goalSelector.addGoal(8, new RandomLookAroundGoal(this));
 
-	container = std::shared_ptr<CraftingContainer>(new CraftingContainer(new SheepContainer(), 2, 1));
-	container->setItem(0, std::shared_ptr<ItemInstance>( new ItemInstance(Item::dye_powder, 1, 0)));
-	container->setItem(1, std::shared_ptr<ItemInstance>( new ItemInstance(Item::dye_powder, 1, 0)));
+	container = shared_ptr<CraftingContainer>(new CraftingContainer(new SheepContainer(), 2, 1));
+	container->setItem(0, shared_ptr<ItemInstance>( new ItemInstance(Item::dye_powder, 1, 0)));
+	container->setItem(1, shared_ptr<ItemInstance>( new ItemInstance(Item::dye_powder, 1, 0)));
 }
 
 bool Sheep::useNewAi()
@@ -95,7 +95,7 @@ int Sheep::getMaxHealth()
 	return 8;
 }
 
-void Sheep::defineSynchedData()
+void Sheep::defineSynchedData() 
 {
 	Animal::defineSynchedData();
 
@@ -108,7 +108,7 @@ void Sheep::dropDeathLoot(bool wasKilledByPlayer, int playerBonusLevel)
 	if(!isSheared())
 	{
 		// killing a non-sheared sheep will drop a single block of cloth
-		spawnAtLocation(std::shared_ptr<ItemInstance>( new ItemInstance(Tile::cloth_Id, 1, getColor()) ), 0.0f);
+		spawnAtLocation(shared_ptr<ItemInstance>( new ItemInstance(Tile::cloth_Id, 1, getColor()) ), 0.0f);
 	}
 }
 
@@ -160,9 +160,9 @@ float Sheep::getHeadEatAngleScale(float a)
 	return ((xRot / (180.0f / PI)));
 }
 
-bool Sheep::interact(std::shared_ptr<Player> player)
+bool Sheep::interact(shared_ptr<Player> player)
 {
-    std::shared_ptr<ItemInstance> item = player->inventory->getSelected();
+    shared_ptr<ItemInstance> item = player->inventory->getSelected();
 
 	// 4J-JEV: Fix for #88212,
 	// Untrusted players shouldn't be able to sheer sheep.
@@ -177,7 +177,7 @@ bool Sheep::interact(std::shared_ptr<Player> player)
             int count = 1 + random->nextInt(3);
             for (int i = 0; i < count; i++)
 			{
-                std::shared_ptr<ItemEntity> ie = spawnAtLocation(std::shared_ptr<ItemInstance>( new ItemInstance(Tile::cloth_Id, 1, getColor()) ), 1.0f);
+                shared_ptr<ItemEntity> ie = spawnAtLocation(shared_ptr<ItemInstance>( new ItemInstance(Tile::cloth_Id, 1, getColor()) ), 1.0f);
                 ie->yd += random->nextFloat() * 0.05f;
                 ie->xd += (random->nextFloat() - random->nextFloat()) * 0.1f;
                 ie->zd += (random->nextFloat() - random->nextFloat()) * 0.1f;
@@ -191,80 +191,80 @@ bool Sheep::interact(std::shared_ptr<Player> player)
     return Animal::interact(player);
 }
 
-void Sheep::addAdditonalSaveData(CompoundTag *tag)
+void Sheep::addAdditonalSaveData(CompoundTag *tag) 
 {
 	Animal::addAdditonalSaveData(tag);
 	tag->putBoolean(L"Sheared", isSheared());
 	tag->putByte(L"Color", (byte) getColor());
 }
 
-void Sheep::readAdditionalSaveData(CompoundTag *tag)
+void Sheep::readAdditionalSaveData(CompoundTag *tag) 
 {
 	Animal::readAdditionalSaveData(tag);
 	setSheared(tag->getBoolean(L"Sheared"));
 	setColor((int) tag->getByte(L"Color"));
 }
 
-int Sheep::getAmbientSound()
+int Sheep::getAmbientSound() 
 {
 	return eSoundType_MOB_SHEEP_AMBIENT;
 }
 
-int Sheep::getHurtSound()
+int Sheep::getHurtSound() 
 {
 	return eSoundType_MOB_SHEEP_AMBIENT;
 }
 
-int Sheep::getDeathSound()
+int Sheep::getDeathSound() 
 {
 	return eSoundType_MOB_SHEEP_AMBIENT;
 }
 
-int Sheep::getColor()
+int Sheep::getColor() 
 {
 	return (entityData->getByte(DATA_WOOL_ID) & 0x0f);
 }
 
-void Sheep::setColor(int color)
+void Sheep::setColor(int color) 
 {
 	byte current = entityData->getByte(DATA_WOOL_ID);
 	entityData->set(DATA_WOOL_ID, (byte) ((current & 0xf0) | (color & 0x0f)));
 }
 
-bool Sheep::isSheared()
+bool Sheep::isSheared() 
 {
 	return (entityData->getByte(DATA_WOOL_ID) & 0x10) != 0;
 }
 
-void Sheep::setSheared(bool value)
+void Sheep::setSheared(bool value) 
 {
 	byte current = entityData->getByte(DATA_WOOL_ID);
-	if (value)
+	if (value) 
 	{
 		entityData->set(DATA_WOOL_ID, (byte) (current | 0x10));
-	}
-	else
+	} 
+	else 
 	{
 		entityData->set(DATA_WOOL_ID, (byte) (current & ~0x10));
 	}
 }
 
-int Sheep::getSheepColor(Random *random)
+int Sheep::getSheepColor(Random *random) 
 {
 	int nextInt = random->nextInt(100);
-	if (nextInt < 5)
+	if (nextInt < 5) 
 	{
 		return 15 - DyePowderItem::BLACK;
 	}
-	if (nextInt < 10)
+	if (nextInt < 10) 
 	{
 		return 15 - DyePowderItem::GRAY;
 	}
-	if (nextInt < 15)
+	if (nextInt < 15) 
 	{
 		return 15 - DyePowderItem::SILVER;
 	}
-	if (nextInt < 18)
+	if (nextInt < 18) 
 	{
 		return 15 - DyePowderItem::BROWN;
 	}
@@ -272,13 +272,13 @@ int Sheep::getSheepColor(Random *random)
 	return 0; // white
 }
 
-std::shared_ptr<AgableMob> Sheep::getBreedOffspring(std::shared_ptr<AgableMob> target)
+shared_ptr<AgableMob> Sheep::getBreedOffspring(shared_ptr<AgableMob> target)
 {
 	// 4J - added limit to number of animals that can be bred
 	if( level->canCreateMore( GetType(), Level::eSpawnType_Breed) )
 	{
-		std::shared_ptr<Sheep> otherSheep = dynamic_pointer_cast<Sheep>( target );
-		std::shared_ptr<Sheep> sheep = std::shared_ptr<Sheep>( new Sheep(level) );
+		shared_ptr<Sheep> otherSheep = dynamic_pointer_cast<Sheep>( target );
+		shared_ptr<Sheep> sheep = shared_ptr<Sheep>( new Sheep(level) );
 		int color = getOffspringColor(dynamic_pointer_cast<Animal>(shared_from_this()), otherSheep);
 		sheep->setColor(15 - color);
 		return sheep;
@@ -309,7 +309,7 @@ void Sheep::finalizeMobSpawn()
 	setColor(Sheep::getSheepColor(level->random));
 }
 
-int Sheep::getOffspringColor(std::shared_ptr<Animal> animal, std::shared_ptr<Animal> partner)
+int Sheep::getOffspringColor(shared_ptr<Animal> animal, shared_ptr<Animal> partner)
 {
 	int parent1DyeColor = getDyeColor(animal);
 	int parent2DyeColor = getDyeColor(partner);
@@ -317,7 +317,7 @@ int Sheep::getOffspringColor(std::shared_ptr<Animal> animal, std::shared_ptr<Ani
 	container->getItem(0)->setAuxValue(parent1DyeColor);
 	container->getItem(1)->setAuxValue(parent2DyeColor);
 
-	std::shared_ptr<ItemInstance> instance = Recipes::getInstance()->getItemFor(container, animal->level);
+	shared_ptr<ItemInstance> instance = Recipes::getInstance()->getItemFor(container, animal->level);
 
 	int color = 0;
 	if (instance != NULL && instance->getItem()->id == Item::dye_powder_Id)
@@ -331,7 +331,7 @@ int Sheep::getOffspringColor(std::shared_ptr<Animal> animal, std::shared_ptr<Ani
 	return color;
 }
 
-int Sheep::getDyeColor(std::shared_ptr<Animal> animal)
+int Sheep::getDyeColor(shared_ptr<Animal> animal)
 {
 	return 15 - dynamic_pointer_cast<Sheep>(animal)->getColor();
 }

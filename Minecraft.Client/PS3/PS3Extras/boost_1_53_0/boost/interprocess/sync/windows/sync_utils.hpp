@@ -62,7 +62,7 @@ inline bool bytes_to_str(const void *mem, const std::size_t mem_length, char *ou
 class sync_id
 {
    public:
-   typedef int64_t internal_type;
+   typedef __int64 internal_type;
    sync_id(const void *map_addr)
       : map_addr_(map_addr)
    {  winapi::query_performance_counter(&rand_);  }

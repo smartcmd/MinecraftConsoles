@@ -327,7 +327,7 @@ void SoundEngine::CreateStreamingWavebank(const char *pchName, IXACT3WaveBank **
 	HANDLE file = CreateFile(pchName, GENERIC_READ, 0, NULL, OPEN_ALWAYS, FILE_FLAG_OVERLAPPED | FILE_FLAG_NO_BUFFERING, NULL);
 
 	if( file == INVALID_HANDLE_VALUE )
-	{
+	{ 
 		app.FatalLoadError();
 		assert(false);
 		return;
@@ -638,7 +638,7 @@ void SoundEngine::playUI(int iSound, float, float)
 void SoundEngine::playStreaming(const wstring& name, float x, float y, float z, float vol, float pitch, bool bMusicDelay)
 {
 	IXACT3SoundBank *pSoundBank=NULL;
-
+	
 	bool bSoundBank2=false;
 	MemSect(34);
 	if(m_MusicInfo.pCue!=NULL)
@@ -747,7 +747,7 @@ void SoundEngine::playStreaming(const wstring& name, float x, float y, float z, 
 		MemSect(0);
 		return;
 	}
-
+	
 
 	if(GetIsPlayingStreamingCDMusic())
 	{
@@ -984,7 +984,7 @@ void SoundEngine::update3DPosition(SoundEngine::soundInfo *pInfo, bool bPlaceEmi
 	XACT3DApply( &m_DSPSettings, pInfo->pCue);
 }
 
-void SoundEngine::tick(std::shared_ptr<Mob> *players, float a)
+void SoundEngine::tick(shared_ptr<Mob> *players, float a)
 {
 	if( m_pXACT3Engine == NULL ) return;
 

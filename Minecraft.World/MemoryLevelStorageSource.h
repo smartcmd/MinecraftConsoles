@@ -3,12 +3,12 @@ using namespace std;
 
 #include "LevelStorageSource.h"
 
-class MemoryLevelStorageSource : public LevelStorageSource
+class MemoryLevelStorageSource : public LevelStorageSource 
 {
 public:
     MemoryLevelStorageSource();
     wstring getName();
-    std::shared_ptr<LevelStorage> selectLevel(const wstring& levelId, bool createPlayerDir);
+    shared_ptr<LevelStorage> selectLevel(const wstring& levelId, bool createPlayerDir);
     vector<LevelSummary *> *getLevelList();
     void clearAll();
     LevelData *getDataTagFor(const wstring& levelId);

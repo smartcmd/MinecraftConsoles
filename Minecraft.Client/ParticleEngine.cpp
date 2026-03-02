@@ -18,7 +18,7 @@ ParticleEngine::ParticleEngine(Level *level, Textures *textures)
         this->level = level;
     }
     this->textures = textures;
-
+	
 	this->random = new Random();
 }
 
@@ -27,7 +27,7 @@ ParticleEngine::~ParticleEngine()
 	delete random;
 }
 
-void ParticleEngine::add(std::shared_ptr<Particle> p)
+void ParticleEngine::add(shared_ptr<Particle> p)
 {
     int t = p->getParticleTexture();
 	int l = p->level->dimension->id == 0 ? 0 : ( p->level->dimension->id == -1 ? 1 : 2);
@@ -43,7 +43,7 @@ void ParticleEngine::tick()
 		{
 			for (unsigned int i = 0; i < particles[l][tt].size(); i++)
 			{
-				std::shared_ptr<Particle> p = particles[l][tt][i];
+				shared_ptr<Particle> p = particles[l][tt][i];
 				p->tick();
 				if (p->removed)
 				{
@@ -56,7 +56,7 @@ void ParticleEngine::tick()
 	}
 }
 
-void ParticleEngine::render(std::shared_ptr<Entity> player, float a)
+void ParticleEngine::render(shared_ptr<Entity> player, float a)
 {
 	// 4J - change brought forward from 1.2.3
     float xa = Camera::xa;
@@ -99,7 +99,7 @@ void ParticleEngine::render(std::shared_ptr<Entity> player, float a)
 				t->end();
 				t->begin();
 			}
-            std::shared_ptr<Particle> p = particles[l][tt][i];
+            shared_ptr<Particle> p = particles[l][tt][i];
 
             if (SharedConstants::TEXTURE_LIGHTING)		// 4J - change brought forward from 1.8.2
 			{
@@ -118,7 +118,7 @@ void ParticleEngine::render(std::shared_ptr<Entity> player, float a)
 
 }
 
-void ParticleEngine::renderLit(std::shared_ptr<Entity> player, float a)
+void ParticleEngine::renderLit(shared_ptr<Entity> player, float a)
 {
 	// 4J - added. We call this before ParticleEngine::render in the general render per player, so if we
 	// don't set this here then the offsets will be from the previous player - a single frame lag for the
@@ -142,7 +142,7 @@ void ParticleEngine::renderLit(std::shared_ptr<Entity> player, float a)
     Tesselator *t = Tesselator::getInstance();
     for (unsigned int i = 0; i < particles[l][tt].size(); i++)
 	{
-        std::shared_ptr<Particle> p = particles[l][tt][i];
+        shared_ptr<Particle> p = particles[l][tt][i];
 
 		if (SharedConstants::TEXTURE_LIGHTING)		// 4J - change brought forward from 1.8.2
 		{
@@ -182,7 +182,7 @@ void ParticleEngine::destroy(int x, int y, int z, int tid, int data)
                 double yp = y + (yy + 0.5) / SD;
                 double zp = z + (zz + 0.5) / SD;
 				int face = random->nextInt(6);
-                add(( std::shared_ptr<TerrainParticle>(new TerrainParticle(level, xp, yp, zp, xp - x - 0.5f, yp - y - 0.5f, zp - z - 0.5f, tile, face, data, textures) ) )->init(x, y, z, data));
+                add(( shared_ptr<TerrainParticle>(new TerrainParticle(level, xp, yp, zp, xp - x - 0.5f, yp - y - 0.5f, zp - z - 0.5f, tile, face, data, textures) ) )->init(x, y, z, data));
             }
 }
 
@@ -201,7 +201,7 @@ void ParticleEngine::crack(int x, int y, int z, int face)
     if (face == 3) zp = z + tile->getShapeZ1() + r;
     if (face == 4) xp = x + tile->getShapeX0() - r;
     if (face == 5) xp = x + tile->getShapeX1() + r;
-    add(( std::shared_ptr<TerrainParticle>(new TerrainParticle(level, xp, yp, zp, 0, 0, 0, tile, face, level->getData(x, y, z), textures) ) )->init(x, y, z, level->getData(x, y, z))->setPower(0.2f)->scale(0.6f));
+    add(( shared_ptr<TerrainParticle>(new TerrainParticle(level, xp, yp, zp, 0, 0, 0, tile, face, level->getData(x, y, z), textures) ) )->init(x, y, z, level->getData(x, y, z))->setPower(0.2f)->scale(0.6f));
 
 }
 

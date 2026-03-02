@@ -20,7 +20,7 @@ public:
 	int shakeTime;
 
 protected:
-	std::shared_ptr<Mob> owner;
+	shared_ptr<Mob> owner;
 
 private:
 	int life;
@@ -37,7 +37,7 @@ protected:
 public:
 	virtual bool shouldRenderAtSqrDistance(double distance);
 
-	Throwable(Level *level, std::shared_ptr<Mob> mob);
+	Throwable(Level *level, shared_ptr<Mob> mob);
 	Throwable(Level *level, double x, double y, double z);
 
 protected:

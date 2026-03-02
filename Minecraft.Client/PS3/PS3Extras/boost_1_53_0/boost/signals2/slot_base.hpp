@@ -13,7 +13,7 @@
 #define BOOST_SIGNALS2_SLOT_BASE_HPP
 
 #include <boost/any.hpp>
-#include <boost/std::shared_ptr.hpp>
+#include <boost/shared_ptr.hpp>
 #include <boost/weak_ptr.hpp>
 #include <boost/signals2/detail/foreign_ptr.hpp>
 #include <boost/signals2/expired_slot.hpp>
@@ -32,7 +32,7 @@ namespace boost
       class tracked_objects_visitor;
 
       typedef boost::variant<boost::weak_ptr<void>, detail::foreign_void_weak_ptr > void_weak_ptr_variant;
-      typedef boost::variant<boost::std::shared_ptr<void>, detail::foreign_void_shared_ptr > void_shared_ptr_variant;
+      typedef boost::variant<boost::shared_ptr<void>, detail::foreign_void_shared_ptr > void_shared_ptr_variant;
       class lock_weak_ptr_visitor
       {
       public:

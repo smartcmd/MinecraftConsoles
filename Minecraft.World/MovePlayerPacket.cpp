@@ -4,7 +4,7 @@
 #include "PacketListener.h"
 #include "MovePlayerPacket.h"
 
-MovePlayerPacket::MovePlayerPacket()
+MovePlayerPacket::MovePlayerPacket() 
 {
 	x = 0;
 	y = 0;
@@ -33,12 +33,12 @@ MovePlayerPacket::MovePlayerPacket(bool onGround, bool isFlying)
 	this->isFlying = isFlying;
 }
 
-void MovePlayerPacket::handle(PacketListener *listener)
+void MovePlayerPacket::handle(PacketListener *listener) 
 {
 	listener->handleMovePlayer(shared_from_this());
 }
 
-void MovePlayerPacket::read(DataInputStream *dis) //throws IOException
+void MovePlayerPacket::read(DataInputStream *dis) //throws IOException 
 {
 	char value = dis->read();
 	onGround = (value & 0x1) != 0;
@@ -46,7 +46,7 @@ void MovePlayerPacket::read(DataInputStream *dis) //throws IOException
 	//onGround = dis->read() != 0;
 }
 
-void MovePlayerPacket::write(DataOutputStream *dos) //throws IOException
+void MovePlayerPacket::write(DataOutputStream *dos) //throws IOException 
 {
 	char value = (onGround ? 0x1 : 0) | (isFlying ? 0x2 : 0);
 	dos->write(value);
@@ -63,7 +63,7 @@ bool MovePlayerPacket::canBeInvalidated()
 	return true;
 }
 
-bool MovePlayerPacket::isInvalidatedBy(std::shared_ptr<Packet> packet)
+bool MovePlayerPacket::isInvalidatedBy(shared_ptr<Packet> packet)
 {
 	return true;
 }
@@ -88,7 +88,7 @@ MovePlayerPacket::PosRot::PosRot(double x, double y, double yView, double z, flo
 	this->isFlying = isFlying;
 }
 
-void MovePlayerPacket::PosRot::read(DataInputStream *dis) //throws IOException
+void MovePlayerPacket::PosRot::read(DataInputStream *dis) //throws IOException 
 {
 	x = dis->readDouble();
 	y = dis->readDouble();
@@ -99,7 +99,7 @@ void MovePlayerPacket::PosRot::read(DataInputStream *dis) //throws IOException
 	MovePlayerPacket::read(dis);
 }
 
-void MovePlayerPacket::PosRot::write(DataOutputStream *dos) //throws IOException
+void MovePlayerPacket::PosRot::write(DataOutputStream *dos) //throws IOException 
 {
 	dos->writeDouble(x);
 	dos->writeDouble(y);
@@ -120,7 +120,7 @@ MovePlayerPacket::Pos::Pos()
 	hasPos = true;
 }
 
-MovePlayerPacket::Pos::Pos(double x, double y, double yView, double z, bool onGround, bool isFlying)
+MovePlayerPacket::Pos::Pos(double x, double y, double yView, double z, bool onGround, bool isFlying) 
 {
 	this->x = x;
 	this->y = y;
@@ -149,17 +149,17 @@ void MovePlayerPacket::Pos::write(DataOutputStream *dos) //throws IOException
 	MovePlayerPacket::write(dos);
 }
 
-int MovePlayerPacket::Pos::getEstimatedSize()
+int MovePlayerPacket::Pos::getEstimatedSize() 
 {
 	return 8 * 4 + 1;
 }
 
-MovePlayerPacket::Rot::Rot()
+MovePlayerPacket::Rot::Rot() 
 {
 	hasRot = true;
 }
 
-MovePlayerPacket::Rot::Rot(float yRot, float xRot, bool onGround, bool isFlying)
+MovePlayerPacket::Rot::Rot(float yRot, float xRot, bool onGround, bool isFlying) 
 {
 	this->yRot = yRot;
 	this->xRot = xRot;
@@ -168,7 +168,7 @@ MovePlayerPacket::Rot::Rot(float yRot, float xRot, bool onGround, bool isFlying)
 	this->isFlying = isFlying;
 }
 
-void MovePlayerPacket::Rot::read(DataInputStream *dis) //throws IOException
+void MovePlayerPacket::Rot::read(DataInputStream *dis) //throws IOException 
 {
 	yRot = dis->readFloat();
 	xRot = dis->readFloat();
@@ -182,7 +182,7 @@ void MovePlayerPacket::Rot::write(DataOutputStream *dos) //throws IOException
 	MovePlayerPacket::write(dos);
 }
 
-int MovePlayerPacket::Rot::getEstimatedSize()
+int MovePlayerPacket::Rot::getEstimatedSize() 
 {
 	return 8 + 1;
 }

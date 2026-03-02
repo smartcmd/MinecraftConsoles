@@ -12,10 +12,10 @@ public:
 
     int containerId;
     int slot;
-    std::shared_ptr<ItemInstance> item;
+    shared_ptr<ItemInstance> item;
 
 	ContainerSetSlotPacket();
-	ContainerSetSlotPacket(int containerId, int slot, std::shared_ptr<ItemInstance> item);
+	ContainerSetSlotPacket(int containerId, int slot, shared_ptr<ItemInstance> item);
 
 	virtual void handle(PacketListener *listener);
 	virtual void read(DataInputStream *dis);
@@ -23,7 +23,7 @@ public:
 	virtual int getEstimatedSize();
 
 public:
-	static std::shared_ptr<Packet> create() { return std::shared_ptr<Packet>(new ContainerSetSlotPacket()); }
+	static shared_ptr<Packet> create() { return shared_ptr<Packet>(new ContainerSetSlotPacket()); }
 	virtual int getId() { return 103; }
 };
 

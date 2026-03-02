@@ -107,7 +107,7 @@ AABB *DoorTile::getAABB(Level *level, int x, int y, int z)
 	return retval;
 }
 
-void DoorTile::updateShape(LevelSource *level, int x, int y, int z, int forceData, std::shared_ptr<TileEntity> forceEntity) // 4J added forceData, forceEntity param
+void DoorTile::updateShape(LevelSource *level, int x, int y, int z, int forceData, shared_ptr<TileEntity> forceEntity) // 4J added forceData, forceEntity param
 {
 	setShape(getCompositeData(level,x, y, z));
 }
@@ -167,7 +167,7 @@ void DoorTile::setShape(int compositeData)
 	}
 }
 
-void DoorTile::attack(Level *level, int x, int y, int z, std::shared_ptr<Player> player)
+void DoorTile::attack(Level *level, int x, int y, int z, shared_ptr<Player> player)
 {
 	// Fix for #92957 - TU11: Content: Multiplayer: Wooden Doors splits in half and glitch in open / close motion while being mined.
 	// In lastest PC version this is commented out, so do that now to fix bug above
@@ -180,7 +180,7 @@ bool DoorTile::TestUse()
 	return true;
 }
 
-bool DoorTile::use(Level *level, int x, int y, int z, std::shared_ptr<Player> player, int clickedFace, float clickX, float clickY, float clickZ, bool soundOnly/*=false*/) // 4J added soundOnly param
+bool DoorTile::use(Level *level, int x, int y, int z, shared_ptr<Player> player, int clickedFace, float clickX, float clickY, float clickZ, bool soundOnly/*=false*/) // 4J added soundOnly param
 {
 	if(soundOnly)
 	{

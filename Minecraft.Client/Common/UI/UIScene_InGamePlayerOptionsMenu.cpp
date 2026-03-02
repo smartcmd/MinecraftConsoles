@@ -66,7 +66,7 @@ UIScene_InGamePlayerOptionsMenu::UIScene_InGamePlayerOptionsMenu(int iPad, void 
 #else
 		m_checkboxes[eControl_Op].init(L"DEBUG: Creative",eControl_Op,Player::getPlayerGamePrivilege(m_playerPrivileges,Player::ePlayerGamePrivilege_CreativeMode));
 #endif
-
+		
 		removeControl( &m_buttonKick, true );
 		removeControl( &m_checkboxes[eControl_CheatTeleport], true );
 
@@ -129,7 +129,7 @@ UIScene_InGamePlayerOptionsMenu::UIScene_InGamePlayerOptionsMenu(int iPad, void 
 			m_checkboxes[eControl_HostHunger].SetEnable(true);
 			checked = Player::getPlayerGamePrivilege(m_playerPrivileges, Player::ePlayerGamePrivilege_CanToggleClassicHunger)!=0;
 			m_checkboxes[eControl_HostHunger].init( app.GetString(IDS_CAN_DISABLE_EXHAUSTION), eControl_HostHunger, checked);
-
+			
 			checked = Player::getPlayerGamePrivilege(m_playerPrivileges, Player::ePlayerGamePrivilege_CanTeleport)!=0;
 			m_checkboxes[eControl_CheatTeleport].init(app.GetString(IDS_ENABLE_TELEPORT),eControl_CheatTeleport,checked);
 		}
@@ -315,11 +315,11 @@ void UIScene_InGamePlayerOptionsMenu::handleInput(int iPad, int key, bool repeat
 			if(originalPrivileges != m_playerPrivileges)
 			{
 				// Send update settings packet to server
-				Minecraft *pMinecraft = Minecraft::GetInstance();
-				std::shared_ptr<MultiplayerLocalPlayer> player = pMinecraft->localplayers[m_iPad];
+				Minecraft *pMinecraft = Minecraft::GetInstance();				
+				shared_ptr<MultiplayerLocalPlayer> player = pMinecraft->localplayers[m_iPad];
 				if(player->connection)
 				{
-					player->connection->send( std::shared_ptr<PlayerInfoPacket>( new PlayerInfoPacket( m_networkSmallId, -1, m_playerPrivileges) ) );
+					player->connection->send( shared_ptr<PlayerInfoPacket>( new PlayerInfoPacket( m_networkSmallId, -1, m_playerPrivileges) ) );
 				}
 			}
 			navigateBack();
@@ -364,12 +364,12 @@ int UIScene_InGamePlayerOptionsMenu::KickPlayerReturned(void *pParam,int iPad,C4
 	delete pParam;
 
 	if(result==C4JStorage::EMessage_ResultAccept)
-	{
+	{		
 		Minecraft *pMinecraft = Minecraft::GetInstance();
-		std::shared_ptr<MultiplayerLocalPlayer> localPlayer = pMinecraft->localplayers[iPad];
+		shared_ptr<MultiplayerLocalPlayer> localPlayer = pMinecraft->localplayers[iPad];
 		if(localPlayer->connection)
 		{
-			localPlayer->connection->send( std::shared_ptr<KickPlayerPacket>( new KickPlayerPacket(smallId) ) );
+			localPlayer->connection->send( shared_ptr<KickPlayerPacket>( new KickPlayerPacket(smallId) ) );
 		}
 
 		// Fix for #61494 - [CRASH]: TU7: Code: Multiplayer: Title may crash while kicking a player from an online game.
@@ -405,7 +405,7 @@ void UIScene_InGamePlayerOptionsMenu::resetCheatCheckboxes()
 		m_checkboxes[eControl_HostInvisible].SetEnable(isModerator);
 		m_checkboxes[eControl_HostFly].SetEnable(isModerator);
 		m_checkboxes[eControl_HostHunger].SetEnable(isModerator);
-		m_checkboxes[eControl_CheatTeleport].SetEnable(isModerator);
+		m_checkboxes[eControl_CheatTeleport].SetEnable(isModerator);		
 	}
 }
 

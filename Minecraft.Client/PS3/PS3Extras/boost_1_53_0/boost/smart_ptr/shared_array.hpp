@@ -25,7 +25,7 @@
 #include <boost/assert.hpp>
 #include <boost/checked_delete.hpp>
 
-#include <boost/smart_ptr/std::shared_ptr.hpp>
+#include <boost/smart_ptr/shared_ptr.hpp>
 #include <boost/smart_ptr/detail/shared_count.hpp>
 #include <boost/smart_ptr/detail/sp_nullptr_t.hpp>
 #include <boost/detail/workaround.hpp>
@@ -40,7 +40,7 @@ namespace boost
 //
 //  shared_array
 //
-//  shared_array extends std::shared_ptr to arrays.
+//  shared_array extends shared_ptr to arrays.
 //  The array pointed to is deleted when the last shared_array pointing to it
 //  is destroyed or reset.
 //
@@ -195,7 +195,7 @@ public:
         BOOST_ASSERT(i >= 0);
         return px[i];
     }
-
+    
     T * get() const BOOST_NOEXCEPT
     {
         return px;

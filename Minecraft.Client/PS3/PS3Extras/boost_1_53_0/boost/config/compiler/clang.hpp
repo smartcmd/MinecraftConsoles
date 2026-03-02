@@ -1,7 +1,7 @@
 // (C) Copyright Douglas Gregor 2010
 //
-//  Use, modification and distribution are subject to the
-//  Boost Software License, Version 1.0. (See accompanying file
+//  Use, modification and distribution are subject to the 
+//  Boost Software License, Version 1.0. (See accompanying file 
 //  LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
 
 //  See http://www.boost.org for most recent version.
@@ -20,7 +20,7 @@
 #  define BOOST_NO_TYPEID
 #endif
 
-#if defined(int64_t)
+#if defined(__int64)
 #  define BOOST_HAS_MS_INT64
 #endif
 
