@@ -36,6 +36,7 @@ foreach ($copy in $copies) {
     $dst = Join-Path $OutDir $copy.Dest
 
     if (Test-Path $src) {
-		xcopy /q /y /i /s /e "$src" "$dst" 2>$null
+        # Copy the files using xcopy, forcing overwrite and suppressing errors, and only copying if the source is newer than the destination
+		xcopy /q /y /i /s /e /d "$src" "$dst" 2>$null
     }
 }
