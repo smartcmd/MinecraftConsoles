@@ -1235,13 +1235,14 @@ int APIENTRY _tWinMain(_In_ HINSTANCE hInstance,
 			ToggleFullscreen();
 		}
 
-		// TAB opens host options menu. - Vvis :3
+		// TAB opens game info menu. - Vvis :3 - Updated by detectiveren
 		if (KMInput.IsKeyPressed(VK_TAB) && !ui.GetMenuDisplayed(0))
 		{
 			if (Minecraft* pMinecraft = Minecraft::GetInstance())
 			{
 				{
-					ui.NavigateToScene(0, eUIScene_InGameHostOptionsMenu);
+					ui.NavigateToScene(0, eUIScene_InGameInfoMenu);
+					
 				}
 			}
 		}
