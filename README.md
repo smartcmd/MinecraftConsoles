@@ -2,6 +2,8 @@
 
 [![Discord](https://img.shields.io/badge/Discord-Join%20Server-5865F2?logo=discord&logoColor=white)](https://discord.gg/5CSzhc9t)
 
+[![Fluxer](https://badges.fluxer.ltrx.lol/badge/1478077475805169303?style=flat)](https://fluxer.gg/eenoyAos)
+
 ![img.png](.github/IMG_8725.png)
 
 ## Introduction
