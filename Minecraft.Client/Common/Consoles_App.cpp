@@ -1342,9 +1342,13 @@ void CMinecraftApp::ActionGameSettings(int iPad,eGameSetting eVal)
 	case eGameSetting_Gamma:
 		if(iPad==ProfileManager.GetPrimaryPad())
 		{
+#if defined(_WIN64) || defined(_WINDOWS64)
+			pMinecraft->options->set(Options::Option::GAMMA, ((float)GameSettingsA[iPad]->ucGamma) / 100.0f);
+#else
 			// ucGamma range is 0-100, UpdateGamma is 0 - 32768
 			float fVal=((float)GameSettingsA[iPad]->ucGamma)*327.68f;
 			RenderManager.UpdateGamma((unsigned short)fVal);
+#endif
 		}				
 
 		break;
