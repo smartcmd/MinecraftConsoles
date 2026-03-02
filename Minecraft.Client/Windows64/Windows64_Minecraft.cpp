@@ -430,6 +430,15 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		if (LOWORD(wParam) == WA_INACTIVE)
 			KMInput.SetCapture(false);
 		break;
+	case WM_SETFOCUS:
+		{
+			// Re-capture when window receives focus (e.g., after clicking on it)
+			Minecraft *pMinecraft = Minecraft::GetInstance();
+			bool shouldCapture = pMinecraft && app.GetGameStarted() && !ui.GetMenuDisplayed(0) && pMinecraft->screen == NULL;
+			if (shouldCapture)
+				KMInput.SetCapture(true);
+		}
+		break;
 	case WM_KILLFOCUS:
 		KMInput.SetCapture(false);
 		KMInput.ClearAllState();

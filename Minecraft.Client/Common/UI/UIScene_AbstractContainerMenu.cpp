@@ -30,6 +30,9 @@ UIScene_AbstractContainerMenu::UIScene_AbstractContainerMenu(int iPad, UILayer *
 	m_bIgnoreInput=false;
 #ifdef _WINDOWS64
 	m_bMouseDragSlider=false;
+	m_bHasMousePosition = false;
+	m_lastMouseX = 0;
+	m_lastMouseY = 0;
 #endif
 }
 
@@ -184,7 +187,9 @@ void UIScene_AbstractContainerMenu::tick()
 
 #ifdef _WINDOWS64
 	bool mouseActive = (m_iPad == 0 && !KMInput.IsCaptured());
+	bool useRawMousePointer = false;
 	float rawMouseMovieX = 0, rawMouseMovieY = 0;
+	int scrollDelta = 0;
 	// Map Windows mouse position to the virtual pointer in movie coordinates
 	if (mouseActive)
 	{
@@ -196,15 +201,28 @@ void UIScene_AbstractContainerMenu::tick()
 		{
 			int mouseX = KMInput.GetMouseX();
 			int mouseY = KMInput.GetMouseY();
+			bool mouseMoved = !m_bHasMousePosition || mouseX != m_lastMouseX || mouseY != m_lastMouseY;
+
+			m_bHasMousePosition = true;
+			m_lastMouseX = mouseX;
+			m_lastMouseY = mouseY;
+			scrollDelta = KMInput.ConsumeScrollDelta();
 
 			// Convert mouse position to movie coordinates using the movie/client ratio
 			float mx = (float)mouseX * ((float)m_movieWidth / (float)clientWidth);
 			float my = (float)mouseY * ((float)m_movieHeight / (float)clientHeight);
 
-			m_pointerPos.x = mx;
-			m_pointerPos.y = my;
 			rawMouseMovieX = mx;
 			rawMouseMovieY = my;
+
+			// Only let the OS cursor drive the menu when the mouse is actively being used.
+			// Otherwise a stationary mouse will override the controller cursor every tick.
+			useRawMousePointer = mouseMoved || KMInput.IsMouseDown(0) || KMInput.IsMouseDown(1) || KMInput.IsMouseDown(2) || scrollDelta != 0;
+			if (useRawMousePointer)
+			{
+				m_pointerPos.x = mx;
+				m_pointerPos.y = my;
+			}
 		}
 	}
 #endif
@@ -251,7 +269,6 @@ void UIScene_AbstractContainerMenu::tick()
 		}
 
 		// Mouse scroll wheel for page scrolling
-		int scrollDelta = KMInput.ConsumeScrollDelta();
 		if (scrollDelta > 0)
 		{
 			handleKeyDown(m_iPad, ACTION_MENU_OTHER_STICK_UP, false);
@@ -276,7 +293,7 @@ void UIScene_AbstractContainerMenu::tick()
 
 #ifdef _WINDOWS64
 	S32 x, y;
-	if (mouseActive)
+	if (mouseActive && useRawMousePointer)
 	{
 		// Send raw mouse position directly as Iggy event to avoid coordinate round-trip errors
 		// Scale mouse client coords to the Iggy display space (which was set to getRenderDimensions())
