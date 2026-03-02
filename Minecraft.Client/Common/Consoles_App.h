@@ -5,11 +5,11 @@ using namespace std;
 #include "Audio/Consoles_SoundEngine.h"
 
 #include <xuiapp.h>
-#include "..\Common\Tutorial\TutorialEnum.h"
+#include ".\Tutorial\TutorialEnum.h"
 
 #ifdef _XBOX
-#include "..\Common\XUI\XUI_Helper.h"
-#include "..\Common\XUI\XUI_HelpCredits.h"
+#include ".\XUI\XUI_Helper.h"
+#include ".\XUI\XUI_HelpCredits.h"
 #endif
 #include "UI\UIStructs.h"
 
@@ -17,9 +17,9 @@ using namespace std;
 #include <xsocialpost.h>
 
 #include "..\StringTable.h"
-#include "..\Common\DLC\DLCManager.h"
-#include "..\Common\GameRules\ConsoleGameRulesConstants.h"
-#include "..\Common\GameRules\GameRuleManager.h"
+#include ".\DLC\DLCManager.h"
+#include ".\GameRules\ConsoleGameRulesConstants.h"
+#include ".\GameRules\GameRuleManager.h"
 #include "..\SkinBox.h"
 #include "..\ArchiveFile.h"
 

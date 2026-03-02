@@ -1,26 +1,28 @@
 #pragma once
 
+#include <cstdint>
+
 // 4J Stu - In Java TickNextTickData implements Comparable<TickNextTickData>
 // We don't need to do that as it is only as helper for the java sdk sorting operations
 
 class TickNextTickData
 {
 private:
-	static __int64 C;
+	static int64_t C;
 
 public:
 	int x, y, z, tileId;
-	__int64 m_delay;
+	int64_t m_delay;
 
 private:
-	__int64 c;
+	int64_t c;
 
 public:
 	TickNextTickData(int x, int y, int z, int tileId);
 
 	bool equals(const void *o) const;
 	int hashCode() const;
-	TickNextTickData *delay(__int64 l);
+	TickNextTickData *delay(int64_t l);
 	int compareTo(const TickNextTickData *tnd) const;
 
 	static bool compare_fnct(const TickNextTickData &x, const TickNextTickData &y);
@@ -28,19 +30,21 @@ public:
 	static bool eq_test(const TickNextTickData &x, const TickNextTickData &y);
 };
 
-typedef struct
+struct TickNextTickDataKeyHash
 {
-	int operator() (const TickNextTickData &k) const { return TickNextTickData::hash_fnct (k); }
+	int operator() (const TickNextTickData &k) const 
+	{ return TickNextTickData::hash_fnct (k); }
+};
 
-} TickNextTickDataKeyHash;
-
-typedef struct
+struct TickNextTickDataKeyEq
 {
-	bool operator() (const TickNextTickData &x, const TickNextTickData &y) const { return TickNextTickData::eq_test (x, y); }
-} TickNextTickDataKeyEq;
+	bool operator() (const TickNextTickData &x, const TickNextTickData &y) const 
+	{ return TickNextTickData::eq_test (x, y); }
+};
 
-typedef struct
+struct TickNextTickDataKeyCompare
 {
-	bool operator() (const TickNextTickData &x, const TickNextTickData &y) const { return TickNextTickData::compare_fnct (x, y); }
+	bool operator() (const TickNextTickData &x, const TickNextTickData &y) const 
+	{ return TickNextTickData::compare_fnct (x, y); }
 
-} TickNextTickDataKeyCompare;
+};
