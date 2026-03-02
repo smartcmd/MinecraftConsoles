@@ -744,6 +744,19 @@ bool CPlatformNetworkManagerDurango::SystemFlagGet(INetworkPlayer *pNetworkPlaye
 	return false;
 }
 
+void CPlatformNetworkManagerDurango::SystemFlagClearForSystem(INetworkPlayer *pNetworkPlayer)
+{
+	if( pNetworkPlayer == NULL ) return;
+
+	for( unsigned int i = 0; i < m_playerFlags.size(); i++ )
+	{
+		if( pNetworkPlayer->IsSameSystem(m_playerFlags[i]->m_pNetworkPlayer) )
+		{
+			memset(m_playerFlags[i]->flags, 0, m_playerFlags[i]->count / 8);
+		}
+	}
+}
+
 wstring CPlatformNetworkManagerDurango::GatherStats()
 {
 	return L"";

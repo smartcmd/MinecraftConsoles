@@ -115,6 +115,7 @@ private:
 public:
 	virtual void SystemFlagSet(INetworkPlayer *pNetworkPlayer, int index);
 	virtual bool SystemFlagGet(INetworkPlayer *pNetworkPlayer, int index);
+	virtual void SystemFlagClearForSystem(INetworkPlayer *pNetworkPlayer);
 
 	// For telemetry
 private:

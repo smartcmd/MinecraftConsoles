@@ -1064,6 +1064,19 @@ bool CPlatformNetworkManagerSony::SystemFlagGet(INetworkPlayer *pNetworkPlayer, 
 	return false;
 }
 
+void CPlatformNetworkManagerSony::SystemFlagClearForSystem(INetworkPlayer *pNetworkPlayer)
+{
+	if( pNetworkPlayer == NULL ) return;
+
+	for( unsigned int i = 0; i < m_playerFlags.size(); i++ )
+	{
+		if( pNetworkPlayer->IsSameSystem(m_playerFlags[i]->m_pNetworkPlayer) )
+		{
+			memset(m_playerFlags[i]->flags, 0, m_playerFlags[i]->count / 8);
+		}
+	}
+}
+
 wstring CPlatformNetworkManagerSony::GatherStats()
 {
 #if 0

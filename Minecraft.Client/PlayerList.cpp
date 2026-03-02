@@ -86,6 +86,32 @@ void PlayerList::placeNewPlayer(Connection *connection, shared_ptr<ServerPlayer>
 			player->setPlayerGamePrivilege(Player::ePlayerGamePrivilege_HOST,1);
 		}
 
+		// A reconnect from the same machine can race with platform-level leave notifications.
+		// If this is the first active player we can currently see for this system, clear the per-system
+		// chunk-sent flags so initial terrain is always resent for this login.
+		if( networkPlayer != NULL )
+		{
+			bool hasActiveSameSystemPlayer = false;
+			for(AUTO_VAR(it, players.begin()); it < players.end(); ++it)
+			{
+				shared_ptr<ServerPlayer> existingPlayer = *it;
+				if( existingPlayer == NULL || existingPlayer->connection == NULL ) continue;
+
+				INetworkPlayer *existingNetworkPlayer = existingPlayer->connection->getNetworkPlayer();
+				if( existingNetworkPlayer == NULL ) continue;
+
+				if( networkPlayer->IsSameSystem(existingNetworkPlayer) )
+				{
+					hasActiveSameSystemPlayer = true;
+					break;
+				}
+			}
+
+			if( !hasActiveSameSystemPlayer )
+			{
+				g_NetworkManager.SystemFlagClearForSystem(networkPlayer);
+			}
+		}
 #if defined(__PS3__) || defined(__ORBIS__)
 		// PS3 networking library doesn't automatically assign PlayerUIDs to the network players for anything remote, so need to tell it what to set from the data in this packet now
 		if( !g_NetworkManager.IsLocalGame() )

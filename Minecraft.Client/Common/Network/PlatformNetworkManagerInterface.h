@@ -101,6 +101,7 @@ private:
 public:
 	virtual void SystemFlagSet(INetworkPlayer *pNetworkPlayer, int index) = 0;
 	virtual bool SystemFlagGet(INetworkPlayer *pNetworkPlayer, int index) = 0;
+	virtual void SystemFlagClearForSystem(INetworkPlayer *pNetworkPlayer) {}
 
 	virtual wstring GatherStats() = 0;
 	virtual wstring GatherRTTStats() = 0;
