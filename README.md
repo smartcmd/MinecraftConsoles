@@ -18,6 +18,7 @@ This project contains the source code of Minecraft Legacy Console Edition v1.3.0
 - Disabled V-Sync for better performance
 - Added a high-resolution timer path on Windows for smoother high-FPS gameplay timing
 - Device's screen resolution will be used as the game resolution instead of using a fixed resolution (1920x1080)
+- LAN Multiplayer & Discovery based on https://github.com/LCEMP/LCEMP/
 
 ## Controls (Keyboard & Mouse)
 
@@ -55,7 +56,7 @@ cmake -S . -B build -G "Visual Studio 17 2022" -A x64
 cmake --build build --config Debug --target MinecraftClient
 ```
 
-For more informatio, see [COMPILE.md](COMPILE.md)
+For more information, see [COMPILE.md](COMPILE.md)
 
 ## Known Issues
 
