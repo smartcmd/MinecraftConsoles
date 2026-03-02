@@ -1220,6 +1220,17 @@ int APIENTRY _tWinMain(_In_ HINSTANCE hInstance,
 			ToggleFullscreen();
 		}
 
+		// TAB opens host options menu. - Vvis :3 
+		if (KMInput.IsKeyPressed(VK_TAB))
+		{
+			if (Minecraft* pMinecraft = Minecraft::GetInstance())
+			{
+				{
+					ui.NavigateToScene(0, eUIScene_InGameHostOptionsMenu);
+				}
+			}
+		}
+
 #if 0
 		// has the game defined profile data been changed (by a profile load)
 		if(app.uiGameDefinedDataChangedBitmask!=0)
