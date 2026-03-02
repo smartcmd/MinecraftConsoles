@@ -235,7 +235,7 @@ Textures::Textures(TexturePackRepository *skins, Options *options)
 	*/
 
 	// 4J Stu - Changed these to our PreStitchedTextureMap from TextureMap
-	terrain = new PreStitchedTextureMap(Icon::TYPE_TERRAIN, L"terrain", L"textures/block/", missingNo, true);
+	terrain = new PreStitchedTextureMap(Icon::TYPE_TERRAIN, L"blocks", L"res/TitleUpdate/res/textures/block/", missingNo, true);
 	items = new PreStitchedTextureMap(Icon::TYPE_ITEM, L"items", L"textures/items/", missingNo, true);
 
 	// 4J - added - preload a set of commonly used textures that can then be referenced directly be an enumerated type rather by string
@@ -1206,57 +1206,23 @@ Icon *Textures::getMissingIcon(int type)
 	}
 }
 
-BufferedImage *Textures::readImage(TEXTURE_NAME texId, const wstring& name)	// 4J was InputStream *in
+BufferedImage *Textures::readImage(TEXTURE_NAME texId, const wstring& name)
 {
-	BufferedImage *img=NULL;
-	MemSect(32);
-	// is this image one of the Title Update ones?
-	bool isTu = IsTUImage(texId, name);	
-	wstring drive = L"";
+    BufferedImage *img = nullptr;
 
-	if(!skins->isUsingDefaultSkin() && skins->getSelected()->hasFile(L"res/" + name,false))
-	{
-		drive = skins->getSelected()->getPath(isTu);
-		img = skins->getSelected()->getImageResource(name, false, isTu, drive); //new BufferedImage(name,false,isTu,drive);
-	}
-	else
-	{
-		const char *pchName=wstringtofilename(name);
-#ifdef __PS3__
-		if(app.GetBootedFromDiscPatch() && app.IsFileInPatchList(pchName))
-		{
-			char *pchUsrDir = app.GetBDUsrDirPath(pchName);
-			wstring wstr (pchUsrDir, pchUsrDir+strlen(pchUsrDir));
+    // Only for terrain blocks
+    if(texId == TN_TERRAIN)
+    {
+        // Build path to individual block texture
+        wstring filePath = L"res/TitleUpdate/res/textures/block/" + name + L".png";
+        img = new BufferedImage(filePath); // load from file directly
+    }
+    else
+    {
+        // fallback to existing behavior for items, fonts, etc.
+        img = skins->getSelected()->getImageResource(name, false, IsTUImage(texId, name));
+    }
 
-			if(isTu)
-			{
-				drive= wstr + L"\\Common\\res\\TitleUpdate\\";
-
-			}
-			else
-			{
-				drive= wstr + L"\\Common\\";
-			}
-		}
-		else
-#endif
-		{
-			drive = skins->getDefault()->getPath(isTu);
-		}
-
-		const char *pchDrive=wstringtofilename(drive);
-
-		if(IsOriginalImage(texId, name) || isTu)
-		{
-			img = skins->getDefault()->getImageResource(name,false,isTu,drive); //new BufferedImage(name,false,isTu,drive);
-		}
-		else 
-		{
-			img = skins->getDefault()->getImageResource(L"1_2_2/" + name, false, isTu, drive); //new BufferedImage(L"/1_2_2" + name,false,isTu,drive);
-		}
-	}
-
-	MemSect(0);
     return img;
 }
 
