@@ -365,7 +365,7 @@ void LocalPlayer::aiStep()
 		{
 			if (jumpTriggerTime == 0)
 			{
-				jumpTriggerTime = 10;			// was 7
+				jumpTriggerTime = 7;			// the 4J team changed it to 10 because of additional requirements to initiate flight
 				twoJumpsRegistered = false;
 			}
 			else
@@ -373,7 +373,7 @@ void LocalPlayer::aiStep()
 				twoJumpsRegistered = true;
 			}
 		}
-		else if( ( !input->jumping ) && ( jumpTriggerTime > 0 ) && twoJumpsRegistered )
+		else if(jumpTriggerTime > 0 && twoJumpsRegistered) //the 4J team checked if the player was NOT jumping after the two jumps, aka had let go of the jump button
 		{
 #ifndef _CONTENT_PACKAGE
 			printf("flying was %s\n", abilities.flying ? "on" : "off");
