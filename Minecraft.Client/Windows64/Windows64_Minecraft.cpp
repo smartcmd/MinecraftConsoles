@@ -1224,7 +1224,7 @@ int APIENTRY _tWinMain(_In_ HINSTANCE hInstance,
 		}
 
 		// TAB opens host options menu. - Vvis :3
-		if (KMInput.IsKeyPressed(VK_TAB))
+		if (KMInput.IsKeyPressed(VK_TAB) && !ui.GetMenuDisplayed(0))
 		{
 			if (Minecraft* pMinecraft = Minecraft::GetInstance())
 			{
