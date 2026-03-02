@@ -28,13 +28,14 @@ public:
 	ChunkPos & operator= (const ChunkPos & other) { x = other.x; z = other.z; return *this; }
 };
 
-typedef struct
+struct ChunkPosKeyHash
 {
-	__int64 operator() (const ChunkPos &k) const { return ChunkPos::hash_fnct(k); }
+	inline __int64 operator()(const ChunkPos &k) const 
+	{ return ChunkPos::hash_fnct(k); }
+};
 
-} ChunkPosKeyHash;
-
-typedef struct
+struct ChunkPosKeyEq
 {
-	bool operator() (const ChunkPos &x, const ChunkPos &y) const { return ChunkPos::eq_test(x, y); }
-} ChunkPosKeyEq;
+	inline bool operator()(const ChunkPos &x, const ChunkPos &y) const 
+	{ return ChunkPos::eq_test(x, y); }
+};
