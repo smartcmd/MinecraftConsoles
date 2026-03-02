@@ -21,14 +21,14 @@ foreach ($dir in $directories) {
 
 $copies = @(
     @{ Source = "music";           Dest = "music" },
-    @{ Source = "Windows64\GameHDD"; Dest = "Windows64\GameHDD" },
     @{ Source = "Common\Media";    Dest = "Common\Media" },
     @{ Source = "Common\res";      Dest = "Common\res" },
     @{ Source = "Common\Trial";    Dest = "Common\Trial" },
     @{ Source = "Common\Tutorial"; Dest = "Common\Tutorial" },
+    @{ Source = "Windows64\GameHDD"; Dest = "Windows64\GameHDD" },
+    @{ Source = "Windows64\Sound";  Dest = "Windows64\Sound" },
     @{ Source = "DurangoMedia";    Dest = "Windows64Media" },
-    @{ Source = "Windows64Media";  Dest = "Windows64Media" },
-    @{ Source = "Durango\Sound";  Dest = "Windows64Media\Sound" }
+    @{ Source = "Windows64Media";  Dest = "Windows64Media" }
 )
 
 foreach ($copy in $copies) {
