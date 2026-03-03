@@ -33,13 +33,7 @@ Basic LAN multiplayer is available on the Windows build
 - Other players on the same LAN can discover the session from the in-game Join Game menu
 - Game connections use TCP port `25565` by default
 - LAN discovery uses UDP port `25566`
-- You can override your in-game username at launch with `-name`
-
-Example:
-
-```powershell
-Minecraft.Client.exe -name Steve
-```
+- You can override your in-game username at launch with `username.txt`
 
 This feature is based on [LCEMP](https://github.com/LCEMP/LCEMP/)
 

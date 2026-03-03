@@ -8,6 +8,7 @@ on:
     paths-ignore:
       - '.gitignore'
       - '*.md'
+      - '.github/*.md'
 
 jobs:
   build:
@@ -35,5 +36,8 @@ jobs:
       with:
         tag_name: nightly
         name: Nightly Release
-        body: Compiled with MSVC v14.44.35207 in Release mode with Whole Program Optimization, as well as `/O2 /Ot /Oi /Ob3 /GF`. (So far the floating point model is `/fp:strict` to avoid undefined behavior before we refactor for performance). Requires at least Windows 7 and DirectX 11 compatible GPU to run.
-        files: LCEWindows64.zip
+        body: Requires at least Windows 7 and DirectX 11 compatible GPU to run. Compiled with MSVC v14.44.35207 in Release mode with Whole Program Optimization, as well as `/O2 /Ot /Oi /Ob3 /GF /fp:precise`.
+        files: |
+            LCEWindows64.zip
+            ./x64/Release/Minecraft.Client.exe
+            ./x64/Release/Minecraft.Client.pdb

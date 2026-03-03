@@ -33,6 +33,7 @@ public:
 	virtual void TemporaryCreateGameStart();
 
 	bool m_bShutdown;
+	wstring g_playerName;
 };
 
 extern CConsoleMinecraftApp app;
