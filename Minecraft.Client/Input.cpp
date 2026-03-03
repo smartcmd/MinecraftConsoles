@@ -145,7 +145,7 @@ void Input::tick(LocalPlayer *player)
 		// Delta should normally be 0 since applyFrameMouseLook() already consumed it
 		if (rawDx != 0.0f || rawDy != 0.0f)
 		{
-			float mouseSensitivity = 0.5f;
+			float mouseSensitivity = ((float)app.GetGameSettings(iPad, eGameSetting_Sensitivity_InGame)) / 100.0f;
 			float mdx = rawDx * mouseSensitivity;
 			float mdy = -rawDy * mouseSensitivity;
 			if (app.GetGameSettings(iPad, eGameSetting_ControlInvertLook))
