@@ -31,16 +31,15 @@ typedef unsigned int ULONG;
 
 typedef unsigned char boolean;
 
-typedef int32_t INT;
-typedef uint32_t UINT;
-typedef uint32_t *PUINT;
+typedef int INT;
+typedef unsigned int UINT;
+typedef unsigned int *PUINT;
 
-typedef unsigned char byte;
 typedef long __int64;
 typedef unsigned long __uint64;
 typedef unsigned int DWORD;
 typedef int INT;
-typedef uintptr_t ULONG_PTR, *PULONG_PTR;
+typedef unsigned long ULONG_PTR, *PULONG_PTR;
 typedef ULONG_PTR SIZE_T, *PSIZE_T;
 
 typedef long LONG64, *PLONG64;
@@ -48,7 +47,7 @@ typedef long LONG64, *PLONG64;
 #define VOID void
 typedef char CHAR;
 typedef short SHORT;
-typedef int32_t LONG;
+typedef int LONG;
 typedef long LONGLONG;
 typedef unsigned long ULONGLONG;
 
@@ -80,73 +79,27 @@ typedef CONST CHAR *LPCSTR, *PCSTR;
 #endif
 
 typedef struct _FILETIME {
-#ifdef _M_PPCBE
-  DWORD dwHighDateTime;
-  DWORD dwLowDateTime;
-#else
   DWORD dwLowDateTime;
   DWORD dwHighDateTime;
-#endif
 } FILETIME, *PFILETIME, *LPFILETIME;
 
-#if defined(MIDL_PASS)
-typedef struct _LARGE_INTEGER {
-#else // MIDL_PASS
-typedef union _LARGE_INTEGER {
-  struct {
-#if defined(_M_PPCBE)
-    LONG HighPart;
-    DWORD LowPart;
-#else
-    DWORD LowPart;
-    LONG HighPart;
-#endif
-  };
-  struct {
-#if defined(_M_PPCBE)
-    LONG HighPart;
-    DWORD LowPart;
-#else
-    DWORD LowPart;
-    LONG HighPart;
-#endif
-  } u;
-#endif // MIDL_PASS
-  LONGLONG QuadPart;
+typedef struct {
+  DWORD LowPart;
+  LONG HighPart;
+  long long QuadPart;
 } LARGE_INTEGER;
 
 typedef LARGE_INTEGER *PLARGE_INTEGER;
 
-#if defined(MIDL_PASS)
-typedef struct _ULARGE_INTEGER {
-#else // MIDL_PASS
-typedef union _ULARGE_INTEGER {
-  struct {
-#if defined(_M_PPCBE)
-    DWORD HighPart;
-    DWORD LowPart;
-#else
-    DWORD LowPart;
-    DWORD HighPart;
-#endif
-  };
-  struct {
-#if defined(_M_PPCBE)
-    DWORD HighPart;
-    DWORD LowPart;
-#else
-    DWORD LowPart;
-    DWORD HighPart;
-#endif
-  } u;
-#endif // MIDL_PASS
-  ULONGLONG QuadPart;
+typedef struct {
+  DWORD LowPart;
+  LONG HighPart;
+  unsigned long long QuadPart;
 } ULARGE_INTEGER;
 
 typedef ULARGE_INTEGER *PULARGE_INTEGER;
 
-// 360 specifics
-typedef int32_t HRESULT;
+typedef int HRESULT;
 typedef void *HANDLE;
 
 #define DECLARE_HANDLE(name) typedef HANDLE name
