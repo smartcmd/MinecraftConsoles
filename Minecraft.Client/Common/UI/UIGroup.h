@@ -102,8 +102,6 @@ public:
 
 	void handleUnlockFullVersion();
 
-	void OnResize(S32 width, S32 height);
-
 	static const int LAYER_COUNT = eUILayer_COUNT;
 	
 	void PrintTotalMemoryUsage(__int64 &totalStatic, __int64 &totalDynamic);

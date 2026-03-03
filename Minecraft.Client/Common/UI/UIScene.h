@@ -122,7 +122,6 @@ protected:
 	virtual bool mapElementsAndNames();
 	void initialiseMovie();
 	void loadMovie();
-    virtual void OnResize();
     virtual void UpdateDisplaySize();
 
 private:

@@ -333,42 +333,6 @@ bool UIGroup::IsFullscreenGroup()
 	return m_group == eUIGroup_Fullscreen;
 }
 
-void UIGroup::OnResize(S32 width, S32 height)
-{
-    // Update all layers in this group
-    for (int layer = 0; layer < LAYER_COUNT; ++layer)
-    {
-        if (m_layers[layer])
-        {
-            m_layers[layer]->OnResize();
-        }
-    }
-
-    //// Update HUD if it exists
-    //if (m_hud)
-    //{
-    //    m_hud->OnResize();
-    //}
-
-    //// Update tooltips if they exist
-    //if (m_tooltips)
-    //{
-    //    m_tooltips->OnResize();
-    //}
-
-    //// Update tutorial popup if it exists
-    //if (m_tutorialPopup)
-    //{
-    //    m_tutorialPopup->OnResize();
-    //}
-
-    //// Update press start to play if it exists
-    //if (m_pressStartToPlay)
-    //{
-    //    m_pressStartToPlay->OnResize();
-    //}
-}
-
 void UIGroup::handleUnlockFullVersion()
 {
 	for(unsigned int i = 0; i < eUILayer_COUNT; ++i)

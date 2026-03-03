@@ -1219,16 +1219,16 @@ void UIController::getRenderDimensions(C4JRender::eViewportType viewport, S32 &w
             float targetAspect = 16.0f / 9.0f;
             float currentAspect = aar_Width / aar_Height;
 
+			// Screen is Ultrawide (Wider than 16:9):
             if (currentAspect > targetAspect)
             {
-                // Screen is Ultrawide (Wider than 16:9):
                 // Lock height to screen, calculate width based on 16:9 ratio
                 width = (S32)(aar_Height * targetAspect);
                 height = (S32)aar_Height;
             }
+            // Screen is Tall (Taller than 16:9, e.g. 4:3, 16:10, Steam Deck):
             else if (currentAspect < targetAspect)
             {
-                // Screen is Tall (Taller than 16:9, e.g. 4:3, 16:10, Steam Deck):
                 // Lock width to screen, calculate height based on 16:9 ratio
                 width = (S32)aar_Width;
                 // Height = Width / 1.777
@@ -1263,30 +1263,10 @@ void UIController::getRenderDimensions(C4JRender::eViewportType viewport, S32 &w
 }
 
 // AAR - Handle window resizing by updating the width and height variables
-// AAR - Handle window resizing by updating the width and height variables
-// AAR - Handle window resizing by updating the width and height variables
 void UIController::resize(S32 width, S32 height)
 {
-    // Store the new dimensions
     aar_Width = (float)width;
     aar_Height = (float)height;
-    m_fScreenWidth = (float)width;
-    m_fScreenHeight = (float)height;
-
-    // Notify all UIGroups about the resize
-    for (unsigned int i = 0; i < eUIGroup_COUNT; ++i)
-    {
-        if (m_groups[i])
-        {
-            m_groups[i]->OnResize(width, height);
-        }
-    }
-
-    // Force a render position update on next render
-    m_currentRenderViewport = (C4JRender::eViewportType)-1; // Force recalculation
-
-    // Update the Iggy global display if needed
-    // (Some Iggy versions need global display size updates)
 }
 
 void UIController::setupRenderPosition(C4JRender::eViewportType viewport)
@@ -1301,9 +1281,9 @@ void UIController::setupRenderPosition(C4JRender::eViewportType viewport)
 		
 		switch( viewport )
 		{
+        // AnyAspectRatio support by Fayaz (related code has AAR prefix)
 		case C4JRender::VIEWPORT_TYPE_FULLSCREEN:
 			{
-				// AnyAspectRatio support by Fayaz (related code has AAR prefix)
 				// Calculate target 16:9 width based on current height
 				float targetAspect = 16.0f / 9.0f;
                 float currentAspect = aar_Width / aar_Height;
