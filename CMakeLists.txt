@@ -158,6 +158,7 @@ elseif(BACKEND STREQUAL "Cross64")
   target_include_directories(MinecraftWorld PRIVATE "${CROSS64_DIR}/Cross64Extras")
 
   target_include_directories(MinecraftClientCross64 PRIVATE
+    "${CMAKE_CURRENT_SOURCE_DIR}"
     "${CROSS64_DIR}/Cross64Extras/"
     
     "${CROSS64_DIR}"
