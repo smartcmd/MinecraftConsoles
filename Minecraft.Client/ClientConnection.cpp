@@ -795,7 +795,7 @@ void ClientConnection::handleAddPlayer(shared_ptr<AddPlayerPacket> packet)
 #ifdef _DURANGO
 	// On Durango request player display name from network manager
 	INetworkPlayer *networkPlayer = g_NetworkManager.GetPlayerByXuid(player->getXuid());
-	if (networkPlayer != NULL) player->displayName = networkPlayer->GetDisplayName();
+	if (networkPlayer != NULL) player->m_displayName = networkPlayer->GetDisplayName();
 #else
 	// On all other platforms display name is just gamertag so don't check with the network manager
 	player->m_displayName = player->getName();
