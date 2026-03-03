@@ -25,7 +25,7 @@ jobs:
       run: MSBuild.exe MinecraftConsoles.sln /p:Configuration=Release /p:Platform="ARM64EC"
 
     - name: Zip Build
-      run: 7z a -r LCEWindowsARM.zip ./x64/Release/*
+      run: 7z a -r LCEWindowsARM.zip ./ARM64EC/Release/*
 
     - name: Update release
       uses: andelf/nightly-release@main
