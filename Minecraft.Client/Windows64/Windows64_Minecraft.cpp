@@ -84,9 +84,6 @@ BOOL g_bWidescreen = TRUE;
 int g_iScreenWidth = 1920;
 int g_iScreenHeight = 1080;
 
-UINT g_ScreenWidth = 1920;
-UINT g_ScreenHeight = 1080;
-
 // Fullscreen toggle state
 static bool g_isFullscreen = false;
 static WINDOWPLACEMENT g_wpPrev = { sizeof(g_wpPrev) };
@@ -431,8 +428,9 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	case WM_SIZE:
 	{
 		// Set the screen width and height used for calculating the aspect ratio
-		g_ScreenWidth = LOWORD(lParam);
-		g_ScreenHeight = HIWORD(lParam);
+		g_iScreenWidth = LOWORD(lParam);
+		g_iScreenHeight = HIWORD(lParam);
+		app.DebugPrintf("width: %d, height: %d\n", g_iScreenWidth, g_iScreenHeight);
 	}
 	break;
 	default:
