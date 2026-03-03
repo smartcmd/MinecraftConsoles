@@ -79,7 +79,7 @@
 //#define DEBUG_RENDER_SHOWS_PACKETS 1
 //#define SPLITSCREEN_TEST
 
-// If not disabled, this creates an event queue on a seperate thread so that the Level::tick calls can be offloaded 
+// If not disabled, this creates an event queue on a seperate thread so that the Level::tick calls can be offloaded
 // from the main thread, and have longer to run, since it's called at 20Hz instead of 60
 #define DISABLE_LEVELTICK_THREAD
 
@@ -96,7 +96,7 @@ TOUCHSCREENRECT QuickSelectRect[3]=
 {
 	{ 560, 890, 1360, 980 },
 	{ 450, 840, 1449, 960 },
-	{ 320, 840, 1600, 970 },		
+	{ 320, 840, 1600, 970 },
 };
 
 int QuickSelectBoxWidth[3]=
@@ -1279,7 +1279,7 @@ void Minecraft::run_middle()
 								if( pDLCPack )
 								{
 									if(!pDLCPack->hasPurchasedFile( DLCManager::e_DLCType_Texture, L"" ))
-									{			
+									{
 										bTrialTexturepack=true;
 									}
 								}
@@ -1401,7 +1401,7 @@ void Minecraft::run_middle()
 				{
 					delete m_pPsPlusUpsell;
 					m_pPsPlusUpsell = NULL;
-								
+
 					if ( ProfileManager.HasPlayStationPlus(i) )
 					{
 						app.DebugPrintf("<Minecraft.cpp> Player_%i is now authorised for PsPlus.\n", i);
@@ -1450,13 +1450,13 @@ void Minecraft::run_middle()
 					// Keyboard/mouse button presses for player 0
 					if (i == 0)
 					{
-						if (KMInput.ConsumeKeyPress(VK_ESCAPE))  localplayers[i]->ullButtonsPressed |= 1LL<<MINECRAFT_ACTION_PAUSEMENU;
-						if (KMInput.ConsumeKeyPress('E'))         localplayers[i]->ullButtonsPressed |= 1LL<<MINECRAFT_ACTION_INVENTORY;
-						if (KMInput.ConsumeKeyPress('Q'))         localplayers[i]->ullButtonsPressed |= 1LL<<MINECRAFT_ACTION_DROP;
-						if (KMInput.ConsumeKeyPress('C'))         localplayers[i]->ullButtonsPressed |= 1LL<<MINECRAFT_ACTION_CRAFTING;
-						if (KMInput.ConsumeKeyPress(VK_F5))       localplayers[i]->ullButtonsPressed |= 1LL<<MINECRAFT_ACTION_RENDER_THIRD_PERSON;
+						if (KMInput.ConsumeKeyPress(KMInput::KEY_PAUSE))  localplayers[i]->ullButtonsPressed |= 1LL<<MINECRAFT_ACTION_PAUSEMENU;
+						if (KMInput.ConsumeKeyPress(KMInput::KEY_INVEN))         localplayers[i]->ullButtonsPressed |= 1LL<<MINECRAFT_ACTION_INVENTORY;
+						if (KMInput.ConsumeKeyPress(KMInput::KEY_DROP))         localplayers[i]->ullButtonsPressed |= 1LL<<MINECRAFT_ACTION_DROP;
+						if (KMInput.ConsumeKeyPress(KMInput::KEY_CRAFT))         localplayers[i]->ullButtonsPressed |= 1LL<<MINECRAFT_ACTION_CRAFTING;
+						if (KMInput.ConsumeKeyPress(KMInput::KEY_TOGGLE_VIEW))       localplayers[i]->ullButtonsPressed |= 1LL<<MINECRAFT_ACTION_RENDER_THIRD_PERSON;
 						// In flying mode, Shift held = sneak/descend
-						if (localplayers[i]->abilities.flying && KMInput.IsKeyDown(VK_SHIFT))
+						if (localplayers[i]->abilities.flying && KMInput.IsKeyDown(KMInput::KEY_SNEAK))
 							localplayers[i]->ullButtonsPressed |= 1LL<<MINECRAFT_ACTION_SNEAK_TOGGLE;
 					}
 #endif
@@ -2184,7 +2184,7 @@ void Minecraft::levelTickThreadInitFunc()
 {
 	AABB::CreateNewThreadStorage();
 	Vec3::CreateNewThreadStorage();
-	IntCache::CreateNewThreadStorage();	
+	IntCache::CreateNewThreadStorage();
 	Compression::UseDefaultThreadStorage();
 }
 
@@ -2801,10 +2801,10 @@ void Minecraft::tick(bool bFirst, bool bUpdateTextures)
 					shared_ptr<ItemInstance> heldItem = nullptr;
 					if (player->inventory->IsHeldItem())
 					{
-						heldItem = player->inventory->getSelected();		
+						heldItem = player->inventory->getSelected();
 					}
 					int heldItemId = heldItem != NULL ? heldItem->getItem()->id : -1;
-					
+
 					switch(entityType)
 					{
 					case eTYPE_CHICKEN:
@@ -2846,7 +2846,7 @@ void Minecraft::tick(bool bFirst, bool bUpdateTextures)
 					case eTYPE_COW:
 						{
 							if(player->isAllowedToAttackAnimals()) *piAction=IDS_TOOLTIPS_HIT;
-						
+
 							shared_ptr<Animal> animal = dynamic_pointer_cast<Animal>(hitResult->entity);
 
 							if (animal->isLeashed() && animal->getLeashHolder() == player)
@@ -2910,7 +2910,7 @@ void Minecraft::tick(bool bFirst, bool bUpdateTextures)
 									*piUse=IDS_TOOLTIPS_MILK;
 									break;
 								case Item::shears_Id:
-									{								
+									{
 										if(player->isAllowedToAttackAnimals()) *piAction=IDS_TOOLTIPS_HIT;
 										if(!animal->isBaby()) *piUse=IDS_TOOLTIPS_SHEAR;
 									}
@@ -2938,10 +2938,10 @@ void Minecraft::tick(bool bFirst, bool bUpdateTextures)
 						*piAction = IDS_TOOLTIPS_MINE;
 						*piUse = IDS_TOOLTIPS_RIDE; // are we in the minecart already? - 4J-JEV: Doesn't matter anymore.
 						break;
-						
+
 					case eTYPE_MINECART_FURNACE:
 						*piAction = IDS_TOOLTIPS_MINE;
-						
+
 						// if you have coal, it'll go. Is there an object in hand?
 						if (heldItemId == Item::coal_Id) *piUse=IDS_TOOLTIPS_USE;
 						break;
@@ -3022,7 +3022,7 @@ void Minecraft::tick(bool bFirst, bool bUpdateTextures)
 							if(player->isAllowedToAttackAnimals()) *piAction=IDS_TOOLTIPS_HIT;
 
 							shared_ptr<Pig> pig = dynamic_pointer_cast<Pig>(hitResult->entity);
-							
+
 							if (pig->isLeashed() && pig->getLeashHolder() == player)
 							{
 								*piUse=IDS_TOOLTIPS_UNLEASH;
@@ -3165,7 +3165,7 @@ void Minecraft::tick(bool bFirst, bool bUpdateTextures)
 							shared_ptr<Ocelot> ocelot = dynamic_pointer_cast<Ocelot>(hitResult->entity);
 
 							if(player->isAllowedToAttackAnimals()) *piAction=IDS_TOOLTIPS_HIT;
-						
+
 							if (ocelot->isLeashed() && ocelot->getLeashHolder() == player)
 							{
 								*piUse = IDS_TOOLTIPS_UNLEASH;
@@ -3194,7 +3194,7 @@ void Minecraft::tick(bool bFirst, bool bUpdateTextures)
 										}
 										else
 										{
-											*piUse=IDS_TOOLTIPS_FEED;									
+											*piUse=IDS_TOOLTIPS_FEED;
 										}
 									}
 
@@ -3217,7 +3217,7 @@ void Minecraft::tick(bool bFirst, bool bUpdateTextures)
 							}
 						}
 						break;
-						
+
 					case eTYPE_PLAYER:
 						{
 							// Fix for #58576 - TU6: Content: Gameplay: Hit button prompt is available when attacking a host who has "Invisible" option turned on
@@ -3283,9 +3283,9 @@ void Minecraft::tick(bool bFirst, bool bUpdateTextures)
 					case eTYPE_HORSE:
 						{
 							shared_ptr<EntityHorse> horse = dynamic_pointer_cast<EntityHorse>(hitResult->entity);
-							
+
 							bool heldItemIsFood = false, heldItemIsLove = false, heldItemIsArmour = false;
-							
+
 							switch( heldItemId )
 							{
 								case Item::wheat_Id:
@@ -3340,7 +3340,7 @@ void Minecraft::tick(bool bFirst, bool bUpdateTextures)
 									*piUse = IDS_TOOLTIPS_FEED;
 								}
 							}
-							else if (	player->isSneaking() 
+							else if (	player->isSneaking()
 									||	(heldItemId == Item::saddle_Id)
 									||	(horse->canWearArmor() && heldItemIsArmour)
 									)
@@ -3349,7 +3349,7 @@ void Minecraft::tick(bool bFirst, bool bUpdateTextures)
 								if (*piUse == -1) *piUse = IDS_TOOLTIPS_OPEN;
 							}
 							else if (	horse->canWearBags()
-									&&	!horse->isChestedHorse() 
+									&&	!horse->isChestedHorse()
 									&&	(heldItemId == Tile::chest_Id) )
 							{
 								// 4j - Attach saddle-bags (chest) to donkey or mule.
@@ -3371,7 +3371,7 @@ void Minecraft::tick(bool bFirst, bool bUpdateTextures)
 								// 4j - Ride tamed horse.
 								*piUse = IDS_TOOLTIPS_MOUNT;
 							}
-							
+
 							if (player->isAllowedToAttackAnimals()) *piAction=IDS_TOOLTIPS_HIT;
 						}
 						break;
@@ -3411,7 +3411,7 @@ void Minecraft::tick(bool bFirst, bool bUpdateTextures)
 							}
 						}
 						*piAction=IDS_TOOLTIPS_HIT;
-						break;	
+						break;
 					}
 					break;
 				}
@@ -3644,7 +3644,7 @@ void Minecraft::tick(bool bFirst, bool bUpdateTextures)
 				player->abilities.debugflying = !player->abilities.debugflying;
 				player->abilities.flying = !player->abilities.flying;
 			}
-#endif // PSVITA		
+#endif // PSVITA
 		}
 #endif
 
@@ -3721,7 +3721,7 @@ void Minecraft::tick(bool bFirst, bool bUpdateTextures)
 		}
 
 		__uint64 ullButtonsPressed=player->ullButtonsPressed;
-		
+
 		bool selected = false;
 #ifdef __PSVITA__
 		// 4J-PB - use the touchscreen for quickselect
@@ -3746,7 +3746,7 @@ void Minecraft::tick(bool bFirst, bool bUpdateTextures)
 			shared_ptr<ItemInstance> selectedItem = player->getSelectedItem();
 			// Dropping items happens over network, so if we only have one then assume that we dropped it and should hide the item
 			int iCount=0;
-			
+
 			if(selectedItem != NULL) iCount=selectedItem->GetCount();
 			if(selectedItem != NULL && !( (player->ullButtonsPressed&(1LL<<MINECRAFT_ACTION_DROP)) && selectedItem->GetCount() == 1))
 			{
@@ -4055,7 +4055,7 @@ void Minecraft::tick(bool bFirst, bool bUpdateTextures)
 	}
 #ifdef __PS3__
 
-// 	while(!g_tickLevelQueue.empty()) 
+// 	while(!g_tickLevelQueue.empty())
 // 	{
 // 		Level* pLevel = g_tickLevelQueue.front();
 // 		g_tickLevelQueue.pop();
@@ -4283,7 +4283,7 @@ void Minecraft::setLevel(MultiPlayerLevel *level, int message /*=-1*/, shared_pt
 
 			player->resetPos();
 			gameMode->initPlayer(player);
-			
+
 			player->SetXboxPad(iPrimaryPlayer);
 
 			for(int i=0;i<XUSER_MAX_COUNT;i++)
@@ -4669,7 +4669,7 @@ void Minecraft::main()
 	}
 
 	app.DebugPrintf("\n\n\n\n\n");
-	
+
 	for(unsigned int i = 0; i < 256; ++i)
 	{
 		if(Tile::tiles[i] != NULL)
@@ -5126,12 +5126,11 @@ int Minecraft::MustSignInReturnedPSN(void *pParam, int iPad, C4JStorage::EMessag
 {
 	Minecraft* pMinecraft = (Minecraft *)pParam;
 
-	if(result == C4JStorage::EMessage_ResultAccept) 
-	{        
+	if(result == C4JStorage::EMessage_ResultAccept)
+	{
 		SQRNetworkManager_Orbis::AttemptPSNSignIn(&Minecraft::InGame_SignInReturned, pMinecraft, false, iPad);
 	}
 
 	return 0;
 }
 #endif
-

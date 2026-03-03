@@ -96,7 +96,7 @@ void KeyboardMouseInput::OnRawMouseInput(LPARAM lParam)
 		if (raw->data.mouse.usFlags == MOUSE_MOVE_RELATIVE)
 		{
 			m_mouseDeltaXAccum += (float)raw->data.mouse.lLastX;
-			m_mouseDeltaYAccum += (float)raw->data.mouse.lLastY;
+			m_mouseDeltaYAccum += (float)raw->data.mouse.lLastY
 		}
 	}
 }

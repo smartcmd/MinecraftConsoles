@@ -15,6 +15,37 @@
 class KeyboardMouseInput
 {
 public:
+    //game controls
+    const static int KEY_WALK_UP = 'W';
+    const static int KEY_WALK_DOWN = 'S';
+    const static int KEY_WALK_LEFT = 'A';
+    const static int KEY_WALK_RIGHT = 'D';
+    const static int KEY_SNEAK = VK_SHIFT;
+    const static int KEY_INVEN = 'E';
+    const static int KEY_DROP = 'Q';
+    const static int KEY_CRAFT = 'C';
+    const static int KEY_JUMP = VK_SPACE;
+    const static int KEY_SPRINT = VK_CONTROL;
+    const static int KEY_PAUSE = VK_ESCAPE;
+
+    //menu controls
+    const static int KEY_UP = VK_UP;
+    const static int KEY_DOWN = VK_DOWN;
+    const static int KEY_LEFT = VK_LEFT;
+    const static int KEY_RIGHT = VK_RIGHT;
+    const static int KEY_A = VK_RETURN;
+    const static int KEY_B = VK_ESCAPE;
+    const static int KEY_LEFT_SCROLL = 'Q';
+    const static int KEY_RIGHT_SCROLL = 'E';
+
+    //debug type shit
+    const static int KEY_TOGGLE_VIEW = VK_F5;
+    const static int KEY_DEBUG_OVERLAY = VK_F4;
+    const static int KEY_DEBUG_CONSOLE_OVERLAY = VK_F3;
+    const static int KEY_FULLSCREEN = VK_F11;
+    const static int KEY_TOGGLE_CAPTURE = VK_MENU;
+    const static int KEY_GAME_INFO_MENU = VK_TAB;
+
 	KeyboardMouseInput();
 	~KeyboardMouseInput();
 

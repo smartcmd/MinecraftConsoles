@@ -163,7 +163,7 @@ UIController::UIController()
 {
 	m_uiDebugConsole = NULL;
 	m_reloadSkinThread = NULL;
-	
+
 	m_navigateToHomeOnReload = false;
 
 	m_bCleanupOnReload = false;
@@ -279,7 +279,7 @@ void UIController::postInit()
 	IggySetTextureSubstitutionCallbacks ( &UIController::TextureSubstitutionCreateCallback , &UIController::TextureSubstitutionDestroyCallback, this );
 
 	SetupFont();
-	// 
+	//
 	loadSkins();
 
 	for(unsigned int i = 0; i < eUIGroup_COUNT; ++i)
@@ -360,7 +360,7 @@ void UIController::SetupFont()
 	app.m_dlcManager.LanguageChanged();
 
 	app.loadStringTable(); // Switch to use new string table,
-	
+
 	if (m_eTargetFont == m_eCurrentFont)
 	{
 		// 4J-JEV: If we're ingame, reload the font to update all the text.
@@ -435,12 +435,12 @@ bool UIController::UsingBitmapFont()
 void UIController::tick()
 {
 	SetupFont(); // If necessary, change font.
-	
+
 	if ( (m_navigateToHomeOnReload || m_bCleanupOnReload) && !ui.IsReloadingSkin() )
 	{
 		ui.CleanUpSkinReload();
-		
-		if (m_navigateToHomeOnReload || !g_NetworkManager.IsInSession()) 
+
+		if (m_navigateToHomeOnReload || !g_NetworkManager.IsInSession())
 		{
 			ui.NavigateToScene(ProfileManager.GetPrimaryPad(),eUIScene_MainMenu);
 		}
@@ -707,7 +707,7 @@ void UIController::CleanUpSkinReload()
 	{
 		if(!Minecraft::GetInstance()->skins->getSelected()->hasAudio())
 		{
-#ifdef _DURANGO			
+#ifdef _DURANGO
 			DWORD result = StorageManager.UnmountInstalledDLC(L"TPACK");
 #else
 			DWORD result = StorageManager.UnmountInstalledDLC("TPACK");
@@ -774,7 +774,7 @@ void UIController::handleInput()
 	{
 #ifdef _DURANGO
 		// 4J-JEV: Added exception for primary play who migh've uttered speech commands.
-		if(iPad != ProfileManager.GetPrimaryPad() 
+		if(iPad != ProfileManager.GetPrimaryPad()
 			&& (!InputManager.IsPadConnected(iPad) || !InputManager.IsPadLocked(iPad)) ) continue;
 #endif
 		for(unsigned int key = 0; key <= ACTION_MAX_MENU; ++key)
@@ -850,7 +850,7 @@ void UIController::handleKeyPress(unsigned int iPad, unsigned int key)
 		{
 			// no active touch? clear active and highlighted touch UI elements
 			m_ActiveUIElement = NULL;
-			m_HighlightedUIElement = NULL; 
+			m_HighlightedUIElement = NULL;
 
 			// fullscreen first
 			UIScene *pScene=m_groups[(int)eUIGroup_Fullscreen]->getCurrentScene();
@@ -900,7 +900,7 @@ void UIController::handleKeyPress(unsigned int iPad, unsigned int key)
 					}
 				}
 			}
-		}	
+		}
 		else if(m_bTouchscreenPressed && pTouchData->reportNum==1)
 		{
 			// fullscreen first
@@ -1001,17 +1001,17 @@ void UIController::handleKeyPress(unsigned int iPad, unsigned int key)
 		bool kbDown = false, kbPressed = false, kbReleased = false;
 		switch(key)
 		{
-			case ACTION_MENU_UP:        kbDown = KMInput.IsKeyDown(VK_UP);     kbPressed = KMInput.IsKeyPressed(VK_UP);     kbReleased = KMInput.IsKeyReleased(VK_UP);     break;
-			case ACTION_MENU_DOWN:      kbDown = KMInput.IsKeyDown(VK_DOWN);   kbPressed = KMInput.IsKeyPressed(VK_DOWN);   kbReleased = KMInput.IsKeyReleased(VK_DOWN);   break;
-			case ACTION_MENU_LEFT:      kbDown = KMInput.IsKeyDown(VK_LEFT);   kbPressed = KMInput.IsKeyPressed(VK_LEFT);   kbReleased = KMInput.IsKeyReleased(VK_LEFT);   break;
-			case ACTION_MENU_RIGHT:     kbDown = KMInput.IsKeyDown(VK_RIGHT);  kbPressed = KMInput.IsKeyPressed(VK_RIGHT);  kbReleased = KMInput.IsKeyReleased(VK_RIGHT);  break;
-			case ACTION_MENU_OK:        kbDown = KMInput.IsKeyDown(VK_RETURN); kbPressed = KMInput.IsKeyPressed(VK_RETURN); kbReleased = KMInput.IsKeyReleased(VK_RETURN); break;
-			case ACTION_MENU_A:         kbDown = KMInput.IsKeyDown(VK_RETURN); kbPressed = KMInput.IsKeyPressed(VK_RETURN); kbReleased = KMInput.IsKeyReleased(VK_RETURN); break;
-			case ACTION_MENU_CANCEL:    kbDown = KMInput.IsKeyDown(VK_ESCAPE); kbPressed = KMInput.IsKeyPressed(VK_ESCAPE); kbReleased = KMInput.IsKeyReleased(VK_ESCAPE); break;
-			case ACTION_MENU_B:         kbDown = KMInput.IsKeyDown(VK_ESCAPE); kbPressed = KMInput.IsKeyPressed(VK_ESCAPE); kbReleased = KMInput.IsKeyReleased(VK_ESCAPE); break;
-			case ACTION_MENU_PAUSEMENU: kbDown = KMInput.IsKeyDown(VK_ESCAPE); kbPressed = KMInput.IsKeyPressed(VK_ESCAPE); kbReleased = KMInput.IsKeyReleased(VK_ESCAPE); break;
-			case ACTION_MENU_LEFT_SCROLL: kbDown = KMInput.IsKeyDown('Q'); kbPressed = KMInput.IsKeyPressed('Q'); kbReleased = KMInput.IsKeyReleased('Q'); break;
-			case ACTION_MENU_RIGHT_SCROLL: kbDown = KMInput.IsKeyDown('E'); kbPressed = KMInput.IsKeyPressed('E'); kbReleased = KMInput.IsKeyReleased('E'); break;
+			case ACTION_MENU_UP:        kbDown = KMInput.IsKeyDown(KMInput::KEY_UP); kbPressed = KMInput.IsKeyPressed(KMInput::KEY_UP); kbReleased = KMInput.IsKeyReleased(KMInput::KEY_UP); break;
+			case ACTION_MENU_DOWN:      kbDown = KMInput.IsKeyDown(KMInput::KEY_DOWN); kbPressed = KMInput.IsKeyPressed(KMInput::KEY_DOWN); kbReleased = KMInput.IsKeyReleased(KMInput::KEY_DOWN); break;
+			case ACTION_MENU_LEFT:      kbDown = KMInput.IsKeyDown(KMInput::KEY_LEFT); kbPressed = KMInput.IsKeyPressed(KMInput::KEY_LEFT); kbReleased = KMInput.IsKeyReleased(KMInput::KEY_LEFT); break;
+			case ACTION_MENU_RIGHT:     kbDown = KMInput.IsKeyDown(KMInput::KEY); kbPressed = KMInput.IsKeyPressed(KMInput::KEY_RIGHT); kbReleased = KMInput.IsKeyReleased(KMInput::KEY_RIGHT); break;
+			case ACTION_MENU_OK:        kbDown = KMInput.IsKeyDown(KMInput::KEY_UP); kbPressed = KMInput.IsKeyPressed(KMInput::KEY_A); kbReleased = KMInput.IsKeyReleased(KMInput::KEY_A); break;
+			case ACTION_MENU_A:         kbDown = KMInput.IsKeyDown(KMInput::KEY_A); kbPressed = KMInput.IsKeyPressed(KMInput::KEY_A); kbReleased = KMInput.IsKeyReleased(KMInput::KEY_A); break;
+			case ACTION_MENU_CANCEL:    kbDown = KMInput.IsKeyDown(KMInput::KEY_B); kbPressed = KMInput.IsKeyPressed(KMInput::KEY_B); kbReleased = KMInput.IsKeyReleased(KMInput::KEY_B); break;
+			case ACTION_MENU_B:         kbDown = KMInput.IsKeyDown(KMInput::KEY_B); kbPressed = KMInput.IsKeyPressed(KMInput::KEY_B); kbReleased = KMInput.IsKeyReleased(KMInput::KEY_B); break;
+			case ACTION_MENU_PAUSEMENU: kbDown = KMInput.IsKeyDown(KMInput::KEY_B); kbPressed = KMInput.IsKeyPressed(KMInput::KEY_B); kbReleased = KMInput.IsKeyReleased(KMInput::KEY_B); break;
+			case ACTION_MENU_LEFT_SCROLL: kbDown = KMInput.IsKeyDown(KMInput::KEY_LEFT_SCROLL); kbPressed = KMInput.IsKeyPressed(KMInput::KEY_LEFT_SCROLL); kbReleased = KMInput.IsKeyReleased(KMInput::KEY_LEFT_SCROLL); break;
+			case ACTION_MENU_RIGHT_SCROLL: kbDown = KMInput.IsKeyDown(KMInput::KEY_RIGHT_SCROLL); kbPressed = KMInput.IsKeyPressed(KMInput::KEY_RIGHT_SCROLL); kbReleased = KMInput.IsKeyReleased(KMInput::KEY_RIGHT_SCROLL); break;
 		}
 		pressed = pressed || kbPressed;
 		released = released || kbReleased;
@@ -1120,8 +1120,8 @@ void UIController::handleKeyPress(unsigned int iPad, unsigned int key)
 		app.DebugPrintf(app.USER_SR, "Total static: %d , Total dynamic: %d\n", totalStatic, totalDynamic);
 		app.DebugPrintf(app.USER_SR, "\n\nEND TOTAL SWF MEMORY USAGE\n");
 		app.DebugPrintf(app.USER_SR, "********************************\n\n");
-	} 
-	else 
+	}
+	else
 #endif
 #endif
 #endif
@@ -1318,7 +1318,7 @@ void UIController::setupCustomDrawGameState()
 	glLoadIdentity();
 	glOrtho(0, m_fScreenWidth, m_fScreenHeight, 0, 1000, 3000);
 	glMatrixMode(GL_MODELVIEW);
-	glEnable(GL_ALPHA_TEST);			
+	glEnable(GL_ALPHA_TEST);
 	glAlphaFunc(GL_GREATER, 0.1f);
 	glEnable(GL_DEPTH_TEST);
 	glDepthFunc(GL_LEQUAL);
@@ -1418,10 +1418,10 @@ void RADLINK UIController::CustomDrawCallback(void *user_callback_data, Iggy *pl
 //Description
 //Callback to create a user-defined texture to replace SWF-defined textures.
 //Parameters
-//width - Input value: optional number of pixels wide specified from AS3, or -1 if not defined. Output value: the number of pixels wide to pretend to Iggy that the bitmap is. SWF and AS3 scales bitmaps based on their pixel dimensions, so you can use this to substitute a texture that is higher or lower resolution that ActionScript thinks it is.  
-//height - Input value: optional number of pixels high specified from AS3, or -1 if not defined. Output value: the number of pixels high to pretend to Iggy that the bitmap is. SWF and AS3 scales bitmaps based on their pixel dimensions, so you can use this to substitute a texture that is higher or lower resolution that ActionScript thinks it is.  
-//destroy_callback_data - Optional additional output value you can set; the value will be passed along to the corresponding Iggy_TextureSubstitutionDestroyCallback (e.g. you can store the pointer to your own internal structure here).  
-//return - A platform-independent wrapped texture handle provided by GDraw, or NULL (NULL with throw an ActionScript 3 ArgumentError that the Flash developer can catch) Use by calling IggySetTextureSubstitutionCallbacks.  
+//width - Input value: optional number of pixels wide specified from AS3, or -1 if not defined. Output value: the number of pixels wide to pretend to Iggy that the bitmap is. SWF and AS3 scales bitmaps based on their pixel dimensions, so you can use this to substitute a texture that is higher or lower resolution that ActionScript thinks it is.
+//height - Input value: optional number of pixels high specified from AS3, or -1 if not defined. Output value: the number of pixels high to pretend to Iggy that the bitmap is. SWF and AS3 scales bitmaps based on their pixel dimensions, so you can use this to substitute a texture that is higher or lower resolution that ActionScript thinks it is.
+//destroy_callback_data - Optional additional output value you can set; the value will be passed along to the corresponding Iggy_TextureSubstitutionDestroyCallback (e.g. you can store the pointer to your own internal structure here).
+//return - A platform-independent wrapped texture handle provided by GDraw, or NULL (NULL with throw an ActionScript 3 ArgumentError that the Flash developer can catch) Use by calling IggySetTextureSubstitutionCallbacks.
 //
 //Discussion
 //
@@ -1637,7 +1637,7 @@ bool UIController::NavigateBack(int iPad, bool forceUsePad, EUIScene eScene, EUI
 void UIController::NavigateToHomeMenu()
 {
 	ui.CloseAllPlayersScenes();
-	
+
 	// Alert the app the we no longer want to be informed of ethernet connections
 	app.SetLiveLinkRequired( false );
 
@@ -1800,7 +1800,7 @@ void UIController::CloseUIScenes(int iPad, bool forceIPad)
 
 	m_groups[(int)group]->closeAllScenes();
 	m_groups[(int)group]->getTooltips()->SetTooltips(-1);
-	
+
 	// This should cause the popup to dissappear
 	TutorialPopupInfo popupInfo;
 	if(m_groups[(int)group]->getTutorialPopup()) m_groups[(int)group]->getTutorialPopup()->SetTutorialDescription(&popupInfo);
@@ -1951,7 +1951,7 @@ void UIController::SetMenuDisplayed(int iPad,bool bVal)
 
 #ifdef _DURANGO
 			// 4J-JEV: When in-game, allow player to toggle the 'Pause' and 'IngameInfo' menus via Kinnect.
-			if (Minecraft::GetInstance()->running) 
+			if (Minecraft::GetInstance()->running)
 				InputManager.SetEnabledGtcButtons(_360_GTC_MENU | _360_GTC_PAUSE | _360_GTC_VIEW);
 #endif
 		}
@@ -2124,7 +2124,7 @@ void UIController::PlayUISFX(ESoundEffect eSound)
 	// Don't play multiple SFX on the same tick
 	// (prevents horrible sounds when programmatically setting multiple checkboxes)
 	if (time - m_lastUiSfx < 10) { return; }
-	m_lastUiSfx = time;	
+	m_lastUiSfx = time;
 
 	Minecraft::GetInstance()->soundEngine->playUI(eSound,1.0f,1.0f);
 }
@@ -2371,7 +2371,7 @@ void UIController::SetTrialTimerLimitSecs(unsigned int uiSeconds)
 
 void UIController::UpdateTrialTimer(unsigned int iPad)
 {
-	WCHAR wcTime[20]; 
+	WCHAR wcTime[20];
 
 	DWORD dwTimeTicks=(DWORD)app.getTrialTimer();
 
@@ -2433,7 +2433,7 @@ void UIController::ShowAutosaveCountdownTimer(bool show)
 void UIController::UpdateAutosaveCountdownTimer(unsigned int uiSeconds)
 {
 #if !(defined(_XBOX_ONE) || defined(__ORBIS__))
-	WCHAR wcAutosaveCountdown[100]; 
+	WCHAR wcAutosaveCountdown[100];
 	swprintf( wcAutosaveCountdown, 100, app.GetString(IDS_AUTOSAVE_COUNTDOWN),uiSeconds);
 	if(m_groups[(int)eUIGroup_Fullscreen]->getPressStartToPlay()) m_groups[(int)eUIGroup_Fullscreen]->getPressStartToPlay()->setTrialTimer(wcAutosaveCountdown);
 #endif
@@ -2603,7 +2603,7 @@ C4JStorage::EMessageResult UIController::RequestUGCMessageBox(UINT title/* = -1 
 #ifdef __ORBIS__
 	// Show the vague UGC system message in addition to our message
 	ProfileManager.DisplaySystemMessage( SCE_MSG_DIALOG_SYSMSG_TYPE_TRC_PSN_UGC_RESTRICTION, iPad );
-	return C4JStorage::EMessage_ResultAccept; 
+	return C4JStorage::EMessage_ResultAccept;
 #elif defined(__PSVITA__)
 	ProfileManager.ShowSystemMessage( SCE_MSG_DIALOG_SYSMSG_TYPE_TRC_PSN_CHAT_RESTRICTION, iPad );
 	UINT uiIDA[1];
@@ -2640,7 +2640,7 @@ C4JStorage::EMessageResult UIController::RequestContentRestrictedMessageBox(UINT
 #ifdef __ORBIS__
 	// Show the vague UGC system message in addition to our message
 	ProfileManager.DisplaySystemMessage( SCE_MSG_DIALOG_SYSMSG_TYPE_TRC_PSN_UGC_RESTRICTION, iPad );
-	return C4JStorage::EMessage_ResultAccept; 
+	return C4JStorage::EMessage_ResultAccept;
 #elif defined(__PSVITA__)
 	ProfileManager.ShowSystemMessage( SCE_MSG_DIALOG_SYSMSG_TYPE_TRC_PSN_AGE_RESTRICTION, iPad );
 	return C4JStorage::EMessage_ResultAccept;
@@ -2680,7 +2680,7 @@ void UIController::setFontCachingCalculationBuffer(int length)
 	}
 }
 
-// Returns the first scene of given type if it exists, NULL otherwise 
+// Returns the first scene of given type if it exists, NULL otherwise
 UIScene *UIController::FindScene(EUIScene sceneType)
 {
 	UIScene *pScene = NULL;
@@ -2822,7 +2822,7 @@ void UIController::TouchBoxesClear(UIScene *pUIScene)
 	for (AUTO_VAR(it, m_TouchBoxes[eUIGroup][eUILayer][eUIscene].begin()); it != itEnd; it++)
 	{
 		UIELEMENT *element=(UIELEMENT *)*it;
-		delete element;		
+		delete element;
 	}
 	m_TouchBoxes[eUIGroup][eUILayer][eUIscene].clear();
 }
@@ -2858,7 +2858,7 @@ bool UIController::TouchBoxHit(UIScene *pUIScene,S32 x, S32 y)
 					return true;
 				}
 			}
-		}			
+		}
 	}
 
 	//app.DebugPrintf("MISS at x = %i y = %i\n", (int)x, (int)y);

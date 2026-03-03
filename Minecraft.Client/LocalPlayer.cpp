@@ -142,7 +142,7 @@ void LocalPlayer::calculateFlight(float xa, float ya, float za)
 void LocalPlayer::serverAiStep()
 {
 	Player::serverAiStep();
-	
+
 	if( abilities.flying && abilities.mayfly )
 	{
 		// snap y rotation for flying to nearest 90 degrees in world space
@@ -160,7 +160,7 @@ void LocalPlayer::serverAiStep()
 			float yRotDiff = yRotSnapped - yRotFinal;
 			// Apply the same difference to the player rotated space angle
 			float yRotInputAdjust = yRotInput + yRotDiff;
-			
+
 			// Calculate final x/y player-space movement required
 			this->xxa = cos(yRotInputAdjust * ( PI / 180.0f) ) * fMag;
 			this->yya = sin(yRotInputAdjust * ( PI / 180.0f) ) * fMag;
@@ -294,7 +294,7 @@ void LocalPlayer::aiStep()
 
 #ifdef _WINDOWS64
 	// Keyboard sprint: Ctrl held while moving forward
-	if (GetXboxPad() == 0 && input->usingKeyboardMovement && KMInput.IsKeyDown(VK_CONTROL) && sprintForward > 0.0f &&
+	if (GetXboxPad() == 0 && input->usingKeyboardMovement && KMInput.IsKeyDown(KMInput::KEY_SPRINT) && sprintForward > 0.0f &&
 		enoughFoodToSprint && !isUsingItem() && !hasEffect(MobEffect::blindness) && onGround)
 	{
 		if (!isSprinting()) setSprinting(true);
@@ -332,7 +332,7 @@ void LocalPlayer::aiStep()
 	if (isSprinting() && (!forwardEnoughToContinueSprint || !enoughFoodToSprint || isSneaking() || isUsingItem()))
 	{
 		setSprinting(false);
-	}	
+	}
 
 	// 4J Stu - Fix for #52705 - Customer Encountered: Player can fly in bed while being in Creative mode.
 	if (!isSleeping() && (abilities.mayfly || isAllowedToFly() ))
@@ -373,7 +373,7 @@ void LocalPlayer::aiStep()
 			abilities.flying = false;
 		}
 	}
-	
+
 
 	if (abilities.flying)
 	{
@@ -435,7 +435,7 @@ void LocalPlayer::aiStep()
 			{
 				jumpRidingScale = (float) jumpRidingTicks * .1f;
 			}
-			else 
+			else
 			{
 				jumpRidingScale = .8f + (2.f / ((float) (jumpRidingTicks - 9))) * .1f;
 			}
@@ -534,7 +534,7 @@ void LocalPlayer::aiStep()
 			else
 			{
 				ProfileManager.SetCurrentGameActivity(m_iPad,CONTEXT_PRESENCE_MULTIPLAYER,false);
-			}			
+			}
 		}
 		else
 		{
@@ -831,7 +831,7 @@ void LocalPlayer::awardStat(Stat *stat, byteArray param)
 {
 #ifdef _DURANGO
 	// 4J-JEV: Maybe we want to fine tune this later? #TODO
-	if (	   !ProfileManager.IsGuest(GetXboxPad()) 
+	if (	   !ProfileManager.IsGuest(GetXboxPad())
 			&& app.CanRecordStatsAndAchievements()
 			&& ProfileManager.IsFullVersion()
 		)
@@ -910,7 +910,7 @@ void LocalPlayer::awardStat(Stat *stat, byteArray param)
 			toolStats[0][2] = GenericStats::itemsCrafted(Item::shovel_iron->id);
 			toolStats[0][3] = GenericStats::itemsCrafted(Item::shovel_diamond->id);
 			toolStats[0][4] = GenericStats::itemsCrafted(Item::shovel_gold->id);
-			toolStats[1][0] = GenericStats::itemsCrafted(Item::pickAxe_wood->id); 
+			toolStats[1][0] = GenericStats::itemsCrafted(Item::pickAxe_wood->id);
 			toolStats[1][1] = GenericStats::itemsCrafted(Item::pickAxe_stone->id);
 			toolStats[1][2] = GenericStats::itemsCrafted(Item::pickAxe_iron->id);
 			toolStats[1][3] = GenericStats::itemsCrafted(Item::pickAxe_diamond->id);
@@ -925,7 +925,7 @@ void LocalPlayer::awardStat(Stat *stat, byteArray param)
 			toolStats[3][2] = GenericStats::itemsCrafted(Item::hoe_iron->id);
 			toolStats[3][3] = GenericStats::itemsCrafted(Item::hoe_diamond->id);
 			toolStats[3][4] = GenericStats::itemsCrafted(Item::hoe_gold->id);
-		
+
 			bool justCraftedTool = false;
 			for (int i=0; i<4; i++)
 			{
@@ -963,7 +963,7 @@ void LocalPlayer::awardStat(Stat *stat, byteArray param)
 					awardStat(GenericStats::MOARTools(), GenericStats::param_noArgs());
 				}
 			}
-			
+
 		}
 
 #ifdef _XBOX
@@ -1047,7 +1047,7 @@ void LocalPlayer::awardStat(Stat *stat, byteArray param)
 				numEmeraldMined = pStats->getTotalValue(emeraldMined);
 				numEmeraldBought = pStats->getTotalValue(emeraldBought);
 				totalSum = numEmeraldMined + numEmeraldBought;
-				
+
 				app.DebugPrintf(
 					"[AwardStat] Check unlock 'The Haggler': "
 					"emerald_mined=%i, emerald_bought=%i, sum=%i.\n",
@@ -1103,7 +1103,7 @@ void LocalPlayer::awardStat(Stat *stat, byteArray param)
 		// AWARD : Rainbow Collection, collect all different colours of wool.
 		{
 			bool justPickedupWool = false;
-			
+
 			for (int i=0; i<16; i++)
 				if ( stat == GenericStats::itemsCollected(Tile::wool_Id, i) )
 					justPickedupWool = true;
@@ -1111,7 +1111,7 @@ void LocalPlayer::awardStat(Stat *stat, byteArray param)
 			if (justPickedupWool)
 			{
 				unsigned int woolCount = 0;
-			
+
 				for (unsigned int i = 0; i < 16; i++)
 				{
 					if (pStats->getTotalValue(GenericStats::itemsCollected(Tile::wool_Id, i)) > 0)
@@ -1300,7 +1300,7 @@ void LocalPlayer::mapPlayerChunk(const unsigned int flagTileType)
 						cout << "O";
 					else for (unsigned int y = 127; y > 0; y--)
 					{
-						int t = cc->getTile(x,y,z);		
+						int t = cc->getTile(x,y,z);
 						if (flagTileType != 0 && t == flagTileType)	{	cout << "@";	break; }
 						else if (t != 0 && t < 10)	{	cout << t;		break; }
 						else if (t > 0)			{	cout << "#";	break; }
@@ -1334,7 +1334,7 @@ void LocalPlayer::handleMouseDown(int button, bool down)
 		if( ( ( y == 0 ) || ( ( y == 127 ) && level->dimension->hasCeiling ) ) && level->dimension->id != 1 ) return;
 
 		minecraft->gameMode->continueDestroyBlock(x, y, z, minecraft->hitResult->f);
-		
+
 		if(mayDestroyBlockAt(x,y,z))
 		{
 			minecraft->particleEngine->crack(x, y, z, minecraft->hitResult->f);
@@ -1372,7 +1372,7 @@ bool LocalPlayer::creativeModeHandleMouseClick(int button, bool buttonPressed)
 			}
 
 			// Get distance from last click point in each axis
-			float dX = (float)x - lastClickX; 
+			float dX = (float)x - lastClickX;
 			float dY = (float)y - lastClickY;
 			float dZ = (float)z - lastClickZ;
 			bool newClick = false;
@@ -1520,13 +1520,13 @@ bool LocalPlayer::handleMouseClick(int button)
 	bool returnItemPlaced = false;
 
 	if (button == 0 && missTime > 0) return false;
-	if (button == 0) 
+	if (button == 0)
 	{
 		//app.DebugPrintf("handleMouseClick - Player %d is swinging\n",GetXboxPad());
 		swing();
 	}
 
-	bool mayUse = true;		
+	bool mayUse = true;
 
 	// 4J-PB - Adding a special case in here for sleeping in a bed in a multiplayer game - we need to wake up, and we don't have the inbedchatscreen with a button
 
@@ -1538,7 +1538,7 @@ bool LocalPlayer::handleMouseClick(int button)
 		shared_ptr<MultiplayerLocalPlayer> mplp = dynamic_pointer_cast<MultiplayerLocalPlayer>( shared_from_this() );
 
 		if(mplp && mplp->connection) mplp->StopSleeping();
-	
+
 	}
 	// 4J Stu - We should not accept any input while asleep, except the above to wake up
 	if(isSleeping() && level != NULL && level->isClientSide)
@@ -1560,9 +1560,9 @@ bool LocalPlayer::handleMouseClick(int button)
 		}
 		if (button == 1)
 		{
-			// 4J-PB - if we milk a cow here, and end up with a bucket of milk, the if (mayUse && button == 1) further down will 
+			// 4J-PB - if we milk a cow here, and end up with a bucket of milk, the if (mayUse && button == 1) further down will
 			// then empty our bucket if we're pointing at a tile
-			// It looks like interact really should be returning a result so we can check this, but it's possibly just the 
+			// It looks like interact really should be returning a result so we can check this, but it's possibly just the
 			// milk bucket that causes a problem
 
 			if(minecraft->hitResult->entity->GetType()==eTYPE_COW)
@@ -1654,7 +1654,7 @@ void LocalPlayer::updateRichPresence()
 		else if(selectedItem != NULL && selectedItem->id == Item::map_Id)
 		{
 			app.SetRichPresenceContext(m_iPad,CONTEXT_GAME_STATE_MAP);
-		}	
+		}
 		else if ( (riding != NULL) && riding->instanceof(eTYPE_MINECART) )
 		{
 			app.SetRichPresenceContext(m_iPad,CONTEXT_GAME_STATE_RIDING_MINECART);
