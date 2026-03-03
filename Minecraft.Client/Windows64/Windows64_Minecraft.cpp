@@ -1360,8 +1360,29 @@ int APIENTRY _tWinMain(_In_ HINSTANCE hInstance,
 				KMInput.SetCapture(true);
 			}
 		}
+		// F1 toggles the HUD, F3 toggles the debug console overlay, F11 toggles fullscreen
+		if (KMInput.IsKeyPressed(VK_F1))
+		{
+			int primaryPad = ProfileManager.GetPrimaryPad();
+			unsigned char displayHud = app.GetGameSettings(primaryPad, eGameSetting_DisplayHUD);
+			app.SetGameSettings(primaryPad, eGameSetting_DisplayHUD, displayHud ? 0 : 1);
+			app.SetGameSettings(primaryPad, eGameSetting_DisplayHand, displayHud ? 0 : 1);
+		}
+		
+		if (KMInput.IsKeyPressed(VK_F3))
+		{
+			static bool s_debugConsole = false;
+			s_debugConsole = !s_debugConsole;
+			ui.ShowUIDebugConsole(s_debugConsole);
+		}
 
-		// F11 toggles fullscreen
+#ifdef _DEBUG_MENUS_ENABLED
+		if (KMInput.IsKeyPressed(VK_F4))
+		{
+			ui.NavigateToScene(ProfileManager.GetPrimaryPad(), eUIScene_DebugOverlay, NULL, eUILayer_Debug);
+		}
+#endif
+
 		if (KMInput.IsKeyPressed(VK_F11))
 		{
 			ToggleFullscreen();

@@ -3617,7 +3617,7 @@
     <ClInclude Include="Common\UI\UIScene_Keyboard.h">
       <Filter>Common\Source Files\UI\Scenes</Filter>
     </ClInclude>
-<ClInclude Include="Common\Leaderboards\SonyLeaderboardManager.h">
+    <ClInclude Include="Common\Leaderboards\SonyLeaderboardManager.h">
       <Filter>Common\Source Files\Leaderboards</Filter>
     </ClInclude>
     <ClInclude Include="Common\Leaderboards\base64.h">

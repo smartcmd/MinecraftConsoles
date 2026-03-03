@@ -845,8 +845,9 @@ IUIScene_CreativeMenu::TabSpec::TabSpec(LPCWSTR icon, int descriptionId, int sta
 		}
 	}
 
-	m_staticPerPage = MAX_SIZE - dynamicItems;
-	m_pages = (int)ceil((float)m_staticItems / m_staticPerPage);
+	m_staticPerPage = columns;
+	const int totalRows = (m_staticItems + columns - 1) / columns;
+	m_pages = std::max<int>(1, totalRows - 5 + 1);
 }
 
 IUIScene_CreativeMenu::TabSpec::~TabSpec()

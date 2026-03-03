@@ -35,4 +35,5 @@ jobs:
       with:
         tag_name: nightly
         name: Nightly Release
+        body: Compiled with MSVC v14.44.35207 in Release mode with Whole Program Optimization, as well as `/O2 /Ot /Oi /Ob3 /GF`. (So far the floating point model is `/fp:strict` to avoid undefined behavior before we refactor for performance). Requires at least Windows 7 and DirectX 11 compatible GPU to run.
         files: LCEWindows64.zip
