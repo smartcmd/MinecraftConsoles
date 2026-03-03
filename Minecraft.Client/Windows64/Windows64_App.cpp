@@ -10,46 +10,11 @@
 #include "..\..\Minecraft.World\BiomeSource.h"
 #include "..\..\Minecraft.World\LevelType.h"
 
-wstring g_playerName;
-
 CConsoleMinecraftApp app;
-
-static void LoadPlayerName()
-{
-	if (!g_playerName.empty()) return;
-	g_playerName = L"Windows";
-
-	char exePath[MAX_PATH] = {};
-	GetModuleFileNameA(NULL, exePath, MAX_PATH);
-	char *lastSlash = strrchr(exePath, '\\');
-	if (lastSlash) *(lastSlash + 1) = '\0';
-	char filePath[MAX_PATH] = {};
-	_snprintf_s(filePath, sizeof(filePath), _TRUNCATE, "%susername.txt", exePath);
-
-	FILE *f = NULL;
-	if (fopen_s(&f, filePath, "r") == 0 && f)
-	{
-		char buf[128] = {};
-		if (fgets(buf, sizeof(buf), f))
-		{
-			int len = (int)strlen(buf);
-			while (len > 0 && (buf[len-1] == '\n' || buf[len-1] == '\r' || buf[len-1] == ' '))
-				buf[--len] = '\0';
-			if (len > 0)
-			{
-				wchar_t wbuf[128] = {};
-				mbstowcs(wbuf, buf, 127);
-				g_playerName = wbuf;
-			}
-		}
-		fclose(f);
-	}
-}
 
 CConsoleMinecraftApp::CConsoleMinecraftApp() : CMinecraftApp()
 {
 	m_bShutdown = false;
-	LoadPlayerName();
 }
 
 void CConsoleMinecraftApp::SetRichPresenceContext(int iPad, int contextId)
@@ -110,8 +75,8 @@ void CConsoleMinecraftApp::TemporaryCreateGameStart()
 	Minecraft *pMinecraft=Minecraft::GetInstance();
 	app.ReleaseSaveThumbnail();
 	ProfileManager.SetLockedProfile(0);
-	LoadPlayerName();
-	pMinecraft->user->name = g_playerName;
+	extern wchar_t g_Win64UsernameW[17];
+	pMinecraft->user->name = g_Win64UsernameW;
 	app.ApplyGameSettingsChanged(0);
 
 	////////////////////////////////////////////////////////////////////////////////////////////// From CScene_MultiGameJoinLoad::OnInit

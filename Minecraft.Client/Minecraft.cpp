@@ -1456,7 +1456,7 @@ void Minecraft::run_middle()
 						if (KMInput.ConsumeKeyPress('C'))         localplayers[i]->ullButtonsPressed |= 1LL<<MINECRAFT_ACTION_CRAFTING;
 						if (KMInput.ConsumeKeyPress(VK_F5))       localplayers[i]->ullButtonsPressed |= 1LL<<MINECRAFT_ACTION_RENDER_THIRD_PERSON;
 						// In flying mode, Shift held = sneak/descend
-						if (localplayers[i]->abilities.flying && KMInput.IsKeyDown(VK_SHIFT))
+						if (localplayers[i]->abilities.flying && KMInput.IsKeyDown(VK_SHIFT) && !ui.GetMenuDisplayed(i))
 							localplayers[i]->ullButtonsPressed |= 1LL<<MINECRAFT_ACTION_SNEAK_TOGGLE;
 					}
 #endif
