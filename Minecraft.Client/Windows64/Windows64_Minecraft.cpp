@@ -88,6 +88,9 @@ int g_iScreenHeight = 1080;
 UINT g_ScreenWidth = 1920;
 UINT g_ScreenHeight = 1080;
 
+char g_Win64Username[17] = { 0 };
+wchar_t g_Win64UsernameW[17] = { 0 };
+
 // Fullscreen toggle state
 static bool g_isFullscreen = false;
 static WINDOWPLACEMENT g_wpPrev = { sizeof(g_wpPrev) };
@@ -762,7 +765,46 @@ int APIENTRY _tWinMain(_In_ HINSTANCE hInstance,
 			//g_iScreenWidth = 960;
 			//g_iScreenHeight = 544;
 		}
+
+		// Default username will be "Windows"
+		strncpy_s(g_Win64Username, sizeof(g_Win64Username), "Windows", _TRUNCATE);
+
+		char exePath[MAX_PATH] = {};
+		GetModuleFileNameA(NULL, exePath, MAX_PATH);
+		char* lastSlash = strrchr(exePath, '\\');
+		if (lastSlash) *(lastSlash + 1) = '\0';
+
+		char filePath[MAX_PATH] = {};
+		_snprintf_s(filePath, sizeof(filePath), _TRUNCATE, "%susername.txt", exePath);
+
+		FILE* f = nullptr;
+		if (fopen_s(&f, filePath, "r") == 0 && f)
+		{
+			char buf[128] = {};
+			if (fgets(buf, sizeof(buf), f))
+			{
+				int len = (int)strlen(buf);
+				while (len > 0 && (buf[len - 1] == '\n' || buf[len - 1] == '\r' || buf[len - 1] == ' '))
+					buf[--len] = '\0';
+
+				if (len > 0)
+				{
+					strncpy_s(g_Win64Username, sizeof(g_Win64Username), buf, _TRUNCATE);
+				}
+			}
+			fclose(f);
+		}
 	}
+
+	if (g_Win64Username[0] == 0)
+	{
+		DWORD sz = 17;
+		if (!GetUserNameA(g_Win64Username, &sz))
+			strncpy_s(g_Win64Username, 17, "Player", _TRUNCATE);
+		g_Win64Username[16] = 0;
+	}
+
+	MultiByteToWideChar(CP_ACP, 0, g_Win64Username, -1, g_Win64UsernameW, 17);
 
 	// Initialize global strings
 	MyRegisterClass(hInstance);
@@ -935,6 +977,8 @@ int APIENTRY _tWinMain(_In_ HINSTANCE hInstance,
 		IQNet::m_player[i].m_isHostPlayer = (i == 0);
 		swprintf_s(IQNet::m_player[i].m_gamertag, 32, L"Player%d", i);
 	}
+	extern wchar_t g_Win64UsernameW[17];
+	wcscpy_s(IQNet::m_player[0].m_gamertag, 32, g_Win64UsernameW);
 
 	WinsockNetLayer::Initialize();
 
