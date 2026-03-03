@@ -1,3 +1,5 @@
+// Code implemented by LCEMP, credit if used on other repos
+// https://github.com/LCEMP/LCEMP
 #pragma once
 
 #ifdef _WINDOWS64
@@ -12,6 +14,7 @@
 #define WIN64_NET_DEFAULT_PORT 25565
 #define WIN64_NET_MAX_CLIENTS 7
 #define WIN64_NET_RECV_BUFFER_SIZE 65536
+#define WIN64_NET_MAX_PACKET_SIZE (4 * 1024 * 1024)
 #define WIN64_LAN_DISCOVERY_PORT 25566
 #define WIN64_LAN_BROADCAST_MAGIC 0x4D434C4E
 
@@ -63,10 +66,10 @@ public:
 	static void Shutdown();
 
 	static bool HostGame(int port);
-	static bool JoinGame(const char *ip, int port);
+	static bool JoinGame(const char* ip, int port);
 
-	static bool SendToSmallId(BYTE targetSmallId, const void *data, int dataSize);
-	static bool SendOnSocket(SOCKET sock, const void *data, int dataSize);
+	static bool SendToSmallId(BYTE targetSmallId, const void* data, int dataSize);
+	static bool SendOnSocket(SOCKET sock, const void* data, int dataSize);
 
 	static bool IsHosting() { return s_isHost; }
 	static bool IsConnected() { return s_connected; }
@@ -77,12 +80,13 @@ public:
 
 	static SOCKET GetSocketForSmallId(BYTE smallId);
 
-	static void HandleDataReceived(BYTE fromSmallId, BYTE toSmallId, unsigned char *data, unsigned int dataSize);
+	static void HandleDataReceived(BYTE fromSmallId, BYTE toSmallId, unsigned char* data, unsigned int dataSize);
 
-	static bool PopDisconnectedSmallId(BYTE *outSmallId);
+	static bool PopDisconnectedSmallId(BYTE* outSmallId);
 	static void PushFreeSmallId(BYTE smallId);
+	static void CloseConnectionBySmallId(BYTE smallId);
 
-	static bool StartAdvertising(int gamePort, const wchar_t *hostName, unsigned int gameSettings, unsigned int texPackId, unsigned char subTexId, unsigned short netVer);
+	static bool StartAdvertising(int gamePort, const wchar_t* hostName, unsigned int gameSettings, unsigned int texPackId, unsigned char subTexId, unsigned short netVer);
 	static void StopAdvertising();
 	static void UpdateAdvertisePlayerCount(BYTE count);
 	static void UpdateAdvertiseJoinable(bool joinable);

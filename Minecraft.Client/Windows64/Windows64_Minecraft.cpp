@@ -85,10 +85,11 @@ BOOL g_bWidescreen = TRUE;
 int g_iScreenWidth = 1920;
 int g_iScreenHeight = 1080;
 
-char g_Win64Username[17] = { 0 };
-wchar_t g_Win64UsernameW[17] = { 0 };
 UINT g_ScreenWidth = 1920;
 UINT g_ScreenHeight = 1080;
+
+char g_Win64Username[17] = { 0 };
+wchar_t g_Win64UsernameW[17] = { 0 };
 
 // Fullscreen toggle state
 static bool g_isFullscreen = false;
@@ -765,36 +766,41 @@ int APIENTRY _tWinMain(_In_ HINSTANCE hInstance,
 			//g_iScreenHeight = 544;
 		}
 
-		char cmdLineA[1024];
-		strncpy_s(cmdLineA, sizeof(cmdLineA), lpCmdLine, _TRUNCATE);
+		// Default username will be "Windows"
+		strncpy_s(g_Win64Username, sizeof(g_Win64Username), "Windows", _TRUNCATE);
 
-		char* nameArg = strstr(cmdLineA, "-name ");
-		if (nameArg)
+		char exePath[MAX_PATH] = {};
+		GetModuleFileNameA(NULL, exePath, MAX_PATH);
+		char* lastSlash = strrchr(exePath, '\\');
+		if (lastSlash) *(lastSlash + 1) = '\0';
+
+		char filePath[MAX_PATH] = {};
+		_snprintf_s(filePath, sizeof(filePath), _TRUNCATE, "%susername.txt", exePath);
+
+		FILE* f = nullptr;
+		if (fopen_s(&f, filePath, "r") == 0 && f)
 		{
-			nameArg += 6;
-			while (*nameArg == ' ') nameArg++;
-			char nameBuf[17];
-			int n = 0;
-			while (nameArg[n] && nameArg[n] != ' ' && n < 16) { nameBuf[n] = nameArg[n]; n++; }
-			nameBuf[n] = 0;
-			strncpy_s(g_Win64Username, 17, nameBuf, _TRUNCATE);
+			char buf[128] = {};
+			if (fgets(buf, sizeof(buf), f))
+			{
+				int len = (int)strlen(buf);
+				while (len > 0 && (buf[len - 1] == '\n' || buf[len - 1] == '\r' || buf[len - 1] == ' '))
+					buf[--len] = '\0';
+
+				if (len > 0)
+				{
+					strncpy_s(g_Win64Username, sizeof(g_Win64Username), buf, _TRUNCATE);
+				}
+			}
+			fclose(f);
 		}
 	}
 
 	if (g_Win64Username[0] == 0)
 	{
 		DWORD sz = 17;
-		static bool seeded = false;
-		if (!seeded)
-		{
-			seeded = true;
-			srand((unsigned int)time(NULL));
-		}
-
-		int r = rand() % 10000; // 0�9999
-
-		snprintf(g_Win64Username, 17, "Player%04d", r);
-
+		if (!GetUserNameA(g_Win64Username, &sz))
+			strncpy_s(g_Win64Username, 17, "Player", _TRUNCATE);
 		g_Win64Username[16] = 0;
 	}
 
