@@ -431,14 +431,6 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			return TRUE;
 		}
 		return DefWindowProc(hWnd, message, wParam, lParam);
-	case WM_SIZE:
-	{
-		// Set the screen width and height used for calculating the aspect ratio
-		g_iScreenWidth = LOWORD(lParam);
-		g_iScreenHeight = HIWORD(lParam);
-		app.DebugPrintf("width: %d, height: %d\n", g_iScreenWidth, g_iScreenHeight);
-	}
-	break;
 	default:
 		return DefWindowProc(hWnd, message, wParam, lParam);
 	}
