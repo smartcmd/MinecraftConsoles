@@ -20,16 +20,6 @@
 // #endif
 // #endif
 
-#ifdef _CROSS64
-#define AUTO_VAR(_var, _val) auto _var = _val
-#include <cstdio>
-#include <cstdlib>
-#include <unordered_map>
-#include <unordered_set>
-#include <vector>
-#include "Cross64Types.h"
-#endif
-
 #ifdef __PS3__
 
 #include "Ps3Types.h"
@@ -64,6 +54,16 @@
 #include "PSVitaTypes.h"
 #include "PSVitaStubs.h"
 #include "PSVitaMaths.h"
+#elif defined _CROSS64
+#define AUTO_VAR(_var, _val) auto _var = _val
+#include <stdio.h>
+#include <stdlib.h>
+#include <unordered_map>
+#include <unordered_set>
+#include <vector>
+#include "Cross64Types.h"
+#include "Cross64Stubs.h"
+#include "Cross64Maths.h"
 #else
 #define AUTO_VAR(_var, _val) auto _var = _val
 #include <unordered_map>

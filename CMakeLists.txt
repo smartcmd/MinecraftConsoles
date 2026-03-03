@@ -156,8 +156,9 @@ elseif(BACKEND STREQUAL "Cross64")
   )
 
   target_include_directories(MinecraftClientCross64 PRIVATE
-    "${CROSS64_DIR}"
     "${CROSS64_DIR}/Cross64Extras/"
+    
+    "${CROSS64_DIR}"
     "${CROSS64_DIR}/4JLibs/inc"
     "${CROSS64_DIR}/Glad/include"
 
@@ -188,21 +189,25 @@ elseif(BACKEND STREQUAL "Cross64")
   target_link_libraries(MinecraftClientCross64 PRIVATE
     MinecraftWorld
     glfw
+    glm::glm
+    OpenGL:GL
   )
+
+  find_package(OpenGL REQUIRED)
 
   if(APPLE)
     target_link_libraries(MinecraftClientCross64 PRIVATE
-      "-framework OpenGL"
+      "-framework Cocoa" 
+      "-framework IOKit" 
+      "-framework CoreVideo"
     )
   elseif(UNIX)
-    find_package(OpenGL REQUIRED)
     target_link_libraries(MinecraftClientCross64 PRIVATE 
-      OpenGL::GL glm::glm pthread dl
+      pthread dl
     )
   elseif(WIN32)
-    find_package(OpenGL REQUIRED)
     target_link_libraries(MinecraftClientCross64 PRIVATE 
-      OpenGL::GL glm::glm wsock32
+      wsock32
     )
   endif()
 

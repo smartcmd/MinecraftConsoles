@@ -4,7 +4,7 @@
 #include <string>
 #include <functional>
 
-#include "..\..\Minecraft.Client\SkinBox.h"
+#include "../../Minecraft.Client/SkinBox.h"
 
 
 #include <vector>

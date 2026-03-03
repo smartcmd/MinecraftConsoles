@@ -59,10 +59,6 @@ typedef XNKID SessionID;
 typedef XUID GameSessionUID;
 #endif
 
-#ifdef _CROSS64
-#include "Cross64Types.h"
-#endif
-
 #ifdef __PS3__
 #include <cell/l10n.h>
 #include <cell/pad.h>
@@ -73,12 +69,9 @@ typedef XUID GameSessionUID;
 #include <sysutil/sysutil_common.h>
 #include <sysutil/sysutil_savedata.h>
 #include <sysutil/sysutil_sysparam.h>
-
-
 #include "Ps3Types.h"
 #include "Ps3Stubs.h"
 #include "PS3Maths.h"
-
 #elif defined __ORBIS__
 #include <unordered_map>
 #include <unordered_set>
@@ -94,10 +87,19 @@ typedef XUID GameSessionUID;
 #include "PSVitaTypes.h"
 #include "PSVitaStubs.h"
 #include "PSVitaMaths.h"
+#elif defined _CROSS64
+#include <unordered_map>
+#include <unordered_set>
+#include <vector>
+#include "Cross64Types.h"
+#include "Cross64Stubs.h"
+#include "Cross64Maths.h"
 #else
 #include <unordered_map>
 #include <unordered_set>
+#if ( defined _XBOX || defined _WINDOWS64  || defined _DURANGO )
 #include <sal.h>
+#endif 
 #include <vector>
 #endif //__PS3__
 
