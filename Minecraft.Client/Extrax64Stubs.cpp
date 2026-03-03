@@ -200,7 +200,7 @@ DWORD IQNetPlayer::GetCurrentRtt() { return 0; }
 bool IQNetPlayer::IsHost() { return m_isHostPlayer; }
 bool IQNetPlayer::IsGuest() { return false; }
 bool IQNetPlayer::IsLocal() { return !m_isRemote; }
-PlayerUID IQNetPlayer::GetXuid() { return (PlayerUID)(0xe000d45248242f2e + m_smallId); }
+PlayerUID IQNetPlayer::GetXuid() { return (PlayerUID)(0xe000d45248242f2e + m_smallId); } // todo: restore to INVALID_XUID once saves support this
 LPCWSTR IQNetPlayer::GetGamertag() { return m_gamertag; }
 int IQNetPlayer::GetSessionIndex() { return m_smallId; }
 bool IQNetPlayer::IsTalking() { return false; }
