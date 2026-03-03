@@ -14,7 +14,7 @@ if(NOT DEFINED CACHE{BACKEND})
   endif()
 endif()
 
-message(STATUS "Building ${BACKEND}.")
+message(STATUS "[MinecraftConsoles] -- Building ${BACKEND}.")
 
 if(BACKEND STREQUAL "Windows64")
   enable_language(C CXX ASM_MASM)
@@ -40,8 +40,9 @@ target_include_directories(MinecraftWorld PRIVATE
   "${CMAKE_CURRENT_SOURCE_DIR}/Minecraft.World/x64headers"
 )
 target_compile_definitions(MinecraftWorld PRIVATE
-  $<$<CONFIG:Debug>:_LARGE_WORLDS;_DEBUG_MENUS_ENABLED;_DEBUG;_LIB;_CRT_NON_CONFORMING_SWPRINTFS;_CRT_SECURE_NO_WARNINGS;_WINDOWS64>
-  $<$<NOT:$<CONFIG:Debug>>:_LARGE_WORLDS;_DEBUG_MENUS_ENABLED;_LIB;_CRT_NON_CONFORMING_SWPRINTFS;_CRT_SECURE_NO_WARNINGS;_WINDOWS64>
+  $<$<CONFIG:Debug>:_LARGE_WORLDS;_DEBUG_MENUS_ENABLED;_DEBUG;_LIB;_CRT_NON_CONFORMING_SWPRINTFS;_CRT_SECURE_NO_WARNINGS;>
+  $<$<NOT:$<CONFIG:Debug>>:_LARGE_WORLDS;_DEBUG_MENUS_ENABLED;_LIB;_CRT_NON_CONFORMING_SWPRINTFS;_CRT_SECURE_NO_WARNINGS;>
+  $<$<BOOL:${WIN32}>:_WINDOWS64>
 )
 if(MSVC)
   target_compile_options(MinecraftWorld PRIVATE
@@ -136,6 +137,9 @@ if(BACKEND STREQUAL "Windows64")
 elseif(BACKEND STREQUAL "Cross64")
   include(FetchContent)
 
+  FetchContent_Declare(glm GIT_REPOSITORY https://github.com/g-truc/glm.git GIT_TAG 1.0.3)
+  FetchContent_MakeAvailable(glm)
+
   FetchContent_Declare(glfw GIT_REPOSITORY https://github.com/glfw/glfw.git GIT_TAG 3.4)
   set(GLFW_BUILD_DOCS OFF CACHE BOOL "" FORCE)
   set(GLFW_BUILD_TESTS OFF CACHE BOOL "" FORCE)
@@ -153,11 +157,17 @@ elseif(BACKEND STREQUAL "Cross64")
 
   target_include_directories(MinecraftClientCross64 PRIVATE
     "${CROSS64_DIR}"
+    "${CROSS64_DIR}/Cross64Extras/"
     "${CROSS64_DIR}/4JLibs/inc"
     "${CROSS64_DIR}/Glad/include"
 
     "${CMAKE_CURRENT_SOURCE_DIR}/Minecraft.Client"
     "${CMAKE_CURRENT_SOURCE_DIR}/Minecraft.World/x64headers"
+  )
+
+  target_compile_definitions(MinecraftClientCross64 PRIVATE
+    $<$<CONFIG:Debug>:_LARGE_WORLDS;_DEBUG_MENUS_ENABLED;_DEBUG;_CRT_NON_CONFORMING_SWPRINTFS;_CRT_SECURE_NO_WARNINGS;_CROSS64>
+    $<$<NOT:$<CONFIG:Debug>>:_LARGE_WORLDS;_DEBUG_MENUS_ENABLED;_CRT_NON_CONFORMING_SWPRINTFS;_CRT_SECURE_NO_WARNINGS;_CROSS64>
   )
 
   if(MSVC)
@@ -187,12 +197,12 @@ elseif(BACKEND STREQUAL "Cross64")
   elseif(UNIX)
     find_package(OpenGL REQUIRED)
     target_link_libraries(MinecraftClientCross64 PRIVATE 
-      OpenGL::GL pthread dl
+      OpenGL::GL glm::glm pthread dl
     )
   elseif(WIN32)
     find_package(OpenGL REQUIRED)
     target_link_libraries(MinecraftClientCross64 PRIVATE 
-      OpenGL::GL wsock32
+      OpenGL::GL glm::glm wsock32
     )
   endif()
 

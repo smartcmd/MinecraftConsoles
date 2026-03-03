@@ -59,6 +59,10 @@ typedef XNKID SessionID;
 typedef XUID GameSessionUID;
 #endif
 
+#ifdef _CROSS64
+#include "Cross64Types.h"
+#endif
+
 #ifdef __PS3__
 #include <cell/l10n.h>
 #include <cell/pad.h>
