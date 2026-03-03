@@ -1606,7 +1606,7 @@ bool UIController::NavigateBack(int iPad, bool forceUsePad, EUIScene eScene, EUI
 	bool navComplete = false;
 	if( app.GetGameStarted() )
 	{
-		bool navComplete = m_groups[(int)eUIGroup_Fullscreen]->NavigateBack(iPad, eScene, eLayer);
+		navComplete = m_groups[(int)eUIGroup_Fullscreen]->NavigateBack(iPad, eScene, eLayer);
 
 		if(!navComplete && ( iPad != 255 ) && ( iPad >= 0 ) )
 		{
@@ -1632,6 +1632,11 @@ bool UIController::NavigateBack(int iPad, bool forceUsePad, EUIScene eScene, EUI
 		navComplete = m_groups[(int)eUIGroup_Fullscreen]->NavigateBack(iPad, eScene, eLayer);
 		if(!m_groups[(int)eUIGroup_Fullscreen]->GetMenuDisplayed()) SetMenuDisplayed(XUSER_INDEX_ANY,false);
 	}
+
+	if (navComplete) {
+		KMInput.ConsumeMousePress(0);
+	}
+
 	return navComplete;
 }
 

@@ -379,7 +379,7 @@ void LocalPlayer::aiStep()
 	{
 		//            yd = 0;
 		// 4J - note that the 0.42 added for going down is to make it match with what happens when you jump - jumping itself adds 0.42 to yd in Mob::jumpFromGround
-		if (ullButtonsPressed & (1LL<<MINECRAFT_ACTION_SNEAK_TOGGLE) ) yd -= ( 0.15 + 0.42 );		// 4J - for flying mode, MINECRAFT_ACTION_SNEAK_TOGGLE isn't a toggle but just indicates that this button is down
+		if (ullButtonsPressed & (1LL<<MINECRAFT_ACTION_SNEAK_TOGGLE) && !ui.GetMenuDisplayed(m_iPad)) yd -= ( 0.15 + 0.42 );		// 4J - for flying mode, MINECRAFT_ACTION_SNEAK_TOGGLE isn't a toggle but just indicates that this button is down
 		if (input->jumping)
 		{
 			noJumpDelay = 0;
@@ -1519,7 +1519,7 @@ bool LocalPlayer::handleMouseClick(int button)
 {
 	bool returnItemPlaced = false;
 
-	if (button == 0 && missTime > 0) return false;
+ 	if (button == 0 && missTime > 0) return false;
 	if (button == 0) 
 	{
 		//app.DebugPrintf("handleMouseClick - Player %d is swinging\n",GetXboxPad());
