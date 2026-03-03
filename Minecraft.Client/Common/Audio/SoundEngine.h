@@ -4,6 +4,12 @@ class Options;
 using namespace std;
 #include "..\..\Minecraft.World\SoundTypes.h"
 
+#include "miniaudio.h"
+
+#ifdef _WINDOWS64
+#include "BinkDecoder.h"
+#endif
+
 enum eMUSICFILES
 {
 	eStream_Overworld_Calm1 = 0,
@@ -76,7 +82,11 @@ enum MUSIC_STREAMSTATE
 
 typedef struct
 {
+	#ifndef _WINDOWS64
 	F32 x,y,z,volume,pitch;
+	#else
+	float x,y,z,volume,pitch;
+	#endif
 	int iSound;
 	bool bIs3D;	
 	bool bUseSoundsPitchVal;	
@@ -85,6 +95,17 @@ typedef struct
 #endif
 }
 AUDIO_INFO;
+
+#ifdef _WINDOWS64
+struct MiniAudioSound
+{
+    ma_sound sound;
+    AUDIO_INFO info;
+    bool active;
+};
+
+extern std::vector<MiniAudioSound*> m_activeSounds;
+#endif
 
 class SoundEngine : public ConsoleSoundEngine
 {
@@ -112,7 +133,11 @@ public:
 	int getMusicID(int iDomain);
 	int getMusicID(const wstring& name);
 	void SetStreamingSounds(int iOverworldMin, int iOverWorldMax, int iNetherMin, int iNetherMax, int iEndMin, int iEndMax, int iCD1);
+#ifndef _WINDOWS64
 	void updateMiles();			// AP added so Vita can update all the Miles functions during the mixer callback
+#else
+	void updateMiniAudio();
+#endif
 	void playMusicUpdate();
 
 private:
@@ -126,10 +151,17 @@ private:
 	
 	int GetRandomishTrack(int iStart,int iEnd);
 
-	HMSOUNDBANK m_hBank;
-	HDIGDRIVER m_hDriver;
-	HSTREAM m_hStream;
-
+	#ifdef _WINDOWS64
+		ma_engine m_engine;
+		ma_engine_config m_engineConfig;
+		ma_sound m_musicStream;
+		bool m_musicStreamActive;
+		BinkDecoder *binkaDecoder;
+	#else
+		HMSOUNDBANK m_hBank;
+		HDIGDRIVER m_hDriver;
+		HSTREAM m_hStream;
+	#endif
 	static char m_szSoundPath[];
 	static char m_szMusicPath[];
 	static char m_szRedistName[];
