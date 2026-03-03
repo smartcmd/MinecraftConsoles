@@ -42,7 +42,8 @@ target_include_directories(MinecraftWorld PRIVATE
 target_compile_definitions(MinecraftWorld PRIVATE
   $<$<CONFIG:Debug>:_LARGE_WORLDS;_DEBUG_MENUS_ENABLED;_DEBUG;_LIB;_CRT_NON_CONFORMING_SWPRINTFS;_CRT_SECURE_NO_WARNINGS;>
   $<$<NOT:$<CONFIG:Debug>>:_LARGE_WORLDS;_DEBUG_MENUS_ENABLED;_LIB;_CRT_NON_CONFORMING_SWPRINTFS;_CRT_SECURE_NO_WARNINGS;>
-  $<$<BOOL:${WIN32}>:_WINDOWS64>
+  $<$<STREQUAL:${BACKEND},Windows64>:_WINDOWS64>
+  $<$<STREQUAL:${BACKEND},Cross64>:_CROSS64>
 )
 if(MSVC)
   target_compile_options(MinecraftWorld PRIVATE
@@ -155,6 +156,8 @@ elseif(BACKEND STREQUAL "Cross64")
     ${CROSS64_SOURCES}
   )
 
+  target_include_directories(MinecraftWorld PRIVATE "${CROSS64_DIR}/Cross64Extras")
+
   target_include_directories(MinecraftClientCross64 PRIVATE
     "${CROSS64_DIR}/Cross64Extras/"
     
@@ -165,6 +168,8 @@ elseif(BACKEND STREQUAL "Cross64")
     "${CMAKE_CURRENT_SOURCE_DIR}/Minecraft.Client"
     "${CMAKE_CURRENT_SOURCE_DIR}/Minecraft.World/x64headers"
   )
+
+  
 
   target_compile_definitions(MinecraftClientCross64 PRIVATE
     $<$<CONFIG:Debug>:_LARGE_WORLDS;_DEBUG_MENUS_ENABLED;_DEBUG;_CRT_NON_CONFORMING_SWPRINTFS;_CRT_SECURE_NO_WARNINGS;_CROSS64>
