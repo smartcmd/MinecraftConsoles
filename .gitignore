@@ -423,7 +423,7 @@ Minecraft.World/x64_Debug/
 Minecraft.World/Release/
 Minecraft.World/x64_Release/
 
-build/*
+build/
 
 # Existing build output files
 !x64/**/Effects.msscmp

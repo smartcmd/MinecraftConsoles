@@ -1,16 +1,23 @@
 cmake_minimum_required(VERSION 3.24)
 
-project(MinecraftConsoles LANGUAGES C CXX ASM_MASM)
+project(MinecraftConsoles)
 
-if(NOT WIN32)
-  message(FATAL_ERROR "This CMake build currently supports Windows only.")
+set(BACKEND "Windows64" CACHE STRING "Backend to compile. Windows64 or Cross64")
+set_property(CACHE BACKEND PROPERTY STRINGS "Windows64" "Cross64")
+
+if(BACKEND STREQUAL "Windows64")
+  enable_language(C CXX ASM_MASM)
+else()
+  enable_language(C CXX)
 endif()
 
 if(NOT CMAKE_SIZEOF_VOID_P EQUAL 8)
   message(FATAL_ERROR "Use a 64-bit generator/toolchain (x64).")
 endif()
 
-set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
+if(MSVC)
+  set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
+endif()
 
 include("${CMAKE_CURRENT_SOURCE_DIR}/cmake/WorldSources.cmake")
 include("${CMAKE_CURRENT_SOURCE_DIR}/cmake/ClientSources.cmake")
@@ -33,6 +40,15 @@ if(MSVC)
     $<$<COMPILE_LANGUAGE:C,CXX>:/MP>
     $<$<COMPILE_LANGUAGE:CXX>:/EHsc>
   )
+endif()
+
+if(BACKEND STREQUAL "Windows64")
+  if(NOT WIN32)
+    message(FATAL_ERROR "The Windows64 backend currently only supports windows.")
+  endif()
+elseif(BACKEND STREQUAL "Cross64")
+else()
+  message(FATAL_ERROR "Invalid Backend.")
 endif()
 
 add_executable(MinecraftClient WIN32 ${MINECRAFT_CLIENT_SOURCES})
