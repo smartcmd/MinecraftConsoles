@@ -1272,7 +1272,15 @@ int APIENTRY _tWinMain(_In_ HINSTANCE hInstance,
 			}
 		}
 
-		// F3 toggles the debug console overlay, F11 toggles fullscreen
+		// F1 toggles the HUD, F3 toggles the debug console overlay, F11 toggles fullscreen
+		if (KMInput.IsKeyPressed(VK_F1))
+		{
+			int primaryPad = ProfileManager.GetPrimaryPad();
+			unsigned char displayHud = app.GetGameSettings(primaryPad, eGameSetting_DisplayHUD);
+			app.SetGameSettings(primaryPad, eGameSetting_DisplayHUD, displayHud ? 0 : 1);
+			app.SetGameSettings(primaryPad, eGameSetting_DisplayHand, displayHud ? 0 : 1);
+		}
+		
 		if (KMInput.IsKeyPressed(VK_F3))
 		{
 			static bool s_debugConsole = false;

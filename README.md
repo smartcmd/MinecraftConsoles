@@ -61,6 +61,7 @@ This feature is based on [LCEMP](https://github.com/LCEMP/LCEMP/)
 - **Select Item**: `Mouse Wheel` or keys `1` to `9`
 - **Accept or Decline Tutorial hints**: `Enter` to accept and `B` to decline
 - **Game Info (Player list and Host Options)**: `TAB`
+- **Toggle HUD**: `F1`
 - **Toggle Debug Info**: `F3`
 - **Open Debug Overlay**: `F4`
 
