@@ -11,7 +11,7 @@ on:
 
 jobs:
   build:
-    name: Build Windows64
+    name: Build WindowsArm
     runs-on: windows-latest
 
     steps:
@@ -22,10 +22,10 @@ jobs:
       uses: microsoft/setup-msbuild@v2
     
     - name: Build
-      run: MSBuild.exe MinecraftConsoles.sln /p:Configuration=Release /p:Platform="Windows64"
+      run: MSBuild.exe MinecraftConsoles.sln /p:Configuration=Release /p:Platform="ARM64EC"
 
     - name: Zip Build
-      run: 7z a -r LCEWindows64.zip ./x64/Release/*
+      run: 7z a -r LCEWindowsARM.zip ./x64/Release/*
 
     - name: Update release
       uses: andelf/nightly-release@main
@@ -35,4 +35,4 @@ jobs:
       with:
         tag_name: nightly
         name: Nightly Release
-        files: LCEWindows64.zip
+        files: LCEWindowsARM.zip
