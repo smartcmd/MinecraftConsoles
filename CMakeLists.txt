@@ -36,8 +36,7 @@ list(TRANSFORM MINECRAFT_WORLD_SOURCES PREPEND "${CMAKE_CURRENT_SOURCE_DIR}/Mine
 
 add_library(MinecraftWorld STATIC ${MINECRAFT_WORLD_SOURCES})
 target_include_directories(MinecraftWorld PRIVATE
-  "${CMAKE_CURRENT_SOURCE_DIR}/Minecraft.World"
-  "${CMAKE_CURRENT_SOURCE_DIR}/Minecraft.World/x64headers"
+  "${CMAKE_CURRENT_SOURCE_DIR}"
 )
 target_compile_definitions(MinecraftWorld PRIVATE
   $<$<CONFIG:Debug>:_LARGE_WORLDS;_DEBUG_MENUS_ENABLED;_DEBUG;_LIB;_CRT_NON_CONFORMING_SWPRINTFS;_CRT_SECURE_NO_WARNINGS;>
@@ -83,7 +82,7 @@ if(BACKEND STREQUAL "Windows64")
 
   add_executable(MinecraftClient WIN32 ${MINECRAFT_CLIENT_SOURCES})
   target_include_directories(MinecraftClient PRIVATE
-    "${CMAKE_CURRENT_SOURCE_DIR}/Minecraft.Client"
+    "${CMAKE_CURRENT_SOURCE_DIR}"
     "${CMAKE_CURRENT_SOURCE_DIR}/Minecraft.Client/Windows64/Iggy/include"
     "${CMAKE_CURRENT_SOURCE_DIR}/Minecraft.Client/Xbox/Sentient/Include"
     "${CMAKE_CURRENT_SOURCE_DIR}/Minecraft.World/x64headers"
