@@ -11,8 +11,6 @@
 
 #define MULTITHREAD_ENABLE
 
-typedef unsigned char byte;
-
 const int XUSER_INDEX_ANY = 255;
 const int XUSER_INDEX_FOCUS = 254;
 
@@ -23,7 +21,6 @@ const int MINECRAFT_NET_MAX_PLAYERS = 4;
 const int XUSER_MAX_COUNT = 4;
 const int MINECRAFT_NET_MAX_PLAYERS = 8;
 #endif
-
 
 
 #ifdef __ORBIS__
@@ -417,7 +414,7 @@ const int QNET_SENDDATA_SEQUENTIAL = 0;
 struct XRNM_SEND_BUFFER
 {
 	DWORD dwDataSize;
-	byte *pbyData;
+	BYTE *pbyData;
 };
 
 const int D3DBLEND_CONSTANTALPHA = 0;
