@@ -77,7 +77,7 @@ function(remove_directory_if_exists rel_path)
   endif()
 endfunction()
 
-copy_tree_if_exists("Durango/Sound" "Windows64/Sound")
+#copy_tree_if_exists("Durango/Sound" "Windows64/Sound")
 copy_tree_if_exists("music" "music")
 copy_tree_if_exists("Windows64/GameHDD" "Windows64/GameHDD")
 copy_file_if_exists("Minecraft.Client/Common/Media/MediaWindows64.arc" "Common/Media/MediaWindows64.arc")

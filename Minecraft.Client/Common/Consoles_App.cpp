@@ -303,6 +303,8 @@ void CMinecraftApp::DebugPrintf(int user, const char *szFormat, ...)
 	}
 #endif
 #endif
+
+	printf("%s", buf);
 }
 
 LPCWSTR CMinecraftApp::GetString(int iID)

@@ -105,6 +105,8 @@ struct MiniAudioSound
 };
 
 extern std::vector<MiniAudioSound*> m_activeSounds;
+
+bool FileExists(const char* path);
 #endif
 
 class SoundEngine : public ConsoleSoundEngine

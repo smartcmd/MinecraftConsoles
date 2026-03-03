@@ -22,6 +22,12 @@
 #include <vector>
 #include <memory>
 #include <mutex>
+
+bool FileExists(const char* filename)
+{
+    DWORD attrib = GetFileAttributesA(filename);
+	return (attrib != INVALID_FILE_ATTRIBUTES && !(attrib & FILE_ATTRIBUTE_DIRECTORY));
+}
 #endif
 
 #ifdef __ORBIS__
@@ -903,96 +909,138 @@ void SoundEngine::GetSoundName(char *szSoundName,int iSound)
 /////////////////////////////////////////////
 void SoundEngine::play(int iSound, float x, float y, float z, float volume, float pitch)
 {
-	U8 szSoundName[256];
+    U8 szSoundName[256];
 
-	if(iSound==-1)
-	{
-		app.DebugPrintf(6,"PlaySound with sound of -1 !!!!!!!!!!!!!!!\n");
-		return;
-	}
+    if (iSound == -1)
+    {
+        app.DebugPrintf(6, "PlaySound with sound of -1 !!!!!!!!!!!!!!!\n");
+        return;
+    }
 
-	// AP removed old counting system. Now relying on Miles' Play Count Limit
-	/*	// if we are already playing loads of this sounds ignore this one
-	if(CurrentSoundsPlaying[iSound+eSFX_MAX]>MAX_SAME_SOUNDS_PLAYING) 
-	{
-	// 		wstring name = wchSoundNames[iSound];
-	// 		char *SoundName = (char *)ConvertSoundPathToName(name);
-	// 		app.DebugPrintf("Too many %s sounds playing!\n",SoundName);
-	return;
-	}*/
-
-	//if (iSound != eSoundType_MOB_IRONGOLEM_WALK) return;
-
-	// build the name
-	strcpy((char *)szSoundName,"Minecraft/");
+    strcpy((char*)szSoundName, "Minecraft/");
 
 #ifdef DISTORTION_TEST
-	wstring name = wchSoundNames[eSoundType_MOB_ENDERDRAGON_GROWL];
+    wstring name = wchSoundNames[eSoundType_MOB_ENDERDRAGON_GROWL];
 #else
-	wstring name = wchSoundNames[iSound];
+    wstring name = wchSoundNames[iSound];
 #endif
 
-	char *SoundName = (char *)ConvertSoundPathToName(name);
-	strcat((char *)szSoundName,SoundName);
+    char* SoundName = (char*)ConvertSoundPathToName(name);
+    strcat((char*)szSoundName, SoundName);
 
-	app.DebugPrintf(6,"PlaySound - %d - %s - %s (%f %f %f, vol %f, pitch %f)\n",iSound, SoundName, szSoundName,x,y,z,volume,pitch);
-
-	AUDIO_INFO AudioInfo;
-	AudioInfo.x=x;
-	AudioInfo.y=y;
-	AudioInfo.z=z;
-	AudioInfo.volume=volume;
-	AudioInfo.pitch=pitch;
-	AudioInfo.bIs3D=true;
-	AudioInfo.bUseSoundsPitchVal=false;
-	AudioInfo.iSound=iSound+eSFX_MAX;
-#ifdef _DEBUG
-	strncpy(AudioInfo.chName,(char *)szSoundName,64);
-#endif
+    app.DebugPrintf(6,
+        "PlaySound - %d - %s - %s (%f %f %f, vol %f, pitch %f)\n",
+        iSound, SoundName, szSoundName, x, y, z, volume, pitch);
 
 #ifdef _WINDOWS64
-	MiniAudioSound* s = new MiniAudioSound();
-	memset(&s->info, 0, sizeof(AUDIO_INFO));
+
+    char basePath[256];
+    sprintf_s(basePath, "Windows64Media/Sound/%s", (char*)szSoundName);
+
+    char finalPath[256];
+    sprintf_s(finalPath, "%s.wav", basePath);
+
+    if (!FileExists(finalPath))
+    {
+        int count = 0;
+
+        for (int i = 1; i < 32; i++)
+        {
+            char numberedFolder[256];
+            sprintf_s(numberedFolder, "%s%d", basePath, i);
+
+            DWORD attr = GetFileAttributesA(numberedFolder);
+
+            if (attr != INVALID_FILE_ATTRIBUTES &&
+                (attr & FILE_ATTRIBUTE_DIRECTORY))
+            {
+                count++;
+            }
+            else
+            {
+                break;
+            }
+        }
+
+        char chosenFolder[256];
+
+        if (count == 0)
+        {
+            sprintf_s(chosenFolder, "%s", basePath);
+        }
+        else
+        {
+            int chosen = (rand() % count) + 1;
+            sprintf_s(chosenFolder, "%s%d", basePath, chosen);
+        }
+
+        char searchPattern[256];
+        sprintf_s(searchPattern, "%s\\*.wav", chosenFolder);
+
+        WIN32_FIND_DATAA findData;
+        HANDLE hFind = FindFirstFileA(searchPattern, &findData);
+
+        if (hFind == INVALID_HANDLE_VALUE)
+        {
+            sprintf_s(searchPattern, "%s\\*.mp3", chosenFolder);
+            hFind = FindFirstFileA(searchPattern, &findData);
+
+            if (hFind == INVALID_HANDLE_VALUE)
+            {
+                printf("No .wav or .mp3 files found in %s\n", chosenFolder);
+                return;
+            }
+        }
+
+        sprintf_s(finalPath, "%s\\%s", chosenFolder, findData.cFileName);
+        FindClose(hFind);
+    }
+
+    MiniAudioSound* s = new MiniAudioSound();
+    memset(&s->info, 0, sizeof(AUDIO_INFO));
 
 	s->info.x = x;
-	s->info.y = y;
-	s->info.z = z;
-	s->info.volume = volume;
-	s->info.pitch = pitch;
-	s->info.bIs3D = true;
-	s->info.bUseSoundsPitchVal = false;
-	s->info.iSound = iSound + eSFX_MAX;
+    s->info.y = y;
+   	s->info.z = z;
+    s->info.volume = volume;
+    s->info.pitch = pitch;
+    s->info.bIs3D = true;
+    s->info.bUseSoundsPitchVal = false;
+    s->info.iSound = iSound + eSFX_MAX;
 
-	if (ma_sound_init_from_file(
-			&m_engine,
-			(const char*)szSoundName,
-			MA_SOUND_FLAG_ASYNC,
-			NULL,
-			NULL,
-			&s->sound) != MA_SUCCESS)
-	{
-		delete s;
-		return;
-	}
+    if (ma_sound_init_from_file(
+            &m_engine,
+            finalPath,
+            MA_SOUND_FLAG_ASYNC,
+            NULL,
+            NULL,
+            &s->sound) != MA_SUCCESS)
+    {
+        app.DebugPrintf("Failed to initialize sound from file: %s\n", finalPath);
+        delete s;
+        return;
+    }
 
-	ma_sound_set_spatialization_enabled(&s->sound, MA_TRUE);
+    ma_sound_set_spatialization_enabled(&s->sound, MA_TRUE);
 
-	float finalVolume = volume * m_MasterEffectsVolume;
-	if (finalVolume > 1.0f)
-		finalVolume = 1.0f;
+    float finalVolume = volume * m_MasterEffectsVolume;
+    if (finalVolume > 1.0f)
+        finalVolume = 1.0f;
 
-	ma_sound_set_volume(&s->sound, finalVolume);
-	ma_sound_set_pitch(&s->sound, pitch);
-	ma_sound_set_position(&s->sound, x, y, z);
+    ma_sound_set_volume(&s->sound, finalVolume);
+    ma_sound_set_pitch(&s->sound, pitch);
+    ma_sound_set_position(&s->sound, x, y, z);
 
-	ma_sound_start(&s->sound);
+    ma_sound_start(&s->sound);
 
-	m_activeSounds.push_back(s);
+    m_activeSounds.push_back(s);
 
 #else
-	S32 token = AIL_enqueue_event_start();
-	AIL_enqueue_event_buffer(&token, &AudioInfo, sizeof(AUDIO_INFO), 0);
-	AIL_enqueue_event_end_named(token, (char *)szSoundName);
+
+    S32 token = AIL_enqueue_event_start();
+    AIL_enqueue_event_buffer(&token, &AudioInfo, sizeof(AUDIO_INFO), 0);
+    AIL_enqueue_event_end_named(token, (char*)szSoundName);
+
 #endif
 }
 
@@ -1021,6 +1069,27 @@ void SoundEngine::playUI(int iSound, float volume, float pitch)
     strcat((char*)szSoundName, SoundName);
 
 #ifdef _WINDOWS64
+
+    char basePath[256];
+    sprintf_s(basePath, "Windows64Media/Sound/Minecraft/UI/%s", ConvertSoundPathToName(name));
+
+    char finalPath[256];
+    sprintf_s(finalPath, "%s.wav", basePath);
+
+    if (!FileExists(finalPath))
+    {
+        sprintf_s(finalPath, "%s.wav", basePath);
+		if (!FileExists(finalPath))
+		{
+			sprintf_s(finalPath, "%s.mp3", basePath);
+			if (!FileExists(finalPath))
+			{
+				app.DebugPrintf("No sound file found for UI sound: %s\n", basePath);
+				return;
+			}
+		}
+    }
+
     MiniAudioSound* s = new MiniAudioSound();
     memset(&s->info, 0, sizeof(AUDIO_INFO));
 
@@ -1031,13 +1100,14 @@ void SoundEngine::playUI(int iSound, float volume, float pitch)
 
     if (ma_sound_init_from_file(
             &m_engine,
-            (const char*)szSoundName,
+            finalPath,
             MA_SOUND_FLAG_ASYNC,
             NULL,
             NULL,
             &s->sound) != MA_SUCCESS)
     {
         delete s;
+        app.DebugPrintf("ma_sound_init_from_file failed: %s\n", finalPath);
         return;
     }
 
@@ -1055,6 +1125,7 @@ void SoundEngine::playUI(int iSound, float volume, float pitch)
     m_activeSounds.push_back(s);
 
 #else
+
     AUDIO_INFO AudioInfo;
     memset(&AudioInfo, 0, sizeof(AUDIO_INFO));
 
@@ -1922,49 +1993,41 @@ void SoundEngine::playMusicUpdate()
 			// Music disc playing - if it's a 3D stream, then set the position - we don't have any streaming audio in the world that moves, so this isn't
 			// required unless we have more than one listener, and are setting the listening position to the origin and setting a fake position
 			// for the sound down  the z axis
-			if(m_StreamingAudioInfo.bIs3D)
+			if (m_StreamingAudioInfo.bIs3D && m_validListenerCount > 1)
 			{
-				if(m_validListenerCount>1)
+				int iClosestListener = 0;
+				float fClosestDist = 1e6f;
+
+				for (int i = 0; i < MAX_LOCAL_PLAYERS; i++)
 				{
-					float fClosest=10000.0f;
-					int iClosestListener=0;
-					float fClosestX=0.0f,fClosestY=0.0f,fClosestZ=0.0f,fDist;
-
-					// need to calculate the distance from the sound to the nearest listener - use Manhattan Distance as the decision
-					for( int i = 0; i < MAX_LOCAL_PLAYERS; i++ )
+					if (m_ListenerA[i].bValid)
 					{
-						if( m_ListenerA[i].bValid )
+						float dx = m_StreamingAudioInfo.x - m_ListenerA[i].vPosition.x;
+						float dy = m_StreamingAudioInfo.y - m_ListenerA[i].vPosition.y;
+						float dz = m_StreamingAudioInfo.z - m_ListenerA[i].vPosition.z;
+						float dist = sqrtf(dx*dx + dy*dy + dz*dz);
+
+						if (dist < fClosestDist)
 						{
-							float x,y,z;
-
-							x=fabs(m_ListenerA[i].vPosition.x-m_StreamingAudioInfo.x);
-							y=fabs(m_ListenerA[i].vPosition.y-m_StreamingAudioInfo.y);
-							z=fabs(m_ListenerA[i].vPosition.z-m_StreamingAudioInfo.z);
-							fDist=x+y+z;
-
-							if(fDist<fClosest)
-							{
-								fClosest=fDist;
-								fClosestX=x;
-								fClosestY=y;
-								fClosestZ=z;
-								iClosestListener=i;
-							}
+							fClosestDist = dist;
+							iClosestListener = i;
 						}
 					}
+				}
 
-					fDist = sqrtf((fClosestX*fClosestX) + (fClosestY*fClosestY) + (fClosestZ*fClosestZ));
+				float relX = m_StreamingAudioInfo.x - m_ListenerA[iClosestListener].vPosition.x;
+				float relY = m_StreamingAudioInfo.y - m_ListenerA[iClosestListener].vPosition.y;
+				float relZ = m_StreamingAudioInfo.z - m_ListenerA[iClosestListener].vPosition.z;
 
 #ifdef _WINDOWS64
-					if (m_musicStreamActive)
-					{
-						ma_sound_set_position(&m_musicStream, 0.0f, 0.0f, fDist);
-					}
-#else
-					HSAMPLE hSample = AIL_stream_sample_handle(m_hStream);
-					AIL_set_sample_3D_position(hSample, 0, 0, fDist);
-#endif
+				if (m_musicStreamActive)
+				{
+					ma_sound_set_position(&m_musicStream, relX, relY, relZ);
 				}
+#else
+				HSAMPLE hSample = AIL_stream_sample_handle(m_hStream);
+				AIL_set_sample_3D_position(hSample, relX, relY, relZ);
+#endif
 			}
 		}
 
