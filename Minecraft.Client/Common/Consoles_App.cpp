@@ -9579,6 +9579,61 @@ void CMinecraftApp::getLocale(vector<wstring> &vecWstrLocales)
 {
 	vector<eMCLang> locales;
 
+#ifdef _WINDOWS64
+	unsigned char forcedLang = GetMinecraftLanguage(0);
+
+	if (forcedLang != MINECRAFT_LANGUAGE_DEFAULT)
+	{
+		switch (forcedLang)
+		{
+		case MINECRAFT_LANGUAGE_ENGLISH		:
+			locales.push_back(eMCLang_enUS);
+			break;
+
+		case MINECRAFT_LANGUAGE_JAPANESE	:
+			locales.push_back(eMCLang_jaJP);
+			break;
+
+		case MINECRAFT_LANGUAGE_GERMAN		:
+			locales.push_back(eMCLang_deDE);
+			break;
+
+		case MINECRAFT_LANGUAGE_FRENCH		:
+			locales.push_back(eMCLang_frFR);
+			break;
+
+		case MINECRAFT_LANGUAGE_SPANISH		:
+			locales.push_back(eMCLang_esES);
+			break;
+
+		case MINECRAFT_LANGUAGE_LATINAMERICANSPANISH	:
+			locales.push_back(eMCLang_laLAS);
+			locales.push_back(eMCLang_esMX);
+			break;
+
+		case MINECRAFT_LANGUAGE_ITALIAN		:
+			locales.push_back(eMCLang_itIT);
+			break;
+
+		case MINECRAFT_LANGUAGE_KOREAN		:
+			locales.push_back(eMCLang_koKR);
+			break;
+
+		case MINECRAFT_LANGUAGE_TCHINESE		:
+			locales.push_back(eMCLang_zhCHT);
+			break;
+
+		case MINECRAFT_LANGUAGE_PORTUGUESE		:
+			locales.push_back(eMCLang_ptPT);
+			break;
+
+		case MINECRAFT_LANGUAGE_BRAZILIAN		:
+			locales.push_back(eMCLang_ptBR);
+			break;
+		}
+	}
+#endif
+
 	DWORD dwSystemLanguage = XGetLanguage( );
 
 	// 4J-PB - restrict the 360 language until we're ready to have them in
