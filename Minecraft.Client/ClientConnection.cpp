@@ -449,7 +449,7 @@ void ClientConnection::handleAddEntity(shared_ptr<AddEntityPacket> packet)
 				}
 			}
 			
-			if (owner->instanceof(eTYPE_PLAYER))
+			if (owner != NULL && owner->instanceof(eTYPE_PLAYER))
 			{
 				shared_ptr<Player> player = dynamic_pointer_cast<Player>(owner);
 				shared_ptr<FishingHook> hook = shared_ptr<FishingHook>( new FishingHook(level, x, y, z, player) );
