@@ -6,10 +6,6 @@ using namespace std;
 
 #include "miniaudio.h"
 
-#ifdef _WINDOWS64
-#include "BinkDecoder.h"
-#endif
-
 enum eMUSICFILES
 {
 	eStream_Overworld_Calm1 = 0,
@@ -105,8 +101,6 @@ struct MiniAudioSound
 };
 
 extern std::vector<MiniAudioSound*> m_activeSounds;
-
-bool FileExists(const char* path);
 #endif
 
 class SoundEngine : public ConsoleSoundEngine
@@ -153,17 +147,11 @@ private:
 	
 	int GetRandomishTrack(int iStart,int iEnd);
 
-	#ifdef _WINDOWS64
-		ma_engine m_engine;
-		ma_engine_config m_engineConfig;
-		ma_sound m_musicStream;
-		bool m_musicStreamActive;
-		BinkDecoder *binkaDecoder;
-	#else
-		HMSOUNDBANK m_hBank;
-		HDIGDRIVER m_hDriver;
-		HSTREAM m_hStream;
-	#endif
+	ma_engine m_engine;
+	ma_engine_config m_engineConfig;
+	ma_sound m_musicStream;
+	bool m_musicStreamActive;
+
 	static char m_szSoundPath[];
 	static char m_szMusicPath[];
 	static char m_szRedistName[];

@@ -16,23 +16,17 @@
 
 #ifdef _WINDOWS64
 #include "..\..\Minecraft.Client\Windows64\Windows64_App.h"
+#endif
 #define MINIAUDIO_IMPLEMENTATION
 #include "miniaudio.h"
-#include "BinkDecoder.h"
 #include <vector>
 #include <memory>
 #include <mutex>
 
-bool FileExists(const char* filename)
-{
-    DWORD attrib = GetFileAttributesA(filename);
-	return (attrib != INVALID_FILE_ATTRIBUTES && !(attrib & FILE_ATTRIBUTE_DIRECTORY));
-}
-#endif
+#include "../Filesystem/Filesystem.h"
 
 #ifdef __ORBIS__
 #include <audioout.h>
-//#define __DISABLE_MILES__			// MGH disabled for now as it crashes if we call sceNpMatching2Initialize
 #endif 
 
 // take out Orbis until they are done
@@ -66,7 +60,7 @@ void SoundEngine::playMusicTick() {};
 
 #else
 
-#ifdef _WINDOWS64
+#ifdef _WINDOWS64 // todo: make this just search in Media instead
 char SoundEngine::m_szSoundPath[]={"Windows64Media\\Sound\\"};
 char SoundEngine::m_szMusicPath[]={"music\\"};
 char SoundEngine::m_szRedistName[]={"redist64"};
@@ -106,14 +100,6 @@ char SoundEngine::m_szRedistName[]={"redist"};
 
 #endif
 
-#ifndef _WINDOWS64
-F32 AILCALLBACK custom_falloff_function (HSAMPLE   S, 
-										 F32       distance,
-										 F32       rolloff_factor,
-										 F32       min_dist,
-										 F32       max_dist);
-#endif
-
 char *SoundEngine::m_szStreamFileA[eStream_Max]=
 {
 	"calm1",
@@ -125,8 +111,8 @@ char *SoundEngine::m_szStreamFileA[eStream_Max]=
 	"hal4",
 	"nuance1",
 	"nuance2",
+
 #ifndef _XBOX
-	// add the new music tracks
 	"creative1",
 	"creative2",
 	"creative3",
@@ -138,6 +124,7 @@ char *SoundEngine::m_szStreamFileA[eStream_Max]=
 	"menu3",
 	"menu4",
 #endif	
+
 	"piano1",
 	"piano2",
 	"piano3",
@@ -147,9 +134,11 @@ char *SoundEngine::m_szStreamFileA[eStream_Max]=
 	"nether2",
 	"nether3",
 	"nether4",
+
 	// The End
 	"the_end_dragon_alive",
 	"the_end_end",
+
 	// CDs
 	"11",
 	"13",
@@ -165,53 +154,7 @@ char *SoundEngine::m_szStreamFileA[eStream_Max]=
 	"where_are_we_now"
 };
 
-/////////////////////////////////////////////
-//
-//	ErrorCallback
-//
-/////////////////////////////////////////////
-#ifndef _WINDOWS64
-void AILCALL ErrorCallback(S64 i_Id, char const* i_Details)
-{
-	char *pchLastError=AIL_last_error();
-
-	if(pchLastError[0]!=0)
-	{
-		app.DebugPrintf("\rErrorCallback Error Category: %s\n", pchLastError);
-	}
-
-	if (i_Details)
-	{
-		app.DebugPrintf("ErrorCallback - Details: %s\n", i_Details);
-	}
-}
-#else
 std::vector<MiniAudioSound*> m_activeSounds;
-#endif
-
-#ifdef __PSVITA__
-// AP - this is the callback when the driver is about to mix. At this point the mutex is locked by Miles so we can now call all Miles functions without
-// the possibility of incurring a stall.
-static bool SoundEngine_Change = false;				// has tick been called?
-static CRITICAL_SECTION SoundEngine_MixerMutex;
-
-void AILCALL MilesMixerCB(HDIGDRIVER dig)
-{
-	// has the tick function been called since the last callback
-	if( SoundEngine_Change )
-	{
-		SoundEngine_Change = false;
-
-		EnterCriticalSection(&SoundEngine_MixerMutex);
-
-		Minecraft *pMinecraft = Minecraft::GetInstance();
-		pMinecraft->soundEngine->updateMiles();
-		pMinecraft->soundEngine->playMusicUpdate();
-
-		LeaveCriticalSection(&SoundEngine_MixerMutex);
-	}
-}
-#endif
 
 /////////////////////////////////////////////
 //
@@ -222,7 +165,6 @@ void SoundEngine::init(Options* pOptions)
 {
     app.DebugPrintf("---SoundEngine::init\n");
 
-#ifdef _WINDOWS64
     m_engineConfig = ma_engine_config_init();
     m_engineConfig.listenerCount = MAX_LOCAL_PLAYERS;
 
@@ -242,182 +184,9 @@ void SoundEngine::init(Options* pOptions)
     m_bSystemMusicPlaying = false;
 
     app.DebugPrintf("---miniaudio initialized\n");
+
     return;
-
-#else
-#ifdef __ORBIS__
-	C4JThread::PushAffinityAllCores();
-#endif 
-#if defined _DURANGO || defined __ORBIS__ || defined __PS3__ || defined __PSVITA__
-	Register_RIB(BinkADec);
-#endif
-
-	char *redistpath;
-
-#if (defined __PSVITA__)// || defined _DURANGO || defined __ORBIS__ )
-	redistpath=AIL_set_redist_directory(m_szRedistName);
-#endif
-
-	app.DebugPrintf("---SoundEngine::init - AIL_startup\n");
-	S32 ret = AIL_startup();
-
-	int iNumberOfChannels=initAudioHardware(8);
-
-	// Create a driver to render our audio - 44khz, 16 bit,
-#ifdef __PS3__	
-	//	On the Sony PS3, the driver is always opened in 48 kHz, 32-bit floating point. The only meaningful configurations are MSS_MC_STEREO, MSS_MC_51_DISCRETE, and MSS_MC_71_DISCRETE. 
-	m_hDriver = AIL_open_digital_driver( 48000, 16, iNumberOfChannels, AIL_OPEN_DIGITAL_USE_SPU0 );
-#elif defined __PSVITA__
-
-	// maximum of 16 samples
-	AIL_set_preference(DIG_MIXER_CHANNELS, 16);
-
-	m_hDriver = AIL_open_digital_driver( 48000, 16, MSS_MC_STEREO, 0 );
-
-	// AP - For some reason the submit thread defaults to a priority of zero (invalid). Make sure it has the highest priority to avoid audio breakup. 
-	SceUID		threadID;
-	AIL_platform_property( m_hDriver, PSP2_SUBMIT_THREAD, &threadID, 0, 0);
-	S32 g_DefaultCPU = sceKernelGetThreadCpuAffinityMask(threadID);
-	S32 Old = sceKernelChangeThreadPriority(threadID, 64);
-
-	// AP - register a callback when the mixer starts
-	AILMIXERCB temp = AIL_register_mix_callback(m_hDriver, MilesMixerCB);
-
-	InitializeCriticalSection(&SoundEngine_MixerMutex);
-
-#elif defined(__ORBIS__)
-	m_hDriver = AIL_open_digital_driver( 48000, 16, 2, 0 );
-	app.DebugPrintf("---SoundEngine::init - AIL_open_digital_driver\n");
-
-#endif
-	if (m_hDriver == 0)
-	{
-		app.DebugPrintf("Couldn't open digital sound driver. (%s)\n", AIL_last_error());
-		AIL_shutdown();
-#ifdef __ORBIS__
-		C4JThread::PopAffinity();
-#endif 
-		return;
-	}
-	app.DebugPrintf("---SoundEngine::init - driver opened\n");
-
-#ifdef __PSVITA__
-
-	// set high falloff power for maximum spatial effect in software mode
-	AIL_set_speaker_configuration( m_hDriver, 0, 0, 4.0F );
-
-#endif
-
-	AIL_set_event_error_callback(ErrorCallback);
-
-	AIL_set_3D_rolloff_factor(m_hDriver,1.0);
-
-	// Create an event system tied to that driver - let Miles choose memory defaults.
-	//if (AIL_startup_event_system(m_hDriver, 0, 0, 0) == 0)
-	// 4J-PB - Durango complains that the default memory (64k)isn't enough
-	// Error: MilesEvent: Out of event system memory (pool passed to event system startup exhausted).
-	// AP - increased command buffer from the default 5K to 20K for Vita
-
-	if (AIL_startup_event_system(m_hDriver, 1024*20, 0, 1024*128) == 0)
-	{
-		app.DebugPrintf("Couldn't init event system (%s).\n", AIL_last_error());
-		AIL_close_digital_driver(m_hDriver);
-		AIL_shutdown();
-#ifdef __ORBIS__
-		C4JThread::PopAffinity();
-#endif 
-		app.DebugPrintf("---SoundEngine::init - AIL_startup_event_system failed\n");
-		return;
-	}
-	char szBankName[255];
-#if defined __PS3__ 
-	if(app.GetBootedFromDiscPatch())
-	{
-		char szTempSoundFilename[255];
-		sprintf(szTempSoundFilename,"%s%s",m_szSoundPath, "Minecraft.msscmp" );
-
-		app.DebugPrintf("SoundEngine::playMusicUpdate - (booted from disc patch) looking for %s\n",szTempSoundFilename);
-		sprintf(szBankName,"%s/%s",app.GetBDUsrDirPath(szTempSoundFilename), m_szSoundPath );
-		app.DebugPrintf("SoundEngine::playMusicUpdate - (booted from disc patch) music path - %s\n",szBankName);
-	}
-	else
-	{
-		sprintf(szBankName,"%s/%s",getUsrDirPath(), m_szSoundPath );
-	}
-	
-#elif defined __PSVITA__
-	sprintf(szBankName,"%s/%s",getUsrDirPath(), m_szSoundPath );
-#elif defined __ORBIS__
-	sprintf(szBankName,"%s/%s",getUsrDirPath(), m_szSoundPath );
-#else
-	strcpy((char *)szBankName,m_szSoundPath);
-#endif
-
-	strcat((char *)szBankName,"Minecraft.msscmp");
-
-	m_hBank=AIL_add_soundbank(szBankName, 0);
-
-	if(m_hBank == NULL)
-	{
-		char *Error=AIL_last_error();
-		app.DebugPrintf("Couldn't open soundbank: %s (%s)\n", szBankName, Error);
-		AIL_close_digital_driver(m_hDriver);
-		AIL_shutdown();
-#ifdef __ORBIS__
-		C4JThread::PopAffinity();
-#endif 
-		return;
-	}
-
-	//#ifdef _DEBUG
-	HMSSENUM token = MSS_FIRST;
-	char const* Events[1] = {0};
-	S32 EventCount = 0;
-	while (AIL_enumerate_events(m_hBank, &token, 0, &Events[0]))
-	{
-		app.DebugPrintf(4,"%d - %s\n", EventCount, Events[0]);
-
-		EventCount++;
-	}
-	//#endif
-
-	U64 u64Result;
-	u64Result=AIL_enqueue_event_by_name("Minecraft/CacheSounds");
-
-	m_MasterMusicVolume=1.0f;
-	m_MasterEffectsVolume=1.0f;
-
-	//AIL_set_variable_float(0,"UserEffectVol",1);
-
-	m_bSystemMusicPlaying = false;
-
-	m_openStreamThread = NULL;
-
-#ifdef __ORBIS__
-	C4JThread::PopAffinity();
-#endif
-
-#ifdef __PSVITA__
-	// AP - By default the mixer won't start up and nothing will process. Kick off a blank sample to force the mixer to start up. 
-	HSAMPLE Sample = AIL_allocate_sample_handle(m_hDriver);
-	AIL_init_sample(Sample, DIG_F_STEREO_16);
-	static U64 silence = 0;
-	AIL_set_sample_address(Sample, &silence, sizeof(U64));
-	AIL_start_sample(Sample);
-
-	// wait for 1 mix...
-	AIL_release_sample_handle(Sample);
-#endif
-
-#endif // !_WINDOWS64
 }
-
-#ifdef __ORBIS__
-// void SoundEngine::SetHandle(int32_t hAudio)
-// {
-// 	//m_hAudio=hAudio;
-// }
-#endif
 
 void SoundEngine::SetStreamingSounds(int iOverworldMin, int iOverWorldMax, int iNetherMin, int iNetherMax, int iEndMin, int iEndMax, int iCD1)
 {
@@ -438,226 +207,11 @@ void SoundEngine::SetStreamingSounds(int iOverworldMin, int iOverWorldMax, int i
 	memset(m_bHeardTrackA,0,sizeof(bool)*iEndMax+1);
 }
 
-// AP - moved to a separate function so it can be called from the mixer callback on Vita
-#ifndef _WINDOWS64
-void SoundEngine::updateMiles()
-{
-#ifdef __PSVITA__ 
-	//CD - We must check for Background Music [BGM] at any point
-	//If it's playing disable our audio, otherwise enable
-	int NoBGMPlaying = sceAudioOutGetAdopt(SCE_AUDIO_OUT_PORT_TYPE_BGM);
-	updateSystemMusicPlaying( !NoBGMPlaying );
-#elif defined __ORBIS__
-	// is the system playing background music?
-	SceAudioOutPortState outPortState;
-	sceAudioOutGetPortState(m_hBGMAudio,&outPortState);
-	updateSystemMusicPlaying( outPortState.output==SCE_AUDIO_OUT_STATE_OUTPUT_UNKNOWN );
-#endif
-
-	if( m_validListenerCount == 1 )
-	{
-		for( int i = 0; i < MAX_LOCAL_PLAYERS; i++ )
-		{
-			// set the listener as the first player we find
-			if( m_ListenerA[i].bValid )
-			{
-				AIL_set_listener_3D_position(m_hDriver,m_ListenerA[i].vPosition.x,m_ListenerA[i].vPosition.y,-m_ListenerA[i].vPosition.z);  // Flipped sign of z as Miles is expecting left handed coord system
-				AIL_set_listener_3D_orientation(m_hDriver,-m_ListenerA[i].vOrientFront.x,m_ListenerA[i].vOrientFront.y,m_ListenerA[i].vOrientFront.z,0,1,0);   // Flipped sign of z as Miles is expecting left handed coord system
-				break;
-			}
-		}
-	}
-	else
-	{
-		// 4J-PB - special case for splitscreen
-		// the shortest distance between any listener and a sound will be used to play a sound a set distance away down the z axis.
-		// The listener position will be set to 0,0,0, and the orientation will be facing down the z axis
-
-		AIL_set_listener_3D_position(m_hDriver,0,0,0);
-		AIL_set_listener_3D_orientation(m_hDriver,0,0,1,0,1,0);
-	}
-
-	AIL_begin_event_queue_processing();
-
-	// Iterate over the sounds
-	S32 StartedCount = 0, CompletedCount = 0, TotalCount = 0;
-	HMSSENUM token = MSS_FIRST;
-	MILESEVENTSOUNDINFO SoundInfo;
-	int Playing = 0;
-	while (AIL_enumerate_sound_instances(0, &token, 0, 0, 0, &SoundInfo))
-	{
-		AUDIO_INFO* game_data= (AUDIO_INFO*)( SoundInfo.UserBuffer );
-
-		if( SoundInfo.Status == MILESEVENT_SOUND_STATUS_PLAYING )
-		{
-			Playing += 1;
-		}
-
-		if ( SoundInfo.Status != MILESEVENT_SOUND_STATUS_COMPLETE )
-		{
-			// apply the master volume
-			// watch for the 'special' volume levels
-			bool isThunder = false;
-			if( game_data->volume == 10000.0f )
-			{
-				isThunder = true;
-			}
-			if(game_data->volume>1) 
-			{
-				game_data->volume=1;
-			}
-			AIL_set_sample_volume_levels( SoundInfo.Sample, game_data->volume*m_MasterEffectsVolume, game_data->volume*m_MasterEffectsVolume);
-
-			float distanceScaler = 16.0f;
-			switch(SoundInfo.Status)
-			{
-			case MILESEVENT_SOUND_STATUS_PENDING:
-				// 4J-PB - causes the falloff to be calculated on the PPU instead of the SPU, and seems to resolve our distorted sound issue
-				AIL_register_falloff_function_callback(SoundInfo.Sample,&custom_falloff_function);
-
-				if(game_data->bIs3D)
-				{			
-					AIL_set_sample_is_3D( SoundInfo.Sample, 1 );
-
-					int iSound = game_data->iSound - eSFX_MAX;
-					switch(iSound)
-					{
-						// Is this the Dragon?
-						case eSoundType_MOB_ENDERDRAGON_GROWL:
-						case eSoundType_MOB_ENDERDRAGON_MOVE:
-						case eSoundType_MOB_ENDERDRAGON_END:
-						case eSoundType_MOB_ENDERDRAGON_HIT:
-							distanceScaler=100.0f;
-							break;
-						case eSoundType_FIREWORKS_BLAST:
-						case eSoundType_FIREWORKS_BLAST_FAR:
-						case eSoundType_FIREWORKS_LARGE_BLAST:
-						case eSoundType_FIREWORKS_LARGE_BLAST_FAR:
-							distanceScaler=100.0f;
-							break;
-						case eSoundType_MOB_GHAST_MOAN:
-						case eSoundType_MOB_GHAST_SCREAM:
-						case eSoundType_MOB_GHAST_DEATH:
-						case eSoundType_MOB_GHAST_CHARGE:
-						case eSoundType_MOB_GHAST_FIREBALL:
-							distanceScaler=30.0f;
-							break;
-					}
-
-					// Set a special distance scaler for thunder, which we respond to by having no attenutation
-					if( isThunder )
-					{
-						distanceScaler = 10000.0f;
-					}
-				}
-				else
-				{
-					AIL_set_sample_is_3D( SoundInfo.Sample, 0 );
-				}
-
-				AIL_set_sample_3D_distances(SoundInfo.Sample,distanceScaler,1,0);
-				// set the pitch
-				if(!game_data->bUseSoundsPitchVal)
-				{
-					AIL_set_sample_playback_rate_factor(SoundInfo.Sample,game_data->pitch);
-				}
-
-				if(game_data->bIs3D)
-				{			
-					if(m_validListenerCount>1)
-					{
-						float fClosest=10000.0f;
-						int iClosestListener=0;
-						float fClosestX=0.0f,fClosestY=0.0f,fClosestZ=0.0f,fDist;
-						// need to calculate the distance from the sound to the nearest listener - use Manhattan Distance as the decision
-						for( int i = 0; i < MAX_LOCAL_PLAYERS; i++ )
-						{
-							if( m_ListenerA[i].bValid )
-							{
-								float x,y,z;
-
-								x=fabs(m_ListenerA[i].vPosition.x-game_data->x);
-								y=fabs(m_ListenerA[i].vPosition.y-game_data->y);
-								z=fabs(m_ListenerA[i].vPosition.z-game_data->z);
-								fDist=x+y+z;
-
-								if(fDist<fClosest)
-								{
-									fClosest=fDist;
-									fClosestX=x;
-									fClosestY=y;
-									fClosestZ=z;
-									iClosestListener=i;
-								}
-							}
-						}
-
-						// our distances in the world aren't very big, so floats rather than casts to doubles should be fine
-						fDist=sqrtf((fClosestX*fClosestX)+(fClosestY*fClosestY)+(fClosestZ*fClosestZ));
-						AIL_set_sample_3D_position( SoundInfo.Sample, 0, 0, fDist );
-
-						//app.DebugPrintf("Playing sound %d %f from nearest listener [%d]\n",SoundInfo.EventID,fDist,iClosestListener);
-					}
-					else
-					{
-						AIL_set_sample_3D_position( SoundInfo.Sample, game_data->x, game_data->y, -game_data->z );  // Flipped sign of z as Miles is expecting left handed coord system
-					}
-				}
-				break;
-
-			default:
-				if(game_data->bIs3D)
-				{	
-					if(m_validListenerCount>1)
-					{
-						float fClosest=10000.0f;
-						int iClosestListener=0;
-						float fClosestX=0.0f,fClosestY=0.0f,fClosestZ=0.0f,fDist;
-						// need to calculate the distance from the sound to the nearest listener - use Manhattan Distance as the decision
-						for( int i = 0; i < MAX_LOCAL_PLAYERS; i++ )
-						{
-							if( m_ListenerA[i].bValid )
-							{
-								float x,y,z;
-
-								x=fabs(m_ListenerA[i].vPosition.x-game_data->x);
-								y=fabs(m_ListenerA[i].vPosition.y-game_data->y);
-								z=fabs(m_ListenerA[i].vPosition.z-game_data->z);
-								fDist=x+y+z;
-
-								if(fDist<fClosest)
-								{
-									fClosest=fDist;
-									fClosestX=x;
-									fClosestY=y;
-									fClosestZ=z;
-									iClosestListener=i;
-								}
-							}
-						}
-						// our distances in the world aren't very big, so floats rather than casts to doubles should be fine
-						fDist=sqrtf((fClosestX*fClosestX)+(fClosestY*fClosestY)+(fClosestZ*fClosestZ));
-						AIL_set_sample_3D_position( SoundInfo.Sample, 0, 0, fDist );
-
-						//app.DebugPrintf("Playing sound %d %f from nearest listener [%d]\n",SoundInfo.EventID,fDist,iClosestListener);
-					}
-					else
-					{
-						AIL_set_sample_3D_position( SoundInfo.Sample, game_data->x, game_data->y, -game_data->z );  // Flipped sign of z as Miles is expecting left handed coord system
-					}
-				}				
-				break;
-			}			
-		}
-	}
-	AIL_complete_event_queue_processing();
-}
-#else
 void SoundEngine::updateMiniAudio()
 {
     if (m_validListenerCount == 1)
     {
-        for (int i = 0; i < MAX_LOCAL_PLAYERS; i++)
+        for (size_t i = 0; i < MAX_LOCAL_PLAYERS; i++)
         {
             if (m_ListenerA[i].bValid)
             {
@@ -720,7 +274,7 @@ void SoundEngine::updateMiniAudio()
             {
                 float closest = 10000.0f;
 
-                for (int i = 0; i < MAX_LOCAL_PLAYERS; i++)
+                for (size_t i = 0; i < MAX_LOCAL_PLAYERS; i++)
                 {
                     if (m_ListenerA[i].bValid)
                     {
@@ -750,7 +304,6 @@ void SoundEngine::updateMiniAudio()
         ++it;
     }
 }
-#endif
 
 //#define DISTORTION_TEST
 #ifdef DISTORTION_TEST
@@ -769,13 +322,6 @@ static S32 running = AIL_ms_count();
 void SoundEngine::tick(shared_ptr<Mob> *players, float a)
 {
 	ConsoleSoundEngine::tick();
-#ifdef __DISABLE_MILES__
-	return;
-#endif
-
-#ifdef __PSVITA__
-	EnterCriticalSection(&SoundEngine_MixerMutex);
-#endif
 
 	// update the listener positions
 	int listenerCount = 0;
@@ -784,8 +330,9 @@ void SoundEngine::tick(shared_ptr<Mob> *players, float a)
 #endif
 	if( players )
 	{
-		bool bListenerPostionSet=false;
-		for( int i = 0; i < MAX_LOCAL_PLAYERS; i++ )
+		bool bListenerPostionSet = false;
+
+		for( size_t i = 0; i < MAX_LOCAL_PLAYERS; i++ )
 		{
 			if( players[i] != NULL )
 			{
@@ -834,14 +381,8 @@ void SoundEngine::tick(shared_ptr<Mob> *players, float a)
 #ifdef __PSVITA__
 	// AP - Show that a change has occurred so we know to update the values at the next Mixer callback
 	SoundEngine_Change = true;
-
-	LeaveCriticalSection(&SoundEngine_MixerMutex);
-#else
-#ifndef _WINDOWS64
-	updateMiles();
 #else
 	updateMiniAudio();
-#endif
 #endif
 }
 
@@ -853,14 +394,11 @@ void SoundEngine::tick(shared_ptr<Mob> *players, float a)
 SoundEngine::SoundEngine()
 {
 	random = new Random();
-#ifndef _WINDOWS64
-	m_hStream=0;
-#else
+
 	memset(&m_engine, 0, sizeof(ma_engine));
     memset(&m_engineConfig, 0, sizeof(ma_engine_config));
-    binkaDecoder = nullptr;
     m_musicStreamActive = false;
-#endif
+
 	m_StreamState=eMusicStreamState_Idle;
 	m_iMusicDelay=0;
 	m_validListenerCount=0; 
@@ -932,8 +470,6 @@ void SoundEngine::play(int iSound, float x, float y, float z, float volume, floa
         "PlaySound - %d - %s - %s (%f %f %f, vol %f, pitch %f)\n",
         iSound, SoundName, szSoundName, x, y, z, volume, pitch);
 
-#ifdef _WINDOWS64
-
     char basePath[256];
     sprintf_s(basePath, "Windows64Media/Sound/%s", (char*)szSoundName);
 
@@ -944,22 +480,20 @@ void SoundEngine::play(int iSound, float x, float y, float z, float volume, floa
     {
         int count = 0;
 
-        for (int i = 1; i < 32; i++)
+        for (size_t i = 1; i < 32; i++)
         {
             char numberedFolder[256];
             sprintf_s(numberedFolder, "%s%d", basePath, i);
 
-            DWORD attr = GetFileAttributesA(numberedFolder);
-
-            if (attr != INVALID_FILE_ATTRIBUTES &&
-                (attr & FILE_ATTRIBUTE_DIRECTORY))
-            {
-                count++;
-            }
-            else
-            {
-                break;
-            }
+			bool exists = DirectoryExists(numberedFolder);
+			if(exists)
+			{
+				count++;
+			}
+			else
+			{
+				break;
+			}
         }
 
         char chosenFolder[256];
@@ -977,23 +511,16 @@ void SoundEngine::play(int iSound, float x, float y, float z, float volume, floa
         char searchPattern[256];
         sprintf_s(searchPattern, "%s\\*.wav", chosenFolder);
 
-        WIN32_FIND_DATAA findData;
-        HANDLE hFind = FindFirstFileA(searchPattern, &findData);
+		char foundFile[256];
+		if (!GetFirstFileInDirectory(chosenFolder, foundFile, sizeof(foundFile)))
+		{
+			app.DebugPrintf("No .wav or .mp3 files found in %s\n", chosenFolder);
+			return;
+		}
 
-        if (hFind == INVALID_HANDLE_VALUE)
-        {
-            sprintf_s(searchPattern, "%s\\*.mp3", chosenFolder);
-            hFind = FindFirstFileA(searchPattern, &findData);
 
-            if (hFind == INVALID_HANDLE_VALUE)
-            {
-                printf("No .wav or .mp3 files found in %s\n", chosenFolder);
-                return;
-            }
-        }
+        sprintf_s(finalPath, "%s\\%s", chosenFolder, foundFile);
 
-        sprintf_s(finalPath, "%s\\%s", chosenFolder, findData.cFileName);
-        FindClose(hFind);
     }
 
     MiniAudioSound* s = new MiniAudioSound();
@@ -1034,14 +561,6 @@ void SoundEngine::play(int iSound, float x, float y, float z, float volume, floa
     ma_sound_start(&s->sound);
 
     m_activeSounds.push_back(s);
-
-#else
-
-    S32 token = AIL_enqueue_event_start();
-    AIL_enqueue_event_buffer(&token, &AudioInfo, sizeof(AUDIO_INFO), 0);
-    AIL_enqueue_event_end_named(token, (char*)szSoundName);
-
-#endif
 }
 
 /////////////////////////////////////////////
@@ -1067,8 +586,6 @@ void SoundEngine::playUI(int iSound, float volume, float pitch)
 
     char* SoundName = (char*)ConvertSoundPathToName(name);
     strcat((char*)szSoundName, SoundName);
-
-#ifdef _WINDOWS64
 
     char basePath[256];
     sprintf_s(basePath, "Windows64Media/Sound/Minecraft/UI/%s", ConvertSoundPathToName(name));
@@ -1123,30 +640,6 @@ void SoundEngine::playUI(int iSound, float volume, float pitch)
     ma_sound_start(&s->sound);
 
     m_activeSounds.push_back(s);
-
-#else
-
-    AUDIO_INFO AudioInfo;
-    memset(&AudioInfo, 0, sizeof(AUDIO_INFO));
-
-    AudioInfo.volume = volume;
-    AudioInfo.pitch = pitch;
-    AudioInfo.bUseSoundsPitchVal = true;
-
-    if (iSound >= eSFX_MAX)
-        AudioInfo.iSound = iSound + eSFX_MAX;
-    else
-        AudioInfo.iSound = iSound;
-
-#ifdef _DEBUG
-    strncpy(AudioInfo.chName, (char*)szSoundName, 64);
-#endif
-
-    S32 token = AIL_enqueue_event_start();
-    AIL_enqueue_event_buffer(&token, &AudioInfo, sizeof(AUDIO_INFO), 0);
-    AIL_enqueue_event_end_named(token, (char*)szSoundName);
-
-#endif
 }
 
 /////////////////////////////////////////////
@@ -1406,28 +899,9 @@ bool SoundEngine::isStreamingWavebankReady() { return true; }
 
 int SoundEngine::OpenStreamThreadProc(void* lpParameter)
 {
-#ifdef __DISABLE_MILES__
-    return 0;
-#endif
-
     SoundEngine* soundEngine = (SoundEngine*)lpParameter;
 
-#ifdef _WINDOWS64
 	const char* ext = strrchr(soundEngine->m_szStreamName, '.');
-    bool isBinkaFile = (ext && _stricmp(ext, ".binka") == 0);
-    
-    if (isBinkaFile)
-    {
-        if (!soundEngine->binkaDecoder)
-            soundEngine->binkaDecoder = new BinkDecoder();
-
-        if (!soundEngine->binkaDecoder->open(soundEngine->m_szStreamName))
-        {
-            delete soundEngine->binkaDecoder;
-            soundEngine->binkaDecoder = nullptr;
-            return 0;
-        }
-    }
 
     if (soundEngine->m_musicStreamActive)
     {
@@ -1446,12 +920,6 @@ int SoundEngine::OpenStreamThreadProc(void* lpParameter)
 
     if (result != MA_SUCCESS)
     {
-        if (isBinkaFile && soundEngine->binkaDecoder)
-        {
-            delete soundEngine->binkaDecoder;
-            soundEngine->binkaDecoder = nullptr;
-        }
-
         return 0;
     }
 
@@ -1459,19 +927,6 @@ int SoundEngine::OpenStreamThreadProc(void* lpParameter)
     ma_sound_set_looping(&soundEngine->m_musicStream, MA_FALSE);
 
     soundEngine->m_musicStreamActive = true;
-    
-    return 0;
-
-#else
-    soundEngine->m_hStream = AIL_open_stream(soundEngine->m_hDriver, soundEngine->m_szStreamName, 0);
-
-    if (soundEngine->m_hStream == 0)
-    {
-        app.DebugPrintf(
-            "SoundEngine::OpenStreamThreadProc - Could not open - %s\n",
-            soundEngine->m_szStreamName);
-    }
-#endif
 
     return 0;
 }
@@ -1492,7 +947,6 @@ void SoundEngine::playMusicTick()
 // AP - moved to a separate function so it can be called from the mixer callback on Vita
 void SoundEngine::playMusicUpdate() 
 {
-	//return;
 	static bool firstCall = true;
 	static float fMusicVol = 0.0f;
 	if( firstCall )
@@ -1568,7 +1022,7 @@ void SoundEngine::playMusicUpdate()
 				
 #ifdef _XBOX_ONE
 					wstring &wstrSoundName=dlcAudioFile->GetSoundName(m_musicID);
-					wstring wstrFile=L"TPACK:\\Data\\" + wstrSoundName +L".binka";
+					wstring wstrFile=L"TPACK:\\Data\\" + wstrSoundName +L".wav";
 					std::wstring mountedPath = StorageManager.GetMountedPath(wstrFile);
 					wcstombs(m_szStreamName,mountedPath.c_str(),255);
 #else
@@ -1577,9 +1031,9 @@ void SoundEngine::playMusicUpdate()
 					wcstombs(szName,wstrSoundName.c_str(),255);
 
 #if defined __PS3__ || defined __ORBIS__ || defined __PSVITA__
-					string strFile="TPACK:/Data/" + string(szName) + ".binka";
+					string strFile="TPACK:/Data/" + string(szName) + ".wav";
 #else
-					string strFile="TPACK:\\Data\\" + string(szName) + ".binka";
+					string strFile="TPACK:\\Data\\" + string(szName) + ".wav";
 #endif
 					std::string mountedPath = StorageManager.GetMountedPath(strFile);
 					strcpy(m_szStreamName,mountedPath.c_str());
@@ -1595,7 +1049,7 @@ void SoundEngine::playMusicUpdate()
 					// Need to adjust to index into the cds in the game's m_szStreamFileA
 					strcat((char *)m_szStreamName,"cds/");
 					strcat((char *)m_szStreamName,m_szStreamFileA[m_musicID-m_iStream_CD_1+eStream_CD_1]);
-					strcat((char *)m_szStreamName,".binka");
+					strcat((char *)m_szStreamName,".wav");
 				}
 			}
 			else
@@ -1608,13 +1062,13 @@ void SoundEngine::playMusicUpdate()
 					strcpy((char *)m_szStreamName,m_szMusicPath);
 					strcat((char *)m_szStreamName,"music/");
 					strcat((char *)m_szStreamName,m_szStreamFileA[m_musicID]);
-					strcat((char *)m_szStreamName,".binka");
+					strcat((char *)m_szStreamName,".wav");
 
 					// check if this is in the patch data
 					sprintf(m_szStreamName,"%s/%s",app.GetBDUsrDirPath(m_szStreamName), m_szMusicPath );		
 					strcat((char *)m_szStreamName,"music/");
 					strcat((char *)m_szStreamName,m_szStreamFileA[m_musicID]);
-					strcat((char *)m_szStreamName,".binka");
+					strcat((char *)m_szStreamName,".wav");
 
 					SetIsPlayingStreamingGameMusic(true);
 					SetIsPlayingStreamingCDMusic(false);
@@ -1630,7 +1084,7 @@ void SoundEngine::playMusicUpdate()
 					// build the name
 					strcat((char *)m_szStreamName,"music/");
 					strcat((char *)m_szStreamName,m_szStreamFileA[m_musicID]);
-					strcat((char *)m_szStreamName,".binka");
+					strcat((char *)m_szStreamName,".wav");
 				}
 
 				else
@@ -1642,7 +1096,7 @@ void SoundEngine::playMusicUpdate()
 					// build the name
 					strcat((char *)m_szStreamName,"cds/");
 					strcat((char *)m_szStreamName,m_szStreamFileA[m_musicID]);
-					strcat((char *)m_szStreamName,".binka");
+					strcat((char *)m_szStreamName,".wav");
 				}
 #else						
 				if(m_musicID<m_iStream_CD_1)
@@ -1664,7 +1118,7 @@ void SoundEngine::playMusicUpdate()
 					strcat((char *)m_szStreamName,"cds/");
 				}
 				strcat((char *)m_szStreamName,m_szStreamFileA[m_musicID]);
-				strcat((char *)m_szStreamName,".binka");
+				strcat((char *)m_szStreamName,".wav");
 				
 #endif
 			}
@@ -1721,122 +1175,48 @@ void SoundEngine::playMusicUpdate()
 
 			app.DebugPrintf("OpenStreamThreadProc finished. m_musicStreamActive=%d\n", m_musicStreamActive);
 
-#ifdef _WINDOWS64
-        if (!m_musicStreamActive)
-        {
-            const char* currentExt = strrchr(reinterpret_cast<char*>(m_szStreamName), '.');
-            if (currentExt && _stricmp(currentExt, ".binka") == 0)
-            {
-                const bool isCD = (m_musicID >= m_iStream_CD_1);
-                const char* folder = isCD ? "cds/" : "music/";
-                
-                int n = sprintf_s(reinterpret_cast<char*>(m_szStreamName), 512, "%s%s%s.wav", m_szMusicPath, folder, m_szStreamFileA[m_musicID]);
-                
-                if (n > 0)
-                {
-                    FILE* pFile = nullptr;
-                    if (fopen_s(&pFile, reinterpret_cast<char*>(m_szStreamName), "rb") == 0 && pFile)
-                    {
-                        fclose(pFile);
-                                                
-                        m_openStreamThread = new C4JThread(OpenStreamThreadProc, this, "OpenStreamThreadProc");
-                        m_openStreamThread->Run();
-                        break;
-                    }
-                }
-            }
-            
-            m_StreamState = eMusicStreamState_Idle;
-            break;
-        }
-        
-        if (m_StreamingAudioInfo.bIs3D)
-        {
-            ma_sound_set_spatialization_enabled(&m_musicStream, MA_TRUE);
-            ma_sound_set_position(&m_musicStream, m_StreamingAudioInfo.x, m_StreamingAudioInfo.y, m_StreamingAudioInfo.z);
-        }
-        else
-        {
-            ma_sound_set_spatialization_enabled(&m_musicStream, MA_FALSE);
-        }
+			if (!m_musicStreamActive)
+			{
+				const char* currentExt = strrchr(reinterpret_cast<char*>(m_szStreamName), '.');
+				const bool isCD = (m_musicID >= m_iStream_CD_1);
+				const char* folder = isCD ? "cds/" : "music/";
+				
+				int n = sprintf_s(reinterpret_cast<char*>(m_szStreamName), 512, "%s%s%s.wav", m_szMusicPath, folder, m_szStreamFileA[m_musicID]);
+				
+				if (n > 0)
+				{
+					FILE* pFile = nullptr;
+					if (fopen_s(&pFile, reinterpret_cast<char*>(m_szStreamName), "rb") == 0 && pFile)
+					{
+						fclose(pFile);
+												
+						m_openStreamThread = new C4JThread(OpenStreamThreadProc, this, "OpenStreamThreadProc");
+						m_openStreamThread->Run();
+						break;
+					}
+				}
+				
+				m_StreamState = eMusicStreamState_Idle;
+				break;
+			}
+			
+			if (m_StreamingAudioInfo.bIs3D)
+			{
+				ma_sound_set_spatialization_enabled(&m_musicStream, MA_TRUE);
+				ma_sound_set_position(&m_musicStream, m_StreamingAudioInfo.x, m_StreamingAudioInfo.y, m_StreamingAudioInfo.z);
+			}
+			else
+			{
+				ma_sound_set_spatialization_enabled(&m_musicStream, MA_FALSE);
+			}
 
-        ma_sound_set_pitch(&m_musicStream, m_StreamingAudioInfo.pitch);
+			ma_sound_set_pitch(&m_musicStream, m_StreamingAudioInfo.pitch);
 
-        float finalVolume = m_StreamingAudioInfo.volume * m_MasterMusicVolume;
+			float finalVolume = m_StreamingAudioInfo.volume * m_MasterMusicVolume;
 
-        ma_sound_set_volume(&m_musicStream, finalVolume);
-        ma_result startResult = ma_sound_start(&m_musicStream);
-        app.DebugPrintf("ma_sound_start result: %d\n", startResult);
-
-#else
-        HSAMPLE hSample = AIL_stream_sample_handle(m_hStream);
-
-        AIL_register_falloff_function_callback(
-            hSample,
-            &custom_falloff_function);
-
-        if (m_StreamingAudioInfo.bIs3D)
-        {
-            AIL_set_sample_3D_distances(hSample, 64.0f, 1, 0);
-
-            if (m_validListenerCount > 1)
-            {
-                float fClosest = 10000.0f;
-                int iClosestListener = 0;
-                float fClosestX = 0.0f, fClosestY = 0.0f, fClosestZ = 0.0f, fDist;
-
-                for (int i = 0; i < MAX_LOCAL_PLAYERS; i++)
-                {
-                    if (m_ListenerA[i].bValid)
-                    {
-                        float x = fabs(m_ListenerA[i].vPosition.x - m_StreamingAudioInfo.x);
-                        float y = fabs(m_ListenerA[i].vPosition.y - m_StreamingAudioInfo.y);
-                        float z = fabs(m_ListenerA[i].vPosition.z - m_StreamingAudioInfo.z);
-
-                        fDist = x + y + z;
-
-                        if (fDist < fClosest)
-                        {
-                            fClosest = fDist;
-                            fClosestX = x;
-                            fClosestY = y;
-                            fClosestZ = z;
-                            iClosestListener = i;
-                        }
-                    }
-                }
-
-                fDist = sqrtf((fClosestX * fClosestX) +
-                              (fClosestY * fClosestY) +
-                              (fClosestZ * fClosestZ));
-
-                AIL_set_sample_3D_position(hSample, 0, 0, fDist);
-            }
-            else
-            {
-                AIL_set_sample_3D_position(
-                    hSample,
-                    m_StreamingAudioInfo.x,
-                    m_StreamingAudioInfo.y,
-                    -m_StreamingAudioInfo.z);
-            }
-        }
-        else
-        {
-            AIL_set_sample_is_3D(hSample, 0);
-        }
-
-        AIL_set_sample_playback_rate_factor(
-            hSample,
-            m_StreamingAudioInfo.pitch);
-
-        AIL_set_sample_volume_levels(
-            hSample,
-            m_StreamingAudioInfo.volume * getMasterMusicVolume(),
-            m_StreamingAudioInfo.volume * getMasterMusicVolume());
-
-        AIL_start_stream(m_hStream);
-#endif
+			ma_sound_set_volume(&m_musicStream, finalVolume);
+			ma_result startResult = ma_sound_start(&m_musicStream);
+			app.DebugPrintf("ma_sound_start result: %d\n", startResult);
 
 			m_StreamState=eMusicStreamState_Playing;
 		}
@@ -1873,7 +1253,6 @@ void SoundEngine::playMusicUpdate()
 	case eMusicStreamState_Play:
 		break;
 	case eMusicStreamState_Playing:
-#ifdef _WINDOWS64
 		{
 			static int frameCount = 0;
 			if (frameCount++ % 60 == 0)
@@ -1886,7 +1265,6 @@ void SoundEngine::playMusicUpdate()
 				}
 			}
 		}
-#endif
 		if(GetIsPlayingStreamingGameMusic())
 		{
 			//if(m_MusicInfo.pCue!=NULL)
@@ -1970,21 +1348,12 @@ void SoundEngine::playMusicUpdate()
 				// volume change required?
 				if (fMusicVol != getMasterMusicVolume())
 				{
-#ifdef _WINDOWS64
 					if (m_musicStreamActive)
 					{
 						float finalVolume = m_StreamingAudioInfo.volume * fMusicVol;
 
 						ma_sound_set_volume(&m_musicStream, finalVolume);
 					}
-
-#else
-					HSAMPLE hSample = AIL_stream_sample_handle(m_hStream);
-
-					float finalVolume = m_StreamingAudioInfo.volume * fMusicVol;
-					AIL_set_sample_volume_levels(hSample, finalVolume, finalVolume);
-
-#endif
 				}
 			}
 		}
@@ -1998,7 +1367,7 @@ void SoundEngine::playMusicUpdate()
 				int iClosestListener = 0;
 				float fClosestDist = 1e6f;
 
-				for (int i = 0; i < MAX_LOCAL_PLAYERS; i++)
+				for (size_t i = 0; i < MAX_LOCAL_PLAYERS; i++)
 				{
 					if (m_ListenerA[i].bValid)
 					{
@@ -2019,15 +1388,10 @@ void SoundEngine::playMusicUpdate()
 				float relY = m_StreamingAudioInfo.y - m_ListenerA[iClosestListener].vPosition.y;
 				float relZ = m_StreamingAudioInfo.z - m_ListenerA[iClosestListener].vPosition.z;
 
-#ifdef _WINDOWS64
 				if (m_musicStreamActive)
 				{
 					ma_sound_set_position(&m_musicStream, relX, relY, relZ);
 				}
-#else
-				HSAMPLE hSample = AIL_stream_sample_handle(m_hStream);
-				AIL_set_sample_3D_position(hSample, relX, relY, relZ);
-#endif
 			}
 		}
 
@@ -2082,7 +1446,6 @@ void SoundEngine::playMusicUpdate()
 
 	// check the status of the stream - this is for when a track completes rather than is stopped by the user action
 
-#ifdef _WINDOWS64
 	if (m_musicStreamActive)
 	{
 		if (!ma_sound_is_playing(&m_musicStream) && ma_sound_at_end(&m_musicStream))
@@ -2096,21 +1459,6 @@ void SoundEngine::playMusicUpdate()
 			m_StreamState = eMusicStreamState_Completed;
 		}
 	}
-#else
-	if (m_hStream != 0)
-	{
-		if (AIL_stream_status(m_hStream) == SMP_DONE)
-		{
-			AIL_close_stream(m_hStream);
-			m_hStream = 0;
-
-			SetIsPlayingStreamingCDMusic(false);
-			SetIsPlayingStreamingGameMusic(false);
-
-			m_StreamState = eMusicStreamState_Completed;
-		}
-	}
-#endif
 }
 
 
@@ -2137,30 +1485,4 @@ char *SoundEngine::ConvertSoundPathToName(const wstring& name, bool bConvertSpac
 	return buf;
 }
 
-#endif
-
-
-#ifndef _WINDOWS64
-F32 AILCALLBACK custom_falloff_function (HSAMPLE   S, 
-										 F32       distance,
-										 F32       rolloff_factor,
-										 F32       min_dist,
-										 F32       max_dist)
-{
-	F32 result;
-
-	// This is now emulating the linear fall-off function that we used on the Xbox 360. The parameter which is passed as "max_dist" is the only one actually used,
-	// and is generally used as CurveDistanceScaler is used on XACT on the Xbox. A special value of 10000.0f is passed for thunder, which has no attenuation
-
-	if( max_dist == 10000.0f )
-	{
-		return 1.0f;
-	}
-
-	result = 1.0f - ( distance / max_dist );
-	if( result < 0.0f ) result = 0.0f;
-	if( result > 1.0f ) result = 1.0f;
-
-	return result;
-}
 #endif

@@ -60,6 +60,10 @@ if(MSVC)
   target_link_options(MinecraftClient PRIVATE
     $<$<CONFIG:Release>:/LTCG /INCREMENTAL:NO>
   )
+  # TEMP!
+  target_compile_options(MinecraftClient PRIVATE
+    $<$<COMPILE_LANGUAGE:C,CXX>:/wd4100 /wd4101 /wd4189 /wd4324 /wd4267 /wd4365 /wd4244 /wd4477 /wd4625 /wd4626 /wd4628 /wd5026 /wd5027>
+  )
 endif()
 
 set_target_properties(MinecraftClient PROPERTIES
@@ -75,7 +79,7 @@ target_link_libraries(MinecraftClient PRIVATE
   "${CMAKE_CURRENT_SOURCE_DIR}/Minecraft.Client/Windows64/Iggy/lib/iggy_w64.lib"
   "${CMAKE_CURRENT_SOURCE_DIR}/Minecraft.Client/Windows64/Iggy/lib/iggyperfmon_w64.lib"
   "${CMAKE_CURRENT_SOURCE_DIR}/Minecraft.Client/Windows64/Iggy/lib/iggyexpruntime_w64.lib"
-  "${CMAKE_CURRENT_SOURCE_DIR}/Minecraft.Client/Windows64/Miles/lib/mss64.lib"
+  #"${CMAKE_CURRENT_SOURCE_DIR}/Minecraft.Client/Windows64/Miles/lib/mss64.lib"
   $<$<CONFIG:Debug>:
     "${CMAKE_CURRENT_SOURCE_DIR}/Minecraft.Client/Windows64/4JLibs/libs/4J_Input_d.lib"
     "${CMAKE_CURRENT_SOURCE_DIR}/Minecraft.Client/Windows64/4JLibs/libs/4J_Storage_d.lib"
