@@ -4,54 +4,63 @@
 #include <stddef.h>
 
 #define S_OK 0
+#define TRUE 1
+#define FALSE 0
 
+#ifndef AUTO_VAR
+#define AUTO_VAR(_var, _val) auto _var = _val
+#endif
+
+#define VOID void
+#define CONST const
+
+#define __in_ecount(a)
+#define __in_bcount(a)
+
+// BASIC TYPES
 typedef uint32_t DWORD;
-typedef int32_t BOOL;
+typedef int32_t BOOL; // what were they thinking
+typedef unsigned char boolean; // keeping as is, scary fucked up javaheads only.
 typedef uint8_t BYTE;
 typedef uint16_t WORD;
 typedef float FLOAT;
-typedef int __int32;
+typedef int32_t INT;
+typedef uint32_t UINT;
+typedef uint32_t ULONG;
+typedef int8_t CHAR;
+typedef int16_t SHORT;
+typedef int32_t LONG;
+typedef int64_t LONG64;
+typedef int64_t LONGLONG;
+typedef uint64_t ULONGLONG;
+typedef int32_t __int32;
+typedef int64_t __int64;
+typedef uint64_t __uint64;
+
+typedef uintptr_t ULONG_PTR;
+typedef size_t SIZE_T;
+
+// POINTERS
+typedef BOOL *PBOOL, *LPBOOL;
+typedef BYTE *PBYTE, *LPBYTE;
+typedef WORD *PWORD, *LPWORD;
+typedef INT *PINT, *LPINT, *PUINT;
+typedef LONG *PLONG, *LPLONG;
+typedef LONG64 *PLONG64;
+typedef DWORD *PDWORD, *LPDWORD;
 typedef FLOAT *PFLOAT;
-typedef BOOL *PBOOL;
-typedef BOOL *LPBOOL;
-typedef BYTE *PBYTE;
-typedef BYTE *LPBYTE;
-typedef int *PINT;
-typedef int *LPINT;
-typedef WORD *PWORD;
-typedef WORD *LPWORD;
-typedef int *PLONG;
-typedef int *LPLONG;
-typedef DWORD *PDWORD;
-typedef DWORD *LPDWORD;
-typedef void *LPVOID;
-typedef const void *LPCVOID;
-typedef void *PVOID;
-typedef unsigned int ULONG;
+typedef ULONG_PTR *PULONG_PTR;
+typedef SIZE_T *PSIZE_T;
 
-typedef unsigned char boolean;
+typedef void* PVOID;
+typedef void* LPVOID;
+typedef const void* LPCVOID;
 
-typedef int INT;
-typedef unsigned int UINT;
-typedef unsigned int *PUINT;
+typedef void *HANDLE;
+typedef HANDLE HINSTANCE;
+typedef HINSTANCE HMODULE; /* HMODULEs can be used in place of HINSTANCEs */
+typedef int32_t HRESULT;
 
-typedef long __int64;
-typedef unsigned long __uint64;
-typedef unsigned int DWORD;
-typedef int INT;
-typedef unsigned long ULONG_PTR, *PULONG_PTR;
-typedef ULONG_PTR SIZE_T, *PSIZE_T;
-
-typedef long LONG64, *PLONG64;
-
-#define VOID void
-typedef char CHAR;
-typedef short SHORT;
-typedef int LONG;
-typedef long LONGLONG;
-typedef unsigned long ULONGLONG;
-
-#define CONST const
 typedef wchar_t WCHAR; // wc,   16-bit UNICODE character
 typedef WCHAR *PWCHAR;
 typedef WCHAR *LPWCH, *PWCH;
@@ -70,42 +79,40 @@ typedef CHAR *NPSTR;
 typedef CHAR *LPSTR, *PSTR;
 typedef CONST CHAR *LPCSTR, *PCSTR;
 
-#ifndef FALSE
-#define FALSE 0
-#endif
-
-#ifndef TRUE
-#define TRUE 1
-#endif
-
 typedef struct _FILETIME {
   DWORD dwLowDateTime;
   DWORD dwHighDateTime;
 } FILETIME, *PFILETIME, *LPFILETIME;
 
-typedef struct {
-  DWORD LowPart;
-  LONG HighPart;
-  long long QuadPart;
+typedef union _LARGE_INTEGER {
+  struct {
+    DWORD LowPart;
+    LONG HighPart;
+  };
+
+  struct {
+    DWORD LowPart;
+    LONG HighPart;
+  } u;
+  LONGLONG QuadPart;
 } LARGE_INTEGER;
 
 typedef LARGE_INTEGER *PLARGE_INTEGER;
 
-typedef struct {
-  DWORD LowPart;
-  LONG HighPart;
-  unsigned long long QuadPart;
+typedef union _ULARGE_INTEGER {
+  struct {
+    DWORD LowPart;
+    DWORD HighPart;
+  };
+
+  struct {
+    DWORD LowPart;
+    DWORD HighPart;
+  } u;
+  ULONGLONG QuadPart;
 } ULARGE_INTEGER;
 
 typedef ULARGE_INTEGER *PULARGE_INTEGER;
-
-typedef int HRESULT;
-typedef void *HANDLE;
-
-#define DECLARE_HANDLE(name) typedef HANDLE name
-DECLARE_HANDLE(HINSTANCE);
-
-typedef HINSTANCE HMODULE; /* HMODULEs can be used in place of HINSTANCEs */
 
 typedef struct _OVERLAPPED {
   ULONG_PTR Internal;
@@ -117,10 +124,3 @@ typedef struct _OVERLAPPED {
 
 typedef LPVOID PSECURITY_ATTRIBUTES;
 typedef LPVOID LPSECURITY_ATTRIBUTES;
-
-#define __in_ecount(a)
-#define __in_bcount(a)
-
-#ifndef AUTO_VAR
-#define AUTO_VAR(_var, _val) auto _var = _val
-#endif
