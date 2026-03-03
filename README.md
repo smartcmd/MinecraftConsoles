@@ -58,6 +58,7 @@ This feature is based on [LCEMP](https://github.com/LCEMP/LCEMP/)
 - **Toggle HUD**: `F1`
 - **Toggle Debug Info**: `F3`
 - **Open Debug Overlay**: `F4`
+- **Toggle Debug Console**: `F6`
 
 ## Build & Run
 
