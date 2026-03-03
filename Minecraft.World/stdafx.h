@@ -30,7 +30,7 @@ typedef unsigned __int64 __uint64;
 #include <DirectXMath.h>
 using namespace DirectX;
 #include <pix.h>
-#include "..\Minecraft.Client\Durango\DurangoExtras\DurangoStubs.h"
+#include <Minecraft.Client/Durango/DurangoExtras/DurangoStubs.h>
 #endif
 
 #if (defined __PS3__ || defined _XBOX )
@@ -125,7 +125,7 @@ typedef XUID GameSessionUID;
 #ifndef _XBOX
 #include "extraX64.h"
 #else
-#include "..\Minecraft.Client\xbox\network\extra.h"
+#include <Minecraft.Client/xbox/network/extra.h>
 #endif
 
 #include "Definitions.h"
@@ -154,100 +154,100 @@ typedef XUID GameSessionUID;
 void MemSect(int sect);
 
 #ifdef _XBOX
-#include "..\Minecraft.Client\xbox\4JLibs\inc\4J_Profile.h"
-#include "..\Minecraft.Client\xbox\4JLibs\inc\4J_Render.h"
-#include "..\Minecraft.Client\xbox\4JLibs\inc\4J_XTMS.h"
-#include "..\Minecraft.Client\xbox\4JLibs\inc\4J_Storage.h"
-#include "..\Minecraft.Client\xbox\4JLibs\inc\4J_Input.h"
+#include <Minecraft.Client/xbox/4JLibs/inc/4J_Profile.h>
+#include <Minecraft.Client/xbox/4JLibs/inc/4J_Render.h>
+#include <Minecraft.Client/xbox/4JLibs/inc/4J_XTMS.h>
+#include <Minecraft.Client/xbox/4JLibs/inc/4J_Storage.h>
+#include <Minecraft.Client/xbox/4JLibs/inc/4J_Input.h>
 #elif defined (__PS3__)
-#include "..\Minecraft.Client\PS3\4JLibs\inc\4J_Profile.h"
-#include "..\Minecraft.Client\PS3\4JLibs\inc\4J_Render.h"
-#include "..\Minecraft.Client\PS3\4JLibs\inc\4J_Storage.h"
-#include "..\Minecraft.Client\PS3\4JLibs\inc\4J_Input.h"
+#include <Minecraft.Client/PS3/4JLibs/inc/4J_Profile.h>
+#include <Minecraft.Client/PS3/4JLibs/inc/4J_Render.h>
+#include <Minecraft.Client/PS3/4JLibs/inc/4J_Storage.h>
+#include <Minecraft.Client/PS3/4JLibs/inc/4J_Input.h>
 #elif defined _DURANGO
-#include "..\Minecraft.Client\Durango\4JLibs\inc\4J_Profile.h"
-#include "..\Minecraft.Client\Durango\4JLibs\inc\4J_Render.h"
-#include "..\Minecraft.Client\Durango\4JLibs\inc\4J_Storage.h"
-#include "..\Minecraft.Client\Durango\4JLibs\inc\4J_Input.h"
+#include <Minecraft.Client/Durango/4JLibs/inc/4J_Profile.h>
+#include <Minecraft.Client/Durango/4JLibs/inc/4J_Render.h>
+#include <Minecraft.Client/Durango/4JLibs/inc/4J_Storage.h>
+#include <Minecraft.Client/Durango/4JLibs/inc/4J_Input.h>
 #elif defined _WINDOWS64
-#include "..\Minecraft.Client\Windows64\4JLibs\inc\4J_Profile.h"
-#include "..\Minecraft.Client\Windows64\4JLibs\inc\4J_Render.h"
-#include "..\Minecraft.Client\Windows64\4JLibs\inc\4J_Storage.h"
-#include "..\Minecraft.Client\Windows64\4JLibs\inc\4J_Input.h"
+#include <Minecraft.Client/Windows64/4JLibs/inc/4J_Profile.h>
+#include <Minecraft.Client/Windows64/4JLibs/inc/4J_Render.h>
+#include <Minecraft.Client/Windows64/4JLibs/inc/4J_Storage.h>
+#include <Minecraft.Client/Windows64/4JLibs/inc/4J_Input.h>
 #elif defined __PSVITA__
-#include "..\Minecraft.Client\PSVita\4JLibs\inc\4J_Profile.h"
-#include "..\Minecraft.Client\PSVita\4JLibs\inc\4J_Render.h"
-#include "..\Minecraft.Client\PSVita\4JLibs\inc\4J_Storage.h"
-#include "..\Minecraft.Client\PSVita\4JLibs\inc\4J_Input.h"
+#include <Minecraft.Client/PSVita/4JLibs/inc/4J_Profile.h>
+#include <Minecraft.Client/PSVita/4JLibs/inc/4J_Render.h>
+#include <Minecraft.Client/PSVita/4JLibs/inc/4J_Storage.h>
+#include <Minecraft.Client/PSVita/4JLibs/inc/4J_Input.h>
 #else
-#include "..\Minecraft.Client\Orbis\4JLibs\inc\4J_Profile.h"
-#include "..\Minecraft.Client\Orbis\4JLibs\inc\4J_Render.h"
-#include "..\Minecraft.Client\Orbis\4JLibs\inc\4J_Storage.h"
-#include "..\Minecraft.Client\Orbis\4JLibs\inc\4J_Input.h"
+#include <Minecraft.Client/Orbis/4JLibs/inc/4J_Profile.h>
+#include <Minecraft.Client/Orbis/4JLibs/inc/4J_Render.h>
+#include <Minecraft.Client/Orbis/4JLibs/inc/4J_Storage.h>
+#include <Minecraft.Client/Orbis/4JLibs/inc/4J_Input.h>
 #endif
 
-#include "..\Minecraft.Client\Common\Network\GameNetworkManager.h"
+#include <Minecraft.Client/Common/Network/GameNetworkManager.h>
 
 // #ifdef _XBOX
-#include "..\Minecraft.Client\Common\App_defines.h"
-#include "..\Minecraft.Client\Common\UI\UIEnums.h"
-#include "..\Minecraft.Client\Common\App_enums.h"
-#include "..\Minecraft.Client\Common\Tutorial\TutorialEnum.h"
-#include "..\Minecraft.Client\Common\App_structs.h"
+#include <Minecraft.Client/Common/App_defines.h>
+#include <Minecraft.Client/Common/UI/UIEnums.h>
+#include <Minecraft.Client/Common/App_enums.h>
+#include <Minecraft.Client/Common/Tutorial/TutorialEnum.h>
+#include <Minecraft.Client/Common/App_structs.h>
 //#endif
 
 #ifdef _XBOX
-#include "..\Minecraft.Client\Common\XUI\XUI_Helper.h"
-#include "..\Minecraft.Client\Common\XUI\XUI_Scene_Base.h"
+#include <Minecraft.Client/Common/XUI/XUI_Helper.h>
+#include <Minecraft.Client/Common/XUI/XUI_Scene_Base.h>
 #endif
-#include "..\Minecraft.Client\Common\Consoles_App.h"
-#include "..\Minecraft.Client\Common\Minecraft_Macros.h"
-#include "..\Minecraft.Client\Common\Colours\ColourTable.h"
+#include <Minecraft.Client/Common/Consoles_App.h>
+#include <Minecraft.Client/Common/Minecraft_Macros.h>
+#include <Minecraft.Client/Common/Colours/ColourTable.h>
 
-#include "..\Minecraft.Client\Common\BuildVer.h"
+#include <Minecraft.Client/Common/BuildVer.h>
 
 #ifdef _XBOX
-#include "..\Minecraft.Client\Xbox\Xbox_App.h"
-#include "..\Minecraft.Client\XboxMedia\strings.h"
-#include "..\Minecraft.Client\Xbox\Sentient\SentientTelemetryCommon.h"
-#include "..\Minecraft.Client\Xbox\Sentient\MinecraftTelemetry.h"
+#include <Minecraft.Client/Xbox/Xbox_App.h>
+#include <Minecraft.Client/XboxMedia/strings.h>
+#include <Minecraft.Client/Xbox/Sentient/SentientTelemetryCommon.h>
+#include <Minecraft.Client/Xbox/Sentient/MinecraftTelemetry.h>
 
 #elif defined (__PS3__)
-#include "..\Minecraft.Client\PS3\PS3_App.h"
-#include "..\Minecraft.Client\PS3Media\strings.h"
-#include "..\Minecraft.Client\PS3\Sentient\SentientTelemetryCommon.h"
-#include "..\Minecraft.Client\PS3\Sentient\MinecraftTelemetry.h"
+#include <Minecraft.Client/PS3/PS3_App.h>
+#include <Minecraft.Client/PS3Media/strings.h>
+#include <Minecraft.Client/PS3/Sentient/SentientTelemetryCommon.h>
+#include <Minecraft.Client/PS3/Sentient/MinecraftTelemetry.h>
 
 #elif defined _DURANGO
-#include "..\Minecraft.Client\Durango\Durango_App.h"
-#include "..\Minecraft.Client\DurangoMedia\strings.h"
-//#include "..\Minecraft.Client\Durango\Sentient\SentientManager.h"
-#include "..\Minecraft.Client\Durango\Sentient\SentientTelemetryCommon.h"
-#include "..\Minecraft.Client\Durango\Sentient\MinecraftTelemetry.h"
-#include "..\Minecraft.Client\Durango\Sentient\TelemetryEnum.h"
+#include <Minecraft.Client/Durango/Durango_App.h>
+#include <Minecraft.Client/DurangoMedia/strings.h>
+//#include <Minecraft.Client/Durango/Sentient/SentientManager.h>
+#include <Minecraft.Client/Durango/Sentient/SentientTelemetryCommon.h>
+#include <Minecraft.Client/Durango/Sentient/MinecraftTelemetry.h>
+#include <Minecraft.Client/Durango/Sentient/TelemetryEnum.h>
 
 #elif defined _WINDOWS64
-#include "..\Minecraft.Client\Windows64\Windows64_App.h"
-#include "..\Minecraft.Client\Windows64Media\strings.h"
-#include "..\Minecraft.Client\Windows64\Sentient\SentientTelemetryCommon.h"
-#include "..\Minecraft.Client\Windows64\Sentient\MinecraftTelemetry.h"
+#include <Minecraft.Client/Windows64/Windows64_App.h>
+#include <Minecraft.Client/Windows64Media/strings.h>
+#include <Minecraft.Client/Windows64/Sentient/SentientTelemetryCommon.h>
+#include <Minecraft.Client/Windows64/Sentient/MinecraftTelemetry.h>
 
 #elif defined __PSVITA__
-#include "..\Minecraft.Client\PSVita\PSVita_App.h"
-#include "..\Minecraft.Client\PSVitaMedia\strings.h"		// TODO - create PSVita-specific version of this
-#include "..\Minecraft.Client\PSVita\Sentient\SentientManager.h"
-#include "..\Minecraft.Client\PSVita\Sentient\MinecraftTelemetry.h"
+#include <Minecraft.Client/PSVita/PSVita_App.h>
+#include <Minecraft.Client/PSVitaMedia/strings.h>		// TODO - create PSVita-specific version of this
+#include <Minecraft.Client/PSVita/Sentient/SentientManager.h>
+#include <Minecraft.Client/PSVita/Sentient/MinecraftTelemetry.h>
 #else
-#include "..\Minecraft.Client\Orbis\Orbis_App.h"
-#include "..\Minecraft.Client\OrbisMedia\strings.h"
-#include "..\Minecraft.Client\Orbis\Sentient\SentientTelemetryCommon.h"
-#include "..\Minecraft.Client\Orbis\Sentient\MinecraftTelemetry.h"
+#include <Minecraft.Client/Orbis/Orbis_App.h>
+#include <Minecraft.Client/OrbisMedia/strings.h>
+#include <Minecraft.Client/Orbis/Sentient/SentientTelemetryCommon.h>
+#include <Minecraft.Client/Orbis/Sentient/MinecraftTelemetry.h>
 #endif
 
-#include "..\Minecraft.Client\Common\DLC\DLCSkinFile.h"
-#include "..\Minecraft.Client\Common\Console_Awards_enum.h"
-#include "..\Minecraft.Client\Common\Potion_Macros.h"
-#include "..\Minecraft.Client\Common\Console_Debug_enum.h"
-#include "..\Minecraft.Client\Common\GameRules\ConsoleGameRulesConstants.h"
-#include "..\Minecraft.Client\Common\GameRules\ConsoleGameRules.h"
-#include "..\Minecraft.Client\Common\Telemetry\TelemetryManager.h"
+#include <Minecraft.Client/Common/DLC/DLCSkinFile.h>
+#include <Minecraft.Client/Common/Console_Awards_enum.h>
+#include <Minecraft.Client/Common/Potion_Macros.h>
+#include <Minecraft.Client/Common/Console_Debug_enum.h>
+#include <Minecraft.Client/Common/GameRules/ConsoleGameRulesConstants.h>
+#include <Minecraft.Client/Common/GameRules/ConsoleGameRules.h>
+#include <Minecraft.Client/Common/Telemetry/TelemetryManager.h>

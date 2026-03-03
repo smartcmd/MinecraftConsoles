@@ -2,20 +2,20 @@
 #include "UI.h"
 #include "UIScene_LoadOrJoinMenu.h"
 
-#include "..\..\..\Minecraft.World\StringHelpers.h"
-#include "..\..\..\Minecraft.World\net.minecraft.world.item.h"
-#include "..\..\..\Minecraft.World\net.minecraft.world.level.h"
-#include "..\..\..\Minecraft.World\net.minecraft.world.level.chunk.storage.h"
-#include "..\..\..\Minecraft.World\ConsoleSaveFile.h"
-#include "..\..\..\Minecraft.World\ConsoleSaveFileOriginal.h"
-#include "..\..\ProgressRenderer.h"
-#include "..\..\MinecraftServer.h"
-#include "..\..\TexturePackRepository.h"
-#include "..\..\TexturePack.h"
-#include "..\Network\SessionInfo.h"
+#include <Minecraft.World/StringHelpers.h>
+#include <Minecraft.World/net.minecraft.world.item.h>
+#include <Minecraft.World/net.minecraft.world.level.h>
+#include <Minecraft.World/net.minecraft.world.level.chunk.storage.h>
+#include <Minecraft.World/ConsoleSaveFile.h>
+#include <Minecraft.World/ConsoleSaveFileOriginal.h>
+#include <ProgressRenderer.h>
+#include <MinecraftServer.h>
+#include <TexturePackRepository.h>
+#include <TexturePack.h>
+#include <Network/SessionInfo.h>
 #if defined(__PS3__) || defined(__ORBIS__) || defined(__PSVITA__)
-#include "Common\Network\Sony\SonyHttp.h"
-#include "Common\Network\Sony\SonyRemoteStorage.h"
+#include <Common/Network/Sony/SonyHttp.h>
+#include <Common/Network/Sony/SonyRemoteStorage.h>
 #include "DLCTexturePack.h"
 #endif
 #if defined(__ORBIS__) || defined(__PSVITA__)

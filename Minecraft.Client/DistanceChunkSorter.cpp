@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "DistanceChunkSorter.h"
-#include "../Minecraft.World/net.minecraft.world.entity.player.h"
+#include <Minecraft.World/net.minecraft.world.entity.player.h>
 #include "Chunk.h"
 
 DistanceChunkSorter::DistanceChunkSorter(shared_ptr<Entity> player)

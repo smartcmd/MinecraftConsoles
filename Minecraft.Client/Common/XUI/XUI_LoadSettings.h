@@ -1,5 +1,5 @@
 #pragma once
-#include "../media/xuiscene_load_settings.h"
+#include <media/xuiscene_load_settings.h>
 #include "XUI_Ctrl_SliderWrapper.h"
 #include "XUI_Ctrl_4JIcon.h"
 #include "XUI_CustomMessages.h"

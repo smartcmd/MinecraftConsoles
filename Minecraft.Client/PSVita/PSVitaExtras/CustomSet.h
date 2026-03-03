@@ -6,7 +6,7 @@
 // causing huge stalls.
 // This isn't really a univeral replacement for std::unordered_set and is quite specific to Level.h
 
-#include "../../../Minecraft.World/ChunkPos.h"
+#include <Minecraft.World/ChunkPos.h>
 
 typedef struct SCustomSetNode
 {

@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "XUI_TextEntry.h"
-#include "..\..\MultiplayerLocalPlayer.h"
+#include <MultiplayerLocalPlayer.h>
 
 
 CScene_TextEntry::CommandParams CScene_TextEntry::CommandA[CScene_TextEntry::eCommand_MAX]=

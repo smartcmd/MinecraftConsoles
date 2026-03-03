@@ -2,20 +2,20 @@
 #include "ItemRenderer.h"
 #include "tileRenderer.h"
 #include "entityRenderDispatcher.h"
-//#include "ItemFrame"
+//#include <ItemFrame>
 #include "ItemFrameRenderer.h"
 #include "TextureAtlas.h"
 
-#include "..\Minecraft.World\JavaMath.h"
-#include "..\Minecraft.World\net.minecraft.world.entity.Item.h"
-#include "..\Minecraft.World\net.minecraft.world.Item.h"
-#include "..\Minecraft.World\net.minecraft.world.Item.alchemy.h"
-#include "..\Minecraft.World\net.minecraft.world.level.tile.h"
-#include "..\Minecraft.World\StringHelpers.h"
+#include <Minecraft.World/JavaMath.h>
+#include <Minecraft.World/net.minecraft.world.entity.Item.h>
+#include <Minecraft.World/net.minecraft.world.Item.h>
+#include <Minecraft.World/net.minecraft.world.Item.alchemy.h>
+#include <Minecraft.World/net.minecraft.world.level.tile.h>
+#include <Minecraft.World/StringHelpers.h>
 #include "Minecraft.h"
-#include "..\Minecraft.World\Item.h"
-#include "..\Minecraft.World\net.minecraft.world.h"
-#include "..\Minecraft.World\net.minecraft.h"
+#include <Minecraft.World/Item.h>
+#include <Minecraft.World/net.minecraft.world.h>
+#include <Minecraft.World/net.minecraft.h>
 #include "CompassTexture.h"
 #include "Minimap.h"
 

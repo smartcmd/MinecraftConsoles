@@ -3,7 +3,7 @@
 // how to configure multiple heaps.
 // =================================================================================================================================
 
-#include "../../Server/HeapInspectorServer.h"
+#include <Server/HeapInspectorServer.h>
 #include <stdlib.h>
 
 using namespace HeapInspectorServer;

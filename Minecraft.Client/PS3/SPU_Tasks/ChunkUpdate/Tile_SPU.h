@@ -1,8 +1,8 @@
 #pragma once
-// #include "Material.h"
-// #include "Vec3.h"
-// #include "Definitions.h"
-// #include "SoundTypes.h"
+// #include <Material.h>
+// #include <Vec3.h>
+// #include <Definitions.h>
+// #include <SoundTypes.h>
 // using namespace std;
 #include "Icon_SPU.h"
 #include "Material_SPU.h"

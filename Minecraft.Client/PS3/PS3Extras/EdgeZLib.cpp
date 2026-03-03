@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include <stdlib.h>
 #include "EdgeZLib.h"
-#include "edge/zlib/edgezlib_ppu.h"
+#include <edge/zlib/edgezlib_ppu.h>
 
 static CellSpurs* s_pSpurs = NULL;
 

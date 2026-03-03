@@ -1,8 +1,8 @@
 #pragma once
 #include "XUI_Helper.h"
-#include "../media/xuiscene_leaderboards.h"
+#include <media/xuiscene_leaderboards.h>
 
-#include "..\Leaderboards\LeaderboardManager.h"
+#include <Leaderboards/LeaderboardManager.h>
 
 class CXuiCtrlCraftIngredientSlot;
 

@@ -8,7 +8,7 @@
 #include "Button.h"
 #include "AchievementScreen.h"
 #include "StatsScreen.h"
-#include "..\Minecraft.World\net.minecraft.stats.h"
+#include <Minecraft.World/net.minecraft.stats.h>
 
 InventoryScreen::InventoryScreen(shared_ptr<Player> player) : AbstractContainerScreen(player->inventoryMenu)
 {

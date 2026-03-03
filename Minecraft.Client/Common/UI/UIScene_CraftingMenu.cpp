@@ -1,8 +1,8 @@
 #include "stdafx.h"
 #include "UI.h"
-#include "..\..\Minecraft.h"
-#include "..\..\MultiplayerLocalPlayer.h"
-#include "..\..\..\Minecraft.World\net.minecraft.world.inventory.h"
+#include <Minecraft.h>
+#include <MultiplayerLocalPlayer.h>
+#include <Minecraft.World/net.minecraft.world.inventory.h>
 #include "UIScene_CraftingMenu.h"
 
 #ifdef __PSVITA__

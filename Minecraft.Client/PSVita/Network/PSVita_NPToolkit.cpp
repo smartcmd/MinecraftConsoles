@@ -1,8 +1,8 @@
 #include "stdafx.h"
 
 #include "PSVita_NPToolkit.h"
-#include "PSVita/PSVitaExtras/Conf.h"
-#include "PSVita/Network/SonyCommerce_Vita.h"
+#include <PSVita/PSVitaExtras/Conf.h>
+#include <PSVita/Network/SonyCommerce_Vita.h>
  
 // #define NP_TITLE_ID "CUSA00265_00"
 // #define NP_TITLE_SECRET_HEX "c37e30fa1f7fd29e3534834d62781143ae29aa7b51d02320e7aa0b45116ad600e4d309e8431bc37977d98b8db480e721876e7d736e11fd906778c0033bbb6370903477b1dc1e65106afc62007a5feee3158844d721b88c3f4bff2e56417b6910cedfdec78b130d2e0dd35a35a9e2ae31d5889f9398c1d62b52a3630bb03faa5b"

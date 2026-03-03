@@ -2,8 +2,8 @@
 #include "WitherBossRenderer.h"
 #include "WitherBossModel.h"
 #include "MobRenderer.h"
-#include "../Minecraft.World/WitherBoss.h"
-#include "../Minecraft.Client/BossMobGuiInfo.h"
+#include <Minecraft.World/WitherBoss.h>
+#include <Minecraft.Client/BossMobGuiInfo.h>
 
 ResourceLocation WitherBossRenderer::WITHER_ARMOR_LOCATION = ResourceLocation(TN_MOB_WITHER_ARMOR);
 ResourceLocation WitherBossRenderer::WITHER_INVULERABLE_LOCATION = ResourceLocation(TN_MOB_WITHER_INVULNERABLE);

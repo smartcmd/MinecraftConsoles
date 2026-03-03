@@ -1,5 +1,5 @@
 #pragma once
-#include "../media/xuiscene_hud.h"
+#include <media/xuiscene_hud.h>
 #include "XUI_CustomMessages.h"
 
 #define CHAT_LINES_COUNT 10

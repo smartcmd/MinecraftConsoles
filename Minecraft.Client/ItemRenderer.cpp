@@ -2,13 +2,13 @@
 #include "ItemRenderer.h"
 #include "TileRenderer.h"
 #include "entityRenderDispatcher.h"
-#include "..\Minecraft.World\JavaMath.h"
-#include "..\Minecraft.World\net.minecraft.world.entity.item.h"
-#include "..\Minecraft.World\net.minecraft.world.item.h"
-#include "..\Minecraft.World\net.minecraft.world.item.alchemy.h"
-#include "..\Minecraft.World\net.minecraft.world.level.tile.h"
-#include "..\Minecraft.World\StringHelpers.h"
-#include "..\Minecraft.World\net.minecraft.world.h"
+#include <Minecraft.World/JavaMath.h>
+#include <Minecraft.World/net.minecraft.world.entity.item.h>
+#include <Minecraft.World/net.minecraft.world.item.h>
+#include <Minecraft.World/net.minecraft.world.item.alchemy.h>
+#include <Minecraft.World/net.minecraft.world.level.tile.h>
+#include <Minecraft.World/StringHelpers.h>
+#include <Minecraft.World/net.minecraft.world.h>
 #include "Options.h"
 #include "TextureAtlas.h"
 

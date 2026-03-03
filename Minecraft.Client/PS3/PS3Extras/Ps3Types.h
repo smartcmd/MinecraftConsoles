@@ -10,15 +10,15 @@
 #include <stddef.h>
 #include <boost/typeof/typeof.hpp>
 #include <boost/tr1/memory.hpp>
-#include "boost/tr1/unordered_map.hpp"
-#include "boost/tr1/unordered_set.hpp"
-#include "boost/pool/pool_alloc.hpp"
+#include <boost/tr1/unordered_map.hpp>
+#include <boost/tr1/unordered_set.hpp>
+#include <boost/pool/pool_alloc.hpp>
 #include <boost/mpl/equal_to.hpp>
 
 
 #define __forceinline inline
 
-//#include "winerror.h"
+//#include <winerror.h>
 
 using std::tr1::bad_weak_ptr;
 using std::tr1::const_pointer_cast;
@@ -71,7 +71,7 @@ extern Cnullptr nullptr;
 
 
 // #include <math.h>
-// #include "DirectX\DirectXMath.h"
+// #include <DirectX/DirectXMath.h>
 // using namespace DirectX;
 
 #define S_OK 0

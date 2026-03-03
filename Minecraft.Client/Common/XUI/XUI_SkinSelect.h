@@ -1,9 +1,9 @@
 #pragma once
 
-#include "../media/xuiscene_skinselect.h"
+#include <media/xuiscene_skinselect.h>
 #include "XUI_CustomMessages.h"
-#include "..\..\..\Minecraft.World\Definitions.h"
-#include "..\..\Textures.h"
+#include <Minecraft.World/Definitions.h>
+#include <Textures.h>
 
 class DLCPack;
 

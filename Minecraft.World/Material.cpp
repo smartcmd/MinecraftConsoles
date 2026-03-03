@@ -4,7 +4,7 @@
 #include "GasMaterial.h"
 #include "LiquidMaterial.h"
 #include "PortalMaterial.h"
-#include "WebMaterial.h"// 4J added, Java version just does a local alteration when instantiating the Material for webs to get the same thing
+#include <WebMaterial.h>// 4J added, Java version just does a local alteration when instantiating the Material for webs to get the same thing
 
 Material *Material::air = NULL;
 Material *Material::grass = NULL;

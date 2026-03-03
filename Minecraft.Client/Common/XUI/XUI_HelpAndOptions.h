@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../media/xuiscene_helpandoptions.h"
+#include <media/xuiscene_helpandoptions.h>
 #include "XUI_CustomMessages.h"
 
 #define BUTTON_HAO_CHANGESKIN			0
