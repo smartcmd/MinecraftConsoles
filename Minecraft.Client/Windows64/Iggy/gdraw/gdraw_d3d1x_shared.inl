@@ -973,6 +973,9 @@ void gdraw_D3D1X_(SetRendertargetSize)(S32 w, S32 h)
 
 void gdraw_D3D1X_(SetTileOrigin)(ID3D1X(RenderTargetView) *main_rt, ID3D1X(DepthStencilView) *main_ds, ID3D1X(ShaderResourceView) *non_msaa_rt, S32 x, S32 y)
 {
+
+    if (!gdraw) return; // AAR - saftey check because windows calls resize early
+
    D3D1X_(RENDER_TARGET_VIEW_DESC) desc;
 
    if (gdraw->frame_done) {

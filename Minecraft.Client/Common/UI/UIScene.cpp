@@ -1199,6 +1199,46 @@ void UIScene::_handleFocusChange(F64 controlId, F64 childId)
 	ui.PlayUISFX(eSFX_Focus);
 }
 
+void UIScene::OnResize()
+{
+    if (!swf)
+    {
+        return;
+    }
+
+    // Update the Iggy player with new display size
+    S32 width, height;
+    m_parentLayer->getRenderDimensions(width, height);
+    IggyPlayerSetDisplaySize(swf, width, height);
+
+    // Update safe zone
+    updateSafeZone();
+
+    // Notify the Flash movie about resize (if it has a resize handler)
+    IggyDataValue result;
+    IggyResult out = IggyPlayerCallMethodRS(getMovie(), &result,
+                                            IggyPlayerRootPath(getMovie()),
+                                            registerFastName(L"OnResize"),
+                                            0, NULL);
+
+
+    // Force a redraw of cached content
+    m_needsCacheRendered = true;
+}
+
+void UIScene::UpdateDisplaySize()
+{
+    if (!swf)
+    {
+        return;
+    }
+
+    S32 width, height;
+    m_parentLayer->getRenderDimensions(width, height);
+    IggyPlayerSetDisplaySize(swf, width, height);
+    updateSafeZone();
+}
+
 void UIScene::_handleInitFocus(F64 controlId, F64 childId)
 {
 	m_iFocusControl = (int)controlId;

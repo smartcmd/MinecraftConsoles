@@ -34,7 +34,7 @@ public:
 	UIGroup *m_parentGroup;
 public:
 	UILayer(UIGroup *parent);
-
+  void UILayer::OnResize();
 	void tick();
 	void render(S32 width, S32 height, C4JRender::eViewportType viewport);
 	void getRenderDimensions(S32 &width, S32 &height);

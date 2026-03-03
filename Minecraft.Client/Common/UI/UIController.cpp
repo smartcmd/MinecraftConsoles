@@ -181,7 +181,9 @@ UIController::UIController()
 	// 4J Stu - This is a bit of a hack until we change the Minecraft initialisation to store the proper screen size for other platforms
 #if defined _WINDOWS64 || defined _DURANGO || defined __ORBIS__
 	m_fScreenWidth = 1920.0f;
-	m_fScreenHeight = 1080.0f;
+	m_fScreenHeight = 1080.0f;\
+	aar_Width = 1920.0f;
+    aar_Height = 1080.0f;
 	m_bScreenWidthSetup = false;
 #else
 	m_fScreenWidth = 1280.0f;
@@ -1209,10 +1211,37 @@ void UIController::getRenderDimensions(C4JRender::eViewportType viewport, S32 &w
 {
 	switch( viewport )
 	{
-	case C4JRender::VIEWPORT_TYPE_FULLSCREEN:
-		width = (S32)(getScreenWidth());
-		height = (S32)(getScreenHeight());
-		break;
+    case C4JRender::VIEWPORT_TYPE_FULLSCREEN:
+        {
+            // AnyAspectRatio support by Fayaz
+            // We must clamp the render dimensions to 16:9 so Iggy doesn't stretch content.
+
+            float targetAspect = 16.0f / 9.0f;
+            float currentAspect = aar_Width / aar_Height;
+
+            if (currentAspect > targetAspect)
+            {
+                // Screen is Ultrawide (Wider than 16:9):
+                // Lock height to screen, calculate width based on 16:9 ratio
+                width = (S32)(aar_Height * targetAspect);
+                height = (S32)aar_Height;
+            }
+            else if (currentAspect < targetAspect)
+            {
+                // Screen is Tall (Taller than 16:9, e.g. 4:3, 16:10, Steam Deck):
+                // Lock width to screen, calculate height based on 16:9 ratio
+                width = (S32)aar_Width;
+                // Height = Width / 1.777
+                height = (S32)(aar_Width / targetAspect);
+            }
+            else
+            {
+                // Standard 16:9: Use actual screen dimensions
+                width = (S32)aar_Width;
+                height = (S32)aar_Height;
+            }
+        }
+        break;
 	case C4JRender::VIEWPORT_TYPE_SPLIT_TOP:
 	case C4JRender::VIEWPORT_TYPE_SPLIT_BOTTOM:
 		width = (S32)(getScreenWidth() / 2);
@@ -1233,16 +1262,81 @@ void UIController::getRenderDimensions(C4JRender::eViewportType viewport, S32 &w
 	}
 }
 
+// AAR - Handle window resizing by updating the width and height variables
+// AAR - Handle window resizing by updating the width and height variables
+// AAR - Handle window resizing by updating the width and height variables
+void UIController::resize(S32 width, S32 height)
+{
+    // Store the new dimensions
+    aar_Width = (float)width;
+    aar_Height = (float)height;
+    m_fScreenWidth = (float)width;
+    m_fScreenHeight = (float)height;
+
+    // Notify all UIGroups about the resize
+    for (unsigned int i = 0; i < eUIGroup_COUNT; ++i)
+    {
+        if (m_groups[i])
+        {
+            m_groups[i]->OnResize(width, height);
+        }
+    }
+
+    // Force a render position update on next render
+    m_currentRenderViewport = (C4JRender::eViewportType)-1; // Force recalculation
+
+    // Update the Iggy global display if needed
+    // (Some Iggy versions need global display size updates)
+}
+
 void UIController::setupRenderPosition(C4JRender::eViewportType viewport)
 {
-	if(m_bCustomRenderPosition || m_currentRenderViewport != viewport)
+	// AAR - Force update for fullscreen to ensure offsets are calculated (fix for constructor init issue)
+	if(m_bCustomRenderPosition || m_currentRenderViewport != viewport || viewport == C4JRender::VIEWPORT_TYPE_FULLSCREEN)
 	{
 		m_currentRenderViewport = viewport;
 		m_bCustomRenderPosition = false;
 		S32 xPos = 0;
 		S32 yPos = 0;
+		
 		switch( viewport )
 		{
+		case C4JRender::VIEWPORT_TYPE_FULLSCREEN:
+			{
+				// AnyAspectRatio support by Fayaz (related code has AAR prefix)
+				// Calculate target 16:9 width based on current height
+				float targetAspect = 16.0f / 9.0f;
+                float currentAspect = aar_Width / aar_Height;
+
+				// Screen is wider than 16:9 (Ultrawide)
+				if (currentAspect > targetAspect)
+				{
+                    // find what the width of 16/9 would be at this height
+                    S32 width169 = (S32)(aar_Height * targetAspect);
+					
+					// Center the UI by setting the width to have the difference of 16/9 width and current width
+                    xPos = (S32)(aar_Width - width169) * 0.5;
+					yPos = 0;
+				}
+                // Screen is taller than 16:9 (like 4:3 or Steam Deck)
+				else if (currentAspect < targetAspect)
+				{
+					// find what the height of 16/9 would be at this width
+                    S32 height169 = (S32)(aar_Width / targetAspect); 
+
+                    // Center the UI by setting the height to have the difference of 16/9 height and current height
+                    xPos = 0; 
+                    yPos = (S32)(aar_Height - height169) * -0.5; // 0, 0 is top left, so we need to negate the yPos
+				}
+				// Otherwise, assume current aspect ratio is 16:9
+				else 
+				{
+					// 16:9 - Fill screen normally (starts at 0,0)
+					xPos = 0;
+					yPos = 0;
+				}
+			}
+			break;
 		case C4JRender::VIEWPORT_TYPE_SPLIT_TOP:
 			xPos = (S32)(getScreenWidth() / 4);
 			break;
@@ -1317,7 +1411,7 @@ void UIController::setupCustomDrawGameState()
 	PIXBeginNamedEvent(0,"Final setup");
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
-	glOrtho(0, m_fScreenWidth, m_fScreenHeight, 0, 1000, 3000);
+    glOrtho(0, aar_Width, aar_Height, 0, 1000, 3000); // AAR - Changed to allow resizing
 	glMatrixMode(GL_MODELVIEW);
 	glEnable(GL_ALPHA_TEST);			
 	glAlphaFunc(GL_GREATER, 0.1f);
@@ -1365,16 +1459,21 @@ void UIController::setupCustomDrawMatrices(UIScene *scene, CustomDrawData *custo
 		{
 			m_fScreenWidth=(float)pMinecraft->width_phys;
 			m_fScreenHeight=(float)pMinecraft->height_phys;
+            aar_Width = (float)pMinecraft->width_phys;
+            aar_Height = (float)pMinecraft->height_phys;
 			m_bScreenWidthSetup = true;
 		}
 	}
 
 	glLoadIdentity();
 	glTranslatef(0, 0, -2000);
+	// Fayaz - Apply the calculated tile origin
+	glTranslatef((float)m_tileOriginX, (float)m_tileOriginY, 0.0f);
+
 	// Iggy translations are based on a double-size target, with the origin in the centre
-	glTranslatef((m_fScreenWidth + customDrawRegion->mat[(0*4)+3]*m_fScreenWidth)/2,(m_fScreenHeight - customDrawRegion->mat[(1*4)+3]*m_fScreenHeight)/2,0);
+    glTranslatef((aar_Width + customDrawRegion->mat[(0 * 4) + 3] * aar_Width) / 2, (aar_Height - customDrawRegion->mat[(1 * 4) + 3] * aar_Height) / 2, 0);
 	// Iggy scales are based on a double-size target
-	glScalef( (m_fScreenWidth * customDrawRegion->mat[0])/2,(m_fScreenHeight * -customDrawRegion->mat[(1*4) + 1])/2,1.0f);
+    glScalef((aar_Width * customDrawRegion->mat[0]) / 2, (aar_Height * -customDrawRegion->mat[(1 * 4) + 1]) / 2, 1.0f);
 }
 
 void UIController::setupCustomDrawGameStateAndMatrices(UIScene *scene, CustomDrawData *customDrawRegion)

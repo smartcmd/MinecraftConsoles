@@ -34,6 +34,8 @@ private:
 
 	float m_fScreenWidth;
 	float m_fScreenHeight;
+    float aar_Width;
+    float aar_Height;
 	bool m_bScreenWidthSetup;
 
 	S32 m_tileOriginX, m_tileOriginY;
@@ -172,6 +174,7 @@ private:
 
 public:
 	UIController();
+	void resize(S32 width, S32 height);
 #ifdef __PSVITA__
 	void TouchBoxAdd(UIControl *pControl,UIScene *pUIScene);
 	bool TouchBoxHit(UIScene *pUIScene,S32 x, S32 y);

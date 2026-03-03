@@ -9,6 +9,7 @@
 
 ConsoleUIController ui;
 
+
 void ConsoleUIController::init(ID3D11Device *dev, ID3D11DeviceContext *ctx, ID3D11RenderTargetView* pRenderTargetView, ID3D11DepthStencilView* pDepthStencilView, S32 w, S32 h)
 {
 #ifdef _ENABLEIGGY

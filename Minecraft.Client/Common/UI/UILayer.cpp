@@ -872,6 +872,35 @@ C4JRender::eViewportType UILayer::getViewport()
 	return m_parentGroup->GetViewportType();
 }
 
+void UILayer::OnResize()
+{
+    // Update all components
+    for (auto component : m_components)
+    {
+        if (component)
+        {
+            component->OnResize();
+        }
+    }
+
+    // Update all scenes in the stack
+    for (auto scene : m_sceneStack)
+    {
+        if (scene)
+        {
+            scene->OnResize();
+        }
+    }
+
+    // Update any scenes pending deletion
+    for (auto scene : m_scenesToDelete)
+    {
+        if (scene)
+        {
+            scene->OnResize();
+        }
+    }
+}
 
 void UILayer::handleUnlockFullVersion()
 {
