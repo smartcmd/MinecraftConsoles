@@ -1445,7 +1445,7 @@ GDrawTexture * RADLINK UIController::TextureSubstitutionCreateCallback ( void * 
 
 			// 4J Stu - All our flash controls that allow replacing textures use a special 64x64 symbol
 			// Force this size here so that our images don't get scaled wildly
-	#if (defined __ORBIS__ || defined _DURANGO )
+	#if (defined __ORBIS__ || defined _DURANGO || defined _WINDOWS64 )
 			*width = 96;
 			*height = 96;
 	#else
