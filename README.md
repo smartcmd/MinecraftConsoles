@@ -46,7 +46,7 @@ This feature is based on [LCEMP](https://github.com/LCEMP/LCEMP/)
 - **Inventory**: `E`
 - **Drop Item**: `Q`
 - **Crafting**: `C`
-- **Toggling between groups(Crafting Table/World Settings)**: `Q` and `E`
+- **Toggle between groups(Crafting Menu/World Options Menu)**: `Q` and `E`
 - **Toggle View (FPS/TPS)**: `F5`
 - **Fullscreen**: `F11`
 - **Pause Menu**: `Esc`
