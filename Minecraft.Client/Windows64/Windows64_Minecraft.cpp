@@ -1256,7 +1256,7 @@ int APIENTRY _tWinMain(_In_ HINSTANCE hInstance,
 			static bool altToggleSuppressCapture = false;
 			bool shouldCapture = app.GetGameStarted() && !ui.GetMenuDisplayed(0) && pMinecraft->screen == NULL;
 			// Left Alt key toggles capture on/off for debugging
-			if (KMInput.IsKeyPressed(VK_MENU))
+			if (KMInput.IsKeyPressed(KMInput::KEY_TOGGLE_CAPTURE))
 			{
 				if (KMInput.IsCaptured()) { KMInput.SetCapture(false); altToggleSuppressCapture = true; }
 				else if (shouldCapture)   { KMInput.SetCapture(true);  altToggleSuppressCapture = false; }
@@ -1273,7 +1273,7 @@ int APIENTRY _tWinMain(_In_ HINSTANCE hInstance,
 		}
 
 		// F3 toggles the debug console overlay, F11 toggles fullscreen
-		if (KMInput.IsKeyPressed(VK_F3))
+		if (KMInput.IsKeyPressed(KMInput::KEY_DEBUG_CONSOLE_OVERLAY))
 		{
 			static bool s_debugConsole = false;
 			s_debugConsole = !s_debugConsole;
@@ -1281,19 +1281,19 @@ int APIENTRY _tWinMain(_In_ HINSTANCE hInstance,
 		}
 
 #ifdef _DEBUG_MENUS_ENABLED
-		if (KMInput.IsKeyPressed(VK_F4))
+		if (KMInput.IsKeyPressed(KeyboardMouseInput::KEY_DEBUG_OVERLAY))
 		{
 			ui.NavigateToScene(ProfileManager.GetPrimaryPad(), eUIScene_DebugOverlay, NULL, eUILayer_Debug);
 		}
 #endif
 
-		if (KMInput.IsKeyPressed(VK_F11))
+		if (KMInput.IsKeyPressed(KMInput::KEY_FULLSCREEN))
 		{
 			ToggleFullscreen();
 		}
 
 		// TAB opens game info menu. - Vvis :3 - Updated by detectiveren
-		if (KMInput.IsKeyPressed(VK_TAB) && !ui.GetMenuDisplayed(0))
+		if (KMInput.IsKeyPressed(KMInput::KEY_GAME_INFO_MENU) && !ui.GetMenuDisplayed(0))
 		{
 			if (Minecraft* pMinecraft = Minecraft::GetInstance())
 			{
@@ -1306,7 +1306,7 @@ int APIENTRY _tWinMain(_In_ HINSTANCE hInstance,
 
 #ifdef _DEBUG_MENUS_ENABLED
 		// F3 toggles onscreen debug info
-		if (KMInput.IsKeyPressed(VK_F3))
+		if (KMInput.IsKeyPressed(KMInput::KEY_DEBUG_CONSOLE_OVERLAY))
 		{
 			if (Minecraft* pMinecraft = Minecraft::GetInstance())
 			{
@@ -1318,7 +1318,7 @@ int APIENTRY _tWinMain(_In_ HINSTANCE hInstance,
 		}
 
 		// F4 opens debug overlay
-		if (KMInput.IsKeyPressed(VK_F4))
+		if (KMInput.IsKeyPressed(KeyboardMouseInput::KEY_DEBUG_OVERLAY))
 		{
 			if (Minecraft* pMinecraft = Minecraft::GetInstance())
 			{

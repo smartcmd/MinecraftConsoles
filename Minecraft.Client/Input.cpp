@@ -50,10 +50,10 @@ void Input::tick(LocalPlayer *player)
 	if (iPad == 0 && KMInput.IsCaptured())
 	{
 		float kbX = 0.0f, kbY = 0.0f;
-		if (KMInput.IsKeyDown('W')) { kbY += 1.0f; sprintForward += 1.0f; usingKeyboardMovement = true; }
-		if (KMInput.IsKeyDown('S')) { kbY -= 1.0f; sprintForward -= 1.0f; usingKeyboardMovement = true; }
-		if (KMInput.IsKeyDown('A')) { kbX += 1.0f; usingKeyboardMovement = true; }  // inverted like gamepad
-		if (KMInput.IsKeyDown('D')) { kbX -= 1.0f; usingKeyboardMovement = true; }
+		if (KMInput.IsKeyDown(KeyboardMouseInput::KEY_WALK_UP)) { kbY += 1.0f; sprintForward += 1.0f; usingKeyboardMovement = true; }
+		if (KMInput.IsKeyDown(KeyboardMouseInput::KEY_WALK_DOWN)) { kbY -= 1.0f; sprintForward -= 1.0f; usingKeyboardMovement = true; }
+		if (KMInput.IsKeyDown(KeyboardMouseInput::KEY_WALK_LEFT)) { kbX += 1.0f; usingKeyboardMovement = true; }  // inverted like gamepad
+		if (KMInput.IsKeyDown(KeyboardMouseInput::KEY_WALK_RIGHT)) { kbX -= 1.0f; usingKeyboardMovement = true; }
 		// Normalize diagonal
 		if (kbX != 0.0f && kbY != 0.0f) { kbX *= 0.707f; kbY *= 0.707f; }
 		if (pMinecraft->localgameModes[iPad]->isInputAllowed(MINECRAFT_ACTION_LEFT) || pMinecraft->localgameModes[iPad]->isInputAllowed(MINECRAFT_ACTION_RIGHT))

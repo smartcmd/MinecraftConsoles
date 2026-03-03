@@ -45,8 +45,8 @@ bool ChoiceTask::isCompleted()
 		sendTelemetry();
 		enableConstraints(false, true);
 		return true;
-	}	
-	
+	}
+
 	if(ui.GetMenuDisplayed(tutorial->getPad()))
 	{
 		// If a menu is displayed, then we use the handleUIInput to complete the task
