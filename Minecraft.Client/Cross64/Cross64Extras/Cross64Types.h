@@ -1,21 +1,16 @@
 #pragma once
 
-#include <stddef.h>
-#include <typeinfo>
 #include <cstdint>
-#include <cstddef>
-#include <cwchar>
+#include <stddef.h>
 
 #define S_OK 0
 
-typedef unsigned long DWORD;
-typedef int BOOL;
-typedef unsigned char BYTE;
-typedef unsigned short WORD;
+typedef uint32_t DWORD;
+typedef int32_t BOOL;
+typedef uint8_t BYTE;
+typedef uint16_t WORD;
 typedef float FLOAT;
-
 typedef int __int32;
-
 typedef FLOAT *PFLOAT;
 typedef BOOL *PBOOL;
 typedef BOOL *LPBOOL;
@@ -25,37 +20,37 @@ typedef int *PINT;
 typedef int *LPINT;
 typedef WORD *PWORD;
 typedef WORD *LPWORD;
-typedef long *PLONG;
-typedef long *LPLONG;
+typedef int *PLONG;
+typedef int *LPLONG;
 typedef DWORD *PDWORD;
 typedef DWORD *LPDWORD;
 typedef void *LPVOID;
 typedef const void *LPCVOID;
 typedef void *PVOID;
-typedef unsigned long ULONG;
+typedef unsigned int ULONG;
 
 typedef unsigned char boolean;
 
-typedef int INT;
-typedef unsigned int UINT;
-typedef unsigned int *PUINT;
+typedef int32_t INT;
+typedef uint32_t UINT;
+typedef uint32_t *PUINT;
 
 typedef unsigned char byte;
-typedef long long __int64;
-typedef unsigned long long __uint64;
-typedef unsigned long DWORD;
+typedef long __int64;
+typedef unsigned long __uint64;
+typedef unsigned int DWORD;
 typedef int INT;
-typedef unsigned long ULONG_PTR, *PULONG_PTR;
+typedef uintptr_t ULONG_PTR, *PULONG_PTR;
 typedef ULONG_PTR SIZE_T, *PSIZE_T;
 
-typedef __int64 LONG64, *PLONG64;
+typedef long LONG64, *PLONG64;
 
 #define VOID void
 typedef char CHAR;
 typedef short SHORT;
-typedef long LONG;
-typedef __int64 LONGLONG;
-typedef __uint64 ULONGLONG;
+typedef int32_t LONG;
+typedef long LONGLONG;
+typedef unsigned long ULONGLONG;
 
 #define CONST const
 typedef wchar_t WCHAR; // wc,   16-bit UNICODE character
@@ -83,12 +78,6 @@ typedef CONST CHAR *LPCSTR, *PCSTR;
 #ifndef TRUE
 #define TRUE 1
 #endif
-
-typedef void *HANDLE;
-typedef void *HMODULE;
-typedef void *HINSTANCE;
-typedef void *HWND;
-typedef int errno_t;
 
 typedef struct _FILETIME {
 #ifdef _M_PPCBE
@@ -156,6 +145,10 @@ typedef union _ULARGE_INTEGER {
 
 typedef ULARGE_INTEGER *PULARGE_INTEGER;
 
+// 360 specifics
+typedef int32_t HRESULT;
+typedef void *HANDLE;
+
 #define DECLARE_HANDLE(name) typedef HANDLE name
 DECLARE_HANDLE(HINSTANCE);
 
@@ -174,3 +167,7 @@ typedef LPVOID LPSECURITY_ATTRIBUTES;
 
 #define __in_ecount(a)
 #define __in_bcount(a)
+
+#ifndef AUTO_VAR
+#define AUTO_VAR(_var, _val) auto _var = _val
+#endif
