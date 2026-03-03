@@ -24,6 +24,9 @@ ServerChunkCache::ServerChunkCache(ServerLevel *level, ChunkStorage *storage, Ch
 	// For infinite worlds, m_XZSize is no longer used for cache sizing.
 	// Keep it at a large value so code that reads it (e.g. dimension getXZSize) still works.
 	this->m_XZSize = source->m_XZSize;
+#ifdef _LARGE_WORLDS
+	this->m_isInfinite = isInfiniteWorld(this->m_XZSize);
+#endif
 
 	InitializeCriticalSectionAndSpinCount(&m_csLoadCreate,4000);
 }
@@ -48,7 +51,15 @@ ServerChunkCache::~ServerChunkCache()
 
 bool ServerChunkCache::hasChunk(int x, int z)
 {
-	// Infinite worlds: any coordinate is valid; check if chunk is loaded
+#ifdef _LARGE_WORLDS
+	// For finite worlds, out-of-bounds coordinates are treated as "exists" (sea/empty edge)
+	if (!m_isInfinite)
+	{
+		int half = m_XZSize / 2;
+		if (x < -half || x >= half || z < -half || z >= half) return true;
+	}
+#endif
+	// Check if chunk is loaded in the map
 	EnterCriticalSection(&m_csLoadCreate);
 	auto it = m_chunkMap.find(chunkKey(x, z));
 	bool result = (it != m_chunkMap.end() && it->second != NULL);
@@ -91,6 +102,15 @@ LevelChunk *ServerChunkCache::create(int x, int z)
 
 LevelChunk *ServerChunkCache::create(int x, int z, bool asyncPostProcess)	// 4J - added extra parameter
 {
+#ifdef _LARGE_WORLDS
+	// For finite worlds, refuse to create chunks outside the world boundary
+	if (!m_isInfinite)
+	{
+		int half = m_XZSize / 2;
+		if (x < -half || x >= half || z < -half || z >= half) return emptyChunk;
+	}
+#endif
+
 	int64_t key = chunkKey(x, z);
 
 	EnterCriticalSection(&m_csLoadCreate);
@@ -130,6 +150,17 @@ LevelChunk *ServerChunkCache::create(int x, int z, bool asyncPostProcess)	// 4J 
 	// they are in fail ServerChunkCache::hasChunk.
 	source->lightChunk(chunk);
 
+	// Prevent cascading chunk creation: when isFindingSpawn or autoCreate is true,
+	// getChunk() auto-creates missing chunks. Post-processing and updatePostProcessFlags
+	// call getChunk() for neighbors, which would recursively create() those neighbors,
+	// whose post-processing creates more neighbors, flood-filling the entire world.
+	// Temporarily disable auto-creation so these internal calls return emptyChunk
+	// for missing neighbors instead of cascading.
+	bool savedFindingSpawn = level->isFindingSpawn;
+	bool savedAutoCreate = autoCreate;
+	level->isFindingSpawn = false;
+	autoCreate = false;
+
 	updatePostProcessFlags( x, z );
 
 	m_loadedChunkList.push_back(chunk);
@@ -155,6 +186,10 @@ LevelChunk *ServerChunkCache::create(int x, int z, bool asyncPostProcess)	// 4J 
 	if( hasChunk( x, z - 1) && hasChunk( x , z - 2 ) && hasChunk( x - 1, z - 1 ) && hasChunk( x + 1, z - 1 ) ) chunk->checkChests( this, x, z - 1);
 	if( hasChunk( x - 1, z ) && hasChunk( x + 1, z ) && hasChunk ( x, z - 1 ) && hasChunk( x, z + 1 ) ) chunk->checkChests( this, x, z );
 
+	// Restore auto-creation flags
+	level->isFindingSpawn = savedFindingSpawn;
+	autoCreate = savedAutoCreate;
+
 	LeaveCriticalSection(&m_csLoadCreate);
 
 #ifdef __PS3__
@@ -168,6 +203,15 @@ LevelChunk *ServerChunkCache::create(int x, int z, bool asyncPostProcess)	// 4J 
 // This is used when sharing server chunk data on the main thread
 LevelChunk *ServerChunkCache::getChunk(int x, int z)
 {
+#ifdef _LARGE_WORLDS
+	// For finite worlds, out-of-bounds coordinates return the empty chunk
+	if (!m_isInfinite)
+	{
+		int half = m_XZSize / 2;
+		if (x < -half || x >= half || z < -half || z >= half) return emptyChunk;
+	}
+#endif
+
 	EnterCriticalSection(&m_csLoadCreate);
 	auto it = m_chunkMap.find(chunkKey(x, z));
 	LevelChunk *chunk = (it != m_chunkMap.end() && it->second != NULL) ? it->second : NULL;
@@ -377,6 +421,15 @@ void ServerChunkCache::flagPostProcessComplete(short flag, int x, int z)
 
 void ServerChunkCache::postProcess(ChunkSource *parent, int x, int z )
 {
+#ifdef _LARGE_WORLDS
+	// Don't run decoration/structures at out-of-bounds coordinates
+	if (!m_isInfinite)
+	{
+		int half = m_XZSize / 2;
+		if (x < -half || x >= half || z < -half || z >= half) return;
+	}
+#endif
+
     LevelChunk *chunk = getChunk(x, z);
     if ( (chunk->terrainPopulated & LevelChunk::sTerrainPopulatedFromHere) == 0 )
 	{	
@@ -393,7 +446,38 @@ void ServerChunkCache::postProcess(ChunkSource *parent, int x, int z )
 		// chunks exist as that's determined before post-processing can even run
 		chunk->terrainPopulated |= LevelChunk::sTerrainPopulatedFromHere;
 
-		// Infinite worlds: no fixed world edges, so no edge-chunk special-casing needed.
+#ifdef _LARGE_WORLDS
+		// For finite worlds, edge chunks have missing neighbours that will never post-process,
+		// so fill in the appropriate flags. For infinite worlds, no edges exist.
+		if (!m_isInfinite)
+		{
+			int half = m_XZSize / 2;
+			if(x == -half)						// Furthest west
+			{
+				chunk->terrainPopulated |= LevelChunk::sTerrainPopulatedFromW;
+				chunk->terrainPopulated |= LevelChunk::sTerrainPopulatedFromSW;
+				chunk->terrainPopulated |= LevelChunk::sTerrainPopulatedFromNW;
+			}
+			if(x == (half - 1))					// Furthest east
+			{
+				chunk->terrainPopulated |= LevelChunk::sTerrainPopulatedFromE;
+				chunk->terrainPopulated |= LevelChunk::sTerrainPopulatedFromSE;
+				chunk->terrainPopulated |= LevelChunk::sTerrainPopulatedFromNE;
+			}
+			if(z == -half)						// Furthest south
+			{
+				chunk->terrainPopulated |= LevelChunk::sTerrainPopulatedFromS;
+				chunk->terrainPopulated |= LevelChunk::sTerrainPopulatedFromSW;
+				chunk->terrainPopulated |= LevelChunk::sTerrainPopulatedFromSE;
+			}
+			if(z == (half - 1))					// Furthest north
+			{
+				chunk->terrainPopulated |= LevelChunk::sTerrainPopulatedFromN;
+				chunk->terrainPopulated |= LevelChunk::sTerrainPopulatedFromNW;
+				chunk->terrainPopulated |= LevelChunk::sTerrainPopulatedFromNE;
+			}
+		}
+#endif
 
 		// Set flags for post-processing being complete for neighbouring chunks. This also performs actions if this post-processing completes
 		// a full set of post-processing flags for one of these neighbours.

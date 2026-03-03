@@ -8463,6 +8463,10 @@ Si vous tentez de sauvegarder en utilisant la version d'essai, l'achat de la ver
 		<value>Énorme</value>
 	</data>	
 
+  <data name="IDS_WORLD_SIZE_TITLE_INFINITE">
+    <value>Infinite</value>
+  </data>
+
 	<data name="IDS_WORLD_SIZE_TITLE_CLASSIC">
 		<value>Classique</value>
 	</data>	

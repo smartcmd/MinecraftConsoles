@@ -34,6 +34,7 @@ private:
     ServerLevel *level;
 
 #ifdef _LARGE_WORLDS
+	bool m_isInfinite;	// true when m_XZSize >= LEVEL_MAX_WIDTH (infinite world)
 	deque<LevelChunk *> m_toDrop;
 #endif
 

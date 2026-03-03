@@ -8353,6 +8353,10 @@ Jos yrität tallentaa käyttäessäsi koeversiota, sinulle tarjotaan mahdollisuu
 		<value>Suuri</value>
 	</data>	
 
+	<data name="IDS_WORLD_SIZE_TITLE_INFINITE">
+		<value>Infinite</value>
+	</data>	
+
 	<data name="IDS_WORLD_SIZE_TITLE_CLASSIC">
 		<value>Klassinen</value>
 	</data>	

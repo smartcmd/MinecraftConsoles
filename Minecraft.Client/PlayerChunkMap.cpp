@@ -586,6 +586,11 @@ void PlayerChunkMap::add(shared_ptr<ServerPlayer> player)
     player->lastMoveX = player->x;
     player->lastMoveZ = player->z;
 
+#ifdef _LARGE_WORLDS
+	int half = level->getLevelData()->getXZSize() / 2;
+	bool isInfinite = isInfiniteWorld(level->getLevelData()->getXZSize());
+#endif
+
 //        for (int x = xc - radius; x <= xc + radius; x++)
 //            for (int z = zc - radius; z <= zc + radius; z++) {
 //                getChunk(x, z, true).add(player);
@@ -598,6 +603,9 @@ void PlayerChunkMap::add(shared_ptr<ServerPlayer> player)
     int dz = 0;
 
     // Origin
+#ifdef _LARGE_WORLDS
+    if (isInfinite || (xc >= -half && xc < half && zc >= -half && zc < half))
+#endif
     getChunk(xc, zc, true)->add(player, false);
 
 	// 4J Added so we send an area packet rather than one visibility packet per chunk
@@ -625,6 +633,9 @@ void PlayerChunkMap::add(shared_ptr<ServerPlayer> player)
 				if( targetZ > maxZ ) maxZ = targetZ;
 				if( targetZ < minZ ) minZ = targetZ;
 
+#ifdef _LARGE_WORLDS
+				if (isInfinite || (targetX >= -half && targetX < half && targetZ >= -half && targetZ < half))
+#endif
                 getChunk(targetX, targetZ, true)->add(player, false);
             }
         }
@@ -645,9 +656,23 @@ void PlayerChunkMap::add(shared_ptr<ServerPlayer> player)
 		if( targetZ > maxZ ) maxZ = targetZ;
 		if( targetZ < minZ ) minZ = targetZ;
 
+#ifdef _LARGE_WORLDS
+		if (isInfinite || (targetX >= -half && targetX < half && targetZ >= -half && targetZ < half))
+#endif
         getChunk(targetX, targetZ, true)->add(player, false);
     }
     // CraftBukkit end
+
+#ifdef _LARGE_WORLDS
+	// Clamp visibility area to world bounds for finite worlds
+	if (!isInfinite)
+	{
+		if (minX < -half) minX = -half;
+		if (maxX >= half) maxX = half - 1;
+		if (minZ < -half) minZ = -half;
+		if (maxZ >= half) maxZ = half - 1;
+	}
+#endif
 
 	player->connection->send( shared_ptr<ChunkVisibilityAreaPacket>( new ChunkVisibilityAreaPacket(minX, maxX, minZ, maxZ) ) );
 
@@ -719,12 +744,20 @@ void PlayerChunkMap::move(shared_ptr<ServerPlayer> player)
     int zd = zc - last_zc;
     if (xd == 0 && zd == 0) return;
 
+#ifdef _LARGE_WORLDS
+	int half = level->getLevelData()->getXZSize() / 2;
+	bool isInfinite = isInfiniteWorld(level->getLevelData()->getXZSize());
+#endif
+
 	for (int x = xc - radius; x <= xc + radius; x++)
         for (int z = zc - radius; z <= zc + radius; z++)
 		{ 
 			if (!chunkInRange(x, z, last_xc, last_zc))
 			{
 				// 4J - changed from separate getChunk & add so we can wrap these operations up and queue
+#ifdef _LARGE_WORLDS
+				if (isInfinite || (x >= -half && x < half && z >= -half && z < half))
+#endif
 				getChunkAndAddPlayer(x, z, player);
 			}
 
@@ -772,6 +805,11 @@ void PlayerChunkMap::setRadius(int newRadius)
 {
 	if( radius != newRadius )
 	{
+#ifdef _LARGE_WORLDS
+		int half = level->getLevelData()->getXZSize() / 2;
+		bool isInfinite = isInfiniteWorld(level->getLevelData()->getXZSize());
+#endif
+
 		PlayerList* players = level->getServer()->getPlayerList();
 		for( int i = 0;i < players->players.size();i += 1 )
 		{
@@ -787,6 +825,9 @@ void PlayerChunkMap::setRadius(int newRadius)
 						// check if this chunk is outside the old radius area
 						if ( x < xc - radius || x > xc + radius || z < zc - radius || z > zc + radius )
 						{
+#ifdef _LARGE_WORLDS
+							if (isInfinite || (x >= -half && x < half && z >= -half && z < half))
+#endif
 							getChunkAndAddPlayer(x, z, player);
 						}
 					}

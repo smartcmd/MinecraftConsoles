@@ -24,6 +24,10 @@ private:
 	// 4J - added for multithreaded support
 	CRITICAL_SECTION m_csLoadCreate;
 
+#ifdef _LARGE_WORLDS
+	bool m_isInfinite;	// true when m_XZSize >= LEVEL_MAX_WIDTH (infinite world)
+#endif
+
 	// Deferred deletion: chunks removed from the map but kept alive briefly
 	// so any in-flight rebuild thread that already obtained the pointer can finish.
 	// Each entry stores {chunk, tickAtWhichToDelete}.

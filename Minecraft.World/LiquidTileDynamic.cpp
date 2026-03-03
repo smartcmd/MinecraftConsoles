@@ -316,7 +316,18 @@ int LiquidTileDynamic::getHighest(Level *level, int x, int y, int z, int current
 
 bool LiquidTileDynamic::canSpreadTo(Level *level, int x, int y, int z)
 {
-	// 4J added - for infinite worlds, we rely on hasChunkAt to prevent spreading into unloaded chunks
+#ifdef _LARGE_WORLDS
+	// 4J added - don't try and spread out of our restricted map. If we don't do this check then tiles at the edge of the world will try and spread outside as the outside tiles report that they contain
+	// only air. The fact that this successfully spreads then updates the neighbours of the tile outside of the map, one of which is the original tile just inside the map, which gets set back to being
+	// dynamic, and added to the pending ticks array.
+	if (!isInfiniteWorld(level->dimension->getXZSize()))
+	{
+		int halfBlocks = (level->dimension->getXZSize() * 16) / 2;
+		if (x < -halfBlocks || x >= halfBlocks || z < -halfBlocks || z >= halfBlocks)
+			return false;
+	}
+#endif
+	// For infinite worlds, rely on hasChunkAt to prevent spreading into unloaded chunks
 	if( !level->hasChunkAt(x, y, z) ) return false;
 
     Material *target = level->getMaterial(x, y, z);

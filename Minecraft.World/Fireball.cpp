@@ -9,6 +9,7 @@
 #include "Fireball.h"
 #include "net.minecraft.world.level.dimension.h"
 #include "SharedConstants.h"
+#include "ChunkSource.h"
 
 
 // 4J - added common ctor code.
@@ -139,16 +140,30 @@ void Fireball::tick()
 		else
 		{
 		// 4J-PB - TU9 bug fix - fireballs can hit the edge of the world, and stay there
-			// Use MAX_LEVEL_SIZE for infinite world support
-			int minXZ = -Level::MAX_LEVEL_SIZE;
-			int maxXZ = Level::MAX_LEVEL_SIZE - 1;
-
-			if ((x<=minXZ) || (x>=maxXZ) || (z<=minXZ) || (z>=maxXZ)) 
+#ifdef _LARGE_WORLDS
+			if (!isInfiniteWorld(level->dimension->getXZSize()))
 			{
-				remove();
-				app.DebugPrintf("Fireball removed - end of world\n");
-				return;
+				int minXZ = -(level->dimension->getXZSize() * 16) / 2;
+				int maxXZ = (level->dimension->getXZSize() * 16) / 2 - 1;
+				if ((x<=minXZ) || (x>=maxXZ) || (z<=minXZ) || (z>=maxXZ)) 
+				{
+					remove();
+					app.DebugPrintf("Fireball removed - end of world\n");
+					return;
+				}
 			}
+#else
+			{
+				int minXZ = -(level->dimension->getXZSize() * 16) / 2;
+				int maxXZ = (level->dimension->getXZSize() * 16) / 2 - 1;
+				if ((x<=minXZ) || (x>=maxXZ) || (z<=minXZ) || (z>=maxXZ)) 
+				{
+					remove();
+					app.DebugPrintf("Fireball removed - end of world\n");
+					return;
+				}
+			}
+#endif
 		}
 	}
 

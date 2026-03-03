@@ -175,6 +175,9 @@ Wenn du versuchst, mit der Testversion zu speichern, wird dir die Möglichkeit g
 	<data name="IDS_WORLD_SIZE_TITLE_LARGE">
 		<value>Groß</value>
 	</data>
+	<data name="IDS_WORLD_SIZE_TITLE_INFINITE">
+		<value>Infinite</value>
+	</data>
 	<data name="IDS_WORLD_SIZE_TITLE_CLASSIC">
 		<value>Klassisch</value>
 	</data>

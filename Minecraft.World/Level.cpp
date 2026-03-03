@@ -1797,8 +1797,12 @@ AABBList *Level::getCubes(shared_ptr<Entity> source, AABB *box, bool noEntities,
 	int z0 = Mth::floor(box->z0);
 	int z1 = Mth::floor(box->z1 + 1);
 
-	int maxxz = MAX_LEVEL_SIZE;
-	int minxz = -MAX_LEVEL_SIZE;
+#ifdef _LARGE_WORLDS
+	int maxxz = isInfiniteWorld(dimension->getXZSize()) ? MAX_LEVEL_SIZE : (dimension->getXZSize() * 16) / 2;
+#else
+	int maxxz = (dimension->getXZSize() * 16) / 2;
+#endif
+	int minxz = -maxxz;
 	for (int x = x0; x < x1; x++)
 		for (int z = z0; z < z1; z++)
 		{
@@ -3379,6 +3383,35 @@ void Level::checkLight(LightLayer::variety layer, int xc, int yc, int zc, bool f
 
 	EnterCriticalSection(&m_checkLightCS);
 
+#ifdef _LARGE_WORLDS
+	// For finite worlds, compute XZ boundaries and early-out if the coordinate is OOB.
+	// For infinite worlds, use MAX_LEVEL_SIZE (effectively no boundary).
+	int checkLightMinXZ, checkLightMaxXZ;
+	if (!isInfiniteWorld(dimension->getXZSize()))
+	{
+		checkLightMinXZ = -(dimension->getXZSize() * 16) / 2;
+		checkLightMaxXZ = (dimension->getXZSize() * 16) / 2 - 1;
+		if ((xc > checkLightMaxXZ) || (xc < checkLightMinXZ) || (zc > checkLightMaxXZ) || (zc < checkLightMinXZ))
+		{
+			LeaveCriticalSection(&m_checkLightCS);
+			return;
+		}
+	}
+	else
+	{
+		checkLightMinXZ = -MAX_LEVEL_SIZE;
+		checkLightMaxXZ = MAX_LEVEL_SIZE - 1;
+	}
+#else
+	int checkLightMinXZ = -(dimension->getXZSize() * 16) / 2;
+	int checkLightMaxXZ = (dimension->getXZSize() * 16) / 2 - 1;
+	if ((xc > checkLightMaxXZ) || (xc < checkLightMinXZ) || (zc > checkLightMaxXZ) || (zc < checkLightMinXZ))
+	{
+		LeaveCriticalSection(&m_checkLightCS);
+		return;
+	}
+#endif
+
 #ifdef __PSVITA__
 	// AP - only clear the one array element required to check if something has changed 
 	cachewritten = false;
@@ -3543,6 +3576,9 @@ void Level::checkLight(LightLayer::variety layer, int xc, int yc, int zc, bool f
                                     int xx = x + ((j / 2) % 3 / 2) * flip;
                                     int yy = y + ((j / 2 + 1) % 3 / 2) * flip;
                                     int zz = z + ((j / 2 + 2) % 3 / 2) * flip;
+
+									// 4J - added - don't let this lighting creep out of the normal fixed world and into the infinite water chunks beyond
+									if( ( xx > checkLightMaxXZ ) || ( xx < checkLightMinXZ ) || ( zz > checkLightMaxXZ ) || ( zz < checkLightMinXZ ) ) continue;
 									if( ( yy < 0 ) || ( yy >= maxBuildHeight ) ) continue;
 
                                     o = getBrightnessCached(cache, layer, xx, yy, zz);
@@ -3631,13 +3667,13 @@ void Level::checkLight(LightLayer::variety layer, int xc, int yc, int zc, bool f
                 if (zd < 0) zd = -zd;
                 if (xd + yd + zd < 17 && tcc < (32 * 32 * 32) - 6)		// 4J - 32 * 32 * 32 was toCheck.length
 				{
-					// Infinite worlds: propagate lighting in all directions without boundary restrictions
-					if (getBrightnessCached(cache, layer, x - 1, y, z) < expected) toCheck[tcc++] = (((x - 1 - xc) + 32)) + (((y - yc) + 32) << 6) + (((z - zc) + 32) << 12);
-					if (getBrightnessCached(cache, layer, x + 1, y, z) < expected) toCheck[tcc++] = (((x + 1 - xc) + 32)) + (((y - yc) + 32) << 6) + (((z - zc) + 32) << 12);
+					// 4J - added extra checks here to stop lighting updates moving out of the actual fixed world and into the infinite water chunks
+					if( ( x - 1 ) >= checkLightMinXZ ) { if (getBrightnessCached(cache, layer, x - 1, y, z) < expected) toCheck[tcc++] = (((x - 1 - xc) + 32)) + (((y - yc) + 32) << 6) + (((z - zc) + 32) << 12); }
+					if( ( x + 1 ) <= checkLightMaxXZ ) { if (getBrightnessCached(cache, layer, x + 1, y, z) < expected) toCheck[tcc++] = (((x + 1 - xc) + 32)) + (((y - yc) + 32) << 6) + (((z - zc) + 32) << 12); }
 					if( ( y - 1 ) >= 0 )     { if (getBrightnessCached(cache, layer, x, y - 1, z) < expected) toCheck[tcc++] = (((x - xc) + 32)) + (((y - 1 - yc) + 32) << 6) + (((z - zc) + 32) << 12); }
 					if( ( y + 1 ) < maxBuildHeight ) { if (getBrightnessCached(cache, layer, x, y + 1, z) < expected) toCheck[tcc++] = (((x - xc) + 32)) + (((y + 1 - yc) + 32) << 6) + (((z - zc) + 32) << 12); }
-					if (getBrightnessCached(cache, layer, x, y, z - 1) < expected) toCheck[tcc++] = (((x - xc) + 32)) + (((y - yc) + 32) << 6) + (((z - 1 - zc) + 32) << 12);
-					if (getBrightnessCached(cache, layer, x, y, z + 1) < expected) toCheck[tcc++] = (((x - xc) + 32)) + (((y - yc) + 32) << 6) + (((z + 1 - zc) + 32) << 12);
+					if( ( z - 1 ) >= checkLightMinXZ ) { if (getBrightnessCached(cache, layer, x, y, z - 1) < expected) toCheck[tcc++] = (((x - xc) + 32)) + (((y - yc) + 32) << 6) + (((z - 1 - zc) + 32) << 12); }
+					if( ( z + 1 ) <= checkLightMaxXZ ) { if (getBrightnessCached(cache, layer, x, y, z + 1) < expected) toCheck[tcc++] = (((x - xc) + 32)) + (((y - yc) + 32) << 6) + (((z + 1 - zc) + 32) << 12); }
                 }
             }
         }

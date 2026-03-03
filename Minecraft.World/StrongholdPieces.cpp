@@ -365,8 +365,24 @@ bool StrongholdPieces::StrongholdPiece::isOkBox(BoundingBox *box, StartPiece *st
 
 		if( startRoom != NULL && startRoom->m_level->getOriginalSaveVersion() >= SAVE_FILE_VERSION_MOVED_STRONGHOLD )
 		{
-			int blockMin = -Level::MAX_LEVEL_SIZE + 1;
-			int blockMax = Level::MAX_LEVEL_SIZE - 1;
+#ifdef _LARGE_WORLDS
+			int xzSize = startRoom->m_level->getLevelData()->getXZSize();
+			int blockMin, blockMax;
+			if (isInfiniteWorld(xzSize))
+			{
+				blockMin = -Level::MAX_LEVEL_SIZE + 1;
+				blockMax = Level::MAX_LEVEL_SIZE - 1;
+			}
+			else
+			{
+				blockMin = -((xzSize << 4) / 2) + 1;
+				blockMax = ((xzSize << 4) / 2) - 1;
+			}
+#else
+			int xzSize = startRoom->m_level->getLevelData()->getXZSize();
+			int blockMin = -((xzSize << 4) / 2) + 1;
+			int blockMax = ((xzSize << 4) / 2) - 1;
+#endif
 
 			if(box->x0 <= blockMin) bIsOk = false;
 			if(box->z0 <= blockMin) bIsOk = false;

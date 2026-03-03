@@ -8241,6 +8241,10 @@ OK を選択すると、この世界でのプレイを終了します</value>
 		<value>大</value>
 	</data>	
 
+	<data name="IDS_WORLD_SIZE_TITLE_INFINITE">
+		<value>Infinite</value>
+	</data>	
+
 	<data name="IDS_WORLD_SIZE_TITLE_CLASSIC">
 		<value>クラシック</value>
 	</data>	

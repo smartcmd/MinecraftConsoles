@@ -8461,6 +8461,10 @@ Wenn du in der Testversion versuchst zu speichern, wird dir die Möglichkeit geg
 		<value>Groß</value>
 	</data>	
 
+  <data name="IDS_WORLD_SIZE_TITLE_INFINITE">
+    <value>Infinite</value>
+  </data>
+
 	<data name="IDS_WORLD_SIZE_TITLE_CLASSIC">
 		<value>Klassisch</value>
 	</data>	

@@ -258,6 +258,9 @@ Ak sa pri používaní skúšobnej verzie pokúsite o uloženie, zobrazí sa mo�
   <data name="IDS_WORLD_SIZE_TITLE_LARGE">
     <value>Veľký</value>
   </data>
+  <data name="IDS_WORLD_SIZE_TITLE_INFINITE">
+    <value>Infinite</value>
+  </data>
   <data name="IDS_WORLD_SIZE_TITLE_CLASSIC">
     <value>Klasický</value>
   </data>

@@ -1200,10 +1200,12 @@ void UIScene_CreateWorldMenu::CreateGame(UIScene_CreateWorldMenu* pClass, DWORD 
 		param->hellScale = 6;
 		break;
 	case 3:
-		//param->xzSize = 5 * 64;
-		//param->hellScale = 8;
-
 		// Large
+		param->xzSize = LEVEL_LARGE_WIDTH;
+		param->hellScale = HELL_LEVEL_MAX_SCALE;
+		break;
+	case 4:
+		// Infinite
 		param->xzSize = LEVEL_MAX_WIDTH;
 		param->hellScale = HELL_LEVEL_MAX_SCALE;
 		break;

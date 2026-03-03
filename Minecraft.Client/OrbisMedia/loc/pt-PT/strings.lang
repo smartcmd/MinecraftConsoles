@@ -8355,6 +8355,10 @@ Se tentares gravar enquanto usas a versão de avaliação, ser-te-á dada a opç
 		<value>Grande</value>
 	</data>	
 
+	<data name="IDS_WORLD_SIZE_TITLE_INFINITE">
+		<value>Infinite</value>
+	</data>	
+
 	<data name="IDS_WORLD_SIZE_TITLE_CLASSIC">
 		<value>Clássico</value>
 	</data>	

@@ -8456,6 +8456,10 @@ Minecraft Xbox One 版は、初期設定でマルチプレイヤー ゲームに
 		<value>ラージ</value>
 	</data>	
 
+  <data name="IDS_WORLD_SIZE_TITLE_INFINITE">
+    <value>Infinite</value>
+  </data>
+
 	<data name="IDS_WORLD_SIZE_TITLE_CLASSIC">
 		<value>クラシック</value>
 	</data>	

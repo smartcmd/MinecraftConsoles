@@ -8459,6 +8459,10 @@ Als je in de demo probeert op te slaan, krijg je de optie om de volledige versie
 		<value>Groot</value>
 	</data>	
 
+	<data name="IDS_WORLD_SIZE_TITLE_INFINITE">
+		<value>Infinite</value>
+	</data>	
+
 	<data name="IDS_WORLD_SIZE_TITLE_CLASSIC">
 		<value>Klassiek</value>
 	</data>	

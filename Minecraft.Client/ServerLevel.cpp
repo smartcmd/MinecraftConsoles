@@ -756,8 +756,22 @@ void ServerLevel::setInitialSpawn(LevelSettings *levelSettings)
 	int xSpawn = 0; // (Level.MAX_LEVEL_SIZE - 100) * 0;
 	int ySpawn = dimension->getSpawnYPosition();
 	int zSpawn = 0; // (Level.MAX_LEVEL_SIZE - 100) * 0;
+#ifdef _LARGE_WORLDS
+	int minXZ, maxXZ;
+	if (isInfiniteWorld(dimension->getXZSize()))
+	{
+		minXZ = -Level::MAX_LEVEL_SIZE;
+		maxXZ = Level::MAX_LEVEL_SIZE - 1;
+	}
+	else
+	{
+		minXZ = -(dimension->getXZSize() * 16) / 2;
+		maxXZ = (dimension->getXZSize() * 16) / 2 - 1;
+	}
+#else
 	int minXZ = -Level::MAX_LEVEL_SIZE;
 	int maxXZ = Level::MAX_LEVEL_SIZE - 1;
+#endif
 
 	if (findBiome != NULL)
 	{

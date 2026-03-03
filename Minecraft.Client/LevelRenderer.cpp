@@ -46,6 +46,7 @@
 #include "..\Minecraft.World\net.minecraft.world.level.h"
 #include "..\Minecraft.World\net.minecraft.world.level.dimension.h"
 #include "..\Minecraft.World\net.minecraft.world.level.tile.h"
+#include "..\Minecraft.World\net.minecraft.world.level.storage.h"
 #include "..\Minecraft.World\net.minecraft.world.phys.h"
 #include "..\Minecraft.World\net.minecraft.world.entity.player.h"
 #include "..\Minecraft.World\net.minecraft.world.item.h"
@@ -143,6 +144,7 @@ LevelRenderer::LevelRenderer(Minecraft *mc, Textures *textures)
 	InitializeCriticalSection(&m_csRenderableTileEntities);
 #ifdef _LARGE_WORLDS
 	InitializeCriticalSection(&m_csChunkFlags);
+	m_isInfinite = false;
 #endif
 
 	dirtyChunkPresent = false;
@@ -353,6 +355,9 @@ void LevelRenderer::setLevel(int playerIndex, MultiPlayerLevel *level)
 			level->addListener(this);
 		}
 
+#ifdef _LARGE_WORLDS
+		m_isInfinite = isInfiniteWorld(level->getLevelData()->getXZSize());
+#endif
 		allChanged(playerIndex);
 	}
 	else

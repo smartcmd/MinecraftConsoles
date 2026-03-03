@@ -18,6 +18,7 @@
 #include "..\Minecraft.World\net.minecraft.world.entity.projectile.h"
 #include "..\Minecraft.World\net.minecraft.world.entity.h"
 #include "..\Minecraft.World\net.minecraft.world.item.h"
+#include "..\Minecraft.World\ChunkSource.h"
 #include "..\Minecraft.World\net.minecraft.world.item.trading.h"
 #include "..\Minecraft.World\net.minecraft.world.entity.item.h"
 #include "..\Minecraft.World\net.minecraft.world.level.tile.entity.h"
@@ -65,8 +66,22 @@ ServerPlayer::ServerPlayer(MinecraftServer *server, Level *level, const wstring&
 		int attemptCount = 0;
 		int xx2, yy2, zz2;
 
+#ifdef _LARGE_WORLDS
+		int minXZ, maxXZ;
+		if (isInfiniteWorld(level->getLevelData()->getXZSize()))
+		{
+			minXZ = -Level::MAX_LEVEL_SIZE;
+			maxXZ = Level::MAX_LEVEL_SIZE - 1;
+		}
+		else
+		{
+			minXZ = -(level->getLevelData()->getXZSize() * 16) / 2;
+			maxXZ = (level->getLevelData()->getXZSize() * 16) / 2 - 1;
+		}
+#else
 		int minXZ = -Level::MAX_LEVEL_SIZE;
 		int maxXZ = Level::MAX_LEVEL_SIZE - 1;
+#endif
 
 		bool playerNear = false;
 		do
@@ -445,7 +460,7 @@ void ServerPlayer::doChunkSendingTick(bool dontDelayChunks)
 					for (unsigned int i = 0; i < tes->size(); i++)
 					{
 						// 4J Stu - Added delay param to ensure that these arrive after the BRUPs from above
-						// Fix for #9169 - ART : Sign text is replaced with the words “Awaiting approval”.
+						// Fix for #9169 - ART : Sign text is replaced with the words ï¿½Awaiting approvalï¿½.
 						broadcast(tes->at(i), !connection->isLocal() && !dontDelayChunks);
 					}
 					delete tes;

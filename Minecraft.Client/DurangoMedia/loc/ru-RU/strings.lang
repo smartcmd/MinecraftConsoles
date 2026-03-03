@@ -8456,6 +8456,10 @@ Enchanted Books are used at the Anvil to apply enchantments to items. This gives
 		<value>Большой</value>
 	</data>	
 
+	<data name="IDS_WORLD_SIZE_TITLE_INFINITE">
+		<value>Infinite</value>
+	</data>	
+
 	<data name="IDS_WORLD_SIZE_TITLE_CLASSIC">
 		<value>Классика</value>
 	</data>	

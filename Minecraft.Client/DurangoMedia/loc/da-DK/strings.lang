@@ -8458,6 +8458,10 @@ Hvis du prøver at gemme, mens du bruger prøveversionen, får du mulighed for a
 		<value>Stor</value>
 	</data>	
 
+  <data name="IDS_WORLD_SIZE_TITLE_INFINITE">
+    <value>Infinite</value>
+  </data>
+
 	<data name="IDS_WORLD_SIZE_TITLE_CLASSIC">
 		<value>Klassisk</value>
 	</data>	

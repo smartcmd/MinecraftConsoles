@@ -19,6 +19,9 @@ MultiPlayerChunkCache::MultiPlayerChunkCache(Level *level)
 {
 	// For infinite worlds, m_XZSize is kept for compatibility but the cache is unbounded
 	m_XZSize = level->dimension->getXZSize();
+#ifdef _LARGE_WORLDS
+	m_isInfinite = isInfiniteWorld(m_XZSize);
+#endif
 
 	emptyChunk = new EmptyLevelChunk(level, byteArray(16 * 16 * Level::maxBuildHeight), 0, 0);
 
@@ -126,6 +129,15 @@ bool MultiPlayerChunkCache::hasChunk(int x, int z)
 // 4J  added - find out if we actually really do have a chunk in our cache
 bool MultiPlayerChunkCache::reallyHasChunk(int x, int z)
 {
+#ifdef _LARGE_WORLDS
+	// For finite worlds, out-of-bounds coordinates are treated as "exists"
+	if (!m_isInfinite)
+	{
+		int half = m_XZSize / 2;
+		if (x < -half || x >= half || z < -half || z >= half) return true;
+	}
+#endif
+
 	int64_t key = mpKey(x, z);
 	EnterCriticalSection(&m_csLoadCreate);
 	auto it = m_chunkMap.find(key);
@@ -174,6 +186,15 @@ void MultiPlayerChunkCache::drop(int x, int z)
 
 LevelChunk *MultiPlayerChunkCache::create(int x, int z)
 {
+#ifdef _LARGE_WORLDS
+	// For finite worlds, refuse to create chunks outside the world boundary
+	if (!m_isInfinite)
+	{
+		int half = m_XZSize / 2;
+		if (x < -half || x >= half || z < -half || z >= half) return emptyChunk;
+	}
+#endif
+
 	int64_t key = mpKey(x, z);
 
 	EnterCriticalSection(&m_csLoadCreate);
@@ -241,6 +262,19 @@ LevelChunk *MultiPlayerChunkCache::create(int x, int z)
 
 LevelChunk *MultiPlayerChunkCache::getChunk(int x, int z)
 {
+#ifdef _LARGE_WORLDS
+	// For finite worlds, out-of-bounds coordinates return the water/empty chunk
+	if (!m_isInfinite)
+	{
+		int half = m_XZSize / 2;
+		if (x < -half || x >= half || z < -half || z >= half)
+		{
+			// Return waterChunk for overworld edge (visual sea), emptyChunk for other dims
+			return (waterChunk != NULL) ? waterChunk : emptyChunk;
+		}
+	}
+#endif
+
 	EnterCriticalSection(&m_csLoadCreate);
 	auto it = m_chunkMap.find(mpKey(x, z));
 	LevelChunk *chunk = (it != m_chunkMap.end() && it->second != NULL) ? it->second : NULL;

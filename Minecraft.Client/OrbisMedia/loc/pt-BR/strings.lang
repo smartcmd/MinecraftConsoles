@@ -8555,6 +8555,10 @@ Se tentar salvar enquanto estiver usando a versão de avaliação, a versão com
 		<value>Grande</value>
 	</data>	
 
+	<data name="IDS_WORLD_SIZE_TITLE_INFINITE">
+		<value>Infinite</value>
+	</data>	
+
 	<data name="IDS_WORLD_SIZE_TITLE_CLASSIC">
 		<value>Clássico</value>
 	</data>	

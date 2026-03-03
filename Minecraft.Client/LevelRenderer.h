@@ -133,6 +133,9 @@ private:
 	ClipChunkArray chunks[4];			// 4J - now one per player
 	int lastPlayerCount[4];				// 4J - added
 	int xChunks, yChunks, zChunks;
+#ifdef _LARGE_WORLDS
+	bool m_isInfinite;	// true when overworld is infinite (rolling window render)
+#endif
 	int chunkLists;
 	Minecraft *mc;
 	TileRenderer *tileRenderer[4];		// 4J - now one per player

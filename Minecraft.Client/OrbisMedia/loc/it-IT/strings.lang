@@ -8327,6 +8327,10 @@ Se cerchi di salvare mentre usi la versione di prova, avrai la possibilità di a
 		<value>Grande</value>
 	</data>	
 
+	<data name="IDS_WORLD_SIZE_TITLE_INFINITE">
+		<value>Infinite</value>
+	</data>	
+
 	<data name="IDS_WORLD_SIZE_TITLE_CLASSIC">
 		<value>Classico</value>
 	</data>	

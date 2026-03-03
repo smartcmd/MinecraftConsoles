@@ -8457,6 +8457,10 @@ Przy próbie zapisania gry z wersją testową pojawi się propozycja zakupu peł
 		<value>Duży</value>
 	</data>	
 
+	<data name="IDS_WORLD_SIZE_TITLE_INFINITE">
+		<value>Infinite</value>
+	</data>	
+
 	<data name="IDS_WORLD_SIZE_TITLE_CLASSIC">
 		<value>Klasyczny</value>
 	</data>	

@@ -8531,6 +8531,10 @@ Du må ikke slukke for dit PlayStation®4-system, når dette ikon vises på skæ
 		<value>Stor</value>
 	</data>	
 
+	<data name="IDS_WORLD_SIZE_TITLE_INFINITE">
+		<value>Infinite</value>
+	</data>	
+
 	<data name="IDS_WORLD_SIZE_TITLE_CLASSIC">
 		<value>Klassisk</value>
 	</data>	

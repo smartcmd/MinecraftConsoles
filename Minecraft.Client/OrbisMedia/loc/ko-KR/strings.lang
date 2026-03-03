@@ -8359,6 +8359,10 @@ Ender에 들어서면 친구가 그들의 지도에서 요새 내부에 있는 E
 		<value>대</value>
 	</data>	
 
+	<data name="IDS_WORLD_SIZE_TITLE_INFINITE">
+		<value>Infinite</value>
+	</data>	
+
 	<data name="IDS_WORLD_SIZE_TITLE_CLASSIC">
 		<value>클래식</value>
 	</data>	

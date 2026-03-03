@@ -10,6 +10,7 @@
 #include "net.minecraft.world.h"
 #include "LevelChunk.h"
 #include "Dimension.h"
+#include "ChunkSource.h"
 
 const wstring PistonBaseTile::EDGE_TEX = L"piston_side";
 const wstring PistonBaseTile::PLATFORM_TEX = L"piston_top";
@@ -487,11 +488,27 @@ bool PistonBaseTile::canPush(Level *level, int sx, int sy, int sz, int facing)
             return false;
         }
 
-		// Infinite worlds: use Level::MAX_LEVEL_SIZE instead of finite world boundary
-		if( ( cx <= -Level::MAX_LEVEL_SIZE ) || ( cx >= Level::MAX_LEVEL_SIZE ) || ( cz <= -Level::MAX_LEVEL_SIZE ) || ( cz >= Level::MAX_LEVEL_SIZE ) )
+		// 4J - added to also check for out of bounds in x/z for our finite world
+#ifdef _LARGE_WORLDS
+		if (!isInfiniteWorld(level->dimension->getXZSize()))
 		{
-			return false;
+			int minXZ = -(level->dimension->getXZSize() * 16) / 2;
+			int maxXZ = (level->dimension->getXZSize() * 16) / 2 - 1;
+			if( ( cx <= minXZ ) || ( cx >= maxXZ ) || ( cz <= minXZ ) || ( cz >= maxXZ ) )
+			{
+				return false;
+			}
 		}
+#else
+		{
+			int minXZ = -(level->dimension->getXZSize() * 16) / 2;
+			int maxXZ = (level->dimension->getXZSize() * 16) / 2 - 1;
+			if( ( cx <= minXZ ) || ( cx >= maxXZ ) || ( cz <= minXZ ) || ( cz >= maxXZ ) )
+			{
+				return false;
+			}
+		}
+#endif
         int block = level->getTile(cx, cy, cz);
         if (block == 0)
 		{
@@ -551,11 +568,27 @@ bool PistonBaseTile::createPush(Level *level, int sx, int sy, int sz, int facing
             return false;
         }
 
-		// Infinite worlds: use Level::MAX_LEVEL_SIZE instead of finite world boundary
-		if( ( cx <= -Level::MAX_LEVEL_SIZE ) || ( cx >= Level::MAX_LEVEL_SIZE ) || ( cz <= -Level::MAX_LEVEL_SIZE ) || ( cz >= Level::MAX_LEVEL_SIZE ) )
+		// 4J - added to also check for out of bounds in x/z for our finite world
+#ifdef _LARGE_WORLDS
+		if (!isInfiniteWorld(level->dimension->getXZSize()))
 		{
-			return false;
+			int minXZ = -(level->dimension->getXZSize() * 16) / 2;
+			int maxXZ = (level->dimension->getXZSize() * 16) / 2 - 1;
+			if( ( cx <= minXZ ) || ( cx >= maxXZ ) || ( cz <= minXZ ) || ( cz >= maxXZ ) )
+			{
+				return false;
+			}
 		}
+#else
+		{
+			int minXZ = -(level->dimension->getXZSize() * 16) / 2;
+			int maxXZ = (level->dimension->getXZSize() * 16) / 2 - 1;
+			if( ( cx <= minXZ ) || ( cx >= maxXZ ) || ( cz <= minXZ ) || ( cz >= maxXZ ) )
+			{
+				return false;
+			}
+		}
+#endif
 
         int block = level->getTile(cx, cy, cz);
         if (block == 0)

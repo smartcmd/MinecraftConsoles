@@ -176,6 +176,9 @@ Si vous tentez de sauvegarder en utilisant cette version d'essai, il vous sera p
 	<data name="IDS_WORLD_SIZE_TITLE_LARGE">
 		<value>Grand</value>
 	</data>
+	<data name="IDS_WORLD_SIZE_TITLE_INFINITE">
+		<value>Infinite</value>
+	</data>
 	<data name="IDS_WORLD_SIZE_TITLE_CLASSIC">
 		<value>Classique</value>
 	</data>

@@ -6,12 +6,13 @@
 #define GAME_CREATE_ONLINE_TIMER_TIME 100
 
 #ifdef _LARGE_WORLDS
-int m_iWorldSizeTitleA[4] = 
+int m_iWorldSizeTitleA[5] = 
 {
 	IDS_WORLD_SIZE_TITLE_CLASSIC,
 	IDS_WORLD_SIZE_TITLE_SMALL,
 	IDS_WORLD_SIZE_TITLE_MEDIUM,
 	IDS_WORLD_SIZE_TITLE_LARGE,
+	IDS_WORLD_SIZE_TITLE_INFINITE,
 };
 #endif
 
@@ -80,7 +81,7 @@ UIScene_LaunchMoreOptionsMenu::UIScene_LaunchMoreOptionsMenu(int iPad, void *ini
 		m_labelRandomSeed.init(app.GetString(IDS_CREATE_NEW_WORLD_RANDOM_SEED));
 		m_editSeed.init(m_params->seed, eControl_EditSeed);
 		m_labelWorldSize.init(app.GetString(IDS_WORLD_SIZE));
-		m_sliderWorldSize.init(app.GetString(m_iWorldSizeTitleA[m_params->worldSize]),eControl_WorldSize,0,3,m_params->worldSize);
+		m_sliderWorldSize.init(app.GetString(m_iWorldSizeTitleA[m_params->worldSize]),eControl_WorldSize,0,4,m_params->worldSize);
 
 		m_checkboxes[eLaunchCheckbox_DisableSaving].init( app.GetString(IDS_DISABLE_SAVING), eLaunchCheckbox_DisableSaving, m_params->bDisableSaving );
 #endif

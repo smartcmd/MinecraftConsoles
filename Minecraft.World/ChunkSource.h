@@ -11,11 +11,17 @@ class TilePos;
 // used for structure placement limits and similar range checks.
 #ifdef _LARGE_WORLDS
 #define LEVEL_MAX_WIDTH (1875000)  // 30,000,000 blocks / 16 = effectively infinite kinda :3
+#define LEVEL_LARGE_WIDTH (5 * 64) // 320 chunks (~5120 blocks radius) for the "Large" bounded option
 #else
 #define LEVEL_MAX_WIDTH 54
 #endif
 #define LEVEL_MIN_WIDTH 54
 #define LEVEL_LEGACY_WIDTH 54
+
+#ifdef _LARGE_WORLDS
+// Anything >= LEVEL_MAX_WIDTH is treated as an infinite world
+inline bool isInfiniteWorld(int xzSize) { return xzSize >= LEVEL_MAX_WIDTH; }
+#endif
 
 // Scale was 8 in the Java game, but that would make our nether tiny
 // Every 1 block you move in the nether maps to HELL_LEVEL_SCALE blocks in the overworld

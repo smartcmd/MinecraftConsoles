@@ -258,6 +258,9 @@ Hvis du prøver å lagre mens du bruker prøveversjonen, får du muligheten til 
   <data name="IDS_WORLD_SIZE_TITLE_LARGE">
     <value>Stor</value>
   </data>
+  <data name="IDS_WORLD_SIZE_TITLE_INFINITE">
+    <value>Infinite</value>
+  </data>
   <data name="IDS_WORLD_SIZE_TITLE_CLASSIC">
     <value>Klassisk</value>
   </data>

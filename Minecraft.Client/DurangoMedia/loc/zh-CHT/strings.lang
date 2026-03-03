@@ -8465,6 +8465,10 @@ Xbox One 主機上的 Minecraft 預設為多人遊戲。如果您選擇高畫質
 		<value>大</value>
 	</data>	
 
+	<data name="IDS_WORLD_SIZE_TITLE_INFINITE">
+		<value>Infinite</value>
+	</data>	
+
 	<data name="IDS_WORLD_SIZE_TITLE_CLASSIC">
 		<value>經典</value>
 	</data>	
