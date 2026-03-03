@@ -52,8 +52,10 @@ public:
 	static const int CHUNK_SIZE = 16;
 #endif
 	static const int CHUNK_Y_COUNT = Level::maxBuildHeight / CHUNK_SIZE;
-#if (defined _XBOX_ONE || defined _WINDOWS64)
-	static const int MAX_COMMANDBUFFER_ALLOCATIONS = 2047 * 1024 * 1024;		// Changed to 2047. 4J had set to 512.
+#if defined _WINDOWS64
+	static const int MAX_COMMANDBUFFER_ALLOCATIONS = 2047 * 1024 * 1024;	// Changed to 2047. 4J had set to 512.
+#elif defined _XBOX_ONE
+	static const int MAX_COMMANDBUFFER_ALLOCATIONS = 512 * 1024 * 1024;		// 4J - added
 #elif defined __ORBIS__
 	static const int MAX_COMMANDBUFFER_ALLOCATIONS = 448 * 1024 * 1024;		// 4J - added - hard limit is 512 so giving a lot of headroom here for fragmentation (have seen 16MB lost to fragmentation in multiplayer crash dump before)
 #elif defined __PS3__
