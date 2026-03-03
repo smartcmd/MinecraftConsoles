@@ -23,6 +23,10 @@ public:
 	virtual void init();
 protected:
 	virtual void buttonClicked(Button *button);
+protected:
+	virtual void renderPanoramas(int xm, int ym, float a);
+	virtual void renderGaussianBlur(float a);
+	virtual void renderBackground(int xm, int ym, float a);
 public:
 	virtual void render(int xm, int ym, float a);
 };

@@ -248,6 +248,13 @@ wchar_t *Textures::preLoaded[TN_COUNT] =
 	L"/AH_0008",
 	L"/AH_0009",*/
 
+	L"title/bg/panorama0",	
+	L"title/bg/panorama1",	
+	L"title/bg/panorama2",	
+	L"title/bg/panorama3",	
+	L"title/bg/panorama4",	
+	L"title/bg/panorama5",	
+
 	L"gui/items",	
 	L"terrain",
 };
