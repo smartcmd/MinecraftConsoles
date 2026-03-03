@@ -77,12 +77,7 @@ void EnderDragonRenderer::renderModel(shared_ptr<LivingEntity> _mob, float wp, f
 		glEnable(GL_BLEND);
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 		glColor4f(1, 0, 0, 0.5f);
-#ifdef __PSVITA__
-		// AP - not sure that the usecompiled flag is supposed to be false. This makes it really slow on vita. Making it true still seems to look the same
 		model->render(mob, wp, ws, bob, headRotMinusBodyRot, headRotx, scale, true);
-#else
-		model->render(mob, wp, ws, bob, headRotMinusBodyRot, headRotx, scale, false);
-#endif
 		glEnable(GL_TEXTURE_2D);
 		glDisable(GL_BLEND);
 		glDepthFunc(GL_LEQUAL);
