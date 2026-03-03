@@ -181,7 +181,7 @@ UIController::UIController()
 	// 4J Stu - This is a bit of a hack until we change the Minecraft initialisation to store the proper screen size for other platforms
 #if defined _WINDOWS64 || defined _DURANGO || defined __ORBIS__
 	m_fScreenWidth = 1920.0f;
-	m_fScreenHeight = 1080.0f;\
+	m_fScreenHeight = 1080.0f;
 	aar_Width = 1920.0f;
     aar_Height = 1080.0f;
 	m_bScreenWidthSetup = false;
