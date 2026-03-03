@@ -81,7 +81,7 @@ public:
 	wstring getName();
 	wstring getCustomName();
 	bool hasCustomName();
-	int getMaxStackSize();
+	int getMaxStackSize() const;
 	bool canDestroy(Tile *tile);
 	shared_ptr<ItemInstance> getArmor(int layer);
 	int getArmorValue();

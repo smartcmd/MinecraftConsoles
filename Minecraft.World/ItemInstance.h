@@ -77,12 +77,12 @@ public:
 	int getIconType();
 	bool useOn(shared_ptr<Player> player, Level *level, int x, int y, int z, int face, float clickX, float clickY, float clickZ, bool bTestUseOnOnly=false);
 	float getDestroySpeed(Tile *tile);
-	bool TestUse(shared_ptr<ItemInstance> itemInstance, Level *level, shared_ptr<Player> player); 
+	bool TestUse(shared_ptr<ItemInstance> itemInstance, Level *level, shared_ptr<Player> player);
 	shared_ptr<ItemInstance> use(Level *level, shared_ptr<Player> player);
 	shared_ptr<ItemInstance> useTimeDepleted(Level *level, shared_ptr<Player> player);
 	CompoundTag *save(CompoundTag *compoundTag);
 	void load(CompoundTag *compoundTag);
-	int getMaxStackSize();
+	int getMaxStackSize() const;
 	bool isStackable();
 	bool isDamageableItem();
 	bool isStackedByData();
@@ -113,7 +113,7 @@ private:
 public:
 	bool sameItem(shared_ptr<ItemInstance> b);
 	bool sameItemWithTags(shared_ptr<ItemInstance> b); //4J Added
-	bool sameItem_not_shared(ItemInstance *b); // 4J Stu - Added this for the one time I need it
+	bool sameItem_not_shared(const ItemInstance *b); // 4J Stu - Added this for the one time I need it
 	virtual unsigned int getUseDescriptionId(); // 4J Added
 	virtual unsigned int getDescriptionId(int iData = -1);
 	virtual ItemInstance *setDescriptionId(unsigned int id);

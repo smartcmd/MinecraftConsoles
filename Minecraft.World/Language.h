@@ -1,5 +1,7 @@
 #pragma once
 
+#include <string>
+
 class Language
 {
 private:
@@ -7,8 +9,11 @@ private:
 public:
 	Language();
     static Language *getInstance();
-    wstring getElement(const wstring& elementId, ...);
-	wstring getElement(const wstring& elementId, va_list args);
-    wstring getElementName(const wstring& elementId);
-    wstring getElementDescription(const wstring& elementId);
+    template<typename...Args>
+    inline std::wstring getElement(const std::wstring& elementId, Args...)
+    {
+        return elementId;
+    }
+    std::wstring getElementName(const std::wstring& elementId);
+    std::wstring getElementDescription(const std::wstring& elementId);
 };

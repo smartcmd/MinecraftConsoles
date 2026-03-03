@@ -2,7 +2,7 @@
 
 [![Discord](https://img.shields.io/badge/Discord-Join%20Server-5865F2?logo=discord&logoColor=white)](https://discord.gg/5CSzhc9t)
 
-![Tutorial World](.github/IMG_8725.png)
+![Tutorial World](.github/TutorialWorld.png)
 
 ## Introduction
 
@@ -23,6 +23,25 @@ This project contains the source code of Minecraft Legacy Console Edition v1.6.0
 - Disabled V-Sync for better performance
 - Added a high-resolution timer path on Windows for smoother high-FPS gameplay timing
 - Device's screen resolution will be used as the game resolution instead of using a fixed resolution (1920x1080)
+- LAN Multiplayer & Discovery
+
+## Multiplayer
+
+Basic LAN multiplayer is available on the Windows build
+
+- Hosting a multiplayer world automatically advertises it on the local network
+- Other players on the same LAN can discover the session from the in-game Join Game menu
+- Game connections use TCP port `25565` by default
+- LAN discovery uses UDP port `25566`
+- You can override your in-game username at launch with `-name`
+
+Example:
+
+```powershell
+Minecraft.Client.exe -name Steve
+```
+
+This feature is based on [LCEMP](https://github.com/LCEMP/LCEMP/)
 
 ## Controls (Keyboard & Mouse)
 
@@ -41,7 +60,7 @@ This project contains the source code of Minecraft Legacy Console Edition v1.6.0
 - **Use / Place**: `Right Click`
 - **Select Item**: `Mouse Wheel` or keys `1` to `9`
 - **Accept or Decline Tutorial hints**: `Enter` to accept and `B` to decline
-- **Host Options**: `TAB`
+- **Game Info (Player list and Host Options)**: `TAB`
 - **Toggle Debug Info**: `F3`
 - **Open Debug Overlay**: `F4`
 

@@ -19,7 +19,7 @@ public:
 	virtual shared_ptr<ItemInstance> removeItem(unsigned int slot, int count);
 	virtual shared_ptr<ItemInstance> removeItemNoUpdate(int slot);
 	virtual void setItem(unsigned int slot, shared_ptr<ItemInstance> item);
-	virtual int getMaxStackSize();
+	virtual int getMaxStackSize() const;
 	virtual void setChanged();
 	virtual bool stillValid(shared_ptr<Player> player);
 	virtual void startOpen() { } // TODO Auto-generated method stub

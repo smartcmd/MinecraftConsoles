@@ -420,7 +420,7 @@ void Entity::remove()
 
 void Entity::setSize(float w, float h)
 {
-	if (w != bbWidth || h != bbHeight) 
+	if (w != bbWidth || h != bbHeight)
 	{
 		float oldW = bbWidth;
 
@@ -431,7 +431,7 @@ void Entity::setSize(float w, float h)
 		bb->z1 = bb->z0 + bbWidth;
 		bb->y1 = bb->y0 + bbHeight;
 
-		if (bbWidth > oldW && !firstTick && !level->isClientSide) 
+		if (bbWidth > oldW && !firstTick && !level->isClientSide)
 		{
 			move(oldW - bbWidth, 0, oldW - bbWidth);
 		}
@@ -449,7 +449,7 @@ void Entity::setPos(EntityPos *pos)
 
 void Entity::setRot(float yRot, float xRot)
 {
-	/* JAVA:		
+	/* JAVA:
 	this->yRot = yRot % 360.0f;
 	this->xRot = xRot % 360.0f;
 
@@ -585,7 +585,7 @@ void Entity::baseTick()
 	{
 		onFire = 0;
 	}
-	else 
+	else
 	{
 		if (onFire > 0)
 		{
@@ -1031,7 +1031,7 @@ void Entity::checkFallDamage(double ya, bool onGround)
 			causeFallDamage(fallDistance);
 			fallDistance = 0;
 		}
-	} 
+	}
 	else
 	{
 		if (ya < 0) fallDistance -= (float) ya;
@@ -1100,7 +1100,7 @@ bool Entity::updateInWaterState()
 		fallDistance = 0;
 		wasInWater = true;
 		onFire = 0;
-	} 
+	}
 	else
 	{
 		wasInWater = false;
@@ -1468,25 +1468,17 @@ void Entity::onLoadedFromSave()
 
 }
 
-ListTag<DoubleTag> *Entity::newDoubleList(unsigned int number, double firstValue, ...)
+template<typename ...Args>
+ListTag<DoubleTag> *Entity::newDoubleList(unsigned int, double firstValue, Args... args)
 {
 	ListTag<DoubleTag> *res = new ListTag<DoubleTag>();
 
 	// Add the first parameter to the ListTag
 	res->add( new DoubleTag(L"", firstValue ) );
 
-	va_list vl;
-	va_start(vl,firstValue);
-
-	double val;
-
-	for (unsigned int i=1;i<number;i++)
-	{
-		val=va_arg(vl,double);
-		res->add(new DoubleTag(L"", val));
-	}
-
-	va_end(vl);
+	// use pre-C++17 fold trick (TODO: once we drop C++14 support, use C++14 fold expression)
+	using expander = int[];
+    (void)expander{0, (res->add(new DoubleTag(L"", static_cast<double>(args))), 0)...};
 
 	return res;
 }
@@ -1573,7 +1565,7 @@ bool Entity::interact(shared_ptr<Player> player)
 	return false;
 }
 
-AABB *Entity::getCollideAgainstBox(shared_ptr<Entity> entity) 
+AABB *Entity::getCollideAgainstBox(shared_ptr<Entity> entity)
 {
 	return NULL;
 }
@@ -1842,7 +1834,7 @@ void Entity::setSharedFlag(int flag, bool value)
 	if( entityData )
 	{
 		byte currentValue = entityData->getByte(DATA_SHARED_FLAGS_ID);
-		if (value) 
+		if (value)
 		{
 			entityData->set(DATA_SHARED_FLAGS_ID, (byte) (currentValue | (1 << flag)));
 		}
@@ -2121,13 +2113,13 @@ wstring Entity::getNetworkName()
 	return getDisplayName();
 }
 
-void Entity::setAnimOverrideBitmask(unsigned int uiBitmask) 
+void Entity::setAnimOverrideBitmask(unsigned int uiBitmask)
 {
 	m_uiAnimOverrideBitmask=uiBitmask;
 	app.DebugPrintf("!!! Setting anim override bitmask to %d\n",uiBitmask);
 }
-unsigned int Entity::getAnimOverrideBitmask() 
-{	
+unsigned int Entity::getAnimOverrideBitmask()
+{
 	if(app.GetGameSettings(eGameSetting_CustomSkinAnim)==0 )
 	{
 		// We have a force animation for some skins (claptrap)

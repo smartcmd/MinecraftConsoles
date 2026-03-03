@@ -47,7 +47,7 @@ private:
 		PotionSlot(shared_ptr<Player> player, shared_ptr<Container> container, int slot, int x, int y);
 
 		virtual bool mayPlace(shared_ptr<ItemInstance> item);
-		virtual int getMaxStackSize();
+		virtual int getMaxStackSize() const;
 		virtual void onTake(shared_ptr<Player> player, shared_ptr<ItemInstance> carried);
 		static bool mayPlaceItem(shared_ptr<ItemInstance> item);
 		virtual bool mayCombine(shared_ptr<ItemInstance> item); // 4J Added
@@ -59,7 +59,7 @@ private:
 		IngredientsSlot(shared_ptr<Container> container, int slot, int x, int y);
 
 		virtual bool mayPlace(shared_ptr<ItemInstance> item);
-		virtual int getMaxStackSize();
+		virtual int getMaxStackSize() const;
 		virtual bool mayCombine(shared_ptr<ItemInstance> item); // 4J Added
 	};
 };

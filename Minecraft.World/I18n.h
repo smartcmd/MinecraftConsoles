@@ -10,6 +10,9 @@ private:
 	static Language *lang;
 
 public:
-    static wstring get(const wstring& id, ...);
-	static wstring get(const wstring& id, va_list args);
+	template<typename ...Args>
+    static wstring get(Args... args)
+	{
+		return lang->getElement(std::forward<Args>(args)...);
+	}
 };

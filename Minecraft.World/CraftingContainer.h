@@ -24,7 +24,7 @@ public:
 	virtual shared_ptr<ItemInstance> removeItemNoUpdate(int slot);
 	virtual shared_ptr<ItemInstance> removeItem(unsigned int slot, int count);
 	virtual void setItem(unsigned int slot, shared_ptr<ItemInstance> item);
-	virtual int getMaxStackSize();
+	virtual int getMaxStackSize() const;
 	virtual void setChanged();
 	bool stillValid(shared_ptr<Player> player);
 

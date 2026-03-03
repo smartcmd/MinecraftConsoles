@@ -160,7 +160,7 @@ void FurnaceTileEntity::save(CompoundTag *base)
 }
 
 
-int FurnaceTileEntity::getMaxStackSize()
+int FurnaceTileEntity::getMaxStackSize() const
 {
 	return Container::LARGE_MAX_STACK_SIZE;
 }
@@ -205,7 +205,7 @@ void FurnaceTileEntity::tick()
 				if (items[SLOT_FUEL] != NULL)
 				{
 					// 4J Added: Keep track of whether charcoal was used in production of current stack.
-					if ( items[SLOT_FUEL]->getItem()->id == Item::coal_Id 
+					if ( items[SLOT_FUEL]->getItem()->id == Item::coal_Id
 						&& items[SLOT_FUEL]->getAuxValue() == CoalItem::CHAR_COAL)
 					{
 						m_charcoalUsed = true;
@@ -250,7 +250,7 @@ void FurnaceTileEntity::tick()
 bool FurnaceTileEntity::canBurn()
 {
 	if (items[SLOT_INPUT] == NULL) return false;
-	ItemInstance *burnResult = FurnaceRecipes::getInstance()->getResult(items[SLOT_INPUT]->getItem()->id);
+	const ItemInstance *burnResult = FurnaceRecipes::getInstance()->getResult(items[SLOT_INPUT]->getItem()->id);
 	if (burnResult == NULL) return false;
 	if (items[SLOT_RESULT] == NULL) return true;
 	if (!items[SLOT_RESULT]->sameItem_not_shared(burnResult)) return false;
@@ -264,7 +264,7 @@ void FurnaceTileEntity::burn()
 {
 	if (!canBurn()) return;
 
-	ItemInstance *result = FurnaceRecipes::getInstance()->getResult(items[SLOT_INPUT]->getItem()->id);
+	const ItemInstance *result = FurnaceRecipes::getInstance()->getResult(items[SLOT_INPUT]->getItem()->id);
 	if (items[SLOT_RESULT] == NULL) items[SLOT_RESULT] = result->copy();
 	else if (items[SLOT_RESULT]->id == result->id) items[SLOT_RESULT]->count++;
 

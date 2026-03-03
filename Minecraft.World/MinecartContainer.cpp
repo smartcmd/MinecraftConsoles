@@ -127,7 +127,7 @@ wstring MinecartContainer::getName()
 	return hasCustomName() ? getCustomName() : app.GetString(IDS_CONTAINER_MINECART);
 }
 
-int MinecartContainer::getMaxStackSize()
+int MinecartContainer::getMaxStackSize() const
 {
 	return Container::LARGE_MAX_STACK_SIZE;
 }

@@ -58,7 +58,7 @@ void ResultContainer::setItem(unsigned int slot, shared_ptr<ItemInstance> item)
 	items[0] = item;
 }
 
-int ResultContainer::getMaxStackSize()
+int ResultContainer::getMaxStackSize() const
 {
 	return Container::LARGE_MAX_STACK_SIZE;
 }

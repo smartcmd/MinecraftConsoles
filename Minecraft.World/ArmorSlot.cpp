@@ -12,7 +12,7 @@ ArmorSlot::ArmorSlot(int slotNum, shared_ptr<Container> container, int id, int x
 {
 }
 
-int ArmorSlot::getMaxStackSize()
+int ArmorSlot::getMaxStackSize() const
 {
 	return 1;
 }

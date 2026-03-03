@@ -72,8 +72,8 @@ public:
 		eMaterial_stoneSmooth,
 		eMaterial_netherbrick,
 		eMaterial_ender,
-		eMaterial_glass,		
-		eMaterial_blaze,		
+		eMaterial_glass,
+		eMaterial_blaze,
 		eMaterial_magic,
 		eMaterial_melon,
 		eMaterial_setfire,
@@ -421,13 +421,13 @@ public:
 	static const int bow_Id					= 261;
 	static const int arrow_Id				= 262;
 	static const int coal_Id				= 263;
-	static const int diamond_Id				= 264;	
+	static const int diamond_Id				= 264;
 	static const int ironIngot_Id			= 265;
 	static const int goldIngot_Id			= 266;
 	static const int sword_iron_Id			= 267;
-	static const int sword_wood_Id			= 268;	
+	static const int sword_wood_Id			= 268;
 	static const int shovel_wood_Id			= 269;
-	static const int pickAxe_wood_Id		= 270;	
+	static const int pickAxe_wood_Id		= 270;
 	static const int hatchet_wood_Id		= 271;
 	static const int sword_stone_Id			= 272;
 	static const int shovel_stone_Id		= 273;
@@ -437,7 +437,7 @@ public:
 	static const int shovel_diamond_Id		= 277;
 	static const int pickAxe_diamond_Id		= 278;
 	static const int hatchet_diamond_Id		= 279;
-	static const int stick_Id				= 280;	
+	static const int stick_Id				= 280;
 	static const int bowl_Id				= 281;
 	static const int mushroomStew_Id		= 282;
 	static const int sword_gold_Id			= 283;
@@ -452,7 +452,7 @@ public:
 	static const int hoe_iron_Id			= 292;
 	static const int hoe_diamond_Id			= 293;
 	static const int hoe_gold_Id			= 294;
-	static const int seeds_wheat_Id			= 295;	
+	static const int seeds_wheat_Id			= 295;
 	static const int wheat_Id				= 296;
 	static const int bread_Id				= 297;
 
@@ -485,7 +485,7 @@ public:
 	static const int porkChop_raw_Id		= 319;
 	static const int porkChop_cooked_Id		= 320;
 	static const int painting_Id			= 321;
-	static const int apple_gold_Id			= 322;	
+	static const int apple_gold_Id			= 322;
 	static const int sign_Id				= 323;
 	static const int door_wood_Id			= 324;
 	static const int bucket_empty_Id		= 325;
@@ -501,7 +501,7 @@ public:
 	static const int bucket_milk_Id			= 335;
 	static const int brick_Id				= 336;
 	static const int clay_Id				= 337;
-	static const int reeds_Id				= 338;	
+	static const int reeds_Id				= 338;
 	static const int paper_Id				= 339;
 	static const int book_Id				= 340;
 	static const int slimeBall_Id			= 341;
@@ -514,7 +514,7 @@ public:
 	static const int yellowDust_Id			= 348;
 	static const int fish_raw_Id			= 349;
 	static const int fish_cooked_Id			= 350;
-	static const int dye_powder_Id			= 351;	
+	static const int dye_powder_Id			= 351;
 	static const int bone_Id				= 352;
 	static const int sugar_Id				= 353;
 	static const int cake_Id				= 354;
@@ -574,7 +574,7 @@ public:
 	static const int record_12_Id			= 2266;
 
 	// 4J-PB - this one isn't playable in the PC game, but is fine in ours
-	static const int record_08_Id			= 2267;		
+	static const int record_08_Id			= 2267;
 
 	// TU9
 	static const int fireball_Id			 = 385;
@@ -668,7 +668,7 @@ public:
 	virtual bool TestUse(shared_ptr<ItemInstance> itemInstance, Level *level, shared_ptr<Player> player);
 	virtual shared_ptr<ItemInstance> use(shared_ptr<ItemInstance> itemInstance, Level *level, shared_ptr<Player> player);
 	virtual shared_ptr<ItemInstance> useTimeDepleted(shared_ptr<ItemInstance> itemInstance, Level *level, shared_ptr<Player> player);
-	virtual int getMaxStackSize();
+	virtual int getMaxStackSize() const;
 	virtual int getLevelDataForAuxValue(int auxValue);
 	bool isStackedByData();
 
@@ -686,7 +686,7 @@ public:
 
 	/**
 	* Returns true when the item was used to deal more than default damage
-	* 
+	*
 	* @param itemInstance
 	* @param mob
 	* @param attacker
@@ -696,7 +696,7 @@ public:
 
 	/**
 	* Returns true when the item was used to mine more efficiently
-	* 
+	*
 	* @param itemInstance
 	* @param tile
 	* @param x

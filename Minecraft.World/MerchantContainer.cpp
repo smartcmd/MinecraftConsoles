@@ -105,7 +105,7 @@ bool MerchantContainer::hasCustomName()
 	return false;
 }
 
-int MerchantContainer::getMaxStackSize()
+int MerchantContainer::getMaxStackSize() const
 {
 	return Container::LARGE_MAX_STACK_SIZE;
 }

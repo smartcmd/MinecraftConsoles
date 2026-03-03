@@ -20,7 +20,7 @@ public:
 	virtual wstring getName() = 0;
 	virtual wstring getCustomName() = 0; // 4J Stu added for sending over the network
 	virtual bool hasCustomName() = 0;
-	virtual int getMaxStackSize() = 0;
+	virtual int getMaxStackSize() const = 0;
 	virtual void setChanged() = 0;
 	virtual bool stillValid(shared_ptr<Player> player) = 0;
 	virtual void startOpen() = 0;

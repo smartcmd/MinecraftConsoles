@@ -37,6 +37,7 @@
 #include "Resource.h"
 #include "..\..\Minecraft.World\compression.h"
 #include "..\..\Minecraft.World\OldChunkStorage.h"
+#include "Network\WinsockNetLayer.h"
 
 #include "Xbox/resource.h"
 
@@ -83,6 +84,11 @@ BOOL g_bWidescreen = TRUE;
 
 int g_iScreenWidth = 1920;
 int g_iScreenHeight = 1080;
+
+char g_Win64Username[17] = { 0 };
+wchar_t g_Win64UsernameW[17] = { 0 };
+UINT g_ScreenWidth = 1920;
+UINT g_ScreenHeight = 1080;
 
 // Fullscreen toggle state
 static bool g_isFullscreen = false;
@@ -723,20 +729,6 @@ void CleanupDevice()
 	if( g_pd3dDevice ) g_pd3dDevice->Release();
 }
 
-typedef HRESULT(__stdcall* SetProcessDpiAwareness_f)(PROCESS_DPI_AWARENESS);
-static HRESULT dyn_SetProcessDpiAwareness(PROCESS_DPI_AWARENESS value) 
-{
-  static const auto ptr = reinterpret_cast<SetProcessDpiAwareness_f>(
-      reinterpret_cast<void*>(::GetProcAddress(static_cast<HMODULE>(LoadLibraryExW(L"Shcore.dll", nullptr, 0)), "SetProcessDpiAwareness")));
-  if (ptr == nullptr) 
-  {
-    SetLastError(ERROR_CALL_NOT_IMPLEMENTED);
-    return E_NOTIMPL;
-  }
-
-  return ptr(value);
-}
-
 int APIENTRY _tWinMain(_In_ HINSTANCE hInstance,
 					   _In_opt_ HINSTANCE hPrevInstance,
 					   _In_ LPTSTR    lpCmdLine,
@@ -745,7 +737,16 @@ int APIENTRY _tWinMain(_In_ HINSTANCE hInstance,
 	UNREFERENCED_PARAMETER(hPrevInstance);
 	UNREFERENCED_PARAMETER(lpCmdLine);
 
-	dyn_SetProcessDpiAwareness(PROCESS_PER_MONITOR_DPI_AWARE);
+	// 4J-Win64: set CWD to exe dir so asset paths resolve correctly
+	{
+		char szExeDir[MAX_PATH] = {};
+		GetModuleFileNameA(NULL, szExeDir, MAX_PATH);
+		char *pSlash = strrchr(szExeDir, '\\');
+		if (pSlash) { *(pSlash + 1) = '\0'; SetCurrentDirectoryA(szExeDir); }
+	}
+
+	// Declare DPI awareness so GetSystemMetrics returns physical pixels
+	SetProcessDPIAware();
 	g_iScreenWidth = GetSystemMetrics(SM_CXSCREEN);
 	g_iScreenHeight = GetSystemMetrics(SM_CYSCREEN);
 
@@ -771,8 +772,41 @@ int APIENTRY _tWinMain(_In_ HINSTANCE hInstance,
 			//g_iScreenWidth = 960;
 			//g_iScreenHeight = 544;
 		}
+
+		char cmdLineA[1024];
+		strncpy_s(cmdLineA, sizeof(cmdLineA), lpCmdLine, _TRUNCATE);
+
+		char* nameArg = strstr(cmdLineA, "-name ");
+		if (nameArg)
+		{
+			nameArg += 6;
+			while (*nameArg == ' ') nameArg++;
+			char nameBuf[17];
+			int n = 0;
+			while (nameArg[n] && nameArg[n] != ' ' && n < 16) { nameBuf[n] = nameArg[n]; n++; }
+			nameBuf[n] = 0;
+			strncpy_s(g_Win64Username, 17, nameBuf, _TRUNCATE);
+		}
 	}
 
+	if (g_Win64Username[0] == 0)
+	{
+		DWORD sz = 17;
+		static bool seeded = false;
+		if (!seeded)
+		{
+			seeded = true;
+			srand((unsigned int)time(NULL));
+		}
+
+		int r = rand() % 10000; // 0�9999
+
+		snprintf(g_Win64Username, 17, "Player%04d", r);
+
+		g_Win64Username[16] = 0;
+	}
+
+	MultiByteToWideChar(CP_ACP, 0, g_Win64Username, -1, g_Win64UsernameW, 17);
 
 	// Initialize global strings
 	MyRegisterClass(hInstance);
@@ -938,7 +972,17 @@ int APIENTRY _tWinMain(_In_ HINSTANCE hInstance,
 	// ProfileManager for XN_LIVE_INVITE_ACCEPTED for QNet.
 	g_NetworkManager.Initialise();
 
+	for (int i = 0; i < MINECRAFT_NET_MAX_PLAYERS; i++)
+	{
+		IQNet::m_player[i].m_smallId = (BYTE)i;
+		IQNet::m_player[i].m_isRemote = false;
+		IQNet::m_player[i].m_isHostPlayer = (i == 0);
+		swprintf_s(IQNet::m_player[i].m_gamertag, 32, L"Player%d", i);
+	}
+	extern wchar_t g_Win64UsernameW[17];
+	wcscpy_s(IQNet::m_player[0].m_gamertag, 32, g_Win64UsernameW);
 
+	WinsockNetLayer::Initialize();
 
 	// 4J-PB moved further down
 	//app.InitGameSettings();
@@ -1110,7 +1154,7 @@ int APIENTRY _tWinMain(_In_ HINSTANCE hInstance,
 		PIXEndNamedEvent();
 
 		PIXBeginNamedEvent(0,"Network manager do work #1");
-		//		g_NetworkManager.DoWork();
+		g_NetworkManager.DoWork();
 		PIXEndNamedEvent();
 
 		//		LeaderboardManager::Instance()->Tick();
@@ -1236,19 +1280,34 @@ int APIENTRY _tWinMain(_In_ HINSTANCE hInstance,
 			}
 		}
 
-		// F11 toggles fullscreen
+		// F3 toggles the debug console overlay, F11 toggles fullscreen
+		if (KMInput.IsKeyPressed(VK_F3))
+		{
+			static bool s_debugConsole = false;
+			s_debugConsole = !s_debugConsole;
+			ui.ShowUIDebugConsole(s_debugConsole);
+		}
+
+#ifdef _DEBUG_MENUS_ENABLED
+		if (KMInput.IsKeyPressed(VK_F4))
+		{
+			ui.NavigateToScene(ProfileManager.GetPrimaryPad(), eUIScene_DebugOverlay, NULL, eUILayer_Debug);
+		}
+#endif
+
 		if (KMInput.IsKeyPressed(VK_F11))
 		{
 			ToggleFullscreen();
 		}
 
-		// TAB opens host options menu. - Vvis :3
+		// TAB opens game info menu. - Vvis :3 - Updated by detectiveren
 		if (KMInput.IsKeyPressed(VK_TAB) && !ui.GetMenuDisplayed(0))
 		{
 			if (Minecraft* pMinecraft = Minecraft::GetInstance())
 			{
 				{
-					ui.NavigateToScene(0, eUIScene_InGameHostOptionsMenu);
+					ui.NavigateToScene(0, eUIScene_InGameInfoMenu);
+
 				}
 			}
 		}
@@ -1271,7 +1330,7 @@ int APIENTRY _tWinMain(_In_ HINSTANCE hInstance,
 		{
 			if (Minecraft* pMinecraft = Minecraft::GetInstance())
 			{
-				if (pMinecraft->options && app.DebugSettingsOn() && 
+				if (pMinecraft->options && app.DebugSettingsOn() &&
 					app.GetGameStarted() && !ui.GetMenuDisplayed(0) && pMinecraft->screen == NULL)
 				{
 					ui.NavigateToScene(0, eUIScene_DebugOverlay, NULL, eUILayer_Debug);

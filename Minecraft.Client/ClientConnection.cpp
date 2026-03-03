@@ -757,7 +757,7 @@ void ClientConnection::handleAddPlayer(shared_ptr<AddPlayerPacket> packet)
 			return;
 		}
 	}
-#ifdef _WINDOWS64
+/*#ifdef _WINDOWS64
 	// On Windows64 all XUIDs are INVALID_XUID so the XUID check above never fires.
 	// packet->m_playerIndex is the server-assigned sequential index (set via LoginPacket),
 	// NOT the controller slot — so we must scan all local player slots and match by
@@ -771,7 +771,7 @@ void ClientConnection::handleAddPlayer(shared_ptr<AddPlayerPacket> packet)
 			return;
 		}
 	}
-#endif
+#endif*/
 
 	double x = packet->x / 32.0;
 	double y = packet->y / 32.0;

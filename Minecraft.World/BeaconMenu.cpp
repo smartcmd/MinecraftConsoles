@@ -134,7 +134,7 @@ bool BeaconMenu::PaymentSlot::mayPlace(shared_ptr<ItemInstance> item)
 	return false;
 }
 
-int BeaconMenu::PaymentSlot::getMaxStackSize()
+int BeaconMenu::PaymentSlot::getMaxStackSize() const
 {
 	return 1;
 }
