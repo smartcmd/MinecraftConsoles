@@ -1213,9 +1213,7 @@ void UIController::getRenderDimensions(C4JRender::eViewportType viewport, S32 &w
 	{
     case C4JRender::VIEWPORT_TYPE_FULLSCREEN:
         {
-            // AnyAspectRatio support by Fayaz
-            // We must clamp the render dimensions to 16:9 so Iggy doesn't stretch content.
-
+            // AAR - Calculate height and width of contained 16:9 window
             float targetAspect = 16.0f / 9.0f;
             float currentAspect = aar_Width / aar_Height;
 
@@ -1447,7 +1445,7 @@ void UIController::setupCustomDrawMatrices(UIScene *scene, CustomDrawData *custo
 
 	glLoadIdentity();
 	glTranslatef(0, 0, -2000);
-	// Fayaz - Apply the calculated tile origin
+	// AAR - Apply the calculated tile origin
 	glTranslatef((float)m_tileOriginX, (float)m_tileOriginY, 0.0f);
 
 	// Iggy translations are based on a double-size target, with the origin in the centre
