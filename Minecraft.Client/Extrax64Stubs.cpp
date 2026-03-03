@@ -589,8 +589,21 @@ char fakeGamerTag[32] = "PlayerName";
 void				SetFakeGamertag(char* name) { strcpy_s(fakeGamerTag, name); }
 char* C_4JProfile::GetGamertag(int iPad) { return fakeGamerTag; }
 #else
-char* C_4JProfile::GetGamertag(int iPad) { extern char g_Win64Username[17]; return g_Win64Username; }
-wstring				C_4JProfile::GetDisplayName(int iPad) { extern wchar_t g_Win64UsernameW[17]; return g_Win64UsernameW; }
+#include <windows.h>
+
+const char* C_4JProfile::GetGamertag(int iPad)
+{
+	static std::string narrowName;
+	const wchar_t* wideName = g_playerName.c_str();
+
+	int sizeNeeded = WideCharToMultiByte(CP_UTF8, 0, wideName, -1, nullptr, 0, nullptr, nullptr);
+
+	narrowName.resize(sizeNeeded);
+	WideCharToMultiByte(CP_UTF8, 0, wideName, -1, &narrowName[0], sizeNeeded, nullptr, nullptr);
+
+	return narrowName.c_str();
+}
+wstring				C_4JProfile::GetDisplayName(int iPad) { return g_playerName; }
 #endif
 bool				C_4JProfile::IsFullVersion() { return s_bProfileIsFullVersion; }
 void				C_4JProfile::SetSignInChangeCallback(void (*Func)(LPVOID, bool, unsigned int), LPVOID lpParam) {}

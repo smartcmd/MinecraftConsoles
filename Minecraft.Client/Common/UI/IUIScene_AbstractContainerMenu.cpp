@@ -1304,42 +1304,60 @@ bool IUIScene_AbstractContainerMenu::handleKeyDown(int iPad, int iAction, bool b
 #endif
 
 	int buttonNum=0; // 0 = LeftMouse, 1 = RightMouse
-	BOOL quickKeyHeld=FALSE; // Represents shift key on PC
-
-	BOOL validKeyPress = FALSE;
+	BOOL quickKeyHeld=false; // Represents shift key on PC
+	BOOL quickKeyDown = false; // Represents shift key on PC
+	BOOL validKeyPress = false;
 	bool itemEditorKeyPress = false;
 
 	// Ignore input from other players
 	//if(pMinecraft->player->GetXboxPad()!=pInputData->UserIndex) return S_OK;
-
+	 
 	switch(iAction)
 	{
 #ifdef _DEBUG_MENUS_ENABLED
 	case ACTION_MENU_OTHER_STICK_PRESS:
 		itemEditorKeyPress = TRUE;
 		break;
-#endif
+#endif 
 	case ACTION_MENU_A:
 #ifdef __ORBIS__
 	case ACTION_MENU_TOUCHPAD_PRESS:
 #endif
-		if(!bRepeat)
+		if (!bRepeat)
 		{
 			validKeyPress = TRUE;
 
 			// Standard left click
 			buttonNum = 0;
-			quickKeyHeld = FALSE;
-
-			if( IsSectionSlotList( m_eCurrSection ) )
+			if (KMInput.IsKeyDown(VK_SHIFT))
 			{
-				int currentIndex = getCurrentIndex( m_eCurrSection ) - getSectionStartOffset(m_eCurrSection);
+				{
+					validKeyPress = TRUE;
 
-				bool bSlotHasItem = !isSlotEmpty(m_eCurrSection, currentIndex);
-				if ( bSlotHasItem )
-					ui.PlayUISFX(eSFX_Press);
+					// Shift and left click
+					buttonNum = 0;
+					quickKeyHeld = TRUE;
+					if (IsSectionSlotList(m_eCurrSection))
+					{
+						int currentIndex = getCurrentIndex(m_eCurrSection) - getSectionStartOffset(m_eCurrSection);
+
+						bool bSlotHasItem = !isSlotEmpty(m_eCurrSection, currentIndex);
+						if (bSlotHasItem)
+							ui.PlayUISFX(eSFX_Press);
+					}
+				}
 			}
-			//
+			else {
+				if (IsSectionSlotList(m_eCurrSection))
+				{
+					int currentIndex = getCurrentIndex(m_eCurrSection) - getSectionStartOffset(m_eCurrSection);
+
+					bool bSlotHasItem = !isSlotEmpty(m_eCurrSection, currentIndex);
+					if (bSlotHasItem)
+						ui.PlayUISFX(eSFX_Press);
+				}
+				//
+			}
 		}
 		break;
 	case ACTION_MENU_X:
@@ -1361,6 +1379,7 @@ bool IUIScene_AbstractContainerMenu::handleKeyDown(int iPad, int iAction, bool b
 			}
 		}
 		break;
+
 	case ACTION_MENU_Y:
 		if(!bRepeat)
 		{
