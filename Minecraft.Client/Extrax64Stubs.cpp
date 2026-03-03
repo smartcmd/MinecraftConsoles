@@ -21,7 +21,6 @@
 #include "Windows64\Social\SocialManager.h"
 #include "Windows64\Sentient\DynamicConfigurations.h"
 #include "Windows64\Network\WinsockNetLayer.h"
-#include "User.h"
 #elif defined __PSVITA__
 #include "PSVita\Sentient\SentientManager.h"
 #include "StatsCounter.h"
