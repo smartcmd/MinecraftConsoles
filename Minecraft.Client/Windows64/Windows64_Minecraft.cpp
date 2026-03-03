@@ -729,7 +729,16 @@ int APIENTRY _tWinMain(_In_ HINSTANCE hInstance,
 	UNREFERENCED_PARAMETER(hPrevInstance);
 	UNREFERENCED_PARAMETER(lpCmdLine);
 
-	dyn_SetProcessDpiAwareness(PROCESS_PER_MONITOR_DPI_AWARE);
+	// 4J-Win64: set CWD to exe dir so asset paths resolve correctly
+	{
+		char szExeDir[MAX_PATH] = {};
+		GetModuleFileNameA(NULL, szExeDir, MAX_PATH);
+		char *pSlash = strrchr(szExeDir, '\\');
+		if (pSlash) { *(pSlash + 1) = '\0'; SetCurrentDirectoryA(szExeDir); }
+	}
+
+	// Declare DPI awareness so GetSystemMetrics returns physical pixels
+	SetProcessDPIAware();
 	g_iScreenWidth = GetSystemMetrics(SM_CXSCREEN);
 	g_iScreenHeight = GetSystemMetrics(SM_CYSCREEN);
 
@@ -1263,7 +1272,21 @@ int APIENTRY _tWinMain(_In_ HINSTANCE hInstance,
 			}
 		}
 
-		// F11 toggles fullscreen
+		// F3 toggles the debug console overlay, F11 toggles fullscreen
+		if (KMInput.IsKeyPressed(VK_F3))
+		{
+			static bool s_debugConsole = false;
+			s_debugConsole = !s_debugConsole;
+			ui.ShowUIDebugConsole(s_debugConsole);
+		}
+
+#ifdef _DEBUG_MENUS_ENABLED
+		if (KMInput.IsKeyPressed(VK_F4))
+		{
+			ui.NavigateToScene(ProfileManager.GetPrimaryPad(), eUIScene_DebugOverlay, NULL, eUILayer_Debug);
+		}
+#endif
+
 		if (KMInput.IsKeyPressed(VK_F11))
 		{
 			ToggleFullscreen();

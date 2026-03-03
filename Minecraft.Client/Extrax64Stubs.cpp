@@ -199,10 +199,11 @@ DWORD IQNetPlayer::GetSendQueueSize(IQNetPlayer * player, DWORD dwFlags) { retur
 DWORD IQNetPlayer::GetCurrentRtt() { return 0; }
 bool IQNetPlayer::IsHost() { return m_isHostPlayer; }
 bool IQNetPlayer::IsGuest() { return false; }
-bool IQNetPlayer::IsLocal() { return !m_isRemote; }
-PlayerUID IQNetPlayer::GetXuid() { return (PlayerUID)(0xe000d45248242f2e + m_smallId); }
-LPCWSTR IQNetPlayer::GetGamertag() { return m_gamertag; }
-int IQNetPlayer::GetSessionIndex() { return m_smallId; }
+bool IQNetPlayer::IsLocal() { return true; }
+PlayerUID IQNetPlayer::GetXuid() { return INVALID_XUID; }
+extern wstring g_playerName;
+LPCWSTR IQNetPlayer::GetGamertag() { return g_playerName.empty() ? L"Windows" : g_playerName.c_str(); }
+int IQNetPlayer::GetSessionIndex() { return 0; }
 bool IQNetPlayer::IsTalking() { return false; }
 bool IQNetPlayer::IsMutedByLocalUser(DWORD dwUserIndex) { return false; }
 bool IQNetPlayer::HasVoice() { return false; }
