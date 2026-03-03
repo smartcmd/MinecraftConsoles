@@ -101,8 +101,6 @@ public:
 	bool IsFullscreenGroup();
 
 	void handleUnlockFullVersion();
-
-	static const int LAYER_COUNT = eUILayer_COUNT;
 	
 	void PrintTotalMemoryUsage(__int64 &totalStatic, __int64 &totalDynamic);
 

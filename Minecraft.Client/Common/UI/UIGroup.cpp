@@ -333,6 +333,7 @@ bool UIGroup::IsFullscreenGroup()
 	return m_group == eUIGroup_Fullscreen;
 }
 
+
 void UIGroup::handleUnlockFullVersion()
 {
 	for(unsigned int i = 0; i < eUILayer_COUNT; ++i)

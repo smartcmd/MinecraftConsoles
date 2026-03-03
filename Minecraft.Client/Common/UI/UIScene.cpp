@@ -1199,19 +1199,6 @@ void UIScene::_handleFocusChange(F64 controlId, F64 childId)
 	ui.PlayUISFX(eSFX_Focus);
 }
 
-void UIScene::UpdateDisplaySize()
-{
-    if (!swf)
-    {
-        return;
-    }
-
-    S32 width, height;
-    m_parentLayer->getRenderDimensions(width, height);
-    IggyPlayerSetDisplaySize(swf, width, height);
-    updateSafeZone();
-}
-
 void UIScene::_handleInitFocus(F64 controlId, F64 childId)
 {
 	m_iFocusControl = (int)controlId;

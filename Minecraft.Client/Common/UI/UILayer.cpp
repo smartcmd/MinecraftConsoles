@@ -872,6 +872,7 @@ C4JRender::eViewportType UILayer::getViewport()
 	return m_parentGroup->GetViewportType();
 }
 
+
 void UILayer::handleUnlockFullVersion()
 {
 	for(AUTO_VAR(it, m_sceneStack.begin()); it != m_sceneStack.end(); ++it)
