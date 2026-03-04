@@ -14,7 +14,6 @@ jobs:
   build:
     name: Build Windows64
     runs-on: windows-latest
-
     steps:
     - name: Checkout
       uses: actions/checkout@v6
@@ -30,14 +29,30 @@ jobs:
 
     - name: Update release
       uses: andelf/nightly-release@main
-
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         tag_name: nightly
         name: Nightly Release
-        body: Requires at least Windows 7 and DirectX 11 compatible GPU to run. Compiled with MSVC v14.44.35207 in Release mode with Whole Program Optimization, as well as `/O2 /Ot /Oi /Ob3 /GF /fp:precise`.
+        body: Requires at least Windows 7 and DirectX 11 compatible GPU to run. Compiled with MSVC v14.44.35207 in Release mode  with Whole Program Optimization, as well as `/O2 /Ot /Oi /Ob3 /GF /fp:precise`.
         files: |
             LCEWindows64.zip
             ./x64/Release/Minecraft.Client.exe
             ./x64/Release/Minecraft.Client.pdb
+
+  mirror_to_codeberg:
+    name: Mirror to Codeberg
+    runs-on: ubuntu-latest
+    needs: build 
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Mirror to Codeberg
+        uses: cssnr/mirror-repository-action@v1
+        with:
+          url: https://codeberg.org/${{ secrets.CODEBERG_USERNAME }}/${{ github.event.repository.name }}.git
+          username: ${{ secrets.CODEBERG_USERNAME }}
+          password: ${{ secrets.CODEBERG_TOKEN }}
