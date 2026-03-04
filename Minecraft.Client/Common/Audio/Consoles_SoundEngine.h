@@ -16,6 +16,8 @@
 #include <Durango/Miles/include/mss.h>
 #elif defined _WINDOWS64
 #include <windows64/Miles/include/mss.h>
+#elif defined _CROSS64 
+// TODO: stub with actual miles replacement
 #else // PS4
 // 4J Stu - Temp define to get Miles to link, can likely be removed when we get a new version of Miles
 #define _SEKRIT2
