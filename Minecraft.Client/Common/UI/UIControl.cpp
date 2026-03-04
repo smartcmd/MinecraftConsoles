@@ -104,6 +104,20 @@ S32 UIControl::getHeight()
 	return m_height;
 }
 
+bool UIControl::setXPos(S32 x)
+{
+	rrbool succ = IggyValueSetF64RS(getIggyValuePath(), m_nameXPos, NULL, (F64)x);
+	if (succ) m_x = x;
+	return succ;
+}
+
+bool UIControl::setYPos(S32 y)
+{
+	rrbool succ = IggyValueSetF64RS(getIggyValuePath(), m_nameYPos, NULL, (F64)y);
+	if (succ) m_y = y;
+	return succ;
+}
+
 void UIControl::setOpacity(float percent)
 {
 	if(percent != m_lastOpacity)
