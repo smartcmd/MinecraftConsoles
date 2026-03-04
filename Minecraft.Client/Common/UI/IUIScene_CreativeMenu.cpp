@@ -882,7 +882,7 @@ void IUIScene_CreativeMenu::TabSpec::populateMenu(AbstractContainerMenu *menu, i
 	for(; currentGroup < m_staticGroupsCount; ++currentGroup)
 	{
 		int size = categoryGroups[m_staticGroupsA[currentGroup]].size();
-		if( currentIndex + size < startIndex)
+		if( currentIndex + size <= startIndex)
 		{
 			currentIndex += size;
 			continue;
@@ -932,7 +932,7 @@ void IUIScene_CreativeMenu::TabSpec::populateMenu(AbstractContainerMenu *menu, i
 			for(; currentGroup < m_debugGroupsCount; ++currentGroup)
 			{
 				int size = categoryGroups[m_debugGroupsA[currentGroup]].size();
-				if( currentIndex + size < startIndex)
+				if( currentIndex + size <= startIndex)
 				{
 					currentIndex += size;
 					continue;
@@ -973,7 +973,9 @@ unsigned int IUIScene_CreativeMenu::TabSpec::getPageCount()
 #ifndef _CONTENT_PACKAGE
 	if(app.DebugArtToolsOn())
 	{
-		return (int)ceil((float)(m_staticItems + m_debugItems) / m_staticPerPage);
+		int totalItems = m_staticItems + m_debugItems;
+		const int totalRows = (totalItems + columns - 1) / columns;
+		return std::max<int>(1, totalRows - rows + 1);
 	}
 	else
 #endif
