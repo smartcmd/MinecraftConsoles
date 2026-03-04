@@ -501,22 +501,25 @@ void GameRenderer::moveCameraToPlayer(float a)
 		else
 		{
 			// 4J - corrected bug where this used to just take player->xRot & yRot directly and so wasn't taking into account interpolation, allowing camera to go through walls
-			float playerYRot = player->yRotO + (player->yRot - player->yRotO) * a;
-			float playerXRot = player->xRotO + (player->xRot - player->xRotO) * a;
-			float yRot = playerYRot;
-			float xRot = playerXRot;
+			float yRot = player->yRotO + (player->yRot - player->yRotO) * a;
+			float xRot = player->xRotO + (player->xRot - player->xRotO) * a;
 
 			// Thirdperson view values are now 0 for disabled, 1 for original mode, 2 for reversed.
 			if( localplayer->ThirdPersonView() == 2 )
 			{
-				// Reverse x rotation - note that this is only used in doing collision to calculate our view
+				// Reverse y rotation - note that this is only used in doing collision to calculate our view
 				// distance, the actual rotation itself is just below this else {} block
-				xRot += 180.0f;
+				yRot += 180.0f;
 			}
 
 			double xd = -Mth::sin(yRot / 180 * PI) * Mth::cos(xRot / 180 * PI) * cameraDist;
 			double zd = Mth::cos(yRot / 180 * PI) * Mth::cos(xRot / 180 * PI) * cameraDist;
 			double yd = -Mth::sin(xRot / 180 * PI) * cameraDist;
+
+			if (localplayer->ThirdPersonView() == 2)
+			{
+				yd = Mth::sin(xRot / 180 * PI) * cameraDist;
+			}
 
 			for (int i = 0; i < 8; i++)
 			{
@@ -538,16 +541,7 @@ void GameRenderer::moveCameraToPlayer(float a)
 				}
 			}
 
-            if ( localplayer->ThirdPersonView() == 2)
-			{
-                glRotatef(180, 0, 1, 0);
-            }
-
-			glRotatef(playerXRot - xRot, 1, 0, 0);
-			glRotatef(playerYRot - yRot, 0, 1, 0);
 			glTranslatef(0, 0, (float) -cameraDist);
-			glRotatef(yRot - playerYRot, 0, 1, 0);
-			glRotatef(xRot - playerXRot, 1, 0, 0);
 		}
 	}
 	else
@@ -557,8 +551,21 @@ void GameRenderer::moveCameraToPlayer(float a)
 
 	if (!mc->options->fixedCamera)
 	{
-		glRotatef(player->xRotO + (player->xRot - player->xRotO) * a, 1, 0, 0);
-		glRotatef(player->yRotO + (player->yRot - player->yRotO) * a + 180, 0, 1, 0);
+		float pitch = player->xRotO + (player->xRot - player->xRotO) * a;
+		if (localplayer->ThirdPersonView() == 2)
+		{
+			pitch = -pitch;
+		}
+
+		glRotatef(pitch, 1, 0, 0);
+		if (localplayer->ThirdPersonView() == 2)
+		{
+			glRotatef(player->yRotO + (player->yRot - player->yRotO) * a, 0, 1, 0);
+		}
+		else
+		{
+			glRotatef(player->yRotO + (player->yRot - player->yRotO) * a + 180, 0, 1, 0);
+		}
 	}
 
 	glTranslatef(0, heightOffset, 0);

@@ -1456,7 +1456,7 @@ void Minecraft::run_middle()
 						if (KMInput.ConsumeKeyPress('C'))         localplayers[i]->ullButtonsPressed |= 1LL<<MINECRAFT_ACTION_CRAFTING;
 						if (KMInput.ConsumeKeyPress(VK_F5))       localplayers[i]->ullButtonsPressed |= 1LL<<MINECRAFT_ACTION_RENDER_THIRD_PERSON;
 						// In flying mode, Shift held = sneak/descend
-						if (localplayers[i]->abilities.flying && KMInput.IsKeyDown(VK_SHIFT))
+						if (localplayers[i]->abilities.flying && KMInput.IsKeyDown(VK_SHIFT) && !ui.GetMenuDisplayed(i))
 							localplayers[i]->ullButtonsPressed |= 1LL<<MINECRAFT_ACTION_SNEAK_TOGGLE;
 					}
 #endif
@@ -3618,8 +3618,6 @@ void Minecraft::tick(bool bFirst, bool bUpdateTextures)
 				if((player->ullButtonsPressed&(1LL<<MINECRAFT_ACTION_RENDER_DEBUG)) )
 				{
 #ifndef _CONTENT_PACKAGE
-
-					options->renderDebug = !options->renderDebug;
 #ifdef _XBOX
 					app.EnableDebugOverlay(options->renderDebug,iPad);
 #else
@@ -3629,13 +3627,11 @@ void Minecraft::tick(bool bFirst, bool bUpdateTextures)
 #endif
 				}
 
-				if((player->ullButtonsPressed&(1LL<<MINECRAFT_ACTION_SPAWN_CREEPER)) && app.GetMobsDontAttackEnabled())
-				{
-					//shared_ptr<Mob> mob = dynamic_pointer_cast<Mob>(Creeper::_class->newInstance( level ));
-					//shared_ptr<Mob> mob = dynamic_pointer_cast<Mob>(Wolf::_class->newInstance( level ));
-					shared_ptr<Mob> mob = dynamic_pointer_cast<Mob>(shared_ptr<Spider>(new Spider( level )));
-					mob->moveTo(player->x+1, player->y, player->z+1, level->random->nextFloat() * 360, 0);
-					level->addEntity(mob);
+				if((player->ullButtonsPressed&(1LL<<MINECRAFT_ACTION_SPAWN_CREEPER)))
+                {
+#ifndef _CONTENT_PACKAGE
+                    options->renderDebug = !options->renderDebug;
+#endif
 				}
 			}
 

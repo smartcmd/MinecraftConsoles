@@ -39,9 +39,7 @@ RemoveSemicolon: false
 SeparateDefinitionBlocks: Leave
 ShortNamespaceLines: 1
 SkipMacroDefinitionBody: false
-SortIncludes:
-  Enabled: true
-  IgnoreCase: false
+SortIncludes: CaseSensitive
 SpacesInParens: Never
 SpacesInParensOptions:
   ExceptDoubleParentheses: false

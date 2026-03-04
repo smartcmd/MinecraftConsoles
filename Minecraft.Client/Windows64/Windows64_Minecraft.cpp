@@ -4,7 +4,9 @@
 #include "stdafx.h"
 
 #include <assert.h>
+#include <iostream>
 #include <ShellScalingApi.h>
+#include <shellapi.h>
 #include "GameConfig\Minecraft.spa.h"
 #include "..\MinecraftServer.h"
 #include "..\LocalPlayer.h"
@@ -34,6 +36,7 @@
 #include "Sentient\SentientManager.h"
 #include "..\..\Minecraft.World\IntCache.h"
 #include "..\Textures.h"
+#include "..\Settings.h"
 #include "Resource.h"
 #include "..\..\Minecraft.World\compression.h"
 #include "..\..\Minecraft.World\OldChunkStorage.h"
@@ -88,9 +91,154 @@ int g_iScreenHeight = 1080;
 UINT g_ScreenWidth = 1920;
 UINT g_ScreenHeight = 1080;
 
+char g_Win64Username[17] = { 0 };
+wchar_t g_Win64UsernameW[17] = { 0 };
+
 // Fullscreen toggle state
 static bool g_isFullscreen = false;
 static WINDOWPLACEMENT g_wpPrev = { sizeof(g_wpPrev) };
+
+struct Win64LaunchOptions
+{
+	int screenMode;
+	bool serverMode;
+};
+
+static void CopyWideArgToAnsi(LPCWSTR source, char* dest, size_t destSize)
+{
+	if (destSize == 0)
+		return;
+
+	dest[0] = 0;
+	if (source == NULL)
+		return;
+
+	WideCharToMultiByte(CP_ACP, 0, source, -1, dest, (int)destSize, NULL, NULL);
+	dest[destSize - 1] = 0;
+}
+
+static void ApplyScreenMode(int screenMode)
+{
+	switch (screenMode)
+	{
+	case 1:
+		g_iScreenWidth = 1280;
+		g_iScreenHeight = 720;
+		break;
+	case 2:
+		g_iScreenWidth = 640;
+		g_iScreenHeight = 480;
+		break;
+	case 3:
+		g_iScreenWidth = 720;
+		g_iScreenHeight = 408;
+		break;
+	default:
+		break;
+	}
+}
+
+static Win64LaunchOptions ParseLaunchOptions()
+{
+	Win64LaunchOptions options = {};
+	options.screenMode = 0;
+	options.serverMode = false;
+
+	g_Win64MultiplayerJoin = false;
+	g_Win64MultiplayerPort = WIN64_NET_DEFAULT_PORT;
+	g_Win64DedicatedServer = false;
+	g_Win64DedicatedServerPort = WIN64_NET_DEFAULT_PORT;
+	g_Win64DedicatedServerBindIP[0] = 0;
+
+	int argc = 0;
+	LPWSTR* argv = CommandLineToArgvW(GetCommandLineW(), &argc);
+	if (argv == NULL)
+		return options;
+
+	if (argc > 1 && lstrlenW(argv[1]) == 1)
+	{
+		if (argv[1][0] >= L'1' && argv[1][0] <= L'3')
+			options.screenMode = argv[1][0] - L'0';
+	}
+
+	for (int i = 1; i < argc; ++i)
+	{
+		if (_wcsicmp(argv[i], L"-server") == 0)
+		{
+			options.serverMode = true;
+			break;
+		}
+	}
+
+	g_Win64DedicatedServer = options.serverMode;
+
+	for (int i = 1; i < argc; ++i)
+	{
+		if (_wcsicmp(argv[i], L"-name") == 0 && (i + 1) < argc)
+		{
+			CopyWideArgToAnsi(argv[++i], g_Win64Username, sizeof(g_Win64Username));
+		}
+		else if (_wcsicmp(argv[i], L"-ip") == 0 && (i + 1) < argc)
+		{
+			char ipBuf[256];
+			CopyWideArgToAnsi(argv[++i], ipBuf, sizeof(ipBuf));
+			if (options.serverMode)
+			{
+				strncpy_s(g_Win64DedicatedServerBindIP, sizeof(g_Win64DedicatedServerBindIP), ipBuf, _TRUNCATE);
+			}
+			else
+			{
+				strncpy_s(g_Win64MultiplayerIP, sizeof(g_Win64MultiplayerIP), ipBuf, _TRUNCATE);
+				g_Win64MultiplayerJoin = true;
+			}
+		}
+		else if (_wcsicmp(argv[i], L"-port") == 0 && (i + 1) < argc)
+		{
+			wchar_t* endPtr = NULL;
+			long port = wcstol(argv[++i], &endPtr, 10);
+			if (endPtr != argv[i] && *endPtr == 0 && port > 0 && port <= 65535)
+			{
+				if (options.serverMode)
+					g_Win64DedicatedServerPort = (int)port;
+				else
+					g_Win64MultiplayerPort = (int)port;
+			}
+		}
+	}
+
+	LocalFree(argv);
+	return options;
+}
+
+static BOOL WINAPI HeadlessServerCtrlHandler(DWORD ctrlType)
+{
+	switch (ctrlType)
+	{
+	case CTRL_C_EVENT:
+	case CTRL_BREAK_EVENT:
+	case CTRL_CLOSE_EVENT:
+	case CTRL_SHUTDOWN_EVENT:
+		app.m_bShutdown = true;
+		MinecraftServer::HaltServer();
+		return TRUE;
+	default:
+		return FALSE;
+	}
+}
+
+static void SetupHeadlessServerConsole()
+{
+	if (AllocConsole())
+	{
+		FILE* stream = NULL;
+		freopen_s(&stream, "CONIN$", "r", stdin);
+		freopen_s(&stream, "CONOUT$", "w", stdout);
+		freopen_s(&stream, "CONOUT$", "w", stderr);
+		SetConsoleTitleA("Minecraft Server");
+	}
+
+	SetConsoleCtrlHandler(HeadlessServerCtrlHandler, TRUE);
+}
 
 void DefineActions(void)
 {
@@ -719,6 +867,225 @@ void CleanupDevice()
 	if( g_pd3dDevice ) g_pd3dDevice->Release();
 }
 
+static Minecraft* InitialiseMinecraftRuntime()
+{
+	app.loadMediaArchive();
+
+	RenderManager.Initialise(g_pd3dDevice, g_pSwapChain);
+
+	app.loadStringTable();
+	ui.init(g_pd3dDevice, g_pImmediateContext, g_pRenderTargetView, g_pDepthStencilView, g_iScreenWidth, g_iScreenHeight);
+
+	InputManager.Initialise(1, 3, MINECRAFT_ACTION_MAX, ACTION_MAX_MENU);
+	KMInput.Init(g_hWnd);
+	DefineActions();
+	InputManager.SetJoypadMapVal(0, 0);
+	InputManager.SetKeyRepeatRate(0.3f, 0.2f);
+
+	ProfileManager.Initialise(TITLEID_MINECRAFT,
+		app.m_dwOfferID,
+		PROFILE_VERSION_10,
+		NUM_PROFILE_VALUES,
+		NUM_PROFILE_SETTINGS,
+		dwProfileSettingsA,
+		app.GAME_DEFINED_PROFILE_DATA_BYTES * XUSER_MAX_COUNT,
+		&app.uiGameDefinedDataChangedBitmask
+	);
+	ProfileManager.SetDefaultOptionsCallback(&CConsoleMinecraftApp::DefaultOptionsCallback, (LPVOID)&app);
+
+	g_NetworkManager.Initialise();
+
+	for (int i = 0; i < MINECRAFT_NET_MAX_PLAYERS; i++)
+	{
+		IQNet::m_player[i].m_smallId = (BYTE)i;
+		IQNet::m_player[i].m_isRemote = false;
+		IQNet::m_player[i].m_isHostPlayer = (i == 0);
+		swprintf_s(IQNet::m_player[i].m_gamertag, 32, L"Player%d", i);
+	}
+	wcscpy_s(IQNet::m_player[0].m_gamertag, 32, g_Win64UsernameW);
+
+	WinsockNetLayer::Initialize();
+
+	ProfileManager.SetDebugFullOverride(true);
+
+	Tesselator::CreateNewThreadStorage(1024 * 1024);
+	AABB::CreateNewThreadStorage();
+	Vec3::CreateNewThreadStorage();
+	IntCache::CreateNewThreadStorage();
+	Compression::CreateNewThreadStorage();
+	OldChunkStorage::CreateNewThreadStorage();
+	Level::enableLightingCache();
+	Tile::CreateNewThreadStorage();
+
+	Minecraft::main();
+	Minecraft* pMinecraft = Minecraft::GetInstance();
+	if (pMinecraft == NULL)
+		return NULL;
+
+	app.InitGameSettings();
+	app.InitialiseTips();
+
+	pMinecraft->options->set(Options::Option::MUSIC, 1.0f);
+	pMinecraft->options->set(Options::Option::SOUND, 1.0f);
+
+	return pMinecraft;
+}
+
+static int HeadlessServerConsoleThreadProc(void* lpParameter)
+{
+	UNREFERENCED_PARAMETER(lpParameter);
+
+	std::string line;
+	while (!app.m_bShutdown)
+	{
+		if (!std::getline(std::cin, line))
+		{
+			if (std::cin.eof())
+			{
+				break;
+			}
+
+			std::cin.clear();
+			Sleep(50);
+			continue;
+		}
+
+		wstring command = trimString(convStringToWstring(line));
+		if (command.empty())
+			continue;
+
+		MinecraftServer* server = MinecraftServer::getInstance();
+		if (server != NULL)
+		{
+			server->handleConsoleInput(command, server);
+		}
+	}
+
+	return 0;
+}
+
+static int RunHeadlessServer()
+{
+	SetupHeadlessServerConsole();
+
+	Settings serverSettings(new File(L"server.properties"));
+	wstring configuredBindIp = serverSettings.getString(L"server-ip", L"");
+
+	const char* bindIp = "*";
+	if (g_Win64DedicatedServerBindIP[0] != 0)
+	{
+		bindIp = g_Win64DedicatedServerBindIP;
+	}
+	else if (!configuredBindIp.empty())
+	{
+		bindIp = wstringtochararray(configuredBindIp);
+	}
+
+	const int port = g_Win64DedicatedServerPort > 0 ? g_Win64DedicatedServerPort : serverSettings.getInt(L"server-port", WIN64_NET_DEFAULT_PORT);
+
+	printf("Starting headless server on %s:%d\n", bindIp, port);
+	fflush(stdout);
+
+	Minecraft* pMinecraft = InitialiseMinecraftRuntime();
+	if (pMinecraft == NULL)
+	{
+		fprintf(stderr, "Failed to initialise the Minecraft runtime.\n");
+		return 1;
+	}
+
+	app.SetGameHostOption(eGameHostOption_Difficulty, serverSettings.getInt(L"difficulty", 1));
+	app.SetGameHostOption(eGameHostOption_Gamertags, 1);
+	app.SetGameHostOption(eGameHostOption_GameType, serverSettings.getInt(L"gamemode", 0));
+	app.SetGameHostOption(eGameHostOption_LevelType, 0);
+	app.SetGameHostOption(eGameHostOption_Structures, serverSettings.getBoolean(L"generate-structures", true) ? 1 : 0);
+	app.SetGameHostOption(eGameHostOption_BonusChest, serverSettings.getBoolean(L"bonus-chest", false) ? 1 : 0);
+	app.SetGameHostOption(eGameHostOption_PvP, serverSettings.getBoolean(L"pvp", true) ? 1 : 0);
+	app.SetGameHostOption(eGameHostOption_TrustPlayers, serverSettings.getBoolean(L"trust-players", true) ? 1 : 0);
+	app.SetGameHostOption(eGameHostOption_FireSpreads, serverSettings.getBoolean(L"fire-spreads", true) ? 1 : 0);
+	app.SetGameHostOption(eGameHostOption_TNT, serverSettings.getBoolean(L"tnt", true) ? 1 : 0);
+	app.SetGameHostOption(eGameHostOption_HostCanFly, 1);
+	app.SetGameHostOption(eGameHostOption_HostCanChangeHunger, 1);
+	app.SetGameHostOption(eGameHostOption_HostCanBeInvisible, 1);
+	app.SetGameHostOption(eGameHostOption_MobGriefing, 1);
+	app.SetGameHostOption(eGameHostOption_KeepInventory, 0);
+	app.SetGameHostOption(eGameHostOption_DoMobSpawning, 1);
+	app.SetGameHostOption(eGameHostOption_DoMobLoot, 1);
+	app.SetGameHostOption(eGameHostOption_DoTileDrops, 1);
+	app.SetGameHostOption(eGameHostOption_NaturalRegeneration, 1);
+	app.SetGameHostOption(eGameHostOption_DoDaylightCycle, 1);
+
+	MinecraftServer::resetFlags();
+	g_NetworkManager.HostGame(0, false, true, MINECRAFT_NET_MAX_PLAYERS, 0);
+
+	if (!WinsockNetLayer::IsActive())
+	{
+		fprintf(stderr, "Failed to bind the server socket on %s:%d.\n", bindIp, port);
+		return 1;
+	}
+
+	g_NetworkManager.FakeLocalPlayerJoined();
+
+	NetworkGameInitData* param = new NetworkGameInitData();
+	param->seed = 0;
+	param->settings = app.GetGameHostOption(eGameHostOption_All);
+
+	g_NetworkManager.ServerStoppedCreate(true);
+	g_NetworkManager.ServerReadyCreate(true);
+
+	C4JThread* thread = new C4JThread(&CGameNetworkManager::ServerThreadProc, param, "Server", 256 * 1024);
+	thread->SetProcessor(CPU_CORE_SERVER);
+	thread->Run();
+
+	g_NetworkManager.ServerReadyWait();
+	g_NetworkManager.ServerReadyDestroy();
+
+	if (MinecraftServer::serverHalted())
+	{
+		fprintf(stderr, "The server halted during startup.\n");
+		g_NetworkManager.LeaveGame(false);
+		return 1;
+	}
+
+	app.SetGameStarted(true);
+	g_NetworkManager.DoWork();
+
+	printf("Server ready on %s:%d\n", bindIp, port);
+	printf("Type 'help' for server commands.\n");
+	fflush(stdout);
+
+	C4JThread* consoleThread = new C4JThread(&HeadlessServerConsoleThreadProc, NULL, "Server console", 128 * 1024);
+	consoleThread->Run();
+
+	MSG msg = { 0 };
+	while (WM_QUIT != msg.message && !app.m_bShutdown && !MinecraftServer::serverHalted())
+	{
+		if (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE))
+		{
+			TranslateMessage(&msg);
+			DispatchMessage(&msg);
+			continue;
+		}
+
+		app.UpdateTime();
+		ProfileManager.Tick();
+		StorageManager.Tick();
+		RenderManager.Tick();
+		ui.tick();
+		g_NetworkManager.DoWork();
+		app.HandleXuiActions();
+
+		Sleep(10);
+	}
+
+	printf("Stopping server...\n");
+	fflush(stdout);
+
+	app.m_bShutdown = true;
+	MinecraftServer::HaltServer();
+	g_NetworkManager.LeaveGame(false);
+	return 0;
+}
+
 int APIENTRY _tWinMain(_In_ HINSTANCE hInstance,
 					   _In_opt_ HINSTANCE hPrevInstance,
 					   _In_ LPTSTR    lpCmdLine,
@@ -740,35 +1107,56 @@ int APIENTRY _tWinMain(_In_ HINSTANCE hInstance,
 	g_iScreenWidth = GetSystemMetrics(SM_CXSCREEN);
 	g_iScreenHeight = GetSystemMetrics(SM_CYSCREEN);
 
-	if(lpCmdLine)
-	{
-		if(lpCmdLine[0] == '1')
-		{
-			g_iScreenWidth = 1280;
-			g_iScreenHeight = 720;
-		}
-		else if(lpCmdLine[0] == '2')
-		{
-			g_iScreenWidth = 640;
-			g_iScreenHeight = 480;
-		}
-		else if(lpCmdLine[0] == '3')
-		{
-			// Vita
-			g_iScreenWidth = 720;
-			g_iScreenHeight = 408;
+	// Load username from username.txt
+    char exePath[MAX_PATH] = {};
+    GetModuleFileNameA(NULL, exePath, MAX_PATH);
+    char *lastSlash = strrchr(exePath, '\\');
+    if (lastSlash)
+    {
+        *(lastSlash + 1) = '\0';
+    }
 
-			// Vita native
-			//g_iScreenWidth = 960;
-			//g_iScreenHeight = 544;
-		}
+    char filePath[MAX_PATH] = {};
+    _snprintf_s(filePath, sizeof(filePath), _TRUNCATE, "%susername.txt", exePath);
+
+    FILE *f = nullptr;
+    if (fopen_s(&f, filePath, "r") == 0 && f)
+    {
+        char buf[128] = {};
+        if (fgets(buf, sizeof(buf), f))
+        {
+            int len = (int)strlen(buf);
+            while (len > 0 && (buf[len - 1] == '\n' || buf[len - 1] == '\r' || buf[len - 1] == ' '))
+            {
+                buf[--len] = '\0';
+            }
+
+            if (len > 0)
+            {
+                strncpy_s(g_Win64Username, sizeof(g_Win64Username), buf, _TRUNCATE);
+            }
+        }
+        fclose(f);
+    }
+
+	// Load stuff from launch options, including username
+	Win64LaunchOptions launchOptions = ParseLaunchOptions();
+	ApplyScreenMode(launchOptions.screenMode);
+
+	// If no username, let's fall back
+	if (g_Win64Username[0] == 0)
+	{
+        // Default username will be "Player"
+        strncpy_s(g_Win64Username, sizeof(g_Win64Username), "Player", _TRUNCATE);
 	}
+
+	MultiByteToWideChar(CP_ACP, 0, g_Win64Username, -1, g_Win64UsernameW, 17);
 
 	// Initialize global strings
 	MyRegisterClass(hInstance);
 
 	// Perform application initialization:
-	if (!InitInstance (hInstance, nCmdShow))
+	if (!InitInstance (hInstance, launchOptions.serverMode ? SW_HIDE : nCmdShow))
 	{
 		return FALSE;
 	}
@@ -779,6 +1167,13 @@ int APIENTRY _tWinMain(_In_ HINSTANCE hInstance,
 	{
 		CleanupDevice();
 		return 0;
+	}
+
+	if (launchOptions.serverMode)
+	{
+		int serverResult = RunHeadlessServer();
+		CleanupDevice();
+		return serverResult;
 	}
 
 #if 0
@@ -833,200 +1228,12 @@ int APIENTRY _tWinMain(_In_ HINSTANCE hInstance,
 	}
 
 #endif
-	app.loadMediaArchive();
-
-	RenderManager.Initialise(g_pd3dDevice, g_pSwapChain);
-
-	app.loadStringTable();
-	ui.init(g_pd3dDevice,g_pImmediateContext,g_pRenderTargetView,g_pDepthStencilView,g_iScreenWidth,g_iScreenHeight);
-
-	////////////////
-	// Initialise //
-	////////////////
-
-	// Set the number of possible joypad layouts that the user can switch between, and the number of actions
-	InputManager.Initialise(1,3,MINECRAFT_ACTION_MAX, ACTION_MAX_MENU);
-
-	// Initialize keyboard/mouse input
-	KMInput.Init(g_hWnd);
-
-	// Set the default joypad action mappings for Minecraft
-	DefineActions();
-	InputManager.SetJoypadMapVal(0,0);
-	InputManager.SetKeyRepeatRate(0.3f,0.2f);
-
-	// Initialise the profile manager with the game Title ID, Offer ID, a profile version number, and the number of profile values and settings
-	ProfileManager.Initialise(TITLEID_MINECRAFT,
-		app.m_dwOfferID,
-		PROFILE_VERSION_10,
-		NUM_PROFILE_VALUES,
-		NUM_PROFILE_SETTINGS,
-		dwProfileSettingsA,
-		app.GAME_DEFINED_PROFILE_DATA_BYTES*XUSER_MAX_COUNT,
-		&app.uiGameDefinedDataChangedBitmask
-		);
-#if 0
-	// register the awards
-	ProfileManager.RegisterAward(eAward_TakingInventory,	ACHIEVEMENT_01, eAwardType_Achievement);
-	ProfileManager.RegisterAward(eAward_GettingWood,		ACHIEVEMENT_02, eAwardType_Achievement);
-	ProfileManager.RegisterAward(eAward_Benchmarking,		ACHIEVEMENT_03, eAwardType_Achievement);
-	ProfileManager.RegisterAward(eAward_TimeToMine,			ACHIEVEMENT_04, eAwardType_Achievement);
-	ProfileManager.RegisterAward(eAward_HotTopic,			ACHIEVEMENT_05, eAwardType_Achievement);
-	ProfileManager.RegisterAward(eAward_AquireHardware,		ACHIEVEMENT_06, eAwardType_Achievement);
-	ProfileManager.RegisterAward(eAward_TimeToFarm,			ACHIEVEMENT_07, eAwardType_Achievement);
-	ProfileManager.RegisterAward(eAward_BakeBread,			ACHIEVEMENT_08, eAwardType_Achievement);
-	ProfileManager.RegisterAward(eAward_TheLie,				ACHIEVEMENT_09, eAwardType_Achievement);
-	ProfileManager.RegisterAward(eAward_GettingAnUpgrade,	ACHIEVEMENT_10, eAwardType_Achievement);
-	ProfileManager.RegisterAward(eAward_DeliciousFish,		ACHIEVEMENT_11, eAwardType_Achievement);
-	ProfileManager.RegisterAward(eAward_OnARail,			ACHIEVEMENT_12, eAwardType_Achievement);
-	ProfileManager.RegisterAward(eAward_TimeToStrike,		ACHIEVEMENT_13, eAwardType_Achievement);
-	ProfileManager.RegisterAward(eAward_MonsterHunter,		ACHIEVEMENT_14, eAwardType_Achievement);
-	ProfileManager.RegisterAward(eAward_CowTipper,			ACHIEVEMENT_15, eAwardType_Achievement);
-	ProfileManager.RegisterAward(eAward_WhenPigsFly,		ACHIEVEMENT_16, eAwardType_Achievement);
-	ProfileManager.RegisterAward(eAward_LeaderOfThePack,	ACHIEVEMENT_17, eAwardType_Achievement);
-	ProfileManager.RegisterAward(eAward_MOARTools,			ACHIEVEMENT_18, eAwardType_Achievement);
-	ProfileManager.RegisterAward(eAward_DispenseWithThis,	ACHIEVEMENT_19, eAwardType_Achievement);
-	ProfileManager.RegisterAward(eAward_InToTheNether,		ACHIEVEMENT_20, eAwardType_Achievement);
-
-	ProfileManager.RegisterAward(eAward_mine100Blocks,		GAMER_PICTURE_GAMERPIC1,			eAwardType_GamerPic,false,app.GetStringTable(),IDS_AWARD_TITLE,IDS_AWARD_GAMERPIC1,IDS_CONFIRM_OK);
-	ProfileManager.RegisterAward(eAward_kill10Creepers,		GAMER_PICTURE_GAMERPIC2,			eAwardType_GamerPic,false,app.GetStringTable(),IDS_AWARD_TITLE,IDS_AWARD_GAMERPIC2,IDS_CONFIRM_OK);
-
-	ProfileManager.RegisterAward(eAward_eatPorkChop,		AVATARASSETAWARD_PORKCHOP_TSHIRT,	eAwardType_AvatarItem,false,app.GetStringTable(),IDS_AWARD_TITLE,IDS_AWARD_AVATAR1,IDS_CONFIRM_OK);
-	ProfileManager.RegisterAward(eAward_play100Days,		AVATARASSETAWARD_WATCH,				eAwardType_AvatarItem,false,app.GetStringTable(),IDS_AWARD_TITLE,IDS_AWARD_AVATAR2,IDS_CONFIRM_OK);
-	ProfileManager.RegisterAward(eAward_arrowKillCreeper,	AVATARASSETAWARD_CAP,				eAwardType_AvatarItem,false,app.GetStringTable(),IDS_AWARD_TITLE,IDS_AWARD_AVATAR3,IDS_CONFIRM_OK);
-
-	ProfileManager.RegisterAward(eAward_socialPost,			0,									eAwardType_Theme,false,app.GetStringTable(),IDS_AWARD_TITLE,IDS_AWARD_THEME,IDS_CONFIRM_OK,THEME_NAME,THEME_FILESIZE);
-
-	// Rich Presence init - number of presences, number of contexts
-	ProfileManager.RichPresenceInit(4,1);
-	ProfileManager.RegisterRichPresenceContext(CONTEXT_GAME_STATE);
-
-	// initialise the storage manager with a default save display name, a Minimum save size, and a callback for displaying the saving message
-	StorageManager.Init(app.GetString(IDS_DEFAULT_SAVENAME),"savegame.dat",FIFTY_ONE_MB,&CConsoleMinecraftApp::DisplaySavingMessage,(LPVOID)&app);
-	// Set up the global title storage path
-	StorageManager.StoreTMSPathName();
-
-	// set a function to be called when there's a sign in change, so we can exit a level if the primary player signs out
-	ProfileManager.SetSignInChangeCallback(&CConsoleMinecraftApp::SignInChangeCallback,(LPVOID)&app);
-
-	// set a function to be called when the ethernet is disconnected, so we can back out if required
-	ProfileManager.SetNotificationsCallback(&CConsoleMinecraftApp::NotificationsCallback,(LPVOID)&app);
-
-#endif
-	// Set a callback for the default player options to be set - when there is no profile data for the player
-	ProfileManager.SetDefaultOptionsCallback(&CConsoleMinecraftApp::DefaultOptionsCallback,(LPVOID)&app);
-#if 0
-	// Set a callback to deal with old profile versions needing updated to new versions
-	ProfileManager.SetOldProfileVersionCallback(&CConsoleMinecraftApp::OldProfileVersionCallback,(LPVOID)&app);
-
-	// Set a callback for when there is a read error on profile data
-	ProfileManager.SetProfileReadErrorCallback(&CConsoleMinecraftApp::ProfileReadErrorCallback,(LPVOID)&app);
-
-#endif
-	// QNet needs to be setup after profile manager, as we do not want its Notify listener to handle
-	// XN_SYS_SIGNINCHANGED notifications. This does mean that we need to have a callback in the
-	// ProfileManager for XN_LIVE_INVITE_ACCEPTED for QNet.
-	g_NetworkManager.Initialise();
-
-	for (int i = 0; i < MINECRAFT_NET_MAX_PLAYERS; i++)
+	Minecraft *pMinecraft = InitialiseMinecraftRuntime();
+	if (pMinecraft == NULL)
 	{
-		IQNet::m_player[i].m_smallId = (BYTE)i;
-		IQNet::m_player[i].m_isRemote = false;
-		IQNet::m_player[i].m_isHostPlayer = (i == 0);
-		swprintf_s(IQNet::m_player[i].m_gamertag, 32, L"Player%d", i);
+		CleanupDevice();
+		return 1;
 	}
-
-	WinsockNetLayer::Initialize();
-
-	// 4J-PB moved further down
-	//app.InitGameSettings();
-
-	// debug switch to trial version
-	ProfileManager.SetDebugFullOverride(true);
-
-#if 0
-	//ProfileManager.AddDLC(2);
-	StorageManager.SetDLCPackageRoot("DLCDrive");
-	StorageManager.RegisterMarketplaceCountsCallback(&CConsoleMinecraftApp::MarketplaceCountsCallback,(LPVOID)&app);
-	// Kinect !
-
-	if(XNuiGetHardwareStatus()!=0)
-	{
-		// If the Kinect Sensor is not physically connected, this function returns 0.
-		NuiInitialize(NUI_INITIALIZE_FLAG_USES_HIGH_QUALITY_COLOR | NUI_INITIALIZE_FLAG_USES_DEPTH |
-			NUI_INITIALIZE_FLAG_EXTRAPOLATE_FLOOR_PLANE | NUI_INITIALIZE_FLAG_USES_FITNESS | NUI_INITIALIZE_FLAG_NUI_GUIDE_DISABLED | NUI_INITIALIZE_FLAG_SUPPRESS_AUTOMATIC_UI,NUI_INITIALIZE_DEFAULT_HARDWARE_THREAD );
-	}
-
-	// Sentient !
-	hr = TelemetryManager->Init();
-
-#endif
-	// Initialise TLS for tesselator, for this main thread
-	Tesselator::CreateNewThreadStorage(1024*1024);
-	// Initialise TLS for AABB and Vec3 pools, for this main thread
-	AABB::CreateNewThreadStorage();
-	Vec3::CreateNewThreadStorage();
-	IntCache::CreateNewThreadStorage();
-	Compression::CreateNewThreadStorage();
-	OldChunkStorage::CreateNewThreadStorage();
-	Level::enableLightingCache();
-	Tile::CreateNewThreadStorage();
-
-	Minecraft::main();
-	Minecraft *pMinecraft=Minecraft::GetInstance();
-
-	app.InitGameSettings();
-
-#if 0
-	//bool bDisplayPauseMenu=false;
-
-	// set the default gamma level
-	float fVal=50.0f*327.68f;
-	RenderManager.UpdateGamma((unsigned short)fVal);
-
-	// load any skins
-	//app.AddSkinsToMemoryTextureFiles();
-
-	// set the achievement text for a trial achievement, now we have the string table loaded
-	ProfileManager.SetTrialTextStringTable(app.GetStringTable(),IDS_CONFIRM_OK, IDS_CONFIRM_CANCEL);
-	ProfileManager.SetTrialAwardText(eAwardType_Achievement,IDS_UNLOCK_TITLE,IDS_UNLOCK_ACHIEVEMENT_TEXT);
-	ProfileManager.SetTrialAwardText(eAwardType_GamerPic,IDS_UNLOCK_TITLE,IDS_UNLOCK_GAMERPIC_TEXT);
-	ProfileManager.SetTrialAwardText(eAwardType_AvatarItem,IDS_UNLOCK_TITLE,IDS_UNLOCK_AVATAR_TEXT);
-	ProfileManager.SetTrialAwardText(eAwardType_Theme,IDS_UNLOCK_TITLE,IDS_UNLOCK_THEME_TEXT);
-	ProfileManager.SetUpsellCallback(&app.UpsellReturnedCallback,&app);
-
-	// Set up a debug character press sequence
-#ifndef _FINAL_BUILD
-	app.SetDebugSequence("LRLRYYY");
-#endif
-
-	// Initialise the social networking manager.
-	CSocialManager::Instance()->Initialise();
-
-	// Update the base scene quick selects now that the minecraft class exists
-	//CXuiSceneBase::UpdateScreenSettings(0);
-#endif
-	app.InitialiseTips();
-#if 0
-
-	DWORD initData=0;
-
-#ifndef _FINAL_BUILD
-#ifndef _DEBUG
-#pragma message(__LOC__"Need to define the _FINAL_BUILD before submission")
-#endif
-#endif
-
-	// Set the default sound levels
-	pMinecraft->options->set(Options::Option::MUSIC,1.0f);
-	pMinecraft->options->set(Options::Option::SOUND,1.0f);
-
-	app.NavigateToScene(XUSER_INDEX_ANY,eUIScene_Intro,&initData);
-#endif
-
-	// Set the default sound levels
-	pMinecraft->options->set(Options::Option::MUSIC,1.0f);
-	pMinecraft->options->set(Options::Option::SOUND,1.0f);
 
 	//app.TemporaryCreateGameStart();
 
@@ -1234,7 +1441,7 @@ int APIENTRY _tWinMain(_In_ HINSTANCE hInstance,
 			}
 		}
 
-		// F1 toggles the HUD, F3 toggles the debug console overlay, F11 toggles fullscreen
+		// F1 toggles the HUD
 		if (KMInput.IsKeyPressed(VK_F1))
 		{
 			int primaryPad = ProfileManager.GetPrimaryPad();
@@ -1242,21 +1449,43 @@ int APIENTRY _tWinMain(_In_ HINSTANCE hInstance,
 			app.SetGameSettings(primaryPad, eGameSetting_DisplayHUD, displayHud ? 0 : 1);
 			app.SetGameSettings(primaryPad, eGameSetting_DisplayHand, displayHud ? 0 : 1);
 		}
-		
+
+		// F3 toggles onscreen debug info
 		if (KMInput.IsKeyPressed(VK_F3))
 		{
-			static bool s_debugConsole = false;
-			s_debugConsole = !s_debugConsole;
-			ui.ShowUIDebugConsole(s_debugConsole);
+			if (Minecraft* pMinecraft = Minecraft::GetInstance())
+			{
+				if (pMinecraft->options)
+				{
+					pMinecraft->options->renderDebug = !pMinecraft->options->renderDebug;
+				}
+			}
 		}
 
 #ifdef _DEBUG_MENUS_ENABLED
-		if (KMInput.IsKeyPressed(VK_F4))
-		{
-			ui.NavigateToScene(ProfileManager.GetPrimaryPad(), eUIScene_DebugOverlay, NULL, eUILayer_Debug);
-		}
+		// F4 Open debug overlay
+        if (KMInput.IsKeyPressed(VK_F4))
+        {
+            if (Minecraft *pMinecraft = Minecraft::GetInstance())
+            {
+                if (pMinecraft->options &&
+                    app.GetGameStarted() && !ui.GetMenuDisplayed(0) && pMinecraft->screen == NULL)
+                {
+                    ui.NavigateToScene(0, eUIScene_DebugOverlay, NULL, eUILayer_Debug);
+                }
+            }
+        }
+
+        // F6 Open debug console
+        if (KMInput.IsKeyPressed(VK_F6))
+        {
+        	static bool s_debugConsole = false;
+        	s_debugConsole = !s_debugConsole;
+        	ui.ShowUIDebugConsole(s_debugConsole);
+        }
 #endif
 
+		// F11 Toggle fullscreen
 		if (KMInput.IsKeyPressed(VK_F11))
 		{
 			ToggleFullscreen();
@@ -1273,33 +1502,6 @@ int APIENTRY _tWinMain(_In_ HINSTANCE hInstance,
 				}
 			}
 		}
-
-#ifdef _DEBUG_MENUS_ENABLED
-		// F3 toggles onscreen debug info
-		if (KMInput.IsKeyPressed(VK_F3))
-		{
-			if (Minecraft* pMinecraft = Minecraft::GetInstance())
-			{
-				if (pMinecraft->options && app.DebugSettingsOn())
-				{
-					pMinecraft->options->renderDebug = !pMinecraft->options->renderDebug;
-				}
-			}
-		}
-
-		// F4 opens debug overlay
-		if (KMInput.IsKeyPressed(VK_F4))
-		{
-			if (Minecraft* pMinecraft = Minecraft::GetInstance())
-			{
-				if (pMinecraft->options && app.DebugSettingsOn() &&
-					app.GetGameStarted() && !ui.GetMenuDisplayed(0) && pMinecraft->screen == NULL)
-				{
-					ui.NavigateToScene(0, eUIScene_DebugOverlay, NULL, eUILayer_Debug);
-				}
-			}
-		}
-#endif
 
 #if 0
 		// has the game defined profile data been changed (by a profile load)

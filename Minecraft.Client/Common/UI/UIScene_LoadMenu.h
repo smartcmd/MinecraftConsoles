@@ -59,6 +59,7 @@ private:
 	bool m_bIsCorrupt;
 	bool m_bThumbnailGetFailed;
 	__int64 m_seed;
+	wstring m_levelName;
 
 #ifdef __PS3__
 	std::vector<SonyCommerce::ProductInfo>*m_pvProductInfo;
