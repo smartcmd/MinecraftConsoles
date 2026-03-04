@@ -1098,7 +1098,15 @@ void IUIScene_CreativeMenu::handleAdditionalKeyPress(int iAction)
 		}
 		break;
 	case ACTION_MENU_OTHER_STICK_DOWN:
-			++m_tabPage[m_curTab];
+		{
+			int pageStep = TabSpec::rows;
+#ifdef _WINDOWS64
+			if (g_KBMInput.WasMouseWheelConsumed())
+			{
+				pageStep = 1;
+			}
+#endif
+			m_tabPage[m_curTab] += pageStep;
 			if(m_tabPage[m_curTab] >= specs[m_curTab]->getPageCount())
 			{
 				m_tabPage[m_curTab] = specs[m_curTab]->getPageCount() - 1;
@@ -1107,9 +1115,18 @@ void IUIScene_CreativeMenu::handleAdditionalKeyPress(int iAction)
 			{
 				switchTab(m_curTab);
 			}
+		}
 		break;
 	case ACTION_MENU_OTHER_STICK_UP:
-			--m_tabPage[m_curTab];
+		{
+			int pageStep = TabSpec::rows;
+#ifdef _WINDOWS64
+			if (g_KBMInput.WasMouseWheelConsumed())
+			{
+				pageStep = 1;
+			}
+#endif
+			m_tabPage[m_curTab] -= pageStep;
 			if(m_tabPage[m_curTab] < 0)
 			{
 				m_tabPage[m_curTab] = 0;
@@ -1118,6 +1135,7 @@ void IUIScene_CreativeMenu::handleAdditionalKeyPress(int iAction)
 			{
 				switchTab(m_curTab);
 			}
+		}
 		break;
 	}
 }

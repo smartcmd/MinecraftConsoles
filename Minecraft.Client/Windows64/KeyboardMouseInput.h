@@ -59,7 +59,8 @@ public:
 
 	int GetMouseWheel();
 	int PeekMouseWheel() const { return m_mouseWheelAccum; }
-	void ConsumeMouseWheel() { m_mouseWheelAccum = 0; }
+	void ConsumeMouseWheel() { if (m_mouseWheelAccum != 0) m_mouseWheelConsumed = true; m_mouseWheelAccum = 0; }
+	bool WasMouseWheelConsumed() const { return m_mouseWheelConsumed; }
 
 	// Per-frame delta consumption for low-latency mouse look.
 	// Reads and clears the raw accumulators (not the per-tick snapshot).
@@ -114,6 +115,7 @@ private:
 	int m_mouseDeltaAccumY;
 
 	int m_mouseWheelAccum;
+	bool m_mouseWheelConsumed;
 
 	bool m_mouseGrabbed;
 

@@ -33,6 +33,7 @@ void KeyboardMouseInput::Init()
 	m_mouseDeltaAccumX = 0;
 	m_mouseDeltaAccumY = 0;
 	m_mouseWheelAccum = 0;
+	m_mouseWheelConsumed = false;
 	m_mouseGrabbed = false;
 	m_cursorHiddenForUI = false;
 	m_windowFocused = true;
@@ -67,6 +68,7 @@ void KeyboardMouseInput::ClearAllState()
 	m_mouseDeltaAccumX = 0;
 	m_mouseDeltaAccumY = 0;
 	m_mouseWheelAccum = 0;
+	m_mouseWheelConsumed = false;
 }
 
 void KeyboardMouseInput::Tick()
@@ -88,6 +90,7 @@ void KeyboardMouseInput::Tick()
 	m_mouseDeltaY = m_mouseDeltaAccumY;
 	m_mouseDeltaAccumX = 0;
 	m_mouseDeltaAccumY = 0;
+	m_mouseWheelConsumed = false;
 
 	m_hasInput = (m_mouseDeltaX != 0 || m_mouseDeltaY != 0 || m_mouseWheelAccum != 0);
 	if (!m_hasInput)
@@ -172,6 +175,8 @@ void KeyboardMouseInput::OnMouseWheel(int delta)
 int KeyboardMouseInput::GetMouseWheel()
 {
 	int val = m_mouseWheelAccum;
+	if (val != 0)
+		m_mouseWheelConsumed = true;
 	m_mouseWheelAccum = 0;
 	return val;
 }
