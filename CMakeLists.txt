@@ -146,11 +146,8 @@ elseif(BACKEND STREQUAL "Cross64")
   FetchContent_Declare(glm GIT_REPOSITORY https://github.com/g-truc/glm.git GIT_TAG 1.0.3)
   FetchContent_MakeAvailable(glm)
 
-  FetchContent_Declare(glfw GIT_REPOSITORY https://github.com/glfw/glfw.git GIT_TAG 3.4)
-  set(GLFW_BUILD_DOCS OFF CACHE BOOL "" FORCE)
-  set(GLFW_BUILD_TESTS OFF CACHE BOOL "" FORCE)
-  set(GLFW_BUILD_EXAMPLES OFF CACHE BOOL "" FORCE)
-  FetchContent_MakeAvailable(glfw)
+  FetchContent_Declare(SDL3 GIT_REPOSITORY https://github.com/libsdl-org/SDL GIT_TAG release-3.4.2)
+  FetchContent_MakeAvailable(SDL3)
 
   set(CROSS64_DIR "${CMAKE_CURRENT_SOURCE_DIR}/Minecraft.Client/Cross64")
   include("${CMAKE_CURRENT_SOURCE_DIR}/cmake/Cross64Sources.cmake")
@@ -197,8 +194,8 @@ elseif(BACKEND STREQUAL "Cross64")
 
   target_link_libraries(MinecraftClientCross64 PRIVATE
     MinecraftWorld
-    glfw
     glm::glm
+    SDL3::SDL3
     OpenGL:GL
   )
 
