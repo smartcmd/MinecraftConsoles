@@ -181,7 +181,7 @@ void MemSect(int sect);
 #include "Minecraft.Client/PSVita/4JLibs/inc/4J_Input.h"
 #elif defined _CROSS64
 // TODO: implement 4jlibs
-#else
+#elif defined __ORBIS__
 #include "Minecraft.Client/Orbis/4JLibs/inc/4J_Profile.h"
 #include "Minecraft.Client/Orbis/4JLibs/inc/4J_Render.h"
 #include "Minecraft.Client/Orbis/4JLibs/inc/4J_Storage.h"
@@ -239,7 +239,7 @@ void MemSect(int sect);
 #include "Minecraft.Client/PSVitaMedia/strings.h"
 #include "Minecraft.Client/PSVita/Sentient/SentientManager.h"
 #include "Minecraft.Client/PSVita/Sentient/MinecraftTelemetry.h"
-#else
+#elif defined __ORBIS__
 #include "Minecraft.Client/Orbis/Orbis_App.h"
 #include "Minecraft.Client/OrbisMedia/strings.h"
 #include "Minecraft.Client/Orbis/Sentient/SentientTelemetryCommon.h"
