@@ -103,7 +103,7 @@ void Chunk::setPos(int x, int y, int z)
 	// 4J - changed to just set the value rather than make a new one, if we've already created storage
 	if( bb == NULL )
 	{
-		bb = AABB::newPermanent(-g, -g, -g, XZSIZE+g, SIZE+g, XZSIZE+g);
+		bb = std::unique_ptr<AABB>(AABB::newPermanent(-g, -g, -g, XZSIZE+g, SIZE+g, XZSIZE+g));
 	}
  	else 
  	{
@@ -171,7 +171,7 @@ void Chunk::makeCopyForRebuild(Chunk *source)
 	this->xm = source->xm;
 	this->ym = source->ym;
 	this->zm = source->zm;
-	this->bb = source->bb;
+	this->bb = move(source->bb);
 	this->clipChunk = NULL;
 	this->id = source->id;
 	this->globalRenderableTileEntities = source->globalRenderableTileEntities;
@@ -998,7 +998,7 @@ int Chunk::getList(int layer)
 
 void Chunk::cull(Culler *culler)
 {
-	clipChunk->visible = culler->isVisible(bb);
+	clipChunk->visible = culler->isVisible(bb.get());
 }
 
 void Chunk::renderBB()
@@ -1029,7 +1029,7 @@ void Chunk::clearDirty()
 
 Chunk::~Chunk()
 {
-	delete bb;
+	// delete bb;
 }
 
 bool Chunk::emptyFlagSet(int layer)
