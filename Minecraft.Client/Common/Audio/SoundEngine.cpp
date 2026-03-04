@@ -209,7 +209,7 @@ void SoundEngine::updateMiniAudio()
 {
     if (m_validListenerCount == 1)
     {
-        for (int i = 0; i < MAX_LOCAL_PLAYERS; i++)
+        for (size_t i = 0; i < MAX_LOCAL_PLAYERS; i++)
         {
             if (m_ListenerA[i].bValid)
             {
@@ -273,7 +273,7 @@ void SoundEngine::updateMiniAudio()
                 float fClosest=10000.0f;
 				int iClosestListener=0;
 				float fClosestX=0.0f,fClosestY=0.0f,fClosestZ=0.0f,fDist;
-				for( int i = 0; i < MAX_LOCAL_PLAYERS; i++ )
+				for( size_t i = 0; i < MAX_LOCAL_PLAYERS; i++ )
 				{
 					if( m_ListenerA[i].bValid )
 					{
@@ -331,7 +331,7 @@ void SoundEngine::tick(shared_ptr<Mob> *players, float a)
 	if( players )
 	{
 		bool bListenerPostionSet = false;
-		for( int i = 0; i < MAX_LOCAL_PLAYERS; i++ )
+		for( size_t i = 0; i < MAX_LOCAL_PLAYERS; i++ )
 		{
 			if( players[i] != NULL )
 			{
@@ -342,15 +342,15 @@ void SoundEngine::tick(shared_ptr<Mob> *players, float a)
 				z=players[i]->zo + (players[i]->z - players[i]->zo) * a;
 
 				float yRot = players[i]->yRotO + (players[i]->yRot - players[i]->yRotO) * a;
-				float yCos = (float)cos(-yRot * Mth::RAD_TO_GRAD - PI);
-				float ySin = (float)sin(-yRot * Mth::RAD_TO_GRAD - PI);
+				float yCos = (float)cos(yRot * Mth::RAD_TO_GRAD);
+				float ySin = (float)sin(yRot * Mth::RAD_TO_GRAD);
 
 				// store the listener positions for splitscreen
 				m_ListenerA[i].vPosition.x = x;
 				m_ListenerA[i].vPosition.y = y;
 				m_ListenerA[i].vPosition.z = z;  
 
-				m_ListenerA[i].vOrientFront.x = ySin;
+				m_ListenerA[i].vOrientFront.x = -ySin;
 				m_ListenerA[i].vOrientFront.y = 0;
 				m_ListenerA[i].vOrientFront.z = yCos;
 
@@ -473,7 +473,7 @@ void SoundEngine::play(int iSound, float x, float y, float z, float volume, floa
     {
         int count = 0;
 
-        for (int i = 1; i < 32; i++)
+        for (size_t i = 1; i < 32; i++)
         {
             char numberedFolder[256];
             sprintf_s(numberedFolder, "%s%d", basePath, i);
@@ -732,7 +732,7 @@ int SoundEngine::GetRandomishTrack(int iStart,int iEnd)
 	// if all tracks have been heard, clear the flags
 	bool bAllTracksHeard=true;
 	int iVal=iStart;
-	for(int i=iStart;i<=iEnd;i++)
+	for(size_t i=iStart;i<=iEnd;i++)
 	{
 		if(m_bHeardTrackA[i]==false) 
 		{
@@ -746,14 +746,14 @@ int SoundEngine::GetRandomishTrack(int iStart,int iEnd)
 	{
 		app.DebugPrintf("Heard all tracks - resetting the tracking array\n");
 
-		for(int i=iStart;i<=iEnd;i++)
+		for(size_t i=iStart;i<=iEnd;i++)
 		{
 			m_bHeardTrackA[i]=false;
 		}
 	}
 
 	// trying to get a track we haven't heard, but not too hard		
-	for(int i=0;i<=((iEnd-iStart)/2);i++)
+	for(size_t i=0;i<=((iEnd-iStart)/2);i++)
 	{
 		// random->nextInt(1) will always return 0
 		iVal=random->nextInt((iEnd-iStart)+1)+iStart;
@@ -834,7 +834,7 @@ int SoundEngine::getMusicID(const wstring& name)
 	char *SoundName = (char *)ConvertSoundPathToName(name,true);
 
 	// 4J-PB - these will always be the game cds, so use the m_szStreamFileA for this
-	for(int i=0;i<12;i++)
+	for(size_t i=0;i<12;i++)
 	{
 		if(strcmp(SoundName,m_szStreamFileA[i+eStream_CD_1])==0)
 		{
@@ -1369,7 +1369,7 @@ void SoundEngine::playMusicUpdate()
 				int iClosestListener = 0;
 				float fClosestDist = 1e6f;
 
-				for (int i = 0; i < MAX_LOCAL_PLAYERS; i++)
+				for (size_t i = 0; i < MAX_LOCAL_PLAYERS; i++)
 				{
 					if (m_ListenerA[i].bValid)
 					{
