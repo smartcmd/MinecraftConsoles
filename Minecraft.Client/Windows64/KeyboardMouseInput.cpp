@@ -12,6 +12,21 @@ extern HWND g_hWnd;
 // Forward declaration
 static void ClipCursorToWindow(HWND hWnd);
 
+static bool IsModifierKeyDown(const bool* keyState, int vkCode)
+{
+	switch (vkCode)
+	{
+	case VK_SHIFT:
+		return keyState[VK_LSHIFT] || keyState[VK_RSHIFT];
+	case VK_CONTROL:
+		return keyState[VK_LCONTROL] || keyState[VK_RCONTROL];
+	case VK_MENU:
+		return keyState[VK_LMENU] || keyState[VK_RMENU];
+	default:
+		return false;
+	}
+}
+
 void KeyboardMouseInput::Init()
 {
 	memset(m_keyDown, 0, sizeof(m_keyDown));
@@ -189,6 +204,9 @@ void KeyboardMouseInput::OnRawMouseDelta(int dx, int dy)
 
 bool KeyboardMouseInput::IsKeyDown(int vkCode) const
 {
+	if (vkCode == VK_SHIFT || vkCode == VK_CONTROL || vkCode == VK_MENU)
+		return IsModifierKeyDown(m_keyDown, vkCode);
+
 	if (vkCode >= 0 && vkCode < MAX_KEYS)
 		return m_keyDown[vkCode];
 	return false;
@@ -196,6 +214,9 @@ bool KeyboardMouseInput::IsKeyDown(int vkCode) const
 
 bool KeyboardMouseInput::IsKeyPressed(int vkCode) const
 {
+	if (vkCode == VK_SHIFT || vkCode == VK_CONTROL || vkCode == VK_MENU)
+		return IsModifierKeyDown(m_keyPressed, vkCode);
+
 	if (vkCode >= 0 && vkCode < MAX_KEYS)
 		return m_keyPressed[vkCode];
 	return false;
@@ -203,6 +224,9 @@ bool KeyboardMouseInput::IsKeyPressed(int vkCode) const
 
 bool KeyboardMouseInput::IsKeyReleased(int vkCode) const
 {
+	if (vkCode == VK_SHIFT || vkCode == VK_CONTROL || vkCode == VK_MENU)
+		return IsModifierKeyDown(m_keyReleased, vkCode);
+
 	if (vkCode >= 0 && vkCode < MAX_KEYS)
 		return m_keyReleased[vkCode];
 	return false;

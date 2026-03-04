@@ -20,7 +20,7 @@ public:
 	static const int KEY_RIGHT = 'D';
 	static const int KEY_JUMP = VK_SPACE;
 	static const int KEY_SNEAK = VK_LSHIFT;
-	static const int KEY_SPRINT = VK_LCONTROL;
+	static const int KEY_SPRINT = VK_CONTROL;
 	static const int KEY_INVENTORY = 'E';
 	static const int KEY_DROP = 'Q';
 	static const int KEY_CRAFTING = 'C';

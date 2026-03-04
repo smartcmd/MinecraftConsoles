@@ -104,7 +104,7 @@ void Input::tick(LocalPlayer *player)
 			}
 		}
 
-		// Left Ctrl + forward = sprint (hold to sprint)
+		// Ctrl + forward = sprint (hold to sprint)
 		if (!player->abilities.flying)
 		{
 			bool ctrlHeld = g_KBMInput.IsKeyDown(KeyboardMouseInput::KEY_SPRINT);
