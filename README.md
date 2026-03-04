@@ -46,7 +46,7 @@ This feature is based on [LCEMP](https://github.com/LCEMP/LCEMP/)
 - **Inventory**: `E`
 - **Drop Item**: `Q`
 - **Crafting**: `C`
-- **Menu Navigation (Crafting/Inventory)**: Use `Q` and `E` to move through tabs (cycles Left/Right)
+- **Menu Navigation (Crafting/Inventory)**: While the Crafting or Inventory menu is open, use `Q` and `E` to cycle between tabs (Left/Right)
 - **Toggle View (FPS/TPS)**: `F5`
 - **Fullscreen**: `F11`
 - **Pause Menu**: `Esc`
