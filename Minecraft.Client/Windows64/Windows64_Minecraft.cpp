@@ -592,12 +592,12 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				}
 			}
 		}
-		return DefWindowProc(hWnd, message, wParam, lParam);
+		break;
 	case WM_SIZE:
 		{
 			UpdateAspectRatio(LOWORD(lParam), HIWORD(lParam));
 		}
-	break;
+		break;
 	default:
 		return DefWindowProc(hWnd, message, wParam, lParam);
 	}
