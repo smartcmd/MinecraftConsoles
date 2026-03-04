@@ -80,6 +80,8 @@ public:
 	S32 getYPos();
 	S32 getWidth();
 	S32 getHeight();
+	bool setXPos(S32 x);
+	bool setYPos(S32 y);
 
 	void setOpacity(float percent);
 	void setVisible(bool visible);

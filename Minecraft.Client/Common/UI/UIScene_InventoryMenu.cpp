@@ -38,6 +38,7 @@ UIScene_InventoryMenu::UIScene_InventoryMenu(int iPad, void *_initData, UILayer 
 	initData->player->awardStat(GenericStats::openInventory(),GenericStats::param_openInventory());
 
 	Initialize( initData->iPad, menu, false, InventoryMenu::INV_SLOT_START, eSectionInventoryUsing, eSectionInventoryMax, initData->bNavigateBack );
+	applyMenuOffset();
 
 	m_slotListArmor.addSlots(InventoryMenu::ARMOR_SLOT_START, InventoryMenu::ARMOR_SLOT_END - InventoryMenu::ARMOR_SLOT_START);
 
@@ -67,6 +68,7 @@ wstring UIScene_InventoryMenu::getMoviePath()
 void UIScene_InventoryMenu::handleReload()
 {
 	Initialize( m_iPad, m_menu, false, InventoryMenu::INV_SLOT_START, eSectionInventoryUsing, eSectionInventoryMax, m_bNavigateBack );
+	applyMenuOffset();
 
 	m_slotListArmor.addSlots(InventoryMenu::ARMOR_SLOT_START, InventoryMenu::ARMOR_SLOT_END - InventoryMenu::ARMOR_SLOT_START);
 
@@ -74,6 +76,21 @@ void UIScene_InventoryMenu::handleReload()
 	{
 		m_bEffectTime[i] = 0;
 	}
+}
+
+void UIScene_InventoryMenu::applyMenuOffset()
+{
+	// Center the inventory background panel in the movie viewport.
+	const int bgWidth = m_controlBackgroundPanel.getWidth();
+	const int bgHeight = m_controlBackgroundPanel.getHeight();
+	const int bgLocalX = m_controlBackgroundPanel.getXPos();
+	const int bgLocalY = m_controlBackgroundPanel.getYPos();
+
+	const int targetBgX = (m_movieWidth - bgWidth) / 2;
+	const int targetBgY = (m_movieHeight - bgHeight) / 2;
+
+	m_controlMainPanel.setXPos(targetBgX - bgLocalX);
+	m_controlMainPanel.setYPos(targetBgY - bgLocalY);
 }
 
 int UIScene_InventoryMenu::getSectionColumns(ESceneSection eSection)

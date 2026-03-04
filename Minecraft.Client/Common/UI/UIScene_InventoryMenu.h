@@ -48,4 +48,5 @@ protected:
 
 private:
 	void updateEffectsDisplay();
+	void applyMenuOffset();
 };
