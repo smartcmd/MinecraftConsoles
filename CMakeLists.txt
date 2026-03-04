@@ -17,6 +17,7 @@ function(configure_msvc_target target)
     $<$<AND:$<NOT:$<CONFIG:Release>>,$<COMPILE_LANGUAGE:C,CXX>>:/W3>
     $<$<AND:$<CONFIG:Release>,$<COMPILE_LANGUAGE:C,CXX>>:/W0>
     $<$<COMPILE_LANGUAGE:C,CXX>:/MP>
+    $<$<COMPILE_LANGUAGE:C,CXX>:/FS>
     $<$<COMPILE_LANGUAGE:CXX>:/EHsc>
     $<$<AND:$<CONFIG:Release>,$<COMPILE_LANGUAGE:C,CXX>>:/GL /O2 /Oi /GT /GF>
   )

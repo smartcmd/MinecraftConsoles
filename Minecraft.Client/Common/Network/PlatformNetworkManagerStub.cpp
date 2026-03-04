@@ -361,17 +361,24 @@ void CPlatformNetworkManagerStub::HostGame(int localUsersMask, bool bOnlineGame,
 	_HostGame( localUsersMask, publicSlots, privateSlots );
 
 #ifdef _WINDOWS64
-	int port = (g_Win64MultiplayerPort > 0) ? g_Win64MultiplayerPort : WIN64_NET_DEFAULT_PORT;
-	const char *bindIP = g_Win64MultiplayerIP;
-	if (bindIP != NULL && bindIP[0] == 0)
-		bindIP = NULL;
-
+	int port = WIN64_NET_DEFAULT_PORT;
+	const char* bindIp = NULL;
+	if (g_Win64DedicatedServer)
+	{
+		if (g_Win64DedicatedServerPort > 0)
+			port = g_Win64DedicatedServerPort;
+		if (g_Win64DedicatedServerBindIP[0] != 0)
+			bindIp = g_Win64DedicatedServerBindIP;
+	}
 	if (!WinsockNetLayer::IsActive())
-		WinsockNetLayer::HostGame(bindIP, port);
+		WinsockNetLayer::HostGame(port, bindIp);
 
-	const wchar_t* hostName = IQNet::m_player[0].m_gamertag;
-	unsigned int settings = app.GetGameHostOption(eGameHostOption_All);
-	WinsockNetLayer::StartAdvertising(port, hostName, settings, 0, 0, MINECRAFT_NET_VERSION);
+	if (WinsockNetLayer::IsActive())
+	{
+		const wchar_t* hostName = IQNet::m_player[0].m_gamertag;
+		unsigned int settings = app.GetGameHostOption(eGameHostOption_All);
+		WinsockNetLayer::StartAdvertising(port, hostName, settings, 0, 0, MINECRAFT_NET_VERSION);
+	}
 #endif
 //#endif
 }

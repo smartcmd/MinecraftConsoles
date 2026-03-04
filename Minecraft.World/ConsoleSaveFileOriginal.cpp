@@ -749,7 +749,7 @@ void ConsoleSaveFileOriginal::Flush(bool autosave, bool updateThumbnail )
 		PBYTE pbDataSaveImage=NULL;
 		DWORD dwDataSizeSaveImage=0;
 
-#if ( defined _XBOX || defined _DURANGO )
+#if ( defined _XBOX || defined _DURANGO || defined _WINDOWS64 )
 		app.GetSaveThumbnail(&pbThumbnailData,&dwThumbnailDataSize);
 #elif ( defined __PS3__ || defined __ORBIS__ || defined __PSVITA__ )
 		app.GetSaveThumbnail(&pbThumbnailData,&dwThumbnailDataSize,&pbDataSaveImage,&dwDataSizeSaveImage);
