@@ -24,6 +24,7 @@ This project contains the source code of Minecraft Legacy Console Edition v1.6.0
 - Added a high-resolution timer path on Windows for smoother high-FPS gameplay timing
 - Device's screen resolution will be used as the game resolution instead of using a fixed resolution (1920x1080)
 - LAN Multiplayer & Discovery
+- Added persistent username system via "username.txt"
 
 ## Multiplayer
 
