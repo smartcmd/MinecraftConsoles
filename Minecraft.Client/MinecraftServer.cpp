@@ -31,6 +31,9 @@
 #include "..\Minecraft.World\net.minecraft.world.item.h"
 #include "..\Minecraft.World\net.minecraft.world.item.enchantment.h"
 #include "..\Minecraft.World\net.minecraft.world.damagesource.h"
+#ifdef _WINDOWS64
+#include "Windows64\Network\WinsockNetLayer.h"
+#endif
 #include <sstream>
 #ifdef SPLIT_SAVES
 #include "..\Minecraft.World\ConsoleSaveFileSplit.h"
@@ -82,6 +85,30 @@ bool MinecraftServer::s_slowQueuePacketSent = false;
 #endif
 
 unordered_map<wstring, int> MinecraftServer::ironTimers;
+
+static bool ShouldUseDedicatedServerProperties()
+{
+#ifdef _WINDOWS64
+	return g_Win64DedicatedServer;
+#else
+	return false;
+#endif
+}
+
+static int GetDedicatedServerInt(Settings *settings, const wchar_t *key, int defaultValue)
+{
+	return (ShouldUseDedicatedServerProperties() && settings != NULL) ? settings->getInt(key, defaultValue) : defaultValue;
+}
+
+static bool GetDedicatedServerBool(Settings *settings, const wchar_t *key, bool defaultValue)
+{
+	return (ShouldUseDedicatedServerProperties() && settings != NULL) ? settings->getBoolean(key, defaultValue) : defaultValue;
+}
+
+static wstring GetDedicatedServerString(Settings *settings, const wchar_t *key, const wstring &defaultValue)
+{
+	return (ShouldUseDedicatedServerProperties() && settings != NULL) ? settings->getString(key, defaultValue) : defaultValue;
+}
 
 static void PrintConsoleLine(const wchar_t *prefix, const wstring &message)
 {
@@ -589,14 +616,14 @@ bool MinecraftServer::initServer(__int64 seed, NetworkGameInitData *initData, DW
 #endif
 	settings = new Settings(new File(L"server.properties"));
 
-	app.SetGameHostOption(eGameHostOption_Difficulty, settings->getInt(L"difficulty", app.GetGameHostOption(eGameHostOption_Difficulty)));
-	app.SetGameHostOption(eGameHostOption_GameType, settings->getInt(L"gamemode", app.GetGameHostOption(eGameHostOption_GameType)));
-	app.SetGameHostOption(eGameHostOption_Structures, settings->getBoolean(L"generate-structures", app.GetGameHostOption(eGameHostOption_Structures) > 0) ? 1 : 0);
-	app.SetGameHostOption(eGameHostOption_BonusChest, settings->getBoolean(L"bonus-chest", app.GetGameHostOption(eGameHostOption_BonusChest) > 0) ? 1 : 0);
-	app.SetGameHostOption(eGameHostOption_PvP, settings->getBoolean(L"pvp", app.GetGameHostOption(eGameHostOption_PvP) > 0) ? 1 : 0);
-	app.SetGameHostOption(eGameHostOption_TrustPlayers, settings->getBoolean(L"trust-players", app.GetGameHostOption(eGameHostOption_TrustPlayers) > 0) ? 1 : 0);
-	app.SetGameHostOption(eGameHostOption_FireSpreads, settings->getBoolean(L"fire-spreads", app.GetGameHostOption(eGameHostOption_FireSpreads) > 0) ? 1 : 0);
-	app.SetGameHostOption(eGameHostOption_TNT, settings->getBoolean(L"tnt", app.GetGameHostOption(eGameHostOption_TNT) > 0) ? 1 : 0);
+	app.SetGameHostOption(eGameHostOption_Difficulty, GetDedicatedServerInt(settings, L"difficulty", app.GetGameHostOption(eGameHostOption_Difficulty)));
+	app.SetGameHostOption(eGameHostOption_GameType, GetDedicatedServerInt(settings, L"gamemode", app.GetGameHostOption(eGameHostOption_GameType)));
+	app.SetGameHostOption(eGameHostOption_Structures, GetDedicatedServerBool(settings, L"generate-structures", app.GetGameHostOption(eGameHostOption_Structures) > 0) ? 1 : 0);
+	app.SetGameHostOption(eGameHostOption_BonusChest, GetDedicatedServerBool(settings, L"bonus-chest", app.GetGameHostOption(eGameHostOption_BonusChest) > 0) ? 1 : 0);
+	app.SetGameHostOption(eGameHostOption_PvP, GetDedicatedServerBool(settings, L"pvp", app.GetGameHostOption(eGameHostOption_PvP) > 0) ? 1 : 0);
+	app.SetGameHostOption(eGameHostOption_TrustPlayers, GetDedicatedServerBool(settings, L"trust-players", app.GetGameHostOption(eGameHostOption_TrustPlayers) > 0) ? 1 : 0);
+	app.SetGameHostOption(eGameHostOption_FireSpreads, GetDedicatedServerBool(settings, L"fire-spreads", app.GetGameHostOption(eGameHostOption_FireSpreads) > 0) ? 1 : 0);
+	app.SetGameHostOption(eGameHostOption_TNT, GetDedicatedServerBool(settings, L"tnt", app.GetGameHostOption(eGameHostOption_TNT) > 0) ? 1 : 0);
 
 	app.DebugPrintf("\n*** SERVER SETTINGS ***\n");
 	app.DebugPrintf("ServerSettings: host-friends-only is %s\n",(app.GetGameHostOption(eGameHostOption_FriendsOfFriends)>0)?"on":"off");
@@ -615,13 +642,13 @@ bool MinecraftServer::initServer(__int64 seed, NetworkGameInitData *initData, DW
 	//motd = settings->getString(L"motd", L"A Minecraft Server");
 	//motd.replace('�', '$');
 
-	setAnimals(settings->getBoolean(L"spawn-animals", true));
-	setNpcsEnabled(settings->getBoolean(L"spawn-npcs", true));
+	setAnimals(GetDedicatedServerBool(settings, L"spawn-animals", true));
+	setNpcsEnabled(GetDedicatedServerBool(settings, L"spawn-npcs", true));
 	setPvpAllowed(app.GetGameHostOption( eGameHostOption_PvP )>0?true:false);
 
 	// 4J Stu - We should never have hacked clients flying when they shouldn't be like the PC version, so enable flying always
 	// Fix for #46612 - TU5: Code: Multiplayer: A client can be banned for flying when accidentaly being blown by dynamite
-	setFlightAllowed(settings->getBoolean(L"allow-flight", true));
+	setFlightAllowed(GetDedicatedServerBool(settings, L"allow-flight", true));
 
 	// 4J Stu - Enabling flight to stop it kicking us when we use it
 #ifdef _DEBUG_MENUS_ENABLED
@@ -667,7 +694,7 @@ bool MinecraftServer::initServer(__int64 seed, NetworkGameInitData *initData, DW
 
 	__int64 levelNanoTime = System::nanoTime();
 
-        wstring levelName = (initData && !initData->levelName.empty()) ? initData->levelName : settings->getString(L"level-name", L"world");
+        wstring levelName = (initData && !initData->levelName.empty()) ? initData->levelName : GetDedicatedServerString(settings, L"level-name", L"world");
 		wstring levelTypeString;
 
 	bool gameRuleUseFlatWorld = false;
@@ -677,11 +704,11 @@ bool MinecraftServer::initServer(__int64 seed, NetworkGameInitData *initData, DW
 	}
 	if(gameRuleUseFlatWorld || app.GetGameHostOption(eGameHostOption_LevelType)>0)
 	{
-		levelTypeString = settings->getString(L"level-type",  L"flat");
+		levelTypeString = GetDedicatedServerString(settings, L"level-type",  L"flat");
 	}
 	else
 	{
-		levelTypeString = settings->getString(L"level-type",L"default");
+		levelTypeString = GetDedicatedServerString(settings, L"level-type",L"default");
 	}
 
 	LevelType *pLevelType = LevelType::getLevelType(levelTypeString);
@@ -702,7 +729,7 @@ bool MinecraftServer::initServer(__int64 seed, NetworkGameInitData *initData, DW
 #endif
 	}
 
-	setMaxBuildHeight(settings->getInt(L"max-build-height", Level::maxBuildHeight));
+	setMaxBuildHeight(GetDedicatedServerInt(settings, L"max-build-height", Level::maxBuildHeight));
 	setMaxBuildHeight(((getMaxBuildHeight() + 8) / 16) * 16);
 	setMaxBuildHeight(Mth::clamp(getMaxBuildHeight(), 64, Level::maxBuildHeight));
 	//settings->setProperty(L"max-build-height", maxBuildHeight);
@@ -851,7 +878,7 @@ bool MinecraftServer::loadLevel(LevelStorageSource *storageSource, const wstring
 	// 4J TODO - free levels here if there are already some?
 	levels = ServerLevelArray(3);
 
-	int gameTypeId = settings->getInt(L"gamemode", app.GetGameHostOption(eGameHostOption_GameType));//LevelSettings::GAMETYPE_SURVIVAL);
+	int gameTypeId = GetDedicatedServerInt(settings, L"gamemode", app.GetGameHostOption(eGameHostOption_GameType));//LevelSettings::GAMETYPE_SURVIVAL);
 	GameType *gameType = LevelSettings::validateGameType(gameTypeId);
 	app.DebugPrintf("Default game type: %d\n" , gameTypeId);
 
@@ -950,7 +977,7 @@ bool MinecraftServer::loadLevel(LevelStorageSource *storageSource, const wstring
 #if DEBUG_SERVER_DONT_SPAWN_MOBS
 		levels[i]->setSpawnSettings(false, false);
 #else
-		levels[i]->setSpawnSettings(settings->getBoolean(L"spawn-monsters", true), animals);
+		levels[i]->setSpawnSettings(GetDedicatedServerBool(settings, L"spawn-monsters", true), animals);
 #endif
 		levels[i]->getLevelData()->setGameType(gameType);
 
@@ -1038,7 +1065,7 @@ bool MinecraftServer::loadLevel(LevelStorageSource *storageSource, const wstring
 	for (int i = 0; i < levels.length ; i++)
 	{
 		//        logger.info("Preparing start region for level " + i);
-		if (i == 0 || settings->getBoolean(L"allow-nether", true))
+		if (i == 0 || GetDedicatedServerBool(settings, L"allow-nether", true))
 		{
 			ServerLevel *level = levels[i];
 			if(levelChunksNeedConverted)
@@ -1780,7 +1807,7 @@ void MinecraftServer::run(__int64 seed, void *lpParameter)
 				MinecraftServer::setTimeOfDayAtEndOfTick = false;
 				for (unsigned int i = 0; i < levels.length; i++)
 				{
-					if (i == 0 || settings->getBoolean(L"allow-nether", true))
+					if (i == 0 || GetDedicatedServerBool(settings, L"allow-nether", true))
 					{
 						ServerLevel *level = levels[i];
 						level->setDayTime( MinecraftServer::setTimeOfDay );
