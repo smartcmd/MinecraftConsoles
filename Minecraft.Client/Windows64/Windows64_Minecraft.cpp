@@ -1106,16 +1106,48 @@ int APIENTRY _tWinMain(_In_ HINSTANCE hInstance,
 	SetProcessDPIAware();
 	g_iScreenWidth = GetSystemMetrics(SM_CXSCREEN);
 	g_iScreenHeight = GetSystemMetrics(SM_CYSCREEN);
+
+	// Load username from username.txt
+    char exePath[MAX_PATH] = {};
+    GetModuleFileNameA(NULL, exePath, MAX_PATH);
+    char *lastSlash = strrchr(exePath, '\\');
+    if (lastSlash)
+    {
+        *(lastSlash + 1) = '\0';
+    }
+
+    char filePath[MAX_PATH] = {};
+    _snprintf_s(filePath, sizeof(filePath), _TRUNCATE, "%susername.txt", exePath);
+
+    FILE *f = nullptr;
+    if (fopen_s(&f, filePath, "r") == 0 && f)
+    {
+        char buf[128] = {};
+        if (fgets(buf, sizeof(buf), f))
+        {
+            int len = (int)strlen(buf);
+            while (len > 0 && (buf[len - 1] == '\n' || buf[len - 1] == '\r' || buf[len - 1] == ' '))
+            {
+                buf[--len] = '\0';
+            }
+
+            if (len > 0)
+            {
+                strncpy_s(g_Win64Username, sizeof(g_Win64Username), buf, _TRUNCATE);
+            }
+        }
+        fclose(f);
+    }
+
+	// Load stuff from launch options, including username
 	Win64LaunchOptions launchOptions = ParseLaunchOptions();
 	ApplyScreenMode(launchOptions.screenMode);
 
+	// If no username, let's fall back
 	if (g_Win64Username[0] == 0)
 	{
-		DWORD sz = 17;
-		//if (!GetUserNameA(g_Win64Username, &sz))
-		// todo: SET USERNAMES PROPERLY
-		strncpy_s(g_Win64Username, 17, "Player", _TRUNCATE);
-		g_Win64Username[16] = 0;
+        // Default username will be "Player"
+        strncpy_s(g_Win64Username, sizeof(g_Win64Username), "Player", _TRUNCATE);
 	}
 
 	MultiByteToWideChar(CP_ACP, 0, g_Win64Username, -1, g_Win64UsernameW, 17);
