@@ -100,10 +100,6 @@ static WINDOWPLACEMENT g_wpPrev = { sizeof(g_wpPrev) };
 void UpdateAspectRatio(int width, int height)
 {
 	g_iAspectRatio = (float)width / (float)height;
-	// printf("Window resized to: %d x %d, aspect ratio: %.2f\n", width, height, g_iAspectRatio);
-
-	// Update the UI components as well
-	ui.resize(width, height);
 }
 
 void DefineActions(void)
