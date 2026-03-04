@@ -762,7 +762,7 @@ void CPlatformNetworkManagerStub::SearchForGames()
 				//Add server to the list!
 				FriendSessionInfo* info = new FriendSessionInfo();
 				wchar_t label[128];
-				wcsncpy_s(label, _countof(label), name.c_str(), _TRUNCATE);
+				wcsncpy_s(label, sizeof(label)/sizeof(wchar_t), name.c_str(), _TRUNCATE);
 				size_t nameLen = wcslen(label);
 				info->displayLabel = new wchar_t[nameLen+1];
 				wcscpy_s(info->displayLabel, nameLen + 1, label);
