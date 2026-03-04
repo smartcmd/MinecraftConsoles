@@ -37,9 +37,9 @@
 #include "CritParticle.h"
 
 // 4J : WESTY : Added for new achievements.
-#include <Minecraft.World/item.h>
-#include <Minecraft.World/mapitem.h>
-#include <Minecraft.World/tile.h>
+#include <Minecraft.World/Item.h>
+#include <Minecraft.World/MapItem.h>
+#include <Minecraft.World/Tile.h>
 
 // 4J Stu - Added for tutorial callbacks
 #include "Minecraft.h"

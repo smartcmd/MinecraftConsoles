@@ -2,7 +2,7 @@
 
 #include <Minecraft.World/DispenserTileEntity.h>
 #include <Minecraft.World/TrapMenu.h>
-#include <MultiplayerLocalPlayer.h>
+#include <MultiPlayerLocalPlayer.h>
 #include "XUI_Ctrl_SlotList.h"
 #include "XUI_Scene_Trap.h"
 #include <Common/Tutorial/Tutorial.h>

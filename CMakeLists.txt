@@ -37,6 +37,7 @@ list(TRANSFORM MINECRAFT_WORLD_SOURCES PREPEND "${CMAKE_CURRENT_SOURCE_DIR}/Mine
 add_library(MinecraftWorld STATIC ${MINECRAFT_WORLD_SOURCES})
 target_include_directories(MinecraftWorld PUBLIC
   "${CMAKE_CURRENT_SOURCE_DIR}"
+  "${CMAKE_CURRENT_SOURCE_DIR}/Minecraft.World"
   "${CMAKE_CURRENT_SOURCE_DIR}/Minecraft.World/x64headers"
 )
 target_compile_definitions(MinecraftWorld PRIVATE

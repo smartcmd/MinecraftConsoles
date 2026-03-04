@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "vertex.h"
+#include "Vertex.h"
 
 Vertex::Vertex(float x, float y, float z, float u, float v)
 {

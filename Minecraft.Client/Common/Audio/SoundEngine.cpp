@@ -2,10 +2,10 @@
 
 #include "SoundEngine.h"
 #include <Consoles_App.h>
-#include <MultiplayerLocalPlayer.h>
+#include <MultiPlayerLocalPlayer.h>
 #include <Minecraft.World/net.minecraft.world.level.h>
-#include <Minecraft.World/leveldata.h>
-#include <Minecraft.World/mth.h>
+#include <Minecraft.World/LevelData.h>
+#include <Minecraft.World/Mth.h>
 #include <TexturePackRepository.h>
 #include <DLCTexturePack.h>
 #include <Common/DLC/DLCAudioFile.h>

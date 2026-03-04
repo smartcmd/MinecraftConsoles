@@ -13,7 +13,7 @@
 #include "CreativeMode.h"
 #include "Lighting.h"
 #include "Options.h"
-#include "MultiplayerLocalPlayer.h"
+#include "MultiPlayerLocalPlayer.h"
 #include "GuiParticles.h"
 #include "MultiPlayerLevel.h"
 #include "Chunk.h"

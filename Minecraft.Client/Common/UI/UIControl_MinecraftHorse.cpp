@@ -16,7 +16,7 @@
 #include <Minecraft.World/net.minecraft.world.entity.player.h>
 //#include <Minecraft.World/net.minecraft.world.entity.animal.EntityHorse.h>
 
-#include <MultiplayerLocalPlayer.h>
+#include <MultiPlayerLocalPlayer.h>
 #include "UI.h"
 #include "UIControl_MinecraftHorse.h"
 

@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include <Common/Tutorial/Tutorial.h>
-#include <MultiplayerLocalPlayer.h>
+#include <MultiPlayerLocalPlayer.h>
 #include <Minecraft.World/StringHelpers.h>
 #include <Minecraft.World/Tile.h>
 #include <Minecraft.World/Item.h>

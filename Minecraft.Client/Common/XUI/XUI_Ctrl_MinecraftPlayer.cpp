@@ -3,7 +3,7 @@
 #include <ScreenSizeCalculator.h>
 #include <EntityRenderDispatcher.h>
 #include <Lighting.h>
-#include <MultiplayerLocalPlayer.h>
+#include <MultiPlayerLocalPlayer.h>
 #include "XUI_Ctrl_MinecraftPlayer.h"
 #include "XUI_Scene_AbstractContainer.h"
 #include "XUI_Scene_Inventory.h"

@@ -160,7 +160,7 @@ typedef XUID GameSessionUID;
 #endif
 
 #include <Minecraft.World/Definitions.h>
-#include <Minecraft.World/class.h>
+#include <Minecraft.World/Class.h>
 #include <Minecraft.World/ArrayWithLength.h>
 #include <Minecraft.World/SharedConstants.h>
 #include <Minecraft.World/Random.h>
@@ -171,7 +171,7 @@ typedef XUID GameSessionUID;
 	#include <xbox/4JLibs/inc/4J_Input.h>
 	#include <xbox/4JLibs/inc/4J_Profile.h>
 	#include <xbox/4JLibs/inc/4J_Render.h>
-	#include <xbox/4JLibs/inc/4J_XTMS.h>
+	#include <xbox/4JLibs/inc/4J_xtms.h>
 	#include <xbox/4JLibs/inc/4J_Storage.h>
 #elif defined (__PS3__)
 
@@ -221,7 +221,7 @@ typedef XUID GameSessionUID;
 #include <Common/XUI/XUI_Scene_Base.h>
 #endif
 
-#include <Common/App_defines.h>
+#include <Common/App_Defines.h>
 #include <Common/UI/UIEnums.h>
 #include <Common/UI/UIStructs.h>
 // #ifdef _XBOX

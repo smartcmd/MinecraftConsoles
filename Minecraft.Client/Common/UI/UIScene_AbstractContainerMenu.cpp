@@ -4,7 +4,7 @@
 
 #include <Minecraft.World/net.minecraft.world.inventory.h>
 #include <Minecraft.World/net.minecraft.world.item.h>
-#include <MultiplayerLocalPlayer.h>
+#include <MultiPlayerLocalPlayer.h>
 #ifdef _WINDOWS64
 #include <Windows64/KeyboardMouseInput.h>
 #endif

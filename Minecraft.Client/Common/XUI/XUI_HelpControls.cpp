@@ -6,7 +6,7 @@
 
 #include <Minecraft.World/net.minecraft.world.level.h>
 #include <Minecraft.World/LevelData.h>
-#include <MultiplayerLocalPlayer.h>
+#include <MultiPlayerLocalPlayer.h>
 
 #define ALIGN_START		0
 #define ALIGN_END		1

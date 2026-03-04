@@ -21,7 +21,7 @@
 #include <minecraft.Client/HumanoidModel.h>
 #include <Minecraft.Client/MinecraftServer.h>
 #include <Minecraft.Client/MultiPlayerLevel.h>
-#include <Minecraft.Client/MultiplayerLocalPlayer.h>
+#include <Minecraft.Client/MultiPlayerLocalPlayer.h>
 #include <Minecraft.Client/ServerLevel.h>
 #include <Minecraft.Client/PlayerList.h>
 

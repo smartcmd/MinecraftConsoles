@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "ItemRenderer.h"
 #include "TileRenderer.h"
-#include "entityRenderDispatcher.h"
+#include "EntityRenderDispatcher.h"
 #include <Minecraft.World/JavaMath.h>
 #include <Minecraft.World/net.minecraft.world.entity.item.h>
 #include <Minecraft.World/net.minecraft.world.item.h>

@@ -2,7 +2,7 @@
 
 #include <Minecraft.World/Container.h>
 #include <Minecraft.World/ContainerMenu.h>
-#include <MultiplayerLocalPlayer.h>
+#include <MultiPlayerLocalPlayer.h>
 #include "XUI_Ctrl_SlotList.h"
 #include "XUI_Scene_Container.h"
 #include "XUI_Ctrl_SlotItemListItem.h"

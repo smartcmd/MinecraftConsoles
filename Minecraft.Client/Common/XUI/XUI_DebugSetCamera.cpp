@@ -6,7 +6,7 @@
 // #include <Xbox/4JLibs/inc/4J_Input.h>
 
 #include <Minecraft.h>
-#include <MultiplayerLocalPlayer.h>
+#include <MultiPlayerLocalPlayer.h>
 
 #ifndef _CONTENT_PACKAGE
 HRESULT CScene_DebugSetCamera::OnInit( XUIMessageInit *pInitData, BOOL &bHandled )

@@ -9,7 +9,7 @@
 #include <Minecraft.World/net.minecraft.stats.h>
 #include <Minecraft.Client/StatsCounter.h>
 #include <Minecraft.World/Entity.h>
-#include <Minecraft.Client/MultiplayerLocalPlayer.h>
+#include <Minecraft.Client/MultiPlayerLocalPlayer.h>
 #include <Minecraft.World/Level.h>
 #include <Minecraft.World/ChunkSource.h>
 #include <Minecraft.Client/ProgressRenderer.h>

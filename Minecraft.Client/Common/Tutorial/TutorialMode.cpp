@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include <memory>
 #include <Minecraft.h>
-#include <MultiplayerLocalPlayer.h>
+#include <MultiPlayerLocalPlayer.h>
 #include <MultiPlayerLevel.h>
 #include <Minecraft.World/Inventory.h>
 #include <Minecraft.World/net.minecraft.world.item.h>

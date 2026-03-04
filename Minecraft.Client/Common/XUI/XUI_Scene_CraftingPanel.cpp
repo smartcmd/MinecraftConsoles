@@ -4,7 +4,7 @@
 #include "stdafx.h"
 
 #include <assert.h>
-#include <MultiplayerLocalPlayer.h>
+#include <MultiPlayerLocalPlayer.h>
 #include <Minecraft.World/net.minecraft.world.item.h>
 #include <Minecraft.World/net.minecraft.world.item.crafting.h>
 #include <Minecraft.World/net.minecraft.world.inventory.h>

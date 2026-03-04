@@ -10,7 +10,7 @@
 #include <Minecraft.World/net.minecraft.world.entity.player.h>
 
 #include <Minecraft.World/net.minecraft.stats.h>
-#include <MultiplayerLocalPlayer.h>
+#include <MultiPlayerLocalPlayer.h>
 #include <Common/Tutorial/Tutorial.h>
 #include <Common/Tutorial/TutorialMode.h>
 #include <Minecraft.h>
@@ -20,7 +20,7 @@
 #include "XUI_Ctrl_SlotList.h"
 #include "XUI_Ctrl_SlotItemListItem.h"
 
-#include <Common/Potion_macros.h>
+#include <Common/Potion_Macros.h>
 
 //--------------------------------------------------------------------------------------
 // Name: CXuiSceneInventoryCreative::OnInit

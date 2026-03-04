@@ -8,7 +8,7 @@
 #include <Minecraft.World/Random.h>
 #include <Minecraft.World/SharedConstants.h>
 #include <Minecraft.World/StringHelpers.h>
-#include <MultiplayerLocalPlayer.h>
+#include <MultiPlayerLocalPlayer.h>
 #include "XUI_Scene_Win.h"
 
 BYTE CScene_Win::s_winUserIndex = 0;

@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include <Minecraft.h>
-#include <MultiplayerLocalPlayer.h>
-#include <MultiplayerLevel.h>
+#include <MultiPlayerLocalPlayer.h>
+#include <MultiPlayerLevel.h>
 #include <GameMode.h>
 #include <SurvivalMode.h>
 #include <CreativeMode.h>

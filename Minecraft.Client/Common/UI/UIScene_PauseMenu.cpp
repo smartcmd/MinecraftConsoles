@@ -2,7 +2,7 @@
 #include "UI.h"
 #include "UIScene_PauseMenu.h"
 #include <MinecraftServer.h>
-#include <MultiplayerLocalPlayer.h>
+#include <MultiPlayerLocalPlayer.h>
 #include <TexturePackRepository.h>
 #include <TexturePack.h>
 #include <DLCTexturePack.h>

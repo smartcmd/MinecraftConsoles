@@ -2,7 +2,7 @@
 #include "XUI_HUD.h"
 #include <Minecraft.h>
 #include <Gui.h>
-#include <MultiplayerLocalPlayer.h>
+#include <MultiPlayerLocalPlayer.h>
 #include <Minecraft.World/net.minecraft.world.inventory.h>
 #include <Minecraft.World/Random.h>
 #include <Minecraft.World/net.minecraft.world.effect.h>

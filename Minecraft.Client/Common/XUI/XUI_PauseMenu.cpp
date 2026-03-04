@@ -10,7 +10,7 @@
 #include <Minecraft.Client/StatsCounter.h>
 #include <Minecraft.World/Entity.h>
 #include <Minecraft.World/Level.h>
-#include <Minecraft.Client/MultiplayerLocalPlayer.h>
+#include <Minecraft.Client/MultiPlayerLocalPlayer.h>
 #include <MinecraftServer.h>
 #include <MultiPlayerLevel.h>
 #include <ProgressRenderer.h>

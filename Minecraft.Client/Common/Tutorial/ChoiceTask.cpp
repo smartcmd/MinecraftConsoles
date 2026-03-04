@@ -2,7 +2,7 @@
 #include <string>
 #include <unordered_map>
 #include <Minecraft.h>
-#include <MultiplayerLocalPlayer.h>
+#include <MultiPlayerLocalPlayer.h>
 #include "Tutorial.h"
 #include "TutorialConstraints.h"
 #include "ChoiceTask.h"

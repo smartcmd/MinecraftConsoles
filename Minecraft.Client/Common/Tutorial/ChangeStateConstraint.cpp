@@ -2,7 +2,7 @@
 
 #include "Tutorial.h"
 #include <Minecraft.h>
-#include <MultiplayerLocalPlayer.h>
+#include <MultiPlayerLocalPlayer.h>
 #include <Minecraft.World/net.minecraft.world.level.h>
 #include "ChangeStateConstraint.h"
 #include <Minecraft.World/AABB.h>

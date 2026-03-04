@@ -156,7 +156,7 @@ void MemSect(int sect);
 #ifdef _XBOX
 #include <Minecraft.Client/xbox/4JLibs/inc/4J_Profile.h>
 #include <Minecraft.Client/xbox/4JLibs/inc/4J_Render.h>
-#include <Minecraft.Client/xbox/4JLibs/inc/4J_XTMS.h>
+#include <Minecraft.Client/xbox/4JLibs/inc/4J_xtms.h>
 #include <Minecraft.Client/xbox/4JLibs/inc/4J_Storage.h>
 #include <Minecraft.Client/xbox/4JLibs/inc/4J_Input.h>
 #elif defined (__PS3__)
@@ -189,7 +189,7 @@ void MemSect(int sect);
 #include <Minecraft.Client/Common/Network/GameNetworkManager.h>
 
 // #ifdef _XBOX
-#include <Minecraft.Client/Common/App_defines.h>
+#include <Minecraft.Client/Common/App_Defines.h>
 #include <Minecraft.Client/Common/UI/UIEnums.h>
 #include <Minecraft.Client/Common/App_enums.h>
 #include <Minecraft.Client/Common/Tutorial/TutorialEnum.h>

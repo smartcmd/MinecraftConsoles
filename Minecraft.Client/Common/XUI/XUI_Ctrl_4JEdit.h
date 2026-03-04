@@ -1,6 +1,6 @@
 #pragma once
 
-#include <XuiApp.h>
+#include <xuiapp.h>
 
 #define XUI_4JEDIT_MAX_CHARS 61
 

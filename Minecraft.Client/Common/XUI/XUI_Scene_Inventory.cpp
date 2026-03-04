@@ -3,7 +3,7 @@
 #include <Minecraft.World/net.minecraft.world.inventory.h>
 #include <Minecraft.World/net.minecraft.stats.h>
 #include <Minecraft.World/net.minecraft.world.effect.h>
-#include <MultiplayerLocalPlayer.h>
+#include <MultiPlayerLocalPlayer.h>
 #include <Common/Tutorial/Tutorial.h>
 #include <Common/Tutorial/TutorialMode.h>
 #include <Common/Tutorial/TutorialEnum.h>

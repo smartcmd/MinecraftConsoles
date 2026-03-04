@@ -6,7 +6,7 @@
 #include "ModelPart.h"
 #include "LocalPlayer.h"
 #include "MultiPlayerLocalPlayer.h"
-#include "entityRenderDispatcher.h"
+#include "EntityRenderDispatcher.h"
 #include <Minecraft.World/net.minecraft.world.entity.h>
 #include <Minecraft.World/net.minecraft.world.entity.player.h>
 #include <Minecraft.World/net.minecraft.world.item.h>

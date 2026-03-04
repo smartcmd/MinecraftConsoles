@@ -8,7 +8,7 @@
 #include <ModelPart.h>
 #include <Options.h>
 #include <Minecraft.World/net.minecraft.world.entity.player.h>
-#include <MultiplayerLocalPlayer.h>
+#include <MultiPlayerLocalPlayer.h>
 #include "UI.h"
 #include "UIControl_MinecraftPlayer.h"
 

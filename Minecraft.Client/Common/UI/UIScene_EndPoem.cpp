@@ -3,7 +3,7 @@
 #include "UIScene_EndPoem.h"
 #include "UIBitmapFont.h"
 #include <Minecraft.h>
-#include <MultiplayerLocalPlayer.h>
+#include <MultiPlayerLocalPlayer.h>
 #include <Minecraft.World/StringHelpers.h>
 
 UIScene_EndPoem::UIScene_EndPoem(int iPad, void *initData, UILayer *parentLayer) : UIScene(iPad, parentLayer)

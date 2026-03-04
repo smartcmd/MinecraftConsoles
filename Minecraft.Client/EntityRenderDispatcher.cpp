@@ -44,7 +44,7 @@
 #include "ExperienceOrbRenderer.h"
 #include "SilverfishRenderer.h"
 #include "MushroomCowRenderer.h"
-#include "SnowmanRenderer.h"
+#include "SnowManRenderer.h"
 #include "LavaSlimeRenderer.h"
 #include "VillagerRenderer.h"
 #include "EnderDragonRenderer.h"

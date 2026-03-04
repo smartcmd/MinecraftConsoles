@@ -1,15 +1,15 @@
 #include "stdafx.h"
 #include "ItemRenderer.h"
-#include "tileRenderer.h"
-#include "entityRenderDispatcher.h"
+#include "TileRenderer.h"
+#include "EntityRenderDispatcher.h"
 //#include <ItemFrame>
 #include "ItemFrameRenderer.h"
 #include "TextureAtlas.h"
 
 #include <Minecraft.World/JavaMath.h>
-#include <Minecraft.World/net.minecraft.world.entity.Item.h>
-#include <Minecraft.World/net.minecraft.world.Item.h>
-#include <Minecraft.World/net.minecraft.world.Item.alchemy.h>
+#include <Minecraft.World/net.minecraft.world.entity.item.h>
+#include <Minecraft.World/net.minecraft.world.item.h>
+#include <Minecraft.World/net.minecraft.world.item.alchemy.h>
 #include <Minecraft.World/net.minecraft.world.level.tile.h>
 #include <Minecraft.World/StringHelpers.h>
 #include "Minecraft.h"

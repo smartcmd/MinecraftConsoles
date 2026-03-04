@@ -1,7 +1,7 @@
 #include "stdafx.h"
 
 #include <Minecraft.h>
-#include <MultiplayerLocalPlayer.h>
+#include <MultiPlayerLocalPlayer.h>
 #include "AreaHint.h"
 #include <Minecraft.World/AABB.h>
 #include "Tutorial.h"

@@ -8,7 +8,7 @@
 #include "PlayerRenderer.h"
 #include "EntityRenderDispatcher.h"
 #include "Lighting.h"
-#include "MultiplayerLocalPlayer.h"
+#include "MultiPlayerLocalPlayer.h"
 #include "Minimap.h"
 #include "MultiPlayerLevel.h"
 #include <Minecraft.World/net.minecraft.world.item.h>

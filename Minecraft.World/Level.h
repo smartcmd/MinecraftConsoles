@@ -7,7 +7,7 @@ using namespace std;
 #include "SavedData.h"
 #include "Definitions.h"
 #include "ParticleTypes.h"
-#include "biome.h"
+#include "Biome.h"
 #include "C4JThread.h"
 
 #ifdef __PSVITA__

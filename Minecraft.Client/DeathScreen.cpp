@@ -2,7 +2,7 @@
 #include <Minecraft.World/StringHelpers.h>
 #include "DeathScreen.h"
 #include "Button.h"
-#include "MultiplayerLocalPlayer.h"
+#include "MultiPlayerLocalPlayer.h"
 #include "TitleScreen.h"
 
 void DeathScreen::init()

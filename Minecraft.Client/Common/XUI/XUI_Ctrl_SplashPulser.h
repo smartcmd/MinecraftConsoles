@@ -1,7 +1,7 @@
 #pragma once
 
 #include <string>
-#include <XuiApp.h>
+#include <xuiapp.h>
 
 using namespace std;
 

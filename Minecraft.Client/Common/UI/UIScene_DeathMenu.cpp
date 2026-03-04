@@ -3,7 +3,7 @@
 #include "UIScene_DeathMenu.h"
 #include "IUIScene_PauseMenu.h"
 #include <Minecraft.h>
-#include <MultiplayerLocalPlayer.h>
+#include <MultiPlayerLocalPlayer.h>
 
 UIScene_DeathMenu::UIScene_DeathMenu(int iPad, void *initData, UILayer *parentLayer) : UIScene(iPad, parentLayer)
 {

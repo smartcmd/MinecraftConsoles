@@ -1,5 +1,5 @@
 #pragma once 
-#include <media/xuiscene_Pause.h>
+#include <media/xuiscene_pause.h>
 #include <UI/IUIScene_PauseMenu.h>
 #include "XUI_CustomMessages.h"
 
