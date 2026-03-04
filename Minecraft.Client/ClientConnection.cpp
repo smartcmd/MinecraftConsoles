@@ -1235,6 +1235,11 @@ void ClientConnection::handleTileUpdate(shared_ptr<TileUpdatePacket> packet)
 		PIXBeginNamedEvent(0,"Setting data\n");
 		bool tileWasSet = dimensionLevel->doSetTileAndData(packet->x, packet->y, packet->z, packet->block, packet->data);
 
+		if (tileWasSet && packet->block == 0 && minecraft->levelRenderer && minecraft->levelRenderer->destroyedTileManager)
+		{
+			minecraft->levelRenderer->destroyedTileManager->RemoveTileAt(dimensionLevel, packet->x, packet->y, packet->z);
+		}
+
 		PIXEndNamedEvent();
 
 		// 4J - remove any tite entities in this region which are associated with a tile that is now no longer a tile entity. Without doing this we end up with stray

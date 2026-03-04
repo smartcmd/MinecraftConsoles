@@ -205,6 +205,7 @@ public:
 		void destroyingTileAt( Level *level, int x, int y, int z );									// For game to let this manager know that a tile is about to be destroyed (must be called before it actually is)
 		void updatedChunkAt( Level * level, int x, int y, int z, int veryNearCount );				// For chunk rebuilding to inform the manager that a chunk (a 16x16x16 tile render chunk) has been updated
 		void addAABBs( Level *level, AABB *box, AABBList *boxes );									// For game to get any AABBs that the user should be colliding with as render data has not yet been updated
+		void RemoveTileAt(const Level* level, int x, int y, int z);
 		void tick();
 		DestroyedTileManager();
 		~DestroyedTileManager();

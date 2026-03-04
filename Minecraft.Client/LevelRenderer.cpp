@@ -3584,6 +3584,31 @@ void LevelRenderer::DestroyedTileManager::destroyingTileAt( Level *level, int x,
 	LeaveCriticalSection(&m_csDestroyedTiles);
 }
 
+void LevelRenderer::DestroyedTileManager::RemoveTileAt(const Level *level, int x, int y, int z)
+{
+    EnterCriticalSection(&m_csDestroyedTiles);
+
+    // Remove ALL entries matching this position
+    for (auto it = m_destroyedTiles.begin(); it != m_destroyedTiles.end();)
+    {
+        const auto &tile = *it;
+
+        if (tile->level == level &&
+            tile->x == x &&
+            tile->y == y &&
+            tile->z == z)
+        {
+            it = m_destroyedTiles.erase(it);
+        }
+        else
+        {
+            ++it;
+        }
+    }
+
+    LeaveCriticalSection(&m_csDestroyedTiles);
+}
+
 // For chunk rebuilding to inform the manager that a chunk (a 16x16x16 tile render chunk) has been updated
 void LevelRenderer::DestroyedTileManager::updatedChunkAt(Level *level, int x, int y, int z, int veryNearCount)
 {

@@ -101,6 +101,11 @@ bool MultiPlayerGameMode::destroyBlock(int x, int y, int z, int face)
 
     if (minecraft->levelRenderer && minecraft->levelRenderer->destroyedTileManager)
     {
+        minecraft->levelRenderer->destroyedTileManager->RemoveTileAt(level, x, y, z);
+    }
+
+    if (minecraft->levelRenderer && minecraft->levelRenderer->destroyedTileManager)
+    {
         minecraft->levelRenderer->destroyedTileManager->destroyingTileAt(level, x, y, z);
     }
 
@@ -113,6 +118,11 @@ bool MultiPlayerGameMode::destroyBlock(int x, int y, int z, int face)
         oldTile->destroy(level, x, y, z, data);
     }
     yDestroyBlock = -1;
+
+    if (minecraft->levelRenderer && minecraft->levelRenderer->destroyedTileManager)
+    {
+        minecraft->levelRenderer->destroyedTileManager->RemoveTileAt(level, x, y, z);
+    }
 
     if (!localPlayerMode->isCreative())
     {
