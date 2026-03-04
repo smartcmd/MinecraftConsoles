@@ -171,7 +171,7 @@ void Chunk::makeCopyForRebuild(Chunk *source)
 	this->xm = source->xm;
 	this->ym = source->ym;
 	this->zm = source->zm;
-	this->bb = move(source->bb);
+	this->bb = source->bb;
 	this->clipChunk = NULL;
 	this->id = source->id;
 	this->globalRenderableTileEntities = source->globalRenderableTileEntities;

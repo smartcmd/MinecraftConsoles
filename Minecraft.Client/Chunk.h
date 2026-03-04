@@ -47,7 +47,7 @@ public:
     int xRenderOffs, yRenderOffs, zRenderOffs;
  
     int xm, ym, zm;
-    unique_ptr<AABB> bb;
+    shared_ptr<AABB> bb;
 	ClipChunk *clipChunk;
 
     int id;
