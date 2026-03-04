@@ -40,7 +40,6 @@ vector<shared_ptr<LevelSummary>> McRegionLevelStorageSource::getLevelList()
     const unique_ptr<vector<File*>> subFolders(baseDir.listFiles());
     if (subFolders)
     {
-        const auto itEnd = subFolders->end();
         for (const File* file : *subFolders)
         {
             if (file->isDirectory())
