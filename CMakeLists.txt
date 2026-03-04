@@ -92,13 +92,13 @@ target_link_libraries(MinecraftClient PRIVATE
 message(STATUS "Starting redist copy...")
 execute_process(
   COMMAND robocopy.exe "${CMAKE_CURRENT_SOURCE_DIR}/x64/Release" "${CMAKE_CURRENT_BINARY_DIR}"
-  /E /MT /R:0 /W:0 /NP
+  /S /MT /R:0 /W:0 /NP
 )
 
 message(STATUS "Starting asset copy...")
 execute_process(
   COMMAND robocopy.exe "${CMAKE_CURRENT_SOURCE_DIR}/Minecraft.Client" "${CMAKE_CURRENT_BINARY_DIR}"
-  /E /MT /R:0 /W:0 /NP
+  /S /MT /R:0 /W:0 /NP
   /XF "*.cpp" "*.c" "*.h" "*.hpp" "*.asm"
       "*.txt" "*.xml" "*.lang" "*.vcxproj" "*.vcxproj.*" "*.sln"
       "*.docx" "*.xls"
