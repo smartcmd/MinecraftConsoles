@@ -123,7 +123,7 @@ void KeyboardMouseInput::Tick()
 		}
 	}
 
-	if ((m_mouseGrabbed || m_cursorHiddenForUI) && g_hWnd)
+	if (m_windowFocused && (m_mouseGrabbed || m_cursorHiddenForUI) && g_hWnd)
 	{
 		RECT rc;
 		GetClientRect(g_hWnd, &rc);
