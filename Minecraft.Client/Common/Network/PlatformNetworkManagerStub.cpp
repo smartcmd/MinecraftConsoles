@@ -743,7 +743,9 @@ void CPlatformNetworkManagerStub::SearchForGames()
 		wstring port;
 		wstring name;
 		while (getline(ServersTxt, line)) {
+			app.DebugPrintf("Read line %s in phase %i\n", line, phase);
 			wline = convStringToWstring(line);
+			app.DebugPrintf("As wstring: %s\n", wline);
 			if (phase == 0) {
 				ip = line;
 				phase = 1;
