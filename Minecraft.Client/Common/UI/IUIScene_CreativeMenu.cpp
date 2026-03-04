@@ -263,40 +263,6 @@ void IUIScene_CreativeMenu::staticCtor()
 			BuildFirework(list, FireworksItem::TYPE_CREEPER, DyePowderItem::BLUE, 1, true, false);
 			BuildFirework(list, FireworksItem::TYPE_STAR, DyePowderItem::YELLOW, 1, false, false);
 			BuildFirework(list, FireworksItem::TYPE_BIG, DyePowderItem::WHITE, 1, true, true);
-
-			ITEM_AUX(Tile::stained_glass_Id,14)	// Red
-			ITEM_AUX(Tile::stained_glass_Id,1)	// Orange
-			ITEM_AUX(Tile::stained_glass_Id,4)	// Yellow
-			ITEM_AUX(Tile::stained_glass_Id,5)	// Lime
-			ITEM_AUX(Tile::stained_glass_Id,3)	// Light Blue
-			ITEM_AUX(Tile::stained_glass_Id,9)	// Cyan
-			ITEM_AUX(Tile::stained_glass_Id,11)	// Blue
-			ITEM_AUX(Tile::stained_glass_Id,10)	// Purple
-			ITEM_AUX(Tile::stained_glass_Id,2)	// Magenta
-			ITEM_AUX(Tile::stained_glass_Id,6)	// Pink
-			ITEM_AUX(Tile::stained_glass_Id,0)	// White
-			ITEM_AUX(Tile::stained_glass_Id,8)	// Light Gray
-			ITEM_AUX(Tile::stained_glass_Id,7)	// Gray
-			ITEM_AUX(Tile::stained_glass_Id,15)	// Black
-			ITEM_AUX(Tile::stained_glass_Id,13)	// Green
-			ITEM_AUX(Tile::stained_glass_Id,12)	// Brown
-
-			ITEM_AUX(Tile::stained_glass_pane_Id,14)	// Red
-			ITEM_AUX(Tile::stained_glass_pane_Id,1)	// Orange
-			ITEM_AUX(Tile::stained_glass_pane_Id,4)	// Yellow
-			ITEM_AUX(Tile::stained_glass_pane_Id,5)	// Lime
-			ITEM_AUX(Tile::stained_glass_pane_Id,3)	// Light Blue
-			ITEM_AUX(Tile::stained_glass_pane_Id,9)	// Cyan
-			ITEM_AUX(Tile::stained_glass_pane_Id,11)	// Blue
-			ITEM_AUX(Tile::stained_glass_pane_Id,10)	// Purple
-			ITEM_AUX(Tile::stained_glass_pane_Id,2)	// Magenta
-			ITEM_AUX(Tile::stained_glass_pane_Id,6)	// Pink
-			ITEM_AUX(Tile::stained_glass_pane_Id,0)	// White
-			ITEM_AUX(Tile::stained_glass_pane_Id,8)	// Light Gray
-			ITEM_AUX(Tile::stained_glass_pane_Id,7)	// Gray
-			ITEM_AUX(Tile::stained_glass_pane_Id,15)	// Black
-			ITEM_AUX(Tile::stained_glass_pane_Id,13)	// Green
-			ITEM_AUX(Tile::stained_glass_pane_Id,12)	// Brown
 		}
 #endif
 
