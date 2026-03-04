@@ -4,6 +4,7 @@
 #include "SlideButton.h"
 #include "Options.h"
 #include "ControlsScreen.h"
+#include "ControlRemapScreen.h"
 #include "VideoSettingsScreen.h"
 #include "..\Minecraft.World\net.minecraft.locale.h"
 
@@ -40,7 +41,8 @@ void OptionsScreen::init()
 
     buttons.push_back(new Button(VIDEO_BUTTON_ID, width / 2 - 100, height / 6 + 24 * 4 + 12, language->getElement(L"options.video")));
     buttons.push_back(new Button(CONTROLS_BUTTON_ID, width / 2 - 100, height / 6 + 24 * 5 + 12, language->getElement(L"options.controls")));
-    buttons.push_back(new Button(200, width / 2 - 100, height / 6 + 24 * 7, language->getElement(L"gui.done")));
+    buttons.push_back(new Button(REMAP_BUTTON_ID, width / 2 - 100, height / 6 + 24 * 6 + 12, L"Remap Controls..."));
+    buttons.push_back(new Button(200, width / 2 - 100, height / 6 + 24 * 8, language->getElement(L"gui.done")));
 
 }
 
@@ -61,6 +63,11 @@ void OptionsScreen::buttonClicked(Button *button)
 	{
         minecraft->options->save();
         minecraft->setScreen(new ControlsScreen(this, options));
+    }
+    if (button->id == REMAP_BUTTON_ID)
+	{
+        minecraft->options->save();
+        minecraft->setScreen(new ControlRemapScreen(this, options));
     }
     if (button->id == 200)
 	{

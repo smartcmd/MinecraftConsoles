@@ -139,6 +139,9 @@ enum EUIScene
 	eUIScene_DebugSetCamera,
 #endif
 
+	eUIScene_ControlRemapMenu,
+	eUIScene_InputPrompt,
+
 	eUIScene_COUNT,
 };
 

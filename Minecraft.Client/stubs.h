@@ -191,7 +191,8 @@ public:
 #else
 	static bool isKeyDown(int) {return false;}
 #endif
-	static wstring getKeyName(int) { return L"KEYNAME"; }
+	static wstring getKeyName(int key);
+	static int getKeyCount();
 	static void enableRepeatEvents(bool) {}
 	static const int KEY_A = 0;
 	static const int KEY_B = 1;
@@ -230,6 +231,25 @@ public:
 	static const int KEY_TAB = 34;
 	static const int KEY_LEFT = 35;
 	static const int KEY_RIGHT = 36;
+	static const int KEY_1 = 37;
+	static const int KEY_2 = 38;
+	static const int KEY_3 = 39;
+	static const int KEY_4 = 40;
+	static const int KEY_5 = 41;
+	static const int KEY_6 = 42;
+	static const int KEY_7 = 43;
+	static const int KEY_8 = 44;
+	static const int KEY_9 = 45;
+	static const int KEY_0 = 46;
+	static const int KEY_LCONTROL = 47;
+	static const int KEY_RCONTROL = 48;
+	static const int KEY_LALT = 49;
+	static const int KEY_RALT = 50;
+	static const int KEY_COUNT = 51;
+#ifdef _WINDOWS64
+	// Convert Keyboard::KEY_* constant to Windows VK code for use with KMInput
+	static int keyToVK(int key);
+#endif
 };
 
 class Mouse

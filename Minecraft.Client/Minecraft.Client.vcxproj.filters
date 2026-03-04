@@ -723,10 +723,10 @@
     <Filter Include="PSVita\Miles Sound System\lib">
       <UniqueIdentifier>{0061db22-43de-4b54-a161-c43958cdcd7e}</UniqueIdentifier>
     </Filter>
-      <Filter Include="net\minecraft\client\resources">
+    <Filter Include="net\minecraft\client\resources">
       <UniqueIdentifier>{889a84db-3009-4a7c-8234-4bf93d412690}</UniqueIdentifier>
     </Filter>
-      <Filter Include="Windows64\Source Files\Network">
+    <Filter Include="Windows64\Source Files\Network">
       <UniqueIdentifier>{e5d7fb24-25b8-413c-84ec-974bf0d4a3d1}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
@@ -3775,6 +3775,15 @@
     <ClInclude Include="Windows64\Network\WinsockNetLayer.h">
       <Filter>Windows64\Source Files\Network</Filter>
     </ClInclude>
+    <ClInclude Include="Common\UI\UIScene_ControlRemapMenu.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Common\UI\UIScene_InputPrompt.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ControlRemapScreen.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -5924,6 +5933,15 @@
     </ClCompile>
     <ClCompile Include="Windows64\Network\WinsockNetLayer.cpp">
       <Filter>Windows64\Source Files\Network</Filter>
+    </ClCompile>
+    <ClCompile Include="Common\UI\UIScene_ControlRemapMenu.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Common\UI\UIScene_InputPrompt.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ControlRemapScreen.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

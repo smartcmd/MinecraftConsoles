@@ -7,6 +7,7 @@
 #include "Input.h"
 #include "..\Minecraft.Client\LocalPlayer.h"
 #include "Options.h"
+#include "KeyMapping.h"
 
 Input::Input()
 {
@@ -46,14 +47,19 @@ void Input::tick(LocalPlayer *player)
 	usingKeyboardMovement = false;
 
 #ifdef _WINDOWS64
-	// WASD movement (combine with gamepad)
-	if (iPad == 0 && KMInput.IsCaptured())
+	// WASD movement (combine with gamepad) - reads from Options::keyMappings
+	if (iPad == 0)
 	{
+		Options *opts = pMinecraft->options;
+		int vkForward = Keyboard::keyToVK(opts->keyUp->key);
+		int vkBack    = Keyboard::keyToVK(opts->keyDown->key);
+		int vkLeft    = Keyboard::keyToVK(opts->keyLeft->key);
+		int vkRight   = Keyboard::keyToVK(opts->keyRight->key);
 		float kbX = 0.0f, kbY = 0.0f;
-		if (KMInput.IsKeyDown('W')) { kbY += 1.0f; sprintForward += 1.0f; usingKeyboardMovement = true; }
-		if (KMInput.IsKeyDown('S')) { kbY -= 1.0f; sprintForward -= 1.0f; usingKeyboardMovement = true; }
-		if (KMInput.IsKeyDown('A')) { kbX += 1.0f; usingKeyboardMovement = true; }  // inverted like gamepad
-		if (KMInput.IsKeyDown('D')) { kbX -= 1.0f; usingKeyboardMovement = true; }
+		if (vkForward && KMInput.IsKeyDown(vkForward)) { kbY += 1.0f; sprintForward += 1.0f; usingKeyboardMovement = true; }
+		if (vkBack    && KMInput.IsKeyDown(vkBack))    { kbY -= 1.0f; sprintForward -= 1.0f; usingKeyboardMovement = true; }
+		if (vkLeft    && KMInput.IsKeyDown(vkLeft))     { kbX += 1.0f; usingKeyboardMovement = true; }  // inverted like gamepad
+		if (vkRight   && KMInput.IsKeyDown(vkRight))    { kbX -= 1.0f; usingKeyboardMovement = true; }
 		// Normalize diagonal
 		if (kbX != 0.0f && kbY != 0.0f) { kbX *= 0.707f; kbY *= 0.707f; }
 		if (pMinecraft->localgameModes[iPad]->isInputAllowed(MINECRAFT_ACTION_LEFT) || pMinecraft->localgameModes[iPad]->isInputAllowed(MINECRAFT_ACTION_RIGHT))
@@ -83,8 +89,8 @@ void Input::tick(LocalPlayer *player)
 		sprintForward = 0.0f;
     }
 
-	// 4J: In flying mode, don't actually toggle sneaking (unless we're riding in which case we need to sneak to dismount)
-	if(!player->abilities.flying || player->riding != NULL)
+	// 4J - in flying mode, don't actually toggle sneaking
+	if(!player->abilities.flying)
 	{
 		if((player->ullButtonsPressed&(1LL<<MINECRAFT_ACTION_SNEAK_TOGGLE)) && pMinecraft->localgameModes[iPad]->isInputAllowed(MINECRAFT_ACTION_SNEAK_TOGGLE))
 		{
@@ -94,9 +100,13 @@ void Input::tick(LocalPlayer *player)
 	sneaking = m_gamepadSneaking;
 
 #ifdef _WINDOWS64
-	// Keyboard hold-to-sneak (overrides gamepad toggle)
-	if (iPad == 0 && KMInput.IsCaptured() && KMInput.IsKeyDown(VK_SHIFT) && !player->abilities.flying)
-		sneaking = true;
+	// Keyboard hold-to-sneak (overrides gamepad toggle) - reads from Options::keyMappings
+	if (iPad == 0)
+	{
+		int vkSneak = Keyboard::keyToVK(pMinecraft->options->keySneak->key);
+		if (vkSneak && KMInput.IsKeyDown(vkSneak) && !player->abilities.flying)
+			sneaking = true;
+	}
 #endif
 
 	if(sneaking)
@@ -145,7 +155,7 @@ void Input::tick(LocalPlayer *player)
 		// Delta should normally be 0 since applyFrameMouseLook() already consumed it
 		if (rawDx != 0.0f || rawDy != 0.0f)
 		{
-			float mouseSensitivity = ((float)app.GetGameSettings(iPad, eGameSetting_Sensitivity_InGame)) / 100.0f;
+			float mouseSensitivity = 0.5f;
 			float mdx = rawDx * mouseSensitivity;
 			float mdy = -rawDy * mouseSensitivity;
 			if (app.GetGameSettings(iPad, eGameSetting_ControlInvertLook))
@@ -165,9 +175,13 @@ void Input::tick(LocalPlayer *player)
  		jumping = false;
 
 #ifdef _WINDOWS64
-	// Keyboard jump (Space)
-	if (iPad == 0 && KMInput.IsCaptured() && KMInput.IsKeyDown(VK_SPACE) && pMinecraft->localgameModes[iPad]->isInputAllowed(MINECRAFT_ACTION_JUMP))
-		jumping = true;
+	// Keyboard jump - reads from Options::keyMappings
+	if (iPad == 0)
+	{
+		int vkJump = Keyboard::keyToVK(pMinecraft->options->keyJump->key);
+		if (vkJump && KMInput.IsKeyDown(vkJump) && pMinecraft->localgameModes[iPad]->isInputAllowed(MINECRAFT_ACTION_JUMP))
+			jumping = true;
+	}
 #endif
 
 #ifndef _CONTENT_PACKAGE

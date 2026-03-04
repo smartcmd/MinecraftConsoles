@@ -10,24 +10,20 @@ UIScene_HelpAndOptionsMenu::UIScene_HelpAndOptionsMenu(int iPad, void *initData,
 
 	m_bNotInGame=(Minecraft::GetInstance()->level==NULL);
 
-	m_buttons[BUTTON_HAO_CHANGESKIN].init(IDS_CHANGE_SKIN,BUTTON_HAO_CHANGESKIN);
-	m_buttons[BUTTON_HAO_HOWTOPLAY].init(IDS_HOW_TO_PLAY,BUTTON_HAO_HOWTOPLAY);
-	m_buttons[BUTTON_HAO_CONTROLS].init(IDS_CONTROLS,BUTTON_HAO_CONTROLS);
-	m_buttons[BUTTON_HAO_SETTINGS].init(IDS_SETTINGS,BUTTON_HAO_SETTINGS);
-	m_buttons[BUTTON_HAO_CREDITS].init(IDS_CREDITS,BUTTON_HAO_CREDITS);
+	m_buttons[BUTTON_HAO_CHANGESKIN].init(app.GetString(IDS_CHANGE_SKIN),BUTTON_HAO_CHANGESKIN);
+	m_buttons[BUTTON_HAO_HOWTOPLAY].init(app.GetString(IDS_HOW_TO_PLAY),BUTTON_HAO_HOWTOPLAY);
+	m_buttons[BUTTON_HAO_CONTROLS].init(app.GetString(IDS_CONTROLS),BUTTON_HAO_CONTROLS);
+	m_buttons[BUTTON_HAO_SETTINGS].init(app.GetString(IDS_SETTINGS),BUTTON_HAO_SETTINGS);
+	m_buttons[BUTTON_HAO_CREDITS].init(app.GetString(IDS_CREDITS),BUTTON_HAO_CREDITS);
+	m_buttons[BUTTON_HAO_REMAPCONTROLS].init(L"Remap Controls",BUTTON_HAO_REMAPCONTROLS);
 	//m_buttons[BUTTON_HAO_REINSTALL].init(app.GetString(IDS_REINSTALL_CONTENT),BUTTON_HAO_REINSTALL);
-	m_buttons[BUTTON_HAO_DEBUG].init(IDS_DEBUG_SETTINGS,BUTTON_HAO_DEBUG);
 
 	/* 4J-TomK - we should never remove a control before the other buttons controls are initialised!
 	(because vita touchboxes are rebuilt on remove since the remaining positions might change) */
 	// We don't have a reinstall content, so remove the button
 	removeControl( &m_buttons[BUTTON_HAO_REINSTALL], false );
 
-#ifdef _FINAL_BUILD
-	removeControl( &m_buttons[BUTTON_HAO_DEBUG], false);
-#else
-	if(!app.DebugSettingsOn()) removeControl( &m_buttons[BUTTON_HAO_DEBUG], false);
-#endif
+	doHorizontalResizeCheck();
 
 #ifdef _XBOX_ONE
 	// 4J-PB - in order to buy the skin packs, we need the signed offer ids for them, which we get in the availability info
@@ -72,9 +68,6 @@ UIScene_HelpAndOptionsMenu::UIScene_HelpAndOptionsMenu(int iPad, void *initData,
 	{
 		removeControl( &m_buttons[BUTTON_HAO_CHANGESKIN], false);
 	}
-
-	// 4J-TomK Moved horizontal resize check to the end to prevent horizontal scaling for buttons that might get removed anyways (debug options for example)
-	doHorizontalResizeCheck();
 
 	//StorageManager.TMSPP_GetUserQuotaInfo(C4JStorage::eGlobalStorage_TitleUser,iPad);
 	//StorageManager.WebServiceRequestGetFriends(iPad);
@@ -121,12 +114,6 @@ void UIScene_HelpAndOptionsMenu::updateComponents()
 
 void UIScene_HelpAndOptionsMenu::handleReload()
 {
-#ifdef _FINAL_BUILD
-	removeControl( &m_buttons[BUTTON_HAO_DEBUG], false);
-#else
-	if(!app.DebugSettingsOn()) removeControl( &m_buttons[BUTTON_HAO_DEBUG], false);
-#endif
-
 	// 4J-PB - do not need a storage device to see this menu - just need one when you choose to re-install them
 	bool bNotInGame=(Minecraft::GetInstance()->level==NULL);
 
@@ -224,11 +211,11 @@ void UIScene_HelpAndOptionsMenu::handlePress(F64 controlId, F64 childId)
 	case BUTTON_HAO_CREDITS:
 		ui.NavigateToScene(m_iPad, eUIScene_Credits);
 		break;
+	case BUTTON_HAO_REMAPCONTROLS:
+		ui.NavigateToScene(m_iPad, eUIScene_ControlRemapMenu);
+		break;
 	case BUTTON_HAO_REINSTALL:
 		ui.NavigateToScene(m_iPad, eUIScene_ReinstallMenu);
-		break;
-	case BUTTON_HAO_DEBUG:
-		ui.NavigateToScene(m_iPad, eUIScene_DebugOptions);
 		break;
 	}
 }

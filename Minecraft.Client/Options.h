@@ -89,6 +89,18 @@ public:
 	static const int keyMappings_length = 14;
     KeyMapping *keyMappings[keyMappings_length];
 
+	// Controller button remapping
+	static const int CONTROLLER_ACTIONS = 13;
+	unsigned int controllerMappings[CONTROLLER_ACTIONS];
+	unsigned int controllerDefaults[CONTROLLER_ACTIONS];
+
+	static wstring getControllerActionName(int action);
+	static wstring getControllerButtonName(unsigned int button);
+	void setControllerMapping(int action, unsigned int button);
+	void resetControllerDefaults();
+	void resetKeyboardDefaults();
+	void applyControllerMappings();
+
 protected:
 	Minecraft *minecraft;
 private:
@@ -123,9 +135,6 @@ public:
     bool getBooleanValue(const Options::Option *item);
     wstring getMessage(const Options::Option *item);
     void load();
-private:
-	float readFloat(wstring string);
-public:
 	void save();
 
 	bool isCloudsOn();

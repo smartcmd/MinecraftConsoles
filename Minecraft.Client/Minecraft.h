@@ -164,6 +164,9 @@ public:
 	SoundEngine *soundEngine;
 	MouseHandler *mouseHandler;
 public:
+	static File getWorkingDirectory();
+	static File getWorkingDirectory(const wstring& applicationName);
+public:
 	TexturePackRepository *skins;
 	File workingDirectory;
 private:

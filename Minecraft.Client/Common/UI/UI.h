@@ -124,3 +124,5 @@
 #include "UIScene_EndPoem.h"
 #include "UIScene_EULA.h"
 #include "UIScene_NewUpdateMessage.h"
+#include "UIScene_ControlRemapMenu.h"
+#include "UIScene_InputPrompt.h"

@@ -303,6 +303,12 @@ bool UILayer::NavigateToScene(int iPad, EUIScene scene, void *initData)
 	case eUIScene_ControlsMenu:
 		newScene = new UIScene_ControlsMenu(iPad, initData, this);
 		break;
+	case eUIScene_ControlRemapMenu:
+		newScene = new UIScene_ControlRemapMenu(iPad, initData, this);
+		break;
+	case eUIScene_InputPrompt:
+		newScene = new UIScene_InputPrompt(iPad, initData, this);
+		break;	
 	case eUIScene_ReinstallMenu:
 		newScene = new UIScene_ReinstallMenu(iPad, initData, this);
 		break;

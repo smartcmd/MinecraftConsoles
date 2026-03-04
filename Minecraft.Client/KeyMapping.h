@@ -6,5 +6,7 @@ class KeyMapping
 public:
 	wstring name;
 	int key;
+	int defaultKey;
 	KeyMapping(const wstring& name, int key);
+	void resetToDefault();
 };

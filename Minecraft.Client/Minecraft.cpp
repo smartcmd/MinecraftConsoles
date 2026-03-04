@@ -74,6 +74,24 @@
 #include "Orbis\Network\PsPlusUpsellWrapper_Orbis.h"
 #endif
 
+#ifdef _WINDOWS64
+#include "KeyMapping.h"
+// Helper: check if a remapped key binding was just pressed this frame (consumes)
+static bool remapConsumePress(int key)
+{
+	if (key < 0) { return KMInput.ConsumeMousePress(key + 100); }
+	int vk = Keyboard::keyToVK(key);
+	return vk && KMInput.ConsumeKeyPress(vk);
+}
+// Helper: check if a remapped key binding is currently held down
+static bool remapIsDown(int key)
+{
+	if (key < 0) { return KMInput.IsMouseDown(key + 100); }
+	int vk = Keyboard::keyToVK(key);
+	return vk && KMInput.IsKeyDown(vk);
+}
+#endif
+
 // #define DISABLE_SPU_CODE
 // 4J Turning this on will change the graph at the bottom of the debug overlay to show the number of packets of each type added per fram
 //#define DEBUG_RENDER_SHOWS_PACKETS 1
@@ -321,7 +339,7 @@ void Minecraft::init()
 
 	// glClearColor(0.2f, 0.2f, 0.2f, 1);
 
-	workingDirectory = File(L"");//getWorkingDirectory();
+	workingDirectory = getWorkingDirectory();
 	levelSource = new McRegionLevelStorageSource(File(workingDirectory, L"saves"));
 	//        levelSource = new MemoryLevelStorageSource();
 	options = new Options(this, workingDirectory);
@@ -474,6 +492,48 @@ void Minecraft::renderLoadingScreen()
 	Display::swapBuffers();
 	// xxx
 	RenderManager.Present();
+#endif
+}
+
+File Minecraft::getWorkingDirectory()
+{
+	if (workDir.getPath().empty()) workDir = getWorkingDirectory(L"minecraft");
+	return workDir;
+}
+
+File Minecraft::getWorkingDirectory(const wstring& applicationName)
+{
+#if 0
+	// 4J - original version
+	final String userHome = System.getProperty("user.home", ".");
+	final File workingDirectory;
+	switch (getPlatform()) {
+	case linux:
+	case solaris:
+		workingDirectory = new File(userHome, '.' + applicationName + '/');
+		break;
+	case windows:
+		final String applicationData = System.getenv("APPDATA");
+		if (applicationData != null) workingDirectory = new File(applicationData, "." + applicationName + '/');
+		else workingDirectory = new File(userHome, '.' + applicationName + '/');
+		break;
+	case macos:
+		workingDirectory = new File(userHome, "Library/Application Support/" + applicationName);
+		break;
+	default:
+		workingDirectory = new File(userHome, applicationName + '/');
+	}
+	if (!workingDirectory.exists()) if (!workingDirectory.mkdirs()) throw new RuntimeException("The working directory could not be created: " + workingDirectory);
+	return workingDirectory;
+#else
+	wstring userHome = L"home";	// 4J - TODO
+	File workingDirectory(userHome, applicationName);
+	// 4J Removed
+	//if (!workingDirectory.exists())
+	//{
+	//	workingDirectory.mkdirs();
+	//}
+	return workingDirectory;
 #endif
 }
 
@@ -1191,7 +1251,7 @@ void Minecraft::applyFrameMouseLook()
 		KMInput.ConsumeMouseDelta(rawDx, rawDy);
 		if (rawDx == 0.0f && rawDy == 0.0f) continue;
 
-		float mouseSensitivity = ((float)app.GetGameSettings(iPad, eGameSetting_Sensitivity_InGame)) / 100.0f;
+		float mouseSensitivity = 0.5f;
 		float mdx = rawDx * mouseSensitivity;
 		float mdy = -rawDy * mouseSensitivity;
 		if (app.GetGameSettings(iPad, eGameSetting_ControlInvertLook))
@@ -1447,16 +1507,20 @@ void Minecraft::run_middle()
 					if(InputManager.ButtonPressed(i, MINECRAFT_ACTION_GAME_INFO))				localplayers[i]->ullButtonsPressed|=1LL<<MINECRAFT_ACTION_GAME_INFO;
 
 #ifdef _WINDOWS64
-					// Keyboard/mouse button presses for player 0
+					// Keyboard/mouse button presses for player 0 - reads from Options::keyMappings
 					if (i == 0)
 					{
+						Options *opts = options;
 						if (KMInput.ConsumeKeyPress(VK_ESCAPE))  localplayers[i]->ullButtonsPressed |= 1LL<<MINECRAFT_ACTION_PAUSEMENU;
-						if (KMInput.ConsumeKeyPress('E'))         localplayers[i]->ullButtonsPressed |= 1LL<<MINECRAFT_ACTION_INVENTORY;
-						if (KMInput.ConsumeKeyPress('Q'))         localplayers[i]->ullButtonsPressed |= 1LL<<MINECRAFT_ACTION_DROP;
+						int vkInventory = Keyboard::keyToVK(opts->keyBuild->key);
+						int vkDrop      = Keyboard::keyToVK(opts->keyDrop->key);
+						int vkSneak     = Keyboard::keyToVK(opts->keySneak->key);
+						if (vkInventory && KMInput.ConsumeKeyPress(vkInventory)) localplayers[i]->ullButtonsPressed |= 1LL<<MINECRAFT_ACTION_INVENTORY;
+						if (vkDrop      && KMInput.ConsumeKeyPress(vkDrop))      localplayers[i]->ullButtonsPressed |= 1LL<<MINECRAFT_ACTION_DROP;
 						if (KMInput.ConsumeKeyPress('C'))         localplayers[i]->ullButtonsPressed |= 1LL<<MINECRAFT_ACTION_CRAFTING;
 						if (KMInput.ConsumeKeyPress(VK_F5))       localplayers[i]->ullButtonsPressed |= 1LL<<MINECRAFT_ACTION_RENDER_THIRD_PERSON;
 						// In flying mode, Shift held = sneak/descend
-						if (localplayers[i]->abilities.flying && KMInput.IsKeyDown(VK_SHIFT) && !ui.GetMenuDisplayed(i))
+						if (localplayers[i]->abilities.flying && vkSneak && KMInput.IsKeyDown(vkSneak))
 							localplayers[i]->ullButtonsPressed |= 1LL<<MINECRAFT_ACTION_SNEAK_TOGGLE;
 					}
 #endif
@@ -1708,8 +1772,8 @@ void Minecraft::run_middle()
 				// For durango, check for unmapped controllers
 				for(unsigned int iPad = XUSER_MAX_COUNT; iPad < (XUSER_MAX_COUNT + InputManager.MAX_GAMEPADS); ++iPad)
 				{
-					bool isPadLocked = InputManager.IsPadLocked(iPad), isPadConnected = InputManager.IsPadConnected(iPad), buttonPressed = InputManager.ButtonPressed(iPad);
-					if (isPadLocked || !isPadConnected || !buttonPressed) continue;
+					if(InputManager.IsPadLocked(iPad) || !InputManager.IsPadConnected(iPad) ) continue;
+					if(!InputManager.ButtonPressed(iPad)) continue;
 
 					if(!ui.PressStartPlaying(firstEmptyUser))
 					{

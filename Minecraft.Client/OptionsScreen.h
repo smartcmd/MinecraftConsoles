@@ -8,6 +8,7 @@ class OptionsScreen : public Screen
 private:
 	static const int CONTROLS_BUTTON_ID = 100;
     static const int VIDEO_BUTTON_ID = 101;
+    static const int REMAP_BUTTON_ID = 102;
     Screen *lastScreen;
 protected:
 	wstring title;
