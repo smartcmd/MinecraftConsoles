@@ -88,7 +88,7 @@ BOOL g_bWidescreen = TRUE;
 int g_iScreenWidth = 1920;
 int g_iScreenHeight = 1080;
 
-float g_iAspectRatio = (float)g_iScreenWidth / (float)g_iScreenHeight;
+float g_iAspectRatio = static_cast<float>g_iScreenWidth / g_iScreenHeight;
 
 char g_Win64Username[17] = { 0 };
 wchar_t g_Win64UsernameW[17] = { 0 };
@@ -102,7 +102,7 @@ static WINDOWPLACEMENT g_wpPrev = { sizeof(g_wpPrev) };
 //--------------------------------------------------------------------------------------
 void UpdateAspectRatio(int width, int height)
 {
-	g_iAspectRatio = (float)width / (float)height;
+	g_iAspectRatio = static_cast<float>width / height;
 }
 
 struct Win64LaunchOptions
