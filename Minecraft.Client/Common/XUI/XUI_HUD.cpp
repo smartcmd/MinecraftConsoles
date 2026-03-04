@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "XUI_HUD.h"
+<<<<<<< HEAD
 #include <Minecraft.h>
 #include <Gui.h>
 #include <MultiPlayerLocalPlayer.h>
@@ -7,6 +8,15 @@
 #include <Minecraft.World/Random.h>
 #include <Minecraft.World/net.minecraft.world.effect.h>
 #include <Minecraft.World/net.minecraft.world.level.material.h>
+=======
+#include "..\..\Minecraft.h"
+#include "..\..\Gui.h"
+#include "..\..\MultiplayerLocalPlayer.h"
+#include "..\..\..\Minecraft.World\net.minecraft.world.inventory.h"
+#include "..\..\..\Minecraft.World\Random.h"
+#include "..\..\..\Minecraft.World\net.minecraft.world.effect.h"
+#include "..\..\..\Minecraft.World\net.minecraft.world.level.material.h"
+>>>>>>> parent of fef5c7b0 (the reformatting, pt 1)
 
 HRESULT CXuiSceneHud::OnInit( XUIMessageInit* pInitData, BOOL& bHandled )
 {

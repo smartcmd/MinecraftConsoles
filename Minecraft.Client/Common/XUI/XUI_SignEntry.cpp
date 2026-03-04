@@ -1,4 +1,5 @@
 #include "stdafx.h"
+<<<<<<< HEAD
 #include <MultiPlayerLevel.h>
 #include <Minecraft.World/SignTileEntity.h>
 #include <Minecraft.World/Entity.h>
@@ -6,6 +7,15 @@
 #include <Minecraft.Client/LocalPlayer.h>
 #include <Minecraft.Client/ClientConnection.h>
 #include <Minecraft.Client/MultiPlayerLocalPlayer.h>
+=======
+#include "..\..\..\MultiplayerLevel.h"
+#include "..\..\..\Minecraft.World\SignTileEntity.h"
+#include "..\..\..\Minecraft.World\Entity.h"
+#include "..\..\..\Minecraft.World\Level.h"
+#include "..\..\..\Minecraft.Client\LocalPlayer.h"
+#include "..\..\..\Minecraft.Client\ClientConnection.h"
+#include "..\..\..\Minecraft.Client\MultiPlayerLocalPlayer.h"
+>>>>>>> parent of fef5c7b0 (the reformatting, pt 1)
 #include "XUI_SignEntry.h"
 
 HRESULT CScene_SignEntry::OnInit( XUIMessageInit* pInitData, BOOL& bHandled )

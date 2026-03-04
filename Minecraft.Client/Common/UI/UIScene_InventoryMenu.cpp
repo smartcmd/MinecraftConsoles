@@ -2,6 +2,7 @@
 #include "UI.h"
 #include "UIScene_InventoryMenu.h"
 
+<<<<<<< HEAD
 #include <Minecraft.World/net.minecraft.world.inventory.h>
 #include <Minecraft.World/net.minecraft.world.item.h>
 #include <Minecraft.World/net.minecraft.stats.h>
@@ -14,6 +15,20 @@
 #include <Tutorial/Tutorial.h>
 #include <Tutorial/TutorialMode.h>
 #include <Tutorial/TutorialEnum.h>
+=======
+#include "..\..\..\Minecraft.World\net.minecraft.world.inventory.h"
+#include "..\..\..\Minecraft.World\net.minecraft.world.item.h"
+#include "..\..\..\Minecraft.World\net.minecraft.stats.h"
+#include "..\..\..\Minecraft.World\net.minecraft.world.effect.h"
+#include "..\..\MultiplayerLocalPlayer.h"
+#include "..\..\Minecraft.h"
+#include "..\..\Options.h"
+#include "..\..\EntityRenderDispatcher.h"
+#include "..\..\Lighting.h"
+#include "..\Tutorial\Tutorial.h"
+#include "..\Tutorial\TutorialMode.h"
+#include "..\Tutorial\TutorialEnum.h"
+>>>>>>> parent of fef5c7b0 (the reformatting, pt 1)
 
 #define INVENTORY_UPDATE_EFFECTS_TIMER_ID (10)
 #define INVENTORY_UPDATE_EFFECTS_TIMER_TIME (1000) // 1 second

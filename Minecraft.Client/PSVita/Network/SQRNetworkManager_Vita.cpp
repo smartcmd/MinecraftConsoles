@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "SQRNetworkManager_Vita.h"
 #include "SonyVoiceChat_Vita.h"
-#include <Common/Network/Sony/PlatformNetworkManagerSony.h>
+#include "Common/Network/Sony/PlatformNetworkManagerSony.h"
 
 #include <np.h>
 #include <rudp.h>
@@ -9,9 +9,9 @@
 #include <libnetctl.h>
 #include <netcheck_dialog.h>
 
-#include <PSVita/PSVitaExtras/Conf.h>
-#include <Common/Network/Sony/SonyHttp.h>
-#include <Minecraft.World/C4JThread.h>
+#include "PSVita\PSVitaExtras\Conf.h"
+#include "Common\Network\Sony\SonyHttp.h"
+#include "..\..\..\Minecraft.World\C4JThread.h"
 
 // image used for the invite gui, filesize must be smaller than SCE_NP_MESSAGE_DIALOG_MAX_INDEX_ICON_SIZE ( 64K )
 #define SESSION_IMAGE_PATH				"app0:PSVita/session_image.png"

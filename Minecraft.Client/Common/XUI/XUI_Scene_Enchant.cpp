@@ -1,16 +1,25 @@
 #include "stdafx.h"
 
-#include <Minecraft.World/AbstractContainerMenu.h>
-#include <Minecraft.World/Slot.h>
-#include <Minecraft.World/net.minecraft.world.inventory.h>
-#include <Minecraft.World/net.minecraft.world.level.dimension.h>
+#include "..\..\..\Minecraft.World\AbstractContainerMenu.h"
+#include "..\..\..\Minecraft.World\Slot.h"
+#include "..\..\..\Minecraft.World\net.minecraft.world.inventory.h"
+#include "..\..\..\Minecraft.World\net.minecraft.world.level.dimension.h"
 
+<<<<<<< HEAD
 //#include <Minecraft.World/net.minecraft.stats.h>
 #include <MultiPlayerLocalPlayer.h>
 #include <Common/Tutorial/Tutorial.h>
 #include <Common/Tutorial/TutorialMode.h>
 #include <Common/Tutorial/TutorialEnum.h>
 #include <Minecraft.h>
+=======
+//#include "..\..\..\Minecraft.World\net.minecraft.stats.h"
+#include "..\..\MultiplayerLocalPlayer.h"
+#include "..\..\Common\Tutorial\Tutorial.h"
+#include "..\..\Common\Tutorial\TutorialMode.h"
+#include "..\..\Common\Tutorial\TutorialEnum.h"
+#include "..\..\Minecraft.h"
+>>>>>>> parent of fef5c7b0 (the reformatting, pt 1)
 #include "XUI_Ctrl_SlotList.h"
 
 #include "XUI_Scene_Enchant.h"

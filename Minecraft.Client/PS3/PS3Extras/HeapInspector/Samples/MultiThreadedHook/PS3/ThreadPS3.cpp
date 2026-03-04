@@ -1,5 +1,5 @@
 #include <pthread.h>
-#include <IThread.h>
+#include "../IThread.h"
 
 void* InternalThread(void* a_UserData)
 {

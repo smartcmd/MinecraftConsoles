@@ -1,22 +1,31 @@
 #include "stdafx.h"
 #include "UI.h"
 #include "UIScene_PauseMenu.h"
+<<<<<<< HEAD
 #include <MinecraftServer.h>
 #include <MultiPlayerLocalPlayer.h>
 #include <TexturePackRepository.h>
 #include <TexturePack.h>
 #include <DLCTexturePack.h>
 #include <Minecraft.World/StringHelpers.h>
+=======
+#include "..\..\MinecraftServer.h"
+#include "..\..\MultiplayerLocalPlayer.h"
+#include "..\..\TexturePackRepository.h"
+#include "..\..\TexturePack.h"
+#include "..\..\DLCTexturePack.h"
+#include "..\..\..\Minecraft.World\StringHelpers.h"
+>>>>>>> parent of fef5c7b0 (the reformatting, pt 1)
 #ifdef __ORBIS__
 #include <error_dialog.h>
 #endif
 
 #ifdef _DURANGO
-#include <Durango/Leaderboards/DurangoStatsDebugger.h>
+#include "..\..\Durango\Leaderboards\DurangoStatsDebugger.h"
 #endif
 
 #ifdef __PSVITA__
-#include <PSVita/Network/SonyCommerce_Vita.h>
+#include "PSVita\Network\SonyCommerce_Vita.h"
 #endif
 
 #if defined __PS3__ || defined __ORBIS__

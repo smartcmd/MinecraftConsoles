@@ -1,8 +1,14 @@
 #include "stdafx.h"
 #include "UI.h"
+<<<<<<< HEAD
 #include <Minecraft.h>
 #include <MultiPlayerLocalPlayer.h>
 #include <Minecraft.World/net.minecraft.world.inventory.h>
+=======
+#include "..\..\Minecraft.h"
+#include "..\..\MultiplayerLocalPlayer.h"
+#include "..\..\..\Minecraft.World\net.minecraft.world.inventory.h"
+>>>>>>> parent of fef5c7b0 (the reformatting, pt 1)
 #include "UIScene_CraftingMenu.h"
 
 #ifdef __PSVITA__

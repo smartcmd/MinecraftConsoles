@@ -4,7 +4,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <voice.h>
-#include <Common/Network/Sony/SQRNetworkPlayer.h>
+#include "Common/Network/Sony/SQRNetworkPlayer.h"
 
 static const int sc_maxVoiceDataSize = 2048;
 

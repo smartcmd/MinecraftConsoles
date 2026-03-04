@@ -1,6 +1,10 @@
 #pragma once
 
+<<<<<<< HEAD
 #include <media/xuiscene_win.h>
+=======
+#include "../media/xuiscene_Win.h"
+>>>>>>> parent of fef5c7b0 (the reformatting, pt 1)
 #include "XUI_CustomMessages.h"
 
 class CScene_Win : public CXuiSceneImpl

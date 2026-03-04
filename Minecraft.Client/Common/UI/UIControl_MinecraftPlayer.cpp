@@ -1,4 +1,5 @@
 #include "stdafx.h"
+<<<<<<< HEAD
 #include <Minecraft.h>
 #include <ScreenSizeCalculator.h>
 #include <EntityRenderDispatcher.h>
@@ -9,6 +10,18 @@
 #include <Options.h>
 #include <Minecraft.World/net.minecraft.world.entity.player.h>
 #include <MultiPlayerLocalPlayer.h>
+=======
+#include "..\..\Minecraft.h"
+#include "..\..\ScreenSizeCalculator.h"
+#include "..\..\EntityRenderDispatcher.h"
+#include "..\..\PlayerRenderer.h"
+#include "..\..\HumanoidModel.h"
+#include "..\..\Lighting.h"
+#include "..\..\ModelPart.h"
+#include "..\..\Options.h"
+#include "..\..\..\Minecraft.World\net.minecraft.world.entity.player.h"
+#include "..\..\MultiplayerLocalPlayer.h"
+>>>>>>> parent of fef5c7b0 (the reformatting, pt 1)
 #include "UI.h"
 #include "UIControl_MinecraftPlayer.h"
 

@@ -1,8 +1,13 @@
 #include "stdafx.h"
 #include <string>
 #include <unordered_map>
+<<<<<<< HEAD
 #include <Minecraft.h>
 #include <MultiPlayerLocalPlayer.h>
+=======
+#include "..\..\Minecraft.h"
+#include "..\..\MultiplayerLocalPlayer.h"
+>>>>>>> parent of fef5c7b0 (the reformatting, pt 1)
 #include "Tutorial.h"
 #include "TutorialConstraints.h"
 #include "ControllerTask.h"

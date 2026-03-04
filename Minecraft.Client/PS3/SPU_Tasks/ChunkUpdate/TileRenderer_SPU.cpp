@@ -25,20 +25,20 @@
 #include <assert.h>
 
 #ifdef SN_TARGET_PS3_SPU
-#include <Common/spu_assert.h>
+#include "..\Common\spu_assert.h"
 #endif 
 
 static const float MATH_PI = 3.141592654f;
 
-// #include <GameRenderer.h>
-// #include <Minecraft.h>
-// #include <Textures.h>
-// #include <Minecraft.World/net.minecraft.world.level.h>
-//  #include <Minecraft.World/net.minecraft.world.level.tile.h>
-// #include <Minecraft.World/net.minecraft.world.level.material.h>
-// #include <Minecraft.World/net.minecraft.h>
-// #include <Minecraft.World/net.minecraft.world.h>
-//  #include <Minecraft.World/net.minecraft.world.level.tile.h>
+// #include "GameRenderer.h"
+// #include "Minecraft.h"
+// #include "Textures.h"
+// #include "..\Minecraft.World\net.minecraft.world.level.h"
+//  #include "..\..\..\Minecraft.World\net.minecraft.world.level.tile.h"
+// #include "..\Minecraft.World\net.minecraft.world.level.material.h"
+// #include "..\Minecraft.World\net.minecraft.h"
+// #include "..\Minecraft.World\net.minecraft.world.h"
+//  #include "..\..\..\Minecraft.World\net.minecraft.world.level.tile.h"
 
 #include "Tesselator_SPU.h"
 
@@ -46,11 +46,11 @@ static const float MATH_PI = 3.141592654f;
 #include "Stubs_SPU.h"
 #endif // SN_TARGET_PS3_SPU
 
-// #include <Minecraft.World/SharedConstants.h>
+// #include "..\..\Minecraft.World\SharedConstants.h"
 #include "Facing_SPU.h"
 
-// #include <EntityTileRenderer.h>
-// #include <Options.h>
+// #include "EntityTileRenderer.h"
+// #include "Options.h"
 
 // #define DISABLE_TESS_FUNCS
 #ifdef SN_TARGET_PS3_SPU

@@ -1,7 +1,13 @@
 #include "stdafx.h"
+<<<<<<< HEAD
 #include <Minecraft.World/net.minecraft.world.inventory.h>
 #include <Minecraft.h>
 #include <MultiPlayerLocalPlayer.h>
+=======
+#include "..\..\..\Minecraft.World\net.minecraft.world.inventory.h"
+#include "..\..\Minecraft.h"
+#include "..\..\MultiplayerLocalPlayer.h"
+>>>>>>> parent of fef5c7b0 (the reformatting, pt 1)
 #include "IUIScene_EnchantingMenu.h"
 
 IUIScene_AbstractContainerMenu::ESceneSection IUIScene_EnchantingMenu::GetSectionAndSlotInDirection( IUIScene_AbstractContainerMenu::ESceneSection eSection, ETapState eTapDirection, int *piTargetX, int *piTargetY )

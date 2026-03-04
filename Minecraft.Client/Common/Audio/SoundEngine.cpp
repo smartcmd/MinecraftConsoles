@@ -1,6 +1,7 @@
 ﻿#include "stdafx.h"
 
 #include "SoundEngine.h"
+<<<<<<< HEAD
 #include <Consoles_App.h>
 #include <MultiPlayerLocalPlayer.h>
 #include <Minecraft.World/net.minecraft.world.level.h>
@@ -9,14 +10,24 @@
 #include <TexturePackRepository.h>
 #include <DLCTexturePack.h>
 #include <Common/DLC/DLCAudioFile.h>
+=======
+#include "..\Consoles_App.h"
+#include "..\..\MultiplayerLocalPlayer.h"
+#include "..\..\..\Minecraft.World\net.minecraft.world.level.h"
+#include "..\..\Minecraft.World\leveldata.h"
+#include "..\..\Minecraft.World\mth.h"
+#include "..\..\TexturePackRepository.h"
+#include "..\..\DLCTexturePack.h"
+#include "Common\DLC\DLCAudioFile.h"
+>>>>>>> parent of fef5c7b0 (the reformatting, pt 1)
 
 #ifdef __PSVITA__
 #include <audioout.h>
 #endif
 
 #ifdef _WINDOWS64
-#include <Minecraft.Client/Windows64/Windows64_App.h>
-#include <Minecraft.Client/Windows64/Miles/include/imssapi.h>
+#include "..\..\Minecraft.Client\Windows64\Windows64_App.h"
+#include "..\..\Minecraft.Client\Windows64\Miles\include\imssapi.h"
 #endif
 
 #ifdef __ORBIS__

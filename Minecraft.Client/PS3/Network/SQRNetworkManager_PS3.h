@@ -1,15 +1,15 @@
 #pragma once
 #include <np.h>
 #ifdef __PS3__
-#include <netex/libnetctl.h>
-#include <netex/net.h>
+#include <netex\libnetctl.h>
+#include <netex\net.h>
 #else
 #include <libnetctl.h>
 #include <net.h>
 #endif
 #include <queue>
 
-#include <Common/Network/Sony/SQRNetworkManager.h>
+#include "..\..\Common\Network\Sony\SQRNetworkManager.h"
 
 class SQRNetworkPlayer;
 class ISQRNetworkManagerListener;

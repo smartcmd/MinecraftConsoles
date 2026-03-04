@@ -2,8 +2,13 @@
 #include "UI.h"
 #include "UIScene_DeathMenu.h"
 #include "IUIScene_PauseMenu.h"
+<<<<<<< HEAD
 #include <Minecraft.h>
 #include <MultiPlayerLocalPlayer.h>
+=======
+#include "..\..\Minecraft.h"
+#include "..\..\MultiplayerLocalPlayer.h"
+>>>>>>> parent of fef5c7b0 (the reformatting, pt 1)
 
 UIScene_DeathMenu::UIScene_DeathMenu(int iPad, void *initData, UILayer *parentLayer) : UIScene(iPad, parentLayer)
 {

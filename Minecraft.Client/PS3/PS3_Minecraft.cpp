@@ -17,13 +17,13 @@ SYS_PROCESS_PARAM(1001, 0x10000);  // thread priority, and stack size
 #include <sysutil/sysutil_gamecontent.h>
 //#include <sysutil/sysutil_screenshot.h>
 
-#include <Leaderboards/PS3LeaderboardManager.h>
-#include <PS3/PS3Extras/PS3Strings.h>
-#include <PS3/PS3Extras/ShutdownManager.h>
+#include "Leaderboards\PS3LeaderboardManager.h"
+#include "PS3\PS3Extras\PS3Strings.h"
+#include "PS3\PS3Extras\ShutdownManager.h"
 #include <sysutil/sysutil_bgmplayback.h>
 #include <sysutil/sysutil_msgdialog.h>
 
-#include <PS3/Network/SonyRemoteStorage_PS3.h>
+#include "PS3/Network/SonyRemoteStorage_PS3.h"
 
 // define to use spurs (otherwise SPU threads or raw will be used)
 #define USE_SPURS
@@ -54,48 +54,48 @@ char secureFileId[CELL_SAVEDATA_SECUREFILEID_SIZE] =
 // --wrap malloc --wrap free --wrap memalign --wrap calloc --wrap realloc --wrap reallocalign  --wrap _malloc_init 
 
 #if HEAPINSPECTOR_PS3
-#include <HeapInspector/Server/HeapInspectorServer.h>
-#include <HeapInspector/Server/PS3/HeapHooks.hpp>
+#include "HeapInspector\Server\HeapInspectorServer.h"
+#include "HeapInspector\Server\PS3\HeapHooks.hpp"
 #endif
 
 #include "PS3_App.h"
-#include <GameConfig/Minecraft.spa.h>
-#include <MinecraftServer.h>
-#include <LocalPlayer.h>
-#include <Minecraft.World/ItemInstance.h>
-#include <Minecraft.World/MapItem.h>
-#include <Minecraft.World/Recipes.h>
-#include <Minecraft.World/Recipy.h>
-#include <Minecraft.World/Language.h>
-#include <Minecraft.World/StringHelpers.h>
-#include <Minecraft.World/AABB.h>
-#include <Minecraft.World/Vec3.h>
-#include <Minecraft.World/Level.h>
-#include <Minecraft.World/net.minecraft.world.level.tile.h>
+#include "GameConfig\Minecraft.spa.h"
+#include "..\MinecraftServer.h"
+#include "..\LocalPlayer.h"
+#include "..\..\Minecraft.World\ItemInstance.h"
+#include "..\..\Minecraft.World\MapItem.h"
+#include "..\..\Minecraft.World\Recipes.h"
+#include "..\..\Minecraft.World\Recipy.h"
+#include "..\..\Minecraft.World\Language.h"
+#include "..\..\Minecraft.World\StringHelpers.h"
+#include "..\..\Minecraft.World\AABB.h"
+#include "..\..\Minecraft.World\Vec3.h"
+#include "..\..\Minecraft.World\Level.h"
+#include "..\..\Minecraft.World\net.minecraft.world.level.tile.h"
 
-#include <ClientConnection.h>
-#include <User.h>
-#include <Minecraft.World/Socket.h>
-#include <Minecraft.World/ThreadName.h>
-#include <Minecraft.Client/StatsCounter.h>
-#include <ConnectScreen.h>
-//#include <Social/SocialManager.h>
-//#include <Leaderboards/LeaderboardManager.h>
-//#include <XUI/XUI_Scene_Container.h>
-//#include <NetworkManager.h>
-#include <Minecraft.Client/Tesselator.h>
-#include <Common/Console_Awards_enum.h>
-#include <Minecraft.Client/Options.h>
-#include <Sentient/SentientManager.h>
-#include <Minecraft.World/IntCache.h>
-#include <Textures.h>
+#include "..\ClientConnection.h"
+#include "..\User.h"
+#include "..\..\Minecraft.World\Socket.h"
+#include "..\..\Minecraft.World\ThreadName.h"
+#include "..\..\Minecraft.Client\StatsCounter.h"
+#include "..\ConnectScreen.h"
+//#include "Social\SocialManager.h"
+//#include "Leaderboards\LeaderboardManager.h"
+//#include "XUI\XUI_Scene_Container.h"
+//#include "NetworkManager.h"
+#include "..\..\Minecraft.Client\Tesselator.h"
+#include "..\Common\Console_Awards_enum.h"
+#include "..\..\Minecraft.Client\Options.h"
+#include "Sentient\SentientManager.h"
+#include "..\..\Minecraft.World\IntCache.h"
+#include "..\Textures.h"
 #include "Resource.h"
-#include <Minecraft.World/compression.h>
-#include <Minecraft.World/OldChunkStorage.h>
-#include <PS3/PS3Extras/EdgeZLib.h>
+#include "..\..\Minecraft.World\compression.h"
+#include "..\..\Minecraft.World\OldChunkStorage.h"
+#include "PS3\PS3Extras\EdgeZLib.h"
 #include "C4JThread_SPU.h"
-#include <Common/Network/Sony/SQRNetworkManager.h>
-#include <Common/UI/IUIScene_PauseMenu.h>
+#include "Common\Network\Sony\SQRNetworkManager.h"
+#include "Common\UI\IUIScene_PauseMenu.h"
 
 #include <cell/sysmodule.h>
 

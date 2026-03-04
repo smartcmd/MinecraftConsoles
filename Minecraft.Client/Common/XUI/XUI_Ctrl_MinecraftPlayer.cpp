@@ -1,13 +1,21 @@
 #include "stdafx.h"
+<<<<<<< HEAD
 #include <Minecraft.h>
 #include <ScreenSizeCalculator.h>
 #include <EntityRenderDispatcher.h>
 #include <Lighting.h>
 #include <MultiPlayerLocalPlayer.h>
+=======
+#include "..\..\Minecraft.h"
+#include "..\..\ScreenSizeCalculator.h"
+#include "..\..\EntityRenderDispatcher.h"
+#include "..\..\Lighting.h"
+#include "..\..\MultiplayerLocalPlayer.h"
+>>>>>>> parent of fef5c7b0 (the reformatting, pt 1)
 #include "XUI_Ctrl_MinecraftPlayer.h"
 #include "XUI_Scene_AbstractContainer.h"
 #include "XUI_Scene_Inventory.h"
-#include <Options.h>
+#include "..\..\Options.h"
 
 //-----------------------------------------------------------------------------
 //  CXuiCtrlMinecraftPlayer class

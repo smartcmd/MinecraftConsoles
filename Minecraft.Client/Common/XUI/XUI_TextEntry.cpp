@@ -1,6 +1,10 @@
 #include "stdafx.h"
 #include "XUI_TextEntry.h"
+<<<<<<< HEAD
 #include <MultiPlayerLocalPlayer.h>
+=======
+#include "..\..\MultiplayerLocalPlayer.h"
+>>>>>>> parent of fef5c7b0 (the reformatting, pt 1)
 
 
 CScene_TextEntry::CommandParams CScene_TextEntry::CommandA[CScene_TextEntry::eCommand_MAX]=

@@ -1,10 +1,17 @@
 #pragma once
 
 #include <string>
+<<<<<<< HEAD
 #include <xuiapp.h>
 #include <Textures.h>
 //#include <Xbox/DLC/DLCSkinFile.h>
 #include <Model.h>
+=======
+#include <XuiApp.h>
+#include "..\..\Textures.h"
+//#include "..\..\Xbox\DLC\DLCSkinFile.h"
+#include "..\..\Model.h"
+>>>>>>> parent of fef5c7b0 (the reformatting, pt 1)
 
 using namespace std;
 

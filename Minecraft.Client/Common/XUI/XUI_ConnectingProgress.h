@@ -1,5 +1,5 @@
 #pragma once 
-#include <media/xuiscene_connectingprogress.h>
+#include "../media/xuiscene_connectingprogress.h"
 
 class CScene_ConnectingProgress : public CXuiSceneImpl
 {

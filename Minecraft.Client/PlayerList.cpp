@@ -11,24 +11,24 @@
 #include "PendingConnection.h"
 #include "PlayerConnection.h"
 #include "EntityTracker.h"
-#include <Minecraft.World/net.minecraft.world.level.storage.h>
-#include <Minecraft.World/net.minecraft.world.level.dimension.h>
-#include <Minecraft.World/ArrayWithLength.h>
-#include <Minecraft.World/net.minecraft.network.packet.h>
-#include <Minecraft.World/net.minecraft.network.h>
-#include <Minecraft.World/Pos.h>
-#include <Minecraft.World/ProgressListener.h>
-#include <Minecraft.World/HellRandomLevelSource.h>
-#include <Minecraft.World/net.minecraft.world.phys.h>
-#include <Minecraft.World/net.minecraft.world.item.h>
-#include <Minecraft.World/net.minecraft.world.level.storage.h>
-#include <Minecraft.World/net.minecraft.world.level.saveddata.h>
-#include <Minecraft.World/JavaMath.h>
-#include <Minecraft.World/EntityIO.h>
+#include "..\Minecraft.World\net.minecraft.world.level.storage.h"
+#include "..\Minecraft.World\net.minecraft.world.level.dimension.h"
+#include "..\Minecraft.World\ArrayWithLength.h"
+#include "..\Minecraft.World\net.minecraft.network.packet.h"
+#include "..\Minecraft.World\net.minecraft.network.h"
+#include "..\Minecraft.World\Pos.h"
+#include "..\Minecraft.World\ProgressListener.h"
+#include "..\Minecraft.World\HellRandomLevelSource.h"
+#include "..\Minecraft.World\net.minecraft.world.phys.h"
+#include "..\Minecraft.World\net.minecraft.world.item.h"
+#include "..\Minecraft.World\net.minecraft.world.level.storage.h"
+#include "..\Minecraft.World\net.minecraft.world.level.saveddata.h"
+#include "..\Minecraft.World\JavaMath.h"
+#include "..\Minecraft.World\EntityIO.h"
 #if defined(_XBOX) || defined(_WINDOWS64)
-#include <Xbox/Network/NetworkPlayerXbox.h>
+#include "Xbox\Network\NetworkPlayerXbox.h"
 #elif defined(__PS3__) || defined(__ORBIS__)
-#include <Common/Network/Sony/NetworkPlayerSony.h>
+#include "Common\Network\Sony\NetworkPlayerSony.h"
 #endif
 
 // 4J - this class is fairly substantially altered as there didn't seem any point in porting code for banning, whitelisting, ops etc.

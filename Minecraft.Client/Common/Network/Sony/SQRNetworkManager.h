@@ -1,8 +1,8 @@
 #pragma once
 #include <np.h>
 #ifdef __PS3__
-#include <netex/libnetctl.h>
-#include <netex/net.h>
+#include <netex\libnetctl.h>
+#include <netex\net.h>
 #else
 #include <libnetctl.h>
 #include <net.h>
@@ -12,7 +12,7 @@
 
 #include <unordered_map>
 #if defined __PSVITA__
-#include <Minecraft.Client/PSVita/4JLibs/inc/4J_Profile.h>
+#include "..\..\Minecraft.Client\PSVita\4JLibs\inc\4J_Profile.h"
 #endif
 
 class SQRNetworkPlayer;

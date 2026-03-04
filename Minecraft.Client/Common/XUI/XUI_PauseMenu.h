@@ -1,6 +1,11 @@
 #pragma once 
+<<<<<<< HEAD
 #include <media/xuiscene_pause.h>
 #include <UI/IUIScene_PauseMenu.h>
+=======
+#include "../media/xuiscene_Pause.h"
+#include "..\UI\IUIScene_PauseMenu.h"
+>>>>>>> parent of fef5c7b0 (the reformatting, pt 1)
 #include "XUI_CustomMessages.h"
 
 #define BUTTON_PAUSE_RESUMEGAME		0

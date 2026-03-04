@@ -1,13 +1,19 @@
 #include "stdafx.h"
 
+<<<<<<< HEAD
 #include <Minecraft.World/DispenserTileEntity.h>
 #include <Minecraft.World/TrapMenu.h>
 #include <MultiPlayerLocalPlayer.h>
+=======
+#include "..\..\..\Minecraft.World\DispenserTileEntity.h"
+#include "..\..\..\Minecraft.World\TrapMenu.h"
+#include "..\..\MultiplayerLocalPlayer.h"
+>>>>>>> parent of fef5c7b0 (the reformatting, pt 1)
 #include "XUI_Ctrl_SlotList.h"
 #include "XUI_Scene_Trap.h"
-#include <Common/Tutorial/Tutorial.h>
-#include <Common/Tutorial/TutorialMode.h>
-#include <Common/Tutorial/TutorialEnum.h>
+#include "..\..\Common\Tutorial\Tutorial.h"
+#include "..\..\Common\Tutorial\TutorialMode.h"
+#include "..\..\Common\Tutorial\TutorialEnum.h"
 
 //--------------------------------------------------------------------------------------
 // Name: CXuiSceneTrap::OnInit

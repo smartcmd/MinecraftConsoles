@@ -1,13 +1,13 @@
 #pragma once
 
-#include <media/xuiscene_DLCOffers.h>
-#include <media/xuiscene_DLCMain.h>
+#include "../media\xuiscene_DLCOffers.h"
+#include "../media\xuiscene_DLCMain.h"
 
 
 #include "XUI_CustomMessages.h"
 #include "XUI_Ctrl_4JList.h"
 #include "XUI_Ctrl_4JIcon.h"
-//#include <XUI_Ctrl_DLCPrice.h>
+//#include "XUI_Ctrl_DLCPrice.h"
 
 class CXuiCtrl4JList;
 class CScene_DLCOffers;

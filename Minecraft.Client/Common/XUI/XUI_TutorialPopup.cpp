@@ -1,9 +1,17 @@
 #include "stdafx.h"
+<<<<<<< HEAD
 #include <Common/Tutorial/Tutorial.h>
 #include <MultiPlayerLocalPlayer.h>
 #include <Minecraft.World/StringHelpers.h>
 #include <Minecraft.World/Tile.h>
 #include <Minecraft.World/Item.h>
+=======
+#include "..\..\Common\Tutorial\Tutorial.h"
+#include "..\..\MultiplayerLocalPlayer.h"
+#include "..\..\..\Minecraft.World\StringHelpers.h"
+#include "..\..\..\Minecraft.World\Tile.h"
+#include "..\..\..\Minecraft.World\Item.h"
+>>>>>>> parent of fef5c7b0 (the reformatting, pt 1)
 #include "XUI_Ctrl_CraftIngredientSlot.h"
 #include "XUI_XZP_Icons.h"
 

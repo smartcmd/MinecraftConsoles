@@ -3,9 +3,9 @@
 #include "Stat.h"
 #include "Stats.h"
 
-//#include <DamageSource.h>
+//#include "DamageSource.h"
 
-//#include <Minecraft.Client/Common/Console_Awards_enum.h>
+//#include "..\Minecraft.Client\Common\Console_Awards_enum.h"
 
 /**
 	4J-JEV:

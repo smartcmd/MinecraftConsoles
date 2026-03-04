@@ -3,8 +3,8 @@
 #ifdef _WINDOWS64
 
 #include "WinsockNetLayer.h"
-#include <Common/Network/PlatformNetworkManagerStub.h>
-#include <Minecraft.World/Socket.h>
+#include "..\..\Common\Network\PlatformNetworkManagerStub.h"
+#include "..\..\..\Minecraft.World\Socket.h"
 
 SOCKET WinsockNetLayer::s_listenSocket = INVALID_SOCKET;
 SOCKET WinsockNetLayer::s_hostConnectionSocket = INVALID_SOCKET;

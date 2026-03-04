@@ -1,10 +1,17 @@
 #include "stdafx.h"
 #include "UI.h"
 #include "UIControl_EnchantmentButton.h"
+<<<<<<< HEAD
 #include <Minecraft.World/net.minecraft.world.inventory.h>
 #include <Minecraft.h>
 #include <MultiPlayerLocalPlayer.h>
 #include <Minecraft.World/StringHelpers.h>
+=======
+#include "..\..\..\Minecraft.World\net.minecraft.world.inventory.h"
+#include "..\..\Minecraft.h"
+#include "..\..\MultiplayerLocalPlayer.h"
+#include "..\..\..\Minecraft.World\StringHelpers.h"
+>>>>>>> parent of fef5c7b0 (the reformatting, pt 1)
 
 UIControl_EnchantmentButton::UIControl_EnchantmentButton()
 {

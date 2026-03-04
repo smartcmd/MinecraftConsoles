@@ -23,7 +23,7 @@
 #include "LeafTileItem.h"
 #include "MapItem.h"
 #include "MinecartItem.h"
-//#include <PaintingItem.h>
+//#include "PaintingItem.h"
 #include "PickaxeItem.h"
 #include "PistonTileItem.h"
 #include "RecordingItem.h"
@@ -54,7 +54,7 @@
 #include "PotionItem.h"
 #include "Rarity.h"
 #include "WaterLilyTileItem.h"
-#include <ExperienceItem.h> // 4J Stu brought forward
+#include "ExperienceItem.h" // 4J Stu brought forward
 
 // TU9
 #include "FireChargeItem.h"

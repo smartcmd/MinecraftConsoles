@@ -1,6 +1,10 @@
 #pragma once
 
+<<<<<<< HEAD
 #include <media/xuiscene_death.h>
+=======
+#include "../media/xuiscene_Death.h"
+>>>>>>> parent of fef5c7b0 (the reformatting, pt 1)
 #include "XUI_CustomMessages.h"
 
 #define BUTTON_DEATH_RESPAWN		0

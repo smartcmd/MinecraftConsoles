@@ -1,10 +1,10 @@
 #pragma once
 using namespace std;
-#include <media/xuiscene_debug_item_editor.h>
+#include "../media/xuiscene_debug_item_editor.h"
 
 #include "XUI_Ctrl_CraftIngredientSlot.h"
 #include "XUI_Ctrl_4JEdit.h"
-#include <Minecraft.World/ItemInstance.h>
+#include "..\..\..\Minecraft.World\ItemInstance.h"
 
 class CScene_DebugItemEditor : public CXuiSceneImpl
 {

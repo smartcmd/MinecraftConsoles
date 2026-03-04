@@ -18,12 +18,21 @@
 #include "EntityPos.h"
 #include "Entity.h"
 #include "SoundTypes.h"
+<<<<<<< HEAD
 #include <minecraft.Client/HumanoidModel.h>
 #include <Minecraft.Client/MinecraftServer.h>
 #include <Minecraft.Client/MultiPlayerLevel.h>
 #include <Minecraft.Client/MultiPlayerLocalPlayer.h>
 #include <Minecraft.Client/ServerLevel.h>
 #include <Minecraft.Client/PlayerList.h>
+=======
+#include "..\minecraft.Client\HumanoidModel.h"
+#include "..\Minecraft.Client\MinecraftServer.h"
+#include "..\Minecraft.Client\MultiPlayerLevel.h"
+#include "..\Minecraft.Client\MultiplayerLocalPlayer.h"
+#include "..\Minecraft.Client\ServerLevel.h"
+#include "..\Minecraft.Client\PlayerList.h"
+>>>>>>> parent of fef5c7b0 (the reformatting, pt 1)
 
 const wstring Entity::RIDING_TAG = L"Riding";
 

@@ -12,7 +12,7 @@
 #include "Throwable.h"
 #include "ThrownEnderpearl.h"
 #include "ThrownPotion.h"
-#include <ThrownExpBottle.h> // Brought forward from 1.2
+#include "ThrownExpBottle.h" // Brought forward from 1.2
 
 // Added TU 9
 #include "DragonFireball.h"

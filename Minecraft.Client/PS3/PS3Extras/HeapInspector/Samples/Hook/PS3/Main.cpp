@@ -1,5 +1,5 @@
-#include <Server/HeapInspectorServer.h>
-#include <Server/PS3/HeapHooks.hpp>
+#include "../../../Server/HeapInspectorServer.h"
+#include "../../../Server/PS3/HeapHooks.hpp"
 
 void RunHeapInspectorServer();
 

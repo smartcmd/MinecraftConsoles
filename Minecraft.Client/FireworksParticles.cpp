@@ -1,8 +1,8 @@
 #include "stdafx.h"
-#include <Minecraft.World/net.minecraft.world.item.h>
+#include "..\Minecraft.World\net.minecraft.world.item.h"
 #include "FireworksParticles.h"
 #include "Tesselator.h"
-#include <Minecraft.World/Level.h>
+#include "../Minecraft.World/Level.h"
 
 FireworksParticles::FireworksStarter::FireworksStarter(Level *level, double x, double y, double z, double xd, double yd, double zd, ParticleEngine *engine, CompoundTag *infoTag) : Particle(level, x, y, z, 0, 0, 0)
 {

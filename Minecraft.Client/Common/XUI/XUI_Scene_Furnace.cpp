@@ -1,11 +1,20 @@
 #include "stdafx.h"
 
+<<<<<<< HEAD
 #include <Minecraft.World/FurnaceMenu.h>
 #include <MultiPlayerLocalPlayer.h>
 #include <Common/Tutorial/Tutorial.h>
 #include <Common/Tutorial/TutorialMode.h>
 #include <Common/Tutorial/TutorialEnum.h>
 #include <Minecraft.h>
+=======
+#include "..\..\..\Minecraft.World\FurnaceMenu.h"
+#include "..\..\MultiplayerLocalPlayer.h"
+#include "..\..\Common\Tutorial\Tutorial.h"
+#include "..\..\Common\Tutorial\TutorialMode.h"
+#include "..\..\Common\Tutorial\TutorialEnum.h"
+#include "..\..\Minecraft.h"
+>>>>>>> parent of fef5c7b0 (the reformatting, pt 1)
 #include "XUI_Ctrl_SlotList.h"
 #include "XUI_Scene_Furnace.h"
 #include "XUI_Ctrl_BurnProgress.h"

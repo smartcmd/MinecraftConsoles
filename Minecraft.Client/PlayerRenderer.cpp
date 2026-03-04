@@ -6,13 +6,13 @@
 #include "ModelPart.h"
 #include "LocalPlayer.h"
 #include "MultiPlayerLocalPlayer.h"
-#include "EntityRenderDispatcher.h"
-#include <Minecraft.World/net.minecraft.world.entity.h>
-#include <Minecraft.World/net.minecraft.world.entity.player.h>
-#include <Minecraft.World/net.minecraft.world.item.h>
-#include <Minecraft.World/net.minecraft.world.level.tile.h>
-#include <Minecraft.World/net.minecraft.h>
-#include <Minecraft.World/StringHelpers.h>
+#include "entityRenderDispatcher.h"
+#include "..\Minecraft.World\net.minecraft.world.entity.h"
+#include "..\Minecraft.World\net.minecraft.world.entity.player.h"
+#include "..\Minecraft.World\net.minecraft.world.item.h"
+#include "..\Minecraft.World\net.minecraft.world.level.tile.h"
+#include "..\Minecraft.World\net.minecraft.h"
+#include "..\Minecraft.World\StringHelpers.h"
 
 const unsigned int PlayerRenderer::s_nametagColors[MINECRAFT_NET_MAX_PLAYERS] = 
 {

@@ -1,6 +1,6 @@
 #pragma once
 
-#include <media/xuiscene_controls.h>
+#include "../media/xuiscene_controls.h"
 #include "XUI_CustomMessages.h"
 
 class CXuiCtrl4JList;

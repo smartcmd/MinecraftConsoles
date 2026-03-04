@@ -1,6 +1,10 @@
 #pragma once
 
+<<<<<<< HEAD
 #include <media/xuiscene_reinstall.h>
+=======
+#include "../media/xuiscene_Reinstall.h"
+>>>>>>> parent of fef5c7b0 (the reformatting, pt 1)
 
 #define BUTTON_REINSTALL_THEME		0
 #define BUTTON_REINSTALL_GAMERPIC1	1

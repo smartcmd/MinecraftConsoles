@@ -4,6 +4,7 @@
 #include "stdafx.h"
 
 #include <assert.h>
+<<<<<<< HEAD
 #include <Minecraft.World/AABB.h>
 #include <Minecraft.World/Vec3.h>
 #include <Minecraft.World/net.minecraft.stats.h>
@@ -21,6 +22,25 @@
 #include <TexturePackRepository.h>
 #include <TexturePack.h>
 #include <DLCTexturePack.h>
+=======
+#include "..\..\..\Minecraft.World\AABB.h"
+#include "..\..\..\Minecraft.World\Vec3.h"
+#include "..\..\..\Minecraft.World\net.minecraft.stats.h"
+#include "..\..\..\Minecraft.Client\StatsCounter.h"
+#include "..\..\..\Minecraft.World\Entity.h"
+#include "..\..\..\Minecraft.World\Level.h"
+#include "..\..\..\Minecraft.Client\MultiplayerLocalPlayer.h"
+#include "..\..\MinecraftServer.h"
+#include "..\..\MultiPlayerLevel.h"
+#include "..\..\ProgressRenderer.h"
+#include "..\..\..\Minecraft.World\DisconnectPacket.h"
+#include "..\..\Minecraft.h"
+#include "..\..\Options.h"
+#include "..\..\..\Minecraft.World\compression.h"
+#include "..\..\TexturePackRepository.h"
+#include "..\..\TexturePack.h"
+#include "..\..\DLCTexturePack.h"
+>>>>>>> parent of fef5c7b0 (the reformatting, pt 1)
 
 #define IGNORE_KEYPRESS_TIMERID 0
 #define IGNORE_KEYPRESS_TIME 100

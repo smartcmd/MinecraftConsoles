@@ -1,12 +1,18 @@
 #include "stdafx.h"
 
 #include <assert.h>
-#include <XUI/XUI_HelpControls.h>
+#include "..\XUI\XUI_HelpControls.h"
 #include "XUI_Ctrl_4JList.h"
 
+<<<<<<< HEAD
 #include <Minecraft.World/net.minecraft.world.level.h>
 #include <Minecraft.World/LevelData.h>
 #include <MultiPlayerLocalPlayer.h>
+=======
+#include "..\..\..\Minecraft.World\net.minecraft.world.level.h"
+#include "..\..\..\Minecraft.World\LevelData.h"
+#include "..\..\MultiplayerLocalPlayer.h"
+>>>>>>> parent of fef5c7b0 (the reformatting, pt 1)
 
 #define ALIGN_START		0
 #define ALIGN_END		1

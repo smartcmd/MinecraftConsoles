@@ -1,11 +1,11 @@
 #include "stdafx.h"
 #include "PS3_UIController.h"
-#include <Common/UI/UIController.h>
+#include "Common/UI/UIController.h"
 #include <cell/gcm.h>
 
 // Temp
-#include <Minecraft.h>
-#include <Textures.h>
+#include "..\Minecraft.h"
+#include "..\Textures.h"
 
 #define _ENABLEIGGY
 

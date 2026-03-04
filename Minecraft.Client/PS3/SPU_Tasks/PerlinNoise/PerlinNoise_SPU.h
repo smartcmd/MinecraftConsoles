@@ -1,5 +1,5 @@
 #pragma once
-#include <vectormath/cpp/vectormath_aos.h>
+#include <vectormath\cpp\vectormath_aos.h>
 #include "ImprovedNoise_SPU.h"
 
 #ifndef SN_TARGET_PS3_SPU

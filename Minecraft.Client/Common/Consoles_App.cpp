@@ -1,64 +1,64 @@
 ﻿
 #include "stdafx.h"
-#include <Minecraft.World/net.minecraft.world.entity.item.h>
-#include <Minecraft.World/net.minecraft.world.entity.player.h>
-#include <Minecraft.World/net.minecraft.world.level.tile.entity.h>
-#include <Minecraft.World/net.minecraft.world.phys.h>
-#include <Minecraft.World/InputOutputStream.h>
-#include <Minecraft.World/compression.h>
-#include <Options.h>
-#include <MinecraftServer.h>
-#include <MultiPlayerLevel.h>
-#include <GameRenderer.h>
-#include <ProgressRenderer.h>
-#include <LevelRenderer.h>
-#include <MobSkinMemTextureProcessor.h>
-#include <Minecraft.h>
-#include <ClientConnection.h>
-#include <MultiPlayerLocalPlayer.h>
-#include <LocalPlayer.h>
-#include <Minecraft.World/Player.h>
-#include <Minecraft.World/Inventory.h>
-#include <Minecraft.World/Level.h>
-#include <Minecraft.World/FurnaceTileEntity.h>
-#include <Minecraft.World/Container.h>
-#include <Minecraft.World/DispenserTileEntity.h>
-#include <Minecraft.World/SignTileEntity.h>
-#include <StatsCounter.h>
-#include <GameMode.h>
-#include <Xbox/Social/SocialManager.h>
-#include <Tutorial/TutorialMode.h>
+#include "..\..\Minecraft.World\net.minecraft.world.entity.item.h"
+#include "..\..\Minecraft.World\net.minecraft.world.entity.player.h"
+#include "..\..\Minecraft.World\net.minecraft.world.level.tile.entity.h"
+#include "..\..\Minecraft.World\net.minecraft.world.phys.h"
+#include "..\..\Minecraft.World\InputOutputStream.h"
+#include "..\..\Minecraft.World\compression.h"
+#include "..\Options.h"
+#include "..\MinecraftServer.h"
+#include "..\MultiPlayerLevel.h"
+#include "..\GameRenderer.h"
+#include "..\ProgressRenderer.h"
+#include "..\LevelRenderer.h"
+#include "..\MobSkinMemTextureProcessor.h"
+#include "..\Minecraft.h"
+#include "..\ClientConnection.h"
+#include "..\MultiPlayerLocalPlayer.h"
+#include "..\LocalPlayer.h"
+#include "..\..\Minecraft.World\Player.h"
+#include "..\..\Minecraft.World\Inventory.h"
+#include "..\..\Minecraft.World\Level.h"
+#include "..\..\Minecraft.World\FurnaceTileEntity.h"
+#include "..\..\Minecraft.World\Container.h"
+#include "..\..\Minecraft.World\DispenserTileEntity.h"
+#include "..\..\Minecraft.World\SignTileEntity.h"
+#include "..\StatsCounter.h"
+#include "..\GameMode.h"
+#include "..\Xbox\Social\SocialManager.h"
+#include "Tutorial\TutorialMode.h"
 #if defined _XBOX || defined _WINDOWS64
-#include <Xbox/XML/ATGXmlParser.h>
-#include <Xbox/XML/xmlFilesCallback.h>
+#include "..\Xbox\XML\ATGXmlParser.h"
+#include "..\Xbox\XML\xmlFilesCallback.h"
 #endif
 #include "Minecraft_Macros.h"
-#include <PlayerList.h>
-#include <ServerPlayer.h>
-#include <GameRules/ConsoleGameRules.h>
-#include <GameRules/ConsoleSchematicFile.h>
-#include <User.h>
-#include <Minecraft.World/LevelData.h>
-#include <Minecraft.World/net.minecraft.world.entity.player.h>
-#include <EntityRenderDispatcher.h>
-#include <Minecraft.World/compression.h>
-#include <TexturePackRepository.h>
-#include <DLCTexturePack.h>
-#include <DLC/DLCPack.h>
-#include <StringTable.h>
+#include "..\PlayerList.h"
+#include "..\ServerPlayer.h"
+#include "GameRules\ConsoleGameRules.h"
+#include "GameRules\ConsoleSchematicFile.h"
+#include "..\User.h"
+#include "..\..\Minecraft.World\LevelData.h"
+#include "..\..\Minecraft.World\net.minecraft.world.entity.player.h"
+#include "..\EntityRenderDispatcher.h"
+#include "..\..\Minecraft.World\compression.h"
+#include "..\TexturePackRepository.h"
+#include "..\DLCTexturePack.h"
+#include "DLC\DLCPack.h"
+#include "..\StringTable.h"
 #ifndef _XBOX
-#include <ArchiveFile.h>
+#include "..\ArchiveFile.h"
 #endif
-#include <Minecraft.h>
+#include "..\Minecraft.h"
 #ifdef _XBOX
-#include <Xbox/GameConfig/Minecraft.spa.h>
-#include <Xbox/Network/NetworkPlayerXbox.h>
-#include <XUI/XUI_TextEntry.h>
-#include <XUI/XUI_XZP_Icons.h>
-#include <XUI/XUI_PauseMenu.h>
+#include "..\Xbox\GameConfig\Minecraft.spa.h"
+#include "..\Xbox\Network\NetworkPlayerXbox.h"
+#include "XUI\XUI_TextEntry.h"
+#include "XUI\XUI_XZP_Icons.h"
+#include "XUI\XUI_PauseMenu.h"
 #else
-#include <UI/UI.h>
-#include <UI/UIScene_PauseMenu.h>
+#include "UI\UI.h"
+#include "UI\UIScene_PauseMenu.h"
 #endif
 #ifdef __PS3__
 #include <sys/tty.h>
@@ -67,7 +67,7 @@
 #include <save_data_dialog.h>
 #endif
 
-#include <Common/Leaderboards/LeaderboardManager.h>
+#include "..\Common\Leaderboards\LeaderboardManager.h"
 
 //CMinecraftApp app;
 unsigned int CMinecraftApp::m_uiLastSignInData = 0;

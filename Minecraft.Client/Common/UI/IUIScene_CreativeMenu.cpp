@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "IUIScene_CreativeMenu.h"
 
+<<<<<<< HEAD
 #include <Minecraft.h>
 #include <MultiPlayerLocalPlayer.h>
 #include <Minecraft.World/net.minecraft.world.inventory.h>
@@ -11,6 +12,18 @@
 #include <Minecraft.World/net.minecraft.world.entity.h>
 #include <Minecraft.World/net.minecraft.world.entity.animal.h>
 #include <Minecraft.World/JavaMath.h>
+=======
+#include "..\..\Minecraft.h"
+#include "..\..\MultiplayerLocalPlayer.h"
+#include "..\..\..\Minecraft.World\net.minecraft.world.inventory.h"
+#include "..\..\..\Minecraft.World\net.minecraft.world.level.tile.h"
+#include "..\..\..\Minecraft.World\net.minecraft.world.level.tile.entity.h"
+#include "..\..\..\Minecraft.World\net.minecraft.world.item.h"
+#include "..\..\..\Minecraft.World\net.minecraft.world.item.enchantment.h"
+#include "..\..\..\Minecraft.World\net.minecraft.world.entity.h"
+#include "..\..\..\Minecraft.World\net.minecraft.world.entity.animal.h"
+#include "..\..\..\Minecraft.World\JavaMath.h"
+>>>>>>> parent of fef5c7b0 (the reformatting, pt 1)
 
 // 4J JEV - Images for each tab.
 IUIScene_CreativeMenu::TabSpec **IUIScene_CreativeMenu::specs = NULL;

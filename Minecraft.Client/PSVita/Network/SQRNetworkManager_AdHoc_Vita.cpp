@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "SQRNetworkManager_AdHoc_Vita.h"
 #include "SonyVoiceChat_Vita.h"
-#include <Common/Network/Sony/PlatformNetworkManagerSony.h>
+#include "Common/Network/Sony/PlatformNetworkManagerSony.h"
 
 #include <np.h>
 #include <rudp.h>
@@ -11,9 +11,9 @@
 #include <pspnet_adhoc.h>
 #include <adhoc_matching.h>
 
-#include <PSVita/PSVitaExtras/Conf.h>
-#include <Common/Network/Sony/SonyHttp.h>
-#include <Minecraft.World/C4JThread.h>
+#include "PSVita\PSVitaExtras\Conf.h"
+#include "Common\Network\Sony\SonyHttp.h"
+#include "..\..\..\Minecraft.World\C4JThread.h"
 
 
 #define MATCHING_PORT						(1)

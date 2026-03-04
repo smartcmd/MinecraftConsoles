@@ -1,11 +1,11 @@
 #include "stdafx.h"
 #include "Minecraft.h"
 #include "GameMode.h"
-#include <Minecraft.World/net.minecraft.world.entity.player.h>
-#include <Minecraft.World/net.minecraft.world.level.h>
-#include <Minecraft.World/net.minecraft.world.level.storage.h>
+#include "..\Minecraft.World\net.minecraft.world.entity.player.h"
+#include "..\Minecraft.World\net.minecraft.world.level.h"
+#include "..\Minecraft.World\net.minecraft.world.level.storage.h"
 #include "Input.h"
-#include <Minecraft.Client/LocalPlayer.h>
+#include "..\Minecraft.Client\LocalPlayer.h"
 #include "Options.h"
 
 Input::Input()

@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "SQRNetworkManager_PS3.h"
-#include <Common/Network/Sony/SQRNetworkPlayer.h>
+#include "Common/Network/Sony/SQRNetworkPlayer.h"
 #ifdef __PS3__
 #include <sys/random_number.h>
 #include <sys/event.h>
@@ -10,14 +10,14 @@
 #include <rudp.h>
 #include <np_toolkit.h>
 #endif
-#include <Passphrase/ps3__np_conf.h>
+#include "../Passphrase/ps3__np_conf.h"
 #ifdef __PS3__
 #include "SonyVoiceChat.h"
-#include <Common/Network/Sony/SonyHttp.h>
+#include "Common/Network/Sony/SonyHttp.h"
 #endif
-#include <Minecraft.World/C4JThread.h>
-#include <PS3Extras/PS3Strings.h>
-#include <PS3/Network/SonyRemoteStorage_PS3.h>
+#include "..\..\..\Minecraft.World\C4JThread.h"
+#include "..\PS3Extras\PS3Strings.h"
+#include "PS3\Network\SonyRemoteStorage_PS3.h"
 
 int (* SQRNetworkManager_PS3::s_SignInCompleteCallbackFn)(void *pParam, bool bContinue, int pad) = NULL;
 void * SQRNetworkManager_PS3::s_SignInCompleteParam = NULL;

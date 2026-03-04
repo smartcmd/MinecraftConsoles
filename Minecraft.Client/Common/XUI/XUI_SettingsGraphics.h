@@ -1,6 +1,10 @@
 #pragma once
 
+<<<<<<< HEAD
 #include <media/xuiscene_settings_Graphics.h>
+=======
+#include "../media/xuiscene_settings_graphics.h"
+>>>>>>> parent of fef5c7b0 (the reformatting, pt 1)
 #include "XUI_Ctrl_SliderWrapper.h"
 #include "XUI_CustomMessages.h"
 

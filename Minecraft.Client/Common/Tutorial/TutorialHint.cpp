@@ -1,11 +1,16 @@
 #include "stdafx.h"
-#include <Minecraft.World/net.minecraft.world.level.h>
-#include <Minecraft.World/net.minecraft.world.level.tile.h>
-#include <Minecraft.World/net.minecraft.world.item.h>
+#include "..\..\..\Minecraft.World\net.minecraft.world.level.h"
+#include "..\..\..\Minecraft.World\net.minecraft.world.level.tile.h"
+#include "..\..\..\Minecraft.World\net.minecraft.world.item.h"
 #include "Tutorial.h"
 #include "TutorialHint.h"
+<<<<<<< HEAD
 #include <Minecraft.h>
 #include <MultiPlayerLocalPlayer.h>
+=======
+#include "..\..\Minecraft.h"
+#include "..\..\MultiplayerLocalPlayer.h"
+>>>>>>> parent of fef5c7b0 (the reformatting, pt 1)
 
 TutorialHint::TutorialHint(eTutorial_Hint id, Tutorial *tutorial, int descriptionId, eHintType type, bool allowFade /*= true*/) 
 	: m_id( id ), m_tutorial(tutorial), m_descriptionId( descriptionId ), m_type( type ), m_counter( 0 ),
