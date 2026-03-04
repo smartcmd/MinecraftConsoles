@@ -15,6 +15,8 @@
 #endif
 
 #include "..\..\Minecraft.Client\Windows64\Windows64_App.h"
+#define MA_NO_DSOUND
+#define MA_NO_WINMM
 #define MINIAUDIO_IMPLEMENTATION
 #include "miniaudio.h"
 #include <vector>
