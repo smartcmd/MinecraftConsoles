@@ -124,6 +124,50 @@ static void CopyWideArgToAnsi(LPCWSTR source, char* dest, size_t destSize)
 	dest[destSize - 1] = 0;
 }
 
+// ---------- Persistent options (options.txt next to exe) ----------
+static void GetOptionsFilePath(char *out, size_t outSize)
+{
+	GetModuleFileNameA(NULL, out, (DWORD)outSize);
+	char *p = strrchr(out, '\\');
+	if (p) *(p + 1) = '\0';
+	strncat_s(out, outSize, "options.txt", _TRUNCATE);
+}
+
+static void SaveFullscreenOption(bool fullscreen)
+{
+	char path[MAX_PATH];
+	GetOptionsFilePath(path, sizeof(path));
+	FILE *f = nullptr;
+	if (fopen_s(&f, path, "w") == 0 && f)
+	{
+		fprintf(f, "fullscreen=%d\n", fullscreen ? 1 : 0);
+		fclose(f);
+	}
+}
+
+static bool LoadFullscreenOption()
+{
+	char path[MAX_PATH];
+	GetOptionsFilePath(path, sizeof(path));
+	FILE *f = nullptr;
+	if (fopen_s(&f, path, "r") == 0 && f)
+	{
+		char line[256];
+		while (fgets(line, sizeof(line), f))
+		{
+			int val = 0;
+			if (sscanf_s(line, "fullscreen=%d", &val) == 1)
+			{
+				fclose(f);
+				return val != 0;
+			}
+		}
+		fclose(f);
+	}
+	return false;
+}
+// ------------------------------------------------------------------
+
 static void ApplyScreenMode(int screenMode)
 {
 	switch (screenMode)
@@ -664,7 +708,7 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 		return FALSE;
 	}
 
-	ShowWindow(g_hWnd, nCmdShow);
+	ShowWindow(g_hWnd, (nCmdShow != SW_HIDE) ? SW_SHOWMAXIMIZED : nCmdShow);
 	UpdateWindow(g_hWnd);
 
 	return TRUE;
@@ -873,6 +917,7 @@ void ToggleFullscreen()
 			SWP_NOMOVE | SWP_NOSIZE | SWP_NOZORDER | SWP_NOOWNERZORDER | SWP_FRAMECHANGED);
 	}
 	g_isFullscreen = !g_isFullscreen;
+	SaveFullscreenOption(g_isFullscreen);
 
 	if (g_KBMInput.IsWindowFocused())
 		g_KBMInput.SetWindowFocused(true);
@@ -1191,6 +1236,12 @@ int APIENTRY _tWinMain(_In_ HINSTANCE hInstance,
 	{
 		CleanupDevice();
 		return 0;
+	}
+
+	// Restore fullscreen state from previous session
+	if (LoadFullscreenOption() && !g_isFullscreen)
+	{
+		ToggleFullscreen();
 	}
 
 	if (launchOptions.serverMode)
