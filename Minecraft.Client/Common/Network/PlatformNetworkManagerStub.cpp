@@ -730,7 +730,7 @@ void CPlatformNetworkManagerStub::SearchForGames()
 		friendsSessions[0].push_back(info);
 	}
 
-	if (g_Win64MultiplayerIP[0] != 0)
+	if (g_Win64MultiplayerJoin && g_Win64MultiplayerIP[0] != 0)
 	{
 		FriendSessionInfo* info = new FriendSessionInfo();
 		wchar_t label[128];
