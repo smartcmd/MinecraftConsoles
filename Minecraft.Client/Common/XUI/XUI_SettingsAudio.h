@@ -3,7 +3,7 @@
 <<<<<<< HEAD
 #include <media/xuiscene_settings_Audio.h>
 =======
-#include "../media/xuiscene_settings_audio.h"
+#include "Minecraft.Client/Common/Media/xuiscene_settings_Audio.h"
 >>>>>>> parent of fef5c7b0 (the reformatting, pt 1)
 #include "XUI_Ctrl_SliderWrapper.h"
 #include "XUI_CustomMessages.h"

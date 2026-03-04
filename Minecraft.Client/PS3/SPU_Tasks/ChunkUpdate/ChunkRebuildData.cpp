@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #ifdef __PS3__
 #ifndef SN_TARGET_PS3_SPU
-// 	#include "..\..\..\stdafx.h"
+#include "Minecraft.Client/stdafx.h"
 #endif
 #endif 
 
@@ -10,24 +10,24 @@
 
 
 #ifndef SN_TARGET_PS3_SPU
-#include "..\..\..\..\Minecraft.World\Tile.h"
-#include "..\..\..\..\Minecraft.World\Level.h"
-#include "..\..\..\..\Minecraft.World\Dimension.h"
+#include "Minecraft.World/Tile.h"
+#include "Minecraft.World/Level.h"
+#include "Minecraft.World/Dimension.h"
 // 
-// #include "..\..\..\Chunk.h"
-// #include "..\..\..\TileRenderer.h"
-// #include "..\..\..\TileEntityRenderDispatcher.h"
-// #include "..\..\..\LevelRenderer.h"
-#include "..\..\..\..\Minecraft.World\net.minecraft.world.level.h"
-#include "..\..\..\..\Minecraft.World\net.minecraft.world.level.chunk.h"
-#include "..\..\..\..\Minecraft.World\net.minecraft.world.level.tile.h"
-#include "..\..\..\..\Minecraft.World\net.minecraft.world.level.tile.entity.h"
-#include "..\..\..\..\Minecraft.World\Icon.h"
-#include "..\..\..\..\Minecraft.World\BiomeSource.h"
+#include "Minecraft.Client/Chunk.h"
+#include "Minecraft.Client/TileRenderer.h"
+#include "Minecraft.Client/TileEntityRenderDispatcher.h"
+#include "Minecraft.Client/LevelRenderer.h"
+#include "Minecraft.World/net.minecraft.world.level.h"
+#include "Minecraft.World/net.minecraft.world.level.chunk.h"
+#include "Minecraft.World/net.minecraft.world.level.tile.h"
+#include "Minecraft.World/net.minecraft.world.level.tile.entity.h"
+#include "Minecraft.World/Icon.h"
+#include "Minecraft.World/BiomeSource.h"
 
 #else
  
-#include "..\Common\spu_assert.h"
+#include "Minecraft.Client/PS3/SPU_Tasks/Common/spu_assert.h"
 
 #endif //SN_TARGET_PS3_SPU
 

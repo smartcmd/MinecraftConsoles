@@ -22,8 +22,8 @@
 ///
 ////////////////////////////////////////////////////////////////////////////////////////
 
-#include "../../gil_config.hpp"
-#include "../../utilities.hpp"
+#include "Minecraft.Client/PS3/PS3Extras/boost_1_53_0/boost/gil/gil_config.hpp"
+#include "Minecraft.Client/PS3/PS3Extras/boost_1_53_0/boost/gil/utilities.hpp"
 #include <cstddef>
 #include <cassert>
 #include <algorithm>

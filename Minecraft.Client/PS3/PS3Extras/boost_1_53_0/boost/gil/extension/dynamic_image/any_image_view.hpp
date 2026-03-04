@@ -23,8 +23,8 @@
 ////////////////////////////////////////////////////////////////////////////////////////
 
 #include "variant.hpp"
-#include "../../image_view.hpp"
-#include "../../image.hpp"
+#include "Minecraft.Client/PS3/PS3Extras/boost_1_53_0/boost/gil/image_view.hpp"
+#include "Minecraft.Client/PS3/PS3Extras/boost_1_53_0/boost/gil/image.hpp"
 
 namespace boost { namespace gil {
 

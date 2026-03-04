@@ -85,7 +85,7 @@
 #include "WoolCarpetTile_SPU.h"
 
 #ifdef SN_TARGET_PS3_SPU
-#include "..\Common\spu_assert.h"
+#include "Minecraft.Client/PS3/SPU_Tasks/Common/spu_assert.h"
 #endif
 
 #include <assert.h>

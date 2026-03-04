@@ -6,9 +6,9 @@
 #ifndef BOOST_LEXER_RE_TOKENISER_STATE_HPP
 #define BOOST_LEXER_RE_TOKENISER_STATE_HPP
 
-#include "../../consts.hpp"
+#include "Minecraft.Client/PS3/PS3Extras/boost_1_53_0/boost/spirit/home/support/detail/lexer/consts.hpp"
 #include <locale>
-#include "../../size_t.hpp"
+#include "Minecraft.Client/PS3/PS3Extras/boost_1_53_0/boost/spirit/home/support/detail/lexer/size_t.hpp"
 #include <stack>
 
 namespace boost

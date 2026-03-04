@@ -10,13 +10,13 @@
 #include <rudp.h>
 #include <np_toolkit.h>
 #endif
-#include "../Passphrase/ps3__np_conf.h"
+#include "Minecraft.Client/PS3/Passphrase/ps3__np_conf.h"
 #ifdef __PS3__
 #include "SonyVoiceChat.h"
 #include "Common/Network/Sony/SonyHttp.h"
 #endif
-#include "..\..\..\Minecraft.World\C4JThread.h"
-#include "..\PS3Extras\PS3Strings.h"
+#include "Minecraft.World/C4JThread.h"
+#include "Minecraft.Client/PS3/PS3Extras/PS3Strings.h"
 #include "PS3\Network\SonyRemoteStorage_PS3.h"
 
 int (* SQRNetworkManager_PS3::s_SignInCompleteCallbackFn)(void *pParam, bool bContinue, int pad) = NULL;

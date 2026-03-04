@@ -19,7 +19,7 @@
 #ifndef HAS_REMOVE_EN_14_12_2004
 #define HAS_REMOVE_EN_14_12_2004
 
-#include "./is_std_list.hpp"
+#include "is_std_list.hpp"
 
 namespace boost
 {

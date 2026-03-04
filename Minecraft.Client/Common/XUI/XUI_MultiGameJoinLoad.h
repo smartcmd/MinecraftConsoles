@@ -1,7 +1,7 @@
 #pragma once
 using namespace std;
 #include <vector>
-#include "..\Media\xuiscene_multi_joinload.h"
+#include "Minecraft.Client/Common/Media/xuiscene_multi_joinload.h"
 #include "XUI_CustomMessages.h"
 
 

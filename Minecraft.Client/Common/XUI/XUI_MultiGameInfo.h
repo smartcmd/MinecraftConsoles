@@ -2,7 +2,7 @@
 using namespace std;
 #include <vector>
 #include <qnet.h>
-#include "..\Media\xuiscene_multi_gameinfo.h"
+#include "Minecraft.Client/Common/Media/xuiscene_multi_gameinfo.h"
 
 class FriendSessionInfo;
 

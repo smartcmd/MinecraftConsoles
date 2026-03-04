@@ -5,9 +5,9 @@
 #include <fcntl.h>
 #include <unistd.h>
 #include <cell/audio.h>
-#include "..\..\Common\Audio\SoundEngine.h"
-#include "..\..\Common\Consoles_App.h"
-#include "..\..\PS3\Miles\include\mss.h"
+#include "Minecraft.Client/Common/Audio/SoundEngine.h"
+#include "Minecraft.Client/Common/Consoles_App.h"
+#include "Minecraft.Client/PS3/Miles/include/mss.h"
 
 // This file has the platform specific functions required for PS3 audio
 

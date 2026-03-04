@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "..\..\Tesselator.h"
+#include "Minecraft.Client/Tesselator.h"
 #include "XUI_FontData.h"
 #include "XUI_Font.h"
 

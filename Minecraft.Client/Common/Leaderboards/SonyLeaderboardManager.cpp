@@ -11,7 +11,7 @@
 #include "Common\Consoles_App.h"
 #include "Common\Network\Sony\SQRNetworkManager.h"
 
-#include "..\..\..\Minecraft.World\StringHelpers.h"
+#include "Minecraft.World/StringHelpers.h"
 
 
 #ifdef __ORBIS__
@@ -154,7 +154,7 @@ void SonyLeaderboardManager::scoreboardThreadInternal()
 		// The following NP call should be reserved for asynchronous multiplayer modes that require PS Plus to be accessed. 
 		//
 		//	Note 2: 
-		// The message is not displayed with a user without PlayStation®Plus subscription and they are able to access the Leaderboards.
+		// The message is not displayed with a user without PlayStationPlus subscription and they are able to access the Leaderboards.
 
 		// NotifyAsyncPlusFeature();
 

@@ -1,5 +1,5 @@
 #pragma once
-#include "../media/xuiscene_tutorialpopup.h"
+#include "Minecraft.Client/Common/Media/xuiscene_tutorialpopup.h"
 #include "XUI_CustomMessages.h"
 
 class Tutorial;

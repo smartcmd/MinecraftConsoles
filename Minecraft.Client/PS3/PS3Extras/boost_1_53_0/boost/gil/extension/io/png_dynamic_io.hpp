@@ -32,7 +32,7 @@
 #include <stdio.h>
 #include <boost/mpl/bool.hpp>
 #include <boost/shared_ptr.hpp>
-#include "../dynamic_image/dynamic_image_all.hpp"
+#include "Minecraft.Client/PS3/PS3Extras/boost_1_53_0/boost/gil/extension/dynamic_image/dynamic_image_all.hpp"
 #include "io_error.hpp"
 #include "png_io.hpp"
 #include "png_io_private.hpp"

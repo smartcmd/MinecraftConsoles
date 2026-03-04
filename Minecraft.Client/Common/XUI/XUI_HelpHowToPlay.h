@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../media/xuiscene_howtoplay.h"
+#include "Minecraft.Client/Common/Media/xuiscene_howtoplay.h"
 #include "XUI_CustomMessages.h"
 
 enum EHowToPlayTextControls

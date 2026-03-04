@@ -3,7 +3,7 @@
 #include <xuiresource.h>
 #include <xuiapp.h>
 
-#include "..\..\Common\Leaderboards\LeaderboardManager.h"
+#include "Minecraft.Client/Common/Leaderboards/LeaderboardManager.h"
 
 class XboxLeaderboardManager : public LeaderboardManager
 {

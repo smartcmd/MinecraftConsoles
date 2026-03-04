@@ -35,8 +35,8 @@ extern "C" {
 #include "png.h"
 }
 #include <boost/static_assert.hpp>
-#include "../../gil_config.hpp"
-#include "../../utilities.hpp"
+#include "Minecraft.Client/PS3/PS3Extras/boost_1_53_0/boost/gil/gil_config.hpp"
+#include "Minecraft.Client/PS3/PS3Extras/boost_1_53_0/boost/gil/utilities.hpp"
 #include "io_error.hpp"
 #include "png_io_private.hpp"
 

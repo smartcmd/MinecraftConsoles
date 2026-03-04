@@ -16,18 +16,18 @@
 #include <Tutorial/TutorialMode.h>
 #include <Tutorial/TutorialEnum.h>
 =======
-#include "..\..\..\Minecraft.World\net.minecraft.world.inventory.h"
-#include "..\..\..\Minecraft.World\net.minecraft.world.item.h"
-#include "..\..\..\Minecraft.World\net.minecraft.stats.h"
-#include "..\..\..\Minecraft.World\net.minecraft.world.effect.h"
-#include "..\..\MultiplayerLocalPlayer.h"
-#include "..\..\Minecraft.h"
-#include "..\..\Options.h"
-#include "..\..\EntityRenderDispatcher.h"
-#include "..\..\Lighting.h"
-#include "..\Tutorial\Tutorial.h"
-#include "..\Tutorial\TutorialMode.h"
-#include "..\Tutorial\TutorialEnum.h"
+#include "Minecraft.World/net.minecraft.world.inventory.h"
+#include "Minecraft.World/net.minecraft.world.item.h"
+#include "Minecraft.World/net.minecraft.stats.h"
+#include "Minecraft.World/net.minecraft.world.effect.h"
+#include "Minecraft.Client/MultiPlayerLocalPlayer.h"
+#include "Minecraft.Client/Minecraft.h"
+#include "Minecraft.Client/Options.h"
+#include "Minecraft.Client/EntityRenderDispatcher.h"
+#include "Minecraft.Client/Lighting.h"
+#include "Minecraft.Client/Common/Tutorial/Tutorial.h"
+#include "Minecraft.Client/Common/Tutorial/TutorialMode.h"
+#include "Minecraft.Client/Common/Tutorial/TutorialEnum.h"
 >>>>>>> parent of fef5c7b0 (the reformatting, pt 1)
 
 #define INVENTORY_UPDATE_EFFECTS_TIMER_ID (10)

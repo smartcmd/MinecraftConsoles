@@ -1,25 +1,25 @@
 #include "stdafx.h"
-#include "..\..\Minecraft.h"
-#include "..\..\ScreenSizeCalculator.h"
-#include "..\..\EntityRenderDispatcher.h"
+#include "Minecraft.Client/Minecraft.h"
+#include "Minecraft.Client/ScreenSizeCalculator.h"
+#include "Minecraft.Client/EntityRenderDispatcher.h"
 
-#include "..\..\PlayerRenderer.h"
-#include "..\..\HorseRenderer.h"
+#include "Minecraft.Client/PlayerRenderer.h"
+#include "Minecraft.Client/HorseRenderer.h"
 
-#include "..\..\HumanoidModel.h"
-#include "..\..\ModelHorse.h"
+#include "Minecraft.Client/HumanoidModel.h"
+#include "Minecraft.Client/ModelHorse.h"
 
-#include "..\..\Lighting.h"
-#include "..\..\ModelPart.h"
-#include "..\..\Options.h"
+#include "Minecraft.Client/Lighting.h"
+#include "Minecraft.Client/ModelPart.h"
+#include "Minecraft.Client/Options.h"
 
-#include "..\..\..\Minecraft.World\net.minecraft.world.entity.player.h"
+#include "Minecraft.World/net.minecraft.world.entity.player.h"
 //#include "..\..\..\Minecraft.World\net.minecraft.world.entity.animal.EntityHorse.h"
 
 <<<<<<< HEAD
 #include <MultiPlayerLocalPlayer.h>
 =======
-#include "..\..\MultiplayerLocalPlayer.h"
+#include "Minecraft.Client/MultiPlayerLocalPlayer.h"
 >>>>>>> parent of fef5c7b0 (the reformatting, pt 1)
 #include "UI.h"
 #include "UIControl_MinecraftHorse.h"

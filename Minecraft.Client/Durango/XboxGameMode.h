@@ -1,5 +1,5 @@
 #pragma once
-#include "..\Common\Tutorial\TutorialMode.h"
+#include "Minecraft.Client/Common/Tutorial/TutorialMode.h"
 
 class XboxGameMode : public TutorialMode
 {

@@ -17,7 +17,7 @@ SYS_PROCESS_PARAM(1001, 0x10000);  // thread priority, and stack size
 #include <sysutil/sysutil_gamecontent.h>
 //#include <sysutil/sysutil_screenshot.h>
 
-#include "Leaderboards\PS3LeaderboardManager.h"
+#include "Leaderboards/PS3LeaderboardManager.h"
 #include "PS3\PS3Extras\PS3Strings.h"
 #include "PS3\PS3Extras\ShutdownManager.h"
 #include <sysutil/sysutil_bgmplayback.h>
@@ -59,39 +59,39 @@ char secureFileId[CELL_SAVEDATA_SECUREFILEID_SIZE] =
 #endif
 
 #include "PS3_App.h"
-#include "GameConfig\Minecraft.spa.h"
-#include "..\MinecraftServer.h"
-#include "..\LocalPlayer.h"
-#include "..\..\Minecraft.World\ItemInstance.h"
-#include "..\..\Minecraft.World\MapItem.h"
-#include "..\..\Minecraft.World\Recipes.h"
-#include "..\..\Minecraft.World\Recipy.h"
-#include "..\..\Minecraft.World\Language.h"
-#include "..\..\Minecraft.World\StringHelpers.h"
-#include "..\..\Minecraft.World\AABB.h"
-#include "..\..\Minecraft.World\Vec3.h"
-#include "..\..\Minecraft.World\Level.h"
-#include "..\..\Minecraft.World\net.minecraft.world.level.tile.h"
+#include "GameConfig/Minecraft.spa.h"
+#include "Minecraft.Client/MinecraftServer.h"
+#include "Minecraft.Client/LocalPlayer.h"
+#include "Minecraft.World/ItemInstance.h"
+#include "Minecraft.World/MapItem.h"
+#include "Minecraft.World/Recipes.h"
+#include "Minecraft.World/Recipy.h"
+#include "Minecraft.World/Language.h"
+#include "Minecraft.World/StringHelpers.h"
+#include "Minecraft.World/AABB.h"
+#include "Minecraft.World/Vec3.h"
+#include "Minecraft.World/Level.h"
+#include "Minecraft.World/net.minecraft.world.level.tile.h"
 
-#include "..\ClientConnection.h"
-#include "..\User.h"
-#include "..\..\Minecraft.World\Socket.h"
-#include "..\..\Minecraft.World\ThreadName.h"
-#include "..\..\Minecraft.Client\StatsCounter.h"
-#include "..\ConnectScreen.h"
-//#include "Social\SocialManager.h"
+#include "Minecraft.Client/ClientConnection.h"
+#include "Minecraft.Client/User.h"
+#include "Minecraft.World/Socket.h"
+#include "Minecraft.World/ThreadName.h"
+#include "Minecraft.Client/StatsCounter.h"
+#include "Minecraft.Client/ConnectScreen.h"
+#include "Social/SocialManager.h"
 //#include "Leaderboards\LeaderboardManager.h"
 //#include "XUI\XUI_Scene_Container.h"
 //#include "NetworkManager.h"
-#include "..\..\Minecraft.Client\Tesselator.h"
-#include "..\Common\Console_Awards_enum.h"
-#include "..\..\Minecraft.Client\Options.h"
-#include "Sentient\SentientManager.h"
-#include "..\..\Minecraft.World\IntCache.h"
-#include "..\Textures.h"
+#include "Minecraft.Client/Tesselator.h"
+#include "Minecraft.Client/Common/Console_Awards_enum.h"
+#include "Minecraft.Client/Options.h"
+#include "Sentient/SentientManager.h"
+#include "Minecraft.World/IntCache.h"
+#include "Minecraft.Client/Textures.h"
 #include "Resource.h"
-#include "..\..\Minecraft.World\compression.h"
-#include "..\..\Minecraft.World\OldChunkStorage.h"
+#include "Minecraft.World/compression.h"
+#include "Minecraft.World/OldChunkStorage.h"
 #include "PS3\PS3Extras\EdgeZLib.h"
 #include "C4JThread_SPU.h"
 #include "Common\Network\Sony\SQRNetworkManager.h"
@@ -961,10 +961,10 @@ int main()
 	}
 	else
 	{
-		StorageManager.SetGameSaveFolderTitle((WCHAR *)app.GetString(IDS_GAMENAME));//"Minecraft: PlayStation®3 Edition");//GAMENAME);
+		StorageManager.SetGameSaveFolderTitle((WCHAR *)app.GetString(IDS_GAMENAME));//"Minecraft: PlayStation3 Edition");//GAMENAME);
 	}
-	StorageManager.SetSaveCacheFolderTitle((WCHAR *)app.GetString(IDS_SAVECACHEFILE));//"Minecraft: PlayStation®3 Edition");//GAMENAME);
-	StorageManager.SetOptionsFolderTitle((WCHAR *)app.GetString(IDS_OPTIONSFILE));//"Minecraft: PlayStation®3 Edition");//GAMENAME);
+	StorageManager.SetSaveCacheFolderTitle((WCHAR *)app.GetString(IDS_SAVECACHEFILE));//"Minecraft: PlayStation3 Edition");//GAMENAME);
+	StorageManager.SetOptionsFolderTitle((WCHAR *)app.GetString(IDS_OPTIONSFILE));//"Minecraft: PlayStation3 Edition");//GAMENAME);
 	StorageManager.SetGameSaveFolderPrefix(app.GetSaveFolderPrefix());
 	StorageManager.SetMaxSaves(99);
 	byteArray baOptionsIcon = app.getArchiveFile(L"DefaultOptionsImage320x176.png");

@@ -2,7 +2,7 @@
 //
 
 #include "stdafx.h"
-#include "..\XUI\XUI_Death.h"
+#include "XUI_Death.h"
 #include <assert.h>
 <<<<<<< HEAD
 #include <Minecraft.World/AABB.h>
@@ -23,23 +23,23 @@
 #include <LocalPlayer.h>
 #include <Minecraft.World/compression.h>
 =======
-#include "..\..\..\Minecraft.World\AABB.h"
-#include "..\..\..\Minecraft.World\Vec3.h"
-#include "..\..\..\Minecraft.World\net.minecraft.stats.h"
-#include "..\..\..\Minecraft.Client\StatsCounter.h"
-#include "..\..\..\Minecraft.World\Entity.h"
-#include "..\..\..\Minecraft.Client\MultiplayerLocalPlayer.h"
-#include "..\..\..\Minecraft.World\Level.h"
-#include "..\..\..\Minecraft.World\ChunkSource.h"
-#include "..\..\..\Minecraft.Client\ProgressRenderer.h"
-#include "..\..\..\Minecraft.Client\GameRenderer.h"
-#include "..\..\..\Minecraft.Client\LevelRenderer.h"
-#include "..\..\..\Minecraft.World\Pos.h"
-#include "..\..\..\Minecraft.World\Dimension.h"
-#include "..\..\Minecraft.h"
-#include "..\..\Options.h"
-#include "..\..\LocalPlayer.h"
-#include "..\..\..\Minecraft.World\compression.h"
+#include "Minecraft.World/AABB.h"
+#include "Minecraft.World/Vec3.h"
+#include "Minecraft.World/net.minecraft.stats.h"
+#include "Minecraft.Client/StatsCounter.h"
+#include "Minecraft.World/Entity.h"
+#include "Minecraft.Client/MultiPlayerLocalPlayer.h"
+#include "Minecraft.World/Level.h"
+#include "Minecraft.World/ChunkSource.h"
+#include "Minecraft.Client/ProgressRenderer.h"
+#include "Minecraft.Client/GameRenderer.h"
+#include "Minecraft.Client/LevelRenderer.h"
+#include "Minecraft.World/Pos.h"
+#include "Minecraft.World/Dimension.h"
+#include "Minecraft.Client/Minecraft.h"
+#include "Minecraft.Client/Options.h"
+#include "Minecraft.Client/LocalPlayer.h"
+#include "Minecraft.World/compression.h"
 >>>>>>> parent of fef5c7b0 (the reformatting, pt 1)
 //----------------------------------------------------------------------------------
 // Performs initialization tasks - retrieves controls.

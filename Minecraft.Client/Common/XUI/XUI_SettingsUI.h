@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../media/xuiscene_settings_UI.h"
+#include "Minecraft.Client/Common/Media/xuiscene_settings_UI.h"
 #include "XUI_Ctrl_SliderWrapper.h"
 #include "XUI_CustomMessages.h"
 

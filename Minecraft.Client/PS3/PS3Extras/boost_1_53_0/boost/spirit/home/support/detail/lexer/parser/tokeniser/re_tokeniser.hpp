@@ -10,10 +10,10 @@
 #include <cstring>
 #include <map>
 #include "num_token.hpp"
-#include "../../runtime_error.hpp"
-#include "../../size_t.hpp"
+#include "Minecraft.Client/PS3/PS3Extras/boost_1_53_0/boost/spirit/home/support/detail/lexer/runtime_error.hpp"
+#include "Minecraft.Client/PS3/PS3Extras/boost_1_53_0/boost/spirit/home/support/detail/lexer/size_t.hpp"
 #include <sstream>
-#include "../../string_token.hpp"
+#include "Minecraft.Client/PS3/PS3Extras/boost_1_53_0/boost/spirit/home/support/detail/lexer/string_token.hpp"
 #include "re_tokeniser_helper.hpp"
 
 namespace boost

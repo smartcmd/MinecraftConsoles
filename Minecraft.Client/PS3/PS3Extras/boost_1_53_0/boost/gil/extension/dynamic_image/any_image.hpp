@@ -22,7 +22,7 @@
 ////////////////////////////////////////////////////////////////////////////////////////
 
 #include "any_image_view.hpp"
-#include "../../image.hpp"
+#include "Minecraft.Client/PS3/PS3Extras/boost_1_53_0/boost/gil/image.hpp"
 
 //#ifdef _MSC_VER
 //#pragma warning(push)

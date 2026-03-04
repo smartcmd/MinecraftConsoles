@@ -6,7 +6,7 @@
 #ifndef BOOST_LEXER_PTR_VECTOR_HPP
 #define BOOST_LEXER_PTR_VECTOR_HPP
 
-#include "../size_t.hpp"
+#include "Minecraft.Client/PS3/PS3Extras/boost_1_53_0/boost/spirit/home/support/detail/lexer/size_t.hpp"
 #include <vector>
 
 namespace boost

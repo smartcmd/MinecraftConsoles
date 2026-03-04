@@ -7,9 +7,9 @@
 #define BOOST_LEXER_EQUIVSET_HPP
 
 #include <algorithm>
-#include "../parser/tree/node.hpp"
+#include "Minecraft.Client/PS3/PS3Extras/boost_1_53_0/boost/spirit/home/support/detail/lexer/parser/tree/node.hpp"
 #include <set>
-#include "../size_t.hpp"
+#include "Minecraft.Client/PS3/PS3Extras/boost_1_53_0/boost/spirit/home/support/detail/lexer/size_t.hpp"
 
 namespace boost
 {

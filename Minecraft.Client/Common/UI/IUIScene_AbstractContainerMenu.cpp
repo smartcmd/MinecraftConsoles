@@ -10,12 +10,12 @@
 #include <MultiPlayerLocalPlayer.h>
 #include <Minecraft.h>
 =======
-#include "..\..\..\Minecraft.World\net.minecraft.world.inventory.h"
-#include "..\..\..\Minecraft.World\net.minecraft.world.item.h"
-#include "..\..\..\Minecraft.World\net.minecraft.world.item.crafting.h"
-#include "..\..\..\Minecraft.World\net.minecraft.world.level.tile.entity.h"
-#include "..\..\MultiplayerLocalPlayer.h"
-#include "..\..\Minecraft.h"
+#include "Minecraft.World/net.minecraft.world.inventory.h"
+#include "Minecraft.World/net.minecraft.world.item.h"
+#include "Minecraft.World/net.minecraft.world.item.crafting.h"
+#include "Minecraft.World/net.minecraft.world.level.tile.entity.h"
+#include "Minecraft.Client/MultiPlayerLocalPlayer.h"
+#include "Minecraft.Client/Minecraft.h"
 >>>>>>> parent of fef5c7b0 (the reformatting, pt 1)
 
 #ifdef __ORBIS__

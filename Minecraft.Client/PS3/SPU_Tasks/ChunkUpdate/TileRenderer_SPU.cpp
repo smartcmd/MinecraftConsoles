@@ -25,7 +25,7 @@
 #include <assert.h>
 
 #ifdef SN_TARGET_PS3_SPU
-#include "..\Common\spu_assert.h"
+#include "Minecraft.Client/PS3/SPU_Tasks/Common/spu_assert.h"
 #endif 
 
 static const float MATH_PI = 3.141592654f;

@@ -3,7 +3,7 @@
 <<<<<<< HEAD
 #include <media/xuiscene_reinstall.h>
 =======
-#include "../media/xuiscene_Reinstall.h"
+#include "Minecraft.Client/Common/Media/xuiscene_reinstall.h"
 >>>>>>> parent of fef5c7b0 (the reformatting, pt 1)
 
 #define BUTTON_REINSTALL_THEME		0

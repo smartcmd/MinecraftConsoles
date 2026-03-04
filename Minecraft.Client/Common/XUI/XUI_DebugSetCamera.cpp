@@ -1,16 +1,16 @@
 #include "stdafx.h"
-#include "..\..\..\Minecraft.World\StringHelpers.h"
+#include "Minecraft.World/StringHelpers.h"
 #include "XUI_DebugSetCamera.h"
-#include "..\..\..\Minecraft.World\ChunkSource.h"
+#include "Minecraft.World/ChunkSource.h"
 
-// #include "..\..\Xbox\4JLibs\inc\4J_Input.h"
+#include "Minecraft.Client/Xbox/4JLibs/inc/4J_Input.h"
 
 <<<<<<< HEAD
 #include <Minecraft.h>
 #include <MultiPlayerLocalPlayer.h>
 =======
-#include "..\..\Minecraft.h"
-#include "..\..\MultiplayerLocalPlayer.h"
+#include "Minecraft.Client/Minecraft.h"
+#include "Minecraft.Client/MultiPlayerLocalPlayer.h"
 >>>>>>> parent of fef5c7b0 (the reformatting, pt 1)
 
 #ifndef _CONTENT_PACKAGE

@@ -1,6 +1,6 @@
 #pragma once
 using namespace std;
-#include "../media/xuiscene_ingameinfo.h"
+#include "Minecraft.Client/Common/Media/xuiscene_ingameinfo.h"
 #include "XUI_CustomMessages.h"
 
 class INetworkPlayer;

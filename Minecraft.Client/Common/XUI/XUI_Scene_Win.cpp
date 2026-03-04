@@ -11,13 +11,13 @@
 #include <Minecraft.World/StringHelpers.h>
 #include <MultiPlayerLocalPlayer.h>
 =======
-#include "..\..\Minecraft.h"
-#include "..\..\Common\Tutorial\TutorialMode.h"
-#include "..\..\Font.h"
-#include "..\..\..\Minecraft.World\Random.h"
-#include "..\..\..\Minecraft.World\SharedConstants.h"
-#include "..\..\..\Minecraft.World\StringHelpers.h"
-#include "..\..\MultiplayerLocalPlayer.h"
+#include "Minecraft.Client/Minecraft.h"
+#include "Minecraft.Client/Common/Tutorial/TutorialMode.h"
+#include "Minecraft.Client/Font.h"
+#include "Minecraft.World/Random.h"
+#include "Minecraft.World/SharedConstants.h"
+#include "Minecraft.World/StringHelpers.h"
+#include "Minecraft.Client/MultiPlayerLocalPlayer.h"
 >>>>>>> parent of fef5c7b0 (the reformatting, pt 1)
 #include "XUI_Scene_Win.h"
 

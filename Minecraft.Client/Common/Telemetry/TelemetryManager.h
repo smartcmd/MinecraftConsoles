@@ -1,6 +1,6 @@
 #pragma once
 
-#include "..\..\Common\UI\UIEnums.h"
+#include "Minecraft.Client/Common/UI/UIEnums.h"
 
 class CTelemetryManager
 {

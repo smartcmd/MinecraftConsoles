@@ -1,8 +1,8 @@
 #pragma once
 using namespace std;
-#include "..\Media\xuiscene_anvil.h"
+#include "Minecraft.Client/Common/Media/xuiscene_anvil.h"
 #include "XUI_Scene_AbstractContainer.h"
-#include "..\UI\IUIScene_AnvilMenu.h"
+#include "Minecraft.Client/Common/UI/IUIScene_AnvilMenu.h"
 #include "Common\XUI\XUI_Ctrl_4JEdit.h"
 
 #define ANVIL_UPDATE_TIMER_ID (10)

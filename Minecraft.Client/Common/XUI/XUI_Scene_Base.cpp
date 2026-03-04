@@ -9,25 +9,25 @@
 #include <Minecraft.World/net.minecraft.stats.h>
 #include <Minecraft.h>
 =======
-#include "..\..\MultiplayerLevel.h"
-#include "..\..\MultiplayerLocalPlayer.h"
-#include "..\..\StatsCounter.h"
-#include "..\..\..\Minecraft.World\StringHelpers.h"
-#include "..\..\..\Minecraft.World\net.minecraft.stats.h"
-#include "..\..\Minecraft.h"
+#include "Minecraft.Client/MultiPlayerLevel.h"
+#include "Minecraft.Client/MultiPlayerLocalPlayer.h"
+#include "Minecraft.Client/StatsCounter.h"
+#include "Minecraft.World/StringHelpers.h"
+#include "Minecraft.World/net.minecraft.stats.h"
+#include "Minecraft.Client/Minecraft.h"
 >>>>>>> parent of fef5c7b0 (the reformatting, pt 1)
 
-#include "..\..\..\Minecraft.World\net.minecraft.world.level.h"
-#include "..\..\..\Minecraft.World\LevelData.h"
+#include "Minecraft.World/net.minecraft.world.level.h"
+#include "Minecraft.World/LevelData.h"
 #include "XUI_CustomMessages.h"
-#include "..\..\..\Minecraft.World\Dimension.h"
-#include "..\..\..\Minecraft.World\SharedConstants.h"
-#include "..\..\GameMode.h"
-#include "..\..\EnderDragonRenderer.h"
-#include "..\..\..\Minecraft.World\net.minecraft.world.entity.boss.enderdragon.h"
-#include "..\..\TexturePackRepository.h"
-#include "..\..\TexturePack.h"
-#include "..\..\DLCTexturePack.h"
+#include "Minecraft.World/Dimension.h"
+#include "Minecraft.World/SharedConstants.h"
+#include "Minecraft.Client/GameMode.h"
+#include "Minecraft.Client/EnderDragonRenderer.h"
+#include "Minecraft.World/net.minecraft.world.entity.boss.enderdragon.h"
+#include "Minecraft.Client/TexturePackRepository.h"
+#include "Minecraft.Client/TexturePack.h"
+#include "Minecraft.Client/DLCTexturePack.h"
 
 #define PRESS_START_TIMER 0
 

@@ -3,7 +3,7 @@
 <<<<<<< HEAD
 #include <media/xuiscene_death.h>
 =======
-#include "../media/xuiscene_Death.h"
+#include "Minecraft.Client/Common/Media/xuiscene_death.h"
 >>>>>>> parent of fef5c7b0 (the reformatting, pt 1)
 #include "XUI_CustomMessages.h"
 

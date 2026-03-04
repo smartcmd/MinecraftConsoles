@@ -22,7 +22,7 @@
 ///
 ////////////////////////////////////////////////////////////////////////////////////////
 
-#include "../../gil_all.hpp"
+#include "Minecraft.Client/PS3/PS3Extras/boost_1_53_0/boost/gil/gil_all.hpp"
 #include "algorithm.hpp"
 #include "any_image.hpp"
 #include "apply_operation.hpp"

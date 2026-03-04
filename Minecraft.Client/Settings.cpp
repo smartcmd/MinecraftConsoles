@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "Settings.h"
-#include "..\Minecraft.World\StringHelpers.h"
+#include "Minecraft.World/StringHelpers.h"
 
 // 4J - TODO - serialise/deserialise from file
 Settings::Settings(File *file)

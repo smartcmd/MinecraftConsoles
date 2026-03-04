@@ -2,14 +2,14 @@
 #include "UI.h"
 #include "UIScene_ContainerMenu.h"
 
-#include "..\..\..\Minecraft.World\net.minecraft.world.inventory.h"
-#include "..\..\..\Minecraft.World\net.minecraft.world.item.h"
-#include "..\..\..\Minecraft.World\net.minecraft.stats.h"
-#include "..\..\LocalPlayer.h"
-#include "..\..\Minecraft.h"
-#include "..\Tutorial\Tutorial.h"
-#include "..\Tutorial\TutorialMode.h"
-#include "..\Tutorial\TutorialEnum.h"
+#include "Minecraft.World/net.minecraft.world.inventory.h"
+#include "Minecraft.World/net.minecraft.world.item.h"
+#include "Minecraft.World/net.minecraft.stats.h"
+#include "Minecraft.Client/LocalPlayer.h"
+#include "Minecraft.Client/Minecraft.h"
+#include "Minecraft.Client/Common/Tutorial/Tutorial.h"
+#include "Minecraft.Client/Common/Tutorial/TutorialMode.h"
+#include "Minecraft.Client/Common/Tutorial/TutorialEnum.h"
 
 UIScene_ContainerMenu::UIScene_ContainerMenu(int iPad, void *_initData, UILayer *parentLayer) : UIScene_AbstractContainerMenu(iPad, parentLayer)
 {

@@ -13,7 +13,7 @@
 #ifndef GIL_DYNAMIC_AT_C_HPP
 #define GIL_DYNAMIC_AT_C_HPP
 
-#include "../../gil_config.hpp"
+#include "Minecraft.Client/PS3/PS3Extras/boost_1_53_0/boost/gil/gil_config.hpp"
 #include <cassert>
 #include <stdexcept>
 #include <boost/mpl/at.hpp>

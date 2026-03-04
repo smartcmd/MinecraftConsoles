@@ -1,13 +1,13 @@
 #include "stdafx.h"
 
-#include "..\..\..\Minecraft.World\net.minecraft.world.inventory.h"
+#include "Minecraft.World/net.minecraft.world.inventory.h"
 
-#include "..\..\..\Minecraft.World\Container.h"
-#include "..\..\..\Minecraft.World\Slot.h"
-#include "..\..\..\Minecraft.World\net.minecraft.world.level.tile.h"
-#include "..\..\..\Minecraft.World\net.minecraft.world.level.tile.entity.h"
-#include "..\..\..\Minecraft.World\net.minecraft.world.item.h"
-#include "..\..\..\Minecraft.World\net.minecraft.world.entity.player.h"
+#include "Minecraft.World/Container.h"
+#include "Minecraft.World/Slot.h"
+#include "Minecraft.World/net.minecraft.world.level.tile.h"
+#include "Minecraft.World/net.minecraft.world.level.tile.entity.h"
+#include "Minecraft.World/net.minecraft.world.item.h"
+#include "Minecraft.World/net.minecraft.world.entity.player.h"
 
 <<<<<<< HEAD
 #include <Minecraft.World/net.minecraft.stats.h>
@@ -16,11 +16,11 @@
 #include <Common/Tutorial/TutorialMode.h>
 #include <Minecraft.h>
 =======
-#include "..\..\..\Minecraft.World\net.minecraft.stats.h"
-#include "..\..\MultiplayerLocalPlayer.h"
-#include "..\..\Common\Tutorial\Tutorial.h"
-#include "..\..\Common\Tutorial\TutorialMode.h"
-#include "..\..\Minecraft.h"
+#include "Minecraft.World/net.minecraft.stats.h"
+#include "Minecraft.Client/MultiPlayerLocalPlayer.h"
+#include "Minecraft.Client/Common/Tutorial/Tutorial.h"
+#include "Minecraft.Client/Common/Tutorial/TutorialMode.h"
+#include "Minecraft.Client/Minecraft.h"
 >>>>>>> parent of fef5c7b0 (the reformatting, pt 1)
 
 #include "XUI_Scene_AbstractContainer.h"
@@ -31,7 +31,7 @@
 <<<<<<< HEAD
 #include <Common/Potion_Macros.h>
 =======
-#include "..\..\Common\Potion_macros.h"
+#include "Minecraft.Client/Common/Potion_Macros.h"
 >>>>>>> parent of fef5c7b0 (the reformatting, pt 1)
 
 //--------------------------------------------------------------------------------------

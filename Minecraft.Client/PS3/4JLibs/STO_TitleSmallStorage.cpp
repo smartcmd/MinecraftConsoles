@@ -18,7 +18,7 @@
 #include <sysutil/sysutil_savedata.h>
 
 #include "STO_TitleSmallStorage.h"
-#include "../Passphrase/ps3__np_conf.h"
+#include "Minecraft.Client/PS3/Passphrase/ps3__np_conf.h"
 
 
 

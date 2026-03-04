@@ -5,15 +5,15 @@
 #include <Minecraft.World/TrapMenu.h>
 #include <MultiPlayerLocalPlayer.h>
 =======
-#include "..\..\..\Minecraft.World\DispenserTileEntity.h"
-#include "..\..\..\Minecraft.World\TrapMenu.h"
-#include "..\..\MultiplayerLocalPlayer.h"
+#include "Minecraft.World/DispenserTileEntity.h"
+#include "Minecraft.World/TrapMenu.h"
+#include "Minecraft.Client/MultiPlayerLocalPlayer.h"
 >>>>>>> parent of fef5c7b0 (the reformatting, pt 1)
 #include "XUI_Ctrl_SlotList.h"
 #include "XUI_Scene_Trap.h"
-#include "..\..\Common\Tutorial\Tutorial.h"
-#include "..\..\Common\Tutorial\TutorialMode.h"
-#include "..\..\Common\Tutorial\TutorialEnum.h"
+#include "Minecraft.Client/Common/Tutorial/Tutorial.h"
+#include "Minecraft.Client/Common/Tutorial/TutorialMode.h"
+#include "Minecraft.Client/Common/Tutorial/TutorialEnum.h"
 
 //--------------------------------------------------------------------------------------
 // Name: CXuiSceneTrap::OnInit

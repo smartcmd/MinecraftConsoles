@@ -9,11 +9,11 @@
 #include <error_dialog.h>
 #include <system_service.h>
 
-#include "../ps4__np_conf.h"
+#include "Minecraft.Client/Orbis/ps4__np_conf.h"
 #include "Orbis_NPToolkit.h"
 #include "SonyVoiceChat_Orbis.h"
 #include "Common\Network\Sony\SonyHttp.h"
-#include "..\..\..\Minecraft.World\C4JThread.h"
+#include "Minecraft.World/C4JThread.h"
 // #include "..\PS3Extras\PS3Strings.h"
 
 

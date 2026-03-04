@@ -1,19 +1,19 @@
 #pragma once
 
-#include "..\..\..\Minecraft.World\SoundTypes.h"
+#include "Minecraft.World/SoundTypes.h"
 
 #ifdef _XBOX
 
 #elif defined (__PS3__)
 #undef __in
 #undef __out
-#include "..\..\PS3\Miles\include\mss.h"
+#include "Minecraft.Client/PS3/Miles/include/mss.h"
 #elif defined (__PSVITA__)
-#include "..\..\PSVITA\Miles\include\mss.h"
+#include "Minecraft.Client/PSVita/Miles/include/mss.h"
 #elif defined _DURANGO
 // 4J Stu - Temp define to get Miles to link, can likely be removed when we get a new version of Miles
 #define _SEKRIT
-#include "..\..\Durango\Miles\include\mss.h"
+#include "Minecraft.Client/Durango/Miles/include/mss.h"
 #elif defined _WINDOWS64
 #include <windows64/Miles/include/mss.h>
 #elif defined _CROSS64 
@@ -21,7 +21,7 @@
 #else // PS4
 // 4J Stu - Temp define to get Miles to link, can likely be removed when we get a new version of Miles
 #define _SEKRIT2
-#include "..\..\Orbis\Miles\include\mss.h"
+#include "Minecraft.Client/Orbis/Miles/include/mss.h"
 #endif
 
 typedef struct

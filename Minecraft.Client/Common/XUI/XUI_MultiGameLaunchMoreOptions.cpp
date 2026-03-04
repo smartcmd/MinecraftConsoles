@@ -1,8 +1,8 @@
 #include "stdafx.h"
 #include "XUI_MultiGameCreate.h"
 #include "XUI_MultiGameLaunchMoreOptions.h"
-#include "..\..\TexturePackRepository.h"
-#include "..\..\Minecraft.h"
+#include "Minecraft.Client/TexturePackRepository.h"
+#include "Minecraft.Client/Minecraft.h"
 
 #define GAME_CREATE_ONLINE_TIMER_ID 0
 #define GAME_CREATE_ONLINE_TIMER_TIME 100

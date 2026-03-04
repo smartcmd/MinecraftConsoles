@@ -7,7 +7,7 @@
 #define BOOST_LEXER_END_NODE_HPP
 
 #include "node.hpp"
-#include "../../size_t.hpp"
+#include "Minecraft.Client/PS3/PS3Extras/boost_1_53_0/boost/spirit/home/support/detail/lexer/size_t.hpp"
 
 namespace boost
 {

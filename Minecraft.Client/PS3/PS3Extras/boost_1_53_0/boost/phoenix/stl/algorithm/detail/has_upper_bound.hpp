@@ -16,10 +16,10 @@
 #define BOOST_PHOENIX_HAS_UPPER_BOUND_EN_14_12_2004
 
 #include <boost/mpl/or.hpp>
-#include "./is_std_map.hpp"
-#include "./is_std_set.hpp"
-#include "./is_std_hash_map.hpp"
-#include "./is_std_hash_set.hpp"
+#include "is_std_map.hpp"
+#include "is_std_set.hpp"
+#include "is_std_hash_map.hpp"
+#include "is_std_hash_set.hpp"
 
 namespace boost
 {

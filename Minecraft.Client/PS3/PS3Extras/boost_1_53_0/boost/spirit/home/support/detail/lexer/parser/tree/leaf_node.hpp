@@ -6,9 +6,9 @@
 #ifndef BOOST_LEXER_LEAF_NODE_HPP
 #define BOOST_LEXER_LEAF_NODE_HPP
 
-#include "../../consts.hpp" // null_token
+#include "Minecraft.Client/PS3/PS3Extras/boost_1_53_0/boost/spirit/home/support/detail/lexer/consts.hpp"
 #include "node.hpp"
-#include "../../size_t.hpp"
+#include "Minecraft.Client/PS3/PS3Extras/boost_1_53_0/boost/spirit/home/support/detail/lexer/size_t.hpp"
 
 namespace boost
 {

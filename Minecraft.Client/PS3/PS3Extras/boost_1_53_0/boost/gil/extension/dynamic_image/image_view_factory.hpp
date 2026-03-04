@@ -23,7 +23,7 @@
 */
 
 #include "any_image_view.hpp"
-#include "../../image_view_factory.hpp"
+#include "Minecraft.Client/PS3/PS3Extras/boost_1_53_0/boost/gil/image_view_factory.hpp"
 
 namespace boost { namespace gil {
 

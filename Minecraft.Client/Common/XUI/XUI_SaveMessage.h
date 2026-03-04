@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../media/xuiscene_savemessage.h"
+#include "Minecraft.Client/Common/Media/xuiscene_savemessage.h"
 
 class CScene_SaveMessage : public CXuiSceneImpl
 {

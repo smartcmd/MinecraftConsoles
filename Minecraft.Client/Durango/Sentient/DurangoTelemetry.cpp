@@ -10,7 +10,7 @@
 #include "Common\Network\GameNetworkManager.h"
 #include "MultiPlayerLocalPlayer.h"
 
-#include "..\ServiceConfig\Events-XBLA.8-149E11AEEvents.h"
+#include "Minecraft.Client/Durango/ServiceConfig/Events-XBLA.8-149E11AEEvents.h"
 
 #include "DurangoTelemetry.h"
 

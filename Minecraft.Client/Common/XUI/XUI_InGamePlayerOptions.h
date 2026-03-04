@@ -1,5 +1,5 @@
 #pragma once
-#include "..\Media\xuiscene_ingame_player_options.h"
+#include "Minecraft.Client/Common/Media/xuiscene_ingame_player_options.h"
 
 class CScene_InGamePlayerOptions : public CXuiSceneImpl
 {

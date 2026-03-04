@@ -13,7 +13,7 @@
 
 #include "PSVita\PSVitaExtras\Conf.h"
 #include "Common\Network\Sony\SonyHttp.h"
-#include "..\..\..\Minecraft.World\C4JThread.h"
+#include "Minecraft.World/C4JThread.h"
 
 
 #define MATCHING_PORT						(1)

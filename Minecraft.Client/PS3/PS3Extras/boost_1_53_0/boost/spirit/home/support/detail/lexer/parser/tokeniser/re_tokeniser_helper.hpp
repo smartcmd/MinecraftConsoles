@@ -6,10 +6,10 @@
 #ifndef BOOST_LEXER_RE_TOKENISER_HELPER_H
 #define BOOST_LEXER_RE_TOKENISER_HELPER_H
 
-#include "../../char_traits.hpp"
+#include "Minecraft.Client/PS3/PS3Extras/boost_1_53_0/boost/spirit/home/support/detail/lexer/char_traits.hpp"
 // strlen()
 #include <cstring>
-#include "../../size_t.hpp"
+#include "Minecraft.Client/PS3/PS3Extras/boost_1_53_0/boost/spirit/home/support/detail/lexer/size_t.hpp"
 #include "re_tokeniser_state.hpp"
 
 namespace boost

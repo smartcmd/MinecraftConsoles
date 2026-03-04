@@ -4,12 +4,12 @@
 
 #include "base64.h"
 
-#include "..\PS3_App.h"
-#include "..\..\Common\Consoles_App.h"
+#include "Minecraft.Client/PS3/PS3_App.h"
+#include "Minecraft.Client/Common/Consoles_App.h"
 
 #include "Common\Network\Sony\SQRNetworkManager.h"
 
-#include "..\..\..\Minecraft.World\StringHelpers.h"
+#include "Minecraft.World/StringHelpers.h"
 
 #include <cstdlib>
 

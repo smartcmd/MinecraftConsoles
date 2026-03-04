@@ -4,11 +4,11 @@
 #include <Minecraft.h>
 #include <MultiPlayerLocalPlayer.h>
 =======
-#include "..\..\Minecraft.h"
-#include "..\..\MultiplayerLocalPlayer.h"
+#include "Minecraft.Client/Minecraft.h"
+#include "Minecraft.Client/MultiPlayerLocalPlayer.h"
 >>>>>>> parent of fef5c7b0 (the reformatting, pt 1)
 #include "AreaConstraint.h"
-#include "..\..\..\Minecraft.World\AABB.h"
+#include "Minecraft.World/AABB.h"
 
 AreaConstraint::AreaConstraint( int descriptionId, double x0, double y0, double z0, double x1, double y1, double z1, bool contains /*= true*/, bool restrictsMovement /*=true*/ )
 	: TutorialConstraint( descriptionId )

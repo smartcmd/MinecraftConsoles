@@ -2,7 +2,7 @@
 #include "ModelPart.h"
 #include "WitchModel.h"
 #include "VillagerModel.h"
-#include "../Minecraft.World/Mth.h"
+#include "Minecraft.World/Mth.h"
 
 WitchModel::WitchModel(float g) : VillagerModel(g, 0, 64, 128)
 {

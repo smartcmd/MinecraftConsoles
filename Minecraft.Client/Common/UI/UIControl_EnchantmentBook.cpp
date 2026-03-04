@@ -1,13 +1,13 @@
 #include "stdafx.h"
 #include "UI.h"
 #include "UIControl_EnchantmentBook.h"
-#include "..\..\Minecraft.h"
-#include "..\..\TileEntityRenderDispatcher.h"
-#include "..\..\EnchantTableRenderer.h"
-#include "..\..\Lighting.h"
-#include "..\..\BookModel.h"
-#include "..\..\..\Minecraft.World\net.minecraft.world.level.tile.entity.h"
-#include "..\..\..\Minecraft.World\net.minecraft.world.inventory.h"
+#include "Minecraft.Client/Minecraft.h"
+#include "Minecraft.Client/TileEntityRenderDispatcher.h"
+#include "Minecraft.Client/EnchantTableRenderer.h"
+#include "Minecraft.Client/Lighting.h"
+#include "Minecraft.Client/BookModel.h"
+#include "Minecraft.World/net.minecraft.world.level.tile.entity.h"
+#include "Minecraft.World/net.minecraft.world.inventory.h"
 
 UIControl_EnchantmentBook::UIControl_EnchantmentBook()
 {

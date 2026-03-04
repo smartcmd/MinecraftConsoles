@@ -8,7 +8,7 @@
 // sign that the operators aren't properly matched.
 // =================================================================================================================================
 
-#include "../../Server/HeapInspectorServer.h"
+#include "Minecraft.Client/PS3/PS3Extras/HeapInspector/Server/HeapInspectorServer.h"
 #include <stdlib.h>
 #include <new>
 

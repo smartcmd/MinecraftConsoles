@@ -1,8 +1,8 @@
 #pragma once
-#include "..\Media\xuiscene_container.h"
+#include "Minecraft.Client/Common/Media/xuiscene_container.h"
 #include "XUI_Scene_AbstractContainer.h"
 #include "XUI_CustomMessages.h"
-#include "..\UI\IUIScene_ContainerMenu.h"
+#include "Minecraft.Client/Common/UI/IUIScene_ContainerMenu.h"
 
 //--------------------------------------------------------------------------------------
 // Scene implementation class.

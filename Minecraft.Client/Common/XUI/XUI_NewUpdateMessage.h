@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../media\xuiscene_NewUpdateMessage.h"
+#include "Minecraft.Client/Common/Media/xuiscene_NewUpdateMessage.h"
 
 class CScene_NewUpdateMessage : public CXuiSceneImpl
 {

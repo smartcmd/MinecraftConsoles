@@ -7,9 +7,9 @@
 #include <MultiPlayerLocalPlayer.h>
 #include <Minecraft.World/StringHelpers.h>
 =======
-#include "..\..\Minecraft.h"
-#include "..\..\MultiplayerLocalPlayer.h"
-#include "..\..\..\Minecraft.World\StringHelpers.h"
+#include "Minecraft.Client/Minecraft.h"
+#include "Minecraft.Client/MultiPlayerLocalPlayer.h"
+#include "Minecraft.World/StringHelpers.h"
 >>>>>>> parent of fef5c7b0 (the reformatting, pt 1)
 
 UIScene_EndPoem::UIScene_EndPoem(int iPad, void *initData, UILayer *parentLayer) : UIScene(iPad, parentLayer)

@@ -10,10 +10,10 @@
 #include "tree/end_node.hpp"
 #include "tree/iteration_node.hpp"
 #include "tree/leaf_node.hpp"
-#include "../runtime_error.hpp"
+#include "Minecraft.Client/PS3/PS3Extras/boost_1_53_0/boost/spirit/home/support/detail/lexer/runtime_error.hpp"
 #include "tree/selection_node.hpp"
 #include "tree/sequence_node.hpp"
-#include "../size_t.hpp"
+#include "Minecraft.Client/PS3/PS3Extras/boost_1_53_0/boost/spirit/home/support/detail/lexer/size_t.hpp"
 #include "tokeniser/re_tokeniser.hpp"
 
 namespace boost

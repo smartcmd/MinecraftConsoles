@@ -1,7 +1,7 @@
 #include "stdafx.h"
 
 #include "SonyCommerce_PS3.h"
-#include "..\PS3Extras\ShutdownManager.h"
+#include "Minecraft.Client/PS3/PS3Extras/ShutdownManager.h"
 #include <sys/event.h>
 
 

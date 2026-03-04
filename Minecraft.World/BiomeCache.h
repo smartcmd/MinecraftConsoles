@@ -1,5 +1,5 @@
 #pragma once
-#include "..\Minecraft.World\JavaIntHash.h"
+#include "JavaIntHash.h"
 
 class BiomeCache
 {

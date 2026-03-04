@@ -1,5 +1,5 @@
-#include "../../../Server/HeapInspectorServer.h"
-#include "../../../Server/PS3/HeapHooks.hpp"
+#include "Minecraft.Client/PS3/PS3Extras/HeapInspector/Server/HeapInspectorServer.h"
+#include "Minecraft.Client/PS3/PS3Extras/HeapInspector/Server/PS3/HeapHooks.hpp"
 
 void RunHeapInspectorServer();
 

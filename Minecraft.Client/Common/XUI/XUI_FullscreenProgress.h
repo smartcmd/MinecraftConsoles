@@ -1,6 +1,6 @@
 #pragma once 
-#include "../media/xuiscene_fullscreenprogress.h"
-#include "..\..\..\Minecraft.World\C4JThread.h"
+#include "Minecraft.Client/Common/Media/xuiscene_fullscreenprogress.h"
+#include "Minecraft.World/C4JThread.h"
 
 #define ERROR_FULLSCREENPROGRESS_
 

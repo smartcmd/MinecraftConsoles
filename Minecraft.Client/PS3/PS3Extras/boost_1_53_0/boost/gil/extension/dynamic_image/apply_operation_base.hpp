@@ -13,8 +13,8 @@
 #ifndef GIL_APPLY_OPERATION_BASE_HPP
 #define GIL_APPLY_OPERATION_BASE_HPP
 
-#include "../../gil_config.hpp"
-#include "../../utilities.hpp"
+#include "Minecraft.Client/PS3/PS3Extras/boost_1_53_0/boost/gil/gil_config.hpp"
+#include "Minecraft.Client/PS3/PS3Extras/boost_1_53_0/boost/gil/utilities.hpp"
 #include <boost/mpl/begin.hpp>
 #include <boost/mpl/next.hpp>
 #include <boost/mpl/deref.hpp>

@@ -7,8 +7,8 @@
 #define BOOST_LEXER_NUM_TOKEN_HPP
 
 #include <boost/config.hpp>
-#include "../../consts.hpp" // null_token
-#include "../../size_t.hpp"
+#include "Minecraft.Client/PS3/PS3Extras/boost_1_53_0/boost/spirit/home/support/detail/lexer/consts.hpp"
+#include "Minecraft.Client/PS3/PS3Extras/boost_1_53_0/boost/spirit/home/support/detail/lexer/size_t.hpp"
 #include <boost/detail/workaround.hpp>
 
 namespace boost

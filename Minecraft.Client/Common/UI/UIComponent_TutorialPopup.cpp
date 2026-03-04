@@ -8,11 +8,11 @@
 #include <Minecraft.h>
 #include <Minecraft.World/net.minecraft.world.level.tile.h>
 =======
-#include "..\..\Common\Tutorial\Tutorial.h"
-#include "..\..\..\Minecraft.World\StringHelpers.h"
-#include "..\..\MultiplayerLocalPlayer.h"
-#include "..\..\Minecraft.h"
-#include "..\..\..\Minecraft.World\net.minecraft.world.level.tile.h"
+#include "Minecraft.Client/Common/Tutorial/Tutorial.h"
+#include "Minecraft.World/StringHelpers.h"
+#include "Minecraft.Client/MultiPlayerLocalPlayer.h"
+#include "Minecraft.Client/Minecraft.h"
+#include "Minecraft.World/net.minecraft.world.level.tile.h"
 >>>>>>> parent of fef5c7b0 (the reformatting, pt 1)
 
 UIComponent_TutorialPopup::UIComponent_TutorialPopup(int iPad, void *initData, UILayer *parentLayer) : UIScene(iPad, parentLayer)

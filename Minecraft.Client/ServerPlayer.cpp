@@ -9,28 +9,28 @@
 #include "PlayerList.h"
 #include "MultiPlayerLevel.h"
 
-#include "..\Minecraft.World\net.minecraft.network.packet.h"
-#include "..\Minecraft.World\net.minecraft.world.damagesource.h"
-#include "..\Minecraft.World\net.minecraft.world.inventory.h"
-#include "..\Minecraft.World\net.minecraft.world.level.h"
-#include "..\Minecraft.World\net.minecraft.world.level.storage.h"
-#include "..\Minecraft.World\net.minecraft.world.level.dimension.h"
-#include "..\Minecraft.World\net.minecraft.world.entity.projectile.h"
-#include "..\Minecraft.World\net.minecraft.world.entity.h"
-#include "..\Minecraft.World\net.minecraft.world.entity.animal.h"
-#include "..\Minecraft.World\net.minecraft.world.item.h"
-#include "..\Minecraft.World\net.minecraft.world.item.trading.h"
-#include "..\Minecraft.World\net.minecraft.world.entity.item.h"
-#include "..\Minecraft.World\net.minecraft.world.level.tile.entity.h"
-#include "..\Minecraft.World\net.minecraft.world.scores.h"
-#include "..\Minecraft.World\net.minecraft.world.scores.criteria.h"
-#include "..\Minecraft.World\net.minecraft.stats.h"
-#include "..\Minecraft.World\net.minecraft.locale.h"
+#include "Minecraft.World/net.minecraft.network.packet.h"
+#include "Minecraft.World/net.minecraft.world.damagesource.h"
+#include "Minecraft.World/net.minecraft.world.inventory.h"
+#include "Minecraft.World/net.minecraft.world.level.h"
+#include "Minecraft.World/net.minecraft.world.level.storage.h"
+#include "Minecraft.World/net.minecraft.world.level.dimension.h"
+#include "Minecraft.World/net.minecraft.world.entity.projectile.h"
+#include "Minecraft.World/net.minecraft.world.entity.h"
+#include "Minecraft.World/net.minecraft.world.entity.animal.h"
+#include "Minecraft.World/net.minecraft.world.item.h"
+#include "Minecraft.World/net.minecraft.world.item.trading.h"
+#include "Minecraft.World/net.minecraft.world.entity.item.h"
+#include "Minecraft.World/net.minecraft.world.level.tile.entity.h"
+#include "Minecraft.World/net.minecraft.world.scores.h"
+#include "Minecraft.World/net.minecraft.world.scores.criteria.h"
+#include "Minecraft.World/net.minecraft.stats.h"
+#include "Minecraft.World/net.minecraft.locale.h"
 
-#include "..\Minecraft.World\Pos.h"
-#include "..\Minecraft.World\Random.h"
+#include "Minecraft.World/Pos.h"
+#include "Minecraft.World/Random.h"
 
-#include "..\Minecraft.World\LevelChunk.h"
+#include "Minecraft.World/LevelChunk.h"
 #include "LevelRenderer.h"
 
 
@@ -477,7 +477,7 @@ void ServerPlayer::doChunkSendingTick(bool dontDelayChunks)
 					for (unsigned int i = 0; i < tes->size(); i++)
 					{
 						// 4J Stu - Added delay param to ensure that these arrive after the BRUPs from above
-						// Fix for #9169 - ART : Sign text is replaced with the words “Awaiting approval”.
+						// Fix for #9169 - ART : Sign text is replaced with the words Awaiting approval.
 						broadcast(tes->at(i), !connection->isLocal() && !dontDelayChunks);
 					}
 					delete tes;

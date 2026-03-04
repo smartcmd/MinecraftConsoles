@@ -7,8 +7,8 @@
 #define BOOST_LEXER_CHARSET_HPP
 
 #include <set>
-#include "../size_t.hpp"
-#include "../string_token.hpp"
+#include "Minecraft.Client/PS3/PS3Extras/boost_1_53_0/boost/spirit/home/support/detail/lexer/size_t.hpp"
+#include "Minecraft.Client/PS3/PS3Extras/boost_1_53_0/boost/spirit/home/support/detail/lexer/string_token.hpp"
 
 namespace boost
 {

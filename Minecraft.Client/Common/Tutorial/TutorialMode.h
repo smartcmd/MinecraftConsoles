@@ -1,7 +1,7 @@
 #pragma once
 using namespace std;
 
-#include "..\..\MultiPlayerGameMode.h"
+#include "Minecraft.Client/MultiPlayerGameMode.h"
 #include "Tutorial.h"
 
 class TutorialMode : public MultiPlayerGameMode

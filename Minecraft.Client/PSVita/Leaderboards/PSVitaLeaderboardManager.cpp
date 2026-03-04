@@ -8,7 +8,7 @@
 #include "Common\Consoles_App.h"
 #include "Common\Network\Sony\SQRNetworkManager.h"
 
-#include "..\..\..\Minecraft.World\StringHelpers.h"
+#include "Minecraft.World/StringHelpers.h"
 
 #include <cstdlib>
 

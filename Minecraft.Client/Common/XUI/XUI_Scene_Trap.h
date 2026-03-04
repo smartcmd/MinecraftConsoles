@@ -1,8 +1,8 @@
 #pragma once
 using namespace std;
-#include "..\Media\xuiscene_trap.h"
+#include "Minecraft.Client/Common/Media/xuiscene_trap.h"
 #include "XUI_Scene_AbstractContainer.h"
-#include "..\UI\IUIScene_DispenserMenu.h"
+#include "Minecraft.Client/Common/UI/IUIScene_DispenserMenu.h"
 #include "XUI_CustomMessages.h"
 
 class Container;

@@ -11,13 +11,13 @@
 #include <DLCTexturePack.h>
 #include <Common/DLC/DLCAudioFile.h>
 =======
-#include "..\Consoles_App.h"
-#include "..\..\MultiplayerLocalPlayer.h"
-#include "..\..\..\Minecraft.World\net.minecraft.world.level.h"
+#include "Minecraft.Client/Common/Consoles_App.h"
+#include "Minecraft.Client/MultiPlayerLocalPlayer.h"
+#include "Minecraft.World/net.minecraft.world.level.h"
 #include "..\..\Minecraft.World\leveldata.h"
 #include "..\..\Minecraft.World\mth.h"
-#include "..\..\TexturePackRepository.h"
-#include "..\..\DLCTexturePack.h"
+#include "Minecraft.Client/TexturePackRepository.h"
+#include "Minecraft.Client/DLCTexturePack.h"
 #include "Common\DLC\DLCAudioFile.h"
 >>>>>>> parent of fef5c7b0 (the reformatting, pt 1)
 

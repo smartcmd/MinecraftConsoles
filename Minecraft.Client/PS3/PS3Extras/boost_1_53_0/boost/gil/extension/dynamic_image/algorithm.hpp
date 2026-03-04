@@ -12,7 +12,7 @@
 #ifndef GIL_DYNAMICIMAGE_ALGORITHM_HPP
 #define GIL_DYNAMICIMAGE_ALGORITHM_HPP
 
-#include "../../algorithm.hpp"
+#include "Minecraft.Client/PS3/PS3Extras/boost_1_53_0/boost/gil/algorithm.hpp"
 #include "any_image.hpp"
 #include <boost/bind.hpp>
 

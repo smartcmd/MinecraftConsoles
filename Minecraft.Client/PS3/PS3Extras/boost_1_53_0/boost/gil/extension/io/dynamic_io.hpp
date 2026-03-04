@@ -21,9 +21,9 @@
 
 #include <boost/mpl/at.hpp>
 #include <boost/mpl/size.hpp>
-#include "../../gil_config.hpp"
+#include "Minecraft.Client/PS3/PS3Extras/boost_1_53_0/boost/gil/gil_config.hpp"
 #include "io_error.hpp"
-#include "../dynamic_image/any_image.hpp"
+#include "Minecraft.Client/PS3/PS3Extras/boost_1_53_0/boost/gil/extension/dynamic_image/any_image.hpp"
 
 namespace boost { namespace gil {
 

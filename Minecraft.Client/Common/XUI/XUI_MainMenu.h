@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../media/xuiscene_main.h"
+#include "Minecraft.Client/Common/Media/xuiscene_main.h"
 #include "XUI_CustomMessages.h"
 
 #define BUTTON_PLAYGAME			0

@@ -5,13 +5,13 @@
 #include <Minecraft.h>
 #include <MultiPlayerLocalPlayer.h>
 =======
-#include "..\..\Minecraft.h"
-#include "..\..\MultiplayerLocalPlayer.h"
+#include "Minecraft.Client/Minecraft.h"
+#include "Minecraft.Client/MultiPlayerLocalPlayer.h"
 >>>>>>> parent of fef5c7b0 (the reformatting, pt 1)
 #include "Tutorial.h"
 #include "TutorialConstraints.h"
 #include "InfoTask.h"
-#include "..\..\..\Minecraft.World\Material.h"
+#include "Minecraft.World/Material.h"
 #include "..\..\KeyboardMouseInput.h"
 
 InfoTask::InfoTask(Tutorial *tutorial, int descriptionId, int promptId /*= -1*/, bool requiresUserInput /*= false*/,

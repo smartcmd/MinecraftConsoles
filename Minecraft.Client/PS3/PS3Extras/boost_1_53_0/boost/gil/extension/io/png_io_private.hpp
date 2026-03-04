@@ -21,7 +21,7 @@
 #include <algorithm>
 #include <vector>
 #include <boost/static_assert.hpp>
-#include "../../gil_all.hpp"
+#include "Minecraft.Client/PS3/PS3Extras/boost_1_53_0/boost/gil/gil_all.hpp"
 #include "io_error.hpp"
 #include <png.h>
 

@@ -1,11 +1,11 @@
 #include "stdafx.h"
-#include "..\..\..\Minecraft.World\net.minecraft.world.item.trading.h"
-#include "..\..\..\Minecraft.World\net.minecraft.world.inventory.h"
-#include "..\..\..\Minecraft.World\net.minecraft.world.item.h"
-#include "..\..\..\Minecraft.World\net.minecraft.network.packet.h"
-#include "..\..\Minecraft.h"
-#include "..\..\MultiPlayerLocalPlayer.h"
-#include "..\..\ClientConnection.h"
+#include "Minecraft.World/net.minecraft.world.item.trading.h"
+#include "Minecraft.World/net.minecraft.world.inventory.h"
+#include "Minecraft.World/net.minecraft.world.item.h"
+#include "Minecraft.World/net.minecraft.network.packet.h"
+#include "Minecraft.Client/Minecraft.h"
+#include "Minecraft.Client/MultiPlayerLocalPlayer.h"
+#include "Minecraft.Client/ClientConnection.h"
 #include "IUIScene_TradingMenu.h"
 
 IUIScene_TradingMenu::IUIScene_TradingMenu()
@@ -78,7 +78,7 @@ bool IUIScene_TradingMenu::handleKeyDown(int iPad, int iAction, bool bRepeat)
 					int buyBMatches = player->inventory->countMatches(buyBItem);
 					if( (buyAItem != NULL && buyAMatches >= buyAItem->count) && (buyBItem == NULL || buyBMatches >= buyBItem->count) )
 					{
-						// 4J-JEV: Fix for PS4 #7111: [PATCH 1.12] Trading Librarian villagers for multiple ‘Enchanted Books’ will cause the title to crash.
+						// 4J-JEV: Fix for PS4 #7111: [PATCH 1.12] Trading Librarian villagers for multiple Enchanted Books will cause the title to crash.
 						int actualShopItem = m_activeOffers.at(selectedShopItem).second;
 
 						m_merchant->notifyTrade(activeRecipe);

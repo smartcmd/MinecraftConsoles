@@ -1,7 +1,7 @@
 #pragma once
 
 #include "UIControl.h"
-#include "..\..\Textures.h"
+#include "Minecraft.Client/Textures.h"
 
 class ModelPart;
 class EntityRenderer;

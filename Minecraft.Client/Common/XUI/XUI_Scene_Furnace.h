@@ -1,8 +1,8 @@
 #pragma once
 using namespace std;
-#include "..\Media\xuiscene_furnace.h"
+#include "Minecraft.Client/Common/Media/xuiscene_furnace.h"
 #include "XUI_Scene_AbstractContainer.h"
-#include "..\UI\IUIScene_FurnaceMenu.h"
+#include "Minecraft.Client/Common/UI/IUIScene_FurnaceMenu.h"
 
 class CXuiCtrlSlotList;
 class CXuiCtrlFireProgress;

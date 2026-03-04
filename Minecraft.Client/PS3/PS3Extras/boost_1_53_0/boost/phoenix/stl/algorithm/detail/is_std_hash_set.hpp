@@ -16,7 +16,7 @@
 #define BOOST_PHOENIX_IS_STD_HASH_SET_EN_16_12_2004
 
 #include <boost/mpl/bool.hpp>
-#include "./std_hash_set_fwd.hpp"
+#include "std_hash_set_fwd.hpp"
 
 namespace boost
 {

@@ -1,12 +1,12 @@
 #include "stdafx.h"
 #include "UI.h"
 #include "UIScene_SignEntryMenu.h"
-#include "..\..\Minecraft.h"
-#include "..\..\MultiPlayerLocalPlayer.h"
-#include "..\..\MultiPlayerLevel.h"
-#include "..\..\ClientConnection.h"
-#include "..\..\..\Minecraft.World\net.minecraft.world.level.h"
-#include "..\..\..\Minecraft.World\net.minecraft.world.level.tile.entity.h"
+#include "Minecraft.Client/Minecraft.h"
+#include "Minecraft.Client/MultiPlayerLocalPlayer.h"
+#include "Minecraft.Client/MultiPlayerLevel.h"
+#include "Minecraft.Client/ClientConnection.h"
+#include "Minecraft.World/net.minecraft.world.level.h"
+#include "Minecraft.World/net.minecraft.world.level.tile.entity.h"
 
 UIScene_SignEntryMenu::UIScene_SignEntryMenu(int iPad, void *_initData, UILayer *parentLayer) : UIScene(iPad, parentLayer)
 {

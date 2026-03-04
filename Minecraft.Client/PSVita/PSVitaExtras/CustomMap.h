@@ -6,7 +6,7 @@
 // causing huge stalls.
 // This isn't really a univeral replacement for std::unordered_map and is quite specific to MobSpawner.h
 
-#include "../../../Minecraft.World/ChunkPos.h"
+#include "Minecraft.World/ChunkPos.h"
 
 typedef struct SCustomMapNode
 {

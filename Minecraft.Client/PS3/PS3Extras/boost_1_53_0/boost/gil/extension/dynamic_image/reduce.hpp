@@ -23,8 +23,8 @@
 #include <boost/mpl/insert.hpp>
 #include <boost/mpl/transform.hpp>
 
-#include "../../metafunctions.hpp"
-#include "../../typedefs.hpp"
+#include "Minecraft.Client/PS3/PS3Extras/boost_1_53_0/boost/gil/metafunctions.hpp"
+#include "Minecraft.Client/PS3/PS3Extras/boost_1_53_0/boost/gil/typedefs.hpp"
 #include "dynamic_at_c.hpp"
 
 ////////////////////////////////////////////////////////////////////////////////////////

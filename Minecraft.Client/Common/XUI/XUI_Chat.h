@@ -1,5 +1,5 @@
 #pragma once
-#include "../media/xuiscene_chat.h"
+#include "Minecraft.Client/Common/Media/xuiscene_chat.h"
 #include "XUI_CustomMessages.h"
 
 #define CHAT_LINES_COUNT 10

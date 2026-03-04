@@ -3,9 +3,9 @@
 #include "DLCManager.h"
 #include "DLCPack.h"
 #include "DLCFile.h"
-#include "..\..\..\Minecraft.World\StringHelpers.h"
-#include "..\..\Minecraft.h"
-#include "..\..\TexturePackRepository.h"
+#include "Minecraft.World/StringHelpers.h"
+#include "Minecraft.Client/Minecraft.h"
+#include "Minecraft.Client/TexturePackRepository.h"
 
 WCHAR *DLCManager::wchTypeNamesA[]=
 {

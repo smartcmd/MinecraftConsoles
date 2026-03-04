@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../media/xuiscene_howtoplay_menu.h"
+#include "Minecraft.Client/Common/Media/xuiscene_howtoplay_menu.h"
 #include "XUI_CustomMessages.h"
 
 class CScene_HowToPlayMenu : public CXuiSceneImpl

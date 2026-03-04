@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../media/xuiscene_debug.h"
+#include "Minecraft.Client/Common/Media/xuiscene_debug.h"
 
 class CScene_Debug : public CXuiSceneImpl
 {

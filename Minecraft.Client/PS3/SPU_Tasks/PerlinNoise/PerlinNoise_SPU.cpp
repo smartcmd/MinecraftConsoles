@@ -2,7 +2,7 @@
 
 
 #include "PerlinNoise_SPU.h"
-#include "..\Common\DmaData.h"
+#include "Minecraft.Client/PS3/SPU_Tasks/Common/DmaData.h"
 #include <alloca.h>
 
 int64_t lfloor(double v)

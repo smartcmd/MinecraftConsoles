@@ -1,7 +1,7 @@
 #pragma once
 
 #if defined(__PS3__) || defined(__ORBIS__)
-#include "..\..\Common\Network\Sony\SQRNetworkManager.h"
+#include "Sony/SQRNetworkManager.h"
 #endif
 
 

@@ -7,12 +7,12 @@
 #include <Minecraft.World/net.minecraft.world.item.h>
 #include <MultiPlayerLocalPlayer.h>
 =======
-#include "..\..\..\Minecraft.World\net.minecraft.world.inventory.h"
-#include "..\..\..\Minecraft.World\net.minecraft.world.item.h"
-#include "..\..\MultiplayerLocalPlayer.h"
+#include "Minecraft.World/net.minecraft.world.inventory.h"
+#include "Minecraft.World/net.minecraft.world.item.h"
+#include "Minecraft.Client/MultiPlayerLocalPlayer.h"
 >>>>>>> parent of fef5c7b0 (the reformatting, pt 1)
 #ifdef _WINDOWS64
-#include "..\..\Windows64\KeyboardMouseInput.h"
+#include "Minecraft.Client/Windows64/KeyboardMouseInput.h"
 #endif
 
 UIScene_AbstractContainerMenu::UIScene_AbstractContainerMenu(int iPad, UILayer *parentLayer) : UIScene(iPad, parentLayer)

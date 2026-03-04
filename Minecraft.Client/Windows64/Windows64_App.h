@@ -1,5 +1,5 @@
 #pragma once
-#include "4JLibs\inc\4J_Render.h"
+#include "4JLibs/inc/4J_Render.h"
 
 class CConsoleMinecraftApp : public CMinecraftApp
 {

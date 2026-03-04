@@ -4,10 +4,10 @@
 #include "stdafx.h"
 
 #include <assert.h>
-#include "..\..\Minecraft.h"
-#include "..\..\ProgressRenderer.h"
-#include "..\..\..\Minecraft.World\StringHelpers.h"
-#include "..\..\Common\Tutorial\TutorialMode.h"
+#include "Minecraft.Client/Minecraft.h"
+#include "Minecraft.Client/ProgressRenderer.h"
+#include "Minecraft.World/StringHelpers.h"
+#include "Minecraft.Client/Common/Tutorial/TutorialMode.h"
 
 //----------------------------------------------------------------------------------
 // Performs initialization tasks - retrieves controls.

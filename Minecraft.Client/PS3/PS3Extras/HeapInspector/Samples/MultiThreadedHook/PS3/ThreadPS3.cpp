@@ -1,5 +1,5 @@
 #include <pthread.h>
-#include "../IThread.h"
+#include "Minecraft.Client/PS3/PS3Extras/HeapInspector/Samples/MultiThreadedHook/IThread.h"
 
 void* InternalThread(void* a_UserData)
 {

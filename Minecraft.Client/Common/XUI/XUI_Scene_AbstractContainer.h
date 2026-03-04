@@ -1,7 +1,7 @@
 #pragma once
-#include "..\UI\IUIScene_AbstractContainerMenu.h"
+#include "Minecraft.Client/Common/UI/IUIScene_AbstractContainerMenu.h"
 #include "XUI_CustomMessages.h"
-#include "..\..\Common\Tutorial\TutorialEnum.h"
+#include "Minecraft.Client/Common/Tutorial/TutorialEnum.h"
 
 class CXuiCtrlSlotList;
 class CXuiCtrlSlotItem;

@@ -3,11 +3,11 @@
 #include "UIScene_CreativeMenu.h"
 
 #include "..\Minecraft.World\JavaMath.h"
-#include "..\..\LocalPlayer.h"
-#include "..\Tutorial\Tutorial.h"
-#include "..\Tutorial\TutorialMode.h"
-#include "..\..\..\Minecraft.World\net.minecraft.world.inventory.h"
-#include "..\..\..\Minecraft.World\net.minecraft.world.item.h"
+#include "Minecraft.Client/LocalPlayer.h"
+#include "Minecraft.Client/Common/Tutorial/Tutorial.h"
+#include "Minecraft.Client/Common/Tutorial/TutorialMode.h"
+#include "Minecraft.World/net.minecraft.world.inventory.h"
+#include "Minecraft.World/net.minecraft.world.item.h"
 
 #ifdef __PSVITA__
 #define GAME_CREATIVE_TOUCHUPDATE_TIMER_ID 0

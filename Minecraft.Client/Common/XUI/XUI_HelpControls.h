@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../media/xuiscene_controls.h"
+#include "Minecraft.Client/Common/Media/xuiscene_controls.h"
 #include "XUI_CustomMessages.h"
 
 class CXuiCtrl4JList;

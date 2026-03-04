@@ -7,9 +7,9 @@
 #define BOOST_LEXER_NODE_HPP
 
 #include <boost/assert.hpp>
-#include "../../containers/ptr_vector.hpp"
-#include "../../runtime_error.hpp"
-#include "../../size_t.hpp"
+#include "Minecraft.Client/PS3/PS3Extras/boost_1_53_0/boost/spirit/home/support/detail/lexer/containers/ptr_vector.hpp"
+#include "Minecraft.Client/PS3/PS3Extras/boost_1_53_0/boost/spirit/home/support/detail/lexer/runtime_error.hpp"
+#include "Minecraft.Client/PS3/PS3Extras/boost_1_53_0/boost/spirit/home/support/detail/lexer/size_t.hpp"
 #include <stack>
 #include <vector>
 

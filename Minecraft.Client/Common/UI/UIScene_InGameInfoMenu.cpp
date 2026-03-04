@@ -1,10 +1,10 @@
 #include "stdafx.h"
 #include "UI.h"
 #include "UIScene_InGameInfoMenu.h"
-#include "..\..\MultiPlayerLocalPlayer.h"
-#include "..\..\..\Minecraft.World\net.minecraft.network.packet.h"
-#include "..\..\MultiPlayerLocalPlayer.h"
-#include "..\..\ClientConnection.h"
+#include "Minecraft.Client/MultiPlayerLocalPlayer.h"
+#include "Minecraft.World/net.minecraft.network.packet.h"
+#include "Minecraft.Client/MultiPlayerLocalPlayer.h"
+#include "Minecraft.Client/ClientConnection.h"
 
 UIScene_InGameInfoMenu::UIScene_InGameInfoMenu(int iPad, void *initData, UILayer *parentLayer) : UIScene(iPad, parentLayer)
 {

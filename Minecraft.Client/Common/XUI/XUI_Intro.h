@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../media/xuiscene_intro.h"
+#include "Minecraft.Client/Common/Media/xuiscene_intro.h"
 
 class CScene_Intro : public CXuiSceneImpl
 {

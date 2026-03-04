@@ -1,7 +1,7 @@
 #pragma once
-#include "..\Media\xuiscene_debug_set_camera.h"
+#include "Minecraft.Client/Common/Media/xuiscene_debug_set_camera.h"
 #include "XUI_Ctrl_4JEdit.h"
-#include "..\..\Common\GameRules\ConsoleSchematicFile.h"
+#include "Minecraft.Client/Common/GameRules/ConsoleSchematicFile.h"
 
 class CScene_DebugSetCamera : public CXuiSceneImpl
 {

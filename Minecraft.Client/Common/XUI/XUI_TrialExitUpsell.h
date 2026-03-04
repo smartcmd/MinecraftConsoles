@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../media/xuiscene_trialexitupsell.h"
+#include "Minecraft.Client/Common/Media/xuiscene_trialexitupsell.h"
 
 #define TRIAL_EXIT_UPSELL_IMAGE_DISPLAY_TIME 3000
 

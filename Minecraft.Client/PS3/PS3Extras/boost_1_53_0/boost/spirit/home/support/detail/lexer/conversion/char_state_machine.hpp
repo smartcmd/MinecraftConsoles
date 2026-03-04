@@ -6,10 +6,10 @@
 #ifndef BOOST_LEXER_CHAR_STATE_MACHINE_HPP
 #define BOOST_LEXER_CHAR_STATE_MACHINE_HPP
 
-#include "../consts.hpp"
+#include "Minecraft.Client/PS3/PS3Extras/boost_1_53_0/boost/spirit/home/support/detail/lexer/consts.hpp"
 #include <map>
-#include "../size_t.hpp"
-#include "../string_token.hpp"
+#include "Minecraft.Client/PS3/PS3Extras/boost_1_53_0/boost/spirit/home/support/detail/lexer/size_t.hpp"
+#include "Minecraft.Client/PS3/PS3Extras/boost_1_53_0/boost/spirit/home/support/detail/lexer/string_token.hpp"
 #include <vector>
 
 namespace boost
