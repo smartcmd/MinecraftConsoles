@@ -43,7 +43,7 @@ cd .\build\Debug
 
 MinecraftConsoles does not support Linux but can cross-compile a Windows build from Linux.
 
-You will need a Windows MSVC SDK. You can get one from [msvc-wine](https://github.com/mstorsjo/msvc-wine).
+You will need a Windows MSVC SDK. You can get one from [msvc-wine](https://github.com/mstorsjo/msvc-wine) or from a real Visual Studio installation.
 
 Configure:
 ```

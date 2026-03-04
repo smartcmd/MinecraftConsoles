@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.24)
 
 project(MinecraftConsoles LANGUAGES C CXX RC)
 
-if(NOT CMAKE_SIZEOF_VOID_P EQUAL 8 AND WIN32) # This check is broken on linux+clang-cl
+if(NOT CMAKE_SIZEOF_VOID_P EQUAL 8 AND WIN32) # triggers when cross compiling on linux
   message(FATAL_ERROR "Use a 64-bit generator/toolchain (x64).")
 endif()
 
