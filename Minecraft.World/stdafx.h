@@ -154,19 +154,11 @@ typedef XUID GameSessionUID;
 void MemSect(int sect);
 
 #ifdef _XBOX
-<<<<<<< HEAD
-#include <Minecraft.Client/xbox/4JLibs/inc/4J_Profile.h>
-#include <Minecraft.Client/xbox/4JLibs/inc/4J_Render.h>
-#include <Minecraft.Client/xbox/4JLibs/inc/4J_xtms.h>
-#include <Minecraft.Client/xbox/4JLibs/inc/4J_Storage.h>
-#include <Minecraft.Client/xbox/4JLibs/inc/4J_Input.h>
-=======
 #include "..\Minecraft.Client\xbox\4JLibs\inc\4J_Profile.h"
 #include "..\Minecraft.Client\xbox\4JLibs\inc\4J_Render.h"
 #include "..\Minecraft.Client\xbox\4JLibs\inc\4J_XTMS.h"
 #include "..\Minecraft.Client\xbox\4JLibs\inc\4J_Storage.h"
 #include "..\Minecraft.Client\xbox\4JLibs\inc\4J_Input.h"
->>>>>>> parent of fef5c7b0 (the reformatting, pt 1)
 #elif defined (__PS3__)
 #include "..\Minecraft.Client\PS3\4JLibs\inc\4J_Profile.h"
 #include "..\Minecraft.Client\PS3\4JLibs\inc\4J_Render.h"
@@ -183,45 +175,27 @@ void MemSect(int sect);
 #include "..\Minecraft.Client\Windows64\4JLibs\inc\4J_Storage.h"
 #include "..\Minecraft.Client\Windows64\4JLibs\inc\4J_Input.h"
 #elif defined __PSVITA__
-<<<<<<< HEAD
-#include <Minecraft.Client/PSVita/4JLibs/inc/4J_Profile.h>
-#include <Minecraft.Client/PSVita/4JLibs/inc/4J_Render.h>
-#include <Minecraft.Client/PSVita/4JLibs/inc/4J_Storage.h>
-#include <Minecraft.Client/PSVita/4JLibs/inc/4J_Input.h>
-#elif defined __ORBIS__
-#include <Minecraft.Client/Orbis/4JLibs/inc/4J_Profile.h>
-#include <Minecraft.Client/Orbis/4JLibs/inc/4J_Render.h>
-#include <Minecraft.Client/Orbis/4JLibs/inc/4J_Storage.h>
-#include <Minecraft.Client/Orbis/4JLibs/inc/4J_Input.h>
-=======
 #include "..\Minecraft.Client\PSVita\4JLibs\inc\4J_Profile.h"
 #include "..\Minecraft.Client\PSVita\4JLibs\inc\4J_Render.h"
 #include "..\Minecraft.Client\PSVita\4JLibs\inc\4J_Storage.h"
 #include "..\Minecraft.Client\PSVita\4JLibs\inc\4J_Input.h"
+#elif defined _CROSS64
+// TODO: implement 4jlibs
 #else
 #include "..\Minecraft.Client\Orbis\4JLibs\inc\4J_Profile.h"
 #include "..\Minecraft.Client\Orbis\4JLibs\inc\4J_Render.h"
 #include "..\Minecraft.Client\Orbis\4JLibs\inc\4J_Storage.h"
 #include "..\Minecraft.Client\Orbis\4JLibs\inc\4J_Input.h"
->>>>>>> parent of fef5c7b0 (the reformatting, pt 1)
 #endif
 
 #include "..\Minecraft.Client\Common\Network\GameNetworkManager.h"
 
 // #ifdef _XBOX
-<<<<<<< HEAD
-#include <Minecraft.Client/Common/App_Defines.h>
-#include <Minecraft.Client/Common/UI/UIEnums.h>
-#include <Minecraft.Client/Common/App_enums.h>
-#include <Minecraft.Client/Common/Tutorial/TutorialEnum.h>
-#include <Minecraft.Client/Common/App_structs.h>
-=======
 #include "..\Minecraft.Client\Common\App_defines.h"
 #include "..\Minecraft.Client\Common\UI\UIEnums.h"
 #include "..\Minecraft.Client\Common\App_enums.h"
 #include "..\Minecraft.Client\Common\Tutorial\TutorialEnum.h"
 #include "..\Minecraft.Client\Common\App_structs.h"
->>>>>>> parent of fef5c7b0 (the reformatting, pt 1)
 //#endif
 
 #ifdef _XBOX
