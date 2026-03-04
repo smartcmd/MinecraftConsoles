@@ -89,13 +89,22 @@ target_link_libraries(MinecraftClient PRIVATE
   >
 )
 
-add_custom_command(TARGET MinecraftClient POST_BUILD
-  COMMAND "${CMAKE_COMMAND}"
-    -DPROJECT_SOURCE_DIR="${CMAKE_CURRENT_SOURCE_DIR}"
-    -DOUTPUT_DIR="$<TARGET_FILE_DIR:MinecraftClient>"
-    -DCONFIGURATION=$<CONFIG>
-    -P "${CMAKE_CURRENT_SOURCE_DIR}/cmake/CopyAssets.cmake"
-  VERBATIM
+message(STATUS "Starting redist copy...")
+execute_process(
+  COMMAND robocopy.exe "${CMAKE_CURRENT_SOURCE_DIR}/x64/Release" "${CMAKE_CURRENT_BINARY_DIR}"
+  /E /MT /R:0 /W:0 /NP
+)
+
+message(STATUS "Starting asset copy...")
+execute_process(
+  COMMAND robocopy.exe "${CMAKE_CURRENT_SOURCE_DIR}/Minecraft.Client" "${CMAKE_CURRENT_BINARY_DIR}"
+  /E /MT /R:0 /W:0 /NP
+  /XF "*.cpp" "*.c" "*.h" "*.hpp" "*.asm"
+      "*.txt" "*.xml" "*.lang" "*.vcxproj" "*.vcxproj.*" "*.sln"
+      "*.docx" "*.xls"
+      "*.bat" "*.cmd" "*.ps1" "*.py"
+      "*Test*"
+  /XD "Durango*" "Orbis*" "PS*" "Xbox"
 )
 
 set_property(DIRECTORY PROPERTY VS_STARTUP_PROJECT MinecraftClient)
