@@ -26,3 +26,56 @@ body:
       required: true
 
 
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+      description: A clear and concise description of what you expected to happen.
+    validations:
+      required: true
+
+      
+  - type: input
+    id: screenshots
+    attributes:
+      label: Screenshots
+      description: If applicable, add screenshots to help explain your problem.
+    validations:
+      required: false
+      
+  - type: input
+    id: video
+    attributes:
+      label: Videos
+      description: If applicable, add videos to help explain your problem.
+    validations:
+      required: false
+
+    *Details*
+
+  - type: input
+    id: version
+    attributes:
+      label: Version
+      placeholder: e.g. 55a86b8
+    validations:
+      required: true
+
+  
+  - type: checkboxes
+    id: build
+    attributes:
+      label: Build Type
+      options:
+        - label: Release
+        - labal: Debug
+    validations:
+      required: true
+
+  - type: textarea
+    id: additional
+    attributes:
+      label: Additional context
+      description: A clear and concise description of what the bug is.
+    validations:
+      required: true
