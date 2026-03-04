@@ -1112,8 +1112,9 @@ int APIENTRY _tWinMain(_In_ HINSTANCE hInstance,
 	if (g_Win64Username[0] == 0)
 	{
 		DWORD sz = 17;
-		if (!GetUserNameA(g_Win64Username, &sz))
-			strncpy_s(g_Win64Username, 17, "Player", _TRUNCATE);
+		//if (!GetUserNameA(g_Win64Username, &sz))
+		// todo: SET USERNAMES PROPERLY
+		strncpy_s(g_Win64Username, 17, "Player", _TRUNCATE);
 		g_Win64Username[16] = 0;
 	}
 
