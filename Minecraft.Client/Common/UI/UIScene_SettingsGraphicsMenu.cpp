@@ -4,6 +4,33 @@
 #include "..\..\Minecraft.h"
 #include "..\..\GameRenderer.h"
 
+namespace
+{
+	const int FOV_MIN = 70;
+	const int FOV_MAX = 110;
+	const int FOV_SLIDER_MAX = 100;
+
+	int clampFov(int value)
+	{
+		if (value < FOV_MIN) return FOV_MIN;
+		if (value > FOV_MAX) return FOV_MAX;
+		return value;
+	}
+
+	int fovToSliderValue(float fov)
+	{
+		int clampedFov = clampFov((int)(fov + 0.5f));
+		return ((clampedFov - FOV_MIN) * FOV_SLIDER_MAX) / (FOV_MAX - FOV_MIN);
+	}
+
+	int sliderValueToFov(int sliderValue)
+	{
+		if (sliderValue < 0) sliderValue = 0;
+		if (sliderValue > FOV_SLIDER_MAX) sliderValue = FOV_SLIDER_MAX;
+		return FOV_MIN + ((sliderValue * (FOV_MAX - FOV_MIN)) / FOV_SLIDER_MAX);
+	}
+}
+
 UIScene_SettingsGraphicsMenu::UIScene_SettingsGraphicsMenu(int iPad, void *initData, UILayer *parentLayer) : UIScene(iPad, parentLayer)
 {
 	// Setup all the Iggy references we need for this scene
@@ -22,8 +49,9 @@ UIScene_SettingsGraphicsMenu::UIScene_SettingsGraphicsMenu(int iPad, void *initD
 	swprintf( (WCHAR *)TempString, 256, L"%ls: %d%%", app.GetString( IDS_SLIDER_GAMMA ),app.GetGameSettings(m_iPad,eGameSetting_Gamma));	
 	m_sliderGamma.init(TempString,eControl_Gamma,0,100,app.GetGameSettings(m_iPad,eGameSetting_Gamma));
 
-	swprintf((WCHAR*)TempString, 256, L"FOV: %d%%", (int)pMinecraft->gameRenderer->GetFovVal());
-	m_sliderFOV.init(TempString, eControl_FOV, 70, 110, (int)pMinecraft->gameRenderer->GetFovVal());
+	int initialFov = clampFov((int)(pMinecraft->gameRenderer->GetFovVal() + 0.5f));
+	swprintf((WCHAR*)TempString, 256, L"FOV: %d", initialFov);
+	m_sliderFOV.init(TempString, eControl_FOV, 0, FOV_SLIDER_MAX, fovToSliderValue((float)initialFov));
 	
 	swprintf( (WCHAR *)TempString, 256, L"%ls: %d%%", app.GetString( IDS_SLIDER_INTERFACEOPACITY ),app.GetGameSettings(m_iPad,eGameSetting_InterfaceOpacity));	
 	m_sliderInterfaceOpacity.init(TempString,eControl_InterfaceOpacity,0,100,app.GetGameSettings(m_iPad,eGameSetting_InterfaceOpacity));
@@ -150,10 +178,12 @@ void UIScene_SettingsGraphicsMenu::handleSliderMove(F64 sliderId, F64 currentVal
 
 	case eControl_FOV:
 		{
+			m_sliderFOV.handleSliderMove(value);
 			Minecraft* pMinecraft = Minecraft::GetInstance();
-			pMinecraft->gameRenderer->SetFovVal((float)currentValue);
+			int fovValue = sliderValueToFov(value);
+			pMinecraft->gameRenderer->SetFovVal((float)fovValue);
 			WCHAR TempString[256];
-			swprintf((WCHAR*)TempString, 256, L"FOV: %d%%", (int)currentValue);
+			swprintf((WCHAR*)TempString, 256, L"FOV: %d", fovValue);
 			m_sliderFOV.setLabel(TempString);
 		}
 		break;

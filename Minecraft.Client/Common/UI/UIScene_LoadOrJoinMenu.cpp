@@ -1317,6 +1317,14 @@ void UIScene_LoadOrJoinMenu::handleInput(int iPad, int key, bool repeat, bool pr
         sendInputToMovie(key, repeat, pressed, released);
         handled = true;
         break;
+    case ACTION_MENU_OTHER_STICK_UP:
+        sendInputToMovie(ACTION_MENU_UP, repeat, pressed, released);
+        handled = true;
+        break;
+    case ACTION_MENU_OTHER_STICK_DOWN:
+        sendInputToMovie(ACTION_MENU_DOWN, repeat, pressed, released);
+        handled = true;
+        break;
     }
 }
 

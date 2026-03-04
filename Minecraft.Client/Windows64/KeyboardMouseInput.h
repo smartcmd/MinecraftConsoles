@@ -4,88 +4,130 @@
 
 #include <windows.h>
 
-// HID usage page and usage for raw input registration
-#ifndef HID_USAGE_PAGE_GENERIC
-#define HID_USAGE_PAGE_GENERIC ((USHORT)0x01)
-#endif
-#ifndef HID_USAGE_GENERIC_MOUSE
-#define HID_USAGE_GENERIC_MOUSE ((USHORT)0x02)
-#endif
-
 class KeyboardMouseInput
 {
 public:
-	KeyboardMouseInput();
-	~KeyboardMouseInput();
+	static const int MAX_KEYS = 256;
 
-	void Init(HWND hWnd);
+	static const int MOUSE_LEFT = 0;
+	static const int MOUSE_RIGHT = 1;
+	static const int MOUSE_MIDDLE = 2;
+	static const int MAX_MOUSE_BUTTONS = 3;
+
+	static const int KEY_FORWARD = 'W';
+	static const int KEY_BACKWARD = 'S';
+	static const int KEY_LEFT = 'A';
+	static const int KEY_RIGHT = 'D';
+	static const int KEY_JUMP = VK_SPACE;
+	static const int KEY_SNEAK = VK_LSHIFT;
+	static const int KEY_SPRINT = VK_LCONTROL;
+	static const int KEY_INVENTORY = 'E';
+	static const int KEY_DROP = 'Q';
+	static const int KEY_CRAFTING = 'C';
+	static const int KEY_CRAFTING_ALT = 'R';
+	static const int KEY_CONFIRM = VK_RETURN;
+	static const int KEY_CANCEL = VK_ESCAPE;
+	static const int KEY_PAUSE = VK_ESCAPE;
+	static const int KEY_THIRD_PERSON = VK_F5;
+	static const int KEY_DEBUG_INFO = VK_F3;
+
+	void Init();
 	void Tick();
-	void EndFrame();
-
-	// Called from WndProc
-	void OnKeyDown(WPARAM vk);
-	void OnKeyUp(WPARAM vk);
-	void OnRawMouseInput(LPARAM lParam);
-	void OnMouseButton(int button, bool down);
-	void OnMouseWheel(int delta);
 	void ClearAllState();
 
-	// Per-frame edge detection (for UI / per-frame logic like Alt toggle)
-	bool IsKeyDown(int vk) const;
-	bool IsKeyPressed(int vk) const;
-	bool IsKeyReleased(int vk) const;
-	bool IsMouseDown(int btn) const;
-	bool IsMousePressed(int btn) const;
-	bool IsMouseReleased(int btn) const;
-
-	// Game-tick consume methods: accumulate across frames, clear on read.
-	// Use these from code that runs at game tick rate (20Hz).
-	bool ConsumeKeyPress(int vk);
-	bool ConsumeMousePress(int btn);
-	bool ConsumeMouseRelease(int btn);
-	void ConsumeMouseDelta(float &dx, float &dy);
-	int ConsumeScrollDelta();
-
-	// Absolute cursor position (client-area coordinates, for GUI when not captured)
+	void OnKeyDown(int vkCode);
+	void OnKeyUp(int vkCode);
+	void OnMouseButtonDown(int button);
+	void OnMouseButtonUp(int button);
 	void OnMouseMove(int x, int y);
-	int GetMouseX() const;
-	int GetMouseY() const;
-	HWND GetHWnd() const;
+	void OnMouseWheel(int delta);
+	void OnRawMouseDelta(int dx, int dy);
 
-	// Mouse capture for FPS look
-	void SetCapture(bool capture);
-	bool IsCaptured() const;
+	bool IsKeyDown(int vkCode) const;
+	bool IsKeyPressed(int vkCode) const;
+	bool IsKeyReleased(int vkCode) const;
+
+	bool IsMouseButtonDown(int button) const;
+	bool IsMouseButtonPressed(int button) const;
+	bool IsMouseButtonReleased(int button) const;
+
+	int GetMouseX() const { return m_mouseX; }
+	int GetMouseY() const { return m_mouseY; }
+
+	int GetMouseDeltaX() const { return m_mouseDeltaX; }
+	int GetMouseDeltaY() const { return m_mouseDeltaY; }
+
+	int GetMouseWheel();
+	int PeekMouseWheel() const { return m_mouseWheelAccum; }
+	void ConsumeMouseWheel() { m_mouseWheelAccum = 0; }
+
+	// Per-frame delta consumption for low-latency mouse look.
+	// Reads and clears the raw accumulators (not the per-tick snapshot).
+	void ConsumeMouseDelta(float &dx, float &dy);
+
+	void SetMouseGrabbed(bool grabbed);
+	bool IsMouseGrabbed() const { return m_mouseGrabbed; }
+
+	void SetCursorHiddenForUI(bool hidden);
+	bool IsCursorHiddenForUI() const { return m_cursorHiddenForUI; }
+
+	void SetWindowFocused(bool focused);
+	bool IsWindowFocused() const { return m_windowFocused; }
+
+	bool HasAnyInput() const { return m_hasInput; }
+
+	void SetKBMActive(bool active) { m_kbmActive = active; }
+	bool IsKBMActive() const { return m_kbmActive; }
+
+	void SetScreenCursorHidden(bool hidden) { m_screenWantsCursorHidden = hidden; }
+	bool IsScreenCursorHidden() const { return m_screenWantsCursorHidden; }
+
+	float GetMoveX() const;
+	float GetMoveY() const;
+
+	float GetLookX(float sensitivity) const;
+	float GetLookY(float sensitivity) const;
 
 private:
-	void CenterCursor();
+	bool m_keyDown[MAX_KEYS];
+	bool m_keyDownPrev[MAX_KEYS];
 
-	// Per-frame double-buffered state (for IsKeyPressed/Released per-frame edge detection)
-	bool m_keyState[256];
-	bool m_keyStatePrev[256];
-	bool m_mouseButtons[3];
-	bool m_mouseButtonsPrev[3];
+	bool m_keyPressedAccum[MAX_KEYS];
+	bool m_keyReleasedAccum[MAX_KEYS];
+	bool m_keyPressed[MAX_KEYS];
+	bool m_keyReleased[MAX_KEYS];
 
-	// Sticky press accumulators (persist until consumed by game tick)
-	bool m_keyPressedAccum[256];
-	bool m_mousePressedAccum[3];
-	bool m_mouseReleasedAccum[3];
+	bool m_mouseButtonDown[MAX_MOUSE_BUTTONS];
+	bool m_mouseButtonDownPrev[MAX_MOUSE_BUTTONS];
 
-	// Mouse delta accumulators (persist until consumed by game tick)
-	float m_mouseDeltaXAccum;
-	float m_mouseDeltaYAccum;
+	bool m_mouseBtnPressedAccum[MAX_MOUSE_BUTTONS];
+	bool m_mouseBtnReleasedAccum[MAX_MOUSE_BUTTONS];
+	bool m_mouseBtnPressed[MAX_MOUSE_BUTTONS];
+	bool m_mouseBtnReleased[MAX_MOUSE_BUTTONS];
 
-	// Scroll accumulator (persists until consumed by game tick)
-	int m_scrollDeltaAccum;
-
-	bool m_captured;
-	HWND m_hWnd;
-	bool m_initialized;
-
-	// Absolute cursor position in client coordinates
 	int m_mouseX;
 	int m_mouseY;
+
+	int m_mouseDeltaX;
+	int m_mouseDeltaY;
+	int m_mouseDeltaAccumX;
+	int m_mouseDeltaAccumY;
+
+	int m_mouseWheelAccum;
+
+	bool m_mouseGrabbed;
+
+	bool m_cursorHiddenForUI;
+
+	bool m_windowFocused;
+
+	bool m_hasInput;
+
+	bool m_kbmActive;
+
+	bool m_screenWantsCursorHidden;
 };
 
-extern KeyboardMouseInput KMInput;
+extern KeyboardMouseInput g_KBMInput;
 
 #endif // _WINDOWS64

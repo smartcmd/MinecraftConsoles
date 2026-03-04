@@ -13,6 +13,12 @@
 #include <pad.h>
 #endif
 
+#ifdef _WINDOWS64
+#include "..\..\Windows64\KeyboardMouseInput.h"
+
+SavedInventoryCursorPos g_savedInventoryCursorPos = { 0.0f, 0.0f, false };
+#endif
+
 IUIScene_AbstractContainerMenu::IUIScene_AbstractContainerMenu()
 {
 	m_menu = NULL;
@@ -474,6 +480,34 @@ void IUIScene_AbstractContainerMenu::onMouseTick()
 	}
 #endif
 
+#ifdef _WINDOWS64
+	if (!g_KBMInput.IsMouseGrabbed() && g_KBMInput.IsKBMActive())
+	{
+		int deltaX = g_KBMInput.GetMouseDeltaX();
+		int deltaY = g_KBMInput.GetMouseDeltaY();
+
+		extern HWND g_hWnd;
+		RECT rc;
+		GetClientRect(g_hWnd, &rc);
+		int winW = rc.right - rc.left;
+		int winH = rc.bottom - rc.top;
+
+		if (winW > 0 && winH > 0)
+		{
+			float scaleX = (float)getMovieWidth() / (float)winW;
+			float scaleY = (float)getMovieHeight() / (float)winH;
+
+			vPointerPos.x += (float)deltaX * scaleX;
+			vPointerPos.y += (float)deltaY * scaleY;
+		}
+
+		if (deltaX != 0 || deltaY != 0)
+		{
+			bStickInput = true;
+		}
+	}
+#endif
+
 	// Determine which slot the pointer is currently over.
 	ESceneSection eSectionUnderPointer = eSectionNone;
 	int iNewSlotX = -1;
@@ -694,7 +728,11 @@ void IUIScene_AbstractContainerMenu::onMouseTick()
 
 			// If there is no stick input, and we are over a slot, then snap pointer to slot centre.
 			// 4J - TomK - only if this particular component allows so!
-			if(!m_bPointerDrivenByMouse && CanHaveFocus(eSectionUnderPointer))
+#ifdef _WINDOWS64
+			if((g_KBMInput.IsMouseGrabbed() || !g_KBMInput.IsKBMActive()) && CanHaveFocus(eSectionUnderPointer))
+#else
+			if(CanHaveFocus(eSectionUnderPointer))
+#endif
 			{
 				vPointerPos.x = vSnapPos.x;
 				vPointerPos.y = vSnapPos.y;
@@ -1329,7 +1367,7 @@ bool IUIScene_AbstractContainerMenu::handleKeyDown(int iPad, int iAction, bool b
 
 			// Standard left click
 			buttonNum = 0;
-			if (KMInput.IsKeyDown(VK_SHIFT))
+			if (g_KBMInput.IsKeyDown(VK_LSHIFT))
 			{
 				{
 					validKeyPress = TRUE;

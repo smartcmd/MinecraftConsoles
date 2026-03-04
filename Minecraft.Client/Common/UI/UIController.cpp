@@ -2,6 +2,7 @@
 #include "UIController.h"
 #include "UI.h"
 #include "UIScene.h"
+#include "UIControl_Slider.h"
 #include "..\..\..\Minecraft.World\StringHelpers.h"
 #include "..\..\LocalPlayer.h"
 #include "..\..\DLCTexturePack.h"
@@ -11,6 +12,9 @@
 #include "..\..\EnderDragonRenderer.h"
 #include "..\..\MultiPlayerLocalPlayer.h"
 #include "UIFontData.h"
+#ifdef _WINDOWS64
+#include "..\..\Windows64\KeyboardMouseInput.h"
+#endif
 #ifdef __PSVITA__
 #include <message_dialog.h>
 #endif
@@ -51,6 +55,21 @@ CRITICAL_SECTION UIController::ms_reloadSkinCS;
 bool UIController::ms_bReloadSkinCSInitialised = false;
 
 DWORD UIController::m_dwTrialTimerLimitSecs=DYNAMIC_CONFIG_DEFAULT_TRIAL_TIME;
+
+#ifdef _WINDOWS64
+static UIControl_Slider *FindSliderById(UIScene *pScene, int sliderId)
+{
+	vector<UIControl *> *controls = pScene->GetControls();
+	if (!controls) return NULL;
+	for (size_t i = 0; i < controls->size(); ++i)
+	{
+		UIControl *ctrl = (*controls)[i];
+		if (ctrl && ctrl->getControlType() == UIControl::eSlider && ctrl->getId() == sliderId)
+			return (UIControl_Slider *)ctrl;
+	}
+	return NULL;
+}
+#endif
 
 static void RADLINK WarningCallback(void *user_callback_data, Iggy *player, IggyResult code, const char *message)
 {
@@ -216,6 +235,10 @@ UIController::UIController()
 	m_currentRenderViewport = C4JRender::VIEWPORT_TYPE_FULLSCREEN;
 	m_bCustomRenderPosition = false;
 	m_winUserIndex = 0;
+	m_mouseDraggingSliderScene = eUIScene_COUNT;
+	m_mouseDraggingSliderId = -1;
+	m_lastHoverMouseX = -1;
+	m_lastHoverMouseY = -1;
 	m_accumulatedTicks = 0;
 	m_lastUiSfx = 0;
 
@@ -761,6 +784,168 @@ void UIController::tickInput()
 		else
 #endif
 		{
+#ifdef _WINDOWS64
+			if (!g_KBMInput.IsMouseGrabbed() && g_KBMInput.IsKBMActive())
+			{
+				UIScene *pScene = NULL;
+				for (int grp = 0; grp < eUIGroup_COUNT && !pScene; ++grp)
+				{
+					pScene = m_groups[grp]->GetTopScene(eUILayer_Debug);
+					if (!pScene) pScene = m_groups[grp]->GetTopScene(eUILayer_Tooltips);
+					if (!pScene) pScene = m_groups[grp]->GetTopScene(eUILayer_Error);
+					if (!pScene) pScene = m_groups[grp]->GetTopScene(eUILayer_Alert);
+					if (!pScene) pScene = m_groups[grp]->GetTopScene(eUILayer_Popup);
+					if (!pScene) pScene = m_groups[grp]->GetTopScene(eUILayer_Fullscreen);
+					if (!pScene) pScene = m_groups[grp]->GetTopScene(eUILayer_Scene);
+				}
+				if (pScene && pScene->getMovie())
+				{
+					Iggy *movie = pScene->getMovie();
+					int rawMouseX = g_KBMInput.GetMouseX();
+					int rawMouseY = g_KBMInput.GetMouseY();
+					F32 mouseX = (F32)rawMouseX;
+					F32 mouseY = (F32)rawMouseY;
+
+					extern HWND g_hWnd;
+					if (g_hWnd)
+					{
+						RECT rc;
+						GetClientRect(g_hWnd, &rc);
+						int winW = rc.right - rc.left;
+						int winH = rc.bottom - rc.top;
+						if (winW > 0 && winH > 0)
+						{
+							mouseX = mouseX * (m_fScreenWidth / (F32)winW);
+							mouseY = mouseY * (m_fScreenHeight / (F32)winH);
+						}
+					}
+
+					// Only update hover focus when the mouse has actually moved,
+					// so that mouse-wheel scrolling can change list selection
+					// without the hover immediately snapping focus back.
+					bool mouseMoved = (rawMouseX != m_lastHoverMouseX || rawMouseY != m_lastHoverMouseY);
+					m_lastHoverMouseX = rawMouseX;
+					m_lastHoverMouseY = rawMouseY;
+
+					if (mouseMoved)
+					{
+						IggyFocusHandle currentFocus = IGGY_FOCUS_NULL;
+						IggyFocusableObject focusables[64];
+						S32 numFocusables = 0;
+						IggyPlayerGetFocusableObjects(movie, &currentFocus, focusables, 64, &numFocusables);
+
+						if (numFocusables > 0 && numFocusables <= 64)
+						{
+							IggyFocusHandle hitObject = IGGY_FOCUS_NULL;
+							for (S32 i = 0; i < numFocusables; ++i)
+							{
+								if (mouseX >= focusables[i].x0 && mouseX <= focusables[i].x1 &&
+									mouseY >= focusables[i].y0 && mouseY <= focusables[i].y1)
+								{
+									hitObject = focusables[i].object;
+									break;
+								}
+							}
+
+							if (hitObject != currentFocus)
+							{
+								IggyPlayerSetFocusRS(movie, hitObject, 0);
+							}
+						}
+					}
+
+					// Convert mouse to scene/movie coordinates for slider hit testing
+					F32 sceneMouseX = mouseX;
+					F32 sceneMouseY = mouseY;
+					{
+						S32 displayWidth = 0, displayHeight = 0;
+						pScene->GetParentLayer()->getRenderDimensions(displayWidth, displayHeight);
+						if (displayWidth > 0 && displayHeight > 0)
+						{
+							sceneMouseX = mouseX * ((F32)pScene->getRenderWidth() / (F32)displayWidth);
+							sceneMouseY = mouseY * ((F32)pScene->getRenderHeight() / (F32)displayHeight);
+						}
+					}
+
+					// Get main panel offset (controls are positioned relative to it)
+					S32 panelOffsetX = 0, panelOffsetY = 0;
+					UIControl *pMainPanel = pScene->GetMainPanel();
+					if (pMainPanel)
+					{
+						pMainPanel->UpdateControl();
+						panelOffsetX = pMainPanel->getXPos();
+						panelOffsetY = pMainPanel->getYPos();
+					}
+
+					bool leftPressed = g_KBMInput.IsMouseButtonPressed(KeyboardMouseInput::MOUSE_LEFT);
+					bool leftDown = leftPressed || g_KBMInput.IsMouseButtonDown(KeyboardMouseInput::MOUSE_LEFT);
+
+					if (m_mouseDraggingSliderScene != eUIScene_COUNT && m_mouseDraggingSliderScene != pScene->getSceneType())
+					{
+						m_mouseDraggingSliderScene = eUIScene_COUNT;
+						m_mouseDraggingSliderId = -1;
+					}
+
+					if (leftPressed)
+					{
+						vector<UIControl *> *controls = pScene->GetControls();
+						if (controls)
+						{
+							for (size_t i = 0; i < controls->size(); ++i)
+							{
+								UIControl *ctrl = (*controls)[i];
+								if (!ctrl || ctrl->getControlType() != UIControl::eSlider || !ctrl->getVisible())
+									continue;
+
+								UIControl_Slider *pSlider = (UIControl_Slider *)ctrl;
+								pSlider->UpdateControl();
+								S32 cx = pSlider->getXPos() + panelOffsetX;
+								S32 cy = pSlider->getYPos() + panelOffsetY;
+								S32 cw = pSlider->GetRealWidth();
+								S32 ch = pSlider->getHeight();
+								if (cw <= 0 || ch <= 0)
+									continue;
+
+								if (sceneMouseX >= cx && sceneMouseX <= cx + cw && sceneMouseY >= cy && sceneMouseY <= cy + ch)
+								{
+									m_mouseDraggingSliderScene = pScene->getSceneType();
+									m_mouseDraggingSliderId = pSlider->getId();
+									break;
+								}
+							}
+						}
+					}
+
+					if (leftDown && m_mouseDraggingSliderScene == pScene->getSceneType() && m_mouseDraggingSliderId >= 0)
+					{
+						UIControl_Slider *pSlider = FindSliderById(pScene, m_mouseDraggingSliderId);
+						if (pSlider && pSlider->getVisible())
+						{
+							pSlider->UpdateControl();
+							S32 sliderX = pSlider->getXPos() + panelOffsetX;
+							S32 sliderWidth = pSlider->GetRealWidth();
+							if (sliderWidth > 0)
+							{
+								float fNewSliderPos = (sceneMouseX - (float)sliderX) / (float)sliderWidth;
+								if (fNewSliderPos < 0.0f) fNewSliderPos = 0.0f;
+								if (fNewSliderPos > 1.0f) fNewSliderPos = 1.0f;
+								pSlider->SetSliderTouchPos(fNewSliderPos);
+							}
+						}
+						else
+						{
+							m_mouseDraggingSliderScene = eUIScene_COUNT;
+							m_mouseDraggingSliderId = -1;
+						}
+					}
+					else if (!leftDown)
+					{
+						m_mouseDraggingSliderScene = eUIScene_COUNT;
+						m_mouseDraggingSliderId = -1;
+					}
+				}
+			}
+#endif
 			handleInput();
 			++m_accumulatedTicks;
 		}
@@ -995,28 +1180,59 @@ void UIController::handleKeyPress(unsigned int iPad, unsigned int key)
 	released = InputManager.ButtonReleased(iPad,key); // Toggle
 
 #ifdef _WINDOWS64
-	// Keyboard menu input for player 0
 	if (iPad == 0)
 	{
-		bool kbDown = false, kbPressed = false, kbReleased = false;
-		switch(key)
+		int vk = 0;
+		switch (key)
 		{
-			case ACTION_MENU_UP:        kbDown = KMInput.IsKeyDown(VK_UP);     kbPressed = KMInput.IsKeyPressed(VK_UP);     kbReleased = KMInput.IsKeyReleased(VK_UP);     break;
-			case ACTION_MENU_DOWN:      kbDown = KMInput.IsKeyDown(VK_DOWN);   kbPressed = KMInput.IsKeyPressed(VK_DOWN);   kbReleased = KMInput.IsKeyReleased(VK_DOWN);   break;
-			case ACTION_MENU_LEFT:      kbDown = KMInput.IsKeyDown(VK_LEFT);   kbPressed = KMInput.IsKeyPressed(VK_LEFT);   kbReleased = KMInput.IsKeyReleased(VK_LEFT);   break;
-			case ACTION_MENU_RIGHT:     kbDown = KMInput.IsKeyDown(VK_RIGHT);  kbPressed = KMInput.IsKeyPressed(VK_RIGHT);  kbReleased = KMInput.IsKeyReleased(VK_RIGHT);  break;
-			case ACTION_MENU_OK:        kbDown = KMInput.IsKeyDown(VK_RETURN); kbPressed = KMInput.IsKeyPressed(VK_RETURN); kbReleased = KMInput.IsKeyReleased(VK_RETURN); break;
-			case ACTION_MENU_A:         kbDown = KMInput.IsKeyDown(VK_RETURN); kbPressed = KMInput.IsKeyPressed(VK_RETURN); kbReleased = KMInput.IsKeyReleased(VK_RETURN); break;
-			case ACTION_MENU_CANCEL:    kbDown = KMInput.IsKeyDown(VK_ESCAPE); kbPressed = KMInput.IsKeyPressed(VK_ESCAPE); kbReleased = KMInput.IsKeyReleased(VK_ESCAPE); break;
-			case ACTION_MENU_B:         kbDown = KMInput.IsKeyDown(VK_ESCAPE); kbPressed = KMInput.IsKeyPressed(VK_ESCAPE); kbReleased = KMInput.IsKeyReleased(VK_ESCAPE); break;
-			case ACTION_MENU_PAUSEMENU: kbDown = KMInput.IsKeyDown(VK_ESCAPE); kbPressed = KMInput.IsKeyPressed(VK_ESCAPE); kbReleased = KMInput.IsKeyReleased(VK_ESCAPE); break;
-			case ACTION_MENU_LEFT_SCROLL: kbDown = KMInput.IsKeyDown('Q'); kbPressed = KMInput.IsKeyPressed('Q'); kbReleased = KMInput.IsKeyReleased('Q'); break;
-			case ACTION_MENU_RIGHT_SCROLL: kbDown = KMInput.IsKeyDown('E'); kbPressed = KMInput.IsKeyPressed('E'); kbReleased = KMInput.IsKeyReleased('E'); break;
-			case ACTION_MENU_QUICK_MOVE: kbDown = KMInput.IsKeyDown(VK_SHIFT); kbPressed = KMInput.IsKeyPressed(VK_SHIFT); kbReleased = KMInput.IsKeyReleased(VK_SHIFT); break;
+		case ACTION_MENU_OK:    case ACTION_MENU_A: vk = VK_RETURN; break;
+		case ACTION_MENU_CANCEL: case ACTION_MENU_B: vk = VK_ESCAPE; break;
+		case ACTION_MENU_UP:    vk = VK_UP;     break;
+		case ACTION_MENU_DOWN:  vk = VK_DOWN;   break;
+		case ACTION_MENU_LEFT:  vk = VK_LEFT;   break;
+		case ACTION_MENU_RIGHT: vk = VK_RIGHT;  break;
+		case ACTION_MENU_X:     vk = 'R';       break;
+		case ACTION_MENU_Y:     vk = VK_TAB;    break;
+		case ACTION_MENU_LEFT_SCROLL:  vk = 'Q'; break;
+		case ACTION_MENU_RIGHT_SCROLL: vk = 'E'; break;
+		case ACTION_MENU_PAGEUP:   vk = VK_PRIOR; break;
+		case ACTION_MENU_PAGEDOWN: vk = VK_NEXT;  break;
 		}
-		pressed = pressed || kbPressed;
-		released = released || kbReleased;
-		down = down || kbDown;
+		if (vk != 0)
+		{
+			if (g_KBMInput.IsKeyPressed(vk))  { pressed = true; down = true; }
+			if (g_KBMInput.IsKeyReleased(vk)) { released = true; down = false; }
+			if (!pressed && !released && g_KBMInput.IsKeyDown(vk)) { down = true; }
+		}
+
+		if ((key == ACTION_MENU_OK || key == ACTION_MENU_A) && !g_KBMInput.IsMouseGrabbed())
+		{
+			if (m_mouseDraggingSliderId < 0)
+			{
+				if (g_KBMInput.IsMouseButtonPressed(KeyboardMouseInput::MOUSE_LEFT))  { pressed = true; down = true; }
+				if (g_KBMInput.IsMouseButtonReleased(KeyboardMouseInput::MOUSE_LEFT)) { released = true; down = false; }
+				if (!pressed && !released && g_KBMInput.IsMouseButtonDown(KeyboardMouseInput::MOUSE_LEFT)) { down = true; }
+			}
+		}
+
+		// Scroll wheel for list scrolling — only consume the wheel value when the
+		// action key actually matches, so the other direction isn't lost.
+		if (!g_KBMInput.IsMouseGrabbed() && (key == ACTION_MENU_OTHER_STICK_UP || key == ACTION_MENU_OTHER_STICK_DOWN))
+		{
+			int wheel = g_KBMInput.PeekMouseWheel();
+			if (key == ACTION_MENU_OTHER_STICK_UP && wheel > 0)
+			{
+				g_KBMInput.ConsumeMouseWheel();
+				pressed = true;
+				down = true;
+			}
+			else if (key == ACTION_MENU_OTHER_STICK_DOWN && wheel < 0)
+			{
+				g_KBMInput.ConsumeMouseWheel();
+				pressed = true;
+				down = true;
+			}
+		}
 	}
 #endif
 
