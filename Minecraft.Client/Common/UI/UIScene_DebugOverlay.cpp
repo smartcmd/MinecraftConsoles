@@ -42,7 +42,7 @@ UIScene_DebugOverlay::UIScene_DebugOverlay(int iPad, void *initData, UILayer *pa
 	
     // Sort items alphabetically
     std::vector<std::pair<std::wstring, unsigned int>> sortedItems;
-    for (unsigned int i = 0; i < Item::items.length; ++i)
+    for (size_t i = 0; i < Item::items.length; ++i)
     {
         if (Item::items[i] != NULL)
         {
@@ -50,7 +50,7 @@ UIScene_DebugOverlay::UIScene_DebugOverlay(int iPad, void *initData, UILayer *pa
         }
     }
 
-    for (int i = 1; i < (int)sortedItems.size(); ++i)
+    for (size_t i = 1; i < sortedItems.size(); ++i)
     {
         auto key = sortedItems[i];
         int j = i - 1;
