@@ -362,12 +362,23 @@ void CPlatformNetworkManagerStub::HostGame(int localUsersMask, bool bOnlineGame,
 
 #ifdef _WINDOWS64
 	int port = WIN64_NET_DEFAULT_PORT;
+	const char* bindIp = NULL;
+	if (g_Win64DedicatedServer)
+	{
+		if (g_Win64DedicatedServerPort > 0)
+			port = g_Win64DedicatedServerPort;
+		if (g_Win64DedicatedServerBindIP[0] != 0)
+			bindIp = g_Win64DedicatedServerBindIP;
+	}
 	if (!WinsockNetLayer::IsActive())
-		WinsockNetLayer::HostGame(port);
+		WinsockNetLayer::HostGame(port, bindIp);
 
-	const wchar_t* hostName = IQNet::m_player[0].m_gamertag;
-	unsigned int settings = app.GetGameHostOption(eGameHostOption_All);
-	WinsockNetLayer::StartAdvertising(port, hostName, settings, 0, 0, MINECRAFT_NET_VERSION);
+	if (WinsockNetLayer::IsActive())
+	{
+		const wchar_t* hostName = IQNet::m_player[0].m_gamertag;
+		unsigned int settings = app.GetGameHostOption(eGameHostOption_All);
+		WinsockNetLayer::StartAdvertising(port, hostName, settings, 0, 0, MINECRAFT_NET_VERSION);
+	}
 #endif
 //#endif
 }

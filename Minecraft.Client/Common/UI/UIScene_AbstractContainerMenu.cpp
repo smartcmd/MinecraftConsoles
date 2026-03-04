@@ -33,6 +33,11 @@ UIScene_AbstractContainerMenu::UIScene_AbstractContainerMenu(int iPad, UILayer *
 	m_bHasMousePosition = false;
 	m_lastMouseX = 0;
 	m_lastMouseY = 0;
+
+	for (int btn = 0; btn < 3; btn++)
+	{
+		KMInput.ConsumeMousePress(btn);
+	}
 #endif
 }
 
@@ -209,8 +214,8 @@ void UIScene_AbstractContainerMenu::tick()
 			scrollDelta = KMInput.ConsumeScrollDelta();
 
 			// Convert mouse position to movie coordinates using the movie/client ratio
-			float mx = (float)mouseX * ((float)m_movieWidth / (float)clientWidth);
-			float my = (float)mouseY * ((float)m_movieHeight / (float)clientHeight);
+			float mx = (float)mouseX * ((float)m_movieWidth / (float)clientWidth) - (float)m_controlMainPanel.getXPos();
+			float my = (float)mouseY * ((float)m_movieHeight / (float)clientHeight) - (float)m_controlMainPanel.getYPos();
 
 			rawMouseMovieX = mx;
 			rawMouseMovieY = my;
@@ -301,8 +306,13 @@ void UIScene_AbstractContainerMenu::tick()
 		// Scale mouse client coords to the Iggy display space (which was set to getRenderDimensions())
 		RECT clientRect;
 		GetClientRect(KMInput.GetHWnd(), &clientRect);
-		x = (S32)((float)KMInput.GetMouseX() * ((float)width / (float)clientRect.right));
-		y = (S32)((float)KMInput.GetMouseY() * ((float)height / (float)clientRect.bottom));
+		float mouseMovieX = (float)KMInput.GetMouseX() * ((float)m_movieWidth / (float)clientRect.right);
+		float mouseMovieY = (float)KMInput.GetMouseY() * ((float)m_movieHeight / (float)clientRect.bottom);
+		float mouseLocalX = mouseMovieX - (float)m_controlMainPanel.getXPos();
+		float mouseLocalY = mouseMovieY - (float)m_controlMainPanel.getYPos();
+
+		x = (S32)(mouseLocalX * ((float)width / m_movieWidth));
+		y = (S32)(mouseLocalY * ((float)height / m_movieHeight));
 	}
 	else
 	{

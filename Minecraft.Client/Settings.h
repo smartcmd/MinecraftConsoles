@@ -7,8 +7,8 @@ class Settings
 //    public static Logger logger = Logger.getLogger("Minecraft");
 //    private Properties properties = new Properties();
 private:
-	unordered_map<wstring,wstring> properties;	// 4J - TODO was Properties type, will need to implement something we can serialise/deserialise too
-	//File *file;
+	unordered_map<wstring,wstring> properties;
+	wstring filePath;
 
 public:
 	Settings(File *file);
