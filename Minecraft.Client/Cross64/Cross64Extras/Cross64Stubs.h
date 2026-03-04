@@ -26,7 +26,7 @@ typedef struct _SYSTEMTIME {
 
 inline VOID GetSystemTime(LPSYSTEMTIME lpSystemTime) {
   const auto dateTime = system_clock::now();
-  const auto dp = floor<std::chrono::days>(dateTime);
+  const auto dp = floor<days>(dateTime);
 
   const year_month_day ymd{dp};
   const hh_mm_ss hms{dateTime - dp};
