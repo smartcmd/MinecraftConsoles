@@ -1,18 +1,16 @@
 #include "stdafx.h"
 #include <string>
 #include <unordered_map>
-<<<<<<< HEAD
 #include <Minecraft.h>
 #include <MultiPlayerLocalPlayer.h>
-=======
-#include "Minecraft.Client/Minecraft.h"
-#include "Minecraft.Client/MultiPlayerLocalPlayer.h"
->>>>>>> parent of fef5c7b0 (the reformatting, pt 1)
 #include "Tutorial.h"
 #include "TutorialConstraints.h"
 #include "InfoTask.h"
 #include "Minecraft.World/Material.h"
-#include "..\..\KeyboardMouseInput.h"
+
+#ifdef _WINDOWS64
+#include "Minecraft.Client/Windows64/KeyboardMouseInput.h"
+#endif
 
 InfoTask::InfoTask(Tutorial *tutorial, int descriptionId, int promptId /*= -1*/, bool requiresUserInput /*= false*/,
 	int iMapping /*= 0*/, ETelemetryChallenges telemetryEvent /*= eTelemetryTutorial_NoEvent*/)
