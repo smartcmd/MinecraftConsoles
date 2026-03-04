@@ -7,6 +7,8 @@
 #include "..\..\Windows64\Network\WinsockNetLayer.h"
 #include "..\..\Minecraft.h"
 #include "..\..\User.h"
+#include <iostream>
+#include <fstream>
 #endif
 
 CPlatformNetworkManagerStub *g_pPlatformNetworkManager;
@@ -729,6 +731,51 @@ void CPlatformNetworkManagerStub::SearchForGames()
 
 		friendsSessions[0].push_back(info);
 	}
+
+	//TODO: add file checking for servers.txt
+	#ifdef _WINDOWS64 //Should we have this windows64 only? idk i havent tested so...
+	ifstream ServersTxt("servers.txt");
+	if (ServersTxt) {
+		string line;
+		wstring wline;
+		int phase = 0;
+		string ip;
+		wstring port;
+		wstring name;
+		while (getline(ServersTxt, line)) {
+			wline = convStringToWstring(line);
+			if (phase == 0) {
+				ip = line;
+				phase = 1;
+			}
+			else if (phase == 1) {
+				port = wline;
+				phase = 2;
+			}
+			else if (phase == 2) {
+				name = wline;
+				phase = 0;
+
+				//Add server to the list!
+				FriendSessionInfo* info = new FriendSessionInfo();
+				wchar_t label[128];
+				swprintf(label, L"%S", name);
+				size_t nameLen = wcslen(label);
+				info->displayLabel = new wchar_t[nameLen+1];
+				wcscpy_s(info->displayLabel, nameLen + 1, label);
+				info->displayLabelLength = (unsigned char)nameLen;
+				info->displayLabelViewableStartIndex = 0;
+				info->data.isReadyToJoin = true;
+				info->data.isJoinable = true;
+				strncpy_s(info->data.hostIP, sizeof(info->data.hostIP), ip.c_str(), _TRUNCATE);
+				info->data.hostPort = stoi(port);
+				info->sessionId = (SessionID)((unsigned __int64)inet_addr(ip.c_str()) | ((unsigned __int64)stoi(port) << 32));
+				friendsSessions[0].push_back(info);
+			}
+		}
+		ServersTxt.close();
+	}
+	#endif
 
 	m_searchResultsCount[0] = (int)friendsSessions[0].size();
 
