@@ -228,9 +228,29 @@ static BOOL WINAPI HeadlessServerCtrlHandler(DWORD ctrlType)
 
 static void SetupHeadlessServerConsole()
 {
-	// The exe is now linked as /SUBSYSTEM:CONSOLE, so it inherits the parent's
-	// console automatically.  We just need to re-open the CRT streams so that
-	// printf/scanf go through the console and set up our Ctrl handler.
+	// The exe is linked as /SUBSYSTEM:CONSOLE, so it normally inherits the
+	// parent's console.  However, if launched with DETACHED_PROCESS or
+	// CREATE_NO_WINDOW the handles may be invalid.  Verify before redirecting
+	// the CRT streams to avoid leaving them in a broken state.
+	HANDLE hStdOut = GetStdHandle(STD_OUTPUT_HANDLE);
+	HANDLE hStdIn  = GetStdHandle(STD_INPUT_HANDLE);
+	bool hasConsole =
+		hStdOut != NULL && hStdOut != INVALID_HANDLE_VALUE &&
+		hStdIn  != NULL && hStdIn  != INVALID_HANDLE_VALUE;
+
+	if (!hasConsole)
+	{
+		if (!AttachConsole(ATTACH_PARENT_PROCESS))
+		{
+			if (!AllocConsole())
+			{
+				// No console available at all; skip stream redirection.
+				SetConsoleCtrlHandler(HeadlessServerCtrlHandler, TRUE);
+				return;
+			}
+		}
+	}
+
 	FILE* stream = NULL;
 	freopen_s(&stream, "CONIN$", "r", stdin);
 	freopen_s(&stream, "CONOUT$", "w", stdout);

@@ -62,8 +62,10 @@ if(MSVC)
   # Docker and piped output in server mode).  WinMainCRTStartup keeps the
   # WinMain entry point.  Client mode calls FreeConsole() to detach.
   target_link_options(MinecraftClient PRIVATE
-    /SUBSYSTEM:CONSOLE /ENTRY:WinMainCRTStartup
-    $<$<CONFIG:Release>:/LTCG /INCREMENTAL:NO>
+    /SUBSYSTEM:CONSOLE
+    /ENTRY:WinMainCRTStartup
+    $<$<CONFIG:Release>:/LTCG>
+    $<$<CONFIG:Release>:/INCREMENTAL:NO>
   )
 endif()
 
