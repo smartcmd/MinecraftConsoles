@@ -33,6 +33,11 @@ UIScene_AbstractContainerMenu::UIScene_AbstractContainerMenu(int iPad, UILayer *
 	m_bHasMousePosition = false;
 	m_lastMouseX = 0;
 	m_lastMouseY = 0;
+
+	for (int btn = 0; btn < 3; btn++)
+	{
+		KMInput.ConsumeMousePress(btn);
+	}
 #endif
 }
 
