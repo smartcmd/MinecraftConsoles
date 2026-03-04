@@ -88,8 +88,7 @@ BOOL g_bWidescreen = TRUE;
 int g_iScreenWidth = 1920;
 int g_iScreenHeight = 1080;
 
-UINT g_ScreenWidth = 1920;
-UINT g_ScreenHeight = 1080;
+float g_iAspectRatio = static_cast<float>(g_iScreenWidth) / g_iScreenHeight;
 
 char g_Win64Username[17] = { 0 };
 wchar_t g_Win64UsernameW[17] = { 0 };
@@ -97,6 +96,14 @@ wchar_t g_Win64UsernameW[17] = { 0 };
 // Fullscreen toggle state
 static bool g_isFullscreen = false;
 static WINDOWPLACEMENT g_wpPrev = { sizeof(g_wpPrev) };
+
+//--------------------------------------------------------------------------------------
+// Update the Aspect Ratio to support Any Aspect Ratio
+//--------------------------------------------------------------------------------------
+void UpdateAspectRatio(int width, int height)
+{
+	g_iAspectRatio = static_cast<float>(width) / height;
+}
 
 struct Win64LaunchOptions
 {
@@ -468,6 +475,7 @@ ID3D11Texture2D*		g_pDepthStencilBuffer = NULL;
 //  WM_COMMAND	- process the application menu
 //  WM_PAINT	- Paint the main window
 //  WM_DESTROY	- post a quit message and return
+//  WM_SIZE		- handle resizing logic to support Any Aspect Ratio
 //
 //
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
@@ -583,6 +591,11 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 					}
 				}
 			}
+		}
+		break;
+	case WM_SIZE:
+		{
+			UpdateAspectRatio(LOWORD(lParam), HIWORD(lParam));
 		}
 		break;
 	default:
@@ -719,7 +732,7 @@ HRESULT InitDevice()
 //app.DebugPrintf("width: %d, height: %d\n", width, height);
 	width = g_iScreenWidth;
 	height = g_iScreenHeight;
-app.DebugPrintf("width: %d, height: %d\n", width, height);
+//app.DebugPrintf("width: %d, height: %d\n", width, height);
 
 	UINT createDeviceFlags = 0;
 #ifdef _DEBUG
