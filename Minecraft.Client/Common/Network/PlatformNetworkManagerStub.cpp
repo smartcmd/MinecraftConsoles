@@ -736,12 +736,15 @@ void CPlatformNetworkManagerStub::SearchForGames()
 	#ifdef _WINDOWS64 //Should we have this windows64 only? idk i havent tested so...
 	ifstream ServersTxt("servers.txt");
 	if (ServersTxt) {
+
 		string line;
 		wstring wline;
 		int phase = 0;
+
 		string ip;
 		wstring port;
 		wstring name;
+
 		while (getline(ServersTxt, line)) {
 			app.DebugPrintf("Read line %s in phase %i\n", line, phase);
 			wline = convStringToWstring(line);
@@ -761,7 +764,7 @@ void CPlatformNetworkManagerStub::SearchForGames()
 				//Add server to the list!
 				FriendSessionInfo* info = new FriendSessionInfo();
 				wchar_t label[128];
-				swprintf(label, L"%S", name);
+				wcsncpy_s(label, _countof(label), name.c_str(), _TRUNCATE);
 				size_t nameLen = wcslen(label);
 				info->displayLabel = new wchar_t[nameLen+1];
 				wcscpy_s(info->displayLabel, nameLen + 1, label);
