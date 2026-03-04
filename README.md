@@ -45,7 +45,7 @@ This feature is based on [LCEMP](https://github.com/LCEMP/LCEMP/)
 - **Sprint**: `Ctrl` (Hold) or Double-tap `W`
 - **Inventory**: `E`
 - **Drop Item**: `Q`
-- **Crafting**: `C`
+- **Crafting**: `C` Use `Q` and `E` to move through tabs (cycles Left/Right)
 - **Toggle View (FPS/TPS)**: `F5`
 - **Fullscreen**: `F11`
 - **Pause Menu**: `Esc`
