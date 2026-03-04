@@ -41,7 +41,7 @@ inline VOID GetSystemTime(LPSYSTEMTIME lpSystemTime) {
 
 inline VOID GetLocalTime(LPSYSTEMTIME lpSystemTime) {
   const auto dateTime = system_clock::now();
-  
+
   const auto tz = current_zone();
   const auto tpl = tz->to_local(dateTime);
   const auto dp = floor<days>(tpl);
@@ -52,7 +52,7 @@ inline VOID GetLocalTime(LPSYSTEMTIME lpSystemTime) {
 
   lpSystemTime->wYear = ymd.year();
   lpSystemTime->wMonth = ymd.month();
-  lpSystemTime->wDayOfWeek = wd.c_encoding(); // 0 = sunday, etc
+  lpSystemTime->wDayOfWeek = wd.c_encoding();
   lpSystemTime->wHour = hms.hours();
   lpSystemTime->wMinute = hms.minutes();
   lpSystemTime->wSecond = hms.seconds();
