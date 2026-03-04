@@ -170,7 +170,6 @@ void SignTileEntity::SetMessage(int iIndex,wstring &wsText)
 	if (wsText.length() > MAX_LINE_LENGTH)  // MAX_LINE_LENGTH == 15
     {
         wsText = wsText.substr(0, MAX_LINE_LENGTH);
-        OutputDebugStringW(L"Sign text truncated to 15 characters\n");
     }
 	m_wsmessages[iIndex]=wsText;
 }
