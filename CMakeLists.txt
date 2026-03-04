@@ -89,22 +89,59 @@ target_link_libraries(MinecraftClient PRIVATE
   >
 )
 
-message(STATUS "Starting redist copy...")
-execute_process(
-  COMMAND robocopy.exe "${CMAKE_CURRENT_SOURCE_DIR}/x64/Release" "${CMAKE_CURRENT_BINARY_DIR}"
-  /S /MT /R:0 /W:0 /NP
-)
-
-message(STATUS "Starting asset copy...")
-execute_process(
-  COMMAND robocopy.exe "${CMAKE_CURRENT_SOURCE_DIR}/Minecraft.Client" "${CMAKE_CURRENT_BINARY_DIR}"
-  /S /MT /R:0 /W:0 /NP
-  /XF "*.cpp" "*.c" "*.h" "*.hpp" "*.asm"
-      "*.txt" "*.xml" "*.lang" "*.vcxproj" "*.vcxproj.*" "*.sln"
-      "*.docx" "*.xls"
-      "*.bat" "*.cmd" "*.ps1" "*.py"
-      "*Test*"
-  /XD "Durango*" "Orbis*" "PS*" "Xbox"
-)
+if(WIN32)
+  message(STATUS "Starting redist copy...")
+  execute_process(
+    COMMAND robocopy.exe
+            "${CMAKE_CURRENT_SOURCE_DIR}/x64/Release"
+            "${CMAKE_CURRENT_BINARY_DIR}"
+            /S /MT /R:0 /W:0 /NP
+  )
+  message(STATUS "Starting asset copy...")
+  execute_process(
+    COMMAND robocopy.exe
+            "${CMAKE_CURRENT_SOURCE_DIR}/Minecraft.Client"
+            "${CMAKE_CURRENT_BINARY_DIR}"
+            /S /MT /R:0 /W:0 /NP
+            /XF "*.cpp" "*.c" "*.h" "*.hpp" "*.asm"
+                "*.xml" "*.lang" "*.vcxproj" "*.vcxproj.*" "*.sln"
+                "*.docx" "*.xls"
+                "*.bat" "*.cmd" "*.ps1" "*.py"
+                "*Test*"
+            /XD "Durango*" "Orbis*" "PS*" "Xbox"
+  )
+  message(STATUS "Patching Windows64Media...")
+  execute_process(
+    COMMAND robocopy.exe
+            "${CMAKE_CURRENT_SOURCE_DIR}/Minecraft.Client/DurangoMedia"
+            "${CMAKE_CURRENT_BINARY_DIR}/Windows64Media"
+            /S /MT /R:0 /W:0 /NP
+            /XF "*.h" "*.xml" "*.lang" "*.bat"
+  )
+elseif(UNIX)
+  message(STATUS "Starting redist copy...")
+  execute_process(
+    COMMAND rsync -av "${CMAKE_CURRENT_SOURCE_DIR}/x64/Release/" "${CMAKE_CURRENT_BINARY_DIR}/"
+  )
+  message(STATUS "Starting asset copy...")
+  execute_process(
+    COMMAND rsync -av
+            "--exclude=*.cpp" "--exclude=*.c" "--exclude=*.h" "--exclude=*.hpp" "--exclude=*.asm"
+            "--exclude=*.xml" "--exclude=*.lang" "--exclude=*.vcxproj" "--exclude=*.vcxproj.*" "--exclude=*.sln"
+            "--exclude=*.docx" "--exclude=*.xls"
+            "--exclude=*.bat" "--exclude=*.cmd" "--exclude=*.ps1" "--exclude=*.py"
+            "--exclude=*Test*"
+            "--exclude=Durango*" "--exclude=Orbis*" "--exclude=PS*" "--exclude=Xbox"
+            "${CMAKE_CURRENT_SOURCE_DIR}/Minecraft.Client/" "${CMAKE_CURRENT_BINARY_DIR}/"
+  )
+  message(STATUS "Patching Windows64Media...")
+  execute_process(
+    COMMAND rsync -av
+            "--exclude=*.h" "--exclude=*.xml" "--exclude=*.lang" "--exclude=*.bat"
+            "${CMAKE_CURRENT_SOURCE_DIR}/Minecraft.Client/DurangoMedia/" "${CMAKE_CURRENT_BINARY_DIR}/Windows64Media/"
+  )
+else()
+  message(FATAL_ERROR "Redist and asset copying is only supported on Windows (Robocopy) and Unix systems (rsync).")
+endif()
 
 set_property(DIRECTORY PROPERTY VS_STARTUP_PROJECT MinecraftClient)
