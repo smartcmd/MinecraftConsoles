@@ -3550,7 +3550,7 @@ void Minecraft::tick(bool bFirst, bool bUpdateTextures)
 				player->lastClickTick[0] = ticks;
 			}
 #ifdef _WINDOWS64
-			else if (iPad == 0 && KMInput.IsCaptured() && KMInput.ConsumeMousePress(0))
+			else if (iPad == 0 && KMInput.IsCaptured() && remapConsumePress(options->keyAttack->key))
 			{
 				player->handleMouseClick(0);
 				player->lastClickTick[0] = ticks;
@@ -3564,7 +3564,7 @@ void Minecraft::tick(bool bFirst, bool bUpdateTextures)
 				player->lastClickTick[0] = ticks;
 			}
 #ifdef _WINDOWS64
-			else if (iPad == 0 && KMInput.IsCaptured() && KMInput.IsMouseDown(0) && ticks - player->lastClickTick[0] >= timer->ticksPerSecond / 4)
+			else if (iPad == 0 && KMInput.IsCaptured() && remapIsDown(options->keyAttack->key) && ticks - player->lastClickTick[0] >= timer->ticksPerSecond / 4)
 			{
 				player->handleMouseClick(0);
 				player->lastClickTick[0] = ticks;
@@ -3573,7 +3573,7 @@ void Minecraft::tick(bool bFirst, bool bUpdateTextures)
 
 			if(InputManager.ButtonDown(iPad, MINECRAFT_ACTION_ACTION)
 #ifdef _WINDOWS64
-				|| (iPad == 0 && KMInput.IsCaptured() && KMInput.IsMouseDown(0))
+				|| (iPad == 0 && KMInput.IsCaptured() && remapIsDown(options->keyAttack->key))
 #endif
 			)
 			{
@@ -3598,14 +3598,14 @@ void Minecraft::tick(bool bFirst, bool bUpdateTextures)
 		{
 			if(!InputManager.ButtonDown(iPad, MINECRAFT_ACTION_USE)
 #ifdef _WINDOWS64
-				&& !(iPad == 0 && KMInput.IsCaptured() && KMInput.IsMouseDown(1))
+				&& !(iPad == 0 && KMInput.IsCaptured() && remapIsDown(options->keyUse->key))
 #endif
 			) gameMode->releaseUsingItem(player);
 		}
 		else if( gameMode->isInputAllowed(MINECRAFT_ACTION_USE) )
 		{
 #ifdef _WINDOWS64
-			bool useButtonDown = InputManager.ButtonDown(iPad, MINECRAFT_ACTION_USE) || (iPad == 0 && KMInput.IsCaptured() && KMInput.IsMouseDown(1));
+			bool useButtonDown = InputManager.ButtonDown(iPad, MINECRAFT_ACTION_USE) || (iPad == 0 && KMInput.IsCaptured() && remapIsDown(options->keyUse->key));
 #else
 			bool useButtonDown = InputManager.ButtonDown(iPad, MINECRAFT_ACTION_USE);
 #endif

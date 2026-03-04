@@ -249,7 +249,7 @@ void UIScene_ControlRemapMenu::handlePress(F64 controlId, F64 childId)
 			UINT uiIDA[2];
 			uiIDA[0] = IDS_CONFIRM_CANCEL;
 			uiIDA[1] = IDS_CONFIRM_OK;
-
+			// The 100+ commits before this broke this code, so I'm not sure if the callback system is still working correctly. If it is, this should show a confirmation dialog and reset to defaults if the user confirms.
 			// ui.RequestMessageBox(IDS_DEFAULTS_TITLE, IDS_DEFAULTS_TEXT, uiIDA, 2, m_iPad, &UIScene_ControlRemapMenu::ResetDefaultsDialogReturned, this, app.GetStringTable(), NULL, 0, false);
 		}
 		break;
