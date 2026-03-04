@@ -1,11 +1,14 @@
 #include "stdafx.h"
 #include "UI.h"
 #include "UIScene_SettingsGraphicsMenu.h"
+#include "..\..\Minecraft.h"
+#include "..\..\GameRenderer.h"
 
 UIScene_SettingsGraphicsMenu::UIScene_SettingsGraphicsMenu(int iPad, void *initData, UILayer *parentLayer) : UIScene(iPad, parentLayer)
 {
 	// Setup all the Iggy references we need for this scene
 	initialiseMovie();
+	Minecraft* pMinecraft = Minecraft::GetInstance();
 	
 	m_bNotInGame=(Minecraft::GetInstance()->level==NULL);
 
@@ -18,6 +21,9 @@ UIScene_SettingsGraphicsMenu::UIScene_SettingsGraphicsMenu(int iPad, void *initD
 	
 	swprintf( (WCHAR *)TempString, 256, L"%ls: %d%%", app.GetString( IDS_SLIDER_GAMMA ),app.GetGameSettings(m_iPad,eGameSetting_Gamma));	
 	m_sliderGamma.init(TempString,eControl_Gamma,0,100,app.GetGameSettings(m_iPad,eGameSetting_Gamma));
+
+	swprintf((WCHAR*)TempString, 256, L"FOV: %d%%", (int)pMinecraft->gameRenderer->GetFovVal());
+	m_sliderFOV.init(TempString, eControl_FOV, 70, 110, (int)pMinecraft->gameRenderer->GetFovVal());
 	
 	swprintf( (WCHAR *)TempString, 256, L"%ls: %d%%", app.GetString( IDS_SLIDER_INTERFACEOPACITY ),app.GetGameSettings(m_iPad,eGameSetting_InterfaceOpacity));	
 	m_sliderInterfaceOpacity.init(TempString,eControl_InterfaceOpacity,0,100,app.GetGameSettings(m_iPad,eGameSetting_InterfaceOpacity));
@@ -141,6 +147,17 @@ void UIScene_SettingsGraphicsMenu::handleSliderMove(F64 sliderId, F64 currentVal
 		m_sliderGamma.setLabel(TempString);
 
 		break;
+
+	case eControl_FOV:
+		{
+			Minecraft* pMinecraft = Minecraft::GetInstance();
+			pMinecraft->gameRenderer->SetFovVal((float)currentValue);
+			WCHAR TempString[256];
+			swprintf((WCHAR*)TempString, 256, L"FOV: %d%%", (int)currentValue);
+			m_sliderFOV.setLabel(TempString);
+		}
+		break;
+
 	case eControl_InterfaceOpacity:
 		m_sliderInterfaceOpacity.handleSliderMove(value);
 		

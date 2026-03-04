@@ -304,7 +304,8 @@ public:
 	virtual void onLoadedFromSave();
 
 protected:
-	ListTag<DoubleTag> *newDoubleList(unsigned int number, double firstValue, ...);
+	template<typename ...Args>
+	ListTag<DoubleTag> *newDoubleList(unsigned int, double firstValue, Args... args);
 	ListTag<FloatTag> *newFloatList(unsigned int number, float firstValue, float secondValue);
 
 public:

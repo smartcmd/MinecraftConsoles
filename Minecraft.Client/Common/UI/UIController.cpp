@@ -1012,6 +1012,7 @@ void UIController::handleKeyPress(unsigned int iPad, unsigned int key)
 			case ACTION_MENU_PAUSEMENU: kbDown = KMInput.IsKeyDown(VK_ESCAPE); kbPressed = KMInput.IsKeyPressed(VK_ESCAPE); kbReleased = KMInput.IsKeyReleased(VK_ESCAPE); break;
 			case ACTION_MENU_LEFT_SCROLL: kbDown = KMInput.IsKeyDown('Q'); kbPressed = KMInput.IsKeyPressed('Q'); kbReleased = KMInput.IsKeyReleased('Q'); break;
 			case ACTION_MENU_RIGHT_SCROLL: kbDown = KMInput.IsKeyDown('E'); kbPressed = KMInput.IsKeyPressed('E'); kbReleased = KMInput.IsKeyReleased('E'); break;
+			case ACTION_MENU_QUICK_MOVE: kbDown = KMInput.IsKeyDown(VK_SHIFT); kbPressed = KMInput.IsKeyPressed(VK_SHIFT); kbReleased = KMInput.IsKeyReleased(VK_SHIFT); break;
 		}
 		pressed = pressed || kbPressed;
 		released = released || kbReleased;
@@ -1444,7 +1445,7 @@ GDrawTexture * RADLINK UIController::TextureSubstitutionCreateCallback ( void * 
 
 			// 4J Stu - All our flash controls that allow replacing textures use a special 64x64 symbol
 			// Force this size here so that our images don't get scaled wildly
-	#if (defined __ORBIS__ || defined _DURANGO )
+	#if (defined __ORBIS__ || defined _DURANGO || defined _WINDOWS64 )
 			*width = 96;
 			*height = 96;
 	#else

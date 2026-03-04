@@ -106,7 +106,7 @@ void SimpleContainer::setCustomName(const wstring &name)
 	this->stringName = name;
 }
 
-int SimpleContainer::getMaxStackSize()
+int SimpleContainer::getMaxStackSize() const
 {
 	return Container::LARGE_MAX_STACK_SIZE;
 }

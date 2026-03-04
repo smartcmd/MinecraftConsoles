@@ -210,7 +210,6 @@ void IUIScene_CreativeMenu::staticCtor()
 		ITEM_AUX(Tile::woolCarpet_Id,13)	// Green
 		ITEM_AUX(Tile::woolCarpet_Id,12)	// Brown
 
-#if 0
 		ITEM_AUX(Tile::stained_glass_Id,14)	// Red
 		ITEM_AUX(Tile::stained_glass_Id,1)	// Orange
 		ITEM_AUX(Tile::stained_glass_Id,4)	// Yellow
@@ -244,7 +243,6 @@ void IUIScene_CreativeMenu::staticCtor()
 		ITEM_AUX(Tile::stained_glass_pane_Id,15)	// Black
 		ITEM_AUX(Tile::stained_glass_pane_Id,13)	// Green
 		ITEM_AUX(Tile::stained_glass_pane_Id,12)	// Brown
-#endif
 
 #ifndef _CONTENT_PACKAGE
 	DEF(eCreativeInventory_ArtToolsDecorations)
@@ -845,8 +843,9 @@ IUIScene_CreativeMenu::TabSpec::TabSpec(LPCWSTR icon, int descriptionId, int sta
 		}
 	}
 
-	m_staticPerPage = MAX_SIZE - dynamicItems;
-	m_pages = (int)ceil((float)m_staticItems / m_staticPerPage);
+	m_staticPerPage = columns;
+	const int totalRows = (m_staticItems + columns - 1) / columns;
+	m_pages = std::max<int>(1, totalRows - 5 + 1);
 }
 
 IUIScene_CreativeMenu::TabSpec::~TabSpec()
@@ -881,7 +880,7 @@ void IUIScene_CreativeMenu::TabSpec::populateMenu(AbstractContainerMenu *menu, i
 	for(; currentGroup < m_staticGroupsCount; ++currentGroup)
 	{
 		int size = categoryGroups[m_staticGroupsA[currentGroup]].size();
-		if( currentIndex + size < startIndex)
+		if( currentIndex + size <= startIndex)
 		{
 			currentIndex += size;
 			continue;
@@ -931,7 +930,7 @@ void IUIScene_CreativeMenu::TabSpec::populateMenu(AbstractContainerMenu *menu, i
 			for(; currentGroup < m_debugGroupsCount; ++currentGroup)
 			{
 				int size = categoryGroups[m_debugGroupsA[currentGroup]].size();
-				if( currentIndex + size < startIndex)
+				if( currentIndex + size <= startIndex)
 				{
 					currentIndex += size;
 					continue;
@@ -972,7 +971,9 @@ unsigned int IUIScene_CreativeMenu::TabSpec::getPageCount()
 #ifndef _CONTENT_PACKAGE
 	if(app.DebugArtToolsOn())
 	{
-		return (int)ceil((float)(m_staticItems + m_debugItems) / m_staticPerPage);
+		int totalItems = m_staticItems + m_debugItems;
+		const int totalRows = (totalItems + columns - 1) / columns;
+		return std::max<int>(1, totalRows - rows + 1);
 	}
 	else
 #endif

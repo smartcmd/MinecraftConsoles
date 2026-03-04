@@ -70,7 +70,7 @@ void CompoundContainer::setItem(unsigned int slot, shared_ptr<ItemInstance> item
 	else c1->setItem(slot, item);
 }
 
-int CompoundContainer::getMaxStackSize()
+int CompoundContainer::getMaxStackSize() const
 {
 	return c1->getMaxStackSize();
 }

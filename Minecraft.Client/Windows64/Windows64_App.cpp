@@ -35,9 +35,27 @@ void CConsoleMinecraftApp::FatalLoadError()
 
 void CConsoleMinecraftApp::CaptureSaveThumbnail()
 {
+	RenderManager.CaptureThumbnail(&m_ThumbnailBuffer);
 }
 void CConsoleMinecraftApp::GetSaveThumbnail(PBYTE *pbData,DWORD *pdwSize)
 {
+	// On a save caused by a create world, the thumbnail capture won't have happened
+	if (m_ThumbnailBuffer.Allocated())
+	{
+		if (pbData)
+		{
+			*pbData  = new BYTE[m_ThumbnailBuffer.GetBufferSize()];
+			*pdwSize = m_ThumbnailBuffer.GetBufferSize();
+			memcpy(*pbData, m_ThumbnailBuffer.GetBufferPointer(), *pdwSize);
+		}
+		m_ThumbnailBuffer.Release();
+	}
+	else
+	{
+		// No capture happened (e.g. first save on world creation) leave thumbnail as NULL
+		if (pbData)  *pbData  = NULL;
+		if (pdwSize) *pdwSize = 0;
+	}
 }
 void CConsoleMinecraftApp::ReleaseSaveThumbnail()
 {
@@ -57,7 +75,8 @@ void CConsoleMinecraftApp::TemporaryCreateGameStart()
 	Minecraft *pMinecraft=Minecraft::GetInstance();
 	app.ReleaseSaveThumbnail();
 	ProfileManager.SetLockedProfile(0);
-	pMinecraft->user->name = L"Windows";
+	extern wchar_t g_Win64UsernameW[17];
+	pMinecraft->user->name = g_Win64UsernameW;
 	app.ApplyGameSettingsChanged(0);
 
 	////////////////////////////////////////////////////////////////////////////////////////////// From CScene_MultiGameJoinLoad::OnInit

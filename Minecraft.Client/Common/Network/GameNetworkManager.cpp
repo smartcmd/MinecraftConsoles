@@ -167,6 +167,11 @@ bool CGameNetworkManager::_RunNetworkGame(LPVOID lpParameter)
 			return true;
 		}
 	}
+	else
+	{
+		// Client needs QNET_STATE_GAME_PLAY so that IsInGameplay() returns true
+		s_pPlatformNetworkManager->SetGamePlayState();
+	}
 	
 	if( g_NetworkManager.IsLeavingGame() ) return false;
 
@@ -1479,7 +1484,10 @@ void CGameNetworkManager::CreateSocket( INetworkPlayer *pNetworkPlayer, bool loc
 	Minecraft *pMinecraft = Minecraft::GetInstance();
 
 	Socket *socket = NULL;
-	shared_ptr<MultiplayerLocalPlayer> mpPlayer = pMinecraft->localplayers[pNetworkPlayer->GetUserIndex()];
+	shared_ptr<MultiplayerLocalPlayer> mpPlayer = nullptr;
+	int userIdx = pNetworkPlayer->GetUserIndex();
+	if (userIdx >= 0 && userIdx < XUSER_MAX_COUNT)
+		mpPlayer = pMinecraft->localplayers[userIdx];
 	if( localPlayer && mpPlayer != NULL && mpPlayer->connection != NULL)
 	{
 		// If we already have a MultiplayerLocalPlayer here then we are doing a session type change
@@ -1970,7 +1978,7 @@ bool CGameNetworkManager::AllowedToPlayMultiplayer(int playerIdx)
 	return ProfileManager.AllowedToPlayMultiplayer(playerIdx);
 }
 
-char *CGameNetworkManager::GetOnlineName(int playerIdx)
+const char *CGameNetworkManager::GetOnlineName(int playerIdx)
 {
 	return ProfileManager.GetGamertag(playerIdx);
 }

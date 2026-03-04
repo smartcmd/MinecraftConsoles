@@ -48,9 +48,13 @@ void glLoadIdentity()
 	RenderManager.MatrixSetIdentity();
 }
 
+extern int g_iScreenWidth;
+extern int g_iScreenHeight;
+
 void gluPerspective(float fovy, float aspect, float zNear, float zFar)
 {
-	RenderManager.MatrixPerspective(fovy,aspect,zNear,zFar);
+	float dynamicAspect = (float)g_iScreenWidth / (float)g_iScreenHeight;
+	RenderManager.MatrixPerspective(fovy, dynamicAspect, zNear, zFar);
 }
 
 void glOrtho(float left,float right,float bottom,float top,float zNear,float zFar)

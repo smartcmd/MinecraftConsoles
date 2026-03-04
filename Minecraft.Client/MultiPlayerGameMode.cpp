@@ -6,6 +6,7 @@
 #include "Minecraft.h"
 #include "ClientConnection.h"
 #include "LevelRenderer.h"
+#include "Common/Network/GameNetworkManager.h"
 #include "../Minecraft.World/net.minecraft.world.level.h"
 #include "../Minecraft.World/net.minecraft.world.item.h"
 #include "../Minecraft.World/net.minecraft.world.entity.player.h"
@@ -84,6 +85,14 @@ bool MultiPlayerGameMode::destroyBlock(int x, int y, int z, int face)
 	Tile *oldTile = Tile::tiles[level->getTile(x, y, z)];
 
 	if (oldTile == NULL) return false;
+
+#ifdef _WINDOWS64
+	if (g_NetworkManager.IsHost())
+	{
+		level->levelEvent(LevelEvent::PARTICLES_DESTROY_BLOCK, x, y, z, oldTile->id + (level->getData(x, y, z) << Tile::TILE_NUM_SHIFT));
+		return true;
+	}
+#endif
 
 	level->levelEvent(LevelEvent::PARTICLES_DESTROY_BLOCK, x, y, z, oldTile->id + (level->getData(x, y, z) << Tile::TILE_NUM_SHIFT));
 

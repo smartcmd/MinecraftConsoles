@@ -23,9 +23,9 @@ typedef struct _GameSessionData
 	_GameSessionData()
 	{
 		netVersion = 0;
-		memset(hostName,0,XUSER_NAME_SIZE);
-		memset(players,0,MINECRAFT_NET_MAX_PLAYERS*sizeof(players[0]));
-		memset(szPlayers,0,MINECRAFT_NET_MAX_PLAYERS*XUSER_NAME_SIZE);
+		memset(hostName, 0, XUSER_NAME_SIZE);
+		memset(players, 0, MINECRAFT_NET_MAX_PLAYERS * sizeof(players[0]));
+		memset(szPlayers, 0, MINECRAFT_NET_MAX_PLAYERS * XUSER_NAME_SIZE);
 		isJoinable = true;
 		m_uiGameHostSettings = 0;
 		texturePackParentId = 0;
@@ -50,7 +50,7 @@ typedef struct _GameSessionData
 	_GameSessionData()
 	{
 		netVersion = 0;
-		memset(players,0,MINECRAFT_NET_MAX_PLAYERS*sizeof(players[0]));
+		memset(players, 0, MINECRAFT_NET_MAX_PLAYERS * sizeof(players[0]));
 		isJoinable = true;
 		m_uiGameHostSettings = 0;
 		texturePackParentId = 0;
@@ -63,12 +63,19 @@ typedef struct _GameSessionData
 #else
 typedef struct _GameSessionData
 {
-	unsigned short netVersion;										//   2 bytes
-	unsigned int m_uiGameHostSettings;								//   4 bytes
-	unsigned int texturePackParentId;								//   4 bytes
-	unsigned char subTexturePackId;									//   1 byte
+	unsigned short netVersion;
+	unsigned int m_uiGameHostSettings;
+	unsigned int texturePackParentId;
+	unsigned char subTexturePackId;
 
-	bool isReadyToJoin;												//   1 byte
+	bool isReadyToJoin;
+	bool isJoinable;
+
+	char hostIP[64];
+	int hostPort;
+	wchar_t hostName[XUSER_NAME_SIZE];
+	unsigned char playerCount;
+	unsigned char maxPlayers;
 
 	_GameSessionData()
 	{
@@ -76,6 +83,13 @@ typedef struct _GameSessionData
 		m_uiGameHostSettings = 0;
 		texturePackParentId = 0;
 		subTexturePackId = 0;
+		isReadyToJoin = false;
+		isJoinable = true;
+		memset(hostIP, 0, sizeof(hostIP));
+		hostPort = 0;
+		memset(hostName, 0, sizeof(hostName));
+		playerCount = 0;
+		maxPlayers = MINECRAFT_NET_MAX_PLAYERS;
 	}
 } GameSessionData;
 #endif
@@ -91,7 +105,7 @@ public:
 #elif defined(_DURANGO)
 	DQRNetworkManager::SessionSearchResult searchResult;
 #endif
-	wchar_t *displayLabel;
+	wchar_t* displayLabel;
 	unsigned char displayLabelLength;
 	unsigned char displayLabelViewableStartIndex;
 	GameSessionData data;
@@ -107,7 +121,7 @@ public:
 
 	~FriendSessionInfo()
 	{
-		if(displayLabel!=NULL)
+		if (displayLabel != NULL)
 			delete displayLabel;
 	}
 };

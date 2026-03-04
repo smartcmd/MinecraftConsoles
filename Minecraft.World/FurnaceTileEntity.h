@@ -57,7 +57,7 @@ public:
 	virtual void setCustomName(const wstring &name);
 	virtual void load(CompoundTag *base);
 	virtual void save(CompoundTag *base);
-	virtual int getMaxStackSize();
+	virtual int getMaxStackSize() const;
 	int getBurnProgress(int max);
 	int getLitProgress(int max);
 	bool isLit();

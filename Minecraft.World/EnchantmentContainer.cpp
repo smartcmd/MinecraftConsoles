@@ -6,7 +6,7 @@ EnchantmentContainer::EnchantmentContainer(EnchantmentMenu *menu) : SimpleContai
 {
 }
 
-int EnchantmentContainer::getMaxStackSize()
+int EnchantmentContainer::getMaxStackSize() const
 {
 	return 1;
 }

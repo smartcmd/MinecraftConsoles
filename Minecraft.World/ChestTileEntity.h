@@ -59,7 +59,7 @@ public:
 	virtual void setCustomName(const wstring &name);
 	virtual void load(CompoundTag *base);
 	virtual void save(CompoundTag *base);
-	virtual int getMaxStackSize();
+	virtual int getMaxStackSize() const;
 	virtual bool stillValid(shared_ptr<Player> player);
 	virtual void setChanged();
 	virtual void clearCache();

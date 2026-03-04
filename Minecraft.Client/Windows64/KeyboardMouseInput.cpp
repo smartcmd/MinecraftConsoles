@@ -103,6 +103,7 @@ void KeyboardMouseInput::OnRawMouseInput(LPARAM lParam)
 
 void KeyboardMouseInput::OnMouseButton(int button, bool down)
 {
+	if (ui.IsPauseMenuDisplayed(ProfileManager.GetPrimaryPad())) { return; }
 	if (button >= 0 && button < 3)
 	{
 		if (down && !m_mouseButtons[button]) m_mousePressedAccum[button] = true;

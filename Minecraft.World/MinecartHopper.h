@@ -54,7 +54,7 @@ public:
 	virtual wstring getName() { return MinecartContainer::getName(); }
 	virtual wstring getCustomName() { return MinecartContainer::getCustomName(); }
 	virtual bool hasCustomName() { return MinecartContainer::hasCustomName(); }
-	virtual int getMaxStackSize() { return MinecartContainer::getMaxStackSize(); }
+	virtual int getMaxStackSize() const { return MinecartContainer::getMaxStackSize(); }
 
 	virtual void setChanged() { MinecartContainer::setChanged(); }
 	virtual bool stillValid(shared_ptr<Player> player) { return MinecartContainer::stillValid(player); }

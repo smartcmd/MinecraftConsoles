@@ -430,3 +430,6 @@ build/*
 !x64/**/iggy_w64.dll
 !x64/**/mss64.dll
 !x64/**/redist64/
+
+# Local saves
+Minecraft.Client/Saves/

@@ -14,37 +14,12 @@ Language *Language::getInstance()
 	return singleton;
 }
 
-/* 4J Jev, creates 2 identical functions.
-wstring Language::getElement(const wstring& elementId)
-{
-	return elementId;
-} */
-
-wstring Language::getElement(const wstring& elementId, ...)
-{
-#ifdef __PSVITA__		// 4J - vita doesn't like having a reference type as the last parameter passed to va_start - we shouldn't need this method anyway
-	return L"";
-#elif _MSC_VER >= 1930	// VS2022+ also disallows va_start with reference types
-	return elementId;
-#else
-	va_list args;
-	va_start(args, elementId);
-	return getElement(elementId, args);
-#endif
-}
-
-wstring Language::getElement(const wstring& elementId, va_list args)
-{
-	// 4J TODO
-	return elementId;
-}
-
-wstring Language::getElementName(const wstring& elementId)
+std::wstring Language::getElementName(const std::wstring& elementId)
 {
 	return elementId;
 }
 
-wstring Language::getElementDescription(const wstring& elementId)
+std::wstring Language::getElementDescription(const std::wstring& elementId)
 {
 	return elementId;
 }

@@ -424,12 +424,109 @@ void Textures::bindTextureLayers(ResourceLocation *resource)
 {
 	assert(resource->isPreloaded());
 
+	// Hack: 4JLibs on Windows does not currently reproduce Minecraft's layered horse texture path reliably.
+	// Merge the layers on the CPU and bind the cached result as a normal single texture instead.
+	wstring cacheKey = L"%layered%";
 	int layers = resource->getTextureCount();
-
 	for( int i = 0; i < layers; i++ )
 	{
-		RenderManager.TextureBind(loadTexture(resource->getTexture(i)));
+		cacheKey += std::to_wstring(resource->getTexture(i));
+		cacheKey += L"/";
 	}
+
+	int id = -1;
+	bool inMap = ( idMap.find(cacheKey) != idMap.end() );
+	if( inMap )
+	{
+		id = idMap[cacheKey];
+	}
+	else
+	{
+		// Cache by layer signature so the merge cost is only paid once per horse texture combination.
+		intArray mergedPixels;
+		int mergedWidth = 0;
+		int mergedHeight = 0;
+		bool hasMergedPixels = false;
+
+		for( int i = 0; i < layers; i++ )
+		{
+			TEXTURE_NAME textureName = resource->getTexture(i);
+			if( textureName == (_TEXTURE_NAME)-1 )
+			{
+				continue;
+			}
+
+			wstring resourceName = wstring(preLoaded[textureName]) + L".png";
+			BufferedImage *image = readImage(textureName, resourceName);
+			if( image == NULL )
+			{
+				continue;
+			}
+
+			int width = image->getWidth();
+			int height = image->getHeight();
+			intArray layerPixels = loadTexturePixels(image);
+			delete image;
+
+			if( !hasMergedPixels )
+			{
+				mergedWidth = width;
+				mergedHeight = height;
+				mergedPixels = intArray(width * height);
+				memcpy(mergedPixels.data, layerPixels.data, width * height * sizeof(int));
+				hasMergedPixels = true;
+			}
+			else if( width == mergedWidth && height == mergedHeight )
+			{
+				for( int p = 0; p < width * height; p++ )
+				{
+					int dst = mergedPixels[p];
+					int src = layerPixels[p];
+
+					float srcAlpha = ((src >> 24) & 0xff) / 255.0f;
+					if( srcAlpha <= 0.0f )
+					{
+						continue;
+					}
+
+					float dstAlpha = ((dst >> 24) & 0xff) / 255.0f;
+					float outAlpha = srcAlpha + dstAlpha * (1.0f - srcAlpha);
+					if( outAlpha <= 0.0f )
+					{
+						mergedPixels[p] = 0;
+						continue;
+					}
+
+					float srcFactor = srcAlpha / outAlpha;
+					float dstFactor = (dstAlpha * (1.0f - srcAlpha)) / outAlpha;
+
+					int outA = (int)(outAlpha * 255.0f + 0.5f);
+					int outR = (int)((((src >> 16) & 0xff) * srcFactor) + (((dst >> 16) & 0xff) * dstFactor) + 0.5f);
+					int outG = (int)((((src >> 8) & 0xff) * srcFactor) + (((dst >> 8) & 0xff) * dstFactor) + 0.5f);
+					int outB = (int)(((src & 0xff) * srcFactor) + ((dst & 0xff) * dstFactor) + 0.5f);
+					mergedPixels[p] = (outA << 24) | (outR << 16) | (outG << 8) | outB;
+				}
+			}
+
+			delete[] layerPixels.data;
+		}
+
+		if( hasMergedPixels )
+		{
+			BufferedImage *mergedImage = new BufferedImage(mergedWidth, mergedHeight, BufferedImage::TYPE_INT_ARGB);
+			memcpy(mergedImage->getData(), mergedPixels.data, mergedWidth * mergedHeight * sizeof(int));
+			delete[] mergedPixels.data;
+			id = getTexture(mergedImage, C4JRender::TEXTURE_FORMAT_RxGyBzAw, false);
+		}
+		else
+		{
+			id = 0;
+		}
+
+		idMap[cacheKey] = id;
+	}
+
+	RenderManager.TextureBind(id);
 }
 
 void Textures::bind(int id)

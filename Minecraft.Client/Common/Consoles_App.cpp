@@ -760,6 +760,43 @@ bool CMinecraftApp::LoadBeaconMenu(int iPad ,shared_ptr<Inventory> inventory, sh
 //////////////////////////////////////////////
 // GAME SETTINGS
 //////////////////////////////////////////////
+
+#ifdef _WINDOWS64
+static void Win64_GetSettingsPath(char *outPath, DWORD size)
+{
+    GetModuleFileNameA(NULL, outPath, size);
+    char *lastSlash = strrchr(outPath, '\\');
+    if (lastSlash) *(lastSlash + 1) = '\0';
+    strncat_s(outPath, size, "settings.dat", _TRUNCATE);
+}
+static void Win64_SaveSettings(GAME_SETTINGS *gs)
+{
+    if (!gs) return;
+    char filePath[MAX_PATH] = {};
+    Win64_GetSettingsPath(filePath, MAX_PATH);
+    FILE *f = NULL;
+    if (fopen_s(&f, filePath, "wb") == 0 && f)
+    {
+        fwrite(gs, sizeof(GAME_SETTINGS), 1, f);
+        fclose(f);
+    }
+}
+static void Win64_LoadSettings(GAME_SETTINGS *gs)
+{
+    if (!gs) return;
+    char filePath[MAX_PATH] = {};
+    Win64_GetSettingsPath(filePath, MAX_PATH);
+    FILE *f = NULL;
+    if (fopen_s(&f, filePath, "rb") == 0 && f)
+    {
+        GAME_SETTINGS temp = {};
+        if (fread(&temp, sizeof(GAME_SETTINGS), 1, f) == 1)
+            memcpy(gs, &temp, sizeof(GAME_SETTINGS));
+        fclose(f);
+    }
+}
+#endif
+
 void CMinecraftApp::InitGameSettings()
 {
 	for(int i=0;i<XUSER_MAX_COUNT;i++)
@@ -780,6 +817,8 @@ void CMinecraftApp::InitGameSettings()
 		// clear this for now - it will come from reading the system values
 		memset(pProfileSettings,0,sizeof(C_4JProfile::PROFILESETTINGS));
 		SetDefaultOptions(pProfileSettings,i);
+		Win64_LoadSettings(GameSettingsA[i]);
+		ApplyGameSettingsChanged(i);
 #elif defined __PS3__ || defined __ORBIS__ || defined _DURANGO  || defined __PSVITA__
 		C4JStorage::PROFILESETTINGS *pProfileSettings=StorageManager.GetDashboardProfileSettings(i);
 		// 4J-PB - don't cause an options write to happen here
@@ -1342,9 +1381,13 @@ void CMinecraftApp::ActionGameSettings(int iPad,eGameSetting eVal)
 	case eGameSetting_Gamma:
 		if(iPad==ProfileManager.GetPrimaryPad())
 		{
+#if defined(_WIN64) || defined(_WINDOWS64)
+			pMinecraft->options->set(Options::Option::GAMMA, ((float)GameSettingsA[iPad]->ucGamma) / 100.0f);
+#else
 			// ucGamma range is 0-100, UpdateGamma is 0 - 32768
 			float fVal=((float)GameSettingsA[iPad]->ucGamma)*327.68f;
 			RenderManager.UpdateGamma((unsigned short)fVal);
+#endif
 		}				
 
 		break;
@@ -2368,6 +2411,9 @@ void CMinecraftApp::CheckGameSettingsChanged(bool bOverride5MinuteTimer, int iPa
 				StorageManager.WriteToProfile(i,true, bOverride5MinuteTimer);
 #else
 				ProfileManager.WriteToProfile(i,true, bOverride5MinuteTimer);
+#ifdef _WINDOWS64
+				Win64_SaveSettings(GameSettingsA[i]);
+#endif
 #endif
 				GameSettingsA[i]->bSettingsChanged=false;
 			}
@@ -2381,6 +2427,9 @@ void CMinecraftApp::CheckGameSettingsChanged(bool bOverride5MinuteTimer, int iPa
 			StorageManager.WriteToProfile(iPad,true, bOverride5MinuteTimer);
 #else
 			ProfileManager.WriteToProfile(iPad,true, bOverride5MinuteTimer);
+#ifdef _WINDOWS64
+			Win64_SaveSettings(GameSettingsA[iPad]);
+#endif
 #endif
 			GameSettingsA[iPad]->bSettingsChanged=false;
 		}
@@ -3398,7 +3447,7 @@ void CMinecraftApp::HandleXuiActions(void)
 								bool gameStarted = false;
 								for(int j = 0; j < pMinecraft->levels.length; j++)
 								{
-									if (pMinecraft->levels.data[i] != NULL)
+									if (pMinecraft->levels.data[i] != nullptr)
 									{
 										gameStarted = true;
 										break;

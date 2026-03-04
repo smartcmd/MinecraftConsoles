@@ -84,6 +84,7 @@ public:
 	virtual void HandleSignInChange() = 0;
 
 	virtual bool _RunNetworkGame() = 0;
+	virtual void SetGamePlayState() {}
 
 private:
 	virtual bool _LeaveGame(bool bMigrateHost, bool bLeaveRoom) = 0;
