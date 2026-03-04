@@ -481,7 +481,7 @@ void IUIScene_AbstractContainerMenu::onMouseTick()
 #endif
 
 #ifdef _WINDOWS64
-	if (!g_KBMInput.IsMouseGrabbed() && g_KBMInput.IsKBMActive() && g_KBMInput.IsCursorHiddenForUI())
+	if (!g_KBMInput.IsMouseGrabbed() && g_KBMInput.IsKBMActive())
 	{
 		int deltaX = g_KBMInput.GetMouseDeltaX();
 		int deltaY = g_KBMInput.GetMouseDeltaY();
