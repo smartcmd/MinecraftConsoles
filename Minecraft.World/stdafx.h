@@ -179,7 +179,7 @@ void MemSect(int sect);
 #include <Minecraft.Client/PSVita/4JLibs/inc/4J_Render.h>
 #include <Minecraft.Client/PSVita/4JLibs/inc/4J_Storage.h>
 #include <Minecraft.Client/PSVita/4JLibs/inc/4J_Input.h>
-#else
+#elif defined __ORBIS__
 #include <Minecraft.Client/Orbis/4JLibs/inc/4J_Profile.h>
 #include <Minecraft.Client/Orbis/4JLibs/inc/4J_Render.h>
 #include <Minecraft.Client/Orbis/4JLibs/inc/4J_Storage.h>
