@@ -103,7 +103,7 @@ void Chunk::setPos(int x, int y, int z)
 	// 4J - changed to just set the value rather than make a new one, if we've already created storage
 	if( bb == NULL )
 	{
-		bb = std::unique_ptr<AABB>(AABB::newPermanent(-g, -g, -g, XZSIZE+g, SIZE+g, XZSIZE+g));
+		bb = shared_ptr<AABB>(AABB::newPermanent(-g, -g, -g, XZSIZE+g, SIZE+g, XZSIZE+g));
 	}
  	else 
  	{
