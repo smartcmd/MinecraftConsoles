@@ -196,7 +196,7 @@ private:
 	int  GetLockedProfile();
 	bool IsSignedInLive(int playerIdx);
 	bool AllowedToPlayMultiplayer(int playerIdx);
-	char *GetOnlineName(int playerIdx);
+	const char *GetOnlineName(int playerIdx);
 
 	C4JThread::Event*	m_hServerStoppedEvent;
 	C4JThread::Event*	m_hServerReadyEvent;

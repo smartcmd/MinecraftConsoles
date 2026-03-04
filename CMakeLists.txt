@@ -30,6 +30,17 @@ if(MSVC)
   set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
 endif()
 
+function(configure_msvc_target target)
+  target_compile_options(${target} PRIVATE
+    $<$<AND:$<NOT:$<CONFIG:Release>>,$<COMPILE_LANGUAGE:C,CXX>>:/W3>
+    $<$<AND:$<CONFIG:Release>,$<COMPILE_LANGUAGE:C,CXX>>:/W0>
+    $<$<COMPILE_LANGUAGE:C,CXX>:/MP>
+    $<$<COMPILE_LANGUAGE:C,CXX>:/FS>
+    $<$<COMPILE_LANGUAGE:CXX>:/EHsc>
+    $<$<AND:$<CONFIG:Release>,$<COMPILE_LANGUAGE:C,CXX>>:/GL /O2 /Oi /GT /GF>
+  )
+endfunction()
+
 # minecraftworld is shared with every backend. 
 include("${CMAKE_CURRENT_SOURCE_DIR}/cmake/WorldSources.cmake")
 list(TRANSFORM MINECRAFT_WORLD_SOURCES PREPEND "${CMAKE_CURRENT_SOURCE_DIR}/Minecraft.World/")
@@ -47,10 +58,7 @@ target_compile_definitions(MinecraftWorld PRIVATE
   $<$<STREQUAL:${BACKEND},Cross64>:_CROSS64>
 )
 if(MSVC)
-  target_compile_options(MinecraftWorld PRIVATE
-    $<$<COMPILE_LANGUAGE:C,CXX>:/W3 /MP>
-    $<$<COMPILE_LANGUAGE:CXX>:/EHsc>
-  )
+  configure_msvc_target(MinecraftWorld)
 endif()
 
 include("${CMAKE_CURRENT_SOURCE_DIR}/cmake/ClientSources.cmake")
@@ -82,23 +90,52 @@ if(BACKEND STREQUAL "Windows64")
 
   list(TRANSFORM MINECRAFT_CLIENT_SOURCES PREPEND "${CMAKE_CURRENT_SOURCE_DIR}/Minecraft.Client/")
 
-  add_executable(MinecraftClient WIN32 ${MINECRAFT_CLIENT_SOURCES})
-  target_include_directories(MinecraftClient PRIVATE
-    "${CMAKE_CURRENT_SOURCE_DIR}"
-    "${CMAKE_CURRENT_SOURCE_DIR}/Minecraft.Client/Windows64/Iggy/include"
-    "${CMAKE_CURRENT_SOURCE_DIR}/Minecraft.Client/Xbox/Sentient/Include"
-    "${CMAKE_CURRENT_SOURCE_DIR}/Minecraft.World/x64headers"
-  )
-  target_compile_definitions(MinecraftClient PRIVATE
-    $<$<CONFIG:Debug>:_LARGE_WORLDS;_DEBUG_MENUS_ENABLED;_DEBUG;_CRT_NON_CONFORMING_SWPRINTFS;_CRT_SECURE_NO_WARNINGS;_WINDOWS64>
-    $<$<NOT:$<CONFIG:Debug>>:_LARGE_WORLDS;_DEBUG_MENUS_ENABLED;_CRT_NON_CONFORMING_SWPRINTFS;_CRT_SECURE_NO_WARNINGS;_WINDOWS64>
-  )
-  if(MSVC)
-    target_compile_options(MinecraftClient PRIVATE
-      $<$<COMPILE_LANGUAGE:C,CXX>:/W /MP>
-      $<$<COMPILE_LANGUAGE:CXX>:/EHsc>
-    )
+include("${CMAKE_CURRENT_SOURCE_DIR}/cmake/ClientSources.cmake")
+
+# each backend is assumed to change these in some way.
+set(BACKEND_SOURCES
+  "glWrapper.cpp"
+  "stubs.cpp"
+  "stdafx.cpp"
+  "iob_shim.asm"
+  "Windows64/Iggy/gdraw/gdraw_d3d11.cpp"
+  "Windows64/KeyboardMouseInput.cpp"
+  "Windows64/Leaderboards/WindowsLeaderboardManager.cpp"
+  "Windows64/Windows64_App.cpp"
+  "Windows64/Windows64_Minecraft.cpp"
+  "Windows64/Windows64_UIController.cpp"
+  "Windows64/Network/WinsockNetLayer.cpp"
+)
+
+# remove backend specific stuff
+set(CLIENT_SHARED_SOURCES ${MINECRAFT_CLIENT_SOURCES})
+list(REMOVE_ITEM CLIENT_SHARED_SOURCES ${BACKEND_SOURCES})
+list(TRANSFORM CLIENT_SHARED_SOURCES PREPEND "${CMAKE_CURRENT_SOURCE_DIR}/Minecraft.Client/")
+
+if(BACKEND STREQUAL "Windows64")
+  if(NOT WIN32)
+    message(FATAL_ERROR "The Windows64 backend can only be built on Windows.")
   endif()
+
+  list(TRANSFORM MINECRAFT_CLIENT_SOURCES PREPEND "${CMAKE_CURRENT_SOURCE_DIR}/Minecraft.Client/")
+
+add_executable(MinecraftClient WIN32 ${MINECRAFT_CLIENT_SOURCES})
+target_include_directories(MinecraftClient PRIVATE
+  "${CMAKE_CURRENT_SOURCE_DIR}/Minecraft.Client"
+  "${CMAKE_CURRENT_SOURCE_DIR}/Minecraft.Client/Windows64/Iggy/include"
+  "${CMAKE_CURRENT_SOURCE_DIR}/Minecraft.Client/Xbox/Sentient/Include"
+  "${CMAKE_CURRENT_SOURCE_DIR}/Minecraft.World/x64headers"
+)
+target_compile_definitions(MinecraftClient PRIVATE
+  $<$<CONFIG:Debug>:_LARGE_WORLDS;_DEBUG_MENUS_ENABLED;_DEBUG;_CRT_NON_CONFORMING_SWPRINTFS;_CRT_SECURE_NO_WARNINGS;_WINDOWS64>
+  $<$<NOT:$<CONFIG:Debug>>:_LARGE_WORLDS;_DEBUG_MENUS_ENABLED;_CRT_NON_CONFORMING_SWPRINTFS;_CRT_SECURE_NO_WARNINGS;_WINDOWS64>
+)
+if(MSVC)
+  configure_msvc_target(MinecraftClient)
+  target_compile_options(MinecraftClient PRIVATE
+    $<$<CONFIG:Release>:/LTCG /INCREMENTAL:NO>
+  )
+endif()
 
   set_target_properties(MinecraftClient PROPERTIES
     VS_DEBUGGER_WORKING_DIRECTORY "$<TARGET_FILE_DIR:MinecraftClient>"

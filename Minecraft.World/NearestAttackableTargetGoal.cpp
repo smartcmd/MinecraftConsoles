@@ -34,7 +34,7 @@ bool NearestAttackableTargetGoal::DistComp::operator() (shared_ptr<Entity> e1, s
 	double distSqr2 = source->distanceToSqr(e2);
 	if (distSqr1 < distSqr2) return true;
 	if (distSqr1 > distSqr2) return false;
-	return true;
+	return false;
 }
 
 NearestAttackableTargetGoal::NearestAttackableTargetGoal(PathfinderMob *mob, const type_info& targetType, int randomInterval, bool mustSee, bool mustReach /*= false*/, EntitySelector *entitySelector /* =NULL */)

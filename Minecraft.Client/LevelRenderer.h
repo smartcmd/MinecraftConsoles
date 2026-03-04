@@ -52,14 +52,16 @@ public:
 	static const int CHUNK_SIZE = 16;
 #endif
 	static const int CHUNK_Y_COUNT = Level::maxBuildHeight / CHUNK_SIZE;
-#if defined _XBOX_ONE
-	static const int MAX_COMMANDBUFFER_ALLOCATIONS = 2047 * 1024 * 1024;		// Changed to 2047. 4J had set to 512.
+#if defined _WINDOWS64
+	static const int MAX_COMMANDBUFFER_ALLOCATIONS = 2047 * 1024 * 1024;	// Changed to 2047. 4J had set to 512.
+#elif defined _XBOX_ONE
+	static const int MAX_COMMANDBUFFER_ALLOCATIONS = 512 * 1024 * 1024;		// 4J - added
 #elif defined __ORBIS__
 	static const int MAX_COMMANDBUFFER_ALLOCATIONS = 448 * 1024 * 1024;		// 4J - added - hard limit is 512 so giving a lot of headroom here for fragmentation (have seen 16MB lost to fragmentation in multiplayer crash dump before)
 #elif defined __PS3__
 	static const int MAX_COMMANDBUFFER_ALLOCATIONS = 110 * 1024 * 1024;		// 4J - added
 #else
-	static const int MAX_COMMANDBUFFER_ALLOCATIONS = 55 * 1024 * 1024;		// 4J - added
+	static const int MAX_COMMANDBUFFER_ALLOCATIONS = 55 * 1024 * 1024;		// 4J - added 
 #endif
 public:
 	LevelRenderer(Minecraft *mc, Textures *textures);
@@ -270,10 +272,10 @@ public:
 
 	bool				dirtyChunkPresent;
 	__int64				lastDirtyChunkFound;
-	static const int	FORCE_DIRTY_CHUNK_CHECK_PERIOD_MS = 250;
+	static const int	FORCE_DIRTY_CHUNK_CHECK_PERIOD_MS = 125; // decreased from 250 to 125 - updated by detectiveren
 
 #ifdef _LARGE_WORLDS
-	static const int MAX_CONCURRENT_CHUNK_REBUILDS = 4;
+	static const int MAX_CONCURRENT_CHUNK_REBUILDS = 8; // increased from 4 to 8 - updated by detectiveren
 	static const int MAX_CHUNK_REBUILD_THREADS = MAX_CONCURRENT_CHUNK_REBUILDS - 1;
 	static Chunk permaChunk[MAX_CONCURRENT_CHUNK_REBUILDS];
 	static C4JThread *rebuildThreads[MAX_CHUNK_REBUILD_THREADS];

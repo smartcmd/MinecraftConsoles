@@ -487,11 +487,11 @@ void LivingEntityRenderer::renderNameTag(shared_ptr<LivingEntity> mob, const wst
 
 	Font *font = getFont();
 
-	float size = 1.60f;
-	float s = 1 / 60.0f * size;
+    constexpr float size = 1.60f;
+    constexpr float s = 1 / 60.0f * size;
 
 	glPushMatrix();
-	glTranslatef((float) x + 0, (float) y + 2.3f, (float) z);
+	glTranslatef(static_cast<float>(x) + 0, static_cast<float>(y) + mob->bbHeight + 0.5f, static_cast<float>(z));
 	glNormal3f(0, 1, 0);
 
 	glRotatef(-this->entityRenderDispatcher->playerRotY, 0, 1, 0);

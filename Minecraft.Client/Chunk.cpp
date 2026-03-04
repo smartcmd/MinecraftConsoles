@@ -52,7 +52,7 @@ Chunk::Chunk(Level *level, LevelRenderer::rteMap &globalRenderableTileEntities, 
 	: globalRenderableTileEntities( &globalRenderableTileEntities ), globalRenderableTileEntities_cs(&globalRenderableTileEntities_cs)
 {
 	clipChunk->visible = false;
-	bb = NULL;
+	bb = nullptr;
 	id = 0;
 
 	this->level = level;
@@ -101,15 +101,15 @@ void Chunk::setPos(int x, int y, int z)
 
 	float g = 6.0f;
 	// 4J - changed to just set the value rather than make a new one, if we've already created storage
-	if( bb == NULL )
+	if( !bb )
 	{
-		bb = AABB::newPermanent(-g, -g, -g, XZSIZE+g, SIZE+g, XZSIZE+g);
+		bb = shared_ptr<AABB>(AABB::newPermanent(-g, -g, -g, XZSIZE+g, SIZE+g, XZSIZE+g));
 	}
- 	else 
- 	{
+	else 
+	{
 		// 4J MGH - bounds are relative to the position now, so the AABB will be setup already, either above, or from the tesselator bounds.
 // 		bb->set(-g, -g, -g, SIZE+g, SIZE+g, SIZE+g);
- 	}
+	}
 	clipChunk->aabb[0] = bb->x0 + x;
 	clipChunk->aabb[1] = bb->y0 + y;
 	clipChunk->aabb[2] = bb->z0 + z;
@@ -154,6 +154,7 @@ void Chunk::translateToPos()
 
 Chunk::Chunk()
 {
+	bb = nullptr;
 }
 
 void Chunk::makeCopyForRebuild(Chunk *source)
@@ -998,7 +999,7 @@ int Chunk::getList(int layer)
 
 void Chunk::cull(Culler *culler)
 {
-	clipChunk->visible = culler->isVisible(bb);
+	clipChunk->visible = culler->isVisible(bb.get());
 }
 
 void Chunk::renderBB()
@@ -1027,10 +1028,7 @@ void Chunk::clearDirty()
 #endif
 }
 
-Chunk::~Chunk()
-{
-	delete bb;
-}
+Chunk::~Chunk() = default;
 
 bool Chunk::emptyFlagSet(int layer)
 {

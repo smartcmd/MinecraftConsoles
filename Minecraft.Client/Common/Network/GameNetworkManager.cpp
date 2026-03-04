@@ -1978,7 +1978,7 @@ bool CGameNetworkManager::AllowedToPlayMultiplayer(int playerIdx)
 	return ProfileManager.AllowedToPlayMultiplayer(playerIdx);
 }
 
-char *CGameNetworkManager::GetOnlineName(int playerIdx)
+const char *CGameNetworkManager::GetOnlineName(int playerIdx)
 {
 	return ProfileManager.GetGamertag(playerIdx);
 }

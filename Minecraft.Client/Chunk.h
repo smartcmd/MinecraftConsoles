@@ -46,11 +46,11 @@ public:
     int xRender, yRender, zRender;
     int xRenderOffs, yRenderOffs, zRenderOffs;
  
-    int xm, ym, zm;
-    AABB *bb;
+	int xm, ym, zm;
+	shared_ptr<AABB> bb;
 	ClipChunk *clipChunk;
 
-    int id;
+	int id;
 //public:
 //	vector<shared_ptr<TileEntity> > renderableTileEntities;		// 4J - removed
     

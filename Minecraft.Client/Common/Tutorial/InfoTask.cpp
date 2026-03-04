@@ -72,7 +72,7 @@ bool InfoTask::isCompleted()
 			if(!current)
 			{
 #ifdef _WINDOWS64
-				if (InputManager.GetValue(pMinecraft->player->GetXboxPad(), (*it).first) > 0 || KMInput.IsKeyDown(VK_SPACE))
+				if (InputManager.GetValue(pMinecraft->player->GetXboxPad(), (*it).first) > 0 || g_KBMInput.IsKeyDown(VK_SPACE))
 #else
 				if( InputManager.GetValue(pMinecraft->player->GetXboxPad(), (*it).first) > 0)
 #endif

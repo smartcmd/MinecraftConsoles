@@ -53,14 +53,12 @@ PlayerList::PlayerList(MinecraftServer *server)
 
 	//int viewDistance = server->settings->getInt(L"view-distance", 10);
 
-	maxPlayers = server->settings->getInt(L"max-players", 20);
-	doWhiteList = false;
-
 #ifdef _WINDOWS64
 	maxPlayers = MINECRAFT_NET_MAX_PLAYERS;
 #else
 	maxPlayers = server->settings->getInt(L"max-players", 20);
 #endif
+	doWhiteList = false;
 	InitializeCriticalSection(&m_kickPlayersCS);
 	InitializeCriticalSection(&m_closePlayersCS);
 }

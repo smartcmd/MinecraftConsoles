@@ -1,6 +1,6 @@
 # MinecraftConsoles
 
-[![Discord](https://img.shields.io/badge/Discord-Join%20Server-5865F2?logo=discord&logoColor=white)](https://discord.gg/5CSzhc9t)
+[![Discord](https://img.shields.io/badge/Discord-Join%20Server-5865F2?logo=discord&logoColor=white)](https://discord.gg/jrum7HhegA)
 
 ![Tutorial World](.github/TutorialWorld.png)
 
@@ -20,10 +20,11 @@ This project contains the source code of Minecraft Legacy Console Edition v1.6.0
 - Fixed compilation and execution in both Debug and Release mode on Windows using Visual Studio 2022
 - Added support for keyboard and mouse input
 - Added fullscreen mode support (toggle using F11)
-- Disabled V-Sync for better performance
+- (WIP) Disabled V-Sync for better performance
 - Added a high-resolution timer path on Windows for smoother high-FPS gameplay timing
 - Device's screen resolution will be used as the game resolution instead of using a fixed resolution (1920x1080)
 - LAN Multiplayer & Discovery
+- Added persistent username system via "username.txt"
 
 ## Multiplayer
 
@@ -33,15 +34,29 @@ Basic LAN multiplayer is available on the Windows build
 - Other players on the same LAN can discover the session from the in-game Join Game menu
 - Game connections use TCP port `25565` by default
 - LAN discovery uses UDP port `25566`
-- You can override your in-game username at launch with `-name`
-
-Example:
-
-```powershell
-Minecraft.Client.exe -name Steve
-```
 
 This feature is based on [LCEMP](https://github.com/LCEMP/LCEMP/)
+
+### Launch Arguments
+
+| Argument           | Description                                                                                         |
+|--------------------|-----------------------------------------------------------------------------------------------------|
+| `-name <username>` | Sets your in-game username                                                                          |
+| `-server`          | Launches a headless server instead of the client                                                    |
+| `-ip <address>`    | Client mode: manually connect to an IP. Server mode: override the bind IP from `server.properties`  |
+| `-port <port>`     | Client mode: override the join port. Server mode: override the listen port from `server.properties` |
+
+Example:
+```
+Minecraft.Client.exe -name Steve -ip 192.168.0.25 -port 25565
+```
+
+Headless server example:
+```
+Minecraft.Client.exe -server -ip 0.0.0.0 -port 25565
+```
+
+The headless server also reads and writes `server.properties` in the working directory. If `-ip` / `-port` are omitted in `-server` mode, it falls back to `server-ip` / `server-port` from that file. Dedicated-server host options such as `trust-players`, `pvp`, `fire-spreads`, `tnt`, `difficulty`, `gamemode`, `spawn-animals`, and `spawn-npcs` are persisted there as well.
 
 ## Controls (Keyboard & Mouse)
 
@@ -51,18 +66,19 @@ This feature is based on [LCEMP](https://github.com/LCEMP/LCEMP/)
 - **Sprint**: `Ctrl` (Hold) or Double-tap `W`
 - **Inventory**: `E`
 - **Drop Item**: `Q`
-- **Crafting**: `C`
+- **Crafting**: `C` Use `Q` and `E` to move through tabs (cycles Left/Right)
 - **Toggle View (FPS/TPS)**: `F5`
 - **Fullscreen**: `F11`
 - **Pause Menu**: `Esc`
-- **Toggle Mouse Capture**: `Left Alt` (for debugging)
 - **Attack / Destroy**: `Left Click`
 - **Use / Place**: `Right Click`
 - **Select Item**: `Mouse Wheel` or keys `1` to `9`
 - **Accept or Decline Tutorial hints**: `Enter` to accept and `B` to decline
 - **Game Info (Player list and Host Options)**: `TAB`
+- **Toggle HUD**: `F1`
 - **Toggle Debug Info**: `F3`
 - **Open Debug Overlay**: `F4`
+- **Toggle Debug Console**: `F6`
 
 ## Build & Run
 

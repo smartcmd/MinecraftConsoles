@@ -110,13 +110,13 @@ void Screen::updateEvents()
 	// Poll mouse button state and dispatch click/release events
 	for (int btn = 0; btn < 3; btn++)
 	{
-		if (KMInput.ConsumeMousePress(btn))
+		if (g_KBMInput.IsMouseButtonPressed(btn))
 		{
 			int xm = Mouse::getX() * width / minecraft->width;
 			int ym = height - Mouse::getY() * height / minecraft->height - 1;
 			mouseClicked(xm, ym, btn);
 		}
-		if (KMInput.ConsumeMouseRelease(btn))
+		if (g_KBMInput.IsMouseButtonReleased(btn))
 		{
 			int xm = Mouse::getX() * width / minecraft->width;
 			int ym = height - Mouse::getY() * height / minecraft->height - 1;
@@ -127,7 +127,7 @@ void Screen::updateEvents()
 	// Poll keyboard events
 	for (int vk = 0; vk < 256; vk++)
 	{
-		if (KMInput.ConsumeKeyPress(vk))
+		if (g_KBMInput.IsKeyPressed(vk))
 		{
 			// Map Windows virtual key to the Keyboard constants used by Screen::keyPressed
 			int mappedKey = -1;
@@ -144,7 +144,7 @@ void Screen::updateEvents()
 			else if (vk >= 'A' && vk <= 'Z')
 			{
 				ch = (wchar_t)(vk - 'A' + L'a');
-				if (KMInput.IsKeyDown(VK_SHIFT)) ch = (wchar_t)vk;
+				if (g_KBMInput.IsKeyDown(VK_LSHIFT) || g_KBMInput.IsKeyDown(VK_RSHIFT)) ch = (wchar_t)vk;
 			}
 			else if (vk >= '0' && vk <= '9') ch = (wchar_t)vk;
 			else if (vk == VK_SPACE) ch = L' ';

@@ -10,12 +10,6 @@ class UIScene_AbstractContainerMenu : public UIScene, public virtual IUIScene_Ab
 private:
 	ESceneSection m_focusSection;
 	bool m_bIgnoreInput;
-#ifdef _WINDOWS64
-	bool m_bMouseDragSlider;
-	bool m_bHasMousePosition;
-	int m_lastMouseX;
-	int m_lastMouseY;
-#endif
 
 protected:
 	UIControl m_controlMainPanel;
@@ -42,6 +36,8 @@ public:
 	virtual void handleDestroy();
 
 	int getPad() { return m_iPad; }
+	int getMovieWidth() { return m_movieWidth; }
+	int getMovieHeight() { return m_movieHeight; }
 	bool getIgnoreInput() { return m_bIgnoreInput; }
 	void setIgnoreInput(bool bVal) { m_bIgnoreInput=bVal; }
 

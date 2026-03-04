@@ -596,7 +596,14 @@ void MapItemSavedData::mergeInMapData(shared_ptr<MapItemSavedData> dataToAdd)
 
 void MapItemSavedData::removeItemFrameDecoration(shared_ptr<ItemInstance> item)
 {
-	AUTO_VAR(frameDecoration, nonPlayerDecorations.find( item->getFrame()->entityId ) );
+	if ( !item )
+		return;
+	
+	std::shared_ptr<ItemFrame> frame = item->getFrame();
+	if ( !frame )
+		return;
+
+	auto frameDecoration = nonPlayerDecorations.find(frame->entityId);
 	if ( frameDecoration != nonPlayerDecorations.end() )
 	{
 		delete frameDecoration->second;
