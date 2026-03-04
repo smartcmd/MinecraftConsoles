@@ -697,6 +697,8 @@ void CPlatformNetworkManagerStub::TickSearch()
 #endif
 }
 
+std::vector<FriendSessionInfo*>* allocatedServers = NULL;
+
 void CPlatformNetworkManagerStub::SearchForGames()
 {
 #ifdef _WINDOWS64
@@ -732,9 +734,18 @@ void CPlatformNetworkManagerStub::SearchForGames()
 		friendsSessions[0].push_back(info);
 	}
 
-	//TODO: add file checking for servers.txt
 	#ifdef _WINDOWS64 //Should we have this windows64 only? idk i havent tested so...
 	ifstream ServersTxt("servers.txt");
+
+	//Memory leak prevention
+	if (allocatedServers != NULL) {
+		for (FriendSessionInfo* info : *allocatedServers) {
+			delete(info);
+		}
+		delete(allocatedServers);
+	}
+	allocatedServers = new vector<FriendSessionInfo*>;
+
 	if (ServersTxt) {
 
 		string line;
@@ -774,6 +785,9 @@ void CPlatformNetworkManagerStub::SearchForGames()
 				info->data.hostPort = stoi(port);
 				info->sessionId = (SessionID)((unsigned __int64)inet_addr(ip.c_str()) | ((unsigned __int64)stoi(port) << 32));
 				friendsSessions[0].push_back(info);
+
+				//save for later deletion!
+				allocatedServers->push_back(info);
 			}
 		}
 		ServersTxt.close();
