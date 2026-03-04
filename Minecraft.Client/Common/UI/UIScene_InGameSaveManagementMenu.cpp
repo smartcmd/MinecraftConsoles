@@ -370,11 +370,9 @@ void UIScene_InGameSaveManagementMenu::GetSaveInfo(  )
 	m_iSaveInfoC=0;
 	m_controlSavesTimer.setVisible(true);
 
-	m_pSaveDetails=StorageManager.ReturnSavesInfo();
-	if(m_pSaveDetails==NULL)
-	{
-		C4JStorage::ESaveGameState eSGIStatus= StorageManager.GetSavesInfo(m_iPad,NULL,this,"save"); 
-	}
+	// Always refresh the saves list to pick up newly created worlds
+	C4JStorage::ESaveGameState eSGIStatus= StorageManager.GetSavesInfo(m_iPad,NULL,this,"save");
+	m_pSaveDetails = nullptr; // Force refresh
 
 
 	return;

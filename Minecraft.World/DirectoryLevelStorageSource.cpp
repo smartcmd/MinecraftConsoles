@@ -22,22 +22,9 @@ wstring DirectoryLevelStorageSource::getName()
 	return L"Old Format";
 }
 
-vector<LevelSummary *> *DirectoryLevelStorageSource::getLevelList()
+vector<shared_ptr<LevelSummary>> DirectoryLevelStorageSource::getLevelList()
 {
-	// 4J Stu - We don't use directory list with the Xbox save locations
-	vector<LevelSummary *> *levels = new vector<LevelSummary *>;
-#if 0
-	for (int i = 0; i < 5; i++) 
-	{
-		wstring levelId = wstring(L"World").append( _toString( (i+1) ) );
-
-		LevelData *levelData = getDataTagFor(saveFile, levelId);
-		if (levelData != NULL) 
-		{
-			levels->push_back(new LevelSummary(levelId, L"", levelData->getLastPlayed(), levelData->getSizeOnDisk(), levelData.getGameType(), false, levelData->isHardcore()));
-		}
-	}
-#endif
+	vector<shared_ptr<LevelSummary>> levels;
 	return levels;
 }
 

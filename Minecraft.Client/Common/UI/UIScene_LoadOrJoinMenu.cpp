@@ -833,11 +833,9 @@ void UIScene_LoadOrJoinMenu::GetSaveInfo()
     {
 #ifdef __ORBIS__
 		// We need to make sure this is non-null so that we have an idea of free space
-        m_pSaveDetails=StorageManager.ReturnSavesInfo();
-        if(m_pSaveDetails==NULL)
-        {
-            C4JStorage::ESaveGameState eSGIStatus= StorageManager.GetSavesInfo(m_iPad,NULL,this,"save"); 
-        }
+        // Always refresh the saves list to pick up newly created worlds
+        C4JStorage::ESaveGameState eSGIStatus= StorageManager.GetSavesInfo(m_iPad,NULL,this,"save"); 
+        m_pSaveDetails = NULL; // Force refresh
 #endif
 
         uiSaveC = 0;
@@ -882,11 +880,9 @@ void UIScene_LoadOrJoinMenu::GetSaveInfo()
         m_iSaveInfoC=0;
         m_controlSavesTimer.setVisible(true);
 
-        m_pSaveDetails=StorageManager.ReturnSavesInfo();
-        if(m_pSaveDetails==NULL)
-        {
-            C4JStorage::ESaveGameState eSGIStatus= StorageManager.GetSavesInfo(m_iPad,NULL,this,"save"); 
-        }
+        // Always refresh the saves list to pick up newly created worlds
+        C4JStorage::ESaveGameState eSGIStatus= StorageManager.GetSavesInfo(m_iPad,NULL,this,"save");
+        m_pSaveDetails = NULL; // Force refresh
 
 #if TO_BE_IMPLEMENTED
         if(eSGIStatus==C4JStorage::ESGIStatus_NoSaves)
