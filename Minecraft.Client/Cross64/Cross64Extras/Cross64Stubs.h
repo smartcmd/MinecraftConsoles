@@ -5,9 +5,13 @@
 
 using namespace std::chrono;
 
-// thread local storage
+class C4JThread;
 
+// thread local storage
+inline LPVOID TlsFree(DWORD dwTlsIndex) { return TLSStorageCross64::Instance()->Free(dwTlsIndex); }
 inline DWORD TlsAlloc(VOID) { return TLSStorageCross64::Instance()->Alloc(); }
+inline LPVOID TlsGetValue(DWORD dwTlsIndex) { return TLSStorageCross64::Instance()->GetValue(dwTlsIndex); }
+inline BOOL TlsSetValue(DWORD dwTlsIndex, LPVOID lpTlsValue) { return TLSStorageCross64::Instance()->SetValue(dwTlsIndex, lpTlsValue); }
 
 typedef struct _SYSTEMTIME {
   WORD wYear;
