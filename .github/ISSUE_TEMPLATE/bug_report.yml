@@ -35,7 +35,7 @@ body:
       required: true
 
       
-  - type: input
+  - type: textarea
     id: screenshots
     attributes:
       label: Screenshots
@@ -43,7 +43,7 @@ body:
     validations:
       required: false
       
-  - type: input
+  - type: textarea
     id: video
     attributes:
       label: Videos
