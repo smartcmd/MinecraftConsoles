@@ -8,7 +8,7 @@ using namespace std::chrono;
 class C4JThread;
 
 // thread local storage
-inline LPVOID TlsFree(DWORD dwTlsIndex) { return TLSStorageCross64::Instance()->Free(dwTlsIndex); }
+inline BOOL TlsFree(DWORD dwTlsIndex) { return TLSStorageCross64::Instance()->Free(dwTlsIndex); }
 inline DWORD TlsAlloc(VOID) { return TLSStorageCross64::Instance()->Alloc(); }
 inline LPVOID TlsGetValue(DWORD dwTlsIndex) { return TLSStorageCross64::Instance()->GetValue(dwTlsIndex); }
 inline BOOL TlsSetValue(DWORD dwTlsIndex, LPVOID lpTlsValue) { return TLSStorageCross64::Instance()->SetValue(dwTlsIndex, lpTlsValue); }
@@ -26,7 +26,7 @@ typedef struct _SYSTEMTIME {
 
 inline VOID GetSystemTime(LPSYSTEMTIME lpSystemTime) {
   const auto dateTime = system_clock::now();
-  const auto dp = floor<days>(dateTime);
+  const auto dp = floor<std::chrono::days>(dateTime);
 
   const year_month_day ymd{dp};
   const hh_mm_ss hms{dateTime - dp};

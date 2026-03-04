@@ -5,7 +5,7 @@ class TLSStorageCross64 {
 
   static const int sc_maxSlots = 64;
   static BOOL m_activeList[sc_maxSlots];
-  __thread static LPVOID m_values[sc_maxSlots];
+  static thread_local LPVOID m_values[sc_maxSlots];
 
 public:
   TLSStorageCross64();
