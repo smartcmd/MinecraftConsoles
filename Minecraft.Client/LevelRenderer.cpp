@@ -2557,12 +2557,18 @@ void LevelRenderer::cull(Culler *culler, float a)
 	{
 		unsigned char flags = pClipChunk->globalIdx == -1 ? 0 : globalChunkFlags[ pClipChunk->globalIdx ];
 
+		// Always perform frustum cull test
+		bool clipres = clip(pClipChunk->aabb, fdraw);
+
 		if ( (flags & CHUNK_FLAG_COMPILED ) && ( ( flags & CHUNK_FLAG_EMPTYBOTH ) != CHUNK_FLAG_EMPTYBOTH ) )
 		{
-			bool clipres = clip(pClipChunk->aabb, fdraw);
 			pClipChunk->visible = clipres;
 			if( pClipChunk->visible ) vis++;
 			total++;
+		}
+		else if (clipres)
+		{
+			pClipChunk->visible = true;
 		}
 		else
 		{
@@ -2571,6 +2577,7 @@ void LevelRenderer::cull(Culler *culler, float a)
 		pClipChunk++;
 	}
 }
+
 
 void LevelRenderer::playStreamingMusic(const wstring& name, int x, int y, int z)
 {

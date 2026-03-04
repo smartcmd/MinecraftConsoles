@@ -1,5 +1,15 @@
 #pragma once
 
+#ifdef _WINDOWS64
+struct SavedInventoryCursorPos
+{
+	float x;
+	float y;
+	bool hasSavedPos;
+};
+extern SavedInventoryCursorPos g_savedInventoryCursorPos;
+#endif
+
 // Uncomment to enable tap input detection to jump 1 slot. Doesn't work particularly well yet, and I feel the system does not need it.
 // Would probably be required if we decide to slow down the pointer movement.
 // 4J Stu - There was a request to be able to navigate the scenes with the dpad, so I have used much of the TAP_DETECTION
@@ -265,4 +275,6 @@ protected:
 
 public:
 	virtual int getPad() = 0;
+	virtual int getMovieWidth() = 0;
+	virtual int getMovieHeight() = 0;
 };

@@ -627,6 +627,7 @@ void Player::ride(shared_ptr<Entity> e)
 
 		return;
 	}
+	this->abilities.flying = false;
 	LivingEntity::ride(e);
 }
 

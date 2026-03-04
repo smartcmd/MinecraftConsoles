@@ -479,7 +479,7 @@ void EntityHorse::createInventory()
 
 void EntityHorse::updateEquipment()
 {
-	if (!level->isClientSide)
+	if (level && !level->isClientSide)
 	{
 		setSaddled(inventory->getItem(INV_SLOT_SADDLE) != NULL);
 		if (canWearArmor())

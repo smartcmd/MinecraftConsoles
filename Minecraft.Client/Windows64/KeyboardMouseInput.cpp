@@ -3,118 +3,176 @@
 #ifdef _WINDOWS64
 
 #include "KeyboardMouseInput.h"
+#include <cmath>
 
-KeyboardMouseInput KMInput;
+KeyboardMouseInput g_KBMInput;
 
-KeyboardMouseInput::KeyboardMouseInput()
-	: m_mouseDeltaXAccum(0.0f)
-	, m_mouseDeltaYAccum(0.0f)
-	, m_scrollDeltaAccum(0)
-	, m_captured(false)
-	, m_hWnd(NULL)
-	, m_initialized(false)
-	, m_mouseX(0)
-	, m_mouseY(0)
+extern HWND g_hWnd;
+
+// Forward declaration
+static void ClipCursorToWindow(HWND hWnd);
+
+static bool IsModifierKeyDown(const bool* keyState, int vkCode)
 {
-	memset(m_keyState, 0, sizeof(m_keyState));
-	memset(m_keyStatePrev, 0, sizeof(m_keyStatePrev));
-	memset(m_mouseButtons, 0, sizeof(m_mouseButtons));
-	memset(m_mouseButtonsPrev, 0, sizeof(m_mouseButtonsPrev));
-	memset(m_keyPressedAccum, 0, sizeof(m_keyPressedAccum));
-	memset(m_mousePressedAccum, 0, sizeof(m_mousePressedAccum));
-	memset(m_mouseReleasedAccum, 0, sizeof(m_mouseReleasedAccum));
-}
-
-KeyboardMouseInput::~KeyboardMouseInput()
-{
-	if (m_captured)
+	switch (vkCode)
 	{
-		SetCapture(false);
+	case VK_SHIFT:
+		return keyState[VK_LSHIFT] || keyState[VK_RSHIFT];
+	case VK_CONTROL:
+		return keyState[VK_LCONTROL] || keyState[VK_RCONTROL];
+	case VK_MENU:
+		return keyState[VK_LMENU] || keyState[VK_RMENU];
+	default:
+		return false;
 	}
 }
 
-void KeyboardMouseInput::Init(HWND hWnd)
+void KeyboardMouseInput::Init()
 {
-	m_hWnd = hWnd;
-	m_initialized = true;
+	memset(m_keyDown, 0, sizeof(m_keyDown));
+	memset(m_keyDownPrev, 0, sizeof(m_keyDownPrev));
+	memset(m_keyPressedAccum, 0, sizeof(m_keyPressedAccum));
+	memset(m_keyReleasedAccum, 0, sizeof(m_keyReleasedAccum));
+	memset(m_keyPressed, 0, sizeof(m_keyPressed));
+	memset(m_keyReleased, 0, sizeof(m_keyReleased));
+	memset(m_mouseButtonDown, 0, sizeof(m_mouseButtonDown));
+	memset(m_mouseButtonDownPrev, 0, sizeof(m_mouseButtonDownPrev));
+	memset(m_mouseBtnPressedAccum, 0, sizeof(m_mouseBtnPressedAccum));
+	memset(m_mouseBtnReleasedAccum, 0, sizeof(m_mouseBtnReleasedAccum));
+	memset(m_mouseBtnPressed, 0, sizeof(m_mouseBtnPressed));
+	memset(m_mouseBtnReleased, 0, sizeof(m_mouseBtnReleased));
+	m_mouseX = 0;
+	m_mouseY = 0;
+	m_mouseDeltaX = 0;
+	m_mouseDeltaY = 0;
+	m_mouseDeltaAccumX = 0;
+	m_mouseDeltaAccumY = 0;
+	m_mouseWheelAccum = 0;
+	m_mouseWheelConsumed = false;
+	m_mouseGrabbed = false;
+	m_cursorHiddenForUI = false;
+	m_windowFocused = true;
+	m_hasInput = false;
+	m_kbmActive = true;
+	m_screenWantsCursorHidden = false;
 
-	// Register for raw mouse input
 	RAWINPUTDEVICE rid;
-	rid.usUsagePage = HID_USAGE_PAGE_GENERIC;
-	rid.usUsage = HID_USAGE_GENERIC_MOUSE;
+	rid.usUsagePage = 0x01; // HID_USAGE_PAGE_GENERIC
+	rid.usUsage = 0x02;     // HID_USAGE_GENERIC_MOUSE
 	rid.dwFlags = 0;
-	rid.hwndTarget = hWnd;
+	rid.hwndTarget = g_hWnd;
 	RegisterRawInputDevices(&rid, 1, sizeof(rid));
+}
+
+void KeyboardMouseInput::ClearAllState()
+{
+	memset(m_keyDown, 0, sizeof(m_keyDown));
+	memset(m_keyDownPrev, 0, sizeof(m_keyDownPrev));
+	memset(m_keyPressedAccum, 0, sizeof(m_keyPressedAccum));
+	memset(m_keyReleasedAccum, 0, sizeof(m_keyReleasedAccum));
+	memset(m_keyPressed, 0, sizeof(m_keyPressed));
+	memset(m_keyReleased, 0, sizeof(m_keyReleased));
+	memset(m_mouseButtonDown, 0, sizeof(m_mouseButtonDown));
+	memset(m_mouseButtonDownPrev, 0, sizeof(m_mouseButtonDownPrev));
+	memset(m_mouseBtnPressedAccum, 0, sizeof(m_mouseBtnPressedAccum));
+	memset(m_mouseBtnReleasedAccum, 0, sizeof(m_mouseBtnReleasedAccum));
+	memset(m_mouseBtnPressed, 0, sizeof(m_mouseBtnPressed));
+	memset(m_mouseBtnReleased, 0, sizeof(m_mouseBtnReleased));
+	m_mouseDeltaX = 0;
+	m_mouseDeltaY = 0;
+	m_mouseDeltaAccumX = 0;
+	m_mouseDeltaAccumY = 0;
+	m_mouseWheelAccum = 0;
+	m_mouseWheelConsumed = false;
 }
 
 void KeyboardMouseInput::Tick()
 {
-	// Keep cursor pinned to center while captured
-	if (m_captured)
-		CenterCursor();
-}
+	memcpy(m_keyDownPrev, m_keyDown, sizeof(m_keyDown));
+	memcpy(m_mouseButtonDownPrev, m_mouseButtonDown, sizeof(m_mouseButtonDown));
 
-void KeyboardMouseInput::EndFrame()
-{
-	// Advance previous state for next frame's edge detection.
-	// Must be called AFTER all per-frame consumers have read IsKeyPressed/Released etc.
-	memcpy(m_keyStatePrev, m_keyState, sizeof(m_keyState));
-	memcpy(m_mouseButtonsPrev, m_mouseButtons, sizeof(m_mouseButtons));
-}
+	memcpy(m_keyPressed, m_keyPressedAccum, sizeof(m_keyPressedAccum));
+	memcpy(m_keyReleased, m_keyReleasedAccum, sizeof(m_keyReleasedAccum));
+	memset(m_keyPressedAccum, 0, sizeof(m_keyPressedAccum));
+	memset(m_keyReleasedAccum, 0, sizeof(m_keyReleasedAccum));
 
-void KeyboardMouseInput::OnKeyDown(WPARAM vk)
-{
-	if (vk < 256)
+	memcpy(m_mouseBtnPressed, m_mouseBtnPressedAccum, sizeof(m_mouseBtnPressedAccum));
+	memcpy(m_mouseBtnReleased, m_mouseBtnReleasedAccum, sizeof(m_mouseBtnReleasedAccum));
+	memset(m_mouseBtnPressedAccum, 0, sizeof(m_mouseBtnPressedAccum));
+	memset(m_mouseBtnReleasedAccum, 0, sizeof(m_mouseBtnReleasedAccum));
+
+	m_mouseDeltaX = m_mouseDeltaAccumX;
+	m_mouseDeltaY = m_mouseDeltaAccumY;
+	m_mouseDeltaAccumX = 0;
+	m_mouseDeltaAccumY = 0;
+	m_mouseWheelConsumed = false;
+
+	m_hasInput = (m_mouseDeltaX != 0 || m_mouseDeltaY != 0 || m_mouseWheelAccum != 0);
+	if (!m_hasInput)
 	{
-		if (!m_keyState[vk]) m_keyPressedAccum[vk] = true;
-		m_keyState[vk] = true;
-	}
-}
-
-void KeyboardMouseInput::OnKeyUp(WPARAM vk)
-{
-	if (vk < 256)
-	{
-		m_keyState[vk] = false;
-	}
-}
-
-void KeyboardMouseInput::OnRawMouseInput(LPARAM lParam)
-{
-	if (!m_captured) return;
-
-	UINT dwSize = 0;
-	GetRawInputData((HRAWINPUT)lParam, RID_INPUT, NULL, &dwSize, sizeof(RAWINPUTHEADER));
-
-	BYTE* lpb = (BYTE*)alloca(dwSize);
-	if (GetRawInputData((HRAWINPUT)lParam, RID_INPUT, lpb, &dwSize, sizeof(RAWINPUTHEADER)) != dwSize)
-		return;
-
-	RAWINPUT* raw = (RAWINPUT*)lpb;
-	if (raw->header.dwType == RIM_TYPEMOUSE)
-	{
-		if (raw->data.mouse.usFlags == MOUSE_MOVE_RELATIVE)
+		for (int i = 0; i < MAX_KEYS; i++)
 		{
-			m_mouseDeltaXAccum += (float)raw->data.mouse.lLastX;
-			m_mouseDeltaYAccum += (float)raw->data.mouse.lLastY;
+			if (m_keyDown[i]) { m_hasInput = true; break; }
 		}
 	}
-}
-
-void KeyboardMouseInput::OnMouseButton(int button, bool down)
-{
-	if (ui.IsPauseMenuDisplayed(ProfileManager.GetPrimaryPad())) { return; }
-	if (button >= 0 && button < 3)
+	if (!m_hasInput)
 	{
-		if (down && !m_mouseButtons[button]) m_mousePressedAccum[button] = true;
-		if (!down && m_mouseButtons[button]) m_mouseReleasedAccum[button] = true;
-		m_mouseButtons[button] = down;
+		for (int i = 0; i < MAX_MOUSE_BUTTONS; i++)
+		{
+			if (m_mouseButtonDown[i]) { m_hasInput = true; break; }
+		}
+	}
+
+	if ((m_mouseGrabbed || m_cursorHiddenForUI) && g_hWnd)
+	{
+		RECT rc;
+		GetClientRect(g_hWnd, &rc);
+		POINT center;
+		center.x = (rc.right - rc.left) / 2;
+		center.y = (rc.bottom - rc.top) / 2;
+		ClientToScreen(g_hWnd, &center);
+		SetCursorPos(center.x, center.y);
 	}
 }
 
-void KeyboardMouseInput::OnMouseWheel(int delta)
+void KeyboardMouseInput::OnKeyDown(int vkCode)
 {
-	m_scrollDeltaAccum += delta;
+	if (vkCode >= 0 && vkCode < MAX_KEYS)
+	{
+		if (!m_keyDown[vkCode])
+			m_keyPressedAccum[vkCode] = true;
+		m_keyDown[vkCode] = true;
+	}
+}
+
+void KeyboardMouseInput::OnKeyUp(int vkCode)
+{
+	if (vkCode >= 0 && vkCode < MAX_KEYS)
+	{
+		if (m_keyDown[vkCode])
+			m_keyReleasedAccum[vkCode] = true;
+		m_keyDown[vkCode] = false;
+	}
+}
+
+void KeyboardMouseInput::OnMouseButtonDown(int button)
+{
+	if (button >= 0 && button < MAX_MOUSE_BUTTONS)
+	{
+		if (!m_mouseButtonDown[button])
+			m_mouseBtnPressedAccum[button] = true;
+		m_mouseButtonDown[button] = true;
+	}
+}
+
+void KeyboardMouseInput::OnMouseButtonUp(int button)
+{
+	if (button >= 0 && button < MAX_MOUSE_BUTTONS)
+	{
+		if (m_mouseButtonDown[button])
+			m_mouseBtnReleasedAccum[button] = true;
+		m_mouseButtonDown[button] = false;
+	}
 }
 
 void KeyboardMouseInput::OnMouseMove(int x, int y)
@@ -123,139 +181,204 @@ void KeyboardMouseInput::OnMouseMove(int x, int y)
 	m_mouseY = y;
 }
 
-int KeyboardMouseInput::GetMouseX() const { return m_mouseX; }
-int KeyboardMouseInput::GetMouseY() const { return m_mouseY; }
-HWND KeyboardMouseInput::GetHWnd() const { return m_hWnd; }
-
-void KeyboardMouseInput::ClearAllState()
+void KeyboardMouseInput::OnMouseWheel(int delta)
 {
-	memset(m_keyState, 0, sizeof(m_keyState));
-	memset(m_mouseButtons, 0, sizeof(m_mouseButtons));
-	memset(m_keyPressedAccum, 0, sizeof(m_keyPressedAccum));
-	memset(m_mousePressedAccum, 0, sizeof(m_mousePressedAccum));
-	memset(m_mouseReleasedAccum, 0, sizeof(m_mouseReleasedAccum));
-	m_mouseDeltaXAccum = 0.0f;
-	m_mouseDeltaYAccum = 0.0f;
-	m_scrollDeltaAccum = 0;
+	// Normalize from raw Windows delta (multiples of WHEEL_DELTA=120) to discrete notch counts
+	m_mouseWheelAccum += delta / WHEEL_DELTA;
 }
 
-// Per-frame key queries
-bool KeyboardMouseInput::IsKeyDown(int vk) const
+int KeyboardMouseInput::GetMouseWheel()
 {
-	if (vk < 0 || vk >= 256) return false;
-	return m_keyState[vk];
+	int val = m_mouseWheelAccum;
+	if (val != 0)
+		m_mouseWheelConsumed = true;
+	m_mouseWheelAccum = 0;
+	return val;
 }
 
-bool KeyboardMouseInput::IsKeyPressed(int vk) const
+void KeyboardMouseInput::OnRawMouseDelta(int dx, int dy)
 {
-	if (vk < 0 || vk >= 256) return false;
-	return m_keyState[vk] && !m_keyStatePrev[vk];
+	m_mouseDeltaAccumX += dx;
+	m_mouseDeltaAccumY += dy;
 }
 
-bool KeyboardMouseInput::IsKeyReleased(int vk) const
+bool KeyboardMouseInput::IsKeyDown(int vkCode) const
 {
-	if (vk < 0 || vk >= 256) return false;
-	return !m_keyState[vk] && m_keyStatePrev[vk];
+	if (vkCode == VK_SHIFT || vkCode == VK_CONTROL || vkCode == VK_MENU)
+		return IsModifierKeyDown(m_keyDown, vkCode);
+
+	if (vkCode >= 0 && vkCode < MAX_KEYS)
+		return m_keyDown[vkCode];
+	return false;
 }
 
-// Per-frame mouse button queries
-bool KeyboardMouseInput::IsMouseDown(int btn) const
+bool KeyboardMouseInput::IsKeyPressed(int vkCode) const
 {
-	if (btn < 0 || btn >= 3) return false;
-	return m_mouseButtons[btn];
+	if (vkCode == VK_SHIFT || vkCode == VK_CONTROL || vkCode == VK_MENU)
+		return IsModifierKeyDown(m_keyPressed, vkCode);
+
+	if (vkCode >= 0 && vkCode < MAX_KEYS)
+		return m_keyPressed[vkCode];
+	return false;
 }
 
-bool KeyboardMouseInput::IsMousePressed(int btn) const
+bool KeyboardMouseInput::IsKeyReleased(int vkCode) const
 {
-	if (btn < 0 || btn >= 3) return false;
-	return m_mouseButtons[btn] && !m_mouseButtonsPrev[btn];
+	if (vkCode == VK_SHIFT || vkCode == VK_CONTROL || vkCode == VK_MENU)
+		return IsModifierKeyDown(m_keyReleased, vkCode);
+
+	if (vkCode >= 0 && vkCode < MAX_KEYS)
+		return m_keyReleased[vkCode];
+	return false;
 }
 
-bool KeyboardMouseInput::IsMouseReleased(int btn) const
+bool KeyboardMouseInput::IsMouseButtonDown(int button) const
 {
-	if (btn < 0 || btn >= 3) return false;
-	return !m_mouseButtons[btn] && m_mouseButtonsPrev[btn];
+	if (button >= 0 && button < MAX_MOUSE_BUTTONS)
+		return m_mouseButtonDown[button];
+	return false;
 }
 
-// Game-tick consume methods
-bool KeyboardMouseInput::ConsumeKeyPress(int vk)
+bool KeyboardMouseInput::IsMouseButtonPressed(int button) const
 {
-	if (vk < 0 || vk >= 256) return false;
-	bool pressed = m_keyPressedAccum[vk];
-	m_keyPressedAccum[vk] = false;
-	return pressed;
+	if (button >= 0 && button < MAX_MOUSE_BUTTONS)
+		return m_mouseBtnPressed[button];
+	return false;
 }
 
-bool KeyboardMouseInput::ConsumeMousePress(int btn)
+bool KeyboardMouseInput::IsMouseButtonReleased(int button) const
 {
-	if (btn < 0 || btn >= 3) return false;
-	bool pressed = m_mousePressedAccum[btn];
-	m_mousePressedAccum[btn] = false;
-	return pressed;
-}
-
-bool KeyboardMouseInput::ConsumeMouseRelease(int btn)
-{
-	if (btn < 0 || btn >= 3) return false;
-	bool released = m_mouseReleasedAccum[btn];
-	m_mouseReleasedAccum[btn] = false;
-	return released;
+	if (button >= 0 && button < MAX_MOUSE_BUTTONS)
+		return m_mouseBtnReleased[button];
+	return false;
 }
 
 void KeyboardMouseInput::ConsumeMouseDelta(float &dx, float &dy)
 {
-	dx = m_mouseDeltaXAccum;
-	dy = m_mouseDeltaYAccum;
-	m_mouseDeltaXAccum = 0.0f;
-	m_mouseDeltaYAccum = 0.0f;
+	dx = (float)m_mouseDeltaAccumX;
+	dy = (float)m_mouseDeltaAccumY;
+	m_mouseDeltaAccumX = 0;
+	m_mouseDeltaAccumY = 0;
 }
 
-int KeyboardMouseInput::ConsumeScrollDelta()
+void KeyboardMouseInput::SetMouseGrabbed(bool grabbed)
 {
-	int delta = m_scrollDeltaAccum;
-	m_scrollDeltaAccum = 0;
-	return delta;
-}
+	if (m_mouseGrabbed == grabbed)
+		return;
 
-// Mouse capture
-void KeyboardMouseInput::SetCapture(bool capture)
-{
-	if (capture == m_captured) return;
-	m_captured = capture;
-
-	if (capture)
+	m_mouseGrabbed = grabbed;
+	if (grabbed && g_hWnd)
 	{
-		ShowCursor(FALSE);
-		RECT rect;
-		GetClientRect(m_hWnd, &rect);
-		POINT topLeft = { rect.left, rect.top };
-		POINT bottomRight = { rect.right, rect.bottom };
-		ClientToScreen(m_hWnd, &topLeft);
-		ClientToScreen(m_hWnd, &bottomRight);
-		RECT screenRect = { topLeft.x, topLeft.y, bottomRight.x, bottomRight.y };
-		ClipCursor(&screenRect);
-		CenterCursor();
+		while (ShowCursor(FALSE) >= 0) {}
+		ClipCursorToWindow(g_hWnd);
 
-		// Flush accumulated deltas so the snap-to-center doesn't cause a jump
-		m_mouseDeltaXAccum = 0.0f;
-		m_mouseDeltaYAccum = 0.0f;
+		RECT rc;
+		GetClientRect(g_hWnd, &rc);
+		POINT center;
+		center.x = (rc.right - rc.left) / 2;
+		center.y = (rc.bottom - rc.top) / 2;
+		ClientToScreen(g_hWnd, &center);
+		SetCursorPos(center.x, center.y);
+
+		m_mouseDeltaAccumX = 0;
+		m_mouseDeltaAccumY = 0;
 	}
-	else
+	else if (!grabbed && !m_cursorHiddenForUI && g_hWnd)
 	{
-		ShowCursor(TRUE);
+		while (ShowCursor(TRUE) < 0) {}
 		ClipCursor(NULL);
 	}
 }
 
-bool KeyboardMouseInput::IsCaptured() const { return m_captured; }
-
-void KeyboardMouseInput::CenterCursor()
+void KeyboardMouseInput::SetCursorHiddenForUI(bool hidden)
 {
-	RECT rect;
-	GetClientRect(m_hWnd, &rect);
-	POINT center = { (rect.left + rect.right) / 2, (rect.top + rect.bottom) / 2 };
-	ClientToScreen(m_hWnd, &center);
-	SetCursorPos(center.x, center.y);
+	if (m_cursorHiddenForUI == hidden)
+		return;
+
+	m_cursorHiddenForUI = hidden;
+	if (hidden && g_hWnd)
+	{
+		while (ShowCursor(FALSE) >= 0) {}
+		ClipCursorToWindow(g_hWnd);
+
+		RECT rc;
+		GetClientRect(g_hWnd, &rc);
+		POINT center;
+		center.x = (rc.right - rc.left) / 2;
+		center.y = (rc.bottom - rc.top) / 2;
+		ClientToScreen(g_hWnd, &center);
+		SetCursorPos(center.x, center.y);
+
+		m_mouseDeltaAccumX = 0;
+		m_mouseDeltaAccumY = 0;
+	}
+	else if (!hidden && !m_mouseGrabbed && g_hWnd)
+	{
+		while (ShowCursor(TRUE) < 0) {}
+		ClipCursor(NULL);
+	}
+}
+
+static void ClipCursorToWindow(HWND hWnd)
+{
+	if (!hWnd) return;
+	RECT rc;
+	GetClientRect(hWnd, &rc);
+	POINT topLeft = { rc.left, rc.top };
+	POINT bottomRight = { rc.right, rc.bottom };
+	ClientToScreen(hWnd, &topLeft);
+	ClientToScreen(hWnd, &bottomRight);
+	RECT clipRect = { topLeft.x, topLeft.y, bottomRight.x, bottomRight.y };
+	ClipCursor(&clipRect);
+}
+
+void KeyboardMouseInput::SetWindowFocused(bool focused)
+{
+	m_windowFocused = focused;
+	if (focused)
+	{
+		if (m_mouseGrabbed || m_cursorHiddenForUI)
+		{
+			while (ShowCursor(FALSE) >= 0) {}
+			ClipCursorToWindow(g_hWnd);
+		}
+		else
+		{
+			while (ShowCursor(TRUE) < 0) {}
+			ClipCursor(NULL);
+		}
+	}
+	else
+	{
+		while (ShowCursor(TRUE) < 0) {}
+		ClipCursor(NULL);
+	}
+}
+
+float KeyboardMouseInput::GetMoveX() const
+{
+	float x = 0.0f;
+	if (m_keyDown[KEY_LEFT])  x += 1.0f;
+	if (m_keyDown[KEY_RIGHT]) x -= 1.0f;
+	return x;
+}
+
+float KeyboardMouseInput::GetMoveY() const
+{
+	float y = 0.0f;
+	if (m_keyDown[KEY_FORWARD])  y += 1.0f;
+	if (m_keyDown[KEY_BACKWARD]) y -= 1.0f;
+	return y;
+}
+
+float KeyboardMouseInput::GetLookX(float sensitivity) const
+{
+	return (float)m_mouseDeltaX * sensitivity;
+}
+
+float KeyboardMouseInput::GetLookY(float sensitivity) const
+{
+	return (float)(-m_mouseDeltaY) * sensitivity;
 }
 
 #endif // _WINDOWS64

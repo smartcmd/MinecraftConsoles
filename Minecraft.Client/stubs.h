@@ -187,12 +187,13 @@ public:
 	static void create() {}
 	static void destroy() {}
 #ifdef _WINDOWS64
-	static bool isKeyDown(int key);
+	static bool isKeyDown(int keyCode);
 #else
-	static bool isKeyDown(int) {return false;}
+	static bool isKeyDown(int) { return false; }
 #endif
 	static wstring getKeyName(int) { return L"KEYNAME"; }
 	static void enableRepeatEvents(bool) {}
+
 	static const int KEY_A = 0;
 	static const int KEY_B = 1;
 	static const int KEY_C = 2;
@@ -228,8 +229,32 @@ public:
 	static const int KEY_UP = 32;
 	static const int KEY_DOWN = 33;
 	static const int KEY_TAB = 34;
-	static const int KEY_LEFT = 35;
-	static const int KEY_RIGHT = 36;
+	static const int KEY_1 = 35;
+	static const int KEY_2 = 36;
+	static const int KEY_3 = 37;
+	static const int KEY_4 = 38;
+	static const int KEY_5 = 39;
+	static const int KEY_6 = 40;
+	static const int KEY_7 = 41;
+	static const int KEY_8 = 42;
+	static const int KEY_9 = 43;
+	static const int KEY_F1 = 44;
+	static const int KEY_F3 = 45;
+	static const int KEY_F4 = 46;
+	static const int KEY_F5 = 47;
+	static const int KEY_F6 = 48;
+	static const int KEY_F8 = 49;
+	static const int KEY_F9 = 50;
+	static const int KEY_F11 = 51;
+	static const int KEY_ADD = 52;
+	static const int KEY_SUBTRACT = 53;
+	static const int KEY_LEFT = 54;
+	static const int KEY_RIGHT = 55;
+
+#ifdef _WINDOWS64
+	// Map LWJGL-style key constant to Windows VK code
+	static int toVK(int keyConst);
+#endif
 };
 
 class Mouse
