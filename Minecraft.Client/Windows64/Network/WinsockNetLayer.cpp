@@ -51,6 +51,9 @@ bool g_Win64MultiplayerHost = false;
 bool g_Win64MultiplayerJoin = false;
 int g_Win64MultiplayerPort = WIN64_NET_DEFAULT_PORT;
 char g_Win64MultiplayerIP[256] = "127.0.0.1";
+bool g_Win64DedicatedServer = false;
+int g_Win64DedicatedServerPort = WIN64_NET_DEFAULT_PORT;
+char g_Win64DedicatedServerBindIP[256] = "";
 
 bool WinsockNetLayer::Initialize()
 {
@@ -139,7 +142,7 @@ void WinsockNetLayer::Shutdown()
 	}
 }
 
-bool WinsockNetLayer::HostGame(int port)
+bool WinsockNetLayer::HostGame(int port, const char* bindIp)
 {
 	if (!s_initialized && !Initialize()) return false;
 
@@ -159,15 +162,19 @@ bool WinsockNetLayer::HostGame(int port)
 	hints.ai_family = AF_INET;
 	hints.ai_socktype = SOCK_STREAM;
 	hints.ai_protocol = IPPROTO_TCP;
-	hints.ai_flags = AI_PASSIVE;
+	hints.ai_flags = (bindIp == NULL || bindIp[0] == 0) ? AI_PASSIVE : 0;
 
 	char portStr[16];
 	sprintf_s(portStr, "%d", port);
 
-	int iResult = getaddrinfo(NULL, portStr, &hints, &result);
+	const char* resolvedBindIp = (bindIp != NULL && bindIp[0] != 0) ? bindIp : NULL;
+	int iResult = getaddrinfo(resolvedBindIp, portStr, &hints, &result);
 	if (iResult != 0)
 	{
-		app.DebugPrintf("getaddrinfo failed: %d\n", iResult);
+		app.DebugPrintf("getaddrinfo failed for %s:%d - %d\n",
+			resolvedBindIp != NULL ? resolvedBindIp : "*",
+			port,
+			iResult);
 		return false;
 	}
 
@@ -206,7 +213,9 @@ bool WinsockNetLayer::HostGame(int port)
 
 	s_acceptThread = CreateThread(NULL, 0, AcceptThreadProc, NULL, 0, NULL);
 
-	app.DebugPrintf("Win64 LAN: Hosting on port %d\n", port);
+	app.DebugPrintf("Win64 LAN: Hosting on %s:%d\n",
+		resolvedBindIp != NULL ? resolvedBindIp : "*",
+		port);
 	return true;
 }
 
