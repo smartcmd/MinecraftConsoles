@@ -2,6 +2,10 @@ cmake_minimum_required(VERSION 3.24)
 
 project(MinecraftConsoles)
 
+set(CMAKE_CXX_STANDARD 23)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_EXTENSIONS OFF)
+
 set(BACKEND "Windows64" CACHE STRING "Backend to compile. Windows64 or Cross64")
 set_property(CACHE BACKEND PROPERTY STRINGS "Windows64" "Cross64")
 
@@ -145,10 +149,6 @@ if(BACKEND STREQUAL "Windows64")
 
   set_property(DIRECTORY PROPERTY VS_STARTUP_PROJECT MinecraftClient)
 elseif(BACKEND STREQUAL "Cross64")
-  set(CMAKE_CXX_STANDARD 23)
-  set(CMAKE_CXX_STANDARD_REQUIRED ON)
-  set(CMAKE_CXX_EXTENSIONS OFF)
-
   include(FetchContent)
 
   FetchContent_Declare(glm GIT_REPOSITORY https://github.com/g-truc/glm.git GIT_TAG 1.0.3)
