@@ -1,0 +1,11 @@
+{
+    "cmake.configureArgs": [
+        "-DCMAKE_TOOLCHAIN_FILE=${workspaceFolder}/cmake/LinuxCrosscompile.cmake"
+    ],
+    "cmake.configureEnvironment": {
+        "CC": "cl",
+        "CXX": "cl"
+    },
+    "cmake.generator": "Ninja",
+    "cmake.buildDirectory": "${workspaceFolder}/build"
+}
