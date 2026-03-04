@@ -14,7 +14,7 @@ if(NOT DEFINED CACHE{BACKEND})
   endif()
 endif()
 
-message(STATUS "[MinecraftConsoles] -- Building ${BACKEND}.")
+message(STATUS "MinecraftConsoles: Generating ${BACKEND}.")
 
 if(BACKEND STREQUAL "Windows64")
   enable_language(C CXX ASM_MASM)
@@ -137,6 +137,10 @@ if(BACKEND STREQUAL "Windows64")
 
   set_property(DIRECTORY PROPERTY VS_STARTUP_PROJECT MinecraftClient)
 elseif(BACKEND STREQUAL "Cross64")
+  set(CMAKE_CXX_STANDARD 23)
+  set(CMAKE_CXX_STANDARD_REQUIRED ON)
+  set(CMAKE_CXX_EXTENSIONS OFF)
+
   include(FetchContent)
 
   FetchContent_Declare(glm GIT_REPOSITORY https://github.com/g-truc/glm.git GIT_TAG 1.0.3)
@@ -170,8 +174,6 @@ elseif(BACKEND STREQUAL "Cross64")
     "${CMAKE_CURRENT_SOURCE_DIR}/Minecraft.Client"
     "${CMAKE_CURRENT_SOURCE_DIR}/Minecraft.World/x64headers"
   )
-
-  
 
   target_compile_definitions(MinecraftClientCross64 PRIVATE
     $<$<CONFIG:Debug>:_LARGE_WORLDS;_DEBUG_MENUS_ENABLED;_DEBUG;_CRT_NON_CONFORMING_SWPRINTFS;_CRT_SECURE_NO_WARNINGS;_CROSS64>
