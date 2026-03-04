@@ -32,15 +32,15 @@ inline VOID GetSystemTime(LPSYSTEMTIME lpSystemTime) {
   const hh_mm_ss hms{dateTime - dp};
   const weekday wd{dp};
 
-  lpSystemTime->wYear = ymd.year();
-  lpSystemTime->wMonth = ymd.month();
-  lpSystemTime->wDayOfWeek = wd.c_encoding(); // 0 = sunday, etc
-  lpSystemTime->wHour = hms.hours();
-  lpSystemTime->wMinute = hms.minutes();
-  lpSystemTime->wSecond = hms.seconds();
+  lpSystemTime->wYear = (WORD)(int)ymd.year();
+  lpSystemTime->wMonth = (WORD)(unsigned)ymd.month();
+  lpSystemTime->wDayOfWeek = (WORD)wd.c_encoding(); // 0 = sunday, etc
+  lpSystemTime->wHour = (WORD)hms.hours().count();
+  lpSystemTime->wMinute = (WORD)hms.minutes().count();
+  lpSystemTime->wSecond = (WORD)hms.seconds().count();
 
   auto ms = duration_cast<milliseconds>(hms.subseconds());
-  lpSystemTime->wMilliseconds = ms.count();
+  lpSystemTime->wMilliseconds = (WORD)ms.count();
 };
 
 inline VOID GetLocalTime(LPSYSTEMTIME lpSystemTime) {
@@ -54,15 +54,15 @@ inline VOID GetLocalTime(LPSYSTEMTIME lpSystemTime) {
   const hh_mm_ss hms{dateTimeLocal - dp};
   const weekday wd{dp};
 
-  lpSystemTime->wYear = ymd.year();
-  lpSystemTime->wMonth = ymd.month();
-  lpSystemTime->wDayOfWeek = wd.c_encoding();
-  lpSystemTime->wHour = hms.hours();
-  lpSystemTime->wMinute = hms.minutes();
-  lpSystemTime->wSecond = hms.seconds();
+  lpSystemTime->wYear = (WORD)(int)ymd.year();
+  lpSystemTime->wMonth = (WORD)(unsigned)ymd.month();
+  lpSystemTime->wDayOfWeek = (WORD)wd.c_encoding(); // 0 = sunday, etc
+  lpSystemTime->wHour = (WORD)hms.hours().count();
+  lpSystemTime->wMinute = (WORD)hms.minutes().count();
+  lpSystemTime->wSecond = (WORD)hms.seconds().count();
 
   auto ms = duration_cast<milliseconds>(hms.subseconds());
-  lpSystemTime->wMilliseconds = ms.count();
+  lpSystemTime->wMilliseconds = (WORD)ms.count();
 };
 
 // d3d11 stub work, i sure hope it does
