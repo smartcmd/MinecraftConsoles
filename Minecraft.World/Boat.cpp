@@ -87,7 +87,7 @@ Boat::Boat(Level *level, double x, double y, double z) : Entity( level )
 
 double Boat::getRideHeight()
 {
-	return bbHeight * 0.0f - 0.3f;
+	return heightOffset;
 }
 
 bool Boat::hurt(DamageSource *source, float hurtDamage)
@@ -283,11 +283,11 @@ void Boat::tick()
 
 			// 4J Stu - Fix for #9579 - GAMEPLAY: Boats with a player in them slowly sink under the water over time, and with no player in them they float into the sky.
 			// Just make the boats bob up and down rather than any other client-side movement when not receiving packets from server
-			if (waterPercentage < 1)
-			{
-				double bob = waterPercentage * 2 - 1;
-				yd += 0.04f * bob;
-			}
+	        if (waterPercentage > 0)
+	        {
+		        double bob = waterPercentage * 2 - 1;
+		        yd += 0.04f * bob;
+	        }
 			else
 			{
 				if (yd < 0) yd /= 2;
@@ -307,15 +307,14 @@ void Boat::tick()
 		return;
 	}
 
-	if (waterPercentage < 1)
+	if (waterPercentage > 0)
 	{
 		double bob = waterPercentage * 2 - 1;
 		yd += 0.04f * bob;
 	}
 	else
 	{
-		if (yd < 0) yd /= 2;
-		yd += 0.007f;
+		yd = 0;
 	}
 
 
