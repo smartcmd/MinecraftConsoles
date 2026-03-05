@@ -327,7 +327,15 @@ int UIScene_AnvilMenu::KeyboardCompleteCallback(LPVOID lpParam,bool bRes)
 void UIScene_AnvilMenu::handleEditNamePressed()
 {
 	setIgnoreInput(true);
-#if defined(__PS3__) || defined(__ORBIS__) || defined __PSVITA__
+#ifdef _WINDOWS64
+	KeyboardInitData kbData;
+	kbData.title = app.GetString(IDS_TITLE_RENAME);
+	kbData.initialText = m_textInputAnvil.getLabel();
+	kbData.charLimit = 30;
+	kbData.lpParam = this;
+	kbData.Func = &UIScene_AnvilMenu::KeyboardCompleteCallbackNew;
+	ui.NavigateToScene(m_iPad, eUIScene_Keyboard, &kbData);
+#elif defined(__PS3__) || defined(__ORBIS__) || defined __PSVITA__
 	int language = XGetLanguage();
 	switch(language)
 	{
@@ -346,6 +354,21 @@ void UIScene_AnvilMenu::handleEditNamePressed()
 #endif
 }
 
+#ifdef _WINDOWS64
+int UIScene_AnvilMenu::KeyboardCompleteCallbackNew(LPVOID lpParam, const wstring &text, bool bAccepted)
+{
+	UIScene_AnvilMenu *pClass = (UIScene_AnvilMenu *)lpParam;
+	pClass->setIgnoreInput(false);
+	if(bAccepted)
+	{
+		pClass->setEditNameValue(text);
+		pClass->m_itemName = text;
+		pClass->updateItemName();
+	}
+	return 0;
+}
+#endif
+
 void UIScene_AnvilMenu::setEditNameValue(const wstring &name)
 {
 	m_textInputAnvil.setLabel(name);
@@ -357,6 +380,8 @@ void UIScene_AnvilMenu::setEditNameEditable(bool enabled)
 
 void UIScene_AnvilMenu::setCostLabel(const wstring &label, bool canAfford)
 {
+	if(!getMovie()) return;
+
 	IggyDataValue result;
 	IggyDataValue value[2];
 
@@ -373,6 +398,8 @@ void UIScene_AnvilMenu::setCostLabel(const wstring &label, bool canAfford)
 
 void UIScene_AnvilMenu::showCross(bool show)
 {
+	if(!getMovie()) return;
+
 	if(m_showingCross != show)
 	{
 		IggyDataValue result;

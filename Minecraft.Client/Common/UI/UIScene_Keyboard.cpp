@@ -1,19 +1,28 @@
 #include "stdafx.h"
 #include "UI.h"
 #include "UIScene_Keyboard.h"
+#include "..\..\Tesselator.h"
 
 #define KEYBOARD_DONE_TIMER_ID 0
 #define KEYBOARD_DONE_TIMER_TIME 100
+
+extern char chGlobalText[256];
 
 UIScene_Keyboard::UIScene_Keyboard(int iPad, void *initData, UILayer *parentLayer) : UIScene(iPad, parentLayer)
 {
 	// Setup all the Iggy references we need for this scene
 	initialiseMovie();
 
-	m_EnterTextLabel.init(L"Enter Sign Text");
+	if (initData != NULL)
+	{
+		m_initData = *((KeyboardInitData *)initData);
+	}
 
-	m_KeyboardTextInput.init(L"", -1);
-	m_KeyboardTextInput.SetCharLimit(15);
+	wstring labelText = m_initData.title.empty() ? L"Enter Text" : m_initData.title;
+	m_EnterTextLabel.init(labelText);
+
+	m_KeyboardTextInput.init(m_initData.initialText.empty() ? L"" : m_initData.initialText, -1);
+	m_KeyboardTextInput.SetCharLimit(m_initData.charLimit > 0 ? m_initData.charLimit : 15);
 	
 	m_ButtonSpace.init(L"Space", -1);
 	m_ButtonCursorLeft.init(L"Cursor Left", -1);
@@ -90,6 +99,12 @@ void UIScene_Keyboard::handleInput(int iPad, int key, bool repeat, bool pressed,
 		switch(key)
 		{
 		case ACTION_MENU_CANCEL:
+#ifdef _WINDOWS64
+			if(m_initData.Func != NULL)
+			{
+				m_initData.Func(m_initData.lpParam, L"", false);
+			}
+#endif
 			navigateBack();
 			handled = true;
 			break;
@@ -176,6 +191,41 @@ void UIScene_Keyboard::KeyboardDonePressed()
 	// Debug
 	app.DebugPrintf("UI Keyboard - DONE - [%ls]\n", m_KeyboardTextInput.getLabel());
 
-	// ToDo: Keyboard can now pass on its final string value and close itself down
+	// Capture the final string value from the keyboard text input
+	m_capturedText = m_KeyboardTextInput.getLabel();
+
+#ifdef _WINDOWS64
+	// Invoke the callback if one was provided
+	if(m_initData.Func != NULL)
+	{
+		m_initData.Func(m_initData.lpParam, m_capturedText, true);
+	}
+
+
+#endif
 	navigateBack();
+}
+
+void UIScene_Keyboard::render(S32 width, S32 height, C4JRender::eViewportType viewport)
+{
+	ui.setupRenderPosition(viewport);
+
+	// Draw a semi transparent dark overlay behind the keyboard
+	glEnable(GL_BLEND);
+	glDisable(GL_TEXTURE_2D);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	glColor4f(0.0f, 0.0f, 0.0f, 1.0f);
+
+	Tesselator *t = Tesselator::getInstance();
+	t->begin();
+	t->vertex(0.0f,          (float)height, 0.0f);
+	t->vertex((float)width,  (float)height, 0.0f);
+	t->vertex((float)width,  0.0f,          0.0f);
+	t->vertex(0.0f,          0.0f,          0.0f);
+	t->end();
+
+	glEnable(GL_TEXTURE_2D);
+	glDisable(GL_BLEND);
+
+	UIScene::render(width, height, viewport);
 }

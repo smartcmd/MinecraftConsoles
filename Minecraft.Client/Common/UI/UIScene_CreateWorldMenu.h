@@ -67,39 +67,42 @@ public:
 
 	virtual void handleTouchBoxRebuild();
 
-protected:
-	// TODO: This should be pure virtual in this class
-	virtual wstring getMoviePath();
-	
-	virtual void handleTimerComplete(int id);
-	virtual void handleGainFocus(bool navBack);
+	protected:
+		// TODO: This should be pure virtual in this class
+		virtual wstring getMoviePath();
+		
+		virtual void handleTimerComplete(int id);
+		virtual void handleGainFocus(bool navBack);
 
-public:
-	// INPUT
-	virtual void handleInput(int iPad, int key, bool repeat, bool pressed, bool released, bool &handled);
+	public:
+		// INPUT
+		virtual void handleInput(int iPad, int key, bool repeat, bool pressed, bool released, bool &handled);
 
-private:
-	void StartSharedLaunchFlow();
-	bool IsLocalMultiplayerAvailable();
+	private:
+		void StartSharedLaunchFlow();
+		bool IsLocalMultiplayerAvailable();
 
 #ifdef _DURANGO
-	static void checkPrivilegeCallback(LPVOID lpParam, bool hasPrivilege, int iPad);
+		static void checkPrivilegeCallback(LPVOID lpParam, bool hasPrivilege, int iPad);
 #endif
 
-protected:
-	static int KeyboardCompleteWorldNameCallback(LPVOID lpParam,const bool bRes);
-	void handlePress(F64 controlId, F64 childId);
-	void handleSliderMove(F64 sliderId, F64 currentValue);
-	
-	static void CreateGame(UIScene_CreateWorldMenu* pClass, DWORD dwLocalUsersMask);
-	static int ConfirmCreateReturned(void *pParam,int iPad,C4JStorage::EMessageResult result);
-	static int StartGame_SignInReturned(void *pParam,bool bContinue, int iPad);
-	static int MustSignInReturnedPSN(void *pParam,int iPad,C4JStorage::EMessageResult result);
+	protected:
+		static int KeyboardCompleteWorldNameCallback(LPVOID lpParam,const bool bRes);
+#ifdef _WINDOWS64
+		static int KeyboardCompleteWorldNameCallbackNew(LPVOID lpParam, const wstring &text, bool bAccepted);
+#endif
+		void handlePress(F64 controlId, F64 childId);
+		void handleSliderMove(F64 sliderId, F64 currentValue);
+		
+		static void CreateGame(UIScene_CreateWorldMenu* pClass, DWORD dwLocalUsersMask);
+		static int ConfirmCreateReturned(void *pParam,int iPad,C4JStorage::EMessageResult result);
+		static int StartGame_SignInReturned(void *pParam,bool bContinue, int iPad);
+		static int MustSignInReturnedPSN(void *pParam,int iPad,C4JStorage::EMessageResult result);
 
 #ifdef __ORBIS__
-	//static int PSPlusReturned(void *pParam,int iPad,C4JStorage::EMessageResult result);
-	static int ContinueOffline(void *pParam,int iPad,C4JStorage::EMessageResult result);
+		//static int PSPlusReturned(void *pParam,int iPad,C4JStorage::EMessageResult result);
+		static int ContinueOffline(void *pParam,int iPad,C4JStorage::EMessageResult result);
 #endif
 
-	virtual void checkStateAndStartGame();
+		virtual void checkStateAndStartGame();
 };

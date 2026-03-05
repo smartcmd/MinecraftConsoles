@@ -573,7 +573,15 @@ void UIScene_LaunchMoreOptionsMenu::handlePress(F64 controlId, F64 childId)
 	case eControl_EditSeed:
 		{
 			m_bIgnoreInput=true;
-#ifdef __PS3__
+#ifdef _WINDOWS64
+			KeyboardInitData kbData;
+			kbData.title = app.GetString(IDS_CREATE_NEW_WORLD_SEED);
+			kbData.initialText = m_editSeed.getLabel();
+			kbData.charLimit = 60;
+			kbData.lpParam = this;
+			kbData.Func = &UIScene_LaunchMoreOptionsMenu::KeyboardCompleteSeedCallbackNew;
+			ui.NavigateToScene(m_iPad, eUIScene_Keyboard, &kbData);
+#elif defined(__PS3__)
 			int language = XGetLanguage();
 			switch(language)
 			{
@@ -595,6 +603,19 @@ void UIScene_LaunchMoreOptionsMenu::handlePress(F64 controlId, F64 childId)
 	}
 }
 
+#ifdef _WINDOWS64
+int UIScene_LaunchMoreOptionsMenu::KeyboardCompleteSeedCallbackNew(LPVOID lpParam, const wstring &text, bool bAccepted)
+{
+	UIScene_LaunchMoreOptionsMenu *pClass = (UIScene_LaunchMoreOptionsMenu *)lpParam;
+	pClass->m_bIgnoreInput = false;
+	if(bAccepted)
+	{
+		pClass->m_editSeed.setLabel(text.c_str());
+		pClass->m_params->seed = text;
+	}
+	return 0;
+}
+#endif
 
 void UIScene_LaunchMoreOptionsMenu::handleSliderMove(F64 sliderId, F64 currentValue)
 {

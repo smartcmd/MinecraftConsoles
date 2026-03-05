@@ -417,7 +417,17 @@ void UIScene_CreateWorldMenu::handlePress(F64 controlId, F64 childId)
 	case eControl_EditWorldName:
 		{
 			m_bIgnoreInput=true;
+#ifdef _WINDOWS64
+			KeyboardInitData kbData;
+			kbData.title = app.GetString(IDS_CREATE_NEW_WORLD);
+			kbData.initialText = m_worldName;
+			kbData.charLimit = 25;
+			kbData.lpParam = this;
+			kbData.Func = &UIScene_CreateWorldMenu::KeyboardCompleteWorldNameCallbackNew;
+			ui.NavigateToScene(m_iPad, eUIScene_Keyboard, &kbData);
+#else
 			InputManager.RequestKeyboard(app.GetString(IDS_CREATE_NEW_WORLD),m_editWorldName.getLabel(),(DWORD)0,25,&UIScene_CreateWorldMenu::KeyboardCompleteWorldNameCallback,this,C_4JInput::EKeyboardMode_Default);
+#endif
 		}
 		break;
 	case eControl_GameModeToggle:
@@ -488,7 +498,7 @@ void UIScene_CreateWorldMenu::StartSharedLaunchFlow()
 
 		if(pTexturePack==NULL)
 		{
-#if TO_BE_IMPLEMENTED
+#if TO_BE IMPLEMENTED
 			// They've selected a texture pack they don't have yet
 			// upsell
 			CXuiCtrl4JList::LIST_ITEM_INFO ListItem;
@@ -712,11 +722,15 @@ void UIScene_CreateWorldMenu::handleTimerComplete(int id)
 	};
 }
 
+extern char chGlobalText[256];
+
 void UIScene_CreateWorldMenu::handleGainFocus(bool navBack)
 {
 	if(navBack)
 	{
 		m_checkboxOnline.setChecked(m_MoreOptionsParams.bOnlineGame);
+
+		m_bIgnoreInput = false;
 	}
 }
 
@@ -741,6 +755,23 @@ int UIScene_CreateWorldMenu::KeyboardCompleteWorldNameCallback(LPVOID lpParam,bo
 	}
 	return 0;
 }
+
+#ifdef _WINDOWS64
+int UIScene_CreateWorldMenu::KeyboardCompleteWorldNameCallbackNew(LPVOID lpParam, const wstring &text, bool bAccepted)
+{
+	UIScene_CreateWorldMenu *pClass = (UIScene_CreateWorldMenu *)lpParam;
+	pClass->m_bIgnoreInput = false;
+
+	if(bAccepted && !text.empty())
+	{
+		pClass->m_editWorldName.setLabel(text.c_str());
+		pClass->m_worldName = text;
+	}
+
+	pClass->m_buttonCreateWorld.setEnable(!pClass->m_worldName.empty());
+	return 0;
+}
+#endif
 
 void UIScene_CreateWorldMenu::checkStateAndStartGame()
 {
@@ -778,7 +809,7 @@ void UIScene_CreateWorldMenu::checkStateAndStartGame()
 			// 4J Stu - This is a bit messy and is due to the library incorrectly returning false for IsSignedInLive if the npAvailability isn't SCE_OK
 			UINT uiIDA[1];
 			uiIDA[0]=IDS_OK;
-			ui.RequestErrorMessage(IDS_ONLINE_SERVICE_TITLE, IDS_CONTENT_RESTRICTION, uiIDA, 1, iPadNotSignedInLive);
+			ui.RequestAlertMessage(IDS_ONLINE_SERVICE_TITLE, IDS_CONTENT_RESTRICTION, uiIDA, 1, iPadNotSignedInLive);
 		}
 		else
 		{
@@ -962,7 +993,7 @@ void UIScene_CreateWorldMenu::checkStateAndStartGame()
 				// On Windows64, Xbox Live is unavailable. Skip QuadrantSignin and start directly.
 				CreateGame(this, 0);
 #else
-				//ProfileManager.RequestSignInUI(false, false, false, true, false,&CScene_MultiGameCreate::StartGame_SignInReturned, this,ProfileManager.GetPrimaryPad());
+				//ProfileManager.RequestSignInUI(false, false, false, true, false,&UIScene_CreateWorldMenu::StartGame_SignInReturned, this,ProfileManager.GetPrimaryPad());
 				SignInInfo info;
 				info.Func = &UIScene_CreateWorldMenu::StartGame_SignInReturned;
 				info.lpParam = this;
@@ -1077,7 +1108,7 @@ void UIScene_CreateWorldMenu::CreateGame(UIScene_CreateWorldMenu* pClass, DWORD 
 	else
 	{
 		// random
-		wSeed=L"";
+		wSeed=L""; 
 	}
 
 	// start the game

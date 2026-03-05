@@ -1,4 +1,4 @@
-// Minecraft.cpp : Defines the entry point for the application.
+﻿// Minecraft.cpp : Defines the entry point for the application.
 //
 
 #include "stdafx.h"
@@ -512,17 +512,31 @@ void ClearGlobalText()
 uint16_t *GetGlobalText()
 {
 	//copy the ch text to ui16
-	char * pchBuffer=(char *)ui16GlobalText;
+		char * pchBuffer=(char *)ui16GlobalText;
 		for(int i=0;i<256;i++)
 		{
 			pchBuffer[i*2]=chGlobalText[i];
 		}
 	return ui16GlobalText;
 }
+
 void SeedEditBox()
 {
-	DialogBox(hMyInst, MAKEINTRESOURCE(IDD_SEED),
-		g_hWnd, reinterpret_cast<DLGPROC>(DlgProc));
+	KeyboardInitData kbData;
+
+	kbData.title =
+		reinterpret_cast<wchar_t*>(chGlobalText);
+
+	kbData.initialText =
+		reinterpret_cast<wchar_t*>(chGlobalText);
+
+	kbData.charLimit = 25;
+	kbData.lpParam = nullptr;
+
+	ui.NavigateToScene(
+		ProfileManager.GetPrimaryPad(),
+		eUIScene_Keyboard,
+		&kbData);
 }
 
 

@@ -2,6 +2,7 @@
 
 #include "UIScene_AbstractContainerMenu.h"
 #include "IUIScene_AnvilMenu.h"
+#include "UIStructs.h"
 #include "..\Minecraft.World\MerchantMenu.h"
 
 class InventoryMenu;
@@ -55,7 +56,10 @@ protected:
 
 	virtual UIControl *getSection(ESceneSection eSection);
 
-	static int KeyboardCompleteCallback(LPVOID lpParam,bool bRes);
+	static int KeyboardCompleteCallback(LPVOID lpParam, const bool bRes);
+#ifdef _WINDOWS64
+	static int KeyboardCompleteCallbackNew(LPVOID lpParam, const wstring &text, bool bAccepted);
+#endif
 	virtual void handleEditNamePressed();
 	virtual void setEditNameValue(const wstring &name);
 	virtual void setEditNameEditable(bool enabled);

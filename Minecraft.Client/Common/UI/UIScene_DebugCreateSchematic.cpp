@@ -112,8 +112,20 @@ void UIScene_DebugCreateSchematic::handlePress(F64 controlId, F64 childId)
 	case eControl_EndX:
 	case eControl_EndY:
 	case eControl_EndZ:
-		m_keyboardCallbackControl = (eControls)((int)controlId);	
+		m_keyboardCallbackControl = (eControls)((int)controlId);
+#ifdef _WINDOWS64
+		{
+			KeyboardInitData kbData;
+			kbData.title = L"Enter something";
+			kbData.initialText = L"";
+			kbData.charLimit = 25;
+			kbData.lpParam = this;
+			kbData.Func = &UIScene_DebugCreateSchematic::KeyboardCompleteCallbackNew;
+			ui.NavigateToScene(m_iPad, eUIScene_Keyboard, &kbData);
+		}
+#else
 		InputManager.RequestKeyboard(L"Enter something",L"",(DWORD)0,25,&UIScene_DebugCreateSchematic::KeyboardCompleteCallback,this,C_4JInput::EKeyboardMode_Default);
+#endif
 		break;
 	};
 }
@@ -213,4 +225,53 @@ int UIScene_DebugCreateSchematic::KeyboardCompleteCallback(LPVOID lpParam,bool b
 
 	return 0;
 }
+
+#ifdef _WINDOWS64
+int UIScene_DebugCreateSchematic::KeyboardCompleteCallbackNew(LPVOID lpParam, const wstring &text, bool bAccepted)
+{
+	UIScene_DebugCreateSchematic *pClass = (UIScene_DebugCreateSchematic *)lpParam;
+	if(!text.empty())
+	{
+		int iVal = _fromString<int>(text);
+		switch(pClass->m_keyboardCallbackControl)
+		{
+		case eControl_Name:
+			pClass->m_textInputName.setLabel(text.c_str());
+			swprintf(pClass->m_data->name, 64, L"%ls", text.c_str());
+			break;
+		case eControl_StartX:
+			pClass->m_textInputStartX.setLabel(text.c_str());
+			if(iVal >= (LEVEL_MAX_WIDTH * -16) || iVal < (LEVEL_MAX_WIDTH * 16))
+				pClass->m_data->startX = iVal;
+			break;
+		case eControl_StartY:
+			pClass->m_textInputStartY.setLabel(text.c_str());
+			if(iVal >= (LEVEL_MAX_WIDTH * -16) || iVal < (LEVEL_MAX_WIDTH * 16))
+				pClass->m_data->startY = iVal;
+			break;
+		case eControl_StartZ:
+			pClass->m_textInputStartZ.setLabel(text.c_str());
+			if(iVal >= (LEVEL_MAX_WIDTH * -16) || iVal < (LEVEL_MAX_WIDTH * 16))
+				pClass->m_data->startZ = iVal;
+			break;
+		case eControl_EndX:
+			pClass->m_textInputEndX.setLabel(text.c_str());
+			if(iVal >= (LEVEL_MAX_WIDTH * -16) || iVal < (LEVEL_MAX_WIDTH * 16))
+				pClass->m_data->endX = iVal;
+			break;
+		case eControl_EndY:
+			pClass->m_textInputEndY.setLabel(text.c_str());
+			if(iVal >= (LEVEL_MAX_WIDTH * -16) || iVal < (LEVEL_MAX_WIDTH * 16))
+				pClass->m_data->endY = iVal;
+			break;
+		case eControl_EndZ:
+			pClass->m_textInputEndZ.setLabel(text.c_str());
+			if(iVal >= (LEVEL_MAX_WIDTH * -16) || iVal < (LEVEL_MAX_WIDTH * 16))
+				pClass->m_data->endZ = iVal;
+			break;
+		}
+	}
+	return 0;
+}
+#endif
 #endif

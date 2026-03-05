@@ -1,6 +1,7 @@
 #pragma once
 
 #include "UIScene.h"
+#include "UIStructs.h"
 
 class UIScene_LaunchMoreOptionsMenu : public UIScene
 {
@@ -145,6 +146,9 @@ public:
 	virtual void handleFocusChange(F64 controlId, F64 childId);
 	virtual void handleTimerComplete(int id);
 	static int KeyboardCompleteSeedCallback(LPVOID lpParam,const bool bRes);
+#ifdef _WINDOWS64
+	static int KeyboardCompleteSeedCallbackNew(LPVOID lpParam, const wstring &text, bool bAccepted);
+#endif
 	virtual void handlePress(F64 controlId, F64 childId);
 	virtual void handleSliderMove(F64 sliderId, F64 currentValue);
 

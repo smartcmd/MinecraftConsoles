@@ -171,7 +171,15 @@ void UIScene_SignEntryMenu::handlePress(F64 controlId, F64 childId)
 		{
 			m_iEditingLine = (int)controlId;
 			m_bIgnoreInput = true;
-#ifdef _XBOX_ONE
+#ifdef _WINDOWS64
+			KeyboardInitData kbData;
+			kbData.title = app.GetString(IDS_SIGN_TITLE);
+			kbData.initialText = m_textInputLines[m_iEditingLine].getLabel();
+			kbData.charLimit = 15;
+			kbData.lpParam = this;
+			kbData.Func = &UIScene_SignEntryMenu::KeyboardCompleteCallbackNew;
+			ui.NavigateToScene(m_iPad, eUIScene_Keyboard, &kbData);
+#elif defined(_XBOX_ONE)
 			// 4J-PB - Xbox One uses the Windows virtual keyboard, and doesn't have the Xbox 360 Latin keyboard type, so we can't restrict the input set to alphanumeric. The closest we get is the emailSmtpAddress type.
 			int language = XGetLanguage();
 			switch(language)
@@ -192,6 +200,19 @@ void UIScene_SignEntryMenu::handlePress(F64 controlId, F64 childId)
 		break;
 	}
 }
+
+#ifdef _WINDOWS64
+int UIScene_SignEntryMenu::KeyboardCompleteCallbackNew(LPVOID lpParam, const wstring &text, bool bAccepted)
+{
+	UIScene_SignEntryMenu *pClass = (UIScene_SignEntryMenu *)lpParam;
+	pClass->m_bIgnoreInput = false;
+	if(bAccepted)
+	{
+		pClass->m_textInputLines[pClass->m_iEditingLine].setLabel(text.c_str());
+	}
+	return 0;
+}
+#endif
 
 void UIScene_SignEntryMenu::handleDestroy()
 {

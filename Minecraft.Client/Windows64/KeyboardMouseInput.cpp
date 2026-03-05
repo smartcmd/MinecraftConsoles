@@ -66,7 +66,6 @@ void KeyboardMouseInput::OnKeyDown(WPARAM vk)
 {
 	if (vk < 256)
 	{
-		if (!m_keyState[vk]) m_keyPressedAccum[vk] = true;
 		m_keyState[vk] = true;
 	}
 }
@@ -103,12 +102,9 @@ void KeyboardMouseInput::OnRawMouseInput(LPARAM lParam)
 
 void KeyboardMouseInput::OnMouseButton(int button, bool down)
 {
-	if (button >= 0 && button < 3)
-	{
-		if (down && !m_mouseButtons[button]) m_mousePressedAccum[button] = true;
-		if (!down && m_mouseButtons[button]) m_mouseReleasedAccum[button] = true;
-		m_mouseButtons[button] = down;
-	}
+	if (button < 0 || button >= 3) return;
+
+	m_mouseButtons[button] = down;
 }
 
 void KeyboardMouseInput::OnMouseWheel(int delta)

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "UIScene.h"
+#include "UIStructs.h"
 
 class SignTileEntity;
 
@@ -54,5 +55,8 @@ public:
 protected:
 	void handlePress(F64 controlId, F64 childId);
 	static int KeyboardCompleteCallback(LPVOID lpParam,const bool bRes);
+#ifdef _WINDOWS64
+	static int KeyboardCompleteCallbackNew(LPVOID lpParam, const wstring &text, bool bAccepted);
+#endif
 	virtual void handleDestroy();
 };

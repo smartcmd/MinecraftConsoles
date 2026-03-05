@@ -422,6 +422,27 @@ typedef struct _SignInInfo
 	bool requireOnline;
 } SignInInfo;
 
+// Keyboard
+typedef struct _KeyboardInitData
+{
+	wstring initialText;
+	wstring title;
+	int charLimit;
+	LPVOID lpParam;
+#ifdef _WINDOWS64
+	int( *Func)(LPVOID lpParam, const wstring &text, bool bAccepted);
+#endif
+
+	_KeyboardInitData()
+	{
+		charLimit = 25;
+		lpParam = NULL;
+#ifdef _WINDOWS64
+		Func = NULL;
+#endif
+	}
+} KeyboardInitData;
+
 // Credits
 typedef struct 
 {
