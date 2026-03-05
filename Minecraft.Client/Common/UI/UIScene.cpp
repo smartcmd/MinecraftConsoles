@@ -900,6 +900,25 @@ void UIScene::sendInputToMovie(int key, bool repeat, bool pressed, bool released
 		app.DebugPrintf("UI WARNING: Ignoring input as game action does not translate to an Iggy keycode\n");
 		return;
 	}
+
+#ifdef _WINDOWS64
+	// If a navigation key is pressed with no focused element, focus the first
+	// available one so arrow keys work even when the mouse is over empty space.
+	if(pressed && (iggyKeyCode == IGGY_KEYCODE_UP || iggyKeyCode == IGGY_KEYCODE_DOWN ||
+	               iggyKeyCode == IGGY_KEYCODE_LEFT || iggyKeyCode == IGGY_KEYCODE_RIGHT))
+	{
+		IggyFocusHandle currentFocus = IGGY_FOCUS_NULL;
+		IggyFocusableObject focusables[64];
+		S32 numFocusables = 0;
+		IggyPlayerGetFocusableObjects(swf, &currentFocus, focusables, 64, &numFocusables);
+		if(currentFocus == IGGY_FOCUS_NULL && numFocusables > 0)
+		{
+			IggyPlayerSetFocusRS(swf, focusables[0].object, 0);
+			return;
+		}
+	}
+#endif
+
 	IggyEvent keyEvent;
 	// 4J Stu - Keyloc is always standard as we don't care about shift/alt
 	IggyMakeEventKey( &keyEvent, pressed?IGGY_KEYEVENT_Down:IGGY_KEYEVENT_Up, (IggyKeycode)iggyKeyCode, IGGY_KEYLOC_Standard );
