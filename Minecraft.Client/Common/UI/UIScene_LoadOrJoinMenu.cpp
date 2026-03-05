@@ -670,8 +670,6 @@ void UIScene_LoadOrJoinMenu::tick()
 {
     UIScene::tick();
 
-
-
 #if (defined  __PS3__  || defined __ORBIS__ || defined _DURANGO || defined _WINDOWS64 || defined __PSVITA__)
     if(m_bExitScene) // navigate forward or back
     {
@@ -1363,7 +1361,11 @@ int UIScene_LoadOrJoinMenu::KeyboardCompleteWorldNameCallback(LPVOID lpParam,boo
     {	
         uint16_t ui16Text[128];
         ZeroMemory(ui16Text, 128 * sizeof(uint16_t) );
+#ifdef _WINDOWS64
+        Win64_GetKeyboardText(ui16Text, 128);
+#else
         InputManager.GetText(ui16Text);
+#endif
 
         // check the name is valid
         if(ui16Text[0]!=0)
@@ -2385,7 +2387,21 @@ int UIScene_LoadOrJoinMenu::SaveOptionsDialogReturned(void *pParam,int iPad,C4JS
     case C4JStorage::EMessage_ResultDecline:  // rename
         {
 			pClass->m_bIgnoreInput=true;
-#ifdef _DURANGO
+#ifdef _WINDOWS64
+            {
+                wchar_t wSaveName[128];
+                ZeroMemory(wSaveName, 128 * sizeof(wchar_t));
+                mbstowcs_s(NULL, wSaveName, 128, pClass->m_saveDetails[pClass->m_iSaveListIndex - pClass->m_iDefaultButtonsC].UTF8SaveName, _TRUNCATE);
+                UIKeyboardInitData kbData;
+                kbData.title       = app.GetString(IDS_RENAME_WORLD_TITLE);
+                kbData.defaultText = wSaveName;
+                kbData.maxChars    = 25;
+                kbData.callback    = &UIScene_LoadOrJoinMenu::KeyboardCompleteWorldNameCallback;
+                kbData.lpParam     = pClass;
+                kbData.pcMode      = !Win64_IsControllerConnected();
+                ui.NavigateToScene(pClass->m_iPad, eUIScene_Keyboard, &kbData);
+            }
+#elif defined _DURANGO
             // bring up a keyboard
             InputManager.RequestKeyboard(app.GetString(IDS_RENAME_WORLD_TITLE), (pClass->m_saveDetails[pClass->m_iSaveListIndex-pClass->m_iDefaultButtonsC]).UTF16SaveName,(DWORD)0,25,&UIScene_LoadOrJoinMenu::KeyboardCompleteWorldNameCallback,pClass,C_4JInput::EKeyboardMode_Default);
 #else
