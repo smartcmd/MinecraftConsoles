@@ -158,6 +158,10 @@ private:
 	vector<QueuedMessageBoxData *> m_queuedMessageBoxData;
 
 	unsigned int m_winUserIndex;
+	EUIScene m_mouseDraggingSliderScene;
+	int m_mouseDraggingSliderId;
+	int m_lastHoverMouseX;
+	int m_lastHoverMouseY;
 	//bool m_bSysUIShowing;
 	bool m_bSystemUIShowing;
 	C4JThread *m_reloadSkinThread;

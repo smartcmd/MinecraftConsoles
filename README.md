@@ -70,7 +70,6 @@ The headless server also reads and writes `server.properties` in the working dir
 - **Toggle View (FPS/TPS)**: `F5`
 - **Fullscreen**: `F11`
 - **Pause Menu**: `Esc`
-- **Toggle Mouse Capture**: `Left Alt` (for debugging)
 - **Attack / Destroy**: `Left Click`
 - **Use / Place**: `Right Click`
 - **Select Item**: `Mouse Wheel` or keys `1` to `9`

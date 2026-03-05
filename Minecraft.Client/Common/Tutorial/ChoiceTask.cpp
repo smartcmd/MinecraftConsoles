@@ -58,7 +58,7 @@ bool ChoiceTask::isCompleted()
 #ifdef _WINDOWS64
 		if (!m_bConfirmMappingComplete &&
 			(InputManager.GetValue(xboxPad, m_iConfirmMapping) > 0
-				|| KMInput.IsKeyDown(VK_RETURN)))
+				|| g_KBMInput.IsKeyDown(VK_RETURN)))
 #else
 		if (!m_bConfirmMappingComplete &&
 			InputManager.GetValue(xboxPad, m_iConfirmMapping) > 0)
@@ -70,7 +70,7 @@ bool ChoiceTask::isCompleted()
 #ifdef _WINDOWS64
 		if (!m_bCancelMappingComplete &&
 			(InputManager.GetValue(xboxPad, m_iCancelMapping) > 0
-				|| KMInput.IsKeyDown('B')))
+				|| g_KBMInput.IsKeyDown('B')))
 #else
 		if (!m_bCancelMappingComplete &&
 			InputManager.GetValue(xboxPad, m_iCancelMapping) > 0)
