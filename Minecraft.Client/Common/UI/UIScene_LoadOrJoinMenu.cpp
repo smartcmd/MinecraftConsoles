@@ -31,6 +31,32 @@
 
 static wstring ReadLevelNameFromSaveFile(const wstring& filePath)
 {
+    // Check for a worldname.txt sidecar written by the rename feature first
+    size_t slashPos = filePath.rfind(L'\\');
+    if (slashPos != wstring::npos)
+    {
+        wstring sidecarPath = filePath.substr(0, slashPos + 1) + L"worldname.txt";
+        FILE *fr = NULL;
+        if (_wfopen_s(&fr, sidecarPath.c_str(), L"r") == 0 && fr)
+        {
+            char buf[128] = {};
+            if (fgets(buf, sizeof(buf), fr))
+            {
+                int len = (int)strlen(buf);
+                while (len > 0 && (buf[len-1] == '\n' || buf[len-1] == '\r' || buf[len-1] == ' '))
+                    buf[--len] = '\0';
+                fclose(fr);
+                if (len > 0)
+                {
+                    wchar_t wbuf[128] = {};
+                    mbstowcs(wbuf, buf, 127);
+                    return wstring(wbuf);
+                }
+            }
+            else fclose(fr);
+        }
+    }
+
     HANDLE hFile = CreateFileW(filePath.c_str(), GENERIC_READ, FILE_SHARE_READ, NULL, OPEN_EXISTING, FILE_FLAG_SEQUENTIAL_SCAN, NULL);
     if (hFile == INVALID_HANDLE_VALUE) return L"";
 
@@ -110,8 +136,8 @@ static wstring ReadLevelNameFromSaveFile(const wstring& filePath)
 
     if (freeSaveData) delete[] saveData;
     delete[] rawData;
-    // "world" is the engine default — it means no real name was ever set, so
-    // return empty to let the caller fall back to the save filename (timestamp).
+    // "world" is the engine default - it means no real name was ever set,
+    // so return empty to let the caller fall back to the save filename (timestamp).
     if (result == L"world") result = L"";
     return result;
 }
@@ -1345,6 +1371,38 @@ int UIScene_LoadOrJoinMenu::KeyboardCompleteWorldNameCallback(LPVOID lpParam,boo
 #if (defined __PS3__ || defined __ORBIS__ || defined _DURANGO  || defined(__PSVITA__))
             // open the save and overwrite the metadata
             StorageManager.RenameSaveData(pClass->m_iSaveListIndex - pClass->m_iDefaultButtonsC, ui16Text,&UIScene_LoadOrJoinMenu::RenameSaveDataReturned,pClass);
+#elif defined(_WINDOWS64)
+            {
+                int listPos = pClass->m_iSaveListIndex - pClass->m_iDefaultButtonsC;
+
+                // Convert the ui16Text input to a wide string
+                wchar_t wNewName[128] = {};
+                for (int k = 0; k < 127 && ui16Text[k]; k++)
+                    wNewName[k] = (wchar_t)ui16Text[k];
+
+                // Convert to narrow for storage and in-memory update
+                char narrowName[128] = {};
+                wcstombs(narrowName, wNewName, 127);
+
+                // Build the sidecar path: Windows64\GameHDD\{folder}\worldname.txt
+                wchar_t wFilename[MAX_SAVEFILENAME_LENGTH] = {};
+                mbstowcs(wFilename, pClass->m_saveDetails[listPos].UTF8SaveFilename, MAX_SAVEFILENAME_LENGTH - 1);
+                wstring sidecarPath = wstring(L"Windows64\\GameHDD\\") + wstring(wFilename) + wstring(L"\\worldname.txt");
+
+                FILE *fw = NULL;
+                if (_wfopen_s(&fw, sidecarPath.c_str(), L"w") == 0 && fw)
+                {
+                    fputs(narrowName, fw);
+                    fclose(fw);
+                }
+
+                // Update the in-memory display name so the list reflects it immediately
+                strncpy_s(pClass->m_saveDetails[listPos].UTF8SaveName, narrowName, 127);
+                pClass->m_saveDetails[listPos].UTF8SaveName[127] = '\0';
+
+                // Reuse the existing callback to trigger the list repopulate
+                UIScene_LoadOrJoinMenu::RenameSaveDataReturned(pClass, true);
+            }
 #endif
         }
         else 
