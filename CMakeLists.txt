@@ -89,7 +89,7 @@ target_link_libraries(MinecraftClient PRIVATE
   >
 )
 
-if(WIN32)
+if(CMAKE_HOST_WIN32)
   message(STATUS "Starting redist copy...")
   execute_process(
     COMMAND robocopy.exe
@@ -118,7 +118,7 @@ if(WIN32)
             /S /MT /R:0 /W:0 /NP
             /XF "*.h" "*.xml" "*.lang" "*.bat"
   )
-elseif(UNIX)
+elseif(CMAKE_HOST_UNIX)
   message(STATUS "Starting redist copy...")
   execute_process(
     COMMAND rsync -av "${CMAKE_CURRENT_SOURCE_DIR}/x64/Release/" "${CMAKE_CURRENT_BINARY_DIR}/"
