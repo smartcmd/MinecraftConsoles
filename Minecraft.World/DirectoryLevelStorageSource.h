@@ -16,7 +16,7 @@ protected:
 public:
 	DirectoryLevelStorageSource(const File dir);
 	virtual wstring getName();
-    virtual vector<LevelSummary *> *getLevelList();
+    virtual vector<shared_ptr<LevelSummary>> getLevelList();
     virtual void clearAll();
     virtual LevelData *getDataTagFor(ConsoleSaveFile *saveFile, const wstring& levelId);
     virtual void renameLevel(const wstring& levelId, const wstring& newLevelName);

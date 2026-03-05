@@ -29,7 +29,7 @@ protected:
 private:
 	bool done;
     int selectedWorld;
-    vector<LevelSummary *> *levelList;
+    vector<shared_ptr<LevelSummary>> levelList;
     WorldSelectionList *worldSelectionList;
     wstring worldLang;
     wstring conversionLang;

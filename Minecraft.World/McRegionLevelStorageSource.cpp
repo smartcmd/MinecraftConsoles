@@ -12,6 +12,7 @@
 #include "McRegionLevelStorage.h"
 #include "File.h"
 #include "LevelData.h"
+#include "LevelSettings.h"
 #include "McRegionLevelStorageSource.h"
 
 #include "ConsoleSaveFileIO.h"
@@ -32,42 +33,48 @@ wstring McRegionLevelStorageSource::getName()
 	return L"Scaevolus' McRegion";
 }
 
-vector<LevelSummary *> *McRegionLevelStorageSource::getLevelList()
+vector<shared_ptr<LevelSummary>> McRegionLevelStorageSource::getLevelList()
 {
-	// 4J Stu - We don't need to do directory lookups with the xbox save files
-	vector<LevelSummary *> *levels = new vector<LevelSummary *>;
-#if 0
-	vector<File *> *subFolders = baseDir.listFiles();
-	File *file;
-	AUTO_VAR(itEnd, subFolders->end());
-	for (AUTO_VAR(it, subFolders->begin()); it != itEnd; it++)
-	{
-		file = *it; //subFolders->at(i);
+    vector<shared_ptr<LevelSummary>> levels;
 
-		if (file->isDirectory()) 
-		{
-			continue;
-		}
+    const unique_ptr<vector<File*>> subFolders(baseDir.listFiles());
+    if (subFolders)
+    {
+        for (const File* file : *subFolders)
+        {
+            if (file->isDirectory())
+                continue;
 
-		wstring levelId = file->getName();
+            wstring levelId = file->getName();
 
-		LevelData *levelData = getDataTagFor(levelId);
-		if (levelData != NULL)
-		{
-			bool requiresConversion = levelData->getVersion() != McRegionLevelStorage::MCREGION_VERSION_ID;
-			wstring levelName = levelData->getLevelName();
+            shared_ptr<LevelData> levelData(getDataTagFor(nullptr, levelId));
+            if (levelData)
+            {
+                bool requiresConversion = levelData->getVersion() != McRegionLevelStorage::MCREGION_VERSION_ID;
+                wstring levelName = levelData->getLevelName();
 
-			if (levelName.empty()) // 4J Jev TODO: levelName can't be NULL? if (levelName == NULL || isEmpty(levelName))
-			{
-				levelName = levelId;
-			}
-			// long size = getLevelSize(folder);
-            long size = 0;
-			levels->push_back(new LevelSummary(levelId, levelName, levelData->getLastPlayed(), size, requiresConversion, levelData->isHardcore()));
-		}
-	}
-#endif
-	return levels;
+                if (levelName.empty())
+                    levelName = levelId;
+
+                long size = 0;
+
+                GameType* gameType = levelData->getGameType();
+                if (gameType == nullptr)
+                    gameType = GameType::SURVIVAL;
+
+                levels.push_back(make_shared<LevelSummary>(
+                    levelId,
+                    levelName,
+                    levelData->getLastPlayed(),
+                    size,
+                    gameType,
+                    requiresConversion,
+                    levelData->isHardcore(),
+                    false));
+            }
+        }
+    }
+    return levels;
 }
 
 void McRegionLevelStorageSource::clearAll()

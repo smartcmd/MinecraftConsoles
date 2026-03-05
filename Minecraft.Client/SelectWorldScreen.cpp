@@ -44,18 +44,17 @@ void SelectWorldScreen::loadLevelList()
 {
 	LevelStorageSource *levelSource = minecraft->getLevelSource();
 	levelList = levelSource->getLevelList();
-//	Collections.sort(levelList);	// 4J - TODO - get sort functor etc.
 	selectedWorld = -1;
 }
 
 wstring SelectWorldScreen::getWorldId(int id)
 {
-	return levelList->at(id)->getLevelId();
+	return levelList.at(id)->getLevelId();
 }
 
 wstring SelectWorldScreen::getWorldName(int id)
 {
-    wstring levelName = levelList->at(id)->getLevelName();
+    wstring levelName = levelList.at(id)->getLevelName();
 
 	if ( levelName.length() == 0 )
 	{
@@ -79,6 +78,9 @@ void SelectWorldScreen::postInit()
     selectButton->active = false;
     deleteButton->active = false;
     renameButton->active = false;
+
+    // Refresh the world list in case new worlds were created
+    loadLevelList();
 
 }
 
@@ -190,7 +192,7 @@ void SelectWorldScreen::render(int xm, int ym, float a)
 	static bool forceCreateLevel = false;
 	if( count++ >= 100 )
 	{
-		if( !forceCreateLevel && levelList->size() > 0 )
+		if( !forceCreateLevel && levelList.size() > 0 )
 		{
 			// 4J Stu - For some obscures reason the "delete" button is called "renameButton" and vice versa.
 			//if( levelList->size() > 2 && deleteButton->active )
@@ -200,7 +202,7 @@ void SelectWorldScreen::render(int xm, int ym, float a)
 			//	buttonClicked(deleteButton);
 			//}
 			//else
-			if( levelList->size() > 1 && renameButton->active )
+			if( levelList.size() > 1 && renameButton->active )
 			{
 				this->selectedWorld = 1;
 				count = 0;
@@ -235,7 +237,7 @@ SelectWorldScreen::WorldSelectionList::WorldSelectionList(SelectWorldScreen *sws
 
 int SelectWorldScreen::WorldSelectionList::getNumberOfItems()
 {
-	return (int)this->parent->levelList->size();
+	return static_cast<int>(this->parent->levelList.size());
 }
 
 void SelectWorldScreen::WorldSelectionList::selectItem(int item, bool doubleClick)
@@ -259,7 +261,7 @@ bool SelectWorldScreen::WorldSelectionList::isSelectedItem(int item)
 
 int SelectWorldScreen::WorldSelectionList::getMaxPosition()
 {
-	return (int)parent->levelList->size() * 36;
+	return static_cast<int>(parent->levelList.size()) * 36;
 }
 
 void SelectWorldScreen::WorldSelectionList::renderBackground()
@@ -269,7 +271,7 @@ void SelectWorldScreen::WorldSelectionList::renderBackground()
 
 void SelectWorldScreen::WorldSelectionList::renderItem(int i, int x, int y, int h, Tesselator *t)
 {
-    LevelSummary *levelSummary = parent->levelList->at(i);
+    LevelSummary *levelSummary = parent->levelList.at(i).get();
 
     wstring name = levelSummary->getLevelName();
     if (name.length()==0)
