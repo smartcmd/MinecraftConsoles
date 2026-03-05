@@ -133,6 +133,9 @@ void MultiPlayerGameMode::startDestroyBlock(int x, int y, int z, int face)
 
 	if (localPlayerMode->isCreative())
 	{
+		// Skip if we just broke a block — prevents double-break on single clicks
+		if (destroyDelay > 0) return;
+
 		connection->send(shared_ptr<PlayerActionPacket>( new PlayerActionPacket(PlayerActionPacket::START_DESTROY_BLOCK, x, y, z, face) ));
 		creativeDestroyBlock(minecraft, this, x, y, z, face);
 		destroyDelay = 5;
@@ -178,6 +181,7 @@ void MultiPlayerGameMode::stopDestroyBlock()
 
 	isDestroying = false;
 	destroyProgress = 0;
+	destroyDelay = 0;
 	minecraft->level->destroyTileProgress(minecraft->player->entityId, xDestroyBlock, yDestroyBlock, zDestroyBlock, -1);
 }
 
