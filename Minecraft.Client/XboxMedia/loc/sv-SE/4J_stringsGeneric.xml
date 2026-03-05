@@ -1,0 +1,152 @@
+﻿<root>
+	<data name="IDS_NULL">
+		<value>Används inte</value>
+	</data>	
+
+	<data name="IDS_OK">
+		<value>OK</value>
+	</data>	
+
+	<data name="IDS_BACK">
+		<value>Tillbaka</value>
+	</data>	
+
+	<data name="IDS_CANCEL">
+		<value>Avbryt</value>
+	</data>	
+
+	<data name="IDS_YES">
+		<value>Ja</value>
+	</data>	
+
+	<data name="IDS_NO">
+		<value>Nej</value>
+	</data>	
+
+	<data name="IDS_CORRUPTSAVE_TITLE">
+		<value>Skadad sparfil</value>
+	</data>	
+
+	<data name="IDS_CORRUPTSAVE_TEXT">
+		<value>Det verkar som att dina spardata är skadade. Vill du skapa en ny sparfil och skriva över den skadade?</value>
+	</data>	
+
+	<data name="IDS_NOFREESPACE_TITLE">
+		<value>Inget ledigt utrymme</value>
+	</data>	
+
+	<data name="IDS_NOFREESPACE_TEXT">
+		<value>Det finns inte tillräckligt mycket ledigt utrymme på lagringsenheten för att skapa en sparfil.</value>
+	</data>	
+
+	<data name="IDS_SELECTAGAIN">
+		<value>Försök igen</value>
+	</data>	
+
+	<data name="IDS_PLAYWITHOUTSAVING">
+		<value>Spela utan att spara</value>
+	</data>	
+
+	<data name="IDS_CREATEANEWSAVE">
+		<value>Skapa en ny sparfil</value>
+	</data>	
+
+	<data name="IDS_OVERWRITESAVE_TITLE">
+		<value>Vill du skriva över sparfilen?</value>
+	</data>	
+
+	<data name="IDS_OVERWRITESAVE_TEXT">
+		<value>Den här sparfilen finns redan på den valda lagringsenheten. Vill du skriva över den?</value>
+	</data>	
+
+	<data name="IDS_OVERWRITESAVE_NO">
+		<value>Nej, skriv inte över den</value>
+	</data>	
+
+	<data name="IDS_OVERWRITESAVE_YES">
+		<value>Skriv över och spara</value>
+	</data>	
+
+	<data name="IDS_FAILED_TO_SAVE_TITLE">
+		<value>Det gick inte att spara</value>
+	</data>	
+
+	<data name="IDS_STORAGEDEVICEPROBLEM_TITLE">
+		<value>Problem med lagringsenheten</value>
+	</data>	
+
+	<data name="IDS_FAILED_TO_SAVE_TEXT">
+		<value>Din lagringsenhet är skadad eller går ej att läsa</value>
+	</data>	
+
+	<data name="IDS_FAILED_TO_LOADSAVE_TEXT">
+		<value>Din lagringsenhet är skadad eller går ej att läsa. Välj en ny enhet.</value>
+	</data>	
+
+	<data name="IDS_SELECTANEWDEVICE">
+		<value>Välj en ny lagringsenhet</value>
+	</data>	
+
+	<data name="IDS_NODEVICE_TITLE">
+		<value>Ingen lagringsenhet vald</value>
+	</data>	
+
+	<data name="IDS_NODEVICE_TEXT">
+		<value>Du kommer inte att kunna spara spelet om du inte väljer en lagringsenhet</value>
+	</data>	
+
+	<data name="IDS_NODEVICE_ACCEPT">
+		<value>Välj en lagringsenhet</value>
+	</data>	
+
+	<data name="IDS_NODEVICE_DECLINE">
+		<value>Fortsätt utan att spara</value>
+	</data>	
+
+	<data name="IDS_DEVICEGONE_TEXT">
+		<value>Din lagringsenhet har tagits bort. Välj en ny.</value>
+	</data>	
+
+	<data name="IDS_DEVICEGONE_TITLE">
+		<value>Det gick inte att ladda</value>
+	</data>	
+
+	<data name="IDS_KEYBOARDUI_SAVEGAME_TITLE">
+		<value>Namnge sparfilen</value>
+	</data>	
+
+	<data name="IDS_KEYBOARDUI_SAVEGAME_TEXT">
+		<value>Skriv in ett namn på din sparfil</value>
+	</data>	
+
+	<data name="IDS_WARNING_ARCADE_TEXT">
+		<value>Är du säker på att du vill avsluta spelet?</value>
+	</data>	
+	<data name="IDS_PRO_RETURNEDTOMENU_TITLE">
+		<value>Utloggad</value>
+	</data>	
+	<data name="IDS_PRO_RETURNEDTOMENU_ACCEPT">
+		<value>Fortsätt spela</value>
+	</data>	
+	<data name="IDS_PRO_NOTONLINE_DECLINE">
+		<value>Fortsätt spela offline</value>
+	</data>	
+	<data name="IDS_STO_SAVING_SHORT">
+		<value>Sparar...</value>
+	</data>	
+
+	<data name="IDS_STO_SAVING_LONG">
+		<value>Innehållet sparas. Stäng inte av konsolen.</value>
+	</data>	
+	<data name="IDS_PRO_UNLOCKGAME_TITLE">
+		<value>Lås upp hela spelet</value>
+	</data>	
+	<data name="IDS_PRO_UNLOCKGAME_TEXT">
+		<value>This is the Minecraft trial game. If you had the full game, you would just have earned an achievement! 
+Unlock the full game to experience the joy of Minecraft and to play with your friends across the globe through Xbox Live.
+Would you like to unlock the full game?</value>
+	</data>
+  <data name="IDS_ERROR_NETWORK">
+    <value>Ett nätverksfel har uppstått.</value>
+  </data>
+</root>

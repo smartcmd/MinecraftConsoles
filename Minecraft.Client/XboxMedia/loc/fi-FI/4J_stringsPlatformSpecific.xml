@@ -1,0 +1,105 @@
+﻿<root>
+  <data name="IDS_NOFREESPACE_TEXT">
+    <value>Valitussa tallennuslaitteessa ei ole riittävästi vapaata tilaa pelitallennuksen luomista varten.</value>
+  </data>
+
+  <data name="IDS_OVERWRITESAVE_TEXT">
+    <value>Valitussa tallennuslaitteessa on jo tämä tallennus. Voiko sen korvata?</value>
+  </data>
+
+  <data name="IDS_STORAGEDEVICEPROBLEM_TITLE">
+    <value>Tallennuslaitteen ongelma</value>
+  </data>
+
+  <data name="IDS_FAILED_TO_SAVE_TEXT">
+    <value>Tallennuslaite ei ole käytettävissä tai tallennuslaitteessa on virhe</value>
+  </data>
+
+  <data name="IDS_FAILED_TO_LOADSAVE_TEXT">
+    <value>Tallennuslaite ei ole käytettävissä tai tallennuslaitteessa on virhe. Valitse uusi tallennuslaite.</value>
+  </data>
+
+  <data name="IDS_SELECTANEWDEVICE">
+    <value>Valitse uusi tallennuslaite</value>
+  </data>
+
+  <data name="IDS_NODEVICE_TITLE">
+    <value>Tallennuslaitetta ei ole valittu</value>
+  </data>
+
+  <data name="IDS_NODEVICE_TEXT">
+    <value>Jos tallennuslaitetta ei valita, peliä ei voi tallentaa.</value>
+  </data>
+
+  <data name="IDS_NODEVICE_ACCEPT">
+    <value>Valitse tallennuslaite</value>
+  </data>
+
+  <data name="IDS_DEVICEGONE_TEXT">
+    <value>Tallennuslaite on poistettu. Valitse uusi tallennuslaite.</value>
+  </data>
+
+  <data name="IDS_WARNING_ARCADE_TITLE">
+    <value>Lopeta peli</value>
+  </data>
+
+  <data name="IDS_PRO_RETURNEDTOTITLESCREEN_TEXT">
+    <value>Palasit aloitusnäyttöön, koska pelaajaprofiilisi on kirjautunut ulos.</value>
+  </data>
+
+  <data name="IDS_PRO_RETURNEDTOMENU_TEXT">
+    <value>Peli päättyi, koska pelaajaprofiili kirjautui ulos.</value>
+  </data>
+
+  <data name="IDS_PRO_NOTONLINE_TITLE">
+    <value>Pelaajapr. ei ole online-tilassa</value>
+  </data>
+
+  <data name="IDS_PRO_NOTONLINE_TEXT">
+    <value>Tässä pelissä on joitakin ominaisuuksia, jotka vaativat Xbox Live -palvelun pelaajaprofiilin, mutta olet tällä hetkellä offline-tilassa.</value>
+  </data>
+
+  <data name="IDS_PRO_XBOXLIVE_NOTIFICATION">
+    <value>Tähän ominaisuuteen vaaditaan pelaajaprofiili, joka on kirjautunut Xbox Live -palveluun.</value>
+  </data>
+
+  <data name="IDS_PRO_NOTONLINE_ACCEPT">
+    <value>Yhdistä Xbox Liveen</value>
+  </data>
+
+  <data name="IDS_PRO_ACHIEVEMENTPROBLEM_TITLE">
+    <value>Saavutuksen myöntämisongelma</value>
+  </data>
+
+  <data name="IDS_PRO_ACHIEVEMENTPROBLEM_TEXT">
+    <value> Pelaajaprofiilin käsittelyssä ilmeni ongelma. Saavutusta ei voitu nyt myöntää.</value>
+  </data>
+
+  <data name="IDS_PRO_NOPROFILE_TITLE">
+    <value>Pelaajaprofiilin ongelma</value>
+  </data>
+
+  <data name="IDS_PRO_NOPROFILEOPTIONS_TEXT">
+    <value>Asetusten tallennus pelaajaprofiiliin epäonnistui.</value>
+  </data>
+
+  <data name="IDS_PRO_GUESTPROFILE_TITLE">
+    <value>Vieraan pelaajaprofiili</value>
+  </data>
+
+  <data name="IDS_PRO_GUESTPROFILE_TEXT">
+    <value>Vieraan pelaajaprofiili ei voi käyttää tätä toimintoa. Käytä toista pelaajaprofiilia.</value>
+  </data>
+
+  <data name="IDS_PRO_UNLOCKGAME_TEXT">
+    <value>
+      Pelaat Minecraft-pelin kokeiluversiota. Jos käytössäsi olisi täysi peliversio, olisit juuri ansainnut saavutuksen!
+      Avaa koko peli ja koe Minecraftin riemut. Voit pelata ystäviesi kanssa eri puolilta maailmaa Xbox Liven kautta.
+      Haluatko avata koko pelin?
+    </value>
+  </data>
+
+  <data name="IDS_PRO_PROFILEPROBLEM_TEXT">
+    <value>Palasit päävalikkoon, koska profiilisi lukemisen yhteydessä ilmeni virhe.</value>
+  </data>
+</root>

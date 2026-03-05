@@ -1,0 +1,47 @@
+<root>
+  <data name="IDS_LEADERBOARD_KILLS_EASY">
+    <value>击杀（简单）</value>
+  </data>
+  <data name="IDS_LEADERBOARD_KILLS_NORMAL">
+    <value>击杀（普通）</value>
+  </data>
+  <data name="IDS_LEADERBOARD_KILLS_HARD">
+    <value>击杀（困难）</value>
+  </data>
+  <data name="IDS_LEADERBOARD_MINING_BLOCKS_PEACEFUL">
+    <value>开采方块（和平）</value>
+  </data>
+  <data name="IDS_LEADERBOARD_MINING_BLOCKS_EASY">
+    <value>开采方块（简单）</value>
+  </data>
+  <data name="IDS_LEADERBOARD_MINING_BLOCKS_NORMAL">
+    <value>开采方块（普通）</value>
+  </data>
+  <data name="IDS_LEADERBOARD_MINING_BLOCKS_HARD">
+    <value>开采方块（困难）</value>
+  </data>
+  <data name="IDS_LEADERBOARD_FARMING_PEACEFUL">
+    <value>种植（和平）</value>
+  </data>
+  <data name="IDS_LEADERBOARD_FARMING_EASY">
+    <value>种植（简单）</value>
+  </data>
+  <data name="IDS_LEADERBOARD_FARMING_NORMAL">
+    <value>种植（普通）</value>
+  </data>
+  <data name="IDS_LEADERBOARD_FARMING_HARD">
+    <value>种植（困难）</value>
+  </data>
+  <data name="IDS_LEADERBOARD_TRAVELLING_PEACEFUL">
+    <value>穿梭（和平）</value>
+  </data>
+  <data name="IDS_LEADERBOARD_TRAVELLING_EASY">
+    <value>穿梭（简单）</value>
+  </data>
+  <data name="IDS_LEADERBOARD_TRAVELLING_NORMAL">
+    <value>穿梭（普通）</value>
+  </data>
+  <data name="IDS_LEADERBOARD_TRAVELLING_HARD">
+    <value>穿梭（困难）</value>
+  </data>
+</root>

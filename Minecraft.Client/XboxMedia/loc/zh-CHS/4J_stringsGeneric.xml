@@ -1,0 +1,152 @@
+﻿<root>
+	<data name="IDS_NULL">
+		<value>未使用</value>
+	</data>	
+
+	<data name="IDS_OK">
+		<value>确定</value>
+	</data>	
+
+	<data name="IDS_BACK">
+		<value>返回</value>
+	</data>	
+
+	<data name="IDS_CANCEL">
+		<value>取消</value>
+	</data>	
+
+	<data name="IDS_YES">
+		<value>是</value>
+	</data>	
+
+	<data name="IDS_NO">
+		<value>否</value>
+	</data>	
+
+	<data name="IDS_CORRUPTSAVE_TITLE">
+		<value>存档受损</value>
+	</data>	
+
+	<data name="IDS_CORRUPTSAVE_TEXT">
+		<value>数据存档已受损。是否创建新的数据存档并覆盖已受损数据？</value>
+	</data>	
+
+	<data name="IDS_NOFREESPACE_TITLE">
+		<value>无可用空间</value>
+	</data>	
+
+	<data name="IDS_NOFREESPACE_TEXT">
+		<value>所选存储设备的可用空间不足，无法创建游戏存档。</value>
+	</data>	
+
+	<data name="IDS_SELECTAGAIN">
+		<value>重新选择</value>
+	</data>	
+
+	<data name="IDS_PLAYWITHOUTSAVING">
+		<value>在非存档模式下游戏</value>
+	</data>	
+
+	<data name="IDS_CREATEANEWSAVE">
+		<value>创建新存档</value>
+	</data>	
+
+	<data name="IDS_OVERWRITESAVE_TITLE">
+		<value>覆盖存档？</value>
+	</data>	
+
+	<data name="IDS_OVERWRITESAVE_TEXT">
+		<value>所选存储设备已包含该存档。是否覆盖？</value>
+	</data>	
+
+	<data name="IDS_OVERWRITESAVE_NO">
+		<value>否 - 不要覆盖</value>
+	</data>	
+
+	<data name="IDS_OVERWRITESAVE_YES">
+		<value>覆盖并保存</value>
+	</data>	
+
+	<data name="IDS_FAILED_TO_SAVE_TITLE">
+		<value>保存失败</value>
+	</data>	
+
+	<data name="IDS_STORAGEDEVICEPROBLEM_TITLE">
+		<value>存储设备问题</value>
+	</data>	
+
+	<data name="IDS_FAILED_TO_SAVE_TEXT">
+		<value>您的存储设备不可用或出现错误</value>
+	</data>	
+
+	<data name="IDS_FAILED_TO_LOADSAVE_TEXT">
+		<value>您的存储设备不可用或出现错误，请选择新的存储设备。</value>
+	</data>	
+
+	<data name="IDS_SELECTANEWDEVICE">
+		<value>选择新的存储设备</value>
+	</data>	
+
+	<data name="IDS_NODEVICE_TITLE">
+		<value>未选择任何存储设备</value>
+	</data>	
+
+	<data name="IDS_NODEVICE_TEXT">
+		<value>如果不选择存储设备，将禁用游戏存档</value>
+	</data>	
+
+	<data name="IDS_NODEVICE_ACCEPT">
+		<value>选择存储设备</value>
+	</data>	
+
+	<data name="IDS_NODEVICE_DECLINE">
+		<value>在非存档模式下继续</value>
+	</data>	
+
+	<data name="IDS_DEVICEGONE_TEXT">
+		<value>您的存储设备已被移除，请选择新的存储设备。</value>
+	</data>	
+
+	<data name="IDS_DEVICEGONE_TITLE">
+		<value>加载失败</value>
+	</data>	
+
+	<data name="IDS_KEYBOARDUI_SAVEGAME_TITLE">
+		<value>为存档命名</value>
+	</data>	
+
+	<data name="IDS_KEYBOARDUI_SAVEGAME_TEXT">
+		<value>请为游戏存档输入名称</value>
+	</data>	
+
+	<data name="IDS_WARNING_ARCADE_TEXT">
+		<value>您确定要退出游戏吗？</value>
+	</data>	
+	<data name="IDS_PRO_RETURNEDTOMENU_TITLE">
+		<value>已登出</value>
+	</data>	
+	<data name="IDS_PRO_RETURNEDTOMENU_ACCEPT">
+		<value>继续进行游戏</value>
+	</data>	
+	<data name="IDS_PRO_NOTONLINE_DECLINE">
+		<value>继续在离线模式下游戏</value>
+	</data>	
+	<data name="IDS_STO_SAVING_SHORT">
+		<value>正在保存…</value>
+	</data>	
+
+	<data name="IDS_STO_SAVING_LONG">
+		<value>正在保存内容，请勿关闭主机。</value>
+	</data>	
+	<data name="IDS_PRO_UNLOCKGAME_TITLE">
+		<value>解锁完整版游戏</value>
+	</data>	
+	<data name="IDS_PRO_UNLOCKGAME_TEXT">
+		<value>您使用的是 Minecraft 试玩版。如果拥有完整版游戏，您刚才就可以获得一项成就！
+请解锁完整版游戏来体验 Minecraft 的乐趣，并与世界各地的好友一起在 Xbox Live 上游戏。
+是否解锁完整版游戏？</value>
+	</data>
+  <data name="IDS_ERROR_NETWORK">
+    <value>发生网络错误。</value>
+  </data>
+</root>

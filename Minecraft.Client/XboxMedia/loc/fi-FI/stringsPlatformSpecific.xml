@@ -1,0 +1,396 @@
+﻿<root>
+	<data name="IDS_TIPS_GAMETIP_0">
+		<value>Jos pelaat peliä HD-tilassa, jopa neljä pelaajaa voi pelata samalla konsolilla jaetun ruudun tilassa!</value>
+	</data>	
+
+	<data name="IDS_TIPS_GAMETIP_1">
+		<value>Peliin voi liittyä milloin tahansa. Kytke vain konsoliin uusia ohjaimia ja paina niiden START-painiketta.</value>
+	</data>	
+
+	<data name="IDS_TIPS_GAMETIP_48">
+		<value>Englanninkielisellä minecraftforum-sivustolla on oma osionsa Xbox One Edition -versiolle.</value>
+	</data>
+
+  <data name="IDS_TIPS_GAMETIP_44">
+    <value>Saat uusimmat peliin liittyvät uutiset Twitteristä käyttäjiltä 4J Studios ja Kappische!</value>
+  </data>
+
+  <data name="IDS_TIPS_GAMETIP_45">
+    <value>Älä katso Endermania silmiin!</value>
+  </data>
+
+	<data name="IDS_TIPS_TRIVIA_4">
+		<value>4J Studios on luullaksemme poistanut Xbox One -versiosta Herobrinen, mutta emme ole aivan varmoja.</value>
+	</data>	
+
+	<data name="IDS_TIPS_TRIVIA_17">
+		<value>Minecraft: Xbox One Edition rikkoi lukuisia ennätyksiä!</value>
+	</data>	
+
+	<data name="IDS_HOW_TO_PLAY_MULTIPLAYER">
+		<value>{*T3*}PELIOHJEET: MONINPELI{*ETW*}{*B*}{*B*}
+Xbox 360 -konsolissa Minecraft on oletusarvoisesti moninpeli. Jos pelaat peliä HD-tilassa, paikalliset pelaajat voivat milloin tahansa liittyä peliisi kytkemällä ohjaimia konsoliin ja painamalla START-painiketta.{*B*}{*B*}
+Jos aloitat online-pelin tai liityt online-peliin, peli näkyy ystäväluettelossasi oleville pelaajille (paitsi jos olet valinnut Vain kutsutut -vaihtoehdon peliä isännöidessäsi). Jos ystäväsi liittyy peliin, peli näkyy myös heidän ystävälistassaan oleville pelaajille (jos olet valinnut Salli ystävien ystävät -asetuksen).{*B*}
+Pelin aikana voit BACK-painiketta painamalla tuoda näkyviin luettelon kaikista muista pelaajista, katsella heidän pelaajakorttejaan, poistaa pelaajia pelistä sekä kutsua muita pelaamaan.
+    </value>
+	</data>	
+
+	<data name="IDS_HOW_TO_PLAY_SOCIALMEDIA">
+		<value>{*T3*}PELIOHJEET: KUVAKAAPPAUSTEN JAKO{*ETW*}{*B*}{*B*}
+Jos haluat ottaa pelistäsi kuvakaappauksen, avaa pysäytysvalikko ja valitse Jaa Facebookissa -vaihtoehto painamalla{*CONTROLLER_VK_Y*}. Näkyviin tulee kuvakaappauksen pikkukuva, ja voit muokata Facebook-viestiin liittyvää tekstiä.{*B*}{*B*}
+Kuvakaappaukset otetaan erityisessä kameratilassa, jonka avulla saat hahmosi näkymään edestäpäin – painele{*CONTROLLER_ACTION_CAMERA*}, kunnes hahmosi näkyy edestäpäin, ja jaa kuvakaappaus sitten painamalla{*CONTROLLER_VK_Y*}.{*B*}{*B*}
+Pelaajatunnukset eivät näy kuvakaappauksissa.
+  </value>
+	</data>	
+
+	<data name="IDS_HOW_TO_PLAY_CREATIVE">
+		<value>{*T3*}PELIOHJEET: NIKKAROIJAPELI{*ETW*}{*B*}{*B*}
+Nikkaroijapelissä pelaajan tavaraluetteloon voidaan siirtää mitä tahansa pelin esineitä, niin ettei niitä tarvitse kaivaa eikä valmistaa. 
+Pelaajan esineitä ei poisteta tavaraluettelosta, kun esineitä sijoitetaan pelimaailmaan tai käytetään pelimaailmassa, joten pelaaja voi keskittyä resurssien keräämisen sijasta rakentamiseen.{*B*}
+Jos luot, lataat tai tallennat pelimaailman nikkaroijapelissä, kyseisellä pelimaailmalla ei voi ansaita saavutuksia eikä sijoittua leaderboardeissa, vaikka maailma ladattaisiinkin myöhemmin selviytyjäpeliin.{*B*}
+Jos haluat lentää nikkaroijapelissä, paina{*CONTROLLER_ACTION_JUMP*} nopeasti kahdesti. Kun haluat lopettaa lentämisen, paina näppäintä kahdesti uudelleen. Jos haluat lentää nopeammin, liikuta{*CONTROLLER_ACTION_MOVE*} kahdesti eteenpäin nopeasti lennon aikana. 
+Lentäessäsi voit lisätä tai vähentää korkeutta pitämällä{*CONTROLLER_ACTION_JUMP*} tai{*CONTROLLER_ACTION_SNEAK*} painettuna. Voit myös liikkua ylös painamalla{*CONTROLLER_ACTION_DPAD_UP*}, alas painamalla{*CONTROLLER_ACTION_DPAD_DOWN*}, 
+vasemmalle painamalla{*CONTROLLER_ACTION_DPAD_LEFT*} ja oikealle painamalla{*CONTROLLER_ACTION_DPAD_RIGHT*}.</value>
+	</data>	
+
+	<data name="IDS_TUTORIAL_TASK_FLY">
+		<value>Jos haluat lentää, paina{*CONTROLLER_ACTION_JUMP*} nopeasti kahdesti. Kun haluat lopettaa lentämisen, paina näppäintä uudelleen kahdesti. Jos haluat lentää nopeammin, liikuta{*CONTROLLER_ACTION_MOVE*} eteenpäin nopeasti kahdesti lennon aikana. 
+Lentäessäsi voit lisätä tai vähentää korkeutta pitämällä{*CONTROLLER_ACTION_JUMP*} tai{*CONTROLLER_ACTION_SNEAK*} painettuna. Voit myös liikkua ylös, alas, vasemmalle tai oikealle painamalla D-alustaa.</value>
+	</data>	
+
+	<data name="IDS_TOOLTIPS_SELECTDEVICE">
+		<value>Valitse tallennuslaite</value>
+	</data>	
+
+	<data name="IDS_TOOLTIPS_CHANGEDEVICE">
+		<value>Vaihda tallennuslaitetta</value>
+	</data>	
+
+	<data name="IDS_TOOLTIPS_VIEW_GAMERCARD">
+		<value>Näytä pelaajakortti</value>
+	</data>	
+
+	<data name="IDS_TOOLTIPS_VIEW_GAMERPROFILE">
+		<value>Näytä pelaajakortti</value>
+	</data>	
+
+	<data name="IDS_TOOLTIPS_INVITE_PARTY">
+		<value>Kutsu Xbox Live Party ­seurue</value>
+	</data>	
+
+	<data name="IDS_CONFIRM_START_CREATIVE">
+		<value>Jos luot, lataat tai tallennat pelimaailman nikkaroijapelissä, kyseisellä pelimaailmalla ei voi ansaita saavutuksia tai sijoittua leaderboardeilla, vaikka maailma ladattaisiin myöhemmin selviytyjäpeliin. Haluatko varmasti jatkaa?</value>
+	</data>	
+
+	<data name="IDS_CONFIRM_START_SAVEDINCREATIVE">
+		<value>Pelimaailma on aiemmin tallennettu nikkaroijapelissä, joten saavutukset ja leaderboard-sijoitukset on poistettu käytöstä. Haluatko varmasti jatkaa?</value>
+	</data>	
+
+	<data name="IDS_CONFIRM_START_SAVEDINCREATIVE_CONTINUE">
+		<value>Pelimaailma on aiemmin tallennettu nikkaroijapelissä, joten saavutukset ja leaderboard-sijoitukset on poistettu käytöstä.</value>
+	</data>	
+
+	<data name="IDS_CONFIRM_START_HOST_PRIVILEGES">
+		<value>Jos luot, lataat tai tallennat pelimaailman, jossa Isännän oikeudet ­asetus on käytössä, kyseisellä pelimaailmalla ei voi ansaita saavutuksia tai sijoittua leaderboardeilla, vaikka maailma ladattaisiinkin myöhemmin ilman kyseisiä oikeuksia. Haluatko varmasti jatkaa?</value>
+	</data>	
+
+	<data name="IDS_CONNECTION_LOST_LIVE">
+		<value>Yhteys Xbox Live ­palveluun katkesi. Palataan päävalikkoon.</value>
+	</data>	
+
+	<data name="IDS_CONNECTION_LOST_LIVE_NO_EXIT">
+		<value>Yhteys Xbox Live ­palveluun katkesi.</value>
+	</data>	
+
+	<data name="IDS_AWARD_AVATAR1">
+		<value>Hurraa! Sait palkinnoksi avatar-esineen – Minecraft: Xbox One Edition ­t­paidan.
+Mene Xbox Kojelaudalle ja pue paita avatar-hahmollesi.</value>
+	</data>	
+
+	<data name="IDS_AWARD_AVATAR2">
+		<value>Hurraa! Sait palkinnoksi avatar-esineen – Minecraft: Xbox One Edition ­kellon.
+Mene Xbox Kojelaudalle ja anna kello avatar-hahmollesi.</value>
+	</data>	
+
+	<data name="IDS_AWARD_AVATAR3">
+		<value>Hurraa! Sait palkinnoksi avatar-esineen: lurkki-lippiksen.
+Mene Xbox Kojelaudalle ja pue lippis avatar-hahmollesi.</value>
+	</data>	
+
+	<data name="IDS_AWARD_THEME">
+		<value>Hurraa! Sait palkinnoksi Minecraft: Xbox One Edition ­teeman.
+Mene Xbox Kojelaudalle ja ota teema käyttöön.</value>
+	</data>	
+
+	<data name="IDS_UNLOCK_ACHIEVEMENT_TEXT">
+		<value>Pelaat Minecraft: Xbox One Edition ­pelin kokeiluversiota. Jos käytössäsi olisi täysi peliversio, olisit juuri ansainnut saavutuksen. 
+Avaa koko peli ja koe Minecraft: Xbox One Edition -version riemut. Voit pelata ystäviesi kanssa eri puolilta maailmaa Xbox Liven kautta.
+Haluatko avata koko pelin?</value>
+	</data>	
+
+	<data name="IDS_UNLOCK_AVATAR_TEXT">
+		<value>Pelaat Minecraft: Xbox One Edition ­pelin kokeiluversiota. Jos käytössäsi olisi täysi peliversio, olisit juuri ansainnut avatar-palkinnon. 
+Avaa koko peli ja koe Minecraft: Xbox One Edition -version riemut. Voit pelata ystäviesi kanssa eri puolilta maailmaa Xbox Liven kautta. 
+Haluatko avata koko pelin?</value>
+	</data>	
+
+	<data name="IDS_UNLOCK_GAMERPIC_TEXT">
+		<value>Pelaat Minecraft: Xbox One Edition ­pelin kokeiluversiota. Jos käytössäsi olisi täysi peliversio, olisit juuri ansainnut pelaajakuvan. 
+Avaa koko peli ja koe Minecraft: Xbox One Edition -version riemut. Voit pelata ystäviesi kanssa eri puolilta maailmaa Xbox Liven kautta. 
+Haluatko avata koko pelin?</value>
+	</data>	
+
+	<data name="IDS_UNLOCK_THEME_TEXT">
+		<value>Pelaat Minecraft: Xbox One Edition ­pelin kokeiluversiota. Jos käytössäsi olisi täysi peliversio, olisit juuri ansainnut teeman. 
+Avaa koko peli ja koe Minecraft: Xbox One Edition -version riemut. Voit pelata ystäviesi kanssa eri puolilta maailmaa Xbox Liven kautta.
+Haluatko avata koko pelin?</value>
+	</data>	
+
+	<data name="IDS_UNLOCK_ACCEPT_INVITE">
+		<value>Pelaat Minecraft: Xbox One Edition ­pelin kokeiluversiota. Tarvitset täyden peliversion, jotta voit hyväksyä tämän kutsun. 
+Haluatko avata koko pelin?</value>
+	</data>	
+
+	<data name="IDS_UNLOCK_GUEST_TEXT">
+		<value>Vieraspelaajat eivät voi avata täyttä peliversiota. Kirjaudu sisään Xbox Live ­palvelun käyttäjätunnuksella.</value>
+	</data>	
+
+	<data name="IDS_LEADERBOARD_GAMERTAG">
+		<value>Pelaajatunnus</value>
+	</data>	
+
+	<data name="IDS_GROUPNAME_POTIONS_480">
+		<value>Haudutus</value>
+	</data>	
+
+	<data name="IDS_RETURNEDTOTITLESCREEN_TEXT">
+		<value>Palasit aloitusnäyttöön, koska pelaajaprofiilisi kirjautui ulos.</value>
+	</data>	
+
+	<data name="IDS_TRIALOVER_TEXT">
+		<value>Minecraft: Xbox One Edition ­pelin kokeiluversion aikaraja on täyttynyt. Jos haluat jatkaa hauskanpitoa, avaa täysi peliversio. </value>
+	</data>	
+
+	<data name="IDS_FATAL_ERROR_TEXT">
+		<value>Minecraft: Xbox One Edition ­pelin lataus epäonnistui. Peliä ei voi jatkaa.</value>
+	</data>	
+
+	<data name="IDS_NO_MULTIPLAYER_PRIVILEGE_JOIN_TEXT">
+		<value>Peliin liittyminen epäonnistui, sillä yksi tai useampi pelaajista ei saa pelata moninpelejä Xbox Live ­palvelussa.</value>
+	</data>	
+
+	<data name="IDS_NO_MULTIPLAYER_PRIVILEGE_HOST_TEXT">
+		<value>Online-pelin luonti epäonnistui, sillä yksi tai useampi pelaajista ei saa pelata moninpelejä Xbox Live ­palvelussa. Poista Online-peli-valintaruudun merkintä ja aloita offline-peli.</value>
+	</data>	
+
+	<data name="IDS_NO_USER_CREATED_CONTENT_PRIVILEGE_SINGLE_LOCAL">
+		<value>Jäsenrajoituksesi estävät peliin osallistumisen. Muuta asetuksia Xbox Kojelaudan Yksityisyys ja verkkoasetukset ­kohdassa, jos haluat osallistua peliin.</value>
+	</data>	
+
+	<data name="IDS_NO_USER_CREATED_CONTENT_PRIVILEGE_ALL_LOCAL">
+		<value>Paikallisen pelaajan jäsenrajoitukset estävät peliin osallistumisen.</value>
+	</data>	
+
+	<data name="IDS_NO_USER_CREATED_CONTENT_PRIVILEGE_REMOTE">
+		<value>Peliin osallistuminen epäonnistui. Peliin osallistuvan pelaajan jäsenrajoitukseksi on määritetty Vain ystävät, etkä ole kyseisen pelaajan ystäväluettelossa.</value>
+	</data>	
+
+	<data name="IDS_NO_USER_CREATED_CONTENT_PRIVILEGE_CREATE">
+		<value>Paikallisen pelaajan jäsenrajoitukset estävät peliin osallistumisen. Aloita offline-peli poistamalla Online-peli-valintaruudun merkintä tai muuta asetuksia Xbox Kojelaudan Yksityisyys ja verkkoasetukset ­kohdassa.</value>
+	</data>	
+
+	<data name="IDS_SAVE_ICON_MESSAGE">
+		<value>Pelitiedot tallentuvat automaattisesti. Kun näet yllä olevan kuvakkeen, pelitietoja tallennetaan.
+Älä sammuta Xbox One ­konsolia, kun kuvake näkyy ruudulla.</value>
+	</data>	
+
+	<data name="IDS_GAMEOPTION_HOST_PRIVILEGES">
+		<value>Jos asetus on käytössä, isäntä voi sallia lentämisen, poistaa uupumisen ja muuttua näkymättömäksi pelivalikosta käsin. Asetus estää saavutukset ja leaderboard-tulokset.</value>
+	</data>	
+
+	<data name="IDS_CHECKBOX_DISPLAY_SPLITSCREENGAMERTAGS">
+		<value>Jaetun ruudun pelaajatunnukset</value>
+	</data>	
+
+	<data name="IDS_ACHIEVEMENTS">
+		<value>Saavutukset</value>
+	</data>	
+
+	<data name="IDS_LABEL_GAMERTAGS">
+		<value>Pelaajatunnukset:</value>
+	</data>	
+
+	<data name="IDS_IN_GAME_GAMERTAGS">
+		<value>Pelinaikaiset pelaajatunnukset</value>
+	</data>	
+
+	<data name="IDS_SOCIAL_DEFAULT_DESCRIPTION">
+		<value>Katso, mitä tein Minecraft: Xbox One Edition ­pelissä!</value>
+	</data>
+  <data name="IDS_PLATFORM_NAME">
+    <value>Xbox One</value>
+  </data>
+  <data name="IDS_BACK_BUTTON">
+    <value>Edellinen</value>
+  </data>
+  <data name="IDS_HOST_OPTION_DISABLES_ACHIEVEMENTS">
+    <value>Asetus poistaa saavutukset ja leaderboard-tulokset käytöstä tässä pelimaailmassa. Et voi ansaita saavutuksia tai leaderboard-tuloksia, vaikka ottaisit asetuksen taas käyttöön, tallentaisit pelin ja lataisit tallennuksen myöhemmin uudelleen.</value>
+  </data>
+  <data name="IDS_KICK_PLAYER_DESCRIPTION">
+    <value>Jos valitset tämän vaihtoehdon, pelaajat, jotka eivät ole samalla Xbox One -konsolilla kuin isäntäpelaaja, poistetaan pelistä ja kaikki muut pelaajat omilla Xbox One -konsoleillaan. Tämä pelaaja ei voi palata peliin, ennen kuin peli on käynnistetty uudelleen.</value>
+  </data>
+  <data name="IDS_USING_TRIAL_TEXUREPACK_WARNING">
+    <value>Käytät pintakuviointipaketin kokeiluversiota. Voit käyttää pintakuviointipaketin koko sisältöä, mutta et pysty tallentamaan edistymistäsi.
+Jos yrität tallentaa käyttäessäsi kokeiluversiota, sinulle tarjotaan mahdollisuus ostaa koko versio.
+    </value>
+  </data>
+  <data name="IDS_XBOX_STORE">
+    <value>Xbox-kauppa</value>
+  </data>
+
+
+  <data name="IDS_WORLD_SIZE_TITLE_SMALL">
+    <value>Pieni</value>
+  </data>
+  <data name="IDS_WORLD_SIZE_TITLE_MEDIUM">
+    <value>Keskisuuri</value>
+  </data>
+  <data name="IDS_WORLD_SIZE_TITLE_LARGE">
+    <value>Suuri</value>
+  </data>
+  <data name="IDS_WORLD_SIZE_TITLE_CLASSIC">
+    <value>Klassinen</value>
+  </data>
+  <data name="IDS_GAME_OPTIONS">
+    <value>Peliasetukset</value>
+  </data>
+  <data name="IDS_WORLD_SIZE">
+    <value>Maailman koko</value>
+  </data>
+  <data name="IDS_GAMEOPTION_SEED">
+    <value>Luo sama maasto uudelleen antamalla siemen. Jätä tyhjäksi, jos haluat satunnaisen maailman.</value>
+  </data>
+  <data name="IDS_GAMEOPTION_WORLD_SIZE">
+    <value>Voit vaihdella tutkittavan maailman määrää valitsemalla maailman koon.</value>
+  </data>
+  <data name="IDS_DISABLE_SAVING">
+    <value>Autom. tallennus pois</value>
+  </data>
+  <data name="IDS_GAMEOPTION_DISABLE_SAVING">
+    <value>Kytke jatkuva, automaattinen pelimaailman tallennus pois päältä. Jos päätät tallentaa myöhemmin, se saattaa kestää kauan.</value>
+  </data>
+  
+  <data name="IDS_XBOX_HELP_APP">
+	<value>Ohje</value>
+  </data>
+
+  <data name="IDS_CONFIRM_EXIT_GAME">
+    <value>Haluatko varmasti poistua päävalikkoon?</value>
+  </data>
+
+  <data name="IDS_CONFIRM_LEAVE_VIA_INVITE">
+    <value>Haluatko varmasti poistua nykyisestä pelistä ja liittyä uuteen?</value>
+  </data>
+
+  <data name="IDS_CONFIRM_EXIT_GAME_CONFIRM_DISCONNECT">
+    <value>Haluatko varmasti poistua päävalikosta ja katkaista kaikkien pelaajien yhteyden peliin?</value>
+  </data>
+
+  <data name="IDS_TOOLTIPS_CHOOSE_USER">
+    <value>Valitse käyttäjä</value>
+  </data>
+
+
+  <data name="IDS_TOOLTIPS_SAVETRANSFER_DOWNLOAD">
+    <value>Hae Xbox 360 -tallennus</value>
+  </data>
+
+  <data name="IDS_SAVETRANSFER_TITLE_GET">
+    <value>Haetaan Xbox 360 -tallennusta</value>
+  </data>
+  <data name="IDS_SAVETRANSFER_STAGE_GET_DETAILS">
+    <value>Haetaan tiedostotietoja</value>
+  </data>
+  <data name="IDS_SAVETRANSFER_STAGE_GET_DATA">
+    <value>Ladataan tiedostoa (%.2fMB/%.2fMB)</value>
+  </data>
+  <data name="IDS_SAVETRANSFER_STAGE_CONVERTING">
+    <value>Muunnetaan tietoa Xbox One -muotoon</value>
+  </data>
+  <data name="IDS_SAVETRANSFER_STAGE_SAVING">
+    <value>Tallennetaan</value>
+  </data>
+  <data name="IDS_SAVETRANSFER_NONE_FOUND">
+    <value>Xbox 360 -tallennusta ei löytynyt</value>
+  </data>
+  <data name="IDS_SAVE_INCOMPLETE_TITLE">
+    <value>Tallennus keskeytyi</value>
+  </data>
+  <data name="IDS_SAVE_INCOMPLETE_EXPLANATION_QUOTA">
+    <value>Minecraft: Xbox One Edition ei voi tallentaa tilan puutteen vuoksi. Tee tilaa poistamalla muita Minecraft: Xbox One Edition -maailmoja ja jatka painamalla Yritä uudelleen, tai jatka tallentamatta kytkemällä tallennustoiminto pois päältä.</value>
+  </data>
+  <data name="IDS_SAVE_INCOMPLETE_EXPLANATION_LOCAL_STORAGE">
+    <value>Yritä tallentaa uudelleen valitsemalla Yritä uudelleen, tai jatka tallentamatta kytkemällä tallennustoiminto pois päältä.</value>
+  </data>
+  <data name="IDS_SAVE_INCOMPLETE_RETRY_SAVING">
+    <value>Yritä tallentaa uudelleen</value>
+  </data>
+  <data name="IDS_SAVE_INCOMPLETE_DISABLE_SAVING">
+    <value>Kytke tallennus pois</value>
+  </data>
+  <data name="IDS_SAVE_INCOMPLETE_DELETE_SAVES">
+    <value>Poista tallennuksia</value>
+  </data>
+  <data name="IDS_PLAY_TRIAL_GAME">
+    <value>Pelaa kokeiluversiota</value>
+  </data>
+  <data name="IDS_TITLE_ENABLE_AUTOSAVE">
+    <value>Autom. tallennus päälle</value>
+  </data>
+  <data name="IDS_CONFIRM_ENABLE_AUTOSAVE">
+    <value>Haluatko kytkeä jatkuvan, automaattisen pelimaailman tallennuksen päälle?</value>
+  </data>
+  <data name="IDS_DISABLE_AUTOSAVE">
+    <value>Autom. tallennus pois</value>
+  </data>
+  <data name="IDS_TITLE_DISABLE_AUTOSAVE">
+    <value>Autom. tallennus pois</value>
+  </data>
+  <data name="IDS_CONFIRM_DISABLE_AUTOSAVE">
+    <value>Haluatko kytkeä jatkuvan, automaattisen pelimaailman tallennuksen pois päältä?</value>
+  </data>
+  <data name="IDS_CONFIRM_SYNC_REQUIRED">
+    <value>Tämä maailma vaatii synkronointia ennen pelaamista. Synkronointi voi kestää hieman. Haluatko synkronoida ja pelata?</value>
+  </data>
+  <data name="IDS_CONFIRM_SYNC">
+    <value>Synkronoi</value>
+  </data>
+  <data name="IDS_SAVE_TRANSFER_DOWNLOAD_AND_CONVERT_COMPLETE">
+    <value>Lataus ja Xbox One -muotoon muuttaminen valmis!</value>
+  </data>
+  <data name="IDS_SAVE_TRANSFER_DOWNLOAD_CANCELLING">
+    <value>Keskeytetään lataus. Pieni hetki...</value>
+  </data>
+  <data name="IDS_SAVE_TRANSFER_DOWNLOAD_CANCELLED">
+    <value>Lataus keskeytetty.</value>
+  </data>
+  <data name="IDS_DISCONNECTED_EXITED_GAME">
+    <value>Olet poistunut pelistä.</value>
+  </data>
+  <data name="IDS_IN_PARTY_SESSION_FULL">
+    <value>Peli, johon liityit, on tällä hetkellä täynnä. Saat ilmoituksen, kun peliin vapautuu paikka.</value>
+  </data>
+
+  <data name="IDS_LEADERBOARD_SCORE_HIDDEN">
+    <value>Piilotettu pelaajan yksityisyysasetusten vuoksi.</value>
+  </data>
+  <data name="IDS_TEXT_COPY_SAVE">
+    <value>Haluatko varmasti kopioida tämän pelitallennuksen?</value>
+  </data>
+  <data name="IDS_COPYSAVE">
+    <value>Kopioi tallennus</value>
+  </data>
+  <data name="IDS_PROGRESS_COPYING_SAVE">
+    <value>Kopioidaan tallennus</value>
+  </data>
+</root>

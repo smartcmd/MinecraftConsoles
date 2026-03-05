@@ -1,0 +1,396 @@
+﻿<root>
+	<data name="IDS_TIPS_GAMETIP_0">
+		<value>Si vous jouez en mode Haute définition, votre partie peut accueillir jusqu'à quatre joueurs sur écran partagé, le tout sur une seule console !</value>
+	</data>	
+
+	<data name="IDS_TIPS_GAMETIP_1">
+		<value>Connectez des manettes supplémentaires à votre console et appuyez sur{*CONTROLLER_VK_START*} pour rejoindre une partie à tout moment.</value>
+	</data>	
+
+	<data name="IDS_TIPS_GAMETIP_48">
+		<value>minecraftforum consacre toute une section à l'édition Xbox One.</value>
+	</data>
+
+  <data name="IDS_TIPS_GAMETIP_44">
+    <value>Suivez 4J Studios et Kappische sur Twitter pour rester au courant des dernières actus du jeu !</value>
+  </data>
+
+  <data name="IDS_TIPS_GAMETIP_45">
+    <value>Ne regardez pas un Enderman dans les yeux !</value>
+  </data>
+
+	<data name="IDS_TIPS_TRIVIA_4">
+		<value>Il paraîtrait que 4J Studios a supprimé Herobrine du jeu sur console Xbox One, mais rien n'est moins sûr.</value>
+	</data>	
+
+	<data name="IDS_TIPS_TRIVIA_17">
+		<value>Minecraft: Xbox One Edition a battu (presque) tous les records !</value>
+	</data>	
+
+	<data name="IDS_HOW_TO_PLAY_MULTIPLAYER">
+		<value>{*T3*}COMMENT JOUER : MULTIJOUEUR{*ETW*}{*B*}{*B*}
+Par défaut, Minecraft sur console Xbox One est un jeu multijoueur. Si vous jouez en mode haute définition, vous pouvez raccorder des manettes supplémentaires et appuyer sur{*CONTROLLER_VK_START*} à n'importe quel moment pour que d'autres joueurs rejoignent la partie.{*B*}{*B*}
+Lorsque vous démarrez ou rejoignez une partie en ligne, elle apparaîtra à tous les joueurs de votre liste d'amis (à moins que vous n'ayez sélectionné l'option Sur invitation lors de la création de la partie) ; s'ils rejoignent la partie, elle apparaîtra également aux membres de leur propre liste d'amis (si vous avez sélectionné l'option Autoriser les amis d'amis). {*B*}
+En cours de partie, vous pouvez appuyer sur la touche{*CONTROLLER_VK_BACK*} pour afficher la liste des joueurs qui figurent dans la partie, consulter leurs cartes du joueur, exclure des joueurs et en inviter d'autres à rejoindre la partie.
+  </value>
+	</data>	
+
+	<data name="IDS_HOW_TO_PLAY_SOCIALMEDIA">
+		<value>{*T3*}COMMENT JOUER : PARTAGE DE CAPTURES D'ÉCRAN{*ETW*}{*B*}{*B*}
+Pour saisir une capture d'écran de votre partie, affichez le menu Pause et appuyez sur{*CONTROLLER_VK_Y*} pour partager sur Facebook. Vous verrez apparaître une version miniature de votre capture d'écran ; vous pourrez alors modifier le texte associé à votre publication sur Facebook.{*B*}{*B*}
+Un mode Caméra est tout spécialement conçu pour saisir ces captures d'écran. Appuyez sur{*CONTROLLER_ACTION_CAMERA*} jusqu'à ce que s'affiche la vue de devant du personnage. Ensuite, appuyez sur{*CONTROLLER_VK_Y*} pour partager.{*B*}{*B*}
+Les gamertags ne seront pas affichés sur la capture d'écran.
+  </value>
+	</data>	
+
+	<data name="IDS_HOW_TO_PLAY_CREATIVE">
+		<value>{*T3*}COMMENT JOUER : MODE CRÉATIF{*ETW*}{*B*}{*B*}
+L'interface du mode Créatif permet de déplacer dans l'inventaire du joueur n'importe quel objet du jeu sans qu'il soit besoin de le miner ou de le fabriquer. {*B*}
+Les objets figurant dans l'inventaire du joueur ne sont pas supprimés lorsqu'ils sont placés ou utilisés dans l'environnement du jeu, ce qui permet au joueur de tout miser sur la construction sans se soucier de collecter des ressources.{*B*}
+Si vous créez, chargez ou sauvegardez un monde en mode Créatif, les mises à jour des succès et des classements seront désactivées pour ce monde, même s'il est chargé en mode Survie.{*B*}
+Pour voler en mode Créatif, appuyez deux fois rapidement sur {*CONTROLLER_ACTION_JUMP*}. Pour ne plus voler, répétez l'opération. Pour voler plus vite, orientez rapidement{*CONTROLLER_ACTION_MOVE*} deux fois vers l'avant en cours de vol.{*B*}
+En mode Vol, maintenez{*CONTROLLER_ACTION_JUMP*} pour monter et{*CONTROLLER_ACTION_SNEAK*} pour descendre, ou bien utilisez{*CONTROLLER_ACTION_DPAD_UP*} pour monter, {*CONTROLLER_ACTION_DPAD_DOWN*} pour descendre, {*B*}
+{*CONTROLLER_ACTION_DPAD_LEFT*} pour virer à gauche et {*CONTROLLER_ACTION_DPAD_RIGHT*} pour virer à droite.</value>
+	</data>	
+
+	<data name="IDS_TUTORIAL_TASK_FLY">
+		<value>Appuyez deux fois rapidement sur{*CONTROLLER_ACTION_JUMP*} pour voler. Pour ne plus voler, répétez l'opération. Pour voler plus vite, orientez rapidement{*CONTROLLER_ACTION_MOVE*} deux fois vers l'avant en cours de vol. 
+En mode Vol, maintenez{*CONTROLLER_ACTION_JUMP*} pour monter et{*CONTROLLER_ACTION_SNEAK*} pour descendre, ou bien utilisez le BMD pour monter/descendre et virer à gauche et à droite.</value>
+	</data>	
+
+	<data name="IDS_TOOLTIPS_SELECTDEVICE">
+		<value>Sélectionner un périphérique</value>
+	</data>	
+
+	<data name="IDS_TOOLTIPS_CHANGEDEVICE">
+		<value>Changer périphérique</value>
+	</data>	
+
+	<data name="IDS_TOOLTIPS_VIEW_GAMERCARD">
+		<value>Voir carte du joueur</value>
+	</data>	
+
+	<data name="IDS_TOOLTIPS_VIEW_GAMERPROFILE">
+		<value>Voir carte du joueur</value>
+	</data>	
+
+	<data name="IDS_TOOLTIPS_INVITE_PARTY">
+		<value>Inviter Groupe d'amis Xbox Live</value>
+	</data>	
+
+	<data name="IDS_CONFIRM_START_CREATIVE">
+		<value>Si vous créez, chargez ou sauvegardez un monde en mode Créatif, les mises à jour des succès et des classements seront désactivées pour ce monde, même s'il est ensuite chargé en mode Survie. Voulez-vous vraiment continuer ?</value>
+	</data>	
+
+	<data name="IDS_CONFIRM_START_SAVEDINCREATIVE">
+		<value>Ce monde a déjà été sauvegardé en mode Créatif : les mises à jour des succès et des classements seront désactivées. Voulez-vous vraiment continuer ?</value>
+	</data>	
+
+	<data name="IDS_CONFIRM_START_SAVEDINCREATIVE_CONTINUE">
+		<value>Ce monde a déjà été sauvegardé en mode Créatif : les mises à jour des succès et du classement seront désactivées.</value>
+	</data>	
+
+	<data name="IDS_CONFIRM_START_HOST_PRIVILEGES">
+		<value>Si vous créez, chargez ou sauvegardez un monde avec des privilèges d'hôte, les mises à jour des succès et des classements seront désactivées pour ce monde, même s'il est ensuite chargé avec ces options désactivées. Voulez-vous vraiment continuer ?</value>
+	</data>	
+
+	<data name="IDS_CONNECTION_LOST_LIVE">
+		<value>La connexion à Xbox Live a été interrompue. Retour au menu principal.</value>
+	</data>	
+
+	<data name="IDS_CONNECTION_LOST_LIVE_NO_EXIT">
+		<value>La connexion à Xbox Live a été interrompue.</value>
+	</data>	
+
+	<data name="IDS_AWARD_AVATAR1">
+		<value>Hourra, vous avez reçu une récompense pour avatar : un T-shirt Minecraft: Xbox One Edition !
+Accédez à l'Accueil pour en habiller votre avatar.</value>
+	</data>	
+
+	<data name="IDS_AWARD_AVATAR2">
+		<value>Hourra, vous avez reçu une récompense pour avatar : une montre Minecraft: Xbox One Edition !
+Accédez à l'Accueil pour la mettre au poignet de votre avatar.</value>
+	</data>	
+
+	<data name="IDS_AWARD_AVATAR3">
+		<value>Hourra, vous avez reçu une récompense pour avatar : une casquette de base-ball Creeper !
+Accédez à l'Accueil pour en coiffer votre avatar.</value>
+	</data>	
+
+	<data name="IDS_AWARD_THEME">
+		<value>Hourra, vous avez reçu le thème Minecraft: Xbox One Edition !
+Accédez à l'Accueil pour sélectionner ce thème.</value>
+	</data>	
+
+	<data name="IDS_UNLOCK_ACHIEVEMENT_TEXT">
+		<value>Vous jouez à la version d'évaluation de Minecraft: Xbox One Edition. Si vous possédiez le jeu complet, vous auriez déjà remporté un succès !
+Déverrouillez le jeu complet pour profiter au mieux de Minecraft: Xbox One Edition et jouer avec vos amis partout dans le monde via Xbox Live.
+Voulez-vous déverrouiller le jeu complet ?</value>
+	</data>	
+
+	<data name="IDS_UNLOCK_AVATAR_TEXT">
+		<value>Vous jouez à la version d'évaluation de Minecraft: Xbox One Edition. Si vous possédiez le jeu complet, vous auriez déjà remporté une récompense pour avatar !
+Déverrouillez le jeu complet pour profiter au mieux de Minecraft: Xbox One Edition et jouer avec vos amis partout dans le monde via Xbox Live.
+Voulez-vous déverrouiller le jeu complet ?</value>
+	</data>	
+
+	<data name="IDS_UNLOCK_GAMERPIC_TEXT">
+		<value>Vous jouez à la version d'évaluation de Minecraft: Xbox One Edition. Si vous possédiez le jeu complet, vous auriez déjà remporté une image de joueur !
+Déverrouillez le jeu complet pour profiter au mieux de Minecraft: Xbox One Edition et jouer avec vos amis partout dans le monde via Xbox Live.
+Voulez-vous déverrouiller le jeu complet ?</value>
+	</data>	
+
+	<data name="IDS_UNLOCK_THEME_TEXT">
+		<value>Vous jouez à la version d'évaluation de Minecraft: Xbox One Edition. Si vous possédiez le jeu complet, vous auriez déjà remporté un thème !
+Déverrouillez le jeu complet pour profiter au mieux de Minecraft: Xbox One Edition et jouer avec vos amis partout dans le monde via Xbox Live.
+Voulez-vous déverrouiller le jeu complet ?</value>
+	</data>	
+
+	<data name="IDS_UNLOCK_ACCEPT_INVITE">
+		<value>Vous jouez à la version d'évaluation de Minecraft: Xbox One Edition. Vous devez disposer du jeu complet pour accepter cette invitation. 
+Voulez-vous déverrouiller le jeu complet ?</value>
+	</data>	
+
+	<data name="IDS_UNLOCK_GUEST_TEXT">
+		<value>Les joueurs invités ne peuvent pas déverrouiller le jeu complet. Veuillez vous connecter à un profil de joueur Xbox Live.</value>
+	</data>	
+
+	<data name="IDS_LEADERBOARD_GAMERTAG">
+		<value>Gamertag</value>
+	</data>	
+
+	<data name="IDS_GROUPNAME_POTIONS_480">
+		<value>Alchimie</value>
+	</data>	
+
+	<data name="IDS_RETURNEDTOTITLESCREEN_TEXT">
+		<value>Votre profil de joueur a été déconnecté : retour à l'écran titre</value>
+	</data>	
+
+	<data name="IDS_TRIALOVER_TEXT">
+		<value>La durée impartie de la version d'évaluation de Minecraft: Xbox One Edition est écoulée ! Pour continuer à en profiter, voulez-vous déverrouiller le jeu complet ? </value>
+	</data>	
+
+	<data name="IDS_FATAL_ERROR_TEXT">
+		<value>Le chargement de Minecraft: Xbox One Edition a échoué : impossible de continuer.</value>
+	</data>	
+
+	<data name="IDS_NO_MULTIPLAYER_PRIVILEGE_JOIN_TEXT">
+		<value>Impossible de rejoindre la partie : l'un des joueurs au moins n'est pas autorisé à jouer en multijoueur sur Xbox Live.</value>
+	</data>	
+
+	<data name="IDS_NO_MULTIPLAYER_PRIVILEGE_HOST_TEXT">
+		<value>Impossible de créer une partie en ligne : l'un des joueurs au moins n'est pas autorisé à jouer en multijoueur sur Xbox Live. Décochez la case Jeu en ligne pour commencer une partie hors ligne.</value>
+	</data>	
+
+	<data name="IDS_NO_USER_CREATED_CONTENT_PRIVILEGE_SINGLE_LOCAL">
+		<value>Vous n'êtes pas autorisé à rejoindre cette session de jeu : vos privilèges d'accès au contenu sont trop restrictifs. Si vous souhaitez rejoindre cette session, modifiez ces paramètres dans la section Confidentialité et connexion de l'Accueil.</value>
+	</data>	
+
+	<data name="IDS_NO_USER_CREATED_CONTENT_PRIVILEGE_ALL_LOCAL">
+		<value>Vous n'êtes pas autorisé à rejoindre cette session de jeu : les privilèges d'accès au contenu d'un de vos joueurs locaux sont trop restrictifs.</value>
+	</data>	
+
+	<data name="IDS_NO_USER_CREATED_CONTENT_PRIVILEGE_REMOTE">
+		<value>Vous n'êtes pas autorisé à rejoindre cette session de jeu : les privilèges d'accès au contenu d'un des joueurs de la session sont réglés sur Amis uniquement et vous ne figurez pas sur sa liste d'amis.</value>
+	</data>	
+
+	<data name="IDS_NO_USER_CREATED_CONTENT_PRIVILEGE_CREATE">
+		<value>Vous n'êtes pas autorisé à créer cette session de jeu : les privilèges d'accès au contenu d'un des joueurs locaux sont trop restrictifs. Décochez la case Jeu en ligne pour commencer une partie hors ligne. Vous pouvez aussi modifier ces paramètres dans la section Confidentialité et connexion de l'Accueil.</value>
+	</data>	
+
+	<data name="IDS_SAVE_ICON_MESSAGE">
+		<value>Le jeu comporte une fonction de sauvegarde automatique du niveau. Quand l'icône ci-dessus apparaît, le jeu sauvegarde vos données.
+Ne pas éteindre la console Xbox One quand cette icône apparaît.</value>
+	</data>	
+
+	<data name="IDS_GAMEOPTION_HOST_PRIVILEGES">
+		<value>Cette option permet à l'hôte d'activer sa capacité à voler et à se rendre invisible, et de désactiver la fatigue. Elle désactive la mise à jour des succès et classements.</value>
+	</data>	
+
+	<data name="IDS_CHECKBOX_DISPLAY_SPLITSCREENGAMERTAGS">
+		<value>Gamertags écran partagé</value>
+	</data>	
+
+	<data name="IDS_ACHIEVEMENTS">
+		<value>Succès</value>
+	</data>	
+
+	<data name="IDS_LABEL_GAMERTAGS">
+		<value>Gamertags :</value>
+	</data>	
+
+	<data name="IDS_IN_GAME_GAMERTAGS">
+		<value>Gamertags en jeu</value>
+	</data>	
+
+	<data name="IDS_SOCIAL_DEFAULT_DESCRIPTION">
+		<value>Regardez où j'en suis dans Minecraft: Xbox One Edition !</value>
+	</data>
+  <data name="IDS_PLATFORM_NAME">
+    <value>Xbox One</value>
+  </data>
+  <data name="IDS_BACK_BUTTON">
+    <value>BACK</value>
+  </data>
+  <data name="IDS_HOST_OPTION_DISABLES_ACHIEVEMENTS">
+    <value>Cette option désactive les mises à jour des succès et des classements pour le monde en cours ; ces mises à jour resteront désactivées si vous chargez ce monde après l'avoir sauvegardé avec cette option activée.</value>
+  </data>
+  <data name="IDS_KICK_PLAYER_DESCRIPTION">
+    <value>Pour les joueurs qui ne sont pas sur la même console Xbox One que le joueur hôte, la sélection de cette option éjectera le joueur de la partie, ainsi que tous les autres joueurs connectés sur sa console Xbox One. Ce joueur ne pourra rejoindre la partie qu'après son redémarrage.</value>
+  </data>
+  <data name="IDS_USING_TRIAL_TEXUREPACK_WARNING">
+    <value>Vous utilisez la version d'essai du pack de textures. Vous aurez accès aux contenus complets du pack de textures mais vous ne pourrez pas sauvegarder votre progression.
+Si vous tentez de sauvegarder en utilisant la version d'essai, l'achat de la version complète vous sera proposé.
+    </value>
+  </data>
+  <data name="IDS_XBOX_STORE">
+    <value>Marché Xbox</value>
+  </data>
+
+
+  <data name="IDS_WORLD_SIZE_TITLE_SMALL">
+    <value>Petite</value>
+  </data>
+  <data name="IDS_WORLD_SIZE_TITLE_MEDIUM">
+    <value>Standard</value>
+  </data>
+  <data name="IDS_WORLD_SIZE_TITLE_LARGE">
+    <value>Énorme</value>
+  </data>
+  <data name="IDS_WORLD_SIZE_TITLE_CLASSIC">
+    <value>Classique</value>
+  </data>
+  <data name="IDS_GAME_OPTIONS">
+    <value>Options de jeu</value>
+  </data>
+  <data name="IDS_WORLD_SIZE">
+    <value>Taille du monde</value>
+  </data>
+  <data name="IDS_GAMEOPTION_SEED">
+    <value>Entrez une graine pour générer à nouveau le même terrain. Laissez vide pour générer un monde aléatoire.</value>
+  </data>
+  <data name="IDS_GAMEOPTION_WORLD_SIZE">
+    <value>Sélectionnez la taille du monde pour modifier la surface que vous pouvez explorer.</value>
+  </data>
+  <data name="IDS_DISABLE_SAVING">
+    <value>Désactiver sauv. auto</value>
+  </data>
+  <data name="IDS_GAMEOPTION_DISABLE_SAVING">
+    <value>Désactivez la sauvegarde automatique constante du monde. Si vous décidez de sauvegarder ultérieurement, il se peut que la procédure prenne un certain temps.</value>
+  </data>
+  
+  <data name="IDS_XBOX_HELP_APP">
+	<value>Aide</value>
+  </data>
+
+  <data name="IDS_CONFIRM_EXIT_GAME">
+    <value>Voulez-vous vraiment retourner au menu principal ?</value>
+  </data>
+
+  <data name="IDS_CONFIRM_LEAVE_VIA_INVITE">
+    <value>Voulez-vous vraiment quitter la partie en cours et rejoindre la nouvelle ?</value>
+  </data>
+
+  <data name="IDS_CONFIRM_EXIT_GAME_CONFIRM_DISCONNECT">
+    <value>Voulez-vous vraiment retourner au menu principal et déconnecter tous les joueurs du jeu ?</value>
+  </data>
+
+  <data name="IDS_TOOLTIPS_CHOOSE_USER">
+    <value>Choisir l'utilisateur</value>
+  </data>
+
+
+  <data name="IDS_TOOLTIPS_SAVETRANSFER_DOWNLOAD">
+    <value>Récupérer la sauv. Xbox 360</value>
+  </data>
+
+  <data name="IDS_SAVETRANSFER_TITLE_GET">
+    <value>Récupération de la sauvegarde Xbox 360</value>
+  </data>
+  <data name="IDS_SAVETRANSFER_STAGE_GET_DETAILS">
+    <value>Obtention des informations de fichier</value>
+  </data>
+  <data name="IDS_SAVETRANSFER_STAGE_GET_DATA">
+    <value>Téléchargement des données de fichier (%.2fMB/%.2fMB)</value>
+  </data>
+  <data name="IDS_SAVETRANSFER_STAGE_CONVERTING">
+    <value>Conversion des données pour Xbox One</value>
+  </data>
+  <data name="IDS_SAVETRANSFER_STAGE_SAVING">
+    <value>Sauvegarde en cours</value>
+  </data>
+  <data name="IDS_SAVETRANSFER_NONE_FOUND">
+    <value>Aucun fichier de sauvegarde Xbox 360 trouvé.</value>
+  </data>
+  <data name="IDS_SAVE_INCOMPLETE_TITLE">
+    <value>Sauvegarde incomplète</value>
+  </data>
+  <data name="IDS_SAVE_INCOMPLETE_EXPLANATION_QUOTA">
+    <value>Espace requis pour les données sauvegardée de Minecraft: Xbox One Edition insuffisant. Pour libérer de l'espace, veuillez supprimer les autres mondes Minecraft: Xbox One Edition et appuyer sur Réessayer pour continuer, ou sur Désactiver la sauvegarde pour continuer sans sauvegarder.</value>
+  </data>
+  <data name="IDS_SAVE_INCOMPLETE_EXPLANATION_LOCAL_STORAGE">
+    <value>Sélectionnez Réessayer pour tenter à nouveau de sauvegarder, ou Désactiver la sauvegarde pour continuer sans sauvegarder.</value>
+  </data>
+  <data name="IDS_SAVE_INCOMPLETE_RETRY_SAVING">
+    <value>Réessayer</value>
+  </data>
+  <data name="IDS_SAVE_INCOMPLETE_DISABLE_SAVING">
+    <value>Désactiver la sauvegarde</value>
+  </data>
+  <data name="IDS_SAVE_INCOMPLETE_DELETE_SAVES">
+    <value>Supprimer les sauvegardes</value>
+  </data>
+  <data name="IDS_PLAY_TRIAL_GAME">
+    <value>Jouer à la version d'essai du jeu</value>
+  </data>
+  <data name="IDS_TITLE_ENABLE_AUTOSAVE">
+    <value>Activer la sauvegarde auto</value>
+  </data>
+  <data name="IDS_CONFIRM_ENABLE_AUTOSAVE">
+    <value>Voulez-vous activer la sauvegarde automatique et constante du monde ?</value>
+  </data>
+  <data name="IDS_DISABLE_AUTOSAVE">
+    <value>Désactiver sauv. auto</value>
+  </data>
+  <data name="IDS_TITLE_DISABLE_AUTOSAVE">
+    <value>Désactiver sauv. auto</value>
+  </data>
+  <data name="IDS_CONFIRM_DISABLE_AUTOSAVE">
+    <value>Voulez-vous vraiment désactiver la sauvegarde automatique et constante du monde ?</value>
+  </data>
+  <data name="IDS_CONFIRM_SYNC_REQUIRED">
+    <value>Ce monde doit être synchronisé avant de pouvoir être joué, ce qui peut prendre un certain temps. Lancer la synchronisation et jouer ?</value>
+  </data>
+  <data name="IDS_CONFIRM_SYNC">
+    <value>Synchronisation</value>
+  </data>
+  <data name="IDS_SAVE_TRANSFER_DOWNLOAD_AND_CONVERT_COMPLETE">
+    <value>Téléchargement et conversion au format Xbox One terminés !</value>
+  </data>
+  <data name="IDS_SAVE_TRANSFER_DOWNLOAD_CANCELLING">
+    <value>Annulation du téléchargement en cours. Veuillez patienter...</value>
+  </data>
+  <data name="IDS_SAVE_TRANSFER_DOWNLOAD_CANCELLED">
+    <value>Téléchargement annulé.</value>
+  </data>
+  <data name="IDS_DISCONNECTED_EXITED_GAME">
+    <value>Vous avez quitté le jeu.</value>
+  </data>
+  <data name="IDS_IN_PARTY_SESSION_FULL">
+    <value>La session de jeu que vous avez rejointe est au complet. Vous serez informé dès qu'une place y sera disponible.</value>
+  </data>
+
+  <data name="IDS_LEADERBOARD_SCORE_HIDDEN">
+    <value>Masqué en raison des paramètres de confidentialité du joueur.</value>
+  </data>
+  <data name="IDS_TEXT_COPY_SAVE">
+    <value>Voulez-vous vraiment copier cette partie sauvegardée ?</value>
+  </data>
+  <data name="IDS_COPYSAVE">
+    <value>Copier la sauvegarde</value>
+  </data>
+  <data name="IDS_PROGRESS_COPYING_SAVE">
+    <value>Copie de la sauvegarde en cours</value>
+  </data>
+</root>

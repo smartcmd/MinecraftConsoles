@@ -1,0 +1,47 @@
+<root>
+  <data name="IDS_LEADERBOARD_KILLS_EASY">
+    <value>Gedood makkie</value>
+  </data>
+  <data name="IDS_LEADERBOARD_KILLS_NORMAL">
+    <value>Gedood normaal</value>
+  </data>
+  <data name="IDS_LEADERBOARD_KILLS_HARD">
+    <value>Gedood lastig</value>
+  </data>
+  <data name="IDS_LEADERBOARD_MINING_BLOCKS_PEACEFUL">
+    <value>Blokken delven vreedzaam</value>
+  </data>
+  <data name="IDS_LEADERBOARD_MINING_BLOCKS_EASY">
+    <value>Blokken delven makkie</value>
+  </data>
+  <data name="IDS_LEADERBOARD_MINING_BLOCKS_NORMAL">
+    <value>Blokken delven normaal</value>
+  </data>
+  <data name="IDS_LEADERBOARD_MINING_BLOCKS_HARD">
+    <value>Blokken delven lastig</value>
+  </data>
+  <data name="IDS_LEADERBOARD_FARMING_PEACEFUL">
+    <value>Boerderij vreedzaam</value>
+  </data>
+  <data name="IDS_LEADERBOARD_FARMING_EASY">
+    <value>Boerderij makkie</value>
+  </data>
+  <data name="IDS_LEADERBOARD_FARMING_NORMAL">
+    <value>Boerderij normaal</value>
+  </data>
+  <data name="IDS_LEADERBOARD_FARMING_HARD">
+    <value>Boerderij lastig</value>
+  </data>
+  <data name="IDS_LEADERBOARD_TRAVELLING_PEACEFUL">
+    <value>Reizen vreedzaam</value>
+  </data>
+  <data name="IDS_LEADERBOARD_TRAVELLING_EASY">
+    <value>Reizen makkie</value>
+  </data>
+  <data name="IDS_LEADERBOARD_TRAVELLING_NORMAL">
+    <value>Reizen normaal</value>
+  </data>
+  <data name="IDS_LEADERBOARD_TRAVELLING_HARD">
+    <value>Reizen lastig</value>
+  </data>
+</root>
