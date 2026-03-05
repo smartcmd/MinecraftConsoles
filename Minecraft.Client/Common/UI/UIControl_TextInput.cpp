@@ -16,6 +16,7 @@ bool UIControl_TextInput::setupControl(UIScene *scene, IggyValuePath *parent, co
 	m_textName = registerFastName(L"text");
 	m_funcChangeState = registerFastName(L"ChangeState");
 	m_funcSetCharLimit = registerFastName(L"SetCharLimit");
+	m_funcSetCaretIndex = registerFastName(L"SetCaretIndex");
 
 	return success;
 }
@@ -80,4 +81,23 @@ void UIControl_TextInput::SetCharLimit(int iLimit)
 	value[0].type = IGGY_DATATYPE_number;
 	value[0].number = iLimit;
 	IggyResult out = IggyPlayerCallMethodRS ( m_parentScene->getMovie() , &result, getIggyValuePath() , m_funcSetCharLimit , 1 , value );
+}
+
+void UIControl_TextInput::setCaretVisible(bool visible)
+{
+	// Always send to Flash — Iggy's focus system can re-enable the caret at any time
+	IggyValuePath caretPath;
+	if (IggyValuePathMakeNameRef(&caretPath, getIggyValuePath(), "m_mcCaret"))
+	{
+		IggyValueSetBooleanRS(&caretPath, m_nameVisible, NULL, visible);
+	}
+}
+
+void UIControl_TextInput::setCaretIndex(int index)
+{
+	IggyDataValue result;
+	IggyDataValue value[1];
+	value[0].type = IGGY_DATATYPE_number;
+	value[0].number = index;
+	IggyResult out = IggyPlayerCallMethodRS ( m_parentScene->getMovie() , &result, getIggyValuePath() , m_funcSetCaretIndex , 1 , value );
 }

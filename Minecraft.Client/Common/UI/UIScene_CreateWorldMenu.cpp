@@ -87,6 +87,7 @@ UIScene_CreateWorldMenu::UIScene_CreateWorldMenu(int iPad, void *initData, UILay
 #ifdef _WINDOWS64
 	m_bDirectEditing = false;
 	m_iDirectEditCooldown = 0;
+	m_iCursorPos = 0;
 #endif
 
 	m_bMultiplayerAllowed = ProfileManager.IsSignedInLive( m_iPad ) && ProfileManager.AllowedToPlayMultiplayer(m_iPad);
@@ -297,6 +298,15 @@ void UIScene_CreateWorldMenu::tick()
 	if (m_iDirectEditCooldown > 0)
 		m_iDirectEditCooldown--;
 
+	// Control caret visibility and position every tick — setLabel() and Flash
+	// focus changes reset both, so we must continuously enforce them.
+	if (g_KBMInput.IsKBMActive())
+	{
+		m_editWorldName.setCaretVisible(m_bDirectEditing);
+		if (m_bDirectEditing)
+			m_editWorldName.setCaretIndex(m_iCursorPos);
+	}
+
 	if (m_bDirectEditing)
 	{
 		wchar_t ch;
@@ -305,9 +315,10 @@ void UIScene_CreateWorldMenu::tick()
 		{
 			if (ch == 0x08) // backspace
 			{
-				if (!m_worldName.empty())
+				if (m_iCursorPos > 0)
 				{
-					m_worldName.pop_back();
+					m_worldName.erase(m_iCursorPos - 1, 1);
+					m_iCursorPos--;
 					changed = true;
 				}
 			}
@@ -316,12 +327,42 @@ void UIScene_CreateWorldMenu::tick()
 				m_bDirectEditing = false;
 				m_iDirectEditCooldown = 4; // absorb the matching ACTION_MENU_OK that follows
 				m_editWorldName.setLabel(m_worldName.c_str());
+				m_editWorldName.setCaretVisible(false);
+				break;
 			}
 			else if ((int)m_worldName.length() < 25)
 			{
-				m_worldName += ch;
+				m_worldName.insert(m_iCursorPos, 1, ch);
+				m_iCursorPos++;
 				changed = true;
 			}
+		}
+
+		// Arrow keys move the cursor within the text
+		if (g_KBMInput.IsKeyPressed(VK_LEFT) && m_iCursorPos > 0)
+		{
+			m_iCursorPos--;
+			m_editWorldName.setCaretIndex(m_iCursorPos);
+		}
+		if (g_KBMInput.IsKeyPressed(VK_RIGHT) && m_iCursorPos < (int)m_worldName.length())
+		{
+			m_iCursorPos++;
+			m_editWorldName.setCaretIndex(m_iCursorPos);
+		}
+		if (g_KBMInput.IsKeyPressed(VK_HOME))
+		{
+			m_iCursorPos = 0;
+			m_editWorldName.setCaretIndex(m_iCursorPos);
+		}
+		if (g_KBMInput.IsKeyPressed(VK_END))
+		{
+			m_iCursorPos = (int)m_worldName.length();
+			m_editWorldName.setCaretIndex(m_iCursorPos);
+		}
+		if (g_KBMInput.IsKeyPressed(VK_DELETE) && m_iCursorPos < (int)m_worldName.length())
+		{
+			m_worldName.erase(m_iCursorPos, 1);
+			changed = true;
 		}
 
 		// Escape cancels and restores the original name
@@ -331,11 +372,13 @@ void UIScene_CreateWorldMenu::tick()
 			m_bDirectEditing = false;
 			m_iDirectEditCooldown = 4;
 			m_editWorldName.setLabel(m_worldName.c_str());
+			m_editWorldName.setCaretVisible(false);
 			m_buttonCreateWorld.setEnable(!m_worldName.empty());
 		}
 		else if (changed)
 		{
 			m_editWorldName.setLabel(m_worldName.c_str());
+			m_editWorldName.setCaretIndex(m_iCursorPos);
 			m_buttonCreateWorld.setEnable(!m_worldName.empty());
 		}
 	}
@@ -492,7 +535,10 @@ void UIScene_CreateWorldMenu::handlePress(F64 controlId, F64 childId)
 				m_bIgnoreInput = false; // Don't block input - m_bDirectEditing is the guard
 				m_worldNameBeforeEdit = m_worldName;
 				m_bDirectEditing = true;
+				m_iCursorPos = (int)m_worldName.length();
 				g_KBMInput.ClearCharBuffer();
+				m_editWorldName.setCaretVisible(true);
+				m_editWorldName.setCaretIndex(m_iCursorPos);
 			}
 #else
 			InputManager.RequestKeyboard(app.GetString(IDS_CREATE_NEW_WORLD),m_editWorldName.getLabel(),(DWORD)0,25,&UIScene_CreateWorldMenu::KeyboardCompleteWorldNameCallback,this,C_4JInput::EKeyboardMode_Default);

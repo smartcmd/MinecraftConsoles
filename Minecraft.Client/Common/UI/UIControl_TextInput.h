@@ -6,6 +6,7 @@ class UIControl_TextInput : public UIControl_Base
 {
 private:
 	IggyName m_textName, m_funcChangeState, m_funcSetCharLimit;
+	IggyName m_funcSetCaretIndex;
 	bool m_bHasFocus;
 
 public:
@@ -19,4 +20,7 @@ public:
 	virtual void setFocus(bool focus);
 
 	void SetCharLimit(int iLimit);
+
+	void setCaretVisible(bool visible);
+	void setCaretIndex(int index);
 };

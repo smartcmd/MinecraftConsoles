@@ -55,6 +55,7 @@ private:
 	bool m_bDirectEditing;
 	wstring m_worldNameBeforeEdit;
 	int m_iDirectEditCooldown;
+	int m_iCursorPos;
 #endif
 
 public:
