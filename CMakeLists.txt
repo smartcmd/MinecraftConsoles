@@ -132,7 +132,7 @@ elseif(UNIX)
             "--exclude=*.bat" "--exclude=*.cmd" "--exclude=*.ps1" "--exclude=*.py"
             "--exclude=*Test*"
             "--exclude=Durango*" "--exclude=Orbis*" "--exclude=PS*" "--exclude=Xbox"
-            -cvf - -C "${CMAKE_CURRENT_SOURCE_DIR}/Minecraft.Client/" .
+            -cf - -C "${CMAKE_CURRENT_SOURCE_DIR}/Minecraft.Client/" .
     COMMAND tar -xvf - -C "${CMAKE_CURRENT_BINARY_DIR}/"
   )
   message(STATUS "Patching Windows64Media...")
@@ -140,7 +140,7 @@ elseif(UNIX)
   execute_process(
     COMMAND tar
             "--exclude=*.h" "--exclude=*.xml" "--exclude=*.lang" "--exclude=*.bat"
-            -cvf - -C "${CMAKE_CURRENT_SOURCE_DIR}/Minecraft.Client/DurangoMedia/" .
+            -cf - -C "${CMAKE_CURRENT_SOURCE_DIR}/Minecraft.Client/DurangoMedia/" .
     COMMAND tar -xvf - -C "${CMAKE_CURRENT_BINARY_DIR}/Windows64Media/"
   )
 else()
