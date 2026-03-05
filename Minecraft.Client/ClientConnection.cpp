@@ -2694,6 +2694,10 @@ void ClientConnection::handleRespawn(shared_ptr<RespawnPacket> packet)
 		int oldDimension = minecraft->localplayers[m_userIndex]->dimension;
 		started = false;
 
+		// Stop any streaming music (e.g. jukebox) when changing dimensions
+		// so it doesn't leak into the new dimension
+		level->playStreamingMusic(L"", 0, 0, 0);
+
 		// Remove client connection from this level
 		level->removeClientConnection(this, false);
 
