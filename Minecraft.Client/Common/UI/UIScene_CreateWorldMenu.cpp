@@ -476,7 +476,7 @@ void UIScene_CreateWorldMenu::handlePress(F64 controlId, F64 childId)
 		{
 			m_bIgnoreInput=true;
 #ifdef _WINDOWS64
-			if (Win64_IsControllerConnected())
+			if (!g_KBMInput.IsKBMActive())
 			{
 				UIKeyboardInitData kbData;
 				kbData.title       = app.GetString(IDS_CREATE_NEW_WORLD);
@@ -488,7 +488,7 @@ void UIScene_CreateWorldMenu::handlePress(F64 controlId, F64 childId)
 			}
 			else
 			{
-				// PC without controller: edit the name field directly in-place.
+				// PC with KBM active: edit the name field directly in-place.
 				m_bIgnoreInput = false; // Don't block input - m_bDirectEditing is the guard
 				m_worldNameBeforeEdit = m_worldName;
 				m_bDirectEditing = true;

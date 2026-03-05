@@ -2394,7 +2394,7 @@ int UIScene_LoadOrJoinMenu::SaveOptionsDialogReturned(void *pParam,int iPad,C4JS
                 kbData.maxChars    = 25;
                 kbData.callback    = &UIScene_LoadOrJoinMenu::KeyboardCompleteWorldNameCallback;
                 kbData.lpParam     = pClass;
-                kbData.pcMode      = !Win64_IsControllerConnected();
+                kbData.pcMode      = g_KBMInput.IsKBMActive();
                 ui.NavigateToScene(pClass->m_iPad, eUIScene_Keyboard, &kbData);
             }
 #elif defined _DURANGO
