@@ -5715,10 +5715,6 @@ Press{*CONTROLLER_VK_B*} if you already know about Fireworks.</value>
 		<value>Cancel</value>
 	</data>	
 
-	<data name="IDS_DOWNLOADABLECONTENT">
-		<value>Minecraft Store</value>
-	</data>	
-
 	<data name="IDS_CONFIRM_LEAVE_VIA_INVITE">
 		<value>Are you sure you want to leave your current game and join the new one? Any unsaved progress will be lost.</value>
 	</data>	

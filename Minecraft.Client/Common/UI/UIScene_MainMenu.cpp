@@ -43,16 +43,6 @@ UIScene_MainMenu::UIScene_MainMenu(int iPad, void *initData, UILayer *parentLaye
 	m_buttons[(int)eControl_Leaderboards].init(IDS_LEADERBOARDS,eControl_Leaderboards);
 	m_buttons[(int)eControl_Achievements].init( (UIString)IDS_ACHIEVEMENTS,eControl_Achievements);
 	m_buttons[(int)eControl_HelpAndOptions].init(IDS_HELP_AND_OPTIONS,eControl_HelpAndOptions);
-	if(ProfileManager.IsFullVersion())
-	{
-		m_bTrialVersion=false;
-		m_buttons[(int)eControl_UnlockOrDLC].init(IDS_DOWNLOADABLECONTENT,eControl_UnlockOrDLC);
-	}
-	else
-	{
-		m_bTrialVersion=true;
-		m_buttons[(int)eControl_UnlockOrDLC].init(IDS_UNLOCK_FULL_GAME,eControl_UnlockOrDLC);
-	}
 
 #ifndef _DURANGO
 	m_buttons[(int)eControl_Exit].init(app.GetString(IDS_EXIT_GAME),eControl_Exit);
@@ -178,12 +168,7 @@ void UIScene_MainMenu::handleGainFocus(bool navBack)
 #ifdef _DURANGO
 	ProfileManager.ClearGameUsers();
 #endif
-		
-	if(navBack && ProfileManager.IsFullVersion())
-	{
-		// Replace the Unlock Full Game with Downloadable Content
-		m_buttons[(int)eControl_UnlockOrDLC].setLabel(IDS_DOWNLOADABLECONTENT);
-	}
+
 
 #if TO_BE_IMPLEMENTED
 	// Fix for #45154 - Frontend: DLC: Content can only be downloaded from the frontend if you have not joined/exited multiplayer
@@ -2129,7 +2114,8 @@ void UIScene_MainMenu::LoadTrial(void)
 
 void UIScene_MainMenu::handleUnlockFullVersion()
 {
-	m_buttons[(int)eControl_UnlockOrDLC].setLabel(IDS_DOWNLOADABLECONTENT,true);
+	//m_buttons[(int)eControl_UnlockOrDLC].setLabel(IDS_DOWNLOADABLECONTENT,true);
+	// function does nothing since the button was removed.
 }
 
 
