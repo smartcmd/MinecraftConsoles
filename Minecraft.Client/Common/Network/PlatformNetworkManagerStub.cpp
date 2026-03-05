@@ -735,7 +735,7 @@ void CPlatformNetworkManagerStub::SearchForGames()
 	}
 
 	#ifdef _WINDOWS64 //Should we have this windows64 only? idk i havent tested so...
-	ifstream ServersTxt("servers.txt");
+	std::FILE* file = std::fopen("servers.txt", "r");
 
 	//Memory leak prevention
 	if (allocatedServers != NULL) {
@@ -744,9 +744,9 @@ void CPlatformNetworkManagerStub::SearchForGames()
 		}
 		delete(allocatedServers);
 	}
-	allocatedServers = new vector<FriendSessionInfo*>;
 
-	if (ServersTxt) {
+	if (file) {
+		allocatedServers = new vector<FriendSessionInfo*>;
 
 		string line;
 		wstring wline;
@@ -756,8 +756,9 @@ void CPlatformNetworkManagerStub::SearchForGames()
 		wstring port;
 		wstring name;
 
-		while (getline(ServersTxt, line)) {
-			wline = convStringToWstring(line);
+		char buffer[512];
+		while (std::fgets(buffer, sizeof(buffer), file)) {
+			wline = convStringToWstring(buffer);
 			if (phase == 0) {
 				ip = line;
 				phase = 1;
@@ -790,7 +791,8 @@ void CPlatformNetworkManagerStub::SearchForGames()
 				allocatedServers->push_back(info);
 			}
 		}
-		ServersTxt.close();
+
+		delete(file);
 	}
 	#endif
 
