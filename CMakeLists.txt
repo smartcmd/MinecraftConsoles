@@ -140,8 +140,8 @@ elseif(UNIX)
   execute_process(
     COMMAND tar
             "--exclude=*.h" "--exclude=*.xml" "--exclude=*.lang" "--exclude=*.bat"
-            -cf - -C "${CMAKE_CURRENT_SOURCE_DIR}/Minecraft.Client/DurangoMedia/" .
-    COMMAND tar -xf - -C "${CMAKE_CURRENT_BINARY_DIR}/Windows64Media/"
+            -cvf - -C "${CMAKE_CURRENT_SOURCE_DIR}/Minecraft.Client/DurangoMedia/" .
+    COMMAND tar -xvf - -C "${CMAKE_CURRENT_BINARY_DIR}/Windows64Media/"
   )
 else()
   message(FATAL_ERROR "Redist and asset copying is only supported on Windows (Robocopy) and Unix systems (cp, tar).")
