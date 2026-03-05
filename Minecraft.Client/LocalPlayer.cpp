@@ -251,13 +251,10 @@ void LocalPlayer::aiStep()
 	if (changingDimensionDelay > 0) changingDimensionDelay--;
 	bool wasJumping = input->jumping;
 	float runTreshold = 0.8f;
-	float sprintForward = input->sprintForward;
-
-	bool wasRunning = sprintForward >= runTreshold;
+	bool wasRunning = input->ya >= runTreshold;
 	//input->tick( dynamic_pointer_cast<Player>( shared_from_this() ) );
 	// 4J-PB - make it a localplayer
 	input->tick( this );
-	sprintForward = input->sprintForward;
 	if (isUsingItem() && !isRiding())
 	{
 		input->xa *= 0.2f;
@@ -281,25 +278,9 @@ void LocalPlayer::aiStep()
 	// world with low food, then reload it in creative.
 	if(abilities.mayfly || isAllowedToFly() ) enoughFoodToSprint = true;
 
-	bool forwardEnoughToTriggerSprint = sprintForward >= runTreshold;
-	bool forwardReturnedToDeadzone = sprintForward == 0.0f;
-	bool forwardEnoughToContinueSprint = sprintForward >= runTreshold;
-
-#ifdef _WINDOWS64
-	if (GetXboxPad() == 0 && input->usingKeyboardMovement)
-	{
-		forwardEnoughToContinueSprint = sprintForward > 0.0f;
-	}
-#endif
-
-#ifdef _WINDOWS64
-	// Keyboard sprint: Ctrl held while moving forward
-	if (GetXboxPad() == 0 && input->usingKeyboardMovement && KMInput.IsKeyDown(VK_CONTROL) && sprintForward > 0.0f &&
-		enoughFoodToSprint && !isUsingItem() && !hasEffect(MobEffect::blindness) && onGround)
-	{
-		if (!isSprinting()) setSprinting(true);
-	}
-#endif
+	bool forwardEnoughToTriggerSprint = input->ya >= runTreshold;
+	bool forwardReturnedToDeadzone = input->ya == 0.0f;
+	bool forwardEnoughToContinueSprint = input->ya >= runTreshold;
 
 	// 4J - altered this slightly to make sure that the joypad returns to below returnTreshold in between registering two movements up to runThreshold
 	if (onGround && !isSprinting() && enoughFoodToSprint && !isUsingItem() && !hasEffect(MobEffect::blindness))
@@ -327,6 +308,12 @@ void LocalPlayer::aiStep()
 		}
 	}
 	if (isSneaking()) sprintTriggerTime = 0;
+#ifdef _WINDOWS64
+	if (input->sprinting && onGround && enoughFoodToSprint && !isUsingItem() && !hasEffect(MobEffect::blindness) && !isSneaking())
+	{
+		setSprinting(true);
+	}
+#endif
 	// 4J-PB - try not stopping sprint on collision
 	//if (isSprinting() && (input->ya < runTreshold || horizontalCollision || !enoughFoodToSprint))
 	if (isSprinting() && (!forwardEnoughToContinueSprint || !enoughFoodToSprint || isSneaking() || isUsingItem()))

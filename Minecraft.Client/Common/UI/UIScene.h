@@ -107,8 +107,10 @@ public:
 	int getRenderHeight() { return m_renderHeight; }
 
 #ifdef __PSVITA__
-	UILayer *GetParentLayer() {return m_parentLayer;}
 	EUIGroup GetParentLayerGroup() {return m_parentLayer->m_parentGroup->GetGroup();}
+#endif
+#if defined(__PSVITA__) || defined(_WINDOWS64)
+	UILayer *GetParentLayer() {return m_parentLayer;}
 	vector<UIControl *> *GetControls() {return &m_controls;}
 #endif
 

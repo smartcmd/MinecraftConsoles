@@ -65,7 +65,7 @@ public:
 	static bool Initialize();
 	static void Shutdown();
 
-	static bool HostGame(int port);
+	static bool HostGame(int port, const char* bindIp = NULL);
 	static bool JoinGame(const char* ip, int port);
 
 	static bool SendToSmallId(BYTE targetSmallId, const void* data, int dataSize);
@@ -147,5 +147,8 @@ extern bool g_Win64MultiplayerHost;
 extern bool g_Win64MultiplayerJoin;
 extern int g_Win64MultiplayerPort;
 extern char g_Win64MultiplayerIP[256];
+extern bool g_Win64DedicatedServer;
+extern int g_Win64DedicatedServerPort;
+extern char g_Win64DedicatedServerBindIP[256];
 
 #endif

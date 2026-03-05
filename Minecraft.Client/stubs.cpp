@@ -3,41 +3,98 @@
 #ifdef _WINDOWS64
 #include "Windows64\KeyboardMouseInput.h"
 
+static const int s_keyToVK[] = {
+	'A',        // KEY_A = 0
+	'B',        // KEY_B = 1
+	'C',        // KEY_C = 2
+	'D',        // KEY_D = 3
+	'E',        // KEY_E = 4
+	'F',        // KEY_F = 5
+	'G',        // KEY_G = 6
+	'H',        // KEY_H = 7
+	'I',        // KEY_I = 8
+	'J',        // KEY_J = 9
+	'K',        // KEY_K = 10
+	'L',        // KEY_L = 11
+	'M',        // KEY_M = 12
+	'N',        // KEY_N = 13
+	'O',        // KEY_O = 14
+	'P',        // KEY_P = 15
+	'Q',        // KEY_Q = 16
+	'R',        // KEY_R = 17
+	'S',        // KEY_S = 18
+	'T',        // KEY_T = 19
+	'U',        // KEY_U = 20
+	'V',        // KEY_V = 21
+	'W',        // KEY_W = 22
+	'X',        // KEY_X = 23
+	'Y',        // KEY_Y = 24
+	'Z',        // KEY_Z = 25
+	VK_SPACE,   // KEY_SPACE = 26
+	VK_LSHIFT,  // KEY_LSHIFT = 27
+	VK_ESCAPE,  // KEY_ESCAPE = 28
+	VK_BACK,    // KEY_BACK = 29
+	VK_RETURN,  // KEY_RETURN = 30
+	VK_RSHIFT,  // KEY_RSHIFT = 31
+	VK_UP,      // KEY_UP = 32
+	VK_DOWN,    // KEY_DOWN = 33
+	VK_TAB,     // KEY_TAB = 34
+	'1',        // KEY_1 = 35
+	'2',        // KEY_2 = 36
+	'3',        // KEY_3 = 37
+	'4',        // KEY_4 = 38
+	'5',        // KEY_5 = 39
+	'6',        // KEY_6 = 40
+	'7',        // KEY_7 = 41
+	'8',        // KEY_8 = 42
+	'9',        // KEY_9 = 43
+	VK_F1,      // KEY_F1 = 44
+	VK_F3,      // KEY_F3 = 45
+	VK_F4,      // KEY_F4 = 46
+	VK_F5,      // KEY_F5 = 47
+	VK_F6,      // KEY_F6 = 48
+	VK_F8,      // KEY_F8 = 49
+	VK_F9,      // KEY_F9 = 50
+	VK_F11,     // KEY_F11 = 51
+	VK_ADD,     // KEY_ADD = 52
+	VK_SUBTRACT,// KEY_SUBTRACT = 53
+	VK_LEFT,    // KEY_LEFT = 54
+	VK_RIGHT,   // KEY_RIGHT = 55
+};
+static const int s_keyToVKCount = sizeof(s_keyToVK) / sizeof(s_keyToVK[0]);
+
+int Keyboard::toVK(int keyConst)
+{
+	if (keyConst >= 0 && keyConst < s_keyToVKCount)
+		return s_keyToVK[keyConst];
+	return 0;
+}
+
+bool Keyboard::isKeyDown(int keyCode)
+{
+	int vk = toVK(keyCode);
+	if (vk > 0)
+		return g_KBMInput.IsKeyDown(vk);
+	return false;
+}
+
 int Mouse::getX()
 {
-	return KMInput.GetMouseX();
+	return g_KBMInput.GetMouseX();
 }
 
 int Mouse::getY()
 {
 	// Return Y in bottom-up coordinates (OpenGL convention, matching original Java LWJGL Mouse)
+	extern HWND g_hWnd;
 	RECT rect;
-	GetClientRect(KMInput.GetHWnd(), &rect);
-	return (rect.bottom - 1) - KMInput.GetMouseY();
+	GetClientRect(g_hWnd, &rect);
+	return (rect.bottom - 1) - g_KBMInput.GetMouseY();
 }
 
 bool Mouse::isButtonDown(int button)
 {
-	return KMInput.IsMouseDown(button);
-}
-
-bool Keyboard::isKeyDown(int key)
-{
-	// Map Keyboard constants to Windows virtual key codes
-	if (key == Keyboard::KEY_LSHIFT) return KMInput.IsKeyDown(VK_LSHIFT);
-	if (key == Keyboard::KEY_RSHIFT) return KMInput.IsKeyDown(VK_RSHIFT);
-	if (key == Keyboard::KEY_ESCAPE) return KMInput.IsKeyDown(VK_ESCAPE);
-	if (key == Keyboard::KEY_RETURN) return KMInput.IsKeyDown(VK_RETURN);
-	if (key == Keyboard::KEY_BACK)   return KMInput.IsKeyDown(VK_BACK);
-	if (key == Keyboard::KEY_SPACE)  return KMInput.IsKeyDown(VK_SPACE);
-	if (key == Keyboard::KEY_TAB)    return KMInput.IsKeyDown(VK_TAB);
-	if (key == Keyboard::KEY_UP)     return KMInput.IsKeyDown(VK_UP);
-	if (key == Keyboard::KEY_DOWN)   return KMInput.IsKeyDown(VK_DOWN);
-	if (key == Keyboard::KEY_LEFT)   return KMInput.IsKeyDown(VK_LEFT);
-	if (key == Keyboard::KEY_RIGHT)  return KMInput.IsKeyDown(VK_RIGHT);
-	if (key >= Keyboard::KEY_A && key <= Keyboard::KEY_Z)
-		return KMInput.IsKeyDown('A' + (key - Keyboard::KEY_A));
-	return false;
+	return g_KBMInput.IsMouseButtonDown(button);
 }
 #endif
 

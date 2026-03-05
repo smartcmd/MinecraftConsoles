@@ -25,6 +25,98 @@
 #include "message_dialog.h"
 #endif
 
+#ifdef _WINDOWS64
+#include "..\..\..\Minecraft.World\NbtIo.h"
+#include "..\..\..\Minecraft.World\compression.h"
+
+static wstring ReadLevelNameFromSaveFile(const wstring& filePath)
+{
+    HANDLE hFile = CreateFileW(filePath.c_str(), GENERIC_READ, FILE_SHARE_READ, NULL, OPEN_EXISTING, FILE_FLAG_SEQUENTIAL_SCAN, NULL);
+    if (hFile == INVALID_HANDLE_VALUE) return L"";
+
+    DWORD fileSize = GetFileSize(hFile, NULL);
+    if (fileSize < 12 || fileSize == INVALID_FILE_SIZE) { CloseHandle(hFile); return L""; }
+
+    unsigned char *rawData = new unsigned char[fileSize];
+    DWORD bytesRead = 0;
+    if (!ReadFile(hFile, rawData, fileSize, &bytesRead, NULL) || bytesRead != fileSize)
+    {
+        CloseHandle(hFile);
+        delete[] rawData;
+        return L"";
+    }
+    CloseHandle(hFile);
+
+    unsigned char *saveData = NULL;
+    unsigned int saveSize   = 0;
+    bool freeSaveData = false;
+
+    if (*(unsigned int*)rawData == 0)
+    {
+        // Compressed format: bytes 0-3=0, bytes 4-7=decompressed size, bytes 8+=compressed data
+        unsigned int decompSize = *(unsigned int*)(rawData + 4);
+        if (decompSize == 0 || decompSize > 128 * 1024 * 1024)
+        {
+            delete[] rawData;
+            return L"";
+        }
+        saveData = new unsigned char[decompSize];
+        Compression::getCompression()->Decompress(saveData, &decompSize, rawData + 8, fileSize - 8);
+        saveSize     = decompSize;
+        freeSaveData = true;
+    }
+    else
+    {
+        saveData = rawData;
+        saveSize = fileSize;
+    }
+
+    wstring result = L"";
+    if (saveSize >= 12)
+    {
+        unsigned int headerOffset = *(unsigned int*)saveData;
+        unsigned int numEntries   = *(unsigned int*)(saveData + 4);
+        const unsigned int entrySize = sizeof(FileEntrySaveData);
+
+        if (headerOffset < saveSize && numEntries > 0 && numEntries < 10000 &&
+            headerOffset + numEntries * entrySize <= saveSize)
+        {
+            FileEntrySaveData *table = (FileEntrySaveData *)(saveData + headerOffset);
+            for (unsigned int i = 0; i < numEntries; i++)
+            {
+                if (wcscmp(table[i].filename, L"level.dat") == 0)
+                {
+                    unsigned int off = table[i].startOffset;
+                    unsigned int len = table[i].length;
+                    if (off >= 12 && off + len <= saveSize && len > 0 && len < 4 * 1024 * 1024)
+                    {
+                        byteArray ba;
+                        ba.data   = (byte*)(saveData + off);
+                        ba.length = len;
+                        CompoundTag *root = NbtIo::decompress(ba);
+                        if (root != NULL)
+                        {
+                            CompoundTag *dataTag = root->getCompound(L"Data");
+                            if (dataTag != NULL)
+                                result = dataTag->getString(L"LevelName");
+                            delete root;
+                        }
+                    }
+                    break;
+                }
+            }
+        }
+    }
+
+    if (freeSaveData) delete[] saveData;
+    delete[] rawData;
+    // "world" is the engine default — it means no real name was ever set, so
+    // return empty to let the caller fall back to the save filename (timestamp).
+    if (result == L"world") result = L"";
+    return result;
+}
+#endif
+
 
 #ifdef SONY_REMOTE_STORAGE_DOWNLOAD
 unsigned long UIScene_LoadOrJoinMenu::m_ulFileSize=0L;
@@ -159,7 +251,7 @@ UIScene_LoadOrJoinMenu::UIScene_LoadOrJoinMenu(int iPad, void *initData, UILayer
     }
 #endif
 
-#if defined(__PS3__) || defined(__ORBIS__) || defined(__PSVITA__) || defined(_DURANGO)
+#if defined(__PS3__) || defined(__ORBIS__) || defined(__PSVITA__) || defined(_DURANGO) || defined(_WINDOWS64)
     // Always clear the saves when we enter this menu
     StorageManager.ClearSavesInfo();
 #endif
@@ -614,6 +706,22 @@ void UIScene_LoadOrJoinMenu::tick()
                 m_saveDetails = new SaveListDetails[m_pSaveDetails->iSaveC];
 
                 m_iSaveDetailsCount = m_pSaveDetails->iSaveC;
+#ifdef _WINDOWS64
+                // Build sorted index array (newest-first by filename timestamp YYYYMMDDHHMMSS)
+                int *sortedIdx = new int[m_pSaveDetails->iSaveC];
+                for (int si = 0; si < (int)m_pSaveDetails->iSaveC; ++si) sortedIdx[si] = si;
+                for (int si = 1; si < (int)m_pSaveDetails->iSaveC; ++si)
+                {
+                    int key = sortedIdx[si];
+                    int sj = si - 1;
+                    while (sj >= 0 && strcmp(m_pSaveDetails->SaveInfoA[sortedIdx[sj]].UTF8SaveFilename, m_pSaveDetails->SaveInfoA[key].UTF8SaveFilename) < 0)
+                    {
+                        sortedIdx[sj + 1] = sortedIdx[sj];
+                        --sj;
+                    }
+                    sortedIdx[sj + 1] = key;
+                }
+#endif
                 for(unsigned int i = 0; i < m_pSaveDetails->iSaveC; ++i)
                 {
 #if defined(_XBOX_ONE)
@@ -628,13 +736,39 @@ void UIScene_LoadOrJoinMenu::tick()
                     memcpy(m_saveDetails[i].UTF16SaveName, m_pSaveDetails->SaveInfoA[i].UTF16SaveTitle, 128);
                     memcpy(m_saveDetails[i].UTF16SaveFilename, m_pSaveDetails->SaveInfoA[i].UTF16SaveFilename, MAX_SAVEFILENAME_LENGTH);
 #else
+#ifdef _WINDOWS64
+                    {
+                        int origIdx = sortedIdx[i];
+                        wchar_t wFilename[MAX_SAVEFILENAME_LENGTH];
+                        ZeroMemory(wFilename, sizeof(wFilename));
+                        mbstowcs(wFilename, m_pSaveDetails->SaveInfoA[origIdx].UTF8SaveFilename, MAX_SAVEFILENAME_LENGTH - 1);
+                        wstring filePath = wstring(L"Windows64\\GameHDD\\") + wstring(wFilename) + wstring(L"\\saveData.ms");
+                        wstring levelName = ReadLevelNameFromSaveFile(filePath);
+                        if (!levelName.empty())
+                        {
+                            m_buttonListSaves.addItem(levelName, wstring(L""));
+                            wcstombs(m_saveDetails[i].UTF8SaveName, levelName.c_str(), 127);
+                            m_saveDetails[i].UTF8SaveName[127] = '\0';
+                        }
+                        else
+                        {
+                            m_buttonListSaves.addItem(m_pSaveDetails->SaveInfoA[origIdx].UTF8SaveTitle, L"");
+                            memcpy(m_saveDetails[i].UTF8SaveName, m_pSaveDetails->SaveInfoA[origIdx].UTF8SaveTitle, 128);
+                        }
+                        m_saveDetails[i].saveId = origIdx;
+                        memcpy(m_saveDetails[i].UTF8SaveFilename, m_pSaveDetails->SaveInfoA[origIdx].UTF8SaveFilename, MAX_SAVEFILENAME_LENGTH);
+                    }
+#else
                     m_buttonListSaves.addItem(m_pSaveDetails->SaveInfoA[i].UTF8SaveTitle, L"");
-
-                    m_saveDetails[i].saveId = i;
                     memcpy(m_saveDetails[i].UTF8SaveName, m_pSaveDetails->SaveInfoA[i].UTF8SaveTitle, 128);
+                    m_saveDetails[i].saveId = i;
                     memcpy(m_saveDetails[i].UTF8SaveFilename, m_pSaveDetails->SaveInfoA[i].UTF8SaveFilename, MAX_SAVEFILENAME_LENGTH);
 #endif
+#endif
                 }
+#ifdef _WINDOWS64
+                delete[] sortedIdx;
+#endif
                 m_controlSavesTimer.setVisible( false );
 
                 // set focus on the first button
@@ -650,7 +784,11 @@ void UIScene_LoadOrJoinMenu::tick()
                 app.DebugPrintf("Requesting the first thumbnail\n");
                 // set the save to load
                 PSAVE_DETAILS pSaveDetails=StorageManager.ReturnSavesInfo();
+#ifdef _WINDOWS64
+                C4JStorage::ESaveGameState eLoadStatus=StorageManager.LoadSaveDataThumbnail(&pSaveDetails->SaveInfoA[m_saveDetails[m_iRequestingThumbnailId].saveId],&LoadSaveDataThumbnailReturned,this);
+#else
                 C4JStorage::ESaveGameState eLoadStatus=StorageManager.LoadSaveDataThumbnail(&pSaveDetails->SaveInfoA[(int)m_iRequestingThumbnailId],&LoadSaveDataThumbnailReturned,this);
+#endif
 
                 if(eLoadStatus!=C4JStorage::ESaveGame_GetSaveThumbnail)
                 {
@@ -713,7 +851,11 @@ void UIScene_LoadOrJoinMenu::tick()
                     app.DebugPrintf("Requesting another thumbnail\n");
                     // set the save to load
                     PSAVE_DETAILS pSaveDetails=StorageManager.ReturnSavesInfo();
+#ifdef _WINDOWS64
+                    C4JStorage::ESaveGameState eLoadStatus=StorageManager.LoadSaveDataThumbnail(&pSaveDetails->SaveInfoA[m_saveDetails[m_iRequestingThumbnailId].saveId],&LoadSaveDataThumbnailReturned,this);
+#else
                     C4JStorage::ESaveGameState eLoadStatus=StorageManager.LoadSaveDataThumbnail(&pSaveDetails->SaveInfoA[(int)m_iRequestingThumbnailId],&LoadSaveDataThumbnailReturned,this);
+#endif
                     if(eLoadStatus!=C4JStorage::ESaveGame_GetSaveThumbnail)
                     {
                         // something went wrong
@@ -1175,6 +1317,14 @@ void UIScene_LoadOrJoinMenu::handleInput(int iPad, int key, bool repeat, bool pr
         sendInputToMovie(key, repeat, pressed, released);
         handled = true;
         break;
+    case ACTION_MENU_OTHER_STICK_UP:
+        sendInputToMovie(ACTION_MENU_UP, repeat, pressed, released);
+        handled = true;
+        break;
+    case ACTION_MENU_OTHER_STICK_DOWN:
+        sendInputToMovie(ACTION_MENU_DOWN, repeat, pressed, released);
+        handled = true;
+        break;
     }
 }
 
@@ -1323,7 +1473,7 @@ void UIScene_LoadOrJoinMenu::handlePress(F64 controlId, F64 childId)
                         LoadMenuInitData *params = new LoadMenuInitData();
                         params->iPad = m_iPad;
                         // need to get the iIndex from the list item, since the position in the list doesn't correspond to the GetSaveGameInfo list because of sorting
-                        params->iSaveGameInfoIndex=((int)childId)-m_iDefaultButtonsC;
+                        params->iSaveGameInfoIndex=m_saveDetails[((int)childId)-m_iDefaultButtonsC].saveId;
                         //params->pbSaveRenamed=&m_bSaveRenamed;
                         params->levelGen = NULL;
                         params->saveDetails = &m_saveDetails[ ((int)childId)-m_iDefaultButtonsC ];

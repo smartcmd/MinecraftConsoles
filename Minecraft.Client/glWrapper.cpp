@@ -48,13 +48,11 @@ void glLoadIdentity()
 	RenderManager.MatrixSetIdentity();
 }
 
-extern int g_iScreenWidth;
-extern int g_iScreenHeight;
-
+// AAR - Use calculated aspect ratio to support dynamic resizing
+extern float g_iAspectRatio;
 void gluPerspective(float fovy, float aspect, float zNear, float zFar)
 {
-	float dynamicAspect = (float)g_iScreenWidth / (float)g_iScreenHeight;
-	RenderManager.MatrixPerspective(fovy, dynamicAspect, zNear, zFar);
+	RenderManager.MatrixPerspective(fovy, g_iAspectRatio, zNear, zFar);
 }
 
 void glOrtho(float left,float right,float bottom,float top,float zNear,float zFar)

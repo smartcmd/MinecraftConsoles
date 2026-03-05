@@ -27,6 +27,14 @@
 #include "..\Minecraft.World\Pos.h"
 #include "..\Minecraft.World\System.h"
 #include "..\Minecraft.World\StringHelpers.h"
+#include "..\Minecraft.World\net.minecraft.world.entity.item.h"
+#include "..\Minecraft.World\net.minecraft.world.item.h"
+#include "..\Minecraft.World\net.minecraft.world.item.enchantment.h"
+#include "..\Minecraft.World\net.minecraft.world.damagesource.h"
+#ifdef _WINDOWS64
+#include "Windows64\Network\WinsockNetLayer.h"
+#endif
+#include <sstream>
 #ifdef SPLIT_SAVES
 #include "..\Minecraft.World\ConsoleSaveFileSplit.h"
 #endif
@@ -78,6 +86,462 @@ bool MinecraftServer::s_slowQueuePacketSent = false;
 
 unordered_map<wstring, int> MinecraftServer::ironTimers;
 
+static bool ShouldUseDedicatedServerProperties()
+{
+#ifdef _WINDOWS64
+	return g_Win64DedicatedServer;
+#else
+	return false;
+#endif
+}
+
+static int GetDedicatedServerInt(Settings *settings, const wchar_t *key, int defaultValue)
+{
+	return (ShouldUseDedicatedServerProperties() && settings != NULL) ? settings->getInt(key, defaultValue) : defaultValue;
+}
+
+static bool GetDedicatedServerBool(Settings *settings, const wchar_t *key, bool defaultValue)
+{
+	return (ShouldUseDedicatedServerProperties() && settings != NULL) ? settings->getBoolean(key, defaultValue) : defaultValue;
+}
+
+static wstring GetDedicatedServerString(Settings *settings, const wchar_t *key, const wstring &defaultValue)
+{
+	return (ShouldUseDedicatedServerProperties() && settings != NULL) ? settings->getString(key, defaultValue) : defaultValue;
+}
+
+static void PrintConsoleLine(const wchar_t *prefix, const wstring &message)
+{
+	wprintf(L"%ls%ls\n", prefix, message.c_str());
+	fflush(stdout);
+}
+
+static bool TryParseIntValue(const wstring &text, int &value)
+{
+	std::wistringstream stream(text);
+	stream >> value;
+	return !stream.fail() && stream.eof();
+}
+
+static vector<wstring> SplitConsoleCommand(const wstring &command)
+{
+	vector<wstring> tokens;
+	std::wistringstream stream(command);
+	wstring token;
+	while (stream >> token)
+	{
+		tokens.push_back(token);
+	}
+	return tokens;
+}
+
+static wstring JoinConsoleCommandTokens(const vector<wstring> &tokens, size_t startIndex)
+{
+	wstring joined;
+	for (size_t i = startIndex; i < tokens.size(); ++i)
+	{
+		if (!joined.empty()) joined += L" ";
+		joined += tokens[i];
+	}
+	return joined;
+}
+
+static shared_ptr<ServerPlayer> FindPlayerByName(PlayerList *playerList, const wstring &name)
+{
+	if (playerList == NULL) return nullptr;
+
+	for (size_t i = 0; i < playerList->players.size(); ++i)
+	{
+		shared_ptr<ServerPlayer> player = playerList->players[i];
+		if (player != NULL && equalsIgnoreCase(player->getName(), name))
+		{
+			return player;
+		}
+	}
+
+	return nullptr;
+}
+
+static void SetAllLevelTimes(MinecraftServer *server, int value)
+{
+	for (unsigned int i = 0; i < server->levels.length; ++i)
+	{
+		if (server->levels[i] != NULL)
+		{
+			server->levels[i]->setDayTime(value);
+		}
+	}
+}
+
+static bool ExecuteConsoleCommand(MinecraftServer *server, const wstring &rawCommand)
+{
+	if (server == NULL)
+		return false;
+
+	wstring command = trimString(rawCommand);
+	if (command.empty())
+		return true;
+
+	if (command[0] == L'/')
+	{
+		command = trimString(command.substr(1));
+	}
+
+	vector<wstring> tokens = SplitConsoleCommand(command);
+	if (tokens.empty())
+		return true;
+
+	const wstring action = toLower(tokens[0]);
+	PlayerList *playerList = server->getPlayers();
+
+	if (action == L"help" || action == L"?")
+	{
+		server->info(L"Commands: help, stop, list, say <message>, save-all, time <set day|night|ticks|add ticks>, weather <clear|rain|thunder> [seconds], tp <player> <target>, give <player> <itemId> [amount] [aux], enchant <player> <enchantId> [level], kill <player>");
+		return true;
+	}
+
+	if (action == L"stop")
+	{
+		server->info(L"Stopping server...");
+		MinecraftServer::HaltServer();
+		return true;
+	}
+
+	if (action == L"list")
+	{
+		wstring playerNames = (playerList != NULL) ? playerList->getPlayerNames() : L"";
+		if (playerNames.empty()) playerNames = L"(none)";
+		server->info(L"Players (" + _toString((playerList != NULL) ? playerList->getPlayerCount() : 0) + L"): " + playerNames);
+		return true;
+	}
+
+	if (action == L"say")
+	{
+		if (tokens.size() < 2)
+		{
+			server->warn(L"Usage: say <message>");
+			return false;
+		}
+
+		wstring message = L"[Server] " + JoinConsoleCommandTokens(tokens, 1);
+		if (playerList != NULL)
+		{
+			playerList->broadcastAll(shared_ptr<ChatPacket>(new ChatPacket(message)));
+		}
+		server->info(message);
+		return true;
+	}
+
+	if (action == L"save-all")
+	{
+		if (playerList != NULL)
+		{
+			playerList->saveAll(NULL, false);
+		}
+		server->info(L"World saved.");
+		return true;
+	}
+
+	if (action == L"time")
+	{
+		if (tokens.size() < 2)
+		{
+			server->warn(L"Usage: time set <day|night|ticks> | time add <ticks>");
+			return false;
+		}
+
+		if (toLower(tokens[1]) == L"add")
+		{
+			if (tokens.size() < 3)
+			{
+				server->warn(L"Usage: time add <ticks>");
+				return false;
+			}
+
+			int delta = 0;
+			if (!TryParseIntValue(tokens[2], delta))
+			{
+				server->warn(L"Invalid tick value: " + tokens[2]);
+				return false;
+			}
+
+			for (unsigned int i = 0; i < server->levels.length; ++i)
+			{
+				if (server->levels[i] != NULL)
+				{
+					server->levels[i]->setDayTime(server->levels[i]->getDayTime() + delta);
+				}
+			}
+
+			server->info(L"Added " + _toString(delta) + L" ticks.");
+			return true;
+		}
+
+		wstring timeValue = toLower(tokens[1]);
+		if (timeValue == L"set")
+		{
+			if (tokens.size() < 3)
+			{
+				server->warn(L"Usage: time set <day|night|ticks>");
+				return false;
+			}
+			timeValue = toLower(tokens[2]);
+		}
+
+		int targetTime = 0;
+		if (timeValue == L"day")
+		{
+			targetTime = 0;
+		}
+		else if (timeValue == L"night")
+		{
+			targetTime = 12500;
+		}
+		else if (!TryParseIntValue(timeValue, targetTime))
+		{
+			server->warn(L"Invalid time value: " + timeValue);
+			return false;
+		}
+
+		SetAllLevelTimes(server, targetTime);
+		server->info(L"Time set to " + _toString(targetTime) + L".");
+		return true;
+	}
+
+	if (action == L"weather")
+	{
+		if (tokens.size() < 2)
+		{
+			server->warn(L"Usage: weather <clear|rain|thunder> [seconds]");
+			return false;
+		}
+
+		int durationSeconds = 600;
+		if (tokens.size() >= 3 && !TryParseIntValue(tokens[2], durationSeconds))
+		{
+			server->warn(L"Invalid duration: " + tokens[2]);
+			return false;
+		}
+
+		if (server->levels[0] == NULL)
+		{
+			server->warn(L"The overworld is not loaded.");
+			return false;
+		}
+
+		LevelData *levelData = server->levels[0]->getLevelData();
+		int duration = durationSeconds * SharedConstants::TICKS_PER_SECOND;
+		levelData->setRainTime(duration);
+		levelData->setThunderTime(duration);
+
+		wstring weather = toLower(tokens[1]);
+		if (weather == L"clear")
+		{
+			levelData->setRaining(false);
+			levelData->setThundering(false);
+		}
+		else if (weather == L"rain")
+		{
+			levelData->setRaining(true);
+			levelData->setThundering(false);
+		}
+		else if (weather == L"thunder")
+		{
+			levelData->setRaining(true);
+			levelData->setThundering(true);
+		}
+		else
+		{
+			server->warn(L"Usage: weather <clear|rain|thunder> [seconds]");
+			return false;
+		}
+
+		server->info(L"Weather set to " + weather + L".");
+		return true;
+	}
+
+	if (action == L"tp" || action == L"teleport")
+	{
+		if (tokens.size() < 3)
+		{
+			server->warn(L"Usage: tp <player> <target>");
+			return false;
+		}
+
+		shared_ptr<ServerPlayer> subject = FindPlayerByName(playerList, tokens[1]);
+		shared_ptr<ServerPlayer> destination = FindPlayerByName(playerList, tokens[2]);
+		if (subject == NULL)
+		{
+			server->warn(L"Unknown player: " + tokens[1]);
+			return false;
+		}
+		if (destination == NULL)
+		{
+			server->warn(L"Unknown player: " + tokens[2]);
+			return false;
+		}
+		if (subject->level->dimension->id != destination->level->dimension->id || !subject->isAlive())
+		{
+			server->warn(L"Teleport failed because the players are not in the same dimension or the source player is dead.");
+			return false;
+		}
+
+		subject->ride(nullptr);
+		subject->connection->teleport(destination->x, destination->y, destination->z, destination->yRot, destination->xRot);
+		server->info(L"Teleported " + subject->getName() + L" to " + destination->getName() + L".");
+		return true;
+	}
+
+	if (action == L"give")
+	{
+		if (tokens.size() < 3)
+		{
+			server->warn(L"Usage: give <player> <itemId> [amount] [aux]");
+			return false;
+		}
+
+		shared_ptr<ServerPlayer> player = FindPlayerByName(playerList, tokens[1]);
+		if (player == NULL)
+		{
+			server->warn(L"Unknown player: " + tokens[1]);
+			return false;
+		}
+
+		int itemId = 0;
+		int amount = 1;
+		int aux = 0;
+		if (!TryParseIntValue(tokens[2], itemId))
+		{
+			server->warn(L"Invalid item id: " + tokens[2]);
+			return false;
+		}
+		if (tokens.size() >= 4 && !TryParseIntValue(tokens[3], amount))
+		{
+			server->warn(L"Invalid amount: " + tokens[3]);
+			return false;
+		}
+		if (tokens.size() >= 5 && !TryParseIntValue(tokens[4], aux))
+		{
+			server->warn(L"Invalid aux value: " + tokens[4]);
+			return false;
+		}
+		if (itemId <= 0 || Item::items[itemId] == NULL)
+		{
+			server->warn(L"Unknown item id: " + _toString(itemId));
+			return false;
+		}
+		if (amount <= 0)
+		{
+			server->warn(L"Amount must be positive.");
+			return false;
+		}
+
+		shared_ptr<ItemInstance> itemInstance(new ItemInstance(itemId, amount, aux));
+		shared_ptr<ItemEntity> drop = player->drop(itemInstance);
+		if (drop != NULL)
+		{
+			drop->throwTime = 0;
+		}
+		server->info(L"Gave item " + _toString(itemId) + L" x" + _toString(amount) + L" to " + player->getName() + L".");
+		return true;
+	}
+
+	if (action == L"enchant")
+	{
+		if (tokens.size() < 3)
+		{
+			server->warn(L"Usage: enchant <player> <enchantId> [level]");
+			return false;
+		}
+
+		shared_ptr<ServerPlayer> player = FindPlayerByName(playerList, tokens[1]);
+		if (player == NULL)
+		{
+			server->warn(L"Unknown player: " + tokens[1]);
+			return false;
+		}
+
+		int enchantmentId = 0;
+		int enchantmentLevel = 1;
+		if (!TryParseIntValue(tokens[2], enchantmentId))
+		{
+			server->warn(L"Invalid enchantment id: " + tokens[2]);
+			return false;
+		}
+		if (tokens.size() >= 4 && !TryParseIntValue(tokens[3], enchantmentLevel))
+		{
+			server->warn(L"Invalid enchantment level: " + tokens[3]);
+			return false;
+		}
+
+		shared_ptr<ItemInstance> selectedItem = player->getSelectedItem();
+		if (selectedItem == NULL)
+		{
+			server->warn(L"The player is not holding an item.");
+			return false;
+		}
+
+		Enchantment *enchantment = Enchantment::enchantments[enchantmentId];
+		if (enchantment == NULL)
+		{
+			server->warn(L"Unknown enchantment id: " + _toString(enchantmentId));
+			return false;
+		}
+		if (!enchantment->canEnchant(selectedItem))
+		{
+			server->warn(L"That enchantment cannot be applied to the selected item.");
+			return false;
+		}
+
+		if (enchantmentLevel < enchantment->getMinLevel()) enchantmentLevel = enchantment->getMinLevel();
+		if (enchantmentLevel > enchantment->getMaxLevel()) enchantmentLevel = enchantment->getMaxLevel();
+
+		if (selectedItem->hasTag())
+		{
+			ListTag<CompoundTag> *enchantmentTags = selectedItem->getEnchantmentTags();
+			if (enchantmentTags != NULL)
+			{
+				for (int i = 0; i < enchantmentTags->size(); i++)
+				{
+					int type = enchantmentTags->get(i)->getShort((wchar_t *)ItemInstance::TAG_ENCH_ID);
+					if (Enchantment::enchantments[type] != NULL && !Enchantment::enchantments[type]->isCompatibleWith(enchantment))
+					{
+						server->warn(L"That enchantment conflicts with an existing enchantment on the selected item.");
+						return false;
+					}
+				}
+			}
+		}
+
+		selectedItem->enchant(enchantment, enchantmentLevel);
+		server->info(L"Enchanted " + player->getName() + L"'s held item with " + _toString(enchantmentId) + L" " + _toString(enchantmentLevel) + L".");
+		return true;
+	}
+
+	if (action == L"kill")
+	{
+		if (tokens.size() < 2)
+		{
+			server->warn(L"Usage: kill <player>");
+			return false;
+		}
+
+		shared_ptr<ServerPlayer> player = FindPlayerByName(playerList, tokens[1]);
+		if (player == NULL)
+		{
+			server->warn(L"Unknown player: " + tokens[1]);
+			return false;
+		}
+
+		player->hurt(DamageSource::outOfWorld, 3.4e38f);
+		server->info(L"Killed " + player->getName() + L".");
+		return true;
+	}
+
+	server->warn(L"Unknown command: " + command);
+	return false;
+}
+
 MinecraftServer::MinecraftServer()
 {
 	// 4J - added initialisers
@@ -107,12 +571,14 @@ MinecraftServer::MinecraftServer()
 	forceGameType = false;
 
 	commandDispatcher = new ServerCommandDispatcher();
+	InitializeCriticalSection(&m_consoleInputCS);
 
 	DispenserBootstrap::bootStrap();
 }
 
 MinecraftServer::~MinecraftServer()
 {
+	DeleteCriticalSection(&m_consoleInputCS);
 }
 
 bool MinecraftServer::initServer(__int64 seed, NetworkGameInitData *initData, DWORD initSettings, bool findSeed)
@@ -150,6 +616,15 @@ bool MinecraftServer::initServer(__int64 seed, NetworkGameInitData *initData, DW
 #endif
 	settings = new Settings(new File(L"server.properties"));
 
+	app.SetGameHostOption(eGameHostOption_Difficulty, GetDedicatedServerInt(settings, L"difficulty", app.GetGameHostOption(eGameHostOption_Difficulty)));
+	app.SetGameHostOption(eGameHostOption_GameType, GetDedicatedServerInt(settings, L"gamemode", app.GetGameHostOption(eGameHostOption_GameType)));
+	app.SetGameHostOption(eGameHostOption_Structures, GetDedicatedServerBool(settings, L"generate-structures", app.GetGameHostOption(eGameHostOption_Structures) > 0) ? 1 : 0);
+	app.SetGameHostOption(eGameHostOption_BonusChest, GetDedicatedServerBool(settings, L"bonus-chest", app.GetGameHostOption(eGameHostOption_BonusChest) > 0) ? 1 : 0);
+	app.SetGameHostOption(eGameHostOption_PvP, GetDedicatedServerBool(settings, L"pvp", app.GetGameHostOption(eGameHostOption_PvP) > 0) ? 1 : 0);
+	app.SetGameHostOption(eGameHostOption_TrustPlayers, GetDedicatedServerBool(settings, L"trust-players", app.GetGameHostOption(eGameHostOption_TrustPlayers) > 0) ? 1 : 0);
+	app.SetGameHostOption(eGameHostOption_FireSpreads, GetDedicatedServerBool(settings, L"fire-spreads", app.GetGameHostOption(eGameHostOption_FireSpreads) > 0) ? 1 : 0);
+	app.SetGameHostOption(eGameHostOption_TNT, GetDedicatedServerBool(settings, L"tnt", app.GetGameHostOption(eGameHostOption_TNT) > 0) ? 1 : 0);
+
 	app.DebugPrintf("\n*** SERVER SETTINGS ***\n");
 	app.DebugPrintf("ServerSettings: host-friends-only is %s\n",(app.GetGameHostOption(eGameHostOption_FriendsOfFriends)>0)?"on":"off");
 	app.DebugPrintf("ServerSettings: game-type is %s\n",(app.GetGameHostOption(eGameHostOption_GameType)==0)?"Survival Mode":"Creative Mode");
@@ -165,15 +640,15 @@ bool MinecraftServer::initServer(__int64 seed, NetworkGameInitData *initData, DW
 	//localIp = settings->getString(L"server-ip", L"");
 	//onlineMode = settings->getBoolean(L"online-mode", true);
 	//motd = settings->getString(L"motd", L"A Minecraft Server");
-	//motd.replace('§', '$');
+	//motd.replace('ï¿½', '$');
 
-	setAnimals(settings->getBoolean(L"spawn-animals", true));
-	setNpcsEnabled(settings->getBoolean(L"spawn-npcs", true));
-	setPvpAllowed(app.GetGameHostOption( eGameHostOption_PvP )>0?true:false); // settings->getBoolean(L"pvp", true);
+	setAnimals(GetDedicatedServerBool(settings, L"spawn-animals", true));
+	setNpcsEnabled(GetDedicatedServerBool(settings, L"spawn-npcs", true));
+	setPvpAllowed(app.GetGameHostOption( eGameHostOption_PvP )>0?true:false);
 
 	// 4J Stu - We should never have hacked clients flying when they shouldn't be like the PC version, so enable flying always
 	// Fix for #46612 - TU5: Code: Multiplayer: A client can be banned for flying when accidentaly being blown by dynamite
-	setFlightAllowed(true); //settings->getBoolean(L"allow-flight", false);
+	setFlightAllowed(GetDedicatedServerBool(settings, L"allow-flight", true));
 
 	// 4J Stu - Enabling flight to stop it kicking us when we use it
 #ifdef _DEBUG_MENUS_ENABLED
@@ -219,8 +694,8 @@ bool MinecraftServer::initServer(__int64 seed, NetworkGameInitData *initData, DW
 
 	__int64 levelNanoTime = System::nanoTime();
 
-	wstring levelName = settings->getString(L"level-name", L"world");
-	wstring levelTypeString;
+        wstring levelName = (initData && !initData->levelName.empty()) ? initData->levelName : GetDedicatedServerString(settings, L"level-name", L"world");
+		wstring levelTypeString;
 
 	bool gameRuleUseFlatWorld = false;
 	if(app.getLevelGenerationOptions() != NULL)
@@ -229,11 +704,11 @@ bool MinecraftServer::initServer(__int64 seed, NetworkGameInitData *initData, DW
 	}
 	if(gameRuleUseFlatWorld || app.GetGameHostOption(eGameHostOption_LevelType)>0)
 	{
-		levelTypeString = settings->getString(L"level-type",  L"flat");
+		levelTypeString = GetDedicatedServerString(settings, L"level-type",  L"flat");
 	}
 	else
 	{
-		levelTypeString = settings->getString(L"level-type",L"default");
+		levelTypeString = GetDedicatedServerString(settings, L"level-type",L"default");
 	}
 
 	LevelType *pLevelType = LevelType::getLevelType(levelTypeString);
@@ -254,7 +729,7 @@ bool MinecraftServer::initServer(__int64 seed, NetworkGameInitData *initData, DW
 #endif
 	}
 
-	setMaxBuildHeight(settings->getInt(L"max-build-height", Level::maxBuildHeight));
+	setMaxBuildHeight(GetDedicatedServerInt(settings, L"max-build-height", Level::maxBuildHeight));
 	setMaxBuildHeight(((getMaxBuildHeight() + 8) / 16) * 16);
 	setMaxBuildHeight(Mth::clamp(getMaxBuildHeight(), 64, Level::maxBuildHeight));
 	//settings->setProperty(L"max-build-height", maxBuildHeight);
@@ -403,7 +878,7 @@ bool MinecraftServer::loadLevel(LevelStorageSource *storageSource, const wstring
 	// 4J TODO - free levels here if there are already some?
 	levels = ServerLevelArray(3);
 
-	int gameTypeId = settings->getInt(L"gamemode", app.GetGameHostOption(eGameHostOption_GameType));//LevelSettings::GAMETYPE_SURVIVAL);
+	int gameTypeId = GetDedicatedServerInt(settings, L"gamemode", app.GetGameHostOption(eGameHostOption_GameType));//LevelSettings::GAMETYPE_SURVIVAL);
 	GameType *gameType = LevelSettings::validateGameType(gameTypeId);
 	app.DebugPrintf("Default game type: %d\n" , gameTypeId);
 
@@ -502,7 +977,7 @@ bool MinecraftServer::loadLevel(LevelStorageSource *storageSource, const wstring
 #if DEBUG_SERVER_DONT_SPAWN_MOBS
 		levels[i]->setSpawnSettings(false, false);
 #else
-		levels[i]->setSpawnSettings(settings->getBoolean(L"spawn-monsters", true), animals);
+		levels[i]->setSpawnSettings(GetDedicatedServerBool(settings, L"spawn-monsters", true), animals);
 #endif
 		levels[i]->getLevelData()->setGameType(gameType);
 
@@ -590,7 +1065,7 @@ bool MinecraftServer::loadLevel(LevelStorageSource *storageSource, const wstring
 	for (int i = 0; i < levels.length ; i++)
 	{
 		//        logger.info("Preparing start region for level " + i);
-		if (i == 0 || settings->getBoolean(L"allow-nether", true))
+		if (i == 0 || GetDedicatedServerBool(settings, L"allow-nether", true))
 		{
 			ServerLevel *level = levels[i];
 			if(levelChunksNeedConverted)
@@ -1332,7 +1807,7 @@ void MinecraftServer::run(__int64 seed, void *lpParameter)
 				MinecraftServer::setTimeOfDayAtEndOfTick = false;
 				for (unsigned int i = 0; i < levels.length; i++)
 				{
-					if (i == 0 || settings->getBoolean(L"allow-nether", true))
+					if (i == 0 || GetDedicatedServerBool(settings, L"allow-nether", true))
 					{
 						ServerLevel *level = levels[i];
 						level->setDayTime( MinecraftServer::setTimeOfDay );
@@ -1707,17 +2182,23 @@ void MinecraftServer::tick()
 
 void MinecraftServer::handleConsoleInput(const wstring& msg, ConsoleInputSource *source)
 {
+	EnterCriticalSection(&m_consoleInputCS);
 	consoleInput.push_back(new ConsoleInput(msg, source));
+	LeaveCriticalSection(&m_consoleInputCS);
 }
 
 void MinecraftServer::handleConsoleInputs()
 {
-	while (consoleInput.size() > 0)
+	vector<ConsoleInput *> pendingInputs;
+	EnterCriticalSection(&m_consoleInputCS);
+	pendingInputs.swap(consoleInput);
+	LeaveCriticalSection(&m_consoleInputCS);
+
+	for (size_t i = 0; i < pendingInputs.size(); ++i)
 	{
-		AUTO_VAR(it, consoleInput.begin());
-		ConsoleInput *input = *it;
-		consoleInput.erase(it);
-		//        commands->handleCommand(input);		// 4J - removed - TODO - do we want equivalent of console commands?
+		ConsoleInput *input = pendingInputs[i];
+		ExecuteConsoleCommand(this, input->msg);
+		delete input;
 	}
 }
 
@@ -1750,10 +2231,12 @@ File *MinecraftServer::getFile(const wstring& name)
 
 void MinecraftServer::info(const wstring& string)
 {
+	PrintConsoleLine(L"[INFO] ", string);
 }
 
 void MinecraftServer::warn(const wstring& string)
 {
+	PrintConsoleLine(L"[WARN] ", string);
 }
 
 wstring MinecraftServer::getConsoleName()

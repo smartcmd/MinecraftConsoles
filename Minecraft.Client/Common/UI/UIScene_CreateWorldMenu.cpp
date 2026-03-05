@@ -1085,6 +1085,7 @@ void UIScene_CreateWorldMenu::CreateGame(UIScene_CreateWorldMenu* pClass, DWORD 
 	__int64 seedValue = 0;
 
 	NetworkGameInitData *param = new NetworkGameInitData();
+	param->levelName = wWorldName;
 
 	if (wSeed.length() != 0)
 	{
