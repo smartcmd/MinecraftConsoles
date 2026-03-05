@@ -207,6 +207,11 @@ void SoundEngine::init(Options *pOptions)
 #ifdef __DISABLE_MILES__
 	return;
 #endif
+	m_hDriver = 0;
+#if defined(_WINDOWS64)
+	__try
+	{
+#endif
 #ifdef __ORBIS__
 	C4JThread::PushAffinityAllCores();
 #endif 
@@ -372,6 +377,14 @@ void SoundEngine::init(Options *pOptions)
 	// wait for 1 mix...
 	AIL_release_sample_handle(Sample);
 #endif
+#if defined(_WINDOWS64)
+	}
+	__except(EXCEPTION_EXECUTE_HANDLER)
+	{
+		m_hDriver = 0;
+		return;
+	}
+#endif
 }
 
 #ifdef __ORBIS__
@@ -403,6 +416,9 @@ void SoundEngine::SetStreamingSounds(int iOverworldMin, int iOverWorldMax, int i
 // AP - moved to a separate function so it can be called from the mixer callback on Vita
 void SoundEngine::updateMiles()
 {
+#if defined(_WINDOWS64)
+	if (!m_hDriver) return;
+#endif
 #ifdef __PSVITA__ 
 	//CD - We must check for Background Music [BGM] at any point
 	//If it's playing disable our audio, otherwise enable
@@ -634,6 +650,9 @@ void SoundEngine::tick(shared_ptr<Mob> *players, float a)
 #ifdef __DISABLE_MILES__
 	return;
 #endif
+#if defined(_WINDOWS64)
+	if (!m_hDriver) return;
+#endif
 
 #ifdef __PSVITA__
 	EnterCriticalSection(&SoundEngine_MixerMutex);
@@ -710,6 +729,8 @@ void SoundEngine::tick(shared_ptr<Mob> *players, float a)
 /////////////////////////////////////////////
 SoundEngine::SoundEngine()
 {
+	m_hDriver = 0;
+	m_hBank = 0;
 	random = new Random();
 	m_hStream=0;
 	m_StreamState=eMusicStreamState_Idle;
@@ -760,6 +781,9 @@ void SoundEngine::GetSoundName(char *szSoundName,int iSound)
 /////////////////////////////////////////////
 void SoundEngine::play(int iSound, float x, float y, float z, float volume, float pitch)
 {
+#if defined(_WINDOWS64)
+	if (!m_hDriver) return;
+#endif
 	U8 szSoundName[256];
 
 	if(iSound==-1)
@@ -819,6 +843,9 @@ void SoundEngine::play(int iSound, float x, float y, float z, float volume, floa
 /////////////////////////////////////////////
 void SoundEngine::playUI(int iSound, float volume, float pitch) 
 {
+#if defined(_WINDOWS64)
+	if (!m_hDriver) return;
+#endif
 	U8 szSoundName[256];
 	wstring name;
 	// we have some game sounds played as UI sounds...
@@ -1135,6 +1162,9 @@ int SoundEngine::OpenStreamThreadProc( void* lpParameter )
 	return 0;
 #endif
 	SoundEngine *soundEngine = (SoundEngine *)lpParameter;
+#if defined(_WINDOWS64)
+	if (!soundEngine->m_hDriver) return 0;
+#endif
 	soundEngine->m_hStream = AIL_open_stream(soundEngine->m_hDriver,soundEngine->m_szStreamName,0);
 
 	if(soundEngine->m_hStream==0)
@@ -1160,6 +1190,9 @@ void SoundEngine::playMusicTick()
 // AP - moved to a separate function so it can be called from the mixer callback on Vita
 void SoundEngine::playMusicUpdate() 
 {
+#if defined(_WINDOWS64)
+	if (!m_hDriver) return;
+#endif
 	//return;
 	static bool firstCall = true;
 	static float fMusicVol = 0.0f;
