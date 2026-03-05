@@ -994,9 +994,6 @@ static Minecraft* InitialiseMinecraftRuntime()
 	app.InitGameSettings();
 	app.InitialiseTips();
 
-	pMinecraft->options->set(Options::Option::MUSIC, 1.0f);
-	pMinecraft->options->set(Options::Option::SOUND, 1.0f);
-
 	return pMinecraft;
 }
 
