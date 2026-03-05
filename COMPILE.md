@@ -48,7 +48,7 @@ You will need a Windows MSVC SDK. You can get one from [msvc-wine](https://githu
 Configure:
 ```
 MinecraftConsoles $ mkdir build && cd build
-MinecraftConsoles/build $ cmake .. -B . -G Ninja -DCMAKE_TOOLCHAIN_FILE=../cmake/LinuxCrosscompile.cmake -DCMAKE_BUILD_TYPE=<Debug or Release>
+MinecraftConsoles/build $ cmake .. -B . -G Ninja -DWINDOWS_SDK_PATH=<windows msvc sdk location> -DCMAKE_TOOLCHAIN_FILE=../cmake/LinuxCrosscompile.cmake -DCMAKE_BUILD_TYPE=<Debug or Release>
 ```
 
 Build:
