@@ -121,27 +121,29 @@ if(WIN32)
 elseif(UNIX)
   message(STATUS "Starting redist copy...")
   execute_process(
-    COMMAND rsync -av "${CMAKE_CURRENT_SOURCE_DIR}/x64/Release/" "${CMAKE_CURRENT_BINARY_DIR}/"
+    COMMAND cp -av "${CMAKE_CURRENT_SOURCE_DIR}/x64/Release/" "${CMAKE_CURRENT_BINARY_DIR}/"
   )
   message(STATUS "Starting asset copy...")
   execute_process(
-    COMMAND rsync -av
+    COMMAND tar
             "--exclude=*.cpp" "--exclude=*.c" "--exclude=*.h" "--exclude=*.hpp" "--exclude=*.asm"
             "--exclude=*.xml" "--exclude=*.lang" "--exclude=*.vcxproj" "--exclude=*.vcxproj.*" "--exclude=*.sln"
             "--exclude=*.docx" "--exclude=*.xls"
             "--exclude=*.bat" "--exclude=*.cmd" "--exclude=*.ps1" "--exclude=*.py"
             "--exclude=*Test*"
             "--exclude=Durango*" "--exclude=Orbis*" "--exclude=PS*" "--exclude=Xbox"
-            "${CMAKE_CURRENT_SOURCE_DIR}/Minecraft.Client/" "${CMAKE_CURRENT_BINARY_DIR}/"
+            -cvf - -C "${CMAKE_CURRENT_SOURCE_DIR}/Minecraft.Client/" .
+    COMMAND tar -xvf - -C "${CMAKE_CURRENT_BINARY_DIR}/"
   )
   message(STATUS "Patching Windows64Media...")
   execute_process(
-    COMMAND rsync -av
+    COMMAND tar
             "--exclude=*.h" "--exclude=*.xml" "--exclude=*.lang" "--exclude=*.bat"
-            "${CMAKE_CURRENT_SOURCE_DIR}/Minecraft.Client/DurangoMedia/" "${CMAKE_CURRENT_BINARY_DIR}/Windows64Media/"
+            -cf - -C "${CMAKE_CURRENT_SOURCE_DIR}/Minecraft.Client/DurangoMedia/" .
+    COMMAND tar -xf - -C "${CMAKE_CURRENT_BINARY_DIR}/Windows64Media/"
   )
 else()
-  message(FATAL_ERROR "Redist and asset copying is only supported on Windows (Robocopy) and Unix systems (rsync).")
+  message(FATAL_ERROR "Redist and asset copying is only supported on Windows (Robocopy) and Unix systems (cp, tar).")
 endif()
 
 set_property(DIRECTORY PROPERTY VS_STARTUP_PROJECT MinecraftClient)
