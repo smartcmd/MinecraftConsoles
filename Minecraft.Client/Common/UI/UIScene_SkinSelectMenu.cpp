@@ -7,6 +7,9 @@
 #elif defined __PSVITA__
 #include <message_dialog.h>
 #endif
+#include <fstream>
+#include <commdlg.h> // Required for GetOpenFileNameW
+#include <array>
 
 #define SKIN_SELECT_PACK_DEFAULT 0
 #define SKIN_SELECT_PACK_FAVORITES 1
@@ -53,6 +56,56 @@ UIScene_SkinSelectMenu::UIScene_SkinSelectMenu(int iPad, void *initData, UILayer
 	m_bSlidingSkins = false;
 	m_bAnimatingMove = false;
 	m_bSkinIndexChanged = false;
+
+	m_customSkinPath   = L"";
+	m_bUsingCustomSkin = false;
+
+	// Try to load a previously saved custom skin from disk.
+	// The file is named after the player's gamertag so each player has their own skin.
+	char* gamertag = ProfileManager.GetGamertag(iPad);
+	const char* tag = (gamertag && gamertag[0]) ? gamertag : "Player";
+
+	std::array<wchar_t, MAX_PATH> diskPathBuf = {};
+	swprintf(diskPathBuf.data(), diskPathBuf.size(), L"CustomSkin/custom_skin_%hs.png", tag);
+
+	File skinFile(diskPathBuf.data());
+	if (skinFile.exists())
+	{
+		DWORD size = (DWORD)skinFile.length();
+		if (size > 0 && size <= 2 * 1024 * 1024)
+		{
+			PBYTE buffer = new (std::nothrow) BYTE[(size_t)size];
+			if (buffer)
+			{
+				FileInputStream fis(skinFile);
+				byteArray b;
+				b.data   = buffer;
+				b.length = size;
+				if (fis.read(b, 0, size) == size)
+				{
+					std::array<wchar_t, 128> texNameBuf = {};
+					swprintf(texNameBuf.data(), texNameBuf.size(), L"custom_skin_%hs.png", tag);
+					wstring texName = texNameBuf.data();
+
+					app.AddMemoryTextureFile(texName, buffer, size);
+					m_customSkinPath   = texName;
+					m_bUsingCustomSkin = true;
+				}
+				else
+				{
+					delete[] buffer;
+				}
+				fis.close();
+			}
+		}
+	}
+
+	// If the profile already tracks a custom skin name, prefer that over the disk load.
+	if (!GET_IS_DLC_SKIN_FROM_BITMASK(m_originalSkinId) && GET_UGC_SKIN_ID_FROM_BITMASK(m_originalSkinId) != 0)
+	{
+		m_customSkinPath   = m_currentSkinPath;
+		m_bUsingCustomSkin = true;
+	}
 
 	m_currentNavigation = eSkinNavigation_Skin;
 
@@ -223,6 +276,15 @@ void UIScene_SkinSelectMenu::handleInput(int iPad, int key, bool repeat, bool pr
 		if(pressed)
 		{
 			InputActionOK(iPad);
+		}
+		break;
+	case ACTION_MENU_X:
+		// Only allow changing the external skin if we are on the first slot of the default pack
+		if (pressed && !repeat && m_packIndex == SKIN_SELECT_PACK_DEFAULT && m_skinIndex == 0)
+		{
+			LoadExternalSkin();
+			handled = true;
+			return;
 		}
 		break;
 	case ACTION_MENU_UP:
@@ -401,6 +463,23 @@ void UIScene_SkinSelectMenu::handleInput(int iPad, int key, bool repeat, bool pr
 void UIScene_SkinSelectMenu::InputActionOK(unsigned int iPad)
 {
 	ui.AnimateKeyPress(iPad, ACTION_MENU_OK, false, true, false);
+
+	// If we are specifically on the custom skin slot (0) and we have a custom skin loaded,
+	// apply it and set the active flag to true.
+	if (!m_customSkinPath.empty() && m_packIndex == SKIN_SELECT_PACK_DEFAULT && m_skinIndex == 0)
+	{
+		ui.PlayUISFX(eSFX_Press);
+		app.SetPlayerSkin(iPad, m_customSkinPath);
+		m_currentSkinPath = app.GetPlayerSkinName(iPad);
+		m_originalSkinId = app.GetPlayerSkinId(iPad);
+		m_bUsingCustomSkin = true;
+		setCharacterSelected(true);
+		return;
+	}
+
+	// If the user selects a different skin (DLC, Default, etc.), clear the active flag
+	// but KEEP m_customSkinPath so the custom skin stays available in the menu.
+	m_bUsingCustomSkin = false;
 
 	// if the profile data has been changed, then force a profile write
 	// It seems we're allowed to break the 5 minute rule if it's the result of a user action
@@ -599,7 +678,10 @@ void UIScene_SkinSelectMenu::InputActionOK(unsigned int iPad)
 void UIScene_SkinSelectMenu::customDraw(IggyCustomDrawCallbackRegion *region)
 {
 	int characterId = -1;
-	swscanf((wchar_t*)region->name,L"Character%d",&characterId);
+	if (swscanf((wchar_t*)region->name,L"Character%d",&characterId) != 1)
+	{
+		characterId = -1;
+	}
 	if (characterId == -1)
 	{
 		app.DebugPrintf("Invalid character to render found\n");
@@ -646,7 +728,27 @@ void UIScene_SkinSelectMenu::handleSkinIndexChanged()
 
 	m_controlSkinNamePlate.setVisible( false );
 
-	if( m_currentPack != NULL )
+	// Show the "Custom Skin" info if we have a custom skin loaded and are on slot 0.
+	if (!m_customSkinPath.empty() && m_packIndex == SKIN_SELECT_PACK_DEFAULT && m_skinIndex == 0)
+	{
+		m_selectedSkinPath = m_customSkinPath;
+		m_selectedCapePath = L"";
+		m_vAdditionalSkinBoxes = NULL;
+		skinName = L"Custom Skin";
+		skinOrigin = L"External PNG";
+
+		// If the player is wearing this custom skin, show the "Selected" checkmark
+		// We also check m_bUsingCustomSkin because the session sequence number in the memory path might differ.
+		if (m_bUsingCustomSkin || m_selectedSkinPath.compare(app.GetPlayerSkinName(m_iPad)) == 0)
+		{
+			setCharacterSelected(true);
+		}
+
+		setCharacterLocked(false);
+		m_characters[eCharacter_Current].setVisible(true);
+		m_controlSkinNamePlate.setVisible(true);
+	}
+	else if( m_currentPack != NULL )
 	{
 		skinFile = m_currentPack->getSkinFile(m_skinIndex);
 		m_selectedSkinPath = skinFile->getPath();
@@ -752,6 +854,11 @@ void UIScene_SkinSelectMenu::handleSkinIndexChanged()
 	m_labelSkinName.setLabel(skinName);
 	m_labelSkinOrigin.setLabel(skinOrigin);
 
+	if (m_selectedSkinPath.compare(m_currentSkinPath) == 0 || (m_bUsingCustomSkin && m_packIndex == SKIN_SELECT_PACK_DEFAULT && m_skinIndex == 0))
+	{
+		setCharacterSelected(true); // Enable selection checkmark
+	}
+
 
 	if(m_vAdditionalSkinBoxes && m_vAdditionalSkinBoxes->size()!=0)
 	{
@@ -844,7 +951,15 @@ void UIScene_SkinSelectMenu::handleSkinIndexChanged()
 				switch(m_packIndex)
 				{
 				case SKIN_SELECT_PACK_DEFAULT:
-					backupTexture = getTextureId(nextIndex);
+					if (nextIndex == 0 && !m_customSkinPath.empty())
+					{
+						otherSkinPath = m_customSkinPath;
+						backupTexture = TN_MOB_CHAR;
+					}
+					else
+					{
+						backupTexture = getTextureId(nextIndex);
+					}
 					break;
 				case SKIN_SELECT_PACK_FAVORITES:
 					if(uiCurrentFavoriteC>0)
@@ -915,7 +1030,15 @@ void UIScene_SkinSelectMenu::handleSkinIndexChanged()
 				switch(m_packIndex)
 				{
 				case SKIN_SELECT_PACK_DEFAULT:
-					backupTexture = getTextureId(previousIndex);
+					if (previousIndex == 0 && !m_customSkinPath.empty())
+					{
+						otherSkinPath = m_customSkinPath;
+						backupTexture = TN_MOB_CHAR;
+					}
+					else
+					{
+						backupTexture = getTextureId(previousIndex);
+					}
 					break;
 				case SKIN_SELECT_PACK_FAVORITES:
 					if(uiCurrentFavoriteC>0)
@@ -1735,3 +1858,82 @@ int UIScene_SkinSelectMenu::PSNSignInReturned(void* pParam, bool bContinue, int 
 	return 0;
 }
 #endif // __PSVITA__
+
+// We include array at the top if not present, but using std::array here:
+void UIScene_SkinSelectMenu::LoadExternalSkin()
+{
+    OPENFILENAMEW ofn;
+    std::array<wchar_t, MAX_PATH> szFile = {};
+
+    ZeroMemory(&ofn, sizeof(ofn));
+    ofn.lStructSize  = sizeof(ofn);
+    ofn.lpstrFile    = szFile.data();
+    ofn.nMaxFile     = (DWORD)szFile.size();
+    ofn.lpstrFilter  = L"PNG Files\0*.png\0All Files\0*.*\0";
+    ofn.Flags        = OFN_PATHMUSTEXIST | OFN_FILEMUSTEXIST | OFN_NOCHANGEDIR;
+
+    if (!GetOpenFileNameW(&ofn))
+        return;
+
+    File srcFile(ofn.lpstrFile);
+    DWORD size = (DWORD)srcFile.length();
+    if (size == 0 || size > 2 * 1024 * 1024) // invalid size
+    {
+        ui.PlayUISFX(eSFX_CraftFail);
+        return;
+    }
+
+    FileInputStream fis(srcFile);
+    PBYTE buffer = new (std::nothrow) BYTE[size];
+    if (!buffer || fis.read({ buffer, size }, 0, size) != size) // read error
+    {
+        delete[] buffer;
+        ui.PlayUISFX(eSFX_CraftFail);
+        return;
+    }
+    fis.close();
+
+    // validate PNG header
+    if (size <= 24 || buffer[0] != 0x89 || buffer[1] != 'P')
+    {
+        delete[] buffer;
+        ui.PlayUISFX(eSFX_CraftFail);
+        return;
+    }
+
+    unsigned int w = (buffer[16] << 24) | (buffer[17] << 16) | (buffer[18] << 8) | buffer[19];
+    unsigned int h = (buffer[20] << 24) | (buffer[21] << 16) | (buffer[22] << 8) | buffer[23];
+    if (!((w == 64 && h == 32) || (w == 64 && h == 64))) // invalid dimensions
+    {
+        delete[] buffer;
+        ui.PlayUISFX(eSFX_CraftFail);
+        return;
+    }
+
+    char* gamertag = ProfileManager.GetGamertag(m_iPad);
+    std::array<wchar_t, 128> texNameBuf = {};
+    swprintf(texNameBuf.data(), texNameBuf.size(), L"custom_skin_%hs.png", gamertag ? gamertag : "Player");
+    wstring textureName = texNameBuf.data();
+
+    if (m_bUsingCustomSkin && !m_customSkinPath.empty())
+        app.RemoveMemoryTextureFile(m_customSkinPath);
+
+    app.AddMemoryTextureFile(textureName, buffer, size); // register in memory
+
+    // save to disk
+    std::array<wchar_t, MAX_PATH> diskPathBuf = {};
+    swprintf(diskPathBuf.data(), diskPathBuf.size(), L"CustomSkin/custom_skin_%hs.png", gamertag ? gamertag : "Player");
+    File(L"CustomSkin").mkdirs();
+    FileOutputStream(File(diskPathBuf.data())).write({ buffer, size }, 0, size);
+
+    app.SetPlayerSkin(m_iPad, textureName); // apply to player
+
+    // update state
+    m_bUsingCustomSkin = true;
+    m_customSkinPath   = textureName;
+    m_selectedSkinPath = textureName;
+    m_currentSkinPath  = textureName;
+    m_selectedCapePath = L"";
+
+    handleSkinIndexChanged();
+}
