@@ -823,6 +823,23 @@ HRESULT InitDevice()
 	}
 	if( FAILED( hr ) )
 		return hr;
+	
+	IDXGIDevice* dxgiDevice = NULL;
+	if (SUCCEEDED(g_pd3dDevice->QueryInterface(__uuidof(IDXGIDevice), (void**)&dxgiDevice)) && dxgiDevice)
+	{
+		IDXGIAdapter* dxgiAdapter = NULL;
+		if (SUCCEEDED(dxgiDevice->GetParent(__uuidof(IDXGIAdapter), (void**)&dxgiAdapter)) && dxgiAdapter)
+		{
+			IDXGIFactory* dxgiFactory = NULL;
+			if (SUCCEEDED(dxgiAdapter->GetParent(__uuidof(IDXGIFactory), (void**)&dxgiFactory)) && dxgiFactory)
+			{
+				dxgiFactory->MakeWindowAssociation(g_hWnd, DXGI_MWA_NO_ALT_ENTER);
+				dxgiFactory->Release();
+			}
+			dxgiAdapter->Release();
+		}
+		dxgiDevice->Release();
+	}
 
 	// Create a render target view
 	ID3D11Texture2D* pBackBuffer = NULL;
@@ -1593,6 +1610,13 @@ int APIENTRY _tWinMain(_In_ HINSTANCE hInstance,
 
 		// F11 Toggle fullscreen
 		if (g_KBMInput.IsKeyPressed(VK_F11))
+		{
+			ToggleFullscreen();
+		}
+
+		// Alt+Enter Toggle fullscreen 
+		if (g_KBMInput.IsKeyPressed(VK_RETURN) &&
+			(g_KBMInput.IsKeyDown(VK_LMENU) || g_KBMInput.IsKeyDown(VK_RMENU)))
 		{
 			ToggleFullscreen();
 		}
