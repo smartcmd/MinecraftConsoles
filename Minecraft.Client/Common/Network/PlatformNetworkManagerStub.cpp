@@ -701,6 +701,7 @@ void CPlatformNetworkManagerStub::SearchForGames()
 #ifdef _WINDOWS64
 	std::vector<Win64LANSession> lanSessions = WinsockNetLayer::GetDiscoveredSessions();
 
+	//THEY GET DELETED HERE DAMMIT
 	for (size_t i = 0; i < friendsSessions[0].size(); i++)
 		delete friendsSessions[0][i];
 	friendsSessions[0].clear();
@@ -757,7 +758,7 @@ void CPlatformNetworkManagerStub::SearchForGames()
 				name = wline;
 				phase = 0;
 
-				//I assume it gets deleted later down the line, otherwise why would REVs be thrown?
+				//THEY GET DELETED AFTER USE LIKE 30 LINES UP!!
 				FriendSessionInfo* info = new FriendSessionInfo();
 				wchar_t label[128];
 				wcsncpy_s(label, sizeof(label)/sizeof(wchar_t), name.c_str(), _TRUNCATE);
