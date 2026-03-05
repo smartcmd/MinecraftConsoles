@@ -47,12 +47,12 @@ void Slime::defineSynchedData()
 {
 	Mob::defineSynchedData();
 
-	entityData->define(ID_SIZE, (byte) 1);
+	entityData->define(ID_SIZE, static_cast<byte>(1));
 }
 
 void Slime::setSize(int size)
 {
-	entityData->set(ID_SIZE, (byte) size);
+	entityData->set(ID_SIZE, static_cast<byte>(size));
 	setSize(0.6f * size, 0.6f * size);
 	setPos(x, y, z);
 	getAttribute(SharedMonsterAttributes::MAX_HEALTH)->setBaseValue(size * size);
@@ -155,7 +155,7 @@ void Slime::serverAiStep()
 		// 4J Removed TU7 to bring forward change to fix lava slime render in MP
 		//targetSquish = 1;
 		xxa = 1 - random->nextFloat() * 2;
-		yya = (float) 1 * getSize();
+		yya = static_cast<float>(1) * getSize();
 	} 
 	else
 	{

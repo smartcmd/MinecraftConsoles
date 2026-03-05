@@ -34,10 +34,10 @@ bool UIControl::setupControl(UIScene *scene, IggyValuePath *parent, const string
 	IggyValueGetF64RS( getIggyValuePath() , m_nameWidth , NULL , &fwidth ); 
 	IggyValueGetF64RS( getIggyValuePath() , m_nameHeight , NULL , &fheight );
 
-	m_x = (S32)fx;
-	m_y = (S32)fy;
-	m_width = (S32)Math::round(fwidth);
-	m_height = (S32)Math::round(fheight);
+	m_x = static_cast<S32>(fx);
+	m_y = static_cast<S32>(fy);
+	m_width = static_cast<S32>(Math::round(fwidth));
+	m_height = static_cast<S32>(Math::round(fheight));
 
 	return res;
 }
@@ -49,10 +49,10 @@ void UIControl::UpdateControl()
 	IggyValueGetF64RS( getIggyValuePath() , m_nameYPos , NULL , &fy ); 
 	IggyValueGetF64RS( getIggyValuePath() , m_nameWidth , NULL , &fwidth ); 
 	IggyValueGetF64RS( getIggyValuePath() , m_nameHeight , NULL , &fheight );
-	m_x = (S32)fx;
-	m_y = (S32)fy;
-	m_width = (S32)Math::round(fwidth);
-	m_height = (S32)Math::round(fheight);
+	m_x = static_cast<S32>(fx);
+	m_y = static_cast<S32>(fy);
+	m_width = static_cast<S32>(Math::round(fwidth));
+	m_height = static_cast<S32>(Math::round(fheight));
 }
 
 void UIControl::ReInit()

@@ -10,7 +10,7 @@ UIScene_FurnaceMenu::UIScene_FurnaceMenu(int iPad, void *_initData, UILayer *par
 	// Setup all the Iggy references we need for this scene
 	initialiseMovie();
 
-	FurnaceScreenInput *initData = (FurnaceScreenInput *)_initData;
+	FurnaceScreenInput *initData = static_cast<FurnaceScreenInput *>(_initData);
 	m_furnace = initData->furnace;
 
 	m_labelFurnace.init(m_furnace->getName());
@@ -23,7 +23,7 @@ UIScene_FurnaceMenu::UIScene_FurnaceMenu(int iPad, void *_initData, UILayer *par
 	Minecraft *pMinecraft = Minecraft::GetInstance();
 	if( pMinecraft->localgameModes[initData->iPad] != NULL )
 	{
-		TutorialMode *gameMode = (TutorialMode *)pMinecraft->localgameModes[initData->iPad];
+		TutorialMode *gameMode = static_cast<TutorialMode *>(pMinecraft->localgameModes[initData->iPad]);
 		m_previousTutorialState = gameMode->getTutorial()->getCurrentState();
 		gameMode->getTutorial()->changeTutorialState(e_Tutorial_State_Furnace_Menu, this);
 	}

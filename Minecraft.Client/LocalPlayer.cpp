@@ -420,11 +420,11 @@ void LocalPlayer::aiStep()
 			jumpRidingTicks++;
 			if (jumpRidingTicks < 10)
 			{
-				jumpRidingScale = (float) jumpRidingTicks * .1f;
+				jumpRidingScale = static_cast<float>(jumpRidingTicks) * .1f;
 			}
 			else 
 			{
-				jumpRidingScale = .8f + (2.f / ((float) (jumpRidingTicks - 9))) * .1f;
+				jumpRidingScale = .8f + (2.f / static_cast<float>(jumpRidingTicks - 9)) * .1f;
 			}
 		}
 	}
@@ -458,9 +458,9 @@ void LocalPlayer::aiStep()
 #ifdef _DEBUG_MENUS_ENABLED
 		if(abilities.debugflying)
 		{
-			flyX = (float)viewVector->x * input->ya;
-			flyY = (float)viewVector->y * input->ya;
-			flyZ = (float)viewVector->z * input->ya;
+			flyX = static_cast<float>(viewVector->x) * input->ya;
+			flyY = static_cast<float>(viewVector->y) * input->ya;
+			flyZ = static_cast<float>(viewVector->z) * input->ya;
 		}
 		else
 #endif
@@ -468,11 +468,11 @@ void LocalPlayer::aiStep()
 			if( isSprinting() )
 			{
 				// Accelrate up to full speed if we are sprinting, moving in the direction of the view vector
-				flyX = (float)viewVector->x * input->ya;
-				flyY = (float)viewVector->y * input->ya;
-				flyZ = (float)viewVector->z * input->ya;
+				flyX = static_cast<float>(viewVector->x) * input->ya;
+				flyY = static_cast<float>(viewVector->y) * input->ya;
+				flyZ = static_cast<float>(viewVector->z) * input->ya;
 
-				float scale = ((float)(SPRINT_DURATION - sprintTime))/10.0f;
+				float scale = static_cast<float>(SPRINT_DURATION - sprintTime)/10.0f;
 				scale = scale * scale;
 				if ( scale > 1.0f ) scale = 1.0f;
 				flyX *= scale;
@@ -575,7 +575,7 @@ float LocalPlayer::getFieldOfViewModifier()
 	if (isUsingItem() && getUseItem()->id == Item::bow->id)
 	{
 		int ticksHeld = getTicksUsingItem();
-		float scale = (float) ticksHeld / BowItem::MAX_DRAW_DURATION;
+		float scale = static_cast<float>(ticksHeld) / BowItem::MAX_DRAW_DURATION;
 		if (scale > 1)
 		{
 			scale = 1;
@@ -785,7 +785,7 @@ void LocalPlayer::hurtTo(float newHealth, ETelemetryChallenges damageSource)
 
 	if( this->getHealth() <= 0)
 	{
-		int deathTime = (int)(level->getGameTime() % Level::TICKS_PER_DAY)/1000;
+		int deathTime = static_cast<int>(level->getGameTime() % Level::TICKS_PER_DAY)/1000;
 		int carriedId = inventory->getSelected() == NULL ? 0 : inventory->getSelected()->id;
 		TelemetryManager->RecordPlayerDiedOrFailed(GetXboxPad(), 0, y, 0, 0, carriedId, 0, damageSource);
 
@@ -835,7 +835,7 @@ void LocalPlayer::awardStat(Stat *stat, byteArray param)
 
 	if (stat->isAchievement())
 	{
-		Achievement *ach = (Achievement *) stat;
+		Achievement *ach = static_cast<Achievement *>(stat);
 		// 4J-PB - changed to attempt to award everytime - the award may need a storage device, so needs a primary player, and the player may not have been a primary player when they first 'got' the award
 		// so let the award manager figure it out
 		//if (!minecraft->stats[m_iPad]->hasTaken(ach))
@@ -861,7 +861,7 @@ void LocalPlayer::awardStat(Stat *stat, byteArray param)
 			}
 
 			// 4J-JEV: To stop spamming trophies.
-			unsigned long long achBit = ((unsigned long long)1) << ach->getAchievementID();
+			unsigned long long achBit = static_cast<unsigned long long>(1) << ach->getAchievementID();
 			if ( !(achBit & m_awardedThisSession) )
 			{
 				ProfileManager.Award(m_iPad, ach->getAchievementID());
@@ -1248,7 +1248,7 @@ void LocalPlayer::onCrafted(shared_ptr<ItemInstance> item)
 {
 	if( minecraft->localgameModes[m_iPad] != NULL )
 	{
-		TutorialMode *gameMode = (TutorialMode *)minecraft->localgameModes[m_iPad];
+		TutorialMode *gameMode = static_cast<TutorialMode *>(minecraft->localgameModes[m_iPad]);
 		gameMode->getTutorial()->onCrafted(item);
 	}
 }
@@ -1270,8 +1270,8 @@ void LocalPlayer::mapPlayerChunk(const unsigned int flagTileType)
 	int cx = this->xChunk;
 	int cz = this->zChunk;
 
-	int pZ = ((int) floor(this->z)) %16;
-	int pX = ((int) floor(this->x)) %16;
+	int pZ = static_cast<int>(floor(this->z)) %16;
+	int pX = static_cast<int>(floor(this->x)) %16;
 
 	cout<<"player in chunk ("<<cx<<","<<cz<<") at ("
 		<<this->x<<","<<this->y<<","<<this->z<<")\n";
@@ -1359,9 +1359,9 @@ bool LocalPlayer::creativeModeHandleMouseClick(int button, bool buttonPressed)
 			}
 
 			// Get distance from last click point in each axis
-			float dX = (float)x - lastClickX; 
-			float dY = (float)y - lastClickY;
-			float dZ = (float)z - lastClickZ;
+			float dX = static_cast<float>(x) - lastClickX; 
+			float dY = static_cast<float>(y) - lastClickY;
+			float dZ = static_cast<float>(z) - lastClickZ;
 			bool newClick = false;
 
 			float ddx = dX - lastClickdX;
@@ -1467,9 +1467,9 @@ bool LocalPlayer::creativeModeHandleMouseClick(int button, bool buttonPressed)
 		else
 		{
 			// First click - just record position & handle
-			lastClickX = (float)x;
-			lastClickY = (float)y;
-			lastClickZ = (float)z;
+			lastClickX = static_cast<float>(x);
+			lastClickY = static_cast<float>(y);
+			lastClickZ = static_cast<float>(z);
 			// If we actually placed an item, then move into the init state as we are going to be doing the special creative mode auto repeat
 			bool itemPlaced = handleMouseClick(button);
 			// If we're sprinting or riding, don't auto-repeat at all. With auto repeat on, we can quickly place fires causing photosensitivity issues due to rapid flashing
@@ -1713,7 +1713,7 @@ void LocalPlayer::handleCollectItem(shared_ptr<ItemInstance> item)
 				}
 			}
 		}
-		TutorialMode *gameMode = (TutorialMode *)minecraft->localgameModes[m_iPad];
+		TutorialMode *gameMode = static_cast<TutorialMode *>(minecraft->localgameModes[m_iPad]);
 		gameMode->getTutorial()->onTake(item, itemCountAnyAux, itemCountThisAux);
 	}
 

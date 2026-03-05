@@ -21,7 +21,7 @@ const float CScene_Win::PLAYER_SCROLL_SPEED = 3.0f;
 //----------------------------------------------------------------------------------
 HRESULT CScene_Win::OnInit( XUIMessageInit* pInitData, BOOL& bHandled )
 {
-	m_iPad = *(int *)pInitData->pvInitData;
+	m_iPad = *static_cast<int *>(pInitData->pvInitData);
 
 	m_bIgnoreInput = false;
 
@@ -57,13 +57,13 @@ HRESULT CScene_Win::OnInit( XUIMessageInit* pInitData, BOOL& bHandled )
 	noNoiseString = app.FormatHTMLString(m_iPad, noNoiseString, 0xff000000);
 
 	Random random(8124371);
-	int found=(int)noNoiseString.find_first_of(L"{");
+	int found=static_cast<int>(noNoiseString.find_first_of(L"{"));
 	int length;
 	while (found!=string::npos)
 	{
 		length = random.nextInt(4) + 3;
 		m_noiseLengths.push_back(length);
-		found=(int)noNoiseString.find_first_of(L"{",found+1);
+		found=static_cast<int>(noNoiseString.find_first_of(L"{", found + 1));
 	}
 
 	Minecraft *pMinecraft = Minecraft::GetInstance();

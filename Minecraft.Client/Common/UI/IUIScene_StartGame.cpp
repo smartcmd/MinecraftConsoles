@@ -123,7 +123,7 @@ void IUIScene_StartGame::HandleDLCMountingComplete()
 
 void IUIScene_StartGame::handleSelectionChanged(F64 selectedId)
 {
-	m_iSetTexturePackDescription = (int)selectedId;
+	m_iSetTexturePackDescription = static_cast<int>(selectedId);
 
 	if(!m_texturePackDescDisplayed)
 	{	
@@ -254,7 +254,7 @@ void IUIScene_StartGame::UpdateCurrentTexturePack(int iSlot)
 
 int IUIScene_StartGame::TrialTexturePackWarningReturned(void *pParam,int iPad,C4JStorage::EMessageResult result)
 {
-	IUIScene_StartGame* pScene = (IUIScene_StartGame*)pParam;
+	IUIScene_StartGame* pScene = static_cast<IUIScene_StartGame *>(pParam);
 
 	if(result==C4JStorage::EMessage_ResultAccept)
 	{
@@ -269,7 +269,7 @@ int IUIScene_StartGame::TrialTexturePackWarningReturned(void *pParam,int iPad,C4
 
 int IUIScene_StartGame::UnlockTexturePackReturned(void *pParam,int iPad,C4JStorage::EMessageResult result)
 {
-	IUIScene_StartGame* pScene = (IUIScene_StartGame*)pParam;
+	IUIScene_StartGame* pScene = static_cast<IUIScene_StartGame *>(pParam);
 
 	if(result==C4JStorage::EMessage_ResultAccept)
 	{
@@ -311,7 +311,7 @@ int IUIScene_StartGame::UnlockTexturePackReturned(void *pParam,int iPad,C4JStora
 
 int IUIScene_StartGame::TexturePackDialogReturned(void *pParam,int iPad,C4JStorage::EMessageResult result)
 {
-	IUIScene_StartGame *pClass = (IUIScene_StartGame *)pParam;
+	IUIScene_StartGame *pClass = static_cast<IUIScene_StartGame *>(pParam);
 
 
 #ifdef _XBOX

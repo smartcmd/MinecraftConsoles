@@ -68,7 +68,7 @@ float XUI_FontData::SChar::getMinX()
 
 float XUI_FontData::SChar::getMaxX()
 {
-	return (float) m_parent->m_fontData->getFontData()->m_uiGlyphWidth;
+	return static_cast<float>(m_parent->m_fontData->getFontData()->m_uiGlyphWidth);
 }
 
 float XUI_FontData::SChar::getMinY()
@@ -83,7 +83,7 @@ float XUI_FontData::SChar::getMaxY()
 
 float XUI_FontData::SChar::getAdvance()
 {
-	return (float) m_parent->m_fontData->getWidth(m_glyphId);
+	return static_cast<float>(m_parent->m_fontData->getWidth(m_glyphId));
 }
 
 int XUI_FontData::SChar::getGlyphId()

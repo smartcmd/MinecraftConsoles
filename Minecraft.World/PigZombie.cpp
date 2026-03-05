@@ -78,7 +78,7 @@ bool PigZombie::canSpawn()
 void PigZombie::addAdditonalSaveData(CompoundTag *tag)
 {
 	Zombie::addAdditonalSaveData(tag);
-	tag->putShort(L"Anger", (short) angerTime);
+	tag->putShort(L"Anger", static_cast<short>(angerTime));
 }
 
 void PigZombie::readAdditionalSaveData(CompoundTag *tag)

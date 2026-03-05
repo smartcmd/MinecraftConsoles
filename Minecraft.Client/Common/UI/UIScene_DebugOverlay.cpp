@@ -23,11 +23,11 @@ UIScene_DebugOverlay::UIScene_DebugOverlay(int iPad, void *initData, UILayer *pa
 
 	Minecraft *pMinecraft = Minecraft::GetInstance();
 	WCHAR TempString[256];
-	swprintf( (WCHAR *)TempString, 256, L"Set fov (%d)", (int)pMinecraft->gameRenderer->GetFovVal());
-	m_sliderFov.init(TempString,eControl_FOV,0,100,(int)pMinecraft->gameRenderer->GetFovVal());
+	swprintf( (WCHAR *)TempString, 256, L"Set fov (%d)", static_cast<int>(pMinecraft->gameRenderer->GetFovVal()));
+	m_sliderFov.init(TempString,eControl_FOV,0,100,static_cast<int>(pMinecraft->gameRenderer->GetFovVal()));
 
 	float currentTime = pMinecraft->level->getLevelData()->getGameTime() % 24000;
-	swprintf( (WCHAR *)TempString, 256, L"Set time (unsafe) (%d)", (int)currentTime);
+	swprintf( (WCHAR *)TempString, 256, L"Set time (unsafe) (%d)", static_cast<int>(currentTime));
 	m_sliderTime.init(TempString,eControl_Time,0,240,currentTime/100);
 
 	m_buttonRain.init(L"Toggle Rain",eControl_Rain);
@@ -140,7 +140,7 @@ void UIScene_DebugOverlay::customDraw(IggyCustomDrawCallbackRegion *region)
 	if(pMinecraft->localplayers[m_iPad] == NULL || pMinecraft->localgameModes[m_iPad] == NULL) return;
 
 	int itemId = -1;
-	swscanf((wchar_t*)region->name,L"item_%d",&itemId);
+	swscanf(static_cast<wchar_t *>(region->name),L"item_%d",&itemId);
 	if (itemId == -1 || itemId > Item::ITEM_NUM_COUNT || Item::items[itemId] == NULL)
 	{
 		app.DebugPrintf("This is not the control we are looking for\n");
@@ -181,7 +181,7 @@ void UIScene_DebugOverlay::handleInput(int iPad, int key, bool repeat, bool pres
 
 void UIScene_DebugOverlay::handlePress(F64 controlId, F64 childId)
 {
-	switch((int)controlId)
+	switch(static_cast<int>(controlId))
 	{
 	case eControl_Items:
 		{
@@ -252,7 +252,7 @@ void UIScene_DebugOverlay::handlePress(F64 controlId, F64 childId)
 
 void UIScene_DebugOverlay::handleSliderMove(F64 sliderId, F64 currentValue)
 {
-	switch((int)sliderId)
+	switch(static_cast<int>(sliderId))
 	{
 	case eControl_Time:
 		{
@@ -266,17 +266,17 @@ void UIScene_DebugOverlay::handleSliderMove(F64 sliderId, F64 currentValue)
 
 			WCHAR TempString[256];
 			float currentTime = currentValue * 100;
-			swprintf( (WCHAR *)TempString, 256, L"Set time (unsafe) (%d)", (int)currentTime);
+			swprintf( (WCHAR *)TempString, 256, L"Set time (unsafe) (%d)", static_cast<int>(currentTime));
 			m_sliderTime.setLabel(TempString);
 		}
 		break;
 	case eControl_FOV:
 		{
 			Minecraft *pMinecraft = Minecraft::GetInstance();
-			pMinecraft->gameRenderer->SetFovVal((float)currentValue);
+			pMinecraft->gameRenderer->SetFovVal(static_cast<float>(currentValue));
 
 			WCHAR TempString[256];
-			swprintf( (WCHAR *)TempString, 256, L"Set fov (%d)", (int)currentValue);
+			swprintf( (WCHAR *)TempString, 256, L"Set fov (%d)", static_cast<int>(currentValue));
 			m_sliderFov.setLabel(TempString);
 		}
 		break;

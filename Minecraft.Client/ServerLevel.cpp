@@ -315,7 +315,7 @@ Biome::MobSpawnerData *ServerLevel::getRandomMobSpawnAt(MobCategory *mobCategory
 	vector<Biome::MobSpawnerData *> *mobList = getChunkSource()->getMobsAt(mobCategory, x, y, z);
 	if (mobList == NULL || mobList->empty()) return NULL;
 
-	return (Biome::MobSpawnerData *) WeighedRandom::getRandomItem(random, (vector<WeighedRandomItem *> *)mobList);
+	return static_cast<Biome::MobSpawnerData *>(WeighedRandom::getRandomItem(random, (vector<WeighedRandomItem *> *)mobList));
 }
 
 void ServerLevel::updateSleepingPlayerList()
@@ -640,8 +640,8 @@ void ServerLevel::resetEmptyTime()
 bool ServerLevel::tickPendingTicks(bool force)
 {
 	EnterCriticalSection(&m_tickNextTickCS);
-	int count = (int)tickNextTickList.size();
-	int count2 = (int)tickNextTickSet.size();
+	int count = static_cast<int>(tickNextTickList.size());
+	int count2 = static_cast<int>(tickNextTickSet.size());
 	if (count != tickNextTickSet.size())
 	{
 		// TODO 4J Stu - Add new exception types
@@ -685,8 +685,8 @@ bool ServerLevel::tickPendingTicks(bool force)
 
 	toBeTicked.clear();
 
-	int count3 = (int)tickNextTickList.size();
-	int count4 = (int)tickNextTickSet.size();
+	int count3 = static_cast<int>(tickNextTickList.size());
+	int count4 = static_cast<int>(tickNextTickSet.size());
 
 	bool retval = tickNextTickList.size() != 0;
 	LeaveCriticalSection(&m_tickNextTickCS);
@@ -1024,7 +1024,7 @@ void ServerLevel::saveToDisc(ProgressListener *progressListener, bool autosave)
 	if(!Minecraft::GetInstance()->skins->isUsingDefaultSkin())
 	{
 		TexturePack *tPack = Minecraft::GetInstance()->skins->getSelected();
-		DLCTexturePack *pDLCTexPack=(DLCTexturePack *)tPack;
+		DLCTexturePack *pDLCTexPack=static_cast<DLCTexturePack *>(tPack);
 
 		DLCPack * pDLCPack=pDLCTexPack->getDLCInfoParentPack();
 
@@ -1268,7 +1268,7 @@ void ServerLevel::sendParticles(const wstring &name, double x, double y, double 
 
 void ServerLevel::sendParticles(const wstring &name, double x, double y, double z, int count, double xDist, double yDist, double zDist, double speed)
 {
-	shared_ptr<Packet> packet = std::make_shared<LevelParticlesPacket>( name, (float) x, (float) y, (float) z, (float) xDist, (float) yDist, (float) zDist, (float) speed, count );
+	shared_ptr<Packet> packet = std::make_shared<LevelParticlesPacket>( name, static_cast<float>(x), static_cast<float>(y), static_cast<float>(z), static_cast<float>(xDist), static_cast<float>(yDist), static_cast<float>(zDist), static_cast<float>(speed), count );
 
 	for(auto& it : players)
 	{

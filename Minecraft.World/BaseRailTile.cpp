@@ -19,7 +19,7 @@ BaseRailTile::Rail::Rail(Level *level, int x, int y, int z)
 	if(m_bValidRail)
 	{
 		int direction = level->getData(x, y, z);
-		if (((BaseRailTile *) Tile::tiles[id])->usesDataBit)
+		if (static_cast<BaseRailTile *>(Tile::tiles[id])->usesDataBit)
 		{
 			usesDataBit = true;
 			direction = direction & ~RAIL_DATA_BIT;

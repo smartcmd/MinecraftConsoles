@@ -109,7 +109,7 @@ VOID CPlatformNetworkManagerXbox::NotifyPlayerJoined(
 	bool createFakeSocket = false;
 	bool localPlayer = false;
 
-	NetworkPlayerXbox *networkPlayer = (NetworkPlayerXbox *)addNetworkPlayer(pQNetPlayer);
+	NetworkPlayerXbox *networkPlayer = static_cast<NetworkPlayerXbox *>(addNetworkPlayer(pQNetPlayer));
 
     if( pQNetPlayer->IsLocal() )
     {
@@ -380,7 +380,7 @@ VOID CPlatformNetworkManagerXbox::NotifyReadinessChanged(
 	__in BOOL                       bReady
 	)
 {
-	app.DebugPrintf( "Player 0x%p readiness is now %i.\n", pQNetPlayer, (int) bReady );
+	app.DebugPrintf( "Player 0x%p readiness is now %i.\n", pQNetPlayer, static_cast<int>(bReady) );
 }
 
 
@@ -946,7 +946,7 @@ void CPlatformNetworkManagerXbox::UpdateAndSetGameSessionData(INetworkPlayer *pN
 			// We can call this from NotifyPlayerLeaving but at that point the player is still considered in the session
 			if( pNetworkPlayer != pNetworkPlayerLeaving )
 			{
-				m_hostGameSessionData.players[i] = ((NetworkPlayerXbox *)pNetworkPlayer)->GetUID();
+				m_hostGameSessionData.players[i] = static_cast<NetworkPlayerXbox *>(pNetworkPlayer)->GetUID();
 
 				char *temp;
 				temp = (char *)wstringtofilename( pNetworkPlayer->GetOnlineName() );
@@ -965,7 +965,7 @@ void CPlatformNetworkManagerXbox::UpdateAndSetGameSessionData(INetworkPlayer *pN
 		}
 	}
 
-	m_hostGameSessionData.hostPlayerUID = ((NetworkPlayerXbox *)GetHostPlayer())->GetQNetPlayer()->GetXuid();
+	m_hostGameSessionData.hostPlayerUID = static_cast<NetworkPlayerXbox *>(GetHostPlayer())->GetQNetPlayer()->GetXuid();
 	m_hostGameSessionData.m_uiGameHostSettings = app.GetGameHostOption(eGameHostOption_All);
 
 	HRESULT hr = S_OK;
@@ -978,7 +978,7 @@ void CPlatformNetworkManagerXbox::UpdateAndSetGameSessionData(INetworkPlayer *pN
 
 int CPlatformNetworkManagerXbox::RemovePlayerOnSocketClosedThreadProc( void* lpParam )
 {
-	INetworkPlayer *pNetworkPlayer = (INetworkPlayer *)lpParam;
+	INetworkPlayer *pNetworkPlayer = static_cast<INetworkPlayer *>(lpParam);
 
 	Socket *socket = pNetworkPlayer->GetSocket();
 
@@ -1099,8 +1099,8 @@ bool CPlatformNetworkManagerXbox::SystemFlagGet(INetworkPlayer *pNetworkPlayer, 
 
 wstring CPlatformNetworkManagerXbox::GatherStats()
 {
-	return L"Queue messages: " + std::to_wstring(((NetworkPlayerXbox *)GetHostPlayer())->GetQNetPlayer()->GetSendQueueSize( NULL, QNET_GETSENDQUEUESIZE_MESSAGES ) )
-		+ L" Queue bytes: " + std::to_wstring( ((NetworkPlayerXbox *)GetHostPlayer())->GetQNetPlayer()->GetSendQueueSize( NULL, QNET_GETSENDQUEUESIZE_BYTES  ) );
+	return L"Queue messages: " + std::to_wstring(static_cast<NetworkPlayerXbox *>(GetHostPlayer())->GetQNetPlayer()->GetSendQueueSize( NULL, QNET_GETSENDQUEUESIZE_MESSAGES ) )
+		+ L" Queue bytes: " + std::to_wstring( static_cast<NetworkPlayerXbox *>(GetHostPlayer())->GetQNetPlayer()->GetSendQueueSize( NULL, QNET_GETSENDQUEUESIZE_BYTES  ) );
 }
 
 wstring CPlatformNetworkManagerXbox::GatherRTTStats()
@@ -1111,7 +1111,7 @@ wstring CPlatformNetworkManagerXbox::GatherRTTStats()
 
 	for(unsigned int i = 0; i < GetPlayerCount(); ++i)
 	{
-		IQNetPlayer *pQNetPlayer = ((NetworkPlayerXbox *)GetPlayerByIndex( i ))->GetQNetPlayer();
+		IQNetPlayer *pQNetPlayer = static_cast<NetworkPlayerXbox *>(GetPlayerByIndex(i))->GetQNetPlayer();
 
 		if(!pQNetPlayer->IsLocal())
 		{
@@ -1386,7 +1386,7 @@ void CPlatformNetworkManagerXbox::SearchForGames()
 
 int CPlatformNetworkManagerXbox::SearchForGamesThreadProc( void* lpParameter )
 {
-	SearchForGamesData *threadData = (SearchForGamesData *)lpParameter;
+	SearchForGamesData *threadData = static_cast<SearchForGamesData *>(lpParameter);
 
 	DWORD sessionIDCount = threadData->sessionIDCount;
 

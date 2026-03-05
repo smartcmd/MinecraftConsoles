@@ -14,7 +14,7 @@ HRESULT CScene_DebugItemEditor::OnInit( XUIMessageInit *pInitData, BOOL &bHandle
 {
 	MapChildControls();
 
-	ItemEditorInput *initData = (ItemEditorInput *)pInitData->pvInitData;
+	ItemEditorInput *initData = static_cast<ItemEditorInput *>(pInitData->pvInitData);
 	m_iPad = initData->iPad;
 	m_slot = initData->slot;
 	m_menu = initData->menu;

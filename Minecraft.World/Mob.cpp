@@ -155,7 +155,7 @@ void Mob::ate()
 void Mob::defineSynchedData()
 {
 	LivingEntity::defineSynchedData();
-	entityData->define(DATA_CUSTOM_NAME_VISIBLE, (byte) 0);
+	entityData->define(DATA_CUSTOM_NAME_VISIBLE, static_cast<byte>(0));
 	entityData->define(DATA_CUSTOM_NAME, L"");
 }
 
@@ -347,7 +347,7 @@ void Mob::readAdditionalSaveData(CompoundTag *tag)
 	_isLeashed = tag->getBoolean(L"Leashed");
 	if (_isLeashed && tag->contains(L"Leash"))
 	{
-		leashInfoTag = (CompoundTag *)tag->getCompound(L"Leash")->copy();
+		leashInfoTag = static_cast<CompoundTag *>(tag->getCompound(L"Leash")->copy());
 	}
 }
 
@@ -560,7 +560,7 @@ void Mob::serverAiStep()
 
 	if (lookingAt != NULL)
 	{
-		lookAt(lookingAt, 10.0f, (float) getMaxHeadXRot());
+		lookAt(lookingAt, 10.0f, static_cast<float>(getMaxHeadXRot()));
 		if (lookTime-- <= 0 || lookingAt->removed || lookingAt->distanceToSqr(shared_from_this()) > lookDistance * lookDistance)
 		{
 			lookingAt = nullptr;
@@ -605,8 +605,8 @@ void Mob::lookAt(shared_ptr<Entity> e, float yMax, float xMax)
 
 	double sd = Mth::sqrt(xd * xd + zd * zd);
 
-	float yRotD = (float) (atan2(zd, xd) * 180 / PI) - 90;
-	float xRotD = (float) -(atan2(yd, sd) * 180 / PI);
+	float yRotD = static_cast<float>(atan2(zd, xd) * 180 / PI) - 90;
+	float xRotD = static_cast<float>(-(atan2(yd, sd) * 180 / PI));
 	xRot = rotlerp(xRot, xRotD, xMax);
 	yRot = rotlerp(yRot, yRotD, yMax);
 }
@@ -659,7 +659,7 @@ int Mob::getMaxSpawnClusterSize()
 int Mob::getMaxFallDistance()
 {
 	if (getTarget() == NULL) return 3;
-	int sacrifice = (int) (getHealth() - (getMaxHealth() * 0.33f));
+	int sacrifice = static_cast<int>(getHealth() - (getMaxHealth() * 0.33f));
 	sacrifice -= (3 - level->difficulty) * 4;
 	if (sacrifice < 0) sacrifice = 0;
 	return sacrifice + 3;
@@ -799,7 +799,7 @@ void Mob::populateDefaultEquipmentEnchantments()
 	float difficulty = level->getDifficulty(x, y, z);
 
 	if (getCarriedItem() != NULL && random->nextFloat() < MAX_ENCHANTED_WEAPON_CHANCE * difficulty) {
-		EnchantmentHelper::enchantItem(random, getCarriedItem(), (int) (5 + difficulty * random->nextInt(18)));
+		EnchantmentHelper::enchantItem(random, getCarriedItem(), static_cast<int>(5 + difficulty * random->nextInt(18)));
 	}
 
 	for (int i = 0; i < 4; i++)
@@ -807,7 +807,7 @@ void Mob::populateDefaultEquipmentEnchantments()
 		shared_ptr<ItemInstance> item = getArmor(i);
 		if (item != NULL && random->nextFloat() < MAX_ENCHANTED_ARMOR_CHANCE * difficulty)
 		{
-			EnchantmentHelper::enchantItem(random, item, (int) (5 + difficulty * random->nextInt(18)));
+			EnchantmentHelper::enchantItem(random, item, static_cast<int>(5 + difficulty * random->nextInt(18)));
 		}
 	}
 }
@@ -865,7 +865,7 @@ bool Mob::hasCustomName()
 
 void Mob::setCustomNameVisible(bool visible)
 {
-	entityData->set(DATA_CUSTOM_NAME_VISIBLE, visible ? (byte) 1 : (byte) 0);
+	entityData->set(DATA_CUSTOM_NAME_VISIBLE, visible ? static_cast<byte>(1) : static_cast<byte>(0));
 }
 
 bool Mob::isCustomNameVisible()

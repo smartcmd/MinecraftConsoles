@@ -67,16 +67,16 @@ void EnderMan::defineSynchedData()
 {
 	Monster::defineSynchedData();
 
-	entityData->define(DATA_CARRY_ITEM_ID, (byte) 0);
-	entityData->define(DATA_CARRY_ITEM_DATA, (byte) 0);
-	entityData->define(DATA_CREEPY, (byte) 0);
+	entityData->define(DATA_CARRY_ITEM_ID, static_cast<byte>(0));
+	entityData->define(DATA_CARRY_ITEM_DATA, static_cast<byte>(0));
+	entityData->define(DATA_CREEPY, static_cast<byte>(0));
 }
 
 void EnderMan::addAdditonalSaveData(CompoundTag *tag)
 {
 	Monster::addAdditonalSaveData(tag);
-	tag->putShort(L"carried", (short) getCarryingTile());
-	tag->putShort(L"carriedData", (short) getCarryingData());
+	tag->putShort(L"carried", static_cast<short>(getCarryingTile()));
+	tag->putShort(L"carriedData", static_cast<short>(getCarryingData()));
 }
 
 void EnderMan::readAdditionalSaveData(CompoundTag *tag)
@@ -202,7 +202,7 @@ void EnderMan::aiStep()
 		float br = getBrightness(1);
 		if (br > 0.5f)
 		{
-			if (level->canSeeSky(Mth::floor(x), (int)floor( y + 0.5 ), Mth::floor(z)) && random->nextFloat() * 30 < (br - 0.4f) * 2)
+			if (level->canSeeSky(Mth::floor(x), static_cast<int>(floor(y + 0.5)), Mth::floor(z)) && random->nextFloat() * 30 < (br - 0.4f) * 2)
 			{
 				attackTarget = nullptr;
 				setCreepy(false);
@@ -385,7 +385,7 @@ void EnderMan::dropDeathLoot(bool wasKilledByPlayer, int playerBonusLevel)
 // 4J Brought forward from 1.2.3 to help fix Enderman behaviour
 void EnderMan::setCarryingTile(int carryingTile)
 {
-	entityData->set(DATA_CARRY_ITEM_ID, (byte) (carryingTile & 0xff));
+	entityData->set(DATA_CARRY_ITEM_ID, static_cast<byte>(carryingTile & 0xff));
 }
 
 int EnderMan::getCarryingTile()
@@ -395,7 +395,7 @@ int EnderMan::getCarryingTile()
 
 void EnderMan::setCarryingData(int carryingData)
 {
-	entityData->set(DATA_CARRY_ITEM_DATA, (byte) (carryingData & 0xff));
+	entityData->set(DATA_CARRY_ITEM_DATA, static_cast<byte>(carryingData & 0xff));
 }
 
 int EnderMan::getCarryingData()
@@ -435,5 +435,5 @@ bool EnderMan::isCreepy()
 
 void EnderMan::setCreepy(bool creepy)
 {
-	entityData->set(DATA_CREEPY, (byte)(creepy ? 1 : 0));
+	entityData->set(DATA_CREEPY, static_cast<byte>(creepy ? 1 : 0));
 }

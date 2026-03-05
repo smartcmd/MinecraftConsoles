@@ -140,8 +140,8 @@ void FurnaceTileEntity::load(CompoundTag *base)
 void FurnaceTileEntity::save(CompoundTag *base)
 {
 	TileEntity::save(base);
-	base->putShort(L"BurnTime", (short) (litTime));
-	base->putShort(L"CookTime", (short) (tickCount));
+	base->putShort(L"BurnTime", static_cast<short>(litTime));
+	base->putShort(L"CookTime", static_cast<short>(tickCount));
 	ListTag<CompoundTag> *listTag = new ListTag<CompoundTag>();
 
 	for (unsigned int i = 0; i < items.length; i++)
@@ -149,7 +149,7 @@ void FurnaceTileEntity::save(CompoundTag *base)
 		if (items[i] != NULL)
 		{
 			CompoundTag *tag = new CompoundTag();
-			tag->putByte(L"Slot", (byte) i);
+			tag->putByte(L"Slot", static_cast<byte>(i));
 			items[i]->save(tag);
 			listTag->add(tag);
 		}
@@ -300,15 +300,15 @@ int FurnaceTileEntity::getBurnDuration(shared_ptr<ItemInstance> itemInstance)
 		}
 	}
 
-	if (dynamic_cast<DiggerItem *>(item) && ((DiggerItem *) item)->getTier() == Item::Tier::WOOD)
+	if (dynamic_cast<DiggerItem *>(item) && static_cast<DiggerItem *>(item)->getTier() == Item::Tier::WOOD)
 	{
 		return BURN_INTERVAL;
 	}
-	else if (dynamic_cast<WeaponItem *>(item) && ((WeaponItem *) item)->getTier() == Item::Tier::WOOD)
+	else if (dynamic_cast<WeaponItem *>(item) && static_cast<WeaponItem *>(item)->getTier() == Item::Tier::WOOD)
 	{
 		return BURN_INTERVAL;
 	}
-	else if (dynamic_cast<HoeItem *>(item) && ((HoeItem *) item)->getTier() == Item::Tier::WOOD)
+	else if (dynamic_cast<HoeItem *>(item) && static_cast<HoeItem *>(item)->getTier() == Item::Tier::WOOD)
 	{
 		return BURN_INTERVAL;
 	}

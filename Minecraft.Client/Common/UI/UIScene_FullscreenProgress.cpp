@@ -27,7 +27,7 @@ UIScene_FullscreenProgress::UIScene_FullscreenProgress(int iPad, void *initData,
 	m_buttonConfirm.init( app.GetString( IDS_CONFIRM_OK ), eControl_Confirm );
 	m_buttonConfirm.setVisible(false);
 
-	LoadingInputParams *params = (LoadingInputParams *)initData;
+	LoadingInputParams *params = static_cast<LoadingInputParams *>(initData);
 
 	m_CompletionData = params->completionData;
 	m_iPad=params->completionData->iPad;
@@ -298,7 +298,7 @@ void UIScene_FullscreenProgress::handleInput(int iPad, int key, bool repeat, boo
 
 void UIScene_FullscreenProgress::handlePress(F64 controlId, F64 childId)
 {
-	if(m_threadCompleted && (int)controlId == eControl_Confirm)
+	if(m_threadCompleted && static_cast<int>(controlId) == eControl_Confirm)
 	{
 		// This assumes all buttons can only be pressed with the A button
 		ui.AnimateKeyPress(m_iPad, ACTION_MENU_A, false, true, false);

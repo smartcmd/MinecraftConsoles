@@ -1087,7 +1087,7 @@ bool ServerPlayer::openTrading(shared_ptr<Merchant> traderTarget, const wstring 
 		containerMenu = new MerchantMenu(inventory, traderTarget, level);
 		containerMenu->containerId = containerCounter;
 		containerMenu->addSlotListener(this);
-		shared_ptr<Container> container = ((MerchantMenu *) containerMenu)->getTradeContainer();
+		shared_ptr<Container> container = static_cast<MerchantMenu *>(containerMenu)->getTradeContainer();
 
 		connection->send(shared_ptr<ContainerOpenPacket>(new ContainerOpenPacket(containerCounter, ContainerOpenPacket::TRADER_NPC, name.empty()?L"":name, container->getContainerSize(), !name.empty())));
 
@@ -1559,7 +1559,7 @@ void ServerPlayer::onUpdateAbilities()
 
 ServerLevel *ServerPlayer::getLevel()
 {
-	return (ServerLevel *) level;
+	return static_cast<ServerLevel *>(level);
 }
 
 void ServerPlayer::setGameMode(GameType *mode)

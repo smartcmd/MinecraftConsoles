@@ -97,7 +97,7 @@ void BiomeSource::getDownfallBlock(floatArray &downfalls, int x, int z, int w, i
 	intArray result = zoomedLayer->getArea(x, z, w, h);
 	for (int i = 0; i < w * h; i++)
 	{
-		float d = (float) Biome::biomes[result[i]]->getDownfallInt() / 65536.0f;
+		float d = static_cast<float>(Biome::biomes[result[i]]->getDownfallInt()) / 65536.0f;
 		if (d > 1) d = 1;
 		downfalls[i] = d;
 	}
@@ -141,7 +141,7 @@ void BiomeSource::getTemperatureBlock(floatArray& temperatures, int x, int z, in
 	intArray result = zoomedLayer->getArea(x, z, w, h);
 	for (int i = 0; i < w * h; i++)
 	{
-		float t = (float) Biome::biomes[result[i]]->getTemperatureInt() / 65536.0f;
+		float t = static_cast<float>(Biome::biomes[result[i]]->getTemperatureInt()) / 65536.0f;
 		if (t > 1) t = 1;
 		temperatures[i] = t;
 	}
@@ -264,7 +264,7 @@ void BiomeSource::getBiomeIndexBlock(byteArray& biomeIndices, int x, int z, int 
 	intArray result = zoomedLayer->getArea(x, z, w, h);
 	for (int i = 0; i < w * h; i++)
 	{
-		biomeIndices[i] = (byte)result[i];
+		biomeIndices[i] = static_cast<byte>(result[i]);
 	}
 }
 
@@ -553,7 +553,7 @@ void BiomeSource::getFracs(intArray indices, float *fracs)
 
 	for( int i = 0; i < Biome::BIOME_COUNT; i++ )
 	{
-		fracs[i] /= (float)(indices.length);
+		fracs[i] /= static_cast<float>(indices.length);
 	}
 }
 

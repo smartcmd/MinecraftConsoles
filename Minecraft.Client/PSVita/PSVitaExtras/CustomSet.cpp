@@ -9,7 +9,7 @@ CustomSet::CustomSet()
 	m_NodePoolIndex = 0;
 
 	m_HashSize = 1024;
-	m_HashTable = (SCustomSetNode**) malloc(m_HashSize * sizeof(SCustomSetNode));
+	m_HashTable = static_cast<SCustomSetNode **>(malloc(m_HashSize * sizeof(SCustomSetNode)));
 
 	clear();
 }
@@ -113,16 +113,16 @@ void CustomSet::resize()
 	SCustomSetNode **NodePool;
 	if( m_NodePool )
 	{
-		NodePool = (SCustomSetNode**) realloc(m_NodePool, m_NodePoolSize * sizeof(SCustomSetNode));
+		NodePool = static_cast<SCustomSetNode **>(realloc(m_NodePool, m_NodePoolSize * sizeof(SCustomSetNode)));
 	}
 	else
 	{
-		NodePool = (SCustomSetNode**) malloc(m_NodePoolSize * sizeof(SCustomSetNode));
+		NodePool = static_cast<SCustomSetNode **>(malloc(m_NodePoolSize * sizeof(SCustomSetNode)));
 	}
 
 	for( int i = 0;i < m_NodePoolSize - OldPoolSize;i += 1 )
 	{
-		NodePool[i + OldPoolSize] = (SCustomSetNode*) malloc(sizeof(SCustomSetNode));
+		NodePool[i + OldPoolSize] = static_cast<SCustomSetNode *>(malloc(sizeof(SCustomSetNode)));
 	}
 
 	m_NodePool = NodePool;

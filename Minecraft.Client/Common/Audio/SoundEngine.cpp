@@ -447,7 +447,7 @@ void SoundEngine::updateMiles()
 	int Playing = 0;
 	while (AIL_enumerate_sound_instances(0, &token, 0, 0, 0, &SoundInfo))
 	{
-		AUDIO_INFO* game_data= (AUDIO_INFO*)( SoundInfo.UserBuffer );
+		AUDIO_INFO* game_data= static_cast<AUDIO_INFO *>(SoundInfo.UserBuffer);
 
 		if( SoundInfo.Status == MILESEVENT_SOUND_STATUS_PLAYING )
 		{
@@ -1134,7 +1134,7 @@ int SoundEngine::OpenStreamThreadProc( void* lpParameter )
 #ifdef __DISABLE_MILES__
 	return 0;
 #endif
-	SoundEngine *soundEngine = (SoundEngine *)lpParameter;
+	SoundEngine *soundEngine = static_cast<SoundEngine *>(lpParameter);
 	soundEngine->m_hStream = AIL_open_stream(soundEngine->m_hDriver,soundEngine->m_szStreamName,0);
 
 	if(soundEngine->m_hStream==0)
@@ -1211,9 +1211,9 @@ void SoundEngine::playMusicUpdate()
 			{
 				// It's a mash-up - need to use the DLC path for the music
 				TexturePack *pTexPack=Minecraft::GetInstance()->skins->getSelected();
-				DLCTexturePack *pDLCTexPack=(DLCTexturePack *)pTexPack;
+				DLCTexturePack *pDLCTexPack=static_cast<DLCTexturePack *>(pTexPack);
 				DLCPack *pack = pDLCTexPack->getDLCInfoParentPack();
-				DLCAudioFile *dlcAudioFile = (DLCAudioFile *) pack->getFile(DLCManager::e_DLCType_Audio, 0);
+				DLCAudioFile *dlcAudioFile = static_cast<DLCAudioFile *>(pack->getFile(DLCManager::e_DLCType_Audio, 0));
 
 				app.DebugPrintf("Mashup pack \n");
 
@@ -1683,7 +1683,7 @@ char *SoundEngine::ConvertSoundPathToName(const wstring& name, bool bConvertSpac
 		{
 			if(c==' ') c='_';
 		}
-		buf[i] = (char)c;
+		buf[i] = static_cast<char>(c);
 	}
 	buf[name.length()] = 0;
 	return buf;

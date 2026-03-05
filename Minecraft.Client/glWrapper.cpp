@@ -62,7 +62,7 @@ void glOrtho(float left,float right,float bottom,float top,float zNear,float zFa
 
 void glScaled(double x,double y,double z)
 {
-	RenderManager.MatrixScale((float)x,(float)y,(float)z);
+	RenderManager.MatrixScale(static_cast<float>(x),static_cast<float>(y),static_cast<float>(z));
 }
 
 void glGetFloat(int type, FloatBuffer *buff)

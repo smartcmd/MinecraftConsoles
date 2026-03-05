@@ -362,7 +362,7 @@ Entity::Entity(Level *level, bool useSmallId)	// 4J - added useSmallId parameter
 
 	if( entityData )
 	{
-		entityData->define(DATA_SHARED_FLAGS_ID, (byte) 0);
+		entityData->define(DATA_SHARED_FLAGS_ID, static_cast<byte>(0));
 		entityData->define(DATA_AIR_SUPPLY_ID, TOTAL_AIR_SUPPLY); // 4J Stu - Brought forward from 1.2.3 to fix 38654 - Gameplay: Player will take damage when air bubbles are present if resuming game from load/autosave underwater.
 	}
 
@@ -907,7 +907,7 @@ void Entity::move(double xa, double ya, double za, bool noEntityCubes)   // 4J -
 
 		if (moveDist > nextStep && t > 0)
 		{
-			nextStep = (int) moveDist + 1;
+			nextStep = static_cast<int>(moveDist) + 1;
 			if (isInWater())
 			{
 				float speed = Mth::sqrt(xd * xd * 0.2f + yd * yd + zd * zd * 0.2f) * 0.35f;
@@ -1023,7 +1023,7 @@ void Entity::checkFallDamage(double ya, bool onGround)
 	}
 	else
 	{
-		if (ya < 0) fallDistance -= (float) ya;
+		if (ya < 0) fallDistance -= static_cast<float>(ya);
 	}
 }
 
@@ -1072,7 +1072,7 @@ bool Entity::updateInWaterState()
 			MemSect(31);
 			playSound(eSoundType_RANDOM_SPLASH, speed, 1 + (random->nextFloat() - random->nextFloat()) * 0.4f);
 			MemSect(0);
-			float yt = (float) Mth::floor(bb->y0);
+			float yt = static_cast<float>(Mth::floor(bb->y0));
 			for (int i = 0; i < 1 + bbWidth * 20; i++)
 			{
 				float xo = (random->nextFloat() * 2 - 1) * bbWidth;
@@ -1202,9 +1202,9 @@ void Entity::moveTo(double x, double y, double z, float yRot, float xRot)
 
 float Entity::distanceTo(shared_ptr<Entity> e)
 {
-	float xd = (float) (x - e->x);
-	float yd = (float) (y - e->y);
-	float zd = (float) (z - e->z);
+	float xd = static_cast<float>(x - e->x);
+	float yd = static_cast<float>(y - e->y);
+	float zd = static_cast<float>(z - e->z);
 	return sqrt(xd * xd + yd * yd + zd * zd);
 }
 
@@ -1365,8 +1365,8 @@ void Entity::saveWithoutId(CompoundTag *entityTag)
 	entityTag->put(L"Rotation", newFloatList(2, yRot, xRot));
 
 	entityTag->putFloat(L"FallDistance", fallDistance);
-	entityTag->putShort(L"Fire", (short) onFire);
-	entityTag->putShort(L"Air", (short) getAirSupply());
+	entityTag->putShort(L"Fire", static_cast<short>(onFire));
+	entityTag->putShort(L"Air", static_cast<short>(getAirSupply()));
 	entityTag->putBoolean(L"OnGround", onGround);
 	entityTag->putInt(L"Dimension", dimension);
 	entityTag->putBoolean(L"Invulnerable", invulnerable);
@@ -1823,11 +1823,11 @@ void Entity::setSharedFlag(int flag, bool value)
 		byte currentValue = entityData->getByte(DATA_SHARED_FLAGS_ID);
 		if (value)
 		{
-			entityData->set(DATA_SHARED_FLAGS_ID, (byte) (currentValue | (1 << flag)));
+			entityData->set(DATA_SHARED_FLAGS_ID, static_cast<byte>(currentValue | (1 << flag)));
 		}
 		else
 		{
-			entityData->set(DATA_SHARED_FLAGS_ID, (byte) (currentValue & ~(1 << flag)));
+			entityData->set(DATA_SHARED_FLAGS_ID, static_cast<byte>(currentValue & ~(1 << flag)));
 		}
 	}
 }
@@ -1841,7 +1841,7 @@ int Entity::getAirSupply()
 // 4J Stu - Brought forward from 1.2.3 to fix 38654 - Gameplay: Player will take damage when air bubbles are present if resuming game from load/autosave underwater.
 void Entity::setAirSupply(int supply)
 {
-	entityData->set(DATA_AIR_SUPPLY_ID, (short) supply);
+	entityData->set(DATA_AIR_SUPPLY_ID, static_cast<short>(supply));
 }
 
 void Entity::thunderHit(const LightningBolt *lightningBolt)

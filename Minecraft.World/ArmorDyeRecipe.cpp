@@ -66,9 +66,9 @@ shared_ptr<ItemInstance> ArmorDyeRecipe::assembleDyedArmor(shared_ptr<CraftingCo
 					if (armor->hasCustomColor(item))
 					{
 						int color = armor->getColor(target);
-						float red = (float) ((color >> 16) & 0xFF) / 0xFF;
-						float green = (float) ((color >> 8) & 0xFF) / 0xFF;
-						float blue = (float) (color & 0xFF) / 0xFF;
+						float red = static_cast<float>((color >> 16) & 0xFF) / 0xFF;
+						float green = static_cast<float>((color >> 8) & 0xFF) / 0xFF;
+						float blue = static_cast<float>(color & 0xFF) / 0xFF;
 
 						intensityTotal += max(red, max(green, blue)) * 0xFF;
 
@@ -86,9 +86,9 @@ shared_ptr<ItemInstance> ArmorDyeRecipe::assembleDyedArmor(shared_ptr<CraftingCo
 			else if (item->id == Item::dye_powder_Id)
 			{
 				int tileData = ColoredTile::getTileDataForItemAuxValue(item->getAuxValue());
-				int red = (int) (Sheep::COLOR[tileData][0] * 0xFF);
-				int green = (int) (Sheep::COLOR[tileData][1] * 0xFF);
-				int blue = (int) (Sheep::COLOR[tileData][2] * 0xFF);
+				int red = static_cast<int>(Sheep::COLOR[tileData][0] * 0xFF);
+				int green = static_cast<int>(Sheep::COLOR[tileData][1] * 0xFF);
+				int blue = static_cast<int>(Sheep::COLOR[tileData][2] * 0xFF);
 
 				intensityTotal += max(red, max(green, blue));
 
@@ -110,13 +110,13 @@ shared_ptr<ItemInstance> ArmorDyeRecipe::assembleDyedArmor(shared_ptr<CraftingCo
 	int green = (colorTotals[1] / colourCounts);
 	int blue = (colorTotals[2] / colourCounts);
 
-	float averageIntensity = (float) intensityTotal / colourCounts;
-	float resultIntensity = (float) max(red, max(green, blue));
+	float averageIntensity = static_cast<float>(intensityTotal) / colourCounts;
+	float resultIntensity = static_cast<float>(max(red, max(green, blue)));
 	//        System.out.println(averageIntensity + ", " + resultIntensity);
 
-	red = (int) ((float) red * averageIntensity / resultIntensity);
-	green = (int) ((float) green * averageIntensity / resultIntensity);
-	blue = (int) ((float) blue * averageIntensity / resultIntensity);
+	red = static_cast<int>((float)red * averageIntensity / resultIntensity);
+	green = static_cast<int>((float)green * averageIntensity / resultIntensity);
+	blue = static_cast<int>((float)blue * averageIntensity / resultIntensity);
 
 	int rgb = red;
 	rgb = (rgb << 8) + green;

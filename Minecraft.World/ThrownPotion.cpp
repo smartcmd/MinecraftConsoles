@@ -117,7 +117,7 @@ void ThrownPotion::onHit(HitResult *res)
 							}
 							else
 							{
-								int duration = (int) (scale * (double) effect->getDuration() + .5);
+								int duration = static_cast<int>(scale * (double)effect->getDuration() + .5);
 								if (duration > SharedConstants::TICKS_PER_SECOND)
 								{
 									e->addEffect(new MobEffectInstance(id, duration, effect->getAmplifier()));
@@ -129,7 +129,7 @@ void ThrownPotion::onHit(HitResult *res)
 			}
 			delete entitiesOfClass;
 		}
-		level->levelEvent(LevelEvent::PARTICLES_POTION_SPLASH, (int) Math::round(x), (int) Math::round(y), (int) Math::round(z), getPotionValue() );
+		level->levelEvent(LevelEvent::PARTICLES_POTION_SPLASH, static_cast<int>(Math::round(x)), static_cast<int>(Math::round(y)), static_cast<int>(Math::round(z)), getPotionValue() );
 
 		remove();
 	}

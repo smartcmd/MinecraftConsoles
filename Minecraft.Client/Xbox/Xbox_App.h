@@ -121,7 +121,7 @@ private:
 
 public:
 
-	void ReadBannedList(int iPad, eTMSAction action=(eTMSAction)0, bool bCallback=false);
+	void ReadBannedList(int iPad, eTMSAction action=static_cast<eTMSAction>(0), bool bCallback=false);
 // 	void ReadXuidsFileFromTMS(int iPad,eTMSAction NextAction,bool bCallback);
 // 	void ReadDLCFileFromTMS(int iPad,eTMSAction NextAction, bool bCallback);
 

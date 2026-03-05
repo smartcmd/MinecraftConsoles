@@ -16,7 +16,7 @@ UIScene_JoinMenu::UIScene_JoinMenu(int iPad, void *_initData, UILayer *parentLay
 	// Setup all the Iggy references we need for this scene
 	initialiseMovie();
 
-	JoinMenuInitData *initData = (JoinMenuInitData *)_initData;
+	JoinMenuInitData *initData = static_cast<JoinMenuInitData *>(_initData);
 	m_selectedSession = initData->selectedSession;
 	m_friendInfoUpdatedOK = false;
 	m_friendInfoUpdatedERROR = false;
@@ -224,7 +224,7 @@ void UIScene_JoinMenu::tick()
 
 void UIScene_JoinMenu::friendSessionUpdated(bool success, void *pParam)
 {
-	UIScene_JoinMenu *scene = (UIScene_JoinMenu *)pParam;
+	UIScene_JoinMenu *scene = static_cast<UIScene_JoinMenu *>(pParam);
 	ui.NavigateBack(scene->m_iPad);
 	if( success )
 	{
@@ -238,7 +238,7 @@ void UIScene_JoinMenu::friendSessionUpdated(bool success, void *pParam)
 
 int UIScene_JoinMenu::ErrorDialogReturned(void *pParam, int iPad, const C4JStorage::EMessageResult)
 {
-	UIScene_JoinMenu *scene = (UIScene_JoinMenu *)pParam;
+	UIScene_JoinMenu *scene = static_cast<UIScene_JoinMenu *>(pParam);
 	ui.NavigateBack(scene->m_iPad);
 
 	return 0;
@@ -301,7 +301,7 @@ void UIScene_JoinMenu::handleInput(int iPad, int key, bool repeat, bool pressed,
 
 void UIScene_JoinMenu::handlePress(F64 controlId, F64 childId)
 {
-	switch((int)controlId)
+	switch(static_cast<int>(controlId))
 	{
 	case eControl_JoinGame:
 		{
@@ -324,10 +324,10 @@ void UIScene_JoinMenu::handlePress(F64 controlId, F64 childId)
 
 void UIScene_JoinMenu::handleFocusChange(F64 controlId, F64 childId)
 {
-	switch((int)controlId)
+	switch(static_cast<int>(controlId))
 	{
 	case eControl_GamePlayers:
-		m_buttonListPlayers.updateChildFocus( (int) childId );
+		m_buttonListPlayers.updateChildFocus( static_cast<int>(childId) );
 	};
 	updateTooltips();
 }
@@ -370,7 +370,7 @@ void UIScene_JoinMenu::StartSharedLaunchFlow()
 
 int UIScene_JoinMenu::StartGame_SignInReturned(void *pParam,bool bContinue, int iPad)
 {
-	UIScene_JoinMenu* pClass = (UIScene_JoinMenu*)ui.GetSceneFromCallbackId((size_t)pParam);
+	UIScene_JoinMenu* pClass = static_cast<UIScene_JoinMenu *>(ui.GetSceneFromCallbackId((size_t)pParam));
 
 	if(pClass)
 	{

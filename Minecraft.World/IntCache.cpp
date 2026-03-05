@@ -36,7 +36,7 @@ IntCache::ThreadStorage::~ThreadStorage()
 
 void IntCache::ReleaseThreadStorage()
 {
-	ThreadStorage *tls = (ThreadStorage *)TlsGetValue(tlsIdx);
+	ThreadStorage *tls = static_cast<ThreadStorage *>(TlsGetValue(tlsIdx));
 
 
 	delete tls;
@@ -44,7 +44,7 @@ void IntCache::ReleaseThreadStorage()
 
 intArray IntCache::allocate(int size)
 {
-	ThreadStorage *tls = (ThreadStorage *)TlsGetValue(tlsIdx);
+	ThreadStorage *tls = static_cast<ThreadStorage *>(TlsGetValue(tlsIdx));
 
 	if (size <= TINY_CUTOFF)
 	{
@@ -100,7 +100,7 @@ intArray IntCache::allocate(int size)
 
 void IntCache::releaseAll()
 {
-	ThreadStorage *tls = (ThreadStorage *)TlsGetValue(tlsIdx);
+	ThreadStorage *tls = static_cast<ThreadStorage *>(TlsGetValue(tlsIdx));
 
 	// 4J - added - we can now remove the vectors that were deemed as too small (see comment in IntCache::allocate)
 	for( int i = 0; i < tls->toosmall.size(); i++ )
@@ -130,7 +130,7 @@ void IntCache::releaseAll()
 // 4J added so that we can fully reset between levels
 void IntCache::Reset()
 {
-	ThreadStorage *tls = (ThreadStorage *)TlsGetValue(tlsIdx);
+	ThreadStorage *tls = static_cast<ThreadStorage *>(TlsGetValue(tlsIdx));
 	tls->maxSize = TINY_CUTOFF;
 	for( int i = 0; i < tls->allocated.size(); i++ )
 	{

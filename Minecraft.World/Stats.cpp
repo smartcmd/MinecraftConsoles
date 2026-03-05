@@ -67,13 +67,13 @@ Stat *Stats::completeTheEnd = NULL; // The number of times this player has been 
 
 void Stats::staticCtor()
 {
-	Stats::walkOneM			= (new GeneralStat(2000, L"stat.walkOneM", (StatFormatter *) Stat::distanceFormatter))->setAwardLocallyOnly()->postConstruct();
-	Stats::swimOneM			= (new GeneralStat(2001, L"stat.swimOneM", (StatFormatter *) Stat::distanceFormatter))->setAwardLocallyOnly()->postConstruct();
-	Stats::fallOneM			= (new GeneralStat(2002, L"stat.fallOneM", (StatFormatter *) Stat::distanceFormatter))->setAwardLocallyOnly()->postConstruct();
-	Stats::climbOneM		= (new GeneralStat(2003, L"stat.climbOneM", (StatFormatter *) Stat::distanceFormatter))->setAwardLocallyOnly()->postConstruct();
-	Stats::minecartOneM		= (new GeneralStat(2004, L"stat.minecartOneM", (StatFormatter *) Stat::distanceFormatter))->setAwardLocallyOnly()->postConstruct();
-	Stats::boatOneM			= (new GeneralStat(2005, L"stat.boatOneM", (StatFormatter *) Stat::distanceFormatter))->setAwardLocallyOnly()->postConstruct();
-	Stats::pigOneM			= (new GeneralStat(2006, L"stat.pigOneM", (StatFormatter *) Stat::distanceFormatter))->setAwardLocallyOnly()->postConstruct();
+	Stats::walkOneM			= (new GeneralStat(2000, L"stat.walkOneM", static_cast<StatFormatter *>(Stat::distanceFormatter)))->setAwardLocallyOnly()->postConstruct();
+	Stats::swimOneM			= (new GeneralStat(2001, L"stat.swimOneM", static_cast<StatFormatter *>(Stat::distanceFormatter)))->setAwardLocallyOnly()->postConstruct();
+	Stats::fallOneM			= (new GeneralStat(2002, L"stat.fallOneM", static_cast<StatFormatter *>(Stat::distanceFormatter)))->setAwardLocallyOnly()->postConstruct();
+	Stats::climbOneM		= (new GeneralStat(2003, L"stat.climbOneM", static_cast<StatFormatter *>(Stat::distanceFormatter)))->setAwardLocallyOnly()->postConstruct();
+	Stats::minecartOneM		= (new GeneralStat(2004, L"stat.minecartOneM", static_cast<StatFormatter *>(Stat::distanceFormatter)))->setAwardLocallyOnly()->postConstruct();
+	Stats::boatOneM			= (new GeneralStat(2005, L"stat.boatOneM", static_cast<StatFormatter *>(Stat::distanceFormatter)))->setAwardLocallyOnly()->postConstruct();
+	Stats::pigOneM			= (new GeneralStat(2006, L"stat.pigOneM", static_cast<StatFormatter *>(Stat::distanceFormatter)))->setAwardLocallyOnly()->postConstruct();
 	Stats::portalsCreated	= (new GeneralStat(2007, L"stat.portalsUsed"))->postConstruct();
 	Stats::cowsMilked		= (new GeneralStat(2008, L"stat.cowsMilked"))->postConstruct();
 	Stats::netherLavaCollected = (new GeneralStat(2009, L"stat.netherLavaCollected"))->postConstruct();

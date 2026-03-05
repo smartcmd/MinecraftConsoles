@@ -37,7 +37,7 @@ ModelPart * HumanoidModel::AddOrRetrievePart(SKIN_BOX *pBox)
 
 	if(pNewBox)
 	{
-		if((pNewBox->getfU()!=(int)pBox->fU) || (pNewBox->getfV()!=(int)pBox->fV))
+		if((pNewBox->getfU()!=static_cast<int>(pBox->fU)) || (pNewBox->getfV()!=static_cast<int>(pBox->fV)))
 		{
 			app.DebugPrintf("HumanoidModel::AddOrRetrievePart - Box geometry was found, but with different uvs\n");
 			pNewBox=NULL;
@@ -47,7 +47,7 @@ ModelPart * HumanoidModel::AddOrRetrievePart(SKIN_BOX *pBox)
 	{
 		//app.DebugPrintf("HumanoidModel::AddOrRetrievePart - Adding box to model part\n");
 
-		pNewBox = new ModelPart(this, (int)pBox->fU, (int)pBox->fV);
+		pNewBox = new ModelPart(this, static_cast<int>(pBox->fU), static_cast<int>(pBox->fV));
 		pNewBox->visible=false;
 		pNewBox->addHumanoidBox(pBox->fX, pBox->fY, pBox->fZ, pBox->fW, pBox->fH, pBox->fD, 0); 
 		// 4J-PB - don't compile here, since the lighting isn't set up. It'll be compiled on first use.

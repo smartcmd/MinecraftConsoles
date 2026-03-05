@@ -103,5 +103,5 @@ void GameProgress::updatePlayer(int iPad)
 
 float GameProgress::calcGameProgress(int achievementsUnlocked)
 {
-	return (float) achievementsUnlocked / 0.60f;
+	return static_cast<float>(achievementsUnlocked) / 0.60f;
 }

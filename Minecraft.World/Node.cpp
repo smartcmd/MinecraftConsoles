@@ -35,9 +35,9 @@ int Node::createHash(const int x, const int y, const int z)
 
 float Node::distanceTo(Node *to)
 {
-	float xd = (float) ( to->x - x );
-	float yd = (float) ( to->y - y );
-	float zd = (float) ( to->z - z );
+	float xd = static_cast<float>(to->x - x);
+	float yd = static_cast<float>(to->y - y);
+	float zd = static_cast<float>(to->z - z);
 	return Mth::sqrt(xd * xd + yd * yd + zd * zd);
 }
 

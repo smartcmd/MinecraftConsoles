@@ -146,8 +146,8 @@ void IUIScene_HUD::updateFrameTick()
 		{
 			if(uiOpacityTimer<10)
 			{
-				float fStep=(80.0f-(float)ucAlpha)/10.0f;
-				fVal=0.01f*(80.0f-((10.0f-(float)uiOpacityTimer)*fStep));
+				float fStep=(80.0f-static_cast<float>(ucAlpha))/10.0f;
+				fVal=0.01f*(80.0f-((10.0f-static_cast<float>(uiOpacityTimer))*fStep));
 			}
 			else
 			{
@@ -156,7 +156,7 @@ void IUIScene_HUD::updateFrameTick()
 		}
 		else
 		{
-			fVal=0.01f*(float)ucAlpha;
+			fVal=0.01f*static_cast<float>(ucAlpha);
 		}
 	}
 	else
@@ -166,7 +166,7 @@ void IUIScene_HUD::updateFrameTick()
 		{
 			ucAlpha=15;
 		}
-		fVal=0.01f*(float)ucAlpha;
+		fVal=0.01f*static_cast<float>(ucAlpha);
 	}
 	SetOpacity(fVal);
 
@@ -198,7 +198,7 @@ void IUIScene_HUD::renderPlayerHealth()
 	bool bHasPoison = pMinecraft->localplayers[iPad]->hasEffect(MobEffect::poison);
 	bool bHasWither = pMinecraft->localplayers[iPad]->hasEffect(MobEffect::wither);
 	AttributeInstance *maxHealthAttribute = pMinecraft->localplayers[iPad]->getAttribute(SharedMonsterAttributes::MAX_HEALTH);
-	float maxHealth = (float)maxHealthAttribute->getValue();
+	float maxHealth = static_cast<float>(maxHealthAttribute->getValue());
 	float totalAbsorption = pMinecraft->localplayers[iPad]->getAbsorptionAmount();
 
 	// Update armour
@@ -242,8 +242,8 @@ void IUIScene_HUD::renderPlayerHealth()
 		if (pMinecraft->localplayers[iPad]->isUnderLiquid(Material::water))
 		{
 			ShowAir(true);
-			int count = (int) ceil((pMinecraft->localplayers[iPad]->getAirSupply() - 2) * 10.0f / Player::TOTAL_AIR_SUPPLY);
-			int extra = (int) ceil((pMinecraft->localplayers[iPad]->getAirSupply()) * 10.0f / Player::TOTAL_AIR_SUPPLY) - count;
+			int count = static_cast<int>(ceil((pMinecraft->localplayers[iPad]->getAirSupply() - 2) * 10.0f / Player::TOTAL_AIR_SUPPLY));
+			int extra = static_cast<int>(ceil((pMinecraft->localplayers[iPad]->getAirSupply()) * 10.0f / Player::TOTAL_AIR_SUPPLY)) - count;
 			SetAir(count, extra);
 		}
 		else
@@ -254,7 +254,7 @@ void IUIScene_HUD::renderPlayerHealth()
 	else if(riding->instanceof(eTYPE_LIVINGENTITY) )
 	{
 		shared_ptr<LivingEntity> living = dynamic_pointer_cast<LivingEntity>(riding);
-		int riderCurrentHealth = (int) ceil(living->getHealth());
+		int riderCurrentHealth = static_cast<int>(ceil(living->getHealth()));
 		float maxRiderHealth = living->getMaxHealth();
 
 		SetRidingHorse(true, pMinecraft->localplayers[iPad]->isRidingJumpable(), maxRiderHealth);

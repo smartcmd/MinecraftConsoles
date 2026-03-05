@@ -140,10 +140,10 @@ void Screen::updateEvents()
 			else if (vk == VK_TAB)     mappedKey = Keyboard::KEY_TAB;
 			else if (vk >= 'A' && vk <= 'Z')
 			{
-				ch = (wchar_t)(vk - 'A' + L'a');
-				if (g_KBMInput.IsKeyDown(VK_LSHIFT) || g_KBMInput.IsKeyDown(VK_RSHIFT)) ch = (wchar_t)vk;
+				ch = static_cast<wchar_t>(vk - 'A' + L'a');
+				if (g_KBMInput.IsKeyDown(VK_LSHIFT) || g_KBMInput.IsKeyDown(VK_RSHIFT)) ch = static_cast<wchar_t>(vk);
 			}
-			else if (vk >= '0' && vk <= '9') ch = (wchar_t)vk;
+			else if (vk >= '0' && vk <= '9') ch = static_cast<wchar_t>(vk);
 			else if (vk == VK_SPACE) ch = L' ';
 
 			if (mappedKey != -1) keyPressed(ch, mappedKey);

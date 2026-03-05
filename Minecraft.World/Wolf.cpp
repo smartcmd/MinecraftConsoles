@@ -100,8 +100,8 @@ void Wolf::defineSynchedData()
 {
 	TamableAnimal::defineSynchedData();
 	entityData->define(DATA_HEALTH_ID, getHealth());
-	entityData->define(DATA_INTERESTED_ID, (byte)0);
-	entityData->define(DATA_COLLAR_COLOR, (byte) ColoredTile::getTileDataForItemAuxValue(DyePowderItem::RED));
+	entityData->define(DATA_INTERESTED_ID, static_cast<byte>(0));
+	entityData->define(DATA_COLLAR_COLOR, static_cast<byte>(ColoredTile::getTileDataForItemAuxValue(DyePowderItem::RED)));
 }
 
 void Wolf::playStepSound(int xt, int yt, int zt, int t)
@@ -114,7 +114,7 @@ void Wolf::addAdditonalSaveData(CompoundTag *tag)
 	TamableAnimal::addAdditonalSaveData(tag);
 
 	tag->putBoolean(L"Angry", isAngry());
-	tag->putByte(L"CollarColor", (byte) getCollarColor());
+	tag->putByte(L"CollarColor", static_cast<byte>(getCollarColor()));
 }
 
 void Wolf::readAdditionalSaveData(CompoundTag *tag) 
@@ -224,8 +224,8 @@ void Wolf::tick()
 
 			if (shakeAnim > 0.4f) 
 			{
-				float yt = (float) bb->y0;
-				int shakeCount = (int) (Mth::sin((shakeAnim - 0.4f) * PI) * 7.0f);
+				float yt = static_cast<float>(bb->y0);
+				int shakeCount = static_cast<int>(Mth::sin((shakeAnim - 0.4f) * PI) * 7.0f);
 				for (int i = 0; i < shakeCount; i++) 
 				{
 					float xo = (random->nextFloat() * 2 - 1) * bbWidth * 0.5f;
@@ -469,7 +469,7 @@ bool Wolf::isFood(shared_ptr<ItemInstance> item)
 {
 	if (item == NULL) return false;
 	if (dynamic_cast<FoodItem *>(Item::items[item->id]) == NULL) return false;
-	return ((FoodItem *) Item::items[item->id])->isMeat();
+	return static_cast<FoodItem *>(Item::items[item->id])->isMeat();
 }
 
 int Wolf::getMaxSpawnClusterSize()
@@ -488,11 +488,11 @@ void Wolf::setAngry(bool value)
 	byte current = entityData->getByte(DATA_FLAGS_ID);
 	if (value) 
 	{
-		entityData->set(DATA_FLAGS_ID, (byte) (current | 0x02));
+		entityData->set(DATA_FLAGS_ID, static_cast<byte>(current | 0x02));
 	} 
 	else
 	{
-		entityData->set(DATA_FLAGS_ID, (byte) (current & ~0x02));
+		entityData->set(DATA_FLAGS_ID, static_cast<byte>(current & ~0x02));
 	}
 }
 
@@ -503,7 +503,7 @@ int Wolf::getCollarColor()
 
 void Wolf::setCollarColor(int color)
 {
-	entityData->set(DATA_COLLAR_COLOR, (byte) (color & 0xF));
+	entityData->set(DATA_COLLAR_COLOR, static_cast<byte>(color & 0xF));
 }
 
 // 4J-PB added for tooltips
@@ -536,11 +536,11 @@ void Wolf::setIsInterested(bool value)
 {
 	if (value)
 	{
-		entityData->set(DATA_INTERESTED_ID, (byte) 1);
+		entityData->set(DATA_INTERESTED_ID, static_cast<byte>(1));
 	}
 	else
 	{
-		entityData->set(DATA_INTERESTED_ID, (byte) 0);
+		entityData->set(DATA_INTERESTED_ID, static_cast<byte>(0));
 	}
 }
 

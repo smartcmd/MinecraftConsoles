@@ -78,7 +78,7 @@ void BaseMobSpawner::tick()
 
 		if (spawnDelay > 0) spawnDelay--;
 		oSpin = spin;
-		spin = (int)(spin + 1000 / (spawnDelay + 200.0f)) % 360;
+		spin = static_cast<int>(spin + 1000 / (spawnDelay + 200.0f)) % 360;
 	}
 	else
 	{
@@ -202,7 +202,7 @@ void BaseMobSpawner::delay()
 
 	if ( (spawnPotentials != NULL) && (spawnPotentials->size() > 0) )
 	{
-		setNextSpawnData( (SpawnData*) WeighedRandom::getRandomItem((Random*)getLevel()->random, (vector<WeighedRandomItem*>*)spawnPotentials) );
+		setNextSpawnData( static_cast<SpawnData *>(WeighedRandom::getRandomItem((Random *)getLevel()->random, (vector<WeighedRandomItem *> *)spawnPotentials)) );
 	}
 
 	broadcastEvent(EVENT_SPAWN);
@@ -261,17 +261,17 @@ void BaseMobSpawner::load(CompoundTag *tag)
 void BaseMobSpawner::save(CompoundTag *tag)
 {
 	tag->putString(L"EntityId", getEntityId());
-	tag->putShort(L"Delay", (short) spawnDelay);
-	tag->putShort(L"MinSpawnDelay", (short) minSpawnDelay);
-	tag->putShort(L"MaxSpawnDelay", (short) maxSpawnDelay);
-	tag->putShort(L"SpawnCount", (short) spawnCount);
-	tag->putShort(L"MaxNearbyEntities", (short) maxNearbyEntities);
-	tag->putShort(L"RequiredPlayerRange", (short) requiredPlayerRange);
-	tag->putShort(L"SpawnRange", (short) spawnRange);
+	tag->putShort(L"Delay", static_cast<short>(spawnDelay));
+	tag->putShort(L"MinSpawnDelay", static_cast<short>(minSpawnDelay));
+	tag->putShort(L"MaxSpawnDelay", static_cast<short>(maxSpawnDelay));
+	tag->putShort(L"SpawnCount", static_cast<short>(spawnCount));
+	tag->putShort(L"MaxNearbyEntities", static_cast<short>(maxNearbyEntities));
+	tag->putShort(L"RequiredPlayerRange", static_cast<short>(requiredPlayerRange));
+	tag->putShort(L"SpawnRange", static_cast<short>(spawnRange));
 
 	if (getNextSpawnData() != NULL)
 	{
-		tag->putCompound(L"SpawnData", (CompoundTag *) getNextSpawnData()->tag->copy());
+		tag->putCompound(L"SpawnData", static_cast<CompoundTag *>(getNextSpawnData()->tag->copy()));
 	}
 
 	if (getNextSpawnData() != NULL || (spawnPotentials != NULL && spawnPotentials->size() > 0))

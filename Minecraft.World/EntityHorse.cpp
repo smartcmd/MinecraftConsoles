@@ -100,7 +100,7 @@ void EntityHorse::defineSynchedData()
 {
 	Animal::defineSynchedData();
 	entityData->define(DATA_ID_HORSE_FLAGS, 0);
-	entityData->define(DATA_ID_TYPE, (byte) 0);
+	entityData->define(DATA_ID_TYPE, static_cast<byte>(0));
 	entityData->define(DATA_ID_TYPE_VARIANT, 0);
 	entityData->define(DATA_ID_OWNER_NAME, L"");
 	entityData->define(DATA_ID_ARMOR, 0);
@@ -108,7 +108,7 @@ void EntityHorse::defineSynchedData()
 
 void EntityHorse::setType(int i)
 {
-	entityData->set(DATA_ID_TYPE, (byte) i);
+	entityData->set(DATA_ID_TYPE, static_cast<byte>(i));
 	clearLayeredTextureInfo();
 }
 
@@ -202,7 +202,7 @@ float EntityHorse::getFoalScale()
 	{
 		return 1.0f;
 	}
-	return .5f + (float) (BABY_START_AGE - age) / (float) BABY_START_AGE * .5f;
+	return .5f + static_cast<float>(BABY_START_AGE - age) / static_cast<float>(BABY_START_AGE) * .5f;
 }
 
 
@@ -995,7 +995,7 @@ bool EntityHorse::mobInteract(shared_ptr<Player> player)
 		}
 		doPlayerRide(player);
 
-		app.DebugPrintf("<EntityHorse::mobInteract> Horse speed: %f\n", (float) (getAttribute(SharedMonsterAttributes::MOVEMENT_SPEED)->getValue()));
+		app.DebugPrintf("<EntityHorse::mobInteract> Horse speed: %f\n", static_cast<float>(getAttribute(SharedMonsterAttributes::MOVEMENT_SPEED)->getValue()));
 
 		return true;
 	}
@@ -1098,7 +1098,7 @@ int EntityHorse::nameYOffset()
 	}
 	else
 	{
-		return (int) (-5 - getFoalScale() * 80.0f);
+		return static_cast<int>(-5 - getFoalScale() * 80.0f);
 	}
 }
 
@@ -1407,7 +1407,7 @@ void EntityHorse::travel(float xa, float ya)
 	flyingSpeed = getSpeed() * .1f;
 	if (!level->isClientSide)
 	{
-		setSpeed((float) (getAttribute(SharedMonsterAttributes::MOVEMENT_SPEED)->getValue()));
+		setSpeed(static_cast<float>(getAttribute(SharedMonsterAttributes::MOVEMENT_SPEED)->getValue()));
 		Animal::travel(xa, ya);
 	}
 
@@ -1459,7 +1459,7 @@ void EntityHorse::addAdditonalSaveData(CompoundTag *tag)
 			{
 				CompoundTag *compoundTag = new CompoundTag();
 
-				compoundTag->putByte(L"Slot", (byte) i);
+				compoundTag->putByte(L"Slot", static_cast<byte>(i));
 
 				stack->save(compoundTag);
 				listTag->add(compoundTag);
@@ -1639,8 +1639,8 @@ MobGroupData *EntityHorse::finalizeMobSpawn(MobGroupData *groupData, int extraDa
 
 	if ( dynamic_cast<HorseGroupData *>(groupData) != NULL )
 	{
-		type = ((HorseGroupData *) groupData)->horseType;
-		variant = ((HorseGroupData *) groupData)->horseVariant & 0xff | (random->nextInt(MARKINGS) << 8);
+		type = static_cast<HorseGroupData *>(groupData)->horseType;
+		variant = static_cast<HorseGroupData *>(groupData)->horseVariant & 0xff | (random->nextInt(MARKINGS) << 8);
 	}
 	else
 	{
@@ -1744,7 +1744,7 @@ void EntityHorse::onPlayerJump(int jumpAmount)
 		}
 		else
 		{
-			playerJumpPendingScale = .4f + .4f * (float) jumpAmount / 90.0f;
+			playerJumpPendingScale = .4f + .4f * static_cast<float>(jumpAmount) / 90.0f;
 		}
 	}
 }

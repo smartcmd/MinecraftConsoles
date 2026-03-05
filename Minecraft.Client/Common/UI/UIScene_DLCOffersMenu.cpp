@@ -16,7 +16,7 @@
 UIScene_DLCOffersMenu::UIScene_DLCOffersMenu(int iPad, void *initData, UILayer *parentLayer) : UIScene(iPad, parentLayer)
 {
 	m_bProductInfoShown=false;
-	DLCOffersParam *param=(DLCOffersParam *)initData;
+	DLCOffersParam *param=static_cast<DLCOffersParam *>(initData);
 	m_iProductInfoIndex=param->iType;
 	m_iCurrentDLC=0;
 	m_iTotalDLC=0;
@@ -103,7 +103,7 @@ void UIScene_DLCOffersMenu::handleTimerComplete(int id)
 
 int UIScene_DLCOffersMenu::ExitDLCOffersMenu(void *pParam,int iPad,C4JStorage::EMessageResult result)
 {
-	UIScene_DLCOffersMenu* pClass = (UIScene_DLCOffersMenu*)pParam;
+	UIScene_DLCOffersMenu* pClass = static_cast<UIScene_DLCOffersMenu *>(pParam);
 
 #if defined __ORBIS__ || defined __PSVITA__
 	app.GetCommerce()->HidePsStoreIcon();
@@ -217,7 +217,7 @@ void UIScene_DLCOffersMenu::handleInput(int iPad, int key, bool repeat, bool pre
 
 void UIScene_DLCOffersMenu::handlePress(F64 controlId, F64 childId)
 {
-	switch((int)controlId)
+	switch(static_cast<int>(controlId))
 	{
 	case eControl_OffersList:
 		{
@@ -263,7 +263,7 @@ void UIScene_DLCOffersMenu::handlePress(F64 controlId, F64 childId)
 			int iIndex = (int)childId;
 			StorageManager.InstallOffer(1,StorageManager.GetOffer(iIndex).wszProductID,NULL,NULL);
 #else
-			int iIndex = (int)childId;
+			int iIndex = static_cast<int>(childId);
 
 			ULONGLONG ullIndexA[1];
 			ullIndexA[0]=StorageManager.GetOffer(iIndex).qwOfferID;

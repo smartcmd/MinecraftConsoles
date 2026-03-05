@@ -102,7 +102,7 @@ HRESULT CScene_DebugOverlay::OnInit( XUIMessageInit *pInitData, BOOL &bHandled )
 
 	Minecraft *pMinecraft = Minecraft::GetInstance();
 	m_setTime.SetValue( pMinecraft->level->getLevelData()->getTime() % 24000 );
-	m_setFov.SetValue( (int)pMinecraft->gameRenderer->GetFovVal());
+	m_setFov.SetValue( static_cast<int>(pMinecraft->gameRenderer->GetFovVal()));
 
 	XuiSetTimer(m_hObj,0,DEBUG_OVERLAY_UPDATE_TIME_PERIOD);
 
@@ -266,7 +266,7 @@ HRESULT CScene_DebugOverlay::OnNotifyValueChanged( HXUIOBJ hObjSource, XUINotify
 	if( hObjSource == m_setFov )
 	{
 		Minecraft *pMinecraft = Minecraft::GetInstance();
-		pMinecraft->gameRenderer->SetFovVal((float)pNotifyValueChangedData->nValue);
+		pMinecraft->gameRenderer->SetFovVal(static_cast<float>(pNotifyValueChangedData->nValue));
 	}
 	return S_OK;
 }
@@ -277,7 +277,7 @@ HRESULT CScene_DebugOverlay::OnTimer( XUIMessageTimer *pTimer, BOOL& bHandled )
 	if(pMinecraft->level != NULL)
 	{
 		m_setTime.SetValue( pMinecraft->level->getLevelData()->getTime() % 24000 );
-		m_setFov.SetValue( (int)pMinecraft->gameRenderer->GetFovVal());
+		m_setFov.SetValue( static_cast<int>(pMinecraft->gameRenderer->GetFovVal()));
 	}
 	return S_OK;
 }
@@ -286,9 +286,9 @@ void CScene_DebugOverlay::SetSpawnToPlayerPos()
 {
 	Minecraft *pMinecraft = Minecraft::GetInstance();
 
-	pMinecraft->level->getLevelData()->setXSpawn((int)pMinecraft->player->x);
-	pMinecraft->level->getLevelData()->setYSpawn((int)pMinecraft->player->y);
-	pMinecraft->level->getLevelData()->setZSpawn((int)pMinecraft->player->z);
+	pMinecraft->level->getLevelData()->setXSpawn(static_cast<int>(pMinecraft->player->x));
+	pMinecraft->level->getLevelData()->setYSpawn(static_cast<int>(pMinecraft->player->y));
+	pMinecraft->level->getLevelData()->setZSpawn(static_cast<int>(pMinecraft->player->z));
 }
 
 #ifndef _CONTENT_PACKAGE

@@ -50,14 +50,14 @@ bool DoorInteractGoal::canContinueToUse()
 void DoorInteractGoal::start()
 {
 	passed = false;
-	doorOpenDirX = (float) (doorX + 0.5f - mob->x);
-	doorOpenDirZ = (float) (doorZ + 0.5f - mob->z);
+	doorOpenDirX = static_cast<float>(doorX + 0.5f - mob->x);
+	doorOpenDirZ = static_cast<float>(doorZ + 0.5f - mob->z);
 }
 
 void DoorInteractGoal::tick()
 {
-	float newDoorDirX = (float) (doorX + 0.5f - mob->x);
-	float newDoorDirZ = (float) (doorZ + 0.5f - mob->z);
+	float newDoorDirX = static_cast<float>(doorX + 0.5f - mob->x);
+	float newDoorDirZ = static_cast<float>(doorZ + 0.5f - mob->z);
 	float dot = doorOpenDirX * newDoorDirX + doorOpenDirZ * newDoorDirZ;
 	if (dot < 0)
 	{
@@ -69,5 +69,5 @@ DoorTile *DoorInteractGoal::getDoorTile(int x, int y, int z)
 {
 	int tileId = mob->level->getTile(x, y, z);
 	if (tileId != Tile::door_wood_Id) return NULL;
-	return (DoorTile *) Tile::tiles[tileId];
+	return static_cast<DoorTile *>(Tile::tiles[tileId]);
 }

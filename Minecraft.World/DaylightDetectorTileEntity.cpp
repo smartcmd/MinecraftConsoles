@@ -14,7 +14,7 @@ void DaylightDetectorTileEntity::tick()
 		tile = getTile();
 		if (tile != NULL && dynamic_cast<DaylightDetectorTile *>(tile) != NULL)
 		{
-			((DaylightDetectorTile *) tile)->updateSignalStrength(level, x, y, z);
+			static_cast<DaylightDetectorTile *>(tile)->updateSignalStrength(level, x, y, z);
 		}
 	}
 }

@@ -25,7 +25,7 @@ public:
 	virtual int GetLocalTMSFileIndex(WCHAR *wchTMSFile,bool bFilenameIncludesExtension,eFileExtensionType eEXT=eFileExtensionType_PNG);
 
 	// BANNED LEVEL LIST
-	virtual void ReadBannedList(int iPad, eTMSAction action=(eTMSAction)0, bool bCallback=false) {}
+	virtual void ReadBannedList(int iPad, eTMSAction action=static_cast<eTMSAction>(0), bool bCallback=false) {}
 
 	C4JStringTable *GetStringTable()																									{ return NULL;}
 

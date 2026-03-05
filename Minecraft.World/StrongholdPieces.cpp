@@ -268,7 +268,7 @@ void StrongholdPieces::StrongholdPiece::addAdditonalSaveData(CompoundTag *tag)
 
 void StrongholdPieces::StrongholdPiece::readAdditonalSaveData(CompoundTag *tag)
 {
-	entryDoor = (SmallDoorType)_fromString<int>(tag->getString(L"EntryDoor"));
+	entryDoor = static_cast<SmallDoorType>(_fromString<int>(tag->getString(L"EntryDoor")));
 }
 
 void StrongholdPieces::StrongholdPiece::generateSmallDoor(Level *level, Random *random, BoundingBox *chunkBB, StrongholdPieces::StrongholdPiece::SmallDoorType doorType, int footX, int footY, int footZ)
@@ -554,7 +554,7 @@ void StrongholdPieces::StairsDown::addChildren(StructurePiece *startPiece, list<
 	{
 		imposedPiece = EPieceClass_FiveCrossing;
 	}
-	generateSmallDoorChildForward((StartPiece *) startPiece, pieces, random, 1, 1);
+	generateSmallDoorChildForward(static_cast<StartPiece *>(startPiece), pieces, random, 1, 1);
 }
 
 StrongholdPieces::StairsDown *StrongholdPieces::StairsDown::createPiece(list<StructurePiece *> *pieces, Random *random, int footX, int footY, int footZ, int direction, int genDepth)
@@ -562,7 +562,7 @@ StrongholdPieces::StairsDown *StrongholdPieces::StairsDown::createPiece(list<Str
 	BoundingBox *box = BoundingBox::orientBox(footX, footY, footZ, -1, 4 - height, 0, width, height, depth, direction);
 
 	StartPiece *startPiece = NULL;
-	if(pieces != NULL) startPiece = ((StrongholdPieces::StartPiece *) pieces->front());
+	if(pieces != NULL) startPiece = static_cast<StrongholdPieces::StartPiece *>(pieces->front());
 
 	if (!isOkBox(box, startPiece) || StructurePiece::findCollisionPiece(pieces, box) != NULL)
 	{
@@ -663,9 +663,9 @@ void StrongholdPieces::Straight::readAdditonalSaveData(CompoundTag *tag)
 
 void StrongholdPieces::Straight::addChildren(StructurePiece *startPiece, list<StructurePiece *> *pieces, Random *random)
 {
-	generateSmallDoorChildForward((StartPiece *) startPiece, pieces, random, 1, 1);
-	if (leftChild) generateSmallDoorChildLeft((StartPiece *) startPiece, pieces, random, 1, 2);
-	if (rightChild) generateSmallDoorChildRight((StartPiece *) startPiece, pieces, random, 1, 2);
+	generateSmallDoorChildForward(static_cast<StartPiece *>(startPiece), pieces, random, 1, 1);
+	if (leftChild) generateSmallDoorChildLeft(static_cast<StartPiece *>(startPiece), pieces, random, 1, 2);
+	if (rightChild) generateSmallDoorChildRight(static_cast<StartPiece *>(startPiece), pieces, random, 1, 2);
 }
 
 StrongholdPieces::Straight *StrongholdPieces::Straight::createPiece(list<StructurePiece *> *pieces, Random *random, int footX, int footY, int footZ, int direction, int genDepth)
@@ -673,7 +673,7 @@ StrongholdPieces::Straight *StrongholdPieces::Straight::createPiece(list<Structu
 	BoundingBox *box = BoundingBox::orientBox(footX, footY, footZ, -1, -1, 0, width, height, depth, direction);
 
 	StartPiece *startPiece = NULL;
-	if(pieces != NULL) startPiece = ((StrongholdPieces::StartPiece *) pieces->front());
+	if(pieces != NULL) startPiece = static_cast<StrongholdPieces::StartPiece *>(pieces->front());
 
 	if (!isOkBox(box, startPiece) || StructurePiece::findCollisionPiece(pieces, box) != NULL)
 	{
@@ -765,7 +765,7 @@ void StrongholdPieces::ChestCorridor::readAdditonalSaveData(CompoundTag *tag)
 
 void StrongholdPieces::ChestCorridor::addChildren(StructurePiece *startPiece, list<StructurePiece *> *pieces, Random *random)
 {
-	generateSmallDoorChildForward((StartPiece *) startPiece, pieces, random, 1, 1);
+	generateSmallDoorChildForward(static_cast<StartPiece *>(startPiece), pieces, random, 1, 1);
 }
 
 StrongholdPieces::ChestCorridor *StrongholdPieces::ChestCorridor::createPiece(list<StructurePiece *> *pieces, Random *random, int footX, int footY, int footZ, int direction, int genDepth)
@@ -773,7 +773,7 @@ StrongholdPieces::ChestCorridor *StrongholdPieces::ChestCorridor::createPiece(li
 	BoundingBox *box = BoundingBox::orientBox(footX, footY, footZ, -1, -1, 0, width, height, depth, direction);
 
 	StartPiece *startPiece = NULL;
-	if(pieces != NULL) startPiece = ((StrongholdPieces::StartPiece *) pieces->front());
+	if(pieces != NULL) startPiece = static_cast<StrongholdPieces::StartPiece *>(pieces->front());
 
 	if (!isOkBox(box, startPiece) || StructurePiece::findCollisionPiece(pieces, box) != NULL)
 	{
@@ -837,7 +837,7 @@ StrongholdPieces::StraightStairsDown::StraightStairsDown(int genDepth, Random *r
 
 void StrongholdPieces::StraightStairsDown::addChildren(StructurePiece *startPiece, list<StructurePiece *> *pieces, Random *random)
 {
-	generateSmallDoorChildForward((StartPiece *) startPiece, pieces, random, 1, 1);
+	generateSmallDoorChildForward(static_cast<StartPiece *>(startPiece), pieces, random, 1, 1);
 }
 
 StrongholdPieces::StraightStairsDown *StrongholdPieces::StraightStairsDown::createPiece(list<StructurePiece *> *pieces, Random *random, int footX, int footY, int footZ, int direction, int genDepth)
@@ -845,7 +845,7 @@ StrongholdPieces::StraightStairsDown *StrongholdPieces::StraightStairsDown::crea
 	BoundingBox *box = BoundingBox::orientBox(footX, footY, footZ, -1, 4 - height, 0, width, height, depth, direction);
 
 	StartPiece *startPiece = NULL;
-	if(pieces != NULL) startPiece = ((StrongholdPieces::StartPiece *) pieces->front());
+	if(pieces != NULL) startPiece = static_cast<StrongholdPieces::StartPiece *>(pieces->front());
 
 	if (!isOkBox(box, startPiece) || StructurePiece::findCollisionPiece(pieces, box) != NULL)
 	{
@@ -904,11 +904,11 @@ void StrongholdPieces::LeftTurn::addChildren(StructurePiece *startPiece, list<St
 {
 	if (orientation == Direction::NORTH || orientation == Direction::EAST)
 	{
-		generateSmallDoorChildLeft((StartPiece *) startPiece, pieces, random, 1, 1);
+		generateSmallDoorChildLeft(static_cast<StartPiece *>(startPiece), pieces, random, 1, 1);
 	}
 	else
 	{
-		generateSmallDoorChildRight((StartPiece *) startPiece, pieces, random, 1, 1);
+		generateSmallDoorChildRight(static_cast<StartPiece *>(startPiece), pieces, random, 1, 1);
 	}
 }
 
@@ -917,7 +917,7 @@ StrongholdPieces::LeftTurn *StrongholdPieces::LeftTurn::createPiece(list<Structu
 	BoundingBox *box = BoundingBox::orientBox(footX, footY, footZ, -1, -1, 0, width, height, depth, direction);
 
 	StartPiece *startPiece = NULL;
-	if(pieces != NULL) startPiece = ((StrongholdPieces::StartPiece *) pieces->front());
+	if(pieces != NULL) startPiece = static_cast<StrongholdPieces::StartPiece *>(pieces->front());
 
 	if (!isOkBox(box, startPiece) || StructurePiece::findCollisionPiece(pieces, box) != NULL)
 	{
@@ -965,11 +965,11 @@ void StrongholdPieces::RightTurn::addChildren(StructurePiece *startPiece, list<S
 {
 	if (orientation == Direction::NORTH || orientation == Direction::EAST)
 	{
-		generateSmallDoorChildRight((StartPiece *) startPiece, pieces, random, 1, 1);
+		generateSmallDoorChildRight(static_cast<StartPiece *>(startPiece), pieces, random, 1, 1);
 	}
 	else
 	{
-		generateSmallDoorChildLeft((StartPiece *) startPiece, pieces, random, 1, 1);
+		generateSmallDoorChildLeft(static_cast<StartPiece *>(startPiece), pieces, random, 1, 1);
 	}
 }
 
@@ -1023,9 +1023,9 @@ void StrongholdPieces::RoomCrossing::readAdditonalSaveData(CompoundTag *tag)
 
 void StrongholdPieces::RoomCrossing::addChildren(StructurePiece *startPiece, list<StructurePiece *> *pieces, Random *random)
 {
-	generateSmallDoorChildForward((StartPiece*) startPiece, pieces, random, 4, 1);
-	generateSmallDoorChildLeft((StartPiece*) startPiece, pieces, random, 1, 4);
-	generateSmallDoorChildRight((StartPiece*) startPiece, pieces, random, 1, 4);
+	generateSmallDoorChildForward(static_cast<StartPiece *>(startPiece), pieces, random, 4, 1);
+	generateSmallDoorChildLeft(static_cast<StartPiece *>(startPiece), pieces, random, 1, 4);
+	generateSmallDoorChildRight(static_cast<StartPiece *>(startPiece), pieces, random, 1, 4);
 }
 
 StrongholdPieces::RoomCrossing *StrongholdPieces::RoomCrossing::createPiece(list<StructurePiece *> *pieces, Random *random, int footX, int footY, int footZ, int direction, int genDepth)
@@ -1033,7 +1033,7 @@ StrongholdPieces::RoomCrossing *StrongholdPieces::RoomCrossing::createPiece(list
 	BoundingBox *box = BoundingBox::orientBox(footX, footY, footZ, -4, -1, 0, width, height, depth, direction);
 
 	StartPiece *startPiece = NULL;
-	if(pieces != NULL) startPiece = ((StrongholdPieces::StartPiece *) pieces->front());
+	if(pieces != NULL) startPiece = static_cast<StrongholdPieces::StartPiece *>(pieces->front());
 
 	if (!isOkBox(box, startPiece) || StructurePiece::findCollisionPiece(pieces, box) != NULL)
 	{
@@ -1177,7 +1177,7 @@ StrongholdPieces::PrisonHall::PrisonHall(int genDepth, Random *random, BoundingB
 
 void StrongholdPieces::PrisonHall::addChildren(StructurePiece *startPiece, list<StructurePiece *> *pieces, Random *random)
 {
-	generateSmallDoorChildForward((StartPiece *) startPiece, pieces, random, 1, 1);
+	generateSmallDoorChildForward(static_cast<StartPiece *>(startPiece), pieces, random, 1, 1);
 }
 
 StrongholdPieces::PrisonHall *StrongholdPieces::PrisonHall::createPiece(list<StructurePiece *> *pieces, Random *random, int footX, int footY, int footZ, int direction, int genDepth)
@@ -1185,7 +1185,7 @@ StrongholdPieces::PrisonHall *StrongholdPieces::PrisonHall::createPiece(list<Str
 	BoundingBox *box = BoundingBox::orientBox(footX, footY, footZ, -1, -1, 0, width, height, depth, direction);
 
 	StartPiece *startPiece = NULL;
-	if(pieces != NULL) startPiece = ((StrongholdPieces::StartPiece *) pieces->front());
+	if(pieces != NULL) startPiece = static_cast<StrongholdPieces::StartPiece *>(pieces->front());
 
 	if (!isOkBox(box, startPiece) || StructurePiece::findCollisionPiece(pieces, box) != NULL)
 	{
@@ -1264,7 +1264,7 @@ StrongholdPieces::Library *StrongholdPieces::Library::createPiece(list<Structure
 	BoundingBox *box = BoundingBox::orientBox(footX, footY, footZ, -4, -1, 0, width, tallHeight, depth, direction);
 
 	StartPiece *startPiece = NULL;
-	if(pieces != NULL) startPiece = ((StrongholdPieces::StartPiece *) pieces->front());
+	if(pieces != NULL) startPiece = static_cast<StrongholdPieces::StartPiece *>(pieces->front());
 
 	if (!isOkBox(box, startPiece) || StructurePiece::findCollisionPiece(pieces, box) != NULL)
 	{
@@ -1465,11 +1465,11 @@ void StrongholdPieces::FiveCrossing::addChildren(StructurePiece *startPiece, lis
 		zOffB = depth - 3 - zOffB;
 	}
 
-	generateSmallDoorChildForward((StartPiece *) startPiece, pieces, random, 5, 1);
-	if (leftLow) generateSmallDoorChildLeft((StartPiece *) startPiece, pieces, random, zOffA, 1);
-	if (leftHigh) generateSmallDoorChildLeft((StartPiece *) startPiece, pieces, random, zOffB, 7);
-	if (rightLow) generateSmallDoorChildRight((StartPiece *) startPiece, pieces, random, zOffA, 1);
-	if (rightHigh) generateSmallDoorChildRight((StartPiece *) startPiece, pieces, random, zOffB, 7);
+	generateSmallDoorChildForward(static_cast<StartPiece *>(startPiece), pieces, random, 5, 1);
+	if (leftLow) generateSmallDoorChildLeft(static_cast<StartPiece *>(startPiece), pieces, random, zOffA, 1);
+	if (leftHigh) generateSmallDoorChildLeft(static_cast<StartPiece *>(startPiece), pieces, random, zOffB, 7);
+	if (rightLow) generateSmallDoorChildRight(static_cast<StartPiece *>(startPiece), pieces, random, zOffA, 1);
+	if (rightHigh) generateSmallDoorChildRight(static_cast<StartPiece *>(startPiece), pieces, random, zOffB, 7);
 }
 
 StrongholdPieces::FiveCrossing *StrongholdPieces::FiveCrossing::createPiece(list<StructurePiece *> *pieces, Random *random, int footX, int footY, int footZ, int direction, int genDepth)
@@ -1477,7 +1477,7 @@ StrongholdPieces::FiveCrossing *StrongholdPieces::FiveCrossing::createPiece(list
 	BoundingBox *box = BoundingBox::orientBox(footX, footY, footZ, -4, -3, 0, width, height, depth, direction);
 
 	StartPiece *startPiece = NULL;
-	if(pieces != NULL) startPiece = ((StrongholdPieces::StartPiece *) pieces->front());
+	if(pieces != NULL) startPiece = static_cast<StrongholdPieces::StartPiece *>(pieces->front());
 
 	if (!isOkBox(box, startPiece) || StructurePiece::findCollisionPiece(pieces, box) != NULL)
 	{
@@ -1563,7 +1563,7 @@ void StrongholdPieces::PortalRoom::addChildren(StructurePiece *startPiece, list<
 {
 	if (startPiece != NULL)
 	{
-		((StartPiece *) startPiece)->portalRoomPiece = this;
+		static_cast<StartPiece *>(startPiece)->portalRoomPiece = this;
 	}
 }
 
@@ -1573,7 +1573,7 @@ StrongholdPieces::PortalRoom *StrongholdPieces::PortalRoom::createPiece(list<Str
 
 	// 4J Added so that we can check that Portals stay within the bounds of the world (which they ALWAYS should anyway)
 	StartPiece *startPiece = NULL;
-	if(pieces != NULL) startPiece = ((StrongholdPieces::StartPiece *) pieces->front());
+	if(pieces != NULL) startPiece = static_cast<StrongholdPieces::StartPiece *>(pieces->front());
 
 	if (!isOkBox(box, startPiece) || StructurePiece::findCollisionPiece(pieces, box) != NULL)
 	{

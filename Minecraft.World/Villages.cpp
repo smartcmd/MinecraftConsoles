@@ -117,7 +117,7 @@ void Villages::cluster()
 		bool found = false;
 		for(auto& village : villages)
 		{
-			int dist = (int) village->getCenter()->distSqr(di->x, di->y, di->z);
+			int dist = static_cast<int>(village->getCenter()->distSqr(di->x, di->y, di->z));
 			int radius = MaxDoorDist + village->getRadius();
 			if (dist > radius * radius) continue;
 			village->addDoorInfo(di);
@@ -173,7 +173,7 @@ shared_ptr<DoorInfo> Villages::getDoorInfo(int x, int y, int z)
 
 void Villages::createDoorInfo(int x, int y, int z)
 {
-	int dir = ((DoorTile *) Tile::door_wood)->getDir(level, x, y, z);
+	int dir = static_cast<DoorTile *>(Tile::door_wood)->getDir(level, x, y, z);
 	if (dir == 0 || dir == 2)
 	{
 		int canSeeX = 0;

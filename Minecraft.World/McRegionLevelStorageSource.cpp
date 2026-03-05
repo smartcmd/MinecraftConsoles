@@ -275,7 +275,7 @@ void McRegionLevelStorageSource::eraseFolders(vector<File *> *folders, int curre
 		folder->_delete();
 
 		currentCount++;
-		int percent = (int) Math::round(100.0 * (double) currentCount / (double) totalCount);
+		int percent = static_cast<int>(Math::round(100.0 * (double)currentCount / (double)totalCount));
 		progress->progressStagePercentage(percent);
 	}
 }

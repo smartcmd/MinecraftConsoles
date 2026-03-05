@@ -86,8 +86,8 @@ Biome::Biome(int id) : id(id)
 	color = 0;
 	//  snowCovered = false;	// 4J - this isn't set by the java game any more so removing to save confusion
 
-	topMaterial = (byte) Tile::grass_Id;
-	material = (byte) Tile::dirt_Id;
+	topMaterial = static_cast<byte>(Tile::grass_Id);
+	material = static_cast<byte>(Tile::dirt_Id);
 	leafColor = 0x4EE031;
 	_hasRain = true;
 	depth = 0.1f;
@@ -261,12 +261,12 @@ float Biome::getCreatureProbability()
 
 int Biome::getDownfallInt()
 {
-	return (int) (downfall * 65536);
+	return static_cast<int>(downfall * 65536);
 }
 
 int Biome::getTemperatureInt()
 {
-	return (int) (temperature * 65536);
+	return static_cast<int>(temperature * 65536);
 }
 
 // 4J - brought forward from 1.2.3

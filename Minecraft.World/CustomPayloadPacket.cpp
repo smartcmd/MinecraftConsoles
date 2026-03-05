@@ -57,7 +57,7 @@ void CustomPayloadPacket::read(DataInputStream *dis)
 void CustomPayloadPacket::write(DataOutputStream *dos)
 {
 	writeUtf(identifier, dos);
-	dos->writeShort((short) length);
+	dos->writeShort(static_cast<short>(length));
 	if (data.data != NULL)
 	{
 		dos->write(data);

@@ -95,7 +95,7 @@ void Minecart::defineSynchedData()
 	entityData->define(DATA_ID_DAMAGE, 0.0f);
 	entityData->define(DATA_ID_DISPLAY_TILE, 0);
 	entityData->define(DATA_ID_DISPLAY_OFFSET, 6);
-	entityData->define(DATA_ID_CUSTOM_DISPLAY, (byte) 0);
+	entityData->define(DATA_ID_CUSTOM_DISPLAY, static_cast<byte>(0));
 }
 
 
@@ -225,7 +225,7 @@ void Minecart::tick()
 
 		if (!level->isClientSide && dynamic_cast<ServerLevel *>(level) != NULL)
 		{
-			MinecraftServer *server = ((ServerLevel *) level)->getServer();
+			MinecraftServer *server = static_cast<ServerLevel *>(level)->getServer();
 			int waitTime = getPortalWaitTime();
 
 			if (isInsidePortal)
@@ -275,8 +275,8 @@ void Minecart::tick()
 
 				double yrd = Mth::wrapDegrees(lyr - yRot);
 
-				yRot += (float) ( (yrd) / lSteps );
-				xRot += (float) ( (lxr - xRot) / lSteps );
+				yRot += static_cast<float>((yrd) / lSteps);
+				xRot += static_cast<float>((lxr - xRot) / lSteps);
 
 				lSteps--;
 				setPos(xt, yt, zt);
@@ -330,7 +330,7 @@ void Minecart::tick()
 		double zDiff = zo - z;
 		if (xDiff * xDiff + zDiff * zDiff > 0.001)
 		{
-			yRot = (float) (atan2(zDiff, xDiff) * 180 / PI);
+			yRot = static_cast<float>(atan2(zDiff, xDiff) * 180 / PI);
 			if (flipped) yRot += 180;
 		}
 
@@ -415,7 +415,7 @@ void Minecart::moveAlongTrack(int xt, int yt, int zt, double maxSpeed, double sl
 		powerTrack = (data & BaseRailTile::RAIL_DATA_BIT) != 0;
 		haltTrack = !powerTrack;
 	}
-	if (((BaseRailTile *) Tile::tiles[tile])->isUsesDataBit())
+	if (static_cast<BaseRailTile *>(Tile::tiles[tile])->isUsesDataBit())
 	{
 		data &= BaseRailTile::RAIL_DIRECTION_MASK;
 	}
@@ -648,7 +648,7 @@ Vec3 *Minecart::getPosOffs(double x, double y, double z, double offs)
 	{
 		int data = level->getData(xt, yt, zt);
 
-		if (((BaseRailTile *) Tile::tiles[tile])->isUsesDataBit())
+		if (static_cast<BaseRailTile *>(Tile::tiles[tile])->isUsesDataBit())
 		{
 			data &= BaseRailTile::RAIL_DIRECTION_MASK;
 		}
@@ -703,7 +703,7 @@ Vec3 *Minecart::getPos(double x, double y, double z)
 		int data = level->getData(xt, yt, zt);
 		y = yt;
 
-		if (((BaseRailTile *) Tile::tiles[tile])->isUsesDataBit())
+		if (static_cast<BaseRailTile *>(Tile::tiles[tile])->isUsesDataBit())
 		{
 			data &= BaseRailTile::RAIL_DIRECTION_MASK;
 		}
@@ -1015,7 +1015,7 @@ bool Minecart::hasCustomDisplay()
 
 void Minecart::setCustomDisplay(bool value)
 {
-	getEntityData()->set(DATA_ID_CUSTOM_DISPLAY, (byte) (value ? 1 : 0));
+	getEntityData()->set(DATA_ID_CUSTOM_DISPLAY, static_cast<byte>(value ? 1 : 0));
 }
 
 void Minecart::setCustomName(const wstring &name)

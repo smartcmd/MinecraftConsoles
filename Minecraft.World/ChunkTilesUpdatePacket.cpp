@@ -42,8 +42,8 @@ ChunkTilesUpdatePacket::ChunkTilesUpdatePacket(int xc, int zc, shortArray positi
 		int y = (positions[i]) & 255;
 
 		this->positions[i] = positions[i];
-		blocks[i] = (byte) levelChunk->getTile(x, y, z);
-		data[i] = (byte) levelChunk->getData(x, y, z);
+		blocks[i] = static_cast<byte>(levelChunk->getTile(x, y, z));
+		data[i] = static_cast<byte>(levelChunk->getData(x, y, z));
 	}
 	levelIdx = ( ( level->dimension->id == 0 ) ? 0 : ( (level->dimension->id == -1) ? 1 : 2 ) );
 }

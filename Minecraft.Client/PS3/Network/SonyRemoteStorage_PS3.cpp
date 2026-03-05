@@ -86,7 +86,7 @@ int SonyRemoteStorage_PS3::initPreconditions()
 
 void SonyRemoteStorage_PS3::staticInternalCallback(const SceRemoteStorageEvent event, int32_t retCode, void * userData)
 {
-	((SonyRemoteStorage_PS3*)userData)->internalCallback(event, retCode);
+	static_cast<SonyRemoteStorage_PS3 *>(userData)->internalCallback(event, retCode);
 }
 
 void SonyRemoteStorage_PS3::internalCallback(const SceRemoteStorageEvent event, int32_t retCode)
@@ -430,20 +430,20 @@ void SonyRemoteStorage_PS3::runCallback()
 
 int SonyRemoteStorage_PS3::SaveCompressCallback(LPVOID lpParam,bool bRes)
 {
-	SonyRemoteStorage_PS3* pRS = (SonyRemoteStorage_PS3*)lpParam;
+	SonyRemoteStorage_PS3* pRS = static_cast<SonyRemoteStorage_PS3 *>(lpParam);
 	pRS->m_compressedSaveState = e_state_Idle;
 	return 0;
 }
 
 int SonyRemoteStorage_PS3::LoadCompressCallback(void *pParam,bool bIsCorrupt, bool bIsOwner)
 {
-	SonyRemoteStorage_PS3* pRS = (SonyRemoteStorage_PS3*)pParam;
+	SonyRemoteStorage_PS3* pRS = static_cast<SonyRemoteStorage_PS3 *>(pParam);
 	int origFilesize = StorageManager.GetSaveSize();
 	void* pOrigSaveData = malloc(origFilesize);
 	unsigned int retFilesize;
 	StorageManager.GetSaveData( pOrigSaveData, &retFilesize );
 	// check if this save file is already compressed
-	if(*((int*)pOrigSaveData) != 0)
+	if(*static_cast<int *>(pOrigSaveData) != 0)
 	{
 		app.DebugPrintf("compressing save data\n");
 
@@ -451,7 +451,7 @@ int SonyRemoteStorage_PS3::LoadCompressCallback(void *pParam,bool bIsCorrupt, bo
 		// We add 4 bytes to the start so that we can signal compressed data
 		// And another 4 bytes to store the decompressed data size
 		unsigned int compLength = origFilesize+8;
-		byte *compData = (byte *)malloc( compLength );
+		byte *compData = static_cast<byte *>(malloc(compLength));
 		Compression::UseDefaultThreadStorage();
 		Compression::getCompression()->Compress(compData+8,&compLength,pOrigSaveData,origFilesize);
 		ZeroMemory(compData,8);

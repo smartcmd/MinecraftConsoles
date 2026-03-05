@@ -111,7 +111,7 @@ Connection::Connection(Socket *socket, const wstring& id, PacketListener *packet
 	sprintf(readThreadName,"%s read\n",szId);
 	sprintf(writeThreadName,"%s write\n",szId);
 
-	readThread = new C4JThread(runRead, (void*)this, readThreadName, READ_STACK_SIZE);
+	readThread = new C4JThread(runRead, static_cast<void *>(this), readThreadName, READ_STACK_SIZE);
 	writeThread = new C4JThread(runWrite, this, writeThreadName, WRITE_STACK_SIZE);
 	readThread->SetProcessor(CPU_CORE_CONNECTIONS);
 	writeThread->SetProcessor(CPU_CORE_CONNECTIONS );
@@ -558,14 +558,14 @@ void Connection::sendAndQuit()
 
 int Connection::countDelayedPackets()
 {
-	return (int)outgoing_slow.size();
+	return static_cast<int>(outgoing_slow.size());
 }
 
 
 int Connection::runRead(void* lpParam)
 {
 	ShutdownManager::HasStarted(ShutdownManager::eConnectionReadThreads);
-	Connection *con = (Connection *)lpParam;
+	Connection *con = static_cast<Connection *>(lpParam);
 
 	if (con == NULL)
 	{
@@ -615,7 +615,7 @@ int Connection::runRead(void* lpParam)
 int Connection::runWrite(void* lpParam)
 {
 	ShutdownManager::HasStarted(ShutdownManager::eConnectionWriteThreads);
-	Connection *con = dynamic_cast<Connection *>((Connection *) lpParam);
+	Connection *con = dynamic_cast<Connection *>(static_cast<Connection *>(lpParam));
 
 	if (con == NULL)
 	{
@@ -660,7 +660,7 @@ int Connection::runWrite(void* lpParam)
 
 int Connection::runClose(void* lpParam)
 {
-	Connection *con = dynamic_cast<Connection *>((Connection *) lpParam);
+	Connection *con = dynamic_cast<Connection *>(static_cast<Connection *>(lpParam));
 
 	if (con == NULL) return 0;
 
@@ -683,7 +683,7 @@ int Connection::runClose(void* lpParam)
 
 int Connection::runSendAndQuit(void* lpParam)
 {
-	Connection *con = dynamic_cast<Connection *>((Connection *) lpParam);
+	Connection *con = dynamic_cast<Connection *>(static_cast<Connection *>(lpParam));
 //	printf("Con:0x%x runSendAndQuit\n",con);
 
 	if (con == NULL) return 0;

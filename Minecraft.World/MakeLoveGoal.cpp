@@ -83,7 +83,7 @@ bool MakeLoveGoal::villageNeedsMoreVillagers()
 		return false;
 	}
 
-	int idealSize = (int) ((float) _village->getDoorCount() * 0.35);
+	int idealSize = static_cast<int>((float)_village->getDoorCount() * 0.35);
 	// System.out.println("idealSize: " + idealSize + " pop: " +
 	// village.getPopulationSize());
 	return _village->getPopulationSize() < idealSize;

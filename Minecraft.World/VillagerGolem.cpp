@@ -53,7 +53,7 @@ VillagerGolem::VillagerGolem(Level *level) : Golem(level)
 void VillagerGolem::defineSynchedData()
 {
 	Golem::defineSynchedData();
-	entityData->define(DATA_FLAGS_ID, (byte) 0);
+	entityData->define(DATA_FLAGS_ID, static_cast<byte>(0));
 }
 
 bool VillagerGolem::useNewAi()
@@ -72,7 +72,7 @@ void VillagerGolem::serverAiMobStep()
 		else
 		{
 			Pos *center = _village->getCenter();
-			restrictTo(center->x, center->y, center->z, (int)((float)_village->getRadius()) * 0.6f);
+			restrictTo(center->x, center->y, center->z, static_cast<int>((float)_village->getRadius()) * 0.6f);
 		}
 	}
 
@@ -234,11 +234,11 @@ void VillagerGolem::setPlayerCreated(bool value)
 	byte current = entityData->getByte(DATA_FLAGS_ID);
 	if (value)
 	{
-		entityData->set(DATA_FLAGS_ID, (byte) (current | 0x01));
+		entityData->set(DATA_FLAGS_ID, static_cast<byte>(current | 0x01));
 	}
 	else
 	{
-		entityData->set(DATA_FLAGS_ID, (byte) (current & ~0x01));
+		entityData->set(DATA_FLAGS_ID, static_cast<byte>(current & ~0x01));
 	}
 }
 

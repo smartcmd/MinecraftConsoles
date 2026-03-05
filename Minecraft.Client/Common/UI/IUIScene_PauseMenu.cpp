@@ -52,7 +52,7 @@ int IUIScene_PauseMenu::ExitGameSaveDialogReturned(void *pParam,int iPad,C4JStor
 			if(!Minecraft::GetInstance()->skins->isUsingDefaultSkin())
 			{
 				TexturePack *tPack = Minecraft::GetInstance()->skins->getSelected();
-				DLCTexturePack *pDLCTexPack=(DLCTexturePack *)tPack;
+				DLCTexturePack *pDLCTexPack=static_cast<DLCTexturePack *>(tPack);
 
 				DLCPack *pDLCPack=pDLCTexPack->getDLCInfoParentPack();//tPack->getDLCPack();
 				if(!pDLCPack->hasPurchasedFile( DLCManager::e_DLCType_Texture, L"" ))
@@ -352,7 +352,7 @@ int IUIScene_PauseMenu::WarningTrialTexturePackReturned(void *pParam,int iPad,C4
 
 int IUIScene_PauseMenu::SaveWorldThreadProc( LPVOID lpParameter )
 {
-	bool bAutosave=(bool)lpParameter;
+	bool bAutosave=static_cast<bool>(lpParameter);
 	if(bAutosave)
 	{
 		app.SetXuiServerAction(ProfileManager.GetPrimaryPad(),eXuiServerAction_AutoSaveGame);

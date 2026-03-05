@@ -55,7 +55,7 @@ CompressedTileStorage::CompressedTileStorage(CompressedTileStorage *copyFrom)
 	allocatedSize = copyFrom->allocatedSize;
 	if(allocatedSize > 0)
 	{
-		indicesAndData = (unsigned char *)XPhysicalAlloc(allocatedSize, MAXULONG_PTR, 4096, PAGE_READWRITE);//(unsigned char *)malloc(allocatedSize);
+		indicesAndData = static_cast<unsigned char *>(XPhysicalAlloc(allocatedSize, MAXULONG_PTR, 4096, PAGE_READWRITE));//(unsigned char *)malloc(allocatedSize);
 		XMemCpy(indicesAndData, copyFrom->indicesAndData, allocatedSize);
 	}
 	else
@@ -75,7 +75,7 @@ CompressedTileStorage::CompressedTileStorage(byteArray initFrom, unsigned int in
 	allocatedSize = 0;
 
 	// We need 32768 bytes for a fully uncompressed chunk, plus 1024 for the index. Rounding up to nearest 4096 bytes for allocation
-	indicesAndData = (unsigned char *)XPhysicalAlloc(32768+4096, MAXULONG_PTR, 4096, PAGE_READWRITE);
+	indicesAndData = static_cast<unsigned char *>(XPhysicalAlloc(32768 + 4096, MAXULONG_PTR, 4096, PAGE_READWRITE));
 
 	unsigned short *indices = (unsigned short *)indicesAndData;
 	unsigned char *data = indicesAndData + 1024;
@@ -125,7 +125,7 @@ CompressedTileStorage::CompressedTileStorage(bool isEmpty)
 	// XPhysicalAlloc just maps to malloc on PS3, so allocate the smallest amount
 	indicesAndData = (unsigned char *)XPhysicalAlloc(1024, MAXULONG_PTR, 4096, PAGE_READWRITE);
 #else
-	indicesAndData = (unsigned char *)XPhysicalAlloc(4096, MAXULONG_PTR, 4096, PAGE_READWRITE);
+	indicesAndData = static_cast<unsigned char *>(XPhysicalAlloc(4096, MAXULONG_PTR, 4096, PAGE_READWRITE));
 #endif //__PS3__
 	unsigned short *indices = (unsigned short *)indicesAndData;
 	//unsigned char *data = indicesAndData + 1024;
@@ -386,7 +386,7 @@ void CompressedTileStorage::setData(byteArray dataIn, unsigned int inOffset)
 //	printf("%d: %d (0) %d (1) %d (2) %d (4) %d (8)\n", chunkTotal, type0 / chunkTotal, type1 / chunkTotal, type2 / chunkTotal, type4 / chunkTotal, type8 / chunkTotal);
 
 	memToAlloc += 1024; // For the indices
-	unsigned char *newIndicesAndData = (unsigned char *)XPhysicalAlloc(memToAlloc, MAXULONG_PTR, 4096, PAGE_READWRITE);//(unsigned char *)malloc( memToAlloc );
+	unsigned char *newIndicesAndData = static_cast<unsigned char *>(XPhysicalAlloc(memToAlloc, MAXULONG_PTR, 4096, PAGE_READWRITE));//(unsigned char *)malloc( memToAlloc );
 	unsigned char *pucData = newIndicesAndData + 1024;
 	unsigned short usDataOffset = 0;
 	unsigned short *newIndices = (unsigned short *) newIndicesAndData;
@@ -401,7 +401,7 @@ void CompressedTileStorage::setData(byteArray dataIn, unsigned int inOffset)
 		{
 			if( _blockIndices[i] & INDEX_TYPE_0_BIT_FLAG )
 			{
-				newIndices[i] = INDEX_TYPE_0_OR_8_BIT | INDEX_TYPE_0_BIT_FLAG | (((unsigned short)data[getIndex(i,0)]) << INDEX_TILE_SHIFT);
+				newIndices[i] = INDEX_TYPE_0_OR_8_BIT | INDEX_TYPE_0_BIT_FLAG | (static_cast<unsigned short>(data[getIndex(i, 0)]) << INDEX_TILE_SHIFT);
 			}
 			else
 			{
@@ -738,7 +738,7 @@ int  CompressedTileStorage::setDataRegion(byteArray dataIn, int x0, int y0, int 
 	}
 	ptrdiff_t count = pucIn - &dataIn.data[offset];
 
-	return (int)count;
+	return static_cast<int>(count);
 }
 
 // Tests whether setting data would actually change anything
@@ -777,7 +777,7 @@ int  CompressedTileStorage::getDataRegion(byteArray dataInOut, int x0, int y0, i
 	}
 	ptrdiff_t count = pucOut - &dataInOut.data[offset];
 
-	return (int)count;
+	return static_cast<int>(count);
 }
 
 void CompressedTileStorage::staticCtor()
@@ -1049,7 +1049,7 @@ void  CompressedTileStorage::compress(int upgradeBlock/*=-1*/)
 	if( needsCompressed )
 	{
 		memToAlloc += 1024; // For the indices
-		unsigned char *newIndicesAndData = (unsigned char *)XPhysicalAlloc(memToAlloc, MAXULONG_PTR, 4096, PAGE_READWRITE);//(unsigned char *)malloc( memToAlloc );
+		unsigned char *newIndicesAndData = static_cast<unsigned char *>(XPhysicalAlloc(memToAlloc, MAXULONG_PTR, 4096, PAGE_READWRITE));//(unsigned char *)malloc( memToAlloc );
 		if( newIndicesAndData == NULL )
 		{
 			DWORD lastError = GetLastError();
@@ -1165,7 +1165,7 @@ void  CompressedTileStorage::compress(int upgradeBlock/*=-1*/)
 				{
 					if( _blockIndices[i] & INDEX_TYPE_0_BIT_FLAG )
 					{
-						newIndices[i] = INDEX_TYPE_0_OR_8_BIT | INDEX_TYPE_0_BIT_FLAG | (((unsigned short)unpacked_data[0]) << INDEX_TILE_SHIFT);
+						newIndices[i] = INDEX_TYPE_0_OR_8_BIT | INDEX_TYPE_0_BIT_FLAG | (static_cast<unsigned short>(unpacked_data[0]) << INDEX_TILE_SHIFT);
 					}
 					else
 					{
@@ -1339,7 +1339,7 @@ void CompressedTileStorage::read(DataInputStream *dis)
 		{
 			XPhysicalFree(indicesAndData);
 		}
-		indicesAndData = (unsigned char *)XPhysicalAlloc(allocatedSize, MAXULONG_PTR, 4096, PAGE_READWRITE);
+		indicesAndData = static_cast<unsigned char *>(XPhysicalAlloc(allocatedSize, MAXULONG_PTR, 4096, PAGE_READWRITE));
 
 		byteArray wrapper(indicesAndData, allocatedSize);
 		dis->readFully(wrapper);

@@ -29,7 +29,7 @@ AbstractContainerMenu::~AbstractContainerMenu()
 
 Slot *AbstractContainerMenu::addSlot(Slot *slot)
 {
-	slot->index = (int)slots.size();
+	slot->index = static_cast<int>(slots.size());
 	slots.push_back(slot);
 	lastSlots.push_back(nullptr);
 	return slot;
@@ -722,7 +722,7 @@ void AbstractContainerMenu::getQuickCraftSlotCount(unordered_set<Slot *> *quickC
 	switch (quickCraftingType)
 	{
 	case QUICKCRAFT_TYPE_CHARITABLE:
-		item->count = Mth::floor(item->count / (float) quickCraftSlots->size());
+		item->count = Mth::floor(item->count / static_cast<float>(quickCraftSlots->size()));
 		break;
 	case QUICKCRAFT_TYPE_GREEDY:
 		item->count = 1;
@@ -749,7 +749,7 @@ int AbstractContainerMenu::getRedstoneSignalFromContainer(shared_ptr<Container> 
 
 		if (item != NULL)
 		{
-			totalPct += item->count / (float) min(container->getMaxStackSize(), item->getMaxStackSize());
+			totalPct += item->count / static_cast<float>(min(container->getMaxStackSize(), item->getMaxStackSize()));
 			count++;
 		}
 	}

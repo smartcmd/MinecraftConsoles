@@ -531,7 +531,7 @@ void LevelChunk::recalcHeightmapOnly()
 				blocks = (y-1) >= Level::COMPRESSED_CHUNK_SECTION_HEIGHT?upperBlocks : lowerBlocks;
 			}
 #endif
-			heightmap[z << 4 | x] = (byte) y;
+			heightmap[z << 4 | x] = static_cast<byte>(y);
 			if (y < min) min = y;
 		}
 
@@ -588,7 +588,7 @@ void LevelChunk::recalcHeightmap()
 				blocks = (y-1) >= Level::COMPRESSED_CHUNK_SECTION_HEIGHT?upperBlocks : lowerBlocks;
 			}
 #endif
-			heightmap[z << 4 | x] = (byte) y;
+			heightmap[z << 4 | x] = static_cast<byte>(y);
 			if (y < min) min = y;
 			if (y < lowestHeightmap) lowestHeightmap = y;
 
@@ -811,7 +811,7 @@ void LevelChunk::recalcHeight(int x, int yStart, int z)
 	if (y == yOld) return;
 
 	//    level->lightColumnChanged(x, z, y, yOld);		// 4J - this call moved below & corrected - see comment further down
-	heightmap[z << 4 | x] = (byte) y;
+	heightmap[z << 4 | x] = static_cast<byte>(y);
 
 	if (y < minHeight)
 	{
@@ -919,12 +919,12 @@ int LevelChunk::getTile(int x, int y, int z)
 
 bool LevelChunk::setTileAndData(int x, int y, int z, int _tile, int _data)
 {
-	byte tile = (byte) _tile;
+	byte tile = static_cast<byte>(_tile);
 
 	// Optimisation brought forward from 1.8.2, change from int to unsigned char & this special value changed from -999 to 255
 	int slot = z << 4 | x;
 
-	if (y >= ((int)rainHeights[slot]) - 1)
+	if (y >= static_cast<int>(rainHeights[slot]) - 1)
 	{
 		rainHeights[slot] = 255;
 	}
@@ -1719,7 +1719,7 @@ int LevelChunk::countEntities()
 #endif
 	for (int yc = 0; yc < ENTITY_BLOCKS_LENGTH; yc++)
 	{
-		entityCount += (int)entityBlocks[yc]->size();
+		entityCount += static_cast<int>(entityBlocks[yc]->size());
 	}
 #ifdef _ENTITIES_RW_SECTION
 	LeaveCriticalRWSection(&m_csEntities, false);
@@ -1813,7 +1813,7 @@ bool LevelChunk::testSetBlocksAndData(byteArray data, int x0, int y0, int z0, in
 
 void LevelChunk::tileUpdatedCallback(int x, int y, int z, void *param, int yparam)
 {
-	LevelChunk *lc = (LevelChunk *)param;
+	LevelChunk *lc = static_cast<LevelChunk *>(param);
 	int xx = lc->x * 16 + x;
 	int yy = y + yparam;
 	int zz = lc->z * 16 + z;
@@ -2000,7 +2000,7 @@ void LevelChunk::checkChests(ChunkSource *source, int x, int z )
 					{
 						int xOffs = x * 16 + xx;
 						int zOffs = z * 16 + zz;
-						ChestTile *tile = (ChestTile *)Tile::tiles[Tile::chest_Id];
+						ChestTile *tile = static_cast<ChestTile *>(Tile::tiles[Tile::chest_Id]);
 						tile->recalcLockDir( level, xOffs, yy, zOffs );
 						level->checkLight(xOffs, yy, zOffs, true);
 					}
@@ -2047,7 +2047,7 @@ void LevelChunk::reloadBiomes()
 		for(unsigned int z = 0; z < 16; ++z)
 		{
 			Biome *biome = biomeSource->getBiome((this->x << 4) + x, (this->z << 4) + z);
-			biomes[(z << 4) | x] = (byte) ( (biome->id) & 0xff);
+			biomes[(z << 4) | x] = static_cast<byte>((biome->id) & 0xff);
 		}
 	}
 }
@@ -2059,7 +2059,7 @@ Biome *LevelChunk::getBiome(int x, int z, BiomeSource *biomeSource)
 	{
 		Biome *biome = biomeSource->getBiome((this->x << 4) + x, (this->z << 4) + z);
 		value = biome->id;
-		biomes[(z << 4) | x] = (byte) (value & 0xff);
+		biomes[(z << 4) | x] = static_cast<byte>(value & 0xff);
 	}
 	if (Biome::biomes[value] == NULL)
 	{

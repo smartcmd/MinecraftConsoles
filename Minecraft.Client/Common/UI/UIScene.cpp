@@ -728,7 +728,7 @@ void UIScene::_customDrawSlotControl(CustomDrawData *region, int iPad, shared_pt
 	if (pop > 0)
 	{
 		glPushMatrix();
-		float squeeze = 1 + pop / (float) Inventory::POP_TIME_DURATION;
+		float squeeze = 1 + pop / static_cast<float>(Inventory::POP_TIME_DURATION);
 		float sx = x;
 		float sy = y;
 		float sxoffs = 8 * scaleX;
@@ -757,15 +757,15 @@ void UIScene::_customDrawSlotControl(CustomDrawData *region, int iPad, shared_pt
 		{
 			glPushMatrix();
 			glScalef(scaleX, scaleY, 1.0f);
-			int iX= (int)(0.5f+((float)x)/scaleX);
-			int iY= (int)(0.5f+((float)y)/scaleY);
+			int iX= static_cast<int>(0.5f + ((float)x) / scaleX);
+			int iY= static_cast<int>(0.5f + ((float)y) / scaleY);
 
 			m_pItemRenderer->renderGuiItemDecorations(pMinecraft->font, pMinecraft->textures, item, iX, iY, fAlpha);
 			glPopMatrix();
 		}
 		else
 		{
-			m_pItemRenderer->renderGuiItemDecorations(pMinecraft->font, pMinecraft->textures, item, (int)x, (int)y, fAlpha);
+			m_pItemRenderer->renderGuiItemDecorations(pMinecraft->font, pMinecraft->textures, item, static_cast<int>(x), static_cast<int>(y), fAlpha);
 		}
 	}
 
@@ -902,7 +902,7 @@ void UIScene::sendInputToMovie(int key, bool repeat, bool pressed, bool released
 	}
 	IggyEvent keyEvent;
 	// 4J Stu - Keyloc is always standard as we don't care about shift/alt
-	IggyMakeEventKey( &keyEvent, pressed?IGGY_KEYEVENT_Down:IGGY_KEYEVENT_Up, (IggyKeycode)iggyKeyCode, IGGY_KEYLOC_Standard );
+	IggyMakeEventKey( &keyEvent, pressed?IGGY_KEYEVENT_Down:IGGY_KEYEVENT_Up, static_cast<IggyKeycode>(iggyKeyCode), IGGY_KEYLOC_Standard );
 
 	IggyEventResult result;
 	IggyPlayerDispatchEventRS ( swf , &keyEvent , &result );
@@ -1191,8 +1191,8 @@ bool UIScene::hasRegisteredSubstitutionTexture(const wstring &textureName)
 
 void UIScene::_handleFocusChange(F64 controlId, F64 childId)
 {
-	m_iFocusControl = (int)controlId;
-	m_iFocusChild = (int)childId;
+	m_iFocusControl = static_cast<int>(controlId);
+	m_iFocusChild = static_cast<int>(childId);
 
 	handleFocusChange(controlId, childId);
 	ui.PlayUISFX(eSFX_Focus);
@@ -1200,8 +1200,8 @@ void UIScene::_handleFocusChange(F64 controlId, F64 childId)
 
 void UIScene::_handleInitFocus(F64 controlId, F64 childId)
 {
-	m_iFocusControl = (int)controlId;
-	m_iFocusChild = (int)childId;
+	m_iFocusControl = static_cast<int>(controlId);
+	m_iFocusChild = static_cast<int>(childId);
 
 	//handleInitFocus(controlId, childId);
 	handleFocusChange(controlId, childId);

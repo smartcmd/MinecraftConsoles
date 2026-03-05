@@ -78,7 +78,7 @@ RegionFile::RegionFile(ConsoleSaveFile *saveFile, File *path)
 	}
 	else
 	{
-		nSectors = (int) fileEntry->getFileSize() / SECTOR_BYTES;
+		nSectors = static_cast<int>(fileEntry->getFileSize()) / SECTOR_BYTES;
 	}
 	sectorFree = new vector<bool>;
 	sectorFree->reserve(nSectors);
@@ -326,7 +326,7 @@ void RegionFile::write(int x, int z, byte *data, int length)		// TODO - was sync
 
 			PIXBeginNamedEvent(0,"Scanning for free space\n");
 			/* scan for a free space large enough to store this chunk */
-			int runStart = (int)(find(sectorFree->begin(),sectorFree->end(),true) - sectorFree->begin());  // 4J - was sectorFree.indexOf(true)
+			int runStart = static_cast<int>(find(sectorFree->begin(), sectorFree->end(), true) - sectorFree->begin());  // 4J - was sectorFree.indexOf(true)
 			int runLength = 0;
 			if (runStart != -1)
 			{
@@ -375,7 +375,7 @@ void RegionFile::write(int x, int z, byte *data, int length)		// TODO - was sync
 				//SetFilePointer(file,0,0,FILE_END);			
 				m_saveFile->setFilePointer( fileEntry, 0, NULL, FILE_END );
 
-				sectorNumber = (int)sectorFree->size();
+				sectorNumber = static_cast<int>(sectorFree->size());
 	#ifndef _CONTENT_PACAKGE
 				//wprintf(L"Writing chunk (%d,%d) in %ls from new sector %d to %d\n", x,z, fileEntry->data.filename, sectorNumber, sectorNumber + sectorsNeeded - 1);
 	#endif
@@ -393,7 +393,7 @@ void RegionFile::write(int x, int z, byte *data, int length)		// TODO - was sync
 				PIXEndNamedEvent();
 			}
 		}
-		setTimestamp(x, z, (int) (System::currentTimeMillis() / 1000L));
+		setTimestamp(x, z, static_cast<int>(System::currentTimeMillis() / 1000L));
 	}
 	m_saveFile->ReleaseSaveAccess();
 

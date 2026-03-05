@@ -770,11 +770,11 @@ void MultiPlayerLevel::playLocalSound(double x, double y, double z, int iSound, 
 			// exhaggerate sound speed effect by making speed of sound ~=
 			// 40 m/s instead of 300 m/s
 			double delayInSeconds = sqrt(minDistSq) / 40.0;
-			minecraft->soundEngine->schedule(iSound, (float) x, (float) y, (float) z, volume, pitch, (int) Math::round(delayInSeconds * SharedConstants::TICKS_PER_SECOND));
+			minecraft->soundEngine->schedule(iSound, static_cast<float>(x), static_cast<float>(y), static_cast<float>(z), volume, pitch, static_cast<int>(Math::round(delayInSeconds * SharedConstants::TICKS_PER_SECOND)));
 		}
 		else
 		{
-			minecraft->soundEngine->play(iSound, (float) x, (float) y, (float) z, volume, pitch);
+			minecraft->soundEngine->play(iSound, static_cast<float>(x), static_cast<float>(y), static_cast<float>(z), volume, pitch);
 		}
 	}
 }

@@ -61,8 +61,8 @@ void FurnaceResultSlot::checkTakeAchievements(shared_ptr<ItemInstance> carried)
 		}
 		else if (value < 1)
 		{
-			int baseValue = floor((float) amount * value);
-			if (baseValue < ceil((float) amount * value) && (float) Math::random() < (((float) amount * value) - baseValue))
+			int baseValue = floor(static_cast<float>(amount) * value);
+			if (baseValue < ceil(static_cast<float>(amount) * value) && static_cast<float>(Math::random()) < ((static_cast<float>(amount) * value) - baseValue))
 			{
 				baseValue++;
 			}

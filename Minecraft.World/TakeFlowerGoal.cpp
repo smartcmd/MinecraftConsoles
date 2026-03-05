@@ -58,7 +58,7 @@ bool TakeFlowerGoal::canContinueToUse()
 
 void TakeFlowerGoal::start()
 {
-	pickupTick = villager->getRandom()->nextInt((int) (OfferFlowerGoal::OFFER_TICKS * 0.8));
+	pickupTick = villager->getRandom()->nextInt(static_cast<int>(OfferFlowerGoal::OFFER_TICKS * 0.8));
 	takeFlower = false;
 	golem.lock()->getNavigation()->stop();
 }

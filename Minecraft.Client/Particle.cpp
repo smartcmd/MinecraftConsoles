@@ -35,7 +35,7 @@ void Particle::_init(Level *level, double x, double y, double z)
 
 	size = (random->nextFloat() * 0.5f + 0.5f) * 2;
 
-	lifetime = (int) (4 / (random->nextFloat() * 0.9f + 0.1f));
+	lifetime = static_cast<int>(4 / (random->nextFloat() * 0.9f + 0.1f));
 	age = 0;
 
 	texX = 0;
@@ -51,10 +51,10 @@ Particle::Particle(Level *level, double x, double y, double z, double xa, double
 {
 	_init(level,x,y,z);
 
-    xd = xa + (float) (Math::random() * 2 - 1) * 0.4f;
-    yd = ya + (float) (Math::random() * 2 - 1) * 0.4f;
-    zd = za + (float) (Math::random() * 2 - 1) * 0.4f;
-    float speed = (float) (Math::random() + Math::random() + 1) * 0.15f;
+    xd = xa + static_cast<float>(Math::random() * 2 - 1) * 0.4f;
+    yd = ya + static_cast<float>(Math::random() * 2 - 1) * 0.4f;
+    zd = za + static_cast<float>(Math::random() * 2 - 1) * 0.4f;
+    float speed = static_cast<float>(Math::random() + Math::random() + 1) * 0.15f;
 
     float dd = (float) (Mth::sqrt(xd * xd + yd * yd + zd * zd));
     xd = xd / dd * speed * 0.4f;
@@ -164,9 +164,9 @@ void Particle::render(Tesselator *t, float a, float xa, float ya, float za, floa
 		v1 = tex->getV1();
 	}
 
-    float x = (float) (xo + (this->x - xo) * a - xOff);
-    float y = (float) (yo + (this->y - yo) * a - yOff);
-    float z = (float) (zo + (this->z - zo) * a - zOff);
+    float x = static_cast<float>(xo + (this->x - xo) * a - xOff);
+    float y = static_cast<float>(yo + (this->y - yo) * a - yOff);
+    float z = static_cast<float>(zo + (this->z - zo) * a - zOff);
 
 	float br = 1.0f;							// 4J - change brought forward from 1.8.2
 	if( !SharedConstants::TEXTURE_LIGHTING )

@@ -107,7 +107,7 @@ StatsScreen::GeneralStatisticsList::GeneralStatisticsList(StatsScreen *ss) : Scr
 
 int StatsScreen::GeneralStatisticsList::getNumberOfItems()
 {
-	return (int)Stats::generalStats->size();
+	return static_cast<int>(Stats::generalStats->size());
 }
 
 void StatsScreen::GeneralStatisticsList::selectItem(int item, bool doubleClick)
@@ -293,7 +293,7 @@ void StatsScreen::StatisticsList::clickedHeader(int headerMouseX, int headerMous
 
 int StatsScreen::StatisticsList::getNumberOfItems()
 {
-	return (int)statItemList.size();
+	return static_cast<int>(statItemList.size());
 }
 
 ItemStat *StatsScreen::StatisticsList::getSlotStat(int slot)

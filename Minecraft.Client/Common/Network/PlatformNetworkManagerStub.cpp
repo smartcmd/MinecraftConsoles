@@ -23,7 +23,7 @@ void CPlatformNetworkManagerStub::NotifyPlayerJoined(IQNetPlayer *pQNetPlayer	)
 	bool createFakeSocket = false;
 	bool localPlayer = false;
 
-	NetworkPlayerXbox *networkPlayer = (NetworkPlayerXbox *)addNetworkPlayer(pQNetPlayer);
+	NetworkPlayerXbox *networkPlayer = static_cast<NetworkPlayerXbox *>(addNetworkPlayer(pQNetPlayer));
 
     if( pQNetPlayer->IsLocal() )
     {
@@ -540,7 +540,7 @@ void CPlatformNetworkManagerStub::UpdateAndSetGameSessionData(INetworkPlayer *pN
 
 int CPlatformNetworkManagerStub::RemovePlayerOnSocketClosedThreadProc( void* lpParam )
 {
-	INetworkPlayer *pNetworkPlayer = (INetworkPlayer *)lpParam;
+	INetworkPlayer *pNetworkPlayer = static_cast<INetworkPlayer *>(lpParam);
 
 	Socket *socket = pNetworkPlayer->GetSocket();
 
@@ -667,7 +667,7 @@ wstring CPlatformNetworkManagerStub::GatherRTTStats()
 
 	for(unsigned int i = 0; i < GetPlayerCount(); ++i)
 	{
-		IQNetPlayer *pQNetPlayer = ((NetworkPlayerXbox *)GetPlayerByIndex( i ))->GetQNetPlayer();
+		IQNetPlayer *pQNetPlayer = static_cast<NetworkPlayerXbox *>(GetPlayerByIndex(i))->GetQNetPlayer();
 
 		if(!pQNetPlayer->IsLocal())
 		{
@@ -711,7 +711,7 @@ void CPlatformNetworkManagerStub::SearchForGames()
 		size_t nameLen = wcslen(lanSessions[i].hostName);
 		info->displayLabel = new wchar_t[nameLen + 1];
 		wcscpy_s(info->displayLabel, nameLen + 1, lanSessions[i].hostName);
-		info->displayLabelLength = (unsigned char)nameLen;
+		info->displayLabelLength = static_cast<unsigned char>(nameLen);
 		info->displayLabelViewableStartIndex = 0;
 
 		info->data.netVersion = lanSessions[i].netVersion;
@@ -726,7 +726,7 @@ void CPlatformNetworkManagerStub::SearchForGames()
 		info->data.playerCount = lanSessions[i].playerCount;
 		info->data.maxPlayers = lanSessions[i].maxPlayers;
 
-		info->sessionId = (SessionID)((unsigned __int64)inet_addr(lanSessions[i].hostIP) | ((unsigned __int64)lanSessions[i].hostPort << 32));
+		info->sessionId = (SessionID)(static_cast<unsigned __int64>(inet_addr(lanSessions[i].hostIP)) | (static_cast<unsigned __int64>(lanSessions[i].hostPort) << 32));
 
 		friendsSessions[0].push_back(info);
 	}
@@ -766,7 +766,7 @@ void CPlatformNetworkManagerStub::SearchForGames()
 				size_t nameLen = wcslen(label);
 				info->displayLabel = new wchar_t[nameLen+1];
 				wcscpy_s(info->displayLabel, nameLen + 1, label);
-				info->displayLabelLength = (unsigned char)nameLen;
+				info->displayLabelLength = static_cast<unsigned char>(nameLen);
 				info->displayLabelViewableStartIndex = 0;
 				info->data.isReadyToJoin = true;
 				info->data.isJoinable = true;
@@ -780,7 +780,7 @@ void CPlatformNetworkManagerStub::SearchForGames()
 		std::fclose(file);
 	}
 
-	m_searchResultsCount[0] = (int)friendsSessions[0].size();
+	m_searchResultsCount[0] = static_cast<int>(friendsSessions[0].size());
 
 	if (m_SessionsUpdatedCallback != NULL)
 		m_SessionsUpdatedCallback(m_pSearchParam);

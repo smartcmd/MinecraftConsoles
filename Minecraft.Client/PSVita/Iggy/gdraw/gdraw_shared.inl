@@ -368,7 +368,7 @@ static void gdraw_HandleTransitionInsertBefore(GDrawHandle *t, GDrawHandleState 
 {
    check_lists(t->cache);
    assert(t->state != GDRAW_HANDLE_STATE_sentinel); // sentinels should never get here!
-   assert(t->state != (U32) new_state); // code should never call "transition" if it's not transitioning!
+   assert(t->state != static_cast<U32>(new_state)); // code should never call "transition" if it's not transitioning!
    // unlink from prev state
    t->prev->next = t->next;
    t->next->prev = t->prev;
@@ -777,7 +777,7 @@ static GDrawTexture *gdraw_BlurPass(GDrawFunctions *g, GDrawBlurInfo *c, GDrawRe
    if (!g->TextureDrawBufferBegin(draw_bounds, GDRAW_TEXTURE_FORMAT_rgba32, GDRAW_TEXTUREDRAWBUFFER_FLAGS_needs_color | GDRAW_TEXTUREDRAWBUFFER_FLAGS_needs_alpha, 0, gstats))
       return r->tex[0];
 
-   c->BlurPass(r, taps, data, draw_bounds, tc, (F32) c->h / c->frametex_height, clamp, gstats);
+   c->BlurPass(r, taps, data, draw_bounds, tc, static_cast<F32>(c->h) / c->frametex_height, clamp, gstats);
    return g->TextureDrawBufferEnd(gstats);
 }
 
@@ -829,7 +829,7 @@ static GDrawTexture *gdraw_BlurPassDownsample(GDrawFunctions *g, GDrawBlurInfo *
    assert(clamp[0] <= clamp[2]);
    assert(clamp[1] <= clamp[3]);
 
-   c->BlurPass(r, taps, data, &z, tc, (F32) c->h / c->frametex_height, clamp, gstats);
+   c->BlurPass(r, taps, data, &z, tc, static_cast<F32>(c->h) / c->frametex_height, clamp, gstats);
    return g->TextureDrawBufferEnd(gstats);
 }
 
@@ -841,7 +841,7 @@ static void gdraw_BlurAxis(S32 axis, GDrawFunctions *g, GDrawBlurInfo *c, GDrawR
    GDrawTexture *t;
    F32 data[MAX_TAPS][4];
    S32 off_axis = 1-axis;
-   S32 w = ((S32) ceil((blur_width-1)/2))*2+1;  // 1.2 => 3, 2.8 => 3, 3.2 => 5
+   S32 w = static_cast<S32>(ceil((blur_width - 1) / 2))*2+1;  // 1.2 => 3, 2.8 => 3, 3.2 => 5
    F32 edge_weight = 1 - (w - blur_width)/2;   // 3 => 0 => 1;   1.2 => 1.8 => 0.9 => 0.1
    F32 inverse_weight = 1.0f / blur_width;
 
@@ -948,7 +948,7 @@ static void gdraw_BlurAxis(S32 axis, GDrawFunctions *g, GDrawBlurInfo *c, GDrawR
          // max coverage is 25 samples, or a filter width of 13. with 7 taps, we sample
          // 13 samples in one pass, max coverage is 13*13 samples or (13*13-1)/2 width,
          // which is ((2T-1)*(2T-1)-1)/2 or (4T^2 - 4T + 1 -1)/2 or 2T^2 - 2T or 2T*(T-1)
-         S32 w_mip = (S32) ceil(linear_remap(w, MAX_TAPS+1, MAX_TAPS*MAX_TAPS, 2, MAX_TAPS));
+         S32 w_mip = static_cast<S32>(ceil(linear_remap(w, MAX_TAPS+1, MAX_TAPS*MAX_TAPS, 2, MAX_TAPS)));
          S32 downsample = w_mip;
          F32 sample_spacing = texel;
          if (downsample < 2) downsample = 2;

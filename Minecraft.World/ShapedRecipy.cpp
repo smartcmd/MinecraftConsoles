@@ -92,7 +92,7 @@ shared_ptr<ItemInstance> ShapedRecipy::assemble(shared_ptr<CraftingContainer> cr
 
 			if (item != NULL && item->hasTag())
 			{
-				result->setTag((CompoundTag *) item->tag->copy());
+				result->setTag(static_cast<CompoundTag *>(item->tag->copy()));
 			}
 		}
 	}

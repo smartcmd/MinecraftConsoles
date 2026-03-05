@@ -10,27 +10,27 @@ QuadrupedModel::QuadrupedModel(int legSize, float g) : Model()
 
 	head = new ModelPart(this, 0, 0);
 	head->addBox(-4, -4, -8, 8, 8, 8, g); // Head
-	head->setPos(0, (float)(12 + 6 - legSize), -6);
+	head->setPos(0, static_cast<float>(12 + 6 - legSize), -6);
 
 	body = new ModelPart(this, 28, 8);
 	body->addBox(-5, -10, -7, 10, 16, 8, g); // Body
-	body->setPos(0, (float)(11 + 6 - legSize), 2);
+	body->setPos(0, static_cast<float>(11 + 6 - legSize), 2);
 
 	leg0 = new ModelPart(this, 0, 16);
 	leg0->addBox(-2, 0, -2, 4, legSize, 4, g); // Leg0
-	leg0->setPos(-3, (float)(18 + 6 - legSize), 7);
+	leg0->setPos(-3, static_cast<float>(18 + 6 - legSize), 7);
 
 	leg1 = new ModelPart(this, 0, 16);
 	leg1->addBox(-2, 0, -2, 4, legSize, 4, g); // Leg1
-	leg1->setPos(3, (float)(18 + 6 - legSize), 7);
+	leg1->setPos(3, static_cast<float>(18 + 6 - legSize), 7);
 
 	leg2 = new ModelPart(this, 0, 16);
 	leg2->addBox(-2, 0, -2, 4, legSize, 4, g); // Leg2
-	leg2->setPos(-3, (float)(18 + 6 - legSize), -5);
+	leg2->setPos(-3, static_cast<float>(18 + 6 - legSize), -5);
 
 	leg3 = new ModelPart(this, 0, 16);
 	leg3->addBox(-2, 0, -2, 4, legSize, 4, g); // Leg3
-	leg3->setPos(3, (float)(18 + 6 - legSize), -5);
+	leg3->setPos(3, static_cast<float>(18 + 6 - legSize), -5);
 
 	// 4J added - compile now to avoid random performance hit first time cubes are rendered
 	head->compile(1.0f/16.0f);

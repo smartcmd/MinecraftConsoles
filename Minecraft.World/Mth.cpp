@@ -26,13 +26,13 @@ void Mth::init()
 float Mth::sin(float i)
 {
 	if(_sin == NULL) init();		// 4J - added
-	return _sin[(int) (i * sinScale) & 65535];
+	return _sin[static_cast<int>(i * sinScale) & 65535];
 }
 
 float Mth::cos(float i)
 {
 	if(_sin == NULL) init();		// 4J - added
-	return _sin[(int) (i * sinScale + 65536 / 4) & 65535];
+	return _sin[static_cast<int>(i * sinScale + 65536 / 4) & 65535];
 }
 
 float Mth::sqrt(float x)
@@ -42,35 +42,35 @@ float Mth::sqrt(float x)
 
 float Mth::sqrt(double x)
 {
-	return (float) ::sqrt(x);
+	return static_cast<float>(::sqrt(x));
 }
 
 int Mth::floor(float v)
 {
-	int i = (int) v;
+	int i = static_cast<int>(v);
 	return v < i ? i - 1 : i;
 }
 
 __int64 Mth::lfloor(double v)
 {
-	__int64 i = (__int64) v;
+	__int64 i = static_cast<__int64>(v);
 	return v < i ? i - 1 : i;
 }
 
 int Mth::fastFloor(double x)
 {
-	return (int) (x + BIG_ENOUGH_FLOAT) - BIG_ENOUGH_INT;
+	return static_cast<int>(x + BIG_ENOUGH_FLOAT) - BIG_ENOUGH_INT;
 }
 
 int Mth::floor(double v)
 {
-	int i = (int) v;
+	int i = static_cast<int>(v);
 	return v < i ? i - 1 : i;
 }
 
 int Mth::absFloor(double v)
 {
-	return (int) (v >= 0 ? v : -v + 1);
+	return static_cast<int>(v >= 0 ? v : -v + 1);
 }
 
 float Mth::abs(float v)
@@ -85,7 +85,7 @@ int Mth::abs(int v)
 
 int Mth::ceil(float v)
 {
-	int i = (int) v;
+	int i = static_cast<int>(v);
 	return v > i ? i + 1 : i;
 }
 

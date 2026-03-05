@@ -113,7 +113,7 @@ void CXuiSceneAbstractContainer::PlatformInitialize(int iPad, int startIndex)
 	// Disable the default navigation behaviour for all slot lsit items (prevent old style cursor navigation).
 	for ( int iSection = m_eFirstSection; iSection < m_eMaxSection; ++iSection )
 	{
-		ESceneSection eSection = ( ESceneSection )( iSection );
+		ESceneSection eSection = static_cast<ESceneSection>(iSection);
 
 		if(!IsSectionSlotList(eSection)) continue;
 

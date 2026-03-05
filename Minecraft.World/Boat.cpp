@@ -245,8 +245,8 @@ void Boat::tick()
 
 			double yrd = Mth::wrapDegrees(lyr - yRot);
 
-			yRot += (float) ( (yrd) / lSteps );
-			xRot += (float) ( (lxr - xRot) / lSteps );
+			yRot += static_cast<float>((yrd) / lSteps);
+			xRot += static_cast<float>((lxr - xRot) / lSteps);
 
 			lSteps--;
 			setPos(xt, yt, zt);
@@ -390,7 +390,7 @@ void Boat::tick()
 	double zDiff = zo - z;
 	if (xDiff * xDiff + zDiff * zDiff > 0.001)
 	{
-		yRotT = (float) (atan2(zDiff, xDiff) * 180 / PI);
+		yRotT = static_cast<float>(atan2(zDiff, xDiff) * 180 / PI);
 	}
 
 	double rotDiff = Mth::wrapDegrees(yRotT - yRot);
@@ -398,7 +398,7 @@ void Boat::tick()
 	if (rotDiff > 20) rotDiff = 20;
 	if (rotDiff < -20) rotDiff = -20;
 
-	yRot += (float) rotDiff;
+	yRot += static_cast<float>(rotDiff);
 	setRot(yRot, xRot);
 
 	if(level->isClientSide) return;

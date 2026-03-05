@@ -119,7 +119,7 @@ void UIScene_SettingsMenu::handlePress(F64 controlId, F64 childId)
 	//CD - Added for audio
 	ui.PlayUISFX(eSFX_Press);
 
-	switch((int)controlId)
+	switch(static_cast<int>(controlId))
 	{
 	case BUTTON_ALL_OPTIONS:
 		ui.NavigateToScene(m_iPad, eUIScene_SettingsOptionsMenu);
@@ -151,7 +151,7 @@ void UIScene_SettingsMenu::handlePress(F64 controlId, F64 childId)
 
 int UIScene_SettingsMenu::ResetDefaultsDialogReturned(void *pParam,int iPad,C4JStorage::EMessageResult result)
 {
-	UIScene_SettingsMenu* pClass = (UIScene_SettingsMenu*)pParam;
+	UIScene_SettingsMenu* pClass = static_cast<UIScene_SettingsMenu *>(pParam);
 
 	// results switched for this dialog
 	if(result==C4JStorage::EMessage_ResultDecline) 

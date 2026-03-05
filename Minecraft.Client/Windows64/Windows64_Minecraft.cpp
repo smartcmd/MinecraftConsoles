@@ -121,14 +121,14 @@ static void CopyWideArgToAnsi(LPCWSTR source, char* dest, size_t destSize)
 	if (source == NULL)
 		return;
 
-	WideCharToMultiByte(CP_ACP, 0, source, -1, dest, (int)destSize, NULL, NULL);
+	WideCharToMultiByte(CP_ACP, 0, source, -1, dest, static_cast<int>(destSize), NULL, NULL);
 	dest[destSize - 1] = 0;
 }
 
 // ---------- Persistent options (options.txt next to exe) ----------
 static void GetOptionsFilePath(char *out, size_t outSize)
 {
-	GetModuleFileNameA(NULL, out, (DWORD)outSize);
+	GetModuleFileNameA(NULL, out, static_cast<DWORD>(outSize));
 	char *p = strrchr(out, '\\');
 	if (p) *(p + 1) = '\0';
 	strncat_s(out, outSize, "options.txt", _TRUNCATE);
@@ -251,9 +251,9 @@ static Win64LaunchOptions ParseLaunchOptions()
 			if (endPtr != argv[i] && *endPtr == 0 && port > 0 && port <= 65535)
 			{
 				if (options.serverMode)
-					g_Win64DedicatedServerPort = (int)port;
+					g_Win64DedicatedServerPort = static_cast<int>(port);
 				else
-					g_Win64MultiplayerPort = (int)port;
+					g_Win64MultiplayerPort = static_cast<int>(port);
 			}
 		}
 	}
@@ -568,13 +568,13 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	case WM_CHAR:
 		// Buffer typed characters so UIScene_Keyboard can dispatch them to the Iggy Flash player
 		if (wParam >= 0x20 || wParam == 0x08 || wParam == 0x0D) // printable chars + backspace + enter
-			g_KBMInput.OnChar((wchar_t)wParam);
+			g_KBMInput.OnChar(static_cast<wchar_t>(wParam));
 		break;
 
 	case WM_KEYDOWN:
 	case WM_SYSKEYDOWN:
 	{
-		int vk = (int)wParam;
+		int vk = static_cast<int>(wParam);
 		if (lParam & 0x40000000) break; // ignore auto-repeat
 		if (vk == VK_SHIFT)
 			vk = (MapVirtualKey((lParam >> 16) & 0xFF, MAPVK_VSC_TO_VK_EX) == VK_RSHIFT) ? VK_RSHIFT : VK_LSHIFT;
@@ -588,7 +588,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	case WM_KEYUP:
 	case WM_SYSKEYUP:
 	{
-		int vk = (int)wParam;
+		int vk = static_cast<int>(wParam);
 		if (vk == VK_SHIFT)
 			vk = (MapVirtualKey((lParam >> 16) & 0xFF, MAPVK_VSC_TO_VK_EX) == VK_RSHIFT) ? VK_RSHIFT : VK_LSHIFT;
 		else if (vk == VK_CONTROL)
@@ -871,8 +871,8 @@ HRESULT InitDevice()
 
 	// Setup the viewport
 	D3D11_VIEWPORT vp;
-	vp.Width = (FLOAT)width;
-	vp.Height = (FLOAT)height;
+	vp.Width = static_cast<FLOAT>(width);
+	vp.Height = static_cast<FLOAT>(height);
 	vp.MinDepth = 0.0f;
 	vp.MaxDepth = 1.0f;
 	vp.TopLeftX = 0;
@@ -975,7 +975,7 @@ static Minecraft* InitialiseMinecraftRuntime()
 
 	for (int i = 0; i < MINECRAFT_NET_MAX_PLAYERS; i++)
 	{
-		IQNet::m_player[i].m_smallId = (BYTE)i;
+		IQNet::m_player[i].m_smallId = static_cast<BYTE>(i);
 		IQNet::m_player[i].m_isRemote = false;
 		IQNet::m_player[i].m_isHostPlayer = (i == 0);
 		swprintf_s(IQNet::m_player[i].m_gamertag, 32, L"Player%d", i);
@@ -1200,7 +1200,7 @@ int APIENTRY _tWinMain(_In_ HINSTANCE hInstance,
         char buf[128] = {};
         if (fgets(buf, sizeof(buf), f))
         {
-            int len = (int)strlen(buf);
+            int len = static_cast<int>(strlen(buf));
             while (len > 0 && (buf[len - 1] == '\n' || buf[len - 1] == '\r' || buf[len - 1] == ' '))
             {
                 buf[--len] = '\0';

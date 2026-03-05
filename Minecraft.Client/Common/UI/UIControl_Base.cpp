@@ -90,7 +90,7 @@ void UIControl_Base::setAllPossibleLabels(int labelCount, wchar_t labels[][256])
 
 	for(unsigned int i = 0; i < labelCount; ++i)
 	{
-		stringVal[i].string = (IggyUTF16 *)labels[i];
+		stringVal[i].string = static_cast<IggyUTF16 *>(labels[i]);
 		stringVal[i].length = wcslen(labels[i]);
 		value[i].type = IGGY_DATATYPE_string_UTF16;
 		value[i].string16 = stringVal[i];

@@ -196,7 +196,7 @@ void CustomLevelSource::prepareHeights(int xOffs, int zOffs, byteArray blocks)
 							if( emin < falloffStart )
 							{
 								int falloff = falloffStart - emin;
-								comp = ((float)falloff / (float)falloffStart ) * falloffMax;
+								comp = (static_cast<float>(falloff) / static_cast<float>(falloffStart) ) * falloffMax;
 							}
 							// 4J - end of extra code
 							///////////////////////////////////////////////////////////////////
@@ -204,11 +204,11 @@ void CustomLevelSource::prepareHeights(int xOffs, int zOffs, byteArray blocks)
 							// 4J - this comparison used to just be with 0.0f but is now varied by block above
 							if (yc * CHUNK_HEIGHT + y < mapHeight)
 							{
-								tileId = (byte) Tile::stone_Id;
+								tileId = static_cast<byte>(Tile::stone_Id);
 							}
 							else if (yc * CHUNK_HEIGHT + y < waterHeight)
 							{
-								tileId = (byte) Tile::calmWater_Id;
+								tileId = static_cast<byte>(Tile::calmWater_Id);
 							}
 
 							// 4J - more extra code to make sure that the column at the edge of the world is just water & rock, to match the infinite sea that
@@ -262,7 +262,7 @@ void CustomLevelSource::buildSurfaces(int xOffs, int zOffs, byteArray blocks, Bi
 
 			Biome *b = biomes[z + x * 16];
 			float temp = b->getTemperature();
-			int runDepth = (int) (depthBuffer[x + z * 16] / 3 + 3 + random->nextDouble() * 0.25);
+			int runDepth = static_cast<int>(depthBuffer[x + z * 16] / 3 + 3 + random->nextDouble() * 0.25);
 
 			int run = -1;
 
@@ -290,7 +290,7 @@ void CustomLevelSource::buildSurfaces(int xOffs, int zOffs, byteArray blocks, Bi
 				if (y <= 1 + random->nextInt(2))	// 4J - changed to make the bedrock not have bits you can get stuck in
 					//                if (y <= 0 + random->nextInt(5))
 				{
-					blocks[offs] = (byte) Tile::unbreakable_Id;
+					blocks[offs] = static_cast<byte>(Tile::unbreakable_Id);
 				}
 				else
 				{
@@ -307,7 +307,7 @@ void CustomLevelSource::buildSurfaces(int xOffs, int zOffs, byteArray blocks, Bi
 							if (runDepth <= 0)
 							{
 								top = 0;
-								material = (byte) Tile::stone_Id;
+								material = static_cast<byte>(Tile::stone_Id);
 							}
 							else if (y >= waterHeight - 4 && y <= waterHeight + 1)
 							{
@@ -321,8 +321,8 @@ void CustomLevelSource::buildSurfaces(int xOffs, int zOffs, byteArray blocks, Bi
 
 							if (y < waterHeight && top == 0)
 							{
-								if (temp < 0.15f) top = (byte) Tile::ice_Id;
-								else top = (byte) Tile::calmWater_Id;
+								if (temp < 0.15f) top = static_cast<byte>(Tile::ice_Id);
+								else top = static_cast<byte>(Tile::calmWater_Id);
 							}
 
 							run = runDepth;
@@ -339,7 +339,7 @@ void CustomLevelSource::buildSurfaces(int xOffs, int zOffs, byteArray blocks, Bi
 							if (run == 0 && material == Tile::sand_Id)
 							{
 								run = random->nextInt(4);
-								material = (byte) Tile::sandStone_Id;
+								material = static_cast<byte>(Tile::sandStone_Id);
 							}
 						}
 					}
@@ -368,7 +368,7 @@ LevelChunk *CustomLevelSource::getChunk(int xOffs, int zOffs)
 
 	// 4J - now allocating this with a physical alloc & bypassing general memory management so that it will get cleanly freed
 	int blocksSize = Level::maxBuildHeight * 16 * 16;
-	byte *tileData = (byte *)XPhysicalAlloc(blocksSize, MAXULONG_PTR, 4096, PAGE_READWRITE);
+	byte *tileData = static_cast<byte *>(XPhysicalAlloc(blocksSize, MAXULONG_PTR, 4096, PAGE_READWRITE));
 	XMemSet128(tileData,0,blocksSize);
 	byteArray blocks = byteArray(tileData,blocksSize);
 	//    byteArray blocks = byteArray(16 * level->depth * 16);

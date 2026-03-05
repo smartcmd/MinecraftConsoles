@@ -62,8 +62,8 @@ CXuiCtrlMinecraftSlot::CXuiCtrlMinecraftSlot() :
 
 	if(pMinecraft != NULL)
 	{
-		m_fScreenWidth=(float)pMinecraft->width_phys;
-		m_fScreenHeight=(float)pMinecraft->height_phys;
+		m_fScreenWidth=static_cast<float>(pMinecraft->width_phys);
+		m_fScreenHeight=static_cast<float>(pMinecraft->height_phys);
 		m_bScreenWidthSetup = true;
 	}
 }
@@ -114,9 +114,9 @@ HRESULT CXuiCtrlMinecraftSlot::OnGetSourceImage(XUIMessageGetSourceImage* pData,
 				m_item = MsgGetSlotItem.item;
 				m_iID = m_item->id;
 				m_iPad	= GET_SLOTDISPLAY_USERINDEX_FROM_DATA_BITMASK(MsgGetSlotItem.iDataBitField);
-				m_fAlpha		= ((float)GET_SLOTDISPLAY_ALPHA_FROM_DATA_BITMASK(MsgGetSlotItem.iDataBitField))/31.0f;
+				m_fAlpha		= static_cast<float>(GET_SLOTDISPLAY_ALPHA_FROM_DATA_BITMASK(MsgGetSlotItem.iDataBitField))/31.0f;
 				m_bDecorations	= GET_SLOTDISPLAY_DECORATIONS_FROM_DATA_BITMASK(MsgGetSlotItem.iDataBitField);
-				m_fScale		= ((float)GET_SLOTDISPLAY_SCALE_FROM_DATA_BITMASK(MsgGetSlotItem.iDataBitField))/10.0f;
+				m_fScale		= static_cast<float>(GET_SLOTDISPLAY_SCALE_FROM_DATA_BITMASK(MsgGetSlotItem.iDataBitField))/10.0f;
 			}
 			else
 			{
@@ -128,10 +128,10 @@ HRESULT CXuiCtrlMinecraftSlot::OnGetSourceImage(XUIMessageGetSourceImage* pData,
 					// 4J Stu - Some parent controls may overide this, others will leave it as what we passed in
 
 					m_iPad	= GET_SLOTDISPLAY_USERINDEX_FROM_DATA_BITMASK(MsgGetSlotItem.iDataBitField);
-					m_fAlpha		= ((float)GET_SLOTDISPLAY_ALPHA_FROM_DATA_BITMASK(MsgGetSlotItem.iDataBitField))/31.0f;
+					m_fAlpha		= static_cast<float>(GET_SLOTDISPLAY_ALPHA_FROM_DATA_BITMASK(MsgGetSlotItem.iDataBitField))/31.0f;
 					m_bDecorations	= GET_SLOTDISPLAY_DECORATIONS_FROM_DATA_BITMASK(MsgGetSlotItem.iDataBitField);
 					m_iCount		= GET_SLOTDISPLAY_COUNT_FROM_DATA_BITMASK(MsgGetSlotItem.iDataBitField);
-					m_fScale		= ((float)GET_SLOTDISPLAY_SCALE_FROM_DATA_BITMASK(MsgGetSlotItem.iDataBitField))/10.0f;
+					m_fScale		= static_cast<float>(GET_SLOTDISPLAY_SCALE_FROM_DATA_BITMASK(MsgGetSlotItem.iDataBitField))/10.0f;
 					m_popTime		= GET_SLOTDISPLAY_POPTIME_FROM_DATA_BITMASK(MsgGetSlotItem.iDataBitField);
 
 					m_iAuxVal		= GET_SLOTDISPLAY_AUXVAL_FROM_ITEM_BITMASK(MsgGetSlotItem.iItemBitField);
@@ -217,18 +217,18 @@ HRESULT CXuiCtrlMinecraftSlot::OnRender(XUIMessageRender *pRenderData, BOOL &bHa
 		// Annoyingly, XUI renders everything to a z of 0 so if we want to render anything that needs the z-buffer on top of it, then we need to clear it.
 		// Clear just the region required for this control.
 		D3DRECT clearRect; 
-		clearRect.x1 = (int)(matrix._41) - 2;
-		clearRect.y1 = (int)(matrix._42) - 2;
-		clearRect.x2 = (int)(matrix._41 + ( bwidth  * matrix._11 )) + 2;
-		clearRect.y2 = (int)(matrix._42 + ( bheight * matrix._22 )) + 2;
+		clearRect.x1 = static_cast<int>(matrix._41) - 2;
+		clearRect.y1 = static_cast<int>(matrix._42) - 2;
+		clearRect.x2 = static_cast<int>(matrix._41 + (bwidth * matrix._11)) + 2;
+		clearRect.y2 = static_cast<int>(matrix._42 + (bheight * matrix._22)) + 2;
 
 		if(!m_bScreenWidthSetup)
 		{
 			Minecraft *pMinecraft=Minecraft::GetInstance();
 			if(pMinecraft != NULL)
 			{
-				m_fScreenWidth=(float)pMinecraft->width_phys;
-				m_fScreenHeight=(float)pMinecraft->height_phys;
+				m_fScreenWidth=static_cast<float>(pMinecraft->width_phys);
+				m_fScreenHeight=static_cast<float>(pMinecraft->height_phys);
 				m_bScreenWidthSetup = true;
 			}
 		}
@@ -261,14 +261,14 @@ HRESULT CXuiCtrlMinecraftSlot::OnRender(XUIMessageRender *pRenderData, BOOL &bHa
 		if (pop > 0)
 		{
 			glPushMatrix();
-			float squeeze = 1 + pop / (float) Inventory::POP_TIME_DURATION;
+			float squeeze = 1 + pop / static_cast<float>(Inventory::POP_TIME_DURATION);
 			float sx = x;
 			float sy = y;
 			float sxoffs = 8 * scaleX;
 			float syoffs = 12 * scaleY;
-			glTranslatef((float)(sx + sxoffs), (float)(sy + syoffs), 0);
+			glTranslatef(static_cast<float>(sx + sxoffs), static_cast<float>(sy + syoffs), 0);
 			glScalef(1 / squeeze, (squeeze + 1) / 2, 1);
-			glTranslatef((float)-(sx + sxoffs), (float)-(sy + syoffs), 0);
+			glTranslatef(static_cast<float>(-(sx + sxoffs)), static_cast<float>(-(sy + syoffs)), 0);
 		}
 
 		m_pItemRenderer->renderAndDecorateItem(pMinecraft->font, pMinecraft->textures, m_item, x, y,scaleX,scaleY,m_fAlpha,m_isFoil,false);
@@ -284,15 +284,15 @@ HRESULT CXuiCtrlMinecraftSlot::OnRender(XUIMessageRender *pRenderData, BOOL &bHa
 			{				
 				glPushMatrix();		
 				glScalef(scaleX, scaleY, 1.0f);
-				int iX= (int)(0.5f+((float)x)/scaleX);
-				int iY= (int)(0.5f+((float)y)/scaleY);
+				int iX= static_cast<int>(0.5f + ((float)x) / scaleX);
+				int iY= static_cast<int>(0.5f + ((float)y) / scaleY);
 
 				m_pItemRenderer->renderGuiItemDecorations(pMinecraft->font, pMinecraft->textures, m_item, iX, iY, m_fAlpha);
 				glPopMatrix();
 			}
 			else
 			{
-				m_pItemRenderer->renderGuiItemDecorations(pMinecraft->font, pMinecraft->textures, m_item, (int)x, (int)y, m_fAlpha);
+				m_pItemRenderer->renderGuiItemDecorations(pMinecraft->font, pMinecraft->textures, m_item, static_cast<int>(x), static_cast<int>(y), m_fAlpha);
 			}
 		}
 
@@ -329,9 +329,9 @@ void CXuiCtrlMinecraftSlot::SetIcon(int iPad, int iId,int iAuxVal, int iCount, i
 		m_iAuxVal = 0;
 
 	m_iCount=iCount;
-	m_fScale	= (float)(iScale)/10.0f;
+	m_fScale	= static_cast<float>(iScale)/10.0f;
 	//m_uiAlpha=uiAlpha;
-	m_fAlpha       =((float)(uiAlpha)) / 255.0f;
+	m_fAlpha       =static_cast<float>(uiAlpha) / 255.0f;
 	m_bDecorations = bDecorations;
 	// 	mif(bDecorations) m_iDecorations=1;
 	// 	else m_iDecorations=0;
@@ -348,8 +348,8 @@ void CXuiCtrlMinecraftSlot::SetIcon(int iPad, shared_ptr<ItemInstance> item, int
 	m_item = item;
 	m_isFoil = item->isFoil();
 	m_iPad = iPad;
-	m_fScale = (float)(iScale)/10.0f;
-	m_fAlpha =((float)(uiAlpha)) / 31;
+	m_fScale = static_cast<float>(iScale)/10.0f;
+	m_fAlpha =static_cast<float>(uiAlpha) / 31;
 	m_bDecorations = bDecorations;
 	m_bDirty = TRUE;
 	XuiElementSetShow(m_hObj,bShow);

@@ -11,7 +11,7 @@ UIScene_HorseInventoryMenu::UIScene_HorseInventoryMenu(int iPad, void *_initData
 	// Setup all the Iggy references we need for this scene
 	initialiseMovie();
 
-	HorseScreenInput *initData = (HorseScreenInput *)_initData;
+	HorseScreenInput *initData = static_cast<HorseScreenInput *>(_initData);
 
 	m_labelHorse.init( initData->container->getName() );
 	m_inventory = initData->inventory;
@@ -20,7 +20,7 @@ UIScene_HorseInventoryMenu::UIScene_HorseInventoryMenu(int iPad, void *_initData
 	Minecraft *pMinecraft = Minecraft::GetInstance();
 	if( pMinecraft->localgameModes[iPad] != NULL )
 	{
-		TutorialMode *gameMode = (TutorialMode *)pMinecraft->localgameModes[iPad];
+		TutorialMode *gameMode = static_cast<TutorialMode *>(pMinecraft->localgameModes[iPad]);
 		m_previousTutorialState = gameMode->getTutorial()->getCurrentState();
 		gameMode->getTutorial()->changeTutorialState(e_Tutorial_State_Horse_Menu, this);
 	}

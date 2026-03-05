@@ -15,12 +15,12 @@ PlayerCloudParticle::PlayerCloudParticle(Level *level, double x, double y, doubl
 	yd += ya;
 	zd += za;
 
-	rCol = gCol = bCol = 1 - (float) (Math::random() * 0.3f);
+	rCol = gCol = bCol = 1 - static_cast<float>(Math::random() * 0.3f);
 	size *= 0.75f;
 	size *= scale;
 	oSize = size;
 
-	lifetime = (int) (8 / (Math::random() * 0.8 + 0.3));
+	lifetime = static_cast<int>(8 / (Math::random() * 0.8 + 0.3));
 	lifetime *= scale;
 	noPhysics = false;
 }

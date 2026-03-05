@@ -173,12 +173,12 @@ void MobEffect::applyInstantenousEffect(shared_ptr<LivingEntity> source, shared_
 {
 	if ((id == heal->id && !mob->isInvertedHealAndHarm()) || (id == harm->id && mob->isInvertedHealAndHarm()))
 	{
-		int amount = (int) (scale * (double) (4 << amplification) + .5);
+		int amount = static_cast<int>(scale * (double)(4 << amplification) + .5);
 		mob->heal(amount);
 	}
 	else if ((id == harm->id && !mob->isInvertedHealAndHarm()) || (id == heal->id && mob->isInvertedHealAndHarm()))
 	{
-		int amount = (int) (scale * (double) (6 << amplification) + .5);
+		int amount = static_cast<int>(scale * (double)(6 << amplification) + .5);
 		if (source == NULL)
 		{
 			mob->hurt(DamageSource::magic, amount);

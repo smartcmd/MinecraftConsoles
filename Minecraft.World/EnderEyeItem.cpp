@@ -212,7 +212,7 @@ shared_ptr<ItemInstance> EnderEyeItem::use(shared_ptr<ItemInstance> instance, Le
 			level->addEntity(eyeOfEnderSignal);
 
 			level->playEntitySound(player, eSoundType_RANDOM_BOW, 0.5f, 0.4f / (random->nextFloat() * 0.4f + 0.8f));
-			level->levelEvent(nullptr, LevelEvent::SOUND_LAUNCH, (int) player->x, (int) player->y, (int) player->z, 0);
+			level->levelEvent(nullptr, LevelEvent::SOUND_LAUNCH, static_cast<int>(player->x), static_cast<int>(player->y), static_cast<int>(player->z), 0);
 			if (!player->abilities.instabuild)
 			{
 				instance->count--;

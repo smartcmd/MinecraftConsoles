@@ -30,7 +30,7 @@ GameRuleDefinition *LevelRuleset::addChild(ConsoleGameRules::EGameRuleType ruleT
 	if(ruleType == ConsoleGameRules::eGameRuleType_NamedArea)
 	{
 		rule = new NamedAreaRuleDefinition();
-		m_areas.push_back((NamedAreaRuleDefinition *)rule);
+		m_areas.push_back(static_cast<NamedAreaRuleDefinition *>(rule));
 	}
 	else
 	{

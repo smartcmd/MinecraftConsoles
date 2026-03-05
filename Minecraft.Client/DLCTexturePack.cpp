@@ -36,7 +36,7 @@ DLCTexturePack::DLCTexturePack(DWORD id, DLCPack *pack, TexturePack *fallback) :
 
 	if(m_dlcInfoPack->doesPackContainFile(DLCManager::e_DLCType_LocalisationData, L"languages.loc"))
 	{
-		DLCLocalisationFile *localisationFile = (DLCLocalisationFile *)m_dlcInfoPack->getFile(DLCManager::e_DLCType_LocalisationData, L"languages.loc");
+		DLCLocalisationFile *localisationFile = static_cast<DLCLocalisationFile *>(m_dlcInfoPack->getFile(DLCManager::e_DLCType_LocalisationData, L"languages.loc"));
 		m_stringTable = localisationFile->getStringTable();
 	}
 
@@ -51,7 +51,7 @@ void DLCTexturePack::loadIcon()
 {
 	if(m_dlcInfoPack->doesPackContainFile(DLCManager::e_DLCType_Texture, L"icon.png"))
 	{
-		DLCTextureFile *textureFile = (DLCTextureFile *)m_dlcInfoPack->getFile(DLCManager::e_DLCType_Texture, L"icon.png");
+		DLCTextureFile *textureFile = static_cast<DLCTextureFile *>(m_dlcInfoPack->getFile(DLCManager::e_DLCType_Texture, L"icon.png"));
 		m_iconData = textureFile->getData(m_iconSize);
 	}
 	else
@@ -64,7 +64,7 @@ void DLCTexturePack::loadComparison()
 {
 	if(m_dlcInfoPack->doesPackContainFile(DLCManager::e_DLCType_Texture, L"comparison.png"))
 	{
-		DLCTextureFile *textureFile = (DLCTextureFile *)m_dlcInfoPack->getFile(DLCManager::e_DLCType_Texture, L"comparison.png");
+		DLCTextureFile *textureFile = static_cast<DLCTextureFile *>(m_dlcInfoPack->getFile(DLCManager::e_DLCType_Texture, L"comparison.png"));
 		m_comparisonData = textureFile->getData(m_comparisonSize);
 	}
 }
@@ -166,7 +166,7 @@ void DLCTexturePack::loadColourTable()
 	// Load the game colours
 	if(m_dlcDataPack != NULL && m_dlcDataPack->doesPackContainFile(DLCManager::e_DLCType_ColourTable, L"colours.col"))
 	{
-		DLCColourTableFile *colourFile = (DLCColourTableFile *)m_dlcDataPack->getFile(DLCManager::e_DLCType_ColourTable, L"colours.col");
+		DLCColourTableFile *colourFile = static_cast<DLCColourTableFile *>(m_dlcDataPack->getFile(DLCManager::e_DLCType_ColourTable, L"colours.col"));
 		m_colourTable = colourFile->getColourTable();
 		m_bUsingDefaultColourTable = false;
 	}
@@ -274,7 +274,7 @@ wstring DLCTexturePack::getFilePath(DWORD packId, wstring filename, bool bAddDat
 
 int DLCTexturePack::packMounted(LPVOID pParam,int iPad,DWORD dwErr,DWORD dwLicenceMask)
 {
-	DLCTexturePack *texturePack = (DLCTexturePack *)pParam;
+	DLCTexturePack *texturePack = static_cast<DLCTexturePack *>(pParam);
 	texturePack->m_bLoadingData = false;
 	if(dwErr!=ERROR_SUCCESS)
 	{
@@ -347,7 +347,7 @@ int DLCTexturePack::packMounted(LPVOID pParam,int iPad,DWORD dwErr,DWORD dwLicen
 					int gameRulesCount = pack->getDLCItemsCount(DLCManager::e_DLCType_GameRulesHeader);
 					for(int i = 0; i < gameRulesCount; ++i)
 					{
-						DLCGameRulesHeader *dlcFile = (DLCGameRulesHeader *) pack->getFile(DLCManager::e_DLCType_GameRulesHeader, i);
+						DLCGameRulesHeader *dlcFile = static_cast<DLCGameRulesHeader *>(pack->getFile(DLCManager::e_DLCType_GameRulesHeader, i));
 					
 						if (!dlcFile->getGrfPath().empty())
 						{
@@ -469,7 +469,7 @@ int DLCTexturePack::packMounted(LPVOID pParam,int iPad,DWORD dwErr,DWORD dwLicen
 				//DLCPack *pack = texturePack->m_dlcInfoPack->GetParentPack();
 				if(pack->getDLCItemsCount(DLCManager::e_DLCType_Audio)>0)
 				{
-					DLCAudioFile *dlcFile = (DLCAudioFile *) pack->getFile(DLCManager::e_DLCType_Audio, 0);
+					DLCAudioFile *dlcFile = static_cast<DLCAudioFile *>(pack->getFile(DLCManager::e_DLCType_Audio, 0));
 					texturePack->setHasAudio(true);
 					// init the streaming sound ids for this texture pack
 					int iOverworldStart, iNetherStart, iEndStart;
@@ -589,7 +589,7 @@ wstring DLCTexturePack::getXuiRootPath()
 	wstring path = L"";
 	if(m_dlcDataPack != NULL && m_dlcDataPack->doesPackContainFile(DLCManager::e_DLCType_UIData, L"TexturePack.xzp"))
 	{
-		DLCUIDataFile *dataFile = (DLCUIDataFile *)m_dlcDataPack->getFile(DLCManager::e_DLCType_UIData, L"TexturePack.xzp");
+		DLCUIDataFile *dataFile = static_cast<DLCUIDataFile *>(m_dlcDataPack->getFile(DLCManager::e_DLCType_UIData, L"TexturePack.xzp"));
 
 		DWORD dwSize = 0;
 		PBYTE pbData = dataFile->getData(dwSize);

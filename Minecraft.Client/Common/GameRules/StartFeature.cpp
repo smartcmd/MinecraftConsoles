@@ -47,7 +47,7 @@ void StartFeature::addAttribute(const wstring &attributeName, const wstring &att
 	else if(attributeName.compare(L"feature") == 0)
 	{
 		int value = _fromString<int>(attributeValue);
-		m_feature = (StructureFeature::EFeatureTypes)value;
+		m_feature = static_cast<StructureFeature::EFeatureTypes>(value);
 		app.DebugPrintf("StartFeature: Adding parameter feature=%d\n",m_feature);
 	}
 	else

@@ -75,7 +75,7 @@ void FlyingMob::travel(float xa, float ya)
 	walkAnimSpeedO = walkAnimSpeed;
 	double xxd = x - xo;
 	double zzd = z - zo;
-	float wst = (float) sqrt(xxd * xxd + zzd * zzd) * 4;
+	float wst = static_cast<float>(sqrt(xxd * xxd + zzd * zzd)) * 4;
 	if (wst > 1) wst = 1;
 	walkAnimSpeed += (wst - walkAnimSpeed) * 0.4f;
 	walkAnimPos += walkAnimSpeed;

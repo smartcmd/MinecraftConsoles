@@ -20,6 +20,6 @@ bool StatTask::isCompleted()
 		return true;
 
 	Minecraft *minecraft = Minecraft::GetInstance();
-	bIsCompleted = minecraft->stats[ProfileManager.GetPrimaryPad()]->getTotalValue( stat ) >= (unsigned int)targetValue;
+	bIsCompleted = minecraft->stats[ProfileManager.GetPrimaryPad()]->getTotalValue( stat ) >= static_cast<unsigned int>(targetValue);
 	return bIsCompleted;
 }

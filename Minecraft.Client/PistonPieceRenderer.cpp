@@ -35,7 +35,7 @@ void PistonPieceRenderer::render(shared_ptr<TileEntity> _entity, double x, doubl
 
         t->begin();
 
-        t->offset((float) x - entity->x + entity->getXOff(a), (float) y - entity->y + entity->getYOff(a), (float) z - entity->z + entity->getZOff(a));
+        t->offset(static_cast<float>(x) - entity->x + entity->getXOff(a), static_cast<float>(y) - entity->y + entity->getYOff(a), static_cast<float>(z) - entity->z + entity->getZOff(a));
         t->color(1, 1, 1);
         if (tile == Tile::pistonExtension && entity->getProgress(a) < 0.5f)
 		{
@@ -45,11 +45,11 @@ void PistonPieceRenderer::render(shared_ptr<TileEntity> _entity, double x, doubl
 		else if (entity->isSourcePiston() && !entity->isExtending())
 		{
             // special case for withdrawing the arm back into the base
-            Tile::pistonExtension->setOverrideTopTexture(((PistonBaseTile *) tile)->getPlatformTexture());
+            Tile::pistonExtension->setOverrideTopTexture(static_cast<PistonBaseTile *>(tile)->getPlatformTexture());
             tileRenderer->tesselatePistonArmNoCulling(Tile::pistonExtension, entity->x, entity->y, entity->z, entity->getProgress(a) < 0.5f, entity->getData());
             Tile::pistonExtension->clearOverrideTopTexture();
 
-            t->offset((float) x - entity->x, (float) y - entity->y, (float) z - entity->z);
+            t->offset(static_cast<float>(x) - entity->x, static_cast<float>(y) - entity->y, static_cast<float>(z) - entity->z);
             tileRenderer->tesselatePistonBaseForceExtended(tile, entity->x, entity->y, entity->z, entity->getData());
         }
 		else

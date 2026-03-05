@@ -40,7 +40,7 @@ ListTag<CompoundTag> *EnchantedBookItem::getEnchantments(shared_ptr<ItemInstance
 		return new ListTag<CompoundTag>();
 	}
 
-	return (ListTag<CompoundTag> *) item->tag->get((wchar_t *)TAG_STORED_ENCHANTMENTS.c_str());
+	return static_cast<ListTag<CompoundTag> *>(item->tag->get((wchar_t *)TAG_STORED_ENCHANTMENTS.c_str()));
 }
 
 void EnchantedBookItem::appendHoverText(shared_ptr<ItemInstance> itemInstance, shared_ptr<Player> player, vector<HtmlString> *lines, bool advanced)
@@ -78,7 +78,7 @@ void EnchantedBookItem::addEnchantment(shared_ptr<ItemInstance> item, Enchantmen
 		{
 			if (tag->getShort((wchar_t *)ItemInstance::TAG_ENCH_LEVEL) < enchantment->level)
 			{
-				tag->putShort((wchar_t *)ItemInstance::TAG_ENCH_LEVEL, (short) enchantment->level);
+				tag->putShort((wchar_t *)ItemInstance::TAG_ENCH_LEVEL, static_cast<short>(enchantment->level));
 			}
 
 			add = false;
@@ -90,8 +90,8 @@ void EnchantedBookItem::addEnchantment(shared_ptr<ItemInstance> item, Enchantmen
 	{
 		CompoundTag *tag = new CompoundTag();
 
-		tag->putShort((wchar_t *)ItemInstance::TAG_ENCH_ID, (short) enchantment->enchantment->id);
-		tag->putShort((wchar_t *)ItemInstance::TAG_ENCH_LEVEL, (short) enchantment->level);
+		tag->putShort((wchar_t *)ItemInstance::TAG_ENCH_ID, static_cast<short>(enchantment->enchantment->id));
+		tag->putShort((wchar_t *)ItemInstance::TAG_ENCH_LEVEL, static_cast<short>(enchantment->level));
 
 		enchantments->add(tag);
 	}

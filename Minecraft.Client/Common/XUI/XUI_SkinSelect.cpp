@@ -26,7 +26,7 @@ WCHAR *CScene_SkinSelect::wchDefaultNamesA[]=
 //----------------------------------------------------------------------------------
 HRESULT CScene_SkinSelect::OnInit( XUIMessageInit* pInitData, BOOL& bHandled )
 {
-	m_iPad=*(int *)pInitData->pvInitData;
+	m_iPad=*static_cast<int *>(pInitData->pvInitData);
 	// if we're not in the game, we need to use basescene 0 
 	bool bNotInGame=(Minecraft::GetInstance()->level==NULL);
 	m_bIgnoreInput=false;
@@ -1021,7 +1021,7 @@ void CScene_SkinSelect::handlePackIndexChanged()
 				DWORD defaultSkinIndex = GET_DEFAULT_SKIN_ID_FROM_BITMASK(m_originalSkinId);
 				if( ugcSkinIndex == 0 )
 				{
-					m_skinIndex = (EDefaultSkins) defaultSkinIndex;
+					m_skinIndex = static_cast<EDefaultSkins>(defaultSkinIndex);
 				}
 			}	
 			break;
@@ -1311,7 +1311,7 @@ void CScene_SkinSelect::updateClipping()
 
 int CScene_SkinSelect::UnlockSkinReturned(void *pParam,int iPad,C4JStorage::EMessageResult result)
 {
-	CScene_SkinSelect* pScene = (CScene_SkinSelect*)pParam;
+	CScene_SkinSelect* pScene = static_cast<CScene_SkinSelect *>(pParam);
 #ifdef _XBOX
 	if(result==C4JStorage::EMessage_ResultAccept)
 	{

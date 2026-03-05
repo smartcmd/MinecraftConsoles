@@ -36,7 +36,7 @@
 HRESULT CScene_MultiGameJoinLoad::OnInit( XUIMessageInit* pInitData, BOOL& bHandled )
 {
 
-	m_iPad=*(int *)pInitData->pvInitData;
+	m_iPad=*static_cast<int *>(pInitData->pvInitData);
 	m_bReady=false;
 	MapChildControls();
 
@@ -95,10 +95,10 @@ HRESULT CScene_MultiGameJoinLoad::OnInit( XUIMessageInit* pInitData, BOOL& bHand
 
 	VOID *pObj;
 	XuiObjectFromHandle( m_SavesList, &pObj );
-	m_pSavesList = (CXuiCtrl4JList *)pObj;
+	m_pSavesList = static_cast<CXuiCtrl4JList *>(pObj);
 
 	XuiObjectFromHandle( m_GamesList, &pObj );
-	m_pGamesList = (CXuiCtrl4JList *)pObj;
+	m_pGamesList = static_cast<CXuiCtrl4JList *>(pObj);
 
 	// block input if we're waiting for DLC to install, and wipe the saves list. The end of dlc mounting custom message will fill the list again
 	if(app.StartInstallDLCProcess(m_iPad)==true)
@@ -326,7 +326,7 @@ HRESULT CScene_MultiGameJoinLoad::GetSaveInfo(  )
 		if( savesDir.exists() )
 		{
 			m_saves = savesDir.listFiles();
-			uiSaveC = (unsigned int)m_saves->size();
+			uiSaveC = static_cast<unsigned int>(m_saves->size());
 		}
 		// add the New Game and Tutorial after the saves list is retrieved, if there are any saves
 
@@ -415,7 +415,7 @@ HRESULT CScene_MultiGameJoinLoad::OnDestroy()
 
 int CScene_MultiGameJoinLoad::DeviceRemovedDialogReturned(void *pParam,int iPad,C4JStorage::EMessageResult result)
 {
-	CScene_MultiGameJoinLoad* pClass = (CScene_MultiGameJoinLoad*)pParam;
+	CScene_MultiGameJoinLoad* pClass = static_cast<CScene_MultiGameJoinLoad *>(pParam);
 
 	// results switched for this dialog
 	if(result==C4JStorage::EMessage_ResultDecline)
@@ -543,7 +543,7 @@ HRESULT CScene_MultiGameJoinLoad::OnNotifyPressEx(HXUIOBJ hObjPressed, XUINotify
 
 			CreateWorldMenuInitData *params = new CreateWorldMenuInitData();
 			params->iPad = m_iPad;
-			app.NavigateToScene(pNotifyPressData->UserIndex,eUIScene_CreateWorldMenu,(void *)params);
+			app.NavigateToScene(pNotifyPressData->UserIndex,eUIScene_CreateWorldMenu,static_cast<void *>(params));
 		}
 		else if(info.iData >= 0)
 		{
@@ -1113,7 +1113,7 @@ void CScene_MultiGameJoinLoad::UpdateGamesListCallback(LPVOID lpParam)
 {
 	if(lpParam != NULL)
 	{
-		CScene_MultiGameJoinLoad* pClass = (CScene_MultiGameJoinLoad *) lpParam;
+		CScene_MultiGameJoinLoad* pClass = static_cast<CScene_MultiGameJoinLoad *>(lpParam);
 		// check this there's no save transfer in progress
 		if(!pClass->m_bSaveTransferInProgress)
 		{
@@ -1213,7 +1213,7 @@ void CScene_MultiGameJoinLoad::UpdateGamesList()
 
 	// Update the xui list displayed
 	unsigned int xuiListSize = m_pGamesList->GetItemCount();
-	unsigned int filteredListSize = (unsigned int)currentSessions.size();
+	unsigned int filteredListSize = static_cast<unsigned int>(currentSessions.size());
 
 	BOOL gamesListHasFocus = m_pGamesList->TreeHasFocus();
 
@@ -1528,7 +1528,7 @@ void CScene_MultiGameJoinLoad::SearchForGameCallback(void *param, DWORD dwNumRes
 
 int CScene_MultiGameJoinLoad::DeviceSelectReturned(void *pParam,bool bContinue)
 {
-	CScene_MultiGameJoinLoad* pClass = (CScene_MultiGameJoinLoad*)pParam;
+	CScene_MultiGameJoinLoad* pClass = static_cast<CScene_MultiGameJoinLoad *>(pParam);
 	//HRESULT hr;
 
 	if(bContinue==true)
@@ -1814,7 +1814,7 @@ int CScene_MultiGameJoinLoad::LoadSaveDataReturned(void *pParam,bool bContinue)
 
 int CScene_MultiGameJoinLoad::StartGame_SignInReturned(void *pParam,bool bContinue, int iPad)
 {
-	CScene_MultiGameJoinLoad* pClass = (CScene_MultiGameJoinLoad*)pParam;
+	CScene_MultiGameJoinLoad* pClass = static_cast<CScene_MultiGameJoinLoad *>(pParam);
 
 	if(bContinue==true)
 	{
@@ -1866,7 +1866,7 @@ void CScene_MultiGameJoinLoad::StartGameFromSave(CScene_MultiGameJoinLoad* pClas
 
 int CScene_MultiGameJoinLoad::DeleteSaveDataReturned(void *pParam,bool bSuccess)
 {
-	CScene_MultiGameJoinLoad* pClass = (CScene_MultiGameJoinLoad*)pParam;
+	CScene_MultiGameJoinLoad* pClass = static_cast<CScene_MultiGameJoinLoad *>(pParam);
 
 	if(bSuccess==true)
 	{
@@ -1924,7 +1924,7 @@ void CScene_MultiGameJoinLoad::LoadLevelGen(LevelGenerationOptions *levelGen)
 
 	LoadingInputParams *loadingParams = new LoadingInputParams();
 	loadingParams->func = &CGameNetworkManager::RunNetworkGameThreadProc;
-	loadingParams->lpParam = (LPVOID)param;
+	loadingParams->lpParam = static_cast<LPVOID>(param);
 
 	UIFullscreenProgressCompletionData *completionData = new UIFullscreenProgressCompletionData();
 	completionData->bShowBackground=TRUE;
@@ -1974,7 +1974,7 @@ void CScene_MultiGameJoinLoad::LoadSaveFromDisk(File *saveFile)
 
 	LoadingInputParams *loadingParams = new LoadingInputParams();
 	loadingParams->func = &CGameNetworkManager::RunNetworkGameThreadProc;
-	loadingParams->lpParam = (LPVOID)param;
+	loadingParams->lpParam = static_cast<LPVOID>(param);
 
 	UIFullscreenProgressCompletionData *completionData = new UIFullscreenProgressCompletionData();
 	completionData->bShowBackground=TRUE;
@@ -1988,7 +1988,7 @@ void CScene_MultiGameJoinLoad::LoadSaveFromDisk(File *saveFile)
 
 int CScene_MultiGameJoinLoad::DeleteSaveDialogReturned(void *pParam,int iPad,C4JStorage::EMessageResult result)
 {
-	CScene_MultiGameJoinLoad* pClass = (CScene_MultiGameJoinLoad*)pParam;
+	CScene_MultiGameJoinLoad* pClass = static_cast<CScene_MultiGameJoinLoad *>(pParam);
 	// results switched for this dialog
 	if(result==C4JStorage::EMessage_ResultDecline)
 	{
@@ -2013,7 +2013,7 @@ int CScene_MultiGameJoinLoad::DeleteSaveDialogReturned(void *pParam,int iPad,C4J
 
 int CScene_MultiGameJoinLoad::SaveTransferDialogReturned(void *pParam,int iPad,C4JStorage::EMessageResult result)
 {
-	CScene_MultiGameJoinLoad* pClass = (CScene_MultiGameJoinLoad*)pParam;
+	CScene_MultiGameJoinLoad* pClass = static_cast<CScene_MultiGameJoinLoad *>(pParam);
 	// results switched for this dialog
 	if(result==C4JStorage::EMessage_ResultAccept)
 	{
@@ -2039,7 +2039,7 @@ int CScene_MultiGameJoinLoad::SaveTransferDialogReturned(void *pParam,int iPad,C
 
 int CScene_MultiGameJoinLoad::UploadSaveForXboxOneThreadProc( LPVOID lpParameter )
 {
-	CScene_MultiGameJoinLoad* pClass = (CScene_MultiGameJoinLoad *) lpParameter;
+	CScene_MultiGameJoinLoad* pClass = static_cast<CScene_MultiGameJoinLoad *>(lpParameter);
 	Minecraft *pMinecraft = Minecraft::GetInstance();
 
 	pMinecraft->progressRenderer->progressStart(IDS_SAVE_TRANSFER_TITLE);
@@ -2178,7 +2178,7 @@ void CScene_MultiGameJoinLoad::UploadFile(CScene_MultiGameJoinLoad *pClass, char
 			C4JStorage::TMS_FILETYPE_BINARY,
 			C4JStorage::TMS_UGCTYPE_NONE,
 			filename,
-			(CHAR *)data,
+			static_cast<CHAR *>(data),
 			size,
 			&CScene_MultiGameJoinLoad::TransferComplete,pClass, 0,
 			&CScene_MultiGameJoinLoad::Progress,pClass);
@@ -2219,7 +2219,7 @@ bool CScene_MultiGameJoinLoad::WaitForTransferComplete( CScene_MultiGameJoinLoad
 		}
 		Sleep(50);
 		// update the progress
-		pMinecraft->progressRenderer->progressStagePercentage((unsigned int)(pClass->m_fProgress*100.0f));
+		pMinecraft->progressRenderer->progressStagePercentage(static_cast<unsigned int>(pClass->m_fProgress * 100.0f));
 	}
 
 	// was there a transfer error?
@@ -2229,7 +2229,7 @@ bool CScene_MultiGameJoinLoad::WaitForTransferComplete( CScene_MultiGameJoinLoad
 
 int CScene_MultiGameJoinLoad::SaveOptionsDialogReturned(void *pParam,int iPad,C4JStorage::EMessageResult result)
 {
-	CScene_MultiGameJoinLoad* pClass = (CScene_MultiGameJoinLoad*)pParam;
+	CScene_MultiGameJoinLoad* pClass = static_cast<CScene_MultiGameJoinLoad *>(pParam);
 
 	// results switched for this dialog
 	// EMessage_ResultAccept means cancel
@@ -2261,7 +2261,7 @@ int CScene_MultiGameJoinLoad::SaveOptionsDialogReturned(void *pParam,int iPad,C4
 
 int CScene_MultiGameJoinLoad::LoadSaveDataReturned(void *pParam,bool bContinue)
 {
-	CScene_MultiGameJoinLoad* pClass = (CScene_MultiGameJoinLoad*)pParam;
+	CScene_MultiGameJoinLoad* pClass = static_cast<CScene_MultiGameJoinLoad *>(pParam);
 
 	if(bContinue==true)
 	{
@@ -2310,7 +2310,7 @@ int CScene_MultiGameJoinLoad::LoadSaveDataReturned(void *pParam,bool bContinue)
 
 int CScene_MultiGameJoinLoad::Progress(void *pParam,float fProgress)
 {
-	CScene_MultiGameJoinLoad* pClass = (CScene_MultiGameJoinLoad*)pParam;
+	CScene_MultiGameJoinLoad* pClass = static_cast<CScene_MultiGameJoinLoad *>(pParam);
 
 	app.DebugPrintf("Progress - %f\n",fProgress);
 	pClass->m_fProgress=fProgress;
@@ -2319,7 +2319,7 @@ int CScene_MultiGameJoinLoad::Progress(void *pParam,float fProgress)
 
 int CScene_MultiGameJoinLoad::TransferComplete(void *pParam,int iPad, int iResult)
 {
-	CScene_MultiGameJoinLoad* pClass = (CScene_MultiGameJoinLoad*)pParam;
+	CScene_MultiGameJoinLoad* pClass = static_cast<CScene_MultiGameJoinLoad *>(pParam);
 
 	delete [] pClass->m_pbSaveTransferData;
 	pClass->m_pbSaveTransferData = NULL;
@@ -2343,14 +2343,14 @@ int CScene_MultiGameJoinLoad::TransferComplete(void *pParam,int iPad, int iResul
 
 int CScene_MultiGameJoinLoad::DeleteComplete(void *pParam,int iPad, int iResult)
 {
-	CScene_MultiGameJoinLoad* pClass = (CScene_MultiGameJoinLoad*)pParam;
+	CScene_MultiGameJoinLoad* pClass = static_cast<CScene_MultiGameJoinLoad *>(pParam);
 	pClass->m_bTransferComplete=true;
 	return 0;
 }
 
 int CScene_MultiGameJoinLoad::KeyboardReturned(void *pParam,bool bSet)
 {
-	CScene_MultiGameJoinLoad* pClass = (CScene_MultiGameJoinLoad*)pParam;
+	CScene_MultiGameJoinLoad* pClass = static_cast<CScene_MultiGameJoinLoad *>(pParam);
 	HRESULT hr = S_OK;
 
 	// if the user has left the name empty, treat this as backing out
@@ -2386,7 +2386,7 @@ int CScene_MultiGameJoinLoad::KeyboardReturned(void *pParam,bool bSet)
 
 int CScene_MultiGameJoinLoad::LoadSaveDataForRenameReturned(void *pParam,bool bContinue)
 {
-	CScene_MultiGameJoinLoad* pClass = (CScene_MultiGameJoinLoad*)pParam;
+	CScene_MultiGameJoinLoad* pClass = static_cast<CScene_MultiGameJoinLoad *>(pParam);
 #ifdef _XBOX
 	if(bContinue==true)
 	{
@@ -2428,7 +2428,7 @@ int CScene_MultiGameJoinLoad::LoadSaveDataForRenameReturned(void *pParam,bool bC
 
 int CScene_MultiGameJoinLoad::CopySaveReturned(void *pParam,bool bResult)
 {
-	CScene_MultiGameJoinLoad* pClass = (CScene_MultiGameJoinLoad*)pParam;
+	CScene_MultiGameJoinLoad* pClass = static_cast<CScene_MultiGameJoinLoad *>(pParam);
 #ifdef _XBOX
 	if(bResult)
 	{
@@ -2450,7 +2450,7 @@ int CScene_MultiGameJoinLoad::CopySaveReturned(void *pParam,bool bResult)
 
 int CScene_MultiGameJoinLoad::TexturePackDialogReturned(void *pParam,int iPad,C4JStorage::EMessageResult result)
 {
-	CScene_MultiGameJoinLoad *pClass = (CScene_MultiGameJoinLoad *)pParam;
+	CScene_MultiGameJoinLoad *pClass = static_cast<CScene_MultiGameJoinLoad *>(pParam);
 
 	// Exit with or without saving
 	// Decline means install full version of the texture pack in this dialog
@@ -2510,7 +2510,7 @@ HRESULT CScene_MultiGameJoinLoad::OnCustomMessage_DLCMountingComplete()
 
 	VOID *pObj;
 	XuiObjectFromHandle( m_SavesList, &pObj );
-	m_pSavesList = (CXuiCtrl4JList *)pObj;
+	m_pSavesList = static_cast<CXuiCtrl4JList *>(pObj);
 
 	m_iChangingSaveGameInfoIndex = 0;
 
@@ -2738,7 +2738,7 @@ int CScene_MultiGameJoinLoad::GetSavesInfoCallback(LPVOID lpParam,const bool)
 
 void CScene_MultiGameJoinLoad::CancelSaveUploadCallback(LPVOID lpParam)
 {
-	CScene_MultiGameJoinLoad* pClass = (CScene_MultiGameJoinLoad *) lpParam;
+	CScene_MultiGameJoinLoad* pClass = static_cast<CScene_MultiGameJoinLoad *>(lpParam);
 
 	StorageManager.TMSPP_CancelWriteFileWithProgress(pClass->m_iPad);
 
@@ -2755,7 +2755,7 @@ void CScene_MultiGameJoinLoad::CancelSaveUploadCallback(LPVOID lpParam)
 
 void CScene_MultiGameJoinLoad::SaveUploadCompleteCallback(LPVOID lpParam)
 {
-	CScene_MultiGameJoinLoad* pClass = (CScene_MultiGameJoinLoad *) lpParam;
+	CScene_MultiGameJoinLoad* pClass = static_cast<CScene_MultiGameJoinLoad *>(lpParam);
 
 	pClass->m_bSaveTransferInProgress=false;
 	// change back to the normal title group id

@@ -37,7 +37,7 @@ int MinecartFurnace::getType()
 void MinecartFurnace::defineSynchedData()
 {
 	Minecart::defineSynchedData();
-	entityData->define(DATA_ID_FUEL, (byte) 0);
+	entityData->define(DATA_ID_FUEL, static_cast<byte>(0));
 }
 
 void MinecartFurnace::tick()
@@ -140,7 +140,7 @@ void MinecartFurnace::addAdditonalSaveData(CompoundTag *base)
 	Minecart::addAdditonalSaveData(base);
 	base->putDouble(L"PushX", xPush);
 	base->putDouble(L"PushZ", zPush);
-	base->putShort(L"Fuel", (short) fuel);
+	base->putShort(L"Fuel", static_cast<short>(fuel));
 }
 
 void MinecartFurnace::readAdditionalSaveData(CompoundTag *base)
@@ -160,11 +160,11 @@ void MinecartFurnace::setHasFuel(bool fuel)
 {
 	if (fuel)
 	{
-		entityData->set(DATA_ID_FUEL, (byte) (entityData->getByte(DATA_ID_FUEL) | 1));
+		entityData->set(DATA_ID_FUEL, static_cast<byte>(entityData->getByte(DATA_ID_FUEL) | 1));
 	}
 	else
 	{
-		entityData->set(DATA_ID_FUEL, (byte) (entityData->getByte(DATA_ID_FUEL) & ~1));
+		entityData->set(DATA_ID_FUEL, static_cast<byte>(entityData->getByte(DATA_ID_FUEL) & ~1));
 	}
 }
 

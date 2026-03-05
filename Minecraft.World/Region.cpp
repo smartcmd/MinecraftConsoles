@@ -105,7 +105,7 @@ int Region::getTile(int x, int y, int z)
 	xc -= xc1;
 	zc -= zc1;
 
-	if (xc < 0 || xc >= (int)chunks->length || zc < 0 || zc >= (int)(*chunks)[xc]->length)
+	if (xc < 0 || xc >= static_cast<int>(chunks->length) || zc < 0 || zc >= static_cast<int>((*chunks)[xc]->length))
 	{
 		return 0;
 	}
@@ -124,7 +124,7 @@ void Region::setCachedTiles(unsigned char *tiles, int xc, int zc)
 	int size = 16 * 16 * Level::maxBuildHeight;
 	if( CachedTiles == NULL )
 	{
-		CachedTiles = (unsigned char *) malloc(size);
+		CachedTiles = static_cast<unsigned char *>(malloc(size));
 	}
 	memcpy(CachedTiles, tiles, size);
 }
@@ -137,7 +137,7 @@ LevelChunk* Region::getLevelChunk(int x, int y, int z)
 	int xc = (x >> 4) - xc1;
 	int zc = (z >> 4) - zc1;
 
-	if (xc < 0 || xc >= (int)chunks->length || zc < 0 || zc >= (int)(*chunks)[xc]->length)
+	if (xc < 0 || xc >= static_cast<int>(chunks->length) || zc < 0 || zc >= static_cast<int>((*chunks)[xc]->length))
 	{
 		return NULL;
 	}

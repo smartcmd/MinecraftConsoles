@@ -213,7 +213,7 @@ void MultiplayerLocalPlayer::completeUsingItem()
 	Minecraft *pMinecraft = Minecraft::GetInstance();
 	if(useItem != NULL && pMinecraft->localgameModes[m_iPad] != NULL )
 	{
-		TutorialMode *gameMode = (TutorialMode *)pMinecraft->localgameModes[m_iPad];
+		TutorialMode *gameMode = static_cast<TutorialMode *>(pMinecraft->localgameModes[m_iPad]);
 		Tutorial *tutorial = gameMode->getTutorial();
 		tutorial->completeUsingItem(useItem);
 	}
@@ -225,7 +225,7 @@ void MultiplayerLocalPlayer::onEffectAdded(MobEffectInstance *effect)
 	Minecraft *pMinecraft = Minecraft::GetInstance();
 	if(pMinecraft->localgameModes[m_iPad] != NULL )
 	{
-		TutorialMode *gameMode = (TutorialMode *)pMinecraft->localgameModes[m_iPad];
+		TutorialMode *gameMode = static_cast<TutorialMode *>(pMinecraft->localgameModes[m_iPad]);
 		Tutorial *tutorial = gameMode->getTutorial();
 		tutorial->onEffectChanged(MobEffect::effects[effect->getId()]);
 	}
@@ -238,7 +238,7 @@ void MultiplayerLocalPlayer::onEffectUpdated(MobEffectInstance *effect, bool doR
 	Minecraft *pMinecraft = Minecraft::GetInstance();
 	if(pMinecraft->localgameModes[m_iPad] != NULL )
 	{
-		TutorialMode *gameMode = (TutorialMode *)pMinecraft->localgameModes[m_iPad];
+		TutorialMode *gameMode = static_cast<TutorialMode *>(pMinecraft->localgameModes[m_iPad]);
 		Tutorial *tutorial = gameMode->getTutorial();
 		tutorial->onEffectChanged(MobEffect::effects[effect->getId()]);
 	}
@@ -251,7 +251,7 @@ void MultiplayerLocalPlayer::onEffectRemoved(MobEffectInstance *effect)
 	Minecraft *pMinecraft = Minecraft::GetInstance();
 	if(pMinecraft->localgameModes[m_iPad] != NULL )
 	{
-		TutorialMode *gameMode = (TutorialMode *)pMinecraft->localgameModes[m_iPad];
+		TutorialMode *gameMode = static_cast<TutorialMode *>(pMinecraft->localgameModes[m_iPad]);
 		Tutorial *tutorial = gameMode->getTutorial();
 		tutorial->onEffectChanged(MobEffect::effects[effect->getId()],true);
 	}
@@ -324,7 +324,7 @@ bool MultiplayerLocalPlayer::isLocalPlayer()
 
 void MultiplayerLocalPlayer::sendRidingJump()
 {
-	connection->send(shared_ptr<PlayerCommandPacket>(new PlayerCommandPacket(shared_from_this(), PlayerCommandPacket::RIDING_JUMP, (int) (getJumpRidingScale() * 100.0f))));
+	connection->send(shared_ptr<PlayerCommandPacket>(new PlayerCommandPacket(shared_from_this(), PlayerCommandPacket::RIDING_JUMP, static_cast<int>(getJumpRidingScale() * 100.0f))));
 }
 
 void MultiplayerLocalPlayer::sendOpenInventory()
@@ -372,7 +372,7 @@ void MultiplayerLocalPlayer::ride(shared_ptr<Entity> e)
 	
 	if( pMinecraft->localgameModes[m_iPad] != NULL )
 	{
-		TutorialMode *gameMode = (TutorialMode *)pMinecraft->localgameModes[m_iPad];
+		TutorialMode *gameMode = static_cast<TutorialMode *>(pMinecraft->localgameModes[m_iPad]);
 		if(wasRiding && !isRiding)
 		{
 			gameMode->getTutorial()->changeTutorialState(e_Tutorial_State_Gameplay);

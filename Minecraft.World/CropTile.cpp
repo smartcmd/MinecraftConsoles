@@ -40,7 +40,7 @@ void CropTile::tick(Level *level, int x, int y, int z, Random *random)
 		{
 			float growthSpeed = getGrowthSpeed(level, x, y, z);
 
-			if (random->nextInt((int) (25 / growthSpeed) + 1) == 0)
+			if (random->nextInt(static_cast<int>(25 / growthSpeed) + 1) == 0)
 			{
 				age++;
 				level->setData(x, y, z, age, Tile::UPDATE_CLIENTS);

@@ -75,7 +75,7 @@ Icon *PistonBaseTile::getTexture(int face, int data)
 		// when the piston is extended, either normally
 		// or because a piston arm animation, the top
 		// texture is the furnace bottom
-		ThreadStorage *tls = (ThreadStorage *)TlsGetValue(Tile::tlsIdxShape);
+		ThreadStorage *tls = static_cast<ThreadStorage *>(TlsGetValue(Tile::tlsIdxShape));
 		if (isExtended(data) || tls->xx0 > 0 || tls->yy0 > 0 || tls->zz0 > 0 || tls->xx1 < 1 || tls->yy1 < 1 || tls->zz1 < 1)
 		{
 			return iconInside;
@@ -412,7 +412,7 @@ bool PistonBaseTile::isExtended(int data)
 
 int PistonBaseTile::getNewFacing(Level *level, int x, int y, int z, shared_ptr<LivingEntity> player)
 {
-	if (Mth::abs((float) player->x - x) < 2 && Mth::abs((float) player->z - z) < 2) 
+	if (Mth::abs(static_cast<float>(player->x) - x) < 2 && Mth::abs(static_cast<float>(player->z) - z) < 2) 
 	{
 		// If the player is above the block, the slot is on the top
 		double py = player->y + 1.82 - player->heightOffset;

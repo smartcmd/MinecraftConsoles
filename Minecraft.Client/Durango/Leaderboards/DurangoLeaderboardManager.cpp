@@ -428,7 +428,7 @@ void DurangoLeaderboardManager::runLeaderboardRequest(WF::IAsyncOperation<MXSL::
 			app.DebugPrintf(
 				"Name: %ls - Filter: %ls - Rows: Retrieved=%d Total=%d Requested=%d.\n",
 				lastResult->DisplayName->Data(),
-				LeaderboardManager::filterNames[ (int) filter ].c_str(),
+				LeaderboardManager::filterNames[ static_cast<int>(filter) ].c_str(),
 				lastResult->Rows->Size, lastResult->TotalRowCount, readCount
 				);
 
@@ -480,10 +480,10 @@ void DurangoLeaderboardManager::runLeaderboardRequest(WF::IAsyncOperation<MXSL::
 
 				m_scores[index].m_name = row->Gamertag->Data();
 				m_scores[index].m_rank = row->Rank;
-				m_scores[index].m_uid  = PlayerUID(row->XboxUserId->Data());
+				m_scores[index].m_uid  = static_cast<PlayerUID>(row->XboxUserId->Data());
 
 				// 4J-JEV: Added to help determine if this player's score is hidden due to their privacy settings.
-				m_scores[index].m_totalScore = (unsigned long) _fromString<long long>(row->Values->GetAt(0)->Data());
+				m_scores[index].m_totalScore = static_cast<unsigned long>(_fromString<long long>(row->Values->GetAt(0)->Data()));
 
 				m_xboxUserIds->Append(row->XboxUserId);
 			}
@@ -493,7 +493,7 @@ void DurangoLeaderboardManager::runLeaderboardRequest(WF::IAsyncOperation<MXSL::
 				vector<PlayerUID> xuids = vector<PlayerUID>();
 				for(int i = 0; i < lastResult->Rows->Size; i++)
 				{
-					xuids.push_back(PlayerUID(lastResult->Rows->GetAt(i)->XboxUserId->Data()));
+					xuids.push_back(static_cast<PlayerUID>(lastResult->Rows->GetAt(i)->XboxUserId->Data()));
 				}
 				m_waitingForProfiles = true;
 				ProfileManager.GetProfiles(xuids, &GetProfilesCallback, this);
@@ -579,7 +579,7 @@ void DurangoLeaderboardManager::updateStatsInfo(int userIndex, int difficulty, E
 
 void DurangoLeaderboardManager::GetProfilesCallback(LPVOID param, std::vector<Microsoft::Xbox::Services::Social::XboxUserProfile^> profiles)
 {
-	DurangoLeaderboardManager *dlm = (DurangoLeaderboardManager *)param;
+	DurangoLeaderboardManager *dlm = static_cast<DurangoLeaderboardManager *>(param);
 
 	app.DebugPrintf("[LeaderboardManager] GetProfilesCallback, profiles.size() == %d.\n", profiles.size());
 

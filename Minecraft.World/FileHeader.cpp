@@ -72,13 +72,13 @@ void FileHeader::WriteHeader( LPVOID saveMem )
 	unsigned int headerOffset = GetStartOfNextData();
 
 	// 4J Changed for save version 2 to be the number of files rather than the size in bytes
-	unsigned int headerSize = (int)(fileTable.size());
+	unsigned int headerSize = static_cast<int>(fileTable.size());
 	
 	//DWORD numberOfBytesWritten = 0;
 
 	// Write the offset of the header
 	//assert(numberOfBytesWritten == 4);
-	int *begin = (int *)saveMem;
+	int *begin = static_cast<int *>(saveMem);
 #ifdef __PSVITA__
 	VirtualCopyTo(begin, &headerOffset, sizeof(headerOffset));
 #else
@@ -115,7 +115,7 @@ void FileHeader::WriteHeader( LPVOID saveMem )
 	app.DebugPrintf("Write save file with original version: %d, and current version %d\n", m_originalSaveVersion, versionNumber);
 #endif
 
-	char *headerPosition = (char *)saveMem + headerOffset;
+	char *headerPosition = static_cast<char *>(saveMem) + headerOffset;
 
 #ifdef _DEBUG_FILE_HEADER
 	app.DebugPrintf("\n\nWrite file Header: Offset = %d, Size = %d\n", headerOffset, headerSize);
@@ -164,7 +164,7 @@ void FileHeader::ReadHeader( LPVOID saveMem, ESavePlatform plat /*= SAVE_FILE_PL
 	
 	// Read the offset of the header
 	//assert(numberOfBytesRead == 4);
-	int *begin = (int *)saveMem;
+	int *begin = static_cast<int *>(saveMem);
 #ifdef __PSVITA__
 	VirtualCopyFrom(&headerOffset, begin, sizeof(headerOffset));
 #else
@@ -205,7 +205,7 @@ void FileHeader::ReadHeader( LPVOID saveMem, ESavePlatform plat /*= SAVE_FILE_PL
 	app.DebugPrintf("\n\nRead file Header: Offset = %d, Size = %d\n", headerOffset, headerSize);
 #endif
 
-	char *headerPosition = (char *)saveMem + headerOffset;
+	char *headerPosition = static_cast<char *>(saveMem) + headerOffset;
 
 	switch( m_saveVersion )
 	{
@@ -321,7 +321,7 @@ unsigned int FileHeader::GetStartOfNextData()
 
 unsigned int FileHeader::GetFileSize()
 {
-	return GetStartOfNextData() + ( sizeof(FileEntrySaveData) * (unsigned int)fileTable.size() );
+	return GetStartOfNextData() + ( sizeof(FileEntrySaveData) * static_cast<unsigned int>(fileTable.size()) );
 }
 
 void FileHeader::AdjustStartOffsets(FileEntry *file, DWORD nNumberOfBytesToWrite, bool subtract /*= false*/)

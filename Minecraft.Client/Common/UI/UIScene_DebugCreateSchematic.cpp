@@ -67,7 +67,7 @@ void UIScene_DebugCreateSchematic::handleInput(int iPad, int key, bool repeat, b
 
 void UIScene_DebugCreateSchematic::handlePress(F64 controlId, F64 childId)
 {
-	switch((int)controlId)
+	switch(static_cast<int>(controlId))
 	{
 	case eControl_Create:
 		{
@@ -112,7 +112,7 @@ void UIScene_DebugCreateSchematic::handlePress(F64 controlId, F64 childId)
 	case eControl_EndX:
 	case eControl_EndY:
 	case eControl_EndZ:
-		m_keyboardCallbackControl = (eControls)((int)controlId);	
+		m_keyboardCallbackControl = static_cast<eControls>((int)controlId);	
 		InputManager.RequestKeyboard(L"Enter something",L"",(DWORD)0,25,&UIScene_DebugCreateSchematic::KeyboardCompleteCallback,this,C_4JInput::EKeyboardMode_Default);
 		break;
 	};
@@ -120,7 +120,7 @@ void UIScene_DebugCreateSchematic::handlePress(F64 controlId, F64 childId)
 
 void UIScene_DebugCreateSchematic::handleCheckboxToggled(F64 controlId, bool selected)
 {
-	switch((int)controlId)
+	switch(static_cast<int>(controlId))
 	{
 	case eControl_SaveMobs:
 		m_data->bSaveMobs = selected;
@@ -136,7 +136,7 @@ void UIScene_DebugCreateSchematic::handleCheckboxToggled(F64 controlId, bool sel
 
 int UIScene_DebugCreateSchematic::KeyboardCompleteCallback(LPVOID lpParam,bool bRes)
 {
-	UIScene_DebugCreateSchematic *pClass=(UIScene_DebugCreateSchematic *)lpParam;
+	UIScene_DebugCreateSchematic *pClass=static_cast<UIScene_DebugCreateSchematic *>(lpParam);
 
 	uint16_t pchText[128];
 	ZeroMemory(pchText, 128 * sizeof(uint16_t) );

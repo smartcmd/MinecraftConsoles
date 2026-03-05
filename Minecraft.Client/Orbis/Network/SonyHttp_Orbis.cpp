@@ -108,7 +108,7 @@ void SonyHttp_Orbis::printSslCertInfo(int libsslCtxId,SceSslCert *sslCert)
 		app.DebugPrintf("sceSslGetSerialNumber() returns 0x%x\n", ret);
 	}
 	else {
-		sboData = (SceUChar8*)malloc(sboLen);
+		sboData = static_cast<SceUChar8 *>(malloc(sboLen));
 		if ( sboData != NULL ) {
 			ret = sceSslGetSerialNumber(libsslCtxId, sslCert, sboData, &sboLen);
 			if (ret < 0){
@@ -141,10 +141,10 @@ SceInt32 SonyHttp_Orbis::sslCallback(int libsslCtxId,unsigned int verifyErr,SceS
 	(void)userArg;
 
 	app.DebugPrintf("Ssl callback:\n");
-	app.DebugPrintf("\tbase tmpl[%x]\n", (*(SceInt32*)(userArg)) );
+	app.DebugPrintf("\tbase tmpl[%x]\n", (*static_cast<SceInt32 *>(userArg)) );
 
 	if (verifyErr != 0){
-		printSslError((SceInt32)SCE_HTTPS_ERROR_CERT, verifyErr);
+		printSslError(static_cast<SceInt32>(SCE_HTTPS_ERROR_CERT), verifyErr);
 	}
 	for (i = 0; i < certNum; i++){
 		printSslCertInfo(libsslCtxId,sslCert[i]);
@@ -202,7 +202,7 @@ bool SonyHttp_Orbis::http_get(const char *targetUrl, void** ppOutData, int* pDat
 	}
 
 	/* Register SSL callback */
-	ret = sceHttpsSetSslCallback(tmplId, sslCallback, (void*)&tmplId);
+	ret = sceHttpsSetSslCallback(tmplId, sslCallback, static_cast<void *>(&tmplId));
 	if (ret < 0) 
 	{
 		app.DebugPrintf("sceHttpsSetSslCallback() error: 0x%08X\n", ret);

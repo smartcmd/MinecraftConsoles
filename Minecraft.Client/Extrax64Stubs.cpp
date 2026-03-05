@@ -309,7 +309,7 @@ void IQNet::ClientJoinGame()
 
 	for (int i = 0; i < MINECRAFT_NET_MAX_PLAYERS; i++)
 	{
-		m_player[i].m_smallId = (BYTE)i;
+		m_player[i].m_smallId = static_cast<BYTE>(i);
 		m_player[i].m_isRemote = true;
 		m_player[i].m_isHostPlayer = false;
 		m_player[i].m_gamertag[0] = 0;
@@ -323,7 +323,7 @@ void IQNet::EndGame()
 	s_playerCount = 1;
 	for (int i = 0; i < MINECRAFT_NET_MAX_PLAYERS; i++)
 	{
-		m_player[i].m_smallId = (BYTE)i;
+		m_player[i].m_smallId = static_cast<BYTE>(i);
 		m_player[i].m_isRemote = false;
 		m_player[i].m_isHostPlayer = false;
 		m_player[i].m_gamertag[0] = 0;
@@ -505,7 +505,7 @@ void				C_4JProfile::Initialise(DWORD dwTitleID,
 		ZeroMemory(profileData[i], sizeof(byte) * iGameDefinedDataSizeX4 / 4);
 
 		// Set some sane initial values!
-		GAME_SETTINGS* pGameSettings = (GAME_SETTINGS*)profileData[i];
+		GAME_SETTINGS* pGameSettings = static_cast<GAME_SETTINGS *>(profileData[i]);
 		pGameSettings->ucMenuSensitivity = 100; //eGameSetting_Sensitivity_InMenu
 		pGameSettings->ucInterfaceOpacity = 80; //eGameSetting_Sensitivity_InMenu
 		pGameSettings->usBitmaskValues |= 0x0200; //eGameSetting_DisplaySplitscreenGamertags - on

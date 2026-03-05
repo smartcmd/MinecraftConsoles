@@ -141,9 +141,9 @@ void PathfinderMob::serverAiStep()
 		double xd = target->x - x;
 		double zd = target->z - z;
 		double yd = target->y - yFloor;
-		float yRotD = (float) (atan2(zd, xd) * 180 / PI) - 90;
+		float yRotD = static_cast<float>(atan2(zd, xd) * 180 / PI) - 90;
 		float rotDiff = Mth::wrapDegrees(yRotD - yRot);
-		yya = (float) getAttribute(SharedMonsterAttributes::MOVEMENT_SPEED)->getValue();
+		yya = static_cast<float>(getAttribute(SharedMonsterAttributes::MOVEMENT_SPEED)->getValue());
 		if (rotDiff > MAX_TURN)
 		{
 			rotDiff = MAX_TURN;
@@ -162,7 +162,7 @@ void PathfinderMob::serverAiStep()
 				double zd2 = attackTarget->z - z;
 
 				float oldyRot = yRot;
-				yRot = (float) (atan2(zd2, xd2) * 180 / PI) - 90;
+				yRot = static_cast<float>(atan2(zd2, xd2) * 180 / PI) - 90;
 
 				rotDiff = ((oldyRot - yRot) + 90) * PI / 180;
 				xxa = -Mth::sin(rotDiff) * yya * 1.0f;
@@ -315,7 +315,7 @@ void PathfinderMob::tickLeash()
 	{
 		// soft restriction
 		shared_ptr<Entity> leashHolder = getLeashHolder();
-		restrictTo((int) leashHolder->x, (int) leashHolder->y, (int) leashHolder->z, 5);
+		restrictTo(static_cast<int>(leashHolder->x), static_cast<int>(leashHolder->y), static_cast<int>(leashHolder->z), 5);
 
 		float _distanceTo = distanceTo(leashHolder);
 

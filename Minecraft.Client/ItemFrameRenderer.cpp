@@ -33,15 +33,15 @@ void ItemFrameRenderer::render(shared_ptr<Entity>  _itemframe, double x, double 
 	shared_ptr<ItemFrame> itemFrame = dynamic_pointer_cast<ItemFrame>(_itemframe);
 
 	glPushMatrix();
-	float xOffs = (float) (itemFrame->x - x) - 0.5f;
-	float yOffs = (float) (itemFrame->y - y) - 0.5f;
-	float zOffs = (float) (itemFrame->z - z) - 0.5f;
+	float xOffs = static_cast<float>(itemFrame->x - x) - 0.5f;
+	float yOffs = static_cast<float>(itemFrame->y - y) - 0.5f;
+	float zOffs = static_cast<float>(itemFrame->z - z) - 0.5f;
 
 	int xt = itemFrame->xTile + Direction::STEP_X[itemFrame->dir];
 	int yt = itemFrame->yTile;
 	int zt = itemFrame->zTile + Direction::STEP_Z[itemFrame->dir];
 
-	glTranslatef((float) xt - xOffs, (float) yt - yOffs, (float) zt - zOffs);
+	glTranslatef(static_cast<float>(xt) - xOffs, static_cast<float>(yt) - yOffs, static_cast<float>(zt) - zOffs);
 
 	drawFrame(itemFrame);
 	drawItem(itemFrame);
@@ -168,7 +168,7 @@ void ItemFrameRenderer::drawItem(shared_ptr<ItemFrame> entity)
 			double compassRotA = ct->rota;
 			ct->rot = 0;
 			ct->rota = 0;
-			ct->updateFromPosition(entity->level, entity->x, entity->z, Mth::wrapDegrees( (float)(180 + entity->dir * 90) ), false, true);
+			ct->updateFromPosition(entity->level, entity->x, entity->z, Mth::wrapDegrees( static_cast<float>(180 + entity->dir * 90) ), false, true);
 			ct->rot = compassRot;
 			ct->rota = compassRotA;
 		}

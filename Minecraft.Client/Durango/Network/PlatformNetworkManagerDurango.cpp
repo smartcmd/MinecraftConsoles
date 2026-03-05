@@ -87,7 +87,7 @@ void CPlatformNetworkManagerDurango::HandlePlayerJoined(DQRNetworkPlayer *pDQRPl
 	bool createFakeSocket = false;
 	bool localPlayer = false;
 
-	NetworkPlayerDurango *networkPlayer = (NetworkPlayerDurango *)addNetworkPlayer(pDQRPlayer);
+	NetworkPlayerDurango *networkPlayer = static_cast<NetworkPlayerDurango *>(addNetworkPlayer(pDQRPlayer));
 
 	// Request full display name for this player
 	m_pDQRNet->RequestDisplayName(pDQRPlayer);
@@ -628,7 +628,7 @@ void CPlatformNetworkManagerDurango::UpdateAndSetGameSessionData(INetworkPlayer 
 
 int CPlatformNetworkManagerDurango::RemovePlayerOnSocketClosedThreadProc( void* lpParam )
 {
-	INetworkPlayer *pNetworkPlayer = (INetworkPlayer *)lpParam;
+	INetworkPlayer *pNetworkPlayer = static_cast<INetworkPlayer *>(lpParam);
 
 	Socket *socket = pNetworkPlayer->GetSocket();
 
@@ -794,7 +794,7 @@ vector<FriendSessionInfo *> *CPlatformNetworkManagerDurango::GetSessionList(int 
 	vector<FriendSessionInfo *> *filteredList = new vector<FriendSessionInfo *>();
 	for( int i = 0; i < m_searchResultsCount; i++ )
 	{
-		GameSessionData *gameSessionData = (GameSessionData *)m_pSearchResults[i].m_extData;
+		GameSessionData *gameSessionData = static_cast<GameSessionData *>(m_pSearchResults[i].m_extData);
 		if( ( gameSessionData->netVersion == MINECRAFT_NET_VERSION ) &&
 			( gameSessionData->isReadyToJoin ) )
 		{

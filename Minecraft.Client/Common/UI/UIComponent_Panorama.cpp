@@ -85,10 +85,10 @@ void UIComponent_Panorama::render(S32 width, S32 height, C4JRender::eViewportTyp
 		switch( viewport )
 		{
 		case C4JRender::VIEWPORT_TYPE_SPLIT_BOTTOM:
-			yPos = (S32)(ui.getScreenHeight() / 2);
+			yPos = static_cast<S32>(ui.getScreenHeight() / 2);
 			break;
 		case C4JRender::VIEWPORT_TYPE_SPLIT_RIGHT:
-			xPos = (S32)(ui.getScreenWidth() / 2);
+			xPos = static_cast<S32>(ui.getScreenWidth() / 2);
 			break;
 		}
 		ui.setupRenderPosition(xPos, yPos);
@@ -99,7 +99,7 @@ void UIComponent_Panorama::render(S32 width, S32 height, C4JRender::eViewportTyp
 			S32 tileXStart = 0;
 			S32 tileYStart = 0;
 			S32 tileWidth = width;
-			S32 tileHeight = (S32)(ui.getScreenHeight());
+			S32 tileHeight = static_cast<S32>(ui.getScreenHeight());
 
 			IggyPlayerSetDisplaySize( getMovie(), m_movieWidth, m_movieHeight );
 

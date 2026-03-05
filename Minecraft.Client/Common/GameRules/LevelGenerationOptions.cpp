@@ -145,22 +145,22 @@ GameRuleDefinition *LevelGenerationOptions::addChild(ConsoleGameRules::EGameRule
 	if(ruleType == ConsoleGameRules::eGameRuleType_ApplySchematic)
 	{
 		rule = new ApplySchematicRuleDefinition(this);
-		m_schematicRules.push_back((ApplySchematicRuleDefinition *)rule);
+		m_schematicRules.push_back(static_cast<ApplySchematicRuleDefinition *>(rule));
 	}
 	else if(ruleType == ConsoleGameRules::eGameRuleType_GenerateStructure)
 	{
 		rule = new ConsoleGenerateStructure();
-		m_structureRules.push_back((ConsoleGenerateStructure *)rule);
+		m_structureRules.push_back(static_cast<ConsoleGenerateStructure *>(rule));
 	}
 	else if(ruleType == ConsoleGameRules::eGameRuleType_BiomeOverride)
 	{
 		rule = new BiomeOverride();
-		m_biomeOverrides.push_back((BiomeOverride *)rule);
+		m_biomeOverrides.push_back(static_cast<BiomeOverride *>(rule));
 	}
 	else if(ruleType == ConsoleGameRules::eGameRuleType_StartFeature)
 	{
 		rule = new StartFeature();
-		m_features.push_back((StartFeature *)rule);
+		m_features.push_back(static_cast<StartFeature *>(rule));
 	}
 	else
 	{
@@ -485,7 +485,7 @@ void LevelGenerationOptions::loadBaseSaveData()
 
 int LevelGenerationOptions::packMounted(LPVOID pParam,int iPad,DWORD dwErr,DWORD dwLicenceMask)
 {
-	LevelGenerationOptions *lgo = (LevelGenerationOptions *)pParam;
+	LevelGenerationOptions *lgo = static_cast<LevelGenerationOptions *>(pParam);
 	lgo->m_bLoadingData = false;
 	if(dwErr!=ERROR_SUCCESS)
 	{
@@ -499,7 +499,7 @@ int LevelGenerationOptions::packMounted(LPVOID pParam,int iPad,DWORD dwErr,DWORD
 		int gameRulesCount = lgo->m_parentDLCPack->getDLCItemsCount(DLCManager::e_DLCType_GameRulesHeader);
 		for(int i = 0; i < gameRulesCount; ++i)
 		{
-			DLCGameRulesHeader *dlcFile = (DLCGameRulesHeader *) lgo->m_parentDLCPack->getFile(DLCManager::e_DLCType_GameRulesHeader, i);
+			DLCGameRulesHeader *dlcFile = static_cast<DLCGameRulesHeader *>(lgo->m_parentDLCPack->getFile(DLCManager::e_DLCType_GameRulesHeader, i));
 
 			if (!dlcFile->getGrfPath().empty())
 			{

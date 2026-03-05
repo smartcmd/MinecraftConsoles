@@ -34,7 +34,7 @@ int UIScene_LoadMenu::m_iDifficultyTitleSettingA[4]=
 
 int UIScene_LoadMenu::LoadSaveDataThumbnailReturned(LPVOID lpParam,PBYTE pbThumbnail,DWORD dwThumbnailBytes)
 {
-	UIScene_LoadMenu *pClass= (UIScene_LoadMenu *)ui.GetSceneFromCallbackId((size_t)lpParam);
+	UIScene_LoadMenu *pClass= static_cast<UIScene_LoadMenu *>(ui.GetSceneFromCallbackId((size_t)lpParam));
 
 	if(pClass)
 	{
@@ -64,7 +64,7 @@ UIScene_LoadMenu::UIScene_LoadMenu(int iPad, void *initData, UILayer *parentLaye
 	// Setup all the Iggy references we need for this scene
 	initialiseMovie();
 
-	LoadMenuInitData *params = (LoadMenuInitData *)initData;
+	LoadMenuInitData *params = static_cast<LoadMenuInitData *>(initData);
 
 	m_labelGameName.init(app.GetString(IDS_WORLD_NAME));
 	m_labelSeed.init(L"");
@@ -477,7 +477,7 @@ void UIScene_LoadMenu::tick()
 			m_MoreOptionsParams.bTNT = app.GetGameHostOption(uiHostOptions,eGameHostOption_TNT)>0?TRUE:FALSE;
 			m_MoreOptionsParams.bHostPrivileges = app.GetGameHostOption(uiHostOptions,eGameHostOption_CheatsEnabled)>0?TRUE:FALSE;
 			m_MoreOptionsParams.bDisableSaving = app.GetGameHostOption(uiHostOptions,eGameHostOption_DisableSaving)>0?TRUE:FALSE;
-			m_MoreOptionsParams.currentWorldSize = (EGameHostOptionWorldSize)app.GetGameHostOption(uiHostOptions,eGameHostOption_WorldSize);
+			m_MoreOptionsParams.currentWorldSize = static_cast<EGameHostOptionWorldSize>(app.GetGameHostOption(uiHostOptions, eGameHostOption_WorldSize));
 			m_MoreOptionsParams.newWorldSize = m_MoreOptionsParams.currentWorldSize;
 
 			m_MoreOptionsParams.bMobGriefing = app.GetGameHostOption(uiHostOptions, eGameHostOption_MobGriefing);
@@ -696,7 +696,7 @@ void UIScene_LoadMenu::handlePress(F64 controlId, F64 childId)
 	//CD - Added for audio
 	ui.PlayUISFX(eSFX_Press);
 
-	switch((int)controlId)
+	switch(static_cast<int>(controlId))
 	{
 	case eControl_GameMode:
 		switch(m_iGameModeId)
@@ -725,7 +725,7 @@ void UIScene_LoadMenu::handlePress(F64 controlId, F64 childId)
 		break;
 	case eControl_TexturePackList:
 		{
-			UpdateCurrentTexturePack((int)childId);
+			UpdateCurrentTexturePack(static_cast<int>(childId));
 		}
 		break;
 	case eControl_LoadWorld:
@@ -821,7 +821,7 @@ void UIScene_LoadMenu::StartSharedLaunchFlow()
 	{
 		// texture pack hasn't been set yet, so check what it will be
 		TexturePack *pTexturePack = pMinecraft->skins->getTexturePackById(m_MoreOptionsParams.dwTexturePack);
-		DLCTexturePack *pDLCTexPack=(DLCTexturePack *)pTexturePack;
+		DLCTexturePack *pDLCTexPack=static_cast<DLCTexturePack *>(pTexturePack);
 		m_pDLCPack=pDLCTexPack->getDLCInfoParentPack();
 
 		// do we have a license?
@@ -946,8 +946,8 @@ void UIScene_LoadMenu::StartSharedLaunchFlow()
 void UIScene_LoadMenu::handleSliderMove(F64 sliderId, F64 currentValue)
 {
 	WCHAR TempString[256];
-	int value = (int)currentValue;
-	switch((int)sliderId)
+	int value = static_cast<int>(currentValue);
+	switch(static_cast<int>(sliderId))
 	{
 	case eControl_Difficulty:
 		m_sliderDifficulty.handleSliderMove(value);
@@ -1182,7 +1182,7 @@ void UIScene_LoadMenu::LaunchGame(void)
 
 int UIScene_LoadMenu::CheckResetNetherReturned(void *pParam,int iPad,C4JStorage::EMessageResult result)
 {
-	UIScene_LoadMenu* pClass = (UIScene_LoadMenu*)pParam;
+	UIScene_LoadMenu* pClass = static_cast<UIScene_LoadMenu *>(pParam);
 
 	// results switched for this dialog
 	if(result==C4JStorage::EMessage_ResultDecline) 
@@ -1206,7 +1206,7 @@ int UIScene_LoadMenu::CheckResetNetherReturned(void *pParam,int iPad,C4JStorage:
 
 int UIScene_LoadMenu::ConfirmLoadReturned(void *pParam,int iPad,C4JStorage::EMessageResult result)
 {
-	UIScene_LoadMenu* pClass = (UIScene_LoadMenu*)pParam;
+	UIScene_LoadMenu* pClass = static_cast<UIScene_LoadMenu *>(pParam);
 
 	if(result==C4JStorage::EMessage_ResultAccept) 
 	{
@@ -1246,7 +1246,7 @@ int UIScene_LoadMenu::ConfirmLoadReturned(void *pParam,int iPad,C4JStorage::EMes
 
 int UIScene_LoadMenu::LoadDataComplete(void *pParam)
 {
-	UIScene_LoadMenu* pClass = (UIScene_LoadMenu*)pParam;
+	UIScene_LoadMenu* pClass = static_cast<UIScene_LoadMenu *>(pParam);
 
 	if(!pClass->m_bIsCorrupt)
 	{
@@ -1484,7 +1484,7 @@ int UIScene_LoadMenu::LoadDataComplete(void *pParam)
 
 int UIScene_LoadMenu::LoadSaveDataReturned(void *pParam,bool bIsCorrupt, bool bIsOwner)
 {
-	UIScene_LoadMenu* pClass = (UIScene_LoadMenu*)pParam;
+	UIScene_LoadMenu* pClass = static_cast<UIScene_LoadMenu *>(pParam);
 
 	pClass->m_bIsCorrupt=bIsCorrupt;
 
@@ -1520,13 +1520,13 @@ int UIScene_LoadMenu::LoadSaveDataReturned(void *pParam,bool bIsCorrupt, bool bI
 
 int UIScene_LoadMenu::TrophyDialogReturned(void *pParam,int iPad,C4JStorage::EMessageResult result)
 {
-	UIScene_LoadMenu* pClass = (UIScene_LoadMenu*)pParam;
+	UIScene_LoadMenu* pClass = static_cast<UIScene_LoadMenu *>(pParam);
 	return LoadDataComplete(pClass);
 }
 
 int UIScene_LoadMenu::DeleteSaveDialogReturned(void *pParam,int iPad,C4JStorage::EMessageResult result)
 {
-	UIScene_LoadMenu* pClass = (UIScene_LoadMenu*)pParam;
+	UIScene_LoadMenu* pClass = static_cast<UIScene_LoadMenu *>(pParam);
 
 	// results switched for this dialog
 	if(result==C4JStorage::EMessage_ResultDecline) 
@@ -1543,7 +1543,7 @@ int UIScene_LoadMenu::DeleteSaveDialogReturned(void *pParam,int iPad,C4JStorage:
 
 int UIScene_LoadMenu::DeleteSaveDataReturned(void *pParam,bool bSuccess)
 {
-	UIScene_LoadMenu* pClass = (UIScene_LoadMenu*)pParam;
+	UIScene_LoadMenu* pClass = static_cast<UIScene_LoadMenu *>(pParam);
 
 	app.SetCorruptSaveDeleted(true);
 	pClass->navigateBack();
@@ -1642,7 +1642,7 @@ void UIScene_LoadMenu::StartGameFromSave(UIScene_LoadMenu* pClass, DWORD dwLocal
 
 	LoadingInputParams *loadingParams = new LoadingInputParams();
 	loadingParams->func = &CGameNetworkManager::RunNetworkGameThreadProc;
-	loadingParams->lpParam = (LPVOID)param;
+	loadingParams->lpParam = static_cast<LPVOID>(param);
 
 	// Reset the autosave time
 	app.SetAutosaveTimerTime();
@@ -1676,7 +1676,7 @@ void UIScene_LoadMenu::checkStateAndStartGame()
 
 int UIScene_LoadMenu::StartGame_SignInReturned(void *pParam,bool bContinue, int iPad)
 {
-	UIScene_LoadMenu* pClass = (UIScene_LoadMenu*)pParam;
+	UIScene_LoadMenu* pClass = static_cast<UIScene_LoadMenu *>(pParam);
 
 	if(bContinue==true)
 	{

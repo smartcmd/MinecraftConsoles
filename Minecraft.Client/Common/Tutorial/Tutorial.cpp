@@ -1173,7 +1173,7 @@ void Tutorial::debugResetPlayerSavedProgress(int iPad)
 #if ( defined  __PS3__ || defined __ORBIS__ || defined _DURANGO || defined __PSVITA__)
 	GAME_SETTINGS *pGameSettings = (GAME_SETTINGS *)StorageManager.GetGameDefinedProfileData(iPad);
 #else
-	GAME_SETTINGS *pGameSettings = (GAME_SETTINGS *)ProfileManager.GetGameDefinedProfileData(iPad);
+	GAME_SETTINGS *pGameSettings = static_cast<GAME_SETTINGS *>(ProfileManager.GetGameDefinedProfileData(iPad));
 #endif
 	ZeroMemory( pGameSettings->ucTutorialCompletion, TUTORIAL_PROFILE_STORAGE_BYTES );
 	pGameSettings->uiSpecialTutorialBitmask = 0;
@@ -1202,7 +1202,7 @@ void Tutorial::setCompleted( int completableId )
 #if (defined __PS3__ || defined __ORBIS__ || defined _DURANGO  || defined __PSVITA__)
 		GAME_SETTINGS *pGameSettings = (GAME_SETTINGS *)StorageManager.GetGameDefinedProfileData(m_iPad);
 #else
-		GAME_SETTINGS *pGameSettings = (GAME_SETTINGS *)ProfileManager.GetGameDefinedProfileData(m_iPad);
+		GAME_SETTINGS *pGameSettings = static_cast<GAME_SETTINGS *>(ProfileManager.GetGameDefinedProfileData(m_iPad));
 #endif
 		int arrayIndex = completableIndex >> 3;
 		int bitIndex = 7 - (completableIndex % 8);
@@ -1235,7 +1235,7 @@ bool Tutorial::getCompleted( int completableId )
 #if ( defined __PS3__ || defined __ORBIS__ || defined _DURANGO  || defined __PSVITA__)
 		GAME_SETTINGS *pGameSettings = (GAME_SETTINGS *)StorageManager.GetGameDefinedProfileData(m_iPad);
 #else
-		GAME_SETTINGS *pGameSettings = (GAME_SETTINGS *)ProfileManager.GetGameDefinedProfileData(m_iPad);
+		GAME_SETTINGS *pGameSettings = static_cast<GAME_SETTINGS *>(ProfileManager.GetGameDefinedProfileData(m_iPad));
 #endif
 		int arrayIndex = completableIndex >> 3;
 		int bitIndex = 7 - (completableIndex % 8);

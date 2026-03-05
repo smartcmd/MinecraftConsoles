@@ -18,7 +18,7 @@ HRESULT CScene_FullscreenProgress::OnInit( XUIMessageInit* pInitData, BOOL& bHan
 
 	m_buttonConfirm.SetText( app.GetString( IDS_CONFIRM_OK ) );
 
-	LoadingInputParams *params = (LoadingInputParams *)pInitData->pvInitData;
+	LoadingInputParams *params = static_cast<LoadingInputParams *>(pInitData->pvInitData);
 
 	m_CompletionData = params->completionData;
 	m_iPad=params->completionData->iPad;
@@ -201,7 +201,7 @@ HRESULT CScene_FullscreenProgress::OnTransitionStart( XUIMessageTransition *pTra
 HRESULT CScene_FullscreenProgress::OnTimer( XUIMessageTimer *pTimer, BOOL& bHandled )
 {
 	int code = thread->GetExitCode();
-    DWORD exitcode = *((DWORD *)&code);
+    DWORD exitcode = *static_cast<DWORD *>(&code);
 
 	//app.DebugPrintf("CScene_FullscreenProgress Timer %d\n",pTimer->nId);
 

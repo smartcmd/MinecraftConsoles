@@ -26,7 +26,7 @@ static 	SceRemoteStorageData s_getDataOutput;
 
 void SonyRemoteStorage_Vita::staticInternalCallback(const SceRemoteStorageEvent event, int32_t retCode, void * userData)
 {
-	((SonyRemoteStorage_Vita*)userData)->internalCallback(event, retCode);
+	static_cast<SonyRemoteStorage_Vita *>(userData)->internalCallback(event, retCode);
 }
 
 void SonyRemoteStorage_Vita::internalCallback(const SceRemoteStorageEvent event, int32_t retCode)
@@ -299,7 +299,7 @@ bool SonyRemoteStorage_Vita::setDataInternal()
 	snprintf(m_saveFilename, sizeof(m_saveFilename), "%s:%s/GAMEDATA.bin", "savedata0", m_setDataSaveInfo->UTF8SaveFilename);
 
 	SceFiosSize outSize = sceFiosFileGetSizeSync(NULL, m_saveFilename);
-	m_uploadSaveSize = (int)outSize;
+	m_uploadSaveSize = static_cast<int>(outSize);
 	
 	strcpy(m_saveFileDesc, m_setDataSaveInfo->UTF8SaveTitle);
 	m_status = e_setDataInProgress;

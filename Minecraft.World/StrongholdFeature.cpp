@@ -136,8 +136,8 @@ bool StrongholdFeature::isFeatureChunk(int x, int z,bool bIsSuperflat)
 				}
 #endif
 
-				int selectedX = (int) (Math::round(cos(angle) * dist));
-				int selectedZ = (int) (Math::round(sin(angle) * dist));
+				int selectedX = static_cast<int>(Math::round(cos(angle) * dist));
+				int selectedZ = static_cast<int>(Math::round(sin(angle) * dist));
 
 				TilePos *position = level->getBiomeSource()->findBiome((selectedX << 4) + 8, (selectedZ << 4) + 8, 7 << 4, allowedBiomes, &random);
 				if (position != NULL)
@@ -164,7 +164,7 @@ bool StrongholdFeature::isFeatureChunk(int x, int z,bool bIsSuperflat)
 				delete strongholdPos[i];
 				strongholdPos[i] = new ChunkPos(selectedX, selectedZ);
 
-				angle += PI * 2.0 / (double) strongholdPos_length;
+				angle += PI * 2.0 / static_cast<double>(strongholdPos_length);
 			}
 
 			// 4J Stu - We want to make sure that we have at least one stronghold in this world
@@ -172,7 +172,7 @@ bool StrongholdFeature::isFeatureChunk(int x, int z,bool bIsSuperflat)
 
 			// 4J Stu - Randomise the angles for retries as well
 #ifdef _LARGE_WORLDS
-			angle = random.nextDouble() * PI * 2.0 * circle / (double) spread;
+			angle = random.nextDouble() * PI * 2.0 * circle / static_cast<double>(spread);
 #endif
 		}
 		while(!hasFoundValidPos && findAttempts < MAX_STRONGHOLD_ATTEMPTS);
@@ -225,7 +225,7 @@ StructureStart *StrongholdFeature::createStructureStart(int x, int z)
 	StrongholdStart *start = new StrongholdStart(level, random, x, z);
 
 	// 4J - front() was get(0)
-	while (start->getPieces()->empty() || ((StrongholdPieces::StartPiece *) start->getPieces()->front())->portalRoomPiece == NULL)
+	while (start->getPieces()->empty() || static_cast<StrongholdPieces::StartPiece *>(start->getPieces()->front())->portalRoomPiece == NULL)
 	{
 		delete start;
 		// regenerate stronghold without changing seed
@@ -254,7 +254,7 @@ StrongholdFeature::StrongholdStart::StrongholdStart(Level *level, Random *random
 	vector<StructurePiece *> *pendingChildren = &startRoom->pendingChildren;
 	while (!pendingChildren->empty())
 	{
-		int pos = random->nextInt((int)pendingChildren->size());
+		int pos = random->nextInt(static_cast<int>(pendingChildren->size()));
         auto it = pendingChildren->begin() + pos;
         StructurePiece *structurePiece = *it;
 		pendingChildren->erase(it);

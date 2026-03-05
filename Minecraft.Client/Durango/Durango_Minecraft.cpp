@@ -582,7 +582,7 @@ void oldWinMainInit()
 	app.ReadLocalDLCList();
 
 	// initialise the storage manager with a default save display name, a Minimum save size, and a callback for displaying the saving message
-	StorageManager.Init(0,app.GetString(IDS_DEFAULT_SAVENAME),"savegame.dat",FIFTY_ONE_MB,&CConsoleMinecraftApp::DisplaySavingMessage,(LPVOID)&app, app.UpdateProductId,SERVICE_CONFIG_ID,TITLE_PRODUCT_ID);
+	StorageManager.Init(0,app.GetString(IDS_DEFAULT_SAVENAME),"savegame.dat",FIFTY_ONE_MB,&CConsoleMinecraftApp::DisplaySavingMessage,static_cast<LPVOID>(&app), app.UpdateProductId,SERVICE_CONFIG_ID,TITLE_PRODUCT_ID);
 
 	StorageManager.SetMaxSaves(99);
 
@@ -595,21 +595,21 @@ void oldWinMainInit()
 		app.GAME_DEFINED_PROFILE_DATA_BYTES*XUSER_MAX_COUNT,
 		&app.uiGameDefinedDataChangedBitmask);
 
-	StorageManager.SetDefaultImages((PBYTE)baSaveThumbnail.data, baSaveThumbnail.length);
+	StorageManager.SetDefaultImages(static_cast<PBYTE>(baSaveThumbnail.data), baSaveThumbnail.length);
 
 	// Set function to be called if a save game operation can't complete due to running out of storage space etc.
-	StorageManager.SetIncompleteSaveCallback(CConsoleMinecraftApp::Callback_SaveGameIncomplete, (LPVOID)&app);
+	StorageManager.SetIncompleteSaveCallback(CConsoleMinecraftApp::Callback_SaveGameIncomplete, static_cast<LPVOID>(&app));
 
 	// set a function to be called when there's a sign in change, so we can exit a level if the primary player signs out
 	ProfileManager.SetSignInChangeCallback(&CConsoleMinecraftApp::SignInChangeCallback,(LPVOID)&app);
 
 	// Set a callback for the default player options to be set - when there is no profile data for the player
-	StorageManager.SetDefaultOptionsCallback(&CConsoleMinecraftApp::DefaultOptionsCallback,(LPVOID)&app);
-	StorageManager.SetOptionsDataCallback(&CConsoleMinecraftApp::OptionsDataCallback,(LPVOID)&app);
+	StorageManager.SetDefaultOptionsCallback(&CConsoleMinecraftApp::DefaultOptionsCallback,static_cast<LPVOID>(&app));
+	StorageManager.SetOptionsDataCallback(&CConsoleMinecraftApp::OptionsDataCallback,static_cast<LPVOID>(&app));
 
 
 	// Set a callback to deal with old profile versions needing updated to new versions
-	StorageManager.SetOldProfileVersionCallback(&CConsoleMinecraftApp::OldProfileVersionCallback,(LPVOID)&app);
+	StorageManager.SetOldProfileVersionCallback(&CConsoleMinecraftApp::OldProfileVersionCallback,static_cast<LPVOID>(&app));
 
 	g_NetworkManager.Initialise();
 

@@ -14,7 +14,7 @@ HRESULT CScene_TutorialPopup::OnInit( XUIMessageInit* pInitData, BOOL& bHandled 
 {
 	HRESULT hr = S_OK;
 
-	tutorial = (Tutorial *)pInitData->pvInitData;
+	tutorial = static_cast<Tutorial *>(pInitData->pvInitData);
 	m_iPad = tutorial->getPad();
 
 	MapChildControls();
@@ -241,7 +241,7 @@ HRESULT CScene_TutorialPopup::_SetDescription(CXuiScene *interactScene, LPCWSTR 
 		SetBounds(fWidth, fHeight + heightDiff);
 
 		m_description.GetBounds(&fWidth,&fHeight);
-		m_description.SetBounds(fWidth, (float)(contentDims.nPageHeight + heightDiff));
+		m_description.SetBounds(fWidth, static_cast<float>(contentDims.nPageHeight + heightDiff));
 	}
 	return hr;
 }
@@ -298,13 +298,13 @@ wstring CScene_TutorialPopup::_SetIcon(int icon, int iAuxVal, bool isFoil, LPCWS
 	{
 		wstring openTag(L"{*ICON*}");
 		wstring closeTag(L"{*/ICON*}");
-		int iconTagStartPos = (int)temp.find(openTag);
-		int iconStartPos = iconTagStartPos + (int)openTag.length();
-		if( iconTagStartPos > 0 && iconStartPos < (int)temp.length() )
+		int iconTagStartPos = static_cast<int>(temp.find(openTag));
+		int iconStartPos = iconTagStartPos + static_cast<int>(openTag.length());
+		if( iconTagStartPos > 0 && iconStartPos < static_cast<int>(temp.length()) )
 		{
-			int iconEndPos = (int)temp.find( closeTag, iconStartPos );
+			int iconEndPos = static_cast<int>(temp.find(closeTag, iconStartPos));
 
-			if(iconEndPos > iconStartPos && iconEndPos < (int)temp.length() )
+			if(iconEndPos > iconStartPos && iconEndPos < static_cast<int>(temp.length()) )
 			{
 				wstring id = temp.substr(iconStartPos, iconEndPos - iconStartPos);
 
@@ -443,13 +443,13 @@ wstring CScene_TutorialPopup::_SetImage(wstring &desc)
 
 	wstring openTag(L"{*IMAGE*}");
 	wstring closeTag(L"{*/IMAGE*}");
-	int imageTagStartPos = (int)desc.find(openTag);
-	int imageStartPos = imageTagStartPos + (int)openTag.length();
-	if( imageTagStartPos > 0 && imageStartPos < (int)desc.length() )
+	int imageTagStartPos = static_cast<int>(desc.find(openTag));
+	int imageStartPos = imageTagStartPos + static_cast<int>(openTag.length());
+	if( imageTagStartPos > 0 && imageStartPos < static_cast<int>(desc.length()) )
 	{
-		int imageEndPos = (int)desc.find( closeTag, imageStartPos );
+		int imageEndPos = static_cast<int>(desc.find(closeTag, imageStartPos));
 
-		if(imageEndPos > imageStartPos && imageEndPos < (int)desc.length() )
+		if(imageEndPos > imageStartPos && imageEndPos < static_cast<int>(desc.length()) )
 		{
 			wstring id = desc.substr(imageStartPos, imageEndPos - imageStartPos);
 			m_image.SetImagePath( id.c_str() );
@@ -564,7 +564,7 @@ HRESULT CScene_TutorialPopup::SetSceneVisible(int iPad, bool show)
 	if( XuiClassDerivesFrom( objClass, thisClass ) )
 	{
 		CScene_TutorialPopup *pThis;
-		hr = XuiObjectFromHandle(hObj, (void **) &pThis);
+		hr = XuiObjectFromHandle(hObj, static_cast<void **>(&pThis));
 		if (FAILED(hr))
 			return hr;
 
@@ -593,7 +593,7 @@ bool CScene_TutorialPopup::IsSceneVisible(int iPad)
 	if( XuiClassDerivesFrom( objClass, thisClass ) )
 	{
 		CScene_TutorialPopup *pThis;
-		hr = XuiObjectFromHandle(hObj, (void **) &pThis);
+		hr = XuiObjectFromHandle(hObj, static_cast<void **>(&pThis));
 		if (FAILED(hr))
 			return false;
 

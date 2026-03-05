@@ -10,7 +10,7 @@
 HRESULT CScene_SettingsAll::OnInit( XUIMessageInit* pInitData, BOOL& bHandled )
 {
 	//WCHAR TempString[256];
-	m_iPad=*(int *)pInitData->pvInitData;
+	m_iPad=*static_cast<int *>(pInitData->pvInitData);
 	// if we're not in the game, we need to use basescene 0 
 	bool bNotInGame=(Minecraft::GetInstance()->level==NULL);
 

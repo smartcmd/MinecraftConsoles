@@ -39,13 +39,13 @@ static SceRemoteStorageStatus statParams;
 void SonyRemoteStorage::SetRetrievedDescData()
 {
 	DescriptionData* pDescDataTest = (DescriptionData*)m_remoteFileInfo->fileDescription;
-	ESavePlatform testPlatform = (ESavePlatform)MAKE_FOURCC(pDescDataTest->m_platform[0], pDescDataTest->m_platform[1], pDescDataTest->m_platform[2], pDescDataTest->m_platform[3]);
+	ESavePlatform testPlatform = static_cast<ESavePlatform>(MAKE_FOURCC(pDescDataTest->m_platform[0], pDescDataTest->m_platform[1], pDescDataTest->m_platform[2], pDescDataTest->m_platform[3]));
 	if(testPlatform == SAVE_FILE_PLATFORM_NONE)
 	{
 		// new version of the descData
 		DescriptionData_V2* pDescData2 = (DescriptionData_V2*)m_remoteFileInfo->fileDescription;
 		m_retrievedDescData.m_descDataVersion = GetU32FromHexBytes(pDescData2->m_descDataVersion);
-		m_retrievedDescData.m_savePlatform = (ESavePlatform)MAKE_FOURCC(pDescData2->m_platform[0], pDescData2->m_platform[1], pDescData2->m_platform[2], pDescData2->m_platform[3]);
+		m_retrievedDescData.m_savePlatform = static_cast<ESavePlatform>(MAKE_FOURCC(pDescData2->m_platform[0], pDescData2->m_platform[1], pDescData2->m_platform[2], pDescData2->m_platform[3]));
 		m_retrievedDescData.m_seed = GetU64FromHexBytes(pDescData2->m_seed);
 		m_retrievedDescData.m_hostOptions = GetU32FromHexBytes(pDescData2->m_hostOptions);
 		m_retrievedDescData.m_texturePack = GetU32FromHexBytes(pDescData2->m_texturePack);
@@ -58,7 +58,7 @@ void SonyRemoteStorage::SetRetrievedDescData()
 		// old version,copy the data across to the new version
 		DescriptionData* pDescData = (DescriptionData*)m_remoteFileInfo->fileDescription;
 		m_retrievedDescData.m_descDataVersion = 1;
-		m_retrievedDescData.m_savePlatform = (ESavePlatform)MAKE_FOURCC(pDescData->m_platform[0], pDescData->m_platform[1], pDescData->m_platform[2], pDescData->m_platform[3]);
+		m_retrievedDescData.m_savePlatform = static_cast<ESavePlatform>(MAKE_FOURCC(pDescData->m_platform[0], pDescData->m_platform[1], pDescData->m_platform[2], pDescData->m_platform[3]));
 		m_retrievedDescData.m_seed = GetU64FromHexBytes(pDescData->m_seed);
 		m_retrievedDescData.m_hostOptions = GetU32FromHexBytes(pDescData->m_hostOptions);
 		m_retrievedDescData.m_texturePack = GetU32FromHexBytes(pDescData->m_texturePack);
@@ -73,7 +73,7 @@ void SonyRemoteStorage::SetRetrievedDescData()
 
 void getSaveInfoReturnCallback(LPVOID lpParam, SonyRemoteStorage::Status s, int error_code)
 {
-	SonyRemoteStorage* pRemoteStorage = (SonyRemoteStorage*)lpParam;
+	SonyRemoteStorage* pRemoteStorage = static_cast<SonyRemoteStorage *>(lpParam);
 	app.DebugPrintf("remoteStorageGetInfoCallback err : 0x%08x\n", error_code);
 	if(error_code == 0)
 	{
@@ -99,7 +99,7 @@ void getSaveInfoReturnCallback(LPVOID lpParam, SonyRemoteStorage::Status s, int 
 
 static void getSaveInfoInitCallback(LPVOID lpParam, SonyRemoteStorage::Status s, int error_code)
 {
-	SonyRemoteStorage* pRemoteStorage = (SonyRemoteStorage*)lpParam;
+	SonyRemoteStorage* pRemoteStorage = static_cast<SonyRemoteStorage *>(lpParam);
 	if(error_code != 0)
 	{
 		app.DebugPrintf("getSaveInfoInitCallback err : 0x%08x\n", error_code);
@@ -143,7 +143,7 @@ bool SonyRemoteStorage::getSaveData( const char* localDirname, CallbackFunc cb, 
 
 static void setSaveDataInitCallback(LPVOID lpParam, SonyRemoteStorage::Status s, int error_code)
 {
-	SonyRemoteStorage* pRemoteStorage = (SonyRemoteStorage*)lpParam;
+	SonyRemoteStorage* pRemoteStorage = static_cast<SonyRemoteStorage *>(lpParam);
 	if(error_code != 0)
 	{
 		app.DebugPrintf("setSaveDataInitCallback err : 0x%08x\n", error_code);
@@ -244,7 +244,7 @@ bool SonyRemoteStorage::setData( PSAVE_INFO info, CallbackFunc cb, LPVOID lpPara
 
 int SonyRemoteStorage::LoadSaveDataThumbnailReturned(LPVOID lpParam,PBYTE pbThumbnail,DWORD dwThumbnailBytes)
 {
-	SonyRemoteStorage *pClass= (SonyRemoteStorage *)lpParam;
+	SonyRemoteStorage *pClass= static_cast<SonyRemoteStorage *>(lpParam);
 
 	if(pClass->m_bAborting)
 	{
@@ -277,7 +277,7 @@ int SonyRemoteStorage::LoadSaveDataThumbnailReturned(LPVOID lpParam,PBYTE pbThum
 
 int SonyRemoteStorage::setDataThread(void* lpParam)
 {
-	SonyRemoteStorage* pClass = (SonyRemoteStorage*)lpParam;
+	SonyRemoteStorage* pClass = static_cast<SonyRemoteStorage *>(lpParam);
 	pClass->m_startTime = System::currentTimeMillis();
 	pClass->setDataInternal();
 	return 0;
@@ -322,8 +322,8 @@ int SonyRemoteStorage::getDataProgress()
 
 	__int64 time = System::currentTimeMillis();
 	int elapsedSecs = (time - m_startTime) / 1000;
-	float estimatedTransfered = float(elapsedSecs * transferRatePerSec);
-	int progVal = m_dataProgress + (estimatedTransfered / float(totalSize)) * 100;
+	float estimatedTransfered = static_cast<float>(elapsedSecs * transferRatePerSec);
+	int progVal = m_dataProgress + (estimatedTransfered / static_cast<float>(totalSize)) * 100;
 	if(progVal > nextChunk)
 		return nextChunk;
 	if(progVal > 99)

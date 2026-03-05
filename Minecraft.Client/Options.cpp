@@ -76,7 +76,7 @@ bool Options::Option::isBoolean() const
 
 int	Options::Option::getId() const
 {
-	return (int)(this-options);
+	return static_cast<int>(this - options);
 }
 
 wstring Options::Option::getCaptionId() const
@@ -417,7 +417,7 @@ void Options::load()
 			// 4J - removed try/catch
 //            try {
                 wstring cmds[2];
-				int splitpos = (int)line.find(L":");
+				int splitpos = static_cast<int>(line.find(L":"));
 				if( splitpos == wstring::npos )
 				{
 					cmds[0] = line;

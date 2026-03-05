@@ -950,7 +950,7 @@ Recipes::Recipes()
 		L'D');
 
 	// 4J - TODO - put these new 1.7.3 items in required place within recipes
-    addShapedRecipy(new ItemInstance((Tile *)Tile::pistonBase, 1), //
+    addShapedRecipy(new ItemInstance(static_cast<Tile *>(Tile::pistonBase), 1), //
 		L"sssctcicictg",
         L"TTT", //
         L"#X#", //
@@ -959,7 +959,7 @@ Recipes::Recipes()
         L'#', Tile::cobblestone, L'X', Item::ironIngot, L'R', Item::redStone, L'T', Tile::wood,
 		L'M');
 
-    addShapedRecipy(new ItemInstance((Tile *)Tile::pistonStickyBase, 1), //
+    addShapedRecipy(new ItemInstance(static_cast<Tile *>(Tile::pistonStickyBase), 1), //
 		L"sscictg",
         L"S", //
         L"P", //
@@ -1072,14 +1072,14 @@ ShapedRecipy *Recipes::addShapedRecipy(ItemInstance *result, ...)
 			pwchString=va_arg(vl,wchar_t *);
 			wString=pwchString;
 			height++;
-			width = (int)wString.length();
+			width = static_cast<int>(wString.length());
 			map += wString;
 			break;
 		case L's':
 			pwchString=va_arg(vl,wchar_t *);
 			wString=pwchString;
 			height++;
-			width = (int)wString.length();
+			width = static_cast<int>(wString.length());
 			map += wString;
 			break;
 		case L'w':
@@ -1091,7 +1091,7 @@ ShapedRecipy *Recipes::addShapedRecipy(ItemInstance *result, ...)
 				if(!wString.empty())
 				{
 					height++;
-					width = (int)wString.length();
+					width = static_cast<int>(wString.length());
 					map += wString;
 				}
 			}
@@ -1305,7 +1305,7 @@ void Recipes::buildRecipeIngredientsArray(void)
 {
 	//RecipyList *recipes = ((Recipes *)Recipes::getInstance())->getRecipies();
 
-	int iRecipeC=(int)recipies->size();
+	int iRecipeC=static_cast<int>(recipies->size());
 
 	m_pRecipeIngredientsRequired= new Recipy::INGREDIENTS_REQUIRED [iRecipeC];
 

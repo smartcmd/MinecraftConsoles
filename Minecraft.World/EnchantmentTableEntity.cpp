@@ -51,7 +51,7 @@ void EnchantmentTableEntity::tick()
 		double xd = player->x - (x + 0.5f);
 		double zd = player->z - (z + 0.5f);
 
-		tRot = (float) atan2(zd, xd);
+		tRot = static_cast<float>(atan2(zd, xd));
 
 		open += 0.1f;
 

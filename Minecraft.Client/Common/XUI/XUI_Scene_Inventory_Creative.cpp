@@ -33,7 +33,7 @@ HRESULT CXuiSceneInventoryCreative::OnInit( XUIMessageInit *pInitData, BOOL &bHa
 
 	Minecraft *pMinecraft = Minecraft::GetInstance();
 
-	InventoryScreenInput *initData = (InventoryScreenInput *)pInitData->pvInitData;
+	InventoryScreenInput *initData = static_cast<InventoryScreenInput *>(pInitData->pvInitData);
 	m_iPad=initData->iPad;
 	m_bSplitscreen=initData->bSplitscreen;
 
@@ -139,10 +139,10 @@ CXuiControl* CXuiSceneInventoryCreative::GetSectionControl( ESceneSection eSecti
 	switch( eSection )
 	{
 	case eSectionInventoryCreativeUsing:
-		return (CXuiControl *)m_useRowControl;
+		return static_cast<CXuiControl *>(m_useRowControl);
 		break;
 	case eSectionInventoryCreativeSelector:
-		return (CXuiControl *)m_containerControl;
+		return static_cast<CXuiControl *>(m_containerControl);
 		break;
 	default:
 		assert( false );

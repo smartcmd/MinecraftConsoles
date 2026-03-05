@@ -25,13 +25,13 @@ UIScene_TradingMenu::UIScene_TradingMenu(int iPad, void *_initData, UILayer *par
 	m_labelRequest1.init(L"");
 	m_labelRequest2.init(L"");
 
-	TradingScreenInput *initData = (TradingScreenInput *)_initData;
+	TradingScreenInput *initData = static_cast<TradingScreenInput *>(_initData);
 	m_merchant = initData->trader;
 
 	Minecraft *pMinecraft = Minecraft::GetInstance();
 	if( pMinecraft->localgameModes[iPad] != NULL )
 	{
-		TutorialMode *gameMode = (TutorialMode *)pMinecraft->localgameModes[iPad];
+		TutorialMode *gameMode = static_cast<TutorialMode *>(pMinecraft->localgameModes[iPad]);
 		m_previousTutorialState = gameMode->getTutorial()->getCurrentState();
 		gameMode->getTutorial()->changeTutorialState(e_Tutorial_State_Trading_Menu, this);
 	}
@@ -89,7 +89,7 @@ void UIScene_TradingMenu::handleDestroy()
 	Minecraft *pMinecraft = Minecraft::GetInstance();
 	if( pMinecraft->localgameModes[m_iPad] != NULL )
 	{
-		TutorialMode *gameMode = (TutorialMode *)pMinecraft->localgameModes[m_iPad];
+		TutorialMode *gameMode = static_cast<TutorialMode *>(pMinecraft->localgameModes[m_iPad]);
 		if(gameMode != NULL) gameMode->getTutorial()->changeTutorialState(m_previousTutorialState);
 	}
 
@@ -159,7 +159,7 @@ void UIScene_TradingMenu::customDraw(IggyCustomDrawCallbackRegion *region)
 
 	shared_ptr<ItemInstance> item = nullptr;
 	int slotId = -1;
-	swscanf((wchar_t*)region->name,L"slot_%d",&slotId);
+	swscanf(static_cast<wchar_t *>(region->name),L"slot_%d",&slotId);
 
 	if(slotId < MerchantMenu::USE_ROW_SLOT_END)
 	{			

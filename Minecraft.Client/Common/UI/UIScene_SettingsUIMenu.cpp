@@ -146,8 +146,8 @@ void UIScene_SettingsUIMenu::handleInput(int iPad, int key, bool repeat, bool pr
 void UIScene_SettingsUIMenu::handleSliderMove(F64 sliderId, F64 currentValue)
 {
 	WCHAR TempString[256];
-	int value = (int)currentValue;
-	switch((int)sliderId)
+	int value = static_cast<int>(currentValue);
+	switch(static_cast<int>(sliderId))
 	{
 	case eControl_UISize:
 		m_sliderUISize.handleSliderMove(value);

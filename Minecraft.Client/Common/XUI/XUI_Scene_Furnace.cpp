@@ -26,7 +26,7 @@ HRESULT CXuiSceneFurnace::OnInit( XUIMessageInit* pInitData, BOOL& bHandled )
 
 	Minecraft *pMinecraft = Minecraft::GetInstance();
 
-	FurnaceScreenInput* initData = (FurnaceScreenInput*)pInitData->pvInitData;
+	FurnaceScreenInput* initData = static_cast<FurnaceScreenInput *>(pInitData->pvInitData);
 	m_iPad=initData->iPad;
 	m_bSplitscreen=initData->bSplitscreen;
 

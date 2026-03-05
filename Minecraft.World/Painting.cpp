@@ -98,7 +98,7 @@ void Painting::PaintingPostConstructor(int dir, int motive)
 		}
 		if (!survivableMotives->empty())
 		{
-			this->motive = survivableMotives->at(random->nextInt((int)survivableMotives->size()));
+			this->motive = survivableMotives->at(random->nextInt(static_cast<int>(survivableMotives->size())));
 		}
 		setDir(dir);
 	}

@@ -92,7 +92,7 @@ void PreLoginPacket::write(DataOutputStream *dos) //throws IOException
 	
 	dos->writeByte(m_friendsOnlyBits);
 	dos->writeInt(m_ugcPlayersVersion);
-	dos->writeByte((byte)m_dwPlayerCount);
+	dos->writeByte(static_cast<byte>(m_dwPlayerCount));
 	for(DWORD i = 0; i < m_dwPlayerCount; ++i)
 	{
 		dos->writePlayerUID( m_playerXuids[i] );
@@ -115,5 +115,5 @@ void PreLoginPacket::handle(PacketListener *listener)
 
 int PreLoginPacket::getEstimatedSize() 
 {
-	return 4 + 4 + (int)loginKey.length() + 4 +14 + 4 + 1 + 4;
+	return 4 + 4 + static_cast<int>(loginKey.length()) + 4 +14 + 4 + 1 + 4;
 }

@@ -157,7 +157,7 @@ void ChestTileEntity::save(CompoundTag *base)
 		if (items->data[i] != NULL)
 		{
 			CompoundTag *tag = new CompoundTag();
-			tag->putByte(L"Slot", (byte) i);
+			tag->putByte(L"Slot", static_cast<byte>(i));
 			items->data[i]->save(tag);
 			listTag->add(tag);
 		}
@@ -254,7 +254,7 @@ bool ChestTileEntity::isSameChest(int x, int y, int z)
 {
 	Tile *tile = Tile::tiles[level->getTile(x, y, z)];
 	if (tile == NULL || !(dynamic_cast<ChestTile *>(tile) != NULL)) return false;
-	return ((ChestTile *) tile)->type == getType();
+	return static_cast<ChestTile *>(tile)->type == getType();
 }
 
 void ChestTileEntity::tick()
@@ -391,7 +391,7 @@ int ChestTileEntity::getType()
 	{
 		if (level != NULL && dynamic_cast<ChestTile *>( getTile() ) != NULL)
 		{
-			type = ((ChestTile *) getTile())->type;
+			type = static_cast<ChestTile *>(getTile())->type;
 		}
 		else
 		{

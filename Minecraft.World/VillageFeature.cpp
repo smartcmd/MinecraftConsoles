@@ -134,7 +134,7 @@ VillageFeature::VillageStart::VillageStart(Level *level, Random *random, int chu
 		// prioritize roads
 		if (pendingRoads->empty())
 		{
-			int pos = random->nextInt((int)pendingHouses->size());
+			int pos = random->nextInt(static_cast<int>(pendingHouses->size()));
             auto it = pendingHouses->begin() + pos;
             StructurePiece *structurePiece = *it;
 			pendingHouses->erase(it);
@@ -142,7 +142,7 @@ VillageFeature::VillageStart::VillageStart(Level *level, Random *random, int chu
 		}
 		else
 		{
-			int pos = random->nextInt((int)pendingRoads->size());
+			int pos = random->nextInt(static_cast<int>(pendingRoads->size()));
             auto it = pendingRoads->begin() + pos;
             StructurePiece *structurePiece = *it;
 			pendingRoads->erase(it);

@@ -420,7 +420,7 @@ void SoundEngine::XACTNotificationCallback( const XACT_NOTIFICATION* pNotificati
 	{
 		if(pNotification->type==XACTNOTIFICATIONTYPE_WAVEBANKPREPARED)
 		{
-			SoundEngine *pSoundEngine=(SoundEngine *)pNotification->pvContext;
+			SoundEngine *pSoundEngine=static_cast<SoundEngine *>(pNotification->pvContext);
 			if(pNotification->waveBank.pWaveBank==pSoundEngine->m_pStreamedWaveBank)
 			{
 				pSoundEngine->m_bStreamingWaveBank1Ready=true;
@@ -446,7 +446,7 @@ char *SoundEngine::ConvertSoundPathToName(const wstring& name, bool bConvertSpac
 	{
 		wchar_t c = name[i];
 		if(c=='.') c='_';
-		buf[i] = (char)c;
+		buf[i] = static_cast<char>(c);
 	}
 	buf[name.length()] = 0;
 	return buf;
@@ -541,7 +541,7 @@ void SoundEngine::play(int iSound, float x, float y, float z, float volume, floa
 
 	soundInfo *info = new soundInfo();
 	info->idx = idx;
-	info->eSoundID = (eSOUND_TYPE)iSound;
+	info->eSoundID = static_cast<eSOUND_TYPE>(iSound);
 	info->iSoundBank = bSoundbank1?0:1;
 	info->x = x;
 	info->y = y;
@@ -578,7 +578,7 @@ void SoundEngine::playUI(int iSound, float, float)
 	}
 	wstring name = wchSoundNames[iSound];
 
-	char *xboxName = (char *)ConvertSoundPathToName(name);
+	char *xboxName = static_cast<char *>(ConvertSoundPathToName(name));
 
 	XACTINDEX idx = m_pSoundBank->GetCueIndex(xboxName);
 
@@ -618,7 +618,7 @@ void SoundEngine::playUI(int iSound, float, float)
 
 	// Add sound info just so we can detect end of this sound
 	soundInfo *info = new soundInfo();
-	info->eSoundID = (eSOUND_TYPE)0;
+	info->eSoundID = static_cast<eSOUND_TYPE>(0);
 	info->iSoundBank = bSoundBank1?0:1;
 	info->idx =idx;
 	info->x = 0.0f;
@@ -701,7 +701,7 @@ void SoundEngine::playStreaming(const wstring& name, float x, float y, float z, 
 		else
 		{
 			// get the dlc texture pack
-			DLCTexturePack *pDLCTexPack=(DLCTexturePack *)pTexPack;
+			DLCTexturePack *pDLCTexPack=static_cast<DLCTexturePack *>(pTexPack);
 			pSoundBank=pDLCTexPack->m_pSoundBank;
 
 			// check we can play the sound
@@ -999,9 +999,9 @@ void SoundEngine::tick(shared_ptr<Mob> *players, float a)
 			{
 				float yRot = players[i]->yRotO + (players[i]->yRot - players[i]->yRotO) * a;
 
-				m_listeners[listenerCount].Position.x = (float) (players[i]->xo + (players[i]->x - players[i]->xo) * a);
-				m_listeners[listenerCount].Position.y = (float) (players[i]->yo + (players[i]->y - players[i]->yo) * a);
-				m_listeners[listenerCount].Position.z = -(float) (players[i]->zo + (players[i]->z - players[i]->zo) * a);	// Flipped sign of z as x3daudio is expecting left handed coord system
+				m_listeners[listenerCount].Position.x = static_cast<float>(players[i]->xo + (players[i]->x - players[i]->xo) * a);
+				m_listeners[listenerCount].Position.y = static_cast<float>(players[i]->yo + (players[i]->y - players[i]->yo) * a);
+				m_listeners[listenerCount].Position.z = -static_cast<float>(players[i]->zo + (players[i]->z - players[i]->zo) * a);	// Flipped sign of z as x3daudio is expecting left handed coord system
 
 				float yCos = (float)cos(-yRot * Mth::RAD_TO_GRAD - PI);
 				float ySin = (float)sin(-yRot * Mth::RAD_TO_GRAD - PI);

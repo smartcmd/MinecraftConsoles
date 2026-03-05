@@ -43,7 +43,7 @@ void Witch::defineSynchedData()
 {
 	Monster::defineSynchedData();
 
-	getEntityData()->define(DATA_USING_ITEM, (byte) 0);
+	getEntityData()->define(DATA_USING_ITEM, static_cast<byte>(0));
 }
 
 int Witch::getAmbientSound()
@@ -63,7 +63,7 @@ int Witch::getDeathSound()
 
 void Witch::setUsingItem(bool isUsing)
 {
-	getEntityData()->set(DATA_USING_ITEM, isUsing ? (byte) 1 : (byte) 0);
+	getEntityData()->set(DATA_USING_ITEM, isUsing ? static_cast<byte>(1) : static_cast<byte>(0));
 }
 
 bool Witch::isUsingItem()

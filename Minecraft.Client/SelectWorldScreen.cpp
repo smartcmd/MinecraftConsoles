@@ -235,7 +235,7 @@ SelectWorldScreen::WorldSelectionList::WorldSelectionList(SelectWorldScreen *sws
 
 int SelectWorldScreen::WorldSelectionList::getNumberOfItems()
 {
-	return (int)this->parent->levelList->size();
+	return static_cast<int>(this->parent->levelList->size());
 }
 
 void SelectWorldScreen::WorldSelectionList::selectItem(int item, bool doubleClick)
@@ -259,7 +259,7 @@ bool SelectWorldScreen::WorldSelectionList::isSelectedItem(int item)
 
 int SelectWorldScreen::WorldSelectionList::getMaxPosition()
 {
-	return (int)parent->levelList->size() * 36;
+	return static_cast<int>(parent->levelList->size()) * 36;
 }
 
 void SelectWorldScreen::WorldSelectionList::renderBackground()

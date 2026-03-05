@@ -25,7 +25,7 @@ void BowItem::releaseUsing(shared_ptr<ItemInstance> itemInstance, Level *level, 
 	if (infiniteArrows || player->inventory->hasResource(Item::arrow_Id))
 	{
 		int timeHeld = getUseDuration(itemInstance) - durationLeft;
-		float pow = timeHeld / (float) MAX_DRAW_DURATION;
+		float pow = timeHeld / static_cast<float>(MAX_DRAW_DURATION);
 		pow = ((pow * pow) + pow * 2) / 3;
 		if (pow < 0.1) return;
 		if (pow > 1) pow = 1;
@@ -35,7 +35,7 @@ void BowItem::releaseUsing(shared_ptr<ItemInstance> itemInstance, Level *level, 
 		int damageBonus = EnchantmentHelper::getEnchantmentLevel(Enchantment::arrowBonus->id, itemInstance);
 		if (damageBonus > 0)
 		{
-			arrow->setBaseDamage(arrow->getBaseDamage() + (double) damageBonus * .5 + .5);
+			arrow->setBaseDamage(arrow->getBaseDamage() + static_cast<double>(damageBonus) * .5 + .5);
 		}
 		int knockbackBonus = EnchantmentHelper::getEnchantmentLevel(Enchantment::arrowKnockback->id, itemInstance);
 		if (knockbackBonus > 0)

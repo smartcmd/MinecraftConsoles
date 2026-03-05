@@ -106,10 +106,10 @@ void Throwable::shoot(double xd, double yd, double zd, float pow, float uncertai
 	this->yd = yd;
 	this->zd = zd;
 
-	float sd = (float) sqrt(xd * xd + zd * zd);
+	float sd = static_cast<float>(sqrt(xd * xd + zd * zd));
 
-	yRotO = yRot = (float) (atan2(xd, zd) * 180 / PI);
-	xRotO = xRot = (float) (atan2(yd, (double)sd) * 180 / PI);
+	yRotO = yRot = static_cast<float>(atan2(xd, zd) * 180 / PI);
+	xRotO = xRot = static_cast<float>(atan2(yd, (double)sd) * 180 / PI);
 	life = 0;
 }
 
@@ -120,9 +120,9 @@ void Throwable::lerpMotion(double xd, double yd, double zd)
 	this->zd = zd;
 	if (xRotO == 0 && yRotO == 0)
 	{
-		float sd = (float) sqrt(xd * xd + zd * zd);
-		yRotO = yRot = (float) (atan2(xd, zd) * 180 / PI);
-		xRotO = xRot = (float) (atan2(yd, (double)sd) * 180 / PI);
+		float sd = static_cast<float>(sqrt(xd * xd + zd * zd));
+		yRotO = yRot = static_cast<float>(atan2(xd, zd) * 180 / PI);
+		xRotO = xRot = static_cast<float>(atan2(yd, (double)sd) * 180 / PI);
 	}
 }
 
@@ -220,9 +220,9 @@ void Throwable::tick()
 	y += yd;
 	z += zd;
 
-	float sd = (float) sqrt(xd * xd + zd * zd);
-	yRot = (float) (atan2(xd, zd) * 180 / PI);
-	xRot = (float) (atan2(yd, (double)sd) * 180 / PI);
+	float sd = static_cast<float>(sqrt(xd * xd + zd * zd));
+	yRot = static_cast<float>(atan2(xd, zd) * 180 / PI);
+	xRot = static_cast<float>(atan2(yd, (double)sd) * 180 / PI);
 
 	while (xRot - xRotO < -180)
 		xRotO -= 360;
@@ -267,12 +267,12 @@ float Throwable::getGravity()
 
 void Throwable::addAdditonalSaveData(CompoundTag *tag)
 {
-	tag->putShort(L"xTile", (short) xTile);
-	tag->putShort(L"yTile", (short) yTile);
-	tag->putShort(L"zTile", (short) zTile);
-	tag->putByte(L"inTile", (byte) lastTile);
-	tag->putByte(L"shake", (byte) shakeTime);
-	tag->putByte(L"inGround", (byte) (inGround ? 1 : 0));
+	tag->putShort(L"xTile", static_cast<short>(xTile));
+	tag->putShort(L"yTile", static_cast<short>(yTile));
+	tag->putShort(L"zTile", static_cast<short>(zTile));
+	tag->putByte(L"inTile", static_cast<byte>(lastTile));
+	tag->putByte(L"shake", static_cast<byte>(shakeTime));
+	tag->putByte(L"inGround", static_cast<byte>(inGround ? 1 : 0));
 
 	if (ownerName.empty() && (owner != NULL) && owner->instanceof(eTYPE_PLAYER) )
 	{

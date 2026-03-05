@@ -79,7 +79,7 @@ S32 UIControl_DynamicLabel::GetRealWidth()
 	S32 iRealWidth = m_width;
 	if(result.type == IGGY_DATATYPE_number)
 	{
-		iRealWidth = (S32)result.number;
+		iRealWidth = static_cast<S32>(result.number);
 	}
 	return iRealWidth;
 }
@@ -92,7 +92,7 @@ S32 UIControl_DynamicLabel::GetRealHeight()
 	S32 iRealHeight = m_height;
 	if(result.type == IGGY_DATATYPE_number)
 	{
-		iRealHeight = (S32)result.number;
+		iRealHeight = static_cast<S32>(result.number);
 	}
 	return iRealHeight;
 }

@@ -113,7 +113,7 @@ void DQRNetworkManager::BytesReceivedInternal(DQRConnectionInfo *connectionInfo,
 			case DQRConnectionInfo::ConnectionState_InternalAssignSmallId2:
 			case DQRConnectionInfo::ConnectionState_InternalAssignSmallId3:
 				{
-					int channel = ((int)connectionInfo->m_internalDataState) - DQRConnectionInfo::ConnectionState_InternalAssignSmallId0;
+					int channel = static_cast<int>(connectionInfo->m_internalDataState) - DQRConnectionInfo::ConnectionState_InternalAssignSmallId0;
 
 					if( ( connectionInfo->m_smallIdReadMask & ( 1 << channel ) ) && ( !connectionInfo->m_channelActive[channel] ) )
 					{
@@ -137,7 +137,7 @@ void DQRNetworkManager::BytesReceivedInternal(DQRConnectionInfo *connectionInfo,
 
 							DQRNetworkPlayer *pPlayer = new DQRNetworkPlayer(this, DQRNetworkPlayer::DNP_TYPE_REMOTE, true, 0, sessionAddress);
 							pPlayer->SetSmallId(byte);
-							pPlayer->SetUID(PlayerUID(m_multiplayerSession->Members->GetAt(sessionIndex)->XboxUserId->Data()));
+							pPlayer->SetUID(static_cast<PlayerUID>(m_multiplayerSession->Members->GetAt(sessionIndex)->XboxUserId->Data()));
 
 							HostGamertagResolveDetails *resolveDetails = new HostGamertagResolveDetails();
 							resolveDetails->m_pPlayer = pPlayer;
@@ -371,7 +371,7 @@ void DQRNetworkManager::SendBytesChat(unsigned int address, BYTE *bytes, int byt
 void DQRNetworkManager::SendBytes(int smallId, BYTE *bytes, int byteCount)
 {
 	EnterCriticalSection(&m_csSendBytes);
-	unsigned char *tempSendBuffer = (unsigned char *)malloc(8191 + 2);
+	unsigned char *tempSendBuffer = static_cast<unsigned char *>(malloc(8191 + 2));
 
 	BYTE *data = bytes;
 	BYTE *dataEnd = bytes + byteCount;
@@ -381,7 +381,7 @@ void DQRNetworkManager::SendBytes(int smallId, BYTE *bytes, int byteCount)
 	// blocks of this size.
 	do
 	{
-		int bytesToSend = (int)(dataEnd - data);
+		int bytesToSend = static_cast<int>(dataEnd - data);
 		if( bytesToSend > 8191 ) bytesToSend = 8191;
 
 		// Send header with data sending mode - see full comment in DQRNetworkManagerEventHandlers::DataReceivedHandler

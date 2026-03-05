@@ -20,7 +20,7 @@ void ItemEntity::_init()
 	age = 0;
 	throwTime = 0;
 	health = 5;
-	bobOffs = (float) (Math::random() * PI * 2);
+	bobOffs = static_cast<float>(Math::random() * PI * 2);
 
 	// 4J Stu - This function call had to be moved here from the Entity ctor to ensure that
 	// the derived version of the function is called
@@ -36,11 +36,11 @@ void ItemEntity::_init(Level *level, double x, double y, double z)
 
 	setPos(x, y, z);
 
-	yRot = (float) (Math::random() * 360);
+	yRot = static_cast<float>(Math::random() * 360);
 
-	xd = (float) (Math::random() * 0.2f - 0.1f);
+	xd = static_cast<float>(Math::random() * 0.2f - 0.1f);
 	yd = +0.2f;
-	zd = (float) (Math::random() * 0.2f - 0.1f);
+	zd = static_cast<float>(Math::random() * 0.2f - 0.1f);
 }
 
 ItemEntity::ItemEntity(Level *level, double x, double y, double z) : Entity(level)
@@ -84,7 +84,7 @@ void ItemEntity::tick()
 	// 4J - added parameter here so that these don't care about colliding with other entities
 	move(xd, yd, zd, true);
 
-	bool moved = (int) xo != (int) x || (int) yo != (int) y || (int) zo != (int) z;
+	bool moved = static_cast<int>(xo) != static_cast<int>(x) || static_cast<int>(yo) != static_cast<int>(y) || static_cast<int>(zo) != static_cast<int>(z);
 
 	if (moved || tickCount % 25 == 0)
 	{
@@ -204,8 +204,8 @@ bool ItemEntity::hurt(DamageSource *source, float damage)
 
 void ItemEntity::addAdditonalSaveData(CompoundTag *entityTag)
 {
-	entityTag->putShort(L"Health", (byte) health);
-	entityTag->putShort(L"Age", (short) age);
+	entityTag->putShort(L"Health", static_cast<byte>(health));
+	entityTag->putShort(L"Age", static_cast<short>(age));
 	if (getItem() != NULL) entityTag->putCompound(L"Item", getItem()->save(new CompoundTag()));
 }
 

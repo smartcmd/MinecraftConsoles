@@ -32,7 +32,7 @@ ResourceLocation PlayerRenderer::DEFAULT_LOCATION = ResourceLocation(TN_MOB_CHAR
 
 PlayerRenderer::PlayerRenderer() : LivingEntityRenderer( new HumanoidModel(0), 0.5f )
 {
-    humanoidModel = (HumanoidModel *) model;
+    humanoidModel = static_cast<HumanoidModel *>(model);
 
     armorParts1 = new HumanoidModel(1.0f);
     armorParts2 = new HumanoidModel(0.5f);
@@ -87,9 +87,9 @@ int PlayerRenderer::prepareArmor(shared_ptr<LivingEntity> _player, int layer, fl
 			if (armorItem->getMaterial() == ArmorItem::ArmorMaterial::CLOTH)
 			{
 				int color = armorItem->getColor(itemInstance);
-				float red = (float) ((color >> 16) & 0xFF) / 0xFF;
-				float green = (float) ((color >> 8) & 0xFF) / 0xFF;
-				float blue = (float) (color & 0xFF) / 0xFF;
+				float red = static_cast<float>((color >> 16) & 0xFF) / 0xFF;
+				float green = static_cast<float>((color >> 8) & 0xFF) / 0xFF;
+				float blue = static_cast<float>(color & 0xFF) / 0xFF;
 				glColor3f(brightness * red, brightness * green, brightness * blue);
 
 				if (itemInstance->isEnchanted()) return 0x1f;
@@ -120,7 +120,7 @@ void PlayerRenderer::prepareSecondPassArmor(shared_ptr<LivingEntity> _player, in
 		if (dynamic_cast<ArmorItem *>(item))
 		{
             ArmorItem *armorItem = dynamic_cast<ArmorItem *>(item);
-			bindTexture(HumanoidMobRenderer::getArmorLocation((ArmorItem *)item, layer, true));
+			bindTexture(HumanoidMobRenderer::getArmorLocation(static_cast<ArmorItem *>(item), layer, true));
 
 			float brightness = SharedConstants::TEXTURE_LIGHTING ? 1 : player->getBrightness(a);
 			glColor3f(brightness, brightness, brightness);
@@ -316,11 +316,11 @@ void PlayerRenderer::additionalRendering(shared_ptr<LivingEntity> _mob, float a)
         double xa = Mth::sin(yr * PI / 180);
         double za = -Mth::cos(yr * PI / 180);
 
-        float flap = (float) yd * 10;
+        float flap = static_cast<float>(yd) * 10;
         if (flap < -6) flap = -6;
         if (flap > 32) flap = 32;
-        float lean = (float) (xd * xa + zd * za) * 100;
-        float lean2 = (float) (xd * za - zd * xa) * 100;
+        float lean = static_cast<float>(xd * xa + zd * za) * 100;
+        float lean2 = static_cast<float>(xd * za - zd * xa) * 100;
         if (lean < 0) lean = 0;
 
         float pow = mob->oBob + (mob->bob - mob->oBob) * a;
@@ -550,5 +550,5 @@ void PlayerRenderer::bindTexture(shared_ptr<Entity> entity)
 ResourceLocation *PlayerRenderer::getTextureLocation(shared_ptr<Entity> entity)
 {
 	shared_ptr<Player> player = dynamic_pointer_cast<Player>(entity);
-	return new ResourceLocation((_TEXTURE_NAME)player->getTexture());
+	return new ResourceLocation(static_cast<_TEXTURE_NAME>(player->getTexture()));
 }

@@ -322,7 +322,7 @@ void BrewingStandTileEntity::save(CompoundTag *base)
 {
 	TileEntity::save(base);
 
-	base->putShort(L"BrewTime", (short) (brewTime));
+	base->putShort(L"BrewTime", static_cast<short>(brewTime));
 	ListTag<CompoundTag> *listTag = new ListTag<CompoundTag>();
 
 	for (int i = 0; i < items.length; i++)
@@ -330,7 +330,7 @@ void BrewingStandTileEntity::save(CompoundTag *base)
 		if (items[i] != NULL)
 		{
 			CompoundTag *tag = new CompoundTag();
-			tag->putByte(L"Slot", (byte) i);
+			tag->putByte(L"Slot", static_cast<byte>(i));
 			items[i]->save(tag);
 			listTag->add(tag);
 		}

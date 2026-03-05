@@ -625,7 +625,7 @@ public:
 	virtual void ReleaseSaveThumbnail()=0;
 	virtual void GetScreenshot(int iPad,PBYTE *pbData,DWORD *pdwSize)=0;
 
-	virtual void ReadBannedList(int iPad, eTMSAction action=(eTMSAction)0, bool bCallback=false)=0;
+	virtual void ReadBannedList(int iPad, eTMSAction action=static_cast<eTMSAction>(0), bool bCallback=false)=0;
 
 private:
 

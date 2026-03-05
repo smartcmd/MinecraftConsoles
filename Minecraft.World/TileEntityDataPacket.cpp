@@ -50,7 +50,7 @@ void TileEntityDataPacket::write(DataOutputStream *dos)
 	dos->writeInt(x);
 	dos->writeShort(y);
 	dos->writeInt(z);
-	dos->writeByte((byte) type);
+	dos->writeByte(static_cast<byte>(type));
 	writeNbt(tag, dos);
 }
 

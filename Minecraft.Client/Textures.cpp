@@ -288,7 +288,7 @@ void Textures::loadIndexedTextures()
 	// 4J - added - preload a set of commonly used textures that can then be referenced directly be an enumerated type rather by string
 	for( int i = 0; i < TN_COUNT - 2; i++ )
 	{
-		preLoadedIdx[i] = loadTexture((TEXTURE_NAME)i, wstring(preLoaded[i]) + L".png");
+		preLoadedIdx[i] = loadTexture(static_cast<TEXTURE_NAME>(i), wstring(preLoaded[i]) + L".png");
 	}
 }
 
@@ -451,7 +451,7 @@ void Textures::bindTextureLayers(ResourceLocation *resource)
 		for( int i = 0; i < layers; i++ )
 		{
 			TEXTURE_NAME textureName = resource->getTexture(i);
-			if( textureName == (_TEXTURE_NAME)-1 )
+			if( textureName == static_cast<_TEXTURE_NAME>(-1) )
 			{
 				continue;
 			}
@@ -500,10 +500,10 @@ void Textures::bindTextureLayers(ResourceLocation *resource)
 					float srcFactor = srcAlpha / outAlpha;
 					float dstFactor = (dstAlpha * (1.0f - srcAlpha)) / outAlpha;
 
-					int outA = (int)(outAlpha * 255.0f + 0.5f);
-					int outR = (int)((((src >> 16) & 0xff) * srcFactor) + (((dst >> 16) & 0xff) * dstFactor) + 0.5f);
-					int outG = (int)((((src >> 8) & 0xff) * srcFactor) + (((dst >> 8) & 0xff) * dstFactor) + 0.5f);
-					int outB = (int)(((src & 0xff) * srcFactor) + ((dst & 0xff) * dstFactor) + 0.5f);
+					int outA = static_cast<int>(outAlpha * 255.0f + 0.5f);
+					int outR = static_cast<int>((((src >> 16) & 0xff) * srcFactor) + (((dst >> 16) & 0xff) * dstFactor) + 0.5f);
+					int outG = static_cast<int>((((src >> 8) & 0xff) * srcFactor) + (((dst >> 8) & 0xff) * dstFactor) + 0.5f);
+					int outB = static_cast<int>(((src & 0xff) * srcFactor) + ((dst & 0xff) * dstFactor) + 0.5f);
 					mergedPixels[p] = (outA << 24) | (outR << 16) | (outG << 8) | outB;
 				}
 			}
@@ -730,10 +730,10 @@ void Textures::loadTexture(BufferedImage *img, int id, bool blur, bool clamp)
         newPixels[i * 4 + 2] = (byte) g;
         newPixels[i * 4 + 3] = (byte) b;
 #else
-        newPixels[i * 4 + 0] = (byte) r;
-        newPixels[i * 4 + 1] = (byte) g;
-        newPixels[i * 4 + 2] = (byte) b;
-        newPixels[i * 4 + 3] = (byte) a;
+        newPixels[i * 4 + 0] = static_cast<byte>(r);
+        newPixels[i * 4 + 1] = static_cast<byte>(g);
+        newPixels[i * 4 + 2] = static_cast<byte>(b);
+        newPixels[i * 4 + 3] = static_cast<byte>(a);
 #endif
     }
 	// 4J - now creating a buffer of the size we require dynamically
@@ -901,10 +901,10 @@ void Textures::replaceTexture(intArray rawPixels, int w, int h, int id)
             b = bb;
         }
 
-        newPixels[i * 4 + 0] = (byte) r;
-        newPixels[i * 4 + 1] = (byte) g;
-        newPixels[i * 4 + 2] = (byte) b;
-        newPixels[i * 4 + 3] = (byte) a;
+        newPixels[i * 4 + 0] = static_cast<byte>(r);
+        newPixels[i * 4 + 1] = static_cast<byte>(g);
+        newPixels[i * 4 + 2] = static_cast<byte>(b);
+        newPixels[i * 4 + 3] = static_cast<byte>(a);
     }
     ByteBuffer *pixels =  MemoryTracker::createByteBuffer(w * h * 4);	// 4J - now creating dynamically
     pixels->put(newPixels);

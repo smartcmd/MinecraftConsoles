@@ -118,7 +118,7 @@ NetherBridgeFeature::NetherBridgeStart::NetherBridgeStart(Level *level, Random *
 	vector<StructurePiece *> *pendingChildren = &start->pendingChildren;
 	while (!pendingChildren->empty())
 	{
-		int pos = random->nextInt((int)pendingChildren->size());
+		int pos = random->nextInt(static_cast<int>(pendingChildren->size()));
         auto it = pendingChildren->begin() + pos;
         StructurePiece *structurePiece = *it;
 		pendingChildren->erase(it);

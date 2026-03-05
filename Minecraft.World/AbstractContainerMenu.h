@@ -95,7 +95,7 @@ public:
 	virtual bool stillValid(shared_ptr<Player> player) = 0;
 
 	// 4J Stu Added for UI
-	unsigned int getSize() { return (unsigned int)slots.size(); }
+	unsigned int getSize() { return static_cast<unsigned int>(slots.size()); }
 
 
 protected:

@@ -26,7 +26,7 @@ int CScene_SettingsOptions::m_iDifficultyTitleSettingA[4]=
 HRESULT CScene_SettingsOptions::OnInit( XUIMessageInit* pInitData, BOOL& bHandled )
 {
 	WCHAR TempString[256];
-	m_iPad=*(int *)pInitData->pvInitData;
+	m_iPad=*static_cast<int *>(pInitData->pvInitData);
 	// if we're not in the game, we need to use basescene 0 
 	bool bNotInGame=(Minecraft::GetInstance()->level==NULL);
 	bool bPrimaryPlayer = ProfileManager.GetPrimaryPad()==m_iPad;
@@ -274,14 +274,14 @@ HRESULT CScene_SettingsOptions::OnNotifyValueChanged( HXUIOBJ hObjSource, XUINot
 		else
 		{
 			app.SetAutosaveTimerTime();
-			swprintf( (WCHAR *)TempString, 256, L"%ls: %d %ls", app.GetString( IDS_SLIDER_AUTOSAVE ),pNotifyValueChanged->nValue*15, app.GetString( IDS_MINUTES ));		
+			swprintf( static_cast<WCHAR *>(TempString), 256, L"%ls: %d %ls", app.GetString( IDS_SLIDER_AUTOSAVE ),pNotifyValueChanged->nValue*15, app.GetString( IDS_MINUTES ));		
 		}
 		m_SliderA[SLIDER_SETTINGS_AUTOSAVE].SetText(TempString);
 	}
 	else if(hObjSource==m_SliderA[SLIDER_SETTINGS_DIFFICULTY].GetSlider() )
 	{
 		app.SetGameSettings(m_iPad,eGameSetting_Difficulty,pNotifyValueChanged->nValue);
-		swprintf( (WCHAR *)TempString, 256, L"%ls: %ls", app.GetString( IDS_SLIDER_DIFFICULTY ),app.GetString(m_iDifficultyTitleSettingA[pNotifyValueChanged->nValue]));		
+		swprintf( static_cast<WCHAR *>(TempString), 256, L"%ls: %ls", app.GetString( IDS_SLIDER_DIFFICULTY ),app.GetString(m_iDifficultyTitleSettingA[pNotifyValueChanged->nValue]));		
 		m_SliderA[SLIDER_SETTINGS_DIFFICULTY].SetText(TempString);
 		
 		wstring wsText=app.GetString(m_iDifficultySettingA[pNotifyValueChanged->nValue]);

@@ -25,7 +25,7 @@
 HRESULT CScene_InGameInfo::OnInit( XUIMessageInit* pInitData, BOOL& bHandled )
 {
 	m_bIgnoreKeyPresses=true;
-	m_iPad = *(int *)pInitData->pvInitData;
+	m_iPad = *static_cast<int *>(pInitData->pvInitData);
 
 	MapChildControls();
 
@@ -142,7 +142,7 @@ HRESULT CScene_InGameInfo::OnKeyDown(XUIMessageInput* pInputData, BOOL& rfHandle
 			INetworkPlayer *player = g_NetworkManager.GetPlayerBySmallId(m_players[playersList.GetCurSel()]);
 			if( player != NULL )
 			{
-				PlayerUID xuid = ((NetworkPlayerXbox *)player)->GetUID();
+				PlayerUID xuid = static_cast<NetworkPlayerXbox *>(player)->GetUID();
 				if( xuid != INVALID_XUID )
 					hr = XShowGamerCardUI(pInputData->UserIndex, xuid);
 			}
@@ -268,7 +268,7 @@ HRESULT CScene_InGameInfo::OnNotifySetFocus( HXUIOBJ hObjSource, XUINotifyFocus 
 
 void CScene_InGameInfo::OnPlayerChanged(void *callbackParam, INetworkPlayer *pPlayer, bool leaving)
 {
-	CScene_InGameInfo *scene = (CScene_InGameInfo *)callbackParam;
+	CScene_InGameInfo *scene = static_cast<CScene_InGameInfo *>(callbackParam);
 	bool playerFound = false;
 
 	for(int i = 0; i < scene->m_playersCount; ++i)
@@ -520,7 +520,7 @@ HRESULT CScene_InGameInfo::OnCustomMessage_Splitscreenplayer(bool bJoining, BOOL
 
 int CScene_InGameInfo::KickPlayerReturned(void *pParam,int iPad,C4JStorage::EMessageResult result)
 {
-	BYTE smallId = *(BYTE *)pParam;
+	BYTE smallId = *static_cast<BYTE *>(pParam);
 	delete pParam;
 
 	if(result==C4JStorage::EMessage_ResultAccept)

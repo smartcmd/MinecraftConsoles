@@ -87,7 +87,7 @@ void Gui::render(float a, bool mouseFree, int xMouse, int yMouse)
 	int quickSelectHeight=22;
 	float fScaleFactorWidth=1.0f,fScaleFactorHeight=1.0f;
 	bool bTwoPlayerSplitscreen=false;
-	currentGuiScaleFactor = (float) guiScale;		// Keep static copy of scale so we know how gui coordinates map to physical pixels - this is also affected by the viewport
+	currentGuiScaleFactor = static_cast<float>(guiScale);		// Keep static copy of scale so we know how gui coordinates map to physical pixels - this is also affected by the viewport
 
 	switch(guiScale)
 	{
@@ -117,7 +117,7 @@ void Gui::render(float a, bool mouseFree, int xMouse, int yMouse)
 		iSafezoneYHalf = splitYOffset;
 		iSafezoneTopYHalf = screenHeight/10;
 		fScaleFactorWidth=0.5f;
-		iWidthOffset=(int)((float)screenWidth*(1.0f - fScaleFactorWidth));
+		iWidthOffset=static_cast<int>((float)screenWidth * (1.0f - fScaleFactorWidth));
 		iTooltipsYOffset=44;
 		bTwoPlayerSplitscreen=true;
 		currentGuiScaleFactor *= 0.5f;
@@ -127,7 +127,7 @@ void Gui::render(float a, bool mouseFree, int xMouse, int yMouse)
 		iSafezoneYHalf = splitYOffset + screenHeight/10;// 5%  (need to treat the whole screen is 2x this screen)
 		iSafezoneTopYHalf = 0;
 		fScaleFactorWidth=0.5f;
-		iWidthOffset=(int)((float)screenWidth*(1.0f - fScaleFactorWidth));
+		iWidthOffset=static_cast<int>((float)screenWidth * (1.0f - fScaleFactorWidth));
 		iTooltipsYOffset=44;
 		bTwoPlayerSplitscreen=true;
 		currentGuiScaleFactor *= 0.5f;
@@ -697,7 +697,7 @@ void Gui::render(float a, bool mouseFree, int xMouse, int yMouse)
 #endif
 
 				glPushMatrix();
-				glTranslatef((float)xo, (float)yo, 50);
+				glTranslatef(static_cast<float>(xo), static_cast<float>(yo), 50);
 				float ss = 12;
 				glScalef(-ss, ss, ss);
 				glRotatef(180, 0, 0, 1);
@@ -806,14 +806,14 @@ void Gui::render(float a, bool mouseFree, int xMouse, int yMouse)
         glDisable(GL_DEPTH_TEST);
         glDisable(GL_ALPHA_TEST);
         int timer = minecraft->player->getSleepTimer();
-        float amount = (float) timer / (float) Player::SLEEP_DURATION;
+        float amount = static_cast<float>(timer) / static_cast<float>(Player::SLEEP_DURATION);
         if (amount > 1)
 		{
             // waking up
-            amount = 1.0f - ((float) (timer - Player::SLEEP_DURATION) / (float) Player::WAKE_UP_DURATION);
+            amount = 1.0f - (static_cast<float>(timer - Player::SLEEP_DURATION) / static_cast<float>(Player::WAKE_UP_DURATION));
         }
 
-        int color = (int) (220.0f * amount) << 24 | (0x101020);
+        int color = static_cast<int>(220.0f * amount) << 24 | (0x101020);
         fill(0, 0, screenWidth/fScaleFactorWidth, screenHeight/fScaleFactorHeight, color);
         glEnable(GL_ALPHA_TEST);
         glEnable(GL_DEPTH_TEST);
@@ -825,9 +825,9 @@ void Gui::render(float a, bool mouseFree, int xMouse, int yMouse)
 		glDisable(GL_DEPTH_TEST);
 		glDisable(GL_ALPHA_TEST);
 		int timer = minecraft->player->getDeathFadeTimer();
-		float amount = (float) timer / (float) Player::DEATHFADE_DURATION;
+		float amount = static_cast<float>(timer) / static_cast<float>(Player::DEATHFADE_DURATION);
 
-		int color = (int) (220.0f * amount) << 24 | (0x200000);
+		int color = static_cast<int>(220.0f * amount) << 24 | (0x200000);
 		fill(0, 0, screenWidth/fScaleFactorWidth, screenHeight/fScaleFactorHeight, color);
 		glEnable(GL_ALPHA_TEST);
 		glEnable(GL_DEPTH_TEST);
@@ -875,7 +875,7 @@ void Gui::render(float a, bool mouseFree, int xMouse, int yMouse)
 				wfeature[pFeatureData->eTerrainFeature] += itemInfo;
 			}
 
-			for( int i = eTerrainFeature_Stronghold; i < (int) eTerrainFeature_Count; i++ )
+			for( int i = eTerrainFeature_Stronghold; i < static_cast<int>(eTerrainFeature_Count); i++ )
 			{
 				font->drawShadow(wfeature[i], iSafezoneXHalf + 2, iYPos, 0xffffff);
 				iYPos+=10;
@@ -1135,10 +1135,10 @@ void Gui::renderPumpkin(int w, int h)
 	MemSect(0);
     Tesselator *t = Tesselator::getInstance();
     t->begin();
-    t->vertexUV((float)(0), (float)( h), (float)( -90), (float)( 0), (float)( 1));
-    t->vertexUV((float)(w), (float)( h), (float)( -90), (float)( 1), (float)( 1));
-    t->vertexUV((float)(w), (float)( 0), (float)( -90), (float)( 1), (float)( 0));
-    t->vertexUV((float)(0), (float)( 0), (float)( -90), (float)( 0), (float)( 0));
+    t->vertexUV(static_cast<float>(0), static_cast<float>(h), static_cast<float>(-90), static_cast<float>(0), static_cast<float>(1));
+    t->vertexUV(static_cast<float>(w), static_cast<float>(h), static_cast<float>(-90), static_cast<float>(1), static_cast<float>(1));
+    t->vertexUV(static_cast<float>(w), static_cast<float>(0), static_cast<float>(-90), static_cast<float>(1), static_cast<float>(0));
+    t->vertexUV(static_cast<float>(0), static_cast<float>(0), static_cast<float>(-90), static_cast<float>(0), static_cast<float>(0));
     t->end();
     glDepthMask(true);
     glEnable(GL_DEPTH_TEST);
@@ -1199,10 +1199,10 @@ void Gui::renderTp(float br, int w, int h)
     float v1 = slot->getV1();
     Tesselator *t = Tesselator::getInstance();
     t->begin();
-    t->vertexUV((float)(0), (float)( h), (float)( -90), (float)( u0), (float)( v1));
-    t->vertexUV((float)(w), (float)( h), (float)( -90), (float)( u1), (float)( v1));
-    t->vertexUV((float)(w), (float)( 0), (float)( -90), (float)( u1), (float)( v0));
-    t->vertexUV((float)(0), (float)( 0), (float)( -90), (float)( u0), (float)( v0));
+    t->vertexUV(static_cast<float>(0), static_cast<float>(h), static_cast<float>(-90), (float)( u0), (float)( v1));
+    t->vertexUV(static_cast<float>(w), static_cast<float>(h), static_cast<float>(-90), (float)( u1), (float)( v1));
+    t->vertexUV(static_cast<float>(w), static_cast<float>(0), static_cast<float>(-90), (float)( u1), (float)( v0));
+    t->vertexUV(static_cast<float>(0), static_cast<float>(0), static_cast<float>(-90), (float)( u0), (float)( v0));
     t->end();
     glDepthMask(true);
     glEnable(GL_DEPTH_TEST);
@@ -1220,10 +1220,10 @@ void Gui::renderSlot(int slot, int x, int y, float a)
     if (pop > 0)
 	{
         glPushMatrix();
-        float squeeze = 1 + pop / (float) Inventory::POP_TIME_DURATION;
-        glTranslatef((float)(x + 8), (float)(y + 12), 0);
+        float squeeze = 1 + pop / static_cast<float>(Inventory::POP_TIME_DURATION);
+        glTranslatef(static_cast<float>(x + 8), static_cast<float>(y + 12), 0);
         glScalef(1 / squeeze, (squeeze + 1) / 2, 1);
-        glTranslatef((float)-(x + 8), (float)-(y + 12), 0);
+        glTranslatef(static_cast<float>(-(x + 8)), static_cast<float>(-(y + 12)), 0);
     }
 
     itemRenderer->renderAndDecorateItem(minecraft->font, minecraft->textures, item, x, y);
@@ -1362,7 +1362,7 @@ void Gui::addMessage(const wstring& _string,int iPad,bool bIsDeathMessage)
 		{
             i++;
         }
-		int iLast=(int)string.find_last_of(L" ",i);
+		int iLast=static_cast<int>(string.find_last_of(L" ", i));
 		switch(XGetLanguage())
 		{
 			case XC_LANGUAGE_JAPANESE:
@@ -1371,7 +1371,7 @@ void Gui::addMessage(const wstring& _string,int iPad,bool bIsDeathMessage)
 				iLast = maximumChars;
 				break;
 			default:
-				iLast=(int)string.find_last_of(L" ",i);
+				iLast=static_cast<int>(string.find_last_of(L" ", i));
 				break;
 		}
 
@@ -1431,7 +1431,7 @@ float Gui::getOpacity(int iPad, DWORD index)
 float Gui::getJukeboxOpacity(int iPad)
 {
 	float t = overlayMessageTime - lastTickA;
-    int alpha = (int) (t * 256 / 20);
+    int alpha = static_cast<int>(t * 256 / 20);
     if (alpha > 255) alpha = 255;
 	alpha /= 255;
 
@@ -1465,7 +1465,7 @@ void Gui::renderGraph(int dataLength, int dataPos, __int64 *dataA, float dataASc
 	glClear(GL_DEPTH_BUFFER_BIT);
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
-	glOrtho(0, (float)minecraft->width, (float)height, 0, 1000, 3000);
+	glOrtho(0, static_cast<float>(minecraft->width), static_cast<float>(height), 0, 1000, 3000);
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 	glTranslatef(0, 0, -2000);
@@ -1496,8 +1496,8 @@ void Gui::renderGraph(int dataLength, int dataPos, __int64 *dataA, float dataASc
 
 			__int64 aVal = dataA[i] / dataAScale;
 
-			t->vertex((float)(xScale*i + 0.5f), (float)( height - aVal + 0.5f), (float)( 0));
-			t->vertex((float)(xScale*i + 0.5f), (float)( height + 0.5f), (float)( 0));
+			t->vertex((float)(xScale*i + 0.5f), (float)( height - aVal + 0.5f), static_cast<float>(0));
+			t->vertex((float)(xScale*i + 0.5f), (float)( height + 0.5f), static_cast<float>(0));
 		}
 
 		if( dataB != NULL )
@@ -1513,8 +1513,8 @@ void Gui::renderGraph(int dataLength, int dataPos, __int64 *dataA, float dataASc
 
 			__int64 bVal = dataB[i] / dataBScale;
 
-			t->vertex((float)(xScale*i + (xScale - 1) + 0.5f), (float)( height - bVal + 0.5f), (float)( 0));
-			t->vertex((float)(xScale*i + (xScale - 1) + 0.5f), (float)( height + 0.5f), (float)( 0));
+			t->vertex((float)(xScale*i + (xScale - 1) + 0.5f), (float)( height - bVal + 0.5f), static_cast<float>(0));
+			t->vertex((float)(xScale*i + (xScale - 1) + 0.5f), (float)( height + 0.5f), static_cast<float>(0));
 		}
 	}
 	t->end();
@@ -1529,7 +1529,7 @@ void Gui::renderStackedGraph(int dataPos, int dataLength, int dataSources, __int
 	glClear(GL_DEPTH_BUFFER_BIT);
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
-	glOrtho(0, (float)minecraft->width, (float)height, 0, 1000, 3000);
+	glOrtho(0, static_cast<float>(minecraft->width), static_cast<float>(height), 0, 1000, 3000);
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 	glTranslatef(0, 0, -2000);
@@ -1558,15 +1558,15 @@ void Gui::renderStackedGraph(int dataPos, int dataLength, int dataSources, __int
 
 			if( thisVal > 0 )
 			{
-				float vary = (float)source/dataSources;
+				float vary = static_cast<float>(source)/dataSources;
 				int fColour = floor(vary * 0xffffff);
 
 				int colour = 0xff000000 + fColour;
 				//printf("Colour is %x\n", colour);
 				t->color(colour);
 
-				t->vertex((float)(i + 0.5f), (float)( height - topVal - thisVal + 0.5f), (float)( 0));
-				t->vertex((float)(i + 0.5f), (float)( height - topVal + 0.5f), (float)( 0));
+				t->vertex((float)(i + 0.5f), (float)( height - topVal - thisVal + 0.5f), static_cast<float>(0));
+				t->vertex((float)(i + 0.5f), (float)( height - topVal + 0.5f), static_cast<float>(0));
 
 				topVal += thisVal;
 			}
@@ -1577,8 +1577,8 @@ void Gui::renderStackedGraph(int dataPos, int dataLength, int dataSources, __int
 		{
 			t->color(0xff000000);
 
-			t->vertex((float)(0 + 0.5f), (float)( height - (horiz*100) + 0.5f), (float)( 0));
-			t->vertex((float)(dataLength + 0.5f), (float)( height - (horiz*100) + 0.5f), (float)( 0));
+			t->vertex((float)(0 + 0.5f), (float)( height - (horiz*100) + 0.5f), static_cast<float>(0));
+			t->vertex((float)(dataLength + 0.5f), (float)( height - (horiz*100) + 0.5f), static_cast<float>(0));
 		}
 	}
 	t->end();

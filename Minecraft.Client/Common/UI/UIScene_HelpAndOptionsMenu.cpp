@@ -207,7 +207,7 @@ void UIScene_HelpAndOptionsMenu::handleInput(int iPad, int key, bool repeat, boo
 
 void UIScene_HelpAndOptionsMenu::handlePress(F64 controlId, F64 childId)
 {
-	switch((int)controlId)
+	switch(static_cast<int>(controlId))
 	{
 	case BUTTON_HAO_CHANGESKIN:
 		ui.NavigateToScene(m_iPad, eUIScene_SkinSelectMenu);

@@ -66,6 +66,6 @@ int SignUpdatePacket::getEstimatedSize()
 	l+=sizeof(byte);
 
 	for (int i = 0; i < MAX_SIGN_LINES; i++)
-		l += (int)lines[i].length();
+		l += static_cast<int>(lines[i].length());
 	return l;
 }

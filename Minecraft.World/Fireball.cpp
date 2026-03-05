@@ -130,7 +130,7 @@ void Fireball::tick()
 	//if (!level->isClientSide && (owner == NULL || owner->removed))
 	if (!level->isClientSide)
 	{
-		if((owner != NULL && owner->removed) || !level->hasChunkAt((int) x, (int) y, (int) z))
+		if((owner != NULL && owner->removed) || !level->hasChunkAt(static_cast<int>(x), static_cast<int>(y), static_cast<int>(z)))
 		{
 			app.DebugPrintf("Fireball removed - owner is null or removed is true for owner\n");
 			remove();
@@ -237,8 +237,8 @@ void Fireball::tick()
     z += zd;
 
     double sd = sqrt(xd * xd + zd * zd);
-    yRot = (float) (atan2(zd, xd) * 180 / PI) + 90;
-    xRot = (float) (atan2(sd, yd) * 180 / PI) - 90;
+    yRot = static_cast<float>(atan2(zd, xd) * 180 / PI) + 90;
+    xRot = static_cast<float>(atan2(sd, yd) * 180 / PI) - 90;
 
     while (xRot - xRotO < -180)
         xRotO -= 360;
@@ -297,11 +297,11 @@ float Fireball::getInertia()
 
 void Fireball::addAdditonalSaveData(CompoundTag *tag)
 {
-	tag->putShort(L"xTile", (short) xTile);
-    tag->putShort(L"yTile", (short) yTile);
-    tag->putShort(L"zTile", (short) zTile);
-    tag->putByte(L"inTile", (byte) lastTile);
-    tag->putByte(L"inGround", (byte) (inGround ? 1 : 0));
+	tag->putShort(L"xTile", static_cast<short>(xTile));
+    tag->putShort(L"yTile", static_cast<short>(yTile));
+    tag->putShort(L"zTile", static_cast<short>(zTile));
+    tag->putByte(L"inTile", static_cast<byte>(lastTile));
+    tag->putByte(L"inGround", static_cast<byte>(inGround ? 1 : 0));
 	tag->put(L"direction", newDoubleList(3, xd, yd, zd));
 }
 

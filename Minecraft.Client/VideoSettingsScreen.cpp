@@ -48,7 +48,7 @@ void VideoSettingsScreen::buttonClicked(Button *button)
     if (!button->active) return;
     if (button->id < 100 && (dynamic_cast<SmallButton *>(button) != NULL))
 	{
-        options->toggle(((SmallButton *) button)->getOption(), 1);
+        options->toggle(static_cast<SmallButton *>(button)->getOption(), 1);
         button->msg = options->getMessage(Options::Option::getItem(button->id));
     }
     if (button->id == 200)

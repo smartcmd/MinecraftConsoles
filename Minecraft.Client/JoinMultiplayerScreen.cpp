@@ -55,7 +55,7 @@ void JoinMultiplayerScreen::buttonClicked(Button *button)
         vector<wstring> parts = stringSplit(ip,L'L');
         if (ip[0]==L'[')
 		{
-            int pos = (int)ip.find(L"]");
+            int pos = static_cast<int>(ip.find(L"]"));
             if (pos != wstring::npos)
 			{
                 wstring path = ip.substr(1, pos);

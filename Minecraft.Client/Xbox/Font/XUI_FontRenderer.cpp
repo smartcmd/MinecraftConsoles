@@ -50,7 +50,7 @@ HRESULT XUI_FontRenderer::CreateFont( const TypefaceDescriptor * pTypefaceDescri
 	//float fXuiSize = fPointSize * ( 16.0f / 16.0f );
 	fXuiSize /= 4.0f;
 	fXuiSize = floor( fXuiSize );
-	int xuiSize = (int)(fXuiSize * 4.0f);
+	int xuiSize = static_cast<int>(fXuiSize * 4.0f);
 	if( xuiSize < 1 ) xuiSize = 8;
 
 	// 4J Stu - We have fonts based on multiples of 8 or 12
@@ -101,13 +101,13 @@ HRESULT XUI_FontRenderer::CreateFont( const TypefaceDescriptor * pTypefaceDescri
 	}
 	font->IncRefCount();
 
-	*phFont = (HFONTOBJ)font;
+	*phFont = static_cast<HFONTOBJ>(font);
 	return S_OK;
 }
 
 VOID XUI_FontRenderer::ReleaseFont( HFONTOBJ hFont )
 {
-	XUI_Font *xuiFont = (XUI_Font*) hFont;
+	XUI_Font *xuiFont = static_cast<XUI_Font *>(hFont);
 	if (xuiFont != NULL)
 	{
 		xuiFont->DecRefCount();
@@ -125,7 +125,7 @@ HRESULT XUI_FontRenderer::GetFontMetrics( HFONTOBJ hFont, XUIFontMetrics *pFontM
 {
     if( hFont == 0 || pFontMetrics == 0 ) return E_INVALIDARG;
 
-	XUI_Font *font = (XUI_Font *)hFont;
+	XUI_Font *font = static_cast<XUI_Font *>(hFont);
 
 	pFontMetrics->fLineHeight =		(font->m_fontData->getFontYAdvance() + 1) * font->m_fYScaleFactor;
 	pFontMetrics->fMaxAscent =		font->m_fontData->getMaxAscent() * font->m_fYScaleFactor;
@@ -142,7 +142,7 @@ HRESULT XUI_FontRenderer::GetCharMetrics( HFONTOBJ hFont, WCHAR wch, XUICharMetr
 {
     if (hFont == 0 || pCharMetrics == 0) return E_INVALIDARG;
 
-	XUI_Font *font = (XUI_Font *)hFont;
+	XUI_Font *font = static_cast<XUI_Font *>(hFont);
 	XUI_FontData::SChar sChar = font->m_fontData->getChar(wch);
 
 	pCharMetrics->fMinX = sChar.getMinX() * font->m_fYScaleFactor;
@@ -169,7 +169,7 @@ HRESULT XUI_FontRenderer::DrawCharsToDevice( HFONTOBJ hFont, CharData * pCharDat
 	DWORD SamplerStateA[5];
 	XMVECTOR vconsts[20];
 	XMVECTOR pconsts[20];
-	XUI_Font *font = (XUI_Font *)hFont;
+	XUI_Font *font = static_cast<XUI_Font *>(hFont);
 
 	// 4J-PB - if we're in 480 Widescreen mode, we need to ensure that the font characters are aligned on an even boundary if they are a 2x multiple
 	if(!RenderManager.IsHiDef())
@@ -184,19 +184,19 @@ HRESULT XUI_FontRenderer::DrawCharsToDevice( HFONTOBJ hFont, CharData * pCharDat
 			if(iScaleX%2==0)
 			{
 				int iWorldX=pWorldViewProj->_41;
-				pWorldViewProj->_41 = (float)(iWorldX & -2);
+				pWorldViewProj->_41 = static_cast<float>(iWorldX & -2);
 			}
 			if(iScaleY%2==0)
 			{
 				int iWorldY=pWorldViewProj->_42;
-				pWorldViewProj->_42 = (float)(iWorldY & -2);
+				pWorldViewProj->_42 = static_cast<float>(iWorldY & -2);
 			}
 		}
 		else
 		{
 			// make x an even number for 480 4:3
 			int iWorldX=pWorldViewProj->_41;
-			pWorldViewProj->_41 = (float)(iWorldX & -2);
+			pWorldViewProj->_41 = static_cast<float>(iWorldX & -2);
 
 			// 480 SD mode - y needs to be on a pixel boundary when multiplied by 1.5, so if it's an odd number, subtract 1/3 from it
 			int iWorldY=pWorldViewProj->_42;

@@ -1040,7 +1040,7 @@ bool IUIScene_CreativeMenu::handleValidKeyPress(int iPad, int buttonNum, BOOL qu
 			{
 				m_menu->getSlot(i)->set(nullptr);
 				// call this function to synchronize multiplayer item bar
-				pMinecraft->localgameModes[iPad]->handleCreativeModeItemAdd(nullptr, i - (int)m_menu->slots.size() + 9 + InventoryMenu::USE_ROW_SLOT_START);
+				pMinecraft->localgameModes[iPad]->handleCreativeModeItemAdd(nullptr, i - static_cast<int>(m_menu->slots.size()) + 9 + InventoryMenu::USE_ROW_SLOT_START);
 			}
 		}
 		return true;
@@ -1082,8 +1082,8 @@ void IUIScene_CreativeMenu::handleAdditionalKeyPress(int iAction)
 		// Fall through intentional
 	case ACTION_MENU_RIGHT_SCROLL:
 		{
-			ECreativeInventoryTabs tab = (ECreativeInventoryTabs)(m_curTab + dir);
-			if (tab < 0) tab = (ECreativeInventoryTabs)(eCreativeInventoryTab_COUNT - 1);
+			ECreativeInventoryTabs tab = static_cast<ECreativeInventoryTabs>(m_curTab + dir);
+			if (tab < 0) tab = static_cast<ECreativeInventoryTabs>(eCreativeInventoryTab_COUNT - 1);
 			if (tab >= eCreativeInventoryTab_COUNT) tab = eCreativeInventoryTab_BuildingBlocks;
 			switchTab(tab);
 			ui.PlayUISFX(eSFX_Focus);
@@ -1188,7 +1188,7 @@ void IUIScene_CreativeMenu::handleSlotListClicked(ESceneSection eSection, int bu
 		m_menu->clicked(currentIndex, buttonNum, quickKeyHeld?AbstractContainerMenu::CLICK_QUICK_MOVE:AbstractContainerMenu::CLICK_PICKUP, pMinecraft->localplayers[getPad()]);
 		shared_ptr<ItemInstance> newItem = m_menu->getSlot(currentIndex)->getItem();
 		// call this function to synchronize multiplayer item bar
-		pMinecraft->localgameModes[getPad()]->handleCreativeModeItemAdd(newItem, currentIndex - (int)m_menu->slots.size() + 9 + InventoryMenu::USE_ROW_SLOT_START);
+		pMinecraft->localgameModes[getPad()]->handleCreativeModeItemAdd(newItem, currentIndex - static_cast<int>(m_menu->slots.size()) + 9 + InventoryMenu::USE_ROW_SLOT_START);
 
 		if(m_bCarryingCreativeItem)
 		{
@@ -1370,7 +1370,7 @@ void IUIScene_CreativeMenu::BuildFirework(vector<shared_ptr<ItemInstance> > *lis
 		expTags->add(expTag);
 
 		fireTag->put(FireworksItem::TAG_EXPLOSIONS, expTags);
-		fireTag->putByte(FireworksItem::TAG_FLIGHT, (byte) sulphur);
+		fireTag->putByte(FireworksItem::TAG_FLIGHT, static_cast<byte>(sulphur));
 
 		itemTag->put(FireworksItem::TAG_FIREWORKS, fireTag);
 

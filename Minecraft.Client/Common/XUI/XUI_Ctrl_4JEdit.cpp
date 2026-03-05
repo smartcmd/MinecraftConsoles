@@ -127,7 +127,7 @@ HRESULT CXuiCtrl4JEdit::OnChar(XUIMessageChar* pInputData, BOOL& rfHandled)
 	XuiSendMessage( hBaseObj, &xuiMsg );
 
  	rfHandled = TRUE;
- 	SendNotifyValueChanged((int)pInputData->wch);
+ 	SendNotifyValueChanged(static_cast<int>(pInputData->wch));
 
 	return hr;
 }    
@@ -185,14 +185,14 @@ HRESULT CXuiCtrl4JEdit::SendNotifyValueChanged(int iValue)
 
 int CXuiCtrl4JEdit::KeyboardReturned(void *pParam,bool bSet)
 {
-	CXuiCtrl4JEdit* pClass = (CXuiCtrl4JEdit*)pParam;
+	CXuiCtrl4JEdit* pClass = static_cast<CXuiCtrl4JEdit *>(pParam);
 	HRESULT hr = S_OK;
 
 	if(bSet)
 	{
 		pClass->SetText(pClass->wchText);
 		// need to move the caret to the end of the newly set text
-		XuiEditSetCaretPosition(pClass->m_hObj, (int)wcsnlen(pClass->wchText, 50));
+		XuiEditSetCaretPosition(pClass->m_hObj, static_cast<int>(wcsnlen(pClass->wchText, 50)));
 		pClass->SendNotifyValueChanged(10); // 10 for a return
 	}
 

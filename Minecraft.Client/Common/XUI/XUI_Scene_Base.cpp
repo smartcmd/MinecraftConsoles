@@ -401,7 +401,7 @@ void CXuiSceneBase::_TickAllBaseScenes()
 			if(uiOpacityTimer < (SharedConstants::TICKS_PER_SECOND * 1) )
 			{
 				float fStep=(80.0f)/10.0f;
-				float fVal=0.01f*(80.0f-((10.0f-(float)uiOpacityTimer)*fStep));
+				float fVal=0.01f*(80.0f-((10.0f-static_cast<float>(uiOpacityTimer))*fStep));
 
 				XuiElementSetOpacity(m_selectedItemA[i],fVal);
 				XuiElementSetOpacity(m_selectedItemSmallA[i],fVal);
@@ -441,8 +441,8 @@ void CXuiSceneBase::_TickAllBaseScenes()
 			{
 				if(uiOpacityTimer<10)
 				{
-					float fStep=(80.0f-(float)ucAlpha)/10.0f;
-					fVal=0.01f*(80.0f-((10.0f-(float)uiOpacityTimer)*fStep));
+					float fStep=(80.0f-static_cast<float>(ucAlpha))/10.0f;
+					fVal=0.01f*(80.0f-((10.0f-static_cast<float>(uiOpacityTimer))*fStep));
 				}
 				else
 				{
@@ -451,7 +451,7 @@ void CXuiSceneBase::_TickAllBaseScenes()
 			}
 			else
 			{
-				fVal=0.01f*(float)ucAlpha;
+				fVal=0.01f*static_cast<float>(ucAlpha);
 			}
 		}
 		else
@@ -461,7 +461,7 @@ void CXuiSceneBase::_TickAllBaseScenes()
 			{
 				ucAlpha=15;
 			}
-			fVal=0.01f*(float)ucAlpha;
+			fVal=0.01f*static_cast<float>(ucAlpha);
 		}
 		XuiElementSetOpacity(app.GetCurrentHUDScene(i),fVal);
 
@@ -627,8 +627,8 @@ HRESULT CXuiSceneBase::_ShowTooltip( unsigned int iPad, unsigned int tooltip, bo
 					{
 						if(uiOpacityTimer<10)
 						{
-							float fStep=(80.0f-(float)ucAlpha)/10.0f;
-							fVal=0.01f*(80.0f-((10.0f-(float)uiOpacityTimer)*fStep));
+							float fStep=(80.0f-static_cast<float>(ucAlpha))/10.0f;
+							fVal=0.01f*(80.0f-((10.0f-static_cast<float>(uiOpacityTimer))*fStep));
 						}
 						else
 						{
@@ -637,7 +637,7 @@ HRESULT CXuiSceneBase::_ShowTooltip( unsigned int iPad, unsigned int tooltip, bo
 					}
 					else
 					{
-						fVal=0.01f*(float)ucAlpha;
+						fVal=0.01f*static_cast<float>(ucAlpha);
 					}
 				}
 				else
@@ -647,7 +647,7 @@ HRESULT CXuiSceneBase::_ShowTooltip( unsigned int iPad, unsigned int tooltip, bo
 					{
 						ucAlpha=15;
 					}
-					fVal=0.01f*(float)ucAlpha;
+					fVal=0.01f*static_cast<float>(ucAlpha);
 				}
 
 				m_Buttons[iPad][tooltip].SetOpacity(fVal);
@@ -678,8 +678,8 @@ HRESULT CXuiSceneBase::_ShowTooltip( unsigned int iPad, unsigned int tooltip, bo
 					{
 						if(uiOpacityTimer<10)
 						{
-							float fStep=(80.0f-(float)ucAlpha)/10.0f;
-							fVal=0.01f*(80.0f-((10.0f-(float)uiOpacityTimer)*fStep));
+							float fStep=(80.0f-static_cast<float>(ucAlpha))/10.0f;
+							fVal=0.01f*(80.0f-((10.0f-static_cast<float>(uiOpacityTimer))*fStep));
 						}
 						else
 						{
@@ -688,12 +688,12 @@ HRESULT CXuiSceneBase::_ShowTooltip( unsigned int iPad, unsigned int tooltip, bo
 					}
 					else
 					{
-						fVal=0.01f*(float)ucAlpha;
+						fVal=0.01f*static_cast<float>(ucAlpha);
 					}
 				}
 				else
 				{
-					fVal=0.01f*(float)ucAlpha;
+					fVal=0.01f*static_cast<float>(ucAlpha);
 				}
 				XuiElementSetOpacity(m_hGamerTagA[iPad],fVal);
 			}
@@ -701,7 +701,7 @@ HRESULT CXuiSceneBase::_ShowTooltip( unsigned int iPad, unsigned int tooltip, bo
 			if(iPad==ProfileManager.GetPrimaryPad())
 			{
 				unsigned char ucAlpha=app.GetGameSettings(ProfileManager.GetPrimaryPad(),eGameSetting_InterfaceOpacity);
-				XuiElementSetOpacity(m_hEmptyQuadrantLogo,0.01f*(float)ucAlpha);
+				XuiElementSetOpacity(m_hEmptyQuadrantLogo,0.01f*static_cast<float>(ucAlpha));
 			}
 		}
 	}
@@ -976,7 +976,7 @@ HRESULT CXuiSceneBase::_UpdateTrialTimer(unsigned int iPad)
 {
 	WCHAR wcTime[20]; 
 
-	DWORD dwTimeTicks=(DWORD)app.getTrialTimer();
+	DWORD dwTimeTicks=static_cast<DWORD>(app.getTrialTimer());
 
 	if(dwTimeTicks>m_dwTrialTimerLimitSecs)
 	{
@@ -1014,7 +1014,7 @@ HRESULT CXuiSceneBase::_UpdateTrialTimer(unsigned int iPad)
 
 void CXuiSceneBase::_ReduceTrialTimerValue()
 {
-	DWORD dwTimeTicks=(int)app.getTrialTimer();
+	DWORD dwTimeTicks=static_cast<int>(app.getTrialTimer());
 
 	if(dwTimeTicks>m_dwTrialTimerLimitSecs)
 	{
@@ -1512,7 +1512,7 @@ void CXuiSceneBase::_SetEmptyQuadrantLogo(int iPad,EBaseScenePosition ePos)
 		if(ProfileManager.GetLockedProfile()!=-1)
 		{
 			unsigned char ucAlpha=app.GetGameSettings(ProfileManager.GetPrimaryPad(),eGameSetting_InterfaceOpacity);
-			XuiElementSetOpacity(m_hEmptyQuadrantLogo,0.01f*(float)ucAlpha);
+			XuiElementSetOpacity(m_hEmptyQuadrantLogo,0.01f*static_cast<float>(ucAlpha));
 		}
 
 		XuiElementSetPosition(m_hEmptyQuadrantLogo, &pos );
@@ -1638,8 +1638,8 @@ HRESULT CXuiSceneBase::_DisplayGamertag( unsigned int iPad, BOOL bDisplay )
 				{
 					if(uiOpacityTimer<10)
 					{
-						float fStep=(80.0f-(float)ucAlpha)/10.0f;
-						fVal=0.01f*(80.0f-((10.0f-(float)uiOpacityTimer)*fStep));
+						float fStep=(80.0f-static_cast<float>(ucAlpha))/10.0f;
+						fVal=0.01f*(80.0f-((10.0f-static_cast<float>(uiOpacityTimer))*fStep));
 					}
 					else
 					{
@@ -1648,12 +1648,12 @@ HRESULT CXuiSceneBase::_DisplayGamertag( unsigned int iPad, BOOL bDisplay )
 				}
 				else
 				{
-					fVal=0.01f*(float)ucAlpha;
+					fVal=0.01f*static_cast<float>(ucAlpha);
 				}
 			}
 			else
 			{
-				fVal=0.01f*(float)ucAlpha;
+				fVal=0.01f*static_cast<float>(ucAlpha);
 			}
 			XuiElementSetOpacity(m_hGamerTagA[iPad],0.01f*fVal);
 		}

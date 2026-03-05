@@ -40,7 +40,7 @@ public:
 	{
 		if (Tag::equals(obj))
 		{
-			ByteArrayTag *o = (ByteArrayTag *) obj;
+			ByteArrayTag *o = static_cast<ByteArrayTag *>(obj);
 			return ((data.data == NULL && o->data.data == NULL) || (data.data != NULL && data.length == o->data.length && memcmp(data.data, o->data.data, data.length) == 0) );
 		}
 		return false;

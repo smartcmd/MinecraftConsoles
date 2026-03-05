@@ -41,7 +41,7 @@ void AABB::UseDefaultThreadStorage()
 
 void AABB::ReleaseThreadStorage()
 {
-	ThreadStorage *tls = (ThreadStorage *)TlsGetValue(tlsIdx);
+	ThreadStorage *tls = static_cast<ThreadStorage *>(TlsGetValue(tlsIdx));
 	if( tls == tlsDefault ) return;
 
 	delete tls;
@@ -62,7 +62,7 @@ void AABB::resetPool()
 
 AABB *AABB::newTemp(double x0, double y0, double z0, double x1, double y1, double z1)
 {
-	ThreadStorage *tls = (ThreadStorage *)TlsGetValue(tlsIdx);
+	ThreadStorage *tls = static_cast<ThreadStorage *>(TlsGetValue(tlsIdx));
 	AABB *thisAABB = &tls->pool[tls->poolPointer];
 	thisAABB->set(x0, y0, z0, x1, y1, z1);
 	tls->poolPointer = ( tls->poolPointer + 1 ) % ThreadStorage::POOL_SIZE;

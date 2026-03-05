@@ -10,11 +10,11 @@ HRESULT CXuiCtrlSliderWrapper::OnInit( XUIMessageInit* pInitData, BOOL& bHandled
 
 	XuiElementGetChildById(m_hObj,L"FocusSink",&hObjChild);
 	XuiObjectFromHandle( hObjChild, &pObj );
-	m_pFocusSink = (CXuiControl *)pObj;
+	m_pFocusSink = static_cast<CXuiControl *>(pObj);
 
 	XuiElementGetChildById(m_hObj,L"XuiSlider",&hObjChild);
 	XuiObjectFromHandle( hObjChild, &pObj );
-	m_pSlider = (CXuiSlider *)pObj;
+	m_pSlider = static_cast<CXuiSlider *>(pObj);
 
 	m_sliderActive = false;
 	m_bDisplayVal=true;

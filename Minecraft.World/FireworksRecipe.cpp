@@ -28,7 +28,7 @@ void FireworksRecipe::UseDefaultThreadStorage()
 
 void FireworksRecipe::ReleaseThreadStorage()
 {
-	ThreadStorage *tls = (ThreadStorage *)TlsGetValue(tlsIdx);
+	ThreadStorage *tls = static_cast<ThreadStorage *>(TlsGetValue(tlsIdx));
 	if( tls == tlsDefault ) return;
 
 	delete tls;
@@ -36,7 +36,7 @@ void FireworksRecipe::ReleaseThreadStorage()
 
 void FireworksRecipe::setResultItem(shared_ptr<ItemInstance> item)
 {
-	ThreadStorage *tls = (ThreadStorage *)TlsGetValue(tlsIdx);
+	ThreadStorage *tls = static_cast<ThreadStorage *>(TlsGetValue(tlsIdx));
 	tls->resultItem = item;
 }
 
@@ -138,12 +138,12 @@ bool FireworksRecipe::matches(shared_ptr<CraftingContainer> craftSlots, Level *l
 
 				if (item->hasTag() && item->getTag()->contains(FireworksItem::TAG_EXPLOSION))
 				{
-					expTags->add((CompoundTag *)item->getTag()->getCompound(FireworksItem::TAG_EXPLOSION)->copy());
+					expTags->add(static_cast<CompoundTag *>(item->getTag()->getCompound(FireworksItem::TAG_EXPLOSION)->copy()));
 				}
 			}
 
 			fireTag->put(FireworksItem::TAG_EXPLOSIONS, expTags);
-			fireTag->putByte(FireworksItem::TAG_FLIGHT, (byte) sulphurCount);
+			fireTag->putByte(FireworksItem::TAG_FLIGHT, static_cast<byte>(sulphurCount));
 			itemTag->put(FireworksItem::TAG_FIREWORKS, fireTag);
 
 			resultItem->setTag(itemTag);
@@ -268,7 +268,7 @@ bool FireworksRecipe::matches(shared_ptr<CraftingContainer> craftSlots, Level *l
 
 shared_ptr<ItemInstance> FireworksRecipe::assemble(shared_ptr<CraftingContainer> craftSlots)
 {
-	ThreadStorage *tls = (ThreadStorage *)TlsGetValue(tlsIdx);
+	ThreadStorage *tls = static_cast<ThreadStorage *>(TlsGetValue(tlsIdx));
 	return tls->resultItem->copy();
 	//return resultItem->copy();
 }
@@ -280,7 +280,7 @@ int FireworksRecipe::size()
 
 const ItemInstance *FireworksRecipe::getResultItem()
 {
-	ThreadStorage *tls = (ThreadStorage *)TlsGetValue(tlsIdx);
+	ThreadStorage *tls = static_cast<ThreadStorage *>(TlsGetValue(tlsIdx));
 	return tls->resultItem.get();
 	//return resultItem.get();
 }

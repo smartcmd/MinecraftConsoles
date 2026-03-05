@@ -12,7 +12,7 @@ int CXuiCtrlBrewProgress::GetValue()
 
 	if( pvUserData != NULL )
 	{
-		BrewingStandTileEntity *pBrewingStandTileEntity = (BrewingStandTileEntity *)pvUserData;
+		BrewingStandTileEntity *pBrewingStandTileEntity = static_cast<BrewingStandTileEntity *>(pvUserData);
 
 		return pBrewingStandTileEntity->getBrewTime();
 	}

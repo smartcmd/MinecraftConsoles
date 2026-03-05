@@ -123,7 +123,7 @@ HtmlString AttributeModifier::getHoverText(eATTRIBUTE_ID attribute)
 	}
 
 	wchar_t formatted[256];
-	swprintf(formatted, 256, L"%ls%d%ls %ls", (amount > 0 ? L"+" : L"-"), (int) displayAmount, (percentage ? L"%" : L""), app.GetString(Attribute::getName(attribute)));
+	swprintf(formatted, 256, L"%ls%d%ls %ls", (amount > 0 ? L"+" : L"-"), static_cast<int>(displayAmount), (percentage ? L"%" : L""), app.GetString(Attribute::getName(attribute)));
 
 	return HtmlString(formatted, color);
 }

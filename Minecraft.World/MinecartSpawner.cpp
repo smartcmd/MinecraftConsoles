@@ -10,7 +10,7 @@ MinecartSpawner::MinecartMobSpawner::MinecartMobSpawner(MinecartSpawner *parent)
 
 void MinecartSpawner::MinecartMobSpawner::broadcastEvent(int id)
 {
-	m_parent->level->broadcastEntityEvent(m_parent->shared_from_this(), (byte) id);
+	m_parent->level->broadcastEntityEvent(m_parent->shared_from_this(), static_cast<byte>(id));
 }
 
 Level *MinecartSpawner::MinecartMobSpawner::getLevel()

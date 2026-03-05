@@ -317,7 +317,7 @@ void UIScene_CreateWorldMenu::tick()
 				m_iDirectEditCooldown = 4; // absorb the matching ACTION_MENU_OK that follows
 				m_editWorldName.setLabel(m_worldName.c_str());
 			}
-			else if ((int)m_worldName.length() < 25)
+			else if (static_cast<int>(m_worldName.length()) < 25)
 			{
 				m_worldName += ch;
 				changed = true;
@@ -470,7 +470,7 @@ void UIScene_CreateWorldMenu::handlePress(F64 controlId, F64 childId)
 	//CD - Added for audio
 	ui.PlayUISFX(eSFX_Press);
 
-	switch((int)controlId)
+	switch(static_cast<int>(controlId))
 	{
 	case eControl_EditWorldName:
 		{
@@ -519,7 +519,7 @@ void UIScene_CreateWorldMenu::handlePress(F64 controlId, F64 childId)
 		break;
 	case eControl_TexturePackList:
 		{
-			UpdateCurrentTexturePack((int)childId);
+			UpdateCurrentTexturePack(static_cast<int>(childId));
 		}
 		break;
 	case eControl_NewWorld:
@@ -615,7 +615,7 @@ void UIScene_CreateWorldMenu::StartSharedLaunchFlow()
 	{
 		// texture pack hasn't been set yet, so check what it will be
 		TexturePack *pTexturePack = pMinecraft->skins->getTexturePackById(m_MoreOptionsParams.dwTexturePack);		
-		DLCTexturePack *pDLCTexPack=(DLCTexturePack *)pTexturePack;
+		DLCTexturePack *pDLCTexPack=static_cast<DLCTexturePack *>(pTexturePack);
 		m_pDLCPack=pDLCTexPack->getDLCInfoParentPack();
 
 		// do we have a license?
@@ -686,8 +686,8 @@ void UIScene_CreateWorldMenu::StartSharedLaunchFlow()
 void UIScene_CreateWorldMenu::handleSliderMove(F64 sliderId, F64 currentValue)
 {
 	WCHAR TempString[256];
-	int value = (int)currentValue;
-	switch((int)sliderId)
+	int value = static_cast<int>(currentValue);
+	switch(static_cast<int>(sliderId))
 	{
 	case eControl_Difficulty:
 		m_sliderDifficulty.handleSliderMove(value);
@@ -801,7 +801,7 @@ void UIScene_CreateWorldMenu::handleGainFocus(bool navBack)
 
 int UIScene_CreateWorldMenu::KeyboardCompleteWorldNameCallback(LPVOID lpParam,bool bRes)
 {
-	UIScene_CreateWorldMenu *pClass=(UIScene_CreateWorldMenu *)lpParam;
+	UIScene_CreateWorldMenu *pClass=static_cast<UIScene_CreateWorldMenu *>(lpParam);
 	pClass->m_bIgnoreInput=false;
 	// 4J HEG - No reason to set value if keyboard was cancelled
 	if (bRes)
@@ -1173,7 +1173,7 @@ void UIScene_CreateWorldMenu::CreateGame(UIScene_CreateWorldMenu* pClass, DWORD 
 	if (wSeed.length() != 0)
 	{
 		__int64 value = 0;
-		unsigned int len = (unsigned int)wSeed.length();
+		unsigned int len = static_cast<unsigned int>(wSeed.length());
 
 		//Check if the input string contains a numerical value
 		bool isNumber = true;
@@ -1247,8 +1247,8 @@ void UIScene_CreateWorldMenu::CreateGame(UIScene_CreateWorldMenu* pClass, DWORD 
 	app.SetGameHostOption(eGameHostOption_WasntSaveOwner, false); 
 #ifdef _LARGE_WORLDS
 	app.SetGameHostOption(eGameHostOption_WorldSize, pClass->m_MoreOptionsParams.worldSize+1 );  // 0 is GAME_HOST_OPTION_WORLDSIZE_UNKNOWN
-	pClass->m_MoreOptionsParams.currentWorldSize = (EGameHostOptionWorldSize)(pClass->m_MoreOptionsParams.worldSize+1);
-	pClass->m_MoreOptionsParams.newWorldSize = (EGameHostOptionWorldSize)(pClass->m_MoreOptionsParams.worldSize+1);
+	pClass->m_MoreOptionsParams.currentWorldSize = static_cast<EGameHostOptionWorldSize>(pClass->m_MoreOptionsParams.worldSize + 1);
+	pClass->m_MoreOptionsParams.newWorldSize = static_cast<EGameHostOptionWorldSize>(pClass->m_MoreOptionsParams.worldSize + 1);
 #endif
 
 	g_NetworkManager.HostGame(dwLocalUsersMask,isClientSide,isPrivate,MINECRAFT_NET_MAX_PLAYERS,0);
@@ -1290,7 +1290,7 @@ void UIScene_CreateWorldMenu::CreateGame(UIScene_CreateWorldMenu* pClass, DWORD 
 
 	LoadingInputParams *loadingParams = new LoadingInputParams();
 	loadingParams->func = &CGameNetworkManager::RunNetworkGameThreadProc;
-	loadingParams->lpParam = (LPVOID)param;
+	loadingParams->lpParam = static_cast<LPVOID>(param);
 
 	// Reset the autosave time
 	app.SetAutosaveTimerTime();
@@ -1308,7 +1308,7 @@ void UIScene_CreateWorldMenu::CreateGame(UIScene_CreateWorldMenu* pClass, DWORD 
 
 int UIScene_CreateWorldMenu::StartGame_SignInReturned(void *pParam,bool bContinue, int iPad)
 {
-	UIScene_CreateWorldMenu* pClass = (UIScene_CreateWorldMenu*)pParam;
+	UIScene_CreateWorldMenu* pClass = static_cast<UIScene_CreateWorldMenu *>(pParam);
 
 	if(bContinue==true)
 	{
@@ -1416,7 +1416,7 @@ int UIScene_CreateWorldMenu::StartGame_SignInReturned(void *pParam,bool bContinu
 
 int UIScene_CreateWorldMenu::ConfirmCreateReturned(void *pParam,int iPad,C4JStorage::EMessageResult result)
 {
-	UIScene_CreateWorldMenu* pClass = (UIScene_CreateWorldMenu*)pParam;
+	UIScene_CreateWorldMenu* pClass = static_cast<UIScene_CreateWorldMenu *>(pParam);
 
 	if(result==C4JStorage::EMessage_ResultAccept) 
 	{

@@ -296,8 +296,8 @@ void IUIScene_AbstractContainerMenu::onMouseTick()
 	int iPad = getPad();
 
 	bool bStickInput = false;
-	float fInputX = InputManager.GetJoypadStick_LX( iPad, false )*((float)app.GetGameSettings(iPad,eGameSetting_Sensitivity_InMenu)/100.0f); // apply the sensitivity
-	float fInputY = InputManager.GetJoypadStick_LY( iPad, false )*((float)app.GetGameSettings(iPad,eGameSetting_Sensitivity_InMenu)/100.0f); // apply the sensitivity
+	float fInputX = InputManager.GetJoypadStick_LX( iPad, false )*(static_cast<float>(app.GetGameSettings(iPad, eGameSetting_Sensitivity_InMenu))/100.0f); // apply the sensitivity
+	float fInputY = InputManager.GetJoypadStick_LY( iPad, false )*(static_cast<float>(app.GetGameSettings(iPad, eGameSetting_Sensitivity_InMenu))/100.0f); // apply the sensitivity
 
 #ifdef __ORBIS__
 	// should have sensitivity for the touchpad
@@ -406,7 +406,7 @@ void IUIScene_AbstractContainerMenu::onMouseTick()
 		if ( m_iConsectiveInputTicks < MAX_INPUT_TICKS_FOR_SCALING )
 		{
 			++m_iConsectiveInputTicks;
-			fInputScale = ( (float)( m_iConsectiveInputTicks) / (float)(MAX_INPUT_TICKS_FOR_SCALING) );
+			fInputScale = ( static_cast<float>(m_iConsectiveInputTicks) / static_cast<float>((MAX_INPUT_TICKS_FOR_SCALING)) );
 		}
 #ifdef TAP_DETECTION
 		else if ( m_iConsectiveInputTicks < MAX_INPUT_TICKS_FOR_TAPPING )
@@ -494,11 +494,11 @@ void IUIScene_AbstractContainerMenu::onMouseTick()
 
 		if (winW > 0 && winH > 0)
 		{
-			float scaleX = (float)getMovieWidth() / (float)winW;
-			float scaleY = (float)getMovieHeight() / (float)winH;
+			float scaleX = static_cast<float>(getMovieWidth()) / static_cast<float>(winW);
+			float scaleY = static_cast<float>(getMovieHeight()) / static_cast<float>(winH);
 
-			vPointerPos.x += (float)deltaX * scaleX;
-			vPointerPos.y += (float)deltaY * scaleY;
+			vPointerPos.x += static_cast<float>(deltaX) * scaleX;
+			vPointerPos.y += static_cast<float>(deltaY) * scaleY;
 		}
 
 		if (deltaX != 0 || deltaY != 0)
@@ -527,7 +527,7 @@ void IUIScene_AbstractContainerMenu::onMouseTick()
 		}
 		else if ( eSectionUnderPointer == eSectionNone )
 		{
-			ESceneSection eSection = ( ESceneSection )( iSection );
+			ESceneSection eSection = static_cast<ESceneSection>(iSection);
 
 			// Get position of this section.
 			UIVec2D sectionPos;
@@ -1309,9 +1309,9 @@ void IUIScene_AbstractContainerMenu::onMouseTick()
 	}
 
 	vPointerPos.x = floor(vPointerPos.x);
-	vPointerPos.x += ( (int)vPointerPos.x%2);
+	vPointerPos.x += ( static_cast<int>(vPointerPos.x)%2);
 	vPointerPos.y = floor(vPointerPos.y);
-	vPointerPos.y += ( (int)vPointerPos.y%2);
+	vPointerPos.y += ( static_cast<int>(vPointerPos.y)%2);
 	m_pointerPos = vPointerPos;
 
 	adjustPointerForSafeZone();
@@ -1525,7 +1525,7 @@ bool IUIScene_AbstractContainerMenu::handleKeyDown(int iPad, int iAction, bool b
 						message->m_iAuxVal = item->getAuxValue();
 						message->m_forceDisplay = true;
 
-						TutorialMode *gameMode = (TutorialMode *)Minecraft::GetInstance()->localgameModes[iPad];
+						TutorialMode *gameMode = static_cast<TutorialMode *>(Minecraft::GetInstance()->localgameModes[iPad]);
 						gameMode->getTutorial()->setMessage(NULL, message);
 						ui.PlayUISFX(eSFX_Press);
 					}

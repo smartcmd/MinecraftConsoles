@@ -165,7 +165,7 @@ void TripWireTile::checkPressed(Level *level, int x, int y, int z)
 	bool wasPressed = (data & MASK_POWERED) == MASK_POWERED;
 	bool shouldBePressed = false;
 
-	ThreadStorage *tls = (ThreadStorage *)TlsGetValue(Tile::tlsIdxShape);
+	ThreadStorage *tls = static_cast<ThreadStorage *>(TlsGetValue(Tile::tlsIdxShape));
 	vector<shared_ptr<Entity> > *entities = level->getEntities(nullptr, AABB::newTemp(x + tls->xx0, y + tls->yy0, z + tls->zz0, x + tls->xx1, y + tls->yy1, z + tls->zz1));
 	if (!entities->empty())
 	{

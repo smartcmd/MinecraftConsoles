@@ -57,7 +57,7 @@ shared_ptr<TileEntity> NoteBlockTile::newTileEntity(Level *level)
 
 bool NoteBlockTile::triggerEvent(Level *level, int x, int y, int z, int i, int note)
 {
-	float pitch = (float) pow(2, (note - 12) / 12.0);
+	float pitch = static_cast<float>(pow(2, (note - 12) / 12.0));
 
 	int iSound;
 	switch(i)

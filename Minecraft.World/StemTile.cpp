@@ -34,7 +34,7 @@ void StemTile::tick(Level *level, int x, int y, int z, Random *random)
 		float growthSpeed = getGrowthSpeed(level, x, y, z);
 
 		// 4J Stu - Brought forward change from 1.2.3 to make fruit more likely to grow
-		if (random->nextInt((int) (25 / growthSpeed) + 1) == 0)
+		if (random->nextInt(static_cast<int>(25 / growthSpeed) + 1) == 0)
 		{
 			int age = level->getData(x, y, z);
 			if (age < 7)
@@ -149,10 +149,10 @@ void StemTile::updateDefaultShape()
 
 void StemTile::updateShape(LevelSource *level, int x, int y, int z, int forceData, shared_ptr<TileEntity> forceEntity) // 4J added forceData, forceEntity param
 {
-	ThreadStorage *tls = (ThreadStorage *)TlsGetValue(Tile::tlsIdxShape);
+	ThreadStorage *tls = static_cast<ThreadStorage *>(TlsGetValue(Tile::tlsIdxShape));
 	tls->yy1 = (level->getData(x, y, z) * 2 + 2) / 16.0f;
 	float ss = 0.125f;
-	setShape(0.5f - ss, 0, 0.5f - ss, 0.5f + ss, (float) tls->yy1, 0.5f + ss);
+	setShape(0.5f - ss, 0, 0.5f - ss, 0.5f + ss, static_cast<float>(tls->yy1), 0.5f + ss);
 }
 
 int StemTile::getRenderShape()

@@ -153,7 +153,7 @@ void UIScene_InGameHostOptionsMenu::handlePress(F64 controlId, F64 childId)
 	TeleportMenuInitData *initData = new TeleportMenuInitData();
 	initData->iPad = m_iPad;
 	initData->teleportToPlayer = false;
-	if( (int)controlId == eControl_TeleportToPlayer )
+	if( static_cast<int>(controlId) == eControl_TeleportToPlayer )
 	{
 		initData->teleportToPlayer = true;
 	}

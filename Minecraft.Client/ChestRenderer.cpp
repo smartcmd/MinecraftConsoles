@@ -54,7 +54,7 @@ void ChestRenderer::render(shared_ptr<TileEntity>  _chest, double x, double y, d
 
 		if (dynamic_cast<ChestTile*>(tile) != NULL && data == 0)
 		{
-			((ChestTile *) tile)->recalcLockDir(chest->getLevel(), chest->x, chest->y, chest->z);
+			static_cast<ChestTile *>(tile)->recalcLockDir(chest->getLevel(), chest->x, chest->y, chest->z);
 			data = chest->getData();
 		}
 
@@ -102,7 +102,7 @@ void ChestRenderer::render(shared_ptr<TileEntity>  _chest, double x, double y, d
 	glEnable(GL_RESCALE_NORMAL);
 	//if( setColor ) glColor4f(1, 1, 1, 1);
 	if( setColor ) glColor4f(1, 1, 1, alpha);
-	glTranslatef((float) x, (float) y + 1, (float) z + 1);
+	glTranslatef(static_cast<float>(x), static_cast<float>(y) + 1, static_cast<float>(z) + 1);
 	glScalef(1, -1, -1);
 
 	glTranslatef(0.5f, 0.5f, 0.5f);

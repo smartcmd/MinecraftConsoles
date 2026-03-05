@@ -13,7 +13,7 @@ UIScene_SignEntryMenu::UIScene_SignEntryMenu(int iPad, void *_initData, UILayer 
 	// Setup all the Iggy references we need for this scene
 	initialiseMovie();
 
-	SignEntryScreenInput* initData = (SignEntryScreenInput*)_initData;
+	SignEntryScreenInput* initData = static_cast<SignEntryScreenInput *>(_initData);
 	m_sign = initData->sign;
 
 	m_bConfirmed = false;
@@ -143,7 +143,7 @@ void UIScene_SignEntryMenu::handleInput(int iPad, int key, bool repeat, bool pre
 int UIScene_SignEntryMenu::KeyboardCompleteCallback(LPVOID lpParam,bool bRes)
 {
 	// 4J HEG - No reason to set value if keyboard was cancelled
-	UIScene_SignEntryMenu *pClass=(UIScene_SignEntryMenu *)lpParam;
+	UIScene_SignEntryMenu *pClass=static_cast<UIScene_SignEntryMenu *>(lpParam);
 	pClass->m_bIgnoreInput = false;
 	if (bRes)
 	{
@@ -157,7 +157,7 @@ int UIScene_SignEntryMenu::KeyboardCompleteCallback(LPVOID lpParam,bool bRes)
 
 void UIScene_SignEntryMenu::handlePress(F64 controlId, F64 childId)
 {
-	switch((int)controlId)
+	switch(static_cast<int>(controlId))
 	{
 	case eControl_Confirm:
 		{
@@ -169,7 +169,7 @@ void UIScene_SignEntryMenu::handlePress(F64 controlId, F64 childId)
 	case eControl_Line3:
 	case eControl_Line4:
 		{
-			m_iEditingLine = (int)controlId;
+			m_iEditingLine = static_cast<int>(controlId);
 			m_bIgnoreInput = true;
 #ifdef _XBOX_ONE
 			// 4J-PB - Xbox One uses the Windows virtual keyboard, and doesn't have the Xbox 360 Latin keyboard type, so we can't restrict the input set to alphanumeric. The closest we get is the emailSmtpAddress type.
@@ -186,7 +186,7 @@ void UIScene_SignEntryMenu::handlePress(F64 controlId, F64 childId)
 				break;
 			}
 #else
-			InputManager.RequestKeyboard(app.GetString(IDS_SIGN_TITLE),m_textInputLines[m_iEditingLine].getLabel(),(DWORD)m_iPad,15,&UIScene_SignEntryMenu::KeyboardCompleteCallback,this,C_4JInput::EKeyboardMode_Alphabet);
+			InputManager.RequestKeyboard(app.GetString(IDS_SIGN_TITLE),m_textInputLines[m_iEditingLine].getLabel(),static_cast<DWORD>(m_iPad),15,&UIScene_SignEntryMenu::KeyboardCompleteCallback,this,C_4JInput::EKeyboardMode_Alphabet);
 #endif
 		}
 		break;

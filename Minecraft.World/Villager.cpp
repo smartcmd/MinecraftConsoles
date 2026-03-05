@@ -105,7 +105,7 @@ void Villager::serverAiMobStep()
 		else
 		{
 			Pos *center = _village->getCenter();
-			restrictTo(center->x, center->y, center->z, (int)((float)_village->getRadius() * 0.6f));
+			restrictTo(center->x, center->y, center->z, static_cast<int>((float)_village->getRadius() * 0.6f));
 			if (rewardPlayersOnFirstVillage)
 			{
 				rewardPlayersOnFirstVillage = false;

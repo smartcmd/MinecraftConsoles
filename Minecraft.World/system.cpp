@@ -64,7 +64,7 @@ __int64 System::nanoTime()
 
 	// Using double to avoid 64-bit overflow during multiplication for long uptime
 	// Precision is sufficient for ~100 days of uptime.
-	return (__int64)((double)counter.QuadPart * 1000000000.0 / (double)s_frequency.QuadPart);
+	return static_cast<__int64>((double)counter.QuadPart * 1000000000.0 / (double)s_frequency.QuadPart);
 #else
 	return GetTickCount() * 1000000LL;
 #endif

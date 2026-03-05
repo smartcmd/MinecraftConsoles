@@ -226,6 +226,6 @@ void CXuiCtrlSlotList::GetCXuiCtrlSlotItem(int itemIndex, CXuiCtrlSlotItemListIt
 	HXUIOBJ itemControl = this->GetItemControl(itemIndex);
 	VOID *pObj;
 	XuiObjectFromHandle( itemControl, &pObj );
-	*CXuiCtrlSlotItem = (CXuiCtrlSlotItemListItem *)pObj;
+	*CXuiCtrlSlotItem = static_cast<CXuiCtrlSlotItemListItem *>(pObj);
 }
 

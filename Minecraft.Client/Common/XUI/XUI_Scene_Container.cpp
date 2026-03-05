@@ -29,7 +29,7 @@ HRESULT CXuiSceneContainer::OnInit( XUIMessageInit* pInitData, BOOL& bHandled )
 
 	Minecraft *pMinecraft = Minecraft::GetInstance();
 
-	ContainerScreenInput* initData = (ContainerScreenInput*)pInitData->pvInitData;
+	ContainerScreenInput* initData = static_cast<ContainerScreenInput *>(pInitData->pvInitData);
 	
 	XuiControlSetText(m_ChestText,app.GetString(initData->container->getName()));
 
@@ -75,9 +75,9 @@ HRESULT CXuiSceneContainer::OnInit( XUIMessageInit* pInitData, BOOL& bHandled )
 	// to get it into actual back buffer coordinates, and we need those to remain whole numbers to avoid issues with point sampling
 	if(!RenderManager.IsHiDef())
 	{
-		int iY = (int)(vPos.y);
+		int iY = static_cast<int>(vPos.y);
 		iY &= 0xfffffffe;
-		vPos.y = (float)iY;
+		vPos.y = static_cast<float>(iY);
 	}
 	this->SetPosition( &vPos );
 

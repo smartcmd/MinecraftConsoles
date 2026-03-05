@@ -22,7 +22,7 @@ HRESULT CXuiSceneTrap::OnInit( XUIMessageInit* pInitData, BOOL& bHandled )
 
 	Minecraft *pMinecraft = Minecraft::GetInstance();
 
-	TrapScreenInput* initData = (TrapScreenInput*)pInitData->pvInitData;
+	TrapScreenInput* initData = static_cast<TrapScreenInput *>(pInitData->pvInitData);
 	m_iPad=initData->iPad;
 	m_bSplitscreen=initData->bSplitscreen;
 

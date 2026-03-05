@@ -92,7 +92,7 @@ ItemInstance::~ItemInstance()
 shared_ptr<ItemInstance> ItemInstance::remove(int count)
 {
 	shared_ptr<ItemInstance> ii = shared_ptr<ItemInstance>( new ItemInstance(id, count, auxValue) );
-	if (tag != NULL) ii->tag = (CompoundTag *) tag->copy();
+	if (tag != NULL) ii->tag = static_cast<CompoundTag *>(tag->copy());
 	this->count -= count;
 
 	// 4J Stu Fix for duplication glitch, make sure that item count is in range
@@ -145,9 +145,9 @@ shared_ptr<ItemInstance> ItemInstance::useTimeDepleted(Level *level, shared_ptr<
 
 CompoundTag *ItemInstance::save(CompoundTag *compoundTag)
 {
-	compoundTag->putShort(L"id", (short) id);
-	compoundTag->putByte(L"Count", (byte) count);
-	compoundTag->putShort(L"Damage", (short) auxValue);
+	compoundTag->putShort(L"id", static_cast<short>(id));
+	compoundTag->putByte(L"Count", static_cast<byte>(count));
+	compoundTag->putShort(L"Damage", static_cast<short>(auxValue));
 	if (tag != NULL) compoundTag->put(L"tag", tag->copy());
 	return compoundTag;
 }
@@ -165,7 +165,7 @@ void ItemInstance::load(CompoundTag *compoundTag)
 	if (compoundTag->contains(L"tag"))
 	{
 		delete tag;
-		tag = (CompoundTag *)compoundTag->getCompound(L"tag")->copy();
+		tag = static_cast<CompoundTag *>(compoundTag->getCompound(L"tag")->copy());
 	}
 }
 
@@ -305,7 +305,7 @@ shared_ptr<ItemInstance> ItemInstance::copy() const
 	shared_ptr<ItemInstance> copy = shared_ptr<ItemInstance>( new ItemInstance(id, count, auxValue) );
 	if (tag != NULL)
 	{
-		copy->tag = (CompoundTag *) tag->copy();
+		copy->tag = static_cast<CompoundTag *>(tag->copy());
 	}
 	return copy;
 }
@@ -316,7 +316,7 @@ ItemInstance *ItemInstance::copy_not_shared() const
 	ItemInstance *copy = new ItemInstance(id, count, auxValue);
 	if (tag != NULL)
 	{
-		copy->tag = (CompoundTag *) tag->copy();
+		copy->tag = static_cast<CompoundTag *>(tag->copy());
 		if (!copy->tag->equals(tag))
 		{
 			return copy;
@@ -493,7 +493,7 @@ ListTag<CompoundTag> *ItemInstance::getEnchantmentTags()
 	{
 		return NULL;
 	}
-	return (ListTag<CompoundTag> *) tag->get(L"ench");
+	return static_cast<ListTag<CompoundTag> *>(tag->get(L"ench"));
 }
 
 void ItemInstance::setTag(CompoundTag *tag)
@@ -733,10 +733,10 @@ void ItemInstance::enchant(const Enchantment *enchantment, int level)
 	if (tag == NULL) this->setTag(new CompoundTag());
 	if (!tag->contains(L"ench")) tag->put(L"ench", new ListTag<CompoundTag>(L"ench"));
 
-	ListTag<CompoundTag> *list = (ListTag<CompoundTag> *) tag->get(L"ench");
+	ListTag<CompoundTag> *list = static_cast<ListTag<CompoundTag> *>(tag->get(L"ench"));
 	CompoundTag *ench = new CompoundTag();
-	ench->putShort((wchar_t *)TAG_ENCH_ID, (short) enchantment->id);
-	ench->putShort((wchar_t *)TAG_ENCH_LEVEL, (byte) level);
+	ench->putShort((wchar_t *)TAG_ENCH_ID, static_cast<short>(enchantment->id));
+	ench->putShort((wchar_t *)TAG_ENCH_LEVEL, static_cast<byte>(level));
 	list->add(ench);
 }
 
@@ -829,7 +829,7 @@ void ItemInstance::set4JData(int data)
 
 	if (tag->contains(L"4jdata"))
 	{
-		IntTag *dataTag = (IntTag *)tag->get(L"4jdata");
+		IntTag *dataTag = static_cast<IntTag *>(tag->get(L"4jdata"));
 		dataTag->data = data;
 	}
 	else if(data != 0)
@@ -843,7 +843,7 @@ int ItemInstance::get4JData()
 	if(tag == NULL || !tag->contains(L"4jdata")) return 0;
 	else
 	{
-		IntTag *dataTag = (IntTag *)tag->get(L"4jdata");
+		IntTag *dataTag = static_cast<IntTag *>(tag->get(L"4jdata"));
 		return dataTag->data;
 	}
 }

@@ -158,7 +158,7 @@ void UIScene_HUD::customDraw(IggyCustomDrawCallbackRegion *region)
 	if(pMinecraft->localplayers[m_iPad] == NULL || pMinecraft->localgameModes[m_iPad] == NULL) return;
 
 	int slot = -1;
-	swscanf((wchar_t*)region->name,L"slot_%d",&slot);
+	swscanf(static_cast<wchar_t *>(region->name),L"slot_%d",&slot);
 	if (slot == -1)
 	{
 		app.DebugPrintf("This is not the control we are looking for\n");
@@ -180,8 +180,8 @@ void UIScene_HUD::customDraw(IggyCustomDrawCallbackRegion *region)
 				{
 					if(uiOpacityTimer<10)
 					{
-						float fStep=(80.0f-(float)ucAlpha)/10.0f;
-						fVal=0.01f*(80.0f-((10.0f-(float)uiOpacityTimer)*fStep));
+						float fStep=(80.0f-static_cast<float>(ucAlpha))/10.0f;
+						fVal=0.01f*(80.0f-((10.0f-static_cast<float>(uiOpacityTimer))*fStep));
 					}
 					else
 					{
@@ -190,12 +190,12 @@ void UIScene_HUD::customDraw(IggyCustomDrawCallbackRegion *region)
 				}
 				else
 				{
-					fVal=0.01f*(float)ucAlpha;
+					fVal=0.01f*static_cast<float>(ucAlpha);
 				}
 			}
 			else
 			{
-				fVal=0.01f*(float)ucAlpha;
+				fVal=0.01f*static_cast<float>(ucAlpha);
 			}
 			customDrawSlotControl(region,m_iPad,item,fVal,item->isFoil(),true);
 		}
@@ -679,15 +679,15 @@ void UIScene_HUD::render(S32 width, S32 height, C4JRender::eViewportType viewpor
 		{
 		case C4JRender::VIEWPORT_TYPE_SPLIT_BOTTOM:
 		case C4JRender::VIEWPORT_TYPE_QUADRANT_BOTTOM_LEFT:
-			yPos = (S32)(ui.getScreenHeight() / 2);
+			yPos = static_cast<S32>(ui.getScreenHeight() / 2);
 			break;
 		case C4JRender::VIEWPORT_TYPE_SPLIT_RIGHT:
 		case C4JRender::VIEWPORT_TYPE_QUADRANT_TOP_RIGHT:
-			xPos = (S32)(ui.getScreenWidth() / 2);
+			xPos = static_cast<S32>(ui.getScreenWidth() / 2);
 			break;
 		case C4JRender::VIEWPORT_TYPE_QUADRANT_BOTTOM_RIGHT:
-			xPos = (S32)(ui.getScreenWidth() / 2);
-			yPos = (S32)(ui.getScreenHeight() / 2);
+			xPos = static_cast<S32>(ui.getScreenWidth() / 2);
+			yPos = static_cast<S32>(ui.getScreenHeight() / 2);
 			break;
 		}
 		ui.setupRenderPosition(xPos, yPos);
@@ -701,14 +701,14 @@ void UIScene_HUD::render(S32 width, S32 height, C4JRender::eViewportType viewpor
 		{
 		case C4JRender::VIEWPORT_TYPE_SPLIT_LEFT:
 		case C4JRender::VIEWPORT_TYPE_SPLIT_RIGHT:
-			tileHeight = (S32)(ui.getScreenHeight());
+			tileHeight = static_cast<S32>(ui.getScreenHeight());
 			break;
 		case C4JRender::VIEWPORT_TYPE_SPLIT_TOP:
-			tileWidth = (S32)(ui.getScreenWidth());
+			tileWidth = static_cast<S32>(ui.getScreenWidth());
 			tileYStart = (S32)(m_movieHeight / 2);
 			break;
 		case C4JRender::VIEWPORT_TYPE_SPLIT_BOTTOM:
-			tileWidth = (S32)(ui.getScreenWidth());
+			tileWidth = static_cast<S32>(ui.getScreenWidth());
 			tileYStart = (S32)(m_movieHeight / 2);
 			break;
 		case C4JRender::VIEWPORT_TYPE_QUADRANT_TOP_LEFT:
@@ -796,11 +796,11 @@ void UIScene_HUD::repositionHud()
 	{
 	case C4JRender::VIEWPORT_TYPE_SPLIT_LEFT:
 	case C4JRender::VIEWPORT_TYPE_SPLIT_RIGHT:
-		height = (S32)(ui.getScreenHeight());
+		height = static_cast<S32>(ui.getScreenHeight());
 		break;
 	case C4JRender::VIEWPORT_TYPE_SPLIT_TOP:
 	case C4JRender::VIEWPORT_TYPE_SPLIT_BOTTOM:
-		width = (S32)(ui.getScreenWidth());
+		width = static_cast<S32>(ui.getScreenWidth());
 		break;
 	}
 

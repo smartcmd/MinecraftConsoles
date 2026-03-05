@@ -51,7 +51,7 @@ void UIScene_AbstractContainerMenu::handleDestroy()
 	Minecraft *pMinecraft = Minecraft::GetInstance();
 	if( pMinecraft->localgameModes[m_iPad] != NULL )
 	{
-		TutorialMode *gameMode = (TutorialMode *)pMinecraft->localgameModes[m_iPad];
+		TutorialMode *gameMode = static_cast<TutorialMode *>(pMinecraft->localgameModes[m_iPad]);
 		if(gameMode != NULL) gameMode->getTutorial()->changeTutorialState(m_previousTutorialState);
 	}
 
@@ -187,8 +187,8 @@ void UIScene_AbstractContainerMenu::PlatformInitialize(int iPad, int startIndex)
 	IggyEvent mouseEvent;
 	S32 width, height;
 	m_parentLayer->getRenderDimensions(width, height);
-	S32 x = m_pointerPos.x*((float)width/m_movieWidth);
-	S32 y = m_pointerPos.y*((float)height/m_movieHeight); 
+	S32 x = m_pointerPos.x*(static_cast<float>(width)/m_movieWidth);
+	S32 y = m_pointerPos.y*(static_cast<float>(height)/m_movieHeight); 
 	IggyMakeEventMouseMove( &mouseEvent, x, y);
 
 	IggyEventResult result;
@@ -212,8 +212,8 @@ void UIScene_AbstractContainerMenu::tick()
 	S32 width, height;
 	m_parentLayer->getRenderDimensions(width, height);
 
-	S32 x = (S32)(m_pointerPos.x * ((float)width / m_movieWidth));
-	S32 y = (S32)(m_pointerPos.y * ((float)height / m_movieHeight));
+	S32 x = static_cast<S32>(m_pointerPos.x * ((float)width / m_movieWidth));
+	S32 y = static_cast<S32>(m_pointerPos.y * ((float)height / m_movieHeight));
 
 	IggyMakeEventMouseMove( &mouseEvent, x, y);
 
@@ -265,7 +265,7 @@ void UIScene_AbstractContainerMenu::customDraw(IggyCustomDrawCallbackRegion *reg
 	}
 	else
 	{
-		swscanf((wchar_t*)region->name,L"slot_%d",&slotId);
+		swscanf(static_cast<wchar_t *>(region->name),L"slot_%d",&slotId);
 		if (slotId == -1)
 		{
 			app.DebugPrintf("This is not the control we are looking for\n");

@@ -230,7 +230,7 @@ void GameRenderer::tick(bool first)		// 4J - add bFirst
 	darkenWorldAmountO = darkenWorldAmount;
 	if (BossMobGuiInfo::darkenWorld)
 	{
-		darkenWorldAmount += 1.0f / ((float) SharedConstants::TICKS_PER_SECOND * 1);
+		darkenWorldAmount += 1.0f / (static_cast<float>(SharedConstants::TICKS_PER_SECOND) * 1);
 		if (darkenWorldAmount > 1)
 		{
 			darkenWorldAmount = 1;
@@ -239,7 +239,7 @@ void GameRenderer::tick(bool first)		// 4J - add bFirst
 	}
 	else if (darkenWorldAmount > 0)
 	{
-		darkenWorldAmount -= 1.0f / ((float) SharedConstants::TICKS_PER_SECOND * 4);
+		darkenWorldAmount -= 1.0f / (static_cast<float>(SharedConstants::TICKS_PER_SECOND) * 4);
 	}
 
 	if( mc->player != mc->localplayers[ProfileManager.GetPrimaryPad()] ) return; // 4J added for split screen - only do rest of processing for once per frame
@@ -475,7 +475,7 @@ void GameRenderer::moveCameraToPlayer(float a)
 				int data = mc->level->getData(Mth::floor(player->x), Mth::floor(player->y), Mth::floor(player->z));
 
 				int direction = data & 3;
-				glRotatef((float)direction * 90,0.0f, 1.0f, 0.0f);
+				glRotatef(static_cast<float>(direction) * 90,0.0f, 1.0f, 0.0f);
 			}
 			glRotatef(player->yRotO + (player->yRot - player->yRotO) * a + 180, 0, -1, 0);
 			glRotatef(player->xRotO + (player->xRot - player->xRotO) * a, -1, 0, 0);
@@ -493,7 +493,7 @@ void GameRenderer::moveCameraToPlayer(float a)
 			float rotationY = thirdRotationO + (thirdRotation - thirdRotationO) * a;
 			float xRot = thirdTiltO + (thirdTilt - thirdTiltO) * a;
 
-			glTranslatef(0, 0, (float) -cameraDist);
+			glTranslatef(0, 0, static_cast<float>(-cameraDist));
 			glRotatef(xRot, 1, 0, 0);
 			glRotatef(rotationY, 0, 1, 0);
 		}
@@ -522,9 +522,9 @@ void GameRenderer::moveCameraToPlayer(float a)
 
 			for (int i = 0; i < 8; i++)
 			{
-				float xo = (float)((i & 1) * 2 - 1);
-				float yo = (float)(((i >> 1) & 1) * 2 - 1);
-				float zo = (float)(((i >> 2) & 1) * 2 - 1);
+				float xo = static_cast<float>((i & 1) * 2 - 1);
+				float yo = static_cast<float>(((i >> 1) & 1) * 2 - 1);
+				float zo = static_cast<float>(((i >> 2) & 1) * 2 - 1);
 
 				xo *= 0.1f;
 				yo *= 0.1f;
@@ -540,7 +540,7 @@ void GameRenderer::moveCameraToPlayer(float a)
 				}
 			}
 
-			glTranslatef(0, 0, (float) -cameraDist);
+			glTranslatef(0, 0, static_cast<float>(-cameraDist));
 		}
 	}
 	else
@@ -595,7 +595,7 @@ void GameRenderer::getFovAndAspect(float& fov, float& aspect, float a, bool appl
 {
 	// 4J - split out aspect ratio and fov here so we can adjust for viewports - we might need to revisit these as
 	// they are maybe be too generous for performance.
-	aspect = mc->width / (float) mc->height;
+	aspect = mc->width / static_cast<float>(mc->height);
 	fov = getFov(a, applyEffects);
 
 	if( ( mc->player->m_iScreenSection == C4JRender::VIEWPORT_TYPE_SPLIT_TOP ) ||
@@ -614,7 +614,7 @@ void GameRenderer::getFovAndAspect(float& fov, float& aspect, float a, bool appl
 
 void GameRenderer::setupCamera(float a, int eye)
 {
-	renderDistance = (float)(16 * 16 >> (mc->options->viewDistance));
+	renderDistance = static_cast<float>(16 * 16 >> (mc->options->viewDistance));
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
 
@@ -627,7 +627,7 @@ void GameRenderer::setupCamera(float a, int eye)
 
 	if (zoom != 1)
 	{
-		glTranslatef((float) zoom_x, (float) -zoom_y, 0);
+		glTranslatef(static_cast<float>(zoom_x), static_cast<float>(-zoom_y), 0);
 		glScaled(zoom, zoom, 1);
 	}
 	gluPerspective(fov, aspect, 0.05f, renderDistance * 2);
@@ -710,7 +710,7 @@ void GameRenderer::renderItemInHand(float a, int eye)
 
 	if (zoom != 1)
 	{
-		glTranslatef((float) zoom_x, (float) -zoom_y, 0);
+		glTranslatef(static_cast<float>(zoom_x), static_cast<float>(-zoom_y), 0);
 		glScaled(zoom, zoom, 1);
 	}
 	gluPerspective(fov, aspect, 0.05f, renderDistance * 2);
@@ -822,8 +822,8 @@ void GameRenderer::turnOnLightLayer(double alpha)
 // 4J - change brought forward from 1.8.2
 void GameRenderer::tickLightTexture()
 {
-	blrt += (float)((Math::random() - Math::random()) * Math::random() * Math::random());
-	blgt += (float)((Math::random() - Math::random()) * Math::random() * Math::random());
+	blrt += static_cast<float>((Math::random() - Math::random()) * Math::random() * Math::random());
+	blgt += static_cast<float>((Math::random() - Math::random()) * Math::random() * Math::random());
 	blrt *= 0.9;
 	blgt *= 0.9;
 	blr += (blrt - blr) * 1;
@@ -1649,7 +1649,7 @@ void GameRenderer::tickRain()
 	double rainPosZ = 0;
 	int rainPosSamples = 0;
 
-	int rainCount = (int) (100 * rainLevel * rainLevel);
+	int rainCount = static_cast<int>(100 * rainLevel * rainLevel);
 	if (mc->options->particles == 1)
 	{
 		rainCount >>= 1;
@@ -1864,11 +1864,11 @@ void GameRenderer::renderSnowAndRain(float a)
 						t->begin();
 					}
 					float ra = (((_tick) & 511) + a) / 512.0f;
-					float uo = random->nextFloat() + time * 0.01f * (float) random->nextGaussian();
-					float vo = random->nextFloat() + time * (float) random->nextGaussian() * 0.001f;
+					float uo = random->nextFloat() + time * 0.01f * static_cast<float>(random->nextGaussian());
+					float vo = random->nextFloat() + time * static_cast<float>(random->nextGaussian()) * 0.001f;
 					double xd = (x + 0.5f) - player->x;
 					double zd = (z + 0.5f) - player->z;
-					float dd = (float) sqrt(xd * xd + zd * zd) / r;
+					float dd = static_cast<float>(sqrt(xd * xd + zd * zd)) / r;
 					float br = 1;
 					t->offset(-xo * 1, -yo * 1, -zo * 1);
 #ifdef __PSVITA__
@@ -1910,7 +1910,7 @@ void GameRenderer::setupGuiScreen(int forceScale /*=-1*/)
 	glClear(GL_DEPTH_BUFFER_BIT);
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
-	glOrtho(0, (float)ssc.rawWidth, (float)ssc.rawHeight, 0, 1000, 3000);
+	glOrtho(0, static_cast<float>(ssc.rawWidth), static_cast<float>(ssc.rawHeight), 0, 1000, 3000);
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 	glTranslatef(0, 0, -2000);
@@ -1922,22 +1922,22 @@ void GameRenderer::setupClearColor(float a)
 	shared_ptr<LivingEntity> player = mc->cameraTargetPlayer;
 
 	float whiteness = 1.0f / (4 - mc->options->viewDistance);
-	whiteness = 1 - (float) pow((double)whiteness, 0.25);
+	whiteness = 1 - static_cast<float>(pow((double)whiteness, 0.25));
 
 	Vec3 *skyColor = level->getSkyColor(mc->cameraTargetPlayer, a);
-	float sr = (float) skyColor->x;
-	float sg = (float) skyColor->y;
-	float sb = (float) skyColor->z;
+	float sr = static_cast<float>(skyColor->x);
+	float sg = static_cast<float>(skyColor->y);
+	float sb = static_cast<float>(skyColor->z);
 
 	Vec3 *fogColor = level->getFogColor(a);
-	fr = (float) fogColor->x;
-	fg = (float) fogColor->y;
-	fb = (float) fogColor->z;
+	fr = static_cast<float>(fogColor->x);
+	fg = static_cast<float>(fogColor->y);
+	fb = static_cast<float>(fogColor->z);
 
 	if (mc->options->viewDistance < 2)
 	{
 		Vec3 *sunAngle = Mth::sin(level->getSunAngle(a)) > 0 ? Vec3::newTemp(-1, 0, 0) : Vec3::newTemp(1, 0, 0);
-		float d = (float) player->getViewVector(a)->dot(sunAngle);
+		float d = static_cast<float>(player->getViewVector(a)->dot(sunAngle));
 		if (d < 0) d = 0;
 		if (d > 0)
 		{
@@ -1978,9 +1978,9 @@ void GameRenderer::setupClearColor(float a)
 	if (isInClouds)
 	{
 		Vec3 *cc = level->getCloudColor(a);
-		fr = (float) cc->x;
-		fg = (float) cc->y;
-		fb = (float) cc->z;
+		fr = static_cast<float>(cc->x);
+		fg = static_cast<float>(cc->y);
+		fb = static_cast<float>(cc->z);
 	}
 	else if (t != 0 && Tile::tiles[t]->material == Material::water)
 	{
@@ -1991,9 +1991,9 @@ void GameRenderer::setupClearColor(float a)
 		byte greenComponent = ((colour>>8)&0xFF);
 		byte blueComponent = ((colour)&0xFF);
 
-		fr = (float)redComponent/256 + clearness;//0.02f;
-		fg = (float)greenComponent/256 + clearness;//0.02f;
-		fb = (float)blueComponent/256 + clearness;//0.2f;
+		fr = static_cast<float>(redComponent)/256 + clearness;//0.02f;
+		fg = static_cast<float>(greenComponent)/256 + clearness;//0.02f;
+		fb = static_cast<float>(blueComponent)/256 + clearness;//0.2f;
 	}
 	else if (t != 0 && Tile::tiles[t]->material == Material::lava)
 	{
@@ -2002,9 +2002,9 @@ void GameRenderer::setupClearColor(float a)
 		byte greenComponent = ((colour>>8)&0xFF);
 		byte blueComponent = ((colour)&0xFF);
 
-		fr = (float)redComponent/256;//0.6f;
-		fg = (float)greenComponent/256;//0.1f;
-		fb = (float)blueComponent/256;//0.00f;
+		fr = static_cast<float>(redComponent)/256;//0.6f;
+		fg = static_cast<float>(greenComponent)/256;//0.1f;
+		fb = static_cast<float>(blueComponent)/256;//0.00f;
 	}
 
 	float brr = fogBrO + (fogBr - fogBrO) * a;
@@ -2019,7 +2019,7 @@ void GameRenderer::setupClearColor(float a)
 		int duration = player->getEffect(MobEffect::blindness)->getDuration();
 		if (duration < 20)
 		{
-			yy = yy * (1.0f - (float) duration / 20.0f);
+			yy = yy * (1.0f - static_cast<float>(duration) / 20.0f);
 		}
 		else
 		{
@@ -2124,7 +2124,7 @@ void GameRenderer::setupFog(int i, float alpha)
 		int duration = player->getEffect(MobEffect::blindness)->getDuration();
 		if (duration < 20)
 		{
-			distance = 5.0f + (renderDistance - 5.0f) * (1.0f - (float) duration / 20.0f);
+			distance = 5.0f + (renderDistance - 5.0f) * (1.0f - static_cast<float>(duration) / 20.0f);
 		}
 
 		glFogi(GL_FOG_MODE, GL_LINEAR);
@@ -2179,7 +2179,7 @@ void GameRenderer::setupFog(int i, float alpha)
 				{
 					if (yy < 0) yy = 0;
 					yy = yy * yy;
-					float dist = 100 * (float) yy;
+					float dist = 100 * static_cast<float>(yy);
 					if (dist < 5) dist = 5;
 					if (distance > dist) distance = dist;
 				}
@@ -2206,7 +2206,7 @@ void GameRenderer::setupFog(int i, float alpha)
 		}
 		*/
 
-		if (mc->level->dimension->isFoggyAt((int) player->x, (int) player->z))
+		if (mc->level->dimension->isFoggyAt(static_cast<int>(player->x), static_cast<int>(player->z)))
 		{
 			glFogf(GL_FOG_START, distance * 0.05f);
 			glFogf(GL_FOG_END, min(distance, 16 * 16 * .75f) * .5f);

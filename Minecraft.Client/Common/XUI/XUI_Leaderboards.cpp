@@ -75,7 +75,7 @@ const CScene_Leaderboards::LeaderboardDescriptor CScene_Leaderboards::LEADERBOAR
 
 HRESULT CScene_Leaderboards::OnInit(XUIMessageInit *pInitData, BOOL &bHandled)
 {
-	m_iPad = *(int *)pInitData->pvInitData;
+	m_iPad = *static_cast<int *>(pInitData->pvInitData);
 	MapChildControls();
 	m_bReady=false;
 
@@ -143,13 +143,13 @@ void CScene_Leaderboards::Reposition(int iNumber)
 	D3DXVECTOR3 vPos;
 
 	fIconSize=(m_fTitleIconXPositions[6]-m_fTitleIconXPositions[0])/6.0f;
-	fNewIconIncrement=(fIconSize*7.0f)/(float)iNumber;
+	fNewIconIncrement=(fIconSize*7.0f)/static_cast<float>(iNumber);
 
 	// reposition the title icons based on the number there are
 	for(int i=0;i<iNumber;i++)
 	{
 		m_pHTitleIconSlots[i]->GetPosition(&vPos);
-		vPos.x=m_fTitleIconXPositions[0]+(((float)i)*fNewIconIncrement)+(fNewIconIncrement-fIconSize)/2.0f;
+		vPos.x=m_fTitleIconXPositions[0]+(static_cast<float>(i)*fNewIconIncrement)+(fNewIconIncrement-fIconSize)/2.0f;
 		m_pHTitleIconSlots[i]->SetPosition(&vPos);
 	}
 }
@@ -161,14 +161,14 @@ void CScene_Leaderboards::RepositionText(int iNumber)
 	D3DXVECTOR3 vPos;
 
 	fTextSize=(m_fTextXPositions[6]-m_fTextXPositions[0])/6.0f;
-	fNewTextIncrement=(fTextSize*7.0f)/(float)iNumber;
+	fNewTextIncrement=(fTextSize*7.0f)/static_cast<float>(iNumber);
 
 	// reposition the title icons based on the number there are
 	for(int i=0;i<iNumber;i++)
 	{
 		// and reposition the text
 		XuiElementGetPosition(m_hTextEntryA[i],&vPos);
-		vPos.x=m_fTextXPositions[0]+(((float)i)*fNewTextIncrement);
+		vPos.x=m_fTextXPositions[0]+(static_cast<float>(i)*fNewTextIncrement);
 		XuiElementSetPosition(m_hTextEntryA[i],&vPos);
 		// and change the size
 		float fWidth,fHeight;
@@ -222,7 +222,7 @@ void CScene_Leaderboards::UpdateTooltips()
 	int iTooltipGamerCardOrProfile=-1;
 	if( m_leaderboard.m_currentEntryCount > 0 )
 	{
-		unsigned int selection = (unsigned int)m_listGamers.GetCurSel();
+		unsigned int selection = static_cast<unsigned int>(m_listGamers.GetCurSel());
 
 		// if the selected user is me, don't show Send Friend Request, and show the gamer profile, not the gamer card
 
@@ -368,7 +368,7 @@ HRESULT CScene_Leaderboards::OnKeyDown(XUIMessageInput* pInputData, BOOL& bHandl
 				else
 				{
 					m_newTop = m_listGamers.GetTopItem() + 10;
-					if( m_newTop+10 > (int)m_leaderboard.m_totalEntryCount )
+					if( m_newTop+10 > static_cast<int>(m_leaderboard.m_totalEntryCount) )
 					{
 						m_newTop = m_leaderboard.m_totalEntryCount - 10;
 						if( m_newTop < 0 )
@@ -426,7 +426,7 @@ HRESULT CScene_Leaderboards::OnKeyDown(XUIMessageInput* pInputData, BOOL& bHandl
 			//Show gamercard
 			if( m_leaderboard.m_currentEntryCount > 0 )
 			{
-				unsigned int selection = (unsigned int)m_listGamers.GetCurSel();
+				unsigned int selection = static_cast<unsigned int>(m_listGamers.GetCurSel());
 				if( selection >= m_leaderboard.m_entryStartIndex-1 &&
 					selection < (m_leaderboard.m_entryStartIndex+m_leaderboard.m_currentEntryCount-1) )
 				{
@@ -448,7 +448,7 @@ HRESULT CScene_Leaderboards::OnKeyDown(XUIMessageInput* pInputData, BOOL& bHandl
 			{
 				if( m_leaderboard.m_currentEntryCount > 0 )
 				{
-					unsigned int selection = (unsigned int)m_listGamers.GetCurSel();
+					unsigned int selection = static_cast<unsigned int>(m_listGamers.GetCurSel());
 					if( selection >= m_leaderboard.m_entryStartIndex-1 &&
 						selection < (m_leaderboard.m_entryStartIndex+m_leaderboard.m_currentEntryCount-1) )
 					{
@@ -547,7 +547,7 @@ void CScene_Leaderboards::ReadStats(int startIndex)
 	}
 	else
 	{
-		m_newEntryIndex = (unsigned int)startIndex;
+		m_newEntryIndex = static_cast<unsigned int>(startIndex);
 		m_newReadSize	= min((int)READ_SIZE, (int)m_leaderboard.m_totalEntryCount-(startIndex-1));
 	}
 
@@ -574,20 +574,20 @@ void CScene_Leaderboards::ReadStats(int startIndex)
 	{
 	case LeaderboardManager::eFM_TopRank:
 		LeaderboardManager::Instance()->ReadStats_TopRank(	this, 
-															m_currentDifficulty, (LeaderboardManager::EStatsType) m_currentLeaderboard, 
+															m_currentDifficulty, static_cast<LeaderboardManager::EStatsType>(m_currentLeaderboard), 
 															m_newEntryIndex, m_newReadSize
 														 );
 		break;
 	case LeaderboardManager::eFM_MyScore:
 		LeaderboardManager::Instance()->ReadStats_MyScore(	this,
-															m_currentDifficulty, (LeaderboardManager::EStatsType) m_currentLeaderboard,
+															m_currentDifficulty, static_cast<LeaderboardManager::EStatsType>(m_currentLeaderboard),
 															INVALID_XUID/*ignored*/, 
 															m_newReadSize
 														 );
 		break;
 	case LeaderboardManager::eFM_Friends:
 		LeaderboardManager::Instance()->ReadStats_Friends(	this,
-															m_currentDifficulty, (LeaderboardManager::EStatsType) m_currentLeaderboard,
+															m_currentDifficulty, static_cast<LeaderboardManager::EStatsType>(m_currentLeaderboard),
 															INVALID_XUID /*ignored*/,
 															0 /*ignored*/, 0 /*ignored*/
 														 );
@@ -660,7 +660,7 @@ bool CScene_Leaderboards::RetrieveStats()
 				else
 				{
 					m_leaderboard.m_entries[entryIndex].m_columns[i] = UINT_MAX;
-					swprintf(m_leaderboard.m_entries[entryIndex].m_wcColumns[i], 12, L"%.1fkm", ((float)m_leaderboard.m_entries[entryIndex].m_columns[i])/100.f/1000.f);
+					swprintf(m_leaderboard.m_entries[entryIndex].m_wcColumns[i], 12, L"%.1fkm", static_cast<float>(m_leaderboard.m_entries[entryIndex].m_columns[i])/100.f/1000.f);
 				}
 			}
 
@@ -822,7 +822,7 @@ HRESULT CScene_Leaderboards::OnGetSourceDataText(XUIMessageGetSourceText *pGetSo
 				int readIndex = m_leaderboard.m_entryStartIndex - READ_SIZE;
 				if( readIndex <= 0 )
 					readIndex = 1;
-				assert( readIndex >= 1 && readIndex <= (int)m_leaderboard.m_totalEntryCount );
+                assert( readIndex >= 1 && readIndex <= static_cast<int>(m_leaderboard.m_totalEntryCount));
 				ReadStats(readIndex);
 			}
 		}
@@ -831,7 +831,7 @@ HRESULT CScene_Leaderboards::OnGetSourceDataText(XUIMessageGetSourceText *pGetSo
 			if( LeaderboardManager::Instance()->isIdle() )
 			{
 				int readIndex = m_leaderboard.m_entryStartIndex + m_leaderboard.m_currentEntryCount;
-				assert( readIndex >= 1 && readIndex <= (int)m_leaderboard.m_totalEntryCount );
+                assert( readIndex >= 1 && readIndex <= static_cast<int>(m_leaderboard.m_totalEntryCount));
 				ReadStats(readIndex);
 			}
 		}
@@ -850,7 +850,7 @@ HRESULT CScene_Leaderboards::OnGetSourceDataText(XUIMessageGetSourceText *pGetSo
 			}
 			else if( pGetSourceTextData->iData >= 3 && pGetSourceTextData->iData <= 9 )
 			{
-				if( m_leaderboard.m_numColumns <= (unsigned int)(pGetSourceTextData->iData-3) )
+				if( m_leaderboard.m_numColumns <= static_cast<unsigned int>(pGetSourceTextData->iData - 3) )
 					pGetSourceTextData->szText = L"";
 				else
 					pGetSourceTextData->szText = m_leaderboard.m_entries[index].m_wcColumns[pGetSourceTextData->iData-3];
@@ -914,7 +914,7 @@ void CScene_Leaderboards::PopulateLeaderboard(bool noResults)
 			hr=XuiElementGetChildById(visual,m_TitleIconNameA[i],&button);
 
 			XuiObjectFromHandle( button, &pObj );
-			m_pHTitleIconSlots[i] = (CXuiCtrlCraftIngredientSlot *)pObj;
+			m_pHTitleIconSlots[i] = static_cast<CXuiCtrlCraftIngredientSlot *>(pObj);
 
 			// store the default position, since we'll be repositioning these depending on how many are valid for each board
 			m_pHTitleIconSlots[i]->GetPosition(&vPos);
@@ -1088,24 +1088,24 @@ void CScene_Leaderboards::CopyLeaderboardEntry(PXUSER_STATS_ROW statsRow, Leader
 			else if(iDigitC<8)
 			{
 				// km with a .X
-				swprintf_s(leaderboardEntry->m_wcColumns[i], 12, L"%.1fkm", ((float)leaderboardEntry->m_columns[i])/1000.f);
+				swprintf_s(leaderboardEntry->m_wcColumns[i], 12, L"%.1fkm", static_cast<float>(leaderboardEntry->m_columns[i])/1000.f);
 #ifdef _DEBUG
-				app.DebugPrintf("Display - %.1fkm\n", ((float)leaderboardEntry->m_columns[i])/1000.f);
+				app.DebugPrintf("Display - %.1fkm\n", static_cast<float>(leaderboardEntry->m_columns[i])/1000.f);
 #endif
 			}
 			else
 			{
 				// bigger than that, so no decimal point
-				swprintf_s(leaderboardEntry->m_wcColumns[i], 12, L"%.0fkm", ((float)leaderboardEntry->m_columns[i])/1000.f);
+				swprintf_s(leaderboardEntry->m_wcColumns[i], 12, L"%.0fkm", static_cast<float>(leaderboardEntry->m_columns[i])/1000.f);
 #ifdef _DEBUG
-				app.DebugPrintf("Display - %.0fkm\n", ((float)leaderboardEntry->m_columns[i])/1000.f);
+				app.DebugPrintf("Display - %.0fkm\n", static_cast<float>(leaderboardEntry->m_columns[i])/1000.f);
 #endif
 			}
 		}
 	}
 
 	//Is the player
-	if( statsRow->xuid == ((XboxLeaderboardManager*)LeaderboardManager::Instance())->GetMyXUID() )
+	if( statsRow->xuid == static_cast<XboxLeaderboardManager *>(LeaderboardManager::Instance())->GetMyXUID() )
 	{
 		leaderboardEntry->m_bPlayer = true;
 		leaderboardEntry->m_bOnline = false;

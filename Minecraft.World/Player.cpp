@@ -175,8 +175,8 @@ void Player::defineSynchedData()
 {
 	LivingEntity::defineSynchedData();
 
-	entityData->define(DATA_PLAYER_FLAGS_ID, (byte) 0);
-	entityData->define(DATA_PLAYER_ABSORPTION_ID, (float) 0);
+	entityData->define(DATA_PLAYER_FLAGS_ID, static_cast<byte>(0));
+	entityData->define(DATA_PLAYER_ABSORPTION_ID, static_cast<float>(0));
 	entityData->define(DATA_SCORE_ID, (int) 0);
 }
 
@@ -657,13 +657,13 @@ void Player::setCustomSkin(DWORD skinId)
 		DWORD defaultSkinIndex = GET_DEFAULT_SKIN_ID_FROM_BITMASK(skinId);
 		if( ugcSkinIndex == 0 && defaultSkinIndex > 0 )
 		{
-			playerSkin = (EDefaultSkins) defaultSkinIndex;
+			playerSkin = static_cast<EDefaultSkins>(defaultSkinIndex);
 		}
 	}
 
 	if( playerSkin == eDefaultSkins_ServerSelected)
 	{
-		playerSkin = (EDefaultSkins)(m_playerIndex + 1);
+		playerSkin = static_cast<EDefaultSkins>(m_playerIndex + 1);
 	}
 
 	// We always set a default skin, since we may be waiting for the player's custom skin to be transmitted
@@ -1018,9 +1018,9 @@ void Player::aiStep()
 		flyingSpeed += defaultFlySpeed * 0.3f;
 	}
 
-	setSpeed((float) speed->getValue());
+	setSpeed(static_cast<float>(speed->getValue()));
 
-	float tBob = (float) sqrt(xd * xd + zd * zd);
+	float tBob = static_cast<float>(sqrt(xd * xd + zd * zd));
 
 	// 4J added - we were getting a NaN with zero xd & zd
 	if(( xd * xd + zd * zd ) < 0.00001f )
@@ -1028,7 +1028,7 @@ void Player::aiStep()
 		tBob = 0.0f;
 	}
 
-	float tTilt = (float) atan(-yd * 0.2f) * 15.0f;
+	float tTilt = static_cast<float>(atan(-yd * 0.2f)) * 15.0f;
 	if (tBob > 0.1f) tBob = 0.1f;
 	if (!onGround || getHealth() <= 0) tBob = 0;
 	if (onGround || getHealth() <= 0) tTilt = 0;
@@ -1305,7 +1305,7 @@ void Player::addAdditonalSaveData(CompoundTag *entityTag)
 	entityTag->put(L"Inventory", inventory->save(new ListTag<CompoundTag>()));
 	entityTag->putInt(L"SelectedItemSlot", inventory->selected);
 	entityTag->putBoolean(L"Sleeping", m_isSleeping);
-	entityTag->putShort(L"SleepTimer", (short) sleepCounter);
+	entityTag->putShort(L"SleepTimer", static_cast<short>(sleepCounter));
 
 	entityTag->putFloat(L"XpP", experienceProgress);
 	entityTag->putInt(L"XpLevel", experienceLevel);
@@ -1459,7 +1459,7 @@ float Player::getArmorCoverPercentage()
 			count++;
 		}
 	}
-	return (float) count / (float) inventory->armor.length;
+	return static_cast<float>(count) / static_cast<float>(inventory->armor.length);
 }
 
 void Player::actuallyHurt(DamageSource *source, float dmg)
@@ -1594,7 +1594,7 @@ void Player::attack(shared_ptr<Entity> entity)
 		return;
 	}
 
-	float dmg = (float) getAttribute(SharedMonsterAttributes::ATTACK_DAMAGE)->getValue();
+	float dmg = static_cast<float>(getAttribute(SharedMonsterAttributes::ATTACK_DAMAGE)->getValue());
 
 	int knockback = 0;
 	float magicBoost = 0;
@@ -2028,11 +2028,11 @@ void Player::setPlayerFlag(int flag, bool value)
 	byte currentValue = entityData->getByte(DATA_PLAYER_FLAGS_ID);
 	if (value)
 	{
-		entityData->set(DATA_PLAYER_FLAGS_ID, (byte) (currentValue | (1 << flag)));
+		entityData->set(DATA_PLAYER_FLAGS_ID, static_cast<byte>(currentValue | (1 << flag)));
 	}
 	else
 	{
-		entityData->set(DATA_PLAYER_FLAGS_ID, (byte) (currentValue & ~(1 << flag)));
+		entityData->set(DATA_PLAYER_FLAGS_ID, static_cast<byte>(currentValue & ~(1 << flag)));
 	}
 }
 
@@ -2121,7 +2121,7 @@ void Player::travel(float xa, float ya)
 
 float Player::getSpeed()
 {
-	return (float) getAttribute(SharedMonsterAttributes::MOVEMENT_SPEED)->getValue();
+	return static_cast<float>(getAttribute(SharedMonsterAttributes::MOVEMENT_SPEED)->getValue());
 }
 
 void Player::checkMovementStatistiscs(double dx, double dy, double dz)
@@ -2133,7 +2133,7 @@ void Player::checkMovementStatistiscs(double dx, double dy, double dz)
 	}
 	if (isUnderLiquid(Material::water))
 	{
-		int distance = (int) Math::round(sqrt(dx * dx + dy * dy + dz * dz) * 100.0f);
+		int distance = static_cast<int>(Math::round(sqrt(dx * dx + dy * dy + dz * dz) * 100.0f));
 		if (distance > 0)
 		{
 			//awardStat(Stats::diveOneCm, distance);
@@ -2142,7 +2142,7 @@ void Player::checkMovementStatistiscs(double dx, double dy, double dz)
 	}
 	else if (isInWater())
 	{
-		int horizontalDistance = (int) Math::round(sqrt(dx * dx + dz * dz) * 100.0f);
+		int horizontalDistance = static_cast<int>(Math::round(sqrt(dx * dx + dz * dz) * 100.0f));
 		if (horizontalDistance > 0)
 		{
 			distanceSwim += horizontalDistance;
@@ -2159,7 +2159,7 @@ void Player::checkMovementStatistiscs(double dx, double dy, double dz)
 	{
 		if (dy > 0)
 		{
-			distanceClimb += (int) Math::round(dy * 100.0f);
+			distanceClimb += static_cast<int>(Math::round(dy * 100.0f));
 			if( distanceClimb >= 100 )
 			{
 				int newDistance = distanceClimb - (distanceClimb % 100);
@@ -2170,7 +2170,7 @@ void Player::checkMovementStatistiscs(double dx, double dy, double dz)
 	}
 	else if (onGround)
 	{
-		int horizontalDistance = (int) Math::round(sqrt(dx * dx + dz * dz) * 100.0f);
+		int horizontalDistance = static_cast<int>(Math::round(sqrt(dx * dx + dz * dz) * 100.0f));
 		if (horizontalDistance > 0)
 		{
 			distanceWalk += horizontalDistance;
@@ -2197,7 +2197,7 @@ void Player::checkRidingStatistiscs(double dx, double dy, double dz)
 {
 	if (riding != NULL)
 	{
-		int distance = (int) Math::round(sqrt(dx * dx + dy * dy + dz * dz) * 100.0f);
+		int distance = static_cast<int>(Math::round(sqrt(dx * dx + dy * dy + dz * dz) * 100.0f));
 		if (distance > 0)
 		{
 			if ( riding->instanceof(eTYPE_MINECART) )
@@ -2278,7 +2278,7 @@ void Player::causeFallDamage(float distance)
 
 	if (distance >= 2)
 	{
-		distanceFall += (int) Math::round(distance * 100.0);
+		distanceFall += static_cast<int>(Math::round(distance * 100.0));
 		if( distanceFall >= 100 )
 		{
 			int newDistance = distanceFall - (distanceFall % 100);
@@ -2388,7 +2388,7 @@ void Player::increaseXp(int i)
 	{
 		i = max;
 	}
-	experienceProgress += (float) i / getXpNeededForNextLevel();
+	experienceProgress += static_cast<float>(i) / getXpNeededForNextLevel();
 	totalExperience += i;
 	while (experienceProgress >= 1)
 	{
@@ -2714,7 +2714,7 @@ int Player::hash_fnct(const shared_ptr<Player> k)
 #ifdef __PS3__
 	return (int)boost::hash_value( k->name ); // 4J Stu - Names are completely unique?
 #else
-	return (int)std::hash<wstring>{}(k->name); // 4J Stu - Names are completely unique?
+	return static_cast<int>(std::hash<wstring>{}(k->name)); // 4J Stu - Names are completely unique?
 #endif //__PS3__
 }
 

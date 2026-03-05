@@ -243,7 +243,7 @@ void UIScene_SettingsOptionsMenu::handlePress(F64 controlId, F64 childId)
 	//CD - Added for audio
 	ui.PlayUISFX(eSFX_Press);
 
-	switch((int)controlId)
+	switch(static_cast<int>(controlId))
 	{
 	case eControl_Languages:
 		m_bNavigateToLanguageSelector = true;
@@ -378,8 +378,8 @@ void UIScene_SettingsOptionsMenu::handleReload()
 
 void UIScene_SettingsOptionsMenu::handleSliderMove(F64 sliderId, F64 currentValue)
 {
-	int value = (int)currentValue;
-	switch((int)sliderId)
+	int value = static_cast<int>(currentValue);
+	switch(static_cast<int>(sliderId))
 	{
 	case eControl_Autosave:
 		m_sliderAutosave.handleSliderMove(value);

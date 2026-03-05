@@ -51,7 +51,7 @@ Path *PathFinder::findPath(Entity *e, double xt, double yt, double zt, float max
 	int startY = Mth::floor(e->bb->y0 + 0.5f);
 	if (canFloat && e->isInWater())
 	{
-		startY = (int) (e->bb->y0);
+		startY = static_cast<int>(e->bb->y0);
 		int tileId = level->getTile((int) Mth::floor(e->x), startY, (int) Mth::floor(e->z));
 		while (tileId == Tile::water_Id || tileId == Tile::calmWater_Id)
 		{
@@ -62,10 +62,10 @@ Path *PathFinder::findPath(Entity *e, double xt, double yt, double zt, float max
 		avoidWater = false;
 	} else startY = Mth::floor(e->bb->y0 + 0.5f);
 
-	Node *from = getNode((int) floor(e->bb->x0), startY, (int) floor(e->bb->z0));
-	Node *to = getNode((int) floor(xt - e->bbWidth / 2), (int) floor(yt), (int) floor(zt - e->bbWidth / 2));
+	Node *from = getNode(static_cast<int>(floor(e->bb->x0)), startY, static_cast<int>(floor(e->bb->z0)));
+	Node *to = getNode(static_cast<int>(floor(xt - e->bbWidth / 2)), static_cast<int>(floor(yt)), static_cast<int>(floor(zt - e->bbWidth / 2)));
 
-	Node *size = new Node((int) floor(e->bbWidth + 1), (int) floor(e->bbHeight + 1), (int) floor(e->bbWidth + 1));
+	Node *size = new Node(static_cast<int>(floor(e->bbWidth + 1)), static_cast<int>(floor(e->bbHeight + 1)), static_cast<int>(floor(e->bbWidth + 1)));
 	Path *path = findPath(e, from, to, size, maxDist);
 	delete size;
 

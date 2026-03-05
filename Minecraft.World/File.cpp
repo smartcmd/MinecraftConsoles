@@ -673,7 +673,7 @@ const std::wstring File::getPath() const
 
 std::wstring File::getName() const
 {
-	unsigned int sep = (unsigned int )(m_abstractPathName.find_last_of( this->pathSeparator ));
+	unsigned int sep = static_cast<unsigned int>(m_abstractPathName.find_last_of(this->pathSeparator));
 	return m_abstractPathName.substr( sep + 1, m_abstractPathName.length() );
 }
 

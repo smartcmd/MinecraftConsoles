@@ -52,7 +52,7 @@ HRESULT CScene_MultiGameCreate::OnInit( XUIMessageInit* pInitData, BOOL& bHandle
 	XuiControlSetText(m_labelRandomSeed,app.GetString(IDS_CREATE_NEW_WORLD_RANDOM_SEED));
 	XuiControlSetText(m_pTexturePacksList->m_hObj,app.GetString(IDS_DLC_MENU_TEXTUREPACKS));
 
-	CreateWorldMenuInitData *params = (CreateWorldMenuInitData *)pInitData->pvInitData;
+	CreateWorldMenuInitData *params = static_cast<CreateWorldMenuInitData *>(pInitData->pvInitData);
 
 	m_MoreOptionsParams.bGenerateOptions=TRUE;
 	m_MoreOptionsParams.bStructures=TRUE;	
@@ -139,7 +139,7 @@ HRESULT CScene_MultiGameCreate::OnInit( XUIMessageInit* pInitData, BOOL& bHandle
 	wstring wWorldName = m_EditWorldName.GetText();
 
 	// set the caret to the end of the default text
-	m_EditWorldName.SetCaretPosition((int)wWorldName.length());
+	m_EditWorldName.SetCaretPosition(static_cast<int>(wWorldName.length()));
 	// In the dashboard, there's room for about 30 W characters on two lines before they go over the top of things
 	m_EditWorldName.SetTextLimit(25);
 
@@ -190,7 +190,7 @@ HRESULT CScene_MultiGameCreate::OnInit( XUIMessageInit* pInitData, BOOL& bHandle
 			if(dwImageBytes > 0 && pbImageData)
 			{
 				ListInfo.fEnabled = TRUE;	
-				DLCTexturePack *pDLCTexPack=(DLCTexturePack *)tp;
+				DLCTexturePack *pDLCTexPack=static_cast<DLCTexturePack *>(tp);
 				if(pDLCTexPack)
 				{
 					int id=pDLCTexPack->getDLCParentPackId();
@@ -522,7 +522,7 @@ HRESULT CScene_MultiGameCreate::OnNotifyPressEx(HXUIOBJ hObjPressed, XUINotifyPr
 
 int CScene_MultiGameCreate::UnlockTexturePackReturned(void *pParam,int iPad,C4JStorage::EMessageResult result)
 {
-	CScene_MultiGameCreate* pScene = (CScene_MultiGameCreate*)pParam;
+	CScene_MultiGameCreate* pScene = static_cast<CScene_MultiGameCreate *>(pParam);
 #ifdef _XBOX
 	if(result==C4JStorage::EMessage_ResultAccept)
 	{
@@ -558,7 +558,7 @@ int CScene_MultiGameCreate::UnlockTexturePackReturned(void *pParam,int iPad,C4JS
 
 int CScene_MultiGameCreate::WarningTrialTexturePackReturned(void *pParam,int iPad,C4JStorage::EMessageResult result)
 {
-	CScene_MultiGameCreate* pScene = (CScene_MultiGameCreate*)pParam;
+	CScene_MultiGameCreate* pScene = static_cast<CScene_MultiGameCreate *>(pParam);
 	pScene->m_bIgnoreInput = false;
 	pScene->SetShow( TRUE );
 	bool isClientSide = ProfileManager.IsSignedInLive(ProfileManager.GetPrimaryPad()) && pScene->m_MoreOptionsParams.bOnlineGame;
@@ -634,7 +634,7 @@ HRESULT CScene_MultiGameCreate::OnNotifyValueChanged (HXUIOBJ hObjSource, XUINot
 	else if(hObjSource==m_SliderDifficulty.GetSlider() )
 	{
 		app.SetGameSettings(m_iPad,eGameSetting_Difficulty,pValueChangedData->nValue);
-		swprintf( (WCHAR *)TempString, 256, L"%ls: %ls", app.GetString( IDS_SLIDER_DIFFICULTY ),app.GetString(m_iDifficultyTitleSettingA[pValueChangedData->nValue]));		
+		swprintf( static_cast<WCHAR *>(TempString), 256, L"%ls: %ls", app.GetString( IDS_SLIDER_DIFFICULTY ),app.GetString(m_iDifficultyTitleSettingA[pValueChangedData->nValue]));		
 		m_SliderDifficulty.SetText(TempString);
 	}
 
@@ -754,7 +754,7 @@ HRESULT CScene_MultiGameCreate::OnTimer( XUIMessageTimer *pTimer, BOOL& bHandled
 
 int CScene_MultiGameCreate::ConfirmCreateReturned(void *pParam,int iPad,C4JStorage::EMessageResult result)
 {
-	CScene_MultiGameCreate* pClass = (CScene_MultiGameCreate*)pParam;
+	CScene_MultiGameCreate* pClass = static_cast<CScene_MultiGameCreate *>(pParam);
 
 	if(result==C4JStorage::EMessage_ResultAccept) 
 	{
@@ -808,7 +808,7 @@ int CScene_MultiGameCreate::ConfirmCreateReturned(void *pParam,int iPad,C4JStora
 
 int CScene_MultiGameCreate::StartGame_SignInReturned(void *pParam,bool bContinue, int iPad)
 {
-	CScene_MultiGameCreate* pClass = (CScene_MultiGameCreate*)pParam;
+	CScene_MultiGameCreate* pClass = static_cast<CScene_MultiGameCreate *>(pParam);
 
 	if(bContinue==true)
 	{
@@ -909,7 +909,7 @@ void CScene_MultiGameCreate::CreateGame(CScene_MultiGameCreate* pClass, DWORD dw
 	if (wSeed.length() != 0)
 	{
 		__int64 value = 0;
-		unsigned int len = (unsigned int)wSeed.length();
+		unsigned int len = static_cast<unsigned int>(wSeed.length());
 
 		//Check if the input string contains a numerical value
 		bool isNumber = true;
@@ -979,7 +979,7 @@ void CScene_MultiGameCreate::CreateGame(CScene_MultiGameCreate* pClass, DWORD dw
 
 	LoadingInputParams *loadingParams = new LoadingInputParams();
 	loadingParams->func = &CGameNetworkManager::RunNetworkGameThreadProc;
-	loadingParams->lpParam = (LPVOID)param;
+	loadingParams->lpParam = static_cast<LPVOID>(param);
 
 	// Reset the autosave time
 	app.SetAutosaveTimerTime();
@@ -1217,7 +1217,7 @@ void CScene_MultiGameCreate::UpdateCurrentTexturePack()
 
 int CScene_MultiGameCreate::TexturePackDialogReturned(void *pParam,int iPad,C4JStorage::EMessageResult result)
 {
-	CScene_MultiGameCreate *pClass = (CScene_MultiGameCreate *)pParam;
+	CScene_MultiGameCreate *pClass = static_cast<CScene_MultiGameCreate *>(pParam);
 	pClass->m_currentTexturePackIndex = pClass->m_pTexturePacksList->GetCurSel();
 	// Exit with or without saving
 	// Decline means install full version of the texture pack in this dialog
@@ -1295,7 +1295,7 @@ HRESULT CScene_MultiGameCreate::OnCustomMessage_DLCMountingComplete()
 			ListInfo.fEnabled = TRUE;			
 			hr=XuiCreateTextureBrushFromMemory(pbImageData,dwImageBytes,&ListInfo.hXuiBrush);
 
-			DLCTexturePack *pDLCTexPack=(DLCTexturePack *)tp;
+			DLCTexturePack *pDLCTexPack=static_cast<DLCTexturePack *>(tp);
 			if(pDLCTexPack)
 			{
 				int id=pDLCTexPack->getDLCParentPackId();

@@ -195,7 +195,7 @@ void PlayerConnection::handleMovePlayer(shared_ptr<MovePlayerPacket> packet)
 				yLastOk = player->y;
 				zLastOk = player->z;
 			}
-			((Level *)level)->tick(player);
+			static_cast<Level *>(level)->tick(player);
 
 			return;
 		}
@@ -204,7 +204,7 @@ void PlayerConnection::handleMovePlayer(shared_ptr<MovePlayerPacket> packet)
 		{
 			player->doTick(false);
 			player->absMoveTo(xLastOk, yLastOk, zLastOk, player->yRot, player->xRot);
-			((Level *)level)->tick(player);
+			static_cast<Level *>(level)->tick(player);
 			return;
 		}
 
@@ -1185,8 +1185,8 @@ void PlayerConnection::handleSetCreativeModeSlot(shared_ptr<SetCreativeModeSlotP
 			int mapScale = 3;
 #ifdef _LARGE_WORLDS
 			int scale = MapItemSavedData::MAP_SIZE * 2 * (1 << mapScale);
-			int centreXC = (int) (Math::round(player->x / scale) * scale);
-			int centreZC = (int) (Math::round(player->z / scale) * scale);
+			int centreXC = static_cast<int>(Math::round(player->x / scale) * scale);
+			int centreZC = static_cast<int>(Math::round(player->z / scale) * scale);
 #else
 			// 4J-PB - for Xbox maps, we'll centre them on the origin of the world, since we can fit the whole world in our map
 			int centreXC = 0;
@@ -1210,7 +1210,7 @@ void PlayerConnection::handleSetCreativeModeSlot(shared_ptr<SetCreativeModeSlotP
 			// 4J-PB - for Xbox maps, we'll centre them on the origin of the world, since we can fit the whole world in our map
 			data->x = centreXC;
 			data->z = centreZC;
-			data->dimension = (byte) player->level->dimension->id;
+			data->dimension = static_cast<byte>(player->level->dimension->id);
 			data->setDirty();
 		}
 
@@ -1313,7 +1313,7 @@ void PlayerConnection::handleKeepAlive(shared_ptr<KeepAlivePacket> packet)
 {
 	if (packet->id == lastKeepAliveId)
 	{
-		int time = (int) (System::nanoTime() / 1000000 - lastKeepAliveTime);
+		int time = static_cast<int>(System::nanoTime() / 1000000 - lastKeepAliveTime);
 		player->latency = (player->latency * 3 + time) / 4;
 	}
 }
@@ -1489,7 +1489,7 @@ void PlayerConnection::handleCustomPayload(shared_ptr<CustomPayloadPacket> custo
 			AbstractContainerMenu *menu = player->containerMenu;
 			if (dynamic_cast<MerchantMenu *>(menu))
 			{
-				((MerchantMenu *) menu)->setSelectionHint(selection);
+				static_cast<MerchantMenu *>(menu)->setSelectionHint(selection);
 			}
 		}
 		else if (CustomPayloadPacket::SET_ADVENTURE_COMMAND_PACKET.compare(customPayloadPacket->identifier) == 0)
@@ -1531,7 +1531,7 @@ void PlayerConnection::handleCustomPayload(shared_ptr<CustomPayloadPacket> custo
 				int primary = input.readInt();
 				int secondary = input.readInt();
 
-				BeaconMenu *beaconMenu = (BeaconMenu *) player->containerMenu;
+				BeaconMenu *beaconMenu = static_cast<BeaconMenu *>(player->containerMenu);
 				Slot *slot = beaconMenu->getSlot(0);
 				if (slot->hasItem())
 				{
@@ -1600,7 +1600,7 @@ void PlayerConnection::handleCraftItem(shared_ptr<CraftItemPacket> packet)
 	}
 	else if (pTempItemInst->id == Item::fireworksCharge_Id || pTempItemInst->id == Item::fireworks_Id)
 	{
-		CraftingMenu *menu = (CraftingMenu *)player->containerMenu;
+		CraftingMenu *menu = static_cast<CraftingMenu *>(player->containerMenu);
 		player->openFireworks(menu->getX(), menu->getY(), menu->getZ() );
 	}
 	else
@@ -1697,7 +1697,7 @@ void PlayerConnection::handleTradeItem(shared_ptr<TradeItemPacket> packet)
 {
 	if (player->containerMenu->containerId == packet->containerId)
 	{
-		MerchantMenu *menu = (MerchantMenu *)player->containerMenu;
+		MerchantMenu *menu = static_cast<MerchantMenu *>(player->containerMenu);
 
 		MerchantRecipeList *offers = menu->getMerchant()->getOffers(player);
 

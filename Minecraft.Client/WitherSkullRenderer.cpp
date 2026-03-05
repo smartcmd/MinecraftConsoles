@@ -19,7 +19,7 @@ void WitherSkullRenderer::render(shared_ptr<Entity> entity, double x, double y, 
 	float headRot = rotlerp(entity->yRotO, entity->yRot, a);
 	float headRotx = entity->xRotO + (entity->xRot - entity->xRotO) * a;
 
-	glTranslatef((float) x, (float) y, (float) z);
+	glTranslatef(static_cast<float>(x), static_cast<float>(y), static_cast<float>(z));
 
 	float scale = 1 / 16.0f;
 	glEnable(GL_RESCALE_NORMAL);

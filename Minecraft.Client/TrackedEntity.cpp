@@ -152,7 +152,7 @@ void TrackedEntity::tick(EntityTracker *tracker, vector<shared_ptr<Player> > *pl
 								)
 				{
 					teleportDelay = 0;
-					packet = shared_ptr<TeleportEntityPacket>( new TeleportEntityPacket(e->entityId, xn, yn, zn, (byte) yRotn, (byte) xRotn) );
+					packet = shared_ptr<TeleportEntityPacket>( new TeleportEntityPacket(e->entityId, xn, yn, zn, static_cast<byte>(yRotn), static_cast<byte>(xRotn)) );
 					//			printf("%d: New teleport rot %d\n",e->entityId,yRotn);
 					yRotp = yRotn;
 					xRotp = xRotn;
@@ -179,12 +179,12 @@ void TrackedEntity::tick(EntityTracker *tracker, vector<shared_ptr<Player> > *pl
 								yRotn = yRotp + yRota;
 							}
 							// 5 bits each for x & z, and 6 for y
-							packet = shared_ptr<MoveEntityPacketSmall>( new MoveEntityPacketSmall::PosRot(e->entityId, (char) xa, (char) ya, (char) za, (char) yRota, 0 ) );
+							packet = shared_ptr<MoveEntityPacketSmall>( new MoveEntityPacketSmall::PosRot(e->entityId, static_cast<char>(xa), static_cast<char>(ya), static_cast<char>(za), static_cast<char>(yRota), 0 ) );
 							c0a++;
 						}
 						else
 						{
-							packet = shared_ptr<MoveEntityPacket>( new MoveEntityPacket::PosRot(e->entityId, (char) xa, (char) ya, (char) za, (char) yRota, (char) xRota) );
+							packet = shared_ptr<MoveEntityPacket>( new MoveEntityPacket::PosRot(e->entityId, static_cast<char>(xa), static_cast<char>(ya), static_cast<char>(za), static_cast<char>(yRota), static_cast<char>(xRota)) );
 							//					printf("%d: New posrot %d + %d = %d\n",e->entityId,yRotp,yRota,yRotn);
 							c0b++;
 						}
@@ -197,7 +197,7 @@ void TrackedEntity::tick(EntityTracker *tracker, vector<shared_ptr<Player> > *pl
 							( ya >= -16 ) && ( ya <= 15 ) )
 						{
 							// 4 bits each for x & z, and 5 for y
-							packet = shared_ptr<MoveEntityPacketSmall>( new MoveEntityPacketSmall::Pos(e->entityId, (char) xa, (char) ya, (char) za) );
+							packet = shared_ptr<MoveEntityPacketSmall>( new MoveEntityPacketSmall::Pos(e->entityId, static_cast<char>(xa), static_cast<char>(ya), static_cast<char>(za)) );
 							c1a++;
 						}
 
@@ -206,12 +206,12 @@ void TrackedEntity::tick(EntityTracker *tracker, vector<shared_ptr<Player> > *pl
 							( ya >= -32 ) && ( ya <= 31 ) )
 						{
 							// use the packet with small packet with rotation if we can - 5 bits each for x & z, and 6 for y - still a byte less than the alternative
-							packet = shared_ptr<MoveEntityPacketSmall>( new MoveEntityPacketSmall::PosRot(e->entityId, (char) xa, (char) ya, (char) za, 0, 0 ));
+							packet = shared_ptr<MoveEntityPacketSmall>( new MoveEntityPacketSmall::PosRot(e->entityId, static_cast<char>(xa), static_cast<char>(ya), static_cast<char>(za), 0, 0 ));
 							c1b++;
 						}
 						else
 						{
-							packet = shared_ptr<MoveEntityPacket>( new MoveEntityPacket::Pos(e->entityId, (char) xa, (char) ya, (char) za) );
+							packet = shared_ptr<MoveEntityPacket>( new MoveEntityPacket::Pos(e->entityId, static_cast<char>(xa), static_cast<char>(ya), static_cast<char>(za)) );
 							c1c++;
 						}
 					}
@@ -231,13 +231,13 @@ void TrackedEntity::tick(EntityTracker *tracker, vector<shared_ptr<Player> > *pl
 								yRota = 15;
 								yRotn = yRotp + yRota;
 							}
-							packet = shared_ptr<MoveEntityPacketSmall>( new MoveEntityPacketSmall::Rot(e->entityId, (char) yRota, 0) );
+							packet = shared_ptr<MoveEntityPacketSmall>( new MoveEntityPacketSmall::Rot(e->entityId, static_cast<char>(yRota), 0) );
 							c2a++;
 						}
 						else
 						{
 							//					printf("%d: New rot %d + %d = %d\n",e->entityId,yRotp,yRota,yRotn);
-							packet = shared_ptr<MoveEntityPacket>( new MoveEntityPacket::Rot(e->entityId, (char) yRota, (char) xRota) );
+							packet = shared_ptr<MoveEntityPacket>( new MoveEntityPacket::Rot(e->entityId, static_cast<char>(yRota), static_cast<char>(xRota)) );
 							c2b++;
 						}
 					}
@@ -291,7 +291,7 @@ void TrackedEntity::tick(EntityTracker *tracker, vector<shared_ptr<Player> > *pl
 			if (rot)
 			{
 				// 4J: Changed this to use deltas
-				broadcast( shared_ptr<MoveEntityPacket>( new MoveEntityPacket::Rot(e->entityId, (byte) yRota, (byte) xRota)) );
+				broadcast( shared_ptr<MoveEntityPacket>( new MoveEntityPacket::Rot(e->entityId, static_cast<byte>(yRota), static_cast<byte>(xRota))) );
 				yRotp = yRotn;
 				xRotp = xRotn;
 			}
@@ -308,7 +308,7 @@ void TrackedEntity::tick(EntityTracker *tracker, vector<shared_ptr<Player> > *pl
 		int yHeadRot = Mth::floor(e->getYHeadRot() * 256 / 360);
 		if (abs(yHeadRot - yHeadRotp) >= TOLERANCE_LEVEL)
 		{
-			broadcast(shared_ptr<RotateHeadPacket>( new RotateHeadPacket(e->entityId, (byte) yHeadRot)));
+			broadcast(shared_ptr<RotateHeadPacket>( new RotateHeadPacket(e->entityId, static_cast<byte>(yHeadRot))));
 			yHeadRotp = yHeadRot;
 		}
 
@@ -337,7 +337,7 @@ void TrackedEntity::sendDirtyEntityData()
 	if ( e->instanceof(eTYPE_LIVINGENTITY) )
 	{
 		shared_ptr<LivingEntity> living = dynamic_pointer_cast<LivingEntity>(e);
-		ServersideAttributeMap *attributeMap = (ServersideAttributeMap *) living->getAttributes();
+		ServersideAttributeMap *attributeMap = static_cast<ServersideAttributeMap *>(living->getAttributes());
 		unordered_set<AttributeInstance *> *attributes = attributeMap->getDirtyAttributes();
 
 		if (!attributes->empty())
@@ -545,7 +545,7 @@ void TrackedEntity::updatePlayer(EntityTracker *tracker, shared_ptr<ServerPlayer
 		if ( e->instanceof(eTYPE_LIVINGENTITY) )
 		{
 			shared_ptr<LivingEntity> living = dynamic_pointer_cast<LivingEntity>(e);
-			ServersideAttributeMap *attributeMap = (ServersideAttributeMap *) living->getAttributes();
+			ServersideAttributeMap *attributeMap = static_cast<ServersideAttributeMap *>(living->getAttributes());
 			unordered_set<AttributeInstance *> *attributes = attributeMap->getSyncableAttributes();
 
 			if (!attributes->empty())
@@ -736,9 +736,9 @@ shared_ptr<Packet> TrackedEntity::getAddEntityPacket()
 		{
 			aep = shared_ptr<AddEntityPacket>( new AddEntityPacket(e, type, 0, yRotp, xRotp, xp, yp, zp) );
 		}
-		aep->xa = (int) (fb->xPower * 8000);
-		aep->ya = (int) (fb->yPower * 8000);
-		aep->za = (int) (fb->zPower * 8000);
+		aep->xa = static_cast<int>(fb->xPower * 8000);
+		aep->ya = static_cast<int>(fb->yPower * 8000);
+		aep->za = static_cast<int>(fb->zPower * 8000);
 		return aep;
 	}
 	else if (e->instanceof(eTYPE_THROWNEGG))
@@ -784,9 +784,9 @@ shared_ptr<Packet> TrackedEntity::getAddEntityPacket()
 	{
 		shared_ptr<LeashFenceKnotEntity> knot = dynamic_pointer_cast<LeashFenceKnotEntity>(e);
 		shared_ptr<AddEntityPacket> packet = shared_ptr<AddEntityPacket>(new AddEntityPacket(e, AddEntityPacket::LEASH_KNOT, yRotp, xRotp, xp, yp, zp) );
-		packet->x = Mth::floor((float)knot->xTile * 32);
-		packet->y = Mth::floor((float)knot->yTile * 32);
-		packet->z = Mth::floor((float)knot->zTile * 32);
+		packet->x = Mth::floor(static_cast<float>(knot->xTile) * 32);
+		packet->y = Mth::floor(static_cast<float>(knot->yTile) * 32);
+		packet->z = Mth::floor(static_cast<float>(knot->zTile) * 32);
 		return packet;
 	}
 	else if (e->instanceof(eTYPE_EXPERIENCEORB))

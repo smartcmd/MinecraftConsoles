@@ -61,7 +61,7 @@ void FileOutputStream::write(unsigned int b)
 {	
 	DWORD numberOfBytesWritten;
 
-	byte value = (byte) b;
+	byte value = static_cast<byte>(b);
 
 	BOOL result = WriteFile(
 		m_fileHandle, // handle to file

@@ -240,7 +240,7 @@ SceInt32 C4JThread::entryPoint(SceSize argSize, void *pArgBlock)
 #else
 DWORD WINAPI	C4JThread::entryPoint(LPVOID lpParam)
 {
-	C4JThread* pThread = (C4JThread*)lpParam;
+	C4JThread* pThread = static_cast<C4JThread *>(lpParam);
 	SetThreadName(-1, pThread->m_threadName);
 	pThread->m_exitCode = (*pThread->m_startFunc)(pThread->m_threadParam);
 	pThread->m_isRunning = false;
@@ -1029,7 +1029,7 @@ void C4JThread::EventQueue::waitForFinish()
 
 int C4JThread::EventQueue::threadFunc( void* lpParam )
 {
-	EventQueue* p = (EventQueue*)lpParam;
+	EventQueue* p = static_cast<EventQueue *>(lpParam);
 	p->threadPoll();
 	return 0;
 }

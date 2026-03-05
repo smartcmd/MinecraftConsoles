@@ -30,7 +30,7 @@ PreStitchedTextureMap::PreStitchedTextureMap(int type, const wstring &name, cons
 	stitchResult = NULL;
 
 	m_mipMap = mipmap;
-	missingPosition = (StitchedTexture *)(new SimpleIcon(NAME_MISSING_TEXTURE,NAME_MISSING_TEXTURE,0,0,1,1));
+	missingPosition = static_cast<StitchedTexture *>(new SimpleIcon(NAME_MISSING_TEXTURE, NAME_MISSING_TEXTURE, 0, 0, 1, 1));
 }
 
 void PreStitchedTextureMap::stitch()

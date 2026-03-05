@@ -58,7 +58,7 @@ void CompleteAllRuleDefinition::updateStatus(GameRule *rule)
 
 wstring CompleteAllRuleDefinition::generateDescriptionString(const wstring &description, void *data, int dataLength)
 {
-	PacketData *values = (PacketData *)data;
+	PacketData *values = static_cast<PacketData *>(data);
 	wstring newDesc = description;
 	newDesc = replaceAll(newDesc,L"{*progress*}",std::to_wstring(values->progress));
 	newDesc = replaceAll(newDesc,L"{*goal*}",std::to_wstring(values->goal));

@@ -62,8 +62,8 @@ void EnchantmentHelper::setEnchantments(unordered_map<int, int> *enchantments, s
 		int id = it.first;
 		CompoundTag *tag = new CompoundTag();
 
-		tag->putShort((wchar_t *)ItemInstance::TAG_ENCH_ID, (short) id);
-		tag->putShort((wchar_t *)ItemInstance::TAG_ENCH_LEVEL, (short)(int)it.second);
+		tag->putShort((wchar_t *)ItemInstance::TAG_ENCH_ID, static_cast<short>(id));
+		tag->putShort((wchar_t *)ItemInstance::TAG_ENCH_LEVEL, static_cast<short>((int)it.second));
 
 		list->add(tag);
 
@@ -348,7 +348,7 @@ vector<EnchantmentInstance *> *EnchantmentHelper::selectEnchantment(Random *rand
 
 	// the final enchantment cost will have another random span of +- 15%
 	float deviation = (random->nextFloat() + random->nextFloat() - 1.0f) * .15f;
-	int realValue = (int) ((float) enchantmentValue * (1.0f + deviation) + .5f);
+	int realValue = static_cast<int>((float)enchantmentValue * (1.0f + deviation) + .5f);
 	if (realValue < 1)
 	{
 		realValue = 1;
@@ -364,7 +364,7 @@ vector<EnchantmentInstance *> *EnchantmentHelper::selectEnchantment(Random *rand
 		{
 			values.push_back(it.second);
 		}
-		EnchantmentInstance *instance = (EnchantmentInstance *) WeighedRandom::getRandomItem(random, &values);
+		EnchantmentInstance *instance = static_cast<EnchantmentInstance *>(WeighedRandom::getRandomItem(random, &values));
 		values.clear();
 
 		if (instance)
@@ -409,7 +409,7 @@ vector<EnchantmentInstance *> *EnchantmentHelper::selectEnchantment(Random *rand
 					{
 						values.push_back(it.second);
 					}
-					EnchantmentInstance *nextInstance = (EnchantmentInstance *) WeighedRandom::getRandomItem(random, &values);
+					EnchantmentInstance *nextInstance = static_cast<EnchantmentInstance *>(WeighedRandom::getRandomItem(random, &values));
 					values.clear();
 					results->push_back( nextInstance->copy() ); // 4J Stu - Inserting a copy so we can clear memory from the availableEnchantments collection
 				}

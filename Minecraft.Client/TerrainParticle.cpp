@@ -55,9 +55,9 @@ void TerrainParticle::render(Tesselator *t, float a, float xa, float ya, float z
 		v1 = tex->getV(((vo + 1) / 4.0f) * SharedConstants::WORLD_RESOLUTION);
 	}
 
-    float x = (float) (xo + (this->x - xo) * a - xOff);
-    float y = (float) (yo + (this->y - yo) * a - yOff);
-    float z = (float) (zo + (this->z - zo) * a - zOff);
+    float x = static_cast<float>(xo + (this->x - xo) * a - xOff);
+    float y = static_cast<float>(yo + (this->y - yo) * a - yOff);
+    float z = static_cast<float>(zo + (this->z - zo) * a - zOff);
 
 	// 4J - don't render terrain particles that are less than a metre away, to try and avoid large particles that are causing us problems with 
 	// photosensitivity testing

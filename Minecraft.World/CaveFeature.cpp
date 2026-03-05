@@ -46,9 +46,9 @@ bool CaveFeature::place(Level *level, Random *random, int x, int y, int z)
 			}
 		}
 
-		for (int x2 = (int) (xx - r / 2); x2 <= (int) (xx + r / 2); x2++)
-			for (int y2 = (int) (yy - hr / 2); y2 <= (int) (yy + hr / 2); y2++)
-				for (int z2 = (int) (zz - r / 2); z2 <= (int) (zz + r / 2); z2++)
+		for (int x2 = static_cast<int>(xx - r / 2); x2 <= static_cast<int>(xx + r / 2); x2++)
+			for (int y2 = static_cast<int>(yy - hr / 2); y2 <= static_cast<int>(yy + hr / 2); y2++)
+				for (int z2 = static_cast<int>(zz - r / 2); z2 <= static_cast<int>(zz + r / 2); z2++)
 				{
 					double xd = ((x2 + 0.5) - xx) / (r / 2);
 					double yd = ((y2 + 0.5) - yy) / (hr / 2);

@@ -28,7 +28,7 @@ HRESULT CXuiSceneAnvil::OnInit( XUIMessageInit* pInitData, BOOL& bHandled )
 
 	Minecraft *pMinecraft = Minecraft::GetInstance();
 
-	AnvilScreenInput* initData = (AnvilScreenInput*)pInitData->pvInitData;
+	AnvilScreenInput* initData = static_cast<AnvilScreenInput *>(pInitData->pvInitData);
 	m_iPad=initData->iPad;
 	m_bSplitscreen=initData->bSplitscreen;
 	m_inventory = initData->inventory;
@@ -42,7 +42,7 @@ HRESULT CXuiSceneAnvil::OnInit( XUIMessageInit* pInitData, BOOL& bHandled )
 
 	if( pMinecraft->localgameModes[m_iPad] != NULL )
 	{
-		TutorialMode *gameMode = (TutorialMode *)pMinecraft->localgameModes[m_iPad];
+		TutorialMode *gameMode = static_cast<TutorialMode *>(pMinecraft->localgameModes[m_iPad]);
 		m_previousTutorialState = gameMode->getTutorial()->getCurrentState();
 		gameMode->getTutorial()->changeTutorialState(e_Tutorial_State_Anvil_Menu, this);
 	}
@@ -69,7 +69,7 @@ HRESULT CXuiSceneAnvil::OnDestroy()
 
 	if( pMinecraft->localgameModes[m_iPad] != NULL )
 	{
-		TutorialMode *gameMode = (TutorialMode *)pMinecraft->localgameModes[m_iPad];
+		TutorialMode *gameMode = static_cast<TutorialMode *>(pMinecraft->localgameModes[m_iPad]);
 		if(gameMode != NULL) gameMode->getTutorial()->changeTutorialState(m_previousTutorialState);
 	}
 
@@ -89,8 +89,8 @@ HRESULT CXuiSceneAnvil::OnNotifyValueChanged (HXUIOBJ hObjSource, XUINotifyValue
 
 		// strip leading spaces
 		wstring b;
-		int start = (int)newValue.find_first_not_of(L" ");
-		int end = (int)newValue.find_last_not_of(L" ");
+		int start = static_cast<int>(newValue.find_first_not_of(L" "));
+		int end = static_cast<int>(newValue.find_last_not_of(L" "));
 
 		if( start == wstring::npos )
 		{
@@ -99,7 +99,7 @@ HRESULT CXuiSceneAnvil::OnNotifyValueChanged (HXUIOBJ hObjSource, XUINotifyValue
 		}
 		else
 		{
-			if( end == wstring::npos ) end = (int)newValue.size()-1;
+			if( end == wstring::npos ) end = static_cast<int>(newValue.size())-1;
 			b = newValue.substr(start,(end-start)+1);
 			newValue=b;
 		}

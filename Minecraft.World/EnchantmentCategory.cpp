@@ -19,7 +19,7 @@ bool EnchantmentCategory::canEnchant(Item *item) const
 	if (dynamic_cast<ArmorItem *>( item ) != NULL)
 	{
 		if (this == armor) return true;
-		ArmorItem *ai = (ArmorItem *) item;
+		ArmorItem *ai = static_cast<ArmorItem *>(item);
 		if (ai->slot == ArmorItem::SLOT_HEAD) return this == armor_head;
 		if (ai->slot == ArmorItem::SLOT_LEGS) return this == armor_legs;
 		if (ai->slot == ArmorItem::SLOT_TORSO) return this == armor_torso;

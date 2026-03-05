@@ -219,13 +219,13 @@ wstring UIComponent_TutorialPopup::_SetIcon(int icon, int iAuxVal, bool isFoil, 
 		m_iconItem = nullptr;
 		wstring openTag(L"{*ICON*}");
 		wstring closeTag(L"{*/ICON*}");
-		int iconTagStartPos = (int)temp.find(openTag);
-		int iconStartPos = iconTagStartPos + (int)openTag.length();
-		if( iconTagStartPos > 0 && iconStartPos < (int)temp.length() )
+		int iconTagStartPos = static_cast<int>(temp.find(openTag));
+		int iconStartPos = iconTagStartPos + static_cast<int>(openTag.length());
+		if( iconTagStartPos > 0 && iconStartPos < static_cast<int>(temp.length()) )
 		{
-			int iconEndPos = (int)temp.find( closeTag, iconStartPos );
+			int iconEndPos = static_cast<int>(temp.find(closeTag, iconStartPos));
 
-			if(iconEndPos > iconStartPos && iconEndPos < (int)temp.length() )
+			if(iconEndPos > iconStartPos && iconEndPos < static_cast<int>(temp.length()) )
 			{
 				wstring id = temp.substr(iconStartPos, iconEndPos - iconStartPos);
 
@@ -479,20 +479,20 @@ void UIComponent_TutorialPopup::render(S32 width, S32 height, C4JRender::eViewpo
 		switch( viewport )
 		{
 		case C4JRender::VIEWPORT_TYPE_SPLIT_BOTTOM:
-			xPos = (S32)(ui.getScreenWidth() / 2);
-			yPos = (S32)(ui.getScreenHeight() / 2);
+			xPos = static_cast<S32>(ui.getScreenWidth() / 2);
+			yPos = static_cast<S32>(ui.getScreenHeight() / 2);
 			break;
 		case C4JRender::VIEWPORT_TYPE_QUADRANT_BOTTOM_LEFT:
-			yPos = (S32)(ui.getScreenHeight() / 2);
+			yPos = static_cast<S32>(ui.getScreenHeight() / 2);
 			break;
 		case C4JRender::VIEWPORT_TYPE_SPLIT_TOP:
 		case C4JRender::VIEWPORT_TYPE_SPLIT_RIGHT:
 		case C4JRender::VIEWPORT_TYPE_QUADRANT_TOP_RIGHT:
-			xPos = (S32)(ui.getScreenWidth() / 2);
+			xPos = static_cast<S32>(ui.getScreenWidth() / 2);
 			break;
 		case C4JRender::VIEWPORT_TYPE_QUADRANT_BOTTOM_RIGHT:
-			xPos = (S32)(ui.getScreenWidth() / 2);
-			yPos = (S32)(ui.getScreenHeight() / 2);
+			xPos = static_cast<S32>(ui.getScreenWidth() / 2);
+			yPos = static_cast<S32>(ui.getScreenHeight() / 2);
 			break;
 		}
 		//Adjust for safezone
@@ -538,7 +538,7 @@ void UIComponent_TutorialPopup::setupIconHolder(EIcons icon)
 	IggyDataValue result;
 	IggyDataValue value[1];
 	value[0].type = IGGY_DATATYPE_number;
-	value[0].number = (F64)icon;
+	value[0].number = static_cast<F64>(icon);
 	IggyResult out = IggyPlayerCallMethodRS ( getMovie() , &result, IggyPlayerRootPath( getMovie() ), m_funcSetupIconHolder , 1 , value );
 
 	m_iconType = icon;

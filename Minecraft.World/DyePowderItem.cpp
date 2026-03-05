@@ -177,7 +177,7 @@ bool DyePowderItem::growCrop(shared_ptr<ItemInstance> itemInstance, Level *level
 		{	
 			if (!level->isClientSide) 
 			{
-				if (level->random->nextFloat() < 0.45) ((Sapling *) Tile::sapling)->advanceTree(level, x, y, z, level->random);
+				if (level->random->nextFloat() < 0.45) static_cast<Sapling *>(Tile::sapling)->advanceTree(level, x, y, z, level->random);
 				itemInstance->count--;
 			}
 		}
@@ -189,7 +189,7 @@ bool DyePowderItem::growCrop(shared_ptr<ItemInstance> itemInstance, Level *level
 		{
 			if (!level->isClientSide)
 			{
-				if (level->random->nextFloat() < 0.4) ((Mushroom *) Tile::tiles[tile])->growTree(level, x, y, z, level->random);
+				if (level->random->nextFloat() < 0.4) static_cast<Mushroom *>(Tile::tiles[tile])->growTree(level, x, y, z, level->random);
 				itemInstance->count--;
 			}
 		}
@@ -202,7 +202,7 @@ bool DyePowderItem::growCrop(shared_ptr<ItemInstance> itemInstance, Level *level
 		{
 			if (!level->isClientSide)
 			{
-				((StemTile *) Tile::tiles[tile])->growCrops(level, x, y, z);
+				static_cast<StemTile *>(Tile::tiles[tile])->growCrops(level, x, y, z);
 				itemInstance->count--;
 			}
 		}
@@ -215,7 +215,7 @@ bool DyePowderItem::growCrop(shared_ptr<ItemInstance> itemInstance, Level *level
 		{
 			if (!level->isClientSide) 
 			{
-				((CropTile *) Tile::tiles[tile])->growCrops(level, x, y, z);
+				static_cast<CropTile *>(Tile::tiles[tile])->growCrops(level, x, y, z);
 				itemInstance->count--;
 			}
 		}
@@ -228,7 +228,7 @@ bool DyePowderItem::growCrop(shared_ptr<ItemInstance> itemInstance, Level *level
 		{	
 			if (!level->isClientSide) 
 			{
-				((CropTile *) Tile::tiles[tile])->growCrops(level, x, y, z);
+				static_cast<CropTile *>(Tile::tiles[tile])->growCrops(level, x, y, z);
 				itemInstance->count--;
 			}
 		}

@@ -100,7 +100,7 @@ void Sheep::defineSynchedData()
 	Animal::defineSynchedData();
 
 	// sheared and color share a byte
-	entityData->define(DATA_WOOL_ID, ((byte) 0)); //was new Byte((byte), 0)
+	entityData->define(DATA_WOOL_ID, static_cast<byte>(0)); //was new Byte((byte), 0)
 }
 
 void Sheep::dropDeathLoot(bool wasKilledByPlayer, int playerBonusLevel)
@@ -141,16 +141,16 @@ float Sheep::getHeadEatPositionScale(float a)
 	}
 	if (eatAnimationTick < 4)
 	{
-		return ((float) eatAnimationTick - a) / 4.0f;
+		return (static_cast<float>(eatAnimationTick) - a) / 4.0f;
 	}
-	return -((float) (eatAnimationTick - EAT_ANIMATION_TICKS) - a) / 4.0f;
+	return -(static_cast<float>(eatAnimationTick - EAT_ANIMATION_TICKS) - a) / 4.0f;
 }
 
 float Sheep::getHeadEatAngleScale(float a)
 {
 	if (eatAnimationTick > 4 && eatAnimationTick <= (EAT_ANIMATION_TICKS - 4))
 	{
-		float scale = ((float) (eatAnimationTick - 4) - a) / (float) (EAT_ANIMATION_TICKS - 8);
+		float scale = (static_cast<float>(eatAnimationTick - 4) - a) / static_cast<float>(EAT_ANIMATION_TICKS - 8);
 		return PI * .20f + PI * .07f * Mth::sin(scale * 28.7f);
 	}
 	if (eatAnimationTick > 0)
@@ -196,7 +196,7 @@ void Sheep::addAdditonalSaveData(CompoundTag *tag)
 {
 	Animal::addAdditonalSaveData(tag);
 	tag->putBoolean(L"Sheared", isSheared());
-	tag->putByte(L"Color", (byte) getColor());
+	tag->putByte(L"Color", static_cast<byte>(getColor()));
 }
 
 void Sheep::readAdditionalSaveData(CompoundTag *tag) 
@@ -234,7 +234,7 @@ int Sheep::getColor()
 void Sheep::setColor(int color) 
 {
 	byte current = entityData->getByte(DATA_WOOL_ID);
-	entityData->set(DATA_WOOL_ID, (byte) ((current & 0xf0) | (color & 0x0f)));
+	entityData->set(DATA_WOOL_ID, static_cast<byte>((current & 0xf0) | (color & 0x0f)));
 }
 
 bool Sheep::isSheared() 
@@ -247,11 +247,11 @@ void Sheep::setSheared(bool value)
 	byte current = entityData->getByte(DATA_WOOL_ID);
 	if (value) 
 	{
-		entityData->set(DATA_WOOL_ID, (byte) (current | 0x10));
+		entityData->set(DATA_WOOL_ID, static_cast<byte>(current | 0x10));
 	} 
 	else 
 	{
-		entityData->set(DATA_WOOL_ID, (byte) (current & ~0x10));
+		entityData->set(DATA_WOOL_ID, static_cast<byte>(current & ~0x10));
 	}
 }
 

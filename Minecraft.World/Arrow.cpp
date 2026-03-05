@@ -72,15 +72,15 @@ Arrow::Arrow(Level *level, shared_ptr<LivingEntity> mob, shared_ptr<LivingEntity
 	double sd = sqrt(xd * xd + zd * zd);
 	if (sd < 0.0000001) return;
 
-	float yRot = (float) (atan2(zd, xd) * 180 / PI) - 90;
-	float xRot = (float) -(atan2(yd, sd) * 180 / PI);
+	float yRot = static_cast<float>(atan2(zd, xd) * 180 / PI) - 90;
+	float xRot = static_cast<float>(-(atan2(yd, sd) * 180 / PI));
 
 	double xdn = xd / sd;
 	double zdn = zd / sd;
 	moveTo(mob->x + xdn, y, mob->z + zdn, yRot, xRot);
 	heightOffset = 0;
 
-	float yo = (float) sd * 0.2f;
+	float yo = static_cast<float>(sd) * 0.2f;
 	shoot(xd, yd + yo, zd, power, uncertainty);
 }
 
@@ -123,13 +123,13 @@ Arrow::Arrow(Level *level, shared_ptr<LivingEntity> mob, float power) : Entity( 
 
 void Arrow::defineSynchedData()
 {
-	entityData->define(ID_FLAGS, (byte) 0);
+	entityData->define(ID_FLAGS, static_cast<byte>(0));
 }
 
 
 void Arrow::shoot(double xd, double yd, double zd, float pow, float uncertainty)
 {
-	float dist = (float) sqrt(xd * xd + yd * yd + zd * zd);
+	float dist = static_cast<float>(sqrt(xd * xd + yd * yd + zd * zd));
 
 	xd /= dist;
 	yd /= dist;
@@ -149,8 +149,8 @@ void Arrow::shoot(double xd, double yd, double zd, float pow, float uncertainty)
 
 	double sd = sqrt(xd * xd + zd * zd);
 
-	yRotO = yRot = (float) (atan2(xd, zd) * 180 / PI);
-	xRotO = xRot = (float) (atan2(yd, sd) * 180 / PI);
+	yRotO = yRot = static_cast<float>(atan2(xd, zd) * 180 / PI);
+	xRotO = xRot = static_cast<float>(atan2(yd, sd) * 180 / PI);
 	life = 0;
 }
 
@@ -168,8 +168,8 @@ void Arrow::lerpMotion(double xd, double yd, double zd)
 	if (xRotO == 0 && yRotO == 0)
 	{
 		double sd = sqrt(xd * xd + zd * zd);
-		yRotO = yRot = (float) (atan2( xd, zd) * 180 / PI);
-		xRotO = xRot = (float) (atan2( yd, sd) * 180 / PI);
+		yRotO = yRot = static_cast<float>(atan2(xd, zd) * 180 / PI);
+		xRotO = xRot = static_cast<float>(atan2(yd, sd) * 180 / PI);
 		xRotO = xRot;
 		yRotO = yRot;
 		app.DebugPrintf("%f %f : 0x%x\n",xRot,yRot,&yRot);
@@ -186,8 +186,8 @@ void Arrow::tick()
 	if (xRotO == 0 && yRotO == 0) 
 	{
 		double sd = sqrt(xd * xd + zd * zd);
-		yRotO = yRot = (float) (atan2(xd, zd) * 180 / PI);
-		xRotO = xRot = (float) (atan2(yd, sd) * 180 / PI);
+		yRotO = yRot = static_cast<float>(atan2(xd, zd) * 180 / PI);
+		xRotO = xRot = static_cast<float>(atan2(yd, sd) * 180 / PI);
 	}
 
 
@@ -289,7 +289,7 @@ void Arrow::tick()
 		if (res->entity != NULL)
 		{
 			float pow = Mth::sqrt(xd * xd + yd * yd + zd * zd);
-			int dmg = (int) Mth::ceil((float)(pow * baseDamage));
+			int dmg = (int) Mth::ceil(static_cast<float>(pow * baseDamage));
 
 			if(isCritArrow()) dmg += random->nextInt(dmg / 2 + 2);
 
@@ -376,10 +376,10 @@ void Arrow::tick()
 			zTile = res->z;
 			lastTile = level->getTile(xTile, yTile, zTile);
 			lastData = level->getData(xTile, yTile, zTile);
-			xd = (float) (res->pos->x - x);
-			yd = (float) (res->pos->y - y);
-			zd = (float) (res->pos->z - z);
-			float dd = (float) sqrt(xd * xd + yd * yd + zd * zd);
+			xd = static_cast<float>(res->pos->x - x);
+			yd = static_cast<float>(res->pos->y - y);
+			zd = static_cast<float>(res->pos->z - z);
+			float dd = static_cast<float>(sqrt(xd * xd + yd * yd + zd * zd));
 			// 4J added check - zero dd here was creating NaNs
 			if( dd > 0.0001f )
 			{
@@ -414,8 +414,8 @@ void Arrow::tick()
 	z += zd;
 
 	double sd = sqrt(xd * xd + zd * zd);
-	yRot = (float) (atan2(xd, zd) * 180 / PI);
-	xRot = (float) (atan2(yd, sd) * 180 / PI);
+	yRot = static_cast<float>(atan2(xd, zd) * 180 / PI);
+	xRot = static_cast<float>(atan2(yd, sd) * 180 / PI);
 
 	while (xRot - xRotO < -180)
 		xRotO -= 360;
@@ -456,14 +456,14 @@ void Arrow::tick()
 
 void Arrow::addAdditonalSaveData(CompoundTag *tag)
 {
-	tag->putShort(L"xTile", (short) xTile);
-	tag->putShort(L"yTile", (short) yTile);
-	tag->putShort(L"zTile", (short) zTile);
-	tag->putByte(L"inTile", (byte) lastTile);
-	tag->putByte(L"inData", (byte) lastData);
-	tag->putByte(L"shake", (byte) shakeTime);
-	tag->putByte(L"inGround", (byte) (inGround ? 1 : 0));
-	tag->putByte(L"pickup", (byte) pickup);
+	tag->putShort(L"xTile", static_cast<short>(xTile));
+	tag->putShort(L"yTile", static_cast<short>(yTile));
+	tag->putShort(L"zTile", static_cast<short>(zTile));
+	tag->putByte(L"inTile", static_cast<byte>(lastTile));
+	tag->putByte(L"inData", static_cast<byte>(lastData));
+	tag->putByte(L"shake", static_cast<byte>(shakeTime));
+	tag->putByte(L"inGround", static_cast<byte>(inGround ? 1 : 0));
+	tag->putByte(L"pickup", static_cast<byte>(pickup));
 	tag->putDouble(L"damage", baseDamage);
 }
 
@@ -548,11 +548,11 @@ void Arrow::setCritArrow(bool critArrow)
 	byte flags = entityData->getByte(ID_FLAGS);
 	if (critArrow)
 	{
-		entityData->set(ID_FLAGS, (byte) (flags | FLAG_CRIT));
+		entityData->set(ID_FLAGS, static_cast<byte>(flags | FLAG_CRIT));
 	}
 	else
 	{
-		entityData->set(ID_FLAGS, (byte) (flags & ~FLAG_CRIT));
+		entityData->set(ID_FLAGS, static_cast<byte>(flags & ~FLAG_CRIT));
 	}
 }
 

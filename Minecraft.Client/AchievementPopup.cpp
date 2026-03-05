@@ -59,7 +59,7 @@ void AchievementPopup::prepareWindow()
     glClear(GL_DEPTH_BUFFER_BIT);
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
-    glOrtho(0, (float)width, (float)height, 0, 1000, 3000);
+    glOrtho(0, static_cast<float>(width), static_cast<float>(height), 0, 1000, 3000);
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
     glTranslatef(0, 0, -2000);

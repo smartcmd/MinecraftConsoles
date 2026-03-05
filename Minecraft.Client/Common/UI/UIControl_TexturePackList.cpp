@@ -125,7 +125,7 @@ bool UIControl_TexturePackList::CanTouchTrigger(S32 iX, S32 iY)
 	S32 bCanTouchTrigger = false;
 	if(result.type == IGGY_DATATYPE_boolean)
 	{
-		bCanTouchTrigger = (bool)result.boolval;
+		bCanTouchTrigger = static_cast<bool>(result.boolval);
 	}
 	return bCanTouchTrigger;
 }
@@ -138,7 +138,7 @@ S32 UIControl_TexturePackList::GetRealHeight()
 	S32 iRealHeight = m_height;
 	if(result.type == IGGY_DATATYPE_number)
 	{
-		iRealHeight = (S32)result.number;
+		iRealHeight = static_cast<S32>(result.number);
 	}
 	return iRealHeight;
 }

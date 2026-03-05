@@ -52,7 +52,7 @@ CompoundTag *NbtIo::read(DataInput *dis)
 {
 	Tag *tag = Tag::readNamedTag(dis);
 
-	if( tag->getId() == Tag::TAG_Compound ) return (CompoundTag *)tag;
+	if( tag->getId() == Tag::TAG_Compound ) return static_cast<CompoundTag *>(tag);
 
 	if(tag!=NULL) delete tag;
 	// Root tag must be a named compound tag

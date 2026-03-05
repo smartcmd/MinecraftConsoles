@@ -101,7 +101,7 @@ void UIScene_SaveMessage::handleInput(int iPad, int key, bool repeat, bool press
 
 void UIScene_SaveMessage::handlePress(F64 controlId, F64 childId)
 {
-	switch((int)controlId)
+	switch(static_cast<int>(controlId))
 	{
 	case eControl_Confirm:
 

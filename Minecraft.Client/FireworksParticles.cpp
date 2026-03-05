@@ -17,7 +17,7 @@ FireworksParticles::FireworksStarter::FireworksStarter(Level *level, double x, d
 
 	if (infoTag != NULL)
 	{
-		explosions = (ListTag<CompoundTag> *)infoTag->getList(FireworksItem::TAG_EXPLOSIONS)->copy();
+		explosions = static_cast<ListTag<CompoundTag> *>(infoTag->getList(FireworksItem::TAG_EXPLOSIONS)->copy());
 		if (explosions->size() == 0)
 		{
 			explosions = NULL;
@@ -186,9 +186,9 @@ void FireworksParticles::FireworksStarter::tick()
 		}
 		{
 			int rgb = colors[0];
-			float r = (float) ((rgb & 0xff0000) >> 16) / 255.0f;
-			float g = (float) ((rgb & 0x00ff00) >> 8) / 255.0f;
-			float b = (float) ((rgb & 0x0000ff) >> 0) / 255.0f;
+			float r = static_cast<float>((rgb & 0xff0000) >> 16) / 255.0f;
+			float g = static_cast<float>((rgb & 0x00ff00) >> 8) / 255.0f;
+			float b = static_cast<float>((rgb & 0x0000ff) >> 0) / 255.0f;
 			shared_ptr<FireworksOverlayParticle> fireworksOverlayParticle = shared_ptr<FireworksOverlayParticle>(new FireworksParticles::FireworksOverlayParticle(level, x, y, z));
 			fireworksOverlayParticle->setColor(r, g, b);
 			fireworksOverlayParticle->setAlpha(0.99f);		// 4J added
@@ -365,18 +365,18 @@ void FireworksParticles::FireworksSparkParticle::setFlicker(bool flicker)
 
 void FireworksParticles::FireworksSparkParticle::setColor(int rgb) 
 {
-	float r = (float) ((rgb & 0xff0000) >> 16) / 255.0f;
-	float g = (float) ((rgb & 0x00ff00) >> 8) / 255.0f;
-	float b = (float) ((rgb & 0x0000ff) >> 0) / 255.0f;
+	float r = static_cast<float>((rgb & 0xff0000) >> 16) / 255.0f;
+	float g = static_cast<float>((rgb & 0x00ff00) >> 8) / 255.0f;
+	float b = static_cast<float>((rgb & 0x0000ff) >> 0) / 255.0f;
 	float scale = 1.0f;
 	Particle::setColor(r * scale, g * scale, b * scale);
 }
 
 void FireworksParticles::FireworksSparkParticle::setFadeColor(int rgb)
 {
-	fadeR = (float) ((rgb & 0xff0000) >> 16) / 255.0f;
-	fadeG = (float) ((rgb & 0x00ff00) >> 8) / 255.0f;
-	fadeB = (float) ((rgb & 0x0000ff) >> 0) / 255.0f;
+	fadeR = static_cast<float>((rgb & 0xff0000) >> 16) / 255.0f;
+	fadeG = static_cast<float>((rgb & 0x00ff00) >> 8) / 255.0f;
+	fadeB = static_cast<float>((rgb & 0x0000ff) >> 0) / 255.0f;
 	hasFade = true;
 }
 
@@ -407,7 +407,7 @@ void FireworksParticles::FireworksSparkParticle::tick()
 	if (age++ >= lifetime) remove();
 	if (age > lifetime / 2)
 	{
-		setAlpha(1.0f - (((float) age - lifetime / 2) / (float) lifetime));
+		setAlpha(1.0f - ((static_cast<float>(age) - lifetime / 2) / static_cast<float>(lifetime)));
 
 		if (hasFade)
 		{
@@ -475,12 +475,12 @@ void FireworksParticles::FireworksOverlayParticle::render(Tesselator *t, float a
 	float u1 = u0 + 32.0f / 128.0f;
 	float v0 = 16.0f / 128.0f;
 	float v1 = v0 + 32.0f / 128.0f;
-	float r = 7.1f * sin(((float) age + a - 1.0f) * .25f * PI);
-	alpha = 0.6f - ((float) age + a - 1.0f) * .25f * .5f;
+	float r = 7.1f * sin((static_cast<float>(age) + a - 1.0f) * .25f * PI);
+	alpha = 0.6f - (static_cast<float>(age) + a - 1.0f) * .25f * .5f;
 
-	float x = (float) (xo + (this->x - xo) * a - xOff);
-	float y = (float) (yo + (this->y - yo) * a - yOff);
-	float z = (float) (zo + (this->z - zo) * a - zOff);
+	float x = static_cast<float>(xo + (this->x - xo) * a - xOff);
+	float y = static_cast<float>(yo + (this->y - yo) * a - yOff);
+	float z = static_cast<float>(zo + (this->z - zo) * a - zOff);
 
 	t->color(rCol, gCol, bCol, alpha);
 

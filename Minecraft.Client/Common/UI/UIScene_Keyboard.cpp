@@ -28,7 +28,7 @@ UIScene_Keyboard::UIScene_Keyboard(int iPad, void *initData, UILayer *parentLaye
 	m_bPCMode = false;
 	if (initData)
 	{
-		UIKeyboardInitData* kbData = (UIKeyboardInitData*)initData;
+		UIKeyboardInitData* kbData = static_cast<UIKeyboardInitData *>(initData);
 		m_win64Callback = kbData->callback;
 		m_win64CallbackParam = kbData->lpParam;
 		if (kbData->title)       titleText        = kbData->title;
@@ -105,7 +105,7 @@ UIScene_Keyboard::UIScene_Keyboard(int iPad, void *initData, UILayer *parentLaye
 		};
 		IggyName nameVisible = registerFastName(L"visible");
 		IggyValuePath* root = IggyPlayerRootPath(getMovie());
-		for (int i = 0; i < (int)(sizeof(s_keyNames) / sizeof(s_keyNames[0])); ++i)
+		for (int i = 0; i < static_cast<int>(sizeof(s_keyNames) / sizeof(s_keyNames[0])); ++i)
 		{
 			IggyValuePath keyPath;
 			if (IggyValuePathMakeNameRef(&keyPath, root, s_keyNames[i]))
@@ -186,7 +186,7 @@ void UIScene_Keyboard::tick()
 				m_bKeyboardDonePressed = true;
 			}
 		}
-		else if ((int)m_win64TextBuffer.length() < m_win64MaxChars)
+		else if (static_cast<int>(m_win64TextBuffer.length()) < m_win64MaxChars)
 		{
 			m_win64TextBuffer += ch;
 			changed = true;
@@ -275,7 +275,7 @@ void UIScene_Keyboard::handleInput(int iPad, int key, bool repeat, bool pressed,
 
 void UIScene_Keyboard::handlePress(F64 controlId, F64 childId)
 {
-	if((int)controlId == 0)
+	if(static_cast<int>(controlId) == 0)
 	{
 		// Done has been pressed. At this point we can query for the input string and pass it on to wherever it is needed.
 		// we can not query for m_KeyboardTextInput.getLabel() here because we're in an iggy callback so we need to wait a frame.

@@ -82,7 +82,7 @@ void TextEditScreen::render(int xm, int ym, float a)
     drawCenteredString(font, title, width / 2, 40, 0xffffff);
 
     glPushMatrix();
-    glTranslatef((float)width / 2, (float)height / 2, 50);
+    glTranslatef(static_cast<float>(width) / 2, static_cast<float>(height) / 2, 50);
     float ss = 60 / (16 / 25.0f);
     glScalef(-ss, -ss, -ss);
     glRotatef(180, 0, 1, 0);

@@ -47,9 +47,9 @@ void MinecartContainer::destroy(DamageSource *source)
 
 				shared_ptr<ItemEntity> itemEntity = shared_ptr<ItemEntity>( new ItemEntity(level, x + xo, y + yo, z + zo, shared_ptr<ItemInstance>( new ItemInstance(item->id, count, item->getAuxValue()))) );
 				float pow = 0.05f;
-				itemEntity->xd = (float) random->nextGaussian() * pow;
-				itemEntity->yd = (float) random->nextGaussian() * pow + 0.2f;
-				itemEntity->zd = (float) random->nextGaussian() * pow;
+				itemEntity->xd = static_cast<float>(random->nextGaussian()) * pow;
+				itemEntity->yd = static_cast<float>(random->nextGaussian()) * pow + 0.2f;
+				itemEntity->zd = static_cast<float>(random->nextGaussian()) * pow;
 				level->addEntity(itemEntity);
 			}
 		}
@@ -161,13 +161,13 @@ void MinecartContainer::remove()
 
 					if (item->hasTag())
 					{
-						itemEntity->getItem()->setTag((CompoundTag *) item->getTag()->copy());
+						itemEntity->getItem()->setTag(static_cast<CompoundTag *>(item->getTag()->copy()));
 					}
 
 					float pow = 0.05f;
-					itemEntity->xd = (float) random->nextGaussian() * pow;
-					itemEntity->yd = (float) random->nextGaussian() * pow + 0.2f;
-					itemEntity->zd = (float) random->nextGaussian() * pow;
+					itemEntity->xd = static_cast<float>(random->nextGaussian()) * pow;
+					itemEntity->yd = static_cast<float>(random->nextGaussian()) * pow + 0.2f;
+					itemEntity->zd = static_cast<float>(random->nextGaussian()) * pow;
 					level->addEntity(itemEntity);
 				}
 			}
@@ -188,7 +188,7 @@ void MinecartContainer::addAdditonalSaveData(CompoundTag *base)
 		if (items[i] != NULL)
 		{
 			CompoundTag *tag = new CompoundTag();
-			tag->putByte(L"Slot", (byte) i);
+			tag->putByte(L"Slot", static_cast<byte>(i));
 			items[i]->save(tag);
 			listTag->add(tag);
 		}

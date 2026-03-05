@@ -45,7 +45,7 @@ GameRuleDefinition *AddItemRuleDefinition::addChild(ConsoleGameRules::EGameRuleT
 	if(ruleType == ConsoleGameRules::eGameRuleType_AddEnchantment)
 	{
 		rule = new AddEnchantmentRuleDefinition();
-		m_enchantments.push_back((AddEnchantmentRuleDefinition *)rule);
+		m_enchantments.push_back(static_cast<AddEnchantmentRuleDefinition *>(rule));
 	}
 	else
 	{

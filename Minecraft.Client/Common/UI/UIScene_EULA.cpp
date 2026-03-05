@@ -132,7 +132,7 @@ void UIScene_EULA::handleInput(int iPad, int key, bool repeat, bool pressed, boo
 
 void UIScene_EULA::handlePress(F64 controlId, F64 childId)
 {
-	switch((int)controlId)
+	switch(static_cast<int>(controlId))
 	{
 	case eControl_Confirm:
 		//CD - Added for audio

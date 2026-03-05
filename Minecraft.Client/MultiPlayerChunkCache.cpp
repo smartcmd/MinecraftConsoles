@@ -65,7 +65,7 @@ MultiPlayerChunkCache::MultiPlayerChunkCache(Level *level)
 					{
 						if( y >= 3 )
 						{
-							((WaterLevelChunk *)waterChunk)->setLevelChunkBrightness(LightLayer::Sky,x,y,z,15);
+							static_cast<WaterLevelChunk *>(waterChunk)->setLevelChunkBrightness(LightLayer::Sky,x,y,z,15);
 						}
 					}
 		}
@@ -77,11 +77,11 @@ MultiPlayerChunkCache::MultiPlayerChunkCache(Level *level)
 					{
 						if( y >= ( level->getSeaLevel() - 1 ) )
 						{
-							((WaterLevelChunk *)waterChunk)->setLevelChunkBrightness(LightLayer::Sky,x,y,z,15);
+							static_cast<WaterLevelChunk *>(waterChunk)->setLevelChunkBrightness(LightLayer::Sky,x,y,z,15);
 						}
 						else
 						{
-							((WaterLevelChunk *)waterChunk)->setLevelChunkBrightness(LightLayer::Sky,x,y,z,2);
+							static_cast<WaterLevelChunk *>(waterChunk)->setLevelChunkBrightness(LightLayer::Sky,x,y,z,2);
 						}
 					}
 		}
@@ -294,7 +294,7 @@ void MultiPlayerChunkCache::recreateLogicStructuresForChunk(int chunkX, int chun
 wstring MultiPlayerChunkCache::gatherStats()
 {
 	EnterCriticalSection(&m_csLoadCreate);
-	int size = (int)loadedChunkList.size();
+	int size = static_cast<int>(loadedChunkList.size());
 	LeaveCriticalSection(&m_csLoadCreate);
 	return L"MultiplayerChunkCache: " + std::to_wstring(size);
 

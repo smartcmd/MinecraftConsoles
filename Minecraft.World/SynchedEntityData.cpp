@@ -485,7 +485,7 @@ int SynchedEntityData::getSizeInBytes()
 				size += 4;
 				break;
 			case TYPE_STRING:
-				size += (int)dataItem->getValue_wstring().length() + 2; // Estimate, assuming all ascii chars
+				size += static_cast<int>(dataItem->getValue_wstring().length()) + 2; // Estimate, assuming all ascii chars
 				break;
 			case TYPE_ITEMINSTANCE:
 				// short + byte + short

@@ -23,7 +23,7 @@ HRESULT CXuiSceneInventory::OnInit( XUIMessageInit *pInitData, BOOL &bHandled )
 
 	Minecraft *pMinecraft = Minecraft::GetInstance();
 
-	InventoryScreenInput *initData = (InventoryScreenInput *)pInitData->pvInitData;
+	InventoryScreenInput *initData = static_cast<InventoryScreenInput *>(pInitData->pvInitData);
 	m_iPad=initData->iPad;
 	m_bSplitscreen=initData->bSplitscreen;
 
@@ -81,7 +81,7 @@ HRESULT CXuiSceneInventory::OnDestroy()
 
 	if( pMinecraft->localgameModes[m_iPad] != NULL )
 	{
-		TutorialMode *gameMode = (TutorialMode *)pMinecraft->localgameModes[m_iPad];
+		TutorialMode *gameMode = static_cast<TutorialMode *>(pMinecraft->localgameModes[m_iPad]);
 		if(gameMode != NULL) gameMode->getTutorial()->changeTutorialState(m_previousTutorialState);
 	}
 
@@ -161,7 +161,7 @@ void CXuiSceneInventory::updateEffectsDisplay()
 	vector<MobEffectInstance *> *activeEffects = player->getActiveEffects();
 
 	// Work out how to arrange the effects
-	int effectCount = (int)activeEffects->size();
+	int effectCount = static_cast<int>(activeEffects->size());
 
 	// Total size of all effects + spacing, minus spacing for the last effect
 	float fHeight = (effectCount * m_effectDisplaySpacing) - (m_effectDisplaySpacing - m_effectDisplayHeight);

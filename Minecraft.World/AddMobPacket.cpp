@@ -29,7 +29,7 @@ AddMobPacket::AddMobPacket(shared_ptr<LivingEntity> mob, int yRotp, int xRotp, i
 {
 	id = mob->entityId;
 
-	type = (byte) EntityIO::getId(mob);
+	type = static_cast<byte>(EntityIO::getId(mob));
 	// 4J Stu - We should add entities at their "last sent" position so that the relative update packets
 	// put them in the correct place
 	x = xp;//Mth::floor(mob->x * 32);
@@ -54,9 +54,9 @@ AddMobPacket::AddMobPacket(shared_ptr<LivingEntity> mob, int yRotp, int xRotp, i
 	if (xd > m) xd = m;
 	if (yd > m) yd = m;
 	if (zd > m) zd = m;
-	this->xd = (int) (xd * 8000.0);
-	this->yd = (int) (yd * 8000.0);
-	this->zd = (int) (zd * 8000.0);
+	this->xd = static_cast<int>(xd * 8000.0);
+	this->yd = static_cast<int>(yd * 8000.0);
+	this->zd = static_cast<int>(zd * 8000.0);
 
 	//	printf("%d: New add mob rot %d\n",id,yRot);
 

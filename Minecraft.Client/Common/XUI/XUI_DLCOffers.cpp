@@ -24,7 +24,7 @@
 
 HRESULT CScene_DLCMain::OnInit( XUIMessageInit* pInitData, BOOL& bHandled )
 {
-	iPad = *(int *) pInitData->pvInitData;
+	iPad = *static_cast<int *>(pInitData->pvInitData);
 
 	MapChildControls();
 	
@@ -39,7 +39,7 @@ HRESULT CScene_DLCMain::OnInit( XUIMessageInit* pInitData, BOOL& bHandled )
 
 		VOID *pObj;
 		XuiObjectFromHandle( xList, &pObj );
-		list = (CXuiCtrl4JList *) pObj;
+		list = static_cast<CXuiCtrl4JList *>(pObj);
 
 		ui.SetTooltips( DEFAULT_XUI_MENU_USER, IDS_TOOLTIPS_SELECT, IDS_TOOLTIPS_BACK );
 
@@ -162,7 +162,7 @@ HRESULT CScene_DLCMain::OnNotifyPressEx(HXUIOBJ hObjPressed, XUINotifyPress* pNo
 		param->iType = iIndex;
 
 		// promote the DLC content request type 
-		app.AddDLCRequest((eDLCMarketplaceType)iIndex, true);
+		app.AddDLCRequest(static_cast<eDLCMarketplaceType>(iIndex), true);
 		app.NavigateToScene(iPad,eUIScene_DLCOffersMenu, param);
 	}
 	return S_OK;
@@ -182,7 +182,7 @@ HRESULT CScene_DLCMain::OnNavReturn(HXUIOBJ hObj,BOOL& rfHandled)
 //----------------------------------------------------------------------------------
 HRESULT CScene_DLCOffers::OnInit( XUIMessageInit* pInitData, BOOL& bHandled )
 {
-	DLCOffersParam *param = (DLCOffersParam *) pInitData->pvInitData;
+	DLCOffersParam *param = static_cast<DLCOffersParam *>(pInitData->pvInitData);
 	m_iPad = param->iPad;
 	m_iType = param->iType;
 	m_iOfferC = app.GetDLCOffersCount();
@@ -226,7 +226,7 @@ HRESULT CScene_DLCOffers::OnInit( XUIMessageInit* pInitData, BOOL& bHandled )
 	m_hXuiBrush=NULL;
 
 	XuiObjectFromHandle( m_List, &pObj );
-	m_pOffersList = (CXuiCtrl4JList *)pObj;
+	m_pOffersList = static_cast<CXuiCtrl4JList *>(pObj);
 	m_bAllDLCContentRetrieved=false;
 
 	XuiElementInitUserFocus(m_hObj,ProfileManager.GetPrimaryPad(),TRUE);
@@ -242,7 +242,7 @@ HRESULT CScene_DLCOffers::OnInit( XUIMessageInit* pInitData, BOOL& bHandled )
 	// Is the DLC we're looking for available?
 	if(!m_bDLCRequiredIsRetrieved)
 	{
-		if(app.DLCContentRetrieved((eDLCMarketplaceType)m_iType))
+		if(app.DLCContentRetrieved(static_cast<eDLCMarketplaceType>(m_iType)))
 		{	
 			m_bDLCRequiredIsRetrieved=true;
 
@@ -301,7 +301,7 @@ HRESULT CScene_DLCOffers::GetDLCInfo( int iOfferC, bool bUpdateOnly )
 
 			// can't trust the offer type - partnernet is giving avatar items the CONTENT type
 			//if(Offer.dwOfferType==app.GetDLCContentType((eDLCContentType)m_iType))
-			if(pDLC->eDLCType==(eDLCContentType)m_iType)
+			if(pDLC->eDLCType==static_cast<eDLCContentType>(m_iType))
 			{		
 				if(xOffer.fUserHasPurchased)
 				{
@@ -362,7 +362,7 @@ HRESULT CScene_DLCOffers::GetDLCInfo( int iOfferC, bool bUpdateOnly )
 
 			// can't trust the offer type - partnernet is giving avatar items the CONTENT type
 			//if(Offer.dwOfferType==app.GetDLCContentType((eDLCContentType)m_iType))
-			if(pDLC->eDLCType==(eDLCContentType)m_iType)
+			if(pDLC->eDLCType==static_cast<eDLCContentType>(m_iType))
 			{		
 				wstring wstrTemp=xOffer.wszOfferName;
 
@@ -395,7 +395,7 @@ HRESULT CScene_DLCOffers::GetDLCInfo( int iOfferC, bool bUpdateOnly )
 
 				// store the offer index
 				pListInfo[iCount].iData=i;
-				pListInfo[iCount].iSortIndex=(int)pDLC->uiSortIndex;
+				pListInfo[iCount].iSortIndex=static_cast<int>(pDLC->uiSortIndex);
 #ifdef _DEBUG
 				app.DebugPrintf("Adding ");
 				OutputDebugStringW(pListInfo[iCount].pwszText);
@@ -791,7 +791,7 @@ HRESULT CScene_DLCOffers::OnTimer(XUIMessageTimer *pData,BOOL& rfHandled)
 	// Is the DLC we're looking for available?
 	if(!m_bDLCRequiredIsRetrieved)
 	{
-		if(app.DLCContentRetrieved((eDLCMarketplaceType)m_iType))
+		if(app.DLCContentRetrieved(static_cast<eDLCMarketplaceType>(m_iType)))
 		{	
 			m_bDLCRequiredIsRetrieved=true;
 		

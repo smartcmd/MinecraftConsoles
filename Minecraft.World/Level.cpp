@@ -91,13 +91,13 @@ DWORD Level::tlsIdxLightCache = TlsAlloc();
 void Level::enableLightingCache()
 {
 	// Allocate 16K (needs 32K for large worlds) for a 16x16x16x4 byte cache of results, plus 128K required for toCheck array. Rounding up to 256 to keep as multiple of alignement - aligning to 128K boundary for possible cache locking.
-	void *cache = (unsigned char *)XPhysicalAlloc(256 * 1024, MAXULONG_PTR, 128 * 1024, PAGE_READWRITE | MEM_LARGE_PAGES);
+	void *cache = static_cast<unsigned char *>(XPhysicalAlloc(256 * 1024, MAXULONG_PTR, 128 * 1024, PAGE_READWRITE | MEM_LARGE_PAGES));
 	TlsSetValue(tlsIdxLightCache,cache);
 }
 
 void Level::destroyLightingCache()
 {
-	lightCache_t *cache = (lightCache_t *)TlsGetValue(tlsIdxLightCache);
+	lightCache_t *cache = static_cast<lightCache_t *>(TlsGetValue(tlsIdxLightCache));
 	XPhysicalFree(cache);
 }
 
@@ -195,8 +195,8 @@ void inline Level::setBrightnessCached(lightCache_t *cache, __uint64 *cacheUse, 
 		( ( z & 0x3f0 ) >> 4 );
 #ifdef _LARGE_WORLDS
 	// Add in the higher bits for x and z
-	posbits |=  ( ( ((__uint64)x) & 0x3FFFC00L) << 38) |
-		( ( ((__uint64)z) & 0x3FFFC00L) << 22);
+	posbits |=  ( ( static_cast<__uint64>(x) & 0x3FFFC00L) << 38) |
+		( ( static_cast<__uint64>(z) & 0x3FFFC00L) << 22);
 #endif
 
 	lightCache_t cacheValue = cache[idx];
@@ -254,8 +254,8 @@ inline int Level::getBrightnessCached(lightCache_t *cache, LightLayer::variety l
 		( ( z & 0x3f0 ) >> 4 );
 #ifdef _LARGE_WORLDS
 	// Add in the higher bits for x and z
-	posbits |=  ( ( ((__uint64)x) & 0x3FFFC00L) << 38) |
-		( ( ((__uint64)z) & 0x3FFFC00L) << 22);
+	posbits |=  ( ( static_cast<__uint64>(x) & 0x3FFFC00L) << 38) |
+		( ( static_cast<__uint64>(z) & 0x3FFFC00L) << 22);
 #endif
 
 	lightCache_t cacheValue = cache[idx];
@@ -321,8 +321,8 @@ inline int Level::getEmissionCached(lightCache_t *cache, int ct, int x, int y, i
 		( ( z & 0x3f0 ) >> 4 );
 #ifdef _LARGE_WORLDS
 	// Add in the higher bits for x and z
-	posbits |=  ( ( ((__uint64)x) & 0x3FFFC00) << 38) |
-		( ( ((__uint64)z) & 0x3FFFC00) << 22);
+	posbits |=  ( ( static_cast<__uint64>(x) & 0x3FFFC00) << 38) |
+		( ( static_cast<__uint64>(z) & 0x3FFFC00) << 22);
 #endif
 
 	lightCache_t cacheValue = cache[idx];
@@ -397,8 +397,8 @@ inline int Level::getBlockingCached(lightCache_t *cache, LightLayer::variety lay
 		( ( z & 0x3f0 ) >> 4 );
 #ifdef _LARGE_WORLDS
 	// Add in the higher bits for x and z
-	posbits |=  ( ( ((__uint64)x) & 0x3FFFC00L) << 38) |
-		( ( ((__uint64)z) & 0x3FFFC00L) << 22);
+	posbits |=  ( ( static_cast<__uint64>(x) & 0x3FFFC00L) << 38) |
+		( ( static_cast<__uint64>(z) & 0x3FFFC00L) << 22);
 #endif
 
 	lightCache_t cacheValue = cache[idx];
@@ -1377,7 +1377,7 @@ void Level::getNeighbourBrightnesses(int *brightnesses, LightLayer::variety laye
 		{
 			for( int i = 0; i < 6; i++ )
 			{
-				brightnesses[i] = (int)layer;
+				brightnesses[i] = static_cast<int>(layer);
 			}
 			return;
 		}
@@ -1392,7 +1392,7 @@ void Level::getNeighbourBrightnesses(int *brightnesses, LightLayer::variety laye
 		{
 			for( int i = 0; i < 6; i++ )
 			{
-				brightnesses[i] = (int)layer;
+				brightnesses[i] = static_cast<int>(layer);
 			}
 			return;
 		}
@@ -1592,19 +1592,19 @@ HitResult *Level::clip(Vec3 *a, Vec3 *b, bool liquid, bool solidOnly)
 		}
 
 		Vec3 *tPos = Vec3::newTemp(a->x, a->y, a->z);
-		xTile0 = (int) (tPos->x = floor(a->x));
+		xTile0 = static_cast<int>(tPos->x = floor(a->x));
 		if (face == 5)
 		{
 			xTile0--;
 			tPos->x++;
 		}
-		yTile0 = (int) (tPos->y = floor(a->y));
+		yTile0 = static_cast<int>(tPos->y = floor(a->y));
 		if (face == 1)
 		{
 			yTile0--;
 			tPos->y++;
 		}
-		zTile0 = (int) (tPos->z = floor(a->z));
+		zTile0 = static_cast<int>(tPos->z = floor(a->z));
 		if (face == 3)
 		{
 			zTile0--;
@@ -2001,7 +2001,7 @@ int Level::getOldSkyDarken(float a)
 	br *= 1 - (getRainLevel(a) * 5 / 16.0f);
 	br *= 1 - (getThunderLevel(a) * 5 / 16.0f);
 	br = 1 - br;
-	return ((int) (br * 11));
+	return static_cast<int>(br * 11);
 }
 
 //4J - change brought forward from 1.8.2
@@ -2839,7 +2839,7 @@ float Level::getSeenPercent(Vec3 *center, AABB *bb)
 				count++;
 			}
 
-			return hits / (float) count;
+			return hits / static_cast<float>(count);
 }
 
 
@@ -3258,7 +3258,7 @@ void Level::buildAndPrepareChunksToPoll()
 	// 4J - rewritten to add chunks interleaved by player, and to add them from the centre outwards. We're going to be
 	// potentially adding less creatures than the original so that our count stays consistent with number of players added, so
 	// we want to make sure as best we can that the ones we do add are near the active players
-	int playerCount = (int)players.size();
+	int playerCount = static_cast<int>(players.size());
 	int *xx = new int[playerCount];
 	int *zz = new int[playerCount];
 	for (size_t i = 0; i < playerCount; i++)
@@ -3437,7 +3437,7 @@ int Level::getExpectedLight(lightCache_t *cache, int x, int y, int z, LightLayer
 // 4J - Made changes here so that lighting goes through a cache, if enabled for this thread
 void Level::checkLight(LightLayer::variety layer, int xc, int yc, int zc, bool force, bool rootOnlyEmissive)
 {
-	lightCache_t *cache = (lightCache_t *)TlsGetValue(tlsIdxLightCache);
+	lightCache_t *cache = static_cast<lightCache_t *>(TlsGetValue(tlsIdxLightCache));
 	__uint64 cacheUse = 0;
 
 	if( force )
@@ -3964,7 +3964,7 @@ Path *Level::findPath(shared_ptr<Entity> from, shared_ptr<Entity> to, float maxD
 	int y = Mth::floor(from->y + 1);
 	int z = Mth::floor(from->z);
 
-	int r = (int) (maxDist + 16);
+	int r = static_cast<int>(maxDist + 16);
 	int x1 = x - r;
 	int y1 = y - r;
 	int z1 = z - r;
@@ -3983,7 +3983,7 @@ Path *Level::findPath(shared_ptr<Entity> from, int xBest, int yBest, int zBest, 
 	int y = Mth::floor(from->y);
 	int z = Mth::floor(from->z);
 
-	int r = (int) (maxDist + 8);
+	int r = static_cast<int>(maxDist + 8);
 	int x1 = x - r;
 	int y1 = y - r;
 	int z1 = z - r;

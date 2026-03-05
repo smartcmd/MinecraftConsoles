@@ -75,7 +75,7 @@ bool Monster::hurt(DamageSource *source, float dmg)
 */
 bool Monster::doHurtTarget(shared_ptr<Entity> target)
 {
-	float dmg = (float) getAttribute(SharedMonsterAttributes::ATTACK_DAMAGE)->getValue();
+	float dmg = static_cast<float>(getAttribute(SharedMonsterAttributes::ATTACK_DAMAGE)->getValue());
 	int knockback = 0;
 
 	

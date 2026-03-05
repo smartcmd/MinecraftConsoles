@@ -103,7 +103,7 @@ UIScene_PauseMenu::UIScene_PauseMenu(int iPad, void *initData, UILayer *parentLa
 	Minecraft *pMinecraft = Minecraft::GetInstance();
 	if(pMinecraft != NULL && pMinecraft->localgameModes[iPad] != NULL )
 	{
-		TutorialMode *gameMode = (TutorialMode *)pMinecraft->localgameModes[iPad];
+		TutorialMode *gameMode = static_cast<TutorialMode *>(pMinecraft->localgameModes[iPad]);
 
 		// This just allows it to be shown
 		gameMode->getTutorial()->showTutorialPopup(false);
@@ -116,7 +116,7 @@ UIScene_PauseMenu::~UIScene_PauseMenu()
 	Minecraft *pMinecraft = Minecraft::GetInstance();
 	if(pMinecraft != NULL && pMinecraft->localgameModes[m_iPad] != NULL )
 	{
-		TutorialMode *gameMode = (TutorialMode *)pMinecraft->localgameModes[m_iPad];
+		TutorialMode *gameMode = static_cast<TutorialMode *>(pMinecraft->localgameModes[m_iPad]);
 
 		// This just allows it to be shown
 		gameMode->getTutorial()->showTutorialPopup(true);
@@ -506,7 +506,7 @@ void UIScene_PauseMenu::handlePress(F64 controlId, F64 childId)
 {
 	if(m_bIgnoreInput) return;
 
-	switch((int)controlId)
+	switch(static_cast<int>(controlId))
 	{
 	case BUTTON_PAUSE_RESUMEGAME:
 		if( m_iPad == ProfileManager.GetPrimaryPad() && g_NetworkManager.IsLocalGame() )
@@ -656,7 +656,7 @@ void UIScene_PauseMenu::handlePress(F64 controlId, F64 childId)
 					int playTime = -1;
 					if( pMinecraft->localplayers[m_iPad] != NULL )
 					{
-						playTime = (int)pMinecraft->localplayers[m_iPad]->getSessionTimer();
+						playTime = static_cast<int>(pMinecraft->localplayers[m_iPad]->getSessionTimer());
 					}
 
 #if defined(_XBOX_ONE) || defined(__ORBIS__)
@@ -725,7 +725,7 @@ void UIScene_PauseMenu::handlePress(F64 controlId, F64 childId)
 					int playTime = -1;
 					if( pMinecraft->localplayers[m_iPad] != NULL )
 					{
-						playTime = (int)pMinecraft->localplayers[m_iPad]->getSessionTimer();
+						playTime = static_cast<int>(pMinecraft->localplayers[m_iPad]->getSessionTimer());
 					}
 
 					TelemetryManager->RecordLevelExit(m_iPad, eSen_LevelExitStatus_Exited);
@@ -743,7 +743,7 @@ void UIScene_PauseMenu::handlePress(F64 controlId, F64 childId)
 					int playTime = -1;
 					if( pMinecraft->localplayers[m_iPad] != NULL )
 					{
-						playTime = (int)pMinecraft->localplayers[m_iPad]->getSessionTimer();
+						playTime = static_cast<int>(pMinecraft->localplayers[m_iPad]->getSessionTimer());
 					}	
 
 					// adjust the trial time played
@@ -761,7 +761,7 @@ void UIScene_PauseMenu::handlePress(F64 controlId, F64 childId)
 					int playTime = -1;
 					if( pMinecraft->localplayers[m_iPad] != NULL )
 					{
-						playTime = (int)pMinecraft->localplayers[m_iPad]->getSessionTimer();
+						playTime = static_cast<int>(pMinecraft->localplayers[m_iPad]->getSessionTimer());
 					}
 
 					TelemetryManager->RecordLevelExit(m_iPad, eSen_LevelExitStatus_Exited);
@@ -839,7 +839,7 @@ void UIScene_PauseMenu::PerformActionSaveGame()
 	if(!Minecraft::GetInstance()->skins->isUsingDefaultSkin())
 	{
 		TexturePack *tPack = Minecraft::GetInstance()->skins->getSelected();
-		DLCTexturePack *pDLCTexPack=(DLCTexturePack *)tPack;
+		DLCTexturePack *pDLCTexPack=static_cast<DLCTexturePack *>(tPack);
 
 		m_pDLCPack=pDLCTexPack->getDLCInfoParentPack();//tPack->getDLCPack();
 
@@ -1003,7 +1003,7 @@ int UIScene_PauseMenu::UnlockFullSaveReturned(void *pParam,int iPad,C4JStorage::
 
 int UIScene_PauseMenu::SaveGame_SignInReturned(void *pParam,bool bContinue, int iPad)
 {
-	UIScene_PauseMenu* pClass = (UIScene_PauseMenu*)ui.GetSceneFromCallbackId((size_t)pParam);
+	UIScene_PauseMenu* pClass = static_cast<UIScene_PauseMenu *>(ui.GetSceneFromCallbackId((size_t)pParam));
 	if(pClass) pClass->SetIgnoreInput(false);
 
 	if(bContinue==true)

@@ -11,7 +11,7 @@ ResourceLocation SnowManRenderer::SNOWMAN_LOCATION = ResourceLocation(TN_MOB_SNO
 
 SnowManRenderer::SnowManRenderer() : MobRenderer(new SnowManModel(), 0.5f)
 {
-	model = (SnowManModel *) MobRenderer::model;
+	model = static_cast<SnowManModel *>(MobRenderer::model);
 	this->setArmor(model);
 }
 

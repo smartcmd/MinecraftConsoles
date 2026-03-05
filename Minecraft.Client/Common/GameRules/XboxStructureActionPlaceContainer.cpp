@@ -37,7 +37,7 @@ GameRuleDefinition *XboxStructureActionPlaceContainer::addChild(ConsoleGameRules
 	if(ruleType == ConsoleGameRules::eGameRuleType_AddItem)
 	{
 		rule = new AddItemRuleDefinition();
-		m_items.push_back((AddItemRuleDefinition *)rule);
+		m_items.push_back(static_cast<AddItemRuleDefinition *>(rule));
 	}
 	else
 	{

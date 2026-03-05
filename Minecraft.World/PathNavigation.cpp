@@ -81,19 +81,19 @@ void PathNavigation::setCanFloat(bool canFloat)
 
 float PathNavigation::getMaxDist()
 {
-	return (float) dist->getValue();
+	return static_cast<float>(dist->getValue());
 }
 
 Path *PathNavigation::createPath(double x, double y, double z)
 {
 	if (!canUpdatePath()) return NULL;
-	return level->findPath(mob->shared_from_this(), Mth::floor(x), (int) y, Mth::floor(z), getMaxDist(), _canPassDoors, _canOpenDoors, avoidWater, canFloat);
+	return level->findPath(mob->shared_from_this(), Mth::floor(x), static_cast<int>(y), Mth::floor(z), getMaxDist(), _canPassDoors, _canOpenDoors, avoidWater, canFloat);
 }
 
 bool PathNavigation::moveTo(double x, double y, double z, double speedModifier)
 {
 	MemSect(52);
-	Path *newPath = createPath(Mth::floor(x), (int) y, Mth::floor(z));
+	Path *newPath = createPath(Mth::floor(x), static_cast<int>(y), Mth::floor(z));
 	MemSect(0);
 	// No need to delete newPath here as this will be copied into the member variable path and the class can assume responsibility for it
 	return moveTo(newPath, speedModifier);
@@ -171,7 +171,7 @@ void PathNavigation::updatePath()
 	int firstElevation = path->getSize();
 	for (int i = path->getIndex(); path != NULL && i < path->getSize(); ++i)
 	{
-		if ((int) path->get(i)->y != (int) mobPos->y)
+		if (static_cast<int>(path->get(i)->y) != static_cast<int>(mobPos->y))
 		{
 			firstElevation = i;
 			break;
@@ -191,8 +191,8 @@ void PathNavigation::updatePath()
 	}
 
 	// smooth remaining on same elevation
-	int sx = (int) ceil(mob->bbWidth);
-	int sy = (int) mob->bbHeight + 1;
+	int sx = static_cast<int>(ceil(mob->bbWidth));
+	int sy = static_cast<int>(mob->bbHeight) + 1;
 	int sz = sx;
 	for (int i = firstElevation - 1; i >= path->getIndex(); --i)
 	{
@@ -232,16 +232,16 @@ Vec3 *PathNavigation::getTempMobPos()
 
 int PathNavigation::getSurfaceY()
 {
-	if (!mob->isInWater() || !canFloat) return (int) (mob->bb->y0 + 0.5);
+	if (!mob->isInWater() || !canFloat) return static_cast<int>(mob->bb->y0 + 0.5);
 
-	int surface = (int) (mob->bb->y0);
+	int surface = static_cast<int>(mob->bb->y0);
 	int tileId = level->getTile(Mth::floor(mob->x), surface, Mth::floor(mob->z));
 	int steps = 0;
 	while (tileId == Tile::water_Id || tileId == Tile::calmWater_Id)
 	{
 		++surface;
 		tileId = level->getTile(Mth::floor(mob->x), surface, Mth::floor(mob->z));
-		if (++steps > 16) return (int) (mob->bb->y0);
+		if (++steps > 16) return static_cast<int>(mob->bb->y0);
 	}
 	return surface;
 }
@@ -258,7 +258,7 @@ bool PathNavigation::isInLiquid()
 
 void PathNavigation::trimPathFromSun()
 {
-	if (level->canSeeSky(Mth::floor(mob->x), (int) (mob->bb->y0 + 0.5), Mth::floor(mob->z))) return;
+	if (level->canSeeSky(Mth::floor(mob->x), static_cast<int>(mob->bb->y0 + 0.5), Mth::floor(mob->z))) return;
 
 	for (int i = 0; i < path->getSize(); ++i)
 	{
@@ -288,7 +288,7 @@ bool PathNavigation::canMoveDirectly(Vec3 *startPos, Vec3 *stopPos, int sx, int 
 
 	sx += 2;
 	sz += 2;
-	if (!canWalkOn(gridPosX, (int) startPos->y, gridPosZ, sx, sy, sz, startPos, dirX, dirZ)) return false;
+	if (!canWalkOn(gridPosX, static_cast<int>(startPos->y), gridPosZ, sx, sy, sz, startPos, dirX, dirZ)) return false;
 	sx -= 2;
 	sz -= 2;
 
@@ -323,7 +323,7 @@ bool PathNavigation::canMoveDirectly(Vec3 *startPos, Vec3 *stopPos, int sx, int 
 			currentDirZ = gridGoalZ - gridPosZ;
 		}
 
-		if (!canWalkOn(gridPosX, (int) startPos->y, gridPosZ, sx, sy, sz, startPos, dirX, dirZ)) return false;
+		if (!canWalkOn(gridPosX, static_cast<int>(startPos->y), gridPosZ, sx, sy, sz, startPos, dirX, dirZ)) return false;
 	}
 	return true;
 }

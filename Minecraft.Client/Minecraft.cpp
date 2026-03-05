@@ -483,10 +483,10 @@ void Minecraft::blit(int x, int y, int sx, int sy, int w, int h)
 	float vs = 1 / 256.0f;
 	Tesselator *t = Tesselator::getInstance();
 	t->begin();
-	t->vertexUV((float)(x + 0), (float)( y + h), (float)( 0), (float)( (sx + 0) * us), (float)( (sy + h) * vs));
-	t->vertexUV((float)(x + w), (float)( y + h), (float)( 0), (float)( (sx + w) * us), (float)( (sy + h) * vs));
-	t->vertexUV((float)(x + w), (float)( y + 0), (float)( 0), (float)( (sx + w) * us), (float)( (sy + 0) * vs));
-	t->vertexUV((float)(x + 0), (float)( y + 0), (float)( 0), (float)( (sx + 0) * us), (float)( (sy + 0) * vs));
+	t->vertexUV(static_cast<float>(x + 0), static_cast<float>(y + h), static_cast<float>(0), (float)( (sx + 0) * us), (float)( (sy + h) * vs));
+	t->vertexUV(static_cast<float>(x + w), static_cast<float>(y + h), static_cast<float>(0), (float)( (sx + w) * us), (float)( (sy + h) * vs));
+	t->vertexUV(static_cast<float>(x + w), static_cast<float>(y + 0), static_cast<float>(0), (float)( (sx + w) * us), (float)( (sy + 0) * vs));
+	t->vertexUV(static_cast<float>(x + 0), static_cast<float>(y + 0), static_cast<float>(0), (float)( (sx + 0) * us), (float)( (sy + 0) * vs));
 	t->end();
 }
 
@@ -1198,7 +1198,7 @@ void Minecraft::applyFrameMouseLook()
 		g_KBMInput.ConsumeMouseDelta(rawDx, rawDy);
 		if (rawDx == 0.0f && rawDy == 0.0f) continue;
 
-		float mouseSensitivity = ((float)app.GetGameSettings(iPad, eGameSetting_Sensitivity_InGame)) / 100.0f;
+		float mouseSensitivity = static_cast<float>(app.GetGameSettings(iPad, eGameSetting_Sensitivity_InGame)) / 100.0f;
 		float mdx = rawDx * mouseSensitivity;
 		float mdy = -rawDy * mouseSensitivity;
 		if (app.GetGameSettings(iPad, eGameSetting_ControlInvertLook))
@@ -1279,7 +1279,7 @@ void Minecraft::run_middle()
 							if(!Minecraft::GetInstance()->skins->isUsingDefaultSkin())
 							{
 								TexturePack *tPack = Minecraft::GetInstance()->skins->getSelected();
-								DLCTexturePack *pDLCTexPack=(DLCTexturePack *)tPack;
+								DLCTexturePack *pDLCTexPack=static_cast<DLCTexturePack *>(tPack);
 
 								DLCPack *pDLCPack=pDLCTexPack->getDLCInfoParentPack();
 
@@ -1910,7 +1910,7 @@ void Minecraft::run_middle()
 					if( setLocalPlayerIdx(i) )
 					{
 						PIXBeginNamedEvent(0,"Game render player idx %d",i);
-						RenderManager.StateSetViewport((C4JRender::eViewportType)player->m_iScreenSection);
+						RenderManager.StateSetViewport(static_cast<C4JRender::eViewportType>(player->m_iScreenSection));
 						gameRenderer->render(timer->a, bFirst);
 						bFirst = false;
 						PIXEndNamedEvent();
@@ -1938,7 +1938,7 @@ void Minecraft::run_middle()
 				if( unoccupiedQuadrant > -1 )
 				{
 					// render a logo
-					RenderManager.StateSetViewport((C4JRender::eViewportType)(C4JRender::VIEWPORT_TYPE_QUADRANT_TOP_LEFT + unoccupiedQuadrant));
+					RenderManager.StateSetViewport(static_cast<C4JRender::eViewportType>(C4JRender::VIEWPORT_TYPE_QUADRANT_TOP_LEFT + unoccupiedQuadrant));
 					glClearColor(0, 0, 0, 0);
 					glClear(GL_COLOR_BUFFER_BIT);
 
@@ -2097,7 +2097,7 @@ void Minecraft::renderFpsMeter(__int64 tickTime)
 	glMatrixMode(GL_PROJECTION);
 	glEnable(GL_COLOR_MATERIAL);
 	glLoadIdentity();
-	glOrtho(0, (float)width, (float)height, 0, 1000, 3000);
+	glOrtho(0, static_cast<float>(width), static_cast<float>(height), 0, 1000, 3000);
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 	glTranslatef(0, 0, -2000);
@@ -2108,16 +2108,16 @@ void Minecraft::renderFpsMeter(__int64 tickTime)
 	t->begin(GL_QUADS);
 	int hh1 = (int) (nsPer60Fps / 200000);
 	t->color(0x20000000);
-	t->vertex((float)(0), (float)( height - hh1), (float)( 0));
-	t->vertex((float)(0), (float)( height), (float)( 0));
-	t->vertex((float)(Minecraft::frameTimes_length), (float)( height), (float)( 0));
-	t->vertex((float)(Minecraft::frameTimes_length), (float)( height - hh1), (float)( 0));
+	t->vertex(static_cast<float>(0), static_cast<float>(height - hh1), static_cast<float>(0));
+	t->vertex(static_cast<float>(0), static_cast<float>(height), static_cast<float>(0));
+	t->vertex(static_cast<float>(Minecraft::frameTimes_length), static_cast<float>(height), static_cast<float>(0));
+	t->vertex(static_cast<float>(Minecraft::frameTimes_length), static_cast<float>(height - hh1), static_cast<float>(0));
 
 	t->color(0x20200000);
-	t->vertex((float)(0), (float)( height - hh1 * 2), (float)( 0));
-	t->vertex((float)(0), (float)( height - hh1), (float)( 0));
-	t->vertex((float)(Minecraft::frameTimes_length), (float)( height - hh1), (float)( 0));
-	t->vertex((float)(Minecraft::frameTimes_length), (float)( height - hh1 * 2), (float)( 0));
+	t->vertex(static_cast<float>(0), static_cast<float>(height - hh1 * 2), static_cast<float>(0));
+	t->vertex(static_cast<float>(0), static_cast<float>(height - hh1), static_cast<float>(0));
+	t->vertex(static_cast<float>(Minecraft::frameTimes_length), static_cast<float>(height - hh1), static_cast<float>(0));
+	t->vertex(static_cast<float>(Minecraft::frameTimes_length), static_cast<float>(height - hh1 * 2), static_cast<float>(0));
 
 	t->end();
 	__int64 totalTime = 0;
@@ -2125,13 +2125,13 @@ void Minecraft::renderFpsMeter(__int64 tickTime)
 	{
 		totalTime += Minecraft::frameTimes[i];
 	}
-	int hh = (int) (totalTime / 200000 / Minecraft::frameTimes_length);
+	int hh = static_cast<int>(totalTime / 200000 / Minecraft::frameTimes_length);
 	t->begin(GL_QUADS);
 	t->color(0x20400000);
-	t->vertex((float)(0), (float)( height - hh), (float)( 0));
-	t->vertex((float)(0), (float)( height), (float)( 0));
-	t->vertex((float)(Minecraft::frameTimes_length), (float)( height), (float)( 0));
-	t->vertex((float)(Minecraft::frameTimes_length), (float)( height - hh), (float)( 0));
+	t->vertex(static_cast<float>(0), static_cast<float>(height - hh), static_cast<float>(0));
+	t->vertex(static_cast<float>(0), static_cast<float>(height), static_cast<float>(0));
+	t->vertex(static_cast<float>(Minecraft::frameTimes_length), static_cast<float>(height), static_cast<float>(0));
+	t->vertex(static_cast<float>(Minecraft::frameTimes_length), static_cast<float>(height - hh), static_cast<float>(0));
 	t->end();
 	t->begin(GL_LINES);
 	for (int i = 0; i < Minecraft::frameTimes_length; i++)
@@ -2153,16 +2153,16 @@ void Minecraft::renderFpsMeter(__int64 tickTime)
 		__int64 time = Minecraft::frameTimes[i] / 200000;
 		__int64 time2 = Minecraft::tickTimes[i] / 200000;
 
-		t->vertex((float)(i + 0.5f), (float)( height - time + 0.5f), (float)( 0));
-		t->vertex((float)(i + 0.5f), (float)( height + 0.5f), (float)( 0));
+		t->vertex((float)(i + 0.5f), (float)( height - time + 0.5f), static_cast<float>(0));
+		t->vertex((float)(i + 0.5f), (float)( height + 0.5f), static_cast<float>(0));
 
 		// if (Minecraft.frameTimes[i]>nsPer60Fps) {
 		t->color(0xff000000 + cc * 65536 + cc * 256 + cc * 1);
 		// } else {
 		// t.color(0xff808080 + cc/2 * 256);
 		// }
-		t->vertex((float)(i + 0.5f), (float)( height - time + 0.5f), (float)( 0));
-		t->vertex((float)(i + 0.5f), (float)( height - (time - time2) + 0.5f), (float)( 0));
+		t->vertex((float)(i + 0.5f), (float)( height - time + 0.5f), static_cast<float>(0));
+		t->vertex((float)(i + 0.5f), (float)( height - (time - time2) + 0.5f), static_cast<float>(0));
 	}
 	t->end();
 
@@ -2223,7 +2223,7 @@ void Minecraft::verify()
 
 void Minecraft::levelTickUpdateFunc(void* pParam)
 {
-	Level* pLevel = (Level*)pParam;
+	Level* pLevel = static_cast<Level *>(pParam);
 	pLevel->tick();
 }
 
@@ -2499,7 +2499,7 @@ void Minecraft::tick(bool bFirst, bool bUpdateTextures)
 				case Item::spiderEye_Id:
 					// Check that we are actually hungry so will eat this item
 					{
-						FoodItem *food = (FoodItem *)itemInstance->getItem();
+						FoodItem *food = static_cast<FoodItem *>(itemInstance->getItem());
 						if (food != NULL && food->canEat(player))
 						{
 							*piUse=IDS_TOOLTIPS_EAT;
@@ -3329,7 +3329,7 @@ void Minecraft::tick(bool bFirst, bool bUpdateTextures)
 					case eTYPE_ZOMBIE:
 						{
 							shared_ptr<Zombie> zomb = dynamic_pointer_cast<Zombie>(hitResult->entity);
-							static GoldenAppleItem *goldapple = (GoldenAppleItem *) Item::apple_gold;
+							static GoldenAppleItem *goldapple = static_cast<GoldenAppleItem *>(Item::apple_gold);
 
 							//zomb->hasEffect(MobEffect::weakness) - not present on client.
 							if ( zomb->isVillager() && zomb->isWeakened() && (heldItemId == Item::apple_gold_Id) && !goldapple->isFoil(heldItem) )
@@ -4397,8 +4397,8 @@ void Minecraft::prepareLevel(int title)
 	Pos *spawnPos = level->getSharedSpawnPos();
 	if (player != NULL)
 	{
-		spawnPos->x = (int) player->x;
-		spawnPos->z = (int) player->z;
+		spawnPos->x = static_cast<int>(player->x);
+		spawnPos->z = static_cast<int>(player->z);
 	}
 
 #if 0
@@ -5008,7 +5008,7 @@ int Minecraft::InGame_SignInReturned(void *pParam,bool bContinue, int iPad, int 
 int Minecraft::InGame_SignInReturned(void *pParam,bool bContinue, int iPad)
 #endif
 {
-	Minecraft* pMinecraftClass = (Minecraft*)pParam;
+	Minecraft* pMinecraftClass = static_cast<Minecraft *>(pParam);
 
 	if(g_NetworkManager.IsInSession())
 	{

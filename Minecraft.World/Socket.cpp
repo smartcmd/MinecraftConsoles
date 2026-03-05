@@ -330,7 +330,7 @@ void Socket::SocketOutputStreamLocal::write(unsigned int b)
 		return;
 	}
 	EnterCriticalSection(&s_hostQueueLock[m_queueIdx]);
-	s_hostQueue[m_queueIdx].push((byte)b);
+	s_hostQueue[m_queueIdx].push(static_cast<byte>(b));
 	LeaveCriticalSection(&s_hostQueueLock[m_queueIdx]);
 }
 
@@ -442,7 +442,7 @@ void Socket::SocketOutputStreamNetwork::write(unsigned int b)
 	if( m_streamOpen != true ) return;
 	byteArray barray;
 	byte bb;
-	bb = (byte)b;
+	bb = static_cast<byte>(b);
 	barray.data = &bb;
 	barray.length = 1;
 	write(barray, 0, 1);

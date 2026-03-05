@@ -163,7 +163,7 @@ void MultiPlayerGameMode::startDestroyBlock(int x, int y, int z, int face)
 			destroyingItem = minecraft->player->getCarriedItem();
             destroyProgress = 0;        
             destroyTicks = 0;
-			minecraft->level->destroyTileProgress(minecraft->player->entityId, xDestroyBlock, yDestroyBlock, zDestroyBlock, (int)(destroyProgress * 10) - 1);
+			minecraft->level->destroyTileProgress(minecraft->player->entityId, xDestroyBlock, yDestroyBlock, zDestroyBlock, static_cast<int>(destroyProgress * 10) - 1);
         }
     }
 
@@ -235,7 +235,7 @@ void MultiPlayerGameMode::continueDestroyBlock(int x, int y, int z, int face)
             destroyDelay = 5;
         }
 
-		minecraft->level->destroyTileProgress(minecraft->player->entityId, xDestroyBlock, yDestroyBlock, zDestroyBlock, (int)(destroyProgress * 10) - 1);
+		minecraft->level->destroyTileProgress(minecraft->player->entityId, xDestroyBlock, yDestroyBlock, zDestroyBlock, static_cast<int>(destroyProgress * 10) - 1);
     }
 	else
 	{
@@ -292,9 +292,9 @@ bool MultiPlayerGameMode::useItemOn(shared_ptr<Player> player, Level *level, sha
 	{
 		ensureHasSentCarriedItem();
 	}
-	float clickX = (float) hit->x - x;
-	float clickY = (float) hit->y - y;
-	float clickZ = (float) hit->z - z;
+	float clickX = static_cast<float>(hit->x) - x;
+	float clickY = static_cast<float>(hit->y) - y;
+	float clickZ = static_cast<float>(hit->z) - z;
 	bool didSomething = false;
 
 	if (!player->isSneaking() || player->getCarriedItem() == NULL)

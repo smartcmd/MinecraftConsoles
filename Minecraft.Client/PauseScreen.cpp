@@ -88,7 +88,7 @@ void PauseScreen::render(int xm, int ym, float a)
 	{
         float col = ((visibleTime % 10) + a) / 10.0f;
         col = Mth::sin(col * PI * 2) * 0.2f + 0.8f;
-        int br = (int) (255 * col);
+        int br = static_cast<int>(255 * col);
 
         drawString(font, L"Saving level..", 8, height - 16, br << 16 | br << 8 | br);
     }

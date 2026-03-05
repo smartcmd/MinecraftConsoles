@@ -141,10 +141,10 @@ ConsoleSaveFileOriginal::ConsoleSaveFileOriginal(const wstring &fileName, LPVOID
 #else
 			void* pvSourceData = pvSaveMem;
 #endif
-			int compressed = *(int*)pvSourceData;
+			int compressed = *static_cast<int *>(pvSourceData);
 			if( compressed == 0 )
 			{
-				unsigned int decompSize = *( (int*)pvSourceData+1 );
+				unsigned int decompSize = *( static_cast<int *>(pvSourceData)+1 );
 				if(isLocalEndianDifferent(plat)) System::ReverseULONG(&decompSize);
 
 				// An invalid save, so clear the memory and start from scratch
@@ -162,13 +162,13 @@ ConsoleSaveFileOriginal::ConsoleSaveFileOriginal(const wstring &fileName, LPVOID
 #ifndef _XBOX
 					if(plat == SAVE_FILE_PLATFORM_PSVITA)
 					{
-						Compression::VitaVirtualDecompress(buf, &decompSize, (unsigned char *)pvSourceData+8, fileSize-8 );
+						Compression::VitaVirtualDecompress(buf, &decompSize, static_cast<unsigned char *>(pvSourceData)+8, fileSize-8 );
 					}
 					else
 #endif
 					{
 						Compression::getCompression()->SetDecompressionType(plat); // if this save is from another platform, set the correct decompression type
-						Compression::getCompression()->Decompress(buf, &decompSize, (unsigned char *)pvSourceData+8, fileSize-8 );
+						Compression::getCompression()->Decompress(buf, &decompSize, static_cast<unsigned char *>(pvSourceData)+8, fileSize-8 );
 						Compression::getCompression()->SetDecompressionType(SAVE_FILE_PLATFORM_LOCAL); // and then set the decompression back to the local machine's standard type
 					}
 
@@ -248,18 +248,18 @@ void ConsoleSaveFileOriginal::deleteFile( FileEntry *file )
 	DWORD bufferDataSize = 0;
 
 
-	char *readStartOffset = (char *)pvSaveMem + file->data.startOffset + file->getFileSize();
+	char *readStartOffset = static_cast<char *>(pvSaveMem) + file->data.startOffset + file->getFileSize();
 
-	char *writeStartOffset = (char *)pvSaveMem + file->data.startOffset;
+	char *writeStartOffset = static_cast<char *>(pvSaveMem) + file->data.startOffset;
 
-	char *endOfDataOffset = (char *)pvSaveMem + header.GetStartOfNextData();
+	char *endOfDataOffset = static_cast<char *>(pvSaveMem) + header.GetStartOfNextData();
 
 	while(true)
 	{
 		// Fill buffer from file
 		if( readStartOffset + bufferSize > endOfDataOffset )
 		{
-			amountToRead = (int)(endOfDataOffset - readStartOffset);
+			amountToRead = static_cast<int>(endOfDataOffset - readStartOffset);
 		}
 		else
 		{
@@ -349,7 +349,7 @@ BOOL ConsoleSaveFileOriginal::writeFile(FileEntry *file,LPCVOID lpBuffer, DWORD 
 
 	PrepareForWrite( file, nNumberOfBytesToWrite );
 
-	char *writeStartOffset = (char *)pvSaveMem + file->currentFilePointer;
+	char *writeStartOffset = static_cast<char *>(pvSaveMem) + file->currentFilePointer;
 	//printf("Write: pvSaveMem = %0xd, currentFilePointer = %d, writeStartOffset = %0xd\n", pvSaveMem, file->currentFilePointer, writeStartOffset);
 
 #ifdef __PSVITA__
@@ -386,7 +386,7 @@ BOOL ConsoleSaveFileOriginal::zeroFile(FileEntry *file, DWORD nNumberOfBytesToWr
 
 	PrepareForWrite( file, nNumberOfBytesToWrite );
 
-	char *writeStartOffset = (char *)pvSaveMem + file->currentFilePointer;
+	char *writeStartOffset = static_cast<char *>(pvSaveMem) + file->currentFilePointer;
 	//printf("Write: pvSaveMem = %0xd, currentFilePointer = %d, writeStartOffset = %0xd\n", pvSaveMem, file->currentFilePointer, writeStartOffset);
 
 #ifdef __PSVITA__
@@ -422,7 +422,7 @@ BOOL ConsoleSaveFileOriginal::readFile( FileEntry *file, LPVOID lpBuffer, DWORD 
 
 	LockSaveAccess();
 
-	char *readStartOffset = (char *)pvSaveMem + file->currentFilePointer;
+	char *readStartOffset = static_cast<char *>(pvSaveMem) + file->currentFilePointer;
 	//printf("Read: pvSaveMem = %0xd, currentFilePointer = %d, readStartOffset = %0xd\n", pvSaveMem, file->currentFilePointer, readStartOffset);
 
 	assert( nNumberOfBytesToRead <= file->getFileSize() );
@@ -498,13 +498,13 @@ void ConsoleSaveFileOriginal::MoveDataBeyond(FileEntry *file, DWORD nNumberOfByt
 	}
 
 	// This is the start of where we want the space to be, and the start of the data that we need to move
-	char *spaceStartOffset = (char *)pvSaveMem + file->data.startOffset + file->getFileSize();
+	char *spaceStartOffset = static_cast<char *>(pvSaveMem) + file->data.startOffset + file->getFileSize();
 
 	// This is the end of where we want the space to be
 	char *spaceEndOffset = spaceStartOffset + nNumberOfBytesToWrite;
 
 	// This is the current end of the data that we want to move
-	char *beginEndOfDataOffset = (char *)pvSaveMem + header.GetStartOfNextData();
+	char *beginEndOfDataOffset = static_cast<char *>(pvSaveMem) + header.GetStartOfNextData();
 
 	// This is where the end of the data is going to be
 	char *finishEndOfDataOffset = beginEndOfDataOffset + nNumberOfBytesToWrite;
@@ -530,8 +530,8 @@ void ConsoleSaveFileOriginal::MoveDataBeyond(FileEntry *file, DWORD nNumberOfByt
 			uintptr_t uiFromEnd = (uintptr_t)beginEndOfDataOffset;
 
 			// Round both of these values to get 4096 byte chunks that we will need to at least partially move
-			uintptr_t uiFromStartChunk = uiFromStart & ~((uintptr_t)4095);
-			uintptr_t uiFromEndChunk = (uiFromEnd - 1 ) & ~((uintptr_t)4095);
+			uintptr_t uiFromStartChunk = uiFromStart & ~static_cast<uintptr_t>(4095);
+			uintptr_t uiFromEndChunk = (uiFromEnd - 1 ) & ~static_cast<uintptr_t>(4095);
 
 			// Loop through all the affected source 4096 chunks, going backwards so we don't overwrite anything we'll need in the future
 			for( uintptr_t uiCurrentChunk = uiFromEndChunk; uiCurrentChunk >= uiFromStartChunk; uiCurrentChunk -= 4096 )
@@ -570,7 +570,7 @@ void ConsoleSaveFileOriginal::MoveDataBeyond(FileEntry *file, DWORD nNumberOfByt
 			// Fill buffer 1 from file
 			if( (readStartOffset - bufferSize) < spaceStartOffset )
 			{
-				amountToRead = (DWORD)(readStartOffset - spaceStartOffset);
+				amountToRead = static_cast<DWORD>(readStartOffset - spaceStartOffset);
 			}
 			else
 			{
@@ -652,7 +652,7 @@ void ConsoleSaveFileOriginal::Flush(bool autosave, bool updateThumbnail )
 	LARGE_INTEGER qwTicksPerSec, qwTime, qwNewTime, qwDeltaTime;
 	float fElapsedTime = 0.0f;
 	QueryPerformanceFrequency( &qwTicksPerSec );
-	float fSecsPerTick = 1.0f / (float)qwTicksPerSec.QuadPart;
+	float fSecsPerTick = 1.0f / static_cast<float>(qwTicksPerSec.QuadPart);
 
 	unsigned int fileSize = header.GetFileSize();
 
@@ -671,7 +671,7 @@ void ConsoleSaveFileOriginal::Flush(bool autosave, bool updateThumbnail )
 #else
 	// Attempt to allocate the required memory
 	// We do not own this, it belongs to the StorageManager
-	byte *compData = (byte *)StorageManager.AllocateSaveData( compLength );
+	byte *compData = static_cast<byte *>(StorageManager.AllocateSaveData(compLength));
 
 #ifdef __PSVITA__
 	// AP - make sure we always allocate just what is needed so it will only SAVE what is needed.
@@ -699,7 +699,7 @@ void ConsoleSaveFileOriginal::Flush(bool autosave, bool updateThumbnail )
 		QueryPerformanceCounter( &qwNewTime );
 
 		qwDeltaTime.QuadPart = qwNewTime.QuadPart - qwTime.QuadPart;
-		fElapsedTime = fSecsPerTick * ((FLOAT)(qwDeltaTime.QuadPart));
+		fElapsedTime = fSecsPerTick * static_cast<FLOAT>(qwDeltaTime.QuadPart);
 
 		app.DebugPrintf("Check buffer size: Elapsed time %f\n", fElapsedTime);
 		PIXEndNamedEvent();
@@ -709,7 +709,7 @@ void ConsoleSaveFileOriginal::Flush(bool autosave, bool updateThumbnail )
 		compLength = compLength+8;
 
 		// Attempt to allocate the required memory
-		compData = (byte *)StorageManager.AllocateSaveData( compLength );
+		compData = static_cast<byte *>(StorageManager.AllocateSaveData(compLength));
 	}
 #endif
 
@@ -730,7 +730,7 @@ void ConsoleSaveFileOriginal::Flush(bool autosave, bool updateThumbnail )
 		QueryPerformanceCounter( &qwNewTime );
 
 		qwDeltaTime.QuadPart = qwNewTime.QuadPart - qwTime.QuadPart;
-		fElapsedTime = fSecsPerTick * ((FLOAT)(qwDeltaTime.QuadPart));
+		fElapsedTime = fSecsPerTick * static_cast<FLOAT>(qwDeltaTime.QuadPart);
 
 		app.DebugPrintf("Compress: Elapsed time %f\n", fElapsedTime);
 		PIXEndNamedEvent();
@@ -819,7 +819,7 @@ void ConsoleSaveFileOriginal::Flush(bool autosave, bool updateThumbnail )
 
 int ConsoleSaveFileOriginal::SaveSaveDataCallback(LPVOID lpParam,bool bRes)
 {
-	ConsoleSaveFile *pClass=(ConsoleSaveFile *)lpParam;
+	ConsoleSaveFile *pClass=static_cast<ConsoleSaveFile *>(lpParam);
 
 	return 0;
 }
@@ -1066,5 +1066,5 @@ void ConsoleSaveFileOriginal::ConvertToLocalPlatform()
 
 void *ConsoleSaveFileOriginal::getWritePointer(FileEntry *file)
 {
-	return (char *)pvSaveMem + file->currentFilePointer;;
+	return static_cast<char *>(pvSaveMem) + file->currentFilePointer;;
 }

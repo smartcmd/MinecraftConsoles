@@ -243,7 +243,7 @@ int Inventory::addResource(shared_ptr<ItemInstance> itemInstance)
 		// 4J Stu - Brought forward from 1.2
 		if (itemInstance->hasTag())
 		{
-			items[slot]->setTag((CompoundTag *) itemInstance->getTag()->copy());
+			items[slot]->setTag(static_cast<CompoundTag *>(itemInstance->getTag()->copy()));
 			player->handleCollectItem(itemInstance);
 		}
 	}
@@ -503,7 +503,7 @@ ListTag<CompoundTag> *Inventory::save(ListTag<CompoundTag> *listTag)
 		if (items[i] != NULL)
 		{
 			CompoundTag *tag = new CompoundTag();
-			tag->putByte(L"Slot", (byte) i);
+			tag->putByte(L"Slot", static_cast<byte>(i));
 			items[i]->save(tag);
 			listTag->add(tag);
 		}
@@ -513,7 +513,7 @@ ListTag<CompoundTag> *Inventory::save(ListTag<CompoundTag> *listTag)
 		if (armor[i] != NULL)
 		{
 			CompoundTag *tag = new CompoundTag();
-			tag->putByte(L"Slot", (byte) (i + 100));
+			tag->putByte(L"Slot", static_cast<byte>(i + 100));
 			armor[i]->save(tag);
 			listTag->add(tag);
 		}
@@ -637,7 +637,7 @@ void Inventory::hurtArmor(float dmg)
 	{
 		if (armor[i] != NULL && dynamic_cast<ArmorItem *>( armor[i]->getItem() ) != NULL )
 		{
-			armor[i]->hurtAndBreak( (int) dmg, dynamic_pointer_cast<LivingEntity>( player->shared_from_this() ) );
+			armor[i]->hurtAndBreak( static_cast<int>(dmg), dynamic_pointer_cast<LivingEntity>( player->shared_from_this() ) );
 			if (armor[i]->count == 0)
 			{
 				armor[i] = nullptr;

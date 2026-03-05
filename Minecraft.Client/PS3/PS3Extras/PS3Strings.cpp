@@ -17,7 +17,7 @@ uint8_t *mallocAndCreateUTF8ArrayFromString(int iID)
 	}
 
 	l10n_convert_str( cd, wchString, &src_len, NULL, &dst_len );
-	uint8_t *strUtf8=(uint8_t *)malloc(dst_len);
+	uint8_t *strUtf8=static_cast<uint8_t *>(malloc(dst_len));
 	memset(strUtf8,0,dst_len);
 
 	result = l10n_convert_str( cd, wchString, &src_len, strUtf8, &dst_len );

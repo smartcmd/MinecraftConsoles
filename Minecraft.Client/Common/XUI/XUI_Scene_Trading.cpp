@@ -27,7 +27,7 @@ HRESULT CXuiSceneTrading::OnInit( XUIMessageInit* pInitData, BOOL& bHandled )
 
 	Minecraft *pMinecraft = Minecraft::GetInstance();
 
-	TradingScreenInput* initData = (TradingScreenInput *)pInitData->pvInitData;
+	TradingScreenInput* initData = static_cast<TradingScreenInput *>(pInitData->pvInitData);
 	m_iPad=initData->iPad;
 	m_bSplitscreen=initData->bSplitscreen;
 	m_merchant = initData->trader;
@@ -41,7 +41,7 @@ HRESULT CXuiSceneTrading::OnInit( XUIMessageInit* pInitData, BOOL& bHandled )
 
 	if( pMinecraft->localgameModes[m_iPad] != NULL )
 	{
-		TutorialMode *gameMode = (TutorialMode *)pMinecraft->localgameModes[m_iPad];
+		TutorialMode *gameMode = static_cast<TutorialMode *>(pMinecraft->localgameModes[m_iPad]);
 		m_previousTutorialState = gameMode->getTutorial()->getCurrentState();
 		gameMode->getTutorial()->changeTutorialState(e_Tutorial_State_Trading_Menu, this);
 	}
@@ -81,7 +81,7 @@ HRESULT CXuiSceneTrading::OnDestroy()
 
 	if( pMinecraft->localgameModes[m_iPad] != NULL )
 	{
-		TutorialMode *gameMode = (TutorialMode *)pMinecraft->localgameModes[m_iPad];
+		TutorialMode *gameMode = static_cast<TutorialMode *>(pMinecraft->localgameModes[m_iPad]);
 		if(gameMode != NULL) gameMode->getTutorial()->changeTutorialState(m_previousTutorialState);
 	}
 

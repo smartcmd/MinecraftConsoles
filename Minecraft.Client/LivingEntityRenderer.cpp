@@ -259,7 +259,7 @@ void LivingEntityRenderer::renderModel(shared_ptr<LivingEntity> mob, float wp, f
 
 void LivingEntityRenderer::setupPosition(shared_ptr<LivingEntity> mob, double x, double y, double z)
 {
-	glTranslatef((float) x, (float) y, (float) z);
+	glTranslatef(static_cast<float>(x), static_cast<float>(y), static_cast<float>(z));
 }
 
 void LivingEntityRenderer::setupRotations(shared_ptr<LivingEntity> mob, float bob, float bodyRot, float a)
@@ -405,7 +405,7 @@ void LivingEntityRenderer::renderName(shared_ptr<LivingEntity> mob, double x, do
 
 					Font *font = getFont();
 					glPushMatrix();
-					glTranslatef((float) x + 0, (float) y + mob->bbHeight + 0.5f, (float) z);
+					glTranslatef(static_cast<float>(x) + 0, static_cast<float>(y) + mob->bbHeight + 0.5f, static_cast<float>(z));
 					glNormal3f(0, 1, 0);
 
 					glRotatef(-entityRenderDispatcher->playerRotY, 0, 1, 0);
@@ -595,10 +595,10 @@ void LivingEntityRenderer::renderNameTag(shared_ptr<LivingEntity> mob, const wst
 		{
 			t->color(0.0f, 0.0f, 0.0f, 0.25f);
 		}
-		t->vertex((float)(-w - 1), (float)( -1 + offs), (float)( 0));
-		t->vertex((float)(-w - 1), (float)( +8 + offs + 1), (float)( 0));
-		t->vertex((float)(+w + 1), (float)( +8 + offs + 1), (float)( 0));
-		t->vertex((float)(+w + 1), (float)( -1 + offs), (float)( 0));
+		t->vertex(static_cast<float>(-w - 1), static_cast<float>(-1 + offs), static_cast<float>(0));
+		t->vertex(static_cast<float>(-w - 1), static_cast<float>(+8 + offs + 1), static_cast<float>(0));
+		t->vertex(static_cast<float>(+w + 1), static_cast<float>(+8 + offs + 1), static_cast<float>(0));
+		t->vertex(static_cast<float>(+w + 1), static_cast<float>(-1 + offs), static_cast<float>(0));
 		t->end();
 
 		glEnable(GL_DEPTH_TEST);
@@ -607,11 +607,11 @@ void LivingEntityRenderer::renderNameTag(shared_ptr<LivingEntity> mob, const wst
 		glLineWidth(2.0f);
 		t->begin(GL_LINE_STRIP);
 		t->color(color, 255 * textOpacity);
-		t->vertex((float)(-w - 1), (float)( -1 + offs), (float)( 0));
-		t->vertex((float)(-w - 1), (float)( +8 + offs + 1), (float)( 0));
-		t->vertex((float)(+w + 1), (float)( +8 + offs + 1), (float)( 0));
-		t->vertex((float)(+w + 1), (float)( -1 + offs), (float)( 0));
-		t->vertex((float)(-w - 1), (float)( -1 + offs), (float)( 0));
+		t->vertex(static_cast<float>(-w - 1), static_cast<float>(-1 + offs), static_cast<float>(0));
+		t->vertex(static_cast<float>(-w - 1), static_cast<float>(+8 + offs + 1), static_cast<float>(0));
+		t->vertex(static_cast<float>(+w + 1), static_cast<float>(+8 + offs + 1), static_cast<float>(0));
+		t->vertex(static_cast<float>(+w + 1), static_cast<float>(-1 + offs), static_cast<float>(0));
+		t->vertex(static_cast<float>(-w - 1), static_cast<float>(-1 + offs), static_cast<float>(0));
 		t->end();
 		glDepthFunc(GL_LEQUAL);
 		glDepthMask(false);
@@ -632,10 +632,10 @@ void LivingEntityRenderer::renderNameTag(shared_ptr<LivingEntity> mob, const wst
 		t->begin();
 		int w = font->width(playerName) / 2;
 		t->color(color, 255);
-		t->vertex((float)(-w - 1), (float)( -1 + offs), (float)( 0));
-		t->vertex((float)(-w - 1), (float)( +8 + offs), (float)( 0));
-		t->vertex((float)(+w + 1), (float)( +8 + offs), (float)( 0));
-		t->vertex((float)(+w + 1), (float)( -1 + offs), (float)( 0));
+		t->vertex(static_cast<float>(-w - 1), static_cast<float>(-1 + offs), static_cast<float>(0));
+		t->vertex(static_cast<float>(-w - 1), static_cast<float>(+8 + offs), static_cast<float>(0));
+		t->vertex(static_cast<float>(+w + 1), static_cast<float>(+8 + offs), static_cast<float>(0));
+		t->vertex(static_cast<float>(+w + 1), static_cast<float>(-1 + offs), static_cast<float>(0));
 		t->end();		
 		glDepthFunc(GL_LEQUAL);
 		glEnable(GL_TEXTURE_2D);
@@ -645,7 +645,7 @@ void LivingEntityRenderer::renderNameTag(shared_ptr<LivingEntity> mob, const wst
 
 	if( textOpacity > 0.0f )
 	{
-		int textColor = ( ( (int)(textOpacity*255) << 24 ) | 0xffffff );
+		int textColor = ( ( static_cast<int>(textOpacity * 255) << 24 ) | 0xffffff );
 		font->draw(playerName, -font->width(playerName) / 2, offs, textColor);
 	}
 

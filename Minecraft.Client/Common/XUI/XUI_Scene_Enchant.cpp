@@ -30,7 +30,7 @@ HRESULT CXuiSceneEnchant::OnInit( XUIMessageInit *pInitData, BOOL &bHandled )
 
 	Minecraft *pMinecraft = Minecraft::GetInstance();
 
-	EnchantingScreenInput *initData = (EnchantingScreenInput *) pInitData->pvInitData;
+	EnchantingScreenInput *initData = static_cast<EnchantingScreenInput *>(pInitData->pvInitData);
 	m_iPad=initData->iPad;
 	m_bSplitscreen=initData->bSplitscreen;
 

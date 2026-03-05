@@ -10,7 +10,7 @@
 
 HRESULT CXuiSceneHud::OnInit( XUIMessageInit* pInitData, BOOL& bHandled )
 {
-	m_iPad = *(int *)pInitData->pvInitData;
+	m_iPad = *static_cast<int *>(pInitData->pvInitData);
 
 	MapChildControls();
 
@@ -145,7 +145,7 @@ HRESULT CXuiSceneHud::OnCustomMessage_TickScene()
 	if (pMinecraft->localgameModes[m_iPad]->canHurtPlayer())
 	{
 		int xpNeededForNextLevel = pMinecraft->localplayers[m_iPad]->getXpNeededForNextLevel();
-		int progress = (int)(pMinecraft->localplayers[m_iPad]->experienceProgress  *xpNeededForNextLevel);
+		int progress = static_cast<int>(pMinecraft->localplayers[m_iPad]->experienceProgress * xpNeededForNextLevel);
 
 		m_ExperienceProgress.SetShow(TRUE);
 		m_ExperienceProgress.SetRange(0,xpNeededForNextLevel);
@@ -257,7 +257,7 @@ HRESULT CXuiSceneHud::OnCustomMessage_TickScene()
 			float yo = 0;
 			if (iHealth <= 4)
 			{
-				yo = (float)m_random.nextInt(2) * (iGuiScale+1);
+				yo = static_cast<float>(m_random.nextInt(2)) * (iGuiScale+1);
 			}
 			if (icon == heartOffsetIndex)
 			{
@@ -359,7 +359,7 @@ HRESULT CXuiSceneHud::OnCustomMessage_TickScene()
 			{
 				if ((m_tickCount % (food * 3 + 1)) == 0)
 				{
-					yo = (float)(m_random.nextInt(3) - 1) * (iGuiScale+1);
+					yo = static_cast<float>(m_random.nextInt(3) - 1) * (iGuiScale+1);
 				}
 			}
 
@@ -391,8 +391,8 @@ HRESULT CXuiSceneHud::OnCustomMessage_TickScene()
 		if (pMinecraft->localplayers[m_iPad]->isUnderLiquid(Material::water))
 		{
 			m_airGroup.SetShow(TRUE);
-			int count = (int) ceil((pMinecraft->localplayers[m_iPad]->getAirSupply() - 2) * 10.0f / Player::TOTAL_AIR_SUPPLY);
-			int extra = (int) ceil((pMinecraft->localplayers[m_iPad]->getAirSupply()) * 10.0f / Player::TOTAL_AIR_SUPPLY) - count;
+			int count = static_cast<int>(ceil((pMinecraft->localplayers[m_iPad]->getAirSupply() - 2) * 10.0f / Player::TOTAL_AIR_SUPPLY));
+			int extra = static_cast<int>(ceil((pMinecraft->localplayers[m_iPad]->getAirSupply()) * 10.0f / Player::TOTAL_AIR_SUPPLY)) - count;
 			for (int icon = 0; icon < 10; icon++)
 			{
 				// Air bubbles

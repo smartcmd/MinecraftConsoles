@@ -139,7 +139,7 @@ void ModelPart::addBox(float x0, float y0, float z0, int w, int h, int d, float 
 
 void ModelPart::addTexBox(float x0, float y0, float z0, int w, int h, int d, int tex)
 {
-	cubes.push_back(new Cube(this, xTexOffs, yTexOffs, x0, y0, z0, w, h, d, (float)tex));
+	cubes.push_back(new Cube(this, xTexOffs, yTexOffs, x0, y0, z0, w, h, d, static_cast<float>(tex)));
 }
 
 void ModelPart::setPos(float x, float y, float z)
@@ -307,8 +307,8 @@ void ModelPart::compile(float scale)
 
 ModelPart *ModelPart::setTexSize(int xs, int ys)
 {
-	this->xTexSize = (float)xs;
-	this->yTexSize = (float)ys;
+	this->xTexSize = static_cast<float>(xs);
+	this->yTexSize = static_cast<float>(ys);
 	return this;
 }
 

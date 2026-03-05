@@ -23,7 +23,7 @@ int FireworksChargeItem::getColor(shared_ptr<ItemInstance> item, int spriteLayer
 		Tag *colorTag = getExplosionTagField(item, FireworksItem::TAG_E_COLORS);
 		if (colorTag != NULL)
 		{
-			IntArrayTag *colors = (IntArrayTag *) colorTag;
+			IntArrayTag *colors = static_cast<IntArrayTag *>(colorTag);
 			if (colors->data.length == 1)
 			{
 				return colors->data[0];

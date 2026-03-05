@@ -143,7 +143,7 @@ void Explosion::explode()
 
 			double sp = level->getSeenPercent(center, e->bb);
 			double pow = (1 - dist) * sp;
-			if(canDamage) e->hurt(DamageSource::explosion(this), (int) ((pow * pow + pow) / 2 * 8 * r + 1));
+			if(canDamage) e->hurt(DamageSource::explosion(this), static_cast<int>((pow * pow + pow) / 2 * 8 * r + 1));
 
 			double kbPower = ProtectionEnchantment::getExplosionKnockbackAfterDampener(e, pow);
 			e->xd += xa *kbPower;
@@ -185,7 +185,7 @@ void Explosion::finalizeExplosion(bool generateParticles, vector<TilePos> *toBlo
 		app.DebugPrintf("Finalizing explosion size %d\n",toBlow.size());
 		static const int MAX_EXPLODE_PARTICLES = 50;
 		// 4J - try and make at most MAX_EXPLODE_PARTICLES pairs of particles
-		int fraction = (int)toBlowArray->size() / MAX_EXPLODE_PARTICLES;
+		int fraction = static_cast<int>(toBlowArray->size()) / MAX_EXPLODE_PARTICLES;
 		if( fraction == 0 ) fraction = 1;
 		size_t j = toBlowArray->size() - 1;
 		//for (size_t j = toBlowArray->size() - 1; j >= 0; j--)

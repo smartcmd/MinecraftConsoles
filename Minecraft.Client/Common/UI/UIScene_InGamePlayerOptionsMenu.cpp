@@ -17,7 +17,7 @@ UIScene_InGamePlayerOptionsMenu::UIScene_InGamePlayerOptionsMenu(int iPad, void 
 
 	m_bShouldNavBack = false;
 
-	InGamePlayerOptionsInitData *initData = (InGamePlayerOptionsInitData *)_initData;
+	InGamePlayerOptionsInitData *initData = static_cast<InGamePlayerOptionsInitData *>(_initData);
 	m_networkSmallId = initData->networkSmallId;
 	m_playerPrivileges = initData->playerPrivileges;
 
@@ -428,7 +428,7 @@ void UIScene_InGamePlayerOptionsMenu::handleInput(int iPad, int key, bool repeat
 
 void UIScene_InGamePlayerOptionsMenu::handlePress(F64 controlId, F64 childId)
 {
-	switch((int)controlId)
+	switch(static_cast<int>(controlId))
 	{
 	case eControl_Kick:
 		{
@@ -446,7 +446,7 @@ void UIScene_InGamePlayerOptionsMenu::handlePress(F64 controlId, F64 childId)
 
 int UIScene_InGamePlayerOptionsMenu::KickPlayerReturned(void *pParam,int iPad,C4JStorage::EMessageResult result)
 {
-	BYTE smallId = *(BYTE *)pParam;
+	BYTE smallId = *static_cast<BYTE *>(pParam);
 	delete pParam;
 
 	if(result==C4JStorage::EMessage_ResultAccept)
@@ -470,9 +470,9 @@ int UIScene_InGamePlayerOptionsMenu::KickPlayerReturned(void *pParam,int iPad,C4
 void UIScene_InGamePlayerOptionsMenu::OnPlayerChanged(void *callbackParam, INetworkPlayer *pPlayer, bool leaving)
 {
 	app.DebugPrintf("UIScene_InGamePlayerOptionsMenu::OnPlayerChanged");
-	UIScene_InGamePlayerOptionsMenu *scene = (UIScene_InGamePlayerOptionsMenu *)callbackParam;
+	UIScene_InGamePlayerOptionsMenu *scene = static_cast<UIScene_InGamePlayerOptionsMenu *>(callbackParam);
 
-	UIScene_InGameInfoMenu *infoScene = (UIScene_InGameInfoMenu *)scene->getBackScene();
+	UIScene_InGameInfoMenu *infoScene = static_cast<UIScene_InGameInfoMenu *>(scene->getBackScene());
 	if(infoScene != NULL) UIScene_InGameInfoMenu::OnPlayerChanged(infoScene,pPlayer,leaving);
 
 	if(leaving && pPlayer != NULL && pPlayer->GetSmallId() == scene->m_networkSmallId)
@@ -497,7 +497,7 @@ void UIScene_InGamePlayerOptionsMenu::resetCheatCheckboxes()
 
 void UIScene_InGamePlayerOptionsMenu::handleCheckboxToggled(F64 controlId, bool selected)
 {
-	switch((int)controlId)
+	switch(static_cast<int>(controlId))
 	{
 	case eControl_Op:
 		// flag that the moderator state has changed

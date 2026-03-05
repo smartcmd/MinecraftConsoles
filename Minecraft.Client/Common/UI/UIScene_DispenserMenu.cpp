@@ -10,14 +10,14 @@ UIScene_DispenserMenu::UIScene_DispenserMenu(int iPad, void *_initData, UILayer 
 	// Setup all the Iggy references we need for this scene
 	initialiseMovie();
 
-	TrapScreenInput *initData = (TrapScreenInput *)_initData;
+	TrapScreenInput *initData = static_cast<TrapScreenInput *>(_initData);
 
 	m_labelDispenser.init(initData->trap->getName());
 
 	Minecraft *pMinecraft = Minecraft::GetInstance();
 	if( pMinecraft->localgameModes[initData->iPad] != NULL )
 	{
-		TutorialMode *gameMode = (TutorialMode *)pMinecraft->localgameModes[initData->iPad];
+		TutorialMode *gameMode = static_cast<TutorialMode *>(pMinecraft->localgameModes[initData->iPad]);
 		m_previousTutorialState = gameMode->getTutorial()->getCurrentState();
 		gameMode->getTutorial()->changeTutorialState(e_Tutorial_State_Trap_Menu, this);
 	}

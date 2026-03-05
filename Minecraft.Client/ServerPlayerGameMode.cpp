@@ -86,7 +86,7 @@ void ServerPlayerGameMode::tick()
 		{
 			Tile *tile = Tile::tiles[t];
 			float destroyProgress = tile->getDestroyProgress(player, player->level, delayedDestroyX, delayedDestroyY, delayedDestroyZ) * (ticksSpentDestroying + 1);
-			int state = (int) (destroyProgress * 10);
+			int state = static_cast<int>(destroyProgress * 10);
 
 			if (state != lastSentState)
 			{
@@ -115,7 +115,7 @@ void ServerPlayerGameMode::tick()
 		{
 			int ticksSpentDestroying = gameTicks - destroyProgressStart;
 			float destroyProgress = tile->getDestroyProgress(player, player->level, xDestroyBlock, yDestroyBlock, zDestroyBlock) * (ticksSpentDestroying + 1);
-			int state = (int) (destroyProgress * 10);
+			int state = static_cast<int>(destroyProgress * 10);
 
 			if (state != lastSentState)
 			{
@@ -166,7 +166,7 @@ void ServerPlayerGameMode::startDestroyBlock(int x, int y, int z, int face)
 		xDestroyBlock = x;
 		yDestroyBlock = y;
 		zDestroyBlock = z;
-		int state = (int) (progress * 10);
+		int state = static_cast<int>(progress * 10);
 		level->destroyTileProgress(player->entityId, x, y, z, state);
 		lastSentState = state;
 	}

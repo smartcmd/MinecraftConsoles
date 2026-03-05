@@ -345,7 +345,7 @@ void DsMobInteract::handleParamBlob(shared_ptr<LocalPlayer> player, byteArray pa
 byteArray DsMobInteract::createParamBlob(eInteract interactionId, int entityId)
 {
 	byteArray output;
-	Param param = { interactionId, EntityIO::eTypeToIoid((eINSTANCEOF)entityId) };
+	Param param = { interactionId, EntityIO::eTypeToIoid(static_cast<eINSTANCEOF>(entityId)) };
 	output.data = (byte*) new Param(param);
 	output.length = sizeof(Param);
 	return output;
@@ -423,7 +423,7 @@ void DsTravel::flush(shared_ptr<LocalPlayer> player)
 	{
 		if (param_cache[iPad][i] > 0)
 		{
-			write( player, (eMethod) i, param_cache[iPad][i] );
+			write( player, static_cast<eMethod>(i), param_cache[iPad][i] );
 			param_cache[iPad][i] = 0;
 		}
 	}
@@ -1093,25 +1093,25 @@ bool DurangoStats::enhancedAchievement(eAward achievementId)
 
 void DurangoStats::generatePlayerSession()
 {
-	DurangoStats *dsInstance = (DurangoStats *) GenericStats::getInstance();
+	DurangoStats *dsInstance = static_cast<DurangoStats *>(GenericStats::getInstance());
 	CoCreateGuid( &dsInstance->playerSessionId );
 }
 
 LPCGUID DurangoStats::getPlayerSession()
 {
-	DurangoStats *dsInstance = (DurangoStats *) GenericStats::getInstance();
+	DurangoStats *dsInstance = static_cast<DurangoStats *>(GenericStats::getInstance());
 	LPCGUID lpcguid = &dsInstance->playerSessionId;
 	return lpcguid;
 }
 
 void DurangoStats::setMultiplayerCorrelationId(Platform::String^ mcpId)
 {
-	((DurangoStats*)GenericStats::getInstance())->multiplayerCorrelationId = mcpId;
+	static_cast<DurangoStats *>(GenericStats::getInstance())->multiplayerCorrelationId = mcpId;
 }
 
 LPCWSTR DurangoStats::getMultiplayerCorrelationId()
 {
-	return ((DurangoStats*)GenericStats::getInstance())->multiplayerCorrelationId->Data();
+	return static_cast<DurangoStats *>(GenericStats::getInstance())->multiplayerCorrelationId->Data();
 }
 
 LPCWSTR DurangoStats::getUserId(shared_ptr<LocalPlayer> player)

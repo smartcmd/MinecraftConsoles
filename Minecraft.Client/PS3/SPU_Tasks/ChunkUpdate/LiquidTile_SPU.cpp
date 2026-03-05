@@ -211,12 +211,12 @@ double LiquidTile_SPU::getSlopeAngle(ChunkRebuildData *level, int x, int y, int 
     if (m->getID() == Material_SPU::water_Id)
 	{
 		TileRef_SPU tRef(Tile_SPU::water_Id);
-		flow = ((LiquidTile_SPU*)tRef.getPtr())->getFlow(level, x, y, z);
+		flow = static_cast<LiquidTile_SPU *>(tRef.getPtr())->getFlow(level, x, y, z);
 	}
     if (m->getID() == Material_SPU::lava_Id)
 	{
 		TileRef_SPU tRef(Tile_SPU::lava_Id);
-		flow = ((LiquidTile_SPU*)tRef.getPtr())->getFlow(level, x, y, z);
+		flow = static_cast<LiquidTile_SPU *>(tRef.getPtr())->getFlow(level, x, y, z);
 	}
     if (flow.x == 0 && flow.z == 0) return -1000;
     return atan2(flow.z, flow.x) - MATH_PI / 2;

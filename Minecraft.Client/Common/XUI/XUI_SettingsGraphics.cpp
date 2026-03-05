@@ -10,7 +10,7 @@
 HRESULT CScene_SettingsGraphics::OnInit( XUIMessageInit* pInitData, BOOL& bHandled )
 {
 	WCHAR TempString[256];
-	m_iPad=*(int *)pInitData->pvInitData;
+	m_iPad=*static_cast<int *>(pInitData->pvInitData);
 	// if we're not in the game, we need to use basescene 0 
 	bool bNotInGame=(Minecraft::GetInstance()->level==NULL);
 	bool bIsPrimaryPad=(ProfileManager.GetPrimaryPad()==m_iPad);
@@ -139,13 +139,13 @@ HRESULT CScene_SettingsGraphics::OnNotifyValueChanged( HXUIOBJ hObjSource, XUINo
 	if(hObjSource==m_SliderA[SLIDER_SETTINGS_GAMMA].GetSlider() )
 	{
 		app.SetGameSettings(m_iPad,eGameSetting_Gamma,pNotifyValueChanged->nValue);
-		swprintf( (WCHAR *)TempString, 256, L"%ls: %d%%", app.GetString( IDS_SLIDER_GAMMA ),pNotifyValueChanged->nValue);		
+		swprintf( static_cast<WCHAR *>(TempString), 256, L"%ls: %d%%", app.GetString( IDS_SLIDER_GAMMA ),pNotifyValueChanged->nValue);		
 		m_SliderA[SLIDER_SETTINGS_GAMMA].SetText(TempString);
 	}
 	else if(hObjSource==m_SliderA[SLIDER_SETTINGS_INTERFACE_OPACITY].GetSlider() )
 	{
 		app.SetGameSettings(m_iPad,eGameSetting_InterfaceOpacity,pNotifyValueChanged->nValue);
-		swprintf( (WCHAR *)TempString, 256, L"%ls: %d%%", app.GetString( IDS_SLIDER_INTERFACEOPACITY ),pNotifyValueChanged->nValue);		
+		swprintf( static_cast<WCHAR *>(TempString), 256, L"%ls: %d%%", app.GetString( IDS_SLIDER_INTERFACEOPACITY ),pNotifyValueChanged->nValue);		
 		m_SliderA[SLIDER_SETTINGS_INTERFACE_OPACITY].SetText(TempString);
 	}
 

@@ -26,7 +26,7 @@ static 	SceRemoteStorageData s_getDataOutput;
 
 void SonyRemoteStorage_Orbis::staticInternalCallback(const SceRemoteStorageEvent event, int32_t retCode, void * userData)
 {
-	((SonyRemoteStorage_Orbis*)userData)->internalCallback(event, retCode);
+	static_cast<SonyRemoteStorage_Orbis *>(userData)->internalCallback(event, retCode);
 }
 void SonyRemoteStorage_Orbis::internalCallback(const SceRemoteStorageEvent event, int32_t retCode)
 {

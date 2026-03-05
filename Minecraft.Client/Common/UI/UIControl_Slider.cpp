@@ -97,7 +97,7 @@ S32 UIControl_Slider::GetRealWidth()
 	S32 iRealWidth = m_width;
 	if(result.type == IGGY_DATATYPE_number)
 	{
-		iRealWidth = (S32)result.number;
+		iRealWidth = static_cast<S32>(result.number);
 	}
 	return iRealWidth;
 }

@@ -317,7 +317,7 @@ void LiquidTile::animateTick(Level *level, int x, int y, int z, Random *random)
 		{
 			if (random->nextInt(100) == 0)
 			{
-				ThreadStorage *tls = (ThreadStorage *)TlsGetValue(Tile::tlsIdxShape);
+				ThreadStorage *tls = static_cast<ThreadStorage *>(TlsGetValue(Tile::tlsIdxShape));
 				double xx = x + random->nextFloat();
 				double yy = y + tls->yy1;
 				double zz = z + random->nextFloat();

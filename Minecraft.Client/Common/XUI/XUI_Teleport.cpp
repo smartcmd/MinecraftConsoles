@@ -21,7 +21,7 @@
 //----------------------------------------------------------------------------------
 HRESULT CScene_Teleport::OnInit( XUIMessageInit* pInitData, BOOL& bHandled )
 {
-	TeleportMenuInitData *initParam = (TeleportMenuInitData *)pInitData->pvInitData;
+	TeleportMenuInitData *initParam = static_cast<TeleportMenuInitData *>(pInitData->pvInitData);
 
 	m_iPad = initParam->iPad;
 	m_teleportToPlayer = initParam->teleportToPlayer;
@@ -125,7 +125,7 @@ HRESULT CScene_Teleport::OnNotifyPressEx(HXUIOBJ hObjPressed, XUINotifyPress* pN
 
 void CScene_Teleport::OnPlayerChanged(void *callbackParam, INetworkPlayer *pPlayer, bool leaving)
 {
-	CScene_Teleport *scene = (CScene_Teleport *)callbackParam;
+	CScene_Teleport *scene = static_cast<CScene_Teleport *>(callbackParam);
 	bool playerFound = false;
 
 	for(int i = 0; i < scene->m_playersCount; ++i)

@@ -85,7 +85,7 @@ void PlayerList::placeNewPlayer(Connection *connection, shared_ptr<ServerPlayer>
 	bool newPlayer = playerTag == NULL;
 
 	player->setLevel(server->getLevel(player->dimension));
-	player->gameMode->setLevel((ServerLevel *)player->level);
+	player->gameMode->setLevel(static_cast<ServerLevel *>(player->level));
 
 	// Make sure these privileges are always turned off for the host player
 	INetworkPlayer *networkPlayer = connection->getSocket()->getPlayer();
@@ -108,7 +108,7 @@ void PlayerList::placeNewPlayer(Connection *connection, shared_ptr<ServerPlayer>
 #ifdef _WINDOWS64
 	if (networkPlayer != NULL && !networkPlayer->IsLocal())
 	{
-		NetworkPlayerXbox* nxp = (NetworkPlayerXbox*)networkPlayer;
+		NetworkPlayerXbox* nxp = static_cast<NetworkPlayerXbox *>(networkPlayer);
 		IQNetPlayer* qnp = nxp->GetQNetPlayer();
 		wcsncpy_s(qnp->m_gamertag, 32, player->name.c_str(), _TRUNCATE);
 	}
@@ -151,8 +151,8 @@ void PlayerList::placeNewPlayer(Connection *connection, shared_ptr<ServerPlayer>
 		int mapScale = 3;
 #ifdef _LARGE_WORLDS
 		int scale = MapItemSavedData::MAP_SIZE * 2 * (1 << mapScale);
-		int centreXC = (int) (Math::round(player->x / scale) * scale);
-		int centreZC = (int) (Math::round(player->z / scale) * scale);
+		int centreXC = static_cast<int>(Math::round(player->x / scale) * scale);
+		int centreZC = static_cast<int>(Math::round(player->z / scale) * scale);
 #else
 		// 4J-PB - for Xbox maps, we'll centre them on the origin of the world, since we can fit the whole world in our map
 		int centreXC = 0;
@@ -226,8 +226,8 @@ void PlayerList::placeNewPlayer(Connection *connection, shared_ptr<ServerPlayer>
 	addPlayerToReceiving( player );
 
 	playerConnection->send( shared_ptr<LoginPacket>( new LoginPacket(L"", player->entityId, level->getLevelData()->getGenerator(), level->getSeed(), player->gameMode->getGameModeForPlayer()->getId(),
-		(byte) level->dimension->id, (byte) level->getMaxBuildHeight(), (byte) getMaxPlayers(),
-		level->difficulty, TelemetryManager->GetMultiplayerInstanceID(), (BYTE)playerIndex, level->useNewSeaLevel(), player->getAllPlayerGamePrivileges(),
+		static_cast<byte>(level->dimension->id), static_cast<byte>(level->getMaxBuildHeight()), static_cast<byte>(getMaxPlayers()),
+		level->difficulty, TelemetryManager->GetMultiplayerInstanceID(), static_cast<BYTE>(playerIndex), level->useNewSeaLevel(), player->getAllPlayerGamePrivileges(),
 		level->getLevelData()->getXZSize(), level->getLevelData()->getHellScale() ) ) );
 	playerConnection->send( shared_ptr<SetSpawnPositionPacket>( new SetSpawnPositionPacket(spawnPos->x, spawnPos->y, spawnPos->z) ) );
 	playerConnection->send( shared_ptr<PlayerAbilitiesPacket>( new PlayerAbilitiesPacket(&player->abilities)) );
@@ -329,7 +329,7 @@ void PlayerList::changeDimension(shared_ptr<ServerPlayer> player, ServerLevel *f
 	if (from != NULL) from->getChunkMap()->remove(player);
 	to->getChunkMap()->add(player);
 
-	to->cache->create(((int) player->x) >> 4, ((int) player->z) >> 4);
+	to->cache->create(static_cast<int>(player->x) >> 4, static_cast<int>(player->z) >> 4);
 }
 
 int PlayerList::getMaxRange()
@@ -506,7 +506,7 @@ if (player->riding != NULL)
 shared_ptr<ServerPlayer> PlayerList::getPlayerForLogin(PendingConnection *pendingConnection, const wstring& userName, PlayerUID xuid, PlayerUID onlineXuid)
 {
 #ifdef _WINDOWS64
-	if (players.size() >= (unsigned int)MINECRAFT_NET_MAX_PLAYERS)
+	if (players.size() >= static_cast<unsigned int>(MINECRAFT_NET_MAX_PLAYERS))
 #else
 	if (players.size() >= (unsigned int)maxPlayers)
 #endif
@@ -682,14 +682,14 @@ shared_ptr<ServerPlayer> PlayerList::respawn(shared_ptr<ServerPlayer> serverPlay
 	}
 
 	// Ensure the area the player is spawning in is loaded!
-	level->cache->create(((int) player->x) >> 4, ((int) player->z) >> 4);
+	level->cache->create(static_cast<int>(player->x) >> 4, static_cast<int>(player->z) >> 4);
 
 	while (!level->getCubes(player, player->bb)->empty())
 	{
 		player->setPos(player->x, player->y + 1, player->z);
 	}
 
-	player->connection->send( std::make_shared<RespawnPacket>( (char) player->dimension, player->level->getSeed(), player->level->getMaxBuildHeight(),
+	player->connection->send( std::make_shared<RespawnPacket>( static_cast<char>(player->dimension), player->level->getSeed(), player->level->getMaxBuildHeight(),
 		player->gameMode->getGameModeForPlayer(), level->difficulty, level->getLevelData()->getGenerator(),
 		player->level->useNewSeaLevel(), player->entityId, level->getLevelData()->getXZSize(), level->getLevelData()->getHellScale() ) );
 	player->connection->teleport(player->x, player->y, player->z, player->yRot, player->xRot);
@@ -806,7 +806,7 @@ void PlayerList::toggleDimension(shared_ptr<ServerPlayer> player, int targetDime
 	// 4J Stu Added so that we remove entities from the correct level, after the respawn packet we will be in the wrong level
 	player->flushEntitiesToRemove();
 
-	player->connection->send( shared_ptr<RespawnPacket>( new RespawnPacket((char) player->dimension, newLevel->getSeed(), newLevel->getMaxBuildHeight(),
+	player->connection->send( shared_ptr<RespawnPacket>( new RespawnPacket(static_cast<char>(player->dimension), newLevel->getSeed(), newLevel->getMaxBuildHeight(),
 		player->gameMode->getGameModeForPlayer(), newLevel->difficulty, newLevel->getLevelData()->getGenerator(),
 		newLevel->useNewSeaLevel(), player->entityId, newLevel->getLevelData()->getXZSize(), newLevel->getLevelData()->getHellScale()) ) );
 
@@ -905,8 +905,8 @@ void PlayerList::repositionAcrossDimension(shared_ptr<Entity> entity, int lastDi
 
 	if (lastDimension != 1)
 	{
-		xt = (double) Mth::clamp((int) xt, -Level::MAX_LEVEL_SIZE + 128, Level::MAX_LEVEL_SIZE - 128);
-		zt = (double) Mth::clamp((int) zt, -Level::MAX_LEVEL_SIZE + 128, Level::MAX_LEVEL_SIZE - 128);
+		xt = static_cast<double>(Mth::clamp((int)xt, -Level::MAX_LEVEL_SIZE + 128, Level::MAX_LEVEL_SIZE - 128));
+		zt = static_cast<double>(Mth::clamp((int)zt, -Level::MAX_LEVEL_SIZE + 128, Level::MAX_LEVEL_SIZE - 128));
 		if (entity->isAlive())
 		{
 			newLevel->addEntity(entity);
@@ -1314,7 +1314,7 @@ void PlayerList::saveAll(ProgressListener *progressListener, bool bDeleteGuestMa
 			//4J Stu - We don't want to save the map data for guests, so when we are sure that the player is gone delete the map
 			if(bDeleteGuestMaps && players[i]->isGuest()) playerIo->deleteMapFilesForPlayer(players[i]);
 
-			if(progressListener != NULL) progressListener->progressStagePercentage((i * 100)/ ((int)players.size()));
+			if(progressListener != NULL) progressListener->progressStagePercentage((i * 100)/ static_cast<int>(players.size()));
 		}
 		playerIo->clearOldPlayerFiles();
 		playerIo->saveMapIdLookup();
@@ -1363,7 +1363,7 @@ void PlayerList::sendAllPlayerInfo(shared_ptr<ServerPlayer> player)
 
 int PlayerList::getPlayerCount()
 {
-	return (int)players.size();
+	return static_cast<int>(players.size());
 }
 
 int PlayerList::getPlayerCount(ServerLevel *level)

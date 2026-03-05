@@ -53,7 +53,7 @@ void UIControl_Progress::setProgress(int current)
 {
 	m_current = current;
 
-	float percent = (float)((m_current-m_min))/(m_max-m_min);
+	float percent = static_cast<float>((m_current - m_min))/(m_max-m_min);
 
 	if(percent != m_lastPercent)
 	{

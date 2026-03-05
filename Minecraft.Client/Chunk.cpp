@@ -32,13 +32,13 @@ void Chunk::CreateNewThreadStorage()
 
 void Chunk::ReleaseThreadStorage()
 {
-	unsigned char *tileIds = (unsigned char *)TlsGetValue(tlsIdx);
+	unsigned char *tileIds = static_cast<unsigned char *>(TlsGetValue(tlsIdx));
 	delete tileIds;
 }
 
 unsigned char *Chunk::GetTileIdsStorage()
 {
-	unsigned char *tileIds = (unsigned char *)TlsGetValue(tlsIdx);
+	unsigned char *tileIds = static_cast<unsigned char *>(TlsGetValue(tlsIdx));
 	return tileIds;
 }
 #else
@@ -148,7 +148,7 @@ void Chunk::setPos(int x, int y, int z)
 
 void Chunk::translateToPos()
 {
-	glTranslatef((float)xRenderOffs, (float)yRenderOffs, (float)zRenderOffs);
+	glTranslatef(static_cast<float>(xRenderOffs), static_cast<float>(yRenderOffs), static_cast<float>(zRenderOffs));
 }
 
 
@@ -399,7 +399,7 @@ void Chunk::rebuild()
 							glTranslatef(zs / 2.0f, ys / 2.0f, zs / 2.0f);
 #endif
 							t->begin();
-							t->offset((float)(-this->x), (float)(-this->y), (float)(-this->z));
+							t->offset(static_cast<float>(-this->x), static_cast<float>(-this->y), static_cast<float>(-this->z));
 						}
 
 						Tile *tile = Tile::tiles[tileId];
@@ -936,17 +936,17 @@ void Chunk::rebuild_SPU()
 
 float Chunk::distanceToSqr(shared_ptr<Entity> player) const
 {
-	float xd = (float) (player->x - xm);
-	float yd = (float) (player->y - ym);
-	float zd = (float) (player->z - zm);
+	float xd = static_cast<float>(player->x - xm);
+	float yd = static_cast<float>(player->y - ym);
+	float zd = static_cast<float>(player->z - zm);
 	return xd * xd + yd * yd + zd * zd;
 }
 
 float Chunk::squishedDistanceToSqr(shared_ptr<Entity> player)
 {
-	float xd = (float) (player->x - xm);
-	float yd = (float) (player->y - ym) * 2;
-	float zd = (float) (player->z - zm);
+	float xd = static_cast<float>(player->x - xm);
+	float yd = static_cast<float>(player->y - ym) * 2;
+	float zd = static_cast<float>(player->z - zm);
 	return xd * xd + yd * yd + zd * zd;
 }
 

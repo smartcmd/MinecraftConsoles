@@ -220,7 +220,7 @@ void EnderDragon::aiStep()
 	checkCrystals();
 
 	float flapSpeed = 0.2f / (sqrt(xd * xd + zd * zd) * 10.0f + 1);
-	flapSpeed *= (float) pow(2.0, yd);
+	flapSpeed *= static_cast<float>(pow(2.0, yd));
 	if (	getSynchedAction() == e_EnderdragonAction_Sitting_Flaming ||
 		getSynchedAction() == e_EnderdragonAction_Sitting_Scanning ||
 		getSynchedAction() == e_EnderdragonAction_Sitting_Attacking)
@@ -468,7 +468,7 @@ void EnderDragon::aiStep()
 			{
 				Vec3 *aim = Vec3::newTemp((attackTarget->x - x), 0, (attackTarget->z - z))->normalize();
 				Vec3 *dir = Vec3::newTemp(sin(yRot * PI / 180), 0, -cos(yRot * PI / 180))->normalize();
-				float dot = (float)dir->dot(aim);
+				float dot = static_cast<float>(dir->dot(aim));
 				float angleDegs = acos(dot)*180/PI;
 				angleDegs = angleDegs + 0.5f;
 
@@ -561,7 +561,7 @@ void EnderDragon::aiStep()
 
 			Vec3 *aim = Vec3::newTemp((xTarget - x), (yTarget - y), (zTarget - z))->normalize();
 			Vec3 *dir = Vec3::newTemp(sin(yRot * PI / 180), yd, -cos(yRot * PI / 180))->normalize();
-			float dot = (float) (dir->dot(aim) + 0.5f) / 1.5f;
+			float dot = static_cast<float>(dir->dot(aim) + 0.5f) / 1.5f;
 			if (dot < 0) dot = 0;
 
 			yRotA *= 0.80f;
@@ -579,7 +579,7 @@ void EnderDragon::aiStep()
 			}
 			yRot += yRotA * 0.1f;
 
-			float span = (float) (2.0f / (distToTarget + 1));
+			float span = static_cast<float>(2.0f / (distToTarget + 1));
 			float speed = 0.06f;
 			moveRelative(0, -1, speed * (dot * span + (1 - span)));
 			if (inWall)
@@ -593,7 +593,7 @@ void EnderDragon::aiStep()
 			}
 
 			Vec3 *actual = Vec3::newTemp(xd, yd, zd)->normalize();
-			float slide = (float) (actual->dot(dir) + 1) / 2.0f;
+			float slide = static_cast<float>(actual->dot(dir) + 1) / 2.0f;
 			slide = 0.8f + 0.15f * slide;
 
 
@@ -722,7 +722,7 @@ void EnderDragon::aiStep()
 				m_fireballCharge++;
 				Vec3 *aim = Vec3::newTemp((attackTarget->x - x), 0, (attackTarget->z - z))->normalize();
 				Vec3 *dir = Vec3::newTemp(sin(yRot * PI / 180), 0, -cos(yRot * PI / 180))->normalize();
-				float dot = (float)dir->dot(aim);
+				float dot = static_cast<float>(dir->dot(aim));
 				float angleDegs = acos(dot)*180/PI;
 				angleDegs = angleDegs + 0.5f;
 
@@ -738,7 +738,7 @@ void EnderDragon::aiStep()
 					double ydd = (attackTarget->bb->y0 + attackTarget->bbHeight / 2) - (startingY + head->bbHeight / 2);
 					double zdd = attackTarget->z - startingZ;
 
-					level->levelEvent(nullptr, LevelEvent::SOUND_GHAST_FIREBALL, (int) x, (int) y, (int) z, 0);
+					level->levelEvent(nullptr, LevelEvent::SOUND_GHAST_FIREBALL, static_cast<int>(x), static_cast<int>(y), static_cast<int>(z), 0);
 					shared_ptr<DragonFireball> ie = shared_ptr<DragonFireball>( new DragonFireball(level, dynamic_pointer_cast<Mob>( shared_from_this() ), xdd, ydd, zdd) );
 					ie->x = startingX;
 					ie->y = startingY;
@@ -1063,7 +1063,7 @@ float EnderDragon::rotWrap(double d)
 		d -= 360;
 	while (d < -180)
 		d += 360;
-	return (float) d;
+	return static_cast<float>(d);
 }
 
 bool EnderDragon::checkWalls(AABB *bb)
@@ -1219,7 +1219,7 @@ void EnderDragon::tickDeath()
 		}
 		if (dragonDeathTime == 1) 
 		{
-			level->globalLevelEvent(LevelEvent::SOUND_DRAGON_DEATH, (int) x, (int) y, (int) z, 0);
+			level->globalLevelEvent(LevelEvent::SOUND_DRAGON_DEATH, static_cast<int>(x), static_cast<int>(y), static_cast<int>(z), 0);
 		}
 	}
 	move(0, 0.1f, 0);
@@ -1458,14 +1458,14 @@ bool EnderDragon::setSynchedAction(EEnderdragonAction action, bool force /*= fal
 
 EnderDragon::EEnderdragonAction EnderDragon::getSynchedAction()
 {
-	return (EEnderdragonAction)entityData->getInteger(DATA_ID_SYNCHED_ACTION);
+	return static_cast<EEnderdragonAction>(entityData->getInteger(DATA_ID_SYNCHED_ACTION));
 }
 
 void EnderDragon::handleCrystalDestroyed(DamageSource *source)
 {
 	AABB *tempBB = AABB::newTemp(PODIUM_X_POS,84.0,PODIUM_Z_POS,PODIUM_X_POS+1.0,85.0,PODIUM_Z_POS+1.0);
 	vector<shared_ptr<Entity> > *crystals = level->getEntitiesOfClass(typeid(EnderCrystal), tempBB->grow(48, 40, 48));
-	m_remainingCrystalsCount = (int)crystals->size() - 1;
+	m_remainingCrystalsCount = static_cast<int>(crystals->size()) - 1;
 	if(m_remainingCrystalsCount < 0) m_remainingCrystalsCount = 0;
 	delete crystals;
 
@@ -1641,7 +1641,7 @@ int EnderDragon::findClosestNode(double tX, double tY, double tZ)
 {
 	float closestDist = 100.0f;
 	int closestIndex = 0;
-	Node *currentPos = new Node((int) floor(tX), (int) floor(tY), (int) floor(tZ));
+	Node *currentPos = new Node(static_cast<int>(floor(tX)), static_cast<int>(floor(tY)), static_cast<int>(floor(tZ)));
 	int startIndex = 0;
 	if(m_remainingCrystalsCount <= 0)
 	{
@@ -1805,7 +1805,7 @@ void EnderDragon::readAdditionalSaveData(CompoundTag *tag)
 	m_remainingCrystalsCount = tag->getShort(L"RemainingCrystals");
 	if(!tag->contains(L"RemainingCrystals")) m_remainingCrystalsCount = CRYSTAL_COUNT;
 
-	if(tag->contains(L"DragonState")) setSynchedAction( (EEnderdragonAction)tag->getInt(L"DragonState"), true);
+	if(tag->contains(L"DragonState")) setSynchedAction( static_cast<EEnderdragonAction>(tag->getInt(L"DragonState")), true);
 
 	Mob::readAdditionalSaveData(tag);
 }

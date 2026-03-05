@@ -71,7 +71,7 @@ void DQRNetworkManager::FriendPartyManagerGetSessionInfo(int idx, SessionSearchR
 
 int DQRNetworkManager::_GetFriendsThreadProc(void* lpParameter)
 {
-	DQRNetworkManager *pDQR = (DQRNetworkManager *)lpParameter;
+	DQRNetworkManager *pDQR = static_cast<DQRNetworkManager *>(lpParameter);
 	return pDQR->GetFriendsThreadProc();
 }
 
@@ -410,7 +410,7 @@ int DQRNetworkManager::GetFriendsThreadProc()
 		for( int j = 0; j < nameResolveVector[i]->Size; j++ )
 		{
 			m_sessionSearchResults[i].m_playerNames[j] = nameResolveVector[i]->GetAt(j)->GameDisplayName->Data();
-			m_sessionSearchResults[i].m_playerXuids[j] = PlayerUID(nameResolveVector[i]->GetAt(j)->XboxUserId->Data());
+			m_sessionSearchResults[i].m_playerXuids[j] = static_cast<PlayerUID>(nameResolveVector[i]->GetAt(j)->XboxUserId->Data());
 		}
 		m_sessionSearchResults[i].m_playerCount = nameResolveVector[i]->Size;
 		m_sessionSearchResults[i].m_usedSlotCount = newSessionVector[i]->Members->Size;
@@ -556,7 +556,7 @@ bool DQRNetworkManager::IsSessionFriendsOfFriends(MXSM::MultiplayerSession^ sess
 
 	if (result)
 	{
-		friendsOfFriends = app.GetGameHostOption(((GameSessionData *)gameSessionData)->m_uiGameHostSettings, eGameHostOption_FriendsOfFriends);
+		friendsOfFriends = app.GetGameHostOption(static_cast<GameSessionData *>(gameSessionData)->m_uiGameHostSettings, eGameHostOption_FriendsOfFriends);
 	}
 
 	free(gameSessionData);
@@ -577,7 +577,7 @@ bool DQRNetworkManager::GetGameSessionData(MXSM::MultiplayerSession^ session, vo
 			Platform::String ^customValueString = customValue->GetString();
 			if( customValueString )
 			{
-				base64_decode( customValueString, (unsigned char *)gameSessionData, sizeof(GameSessionData) );
+				base64_decode( customValueString, static_cast<unsigned char *>(gameSessionData), sizeof(GameSessionData) );
 				return true;
 			}			
 		}

@@ -197,7 +197,7 @@ bool	CGameNetworkManager::StartNetworkGame(Minecraft *minecraft, LPVOID lpParame
 	__int64 seed = 0;
 	if(lpParameter != NULL)
 	{
-		NetworkGameInitData *param = (NetworkGameInitData *)lpParameter;
+		NetworkGameInitData *param = static_cast<NetworkGameInitData *>(lpParameter);
 		seed = param->seed;
 
 		app.setLevelGenerationOptions(param->levelGen);
@@ -744,7 +744,7 @@ CGameNetworkManager::eJoinGameResult CGameNetworkManager::JoinGame(FriendSession
 	// Make sure that the Primary Pad is in by default
 	localUsersMask |= GetLocalPlayerMask( ProfileManager.GetPrimaryPad() );
 
-	return (eJoinGameResult)(s_pPlatformNetworkManager->JoinGame( searchResult, localUsersMask, primaryUserIndex ));
+	return static_cast<eJoinGameResult>(s_pPlatformNetworkManager->JoinGame(searchResult, localUsersMask, primaryUserIndex));
 }
 
 void CGameNetworkManager::CancelJoinGame(LPVOID lpParam)
@@ -762,7 +762,7 @@ bool CGameNetworkManager::LeaveGame(bool bMigrateHost)
 
 int CGameNetworkManager::JoinFromInvite_SignInReturned(void *pParam,bool bContinue, int iPad)
 {
-	INVITE_INFO * pInviteInfo = (INVITE_INFO *)pParam;
+	INVITE_INFO * pInviteInfo = static_cast<INVITE_INFO *>(pParam);
 
 	if(bContinue==true)
 	{
@@ -932,7 +932,7 @@ int CGameNetworkManager::ServerThreadProc( void* lpParameter )
 	__int64 seed = 0;
 	if(lpParameter != NULL)
 	{
-		NetworkGameInitData *param = (NetworkGameInitData *)lpParameter;
+		NetworkGameInitData *param = static_cast<NetworkGameInitData *>(lpParameter);
 		seed = param->seed;
 		app.SetGameHostOption(eGameHostOption_All,param->settings);
 
@@ -988,7 +988,7 @@ int	CGameNetworkManager::ExitAndJoinFromInviteThreadProc( void* lpParam )
 
 	// Xbox should always be online when receiving invites - on PS3 we need to check & ask the user to sign in
 #if !defined(__PS3__) && !defined(__PSVITA__)
-	JoinFromInviteData *inviteData = (JoinFromInviteData *)lpParam;
+	JoinFromInviteData *inviteData = static_cast<JoinFromInviteData *>(lpParam);
 	app.SetAction(inviteData->dwUserIndex, eAppAction_JoinFromInvite, lpParam);
 #else
 	if(ProfileManager.IsSignedInLive(ProfileManager.GetPrimaryPad()))

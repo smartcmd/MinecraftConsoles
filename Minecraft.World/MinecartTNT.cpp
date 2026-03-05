@@ -81,7 +81,7 @@ void MinecartTNT::explode(double speedSqr)
 	{
 		double speed = sqrt(speedSqr);
 		if (speed > 5) speed = 5;
-		level->explode(shared_from_this(), x, y, z, (float) (4 + random->nextDouble() * 1.5f * speed), true);
+		level->explode(shared_from_this(), x, y, z, static_cast<float>(4 + random->nextDouble() * 1.5f * speed), true);
 		remove();
 	}
 }

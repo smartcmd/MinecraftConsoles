@@ -16,13 +16,13 @@ UIScene_AnvilMenu::UIScene_AnvilMenu(int iPad, void *_initData, UILayer *parentL
 
 	m_labelAnvil.init( app.GetString(IDS_REPAIR_AND_NAME) );
 
-	AnvilScreenInput *initData = (AnvilScreenInput *)_initData;
+	AnvilScreenInput *initData = static_cast<AnvilScreenInput *>(_initData);
 	m_inventory = initData->inventory;
 
 	Minecraft *pMinecraft = Minecraft::GetInstance();
 	if( pMinecraft->localgameModes[iPad] != NULL )
 	{
-		TutorialMode *gameMode = (TutorialMode *)pMinecraft->localgameModes[iPad];
+		TutorialMode *gameMode = static_cast<TutorialMode *>(pMinecraft->localgameModes[iPad]);
 		m_previousTutorialState = gameMode->getTutorial()->getCurrentState();
 		gameMode->getTutorial()->changeTutorialState(e_Tutorial_State_Anvil_Menu, this);
 	}
@@ -309,7 +309,7 @@ UIControl *UIScene_AnvilMenu::getSection(ESceneSection eSection)
 int UIScene_AnvilMenu::KeyboardCompleteCallback(LPVOID lpParam,bool bRes)
 {
 	// 4J HEG - No reason to set value if keyboard was cancelled
-	UIScene_AnvilMenu *pClass=(UIScene_AnvilMenu *)lpParam;
+	UIScene_AnvilMenu *pClass=static_cast<UIScene_AnvilMenu *>(lpParam);
 	pClass->setIgnoreInput(false);
 
 	if (bRes)
@@ -342,7 +342,7 @@ void UIScene_AnvilMenu::handleEditNamePressed()
 		break;
 	}
 #else
-	InputManager.RequestKeyboard(app.GetString(IDS_TITLE_RENAME),m_textInputAnvil.getLabel(),(DWORD)m_iPad,30,&UIScene_AnvilMenu::KeyboardCompleteCallback,this,C_4JInput::EKeyboardMode_Default);
+	InputManager.RequestKeyboard(app.GetString(IDS_TITLE_RENAME),m_textInputAnvil.getLabel(),static_cast<DWORD>(m_iPad),30,&UIScene_AnvilMenu::KeyboardCompleteCallback,this,C_4JInput::EKeyboardMode_Default);
 #endif
 }
 

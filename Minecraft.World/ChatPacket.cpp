@@ -43,7 +43,7 @@ ChatPacket::ChatPacket(const wstring& message, EChatPacketMessage type, int sour
 // Read chat packet (throws IOException)
 void ChatPacket::read(DataInputStream *dis) 
 {
-	m_messageType = (EChatPacketMessage) dis->readShort();
+	m_messageType = static_cast<EChatPacketMessage>(dis->readShort());
 
 	short packedCounts = dis->readShort();
 	int stringCount = (packedCounts >> 4) & 0xF;

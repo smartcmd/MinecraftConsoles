@@ -106,12 +106,12 @@ void BrewingStandTile::onRemove(Level *level, int x, int y, int z, int id, int d
 
 					shared_ptr<ItemEntity> itemEntity = shared_ptr<ItemEntity>(new ItemEntity(level, x + xo, y + yo, z + zo, shared_ptr<ItemInstance>( new ItemInstance(item->id, count, item->getAuxValue()))));
 					float pow = 0.05f;
-					itemEntity->xd = (float) random->nextGaussian() * pow;
-					itemEntity->yd = (float) random->nextGaussian() * pow + 0.2f;
-					itemEntity->zd = (float) random->nextGaussian() * pow;
+					itemEntity->xd = static_cast<float>(random->nextGaussian()) * pow;
+					itemEntity->yd = static_cast<float>(random->nextGaussian()) * pow + 0.2f;
+					itemEntity->zd = static_cast<float>(random->nextGaussian()) * pow;
 					if (item->hasTag())
 					{
-						itemEntity->getItem()->setTag((CompoundTag *) item->getTag()->copy());
+						itemEntity->getItem()->setTag(static_cast<CompoundTag *>(item->getTag()->copy()));
 					}
 					level->addEntity(itemEntity);
 				}

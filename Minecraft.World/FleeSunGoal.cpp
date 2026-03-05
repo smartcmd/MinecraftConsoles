@@ -18,7 +18,7 @@ bool FleeSunGoal::canUse()
 {
 	if (!level->isDay()) return false;
 	if (!mob->isOnFire()) return false;
-	if (!level->canSeeSky(Mth::floor(mob->x), (int) mob->bb->y0, Mth::floor(mob->z))) return false;
+	if (!level->canSeeSky(Mth::floor(mob->x), static_cast<int>(mob->bb->y0), Mth::floor(mob->z))) return false;
 
 	Vec3 *pos = getHidePos();
 	if (pos == NULL) return false;

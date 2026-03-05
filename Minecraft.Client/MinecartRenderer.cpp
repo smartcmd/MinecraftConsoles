@@ -60,11 +60,11 @@ void MinecartRenderer::render(shared_ptr<Entity> _cart, double x, double y, doub
 		else
 		{
 			dir = dir->normalize();
-			rot = (float) (atan2(dir->z, dir->x) * 180 / PI);
-			xRot = (float) (atan(dir->y) * 73);
+			rot = static_cast<float>(atan2(dir->z, dir->x) * 180 / PI);
+			xRot = static_cast<float>(atan(dir->y) * 73);
 		}
 	}
-	glTranslatef((float) x, (float) y, (float) z);
+	glTranslatef(static_cast<float>(x), static_cast<float>(y), static_cast<float>(z));
 
 	glRotatef(180 - rot, 0, 1, 0);
 	glRotatef(-xRot, 0, 0, 1);

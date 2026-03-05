@@ -126,9 +126,9 @@ int HumanoidMobRenderer::prepareArmor(shared_ptr<LivingEntity> _mob, int layer, 
 			if (armorItem->getMaterial() == ArmorItem::ArmorMaterial::CLOTH)
 			{
 				int color = armorItem->getColor(itemInstance);
-				float red = (float) ((color >> 16) & 0xFF) / 0xFF;
-				float green = (float) ((color >> 8) & 0xFF) / 0xFF;
-				float blue = (float) (color & 0xFF) / 0xFF;
+				float red = static_cast<float>((color >> 16) & 0xFF) / 0xFF;
+				float green = static_cast<float>((color >> 8) & 0xFF) / 0xFF;
+				float blue = static_cast<float>(color & 0xFF) / 0xFF;
 				glColor3f(brightness * red, brightness * green, brightness * blue);
 
 				if (itemInstance->isEnchanted()) return 0x1f;

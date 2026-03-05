@@ -91,7 +91,7 @@ int RespawnPacket::getEstimatedSize()
 	int length=0;
 	if (m_pLevelType != NULL) 
 	{
-		length = (int)m_pLevelType->getGeneratorName().length();
+		length = static_cast<int>(m_pLevelType->getGeneratorName().length());
 	}
 	return 13+length;
 }

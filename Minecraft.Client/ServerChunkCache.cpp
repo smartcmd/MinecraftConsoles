@@ -995,7 +995,7 @@ void ServerChunkCache::recreateLogicStructuresForChunk(int chunkX, int chunkZ)
 
 int ServerChunkCache::runSaveThreadProc(LPVOID lpParam)
 {
-	SaveThreadData *params = (SaveThreadData *)lpParam;
+	SaveThreadData *params = static_cast<SaveThreadData *>(lpParam);
 
 	if(params->useSharedThreadStorage)
 	{

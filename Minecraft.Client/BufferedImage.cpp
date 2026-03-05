@@ -391,9 +391,9 @@ void BufferedImage::preMultiplyAlpha()
 	{
 		cur = curData[i];
 		alpha = (cur >> 24) & 0xff;
-		r = ((cur >> 16) & 0xff) * (float)alpha/255;
-		g = ((cur >> 8) & 0xff) * (float)alpha/255;
-		b = (cur & 0xff) * (float)alpha/255;
+		r = ((cur >> 16) & 0xff) * static_cast<float>(alpha)/255;
+		g = ((cur >> 8) & 0xff) * static_cast<float>(alpha)/255;
+		b = (cur & 0xff) * static_cast<float>(alpha)/255;
 
 		curData[i] = (r << 16) | (g << 8) | (b ) | (alpha << 24);
 	}

@@ -12,7 +12,7 @@
 //----------------------------------------------------------------------------------
 HRESULT CScene_InGameHostOptions::OnInit( XUIMessageInit* pInitData, BOOL& bHandled )
 {
-	m_iPad = *(int *)pInitData->pvInitData;
+	m_iPad = *static_cast<int *>(pInitData->pvInitData);
 
 	MapChildControls();
 

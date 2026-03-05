@@ -35,7 +35,7 @@ UpdateGameRuleProgressPacket::UpdateGameRuleProgressPacket(ConsoleGameRules::EGa
 
 void UpdateGameRuleProgressPacket::read(DataInputStream *dis) //throws IOException 
 {
-	m_definitionType = (ConsoleGameRules::EGameRuleType)dis->readInt();
+	m_definitionType = static_cast<ConsoleGameRules::EGameRuleType>(dis->readInt());
 	m_messageId = readUtf(dis,64);
 	m_icon = dis->readInt();
 	m_auxValue = dis->readByte();
@@ -71,5 +71,5 @@ void UpdateGameRuleProgressPacket::handle(PacketListener *listener)
 
 int UpdateGameRuleProgressPacket::getEstimatedSize()
 {
-	return (int)m_messageId.length() + 4 + m_data.length;
+	return static_cast<int>(m_messageId.length()) + 4 + m_data.length;
 }

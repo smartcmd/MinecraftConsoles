@@ -481,13 +481,13 @@ void ItemInHandRenderer::render(float a)
                 glPushMatrix();
 
                 glTranslatef(-0.0f, -0.6f, 1.1f * flip);
-                glRotatef((float)(-45 * flip), 1, 0, 0);
+                glRotatef(static_cast<float>(-45 * flip), 1, 0, 0);
                 glRotatef(-90, 0, 0, 1);
                 glRotatef(59, 0, 0, 1);
-                glRotatef((float)(-65 * flip), 0, 1, 0);
+                glRotatef(static_cast<float>(-65 * flip), 0, 1, 0);
 
                 EntityRenderer *er = EntityRenderDispatcher::instance->getRenderer(minecraft->player);
-                PlayerRenderer *playerRenderer = (PlayerRenderer *) er;
+                PlayerRenderer *playerRenderer = static_cast<PlayerRenderer *>(er);
                 float ss = 1;
                 glScalef(ss, ss, ss);
 
@@ -530,10 +530,10 @@ void ItemInHandRenderer::render(float a)
         t->begin();
 		int vo = 7;
 		t->normal(0,0,-1);
-        t->vertexUV((float)(0 - vo), (float)( 128 + vo), (float)( 0), (float)( 0), (float)( 1));
-        t->vertexUV((float)(128 + vo), (float)( 128 + vo), (float)( 0), (float)( 1), (float)( 1));
-        t->vertexUV((float)(128 + vo), (float)( 0 - vo), (float)( 0), (float)( 1), (float)( 0));
-        t->vertexUV((float)(0 - vo), (float)( 0 - vo), (float)( 0), (float)( 0), (float)( 0));
+        t->vertexUV(static_cast<float>(0 - vo), static_cast<float>(128 + vo), static_cast<float>(0), static_cast<float>(0), static_cast<float>(1));
+        t->vertexUV(static_cast<float>(128 + vo), static_cast<float>(128 + vo), static_cast<float>(0), static_cast<float>(1), static_cast<float>(1));
+        t->vertexUV(static_cast<float>(128 + vo), static_cast<float>(0 - vo), static_cast<float>(0), static_cast<float>(1), static_cast<float>(0));
+        t->vertexUV(static_cast<float>(0 - vo), static_cast<float>(0 - vo), static_cast<float>(0), static_cast<float>(0), static_cast<float>(0));
         t->end();
 
         shared_ptr<MapItemSavedData> data = Item::map->getSavedData(item, minecraft->level);
@@ -617,7 +617,7 @@ void ItemInHandRenderer::render(float a)
                 glRotatef(-8, 1, 0, 0);
                 glTranslatef(-0.9f, 0.2f, 0.0f);
                 float timeHeld = (item->getUseDuration() - (player->getUseItemDuration() - a + 1));
-                float pow = timeHeld / (float) (BowItem::MAX_DRAW_DURATION);
+                float pow = timeHeld / static_cast<float>(BowItem::MAX_DRAW_DURATION);
                 pow = ((pow * pow) + pow * 2) / 3;
                 if (pow > 1) pow = 1;
                 if (pow > 0.1f)
@@ -706,7 +706,7 @@ void ItemInHandRenderer::render(float a)
         glTranslatef(5.6f, 0, 0);
 
         EntityRenderer *er = EntityRenderDispatcher::instance->getRenderer(minecraft->player);
-        PlayerRenderer *playerRenderer = (PlayerRenderer *) er;
+        PlayerRenderer *playerRenderer = static_cast<PlayerRenderer *>(er);
         float ss = 1;
         glScalef(ss, ss, ss);
 		MemSect(31);

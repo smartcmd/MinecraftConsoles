@@ -45,7 +45,7 @@ void OldChunkStorage::UseDefaultThreadStorage()
 
 void OldChunkStorage::ReleaseThreadStorage()
 {
-	ThreadStorage *tls = (ThreadStorage *)TlsGetValue(tlsIdx);
+	ThreadStorage *tls = static_cast<ThreadStorage *>(TlsGetValue(tlsIdx));
 	if( tls == tlsDefault ) return;
 
 	delete tls;
@@ -290,7 +290,7 @@ void OldChunkStorage::save(LevelChunk *lc, Level *level, DataOutputStream *dos)
 			teTag->putInt(L"x", td.x);
 			teTag->putInt(L"y", td.y);
 			teTag->putInt(L"z", td.z);
-			teTag->putInt(L"t", (int) (td.m_delay - levelTime));
+			teTag->putInt(L"t", static_cast<int>(td.m_delay - levelTime));
 
 			tickTags->add(teTag);
 		}
@@ -318,7 +318,7 @@ void OldChunkStorage::save(LevelChunk *lc, Level *level, CompoundTag *tag)
 	// Will be fine so long as we only actually create tags for once chunk at a time.
 
 	// 4J Stu - As we now save on multiple threads, the static data has been moved to TLS
-	ThreadStorage *tls = (ThreadStorage *)TlsGetValue(tlsIdx);
+	ThreadStorage *tls = static_cast<ThreadStorage *>(TlsGetValue(tlsIdx));
 
 	PIXBeginNamedEvent(0,"Getting block data");
 	//static byteArray blockData = byteArray(32768);
@@ -378,7 +378,7 @@ void OldChunkStorage::save(LevelChunk *lc, Level *level, CompoundTag *tag)
 			teTag->putInt(L"x", td.x);
 			teTag->putInt(L"y", td.y);
 			teTag->putInt(L"z", td.z);
-			teTag->putInt(L"t", (int) (td.m_delay - levelTime));
+			teTag->putInt(L"t", static_cast<int>(td.m_delay - levelTime));
 			teTag->putInt(L"p", td.priorityTilt);
 
 			tickTags->add(teTag);

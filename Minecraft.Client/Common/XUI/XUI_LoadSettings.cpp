@@ -49,7 +49,7 @@ HRESULT CScene_LoadGameSettings::OnInit( XUIMessageInit* pInitData, BOOL& bHandl
 
 	WCHAR TempString[256];
 
-	m_params = (LoadMenuInitData *)pInitData->pvInitData;
+	m_params = static_cast<LoadMenuInitData *>(pInitData->pvInitData);
 
 	m_MoreOptionsParams.bGenerateOptions=FALSE;
 	m_MoreOptionsParams.bPVP = TRUE;
@@ -276,7 +276,7 @@ HRESULT CScene_LoadGameSettings::OnInit( XUIMessageInit* pInitData, BOOL& bHandl
 			if(dwImageBytes > 0 && pbImageData)
 			{
 				ListInfo.fEnabled = TRUE;			
-				DLCTexturePack *pDLCTexPack=(DLCTexturePack *)tp;
+				DLCTexturePack *pDLCTexPack=static_cast<DLCTexturePack *>(tp);
 				if(pDLCTexPack)
 				{
 					int id=pDLCTexPack->getDLCParentPackId();
@@ -469,7 +469,7 @@ HRESULT CScene_LoadGameSettings::LaunchGame(void)
 
 int CScene_LoadGameSettings::CheckResetNetherReturned(void *pParam,int iPad,C4JStorage::EMessageResult result)
 {
-	CScene_LoadGameSettings* pClass = (CScene_LoadGameSettings*)pParam;
+	CScene_LoadGameSettings* pClass = static_cast<CScene_LoadGameSettings *>(pParam);
 
 	// results switched for this dialog
 	if(result==C4JStorage::EMessage_ResultDecline) 
@@ -703,7 +703,7 @@ HRESULT CScene_LoadGameSettings::OnFontRendererChange()
 
 int CScene_LoadGameSettings::ConfirmLoadReturned(void *pParam,int iPad,C4JStorage::EMessageResult result)
 {
-	CScene_LoadGameSettings* pClass = (CScene_LoadGameSettings*)pParam;
+	CScene_LoadGameSettings* pClass = static_cast<CScene_LoadGameSettings *>(pParam);
 
 	if(result==C4JStorage::EMessage_ResultAccept) 
 	{
@@ -840,7 +840,7 @@ int CScene_LoadGameSettings::Progress(void *pParam,float fProgress)
 
 int CScene_LoadGameSettings::LoadSaveDataReturned(void *pParam,bool bContinue)
 {
-	CScene_LoadGameSettings* pClass = (CScene_LoadGameSettings*)pParam;
+	CScene_LoadGameSettings* pClass = static_cast<CScene_LoadGameSettings *>(pParam);
 
 	if(bContinue==true)
 	{
@@ -903,7 +903,7 @@ int CScene_LoadGameSettings::LoadSaveDataReturned(void *pParam,bool bContinue)
 
 int CScene_LoadGameSettings::DeleteSaveDialogReturned(void *pParam,int iPad,C4JStorage::EMessageResult result)
 {
-	CScene_LoadGameSettings* pClass = (CScene_LoadGameSettings*)pParam;
+	CScene_LoadGameSettings* pClass = static_cast<CScene_LoadGameSettings *>(pParam);
 
 	// results switched for this dialog
 	if(result==C4JStorage::EMessage_ResultDecline) 
@@ -921,7 +921,7 @@ int CScene_LoadGameSettings::DeleteSaveDialogReturned(void *pParam,int iPad,C4JS
 
 int CScene_LoadGameSettings::DeleteSaveDataReturned(void *pParam,bool bSuccess)
 {
-	CScene_LoadGameSettings* pClass = (CScene_LoadGameSettings*)pParam;
+	CScene_LoadGameSettings* pClass = static_cast<CScene_LoadGameSettings *>(pParam);
 
 	app.SetCorruptSaveDeleted(true);
 	app.NavigateBack(pClass->m_iPad);
@@ -983,7 +983,7 @@ void CScene_LoadGameSettings::StartGameFromSave(CScene_LoadGameSettings* pClass,
 
 	LoadingInputParams *loadingParams = new LoadingInputParams();
 	loadingParams->func = &CGameNetworkManager::RunNetworkGameThreadProc;
-	loadingParams->lpParam = (LPVOID)param;
+	loadingParams->lpParam = static_cast<LPVOID>(param);
 
 	// Reset the autosave timer
 	app.SetAutosaveTimerTime();
@@ -1000,7 +1000,7 @@ void CScene_LoadGameSettings::StartGameFromSave(CScene_LoadGameSettings* pClass,
 
 int CScene_LoadGameSettings::StartGame_SignInReturned(void *pParam,bool bContinue, int iPad)
 {
-	CScene_LoadGameSettings* pClass = (CScene_LoadGameSettings*)pParam;
+	CScene_LoadGameSettings* pClass = static_cast<CScene_LoadGameSettings *>(pParam);
 
 	if(bContinue==true)
 	{
@@ -1082,7 +1082,7 @@ HRESULT CScene_LoadGameSettings::OnNotifyValueChanged( HXUIOBJ hObjSource, XUINo
 	if(hObjSource==m_SliderDifficulty.GetSlider() )
 	{
 		app.SetGameSettings(m_iPad,eGameSetting_Difficulty,pNotifyValueChanged->nValue);
-		swprintf( (WCHAR *)TempString, 256, L"%ls: %ls", app.GetString( IDS_SLIDER_DIFFICULTY ),app.GetString(m_iDifficultyTitleSettingA[pNotifyValueChanged->nValue]));		
+		swprintf( static_cast<WCHAR *>(TempString), 256, L"%ls: %ls", app.GetString( IDS_SLIDER_DIFFICULTY ),app.GetString(m_iDifficultyTitleSettingA[pNotifyValueChanged->nValue]));		
 		m_SliderDifficulty.SetText(TempString);
 	}
 	return S_OK;
@@ -1150,7 +1150,7 @@ HRESULT CScene_LoadGameSettings::OnTransitionEnd( XUIMessageTransition *pTransit
 
 int CScene_LoadGameSettings::UnlockTexturePackReturned(void *pParam,int iPad,C4JStorage::EMessageResult result)
 {
-	CScene_LoadGameSettings* pScene = (CScene_LoadGameSettings*)pParam;
+	CScene_LoadGameSettings* pScene = static_cast<CScene_LoadGameSettings *>(pParam);
 
 	if(result==C4JStorage::EMessage_ResultAccept)
 	{
@@ -1482,7 +1482,7 @@ void CScene_LoadGameSettings::LoadLevelGen(LevelGenerationOptions *levelGen)
 
 	LoadingInputParams *loadingParams = new LoadingInputParams();
 	loadingParams->func = &CGameNetworkManager::RunNetworkGameThreadProc;
-	loadingParams->lpParam = (LPVOID)param;
+	loadingParams->lpParam = static_cast<LPVOID>(param);
 
 	// Reset the autosave timer
 	app.SetAutosaveTimerTime();
@@ -1540,7 +1540,7 @@ HRESULT CScene_LoadGameSettings::OnCustomMessage_DLCMountingComplete()
 			ListInfo.fEnabled = TRUE;			
 			hr=XuiCreateTextureBrushFromMemory(pbImageData,dwImageBytes,&ListInfo.hXuiBrush);
 
-			DLCTexturePack *pDLCTexPack=(DLCTexturePack *)tp;
+			DLCTexturePack *pDLCTexPack=static_cast<DLCTexturePack *>(tp);
 			if(pDLCTexPack)
 			{
 				int id=pDLCTexPack->getDLCParentPackId();
@@ -1635,7 +1635,7 @@ HRESULT CScene_LoadGameSettings::OnCustomMessage_DLCMountingComplete()
 
 int CScene_LoadGameSettings::TexturePackDialogReturned(void *pParam,int iPad,C4JStorage::EMessageResult result)
 {
-	CScene_LoadGameSettings *pClass = (CScene_LoadGameSettings *)pParam;
+	CScene_LoadGameSettings *pClass = static_cast<CScene_LoadGameSettings *>(pParam);
 #ifdef _XBOX
 	pClass->m_currentTexturePackIndex = pClass->m_pTexturePacksList->GetCurSel();
 	// Exit with or without saving

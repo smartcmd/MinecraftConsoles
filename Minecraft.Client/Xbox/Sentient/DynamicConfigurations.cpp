@@ -43,7 +43,7 @@ void MinecraftDynamicConfigurations::UpdateNextConfiguration()
 	{
 		if(!s_bUpdatedConfigs[i])
 		{
-			update = (EDynamic_Configs)i;
+			update = static_cast<EDynamic_Configs>(i);
 			break;
 		}
 	}

@@ -79,8 +79,8 @@ void LightningBoltRenderer::render(shared_ptr<Entity> _bolt, double x, double y,
                     if (i == 1 || i == 2) xx2 += rr2 * 2;
                     if (i == 2 || i == 3) zz2 += rr2 * 2;
 
-                    t->vertex((float)(xx2 + xo0), (float)( y + (h) * 16), (float)( zz2 + zo0));
-                    t->vertex((float)(xx1 + xo1), (float)( y + (h + 1) * 16), (float)( zz1 + zo1));
+                    t->vertex(static_cast<float>(xx2 + xo0), static_cast<float>(y + (h) * 16), static_cast<float>(zz2 + zo0));
+                    t->vertex(static_cast<float>(xx1 + xo1), static_cast<float>(y + (h + 1) * 16), static_cast<float>(zz1 + zo1));
 
                 }
 

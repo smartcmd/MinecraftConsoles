@@ -14,14 +14,14 @@ UIScene_EnchantingMenu::UIScene_EnchantingMenu(int iPad, void *_initData, UILaye
 	m_enchantButton[1].init(1);
 	m_enchantButton[2].init(2);
 
-	EnchantingScreenInput *initData = (EnchantingScreenInput *)_initData;
+	EnchantingScreenInput *initData = static_cast<EnchantingScreenInput *>(_initData);
 	
 	m_labelEnchant.init( initData->name.empty() ? app.GetString(IDS_ENCHANT) : initData->name );
 
 	Minecraft *pMinecraft = Minecraft::GetInstance();
 	if( pMinecraft->localgameModes[initData->iPad] != NULL )
 	{
-		TutorialMode *gameMode = (TutorialMode *)pMinecraft->localgameModes[initData->iPad];
+		TutorialMode *gameMode = static_cast<TutorialMode *>(pMinecraft->localgameModes[initData->iPad]);
 		m_previousTutorialState = gameMode->getTutorial()->getCurrentState();
 		gameMode->getTutorial()->changeTutorialState(e_Tutorial_State_Enchanting_Menu, this);
 	}
@@ -264,7 +264,7 @@ void UIScene_EnchantingMenu::customDraw(IggyCustomDrawCallbackRegion *region)
 	else
 	{
 		int slotId = -1;
-		swscanf((wchar_t*)region->name,L"slot_Button%d",&slotId);
+		swscanf(static_cast<wchar_t *>(region->name),L"slot_Button%d",&slotId);
 		if(slotId >= 0)
 		{
 			// Setup GDraw, normal game render states and matrices

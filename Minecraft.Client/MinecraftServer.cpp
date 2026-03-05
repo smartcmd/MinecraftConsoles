@@ -767,7 +767,7 @@ int MinecraftServer::runPostUpdate(void* lpParam)
 {
 	ShutdownManager::HasStarted(ShutdownManager::ePostProcessThread);
 
-	MinecraftServer *server = (MinecraftServer *)lpParam;
+	MinecraftServer *server = static_cast<MinecraftServer *>(lpParam);
 	Entity::useSmallIds();		// This thread can end up spawning entities as resources
 	IntCache::CreateNewThreadStorage();
 	AABB::CreateNewThreadStorage();
@@ -1401,7 +1401,7 @@ void MinecraftServer::Suspend()
 	LARGE_INTEGER qwTicksPerSec, qwTime, qwNewTime, qwDeltaTime;
 	float fElapsedTime = 0.0f;
 	QueryPerformanceFrequency( &qwTicksPerSec );
-	float fSecsPerTick = 1.0f / (float)qwTicksPerSec.QuadPart;
+	float fSecsPerTick = 1.0f / static_cast<float>(qwTicksPerSec.QuadPart);
 	// Save the start time
 	QueryPerformanceCounter( &qwTime );
 	if(m_bLoaded && ProfileManager.IsFullVersion() && (!StorageManager.GetSaveDisabled()))
@@ -1428,7 +1428,7 @@ void MinecraftServer::Suspend()
 	QueryPerformanceCounter( &qwNewTime );
 
 	qwDeltaTime.QuadPart = qwNewTime.QuadPart - qwTime.QuadPart;
-	fElapsedTime = fSecsPerTick * ((FLOAT)(qwDeltaTime.QuadPart));
+	fElapsedTime = fSecsPerTick * static_cast<FLOAT>(qwDeltaTime.QuadPart);
 
 	// 4J-JEV: Flush stats and call PlayerSessionExit.
 	for (int iPad = 0; iPad < XUSER_MAX_COUNT; iPad++)
@@ -1702,7 +1702,7 @@ void MinecraftServer::run(__int64 seed, void *lpParameter)
 	bool findSeed = false;
 	if(lpParameter != NULL)
 	{
-		initData = (NetworkGameInitData *)lpParameter;
+		initData = static_cast<NetworkGameInitData *>(lpParameter);
 		initSettings = app.GetGameHostOption(eGameHostOption_All);
 		findSeed = initData->findSeed;
 		m_texturePackId = initData->texturePackId;
@@ -1917,7 +1917,7 @@ void MinecraftServer::run(__int64 seed, void *lpParameter)
 				case eXuiServerAction_SpawnMob:
 					{
 						shared_ptr<ServerPlayer> player = players->players.at(0);
-						eINSTANCEOF factory = (eINSTANCEOF)((size_t)param);
+						eINSTANCEOF factory = static_cast<eINSTANCEOF>((size_t)param);
 						shared_ptr<Mob> mob = dynamic_pointer_cast<Mob>(EntityIO::newByEnumType(factory,player->level ));
 						mob->moveTo(player->x+1, player->y, player->z+1, player->level->random->nextFloat() * 360, 0);
 						mob->setDespawnProtected();		// 4J added, default to being protected against despawning (has to be done after initial position is set)
@@ -1963,7 +1963,7 @@ void MinecraftServer::run(__int64 seed, void *lpParameter)
 
 					if( !s_bServerHalted )
 					{
-						ConsoleSchematicFile::XboxSchematicInitParam *initData = (ConsoleSchematicFile::XboxSchematicInitParam *)param;
+						ConsoleSchematicFile::XboxSchematicInitParam *initData = static_cast<ConsoleSchematicFile::XboxSchematicInitParam *>(param);
 #ifdef _XBOX
 						File targetFileDir(File::pathRoot + File::pathSeparator + L"Schematics");
 #else
@@ -1989,7 +1989,7 @@ void MinecraftServer::run(__int64 seed, void *lpParameter)
 				case eXuiServerAction_SetCameraLocation:
 #ifndef _CONTENT_PACKAGE
 					{
-						DebugSetCameraPosition *pos = (DebugSetCameraPosition *)param;
+						DebugSetCameraPosition *pos = static_cast<DebugSetCameraPosition *>(param);
 
 						app.DebugPrintf(	"DEBUG: Player=%i\n", pos->player );
 						app.DebugPrintf(	"DEBUG: Teleporting to pos=(%f.2, %f.2, %f.2), looking at=(%f.2,%f.2)\n",
@@ -2122,7 +2122,7 @@ void MinecraftServer::tick()
 			static __int64 stc = 0;
 			__int64 st0 = System::currentTimeMillis();
 			PIXBeginNamedEvent(0,"Level tick %d",i);
-			((Level *)level)->tick();
+			static_cast<Level *>(level)->tick();
 			__int64 st1 = System::currentTimeMillis();
 			PIXEndNamedEvent();
 			PIXBeginNamedEvent(0,"Update lights %d",i);

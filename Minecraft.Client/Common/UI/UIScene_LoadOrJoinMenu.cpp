@@ -42,7 +42,7 @@ static wstring ReadLevelNameFromSaveFile(const wstring& filePath)
             char buf[128] = {};
             if (fgets(buf, sizeof(buf), fr))
             {
-                int len = (int)strlen(buf);
+                int len = static_cast<int>(strlen(buf));
                 while (len > 0 && (buf[len-1] == '\n' || buf[len-1] == '\r' || buf[len-1] == ' '))
                     buf[--len] = '\0';
                 fclose(fr);
@@ -172,7 +172,7 @@ C4JStorage::SAVETRANSFER_FILE_DETAILS UIScene_LoadOrJoinMenu::m_debugTransferDet
 
 int UIScene_LoadOrJoinMenu::LoadSaveDataThumbnailReturned(LPVOID lpParam,PBYTE pbThumbnail,DWORD dwThumbnailBytes)
 {
-    UIScene_LoadOrJoinMenu *pClass= (UIScene_LoadOrJoinMenu *)lpParam;
+    UIScene_LoadOrJoinMenu *pClass= static_cast<UIScene_LoadOrJoinMenu *>(lpParam);
 
     app.DebugPrintf("Received data for save thumbnail\n");
 
@@ -1015,7 +1015,7 @@ void UIScene_LoadOrJoinMenu::GetSaveInfo()
         if( savesDir.exists() )
         {
             m_saves = savesDir.listFiles();
-            uiSaveC = (unsigned int)m_saves->size();
+            uiSaveC = static_cast<unsigned int>(m_saves->size());
         }
         // add the New Game and Tutorial after the saves list is retrieved, if there are any saves
 
@@ -1353,7 +1353,7 @@ void UIScene_LoadOrJoinMenu::handleInput(int iPad, int key, bool repeat, bool pr
 int UIScene_LoadOrJoinMenu::KeyboardCompleteWorldNameCallback(LPVOID lpParam,bool bRes)
 {
     // 4J HEG - No reason to set value if keyboard was cancelled
-    UIScene_LoadOrJoinMenu *pClass=(UIScene_LoadOrJoinMenu *)lpParam;
+    UIScene_LoadOrJoinMenu *pClass=static_cast<UIScene_LoadOrJoinMenu *>(lpParam);
 	pClass->m_bIgnoreInput=false;
     if (bRes)
     {
@@ -1378,7 +1378,7 @@ int UIScene_LoadOrJoinMenu::KeyboardCompleteWorldNameCallback(LPVOID lpParam,boo
                 // Convert the ui16Text input to a wide string
                 wchar_t wNewName[128] = {};
                 for (int k = 0; k < 127 && ui16Text[k]; k++)
-                    wNewName[k] = (wchar_t)ui16Text[k];
+                    wNewName[k] = static_cast<wchar_t>(ui16Text[k]);
 
                 // Convert to narrow for storage and in-memory update
                 char narrowName[128] = {};
@@ -1422,18 +1422,18 @@ int UIScene_LoadOrJoinMenu::KeyboardCompleteWorldNameCallback(LPVOID lpParam,boo
 }
 void UIScene_LoadOrJoinMenu::handleInitFocus(F64 controlId, F64 childId)
 {
-    app.DebugPrintf(app.USER_SR, "UIScene_LoadOrJoinMenu::handleInitFocus - %d , %d\n", (int)controlId, (int)childId);
+    app.DebugPrintf(app.USER_SR, "UIScene_LoadOrJoinMenu::handleInitFocus - %d , %d\n", static_cast<int>(controlId), static_cast<int>(childId));
 }
 
 void UIScene_LoadOrJoinMenu::handleFocusChange(F64 controlId, F64 childId)
 {
-    app.DebugPrintf(app.USER_SR, "UIScene_LoadOrJoinMenu::handleFocusChange - %d , %d\n", (int)controlId, (int)childId);
+    app.DebugPrintf(app.USER_SR, "UIScene_LoadOrJoinMenu::handleFocusChange - %d , %d\n", static_cast<int>(controlId), static_cast<int>(childId));
 
-	switch((int)controlId)
+	switch(static_cast<int>(controlId))
 	{
 	case eControl_GamesList:
 		m_iGameListIndex = childId;
-		m_buttonListGames.updateChildFocus( (int) childId );
+		m_buttonListGames.updateChildFocus( static_cast<int>(childId) );
 		break;
 	case eControl_SavesList:
 		m_iSaveListIndex = childId;
@@ -1455,18 +1455,18 @@ void UIScene_LoadOrJoinMenu::remoteStorageGetSaveCallback(LPVOID lpParam, SonyRe
 
 void UIScene_LoadOrJoinMenu::handlePress(F64 controlId, F64 childId)
 {
-    switch((int)controlId)
+    switch(static_cast<int>(controlId))
     {
     case eControl_SavesList:
         {
             m_bIgnoreInput=true;
 
-            int lGenID = (int)childId - 1;
+            int lGenID = static_cast<int>(childId) - 1;
 
             //CD - Added for audio
             ui.PlayUISFX(eSFX_Press);
 
-            if((int)childId == JOIN_LOAD_CREATE_BUTTON_INDEX)
+            if(static_cast<int>(childId) == JOIN_LOAD_CREATE_BUTTON_INDEX)
             {
                 app.SetTutorialMode( false );
 
@@ -1524,17 +1524,17 @@ void UIScene_LoadOrJoinMenu::handlePress(F64 controlId, F64 childId)
 
                     if(app.DebugSettingsOn() && app.GetLoadSavesFromFolderEnabled())
                     {
-                        LoadSaveFromDisk(m_saves->at((int)childId-m_iDefaultButtonsC));
+                        LoadSaveFromDisk(m_saves->at(static_cast<int>(childId)-m_iDefaultButtonsC));
                     }
                     else
                     {
                         LoadMenuInitData *params = new LoadMenuInitData();
                         params->iPad = m_iPad;
                         // need to get the iIndex from the list item, since the position in the list doesn't correspond to the GetSaveGameInfo list because of sorting
-                        params->iSaveGameInfoIndex=m_saveDetails[((int)childId)-m_iDefaultButtonsC].saveId;
+                        params->iSaveGameInfoIndex=m_saveDetails[static_cast<int>(childId)-m_iDefaultButtonsC].saveId;
                         //params->pbSaveRenamed=&m_bSaveRenamed;
                         params->levelGen = NULL;
-                        params->saveDetails = &m_saveDetails[ ((int)childId)-m_iDefaultButtonsC ];
+                        params->saveDetails = &m_saveDetails[ static_cast<int>(childId)-m_iDefaultButtonsC ];
 
 #ifdef _XBOX_ONE
                         // On XB1, saves might need syncing, in which case inform the user so they can decide whether they want to wait for this to happen
@@ -1568,7 +1568,7 @@ void UIScene_LoadOrJoinMenu::handlePress(F64 controlId, F64 childId)
             ui.PlayUISFX(eSFX_Press);
 
 			{
-				int nIndex = (int)childId;
+				int nIndex = static_cast<int>(childId);
 				m_iGameListIndex = nIndex;
 				CheckAndJoinGame(nIndex);
 			}
@@ -1818,7 +1818,7 @@ void UIScene_LoadOrJoinMenu::LoadLevelGen(LevelGenerationOptions *levelGen)
 
     LoadingInputParams *loadingParams = new LoadingInputParams();
     loadingParams->func = &CGameNetworkManager::RunNetworkGameThreadProc;
-    loadingParams->lpParam = (LPVOID)param;
+    loadingParams->lpParam = static_cast<LPVOID>(param);
 
     UIFullscreenProgressCompletionData *completionData = new UIFullscreenProgressCompletionData();
     completionData->bShowBackground=TRUE;
@@ -1834,7 +1834,7 @@ void UIScene_LoadOrJoinMenu::UpdateGamesListCallback(LPVOID pParam)
 {
     if(pParam != NULL)
     {
-        UIScene_LoadOrJoinMenu *pScene = (UIScene_LoadOrJoinMenu *)pParam;
+        UIScene_LoadOrJoinMenu *pScene = static_cast<UIScene_LoadOrJoinMenu *>(pParam);
         pScene->UpdateGamesList();
     }
 }
@@ -1879,7 +1879,7 @@ void UIScene_LoadOrJoinMenu::UpdateGamesList()
 
     // Update the xui list displayed
     unsigned int xuiListSize = m_buttonListGames.getItemCount();
-    unsigned int filteredListSize = (unsigned int)m_currentSessions->size();
+    unsigned int filteredListSize = static_cast<unsigned int>(m_currentSessions->size());
 
     BOOL gamesListHasFocus = DoesGamesListHaveFocus();
 
@@ -2170,7 +2170,7 @@ void UIScene_LoadOrJoinMenu::LoadSaveFromDisk(File *saveFile, ESavePlatform save
 
     LoadingInputParams *loadingParams = new LoadingInputParams();
     loadingParams->func = &CGameNetworkManager::RunNetworkGameThreadProc;
-    loadingParams->lpParam = (LPVOID)param;
+    loadingParams->lpParam = static_cast<LPVOID>(param);
 
     UIFullscreenProgressCompletionData *completionData = new UIFullscreenProgressCompletionData();
     completionData->bShowBackground=TRUE;
@@ -2276,7 +2276,7 @@ static bool Win64_DeleteSaveDirectory(const wchar_t* wPath)
 
 int UIScene_LoadOrJoinMenu::DeleteSaveDialogReturned(void *pParam,int iPad,C4JStorage::EMessageResult result)
 {
-    UIScene_LoadOrJoinMenu* pClass = (UIScene_LoadOrJoinMenu*)pParam;
+    UIScene_LoadOrJoinMenu* pClass = static_cast<UIScene_LoadOrJoinMenu *>(pParam);
     // results switched for this dialog
 
 	// Check that we have a valid save selected (can get a bad index if the save list has been refreshed)
@@ -2322,7 +2322,7 @@ int UIScene_LoadOrJoinMenu::DeleteSaveDialogReturned(void *pParam,int iPad,C4JSt
 int UIScene_LoadOrJoinMenu::DeleteSaveDataReturned(LPVOID lpParam,bool bRes)
 {
 	ui.EnterCallbackIdCriticalSection();
-    UIScene_LoadOrJoinMenu* pClass = (UIScene_LoadOrJoinMenu*)ui.GetSceneFromCallbackId((size_t)lpParam);
+    UIScene_LoadOrJoinMenu* pClass = static_cast<UIScene_LoadOrJoinMenu *>(ui.GetSceneFromCallbackId((size_t)lpParam));
 
 	if(pClass)
 	{
@@ -2342,7 +2342,7 @@ int UIScene_LoadOrJoinMenu::DeleteSaveDataReturned(LPVOID lpParam,bool bRes)
 
 int UIScene_LoadOrJoinMenu::RenameSaveDataReturned(LPVOID lpParam,bool bRes)
 {
-    UIScene_LoadOrJoinMenu* pClass = (UIScene_LoadOrJoinMenu*)lpParam;
+    UIScene_LoadOrJoinMenu* pClass = static_cast<UIScene_LoadOrJoinMenu *>(lpParam);
 
     if(bRes)
     {
@@ -2374,7 +2374,7 @@ void UIScene_LoadOrJoinMenu::LoadRemoteFileFromDisk(char* remoteFilename)
 
 int UIScene_LoadOrJoinMenu::SaveOptionsDialogReturned(void *pParam,int iPad,C4JStorage::EMessageResult result)
 {
-    UIScene_LoadOrJoinMenu* pClass = (UIScene_LoadOrJoinMenu*)pParam;
+    UIScene_LoadOrJoinMenu* pClass = static_cast<UIScene_LoadOrJoinMenu *>(pParam);
 
     // results switched for this dialog
     // EMessage_ResultAccept means cancel
@@ -2545,7 +2545,7 @@ int UIScene_LoadOrJoinMenu::MustSignInReturnedTexturePack(void *pParam,bool bCon
 
 int UIScene_LoadOrJoinMenu::TexturePackDialogReturned(void *pParam,int iPad,C4JStorage::EMessageResult result)
 {
-    UIScene_LoadOrJoinMenu *pClass = (UIScene_LoadOrJoinMenu *)pParam;
+    UIScene_LoadOrJoinMenu *pClass = static_cast<UIScene_LoadOrJoinMenu *>(pParam);
 
     // Exit with or without saving
     if(result==C4JStorage::EMessage_ResultAccept)

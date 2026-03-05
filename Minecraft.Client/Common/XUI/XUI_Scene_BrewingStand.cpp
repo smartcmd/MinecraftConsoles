@@ -24,7 +24,7 @@ HRESULT CXuiSceneBrewingStand::OnInit( XUIMessageInit* pInitData, BOOL& bHandled
 
 	Minecraft *pMinecraft = Minecraft::GetInstance();
 
-	BrewingScreenInput* initData = (BrewingScreenInput*)pInitData->pvInitData;
+	BrewingScreenInput* initData = static_cast<BrewingScreenInput *>(pInitData->pvInitData);
 	m_iPad=initData->iPad;
 	m_bSplitscreen=initData->bSplitscreen;
 

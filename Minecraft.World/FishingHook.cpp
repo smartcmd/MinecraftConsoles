@@ -102,7 +102,7 @@ bool FishingHook::shouldRenderAtSqrDistance(double distance)
 
 void FishingHook::shoot(double xd, double yd, double zd, float pow, float uncertainty)
 {
-	float dist = (float) sqrt(xd * xd + yd * yd + zd * zd);
+	float dist = static_cast<float>(sqrt(xd * xd + yd * yd + zd * zd));
 
 	xd /= dist;
 	yd /= dist;
@@ -122,8 +122,8 @@ void FishingHook::shoot(double xd, double yd, double zd, float pow, float uncert
 
 	double sd = sqrt(xd * xd + zd * zd);
 
-	yRotO = yRot = (float) (atan2(xd, zd) * 180 / PI);
-	xRotO = xRot = (float) (atan2(yd, sd) * 180 / PI);
+	yRotO = yRot = static_cast<float>(atan2(xd, zd) * 180 / PI);
+	xRotO = xRot = static_cast<float>(atan2(yd, sd) * 180 / PI);
 	life = 0;
 }
 
@@ -161,8 +161,8 @@ void FishingHook::tick()
 
 		double yrd = Mth::wrapDegrees(lyr - yRot);
 
-		yRot += (float) ( (yrd) / lSteps );
-		xRot += (float) ( (lxr - xRot) / lSteps );
+		yRot += static_cast<float>((yrd) / lSteps);
+		xRot += static_cast<float>((lxr - xRot) / lSteps);
 
 		lSteps--;
 		setPos(xt, yt, zt);
@@ -284,8 +284,8 @@ void FishingHook::tick()
 	move(xd, yd, zd);
 
 	double sd = sqrt(xd * xd + zd * zd);
-	yRot = (float) (atan2(xd, zd) * 180 / PI);
-	xRot = (float) (atan2(yd, sd) * 180 / PI);
+	yRot = static_cast<float>(atan2(xd, zd) * 180 / PI);
+	xRot = static_cast<float>(atan2(yd, sd) * 180 / PI);
 
 	while (xRot - xRotO < -180)
 		xRotO -= 360;
@@ -337,7 +337,7 @@ void FishingHook::tick()
 				nibble = random->nextInt(30) + 10;
 				yd -= 0.2f;
 				playSound(eSoundType_RANDOM_SPLASH, 0.25f, 1 + (random->nextFloat() - random->nextFloat()) * 0.4f);
-				float yt = (float) Mth::floor(bb->y0);
+				float yt = static_cast<float>(Mth::floor(bb->y0));
 				for (int i = 0; i < 1 + bbWidth * 20; i++)
 				{
 					float xo = (random->nextFloat() * 2 - 1) * bbWidth;
@@ -377,12 +377,12 @@ void FishingHook::tick()
 
 void FishingHook::addAdditonalSaveData(CompoundTag *tag)
 {
-	tag->putShort(L"xTile", (short) xTile);
-	tag->putShort(L"yTile", (short) yTile);
-	tag->putShort(L"zTile", (short) zTile);
-	tag->putByte(L"inTile", (byte) lastTile);
-	tag->putByte(L"shake", (byte) shakeTime);
-	tag->putByte(L"inGround", (byte) (inGround ? 1 : 0));
+	tag->putShort(L"xTile", static_cast<short>(xTile));
+	tag->putShort(L"yTile", static_cast<short>(yTile));
+	tag->putShort(L"zTile", static_cast<short>(zTile));
+	tag->putByte(L"inTile", static_cast<byte>(lastTile));
+	tag->putByte(L"shake", static_cast<byte>(shakeTime));
+	tag->putByte(L"inGround", static_cast<byte>(inGround ? 1 : 0));
 }
 
 void FishingHook::readAdditionalSaveData(CompoundTag *tag)

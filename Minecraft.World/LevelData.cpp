@@ -712,7 +712,7 @@ void LevelData::getMoatFlags(bool* bClassicEdgeMoat, bool* bSmallEdgeMoat, bool*
 
 int LevelData::getXZHellSizeOld()
 {
-	int hellXZSizeOld = ceil((float)m_xzSizeOld / m_hellScaleOld);
+	int hellXZSizeOld = ceil(static_cast<float>(m_xzSizeOld) / m_hellScaleOld);
 
 	while(hellXZSizeOld > HELL_LEVEL_MAX_WIDTH && m_hellScaleOld < HELL_LEVEL_MAX_SCALE)
 	{

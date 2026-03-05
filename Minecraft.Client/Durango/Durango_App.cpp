@@ -221,7 +221,7 @@ int CConsoleMinecraftApp::LoadLocalDLCImage(WCHAR *wchName,PBYTE *ppbImageData,D
 	if(*pdwBytes!=0)
 	{
 		DWORD dwBytesRead;
-		PBYTE pbImageData=(PBYTE)malloc(*pdwBytes);
+		PBYTE pbImageData=static_cast<PBYTE>(malloc(*pdwBytes));
 
 		if(ReadFile(hFile,pbImageData,*pdwBytes,&dwBytesRead,NULL)==FALSE)
 		{
@@ -299,7 +299,7 @@ void CConsoleMinecraftApp::TemporaryCreateGameStart()
 
 	LoadingInputParams *loadingParams = new LoadingInputParams();
 	loadingParams->func = &CGameNetworkManager::RunNetworkGameThreadProc;
-	loadingParams->lpParam = (LPVOID)param;
+	loadingParams->lpParam = static_cast<LPVOID>(param);
 
 	// Reset the autosave time
 	app.SetAutosaveTimerTime();
@@ -454,9 +454,9 @@ bool CConsoleMinecraftApp::TMSPP_ReadBannedList(int iPad,eTMSAction NextAction)
 int CConsoleMinecraftApp::Callback_TMSPPReadBannedList(void *pParam,int iPad, int iUserData, LPVOID lpvData,WCHAR *wchFilename)
 {
 	app.DebugPrintf("CConsoleMinecraftApp::Callback_TMSPPReadBannedList\n");
-	C4JStorage::PTMSPP_FILEDATA pFileData=(C4JStorage::PTMSPP_FILEDATA)lpvData;
+	C4JStorage::PTMSPP_FILEDATA pFileData=static_cast<C4JStorage::PTMSPP_FILEDATA>(lpvData);
 	
-	CConsoleMinecraftApp* pClass = (CConsoleMinecraftApp*)pParam;
+	CConsoleMinecraftApp* pClass = static_cast<CConsoleMinecraftApp *>(pParam);
 
 	if(pFileData)
 	{
@@ -486,7 +486,7 @@ int CConsoleMinecraftApp::Callback_TMSPPReadBannedList(void *pParam,int iPad, in
 	}
 
 	// change the state to the next action
-	pClass->SetTMSAction(iPad,(eTMSAction)iUserData);
+	pClass->SetTMSAction(iPad,static_cast<eTMSAction>(iUserData));
 
 	return 0;
 }
@@ -555,11 +555,11 @@ void CConsoleMinecraftApp::TMSPP_RetrieveFileList(int iPad,C4JStorage::eGlobalSt
 
 int CConsoleMinecraftApp::Callback_TMSPPRetrieveFileList(void *pParam,int iPad, int iUserData, LPVOID lpvData, WCHAR *wchFilename)
 {
-	CConsoleMinecraftApp* pClass = (CConsoleMinecraftApp*)pParam;
+	CConsoleMinecraftApp* pClass = static_cast<CConsoleMinecraftApp *>(pParam);
 	app.DebugPrintf("CConsoleMinecraftApp::Callback_TMSPPRetrieveFileList\n");
 	if(lpvData!=NULL)
 	{	
-		vector<C4JStorage::PTMSPP_FILE_DETAILS> *pvTmsFileDetails=(vector<C4JStorage::PTMSPP_FILE_DETAILS> *)lpvData;
+		vector<C4JStorage::PTMSPP_FILE_DETAILS> *pvTmsFileDetails=static_cast<vector<C4JStorage::PTMSPP_FILE_DETAILS> *>(lpvData);
 
 		if(pvTmsFileDetails->size()>0)
 		{	
@@ -578,7 +578,7 @@ int CConsoleMinecraftApp::Callback_TMSPPRetrieveFileList(void *pParam,int iPad, 
 		}
 	}
 	// change the state to the next action
-	pClass->SetTMSAction(iPad,(eTMSAction)iUserData);
+	pClass->SetTMSAction(iPad,static_cast<eTMSAction>(iUserData));
 	return 0;
 }
 
@@ -586,8 +586,8 @@ int CConsoleMinecraftApp::Callback_TMSPPRetrieveFileList(void *pParam,int iPad, 
 int CConsoleMinecraftApp::Callback_TMSPPReadDLCFile(void *pParam,int iPad, int iUserData, LPVOID lpvData ,WCHAR *pwchFilename)
 {
 	app.DebugPrintf("CConsoleMinecraftApp::Callback_TMSPPReadDLCFile\n");
-	C4JStorage::PTMSPP_FILEDATA pFileData= (C4JStorage::PTMSPP_FILEDATA)lpvData;
-	CConsoleMinecraftApp* pClass = (CConsoleMinecraftApp*)pParam;
+	C4JStorage::PTMSPP_FILEDATA pFileData= static_cast<C4JStorage::PTMSPP_FILEDATA>(lpvData);
+	CConsoleMinecraftApp* pClass = static_cast<CConsoleMinecraftApp *>(pParam);
 
 #ifdef WRITE_DLCINFO
 	if(0)
@@ -698,14 +698,14 @@ int CConsoleMinecraftApp::Callback_TMSPPReadDLCFile(void *pParam,int iPad, int i
 	}
 
 	// change the state to the next action
-	pClass->SetTMSAction(iPad,(eTMSAction)iUserData);
+	pClass->SetTMSAction(iPad,static_cast<eTMSAction>(iUserData));
 
 	return 0;
 }
 
 void CConsoleMinecraftApp::Callback_SaveGameIncomplete(void *pParam, C4JStorage::ESaveIncompleteType saveIncompleteType)
 {
-	CConsoleMinecraftApp* pClass = (CConsoleMinecraftApp*)pParam;
+	CConsoleMinecraftApp* pClass = static_cast<CConsoleMinecraftApp *>(pParam);
 
 	if (	saveIncompleteType == C4JStorage::ESaveIncomplete_OutOfQuota 
 		||	saveIncompleteType == C4JStorage::ESaveIncomplete_OutOfLocalStorage )
@@ -740,7 +740,7 @@ void CConsoleMinecraftApp::Callback_SaveGameIncomplete(void *pParam, C4JStorage:
 
 int CConsoleMinecraftApp::Callback_SaveGameIncompleteMessageBoxReturned(void *pParam,int iPad,C4JStorage::EMessageResult result)
 {
-	CConsoleMinecraftApp* pClass = (CConsoleMinecraftApp*)pParam;
+	CConsoleMinecraftApp* pClass = static_cast<CConsoleMinecraftApp *>(pParam);
 
 	switch(result)
 	{

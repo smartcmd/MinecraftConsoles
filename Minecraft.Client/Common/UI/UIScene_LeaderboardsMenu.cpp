@@ -438,7 +438,7 @@ void UIScene_LeaderboardsMenu::ReadStats(int startIndex)
 	}
 	else
 	{
-		m_newEntryIndex = (unsigned int)startIndex;
+		m_newEntryIndex = static_cast<unsigned int>(startIndex);
 		// m_newReadSize	= min((int)READ_SIZE, (int)m_leaderboard.m_totalEntryCount-(startIndex-1));
 	}
 
@@ -462,7 +462,7 @@ void UIScene_LeaderboardsMenu::ReadStats(int startIndex)
 		{
 			m_interface.ReadStats_TopRank(
 				this, 
-				m_currentDifficulty, (LeaderboardManager::EStatsType) m_currentLeaderboard, 
+				m_currentDifficulty, static_cast<LeaderboardManager::EStatsType>(m_currentLeaderboard), 
 				m_newEntryIndex, m_newReadSize
 				);
 		}
@@ -472,7 +472,7 @@ void UIScene_LeaderboardsMenu::ReadStats(int startIndex)
 			PlayerUID uid;
 			ProfileManager.GetXUID(ProfileManager.GetPrimaryPad(),&uid, true);
 			m_interface.ReadStats_MyScore(	this,
-				m_currentDifficulty, (LeaderboardManager::EStatsType) m_currentLeaderboard,
+				m_currentDifficulty, static_cast<LeaderboardManager::EStatsType>(m_currentLeaderboard),
 				uid /*ignored on PS3*/,
 				m_newReadSize
 				);
@@ -483,7 +483,7 @@ void UIScene_LeaderboardsMenu::ReadStats(int startIndex)
 			PlayerUID uid;
 			ProfileManager.GetXUID(ProfileManager.GetPrimaryPad(),&uid, true);
 			m_interface.ReadStats_Friends(	this,
-				m_currentDifficulty, (LeaderboardManager::EStatsType) m_currentLeaderboard,
+				m_currentDifficulty, static_cast<LeaderboardManager::EStatsType>(m_currentLeaderboard),
 				uid /*ignored on PS3*/,
 				m_newEntryIndex, m_newReadSize
 				);
@@ -558,7 +558,7 @@ bool UIScene_LeaderboardsMenu::RetrieveStats()
 				else
 				{
 					m_leaderboard.m_entries[entryIndex].m_columns[i] = UINT_MAX;
-					swprintf(m_leaderboard.m_entries[entryIndex].m_wcColumns[i], 12, L"%.1fkm", ((float)m_leaderboard.m_entries[entryIndex].m_columns[i])/100.f/1000.f);
+					swprintf(m_leaderboard.m_entries[entryIndex].m_wcColumns[i], 12, L"%.1fkm", static_cast<float>(m_leaderboard.m_entries[entryIndex].m_columns[i])/100.f/1000.f);
 				}
 			}
 
@@ -781,7 +781,7 @@ void UIScene_LeaderboardsMenu::CopyLeaderboardEntry(LeaderboardManager::ReadScor
 			else if(iDigitC<8)
 			{
 				// km with a .X
-				swprintf(leaderboardEntry->m_wcColumns[i], 12, L"%.1fkm", ((float)leaderboardEntry->m_columns[i])/1000.f);
+				swprintf(leaderboardEntry->m_wcColumns[i], 12, L"%.1fkm", static_cast<float>(leaderboardEntry->m_columns[i])/1000.f);
 #ifdef _DEBUG
 				//app.DebugPrintf("Display - %.1fkm\n", ((float)leaderboardEntry->m_columns[i])/1000.f);
 #endif
@@ -789,7 +789,7 @@ void UIScene_LeaderboardsMenu::CopyLeaderboardEntry(LeaderboardManager::ReadScor
 			else
 			{
 				// bigger than that, so no decimal point
-				swprintf(leaderboardEntry->m_wcColumns[i], 12, L"%.0fkm", ((float)leaderboardEntry->m_columns[i])/1000.f);
+				swprintf(leaderboardEntry->m_wcColumns[i], 12, L"%.0fkm", static_cast<float>(leaderboardEntry->m_columns[i])/1000.f);
 #ifdef _DEBUG
 				//app.DebugPrintf("Display - %.0fkm\n", ((float)leaderboardEntry->m_columns[i])/1000.f);
 #endif
@@ -964,7 +964,7 @@ int UIScene_LeaderboardsMenu::SetLeaderboardTitleIcons()
 void UIScene_LeaderboardsMenu::customDraw(IggyCustomDrawCallbackRegion *region)
 {
 	int slotId = -1;
-	swscanf((wchar_t*)region->name,L"slot_%d",&slotId);
+	swscanf(static_cast<wchar_t *>(region->name),L"slot_%d",&slotId);
 	if (slotId == -1)
 	{
 		//app.DebugPrintf("This is not the control we are looking for\n");
@@ -979,14 +979,14 @@ void UIScene_LeaderboardsMenu::customDraw(IggyCustomDrawCallbackRegion *region)
 void UIScene_LeaderboardsMenu::handleSelectionChanged(F64 selectedId)
 {
 	ui.PlayUISFX(eSFX_Focus);
-	m_newSel = (int)selectedId;
+	m_newSel = static_cast<int>(selectedId);
 	updateTooltips();
 }
 
 // Handle a request from Iggy for more data
 void UIScene_LeaderboardsMenu::handleRequestMoreData(F64 startIndex, bool up)
 {
-	unsigned int item = (int)startIndex;
+	unsigned int item = static_cast<int>(startIndex);
 
 	if( m_leaderboard.m_totalEntryCount > 0 && (item+1) < GetEntryStartIndex() )
 	{
@@ -995,7 +995,7 @@ void UIScene_LeaderboardsMenu::handleRequestMoreData(F64 startIndex, bool up)
 			int readIndex = (GetEntryStartIndex() + 1) - READ_SIZE;
 			if( readIndex <= 0 )
 				readIndex = 1;
-			assert( readIndex >= 1 && readIndex <= (int)m_leaderboard.m_totalEntryCount );
+            assert( readIndex >= 1 && readIndex <= static_cast<int>(m_leaderboard.m_totalEntryCount));
 			ReadStats(readIndex);
 		}
 	}
@@ -1004,7 +1004,7 @@ void UIScene_LeaderboardsMenu::handleRequestMoreData(F64 startIndex, bool up)
 		if( LeaderboardManager::Instance()->isIdle() )
 		{
 			int readIndex = (GetEntryStartIndex() + 1) + m_leaderboard.m_entries.size();
-			assert( readIndex >= 1 && readIndex <= (int)m_leaderboard.m_totalEntryCount );
+            assert( readIndex >= 1 && readIndex <= static_cast<int>(m_leaderboard.m_totalEntryCount));
 			ReadStats(readIndex);
 		}
 	}
@@ -1033,7 +1033,7 @@ void UIScene_LeaderboardsMenu::handleTimerComplete(int id)
 
 int UIScene_LeaderboardsMenu::ExitLeaderboards(void *pParam,int iPad,C4JStorage::EMessageResult result)
 {
-	UIScene_LeaderboardsMenu* pClass = (UIScene_LeaderboardsMenu*)pParam;
+	UIScene_LeaderboardsMenu* pClass = static_cast<UIScene_LeaderboardsMenu *>(pParam);
 
 	pClass->navigateBack();
 

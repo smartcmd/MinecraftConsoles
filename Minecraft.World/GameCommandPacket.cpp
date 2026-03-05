@@ -37,7 +37,7 @@ GameCommandPacket::~GameCommandPacket()
 
 void GameCommandPacket::read(DataInputStream *dis)
 {
-	command = (EGameCommand)dis->readInt();
+	command = static_cast<EGameCommand>(dis->readInt());
 	length = dis->readShort();
 
 	if (length > 0 && length < Short::MAX_VALUE)
@@ -54,7 +54,7 @@ void GameCommandPacket::read(DataInputStream *dis)
 void GameCommandPacket::write(DataOutputStream *dos)
 {
 	dos->writeInt(command);
-	dos->writeShort((short) length);
+	dos->writeShort(static_cast<short>(length));
 	if (data.data != NULL)
 	{
 		dos->write(data);

@@ -515,7 +515,7 @@ bool DQRNetworkManager::AddLocalPlayerByUserIndex(int userIndex)
 						pPlayer->SetSmallId(smallId);
 						pPlayer->SetName(ProfileManager.GetUser(userIndex)->DisplayInfo->Gamertag->Data());
 						pPlayer->SetDisplayName(ProfileManager.GetDisplayName(userIndex));
-						pPlayer->SetUID(PlayerUID(ProfileManager.GetUser(userIndex)->XboxUserId->Data()));
+						pPlayer->SetUID(static_cast<PlayerUID>(ProfileManager.GetUser(userIndex)->XboxUserId->Data()));
 
 						// Also add to the party so that our friends can find us. The host will get notified of this additional player in the party, but we should ignore since we're already in the session
 						m_partyController->AddLocalUsersToParty(1 << userIndex, ProfileManager.GetUser(0));
@@ -550,7 +550,7 @@ bool DQRNetworkManager::AddLocalPlayerByUserIndex(int userIndex)
 			pPlayer->SetSmallId(m_currentSmallId++);
 			pPlayer->SetName(ProfileManager.GetUser(userIndex)->DisplayInfo->Gamertag->Data());
 			pPlayer->SetDisplayName(ProfileManager.GetDisplayName(userIndex));
-			pPlayer->SetUID(PlayerUID(ProfileManager.GetUser(userIndex)->XboxUserId->Data()));
+			pPlayer->SetUID(static_cast<PlayerUID>(ProfileManager.GetUser(userIndex)->XboxUserId->Data()));
 
 			// TODO - could this add fail?
 			if(AddRoomSyncPlayer( pPlayer, 0, userIndex))
@@ -1326,11 +1326,11 @@ void DQRNetworkManager::HandleSessionChange(MXSM::MultiplayerSession^ multiplaye
 	{
 		// 4J-JEV: This id is needed to link stats together.
 		// I thought setting the value from here would be less intrusive than adding an accessor.
-		((DurangoStats*)GenericStats::getInstance())->setMultiplayerCorrelationId(multiplayerSession->MultiplayerCorrelationId);
+		static_cast<DurangoStats *>(GenericStats::getInstance())->setMultiplayerCorrelationId(multiplayerSession->MultiplayerCorrelationId);
 	}
 	else
 	{
-		((DurangoStats*)GenericStats::getInstance())->setMultiplayerCorrelationId( nullptr );
+		static_cast<DurangoStats *>(GenericStats::getInstance())->setMultiplayerCorrelationId( nullptr );
 	}
 	
 	m_multiplayerSession = multiplayerSession;
@@ -1403,7 +1403,7 @@ bool DQRNetworkManager::IsPlayerInSession( Platform::String^ xboxUserId, MXSM::M
 				{
 					Windows::Data::Json::JsonObject^ customConstant = Windows::Data::Json::JsonObject::Parse(member->MemberCustomConstantsJson);
 					Windows::Data::Json::JsonValue^ customValue = customConstant->GetNamedValue(L"smallId");
-					*smallId = (int)(customValue->GetNumber()) & 255;
+					*smallId = static_cast<int>(customValue->GetNumber()) & 255;
 				}
 				catch (Platform::COMException^ ex)
 				{
@@ -1745,7 +1745,7 @@ void DQRNetworkManager::SendSmallId(bool reliableAndSequential, int playerMask)
 					{
 						Windows::Data::Json::JsonObject^ customConstant = Windows::Data::Json::JsonObject::Parse(member->MemberCustomConstantsJson);
 						Windows::Data::Json::JsonValue^ customValue = customConstant->GetNamedValue(L"smallId");
-						smallId = (BYTE)(customValue->GetNumber());
+						smallId = static_cast<BYTE>(customValue->GetNumber());
 						bFound = true;
 					}
 					catch (Platform::COMException^ ex)
@@ -1797,7 +1797,7 @@ int DQRNetworkManager::GetSessionIndexForSmallId(unsigned char smallId)
 		{
 			Windows::Data::Json::JsonObject^ customConstant = Windows::Data::Json::JsonObject::Parse(member->MemberCustomConstantsJson);
 			Windows::Data::Json::JsonValue^ customValue = customConstant->GetNamedValue(L"smallId");
-			smallIdMember = (BYTE)(customValue->GetNumber());
+			smallIdMember = static_cast<BYTE>(customValue->GetNumber());
 		}
 		catch (Platform::COMException^ ex)
 		{
@@ -1830,7 +1830,7 @@ int DQRNetworkManager::GetSessionIndexAndSmallIdForHost(unsigned char *smallId)
 		}
 		if( smallIdMember > 255 )
 		{
-			*smallId = (BYTE)(smallIdMember);
+			*smallId = static_cast<BYTE>(smallIdMember);
 			return i;
 		}
 	}
@@ -1877,7 +1877,7 @@ Platform::String^ DQRNetworkManager::GetNextSmallIdAsJsonString()
 
 int DQRNetworkManager::_HostGameThreadProc( void* lpParameter )
 {
-	DQRNetworkManager *pDQR = (DQRNetworkManager *)lpParameter;
+	DQRNetworkManager *pDQR = static_cast<DQRNetworkManager *>(lpParameter);
 	return pDQR->HostGameThreadProc();
 }
 
@@ -2190,7 +2190,7 @@ int DQRNetworkManager::HostGameThreadProc()
 			pPlayer->SetSmallId(smallId);
 			pPlayer->SetName(user->DisplayInfo->Gamertag->Data());
 			pPlayer->SetDisplayName(displayName);
-			pPlayer->SetUID(PlayerUID(user->XboxUserId->Data()));
+			pPlayer->SetUID(static_cast<PlayerUID>(user->XboxUserId->Data()));
 
 			AddRoomSyncPlayer( pPlayer, localSessionAddress, i);
 
@@ -2208,7 +2208,7 @@ int DQRNetworkManager::HostGameThreadProc()
 int DQRNetworkManager::_LeaveRoomThreadProc( void* lpParameter )
 {
 
-	DQRNetworkManager *pDQR = (DQRNetworkManager *)lpParameter;
+	DQRNetworkManager *pDQR = static_cast<DQRNetworkManager *>(lpParameter);
 	return pDQR->LeaveRoomThreadProc();
 }
 
@@ -2311,7 +2311,7 @@ int DQRNetworkManager::LeaveRoomThreadProc()
 int DQRNetworkManager::_TidyUpJoinThreadProc( void* lpParameter )
 {
 
-	DQRNetworkManager *pDQR = (DQRNetworkManager *)lpParameter;
+	DQRNetworkManager *pDQR = static_cast<DQRNetworkManager *>(lpParameter);
 	return pDQR->TidyUpJoinThreadProc();
 }
 
@@ -2416,7 +2416,7 @@ int DQRNetworkManager::TidyUpJoinThreadProc()
 int DQRNetworkManager::_UpdateCustomSessionDataThreadProc( void* lpParameter )
 {
 
-	DQRNetworkManager *pDQR = (DQRNetworkManager *)lpParameter;
+	DQRNetworkManager *pDQR = static_cast<DQRNetworkManager *>(lpParameter);
 	return pDQR->UpdateCustomSessionDataThreadProc();
 }
 
@@ -2491,7 +2491,7 @@ int DQRNetworkManager::UpdateCustomSessionDataThreadProc()
 
 int DQRNetworkManager::_CheckInviteThreadProc(void* lpParameter)
 {
-	DQRNetworkManager *pDQR = (DQRNetworkManager *)lpParameter;
+	DQRNetworkManager *pDQR = static_cast<DQRNetworkManager *>(lpParameter);
 	return pDQR->CheckInviteThreadProc();
 }
 
@@ -3026,8 +3026,8 @@ void DQRNetworkManager::RequestDisplayName(DQRNetworkPlayer *player)
 
 void DQRNetworkManager::GetProfileCallback(LPVOID pParam, Microsoft::Xbox::Services::Social::XboxUserProfile^ profile)
 {
-	DQRNetworkManager *dqnm = (DQRNetworkManager *)pParam;
-	dqnm->SetDisplayName(PlayerUID(profile->XboxUserId->Data()), profile->GameDisplayName->Data());
+	DQRNetworkManager *dqnm = static_cast<DQRNetworkManager *>(pParam);
+	dqnm->SetDisplayName(static_cast<PlayerUID>(profile->XboxUserId->Data()), profile->GameDisplayName->Data());
 }
 
 // Set player display name

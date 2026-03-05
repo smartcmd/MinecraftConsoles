@@ -26,7 +26,7 @@
 //----------------------------------------------------------------------------------
 HRESULT CScene_Death::OnInit( XUIMessageInit* pInitData, BOOL& bHandled )
 {	
-	m_iPad = *(int *)pInitData->pvInitData;
+	m_iPad = *static_cast<int *>(pInitData->pvInitData);
 
 	m_bIgnoreInput = false;
 
@@ -107,7 +107,7 @@ HRESULT CScene_Death::OnNotifyPressEx(HXUIOBJ hObjPressed, XUINotifyPress* pNoti
 					int playTime = -1;
 					if( pMinecraft->localplayers[pNotifyPressData->UserIndex] != NULL )
 					{
-						playTime = (int)pMinecraft->localplayers[pNotifyPressData->UserIndex]->getSessionTimer();
+						playTime = static_cast<int>(pMinecraft->localplayers[pNotifyPressData->UserIndex]->getSessionTimer());
 					}
 					TelemetryManager->RecordLevelExit(pNotifyPressData->UserIndex, eSen_LevelExitStatus_Failed);
 					

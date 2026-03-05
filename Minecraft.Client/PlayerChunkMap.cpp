@@ -187,7 +187,7 @@ void PlayerChunkMap::PlayerChunk::tileChanged(int x, int y, int z)
 
     if (changes < MAX_CHANGES_BEFORE_RESEND)
 	{
-        short id = (short) ((x << 12) | (z << 8) | (y));
+        short id = static_cast<short>((x << 12) | (z << 8) | (y));
 
         for (int i = 0; i < changes; i++)
 		{
@@ -365,7 +365,7 @@ bool PlayerChunkMap::PlayerChunk::broadcastChanges(bool allowRegionUpdate)
 	else
 	{
 		// 4J As we only get here if changes is less than MAX_CHANGES_BEFORE_RESEND (10) we only need to send a byte value in the packet
-        broadcast( shared_ptr<ChunkTilesUpdatePacket>( new ChunkTilesUpdatePacket(pos.x, pos.z, changedTiles, (byte)changes, level) ) );
+        broadcast( shared_ptr<ChunkTilesUpdatePacket>( new ChunkTilesUpdatePacket(pos.x, pos.z, changedTiles, static_cast<byte>(changes), level) ) );
         for (int i = 0; i < changes; i++)
 		{
             int x = pos.x * 16 + ((changedTiles[i] >> 12) & 15);
@@ -544,8 +544,8 @@ void PlayerChunkMap::tickAddRequests(shared_ptr<ServerPlayer> player)
 	if( addRequests.size() )
 	{
 		// Find the nearest chunk request to the player
-		int px = (int)player->x;
-		int pz = (int)player->z;
+		int px = static_cast<int>(player->x);
+		int pz = static_cast<int>(player->z);
 		int minDistSq = -1;
 
         auto itNearest = addRequests.end();
@@ -621,8 +621,8 @@ void PlayerChunkMap::add(shared_ptr<ServerPlayer> player)
 {
 	static int direction[4][2] = { { 1, 0 }, { 0, 1 }, { -1, 0 }, {0, -1} };
 
-	int xc = (int) player->x >> 4;
-	int zc = (int) player->z >> 4;
+	int xc = static_cast<int>(player->x) >> 4;
+	int zc = static_cast<int>(player->z) >> 4;
 
     player->lastMoveX = player->x;
     player->lastMoveZ = player->z;
@@ -724,8 +724,8 @@ void PlayerChunkMap::add(shared_ptr<ServerPlayer> player)
 
 void PlayerChunkMap::remove(shared_ptr<ServerPlayer> player)
 {
-    int xc = ((int) player->lastMoveX) >> 4;
-    int zc = ((int) player->lastMoveZ) >> 4;
+    int xc = static_cast<int>(player->lastMoveX) >> 4;
+    int zc = static_cast<int>(player->lastMoveZ) >> 4;
 
     for (int x = xc - radius; x <= xc + radius; x++)
         for (int z = zc - radius; z <= zc + radius; z++)
@@ -767,16 +767,16 @@ bool PlayerChunkMap::chunkInRange(int x, int z, int xc, int zc)
 // need to be created, so that we aren't creating potentially 20 chunks per player per tick
 void PlayerChunkMap::move(shared_ptr<ServerPlayer> player)
 {
-    int xc = ((int) player->x) >> 4;
-    int zc = ((int) player->z) >> 4;
+    int xc = static_cast<int>(player->x) >> 4;
+    int zc = static_cast<int>(player->z) >> 4;
 
     double _xd = player->lastMoveX - player->x;
     double _zd = player->lastMoveZ - player->z;
     double dist = _xd * _xd + _zd * _zd;
     if (dist < 8 * 8) return;
 
-    int last_xc = ((int) player->lastMoveX) >> 4;
-    int last_zc = ((int) player->lastMoveZ) >> 4;
+    int last_xc = static_cast<int>(player->lastMoveX) >> 4;
+    int last_zc = static_cast<int>(player->lastMoveZ) >> 4;
 
     int xd = xc - last_xc;
     int zd = zc - last_zc;
@@ -841,8 +841,8 @@ void PlayerChunkMap::setRadius(int newRadius)
 			shared_ptr<ServerPlayer> player = players->players[i];
 			if( player->level == level )
 			{
-				int xc = ((int) player->x) >> 4;
-				int zc = ((int) player->z) >> 4;
+				int xc = static_cast<int>(player->x) >> 4;
+				int zc = static_cast<int>(player->z) >> 4;
 
 				for (int x = xc - newRadius; x <= xc + newRadius; x++)
 					for (int z = zc - newRadius; z <= zc + newRadius; z++)

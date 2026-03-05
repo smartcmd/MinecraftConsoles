@@ -57,7 +57,7 @@ void Ocelot::defineSynchedData()
 {
 	TamableAnimal::defineSynchedData();
 
-	entityData->define(DATA_TYPE_ID, (byte) 0);
+	entityData->define(DATA_TYPE_ID, static_cast<byte>(0));
 }
 
 void Ocelot::serverAiMobStep()
@@ -279,7 +279,7 @@ int Ocelot::getCatType()
 
 void Ocelot::setCatType(int type)
 {
-	entityData->set(DATA_TYPE_ID, (byte) type);
+	entityData->set(DATA_TYPE_ID, static_cast<byte>(type));
 }
 
 bool Ocelot::canSpawn()
@@ -351,7 +351,7 @@ MobGroupData *Ocelot::finalizeMobSpawn(MobGroupData *groupData, int extraData /*
 void Ocelot::setSittingOnTile(bool val)
 {
 	byte current = entityData->getByte(DATA_FLAGS_ID);
-	entityData->set(DATA_FLAGS_ID, val ? (byte) (current | 0x02) : (byte) (current & ~0x02) );
+	entityData->set(DATA_FLAGS_ID, val ? static_cast<byte>(current | 0x02) : static_cast<byte>(current & ~0x02) );
 }
 
 bool Ocelot::isSittingOnTile()

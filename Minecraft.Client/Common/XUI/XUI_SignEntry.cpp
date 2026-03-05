@@ -15,7 +15,7 @@ HRESULT CScene_SignEntry::OnInit( XUIMessageInit* pInitData, BOOL& bHandled )
 	XuiControlSetText(m_ButtonDone,app.GetString(IDS_DONE));
 	XuiControlSetText(m_labelEditSign,app.GetString(IDS_EDIT_SIGN_MESSAGE));
 
-	SignEntryScreenInput* initData = (SignEntryScreenInput*)pInitData->pvInitData;
+	SignEntryScreenInput* initData = static_cast<SignEntryScreenInput *>(pInitData->pvInitData);
 	m_sign = initData->sign;
 	
 	CXuiSceneBase::ShowDarkOverlay( initData->iPad, TRUE );

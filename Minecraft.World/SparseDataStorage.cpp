@@ -28,7 +28,7 @@ SparseDataStorage::SparseDataStorage()
 #ifdef _XBOX
 	unsigned char *planeIndices = (unsigned char *)XPhysicalAlloc(128 * 128, MAXULONG_PTR, 4096, PAGE_READWRITE);
 #else
-	unsigned char *planeIndices = (unsigned char *)malloc(128 * 128);
+	unsigned char *planeIndices = static_cast<unsigned char *>(malloc(128 * 128));
 #endif
 	unsigned char *data = planeIndices + 128;
 	planeIndices[0] = ALL_0_INDEX;
@@ -51,7 +51,7 @@ SparseDataStorage::SparseDataStorage(bool isUpper)
 {
 	// Allocate using physical alloc. As this will (by default) return memory from the pool of 4KB pages, the address will in the range of MM_PHYSICAL_4KB_BASE upwards. We can use
 	// this fact to identify the allocation later, and so free it with the corresponding call to XPhysicalFree.
-	unsigned char *planeIndices = (unsigned char *)malloc(128);
+	unsigned char *planeIndices = static_cast<unsigned char *>(malloc(128));
 	for( int i = 0; i < 128; i++ )
 	{
 		planeIndices[i] = ALL_0_INDEX;
@@ -92,7 +92,7 @@ SparseDataStorage::SparseDataStorage(SparseDataStorage *copyFrom)
 	int sourceCount = (sourceDataAndCount >> 48 ) & 0xffff;
 
 	// Allocate & copy indices ( 128 bytes ) and any allocated planes (128 * count)
-	unsigned char *destIndicesAndData = (unsigned char *)malloc( sourceCount * 128 + 128 );
+	unsigned char *destIndicesAndData = static_cast<unsigned char *>(malloc(sourceCount * 128 + 128));
 
 	// AP - I've moved this to be before the memcpy because of a very strange bug on vita. Sometimes dataAndCount wasn't valid in time when ::get was called.
 	// This should never happen and this isn't a proper solution but fixes it for now.
@@ -146,7 +146,7 @@ void SparseDataStorage::setData(byteArray dataIn, unsigned int inOffset)
 	}
 
 	// Allocate required storage
-	unsigned char *planeIndices = (unsigned char *)malloc(128 * allocatedPlaneCount + 128);
+	unsigned char *planeIndices = static_cast<unsigned char *>(malloc(128 * allocatedPlaneCount + 128));
 	unsigned char *data = planeIndices + 128;
 	XMemCpy(planeIndices, _planeIndices, 128);
 
@@ -178,7 +178,7 @@ void SparseDataStorage::setData(byteArray dataIn, unsigned int inOffset)
 #pragma warning ( disable : 4826 )
 	__int64 newDataAndCount = ((__int64) planeIndices) & 0x0000ffffffffffffL;
 #pragma warning ( default : 4826 )
-	newDataAndCount |= ((__int64)allocatedPlaneCount) << 48;
+	newDataAndCount |= static_cast<__int64>(allocatedPlaneCount) << 48;
 
 	updateDataAndCount( newDataAndCount );
 }
@@ -341,7 +341,7 @@ int SparseDataStorage::setDataRegion(byteArray dataIn, int x0, int y0, int z0, i
 	}
 	ptrdiff_t count = pucIn - &dataIn.data[offset];
 
-	return (int)count;
+	return static_cast<int>(count);
 }
 
 // Updates the data at offset position dataInOut with a region of data information - external ordering compatible with java DataLayer
@@ -371,7 +371,7 @@ int SparseDataStorage::getDataRegion(byteArray dataInOut, int x0, int y0, int z0
 	}
 	ptrdiff_t count = pucOut - &dataInOut.data[offset];
 	
-	return (int)count;
+	return static_cast<int>(count);
 }
 
 void SparseDataStorage::addNewPlane(int y)
@@ -383,7 +383,7 @@ void SparseDataStorage::addNewPlane(int y)
 		__int64 lastDataAndCount = dataAndCount;
 
 		// Unpack count & data pointer
-		int lastLinesUsed = (int)(( lastDataAndCount >> 48 ) & 0xffff);
+		int lastLinesUsed = static_cast<int>((lastDataAndCount >> 48) & 0xffff);
 		unsigned char *lastDataPointer = (unsigned char *)(lastDataAndCount & 0x0000ffffffffffff);
 
 		// Find out what to prefill the newly allocated line with
@@ -394,7 +394,7 @@ void SparseDataStorage::addNewPlane(int y)
 		int linesUsed = lastLinesUsed + 1;
 
 		// Allocate new memory storage, copy over anything from old storage, and initialise remainder
-		unsigned char *dataPointer = (unsigned char *)malloc(linesUsed * 128 + 128);
+		unsigned char *dataPointer = static_cast<unsigned char *>(malloc(linesUsed * 128 + 128));
 		XMemCpy( dataPointer, lastDataPointer, 128 * lastLinesUsed + 128);
 		XMemSet( dataPointer + ( 128 * lastLinesUsed ) + 128, 0, 128 );
 		dataPointer[y] = lastLinesUsed;
@@ -403,7 +403,7 @@ void SparseDataStorage::addNewPlane(int y)
 #pragma warning ( disable : 4826 )
 		__int64 newDataAndCount = ((__int64) dataPointer) & 0x0000ffffffffffffL;
 #pragma warning ( default : 4826 )
-		newDataAndCount |= ((__int64)linesUsed) << 48;
+		newDataAndCount |= static_cast<__int64>(linesUsed) << 48;
 
 		// Attempt to update the data & count atomically. This command will Only succeed if the data stored at
 		// dataAndCount is equal to lastDataAndCount, and will return the value present just before the write took place
@@ -543,7 +543,7 @@ int SparseDataStorage::compress()
 
 	if( needsCompressed )
 	{
-		unsigned char *newIndicesAndData = (unsigned char *)malloc( 128 + 128 * planesToAlloc );
+		unsigned char *newIndicesAndData = static_cast<unsigned char *>(malloc(128 + 128 * planesToAlloc));
 		unsigned char *pucData = newIndicesAndData + 128;
 		XMemCpy( newIndicesAndData, _planeIndices, 128 );
 
@@ -560,7 +560,7 @@ int SparseDataStorage::compress()
 #pragma warning ( disable : 4826 )
 		__int64 newDataAndCount = ((__int64) newIndicesAndData) & 0x0000ffffffffffffL;
 #pragma warning ( default : 4826 )
-		newDataAndCount |= ((__int64)planesToAlloc) << 48;
+		newDataAndCount |= static_cast<__int64>(planesToAlloc) << 48;
 
 		// Attempt to update the data & count atomically. This command will Only succeed if the data stored at
 		// dataAndCount is equal to lastDataAndCount, and will return the value present just before the write took place
@@ -586,7 +586,7 @@ int SparseDataStorage::compress()
 	}
 	else
 	{
-		return (int)((lastDataAndCount >> 48 ) & 0xffff);
+		return static_cast<int>((lastDataAndCount >> 48) & 0xffff);
 	}
 }
 
@@ -612,14 +612,14 @@ void SparseDataStorage::write(DataOutputStream *dos)
 void SparseDataStorage::read(DataInputStream *dis)
 {
 	int count = dis->readInt();
-	unsigned char *dataPointer = (unsigned char *)malloc(count * 128 + 128);
+	unsigned char *dataPointer = static_cast<unsigned char *>(malloc(count * 128 + 128));
 	byteArray wrapper(dataPointer, count * 128 + 128);
 	dis->readFully(wrapper);
 
 #pragma warning ( disable : 4826 )
 	__int64 newDataAndCount = ((__int64) dataPointer) & 0x0000ffffffffffffL;
 #pragma warning ( default : 4826 )
-	newDataAndCount |= ((__int64)count) << 48;
+	newDataAndCount |= static_cast<__int64>(count) << 48;
 
 	updateDataAndCount(newDataAndCount);
 }

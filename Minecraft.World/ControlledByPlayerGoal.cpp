@@ -42,7 +42,7 @@ bool ControlledByPlayerGoal::canUse()
 void ControlledByPlayerGoal::tick()
 {
 	shared_ptr<Player> player = dynamic_pointer_cast<Player>(mob->rider.lock());
-	PathfinderMob *pig = (PathfinderMob *)mob;
+	PathfinderMob *pig = static_cast<PathfinderMob *>(mob);
 
 	float yrd = Mth::wrapDegrees(player->yRot - mob->yRot) * 0.5f;
 	if (yrd > 5) yrd = 5;
@@ -62,7 +62,7 @@ void ControlledByPlayerGoal::tick()
 		{
 			boosting = false;
 		}
-		moveSpeed += moveSpeed * 1.15f * Mth::sin((float) boostTime / boostTimeTotal * PI);
+		moveSpeed += moveSpeed * 1.15f * Mth::sin(static_cast<float>(boostTime) / boostTimeTotal * PI);
 	}
 
 	float friction = 0.91f;

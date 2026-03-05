@@ -192,7 +192,7 @@ bool XboxLeaderboardManager::WriteStats(unsigned int viewCount, ViewIn views)
 		INetworkPlayer *player = g_NetworkManager.GetPlayerByXuid(m_myXUID);
 		if(player != NULL)
 		{
-			ret = ((NetworkPlayerXbox *)player)->GetQNetPlayer()->WriteStats(viewCount,views);
+			ret = static_cast<NetworkPlayerXbox *>(player)->GetQNetPlayer()->WriteStats(viewCount,views);
 			//printf("Wrote stats to QNet player\n");
 		}
 		else
@@ -376,10 +376,10 @@ bool XboxLeaderboardManager::readStats(int difficulty, EStatsType type)
 
 	//Setup the spec structure for the read request
 	m_spec = new XUSER_STATS_SPEC[1];
-	m_spec[0].dwViewId = LEADERBOARD_DESCRIPTORS[(int)type][difficulty].m_viewId;
-	m_spec[0].dwNumColumnIds = LEADERBOARD_DESCRIPTORS[(int)type][difficulty].m_columnCount;
+	m_spec[0].dwViewId = LEADERBOARD_DESCRIPTORS[static_cast<int>(type)][difficulty].m_viewId;
+	m_spec[0].dwNumColumnIds = LEADERBOARD_DESCRIPTORS[static_cast<int>(type)][difficulty].m_columnCount;
 	for (unsigned int i=0; i<m_spec[0].dwNumColumnIds; ++i)
-		m_spec[0].rgwColumnIds[i] = LEADERBOARD_DESCRIPTORS[(int)type][difficulty].m_columnIds[i];
+		m_spec[0].rgwColumnIds[i] = LEADERBOARD_DESCRIPTORS[static_cast<int>(type)][difficulty].m_columnIds[i];
 
 	return true;
 }
@@ -431,7 +431,7 @@ bool XboxLeaderboardManager::IsStatsReadComplete()
 
 int XboxLeaderboardManager::FriendSortFunction(const void* a, const void* b)
 {
-	return ((int)((XUSER_STATS_ROW*)a)->dwRank) - ((int)((XUSER_STATS_ROW*)b)->dwRank);
+	return static_cast<int>(((XUSER_STATS_ROW *)a)->dwRank) - static_cast<int>(((XUSER_STATS_ROW *)b)->dwRank);
 }
 
 void XboxLeaderboardManager::SortFriendStats()

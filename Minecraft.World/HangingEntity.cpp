@@ -35,16 +35,16 @@ HangingEntity::HangingEntity(Level *level, int xTile, int yTile, int zTile, int 
 void HangingEntity::setDir(int dir)
 {
 	this->dir = dir;
-	yRotO = yRot = (float)(dir * 90);
+	yRotO = yRot = static_cast<float>(dir * 90);
 
-	float w = (float)getWidth();
-	float h = (float)getHeight();
-	float d = (float)getWidth();
+	float w = static_cast<float>(getWidth());
+	float h = static_cast<float>(getHeight());
+	float d = static_cast<float>(getWidth());
 
 	if (dir == Direction::NORTH || dir == Direction::SOUTH)
 	{
 		d = 0.5f;
-		yRot = yRotO = (float)(Direction::DIRECTION_OPPOSITE[dir] * 90);
+		yRot = yRotO = static_cast<float>(Direction::DIRECTION_OPPOSITE[dir] * 90);
 	}
 	else
 	{
@@ -235,7 +235,7 @@ void HangingEntity::push(double xa, double ya, double za)
 
 void HangingEntity::addAdditonalSaveData(CompoundTag *tag)
 {
-	tag->putByte(L"Direction", (byte) dir);
+	tag->putByte(L"Direction", static_cast<byte>(dir));
 	tag->putInt(L"TileX", xTile);
 	tag->putInt(L"TileY", yTile);
 	tag->putInt(L"TileZ", zTile);

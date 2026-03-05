@@ -40,7 +40,7 @@ void ThrownExpBottle::onHit(HitResult *res)
 
 	if (!level->isClientSide)
 	{
-		level->levelEvent(LevelEvent::PARTICLES_POTION_SPLASH, (int) Math::round(x), (int) Math::round(y), (int) Math::round(z), 0);
+		level->levelEvent(LevelEvent::PARTICLES_POTION_SPLASH, static_cast<int>(Math::round(x)), static_cast<int>(Math::round(y)), static_cast<int>(Math::round(z)), 0);
 
 		int xpCount = 3 + level->random->nextInt(5) + level->random->nextInt(5);
 		while (xpCount > 0)

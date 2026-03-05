@@ -34,7 +34,7 @@ void Vec3::UseDefaultThreadStorage()
 
 void Vec3::ReleaseThreadStorage()
 {
-	ThreadStorage *tls = (ThreadStorage *)TlsGetValue(tlsIdx);
+	ThreadStorage *tls = static_cast<ThreadStorage *>(TlsGetValue(tlsIdx));
 	if( tls == tlsDefault ) return;
 
 	delete tls;
@@ -55,7 +55,7 @@ void Vec3::resetPool()
 
 Vec3 *Vec3::newTemp(double x, double y, double z)
 {
-	ThreadStorage *tls = (ThreadStorage *)TlsGetValue(tlsIdx);
+	ThreadStorage *tls = static_cast<ThreadStorage *>(TlsGetValue(tlsIdx));
 	Vec3 *thisVec = &tls->pool[tls->poolPointer];
 	thisVec->set(x, y, z);
 	tls->poolPointer = ( tls->poolPointer + 1 ) % ThreadStorage::POOL_SIZE;

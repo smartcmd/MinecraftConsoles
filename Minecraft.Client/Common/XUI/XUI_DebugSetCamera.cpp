@@ -43,12 +43,12 @@ HRESULT CScene_DebugSetCamera::OnInit( XUIMessageInit *pInitData, BOOL &bHandled
 	m_yRot.SetKeyboardType(C_4JInput::EKeyboardMode_Full);
 	m_elevation.SetKeyboardType(C_4JInput::EKeyboardMode_Full);
 
-	m_camX.SetText((CONST WCHAR *) std::to_wstring(currentPosition->m_camX).c_str());
-	m_camY.SetText((CONST WCHAR *) std::to_wstring(currentPosition->m_camY + 1.62).c_str());
-	m_camZ.SetText((CONST WCHAR *) std::to_wstring(currentPosition->m_camZ).c_str());
+	m_camX.SetText(static_cast<const WCHAR *>(std::to_wstring(currentPosition->m_camX).c_str()));
+	m_camY.SetText(static_cast<const WCHAR *>(std::to_wstring(currentPosition->m_camY + 1.62).c_str()));
+	m_camZ.SetText(static_cast<const WCHAR *>(std::to_wstring(currentPosition->m_camZ).c_str()));
 
-	m_yRot.SetText((CONST WCHAR *) std::to_wstring(currentPosition->m_yRot).c_str());
-	m_elevation.SetText((CONST WCHAR *) std::to_wstring(currentPosition->m_elev).c_str());
+	m_yRot.SetText(static_cast<const WCHAR *>(std::to_wstring(currentPosition->m_yRot).c_str()));
+	m_elevation.SetText(static_cast<const WCHAR *>(std::to_wstring(currentPosition->m_elev).c_str()));
 
 	//fpp = new FreezePlayerParam();
 	//fpp->player = playerNo;

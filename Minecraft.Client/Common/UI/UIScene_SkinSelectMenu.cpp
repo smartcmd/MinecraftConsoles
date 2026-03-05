@@ -599,7 +599,7 @@ void UIScene_SkinSelectMenu::InputActionOK(unsigned int iPad)
 void UIScene_SkinSelectMenu::customDraw(IggyCustomDrawCallbackRegion *region)
 {
 	int characterId = -1;
-	swscanf((wchar_t*)region->name,L"Character%d",&characterId);
+	swscanf(static_cast<wchar_t *>(region->name),L"Character%d",&characterId);
 	if (characterId == -1)
 	{
 		app.DebugPrintf("Invalid character to render found\n");
@@ -1099,7 +1099,7 @@ void UIScene_SkinSelectMenu::handlePackIndexChanged()
 				DWORD defaultSkinIndex = GET_DEFAULT_SKIN_ID_FROM_BITMASK(m_originalSkinId);
 				if( ugcSkinIndex == 0 )
 				{
-					m_skinIndex = (EDefaultSkins) defaultSkinIndex;
+					m_skinIndex = static_cast<EDefaultSkins>(defaultSkinIndex);
 				}
 			}	
 			break;
@@ -1563,7 +1563,7 @@ void UIScene_SkinSelectMenu::showNotOnlineDialog(int iPad)
 
 int UIScene_SkinSelectMenu::UnlockSkinReturned(void *pParam,int iPad,C4JStorage::EMessageResult result)
 {
-	UIScene_SkinSelectMenu* pScene = (UIScene_SkinSelectMenu*)pParam;
+	UIScene_SkinSelectMenu* pScene = static_cast<UIScene_SkinSelectMenu *>(pParam);
 
 	if	(	(result == C4JStorage::EMessage_ResultAccept)
 		&&	ProfileManager.IsSignedIn(iPad)
@@ -1642,7 +1642,7 @@ int UIScene_SkinSelectMenu::UnlockSkinReturned(void *pParam,int iPad,C4JStorage:
 
 int UIScene_SkinSelectMenu::RenableInput(LPVOID lpVoid, int, int)
 {
-	((UIScene_SkinSelectMenu*) lpVoid)->m_bIgnoreInput = false;
+	static_cast<UIScene_SkinSelectMenu *>(lpVoid)->m_bIgnoreInput = false;
 	return 0;
 }
 

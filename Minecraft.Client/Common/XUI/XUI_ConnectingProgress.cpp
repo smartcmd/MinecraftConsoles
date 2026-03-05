@@ -12,7 +12,7 @@
 //----------------------------------------------------------------------------------
 HRESULT CScene_ConnectingProgress::OnInit( XUIMessageInit* pInitData, BOOL& bHandled )
 {
-	ConnectionProgressParams *param = (ConnectionProgressParams *)pInitData->pvInitData;
+	ConnectionProgressParams *param = static_cast<ConnectionProgressParams *>(pInitData->pvInitData);
 	m_iPad = param->iPad;
 	MapChildControls();
 

@@ -184,16 +184,16 @@ LevelRenderer::LevelRenderer(Minecraft *mc, Textures *textures)
 	float yy;
 	int s = 64;
 	int d = 256 / s + 2;
-	yy = (float) 16;
+	yy = static_cast<float>(16);
 	for (int xx = -s * d; xx <= s * d; xx += s)
 	{
 		for (int zz = -s * d; zz <= s * d; zz += s)
 		{
 			t->begin();
-			t->vertex((float)(xx + 0), (float)( yy), (float)( zz + 0));
-			t->vertex((float)(xx + s), (float)( yy), (float)( zz + 0));
-			t->vertex((float)(xx + s), (float)( yy), (float)( zz + s));
-			t->vertex((float)(xx + 0), (float)( yy), (float)( zz + s));
+			t->vertex(static_cast<float>(xx + 0), (float)( yy), static_cast<float>(zz + 0));
+			t->vertex(static_cast<float>(xx + s), (float)( yy), static_cast<float>(zz + 0));
+			t->vertex(static_cast<float>(xx + s), (float)( yy), static_cast<float>(zz + s));
+			t->vertex(static_cast<float>(xx + 0), (float)( yy), static_cast<float>(zz + s));
 			t->end();
 		}
 	}
@@ -201,16 +201,16 @@ LevelRenderer::LevelRenderer(Minecraft *mc, Textures *textures)
 
 	darkList = starList + 2;
 	glNewList(darkList, GL_COMPILE);
-	yy = -(float) 16;
+	yy = -static_cast<float>(16);
 	t->begin();
 	for (int xx = -s * d; xx <= s * d; xx += s)
 	{
 		for (int zz = -s * d; zz <= s * d; zz += s)
 		{
-			t->vertex((float)(xx + s), (float)( yy), (float)( zz + 0));
-			t->vertex((float)(xx + 0), (float)( yy), (float)( zz + 0));
-			t->vertex((float)(xx + 0), (float)( yy), (float)( zz + s));
-			t->vertex((float)(xx + s), (float)( yy), (float)( zz + s));
+			t->vertex(static_cast<float>(xx + s), (float)( yy), static_cast<float>(zz + 0));
+			t->vertex(static_cast<float>(xx + 0), (float)( yy), static_cast<float>(zz + 0));
+			t->vertex(static_cast<float>(xx + 0), (float)( yy), static_cast<float>(zz + s));
+			t->vertex(static_cast<float>(xx + s), (float)( yy), static_cast<float>(zz + s));
 		}
 	}
 	t->end();
@@ -312,7 +312,7 @@ void LevelRenderer::renderStars()
 				double yo = _yo;
 				double zo = _zo * ySin + _xo * yCos;
 
-				t->vertex((float)(xp + xo), (float)( yp + yo), (float)( zp + zo));
+				t->vertex(static_cast<float>(xp + xo), static_cast<float>(yp + yo), static_cast<float>(zp + zo));
 			}
 		}
 	}
@@ -427,7 +427,7 @@ void LevelRenderer::allChanged(int playerIndex)
 	lastViewDistance = mc->options->viewDistance;
 
 	// Calculate size of area we can render based on number of players we need to render for
-	int dist = (int)sqrtf( (float)PLAYER_RENDER_AREA / (float)activePlayers() );
+	int dist = static_cast<int>(sqrtf((float)PLAYER_RENDER_AREA / (float)activePlayers()));
 
 	// AP - poor little Vita just can't cope with such a big area
 #ifdef __PSVITA__
@@ -531,7 +531,7 @@ void LevelRenderer::renderEntities(Vec3 *cam, Culler *culler, float a)
 	mc->gameRenderer->turnOnLightLayer(a);		// 4J - brought forward from 1.8.2
 
 	vector<shared_ptr<Entity> > entities = level[playerIndex]->getAllEntities();
-	totalEntities = (int)entities.size();
+	totalEntities = static_cast<int>(entities.size());
 
 	for (auto& entity : level[playerIndex]->globalEntities)
 	{
@@ -729,7 +729,7 @@ int LevelRenderer::render(shared_ptr<LivingEntity> player, int layer, double alp
 	}
 	Lighting::turnOff();
 
-	int count = renderChunks(0, (int)chunks[playerIndex].length, layer, alpha);
+	int count = renderChunks(0, static_cast<int>(chunks[playerIndex].length), layer, alpha);
 
 	return count;
 
@@ -765,7 +765,7 @@ int LevelRenderer::renderChunks(int from, int to, int layer, double alpha)
 	double zOff = player->zOld + (player->z - player->zOld) * alpha;
 
 	glPushMatrix();
-	glTranslatef((float)-xOff, (float)-yOff, (float)-zOff);
+	glTranslatef(static_cast<float>(-xOff), static_cast<float>(-yOff), static_cast<float>(-zOff));
 
 #ifdef __PSVITA__
 	// AP - also set the camera position so we can work out if a chunk is fogged or not
@@ -990,9 +990,9 @@ void LevelRenderer::renderSky(float alpha)
 
 	int playerIndex = mc->player->GetXboxPad();
 	Vec3 *sc = level[playerIndex]->getSkyColor(mc->cameraTargetPlayer, alpha);
-	float sr = (float) sc->x;
-	float sg = (float) sc->y;
-	float sb = (float) sc->z;
+	float sr = static_cast<float>(sc->x);
+	float sg = static_cast<float>(sc->y);
+	float sb = static_cast<float>(sc->z);
 
 	if (mc->options->anaglyph3d)
 	{
@@ -1055,7 +1055,7 @@ void LevelRenderer::renderSky(float alpha)
 			t->begin(GL_TRIANGLE_FAN);
 			t->color(r, g, b, c[3]);
 
-			t->vertex((float)(0), (float)( 100), (float)( 0));
+			t->vertex(static_cast<float>(0), static_cast<float>(100), static_cast<float>(0));
 			int steps = 16;
 			t->color(c[0], c[1], c[2], 0.0f);
 			for (int i = 0; i <= steps; i++)
@@ -1089,10 +1089,10 @@ void LevelRenderer::renderSky(float alpha)
 		textures->bindTexture(&SUN_LOCATION);
 		MemSect(0);
 		t->begin();
-		t->vertexUV((float)(-ss), (float)( 100), (float)( -ss), (float)( 0), (float)( 0));
-		t->vertexUV((float)(+ss), (float)( 100), (float)( -ss), (float)( 1), (float)( 0));
-		t->vertexUV((float)(+ss), (float)( 100), (float)( +ss), (float)( 1), (float)( 1));
-		t->vertexUV((float)(-ss), (float)( 100), (float)( +ss), (float)( 0), (float)( 1));
+		t->vertexUV((float)(-ss), static_cast<float>(100), (float)( -ss), static_cast<float>(0), static_cast<float>(0));
+		t->vertexUV((float)(+ss), static_cast<float>(100), (float)( -ss), static_cast<float>(1), static_cast<float>(0));
+		t->vertexUV((float)(+ss), static_cast<float>(100), (float)( +ss), static_cast<float>(1), static_cast<float>(1));
+		t->vertexUV((float)(-ss), static_cast<float>(100), (float)( +ss), static_cast<float>(0), static_cast<float>(1));
 		t->end();
 
 		ss = 20;
@@ -1137,7 +1137,7 @@ void LevelRenderer::renderSky(float alpha)
 	if (yy < 0)
 	{
 		glPushMatrix();
-		glTranslatef(0, -(float) (-12), 0);
+		glTranslatef(0, -static_cast<float>(-12), 0);
 		glCallList(darkList);
 		glPopMatrix();
 
@@ -1188,7 +1188,7 @@ void LevelRenderer::renderSky(float alpha)
 		glColor3f(sr, sg, sb);
 	}
 	glPushMatrix();
-	glTranslatef(0, -(float) (yy - 16), 0);
+	glTranslatef(0, -static_cast<float>(yy - 16), 0);
 	glCallList(darkList);
 	glPopMatrix();
 	glEnable(GL_TEXTURE_2D);
@@ -1209,9 +1209,9 @@ void LevelRenderer::renderHaloRing(float alpha)
 	int playerIndex = mc->player->GetXboxPad();
 
 	Vec3 *sc = level[playerIndex]->getSkyColor(mc->cameraTargetPlayer, alpha);
-	float sr = (float) sc->x;
-	float sg = (float) sc->y;
-	float sb = (float) sc->z;
+	float sr = static_cast<float>(sc->x);
+	float sg = static_cast<float>(sc->y);
+	float sb = static_cast<float>(sc->z);
 
 	// Rough lumninance calculation
 	float Y = (sr+sr+sb+sg+sg+sg)/6;
@@ -1274,7 +1274,7 @@ void LevelRenderer::renderClouds(float alpha)
 		}
 	}
 	glDisable(GL_CULL_FACE);
-	float yOffs = (float) (mc->cameraTargetPlayer->yOld + (mc->cameraTargetPlayer->y - mc->cameraTargetPlayer->yOld) * alpha);
+	float yOffs = static_cast<float>(mc->cameraTargetPlayer->yOld + (mc->cameraTargetPlayer->y - mc->cameraTargetPlayer->yOld) * alpha);
 	int s = 32;
 	int d = 256 / s;
 	Tesselator *t = Tesselator::getInstance();
@@ -1284,9 +1284,9 @@ void LevelRenderer::renderClouds(float alpha)
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 	Vec3 *cc = level[playerIndex]->getCloudColor(alpha);
-	float cr = (float) cc->x;
-	float cg = (float) cc->y;
-	float cb = (float) cc->z;
+	float cr = static_cast<float>(cc->x);
+	float cg = static_cast<float>(cc->y);
+	float cb = static_cast<float>(cc->z);
 
 	if (mc->options->anaglyph3d)
 	{
@@ -1312,8 +1312,8 @@ void LevelRenderer::renderClouds(float alpha)
 	zo -= zOffs * 2048;
 
 	float yy = (float) (level[playerIndex]->dimension->getCloudHeight() - yOffs + 0.33f);
-	float uo = (float) (xo * scale);
-	float vo = (float) (zo * scale);
+	float uo = static_cast<float>(xo * scale);
+	float vo = static_cast<float>(zo * scale);
 	t->begin();
 
 	t->color(cr, cg, cb, 0.8f);
@@ -1321,10 +1321,10 @@ void LevelRenderer::renderClouds(float alpha)
 	{
 		for (int zz = -s * d; zz < +s * d; zz += s)
 		{
-			t->vertexUV((float)(xx + 0), (float)( yy), (float)( zz + s), (float)( (xx + 0) * scale + uo), (float)( (zz + s) * scale + vo));
-			t->vertexUV((float)(xx + s), (float)( yy), (float)( zz + s), (float)( (xx + s) * scale + uo), (float)( (zz + s) * scale + vo));
-			t->vertexUV((float)(xx + s), (float)( yy), (float)( zz + 0), (float)( (xx + s) * scale + uo), (float)( (zz + 0) * scale + vo));
-			t->vertexUV((float)(xx + 0), (float)( yy), (float)( zz + 0), (float)( (xx + 0) * scale + uo), (float)( (zz + 0) * scale + vo));
+			t->vertexUV(static_cast<float>(xx + 0), (float)( yy), static_cast<float>(zz + s), (float)( (xx + 0) * scale + uo), (float)( (zz + s) * scale + vo));
+			t->vertexUV(static_cast<float>(xx + s), (float)( yy), static_cast<float>(zz + s), (float)( (xx + s) * scale + uo), (float)( (zz + s) * scale + vo));
+			t->vertexUV(static_cast<float>(xx + s), (float)( yy), static_cast<float>(zz + 0), (float)( (xx + s) * scale + uo), (float)( (zz + 0) * scale + vo));
+			t->vertexUV(static_cast<float>(xx + 0), (float)( yy), static_cast<float>(zz + 0), (float)( (xx + 0) * scale + uo), (float)( (zz + 0) * scale + vo));
 		}
 	}
 	t->end();
@@ -1371,13 +1371,13 @@ void LevelRenderer::createCloudMesh()
 			{
 				for( int xt = 0; xt < D; xt++ )
 				{
-					float u = (((float) xt ) + 0.5f ) / 256.0f;
-					float v = (((float) zt ) + 0.5f ) / 256.0f;
-					float x0 = (float)xt;
+					float u = (static_cast<float>(xt) + 0.5f ) / 256.0f;
+					float v = (static_cast<float>(zt) + 0.5f ) / 256.0f;
+					float x0 = static_cast<float>(xt);
 					float x1 = x0 + 1.0f;
 					float y0 = 0;
 					float y1 = h;
-					float z0 = (float)zt;
+					float z0 = static_cast<float>(zt);
 					float z1 = z0 + 1.0f;
 					t->color(0.7f, 0.7f, 0.7f, 0.8f);
 					t->normal(0, -1, 0);
@@ -1396,13 +1396,13 @@ void LevelRenderer::createCloudMesh()
 			{
 				for( int xt = 0; xt < D; xt++ )
 				{
-					float u = (((float) xt ) + 0.5f ) / 256.0f;
-					float v = (((float) zt ) + 0.5f ) / 256.0f;
-					float x0 = (float)xt;
+					float u = (static_cast<float>(xt) + 0.5f ) / 256.0f;
+					float v = (static_cast<float>(zt) + 0.5f ) / 256.0f;
+					float x0 = static_cast<float>(xt);
 					float x1 = x0 + 1.0f;
 					float y0 = 0;
 					float y1 = h;
-					float z0 = (float)zt;
+					float z0 = static_cast<float>(zt);
 					float z1 = z0 + 1.0f;
 					t->color(1.0f, 1.0f, 1.0f, 0.8f);
 					t->normal(0, 1, 0);
@@ -1421,13 +1421,13 @@ void LevelRenderer::createCloudMesh()
 			{
 				for( int xt = 0; xt < D; xt++ )
 				{
-					float u = (((float) xt ) + 0.5f ) / 256.0f;
-					float v = (((float) zt ) + 0.5f ) / 256.0f;
-					float x0 = (float)xt;
+					float u = (static_cast<float>(xt) + 0.5f ) / 256.0f;
+					float v = (static_cast<float>(zt) + 0.5f ) / 256.0f;
+					float x0 = static_cast<float>(xt);
 					float x1 = x0 + 1.0f;
 					float y0 = 0;
 					float y1 = h;
-					float z0 = (float)zt;
+					float z0 = static_cast<float>(zt);
 					float z1 = z0 + 1.0f;
 					t->color(0.9f, 0.9f, 0.9f, 0.8f);
 					t->normal(-1, 0, 0);
@@ -1446,13 +1446,13 @@ void LevelRenderer::createCloudMesh()
 			{
 				for( int xt = 0; xt < D; xt++ )
 				{
-					float u = (((float) xt ) + 0.5f ) / 256.0f;
-					float v = (((float) zt ) + 0.5f ) / 256.0f;
-					float x0 = (float)xt;
+					float u = (static_cast<float>(xt) + 0.5f ) / 256.0f;
+					float v = (static_cast<float>(zt) + 0.5f ) / 256.0f;
+					float x0 = static_cast<float>(xt);
 					float x1 = x0 + 1.0f;
 					float y0 = 0;
 					float y1 = h;
-					float z0 = (float)zt;
+					float z0 = static_cast<float>(zt);
 					float z1 = z0 + 1.0f;
 					t->color(0.9f, 0.9f, 0.9f, 0.8f);
 					t->normal(1, 0, 0);
@@ -1471,13 +1471,13 @@ void LevelRenderer::createCloudMesh()
 			{
 				for( int xt = 0; xt < D; xt++ )
 				{
-					float u = (((float) xt ) + 0.5f ) / 256.0f;
-					float v = (((float) zt ) + 0.5f ) / 256.0f;
-					float x0 = (float)xt;
+					float u = (static_cast<float>(xt) + 0.5f ) / 256.0f;
+					float v = (static_cast<float>(zt) + 0.5f ) / 256.0f;
+					float x0 = static_cast<float>(xt);
 					float x1 = x0 + 1.0f;
 					float y0 = 0;
 					float y1 = h;
-					float z0 = (float)zt;
+					float z0 = static_cast<float>(zt);
 					float z1 = z0 + 1.0f;
 					t->color(0.8f, 0.8f, 0.8f, 0.8f);
 					t->normal(-1, 0, 0);
@@ -1496,13 +1496,13 @@ void LevelRenderer::createCloudMesh()
 			{
 				for( int xt = 0; xt < D; xt++ )
 				{
-					float u = (((float) xt ) + 0.5f ) / 256.0f;
-					float v = (((float) zt ) + 0.5f ) / 256.0f;
-					float x0 = (float)xt;
+					float u = (static_cast<float>(xt) + 0.5f ) / 256.0f;
+					float v = (static_cast<float>(zt) + 0.5f ) / 256.0f;
+					float x0 = static_cast<float>(xt);
 					float x1 = x0 + 1.0f;
 					float y0 = 0;
 					float y1 = h;
-					float z0 = (float)zt;
+					float z0 = static_cast<float>(zt);
 					float z1 = z0 + 1.0f;
 					t->color(0.8f, 0.8f, 0.8f, 0.8f);
 					t->normal(1, 0, 0);
@@ -1527,7 +1527,7 @@ void LevelRenderer::renderAdvancedClouds(float alpha)
 	// 4J - most of our viewports are now rendered with no clip planes but using stencilling to limit the area drawn to. Clouds have a relatively large fill area compared to
 	// the number of vertices that they have, and so enabling clipping here to try and reduce fill rate cost.
 	RenderManager.StateSetEnableViewportClipPlanes(true);
-	float yOffs = (float) (mc->cameraTargetPlayer->yOld + (mc->cameraTargetPlayer->y - mc->cameraTargetPlayer->yOld) * alpha);
+	float yOffs = static_cast<float>(mc->cameraTargetPlayer->yOld + (mc->cameraTargetPlayer->y - mc->cameraTargetPlayer->yOld) * alpha);
 	Tesselator *t = Tesselator::getInstance();
 	int playerIndex = mc->player->GetXboxPad();
 
@@ -1577,9 +1577,9 @@ void LevelRenderer::renderAdvancedClouds(float alpha)
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 	Vec3 *cc = level[playerIndex]->getCloudColor(alpha);
-	float cr = (float) cc->x;
-	float cg = (float) cc->y;
-	float cb = (float) cc->z;
+	float cr = static_cast<float>(cc->x);
+	float cg = static_cast<float>(cc->y);
+	float cb = static_cast<float>(cc->z);
 
 	if (mc->options->anaglyph3d)
 	{
@@ -1592,19 +1592,19 @@ void LevelRenderer::renderAdvancedClouds(float alpha)
 		cb = cbb;
 	}
 
-	float uo = (float) (xo * 0);
-	float vo = (float) (zo * 0);
+	float uo = static_cast<float>(xo * 0);
+	float vo = static_cast<float>(zo * 0);
 
 	float scale = 1 / 256.0f;
 
-	uo = (float) (Mth::floor(xo)) * scale;
-	vo = (float) (Mth::floor(zo)) * scale;
+	uo = static_cast<float>(Mth::floor(xo)) * scale;
+	vo = static_cast<float>(Mth::floor(zo)) * scale;
 	// 4J - keep our UVs +ve - there's a small bug in the xbox GPU that incorrectly rounds small -ve UVs (between -1/(64*size) and 0) up to 0, which leaves gaps in our clouds...
 	while( uo < 1.0f ) uo += 1.0f;
 	while( vo < 1.0f ) vo += 1.0f;
 
-	float xoffs = (float) (xo - Mth::floor(xo));
-	float zoffs = (float) (zo - Mth::floor(zo));
+	float xoffs = static_cast<float>(xo - Mth::floor(xo));
+	float zoffs = static_cast<float>(zo - Mth::floor(zo));
 
 	int D = 8;
 
@@ -1634,8 +1634,8 @@ void LevelRenderer::renderAdvancedClouds(float alpha)
 				// 4J - reimplemented the clouds with full cube-per-texel geometry to get rid of seams. This is a huge amount more quads to render, so
 				// now using command buffers to render each section to cut CPU hit.
 #if 1
-				float xx = (float)(xPos * D);
-				float zz = (float)(zPos * D);
+				float xx = static_cast<float>(xPos * D);
+				float zz = static_cast<float>(zPos * D);
 				float xp = xx - xoffs;
 				float zp = zz - zoffs;
 
@@ -1828,7 +1828,7 @@ bool LevelRenderer::updateDirtyChunks()
 	}
 	throttle++;
 	*/
-	PIXAddNamedCounter(((float)memAlloc)/(1024.0f*1024.0f),"Command buffer allocations");
+	PIXAddNamedCounter(static_cast<float>(memAlloc)/(1024.0f*1024.0f),"Command buffer allocations");
 	bool onlyRebuild = ( memAlloc >= MAX_COMMANDBUFFER_ALLOCATIONS );
 	EnterCriticalSection(&m_csDirtyChunks);
 
@@ -1930,9 +1930,9 @@ bool LevelRenderer::updateDirtyChunks()
 			if( chunks[p].data == NULL ) continue;
 			if( level[p] == NULL ) continue;
 			if( chunks[p].length != xChunks * zChunks * CHUNK_Y_COUNT ) continue;
-			int px = (int)player->x;
-			int py = (int)player->y;
-			int pz = (int)player->z;
+			int px = static_cast<int>(player->x);
+			int py = static_cast<int>(player->y);
+			int pz = static_cast<int>(player->z);
 
 			//			app.DebugPrintf("!! %d %d %d, %d %d %d {%d,%d} ",px,py,pz,stackChunkDirty,nonStackChunkDirty,onlyRebuild, xChunks, zChunks);
 
@@ -2221,7 +2221,7 @@ void LevelRenderer::renderDestroyAnimation(Tesselator *t, shared_ptr<Player> pla
 		// so just add on a little bit of y to fix this. hacky hacky
 		t->offset((float)-xo, (float)-yo + 0.01f,(float) -zo);
 #else
-		t->offset((float)-xo, (float)-yo,(float) -zo);
+		t->offset(static_cast<float>(-xo), static_cast<float>(-yo),static_cast<float>(-zo));
 #endif
 		t->noColor();
 
@@ -2298,30 +2298,30 @@ void LevelRenderer::render(AABB *b)
 	Tesselator *t = Tesselator::getInstance();
 
 	t->begin(GL_LINE_STRIP);
-	t->vertex((float)(b->x0), (float)( b->y0), (float)( b->z0));
-	t->vertex((float)(b->x1), (float)( b->y0), (float)( b->z0));
-	t->vertex((float)(b->x1), (float)( b->y0), (float)( b->z1));
-	t->vertex((float)(b->x0), (float)( b->y0), (float)( b->z1));
-	t->vertex((float)(b->x0), (float)( b->y0), (float)( b->z0));
+	t->vertex(static_cast<float>(b->x0), static_cast<float>(b->y0), static_cast<float>(b->z0));
+	t->vertex(static_cast<float>(b->x1), static_cast<float>(b->y0), static_cast<float>(b->z0));
+	t->vertex(static_cast<float>(b->x1), static_cast<float>(b->y0), static_cast<float>(b->z1));
+	t->vertex(static_cast<float>(b->x0), static_cast<float>(b->y0), static_cast<float>(b->z1));
+	t->vertex(static_cast<float>(b->x0), static_cast<float>(b->y0), static_cast<float>(b->z0));
 	t->end();
 
 	t->begin(GL_LINE_STRIP);
-	t->vertex((float)(b->x0), (float)( b->y1), (float)( b->z0));
-	t->vertex((float)(b->x1), (float)( b->y1), (float)( b->z0));
-	t->vertex((float)(b->x1), (float)( b->y1), (float)( b->z1));
-	t->vertex((float)(b->x0), (float)( b->y1), (float)( b->z1));
-	t->vertex((float)(b->x0), (float)( b->y1), (float)( b->z0));
+	t->vertex(static_cast<float>(b->x0), static_cast<float>(b->y1), static_cast<float>(b->z0));
+	t->vertex(static_cast<float>(b->x1), static_cast<float>(b->y1), static_cast<float>(b->z0));
+	t->vertex(static_cast<float>(b->x1), static_cast<float>(b->y1), static_cast<float>(b->z1));
+	t->vertex(static_cast<float>(b->x0), static_cast<float>(b->y1), static_cast<float>(b->z1));
+	t->vertex(static_cast<float>(b->x0), static_cast<float>(b->y1), static_cast<float>(b->z0));
 	t->end();
 
 	t->begin(GL_LINES);
-	t->vertex((float)(b->x0), (float)( b->y0), (float)( b->z0));
-	t->vertex((float)(b->x0), (float)( b->y1), (float)( b->z0));
-	t->vertex((float)(b->x1), (float)( b->y0), (float)( b->z0));
-	t->vertex((float)(b->x1), (float)( b->y1), (float)( b->z0));
-	t->vertex((float)(b->x1), (float)( b->y0), (float)( b->z1));
-	t->vertex((float)(b->x1), (float)( b->y1), (float)( b->z1));
-	t->vertex((float)(b->x0), (float)( b->y0), (float)( b->z1));
-	t->vertex((float)(b->x0), (float)( b->y1), (float)( b->z1));
+	t->vertex(static_cast<float>(b->x0), static_cast<float>(b->y0), static_cast<float>(b->z0));
+	t->vertex(static_cast<float>(b->x0), static_cast<float>(b->y1), static_cast<float>(b->z0));
+	t->vertex(static_cast<float>(b->x1), static_cast<float>(b->y0), static_cast<float>(b->z0));
+	t->vertex(static_cast<float>(b->x1), static_cast<float>(b->y1), static_cast<float>(b->z0));
+	t->vertex(static_cast<float>(b->x1), static_cast<float>(b->y0), static_cast<float>(b->z1));
+	t->vertex(static_cast<float>(b->x1), static_cast<float>(b->y1), static_cast<float>(b->z1));
+	t->vertex(static_cast<float>(b->x0), static_cast<float>(b->y0), static_cast<float>(b->z1));
+	t->vertex(static_cast<float>(b->x0), static_cast<float>(b->y1), static_cast<float>(b->z1));
 	t->end();
 }
 
@@ -2527,7 +2527,7 @@ void LevelRenderer::cull(Culler *culler, float a)
 #endif // __PS3__
 
 
-	FrustumCuller *fc = (FrustumCuller *)culler;
+	FrustumCuller *fc = static_cast<FrustumCuller *>(culler);
 	FrustumData *fd = fc->frustum;
 	float fdraw[6 * 4];
 	for( int i = 0; i < 6; i++ )
@@ -2535,10 +2535,10 @@ void LevelRenderer::cull(Culler *culler, float a)
 		double fx = fd->m_Frustum[i][0];
 		double fy = fd->m_Frustum[i][1];
 		double fz = fd->m_Frustum[i][2];
-		fdraw[i * 4 + 0] = (float)fx;
-		fdraw[i * 4 + 1] = (float)fy;
-		fdraw[i * 4 + 2] = (float)fz;
-		fdraw[i * 4 + 3] = (float)(fd->m_Frustum[i][3] + ( fx * -fc->xOff ) + ( fy * - fc->yOff ) + ( fz * -fc->zOff ));
+		fdraw[i * 4 + 0] = static_cast<float>(fx);
+		fdraw[i * 4 + 1] = static_cast<float>(fy);
+		fdraw[i * 4 + 2] = static_cast<float>(fz);
+		fdraw[i * 4 + 3] = static_cast<float>(fd->m_Frustum[i][3] + (fx * -fc->xOff) + (fy * -fc->yOff) + (fz * -fc->zOff));
 	}
 
 	ClipChunk *pClipChunk = chunks[playerIndex].data;
@@ -2577,7 +2577,7 @@ void LevelRenderer::playStreamingMusic(const wstring& name, int x, int y, int z)
 	{
 		mc->gui->setNowPlaying(L"C418 - " + name);
 	}
-	mc->soundEngine->playStreaming(name, (float) x, (float) y, (float) z, 1, 1);
+	mc->soundEngine->playStreaming(name, static_cast<float>(x), static_cast<float>(y), static_cast<float>(z), 1, 1);
 }
 
 void LevelRenderer::playSound(int iSound, double x, double y, double z, float volume, float pitch, float fSoundClipDist)
@@ -2777,8 +2777,8 @@ shared_ptr<Particle> LevelRenderer::addParticleInternal(ePARTICLE_TYPE eParticle
 			}
 			else
 			{
-				float fStart=((float)(cStart&0xFF));
-				float fDiff=(float)((cEnd-cStart)&0xFF);
+				float fStart=static_cast<float>(cStart & 0xFF);
+				float fDiff=static_cast<float>((cEnd - cStart) & 0xFF);
 
 				float fCol =  (fStart + (Math::random() * fDiff))/255.0f;
 				particle->setColor( fCol, fCol, fCol );
@@ -2810,12 +2810,12 @@ shared_ptr<Particle> LevelRenderer::addParticleInternal(ePARTICLE_TYPE eParticle
 		break;
 	case eParticleType_mobSpell:
 		particle = shared_ptr<Particle>(new SpellParticle(lev, x, y, z, 0, 0, 0));
-		particle->setColor((float) xa, (float) ya, (float) za);
+		particle->setColor(static_cast<float>(xa), static_cast<float>(ya), static_cast<float>(za));
 		break;
 	case eParticleType_mobSpellAmbient:
 		particle = shared_ptr<SpellParticle>(new SpellParticle(lev, x, y, z, 0, 0, 0));
 		particle->setAlpha(0.15f);
-		particle->setColor((float) xa, (float) ya, (float) za);
+		particle->setColor(static_cast<float>(xa), static_cast<float>(ya), static_cast<float>(za));
 		break;
 	case eParticleType_spell:
 		particle = shared_ptr<Particle>( new SpellParticle(lev, x, y, z, xa, ya, za) );
@@ -2863,7 +2863,7 @@ shared_ptr<Particle> LevelRenderer::addParticleInternal(ePARTICLE_TYPE eParticle
 		particle = shared_ptr<Particle>( new SmokeParticle(lev, x, y, z, xa, ya, za, 2.5f) );
 		break;
 	case eParticleType_reddust:
-		particle = shared_ptr<Particle>( new RedDustParticle(lev, x, y, z, (float) xa, (float) ya, (float) za) );
+		particle = shared_ptr<Particle>( new RedDustParticle(lev, x, y, z, static_cast<float>(xa), static_cast<float>(ya), static_cast<float>(za)) );
 		break;
 	case eParticleType_snowballpoof:
 		particle = shared_ptr<Particle>( new BreakingItemParticle(lev, x, y, z, Item::snowBall, textures) );
@@ -3110,9 +3110,9 @@ void LevelRenderer::levelEvent(shared_ptr<Player> source, int type, int x, int y
 
 			int colorValue = Item::potion->getColor(data);
 
-			float red = (float) ((colorValue >> 16) & 0xff) / 255.0f;
-			float green = (float) ((colorValue >> 8) & 0xff) / 255.0f;
-			float blue = (float) ((colorValue >> 0) & 0xff) / 255.0f;
+			float red = static_cast<float>((colorValue >> 16) & 0xff) / 255.0f;
+			float green = static_cast<float>((colorValue >> 8) & 0xff) / 255.0f;
+			float blue = static_cast<float>((colorValue >> 0) & 0xff) / 255.0f;
 
 			ePARTICLE_TYPE particleName = eParticleType_spell;
 			if (Item::potion->hasInstantenousEffects(data))
@@ -3133,7 +3133,7 @@ void LevelRenderer::levelEvent(shared_ptr<Player> source, int type, int x, int y
 				{
 					float randBrightness = 0.75f + random->nextFloat() * 0.25f;
 					spellParticle->setColor(red * randBrightness, green * randBrightness, blue * randBrightness);
-					spellParticle->setPower((float) dist);
+					spellParticle->setPower(static_cast<float>(dist));
 				}
 			}
 			level[playerIndex]->playLocalSound(x + 0.5, y + 0.5, z + 0.5, eSoundType_RANDOM_GLASS, 1, level[playerIndex]->random->nextFloat() * 0.1f + 0.9f, false);
@@ -3159,7 +3159,7 @@ void LevelRenderer::levelEvent(shared_ptr<Player> source, int type, int x, int y
 				if (acidParticle != NULL)
 				{
 					float randBrightness = 0.75f + random->nextFloat() * 0.25f;
-					acidParticle->setPower((float) dist);
+					acidParticle->setPower(static_cast<float>(dist));
 				}
 			}
 			level[playerIndex]->playLocalSound(x + 0.5, y + 0.5, z + 0.5, eSoundType_RANDOM_EXPLODE, 1, level[playerIndex]->random->nextFloat() * 0.1f + 0.9f);
@@ -3550,7 +3550,7 @@ void LevelRenderer::DestroyedTileManager::destroyingTileAt( Level *level, int x,
 	// ones, so make a temporary list and then copy over
 
 	RecentTile *recentTile = new RecentTile(x, y, z, level);
-	AABB *box = AABB::newTemp((float)x, (float)y, (float)z, (float)(x+1), (float)(y+1), (float)(z+1));
+	AABB *box = AABB::newTemp(static_cast<float>(x), static_cast<float>(y), static_cast<float>(z), static_cast<float>(x + 1), static_cast<float>(y + 1), static_cast<float>(z + 1));
 	Tile *tile = Tile::tiles[level->getTile(x, y, z)];
 
 	if (tile != NULL)

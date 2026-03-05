@@ -16,9 +16,9 @@
 //----------------------------------------------------------------------------------
 HRESULT CScene_InGamePlayerOptions::OnInit( XUIMessageInit* pInitData, BOOL& bHandled )
 {
-	m_iPad = *(int *)pInitData->pvInitData;
+	m_iPad = *static_cast<int *>(pInitData->pvInitData);
 
-	InGamePlayerOptionsInitData *initData = (InGamePlayerOptionsInitData *)pInitData->pvInitData;
+	InGamePlayerOptionsInitData *initData = static_cast<InGamePlayerOptionsInitData *>(pInitData->pvInitData);
 	m_iPad = initData->iPad;
 	m_networkSmallId = initData->networkSmallId;
 	m_playerPrivileges = initData->playerPrivileges;
@@ -330,7 +330,7 @@ HRESULT CScene_InGamePlayerOptions::OnControlNavigate(XUIMessageControlNavigate 
 
 int CScene_InGamePlayerOptions::KickPlayerReturned(void *pParam,int iPad,C4JStorage::EMessageResult result)
 {
-	BYTE smallId = *(BYTE *)pParam;
+	BYTE smallId = *static_cast<BYTE *>(pParam);
 	delete pParam;
 
 	if(result==C4JStorage::EMessage_ResultAccept)
@@ -353,13 +353,13 @@ int CScene_InGamePlayerOptions::KickPlayerReturned(void *pParam,int iPad,C4JStor
 
 void CScene_InGamePlayerOptions::OnPlayerChanged(void *callbackParam, INetworkPlayer *pPlayer, bool leaving)
 {
-	CScene_InGamePlayerOptions *scene = (CScene_InGamePlayerOptions *)callbackParam;
+	CScene_InGamePlayerOptions *scene = static_cast<CScene_InGamePlayerOptions *>(callbackParam);
 
 	HXUIOBJ hBackScene = scene->GetBackScene();
 	CScene_InGameInfo* infoScene;
 	VOID *pObj;
 	XuiObjectFromHandle( hBackScene, &pObj );
-	infoScene = (CScene_InGameInfo *)pObj;
+	infoScene = static_cast<CScene_InGameInfo *>(pObj);
 	if(infoScene != NULL) CScene_InGameInfo::OnPlayerChanged(infoScene,pPlayer,leaving);
 
 	if(leaving && pPlayer != NULL && pPlayer->GetSmallId() == scene->m_networkSmallId)

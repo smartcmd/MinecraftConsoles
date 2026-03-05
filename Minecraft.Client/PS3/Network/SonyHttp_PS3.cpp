@@ -27,7 +27,7 @@ bool SonyHttp_PS3::loadCerts(size_t *numBufPtr, CellHttpsData **caListPtr)
 	int ret = 0;
 	char *buf = NULL;
 
-	caList = (CellHttpsData *)malloc(sizeof(CellHttpsData)*2);
+	caList = static_cast<CellHttpsData *>(malloc(sizeof(CellHttpsData) * 2));
 	if (NULL == caList) {
 		app.DebugPrintf("failed to malloc cert data");
 		return false;
@@ -39,7 +39,7 @@ bool SonyHttp_PS3::loadCerts(size_t *numBufPtr, CellHttpsData **caListPtr)
 		return ret;
 	}
 
-	buf = (char*)malloc(size);
+	buf = static_cast<char *>(malloc(size));
 	if (NULL == buf) {
 		app.DebugPrintf("failed to malloc cert buffer");
 		free(caList);
@@ -244,7 +244,7 @@ void* SonyHttp_PS3::getData(const char* url, int* pDataSize)
 	}
 
 	int bufferSize = length;
-	char* buffer = (char*)malloc(bufferSize+1);
+	char* buffer = static_cast<char *>(malloc(bufferSize + 1));
 
 	recvd = 0;
 

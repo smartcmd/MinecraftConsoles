@@ -120,13 +120,13 @@ void HopperTile::onRemove(Level *level, int x, int y, int z, int id, int data)
 
 					if (item->hasTag())
 					{
-						itemEntity->getItem()->setTag((CompoundTag *) item->getTag()->copy());
+						itemEntity->getItem()->setTag(static_cast<CompoundTag *>(item->getTag()->copy()));
 					}
 
 					float pow = 0.05f;
-					itemEntity->xd = (float) random.nextGaussian() * pow;
-					itemEntity->yd = (float) random.nextGaussian() * pow + 0.2f;
-					itemEntity->zd = (float) random.nextGaussian() * pow;
+					itemEntity->xd = static_cast<float>(random.nextGaussian()) * pow;
+					itemEntity->yd = static_cast<float>(random.nextGaussian()) * pow + 0.2f;
+					itemEntity->zd = static_cast<float>(random.nextGaussian()) * pow;
 					level->addEntity(itemEntity);
 				}
 			}

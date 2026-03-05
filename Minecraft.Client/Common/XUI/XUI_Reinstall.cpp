@@ -26,7 +26,7 @@
 HRESULT CScene_Reinstall::OnInit( XUIMessageInit* pInitData, BOOL& bHandled )
 {
 	// We'll only be in this menu from the main menu, not in game
-	m_iPad = *(int *)pInitData->pvInitData;
+	m_iPad = *static_cast<int *>(pInitData->pvInitData);
 
 	m_bIgnoreInput=false;
 	MapChildControls();
@@ -283,7 +283,7 @@ HRESULT CScene_Reinstall::OnTransitionStart( XUIMessageTransition *pTransition, 
 
 int CScene_Reinstall::DeviceSelectReturned(void *pParam,bool bContinue)
 {
-	CScene_Reinstall* pClass = (CScene_Reinstall*)pParam;
+	CScene_Reinstall* pClass = static_cast<CScene_Reinstall *>(pParam);
 
 	if(!StorageManager.GetSaveDeviceSelected(pClass->m_iPad))
 	{
@@ -300,7 +300,7 @@ int CScene_Reinstall::DeviceSelectReturned(void *pParam,bool bContinue)
 
 int CScene_Reinstall::DeviceSelectReturned_AndReinstall(void *pParam,bool bContinue)
 {
-	CScene_Reinstall* pClass = (CScene_Reinstall*)pParam;
+	CScene_Reinstall* pClass = static_cast<CScene_Reinstall *>(pParam);
 
 	if(!StorageManager.GetSaveDeviceSelected(pClass->m_iPad))
 	{

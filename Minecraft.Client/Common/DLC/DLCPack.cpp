@@ -156,7 +156,7 @@ void DLCPack::addParameter(DLCManager::EDLCParameterType type, const wstring &va
 		m_dataPath = value;
 		break;
 	default:
-		m_parameters[(int)type] = value;
+		m_parameters[static_cast<int>(type)] = value;
 		break;
 	}
 }
@@ -263,7 +263,7 @@ bool DLCPack::doesPackContainFile(DLCManager::EDLCType type, const wstring &path
 	bool hasFile = false;
 	if(type == DLCManager::e_DLCType_All)
 	{
-		for(DLCManager::EDLCType currentType = (DLCManager::EDLCType)0; currentType < DLCManager::e_DLCType_Max; currentType = (DLCManager::EDLCType)(currentType + 1))
+		for(DLCManager::EDLCType currentType = static_cast<DLCManager::EDLCType>(0); currentType < DLCManager::e_DLCType_Max; currentType = static_cast<DLCManager::EDLCType>(currentType + 1))
 		{
 			hasFile = doesPackContainFile(currentType,path);
 			if(hasFile) break;
@@ -287,7 +287,7 @@ DLCFile *DLCPack::getFile(DLCManager::EDLCType type, DWORD index)
 	DLCFile *file = NULL;
 	if(type == DLCManager::e_DLCType_All)
 	{
-		for(DLCManager::EDLCType currentType = (DLCManager::EDLCType)0; currentType < DLCManager::e_DLCType_Max; currentType = (DLCManager::EDLCType)(currentType + 1))
+		for(DLCManager::EDLCType currentType = static_cast<DLCManager::EDLCType>(0); currentType < DLCManager::e_DLCType_Max; currentType = static_cast<DLCManager::EDLCType>(currentType + 1))
 		{
 			file = getFile(currentType,index);
 			if(file != NULL) break;
@@ -309,7 +309,7 @@ DLCFile *DLCPack::getFile(DLCManager::EDLCType type, const wstring &path)
 	DLCFile *file = NULL;
 	if(type == DLCManager::e_DLCType_All)
 	{
-		for(DLCManager::EDLCType currentType = (DLCManager::EDLCType)0; currentType < DLCManager::e_DLCType_Max; currentType = (DLCManager::EDLCType)(currentType + 1))
+		for(DLCManager::EDLCType currentType = static_cast<DLCManager::EDLCType>(0); currentType < DLCManager::e_DLCType_Max; currentType = static_cast<DLCManager::EDLCType>(currentType + 1))
 		{
 			file = getFile(currentType,path);
 			if(file != NULL) break;
@@ -346,11 +346,11 @@ DWORD DLCPack::getDLCItemsCount(DLCManager::EDLCType type /*= DLCManager::e_DLCT
 	case DLCManager::e_DLCType_All:
 		for(int i = 0; i < DLCManager::e_DLCType_Max; ++i)
 		{
-			count += getDLCItemsCount((DLCManager::EDLCType)i);
+			count += getDLCItemsCount(static_cast<DLCManager::EDLCType>(i));
 		}
 		break;
 	default:
-		count = (DWORD)m_files[(int)type].size();
+		count = static_cast<DWORD>(m_files[(int)type].size());
 		break;
 	};
 	return count;
@@ -425,7 +425,7 @@ void  DLCPack::UpdateLanguage()
 	if(m_files[DLCManager::e_DLCType_LocalisationData].size() > 0)
 	{
 		file = m_files[DLCManager::e_DLCType_LocalisationData][0];
-		DLCLocalisationFile *localisationFile = (DLCLocalisationFile *)getFile(DLCManager::e_DLCType_LocalisationData, L"languages.loc");
+		DLCLocalisationFile *localisationFile = static_cast<DLCLocalisationFile *>(getFile(DLCManager::e_DLCType_LocalisationData, L"languages.loc"));
 		StringTable *strTable = localisationFile->getStringTable();
 		strTable->ReloadStringTable();
 	}

@@ -85,7 +85,7 @@ BiomeCache::Block *BiomeCache::getBlockAt(int x, int z)
 	EnterCriticalSection(&m_CS);
 	x >>= ZONE_SIZE_BITS;
 	z >>= ZONE_SIZE_BITS;
-	__int64 slot = (((__int64) x) & 0xffffffffl) | ((((__int64) z) & 0xffffffffl) << 32l);
+	__int64 slot = (static_cast<__int64>(x) & 0xffffffffl) | ((static_cast<__int64>(z) & 0xffffffffl) << 32l);
 	auto it = cached.find(slot);
 	Block *block = NULL;
 	if (it == cached.end())
@@ -137,7 +137,7 @@ void BiomeCache::update()
 			if (time > DECAY_TIME || time < 0)
 			{
 				it = all.erase(it);
-				__int64 slot = (((__int64) block->x) & 0xffffffffl) | ((((__int64) block->z) & 0xffffffffl) << 32l);
+				__int64 slot = (static_cast<__int64>(block->x) & 0xffffffffl) | ((static_cast<__int64>(block->z) & 0xffffffffl) << 32l);
 				cached.erase(slot);
 				delete block;
 			}

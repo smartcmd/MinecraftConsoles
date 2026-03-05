@@ -27,7 +27,7 @@ AABB *TopSnowTile::getAABB(Level *level, int x, int y, int z)
 {
 	int height = level->getData(x, y, z) & HEIGHT_MASK;
 	float offset = 2.0f / SharedConstants::WORLD_RESOLUTION;
-	ThreadStorage *tls = (ThreadStorage *)TlsGetValue(Tile::tlsIdxShape);
+	ThreadStorage *tls = static_cast<ThreadStorage *>(TlsGetValue(Tile::tlsIdxShape));
 	return AABB::newTemp(x + tls->xx0, y + tls->yy0, z + tls->zz0, x + tls->xx1, y + (height * offset), z + tls->zz1);
 }
 

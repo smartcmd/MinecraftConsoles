@@ -39,7 +39,7 @@ CustomMessage_GetSlotItem_Struct;
 static __declspec(noinline) void CustomMessage_GetSlotItem(XUIMessage *pMsg, CustomMessage_GetSlotItem_Struct* pData, int iDataBitField, int iItemBitField)
 {
 	XuiMessage(pMsg,XM_GETSLOTITEM_MESSAGE);
-	_XuiMessageExtra(pMsg,(XUIMessageData*) pData, sizeof(*pData));
+	_XuiMessageExtra(pMsg,static_cast<XUIMessageData *>(pData), sizeof(*pData));
 	pData->item = nullptr;
 	pData->iDataBitField = iDataBitField;
 	pData->iItemBitField = iItemBitField;
@@ -68,7 +68,7 @@ CustomMessage_Splitscreenplayer_Struct;
 static __declspec(noinline) void CustomMessage_Splitscreenplayer(XUIMessage *pMsg, CustomMessage_Splitscreenplayer_Struct* pData, bool bJoining)
 {
 	XuiMessage(pMsg,XM_SPLITSCREENPLAYER_MESSAGE);
-	_XuiMessageExtra(pMsg,(XUIMessageData*) pData, sizeof(*pData));
+	_XuiMessageExtra(pMsg,static_cast<XUIMessageData *>(pData), sizeof(*pData));
 	pData->bJoining = bJoining;
 }
 

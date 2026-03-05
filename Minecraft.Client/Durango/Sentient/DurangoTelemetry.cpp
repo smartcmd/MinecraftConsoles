@@ -968,7 +968,7 @@ bool CDurangoTelemetryManager::RecordUnBanLevel(int iPad)
 
 DurangoStats *CDurangoTelemetryManager::durangoStats()
 {
-	return (DurangoStats*) GenericStats::getInstance();
+	return static_cast<DurangoStats *>(GenericStats::getInstance());
 }
 
 wstring CDurangoTelemetryManager::guid2str(LPCGUID guid)

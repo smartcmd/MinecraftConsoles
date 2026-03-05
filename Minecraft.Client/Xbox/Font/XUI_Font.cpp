@@ -244,21 +244,21 @@ VOID XUI_Font::DrawText( FLOAT fOriginX, FLOAT fOriginY, DWORD dwColor,
 	{
 		if(RenderManager.IsWidescreen())
 		{		
-			int iScaleX=(int)m_fXScaleFactor;
+			int iScaleX=static_cast<int>(m_fXScaleFactor);
 			int iOriginX;
 			if(iScaleX%2==0)
 			{
-				iOriginX=(int)fOriginX;
+				iOriginX=static_cast<int>(fOriginX);
 				if(iOriginX%2==1)
 				{
 					fOriginX+=1.0f;
 				}
 			}
-			int iScaleY=(int)m_fYScaleFactor;
+			int iScaleY=static_cast<int>(m_fYScaleFactor);
 			int iOriginY;
 			if(iScaleY%2==0)
 			{
-				iOriginY=(int)fOriginY;
+				iOriginY=static_cast<int>(fOriginY);
 				if(iOriginY%2==1)
 				{
 					fOriginY+=1.0f;
@@ -268,7 +268,7 @@ VOID XUI_Font::DrawText( FLOAT fOriginX, FLOAT fOriginY, DWORD dwColor,
 		else
 		{
 			// 480 SD mode - y needs to be on a pixel boundary when multiplied by 1.5, so if it's an odd number, subtract 1/3 from it
-			int iOriginY=(int)fOriginY;
+			int iOriginY=static_cast<int>(fOriginY);
 			if(iOriginY%2==1)
 			{
 				fOriginY-=1.0f/3.0f;
@@ -415,8 +415,8 @@ VOID XUI_Font::DrawText( FLOAT fOriginX, FLOAT fOriginY, DWORD dwColor,
         // Translate unprintable characters
         XUI_FontData::SChar sChar = m_fontData->getChar( letter );
 
-        FLOAT fOffset = m_fXScaleFactor * ( FLOAT )sChar.getOffset();
-        FLOAT fAdvance = m_fXScaleFactor * ( FLOAT )sChar.getWAdvance();
+        FLOAT fOffset = m_fXScaleFactor * static_cast<FLOAT>(sChar.getOffset());
+        FLOAT fAdvance = m_fXScaleFactor * static_cast<FLOAT>(sChar.getWAdvance());
 		// 4J Use the font max width otherwise scaling doesnt look right
         FLOAT fWidth = m_fXScaleFactor * (sChar.tu2() - sChar.tu1());//( FLOAT )pGlyph->wWidth;
 		FLOAT fHeight = m_fYScaleFactor * m_fontData->getFontHeight();
@@ -450,10 +450,10 @@ VOID XUI_Font::DrawText( FLOAT fOriginX, FLOAT fOriginY, DWORD dwColor,
 
         // Add the vertices to draw this glyph
 
-        FLOAT tu1 = sChar.tu1() / (float)m_fontData->getImageWidth();
-        FLOAT tv1 = sChar.tv1() / (float)m_fontData->getImageHeight();
-        FLOAT tu2 = sChar.tu2() / (float)m_fontData->getImageWidth();
-        FLOAT tv2 = sChar.tv2() / (float)m_fontData->getImageHeight();
+        FLOAT tu1 = sChar.tu1() / static_cast<float>(m_fontData->getImageWidth());
+        FLOAT tv1 = sChar.tv1() / static_cast<float>(m_fontData->getImageHeight());
+        FLOAT tu2 = sChar.tu2() / static_cast<float>(m_fontData->getImageWidth());
+        FLOAT tv2 = sChar.tv2() / static_cast<float>(m_fontData->getImageHeight());
 
 		Tesselator *t = Tesselator::getInstance();
 		t->begin();

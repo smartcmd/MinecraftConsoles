@@ -10,14 +10,14 @@ UIScene_HopperMenu::UIScene_HopperMenu(int iPad, void *_initData, UILayer *paren
 	// Setup all the Iggy references we need for this scene
 	initialiseMovie();
 
-	HopperScreenInput *initData = (HopperScreenInput *)_initData;
+	HopperScreenInput *initData = static_cast<HopperScreenInput *>(_initData);
 
 	m_labelDispenser.init(initData->hopper->getName());
 
 	Minecraft *pMinecraft = Minecraft::GetInstance();
 	if( pMinecraft->localgameModes[initData->iPad] != NULL )
 	{
-		TutorialMode *gameMode = (TutorialMode *)pMinecraft->localgameModes[initData->iPad];
+		TutorialMode *gameMode = static_cast<TutorialMode *>(pMinecraft->localgameModes[initData->iPad]);
 		m_previousTutorialState = gameMode->getTutorial()->getCurrentState();
 		gameMode->getTutorial()->changeTutorialState(e_Tutorial_State_Hopper_Menu, this);
 	}

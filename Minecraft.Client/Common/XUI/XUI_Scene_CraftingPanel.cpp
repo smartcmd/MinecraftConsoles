@@ -40,7 +40,7 @@ HRESULT CXuiSceneCraftingPanel::OnInit( XUIMessageInit* pInitData, BOOL& bHandle
 
 	D3DXVECTOR3 vec;
 	VOID *pObj;
-	CraftingPanelScreenInput* pCraftingPanelData = (CraftingPanelScreenInput*)pInitData->pvInitData;
+	CraftingPanelScreenInput* pCraftingPanelData = static_cast<CraftingPanelScreenInput *>(pInitData->pvInitData);
 	m_iContainerType=pCraftingPanelData->iContainerType;
 	m_pPlayer=pCraftingPanelData->player;
 	m_iPad=pCraftingPanelData->iPad;
@@ -89,12 +89,12 @@ HRESULT CXuiSceneCraftingPanel::OnInit( XUIMessageInit* pInitData, BOOL& bHandle
 		for(int i=0;i<m_iIngredients3x3SlotC;i++)
 		{
 			XuiObjectFromHandle( m_hCraftIngredientA[i], &pObj );
-			m_pCraftingIngredientA[i] = (CXuiCtrlCraftIngredientSlot *)pObj;
+			m_pCraftingIngredientA[i] = static_cast<CXuiCtrlCraftIngredientSlot *>(pObj);
 		}
 		XuiObjectFromHandle( m_hCraftOutput, &pObj );
-		m_pCraftingOutput = (CXuiCtrlCraftIngredientSlot *)pObj;
-		m_pGroupA=(Recipy::_eGroupType *)&m_GroupTypeMapping9GridA;
-		m_pGroupTabA=(CXuiSceneCraftingPanel::_eGroupTab *)&m_GroupTabBkgMapping3x3A;
+		m_pCraftingOutput = static_cast<CXuiCtrlCraftIngredientSlot *>(pObj);
+		m_pGroupA=static_cast<Recipy::_eGroupType *>(&m_GroupTypeMapping9GridA);
+		m_pGroupTabA=static_cast<CXuiSceneCraftingPanel::_eGroupTab *>(&m_GroupTabBkgMapping3x3A);
 
 		m_iCraftablesMaxHSlotC=m_iMaxHSlot3x3C;
 
@@ -102,7 +102,7 @@ HRESULT CXuiSceneCraftingPanel::OnInit( XUIMessageInit* pInitData, BOOL& bHandle
 		for(int i=0;i<4;i++)
 		{
 			XuiObjectFromHandle( m_hCraftIngredientDescA[i], &pObj );
-			m_pCraftIngredientDescA[i] = (CXuiCtrlCraftIngredientSlot *)pObj;
+			m_pCraftIngredientDescA[i] = static_cast<CXuiCtrlCraftIngredientSlot *>(pObj);
 		}
 	}
 	else
@@ -113,13 +113,13 @@ HRESULT CXuiSceneCraftingPanel::OnInit( XUIMessageInit* pInitData, BOOL& bHandle
 		for(int i=0;i<m_iIngredients2x2SlotC;i++)
 		{
 			XuiObjectFromHandle( m_hCraftIngredientA[i], &pObj );
-			m_pCraftingIngredientA[i] = (CXuiCtrlCraftIngredientSlot *)pObj;
+			m_pCraftingIngredientA[i] = static_cast<CXuiCtrlCraftIngredientSlot *>(pObj);
 		}
 
 		XuiObjectFromHandle( m_hCraftOutput, &pObj );
-		m_pCraftingOutput = (CXuiCtrlCraftIngredientSlot *)pObj;
-		m_pGroupA=(Recipy::_eGroupType *)&m_GroupTypeMapping4GridA;
-		m_pGroupTabA=(CXuiSceneCraftingPanel::_eGroupTab *)&m_GroupTabBkgMapping2x2A;
+		m_pCraftingOutput = static_cast<CXuiCtrlCraftIngredientSlot *>(pObj);
+		m_pGroupA=static_cast<Recipy::_eGroupType *>(&m_GroupTypeMapping4GridA);
+		m_pGroupTabA=static_cast<CXuiSceneCraftingPanel::_eGroupTab *>(&m_GroupTabBkgMapping2x2A);
 
 		m_iCraftablesMaxHSlotC=m_iMaxHSlot2x2C;
 
@@ -127,7 +127,7 @@ HRESULT CXuiSceneCraftingPanel::OnInit( XUIMessageInit* pInitData, BOOL& bHandle
 		for(int i=0;i<4;i++)
 		{
 			XuiObjectFromHandle( m_hCraftIngredientDescA[i], &pObj );
-			m_pCraftIngredientDescA[i] = (CXuiCtrlCraftIngredientSlot *)pObj;
+			m_pCraftIngredientDescA[i] = static_cast<CXuiCtrlCraftIngredientSlot *>(pObj);
 		}
 	}
 

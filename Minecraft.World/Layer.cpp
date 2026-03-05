@@ -189,7 +189,7 @@ int Layer::nextRandom(int max)
 	}
 #else
 
-	int result = (int) ((rval >> 24) % max);
+	int result = static_cast<int>((rval >> 24) % max);
 #endif
 
 	if (result < 0) result += max;

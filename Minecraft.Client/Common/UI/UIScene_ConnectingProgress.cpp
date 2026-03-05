@@ -15,7 +15,7 @@ UIScene_ConnectingProgress::UIScene_ConnectingProgress(int iPad, void *_initData
 	m_progressBar.setVisible( false );
 	m_labelTip.setVisible( false );
 
-	ConnectionProgressParams *param = (ConnectionProgressParams *)_initData;
+	ConnectionProgressParams *param = static_cast<ConnectionProgressParams *>(_initData);
 
 	if( param->stringId >= 0 )
 	{
@@ -245,7 +245,7 @@ void UIScene_ConnectingProgress::handleInput(int iPad, int key, bool repeat, boo
 
 void UIScene_ConnectingProgress::handlePress(F64 controlId, F64 childId)
 {
-	switch((int)controlId)
+	switch(static_cast<int>(controlId))
 	{
 	case eControl_Confirm:
 		if(m_showingButton)

@@ -49,7 +49,7 @@ void HopperTileEntity::save(CompoundTag *base)
 		if (items[i] != NULL)
 		{
 			CompoundTag *tag = new CompoundTag();
-			tag->putByte(L"Slot", (byte) i);
+			tag->putByte(L"Slot", static_cast<byte>(i));
 			items[i]->save(tag);
 			listTag->add(tag);
 		}
@@ -307,7 +307,7 @@ shared_ptr<ItemInstance> HopperTileEntity::addItem(Container *container, shared_
 {
 	if (dynamic_cast<WorldlyContainer *>( container ) != NULL && face > -1)
 	{
-		WorldlyContainer *worldly = (WorldlyContainer *) container;
+		WorldlyContainer *worldly = static_cast<WorldlyContainer *>(container);
 		intArray slots = worldly->getSlotsForFace(face);
 
 		for (int i = 0; i < slots.length && item != NULL && item->count > 0; i++)
@@ -429,7 +429,7 @@ shared_ptr<Container> HopperTileEntity::getContainerAt(Level *level, double x, d
 
 			if ( dynamic_cast<ChestTile *>( tile ) != NULL )
 			{
-				result = ((ChestTile *) tile)->getContainer(level, xt, yt, zt);
+				result = static_cast<ChestTile *>(tile)->getContainer(level, xt, yt, zt);
 			}
 		}
 	}

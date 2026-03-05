@@ -327,14 +327,14 @@ void UIScene_InGameInfoMenu::handleInput(int iPad, int key, bool repeat, bool pr
 
 void UIScene_InGameInfoMenu::handlePress(F64 controlId, F64 childId)
 {
-	app.DebugPrintf("Pressed = %d, %d\n", (int)controlId, (int)childId);
-	switch((int)controlId)
+	app.DebugPrintf("Pressed = %d, %d\n", static_cast<int>(controlId), static_cast<int>(childId));
+	switch(static_cast<int>(controlId))
 	{
 	case eControl_GameOptions:
 		ui.NavigateToScene(m_iPad,eUIScene_InGameHostOptionsMenu);
 		break;
 	case eControl_GamePlayers:
-		int currentSelection = (int)childId;
+		int currentSelection = static_cast<int>(childId);
 		INetworkPlayer *selectedPlayer = g_NetworkManager.GetPlayerBySmallId(m_players[currentSelection]->m_smallId);
 
 		Minecraft *pMinecraft = Minecraft::GetInstance();
@@ -377,10 +377,10 @@ void UIScene_InGameInfoMenu::handlePress(F64 controlId, F64 childId)
 
 void UIScene_InGameInfoMenu::handleFocusChange(F64 controlId, F64 childId)
 {
-	switch((int)controlId)
+	switch(static_cast<int>(controlId))
 	{
 	case eControl_GamePlayers:
-		m_playerList.updateChildFocus( (int) childId );
+		m_playerList.updateChildFocus( static_cast<int>(childId) );
 	};
 	updateTooltips();
 }
@@ -389,7 +389,7 @@ void UIScene_InGameInfoMenu::OnPlayerChanged(void *callbackParam, INetworkPlayer
 {
 	app.DebugPrintf("<UIScene_InGameInfoMenu::OnPlayerChanged> Player \"%ls\" %s (smallId: %d)\n", pPlayer->GetOnlineName(), leaving ? "leaving" : "joining", pPlayer->GetSmallId());
 
-	UIScene_InGameInfoMenu *scene = (UIScene_InGameInfoMenu *)callbackParam;
+	UIScene_InGameInfoMenu *scene = static_cast<UIScene_InGameInfoMenu *>(callbackParam);
 	bool playerFound = false;
 	int foundIndex = 0;
 	for(int i = 0; i < scene->m_players.size(); ++i)
@@ -439,7 +439,7 @@ void UIScene_InGameInfoMenu::OnPlayerChanged(void *callbackParam, INetworkPlayer
 
 int UIScene_InGameInfoMenu::KickPlayerReturned(void *pParam,int iPad,C4JStorage::EMessageResult result)
 {
-	BYTE smallId = *(BYTE *)pParam;
+	BYTE smallId = *static_cast<BYTE *>(pParam);
 	delete pParam;
 
 	if(result==C4JStorage::EMessage_ResultAccept)

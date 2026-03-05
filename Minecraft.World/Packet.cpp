@@ -386,7 +386,7 @@ void Packet::writeUtf(const wstring& value, DataOutputStream *dos) // throws IOE
 	}
 #endif
 
-	dos->writeShort((short)value.length());
+	dos->writeShort(static_cast<short>(value.length()));
 	dos->writeChars(value);
 }
 
@@ -443,7 +443,7 @@ double Packet::PacketStatistics::getAverageSize()
 	{
 		return 0;
 	}
-	return (double) totalSize / count;
+	return static_cast<double>(totalSize) / count;
 }
 
 int Packet::PacketStatistics::getTotalSize()
@@ -562,7 +562,7 @@ void Packet::writeNbt(CompoundTag *tag, DataOutputStream *dos)
 	else
 	{
 		byteArray buff = NbtIo::compress(tag);
-		dos->writeShort((short) buff.length);
+		dos->writeShort(static_cast<short>(buff.length));
 		dos->write(buff);
 		delete [] buff.data;
 	}

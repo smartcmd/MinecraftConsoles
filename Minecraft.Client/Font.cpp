@@ -167,7 +167,7 @@ void Font::renderCharacter(wchar_t c)
 	t->end();
 #endif
 
-	xPos += (float) charWidths[c];
+	xPos += static_cast<float>(charWidths[c]);
 }
 
 void Font::drawShadow(const wstring& str, int x, int y, int color)
@@ -201,7 +201,7 @@ void Font::draw(const wstring &str, bool dropShadow)
 	bool noise = false;
 	wstring cleanStr = sanitize(str);
 
-	for (int i = 0; i < (int)cleanStr.length(); ++i)
+	for (int i = 0; i < static_cast<int>(cleanStr.length()); ++i)
 	{
 		// Map character
 		wchar_t c = cleanStr.at(i);
@@ -467,7 +467,7 @@ void Font::setBidirectional(bool bidirectional)
 
 bool Font::AllCharactersValid(const wstring &str)
 {
-	for (int i = 0; i < (int)str.length(); ++i)
+	for (int i = 0; i < static_cast<int>(str.length()); ++i)
 	{
 		wchar_t c = str.at(i);
 

@@ -16,8 +16,8 @@ __int64 ChunkPos::hashCode(int x, int z)
 int ChunkPos::hashCode()
 {
 	__int64 hash = hashCode(x, z);
-	int h1 = (int) (hash);
-	int h2 = (int) (hash >> 32l);
+	int h1 = static_cast<int>(hash);
+	int h2 = static_cast<int>(hash >> 32l);
 	return h1 ^ h2;
 }
 

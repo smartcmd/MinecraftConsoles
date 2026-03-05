@@ -53,7 +53,7 @@ shared_ptr<ItemInstance> ContainerMenu::quickMoveStack(shared_ptr<Player> player
 
 		if (slotIndex < containerRows * 9)
 		{
-			if(!moveItemStackTo(stack, containerRows * 9, (int)slots.size(), true))
+			if(!moveItemStackTo(stack, containerRows * 9, static_cast<int>(slots.size()), true))
 			{
 				// 4J Stu - Brought forward from 1.2
 				return nullptr;

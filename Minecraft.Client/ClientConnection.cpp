@@ -468,12 +468,12 @@ void ClientConnection::handleAddEntity(shared_ptr<AddEntityPacket> packet)
 		break;
 	case AddEntityPacket::ITEM_FRAME:
 		{
-			int ix=(int) x;
-			int iy=(int) y;
-			int iz = (int) z;
+			int ix=static_cast<int>(x);
+			int iy=static_cast<int>(y);
+			int iz = static_cast<int>(z);
 		app.DebugPrintf("ClientConnection ITEM_FRAME xyz %d,%d,%d\n",ix,iy,iz);
 		}
-		e = shared_ptr<Entity>(new ItemFrame(level, (int) x, (int) y, (int) z, packet->data));
+		e = shared_ptr<Entity>(new ItemFrame(level, static_cast<int>(x), static_cast<int>(y), static_cast<int>(z), packet->data));
 		packet->data = 0;
 		setRot = false;
 		break;
@@ -530,7 +530,7 @@ void ClientConnection::handleAddEntity(shared_ptr<AddEntityPacket> packet)
 		e = shared_ptr<Entity>(new FireworksRocketEntity(level, x, y, z, nullptr));
 		break;
 	case AddEntityPacket::LEASH_KNOT:
-		e = shared_ptr<Entity>(new LeashFenceKnotEntity(level, (int) x, (int) y, (int) z));
+		e = shared_ptr<Entity>(new LeashFenceKnotEntity(level, static_cast<int>(x), static_cast<int>(y), static_cast<int>(z)));
 		packet->data = 0;
 		break;
 #ifndef _FINAL_BUILD
@@ -804,11 +804,11 @@ void ClientConnection::handleAddPlayer(shared_ptr<AddPlayerPacket> packet)
 		const PlayerUID WIN64_XUID_BASE = (PlayerUID)0xe000d45248242f2e;
 		if (pktXuid >= WIN64_XUID_BASE && pktXuid < WIN64_XUID_BASE + MINECRAFT_NET_MAX_PLAYERS)
 		{
-			BYTE smallId = (BYTE)(pktXuid - WIN64_XUID_BASE);
+			BYTE smallId = static_cast<BYTE>(pktXuid - WIN64_XUID_BASE);
 			INetworkPlayer* np = g_NetworkManager.GetPlayerBySmallId(smallId);
 			if (np != NULL)
 			{
-				NetworkPlayerXbox* npx = (NetworkPlayerXbox*)np;
+				NetworkPlayerXbox* npx = static_cast<NetworkPlayerXbox *>(np);
 				IQNetPlayer* qp = npx->GetQNetPlayer();
 				if (qp != NULL && qp->m_gamertag[0] == 0)
 				{
@@ -976,7 +976,7 @@ void ClientConnection::handleRemoveEntity(shared_ptr<RemoveEntitiesPacket> packe
 					INetworkPlayer* np = g_NetworkManager.GetPlayerByXuid(xuid);
 					if (np != NULL)
 					{
-						NetworkPlayerXbox* npx = (NetworkPlayerXbox*)np;
+						NetworkPlayerXbox* npx = static_cast<NetworkPlayerXbox *>(np);
 						IQNetPlayer* qp = npx->GetQNetPlayer();
 						if (qp != NULL)
 						{
@@ -1727,7 +1727,7 @@ void ClientConnection::handleChat(shared_ptr<ChatPacket> packet)
 		}
 		else
 		{
-			message = replaceAll(message,L"{*DESTINATION*}", app.getEntityName((eINSTANCEOF)packet->m_intArgs[0]));
+			message = replaceAll(message,L"{*DESTINATION*}", app.getEntityName(static_cast<eINSTANCEOF>(packet->m_intArgs[0])));
 		}
 		break;
 	case ChatPacket::e_ChatCommandTeleportMe:
@@ -1767,7 +1767,7 @@ void ClientConnection::handleChat(shared_ptr<ChatPacket> packet)
 			}
 			else
 			{
-				entityName = app.getEntityName((eINSTANCEOF) packet->m_intArgs[0]);
+				entityName = app.getEntityName(static_cast<eINSTANCEOF>(packet->m_intArgs[0]));
 			}
 
 			message = replaceAll(message,L"{*SOURCE*}", entityName);
@@ -2744,7 +2744,7 @@ void ClientConnection::handleRespawn(shared_ptr<RespawnPacket> packet)
 
 		if( minecraft->localgameModes[m_userIndex] != NULL )
 		{
-			TutorialMode *gameMode = (TutorialMode *)minecraft->localgameModes[m_userIndex];
+			TutorialMode *gameMode = static_cast<TutorialMode *>(minecraft->localgameModes[m_userIndex]);
 			gameMode->getTutorial()->showTutorialPopup(false);
 		}
 
@@ -3267,7 +3267,7 @@ void ClientConnection::handleGameEvent(shared_ptr<GameEventPacket> gameEventPack
 	}
 	else if (event == GameEventPacket::WIN_GAME)
 	{
-		ui.SetWinUserIndex( (BYTE)gameEventPacket->param );
+		ui.SetWinUserIndex( static_cast<BYTE>(gameEventPacket->param) );
 
 #ifdef _XBOX
 
@@ -3439,11 +3439,11 @@ void ClientConnection::displayPrivilegeChanges(shared_ptr<MultiplayerLocalPlayer
 {
 	int userIndex = player->GetXboxPad();
 	unsigned int newPrivileges = player->getAllPlayerGamePrivileges();
-	Player::EPlayerGamePrivileges priv = (Player::EPlayerGamePrivileges)0;
+	Player::EPlayerGamePrivileges priv = static_cast<Player::EPlayerGamePrivileges>(0);
 	bool privOn = false;
 	for(unsigned int i = 0; i < Player::ePlayerGamePrivilege_MAX; ++i)
 	{
-		priv = (Player::EPlayerGamePrivileges) i;
+		priv = static_cast<Player::EPlayerGamePrivileges>(i);
 		if( Player::getPlayerGamePrivilege(newPrivileges,priv) != Player::getPlayerGamePrivilege(oldPrivileges,priv))
 		{
 			privOn = Player::getPlayerGamePrivilege(newPrivileges,priv);
@@ -3579,7 +3579,7 @@ void ClientConnection::handleCustomPayload(shared_ptr<CustomPayloadPacket> custo
 			}
 #else
 			UIScene *scene = ui.GetTopScene(m_userIndex, eUILayer_Scene);
-			UIScene_TradingMenu *screen = (UIScene_TradingMenu *)scene;
+			UIScene_TradingMenu *screen = static_cast<UIScene_TradingMenu *>(scene);
 			trader = screen->getMerchant();
 #endif
 
@@ -3665,7 +3665,7 @@ int ClientConnection::HostDisconnectReturned(void *pParam,int iPad,C4JStorage::E
 	if(!Minecraft::GetInstance()->skins->isUsingDefaultSkin())
 	{
 		TexturePack *tPack = Minecraft::GetInstance()->skins->getSelected();
-		DLCTexturePack *pDLCTexPack=(DLCTexturePack *)tPack;
+		DLCTexturePack *pDLCTexPack=static_cast<DLCTexturePack *>(tPack);
 
 		DLCPack *pDLCPack=pDLCTexPack->getDLCInfoParentPack();//tPack->getDLCPack();
 		if(!pDLCPack->hasPurchasedFile( DLCManager::e_DLCType_Texture, L"" ))

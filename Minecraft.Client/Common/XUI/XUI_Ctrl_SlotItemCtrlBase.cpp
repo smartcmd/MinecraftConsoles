@@ -12,7 +12,7 @@ HRESULT CXuiCtrlSlotItemCtrlBase::OnInit( HXUIOBJ hObj, XUIMessageInit* pInitDat
 {
 	HRESULT hr = S_OK;
 	SlotControlUserDataContainer* pvUserData = new SlotControlUserDataContainer();
-	hr = XuiElementSetUserData(hObj, (void *)pvUserData );
+	hr = XuiElementSetUserData(hObj, static_cast<void *>(pvUserData) );
 
 	// 4J WESTY : Pointer Prototype : Added to support prototype only.
 	m_bSkipDefaultNavigation = false;
@@ -41,7 +41,7 @@ HRESULT CXuiCtrlSlotItemCtrlBase::OnCustomMessage_GetSlotItem(HXUIOBJ hObj, Cust
 	void* pvUserData;
 	XuiElementGetUserData( hObj, &pvUserData );
 
-	SlotControlUserDataContainer* pUserDataContainer = (SlotControlUserDataContainer*)pvUserData;
+	SlotControlUserDataContainer* pUserDataContainer = static_cast<SlotControlUserDataContainer *>(pvUserData);
 
 	if( pUserDataContainer->slot != NULL )
 	{
@@ -64,7 +64,7 @@ HRESULT CXuiCtrlSlotItemCtrlBase::OnCustomMessage_GetSlotItem(HXUIOBJ hObj, Cust
 		// 11 bits - auxval
 		//  6 bits - count
 		//  6 bits - scale
-		pData->iDataBitField = MAKE_SLOTDISPLAY_DATA_BITMASK(pUserDataContainer->m_iPad, (int)(31*pUserDataContainer->m_fAlpha),true,item->GetCount(),7,item->popTime);
+		pData->iDataBitField = MAKE_SLOTDISPLAY_DATA_BITMASK(pUserDataContainer->m_iPad, static_cast<int>(31 * pUserDataContainer->m_fAlpha),true,item->GetCount(),7,item->popTime);
 	}
 	else
 	{
@@ -82,7 +82,7 @@ void CXuiCtrlSlotItemCtrlBase::SetSlot( HXUIOBJ hObj, Slot* slot )
 	void* pvUserData;
 	XuiElementGetUserData( hObj, &pvUserData );
 
-	SlotControlUserDataContainer* pUserDataContainer = (SlotControlUserDataContainer*)pvUserData;
+	SlotControlUserDataContainer* pUserDataContainer = static_cast<SlotControlUserDataContainer *>(pvUserData);
 
 	pUserDataContainer->slot = slot;
 }
@@ -92,7 +92,7 @@ void CXuiCtrlSlotItemCtrlBase::SetUserIndex(  HXUIOBJ hObj, int iPad )
 	void* pvUserData;
 	XuiElementGetUserData( hObj, &pvUserData );
 
-	SlotControlUserDataContainer* pUserDataContainer = (SlotControlUserDataContainer*)pvUserData;
+	SlotControlUserDataContainer* pUserDataContainer = static_cast<SlotControlUserDataContainer *>(pvUserData);
 
 	pUserDataContainer->m_iPad = iPad;
 }
@@ -102,7 +102,7 @@ void CXuiCtrlSlotItemCtrlBase::SetAlpha(  HXUIOBJ hObj, float fAlpha )
 	void* pvUserData;
 	XuiElementGetUserData( hObj, &pvUserData );
 
-	SlotControlUserDataContainer* pUserDataContainer = (SlotControlUserDataContainer*)pvUserData;
+	SlotControlUserDataContainer* pUserDataContainer = static_cast<SlotControlUserDataContainer *>(pvUserData);
 
 	pUserDataContainer->m_fAlpha = fAlpha;
 }
@@ -111,7 +111,7 @@ bool CXuiCtrlSlotItemCtrlBase::isEmpty( HXUIOBJ hObj )
 {
 	void* pvUserData;
 	XuiElementGetUserData( hObj, &pvUserData );
-	SlotControlUserDataContainer* pUserDataContainer = (SlotControlUserDataContainer*)pvUserData;
+	SlotControlUserDataContainer* pUserDataContainer = static_cast<SlotControlUserDataContainer *>(pvUserData);
 
 	if(pUserDataContainer->slot != NULL)
 	{
@@ -130,7 +130,7 @@ wstring CXuiCtrlSlotItemCtrlBase::GetItemDescription( HXUIOBJ hObj, vector<wstri
 {
 	void* pvUserData;
 	XuiElementGetUserData( hObj, &pvUserData );
-	SlotControlUserDataContainer* pUserDataContainer = (SlotControlUserDataContainer*)pvUserData;
+	SlotControlUserDataContainer* pUserDataContainer = static_cast<SlotControlUserDataContainer *>(pvUserData);
 
 	if(pUserDataContainer->slot != NULL)
 	{
@@ -181,7 +181,7 @@ shared_ptr<ItemInstance> CXuiCtrlSlotItemCtrlBase::getItemInstance( HXUIOBJ hObj
 {
 	void* pvUserData;
 	XuiElementGetUserData( hObj, &pvUserData );
-	SlotControlUserDataContainer* pUserDataContainer = (SlotControlUserDataContainer*)pvUserData;
+	SlotControlUserDataContainer* pUserDataContainer = static_cast<SlotControlUserDataContainer *>(pvUserData);
 
 	if(pUserDataContainer->slot != NULL)
 	{
@@ -200,7 +200,7 @@ Slot *CXuiCtrlSlotItemCtrlBase::getSlot( HXUIOBJ hObj )
 {
 	void* pvUserData;
 	XuiElementGetUserData( hObj, &pvUserData );
-	SlotControlUserDataContainer* pUserDataContainer = (SlotControlUserDataContainer*)pvUserData;
+	SlotControlUserDataContainer* pUserDataContainer = static_cast<SlotControlUserDataContainer *>(pvUserData);
 
 	return pUserDataContainer->slot;
 }
@@ -254,7 +254,7 @@ int CXuiCtrlSlotItemCtrlBase::GetObjectCount( HXUIOBJ hObj )
 {
 	void* pvUserData;
 	XuiElementGetUserData( hObj, &pvUserData );
-	SlotControlUserDataContainer* pUserDataContainer = (SlotControlUserDataContainer*)pvUserData;
+	SlotControlUserDataContainer* pUserDataContainer = static_cast<SlotControlUserDataContainer *>(pvUserData);
 
 	int iCount = 0;
 
@@ -294,7 +294,7 @@ bool CXuiCtrlSlotItemCtrlBase::IsSameItemAs( HXUIOBJ hThisObj, HXUIOBJ hOtherObj
 	// Get the info on this item.
 	void* pvThisUserData;
 	XuiElementGetUserData( hThisObj, &pvThisUserData );
-	SlotControlUserDataContainer* pThisUserDataContainer = (SlotControlUserDataContainer*)pvThisUserData;
+	SlotControlUserDataContainer* pThisUserDataContainer = static_cast<SlotControlUserDataContainer *>(pvThisUserData);
 
 	if(pThisUserDataContainer->slot != NULL)
 	{
@@ -322,7 +322,7 @@ bool CXuiCtrlSlotItemCtrlBase::IsSameItemAs( HXUIOBJ hThisObj, HXUIOBJ hOtherObj
 	// Get the info on other item.
 	void* pvOtherUserData;
 	XuiElementGetUserData( hOtherObj, &pvOtherUserData );
-	SlotControlUserDataContainer* pOtherUserDataContainer = (SlotControlUserDataContainer*)pvOtherUserData;
+	SlotControlUserDataContainer* pOtherUserDataContainer = static_cast<SlotControlUserDataContainer *>(pvOtherUserData);
 
 	if(pOtherUserDataContainer->slot != NULL)
 	{
@@ -363,7 +363,7 @@ int	CXuiCtrlSlotItemCtrlBase::GetEmptyStackSpace( HXUIOBJ hObj )
 
 	void* pvUserData;
 	XuiElementGetUserData( hObj, &pvUserData );
-	SlotControlUserDataContainer* pUserDataContainer = (SlotControlUserDataContainer*)pvUserData;
+	SlotControlUserDataContainer* pUserDataContainer = static_cast<SlotControlUserDataContainer *>(pvUserData);
 
 	int iCount = 0;
 	int iMaxStackSize = 0;

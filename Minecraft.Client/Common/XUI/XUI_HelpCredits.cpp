@@ -386,7 +386,7 @@ static const int gs_aNumTextElements[ eNumTextTypes ] =
 //----------------------------------------------------------------------------------
 HRESULT CScene_Credits::OnInit( XUIMessageInit* pInitData, BOOL& bHandled )
 {
-	int iPad = *(int *)pInitData->pvInitData;
+	int iPad = *static_cast<int *>(pInitData->pvInitData);
 
 	MapChildControls();
 
@@ -441,7 +441,7 @@ HRESULT CScene_Credits::OnInit( XUIMessageInit* pInitData, BOOL& bHandled )
 
 			VOID* pTextObj;
 			XuiObjectFromHandle( text, &pTextObj );
-			m_aTextTypes[ i ].m_appTextElements[ j ] = (CXuiControl *)pTextObj;
+			m_aTextTypes[ i ].m_appTextElements[ j ] = static_cast<CXuiControl *>(pTextObj);
 			m_aTextTypes[ i ].m_appTextElements[ j ]->SetShow( false );
 		}
 	}

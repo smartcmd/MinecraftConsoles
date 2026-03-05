@@ -23,17 +23,17 @@ UIScene_InventoryMenu::UIScene_InventoryMenu(int iPad, void *_initData, UILayer 
 	// Setup all the Iggy references we need for this scene
 	initialiseMovie();
 
-	InventoryScreenInput *initData = (InventoryScreenInput *)_initData;
+	InventoryScreenInput *initData = static_cast<InventoryScreenInput *>(_initData);
 
 	Minecraft *pMinecraft = Minecraft::GetInstance();
 	if( pMinecraft->localgameModes[initData->iPad] != NULL )
 	{
-		TutorialMode *gameMode = (TutorialMode *)pMinecraft->localgameModes[initData->iPad];
+		TutorialMode *gameMode = static_cast<TutorialMode *>(pMinecraft->localgameModes[initData->iPad]);
 		m_previousTutorialState = gameMode->getTutorial()->getCurrentState();
 		gameMode->getTutorial()->changeTutorialState(e_Tutorial_State_Inventory_Menu, this);
 	}
 
-	InventoryMenu *menu = (InventoryMenu *)initData->player->inventoryMenu;
+	InventoryMenu *menu = static_cast<InventoryMenu *>(initData->player->inventoryMenu);
 
 	initData->player->awardStat(GenericStats::openInventory(),GenericStats::param_openInventory());
 

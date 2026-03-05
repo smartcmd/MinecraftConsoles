@@ -108,7 +108,7 @@ void _MapDataMappings_old::setMapping(int id, PlayerUID xuid, int dimension)
 #ifdef _LARGE_WORLDS
 void DirectoryLevelStorage::PlayerMappings::addMapping(int id, int centreX, int centreZ, int dimension, int scale)
 {
-	__int64 index = ( ((__int64)(centreZ & 0x1FFFFFFF)) << 34) | ( ((__int64)(centreX & 0x1FFFFFFF)) << 5) | ( (scale & 0x7) << 2) | (dimension & 0x3);
+	__int64 index = ( static_cast<__int64>(centreZ & 0x1FFFFFFF) << 34) | ( static_cast<__int64>(centreX & 0x1FFFFFFF) << 5) | ( (scale & 0x7) << 2) | (dimension & 0x3);
 	m_mappings[index] = id;
 	//app.DebugPrintf("Adding mapping: %d - (%d,%d)/%d/%d [%I64d - 0x%016llx]\n", id, centreX, centreZ, dimension, scale, index, index);
 }
@@ -120,7 +120,7 @@ bool DirectoryLevelStorage::PlayerMappings::getMapping(int &id, int centreX, int
 	//__int64 zShifted = zMasked << 34;
 	//__int64 xShifted = xMasked << 5;
 	//app.DebugPrintf("xShifted = %d (0x%016x), zShifted = %I64d (0x%016llx)\n", xShifted, xShifted, zShifted, zShifted);
-	__int64 index = ( ((__int64)(centreZ & 0x1FFFFFFF)) << 34) | ( ((__int64)(centreX & 0x1FFFFFFF)) << 5) | ( (scale & 0x7) << 2) | (dimension & 0x3);
+	__int64 index = ( static_cast<__int64>(centreZ & 0x1FFFFFFF) << 34) | ( static_cast<__int64>(centreX & 0x1FFFFFFF) << 5) | ( (scale & 0x7) << 2) | (dimension & 0x3);
 	auto it = m_mappings.find(index);
 	if(it != m_mappings.end())
 	{

@@ -31,7 +31,7 @@ HRESULT CScene_MultiGameInfo::OnInit( XUIMessageInit* pInitData, BOOL& bHandled 
 	XuiControlSetText(m_labelTNTOn,app.GetString(IDS_LABEL_TNT));
 	XuiControlSetText(m_labelFireOn,app.GetString(IDS_LABEL_FIRE_SPREADS));
 
-	JoinMenuInitData *initData = (JoinMenuInitData *)pInitData->pvInitData;
+	JoinMenuInitData *initData = static_cast<JoinMenuInitData *>(pInitData->pvInitData);
 	m_selectedSession = initData->selectedSession;
 	m_iPad = initData->iPad;
 	// 4J-PB - don't delete this - it's part of the joinload structure
@@ -237,7 +237,7 @@ HRESULT CScene_MultiGameInfo::OnNotifyKillFocus(HXUIOBJ hObjSource, XUINotifyFoc
 
 int CScene_MultiGameInfo::StartGame_SignInReturned(void *pParam,bool bContinue, int iPad)
 {
-	CScene_MultiGameInfo* pClass = (CScene_MultiGameInfo*)pParam;
+	CScene_MultiGameInfo* pClass = static_cast<CScene_MultiGameInfo *>(pParam);
 
 	if(bContinue==true)
 	{

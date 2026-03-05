@@ -222,7 +222,7 @@ void EntityRenderDispatcher::prepare(Level *level, Textures *textures, Font *fon
 			int data = level->getData(Mth::floor(player->x), Mth::floor(player->y), Mth::floor(player->z));
 
 			int direction = data & 3;
-			playerRotY = (float)(direction * 90 + 180);
+			playerRotY = static_cast<float>(direction * 90 + 180);
 			playerRotX = 0;
 		}
 	} else {

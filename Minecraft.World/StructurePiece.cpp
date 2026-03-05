@@ -730,15 +730,15 @@ void StructurePiece::maybeGenerateBlock( Level* level, BoundingBox* chunkBB, Ran
 void StructurePiece::generateUpperHalfSphere( Level* level, BoundingBox* chunkBB, int x0, int y0, int z0, int x1,
 											 int y1, int z1, int fillTile, bool skipAir )
 {
-	float	diagX = (float)( x1 - x0 + 1 );
-	float	diagY = (float)( y1 - y0 + 1 );
-	float	diagZ = (float)( z1 - z0 + 1 );
+	float	diagX = static_cast<float>(x1 - x0 + 1);
+	float	diagY = static_cast<float>(y1 - y0 + 1);
+	float	diagZ = static_cast<float>(z1 - z0 + 1);
 	float	cx = x0 + diagX / 2;
 	float	cz = z0 + diagZ / 2;
 
 	for ( int y = y0; y <= y1; y++ )
 	{
-		float normalizedYDistance = ( float )( y - y0 ) / diagY;
+		float normalizedYDistance = static_cast<float>(y - y0) / diagY;
 
 		for ( int x = x0; x <= x1; x++ )
 		{

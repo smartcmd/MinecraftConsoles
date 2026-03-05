@@ -88,7 +88,7 @@ void UIScene_DebugSetCamera::handleInput(int iPad, int key, bool repeat, bool pr
 
 void UIScene_DebugSetCamera::handlePress(F64 controlId, F64 childId)
 {
-	switch((int)controlId)
+	switch(static_cast<int>(controlId))
 	{
 	case eControl_Teleport:
 		app.SetXuiServerAction(	ProfileManager.GetPrimaryPad(),
@@ -100,7 +100,7 @@ void UIScene_DebugSetCamera::handlePress(F64 controlId, F64 childId)
 	case eControl_CamZ:
 	case eControl_YRot:
 	case eControl_Elevation:
-		m_keyboardCallbackControl = (eControls)((int)controlId);	
+		m_keyboardCallbackControl = static_cast<eControls>((int)controlId);	
 		InputManager.RequestKeyboard(L"Enter something",L"",(DWORD)0,25,&UIScene_DebugSetCamera::KeyboardCompleteCallback,this,C_4JInput::EKeyboardMode_Default);
 		break;
 	};
@@ -108,7 +108,7 @@ void UIScene_DebugSetCamera::handlePress(F64 controlId, F64 childId)
 
 void UIScene_DebugSetCamera::handleCheckboxToggled(F64 controlId, bool selected)
 {
-	switch((int)controlId)
+	switch(static_cast<int>(controlId))
 	{
 	case eControl_LockPlayer:
 		app.SetFreezePlayers(selected);
@@ -118,7 +118,7 @@ void UIScene_DebugSetCamera::handleCheckboxToggled(F64 controlId, bool selected)
 
 int UIScene_DebugSetCamera::KeyboardCompleteCallback(LPVOID lpParam,bool bRes)
 {
-	UIScene_DebugSetCamera *pClass=(UIScene_DebugSetCamera *)lpParam;
+	UIScene_DebugSetCamera *pClass=static_cast<UIScene_DebugSetCamera *>(lpParam);
 	uint16_t pchText[2048];//[128];
 	ZeroMemory(pchText, 2048/*128*/ * sizeof(uint16_t) );
 	InputManager.GetText(pchText);

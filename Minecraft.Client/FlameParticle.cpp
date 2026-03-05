@@ -15,14 +15,14 @@ FlameParticle::FlameParticle(Level *level, double x, double y, double z, double 
     oSize = size;
     rCol = gCol = bCol = 1.0f;
         
-    lifetime = (int)(8/(Math::random()*0.8+0.2))+4;
+    lifetime = static_cast<int>(8 / (Math::random() * 0.8 + 0.2))+4;
     noPhysics = true;
     setMiscTex(48);
 }
 
 void FlameParticle::render(Tesselator *t, float a, float xa, float ya, float za, float xa2, float za2)
 {
-    float s = (age + a) / (float) lifetime;
+    float s = (age + a) / static_cast<float>(lifetime);
     size = oSize * (1 - s*s*0.5f);
     Particle::render(t, a, xa, ya, za, xa2, za2);
 }
@@ -37,7 +37,7 @@ int FlameParticle::getLightColor(float a)
 
     int br1 = (br) & 0xff;
     int br2 = (br >> 16) & 0xff;
-    br1 += (int) (l * 15 * 16);
+    br1 += static_cast<int>(l * 15 * 16);
     if (br1 > 15 * 16) br1 = 15 * 16;
     return br1 | br2 << 16;
 }

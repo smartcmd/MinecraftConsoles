@@ -55,7 +55,7 @@ AddPlayerPacket::AddPlayerPacket(shared_ptr<Player> player, PlayerUID xuid, Play
 
 	this->xuid = xuid;
 	this->OnlineXuid = OnlineXuid;
-	m_playerIndex = (BYTE)player->getPlayerIndex();
+	m_playerIndex = static_cast<BYTE>(player->getPlayerIndex());
 	m_skinId = player->getCustomSkin();
 	m_capeId = player->getCustomCape();
 	m_uiGamePrivileges = player->getAllPlayerGamePrivileges();

@@ -176,8 +176,8 @@ int LoginPacket::getEstimatedSize()
 	int length=0;
 	if (m_pLevelType != NULL) 
 	{
-		length = (int)m_pLevelType->getGeneratorName().length();
+		length = static_cast<int>(m_pLevelType->getGeneratorName().length());
 	}
 
-	return (int)(sizeof(int) + userName.length() + 4 + 6 + sizeof(__int64) + sizeof(char) + sizeof(int) + (2*sizeof(PlayerUID)) +1 + sizeof(char) + sizeof(BYTE) + sizeof(bool) + sizeof(bool) + length + sizeof(unsigned int));
+	return static_cast<int>(sizeof(int) + userName.length() + 4 + 6 + sizeof(__int64) + sizeof(char) + sizeof(int) + (2 * sizeof(PlayerUID)) + 1 + sizeof(char) + sizeof(BYTE) + sizeof(bool) + sizeof(bool) + length + sizeof(unsigned int));
 }

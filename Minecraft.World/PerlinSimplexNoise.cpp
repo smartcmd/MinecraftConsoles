@@ -72,7 +72,7 @@ doubleArray PerlinSimplexNoise::getRegion(doubleArray buffer, double x, double y
     xScale/=1.5;
     yScale/=1.5;
 
-	if (buffer.data == NULL || (int) buffer.length < xSize * ySize)
+	if (buffer.data == NULL || static_cast<int>(buffer.length) < xSize * ySize)
 	{
 		if( buffer.data ) delete [] buffer.data;
 		buffer = doubleArray(xSize * ySize);

@@ -66,7 +66,7 @@ int Creeper::getMaxFallDistance()
 {
 	if (getTarget() == NULL) return 3;
 	// As long as they survive the fall they should try.
-	return 3 + (int) (getHealth() - 1);
+	return 3 + static_cast<int>(getHealth() - 1);
 }
 
 void Creeper::causeFallDamage(float distance)
@@ -81,22 +81,22 @@ void Creeper::defineSynchedData()
 {
 	Monster::defineSynchedData();
 
-	entityData->define(DATA_SWELL_DIR, (byte) -1);
-	entityData->define(DATA_IS_POWERED, (byte) 0);
+	entityData->define(DATA_SWELL_DIR, static_cast<byte>(-1));
+	entityData->define(DATA_IS_POWERED, static_cast<byte>(0));
 }
 
 void Creeper::addAdditonalSaveData(CompoundTag *entityTag)
 {
 	Monster::addAdditonalSaveData(entityTag);
 	if (entityData->getByte(DATA_IS_POWERED) == 1) entityTag->putBoolean(L"powered", true);
-	entityTag->putShort(L"Fuse", (short) maxSwell);
-	entityTag->putByte(L"ExplosionRadius", (byte) explosionRadius);
+	entityTag->putShort(L"Fuse", static_cast<short>(maxSwell));
+	entityTag->putByte(L"ExplosionRadius", static_cast<byte>(explosionRadius));
 }
 
 void Creeper::readAdditionalSaveData(CompoundTag *tag)
 {
 	Monster::readAdditionalSaveData(tag);
-	entityData->set(DATA_IS_POWERED, (byte) (tag->getBoolean(L"powered") ? 1 : 0));
+	entityData->set(DATA_IS_POWERED, static_cast<byte>(tag->getBoolean(L"powered") ? 1 : 0));
 	if (tag->contains(L"Fuse")) maxSwell = tag->getShort(L"Fuse");
 	if (tag->contains(L"ExplosionRadius")) explosionRadius = tag->getByte(L"ExplosionRadius");
 }
@@ -177,16 +177,16 @@ int Creeper::getDeathLoot()
 
 int Creeper::getSwellDir()
 {
-	return (int) (char) entityData->getByte(DATA_SWELL_DIR);
+	return (int) static_cast<char>(entityData->getByte(DATA_SWELL_DIR));
 }
 
 void Creeper::setSwellDir(int dir)
 {
-	entityData->set(DATA_SWELL_DIR, (byte) dir);
+	entityData->set(DATA_SWELL_DIR, static_cast<byte>(dir));
 }
 
 void Creeper::thunderHit(const LightningBolt *lightningBolt) 
 {
 	Monster::thunderHit(lightningBolt);
-	entityData->set(DATA_IS_POWERED, (byte) 1);
+	entityData->set(DATA_IS_POWERED, static_cast<byte>(1));
 }

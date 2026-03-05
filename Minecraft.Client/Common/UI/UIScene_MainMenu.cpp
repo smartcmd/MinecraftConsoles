@@ -12,7 +12,7 @@
 
 Random *UIScene_MainMenu::random = new Random();
 
-EUIScene UIScene_MainMenu::eNavigateWhenReady = (EUIScene) -1;
+EUIScene UIScene_MainMenu::eNavigateWhenReady = static_cast<EUIScene>(-1);
 
 UIScene_MainMenu::UIScene_MainMenu(int iPad, void *initData, UILayer *parentLayer) : UIScene(iPad, parentLayer)
 {
@@ -33,29 +33,29 @@ UIScene_MainMenu::UIScene_MainMenu(int iPad, void *initData, UILayer *parentLaye
 	m_bIgnorePress=false;
 
 
-	m_buttons[(int)eControl_PlayGame].init(IDS_PLAY_GAME,eControl_PlayGame);
+	m_buttons[static_cast<int>(eControl_PlayGame)].init(IDS_PLAY_GAME,eControl_PlayGame);
 
 #ifdef _XBOX_ONE
 	if(!ProfileManager.IsFullVersion()) m_buttons[(int)eControl_PlayGame].setLabel(IDS_PLAY_TRIAL_GAME);
 	app.SetReachedMainMenu();
 #endif
 
-	m_buttons[(int)eControl_Leaderboards].init(IDS_LEADERBOARDS,eControl_Leaderboards);
-	m_buttons[(int)eControl_Achievements].init( (UIString)IDS_ACHIEVEMENTS,eControl_Achievements);
-	m_buttons[(int)eControl_HelpAndOptions].init(IDS_HELP_AND_OPTIONS,eControl_HelpAndOptions);
+	m_buttons[static_cast<int>(eControl_Leaderboards)].init(IDS_LEADERBOARDS,eControl_Leaderboards);
+	m_buttons[static_cast<int>(eControl_Achievements)].init( (UIString)IDS_ACHIEVEMENTS,eControl_Achievements);
+	m_buttons[static_cast<int>(eControl_HelpAndOptions)].init(IDS_HELP_AND_OPTIONS,eControl_HelpAndOptions);
 	if(ProfileManager.IsFullVersion())
 	{
 		m_bTrialVersion=false;
-		m_buttons[(int)eControl_UnlockOrDLC].init(IDS_DOWNLOADABLECONTENT,eControl_UnlockOrDLC);
+		m_buttons[static_cast<int>(eControl_UnlockOrDLC)].init(IDS_DOWNLOADABLECONTENT,eControl_UnlockOrDLC);
 	}
 	else
 	{
 		m_bTrialVersion=true;
-		m_buttons[(int)eControl_UnlockOrDLC].init(IDS_UNLOCK_FULL_GAME,eControl_UnlockOrDLC);
+		m_buttons[static_cast<int>(eControl_UnlockOrDLC)].init(IDS_UNLOCK_FULL_GAME,eControl_UnlockOrDLC);
 	}
 
 #ifndef _DURANGO
-	m_buttons[(int)eControl_Exit].init(app.GetString(IDS_EXIT_GAME),eControl_Exit);
+	m_buttons[static_cast<int>(eControl_Exit)].init(app.GetString(IDS_EXIT_GAME),eControl_Exit);
 #else
 	m_buttons[(int)eControl_XboxHelp].init(IDS_XBOX_HELP_APP, eControl_XboxHelp);
 #endif
@@ -182,7 +182,7 @@ void UIScene_MainMenu::handleGainFocus(bool navBack)
 	if(navBack && ProfileManager.IsFullVersion())
 	{
 		// Replace the Unlock Full Game with Downloadable Content
-		m_buttons[(int)eControl_UnlockOrDLC].setLabel(IDS_DOWNLOADABLECONTENT);
+		m_buttons[static_cast<int>(eControl_UnlockOrDLC)].setLabel(IDS_DOWNLOADABLECONTENT);
 	}
 
 #if TO_BE_IMPLEMENTED
@@ -196,7 +196,7 @@ void UIScene_MainMenu::handleGainFocus(bool navBack)
 #ifdef __PSVITA__
 	int splashIndex = eSplashRandomStart + 2 + random->nextInt( (int)m_splashes.size() - (eSplashRandomStart + 2) ); 
 #else
-	int splashIndex = eSplashRandomStart + 1 + random->nextInt( (int)m_splashes.size() - (eSplashRandomStart + 1) );
+	int splashIndex = eSplashRandomStart + 1 + random->nextInt( static_cast<int>(m_splashes.size()) - (eSplashRandomStart + 1) );
 #endif
 
 	// Override splash text on certain dates
@@ -308,7 +308,7 @@ void UIScene_MainMenu::handlePress(F64 controlId, F64 childId)
 	int (*signInReturnedFunc) (LPVOID,const bool, const int iPad) = NULL;
 #endif
 
-	switch((int)controlId)
+	switch(static_cast<int>(controlId))
 	{
 	case eControl_PlayGame:
 #ifdef __ORBIS__
@@ -466,10 +466,10 @@ void UIScene_MainMenu::customDrawSplash(IggyCustomDrawCallbackRegion *region)
 
 	// 4J Stu - Move this to the ctor when the main menu is not the first scene we navigate to
 	ScreenSizeCalculator ssc(pMinecraft->options, pMinecraft->width_phys, pMinecraft->height_phys);
-	m_fScreenWidth=(float)pMinecraft->width_phys;
-	m_fRawWidth=(float)ssc.rawWidth;
-	m_fScreenHeight=(float)pMinecraft->height_phys;
-	m_fRawHeight=(float)ssc.rawHeight;
+	m_fScreenWidth=static_cast<float>(pMinecraft->width_phys);
+	m_fRawWidth=static_cast<float>(ssc.rawWidth);
+	m_fScreenHeight=static_cast<float>(pMinecraft->height_phys);
+	m_fRawHeight=static_cast<float>(ssc.rawHeight);
 
 
 	// Setup GDraw, normal game render states and matrices
@@ -513,7 +513,7 @@ void UIScene_MainMenu::customDrawSplash(IggyCustomDrawCallbackRegion *region)
 
 int UIScene_MainMenu::MustSignInReturned(void *pParam, int iPad, C4JStorage::EMessageResult result)
 {
-	UIScene_MainMenu* pClass = (UIScene_MainMenu*)pParam;
+	UIScene_MainMenu* pClass = static_cast<UIScene_MainMenu *>(pParam);
 
 	if(result==C4JStorage::EMessage_ResultAccept) 
 	{
@@ -643,7 +643,7 @@ int UIScene_MainMenu::HelpAndOptions_SignInReturned(void *pParam,bool bContinue,
 int UIScene_MainMenu::HelpAndOptions_SignInReturned(void *pParam,bool bContinue,int iPad)
 #endif
 {
-	UIScene_MainMenu *pClass = (UIScene_MainMenu *)pParam;
+	UIScene_MainMenu *pClass = static_cast<UIScene_MainMenu *>(pParam);
 
 	if(bContinue)
 	{
@@ -714,7 +714,7 @@ int UIScene_MainMenu::CreateLoad_SignInReturned(void *pParam, bool bContinue, in
 int UIScene_MainMenu::CreateLoad_SignInReturned(void *pParam, bool bContinue, int iPad)
 #endif
 {
-	UIScene_MainMenu* pClass = (UIScene_MainMenu*)pParam;
+	UIScene_MainMenu* pClass = static_cast<UIScene_MainMenu *>(pParam);
 	
 	if(bContinue)
 	{
@@ -916,7 +916,7 @@ int UIScene_MainMenu::Leaderboards_SignInReturned(void *pParam,bool bContinue,in
 int UIScene_MainMenu::Leaderboards_SignInReturned(void *pParam,bool bContinue,int iPad)
 #endif
 {
-	UIScene_MainMenu *pClass = (UIScene_MainMenu *)pParam;
+	UIScene_MainMenu *pClass = static_cast<UIScene_MainMenu *>(pParam);
 
 	if(bContinue)
 	{
@@ -986,7 +986,7 @@ int UIScene_MainMenu::Achievements_SignInReturned(void *pParam,bool bContinue,in
 int UIScene_MainMenu::Achievements_SignInReturned(void *pParam,bool bContinue,int iPad)
 #endif
 {
-	UIScene_MainMenu *pClass = (UIScene_MainMenu *)pParam;
+	UIScene_MainMenu *pClass = static_cast<UIScene_MainMenu *>(pParam);
 
 	if (bContinue)
 	{
@@ -1020,7 +1020,7 @@ int UIScene_MainMenu::UnlockFullGame_SignInReturned(void *pParam,bool bContinue,
 int UIScene_MainMenu::UnlockFullGame_SignInReturned(void *pParam,bool bContinue,int iPad)
 #endif
 {
-	UIScene_MainMenu* pClass = (UIScene_MainMenu*)pParam;
+	UIScene_MainMenu* pClass = static_cast<UIScene_MainMenu *>(pParam);
 
 	if (bContinue)
 	{
@@ -1898,7 +1898,7 @@ void UIScene_MainMenu::tick()
 		{
 			app.DebugPrintf("[MainMenu] Navigating away from MainMenu.\n");
 			ui.NavigateToScene(lockedProfile, eNavigateWhenReady);
-			eNavigateWhenReady = (EUIScene) -1;
+			eNavigateWhenReady = static_cast<EUIScene>(-1);
 		}
 #ifdef _DURANGO
 		else
@@ -2110,7 +2110,7 @@ void UIScene_MainMenu::LoadTrial(void)
 
 	LoadingInputParams *loadingParams = new LoadingInputParams();
 	loadingParams->func = &CGameNetworkManager::RunNetworkGameThreadProc;
-	loadingParams->lpParam = (LPVOID)param;
+	loadingParams->lpParam = static_cast<LPVOID>(param);
 
 	UIFullscreenProgressCompletionData *completionData = new UIFullscreenProgressCompletionData();
 	completionData->bShowBackground=TRUE;
@@ -2129,7 +2129,7 @@ void UIScene_MainMenu::LoadTrial(void)
 
 void UIScene_MainMenu::handleUnlockFullVersion()
 {
-	m_buttons[(int)eControl_UnlockOrDLC].setLabel(IDS_DOWNLOADABLECONTENT,true);
+	m_buttons[static_cast<int>(eControl_UnlockOrDLC)].setLabel(IDS_DOWNLOADABLECONTENT,true);
 }
 
 

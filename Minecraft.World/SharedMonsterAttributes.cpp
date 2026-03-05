@@ -101,6 +101,6 @@ void SharedMonsterAttributes::loadAttribute(AttributeInstance *instance, Compoun
 
 AttributeModifier *SharedMonsterAttributes::loadAttributeModifier(CompoundTag *tag)
 {
-	eMODIFIER_ID id = (eMODIFIER_ID)tag->getInt(L"UUID");
+	eMODIFIER_ID id = static_cast<eMODIFIER_ID>(tag->getInt(L"UUID"));
 	return new AttributeModifier(id, tag->getDouble(L"Amount"), tag->getInt(L"Operation"));
 }

@@ -187,7 +187,7 @@ float RandomLevelSource::getHeightFalloff(int xxx, int zzz, int* pEMin)
 	if( emin < falloffStart )
 	{
 		int falloff = falloffStart - emin;
-		comp = ((float)falloff / (float)falloffStart ) * falloffMax;
+		comp = (static_cast<float>(falloff) / static_cast<float>(falloffStart) ) * falloffMax;
 	}
 	*pEMin = emin;
 	return comp;
@@ -267,7 +267,7 @@ void RandomLevelSource::prepareHeights(int xOffs, int zOffs, byteArray blocks)
 		{
 			for (int yc = 0; yc < yChunks; yc++)
 			{
-				double yStep = 1 / (double) CHUNK_HEIGHT;
+				double yStep = 1 / static_cast<double>(CHUNK_HEIGHT);
 				double s0 = buffer[((xc + 0) * zSize + (zc + 0)) * ySize + (yc + 0)];
 				double s1 = buffer[((xc + 0) * zSize + (zc + 1)) * ySize + (yc + 0)];
 				double s2 = buffer[((xc + 1) * zSize + (zc + 0)) * ySize + (yc + 0)];
@@ -280,7 +280,7 @@ void RandomLevelSource::prepareHeights(int xOffs, int zOffs, byteArray blocks)
 
 				for (int y = 0; y < CHUNK_HEIGHT; y++)
 				{
-					double xStep = 1 / (double) CHUNK_WIDTH;
+					double xStep = 1 / static_cast<double>(CHUNK_WIDTH);
 
 					double _s0 = s0;
 					double _s1 = s1;
@@ -292,7 +292,7 @@ void RandomLevelSource::prepareHeights(int xOffs, int zOffs, byteArray blocks)
 						int offs = (x + xc * CHUNK_WIDTH) << Level::genDepthBitsPlusFour | (0 + zc * CHUNK_WIDTH) << Level::genDepthBits | (yc * CHUNK_HEIGHT + y);
 						int step = 1 << Level::genDepthBits;
 						offs -= step;
-						double zStep = 1 / (double) CHUNK_WIDTH;
+						double zStep = 1 / static_cast<double>(CHUNK_WIDTH);
 
 						double val = _s0;
 						double vala = (_s1 - _s0) * zStep;
@@ -315,11 +315,11 @@ void RandomLevelSource::prepareHeights(int xOffs, int zOffs, byteArray blocks)
 							// 4J - this comparison used to just be with 0.0f but is now varied by block above
 							if ((val += vala) > comp)
 							{
-								tileId = (byte) Tile::stone_Id;
+								tileId = static_cast<byte>(Tile::stone_Id);
 							}
 							else if (yc * CHUNK_HEIGHT + y < waterHeight)
 							{
-								tileId = (byte) Tile::calmWater_Id;
+								tileId = static_cast<byte>(Tile::calmWater_Id);
 							}
 
 							// 4J - more extra code to make sure that the column at the edge of the world is just water & rock, to match the infinite sea that
@@ -377,7 +377,7 @@ void RandomLevelSource::buildSurfaces(int xOffs, int zOffs, byteArray blocks, Bi
 		{
 			Biome *b = biomes[z + x * 16];
 			float temp = b->getTemperature();
-			int runDepth = (int) (depthBuffer[x + z * 16] / 3 + 3 + random->nextDouble() * 0.25);
+			int runDepth = static_cast<int>(depthBuffer[x + z * 16] / 3 + 3 + random->nextDouble() * 0.25);
 
 			int run = -1;
 
@@ -397,7 +397,7 @@ void RandomLevelSource::buildSurfaces(int xOffs, int zOffs, byteArray blocks, Bi
 				if (y <= 1 + random->nextInt(2))	// 4J - changed to make the bedrock not have bits you can get stuck in
 					//                if (y <= 0 + random->nextInt(5))
 				{
-					blocks[offs] = (byte) Tile::unbreakable_Id;
+					blocks[offs] = static_cast<byte>(Tile::unbreakable_Id);
 				}
 				else
 				{
@@ -414,7 +414,7 @@ void RandomLevelSource::buildSurfaces(int xOffs, int zOffs, byteArray blocks, Bi
 							if (runDepth <= 0)
 							{
 								top = 0;
-								material = (byte) Tile::stone_Id;
+								material = static_cast<byte>(Tile::stone_Id);
 							}
 							else if (y >= waterHeight - 4 && y <= waterHeight + 1)
 							{
@@ -428,8 +428,8 @@ void RandomLevelSource::buildSurfaces(int xOffs, int zOffs, byteArray blocks, Bi
 
 							if (y < waterHeight && top == 0)
 							{
-								if (temp < 0.15f) top = (byte) Tile::ice_Id;
-								else top = (byte) Tile::calmWater_Id;
+								if (temp < 0.15f) top = static_cast<byte>(Tile::ice_Id);
+								else top = static_cast<byte>(Tile::calmWater_Id);
 							}
 
 							run = runDepth;
@@ -445,7 +445,7 @@ void RandomLevelSource::buildSurfaces(int xOffs, int zOffs, byteArray blocks, Bi
 							if (run == 0 && material == Tile::sand_Id)
 							{
 								run = random->nextInt(4);
-								material = (byte) Tile::sandStone_Id;
+								material = static_cast<byte>(Tile::sandStone_Id);
 							}
 						}
 					}
@@ -469,7 +469,7 @@ LevelChunk *RandomLevelSource::getChunk(int xOffs, int zOffs)
 
 	// 4J - now allocating this with a physical alloc & bypassing general memory management so that it will get cleanly freed
 	int blocksSize = Level::genDepth * 16 * 16;
-	byte *tileData = (byte *)XPhysicalAlloc(blocksSize, MAXULONG_PTR, 4096, PAGE_READWRITE);
+	byte *tileData = static_cast<byte *>(XPhysicalAlloc(blocksSize, MAXULONG_PTR, 4096, PAGE_READWRITE));
 	XMemSet128(tileData,0,blocksSize);
 	byteArray blocks = byteArray(tileData,blocksSize);
 	//    byteArray blocks = byteArray(16 * level->depth * 16);

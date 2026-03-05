@@ -95,14 +95,14 @@ void GameRuleManager::loadGameRules(DLCPack *pack)
 
 	if(pack->doesPackContainFile(DLCManager::e_DLCType_LocalisationData,L"languages.loc"))
 	{
-		DLCLocalisationFile *localisationFile = (DLCLocalisationFile *)pack->getFile(DLCManager::e_DLCType_LocalisationData, L"languages.loc");
+		DLCLocalisationFile *localisationFile = static_cast<DLCLocalisationFile *>(pack->getFile(DLCManager::e_DLCType_LocalisationData, L"languages.loc"));
 		strings = localisationFile->getStringTable();
 	}
 
 	int gameRulesCount = pack->getDLCItemsCount(DLCManager::e_DLCType_GameRulesHeader);
 	for(int i = 0; i < gameRulesCount; ++i)
 	{
-		DLCGameRulesHeader *dlcHeader = (DLCGameRulesHeader *)pack->getFile(DLCManager::e_DLCType_GameRulesHeader, i);
+		DLCGameRulesHeader *dlcHeader = static_cast<DLCGameRulesHeader *>(pack->getFile(DLCManager::e_DLCType_GameRulesHeader, i));
 		DWORD dSize;
 		byte *dData = dlcHeader->getData(dSize);
 
@@ -120,7 +120,7 @@ void GameRuleManager::loadGameRules(DLCPack *pack)
 	gameRulesCount = pack->getDLCItemsCount(DLCManager::e_DLCType_GameRules);
 	for (int i = 0; i < gameRulesCount; ++i)
 	{
-		DLCGameRulesFile *dlcFile = (DLCGameRulesFile *)pack->getFile(DLCManager::e_DLCType_GameRules, i);
+		DLCGameRulesFile *dlcFile = static_cast<DLCGameRulesFile *>(pack->getFile(DLCManager::e_DLCType_GameRules, i));
 
 		DWORD dSize;
 		byte *dData = dlcFile->getData(dSize);
@@ -182,7 +182,7 @@ void GameRuleManager::loadGameRules(LevelGenerationOptions *lgo, byte *dIn, UINT
 				compr_content(new BYTE[compr_len], compr_len);
 	dis.read(compr_content);
 
-	Compression::getCompression()->SetDecompressionType( (Compression::ECompressionTypes)compression_type );
+	Compression::getCompression()->SetDecompressionType( static_cast<Compression::ECompressionTypes>(compression_type) );
 	Compression::getCompression()->DecompressLZXRLE(	content.data, &content.length,
 													compr_content.data, compr_content.length);
 	Compression::getCompression()->SetDecompressionType( SAVE_FILE_PLATFORM_LOCAL );
@@ -469,13 +469,13 @@ bool GameRuleManager::readRuleFile(LevelGenerationOptions *lgo, byte *dIn, UINT 
 		tagsAndAtts.push_back( contentDis->readUTF() );
 
 	unordered_map<int, ConsoleGameRules::EGameRuleType> tagIdMap;
-	for(int type = (int)ConsoleGameRules::eGameRuleType_Root; type < (int)ConsoleGameRules::eGameRuleType_Count; ++type)
+	for(int type = (int)ConsoleGameRules::eGameRuleType_Root; type < static_cast<int>(ConsoleGameRules::eGameRuleType_Count); ++type)
 	{
 		for(UINT i = 0; i < numStrings; ++i)
 		{
 			if(tagsAndAtts[i].compare(wchTagNameA[type]) == 0)
 			{
-				tagIdMap.insert( unordered_map<int, ConsoleGameRules::EGameRuleType>::value_type(i, (ConsoleGameRules::EGameRuleType)type) );
+				tagIdMap.insert( unordered_map<int, ConsoleGameRules::EGameRuleType>::value_type(i, static_cast<ConsoleGameRules::EGameRuleType>(type)) );
 				break;
 			}
 		}

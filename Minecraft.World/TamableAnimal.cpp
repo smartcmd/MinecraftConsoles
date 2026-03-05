@@ -19,7 +19,7 @@ TamableAnimal::~TamableAnimal()
 void TamableAnimal::defineSynchedData()
 {
 	Animal::defineSynchedData();
-	entityData->define(DATA_FLAGS_ID, (byte) 0);
+	entityData->define(DATA_FLAGS_ID, static_cast<byte>(0));
 	entityData->define(DATA_OWNERUUID_ID, L"");
 }
 
@@ -113,11 +113,11 @@ void TamableAnimal::setTame(bool value)
 	byte current = entityData->getByte(DATA_FLAGS_ID);
 	if (value)
 	{
-		entityData->set(DATA_FLAGS_ID, (byte) (current | 0x04));
+		entityData->set(DATA_FLAGS_ID, static_cast<byte>(current | 0x04));
 	}
 	else
 	{
-		entityData->set(DATA_FLAGS_ID, (byte) (current & ~0x04));
+		entityData->set(DATA_FLAGS_ID, static_cast<byte>(current & ~0x04));
 	}
 }
 
@@ -131,11 +131,11 @@ void TamableAnimal::setSitting(bool value)
 	byte current = entityData->getByte(DATA_FLAGS_ID);
 	if (value)
 	{
-		entityData->set(DATA_FLAGS_ID, (byte) (current | 0x01));
+		entityData->set(DATA_FLAGS_ID, static_cast<byte>(current | 0x01));
 	}
 	else
 	{
-		entityData->set(DATA_FLAGS_ID, (byte) (current & ~0x01));
+		entityData->set(DATA_FLAGS_ID, static_cast<byte>(current & ~0x01));
 	}
 }
 

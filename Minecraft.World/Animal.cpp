@@ -72,7 +72,7 @@ void Animal::checkHurtTarget(shared_ptr<Entity> target, float d)
 		{
 			double xd = target->x - x;
 			double zd = target->z - z;
-			yRot = (float) (atan2(zd, xd) * 180 / PI) - 90;
+			yRot = static_cast<float>(atan2(zd, xd) * 180 / PI) - 90;
 
 			holdGround = true;
 		}

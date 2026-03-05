@@ -47,7 +47,7 @@ DLCManager::EDLCParameterType DLCManager::getParameterType(const wstring &paramN
 	{
 		if(paramName.compare(wchTypeNamesA[i]) == 0)
 		{
-			type = (EDLCParameterType)i;
+			type = static_cast<EDLCParameterType>(i);
 			break;
 		}
 	}
@@ -70,7 +70,7 @@ DWORD DLCManager::getPackCount(EDLCType type /*= e_DLCType_All*/)
 	}
 	else
 	{
-		packCount = (DWORD)m_packs.size();
+		packCount = static_cast<DWORD>(m_packs.size());
 	}
 	return packCount;
 }
@@ -403,7 +403,7 @@ bool DLCManager::processDLCDataFile(DWORD &dwFilesProcessed, PBYTE pbData, DWORD
 	for(unsigned int i=0;i<uiParameterCount;i++)
 	{
 		// Map DLC strings to application strings, then store the DLC index mapping to application index
-		wstring parameterName((WCHAR *)pParams->wchData);
+		wstring parameterName(static_cast<WCHAR *>(pParams->wchData));
 		DLCManager::EDLCParameterType type = DLCManager::getParameterType(parameterName);
 		if( type != DLCManager::e_DLCParamType_Invalid )
 		{
@@ -429,7 +429,7 @@ bool DLCManager::processDLCDataFile(DWORD &dwFilesProcessed, PBYTE pbData, DWORD
 
 	for(unsigned int i=0;i<uiFileCount;i++)
 	{
-		DLCManager::EDLCType type = (DLCManager::EDLCType)pFile->dwType;
+		DLCManager::EDLCType type = static_cast<DLCManager::EDLCType>(pFile->dwType);
 
 		DLCFile *dlcFile = NULL;
 		DLCPack *dlcTexturePack = NULL;
@@ -608,7 +608,7 @@ DWORD DLCManager::retrievePackID(PBYTE pbData, DWORD dwLength, DLCPack *pack)
 	for(unsigned int i=0;i<uiParameterCount;i++)
 	{
 		// Map DLC strings to application strings, then store the DLC index mapping to application index
-		wstring parameterName((WCHAR *)pParams->wchData);
+		wstring parameterName(static_cast<WCHAR *>(pParams->wchData));
 		DLCManager::EDLCParameterType type = DLCManager::getParameterType(parameterName);
 		if( type != DLCManager::e_DLCParamType_Invalid )
 		{
@@ -633,7 +633,7 @@ DWORD DLCManager::retrievePackID(PBYTE pbData, DWORD dwLength, DLCPack *pack)
 
 	for(unsigned int i=0;i<uiFileCount;i++)
 	{
-		DLCManager::EDLCType type = (DLCManager::EDLCType)pFile->dwType;
+		DLCManager::EDLCType type = static_cast<DLCManager::EDLCType>(pFile->dwType);
 
 		// Params
 		uiParameterCount=*(unsigned int *)pbTemp;
@@ -649,7 +649,7 @@ DWORD DLCManager::retrievePackID(PBYTE pbData, DWORD dwLength, DLCPack *pack)
 				{
 					if(it->second==e_DLCParamType_PackId)
 					{				
-						wstring wsTemp=(WCHAR *)pParams->wchData;
+						wstring wsTemp=static_cast<WCHAR *>(pParams->wchData);
 						std::wstringstream ss;
 						// 4J Stu - numbered using decimal to make it easier for artists/people to number manually
 						ss << std::dec << wsTemp.c_str();

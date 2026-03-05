@@ -512,10 +512,10 @@ VillagePieces::Well::Well(StartPiece *startPiece, int genDepth, Random *random, 
 
 void VillagePieces::Well::addChildren(StructurePiece *startPiece, list<StructurePiece *> *pieces, Random *random)
 {
-	generateAndAddRoadPiece((StartPiece *) startPiece, pieces, random, boundingBox->x0 - 1, boundingBox->y1 - 4, boundingBox->z0 + 1, Direction::WEST, getGenDepth());
-	generateAndAddRoadPiece((StartPiece *) startPiece, pieces, random, boundingBox->x1 + 1, boundingBox->y1 - 4, boundingBox->z0 + 1, Direction::EAST, getGenDepth());
-	generateAndAddRoadPiece((StartPiece *) startPiece, pieces, random, boundingBox->x0 + 1, boundingBox->y1 - 4, boundingBox->z0 - 1, Direction::NORTH, getGenDepth());
-	generateAndAddRoadPiece((StartPiece *) startPiece, pieces, random, boundingBox->x0 + 1, boundingBox->y1 - 4, boundingBox->z1 + 1, Direction::SOUTH, getGenDepth());
+	generateAndAddRoadPiece(static_cast<StartPiece *>(startPiece), pieces, random, boundingBox->x0 - 1, boundingBox->y1 - 4, boundingBox->z0 + 1, Direction::WEST, getGenDepth());
+	generateAndAddRoadPiece(static_cast<StartPiece *>(startPiece), pieces, random, boundingBox->x1 + 1, boundingBox->y1 - 4, boundingBox->z0 + 1, Direction::EAST, getGenDepth());
+	generateAndAddRoadPiece(static_cast<StartPiece *>(startPiece), pieces, random, boundingBox->x0 + 1, boundingBox->y1 - 4, boundingBox->z0 - 1, Direction::NORTH, getGenDepth());
+	generateAndAddRoadPiece(static_cast<StartPiece *>(startPiece), pieces, random, boundingBox->x0 + 1, boundingBox->y1 - 4, boundingBox->z1 + 1, Direction::SOUTH, getGenDepth());
 }
 
 bool VillagePieces::Well::postProcess(Level *level, Random *random, BoundingBox *chunkBB)
@@ -628,7 +628,7 @@ void VillagePieces::StraightRoad::addChildren(StructurePiece *startPiece, list<S
 	int depth = random->nextInt(5);
 	while (depth < length - 8)
 	{
-		StructurePiece *piece = generateHouseNorthernLeft((StartPiece *) startPiece, pieces, random, 0, depth);
+		StructurePiece *piece = generateHouseNorthernLeft(static_cast<StartPiece *>(startPiece), pieces, random, 0, depth);
 		if (piece != NULL)
 		{
 			depth += Math::_max(piece->boundingBox->getXSpan(), piece->boundingBox->getZSpan());
@@ -641,7 +641,7 @@ void VillagePieces::StraightRoad::addChildren(StructurePiece *startPiece, list<S
 	depth = random->nextInt(5);
 	while (depth < length - 8)
 	{
-		StructurePiece *piece = generateHouseNorthernRight((StartPiece *) startPiece, pieces, random, 0, depth);
+		StructurePiece *piece = generateHouseNorthernRight(static_cast<StartPiece *>(startPiece), pieces, random, 0, depth);
 		if (piece != NULL)
 		{
 			depth += Math::_max(piece->boundingBox->getXSpan(), piece->boundingBox->getZSpan());
@@ -655,16 +655,16 @@ void VillagePieces::StraightRoad::addChildren(StructurePiece *startPiece, list<S
 		switch (orientation)
 		{
 		case Direction::NORTH:
-			generateAndAddRoadPiece((StartPiece *) startPiece, pieces, random, boundingBox->x0 - 1, boundingBox->y0, boundingBox->z0, Direction::WEST, getGenDepth());
+			generateAndAddRoadPiece(static_cast<StartPiece *>(startPiece), pieces, random, boundingBox->x0 - 1, boundingBox->y0, boundingBox->z0, Direction::WEST, getGenDepth());
 			break;
 		case Direction::SOUTH:
-			generateAndAddRoadPiece((StartPiece *) startPiece, pieces, random, boundingBox->x0 - 1, boundingBox->y0, boundingBox->z1 - 2, Direction::WEST, getGenDepth());
+			generateAndAddRoadPiece(static_cast<StartPiece *>(startPiece), pieces, random, boundingBox->x0 - 1, boundingBox->y0, boundingBox->z1 - 2, Direction::WEST, getGenDepth());
 			break;
 		case Direction::EAST:
-			generateAndAddRoadPiece((StartPiece *) startPiece, pieces, random, boundingBox->x1 - 2, boundingBox->y0, boundingBox->z0 - 1, Direction::NORTH, getGenDepth());
+			generateAndAddRoadPiece(static_cast<StartPiece *>(startPiece), pieces, random, boundingBox->x1 - 2, boundingBox->y0, boundingBox->z0 - 1, Direction::NORTH, getGenDepth());
 			break;
 		case Direction::WEST:
-			generateAndAddRoadPiece((StartPiece *) startPiece, pieces, random, boundingBox->x0, boundingBox->y0, boundingBox->z0 - 1, Direction::NORTH, getGenDepth());
+			generateAndAddRoadPiece(static_cast<StartPiece *>(startPiece), pieces, random, boundingBox->x0, boundingBox->y0, boundingBox->z0 - 1, Direction::NORTH, getGenDepth());
 			break;
 		}
 	}
@@ -673,16 +673,16 @@ void VillagePieces::StraightRoad::addChildren(StructurePiece *startPiece, list<S
 		switch (orientation)
 		{
 		case Direction::NORTH:
-			generateAndAddRoadPiece((StartPiece *) startPiece, pieces, random, boundingBox->x1 + 1, boundingBox->y0, boundingBox->z0, Direction::EAST, getGenDepth());
+			generateAndAddRoadPiece(static_cast<StartPiece *>(startPiece), pieces, random, boundingBox->x1 + 1, boundingBox->y0, boundingBox->z0, Direction::EAST, getGenDepth());
 			break;
 		case Direction::SOUTH:
-			generateAndAddRoadPiece((StartPiece *) startPiece, pieces, random, boundingBox->x1 + 1, boundingBox->y0, boundingBox->z1 - 2, Direction::EAST, getGenDepth());
+			generateAndAddRoadPiece(static_cast<StartPiece *>(startPiece), pieces, random, boundingBox->x1 + 1, boundingBox->y0, boundingBox->z1 - 2, Direction::EAST, getGenDepth());
 			break;
 		case Direction::EAST:
-			generateAndAddRoadPiece((StartPiece *) startPiece, pieces, random, boundingBox->x1 - 2, boundingBox->y0, boundingBox->z1 + 1, Direction::SOUTH, getGenDepth());
+			generateAndAddRoadPiece(static_cast<StartPiece *>(startPiece), pieces, random, boundingBox->x1 - 2, boundingBox->y0, boundingBox->z1 + 1, Direction::SOUTH, getGenDepth());
 			break;
 		case Direction::WEST:
-			generateAndAddRoadPiece((StartPiece *) startPiece, pieces, random, boundingBox->x0, boundingBox->y0, boundingBox->z1 + 1, Direction::SOUTH, getGenDepth());
+			generateAndAddRoadPiece(static_cast<StartPiece *>(startPiece), pieces, random, boundingBox->x0, boundingBox->y0, boundingBox->z1 + 1, Direction::SOUTH, getGenDepth());
 			break;
 		}
 	}

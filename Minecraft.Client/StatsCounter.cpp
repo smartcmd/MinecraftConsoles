@@ -142,7 +142,7 @@ void StatsCounter::parse(void* data)
 	assert( stats.size() == 0 );
 
 	//Pointer to current position in stat array
-	PBYTE pbData=(PBYTE)data;
+	PBYTE pbData=static_cast<PBYTE>(data);
 	pbData+=sizeof(GAME_SETTINGS);
 	unsigned short* statData = (unsigned short*)pbData;//data + (STAT_DATA_OFFSET/sizeof(unsigned short));
 
@@ -217,7 +217,7 @@ void StatsCounter::save(int player, bool force)
 #if ( defined __PS3__ || defined __ORBIS__ || defined _DURANGO || defined __PSVITA__ )
 	PBYTE pbData = (PBYTE)StorageManager.GetGameDefinedProfileData(player);
 #else
-	PBYTE pbData = (PBYTE)ProfileManager.GetGameDefinedProfileData(player);
+	PBYTE pbData = static_cast<PBYTE>(ProfileManager.GetGameDefinedProfileData(player));
 #endif
 	pbData+=sizeof(GAME_SETTINGS);
 	

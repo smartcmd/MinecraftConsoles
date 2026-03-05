@@ -273,7 +273,7 @@ void BoatDispenseBehavior::playSound(BlockSource *source, eOUTCOME outcome)
 
 shared_ptr<ItemInstance> FilledBucketDispenseBehavior::execute(BlockSource *source, shared_ptr<ItemInstance> dispensed, eOUTCOME &outcome)
 {
-	BucketItem *bucket = (BucketItem *)dispensed->getItem();
+	BucketItem *bucket = static_cast<BucketItem *>(dispensed->getItem());
 	int sourceX = source->getBlockX();
 	int sourceY = source->getBlockY();
 	int sourceZ = source->getBlockZ();

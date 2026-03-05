@@ -63,7 +63,7 @@ void Skeleton::defineSynchedData()
 {
 	Monster::defineSynchedData();
 
-	entityData->define(DATA_TYPE_ID, (byte) TYPE_DEFAULT);
+	entityData->define(DATA_TYPE_ID, static_cast<byte>(TYPE_DEFAULT));
 }
 
 bool Skeleton::useNewAi()
@@ -114,7 +114,7 @@ void Skeleton::aiStep()
 	if (level->isDay() && !level->isClientSide)
 	{
 		float br = getBrightness(1);
-		if (br > 0.5f && random->nextFloat() * 30 < (br - 0.4f) * 2 && level->canSeeSky(Mth::floor(x), (int)floor( y + 0.5 ), Mth::floor(z)))
+		if (br > 0.5f && random->nextFloat() * 30 < (br - 0.4f) * 2 && level->canSeeSky(Mth::floor(x), static_cast<int>(floor(y + 0.5)), Mth::floor(z)))
 		{
 			bool burn = true;
 
@@ -289,7 +289,7 @@ void Skeleton::performRangedAttack(shared_ptr<LivingEntity> target, float power)
 
 	if (damageBonus > 0)
 	{
-		arrow->setBaseDamage(arrow->getBaseDamage() + (double) damageBonus * .5 + .5);
+		arrow->setBaseDamage(arrow->getBaseDamage() + static_cast<double>(damageBonus) * .5 + .5);
 	}
 	if (knockbackBonus > 0)
 	{
@@ -311,7 +311,7 @@ int Skeleton::getSkeletonType()
 
 void Skeleton::setSkeletonType(int type)
 {
-	entityData->set(DATA_TYPE_ID, (byte) type);
+	entityData->set(DATA_TYPE_ID, static_cast<byte>(type));
 
 	fireImmune = type == TYPE_WITHER;
 	if (type == TYPE_WITHER)
@@ -340,7 +340,7 @@ void Skeleton::readAdditionalSaveData(CompoundTag *tag)
 void Skeleton::addAdditonalSaveData(CompoundTag *entityTag)
 {
 	Monster::addAdditonalSaveData(entityTag);
-	entityTag->putByte(L"SkeletonType", (byte) getSkeletonType());
+	entityTag->putByte(L"SkeletonType", static_cast<byte>(getSkeletonType()));
 }
 
 void Skeleton::setEquippedSlot(int slot, shared_ptr<ItemInstance> item)

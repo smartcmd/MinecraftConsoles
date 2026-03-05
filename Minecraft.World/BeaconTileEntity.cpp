@@ -163,18 +163,18 @@ float BeaconTileEntity::getAndUpdateClientSideScale()
 		return 0;
 	}
 
-	int renderDelta = (int) (level->getGameTime() - clientSideRenderTick);
+	int renderDelta = static_cast<int>(level->getGameTime() - clientSideRenderTick);
 	clientSideRenderTick = level->getGameTime();
 	if (renderDelta > 1)
 	{
-		clientSideRenderScale -= ((float) renderDelta / (float) SCALE_TIME);
+		clientSideRenderScale -= (static_cast<float>(renderDelta) / static_cast<float>(SCALE_TIME));
 
 		if (clientSideRenderScale < 0)
 		{
 			clientSideRenderScale = 0;
 		}
 	}
-	clientSideRenderScale += (1.0f / (float) SCALE_TIME);
+	clientSideRenderScale += (1.0f / static_cast<float>(SCALE_TIME));
 	if (clientSideRenderScale > 1)
 	{
 		clientSideRenderScale = 1;

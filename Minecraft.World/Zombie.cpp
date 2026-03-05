@@ -68,9 +68,9 @@ void Zombie::defineSynchedData()
 {
 	Monster::defineSynchedData();
 
-	getEntityData()->define(DATA_BABY_ID, (byte) 0);
-	getEntityData()->define(DATA_VILLAGER_ID, (byte) 0);
-	getEntityData()->define(DATA_CONVERTING_ID, (byte) 0);
+	getEntityData()->define(DATA_BABY_ID, static_cast<byte>(0));
+	getEntityData()->define(DATA_VILLAGER_ID, static_cast<byte>(0));
+	getEntityData()->define(DATA_CONVERTING_ID, static_cast<byte>(0));
 }
 
 int Zombie::getArmorValue()
@@ -87,12 +87,12 @@ bool Zombie::useNewAi()
 
 bool Zombie::isBaby()
 {
-	return getEntityData()->getByte(DATA_BABY_ID) == (byte) 1;
+	return getEntityData()->getByte(DATA_BABY_ID) == static_cast<byte>(1);
 }
 
 void Zombie::setBaby(bool baby)
 {
-	getEntityData()->set(DATA_BABY_ID, (byte) (baby ? 1 : 0));
+	getEntityData()->set(DATA_BABY_ID, static_cast<byte>(baby ? 1 : 0));
 
 	if (level != NULL && !level->isClientSide)
 	{
@@ -107,12 +107,12 @@ void Zombie::setBaby(bool baby)
 
 bool Zombie::isVillager()
 {
-	return getEntityData()->getByte(DATA_VILLAGER_ID) == (byte) 1;
+	return getEntityData()->getByte(DATA_VILLAGER_ID) == static_cast<byte>(1);
 }
 
 void Zombie::setVillager(bool villager)
 {
-	getEntityData()->set(DATA_VILLAGER_ID, (byte) (villager ? 1 : 0));
+	getEntityData()->set(DATA_VILLAGER_ID, static_cast<byte>(villager ? 1 : 0));
 }
 
 void Zombie::aiStep()
@@ -120,7 +120,7 @@ void Zombie::aiStep()
 	if (level->isDay() && !level->isClientSide && !isBaby())
 	{
 		float br = getBrightness(1);
-		if (br > 0.5f && random->nextFloat() * 30 < (br - 0.4f) * 2 && level->canSeeSky(Mth::floor(x), (int)floor( y + 0.5 ), Mth::floor(z)))
+		if (br > 0.5f && random->nextFloat() * 30 < (br - 0.4f) * 2 && level->canSeeSky(Mth::floor(x), static_cast<int>(floor(y + 0.5)), Mth::floor(z)))
 		{
 			bool burn = true;
 
@@ -324,7 +324,7 @@ void Zombie::killed(shared_ptr<LivingEntity> mob)
 		if (mob->isBaby()) zombie->setBaby(true);
 		level->addEntity(zombie);
 
-		level->levelEvent(nullptr, LevelEvent::SOUND_ZOMBIE_INFECTED, (int) x, (int) y, (int) z, 0);
+		level->levelEvent(nullptr, LevelEvent::SOUND_ZOMBIE_INFECTED, static_cast<int>(x), static_cast<int>(y), static_cast<int>(z), 0);
 	}
 }
 
@@ -342,7 +342,7 @@ MobGroupData *Zombie::finalizeMobSpawn(MobGroupData *groupData, int extraData /*
 
 	if ( dynamic_cast<ZombieGroupData *>( groupData ) != NULL)
 	{
-		ZombieGroupData *zombieData = (ZombieGroupData *) groupData;
+		ZombieGroupData *zombieData = static_cast<ZombieGroupData *>(groupData);
 
 		if (zombieData->isVillager)
 		{
@@ -414,7 +414,7 @@ bool Zombie::mobInteract(shared_ptr<Player> player)
 void Zombie::startConverting(int time)
 {
 	villagerConversionTime = time;
-	getEntityData()->set(DATA_CONVERTING_ID, (byte) 1);
+	getEntityData()->set(DATA_CONVERTING_ID, static_cast<byte>(1));
 
 	removeEffect(MobEffect::weakness->id);
 	addEffect(new MobEffectInstance(MobEffect::damageBoost->id, time, min(level->difficulty - 1, 0)));
@@ -441,7 +441,7 @@ bool Zombie::removeWhenFarAway()
 
 bool Zombie::isConverting()
 {
-	return getEntityData()->getByte(DATA_CONVERTING_ID) == (byte) 1;
+	return getEntityData()->getByte(DATA_CONVERTING_ID) == static_cast<byte>(1);
 }
 
 void Zombie::finishConversion()
@@ -455,7 +455,7 @@ void Zombie::finishConversion()
 	level->addEntity(villager);
 
 	villager->addEffect(new MobEffectInstance(MobEffect::confusion->id, SharedConstants::TICKS_PER_SECOND * 10, 0));
-	level->levelEvent(nullptr, LevelEvent::SOUND_ZOMBIE_CONVERTED, (int) x, (int) y, (int) z, 0);
+	level->levelEvent(nullptr, LevelEvent::SOUND_ZOMBIE_CONVERTED, static_cast<int>(x), static_cast<int>(y), static_cast<int>(z), 0);
 }
 
 int Zombie::getConversionProgress()
@@ -466,11 +466,11 @@ int Zombie::getConversionProgress()
 	{
 		int specialBlocksCount = 0;
 
-		for (int xx = (int) x - SPECIAL_BLOCK_RADIUS; xx < (int) x + SPECIAL_BLOCK_RADIUS && specialBlocksCount < MAX_SPECIAL_BLOCKS_COUNT; xx++)
+		for (int xx = static_cast<int>(x) - SPECIAL_BLOCK_RADIUS; xx < static_cast<int>(x) + SPECIAL_BLOCK_RADIUS && specialBlocksCount < MAX_SPECIAL_BLOCKS_COUNT; xx++)
 		{
-			for (int yy = (int) y - SPECIAL_BLOCK_RADIUS; yy < (int) y + SPECIAL_BLOCK_RADIUS && specialBlocksCount < MAX_SPECIAL_BLOCKS_COUNT; yy++)
+			for (int yy = static_cast<int>(y) - SPECIAL_BLOCK_RADIUS; yy < static_cast<int>(y) + SPECIAL_BLOCK_RADIUS && specialBlocksCount < MAX_SPECIAL_BLOCKS_COUNT; yy++)
 			{
-				for (int zz = (int) z - SPECIAL_BLOCK_RADIUS; zz < (int) z + SPECIAL_BLOCK_RADIUS && specialBlocksCount < MAX_SPECIAL_BLOCKS_COUNT; zz++)
+				for (int zz = static_cast<int>(z) - SPECIAL_BLOCK_RADIUS; zz < static_cast<int>(z) + SPECIAL_BLOCK_RADIUS && specialBlocksCount < MAX_SPECIAL_BLOCKS_COUNT; zz++)
 				{
 					int tile = level->getTile(xx, yy, zz);
 
