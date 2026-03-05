@@ -29,90 +29,182 @@
 #include "..\..\..\Minecraft.World\NbtIo.h"
 #include "..\..\..\Minecraft.World\compression.h"
 
+// Helper: extract level name from in-memory save data (after decompression or for raw files)
+static wstring ExtractLevelNameFromData(unsigned char *saveData, unsigned int saveSize)
+{
+    if (saveSize < 12) return L"";
+
+    unsigned int headerOffset = *(unsigned int*)saveData;
+    unsigned int numEntries   = *(unsigned int*)(saveData + 4);
+    const unsigned int entrySize = sizeof(FileEntrySaveData);
+
+    if (headerOffset >= saveSize || numEntries == 0 || numEntries >= 10000 ||
+        headerOffset + numEntries * entrySize > saveSize)
+        return L"";
+
+    FileEntrySaveData *table = (FileEntrySaveData *)(saveData + headerOffset);
+    for (unsigned int i = 0; i < numEntries; i++)
+    {
+        if (wcscmp(table[i].filename, L"level.dat") == 0)
+        {
+            unsigned int off = table[i].startOffset;
+            unsigned int len = table[i].length;
+            if (off >= 12 && off + len <= saveSize && len > 0 && len < 4 * 1024 * 1024)
+            {
+                byteArray ba;
+                ba.data   = (byte*)(saveData + off);
+                ba.length = len;
+                CompoundTag *root = NbtIo::decompress(ba);
+                if (root != NULL)
+                {
+                    wstring result = L"";
+                    CompoundTag *dataTag = root->getCompound(L"Data");
+                    if (dataTag != NULL)
+                        result = dataTag->getString(L"LevelName");
+                    delete root;
+                    return result;
+                }
+            }
+            break;
+        }
+    }
+    return L"";
+}
+
+// Try to read a cached level name from a sidecar file
+static wstring ReadCachedLevelName(const wstring& saveDir)
+{
+    wstring cachePath = saveDir + L"\\levelName.cache";
+    HANDLE hFile = CreateFileW(cachePath.c_str(), GENERIC_READ, FILE_SHARE_READ, NULL, OPEN_EXISTING, 0, NULL);
+    if (hFile == INVALID_HANDLE_VALUE) return L"";
+    wchar_t buf[256] = {};
+    DWORD bytesRead = 0;
+    ReadFile(hFile, buf, sizeof(buf) - sizeof(wchar_t), &bytesRead, NULL);
+    CloseHandle(hFile);
+    if (bytesRead < 2) return L"";
+    buf[bytesRead / sizeof(wchar_t)] = L'\0';
+    return wstring(buf);
+}
+
+// Write a level name to the sidecar cache file
+static void WriteCachedLevelName(const wstring& saveDir, const wstring& name)
+{
+    wstring cachePath = saveDir + L"\\levelName.cache";
+    HANDLE hFile = CreateFileW(cachePath.c_str(), GENERIC_WRITE, 0, NULL, CREATE_ALWAYS, 0, NULL);
+    if (hFile == INVALID_HANDLE_VALUE) return;
+    DWORD written = 0;
+    WriteFile(hFile, name.c_str(), (DWORD)(name.size() * sizeof(wchar_t)), &written, NULL);
+    CloseHandle(hFile);
+}
+
 static wstring ReadLevelNameFromSaveFile(const wstring& filePath)
 {
-    HANDLE hFile = CreateFileW(filePath.c_str(), GENERIC_READ, FILE_SHARE_READ, NULL, OPEN_EXISTING, FILE_FLAG_SEQUENTIAL_SCAN, NULL);
+    // Derive the save directory from the file path (parent of saveData.ms)
+    wstring saveDir = filePath.substr(0, filePath.find_last_of(L'\\'));
+
+    // 1. Check sidecar cache first (instant for repeat loads)
+    wstring cached = ReadCachedLevelName(saveDir);
+    if (!cached.empty()) return cached;
+
+    // 2. Open the save file
+    HANDLE hFile = CreateFileW(filePath.c_str(), GENERIC_READ, FILE_SHARE_READ, NULL, OPEN_EXISTING, FILE_FLAG_RANDOM_ACCESS, NULL);
     if (hFile == INVALID_HANDLE_VALUE) return L"";
 
     DWORD fileSize = GetFileSize(hFile, NULL);
     if (fileSize < 12 || fileSize == INVALID_FILE_SIZE) { CloseHandle(hFile); return L""; }
 
-    unsigned char *rawData = new unsigned char[fileSize];
+    // Read the first 8 bytes to determine format
+    unsigned char header[8];
     DWORD bytesRead = 0;
-    if (!ReadFile(hFile, rawData, fileSize, &bytesRead, NULL) || bytesRead != fileSize)
-    {
-        CloseHandle(hFile);
-        delete[] rawData;
-        return L"";
-    }
-    CloseHandle(hFile);
+    if (!ReadFile(hFile, header, 8, &bytesRead, NULL) || bytesRead < 8) { CloseHandle(hFile); return L""; }
 
-    unsigned char *saveData = NULL;
-    unsigned int saveSize   = 0;
-    bool freeSaveData = false;
+    wstring result = L"";
 
-    if (*(unsigned int*)rawData == 0)
+    if (*(unsigned int*)header == 0)
     {
-        // Compressed format: bytes 0-3=0, bytes 4-7=decompressed size, bytes 8+=compressed data
-        unsigned int decompSize = *(unsigned int*)(rawData + 4);
-        if (decompSize == 0 || decompSize > 128 * 1024 * 1024)
+        // Compressed save: must read and decompress entire file
+        SetFilePointer(hFile, 0, NULL, FILE_BEGIN);
+        unsigned char *rawData = new unsigned char[fileSize];
+        if (!ReadFile(hFile, rawData, fileSize, &bytesRead, NULL) || bytesRead != fileSize)
         {
+            CloseHandle(hFile);
             delete[] rawData;
             return L"";
         }
-        saveData = new unsigned char[decompSize];
-        Compression::getCompression()->Decompress(saveData, &decompSize, rawData + 8, fileSize - 8);
-        saveSize     = decompSize;
-        freeSaveData = true;
+        CloseHandle(hFile);
+
+        unsigned int decompSize = *(unsigned int*)(rawData + 4);
+        if (decompSize > 0 && decompSize <= 128 * 1024 * 1024)
+        {
+            unsigned char *saveData = new unsigned char[decompSize];
+            Compression::getCompression()->Decompress(saveData, &decompSize, rawData + 8, fileSize - 8);
+            result = ExtractLevelNameFromData(saveData, decompSize);
+            delete[] saveData;
+        }
+        delete[] rawData;
     }
     else
     {
-        saveData = rawData;
-        saveSize = fileSize;
-    }
-
-    wstring result = L"";
-    if (saveSize >= 12)
-    {
-        unsigned int headerOffset = *(unsigned int*)saveData;
-        unsigned int numEntries   = *(unsigned int*)(saveData + 4);
+        // Uncompressed save: use seek-based reading (fast path)
+        // Read header: headerOffset and numEntries
+        unsigned int headerOffset = *(unsigned int*)header;
+        unsigned int numEntries   = *(unsigned int*)(header + 4);
         const unsigned int entrySize = sizeof(FileEntrySaveData);
 
-        if (headerOffset < saveSize && numEntries > 0 && numEntries < 10000 &&
-            headerOffset + numEntries * entrySize <= saveSize)
+        if (headerOffset < fileSize && numEntries > 0 && numEntries < 10000 &&
+            headerOffset + numEntries * entrySize <= fileSize)
         {
-            FileEntrySaveData *table = (FileEntrySaveData *)(saveData + headerOffset);
-            for (unsigned int i = 0; i < numEntries; i++)
+            // Seek to file table and read only the table
+            SetFilePointer(hFile, headerOffset, NULL, FILE_BEGIN);
+            unsigned int tableSize = numEntries * entrySize;
+            unsigned char *tableData = new unsigned char[tableSize];
+            if (ReadFile(hFile, tableData, tableSize, &bytesRead, NULL) && bytesRead == tableSize)
             {
-                if (wcscmp(table[i].filename, L"level.dat") == 0)
+                FileEntrySaveData *table = (FileEntrySaveData *)tableData;
+                for (unsigned int i = 0; i < numEntries; i++)
                 {
-                    unsigned int off = table[i].startOffset;
-                    unsigned int len = table[i].length;
-                    if (off >= 12 && off + len <= saveSize && len > 0 && len < 4 * 1024 * 1024)
+                    if (wcscmp(table[i].filename, L"level.dat") == 0)
                     {
-                        byteArray ba;
-                        ba.data   = (byte*)(saveData + off);
-                        ba.length = len;
-                        CompoundTag *root = NbtIo::decompress(ba);
-                        if (root != NULL)
+                        unsigned int off = table[i].startOffset;
+                        unsigned int len = table[i].length;
+                        if (off >= 12 && off + len <= fileSize && len > 0 && len < 4 * 1024 * 1024)
                         {
-                            CompoundTag *dataTag = root->getCompound(L"Data");
-                            if (dataTag != NULL)
-                                result = dataTag->getString(L"LevelName");
-                            delete root;
+                            // Seek to level.dat data and read only that
+                            SetFilePointer(hFile, off, NULL, FILE_BEGIN);
+                            unsigned char *levelData = new unsigned char[len];
+                            DWORD levelRead = 0;
+                            if (ReadFile(hFile, levelData, len, &levelRead, NULL) && levelRead == len)
+                            {
+                                byteArray ba;
+                                ba.data   = (byte*)levelData;
+                                ba.length = len;
+                                CompoundTag *root = NbtIo::decompress(ba);
+                                if (root != NULL)
+                                {
+                                    CompoundTag *dataTag = root->getCompound(L"Data");
+                                    if (dataTag != NULL)
+                                        result = dataTag->getString(L"LevelName");
+                                    delete root;
+                                }
+                            }
+                            delete[] levelData;
                         }
+                        break;
                     }
-                    break;
                 }
             }
+            delete[] tableData;
         }
+        CloseHandle(hFile);
     }
 
-    if (freeSaveData) delete[] saveData;
-    delete[] rawData;
-    // "world" is the engine default — it means no real name was ever set, so
-    // return empty to let the caller fall back to the save filename (timestamp).
+    // "world" is the engine default — return empty to fall back to timestamp
     if (result == L"world") result = L"";
+
+    // Cache the result for future loads
+    if (!result.empty())
+        WriteCachedLevelName(saveDir, result);
+
     return result;
 }
 #endif
