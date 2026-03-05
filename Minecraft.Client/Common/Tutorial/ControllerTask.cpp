@@ -53,15 +53,15 @@ bool ControllerTask::isCompleted()
 
 	if(m_bHasSouthpaw && app.GetGameSettings(pMinecraft->player->GetXboxPad(),eGameSetting_ControlSouthPaw))
 	{
-		for(AUTO_VAR(it, southpawCompletedMappings.begin()); it != southpawCompletedMappings.end(); ++it)
+		for (auto& it : southpawCompletedMappings )
 		{
-			bool current = (*it).second;
+			bool current = it.second;
 			if(!current)
 			{
 				// TODO Use a different pad
-				if( InputManager.GetValue(pMinecraft->player->GetXboxPad(), (*it).first) > 0 )
+				if( InputManager.GetValue(pMinecraft->player->GetXboxPad(), it.first) > 0 )
 				{
-					(*it).second = true;
+					it.second = true;
 					m_uiCompletionMask|=1<<iCurrent;
 				}
 				else
@@ -78,15 +78,15 @@ bool ControllerTask::isCompleted()
 	}
 	else
 	{
-		for(AUTO_VAR(it, completedMappings.begin()); it != completedMappings.end(); ++it)
+		for (auto& it : completedMappings )
 		{
-			bool current = (*it).second;
+			bool current = it.second;
 			if(!current)
 			{
 				// TODO Use a different pad
-				if( InputManager.GetValue(pMinecraft->player->GetXboxPad(), (*it).first) > 0 )
+				if( InputManager.GetValue(pMinecraft->player->GetXboxPad(), it.first) > 0 )
 				{
-					(*it).second = true;
+					it.second = true;
 					m_uiCompletionMask|=1<<iCurrent;
 				}
 				else

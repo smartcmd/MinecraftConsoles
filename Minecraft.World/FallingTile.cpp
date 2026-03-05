@@ -145,13 +145,15 @@ void FallingTile::tick()
 							CompoundTag *swap = new CompoundTag();
 							tileEntity->save(swap);
 							vector<Tag *> *allTags = tileData->getAllTags();
-							for(AUTO_VAR(it, allTags->begin()); it != allTags->end(); ++it)
+							if ( allTags )
 							{
-								Tag *tag = *it;
-								if (tag->getName().compare(L"x") == 0 || tag->getName().compare(L"y") == 0 || tag->getName().compare(L"z") == 0) continue;
-								swap->put(tag->getName(), tag->copy());
+								for ( Tag* tag : *allTags )
+								{
+									if (tag->getName().compare(L"x") == 0 || tag->getName().compare(L"y") == 0 || tag->getName().compare(L"z") == 0) continue;
+									swap->put(tag->getName(), tag->copy());
+								}
+								delete allTags;
 							}
-							delete allTags;
 							tileEntity->load(swap);
 							tileEntity->setChanged();
 						}
@@ -181,12 +183,14 @@ void FallingTile::causeFallDamage(float distance)
 			// 4J: Copy vector since it might be modified when we hurt the entities (invalidating our iterator)
 			vector<shared_ptr<Entity> > *entities = new vector<shared_ptr<Entity> >(*level->getEntities(shared_from_this(), bb));
 			DamageSource *source = tile == Tile::anvil_Id ? DamageSource::anvil : DamageSource::fallingBlock;
-			//for (Entity entity : entities)
-			for(AUTO_VAR(it, entities->begin()); it != entities->end(); ++it)
+			if ( source )
 			{
-				(*it)->hurt(source, min(Mth::floor(dmg * fallDamageAmount), fallDamageMax));
+				for (auto& it : *entities)
+				{
+					it->hurt(source, static_cast<float>(std::min<int>(Mth::floor(dmg * fallDamageAmount), fallDamageMax)));
+				}
+				delete entities;
 			}
-			delete entities;
 
 			if (tile == Tile::anvil_Id && random->nextFloat() < 0.05f + (dmg * 0.05))
 			{

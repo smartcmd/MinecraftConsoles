@@ -61,10 +61,10 @@ void TextureMap::stitch()
 	unordered_map<TextureHolder *, vector<Texture *> * > textures; // = new HashMap<TextureHolder, List<Texture>>();
 
 	Stitcher *stitcher = TextureManager::getInstance()->createStitcher(name);
-	
-	for(AUTO_VAR(it,texturesByName.begin()); it != texturesByName.end(); ++it)
+
+	for(auto& it : texturesByName)
 	{
-		delete it->second;
+		delete it.second;
 	}
 	texturesByName.clear();
 	animatedTextures.clear();
@@ -80,9 +80,9 @@ void TextureMap::stitch()
 
 	// Extract frames from textures and add them to the stitchers
 	//for (final String name : texturesToRegister.keySet())
-	for(AUTO_VAR(it, texturesToRegister.begin()); it != texturesToRegister.end(); ++it)
+	for(auto& it : texturesToRegister)
 	{
-		wstring name = it->first;
+		wstring name = it.first;
 
 		wstring filename = path + name + extension;
 
@@ -113,11 +113,10 @@ void TextureMap::stitch()
 	stitchResult = stitcher->constructTexture(m_mipMap);
 
 	// Extract all the final positions and store them
-	AUTO_VAR(areas, stitcher->gatherAreas());
-	//for (StitchSlot slot : stitcher.gatherAreas())
-	for(AUTO_VAR(it, areas->begin()); it != areas->end(); ++it)
+    auto areas = stitcher->gatherAreas();
+    //for (StitchSlot slot : stitcher.gatherAreas())
+	for(auto& slot : *areas)
 	{
-		StitchSlot *slot = *it;
 		TextureHolder *textureHolder = slot->getHolder();
 
 		Texture *texture = textureHolder->getTexture();
@@ -126,13 +125,13 @@ void TextureMap::stitch()
 		vector<Texture *> *frames = textures.find(textureHolder)->second;
 
 		StitchedTexture *stored = NULL;
-		
-		AUTO_VAR(itTex, texturesToRegister.find(textureName) );
-		if(itTex != texturesToRegister.end() ) stored = itTex->second;
+
+        auto itTex = texturesToRegister.find(textureName);
+        if(itTex != texturesToRegister.end() ) stored = itTex->second;
 
 		// [EB]: What is this code for? debug warnings for when during transition?
 		bool missing = false;
-		if (stored == NULL)
+		if (stored)
 		{
 			missing = true;
 			stored = StitchedTexture::create(textureName);
@@ -159,7 +158,6 @@ void TextureMap::stitch()
 
 			TexturePack *texturePack = Minecraft::GetInstance()->skins->getSelected();
 			bool requiresFallback = !texturePack->hasFile(L"\\" + textureName + L".png", false);
-			//try {
 				InputStream *fileStream = texturePack->getResource(L"\\" + path + animationDefinitionFile, requiresFallback);
 
 				//Minecraft::getInstance()->getLogger().info("Found animation info for: " + animationDefinitionFile);
@@ -170,8 +168,6 @@ void TextureMap::stitch()
 				BufferedReader br(&isr);
 				stored->loadAnimationFrames(&br);
 				delete fileStream;
-			//} catch (IOException ignored) {
-			//}
 		}
 	}
 	delete areas;
@@ -179,9 +175,9 @@ void TextureMap::stitch()
 	missingPosition = texturesByName.find(NAME_MISSING_TEXTURE)->second;
 
 	//for (StitchedTexture texture : texturesToRegister.values())
-	for(AUTO_VAR(it, texturesToRegister.begin() ); it != texturesToRegister.end(); ++it)
+	for(auto& it : texturesToRegister)
 	{
-		StitchedTexture *texture = it->second;
+		StitchedTexture *texture = it.second;
 		texture->replaceWith(missingPosition);
 	}
 
@@ -199,10 +195,10 @@ StitchedTexture *TextureMap::getTexture(const wstring &name)
 void TextureMap::cycleAnimationFrames()
 {
 	//for (StitchedTexture texture : animatedTextures)
-	for(AUTO_VAR(it, animatedTextures.begin() ); it != animatedTextures.end(); ++it)
+	for(auto& texture : animatedTextures)
 	{
-		StitchedTexture *texture = *it;
-		texture->cycleFrames();
+		if ( texture )
+			texture->cycleFrames();
 	}
 }
 
@@ -225,8 +221,8 @@ Icon *TextureMap::registerIcon(const wstring &name)
 
 	// TODO: [EB]: Why do we allow multiple registrations?
 	StitchedTexture *result = NULL;
-	AUTO_VAR(it, texturesToRegister.find(name));
-	if(it != texturesToRegister.end()) result = it->second;
+    auto it = texturesToRegister.find(name);
+    if(it != texturesToRegister.end()) result = it->second;
 
 	if (result == NULL)
 	{

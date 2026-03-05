@@ -691,7 +691,7 @@ void Level::_init(shared_ptr<LevelStorage>levelStorage, const wstring& levelName
 	//{
 	//	dimension = Dimension::getNew(levelData->getDimension());
 	//}
-	else 
+	else
 	{
 		dimension = Dimension::getNew(0);
 	}
@@ -740,7 +740,7 @@ Level::~Level()
 	DeleteCriticalSection(&m_checkLightCS);
 
 	// 4J-PB - savedDataStorage is shared between overworld and nether levels in the server, so it will already have been deleted on the first level delete
-	if(savedDataStorage!=NULL) delete savedDataStorage;		
+	if(savedDataStorage!=NULL) delete savedDataStorage;
 
 	DeleteCriticalSection(&m_entitiesCS);
 	DeleteCriticalSection(&m_tileEntityListCS);
@@ -934,7 +934,7 @@ bool Level::setTileAndData(int x, int y, int z, int tile, int data, int updateFl
 	int olddata = c->getData( x & 15, y, z & 15);
 #endif
 	result = c->setTileAndData(x & 15, y, z & 15, tile, data);
-	if( updateFlags != Tile::UPDATE_INVISIBLE_NO_LIGHT) 
+	if( updateFlags != Tile::UPDATE_INVISIBLE_NO_LIGHT)
 	{
 #ifndef _CONTENT_PACKAGE
 		PIXBeginNamedEvent(0,"Checking light %d %d %d",x,y,z);
@@ -1019,7 +1019,7 @@ bool Level::setData(int x, int y, int z, int data, int updateFlags, bool forceUp
 
 /**
 * Sets a tile to air without dropping resources or showing any animation.
-* 
+*
 * @param x
 * @param y
 * @param z
@@ -1033,7 +1033,7 @@ bool Level::removeTile(int x, int y, int z)
 /**
 * Sets a tile to air and plays a destruction animation, with option to also
 * drop resources.
-* 
+*
 * @param x
 * @param y
 * @param z
@@ -1063,10 +1063,9 @@ bool Level::setTileAndUpdate(int x, int y, int z, int tile)
 
 void Level::sendTileUpdated(int x, int y, int z)
 {
-	AUTO_VAR(itEnd, listeners.end());
-	for (AUTO_VAR(it, listeners.begin()); it != itEnd; it++)
+	for (auto& listener : listeners)
 	{
-		(*it)->tileChanged(x, y, z);
+		listener->tileChanged(x, y, z);
 	}
 }
 
@@ -1105,20 +1104,18 @@ void Level::lightColumnChanged(int x, int z, int y0, int y1)
 
 void Level::setTileDirty(int x, int y, int z)
 {
-	AUTO_VAR(itEnd, listeners.end());
-	for (AUTO_VAR(it, listeners.begin()); it != itEnd; it++)
+    for (auto& listener : listeners)
 	{
-		(*it)->setTilesDirty(x, y, z, x, y, z, this);
+		listener->setTilesDirty(x, y, z, x, y, z, this);
 	}
 }
 
 
 void Level::setTilesDirty(int x0, int y0, int z0, int x1, int y1, int z1)
 {
-	AUTO_VAR(itEnd, listeners.end());
-	for (AUTO_VAR(it, listeners.begin()); it != itEnd; it++)
+	for (auto& listener : listeners)
 	{
-		(*it)->setTilesDirty(x0, y0, z0, x1, y1, z1, this);
+		listener->setTilesDirty(x0, y0, z0, x1, y1, z1, this);
 	}
 }
 
@@ -1351,7 +1348,7 @@ int Level::getBrightness(LightLayer::variety layer, int x, int y, int z)
 // the level chunk once
 void Level::getNeighbourBrightnesses(int *brightnesses, LightLayer::variety layer, int x, int y, int z)
 {
-	if( ( ( ( x & 15 ) == 0 ) || ( ( x & 15 ) == 15 ) ) || 
+	if( ( ( ( x & 15 ) == 0 ) || ( ( x & 15 ) == 15 ) ) ||
 		( ( ( z & 15 ) == 0 ) || ( ( z & 15 ) == 15 ) ) ||
 		( ( y <= 0 ) || ( y >= 127 ) ) )
 	{
@@ -1443,20 +1440,18 @@ void Level::setBrightness(LightLayer::variety layer, int x, int y, int z, int br
 	}
 	else
 	{
-		AUTO_VAR(itEnd, listeners.end());
-		for (AUTO_VAR(it, listeners.begin()); it != itEnd; it++)
+		for (auto& listener : listeners)
 		{
-			(*it)->tileLightChanged(x, y, z);
+			listener->tileLightChanged(x, y, z);
 		}
 	}
 }
 
 void Level::setTileBrightnessChanged(int x, int y, int z)
 {
-	AUTO_VAR(itEnd, listeners.end());
-	for (AUTO_VAR(it, listeners.begin()); it != itEnd; it++)
+	for (auto& listener : listeners)
 	{
-		(*it)->tileLightChanged(x, y, z);
+		listener->tileLightChanged(x, y, z);
 	}
 }
 
@@ -1637,19 +1632,18 @@ HitResult *Level::clip(Vec3 *a, Vec3 *b, bool liquid, bool solidOnly)
 void Level::playEntitySound(shared_ptr<Entity> entity, int iSound, float volume, float pitch)
 {
 	if(entity == NULL) return;
-	AUTO_VAR(itEnd, listeners.end());
-	for (AUTO_VAR(it, listeners.begin()); it != itEnd; it++)
+	for (auto& listener : listeners)
 	{
 		// 4J-PB - if the entity is a local player, don't play the sound
 		if(entity->GetType() == eTYPE_SERVERPLAYER)
 		{
 			//app.DebugPrintf("ENTITY is serverplayer\n");
 
-			(*it)->playSound(iSound, entity->x, entity->y - entity->heightOffset, entity->z, volume, pitch);
+			listener->playSound(iSound, entity->x, entity->y - entity->heightOffset, entity->z, volume, pitch);
 		}
 		else
 		{
-			(*it)->playSound(iSound, entity->x, entity->y - entity->heightOffset, entity->z, volume, pitch);
+			listener->playSound(iSound, entity->x, entity->y - entity->heightOffset, entity->z, volume, pitch);
 		}
 	}
 }
@@ -1657,20 +1651,18 @@ void Level::playEntitySound(shared_ptr<Entity> entity, int iSound, float volume,
 void Level::playPlayerSound(shared_ptr<Player> entity, int iSound, float volume, float pitch)
 {
 	if (entity == NULL) return;
-	AUTO_VAR(itEnd, listeners.end());
-	for (AUTO_VAR(it, listeners.begin()); it != itEnd; it++)
+	for (auto& listener : listeners)
 	{
-		(*it)->playSoundExceptPlayer(entity, iSound, entity->x, entity->y - entity->heightOffset, entity->z, volume, pitch);
+		listener->playSoundExceptPlayer(entity, iSound, entity->x, entity->y - entity->heightOffset, entity->z, volume, pitch);
 	}
 }
 
 //void Level::playSound(double x, double y, double z, const wstring& name, float volume, float pitch)
 void Level::playSound(double x, double y, double z, int iSound, float volume, float pitch, float fClipSoundDist)
 {
-	AUTO_VAR(itEnd, listeners.end());
-	for (AUTO_VAR(it, listeners.begin()); it != itEnd; it++)
+	for (auto& listener : listeners)
 	{
-		(*it)->playSound(iSound, x, y, z, volume, pitch, fClipSoundDist);
+		listener->playSound(iSound, x, y, z, volume, pitch, fClipSoundDist);
 	}
 }
 
@@ -1680,10 +1672,9 @@ void Level::playLocalSound(double x, double y, double z, int iSound, float volum
 
 void Level::playStreamingMusic(const wstring& name, int x, int y, int z)
 {
-	AUTO_VAR(itEnd, listeners.end());
-	for (AUTO_VAR(it, listeners.begin()); it != itEnd; it++)
+	for (auto& listener : listeners)
 	{
-		(*it)->playStreamingMusic(name, x, y, z);
+		listener->playStreamingMusic(name, x, y, z);
 	}
 }
 
@@ -1692,22 +1683,11 @@ void Level::playMusic(double x, double y, double z, const wstring& string, float
 {
 }
 
-// 4J removed - 
-/*
-void Level::addParticle(const wstring& id, double x, double y, double z, double xd, double yd, double zd)
-{
-AUTO_VAR(itEnd, listeners.end());
-for (AUTO_VAR(it, listeners.begin()); it != itEnd; it++)
-(*it)->addParticle(id, x, y, z, xd, yd, zd);
-}
-*/
-
 // 4J-PB added
 void Level::addParticle(ePARTICLE_TYPE id, double x, double y, double z, double xd, double yd, double zd)
 {
-	AUTO_VAR(itEnd, listeners.end());
-	for (AUTO_VAR(it, listeners.begin()); it != itEnd; it++)
-		(*it)->addParticle(id, x, y, z, xd, yd, zd);
+	for (auto& listener : listeners)
+		listener->addParticle(id, x, y, z, xd, yd, zd);
 }
 
 bool Level::addGlobalEntity(shared_ptr<Entity> e)
@@ -1768,48 +1748,45 @@ bool Level::addEntity(shared_ptr<Entity> e)
 
 void Level::entityAdded(shared_ptr<Entity> e)
 {
-	AUTO_VAR(itEnd, listeners.end());
-	for (AUTO_VAR(it, listeners.begin()); it != itEnd; it++)
+	for (auto& listener : listeners)
 	{
-		(*it)->entityAdded(e);
+		listener->entityAdded(e);
 	}
 }
 
 
 void Level::entityRemoved(shared_ptr<Entity> e)
 {
-	AUTO_VAR(itEnd, listeners.end());
-	for (AUTO_VAR(it, listeners.begin()); it != itEnd; it++)
+	for (auto& listener : listeners)
 	{
-		(*it)->entityRemoved(e);
+		listener->entityRemoved(e);
 	}
 }
 
 // 4J added
 void Level::playerRemoved(shared_ptr<Entity> e)
 {
-	AUTO_VAR(itEnd, listeners.end());
-	for (AUTO_VAR(it, listeners.begin()); it != itEnd; it++)
+	for (auto& listener : listeners)
 	{
-		(*it)->playerRemoved(e);
+		listener->playerRemoved(e);
 	}
 }
 
 void Level::removeEntity(shared_ptr<Entity> e)
 {
-	if (e->rider.lock() != NULL)
+	if (e->rider.lock())
 	{
 		e->rider.lock()->ride(nullptr);
 	}
-	if (e->riding != NULL)
+	if (e->riding)
 	{
 		e->ride(nullptr);
 	}
 	e->remove();
 	if (e->instanceof(eTYPE_PLAYER))
 	{
-		vector<shared_ptr<Player> >::iterator it = players.begin();
-		vector<shared_ptr<Player> >::iterator itEnd = players.end();
+		auto it = players.begin();
+		auto itEnd = players.end();
 		while( it != itEnd && *it != dynamic_pointer_cast<Player>(e) )
 			it++;
 
@@ -1958,16 +1935,15 @@ AABBList *Level::getCubes(shared_ptr<Entity> source, AABB *box, bool noEntities/
 
 		double r = 0.25;
 		vector<shared_ptr<Entity> > *ee = getEntities(source, box->grow(r, r, r));
-		vector<shared_ptr<Entity> >::iterator itEnd = ee->end();
-		for (AUTO_VAR(it, ee->begin()); it != itEnd; it++)
+		for (auto& it : *ee)
 		{
-			AABB *collideBox = (*it)->getCollideBox();
+			AABB *collideBox = it->getCollideBox();
 			if (collideBox != NULL && collideBox->intersects(box))
 			{
 				boxes.push_back(collideBox);
 			}
 
-			collideBox = source->getCollideAgainstBox(*it);
+			collideBox = source->getCollideAgainstBox(it);
 			if (collideBox != NULL && collideBox->intersects(box))
 			{
 				boxes.push_back(collideBox);
@@ -2277,12 +2253,12 @@ void Level::tickEntities()
 
 	EnterCriticalSection(&m_entitiesCS);
 
-	for( AUTO_VAR(it, entities.begin()); it != entities.end(); )
-	{
+    for (auto it = entities.begin(); it != entities.end();)
+    {
 		bool found = false;
-		for( AUTO_VAR(it2, entitiesToRemove.begin()); it2 != entitiesToRemove.end(); it2++ )
+		for(auto& it2 : entitiesToRemove)
 		{
-			if( (*it) == (*it2) )
+			if( (*it) == it2 )
 			{
 				found = true;
 				break;
@@ -2299,10 +2275,8 @@ void Level::tickEntities()
 	}
 	LeaveCriticalSection(&m_entitiesCS);
 
-	AUTO_VAR(itETREnd, entitiesToRemove.end());
-	for (AUTO_VAR(it, entitiesToRemove.begin()); it != itETREnd; it++)
+	for (auto& e : entitiesToRemove)
 	{
-		shared_ptr<Entity> e = *it;//entitiesToRemove.at(j);
 		int xc = e->xChunk;
 		int zc = e->zChunk;
 		if (e->inChunk && hasChunk(xc, zc))
@@ -2311,12 +2285,11 @@ void Level::tickEntities()
 		}
 	}
 
-	itETREnd = entitiesToRemove.end();
-	for (AUTO_VAR(it, entitiesToRemove.begin()); it != itETREnd; it++)
+	for (auto& it : entitiesToRemove)
 	{
-		entityRemoved(*it);
+		entityRemoved(it);
 	}
-	// 
+	//
 	entitiesToRemove.clear();
 
 	//for (int i = 0; i < entities.size(); i++)
@@ -2348,7 +2321,7 @@ void Level::tickEntities()
 		{
 #ifndef _FINAL_BUILD
 			if ( !( app.DebugSettingsOn() && app.GetMobsDontTickEnabled() && e->instanceof(eTYPE_MOB) && !e->instanceof(eTYPE_PLAYER)) )
-#endif			
+#endif
 			{
 				tick(e);
 			}
@@ -2367,8 +2340,8 @@ void Level::tickEntities()
 
 			// 4J Find the entity again before deleting, as things might have moved in the entity array eg
 			// from the explosion created by tnt
-			AUTO_VAR(it, find(entities.begin(), entities.end(), e));
-			if( it != entities.end() )
+            auto it = find(entities.begin(), entities.end(), e);
+            if( it != entities.end() )
 			{
 				entities.erase(it);
 			}
@@ -2385,8 +2358,8 @@ void Level::tickEntities()
 	EnterCriticalSection(&m_tileEntityListCS);
 
 	updatingTileEntities = true;
-	for (AUTO_VAR(it, tileEntityList.begin()); it != tileEntityList.end();)
-	{
+    for (auto it = tileEntityList.begin(); it != tileEntityList.end();)
+    {
 		shared_ptr<TileEntity> te = *it;//tilevector<shared_ptr<Entity> >.at(i);
 		if( !te->isRemoved() && te->hasLevel() )
 		{
@@ -2421,15 +2394,15 @@ void Level::tickEntities()
 	// 4J-PB - Stuart  - check this is correct here
 
 	if (!tileEntitiesToUnload.empty())
-	{	
+	{
 		//tileEntityList.removeAll(tileEntitiesToUnload);
 
-		for( AUTO_VAR(it, tileEntityList.begin()); it != tileEntityList.end(); )
-		{
+        for (auto it = tileEntityList.begin(); it != tileEntityList.end();)
+        {
 			bool found = false;
-			for( AUTO_VAR(it2, tileEntitiesToUnload.begin()); it2 != tileEntitiesToUnload.end(); it2++ )
+			for(auto& it2 : tileEntitiesToUnload)
 			{
-				if( (*it) == (*it2) )
+				if( (*it) == it2 )
 				{
 					found = true;
 					break;
@@ -2453,10 +2426,9 @@ void Level::tickEntities()
 
 	if( !pendingTileEntities.empty() )
 	{
-		for( AUTO_VAR(it, pendingTileEntities.begin()); it != pendingTileEntities.end(); it++ )
+		for(auto& e : pendingTileEntities)
 		{
-			shared_ptr<TileEntity> e = *it;
-			if( !e->isRemoved() )
+			if( e && !e->isRemoved() )
 			{
 				if( find(tileEntityList.begin(),tileEntityList.end(),e) == tileEntityList.end() )
 				{
@@ -2481,16 +2453,16 @@ void Level::addAllPendingTileEntities(vector< shared_ptr<TileEntity> >& entities
 	EnterCriticalSection(&m_tileEntityListCS);
 	if( updatingTileEntities )
 	{
-		for( AUTO_VAR(it, entities.begin()); it != entities.end(); it++ )
+		for(auto& it : entities)
 		{
-			pendingTileEntities.push_back(*it);
+			pendingTileEntities.push_back(it);
 		}
 	}
 	else
 	{
-		for( AUTO_VAR(it, entities.begin()); it != entities.end(); it++ )
+		for(auto& it : entities)
 		{
-			tileEntityList.push_back(*it);
+			tileEntityList.push_back(it);
 		}
 	}
 	LeaveCriticalSection(&m_tileEntityListCS);
@@ -2602,11 +2574,9 @@ bool Level::isUnobstructed(AABB *aabb)
 bool Level::isUnobstructed(AABB *aabb, shared_ptr<Entity> ignore)
 {
 	vector<shared_ptr<Entity> > *ents = getEntities(nullptr, aabb);
-	AUTO_VAR(itEnd, ents->end());
-	for (AUTO_VAR(it, ents->begin()); it != itEnd; it++)
+	for (auto& e : *ents)
 	{
-		shared_ptr<Entity> e = *it;
-		if (!e->removed && e->blocksBuilding && e != ignore) return false;
+		if (e && !e->removed && e->blocksBuilding && e != ignore) return false;
 	}
 	return true;
 }
@@ -2841,7 +2811,7 @@ shared_ptr<Explosion> Level::explode(shared_ptr<Entity> source, double x, double
 shared_ptr<Explosion> Level::explode(shared_ptr<Entity> source, double x, double y, double z, float r, bool fire, bool destroyBlocks)
 {
 	shared_ptr<Explosion> explosion = shared_ptr<Explosion>( new Explosion(this, source, x, y, z, r) );
-	explosion->fire = fire;	
+	explosion->fire = fire;
 	explosion->destroyBlocks = destroyBlocks;
 	explosion->explode();
 	explosion->finalizeExplosion(true);
@@ -2950,11 +2920,9 @@ shared_ptr<TileEntity> Level::getTileEntity(int x, int y, int z)
 	if (tileEntity == NULL)
 	{
 		EnterCriticalSection(&m_tileEntityListCS);
-		for( AUTO_VAR(it, pendingTileEntities.begin()); it != pendingTileEntities.end(); it++ )
+		for(auto& e : pendingTileEntities)
 		{
-			shared_ptr<TileEntity> e = *it;
-
-			if (!e->isRemoved() && e->x == x && e->y == y && e->z == z)
+			if ( e && !e->isRemoved() && e->x == x && e->y == y && e->z == z)
 			{
 				tileEntity = e;
 				break;
@@ -2978,8 +2946,8 @@ void Level::setTileEntity(int x, int y, int z, shared_ptr<TileEntity> tileEntity
 			tileEntity->z = z;
 
 			// avoid adding duplicates
-			for( AUTO_VAR(it, pendingTileEntities.begin()); it != pendingTileEntities.end();)
-			{
+            for (auto it = pendingTileEntities.begin(); it != pendingTileEntities.end();)
+            {
 				shared_ptr<TileEntity> next = *it;
 				if (next->x == x && next->y == y && next->z == z)
 				{
@@ -3012,8 +2980,8 @@ void Level::removeTileEntity(int x, int y, int z)
 	if (te != NULL && updatingTileEntities)
 	{
 		te->setRemoved();
-		AUTO_VAR(it, find(pendingTileEntities.begin(), pendingTileEntities.end(), te ));
-		if( it != pendingTileEntities.end() )
+        auto it = find(pendingTileEntities.begin(), pendingTileEntities.end(), te);
+        if( it != pendingTileEntities.end() )
 		{
 			pendingTileEntities.erase(it);
 		}
@@ -3022,13 +2990,13 @@ void Level::removeTileEntity(int x, int y, int z)
 	{
 		if (te != NULL)
 		{
-			AUTO_VAR(it, find(pendingTileEntities.begin(), pendingTileEntities.end(), te ));
-			if( it != pendingTileEntities.end() )
+            auto it = find(pendingTileEntities.begin(), pendingTileEntities.end(), te);
+            if( it != pendingTileEntities.end() )
 			{
 				pendingTileEntities.erase(it);
 			}
-			AUTO_VAR(it2, find(tileEntityList.begin(), tileEntityList.end(), te));
-			if( it2 != tileEntityList.end() )
+            auto it2 = find(tileEntityList.begin(), tileEntityList.end(), te);
+            if( it2 != tileEntityList.end() )
 			{
 				tileEntityList.erase(it2);
 			}
@@ -3126,7 +3094,7 @@ bool Level::isTopSolidBlocking(Tile *tile, int data)
 	if (tile == NULL) return false;
 
 	if (tile->material->isSolidBlocking() && tile->isCubeShaped()) return true;
-	if (dynamic_cast<StairTile *>(tile) != NULL) 
+	if (dynamic_cast<StairTile *>(tile) != NULL)
 	{
 		return (data & StairTile::UPSIDEDOWN_BIT) == StairTile::UPSIDEDOWN_BIT;
 	}
@@ -3273,11 +3241,9 @@ void Level::toggleDownfall()
 
 void Level::buildAndPrepareChunksToPoll()
 {
-#if 0	
-	AUTO_VAR(itEnd, players.end());
-	for (AUTO_VAR(it, players.begin()); it != itEnd; it++)
+#if 0
+	for (auto& player : players)
 	{
-		shared_ptr<Player> player = *it;
 		int xx = Mth::floor(player->x / 16);
 		int zz = Mth::floor(player->z / 16);
 
@@ -3295,7 +3261,7 @@ void Level::buildAndPrepareChunksToPoll()
 	int playerCount = (int)players.size();
 	int *xx = new int[playerCount];
 	int *zz = new int[playerCount];
-	for (int i = 0; i < playerCount; i++)
+	for (size_t i = 0; i < playerCount; i++)
 	{
 		shared_ptr<Player> player = players[i];
 		xx[i] = Mth::floor(player->x / 16);
@@ -3534,7 +3500,7 @@ void Level::checkLight(LightLayer::variety layer, int xc, int yc, int zc, bool f
 	{
 		int centerCurrent = getBrightnessCached(cache, layer, xc, yc, zc);
 		int centerExpected = getExpectedLight(cache, xc, yc, zc, layer, false);
-	
+
 		if( centerExpected != centerCurrent && cache )
 		{
 			initCacheComplete(cache, xc, yc, zc);
@@ -3802,9 +3768,8 @@ shared_ptr<Entity> Level::getClosestEntityOfClass(const type_info& baseClass, AA
 	shared_ptr<Entity> closest = nullptr;
 	double closestDistSqr = Double::MAX_VALUE;
 	//for (Entity entity : entities)
-	for(AUTO_VAR(it, entities->begin()); it != entities->end(); ++it)
+	for(auto& entity : *entities)
 	{
-		shared_ptr<Entity> entity = *it;
 		if (entity == source) continue;
 		double distSqr = source->distanceToSqr(entity);
 		if (distSqr > closestDistSqr) continue;
@@ -3837,10 +3802,8 @@ unsigned int Level::countInstanceOf(BaseObject::Class *clas)
 {
 	unsigned int count = 0;
 	EnterCriticalSection(&m_entitiesCS);
-	AUTO_VAR(itEnd, entities.end());
-	for (AUTO_VAR(it, entities.begin()); it != itEnd; it++)
+	for (auto& e : entities)
 	{
-		shared_ptr<Entity> e = *it;//entities.at(i);
 		if (clas->isAssignableFrom(e->getClass())) count++;
 	}
 	LeaveCriticalSection(&m_entitiesCS);
@@ -3857,10 +3820,8 @@ unsigned int Level::countInstanceOf(eINSTANCEOF clas, bool singleType, unsigned 
 	if( protectedCount ) *protectedCount = 0;
 	if( couldWanderCount ) *couldWanderCount = 0;
 	EnterCriticalSection(&m_entitiesCS);
-	AUTO_VAR(itEnd, entities.end());
-	for (AUTO_VAR(it, entities.begin()); it != itEnd; it++)
+	for (auto& e : entities)
 	{
-		shared_ptr<Entity> e = *it;//entities.at(i);
 		if( singleType )
 		{
 			if (e->GetType() == clas)
@@ -3892,11 +3853,8 @@ unsigned int Level::countInstanceOfInRange(eINSTANCEOF clas, bool singleType, in
 {
 	unsigned int count = 0;
 	EnterCriticalSection(&m_entitiesCS);
-	AUTO_VAR(itEnd, entities.end());
-	for (AUTO_VAR(it, entities.begin()); it != itEnd; it++)
+	for (auto& e : entities)
 	{
-		shared_ptr<Entity> e = *it;//entities.at(i);
-
 		float sd = e->distanceTo(x,y,z);
 		if (sd * sd > range * range)
 		{
@@ -3925,14 +3883,13 @@ void Level::addEntities(vector<shared_ptr<Entity> > *list)
 	//entities.addAll(list);
 	EnterCriticalSection(&m_entitiesCS);
 	entities.insert(entities.end(), list->begin(), list->end());
-	AUTO_VAR(itEnd, list->end());
 	bool deleteDragons = false;
-	for (AUTO_VAR(it, list->begin()); it != itEnd; it++)
+	for (auto& it : *list)
 	{
-		entityAdded(*it);
+		entityAdded(it);
 
 		// 4J Stu - Special change to remove duplicate enderdragons that a previous bug might have produced
-		if( (*it)->GetType() == eTYPE_ENDERDRAGON)
+		if( it->GetType() == eTYPE_ENDERDRAGON)
 		{
 			deleteDragons = true;
 		}
@@ -3941,14 +3898,14 @@ void Level::addEntities(vector<shared_ptr<Entity> > *list)
 	if(deleteDragons)
 	{
 		deleteDragons = false;
-		for(AUTO_VAR(it, entities.begin()); it != entities.end(); ++it)
+		for(auto& it : entities)
 		{
 			// 4J Stu - Special change to remove duplicate enderdragons that a previous bug might have produced
-			if( (*it)->GetType() == eTYPE_ENDERDRAGON)
+			if( it->GetType() == eTYPE_ENDERDRAGON)
 			{
 				if(deleteDragons)
 				{
-					(*it)->remove();
+					it->remove();
 				}
 				else
 				{
@@ -4118,10 +4075,8 @@ shared_ptr<Player> Level::getNearestPlayer(double x, double y, double z, double 
 	MemSect(21);
 	double best = -1;
 	shared_ptr<Player> result = nullptr;
-	AUTO_VAR(itEnd, players.end());
-	for (AUTO_VAR(it, players.begin()); it != itEnd; it++)
+	for (auto& p : players)
 	{
-		shared_ptr<Player> p = *it;//players.at(i);
 		double dist = p->distanceToSqr(x, y, z);
 
 		// Allow specifying shorter distances in the vertical
@@ -4142,10 +4097,8 @@ shared_ptr<Player> Level::getNearestPlayer(double x, double z, double maxDist)
 {
 	double best = -1;
 	shared_ptr<Player> result = nullptr;
-	AUTO_VAR(itEnd, players.end());
-	for (AUTO_VAR(it, players.begin()); it != itEnd; it++)
+	for (auto& p : players)
 	{
-		shared_ptr<Player> p = *it;
 		double dist = p->distanceToSqr(x, p->y, z);
 		if ((maxDist < 0 || dist < maxDist * maxDist) && (best == -1 || dist < best))
 		{
@@ -4166,11 +4119,8 @@ shared_ptr<Player> Level::getNearestAttackablePlayer(double x, double y, double 
 	double best = -1;
 
 	shared_ptr<Player> result = nullptr;
-	AUTO_VAR(itEnd, players.end());
-	for (AUTO_VAR(it, players.begin()); it != itEnd; it++)
+	for (auto& p : players)
 	{
-		shared_ptr<Player> p = *it;
-
 		// 4J Stu - Added privilege check
 		if (p->abilities.invulnerable || !p->isAlive() || p->hasInvisiblePrivilege() )
 		{
@@ -4207,28 +4157,26 @@ shared_ptr<Player> Level::getNearestAttackablePlayer(double x, double y, double 
 
 shared_ptr<Player> Level::getPlayerByName(const wstring& name)
 {
-	AUTO_VAR(itEnd, players.end());
-	for (AUTO_VAR(it, players.begin()); it != itEnd; it++)
+	for (auto& player : players)
 	{
-		if (name.compare( (*it)->getName()) == 0)
+		if (name.compare( player->getName()) == 0)
 		{
-			return *it; //players.at(i);
+			return player;
 		}
 	}
-	return shared_ptr<Player>();
+	return {};
 }
 
 shared_ptr<Player> Level::getPlayerByUUID(const wstring& name)
 {
-	AUTO_VAR(itEnd, players.end());
-	for (AUTO_VAR(it, players.begin()); it != itEnd; it++)
+	for (auto& player : players)
 	{
-		if (name.compare( (*it)->getUUID() ) == 0)
+		if (name.compare( player->getUUID() ) == 0)
 		{
-			return *it; //players.at(i);
+			return player;
 		}
 	}
-	return shared_ptr<Player>();
+	return {};
 }
 
 // 4J Stu - Removed in 1.2.3 ?
@@ -4355,10 +4303,9 @@ void Level::setGameTime(__int64 time)
 		// Apply stat to each player.
 		if ( timeDiff > 0 && levelData->getGameTime() != -1 )
 		{
-			AUTO_VAR(itEnd, players.end());
-			for (vector<shared_ptr<Player> >::iterator it = players.begin(); it != itEnd; it++)
+			for (auto& player : players)
 			{
-				(*it)->awardStat( GenericStats::timePlayed(), GenericStats::param_time(timeDiff) );
+				player->awardStat( GenericStats::timePlayed(), GenericStats::param_time(timeDiff) );
 			}
 		}
 	}
@@ -4538,12 +4485,11 @@ int Level::getAuxValueForMap(PlayerUID xuid, int dimension, int centreXC, int ce
 	return savedDataStorage->getAuxValueForMap(xuid, dimension, centreXC, centreZC, scale);
 }
 
-void Level::globalLevelEvent(int type, int sourceX, int sourceY, int sourceZ, int data) 
+void Level::globalLevelEvent(int type, int sourceX, int sourceY, int sourceZ, int data)
 {
-	AUTO_VAR(itEnd, listeners.end());
-	for (AUTO_VAR(it, listeners.begin()); it != itEnd; it++)
+	for (auto& listener : listeners)
 	{
-		(*it)->globalLevelEvent(type, sourceX, sourceY, sourceZ, data);
+		listener->globalLevelEvent(type, sourceX, sourceY, sourceZ, data);
 	}
 }
 
@@ -4555,10 +4501,9 @@ void Level::levelEvent(int type, int x, int y, int z, int data)
 
 void Level::levelEvent(shared_ptr<Player> source, int type, int x, int y, int z, int data)
 {
-	AUTO_VAR(itEnd, listeners.end());
-	for (AUTO_VAR(it, listeners.begin()); it != itEnd; it++)
+	for (auto& listener : listeners)
 	{
-		(*it)->levelEvent(source, type, x, y, z, data);
+		listener->levelEvent(source, type, x, y, z, data);
 	}
 }
 
@@ -4594,9 +4539,9 @@ bool Level::isAllEmpty()
 	return false;
 }
 
-double Level::getHorizonHeight() 
+double Level::getHorizonHeight()
 {
-	if (levelData->getGenerator() == LevelType::lvl_flat) 
+	if (levelData->getGenerator() == LevelType::lvl_flat)
 	{
 		return 0.0;
 	}
@@ -4605,10 +4550,9 @@ double Level::getHorizonHeight()
 
 void Level::destroyTileProgress(int id, int x, int y, int z, int progress)
 {
-	AUTO_VAR(itEnd, listeners.end());
-	for (AUTO_VAR(it, listeners.begin()); it != itEnd; it++)
+	for (auto& listener : listeners)
 	{
-		(*it)->destroyTileProgress(id, x, y, z, progress);
+		listener->destroyTileProgress(id, x, y, z, progress);
 	}
 }
 

@@ -273,27 +273,29 @@ void ConsoleSaveFileConverter::ConvertSave(ConsoleSaveFile *sourceSave, ConsoleS
 	// 4J Stu - Old version that just changes the compression of chunks, not usable for XboxOne style split saves or compressed tile formats
 	// Process region files
 	vector<FileEntry *> *allFilesInSave = sourceSave->getFilesWithPrefix(wstring(L""));
-	for(AUTO_VAR(it, allFilesInSave->begin()); it < allFilesInSave->end(); ++it)
+	if ( allFilesInSave )
 	{
-		FileEntry *fe = *it;
-		if( fe != sourceLdatFe )
+		for ( FileEntry* fe : *allFilesInSave )
 		{
-			wstring fName( fe->data.filename );
-			wstring suffix(L".mcr");
-			if( fName.compare(fName.length() - suffix.length(), suffix.length(), suffix) == 0 )
+			if (fe != sourceLdatFe)
 			{
+				wstring fName(fe->data.filename);
+				wstring suffix(L".mcr");
+				if (fName.compare(fName.length() - suffix.length(), suffix.length(), suffix) == 0)
+				{
 #ifndef _CONTENT_PACKAGE
-				wprintf(L"Processing a region file: %s\n", fe->data.filename);
+					wprintf(L"Processing a region file: %s\n", fe->data.filename);
 #endif
-				ProcessStandardRegionFile(sourceSave, File(fe->data.filename), targetSave, File(fe->data.filename) );
-			}
-			else
-			{
+					ProcessStandardRegionFile(sourceSave, File(fe->data.filename), targetSave, File(fe->data.filename));
+				}
+				else
+				{
 #ifndef _CONTENT_PACKAGE
-				wprintf(L"%s is not a region file, ignoring\n", fe->data.filename);
+					wprintf(L"%s is not a region file, ignoring\n", fe->data.filename);
 #endif
+				}
 			}
 		}
-	}
 #endif
+	}
 }

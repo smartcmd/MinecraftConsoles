@@ -124,7 +124,7 @@ void PlayerConnection::disconnect(DisconnectPacket::eDisconnectReason reason)
 	send( shared_ptr<DisconnectPacket>( new DisconnectPacket(reason) ));
 	connection->sendAndQuit();
 	// 4J-PB - removed, since it needs to be localised in the language the client is in
-	//server->players->broadcastAll( shared_ptr<ChatPacket>( new ChatPacket(L"§e" + player->name + L" left the game.") ) );
+	//server->players->broadcastAll( shared_ptr<ChatPacket>( new ChatPacket(L"ï¿½e" + player->name + L" left the game.") ) );
 	if(getWasKicked())
 	{
 		server->getPlayers()->broadcastAll( shared_ptr<ChatPacket>( new ChatPacket(player->name, ChatPacket::e_ChatPlayerKickedFromGame) ) );
@@ -182,7 +182,7 @@ void PlayerConnection::handleMovePlayer(shared_ptr<MovePlayerPacket> packet)
 
 			player->onGround = packet->onGround;
 
-			player->doTick(false);			
+			player->doTick(false);
 			player->ySlideOffset = 0;
 			player->absMoveTo(xt, yt, zt, yRotT, xRotT);
 			if (player->riding != NULL) player->riding->positionRider();
@@ -539,7 +539,7 @@ void PlayerConnection::onDisconnect(DisconnectPacket::eDisconnectReason reason, 
 	if( done ) return;
 	//    logger.info(player.name + " lost connection: " + reason);
 	// 4J-PB - removed, since it needs to be localised in the language the client is in
-	//server->players->broadcastAll( shared_ptr<ChatPacket>( new ChatPacket(L"§e" + player->name + L" left the game.") ) );
+	//server->players->broadcastAll( shared_ptr<ChatPacket>( new ChatPacket(L"ï¿½e" + player->name + L" left the game.") ) );
 	if(getWasKicked())
 	{
 		server->getPlayers()->broadcastAll( shared_ptr<ChatPacket>( new ChatPacket(player->name, ChatPacket::e_ChatPlayerKickedFromGame) ) );
@@ -728,13 +728,13 @@ int PlayerConnection::countDelayedPackets()
 void PlayerConnection::info(const wstring& string)
 {
 	// 4J-PB - removed, since it needs to be localised in the language the client is in
-	//send( shared_ptr<ChatPacket>( new ChatPacket(L"§7" + string) ) );
+	//send( shared_ptr<ChatPacket>( new ChatPacket(L"ï¿½7" + string) ) );
 }
 
 void PlayerConnection::warn(const wstring& string)
 {
 	// 4J-PB - removed, since it needs to be localised in the language the client is in
-	//send( shared_ptr<ChatPacket>( new ChatPacket(L"§9" + string) ) );
+	//send( shared_ptr<ChatPacket>( new ChatPacket(L"ï¿½9" + string) ) );
 }
 
 wstring PlayerConnection::getConsoleName()
@@ -798,7 +798,7 @@ void PlayerConnection::handleTexture(shared_ptr<TexturePacket> packet)
 		wprintf(L"Server received request for custom texture %ls\n",packet->textureName.c_str());
 #endif
 		PBYTE pbData=NULL;
-		DWORD dwBytes=0;		
+		DWORD dwBytes=0;
 		app.GetMemFileDetails(packet->textureName,&pbData,&dwBytes);
 
 		if(dwBytes!=0)
@@ -832,7 +832,7 @@ void PlayerConnection::handleTextureAndGeometry(shared_ptr<TextureAndGeometryPac
 		wprintf(L"Server received request for custom texture %ls\n",packet->textureName.c_str());
 #endif
 		PBYTE pbData=NULL;
-		DWORD dwTextureBytes=0;		
+		DWORD dwTextureBytes=0;
 		app.GetMemFileDetails(packet->textureName,&pbData,&dwTextureBytes);
 		DLCSkinFile *pDLCSkinFile = app.m_dlcManager.getSkinFile(packet->textureName);
 
@@ -892,11 +892,11 @@ void PlayerConnection::handleTextureAndGeometry(shared_ptr<TextureAndGeometryPac
 void PlayerConnection::handleTextureReceived(const wstring &textureName)
 {
 	// This sends the server received texture out to any other players waiting for the data
-	AUTO_VAR(it, find( m_texturesRequested.begin(), m_texturesRequested.end(), textureName ));
-	if( it != m_texturesRequested.end() )
+    auto it = find(m_texturesRequested.begin(), m_texturesRequested.end(), textureName);
+    if( it != m_texturesRequested.end() )
 	{
 		PBYTE pbData=NULL;
-		DWORD dwBytes=0;		
+		DWORD dwBytes=0;
 		app.GetMemFileDetails(textureName,&pbData,&dwBytes);
 
 		if(dwBytes!=0)
@@ -910,11 +910,11 @@ void PlayerConnection::handleTextureReceived(const wstring &textureName)
 void PlayerConnection::handleTextureAndGeometryReceived(const wstring &textureName)
 {
 	// This sends the server received texture out to any other players waiting for the data
-	AUTO_VAR(it, find( m_texturesRequested.begin(), m_texturesRequested.end(), textureName ));
-	if( it != m_texturesRequested.end() )
+    auto it = find(m_texturesRequested.begin(), m_texturesRequested.end(), textureName);
+    if( it != m_texturesRequested.end() )
 	{
 		PBYTE pbData=NULL;
-		DWORD dwTextureBytes=0;		
+		DWORD dwTextureBytes=0;
 		app.GetMemFileDetails(textureName,&pbData,&dwTextureBytes);
 		DLCSkinFile *pDLCSkinFile=app.m_dlcManager.getSkinFile(textureName);
 
@@ -933,7 +933,7 @@ void PlayerConnection::handleTextureAndGeometryReceived(const wstring &textureNa
 
 				send( shared_ptr<TextureAndGeometryPacket>( new TextureAndGeometryPacket(textureName,pbData,dwTextureBytes, pvSkinBoxes, uiAnimOverrideBitmask) ) );
 			}
-			m_texturesRequested.erase(it);		
+			m_texturesRequested.erase(it);
 		}
 	}
 }
@@ -967,7 +967,7 @@ void PlayerConnection::handleTextureChange(shared_ptr<TextureChangePacket> packe
 		}
 	}
 	else if(!packet->path.empty() && app.IsFileInMemoryTextures(packet->path))
-	{			
+	{
 		// Update the ref count on the memory texture data
 		app.AddMemoryTextureFile(packet->path,NULL,0);
 	}
@@ -994,7 +994,7 @@ void PlayerConnection::handleTextureAndGeometryChange(shared_ptr<TextureAndGeome
 		}
 	}
 	else if(!packet->path.empty() && app.IsFileInMemoryTextures(packet->path))
-	{			
+	{
 		// Update the ref count on the memory texture data
 		app.AddMemoryTextureFile(packet->path,NULL,0);
 
@@ -1017,7 +1017,7 @@ void PlayerConnection::handleServerSettingsChanged(shared_ptr<ServerSettingsChan
 		if( (networkPlayer != NULL && networkPlayer->IsHost()) || player->isModerator())
 		{
 			app.SetGameHostOption(eGameHostOption_FireSpreads, app.GetGameHostOption(packet->data,eGameHostOption_FireSpreads));
-			app.SetGameHostOption(eGameHostOption_TNT, app.GetGameHostOption(packet->data,eGameHostOption_TNT));			
+			app.SetGameHostOption(eGameHostOption_TNT, app.GetGameHostOption(packet->data,eGameHostOption_TNT));
 			app.SetGameHostOption(eGameHostOption_MobGriefing, app.GetGameHostOption(packet->data, eGameHostOption_MobGriefing));
 			app.SetGameHostOption(eGameHostOption_KeepInventory, app.GetGameHostOption(packet->data, eGameHostOption_KeepInventory));
 			app.SetGameHostOption(eGameHostOption_DoMobSpawning, app.GetGameHostOption(packet->data, eGameHostOption_DoMobSpawning));
@@ -1038,7 +1038,7 @@ void PlayerConnection::handleKickPlayer(shared_ptr<KickPlayerPacket> packet)
 {
 	INetworkPlayer *networkPlayer = getNetworkPlayer();
 	if( (networkPlayer != NULL && networkPlayer->IsHost()) || player->isModerator())
-	{		
+	{
 		server->getPlayers()->kickPlayerByShortId(packet->m_networkSmallId);
 	}
 }
@@ -1090,7 +1090,7 @@ void PlayerConnection::handleContainerClose(shared_ptr<ContainerClosePacket> pac
 	player->doCloseContainer();
 }
 
-#ifndef _CONTENT_PACKAGE	
+#ifndef _CONTENT_PACKAGE
 void PlayerConnection::handleContainerSetSlot(shared_ptr<ContainerSetSlotPacket> packet)
 {
 	if (packet->containerId == AbstractContainerMenu::CONTAINER_ID_CARRIED )
@@ -1192,7 +1192,7 @@ void PlayerConnection::handleSetCreativeModeSlot(shared_ptr<SetCreativeModeSlotP
 			int centreXC = 0;
 			int centreZC = 0;
 #endif
-			item->setAuxValue( player->level->getAuxValueForMap(player->getXuid(), player->dimension, centreXC, centreZC, mapScale) );			
+			item->setAuxValue( player->level->getAuxValueForMap(player->getXuid(), player->dimension, centreXC, centreZC, mapScale) );
 
 			shared_ptr<MapItemSavedData> data = MapItem::getSavedData(item->getAuxValue(), player->level);
 			// 4J Stu - We only have one map per player per dimension, so don't reset the one that they have
@@ -1261,9 +1261,9 @@ void PlayerConnection::handleSetCreativeModeSlot(shared_ptr<SetCreativeModeSlotP
 
 void PlayerConnection::handleContainerAck(shared_ptr<ContainerAckPacket> packet)
 {
-	AUTO_VAR(it, expectedAcks.find(player->containerMenu->containerId));
+    auto it = expectedAcks.find(player->containerMenu->containerId);
 
-	if (it != expectedAcks.end() && packet->uid == it->second && player->containerMenu->containerId == packet->containerId && !player->containerMenu->isSynched(player))
+    if (it != expectedAcks.end() && packet->uid == it->second && player->containerMenu->containerId == packet->containerId && !player->containerMenu->isSynched(player))
 	{
 		player->containerMenu->setSynched(player, true);
 	}
@@ -1319,7 +1319,7 @@ void PlayerConnection::handleKeepAlive(shared_ptr<KeepAlivePacket> packet)
 }
 
 void PlayerConnection::handlePlayerInfo(shared_ptr<PlayerInfoPacket> packet)
-{	
+{
 	// Need to check that this player has permission to change each individual setting?
 
 	INetworkPlayer *networkPlayer = getNetworkPlayer();
@@ -1327,9 +1327,8 @@ void PlayerConnection::handlePlayerInfo(shared_ptr<PlayerInfoPacket> packet)
 	{
 		shared_ptr<ServerPlayer> serverPlayer;
 		// Find the player being edited
-		for(AUTO_VAR(it, server->getPlayers()->players.begin()); it != server->getPlayers()->players.end(); ++it)
+		for(auto& checkingPlayer : server->getPlayers()->players)
 		{
-			shared_ptr<ServerPlayer> checkingPlayer = *it;
 			if(checkingPlayer->connection->getNetworkPlayer() != NULL && checkingPlayer->connection->getNetworkPlayer()->GetSmallId() == packet->m_networkSmallId)
 			{
 				serverPlayer = checkingPlayer;
@@ -1350,7 +1349,7 @@ void PlayerConnection::handlePlayerInfo(shared_ptr<PlayerInfoPacket> packet)
 				if (serverPlayer->gameMode->getGameModeForPlayer() != gameType)
 				{
 #ifndef _CONTENT_PACKAGE
-					wprintf(L"Setting %ls to game mode %d\n", serverPlayer->name.c_str(), gameType);
+					wprintf(L"Setting %ls to game mode %d\n", serverPlayer->name.c_str(), gameType->getId());
 #endif
 					serverPlayer->setPlayerGamePrivilege(Player::ePlayerGamePrivilege_CreativeMode,Player::getPlayerGamePrivilege(packet->m_playerPrivileges,Player::ePlayerGamePrivilege_CreativeMode) );
 					serverPlayer->gameMode->setGameModeForPlayer(gameType);
@@ -1382,7 +1381,7 @@ void PlayerConnection::handlePlayerInfo(shared_ptr<PlayerInfoPacket> packet)
 			}
 			else
 			{
-				// Editing someone else				
+				// Editing someone else
 				if(!trustPlayers && !serverPlayer->connection->getNetworkPlayer()->IsHost())
 				{
 					serverPlayer->setPlayerGamePrivilege(Player::ePlayerGamePrivilege_CannotMine,Player::getPlayerGamePrivilege(packet->m_playerPrivileges,Player::ePlayerGamePrivilege_CannotMine) );
@@ -1609,7 +1608,7 @@ void PlayerConnection::handleCraftItem(shared_ptr<CraftItemPacket> packet)
 
 
 		// TODO 4J Stu - Assume at the moment that the client can work this out for us...
-		//if(pRecipeIngredientsRequired[iRecipe].bCanMake) 
+		//if(pRecipeIngredientsRequired[iRecipe].bCanMake)
 		//{
 		pTempItemInst->onCraftedBy(player->level, dynamic_pointer_cast<Player>( player->shared_from_this() ), pTempItemInst->count );
 
@@ -1756,7 +1755,7 @@ INetworkPlayer *PlayerConnection::getNetworkPlayer()
 
 bool PlayerConnection::isLocal()
 {
-	if( connection->getSocket() == NULL ) 
+	if( connection->getSocket() == NULL )
 	{
 		return false;
 	}
@@ -1769,7 +1768,7 @@ bool PlayerConnection::isLocal()
 
 bool PlayerConnection::isGuest()
 {
-	if( connection->getSocket() == NULL ) 
+	if( connection->getSocket() == NULL )
 	{
 		return false;
 	}

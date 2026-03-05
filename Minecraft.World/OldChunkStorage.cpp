@@ -103,7 +103,7 @@ File OldChunkStorage::getFile(int x, int z)
 	file = File( file, wstring( name ) );
 	if ( !file.exists() )
 	{
-		if (!create) 
+		if (!create)
 		{
 			return File(L"");
 		}
@@ -163,7 +163,7 @@ void OldChunkStorage::save(Level *level, LevelChunk *levelChunk)
 	{
 		LevelData *levelData = level->getLevelData();
 		levelData->setSizeOnDisk( levelData->getSizeOnDisk() - file.length() );
-	} 
+	}
 
 	// 4J - removed try/catch
 	//    try {
@@ -202,7 +202,7 @@ bool OldChunkStorage::saveEntities(LevelChunk *lc, Level *level, CompoundTag *ta
 
 	lc->lastSaveHadEntities = false;
 	ListTag<CompoundTag> *entityTags = new ListTag<CompoundTag>();
-	
+
 #ifdef _ENTITIES_RW_SECTION
 	EnterCriticalRWSection(&lc->m_csEntities, true);
 #else
@@ -210,17 +210,14 @@ bool OldChunkStorage::saveEntities(LevelChunk *lc, Level *level, CompoundTag *ta
 #endif
 	for (int i = 0; i < lc->ENTITY_BLOCKS_LENGTH; i++)
 	{
-		AUTO_VAR(itEnd, lc->entityBlocks[i]->end());
-		for( vector<shared_ptr<Entity> >::iterator it = lc->entityBlocks[i]->begin(); it != itEnd; it++ )
+		for( auto& e : *lc->entityBlocks[i] )
 		{
-			shared_ptr<Entity> e = *it;
 			lc->lastSaveHadEntities = true;
 			CompoundTag *teTag = new CompoundTag();
-			if (e->save(teTag))
+			if ( e && e->save(teTag))
 			{
 				entityTags->add(teTag);
 			}
-
 		}
 	}
 #ifdef _ENTITIES_RW_SECTION
@@ -264,15 +261,13 @@ void OldChunkStorage::save(LevelChunk *lc, Level *level, DataOutputStream *dos)
 #ifndef SPLIT_SAVES
 	saveEntities(lc, level, tag);
 #endif
-	
+
 	PIXBeginNamedEvent(0,"Saving tile entities");
 	ListTag<CompoundTag> *tileEntityTags = new ListTag<CompoundTag>();
 
-	AUTO_VAR(itEnd, lc->tileEntities.end());
-	for( unordered_map<TilePos, shared_ptr<TileEntity>, TilePosKeyHash, TilePosKeyEq>::iterator it = lc->tileEntities.begin();
-		it != itEnd; it++)
+	for(auto& it : lc->tileEntities)
 	{
-		shared_ptr<TileEntity> te = it->second;
+		shared_ptr<TileEntity> te = it.second;
 		CompoundTag *teTag = new CompoundTag();
 		te->save(teTag);
 		tileEntityTags->add(teTag);
@@ -358,11 +353,9 @@ void OldChunkStorage::save(LevelChunk *lc, Level *level, CompoundTag *tag)
 	PIXBeginNamedEvent(0,"Saving tile entities");
 	ListTag<CompoundTag> *tileEntityTags = new ListTag<CompoundTag>();
 
-	AUTO_VAR(itEnd, lc->tileEntities.end());
-	for( unordered_map<TilePos, shared_ptr<TileEntity>, TilePosKeyHash, TilePosKeyEq>::iterator it = lc->tileEntities.begin();
-		it != itEnd; it++)
+	for(auto& it : lc->tileEntities)
 	{
-		shared_ptr<TileEntity> te = it->second;
+		shared_ptr<TileEntity> te = it.second;
 		CompoundTag *teTag = new CompoundTag();
 		te->save(teTag);
 		tileEntityTags->add(teTag);
@@ -451,7 +444,7 @@ LevelChunk *OldChunkStorage::load(Level *level, DataInputStream *dis)
 
 	dis->readFully(levelChunk->heightmap);
 
-	levelChunk->terrainPopulated = dis->readShort();	
+	levelChunk->terrainPopulated = dis->readShort();
 	// If all neighbours have been post-processed, then we should have done the post-post-processing now. Check that this is set as if it isn't then we won't be able
 	// to send network data for chunks, and we won't ever try and set it again as all the directional flags are now already set - should only be an issue for old maps
 	// before this flag was added.
@@ -537,13 +530,13 @@ LevelChunk *OldChunkStorage::load(Level *level, CompoundTag *tag)
 	if( tag->get(L"TerrainPopulated") )
 	{
 		// Java bool type or byte bitfield
-		levelChunk->terrainPopulated = tag->getByte(L"TerrainPopulated");		
+		levelChunk->terrainPopulated = tag->getByte(L"TerrainPopulated");
 		if( levelChunk->terrainPopulated >= 1 ) levelChunk->terrainPopulated = LevelChunk::sTerrainPopulatedAllNeighbours | LevelChunk::sTerrainPostPostProcessed;	// Convert from old bool type to new bitfield
 	}
 	else
 	{
 		// New style short
-		levelChunk->terrainPopulated = tag->getShort(L"TerrainPopulatedFlags");	
+		levelChunk->terrainPopulated = tag->getShort(L"TerrainPopulatedFlags");
 		// If all neighbours have been post-processed, then we should have done the post-post-processing now. Check that this is set as if it isn't then we won't be able
 		// to send network data for chunks, and we won't ever try and set it again as all the directional flags are now already set - should only be an issue for old maps
 		// before this flag was added.

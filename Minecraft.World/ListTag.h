@@ -20,9 +20,8 @@ public:
 		dos->writeByte(type);
 		dos->writeInt((int)list.size());
 
-		AUTO_VAR(itEnd, list.end());
-		for (AUTO_VAR(it, list.begin()); it != itEnd; it++)
-			(*it)->write(dos);
+		for ( auto& it : list )
+			it->write(dos);
 	}
 
 	void load(DataInput *dis, int tagDepth)
@@ -52,7 +51,7 @@ public:
 	wstring toString()
 	{
 		static wchar_t buf[64];
-		swprintf(buf,64,L"%d entries of type %ls",list.size(),Tag::getTagName(type));
+		swprintf(buf,64,L"%zu entries of type %ls",list.size(),Tag::getTagName(type));
 		return wstring( buf );
 	}
 
@@ -65,9 +64,8 @@ public:
 		char *newPrefix = new char[ strlen(prefix) + 4 ];
 		strcpy( newPrefix, prefix);
 		strcat( newPrefix, "   ");
-		AUTO_VAR(itEnd, list.end());
-		for (AUTO_VAR(it, list.begin()); it != itEnd; it++)
-			(*it)->print(newPrefix, out);
+		for ( auto& it : list )
+			it->print(newPrefix, out);
 		delete[] newPrefix;
 		out << prefix << "}" << endl;
 	}
@@ -95,10 +93,9 @@ public:
 
 	virtual ~ListTag()
 	{
-		AUTO_VAR(itEnd, list.end());
-		for (AUTO_VAR(it, list.begin()); it != itEnd; it++)
+		for ( auto& it : list )
 		{
-			delete *it;
+			delete it;
 		}
 	}
 
@@ -106,10 +103,9 @@ public:
 	{
 		ListTag<T> *res = new ListTag<T>(getName());
 		res->type = type;
-		AUTO_VAR(itEnd, list.end());
-		for (AUTO_VAR(it, list.begin()); it != itEnd; it++)
+		for ( auto& it : list )
 		{
-			T *copy = (T *) (*it)->copy();
+			T *copy = (T *) it->copy();
 			res->list.push_back(copy);
 		}
 		return res;
@@ -126,14 +122,13 @@ public:
 				if(list.size() == o->list.size())
 				{
 					equal = true;
-					AUTO_VAR(itEnd, list.end());
 					// 4J Stu - Pretty inefficient method, but I think we can live with it give how often it will happen, and the small sizes of the data sets
-					for (AUTO_VAR(it, list.begin()); it != itEnd; ++it)
+					for ( auto& it : list )
 					{
 						bool thisMatches = false;
-						for(AUTO_VAR(it2, o->list.begin()); it2 != o->list.end(); ++it2)
+						for( auto it2 : o->list )
 						{
-							if((*it)->equals(*it2))
+							if(it->equals(it2))
 							{
 								thisMatches = true;
 								break;

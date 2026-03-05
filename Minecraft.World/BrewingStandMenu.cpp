@@ -40,10 +40,8 @@ void BrewingStandMenu::broadcastChanges()
 {
 	AbstractContainerMenu::broadcastChanges();
 
-	//for (int i = 0; i < containerListeners->size(); i++)
-	for(AUTO_VAR(it, containerListeners.begin()); it != containerListeners.end(); ++it)
+	for( auto& listener : containerListeners )
 	{
-		ContainerListener *listener = *it; //containerListeners.at(i);
 		if (tc != brewingStand->getBrewTime())
 		{
 			listener->setContainerData(this, 0, brewingStand->getBrewTime());

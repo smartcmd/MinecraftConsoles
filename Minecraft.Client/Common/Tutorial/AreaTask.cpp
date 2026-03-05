@@ -23,9 +23,8 @@ bool AreaTask::isCompleted()
 	case eAreaTaskCompletion_CompleteOnConstraintsSatisfied:
 		{
 			bool allSatisfied = true;
-			for(AUTO_VAR(it, constraints.begin()); it != constraints.end(); ++it)
+			for( auto& constraint : constraints )
 			{
-				TutorialConstraint *constraint = *it;
 				if(!constraint->isConstraintSatisfied(tutorial->getPad()))
 				{
 					allSatisfied = false;

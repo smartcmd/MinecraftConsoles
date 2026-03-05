@@ -1,4 +1,4 @@
-#include "stdafx.h"	
+#include "stdafx.h"
 #include "..\..\..\Minecraft.World\Socket.h"
 #include "..\..\..\Minecraft.World\StringHelpers.h"
 #include "PlatformNetworkManagerDurango.h"
@@ -131,9 +131,8 @@ void CPlatformNetworkManagerDurango::HandlePlayerJoined(DQRNetworkPlayer *pDQRPl
 		{
 			// Do we already have a primary player for this system?
 			bool systemHasPrimaryPlayer = false;
-			for(AUTO_VAR(it, m_machineDQRPrimaryPlayers.begin()); it < m_machineDQRPrimaryPlayers.end(); ++it)
-			{
-				DQRNetworkPlayer *pQNetPrimaryPlayer = *it;
+            for ( DQRNetworkPlayer *pQNetPrimaryPlayer : m_machineDQRPrimaryPlayers )
+            {
 				if( pDQRPlayer->IsSameSystem(pQNetPrimaryPlayer) )
 				{
 					systemHasPrimaryPlayer = true;
@@ -145,7 +144,7 @@ void CPlatformNetworkManagerDurango::HandlePlayerJoined(DQRNetworkPlayer *pDQRPl
 		}
     }
 	g_NetworkManager.PlayerJoining( networkPlayer );
-	
+
 	if( createFakeSocket == true && !m_bHostChanged )
 	{
 		g_NetworkManager.CreateSocket( networkPlayer, localPlayer );
@@ -164,7 +163,7 @@ void CPlatformNetworkManagerDurango::HandlePlayerJoined(DQRNetworkPlayer *pDQRPl
 		g_NetworkManager.UpdateAndSetGameSessionData();
 		SystemFlagAddPlayer( networkPlayer );
 	}
-	
+
 	for( int idx = 0; idx < XUSER_MAX_COUNT; ++idx)
 	{
 		if(playerChangedCallback[idx] != NULL)
@@ -233,8 +232,8 @@ void CPlatformNetworkManagerDurango::HandlePlayerLeaving(DQRNetworkPlayer *pDQRP
 						break;
 					}
 				}
-				AUTO_VAR(it, find( m_machineDQRPrimaryPlayers.begin(), m_machineDQRPrimaryPlayers.end(), pDQRPlayer));
-				if( it != m_machineDQRPrimaryPlayers.end() )
+                auto it = find(m_machineDQRPrimaryPlayers.begin(), m_machineDQRPrimaryPlayers.end(), pDQRPlayer);
+                if( it != m_machineDQRPrimaryPlayers.end() )
 				{
 					m_machineDQRPrimaryPlayers.erase( it );
 				}
@@ -249,7 +248,7 @@ void CPlatformNetworkManagerDurango::HandlePlayerLeaving(DQRNetworkPlayer *pDQRP
 		}
 
 		g_NetworkManager.PlayerLeaving( networkPlayer );
-	
+
 		for( int idx = 0; idx < XUSER_MAX_COUNT; ++idx)
 		{
 			if(playerChangedCallback[idx] != NULL)
@@ -322,7 +321,7 @@ bool CPlatformNetworkManagerDurango::Initialise(CGameNetworkManager *pGameNetwor
 	{
 		playerChangedCallback[ i ] = NULL;
 	}
-	
+
 	m_bLeavingGame = false;
 	m_bLeaveGameOnTick = false;
 	m_bHostChanged = false;
@@ -593,7 +592,7 @@ void CPlatformNetworkManagerDurango::UnRegisterPlayerChangedCallback(int iPad, v
 
 void CPlatformNetworkManagerDurango::HandleSignInChange()
 {
-	return;	
+	return;
 }
 
 void CPlatformNetworkManagerDurango::HandleAddLocalPlayerFailed(int idx, bool serverFull)
@@ -618,10 +617,10 @@ void CPlatformNetworkManagerDurango::UpdateAndSetGameSessionData(INetworkPlayer 
 {
  	if( this->m_bLeavingGame )
  		return;
- 
+
  	if( GetHostPlayer() == NULL )
  		return;
- 
+
  	m_hostGameSessionData.m_uiGameHostSettings = app.GetGameHostOption(eGameHostOption_All);
 
 	m_pDQRNet->UpdateCustomSessionData();
@@ -847,8 +846,8 @@ INetworkPlayer *CPlatformNetworkManagerDurango::addNetworkPlayer(DQRNetworkPlaye
 void CPlatformNetworkManagerDurango::removeNetworkPlayer(DQRNetworkPlayer *pDQRPlayer)
 {
 	INetworkPlayer *pNetworkPlayer = getNetworkPlayer(pDQRPlayer);
-	for( AUTO_VAR(it, currentNetworkPlayers.begin()); it != currentNetworkPlayers.end(); it++ )
-	{
+    for (auto it = currentNetworkPlayers.begin(); it != currentNetworkPlayers.end(); ++it)
+    {
 		if( *it == pNetworkPlayer )
 		{
 			currentNetworkPlayers.erase(it);
@@ -865,7 +864,7 @@ INetworkPlayer *CPlatformNetworkManagerDurango::getNetworkPlayer(DQRNetworkPlaye
 
 INetworkPlayer *CPlatformNetworkManagerDurango::GetLocalPlayerByUserIndex(int userIndex )
 {
-	return getNetworkPlayer(m_pDQRNet->GetLocalPlayerByUserIndex(userIndex)); 
+	return getNetworkPlayer(m_pDQRNet->GetLocalPlayerByUserIndex(userIndex));
 }
 
 INetworkPlayer *CPlatformNetworkManagerDurango::GetPlayerByIndex(int playerIndex)

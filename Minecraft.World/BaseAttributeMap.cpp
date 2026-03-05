@@ -4,9 +4,9 @@
 
 BaseAttributeMap::~BaseAttributeMap()
 {
-	for(AUTO_VAR(it,attributesById.begin()); it != attributesById.end(); ++it)
+	for( auto& it : attributesById )
 	{
-		delete it->second;
+		delete it.second;
 	}
 }
 
@@ -17,7 +17,7 @@ AttributeInstance *BaseAttributeMap::getInstance(Attribute *attribute)
 
 AttributeInstance *BaseAttributeMap::getInstance(eATTRIBUTE_ID id)
 {
-	AUTO_VAR(it,attributesById.find(id));
+	auto it = attributesById.find(id);
 	if(it != attributesById.end())
 	{
 		return it->second;
@@ -30,9 +30,9 @@ AttributeInstance *BaseAttributeMap::getInstance(eATTRIBUTE_ID id)
 
 void BaseAttributeMap::getAttributes(vector<AttributeInstance *>& atts)
 {
-	for(AUTO_VAR(it,attributesById.begin()); it != attributesById.end(); ++it)
+	for( auto& it : attributesById )
 	{
-		atts.push_back(it->second);
+		atts.push_back(it.second);
 	}
 }
 
@@ -43,40 +43,44 @@ void BaseAttributeMap::onAttributeModified(ModifiableAttributeInstance *attribut
 void BaseAttributeMap::removeItemModifiers(shared_ptr<ItemInstance> item)
 {
 	attrAttrModMap *modifiers = item->getAttributeModifiers();
-
-	for(AUTO_VAR(it, modifiers->begin()); it != modifiers->end(); ++it)
+	if ( modifiers )
 	{
-		AttributeInstance *attribute = getInstance(it->first);
-		AttributeModifier *modifier = it->second;
-
-		if (attribute != NULL)
+		for (auto& it : *modifiers)
 		{
-			attribute->removeModifier(modifier);
+			AttributeInstance* attribute = getInstance(it.first);
+			AttributeModifier* modifier = it.second;
+
+			if (attribute != NULL)
+			{
+				attribute->removeModifier(modifier);
+			}
+
+			delete modifier;
 		}
 
-		delete modifier;
+		delete modifiers;
 	}
-
-	delete modifiers;
 }
 
 void BaseAttributeMap::addItemModifiers(shared_ptr<ItemInstance> item)
 {
 	attrAttrModMap *modifiers = item->getAttributeModifiers();
-
-	for(AUTO_VAR(it, modifiers->begin()); it != modifiers->end(); ++it)
+	if ( modifiers )
 	{
-		AttributeInstance *attribute = getInstance(it->first);
-		AttributeModifier *modifier = it->second;
-
-		if (attribute != NULL)
+		for (auto& it : *modifiers)
 		{
-			attribute->removeModifier(modifier);
-			attribute->addModifier(new AttributeModifier(*modifier));
-		}
-		
-		delete modifier;
-	}
+			AttributeInstance* attribute = getInstance(it.first);
+			AttributeModifier* modifier = it.second;
 
-	delete modifiers;
+			if (attribute != NULL)
+			{
+				attribute->removeModifier(modifier);
+				attribute->addModifier(new AttributeModifier(*modifier));
+			}
+
+			delete modifier;
+		}
+
+		delete modifiers;
+	}
 }

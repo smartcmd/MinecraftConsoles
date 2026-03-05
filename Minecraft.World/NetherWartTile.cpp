@@ -107,6 +107,6 @@ void NetherWartTile::registerIcons(IconRegister *iconRegister)
 {
 	for (int i = 0; i < NETHER_STALK_TEXTURE_COUNT; i++)
 	{
-		icons[i] = iconRegister->registerIcon(getIconName() + L"_stage_" + _toString<int>(i) );
+		icons[i] = iconRegister->registerIcon(getIconName() + L"_stage_" + std::to_wstring(i) );
 	}
 }

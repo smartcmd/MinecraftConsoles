@@ -2,7 +2,7 @@
 
 // All the instanceof s from Java have been converted to dynamic_cast in this file
 // Once all the classes are finished it may be that we do not need to use dynamic_cast
-// for every test and a simple virtual function should suffice. We probably only need 
+// for every test and a simple virtual function should suffice. We probably only need
 // dynamic_cast to find one of the classes that an object derives from, and not to find
 // the derived class itself (which should own the virtual GetType function)
 
@@ -348,7 +348,7 @@ void Player::tick()
 	zCloak += zca * 0.25;
 	yCloak += yca * 0.25;
 
-	if (riding == NULL) 
+	if (riding == NULL)
 	{
 		if( minecartAchievementPos != NULL )
 		{
@@ -458,7 +458,7 @@ void Player::tick()
 		// minecart. For some reason some of the torches come off so it will also need some fixing along the way.
 		static bool madeTrack = false;
 		if( !madeTrack )
-		{	
+		{
 			this->drop( shared_ptr<ItemInstance>( new ItemInstance( Item::minecart, 1 ) ) );
 			this->drop( shared_ptr<ItemInstance>( new ItemInstance( Tile::goldenRail, 10 ) ) );
 			this->drop( shared_ptr<ItemInstance>( new ItemInstance( Tile::lever, 10 ) ) );
@@ -631,8 +631,8 @@ void Player::ride(shared_ptr<Entity> e)
 	LivingEntity::ride(e);
 }
 
-void Player::setPlayerDefaultSkin(EDefaultSkins skin)										
-{ 	
+void Player::setPlayerDefaultSkin(EDefaultSkins skin)
+{
 #ifndef _CONTENT_PACKAGE
 	wprintf(L"Setting default skin to %d for player %ls\n", skin, name.c_str() );
 #endif
@@ -651,8 +651,8 @@ void Player::setCustomSkin(DWORD skinId)
 
 	setAnimOverrideBitmask(getSkinAnimOverrideBitmask(skinId));
 	if( !GET_IS_DLC_SKIN_FROM_BITMASK(skinId) )
-	{	
-		// GET_UGC_SKIN_ID_FROM_BITMASK will always be zero - this was for a possible custom skin editor skin 
+	{
+		// GET_UGC_SKIN_ID_FROM_BITMASK will always be zero - this was for a possible custom skin editor skin
 		DWORD ugcSkinIndex = GET_UGC_SKIN_ID_FROM_BITMASK(skinId);
 		DWORD defaultSkinIndex = GET_DEFAULT_SKIN_ID_FROM_BITMASK(skinId);
 		if( ugcSkinIndex == 0 && defaultSkinIndex > 0 )
@@ -722,7 +722,7 @@ unsigned int Player::getSkinAnimOverrideBitmask(DWORD skinId)
 {
 	unsigned long bitmask = 0L;
 	if( GET_IS_DLC_SKIN_FROM_BITMASK(skinId) )
-	{	
+	{
 		// Temp check for anim override
 		switch( GET_DLC_SKIN_ID_FROM_BITMASK(skinId) )
 		{
@@ -785,7 +785,7 @@ void Player::setCustomCape(DWORD capeId)
 	else
 	{
 		MOJANG_DATA *pMojangData=app.GetMojangDataForXuid(getOnlineXuid());
-		if(pMojangData) 
+		if(pMojangData)
 		{
 			// Cape
 			if(pMojangData->wchCape)
@@ -822,7 +822,7 @@ void Player::setCustomCape(DWORD capeId)
 
 DWORD Player::getCapeIdFromPath(const wstring &cape)
 {
-	bool dlcCape = false; 
+	bool dlcCape = false;
 	unsigned int capeId = 0;
 
 	if(cape.size() >= 14)
@@ -886,7 +886,7 @@ void Player::ChangePlayerSkin()
 			this->customTextureUrl=L"";
 		}
 		else
-		{		
+		{
 			if(m_uiPlayerCurrentSkin>0)
 			{
 				// change this players custom texture url
@@ -900,7 +900,7 @@ void Player::prepareCustomTextures()
 {
 	MOJANG_DATA *pMojangData=app.GetMojangDataForXuid(getOnlineXuid());
 
-	if(pMojangData) 
+	if(pMojangData)
 	{
 		// Skin
 		if(pMojangData->wchSkin)
@@ -1054,11 +1054,9 @@ void Player::aiStep()
 		vector<shared_ptr<Entity> > *entities = level->getEntities(shared_from_this(), pickupArea);
 		if (entities != NULL)
 		{
-			AUTO_VAR(itEnd, entities->end());
-			for (AUTO_VAR(it, entities->begin()); it != itEnd; it++)
+			for (auto& e : *entities)
 			{
-				shared_ptr<Entity> e = *it; //entities->at(i);
-				if (!e->removed)
+				if ( e && !e->removed)
 				{
 					touch(e);
 				}
@@ -1135,11 +1133,14 @@ void Player::awardKillScore(shared_ptr<Entity> victim, int awardPoints)
 
 	if(objectives)
 	{
-		for (AUTO_VAR(it,objectives->begin()); it != objectives->end(); ++it)
+		for (auto& objective : *objectives)
 		{
-			Objective *objective = *it;
-			Score *score = getScoreboard()->getPlayerScore(getAName(), objective);
-			score->increment();
+			if ( objective )
+			{
+				Score *score = getScoreboard()->getPlayerScore(getAName(), objective);
+				if ( score ) 
+					score->increment();
+			}
 		}
 	}
 }
@@ -1546,7 +1547,7 @@ bool Player::interact(shared_ptr<Entity> entity)
 	}
 
 	if ( (item != NULL) && entity->instanceof(eTYPE_LIVINGENTITY) )
-	{		
+	{
 		// 4J - PC Comments
 		// Hack to prevent item stacks from decrementing if the player has
 		// the ability to instabuild
@@ -1597,7 +1598,7 @@ void Player::attack(shared_ptr<Entity> entity)
 
 	int knockback = 0;
 	float magicBoost = 0;
-	
+
 	if ( entity->instanceof(eTYPE_LIVINGENTITY) )
 	{
 		shared_ptr<Player> thisPlayer = dynamic_pointer_cast<Player>(shared_from_this());
@@ -1657,7 +1658,7 @@ void Player::attack(shared_ptr<Entity> entity)
 			}
 			setLastHurtMob(entity);
 
-			
+
 			if ( entity->instanceof(eTYPE_LIVINGENTITY) )
 			{
 				shared_ptr<LivingEntity> mob = dynamic_pointer_cast<LivingEntity>(entity);
@@ -1800,11 +1801,11 @@ Player::BedSleepingResult Player::startSleepInBed(int x, int y, int z, bool bTes
 		}
 
 		// This causes a message to be displayed, so we do want to show the tooltip in test mode
-		if (!bTestUse && level->isDay()) 
+		if (!bTestUse && level->isDay())
 		{
 			// may not sleep during day
 			return NOT_POSSIBLE_NOW;
-		}	
+		}
 	}
 
 	if(bTestUse)
@@ -1889,7 +1890,7 @@ void Player::setBedOffset(int bedDirection)
 
 
 /**
-* 
+*
 * @param forcefulWakeUp
 *            If the player has been forced to wake up. When this happens,
 *            the client will skip the wake-up animation. For example, when
@@ -2193,7 +2194,7 @@ void Player::checkMovementStatistiscs(double dx, double dy, double dz)
 
 
 void Player::checkRidingStatistiscs(double dx, double dy, double dz)
-{ 
+{
 	if (riding != NULL)
 	{
 		int distance = (int) Math::round(sqrt(dx * dx + dy * dy + dz * dz) * 100.0f);
@@ -2215,7 +2216,7 @@ void Player::checkRidingStatistiscs(double dx, double dy, double dz)
 					minecartAchievementPos = new Pos(Mth::floor(x), Mth::floor(y), Mth::floor(z));
 				}
 				// 4J-PB - changed this because our world isn't big enough to go 1000m
-				else 
+				else
 				{
 					// 4-JEV, changed slightly to add extra parameters for event on durango.
 					int dist = minecartAchievementPos->dist(Mth::floor(x), Mth::floor(y), Mth::floor(z));
@@ -2242,7 +2243,7 @@ void Player::checkRidingStatistiscs(double dx, double dy, double dz)
 						awardStat(GenericStats::onARail(), GenericStats::param_onARail(dist));
 						m_bAwardedOnARail=true;
 					}
-#endif					
+#endif
 				}
 
 			}
@@ -2304,13 +2305,13 @@ void Player::killed(shared_ptr<LivingEntity> mob)
 		case eTYPE_SKELETON:
 			if( mob->isRiding() && mob->riding->GetType() == eTYPE_SPIDER )
 				awardStat(GenericStats::killsSpiderJockey(), GenericStats::param_noArgs());
-			else				
+			else
 				awardStat(GenericStats::killsSkeleton(), GenericStats::param_noArgs());
 			break;
 		case eTYPE_SPIDER:
 			if( mob->rider.lock() != NULL && mob->rider.lock()->GetType() == eTYPE_SKELETON )
 				awardStat(GenericStats::killsSpiderJockey(), GenericStats::param_noArgs());
-			else				
+			else
 				awardStat(GenericStats::killsSpider(), GenericStats::param_noArgs());
 			break;
 		case eTYPE_ZOMBIE:
@@ -2432,7 +2433,7 @@ int Player::getXpNeededForNextLevel()
 /**
 * This method adds on to the player's exhaustion, which may decrease the
 * player's food level.
-* 
+*
 * @param amount
 *            Amount of exhaustion to add, between 0 and 20 (setting it to
 *            20 will guarantee that at least 1, and at most 4, food points
@@ -2769,7 +2770,7 @@ void Player::setPlayerGamePrivilege(unsigned int &uiGamePrivileges, EPlayerGameP
 		}
 	}
 	else if (privilege < ePlayerGamePrivilege_MAX )
-	{		
+	{
 		if(value!=0)
 		{
 			uiGamePrivileges|=(1<<privilege);
@@ -3073,7 +3074,7 @@ void Player::enableAllPlayerPrivileges(unsigned int &uigamePrivileges, bool enab
 }
 
 void Player::enableAllPlayerPrivileges(bool enable)
-{	
+{
 	Player::enableAllPlayerPrivileges(m_uiGamePrivileges,enable);
 }
 
@@ -3082,8 +3083,8 @@ bool Player::canCreateParticles()
 	return !hasInvisiblePrivilege();
 }
 
-vector<ModelPart *> *Player::GetAdditionalModelParts() 
-{ 
+vector<ModelPart *> *Player::GetAdditionalModelParts()
+{
 	if(m_ppAdditionalModelParts==NULL && !m_bCheckedForModelParts)
 	{
 		bool hasCustomTexture = !customTextureUrl.empty();
@@ -3127,8 +3128,8 @@ vector<ModelPart *> *Player::GetAdditionalModelParts()
 	return m_ppAdditionalModelParts;
 }
 
-void Player::SetAdditionalModelParts(vector<ModelPart *> *ppAdditionalModelParts) 
-{ 
+void Player::SetAdditionalModelParts(vector<ModelPart *> *ppAdditionalModelParts)
+{
 	m_ppAdditionalModelParts=ppAdditionalModelParts;
 }
 
@@ -3139,7 +3140,7 @@ Player::ePlayerNameValidState Player::GetPlayerNameValidState(void)
 	return m_ePlayerNameValidState;
 }
 
-void Player::SetPlayerNameValidState(bool bState) 
+void Player::SetPlayerNameValidState(bool bState)
 {
 	if(bState)
 	{

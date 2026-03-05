@@ -15,9 +15,8 @@ ListTag<CompoundTag> *SharedMonsterAttributes::saveAttributes(BaseAttributeMap *
 
 	vector<AttributeInstance *> atts;
 	attributes->getAttributes(atts);
-	for (AUTO_VAR(it, atts.begin()); it != atts.end(); ++it)
+	for (auto& attribute : atts)
 	{
-		AttributeInstance *attribute = *it;
 		list->add(saveAttribute(attribute));
 	}
 
@@ -39,9 +38,8 @@ CompoundTag *SharedMonsterAttributes::saveAttribute(AttributeInstance *instance)
 	{
 		ListTag<CompoundTag> *list = new ListTag<CompoundTag>();
 
-		for (AUTO_VAR(it,modifiers.begin()); it != modifiers.end(); ++it)
+		for (auto& modifier : modifiers)
 		{
-			AttributeModifier* modifier = *it;
 			if (modifier->isSerializable())
 			{
 				list->add(saveAttributeModifier(modifier));

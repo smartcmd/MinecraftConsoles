@@ -9,7 +9,7 @@
 #include "net.minecraft.world.level.dimension.h"
 
 
-LightningBolt::LightningBolt(Level *level, double x, double y, double z) : 
+LightningBolt::LightningBolt(Level *level, double x, double y, double z) :
 	life( 0 ),
 	seed( 0 ),
 	flashes( 0 ),
@@ -103,10 +103,8 @@ void LightningBolt::tick()
 		{
 			double r = 3;
 			vector<shared_ptr<Entity> > *entities = level->getEntities(shared_from_this(), AABB::newTemp(x - r, y - r, z - r, x + r, y + 6 + r, z + r));
-			AUTO_VAR(itEnd, entities->end());
-			for (AUTO_VAR(it, entities->begin()); it != itEnd; it++)
+			for (auto& e : *entities)
 			{
-				shared_ptr<Entity> e = (*it); //entities->at(i);
 				e->thunderHit(this);
 			}
 		}

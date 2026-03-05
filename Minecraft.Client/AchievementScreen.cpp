@@ -261,12 +261,10 @@ void AchievementScreen::renderBg(int xm, int ym, float a)
     glDepthFunc(GL_LEQUAL);
 
     glDisable(GL_TEXTURE_2D);
-	
-	AUTO_VAR(itEnd, Achievements::achievements->end());
-	for (AUTO_VAR(it, Achievements::achievements->begin()); it != itEnd; it++)
+
+	for ( Achievement *ach : *Achievements::achievements )
 	{
-        Achievement *ach = *it; //Achievements::achievements->at(i);
-        if (ach->requires == NULL) continue;
+        if ( ach == nullptr || ach->requires == nullptr) continue;
 
         int x1 = ach->x * ACHIEVEMENT_COORD_SCALE - (int) xScroll + 11 + xBigMap;
         int y1 = ach->y * ACHIEVEMENT_COORD_SCALE - (int) yScroll + 11 + yBigMap;
@@ -298,12 +296,9 @@ void AchievementScreen::renderBg(int xm, int ym, float a)
     glDisable(GL_LIGHTING);
     glEnable(GL_RESCALE_NORMAL);
     glEnable(GL_COLOR_MATERIAL);
-	
-	itEnd = Achievements::achievements->end();
-	for (AUTO_VAR(it, Achievements::achievements->begin()); it != itEnd; it++)
-	{
-        Achievement *ach = *it; //Achievements::achievements->at(i);
 
+	for ( Achievement *ach : *Achievements::achievements )
+	{
         int x = ach->x * ACHIEVEMENT_COORD_SCALE - (int) xScroll;
         int y = ach->y * ACHIEVEMENT_COORD_SCALE - (int) yScroll;
 

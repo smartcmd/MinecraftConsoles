@@ -2,6 +2,7 @@
 #include "UI.h"
 #include "UIScene_LoadMenu.h"
 #include "..\..\Minecraft.h"
+#include "..\..\User.h"
 #include "..\..\TexturePackRepository.h"
 #include "..\..\Options.h"
 #include "..\..\MinecraftServer.h"
@@ -273,7 +274,7 @@ UIScene_LoadMenu::UIScene_LoadMenu(int iPad, void *initData, UILayer *parentLaye
 		m_bIgnoreInput = false;
 
 		Minecraft *pMinecraft = Minecraft::GetInstance();
-		int texturePacksCount = pMinecraft->skins->getTexturePackCount();
+		unsigned int texturePacksCount = (unsigned int)pMinecraft->skins->getTexturePackCount();
 		for(unsigned int i = 0; i < texturePacksCount; ++i)
 		{
 			TexturePack *tp = pMinecraft->skins->getTexturePackByIndex(i);
@@ -1629,6 +1630,12 @@ void UIScene_LoadMenu::StartGameFromSave(UIScene_LoadMenu* pClass, DWORD dwLocal
 
 	param->settings = app.GetGameHostOption( eGameHostOption_All );
 
+#ifdef _WINDOWS64
+	{
+		extern wchar_t g_Win64UsernameW[17];
+		Minecraft::GetInstance()->user->name = g_Win64UsernameW;
+	}
+#endif
 #ifndef _XBOX
 	g_NetworkManager.FakeLocalPlayerJoined();
 #endif

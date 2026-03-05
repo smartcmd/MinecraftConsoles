@@ -34,23 +34,9 @@ public:
 	static const int RULE_NATURAL_REGENERATION;
 	static const int RULE_DAYLIGHT;
 
-private:
-	unordered_map<wstring, GameRule *> rules;
-
 public:
-	GameRules();
-	~GameRules();
+	GameRules() = default;
+	~GameRules() = default;
 
 	bool getBoolean(const int rule);
-
-	// 4J: Removed unused functions
-	/*void set(const wstring &ruleName, const wstring &newValue);
-	void registerRule(const wstring &name, const wstring &startValue);
-	wstring get(const wstring &ruleName);
-	int getInt(const wstring &ruleName);
-	double getDouble(const wstring &ruleName);
-	CompoundTag *createTag();
-	void loadFromTag(CompoundTag *tag);
-	vector<wstring> *getRuleNames();
-	bool contains(const wstring &rule);*/
 };

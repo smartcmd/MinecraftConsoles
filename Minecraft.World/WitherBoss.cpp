@@ -535,7 +535,7 @@ void WitherBoss::registerAttributes()
 	getAttribute(SharedMonsterAttributes::MOVEMENT_SPEED)->setBaseValue(0.6f);
 
 	// 4J Stu - Don't make it so far!
-	//getAttribute(SharedMonsterAttributes::FOLLOW_RANGE)->setBaseValue(40);
+	getAttribute(SharedMonsterAttributes::FOLLOW_RANGE)->setBaseValue(40);
 }
 
 float WitherBoss::getHeadYRot(int i)

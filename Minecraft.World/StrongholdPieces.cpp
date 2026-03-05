@@ -52,9 +52,9 @@ bool StrongholdPieces::PieceWeight::isValid()
 
 void StrongholdPieces::resetPieces()
 {
-	for( AUTO_VAR(it, currentPieces.begin()); it != currentPieces.end(); it++ )
+	for(auto& it : currentPieces)
 	{
-		delete (*it);
+		delete it;
 	}
 	currentPieces.clear();
 
@@ -77,9 +77,8 @@ bool StrongholdPieces::updatePieceWeight()
 {
 	bool hasAnyPieces = false;
 	totalWeight = 0;
-	for( AUTO_VAR(it, currentPieces.begin()); it != currentPieces.end(); it++ )
+	for(auto& piece : currentPieces)
 	{
-		PieceWeight *piece = *it;
 		if (piece->maxPlaceCount > 0 && piece->placeCount < piece->maxPlaceCount)
 		{
 			hasAnyPieces = true;
@@ -166,9 +165,8 @@ StrongholdPieces::StrongholdPiece *StrongholdPieces::generatePieceFromSmallDoor(
 		numAttempts++;
 
 		int weightSelection = random->nextInt(totalWeight);
-		for( AUTO_VAR(it, currentPieces.begin()); it != currentPieces.end(); it++ )
-		{
-			PieceWeight *piece = *it;
+        for ( PieceWeight *piece : currentPieces )
+        {
 			weightSelection -= piece->weight;
 			if (weightSelection < 0)
 			{
@@ -215,10 +213,8 @@ StructurePiece *StrongholdPieces::generateAndAddPiece(StartPiece *startPiece, li
 		// Force attempt at spawning a portal room
 		if(startPiece->m_level->getOriginalSaveVersion() >= SAVE_FILE_VERSION_MOVED_STRONGHOLD && !startPiece->m_level->getLevelData()->getHasStrongholdEndPortal())
 		{
-			for( AUTO_VAR(it, currentPieces.begin()); it != currentPieces.end(); it++ )
-			{
-				PieceWeight *piece = *it;
-
+            for ( PieceWeight *piece : currentPieces )
+            {
 				if(piece->pieceClass != EPieceClass_PortalRoom) continue;
 
 #ifndef _CONTENT_PACKAGE
@@ -254,7 +250,7 @@ StructurePiece *StrongholdPieces::generateAndAddPiece(StartPiece *startPiece, li
 	return newPiece;
 }
 
-StrongholdPieces::StrongholdPiece::StrongholdPiece() 
+StrongholdPieces::StrongholdPiece::StrongholdPiece()
 {
 	entryDoor = OPENING;
 	// for reflection
@@ -267,7 +263,7 @@ StrongholdPieces::StrongholdPiece::StrongholdPiece(int genDepth) : StructurePiec
 
 void StrongholdPieces::StrongholdPiece::addAdditonalSaveData(CompoundTag *tag)
 {
-	tag->putString(L"EntryDoor", _toString<int>(entryDoor));
+	tag->putString(L"EntryDoor", std::to_wstring(entryDoor));
 }
 
 void StrongholdPieces::StrongholdPiece::readAdditonalSaveData(CompoundTag *tag)
@@ -565,7 +561,7 @@ StrongholdPieces::StairsDown *StrongholdPieces::StairsDown::createPiece(list<Str
 {
 	BoundingBox *box = BoundingBox::orientBox(footX, footY, footZ, -1, 4 - height, 0, width, height, depth, direction);
 
-	StartPiece *startPiece = NULL;	
+	StartPiece *startPiece = NULL;
 	if(pieces != NULL) startPiece = ((StrongholdPieces::StartPiece *) pieces->front());
 
 	if (!isOkBox(box, startPiece) || StructurePiece::findCollisionPiece(pieces, box) != NULL)
@@ -676,7 +672,7 @@ StrongholdPieces::Straight *StrongholdPieces::Straight::createPiece(list<Structu
 {
 	BoundingBox *box = BoundingBox::orientBox(footX, footY, footZ, -1, -1, 0, width, height, depth, direction);
 
-	StartPiece *startPiece = NULL;	
+	StartPiece *startPiece = NULL;
 	if(pieces != NULL) startPiece = ((StrongholdPieces::StartPiece *) pieces->front());
 
 	if (!isOkBox(box, startPiece) || StructurePiece::findCollisionPiece(pieces, box) != NULL)
@@ -719,7 +715,7 @@ bool StrongholdPieces::Straight::postProcess(Level *level, Random *random, Bound
 	return true;
 }
 
-WeighedTreasure *StrongholdPieces::ChestCorridor::treasureItems[TREASURE_ITEMS_COUNT] = 
+WeighedTreasure *StrongholdPieces::ChestCorridor::treasureItems[TREASURE_ITEMS_COUNT] =
 {
 	new WeighedTreasure(Item::enderPearl_Id, 0, 1, 1, 10),
 	new WeighedTreasure(Item::diamond_Id, 0, 1, 3, 3),
@@ -776,7 +772,7 @@ StrongholdPieces::ChestCorridor *StrongholdPieces::ChestCorridor::createPiece(li
 {
 	BoundingBox *box = BoundingBox::orientBox(footX, footY, footZ, -1, -1, 0, width, height, depth, direction);
 
-	StartPiece *startPiece = NULL;	
+	StartPiece *startPiece = NULL;
 	if(pieces != NULL) startPiece = ((StrongholdPieces::StartPiece *) pieces->front());
 
 	if (!isOkBox(box, startPiece) || StructurePiece::findCollisionPiece(pieces, box) != NULL)
@@ -848,7 +844,7 @@ StrongholdPieces::StraightStairsDown *StrongholdPieces::StraightStairsDown::crea
 {
 	BoundingBox *box = BoundingBox::orientBox(footX, footY, footZ, -1, 4 - height, 0, width, height, depth, direction);
 
-	StartPiece *startPiece = NULL;	
+	StartPiece *startPiece = NULL;
 	if(pieces != NULL) startPiece = ((StrongholdPieces::StartPiece *) pieces->front());
 
 	if (!isOkBox(box, startPiece) || StructurePiece::findCollisionPiece(pieces, box) != NULL)
@@ -920,7 +916,7 @@ StrongholdPieces::LeftTurn *StrongholdPieces::LeftTurn::createPiece(list<Structu
 {
 	BoundingBox *box = BoundingBox::orientBox(footX, footY, footZ, -1, -1, 0, width, height, depth, direction);
 
-	StartPiece *startPiece = NULL;	
+	StartPiece *startPiece = NULL;
 	if(pieces != NULL) startPiece = ((StrongholdPieces::StartPiece *) pieces->front());
 
 	if (!isOkBox(box, startPiece) || StructurePiece::findCollisionPiece(pieces, box) != NULL)
@@ -1010,7 +1006,7 @@ StrongholdPieces::RoomCrossing::RoomCrossing(int genDepth, Random *random, Bound
 {
 	entryDoor = randomSmallDoor(random);
 	orientation = direction;
-	boundingBox = stairsBox;       
+	boundingBox = stairsBox;
 }
 
 void StrongholdPieces::RoomCrossing::addAdditonalSaveData(CompoundTag *tag)
@@ -1036,7 +1032,7 @@ StrongholdPieces::RoomCrossing *StrongholdPieces::RoomCrossing::createPiece(list
 {
 	BoundingBox *box = BoundingBox::orientBox(footX, footY, footZ, -4, -1, 0, width, height, depth, direction);
 
-	StartPiece *startPiece = NULL;	
+	StartPiece *startPiece = NULL;
 	if(pieces != NULL) startPiece = ((StrongholdPieces::StartPiece *) pieces->front());
 
 	if (!isOkBox(box, startPiece) || StructurePiece::findCollisionPiece(pieces, box) != NULL)
@@ -1048,7 +1044,7 @@ StrongholdPieces::RoomCrossing *StrongholdPieces::RoomCrossing::createPiece(list
 	return new RoomCrossing(genDepth, random, box, direction);
 }
 
-WeighedTreasure *StrongholdPieces::RoomCrossing::smallTreasureItems[SMALL_TREASURE_ITEMS_COUNT] = 
+WeighedTreasure *StrongholdPieces::RoomCrossing::smallTreasureItems[SMALL_TREASURE_ITEMS_COUNT] =
 {
 	new WeighedTreasure(Item::ironIngot_Id, 0, 1, 5, 10),
 	new WeighedTreasure(Item::goldIngot_Id, 0, 1, 3, 5),
@@ -1188,7 +1184,7 @@ StrongholdPieces::PrisonHall *StrongholdPieces::PrisonHall::createPiece(list<Str
 {
 	BoundingBox *box = BoundingBox::orientBox(footX, footY, footZ, -1, -1, 0, width, height, depth, direction);
 
-	StartPiece *startPiece = NULL;	
+	StartPiece *startPiece = NULL;
 	if(pieces != NULL) startPiece = ((StrongholdPieces::StartPiece *) pieces->front());
 
 	if (!isOkBox(box, startPiece) || StructurePiece::findCollisionPiece(pieces, box) != NULL)
@@ -1267,7 +1263,7 @@ StrongholdPieces::Library *StrongholdPieces::Library::createPiece(list<Structure
 	// attempt to make a tall library first
 	BoundingBox *box = BoundingBox::orientBox(footX, footY, footZ, -4, -1, 0, width, tallHeight, depth, direction);
 
-	StartPiece *startPiece = NULL;	
+	StartPiece *startPiece = NULL;
 	if(pieces != NULL) startPiece = ((StrongholdPieces::StartPiece *) pieces->front());
 
 	if (!isOkBox(box, startPiece) || StructurePiece::findCollisionPiece(pieces, box) != NULL)
@@ -1286,7 +1282,7 @@ StrongholdPieces::Library *StrongholdPieces::Library::createPiece(list<Structure
 	return new Library(genDepth, random, box, direction);
 }
 
-WeighedTreasure *StrongholdPieces::Library::libraryTreasureItems[LIBRARY_TREASURE_ITEMS_COUNT] = 
+WeighedTreasure *StrongholdPieces::Library::libraryTreasureItems[LIBRARY_TREASURE_ITEMS_COUNT] =
 {
 	new WeighedTreasure(Item::book_Id, 0, 1, 3, 20),
 	new WeighedTreasure(Item::paper_Id, 0, 2, 7, 20),
@@ -1467,7 +1463,7 @@ void StrongholdPieces::FiveCrossing::addChildren(StructurePiece *startPiece, lis
 	{
 		zOffA = depth - 3 - zOffA;
 		zOffB = depth - 3 - zOffB;
-	} 
+	}
 
 	generateSmallDoorChildForward((StartPiece *) startPiece, pieces, random, 5, 1);
 	if (leftLow) generateSmallDoorChildLeft((StartPiece *) startPiece, pieces, random, zOffA, 1);
@@ -1480,7 +1476,7 @@ StrongholdPieces::FiveCrossing *StrongholdPieces::FiveCrossing::createPiece(list
 {
 	BoundingBox *box = BoundingBox::orientBox(footX, footY, footZ, -4, -3, 0, width, height, depth, direction);
 
-	StartPiece *startPiece = NULL;	
+	StartPiece *startPiece = NULL;
 	if(pieces != NULL) startPiece = ((StrongholdPieces::StartPiece *) pieces->front());
 
 	if (!isOkBox(box, startPiece) || StructurePiece::findCollisionPiece(pieces, box) != NULL)
@@ -1576,7 +1572,7 @@ StrongholdPieces::PortalRoom *StrongholdPieces::PortalRoom::createPiece(list<Str
 	BoundingBox *box = BoundingBox::orientBox(footX, footY, footZ, -4, -1, 0, width, height, depth, direction);
 
 	// 4J Added so that we can check that Portals stay within the bounds of the world (which they ALWAYS should anyway)
-	StartPiece *startPiece = NULL;	
+	StartPiece *startPiece = NULL;
 	if(pieces != NULL) startPiece = ((StrongholdPieces::StartPiece *) pieces->front());
 
 	if (!isOkBox(box, startPiece) || StructurePiece::findCollisionPiece(pieces, box) != NULL)
@@ -1684,7 +1680,7 @@ bool StrongholdPieces::PortalRoom::postProcess(Level *level, Random *random, Bou
 		if (chunkBB->isInside(x, y, z))
 		{
 			// 4J Stu - The mob spawner location is close enough for the map icon display, and this ensures that we only need to set the position once
-			app.AddTerrainFeaturePosition(eTerrainFeature_StrongholdEndPortal,x,z);			
+			app.AddTerrainFeaturePosition(eTerrainFeature_StrongholdEndPortal,x,z);
 			level->getLevelData()->setXStrongholdEndPortal(x);
 			level->getLevelData()->setZStrongholdEndPortal(z);
 			level->getLevelData()->setHasStrongholdEndPortal();

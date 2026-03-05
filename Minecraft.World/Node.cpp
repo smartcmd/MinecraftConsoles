@@ -28,12 +28,12 @@ hash(createHash(x, y, z))
 	//hash = createHash(x, y, z);
 }
 
-int Node::createHash(const int x, const int y, const int z) 
+int Node::createHash(const int x, const int y, const int z)
 {
 	return (y & 0xff) | ((x & 0x7fff) << 8) | ((z & 0x7fff) << 24) | ((x < 0) ? 0x0080000000 : 0) | ((z < 0) ? 0x0000008000 : 0);
 }
 
-float Node::distanceTo(Node *to) 
+float Node::distanceTo(Node *to)
 {
 	float xd = (float) ( to->x - x );
 	float yd = (float) ( to->y - y );
@@ -49,27 +49,27 @@ float Node::distanceToSqr(Node *to)
 	return xd * xd + yd * yd + zd * zd;
 }
 
-bool Node::equals(Node *o) 
+bool Node::equals(Node *o)
 {
 	//4J Jev, never used anything other than a node.
-	//if (dynamic_cast<Node *>((Node *) o) != NULL) 
+	//if (dynamic_cast<Node *>((Node *) o) != NULL)
 	//{
 		return hash == o->hash && x == o->x && y == o->y && z == o->z;
 	//}
 	//return false;
 }
 
-int Node::hashCode() 
+int Node::hashCode()
 {
 	return hash;
 }
 
-bool Node::inOpenSet() 
+bool Node::inOpenSet()
 {
 	return heapIdx >= 0;
 }
 
-wstring Node::toString() 
+wstring Node::toString()
 {
-	return _toString<int>(x) + L", " + _toString<int>(y) + L", " + _toString<int>(z);
+	return std::to_wstring(x) + L", " + std::to_wstring(y) + L", " + std::to_wstring(z);
 }

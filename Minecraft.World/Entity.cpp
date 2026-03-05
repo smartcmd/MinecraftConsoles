@@ -753,9 +753,6 @@ void Entity::move(double xa, double ya, double za, bool noEntityCubes)   // 4J -
 	AABBList *aABBs = level->getCubes(shared_from_this(), bb->expand(xa, ya, za), noEntityCubes, true);
 
 
-	// LAND FIRST, then x and z
-	AUTO_VAR(itEndAABB, aABBs->end());
-
 	// 4J Stu - Particles (and possibly other entities) don't have xChunk and zChunk set, so calculate the chunk instead
 	int xc = Mth::floor(x / 16);
 	int zc = Mth::floor(z / 16);
@@ -763,8 +760,8 @@ void Entity::move(double xa, double ya, double za, bool noEntityCubes)   // 4J -
 	{
 		// 4J Stu - It's horrible that the client is doing any movement at all! But if we don't have the chunk
 		// data then all the collision info will be incorrect as well
-		for (AUTO_VAR(it, aABBs->begin()); it != itEndAABB; it++)
-			ya = (*it)->clipYCollide(bb, ya);
+		for ( auto& it : *aABBs )
+			ya = it->clipYCollide(bb, ya);
 		bb->move(0, ya, 0);
 	}
 
@@ -775,9 +772,8 @@ void Entity::move(double xa, double ya, double za, bool noEntityCubes)   // 4J -
 
 	bool og = onGround || (yaOrg != ya && yaOrg < 0);
 
-	itEndAABB = aABBs->end();
-	for (AUTO_VAR(it, aABBs->begin()); it != itEndAABB; it++)
-		xa = (*it)->clipXCollide(bb, xa);
+	for ( auto& it : *aABBs )
+		xa = it->clipXCollide(bb, xa);
 
 	bb->move(xa, 0, 0);
 
@@ -786,9 +782,8 @@ void Entity::move(double xa, double ya, double za, bool noEntityCubes)   // 4J -
 		xa = ya = za = 0;
 	}
 
-	itEndAABB = aABBs->end();
-	for (AUTO_VAR(it, aABBs->begin()); it != itEndAABB; it++)
-		za = (*it)->clipZCollide(bb, za);
+	for ( auto& it : *aABBs )
+		za = it->clipZCollide(bb, za);
 	bb->move(0, 0, za);
 
 	if (!slide && zaOrg != za)
@@ -812,15 +807,12 @@ void Entity::move(double xa, double ya, double za, bool noEntityCubes)   // 4J -
 		// so we'd better include cubes under our feet in this list of things we might possibly collide with
 		aABBs = level->getCubes(shared_from_this(), bb->expand(xa, ya, za)->expand(0,-ya,0),false,true);
 
-		// LAND FIRST, then x and z
-		itEndAABB = aABBs->end();
-
 		if(!level->isClientSide || level->reallyHasChunk(xc, zc))
 		{
 			// 4J Stu - It's horrible that the client is doing any movement at all! But if we don't have the chunk
 			// data then all the collision info will be incorrect as well
-			for (AUTO_VAR(it, aABBs->begin()); it != itEndAABB; it++)
-				ya = (*it)->clipYCollide(bb, ya);
+			for ( auto& it : *aABBs )
+				ya = it->clipYCollide(bb, ya);
 			bb->move(0, ya, 0);
 		}
 
@@ -830,9 +822,8 @@ void Entity::move(double xa, double ya, double za, bool noEntityCubes)   // 4J -
 		}
 
 
-		itEndAABB = aABBs->end();
-		for (AUTO_VAR(it, aABBs->begin()); it != itEndAABB; it++)
-			xa = (*it)->clipXCollide(bb, xa);
+		for ( auto& it : *aABBs )
+			xa = it->clipXCollide(bb, xa);
 		bb->move(xa, 0, 0);
 
 		if (!slide && xaOrg != xa)
@@ -840,9 +831,8 @@ void Entity::move(double xa, double ya, double za, bool noEntityCubes)   // 4J -
 			xa = ya = za = 0;
 		}
 
-		itEndAABB = aABBs->end();
-		for (AUTO_VAR(it, aABBs->begin()); it != itEndAABB; it++)
-			za = (*it)->clipZCollide(bb, za);
+		for ( auto& it : *aABBs )
+			za = it->clipZCollide(bb, za);
 		bb->move(0, 0, za);
 
 		if (!slide && zaOrg != za)
@@ -859,9 +849,8 @@ void Entity::move(double xa, double ya, double za, bool noEntityCubes)   // 4J -
 		{
 			ya = -footSize;
 			// LAND FIRST, then x and z
-			itEndAABB = aABBs->end();
-			for (AUTO_VAR(it, aABBs->begin()); it != itEndAABB; it++)
-				ya = (*it)->clipYCollide(bb, ya);
+			for ( auto& it : *aABBs )
+				ya = it->clipYCollide(bb, ya);
 			bb->move(0, ya, 0);
 		}
 
@@ -1667,14 +1656,12 @@ void Entity::lerpTo(double x, double y, double z, float yRot, float xRot, int st
 	if( GetType() != eTYPE_ARROW )
 	{
 		AABBList *collisions = level->getCubes(shared_from_this(), bb->shrink(1 / 32.0, 0, 1 / 32.0));
-		if (!collisions->empty())
+		if ( collisions && !collisions->empty())
 		{
 			double yTop = 0;
-			AUTO_VAR(itEnd, collisions->end());
-			for (AUTO_VAR(it, collisions->begin()); it != itEnd; it++)
+			for ( const AABB *ab : *collisions )
 			{
-				AABB *ab = *it; //collisions->at(i);
-				if (ab->y1 > yTop) yTop = ab->y1;
+				if ( ab && ab->y1 > yTop) yTop = ab->y1;
 			}
 
 			y += yTop - bb->y0;
@@ -1942,7 +1929,7 @@ wstring Entity::getAName()
 #ifdef _DEBUG
 	wstring id = EntityIO::getEncodeId(shared_from_this());
 	if (id.empty()) id = L"generic";
-	return L"entity." + id + _toString(entityId);
+	return L"entity." + id + std::to_wstring(entityId);
 #else
 	return L"";
 #endif

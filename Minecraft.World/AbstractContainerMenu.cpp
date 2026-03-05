@@ -48,27 +48,25 @@ void AbstractContainerMenu::addSlotListener(ContainerListener *listener)
 
 void AbstractContainerMenu::removeSlotListener(ContainerListener *listener)
 {
-	AUTO_VAR(it, std::find(containerListeners.begin(), containerListeners.end(), listener) );
+	auto it = std::find(containerListeners.begin(), containerListeners.end(), listener);
 	if(it != containerListeners.end()) containerListeners.erase(it);
 }
 
 vector<shared_ptr<ItemInstance> > *AbstractContainerMenu::getItems()
 {
 	vector<shared_ptr<ItemInstance> > *items = new vector<shared_ptr<ItemInstance> >();
-	AUTO_VAR(itEnd, slots.end());
-	for (AUTO_VAR(it, slots.begin()); it != itEnd; it++)
+	for ( Slot* it : slots )
 	{
-		items->push_back((*it)->getItem());
+		items->push_back(it->getItem());
 	}
 	return items;
 }
 
 void AbstractContainerMenu::sendData(int id, int value)
 {
-	AUTO_VAR(itEnd, containerListeners.end());
-	for (AUTO_VAR(it, containerListeners.begin()); it != itEnd; it++)
+	for ( auto& it : containerListeners )
 	{
-		(*it)->setContainerData(this, id, value);
+		it->setContainerData(this, id, value);
 	}
 }
 
@@ -86,10 +84,9 @@ void AbstractContainerMenu::broadcastChanges()
 			lastSlots[i] = expected;
 			m_bNeedsRendered = true;
 
-			AUTO_VAR(itEnd, containerListeners.end());
-			for (AUTO_VAR(it, containerListeners.begin()); it != itEnd; it++)
+			for ( auto& it : containerListeners )
 			{
-				(*it)->slotChanged(this, i, expected);
+				it->slotChanged(this, i, expected);
 			}
 		}
 	}
@@ -122,10 +119,8 @@ bool AbstractContainerMenu::clickMenuButton(shared_ptr<Player> player, int butto
 
 Slot *AbstractContainerMenu::getSlotFor(shared_ptr<Container> c, int index)
 {
-	AUTO_VAR(itEnd, slots.end());
-	for (AUTO_VAR(it, slots.begin()); it != itEnd; it++)
+	for ( Slot *slot : slots )
 	{
-		Slot *slot = *it; //slots->at(i);
 		if (slot->isAt(c, index))
 		{
 			return slot;
@@ -197,10 +192,9 @@ shared_ptr<ItemInstance> AbstractContainerMenu::clicked(int slotIndex, int butto
 				shared_ptr<ItemInstance> source = inventory->getCarried()->copy();
 				int remaining = inventory->getCarried()->count;
 
-				for(AUTO_VAR(it, quickcraftSlots.begin()); it != quickcraftSlots.end(); ++it)
+				for ( Slot *slot : quickcraftSlots )
 				{
-					Slot *slot = *it;
-					if (slot != NULL && canItemQuickReplace(slot, inventory->getCarried(), true) && slot->mayPlace(inventory->getCarried()) && inventory->getCarried()->count >= quickcraftSlots.size() && canDragTo(slot))
+					if (slot != nullptr && canItemQuickReplace(slot, inventory->getCarried(), true) && slot->mayPlace(inventory->getCarried()) && inventory->getCarried()->count >= quickcraftSlots.size() && canDragTo(slot))
 					{
 						shared_ptr<ItemInstance> copy = source->copy();
 						int carry = slot->hasItem() ? slot->getItem()->count : 0;
@@ -582,7 +576,7 @@ void AbstractContainerMenu::setSynched(shared_ptr<Player> player, bool synched)
 {
 	if (synched)
 	{
-		AUTO_VAR(it, unSynchedPlayers.find(player));
+		auto it = unSynchedPlayers.find(player);
 
 		if(it != unSynchedPlayers.end()) unSynchedPlayers.erase( it );
 	}

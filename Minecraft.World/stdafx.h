@@ -6,7 +6,6 @@
 
 #ifdef __PS3__
 #else
-#define AUTO_VAR(_var, _val) auto _var = _val
 #endif
 
 #if ( defined _XBOX || defined _WINDOWS64  || defined _DURANGO )

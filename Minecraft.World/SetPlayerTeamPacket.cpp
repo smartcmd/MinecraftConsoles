@@ -96,9 +96,9 @@ void SetPlayerTeamPacket::write(DataOutputStream *dos)
 	{
 		dos->writeShort(players.size());
 
-		for (AUTO_VAR(it,players.begin()); it != players.end(); ++it)
+		for (auto& player : players)
 		{
-			writeUtf(*it, dos);
+			writeUtf(player, dos);
 		}
 	}
 }

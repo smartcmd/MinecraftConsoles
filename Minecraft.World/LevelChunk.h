@@ -29,9 +29,8 @@ class LevelChunk
 public:
 	byteArray biomes; // 4J Stu - Made public
 
-	// 4J Stu - No longer static in 1.8.2
-	const int ENTITY_BLOCKS_LENGTH;
-	static const int BLOCKS_LENGTH = Level::CHUNK_TILE_COUNT;	// 4J added
+	static constexpr int ENTITY_BLOCKS_LENGTH = Level::maxBuildHeight/16;
+	static constexpr int BLOCKS_LENGTH = Level::CHUNK_TILE_COUNT;	// 4J added
 
 	static bool touchedSky;
 

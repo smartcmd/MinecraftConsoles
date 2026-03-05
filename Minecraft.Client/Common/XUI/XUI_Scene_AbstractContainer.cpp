@@ -24,7 +24,7 @@
 #include "XUI_Ctrl_SlotItem.h"
 #include "XUI_Ctrl_SlotItemListItem.h"
 #include "XUI_Scene_AbstractContainer.h"
-#ifdef _DEBUG_MENUS_ENABLED	
+#ifdef _DEBUG_MENUS_ENABLED
 #include "XUI_DebugItemEditor.h"
 #endif
 
@@ -44,14 +44,14 @@ void CXuiSceneAbstractContainer::PlatformInitialize(int iPad, int startIndex)
 
 	// We may have varying depths of controls here, so base off the pointers parent
 	HXUIOBJ parent;
-	XuiElementGetBounds( m_pointerControl->m_hObj, &fPointerWidth, &fPointerHeight );	
+	XuiElementGetBounds( m_pointerControl->m_hObj, &fPointerWidth, &fPointerHeight );
 	XuiElementGetParent( m_pointerControl->m_hObj, &parent );
 	m_pointerControl->SetShow(TRUE);
-	XuiElementGetBounds( parent, &fPanelWidth, &fPanelHeight );	
+	XuiElementGetBounds( parent, &fPanelWidth, &fPanelHeight );
 	// Get size of pointer
 	m_fPointerImageOffsetX = floor(fPointerWidth/2.0f);
 	m_fPointerImageOffsetY = floor(fPointerHeight/2.0f);
-	
+
 	m_fPanelMinX = 0.0f;
 	m_fPanelMaxX = fPanelWidth;
 	m_fPanelMinY = 0.0f;
@@ -97,13 +97,13 @@ void CXuiSceneAbstractContainer::PlatformInitialize(int iPad, int startIndex)
 	m_pointerPos.x = newPointerPos.x;
 	m_pointerPos.y = newPointerPos.y;
 
-#ifdef USE_POINTER_ACCEL	
+#ifdef USE_POINTER_ACCEL
 	m_fPointerVelX = 0.0f;
 	m_fPointerVelY = 0.0f;
 	m_fPointerAccelX = 0.0f;
 	m_fPointerAccelY = 0.0f;
 #endif
-	
+
 	// Add timer to poll controller stick input at 60Hz
 	HRESULT timerResult = SetTimer( POINTER_INPUT_TIMER_ID, ( 1000 / 60 ) );
 	assert( timerResult == S_OK );
@@ -114,7 +114,7 @@ void CXuiSceneAbstractContainer::PlatformInitialize(int iPad, int startIndex)
 	for ( int iSection = m_eFirstSection; iSection < m_eMaxSection; ++iSection )
 	{
 		ESceneSection eSection = ( ESceneSection )( iSection );
-		
+
 		if(!IsSectionSlotList(eSection)) continue;
 
 		// Get dimensions of this section.
@@ -153,7 +153,7 @@ int CXuiSceneAbstractContainer::getSectionRows(ESceneSection eSection)
 	return GetSectionSlotList( eSection )->GetRows();
 }
 
-// Adding this so we can turn off the pointer text background, since it flickers on then off at the start of a scene where a tutorial popup is 
+// Adding this so we can turn off the pointer text background, since it flickers on then off at the start of a scene where a tutorial popup is
 HRESULT CXuiSceneAbstractContainer::OnTransitionStart( XUIMessageTransition *pTransition, BOOL& bHandled )
 {
 	if(pTransition->dwTransAction==XUI_TRANSITION_ACTION_DESTROY ) return S_OK;
@@ -327,7 +327,7 @@ HRESULT CXuiSceneAbstractContainer::OnTimer( XUIMessageTimer *pTimer, BOOL& bHan
 	// Update pointer from stick input on timer.
 	if ( pTimer->nId == POINTER_INPUT_TIMER_ID )
     {
-		
+
 		onMouseTick();
 		D3DXVECTOR3 pointerPos;
 		pointerPos.x = m_pointerPos.x;
@@ -348,7 +348,7 @@ HRESULT CXuiSceneAbstractContainer::OnTimer( XUIMessageTimer *pTimer, BOOL& bHan
 		hr = handleCustomTimer( pTimer, bHandled );
 	}
 	return hr;
-}		
+}
 
 HRESULT CXuiSceneAbstractContainer::OnCustomMessage_Splitscreenplayer(bool bJoining, BOOL& bHandled)
 {
@@ -388,15 +388,15 @@ void CXuiSceneAbstractContainer::SetPointerText(const wstring &description, vect
 	}
 
 	bool smallPointer = m_bSplitscreen || (!RenderManager.IsHiDef() && !RenderManager.IsWidescreen());
-	wstring desc = L"<font size=\"" + _toString<int>(smallPointer ? 12 :14) + L"\">" + description + L"</font>";
+	wstring desc = L"<font size=\"" + std::to_wstring(smallPointer ? 12 :14) + L"\">" + description + L"</font>";
 
 	XUIRect tempXuiRect, xuiRect;
 	HRESULT hr;
 	xuiRect.right = 0;
 
-	for(AUTO_VAR(it, unformattedStrings.begin()); it != unformattedStrings.end(); ++it)
-	{
-		XuiTextPresenterMeasureText(m_hPointerTextMeasurer, parseXMLSpecials((*it)).c_str(), &tempXuiRect);
+    for (auto& it : unformattedStrings )
+    {
+		XuiTextPresenterMeasureText(m_hPointerTextMeasurer, parseXMLSpecials(it).c_str(), &tempXuiRect);
 		if(tempXuiRect.right > xuiRect.right) xuiRect = tempXuiRect;
 	}
 
@@ -443,7 +443,7 @@ void CXuiSceneAbstractContainer::adjustPointerForSafeZone()
 	D3DXVECTOR2 baseSceneOrigin;
 	float baseWidth, baseHeight;
 	if(CXuiSceneBase::GetBaseSceneSafeZone( m_iPad, baseSceneOrigin, baseWidth, baseHeight))
-	{			
+	{
 		D3DXMATRIX pointerBackgroundMatrix;
 		XuiElementGetFullXForm( m_hPointerTextBkg, &pointerBackgroundMatrix);
 

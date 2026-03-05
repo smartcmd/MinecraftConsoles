@@ -28,10 +28,9 @@ bool NotGateTile::isToggledTooFrequently(Level *level, int x, int y, int z, bool
 	if (add) recentToggles[level]->push_back(Toggle(x, y, z, level->getGameTime()));
 	int count = 0;
 
-	AUTO_VAR(itEnd, recentToggles[level]->end());
-	for (AUTO_VAR(it, recentToggles[level]->begin()); it != itEnd; it++)
+	for (const auto& it : *recentToggles[level])
 	{
-		if (it->x == x && it->y == y && it->z == z)
+		if (it.x == x && it.y == y && it.z == z)
 		{
 			count++;
 			if (count >= MAX_RECENT_TOGGLES)
@@ -122,7 +121,7 @@ void NotGateTile::tick(Level *level, int x, int y, int z, Random *random)
 		}
 	}
 
-	if (on) 
+	if (on)
 	{
 		if (neighborSignal)
 		{
@@ -153,7 +152,7 @@ void NotGateTile::tick(Level *level, int x, int y, int z, Random *random)
 				level->setTileAndData(x, y, z, Tile::redstoneTorch_on_Id, level->getData(x, y, z), Tile::UPDATE_ALL);
 			}
 			else
-			{				
+			{
 				app.DebugPrintf("Torch at (%d,%d,%d) has toggled too many times\n",x,y,z);
 			}
 		}
@@ -236,9 +235,9 @@ void NotGateTile::levelTimeChanged(Level *level, __int64 delta, __int64 newTime)
 
 	if (toggles != NULL)
 	{
-		for (AUTO_VAR(it,toggles->begin()); it != toggles->end(); ++it)
+		for (auto& toggle : *toggles)
 		{
-			(*it).when += delta;
+			toggle.when += delta;
 		}
 	}
 }

@@ -464,7 +464,7 @@ void LevelRenderer::allChanged(int playerIndex)
 	zMaxChunk = zChunks;
 
 	// 4J removed - we now only fully clear this on exiting the game (setting level to NULL). Apart from that, the chunk rebuilding is responsible for maintaining this
-	//	renderableTileEntities.clear();	
+	//	renderableTileEntities.clear();
 
 	for (int x = 0; x < xChunks; x++)
 	{
@@ -533,19 +533,14 @@ void LevelRenderer::renderEntities(Vec3 *cam, Culler *culler, float a)
 	vector<shared_ptr<Entity> > entities = level[playerIndex]->getAllEntities();
 	totalEntities = (int)entities.size();
 
-	AUTO_VAR(itEndGE, level[playerIndex]->globalEntities.end());
-	for (AUTO_VAR(it, level[playerIndex]->globalEntities.begin()); it != itEndGE; it++)
+	for (auto& entity : level[playerIndex]->globalEntities)
 	{
-		shared_ptr<Entity> entity = *it; //level->globalEntities[i];
 		renderedEntities++;
 		if (entity->shouldRender(cam)) EntityRenderDispatcher::instance->render(entity, a);
 	}
 
-	AUTO_VAR(itEndEnts, entities.end());
-	for (AUTO_VAR(it, entities.begin()); it != itEndEnts; it++)
+	for (auto& entity : entities)
 	{
-		shared_ptr<Entity> entity = *it; //entities[i];
-
 		bool shouldRender = (entity->shouldRender(cam) && (entity->noCulling || culler->isVisible(entity->bb)));
 
 		// Render the mob if the mob's leash holder is within the culler
@@ -580,25 +575,25 @@ void LevelRenderer::renderEntities(Vec3 *cam, Culler *culler, float a)
 	// 4J - have restructed this so that the tile entities are stored within a hashmap by chunk/dimension index. The index
 	// is calculated in the same way as the global flags.
 	EnterCriticalSection(&m_csRenderableTileEntities);
-	for (AUTO_VAR(it, renderableTileEntities.begin()); it !=  renderableTileEntities.end(); it++)
-	{
-		int idx = it->first;
+    for (auto & it : renderableTileEntities)
+    {
+		int idx = it.first;
 		// Don't render if it isn't in the same dimension as this player
 		if( !isGlobalIndexInSameDimension(idx, level[playerIndex]) ) continue;
 
-		for( AUTO_VAR(it2, it->second.begin()); it2 != it->second.end(); it2++)
+		for( auto& it2 : it.second)
 		{
-			TileEntityRenderDispatcher::instance->render(*it2, a);			
+			TileEntityRenderDispatcher::instance->render(it2, a);
 		}
 	}
 
 	// Now consider if any of these renderable tile entities have been flagged for removal, and if so, remove
-	for (AUTO_VAR(it, renderableTileEntities.begin()); it != renderableTileEntities.end();)
-	{
+    for (auto it = renderableTileEntities.begin(); it != renderableTileEntities.end();)
+    {
 		int idx = it->first;
 
-		for( AUTO_VAR(it2, it->second.begin()); it2 != it->second.end(); )
-		{
+        for (auto it2 = it->second.begin(); it2 != it->second.end();)
+        {
 			// If it has been flagged for removal, remove
 			if((*it2)->shouldRemoveForRender())
 			{
@@ -628,12 +623,12 @@ void LevelRenderer::renderEntities(Vec3 *cam, Culler *culler, float a)
 
 wstring LevelRenderer::gatherStats1()
 {
-	return L"C: " + _toString<int>(renderedChunks) + L"/" + _toString<int>(totalChunks) + L". F: " + _toString<int>(offscreenChunks) + L", O: " + _toString<int>(occludedChunks) + L", E: " + _toString<int>(emptyChunks);
+	return L"C: " + std::to_wstring(renderedChunks) + L"/" + std::to_wstring(totalChunks) + L". F: " + std::to_wstring(offscreenChunks) + L", O: " + std::to_wstring(occludedChunks) + L", E: " + std::to_wstring(emptyChunks);
 }
 
 wstring LevelRenderer::gatherStats2()
 {
-	return L"E: " + _toString<int>(renderedEntities) + L"/" + _toString<int>(totalEntities) + L". B: " + _toString<int>(culledEntities) + L", I: " + _toString<int>((totalEntities - culledEntities) - renderedEntities);
+	return L"E: " + std::to_wstring(renderedEntities) + L"/" + std::to_wstring(totalEntities) + L". B: " + std::to_wstring(culledEntities) + L", I: " + std::to_wstring((totalEntities - culledEntities) - renderedEntities);
 }
 
 void LevelRenderer::resortChunks(int xc, int yc, int zc)
@@ -888,11 +883,8 @@ int LevelRenderer::renderChunks(int from, int to, int layer, double alpha)
 		renderLists[l].clear();
 	}
 
-	AUTO_VAR(itEnd, _renderChunks.end());
-	for (AUTO_VAR(it, _renderChunks.begin()); it != itEnd; it++)
+	for ( Chunk *chunk : _renderChunks )
 	{
-		Chunk *chunk = *it; //_renderChunks[i];
-
 		int list = -1;
 		for (int l = 0; l < lists; l++)
 		{
@@ -918,7 +910,7 @@ int LevelRenderer::renderChunks(int from, int to, int layer, double alpha)
 }
 
 
-void LevelRenderer::renderSameAsLast(int layer, double alpha) 
+void LevelRenderer::renderSameAsLast(int layer, double alpha)
 {
 	for (int i = 0; i < RENDERLISTS_LENGTH; i++)
 	{
@@ -932,8 +924,8 @@ void LevelRenderer::tick()
 
 	if ((ticks % SharedConstants::TICKS_PER_SECOND) == 0)
 	{
-		AUTO_VAR(it , destroyingBlocks.begin());
-		while (it != destroyingBlocks.end())
+        auto it = destroyingBlocks.begin();
+        while (it != destroyingBlocks.end())
 		{
 			BlockDestructionProgress *block = it->second;
 
@@ -1150,7 +1142,7 @@ void LevelRenderer::renderSky(float alpha)
 		glPopMatrix();
 
 		// 4J - can't work out what this big black box is for. Taking it out until someone misses it... it causes a big black box to visible appear in 3rd person mode whilst under the ground.
-#if 0        
+#if 0
 		float ss = 1;
 		float yo = -(float) (yy + 65);
 		float y0 = -ss;
@@ -1223,7 +1215,7 @@ void LevelRenderer::renderHaloRing(float alpha)
 
 	// Rough lumninance calculation
 	float Y = (sr+sr+sb+sg+sg+sg)/6;
-	float br = 0.6f + (Y*0.4f); 
+	float br = 0.6f + (Y*0.4f);
 	//app.DebugPrintf("Luminance = %f, brightness = %f\n", Y, br);
 	glColor3f(br,br,br);
 
@@ -1392,7 +1384,7 @@ void LevelRenderer::createCloudMesh()
 					t->vertexUV(x0, y0, z0, u, v );
 					t->vertexUV(x1, y0, z0, u, v );
 					t->vertexUV(x1, y0, z1, u, v );
-					t->vertexUV(x0, y0, z1, u, v );				
+					t->vertexUV(x0, y0, z1, u, v );
 				}
 			}
 			t->end();
@@ -1492,7 +1484,7 @@ void LevelRenderer::createCloudMesh()
 					t->vertexUV(x0, y1, z0, u, v );
 					t->vertexUV(x1, y1, z0, u, v );
 					t->vertexUV(x1, y0, z0, u, v );
-					t->vertexUV(x0, y0, z0, u, v );								
+					t->vertexUV(x0, y0, z0, u, v );
 				}
 			}
 			t->end();
@@ -1514,10 +1506,10 @@ void LevelRenderer::createCloudMesh()
 					float z1 = z0 + 1.0f;
 					t->color(0.8f, 0.8f, 0.8f, 0.8f);
 					t->normal(1, 0, 0);
-					t->vertexUV(x0, y0, z1, u, v );		
+					t->vertexUV(x0, y0, z1, u, v );
 					t->vertexUV(x1, y0, z1, u, v );
 					t->vertexUV(x1, y1, z1, u, v );
-					t->vertexUV(x0, y1, z1, u, v );								
+					t->vertexUV(x0, y1, z1, u, v );
 				}
 			}
 			t->end();
@@ -1796,7 +1788,7 @@ void LevelRenderer::renderAdvancedClouds(float alpha)
 				t->end();
 #endif
 			}
-		}			
+		}
 	}
 
 	glColor4f(1, 1, 1, 1.0f);
@@ -1933,14 +1925,14 @@ bool LevelRenderer::updateDirtyChunks()
 		{
 			// It's possible that the localplayers member can be set to NULL on the main thread when a player chooses to exit the game
 			// So take a reference to the player object now. As it is a shared_ptr it should live as long as we need it
-			shared_ptr<LocalPlayer> player = mc->localplayers[p]; 
+			shared_ptr<LocalPlayer> player = mc->localplayers[p];
 			if( player == NULL ) continue;
 			if( chunks[p].data == NULL ) continue;
 			if( level[p] == NULL ) continue;
 			if( chunks[p].length != xChunks * zChunks * CHUNK_Y_COUNT ) continue;
 			int px = (int)player->x;
 			int py = (int)player->y;
-			int pz = (int)player->z;		
+			int pz = (int)player->z;
 
 			//			app.DebugPrintf("!! %d %d %d, %d %d %d {%d,%d} ",px,py,pz,stackChunkDirty,nonStackChunkDirty,onlyRebuild, xChunks, zChunks);
 
@@ -1955,7 +1947,7 @@ bool LevelRenderer::updateDirtyChunks()
 						ClipChunk *pClipChunk = &chunks[p][(z * yChunks + y) * xChunks + x];
 						// Get distance to this chunk - deliberately not calling the chunk's method of doing this to avoid overheads (passing entitie, type conversion etc.) that this involves
 						int xd = pClipChunk->xm - px;
-						int yd = pClipChunk->ym - py;		
+						int yd = pClipChunk->ym - py;
 						int zd = pClipChunk->zm - pz;
 						int distSq = xd * xd + yd * yd + zd * zd;
 						int distSqWeighted = xd * xd + yd * yd * 4 + zd * zd;  // Weighting against y to prioritise things in same x/z plane as player first
@@ -1970,8 +1962,8 @@ bool LevelRenderer::updateDirtyChunks()
 								// Is this chunk nearer than our nearest?
 #ifdef _LARGE_WORLDS
 								bool isNearer = nearestClipChunks.empty();
-								AUTO_VAR(itNearest, nearestClipChunks.begin());
-								for(; itNearest != nearestClipChunks.end(); ++itNearest)
+                                auto itNearest = nearestClipChunks.begin();
+                                for(; itNearest != nearestClipChunks.end(); ++itNearest)
 								{
 									isNearer = distSqWeighted < itNearest->second;
 									if(isNearer) break;
@@ -1997,12 +1989,12 @@ bool LevelRenderer::updateDirtyChunks()
 									// emptiness without actually testing as many data items as uncompressed data would.
 									Chunk *chunk = pClipChunk->chunk;
 									LevelChunk *lc = level[p]->getChunkAt(chunk->x,chunk->z);
-									if( !lc->isRenderChunkEmpty(y * 16) ) 
+									if( !lc->isRenderChunkEmpty(y * 16) )
 									{
 										nearChunk = pClipChunk;
 										minDistSq = distSqWeighted;
 #ifdef _LARGE_WORLDS
-										nearestClipChunks.insert(itNearest, std::pair<ClipChunk *, int>(nearChunk, minDistSq) );
+										nearestClipChunks.insert(itNearest, std::make_pair(nearChunk, minDistSq) );
 										if(nearestClipChunks.size() > maxNearestChunks)
 										{
 											nearestClipChunks.pop_back();
@@ -2044,9 +2036,9 @@ bool LevelRenderer::updateDirtyChunks()
 	if(!nearestClipChunks.empty())
 	{
 		int index = 0;
-		for(AUTO_VAR(it, nearestClipChunks.begin()); it != nearestClipChunks.end(); ++it)
+		for(auto & it : nearestClipChunks)
 		{
-			chunk = it->first->chunk;
+			chunk = it.first->chunk;
 			// If this chunk is very near, then move the renderer into a deferred mode. This won't commit any command buffers
 			// for rendering until we call CBuffDeferredModeEnd(), allowing us to group any near changes into an atomic unit. This
 			// is essential so we don't temporarily create any holes in the environment whilst updating one chunk and not the neighbours.
@@ -2081,7 +2073,7 @@ bool LevelRenderer::updateDirtyChunks()
 			if((veryNearCount > 0))
 				bAtomic = true;		//MGH -  if veryNearCount, then we're trying to rebuild atomically, so do it all on the main thread
 
-			if( bAtomic || (index == 0) ) 
+			if( bAtomic || (index == 0) )
 			{
 				//PIXBeginNamedEvent(0,"Rebuilding near chunk %d %d %d",chunk->x, chunk->y, chunk->z);
 				//		static __int64 totalTime = 0;
@@ -2090,9 +2082,9 @@ bool LevelRenderer::updateDirtyChunks()
 
 				//app.DebugPrintf("Rebuilding permaChunk %d\n", index);
 
-				permaChunk[index].rebuild();	
+				permaChunk[index].rebuild();
 
-				if(index !=0)			
+				if(index !=0)
 					s_rebuildCompleteEvents->Set(index-1);		// MGH - this rebuild happening on the main thread instead, mark the thread it should have been running on as complete
 
 				//		__int64 endTime = System::currentTimeMillis();
@@ -2233,8 +2225,8 @@ void LevelRenderer::renderDestroyAnimation(Tesselator *t, shared_ptr<Player> pla
 #endif
 		t->noColor();
 
-		AUTO_VAR(it, destroyingBlocks.begin());
-		while (it != destroyingBlocks.end())
+        auto it = destroyingBlocks.begin();
+        while (it != destroyingBlocks.end())
 		{
 			BlockDestructionProgress *block = it->second;
 			double xd = block->getX() - xo;
@@ -2337,7 +2329,7 @@ void LevelRenderer::setDirty(int x0, int y0, int z0, int x1, int y1, int z1, Lev
 {
 	// 4J - level is passed if this is coming from setTilesDirty, which could come from when connection is being ticked outside of normal level tick, and player won't
 	// be set up
-	if( level == NULL ) level = this->level[mc->player->GetXboxPad()];		
+	if( level == NULL ) level = this->level[mc->player->GetXboxPad()];
 	//	EnterCriticalSection(&m_csDirtyChunks);
 	int _x0 = Mth::intFloorDiv(x0, CHUNK_XZSIZE);
 	int _y0 = Mth::intFloorDiv(y0, CHUNK_SIZE);
@@ -2368,10 +2360,10 @@ void LevelRenderer::setDirty(int x0, int y0, int z0, int x1, int y1, int z1, Lev
 
 					// AP - by the time we reach this function the area passed in has a 1 block border added to it to make sure geometry and lighting is updated correctly.
 					// Some of those blocks will only need lighting updated so it is acceptable to not have those blocks grouped in the deferral system as the mismatch
-					// will hardly be noticable. The blocks that need geometry updated will be adjacent to the original, non-bordered area. 
+					// will hardly be noticable. The blocks that need geometry updated will be adjacent to the original, non-bordered area.
 					// This bit of code will mark a chunk as 'non-critical' if all of the blocks inside it are NOT adjacent to the original area. This has the greatest effect
 					// when digging a single block. Only 6 of the blocks out of the possible 26 are actually adjacent to the original block. The other 20 only need lighting updated.
-					// Note I have noticed a new side effect of this system where it's possible to see into the sides of water but this is acceptable compared to seeing through 
+					// Note I have noticed a new side effect of this system where it's possible to see into the sides of water but this is acceptable compared to seeing through
 					// the entire landscape.
 					// is the left or right most block just inside this chunk
 					if( ((x0 & 15) == 15 && x == _x0) || ((x1 & 15) == 0 && x == _x1) )
@@ -2398,7 +2390,7 @@ void LevelRenderer::setDirty(int x0, int y0, int z0, int x1, int y1, int z1, Lev
 
 					dirtyChunksLockFreeStack.Push((int *)(index));
 #else
-					dirtyChunksLockFreeStack.Push((int *)(index + 2));		
+					dirtyChunksLockFreeStack.Push((int *)(index + 2));
 #endif
 
 #ifdef _XBOX
@@ -2511,7 +2503,7 @@ void LevelRenderer::cull_SPU(int playerIndex, Culler *culler, float a)
 	m_jobPort_CullSPU->submitSync();
 	// 	static int doSort = false;
 	// 	if(doSort)
-	{	 
+	{
 		m_jobPort_CullSPU->submitJob(&sortJob);
 	}
 	// 	doSort ^= 1;
@@ -2624,7 +2616,7 @@ void LevelRenderer::playSoundExceptPlayer(shared_ptr<Player> player, int iSound,
 }
 
 // 4J-PB - original function. I've changed to an enum instead of string compares
-// 4J removed - 
+// 4J removed -
 /*
 void LevelRenderer::addParticle(const wstring& name, double x, double y, double z, double xa, double ya, double za)
 {
@@ -2788,7 +2780,7 @@ shared_ptr<Particle> LevelRenderer::addParticleInternal(ePARTICLE_TYPE eParticle
 				float fStart=((float)(cStart&0xFF));
 				float fDiff=(float)((cEnd-cStart)&0xFF);
 
-				float fCol =  (fStart + (Math::random() * fDiff))/255.0f;				
+				float fCol =  (fStart + (Math::random() * fDiff))/255.0f;
 				particle->setColor( fCol, fCol, fCol );
 			}
 		}
@@ -2933,11 +2925,11 @@ void LevelRenderer::entityAdded(shared_ptr<Entity> entity)
 		player->prepareCustomTextures();
 
 		// 4J-PB - adding these from global title storage
-		if (player->customTextureUrl != L"") 
+		if (player->customTextureUrl != L"")
 		{
 			textures->addMemTexture(player->customTextureUrl, new MobSkinMemTextureProcessor());
 		}
-		if (player->customTextureUrl2 != L"") 
+		if (player->customTextureUrl2 != L"")
 		{
 			textures->addMemTexture(player->customTextureUrl2, new MobSkinMemTextureProcessor());
 		}
@@ -2949,11 +2941,11 @@ void LevelRenderer::entityRemoved(shared_ptr<Entity> entity)
 	if(entity->instanceof(eTYPE_PLAYER))
 	{
 		shared_ptr<Player> player = dynamic_pointer_cast<Player>(entity);
-		if (player->customTextureUrl != L"") 
+		if (player->customTextureUrl != L"")
 		{
 			textures->removeMemTexture(player->customTextureUrl);
 		}
-		if (player->customTextureUrl2 != L"") 
+		if (player->customTextureUrl2 != L"")
 		{
 			textures->removeMemTexture(player->customTextureUrl2);
 		}
@@ -3032,7 +3024,7 @@ void LevelRenderer::levelEvent(shared_ptr<Player> source, int type, int x, int y
 	{
 		//case LevelEvent::SOUND_WITHER_BOSS_SPAWN:
 	case LevelEvent::SOUND_DRAGON_DEATH:
-		if (mc->cameraTargetPlayer != NULL) 
+		if (mc->cameraTargetPlayer != NULL)
 		{
 			// play the sound at an offset from the player
 			double dx = x - mc->cameraTargetPlayer->x;
@@ -3044,7 +3036,7 @@ void LevelRenderer::levelEvent(shared_ptr<Player> source, int type, int x, int y
 			double sy = mc->cameraTargetPlayer->y;
 			double sz = mc->cameraTargetPlayer->z;
 
-			if (len > 0) 
+			if (len > 0)
 			{
 				sx += (dx / len) * 2;
 				sy += (dy / len) * 2;
@@ -3284,8 +3276,8 @@ void LevelRenderer::destroyTileProgress(int id, int x, int y, int z, int progres
 {
 	if (progress < 0 || progress >= 10)
 	{
-		AUTO_VAR(it, destroyingBlocks.find(id));
-		if(it != destroyingBlocks.end()) 
+        auto it = destroyingBlocks.find(id);
+        if(it != destroyingBlocks.end())
 		{
 			delete it->second;
 			destroyingBlocks.erase(it);
@@ -3296,8 +3288,8 @@ void LevelRenderer::destroyTileProgress(int id, int x, int y, int z, int progres
 	{
 		BlockDestructionProgress *entry = NULL;
 
-		AUTO_VAR(it, destroyingBlocks.find(id));
-		if(it != destroyingBlocks.end()) entry = it->second;
+        auto it = destroyingBlocks.find(id);
+        if(it != destroyingBlocks.end()) entry = it->second;
 
 		if (entry == NULL || entry->getX() != x || entry->getY() != y || entry->getZ() != z)
 		{
@@ -3316,7 +3308,7 @@ void LevelRenderer::registerTextures(IconRegister *iconRegister)
 
 	for (int i = 0; i < 10; i++)
 	{
-		breakingTextures[i] = iconRegister->registerIcon(L"destroy_" + _toString(i) );
+		breakingTextures[i] = iconRegister->registerIcon(L"destroy_" + std::to_wstring(i) );
 	}
 }
 
@@ -3473,7 +3465,7 @@ unsigned char LevelRenderer::incGlobalChunkRefCount(int x, int y, int z, Level *
 		unsigned char refCount = (flags >> CHUNK_FLAG_REF_SHIFT ) & CHUNK_FLAG_REF_MASK;
 		refCount++;
 		flags &= ~(CHUNK_FLAG_REF_MASK<<CHUNK_FLAG_REF_SHIFT);
-		flags |= refCount << CHUNK_FLAG_REF_SHIFT;	
+		flags |= refCount << CHUNK_FLAG_REF_SHIFT;
 		globalChunkFlags[ index ] = flags;
 
 		return refCount;
@@ -3509,13 +3501,11 @@ unsigned char LevelRenderer::decGlobalChunkRefCount(int x, int y, int z, Level *
 void LevelRenderer::fullyFlagRenderableTileEntitiesToBeRemoved()
 {
 	EnterCriticalSection(&m_csRenderableTileEntities);
-	AUTO_VAR(itChunkEnd, renderableTileEntities.end());
-	for (AUTO_VAR(it, renderableTileEntities.begin()); it != itChunkEnd; it++)
-	{
-		AUTO_VAR(itTEEnd, it->second.end());
-		for( AUTO_VAR(it2, it->second.begin()); it2 != itTEEnd; it2++ )
+    for (auto& it : renderableTileEntities)
+    {
+		for(auto& it2 : it.second)
 		{
-			(*it2)->upgradeRenderRemoveStage();
+			it2->upgradeRenderRemoveStage();
 		}
 	}
 	LeaveCriticalSection(&m_csRenderableTileEntities);
@@ -3529,9 +3519,9 @@ LevelRenderer::DestroyedTileManager::RecentTile::RecentTile(int x, int y, int z,
 
 LevelRenderer::DestroyedTileManager::RecentTile::~RecentTile()
 {
-	for( AUTO_VAR(it, boxes.begin()); it!= boxes.end(); it++ )
+	for(auto& it : boxes)
 	{
-		delete *it;
+		delete it;
 	}
 }
 
@@ -3645,7 +3635,7 @@ void LevelRenderer::DestroyedTileManager::addAABBs( Level *level, AABB *box, AAB
 				// without worrying about the lifespan of the copy we've passed out
 				if( m_destroyedTiles[i]->boxes[j]->intersects( box ) )
 				{
-					boxes->push_back(AABB::newTemp( m_destroyedTiles[i]->boxes[j]->x0, 
+					boxes->push_back(AABB::newTemp( m_destroyedTiles[i]->boxes[j]->x0,
 						m_destroyedTiles[i]->boxes[j]->y0,
 						m_destroyedTiles[i]->boxes[j]->z0,
 						m_destroyedTiles[i]->boxes[j]->x1,

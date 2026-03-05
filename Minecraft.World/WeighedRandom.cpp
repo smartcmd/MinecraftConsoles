@@ -4,9 +4,9 @@
 int WeighedRandom::getTotalWeight(vector<WeighedRandomItem *> *items)
 {
     int totalWeight = 0;
-	for( AUTO_VAR(it, items->begin()); it != items->end(); it++ )
+	for( const auto& item : *items)
 	{
-		totalWeight += (*it)->randomWeight;
+		totalWeight += item->randomWeight;
 	}
     return totalWeight;
 }
@@ -20,12 +20,12 @@ WeighedRandomItem *WeighedRandom::getRandomItem(Random *random, vector<WeighedRa
 
 	int selection = random->nextInt(totalWeight);
 
-	for( AUTO_VAR(it, items->begin()); it != items->end(); it++ )
+	for(const auto& item : *items)
 	{
-		selection -= (*it)->randomWeight;
+		selection -= item->randomWeight;
         if (selection < 0)
 		{
-            return *it;
+            return item;
         }
 	}
     return NULL;

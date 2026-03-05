@@ -13,9 +13,8 @@ UpdateAttributesPacket::UpdateAttributesPacket(int entityId, unordered_set<Attri
 {
 	this->entityId = entityId;
 
-	for (AUTO_VAR(it,values->begin()); it != values->end(); ++it)
+	for (AttributeInstance *value : *values)
 	{
-		AttributeInstance *value = *it;
 		unordered_set<AttributeModifier*> mods;
 		value->getModifiers(mods);
 		attributes.insert(new AttributeSnapshot(value->getAttribute()->getId(), value->getBaseValue(), &mods));
@@ -25,9 +24,9 @@ UpdateAttributesPacket::UpdateAttributesPacket(int entityId, unordered_set<Attri
 UpdateAttributesPacket::~UpdateAttributesPacket()
 {
 	// Delete modifiers - these are always copies, either on construction or on read
-	for(AUTO_VAR(it,attributes.begin()); it != attributes.end(); ++it)
-	{		
-		delete (*it);
+	for(auto& attribute : attributes)
+	{
+		delete attribute;
 	}
 }
 
@@ -54,9 +53,9 @@ void UpdateAttributesPacket::read(DataInputStream *dis)
 		attributes.insert(new AttributeSnapshot(id, base, &modifiers));
 
 		// modifiers is copied in AttributeSnapshot ctor so delete contents
-		for(AUTO_VAR(it, modifiers.begin()); it != modifiers.end(); ++it)
+		for(auto& modifier : modifiers)
 		{
-			delete *it;
+			delete modifier;
 		}
 	}
 }
@@ -66,19 +65,16 @@ void UpdateAttributesPacket::write(DataOutputStream *dos)
 	dos->writeInt(entityId);
 	dos->writeInt(attributes.size());
 
-	for(AUTO_VAR(it, attributes.begin()); it != attributes.end(); ++it)
+	for(auto& attribute : attributes)
 	{
-		AttributeSnapshot *attribute = (*it);
-
 		unordered_set<AttributeModifier *> *modifiers = attribute->getModifiers();
 
 		dos->writeShort(attribute->getId());
 		dos->writeDouble(attribute->getBase());
 		dos->writeShort(modifiers->size());
 
-		for (AUTO_VAR(it2, modifiers->begin()); it2 != modifiers->end(); ++it2)
+		for (auto& modifier : *modifiers)
 		{
-			AttributeModifier *modifier = (*it2);
 			dos->writeInt(modifier->getId());
 			dos->writeDouble(modifier->getAmount());
 			dos->writeByte(modifier->getOperation());
@@ -111,17 +107,17 @@ UpdateAttributesPacket::AttributeSnapshot::AttributeSnapshot(eATTRIBUTE_ID id, d
 	this->id = id;
 	this->base = base;
 
-	for(AUTO_VAR(it,modifiers->begin()); it != modifiers->end(); ++it)
+	for(auto& modifier : *modifiers)
 	{
-		this->modifiers.insert( new AttributeModifier((*it)->getId(), (*it)->getAmount(), (*it)->getOperation()));
+		this->modifiers.insert( new AttributeModifier(modifier->getId(), modifier->getAmount(), modifier->getOperation()));
 	}
 }
 
 UpdateAttributesPacket::AttributeSnapshot::~AttributeSnapshot()
 {
-	for(AUTO_VAR(it, modifiers.begin()); it != modifiers.end(); ++it)
+	for(auto& modifier : modifiers)
 	{
-		delete (*it);
+		delete modifier;
 	}
 }
 

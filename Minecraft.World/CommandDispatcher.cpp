@@ -4,7 +4,7 @@
 
 int CommandDispatcher::performCommand(shared_ptr<CommandSender> sender, EGameCommand command, byteArray commandData)
 {
-	AUTO_VAR(it, commandsById.find(command));
+	auto it = commandsById.find(command);
 
 	if(it != commandsById.end())
 	{
