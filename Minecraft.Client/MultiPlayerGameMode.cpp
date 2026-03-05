@@ -86,13 +86,6 @@ bool MultiPlayerGameMode::destroyBlock(int x, int y, int z, int face)
 
 	if (oldTile == NULL) return false;
 
-#ifdef _WINDOWS64
-	if (g_NetworkManager.IsHost())
-	{
-		level->levelEvent(LevelEvent::PARTICLES_DESTROY_BLOCK, x, y, z, oldTile->id + (level->getData(x, y, z) << Tile::TILE_NUM_SHIFT));
-	}
-#endif
-
 	level->levelEvent(LevelEvent::PARTICLES_DESTROY_BLOCK, x, y, z, oldTile->id + (level->getData(x, y, z) << Tile::TILE_NUM_SHIFT));
 
 	int data = level->getData(x, y, z);
