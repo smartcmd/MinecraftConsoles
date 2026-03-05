@@ -565,6 +565,12 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		g_KBMInput.SetWindowFocused(true);
 		break;
 
+	case WM_CHAR:
+		// Buffer typed characters so UIScene_Keyboard can dispatch them to the Iggy Flash player
+		if (wParam >= 0x20 || wParam == 0x08 || wParam == 0x0D) // printable chars + backspace + enter
+			g_KBMInput.OnChar((wchar_t)wParam);
+		break;
+
 	case WM_KEYDOWN:
 	case WM_SYSKEYDOWN:
 	{

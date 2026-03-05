@@ -55,6 +55,8 @@ void KeyboardMouseInput::Init()
 	m_hasInput = false;
 	m_kbmActive = true;
 	m_screenWantsCursorHidden = false;
+	m_charBufferHead = 0;
+	m_charBufferTail = 0;
 
 	RAWINPUTDEVICE rid;
 	rid.usUsagePage = 0x01; // HID_USAGE_PAGE_GENERIC
@@ -379,6 +381,31 @@ float KeyboardMouseInput::GetLookX(float sensitivity) const
 float KeyboardMouseInput::GetLookY(float sensitivity) const
 {
 	return (float)(-m_mouseDeltaY) * sensitivity;
+}
+
+void KeyboardMouseInput::OnChar(wchar_t c)
+{
+	int next = (m_charBufferHead + 1) % CHAR_BUFFER_SIZE;
+	if (next != m_charBufferTail)
+	{
+		m_charBuffer[m_charBufferHead] = c;
+		m_charBufferHead = next;
+	}
+}
+
+bool KeyboardMouseInput::ConsumeChar(wchar_t &outChar)
+{
+	if (m_charBufferTail == m_charBufferHead)
+		return false;
+	outChar = m_charBuffer[m_charBufferTail];
+	m_charBufferTail = (m_charBufferTail + 1) % CHAR_BUFFER_SIZE;
+	return true;
+}
+
+void KeyboardMouseInput::ClearCharBuffer()
+{
+	m_charBufferHead = 0;
+	m_charBufferTail = 0;
 }
 
 #endif // _WINDOWS64
