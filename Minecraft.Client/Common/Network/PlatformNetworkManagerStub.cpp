@@ -8,7 +8,6 @@
 #include "..\..\Minecraft.h"
 #include "..\..\User.h"
 #include <iostream>
-#include <fstream>
 #endif
 
 CPlatformNetworkManagerStub *g_pPlatformNetworkManager;
@@ -697,8 +696,6 @@ void CPlatformNetworkManagerStub::TickSearch()
 #endif
 }
 
-std::vector<FriendSessionInfo*>* allocatedServers = NULL;
-
 void CPlatformNetworkManagerStub::SearchForGames()
 {
 #ifdef _WINDOWS64
@@ -734,20 +731,9 @@ void CPlatformNetworkManagerStub::SearchForGames()
 		friendsSessions[0].push_back(info);
 	}
 
-	#ifdef _WINDOWS64 //Should we have this windows64 only? idk i havent tested so...
 	std::FILE* file = std::fopen("servers.txt", "r");
 
-	//Memory leak prevention
-	if (allocatedServers != NULL) {
-		for (FriendSessionInfo* info : *allocatedServers) {
-			delete(info);
-		}
-		delete(allocatedServers);
-	}
-
 	if (file) {
-		allocatedServers = new vector<FriendSessionInfo*>;
-
 		wstring wline;
 		int phase = 0;
 
@@ -771,7 +757,7 @@ void CPlatformNetworkManagerStub::SearchForGames()
 				name = wline;
 				phase = 0;
 
-				//Add server to the list!
+				//I assume it gets deleted later down the line, otherwise why would REVs be thrown?
 				FriendSessionInfo* info = new FriendSessionInfo();
 				wchar_t label[128];
 				wcsncpy_s(label, sizeof(label)/sizeof(wchar_t), name.c_str(), _TRUNCATE);
@@ -786,15 +772,11 @@ void CPlatformNetworkManagerStub::SearchForGames()
 				info->data.hostPort = stoi(port);
 				info->sessionId = (SessionID)(static_cast<uint64_t>(inet_addr(ip.c_str())) | (static_cast<uint64_t>(stoi(port)) << 32));
 				friendsSessions[0].push_back(info);
-
-				//save for later deletion!
-				allocatedServers->push_back(info);
 			}
 		}
 
-		delete(file);
+		std::fclose(file);
 	}
-	#endif
 
 	m_searchResultsCount[0] = (int)friendsSessions[0].size();
 
