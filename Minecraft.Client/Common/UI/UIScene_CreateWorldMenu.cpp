@@ -418,13 +418,20 @@ void UIScene_CreateWorldMenu::handlePress(F64 controlId, F64 childId)
 		{
 			m_bIgnoreInput=true;
 #ifdef _WINDOWS64
-			KeyboardInitData kbData;
-			kbData.title = app.GetString(IDS_CREATE_NEW_WORLD);
-			kbData.initialText = m_worldName;
-			kbData.charLimit = 25;
-			kbData.lpParam = this;
-			kbData.Func = &UIScene_CreateWorldMenu::KeyboardCompleteWorldNameCallbackNew;
-			ui.NavigateToScene(m_iPad, eUIScene_Keyboard, &kbData);
+			if (!g_KBMInput.IsKBMActive())
+			{
+				KeyboardInitData kbData;
+				kbData.title = app.GetString(IDS_CREATE_NEW_WORLD);
+				kbData.initialText = m_worldName;
+				kbData.charLimit = 25;
+				kbData.lpParam = this;
+				kbData.Func = &UIScene_CreateWorldMenu::KeyboardCompleteWorldNameCallbackNew;
+				ui.NavigateToScene(m_iPad, eUIScene_Keyboard, &kbData);
+			}
+			else
+			{
+				InputManager.RequestKeyboard(app.GetString(IDS_CREATE_NEW_WORLD), m_editWorldName.getLabel(), (DWORD)0, 25, &UIScene_CreateWorldMenu::KeyboardCompleteWorldNameCallback, this, C_4JInput::EKeyboardMode_Default);
+			}
 #else
 			InputManager.RequestKeyboard(app.GetString(IDS_CREATE_NEW_WORLD),m_editWorldName.getLabel(),(DWORD)0,25,&UIScene_CreateWorldMenu::KeyboardCompleteWorldNameCallback,this,C_4JInput::EKeyboardMode_Default);
 #endif

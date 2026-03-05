@@ -172,13 +172,20 @@ void UIScene_SignEntryMenu::handlePress(F64 controlId, F64 childId)
 			m_iEditingLine = (int)controlId;
 			m_bIgnoreInput = true;
 #ifdef _WINDOWS64
-			KeyboardInitData kbData;
-			kbData.title = app.GetString(IDS_SIGN_TITLE);
-			kbData.initialText = m_textInputLines[m_iEditingLine].getLabel();
-			kbData.charLimit = 15;
-			kbData.lpParam = this;
-			kbData.Func = &UIScene_SignEntryMenu::KeyboardCompleteCallbackNew;
-			ui.NavigateToScene(m_iPad, eUIScene_Keyboard, &kbData);
+			if (!g_KBMInput.IsKBMActive())
+			{
+				KeyboardInitData kbData;
+				kbData.title = app.GetString(IDS_SIGN_TITLE);
+				kbData.initialText = m_textInputLines[m_iEditingLine].getLabel();
+				kbData.charLimit = 15;
+				kbData.lpParam = this;
+				kbData.Func = &UIScene_SignEntryMenu::KeyboardCompleteCallbackNew;
+				ui.NavigateToScene(m_iPad, eUIScene_Keyboard, &kbData);
+			}
+			else
+			{
+				InputManager.RequestKeyboard(app.GetString(IDS_SIGN_TITLE), m_textInputLines[m_iEditingLine].getLabel(), (DWORD)m_iPad, 15, &UIScene_SignEntryMenu::KeyboardCompleteCallback, this, C_4JInput::EKeyboardMode_Alphabet);
+			}
 #elif defined(_XBOX_ONE)
 			// 4J-PB - Xbox One uses the Windows virtual keyboard, and doesn't have the Xbox 360 Latin keyboard type, so we can't restrict the input set to alphanumeric. The closest we get is the emailSmtpAddress type.
 			int language = XGetLanguage();

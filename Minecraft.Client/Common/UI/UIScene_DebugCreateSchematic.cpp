@@ -115,13 +115,21 @@ void UIScene_DebugCreateSchematic::handlePress(F64 controlId, F64 childId)
 		m_keyboardCallbackControl = (eControls)((int)controlId);
 #ifdef _WINDOWS64
 		{
-			KeyboardInitData kbData;
-			kbData.title = L"Enter something";
-			kbData.initialText = L"";
-			kbData.charLimit = 25;
-			kbData.lpParam = this;
-			kbData.Func = &UIScene_DebugCreateSchematic::KeyboardCompleteCallbackNew;
-			ui.NavigateToScene(m_iPad, eUIScene_Keyboard, &kbData);
+			if (!g_KBMInput.IsKBMActive())
+			{
+
+				KeyboardInitData kbData;
+				kbData.title = L"Enter something";
+				kbData.initialText = L"";
+				kbData.charLimit = 25;
+				kbData.lpParam = this;
+				kbData.Func = &UIScene_DebugCreateSchematic::KeyboardCompleteCallbackNew;
+				ui.NavigateToScene(m_iPad, eUIScene_Keyboard, &kbData);
+			}
+			else
+			{
+				InputManager.RequestKeyboard(L"Enter something", L"", (DWORD)0, 25, &UIScene_DebugCreateSchematic::KeyboardCompleteCallback, this, C_4JInput::EKeyboardMode_Default);
+			}
 		}
 #else
 		InputManager.RequestKeyboard(L"Enter something",L"",(DWORD)0,25,&UIScene_DebugCreateSchematic::KeyboardCompleteCallback,this,C_4JInput::EKeyboardMode_Default);

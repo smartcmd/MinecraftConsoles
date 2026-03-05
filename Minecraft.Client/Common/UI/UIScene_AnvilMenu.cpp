@@ -328,13 +328,23 @@ void UIScene_AnvilMenu::handleEditNamePressed()
 {
 	setIgnoreInput(true);
 #ifdef _WINDOWS64
-	KeyboardInitData kbData;
-	kbData.title = app.GetString(IDS_TITLE_RENAME);
-	kbData.initialText = m_textInputAnvil.getLabel();
-	kbData.charLimit = 30;
-	kbData.lpParam = this;
-	kbData.Func = &UIScene_AnvilMenu::KeyboardCompleteCallbackNew;
-	ui.NavigateToScene(m_iPad, eUIScene_Keyboard, &kbData);
+
+	if (!g_KBMInput.IsKBMActive())
+	{
+		KeyboardInitData kbData;
+		kbData.title = app.GetString(IDS_TITLE_RENAME);
+		kbData.initialText = m_textInputAnvil.getLabel();
+		kbData.charLimit = 30;
+		kbData.lpParam = this;
+		kbData.Func = &UIScene_AnvilMenu::KeyboardCompleteCallbackNew;
+		ui.NavigateToScene(m_iPad, eUIScene_Keyboard, &kbData);
+	}
+	else
+	{
+		InputManager.RequestKeyboard(app.GetString(IDS_TITLE_RENAME), m_textInputAnvil.getLabel(), (DWORD)m_iPad, 30, &UIScene_AnvilMenu::KeyboardCompleteCallback, this, C_4JInput::EKeyboardMode_Alphabet_Extended);
+	}
+
+
 #elif defined(__PS3__) || defined(__ORBIS__) || defined __PSVITA__
 	int language = XGetLanguage();
 	switch(language)

@@ -735,23 +735,9 @@ uint16_t *GetGlobalText()
 
 void SeedEditBox()
 {
-	KeyboardInitData kbData;
-
-	kbData.title =
-		reinterpret_cast<wchar_t*>(chGlobalText);
-
-	kbData.initialText =
-		reinterpret_cast<wchar_t*>(chGlobalText);
-
-	kbData.charLimit = 25;
-	kbData.lpParam = nullptr;
-
-	ui.NavigateToScene(
-		ProfileManager.GetPrimaryPad(),
-		eUIScene_Keyboard,
-		&kbData);
+	DialogBox(hMyInst, MAKEINTRESOURCE(IDD_SEED),
+		g_hWnd, reinterpret_cast<DLGPROC>(DlgProc));
 }
-
 
 //---------------------------------------------------------------------------
 LRESULT CALLBACK DlgProc(HWND hWndDlg, UINT Msg, WPARAM wParam, LPARAM lParam)

@@ -574,13 +574,20 @@ void UIScene_LaunchMoreOptionsMenu::handlePress(F64 controlId, F64 childId)
 		{
 			m_bIgnoreInput=true;
 #ifdef _WINDOWS64
-			KeyboardInitData kbData;
-			kbData.title = app.GetString(IDS_CREATE_NEW_WORLD_SEED);
-			kbData.initialText = m_editSeed.getLabel();
-			kbData.charLimit = 60;
-			kbData.lpParam = this;
-			kbData.Func = &UIScene_LaunchMoreOptionsMenu::KeyboardCompleteSeedCallbackNew;
-			ui.NavigateToScene(m_iPad, eUIScene_Keyboard, &kbData);
+			if (!g_KBMInput.IsKBMActive())
+			{
+				KeyboardInitData kbData;
+				kbData.title = app.GetString(IDS_CREATE_NEW_WORLD_SEED);
+				kbData.initialText = m_editSeed.getLabel();
+				kbData.charLimit = 60;
+				kbData.lpParam = this;
+				kbData.Func = &UIScene_LaunchMoreOptionsMenu::KeyboardCompleteSeedCallbackNew;
+				ui.NavigateToScene(m_iPad, eUIScene_Keyboard, &kbData);
+			}
+			else
+			{
+				InputManager.RequestKeyboard(app.GetString(IDS_CREATE_NEW_WORLD_SEED), m_editSeed.getLabel(), (DWORD)0, 60, &UIScene_LaunchMoreOptionsMenu::KeyboardCompleteSeedCallback, this, C_4JInput::EKeyboardMode_Alphabet_Extended);
+			}
 #elif defined(__PS3__)
 			int language = XGetLanguage();
 			switch(language)
