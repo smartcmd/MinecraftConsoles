@@ -1596,7 +1596,7 @@ bool CPlatformNetworkManagerXbox::GetGameSessionInfo(int iPad, SessionID session
 
 			bool foundSession = false;
 			FriendSessionInfo *sessionInfo = NULL;
-			AUTO_VAR(itFriendSession, friendsSessions[iPad].begin());
+			auto = itFriendSession, friendsSessions[iPad].begin();
 			for(itFriendSession = friendsSessions[iPad].begin(); itFriendSession < friendsSessions[iPad].end(); ++itFriendSession)
 			{
 				sessionInfo = *itFriendSession;
@@ -1687,7 +1687,7 @@ INetworkPlayer *CPlatformNetworkManagerXbox::addNetworkPlayer(IQNetPlayer *pQNet
 void CPlatformNetworkManagerXbox::removeNetworkPlayer(IQNetPlayer *pQNetPlayer)
 {
 	INetworkPlayer *pNetworkPlayer = getNetworkPlayer(pQNetPlayer);
-	for( AUTO_VAR(it, currentNetworkPlayers.begin()); it != currentNetworkPlayers.end(); it++ )
+	for( auto it = currentNetworkPlayers.begin(); it != currentNetworkPlayers.end(); it++ )
 	{
 		if( *it == pNetworkPlayer )
 		{

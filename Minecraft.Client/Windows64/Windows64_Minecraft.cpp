@@ -40,6 +40,7 @@
 #include "Resource.h"
 #include "..\..\Minecraft.World\compression.h"
 #include "..\..\Minecraft.World\OldChunkStorage.h"
+#include "Common/PostProcesser.h"
 #include "Network\WinsockNetLayer.h"
 
 #include "Xbox/resource.h"
@@ -873,6 +874,8 @@ HRESULT InitDevice()
 	g_pImmediateContext->RSSetViewports( 1, &vp );
 
 	RenderManager.Initialise(g_pd3dDevice, g_pSwapChain);
+
+	PostProcesser::GetInstance().Init();
 
 	return S_OK;
 }
