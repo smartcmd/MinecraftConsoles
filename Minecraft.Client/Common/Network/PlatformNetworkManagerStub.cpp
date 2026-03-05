@@ -748,7 +748,6 @@ void CPlatformNetworkManagerStub::SearchForGames()
 	if (file) {
 		allocatedServers = new vector<FriendSessionInfo*>;
 
-		string line;
 		wstring wline;
 		int phase = 0;
 
@@ -758,16 +757,17 @@ void CPlatformNetworkManagerStub::SearchForGames()
 
 		char buffer[512];
 		while (std::fgets(buffer, sizeof(buffer), file)) {
-			wline = convStringToWstring(buffer);
 			if (phase == 0) {
-				ip = line;
+				ip = buffer;
 				phase = 1;
 			}
 			else if (phase == 1) {
+				wline = convStringToWstring(buffer);
 				port = wline;
 				phase = 2;
 			}
 			else if (phase == 2) {
+				wline = convStringToWstring(buffer);
 				name = wline;
 				phase = 0;
 
