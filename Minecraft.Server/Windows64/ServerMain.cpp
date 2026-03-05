@@ -289,8 +289,15 @@ int main(int argc, char **argv)
 	SetConsoleCtrlHandler(ConsoleCtrlHandlerProc, TRUE);
 	SetExeWorkingDirectory();
 
-	g_iScreenWidth = 1280;
-	g_iScreenHeight = 720;
+	// https://github.com/smartcmd/MinecraftConsoles/commit/cb9ab4ef
+	// cb9ab4ef5131881af56936aeef38ff322b975fd0 から、720用の`skinHud.swf`が`MediaWindows64.arc`に含まれていないため
+	// 仮想ScreenをHDにしないとクラッシュする
+	// 
+	// g_iScreenWidth = 1280;
+	// g_iScreenHeight = 720;
+
+	g_iScreenWidth = 1920;
+	g_iScreenHeight = 1080;
 
 	strncpy_s(g_Win64Username, sizeof(g_Win64Username), config.name, _TRUNCATE);
 	MultiByteToWideChar(CP_ACP, 0, g_Win64Username, -1, g_Win64UsernameW, 17);
