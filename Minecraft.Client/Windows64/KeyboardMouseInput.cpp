@@ -117,7 +117,21 @@ void KeyboardMouseInput::Tick()
 	}
 	if (!m_hasInput)
 	{
-		m_keyState[vk] = true;
+		for (int i = 0; i < MAX_MOUSE_BUTTONS; i++)
+		{
+			if (m_mouseButtonDown[i]) { m_hasInput = true; break; }
+		}
+	}
+
+	if ((m_mouseGrabbed || m_cursorHiddenForUI) && g_hWnd)
+	{
+		RECT rc;
+		GetClientRect(g_hWnd, &rc);
+		POINT center;
+		center.x = (rc.right - rc.left) / 2;
+		center.y = (rc.bottom - rc.top) / 2;
+		ClientToScreen(g_hWnd, &center);
+		SetCursorPos(center.x, center.y);
 	}
 }
 
@@ -143,9 +157,12 @@ void KeyboardMouseInput::OnKeyUp(int vkCode)
 
 void KeyboardMouseInput::OnMouseButtonDown(int button)
 {
-	if (button < 0 || button >= 3) return;
-
-	m_mouseButtons[button] = down;
+	if (button >= 0 && button < MAX_MOUSE_BUTTONS)
+	{
+		if (!m_mouseButtonDown[button])
+			m_mouseBtnPressedAccum[button] = true;
+		m_mouseButtonDown[button] = true;
+	}
 }
 
 void KeyboardMouseInput::OnMouseButtonUp(int button)
@@ -236,7 +253,7 @@ bool KeyboardMouseInput::IsMouseButtonReleased(int button) const
 	return false;
 }
 
-void KeyboardMouseInput::ConsumeMouseDelta(float &dx, float &dy)
+void KeyboardMouseInput::ConsumeMouseDelta(float& dx, float& dy)
 {
 	dx = (float)m_mouseDeltaAccumX;
 	dy = (float)m_mouseDeltaAccumY;
