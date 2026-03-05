@@ -15,6 +15,9 @@
 #endif
 
 #include "..\..\Minecraft.Client\Windows64\Windows64_App.h"
+
+#include "stb_vorbis.h"
+
 #define MA_NO_DSOUND
 #define MA_NO_WINMM
 #define MINIAUDIO_IMPLEMENTATION
@@ -511,21 +514,28 @@ void SoundEngine::play(int iSound, float x, float y, float z, float volume, floa
         WIN32_FIND_DATAA findData;
         HANDLE hFind = FindFirstFileA(searchPattern, &findData);
 
-        if (hFind == INVALID_HANDLE_VALUE)
-        {
-            sprintf_s(searchPattern, "%s\\*.mp3", chosenFolder);
-            hFind = FindFirstFileA(searchPattern, &findData);
+		const char* extensions[] = { ".ogg", ".wav", ".mp3" };
+		size_t extCount = sizeof(extensions) / sizeof(extensions[0]);
+		bool found = false;
+		for (size_t i = 0; i < extCount; i++)
+		{
+			sprintf_s(searchPattern, "%s\\*%s", chosenFolder, extensions[i]);
+			hFind = FindFirstFileA(searchPattern, &findData);
+			if (hFind != INVALID_HANDLE_VALUE)
+			{
+				found = true;
+				break;
+			}
+		}
+		if (hFind == INVALID_HANDLE_VALUE)
+		{
+			app.DebugPrintf("No sound files found in %s\n", chosenFolder);
+			return;
+		}
 
-            if (hFind == INVALID_HANDLE_VALUE)
-            {
-                printf("No .wav or .mp3 files found in %s\n", chosenFolder);
-                return;
-            }
-        }
-
-        sprintf_s(finalPath, "%s\\%s", chosenFolder, findData.cFileName);
-        FindClose(hFind);
-    }
+		sprintf_s(finalPath, "%s\\%s", chosenFolder, findData.cFileName);
+		FindClose(hFind);
+	}
 
     MiniAudioSound* s = new MiniAudioSound();
     memset(&s->info, 0, sizeof(AUDIO_INFO));
@@ -598,19 +608,23 @@ void SoundEngine::playUI(int iSound, float volume, float pitch)
     char finalPath[256];
     sprintf_s(finalPath, "%s.wav", basePath);
 
-    if (!FileExists(finalPath))
-    {
-        sprintf_s(finalPath, "%s.wav", basePath);
-		if (!FileExists(finalPath))
+	const char* extensions[] = { ".ogg", ".wav", ".mp3" };
+	size_t count = sizeof(extensions) / sizeof(extensions[0]);
+	bool found = false;
+	for (size_t i = 0; i < count; i++)
+	{
+		sprintf_s(finalPath, "%s%s", basePath, extensions[i]);
+		if (FileExists(finalPath))
 		{
-			sprintf_s(finalPath, "%s.mp3", basePath);
-			if (!FileExists(finalPath))
-			{
-				app.DebugPrintf("No sound file found for UI sound: %s\n", basePath);
-				return;
-			}
+			found = true;
+			break;
 		}
-    }
+	}
+	if (!found)
+	{
+		app.DebugPrintf("No sound file found for UI sound: %s\n", basePath);
+		return;
+	}
 
     MiniAudioSound* s = new MiniAudioSound();
     memset(&s->info, 0, sizeof(AUDIO_INFO));
@@ -1134,35 +1148,41 @@ void SoundEngine::playMusicUpdate()
 			// 			char *SoundName = (char *)ConvertSoundPathToName(name);
 			// 			strcat((char *)szStreamName,SoundName);
 
-			const bool isCD = (m_musicID >= m_iStream_CD_1);
-			const char* folder = isCD ? "cds/" : "music/";
-
 			FILE* pFile = nullptr;
+			
 			if (fopen_s(&pFile, reinterpret_cast<char*>(m_szStreamName), "rb") == 0 && pFile)
 			{
 				fclose(pFile);
 			}
 			else
 			{
-				const char* extensions[] = { ".wav", ".mp3" }; // custom audio formats can be implemented via ma_audio_buffer and whatnot
-				size_t count = sizeof(extensions) / sizeof(extensions[0]);
+				const char* extensions[] = { ".ogg", ".mp3", ".wav" };
+				size_t extCount = sizeof(extensions) / sizeof(extensions[0]);
 				bool found = false;
 
-				for (size_t i = 0; i < count; i++)
+				char* dotPos = strrchr(reinterpret_cast<char*>(m_szStreamName), '.');
+				if (dotPos != nullptr && (dotPos - reinterpret_cast<char*>(m_szStreamName)) < 250)
 				{
-					int n = sprintf_s(reinterpret_cast<char*>(m_szStreamName), 512, "%s%s%s%s", m_szMusicPath, folder, m_szStreamFileA[m_musicID], extensions[i]);
-					if (n < 0) continue;
-
-					if (fopen_s(&pFile, reinterpret_cast<char*>(m_szStreamName), "rb") == 0 && pFile)
+					for (size_t i = 0; i < extCount; i++)
 					{
-						fclose(pFile);
-						found = true;
-						break;
+						strcpy_s(dotPos, 5, extensions[i]);
+						
+						if (fopen_s(&pFile, reinterpret_cast<char*>(m_szStreamName), "rb") == 0 && pFile)
+						{
+							fclose(pFile);
+							found = true;
+							break;
+						}
 					}
 				}
 
 				if (!found)
 				{
+					if (dotPos != nullptr)
+					{
+						strcpy_s(dotPos, 5, ".wav");
+					}
+					app.DebugPrintf("WARNING: No audio file found for music ID %d (tried .ogg, .mp3, .wav)\n", m_musicID);
 					return;
 				}
 			}

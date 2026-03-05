@@ -3787,6 +3787,9 @@
     <ClInclude Include="Common\Audio\miniaudio.h">
       <Filter>Common\Source Files\Audio</Filter>
     </ClInclude>
+    <ClInclude Include="Common\Audio\stb_vorbis.h">
+      <Filter>Common\Source Files\Audio</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -6001,9 +6004,6 @@
     </Library>
     <Library Include="Windows64\4JLibs\libs\4J_Input_d.lib">
       <Filter>Windows64\4JLibs\libs</Filter>
-    </Library>
-    <Library Include="Windows64\Miles\lib\mss64.lib">
-      <Filter>Windows64\Miles Sound System\lib</Filter>
     </Library>
     <Library Include="Windows64\Iggy\lib\iggy_w64.lib">
       <Filter>Windows64\Iggy\lib</Filter>
