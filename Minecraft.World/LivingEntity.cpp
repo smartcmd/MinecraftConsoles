@@ -1222,6 +1222,23 @@ void LivingEntity::handleEntityEvent(byte id)
 	}
 }
 
+void LivingEntity::lerpMotion(double xd, double yd, double zd)
+{
+	this->xd = xd;
+	this->yd = yd;
+	this->zd = zd;
+	// Set the value
+	float result = static_cast<float>(
+		std::atan2(this->zd - zd, this->xd - xd) * (180.0 / PI)
+		- this->getYHeadRot()
+	);
+
+	if (std::isfinite(result))
+	{
+		this->hurtDir = result;
+	}
+}
+
 void LivingEntity::outOfWorld() 
 {
 	hurt(DamageSource::outOfWorld, 4);
