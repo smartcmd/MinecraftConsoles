@@ -136,6 +136,7 @@ elseif(UNIX)
     COMMAND tar -xvf - -C "${CMAKE_CURRENT_BINARY_DIR}/"
   )
   message(STATUS "Patching Windows64Media...")
+  file(MAKE_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/Windows64Media/")
   execute_process(
     COMMAND tar
             "--exclude=*.h" "--exclude=*.xml" "--exclude=*.lang" "--exclude=*.bat"
