@@ -148,6 +148,7 @@ public:
 	virtual int getNoActionTime();
 	virtual void addAdditonalSaveData(CompoundTag *entityTag);
 	virtual void readAdditionalSaveData(CompoundTag *tag);
+	virtual void lerpMotion(double xd, double yd, double zd);
 
 protected:
 	virtual void tickEffects();
