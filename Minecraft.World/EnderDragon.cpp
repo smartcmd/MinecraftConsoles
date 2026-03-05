@@ -444,13 +444,16 @@ void EnderDragon::aiStep()
 			{
 				vector<shared_ptr<Entity> > *targets = level->getEntities(shared_from_this(), m_acidArea);
 
-				for( AUTO_VAR(it, targets->begin() ); it != targets->end(); ++it)
+				if ( targets )
 				{
-					if ( (*it)->instanceof(eTYPE_LIVINGENTITY) )
+					for (auto& it : *targets )
 					{
-						//app.DebugPrintf("Attacking entity with acid\n");
-						shared_ptr<LivingEntity> e = dynamic_pointer_cast<LivingEntity>( *it );
-						e->hurt(DamageSource::dragonbreath, 2);
+						if ( it->instanceof(eTYPE_LIVINGENTITY))
+						{
+							//app.DebugPrintf("Attacking entity with acid\n");
+							shared_ptr<LivingEntity> e = dynamic_pointer_cast<LivingEntity>(it);
+							e->hurt(DamageSource::dragonbreath, 2);
+						}
 					}
 				}
 			}
@@ -796,24 +799,23 @@ void EnderDragon::checkCrystals()
 	{
 		float maxDist = 32;
 		vector<shared_ptr<Entity> > *crystals = level->getEntitiesOfClass(typeid(EnderCrystal), bb->grow(maxDist, maxDist, maxDist));
-
-		shared_ptr<EnderCrystal> crystal = nullptr;
-		double nearest = Double::MAX_VALUE;
-		//for (Entity ec : crystals)
-		for(AUTO_VAR(it, crystals->begin()); it != crystals->end(); ++it)
+		if ( crystals )
 		{
-			shared_ptr<EnderCrystal> ec = dynamic_pointer_cast<EnderCrystal>( *it );
-			double dist = ec->distanceToSqr(shared_from_this() );
-			if (dist < nearest)
+			shared_ptr<EnderCrystal> crystal = nullptr;
+			double nearest = Double::MAX_VALUE;
+			for (auto& it : *crystals )
 			{
-				nearest = dist;
-				crystal = ec;
+				shared_ptr<EnderCrystal> ec = dynamic_pointer_cast<EnderCrystal>(it);
+				double dist = ec->distanceToSqr(shared_from_this());
+				if (dist < nearest)
+				{
+					nearest = dist;
+					crystal = ec;
+				}
 			}
+			delete crystals;
+			nearestCrystal = crystal;
 		}
-		delete crystals;
-
-
-		nearestCrystal = crystal;
 	}
 }
 
@@ -839,33 +841,39 @@ void EnderDragon::knockBack(vector<shared_ptr<Entity> > *entities)
 	//        double ym = (body.bb.y0 + body.bb.y1) / 2;
 	double zm = (body->bb->z0 + body->bb->z1) / 2;
 
-	//for (Entity e : entities)
-	for(AUTO_VAR(it, entities->begin()); it != entities->end(); ++it)
+	if ( entities )
 	{
-
-		if ( (*it)->instanceof(eTYPE_LIVINGENTITY) )//(e instanceof Mob)
+		for ( auto& it : *entities )
 		{
-			shared_ptr<LivingEntity> e = dynamic_pointer_cast<LivingEntity>( *it );
-			double xd = e->x - xm;
-			double zd = e->z - zm;
-			double dd = xd * xd + zd * zd;
-			e->push(xd / dd * 4, 0.2f, zd / dd * 4);
+			if (it->instanceof(eTYPE_LIVINGENTITY))
+			{
+				shared_ptr<LivingEntity> e = dynamic_pointer_cast<LivingEntity>(it);
+				double xd = e->x - xm;
+				double zd = e->z - zm;
+				double dd = xd * xd + zd * zd;
+				e->push(xd / dd * 4, 0.2f, zd / dd * 4);
+			}
 		}
 	}
 }
 
 void EnderDragon::hurt(vector<shared_ptr<Entity> > *entities)
 {
-	//for (int i = 0; i < entities->size(); i++)
-	for(AUTO_VAR(it, entities->begin()); it != entities->end(); ++it)
+	if ( entities )
 	{
-
-		if ( (*it)->instanceof(eTYPE_LIVINGENTITY) ) //(e instanceof Mob)
+		for ( auto& it : *entities )
 		{
-			shared_ptr<LivingEntity> e = dynamic_pointer_cast<LivingEntity>( *it );//entities.get(i);
-			DamageSource *damageSource = DamageSource::mobAttack( dynamic_pointer_cast<LivingEntity>( shared_from_this() ));
-			e->hurt(damageSource, 10);
-			delete damageSource;
+
+			if ( it->instanceof(eTYPE_LIVINGENTITY))
+			{
+				shared_ptr<LivingEntity> e = dynamic_pointer_cast<LivingEntity>(it);
+				DamageSource* damageSource = DamageSource::mobAttack(dynamic_pointer_cast<LivingEntity>(shared_from_this()));
+				if ( damageSource )
+				{
+					e->hurt(damageSource, 10);
+					delete damageSource;
+				}
+			}
 		}
 	}
 }

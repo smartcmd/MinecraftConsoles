@@ -28,12 +28,12 @@ void CompleteAllRuleDefinition::updateStatus(GameRule *rule)
 {
 	int goal = 0;
 	int progress = 0;
-	for(AUTO_VAR(it, rule->m_parameters.begin()); it != rule->m_parameters.end(); ++it)
+	for (auto& it : rule->m_parameters )
 	{
-		if(it->second.isPointer)
+		if(it.second.isPointer)
 		{
-			goal += it->second.gr->getGameRuleDefinition()->getGoal();
-			progress += it->second.gr->getGameRuleDefinition()->getProgress(it->second.gr);
+			goal += it.second.gr->getGameRuleDefinition()->getGoal();
+			progress += it.second.gr->getGameRuleDefinition()->getProgress(it.second.gr);
 		}
 	}
 	if(rule->getConnection() != NULL)
@@ -44,9 +44,9 @@ void CompleteAllRuleDefinition::updateStatus(GameRule *rule)
 
 		int icon = -1;
 		int auxValue = 0;
-		
+
 		if(m_lastRuleStatusChanged != NULL)
-		{	
+		{
 			icon = m_lastRuleStatusChanged->getIcon();
 			auxValue = m_lastRuleStatusChanged->getAuxValue();
 			m_lastRuleStatusChanged = NULL;
@@ -60,7 +60,7 @@ wstring CompleteAllRuleDefinition::generateDescriptionString(const wstring &desc
 {
 	PacketData *values = (PacketData *)data;
 	wstring newDesc = description;
-	newDesc = replaceAll(newDesc,L"{*progress*}",_toString<int>(values->progress));
-	newDesc = replaceAll(newDesc,L"{*goal*}",_toString<int>(values->goal));
+	newDesc = replaceAll(newDesc,L"{*progress*}",std::to_wstring(values->progress));
+	newDesc = replaceAll(newDesc,L"{*goal*}",std::to_wstring(values->goal));
 	return newDesc;
 }

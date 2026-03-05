@@ -27,16 +27,12 @@ ExplodePacket::ExplodePacket(double x, double y, double z, float r, unordered_se
 	this->r = r;
 	m_bKnockbackOnly = knockBackOnly;
 
-	if(toBlow != NULL)
+	if(toBlow != nullptr)
 	{
 		this->toBlow.assign(toBlow->begin(),toBlow->end());
-		//for( AUTO_VAR(it, toBlow->begin()); it != toBlow->end(); it++ )
-		//{
-		//	this->toBlow.push_back(*it);
-		//}
 	}
 
-	if (knockback != NULL)
+	if (knockback != nullptr)
 	{
 		knockbackX = (float) knockback->x;
 		knockbackY = (float) knockback->y;
@@ -89,13 +85,8 @@ void ExplodePacket::write(DataOutputStream *dos) //throws IOException
 		int yp = (int)y;
 		int zp = (int)z;
 
-		//(Myset::const_iterator it = c1.begin(); 
-		//it != c1.end(); ++it) 
-	
-		for( AUTO_VAR(it, toBlow.begin()); it != toBlow.end(); it++ )
+		for ( const TilePos& tp : toBlow )
 		{
-			TilePos tp = *it;
-
 			int xx = tp.x-xp;
 			int yy = tp.y-yp;
 			int zz = tp.z-zp;

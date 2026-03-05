@@ -53,7 +53,7 @@ void FileHeader::RemoveFile( FileEntry *file )
 
 	AdjustStartOffsets(file, file->getFileSize(), true);
 
-	AUTO_VAR(it, find(fileTable.begin(), fileTable.end(),file));
+	auto it = find(fileTable.begin(), fileTable.end(), file);
 
 	if( it < fileTable.end() )
 	{

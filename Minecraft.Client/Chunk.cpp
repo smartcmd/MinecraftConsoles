@@ -105,7 +105,7 @@ void Chunk::setPos(int x, int y, int z)
 	{
 		bb = shared_ptr<AABB>(AABB::newPermanent(-g, -g, -g, XZSIZE+g, SIZE+g, XZSIZE+g));
 	}
-	else 
+	else
 	{
 		// 4J MGH - bounds are relative to the position now, so the AABB will be setup already, either above, or from the tesselator bounds.
 // 		bb->set(-g, -g, -g, SIZE+g, SIZE+g, SIZE+g);
@@ -143,7 +143,7 @@ void Chunk::setPos(int x, int y, int z)
 
 	LeaveCriticalSection(&levelRenderer->m_csDirtyChunks);
 
-	
+
 }
 
 void Chunk::translateToPos()
@@ -176,7 +176,7 @@ void Chunk::makeCopyForRebuild(Chunk *source)
 	this->clipChunk = NULL;
 	this->id = source->id;
 	this->globalRenderableTileEntities = source->globalRenderableTileEntities;
-	this->globalRenderableTileEntities_cs = source->globalRenderableTileEntities_cs;	
+	this->globalRenderableTileEntities_cs = source->globalRenderableTileEntities_cs;
 }
 
 void Chunk::rebuild()
@@ -189,7 +189,7 @@ void Chunk::rebuild()
 
 //	if (!dirty) return;
 	PIXBeginNamedEvent(0,"Rebuild section A");
-	
+
 #ifdef _LARGE_WORLDS
 	Tesselator *t = Tesselator::getInstance();
 #else
@@ -226,7 +226,7 @@ void Chunk::rebuild()
 	// Get the data for the level chunk that this render chunk is it (level chunk is 16 x 16 x 128,
 	// render chunk is 16 x 16 x 16. We wouldn't have to actually get all of it if the data was ordered differently, but currently
 	// it is ordered by x then z then y so just getting a small range of y out of it would involve getting the whole thing into
-	// the cache anyway. 
+	// the cache anyway.
 
 #ifdef _LARGE_WORLDS
 	unsigned char *tileIds = GetTileIdsStorage();
@@ -240,9 +240,9 @@ void Chunk::rebuild()
 	TileRenderer *tileRenderer = new TileRenderer(region, this->x, this->y, this->z, tileIds);
 
 	// AP - added a caching system for Chunk::rebuild to take advantage of
-	// Basically we're storing of copy of the tileIDs array inside the region so that calls to Region::getTile can grab data 
-	// more quickly from this array rather than calling CompressedTileStorage. On the Vita the total thread time spent in 
-	// Region::getTile went from 20% to 4%.	
+	// Basically we're storing of copy of the tileIDs array inside the region so that calls to Region::getTile can grab data
+	// more quickly from this array rather than calling CompressedTileStorage. On the Vita the total thread time spent in
+	// Region::getTile went from 20% to 4%.
 #ifdef __PSVITA__
 	int xc = x >> 4;
 	int zc = z >> 4;
@@ -278,7 +278,7 @@ void Chunk::rebuild()
 				if( yy == (Level::maxBuildHeight - 1) ) continue;
 				if(( xx == 0 ) || ( xx == 15 )) continue;
 				if(( zz == 0 ) || ( zz == 15 )) continue;
-				
+
 				// Establish whether this tile and its neighbours are all made of rock, dirt, unbreakable tiles, or have already
 				// been determined to meet this criteria themselves and have a tile of 255 set.
 				if( !( ( tileId == Tile::stone_Id ) || ( tileId == Tile::dirt_Id ) || ( tileId == Tile::unbreakable_Id ) || ( tileId == 255) ) ) continue;
@@ -340,7 +340,7 @@ void Chunk::rebuild()
 	PIXBeginNamedEvent(0,"Rebuild section C");
 	Tesselator::Bounds bounds;	// 4J MGH - added
 	{
-		// this was the old default clip bounds for the chunk, set in Chunk::setPos. 
+		// this was the old default clip bounds for the chunk, set in Chunk::setPos.
 		float g = 6.0f;
 		bounds.boundingBox[0] = -g;
 		bounds.boundingBox[1] = -g;
@@ -401,7 +401,7 @@ void Chunk::rebuild()
 							t->begin();
 							t->offset((float)(-this->x), (float)(-this->y), (float)(-this->z));
 						}
-						
+
 						Tile *tile = Tile::tiles[tileId];
 						if (currentLayer == 0 && tile->isEntityTile())
 						{
@@ -468,7 +468,7 @@ void Chunk::rebuild()
 		{
 			levelRenderer->setGlobalChunkFlag(this->x, this->y, this->z, level, LevelRenderer::CHUNK_FLAG_EMPTY1);
 			RenderManager.CBuffClear(lists + 1);
-			break;		
+			break;
 		}
 	}
 
@@ -484,7 +484,6 @@ void Chunk::rebuild()
 
 	PIXEndNamedEvent();
 	PIXBeginNamedEvent(0,"Rebuild section D");
-
 	// 4J - have rewritten the way that tile entities are stored globally to make it work more easily with split screen. Chunks are now
 	// stored globally in the levelrenderer, in a hashmap with a special key made up from the dimension and chunk position (using same index
 	// as is used for global flags)
@@ -493,25 +492,25 @@ void Chunk::rebuild()
 	EnterCriticalSection(globalRenderableTileEntities_cs);
 	if( renderableTileEntities.size() )
 	{
-		AUTO_VAR(it, globalRenderableTileEntities->find(key));
-		if( it != globalRenderableTileEntities->end() )
+        auto it = globalRenderableTileEntities->find(key);
+        if( it != globalRenderableTileEntities->end() )
 		{
 			// We've got some renderable tile entities that we want associated with this chunk, and an existing list of things that used to be.
 			// We need to flag any that we don't need any more to be removed, keep those that we do, and add any new ones
 
 			// First pass - flag everything already existing to be removed
-			for( AUTO_VAR(it2, it->second.begin()); it2 != it->second.end(); it2++ )
+			for(auto& it2 : it->second)
 			{
-				(*it2)->setRenderRemoveStage(TileEntity::e_RenderRemoveStageFlaggedAtChunk);
+				it2->setRenderRemoveStage(TileEntity::e_RenderRemoveStageFlaggedAtChunk);
 			}
 
 			// Now go through the current list. If these are already in the list, then unflag the remove flag. If they aren't, then add
-			for( int i = 0; i < renderableTileEntities.size(); i++ )
+			for(const auto& it3 : renderableTileEntities)
 			{
-				AUTO_VAR(it2, find( it->second.begin(), it->second.end(), renderableTileEntities[i] ));
-				if( it2 == it->second.end() )
+                auto it2 = find(it->second.begin(), it->second.end(), it3);
+                if( it2 == it->second.end() )
 				{
-					(*globalRenderableTileEntities)[key].push_back(renderableTileEntities[i]);
+					(*globalRenderableTileEntities)[key].push_back(it3);
 				}
 				else
 				{
@@ -531,12 +530,12 @@ void Chunk::rebuild()
 	else
 	{
 		// Another easy case - we don't want any renderable tile entities associated with this chunk. Flag all to be removed.
-		AUTO_VAR(it, globalRenderableTileEntities->find(key));
-		if( it != globalRenderableTileEntities->end() )
+        auto it = globalRenderableTileEntities->find(key);
+        if( it != globalRenderableTileEntities->end() )
 		{
-			for( AUTO_VAR(it2, it->second.begin()); it2 != it->second.end(); it2++ )
+			for(auto& it2 : it->second)
 			{
-				(*it2)->setRenderRemoveStage(TileEntity::e_RenderRemoveStageFlaggedAtChunk);
+				it2->setRenderRemoveStage(TileEntity::e_RenderRemoveStageFlaggedAtChunk);
 			}
 		}
 	}
@@ -555,11 +554,11 @@ void Chunk::rebuild()
 		oldTileEntities.removeAll(renderableTileEntities);
 		globalRenderableTileEntities.removeAll(oldTileEntities);
 		*/
-        
+
 
     unordered_set<shared_ptr<TileEntity> > newTileEntities(renderableTileEntities.begin(),renderableTileEntities.end());
-    
-	AUTO_VAR(endIt, oldTileEntities.end());
+
+	auto endIt = oldTileEntities.end();
 	for( unordered_set<shared_ptr<TileEntity> >::iterator it = oldTileEntities.begin(); it != endIt; it++ )
 	{
 		newTileEntities.erase(*it);
@@ -576,7 +575,7 @@ void Chunk::rebuild()
 
 	// 4J - All these new things added to globalRenderableTileEntities
 
-	AUTO_VAR(endItRTE, renderableTileEntities.end());
+	auto endItRTE = renderableTileEntities.end();
 	for( vector<shared_ptr<TileEntity> >::iterator it = renderableTileEntities.begin(); it != endItRTE; it++ )
 	{
 		oldTileEntities.erase(*it);
@@ -680,13 +679,13 @@ void Chunk::rebuild_SPU()
 	// Get the data for the level chunk that this render chunk is it (level chunk is 16 x 16 x 128,
 	// render chunk is 16 x 16 x 16. We wouldn't have to actually get all of it if the data was ordered differently, but currently
 	// it is ordered by x then z then y so just getting a small range of y out of it would involve getting the whole thing into
-	// the cache anyway. 
+	// the cache anyway.
 	ChunkRebuildData* pOutData = NULL;
 	g_rebuildDataIn.buildForChunk(&region, level, x0, y0, z0);
 
  	Tesselator::Bounds bounds;
 	{
-		// this was the old default clip bounds for the chunk, set in Chunk::setPos. 
+		// this was the old default clip bounds for the chunk, set in Chunk::setPos.
 		float g = 6.0f;
 		bounds.boundingBox[0] = -g;
 		bounds.boundingBox[1] = -g;
@@ -814,14 +813,14 @@ void Chunk::rebuild_SPU()
 	EnterCriticalSection(globalRenderableTileEntities_cs);
 	if( renderableTileEntities.size() )
 	{
-		AUTO_VAR(it, globalRenderableTileEntities->find(key));
+		auto it = globalRenderableTileEntities->find(key);
 		if( it != globalRenderableTileEntities->end() )
 		{
 			// We've got some renderable tile entities that we want associated with this chunk, and an existing list of things that used to be.
 			// We need to flag any that we don't need any more to be removed, keep those that we do, and add any new ones
 
 			// First pass - flag everything already existing to be removed
-			for( AUTO_VAR(it2, it->second.begin()); it2 != it->second.end(); it2++ )
+			for( auto it2 = it->second.begin(); it2 != it->second.end(); it2++ )
 			{
 				(*it2)->setRenderRemoveStage(TileEntity::e_RenderRemoveStageFlaggedAtChunk);
 			}
@@ -829,7 +828,7 @@ void Chunk::rebuild_SPU()
 			// Now go through the current list. If these are already in the list, then unflag the remove flag. If they aren't, then add
 			for( int i = 0; i < renderableTileEntities.size(); i++ )
 			{
-				AUTO_VAR(it2, find( it->second.begin(), it->second.end(), renderableTileEntities[i] ));
+				auto it2 = find( it->second.begin(), it->second.end(), renderableTileEntities[i] );
 				if( it2 == it->second.end() )
 				{
 					(*globalRenderableTileEntities)[key].push_back(renderableTileEntities[i]);
@@ -852,10 +851,10 @@ void Chunk::rebuild_SPU()
 	else
 	{
 		// Another easy case - we don't want any renderable tile entities associated with this chunk. Flag all to be removed.
-		AUTO_VAR(it, globalRenderableTileEntities->find(key));
+		auto it = globalRenderableTileEntities->find(key);
 		if( it != globalRenderableTileEntities->end() )
 		{
-			for( AUTO_VAR(it2, it->second.begin()); it2 != it->second.end(); it2++ )
+			for( auto it2 = it->second.begin(); it2 != it->second.end(); it2++ )
 			{
 				(*it2)->setRenderRemoveStage(TileEntity::e_RenderRemoveStageFlaggedAtChunk);
 			}
@@ -875,11 +874,11 @@ void Chunk::rebuild_SPU()
 		oldTileEntities.removeAll(renderableTileEntities);
 		globalRenderableTileEntities.removeAll(oldTileEntities);
 		*/
-        
+
 
     unordered_set<shared_ptr<TileEntity> > newTileEntities(renderableTileEntities.begin(),renderableTileEntities.end());
-    
-	AUTO_VAR(endIt, oldTileEntities.end());
+
+	auto endIt = oldTileEntities.end();
 	for( unordered_set<shared_ptr<TileEntity> >::iterator it = oldTileEntities.begin(); it != endIt; it++ )
 	{
 		newTileEntities.erase(*it);
@@ -896,7 +895,7 @@ void Chunk::rebuild_SPU()
 
 	// 4J - All these new things added to globalRenderableTileEntities
 
-	AUTO_VAR(endItRTE, renderableTileEntities.end());
+	auto endItRTE = renderableTileEntities.end();
 	for( vector<shared_ptr<TileEntity> >::iterator it = renderableTileEntities.begin(); it != endItRTE; it++ )
 	{
 		oldTileEntities.erase(*it);

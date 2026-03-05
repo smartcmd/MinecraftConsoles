@@ -19,7 +19,7 @@ ServerChunkCache::ServerChunkCache(ServerLevel *level, ChunkStorage *storage, Ch
 	XZOFFSET = XZSIZE/2; // 4J Added
 
 	autoCreate = false;	// 4J added
-    
+
 	emptyChunk = new EmptyLevelChunk(level, byteArray( Level::CHUNK_TILE_COUNT ), 0, 0);
 
     this->level = level;
@@ -54,9 +54,8 @@ ServerChunkCache::~ServerChunkCache()
 	delete m_unloadedCache;
 #endif
 
-	AUTO_VAR(itEnd, m_loadedChunkList.end());
-	for (AUTO_VAR(it, m_loadedChunkList.begin()); it != itEnd; it++)
-		delete *it;
+	for (auto& it : m_loadedChunkList)
+		delete it;
 	DeleteCriticalSection(&m_csLoadCreate);
 }
 
@@ -510,7 +509,7 @@ void ServerChunkCache::flagPostProcessComplete(short flag, int x, int z)
 			lc->compressLighting();
 		if( !lc->isLowerDataStorageCompressed() )
 			lc->compressData();
-		
+
 		PIXEndNamedEvent();
 	}
 
@@ -542,7 +541,7 @@ void ServerChunkCache::postProcess(ChunkSource *parent, int x, int z )
 {
     LevelChunk *chunk = getChunk(x, z);
     if ( (chunk->terrainPopulated & LevelChunk::sTerrainPopulatedFromHere) == 0 )
-	{	
+	{
 		if (source != NULL)
 		{
 			PIXBeginNamedEvent(0,"Main post processing");
@@ -603,9 +602,9 @@ bool ServerChunkCache::saveAllEntities()
 
 	PIXBeginNamedEvent(0, "saving to NBT");
 	EnterCriticalSection(&m_csLoadCreate);
-	for(AUTO_VAR(it,m_loadedChunkList.begin()); it != m_loadedChunkList.end(); ++it)
+	for(auto& it : m_loadedChunkList)
 	{
-		storage->saveEntities(level, *it);
+		storage->saveEntities(level, it);
 	}
 	LeaveCriticalSection(&m_csLoadCreate);
 	PIXEndNamedEvent();
@@ -625,13 +624,11 @@ bool ServerChunkCache::save(bool force, ProgressListener *progressListener)
 
 	// 4J - added this to support progressListner
 	int count = 0;
-    if (progressListener != NULL)
+    if (progressListener)
 	{
-        AUTO_VAR(itEnd, m_loadedChunkList.end());
-		for (AUTO_VAR(it, m_loadedChunkList.begin()); it != itEnd; it++)
+		for (LevelChunk *chunk : m_loadedChunkList)
 		{
-			LevelChunk *chunk = *it;
-            if (chunk->shouldSave(force))
+			if ( chunk && chunk->shouldSave(force))
 			{
                 count++;
             }
@@ -745,12 +742,12 @@ bool ServerChunkCache::save(bool force, ProgressListener *progressListener)
 		for(unsigned int i = 0; i < 3; ++i)
 		{
 			saveThreads[i] = NULL;
-		
+
 			threadData[i].cache = this;
 
 			wakeEvent[i] = new C4JThread::Event(); //CreateEvent(NULL,FALSE,FALSE,NULL);
 			threadData[i].wakeEvent = wakeEvent[i];
-			
+
 			notificationEvent[i] = new C4JThread::Event(); //CreateEvent(NULL,FALSE,FALSE,NULL);
 			threadData[i].notificationEvent = notificationEvent[i];
 
@@ -783,7 +780,7 @@ bool ServerChunkCache::save(bool force, ProgressListener *progressListener)
 		{
 			if( ( m_loadedChunkList[i]->x < 0 ) && ( m_loadedChunkList[i]->z >= 0 ) ) sortedChunkList.push_back(m_loadedChunkList[i]);
 		}
-		
+
 		for (unsigned int i = 0; i < sortedChunkList.size();)
 		{
 			workingThreads = 0;
@@ -951,8 +948,8 @@ bool ServerChunkCache::tick()
 
 						//loadedChunks.remove(cp);
 						//loadedChunkList.remove(chunk);
-						AUTO_VAR(it, std::find( m_loadedChunkList.begin(), m_loadedChunkList.end(), chunk) );
-						if(it != m_loadedChunkList.end()) m_loadedChunkList.erase(it);
+                        auto it = std::find(m_loadedChunkList.begin(), m_loadedChunkList.end(), chunk);
+                        if(it != m_loadedChunkList.end()) m_loadedChunkList.erase(it);
 
 						int ix = chunk->x + XZOFFSET;
 						int iz = chunk->z + XZOFFSET;
@@ -979,7 +976,7 @@ bool ServerChunkCache::shouldSave()
 
 wstring ServerChunkCache::gatherStats()
 {
-	 return L"ServerChunkCache: ";// + _toString<int>(loadedChunks.size()) + L" Drop: " + _toString<int>(toDrop.size());
+	 return L"ServerChunkCache: ";// + std::to_wstring(loadedChunks.size()) + L" Drop: " + std::to_wstring(toDrop.size());
 }
 
 vector<Biome::MobSpawnerData *> *ServerChunkCache::getMobsAt(MobCategory *mobCategory, int x, int y, int z)

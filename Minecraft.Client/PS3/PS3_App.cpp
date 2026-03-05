@@ -31,7 +31,7 @@ CConsoleMinecraftApp::CConsoleMinecraftApp() : CMinecraftApp()
 
 	m_bVoiceChatAndUGCRestricted=false;
 	m_bDisplayFullVersionPurchase=false;
-// #ifdef _DEBUG_MENUS_ENABLED	
+// #ifdef _DEBUG_MENUS_ENABLED
 // 	debugOverlayCreated = false;
 // #endif
 
@@ -173,7 +173,7 @@ BOOL CConsoleMinecraftApp::ReadProductCodes()
 			WRAPPED_READFILE(file,&pDLCInfo->iConfig,sizeof(int),&bytesRead,NULL);
 
 			// push this into a vector
-			
+
 			wstring wstrTemp=convStringToWstring(chDLCTitle);
 			m_SONYDLCMap[wstrTemp]=pDLCInfo;
 		}
@@ -266,7 +266,7 @@ void CConsoleMinecraftApp::FatalLoadError()
 		aStrings[1] = L"Не удалось загрузить игру \"Minecraft: PlayStation®3 Edition\". Продолжить загрузку невозможно.";
 		aStrings[2] = L"Выйти из игры";
 		break;
-	case XC_LANGUAGE_TCHINESE:		
+	case XC_LANGUAGE_TCHINESE:
 		aStrings[0] = L"載入錯誤";
 		aStrings[1] = L"無法載入「Minecraft: PlayStation®3 Edition」，因此無法繼續。";
 		aStrings[2] = L"離開遊戲";
@@ -360,7 +360,7 @@ void CConsoleMinecraftApp::FatalLoadError()
 		}
 		app.DebugPrintf("Requesting Message Box for Fatal Error again due to BUSY\n");
 		eResult=InputManager.RequestMessageBox(EMSgBoxType_None,0,NULL,this,(char *)u8Message,0);
-	} 
+	}
 
 	while(1)
 	{
@@ -467,7 +467,7 @@ void CConsoleMinecraftApp::FreeLocalTMSFiles(eTMSFileType eType)
 }
 
 LoadSaveDataThreadParam* LoadSaveFromDisk(const wstring& pathName)
-{	
+{
 	File saveFile(pathName);
 	__int64 fileSize = saveFile.length();
 	FileInputStream fis(saveFile);
@@ -595,7 +595,7 @@ void CConsoleMinecraftApp::CommerceTick()
 
 			break;
 		case eCommerce_State_GetProductList:
-			{	
+			{
 				m_eCommerce_State=eCommerce_State_GetProductList_Pending;
 				SonyCommerce::CategoryInfo *pCategories=app.GetCategoryInfo();
 				std::list<SonyCommerce::CategoryInfoSub>::iterator iter = pCategories->subCategories.begin();
@@ -611,7 +611,7 @@ void CConsoleMinecraftApp::CommerceTick()
 
 			break;
 		case eCommerce_State_AddProductInfoDetailed:
-			{	
+			{
 				m_eCommerce_State=eCommerce_State_AddProductInfoDetailed_Pending;
 
 				// for each of the products in the categories, get the detailed info. We really only need the long description and price info.
@@ -648,7 +648,7 @@ void CConsoleMinecraftApp::CommerceTick()
 			break;
 
 		case eCommerce_State_RegisterDLC:
-			{	
+			{
 				m_eCommerce_State=eCommerce_State_Online;
 				// register the DLC info
 				SonyCommerce::CategoryInfo *pCategories=app.GetCategoryInfo();
@@ -738,16 +738,16 @@ void CConsoleMinecraftApp::ClearCommerceDetails()
 {
 	for(int i=0;i<m_ProductListCategoriesC;i++)
 	{
-		std::vector<SonyCommerce::ProductInfo>* pProductList=&m_ProductListA[i];	
+		std::vector<SonyCommerce::ProductInfo>* pProductList=&m_ProductListA[i];
 		pProductList->clear();
 	}
 
 	if(m_ProductListA!=NULL)
 	{
-		delete [] m_ProductListA;	
+		delete [] m_ProductListA;
 		m_ProductListA=NULL;
 	}
-	
+
 	m_ProductListRetrievedC=0;
 	m_ProductListAdditionalDetailsC=0;
 	m_ProductListCategoriesC=0;
@@ -772,17 +772,17 @@ void CConsoleMinecraftApp::GetDLCSkuIDFromProductList(char * pchDLCProductID, ch
 		for(int j=0;j<m_ProductListA[i].size();j++)
 		{
 			std::vector<SonyCommerce::ProductInfo>* pProductList=&m_ProductListA[i];
-			AUTO_VAR(itEnd, pProductList->end());
+            auto itEnd = pProductList->end();
 
-			for (AUTO_VAR(it, pProductList->begin()); it != itEnd; it++)
-			{
+            for (auto it = pProductList->begin(); it != itEnd; it++)
+            {
 				SonyCommerce::ProductInfo Info=*it;
 				if(strcmp(pchDLCProductID,Info.productId)==0)
-				{	
+				{
 					memcpy(pchSkuID,Info.skuId,SCE_NP_COMMERCE2_SKU_ID_LEN);
 					return;
 				}
-			}		
+			}
 		}
 	}
 	return;
@@ -791,7 +791,7 @@ void CConsoleMinecraftApp::GetDLCSkuIDFromProductList(char * pchDLCProductID, ch
 void CConsoleMinecraftApp::Checkout(char *pchSkuID)
 {
 	if(m_eCommerce_State==eCommerce_State_Online)
-	{	
+	{
 		strcpy(m_pchSkuID,pchSkuID);
 		m_eCommerce_State=eCommerce_State_Checkout;
 	}
@@ -800,7 +800,7 @@ void CConsoleMinecraftApp::Checkout(char *pchSkuID)
 void CConsoleMinecraftApp::DownloadAlreadyPurchased(char *pchSkuID)
 {
 	if(m_eCommerce_State==eCommerce_State_Online)
-	{	
+	{
 		strcpy(m_pchSkuID,pchSkuID);
 		m_eCommerce_State=eCommerce_State_DownloadAlreadyPurchased;
 	}
@@ -809,7 +809,7 @@ void CConsoleMinecraftApp::DownloadAlreadyPurchased(char *pchSkuID)
 bool CConsoleMinecraftApp::UpgradeTrial()
 {
 	if(m_eCommerce_State==eCommerce_State_Online)
-	{	
+	{
 		m_eCommerce_State=eCommerce_State_UpgradeTrial;
 		return true;
 	}
@@ -845,13 +845,13 @@ bool CConsoleMinecraftApp::DLCAlreadyPurchased(char *pchTitle)
 		for(int j=0;j<m_ProductListA[i].size();j++)
 		{
 			std::vector<SonyCommerce::ProductInfo>* pProductList=&m_ProductListA[i];
-			AUTO_VAR(itEnd, pProductList->end());
-			
-			for (AUTO_VAR(it, pProductList->begin()); it != itEnd; it++)
-			{
+            auto itEnd = pProductList->end();
+
+            for (auto it = pProductList->begin(); it != itEnd; it++)
+            {
 				SonyCommerce::ProductInfo Info=*it;
 				if(strcmp(pchTitle,Info.skuId)==0)
-				{				
+				{
 					if(Info.purchasabilityFlag==SCE_NP_COMMERCE2_SKU_PURCHASABILITY_FLAG_OFF)
 					{
 						return true;
@@ -861,7 +861,7 @@ bool CConsoleMinecraftApp::DLCAlreadyPurchased(char *pchTitle)
 						return false;
 					}
 				}
-			}		
+			}
 		}
 	}
 	return false;
@@ -896,7 +896,7 @@ void CConsoleMinecraftApp::CommerceGetCategoriesCallback(LPVOID lpParam,int err)
 	if(err==0)
 	{
 		pClass->m_ProductListCategoriesC=pClass->m_CategoryInfo.countOfSubCategories;
-		// allocate the memory for the product info for each categories 
+		// allocate the memory for the product info for each categories
 		if(pClass->m_CategoryInfo.countOfSubCategories>0)
 		{
 			pClass->m_ProductListA = (std::vector<SonyCommerce::ProductInfo> *) new std::vector<SonyCommerce::ProductInfo> [pClass->m_CategoryInfo.countOfSubCategories];
@@ -928,7 +928,7 @@ void CConsoleMinecraftApp::CommerceGetProductListCallback(LPVOID lpParam,int err
 		{
 			// we're done, so now retrieve the additional product details for each product
 			pClass->m_eCommerce_State=eCommerce_State_AddProductInfoDetailed;
-			pClass->m_bCommerceProductListRetrieved=true;		
+			pClass->m_bCommerceProductListRetrieved=true;
 		}
 		else
 		{
@@ -938,21 +938,21 @@ void CConsoleMinecraftApp::CommerceGetProductListCallback(LPVOID lpParam,int err
 	else
 	{
 		pClass->m_eCommerce_State=eCommerce_State_Error;
-		pClass->m_bCommerceProductListRetrieved=true;		
+		pClass->m_bCommerceProductListRetrieved=true;
 	}
 }
 
 // void CConsoleMinecraftApp::CommerceGetDetailedProductInfoCallback(LPVOID lpParam,int err)
 // {
 // 	CConsoleMinecraftApp *pScene=(CConsoleMinecraftApp *)lpParam;
-// 
+//
 // 	if(err==0)
 // 	{
 // 		pScene->m_eCommerce_State=eCommerce_State_Idle;
-// 		//pScene->m_bCommerceProductListRetrieved=true;		
+// 		//pScene->m_bCommerceProductListRetrieved=true;
 // 	}
 // 	//printf("Callback hit, error 0x%08x\n", err);
-// 
+//
 // }
 
 void CConsoleMinecraftApp::CommerceAddDetailedProductInfoCallback(LPVOID lpParam,int err)
@@ -971,7 +971,7 @@ void CConsoleMinecraftApp::CommerceAddDetailedProductInfoCallback(LPVOID lpParam
 		{
 			// MGH - change this to a while loop so we can skip empty categories.
 			do
-			{ 
+			{
 				pClass->m_iCurrentCategory++;
 			}while(pClass->m_ProductListA[pClass->m_iCurrentCategory].size() == 0 && pClass->m_iCurrentCategory<pClass->m_ProductListCategoriesC);
 
@@ -980,12 +980,12 @@ void CConsoleMinecraftApp::CommerceAddDetailedProductInfoCallback(LPVOID lpParam
 			{
 				// there are no more categories, so we're done
 				pClass->m_eCommerce_State=eCommerce_State_RegisterDLC;
-				pClass->m_bProductListAdditionalDetailsRetrieved=true;		
+				pClass->m_bProductListAdditionalDetailsRetrieved=true;
 			}
 			else
 			{
 				// continue with the next category
-				pClass->m_eCommerce_State=eCommerce_State_AddProductInfoDetailed;				
+				pClass->m_eCommerce_State=eCommerce_State_AddProductInfoDetailed;
 			}
 		}
 		else
@@ -997,7 +997,7 @@ void CConsoleMinecraftApp::CommerceAddDetailedProductInfoCallback(LPVOID lpParam
 	else
 	{
 		pClass->m_eCommerce_State=eCommerce_State_Error;
-		pClass->m_bProductListAdditionalDetailsRetrieved=true;	
+		pClass->m_bProductListAdditionalDetailsRetrieved=true;
 		pClass->m_iCurrentProduct=0;
 		pClass->m_iCurrentCategory=0;
 	}
@@ -1166,7 +1166,7 @@ char *PatchFilelist[] =
 // 	"/TitleUpdate/res/font/Default.png",
  	"/TitleUpdate/res/font/Mojangles_7.png",
  	"/TitleUpdate/res/font/Mojangles_11.png",
-	
+
 	"music/music/creative1.binka",
 	"music/music/creative2.binka",
 	"music/music/creative3.binka",
@@ -1227,7 +1227,7 @@ bool CConsoleMinecraftApp::CheckForEmptyStore(int iPad)
 
 	bool bEmptyStore=true;
 	if(pCategories!=NULL)
-	{	
+	{
 		if(pCategories->countOfProducts>0)
 		{
 			bEmptyStore=false;

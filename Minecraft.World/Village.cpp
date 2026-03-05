@@ -46,9 +46,9 @@ Village::~Village()
 {
 	delete accCenter;
 	delete center;
-	for(AUTO_VAR(it, aggressors.begin()); it != aggressors.end(); ++it)
+	for(auto& aggressor : aggressors)
 	{
-		delete *it;
+		delete aggressor;
 	}
 }
 
@@ -181,9 +181,8 @@ shared_ptr<DoorInfo> Village::getClosestDoorInfo(int x, int y, int z)
 	shared_ptr<DoorInfo> closest = nullptr;
 	int closestDistSqr = Integer::MAX_VALUE;
 	//for (DoorInfo dm : doorInfos)
-	for(AUTO_VAR(it, doorInfos.begin()); it != doorInfos.end(); ++it)
+	for(auto& dm : doorInfos)
 	{
-		shared_ptr<DoorInfo> dm = *it;
 		int distSqr = dm->distanceToSqr(x, y, z);
 		if (distSqr < closestDistSqr)
 		{
@@ -199,10 +198,8 @@ shared_ptr<DoorInfo>Village::getBestDoorInfo(int x, int y, int z)
 	shared_ptr<DoorInfo> closest = nullptr;
 	int closestDist = Integer::MAX_VALUE;
 	//for (DoorInfo dm : doorInfos)
-	for(AUTO_VAR(it, doorInfos.begin()); it != doorInfos.end(); ++it)
+	for(auto& dm : doorInfos)
 	{
-		shared_ptr<DoorInfo>dm = *it;
-
 		int distSqr = dm->distanceToSqr(x, y, z);
 		if (distSqr > 16 * 16) distSqr *= 1000;
 		else distSqr = dm->getBookingsCount();
@@ -221,14 +218,13 @@ bool Village::hasDoorInfo(int x, int y, int z)
 	return getDoorInfo(x, y, z) != NULL;
 }
 
-shared_ptr<DoorInfo>Village::getDoorInfo(int x, int y, int z)
+shared_ptr<DoorInfo> Village::getDoorInfo(int x, int y, int z)
 {
 	if (center->distSqr(x, y, z) > radius * radius) return nullptr;
-	//for (DoorInfo di : doorInfos)
-	for(AUTO_VAR(it, doorInfos.begin()); it != doorInfos.end(); ++it)
+	for( auto& di : doorInfos)
 	{
-		shared_ptr<DoorInfo> di = *it;
-		if (di->x == x && di->z == z && abs(di->y - y) <= 1) return di;
+		if (di->x == x && di->z == z && abs(di->y - y) <= 1)
+			return di;
 	}
 	return nullptr;
 }
@@ -250,10 +246,8 @@ bool Village::canRemove()
 
 void Village::addAggressor(shared_ptr<LivingEntity> mob)
 {
-	//for (Aggressor a : aggressors)
-	for(AUTO_VAR(it, aggressors.begin()); it != aggressors.end(); ++it)
+	for(auto& a : aggressors)
 	{
-		Aggressor *a = *it;
 		if (a->mob == mob)
 		{
 			a->timeStamp = _tick;
@@ -267,10 +261,8 @@ shared_ptr<LivingEntity> Village::getClosestAggressor(shared_ptr<LivingEntity> f
 {
 	double closestSqr = Double::MAX_VALUE;
 	Aggressor *closest = NULL;
-	//for (int i = 0; i < aggressors.size(); ++i)
-	for(AUTO_VAR(it, aggressors.begin()); it != aggressors.end(); ++it)
+	for(auto& a : aggressors)
 	{
-		Aggressor *a = *it; //aggressors.get(i);
 		double distSqr = a->mob->distanceToSqr(from);
 		if (distSqr > closestSqr) continue;
 		closest = a;
@@ -284,10 +276,9 @@ shared_ptr<Player> Village::getClosestBadStandingPlayer(shared_ptr<LivingEntity>
 	double closestSqr = Double::MAX_VALUE;
 	shared_ptr<Player> closest = nullptr;
 
-	//for (String player : playerStanding.keySet())
-	for(AUTO_VAR(it,playerStanding.begin()); it != playerStanding.end(); ++it)
+	for(auto& it : playerStanding)
 	{
-		wstring player = it->first;
+		wstring player = it.first;
 		if (isVeryBadStanding(player))
 		{
 			shared_ptr<Player> mob = level->getPlayerByName(player);
@@ -306,9 +297,8 @@ shared_ptr<Player> Village::getClosestBadStandingPlayer(shared_ptr<LivingEntity>
 
 void Village::updateAggressors()
 {
-	//for (Iterator<Aggressor> it = aggressors.iterator(); it.hasNext();)
-	for(AUTO_VAR(it, aggressors.begin()); it != aggressors.end();)
-	{
+    for (auto it = aggressors.begin(); it != aggressors.end();)
+    {
 		Aggressor *a = *it; //it.next();
 		if (!a->mob->isAlive() || abs(_tick - a->timeStamp) > 300)
 		{
@@ -328,8 +318,8 @@ void Village::updateDoors()
 	bool removed = false;
 	bool resetBookings = level->random->nextInt(50) == 0;
 	//for (Iterator<DoorInfo> it = doorInfos.iterator(); it.hasNext();)
-	for(AUTO_VAR(it, doorInfos.begin()); it != doorInfos.end();)
-	{
+    for (auto it = doorInfos.begin(); it != doorInfos.end();)
+    {
 		shared_ptr<DoorInfo> dm = *it; //it.next();
 		if (resetBookings) dm->resetBookingCount();
 		if (!isDoor(dm->x, dm->y, dm->z) || abs(_tick - dm->timeStamp) > 1200)
@@ -371,10 +361,9 @@ void Village::calcInfo()
 	center->set(accCenter->x / s, accCenter->y / s, accCenter->z / s);
 	int maxRadiusSqr = 0;
 	//for (DoorInfo dm : doorInfos)
-	for(AUTO_VAR(it, doorInfos.begin()); it != doorInfos.end(); ++it)
+	for(auto& dm : doorInfos)
 	{
-		shared_ptr<DoorInfo> dm = *it;
-		maxRadiusSqr = max(dm->distanceToSqr(center->x, center->y, center->z), maxRadiusSqr);
+		maxRadiusSqr = std::max<int>(dm->distanceToSqr(center->x, center->y, center->z), maxRadiusSqr);
 	}
 	int doorDist= Villages::MaxDoorDist;			// Take into local int for PS4 as max takes a reference to the const int there and then needs the value to exist for the linker
 	radius = max(doorDist, (int) sqrt((float)maxRadiusSqr) + 1);
@@ -382,8 +371,8 @@ void Village::calcInfo()
 
 int Village::getStanding(const wstring &playerName)
 {
-	AUTO_VAR(it,playerStanding.find(playerName));
-	if (it != playerStanding.end())
+    auto it = playerStanding.find(playerName);
+    if (it != playerStanding.end())
 	{
 		return it->second;
 	}
@@ -462,9 +451,8 @@ void Village::addAdditonalSaveData(CompoundTag *tag)
 
 	ListTag<CompoundTag> *doorTags = new ListTag<CompoundTag>(L"Doors");
 	//for (DoorInfo dm : doorInfos)
-	for(AUTO_VAR(it,doorInfos.begin()); it != doorInfos.end(); ++it)
+	for(auto& dm : doorInfos)
 	{
-		shared_ptr<DoorInfo> dm = *it;
 		CompoundTag *doorTag = new CompoundTag(L"Door");
 		doorTag->putInt(L"X", dm->x);
 		doorTag->putInt(L"Y", dm->y);
@@ -478,12 +466,12 @@ void Village::addAdditonalSaveData(CompoundTag *tag)
 
 	ListTag<CompoundTag> *playerTags = new ListTag<CompoundTag>(L"Players");
 	//for (String player : playerStanding.keySet())
-	for(AUTO_VAR(it, playerStanding.begin()); it != playerStanding.end(); ++it)
+	for(auto& it : playerStanding)
 	{
-		wstring player = it->first;
+		wstring player = it.first;
 		CompoundTag *playerTag = new CompoundTag(player);
 		playerTag->putString(L"Name", player);
-		playerTag->putInt(L"S", it->second);
+		playerTag->putInt(L"S", it.second);
 		playerTags->add(playerTag);
 	}
 	tag->put(L"Players", playerTags);
@@ -504,9 +492,8 @@ bool Village::isBreedTimerOk()
 
 void Village::rewardAllPlayers(int amount)
 {
-	//for (String player : playerStanding.keySet())
-	for(AUTO_VAR(it, playerStanding.begin()); it != playerStanding.end(); ++it)
+	for(auto& it : playerStanding)
 	{
-		modifyStanding(it->first, amount);
+		modifyStanding(it.first, amount);
 	}
 }

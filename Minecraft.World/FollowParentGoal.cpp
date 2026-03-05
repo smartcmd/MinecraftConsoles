@@ -22,9 +22,9 @@ bool FollowParentGoal::canUse()
 
 	shared_ptr<Animal> closest = nullptr;
 	double closestDistSqr = Double::MAX_VALUE;
-	for(AUTO_VAR(it, parents->begin()); it != parents->end(); ++it)
+	for(auto& it : *parents)
 	{
-		shared_ptr<Animal> parent = dynamic_pointer_cast<Animal>(*it);
+		shared_ptr<Animal> parent = dynamic_pointer_cast<Animal>(it);
 		if (parent->getAge() < 0) continue;
 		double distSqr = animal->distanceToSqr(parent);
 		if (distSqr > closestDistSqr) continue;

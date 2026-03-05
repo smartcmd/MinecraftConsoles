@@ -53,14 +53,14 @@ int ChunkPos::getMiddleBlockZ()
 	return ( z << 4 ) + 8;
 }
 
-TilePos ChunkPos::getMiddleBlockPosition(int y) 
+TilePos ChunkPos::getMiddleBlockPosition(int y)
 {
 	return TilePos(getMiddleBlockX(), y, getMiddleBlockZ());
 }
 
 wstring ChunkPos::toString()
 {
-    return L"[" + _toString<int>(x) + L", " + _toString<int>(z) + L"]";
+    return L"[" + std::to_wstring(x) + L", " + std::to_wstring(z) + L"]";
 }
 
 __int64 ChunkPos::hash_fnct(const ChunkPos &k)

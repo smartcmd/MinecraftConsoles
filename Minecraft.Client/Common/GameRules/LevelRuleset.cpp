@@ -11,7 +11,7 @@ LevelRuleset::LevelRuleset()
 
 LevelRuleset::~LevelRuleset()
 {
-	for(AUTO_VAR(it, m_areas.begin()); it != m_areas.end(); ++it)
+	for (auto it = m_areas.begin(); it != m_areas.end(); ++it)
 	{
 		delete *it;
 	}
@@ -20,8 +20,8 @@ LevelRuleset::~LevelRuleset()
 void LevelRuleset::getChildren(vector<GameRuleDefinition *> *children)
 {
 	CompoundGameRuleDefinition::getChildren(children);
-	for (AUTO_VAR(it, m_areas.begin()); it != m_areas.end(); it++)
-		children->push_back(*it);
+	for (const auto& area : m_areas)
+		children->push_back(area);
 }
 
 GameRuleDefinition *LevelRuleset::addChild(ConsoleGameRules::EGameRuleType ruleType)
@@ -58,12 +58,12 @@ LPCWSTR LevelRuleset::getString(const wstring &key)
 
 AABB *LevelRuleset::getNamedArea(const wstring &areaName)
 {
-	AABB *area = NULL;
-	for(AUTO_VAR(it, m_areas.begin()); it != m_areas.end(); ++it)
+	AABB *area = nullptr;
+	for(auto& it : m_areas)
 	{
-		if( (*it)->getName().compare(areaName) == 0 )
+		if( it->getName().compare(areaName) == 0 )
 		{
-			area = (*it)->getArea();
+			area = it->getArea();
 			break;
 		}
 	}

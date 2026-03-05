@@ -405,13 +405,12 @@ void Boat::tick()
 	if(level->isClientSide) return;
 
 	vector<shared_ptr<Entity> > *entities = level->getEntities(shared_from_this(), bb->grow(0.2f, 0, 0.2f));
-	if (entities != NULL && !entities->empty())
+	if (entities && !entities->empty())
 	{
-		AUTO_VAR(itEnd, entities->end());
-		for (AUTO_VAR(it, entities->begin()); it != itEnd; it++)
+		auto riderPtr = rider.lock();
+		for ( auto& e : *entities )
 		{
-			shared_ptr<Entity> e = (*it); // entities->at(i);
-			if (e != rider.lock() && e->isPushable() && e->GetType() ==  eTYPE_BOAT)
+			if (e != riderPtr && e->isPushable() && e->GetType() ==  eTYPE_BOAT)
 			{
 				e->push(shared_from_this());
 			}

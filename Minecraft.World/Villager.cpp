@@ -125,9 +125,8 @@ void Villager::serverAiMobStep()
 				if (offers->size() > 0)
 				{
 					//for (MerchantRecipe recipe : offers)
-					for(AUTO_VAR(it, offers->begin()); it != offers->end(); ++it)
+					for(auto& recipe : *offers)
 					{
-						MerchantRecipe *recipe = *it;
 						if (recipe->isDeprecated())
 						{
 							recipe->increaseMaxUses(random->nextInt(6) + random->nextInt(6) + 2);
@@ -615,8 +614,8 @@ shared_ptr<ItemInstance> Villager::getItemTradeInValue(int itemId, Random *rando
 
 int Villager::getTradeInValue(int itemId, Random *random)
 {
-	AUTO_VAR(it,MIN_MAX_VALUES.find(itemId));
-	if (it == MIN_MAX_VALUES.end())
+    auto it = MIN_MAX_VALUES.find(itemId);
+    if (it == MIN_MAX_VALUES.end())
 	{
 		return 1;
 	}
@@ -660,8 +659,8 @@ void Villager::addItemForPurchase(MerchantRecipeList *list, int itemId, Random *
 
 int Villager::getPurchaseCost(int itemId, Random *random)
 {
-	AUTO_VAR(it,MIN_MAX_PRICES.find(itemId));
-	if (it == MIN_MAX_PRICES.end())
+    auto it = MIN_MAX_PRICES.find(itemId);
+    if (it == MIN_MAX_PRICES.end())
 	{
 		return 1;
 	}
@@ -677,7 +676,7 @@ void Villager::handleEntityEvent(byte id)
 {
 	if (id == EntityEvent::LOVE_HEARTS)
 	{
-		addParticlesAroundSelf(eParticleType_heart);	
+		addParticlesAroundSelf(eParticleType_heart);
 	}
 	else if (id == EntityEvent::VILLAGER_ANGRY)
 	{

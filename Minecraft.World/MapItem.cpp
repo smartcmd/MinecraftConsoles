@@ -20,18 +20,18 @@ MapItem::MapItem(int id) : ComplexItem(id)
 }
 
 shared_ptr<MapItemSavedData> MapItem::getSavedData(short idNum, Level *level)
-{	
-	std::wstring id = wstring( L"map_" ) + _toString(idNum);
+{
+	std::wstring id = wstring( L"map_" ) + std::to_wstring(idNum);
 	shared_ptr<MapItemSavedData> mapItemSavedData = dynamic_pointer_cast<MapItemSavedData>(level->getSavedData(typeid(MapItemSavedData), id));
 
-	if (mapItemSavedData == NULL) 
+	if (mapItemSavedData == NULL)
 	{
 		// 4J Stu - This call comes from ClientConnection, but i don't see why we should be trying to work out
 		// the id again when it's passed as a param. In any case that won't work with the new map setup
 		//int aux = level->getFreeAuxValueFor(L"map");
 		int aux = idNum;
 
-		id = wstring( L"map_" ) + _toString(aux);
+		id = wstring( L"map_" ) + std::to_wstring(aux);
 		mapItemSavedData = shared_ptr<MapItemSavedData>( new MapItemSavedData(id) );
 
 		level->setSavedData(id, (shared_ptr<SavedData> ) mapItemSavedData);
@@ -43,7 +43,7 @@ shared_ptr<MapItemSavedData> MapItem::getSavedData(short idNum, Level *level)
 shared_ptr<MapItemSavedData> MapItem::getSavedData(shared_ptr<ItemInstance> itemInstance, Level *level)
 {
 	MemSect(31);
-	std::wstring id = wstring( L"map_" ) + _toString(itemInstance->getAuxValue() );
+	std::wstring id = wstring( L"map_" ) + std::to_wstring(itemInstance->getAuxValue() );
 	MemSect(0);
 	shared_ptr<MapItemSavedData> mapItemSavedData = dynamic_pointer_cast<MapItemSavedData>( level->getSavedData(typeid(MapItemSavedData), id ) );
 
@@ -54,7 +54,7 @@ shared_ptr<MapItemSavedData> MapItem::getSavedData(shared_ptr<ItemInstance> item
 		// In any case that won't work with the new map setup
 		//itemInstance->setAuxValue(level->getFreeAuxValueFor(L"map"));
 
-		id = wstring( L"map_" ) + _toString(itemInstance->getAuxValue() );
+		id = wstring( L"map_" ) + std::to_wstring(itemInstance->getAuxValue() );
 		mapItemSavedData = shared_ptr<MapItemSavedData>( new MapItemSavedData(id) );
 
 		newData = true;
@@ -75,7 +75,7 @@ shared_ptr<MapItemSavedData> MapItem::getSavedData(shared_ptr<ItemInstance> item
 		mapItemSavedData->z = Math::round(level->getLevelData()->getZSpawn() / scale) * scale;
 #endif
 		mapItemSavedData->dimension = (byte) level->dimension->id;
-	
+
 		mapItemSavedData->setDirty();
 
 		level->setSavedData(id, (shared_ptr<SavedData> ) mapItemSavedData);
@@ -86,7 +86,7 @@ shared_ptr<MapItemSavedData> MapItem::getSavedData(shared_ptr<ItemInstance> item
 
 void MapItem::update(Level *level, shared_ptr<Entity> player, shared_ptr<MapItemSavedData> data)
 {
-	if ( (level->dimension->id != data->dimension) || !player->instanceof(eTYPE_PLAYER) ) 
+	if ( (level->dimension->id != data->dimension) || !player->instanceof(eTYPE_PLAYER) )
 	{
 		// Wrong dimension, abort
 		return;
@@ -148,8 +148,8 @@ void MapItem::update(Level *level, shared_ptr<Entity> player, shared_ptr<MapItem
 				if (((ss >> 20) & 1) == 0) count[Tile::dirt_Id] += 10;
 				else count[Tile::stone_Id] += 10;
 				hh = 100;
-			} 
-			else 
+			}
+			else
 			{
 				for (int xs = 0; xs < scale; xs++)
 				{
@@ -157,7 +157,7 @@ void MapItem::update(Level *level, shared_ptr<Entity> player, shared_ptr<MapItem
 					{
 						int yy = lc->getHeightmap(xs + xso, zs + zso) + 1;
 						int t = 0;
-						if (yy > 1) 
+						if (yy > 1)
 						{
 							bool ok = false;
 							do
@@ -215,7 +215,7 @@ void MapItem::update(Level *level, shared_ptr<Entity> player, shared_ptr<MapItem
 			if (diff < -0.6) br = 0;
 
 			int col = 0;
-			if (tBest > 0) 
+			if (tBest > 0)
 			{
 				MaterialColor *mc = Tile::tiles[tBest]->material->color;
 				if (mc == MaterialColor::water)
@@ -245,7 +245,7 @@ void MapItem::update(Level *level, shared_ptr<Entity> player, shared_ptr<MapItem
 				data->colors[x + z * w] = newColor;
 			}
 		}
-		if (yd0 <= yd1) 
+		if (yd0 <= yd1)
 		{
 			data->setDirty(x, yd0, yd1);
 		}
@@ -257,7 +257,7 @@ void MapItem::inventoryTick(shared_ptr<ItemInstance> itemInstance, Level *level,
 	if (level->isClientSide) return;
 
 	shared_ptr<MapItemSavedData> data = getSavedData(itemInstance, level);
-	if ( owner->instanceof(eTYPE_PLAYER) ) 
+	if ( owner->instanceof(eTYPE_PLAYER) )
 	{
 		shared_ptr<Player> player = dynamic_pointer_cast<Player>(owner);
 
@@ -276,7 +276,7 @@ void MapItem::inventoryTick(shared_ptr<ItemInstance> itemInstance, Level *level,
 			ownersData->tickCarriedBy(player, itemInstance );
 			ownersData->mergeInMapData(data);
 			player->inventoryMenu->broadcastChanges();
-			
+
 			data = ownersData;
 		}
 		else
@@ -285,13 +285,13 @@ void MapItem::inventoryTick(shared_ptr<ItemInstance> itemInstance, Level *level,
 		}
 	}
 
-	if (selected) 
+	if (selected)
 	{
 		update(level, owner, data);
 	}
 }
 
-shared_ptr<Packet> MapItem::getUpdatePacket(shared_ptr<ItemInstance> itemInstance, Level *level, shared_ptr<Player> player) 
+shared_ptr<Packet> MapItem::getUpdatePacket(shared_ptr<ItemInstance> itemInstance, Level *level, shared_ptr<Player> player)
 {
 	charArray data = MapItem::getSavedData(itemInstance, level)->getUpdatePacket(itemInstance, level, player);
 
@@ -302,7 +302,7 @@ shared_ptr<Packet> MapItem::getUpdatePacket(shared_ptr<ItemInstance> itemInstanc
 	return retval;
 }
 
-void MapItem::onCraftedBy(shared_ptr<ItemInstance> itemInstance, Level *level, shared_ptr<Player> player) 
+void MapItem::onCraftedBy(shared_ptr<ItemInstance> itemInstance, Level *level, shared_ptr<Player> player)
 {
 	wchar_t buf[64];
 
@@ -318,7 +318,7 @@ void MapItem::onCraftedBy(shared_ptr<ItemInstance> itemInstance, Level *level, s
 #endif
 
 	itemInstance->setAuxValue(level->getAuxValueForMap(player->getXuid(), player->dimension, centreXC, centreZC, mapScale));
-	
+
 	swprintf(buf,64,L"map_%d", itemInstance->getAuxValue());
 	std::wstring id = wstring(buf);
 
@@ -330,7 +330,7 @@ void MapItem::onCraftedBy(shared_ptr<ItemInstance> itemInstance, Level *level, s
 		data = shared_ptr<MapItemSavedData>( new MapItemSavedData(id) );
 	}
 	level->setSavedData(id, (shared_ptr<SavedData> ) data);
-	
+
 	data->scale = mapScale;
 	// 4J-PB - for Xbox maps, we'll centre them on the origin of the world, since we can fit the whole world in our map
 	data->x = centreXC;

@@ -171,7 +171,7 @@ int CConsoleMinecraftApp::LoadLocalDLCImages()
 {
 	unordered_map<wstring,DLC_INFO * > *pDLCInfoA=app.GetDLCInfo();
 	// 4J-PB - Any local graphic files for the Minecraft Store?
-	for( AUTO_VAR(it, pDLCInfoA->begin()); it != pDLCInfoA->end(); it++ )
+	for (auto it = pDLCInfoA->begin(); it != pDLCInfoA->end(); it++)
 	{
 		DLC_INFO * pDLCInfo=(*it).second;
 
@@ -185,7 +185,7 @@ void CConsoleMinecraftApp::FreeLocalDLCImages()
 	// 4J-PB - Any local graphic files for the Minecraft Store?
 	unordered_map<wstring,DLC_INFO * > *pDLCInfoA=app.GetDLCInfo();
 
-	for( AUTO_VAR(it, pDLCInfoA->begin()); it != pDLCInfoA->end(); it++ )
+	for (auto it = pDLCInfoA->begin(); it != pDLCInfoA->end(); it++)
 	{
 		DLC_INFO * pDLCInfo=(*it).second;
 
@@ -567,8 +567,8 @@ int CConsoleMinecraftApp::Callback_TMSPPRetrieveFileList(void *pParam,int iPad, 
 			// dump out the file list
 			app.DebugPrintf("TMSPP filecount - %d\nFiles - \n",pvTmsFileDetails->size());
 			int iCount=0;
-			AUTO_VAR(itEnd, pvTmsFileDetails->end());
-			for( AUTO_VAR(it, pvTmsFileDetails->begin()); it != itEnd; it++ )
+			auto itEnd = pvTmsFileDetails->end();
+			for (auto it = pvTmsFileDetails->begin(); it != itEnd; it++)
 			{
 				C4JStorage::PTMSPP_FILE_DETAILS fd = *it;
 				app.DebugPrintf("%2d. %ls (size - %d)\n",iCount++,fd->wchFilename,fd->ulFileSize);

@@ -27,9 +27,9 @@ BaseMobSpawner::~BaseMobSpawner()
 {
 	if(spawnPotentials)
 	{
-		for(AUTO_VAR(it,spawnPotentials->begin()); it != spawnPotentials->end(); ++it)
+		for( auto& it : *spawnPotentials )
 		{
-			delete *it;
+			delete it;
 		}
 		delete spawnPotentials;
 	}
@@ -137,12 +137,14 @@ shared_ptr<Entity> BaseMobSpawner::loadDataAndAddEntity(shared_ptr<Entity> entit
 		entity->save(data);
 
 		vector<Tag *> *tags = getNextSpawnData()->tag->getAllTags();
-		for (AUTO_VAR(it, tags->begin()); it != tags->end(); ++it)
+		if ( tags )
 		{
-			Tag *tag = *it;
-			data->put(tag->getName(), tag->copy());
+			for (auto& tag : *tags)
+			{
+				data->put(tag->getName(), tag->copy());
+			}
+			delete tags;
 		}
-		delete tags;
 
 		entity->load(data);
 		if (entity->level != NULL) entity->level->addEntity(entity);
@@ -159,12 +161,14 @@ shared_ptr<Entity> BaseMobSpawner::loadDataAndAddEntity(shared_ptr<Entity> entit
 				mount->save(mountData);
 
 				vector<Tag *> *ridingTags = ridingTag->getAllTags();
-				for (AUTO_VAR(it, ridingTags->begin()); it != ridingTags->end(); ++it)
+				if ( ridingTags )
 				{
-					Tag *tag = *it;
-					mountData->put(tag->getName(), tag->copy());
+					for (auto& tag : *ridingTags)
+					{
+						mountData->put(tag->getName(), tag->copy());
+					}
+					delete ridingTags;
 				}
-				delete ridingTags;
 				mount->load(mountData);
 				mount->moveTo(rider->x, rider->y, rider->z, rider->yRot, rider->xRot);
 
@@ -274,11 +278,10 @@ void BaseMobSpawner::save(CompoundTag *tag)
 	{
 		ListTag<CompoundTag> *list = new ListTag<CompoundTag>();
 
-		if (spawnPotentials != NULL && spawnPotentials->size() > 0)
+		if (spawnPotentials && spawnPotentials->size() > 0)
 		{
-			for (AUTO_VAR(it, spawnPotentials->begin()); it != spawnPotentials->end(); ++it)
+			for ( auto& data : *spawnPotentials )
 			{
-				SpawnData *data = *it;
 				list->add(data->save());
 			}
 		}

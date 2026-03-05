@@ -13,7 +13,7 @@ XUI_FontRenderer::XUI_FontRenderer()
 	ZeroMemory(m_loadedFontData, sizeof(XUI_FontData*) * eFontData_MAX);
 
 	//XuiFontSetRenderer(this);
-	
+
 	//Minecraft *pMinecraft=Minecraft::GetInstance();
 
 	//ScreenSizeCalculator ssc(pMinecraft->options, pMinecraft->width_phys, pMinecraft->height_phys);
@@ -113,8 +113,8 @@ VOID XUI_FontRenderer::ReleaseFont( HFONTOBJ hFont )
 		xuiFont->DecRefCount();
 		if (xuiFont->refCount <= 0)
 		{
-			AUTO_VAR(it, m_loadedFonts[xuiFont->m_iFontData].find(xuiFont->m_fScaleFactor) );
-			if (it != m_loadedFonts[xuiFont->m_iFontData].end()) m_loadedFonts[xuiFont->m_iFontData].erase(it);
+            auto it = m_loadedFonts[xuiFont->m_iFontData].find(xuiFont->m_fScaleFactor);
+            if (it != m_loadedFonts[xuiFont->m_iFontData].end()) m_loadedFonts[xuiFont->m_iFontData].erase(it);
 			delete hFont;
 		}
 	}
@@ -175,7 +175,7 @@ HRESULT XUI_FontRenderer::DrawCharsToDevice( HFONTOBJ hFont, CharData * pCharDat
 	if(!RenderManager.IsHiDef())
 	{
 		if(RenderManager.IsWidescreen())
-		{		
+		{
 			float fScaleX, fScaleY;
 			font->GetScaleFactors(&fScaleX,&fScaleY);
 			int iScaleX=fScaleX;
@@ -230,8 +230,8 @@ HRESULT XUI_FontRenderer::DrawCharsToDevice( HFONTOBJ hFont, CharData * pCharDat
 	matrixCopy[14] = floor(matrixCopy[14] + 0.5f);
 	matrixCopy[15] = 1.0f;
 	glMultMatrixf(matrixCopy);
-	
-	
+
+
 	float lineXPos = 0.0f;
 	float lineYPos = 0.0f;
 	DWORD colour = 0;
@@ -262,7 +262,7 @@ HRESULT XUI_FontRenderer::DrawCharsToDevice( HFONTOBJ hFont, CharData * pCharDat
 		lineXPos = pCharData[i].x;
 		colour = pCharData[i].dwColor;
 		style = pCharData[i].dwStyle;
-		
+
 		while(i < dwCount && pCharData[i].y == lineYPos)
 		{
 			string.push_back(pCharData[i].wch);
@@ -300,7 +300,7 @@ HRESULT XUI_FontRenderer::DrawCharsToDevice( HFONTOBJ hFont, CharData * pCharDat
 	g_pD3DDevice->SetRenderState(D3DRS_HALFPIXELOFFSET, FALSE);
 	glEnable(GL_CULL_FACE);
 	glEnable(GL_DEPTH_TEST);
-	
+
 	XuiRenderRestoreState(hDC);
 
     return( S_OK );

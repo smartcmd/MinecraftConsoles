@@ -42,7 +42,7 @@ void ConsoleSoundEngine::tick()
 		return;
 	}
 
-	for(AUTO_VAR(it,scheduledSounds.begin()); it != scheduledSounds.end();)
+	for (auto it = scheduledSounds.begin(); it != scheduledSounds.end();)
 	{
 		SoundEngine::ScheduledSound *next = *it;
 		next->delay--;

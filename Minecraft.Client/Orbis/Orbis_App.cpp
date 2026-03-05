@@ -35,7 +35,7 @@ CConsoleMinecraftApp::CConsoleMinecraftApp() : CMinecraftApp()
 
 	m_bVoiceChatAndUGCRestricted=false;
 	m_bDisplayFullVersionPurchase=false;
-	// #ifdef _DEBUG_MENUS_ENABLED	
+	// #ifdef _DEBUG_MENUS_ENABLED
 	// 	debugOverlayCreated = false;
 	// #endif
 
@@ -101,8 +101,8 @@ SONYDLC *CConsoleMinecraftApp::GetSONYDLCInfo(char *pchTitle)
 {
 	wstring wstrTemp=convStringToWstring(pchTitle);
 
-	AUTO_VAR(it, m_SONYDLCMap.find(wstrTemp));
-	if(it == m_SONYDLCMap.end())
+    auto it = m_SONYDLCMap.find(wstrTemp);
+    if(it == m_SONYDLCMap.end())
 	{
 		app.DebugPrintf("Couldn't find DLC info for %s\n", pchTitle);
 		assert(0);
@@ -114,9 +114,9 @@ SONYDLC *CConsoleMinecraftApp::GetSONYDLCInfo(char *pchTitle)
 SONYDLC *CConsoleMinecraftApp::GetSONYDLCInfoFromKeyname(char *pchKeyName)
 {
 
-	for(AUTO_VAR(it, m_SONYDLCMap.begin()); it != m_SONYDLCMap.end(); ++it)
-	{
-		SONYDLC *pDLCInfo=(*it).second;
+    for ( auto& it : m_SONYDLCMap )
+    {
+		SONYDLC *pDLCInfo=it.second;
 
 		if(strcmp(pDLCInfo->chDLCKeyname,pchKeyName)==0)
 		{
@@ -289,9 +289,9 @@ int CConsoleMinecraftApp::LoadLocalDLCImages()
 {
 	// 4J-PB - Any local graphic files for the Minecraft Store?
 	unordered_map<wstring, SONYDLC *>*pDLCInfoA=app.GetSonyDLCMap();
-	for( AUTO_VAR(it, pDLCInfoA->begin()); it != pDLCInfoA->end(); it++ )
-	{
-		SONYDLC * pDLCInfo=(*it).second;
+    for (auto& it : *pDLCInfoA )
+    {
+		SONYDLC * pDLCInfo = it.second;
 
 		LoadLocalDLCImage(pDLCInfo);
 	}
@@ -302,9 +302,9 @@ void CConsoleMinecraftApp::FreeLocalDLCImages()
 {
 	// 4J-PB - Any local graphic files for the Minecraft Store?
 	unordered_map<wstring, SONYDLC *>*pDLCInfoA=app.GetSonyDLCMap();
-	for( AUTO_VAR(it, pDLCInfoA->begin()); it != pDLCInfoA->end(); it++ )
+	for( auto& it : *pDLCInfoA )
 	{
-		SONYDLC * pDLCInfo=(*it).second;
+		SONYDLC * pDLCInfo = it.second;
 
 		if(pDLCInfo->dwImageBytes!=0)
 		{
@@ -333,7 +333,7 @@ int CConsoleMinecraftApp::LoadLocalDLCImage(SONYDLC *pDLCInfo)
 
 	DWORD dwHigh=0;
 	pDLCInfo->dwImageBytes = GetFileSize(hFile,&dwHigh);
-	
+
 	if(pDLCInfo->dwImageBytes!=0)
 	{
 		DWORD dwBytesRead;
@@ -485,7 +485,7 @@ void CConsoleMinecraftApp::CommerceTick()
 
 			break;
 		case eCommerce_State_GetProductList:
-			{	
+			{
 				m_eCommerce_State=eCommerce_State_GetProductList_Pending;
 				SonyCommerce::CategoryInfo *pCategories=app.GetCategoryInfo();
 				std::list<SonyCommerce::CategoryInfoSub>::iterator iter = pCategories->subCategories.begin();
@@ -501,7 +501,7 @@ void CConsoleMinecraftApp::CommerceTick()
 
 			break;
 		case eCommerce_State_AddProductInfoDetailed:
-			{	
+			{
 				m_eCommerce_State=eCommerce_State_AddProductInfoDetailed_Pending;
 
 				// for each of the products in the categories, get the detailed info. We really only need the long description and price info.
@@ -538,7 +538,7 @@ void CConsoleMinecraftApp::CommerceTick()
 			break;
 
 		case eCommerce_State_RegisterDLC:
-			{	
+			{
 				m_eCommerce_State=eCommerce_State_Online;
 				// register the DLC info
 				SonyCommerce::CategoryInfo *pCategories=app.GetCategoryInfo();
@@ -625,20 +625,20 @@ SonyCommerce::CategoryInfo *CConsoleMinecraftApp::GetCategoryInfo()
 
 	return &m_CategoryInfo;
 }
-#endif 
+#endif
 
 void CConsoleMinecraftApp::ClearCommerceDetails()
 {
 #ifdef ORBIS_COMMERCE_ENABLED
 	for(int i=0;i<m_ProductListCategoriesC;i++)
 	{
-		std::vector<SonyCommerce::ProductInfo>* pProductList=&m_ProductListA[i];	
+		std::vector<SonyCommerce::ProductInfo>* pProductList=&m_ProductListA[i];
 		pProductList->clear();
 	}
 
 	if(m_ProductListA!=NULL)
 	{
-		delete [] m_ProductListA;	
+		delete [] m_ProductListA;
 		m_ProductListA=NULL;
 	}
 
@@ -668,17 +668,14 @@ void CConsoleMinecraftApp::GetDLCSkuIDFromProductList(char * pchDLCProductID, ch
 		for(int j=0;j<m_ProductListA[i].size();j++)
 		{
 			std::vector<SonyCommerce::ProductInfo>* pProductList=&m_ProductListA[i];
-			AUTO_VAR(itEnd, pProductList->end());
-
-			for (AUTO_VAR(it, pProductList->begin()); it != itEnd; it++)
+			for ( SonyCommerce::ProductInfo& : *pProductList )
 			{
-				SonyCommerce::ProductInfo Info=*it;
 				if(strcmp(pchDLCProductID,Info.productId)==0)
-				{	
+				{
 					memcpy(pchSkuID,Info.skuId,SCE_NP_COMMERCE2_SKU_ID_LEN);
 					return;
 				}
-			}		
+			}
 		}
 	}
 	return;
@@ -689,7 +686,7 @@ void CConsoleMinecraftApp::GetDLCSkuIDFromProductList(char * pchDLCProductID, ch
 void CConsoleMinecraftApp::Checkout(char *pchSkuID)
 {
 	if(m_eCommerce_State==eCommerce_State_Online)
-	{	
+	{
 		strcpy(m_pchSkuID,pchSkuID);
 		m_eCommerce_State=eCommerce_State_Checkout;
 	}
@@ -698,7 +695,7 @@ void CConsoleMinecraftApp::Checkout(char *pchSkuID)
 void CConsoleMinecraftApp::DownloadAlreadyPurchased(char *pchSkuID)
 {
 	if(m_eCommerce_State==eCommerce_State_Online)
-	{	
+	{
 		strcpy(m_pchSkuID,pchSkuID);
 		m_eCommerce_State=eCommerce_State_DownloadAlreadyPurchased;
 	}
@@ -707,7 +704,7 @@ void CConsoleMinecraftApp::DownloadAlreadyPurchased(char *pchSkuID)
 bool CConsoleMinecraftApp::UpgradeTrial()
 {
 	if(m_eCommerce_State==eCommerce_State_Online)
-	{	
+	{
 		m_eCommerce_State=eCommerce_State_UpgradeTrial;
 		return true;
 	}
@@ -742,33 +739,6 @@ bool CConsoleMinecraftApp::DLCAlreadyPurchased(char *pchTitle)
 #ifdef ORBIS_COMMERCE_ENABLED
 	// purchasability flag is not return on PS4
 	return false;
-	// find the DLC
-// 	for(int i=0;i<m_ProductListCategoriesC;i++)
-// 	{
-// 		for(int j=0;j<m_ProductListA[i].size();j++)
-// 		{
-// 			std::vector<SonyCommerce::ProductInfo>* pProductList=&m_ProductListA[i];
-// 			AUTO_VAR(itEnd, pProductList->end());
-// 
-// 			for (AUTO_VAR(it, pProductList->begin()); it != itEnd; it++)
-// 			{
-// 				SonyCommerce::ProductInfo Info=*it;
-// 				if(strcmp(pchTitle,Info.skuId)==0)
-// 				{			
-// 					ORBIS_STUBBED;
-// 					SCE_NP_COMMERCE2_SKU_PURCHASABILITY_FLAG_OFF
-// // 					if(Info.purchasabilityFlag==SCE_NP_COMMERCE2_SKU_PURCHASABILITY_FLAG_OFF)
-// // 					{
-// // 						return true;
-// // 					}
-// // 					else
-// // 					{
-// // 						return false;
-// // 					}
-// 				}
-// 			}		
-// 		}
-// 	}
 #endif // #ifdef ORBIS_COMMERCE_ENABLED
 
 	return false;
@@ -804,7 +774,7 @@ void CConsoleMinecraftApp::CommerceGetCategoriesCallback(LPVOID lpParam,int err)
 	if(err==0)
 	{
 		pClass->m_ProductListCategoriesC=pClass->m_CategoryInfo.countOfSubCategories;
-		// allocate the memory for the product info for each categories 
+		// allocate the memory for the product info for each categories
 		if(pClass->m_CategoryInfo.countOfSubCategories>0)
 		{
 			pClass->m_ProductListA = (std::vector<SonyCommerce::ProductInfo> *) new std::vector<SonyCommerce::ProductInfo> [pClass->m_CategoryInfo.countOfSubCategories];
@@ -838,7 +808,7 @@ void CConsoleMinecraftApp::CommerceGetProductListCallback(LPVOID lpParam,int err
 		{
 			// we're done, so now retrieve the additional product details for each product
 			pClass->m_eCommerce_State=eCommerce_State_AddProductInfoDetailed;
-			pClass->m_bCommerceProductListRetrieved=true;		
+			pClass->m_bCommerceProductListRetrieved=true;
 		}
 		else
 		{
@@ -848,21 +818,21 @@ void CConsoleMinecraftApp::CommerceGetProductListCallback(LPVOID lpParam,int err
 	else
 	{
 		pClass->m_eCommerce_State=eCommerce_State_Error;
-		pClass->m_bCommerceProductListRetrieved=true;		
+		pClass->m_bCommerceProductListRetrieved=true;
 	}
 }
 
 // void CConsoleMinecraftApp::CommerceGetDetailedProductInfoCallback(LPVOID lpParam,int err)
 // {
 // 	CConsoleMinecraftApp *pScene=(CConsoleMinecraftApp *)lpParam;
-// 
+//
 // 	if(err==0)
 // 	{
 // 		pScene->m_eCommerce_State=eCommerce_State_Idle;
-// 		//pScene->m_bCommerceProductListRetrieved=true;		
+// 		//pScene->m_bCommerceProductListRetrieved=true;
 // 	}
 // 	//printf("Callback hit, error 0x%08x\n", err);
-// 
+//
 // }
 
 void CConsoleMinecraftApp::CommerceAddDetailedProductInfoCallback(LPVOID lpParam,int err)
@@ -882,7 +852,7 @@ void CConsoleMinecraftApp::CommerceAddDetailedProductInfoCallback(LPVOID lpParam
 		{
 			// MGH - change this to a while loop so we can skip empty categories.
 			do
-			{ 
+			{
 				pClass->m_iCurrentCategory++;
 			}while(pClass->m_ProductListA[pClass->m_iCurrentCategory].size() == 0 && pClass->m_iCurrentCategory<pClass->m_ProductListCategoriesC);
 
@@ -891,12 +861,12 @@ void CConsoleMinecraftApp::CommerceAddDetailedProductInfoCallback(LPVOID lpParam
 			{
 				// there are no more categories, so we're done
 				pClass->m_eCommerce_State=eCommerce_State_RegisterDLC;
-				pClass->m_bProductListAdditionalDetailsRetrieved=true;		
+				pClass->m_bProductListAdditionalDetailsRetrieved=true;
 			}
 			else
 			{
 				// continue with the next category
-				pClass->m_eCommerce_State=eCommerce_State_AddProductInfoDetailed;				
+				pClass->m_eCommerce_State=eCommerce_State_AddProductInfoDetailed;
 			}
 		}
 		else
@@ -908,7 +878,7 @@ void CConsoleMinecraftApp::CommerceAddDetailedProductInfoCallback(LPVOID lpParam
 	else
 	{
 		pClass->m_eCommerce_State=eCommerce_State_Error;
-		pClass->m_bProductListAdditionalDetailsRetrieved=true;	
+		pClass->m_bProductListAdditionalDetailsRetrieved=true;
 		pClass->m_iCurrentProduct=0;
 		pClass->m_iCurrentCategory=0;
 	}
@@ -1062,9 +1032,9 @@ void CConsoleMinecraftApp::SystemServiceTick()
 		for (int i = 0; i < status.eventNum; i++)
 		{
 			ret = sceSystemServiceReceiveEvent(&event);
-			if (ret == SCE_OK) 
+			if (ret == SCE_OK)
 			{
-				switch(event.eventType) 
+				switch(event.eventType)
 				{
 				case SCE_SYSTEM_SERVICE_EVENT_GAME_CUSTOM_DATA:
 				{
@@ -1072,7 +1042,7 @@ void CConsoleMinecraftApp::SystemServiceTick()
 					// Processing after invitation
 					//SceNpSessionInvitationEventParam* pInvite = (SceNpSessionInvitationEventParam*)event.data.param;
 					//SQRNetworkManager_Orbis::GetInviteDataAndProcess(pInvite);
-					break;				
+					break;
 				}
 				case SCE_SYSTEM_SERVICE_EVENT_ON_RESUME:
 					// Resume means that the user signed out (but came back), sensible thing to do is exit to main menu
@@ -1217,7 +1187,7 @@ bool CConsoleMinecraftApp::CheckForEmptyStore(int iPad)
 
 	bool bEmptyStore=true;
 	if(pCategories!=NULL)
-	{	
+	{
 		if(pCategories->countOfProducts>0)
 		{
 			bEmptyStore=false;
@@ -1247,7 +1217,7 @@ bool CConsoleMinecraftApp::CheckForEmptyStore(int iPad)
 void CConsoleMinecraftApp::ShowPatchAvailableError()
 {
 	int32_t ret=sceErrorDialogInitialize();
-	if (  ret==SCE_OK ) 
+	if (  ret==SCE_OK )
 	{
 		m_bPatchAvailableDialogRunning = true;
 
@@ -1256,7 +1226,7 @@ void CConsoleMinecraftApp::ShowPatchAvailableError()
 		// 4J-PB - We want to display the option to get the patch now
 		param.errorCode = SCE_NP_ERROR_LATEST_PATCH_PKG_DOWNLOADED;
 		ret = sceUserServiceGetInitialUser( &param.userId );
-		if ( ret == SCE_OK ) 
+		if ( ret == SCE_OK )
 		{
 			ret=sceErrorDialogOpen( &param );
 		}
@@ -1266,9 +1236,9 @@ void CConsoleMinecraftApp::ShowPatchAvailableError()
 void CConsoleMinecraftApp::PatchAvailableDialogTick()
 {
 	if(m_bPatchAvailableDialogRunning)
-	{	
+	{
 		SceErrorDialogStatus stat = sceErrorDialogUpdateStatus();
-		if( stat == SCE_ERROR_DIALOG_STATUS_FINISHED ) 
+		if( stat == SCE_ERROR_DIALOG_STATUS_FINISHED )
 		{
 			sceErrorDialogTerminate();
 

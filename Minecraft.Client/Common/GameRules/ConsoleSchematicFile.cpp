@@ -167,18 +167,18 @@ void ConsoleSchematicFile::save_tags(DataOutputStream *dos)
 	ListTag<CompoundTag> *tileEntityTags = new ListTag<CompoundTag>();
 	tag->put(L"TileEntities", tileEntityTags);
 
-	for (AUTO_VAR(it, m_tileEntities.begin()); it != m_tileEntities.end(); it++)
+	for ( auto& it : m_tileEntities )
 	{
 		CompoundTag *cTag = new CompoundTag();
-		(*it)->save(cTag);
+		it->save(cTag);
 		tileEntityTags->add(cTag);
 	}
 
 	ListTag<CompoundTag> *entityTags = new ListTag<CompoundTag>();
 	tag->put(L"Entities", entityTags);
 
-	for (AUTO_VAR(it, m_entities.begin()); it != m_entities.end(); it++)
-		entityTags->add( (CompoundTag *)(*it).second->copy() );
+	for (auto& it : m_entities )
+		entityTags->add( (CompoundTag *)(it).second->copy() );
 
 	NbtIo::write(tag,dos);
 	delete tag;
@@ -186,15 +186,15 @@ void ConsoleSchematicFile::save_tags(DataOutputStream *dos)
 
 __int64 ConsoleSchematicFile::applyBlocksAndData(LevelChunk *chunk, AABB *chunkBox, AABB *destinationBox, ESchematicRotation rot)
 {
-	int xStart = max(destinationBox->x0, (double)chunk->x*16);
-	int xEnd = min(destinationBox->x1, (double)((xStart>>4)<<4) + 16);
+	int xStart = static_cast<int>(std::fmax<double>(destinationBox->x0, (double)chunk->x*16));
+	int xEnd = static_cast<int>(std::fmin<double>(destinationBox->x1, (double)((xStart >> 4) << 4) + 16));
 
 	int yStart = destinationBox->y0;
 	int yEnd = destinationBox->y1;
 	if(yEnd > Level::maxBuildHeight) yEnd = Level::maxBuildHeight;
 
-	int zStart = max(destinationBox->z0, (double)chunk->z*16);
-	int zEnd = min(destinationBox->z1, (double)((zStart>>4)<<4) + 16);
+	int zStart = static_cast<int>(std::fmax<double>(destinationBox->z0, (double)chunk->z * 16));
+	int zEnd = static_cast<int>(std::fmin<double>(destinationBox->z1, (double)((zStart >> 4) << 4) + 16));
 
 #ifdef _DEBUG
 	app.DebugPrintf("Range is (%d,%d,%d) to (%d,%d,%d)\n",xStart,yStart,zStart,xEnd-1,yEnd-1,zEnd-1);
@@ -431,10 +431,8 @@ void ConsoleSchematicFile::schematicCoordToChunkCoord(AABB *destinationBox, doub
 
 void ConsoleSchematicFile::applyTileEntities(LevelChunk *chunk, AABB *chunkBox, AABB *destinationBox, ESchematicRotation rot)
 {
-	for(AUTO_VAR(it, m_tileEntities.begin()); it != m_tileEntities.end();++it)
+	for (auto& te : m_tileEntities )
 	{
-		shared_ptr<TileEntity> te = *it;
-
 		double targetX = te->x;
 		double targetY = te->y + destinationBox->y0;
 		double targetZ = te->z;
@@ -477,7 +475,7 @@ void ConsoleSchematicFile::applyTileEntities(LevelChunk *chunk, AABB *chunkBox, 
 			teCopy->setChanged();
 		}
 	}
-	for(AUTO_VAR(it,  m_entities.begin()); it != m_entities.end();)
+	for (auto it = m_entities.begin(); it != m_entities.end();)
 	{
 		Vec3 *source = it->first;
 		
@@ -679,9 +677,8 @@ void ConsoleSchematicFile::generateSchematicFile(DataOutputStream *dos, Level *l
 		for (int zc = zc0; zc <= zc1; zc++)
 		{
 			vector<shared_ptr<TileEntity> > *tileEntities = getTileEntitiesInRegion(level->getChunk(xc, zc), xStart, yStart, zStart, xStart + xSize, yStart + ySize, zStart + zSize);
-			for(AUTO_VAR(it, tileEntities->begin()); it != tileEntities->end(); ++it)
+			for( auto& te : *tileEntities )
 			{
-				shared_ptr<TileEntity> te = *it;
 				CompoundTag *teTag = new CompoundTag();
 				shared_ptr<TileEntity> teCopy = te->clone();
 
@@ -701,10 +698,8 @@ void ConsoleSchematicFile::generateSchematicFile(DataOutputStream *dos, Level *l
 	vector<shared_ptr<Entity> > *entities = level->getEntities(nullptr, bb);
 	ListTag<CompoundTag> *entitiesTag = new ListTag<CompoundTag>(L"entities");
 
-	for(AUTO_VAR(it, entities->begin()); it != entities->end(); ++it)
+	for (auto& e : *entities )
 	{
-		shared_ptr<Entity> e = *it;
-
 		bool mobCanBeSaved = false;
 		if (bSaveMobs)
 		{
@@ -1012,12 +1007,15 @@ void ConsoleSchematicFile::setBlocksAndData(LevelChunk *chunk, byteArray blockDa
 vector<shared_ptr<TileEntity> > *ConsoleSchematicFile::getTileEntitiesInRegion(LevelChunk *chunk, int x0, int y0, int z0, int x1, int y1, int z1)
 {
 	vector<shared_ptr<TileEntity> > *result = new vector<shared_ptr<TileEntity> >;
-	for (AUTO_VAR(it, chunk->tileEntities.begin()); it != chunk->tileEntities.end(); ++it)
+	if ( result )
 	{
-		shared_ptr<TileEntity> te = it->second;
-		if (te->x >= x0 && te->y >= y0 && te->z >= z0 && te->x < x1 && te->y < y1 && te->z < z1)
+		for ( auto& it : chunk->tileEntities )
 		{
-			result->push_back(te);
+			shared_ptr<TileEntity> te = it.second;
+			if (te->x >= x0 && te->y >= y0 && te->z >= z0 && te->x < x1 && te->y < y1 && te->z < z1)
+			{
+				result->push_back(te);
+			}
 		}
 	}
 	return result;

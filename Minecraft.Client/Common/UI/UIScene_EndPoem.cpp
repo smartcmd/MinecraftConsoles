@@ -61,13 +61,13 @@ UIScene_EndPoem::UIScene_EndPoem(int iPad, void *initData, UILayer *parentLayer)
 	noNoiseString = replaceAll(noNoiseString,L"{*PLAYER*}",playerName);
 
 	Random random(8124371);
-	int found=(int)noNoiseString.find(L"{*NOISE*}");
+	size_t found=noNoiseString.find(L"{*NOISE*}");
 	int length;
 	while (found!=string::npos)
 	{
 		length = random.nextInt(4) + 3;
 		m_noiseLengths.push_back(length);
-		found=(int)noNoiseString.find(L"{*NOISE*}",found+1);
+		found=noNoiseString.find(L"{*NOISE*}",found+1);
 	}
 
 	updateNoise();
@@ -77,7 +77,7 @@ UIScene_EndPoem::UIScene_EndPoem(int iPad, void *initData, UILayer *parentLayer)
 	m_paragraphs = vector<wstring>();
 	int lastIndex = 0;
 	for (	int index = 0;
-			index != wstring::npos; 
+			index != wstring::npos;
 			index = noiseString.find(L"<br /><br />", index+12, 12)
 		)
 	{
@@ -198,7 +198,7 @@ void UIScene_EndPoem::updateNoise()
 {
 	Minecraft *pMinecraft = Minecraft::GetInstance();
 	noiseString = noNoiseString;
-	
+
 	int length = 0;
 	wchar_t replacements[64];
 	wstring replaceString = L"";
@@ -209,8 +209,8 @@ void UIScene_EndPoem::updateNoise()
 
 	wstring tag = L"{*NOISE*}";
 
-	AUTO_VAR(it, m_noiseLengths.begin());
-	int found=(int)noiseString.find(tag);
+    auto it = m_noiseLengths.begin();
+    size_t found= noiseString.find(tag);
 	while (found!=string::npos && it != m_noiseLengths.end() )
 	{
 		length = *it;
@@ -229,7 +229,7 @@ void UIScene_EndPoem::updateNoise()
 				static wstring acceptableLetters = L"!\"#$%&'()*+,-./0123456789:;<=>?@[\\]^_'|}~";
 				randomChar = acceptableLetters[ random->nextInt((int)acceptableLetters.length()) ];
 			}
-			
+
 			wstring randomCharStr = L"";
 			randomCharStr.push_back(randomChar);
 			if(randomChar == L'<')
@@ -275,6 +275,6 @@ void UIScene_EndPoem::updateNoise()
 		//ib.put(listPos + 256 + random->nextInt(2) + 8 + (darken ? 16 : 0));
 		//ib.put(listPos + pos + 32);
 
-		found=(int)noiseString.find(tag,found+1);
+		found=noiseString.find(tag,found+1);
 	}
 }

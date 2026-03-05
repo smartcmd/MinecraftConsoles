@@ -149,17 +149,15 @@ void ServerPlayer::flagEntitiesToBeRemoved(unsigned int *flags, bool *removedFou
 		memset(flags, 0, 2048/32);
 	}
 
-	AUTO_VAR(it, entitiesToRemove.begin() );
-	for( AUTO_VAR(it, entitiesToRemove.begin()); it != entitiesToRemove.end(); it++ )
+	for(int index : entitiesToRemove)
 	{
-		int index = *it;
 		if( index < 2048 )
 		{
 			unsigned int i = index / 32;
 			unsigned int j = index % 32;
 			unsigned int uiMask = 0x80000000 >> j;
 
-			flags[i] |= uiMask;			
+			flags[i] |= uiMask;
 		}
 	}
 }
@@ -275,8 +273,8 @@ void ServerPlayer::flushEntitiesToRemove()
 		intArray ids(amount);
 		int pos = 0;
 
-		AUTO_VAR(it, entitiesToRemove.begin() );
-		while (it != entitiesToRemove.end() && pos < amount)
+        auto it = entitiesToRemove.begin();
+        while (it != entitiesToRemove.end() && pos < amount)
 		{
 			ids[pos++] = *it;
 			it = entitiesToRemove.erase(it);
@@ -340,9 +338,8 @@ void ServerPlayer::doChunkSendingTick(bool dontDelayChunks)
 		// the player can quickly wander away from the centre of the spiral of chunks that that method creates, long before transmission
 		// of them is complete.
 		double dist = DBL_MAX;
-		for( AUTO_VAR(it, chunksToSend.begin()); it != chunksToSend.end(); it++ )
+		for(ChunkPos chunk : chunksToSend)
 		{
-			ChunkPos chunk = *it;
 			if( level->isChunkFinalised(chunk.x, chunk.z) )
 			{
 				double newDist = chunk.distanceToSqr(x, z);
@@ -378,8 +375,8 @@ void ServerPlayer::doChunkSendingTick(bool dontDelayChunks)
 //						g_NetworkManager.GetHostPlayer()->GetSendQueueSizeMessages( NULL, true ),
 //						connection->done);
 //				}
-		
-				if( dontDelayChunks || 
+
+				if( dontDelayChunks ||
 					(canSendToPlayer &&
 #ifdef _XBOX_ONE
 					// The network manager on xbox one doesn't currently split data into slow & fast queues - since we can only measure
@@ -390,7 +387,7 @@ void ServerPlayer::doChunkSendingTick(bool dontDelayChunks)
 #else
 					(connection->countDelayedPackets() < 4 )&&
 					(g_NetworkManager.GetHostPlayer()->GetSendQueueSizeMessages( NULL, true ) < 4 )&&
-#endif 
+#endif
 					//(tickCount - lastBrupSendTickCount) > (connection->getNetworkPlayer()->GetCurrentRtt()>>4) &&
 					!connection->done) )
 				{
@@ -477,7 +474,7 @@ void ServerPlayer::doChunkSendingTick(bool dontDelayChunks)
 					for (unsigned int i = 0; i < tes->size(); i++)
 					{
 						// 4J Stu - Added delay param to ensure that these arrive after the BRUPs from above
-						// Fix for #9169 - ART : Sign text is replaced with the words “Awaiting approval”.
+						// Fix for #9169 - ART : Sign text is replaced with the words ï¿½Awaiting approvalï¿½.
 						broadcast(tes->at(i), !connection->isLocal() && !dontDelayChunks);
 					}
 					delete tes;
@@ -504,7 +501,7 @@ void ServerPlayer::doTickB()
 	// 	else if (app.GetGameSettingsDebugMask(ProfileManager.GetPrimaryPad())&(1L<<eDebugSetting_GoToEnd))
 	// 	{
 	// 		if(level->dimension->id == 0 )
-	// 		{		
+	// 		{
 	// 			server->players->toggleDimension( dynamic_pointer_cast<ServerPlayer>( shared_from_this() ), 1 );
 	// 		}
 	// 		unsigned int uiVal=app.GetGameSettingsDebugMask(ProfileManager.GetPrimaryPad());
@@ -542,9 +539,8 @@ void ServerPlayer::doTickB()
 			vector< shared_ptr<Player> > players = vector< shared_ptr<Player> >();
 			players.push_back(dynamic_pointer_cast<Player>(shared_from_this()));
 
-			for (AUTO_VAR(it,objectives->begin()); it != objectives->end(); ++it)
+			for (Objective *objective : *objectives)
 			{
-				Objective *objective = *it;
 				getScoreboard()->getPlayerScore(getAName(), objective)->updateFor(&players);
 			}
 			delete objectives;
@@ -624,7 +620,7 @@ bool ServerPlayer::hurt(DamageSource *dmgSource, float dmg)
 	bool returnVal = Player::hurt(dmgSource, dmg);
 
 	if( returnVal )
-	{		
+	{
 		// 4J Stu - Work out the source of this damage for telemetry
 		m_lastDamageSource = eTelemetryChallenges_Unknown;
 
@@ -696,7 +692,7 @@ bool ServerPlayer::hurt(DamageSource *dmgSource, float dmg)
 					m_lastDamageSource = eTelemetryPlayerDeathSource_Ghast;
 					break;
 				};
-			}		
+			}
 		};
 	}
 
@@ -748,15 +744,14 @@ void ServerPlayer::changeDimension(int i)
 			connection->send( shared_ptr<GameEventPacket>( new GameEventPacket(GameEventPacket::WIN_GAME, thisPlayer->GetUserIndex()) ) );
 			app.DebugPrintf("Sending packet to %d\n", thisPlayer->GetUserIndex());
 		}
-		if(thisPlayer != NULL)
+		if(thisPlayer)
 		{
-			for(AUTO_VAR(it, MinecraftServer::getInstance()->getPlayers()->players.begin()); it != MinecraftServer::getInstance()->getPlayers()->players.end(); ++it)
+			for(auto& servPlayer : MinecraftServer::getInstance()->getPlayers()->players)
 			{
-				shared_ptr<ServerPlayer> servPlayer = *it;
 				INetworkPlayer *checkPlayer = servPlayer->connection->getNetworkPlayer();
 				if(thisPlayer != checkPlayer && checkPlayer != NULL && thisPlayer->IsSameSystem( checkPlayer ) && !servPlayer->wonGame )
 				{
-					servPlayer->wonGame = true;					
+					servPlayer->wonGame = true;
 					servPlayer->connection->send( shared_ptr<GameEventPacket>( new GameEventPacket(GameEventPacket::WIN_GAME, thisPlayer->GetUserIndex() ) ) );
 					app.DebugPrintf("Sending packet to %d\n", thisPlayer->GetUserIndex());
 				}
@@ -899,7 +894,7 @@ bool ServerPlayer::openFireworks(int x, int y, int z)
 		containerMenu->addSlotListener(this);
 	}
 	else if(dynamic_cast<CraftingMenu *>(containerMenu) != NULL)
-	{		
+	{
 		closeContainer();
 
 		nextContainerCounter();
@@ -929,7 +924,7 @@ bool ServerPlayer::startEnchanting(int x, int y, int z, const wstring &name)
 	else
 	{
 		app.DebugPrintf("ServerPlayer tried to open enchanting container when one was already open\n");
-	}	
+	}
 
 	return true;
 }
@@ -947,7 +942,7 @@ bool ServerPlayer::startRepairing(int x, int y, int z)
 	else
 	{
 		app.DebugPrintf("ServerPlayer tried to open enchanting container when one was already open\n");
-	}	
+	}
 
 	return true;
 }
@@ -1384,7 +1379,7 @@ void ServerPlayer::displayClientMessage(int messageId)
 			shared_ptr<ServerPlayer> player = server->getPlayers()->players[i];
 			if(shared_from_this()==player)
 			{
-				player->connection->send(shared_ptr<ChatPacket>( new ChatPacket(name, ChatPacket::e_ChatPlayerMaxEnemies)));		
+				player->connection->send(shared_ptr<ChatPacket>( new ChatPacket(name, ChatPacket::e_ChatPlayerMaxEnemies)));
 			}
 		}
 		break;
@@ -1395,7 +1390,7 @@ void ServerPlayer::displayClientMessage(int messageId)
 			shared_ptr<ServerPlayer> player = server->getPlayers()->players[i];
 			if(shared_from_this()==player)
 			{
-				player->connection->send(shared_ptr<ChatPacket>( new ChatPacket(name, ChatPacket::e_ChatPlayerMaxVillagers)));		
+				player->connection->send(shared_ptr<ChatPacket>( new ChatPacket(name, ChatPacket::e_ChatPlayerMaxVillagers)));
 			}
 		}
 		break;
@@ -1405,7 +1400,7 @@ void ServerPlayer::displayClientMessage(int messageId)
 			shared_ptr<ServerPlayer> player = server->getPlayers()->players[i];
 			if(shared_from_this()==player)
 			{
-				player->connection->send(shared_ptr<ChatPacket>( new ChatPacket(name, ChatPacket::e_ChatPlayerMaxBredPigsSheepCows)));		
+				player->connection->send(shared_ptr<ChatPacket>( new ChatPacket(name, ChatPacket::e_ChatPlayerMaxBredPigsSheepCows)));
 			}
 		}
 		break;
@@ -1415,7 +1410,7 @@ void ServerPlayer::displayClientMessage(int messageId)
 			shared_ptr<ServerPlayer> player = server->getPlayers()->players[i];
 			if(shared_from_this()==player)
 			{
-				player->connection->send(shared_ptr<ChatPacket>( new ChatPacket(name, ChatPacket::e_ChatPlayerMaxBredChickens)));		
+				player->connection->send(shared_ptr<ChatPacket>( new ChatPacket(name, ChatPacket::e_ChatPlayerMaxBredChickens)));
 			}
 		}
 		break;
@@ -1425,7 +1420,7 @@ void ServerPlayer::displayClientMessage(int messageId)
 			shared_ptr<ServerPlayer> player = server->getPlayers()->players[i];
 			if(shared_from_this()==player)
 			{
-				player->connection->send(shared_ptr<ChatPacket>( new ChatPacket(name, ChatPacket::e_ChatPlayerMaxBredMooshrooms)));		
+				player->connection->send(shared_ptr<ChatPacket>( new ChatPacket(name, ChatPacket::e_ChatPlayerMaxBredMooshrooms)));
 			}
 		}
 		break;
@@ -1436,7 +1431,7 @@ void ServerPlayer::displayClientMessage(int messageId)
 			shared_ptr<ServerPlayer> player = server->getPlayers()->players[i];
 			if(shared_from_this()==player)
 			{
-				player->connection->send(shared_ptr<ChatPacket>( new ChatPacket(name, ChatPacket::e_ChatPlayerMaxBredWolves)));		
+				player->connection->send(shared_ptr<ChatPacket>( new ChatPacket(name, ChatPacket::e_ChatPlayerMaxBredWolves)));
 			}
 		}
 		break;
@@ -1447,7 +1442,7 @@ void ServerPlayer::displayClientMessage(int messageId)
 			shared_ptr<ServerPlayer> player = server->getPlayers()->players[i];
 			if(shared_from_this()==player)
 			{
-				player->connection->send(shared_ptr<ChatPacket>( new ChatPacket(name, ChatPacket::e_ChatPlayerCantShearMooshroom)));		
+				player->connection->send(shared_ptr<ChatPacket>( new ChatPacket(name, ChatPacket::e_ChatPlayerCantShearMooshroom)));
 			}
 		}
 		break;
@@ -1471,7 +1466,7 @@ void ServerPlayer::displayClientMessage(int messageId)
 			{
 				player->connection->send(shared_ptr<ChatPacket>( new ChatPacket(name, ChatPacket::e_ChatPlayerCantSpawnInPeaceful)));
 			}
-		}		
+		}
 		break;
 
 	case IDS_MAX_BOATS:
@@ -1482,7 +1477,7 @@ void ServerPlayer::displayClientMessage(int messageId)
 			{
 				player->connection->send(shared_ptr<ChatPacket>( new ChatPacket(name, ChatPacket::e_ChatPlayerMaxBoats)));
 			}
-		}				
+		}
 		break;
 
 	default:
@@ -1541,7 +1536,7 @@ void ServerPlayer::onEffectRemoved(MobEffectInstance *effect)
 	connection->send(shared_ptr<RemoveMobEffectPacket>( new RemoveMobEffectPacket(entityId, effect) ) );
 }
 
-void ServerPlayer::teleportTo(double x, double y, double z) 
+void ServerPlayer::teleportTo(double x, double y, double z)
 {
 	connection->teleport(x, y, z, yRot, xRot);
 }
@@ -1675,7 +1670,7 @@ void ServerPlayer::handleCollectItem(shared_ptr<ItemInstance> item)
 }
 
 #ifndef _CONTENT_PACKAGE
-void ServerPlayer::debug_setPosition(double x, double y, double z, double nYRot, double nXRot) 
+void ServerPlayer::debug_setPosition(double x, double y, double z, double nYRot, double nXRot)
 {
 	connection->teleport(x, y, z, nYRot, nXRot);
 }

@@ -1,0 +1,32 @@
+name: MSBuild Debug Test
+
+on:
+  workflow_dispatch: 
+  pull_request:
+    types: [opened, reopened, synchronize]
+    paths-ignore:
+      - '.gitignore'
+      - '*.md'
+      - '.github/*.md'
+  push:
+    branches:
+    - 'main'
+    paths-ignore:
+      - '.gitignore'
+      - '*.md'
+      - '.github/*.md'
+
+jobs:
+  build:
+    name: Build Windows64 (DEBUG)
+    runs-on: windows-latest
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v6
+
+    - name: Setup msbuild
+      uses: microsoft/setup-msbuild@v2
+    
+    - name: Build
+      run: MSBuild.exe MinecraftConsoles.sln /p:Configuration=Debug /p:Platform="Windows64"

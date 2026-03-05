@@ -40,6 +40,7 @@
 #include "Resource.h"
 #include "..\..\Minecraft.World\compression.h"
 #include "..\..\Minecraft.World\OldChunkStorage.h"
+#include "Common/PostProcesser.h"
 #include "Network\WinsockNetLayer.h"
 
 #include "Xbox/resource.h"
@@ -873,6 +874,8 @@ HRESULT InitDevice()
 	g_pImmediateContext->RSSetViewports( 1, &vp );
 
 	RenderManager.Initialise(g_pd3dDevice, g_pSwapChain);
+
+	PostProcesser::GetInstance().Init();
 
 	return S_OK;
 }
@@ -1812,7 +1815,7 @@ SIZE_T WINAPI XMemSize(
 void DumpMem()
 {
 	int totalLeak = 0;
-	for(AUTO_VAR(it, allocCounts.begin()); it != allocCounts.end(); it++ )
+	for( auto it = allocCounts.begin(); it != allocCounts.end(); it++ )
 	{
 		if(it->second > 0 )
 		{
@@ -1860,7 +1863,7 @@ void MemPixStuff()
 
 	int totals[MAX_SECT] = {0};
 
-	for(AUTO_VAR(it, allocCounts.begin()); it != allocCounts.end(); it++ )
+	for( auto it = allocCounts.begin(); it != allocCounts.end(); it++ )
 	{
 		if(it->second > 0 )
 		{

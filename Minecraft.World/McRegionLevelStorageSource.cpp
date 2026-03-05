@@ -39,12 +39,11 @@ vector<LevelSummary *> *McRegionLevelStorageSource::getLevelList()
 #if 0
 	vector<File *> *subFolders = baseDir.listFiles();
 	File *file;
-	AUTO_VAR(itEnd, subFolders->end());
-	for (AUTO_VAR(it, subFolders->begin()); it != itEnd; it++)
+	for (auto& subFolder : *subFolders)
 	{
-		file = *it; //subFolders->at(i);
+		file = subFolder; //subFolders->at(i);
 
-		if (file->isDirectory()) 
+		if (file->isDirectory())
 		{
 			continue;
 		}
@@ -74,13 +73,13 @@ void McRegionLevelStorageSource::clearAll()
 {
 }
 
-shared_ptr<LevelStorage> McRegionLevelStorageSource::selectLevel(ConsoleSaveFile *saveFile, const wstring& levelId, bool createPlayerDir) 
+shared_ptr<LevelStorage> McRegionLevelStorageSource::selectLevel(ConsoleSaveFile *saveFile, const wstring& levelId, bool createPlayerDir)
 {
 	//        return new LevelStorageProfilerDecorator(new McRegionLevelStorage(baseDir, levelId, createPlayerDir));
 	return shared_ptr<LevelStorage>(new McRegionLevelStorage(saveFile, baseDir, levelId, createPlayerDir));
 }
 
-bool McRegionLevelStorageSource::isConvertible(ConsoleSaveFile *saveFile, const wstring& levelId) 
+bool McRegionLevelStorageSource::isConvertible(ConsoleSaveFile *saveFile, const wstring& levelId)
 {
 	// check if there is old file format level data
 	LevelData *levelData = getDataTagFor(saveFile, levelId);
@@ -145,7 +144,7 @@ bool McRegionLevelStorageSource::convertLevel(ConsoleSaveFile *saveFile, const w
     }
 
 	int totalCount = normalRegions->size() + netherRegions->size() + enderRegions.size() + normalBaseFolders->size() + netherBaseFolders->size() + enderBaseFolders.size();
-	
+
 	// System.out.println("Total conversion count is " + totalCount); 4J Jev, TODO
 
 	// convert normal world
@@ -173,16 +172,15 @@ bool McRegionLevelStorageSource::convertLevel(ConsoleSaveFile *saveFile, const w
 
 #if 0
 // 4J - not required anymore
-void McRegionLevelStorageSource::addRegions(File &baseFolder, vector<ChunkFile *> *dest, vector<File *> *firstLevelFolders) 
+void McRegionLevelStorageSource::addRegions(File &baseFolder, vector<ChunkFile *> *dest, vector<File *> *firstLevelFolders)
 {
 	FolderFilter folderFilter;
 	ChunkFilter chunkFilter;
 
 	File *folder1;
 	vector<File *> *folderLevel1 = baseFolder.listFiles((FileFilter *) &folderFilter);
-	AUTO_VAR(itEnd, folderLevel1->end());
-	for (AUTO_VAR(it, folderLevel1->begin()); it != itEnd; it++)
-	{
+    for (auto it = folderLevel1->begin(); it != folderLevel1->end(); it++)
+    {
 		folder1 = *it; //folderLevel1->at(i1);
 
 		// keep this for the clean-up process later on
@@ -190,17 +188,17 @@ void McRegionLevelStorageSource::addRegions(File &baseFolder, vector<ChunkFile *
 
 		File *folder2;
 		vector<File *> *folderLevel2 = folder1->listFiles(&folderFilter);
-		AUTO_VAR(itEnd2, folderLevel2->end());
-		for (AUTO_VAR(it2, folderLevel2->begin()); it2 != itEnd; it2++)
+        auto itEnd2 = folderLevel2->end();
+        for ( auto it2 = folderLevel2->begin(); it2 != itEnd2; it2++)
 		{
 			folder2 = *it2; //folderLevel2->at(i2);
 
 			vector<File *> *chunkFiles = folder2->listFiles((FileFilter *) &chunkFilter);
 
 			File *chunk;
-			AUTO_VAR(itEndFile, chunkFiles->end());
-			for (AUTO_VAR(itFile, chunkFiles->begin()); itFile != itEndFile; itFile++)
-			{
+            auto itEndFile = chunkFiles->end();
+            for (auto itFile = chunkFiles->begin(); itFile != itEndFile; itFile++)
+            {
 				chunk = *itFile; //chunkFiles->at(i3);
 
 				dest->push_back(new ChunkFile(chunk));
@@ -210,7 +208,7 @@ void McRegionLevelStorageSource::addRegions(File &baseFolder, vector<ChunkFile *
 }
 #endif
 
-void McRegionLevelStorageSource::convertRegions(File &baseFolder, vector<ChunkFile *> *chunkFiles, int currentCount, int totalCount, ProgressListener *progress) 
+void McRegionLevelStorageSource::convertRegions(File &baseFolder, vector<ChunkFile *> *chunkFiles, int currentCount, int totalCount, ProgressListener *progress)
 {
 	assert( false );
 
@@ -222,10 +220,9 @@ void McRegionLevelStorageSource::convertRegions(File &baseFolder, vector<ChunkFi
 	byteArray buffer = byteArray(4096);
 
 	ChunkFile *chunkFile;
-	AUTO_VAR(itEnd, chunkFiles->end());
-	for (AUTO_VAR(it, chunkFiles->begin()); it != itEnd; it++)
+	for (auto& it : *chunkFiles)
 	{
-		chunkFile = *it; //chunkFiles->at(i1);
+		chunkFile = it; //chunkFiles->at(i1);
 
 		//            Matcher matcher = ChunkFilter.chunkFilePattern.matcher(chunkFile.getName());
 		//            if (!matcher.matches()) {
@@ -238,7 +235,7 @@ void McRegionLevelStorageSource::convertRegions(File &baseFolder, vector<ChunkFi
 		int z = chunkFile->getZ();
 
 		RegionFile *region = RegionFileCache::getRegionFile(baseFolder, x, z);
-		if (!region->hasChunk(x & 31, z & 31)) 
+		if (!region->hasChunk(x & 31, z & 31))
 		{
 			FileInputStream fis = new BufferedInputStream(FileInputStream(*chunkFile->getFile()));
 			DataInputStream istream = DataInputStream(&fis); // 4J - was new GZIPInputStream as well
@@ -271,12 +268,8 @@ void McRegionLevelStorageSource::convertRegions(File &baseFolder, vector<ChunkFi
 
 void McRegionLevelStorageSource::eraseFolders(vector<File *> *folders, int currentCount, int totalCount, ProgressListener *progress)
 {
-	File *folder;
-	AUTO_VAR(itEnd, folders->end());
-	for (AUTO_VAR(it, folders->begin()); it != itEnd; it++)
+	for (File *folder : *folders)
 	{
-		folder = *it; //folders->at(i);
-
 		vector<File *> *files = folder->listFiles();
 		deleteRecursive(files);
 		folder->_delete();
@@ -289,7 +282,7 @@ void McRegionLevelStorageSource::eraseFolders(vector<File *> *folders, int curre
 
 #if 0
 // 4J - not required anymore
-bool McRegionLevelStorageSource::FolderFilter::accept(File *file) 
+bool McRegionLevelStorageSource::FolderFilter::accept(File *file)
 {
 	if (file->isDirectory())
 	{
@@ -300,23 +293,23 @@ bool McRegionLevelStorageSource::FolderFilter::accept(File *file)
 }
 
 
-bool McRegionLevelStorageSource::ChunkFilter::accept(File *dir, const wstring& name) 
+bool McRegionLevelStorageSource::ChunkFilter::accept(File *dir, const wstring& name)
 {
 	Matcher matcher( chunkFilePattern, name );
 	return matcher.matches();
 }
 
 
-McRegionLevelStorageSource::ChunkFile::ChunkFile(File *file) 
+McRegionLevelStorageSource::ChunkFile::ChunkFile(File *file)
 {
 	this->file = file;
 
 	Matcher matcher( ChunkFilter::chunkFilePattern, file->getName() );
-	if (matcher.matches()) 
+	if (matcher.matches())
 	{
 		x = Integer::parseInt(matcher.group(1), 36);
 		z = Integer::parseInt(matcher.group(2), 36);
-	} 
+	}
 	else
 	{
 		x = 0;
@@ -348,17 +341,17 @@ bool McRegionLevelStorageSource::ChunkFile::operator<( ChunkFile *b )
 	return compareTo( b ) < 0;
 }
 
-File *McRegionLevelStorageSource::ChunkFile::getFile() 
+File *McRegionLevelStorageSource::ChunkFile::getFile()
 {
 	return (File *) file;
 }
 
-int McRegionLevelStorageSource::ChunkFile::getX() 
+int McRegionLevelStorageSource::ChunkFile::getX()
 {
 	return x;
 }
 
-int McRegionLevelStorageSource::ChunkFile::getZ() 
+int McRegionLevelStorageSource::ChunkFile::getZ()
 {
 	return z;
 }

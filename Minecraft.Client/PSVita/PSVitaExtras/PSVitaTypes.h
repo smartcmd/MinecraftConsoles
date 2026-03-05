@@ -170,7 +170,3 @@ typedef LPVOID LPSECURITY_ATTRIBUTES;
 
 #define __in_ecount(a)
 #define __in_bcount(a)
-
-#ifndef AUTO_VAR
-#define AUTO_VAR(_var, _val) auto _var = _val
-#endif

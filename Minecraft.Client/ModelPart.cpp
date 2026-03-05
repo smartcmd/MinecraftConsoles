@@ -24,23 +24,23 @@ ModelPart::ModelPart()
 	_init();
 }
 
-ModelPart::ModelPart(Model *model, const wstring& id) 
+ModelPart::ModelPart(Model *model, const wstring& id)
 {
 	construct(model, id);
 }
 
-ModelPart::ModelPart(Model *model) 
+ModelPart::ModelPart(Model *model)
 {
 	construct(model);
 }
 
-ModelPart::ModelPart(Model *model, int xTexOffs, int yTexOffs) 
+ModelPart::ModelPart(Model *model, int xTexOffs, int yTexOffs)
 {
 	construct(model, xTexOffs, yTexOffs);
 }
 
 
-void ModelPart::construct(Model *model, const wstring& id) 
+void ModelPart::construct(Model *model, const wstring& id)
 {
 	_init();
 	this->model = model;
@@ -49,13 +49,13 @@ void ModelPart::construct(Model *model, const wstring& id)
 	setTexSize(model->texWidth, model->texHeight);
 }
 
-void ModelPart::construct(Model *model) 
+void ModelPart::construct(Model *model)
 {
 	_init();
 	construct(model, L"");
 }
 
-void ModelPart::construct(Model *model, int xTexOffs, int yTexOffs) 
+void ModelPart::construct(Model *model, int xTexOffs, int yTexOffs)
 {
 	_init();
 	construct(model);
@@ -63,22 +63,18 @@ void ModelPart::construct(Model *model, int xTexOffs, int yTexOffs)
 }
 
 
-void ModelPart::addChild(ModelPart *child) 
+void ModelPart::addChild(ModelPart *child)
 {
 	//if (children == NULL) children = new ModelPartArray;
 	children.push_back(child);
 }
 
-ModelPart * ModelPart::retrieveChild(SKIN_BOX *pBox) 
+ModelPart * ModelPart::retrieveChild(SKIN_BOX *pBox)
 {
-	for(AUTO_VAR(it, children.begin()); it != children.end(); ++it)
+	for( ModelPart *child : children )
 	{
-		ModelPart *child=*it;
-
-		for(AUTO_VAR(itcube, child->cubes.begin()); itcube != child->cubes.end(); ++itcube)
-		{
-			Cube *pCube=*itcube;
-
+        for ( const Cube *pCube : child->cubes )
+        {
 			if((pCube->x0==pBox->fX) &&
 				(pCube->y0==pBox->fY) &&
 				(pCube->z0==pBox->fZ) &&
@@ -96,20 +92,20 @@ ModelPart * ModelPart::retrieveChild(SKIN_BOX *pBox)
 	return NULL;
 }
 
-ModelPart *ModelPart::mirror() 
+ModelPart *ModelPart::mirror()
 {
 	bMirror = !bMirror;
 	return this;
 }
 
-ModelPart *ModelPart::texOffs(int xTexOffs, int yTexOffs) 
+ModelPart *ModelPart::texOffs(int xTexOffs, int yTexOffs)
 {
 	this->xTexOffs = xTexOffs;
 	this->yTexOffs = yTexOffs;
 	return this;
 }
 
-ModelPart *ModelPart::addBox(wstring id, float x0, float y0, float z0, int w, int h, int d) 
+ModelPart *ModelPart::addBox(wstring id, float x0, float y0, float z0, int w, int h, int d)
 {
 	id = this->id + L"." + id;
 	TexOffs *offs = model->getMapTex(id);
@@ -118,42 +114,42 @@ ModelPart *ModelPart::addBox(wstring id, float x0, float y0, float z0, int w, in
 	return this;
 }
 
-ModelPart *ModelPart::addBox(float x0, float y0, float z0, int w, int h, int d) 
+ModelPart *ModelPart::addBox(float x0, float y0, float z0, int w, int h, int d)
 {
 	cubes.push_back(new Cube(this, xTexOffs, yTexOffs, x0, y0, z0, w, h, d, 0));
 	return this;
 }
 
-void ModelPart::addHumanoidBox(float x0, float y0, float z0, int w, int h, int d, float g) 
+void ModelPart::addHumanoidBox(float x0, float y0, float z0, int w, int h, int d, float g)
 {
 	cubes.push_back(new Cube(this, xTexOffs, yTexOffs, x0, y0, z0, w, h, d, g, 63, true));
 }
 
-ModelPart *ModelPart::addBoxWithMask(float x0, float y0, float z0, int w, int h, int d, int faceMask) 
+ModelPart *ModelPart::addBoxWithMask(float x0, float y0, float z0, int w, int h, int d, int faceMask)
 {
 	cubes.push_back(new Cube(this, xTexOffs, yTexOffs, x0, y0, z0, w, h, d, 0, faceMask));
 	return this;
 }
 
-void ModelPart::addBox(float x0, float y0, float z0, int w, int h, int d, float g) 
+void ModelPart::addBox(float x0, float y0, float z0, int w, int h, int d, float g)
 {
 	cubes.push_back(new Cube(this, xTexOffs, yTexOffs, x0, y0, z0, w, h, d, g));
 }
 
 
-void ModelPart::addTexBox(float x0, float y0, float z0, int w, int h, int d, int tex) 
+void ModelPart::addTexBox(float x0, float y0, float z0, int w, int h, int d, int tex)
 {
 	cubes.push_back(new Cube(this, xTexOffs, yTexOffs, x0, y0, z0, w, h, d, (float)tex));
 }
 
-void ModelPart::setPos(float x, float y, float z) 
+void ModelPart::setPos(float x, float y, float z)
 {
 	this->x = x;
 	this->y = y;
 	this->z = z;
 }
 
-void ModelPart::render(float scale, bool usecompiled, bool bHideParentBodyPart) 
+void ModelPart::render(float scale, bool usecompiled, bool bHideParentBodyPart)
 {
 	if (neverRender) return;
 	if (!visible) return;
@@ -161,7 +157,7 @@ void ModelPart::render(float scale, bool usecompiled, bool bHideParentBodyPart)
 
 	glTranslatef(translateX, translateY, translateZ);
 
-	if (xRot != 0 || yRot != 0 || zRot != 0) 
+	if (xRot != 0 || yRot != 0 || zRot != 0)
 	{
 		glPushMatrix();
 		glTranslatef(x * scale, y * scale, z * scale);
@@ -170,7 +166,7 @@ void ModelPart::render(float scale, bool usecompiled, bool bHideParentBodyPart)
 		if (xRot != 0) glRotatef(xRot * RAD, 1, 0, 0);
 
 		if(!bHideParentBodyPart)
-		{		
+		{
 			if( usecompiled )
 			{
 				glCallList(list);
@@ -178,53 +174,27 @@ void ModelPart::render(float scale, bool usecompiled, bool bHideParentBodyPart)
 			else
 			{
 				Tesselator *t = Tesselator::getInstance();
-				for (unsigned int i = 0; i < cubes.size(); i++) 
+				for (unsigned int i = 0; i < cubes.size(); i++)
 				{
 					cubes[i]->render(t, scale);
 				}
 			}
-		}			
-		//if (children != NULL) 
+		}
+		//if (children != NULL)
 		{
-			for (unsigned int i = 0; i < children.size(); i++) 
+			for (unsigned int i = 0; i < children.size(); i++)
 			{
 				children.at(i)->render(scale,usecompiled);
 			}
 		}
 
 		glPopMatrix();
-	} 
-	else if (x != 0 || y != 0 || z != 0) 
+	}
+	else if (x != 0 || y != 0 || z != 0)
 	{
 		glTranslatef(x * scale, y * scale, z * scale);
 		if(!bHideParentBodyPart)
-		{		
-			if( usecompiled )
-			{
-				glCallList(list);
-			}
-			else
-			{
-				Tesselator *t = Tesselator::getInstance();			
-				for (unsigned int i = 0; i < cubes.size(); i++) 
-				{
-					cubes[i]->render(t, scale);
-				}
-			}
-		}
-		//if (children != NULL) 
 		{
-			for (unsigned int i = 0; i < children.size(); i++) 
-			{
-				children.at(i)->render(scale,usecompiled);
-			}
-		}
-		glTranslatef(-x * scale, -y * scale, -z * scale);
-	} 
-	else 
-	{
-		if(!bHideParentBodyPart)
-		{		
 			if( usecompiled )
 			{
 				glCallList(list);
@@ -232,15 +202,41 @@ void ModelPart::render(float scale, bool usecompiled, bool bHideParentBodyPart)
 			else
 			{
 				Tesselator *t = Tesselator::getInstance();
-				for (unsigned int i = 0; i < cubes.size(); i++) 
+				for (unsigned int i = 0; i < cubes.size(); i++)
 				{
 					cubes[i]->render(t, scale);
 				}
 			}
 		}
-		//if (children != NULL) 
+		//if (children != NULL)
 		{
-			for (unsigned int i = 0; i < children.size(); i++) 
+			for (unsigned int i = 0; i < children.size(); i++)
+			{
+				children.at(i)->render(scale,usecompiled);
+			}
+		}
+		glTranslatef(-x * scale, -y * scale, -z * scale);
+	}
+	else
+	{
+		if(!bHideParentBodyPart)
+		{
+			if( usecompiled )
+			{
+				glCallList(list);
+			}
+			else
+			{
+				Tesselator *t = Tesselator::getInstance();
+				for (unsigned int i = 0; i < cubes.size(); i++)
+				{
+					cubes[i]->render(t, scale);
+				}
+			}
+		}
+		//if (children != NULL)
+		{
+			for (unsigned int i = 0; i < children.size(); i++)
 			{
 				children.at(i)->render(scale,usecompiled);
 			}
@@ -250,7 +246,7 @@ void ModelPart::render(float scale, bool usecompiled, bool bHideParentBodyPart)
 	glTranslatef(-translateX, -translateY, -translateZ);
 }
 
-void ModelPart::renderRollable(float scale, bool usecompiled) 
+void ModelPart::renderRollable(float scale, bool usecompiled)
 {
 	if (neverRender) return;
 	if (!visible) return;
@@ -266,29 +262,29 @@ void ModelPart::renderRollable(float scale, bool usecompiled)
 
 }
 
-void ModelPart::translateTo(float scale) 
+void ModelPart::translateTo(float scale)
 {
 	if (neverRender) return;
 	if (!visible) return;
 	if (!compiled) compile(scale);
 
-	if (xRot != 0 || yRot != 0 || zRot != 0) 
+	if (xRot != 0 || yRot != 0 || zRot != 0)
 	{
 		glTranslatef(x * scale, y * scale, z * scale);
 		if (zRot != 0) glRotatef(zRot * RAD, 0, 0, 1);
 		if (yRot != 0) glRotatef(yRot * RAD, 0, 1, 0);
 		if (xRot != 0) glRotatef(xRot * RAD, 1, 0, 0);
-	} 
-	else if (x != 0 || y != 0 || z != 0) 
+	}
+	else if (x != 0 || y != 0 || z != 0)
 	{
 		glTranslatef(x * scale, y * scale, z * scale);
-	} 
-	else 
+	}
+	else
 	{
 	}
 }
 
-void ModelPart::compile(float scale) 
+void ModelPart::compile(float scale)
 {
 	list = MemoryTracker::genLists(1);
 
@@ -299,24 +295,24 @@ void ModelPart::compile(float scale)
 	glDepthMask(true);
 	Tesselator *t = Tesselator::getInstance();
 
-	for (unsigned int i = 0; i < cubes.size(); i++) 
+	for (unsigned int i = 0; i < cubes.size(); i++)
 	{
 		cubes.at(i)->render(t, scale);
 	}
-	
+
 	glEndList();
 
 	compiled = true;
 }
 
-ModelPart *ModelPart::setTexSize(int xs, int ys) 
+ModelPart *ModelPart::setTexSize(int xs, int ys)
 {
 	this->xTexSize = (float)xs;
 	this->yTexSize = (float)ys;
 	return this;
 }
 
-void ModelPart::mimic(ModelPart *o) 
+void ModelPart::mimic(ModelPart *o)
 {
 	x =		o->x;
 	y =		o->y;

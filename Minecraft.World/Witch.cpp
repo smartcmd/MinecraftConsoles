@@ -101,9 +101,9 @@ void Witch::aiStep()
 					vector<MobEffectInstance *> *effects = Item::potion->getMobEffects(item);
 					if (effects != NULL)
 					{
-						for(AUTO_VAR(it, effects->begin()); it != effects->end(); ++it)
+						for(auto& effect : *effects)
 						{
-							addEffect(new MobEffectInstance(*it));
+							addEffect(new MobEffectInstance(effect));
 						}
 					}
 					delete effects;

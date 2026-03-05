@@ -13,7 +13,7 @@ UIScene::UIScene(int iPad, UILayer *parentLayer)
 	m_iPad = iPad;
 	swf = NULL;
 	m_pItemRenderer = NULL;
-	
+
 	bHasFocus = false;
 	m_hasTickedOnce = false;
 	m_bFocussedOnce = false;
@@ -27,7 +27,7 @@ UIScene::UIScene(int iPad, UILayer *parentLayer)
 	m_bUpdateOpacity = false;
 
 	m_backScene = NULL;
-	
+
 	m_cacheSlotRenders = false;
 	m_needsCacheRendered = true;
 	m_expectedCachedSlotCount = 0;
@@ -39,9 +39,9 @@ UIScene::~UIScene()
 	/* Destroy the Iggy player. */
 	IggyPlayerDestroy( swf );
 
-	for(AUTO_VAR(it,m_registeredTextures.begin()); it != m_registeredTextures.end(); ++it)
+	for(auto & it : m_registeredTextures)
 	{
-		ui.unregisterSubstitutionTexture( it->first, it->second );
+		ui.unregisterSubstitutionTexture( it.first, it.second );
 	}
 
 	if(m_callbackUniqueId != 0)
@@ -88,14 +88,14 @@ void UIScene::reloadMovie(bool force)
 	handlePreReload();
 
 	// Reload controls
-	for(AUTO_VAR(it, m_controls.begin()); it != m_controls.end(); ++it)
+	for(auto & it : m_controls)
 	{
-		(*it)->ReInit();
+		it->ReInit();
 	}
 
 	updateComponents();
 	handleReload();
-	
+
 	IggyDataValue result;
 	IggyDataValue value[1];
 
@@ -332,7 +332,7 @@ void UIScene::loadMovie()
 	__int64 beforeLoad = ui.iggyAllocCount;
 	swf = IggyPlayerCreateFromMemory ( baFile.data , baFile.length, NULL);
 	__int64 afterLoad = ui.iggyAllocCount;
-	IggyPlayerInitializeAndTickRS ( swf ); 
+	IggyPlayerInitializeAndTickRS ( swf );
 	__int64 afterTick = ui.iggyAllocCount;
 
 	if(!swf)
@@ -344,7 +344,7 @@ void UIScene::loadMovie()
 		app.FatalLoadError();
 	}
 	app.DebugPrintf( app.USER_SR, "Loaded iggy movie %ls\n", moviePath.c_str() );
-	IggyProperties *properties = IggyPlayerProperties ( swf ); 
+	IggyProperties *properties = IggyPlayerProperties ( swf );
 	m_movieHeight = properties->movie_height_in_pixels;
 	m_movieWidth = properties->movie_width_in_pixels;
 
@@ -352,7 +352,7 @@ void UIScene::loadMovie()
 	m_renderHeight = m_movieHeight;
 
 	S32 width, height;
-	m_parentLayer->getRenderDimensions(width, height);	
+	m_parentLayer->getRenderDimensions(width, height);
 	IggyPlayerSetDisplaySize( swf, width, height );
 
 	IggyPlayerSetUserdata(swf,this);
@@ -373,7 +373,7 @@ void UIScene::loadMovie()
 	{
 		totalStatic += memoryInfo.static_allocation_bytes;
 		totalDynamic += memoryInfo.dynamic_allocation_bytes;
-		app.DebugPrintf(app.USER_SR, "%ls - %.*s static: %d ( %d ) dynamic: %d ( %d )\n", moviePath.c_str(), memoryInfo.subcategory_stringlen, memoryInfo.subcategory, 
+		app.DebugPrintf(app.USER_SR, "%ls - %.*s static: %d ( %d ) dynamic: %d ( %d )\n", moviePath.c_str(), memoryInfo.subcategory_stringlen, memoryInfo.subcategory,
 			memoryInfo.static_allocation_bytes, memoryInfo.static_allocation_count, memoryInfo.dynamic_allocation_bytes, memoryInfo.dynamic_allocation_count);
 		++iteration;
 		//if(memoryInfo.static_allocation_bytes > 0) getDebugMemoryUseRecursive(moviePath, memoryInfo);
@@ -399,7 +399,7 @@ void UIScene::getDebugMemoryUseRecursive(const wstring &moviePath, IggyMemoryUse
 		internalIteration ,
 		&internalMemoryInfo ))
 	{
-		app.DebugPrintf(app.USER_SR, "%ls - %.*s static: %d ( %d ) dynamic: %d ( %d )\n", moviePath.c_str(), internalMemoryInfo.subcategory_stringlen, internalMemoryInfo.subcategory, 
+		app.DebugPrintf(app.USER_SR, "%ls - %.*s static: %d ( %d ) dynamic: %d ( %d )\n", moviePath.c_str(), internalMemoryInfo.subcategory_stringlen, internalMemoryInfo.subcategory,
 			internalMemoryInfo.static_allocation_bytes, internalMemoryInfo.static_allocation_count, internalMemoryInfo.dynamic_allocation_bytes, internalMemoryInfo.dynamic_allocation_count);
 		++internalIteration;
 		if(internalMemoryInfo.subcategory_stringlen > memoryInfo.subcategory_stringlen) getDebugMemoryUseRecursive(moviePath, internalMemoryInfo);
@@ -440,9 +440,9 @@ void UIScene::tick()
 	while(IggyPlayerReadyToTick( swf ))
 	{
 		tickTimers();
-		for(AUTO_VAR(it, m_controls.begin()); it != m_controls.end(); ++it)
+		for(auto & it : m_controls)
 		{
-			(*it)->tick();
+			it->tick();
 		}
 		IggyPlayerTickRS( swf );
 		m_hasTickedOnce = true;
@@ -468,8 +468,8 @@ void UIScene::addTimer(int id, int ms)
 
 void UIScene::killTimer(int id)
 {
-	AUTO_VAR(it, m_timers.find(id));
-	if(it != m_timers.end())
+    auto it = m_timers.find(id);
+    if(it != m_timers.end())
 	{
 		it->second.running = false;
 	}
@@ -478,13 +478,13 @@ void UIScene::killTimer(int id)
 void UIScene::tickTimers()
 {
 	int currentTime = System::currentTimeMillis();
-	for(AUTO_VAR(it, m_timers.begin()); it != m_timers.end();)
-	{
+    for (auto it = m_timers.begin(); it != m_timers.end();)
+    {
 		if(!it->second.running)
 		{
 			it = m_timers.erase(it);
 		}
-		else 
+		else
 		{
 			if(currentTime > it->second.targetTime)
 			{
@@ -501,8 +501,8 @@ void UIScene::tickTimers()
 IggyName UIScene::registerFastName(const wstring &name)
 {
 	IggyName var;
-	AUTO_VAR(it,m_fastNames.find(name));
-	if(it != m_fastNames.end())
+    auto it = m_fastNames.find(name);
+    if(it != m_fastNames.end())
 	{
 		var = it->second;
 	}
@@ -635,17 +635,16 @@ void UIScene::customDrawSlotControl(IggyCustomDrawCallbackRegion *region, int iP
 					if(useCommandBuffers) RenderManager.CBuffStart(list, true);
 #endif
 					PIXBeginNamedEvent(0,"Draw uncached");
-					ui.setupCustomDrawMatrices(this, customDrawRegion);	
+					ui.setupCustomDrawMatrices(this, customDrawRegion);
 					_customDrawSlotControl(customDrawRegion, iPad, item, fAlpha, isFoil, bDecorations, useCommandBuffers);
 					delete customDrawRegion;
 					PIXEndNamedEvent();
 
 					PIXBeginNamedEvent(0,"Draw all cache");
 					// Draw all the cached slots
-					for(AUTO_VAR(it, m_cachedSlotDraw.begin()); it != m_cachedSlotDraw.end(); ++it)
+					for(auto& drawData : m_cachedSlotDraw)
 					{
-						CachedSlotDrawData *drawData = *it;
-						ui.setupCustomDrawMatrices(this, drawData->customDrawRegion);					
+						ui.setupCustomDrawMatrices(this, drawData->customDrawRegion);
 						_customDrawSlotControl(drawData->customDrawRegion, iPad, drawData->item, drawData->fAlpha, drawData->isFoil, drawData->bDecorations, useCommandBuffers);
 						delete drawData->customDrawRegion;
 						delete drawData;
@@ -699,7 +698,7 @@ void UIScene::customDrawSlotControl(IggyCustomDrawCallbackRegion *region, int iP
 			// Finish GDraw and anything else that needs to be finalised
 			ui.endCustomDraw(region);
 		}
-	}	
+	}
 }
 
 void UIScene::_customDrawSlotControl(CustomDrawData *region, int iPad, shared_ptr<ItemInstance> item, float fAlpha, bool isFoil, bool bDecorations, bool usingCommandBuffer)
@@ -717,7 +716,7 @@ void UIScene::_customDrawSlotControl(CustomDrawData *region, int iPad, shared_pt
 	// we might want separate x & y scales here
 
 	float scaleX = bwidth / 16.0f;
-	float scaleY = bheight / 16.0f;	
+	float scaleY = bheight / 16.0f;
 
 	glEnable(GL_RESCALE_NORMAL);
 	glPushMatrix();
@@ -755,8 +754,8 @@ void UIScene::_customDrawSlotControl(CustomDrawData *region, int iPad, shared_pt
 	if(bDecorations)
 	{
 		if((scaleX!=1.0f) ||(scaleY!=1.0f))
-		{				
-			glPushMatrix();		
+		{
+			glPushMatrix();
 			glScalef(scaleX, scaleY, 1.0f);
 			int iX= (int)(0.5f+((float)x)/scaleX);
 			int iY= (int)(0.5f+((float)y)/scaleY);
@@ -991,8 +990,8 @@ int UIScene::convertGameActionToIggyKeycode(int action)
 
 bool UIScene::allowRepeat(int key)
 {
-	// 4J-PB - ignore repeats of action ABXY buttons 
-	// fix for PS3 213 - [MAIN MENU] Holding down buttons will continue to activate every prompt. 
+	// 4J-PB - ignore repeats of action ABXY buttons
+	// fix for PS3 213 - [MAIN MENU] Holding down buttons will continue to activate every prompt.
 	switch(key)
 	{
 	case ACTION_MENU_OK:
@@ -1185,9 +1184,9 @@ void UIScene::registerSubstitutionTexture(const wstring &textureName, PBYTE pbDa
 
 bool UIScene::hasRegisteredSubstitutionTexture(const wstring &textureName)
 {
-	AUTO_VAR(it, m_registeredTextures.find( textureName ) );
+    auto it = m_registeredTextures.find(textureName);
 
-	return  it != m_registeredTextures.end();
+    return  it != m_registeredTextures.end();
 }
 
 void UIScene::_handleFocusChange(F64 controlId, F64 childId)
@@ -1240,10 +1239,8 @@ UIScene *UIScene::getBackScene()
 #ifdef __PSVITA__
 void UIScene::UpdateSceneControls()
 {
-	AUTO_VAR(itEnd, GetControls()->end());
-	for (AUTO_VAR(it, GetControls()->begin()); it != itEnd; it++)
+	for ( UIControl *control : *GetControls() )
 	{
-		UIControl *control=(UIControl *)*it;
 		control->UpdateControl();
 	}
 }

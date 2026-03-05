@@ -723,10 +723,10 @@
     <Filter Include="PSVita\Miles Sound System\lib">
       <UniqueIdentifier>{0061db22-43de-4b54-a161-c43958cdcd7e}</UniqueIdentifier>
     </Filter>
-      <Filter Include="net\minecraft\client\resources">
+    <Filter Include="net\minecraft\client\resources">
       <UniqueIdentifier>{889a84db-3009-4a7c-8234-4bf93d412690}</UniqueIdentifier>
     </Filter>
-      <Filter Include="Windows64\Source Files\Network">
+    <Filter Include="Windows64\Source Files\Network">
       <UniqueIdentifier>{e5d7fb24-25b8-413c-84ec-974bf0d4a3d1}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
@@ -2096,6 +2096,9 @@
       <Filter>Durango</Filter>
     </ClInclude>
     <ClInclude Include="Common\Potion_Macros.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="Common\PostProcesser.h">
       <Filter>Common</Filter>
     </ClInclude>
     <ClInclude Include="PS3\4JLibs\inc\4J_Input.h">
@@ -4918,6 +4921,9 @@
       <Filter>Common\Source Files\DLC</Filter>
     </ClCompile>
     <ClCompile Include="Windows64\Windows64_Minecraft.cpp">
+      <Filter>Windows64\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Windows64\PostProcesser.cpp">
       <Filter>Windows64\Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Windows64\KeyboardMouseInput.cpp">

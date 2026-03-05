@@ -588,7 +588,7 @@ vector<HtmlString> *ItemInstance::getHoverText(shared_ptr<Player> player, bool a
 
 	/*if (!hasCustomHoverName() && id == Item::map_Id)
 	{
-		title.text += L" #" + _toString(auxValue);
+		title.text += L" #" + std::to_wstring(auxValue);
 	}*/
 
 	lines->push_back(title);
@@ -652,20 +652,20 @@ vector<HtmlString> *ItemInstance::getHoverText(shared_ptr<Player> player, bool a
 	if (!modifiers->empty())
 	{
 		// New line
-		lines->push_back(HtmlString(L""));
+		lines->emplace_back(L"");
 
 		// Modifier descriptions
-		for (AUTO_VAR(it, modifiers->begin()); it != modifiers->end(); ++it)
+		for (auto& modifier : *modifiers)
 		{
 			// 4J: Moved modifier string building to AttributeModifier
-			lines->push_back(it->second->getHoverText(it->first));
+			lines->push_back(modifier.second->getHoverText(modifier.first));
 		}
 	}
 
 	// Delete modifiers map
-	for (AUTO_VAR(it, modifiers->begin()); it != modifiers->end(); ++it)
+	for (auto& it : *modifiers)
 	{
-		AttributeModifier *modifier = it->second;
+		AttributeModifier *modifier = it.second;
 		delete modifier;
 	}
 	delete modifiers;
@@ -674,7 +674,7 @@ vector<HtmlString> *ItemInstance::getHoverText(shared_ptr<Player> player, bool a
 	{
 		if (isDamaged())
 		{
-			wstring damageStr = L"Durability: LOCALISE " + _toString<int>((getMaxDamage()) - getDamageValue()) + L" / " + _toString<int>(getMaxDamage());
+			wstring damageStr = L"Durability: LOCALISE " + std::to_wstring((getMaxDamage()) - getDamageValue()) + L" / " + std::to_wstring(getMaxDamage());
 			lines->push_back(HtmlString(damageStr));
 		}
 	}

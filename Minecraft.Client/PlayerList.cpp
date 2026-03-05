@@ -1,5 +1,7 @@
 #include "stdafx.h"
 #include "PlayerList.h"
+
+#include <memory>
 #include "PlayerChunkMap.h"
 #include "MinecraftServer.h"
 #include "Settings.h"
@@ -65,11 +67,11 @@ PlayerList::PlayerList(MinecraftServer *server)
 
 PlayerList::~PlayerList()
 {
-	for( AUTO_VAR(it, players.begin()); it < players.end(); it++ )
-	{
-		(*it)->connection = nullptr;	// Must remove reference to connection, or else there is a circular dependency
-		delete (*it)->gameMode;		// Gamemode also needs deleted as it references back to this player
-		(*it)->gameMode = NULL;
+    for (auto& player : players)
+    {
+		player->connection = nullptr;	// Must remove reference to connection, or else there is a circular dependency
+		delete player->gameMode;		// Gamemode also needs deleted as it references back to this player
+		player->gameMode = nullptr;
 	}
 
 	DeleteCriticalSection(&m_kickPlayersCS);
@@ -89,7 +91,7 @@ void PlayerList::placeNewPlayer(Connection *connection, shared_ptr<ServerPlayer>
 	INetworkPlayer *networkPlayer = connection->getSocket()->getPlayer();
 	if(networkPlayer != NULL && networkPlayer->IsHost())
 	{
-		player->enableAllPlayerPrivileges(true);			
+		player->enableAllPlayerPrivileges(true);
 		player->setPlayerGamePrivilege(Player::ePlayerGamePrivilege_HOST,1);
 	}
 
@@ -123,9 +125,9 @@ void PlayerList::placeNewPlayer(Connection *connection, shared_ptr<ServerPlayer>
 	{
 		bool usedIndexes[MINECRAFT_NET_MAX_PLAYERS];
 		ZeroMemory( &usedIndexes, MINECRAFT_NET_MAX_PLAYERS * sizeof(bool) );
-		for(AUTO_VAR(it, players.begin()); it < players.end(); ++it)
-		{
-			usedIndexes[ (int)(*it)->getPlayerIndex() ] = true;
+        for (auto& player : players )
+        {
+			usedIndexes[player->getPlayerIndex()] = true;
 		}
 		for(unsigned int i = 0; i < MINECRAFT_NET_MAX_PLAYERS; ++i)
 		{
@@ -175,7 +177,7 @@ void PlayerList::placeNewPlayer(Connection *connection, shared_ptr<ServerPlayer>
 		}
 	}
 	else if(!player->customTextureUrl.empty() && app.IsFileInMemoryTextures(player->customTextureUrl))
-	{			
+	{
 		// Update the ref count on the memory texture data
 		app.AddMemoryTextureFile(player->customTextureUrl,NULL,0);
 	}
@@ -191,7 +193,7 @@ void PlayerList::placeNewPlayer(Connection *connection, shared_ptr<ServerPlayer>
 		}
 	}
 	else if(!player->customTextureUrl2.empty() && app.IsFileInMemoryTextures(player->customTextureUrl2))
-	{			
+	{
 		// Update the ref count on the memory texture data
 		app.AddMemoryTextureFile(player->customTextureUrl2,NULL,0);
 	}
@@ -250,10 +252,9 @@ void PlayerList::placeNewPlayer(Connection *connection, shared_ptr<ServerPlayer>
 	server->getConnection()->addPlayerConnection(playerConnection);
 	playerConnection->send( shared_ptr<SetTimePacket>( new SetTimePacket(level->getGameTime(), level->getDayTime(), level->getGameRules()->getBoolean(GameRules::RULE_DAYLIGHT)) ) );
 
-	AUTO_VAR(activeEffects, player->getActiveEffects());
-	for(AUTO_VAR(it, activeEffects->begin()); it != activeEffects->end(); ++it)
+    auto activeEffects = player->getActiveEffects();
+    for(MobEffectInstance *effect : *player->getActiveEffects())
 	{
-		MobEffectInstance *effect = *it;
 		playerConnection->send(shared_ptr<UpdateMobEffectPacket>( new UpdateMobEffectPacket(player->entityId, effect) ) );
 	}
 
@@ -275,13 +276,12 @@ void PlayerList::placeNewPlayer(Connection *connection, shared_ptr<ServerPlayer>
 	// If we are joining at the same time as someone in the end on this system is travelling through the win portal,
 	// then we should set our wonGame flag to true so that respawning works when the EndPoem is closed
 	INetworkPlayer *thisPlayer = player->connection->getNetworkPlayer();
-	if( thisPlayer != NULL )
+	if( thisPlayer )
 	{
-		for(AUTO_VAR(it, players.begin()); it != players.end(); ++it)
+		for(auto& servPlayer : players)
 		{
-			shared_ptr<ServerPlayer> servPlayer = *it;
-			INetworkPlayer *checkPlayer = servPlayer->connection->getNetworkPlayer();
-			if(thisPlayer != checkPlayer && checkPlayer != NULL && thisPlayer->IsSameSystem( checkPlayer ) && servPlayer->wonGame )
+			INetworkPlayer* checkPlayer = servPlayer->connection->getNetworkPlayer();
+			if(thisPlayer != checkPlayer && checkPlayer && thisPlayer->IsSameSystem( checkPlayer ) && servPlayer->wonGame )
 			{
 				player->wonGame = true;
 				break;
@@ -460,7 +460,7 @@ void PlayerList::add(shared_ptr<ServerPlayer> player)
 			shared_ptr<ServerPlayer> thisPlayer = players[i];
 			if(thisPlayer->isSleeping())
 			{
-				if(firstSleepingPlayer == NULL) firstSleepingPlayer = thisPlayer;				
+				if(firstSleepingPlayer == NULL) firstSleepingPlayer = thisPlayer;
 				thisPlayer->connection->send(shared_ptr<ChatPacket>( new ChatPacket(thisPlayer->name, ChatPacket::e_ChatBedMeSleep)));
 			}
 		}
@@ -487,12 +487,12 @@ if (player->riding != NULL)
 	level->getTracker()->removeEntity(player);
 	level->removeEntity(player);
 	level->getChunkMap()->remove(player);
-	AUTO_VAR(it, find(players.begin(),players.end(),player));
-	if( it != players.end() )
+    auto it = find(players.begin(), players.end(), player);
+    if( it != players.end() )
 	{
 		players.erase(it);
 	}
-	//broadcastAll(shared_ptr<PlayerInfoPacket>( new PlayerInfoPacket(player->name, false, 9999) ) );	
+	//broadcastAll(shared_ptr<PlayerInfoPacket>( new PlayerInfoPacket(player->name, false, 9999) ) );
 
 	removePlayerFromReceiving(player);
 	player->connection = nullptr;		// Must remove reference to connection, or else there is a circular dependency
@@ -548,7 +548,7 @@ shared_ptr<ServerPlayer> PlayerList::getPlayerForLogin(PendingConnection *pendin
 
 shared_ptr<ServerPlayer> PlayerList::respawn(shared_ptr<ServerPlayer> serverPlayer, int targetDimension, bool keepAllPlayerData)
 {
-	// How we handle the entity tracker depends on whether we are the primary player currently, and whether there will be any player in the same system in the same dimension once we finish respawning. 
+	// How we handle the entity tracker depends on whether we are the primary player currently, and whether there will be any player in the same system in the same dimension once we finish respawning.
 	bool isPrimary = canReceiveAllPackets(serverPlayer);	// Is this the primary player in its current dimension?
 	int oldDimension = serverPlayer->dimension;
 	bool isEmptying = ( targetDimension != oldDimension);		// We're not emptying this dimension on this machine if this player is going back into the same dimension
@@ -599,8 +599,8 @@ shared_ptr<ServerPlayer> PlayerList::respawn(shared_ptr<ServerPlayer> serverPlay
 	}
 
 	serverPlayer->getLevel()->getChunkMap()->remove(serverPlayer);
-	AUTO_VAR(it, find(players.begin(),players.end(),serverPlayer));
-	if( it != players.end() )
+    auto it = find(players.begin(), players.end(), serverPlayer);
+    if( it != players.end() )
 	{
 		players.erase(it);
 	}
@@ -689,20 +689,18 @@ shared_ptr<ServerPlayer> PlayerList::respawn(shared_ptr<ServerPlayer> serverPlay
 		player->setPos(player->x, player->y + 1, player->z);
 	}
 
-	player->connection->send( shared_ptr<RespawnPacket>( new RespawnPacket((char) player->dimension, player->level->getSeed(), player->level->getMaxBuildHeight(),
+	player->connection->send( std::make_shared<RespawnPacket>( (char) player->dimension, player->level->getSeed(), player->level->getMaxBuildHeight(),
 		player->gameMode->getGameModeForPlayer(), level->difficulty, level->getLevelData()->getGenerator(),
-		player->level->useNewSeaLevel(), player->entityId, level->getLevelData()->getXZSize(), level->getLevelData()->getHellScale()) ) );
+		player->level->useNewSeaLevel(), player->entityId, level->getLevelData()->getXZSize(), level->getLevelData()->getHellScale() ) );
 	player->connection->teleport(player->x, player->y, player->z, player->yRot, player->xRot);
-	player->connection->send( shared_ptr<SetExperiencePacket>( new SetExperiencePacket(player->experienceProgress, player->totalExperience, player->experienceLevel)) );
+	player->connection->send( std::make_shared<SetExperiencePacket>( player->experienceProgress, player->totalExperience, player->experienceLevel) );
 
 	if(keepAllPlayerData)
 	{
 		vector<MobEffectInstance *> *activeEffects = player->getActiveEffects();
-		for(AUTO_VAR(it, activeEffects->begin()); it != activeEffects->end(); ++it)
+		for(MobEffectInstance *effect : *activeEffects)
 		{
-			MobEffectInstance *effect = *it;
-
-			player->connection->send(shared_ptr<UpdateMobEffectPacket>( new UpdateMobEffectPacket(player->entityId, effect) ) );
+			player->connection->send(std::make_shared<UpdateMobEffectPacket>( player->entityId, effect ) );
 		}
 		delete activeEffects;
 		player->getEntityData()->markDirty(Mob::DATA_EFFECT_COLOR_ID);
@@ -719,7 +717,7 @@ shared_ptr<ServerPlayer> PlayerList::respawn(shared_ptr<ServerPlayer> serverPlay
 
 	// 4J-JEV - Dying before this point in the tutorial is pretty annoying,
 	// making sure to remove health/hunger and give you back your meat.
-	if( Minecraft::GetInstance()->isTutorial() 
+	if( Minecraft::GetInstance()->isTutorial()
 		&& (!Minecraft::GetInstance()->gameMode->getTutorial()->isStateCompleted(e_Tutorial_State_Food_Bar)) )
 	{
 		app.getGameRuleDefinitions()->postProcessPlayer(player);
@@ -737,7 +735,7 @@ shared_ptr<ServerPlayer> PlayerList::respawn(shared_ptr<ServerPlayer> serverPlay
 void PlayerList::toggleDimension(shared_ptr<ServerPlayer> player, int targetDimension)
 {
 	int lastDimension = player->dimension;
-	// How we handle the entity tracker depends on whether we are the primary player currently, and whether there will be any player in the same system in the same dimension once we finish respawning. 
+	// How we handle the entity tracker depends on whether we are the primary player currently, and whether there will be any player in the same system in the same dimension once we finish respawning.
 	bool isPrimary = canReceiveAllPackets(player);	// Is this the primary player in its current dimension?
 	bool isEmptying = true;
 
@@ -832,11 +830,9 @@ void PlayerList::toggleDimension(shared_ptr<ServerPlayer> player, int targetDime
 
 	// 4J Stu - Fix for #64683 - Customer Encountered: TU7: Content: Gameplay: Potion effects are removed after using the Nether Portal
 	vector<MobEffectInstance *> *activeEffects = player->getActiveEffects();
-	for(AUTO_VAR(it, activeEffects->begin()); it != activeEffects->end(); ++it)
+	for(MobEffectInstance *effect : *activeEffects)
 	{
-		MobEffectInstance *effect = *it;
-
-		player->connection->send(shared_ptr<UpdateMobEffectPacket>( new UpdateMobEffectPacket(player->entityId, effect) ) );
+		player->connection->send(std::make_shared<UpdateMobEffectPacket>( player->entityId, effect ) );
 	}
 	delete activeEffects;
 	player->getEntityData()->markDirty(Mob::DATA_EFFECT_COLOR_ID);
@@ -933,10 +929,10 @@ void PlayerList::tick()
 		sendAllPlayerInfoIn = 0;
 	}
 
-	if (sendAllPlayerInfoIn < players.size()) 
+	if (sendAllPlayerInfoIn < players.size())
 	{
 		shared_ptr<ServerPlayer> op = players[sendAllPlayerInfoIn];
-		//broadcastAll(shared_ptr<PlayerInfoPacket>( new PlayerInfoPacket(op->name, true, op->latency) ) );		
+		//broadcastAll(shared_ptr<PlayerInfoPacket>( new PlayerInfoPacket(op->name, true, op->latency) ) );
 		if( op->connection->getNetworkPlayer() )
 		{
 			broadcastAll(shared_ptr<PlayerInfoPacket>( new PlayerInfoPacket( op ) ) );
@@ -1091,7 +1087,7 @@ bool PlayerList::isOp(shared_ptr<ServerPlayer> player)
 
 shared_ptr<ServerPlayer> PlayerList::getPlayer(const wstring& name)
 {
-	for (unsigned int i = 0; i < players.size(); i++) 
+	for (unsigned int i = 0; i < players.size(); i++)
 	{
 		shared_ptr<ServerPlayer> p = players[i];
 		if (p->name == name)	// 4J - used to be case insensitive (using equalsIgnoreCase) - imagine we'll be shifting to XUIDs anyway
@@ -1105,7 +1101,7 @@ shared_ptr<ServerPlayer> PlayerList::getPlayer(const wstring& name)
 // 4J Added
 shared_ptr<ServerPlayer> PlayerList::getPlayer(PlayerUID uid)
 {
-	for (unsigned int i = 0; i < players.size(); i++) 
+	for (unsigned int i = 0; i < players.size(); i++)
 	{
 		shared_ptr<ServerPlayer> p = players[i];
 		if (p->getXuid() == uid || p->getOnlineXuid() == uid)	// 4J - used to be case insensitive (using equalsIgnoreCase) - imagine we'll be shifting to XUIDs anyway
@@ -1264,7 +1260,7 @@ void PlayerList::broadcast(shared_ptr<Player> except, double x, double y, double
 			}
 			else
 			{
-				for(unsigned int j = 0; j < sentTo.size(); j++ )	
+				for(unsigned int j = 0; j < sentTo.size(); j++ )
 				{
 					shared_ptr<ServerPlayer> player2 = sentTo[j];
 					INetworkPlayer *otherPlayer = player2->connection->getNetworkPlayer();
@@ -1351,7 +1347,7 @@ void PlayerList::sendLevelInfo(shared_ptr<ServerPlayer> player, ServerLevel *lev
 		player->connection->send( shared_ptr<GameEventPacket>( new GameEventPacket(GameEventPacket::STOP_RAINING, 0) ) );
 	}
 
-	// send the stronghold position if there is one 
+	// send the stronghold position if there is one
 	if((level->dimension->id==0) && level->getLevelData()->getHasStronghold())
 	{
 		player->connection->send( shared_ptr<XZPacket>( new XZPacket(XZPacket::STRONGHOLD,level->getLevelData()->getXStronghold(),level->getLevelData()->getZStronghold()) ) );
@@ -1374,9 +1370,9 @@ int PlayerList::getPlayerCount(ServerLevel *level)
 {
 	int count = 0;
 
-	for(AUTO_VAR(it, players.begin()); it != players.end(); ++it)
+	for(auto& player : players)
 	{
-		if( (*it)->level == level ) ++count;
+		if( player->level == level ) ++count;
 	}
 
 	return count;
@@ -1431,18 +1427,16 @@ shared_ptr<ServerPlayer> PlayerList::findAlivePlayerOnSystem(shared_ptr<ServerPl
 	else if( dimIndex == 1) dimIndex = 2;
 
 	INetworkPlayer *thisPlayer = player->connection->getNetworkPlayer();
-	if( thisPlayer != NULL )
+	if( thisPlayer )
 	{
-		for(AUTO_VAR(itP, players.begin()); itP != players.end(); ++itP)
+		for(auto& newPlayer : players)
 		{
-			shared_ptr<ServerPlayer> newPlayer = *itP;
-
 			INetworkPlayer *otherPlayer = newPlayer->connection->getNetworkPlayer();
 
 			if( !newPlayer->removed &&
 				newPlayer != player &&
 				newPlayer->dimension == playerDim &&
-				otherPlayer != NULL &&
+				otherPlayer &&
 				otherPlayer->IsSameSystem( thisPlayer )
 				)
 			{
@@ -1466,8 +1460,8 @@ void PlayerList::removePlayerFromReceiving(shared_ptr<ServerPlayer> player, bool
 #endif
 	bool playerRemoved = false;
 
-	AUTO_VAR(it, find( receiveAllPlayers[dimIndex].begin(), receiveAllPlayers[dimIndex].end(), player));
-	if( it != receiveAllPlayers[dimIndex].end() )
+    auto it = find(receiveAllPlayers[dimIndex].begin(), receiveAllPlayers[dimIndex].end(), player);
+    if( it != receiveAllPlayers[dimIndex].end() )
 	{
 #ifndef _CONTENT_PACKAGE
 		app.DebugPrintf("Remove: Removing player %ls as primary in dimension %d\n", player->name.c_str(), dimIndex);
@@ -1477,17 +1471,15 @@ void PlayerList::removePlayerFromReceiving(shared_ptr<ServerPlayer> player, bool
 	}
 
 	INetworkPlayer *thisPlayer = player->connection->getNetworkPlayer();
-	if( thisPlayer != NULL && playerRemoved )
+	if( thisPlayer && playerRemoved )
 	{
-		for(AUTO_VAR(itP, players.begin()); itP != players.end(); ++itP)
+		for(auto& newPlayer : players)
 		{
-			shared_ptr<ServerPlayer> newPlayer = *itP;
-
 			INetworkPlayer *otherPlayer = newPlayer->connection->getNetworkPlayer();
 
 			if( newPlayer != player &&
 				newPlayer->dimension == playerDim &&
-				otherPlayer != NULL &&
+				otherPlayer &&
 				otherPlayer->IsSameSystem( thisPlayer )
 				)
 			{
@@ -1506,20 +1498,18 @@ void PlayerList::removePlayerFromReceiving(shared_ptr<ServerPlayer> player, bool
 #endif
 		// 4J Stu - Something went wrong, or possibly the QNet player left before we got here.
 		// Re-check all active players and make sure they have someone on their system to receive all packets
-		for(AUTO_VAR(itP, players.begin()); itP != players.end(); ++itP)
+		for(auto& newPlayer : players)
 		{
-			shared_ptr<ServerPlayer> newPlayer = *itP;
 			INetworkPlayer *checkingPlayer = newPlayer->connection->getNetworkPlayer();
 
-			if( checkingPlayer != NULL )
+			if( checkingPlayer )
 			{
 				int newPlayerDim = 0;
 				if( newPlayer->dimension == -1 ) newPlayerDim = 1;
 				else if( newPlayer->dimension == 1) newPlayerDim = 2;
 				bool foundPrimary = false;
-				for(AUTO_VAR(it, receiveAllPlayers[newPlayerDim].begin()); it != receiveAllPlayers[newPlayerDim].end(); ++it)
+				for(auto& primaryPlayer : receiveAllPlayers[newPlayerDim])
 				{
-					shared_ptr<ServerPlayer> primaryPlayer = *it;
 					INetworkPlayer *primPlayer = primaryPlayer->connection->getNetworkPlayer();
 					if(primPlayer != NULL && checkingPlayer->IsSameSystem( primPlayer ) )
 					{
@@ -1562,11 +1552,10 @@ void PlayerList::addPlayerToReceiving(shared_ptr<ServerPlayer> player)
 	}
 	else
 	{
-		for(AUTO_VAR(it, receiveAllPlayers[playerDim].begin()); it != receiveAllPlayers[playerDim].end(); ++it)
+		for(auto& oldPlayer : receiveAllPlayers[playerDim])
 		{
-			shared_ptr<ServerPlayer> oldPlayer = *it;
 			INetworkPlayer *checkingPlayer = oldPlayer->connection->getNetworkPlayer();
-			if(checkingPlayer != NULL && checkingPlayer->IsSameSystem( thisPlayer ) ) 
+			if(checkingPlayer != NULL && checkingPlayer->IsSameSystem( thisPlayer ) )
 			{
 				shouldAddPlayer = false;
 				break;
@@ -1588,9 +1577,8 @@ bool PlayerList::canReceiveAllPackets(shared_ptr<ServerPlayer> player)
 	int playerDim = 0;
 	if( player->dimension == -1 ) playerDim = 1;
 	else if( player->dimension == 1) playerDim = 2;
-	for(AUTO_VAR(it, receiveAllPlayers[playerDim].begin()); it != receiveAllPlayers[playerDim].end(); ++it)
+	for(const auto& newPlayer : receiveAllPlayers[playerDim])
 	{
-		shared_ptr<ServerPlayer> newPlayer = *it;
 		if(newPlayer == player)
 		{
 			return true;
@@ -1619,9 +1607,9 @@ bool PlayerList::isXuidBanned(PlayerUID xuid)
 
 	bool banned = false;
 
-	for( AUTO_VAR(it, m_bannedXuids.begin()); it != m_bannedXuids.end(); ++it )
+	for(PlayerUID it : m_bannedXuids)
 	{
-		if( ProfileManager.AreXUIDSEqual( xuid, *it ) )
+		if( ProfileManager.AreXUIDSEqual( xuid, it ) )
 		{
 			banned = true;
 			break;
