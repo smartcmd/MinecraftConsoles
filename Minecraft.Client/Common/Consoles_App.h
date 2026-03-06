@@ -76,6 +76,7 @@ public:
 
 	// storing skin files
 	std::vector <wstring > vSkinNames;
+    std::vector<wstring> m_customSkinNames;
 	DLCManager m_dlcManager;
 
 	// storing credits text from the DLC
@@ -356,6 +357,7 @@ public:
 	void RemoveMemoryTextureFile(const wstring &wName);
 	void GetMemFileDetails(const wstring &wName,PBYTE *ppbData,DWORD *pdwBytes);
 	bool IsFileInMemoryTextures(const wstring &wName);
+    void ScanAndLoadCustomSkins();
 
 	// Texture Pack Data files (icon, banner, comparison shot & text)
 	void AddMemoryTPDFile(int iConfig,PBYTE pbData,DWORD dwBytes);

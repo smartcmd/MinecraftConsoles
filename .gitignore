@@ -431,6 +431,9 @@ build/*
 !x64/**/mss64.dll
 !x64/**/redist64/
 
+# Custom data
+!x64/**/CustomSkins/*
+
 # Local saves
 Minecraft.Client/Saves/
 

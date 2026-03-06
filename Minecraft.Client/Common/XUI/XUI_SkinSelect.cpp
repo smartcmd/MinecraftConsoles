@@ -4,8 +4,8 @@
 
 #define SKIN_SELECT_PACK_DEFAULT 0
 #define SKIN_SELECT_PACK_FAVORITES 1
-//#define SKIN_SELECT_PACK_PLAYER_CUSTOM 1
-#define SKIN_SELECT_MAX_DEFAULTS 2
+#define SKIN_SELECT_PACK_PLAYER_CUSTOM 2
+#define SKIN_SELECT_MAX_DEFAULTS 3
 
 WCHAR *CScene_SkinSelect::wchDefaultNamesA[]=
 {
@@ -287,14 +287,29 @@ HRESULT CScene_SkinSelect::OnKeyDown(XUIMessageInput* pInputData, BOOL& rfHandle
 					}
 					else
 					{
-						app.SetPlayerSkin(pInputData->UserIndex, skinFile->getPath());
-						app.SetPlayerCape(pInputData->UserIndex, skinFile->getParameterAsString(DLCManager::e_DLCParamType_Cape));
-						m_selectedGroup.SetShow( TRUE );
-						m_currentSkinPath = app.GetPlayerSkinName(m_iPad);
-						m_originalSkinId = app.GetPlayerSkinId(m_iPad);
+                        if (m_packIndex == SKIN_SELECT_PACK_PLAYER_CUSTOM)
+                        {
+                            if (app.m_customSkinNames.size() > 0)
+                            {
+                                wstring selectedSkin = app.m_customSkinNames[m_skinIndex];
+                                app.SetPlayerSkin(pInputData->UserIndex, selectedSkin);
+                                app.SetPlayerCape(pInputData->UserIndex, L"");
+                                m_selectedGroup.SetShow(TRUE);
+                                m_currentSkinPath = selectedSkin;
+                                m_originalSkinId = 0;
+                            }
+                        }
+                        else
+                        {
+                            app.SetPlayerSkin(pInputData->UserIndex, skinFile->getPath());
+                            app.SetPlayerCape(pInputData->UserIndex, skinFile->getParameterAsString(DLCManager::e_DLCParamType_Cape));
+                            m_selectedGroup.SetShow(TRUE);
+                            m_currentSkinPath = app.GetPlayerSkinName(m_iPad);
+                            m_originalSkinId = app.GetPlayerSkinId(m_iPad);
 
-						// push this onto the favorite list
-						AddFavoriteSkin(m_iPad,GET_DLC_SKIN_ID_FROM_BITMASK(m_originalSkinId));
+                            // push this onto the favorite list
+                            AddFavoriteSkin(m_iPad, GET_DLC_SKIN_ID_FROM_BITMASK(m_originalSkinId));
+                        }
 					}
 				}
 				else
@@ -743,6 +758,31 @@ void CScene_SkinSelect::handleSkinIndexChanged()
 				bNoSkinsToShow=true;
 			}
 			break;
+        case SKIN_SELECT_PACK_PLAYER_CUSTOM:
+            if (app.m_customSkinNames.size() > 0)
+            {
+                m_selectedSkinPath = app.m_customSkinNames[m_skinIndex];
+                skinName = m_selectedSkinPath;
+                skinOrigin = L"Custom Skins";
+
+                if (m_selectedSkinPath.compare(m_currentSkinPath) == 0)
+                {
+                    m_selectedGroup.SetShow(TRUE);
+                }
+                else
+                {
+                    m_selectedGroup.SetShow(FALSE);
+                }
+                m_imagePadlock.SetShow(FALSE);
+                m_previewControl->SetShow(TRUE);
+                m_skinDetails.SetShow(TRUE);
+            }
+            else
+            {
+                m_previewControl->SetShow(FALSE);
+                bNoSkinsToShow = true;
+            }
+            break;
 
 		}
 	}
@@ -1041,6 +1081,9 @@ void CScene_SkinSelect::handlePackIndexChanged()
 				}
 			}
 			break;
+        case SKIN_SELECT_PACK_PLAYER_CUSTOM:
+            // No extra logic needed for custom pack index change for now
+            break;
 		default:
 			break;
 		}
@@ -1071,6 +1114,9 @@ void CScene_SkinSelect::updatePackDisplay()
 		case SKIN_SELECT_PACK_FAVORITES:				
 			m_packCenter.SetText(app.GetString(IDS_FAVORITES_SKIN_PACK));
 			break;
+        case SKIN_SELECT_PACK_PLAYER_CUSTOM:
+            m_packCenter.SetText(L"Custom Skins");
+            break;
 		}
 	}
 
@@ -1090,6 +1136,9 @@ void CScene_SkinSelect::updatePackDisplay()
 		case SKIN_SELECT_PACK_FAVORITES:				
 			m_packRight.SetText(app.GetString(IDS_FAVORITES_SKIN_PACK));
 			break;
+        case SKIN_SELECT_PACK_PLAYER_CUSTOM:
+            m_packRight.SetText(L"Custom Skins");
+            break;
 		}
 	}
 
@@ -1109,6 +1158,9 @@ void CScene_SkinSelect::updatePackDisplay()
 		case SKIN_SELECT_PACK_FAVORITES:				
 			m_packLeft.SetText(app.GetString(IDS_FAVORITES_SKIN_PACK));
 			break;
+        case SKIN_SELECT_PACK_PLAYER_CUSTOM:
+            m_packLeft.SetText(L"Custom Skins");
+            break;
 		}
 	}
 	
@@ -1192,6 +1244,13 @@ int CScene_SkinSelect::getNextSkinIndex(DWORD sourceIndex)
 		}
 	
 		break;
+    case SKIN_SELECT_PACK_PLAYER_CUSTOM:
+        ++nextSkin;
+        if (nextSkin >= (int)app.m_customSkinNames.size())
+        {
+            nextSkin = 0;
+        }
+        break;
 	default:
 		++nextSkin;
 
@@ -1226,6 +1285,16 @@ int CScene_SkinSelect::getPreviousSkinIndex(DWORD sourceIndex)
 			--previousSkin;
 		}		
 		break;
+    case SKIN_SELECT_PACK_PLAYER_CUSTOM:
+        if (previousSkin == 0)
+        {
+            previousSkin = (int)app.m_customSkinNames.size() - 1;
+        }
+        else
+        {
+            --previousSkin;
+        }
+        break;
 	default:
 		if(previousSkin==0)
 		{
