@@ -4,6 +4,9 @@
 #include "..\..\MultiplayerLocalPlayer.h"
 #include "..\..\..\Minecraft.World\net.minecraft.world.inventory.h"
 #include "UIScene_CraftingMenu.h"
+#ifdef _WINDOWS64
+#include "..\..\Windows64\Iggy\gdraw\gdraw_d3d11.h"
+#endif
 
 #ifdef __PSVITA__
 #define GAME_CRAFTING_TOUCHUPDATE_TIMER_ID 0
@@ -12,6 +15,11 @@
 
 UIScene_CraftingMenu::UIScene_CraftingMenu(int iPad, void *_initData, UILayer *parentLayer) : UIScene(iPad, parentLayer)
 {
+#ifdef _WINDOWS64
+	m_hSlotBoundsValid = false;
+	m_hSlotX0 = m_hSlotY0 = m_hSlotY1 = 0;
+	m_hSlotSpacing = 0;
+#endif
 	m_bIgnoreKeyPresses = false;
 
 	CraftingPanelScreenInput* initData = (CraftingPanelScreenInput*)_initData;
@@ -254,12 +262,14 @@ wstring UIScene_CraftingMenu::getMoviePath()
 	}
 }
 
-#ifdef __PSVITA__
+#if defined(__PSVITA__) || defined(_WINDOWS64)
 UIControl* UIScene_CraftingMenu::GetMainPanel()
 {
 	return &m_controlMainPanel;
 }
+#endif
 
+#ifdef __PSVITA__
 void UIScene_CraftingMenu::handleTouchInput(unsigned int iPad, S32 x, S32 y, int iId, bool bPressed, bool bRepeat, bool bReleased)
 {
 	// perform action on release
@@ -383,6 +393,85 @@ void UIScene_CraftingMenu::handleTimerComplete(int id)
 }
 #endif
 
+#ifdef _WINDOWS64
+bool UIScene_CraftingMenu::handleMouseClick(F32 x, F32 y)
+{
+	if (!m_hSlotBoundsValid || m_hSlotSpacing <= 0)
+		return false;
+
+	// Tab click — tabs sit directly above the H slot row. We derive their
+	// bounds from the H slot positions cached in customDraw, since the Vita
+	// TouchPanel controls are full-screen overlays with unusable bounds.
+	int maxTabs = (m_iContainerType == RECIPE_TYPE_3x3) ? m_iMaxGroup3x3 : m_iMaxGroup2x2;
+	F32 slotHeight = m_hSlotY1 - m_hSlotY0;
+	F32 tabRowY0 = (m_hSlotY0 * 0.75f) - slotHeight * 1.55f;
+	F32 tabRowY1 = tabRowY0 + (slotHeight * 1.7f);
+	F32 tabRowWidth = m_hSlotSpacing * m_iCraftablesMaxHSlotC;
+	F32 tabWidth = tabRowWidth / maxTabs;
+
+	if (tabWidth > 0 && x >= m_hSlotX0 && x < m_hSlotX0 + tabRowWidth &&
+		y >= tabRowY0 && y < tabRowY1)
+	{
+		int iTab = (int)((x - m_hSlotX0) / tabWidth);
+		if (iTab >= 0 && iTab < maxTabs && iTab != m_iGroupIndex)
+		{
+			showTabHighlight(m_iGroupIndex, false);
+			m_iGroupIndex = iTab;
+			showTabHighlight(m_iGroupIndex, true);
+			m_iCurrentSlotHIndex = 0;
+			m_iCurrentSlotVIndex = 1;
+			CheckRecipesAvailable();
+			iVSlotIndexA[0] = CanBeMadeA[m_iCurrentSlotHIndex].iCount - 1;
+			iVSlotIndexA[1] = 0;
+			iVSlotIndexA[2] = 1;
+			ui.PlayUISFX(eSFX_Focus);
+			UpdateVerticalSlots();
+			UpdateHighlight();
+			setGroupText(GetGroupNameText(m_pGroupA[m_iGroupIndex]));
+		}
+		return true;
+	}
+
+	// H slot click — select or craft
+	F32 rowWidth = m_hSlotSpacing * m_iCraftablesMaxHSlotC;
+	if (x >= m_hSlotX0 && x < m_hSlotX0 + rowWidth &&
+		y >= m_hSlotY0 && y < m_hSlotY1)
+	{
+		int iNewSlot = (int)((x - m_hSlotX0) / m_hSlotSpacing);
+		if (iNewSlot >= 0 && iNewSlot < m_iCraftablesMaxHSlotC)
+		{
+			// Only interact with populated slots
+			if (CanBeMadeA[iNewSlot].iCount == 0)
+				return true;
+
+			if (iNewSlot == m_iCurrentSlotHIndex)
+			{
+				// Click on already-selected slot — craft the item
+				handleKeyDown(m_iPad, ACTION_MENU_A, false);
+			}
+			else
+			{
+				int iOldHSlot = m_iCurrentSlotHIndex;
+				m_iCurrentSlotHIndex = iNewSlot;
+				m_iCurrentSlotVIndex = 1;
+				iVSlotIndexA[0] = CanBeMadeA[m_iCurrentSlotHIndex].iCount - 1;
+				iVSlotIndexA[1] = 0;
+				iVSlotIndexA[2] = 1;
+				UpdateVerticalSlots();
+				UpdateHighlight();
+				if (CanBeMadeA[iOldHSlot].iCount > 0)
+					setShowCraftHSlot(iOldHSlot, true);
+				ui.PlayUISFX(eSFX_Focus);
+			}
+			return true;
+		}
+	}
+	// Consume all mouse clicks so misses don't generate ACTION_MENU_A
+	// and accidentally craft. Only blocks mouse-originated presses.
+	return true;
+}
+#endif
+
 void UIScene_CraftingMenu::handleReload()
 {
 	m_slotListInventory.addSlots(CRAFTING_INVENTORY_SLOT_START,CRAFTING_INVENTORY_SLOT_END - CRAFTING_INVENTORY_SLOT_START);
@@ -478,6 +567,32 @@ void UIScene_CraftingMenu::customDraw(IggyCustomDrawCallbackRegion *region)
 	{
 		decorations = false;
 		int iIndex = slotId - CRAFTING_H_SLOT_START;
+#ifdef _WINDOWS64
+		// Cache H slot SWF-space positions from the custom draw transform matrix
+		if (iIndex == 0 || iIndex == 1)
+		{
+			F32 mat[16];
+			gdraw_D3D11_CalculateCustomDraw_4J(region, mat);
+			// Matrix to SWF coords (same formula as setupCustomDrawMatrices)
+			F32 sw = (F32)getRenderWidth();
+			F32 sh = (F32)getRenderHeight();
+			F32 swfX = sw * (1.0f + mat[3]) / 2.0f;
+			F32 swfY = sh * (1.0f - mat[7]) / 2.0f;
+			if (iIndex == 0)
+			{
+				m_hSlotX0 = swfX;
+				m_hSlotY0 = swfY;
+				// Slot visual height from matrix scale and region height
+				F32 slotH = sh * (-mat[5]) / 2.0f * region->y1;
+				m_hSlotY1 = swfY + slotH;
+			}
+			else
+			{
+				m_hSlotSpacing = swfX - m_hSlotX0;
+				m_hSlotBoundsValid = (m_hSlotSpacing > 0);
+			}
+		}
+#endif
 		if(m_hSlotsInfo[iIndex].show)
 		{
 			item = m_hSlotsInfo[iIndex].item;

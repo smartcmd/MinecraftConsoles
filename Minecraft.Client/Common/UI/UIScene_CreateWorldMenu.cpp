@@ -84,10 +84,6 @@ UIScene_CreateWorldMenu::UIScene_CreateWorldMenu(int iPad, void *initData, UILay
 	m_iGameModeId = GameType::SURVIVAL->getId();
 	m_pDLCPack = NULL;
 	m_bRebuildTouchBoxes = false;
-#ifdef _WINDOWS64
-	m_bDirectEditing = false;
-	m_iDirectEditCooldown = 0;
-#endif
 
 	m_bMultiplayerAllowed = ProfileManager.IsSignedInLive( m_iPad ) && ProfileManager.AllowedToPlayMultiplayer(m_iPad);
 	// 4J-PB - read the settings for the online flag. We'll only save this setting if the user changed it.
@@ -293,53 +289,6 @@ void UIScene_CreateWorldMenu::tick()
 {
 	UIScene::tick();
 
-#ifdef _WINDOWS64
-	if (m_iDirectEditCooldown > 0)
-		m_iDirectEditCooldown--;
-
-	if (m_bDirectEditing)
-	{
-		wchar_t ch;
-		bool changed = false;
-		while (g_KBMInput.ConsumeChar(ch))
-		{
-			if (ch == 0x08) // backspace
-			{
-				if (!m_worldName.empty())
-				{
-					m_worldName.pop_back();
-					changed = true;
-				}
-			}
-			else if (ch == 0x0D) // enter - confirm
-			{
-				m_bDirectEditing = false;
-				m_iDirectEditCooldown = 4; // absorb the matching ACTION_MENU_OK that follows
-				m_editWorldName.setLabel(m_worldName.c_str());
-			}
-			else if ((int)m_worldName.length() < 25)
-			{
-				m_worldName += ch;
-				changed = true;
-			}
-		}
-
-		// Escape cancels and restores the original name
-		if (m_bDirectEditing && g_KBMInput.IsKeyPressed(VK_ESCAPE))
-		{
-			m_worldName = m_worldNameBeforeEdit;
-			m_bDirectEditing = false;
-			m_iDirectEditCooldown = 4;
-			m_editWorldName.setLabel(m_worldName.c_str());
-			m_buttonCreateWorld.setEnable(!m_worldName.empty());
-		}
-		else if (changed)
-		{
-			m_editWorldName.setLabel(m_worldName.c_str());
-			m_buttonCreateWorld.setEnable(!m_worldName.empty());
-		}
-	}
-#endif
 
 	if(m_iSetTexturePackDescription >= 0 )
 	{
@@ -403,11 +352,24 @@ int UIScene_CreateWorldMenu::ContinueOffline(void *pParam,int iPad,C4JStorage::E
 
 #endif
 
+#ifdef _WINDOWS64
+void UIScene_CreateWorldMenu::getDirectEditInputs(vector<UIControl_TextInput*> &inputs)
+{
+	inputs.push_back(&m_editWorldName);
+}
+
+void UIScene_CreateWorldMenu::onDirectEditFinished(UIControl_TextInput *input, UIControl_TextInput::EDirectEditResult result)
+{
+	m_worldName = input->getEditBuffer();
+	m_buttonCreateWorld.setEnable(!m_worldName.empty());
+}
+#endif
+
 void UIScene_CreateWorldMenu::handleInput(int iPad, int key, bool repeat, bool pressed, bool released, bool &handled)
 {
 	if(m_bIgnoreInput) return;
 #ifdef _WINDOWS64
-	if (m_bDirectEditing || m_iDirectEditCooldown > 0) { handled = true; return; }
+	if (isDirectEditBlocking()) { handled = true; return; }
 #endif
 
 	ui.AnimateKeyPress(m_iPad, key, repeat, pressed, released);
@@ -464,7 +426,7 @@ void UIScene_CreateWorldMenu::handlePress(F64 controlId, F64 childId)
 {
 	if(m_bIgnoreInput) return;
 #ifdef _WINDOWS64
-	if (m_bDirectEditing || m_iDirectEditCooldown > 0) return;
+	if (isDirectEditBlocking()) return;
 #endif
 
 	//CD - Added for audio
@@ -476,7 +438,7 @@ void UIScene_CreateWorldMenu::handlePress(F64 controlId, F64 childId)
 		{
 			m_bIgnoreInput=true;
 #ifdef _WINDOWS64
-			if (Win64_IsControllerConnected())
+			if (!g_KBMInput.IsKBMActive())
 			{
 				UIKeyboardInitData kbData;
 				kbData.title       = app.GetString(IDS_CREATE_NEW_WORLD);
@@ -488,11 +450,8 @@ void UIScene_CreateWorldMenu::handlePress(F64 controlId, F64 childId)
 			}
 			else
 			{
-				// PC without controller: edit the name field directly in-place.
-				m_bIgnoreInput = false; // Don't block input - m_bDirectEditing is the guard
-				m_worldNameBeforeEdit = m_worldName;
-				m_bDirectEditing = true;
-				g_KBMInput.ClearCharBuffer();
+				m_bIgnoreInput = false;
+				m_editWorldName.beginDirectEdit(25);
 			}
 #else
 			InputManager.RequestKeyboard(app.GetString(IDS_CREATE_NEW_WORLD),m_editWorldName.getLabel(),(DWORD)0,25,&UIScene_CreateWorldMenu::KeyboardCompleteWorldNameCallback,this,C_4JInput::EKeyboardMode_Default);
