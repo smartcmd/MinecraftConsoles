@@ -190,7 +190,6 @@ void StemTile::spawnResources(Level *level, int x, int y, int z, int data, float
     if (seed != NULL)
     {
         popResource(level, x, y, z, shared_ptr<ItemInstance>(new ItemInstance(seed)));
-		//test
     }
 }
 
