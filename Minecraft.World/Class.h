@@ -338,7 +338,7 @@ inline bool eTYPE_FLAGSET(eINSTANCEOF flag, eINSTANCEOF claz)
 
 /// FOR CHECKING ///
 
-#if !(defined _WINDOWS64)
+#if !(defined _WIN32)
 
 class SubClass
 {
