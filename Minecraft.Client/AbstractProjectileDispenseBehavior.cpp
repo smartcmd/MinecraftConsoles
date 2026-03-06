@@ -19,7 +19,7 @@ shared_ptr<ItemInstance> AbstractProjectileDispenseBehavior::execute(BlockSource
 
 	return dispensed;
 }
-
+// herobrine
 void AbstractProjectileDispenseBehavior::playSound(BlockSource *source)
 {
 	source->getWorld()->levelEvent(LevelEvent::SOUND_LAUNCH, source->getBlockX(), source->getBlockY(), source->getBlockZ(), 0);
