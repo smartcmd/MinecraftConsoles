@@ -18,7 +18,7 @@ const unsigned int UIScene_LanguageSelector::m_uiHTPButtonNameA[]=
 	HAS_LANGUAGE_KO_KR(IDS_LANG_KOREAN)
 	HAS_LANGUAGE_CN_TW(IDS_LANG_CHINESE_TRADITIONAL)
 	HAS_LANGUAGE_CN_CN(IDS_LANG_CHINESE_SIMPLIFIED)
-	/*HAS_LANGUAGE_DA_DK(IDS_LANG_DANISH)
+	HAS_LANGUAGE_DA_DK(IDS_LANG_DANISH)
 	HAS_LANGUAGE_FI_FI(IDS_LANG_FINISH)
 	HAS_LANGUAGE_NL_NL(IDS_LANG_DUTCH)
 	HAS_LANGUAGE_PL_PL(IDS_LANG_POLISH)
@@ -28,7 +28,7 @@ const unsigned int UIScene_LanguageSelector::m_uiHTPButtonNameA[]=
 	HAS_LANGUAGE_SK_SK(IDS_LANG_SLOVAK)
 	HAS_LANGUAGE_CZ_CZ(IDS_LANG_CZECH)
 	HAS_LANGUAGE_EL_GR(IDS_LANG_GREEK)
-	HAS_LANGUAGE_TR_TR(IDS_LANG_TURKISH)*/
+	HAS_LANGUAGE_TR_TR(IDS_LANG_TURKISH)
 };
 
 
@@ -51,10 +51,10 @@ wstring UIScene_LanguageSelector::getMoviePath()
 	else								return L"LanguagesMenu";
 }
 
-/*void UIScene_LanguageSelector::updateTooltips() //temporaly removing this
+void UIScene_LanguageSelector::updateTooltips()
 {
 	ui.SetTooltips( m_iPad, IDS_TOOLTIPS_SELECT, IDS_TOOLTIPS_BACK);
-}*/
+}
 
 void UIScene_LanguageSelector::updateComponents()
 {
@@ -123,11 +123,7 @@ void UIScene_LanguageSelector::handlePress(F64 controlId, F64 childId)
 
 		app.SetMinecraftLanguage(m_iPad, newLanguage);
 		app.SetMinecraftLocale(m_iPad, newLocale);
+
 		app.CheckGameSettingsChanged(true, m_iPad);
-		#if defined _WINDOWS64 //js in case it breaks console support
-			app.loadStringTable();
-			m_parentLayer->closeAllScenes();
-			m_parentLayer->NavigateToScene(m_iPad, eUIScene_MainMenu, NULL);
-		#endif
 	}
 }

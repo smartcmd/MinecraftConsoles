@@ -92,7 +92,7 @@ public:
 
 	virtual EUIScene getSceneType() { return eUIScene_LanguageSelector; }
 	
-	//virtual void updateTooltips();
+	virtual void updateTooltips();
 	virtual void updateComponents();
 
 	virtual void handleReload();
