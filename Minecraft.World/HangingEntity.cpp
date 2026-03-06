@@ -61,6 +61,11 @@ void HangingEntity::setDir(int dir)
 
 	float fOffs = 0.5f + 1.0f / 16.0f;
 
+	if (this->GetType() == eTYPE_PAINTING)
+	{
+		fOffs = 0.5f + 1.0f / 32.0f; //dividing by 16.0f introduce a small gap between the block and the painting. See https://github.com/smartcmd/MinecraftConsoles/issues/661
+	}
+
 	if (dir == Direction::NORTH) z -= fOffs;
 	if (dir == Direction::WEST) x -= fOffs;
 	if (dir == Direction::SOUTH) z += fOffs;
