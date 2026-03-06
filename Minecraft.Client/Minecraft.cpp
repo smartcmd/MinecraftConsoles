@@ -3530,11 +3530,14 @@ void Minecraft::tick(bool bFirst, bool bUpdateTextures)
 			}
 
 #ifdef _WINDOWS64
+			bool actionPressed = InputManager.ButtonPressed(iPad, MINECRAFT_ACTION_ACTION) || (iPad == 0 && g_KBMInput.IsKBMActive() && g_KBMInput.IsMouseButtonPressed(KeyboardMouseInput::MOUSE_LEFT));
 			bool actionHeld = InputManager.ButtonDown(iPad, MINECRAFT_ACTION_ACTION) || (iPad == 0 && g_KBMInput.IsKBMActive() && g_KBMInput.IsMouseButtonDown(KeyboardMouseInput::MOUSE_LEFT));
 #else
+			bool actionPressed = InputManager.ButtonPressed(iPad, MINECRAFT_ACTION_ACTION);
 			bool actionHeld = InputManager.ButtonDown(iPad, MINECRAFT_ACTION_ACTION);
 #endif
-			if (actionHeld && ticks - player->lastClickTick[0] >= timer->ticksPerSecond / 4)
+
+			if (actionPressed)
 			{
 				//printf("MINECRAFT_ACTION_ACTION ButtonDown");
 				player->handleMouseClick(0);
