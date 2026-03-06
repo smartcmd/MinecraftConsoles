@@ -94,6 +94,9 @@ void UIControl_TextInput::SetCharLimit(int iLimit)
 
 void UIControl_TextInput::setCaretVisible(bool visible)
 {
+	if (!m_parentScene || !m_parentScene->getMovie())
+		return;
+
 	// Check once whether this SWF's FJ_TextInput actually has a m_mcCaret child.
 	// IggyValuePathMakeNameRef always succeeds (creates a ref to undefined),
 	// so we validate by trying to read a property from the resolved path.
@@ -124,6 +127,9 @@ void UIControl_TextInput::setCaretVisible(bool visible)
 
 void UIControl_TextInput::setCaretIndex(int index)
 {
+	if (!m_parentScene || !m_parentScene->getMovie())
+		return;
+
 	IggyDataValue result;
 	IggyDataValue value[1];
 	value[0].type = IGGY_DATATYPE_number;
