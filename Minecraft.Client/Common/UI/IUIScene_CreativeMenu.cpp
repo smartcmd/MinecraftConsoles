@@ -1099,42 +1099,42 @@ void IUIScene_CreativeMenu::handleAdditionalKeyPress(int iAction)
 		break;
 	case ACTION_MENU_OTHER_STICK_DOWN:
 		{
-			int pageStep = TabSpec::rows;
+			int pageStep = 1; // override: use 1 so thumbstick increment/decrement behaves alike the mouse wheel implementation.
 #ifdef _WINDOWS64
-			if (g_KBMInput.WasMouseWheelConsumed())
-			{
-				pageStep = 1;
-			}
+            if (g_KBMInput.WasMouseWheelConsumed())
+            {
+                pageStep = 1;
+            }
 #endif
-			m_tabPage[m_curTab] += pageStep;
-			if(m_tabPage[m_curTab] >= specs[m_curTab]->getPageCount())
-			{
-				m_tabPage[m_curTab] = specs[m_curTab]->getPageCount() - 1;
-			}
-			else
-			{
-				switchTab(m_curTab);
-			}
+            m_tabPage[m_curTab] += pageStep;
+            if(m_tabPage[m_curTab] >= specs[m_curTab]->getPageCount())
+            {
+                m_tabPage[m_curTab] = specs[m_curTab]->getPageCount() - 1;
+            }
+            else
+            {
+                switchTab(m_curTab);
+            }
 		}
 		break;
 	case ACTION_MENU_OTHER_STICK_UP:
 		{
-			int pageStep = TabSpec::rows;
+			int pageStep = 1; // override: use 1 so thumbstick increment/decrement behaves alike the mouse wheel implementation.
 #ifdef _WINDOWS64
-			if (g_KBMInput.WasMouseWheelConsumed())
-			{
-				pageStep = 1;
-			}
+            if (g_KBMInput.WasMouseWheelConsumed())
+            {
+                pageStep = 1;
+            }
 #endif
-			m_tabPage[m_curTab] -= pageStep;
-			if(m_tabPage[m_curTab] < 0)
-			{
-				m_tabPage[m_curTab] = 0;
-			}
-			else
-			{
-				switchTab(m_curTab);
-			}
+            m_tabPage[m_curTab] -= pageStep;
+            if(m_tabPage[m_curTab] < 0)
+            {
+                m_tabPage[m_curTab] = 0;
+            }
+            else
+            {
+                switchTab(m_curTab);
+            }
 		}
 		break;
 	}
