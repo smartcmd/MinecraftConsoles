@@ -8,7 +8,8 @@
 
 This project contains the source code of Minecraft Legacy Console Edition v1.6.0560.0 (TU19) from https://archive.org/details/minecraft-legacy-console-edition-source-code, with some fixes and improvements applied.
 
-[Nightly Build](https://github.com/smartcmd/MinecraftConsoles/releases/tag/nightly)
+## Download
+Windows users can download our [Nightly Build](https://github.com/smartcmd/MinecraftConsoles/releases/tag/nightly)! Simply download the `.zip` file and extract it to a folder where you'd like to keep the game. You can set your username in `username.txt` (you'll have to make this file) and add servers to connect to in `servers.txt`
 
 ## Platform Support
 
