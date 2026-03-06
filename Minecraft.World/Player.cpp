@@ -43,6 +43,12 @@
 #include "..\Minecraft.Client\HumanoidModel.h"
 #include "SoundTypes.h"
 
+#include "..\Minecraft.Client\Minecraft.h"
+#include "..\Minecraft.Client\Screen.h"
+#ifdef _WINDOWS64
+#include "..\Minecraft.Client\Windows64\KeyboardMouseInput.h"
+#endif
+
 
 
 void Player::_init()
@@ -361,6 +367,13 @@ void Player::tick()
 	{
 		foodData.tick(dynamic_pointer_cast<Player>(shared_from_this()));
 	}
+
+	#ifdef _WINDOWS64
+    if (g_KBMInput.IsKeyDown(VK_LSHIFT) && this->isSleeping())
+    {
+        stopSleepInBed(true, true, false);
+    }
+	#endif
 
 	// 4J Stu Debugging
 	if (!level->isClientSide)
@@ -1852,6 +1865,11 @@ Player::BedSleepingResult Player::startSleepInBed(int x, int y, int z, bool bTes
 		setPos(x + .5f, y + 15.0f / 16.0f, z + .5f);
 	}
 	m_isSleeping = true;
+
+	#ifdef _WINDOWS64
+    Minecraft::GetInstance()->setScreen(new Screen());
+	#endif
+
 	sleepCounter = 0;
 	bedPosition = new Pos(x, y, z);
 	xd = zd = yd = 0;
@@ -1938,6 +1956,10 @@ void Player::stopSleepInBed(bool forcefulWakeUp, bool updateLevelList, bool save
 	{
 		setRespawnPosition(bedPosition, false);
 	}
+
+	#ifdef _WINDOWS64
+    Minecraft::GetInstance()->setScreen(nullptr);
+	#endif
 }
 
 
