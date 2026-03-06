@@ -58,6 +58,51 @@ Minecraft.Client.exe -server -ip 0.0.0.0 -port 25565
 
 The headless server also reads and writes `server.properties` in the working directory. If `-ip` / `-port` are omitted in `-server` mode, it falls back to `server-ip` / `server-port` from that file. Dedicated-server host options such as `trust-players`, `pvp`, `fire-spreads`, `tnt`, `difficulty`, `gamemode`, `spawn-animals`, and `spawn-npcs` are persisted there as well.
 
+## Dedicated Server in Docker (Wine)
+
+This repository includes a lightweight Docker setup for running the Windows dedicated server under Wine.
+**To build the image, a release build of `Minecraft.Server` is required.**
+
+1. Build the dedicated server (`Minecraft.Server`) first.
+2. Start with Docker Compose (server runtime files are copied into the image at build time):
+
+```bash
+docker compose -f docker-compose.dedicated-server.yml up -d
+```
+
+or use the helper script:
+
+```bash
+./start-dedicated-server.sh
+```
+
+You can explicitly choose runtime:
+**However, debug builds often fail to run because some debug-related libraries are missing.**
+
+```bash
+./start-dedicated-server.sh release
+./start-dedicated-server.sh debug
+```
+
+By default, build input is `x64/Minecraft.Server/Release`. Override it when needed (path must be inside this repository):
+
+```bash
+MC_RUNTIME_DIR=x64/Minecraft.Server/Debug docker compose -f docker-compose.dedicated-server.yml up -d --build
+```
+
+Useful environment variables:
+- `XVFB_DISPLAY` (default: `:99`)
+- `XVFB_SCREEN` (default: `64x64x16`, tiny virtual display used by Wine)
+
+Fixed server runtime behavior in container:
+- executable path: `/srv/mc/Minecraft.Server.exe`
+- bind IP: `0.0.0.0`
+- server port: `25565`
+
+Persistent files are bind-mounted to host:
+- `./server-data/server.properties` -> `/srv/mc/server.properties`
+- `./server-data/GameHDD` -> `/srv/mc/Windows64/GameHDD`
+
 ## Controls (Keyboard & Mouse)
 
 - **Movement**: `W` `A` `S` `D`
