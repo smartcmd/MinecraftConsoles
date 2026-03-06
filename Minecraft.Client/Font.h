@@ -21,6 +21,12 @@ private:
 	float xPos;
 	float yPos;
 
+	// § format state (bold, italic, underline, strikethrough); set during draw(), reset by §r
+	bool m_bold;
+	bool m_italic;
+	bool m_underline;
+	bool m_strikethrough;
+
 	bool enforceUnicodeSheet; // use unicode sheet for ascii
 	bool bidirectional; // use bidi to flip strings
 
@@ -41,9 +47,12 @@ public:
 
 private:
 	void renderCharacter(wchar_t c); // 4J added
+	void addCharacterQuad(wchar_t c);
+	void renderStyleLine(float x0, float y0, float x1, float y1); // solid line for underline/strikethrough
 
 public:
     void drawShadow(const wstring& str, int x, int y, int color);
+	void drawShadowLiteral(const wstring& str, int x, int y, int color); // draw without interpreting § codes
 	void drawShadowWordWrap(const wstring &str, int x, int y, int w, int color, int h); // 4J Added h param
     void draw(const wstring &str, int x, int y, int color);
 	/**
@@ -58,11 +67,13 @@ private:
 
 	void draw(const wstring &str, bool dropShadow);
     void draw(const wstring& str, int x, int y, int color, bool dropShadow);
+	void drawLiteral(const wstring& str, int x, int y, int color); // no § parsing
 	int MapCharacter(wchar_t c); // 4J added
 	bool CharacterExists(wchar_t c); // 4J added
 
 public:
     int width(const wstring& str);
+	int widthLiteral(const wstring& str); // width without skipping § codes (for chat input)
     wstring sanitize(const wstring& str);
 	void drawWordWrap(const wstring &string, int x, int y, int w, int col, int h); // 4J Added h param
 

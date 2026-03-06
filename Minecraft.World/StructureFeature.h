@@ -26,7 +26,7 @@ private:
 
 
 protected:
-	unordered_map<__int64, StructureStart *> cachedStructures;
+	unordered_map<int64_t, StructureStart *> cachedStructures;
 
 public:
 	StructureFeature();
@@ -49,7 +49,7 @@ public:
 	TilePos *getNearestGeneratedFeature(Level *level, int cellX, int cellY, int cellZ);
 
 protected:
-	vector<TilePos> *getGuesstimatedFeaturePositions(); 
+	vector<TilePos> *getGuesstimatedFeaturePositions();
 
 private:
 	virtual void restoreSavedData(Level *level);
@@ -58,7 +58,7 @@ private:
 	/**
 	* Returns true if the given chunk coordinates should hold a structure
 	* source.
-	* 
+	*
 	* @param x
 	*            chunk x
 	* @param z
@@ -71,7 +71,7 @@ protected:
 	/**
 	* Creates a new instance of a structure source at the given chunk
 	* coordinates.
-	* 
+	*
 	* @param x
 	*            chunk x
 	* @param z

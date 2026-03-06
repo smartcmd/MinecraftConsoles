@@ -15,5 +15,6 @@ public:
 	GuiComponent();	// 4J added
 	void drawCenteredString(Font *font, const wstring& str, int x, int y, int color);
     void drawString(Font *font, const wstring& str, int x, int y, int color);
+	void drawStringLiteral(Font* font, const wstring& str, int x, int y, int color);
     void blit(int x, int y, int sx, int sy, int w, int h);
 };

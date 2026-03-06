@@ -102,7 +102,7 @@ public:
 
 	};
 
-	__int64 lastModifiedTime;			// 8B
+	int64_t lastModifiedTime;			// 8B
 };
 
 typedef FileEntrySaveDataV2 FileEntrySaveData;
@@ -128,7 +128,7 @@ public:
 		currentFilePointer = data.startOffset;
 	}
 
-	unsigned int getFileSize() { return data.length; }	
+	unsigned int getFileSize() { return data.length; }
 	bool isRegionFile() { return data.filename[0] == 0; }				// When using ConsoleSaveFileSplit only
 	unsigned int getRegionFileIndex() { return data.regionIndex; }		// When using ConsoleSaveFileSplit only
 
@@ -191,7 +191,7 @@ protected:
 	vector<FileEntry *> *getDatFilesWithMacAndUserID(const PlayerUID& pUID);
 	vector<FileEntry *> *getDatFilesWithPrimaryUser();
 #endif
-	
+
 	void setSaveVersion(int version) { m_saveVersion = version; }
 	int getSaveVersion() { return m_saveVersion; }
 	void setOriginalSaveVersion(int version) { m_originalSaveVersion = version; }
@@ -205,5 +205,5 @@ protected:
 	void setEndian(ByteOrder endian) { m_saveEndian = endian; }
 	static ByteOrder getEndian(ESavePlatform plat);
 	bool isLocalEndianDifferent(ESavePlatform plat){return m_localEndian != getEndian(plat); }
-	
+
 };

@@ -745,7 +745,12 @@ void GameRenderer::renderItemInHand(float a, int eye)
 			{
 				turnOnLightLayer(a);
 				PIXBeginNamedEvent(0,"Item in hand render");
+				glEnable(GL_BLEND);
+				glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+				glDepthMask(false);
 				itemInHandRenderer->render(a);
+				glDepthMask(true);
+				glDisable(GL_BLEND);
 				PIXEndNamedEvent();
 				turnOffLightLayer(a);
 			}
@@ -1169,8 +1174,6 @@ void GameRenderer::render(float a, bool bFirst)
 
 		lastNsTime = System::nanoTime();
 
-		ApplyGammaPostProcess();
-
 		if (!mc->options->hideGui || mc->screen != NULL)
 		{
 			mc->gui->render(a, mc->screen != NULL, xMouse, yMouse);
@@ -1196,6 +1199,7 @@ void GameRenderer::render(float a, bool bFirst)
 		if (mc->screen != NULL && mc->screen->particles != NULL) mc->screen->particles->render(a);
 	}
 
+	ApplyGammaPostProcess();
 }
 
 void GameRenderer::renderLevel(float a)
@@ -1351,7 +1355,7 @@ void GameRenderer::DisableUpdateThread()
 #endif
 }
 
-void GameRenderer::renderLevel(float a, __int64 until)
+void GameRenderer::renderLevel(float a, int64_t until)
 {
 	//	if (updateLightTexture) updateLightTexture();	// 4J - TODO - Java 1.0.1 has this line enabled, should check why - don't want to put it in now in case it breaks split-screen
 
@@ -1434,7 +1438,7 @@ void GameRenderer::renderLevel(float a, __int64 until)
 
 				if (until == 0) break;
 
-				__int64 diff = until - System::nanoTime();
+				int64_t diff = until - System::nanoTime();
 				if (diff < 0) break;
 				if (diff > 1000000000) break;
 			} while (true);

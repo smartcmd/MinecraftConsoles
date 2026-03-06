@@ -169,10 +169,10 @@ TilePos *StructureFeature::getNearestGeneratedFeature(Level *level, int cellX, i
 	restoreSavedData(level);
 
 	random->setSeed(level->getSeed());
-	__int64 xScale = random->nextLong();
-	__int64 zScale = random->nextLong();
-	__int64 xx = (cellX >> 4) * xScale;
-	__int64 zz = (cellZ >> 4) * zScale;
+	int64_t xScale = random->nextLong();
+	int64_t zScale = random->nextLong();
+	int64_t xx = (cellX >> 4) * xScale;
+	int64_t zz = (cellZ >> 4) * zScale;
 	random->setSeed(xx ^ zz ^ level->getSeed());
 
 	addFeature(level, cellX >> 4, cellZ >> 4, 0, 0, byteArray());

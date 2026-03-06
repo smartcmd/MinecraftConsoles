@@ -15,7 +15,7 @@ typedef struct
 }
 CONTAINER_METADATA;
 
-typedef struct  
+typedef struct
 {
 	char UTF8SaveFilename[MAX_SAVEFILENAME_LENGTH];
 	char UTF8SaveTitle[MAX_DISPLAYNAME_LENGTH];
@@ -24,7 +24,7 @@ typedef struct
 }
 SAVE_INFO,*PSAVE_INFO;
 
-typedef struct  
+typedef struct
 {
 	int iSaveC;
 	PSAVE_INFO SaveInfoA;
@@ -43,7 +43,7 @@ class C4JStorage
 
 public:
 	// Structs defined in the DLC_Creator, but added here to be used in the app
-	typedef struct  
+	typedef struct
 	{
 		unsigned int	uiFileSize;
 		DWORD			dwType;
@@ -61,7 +61,7 @@ public:
 	DLC_FILE_PARAM, *PDLC_FILE_PARAM;
 	// End of DLC_Creator structs
 
-	typedef struct  
+	typedef struct
 	{
  		WCHAR                               wchDisplayName[XCONTENT_MAX_DISPLAYNAME_LENGTH];
  		CHAR                                szFileName[XCONTENT_MAX_FILENAME_LENGTH];
@@ -71,7 +71,7 @@ public:
 	CACHEINFOSTRUCT;
 
 	// structure to hold DLC info in TMS
-	typedef struct  
+	typedef struct
 	{
 		DWORD dwVersion;
 		DWORD dwNewOffers;
@@ -111,7 +111,7 @@ public:
 	enum ESaveGameControlState
 	{
 		ESaveGameControl_Idle=0,
-		ESaveGameControl_Save,	
+		ESaveGameControl_Save,
 		ESaveGameControl_InternalRequestingDevice,
 		ESaveGameControl_InternalGetSaveName,
 		ESaveGameControl_InternalSaving,
@@ -122,16 +122,16 @@ public:
 	enum ESaveGameState
 	{
 		ESaveGame_Idle=0,
-		ESaveGame_Save,	
+		ESaveGame_Save,
 		ESaveGame_InternalRequestingDevice,
 		ESaveGame_InternalGetSaveName,
 		ESaveGame_InternalSaving,
 		ESaveGame_CopySave,
 		ESaveGame_CopyingSave,
-		ESaveGame_Load,	
-		ESaveGame_GetSavesInfo,	
-		ESaveGame_Rename,	
-		ESaveGame_Delete,	
+		ESaveGame_Load,
+		ESaveGame_GetSavesInfo,
+		ESaveGame_Rename,
+		ESaveGame_Delete,
 
 		ESaveGame_GetSaveThumbnail		// Not used as an actual state in the PS4, but the game expects this to be returned to indicate success when getting a thumbnail
 
@@ -210,7 +210,7 @@ public:
 	};
 
 
-	typedef struct  
+	typedef struct
 	{
 		CHAR			szFilename[256];
 		int				iFileSize;
@@ -218,14 +218,14 @@ public:
 	}
 	TMSPP_FILE_DETAILS, *PTMSPP_FILE_DETAILS;
 
-	typedef struct  
+	typedef struct
 	{
 		int iCount;
 		PTMSPP_FILE_DETAILS FileDetailsA;
 	}
 	TMSPP_FILE_LIST, *PTMSPP_FILE_LIST;
 
-	typedef struct  
+	typedef struct
 	{
 		DWORD dwSize;
 		PBYTE pbData;
@@ -264,7 +264,7 @@ public:
 	void						SetSaveImages( PBYTE pbThumbnail,DWORD dwThumbnailBytes,PBYTE pbImage,DWORD dwImageBytes, PBYTE pbTextData ,DWORD dwTextDataBytes);					// Sets the thumbnail & image for the save, optionally setting the metadata in the png
 	C4JStorage::ESaveGameState	SaveSaveData(int( *Func)(LPVOID ,const bool),LPVOID lpParam);
 	void						CopySaveDataToNewSave(PBYTE pbThumbnail,DWORD cbThumbnail,WCHAR *wchNewName,int ( *Func)(LPVOID lpParam, bool), LPVOID lpParam);
-	void						SetSaveDeviceSelected(unsigned int uiPad,bool bSelected);	
+	void						SetSaveDeviceSelected(unsigned int uiPad,bool bSelected);
 	bool						GetSaveDeviceSelected(unsigned int iPad);
 	C4JStorage::ESaveGameState	DoesSaveExist(bool *pbExists);
 	bool						EnoughSpaceForAMinSaveGame();
@@ -286,12 +286,12 @@ public:
 	// DLC
 	void								RegisterMarketplaceCountsCallback(int ( *Func)(LPVOID lpParam, C4JStorage::DLC_TMS_DETAILS *, int), LPVOID lpParam );
 	void								SetDLCPackageRoot(char *pszDLCRoot);
-	C4JStorage::EDLCStatus				GetDLCOffers(int iPad,int( *Func)(LPVOID, int, DWORD, int),LPVOID lpParam, DWORD dwOfferTypesBitmask=XMARKETPLACE_OFFERING_TYPE_CONTENT);	
+	C4JStorage::EDLCStatus				GetDLCOffers(int iPad,int( *Func)(LPVOID, int, DWORD, int),LPVOID lpParam, DWORD dwOfferTypesBitmask=XMARKETPLACE_OFFERING_TYPE_CONTENT);
 	DWORD								CancelGetDLCOffers();
 	void								ClearDLCOffers();
 	XMARKETPLACE_CONTENTOFFER_INFO&		GetOffer(DWORD dw);
 	int									GetOfferCount();
-	DWORD								InstallOffer(int iOfferIDC, __uint64 *ullOfferIDA,int( *Func)(LPVOID, int, int),LPVOID lpParam, bool bTrial=false);
+	DWORD								InstallOffer(int iOfferIDC, uint64_t *ullOfferIDA,int( *Func)(LPVOID, int, int),LPVOID lpParam, bool bTrial=false);
 	DWORD								GetAvailableDLCCount( int iPad);
 
 	C4JStorage::EDLCStatus				GetInstalledDLC(int iPad,int( *Func)(LPVOID, int, int),LPVOID lpParam);
@@ -335,7 +335,7 @@ public:
 	unsigned int						CRC(unsigned char *buf, int len);
 
 // #ifdef _DEBUG
-// 	void SetSaveName(int i);					
+// 	void SetSaveName(int i);
 // #endif
 	// string table for all the Storage problems. Loaded by the application
 	C4JStringTable				*m_pStringTable;

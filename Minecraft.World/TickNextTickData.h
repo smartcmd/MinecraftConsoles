@@ -12,7 +12,7 @@ private:
 
 public:
 	int x, y, z, tileId;
-	__int64 m_delay;
+	int64_t m_delay;
 	int priorityTilt;
 
 private:
@@ -23,7 +23,7 @@ public:
 
 	bool equals(const TickNextTickData *o) const;
 	int hashCode() const;
-	TickNextTickData *delay(__int64 l);
+	TickNextTickData *delay(int64_t l);
 	void setPriorityTilt(int priorityTilt);
 	int compareTo(const TickNextTickData *tnd) const;
 
@@ -35,19 +35,19 @@ public:
 
 struct TickNextTickDataKeyHash
 {
-	int operator() (const TickNextTickData &k) const 
+	int operator() (const TickNextTickData &k) const
 	{ return TickNextTickData::hash_fnct (k); }
 };
 
 struct TickNextTickDataKeyEq
 {
-	bool operator() (const TickNextTickData &x, const TickNextTickData &y) const 
+	bool operator() (const TickNextTickData &x, const TickNextTickData &y) const
 	{ return TickNextTickData::eq_test (x, y); }
 };
 
 struct TickNextTickDataKeyCompare
 {
-	bool operator() (const TickNextTickData &x, const TickNextTickData &y) const 
+	bool operator() (const TickNextTickData &x, const TickNextTickData &y) const
 	{ return TickNextTickData::compare_fnct (x, y); }
 
 };

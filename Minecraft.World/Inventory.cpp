@@ -343,6 +343,18 @@ bool Inventory::hasResource(int type)
 	return true;
 }
 
+int Inventory::countResource(int type, int auxVal)
+{
+	int count = 0;
+	for (unsigned int i = 0; i < items.length; i++)
+	{
+		if (items[i] != NULL && items[i]->id == type &&
+		    (auxVal == -1 || items[i]->getAuxValue() == auxVal))
+			count += items[i]->count;
+	}
+	return count;
+}
+
 void Inventory::swapSlots(int from, int to)
 {
 	shared_ptr<ItemInstance> tmp = items[to];

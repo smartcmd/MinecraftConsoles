@@ -4167,7 +4167,7 @@ bool TileRenderer::tesselateCrossInWorld( Tile* tt, int x, int y, int z )
 
 	if (tt == Tile::tallgrass)
 	{
-		__int64 seed = (x * 3129871) ^ (z * 116129781l) ^ (y);
+		int64_t seed = (x * 3129871) ^ (z * 116129781l) ^ (y);
 		seed = seed * seed * 42317861 + seed * 11;
 
 		xt += ((((seed >> 16) & 0xf) / 15.0f) - 0.5f) * 0.5f;
@@ -4406,7 +4406,7 @@ bool TileRenderer::tesselateLilypadInWorld(Tile *tt, int x, int y, int z)
 	float u1 = tex->getU1(true);
 	float v1 = tex->getV1(true);
 
-	__int64 seed = (x * 3129871) ^ (z * 116129781l) ^ (y);
+	int64_t seed = (x * 3129871) ^ (z * 116129781l) ^ (y);
 	seed = seed * seed * 42317861 + seed * 11;
 
 	int dir = (int) ((seed >> 16) & 0x3);
@@ -5261,7 +5261,7 @@ bool TileRenderer::tesselateBlockInWorldWithAmbienceOcclusionTexLighting( Tile* 
 	{
 		if ( getTexture(tt)->getFlags() == Icon::IS_GRASS_TOP ) tintSides = false;
 	}
-	else if (hasFixedTexture()) 
+	else if (hasFixedTexture())
 	{
 		tintSides = false;
 	}
@@ -5528,7 +5528,7 @@ bool TileRenderer::tesselateBlockInWorldWithAmbienceOcclusionTexLighting( Tile* 
 		float ll00z = tt->getShadeBrightness(level, pX, pY, pZ - 1);
 
 		{
-			if(smoothShapeLighting)		// MGH - unifying tesselateBlockInWorldWithAmbienceOcclusionTexLighting and tesselateBlockInWorldWithAmbienceOcclusionTexLighting2 
+			if(smoothShapeLighting)		// MGH - unifying tesselateBlockInWorldWithAmbienceOcclusionTexLighting and tesselateBlockInWorldWithAmbienceOcclusionTexLighting2
 			{
 				float _ll1 = (llx0z + llxYz + ll00z + ll0Yz) / 4.0f;
 				float _ll2 = (ll00z + ll0Yz + llX0z + llXYz) / 4.0f;
@@ -5683,7 +5683,7 @@ bool TileRenderer::tesselateBlockInWorldWithAmbienceOcclusionTexLighting( Tile* 
 		float ll00Z = tt->getShadeBrightness(level, pX, pY, pZ + 1);
 
 		{
-			if(smoothShapeLighting)		// MGH - unifying tesselateBlockInWorldWithAmbienceOcclusionTexLighting and tesselateBlockInWorldWithAmbienceOcclusionTexLighting2 
+			if(smoothShapeLighting)		// MGH - unifying tesselateBlockInWorldWithAmbienceOcclusionTexLighting and tesselateBlockInWorldWithAmbienceOcclusionTexLighting2
 			{
 				float _ll1 = (llx0Z + llxYZ + ll00Z + ll0YZ) / 4.0f;
 				float _ll4 = (ll00Z + ll0YZ + llX0Z + llXYZ) / 4.0f;
@@ -5834,7 +5834,7 @@ bool TileRenderer::tesselateBlockInWorldWithAmbienceOcclusionTexLighting( Tile* 
 		float llx00 = tt->getShadeBrightness(level, pX - 1, pY, pZ);
 
 		{
-			if(smoothShapeLighting)		// MGH - unifying tesselateBlockInWorldWithAmbienceOcclusionTexLighting and tesselateBlockInWorldWithAmbienceOcclusionTexLighting2 
+			if(smoothShapeLighting)		// MGH - unifying tesselateBlockInWorldWithAmbienceOcclusionTexLighting and tesselateBlockInWorldWithAmbienceOcclusionTexLighting2
 			{
 				float _ll4 = (llxy0 + llxyZ + llx00 + llx0Z) / 4.0f;
 				float _ll1 = (llx00 + llx0Z + llxY0 + llxYZ) / 4.0f;
@@ -5985,7 +5985,7 @@ bool TileRenderer::tesselateBlockInWorldWithAmbienceOcclusionTexLighting( Tile* 
 		float llX00 = tt->getShadeBrightness(level, pX + 1, pY, pZ);
 
 		{
-			if(smoothShapeLighting)		// MGH - unifying tesselateBlockInWorldWithAmbienceOcclusionTexLighting and tesselateBlockInWorldWithAmbienceOcclusionTexLighting2 
+			if(smoothShapeLighting)		// MGH - unifying tesselateBlockInWorldWithAmbienceOcclusionTexLighting and tesselateBlockInWorldWithAmbienceOcclusionTexLighting2
 			{
 				float _ll1 = (llXy0 + llXyZ + llX00 + llX0Z) / 4.0f;
 				float _ll2 = (llXyz + llXy0 + llX0z + llX00) / 4.0f;
@@ -7959,7 +7959,7 @@ void TileRenderer::renderTile( Tile* tile, int data, float brightness, float fAl
 			data = Facing::UP;
 		}
 
-		tile->updateDefaultShape();	
+		tile->updateDefaultShape();
 		setShape(tile);
 		glRotatef(90, 0, 1, 0);
 

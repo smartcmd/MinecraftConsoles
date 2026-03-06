@@ -6,7 +6,7 @@
 
 const int ZoneFile::slotsLength = ZonedChunkStorage::CHUNKS_PER_ZONE * ZonedChunkStorage::CHUNKS_PER_ZONE;
 
-ZoneFile::ZoneFile(__int64 key, File file, File entityFile) : slots(slotsLength)
+ZoneFile::ZoneFile(int64_t key, File file, File entityFile) : slots(slotsLength)
 {
 	lastUse = 0;
 

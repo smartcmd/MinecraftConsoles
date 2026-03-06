@@ -753,10 +753,16 @@ void UIScene_HUD::handleTimerComplete(int id)
 			float opacity = pGui->getOpacity(m_iPad, i);
 			if( opacity > 0 )
 			{
+#if 0 // def _WINDOWS64 // Use Iggy chat until Gui::render has visual parity
+				// Chat drawn by Gui::render with color codes. Hides Iggy chat to avoid double chats.
+				m_controlLabelBackground[i].setOpacity(0);
+				m_labelChatText[i].setOpacity(0);
+				m_labelChatText[i].setLabel(L"");
+#else
 				m_controlLabelBackground[i].setOpacity(opacity);
 				m_labelChatText[i].setOpacity(opacity);
 				m_labelChatText[i].setLabel( pGui->getMessagesCount(m_iPad) ? pGui->getMessage(m_iPad,i) : L"" );
-
+#endif
 				anyVisible = true;
 			}
 			else

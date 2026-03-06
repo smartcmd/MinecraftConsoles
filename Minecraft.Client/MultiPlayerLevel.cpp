@@ -789,7 +789,7 @@ void MultiPlayerLevel::setScoreboard(Scoreboard *scoreboard)
 	this->scoreboard = scoreboard;
 }
 
-void MultiPlayerLevel::setDayTime(__int64 newTime)
+void MultiPlayerLevel::setDayTime(int64_t newTime)
 {
 	// 4J: We send daylight cycle rule with host options so don't need this
 	/*if (newTime < 0)

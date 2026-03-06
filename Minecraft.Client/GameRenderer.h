@@ -115,8 +115,8 @@ public:
 	void setupCamera(float a, int eye);
 private:
     void renderItemInHand(float a, int eye);
-    __int64 lastActiveTime;
-    __int64 lastNsTime;
+    int64_t lastActiveTime;
+    int64_t lastNsTime;
 	// 4J - changes brought forward from 1.8.2
 	bool _updateLightTexture;
 public:
@@ -133,7 +133,7 @@ private:
 public:
 	void render(float a, bool bFirst);		// 4J added bFirst
     void renderLevel(float a);
-    void renderLevel(float a, __int64 until);
+    void renderLevel(float a, int64_t until);
 private:
 	Random *random;
     int rainSoundTime;

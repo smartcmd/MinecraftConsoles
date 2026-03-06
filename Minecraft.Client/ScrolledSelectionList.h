@@ -28,7 +28,7 @@ private:
     float yo;
 
     int lastSelection;
-    __int64 lastSelectionTime ;
+    int64_t lastSelectionTime ;
 
     bool renderSelection;
     bool _renderHeader;
@@ -40,7 +40,7 @@ public:
 
 protected:
 	void setRenderHeader(bool renderHeader, int headerHeight);
-    virtual int getNumberOfItems() = 0; 
+    virtual int getNumberOfItems() = 0;
     virtual void selectItem(int item, bool doubleClick) = 0;
     virtual bool isSelectedItem(int item) = 0;
     virtual int getMaxPosition();

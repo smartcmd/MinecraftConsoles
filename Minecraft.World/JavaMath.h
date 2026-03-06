@@ -8,7 +8,7 @@ private:
 
 public:
 	static double random();
-	static __int64 round( double d );
+	static int64_t round( double d );
 	static int _max(int a, int b);
 	static float _max(float a, float b);
 	static int _min(int a, int b);

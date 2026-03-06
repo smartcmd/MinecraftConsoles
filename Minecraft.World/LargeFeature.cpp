@@ -21,15 +21,15 @@ void LargeFeature::apply(ChunkSource *ChunkSource, Level *level, int xOffs, int 
 	this->level = level;
 
     random->setSeed(level->getSeed());
-    __int64 xScale = random->nextLong();
-    __int64 zScale = random->nextLong();
+    int64_t xScale = random->nextLong();
+    int64_t zScale = random->nextLong();
 
     for (int x = xOffs - r; x <= xOffs + r; x++)
 	{
         for (int z = zOffs - r; z <= zOffs + r; z++)
 		{
-            __int64 xx = x * xScale;
-            __int64 zz = z * zScale;
+            int64_t xx = x * xScale;
+            int64_t zz = z * zScale;
             random->setSeed(xx ^ zz ^ level->getSeed());
             addFeature(level, x, z, xOffs, zOffs, blocks);
         }

@@ -47,7 +47,7 @@ void UIComponent_Panorama::tick()
 	EnterCriticalSection(&pMinecraft->m_setLevelCS);
 	if(pMinecraft->level!=NULL)
 	{
-		__int64 i64TimeOfDay =0;
+		int64_t i64TimeOfDay =0;
 		// are we in the Nether? - Leave the time as 0 if we are, so we show daylight
 		if(pMinecraft->level->dimension->id==0)
 		{
@@ -104,7 +104,7 @@ void UIComponent_Panorama::render(S32 width, S32 height, C4JRender::eViewportTyp
 			IggyPlayerSetDisplaySize( getMovie(), m_movieWidth, m_movieHeight );
 
 			IggyPlayerDrawTilesStart ( getMovie() );
-		
+
 			m_renderWidth = tileWidth;
 			m_renderHeight = tileHeight;
 			IggyPlayerDrawTile ( getMovie() ,
@@ -112,7 +112,7 @@ void UIComponent_Panorama::render(S32 width, S32 height, C4JRender::eViewportTyp
 				tileYStart ,
 				tileXStart + tileWidth ,
 				tileYStart + tileHeight ,
-				0 ); 
+				0 );
 			IggyPlayerDrawTilesEnd ( getMovie() );
 		}
 		else
