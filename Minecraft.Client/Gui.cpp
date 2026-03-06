@@ -971,15 +971,10 @@ void Gui::render(float a, bool mouseFree, int xMouse, int yMouse)
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     glDisable(GL_ALPHA_TEST);
 
-// 4J Stu - We have moved the chat text to a xui
-#if 0
+#if defined(_WINDOWS64)
     glPushMatrix();
-	// 4J-PB we need to move this up a bit because we've moved the quick select
-	//glTranslatef(0, ((float)screenHeight) - 48, 0);
-    glTranslatef(0.0f, (float)(screenHeight - iSafezoneYHalf - iTooltipsYOffset - 16 - 3 + 22) - 24.0f, 0.0f);
-    // glScalef(1.0f / ssc.scale, 1.0f / ssc.scale, 1);
+    glTranslatef(0.0f, static_cast<float>(screenHeight - iSafezoneYHalf - iTooltipsYOffset - 16 - 3 + 22) - 24.0f, 0.0f);
 
-	// 4J-PB - we need gui messages for each of the possible 4 splitscreen players
 	if(bDisplayGui)
 	{
 		int iPad=minecraft->player->GetXboxPad();
@@ -993,23 +988,21 @@ void Gui::render(float a, bool mouseFree, int xMouse, int yMouse)
 				if (t < 0) t = 0;
 				if (t > 1) t = 1;
 				t = t * t;
-				int alpha = (int) (255 * t);
+				int alpha = static_cast<int>(255 * t);
 				if (isChatting) alpha = 255;
 
 				if (alpha > 0)
 				{
 					int x = iSafezoneXHalf+2;
-					int y = -((int)i) * 9;
+					int y = -(static_cast<int>(i)) * 9;
 					if(bTwoPlayerSplitscreen)
 					{
 						y+= iHeightOffset;
 					}
 
 					wstring msg = guiMessages[iPad][i].string;
-					// 4J-PB - fill the black bar across the whole screen, otherwise it looks odd due to the safe area
 					this->fill(0, y - 1, screenWidth/fScaleFactorWidth, y + 8, (alpha / 2) << 24);
 					glEnable(GL_BLEND);
-
 					font->drawShadow(msg, iSafezoneXHalf+4, y, 0xffffff + (alpha << 24));
 				}
 			}

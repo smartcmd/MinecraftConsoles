@@ -21,6 +21,8 @@
 #include "..\Minecraft.World\AABB.h"
 #include "..\Minecraft.World\Pos.h"
 #include "..\Minecraft.World\SharedConstants.h"
+#include "..\Minecraft.World\ChatPacket.h"
+#include "..\Minecraft.World\StringHelpers.h"
 #include "..\Minecraft.World\Socket.h"
 #include "..\Minecraft.World\Achievements.h"
 #include "..\Minecraft.World\net.minecraft.h"
@@ -607,38 +609,26 @@ void PlayerConnection::handleSetCarriedItem(shared_ptr<SetCarriedItemPacket> pac
 
 void PlayerConnection::handleChat(shared_ptr<ChatPacket> packet)
 {
-	// 4J - TODO
-#if 0
-	wstring message = packet->message;
+	if (packet->m_stringArgs.empty()) return;
+	wstring message = trimString(packet->m_stringArgs[0]);
 	if (message.length() > SharedConstants::maxChatLength)
 	{
-		disconnect(L"Chat message too long");
+		disconnect(DisconnectPacket::eDisconnect_None); // or a specific reason
 		return;
 	}
-	message = message.trim();
-	for (int i = 0; i < message.length(); i++)
-	{
-		if (SharedConstants.acceptableLetters.indexOf(message.charAt(i)) < 0 && (int) message.charAt(i) < 32)
-		{
-			disconnect(L"Illegal characters in chat");
-			return;
-		}
-	}
-
-	if (message.startsWith("/"))
+	// Optional: validate characters (acceptableLetters)
+	if (message.length() > 0 && message[0] == L'/')
 	{
 		handleCommand(message);
-	} else {
-		message = "<" + player.name + "> " + message;
-		logger.info(message);
-		server.players.broadcastAll(new ChatPacket(message));
+		return;
 	}
+	wstring formatted = L"<" + player->name + L"> " + message;
+	server->getPlayers()->broadcastAll(shared_ptr<ChatPacket>(new ChatPacket(formatted)));
 	chatSpamTickCount += SharedConstants::TICKS_PER_SECOND;
 	if (chatSpamTickCount > SharedConstants::TICKS_PER_SECOND * 10)
 	{
-		disconnect("disconnect.spam");
+		disconnect(DisconnectPacket::eDisconnect_None); // spam
 	}
-#endif
 }
 
 void PlayerConnection::handleCommand(const wstring& message)
