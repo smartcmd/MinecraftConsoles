@@ -773,12 +773,12 @@ void UIController::tickInput()
 {
 	// If system/commerce UI up, don't handle input
 	//if(!m_bSysUIShowing && !m_bSystemUIShowing)
-	if(!m_bSystemUIShowing)
+	if (!m_bSystemUIShowing)
 	{
 #ifdef ENABLE_IGGY_PERFMON
 		if (m_iggyPerfmonEnabled)
 		{
-			if(InputManager.ButtonPressed(ProfileManager.GetPrimaryPad(), ACTION_MENU_STICK_PRESS)) m_iggyPerfmonEnabled = !m_iggyPerfmonEnabled;
+			if (InputManager.ButtonPressed(ProfileManager.GetPrimaryPad(), ACTION_MENU_STICK_PRESS)) m_iggyPerfmonEnabled = !m_iggyPerfmonEnabled;
 		}
 		else
 #endif
@@ -786,7 +786,7 @@ void UIController::tickInput()
 #ifdef _WINDOWS64
 			if (!g_KBMInput.IsMouseGrabbed() && g_KBMInput.IsKBMActive())
 			{
-				UIScene *pScene = NULL;
+				UIScene* pScene = NULL;
 				for (int grp = 0; grp < eUIGroup_COUNT && !pScene; ++grp)
 				{
 					pScene = m_groups[grp]->GetTopScene(eUILayer_Debug);
@@ -799,7 +799,7 @@ void UIController::tickInput()
 				}
 				if (pScene && pScene->getMovie())
 				{
-					Iggy *movie = pScene->getMovie();
+					Iggy* movie = pScene->getMovie();
 					int rawMouseX = g_KBMInput.GetMouseX();
 					int rawMouseY = g_KBMInput.GetMouseY();
 					F32 mouseX = (F32)rawMouseX;
@@ -845,8 +845,7 @@ void UIController::tickInput()
 									break;
 								}
 							}
-
-							if (hitObject != currentFocus)
+							if (hitObject != IGGY_FOCUS_NULL && hitObject != currentFocus) // <-- THE FIX
 							{
 								IggyPlayerSetFocusRS(movie, hitObject, 0);
 							}
@@ -868,35 +867,31 @@ void UIController::tickInput()
 
 					// Get main panel offset (controls are positioned relative to it)
 					S32 panelOffsetX = 0, panelOffsetY = 0;
-					UIControl *pMainPanel = pScene->GetMainPanel();
+					UIControl* pMainPanel = pScene->GetMainPanel();
 					if (pMainPanel)
 					{
 						pMainPanel->UpdateControl();
 						panelOffsetX = pMainPanel->getXPos();
 						panelOffsetY = pMainPanel->getYPos();
 					}
-
 					bool leftPressed = g_KBMInput.IsMouseButtonPressed(KeyboardMouseInput::MOUSE_LEFT);
 					bool leftDown = leftPressed || g_KBMInput.IsMouseButtonDown(KeyboardMouseInput::MOUSE_LEFT);
-
 					if (m_mouseDraggingSliderScene != eUIScene_COUNT && m_mouseDraggingSliderScene != pScene->getSceneType())
 					{
 						m_mouseDraggingSliderScene = eUIScene_COUNT;
 						m_mouseDraggingSliderId = -1;
 					}
-
 					if (leftPressed)
 					{
-						vector<UIControl *> *controls = pScene->GetControls();
+						vector<UIControl*>* controls = pScene->GetControls();
 						if (controls)
 						{
 							for (size_t i = 0; i < controls->size(); ++i)
 							{
-								UIControl *ctrl = (*controls)[i];
+								UIControl* ctrl = (*controls)[i];
 								if (!ctrl || ctrl->getControlType() != UIControl::eSlider || !ctrl->getVisible())
 									continue;
-
-								UIControl_Slider *pSlider = (UIControl_Slider *)ctrl;
+								UIControl_Slider* pSlider = (UIControl_Slider*)ctrl;
 								pSlider->UpdateControl();
 								S32 cx = pSlider->getXPos() + panelOffsetX;
 								S32 cy = pSlider->getYPos() + panelOffsetY;
@@ -904,7 +899,6 @@ void UIController::tickInput()
 								S32 ch = pSlider->getHeight();
 								if (cw <= 0 || ch <= 0)
 									continue;
-
 								if (sceneMouseX >= cx && sceneMouseX <= cx + cw && sceneMouseY >= cy && sceneMouseY <= cy + ch)
 								{
 									m_mouseDraggingSliderScene = pScene->getSceneType();
@@ -914,10 +908,9 @@ void UIController::tickInput()
 							}
 						}
 					}
-
 					if (leftDown && m_mouseDraggingSliderScene == pScene->getSceneType() && m_mouseDraggingSliderId >= 0)
 					{
-						UIControl_Slider *pSlider = FindSliderById(pScene, m_mouseDraggingSliderId);
+						UIControl_Slider* pSlider = FindSliderById(pScene, m_mouseDraggingSliderId);
 						if (pSlider && pSlider->getVisible())
 						{
 							pSlider->UpdateControl();
