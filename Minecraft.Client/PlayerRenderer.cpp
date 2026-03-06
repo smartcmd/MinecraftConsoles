@@ -14,19 +14,44 @@
 #include "..\Minecraft.World\net.minecraft.h"
 #include "..\Minecraft.World\StringHelpers.h"
 
-const unsigned int PlayerRenderer::s_nametagColors[MINECRAFT_NET_MAX_PLAYERS] =
+static unsigned int nametagColorForIndex(int index)
 {
-	0xff000000, // WHITE (represents the "white" player, but using black as the colour)
-	0xff33cc33, // GREEN
-	0xffcc3333, // RED
-	0xff3333cc, // BLUE
-#ifndef __PSVITA__		// only 4 player on Vita
-	0xffcc33cc, // PINK
-	0xffcc6633, // ORANGE
-	0xffcccc33, // YELLOW
-	0xff33dccc, // TURQUOISE
+	static const unsigned int s_firstColors[] = {
+		0xff000000, // WHITE (represents the "white" player, but using black as the colour)
+		0xff33cc33, // GREEN
+		0xffcc3333, // RED
+		0xff3333cc, // BLUE
+		0xffcc33cc, // PINK
+		0xffcc6633, // ORANGE
+		0xffcccc33, // YELLOW
+		0xff33dccc // TURQUOISE
+	};
+#ifndef __PSVITA__
+	if (index >= 0 && index < 8) // Use original colors for the first 8 players
+		return s_firstColors[index];
+	if (index >= 8 && index < MINECRAFT_NET_MAX_PLAYERS)
+	{
+		float h = (float)((index * 137) % 360) / 60.f;
+		int i = (int)h;
+		float f = h - i;
+		float q = 1.f - f;
+		float t = 1.f - (1.f - f);
+		float r = 0.f, g = 0.f, b = 0.f;
+		switch (i % 6)
+		{
+			case 0: r = 1.f; g = t;   b = 0.f; break;
+			case 1: r = q;   g = 1.f; b = 0.f; break;
+			case 2: r = 0.f; g = 1.f; b = t;   break;
+			case 3: r = 0.f; g = q;   b = 1.f; break;
+			case 4: r = t;   g = 0.f; b = 1.f; break;
+			default: r = 1.f; g = 0.f; b = q; break;
+		}
+		int ri = (int)(r * 255.f) & 0xff, gi = (int)(g * 255.f) & 0xff, bi = (int)(b * 255.f) & 0xff;
+		return 0xff000000u | (ri << 16) | (gi << 8) | bi;
+	}
 #endif
-};
+	return 0xFF000000; //Fallback if exceeds 256 somehow
+}
 
 ResourceLocation PlayerRenderer::DEFAULT_LOCATION = ResourceLocation(TN_MOB_CHAR);
 
@@ -41,9 +66,7 @@ PlayerRenderer::PlayerRenderer() : LivingEntityRenderer( new HumanoidModel(0), 0
 unsigned int PlayerRenderer::getNametagColour(int index)
 {
 	if( index >= 0 && index < MINECRAFT_NET_MAX_PLAYERS)
-	{
-		return s_nametagColors[index];
-	}
+		return nametagColorForIndex(index);
 	return 0xFF000000;
 }
 

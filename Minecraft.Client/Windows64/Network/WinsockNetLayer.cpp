@@ -21,7 +21,7 @@ bool WinsockNetLayer::s_initialized = false;
 
 BYTE WinsockNetLayer::s_localSmallId = 0;
 BYTE WinsockNetLayer::s_hostSmallId = 0;
-BYTE WinsockNetLayer::s_nextSmallId = 1;
+unsigned int WinsockNetLayer::s_nextSmallId = 1;
 
 CRITICAL_SECTION WinsockNetLayer::s_sendLock;
 CRITICAL_SECTION WinsockNetLayer::s_connectionsLock;
@@ -447,9 +447,9 @@ DWORD WINAPI WinsockNetLayer::AcceptThreadProc(LPVOID param)
 			assignedSmallId = s_freeSmallIds.back();
 			s_freeSmallIds.pop_back();
 		}
-		else if (s_nextSmallId < MINECRAFT_NET_MAX_PLAYERS)
+		else if (s_nextSmallId < (unsigned int)MINECRAFT_NET_MAX_PLAYERS)
 		{
-			assignedSmallId = s_nextSmallId++;
+			assignedSmallId = (BYTE)s_nextSmallId++;
 		}
 		else
 		{

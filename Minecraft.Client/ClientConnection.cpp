@@ -830,8 +830,9 @@ void ClientConnection::handleAddPlayer(shared_ptr<AddPlayerPacket> packet)
 		// Current Win64 path: identify QNet player by name and attach packet XUID.
 		if (matchedQNetPlayer == NULL)
 		{
-			for (BYTE smallId = 0; smallId < MINECRAFT_NET_MAX_PLAYERS; ++smallId)
+			for (int i = 0; i < MINECRAFT_NET_MAX_PLAYERS; ++i)
 			{
+				BYTE smallId = static_cast<BYTE>(i);
 				INetworkPlayer* np = g_NetworkManager.GetPlayerBySmallId(smallId);
 				if (np == NULL)
 					continue;
