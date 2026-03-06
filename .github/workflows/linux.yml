@@ -14,7 +14,7 @@ jobs:
       - name: Install base dependencies
         run: |
           pacman -Syu --noconfirm archlinux-keyring
-          pacman -Syu --noconfirm base-devel sudo git cmake extra-cmake-modules python wine msitools ca-certificates libwbclient
+          pacman -Syu --noconfirm base-devel sudo git cmake extra-cmake-modules python wine msitools ca-certificates libwbclient 7zip
 
       - name: Create build user
         run: |
@@ -37,8 +37,8 @@ jobs:
           ./msvc-wine/vsdownload.py --accept-license --dest $(pwd)/my_msvc/opt/msvc
           ./msvc-wine/install.sh $(pwd)/my_msvc/opt/msvc
           export PATH=$(pwd)/my_msvc/opt/msvc/bin/x64:$PATH
-          CC=cl CXX=cl cmake . -DCMAKE_BUILD_TYPE=Release -DCMAKE_SYSTEM_NAME=Windows
-          make
+          msbuild MinecraftConsoles.sln /p:Configuration=Release /p:Platform="Windows64"
+          ls -l
           EOF
 
       - name: Upload artifact/s
@@ -46,4 +46,6 @@ jobs:
         with:
           name: DLL
           path: |
-            DLL/dinput8.dll
+            LCEWindows64.zip
+            ./x64/Release/Minecraft.Client.exe
+            ./x64/Release/Minecraft.Client.pdb
