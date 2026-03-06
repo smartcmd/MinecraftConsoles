@@ -36,7 +36,7 @@ private:
 		virtual int read(byteArray b);
 		virtual int read(byteArray b, unsigned int offset, unsigned int length);
 		virtual void close();
-		virtual __int64 skip(__int64 n) { return n; } // 4J Stu - Not implemented
+		virtual int64_t skip(int64_t n) { return n; } // 4J Stu - Not implemented
 		virtual void flush() {}
 	};
 
@@ -68,7 +68,7 @@ private:
 		virtual int read(byteArray b);
 		virtual int read(byteArray b, unsigned int offset, unsigned int length);
 		virtual void close();
-		virtual __int64 skip(__int64 n) { return n; } // 4J Stu - Not implemented
+		virtual int64_t skip(int64_t n) { return n; } // 4J Stu - Not implemented
 		virtual void flush() {}
 	};
 	class SocketOutputStreamNetwork : public SocketOutputStream
@@ -86,13 +86,13 @@ private:
 		virtual void close();
 		virtual void flush() {}
 	};
-	
+
 	bool m_hostServerConnection;			// true if this is the connection between the host player and server
 	bool m_hostLocal;						// true if this player on the same machine as the host
 	int m_end;								// 0 for client side or 1 for host side
 
 	// For local connections between the host player and the server
-	static CRITICAL_SECTION s_hostQueueLock[2]; 
+	static CRITICAL_SECTION s_hostQueueLock[2];
 	static std::queue<byte> s_hostQueue[2];
 	static SocketOutputStreamLocal *s_hostOutStream[2];
 	static SocketInputStreamLocal *s_hostInStream[2];
@@ -108,7 +108,7 @@ private:
 	static ServerConnection *s_serverConnection;
 
 	BYTE networkPlayerSmallId;
-public:	
+public:
 	C4JThread::Event* m_socketClosedEvent;
 
 	INetworkPlayer *getPlayer();

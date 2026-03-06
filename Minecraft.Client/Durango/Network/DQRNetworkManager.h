@@ -131,7 +131,7 @@ public:
 	static const int MAX_ONLINE_PLAYER_COUNT = 8;
 	static const int MAX_ONLINE_PLAYER_NAME_LENGTH = 21;
 
-	// This class stores everything about a player that must be synchronised between machines. 
+	// This class stores everything about a player that must be synchronised between machines.
 	class PlayerSyncData
 	{
 	public:
@@ -210,7 +210,7 @@ public:
 		DNM_STATE_JOINING,
 
 		DNM_STATE_STARTING,
-		DNM_STATE_PLAYING,		
+		DNM_STATE_PLAYING,
 
 		DNM_STATE_LEAVING,
 		DNM_STATE_ENDING,
@@ -339,9 +339,9 @@ private:
 	static const eDQRNetworkManagerState								m_INTtoEXTStateMappings[DNM_INT_STATE_COUNT];
 	eDQRNetworkManagerInternalState										m_state;
 	eDQRNetworkManagerState												m_stateExternal;
-	__int64																m_lastUnreliableSendTime;
-	__int64																m_firstUnreliableSendTime;
-	__int64																m_startedWaitingForReservationsTime;
+	int64_t																m_lastUnreliableSendTime;
+	int64_t																m_firstUnreliableSendTime;
+	int64_t																m_startedWaitingForReservationsTime;
 	unsigned char														*m_customSessionData;
 	unsigned int														m_customSessionDataSize;
 	int																	m_customDataDirtyUpdateTicks;
@@ -361,7 +361,7 @@ private:
 
 	CRITICAL_SECTION													m_csRoomSyncData;
 	RoomSyncData														m_roomSyncData;
-	DQRNetworkPlayer													*m_players[MAX_ONLINE_PLAYER_COUNT];	
+	DQRNetworkPlayer													*m_players[MAX_ONLINE_PLAYER_COUNT];
 
 	IDQRNetworkManagerListener											*m_listener;
 	PartyController														*m_partyController;
@@ -389,7 +389,7 @@ private:
 	int																	m_joinCreateSessionAttempts;
 
 	C4JThread															*m_CreateSessionThread;
-	C4JThread															*m_LeaveRoomThread;		
+	C4JThread															*m_LeaveRoomThread;
 	C4JThread															*m_TidyUpJoinThread;
 	C4JThread															*m_UpdateCustomSessionDataThread;
 	C4JThread															*m_RTS_DoWorkThread;
@@ -426,7 +426,7 @@ private:
 	int																	GetQueueSizeMessages();
 	void																SendBytesRaw(int smallId, BYTE *bytes, int byteCount, bool reliableAndSequential);
 	void																SendBytesChat(unsigned int address, BYTE *bytes, int byteCount, bool reliable, bool sequential, bool broadcast);
-	
+
 	bool																AddRoomSyncPlayer(DQRNetworkPlayer *pPlayer, unsigned int sessionAddress, int channel);
 	void																RemoveRoomSyncPlayersWithSessionAddress(unsigned int sessionAddress);
 	void																RemoveRoomSyncPlayer(DQRNetworkPlayer *pPlayer);
@@ -438,7 +438,7 @@ private:
 	int																	GetSessionIndexForSmallId(unsigned char smallId);
 	int																	GetSessionIndexAndSmallIdForHost(unsigned char *smallId);
 
-	static void															LogComment( Platform::String^ strText );	
+	static void															LogComment( Platform::String^ strText );
 	static void															LogCommentFormat( LPCWSTR strMsg, ... );
 	static void															LogCommentWithError( Platform::String^ strTest, HRESULT hr );
 
@@ -491,7 +491,7 @@ public:
 	void																SetDisplayName(PlayerUID xuid, wstring displayName);
 
 private:
-	__int64																m_playersLeftPartyTime;
+	int64_t																m_playersLeftPartyTime;
 	int																	m_playersLeftParty;
 
 	bool																GetBestPartyUserIndex();
@@ -502,7 +502,7 @@ private:
 	bool																GetGameSessionData(MXSM::MultiplayerSession^ session, void *gameSessionData);
 
 public:
-	static Platform::Collections::Vector<Platform::String^>^			GetFriends(); 
+	static Platform::Collections::Vector<Platform::String^>^			GetFriends();
 
 private:
 	SessionSearchResult													*m_sessionSearchResults;
@@ -551,7 +551,7 @@ private:
 	void																Process_RTS_MESSAGE_STATUS_TERMINATED(RTS_Message &message);
 
 	// Outgoing messages - to be called from the RTS work thread, to process requests from the main thread
-	
+
 	void																ProcessRTSMessagesOutgoing();
 	void																Process_RTS_MESSAGE_START_CLIENT(RTS_Message &message);
 	void																Process_RTS_MESSAGE_START_HOST(RTS_Message &message);

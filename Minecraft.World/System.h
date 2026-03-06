@@ -20,16 +20,16 @@ public:
 	ArrayCopyFunctionDeclaration(Biome *)
 	ArrayCopyFunctionDeclaration(int)
 
-	static __int64 nanoTime();
-	static __int64 currentTimeMillis();
-	static __int64 currentRealTimeMillis(); // 4J Added to get real-world time for timestamps in saves
+	static int64_t nanoTime();
+	static int64_t currentTimeMillis();
+	static int64_t currentRealTimeMillis(); // 4J Added to get real-world time for timestamps in saves
 
 	static void ReverseUSHORT(unsigned short *pusVal);
 	static void ReverseSHORT(short *psVal);
 	static void ReverseULONG(unsigned long *pulVal);
 	static void ReverseULONG(unsigned int *pulVal);
 	static void ReverseINT(int *piVal);
-	static void ReverseULONGLONG(__int64 *pullVal);
+	static void ReverseULONGLONG(int64_t *pullVal);
 	static void ReverseWCHARA(WCHAR *pwch,int iLen);
 
 };

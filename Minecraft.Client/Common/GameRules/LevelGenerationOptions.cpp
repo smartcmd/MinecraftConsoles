@@ -175,7 +175,7 @@ void LevelGenerationOptions::addAttribute(const wstring &attributeName, const ws
 {
 	if(attributeName.compare(L"seed") == 0)
 	{
-		m_seed = _fromString<__int64>(attributeValue);
+		m_seed = _fromString<int64_t>(attributeValue);
 		app.DebugPrintf("LevelGenerationOptions: Adding parameter m_seed=%I64d\n",m_seed);
 	}
 	else if(attributeName.compare(L"spawnX") == 0)
@@ -700,7 +700,7 @@ void LevelGenerationOptions::deleteBaseSaveData() { if(m_pbBaseSaveData) delete 
 bool LevelGenerationOptions::hasLoadedData() { return m_hasLoadedData; }
 void LevelGenerationOptions::setLoadedData() { m_hasLoadedData = true; }
 
-__int64 LevelGenerationOptions::getLevelSeed() { return m_seed; }
+int64_t LevelGenerationOptions::getLevelSeed() { return m_seed; }
 int LevelGenerationOptions::getLevelHasBeenInCreative() { return m_bHasBeenInCreative; }
 Pos *LevelGenerationOptions::getSpawnPos() { return m_spawnPos; }
 bool LevelGenerationOptions::getuseFlatWorld() { return m_useFlatWorld; }

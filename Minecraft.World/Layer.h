@@ -11,22 +11,22 @@ class LevelType;
 class Layer
 {
 private:
-	__int64 seed;
+	int64_t seed;
 
 protected:
 	shared_ptr<Layer>parent;
 
 private:
-	__int64 rval;
-	__int64 seedMixup;
+	int64_t rval;
+	int64_t seedMixup;
 
 public:
-	static LayerArray getDefaultLayers(__int64 seed, LevelType *levelType);
+	static LayerArray getDefaultLayers(int64_t seed, LevelType *levelType);
 
-	Layer(__int64 seedMixup);
+	Layer(int64_t seedMixup);
 
-	virtual void init(__int64 seed);
-	virtual void initRandom(__int64 x, __int64 y);
+	virtual void init(int64_t seed);
+	virtual void initRandom(int64_t x, int64_t y);
 
 protected:
 	int nextRandom(int max);

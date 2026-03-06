@@ -767,6 +767,9 @@ int LevelRenderer::renderChunks(int from, int to, int layer, double alpha)
 	glPushMatrix();
 	glTranslatef((float)-xOff, (float)-yOff, (float)-zOff);
 
+	if (layer == 1)
+		glDepthMask(false);
+
 #ifdef __PSVITA__
 	// AP - also set the camera position so we can work out if a chunk is fogged or not
 	RenderManager.SetCameraPosition((float)-xOff, (float)-yOff, (float)-zOff);
@@ -844,6 +847,10 @@ int LevelRenderer::renderChunks(int from, int to, int layer, double alpha)
 #endif // __PS3__
 
 	glPopMatrix();
+
+	if (layer == 1)
+		glDepthMask(true);
+
 	mc->gameRenderer->turnOffLightLayer(alpha);		// 4J - brought forward from 1.8.2
 
 #else
@@ -2076,9 +2083,9 @@ bool LevelRenderer::updateDirtyChunks()
 			if( bAtomic || (index == 0) )
 			{
 				//PIXBeginNamedEvent(0,"Rebuilding near chunk %d %d %d",chunk->x, chunk->y, chunk->z);
-				//		static __int64 totalTime = 0;
-				//		static __int64 countTime = 0;
-				//		__int64 startTime = System::currentTimeMillis();
+				//		static int64_t totalTime = 0;
+				//		static int64_t countTime = 0;
+				//		int64_t startTime = System::currentTimeMillis();
 
 				//app.DebugPrintf("Rebuilding permaChunk %d\n", index);
 
@@ -2087,7 +2094,7 @@ bool LevelRenderer::updateDirtyChunks()
 				if(index !=0)
 					s_rebuildCompleteEvents->Set(index-1);		// MGH - this rebuild happening on the main thread instead, mark the thread it should have been running on as complete
 
-				//		__int64 endTime = System::currentTimeMillis();
+				//		int64_t endTime = System::currentTimeMillis();
 				//		totalTime += (endTime - startTime);
 				//		countTime++;
 				//		printf("%d : %f\n", countTime, (float)totalTime / (float)countTime);
@@ -2126,11 +2133,11 @@ bool LevelRenderer::updateDirtyChunks()
 		static Chunk permaChunk;
 		permaChunk.makeCopyForRebuild(chunk);
 		LeaveCriticalSection(&m_csDirtyChunks);
-		//		static __int64 totalTime = 0;
-		//		static __int64 countTime = 0;
-		//		__int64 startTime = System::currentTimeMillis();
+		//		static int64_t totalTime = 0;
+		//		static int64_t countTime = 0;
+		//		int64_t startTime = System::currentTimeMillis();
 		permaChunk.rebuild();
-		//		__int64 endTime = System::currentTimeMillis();
+		//		int64_t endTime = System::currentTimeMillis();
 		//		totalTime += (endTime - startTime);
 		//		countTime++;
 		//		printf("%d : %f\n", countTime, (float)totalTime / (float)countTime);

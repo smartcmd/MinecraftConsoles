@@ -14,7 +14,7 @@ public:
 	virtual ChunkSource *createRandomLevelSource() const;
 	virtual bool isNaturalDimension();
 	virtual bool isValidSpawn(int x, int y) const;
-	virtual float getTimeOfDay(__int64 time, float a) const;
+	virtual float getTimeOfDay(int64_t time, float a) const;
 	virtual bool mayRespawn() const;
 	virtual bool isFoggyAt(int x, int z);
 

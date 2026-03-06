@@ -21,8 +21,8 @@ int (* SQRNetworkManager_Orbis::s_SignInCompleteCallbackFn)(void *pParam, bool b
 void * SQRNetworkManager_Orbis::s_SignInCompleteParam = NULL;
 sce::Toolkit::NP::PresenceDetails SQRNetworkManager_Orbis::s_lastPresenceInfo;
 
-__int64 SQRNetworkManager_Orbis::s_lastPresenceTime = 0;
-__int64 SQRNetworkManager_Orbis::s_resendPresenceTime = 0;
+int64_t SQRNetworkManager_Orbis::s_lastPresenceTime = 0;
+int64_t SQRNetworkManager_Orbis::s_resendPresenceTime = 0;
 
 bool SQRNetworkManager_Orbis::s_presenceStatusDirty = false;
 bool SQRNetworkManager_Orbis::s_presenceDataDirty = false;

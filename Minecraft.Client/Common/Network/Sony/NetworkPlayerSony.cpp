@@ -132,6 +132,6 @@ int NetworkPlayerSony::GetTimeSinceLastChunkPacket_ms()
 		return INT_MAX;
 	}
 
-	__int64 currentTime = System::currentTimeMillis();
+	int64_t currentTime = System::currentTimeMillis();
 	return (int)( currentTime - m_lastChunkPacketTime );
 }

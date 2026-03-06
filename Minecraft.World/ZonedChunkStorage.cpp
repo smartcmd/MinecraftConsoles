@@ -50,7 +50,7 @@ ZoneFile *ZonedChunkStorage::getZoneFile(int x, int z, bool create)
 
     int xZone = x >> CHUNKS_PER_ZONE_BITS;
     int zZone = z >> CHUNKS_PER_ZONE_BITS;
-    __int64 key = xZone + (zZone << 20l);
+    int64_t key = xZone + (zZone << 20l);
 	// 4J - was !zoneFiles.containsKey(key)
     if (zoneFiles.find(key) == zoneFiles.end())
 	{
@@ -107,8 +107,8 @@ LevelChunk *ZonedChunkStorage::load(Level *level, int x, int z)
     header->flip();
     int xOrg = header->getInt();
     int zOrg = header->getInt();
-    __int64 time = header->getLong();
-    __int64 flags = header->getLong();
+    int64_t time = header->getLong();
+    int64_t flags = header->getLong();
 
     lc->terrainPopulated = (flags & BIT_TERRAIN_POPULATED) != 0;
 
@@ -121,7 +121,7 @@ LevelChunk *ZonedChunkStorage::load(Level *level, int x, int z)
 
 void ZonedChunkStorage::save(Level *level, LevelChunk *lc)
 {
-    __int64 flags = 0;
+    int64_t flags = 0;
     if (lc->terrainPopulated) flags |= BIT_TERRAIN_POPULATED;
 
     ByteBuffer *header = ByteBuffer::allocate(CHUNK_HEADER_SIZE);
@@ -176,7 +176,7 @@ void ZonedChunkStorage::flush()
 	for ( auto& it : zoneFiles )
 	{
 		ZoneFile *zoneFile = it.second;
-        if ( zoneFile ) 
+        if ( zoneFile )
             zoneFile->close();
 	}
 	zoneFiles.clear();

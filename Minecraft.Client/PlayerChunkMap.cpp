@@ -102,7 +102,7 @@ void PlayerChunkMap::PlayerChunk::remove(shared_ptr<ServerPlayer> player)
             auto it = find(parent->knownChunks.begin(), parent->knownChunks.end(), this);
             if(it != parent->knownChunks.end()) parent->knownChunks.erase(it);
 		}
-        __int64 id = (pos.x + 0x7fffffffLL) | ((pos.z + 0x7fffffffLL) << 32);
+        int64_t id = (pos.x + 0x7fffffffLL) | ((pos.z + 0x7fffffffLL) << 32);
         auto it = parent->chunks.find(id);
         if( it != parent->chunks.end() )
 		{
@@ -421,7 +421,7 @@ ServerLevel *PlayerChunkMap::getLevel()
 
 void PlayerChunkMap::tick()
 {
-	__int64 time = level->getGameTime();
+	int64_t time = level->getGameTime();
 
 	if (time - lastInhabitedUpdate > Level::TICKS_PER_DAY / 3)
 	{
@@ -474,13 +474,13 @@ void PlayerChunkMap::tick()
 
 bool PlayerChunkMap::hasChunk(int x, int z)
 {
-    __int64 id = (x + 0x7fffffffLL) | ((z + 0x7fffffffLL) << 32);
+    int64_t id = (x + 0x7fffffffLL) | ((z + 0x7fffffffLL) << 32);
 	return chunks.find(id) != chunks.end();
 }
 
 PlayerChunkMap::PlayerChunk *PlayerChunkMap::getChunk(int x, int z, bool create)
 {
-    __int64 id = (x + 0x7fffffffLL) | ((z + 0x7fffffffLL) << 32);
+    int64_t id = (x + 0x7fffffffLL) | ((z + 0x7fffffffLL) << 32);
     auto it = chunks.find(id);
 
     PlayerChunk *chunk = nullptr;
@@ -502,7 +502,7 @@ PlayerChunkMap::PlayerChunk *PlayerChunkMap::getChunk(int x, int z, bool create)
 // queue a request for it to be created.
 void PlayerChunkMap::getChunkAndAddPlayer(int x, int z, shared_ptr<ServerPlayer> player)
 {
-    __int64 id = (x + 0x7fffffffLL) | ((z + 0x7fffffffLL) << 32);
+    int64_t id = (x + 0x7fffffffLL) | ((z + 0x7fffffffLL) << 32);
     auto it = chunks.find(id);
 
     if( it != chunks.end() )
@@ -529,7 +529,7 @@ void PlayerChunkMap::getChunkAndRemovePlayer(int x, int z, shared_ptr<ServerPlay
 			return;
 		}
 	}
-    __int64 id = (x + 0x7fffffffLL) | ((z + 0x7fffffffLL) << 32);
+    int64_t id = (x + 0x7fffffffLL) | ((z + 0x7fffffffLL) << 32);
     auto it = chunks.find(id);
 
     if( it != chunks.end() )

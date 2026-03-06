@@ -21,7 +21,7 @@ public:
 	static void staticCtor();
 
 private:
-	__int64 clientSideRenderTick;
+	int64_t clientSideRenderTick;
 	float clientSideRenderScale;
 
 	bool isActive;

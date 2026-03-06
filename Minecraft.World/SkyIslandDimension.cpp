@@ -16,7 +16,7 @@ ChunkSource *SkyIslandDimension::createRandomLevelSource() const
 	return new SkyIslandRandomLevelSource(level, level->getSeed());
 }
 
-float SkyIslandDimension::getTimeOfDay(__int64 time, float a) const
+float SkyIslandDimension::getTimeOfDay(int64_t time, float a) const
 {
 	return 0.0f;
 }
