@@ -845,7 +845,7 @@ void UIController::tickInput()
 									break;
 								}
 							}
-							if (hitObject != IGGY_FOCUS_NULL && hitObject != currentFocus)
+							if (hitObject != currentFocus && (hitObject != IGGY_FOCUS_NULL || !Win64_IsControllerConnected()))
 							{
 								IggyPlayerSetFocusRS(movie, hitObject, 0);
 							}
