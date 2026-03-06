@@ -1169,6 +1169,43 @@ void UIScene_LoadOrJoinMenu::handleInput(int iPad, int key, bool repeat, bool pr
 			}
 		}
 #endif
+#ifdef _WINDOWS64
+		// Right click on a save opens save options (same as RB / ACTION_MENU_RIGHT_SCROLL)
+		if(pressed && !repeat && ProfileManager.IsFullVersion() && !StorageManager.GetSaveDisabled())
+		{
+			if(DoesSavesListHaveFocus() && (m_iDefaultButtonsC > 0) && (m_iSaveListIndex >= m_iDefaultButtonsC))
+			{
+				m_bIgnoreInput = true;
+				if(StorageManager.EnoughSpaceForAMinSaveGame())
+				{
+					UINT uiIDA[3];
+					uiIDA[0]=IDS_CONFIRM_CANCEL;
+					uiIDA[1]=IDS_TITLE_RENAMESAVE;
+					uiIDA[2]=IDS_TOOLTIPS_DELETESAVE;
+					ui.RequestAlertMessage(IDS_TOOLTIPS_SAVEOPTIONS, IDS_TEXT_SAVEOPTIONS, uiIDA, 3, iPad,&UIScene_LoadOrJoinMenu::SaveOptionsDialogReturned,this);
+				}
+				else
+				{
+					UINT uiIDA[2];
+					uiIDA[0]=IDS_CONFIRM_CANCEL;
+					uiIDA[1]=IDS_CONFIRM_OK;
+					ui.RequestAlertMessage(IDS_TOOLTIPS_DELETESAVE, IDS_TEXT_DELETE_SAVE, uiIDA, 2, iPad,&UIScene_LoadOrJoinMenu::DeleteSaveDialogReturned,this);
+				}
+				ui.PlayUISFX(eSFX_Press);
+			}
+			else if(DoesMashUpWorldHaveFocus() && (m_iSaveListIndex != JOIN_LOAD_CREATE_BUTTON_INDEX))
+			{
+				LevelGenerationOptions *levelGen = m_generators.at(m_iSaveListIndex - 1);
+				if(!levelGen->isTutorial() && levelGen->requiresTexturePack())
+				{
+					m_bIgnoreInput = true;
+					app.HideMashupPackWorld(m_iPad, levelGen->getRequiredTexturePackId());
+					m_iState = e_SavesRepopulateAfterMashupHide;
+				}
+				ui.PlayUISFX(eSFX_Press);
+			}
+		}
+#endif
         break;
     case ACTION_MENU_Y:
 #if defined(__PS3__) || defined(__PSVITA__) || defined(__ORBIS__)
@@ -2394,7 +2431,7 @@ int UIScene_LoadOrJoinMenu::SaveOptionsDialogReturned(void *pParam,int iPad,C4JS
                 kbData.maxChars    = 25;
                 kbData.callback    = &UIScene_LoadOrJoinMenu::KeyboardCompleteWorldNameCallback;
                 kbData.lpParam     = pClass;
-                kbData.pcMode      = !Win64_IsControllerConnected();
+                kbData.pcMode      = g_KBMInput.IsKBMActive();
                 ui.NavigateToScene(pClass->m_iPad, eUIScene_Keyboard, &kbData);
             }
 #elif defined _DURANGO
