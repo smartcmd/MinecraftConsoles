@@ -18,6 +18,7 @@
 #include "..\Minecraft.World\ArrayWithLength.h"
 #include "..\Minecraft.World\net.minecraft.network.packet.h"
 #include "..\Minecraft.World\net.minecraft.network.h"
+#include "Windows64\Windows64_Xuid.h"
 #include "..\Minecraft.World\Pos.h"
 #include "..\Minecraft.World\ProgressListener.h"
 #include "..\Minecraft.World\HellRandomLevelSource.h"
@@ -106,11 +107,18 @@ void PlayerList::placeNewPlayer(Connection *connection, shared_ptr<ServerPlayer>
 	}
 #endif
 #ifdef _WINDOWS64
-	if (networkPlayer != NULL && !networkPlayer->IsLocal())
+	if (networkPlayer != NULL)
 	{
 		NetworkPlayerXbox* nxp = (NetworkPlayerXbox*)networkPlayer;
 		IQNetPlayer* qnp = nxp->GetQNetPlayer();
-		wcsncpy_s(qnp->m_gamertag, 32, player->name.c_str(), _TRUNCATE);
+		if (qnp != NULL)
+		{
+			if (!networkPlayer->IsLocal())
+			{
+				wcsncpy_s(qnp->m_gamertag, 32, player->name.c_str(), _TRUNCATE);
+			}
+			qnp->m_resolvedXuid = player->getXuid();
+		}
 	}
 #endif
 	// 4J Stu - TU-1 hotfix
@@ -520,12 +528,20 @@ shared_ptr<ServerPlayer> PlayerList::getPlayerForLogin(PendingConnection *pendin
 	player->setOnlineXuid( onlineXuid ); // 4J Added
 #ifdef _WINDOWS64
 	{
+		// Use packet-supplied identity from LoginPacket.
+		// Do not recompute from name here: mixed-version clients must stay compatible.
 		INetworkPlayer* np = pendingConnection->connection->getSocket()->getPlayer();
 		if (np != NULL)
 		{
-			PlayerUID realXuid = np->GetUID();
-			player->setXuid(realXuid);
-			player->setOnlineXuid(realXuid);
+			player->setOnlineXuid(np->GetUID());
+
+			// Backward compatibility: when Minecraft.Client is hosting, keep the first
+			// host player on the legacy embedded host XUID (base + 0).
+			// This preserves pre-migration host playerdata in existing worlds.
+			if (np->IsHost())
+			{
+				player->setXuid(Win64Xuid::GetLegacyEmbeddedHostXuid());
+			}
 		}
 	}
 #endif

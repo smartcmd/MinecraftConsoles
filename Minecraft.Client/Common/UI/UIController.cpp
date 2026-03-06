@@ -2342,7 +2342,13 @@ void UIController::PlayUISFX(ESoundEffect eSound)
 	if (time - m_lastUiSfx < 10) { return; }
 	m_lastUiSfx = time;
 
-	Minecraft::GetInstance()->soundEngine->playUI(eSound,1.0f,1.0f);
+	float pitch = 1.0f;
+	if (eSound == eSFX_Focus)
+	{
+		pitch += (m_randomDistribution(m_randomGenerator) - 0.5f) / 10;
+	}
+
+	Minecraft::GetInstance()->soundEngine->playUI(eSound,1.0f,pitch);
 }
 
 void UIController::DisplayGamertag(unsigned int iPad, bool show)

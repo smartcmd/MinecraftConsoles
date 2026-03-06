@@ -42,6 +42,7 @@
 #include "..\..\Minecraft.World\OldChunkStorage.h"
 #include "Common/PostProcesser.h"
 #include "Network\WinsockNetLayer.h"
+#include "Windows64_Xuid.h"
 
 #include "Xbox/resource.h"
 
@@ -110,6 +111,7 @@ struct Win64LaunchOptions
 {
 	int screenMode;
 	bool serverMode;
+	bool fullscreen;
 };
 
 static void CopyWideArgToAnsi(LPCWSTR source, char* dest, size_t destSize)
@@ -256,6 +258,8 @@ static Win64LaunchOptions ParseLaunchOptions()
 					g_Win64MultiplayerPort = (int)port;
 			}
 		}
+		else if (_wcsicmp(argv[i], L"-fullscreen") == 0)
+			options.fullscreen = true;
 	}
 
 	LocalFree(argv);
@@ -1218,6 +1222,12 @@ int APIENTRY _tWinMain(_In_ HINSTANCE hInstance,
 	Win64LaunchOptions launchOptions = ParseLaunchOptions();
 	ApplyScreenMode(launchOptions.screenMode);
 
+	// Ensure uid.dat exists from startup in client mode (before any multiplayer/login path).
+	if (!launchOptions.serverMode)
+	{
+		Win64Xuid::ResolvePersistentXuid();
+	}
+
 	// If no username, let's fall back
 	if (g_Win64Username[0] == 0)
 	{
@@ -1245,7 +1255,7 @@ int APIENTRY _tWinMain(_In_ HINSTANCE hInstance,
 	}
 
 	// Restore fullscreen state from previous session
-	if (LoadFullscreenOption() && !g_isFullscreen)
+	if (LoadFullscreenOption() && !g_isFullscreen || launchOptions.fullscreen)
 	{
 		ToggleFullscreen();
 	}
