@@ -36,9 +36,8 @@ PreStitchedTextureMap::PreStitchedTextureMap(int type, const wstring &name, cons
 void PreStitchedTextureMap::stitch()
 {
 	// Animated StitchedTextures store a vector of textures for each frame of the animation. Free any pre-existing ones here.
-	for(AUTO_VAR(it, animatedTextures.begin()); it != animatedTextures.end(); ++it)
+	for(StitchedTexture *animatedStitchedTexture : animatedTextures)
 	{
-		StitchedTexture *animatedStitchedTexture = *it;
 		animatedStitchedTexture->freeFrameTextures();
 	}
 
@@ -133,24 +132,24 @@ void PreStitchedTextureMap::stitch()
 	TextureManager::getInstance()->registerName(name, stitchResult);
 	//stitchResult = stitcher->constructTexture(m_mipMap);
 
-	for(AUTO_VAR(it, texturesByName.begin()); it != texturesByName.end(); ++it)
+	for(auto & it : texturesByName)
 	{
-		StitchedTexture *preStitched = (StitchedTexture *)it->second;
+		auto *preStitched = static_cast<StitchedTexture *>(it.second);
 
 		int x = preStitched->getU0() * stitchResult->getWidth();
 		int y = preStitched->getV0() * stitchResult->getHeight();
 		int width = (preStitched->getU1() * stitchResult->getWidth()) - x;
 		int height = (preStitched->getV1() * stitchResult->getHeight()) - y;
 
-		preStitched->init(stitchResult, NULL, x, y, width, height, false);
+		preStitched->init(stitchResult, nullptr, x, y, width, height, false);
 	}
 
 	MemSect(52);
-	for(AUTO_VAR(it, texturesByName.begin()); it != texturesByName.end(); ++it)
+	for(auto& it : texturesByName)
 	{
-		StitchedTexture *preStitched = (StitchedTexture *)(it->second);
+		auto *preStitched = static_cast<StitchedTexture *>(it.second);
 
-		makeTextureAnimated(texturePack, preStitched);		
+		makeTextureAnimated(texturePack, preStitched);
 	}
 	MemSect(0);
 	//missingPosition = (StitchedTexture *)texturesByName.find(NAME_MISSING_TEXTURE)->second;
@@ -164,7 +163,7 @@ void PreStitchedTextureMap::stitch()
 	DWORD *data = (DWORD*) this->getStitchedTexture()->getData()->getBuffer();
 	int Width = this->getStitchedTexture()->getWidth();
 	int Height = this->getStitchedTexture()->getHeight();
-	for(AUTO_VAR(it, texturesByName.begin()); it != texturesByName.end(); ++it)
+	for( auto it = texturesByName.begin(); it != texturesByName.end(); ++it)
 	{
 		StitchedTexture *preStitched = (StitchedTexture *)it->second;
 
@@ -208,7 +207,7 @@ void PreStitchedTextureMap::makeTextureAnimated(TexturePack *texturePack, Stitch
 	}
 
 	wstring textureFileName = tex->m_fileName;
-	
+
 	wstring animString = texturePack->getAnimationString(textureFileName, path, true);
 
 	if(!animString.empty())
@@ -259,10 +258,8 @@ StitchedTexture *PreStitchedTextureMap::getTexture(const wstring &name)
 
 void PreStitchedTextureMap::cycleAnimationFrames()
 {
-	//for (StitchedTexture texture : animatedTextures)
-	for(AUTO_VAR(it, animatedTextures.begin() ); it != animatedTextures.end(); ++it)
+	for(StitchedTexture* texture : animatedTextures)
 	{
-		StitchedTexture *texture = *it;
 		texture->cycleFrames();
 	}
 }
@@ -286,10 +283,10 @@ Icon *PreStitchedTextureMap::registerIcon(const wstring &name)
 		//new RuntimeException("Don't register null!").printStackTrace();
 	}
 
-	AUTO_VAR(it, texturesByName.find(name));
-	if(it != texturesByName.end()) result = it->second;
+    auto it = texturesByName.find(name);
+    if(it != texturesByName.end()) result = it->second;
 
-	if (result == NULL)
+	if (result == nullptr)
 	{
 #ifndef _CONTENT_PACKAGE
 		app.DebugPrintf("Could not find uv data for icon %ls\n", name.c_str() );
@@ -325,9 +322,9 @@ void PreStitchedTextureMap::loadUVs()
 		return;
 	}
 
-	for(AUTO_VAR(it, texturesByName.begin()); it != texturesByName.end(); ++it)
+	for(auto& it : texturesByName)
 	{
-		delete it->second;
+		delete it.second;
 	}
 	texturesByName.clear();
 
@@ -972,7 +969,7 @@ void PreStitchedTextureMap::loadUVs()
 		ADD_ICON(18,	13,	L"glass_silver");
 		ADD_ICON(18,	14,	L"glass_white");
 		ADD_ICON(18,	15,	L"glass_yellow");
-		
+
 		ADD_ICON(19,	0,	L"glass_pane_top_black");
 		ADD_ICON(19,	1,	L"glass_pane_top_blue");
 		ADD_ICON(19,	2,	L"glass_pane_top_brown");

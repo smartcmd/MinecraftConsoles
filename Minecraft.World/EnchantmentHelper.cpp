@@ -57,19 +57,19 @@ void EnchantmentHelper::setEnchantments(unordered_map<int, int> *enchantments, s
 	ListTag<CompoundTag> *list = new ListTag<CompoundTag>();
 
 	//for (int id : enchantments.keySet())
-	for(AUTO_VAR(it, enchantments->begin()); it != enchantments->end(); ++it)
+	for ( const auto& it : *enchantments )
 	{
-		int id = it->first;
+		int id = it.first;
 		CompoundTag *tag = new CompoundTag();
 
 		tag->putShort((wchar_t *)ItemInstance::TAG_ENCH_ID, (short) id);
-		tag->putShort((wchar_t *)ItemInstance::TAG_ENCH_LEVEL, (short)(int)it->second);
+		tag->putShort((wchar_t *)ItemInstance::TAG_ENCH_LEVEL, (short)(int)it.second);
 
 		list->add(tag);
 
 		if (item->id == Item::enchantedBook_Id)
 		{
-			Item::enchantedBook->addEnchantment(item, new EnchantmentInstance(id, it->second));
+			Item::enchantedBook->addEnchantment(item, new EnchantmentInstance(id, it.second));
 		}
 	}
 
@@ -301,20 +301,22 @@ shared_ptr<ItemInstance> EnchantmentHelper::enchantItem(Random *random, shared_p
 
 	if (isBook) itemInstance->id = Item::enchantedBook_Id;
 
-	if (newEnchantment != NULL)
+	if ( newEnchantment )
 	{
-		for(AUTO_VAR(it, newEnchantment->begin()); it != newEnchantment->end(); ++it)
+		for ( EnchantmentInstance *e : *newEnchantment )
 		{
-			EnchantmentInstance *e = *it;
-			if (isBook)
+			if ( e )
 			{
-				Item::enchantedBook->addEnchantment(itemInstance, e);
+				if (isBook)
+				{
+					Item::enchantedBook->addEnchantment(itemInstance, e);
+				}
+				else
+				{
+					itemInstance->enchant(e->enchantment, e->level);
+				}
+				delete e;
 			}
-			else
-			{
-				itemInstance->enchant(e->enchantment, e->level);
-			}
-			delete e;
 		}
 		delete newEnchantment;
 	}
@@ -355,17 +357,17 @@ vector<EnchantmentInstance *> *EnchantmentHelper::selectEnchantment(Random *rand
 	vector<EnchantmentInstance *> *results = NULL;
 
 	unordered_map<int, EnchantmentInstance *> *availableEnchantments = getAvailableEnchantmentResults(realValue, itemInstance);
-	if (availableEnchantments != NULL && !availableEnchantments->empty())
+	if (availableEnchantments && !availableEnchantments->empty())
 	{
 		vector<WeighedRandomItem *> values;
-		for(AUTO_VAR(it, availableEnchantments->begin()); it != availableEnchantments->end(); ++it)
+		for( auto& it : *availableEnchantments )
 		{
-			values.push_back(it->second);
+			values.push_back(it.second);
 		}
 		EnchantmentInstance *instance = (EnchantmentInstance *) WeighedRandom::getRandomItem(random, &values);
 		values.clear();
 
-		if (instance != NULL)
+		if (instance)
 		{
 			results = new vector<EnchantmentInstance *>();
 			results->push_back( instance->copy() ); // 4J Stu - Inserting a copy so we can clear memory from the availableEnchantments collection
@@ -377,14 +379,12 @@ vector<EnchantmentInstance *> *EnchantmentHelper::selectEnchantment(Random *rand
 				// remove incompatible enchantments from previous result
 				//final Iterator<Integer> mapIter = availableEnchantments.keySet().iterator();
 				//while (mapIter.hasNext())
-				for(AUTO_VAR(it, availableEnchantments->begin()); it != availableEnchantments->end();)
+				for (auto it = availableEnchantments->begin(); it != availableEnchantments->end();)
 				{
 					int nextEnchantment = it->first;//mapIter.next();
 					bool valid = true;
-					//for (EnchantmentInstance *current : results)
-					for(AUTO_VAR(resIt, results->begin()); resIt != results->end(); ++resIt)
+					for ( const EnchantmentInstance *current : *results )
 					{
-						EnchantmentInstance *current = *resIt;
 						if (!current->enchantment->isCompatibleWith(Enchantment::enchantments[nextEnchantment]))
 						{
 							valid = false;
@@ -405,9 +405,9 @@ vector<EnchantmentInstance *> *EnchantmentHelper::selectEnchantment(Random *rand
 
 				if (!availableEnchantments->empty())
 				{					
-					for(AUTO_VAR(it, availableEnchantments->begin()); it != availableEnchantments->end(); ++it)
+					for (auto& it : *availableEnchantments )
 					{
-						values.push_back(it->second);
+						values.push_back(it.second);
 					}
 					EnchantmentInstance *nextInstance = (EnchantmentInstance *) WeighedRandom::getRandomItem(random, &values);
 					values.clear();
@@ -418,11 +418,11 @@ vector<EnchantmentInstance *> *EnchantmentHelper::selectEnchantment(Random *rand
 			}
 		}
 	}
-	if(availableEnchantments != NULL)
+	if( availableEnchantments )
 	{
-		for(AUTO_VAR(it, availableEnchantments->begin()); it != availableEnchantments->end(); ++it)
+		for (auto& it : *availableEnchantments )
 		{
-			delete it->second;
+			delete it.second;
 		}
 		delete availableEnchantments;
 	}
@@ -460,7 +460,7 @@ unordered_map<int, EnchantmentInstance *> *EnchantmentHelper::getAvailableEnchan
 				{
 					results = new unordered_map<int, EnchantmentInstance *>();
 				}
-				AUTO_VAR(it, results->find(e->id));
+				auto it = results->find(e->id);
 				if(it != results->end())
 				{
 					delete it->second;

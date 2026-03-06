@@ -440,7 +440,7 @@ void EntityHorse::causeFallDamage(float fallDistance)
 
 /**
 * Different inventory sizes depending on the kind of horse
-* 
+*
 * @return
 */
 int EntityHorse::getInventorySize()
@@ -523,9 +523,8 @@ shared_ptr<EntityHorse> EntityHorse::getClosestMommy(shared_ptr<Entity> baby, do
 	shared_ptr<Entity> mommy = nullptr;
 	vector<shared_ptr<Entity> > *list = level->getEntities(baby, baby->bb->expand(searchRadius, searchRadius, searchRadius), PARENT_HORSE_SELECTOR);
 
-	for(AUTO_VAR(it,list->begin()); it != list->end(); ++it)
+	for( auto& horse : *list )
 	{
-		shared_ptr<Entity> horse = *it;
 		double distanceSquared = horse->distanceToSqr(baby->x, baby->y, baby->z);
 
 		if (distanceSquared < closestDistance)
@@ -767,7 +766,7 @@ void EntityHorse::rebuildLayeredTextureInfo()
 	else
 	{
 		layerTextureLayers[0] = -1;
-		layerTextureHashName += L"_" + _toString<int>(type) + L"_";
+		layerTextureHashName += L"_" + std::to_wstring(type) + L"_";
 		armorIndex = 1;
 	}
 
@@ -1036,7 +1035,7 @@ bool EntityHorse::canWearArmor()
 
 /**
 * able to carry bags
-* 
+*
 * @return
 */
 bool EntityHorse::canWearBags()
@@ -1065,7 +1064,7 @@ bool EntityHorse::isPureBreed()
 
 /**
 * Is this an Undead Horse?
-* 
+*
 * @return
 */
 bool EntityHorse::isUndead()
@@ -1675,7 +1674,7 @@ MobGroupData *EntityHorse::finalizeMobSpawn(MobGroupData *groupData, int extraDa
 		setAge(AgableMob::BABY_START_AGE);
 	}
 
-	if (type == TYPE_SKELETON || type == TYPE_UNDEAD) 
+	if (type == TYPE_SKELETON || type == TYPE_UNDEAD)
 	{
 		getAttribute(SharedMonsterAttributes::MAX_HEALTH)->setBaseValue(15);
 		getAttribute(SharedMonsterAttributes::MOVEMENT_SPEED)->setBaseValue(0.2f);
@@ -1791,7 +1790,7 @@ void EntityHorse::positionRider()
 		float height = .15f * standAnimO;
 
 		rider.lock()->setPos(x + dist * sin, y + getRideHeight() + rider.lock()->getRidingHeight() + height, z - dist * cos);
-		
+
 		if ( rider.lock()->instanceof(eTYPE_LIVINGENTITY) )
 		{
 			shared_ptr<LivingEntity> livingRider = dynamic_pointer_cast<LivingEntity>(rider.lock());

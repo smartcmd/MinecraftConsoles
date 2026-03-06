@@ -14,21 +14,21 @@ XboxStructureActionPlaceContainer::XboxStructureActionPlaceContainer()
 
 XboxStructureActionPlaceContainer::~XboxStructureActionPlaceContainer()
 {
-	for(AUTO_VAR(it, m_items.begin()); it != m_items.end(); ++it)
+	for(auto& item : m_items)
 	{
-		delete *it;
+		delete item;
 	}
 }
 
 // 4J-JEV: Super class handles attr-facing fine.
 //void XboxStructureActionPlaceContainer::writeAttributes(DataOutputStream *dos, UINT numAttrs)
-	
+
 
 void XboxStructureActionPlaceContainer::getChildren(vector<GameRuleDefinition *> *children)
 {
 	XboxStructureActionPlaceBlock::getChildren(children);
-	for(AUTO_VAR(it, m_items.begin()); it!=m_items.end(); it++)
-		children->push_back( *it );
+	for(auto & item : m_items)
+		children->push_back( item );
 }
 
 GameRuleDefinition *XboxStructureActionPlaceContainer::addChild(ConsoleGameRules::EGameRuleType ruleType)
@@ -79,15 +79,15 @@ bool XboxStructureActionPlaceContainer::placeContainerInLevel(StructurePiece *st
 
 		level->setTileAndData( worldX, worldY, worldZ, m_tile, 0, Tile::UPDATE_ALL );
 		shared_ptr<Container> container = dynamic_pointer_cast<Container>(level->getTileEntity( worldX, worldY, worldZ ));
-		
+
 		app.DebugPrintf("XboxStructureActionPlaceContainer - placing a container at (%d,%d,%d)\n", worldX, worldY, worldZ);
 		if ( container != NULL )
 		{
 			level->setData( worldX, worldY, worldZ, m_data, Tile::UPDATE_CLIENTS);
 			// Add items
 			int slotId = 0;
-			for(AUTO_VAR(it, m_items.begin()); it != m_items.end() && (slotId < container->getContainerSize()); ++it, ++slotId )
-			{
+            for (auto it = m_items.begin(); it != m_items.end() && (slotId < container->getContainerSize()); ++it, ++slotId)
+            {
 				AddItemRuleDefinition *addItem = *it;
 
 				addItem->addItemToContainer(container,slotId);

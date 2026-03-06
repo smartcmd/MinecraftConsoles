@@ -28,7 +28,7 @@
 #include "..\..\..\Minecraft.World\net.minecraft.commands.common.h"
 #include "..\..\..\Minecraft.World\ConsoleSaveFileOriginal.h"
 
-#ifdef _DEBUG_MENUS_ENABLED	
+#ifdef _DEBUG_MENUS_ENABLED
 HRESULT CScene_DebugOverlay::OnInit( XUIMessageInit *pInitData, BOOL &bHandled )
 {
 	MapChildControls();
@@ -53,7 +53,7 @@ HRESULT CScene_DebugOverlay::OnInit( XUIMessageInit *pInitData, BOOL &bHandled )
 		m_enchantmentIds.push_back(ench->id);
 		m_enchantments.SetText( i, app.GetString( ench->getDescriptionId() ) );
 	}
-	
+
 	m_mobs.InsertItems( 0, 21 );
 
 	m_mobs.SetText( m_mobFactories.size(), L"Chicken" );
@@ -98,7 +98,7 @@ HRESULT CScene_DebugOverlay::OnInit( XUIMessageInit *pInitData, BOOL &bHandled )
 	m_mobFactories.push_back(eTYPE_BLAZE);
 	m_mobs.SetText( m_mobFactories.size(), L"Magma Cube" );
 	m_mobFactories.push_back(eTYPE_LAVASLIME);
-	
+
 
 	Minecraft *pMinecraft = Minecraft::GetInstance();
 	m_setTime.SetValue( pMinecraft->level->getLevelData()->getTime() % 24000 );
@@ -135,7 +135,7 @@ HRESULT CScene_DebugOverlay::OnNotifyPressEx(HXUIOBJ hObjPressed, XUINotifyPress
     {
         nIndex = m_mobs.GetCurSel();
 		if(nIndex<m_mobFactories.size())
-		{			
+		{
 			app.SetXuiServerAction(ProfileManager.GetPrimaryPad(),eXuiServerAction_SpawnMob,(void *)m_mobFactories[nIndex]);
 		}
     }
@@ -171,7 +171,7 @@ HRESULT CScene_DebugOverlay::OnNotifyPressEx(HXUIOBJ hObjPressed, XUINotifyPress
 		HXUIOBJ hScene;
 		HRESULT hr;
 		//const WCHAR XZP_SEPARATOR  = L'#';
-		const DWORD LOCATOR_SIZE = 256; // Use this to allocate space to hold a ResourceLocator string 
+		const DWORD LOCATOR_SIZE = 256; // Use this to allocate space to hold a ResourceLocator string
 		WCHAR szResourceLocator[ LOCATOR_SIZE ];
 
 		swprintf(szResourceLocator, LOCATOR_SIZE, L"section://%X,%ls#%ls",c_ModuleHandle,L"media", L"media/");
@@ -189,7 +189,7 @@ HRESULT CScene_DebugOverlay::OnNotifyPressEx(HXUIOBJ hObjPressed, XUINotifyPress
 		HXUIOBJ hScene;
 		HRESULT hr;
 		//const WCHAR XZP_SEPARATOR  = L'#';
-		const DWORD LOCATOR_SIZE = 256; // Use this to allocate space to hold a ResourceLocator string 
+		const DWORD LOCATOR_SIZE = 256; // Use this to allocate space to hold a ResourceLocator string
 		WCHAR szResourceLocator[ LOCATOR_SIZE ];
 
 		swprintf(szResourceLocator, LOCATOR_SIZE, L"section://%X,%ls#%ls",c_ModuleHandle,L"media", L"media/");
@@ -256,7 +256,7 @@ HRESULT CScene_DebugOverlay::OnNotifyValueChanged( HXUIOBJ hObjSource, XUINotify
 	if( hObjSource == m_setTime )
 	{
 		Minecraft *pMinecraft = Minecraft::GetInstance();
-		
+
 		// Need to set the time on both levels to stop the flickering as the local level
 		// tries to predict the time
 		// Only works if we are on the host machine, but shouldn't break if not
@@ -365,11 +365,11 @@ void CScene_DebugOverlay::SaveLimitedFile(int chunkRadius)
 
 RegionFile *CScene_DebugOverlay::getRegionFile(unordered_map<File, RegionFile *, FileKeyHash, FileKeyEq> &newFileCache, ConsoleSaveFile *saveFile, const wstring &prefix, int chunkX, int chunkZ)		// 4J - TODO was synchronized
 {
-	File file( prefix + wstring(L"r.") + _toString(chunkX>>5) + L"." + _toString(chunkZ>>5) + L".mcr" );
+	File file( prefix + wstring(L"r.") + std::to_wstring(chunkX>>5) + L"." + std::to_wstring(chunkZ>>5) + L".mcr" );
 
 	RegionFile *ref = NULL;
-	AUTO_VAR(it, newFileCache.find(file));
-	if( it != newFileCache.end() )
+    auto it = newFileCache.find(file);
+    if( it != newFileCache.end() )
 		ref = it->second;
 
 	// 4J Jev, put back in.

@@ -36,8 +36,8 @@ vector<MobEffectInstance *> *PotionItem::getMobEffects(shared_ptr<ItemInstance> 
 	if (!potion->hasTag() || !potion->getTag()->contains(L"CustomPotionEffects"))
 	{
 		vector<MobEffectInstance *> *effects = NULL;
-		AUTO_VAR(it, cachedMobEffects.find(potion->getAuxValue()));
-		if(it != cachedMobEffects.end()) effects = it->second;
+        auto it = cachedMobEffects.find(potion->getAuxValue());
+        if(it != cachedMobEffects.end()) effects = it->second;
 		if (effects == NULL)
 		{
 			effects = PotionBrewing::getEffects(potion->getAuxValue(), false);
@@ -65,8 +65,8 @@ vector<MobEffectInstance *> *PotionItem::getMobEffects(shared_ptr<ItemInstance> 
 vector<MobEffectInstance *> *PotionItem::getMobEffects(int auxValue)
 {
 	vector<MobEffectInstance *> *effects = NULL;
-	AUTO_VAR(it, cachedMobEffects.find(auxValue));
-	if(it != cachedMobEffects.end()) effects = it->second;
+    auto it = cachedMobEffects.find(auxValue);
+    if(it != cachedMobEffects.end()) effects = it->second;
 	if (effects == NULL)
 	{
 		effects = PotionBrewing::getEffects(auxValue, false);
@@ -84,10 +84,9 @@ shared_ptr<ItemInstance> PotionItem::useTimeDepleted(shared_ptr<ItemInstance> in
 		vector<MobEffectInstance *> *effects = getMobEffects(instance);
 		if (effects != NULL)
 		{
-			//for (MobEffectInstance effect : effects)
-			for(AUTO_VAR(it, effects->begin()); it != effects->end(); ++it)
+			for(auto& effect : *effects)
 			{
-				player->addEffect(new MobEffectInstance(*it));
+				player->addEffect(new MobEffectInstance(effect));
 			}
 		}
 	}
@@ -188,10 +187,8 @@ bool PotionItem::hasInstantenousEffects(int itemAuxValue)
 	{
 		return false;
 	}
-	//for (MobEffectInstance effect : mobEffects) {
-	for(AUTO_VAR(it, mobEffects->begin()); it != mobEffects->end(); ++it)
+	for(auto& effect : *mobEffects)
 	{
-		MobEffectInstance *effect = *it;
 		if (MobEffect::effects[effect->getId()]->isInstantenous())
 		{
 			return true;
@@ -224,7 +221,7 @@ wstring PotionItem::getHoverName(shared_ptr<ItemInstance> itemInstance)
 		//String postfixString = effects.get(0).getDescriptionId();
 		//postfixString += ".postfix";
 		//return elementName + " " + I18n.get(postfixString).trim();
-		
+
 		elementName = replaceAll(elementName,L"{*prefix*}",L"");
 		elementName = replaceAll(elementName,L"{*postfix*}",app.GetString(effects->at(0)->getPostfixDescriptionId()));
 	}
@@ -232,7 +229,7 @@ wstring PotionItem::getHoverName(shared_ptr<ItemInstance> itemInstance)
 	{
 		//String appearanceName = PotionBrewing.getAppearanceName(itemInstance.getAuxValue());
 		//return I18n.get(appearanceName).trim() + " " + elementName;
-		
+
 		elementName = replaceAll(elementName,L"{*prefix*}",app.GetString( PotionBrewing::getAppearanceName(itemInstance->getAuxValue())));
 		elementName = replaceAll(elementName,L"{*postfix*}",L"");
 	}
@@ -250,9 +247,8 @@ void PotionItem::appendHoverText(shared_ptr<ItemInstance> itemInstance, shared_p
 	if (effects != NULL && !effects->empty())
 	{
 		//for (MobEffectInstance effect : effects)
-		for(AUTO_VAR(it, effects->begin()); it != effects->end(); ++it)
+		for(auto& effect : *effects)
 		{
-			MobEffectInstance *effect = *it;
 			wstring effectString = app.GetString( effect->getDescriptionId() );
 
 			MobEffect *mobEffect = MobEffect::effects[effect->getId()];
@@ -260,12 +256,12 @@ void PotionItem::appendHoverText(shared_ptr<ItemInstance> itemInstance, shared_p
 
 			if (effectModifiers != NULL && effectModifiers->size() > 0)
 			{
-				for(AUTO_VAR(it, effectModifiers->begin()); it != effectModifiers->end(); ++it)
+				for(auto& it : *effectModifiers)
 				{
 					// 4J - anonymous modifiers added here are destroyed shortly?
-					AttributeModifier *original = it->second;
+					AttributeModifier *original = it.second;
 					AttributeModifier *modifier = new AttributeModifier(mobEffect->getAttributeModifierValue(effect->getAmplifier(), original), original->getOperation());
-					modifiers.insert( std::pair<eATTRIBUTE_ID, AttributeModifier*>( it->first->getId(), modifier) );
+					modifiers.insert( std::pair<eATTRIBUTE_ID, AttributeModifier*>( it.first->getId(), modifier) );
 				}
 			}
 
@@ -318,20 +314,20 @@ void PotionItem::appendHoverText(shared_ptr<ItemInstance> itemInstance, shared_p
 	{
 		wstring effectString = app.GetString(IDS_POTION_EMPTY); //I18n.get("potion.empty").trim();
 
-		lines->push_back(HtmlString(effectString, eHTMLColor_7)); //"§7"
+		lines->push_back(HtmlString(effectString, eHTMLColor_7)); //"ï¿½7"
 	}
 
 	if (!modifiers.empty())
 	{
 		// Add new line
-		lines->push_back(HtmlString(L""));
-		lines->push_back(HtmlString(app.GetString(IDS_POTION_EFFECTS_WHENDRANK), eHTMLColor_5));
+		lines->emplace_back(L"");
+		lines->emplace_back(app.GetString(IDS_POTION_EFFECTS_WHENDRANK), eHTMLColor_5);
 
 		// Add modifier descriptions
-		for (AUTO_VAR(it, modifiers.begin()); it != modifiers.end(); ++it)
+		for (auto& modifier : modifiers)
 		{
 			// 4J: Moved modifier string building to AttributeModifier
-			lines->push_back(it->second->getHoverText(it->first));
+			lines->push_back(modifier.second->getHoverText(modifier.first));
 		}
 	}
 }
@@ -392,18 +388,17 @@ vector<pair<int, int> > *PotionItem::getUniquePotionValues()
 					// 4J Stu - Based on implementation of Java List.hashCode() at http://docs.oracle.com/javase/6/docs/api/java/util/List.html#hashCode()
 					// and adding deleting to clear up as we go
 					int effectsHashCode = 1;
-					for(AUTO_VAR(it, effects->begin()); it != effects->end(); ++it)
+					for(auto& effect : *effects)
 					{
-						MobEffectInstance *mei = *it;
-						effectsHashCode = 31*effectsHashCode + (mei==NULL ? 0 : mei->hashCode());
-						delete (*it);
+						effectsHashCode = 31*effectsHashCode + (effect ? 0 : effect->hashCode());
+						delete effect;
 					}
 
 					bool toAdd = true;
-					for(AUTO_VAR(it, s_uniquePotionValues.begin()); it != s_uniquePotionValues.end(); ++it)
+					for(auto& it : s_uniquePotionValues)
 					{
 						// Some potions hash the same (identical effects) but are throwable so account for that
-						if(it->first == effectsHashCode && !(!isThrowable(it->second) && isThrowable(brew)) )
+						if(it.first == effectsHashCode && !(!isThrowable(it.second) && isThrowable(brew)) )
 						{
 							toAdd = false;
 							break;

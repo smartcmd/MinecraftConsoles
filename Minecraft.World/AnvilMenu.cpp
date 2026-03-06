@@ -134,64 +134,67 @@ void AnvilMenu::createResult()
 
 				unordered_map<int, int> *additionalEnchantments = EnchantmentHelper::getEnchantments(addition);
 
-				for(AUTO_VAR(it, additionalEnchantments->begin()); it != additionalEnchantments->end(); ++it)
+				if ( additionalEnchantments )
 				{
-					int id = it->first;
-					Enchantment *enchantment = Enchantment::enchantments[id];
-					AUTO_VAR(localIt, enchantments->find(id));
-					int current = localIt != enchantments->end() ? localIt->second : 0;
-					int level = it->second;
-					level = (current == level) ? level += 1 : max(level, current);
-					int extra = level - current;
-					bool compatible = enchantment->canEnchant(input);
-
-					if (player->abilities.instabuild || input->id == EnchantedBookItem::enchantedBook_Id) compatible = true;
-
-					for(AUTO_VAR(it2, enchantments->begin()); it2 != enchantments->end(); ++it2)
+					for (const auto& it : *additionalEnchantments)
 					{
-						int other = it2->first;
-						if (other != id && !enchantment->isCompatibleWith(Enchantment::enchantments[other]))
-						{
-							compatible = false;
+						int id = it.first;
+						Enchantment* enchantment = Enchantment::enchantments[id];
+						auto localIt = enchantments->find(id);
+						int current = localIt != enchantments->end() ? localIt->second : 0;
+						int level = it.second;
+						level = (current == level) ? level += 1 : std::max<int>(level, current);
+						int extra = level - current;
+						bool compatible = enchantment->canEnchant(input);
 
-							price += extra;
-							if (DEBUG_COST)
+						if (player->abilities.instabuild || input->id == EnchantedBookItem::enchantedBook_Id) compatible = true;
+
+						for (auto& it2 : *enchantments)
+						{
+							int other = it2.first;
+							if (other != id && !enchantment->isCompatibleWith(Enchantment::enchantments[other]))
 							{
-								app.DebugPrintf("Enchantment incompatibility fee; price is now %d (went up by %d)\n", price, extra);
+								compatible = false;
+
+								price += extra;
+								if (DEBUG_COST)
+								{
+									app.DebugPrintf("Enchantment incompatibility fee; price is now %d (went up by %d)\n", price, extra);
+								}
 							}
 						}
+
+						if (!compatible) continue;
+						if (level > enchantment->getMaxLevel()) level = enchantment->getMaxLevel();
+						(*enchantments)[id] = level;
+						int fee = 0;
+
+						switch (enchantment->getFrequency())
+						{
+						case Enchantment::FREQ_COMMON:
+							fee = 1;
+							break;
+						case Enchantment::FREQ_UNCOMMON:
+							fee = 2;
+							break;
+						case Enchantment::FREQ_RARE:
+							fee = 4;
+							break;
+						case Enchantment::FREQ_VERY_RARE:
+							fee = 8;
+							break;
+						}
+
+						if (usingBook) fee = max(1, fee / 2);
+
+						price += fee * extra;
+						if (DEBUG_COST)
+						{
+							app.DebugPrintf("Enchantment increase fee; price is now %d (went up by %d)\n", price, fee * extra);
+						}
 					}
-
-					if (!compatible) continue;
-					if (level > enchantment->getMaxLevel()) level = enchantment->getMaxLevel();
-					(*enchantments)[id] = level;
-					int fee = 0;
-
-					switch (enchantment->getFrequency())
-					{
-					case Enchantment::FREQ_COMMON:
-						fee = 1;
-						break;
-					case Enchantment::FREQ_UNCOMMON:
-						fee = 2;
-						break;
-					case Enchantment::FREQ_RARE:
-						fee = 4;
-						break;
-					case Enchantment::FREQ_VERY_RARE:
-						fee = 8;
-						break;
-					}
-
-					if (usingBook) fee = max(1, fee / 2);
-
-					price += fee * extra;
-					if (DEBUG_COST)
-					{
-						app.DebugPrintf("Enchantment increase fee; price is now %d (went up by %d)\n", price, fee*extra);
-					}
+					delete additionalEnchantments;
 				}
-				delete additionalEnchantments;
 			}
 		}
 
@@ -233,11 +236,11 @@ void AnvilMenu::createResult()
 		}
 
 		int count = 0;
-		for(AUTO_VAR(it, enchantments->begin()); it != enchantments->end(); ++it)
+		for( const auto& it : *enchantments )
 		{
-			int id = it->first;
+			int id = it.first;
 			Enchantment *enchantment = Enchantment::enchantments[id];
-			int level = it->second;
+			int level = it.second;
 			int fee = 0;
 
 			count++;
@@ -258,7 +261,7 @@ void AnvilMenu::createResult()
 				break;
 			}
 
-			if (usingBook) fee = max(1, fee / 2);
+			if (usingBook) fee = std::max<int>(1, fee / 2);
 
 			tax += count + level * fee;
 			if (DEBUG_COST)

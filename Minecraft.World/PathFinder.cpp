@@ -26,14 +26,13 @@ PathFinder::~PathFinder()
 	// references to the same things, so just need to destroy their containers
 	delete [] neighbors->data;
 	delete neighbors;
-	AUTO_VAR(itEnd, nodes.end());
-	for( AUTO_VAR(it, nodes.begin()); it != itEnd; it++ )
+	for(auto& node : nodes)
 	{
-		delete it->second;
+		delete node.second;
 	}
 }
 
-Path *PathFinder::findPath(Entity *from, Entity *to, float maxDist) 
+Path *PathFinder::findPath(Entity *from, Entity *to, float maxDist)
 {
 	return findPath(from, to->x, to->bb->y0, to->z, maxDist);
 }
@@ -187,9 +186,9 @@ Node *PathFinder::getNode(Entity *entity, int x, int y, int z, Node *size, int j
 /*final*/ Node *PathFinder::getNode(int x, int y, int z)
 {
 	int i = Node::createHash(x, y, z);
-	Node *node;
-	AUTO_VAR(it, nodes.find(i));
-	if ( it == nodes.end() )
+	Node *node = nullptr;
+    auto it = nodes.find(i);
+    if ( it == nodes.end() )
 	{
 		MemSect(54);
 		node = new Node(x, y, z);
@@ -279,7 +278,7 @@ Path *PathFinder::reconstruct_path(Node *from, Node *to)
 	NodeArray nodes = NodeArray(count);
 	n = to;
 	nodes.data[--count] = n;
-	while (n->cameFrom != NULL) 
+	while (n->cameFrom != NULL)
 	{
 		n = n->cameFrom;
 		nodes.data[--count] = n;

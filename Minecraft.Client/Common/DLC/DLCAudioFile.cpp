@@ -178,7 +178,7 @@ bool DLCAudioFile::processDLCDataFile(PBYTE pbData, DWORD dwLength)
 		{
 			//EAudioParameterType paramType = e_AudioParamType_Invalid;
 
-			AUTO_VAR(it, parameterMapping.find( pParams->dwType ));
+			auto it = parameterMapping.find(pParams->dwType);
 
 			if(it != parameterMapping.end() )
 			{

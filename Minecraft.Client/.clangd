@@ -1,0 +1,30 @@
+CompileFlags:
+    Add: [-std=c++14,
+          -m64,
+          -Wno-unused-includes
+          ]
+    Remove: [-W*]
+
+Index:
+    StandardLibrary: true
+
+Diagnostics:
+    Suppress: unused-includes
+    UnusedIncludes: None
+    ClangTidy:
+        Add: [modernize-loop-convert]
+
+Completion:
+    AllScopes: Yes
+    ArgumentLists: Delimiters
+    HeaderInsertion: Never
+
+InlayHints:
+    BlockEnd: true
+    ParameterNames: false
+    DeducedTypes: false
+    Designators: false
+    DefaultArguments: false
+
+Hover:
+    ShowAKA: true

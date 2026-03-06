@@ -33,27 +33,27 @@ void DragonFireball::onHit(HitResult *res)
 	{
 		AABB *aoe = bb->grow(SPLASH_RANGE, SPLASH_RANGE / 2, SPLASH_RANGE);
 		vector<shared_ptr<Entity> > *entitiesOfClass = level->getEntitiesOfClass(typeid(LivingEntity), aoe);
-
-		if (entitiesOfClass != NULL && !entitiesOfClass->empty())
+		if ( entitiesOfClass )
 		{
-			//for (Entity e : entitiesOfClass)
-			for( AUTO_VAR(it, entitiesOfClass->begin()); it != entitiesOfClass->end(); ++it)
+			if (!entitiesOfClass->empty())
 			{
-				//shared_ptr<Entity> e = *it;
-				shared_ptr<LivingEntity> e = dynamic_pointer_cast<LivingEntity>( *it );
-				double dist = distanceToSqr(e);
-				if (dist < SPLASH_RANGE_SQ)
+				for (auto& it : *entitiesOfClass)
 				{
-					double scale = 1.0 - (sqrt(dist) / SPLASH_RANGE);
-					if (e == res->entity)
+					shared_ptr<LivingEntity> e = dynamic_pointer_cast<LivingEntity>(it);
+					double dist = distanceToSqr(e);
+					if (dist < SPLASH_RANGE_SQ)
 					{
-						scale = 1;
+						double scale = 1.0 - (sqrt(dist) / SPLASH_RANGE);
+						if (e == res->entity)
+						{
+							scale = 1;
+						}
+						e->hurt(DamageSource::dragonbreath, 8 * scale);
 					}
-					e->hurt(DamageSource::dragonbreath, 8*scale);
 				}
 			}
+			delete entitiesOfClass;
 		}
-		delete entitiesOfClass;
 		level->levelEvent(LevelEvent::ENDERDRAGON_FIREBALL_SPLASH, (int) Math::round(x), (int) Math::round(y), (int) Math::round(z), 0);
 
 		remove();

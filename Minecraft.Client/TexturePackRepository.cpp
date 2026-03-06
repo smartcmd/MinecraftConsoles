@@ -40,7 +40,7 @@ void TexturePackRepository::addDebugPacks()
 #ifndef _CONTENT_PACKAGE
 	//File *file = new File(L"DummyTexturePack"); // Path to the test texture pack
 	//m_dummyTexturePack = new FolderTexturePack(FOLDER_TEST_TEXTURE_PACK_ID, L"FolderTestPack", file, DEFAULT_TEXTURE_PACK);
-	//texturePacks->push_back(m_dummyTexturePack);	
+	//texturePacks->push_back(m_dummyTexturePack);
 	//cacheById[m_dummyTexturePack->getId()] = m_dummyTexturePack;
 
 #ifdef _XBOX
@@ -96,7 +96,7 @@ void TexturePackRepository::createWorkingDirecoryUnlessExists()
 bool TexturePackRepository::selectSkin(TexturePack *skin)
 {
     if (skin==selected) return false;
-    
+
 	lastSelected = selected;
     usingWeb = false;
     selected = skin;
@@ -161,7 +161,7 @@ void TexturePackRepository::updateList()
 	currentPacks->push_back(DEFAULT_TEXTURE_PACK);
 	cacheById[DEFAULT_TEXTURE_PACK->getId()] = DEFAULT_TEXTURE_PACK;
 #ifndef _CONTENT_PACKAGE
-	currentPacks->push_back(m_dummyTexturePack);	
+	currentPacks->push_back(m_dummyTexturePack);
 	cacheById[m_dummyTexturePack->getId()] = m_dummyTexturePack;
 
 	if(m_dummyDLCTexturePack != NULL)
@@ -194,10 +194,9 @@ void TexturePackRepository::updateList()
 	}
 
 	// 4J - was texturePacks.removeAll(currentPacks);
-	AUTO_VAR(itEnd, currentPacks->end());
-	for( vector<TexturePack *>::iterator it1 = currentPacks->begin(); it1 != itEnd; it1++ )
+	for( auto it1 = currentPacks->begin(); it1 != currentPacks->end(); it1++ )
 	{
-		for( vector<TexturePack *>::iterator it2 = texturePacks->begin(); it2 != texturePacks->end(); it2++ )
+		for( auto it2 = texturePacks->begin(); it2 != texturePacks->end(); it2++ )
 		{
 			if( *it1 == *it2 )
 			{
@@ -206,8 +205,7 @@ void TexturePackRepository::updateList()
 		}
 	}
 
-	itEnd = texturePacks->end();
-	for( vector<TexturePack *>::iterator it = texturePacks->begin(); it != itEnd; it++ )
+	for( auto it = texturePacks->begin(); it != texturePacks->end(); it++ )
 	{
 		TexturePack *pack = *it;
 		pack->unload(minecraft->textures);
@@ -295,10 +293,9 @@ vector< pair<DWORD,wstring> > *TexturePackRepository::getTexturePackIdNames()
 {
 	vector< pair<DWORD,wstring> > *packList = new vector< pair<DWORD,wstring> >();
 
-	for(AUTO_VAR(it,texturePacks->begin()); it != texturePacks->end(); ++it)
+	for(auto& pack : *texturePacks)
 	{
-		TexturePack *pack = *it;
-		packList->push_back( pair<DWORD,wstring>(pack->getId(),pack->getName()) );
+		packList->emplace_back(pack->getId(), pack->getName());
 	}
 	return packList;
 }
@@ -311,8 +308,8 @@ bool TexturePackRepository::selectTexturePackById(DWORD id)
 	// (where they don't have the texture pack) can check this when the texture pack is installed
 	app.SetRequiredTexturePackID(id);
 
-	AUTO_VAR(it, cacheById.find(id));
-	if(it != cacheById.end())
+    auto it = cacheById.find(id);
+    if(it != cacheById.end())
 	{
 		TexturePack *newPack = it->second;
 		if(newPack != selected)
@@ -354,8 +351,8 @@ bool TexturePackRepository::selectTexturePackById(DWORD id)
 
 TexturePack *TexturePackRepository::getTexturePackById(DWORD id)
 {
-	AUTO_VAR(it, cacheById.find(id));
-	if(it != cacheById.end())
+    auto it = cacheById.find(id);
+    if(it != cacheById.end())
 	{
 		return it->second;
 	}
@@ -392,21 +389,21 @@ TexturePack *TexturePackRepository::addTexturePackFromDLC(DLCPack *dlcPack, DWOR
 
 void TexturePackRepository::clearInvalidTexturePacks()
 {
-	for(AUTO_VAR(it, m_texturePacksToDelete.begin()); it != m_texturePacksToDelete.end(); ++it)
+	for(auto& it : m_texturePacksToDelete)
 	{
-		delete *it;
+		delete it;
 	}
 }
 
 void TexturePackRepository::removeTexturePackById(DWORD id)
 {
-	AUTO_VAR(it, cacheById.find(id));
-	if(it != cacheById.end())
+    auto it = cacheById.find(id);
+    if(it != cacheById.end())
 	{
 		TexturePack *oldPack = it->second;
 
-		AUTO_VAR(it2, find(texturePacks->begin(), texturePacks->end(),oldPack) );
-		if(it2 != texturePacks->end())
+        auto it2 = find(texturePacks->begin(), texturePacks->end(), oldPack);
+        if(it2 != texturePacks->end())
 		{
 			texturePacks->erase(it2);
 			if(lastSelected == oldPack)
@@ -453,10 +450,10 @@ TexturePack *TexturePackRepository::getTexturePackByIndex(unsigned int index)
 unsigned int TexturePackRepository::getTexturePackIndex(unsigned int id)
 {
 	int currentIndex = 0;
-	for(AUTO_VAR(it,texturePacks->begin()); it != texturePacks->end(); ++it)
+	for(auto& pack : *texturePacks)
 	{
-		TexturePack *pack = *it;
-		if(pack->getId() == id) break;
+		if(pack->getId() == id)
+			break;
 		++currentIndex;
 	}
 	if(currentIndex >= texturePacks->size()) currentIndex = 0;

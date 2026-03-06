@@ -175,14 +175,14 @@ void UIControl_PlayerSkinPreview::CycleNextAnimation()
 
 void UIControl_PlayerSkinPreview::CyclePreviousAnimation()
 {
-	m_currentAnimation = (ESkinPreviewAnimations)(m_currentAnimation - 1);	
+	m_currentAnimation = (ESkinPreviewAnimations)(m_currentAnimation - 1);
 	if(m_currentAnimation < e_SkinPreviewAnimation_Walking) m_currentAnimation = (ESkinPreviewAnimations)(e_SkinPreviewAnimation_Count - 1);
 
 	m_swingTime = 0.0f;
 }
 
 void UIControl_PlayerSkinPreview::render(IggyCustomDrawCallbackRegion *region)
-{	
+{
 	Minecraft *pMinecraft=Minecraft::GetInstance();
 
 	glEnable(GL_RESCALE_NORMAL);
@@ -193,7 +193,7 @@ void UIControl_PlayerSkinPreview::render(IggyCustomDrawCallbackRegion *region)
 	float height = region->y1 - region->y0;
 	float xo = width/2;
 	float yo = height;
-	
+
 	glTranslatef(xo, yo - 3.5f, 50.0f);
 	//glTranslatef(120.0f, 294, 0.0f);
 
@@ -224,11 +224,9 @@ void UIControl_PlayerSkinPreview::render(IggyCustomDrawCallbackRegion *region)
 		//vector<ModelPart *> *pAdditionalModelParts=mob->GetAdditionalModelParts();
 
 		if(m_pvAdditionalModelParts && m_pvAdditionalModelParts->size()!=0)
-		{	
-			for(AUTO_VAR(it, m_pvAdditionalModelParts->begin()); it != m_pvAdditionalModelParts->end(); ++it)
+		{
+			for(auto& pModelPart : *m_pvAdditionalModelParts)
 			{
-				ModelPart *pModelPart=*it;
-
 				pModelPart->visible=true;
 			}
 		}
@@ -238,11 +236,9 @@ void UIControl_PlayerSkinPreview::render(IggyCustomDrawCallbackRegion *region)
 
 		// hide the additional parts
 		if(m_pvAdditionalModelParts && m_pvAdditionalModelParts->size()!=0)
-		{	
-			for(AUTO_VAR(it, m_pvAdditionalModelParts->begin()); it != m_pvAdditionalModelParts->end(); ++it)
+		{
+			for(auto& pModelPart : *m_pvAdditionalModelParts)
 			{
-				ModelPart *pModelPart=*it;
-
 				pModelPart->visible=false;
 			}
 		}

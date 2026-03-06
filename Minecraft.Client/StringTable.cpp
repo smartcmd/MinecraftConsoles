@@ -48,24 +48,23 @@ void StringTable::ProcessStringTableData(void)
 	int dataSize = 0;
 
 	//
-	for(	AUTO_VAR(it_locales, locales.begin());
-		it_locales!=locales.end() && (!foundLang); 
-		it_locales++
-		)
-	{
+    for (auto it_locales = locales.begin();
+         it_locales != locales.end() && (!foundLang);
+         ++it_locales)
+    {
 		bytesToSkip = 0;
 
-		for(AUTO_VAR(it, langSizeMap.begin()); it != langSizeMap.end(); ++it)
+		for(auto& it : langSizeMap)
 		{
-			if(it->first.compare(*it_locales) == 0)
+			if(it.first.compare(*it_locales) == 0)
 			{
 				app.DebugPrintf("StringTable:: Found language '%ls'.\n", it_locales->c_str());
-				dataSize = it->second;
+				dataSize = it.second;
 				foundLang = true;
 				break;
 			}
 
-			bytesToSkip += it->second;
+			bytesToSkip += it.second;
 		}
 
 		if (!foundLang)
@@ -87,7 +86,7 @@ void StringTable::ProcessStringTableData(void)
 		// Read the language file for the selected language
 		int langVersion = dis2.readInt();
 
-		isStatic = false;     // 4J-JEV: Versions 1 and up could use 
+		isStatic = false;     // 4J-JEV: Versions 1 and up could use
 		if (langVersion > 0)  // integers rather than wstrings as keys.
 			isStatic = dis2.readBoolean();
 
@@ -152,9 +151,9 @@ LPCWSTR StringTable::getString(const wstring &id)
 	}
 #endif
 
-	AUTO_VAR(it, m_stringsMap.find(id) );
+    auto it = m_stringsMap.find(id);
 
-	if(it != m_stringsMap.end())
+    if(it != m_stringsMap.end())
 	{
 		return it->second.c_str();
 	}

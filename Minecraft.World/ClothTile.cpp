@@ -33,6 +33,6 @@ void ClothTile::registerIcons(IconRegister *iconRegister)
 
 	for (int i = 0; i < 16; i++)
 	{
-		icons[i] = iconRegister->registerIcon(L"cloth_" + _toString(i) );
+		icons[i] = iconRegister->registerIcon(L"cloth_" + std::to_wstring(i) );
 	}
 }

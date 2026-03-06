@@ -337,16 +337,19 @@ int ChestTile::getDirectSignal(LevelSource *level, int x, int y, int z, int dir)
 bool ChestTile::isCatSittingOnChest(Level *level, int x, int y, int z) 
 {
 	vector<shared_ptr<Entity> > *entities = level->getEntitiesOfClass(typeid(Ocelot), AABB::newTemp(x, y + 1, z, x + 1, y + 2, z + 1));
-	for(AUTO_VAR(it, entities->begin()); it != entities->end(); ++it)
+	if ( entities )
 	{
-		shared_ptr<Ocelot> ocelot = dynamic_pointer_cast<Ocelot>(*it);
-		if(ocelot->isSitting())
+		for (auto& it : *entities)
 		{
-			delete entities;
-			return true;
+			shared_ptr<Ocelot> ocelot = dynamic_pointer_cast<Ocelot>(it);
+			if ( ocelot && ocelot->isSitting())
+			{
+				delete entities;
+				return true;
+			}
 		}
+		delete entities;
 	}
-	delete entities;
 	return false;
 }
 

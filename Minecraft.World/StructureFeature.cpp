@@ -16,9 +16,9 @@ StructureFeature::StructureFeature()
 
 StructureFeature::~StructureFeature()
 {
-	for( AUTO_VAR(it, cachedStructures.begin()); it != cachedStructures.end(); it++ )
+	for(auto& it : cachedStructures)
 	{
-		delete it->second;
+		delete it.second;
 	}
 }
 
@@ -58,9 +58,9 @@ bool StructureFeature::postProcess(Level *level, Random *random, int chunkX, int
 	int cz = (chunkZ << 4); // + 8;
 
 	bool intersection = false;
-	for( AUTO_VAR(it, cachedStructures.begin()); it != cachedStructures.end(); it++ )
+	for(auto& it : cachedStructures)
 	{
-		StructureStart *structureStart = it->second;
+		StructureStart *structureStart = it.second;
 
 		if (structureStart->isValid())
 		{
@@ -84,15 +84,15 @@ bool StructureFeature::isIntersection(int cellX, int cellZ)
 {
 	restoreSavedData(level);
 
-	for( AUTO_VAR(it, cachedStructures.begin()); it != cachedStructures.end(); it++ )
+	for(auto & it : cachedStructures)
 	{
-		StructureStart *structureStart = it->second;
+		StructureStart *structureStart = it.second;
 		if (structureStart->isValid())
 		{
 			if (structureStart->getBoundingBox()->intersects(cellX, cellZ, cellX, cellZ))
 			{
-				AUTO_VAR(it2, structureStart->getPieces()->begin());
-				while( it2 != structureStart->getPieces()->end() )
+                auto it2 = structureStart->getPieces()->begin();
+                while( it2 != structureStart->getPieces()->end() )
 				{
 					StructurePiece *next = *it2++;
 					if (next->getBoundingBox()->intersects(cellX, cellZ, cellX, cellZ))
@@ -106,7 +106,7 @@ bool StructureFeature::isIntersection(int cellX, int cellZ)
 	return false;
 }
 
-bool StructureFeature::isInsideFeature(int cellX, int cellY, int cellZ) 
+bool StructureFeature::isInsideFeature(int cellX, int cellY, int cellZ)
 {
 	restoreSavedData(level);
 	return getStructureAt(cellX, cellY, cellZ) != NULL;
@@ -114,14 +114,13 @@ bool StructureFeature::isInsideFeature(int cellX, int cellY, int cellZ)
 
 StructureStart *StructureFeature::getStructureAt(int cellX, int cellY, int cellZ)
 {
-	//for (StructureStart structureStart : cachedStructures.values()) 
-	for(AUTO_VAR(it, cachedStructures.begin()); it != cachedStructures.end(); ++it)
+	for(auto& it : cachedStructures)
 	{
-		StructureStart *pStructureStart = it->second;
+		StructureStart *pStructureStart = it.second;
 
-		if (pStructureStart->isValid()) 
+		if (pStructureStart->isValid())
 		{
-			if (pStructureStart->getBoundingBox()->intersects(cellX, cellZ, cellX, cellZ)) 
+			if (pStructureStart->getBoundingBox()->intersects(cellX, cellZ, cellX, cellZ))
 			{
 				/*
 				Iterator<StructurePiece> it = structureStart.getPieces().iterator();
@@ -133,9 +132,8 @@ StructureStart *StructureFeature::getStructureAt(int cellX, int cellY, int cellZ
 				*/
 				list<StructurePiece *> *pieces=pStructureStart->getPieces();
 
-				for ( AUTO_VAR(it2, pieces->begin()); it2 != pieces->end(); it2++ )
+				for (auto& piece : *pieces)
 				{
-					StructurePiece* piece = *it2;
 					if ( piece->getBoundingBox()->isInside(cellX, cellY, cellZ)  )
 					{
 						return pStructureStart;
@@ -151,9 +149,9 @@ bool StructureFeature::isInsideBoundingFeature(int cellX, int cellY, int cellZ)
 {
 	restoreSavedData(level);
 
-	for(AUTO_VAR(it, cachedStructures.begin()); it != cachedStructures.end(); ++it)
+	for(auto& it : cachedStructures)
 	{
-		StructureStart *structureStart = it->second;
+		StructureStart *structureStart = it.second;
 		if (structureStart->isValid())
 		{
 			return (structureStart->getBoundingBox()->intersects(cellX, cellZ, cellX, cellZ));
@@ -162,7 +160,7 @@ bool StructureFeature::isInsideBoundingFeature(int cellX, int cellY, int cellZ)
 	return false;
 }
 
-TilePos *StructureFeature::getNearestGeneratedFeature(Level *level, int cellX, int cellY, int cellZ) 
+TilePos *StructureFeature::getNearestGeneratedFeature(Level *level, int cellX, int cellY, int cellZ)
 {
 	// this is a hack that will "force" the feature to generate positions
 	// even if the player hasn't generated new chunks yet
@@ -182,11 +180,11 @@ TilePos *StructureFeature::getNearestGeneratedFeature(Level *level, int cellX, i
 	double minDistance = DBL_MAX;
 	TilePos *selected = NULL;
 
-	for(AUTO_VAR(it, cachedStructures.begin()); it != cachedStructures.end(); ++it)
+	for(auto& it : cachedStructures)
 	{
-		StructureStart *pStructureStart = it->second;
+		StructureStart *pStructureStart = it.second;
 
-		if (pStructureStart->isValid()) 
+		if (pStructureStart->isValid())
 		{
 
 			//StructurePiece *pStructurePiece = pStructureStart->getPieces().get(0);
@@ -198,37 +196,37 @@ TilePos *StructureFeature::getNearestGeneratedFeature(Level *level, int cellX, i
 			int dz = locatorPosition->z - cellZ;
 			double dist = dx * dx + dy * dy + dz * dz;
 
-			if (dist < minDistance) 
+			if (dist < minDistance)
 			{
 				minDistance = dist;
 				selected = locatorPosition;
 			}
 		}
 	}
-	if (selected != NULL) 
+	if (selected != NULL)
 	{
 		return selected;
-	} 
-	else 
+	}
+	else
 	{
 		vector<TilePos> *guesstimatedFeaturePositions = getGuesstimatedFeaturePositions();
-		if (guesstimatedFeaturePositions != NULL) 
+		if (guesstimatedFeaturePositions != NULL)
 		{
 			TilePos *pSelectedPos = new TilePos(0,0,0);
 
-			for(AUTO_VAR(it, guesstimatedFeaturePositions->begin()); it != guesstimatedFeaturePositions->end(); ++it)
+			for(const auto& it : *guesstimatedFeaturePositions)
 			{
-				int dx = (*it).x - cellX;
-				int dy = (*it).y - cellY;
-				int dz = (*it).z - cellZ;
+				int dx = it.x - cellX;
+				int dy = it.y - cellY;
+				int dz = it.z - cellZ;
 				double dist = dx * dx + dy * dy + dz * dz;
 
-				if (dist < minDistance) 
+				if (dist < minDistance)
 				{
 					minDistance = dist;
-					pSelectedPos->x = (*it).x;
-					pSelectedPos->y = (*it).y;
-					pSelectedPos->z = (*it).z;
+					pSelectedPos->x = it.x;
+					pSelectedPos->y = it.y;
+					pSelectedPos->z = it.z;
 				}
 			}
 			delete guesstimatedFeaturePositions;
@@ -238,7 +236,7 @@ TilePos *StructureFeature::getNearestGeneratedFeature(Level *level, int cellX, i
 	return NULL;
 }
 
-vector<TilePos> *StructureFeature::getGuesstimatedFeaturePositions() 
+vector<TilePos> *StructureFeature::getGuesstimatedFeaturePositions()
 {
 	return NULL;
 }
@@ -260,10 +258,9 @@ void StructureFeature::restoreSavedData(Level *level)
 			CompoundTag *fullTag = savedData->getFullTag();
 
 			vector<Tag *> *allTags = fullTag->getAllTags();
-			for (AUTO_VAR(it,allTags->begin()); it != allTags->end(); ++it)
+			for ( Tag *featureTag : *allTags )
 			{
-				Tag *featureTag = *it;
-				if (featureTag->getId() == Tag::TAG_Compound)
+				if ( featureTag && featureTag->getId() == Tag::TAG_Compound)
 				{
 					CompoundTag *ct = (CompoundTag *) featureTag;
 

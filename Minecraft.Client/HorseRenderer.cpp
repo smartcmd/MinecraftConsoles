@@ -83,9 +83,9 @@ ResourceLocation *HorseRenderer::getOrCreateLayeredTextureLocation(shared_ptr<En
 {
     wstring textureName = horse->getLayeredTextureHashName();
 
-    AUTO_VAR(it, LAYERED_LOCATION_CACHE.find(textureName));
+    auto it = LAYERED_LOCATION_CACHE.find(textureName);
 
-	ResourceLocation *location;
+    ResourceLocation *location;
 	if (it != LAYERED_LOCATION_CACHE.end())
 	{
 		location = it->second;
@@ -93,7 +93,7 @@ ResourceLocation *HorseRenderer::getOrCreateLayeredTextureLocation(shared_ptr<En
 	else
 	{
 		LAYERED_LOCATION_CACHE[textureName] = new ResourceLocation(horse->getLayeredTextureLayers());
-			
+
 		it = LAYERED_LOCATION_CACHE.find(textureName);
 		location = it->second;
 	}

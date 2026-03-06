@@ -72,7 +72,7 @@ void ItemEntity::defineSynchedData()
 void ItemEntity::tick()
 {
 	Entity::tick();
-	
+
 	if (throwTime > 0) throwTime--;
 	xo = x;
 	yo = y;
@@ -80,7 +80,7 @@ void ItemEntity::tick()
 
 	yd -= 0.04f;
 	noPhysics = checkInTile(x, (bb->y0 + bb->y1) / 2, z);
-	
+
 	// 4J - added parameter here so that these don't care about colliding with other entities
 	move(xd, yd, zd, true);
 
@@ -133,11 +133,11 @@ void ItemEntity::tick()
 }
 
 void ItemEntity::mergeWithNeighbours()
-{	
+{
 	vector<shared_ptr<Entity> > *neighbours = level->getEntitiesOfClass(typeid(*this), bb->grow(0.5, 0, 0.5));
-	for(AUTO_VAR(it, neighbours->begin()); it != neighbours->end(); ++it)
+	for(auto& neighbour : *neighbours)
 	{
-		shared_ptr<ItemEntity> entity = dynamic_pointer_cast<ItemEntity>(*it);
+		shared_ptr<ItemEntity> entity = dynamic_pointer_cast<ItemEntity>(neighbour);
 		merge(entity);
 	}
 	delete neighbours;
@@ -189,7 +189,7 @@ bool ItemEntity::hurt(DamageSource *source, float damage)
 	// 4J - added next line: found whilst debugging an issue with item entities getting into a bad state when being created by a cactus, since entities insides cactuses get hurt
 	// and therefore depending on the timing of things they could get removed from the client when they weren't supposed to be. Are there really any cases were we would want
 	// an itemEntity to be locally hurt?
-	if (level->isClientSide ) return false;	
+	if (level->isClientSide ) return false;
 
 	if (isInvulnerable()) return false;
 	if (getItem() != NULL && getItem()->id == Item::netherStar_Id && source->isExplosion()) return false;
@@ -253,7 +253,7 @@ void ItemEntity::playerTouch(shared_ptr<Player> player)
 			}
 #endif
 		}
-		if (item->id == Item::blazeRod_Id) 
+		if (item->id == Item::blazeRod_Id)
 			player->awardStat(GenericStats::blazeRod(), GenericStats::param_blazeRod());
 
 		playSound(eSoundType_RANDOM_POP, 0.2f, ((random->nextFloat() - random->nextFloat()) * 0.7f + 1.0f) * 2.0f);

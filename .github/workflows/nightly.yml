@@ -36,7 +36,11 @@ jobs:
       with:
         tag_name: nightly
         name: Nightly Release
-        body: Requires at least Windows 7 and DirectX 11 compatible GPU to run. Compiled with MSVC v14.44.35207 in Release mode with Whole Program Optimization, as well as `/O2 /Ot /Oi /Ob3 /GF /fp:precise`.
+        body: |
+          Requires at least Windows 7 and DirectX 11 compatible GPU to run. Compiled with MSVC v14.44.35207 in Release mode with Whole Program Optimization, as well as `/O2 /Ot /Oi /Ob3 /GF /fp:precise`.
+          
+          # 🚨 First time here? 🚨
+          If you've never downloaded the game before, you need to download `LCEWindows64.zip` and extract it to the folder where you'd like to keep the game. The other files are included in this `.zip` file!
         files: |
             LCEWindows64.zip
             ./x64/Release/Minecraft.Client.exe

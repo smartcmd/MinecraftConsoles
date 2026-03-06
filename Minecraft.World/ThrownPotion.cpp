@@ -14,7 +14,7 @@ const double ThrownPotion::SPLASH_RANGE = 4.0;
 const double ThrownPotion::SPLASH_RANGE_SQ = ThrownPotion::SPLASH_RANGE * ThrownPotion::SPLASH_RANGE;
 
 void ThrownPotion::_init()
-{		
+{
 	// 4J Stu - This function call had to be moved here from the Entity ctor to ensure that
 	// the derived version of the function is called
 	this->defineSynchedData();
@@ -95,11 +95,9 @@ void ThrownPotion::onHit(HitResult *res)
 
 			if (entitiesOfClass != NULL && !entitiesOfClass->empty())
 			{
-				//for (Entity e : entitiesOfClass)
-				for(AUTO_VAR(it, entitiesOfClass->begin()); it != entitiesOfClass->end(); ++it)
+				for(auto & it : *entitiesOfClass)
 				{
-					//shared_ptr<Entity> e = *it;
-					shared_ptr<LivingEntity> e = dynamic_pointer_cast<LivingEntity>( *it );
+					shared_ptr<LivingEntity> e = dynamic_pointer_cast<LivingEntity>( it );
 					double dist = distanceToSqr(e);
 					if (dist < SPLASH_RANGE_SQ)
 					{
@@ -110,9 +108,8 @@ void ThrownPotion::onHit(HitResult *res)
 						}
 
 						//for (MobEffectInstance effect : mobEffects)
-						for(AUTO_VAR(itMEI, mobEffects->begin()); itMEI != mobEffects->end(); ++itMEI)
+						for(auto& effect : *mobEffects)
 						{
-							MobEffectInstance *effect = *itMEI;
 							int id = effect->getId();
 							if (MobEffect::effects[id]->isInstantenous())
 							{

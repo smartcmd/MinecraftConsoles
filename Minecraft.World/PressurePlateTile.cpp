@@ -32,9 +32,8 @@ int PressurePlateTile::getSignalStrength(Level *level, int x, int y, int z)
 
 	if (entities != NULL && !entities->empty())
 	{
-		for (AUTO_VAR(it, entities->begin()); it != entities->end(); ++it)
-		{
-			shared_ptr<Entity> e = *it;
+        for (auto& e : *entities)
+        {
 			if (!e->isIgnoringTileTriggers())
 			{
 				if (sensitivity != everything) delete entities;

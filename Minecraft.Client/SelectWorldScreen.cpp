@@ -60,7 +60,7 @@ wstring SelectWorldScreen::getWorldName(int id)
 	if ( levelName.length() == 0 )
 	{
         Language *language = Language::getInstance();
-        levelName = language->getElement(L"selectWorld.world") + L" " + _toString<int>(id + 1);
+        levelName = language->getElement(L"selectWorld.world") + L" " + std::to_wstring(id + 1);
     }
 
     return levelName;
@@ -150,7 +150,7 @@ void SelectWorldScreen::worldSelected(int id)
     wstring worldFolderName = getWorldId(id);
     if (worldFolderName == L"")	// 4J - was NULL comparison
 	{
-        worldFolderName = L"World" + _toString<int>(id);
+        worldFolderName = L"World" + std::to_wstring(id);
     }
 // 4J Stu - Not used, so commenting to stop the build failing
 #if 0
@@ -246,7 +246,7 @@ void SelectWorldScreen::WorldSelectionList::selectItem(int item, bool doubleClic
     parent->deleteButton->active = active;
     parent->renameButton->active = active;
 
-    if (doubleClick && active) 
+    if (doubleClick && active)
 	{
         parent->worldSelected(item);
     }
@@ -274,7 +274,7 @@ void SelectWorldScreen::WorldSelectionList::renderItem(int i, int x, int y, int 
     wstring name = levelSummary->getLevelName();
     if (name.length()==0)
 	{
-        name = parent->worldLang + L" " + _toString<int>(i + 1);
+        name = parent->worldLang + L" " + std::to_wstring(i + 1);
     }
 
     wstring id = levelSummary->getLevelId();
@@ -295,7 +295,7 @@ void SelectWorldScreen::WorldSelectionList::renderItem(int i, int x, int y, int 
     id = id + L" (" + buffer;
 
     __int64 size = levelSummary->getSizeOnDisk();
-    id = id + L", " + _toString<float>(size / 1024 * 100 / 1024 / 100.0f) + L" MB)";
+    id = id + L", " + std::to_wstring(static_cast<float>(size / 1024 * 100 / 1024 / 100.0f)) + L" MB)";
     wstring info;
 
     if (levelSummary->isRequiresConversion())

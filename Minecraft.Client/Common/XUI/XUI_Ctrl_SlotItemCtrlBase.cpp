@@ -64,7 +64,7 @@ HRESULT CXuiCtrlSlotItemCtrlBase::OnCustomMessage_GetSlotItem(HXUIOBJ hObj, Cust
 		// 11 bits - auxval
 		//  6 bits - count
 		//  6 bits - scale
-		pData->iDataBitField = MAKE_SLOTDISPLAY_DATA_BITMASK(pUserDataContainer->m_iPad, (int)(31*pUserDataContainer->m_fAlpha),true,item->GetCount(),7,item->popTime); 
+		pData->iDataBitField = MAKE_SLOTDISPLAY_DATA_BITMASK(pUserDataContainer->m_iPad, (int)(31*pUserDataContainer->m_fAlpha),true,item->GetCount(),7,item->popTime);
 	}
 	else
 	{
@@ -93,7 +93,7 @@ void CXuiCtrlSlotItemCtrlBase::SetUserIndex(  HXUIOBJ hObj, int iPad )
 	XuiElementGetUserData( hObj, &pvUserData );
 
 	SlotControlUserDataContainer* pUserDataContainer = (SlotControlUserDataContainer*)pvUserData;
-	
+
 	pUserDataContainer->m_iPad = iPad;
 }
 
@@ -103,7 +103,7 @@ void CXuiCtrlSlotItemCtrlBase::SetAlpha(  HXUIOBJ hObj, float fAlpha )
 	XuiElementGetUserData( hObj, &pvUserData );
 
 	SlotControlUserDataContainer* pUserDataContainer = (SlotControlUserDataContainer*)pvUserData;
-	
+
 	pUserDataContainer->m_fAlpha = fAlpha;
 }
 
@@ -137,16 +137,15 @@ wstring CXuiCtrlSlotItemCtrlBase::GetItemDescription( HXUIOBJ hObj, vector<wstri
 		wstring desc = L"";
 		vector<wstring> *strings = pUserDataContainer->slot->getItem()->getHoverText(Minecraft::GetInstance()->localplayers[pUserDataContainer->m_iPad], false, unformattedStrings);
 		bool firstLine = true;
-		for(AUTO_VAR(it, strings->begin()); it != strings->end(); ++it)
-		{
-			wstring thisString = *it;
+        for ( wstring& thisString : *strings )
+        {
 			if(!firstLine)
 			{
 				desc.append( L"<br />" );
 			}
 			else
 			{
-				firstLine = false;				
+				firstLine = false;
 				wchar_t formatted[256];
 				eMinecraftColour rarityColour = pUserDataContainer->slot->getItem()->getRarity()->color;
 				int colour = app.GetHTMLColour(rarityColour);
@@ -156,7 +155,7 @@ wstring CXuiCtrlSlotItemCtrlBase::GetItemDescription( HXUIOBJ hObj, vector<wstri
 					colour = app.GetHTMLColour(eTextColor_RenamedItemTitle);
 				}
 
-				swprintf(formatted, 256, L"<font color=\"#%08x\">%s</font>",colour,thisString.c_str());				
+				swprintf(formatted, 256, L"<font color=\"#%08x\">%s</font>",colour,thisString.c_str());
 				thisString = formatted;
 			}
 			desc.append( thisString );
@@ -221,7 +220,7 @@ HRESULT CXuiCtrlSlotItemCtrlBase::OnKeyDown(HXUIOBJ hObj, XUIMessageInput *pInpu
 
 		XUIMessage message;
 		XUIMessageInput messageInput;
-	
+
 		XuiMessageInput( &message, &messageInput, XUI_KEYDOWN, pInputData->dwKeyCode, pInputData->wch, pInputData->dwFlags, pInputData->UserIndex );
 
 		if (HRESULT_SUCCEEDED(hr))
@@ -358,7 +357,7 @@ bool CXuiCtrlSlotItemCtrlBase::IsSameItemAs( HXUIOBJ hThisObj, HXUIOBJ hOtherObj
 
 // 4J WESTY : Pointer Prototype : Added to support prototype only.
 // Returns number of items that can still be stacked into this slot.
-int	CXuiCtrlSlotItemCtrlBase::GetEmptyStackSpace( HXUIOBJ hObj )		
+int	CXuiCtrlSlotItemCtrlBase::GetEmptyStackSpace( HXUIOBJ hObj )
 {
 	int iResult = 0;
 
