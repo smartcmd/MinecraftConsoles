@@ -865,6 +865,7 @@ void UIController::tickInput()
 							int hitControlId = -1;
 							S32 hitArea = INT_MAX;
 							UIControl *hitCtrl = NULL;
+							bool hitAny = false;
 							for (size_t i = 0; i < controls->size(); ++i)
 							{
 								UIControl *ctrl = (*controls)[i];
@@ -906,7 +907,8 @@ void UIController::tickInput()
 										hitControlId = -1;
 										hitArea = INT_MAX;
 										hitCtrl = NULL;
-										break; // ButtonList takes priority
+										hitAny = true;
+									break; // ButtonList takes priority
 									}
 									if (type == UIControl::eTexturePackList)
 									{
@@ -919,6 +921,7 @@ void UIController::tickInput()
 										hitControlId = -1;
 										hitArea = INT_MAX;
 										hitCtrl = NULL;
+										hitAny = true;
 										break;
 									}
 									S32 area = cw * ch;
@@ -927,6 +930,7 @@ void UIController::tickInput()
 										hitControlId = ctrl->getId();
 										hitArea = area;
 										hitCtrl = ctrl;
+										hitAny = true;
 										if (type == UIControl::eSlider)
 											m_bMouseHoverHorizontalList = true;
 									}
@@ -952,6 +956,19 @@ void UIController::tickInput()
 									{
 										((UIControl_TextInput *)hitCtrl)->setCaretVisible(false);
 									}
+								}
+							}
+							else if (!hitAny && !pScene->isDirectEditBlocking())
+							{
+								// Mouse moved away from all controls — clear focus if set
+								Iggy *movie = pScene->getMovie();
+								IggyFocusHandle currentFocus = IGGY_FOCUS_NULL;
+								IggyFocusableObject focusables[64];
+								S32 numFocusables = 0;
+								IggyPlayerGetFocusableObjects(movie, &currentFocus, focusables, 64, &numFocusables);
+								if (currentFocus != IGGY_FOCUS_NULL)
+								{
+									IggyPlayerSetFocusRS(movie, IGGY_FOCUS_NULL, 0);
 								}
 							}
 						}
