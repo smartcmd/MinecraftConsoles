@@ -45,7 +45,7 @@ jobs:
       - name: Upload artifact/s
         uses: actions/upload-artifact@v4
         with:
-          name: DLL
+          name: Zip
           path: |
             LCEWindows64.zip
             ./x64/Release/Minecraft.Client.exe
