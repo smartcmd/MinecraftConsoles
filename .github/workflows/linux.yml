@@ -14,7 +14,7 @@ jobs:
       - name: Install base dependencies
         run: |
           pacman -Syu --noconfirm archlinux-keyring
-          pacman -Syu --noconfirm base-devel sudo git cmake extra-cmake-modules python wine msitools ca-certificates libwbclient 7zip
+          pacman -Syu --noconfirm base-devel sudo git cmake extra-cmake-modules python wine msitools ca-certificates libwbclient 7zip tree
 
       - name: Create build user
         run: |
@@ -40,9 +40,10 @@ jobs:
           CC=cl CXX=cl cmake . -DCMAKE_BUILD_TYPE=Release -DCMAKE_SYSTEM_NAME=Windows
           make -j$(nproc)
           ls -lh
+          tree
           7z a build.zip \
-          Common music redist64 Windows64 Windows64Media Effects.msscmp \
-          iggy_w64.dll MinecraftClient.exe Minecraft.Client.exe mss64.dll
+          Minecraft.Client/Common Minecraft.Client/music Minecraft.Client/redist64 Minecraft.Client/Windows64 Minecraft.Client/Windows64Media x64/Release \
+          iggy_w64.dll MinecraftClient.exe mss64.dll || true
           EOF
 
       - name: Upload artifact
