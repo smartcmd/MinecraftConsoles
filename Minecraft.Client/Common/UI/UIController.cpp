@@ -865,7 +865,7 @@ void UIController::tickInput()
 							for (size_t i = 0; i < controls->size(); ++i)
 							{
 								UIControl *ctrl = (*controls)[i];
-								if (!ctrl || !ctrl->getVisible() || ctrl->getId() < 0)
+								if (!ctrl || ctrl->getHidden() || !ctrl->getVisible() || ctrl->getId() < 0)
 									continue;
 
 								UIControl::eUIControlType type = ctrl->getControlType();

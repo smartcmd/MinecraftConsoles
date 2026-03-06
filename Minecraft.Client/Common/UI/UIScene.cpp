@@ -478,7 +478,7 @@ bool UIScene::handleMouseClick(F32 x, F32 y)
 	for (size_t i = 0; i < controls->size(); ++i)
 	{
 		UIControl *ctrl = (*controls)[i];
-		if (!ctrl || !ctrl->getVisible() || ctrl->getId() < 0)
+		if (!ctrl || ctrl->getHidden() || !ctrl->getVisible() || ctrl->getId() < 0)
 			continue;
 
 		UIControl::eUIControlType type = ctrl->getControlType();
@@ -607,11 +607,12 @@ void UIScene::removeControl( UIControl_Base *control, bool centreScene)
 	// update the button positions since they may have changed
 	UpdateSceneControls();
 
-	// mark the button as removed
-	control->setHidden(true);
 	// remove it from the touchboxes
 	ui.TouchBoxRebuild(control->getParentScene());
 #endif
+
+	// mark the button as removed so hover/touch hit-tests skip it
+	control->setHidden(true);
 
 }
 

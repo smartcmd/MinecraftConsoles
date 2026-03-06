@@ -64,10 +64,8 @@ public:
 
 	virtual bool setupControl(UIScene *scene, IggyValuePath *parent, const string &controlName);
 	void UpdateControl();
-#ifdef __PSVITA__
 	void setHidden(bool bHidden) {m_bHidden=bHidden;}
 	bool getHidden(void) {return m_bHidden;}
-#endif
 
 	IggyValuePath *getIggyValuePath();
 
