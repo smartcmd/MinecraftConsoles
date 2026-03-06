@@ -252,7 +252,7 @@ void LocalPlayer::aiStep()
 	bool forwardEnoughToContinueSprint = input->ya >= runTreshold;
 
 	// 4J - altered this slightly to make sure that the joypad returns to below returnTreshold in between registering two movements up to runThreshold
-	if (onGround && !isSprinting() && enoughFoodToSprint && !isUsingItem() && !hasEffect(MobEffect::blindness))
+	if ((onGround || abilities.flying) && !isSprinting() && enoughFoodToSprint && !isUsingItem() && !hasEffect(MobEffect::blindness))
 	{
 		if( !wasRunning && forwardEnoughToTriggerSprint )
 		{
@@ -278,7 +278,7 @@ void LocalPlayer::aiStep()
 	}
 	if (isSneaking()) sprintTriggerTime = 0;
 #ifdef _WINDOWS64
-	if (input->sprinting && onGround && enoughFoodToSprint && !isUsingItem() && !hasEffect(MobEffect::blindness) && !isSneaking())
+	if (input->sprinting && (onGround || abilities.flying) && enoughFoodToSprint && !isUsingItem() && !hasEffect(MobEffect::blindness) && !isSneaking())
 	{
 		setSprinting(true);
 	}
@@ -333,13 +333,10 @@ void LocalPlayer::aiStep()
 
 	if (abilities.flying)
 	{
-		//            yd = 0;
-		// 4J - note that the 0.42 added for going down is to make it match with what happens when you jump - jumping itself adds 0.42 to yd in Mob::jumpFromGround
-		if (ullButtonsPressed & (1LL<<MINECRAFT_ACTION_SNEAK_TOGGLE) ) yd -= ( 0.15 + 0.42 );		// 4J - for flying mode, MINECRAFT_ACTION_SNEAK_TOGGLE isn't a toggle but just indicates that this button is down
+		if (ullButtonsPressed & (1LL<<MINECRAFT_ACTION_SNEAK_TOGGLE) ) yd -= 0.15f;
 		if (input->jumping)
 		{
-			noJumpDelay = 0;
-			yd += 0.15;
+			yd += 0.15f;
 		}
 
 		// snap y rotation to nearest 90 degree axis aligned value
@@ -434,40 +431,22 @@ void LocalPlayer::aiStep()
 		else
 #endif
 		{
-			if( isSprinting() )
+			flyX = 0.0f;
+			flyY = 0.0f;
+			flyZ = 0.0f;
+			if( ullDpad_filtered & (1LL<<MINECRAFT_ACTION_DPAD_UP))
 			{
-				// Accelrate up to full speed if we are sprinting, moving in the direction of the view vector
-				flyX = (float)viewVector->x * input->ya;
-				flyY = (float)viewVector->y * input->ya;
-				flyZ = (float)viewVector->z * input->ya;
-
-				float scale = ((float)(SPRINT_DURATION - sprintTime))/10.0f;
-				scale = scale * scale;
-				if ( scale > 1.0f ) scale = 1.0f;
-				flyX *= scale;
-				flyY *= scale;
-				flyZ *= scale;
+				flyY = 0.1f;
 			}
-			else
+			if( ullDpad_filtered & (1LL<<MINECRAFT_ACTION_DPAD_DOWN))
 			{
-				flyX = 0.0f;
-				flyY = 0.0f;
-				flyZ = 0.0f;
-				if( ullDpad_filtered & (1LL<<MINECRAFT_ACTION_DPAD_UP))
-				{
-					flyY = 0.1f;
-				}
-				if( ullDpad_filtered & (1LL<<MINECRAFT_ACTION_DPAD_DOWN))
-				{
-					flyY = -0.1f;
-				}
+				flyY = -0.1f;
 			}
 		}
 
 		Player::move(flyX, flyY, flyZ);
 
 		fallDistance = 0.0f;
-		yd = 0.0f;
 		onGround = true;
 	}
 

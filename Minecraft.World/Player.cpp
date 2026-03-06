@@ -1015,7 +1015,7 @@ void Player::aiStep()
 	flyingSpeed = defaultFlySpeed;
 	if (isSprinting())
 	{
-		flyingSpeed += defaultFlySpeed * 0.3f;
+		flyingSpeed += defaultFlySpeed;
 	}
 
 	setSpeed((float) speed->getValue());
@@ -2082,6 +2082,8 @@ void Player::awardStat(Stat *stat, byteArray paramBlob)
 
 void Player::jumpFromGround()
 {
+	if (abilities.flying) return;
+
 	LivingEntity::jumpFromGround();
 
 	// 4J Stu - This seems to have been missed from 1.7.3, but do we care?
@@ -2104,11 +2106,14 @@ void Player::travel(float xa, float ya)
 
 	if (abilities.flying && riding == NULL)
 	{
-		double ydo = yd;
+		double savedYd = yd;
 		float ofs = flyingSpeed;
-		flyingSpeed = abilities.getFlyingSpeed();
+		flyingSpeed = abilities.getFlyingSpeed() * (isSprinting() ? 2 : 1);
+		bool wasOnGround = onGround;
+		onGround = false;
 		LivingEntity::travel(xa, ya);
-		yd = ydo * 0.6;
+		onGround = wasOnGround;
+		yd = savedYd * 0.6;
 		flyingSpeed = ofs;
 	}
 	else
