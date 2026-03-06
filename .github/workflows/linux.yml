@@ -31,7 +31,8 @@ jobs:
         run: |
           sudo -u builder sh <<'EOF'
           set -e
-          export XDG_RUNTIME_DIR=/tmp/runtime-builder
+          export UID=$(id -u)
+          export XDG_RUNTIME_DIR=/run/user/$UID
           mkdir -p $XDG_RUNTIME_DIR
           chmod 700 $XDG_RUNTIME_DIR
           export WINE=$(command -v wine64 || command -v wine || false)
