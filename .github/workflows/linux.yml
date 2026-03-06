@@ -31,10 +31,9 @@ jobs:
         run: |
           sudo -u builder sh <<'EOF'
           set -e
-          export UID=$(id -u)
           export XDG_RUNTIME_DIR=/run/user/$UID
-          mkdir -p $XDG_RUNTIME_DIR
-          chmod 700 $XDG_RUNTIME_DIR
+          mkdir -p "$XDG_RUNTIME_DIR"
+          chmod 700 "$XDG_RUNTIME_DIR"
           export WINE=$(command -v wine64 || command -v wine || false)
           $WINE wineboot
           git clone https://github.com/mstorsjo/msvc-wine
