@@ -46,7 +46,20 @@ Notes:
 
 ## Building on Linux
 
-In order to build on linux you'll need git cmake & wine once you've installed those you can run this after cloning the repository which will build via [msvc-wine](https://github.com/mstorsjo/msvc-wine) 
+In order to build on linux you'll need the following dependencies (These pkg names are for arch):
+
+```
+git
+cmake
+extra-cmake-modules
+python
+wine
+msitools
+ca-certificates
+libwbclient
+```
+
+Once you've installed those you can run this after cloning the repository which will build via [msvc-wine](https://github.com/mstorsjo/msvc-wine) 
 
 ```sh
 export WINE=$(command -v wine64 || command -v wine || false)
