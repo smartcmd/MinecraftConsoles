@@ -1303,6 +1303,14 @@ void UIController::handleKeyPress(unsigned int iPad, unsigned int key)
 			}
 		}
 
+		// Right click → ACTION_MENU_X (pick up half stack in inventory)
+		if (key == ACTION_MENU_X && !g_KBMInput.IsMouseGrabbed())
+		{
+			if (g_KBMInput.IsMouseButtonPressed(KeyboardMouseInput::MOUSE_RIGHT))  { pressed = true; down = true; }
+			if (g_KBMInput.IsMouseButtonReleased(KeyboardMouseInput::MOUSE_RIGHT)) { released = true; down = false; }
+			if (!pressed && !released && g_KBMInput.IsMouseButtonDown(KeyboardMouseInput::MOUSE_RIGHT)) { down = true; }
+		}
+
 		// Scroll wheel for list scrolling — only consume the wheel value when the
 		// action key actually matches, so the other direction isn't lost.
 		if (!g_KBMInput.IsMouseGrabbed() && (key == ACTION_MENU_OTHER_STICK_UP || key == ACTION_MENU_OTHER_STICK_DOWN))
