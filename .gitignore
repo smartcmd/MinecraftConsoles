@@ -433,3 +433,7 @@ build/*
 
 # Local saves
 Minecraft.Client/Saves/
+
+# msvc
+msvc-wine/
+my_msvc/
