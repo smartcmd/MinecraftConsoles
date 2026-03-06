@@ -29,12 +29,7 @@ jobs:
 
       - name: Build
         run: |
-          sudo -u builder sh <<'EOF'
           set -ex
-          export XDG_RUNTIME_DIR=/tmp/runtime-$UID
-          mkdir -p "$XDG_RUNTIME_DIR"
-          chmod 700 "$XDG_RUNTIME_DIR"
-          export WINEDEBUG=+all
           export WINE=$(command -v wine64 || command -v wine || false)
           $WINE wineboot
           git clone https://github.com/mstorsjo/msvc-wine
@@ -43,7 +38,6 @@ jobs:
           export PATH=$(pwd)/my_msvc/opt/msvc/bin/x64:$PATH
           $WINE wineboot
           ./my_msvc/opt/msvc/bin/x64/msbuild MinecraftConsoles.sln /p:Configuration=Release /p:Platform="Windows64"
-          EOF
 
       - name: Upload artifact/s
         uses: actions/upload-artifact@v4
