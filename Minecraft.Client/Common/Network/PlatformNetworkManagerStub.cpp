@@ -745,6 +745,8 @@ void CPlatformNetworkManagerStub::SearchForGames()
 		while (std::fgets(buffer, sizeof(buffer), file)) {
 			if (phase == 0) {
 				ip = buffer;
+				if (!ip.empty() && (ip.back() == '\n' || ip.back() == '\r'))
+					ip.pop_back();
 				phase = 1;
 			}
 			else if (phase == 1) {

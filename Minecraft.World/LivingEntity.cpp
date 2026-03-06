@@ -1305,42 +1305,46 @@ void LivingEntity::teleportTo(double x, double y, double z)
 
 void LivingEntity::findStandUpPosition(shared_ptr<Entity> vehicle)
 {
-	AABB *boundingBox;
-	double fallbackX = vehicle->x;
-	double fallbackY = vehicle->bb->y0 + vehicle->bbHeight;
-	double fallbackZ = vehicle->z;
+    const double vehicleX = vehicle->x;
+    const double vehicleY = vehicle->bb->y0 + vehicle->bbHeight;
+    const double vehicleZ = vehicle->z;
+    double fallbackX = vehicleX;
+    double fallbackY = vehicleY;
+    double fallbackZ = vehicleZ;
+    const double searchY = vehicleY;
 
-	for (double xDiff = -1.5; xDiff < 2; xDiff += 1.5)
-	{
-		for (double zDiff = -1.5; zDiff < 2; zDiff += 1.5)
-		{
-			if (xDiff == 0 && zDiff == 0)
-			{
-				continue;
-			}
+    for (double xDiff = -1.5; xDiff < 2; xDiff += 1.5)
+    {
+        for (double zDiff = -1.5; zDiff < 2; zDiff += 1.5)
+        {
+            if (xDiff == 0 && zDiff == 0)
+            {
+                continue;
+            }
 
-			int xToInt = (int) (x + xDiff);
-			int zToInt = (int) (z + zDiff);
-			boundingBox = bb->cloneMove(xDiff, 1, zDiff);
+            const int xToInt = static_cast<int>(vehicleX + xDiff);
+            const int zToInt = static_cast<int>(vehicleZ + zDiff);
+            AABB *boundingBox = bb->cloneMove(vehicleX + xDiff - x, searchY + 1 - y, vehicleZ + zDiff - z);
 
-			if (level->getTileCubes(boundingBox, true)->empty())
-			{
-				if (level->isTopSolidBlocking(xToInt, (int) y, zToInt))
-				{
-					teleportTo(x + xDiff, y + 1, z + zDiff);
-					return;
-				}
-				else if (level->isTopSolidBlocking(xToInt, (int) y - 1, zToInt) || level->getMaterial(xToInt, (int) y - 1, zToInt) == Material::water)
-				{
-					fallbackX = x + xDiff;
-					fallbackY = y + 1;
-					fallbackZ = z + zDiff;
-				}
-			}
-		}
-	}
+            if (level->getTileCubes(boundingBox, true)->empty())
+            {
+                if (level->isTopSolidBlocking(xToInt, static_cast<int>(searchY), zToInt))
+                {
+                    teleportTo(vehicleX + xDiff, searchY + 1, vehicleZ + zDiff);
+                    return;
+                }
+                if (level->isTopSolidBlocking(xToInt, static_cast<int>(searchY) - 1, zToInt) ||
+                    level->getMaterial(xToInt, static_cast<int>(searchY) - 1, zToInt) == Material::water)
+                {
+                    fallbackX = vehicleX + xDiff;
+                    fallbackY = searchY + 1;
+                    fallbackZ = vehicleZ + zDiff;
+                }
+            }
+        }
+    }
 
-	teleportTo(fallbackX, fallbackY, fallbackZ);
+    teleportTo(fallbackX, fallbackY, fallbackZ);
 }
 
 bool LivingEntity::shouldShowName()

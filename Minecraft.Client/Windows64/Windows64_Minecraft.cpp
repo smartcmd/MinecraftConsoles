@@ -40,6 +40,7 @@
 #include "Resource.h"
 #include "..\..\Minecraft.World\compression.h"
 #include "..\..\Minecraft.World\OldChunkStorage.h"
+#include "Common/PostProcesser.h"
 #include "Network\WinsockNetLayer.h"
 
 #include "Xbox/resource.h"
@@ -564,6 +565,12 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		g_KBMInput.SetWindowFocused(true);
 		break;
 
+	case WM_CHAR:
+		// Buffer typed characters so UIScene_Keyboard can dispatch them to the Iggy Flash player
+		if (wParam >= 0x20 || wParam == 0x08 || wParam == 0x0D) // printable chars + backspace + enter
+			g_KBMInput.OnChar((wchar_t)wParam);
+		break;
+
 	case WM_KEYDOWN:
 	case WM_SYSKEYDOWN:
 	{
@@ -874,6 +881,8 @@ HRESULT InitDevice()
 
 	RenderManager.Initialise(g_pd3dDevice, g_pSwapChain);
 
+	PostProcesser::GetInstance().Init();
+
 	return S_OK;
 }
 
@@ -993,9 +1002,6 @@ static Minecraft* InitialiseMinecraftRuntime()
 
 	app.InitGameSettings();
 	app.InitialiseTips();
-
-	pMinecraft->options->set(Options::Option::MUSIC, 1.0f);
-	pMinecraft->options->set(Options::Option::SOUND, 1.0f);
 
 	return pMinecraft;
 }

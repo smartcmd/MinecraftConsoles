@@ -1230,7 +1230,11 @@ bool MinecraftServer::loadLevel(LevelStorageSource *storageSource, const wstring
 
 	if( levels[0]->isNew || levels[1]->isNew || levels[2]->isNew )
 	{
+#ifndef _WINDOWS64
+		// On Windows64 we skip the automatic initial save so that choosing
+		// "Exit without saving" on a new world does not leave an orphaned save folder.
 		levels[0]->saveToDisc(mcprogress, false);
+#endif
 	}
 
 	if( s_bServerHalted || !g_NetworkManager.IsInSession() ) return false;

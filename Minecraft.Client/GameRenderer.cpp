@@ -51,6 +51,7 @@
 #include "TexturePackRepository.h"
 #include "TexturePack.h"
 #include "TextureAtlas.h"
+#include "Common/PostProcesser.h"
 
 bool GameRenderer::anaglyph3d = false;
 int GameRenderer::anaglyphPass = 0;
@@ -832,124 +833,253 @@ void GameRenderer::tickLightTexture()
 
 void GameRenderer::updateLightTexture(float a)
 {
-	// 4J-JEV: Now doing light textures on PER PLAYER basis.
-	// 4J - we *had* added separate light textures for all dimensions, and this loop to update them all here
-	for(int j = 0; j < XUSER_MAX_COUNT; j++ )
-	{
-		// Loop over all the players
-		shared_ptr<MultiplayerLocalPlayer> player = Minecraft::GetInstance()->localplayers[j];
-		if (player == NULL) continue;
+    CachePlayerGammas();
 
-		Level *level = player->level;		// 4J - was mc->level when it was just to update the one light texture
+    for (int j = 0; j < XUSER_MAX_COUNT; j++)
+    {
+        shared_ptr<MultiplayerLocalPlayer> player = Minecraft::GetInstance()->localplayers[j];
+        if (player == nullptr)
+            continue;
 
-		float skyDarken1 = level->getSkyDarken((float) 1);
-		for (int i = 0; i < 256; i++)
-		{
-			float darken = skyDarken1 * 0.95f + 0.05f;
-			float sky = level->dimension->brightnessRamp[i / 16] * darken;
-			float block = level->dimension->brightnessRamp[i % 16] * (blr * 0.1f + 1.5f);
+        Level *level = player->level;
 
-			if (level->skyFlashTime > 0)
-			{
-				sky = level->dimension->brightnessRamp[i / 16];
-			}
+        const float skyDarken1 = level->getSkyDarken(1.0f);
+        for (int i = 0; i < 256; i++)
+        {
+            const float darken = skyDarken1 * 0.95f + 0.05f;
+            float sky = level->dimension->brightnessRamp[i / 16] * darken;
+            const float block = level->dimension->brightnessRamp[i % 16] * (blr * 0.1f + 1.5f);
 
-			float rs = sky * (skyDarken1 * 0.65f + 0.35f);
-			float gs = sky * (skyDarken1 * 0.65f + 0.35f);
-			float bs = sky;
+            if (level->skyFlashTime < 0)
+            {
+                sky = level->dimension->brightnessRamp[i / 16];
+            }
 
-			float rb = block;
-			float gb = block * ((block * 0.6f + 0.4f) * 0.6f + 0.4f);
-			float bb = block * ((block * block) * 0.6f + 0.4f);
+            const float rs = sky * (skyDarken1 * 0.65f + 0.35f);
+            const float gs = sky * (skyDarken1 * 0.65f + 0.35f);
+            const float bs = sky;
 
-			float _r = (rs + rb);
-			float _g = (gs + gb);
-			float _b = (bs + bb);
+            const float rb = block;
+            const float gb = block * ((block * 0.6f + 0.4f) * 0.6f + 0.4f);
+            const float bb = block * ((block * block) * 0.6f + 0.4f);
 
-			_r = _r * 0.96f + 0.03f;
-			_g = _g * 0.96f + 0.03f;
-			_b = _b * 0.96f + 0.03f;
+            float _r = (rs + rb);
+            float _g = (gs + gb);
+            float _b = (bs + bb);
 
-			if (darkenWorldAmount > 0)
-			{
-				float amount = darkenWorldAmountO + (darkenWorldAmount - darkenWorldAmountO) * a;
-				_r = _r * (1.0f - amount) + (_r * .7f) * amount;
-				_g = _g * (1.0f - amount) + (_g * .6f) * amount;
-				_b = _b * (1.0f - amount) + (_b * .6f) * amount;
-			}
+            _r = _r * 0.96f + 0.03f;
+            _g = _g * 0.96f + 0.03f;
+            _b = _b * 0.96f + 0.03f;
 
-			if (level->dimension->id == 1)
-			{
-				_r = (0.22f + rb * 0.75f);
-				_g = (0.28f + gb * 0.75f);
-				_b = (0.25f + bb * 0.75f);
-			}
+            if (darkenWorldAmount > 0)
+            {
+                const float amount = darkenWorldAmountO + (darkenWorldAmount - darkenWorldAmountO) * a;
+                _r = _r * (1.0f - amount) + (_r * 0.7f) * amount;
+                _g = _g * (1.0f - amount) + (_g * 0.6f) * amount;
+                _b = _b * (1.0f - amount) + (_b * 0.6f) * amount;
+            }
 
-			if (player->hasEffect(MobEffect::nightVision))
-			{
-				float scale = getNightVisionScale(player, a);
-				{
-					float dist = 1.0f / _r;
-					if (dist > (1.0f / _g))
-					{
-						dist = (1.0f / _g);
-					}
-					if (dist > (1.0f / _b))
-					{
-						dist = (1.0f / _b);
-					}
-					_r = _r * (1.0f - scale) + (_r * dist) * scale;
-					_g = _g * (1.0f - scale) + (_g * dist) * scale;
-					_b = _b * (1.0f - scale) + (_b * dist) * scale;
-				}
-			}
+            if (level->dimension->id == 1)
+            {
+                _r = (0.22f + rb * 0.75f);
+                _g = (0.28f + gb * 0.75f);
+                _b = (0.25f + bb * 0.75f);
+            }
 
-			if (_r > 1) _r = 1;
-			if (_g > 1) _g = 1;
-			if (_b > 1) _b = 1;
+            if (player->hasEffect(MobEffect::nightVision))
+            {
+                const float scale = getNightVisionScale(player, a);
+                float dist = 1.0f / _r;
+                if (dist > (1.0f / _g))
+                    dist = (1.0f / _g);
+                if (dist > (1.0f / _b))
+                    dist = (1.0f / _b);
+                _r = _r * (1.0f - scale) + (_r * dist) * scale;
+                _g = _g * (1.0f - scale) + (_g * dist) * scale;
+                _b = _b * (1.0f - scale) + (_b * dist) * scale;
+            }
 
-			float brightness = mc->options->gamma;
+            if (_r > 1.0f)
+                _r = 1.0f;
+            if (_r < 0.0f)
+                _r = 0.0f;
+            if (_g > 1.0f)
+                _g = 1.0f;
+            if (_g < 0.0f)
+                _g = 0.0f;
+            if (_b > 1.0f)
+                _b = 1.0f;
+            if (_b < 0.0f)
+                _b = 0.0f;
 
-			float ir = 1 - _r;
-			float ig = 1 - _g;
-			float ib = 1 - _b;
-			ir = 1 - (ir * ir * ir * ir);
-			ig = 1 - (ig * ig * ig * ig);
-			ib = 1 - (ib * ib * ib * ib);
-			_r = _r * (1 - brightness) + ir * brightness;
-			_g = _g * (1 - brightness) + ig * brightness;
-			_b = _b * (1 - brightness) + ib * brightness;
-
-			_r = _r * 0.96f + 0.03f;
-			_g = _g * 0.96f + 0.03f;
-			_b = _b * 0.96f + 0.03f;
-
-			if (_r > 1) _r = 1;
-			if (_g > 1) _g = 1;
-			if (_b > 1) _b = 1;
-			if (_r < 0) _r = 0;
-			if (_g < 0) _g = 0;
-			if (_b < 0) _b = 0;
-
-			int alpha = 255;
-			int r = (int) (_r * 255);
-			int g = (int) (_g * 255);
-			int b = (int) (_b * 255);
+            constexpr int alpha = 255;
+            const int r = static_cast<int>(_r * 255);
+            const int g = static_cast<int>(_g * 255);
+            const int b = static_cast<int>(_b * 255);
 
 #if ( defined _DURANGO || defined _WIN64 || __PSVITA__ )
-			lightPixels[j][i] = alpha << 24 | b << 16 | g << 8 | r;
+            lightPixels[j][i] = alpha << 24 | b << 16 | g << 8 | r;
 #elif ( defined _XBOX || defined __ORBIS__ )
-			lightPixels[j][i] = alpha << 24 | r << 16 | g << 8 | b;
+            lightPixels[j][i] = alpha << 24 | r << 16 | g << 8 | b;
 #else
-			lightPixels[j][i] = r << 24 | g << 16 | b << 8 | alpha;
+            lightPixels[j][i] = r << 24 | g << 16 | b << 8 | alpha;
 #endif
-		}
+        }
 
-		mc->textures->replaceTextureDirect( lightPixels[j], 16, 16, getLightTexture(j,level) );
-		// lightTexture->upload(); // 4J: not relevant
+        mc->textures->replaceTextureDirect(lightPixels[j], 16, 16, getLightTexture(j, level));
+    }
+}
 
-		//_updateLightTexture = false;
-	}
+float GameRenderer::ComputeGammaFromSlider(float slider0to100)
+{
+    float slider = slider0to100;
+    slider = max(slider, 0.0f);
+    slider = min(slider, 100.0f);
+
+    if (slider > 50.0f)
+        return 1.0f + (slider - 50.0f) / 50.0f * 3.0f; // 1.0 -> 4.0
+    else
+        return 1.0f - (50.0f - slider) / 50.0f * 0.85f; // 1.0 -> 0.15
+}
+
+void GameRenderer::CachePlayerGammas()
+{
+    for (int j = 0; j < XUSER_MAX_COUNT && j < NUM_LIGHT_TEXTURES; ++j)
+    {
+        std::shared_ptr<MultiplayerLocalPlayer> player = Minecraft::GetInstance()->localplayers[j];
+        if (!player)
+        {
+            m_cachedGammaPerPlayer[j] = 1.0f;
+            continue;
+        }
+
+        const float slider = app.GetGameSettings(j, eGameSetting_Gamma); // 0..100
+        m_cachedGammaPerPlayer[j] = ComputeGammaFromSlider(slider);
+    }
+}
+
+bool GameRenderer::ComputeViewportForPlayer(int j, D3D11_VIEWPORT &outViewport) const
+{
+    int active = 0;
+    int indexMap[NUM_LIGHT_TEXTURES] = {-1, -1, -1, -1};
+    for (int i = 0; i < XUSER_MAX_COUNT && i < NUM_LIGHT_TEXTURES; ++i)
+    {
+        if (Minecraft::GetInstance()->localplayers[i])
+            indexMap[active++] = i;
+    }
+
+    if (active <= 1)
+    {
+        outViewport.TopLeftX = 0.0f;
+        outViewport.TopLeftY = 0.0f;
+        outViewport.Width = static_cast<FLOAT>(mc->width);
+        outViewport.Height = static_cast<FLOAT>(mc->height);
+        outViewport.MinDepth = 0.0f;
+        outViewport.MaxDepth = 1.0f;
+        return true;
+    }
+
+    int k = -1;
+    for (int ord = 0; ord < active; ++ord)
+        if (indexMap[ord] == j)
+        {
+            k = ord;
+            break;
+        }
+    if (k < 0)
+        return false;
+
+    const float width = static_cast<float>(mc->width);
+    const float height = static_cast<float>(mc->height);
+
+    if (active == 2)
+    {
+        const float halfH = height * 0.5f;
+        outViewport.TopLeftX = 0.0f;
+        outViewport.Width = width;
+        outViewport.MinDepth = 0.0f;
+        outViewport.MaxDepth = 1.0f;
+        if (k == 0)
+        {
+            outViewport.TopLeftY = 0.0f;
+            outViewport.Height = halfH;
+        }
+        else
+        {
+            outViewport.TopLeftY = halfH;
+            outViewport.Height = halfH;
+        }
+        return true;
+    }
+    else
+    {
+        const float halfW = width * 0.5f;
+        const float halfH = height * 0.5f;
+        const int row = (k >= 2) ? 1 : 0;
+        const int col = (k % 2);
+        outViewport.TopLeftX = col ? halfW : 0.0f;
+        outViewport.TopLeftY = row ? halfH : 0.0f;
+        outViewport.Width = halfW;
+        outViewport.Height = halfH;
+        outViewport.MinDepth = 0.0f;
+        outViewport.MaxDepth = 1.0f;
+        return true;
+    }
+}
+
+uint32_t GameRenderer::BuildPlayerViewports(D3D11_VIEWPORT *outViewports, float *outGammas, UINT maxCount) const
+{
+    UINT count = 0;
+    for (int j = 0; j < XUSER_MAX_COUNT && j < NUM_LIGHT_TEXTURES && count < maxCount; ++j)
+    {
+        if (!Minecraft::GetInstance()->localplayers[j])
+            continue;
+        D3D11_VIEWPORT vp;
+        if (!ComputeViewportForPlayer(j, vp))
+            continue;
+        outViewports[count] = vp;
+        outGammas[count] = m_cachedGammaPerPlayer[j];
+        ++count;
+    }
+    return count;
+}
+
+void GameRenderer::ApplyGammaPostProcess() const
+{
+    D3D11_VIEWPORT vps[NUM_LIGHT_TEXTURES];
+    float gammas[NUM_LIGHT_TEXTURES];
+    const UINT n = BuildPlayerViewports(vps, gammas, NUM_LIGHT_TEXTURES);
+    if (n == 0)
+        return;
+
+    bool anyEffect = false;
+    for (UINT i = 0; i < n; ++i)
+    {
+        if (gammas[i] < 0.99f || gammas[i] > 1.01f)
+        {
+            anyEffect = true;
+            break;
+        }
+    }
+    if (!anyEffect)
+        return;
+
+    if (n == 1)
+    {
+        PostProcesser::GetInstance().SetGamma(gammas[0]);
+        PostProcesser::GetInstance().Apply();
+    }
+    else
+    {
+        PostProcesser::GetInstance().CopyBackbuffer();
+        for (UINT i = 0; i < n; ++i)
+        {
+            PostProcesser::GetInstance().SetGamma(gammas[i]);
+            PostProcesser::GetInstance().SetViewport(vps[i]);
+            PostProcesser::GetInstance().ApplyFromCopied();
+        }
+        PostProcesser::GetInstance().ResetViewport();
+    }
 }
 
 float GameRenderer::getNightVisionScale(shared_ptr<Player> player, float a)
@@ -1039,6 +1169,7 @@ void GameRenderer::render(float a, bool bFirst)
 
 		lastNsTime = System::nanoTime();
 
+		ApplyGammaPostProcess();
 
 		if (!mc->options->hideGui || mc->screen != NULL)
 		{
