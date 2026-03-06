@@ -188,9 +188,6 @@ void SoundEngine::init(Options* pOptions)
 
     app.DebugPrintf("---miniaudio initialized\n");
 
-	AllocConsole();
-	freopen("CONOUT$", "w", stdout);
-
     return;
 }
 
@@ -268,7 +265,6 @@ void SoundEngine::updateMiniAudio()
             finalVolume = 1.0f;
 
         ma_sound_set_volume(&s->sound, finalVolume);
-		printf("Sound volume set to %f\n", finalVolume);
 
         if (!s->info.bUseSoundsPitchVal)
         {
