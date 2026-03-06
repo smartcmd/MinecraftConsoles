@@ -2,7 +2,7 @@
 #include "UI.h"
 #include "UIScene_SettingsOptionsMenu.h"
 
-#if defined(_XBOX_ONE) || defined (_WINDOWS64)
+#if defined(_XBOX_ONE)
 #define _ENABLE_LANGUAGE_SELECT
 #endif
 

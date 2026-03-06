@@ -2,6 +2,7 @@
 #include "UI.h"
 #include "UIScene_SettingsGraphicsMenu.h"
 #include "..\..\Minecraft.h"
+#include "..\..\Options.h"
 #include "..\..\GameRenderer.h"
 
 namespace
@@ -29,6 +30,24 @@ namespace
 		if (sliderValue > FOV_SLIDER_MAX) sliderValue = FOV_SLIDER_MAX;
 		return FOV_MIN + ((sliderValue * (FOV_MAX - FOV_MIN)) / FOV_SLIDER_MAX);
 	}
+
+	int LevelToDistance(int level)
+	{
+		static const int table[6] = {2,4,8,16,32,64};
+		if(level < 0) level = 0;
+		if(level > 5) level = 5;
+		return table[level];
+	}
+}
+
+int UIScene_SettingsGraphicsMenu::DistanceToLevel(int dist)
+{
+    static const int table[6] = {2,4,8,16,32,64};
+    for(int i = 0; i < 6; i++){
+        if(table[i] == dist)
+            return i;
+    }
+    return 2;
 }
 
 UIScene_SettingsGraphicsMenu::UIScene_SettingsGraphicsMenu(int iPad, void *initData, UILayer *parentLayer) : UIScene(iPad, parentLayer)
@@ -45,6 +64,9 @@ UIScene_SettingsGraphicsMenu::UIScene_SettingsGraphicsMenu(int iPad, void *initD
 
 	
 	WCHAR TempString[256];
+
+	swprintf((WCHAR*)TempString, 256, L"Render Distance: %d",app.GetGameSettings(m_iPad,eGameSetting_RenderDistance));	
+	m_sliderRenderDistance.init(TempString,eControl_RenderDistance,0,5,DistanceToLevel(app.GetGameSettings(m_iPad,eGameSetting_RenderDistance)));
 	
 	swprintf( (WCHAR *)TempString, 256, L"%ls: %d%%", app.GetString( IDS_SLIDER_GAMMA ),app.GetGameSettings(m_iPad,eGameSetting_Gamma));	
 	m_sliderGamma.init(TempString,eControl_Gamma,0,100,app.GetGameSettings(m_iPad,eGameSetting_Gamma));
@@ -167,6 +189,21 @@ void UIScene_SettingsGraphicsMenu::handleSliderMove(F64 sliderId, F64 currentVal
 	int value = (int)currentValue;
 	switch((int)sliderId)
 	{
+	case eControl_RenderDistance:
+		{
+			m_sliderRenderDistance.handleSliderMove(value);
+
+			int dist = LevelToDistance(value);
+
+			app.SetGameSettings(m_iPad,eGameSetting_RenderDistance,dist);
+
+			Minecraft* mc = Minecraft::GetInstance();
+			mc->options->viewDistance = 3 - value;
+			swprintf((WCHAR*)TempString,256,L"Render Distance: %d",dist);
+			m_sliderRenderDistance.setLabel(TempString);
+		}
+		break;
+
 	case eControl_Gamma:
 		m_sliderGamma.handleSliderMove(value);
 		
