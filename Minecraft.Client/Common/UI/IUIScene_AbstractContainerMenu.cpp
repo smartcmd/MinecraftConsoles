@@ -1377,21 +1377,13 @@ bool IUIScene_AbstractContainerMenu::handleKeyDown(int iPad, int iAction, bool b
 					quickKeyHeld = TRUE;
 					if (IsSectionSlotList(m_eCurrSection))
 					{
-						int currentIndex = getCurrentIndex(m_eCurrSection) - getSectionStartOffset(m_eCurrSection);
-
-						bool bSlotHasItem = !isSlotEmpty(m_eCurrSection, currentIndex);
-						if (bSlotHasItem)
-							ui.PlayUISFX(eSFX_Press);
+						ui.PlayUISFX(eSFX_Press);
 					}
 				}
 			}
 			else {
 				if (IsSectionSlotList(m_eCurrSection))
 				{
-					int currentIndex = getCurrentIndex(m_eCurrSection) - getSectionStartOffset(m_eCurrSection);
-
-					//bool bSlotHasItem = !isSlotEmpty(m_eCurrSection, currentIndex);
-					//if (bSlotHasItem)
 					ui.PlayUISFX(eSFX_Press);
 				}
 				//
