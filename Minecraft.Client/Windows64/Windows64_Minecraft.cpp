@@ -1,3 +1,6 @@
+// Minecraft.cpp : Defines the entry point for the application.
+//
+
 #include "stdafx.h"
 
 #include <assert.h>
@@ -6,6 +9,7 @@
 #include <shellapi.h>
 #include "GameConfig\Minecraft.spa.h"
 #include "..\MinecraftServer.h"
+#include "..\PlayerList.h"
 #include "..\LocalPlayer.h"
 #include "..\..\Minecraft.World\ItemInstance.h"
 #include "..\..\Minecraft.World\MapItem.h"
@@ -986,6 +990,7 @@ static Minecraft* InitialiseMinecraftRuntime()
 
 	ProfileManager.SetDebugFullOverride(true);
 
+	// Initialise storage manager — was accidentally left inside #if 0 in original code
 	StorageManager.Init(0, app.GetString(IDS_DEFAULT_SAVENAME), "savegame.dat", FIFTY_ONE_MB, &CConsoleMinecraftApp::DisplaySavingMessage, (LPVOID)&app, "");
 	StorageManager.StoreTMSPathName();
 
@@ -1092,6 +1097,12 @@ static int RunHeadlessServer()
 	app.SetGameHostOption(eGameHostOption_NaturalRegeneration, 1);
 	app.SetGameHostOption(eGameHostOption_DoDaylightCycle, 1);
 
+	// World size: 0=classic, 1=small, 2=medium, 3=large
+	int worldSizeSetting = serverSettings.getInt(L"world-size", 3);
+	if (worldSizeSetting < 0) worldSizeSetting = 0;
+	if (worldSizeSetting > 3) worldSizeSetting = 3;
+	app.SetGameHostOption(eGameHostOption_WorldSize, worldSizeSetting + 1);
+
 	MinecraftServer::resetFlags();
 	g_NetworkManager.HostGame(0, false, true, MINECRAFT_NET_MAX_PLAYERS, 0);
 
@@ -1106,6 +1117,14 @@ static int RunHeadlessServer()
 	NetworkGameInitData* param = new NetworkGameInitData();
 	param->seed = 0;
 	param->settings = app.GetGameHostOption(eGameHostOption_All);
+
+	switch (worldSizeSetting)
+	{
+	case 0: param->xzSize = LEVEL_WIDTH_CLASSIC; param->hellScale = HELL_LEVEL_SCALE_CLASSIC; break;
+	case 1: param->xzSize = LEVEL_WIDTH_SMALL;   param->hellScale = HELL_LEVEL_SCALE_SMALL;   break;
+	case 2: param->xzSize = LEVEL_WIDTH_MEDIUM;  param->hellScale = HELL_LEVEL_SCALE_MEDIUM;  break;
+	case 3: param->xzSize = LEVEL_WIDTH_LARGE;   param->hellScale = HELL_LEVEL_SCALE_LARGE;   break;
+	}
 
 	g_NetworkManager.ServerStoppedCreate(true);
 	g_NetworkManager.ServerReadyCreate(true);
@@ -1157,6 +1176,20 @@ static int RunHeadlessServer()
 
 	printf("Stopping server...\n");
 	fflush(stdout);
+
+	// Force save before shutdown — headless mode has no UI to trigger save-on-exit
+	MinecraftServer* shutdownServer = MinecraftServer::getInstance();
+	if (shutdownServer != NULL)
+	{
+		printf("Saving world...\n");
+		fflush(stdout);
+		PlayerList* pl = shutdownServer->getPlayers();
+		if (pl != NULL)
+			pl->saveAll(NULL, false);
+		shutdownServer->saveAllChunks();
+		printf("World saved.\n");
+		fflush(stdout);
+	}
 
 	app.m_bShutdown = true;
 	MinecraftServer::HaltServer();

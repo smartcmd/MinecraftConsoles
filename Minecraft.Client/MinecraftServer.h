@@ -138,7 +138,6 @@ private:
     bool loadLevel(LevelStorageSource *storageSource, const wstring& name, __int64 levelSeed, LevelType *pLevelType, NetworkGameInitData *initData);
     void setProgress(const wstring& status, int progress);
     void endProgress();
-    void saveAllChunks();
 	void saveGameRules();
     void stopServer(bool didInit);
 #ifdef _LARGE_WORLDS
@@ -152,6 +151,7 @@ public:
 	PlayerList *getPlayers();
 	void setPlayers(PlayerList *players);
 	ServerConnection *getConnection();
+	void saveAllChunks();
 	bool isAnimals();
 	void setAnimals(bool animals);
 	bool isNpcsEnabled();

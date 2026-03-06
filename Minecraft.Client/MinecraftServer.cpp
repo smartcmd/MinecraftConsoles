@@ -202,6 +202,10 @@ static bool ExecuteConsoleCommand(MinecraftServer *server, const wstring &rawCom
 
 	if (action == L"stop")
 	{
+		server->info(L"Saving before stopping...");
+		if (playerList != NULL)
+			playerList->saveAll(NULL, false);
+		server->saveAllChunks();
 		server->info(L"Stopping server...");
 		MinecraftServer::HaltServer();
 		return true;
@@ -238,6 +242,7 @@ static bool ExecuteConsoleCommand(MinecraftServer *server, const wstring &rawCom
 		{
 			playerList->saveAll(NULL, false);
 		}
+		server->saveAllChunks();
 		server->info(L"World saved.");
 		return true;
 	}
