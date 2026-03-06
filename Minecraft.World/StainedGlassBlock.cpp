@@ -5,7 +5,7 @@
 
 Icon *StainedGlassBlock::ICONS[StainedGlassBlock::ICONS_LENGTH];
 
-StainedGlassBlock::StainedGlassBlock(int id, Material *material) : HalfTransparentTile(id, L"glass", material, false)
+StainedGlassBlock::StainedGlassBlock(int id, Material *material) : HalfTransparentTile(id, L"glass", material, true)
 {
 }
 
