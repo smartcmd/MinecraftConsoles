@@ -3,6 +3,7 @@ using namespace std;
 #include "IUIController.h"
 #include "UIEnums.h"
 #include "UIGroup.h"
+#include <random>
 
 class UIAbstractBitmapFont;
 class UIBitmapFont;
@@ -62,6 +63,9 @@ private:
 	UIAbstractBitmapFont *m_mcBitmapFont;
 	UITTFFont *m_mcTTFFont;
 	UIBitmapFont *m_moj7, *m_moj11;
+
+	std::mt19937 m_randomGenerator;
+	std::uniform_real_distribution<float> m_randomDistribution;
 
 public:
 	void setCleanupOnReload();

@@ -266,10 +266,7 @@ void SoundEngine::updateMiniAudio()
 
         ma_sound_set_volume(&s->sound, finalVolume);
 
-        if (!s->info.bUseSoundsPitchVal)
-        {
-            ma_sound_set_pitch(&s->sound, s->info.pitch);
-        }
+        ma_sound_set_pitch(&s->sound, s->info.pitch);
 
         if (s->info.bIs3D)
         {
