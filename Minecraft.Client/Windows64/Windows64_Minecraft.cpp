@@ -986,7 +986,6 @@ static Minecraft* InitialiseMinecraftRuntime()
 
 	ProfileManager.SetDebugFullOverride(true);
 
-	// Initialise storage manager — was accidentally left inside #if 0 in original code
 	StorageManager.Init(0, app.GetString(IDS_DEFAULT_SAVENAME), "savegame.dat", FIFTY_ONE_MB, &CConsoleMinecraftApp::DisplaySavingMessage, (LPVOID)&app, "");
 	StorageManager.StoreTMSPathName();
 
