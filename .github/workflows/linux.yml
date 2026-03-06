@@ -31,7 +31,7 @@ jobs:
         run: |
           sudo -u builder sh <<'EOF'
           set -e
-          export XDG_RUNTIME_DIR=/run/user/$UID
+          export XDG_RUNTIME_DIR=/tmp/runtime-$UID
           mkdir -p "$XDG_RUNTIME_DIR"
           chmod 700 "$XDG_RUNTIME_DIR"
           export WINE=$(command -v wine64 || command -v wine || false)
@@ -40,7 +40,7 @@ jobs:
           ./msvc-wine/vsdownload.py --accept-license --dest $(pwd)/my_msvc/opt/msvc
           ./msvc-wine/install.sh $(pwd)/my_msvc/opt/msvc
           export PATH=$(pwd)/my_msvc/opt/msvc/bin/x64:$PATH
-          msbuild MinecraftConsoles.sln /p:Configuration=Release /p:Platform="Windows64"
+          ./my_msvc/opt/msvc/bin/x64/msbuild MinecraftConsoles.sln /p:Configuration=Release /p:Platform="Windows64"
           ls -l
           EOF
 
