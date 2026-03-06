@@ -121,6 +121,7 @@ using ServerRuntime::ServerPropertiesConfig;
 using ServerRuntime::TryParseServerLogLevel;
 using ServerRuntime::WideToUtf8;
 using ServerRuntime::BootstrapWorldForServer;
+using ServerRuntime::eWorldBootstrap_CreatedNew;
 using ServerRuntime::eWorldBootstrap_Failed;
 using ServerRuntime::eWorldBootstrap_Loaded;
 using ServerRuntime::WaitForWorldActionIdle;
@@ -473,6 +474,23 @@ int main(int argc, char **argv)
 
 	LogStartupStep("server startup complete");
 	LogInfof("startup", "Dedicated server listening on %s:%d", g_Win64MultiplayerIP, g_Win64MultiplayerPort);
+	if (worldBootstrap.status == eWorldBootstrap_CreatedNew && !g_shutdownRequested && !app.m_bShutdown)
+	{
+		// Windows64 では新規ワールド直後の saveToDisc を抑止しているため
+		// Dedicated Server はここで初回保存を明示的に実行する
+		LogWorldIO("requesting initial save for newly created world");
+		WaitForWorldActionIdle(kServerActionPad, 5000, &TickCoreSystems, &HandleXuiActions);
+		app.SetXuiServerAction(kServerActionPad, eXuiServerAction_AutoSaveGame);
+		if (!WaitForWorldActionIdle(kServerActionPad, 30000, &TickCoreSystems, &HandleXuiActions))
+		{
+			LogWorldIO("initial save timed out");
+			LogWarn("world-io", "Timed out waiting for initial save action to finish.");
+		}
+		else
+		{
+			LogWorldIO("initial save completed");
+		}
+	}
 	DWORD nextAutosaveTick = GetTickCount() + kAutosaveIntervalMs;
 	bool autosaveRequested = false;
 
