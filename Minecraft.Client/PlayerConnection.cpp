@@ -21,6 +21,8 @@
 #include "..\Minecraft.World\AABB.h"
 #include "..\Minecraft.World\Pos.h"
 #include "..\Minecraft.World\SharedConstants.h"
+#include "..\Minecraft.World\ChatPacket.h"
+#include "..\Minecraft.World\StringHelpers.h"
 #include "..\Minecraft.World\Socket.h"
 #include "..\Minecraft.World\Achievements.h"
 #include "..\Minecraft.World\net.minecraft.h"
@@ -607,38 +609,26 @@ void PlayerConnection::handleSetCarriedItem(shared_ptr<SetCarriedItemPacket> pac
 
 void PlayerConnection::handleChat(shared_ptr<ChatPacket> packet)
 {
-	// 4J - TODO
-#if 0
-	wstring message = packet->message;
+	if (packet->m_stringArgs.empty()) return;
+	wstring message = trimString(packet->m_stringArgs[0]);
 	if (message.length() > SharedConstants::maxChatLength)
 	{
-		disconnect(L"Chat message too long");
+		disconnect(DisconnectPacket::eDisconnect_None); // or a specific reason
 		return;
 	}
-	message = message.trim();
-	for (int i = 0; i < message.length(); i++)
-	{
-		if (SharedConstants.acceptableLetters.indexOf(message.charAt(i)) < 0 && (int) message.charAt(i) < 32)
-		{
-			disconnect(L"Illegal characters in chat");
-			return;
-		}
-	}
-
-	if (message.startsWith("/"))
+	// Optional: validate characters (acceptableLetters)
+	if (message.length() > 0 && message[0] == L'/')
 	{
 		handleCommand(message);
-	} else {
-		message = "<" + player.name + "> " + message;
-		logger.info(message);
-		server.players.broadcastAll(new ChatPacket(message));
+		return;
 	}
+	wstring formatted = L"<" + player->name + L"> " + message;
+	server->getPlayers()->broadcastAll(shared_ptr<ChatPacket>(new ChatPacket(formatted)));
 	chatSpamTickCount += SharedConstants::TICKS_PER_SECOND;
 	if (chatSpamTickCount > SharedConstants::TICKS_PER_SECOND * 10)
 	{
-		disconnect("disconnect.spam");
+		disconnect(DisconnectPacket::eDisconnect_None); // spam
 	}
-#endif
 }
 
 void PlayerConnection::handleCommand(const wstring& message)
@@ -1093,6 +1083,10 @@ void PlayerConnection::handleContainerClose(shared_ptr<ContainerClosePacket> pac
 #ifndef _CONTENT_PACKAGE
 void PlayerConnection::handleContainerSetSlot(shared_ptr<ContainerSetSlotPacket> packet)
 {
+	if(player->gameMode->isSurvival()){ // Still allow creative players to change slots manually with packets(?) -- might want this different.
+		server->warn(L"Player " + player->getName() + L" just tried to set a slot in a container in survival mode");
+		return;
+	}
 	if (packet->containerId == AbstractContainerMenu::CONTAINER_ID_CARRIED )
 	{
 		player->inventory->setCarried(packet->item);
@@ -1589,6 +1583,10 @@ void PlayerConnection::handleCraftItem(shared_ptr<CraftItemPacket> packet)
 	Recipy::INGREDIENTS_REQUIRED *pRecipeIngredientsRequired=Recipes::getInstance()->getRecipeIngredientsArray();
 	shared_ptr<ItemInstance> pTempItemInst=pRecipeIngredientsRequired[iRecipe].pRecipy->assemble(nullptr);
 
+	size_t recipeCount = Recipes::getInstance()->getRecipies()->size();
+	if (iRecipe < 0 || iRecipe >= (int)recipeCount)
+		return;
+
 	if(app.DebugSettingsOn() && (player->GetDebugOptions()&(1L<<eDebugSetting_CraftAnything)))
 	{
 		pTempItemInst->onCraftedBy(player->level, dynamic_pointer_cast<Player>( player->shared_from_this() ), pTempItemInst->count );
@@ -1607,9 +1605,21 @@ void PlayerConnection::handleCraftItem(shared_ptr<CraftItemPacket> packet)
 	{
 
 
-		// TODO 4J Stu - Assume at the moment that the client can work this out for us...
-		//if(pRecipeIngredientsRequired[iRecipe].bCanMake)
-		//{
+		Recipy::INGREDIENTS_REQUIRED &req = pRecipeIngredientsRequired[iRecipe];
+		if (req.iType == RECIPE_TYPE_3x3 && dynamic_cast<CraftingMenu *>(player->containerMenu) == NULL)
+		{
+			server->warn(L"Player " + player->getName() + L" tried to craft a 3x3 recipe without a crafting bench");
+			return;
+		}
+		for (int i = 0; i < req.iIngC; i++){
+			int need = req.iIngValA[i];
+			int have = player->inventory->countResource(req.iIngIDA[i], req.iIngAuxValA[i]);
+			if (have < need){
+				server->warn(L"Player " + player->getName() + L" just tried to craft item " + to_wstring(pTempItemInst->id) + L" with insufficient ingredients");
+				return;
+			}
+		}
+
 		pTempItemInst->onCraftedBy(player->level, dynamic_pointer_cast<Player>( player->shared_from_this() ), pTempItemInst->count );
 
 		// and remove those resources from your inventory

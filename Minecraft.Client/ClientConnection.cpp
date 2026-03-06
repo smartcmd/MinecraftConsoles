@@ -759,6 +759,18 @@ void ClientConnection::handleAddPlayer(shared_ptr<AddPlayerPacket> packet)
 			return;
 		}
 	}
+#ifdef _WINDOWS64
+	// Win64 keeps local-player identity separate from network smallId; also guard against creating
+	// a duplicate remote player for a local slot by checking the username directly.
+	for (unsigned int idx = 0; idx < XUSER_MAX_COUNT; ++idx)
+	{
+		if (minecraft->localplayers[idx] != NULL && minecraft->localplayers[idx]->name == packet->name)
+		{
+			app.DebugPrintf("AddPlayerPacket received for local player name %ls\n", packet->name.c_str());
+			return;
+		}
+	}
+#endif
 /*#ifdef _WINDOWS64
 	// On Windows64 all XUIDs are INVALID_XUID so the XUID check above never fires.
 	// packet->m_playerIndex is the server-assigned sequential index (set via LoginPacket),
@@ -800,8 +812,10 @@ void ClientConnection::handleAddPlayer(shared_ptr<AddPlayerPacket> packet)
 
 #ifdef _WINDOWS64
 	{
+		IQNetPlayer* matchedQNetPlayer = NULL;
 		PlayerUID pktXuid = player->getXuid();
 		const PlayerUID WIN64_XUID_BASE = (PlayerUID)0xe000d45248242f2e;
+		// Legacy compatibility path for peers still using embedded smallId XUIDs.
 		if (pktXuid >= WIN64_XUID_BASE && pktXuid < WIN64_XUID_BASE + MINECRAFT_NET_MAX_PLAYERS)
 		{
 			BYTE smallId = (BYTE)(pktXuid - WIN64_XUID_BASE);
@@ -809,11 +823,37 @@ void ClientConnection::handleAddPlayer(shared_ptr<AddPlayerPacket> packet)
 			if (np != NULL)
 			{
 				NetworkPlayerXbox* npx = (NetworkPlayerXbox*)np;
+				matchedQNetPlayer = npx->GetQNetPlayer();
+			}
+		}
+
+		// Current Win64 path: identify QNet player by name and attach packet XUID.
+		if (matchedQNetPlayer == NULL)
+		{
+			for (BYTE smallId = 0; smallId < MINECRAFT_NET_MAX_PLAYERS; ++smallId)
+			{
+				INetworkPlayer* np = g_NetworkManager.GetPlayerBySmallId(smallId);
+				if (np == NULL)
+					continue;
+
+				NetworkPlayerXbox* npx = (NetworkPlayerXbox*)np;
 				IQNetPlayer* qp = npx->GetQNetPlayer();
-				if (qp != NULL && qp->m_gamertag[0] == 0)
+				if (qp != NULL && _wcsicmp(qp->m_gamertag, packet->name.c_str()) == 0)
 				{
-					wcsncpy_s(qp->m_gamertag, 32, packet->name.c_str(), _TRUNCATE);
+					matchedQNetPlayer = qp;
+					break;
 				}
+			}
+		}
+
+		if (matchedQNetPlayer != NULL)
+		{
+			// Store packet-authoritative XUID on this network slot so later lookups by XUID
+			// (e.g. remove player, display mapping) work for both legacy and uid.dat clients.
+			matchedQNetPlayer->m_resolvedXuid = pktXuid;
+			if (matchedQNetPlayer->m_gamertag[0] == 0)
+			{
+				wcsncpy_s(matchedQNetPlayer->m_gamertag, 32, packet->name.c_str(), _TRUNCATE);
 			}
 		}
 	}
@@ -985,6 +1025,8 @@ void ClientConnection::handleRemoveEntity(shared_ptr<RemoveEntitiesPacket> packe
 							qp->m_smallId = 0;
 							qp->m_isRemote = false;
 							qp->m_isHostPlayer = false;
+							// Clear resolved id to avoid stale XUID -> player matches after disconnect.
+							qp->m_resolvedXuid = INVALID_XUID;
 							qp->m_gamertag[0] = 0;
 							qp->SetCustomDataValue(0);
 						}
@@ -1399,6 +1441,9 @@ void ClientConnection::handleChat(shared_ptr<ChatPacket> packet)
 
 	switch(packet->m_messageType)
 	{
+	case ChatPacket::e_ChatCustom:
+		message = (packet->m_stringArgs.size() >= 1) ? packet->m_stringArgs[0] : L"";
+		break;
 	case ChatPacket::e_ChatBedOccupied:
 		message = app.GetString(IDS_TILE_BED_OCCUPIED);
 		break;

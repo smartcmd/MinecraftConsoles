@@ -31,6 +31,32 @@
 
 static wstring ReadLevelNameFromSaveFile(const wstring& filePath)
 {
+    // Check for a worldname.txt sidecar written by the rename feature first
+    size_t slashPos = filePath.rfind(L'\\');
+    if (slashPos != wstring::npos)
+    {
+        wstring sidecarPath = filePath.substr(0, slashPos + 1) + L"worldname.txt";
+        FILE *fr = NULL;
+        if (_wfopen_s(&fr, sidecarPath.c_str(), L"r") == 0 && fr)
+        {
+            char buf[128] = {};
+            if (fgets(buf, sizeof(buf), fr))
+            {
+                int len = (int)strlen(buf);
+                while (len > 0 && (buf[len-1] == '\n' || buf[len-1] == '\r' || buf[len-1] == ' '))
+                    buf[--len] = '\0';
+                fclose(fr);
+                if (len > 0)
+                {
+                    wchar_t wbuf[128] = {};
+                    mbstowcs(wbuf, buf, 127);
+                    return wstring(wbuf);
+                }
+            }
+            else fclose(fr);
+        }
+    }
+
     HANDLE hFile = CreateFileW(filePath.c_str(), GENERIC_READ, FILE_SHARE_READ, NULL, OPEN_EXISTING, FILE_FLAG_SEQUENTIAL_SCAN, NULL);
     if (hFile == INVALID_HANDLE_VALUE) return L"";
 
@@ -110,8 +136,8 @@ static wstring ReadLevelNameFromSaveFile(const wstring& filePath)
 
     if (freeSaveData) delete[] saveData;
     delete[] rawData;
-    // "world" is the engine default — it means no real name was ever set, so
-    // return empty to let the caller fall back to the save filename (timestamp).
+    // "world" is the engine default - it means no real name was ever set,
+    // so return empty to let the caller fall back to the save filename (timestamp).
     if (result == L"world") result = L"";
     return result;
 }
@@ -643,8 +669,6 @@ wstring UIScene_LoadOrJoinMenu::getMoviePath()
 void UIScene_LoadOrJoinMenu::tick()
 {
     UIScene::tick();
-
-
 
 #if (defined  __PS3__  || defined __ORBIS__ || defined _DURANGO || defined _WINDOWS64 || defined __PSVITA__)
     if(m_bExitScene) // navigate forward or back
@@ -1335,7 +1359,11 @@ int UIScene_LoadOrJoinMenu::KeyboardCompleteWorldNameCallback(LPVOID lpParam,boo
     {
         uint16_t ui16Text[128];
         ZeroMemory(ui16Text, 128 * sizeof(uint16_t) );
+#ifdef _WINDOWS64
+        Win64_GetKeyboardText(ui16Text, 128);
+#else
         InputManager.GetText(ui16Text);
+#endif
 
         // check the name is valid
         if(ui16Text[0]!=0)
@@ -1343,6 +1371,38 @@ int UIScene_LoadOrJoinMenu::KeyboardCompleteWorldNameCallback(LPVOID lpParam,boo
 #if (defined __PS3__ || defined __ORBIS__ || defined _DURANGO  || defined(__PSVITA__))
             // open the save and overwrite the metadata
             StorageManager.RenameSaveData(pClass->m_iSaveListIndex - pClass->m_iDefaultButtonsC, ui16Text,&UIScene_LoadOrJoinMenu::RenameSaveDataReturned,pClass);
+#elif defined(_WINDOWS64)
+            {
+                int listPos = pClass->m_iSaveListIndex - pClass->m_iDefaultButtonsC;
+
+                // Convert the ui16Text input to a wide string
+                wchar_t wNewName[128] = {};
+                for (int k = 0; k < 127 && ui16Text[k]; k++)
+                    wNewName[k] = (wchar_t)ui16Text[k];
+
+                // Convert to narrow for storage and in-memory update
+                char narrowName[128] = {};
+                wcstombs(narrowName, wNewName, 127);
+
+                // Build the sidecar path: Windows64\GameHDD\{folder}\worldname.txt
+                wchar_t wFilename[MAX_SAVEFILENAME_LENGTH] = {};
+                mbstowcs(wFilename, pClass->m_saveDetails[listPos].UTF8SaveFilename, MAX_SAVEFILENAME_LENGTH - 1);
+                wstring sidecarPath = wstring(L"Windows64\\GameHDD\\") + wstring(wFilename) + wstring(L"\\worldname.txt");
+
+                FILE *fw = NULL;
+                if (_wfopen_s(&fw, sidecarPath.c_str(), L"w") == 0 && fw)
+                {
+                    fputs(narrowName, fw);
+                    fclose(fw);
+                }
+
+                // Update the in-memory display name so the list reflects it immediately
+                strncpy_s(pClass->m_saveDetails[listPos].UTF8SaveName, narrowName, 127);
+                pClass->m_saveDetails[listPos].UTF8SaveName[127] = '\0';
+
+                // Reuse the existing callback to trigger the list repopulate
+                UIScene_LoadOrJoinMenu::RenameSaveDataReturned(pClass, true);
+            }
 #endif
         }
         else
@@ -2189,6 +2249,31 @@ void UIScene_LoadOrJoinMenu::LoadSaveFromCloud()
 
 #endif //SONY_REMOTE_STORAGE_DOWNLOAD
 
+#ifdef _WINDOWS64
+static bool Win64_DeleteSaveDirectory(const wchar_t* wPath)
+{
+    wchar_t wSearch[MAX_PATH];
+    swprintf_s(wSearch, MAX_PATH, L"%s\\*", wPath);
+    WIN32_FIND_DATAW fd;
+    HANDLE hFind = FindFirstFileW(wSearch, &fd);
+    if (hFind != INVALID_HANDLE_VALUE)
+    {
+        do
+        {
+            if (wcscmp(fd.cFileName, L".") == 0 || wcscmp(fd.cFileName, L"..") == 0) continue;
+            wchar_t wChild[MAX_PATH];
+            swprintf_s(wChild, MAX_PATH, L"%s\\%s", wPath, fd.cFileName);
+            if (fd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)
+                Win64_DeleteSaveDirectory(wChild);
+            else
+                DeleteFileW(wChild);
+        } while (FindNextFileW(hFind, &fd));
+        FindClose(hFind);
+    }
+    return RemoveDirectoryW(wPath) != 0;
+}
+#endif // _WINDOWS64
+
 int UIScene_LoadOrJoinMenu::DeleteSaveDialogReturned(void *pParam,int iPad,C4JStorage::EMessageResult result)
 {
     UIScene_LoadOrJoinMenu* pClass = (UIScene_LoadOrJoinMenu*)pParam;
@@ -2205,7 +2290,24 @@ int UIScene_LoadOrJoinMenu::DeleteSaveDialogReturned(void *pParam,int iPad,C4JSt
         }
         else
         {
+#ifdef _WINDOWS64
+            {
+                // Use m_saveDetails (sorted display order) so the correct folder is targeted
+                int displayIdx = pClass->m_iSaveListIndex - pClass->m_iDefaultButtonsC;
+                bool bSuccess = false;
+                if (pClass->m_saveDetails && displayIdx >= 0 && pClass->m_saveDetails[displayIdx].UTF8SaveFilename[0])
+                {
+                    wchar_t wFilename[MAX_SAVEFILENAME_LENGTH] = {};
+                    mbstowcs_s(NULL, wFilename, MAX_SAVEFILENAME_LENGTH, pClass->m_saveDetails[displayIdx].UTF8SaveFilename, MAX_SAVEFILENAME_LENGTH - 1);
+                    wchar_t wFolderPath[MAX_PATH] = {};
+                    swprintf_s(wFolderPath, MAX_PATH, L"Windows64\\GameHDD\\%s", wFilename);
+                    bSuccess = Win64_DeleteSaveDirectory(wFolderPath);
+                }
+                UIScene_LoadOrJoinMenu::DeleteSaveDataReturned((LPVOID)pClass->GetCallbackUniqueId(), bSuccess);
+            }
+#else
 			StorageManager.DeleteSaveData(&pClass->m_pSaveDetails->SaveInfoA[pClass->m_iSaveListIndex - pClass->m_iDefaultButtonsC], UIScene_LoadOrJoinMenu::DeleteSaveDataReturned, (LPVOID)pClass->GetCallbackUniqueId());
+#endif
             pClass->m_controlSavesTimer.setVisible( true );
         }
     }
@@ -2281,7 +2383,21 @@ int UIScene_LoadOrJoinMenu::SaveOptionsDialogReturned(void *pParam,int iPad,C4JS
     case C4JStorage::EMessage_ResultDecline:  // rename
         {
 			pClass->m_bIgnoreInput=true;
-#ifdef _DURANGO
+#ifdef _WINDOWS64
+            {
+                wchar_t wSaveName[128];
+                ZeroMemory(wSaveName, 128 * sizeof(wchar_t));
+                mbstowcs_s(NULL, wSaveName, 128, pClass->m_saveDetails[pClass->m_iSaveListIndex - pClass->m_iDefaultButtonsC].UTF8SaveName, _TRUNCATE);
+                UIKeyboardInitData kbData;
+                kbData.title       = app.GetString(IDS_RENAME_WORLD_TITLE);
+                kbData.defaultText = wSaveName;
+                kbData.maxChars    = 25;
+                kbData.callback    = &UIScene_LoadOrJoinMenu::KeyboardCompleteWorldNameCallback;
+                kbData.lpParam     = pClass;
+                kbData.pcMode      = !Win64_IsControllerConnected();
+                ui.NavigateToScene(pClass->m_iPad, eUIScene_Keyboard, &kbData);
+            }
+#elif defined _DURANGO
             // bring up a keyboard
             InputManager.RequestKeyboard(app.GetString(IDS_RENAME_WORLD_TITLE), (pClass->m_saveDetails[pClass->m_iSaveListIndex-pClass->m_iDefaultButtonsC]).UTF16SaveName,(DWORD)0,25,&UIScene_LoadOrJoinMenu::KeyboardCompleteWorldNameCallback,pClass,C_4JInput::EKeyboardMode_Default);
 #else
