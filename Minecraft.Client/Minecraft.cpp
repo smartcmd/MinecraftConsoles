@@ -1499,7 +1499,7 @@ void Minecraft::run_middle()
 						}
 
 						// Utility keys always work regardless of KBM active state
-						if(g_KBMInput.IsKeyPressed(KeyboardMouseInput::KEY_PAUSE) && !ui.IsTutorialVisible(i) && !ui.GetMenuDisplayed(i))
+						if(g_KBMInput.IsKeyPressed(KeyboardMouseInput::KEY_PAUSE) && !ui.GetMenuDisplayed(i))
 						{
 							localplayers[i]->ullButtonsPressed|=1LL<<MINECRAFT_ACTION_PAUSEMENU;
 							app.DebugPrintf("PAUSE PRESSED (keyboard) - ipad = %d\n",i);

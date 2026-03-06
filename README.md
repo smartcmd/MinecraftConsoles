@@ -35,7 +35,7 @@ Basic LAN multiplayer is available on the Windows build
 - Game connections use TCP port `25565` by default
 - LAN discovery uses UDP port `25566`
 
-This feature is based on [LCEMP](https://github.com/LCEMP/LCEMP/)
+This feature is based on [LCEMP](https://github.com/LCEMP/LCEMP)
 
 ### Launch Arguments
 
@@ -65,6 +65,7 @@ The headless server also reads and writes `server.properties` in the working dir
 - **Sneak / Fly (Down)**: `Shift` (Hold)
 - **Sprint**: `Ctrl` (Hold) or Double-tap `W`
 - **Inventory**: `E`
+- **Chat**: `T`
 - **Drop Item**: `Q`
 - **Crafting**: `C` Use `Q` and `E` to move through tabs (cycles Left/Right)
 - **Toggle View (FPS/TPS)**: `F5`

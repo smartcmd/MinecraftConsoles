@@ -463,6 +463,23 @@ BOOL ConsoleSaveFileOriginal::closeHandle( FileEntry *file )
 void ConsoleSaveFileOriginal::finalizeWrite()
 {
 	LockSaveAccess();
+
+	// Ensure buffer is large enough for the full file including header table.
+	// New file entries (e.g. from RegionFile creation) increase GetFileSize()
+	// without triggering MoveDataBeyond, so the committed pages may be short.
+	DWORD currentHeapSize = pagesCommitted * CSF_PAGE_SIZE;
+	DWORD desiredSize = header.GetFileSize();
+	if( desiredSize > currentHeapSize )
+	{
+		unsigned int pagesRequired = ( desiredSize + (CSF_PAGE_SIZE - 1 ) ) / CSF_PAGE_SIZE;
+		void *pvRet = VirtualAlloc(pvHeap, pagesRequired * CSF_PAGE_SIZE, COMMIT_ALLOCATION, PAGE_READWRITE);
+		if( pvRet == NULL )
+		{
+			__debugbreak();
+		}
+		pagesCommitted = pagesRequired;
+	}
+
 	header.WriteHeader( pvSaveMem );
 	ReleaseSaveAccess();
 }
