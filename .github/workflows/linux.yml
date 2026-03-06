@@ -1,4 +1,4 @@
-name: Build DLL (Linux)
+name: Build (Linux)
 
 on:
   workflow_dispatch:
@@ -31,6 +31,9 @@ jobs:
         run: |
           sudo -u builder sh <<'EOF'
           set -e
+          export XDG_RUNTIME_DIR=/tmp/runtime-builder
+          mkdir -p $XDG_RUNTIME_DIR
+          chmod 700 $XDG_RUNTIME_DIR
           export WINE=$(command -v wine64 || command -v wine || false)
           $WINE wineboot
           git clone https://github.com/mstorsjo/msvc-wine
