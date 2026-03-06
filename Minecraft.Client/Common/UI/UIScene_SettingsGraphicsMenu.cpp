@@ -49,9 +49,10 @@ UIScene_SettingsGraphicsMenu::UIScene_SettingsGraphicsMenu(int iPad, void *initD
 	swprintf( (WCHAR *)TempString, 256, L"%ls: %d%%", app.GetString( IDS_SLIDER_GAMMA ),app.GetGameSettings(m_iPad,eGameSetting_Gamma));	
 	m_sliderGamma.init(TempString,eControl_Gamma,0,100,app.GetGameSettings(m_iPad,eGameSetting_Gamma));
 
-	int initialFov = clampFov((int)(pMinecraft->gameRenderer->GetFovVal() + 0.5f));
-	swprintf((WCHAR*)TempString, 256, L"FOV: %d", initialFov);
-	m_sliderFOV.init(TempString, eControl_FOV, 0, FOV_SLIDER_MAX, fovToSliderValue((float)initialFov));
+	int initialFovSlider = app.GetGameSettings(m_iPad, eGameSetting_FOV);
+	int initialFovDeg = sliderValueToFov(initialFovSlider);
+	swprintf((WCHAR*)TempString, 256, L"FOV: %d", initialFovDeg);
+	m_sliderFOV.init(TempString, eControl_FOV, 0, FOV_SLIDER_MAX, initialFovSlider);
 	
 	swprintf( (WCHAR *)TempString, 256, L"%ls: %d%%", app.GetString( IDS_SLIDER_INTERFACEOPACITY ),app.GetGameSettings(m_iPad,eGameSetting_InterfaceOpacity));	
 	m_sliderInterfaceOpacity.init(TempString,eControl_InterfaceOpacity,0,100,app.GetGameSettings(m_iPad,eGameSetting_InterfaceOpacity));
@@ -182,6 +183,7 @@ void UIScene_SettingsGraphicsMenu::handleSliderMove(F64 sliderId, F64 currentVal
 			Minecraft* pMinecraft = Minecraft::GetInstance();
 			int fovValue = sliderValueToFov(value);
 			pMinecraft->gameRenderer->SetFovVal((float)fovValue);
+			app.SetGameSettings(m_iPad, eGameSetting_FOV, value);
 			WCHAR TempString[256];
 			swprintf((WCHAR*)TempString, 256, L"FOV: %d", fovValue);
 			m_sliderFOV.setLabel(TempString);
