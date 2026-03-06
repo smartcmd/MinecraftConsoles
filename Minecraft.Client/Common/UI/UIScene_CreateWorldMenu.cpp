@@ -17,7 +17,7 @@
 #include "PSVita\Network\SQRNetworkManager_AdHoc_Vita.h"
 #endif
 
-#ifdef  _WINDOWS64
+#if defined(_WIN32)
 
 #include <windows.h>
 #include "Xbox\Resource.h"
@@ -84,7 +84,7 @@ UIScene_CreateWorldMenu::UIScene_CreateWorldMenu(int iPad, void *initData, UILay
 	m_iGameModeId = GameType::SURVIVAL->getId();
 	m_pDLCPack = NULL;
 	m_bRebuildTouchBoxes = false;
-#ifdef _WINDOWS64
+#if defined(_WIN32)
 	m_bDirectEditing = false;
 	m_iDirectEditCooldown = 0;
 #endif
@@ -293,7 +293,7 @@ void UIScene_CreateWorldMenu::tick()
 {
 	UIScene::tick();
 
-#ifdef _WINDOWS64
+#if defined(_WIN32)
 	if (m_iDirectEditCooldown > 0)
 		m_iDirectEditCooldown--;
 
@@ -406,7 +406,7 @@ int UIScene_CreateWorldMenu::ContinueOffline(void *pParam,int iPad,C4JStorage::E
 void UIScene_CreateWorldMenu::handleInput(int iPad, int key, bool repeat, bool pressed, bool released, bool &handled)
 {
 	if(m_bIgnoreInput) return;
-#ifdef _WINDOWS64
+#if defined(_WIN32)
 	if (m_bDirectEditing || m_iDirectEditCooldown > 0) { handled = true; return; }
 #endif
 
@@ -463,7 +463,7 @@ void UIScene_CreateWorldMenu::handleInput(int iPad, int key, bool repeat, bool p
 void UIScene_CreateWorldMenu::handlePress(F64 controlId, F64 childId)
 {
 	if(m_bIgnoreInput) return;
-#ifdef _WINDOWS64
+#if defined(_WIN32)
 	if (m_bDirectEditing || m_iDirectEditCooldown > 0) return;
 #endif
 
@@ -475,7 +475,7 @@ void UIScene_CreateWorldMenu::handlePress(F64 controlId, F64 childId)
 	case eControl_EditWorldName:
 		{
 			m_bIgnoreInput=true;
-#ifdef _WINDOWS64
+#if defined(_WIN32)
 			if (Win64_IsControllerConnected())
 			{
 				UIKeyboardInitData kbData;
@@ -808,7 +808,7 @@ int UIScene_CreateWorldMenu::KeyboardCompleteWorldNameCallback(LPVOID lpParam,bo
 	{
 		uint16_t pchText[128];
 		ZeroMemory(pchText, 128 * sizeof(uint16_t) );
-#ifdef _WINDOWS64
+#if defined(_WIN32)
 		Win64_GetKeyboardText(pchText, 128);
 #else
 		InputManager.GetText(pchText);
@@ -1041,7 +1041,7 @@ void UIScene_CreateWorldMenu::checkStateAndStartGame()
 #endif
 			else
 			{
-#ifdef _WINDOWS64
+#if defined(_WIN32)
 				// On Windows64, Xbox Live is unavailable. Skip QuadrantSignin and start directly.
 				CreateGame(this, 0);
 #else
@@ -1431,7 +1431,7 @@ int UIScene_CreateWorldMenu::ConfirmCreateReturned(void *pParam,int iPad,C4JStor
 
 		if(isClientSide && app.IsLocalMultiplayerAvailable())
 		{
-#ifdef _WINDOWS64
+#if defined(_WIN32)
 			// On Windows64, Xbox Live is unavailable. Skip QuadrantSignin and start directly.
 			CreateGame(pClass, 0);
 			return 0;

@@ -2,7 +2,7 @@
 #include "UI.h"
 #include "UIScene_Keyboard.h"
 
-#ifdef _WINDOWS64
+#if defined(_WIN32)
 // Global buffer that stores the text entered in the native keyboard scene.
 // Callbacks retrieve it via Win64_GetKeyboardText() declared in UIStructs.h.
 wchar_t g_Win64KeyboardResult[256] = {};
@@ -16,7 +16,7 @@ UIScene_Keyboard::UIScene_Keyboard(int iPad, void *initData, UILayer *parentLaye
 	// Setup all the Iggy references we need for this scene
 	initialiseMovie();
 
-#ifdef _WINDOWS64
+#if defined(_WIN32)
 	m_win64Callback = NULL;
 	m_win64CallbackParam = NULL;
 	m_win64TextBuffer = L"";
@@ -62,7 +62,7 @@ UIScene_Keyboard::UIScene_Keyboard(int iPad, void *initData, UILayer *parentLaye
 	m_ButtonBackspace.init(L"Backspace", -1);
 
 	// Initialise function keyboard Buttons and set alternative symbol button string
-#ifdef _WINDOWS64
+#if defined(_WIN32)
 	if (!m_bPCMode)
 #endif
 	{
@@ -79,7 +79,7 @@ UIScene_Keyboard::UIScene_Keyboard(int iPad, void *initData, UILayer *parentLaye
 		IggyPlayerCallMethodRS ( getMovie() , &result, IggyPlayerRootPath( getMovie() ), m_funcInitFunctionButtons , 1 , value );
 	}
 
-#ifdef _WINDOWS64
+#if defined(_WIN32)
 	if (m_bPCMode)
 	{
 		// PC text-input mode: hide all on-screen buttons, user types with physical keyboard
@@ -158,7 +158,7 @@ bool UIScene_Keyboard::allowRepeat(int key)
 	return true;
 }
 
-#ifdef _WINDOWS64
+#if defined(_WIN32)
 void UIScene_Keyboard::tick()
 {
 	UIScene::tick();
@@ -208,7 +208,7 @@ void UIScene_Keyboard::handleInput(int iPad, int key, bool repeat, bool pressed,
 		switch(key)
 		{
 		case ACTION_MENU_CANCEL:
-#ifdef _WINDOWS64
+#if defined(_WIN32)
 			{
 				// Cache before navigateBack() destroys this scene
 				int(*cb)(LPVOID, const bool) = m_win64Callback;
@@ -302,7 +302,7 @@ void UIScene_Keyboard::handleTimerComplete(int id)
 
 void UIScene_Keyboard::KeyboardDonePressed()
 {
-#ifdef _WINDOWS64
+#if defined(_WIN32)
 	// Use getLabel() here — this is a timer callback (not an Iggy callback) so it's safe.
 	// getLabel() reflects both physical keyboard input (pushed via setLabel) and
 	// on-screen button input (set directly by Flash ActionScript).

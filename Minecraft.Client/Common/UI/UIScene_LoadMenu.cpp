@@ -248,7 +248,7 @@ UIScene_LoadMenu::UIScene_LoadMenu(int iPad, void *initData, UILayer *parentLaye
 		m_labelGameName.init(wSaveName);
 #endif
 #endif
-#ifdef _WINDOWS64
+#if defined(_WIN32)
 		if (params->saveDetails != NULL && params->saveDetails->UTF8SaveName[0] != '\0')
 		{
 			wchar_t wSaveName[128];
@@ -862,7 +862,7 @@ void UIScene_LoadMenu::StartSharedLaunchFlow()
 				TelemetryManager->RecordUpsellPresented(m_iPad, eSet_UpsellID_Texture_DLC, ullOfferID_Full & 0xFFFFFFFF);
 #endif
 
-#if defined(_WINDOWS64) || defined(_DURANGO)
+#if defined(_WIN32) || defined(_DURANGO)
 				// trial pack warning
 				UINT uiIDA[1];
 				uiIDA[0]=IDS_CONFIRM_OK;
@@ -1455,7 +1455,7 @@ int UIScene_LoadMenu::LoadDataComplete(void *pParam)
 #endif
 			else
 			{
-#ifdef _WINDOWS64
+#if defined(_WIN32)
 				// On Windows64, IsSignedInLive() returns true as a stub but Xbox Live is
 				// not available. Skip QuadrantSignin and proceed directly with local play.
 				DWORD dwLocalUsersMask = CGameNetworkManager::GetLocalPlayerMask(ProfileManager.GetPrimaryPad());
@@ -1630,7 +1630,7 @@ void UIScene_LoadMenu::StartGameFromSave(UIScene_LoadMenu* pClass, DWORD dwLocal
 
 	param->settings = app.GetGameHostOption( eGameHostOption_All );
 
-#ifdef _WINDOWS64
+#if defined(_WIN32)
 	{
 		extern wchar_t g_Win64UsernameW[17];
 		Minecraft::GetInstance()->user->name = g_Win64UsernameW;

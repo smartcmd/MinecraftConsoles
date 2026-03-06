@@ -1016,7 +1016,7 @@ void UIScene_LeaderboardsMenu::handleTimerComplete(int id)
 	switch(id)
 	{
 	case PLAYER_ONLINE_TIMER_ID:
-#ifndef _WINDOWS64
+#if !defined(_WIN32)
 		if(ProfileManager.IsSignedInLive(ProfileManager.GetPrimaryPad())==false)
 		{
 			// check the player hasn't gone offline

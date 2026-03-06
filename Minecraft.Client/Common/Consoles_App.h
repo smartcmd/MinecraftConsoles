@@ -920,7 +920,7 @@ public:
 
 #elif defined _DURANGO
 
-#elif defined _WINDOWS64
+#elif defined(_WIN32)
 	//CMinecraftAudio audio;
 #else // PS4
 

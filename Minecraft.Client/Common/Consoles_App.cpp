@@ -760,7 +760,7 @@ bool CMinecraftApp::LoadBeaconMenu(int iPad ,shared_ptr<Inventory> inventory, sh
 // GAME SETTINGS
 //////////////////////////////////////////////
 
-#ifdef _WINDOWS64
+#if defined(_WIN32)
 static void Win64_GetSettingsPath(char *outPath, DWORD size)
 {
     GetModuleFileNameA(NULL, outPath, size);
@@ -811,7 +811,7 @@ void CMinecraftApp::InitGameSettings()
 		//SetDefaultGameSettings(i); - done on a callback from the profile manager
 
 		// 4J-PB - adding in for Windows & PS3 to set the defaults for the joypad
-#if defined _WINDOWS64// || defined __PSVITA__
+#if defined(_WIN32)// || defined __PSVITA__
 		C_4JProfile::PROFILESETTINGS *pProfileSettings=ProfileManager.GetDashboardProfileSettings(i);
 		// clear this for now - it will come from reading the system values
 		memset(pProfileSettings,0,sizeof(C_4JProfile::PROFILESETTINGS));
@@ -2409,7 +2409,7 @@ void CMinecraftApp::CheckGameSettingsChanged(bool bOverride5MinuteTimer, int iPa
 				StorageManager.WriteToProfile(i,true, bOverride5MinuteTimer);
 #else
 				ProfileManager.WriteToProfile(i,true, bOverride5MinuteTimer);
-#ifdef _WINDOWS64
+#if defined(_WIN32)
 				Win64_SaveSettings(GameSettingsA[i]);
 #endif
 #endif
@@ -2425,7 +2425,7 @@ void CMinecraftApp::CheckGameSettingsChanged(bool bOverride5MinuteTimer, int iPa
 			StorageManager.WriteToProfile(iPad,true, bOverride5MinuteTimer);
 #else
 			ProfileManager.WriteToProfile(iPad,true, bOverride5MinuteTimer);
-#ifdef _WINDOWS64
+#if defined(_WIN32)
 			Win64_SaveSettings(GameSettingsA[iPad]);
 #endif
 #endif
@@ -5831,7 +5831,7 @@ int CMinecraftApp::GetTPConfigVal(WCHAR *pwchDataFile)
 
 	return -1;
 }
-#elif defined _WINDOWS64
+#elif defined(_WIN32)
 int CMinecraftApp::GetTPConfigVal(WCHAR *pwchDataFile)
 {
 	return -1;
@@ -9509,7 +9509,7 @@ bool CMinecraftApp::IsLocalMultiplayerAvailable()
 		if( InputManager.IsPadConnected(i) || ProfileManager.IsSignedIn(i) ) ++connectedControllers;
 	}
 
-#ifdef _WINDOWS64
+#if defined(_WIN32)
 	bool available = connectedControllers > 1;
 #else
 	bool available = RenderManager.IsHiDef() && connectedControllers > 1;
@@ -10049,7 +10049,7 @@ enum ETitleUpdateTexturePacks
 	//eTUTP_Steampunk = 0x01000808, // 4J Stu - The released Steampunk pack had a sub-pack ID
 };
 
-#ifdef _WINDOWS64
+#if defined(_WIN32)
 wstring titleUpdateTexturePackRoot = L"Windows64\\DLC\\";
 #elif defined(__ORBIS__)
 wstring titleUpdateTexturePackRoot = L"/app0/orbis/CU/DLC/";

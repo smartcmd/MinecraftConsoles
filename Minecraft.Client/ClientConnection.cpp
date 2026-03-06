@@ -55,7 +55,7 @@
 #endif
 #include "DLCTexturePack.h"
 
-#ifdef _WINDOWS64
+#if defined(_WIN32)
 #include "Xbox\Network\NetworkPlayerXbox.h"
 #include "Common\Network\PlatformNetworkManagerStub.h"
 #endif
@@ -759,7 +759,7 @@ void ClientConnection::handleAddPlayer(shared_ptr<AddPlayerPacket> packet)
 			return;
 		}
 	}
-#ifdef _WINDOWS64
+#if defined(_WIN32)
 	// Win64 keeps local-player identity separate from network smallId; also guard against creating
 	// a duplicate remote player for a local slot by checking the username directly.
 	for (unsigned int idx = 0; idx < XUSER_MAX_COUNT; ++idx)
@@ -771,7 +771,7 @@ void ClientConnection::handleAddPlayer(shared_ptr<AddPlayerPacket> packet)
 		}
 	}
 #endif
-/*#ifdef _WINDOWS64
+/*#if defined(_WIN32)
 	// On Windows64 all XUIDs are INVALID_XUID so the XUID check above never fires.
 	// packet->m_playerIndex is the server-assigned sequential index (set via LoginPacket),
 	// NOT the controller slot — so we must scan all local player slots and match by
@@ -810,7 +810,7 @@ void ClientConnection::handleAddPlayer(shared_ptr<AddPlayerPacket> packet)
 	player->m_displayName = player->getName();
 #endif
 
-#ifdef _WINDOWS64
+#if defined(_WIN32)
 	{
 		IQNetPlayer* matchedQNetPlayer = NULL;
 		PlayerUID pktXuid = player->getXuid();
@@ -1001,7 +1001,7 @@ void ClientConnection::handleMoveEntitySmall(shared_ptr<MoveEntityPacketSmall> p
 
 void ClientConnection::handleRemoveEntity(shared_ptr<RemoveEntitiesPacket> packet)
 {
-#ifdef _WINDOWS64
+#if defined(_WIN32)
 	if (!g_NetworkManager.IsHost())
 	{
 		for (int i = 0; i < packet->ids.length; i++)

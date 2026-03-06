@@ -276,7 +276,7 @@ void UIScene_InGameSaveManagementMenu::tick()
 #ifdef _DURANGO
 				// Already utf16 on durango
 				memcpy(u16Message, m_saveDetails[m_iRequestingThumbnailId].UTF16SaveFilename, MAX_SAVEFILENAME_LENGTH);
-#elif defined(_WINDOWS64)
+#elif defined(_WIN32)
 				int result = ::MultiByteToWideChar(
 					CP_UTF8,                // convert from UTF-8
 					MB_ERR_INVALID_CHARS,   // error on invalid chars

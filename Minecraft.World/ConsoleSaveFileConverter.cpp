@@ -133,7 +133,7 @@ void ConsoleSaveFileConverter::ConvertSave(ConsoleSaveFile *sourceSave, ConsoleS
 
 	if(progress)
 	{
-#ifndef _WINDOWS64
+#if !defined(_WIN32)
 		progress->progressStage(IDS_SAVETRANSFER_STAGE_CONVERTING);
 #endif
 	}

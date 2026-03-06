@@ -12,7 +12,7 @@
 typedef unsigned __int64 __uint64;
 #endif
 
-#ifdef _WINDOWS64
+#if defined(_WIN32)
 #define WIN32_LEAN_AND_MEAN             // Exclude rarely-used stuff from Windows headers
 // Windows Header Files:
 #include <windows.h>
@@ -162,7 +162,7 @@ void MemSect(int sect);
 #include "..\Minecraft.Client\Durango\4JLibs\inc\4J_Render.h"
 #include "..\Minecraft.Client\Durango\4JLibs\inc\4J_Storage.h"
 #include "..\Minecraft.Client\Durango\4JLibs\inc\4J_Input.h"
-#elif defined _WINDOWS64
+#elif defined(_WIN32)
 #include "..\Minecraft.Client\Windows64\4JLibs\inc\4J_Profile.h"
 #include "..\Minecraft.Client\Windows64\4JLibs\inc\4J_Render.h"
 #include "..\Minecraft.Client\Windows64\4JLibs\inc\4J_Storage.h"
@@ -219,7 +219,7 @@ void MemSect(int sect);
 #include "..\Minecraft.Client\Durango\Sentient\MinecraftTelemetry.h"
 #include "..\Minecraft.Client\Durango\Sentient\TelemetryEnum.h"
 
-#elif defined _WINDOWS64
+#elif defined(_WIN32)
 #include "..\Minecraft.Client\Windows64\Windows64_App.h"
 #include "..\Minecraft.Client\Windows64Media\strings.h"
 #include "..\Minecraft.Client\Windows64\Sentient\SentientTelemetryCommon.h"

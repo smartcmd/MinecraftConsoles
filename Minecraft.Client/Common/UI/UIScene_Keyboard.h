@@ -7,7 +7,7 @@ class UIScene_Keyboard : public UIScene
 private:
 	bool m_bKeyboardDonePressed;
 
-#ifdef _WINDOWS64
+#if defined(_WIN32)
 	int(*m_win64Callback)(LPVOID, const bool);
 	LPVOID m_win64CallbackParam;
 	wstring m_win64TextBuffer;
@@ -57,7 +57,7 @@ public:
 	// INPUT
 	virtual void handleInput(int iPad, int key, bool repeat, bool pressed, bool released, bool &handled);
 
-#ifdef _WINDOWS64
+#if defined(_WIN32)
 	virtual void tick();
 #endif
 
@@ -87,7 +87,7 @@ public:
 #endif
 
 	// Returns true if lower scenes in this scenes layer, or in any layer below this scenes layers should be hidden
-#ifdef _WINDOWS64
+#if defined(_WIN32)
 	virtual bool hidesLowerScenes() { return true; }
 #else
 	virtual bool hidesLowerScenes() { return false; }

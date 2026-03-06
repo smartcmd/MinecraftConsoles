@@ -66,7 +66,7 @@ bool ControllerTask::isCompleted()
 				}
 				else
 				{
-#ifdef _WINDOWS64
+#if defined(_WIN32)
 					bAllComplete = true;
 #else
 					bAllComplete = false;
@@ -91,7 +91,7 @@ bool ControllerTask::isCompleted()
 				}
 				else
 				{
-#ifdef _WINDOWS64
+#if defined(_WIN32)
 					bAllComplete = true;
 #else
 					bAllComplete = false;

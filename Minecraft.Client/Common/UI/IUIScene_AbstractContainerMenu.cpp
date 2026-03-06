@@ -13,7 +13,7 @@
 #include <pad.h>
 #endif
 
-#ifdef _WINDOWS64
+#if defined(_WIN32)
 #include "..\..\Windows64\KeyboardMouseInput.h"
 
 SavedInventoryCursorPos g_savedInventoryCursorPos = { 0.0f, 0.0f, false };
@@ -480,7 +480,7 @@ void IUIScene_AbstractContainerMenu::onMouseTick()
 	}
 #endif
 
-#ifdef _WINDOWS64
+#if defined(_WIN32)
 	if (!g_KBMInput.IsMouseGrabbed() && g_KBMInput.IsKBMActive())
 	{
 		int deltaX = g_KBMInput.GetMouseDeltaX();
@@ -728,7 +728,7 @@ void IUIScene_AbstractContainerMenu::onMouseTick()
 
 			// If there is no stick input, and we are over a slot, then snap pointer to slot centre.
 			// 4J - TomK - only if this particular component allows so!
-#ifdef _WINDOWS64
+#if defined(_WIN32)
 			if((g_KBMInput.IsMouseGrabbed() || !g_KBMInput.IsKBMActive()) && CanHaveFocus(eSectionUnderPointer))
 #else
 			if(CanHaveFocus(eSectionUnderPointer))

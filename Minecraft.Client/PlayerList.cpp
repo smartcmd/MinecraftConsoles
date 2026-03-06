@@ -56,7 +56,7 @@ PlayerList::PlayerList(MinecraftServer *server)
 
 	//int viewDistance = server->settings->getInt(L"view-distance", 10);
 
-#ifdef _WINDOWS64
+#if defined(_WIN32)
 	maxPlayers = MINECRAFT_NET_MAX_PLAYERS;
 #else
 	maxPlayers = server->settings->getInt(L"max-players", 20);
@@ -106,7 +106,7 @@ void PlayerList::placeNewPlayer(Connection *connection, shared_ptr<ServerPlayer>
 		}
 	}
 #endif
-#ifdef _WINDOWS64
+#if defined(_WIN32)
 	if (networkPlayer != NULL)
 	{
 		NetworkPlayerXbox* nxp = (NetworkPlayerXbox*)networkPlayer;
@@ -513,7 +513,7 @@ if (player->riding != NULL)
 
 shared_ptr<ServerPlayer> PlayerList::getPlayerForLogin(PendingConnection *pendingConnection, const wstring& userName, PlayerUID xuid, PlayerUID onlineXuid)
 {
-#ifdef _WINDOWS64
+#if defined(_WIN32)
 	if (players.size() >= (unsigned int)MINECRAFT_NET_MAX_PLAYERS)
 #else
 	if (players.size() >= (unsigned int)maxPlayers)
@@ -526,7 +526,7 @@ shared_ptr<ServerPlayer> PlayerList::getPlayerForLogin(PendingConnection *pendin
 	player->gameMode->player = player; // 4J added as had to remove this assignment from ServerPlayer ctor
 	player->setXuid( xuid ); // 4J Added
 	player->setOnlineXuid( onlineXuid ); // 4J Added
-#ifdef _WINDOWS64
+#if defined(_WIN32)
 	{
 		// Use packet-supplied identity from LoginPacket.
 		// Do not recompute from name here: mixed-version clients must stay compatible.

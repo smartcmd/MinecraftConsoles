@@ -13,7 +13,7 @@ BiomeOverrideLayer::BiomeOverrideLayer(int seedMixup) : Layer(seedMixup)
 	wstring path = L"GAME:\\GameRules\\biomemap.bin";
 	HANDLE file = CreateFile(path.c_str(), GENERIC_READ, 0, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
 #else
-#ifdef _WINDOWS64
+#if defined(_WIN32)
 	string path = "GameRules\\biomemap.bin";
 #else
 	string path = "GAME:\\GameRules\\biomemap.bin";

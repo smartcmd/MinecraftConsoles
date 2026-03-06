@@ -36,7 +36,7 @@ File::File( const wstring& pathname ) //: parent( NULL )
 	else
 		m_abstractPathName = pathname;
 
-#ifdef _WINDOWS64
+#if defined(_WIN32)
 	string path = wstringtochararray(m_abstractPathName);
 	string finalPath = StorageManager.GetMountedPath(path.c_str());
 	if(finalPath.size() == 0) finalPath = path;

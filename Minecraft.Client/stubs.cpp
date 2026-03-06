@@ -1,6 +1,6 @@
 #include "stdafx.h"
 
-#ifdef _WINDOWS64
+#if defined(_WIN32)
 #include "Windows64\KeyboardMouseInput.h"
 
 static const int s_keyToVK[] = {

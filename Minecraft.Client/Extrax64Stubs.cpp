@@ -15,7 +15,7 @@
 #include "Durango\Social\SocialManager.h"
 #include "Durango\Sentient\DynamicConfigurations.h"
 #include "Durango\DurangoExtras\xcompress.h"
-#elif defined _WINDOWS64
+#elif defined(_WIN32)
 #include "Windows64\Sentient\SentientManager.h"
 #include "StatsCounter.h"
 #include "Windows64\Social\SocialManager.h"
@@ -37,7 +37,7 @@
 #endif
 
 #if !defined(__PS3__) && !defined(__ORBIS__) && !defined(__PSVITA__)
-#ifdef _WINDOWS64
+#if defined(_WIN32)
 //C4JStorage StorageManager;
 C_4JProfile ProfileManager;
 #endif
@@ -510,7 +510,7 @@ DWORD XEnableGuestSignin(BOOL fEnable) { return 0; }
 
 
 /////////////////////////////////////////////// Profile library
-#ifdef _WINDOWS64
+#if defined(_WIN32)
 static void* profileData[4];
 static bool s_bProfileIsFullVersion;
 void				C_4JProfile::Initialise(DWORD dwTitleID,
@@ -592,7 +592,7 @@ void				C_4JProfile::SetPrimaryPlayerChanged(bool bVal) {}
 bool				C_4JProfile::QuerySigninStatus(void) { return true; }
 void				C_4JProfile::GetXUID(int iPad, PlayerUID * pXuid, bool bOnlineXuid)
 {
-#ifdef _WINDOWS64
+#if defined(_WIN32)
 	if (iPad != 0)
 	{
 		*pXuid = INVALID_XUID;
@@ -689,7 +689,7 @@ void				C_4JProfile::SetDebugFullOverride(bool bVal) { s_bProfileIsFullVersion =
 void				C_4JProfile::ShowProfileCard(int iPad, PlayerUID targetUid) {}
 
 /////////////////////////////////////////////// Storage library
-//#ifdef _WINDOWS64
+//#if defined(_WIN32)
 #if 0
 C4JStorage::C4JStorage() {}
 void								C4JStorage::Tick() {}

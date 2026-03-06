@@ -3,7 +3,7 @@
 
 #include "stdafx.h"
 
-#ifdef _WINDOWS64
+#if defined(_WIN32)
 
 #include "WinsockNetLayer.h"
 #include "..\..\Common\Network\PlatformNetworkManagerStub.h"

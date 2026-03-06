@@ -5,7 +5,7 @@
 #include "Tesselator.h"
 #include "Textures.h"
 #include "..\Minecraft.World\SoundTypes.h"
-#ifdef _WINDOWS64
+#if defined(_WIN32)
 #include "Windows64\KeyboardMouseInput.h"
 #endif
 
@@ -103,7 +103,7 @@ void Screen::init()
 
 void Screen::updateEvents()
 {
-#ifdef _WINDOWS64
+#if defined(_WIN32)
 	// Poll mouse button state and dispatch click/release events
 	for (int btn = 0; btn < 3; btn++)
 	{
@@ -165,7 +165,7 @@ void Screen::updateEvents()
 
 void Screen::mouseEvent()
 {
-#ifdef _WINDOWS64
+#if defined(_WIN32)
 	// Mouse event dispatching is handled directly in updateEvents() for Windows
 #else
 	/* 4J - TODO

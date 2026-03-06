@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "Filesystem.h"
 
-#ifdef _WINDOWS64
+#if defined(_WIN32)
 #include <windows.h>
 #endif // TODO: More os' filesystem handling for when the project moves away from only Windows
 
@@ -9,7 +9,7 @@
 
 bool FileOrDirectoryExists(const char* path)
 {
-#ifdef _WINDOWS64
+#if defined(_WIN32)
     DWORD attribs = GetFileAttributesA(path);
     return (attribs != INVALID_FILE_ATTRIBUTES);
 #else
@@ -20,7 +20,7 @@ bool FileOrDirectoryExists(const char* path)
 
 bool FileExists(const char* path)
 {
-#ifdef _WINDOWS64
+#if defined(_WIN32)
     DWORD attribs = GetFileAttributesA(path);
     return (attribs != INVALID_FILE_ATTRIBUTES && !(attribs & FILE_ATTRIBUTE_DIRECTORY));
 #else
@@ -31,7 +31,7 @@ bool FileExists(const char* path)
 
 bool DirectoryExists(const char* path)
 {
-#ifdef _WINDOWS64
+#if defined(_WIN32)
     DWORD attribs = GetFileAttributesA(path);
     return (attribs != INVALID_FILE_ATTRIBUTES && (attribs & FILE_ATTRIBUTE_DIRECTORY));
 #else
@@ -42,7 +42,7 @@ bool DirectoryExists(const char* path)
 
 bool GetFirstFileInDirectory(const char* directory, char* outFilePath, size_t outFilePathSize)
 {
-#ifdef _WINDOWS64
+#if defined(_WIN32)
     char searchPath[MAX_PATH];
     snprintf(searchPath, MAX_PATH, "%s\\*", directory);
 

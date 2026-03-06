@@ -20,7 +20,7 @@
 
 Random *PendingConnection::random = new Random();
 
-#ifdef _WINDOWS64
+#if defined(_WIN32)
 bool g_bRejectDuplicateNames = true;
 #endif
 
@@ -192,7 +192,7 @@ void PendingConnection::handleLogin(shared_ptr<LoginPacket> packet)
 		app.DebugPrintf("Rejecting duplicate xuid for name: %ls\n", name.c_str());
 		disconnect(DisconnectPacket::eDisconnect_Banned);
 	}
-#ifdef _WINDOWS64
+#if defined(_WIN32)
 	else if (g_bRejectDuplicateNames)
 	{
 		bool nameTaken = false;

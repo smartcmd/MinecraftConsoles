@@ -3,7 +3,7 @@
 #include "..\..\..\Minecraft.World\StringHelpers.h"
 #include "PlatformNetworkManagerStub.h"
 #include "..\..\Xbox\Network\NetworkPlayerXbox.h"
-#ifdef _WINDOWS64
+#if defined(_WIN32)
 #include "..\..\Windows64\Network\WinsockNetLayer.h"
 #include "..\..\Windows64\Windows64_Xuid.h"
 #include "..\..\Minecraft.h"
@@ -213,7 +213,7 @@ bool CPlatformNetworkManagerStub::isSystemPrimaryPlayer(IQNetPlayer *pQNetPlayer
 // We call this twice a frame, either side of the render call so is a good place to "tick" things
 void CPlatformNetworkManagerStub::DoWork()
 {
-#ifdef _WINDOWS64
+#if defined(_WIN32)
 	extern QNET_STATE _iQNetStubState;
 	if (_iQNetStubState == QNET_STATE_SESSION_STARTING && app.GetGameStarted())
 	{
@@ -303,7 +303,7 @@ bool CPlatformNetworkManagerStub::LeaveGame(bool bMigrateHost)
 
 	m_bLeavingGame = true;
 
-#ifdef _WINDOWS64
+#if defined(_WIN32)
 	WinsockNetLayer::StopAdvertising();
 #endif
 
@@ -325,7 +325,7 @@ bool CPlatformNetworkManagerStub::LeaveGame(bool bMigrateHost)
 	m_machineQNetPrimaryPlayers.clear();
 	SystemFlagReset();
 
-#ifdef _WINDOWS64
+#if defined(_WIN32)
 	WinsockNetLayer::Shutdown();
 	WinsockNetLayer::Initialize();
 #endif
@@ -353,7 +353,7 @@ void CPlatformNetworkManagerStub::HostGame(int localUsersMask, bool bOnlineGame,
 
 	m_pIQNet->HostGame();
 
-#ifdef _WINDOWS64
+#if defined(_WIN32)
 	IQNet::m_player[0].m_smallId = 0;
 	IQNet::m_player[0].m_isRemote = false;
 	// world host is pinned to legacy host XUID to keep old player data compatibility.
@@ -364,7 +364,7 @@ void CPlatformNetworkManagerStub::HostGame(int localUsersMask, bool bOnlineGame,
 
 	_HostGame( localUsersMask, publicSlots, privateSlots );
 
-#ifdef _WINDOWS64
+#if defined(_WIN32)
 	int port = WIN64_NET_DEFAULT_PORT;
 	const char* bindIp = NULL;
 	if (g_Win64DedicatedServer)
@@ -398,7 +398,7 @@ bool CPlatformNetworkManagerStub::_StartGame()
 
 int CPlatformNetworkManagerStub::JoinGame(FriendSessionInfo* searchResult, int localUsersMask, int primaryUserIndex)
 {
-#ifdef _WINDOWS64
+#if defined(_WIN32)
 	if (searchResult == NULL)
 		return CGameNetworkManager::JOINGAME_FAIL_GENERAL;
 
@@ -485,7 +485,7 @@ void CPlatformNetworkManagerStub::HandleSignInChange()
 
 bool CPlatformNetworkManagerStub::_RunNetworkGame()
 {
-#ifdef _WINDOWS64
+#if defined(_WIN32)
 	extern QNET_STATE _iQNetStubState;
 	_iQNetStubState = QNET_STATE_GAME_PLAY;
 
@@ -689,7 +689,7 @@ wstring CPlatformNetworkManagerStub::GatherRTTStats()
 
 void CPlatformNetworkManagerStub::TickSearch()
 {
-#ifdef _WINDOWS64
+#if defined(_WIN32)
 	if (m_SessionsUpdatedCallback == NULL)
 		return;
 
@@ -705,7 +705,7 @@ void CPlatformNetworkManagerStub::TickSearch()
 
 void CPlatformNetworkManagerStub::SearchForGames()
 {
-#ifdef _WINDOWS64
+#if defined(_WIN32)
 	std::vector<Win64LANSession> lanSessions = WinsockNetLayer::GetDiscoveredSessions();
 
 	//THEY GET DELETED HERE DAMMIT

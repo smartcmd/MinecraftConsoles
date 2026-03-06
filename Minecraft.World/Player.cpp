@@ -369,7 +369,7 @@ void Player::tick()
 		if( count++ == 100 )
 		{
 #if 0
-#ifdef _WINDOWS64
+#if defined(_WIN32)
 			// Drop some items so we have them in inventory to play with
 			this->drop( shared_ptr<ItemInstance>( new ItemInstance(Tile::recordPlayer) ) );
 			this->drop( shared_ptr<ItemInstance>( new ItemInstance(Item::map) ) );

@@ -24,7 +24,7 @@ CustomLevelSource::CustomLevelSource(Level *level, __int64 seed, bool generateSt
 	wstring path = L"GAME:\\GameRules\\heightmap.bin";
 
 #else
-#ifdef _WINDOWS64
+#if defined(_WIN32)
 	string path = "GameRules\\heightmap.bin";
 #else
 	string path = "GAME:\\GameRules\\heightmap.bin";
@@ -66,7 +66,7 @@ CustomLevelSource::CustomLevelSource(Level *level, __int64 seed, bool generateSt
 	wstring waterHeightPath = L"GAME:\\GameRules\\waterheight.bin";
 
 #else
-#ifdef _WINDOWS64
+#if defined(_WIN32)
 	string waterHeightPath = "GameRules\\waterheight.bin";
 #else
 	string waterHeightPath = "GAME:\\GameRules\\waterheight.bin";

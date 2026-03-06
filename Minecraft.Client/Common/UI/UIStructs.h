@@ -283,7 +283,7 @@ typedef struct _JoinMenuInitData
 } JoinMenuInitData;
 
 // Native keyboard (Windows64 replacement for InputManager.RequestKeyboard WinAPI dialog)
-#ifdef _WINDOWS64
+#if defined(_WIN32)
 typedef struct _UIKeyboardInitData
 {
 	const wchar_t* title;

@@ -2,7 +2,7 @@
 // https://github.com/LCEMP/LCEMP
 #pragma once
 
-#ifdef _WINDOWS64
+#if defined(_WIN32)
 
 #include <WinSock2.h>
 #include <WS2tcpip.h>

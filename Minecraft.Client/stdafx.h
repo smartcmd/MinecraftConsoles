@@ -60,7 +60,7 @@
 typedef unsigned __int64 __uint64;
 #endif
 
-#ifdef  _WINDOWS64
+#if defined(_WIN32)
 #define WIN32_LEAN_AND_MEAN             // Exclude rarely-used stuff from Windows headers
 // Windows Header Files:
 #include <windows.h>
@@ -172,7 +172,7 @@ typedef XUID GameSessionUID;
 	#include "Durango\4JLibs\inc\4J_Profile.h"
 	#include "Durango\4JLibs\inc\4J_Render.h"
 	#include "Durango\4JLibs\inc\4J_Storage.h"
-#elif defined _WINDOWS64
+#elif defined(_WIN32)
 	#include <Xinput.h>
 	#include "Windows64\4JLibs\inc\4J_Input.h"
 	#include "Windows64\4JLibs\inc\4J_Profile.h"
@@ -267,7 +267,7 @@ typedef XUID GameSessionUID;
 	#include "Durango\Iggy\include\iggy.h"
 	#include "Durango\Iggy\gdraw\gdraw_d3d11.h"
 	#include "Durango\Durango_UIController.h"
-#elif defined _WINDOWS64
+#elif defined(_WIN32)
 	#include "Windows64\Sentient\MinecraftTelemetry.h"
 	#include "Windows64Media\strings.h"
 	#include "Windows64\Windows64_App.h"

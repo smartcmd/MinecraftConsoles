@@ -503,7 +503,7 @@ void Minecraft::setScreen(Screen *screen)
 		this->screen->removed();
 	}
 
-#ifdef _WINDOWS64
+#if defined(_WIN32)
 	if (screen != NULL && g_KBMInput.IsMouseGrabbed())
 	{
 		g_KBMInput.SetMouseGrabbed(false);
@@ -1039,7 +1039,7 @@ shared_ptr<MultiplayerLocalPlayer> Minecraft::createExtraLocalPlayer(int idx, co
 		PlayerUID playerXUIDOnline = INVALID_XUID;
 		ProfileManager.GetXUID(idx,&playerXUIDOffline,false);
 		ProfileManager.GetXUID(idx,&playerXUIDOnline,true);
-#ifdef _WINDOWS64
+#if defined(_WIN32)
 		// Compatibility rule for Win64 id migration
 		// host keeps legacy host XUID, non-host uses persistent uid.dat XUID.
 		INetworkPlayer *localNetworkPlayer = g_NetworkManager.GetLocalPlayerByUserIndex(idx);
@@ -1191,7 +1191,7 @@ void Minecraft::createPrimaryLocalPlayer(int iPad)
 	}
 }
 
-#ifdef _WINDOWS64
+#if defined(_WIN32)
 void Minecraft::applyFrameMouseLook()
 {
 	// Per-frame mouse look: consume mouse deltas every frame instead of waiting
@@ -1467,7 +1467,7 @@ void Minecraft::run_middle()
 					if(InputManager.ButtonPressed(i, MINECRAFT_ACTION_RENDER_THIRD_PERSON))		localplayers[i]->ullButtonsPressed|=1LL<<MINECRAFT_ACTION_RENDER_THIRD_PERSON;
 					if(InputManager.ButtonPressed(i, MINECRAFT_ACTION_GAME_INFO))				localplayers[i]->ullButtonsPressed|=1LL<<MINECRAFT_ACTION_GAME_INFO;
 
-#ifdef _WINDOWS64
+#if defined(_WIN32)
 					// Keyboard/mouse button presses for player 0
 					if (i == 0)
 					{
@@ -1572,7 +1572,7 @@ void Minecraft::run_middle()
 					// 4J Stu - This doesn't make any sense with the way we handle XboxOne users
 #ifndef _DURANGO
 					// did we just get input from a player who doesn't exist? They'll be wanting to join the game then
-#ifdef _WINDOWS64
+#if defined(_WIN32)
 					// The 4J toggle system is unreliable here: UIController::handleInput() calls
 					// ButtonPressed for every ACTION_MENU_* mapped button (which covers all physical
 					// buttons) before run_middle() runs. Bypass it with raw XInput and own edge detection.
@@ -1624,7 +1624,7 @@ void Minecraft::run_middle()
 							// did we just get input from a player who doesn't exist? They'll be wanting to join the game then
 #ifdef __ORBIS__
 							if(InputManager.ButtonPressed(i, ACTION_MENU_A))
-#elif defined _WINDOWS64
+#elif defined(_WIN32)
 							if(startJustPressed)
 #else
 							if(InputManager.ButtonPressed(i, MINECRAFT_ACTION_PAUSEMENU))
@@ -1633,7 +1633,7 @@ void Minecraft::run_middle()
 								// Let them join
 
 								// are they signed in?
-#ifdef _WINDOWS64
+#if defined(_WIN32)
 								if(ProfileManager.IsSignedIn(i) || (g_NetworkManager.IsLocalGame() && InputManager.IsPadConnected(i)))
 #else
 								if(ProfileManager.IsSignedIn(i))
@@ -2338,7 +2338,7 @@ void Minecraft::tick(bool bFirst, bool bUpdateTextures)
 		}
 	}
 
-#ifdef _WINDOWS64
+#if defined(_WIN32)
 	if ((screen != NULL || ui.GetMenuDisplayed(iPad)) && g_KBMInput.IsMouseGrabbed())
 	{
 		g_KBMInput.SetMouseGrabbed(false);
@@ -2347,7 +2347,7 @@ void Minecraft::tick(bool bFirst, bool bUpdateTextures)
 
 	if (screen == NULL && !ui.GetMenuDisplayed(iPad) )
 	{
-#ifdef _WINDOWS64
+#if defined(_WIN32)
 		if (!g_KBMInput.IsMouseGrabbed() && g_KBMInput.IsWindowFocused())
 		{
 			g_KBMInput.SetMouseGrabbed(true);
@@ -3505,7 +3505,7 @@ void Minecraft::tick(bool bFirst, bool bUpdateTextures)
 			wheel = -1;
 		}
 
-#ifdef _WINDOWS64
+#if defined(_WIN32)
 		if (iPad == 0 && wheel == 0 && g_KBMInput.IsKBMActive())
 		{
 			wheel = g_KBMInput.GetMouseWheel();
@@ -3543,7 +3543,7 @@ void Minecraft::tick(bool bFirst, bool bUpdateTextures)
 				player->lastClickTick[0] = ticks;
 			}
 
-#ifdef _WINDOWS64
+#if defined(_WIN32)
 			bool actionPressed = InputManager.ButtonPressed(iPad, MINECRAFT_ACTION_ACTION) || (iPad == 0 && g_KBMInput.IsKBMActive() && g_KBMInput.IsMouseButtonPressed(KeyboardMouseInput::MOUSE_LEFT));
 			bool actionHeld = InputManager.ButtonDown(iPad, MINECRAFT_ACTION_ACTION) || (iPad == 0 && g_KBMInput.IsKBMActive() && g_KBMInput.IsMouseButtonDown(KeyboardMouseInput::MOUSE_LEFT));
 #else
@@ -3577,7 +3577,7 @@ void Minecraft::tick(bool bFirst, bool bUpdateTextures)
 		lastClickTick = ticks;
 		}
 		*/
-#ifdef _WINDOWS64
+#if defined(_WIN32)
 		bool useHeld = InputManager.ButtonDown(iPad, MINECRAFT_ACTION_USE) || (iPad == 0 && g_KBMInput.IsKBMActive() && g_KBMInput.IsMouseButtonDown(KeyboardMouseInput::MOUSE_RIGHT));
 #else
 		bool useHeld = InputManager.ButtonDown(iPad, MINECRAFT_ACTION_USE);
@@ -4313,7 +4313,7 @@ void Minecraft::setLevel(MultiPlayerLevel *level, int message /*=-1*/, shared_pt
 				playerXUIDOnline.setForAdhoc();
 			}
 #endif
-#ifdef _WINDOWS64
+#if defined(_WIN32)
 			// On Windows, the implementation has been changed to use a per-client pseudo XUID based on `uid.dat`.  
 			// To maintain player data compatibility with existing worlds, the world host (the first player) will use the previous embedded pseudo XUID.
 			INetworkPlayer *localNetworkPlayer = g_NetworkManager.GetLocalPlayerByUserIndex(iPrimaryPlayer);
@@ -4508,7 +4508,7 @@ void Minecraft::respawnPlayer(int iPad, int dimension, int newEntityId)
 	PlayerUID playerXUIDOnline = INVALID_XUID;
 	ProfileManager.GetXUID(iTempPad,&playerXUIDOffline,false);
 	ProfileManager.GetXUID(iTempPad,&playerXUIDOnline,true);
-#ifdef _WINDOWS64
+#if defined(_WIN32)
 	// Same compatibility rule as create/init paths.
 	INetworkPlayer *localNetworkPlayer = g_NetworkManager.GetLocalPlayerByUserIndex(iTempPad);
 	if(localNetworkPlayer != NULL && localNetworkPlayer->IsHost())

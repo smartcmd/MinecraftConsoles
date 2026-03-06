@@ -78,7 +78,7 @@ enum MUSIC_STREAMSTATE
 
 typedef struct
 {
-	#ifndef _WINDOWS64
+	#if !defined(_WIN32)
 	F32 x,y,z,volume,pitch;
 	#else
 	float x,y,z,volume,pitch;
@@ -92,7 +92,7 @@ typedef struct
 }
 AUDIO_INFO;
 
-#ifdef _WINDOWS64
+#if defined(_WIN32)
 struct MiniAudioSound
 {
     ma_sound sound;

@@ -1100,7 +1100,7 @@ void IUIScene_CreativeMenu::handleAdditionalKeyPress(int iAction)
 	case ACTION_MENU_OTHER_STICK_DOWN:
 		{
 			int pageStep = TabSpec::rows;
-#ifdef _WINDOWS64
+#if defined(_WIN32)
 			if (g_KBMInput.WasMouseWheelConsumed())
 			{
 				pageStep = 1;
@@ -1120,7 +1120,7 @@ void IUIScene_CreativeMenu::handleAdditionalKeyPress(int iAction)
 	case ACTION_MENU_OTHER_STICK_UP:
 		{
 			int pageStep = TabSpec::rows;
-#ifdef _WINDOWS64
+#if defined(_WIN32)
 			if (g_KBMInput.WasMouseWheelConsumed())
 			{
 				pageStep = 1;

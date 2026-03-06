@@ -641,7 +641,7 @@ void GameRuleManager::loadDefaultGameRules()
 
 #else // _XBOX
 
-#ifdef _WINDOWS64
+#if defined(_WIN32)
 	File packedTutorialFile(L"Windows64Media\\Tutorial\\Tutorial.pck");
 	if(!packedTutorialFile.exists()) packedTutorialFile = File(L"Windows64\\Tutorial\\Tutorial.pck");
 #elif defined(__ORBIS__)

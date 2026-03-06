@@ -12,7 +12,7 @@
 #include "..\..\EnderDragonRenderer.h"
 #include "..\..\MultiPlayerLocalPlayer.h"
 #include "UIFontData.h"
-#ifdef _WINDOWS64
+#if defined(_WIN32)
 #include "..\..\Windows64\KeyboardMouseInput.h"
 #endif
 #ifdef __PSVITA__
@@ -56,7 +56,7 @@ bool UIController::ms_bReloadSkinCSInitialised = false;
 
 DWORD UIController::m_dwTrialTimerLimitSecs=DYNAMIC_CONFIG_DEFAULT_TRIAL_TIME;
 
-#ifdef _WINDOWS64
+#if defined(_WIN32)
 static UIControl_Slider *FindSliderById(UIScene *pScene, int sliderId)
 {
 	vector<UIControl *> *controls = pScene->GetControls();
@@ -198,7 +198,7 @@ UIController::UIController()
 #endif
 
 	// 4J Stu - This is a bit of a hack until we change the Minecraft initialisation to store the proper screen size for other platforms
-#if defined _WINDOWS64 || defined _DURANGO || defined __ORBIS__
+#if defined(_WIN32) || defined _DURANGO || defined __ORBIS__
 	m_fScreenWidth = 1920.0f;
 	m_fScreenHeight = 1080.0f;
 	m_bScreenWidthSetup = false;
@@ -522,7 +522,7 @@ void UIController::loadSkins()
 	platformSkinPath = L"skinPS3.swf";
 #elif defined __PSVITA__
 	platformSkinPath = L"skinVita.swf";
-#elif defined _WINDOWS64
+#elif defined(_WIN32)
 	if(m_fScreenHeight>720.0f)
 	{
 		platformSkinPath = L"skinHDWin.swf";
@@ -576,7 +576,7 @@ void UIController::loadSkins()
 
 #if ( defined(_WINDOWS64) || defined(_DURANGO) || defined(__ORBIS__) )
 
-#if defined(_WINDOWS64)
+#if defined(_WIN32)
 	// 4J Stu - Load the 720/480 skins so that we have something to fallback on during development
 #ifndef _FINAL_BUILD
 	m_iggyLibraries[eLibraryFallback_GraphicsDefault] = loadSkin(L"skinGraphics.swf", L"skinGraphics.swf");
@@ -655,7 +655,7 @@ void UIController::ReloadSkin()
 		m_iggyLibraries[i] = IGGY_INVALID_LIBRARY;
 	}
 
-#ifdef _WINDOWS64
+#if defined(_WIN32)
 	// 4J Stu - Don't load on a thread on windows. I haven't investigated this in detail, so a quick fix
 	reloadSkinThreadProc(this);
 #else
@@ -783,7 +783,7 @@ void UIController::tickInput()
 		else
 #endif
 		{
-#ifdef _WINDOWS64
+#if defined(_WIN32)
 			if (!g_KBMInput.IsMouseGrabbed() && g_KBMInput.IsKBMActive())
 			{
 				UIScene *pScene = NULL;
@@ -1178,7 +1178,7 @@ void UIController::handleKeyPress(unsigned int iPad, unsigned int key)
 	pressed = InputManager.ButtonPressed(iPad,key); // Toggle
 	released = InputManager.ButtonReleased(iPad,key); // Toggle
 
-#ifdef _WINDOWS64
+#if defined(_WIN32)
 	if (iPad == 0)
 	{
 		int vk = 0;
@@ -1507,7 +1507,7 @@ void UIController::setupCustomDrawGameState()
 	m_customRenderingClearRect.top = LONG_MAX;
 	m_customRenderingClearRect.bottom = LONG_MIN;
 
-#if defined _WINDOWS64 || _DURANGO
+#if defined(_WIN32) || _DURANGO
 	PIXBeginNamedEvent(0,"StartFrame");
 	RenderManager.StartFrame();
 	PIXEndNamedEvent();

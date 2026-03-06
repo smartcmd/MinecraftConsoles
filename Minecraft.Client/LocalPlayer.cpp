@@ -277,7 +277,7 @@ void LocalPlayer::aiStep()
 		}
 	}
 	if (isSneaking()) sprintTriggerTime = 0;
-#ifdef _WINDOWS64
+#if defined(_WIN32)
 	if (input->sprinting && onGround && enoughFoodToSprint && !isUsingItem() && !hasEffect(MobEffect::blindness) && !isSneaking())
 	{
 		setSprinting(true);

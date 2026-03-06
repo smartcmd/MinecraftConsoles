@@ -25,7 +25,7 @@
 #include "message_dialog.h"
 #endif
 
-#ifdef _WINDOWS64
+#if defined(_WIN32)
 #include "..\..\..\Minecraft.World\NbtIo.h"
 #include "..\..\..\Minecraft.World\compression.h"
 
@@ -730,7 +730,7 @@ void UIScene_LoadOrJoinMenu::tick()
                 m_saveDetails = new SaveListDetails[m_pSaveDetails->iSaveC];
 
                 m_iSaveDetailsCount = m_pSaveDetails->iSaveC;
-#ifdef _WINDOWS64
+#if defined(_WIN32)
                 // Build sorted index array (newest-first by filename timestamp YYYYMMDDHHMMSS)
                 int *sortedIdx = new int[m_pSaveDetails->iSaveC];
                 for (int si = 0; si < (int)m_pSaveDetails->iSaveC; ++si) sortedIdx[si] = si;
@@ -760,7 +760,7 @@ void UIScene_LoadOrJoinMenu::tick()
                     memcpy(m_saveDetails[i].UTF16SaveName, m_pSaveDetails->SaveInfoA[i].UTF16SaveTitle, 128);
                     memcpy(m_saveDetails[i].UTF16SaveFilename, m_pSaveDetails->SaveInfoA[i].UTF16SaveFilename, MAX_SAVEFILENAME_LENGTH);
 #else
-#ifdef _WINDOWS64
+#if defined(_WIN32)
                     {
                         int origIdx = sortedIdx[i];
                         wchar_t wFilename[MAX_SAVEFILENAME_LENGTH];
@@ -790,7 +790,7 @@ void UIScene_LoadOrJoinMenu::tick()
 #endif
 #endif
                 }
-#ifdef _WINDOWS64
+#if defined(_WIN32)
                 delete[] sortedIdx;
 #endif
                 m_controlSavesTimer.setVisible( false );
@@ -808,7 +808,7 @@ void UIScene_LoadOrJoinMenu::tick()
                 app.DebugPrintf("Requesting the first thumbnail\n");
                 // set the save to load
                 PSAVE_DETAILS pSaveDetails=StorageManager.ReturnSavesInfo();
-#ifdef _WINDOWS64
+#if defined(_WIN32)
                 C4JStorage::ESaveGameState eLoadStatus=StorageManager.LoadSaveDataThumbnail(&pSaveDetails->SaveInfoA[m_saveDetails[m_iRequestingThumbnailId].saveId],&LoadSaveDataThumbnailReturned,this);
 #else
                 C4JStorage::ESaveGameState eLoadStatus=StorageManager.LoadSaveDataThumbnail(&pSaveDetails->SaveInfoA[(int)m_iRequestingThumbnailId],&LoadSaveDataThumbnailReturned,this);
@@ -834,7 +834,7 @@ void UIScene_LoadOrJoinMenu::tick()
 #ifdef _DURANGO
                 // Already utf16 on durango
                 memcpy(u16Message, m_saveDetails[m_iRequestingThumbnailId].UTF16SaveFilename, MAX_SAVEFILENAME_LENGTH);
-#elif defined(_WINDOWS64)
+#elif defined(_WIN32)
                 int result = ::MultiByteToWideChar(
                     CP_UTF8,                // convert from UTF-8
                     MB_ERR_INVALID_CHARS,   // error on invalid chars
@@ -875,7 +875,7 @@ void UIScene_LoadOrJoinMenu::tick()
                     app.DebugPrintf("Requesting another thumbnail\n");
                     // set the save to load
                     PSAVE_DETAILS pSaveDetails=StorageManager.ReturnSavesInfo();
-#ifdef _WINDOWS64
+#if defined(_WIN32)
                     C4JStorage::ESaveGameState eLoadStatus=StorageManager.LoadSaveDataThumbnail(&pSaveDetails->SaveInfoA[m_saveDetails[m_iRequestingThumbnailId].saveId],&LoadSaveDataThumbnailReturned,this);
 #else
                     C4JStorage::ESaveGameState eLoadStatus=StorageManager.LoadSaveDataThumbnail(&pSaveDetails->SaveInfoA[(int)m_iRequestingThumbnailId],&LoadSaveDataThumbnailReturned,this);
@@ -1359,7 +1359,7 @@ int UIScene_LoadOrJoinMenu::KeyboardCompleteWorldNameCallback(LPVOID lpParam,boo
     {
         uint16_t ui16Text[128];
         ZeroMemory(ui16Text, 128 * sizeof(uint16_t) );
-#ifdef _WINDOWS64
+#if defined(_WIN32)
         Win64_GetKeyboardText(ui16Text, 128);
 #else
         InputManager.GetText(ui16Text);
@@ -1371,7 +1371,7 @@ int UIScene_LoadOrJoinMenu::KeyboardCompleteWorldNameCallback(LPVOID lpParam,boo
 #if (defined __PS3__ || defined __ORBIS__ || defined _DURANGO  || defined(__PSVITA__))
             // open the save and overwrite the metadata
             StorageManager.RenameSaveData(pClass->m_iSaveListIndex - pClass->m_iDefaultButtonsC, ui16Text,&UIScene_LoadOrJoinMenu::RenameSaveDataReturned,pClass);
-#elif defined(_WINDOWS64)
+#elif defined(_WIN32)
             {
                 int listPos = pClass->m_iSaveListIndex - pClass->m_iDefaultButtonsC;
 
@@ -2249,7 +2249,7 @@ void UIScene_LoadOrJoinMenu::LoadSaveFromCloud()
 
 #endif //SONY_REMOTE_STORAGE_DOWNLOAD
 
-#ifdef _WINDOWS64
+#if defined(_WIN32)
 static bool Win64_DeleteSaveDirectory(const wchar_t* wPath)
 {
     wchar_t wSearch[MAX_PATH];
@@ -2290,7 +2290,7 @@ int UIScene_LoadOrJoinMenu::DeleteSaveDialogReturned(void *pParam,int iPad,C4JSt
         }
         else
         {
-#ifdef _WINDOWS64
+#if defined(_WIN32)
             {
                 // Use m_saveDetails (sorted display order) so the correct folder is targeted
                 int displayIdx = pClass->m_iSaveListIndex - pClass->m_iDefaultButtonsC;
@@ -2383,7 +2383,7 @@ int UIScene_LoadOrJoinMenu::SaveOptionsDialogReturned(void *pParam,int iPad,C4JS
     case C4JStorage::EMessage_ResultDecline:  // rename
         {
 			pClass->m_bIgnoreInput=true;
-#ifdef _WINDOWS64
+#if defined(_WIN32)
             {
                 wchar_t wSaveName[128];
                 ZeroMemory(wSaveName, 128 * sizeof(wchar_t));

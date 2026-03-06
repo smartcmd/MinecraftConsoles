@@ -1,6 +1,6 @@
 #include "stdafx.h"
 
-#ifdef _WINDOWS64
+#if defined(_WIN32)
 
 #include "KeyboardMouseInput.h"
 #include <cmath>

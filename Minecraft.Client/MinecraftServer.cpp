@@ -31,7 +31,7 @@
 #include "..\Minecraft.World\net.minecraft.world.item.h"
 #include "..\Minecraft.World\net.minecraft.world.item.enchantment.h"
 #include "..\Minecraft.World\net.minecraft.world.damagesource.h"
-#ifdef _WINDOWS64
+#if defined(_WIN32)
 #include "Windows64\Network\WinsockNetLayer.h"
 #endif
 #include <sstream>
@@ -88,7 +88,7 @@ unordered_map<wstring, int> MinecraftServer::ironTimers;
 
 static bool ShouldUseDedicatedServerProperties()
 {
-#ifdef _WINDOWS64
+#if defined(_WIN32)
 	return g_Win64DedicatedServer;
 #else
 	return false;
@@ -1230,7 +1230,7 @@ bool MinecraftServer::loadLevel(LevelStorageSource *storageSource, const wstring
 
 	if( levels[0]->isNew || levels[1]->isNew || levels[2]->isNew )
 	{
-#ifndef _WINDOWS64
+#if !defined(_WIN32)
 		// On Windows64 we skip the automatic initial save so that choosing
 		// "Exit without saving" on a new world does not leave an orphaned save folder.
 		levels[0]->saveToDisc(mcprogress, false);

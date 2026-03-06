@@ -63,7 +63,7 @@ void SoundEngine::playMusicTick() {};
 
 #else
 
-#ifdef _WINDOWS64
+#if defined(_WIN32)
 char SoundEngine::m_szSoundPath[]={"Windows64Media\\Sound\\"};
 char SoundEngine::m_szMusicPath[]={"music\\"};
 char SoundEngine::m_szRedistName[]={"redist64"};

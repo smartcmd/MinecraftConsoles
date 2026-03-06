@@ -224,7 +224,7 @@ bool	CGameNetworkManager::StartNetworkGame(Minecraft *minecraft, LPVOID lpParame
 						wstring fileRoot = L"GAME:\\res\\TitleUpdate\\GameRules\\" + param->levelGen->getBaseSavePath();
 #endif
 #else
-#ifdef _WINDOWS64
+#if defined(_WIN32)
 						wstring fileRoot = L"Windows64Media\\Tutorial\\" + param->levelGen->getBaseSavePath();
 						File root(fileRoot);
 						if(!root.exists()) fileRoot = L"Windows64\\Tutorial\\" + param->levelGen->getBaseSavePath();

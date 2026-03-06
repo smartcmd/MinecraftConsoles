@@ -5,7 +5,7 @@
 #include "..\..\..\Minecraft.World\net.minecraft.world.inventory.h"
 #include "..\..\..\Minecraft.World\net.minecraft.world.item.h"
 #include "..\..\MultiplayerLocalPlayer.h"
-#ifdef _WINDOWS64
+#if defined(_WIN32)
 #include "..\..\Windows64\KeyboardMouseInput.h"
 #endif
 
@@ -39,7 +39,7 @@ void UIScene_AbstractContainerMenu::handleDestroy()
 {
 	app.DebugPrintf("UIScene_AbstractContainerMenu::handleDestroy\n");
 
-#ifdef _WINDOWS64
+#if defined(_WIN32)
 	g_savedInventoryCursorPos.x = m_pointerPos.x;
 	g_savedInventoryCursorPos.y = m_pointerPos.y;
 	g_savedInventoryCursorPos.hasSavedPos = true;
@@ -83,7 +83,7 @@ void UIScene_AbstractContainerMenu::InitDataAssociations(int iPad, AbstractConta
 
 void UIScene_AbstractContainerMenu::PlatformInitialize(int iPad, int startIndex)
 {
-#ifdef _WINDOWS64
+#if defined(_WIN32)
 	g_KBMInput.SetScreenCursorHidden(true);
 	g_KBMInput.SetCursorHiddenForUI(true);
 #endif
@@ -171,7 +171,7 @@ void UIScene_AbstractContainerMenu::PlatformInitialize(int iPad, int startIndex)
 	//m_pointerControl->SetPosition( &vPointerPos );
 	m_pointerPos = vPointerPos;
 
-#ifdef _WINDOWS64
+#if defined(_WIN32)
 	if (g_savedInventoryCursorPos.hasSavedPos)
 	{
 		m_pointerPos.x = g_savedInventoryCursorPos.x;

@@ -51,7 +51,7 @@ private:
 	DLCPack * m_pDLCPack;
 	bool m_bRebuildTouchBoxes;
 
-#ifdef _WINDOWS64
+#if defined(_WIN32)
 	bool m_bDirectEditing;
 	wstring m_worldNameBeforeEdit;
 	int m_iDirectEditCooldown;

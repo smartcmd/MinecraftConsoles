@@ -21,7 +21,7 @@ UIComponent_DebugUIMarketingGuide::UIComponent_DebugUIMarketingGuide(int iPad, v
 	value[0].number = (F64)4;
 #elif defined __PSVITA__
 	value[0].number = (F64)5;
-#elif defined _WINDOWS64
+#elif defined(_WIN32)
 	value[0].number = (F64)0;
 #endif
 	IggyResult out = IggyPlayerCallMethodRS ( getMovie() , &result, IggyPlayerRootPath( getMovie() ), m_funcSetPlatform , 1 , value );
