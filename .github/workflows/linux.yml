@@ -1,4 +1,4 @@
-name: Build (Linux)
+name: Build DLL (Linux)
 
 on:
   workflow_dispatch:
@@ -29,15 +29,18 @@ jobs:
 
       - name: Build
         run: |
-          set -ex
+          sudo -u builder sh <<'EOF'
+          set -e
           export WINE=$(command -v wine64 || command -v wine || false)
           $WINE wineboot
           git clone https://github.com/mstorsjo/msvc-wine
           ./msvc-wine/vsdownload.py --accept-license --dest $(pwd)/my_msvc/opt/msvc
           ./msvc-wine/install.sh $(pwd)/my_msvc/opt/msvc
           export PATH=$(pwd)/my_msvc/opt/msvc/bin/x64:$PATH
-          $WINE wineboot
-          ./my_msvc/opt/msvc/bin/x64/msbuild MinecraftConsoles.sln /p:Configuration=Release /p:Platform="Windows64"
+          CC=cl CXX=cl cmake . -DCMAKE_BUILD_TYPE=Release -DCMAKE_SYSTEM_NAME=Windows
+          make
+          7z a -r LCEWindows64.zip ./x64/Release/*
+          EOF
 
       - name: Upload artifact/s
         uses: actions/upload-artifact@v4
