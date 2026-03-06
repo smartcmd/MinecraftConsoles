@@ -1522,7 +1522,7 @@ void Minecraft::run_middle()
 					}
 #endif
 
-#ifndef _FINAL_BUILD
+#if _DEBUG // ndef _FINAL_BUILD // Disable conflicting debug functionality in release builds
 					if( app.DebugSettingsOn() && app.GetUseDPadForDebug() )
 					{
 						localplayers[i]->ullDpad_last = 0;
@@ -3651,7 +3651,7 @@ void Minecraft::tick(bool bFirst, bool bUpdateTextures)
 
 		if (player->missTime > 0) player->missTime--;
 
-#ifdef _DEBUG_MENUS_ENABLED
+#ifdef _DEBUG//_MENUS_ENABLED // disable DPad cheats on release builds
 		if(app.DebugSettingsOn())
 		{
 #ifndef __PSVITA__
