@@ -41,9 +41,16 @@ jobs:
           make -j$(nproc)
           ls -lh
           tree
-          7z a build.zip \
-          Minecraft.Client/Common Minecraft.Client/music Minecraft.Client/redist64 Minecraft.Client/Windows64 Minecraft.Client/Windows64Media x64/Release \
-          iggy_w64.dll MinecraftClient.exe mss64.dll || true
+
+          # Move stuff so that the game runs out of the box
+          mkdir -p tmp_build
+          cp -r Minecraft.Client/Common Minecraft.Client/music Minecraft.Client/redist64 Minecraft.Client/Windows64 Minecraft.Client/Windows64Media tmp_build/
+          cp -r x64/Release/* tmp_build/
+          cp MinecraftClient.exe mss64.dll tmp_build/
+
+          # Zip everything in tmp_build
+          7z a build.zip tmp_build/* -r -mx=9
+
           EOF
 
       - name: Upload artifact
