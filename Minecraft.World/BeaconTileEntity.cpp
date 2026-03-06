@@ -80,21 +80,26 @@ void BeaconTileEntity::applyEffects()
 		AABB *bb = AABB::newTemp(x, y, z, x + 1, y + 1, z + 1)->grow(range, range, range);
 		bb->y1 = level->getMaxBuildHeight();
 		vector<shared_ptr<Entity> > *players = level->getEntitiesOfClass(typeid(Player), bb);
-		for (AUTO_VAR(it,players->begin()); it != players->end(); ++it)
+		if ( players )
 		{
-			shared_ptr<Player> player = dynamic_pointer_cast<Player>(*it);
-			player->addEffect(new MobEffectInstance(primaryPower, SharedConstants::TICKS_PER_SECOND * 9, baseAmp, true));
-		}
-
-		if (levels >= 4 && primaryPower != secondaryPower && secondaryPower > 0)
-		{
-			for (AUTO_VAR(it,players->begin()); it != players->end(); ++it)
+			for (auto& it : *players)
 			{
-				shared_ptr<Player> player = dynamic_pointer_cast<Player>(*it);
-				player->addEffect(new MobEffectInstance(secondaryPower, SharedConstants::TICKS_PER_SECOND * 9, 0, true));
+				shared_ptr<Player> player = dynamic_pointer_cast<Player>(it);
+				if ( player )
+					player->addEffect(new MobEffectInstance(primaryPower, SharedConstants::TICKS_PER_SECOND * 9, baseAmp, true));
 			}
+
+			if (levels >= 4 && primaryPower != secondaryPower && secondaryPower > 0)
+			{
+				for ( auto& it : *players )
+				{
+					shared_ptr<Player> player = dynamic_pointer_cast<Player>(it);
+					if ( player )
+						player->addEffect(new MobEffectInstance(secondaryPower, SharedConstants::TICKS_PER_SECOND * 9, 0, true));
+				}
+			}
+			delete players;
 		}
-		delete players;
 	}
 }
 

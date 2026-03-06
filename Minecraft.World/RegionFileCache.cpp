@@ -25,22 +25,22 @@ RegionFile *RegionFileCache::_getRegionFile(ConsoleSaveFile *saveFile, const wst
 
 	//File regionDir(basePath, L"region");
 
-	//File file(regionDir, wstring(L"r.") + _toString(chunkX>>5) + L"." + _toString(chunkZ>>5) + L".mcr" );
+	//File file(regionDir, wstring(L"r.") + std::to_wstring(chunkX>>5) + L"." + std::to_wstring(chunkZ>>5) + L".mcr" );
 	MemSect(31);
 	File file;
 	if(useSplitSaves(saveFile->getSavePlatform()))
 	{
-		file = File( prefix + wstring(L"r.") + _toString(chunkX>>4) + L"." + _toString(chunkZ>>4) + L".mcr" );
+		file = File( prefix + wstring(L"r.") + std::to_wstring(chunkX>>4) + L"." + std::to_wstring(chunkZ>>4) + L".mcr" );
 	}
 	else
 	{
-		file = File( prefix + wstring(L"r.") + _toString(chunkX>>5) + L"." + _toString(chunkZ>>5) + L".mcr" );
+		file = File( prefix + wstring(L"r.") + std::to_wstring(chunkX>>5) + L"." + std::to_wstring(chunkZ>>5) + L".mcr" );
 	}
 	MemSect(0);
 
 	RegionFile *ref = NULL;
-	AUTO_VAR(it, cache.find(file));
-	if( it != cache.end() )
+    auto it = cache.find(file);
+    if( it != cache.end() )
 		ref = it->second;
 
 	// 4J Jev, put back in.
@@ -69,20 +69,14 @@ RegionFile *RegionFileCache::_getRegionFile(ConsoleSaveFile *saveFile, const wst
 
 void RegionFileCache::_clear()															// 4J - TODO was synchronized
 {
-	AUTO_VAR(itEnd, cache.end());
-	for( AUTO_VAR(it, cache.begin()); it != itEnd; it++ )
+	for(auto& it : cache)
 	{
-		// 4J - removed try/catch
-//        try {
-        RegionFile *regionFile = it->second;
+        RegionFile *regionFile = it.second;
         if (regionFile != NULL)
 		{
             regionFile->close();
         }
 		delete regionFile;
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }	
 	}
 	cache.clear();
 }

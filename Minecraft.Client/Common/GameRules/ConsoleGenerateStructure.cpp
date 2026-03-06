@@ -17,10 +17,10 @@ ConsoleGenerateStructure::ConsoleGenerateStructure() : StructurePiece(0)
 
 void ConsoleGenerateStructure::getChildren(vector<GameRuleDefinition *> *children)
 {
-	GameRuleDefinition::getChildren(children); 
-	
-	for(AUTO_VAR(it, m_actions.begin()); it != m_actions.end(); it++)
-		children->push_back( *it );
+	GameRuleDefinition::getChildren(children);
+
+	for ( auto& action : m_actions )
+		children->push_back( action );
 }
 
 GameRuleDefinition *ConsoleGenerateStructure::addChild(ConsoleGameRules::EGameRuleType ruleType)
@@ -60,16 +60,16 @@ void ConsoleGenerateStructure::writeAttributes(DataOutputStream *dos, UINT numAt
 	GameRuleDefinition::writeAttributes(dos, numAttrs + 5);
 
 	ConsoleGameRules::write(dos, ConsoleGameRules::eGameRuleAttr_x);
-	dos->writeUTF(_toString(m_x));
+	dos->writeUTF(std::to_wstring(m_x));
 	ConsoleGameRules::write(dos, ConsoleGameRules::eGameRuleAttr_y);
-	dos->writeUTF(_toString(m_y));
+	dos->writeUTF(std::to_wstring(m_y));
 	ConsoleGameRules::write(dos, ConsoleGameRules::eGameRuleAttr_z);
-	dos->writeUTF(_toString(m_z));
+	dos->writeUTF(std::to_wstring(m_z));
 
 	ConsoleGameRules::write(dos, ConsoleGameRules::eGameRuleAttr_orientation);
-	dos->writeUTF(_toString(orientation));
+	dos->writeUTF(std::to_wstring(orientation));
 	ConsoleGameRules::write(dos, ConsoleGameRules::eGameRuleAttr_dimension);
-	dos->writeUTF(_toString(m_dimension));
+	dos->writeUTF(std::to_wstring(m_dimension));
 }
 
 void ConsoleGenerateStructure::addAttribute(const wstring &attributeName, const wstring &attributeValue)
@@ -117,27 +117,24 @@ BoundingBox* ConsoleGenerateStructure::getBoundingBox()
 		// Find the max bounds
 		int maxX, maxY, maxZ;
 		maxX = maxY = maxZ = 1;
-		for(AUTO_VAR(it, m_actions.begin()); it != m_actions.end(); ++it)
+		for( ConsoleGenerateStructureAction *action : m_actions )
 		{
-			ConsoleGenerateStructureAction *action  = *it;
-			maxX = max(maxX,action->getEndX());
-			maxY = max(maxY,action->getEndY());
-			maxZ = max(maxZ,action->getEndZ());
+			maxX = std::max<int>(maxX,action->getEndX());
+			maxY = std::max<int>(maxY,action->getEndY());
+			maxZ = std::max<int>(maxZ,action->getEndZ());
 		}
-		
+
 		boundingBox = new BoundingBox(m_x, m_y, m_z, m_x + maxX, m_y + maxY, m_z + maxZ);
 	}
 	return boundingBox;
 }
 
 bool ConsoleGenerateStructure::postProcess(Level *level, Random *random, BoundingBox *chunkBB)
-{	
+{
 	if(level->dimension->id != m_dimension) return false;
 
-	for(AUTO_VAR(it, m_actions.begin()); it != m_actions.end(); ++it)
+	for( ConsoleGenerateStructureAction *action : m_actions )
 	{
-		ConsoleGenerateStructureAction *action  = *it;
-		
 		switch(action->getActionType())
 		{
 		case ConsoleGameRules::eGameRuleType_GenerateBox:

@@ -1,4 +1,9 @@
 #pragma once
+
+#ifdef _WIN64
+#include <d3d11.h>
+#endif
+
 class Minecraft;
 class Entity;
 class Random;
@@ -71,6 +76,14 @@ private:
 
 	float darkenWorldAmount;
     float darkenWorldAmountO;
+
+    // Gamma caching
+    float m_cachedGammaPerPlayer[NUM_LIGHT_TEXTURES];
+    static float ComputeGammaFromSlider(float slider0to100);
+    void CachePlayerGammas();
+    void ApplyGammaPostProcess() const;
+    bool ComputeViewportForPlayer(int j, D3D11_VIEWPORT& outViewport) const;
+    uint32_t BuildPlayerViewports(D3D11_VIEWPORT* outViewports, float* outGammas, UINT maxCount) const;
 
     bool isInClouds;
 

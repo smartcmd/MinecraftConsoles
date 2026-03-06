@@ -51,9 +51,9 @@ void TextureManager::registerName(const wstring &name, Texture *texture)
 
 void TextureManager::registerTexture(Texture *texture)
 {
-	for(AUTO_VAR(it, idToTextureMap.begin()); it != idToTextureMap.end(); ++it)
+	for(auto& it : idToTextureMap)
 	{
-		if(it->second == texture)
+		if(it.second == texture)
 		{
 			//Minecraft.getInstance().getLogger().warning("TextureManager.registerTexture called, but this texture has " + "already been registered. ignoring.");
 			app.DebugPrintf("TextureManager.registerTexture called, but this texture has already been registered. ignoring.");
@@ -66,11 +66,11 @@ void TextureManager::registerTexture(Texture *texture)
 
 void TextureManager::unregisterTexture(const wstring &name, Texture *texture)
 {
-	AUTO_VAR(it, idToTextureMap.find(texture->getManagerId()));
-	if(it != idToTextureMap.end()) idToTextureMap.erase(it);
+    auto it = idToTextureMap.find(texture->getManagerId());
+    if(it != idToTextureMap.end()) idToTextureMap.erase(it);
 
-	AUTO_VAR(it2, stringToIDMap.find(name));
-	if(it2 != stringToIDMap.end()) stringToIDMap.erase(it2);
+    auto it2 = stringToIDMap.find(name);
+    if(it2 != stringToIDMap.end()) stringToIDMap.erase(it2);
 }
 
 Stitcher *TextureManager::createStitcher(const wstring &name)
@@ -110,7 +110,7 @@ vector<Texture *> *TextureManager::createTextures(const wstring &filename, bool 
 			drive= wstr + L"\\Common\\res\\TitleUpdate\\";
 		}
 		else
-#endif		
+#endif
 		{
 			drive = Minecraft::GetInstance()->skins->getDefault()->getPath(true);
 		}

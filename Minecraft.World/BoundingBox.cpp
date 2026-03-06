@@ -175,7 +175,7 @@ int BoundingBox::getZCenter()
 
 wstring BoundingBox::toString()
 {
-	return L"(" + _toString<int>(x0) + L", " + _toString<int>(y0) + L", " + _toString<int>(z0) + L"; " + _toString<int>(x1) + L", " + _toString<int>(y1) + L", " + _toString<int>(z1) + L")";
+	return L"(" + std::to_wstring(x0) + L", " + std::to_wstring(y0) + L", " + std::to_wstring(z0) + L"; " + std::to_wstring(x1) + L", " + std::to_wstring(y1) + L", " + std::to_wstring(z1) + L")";
 }
 
 IntArrayTag *BoundingBox::createTag(const wstring &name)

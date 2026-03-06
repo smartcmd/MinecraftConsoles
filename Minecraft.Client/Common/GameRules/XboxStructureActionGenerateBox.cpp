@@ -14,25 +14,25 @@ void XboxStructureActionGenerateBox::writeAttributes(DataOutputStream *dos, UINT
 	ConsoleGenerateStructureAction::writeAttributes(dos, numAttrs + 9);
 
 	ConsoleGameRules::write(dos, ConsoleGameRules::eGameRuleAttr_x0);
-	dos->writeUTF(_toString(m_x0));
+	dos->writeUTF(std::to_wstring(m_x0));
 	ConsoleGameRules::write(dos, ConsoleGameRules::eGameRuleAttr_y0);
-	dos->writeUTF(_toString(m_y0));
+	dos->writeUTF(std::to_wstring(m_y0));
 	ConsoleGameRules::write(dos, ConsoleGameRules::eGameRuleAttr_z0);
-	dos->writeUTF(_toString(m_z0));
+	dos->writeUTF(std::to_wstring(m_z0));
 
 	ConsoleGameRules::write(dos, ConsoleGameRules::eGameRuleAttr_x1);
-	dos->writeUTF(_toString(m_x1));
+	dos->writeUTF(std::to_wstring(m_x1));
 	ConsoleGameRules::write(dos, ConsoleGameRules::eGameRuleAttr_y1);
-	dos->writeUTF(_toString(m_y1));
+	dos->writeUTF(std::to_wstring(m_y1));
 	ConsoleGameRules::write(dos, ConsoleGameRules::eGameRuleAttr_z1);
-	dos->writeUTF(_toString(m_z1));
+	dos->writeUTF(std::to_wstring(m_z1));
 
 	ConsoleGameRules::write(dos, ConsoleGameRules::eGameRuleAttr_edgeTile);
-	dos->writeUTF(_toString(m_edgeTile));
+	dos->writeUTF(std::to_wstring(m_edgeTile));
 	ConsoleGameRules::write(dos, ConsoleGameRules::eGameRuleAttr_fillTile);
-	dos->writeUTF(_toString(m_fillTile));
+	dos->writeUTF(std::to_wstring(m_fillTile));
 	ConsoleGameRules::write(dos, ConsoleGameRules::eGameRuleAttr_skipAir);
-	dos->writeUTF(_toString(m_skipAir));
+	dos->writeUTF(std::to_wstring(m_skipAir));
 }
 
 void XboxStructureActionGenerateBox::addAttribute(const wstring &attributeName, const wstring &attributeValue)

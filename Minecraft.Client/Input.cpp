@@ -104,8 +104,7 @@ void Input::tick(LocalPlayer *player)
 			}
 		}
 
-		// Ctrl + forward = sprint (hold to sprint)
-		if (!player->abilities.flying)
+		// Ctrl + forward = sprint (hold to sprint, including while flying)
 		{
 			bool ctrlHeld = g_KBMInput.IsKeyDown(KeyboardMouseInput::KEY_SPRINT);
 			bool movingForward = (kbYA > 0.0f);
@@ -118,10 +117,6 @@ void Input::tick(LocalPlayer *player)
 			{
 				sprinting = false;
 			}
-		}
-		else
-		{
-			sprinting = false;
 		}
 	}
 	else if (iPad == 0)

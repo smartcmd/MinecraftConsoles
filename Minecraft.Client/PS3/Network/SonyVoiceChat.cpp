@@ -74,7 +74,7 @@ void SonyVoiceChat::setEnabled( bool bEnabled )
 		{
 			if(bEnabled)
 				startStream();
-			else 
+			else
 				stopStream();
 		}
 		sm_bEnabled = bEnabled;
@@ -185,18 +185,18 @@ int SonyVoiceChat::eventcb_voiceDetected(CellSysutilAvc2EventId event_id,	CellSy
 	UNUSED_VARIABLE( userdata );
 
 // 	To the upper 32 bits, the room member ID of the player is passed.
-// 	In the lower 32 bits, a value of 0 (mute) or a value between 1 (low volume) 
-// 	and 10 (high volume) is passed as the audio signal value when the notification 
-// 	method is the level method, or a value of 1 (start of speaking) or 0 (end of speaking) 
+// 	In the lower 32 bits, a value of 0 (mute) or a value between 1 (low volume)
+// 	and 10 (high volume) is passed as the audio signal value when the notification
+// 	method is the level method, or a value of 1 (start of speaking) or 0 (end of speaking)
 // 	is stored when the notification method is the trigger method.
 
 	SceNpMatching2RoomMemberId  roomMemberID = (SceNpMatching2RoomMemberId)(event_param >> 32);
 	uint32_t volume = (uint32_t)(event_param & 0xffffffff);
 
-// 	The precision of voice detection is not very high. Since the audio signal values may 
-// 	always be relatively high depending on the audio input device and the noise level in the 
-// 	room, you should set a large reference value for determining whether or not a player is 
-// 	speaking. Relatively good results can be obtained when an audio signal value of at 
+// 	The precision of voice detection is not very high. Since the audio signal values may
+// 	always be relatively high depending on the audio input device and the noise level in the
+// 	room, you should set a large reference value for determining whether or not a player is
+// 	speaking. Relatively good results can be obtained when an audio signal value of at
 // 	least 9 is used to determine if a player is speaking.
 	bool bTalking = false;
 	if(volume >= 9)
@@ -514,7 +514,7 @@ void SonyVoiceChat::do_state_transition( state_transition_table *tbl, int tbl_si
 	}
 	if(bCalledFunc == false)
 	{
- 		assert(	(sm_event == AVC_EVENT_NON) || 
+ 		assert(	(sm_event == AVC_EVENT_NON) ||
 				(sm_state == AVC_STATE_IDLE && sm_event == AVC_EVENT_EPSILON) );
 	}
 }
@@ -547,7 +547,7 @@ void SonyVoiceChat::mute( bool bMute )
 {
 	if(sm_bLoaded && !sm_bUnloading)
 	{
-		int err = cellSysutilAvc2SetVoiceMuting(bMute); 
+		int err = cellSysutilAvc2SetVoiceMuting(bMute);
 		assert(err == CELL_OK);
 	}
 }
@@ -576,14 +576,14 @@ bool SonyVoiceChat::isMuted()
 	if(sm_bLoaded && !sm_bUnloading)
 	{
 		uint8_t bMute;
-		int err = cellSysutilAvc2GetVoiceMuting(&bMute); 
+		int err = cellSysutilAvc2GetVoiceMuting(&bMute);
 		assert(err == CELL_OK);
 		return bMute;
 	}
 	return false;
 }
 
-bool SonyVoiceChat::isMutedPlayer( const SceNpMatching2RoomMemberId member_id) 
+bool SonyVoiceChat::isMutedPlayer( const SceNpMatching2RoomMemberId member_id)
 {
 	if(sm_bLoaded && !sm_bUnloading)
 	{
@@ -595,7 +595,7 @@ bool SonyVoiceChat::isMutedPlayer( const SceNpMatching2RoomMemberId member_id)
 	return false;
 }
 
-bool SonyVoiceChat::isMutedLocalPlayer() 
+bool SonyVoiceChat::isMutedLocalPlayer()
 {
 	if(sm_bLoaded && !sm_bUnloading)
 	{
@@ -611,10 +611,10 @@ void SonyVoiceChat::setVolume( float vol )
 {
 	if(sm_bLoaded && !sm_bUnloading)
 	{
-		// The volume level can be set to a value in the range 0.0 to 40.0. 
-		// Volume levels are linear values such that if 1.0 is specified, the 
-		// volume level will be 1 times the reference power (0dB), and if 0.5 
-		// is specified, the volume level will be 0.5 times the reference power 
+		// The volume level can be set to a value in the range 0.0 to 40.0.
+		// Volume levels are linear values such that if 1.0 is specified, the
+		// volume level will be 1 times the reference power (0dB), and if 0.5
+		// is specified, the volume level will be 0.5 times the reference power
 		// (-6dB). If 0.0 is specified, chat audio will no longer be audible.
 
 		int err =cellSysutilAvc2SetSpeakerVolumeLevel(vol * 40.0f);
@@ -636,8 +636,8 @@ float SonyVoiceChat::getVolume()
 
 bool SonyVoiceChat::isTalking( SceNpMatching2RoomMemberId* players_id )
 {
-	AUTO_VAR(it, sm_bTalkingMap.find(*players_id));
-	if (it != sm_bTalkingMap.end() ) 
+    auto it = sm_bTalkingMap.find(*players_id);
+    if (it != sm_bTalkingMap.end() )
 		return it->second;
 	return false;
 }
@@ -648,11 +648,11 @@ void SonyVoiceChat::setBitRate()
 		return;
 
 	int numPlayers = sm_pNetworkManager->GetPlayerCount();
-// 	This internal attribute represents the maximum voice bit rate. attr_param 
-//	is an integer value. The units are bps, and the specifiable values are 
+// 	This internal attribute represents the maximum voice bit rate. attr_param
+//	is an integer value. The units are bps, and the specifiable values are
 //	4000, 8000, 16000, 20000, 24000, and 28000. The initial value is 28000.
 
-	static int bitRates[8] = {	28000, 28000, 
+	static int bitRates[8] = {	28000, 28000,
 								28000, 28000,
 								24000, 20000,
 								16000, 16000};
@@ -686,14 +686,14 @@ const char* getStateString(EAVCState state)
 	{
 
 		CASE_STR_VALUE(AVC_STATE_IDLE);
-		CASE_STR_VALUE(AVC_STATE_CHAT_INIT)				
-		CASE_STR_VALUE(AVC_STATE_CHAT_LOAD);		
+		CASE_STR_VALUE(AVC_STATE_CHAT_INIT)
+		CASE_STR_VALUE(AVC_STATE_CHAT_LOAD);
 		CASE_STR_VALUE(AVC_STATE_CHAT_JOIN);
 		CASE_STR_VALUE(AVC_STATE_CHAT_SESSION_PROCESSING);
 		CASE_STR_VALUE(AVC_STATE_CHAT_LEAVE);
 		CASE_STR_VALUE(AVC_STATE_CHAT_RESET);
-		CASE_STR_VALUE(AVC_STATE_CHAT_UNLOAD);	
-		CASE_STR_VALUE(AVC_STATE_EXIT);		
+		CASE_STR_VALUE(AVC_STATE_CHAT_UNLOAD);
+		CASE_STR_VALUE(AVC_STATE_EXIT);
 	default:
 		return "unknown state";
 	}

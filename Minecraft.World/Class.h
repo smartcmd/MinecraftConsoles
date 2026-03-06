@@ -371,9 +371,9 @@ public:
 
 		m_parents.push_back(id);
 
-		for (AUTO_VAR(itr, parent->m_parents.begin()); itr != parent->m_parents.end(); itr++)
+		for ( auto& it : parent->m_parents )
 		{
-			m_parents.push_back(*itr);
+			m_parents.push_back(it);
 		}
 
 		return this;

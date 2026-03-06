@@ -37,7 +37,7 @@ bool InfoTask::isCompleted()
 		return false;
 
 	bool bAllComplete = true;
-	
+
 	Minecraft *pMinecraft = Minecraft::GetInstance();
 
 	// If the player is under water then allow all keypresses so they can jump out
@@ -47,9 +47,9 @@ bool InfoTask::isCompleted()
 	{
 		// If a menu is displayed, then we use the handleUIInput to complete the task
 		bAllComplete = true;
-		for(AUTO_VAR(it, completedMappings.begin()); it != completedMappings.end(); ++it)
+		for( auto& it : completedMappings )
 		{
-			bool current = (*it).second;
+			bool current = it.second;
 			if(!current)
 			{
 				bAllComplete = false;
@@ -61,18 +61,18 @@ bool InfoTask::isCompleted()
 	{
 		int iCurrent=0;
 
-		for(AUTO_VAR(it, completedMappings.begin()); it != completedMappings.end(); ++it)
+		for( auto& it : completedMappings )
 		{
-			bool current = (*it).second;
+			bool current = it.second;
 			if(!current)
 			{
 #ifdef _WINDOWS64
-				if (InputManager.GetValue(pMinecraft->player->GetXboxPad(), (*it).first) > 0 || g_KBMInput.IsKeyDown(VK_SPACE))
+				if (InputManager.GetValue(pMinecraft->player->GetXboxPad(), it.first) > 0 || g_KBMInput.IsKeyDown(VK_SPACE))
 #else
-				if( InputManager.GetValue(pMinecraft->player->GetXboxPad(), (*it).first) > 0)
+				if( InputManager.GetValue(pMinecraft->player->GetXboxPad(), it.first) > 0)
 #endif
 				{
-					(*it).second = true;
+					it.second = true;
 					bAllComplete=true;
 				}
 				else
@@ -111,11 +111,11 @@ void InfoTask::handleUIInput(int iAction)
 {
 	if(bHasBeenActivated)
 	{
-		for(AUTO_VAR(it, completedMappings.begin()); it != completedMappings.end(); ++it)
+		for( auto& it : completedMappings )
 		{
-			if( iAction == (*it).first )
+			if( iAction == it.first )
 			{
-				(*it).second = true;
+				it.second = true;
 			}
 		}
 	}

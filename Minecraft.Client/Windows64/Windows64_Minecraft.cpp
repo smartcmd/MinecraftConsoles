@@ -40,6 +40,7 @@
 #include "Resource.h"
 #include "..\..\Minecraft.World\compression.h"
 #include "..\..\Minecraft.World\OldChunkStorage.h"
+#include "Common/PostProcesser.h"
 #include "Network\WinsockNetLayer.h"
 
 #include "Xbox/resource.h"
@@ -109,6 +110,7 @@ struct Win64LaunchOptions
 {
 	int screenMode;
 	bool serverMode;
+	bool fullscreen;
 };
 
 static void CopyWideArgToAnsi(LPCWSTR source, char* dest, size_t destSize)
@@ -255,6 +257,8 @@ static Win64LaunchOptions ParseLaunchOptions()
 					g_Win64MultiplayerPort = (int)port;
 			}
 		}
+		else if (_wcsicmp(argv[i], L"-fullscreen") == 0)
+			options.fullscreen = true;
 	}
 
 	LocalFree(argv);
@@ -562,6 +566,12 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 	case WM_SETFOCUS:
 		g_KBMInput.SetWindowFocused(true);
+		break;
+
+	case WM_CHAR:
+		// Buffer typed characters so UIScene_Keyboard can dispatch them to the Iggy Flash player
+		if (wParam >= 0x20 || wParam == 0x08 || wParam == 0x0D) // printable chars + backspace + enter
+			g_KBMInput.OnChar((wchar_t)wParam);
 		break;
 
 	case WM_KEYDOWN:
@@ -874,6 +884,8 @@ HRESULT InitDevice()
 
 	RenderManager.Initialise(g_pd3dDevice, g_pSwapChain);
 
+	PostProcesser::GetInstance().Init();
+
 	return S_OK;
 }
 
@@ -993,9 +1005,6 @@ static Minecraft* InitialiseMinecraftRuntime()
 
 	app.InitGameSettings();
 	app.InitialiseTips();
-
-	pMinecraft->options->set(Options::Option::MUSIC, 1.0f);
-	pMinecraft->options->set(Options::Option::SOUND, 1.0f);
 
 	return pMinecraft;
 }
@@ -1239,7 +1248,7 @@ int APIENTRY _tWinMain(_In_ HINSTANCE hInstance,
 	}
 
 	// Restore fullscreen state from previous session
-	if (LoadFullscreenOption() && !g_isFullscreen)
+	if (LoadFullscreenOption() && !g_isFullscreen || launchOptions.fullscreen)
 	{
 		ToggleFullscreen();
 	}
@@ -1569,19 +1578,6 @@ int APIENTRY _tWinMain(_In_ HINSTANCE hInstance,
 		}
 
 #ifdef _DEBUG_MENUS_ENABLED
-		// F4 Open debug overlay
-        if (g_KBMInput.IsKeyPressed(VK_F4))
-        {
-            if (Minecraft *pMinecraft = Minecraft::GetInstance())
-            {
-                if (pMinecraft->options &&
-                    app.GetGameStarted() && !ui.GetMenuDisplayed(0) && pMinecraft->screen == NULL)
-                {
-                    ui.NavigateToScene(0, eUIScene_DebugOverlay, NULL, eUILayer_Debug);
-                }
-            }
-        }
-
         // F6 Open debug console
         if (g_KBMInput.IsKeyPressed(VK_F6))
         {
@@ -1825,7 +1821,7 @@ SIZE_T WINAPI XMemSize(
 void DumpMem()
 {
 	int totalLeak = 0;
-	for(AUTO_VAR(it, allocCounts.begin()); it != allocCounts.end(); it++ )
+	for( auto it = allocCounts.begin(); it != allocCounts.end(); it++ )
 	{
 		if(it->second > 0 )
 		{
@@ -1873,7 +1869,7 @@ void MemPixStuff()
 
 	int totals[MAX_SECT] = {0};
 
-	for(AUTO_VAR(it, allocCounts.begin()); it != allocCounts.end(); it++ )
+	for( auto it = allocCounts.begin(); it != allocCounts.end(); it++ )
 	{
 		if(it->second > 0 )
 		{

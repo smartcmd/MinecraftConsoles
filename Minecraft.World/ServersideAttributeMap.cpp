@@ -14,12 +14,12 @@ AttributeInstance *ServersideAttributeMap::getInstance(Attribute *attribute)
 AttributeInstance *ServersideAttributeMap::getInstance(eATTRIBUTE_ID id)
 {
 	AttributeInstance *result = BaseAttributeMap::getInstance(id);
-	
+
 	// 4J: Removed legacy name
 	// If we didn't find it, search by legacy name
 	/*if (result == NULL)
 	{
-		AUTO_VAR(it, attributesByLegacy.find(name));
+		auto it = attributesByLegacy.find(name);
 		if(it != attributesByLegacy.end())
 		{
 			result = it->second;
@@ -31,15 +31,15 @@ AttributeInstance *ServersideAttributeMap::getInstance(eATTRIBUTE_ID id)
 
 AttributeInstance *ServersideAttributeMap::registerAttribute(Attribute *attribute)
 {
-	AUTO_VAR(it,attributesById.find(attribute->getId()));
-	if (it != attributesById.end())
+    auto it = attributesById.find(attribute->getId());
+    if (it != attributesById.end())
 	{
 		return it->second;
 	}
 
 	AttributeInstance *instance = new ModifiableAttributeInstance(this, attribute);
 	attributesById.insert(std::pair<eATTRIBUTE_ID, AttributeInstance *>(attribute->getId(), instance));
-	
+
 	// 4J: Removed legacy name
 	// If this is a ranged attribute also add to legacy name map
 	/*RangedAttribute *rangedAttribute = dynamic_cast<RangedAttribute*>(attribute);

@@ -14,7 +14,7 @@
 #include "..\Minecraft.World\net.minecraft.h"
 #include "..\Minecraft.World\StringHelpers.h"
 
-const unsigned int PlayerRenderer::s_nametagColors[MINECRAFT_NET_MAX_PLAYERS] = 
+const unsigned int PlayerRenderer::s_nametagColors[MINECRAFT_NET_MAX_PLAYERS] =
 {
 	0xff000000, // WHITE (represents the "white" player, but using black as the colour)
 	0xff33cc33, // GREEN
@@ -201,12 +201,10 @@ void PlayerRenderer::render(shared_ptr<Entity> _mob, double x, double y, double 
 	// 4J-PB - any additional parts to turn on for this player (skin dependent)
 	vector<ModelPart *> *pAdditionalModelParts=mob->GetAdditionalModelParts();
 	//turn them on
-	if(pAdditionalModelParts!=NULL)
+	if(pAdditionalModelParts!=nullptr)
 	{
-		for(AUTO_VAR(it, pAdditionalModelParts->begin()); it != pAdditionalModelParts->end(); ++it)
+		for(ModelPart *pModelPart : *pAdditionalModelParts)
 		{
-			ModelPart *pModelPart=*it;
-
 			pModelPart->visible=true;
 		}
 	}
@@ -216,10 +214,8 @@ void PlayerRenderer::render(shared_ptr<Entity> _mob, double x, double y, double 
 	// turn them off again
 	if(pAdditionalModelParts && pAdditionalModelParts->size()!=0)
 	{
-		for(AUTO_VAR(it, pAdditionalModelParts->begin()); it != pAdditionalModelParts->end(); ++it)
+		for(ModelPart *pModelPart : *pAdditionalModelParts)
 		{
-			ModelPart *pModelPart=*it;
-
 			pModelPart->visible=false;
 		}
 	}
@@ -346,7 +342,7 @@ void PlayerRenderer::additionalRendering(shared_ptr<LivingEntity> _mob, float a)
         humanoidModel->renderCloak(1 / 16.0f,true);
         glPopMatrix();
     }
-	
+
     shared_ptr<ItemInstance> item = mob->inventory->getSelected();
 
     if (item != NULL)

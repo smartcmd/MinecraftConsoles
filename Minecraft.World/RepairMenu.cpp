@@ -134,22 +134,22 @@ void RepairMenu::createResult()
 
 				unordered_map<int, int> *additionalEnchantments = EnchantmentHelper::getEnchantments(addition);
 
-				for(AUTO_VAR(it, additionalEnchantments->begin()); it != additionalEnchantments->end(); ++it)
+				for(auto& it : *additionalEnchantments)
 				{
-					int id = it->first;
+					int id = it.first;
 					Enchantment *enchantment = Enchantment::enchantments[id];
-					AUTO_VAR(localIt, enchantments->find(id));
-					int current = localIt != enchantments->end() ? localIt->second : 0;
-					int level = it->second;
+                    auto localIt = enchantments->find(id);
+                    int current = localIt != enchantments->end() ? localIt->second : 0;
+					int level = it.second;
 					level = (current == level) ? level += 1 : max(level, current);
 					int extra = level - current;
 					bool compatible = enchantment->canEnchant(input);
 
 					if (player->abilities.instabuild) compatible = true;
 
-					for(AUTO_VAR(it2, enchantments->begin()); it2 != enchantments->end(); ++it2)
+					for(auto& it2 : *enchantments)
 					{
-						int other = it2->first;
+						int other = it2.first;
 						if (other != id && !enchantment->isCompatibleWith(Enchantment::enchantments[other]))
 						{
 							compatible = false;
@@ -219,11 +219,11 @@ void RepairMenu::createResult()
 		}
 
 		int count = 0;
-		for(AUTO_VAR(it, enchantments->begin()); it != enchantments->end(); ++it)
+		for(auto& it : *enchantments)
 		{
-			int id = it->first;
+			int id = it.first;
 			Enchantment *enchantment = Enchantment::enchantments[id];
-			int level = it->second;
+			int level = it.second;
 			int fee = 0;
 
 			count++;

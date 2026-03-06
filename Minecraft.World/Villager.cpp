@@ -16,6 +16,7 @@
 #include "net.minecraft.world.level.h"
 #include "..\Minecraft.Client\Textures.h"
 #include "Villager.h"
+#include "AbstractContainerMenu.h"
 
 unordered_map<int, pair<int,int> > Villager::MIN_MAX_VALUES;
 unordered_map<int, pair<int,int> > Villager::MIN_MAX_PRICES;
@@ -125,9 +126,8 @@ void Villager::serverAiMobStep()
 				if (offers->size() > 0)
 				{
 					//for (MerchantRecipe recipe : offers)
-					for(AUTO_VAR(it, offers->begin()); it != offers->end(); ++it)
+					for(auto& recipe : *offers)
 					{
-						MerchantRecipe *recipe = *it;
 						if (recipe->isDeprecated())
 						{
 							recipe->increaseMaxUses(random->nextInt(6) + random->nextInt(6) + 2);
@@ -307,6 +307,18 @@ void Villager::die(DamageSource *source)
 			}
 		}
 	}
+
+	// Make the gui close if the villager die while trading
+    if (auto currentTrader = tradingPlayer.lock())
+    {
+        if (currentTrader->containerMenu != nullptr)
+        {
+            auto menu = currentTrader->containerMenu;
+            menu->removed(currentTrader);
+        }
+
+        tradingPlayer.reset();
+    }
 
 	AgableMob::die(source);
 }
@@ -615,8 +627,8 @@ shared_ptr<ItemInstance> Villager::getItemTradeInValue(int itemId, Random *rando
 
 int Villager::getTradeInValue(int itemId, Random *random)
 {
-	AUTO_VAR(it,MIN_MAX_VALUES.find(itemId));
-	if (it == MIN_MAX_VALUES.end())
+    auto it = MIN_MAX_VALUES.find(itemId);
+    if (it == MIN_MAX_VALUES.end())
 	{
 		return 1;
 	}
@@ -660,8 +672,8 @@ void Villager::addItemForPurchase(MerchantRecipeList *list, int itemId, Random *
 
 int Villager::getPurchaseCost(int itemId, Random *random)
 {
-	AUTO_VAR(it,MIN_MAX_PRICES.find(itemId));
-	if (it == MIN_MAX_PRICES.end())
+    auto it = MIN_MAX_PRICES.find(itemId);
+    if (it == MIN_MAX_PRICES.end())
 	{
 		return 1;
 	}
@@ -677,7 +689,7 @@ void Villager::handleEntityEvent(byte id)
 {
 	if (id == EntityEvent::LOVE_HEARTS)
 	{
-		addParticlesAroundSelf(eParticleType_heart);	
+		addParticlesAroundSelf(eParticleType_heart);
 	}
 	else if (id == EntityEvent::VILLAGER_ANGRY)
 	{

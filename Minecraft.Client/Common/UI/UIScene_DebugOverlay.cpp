@@ -80,7 +80,7 @@ UIScene_DebugOverlay::UIScene_DebugOverlay(int iPad, void *initData, UILayer *pa
 		for(unsigned int level = ench->getMinLevel(); level <= ench->getMaxLevel(); ++level)
 		{
 			m_enchantmentIdAndLevels.push_back(pair<int,int>(ench->id,level));
-			m_buttonListEnchantments.addItem(app.GetString( ench->getDescriptionId() ) + _toString<int>(level) );
+			m_buttonListEnchantments.addItem(app.GetString( ench->getDescriptionId() ) + std::to_wstring(level) );
 		}
 	}
 
@@ -196,7 +196,7 @@ void UIScene_DebugOverlay::handlePress(F64 controlId, F64 childId)
 		{
 			int id = childId;
 			if(id<m_mobFactories.size())
-			{			
+			{
 				app.SetXuiServerAction(ProfileManager.GetPrimaryPad(),eXuiServerAction_SpawnMob,(void *)m_mobFactories[id]);
 			}
 		}

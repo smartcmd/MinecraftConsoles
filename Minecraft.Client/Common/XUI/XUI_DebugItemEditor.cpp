@@ -9,7 +9,7 @@
 #include "..\..\Common\GameRules\ConsoleGameRules.h"
 #include "XUI_DebugItemEditor.h"
 
-#ifdef _DEBUG_MENUS_ENABLED	
+#ifdef _DEBUG_MENUS_ENABLED
 HRESULT CScene_DebugItemEditor::OnInit( XUIMessageInit *pInitData, BOOL &bHandled )
 {
 	MapChildControls();
@@ -22,13 +22,13 @@ HRESULT CScene_DebugItemEditor::OnInit( XUIMessageInit *pInitData, BOOL &bHandle
 
 	if(m_item!=NULL)
 	{
-		m_icon->SetIcon(m_iPad, m_item->id,m_item->getAuxValue(),m_item->count,10,31,false,m_item->isFoil());		
+		m_icon->SetIcon(m_iPad, m_item->id,m_item->getAuxValue(),m_item->count,10,31,false,m_item->isFoil());
 		m_itemName.SetText( app.GetString( Item::items[m_item->id]->getDescriptionId(m_item) ) );
 
-		m_itemId		.SetText( _toString<int>(m_item->id).c_str() );
-		m_itemAuxValue	.SetText( _toString<int>(m_item->getAuxValue()).c_str() );
-		m_itemCount		.SetText( _toString<int>(m_item->count).c_str() );
-		m_item4JData	.SetText( _toString<int>(m_item->get4JData()).c_str() );
+		m_itemId		.SetText( std::to_wstring(m_item->id).c_str() );
+		m_itemAuxValue	.SetText( std::to_wstring(m_item->getAuxValue()).c_str() );
+		m_itemCount		.SetText( std::to_wstring(m_item->count).c_str() );
+		m_item4JData	.SetText( std::to_wstring(m_item->get4JData()).c_str() );
 	}
 
 	m_itemId		.SetKeyboardType(C_4JInput::EKeyboardMode_Numeric);
@@ -107,7 +107,7 @@ HRESULT CScene_DebugItemEditor::OnNotifyValueChanged( HXUIOBJ hObjSource, XUINot
 		if(!value.empty()) data = _fromString<int>( value );
 		m_item->set4JData(data);
 	}
-	
+
 	m_icon->SetIcon(m_iPad, m_item->id,m_item->getAuxValue(),m_item->count,10,31,false,m_item->isFoil());
 
 	m_itemName.SetText( app.GetString( Item::items[m_item->id]->getDescriptionId(m_item) ) );

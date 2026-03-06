@@ -173,15 +173,11 @@ void ArmorDyeRecipe::requires(INGREDIENTS_REQUIRED *pIngReq)
 	ZeroMemory(TempIngReq.uiGridA,sizeof(unsigned int)*9);
 
 #if 0
-	AUTO_VAR(citEnd, ingredients->end());
-
-	for (vector<ItemInstance *>::const_iterator ingredient = ingredients->begin(); ingredient != citEnd; ingredient++)
+	for ( ItemInstance *expected : *ingredients )
 	{
-		ItemInstance *expected = *ingredient;
-
 		if (expected!=NULL) 
 		{			
-			int iAuxVal = (*ingredient)->getAuxValue();
+			int iAuxVal = expected->getAuxValue();
 			TempIngReq.uiGridA[iCount++]=expected->id | iAuxVal<<24;
 			// 4J-PB - put the ingredients in boxes 1,2,4,5 so we can see them in a 2x2 crafting screen
 			if(iCount==2) iCount=3;

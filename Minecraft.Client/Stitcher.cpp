@@ -81,10 +81,8 @@ void Stitcher::stitch()
 	stitchedTexture = NULL;
 
 	//for (int i = 0; i < textureHolders.length; i++)
-	for(AUTO_VAR(it, texturesToBeStitched.begin()); it != texturesToBeStitched.end(); ++it)
+	for( TextureHolder *textureHolder : texturesToBeStitched )
 	{
-		TextureHolder *textureHolder = *it; //textureHolders[i];
-
 		if (!addToStorage(textureHolder))
 		{
 			app.DebugPrintf("Stitcher exception!\n");
@@ -101,10 +99,10 @@ vector<StitchSlot *> *Stitcher::gatherAreas()
 	vector<StitchSlot *> *result = new vector<StitchSlot *>();
 
 	//for (StitchSlot slot : storage)
-	for(AUTO_VAR(it, storage.begin()); it != storage.end(); ++it)
+	for( StitchSlot *slot : storage )
 	{
-		StitchSlot *slot = *it;
-		slot->collectAssignments(result);
+		if ( slot )
+			slot->collectAssignments(result);
 	}
 
 	return result;

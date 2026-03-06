@@ -229,51 +229,58 @@ shared_ptr<Entity> Animal::findAttackTarget()
 	if (getInLoveValue() > 0)
 	{
 		vector<shared_ptr<Entity> > *others = level->getEntitiesOfClass(typeid(*this), bb->grow(r, r, r));
-		//for (int i = 0; i < others->size(); i++)
-		for(AUTO_VAR(it, others->begin()); it != others->end(); ++it)
+		if ( others )
 		{
-			shared_ptr<Animal> p = dynamic_pointer_cast<Animal>(*it);
-			if (p != shared_from_this() && p->getInLoveValue() > 0)
+			for (auto& it : *others)
 			{
-				delete others;
-				return p;
-			}
-		}
-		delete others;
-	}
-	else
-	{
-		if (getAge() == 0)
-		{
-			vector<shared_ptr<Entity> > *players = level->getEntitiesOfClass(typeid(Player), bb->grow(r, r, r));
-			//for (int i = 0; i < players.size(); i++)
-			for(AUTO_VAR(it, players->begin()); it != players->end(); ++it)
-			{
-				setDespawnProtected();
-
-				shared_ptr<Player> p = dynamic_pointer_cast<Player>(*it);
-				if (p->getSelectedItem() != NULL && this->isFood(p->getSelectedItem()))
-				{
-					delete players;
-					return p;
-				}
-			}
-			delete players;
-		}
-		else if (getAge() > 0)
-		{
-			vector<shared_ptr<Entity> > *others = level->getEntitiesOfClass(typeid(*this), bb->grow(r, r, r));
-			//for (int i = 0; i < others.size(); i++)			
-			for(AUTO_VAR(it, others->begin()); it != others->end(); ++it)
-			{
-				shared_ptr<Animal> p = dynamic_pointer_cast<Animal>(*it);
-				if (p != shared_from_this() && p->getAge() < 0)
+				shared_ptr<Animal> p = dynamic_pointer_cast<Animal>(it);
+				if (p != shared_from_this() && p->getInLoveValue() > 0)
 				{
 					delete others;
 					return p;
 				}
 			}
 			delete others;
+		}
+	}
+	else
+	{
+		if (getAge() == 0)
+		{
+			vector<shared_ptr<Entity> > *players = level->getEntitiesOfClass(typeid(Player), bb->grow(r, r, r));
+			if ( players )
+			{
+				for (auto& it : *players)
+				{
+					setDespawnProtected();
+
+					shared_ptr<Player> p = dynamic_pointer_cast<Player>(it);
+					if (p->getSelectedItem() != NULL && this->isFood(p->getSelectedItem()))
+					{
+						delete players;
+						return p;
+					}
+				}
+				delete players;
+			}
+		}
+		else if (getAge() > 0)
+		{
+			vector<shared_ptr<Entity> > *others = level->getEntitiesOfClass(typeid(*this), bb->grow(r, r, r));
+			
+			if ( others )
+			{
+				for (auto& it : *others)
+				{
+					shared_ptr<Animal> p = dynamic_pointer_cast<Animal>(it);
+					if (p != shared_from_this() && p->getAge() < 0)
+					{
+						delete others;
+						return p;
+					}
+				}
+				delete others;
+			}
 		}
 	}
 	return nullptr;

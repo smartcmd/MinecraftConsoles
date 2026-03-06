@@ -105,15 +105,14 @@ void PendingConnection::sendPreLoginResponse()
 	StorageManager.GetSaveUniqueFilename(szUniqueMapName);
 
 	PlayerList *playerList = MinecraftServer::getInstance()->getPlayers();
-	for(AUTO_VAR(it, playerList->players.begin()); it != playerList->players.end(); ++it)
+	for(auto& player : playerList->players)
 	{
-		shared_ptr<ServerPlayer> player = *it;
 		// If the offline Xuid is invalid but the online one is not then that's guest which we should ignore
 		// If the online Xuid is invalid but the offline one is not then we are definitely an offline game so dont care about UGC
 
 		// PADDY - this is failing when a local player with chat restrictions joins an online game
 
-		if( player != NULL && player->connection->m_offlineXUID != INVALID_XUID && player->connection->m_onlineXUID != INVALID_XUID )
+		if( player != nullptr && player->connection->m_offlineXUID != INVALID_XUID && player->connection->m_onlineXUID != INVALID_XUID )
 		{
 			if( player->connection->m_friendsOnlyUGC )
 			{
@@ -198,9 +197,9 @@ void PendingConnection::handleLogin(shared_ptr<LoginPacket> packet)
 	{
 		bool nameTaken = false;
 		vector<shared_ptr<ServerPlayer> >& pl = server->getPlayers()->players;
-		for (unsigned int i = 0; i < pl.size(); i++)
+		for (const auto& i : pl)
 		{
-			if (pl[i] != NULL && pl[i]->name == name)
+			if (i != NULL && i->name == name)
 			{
 				nameTaken = true;
 				break;
@@ -224,7 +223,7 @@ void PendingConnection::handleLogin(shared_ptr<LoginPacket> packet)
 	//else
 	{
 		//4J - removed
-#if 0 
+#if 0
 		new Thread() {
 			public void run() {
 				try {

@@ -282,6 +282,44 @@ typedef struct _JoinMenuInitData
 	int iPad;
 } JoinMenuInitData;
 
+// Native keyboard (Windows64 replacement for InputManager.RequestKeyboard WinAPI dialog)
+#ifdef _WINDOWS64
+typedef struct _UIKeyboardInitData
+{
+	const wchar_t* title;
+	const wchar_t* defaultText;
+	int maxChars;
+	int(*callback)(LPVOID, const bool);
+	LPVOID lpParam;
+	bool pcMode; // When true, disables on-screen keyboard buttons (PC keyboard users only need the text field)
+
+	_UIKeyboardInitData() : title(nullptr), defaultText(nullptr), maxChars(25), callback(nullptr), lpParam(nullptr), pcMode(false) {}
+} UIKeyboardInitData;
+
+// Stores the text typed in UIScene_Keyboard so callbacks can retrieve it
+// without calling InputManager.GetText (which shows the WinAPI dialog result).
+extern wchar_t g_Win64KeyboardResult[256];
+inline void Win64_GetKeyboardText(uint16_t* outBuf, int maxChars)
+{
+	wcsncpy_s((wchar_t*)outBuf, maxChars, g_Win64KeyboardResult, _TRUNCATE);
+}
+
+// Returns true if any XInput controller is currently connected.
+// Used to decide whether to show the in-game keyboard UI or fall back to PC input.
+#include <Xinput.h>
+inline bool Win64_IsControllerConnected()
+{
+	XINPUT_STATE state;
+	for (DWORD i = 0; i < XUSER_MAX_COUNT; i++)
+	{
+		memset(&state, 0, sizeof(state));
+		if (XInputGetState(i, &state) == ERROR_SUCCESS)
+			return true;
+	}
+	return false;
+}
+#endif // _WINDOWS64
+
 // More Options
 typedef struct _LaunchMoreOptionsMenuInitData
 {

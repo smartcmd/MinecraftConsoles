@@ -32,7 +32,7 @@ McRegionChunkStorage::McRegionChunkStorage(ConsoleSaveFile *saveFile, const wstr
 		m_saveFile->createFile(ConsoleSavePath(L"r.-1.0.mcr"));
 	}
 
-	
+
 #ifdef SPLIT_SAVES
 	ConsoleSavePath currentFile = ConsoleSavePath( m_prefix + wstring( L"entities.dat" ) );
 
@@ -64,9 +64,9 @@ McRegionChunkStorage::McRegionChunkStorage(ConsoleSaveFile *saveFile, const wstr
 
 McRegionChunkStorage::~McRegionChunkStorage()
 {
-	for(AUTO_VAR(it,m_entityData.begin()); it != m_entityData.end(); ++it)
+	for(auto& it : m_entityData)
 	{
-		delete it->second.data;
+		delete it.second.data;
 	}
 }
 
@@ -80,8 +80,8 @@ LevelChunk *McRegionChunkStorage::load(Level *level, int x, int z)
 	{
 		__int64 index = ((__int64)(x) << 32) | (((__int64)(z))&0x00000000FFFFFFFF);
 
-		AUTO_VAR(it, m_entityData.find(index));
-		if(it != m_entityData.end())
+        auto it = m_entityData.find(index);
+        if(it != m_entityData.end())
 		{
 			delete it->second.data;
 			m_entityData.erase(it);
@@ -262,8 +262,8 @@ void McRegionChunkStorage::saveEntities(Level *level, LevelChunk *levelChunk)
 	}
 	else
 	{
-		AUTO_VAR(it, m_entityData.find(index));
-		if(it != m_entityData.end())
+        auto it = m_entityData.find(index);
+        if(it != m_entityData.end())
 		{
 			m_entityData.erase(it);
 		}
@@ -277,9 +277,9 @@ void McRegionChunkStorage::loadEntities(Level *level, LevelChunk *levelChunk)
 {
 #ifdef SPLIT_SAVES
 	__int64 index = ((__int64)(levelChunk->x) << 32) | (((__int64)(levelChunk->z))&0x00000000FFFFFFFF);
-	
-	AUTO_VAR(it, m_entityData.find(index));
-	if(it != m_entityData.end())
+
+    auto it = m_entityData.find(index);
+    if(it != m_entityData.end())
 	{
 		ByteArrayInputStream bais(it->second);
 		DataInputStream dis(&bais);
@@ -308,10 +308,10 @@ void McRegionChunkStorage::flush()
 	PIXBeginNamedEvent(0,"Writing to stream");
 	dos.writeInt(m_entityData.size());
 
-	for(AUTO_VAR(it,m_entityData.begin()); it != m_entityData.end(); ++it)
+	for(auto& it : m_entityData)
 	{
-		dos.writeLong(it->first);
-		dos.write(it->second,0,it->second.length);
+		dos.writeLong(it.first);
+		dos.write(it.second,0,it.second.length);
 	}
 	bos.flush();
 	PIXEndNamedEvent();

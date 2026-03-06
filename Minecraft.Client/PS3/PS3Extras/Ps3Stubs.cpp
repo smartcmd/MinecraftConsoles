@@ -5,7 +5,7 @@
 #include <libsn.h>
 #include <cell/cell_fs.h>
 #include <sys/vm.h>
-#include <sys/memory.h> 
+#include <sys/memory.h>
 #undef __in
 #undef __out
 #include <cell/atomic.h>
@@ -31,49 +31,49 @@ vector<int> vOpenFileHandles;
 namespace boost
 {
 	void assertion_failed(char const * expr,
-		char const * function, char const * file, long line) 
-	{ 
+		char const * function, char const * file, long line)
+	{
 #ifndef _CONTENT_PACKAGE
-		printf("Assert failed!!!\n"); 
-		printf(expr); 
-		printf("\n"); 
-		printf("----------------------\n    %s failed. File %s at line %d \n----------------------\n", function, file, line); 
+		printf("Assert failed!!!\n");
+		printf(expr);
+		printf("\n");
+		printf("----------------------\n    %s failed. File %s at line %d \n----------------------\n", function, file, line);
 		snPause();
 #endif
 	} // user defined
 } // namespace boost
 
- char* getConsoleHomePath() 
- { 
- 	return contentInfoPath; 
+ char* getConsoleHomePath()
+ {
+ 	return contentInfoPath;
  }
 
-char* getUsrDirPath() 
-{ 
-	return usrdirPath; 
+char* getUsrDirPath()
+{
+	return usrdirPath;
 }
 
-char* getConsoleHomePathBDPatch() 
-{ 
-	return contentInfoPathBDPatch; 
+char* getConsoleHomePathBDPatch()
+{
+	return contentInfoPathBDPatch;
 }
 
-char* getUsrDirPathBDPatch() 
-{ 
-	return usrdirPathBDPatch; 
+char* getUsrDirPathBDPatch()
+{
+	return usrdirPathBDPatch;
 }
 
 
-char* getDirName() 
-{ 
-	return dirName; 
+char* getDirName()
+{
+	return dirName;
 }
 
 int _wcsicmp( const wchar_t * dst, const wchar_t * src )
 {
 	wchar_t f,l;
 
-	// validation section 
+	// validation section
 	// 	_VALIDATE_RETURN(dst != NULL, EINVAL, _NLSCMPERROR);
 	// 	_VALIDATE_RETURN(src != NULL, EINVAL, _NLSCMPERROR);
 
@@ -101,7 +101,7 @@ size_t wcsnlen(const wchar_t *wcs, size_t maxsize)
 
 Cnullptr nullptr;
 
-VOID GetSystemTime(	LPSYSTEMTIME lpSystemTime) 
+VOID GetSystemTime(	LPSYSTEMTIME lpSystemTime)
 {
 	CellRtcDateTime dateTime;
 	int err = cellRtcGetCurrentClock(&dateTime, 0);
@@ -118,8 +118,8 @@ VOID GetSystemTime(	LPSYSTEMTIME lpSystemTime)
 }
 BOOL FileTimeToSystemTime(CONST FILETIME *lpFileTime, LPSYSTEMTIME lpSystemTime) { PS3_STUBBED; return false; }
 BOOL SystemTimeToFileTime(CONST SYSTEMTIME *lpSystemTime, LPFILETIME lpFileTime) { PS3_STUBBED; return false; }
-VOID GetLocalTime(LPSYSTEMTIME lpSystemTime) 
-{ 
+VOID GetLocalTime(LPSYSTEMTIME lpSystemTime)
+{
 	CellRtcDateTime dateTime;
 	int err = cellRtcGetCurrentClockLocalTime(&dateTime);
 	assert(err == CELL_OK);
@@ -135,26 +135,26 @@ VOID GetLocalTime(LPSYSTEMTIME lpSystemTime)
 }
 
 HANDLE CreateEvent(void* lpEventAttributes,	BOOL bManualReset,	BOOL bInitialState,	LPCSTR lpName) { PS3_STUBBED; return NULL; }
-VOID Sleep(DWORD dwMilliseconds) 
-{ 
+VOID Sleep(DWORD dwMilliseconds)
+{
 	C4JThread::Sleep(dwMilliseconds);
 }
 
 BOOL SetThreadPriority(HANDLE hThread, int nPriority) { PS3_STUBBED; return FALSE; }
 DWORD WaitForSingleObject(HANDLE hHandle, DWORD dwMilliseconds) { PS3_STUBBED; return false; }
 
-LONG InterlockedCompareExchangeRelease(LONG volatile *Destination, LONG Exchange,LONG Comperand	) 
-{ 
+LONG InterlockedCompareExchangeRelease(LONG volatile *Destination, LONG Exchange,LONG Comperand	)
+{
 	return cellAtomicCompareAndSwap32((uint32_t*)Destination, (uint32_t)Comperand, (uint32_t)Exchange);
 }
 
-LONG64 InterlockedCompareExchangeRelease64(LONG64 volatile *Destination, LONG64 Exchange, LONG64 Comperand) 
-{ 
+LONG64 InterlockedCompareExchangeRelease64(LONG64 volatile *Destination, LONG64 Exchange, LONG64 Comperand)
+{
 	return cellAtomicCompareAndSwap64((uint64_t*)Destination, (uint64_t)Comperand, (uint64_t)Exchange);
 }
 
 
-VOID InitializeCriticalSection(PCRITICAL_SECTION CriticalSection) 
+VOID InitializeCriticalSection(PCRITICAL_SECTION CriticalSection)
 {
 	sys_lwmutex_attribute_t attr;
 	// from the defaults in sys_lwmutex_attribute_initialize
@@ -167,7 +167,7 @@ VOID InitializeCriticalSection(PCRITICAL_SECTION CriticalSection)
 }
 
 
-VOID InitializeCriticalSectionAndSpinCount(PCRITICAL_SECTION CriticalSection, ULONG SpinCount) 
+VOID InitializeCriticalSectionAndSpinCount(PCRITICAL_SECTION CriticalSection, ULONG SpinCount)
 {
 	// no spin count on PS3
 	InitializeCriticalSection(CriticalSection);
@@ -179,9 +179,9 @@ VOID DeleteCriticalSection(PCRITICAL_SECTION CriticalSection)
 	PS3_ASSERT_CELL_ERROR(err);
 }
 
-extern CRITICAL_SECTION g_singleThreadCS; 
+extern CRITICAL_SECTION g_singleThreadCS;
 
-VOID EnterCriticalSection(PCRITICAL_SECTION CriticalSection) 
+VOID EnterCriticalSection(PCRITICAL_SECTION CriticalSection)
 {
 // 	if(CriticalSection != &g_singleThreadCS &&(C4JThread::isMainThread() == false) )
 // 		LeaveCriticalSection(&g_singleThreadCS);
@@ -192,7 +192,7 @@ VOID EnterCriticalSection(PCRITICAL_SECTION CriticalSection)
 }
 
 
-VOID LeaveCriticalSection(PCRITICAL_SECTION CriticalSection) 
+VOID LeaveCriticalSection(PCRITICAL_SECTION CriticalSection)
 {
 	int err =  sys_lwmutex_unlock(CriticalSection);
 	PS3_ASSERT_CELL_ERROR(err);
@@ -200,7 +200,7 @@ VOID LeaveCriticalSection(PCRITICAL_SECTION CriticalSection)
 
 ULONG TryEnterCriticalSection(PCRITICAL_SECTION CriticalSection)
 {
-	int err = sys_lwmutex_trylock(CriticalSection); 
+	int err = sys_lwmutex_trylock(CriticalSection);
 	if(err == CELL_OK)
 		return true;
 	return false;
@@ -209,8 +209,8 @@ DWORD WaitForMultipleObjects(DWORD nCount, CONST HANDLE *lpHandles,BOOL bWaitAll
 
 
 
-BOOL CloseHandle(HANDLE hObject) 
-{ 
+BOOL CloseHandle(HANDLE hObject)
+{
 	if(hObject==INVALID_HANDLE_VALUE)
 	{
 		//printf("\n\nTRYING TO CLOSE AN INVALID FILE HANDLE\n\n");
@@ -219,13 +219,13 @@ BOOL CloseHandle(HANDLE hObject)
 	else
 	{
 		CellFsErrno err;
-		err=cellFsClose(int(hObject)); 
+		err=cellFsClose(int(hObject));
 		if(err==CELL_FS_SUCCEEDED)
 		{
 			iFilesOpen--;
 
-			AUTO_VAR(itEnd, vOpenFileHandles.end());
-			for (AUTO_VAR(it, vOpenFileHandles.begin()); it != itEnd; it++)
+			auto itEnd = vOpenFileHandles.end();
+			for ( auto it = vOpenFileHandles.begin(); it != itEnd; it++)
 			{
 				int iFH=(int)*it;
 				if(iFH==(int)hObject)
@@ -235,7 +235,7 @@ BOOL CloseHandle(HANDLE hObject)
 				}
 			}
 			//printf("\n\nFiles Open - %d\n\n",iFilesOpen);
-			return true; 
+			return true;
 		}
 		else
 		{
@@ -249,8 +249,8 @@ BOOL SetEvent(HANDLE hEvent) { PS3_STUBBED; return false; }
 
 HMODULE GetModuleHandle(LPCSTR lpModuleName) { PS3_STUBBED; return 0; }
 
-sys_ppu_thread_t GetCurrentThreadId(VOID) 
-{ 
+sys_ppu_thread_t GetCurrentThreadId(VOID)
+{
 	sys_ppu_thread_t id;
 	int err = sys_ppu_thread_get_id(&id);
 	PS3_ASSERT_CELL_ERROR(err);
@@ -264,8 +264,8 @@ BOOL TlsFree(DWORD dwTlsIndex) { return TLSStoragePS3::Instance()->Free(dwTlsInd
 LPVOID TlsGetValue(DWORD dwTlsIndex) { return TLSStoragePS3::Instance()->GetValue(dwTlsIndex); }
 BOOL TlsSetValue(DWORD dwTlsIndex, LPVOID lpTlsValue) { return TLSStoragePS3::Instance()->SetValue(dwTlsIndex, lpTlsValue); }
 
-LPVOID VirtualAlloc(LPVOID lpAddress, SIZE_T dwSize, DWORD flAllocationType, DWORD flProtect) 
-{ 
+LPVOID VirtualAlloc(LPVOID lpAddress, SIZE_T dwSize, DWORD flAllocationType, DWORD flProtect)
+{
 	int err;
 	sys_addr_t newAddress = NULL;
 	if(lpAddress == NULL)
@@ -299,7 +299,7 @@ LPVOID VirtualAlloc(LPVOID lpAddress, SIZE_T dwSize, DWORD flAllocationType, DWO
 	return (LPVOID)newAddress;
 }
 
-BOOL VirtualFree(LPVOID lpAddress, SIZE_T dwSize, DWORD dwFreeType) 
+BOOL VirtualFree(LPVOID lpAddress, SIZE_T dwSize, DWORD dwFreeType)
 {
 	if(dwFreeType == MEM_DECOMMIT)
 	{
@@ -307,12 +307,12 @@ BOOL VirtualFree(LPVOID lpAddress, SIZE_T dwSize, DWORD dwFreeType)
 		sys_vm_statistics_t stat;
 		err = sys_vm_get_statistics((sys_addr_t)lpAddress, &stat);
 		PS3_ASSERT(err == CELL_OK);
-		
+
 		// 4J Stu - We can only return what we have actually committed on PS3
 		// From PS3 Docs:
 		// The maximum amount of memory that can be returned is the difference of the total amount of physical memory used by the virtual memory area minus 1MB. When an amount exceeding this value is specified, EBUSY will return.
 		SIZE_T memToFree = stat.pmem_total - (1024 * 1024);
-		if(dwSize < memToFree) 
+		if(dwSize < memToFree)
 			memToFree = dwSize;
 
 		app.DebugPrintf("VirtualFree: Requested size - %d, Actual size - %d\n", dwSize, memToFree);
@@ -349,10 +349,10 @@ BOOL WriteFile(	HANDLE hFile, LPCVOID lpBuffer, DWORD nNumberOfBytesToWrite, LPD
 	uint64_t bytesWritten;
 	CellFsErrno err = cellFsWrite(fd, lpBuffer, nNumberOfBytesToWrite, &bytesWritten);
 	*lpNumberOfBytesWritten = (DWORD)bytesWritten;
-	return (err == CELL_FS_OK); 
+	return (err == CELL_FS_OK);
 }
 
-BOOL ReadFile(HANDLE hFile, LPVOID lpBuffer, DWORD nNumberOfBytesToRead, LPDWORD lpNumberOfBytesRead, LPOVERLAPPED lpOverlapped ) 
+BOOL ReadFile(HANDLE hFile, LPVOID lpBuffer, DWORD nNumberOfBytesToRead, LPDWORD lpNumberOfBytesRead, LPOVERLAPPED lpOverlapped )
 {
 	int fd = (int)hFile;
 	uint64_t bytesRead;
@@ -374,7 +374,7 @@ BOOL ReadFile(HANDLE hFile, LPVOID lpBuffer, DWORD nNumberOfBytesToRead, LPDWORD
 		break;
 	}
 
-	return (err==CELL_FS_SUCCEEDED); 
+	return (err==CELL_FS_SUCCEEDED);
 }
 
 BOOL SetFilePointer(HANDLE hFile, LONG lDistanceToMove, PLONG lpDistanceToMoveHigh, DWORD dwMoveMethod)
@@ -407,7 +407,7 @@ void replaceBackslashes(char* szFilename)
 	}
 }
 
-HANDLE CreateFileA(LPCSTR lpFileName, DWORD dwDesiredAccess, DWORD dwShareMode, LPSECURITY_ATTRIBUTES lpSecurityAttributes, DWORD dwCreationDisposition, DWORD dwFlagsAndAttributes, HANDLE hTemplateFile) 
+HANDLE CreateFileA(LPCSTR lpFileName, DWORD dwDesiredAccess, DWORD dwShareMode, LPSECURITY_ATTRIBUTES lpSecurityAttributes, DWORD dwCreationDisposition, DWORD dwFlagsAndAttributes, HANDLE hTemplateFile)
 {
 	char filePath[256];
 	std::string mountedPath;
@@ -445,7 +445,7 @@ HANDLE CreateFileA(LPCSTR lpFileName, DWORD dwDesiredAccess, DWORD dwShareMode, 
 	int fd = 0;
 	int flags = 0;
 	switch(dwDesiredAccess)
-	{ 
+	{
 	case GENERIC_READ:
 		flags = CELL_FS_O_RDONLY;	break;
 	case GENERIC_WRITE:
@@ -508,7 +508,7 @@ HANDLE CreateFileA(LPCSTR lpFileName, DWORD dwDesiredAccess, DWORD dwShareMode, 
 	switch(err)
 	{
 	case CELL_FS_SUCCEEDED:
-		{		
+		{
 			app.DebugPrintf("CELL_FS_SUCCEEDED\n");
 			DWORD dwFileSize = (DWORD)statData.st_size;
 
@@ -522,7 +522,7 @@ HANDLE CreateFileA(LPCSTR lpFileName, DWORD dwDesiredAccess, DWORD dwShareMode, 
 		// fd is invalid or the file system on a removable media has been unmounted
 
 		// When cellFsFstat() returns CELL_FS_EBADF, it can be deduced that the above error occurred because a disc was ejected.
-		// Explicitly call cellFsClose() and close the applicable file. When using stream supporting APIs, call cellFsStReadFinish() before calling cellFsClose(). 
+		// Explicitly call cellFsClose() and close the applicable file. When using stream supporting APIs, call cellFsStReadFinish() before calling cellFsClose().
 
 		app.DebugPrintf("CELL_FS_EBADF\n");
 		CloseHandle((HANDLE)fd);
@@ -531,7 +531,7 @@ HANDLE CreateFileA(LPCSTR lpFileName, DWORD dwDesiredAccess, DWORD dwShareMode, 
 		//ShutdownManager::StartShutdown();
 
 		return INVALID_HANDLE_VALUE;
-		
+
 	case CELL_FS_EIO:
 		app.DebugPrintf("CELL_FS_EIO\n");
 		break;
@@ -550,8 +550,8 @@ HANDLE CreateFileA(LPCSTR lpFileName, DWORD dwDesiredAccess, DWORD dwShareMode, 
 	return (void*)fd;
 }
 
-BOOL CreateDirectoryA(LPCSTR lpPathName, LPSECURITY_ATTRIBUTES lpSecurityAttributes) 
-{ 
+BOOL CreateDirectoryA(LPCSTR lpPathName, LPSECURITY_ATTRIBUTES lpSecurityAttributes)
+{
 	char filePath[256];
 	sprintf(filePath,"%s/%s",usrdirPath, lpPathName );
 	CellFsErrno err = cellFsMkdir(filePath, CELL_FS_DEFAULT_CREATE_MODE_1);
@@ -563,12 +563,12 @@ BOOL CreateDirectoryA(LPCSTR lpPathName, LPSECURITY_ATTRIBUTES lpSecurityAttribu
 
 BOOL DeleteFileA(LPCSTR lpFileName) { PS3_STUBBED; return false; }
 
-// BOOL XCloseHandle(HANDLE a) 
-// { 
-// 	cellFsClose(int(a)); 
+// BOOL XCloseHandle(HANDLE a)
+// {
+// 	cellFsClose(int(a));
 // }
 
-DWORD GetFileAttributesA(LPCSTR lpFileName) 
+DWORD GetFileAttributesA(LPCSTR lpFileName)
 {
 	char filePath[256];
 	std::string mountedPath = StorageManager.GetMountedPath(lpFileName);
@@ -582,7 +582,7 @@ DWORD GetFileAttributesA(LPCSTR lpFileName)
 		sprintf(filePath,"%s/%s",usrdirPath, lpFileName );	// set to load from host
 
 	//strcat(filePath,".edat");
-			
+
 	//printf("GetFileAttributesA - %s\n",filePath);
 
 	// check if the file exists first
@@ -606,7 +606,7 @@ VOID DebugBreak(VOID) { snPause(); }
 
 
 DWORD GetLastError(VOID) { PS3_STUBBED; return 0; }
-VOID GlobalMemoryStatus(LPMEMORYSTATUS lpBuffer) 
+VOID GlobalMemoryStatus(LPMEMORYSTATUS lpBuffer)
 {
 	malloc_managed_size stat;
 	int err = malloc_stats(&stat);
@@ -620,20 +620,20 @@ VOID GlobalMemoryStatus(LPMEMORYSTATUS lpBuffer)
 	lpBuffer->dwAvailVirtual = stat.max_system_size - stat.current_inuse_size;
 }
 
-DWORD GetTickCount() 
+DWORD GetTickCount()
 {
-	// This function returns the current system time at this function is called. 
+	// This function returns the current system time at this function is called.
 	// The system time is represented the time elapsed since the system starts up in microseconds.
 	system_time_t sysTime = sys_time_get_system_time();
-	return sysTime / 1000; 
+	return sysTime / 1000;
 }
 
 // we should really use libperf for this kind of thing, but this will do for now.
-BOOL QueryPerformanceFrequency(LARGE_INTEGER *lpFrequency) 
-{ 
+BOOL QueryPerformanceFrequency(LARGE_INTEGER *lpFrequency)
+{
 	// microseconds
-	lpFrequency->QuadPart =  (1000 * 1000);		
-	return false; 
+	lpFrequency->QuadPart =  (1000 * 1000);
+	return false;
 }
 BOOL QueryPerformanceCounter(LARGE_INTEGER *lpPerformanceCount)
 {
@@ -646,24 +646,24 @@ BOOL QueryPerformanceCounter(LARGE_INTEGER *lpPerformanceCount)
 }
 
 #ifndef _FINAL_BUILD
-VOID OutputDebugStringW(LPCWSTR lpOutputString) 
-{ 
-	wprintf(lpOutputString); 
+VOID OutputDebugStringW(LPCWSTR lpOutputString)
+{
+	wprintf(lpOutputString);
 }
 
-VOID OutputDebugString(LPCSTR lpOutputString) 
-{ 
-	printf(lpOutputString); 
+VOID OutputDebugString(LPCSTR lpOutputString)
+{
+	printf(lpOutputString);
 }
 
-VOID OutputDebugStringA(LPCSTR lpOutputString) 
-{ 
-	printf(lpOutputString); 
+VOID OutputDebugStringA(LPCSTR lpOutputString)
+{
+	printf(lpOutputString);
 }
 #endif // _CONTENT_PACKAGE
 
 BOOL GetFileAttributesExA(LPCSTR lpFileName,GET_FILEEX_INFO_LEVELS fInfoLevelId,LPVOID lpFileInformation)
-{ 
+{
 	PS3_STUBBED;
 	return false;
 }
@@ -680,13 +680,13 @@ int _wtoi(const wchar_t *_Str)
 
 
 
-DWORD XGetLanguage() 
-{ 
+DWORD XGetLanguage()
+{
 	unsigned char ucLang = app.GetMinecraftLanguage(0);
 	int iLang;
 
 	// check if we should override the system language or not
-	if(ucLang==MINECRAFT_LANGUAGE_DEFAULT)	
+	if(ucLang==MINECRAFT_LANGUAGE_DEFAULT)
 	{
 		cellSysutilGetSystemParamInt(CELL_SYSUTIL_SYSTEMPARAM_ID_LANG,&iLang);
 	}
@@ -701,7 +701,7 @@ DWORD XGetLanguage()
 	case CELL_SYSUTIL_LANG_ENGLISH_US		: return XC_LANGUAGE_ENGLISH;
 	case CELL_SYSUTIL_LANG_FRENCH			: return XC_LANGUAGE_FRENCH;
 
-	case CELL_SYSUTIL_LANG_SPANISH			: 
+	case CELL_SYSUTIL_LANG_SPANISH			:
 		if(app.IsAmericanSKU())
 		{
 			return XC_LANGUAGE_LATINAMERICANSPANISH;
@@ -714,7 +714,7 @@ DWORD XGetLanguage()
 	case CELL_SYSUTIL_LANG_GERMAN			: return XC_LANGUAGE_GERMAN;
 	case CELL_SYSUTIL_LANG_ITALIAN			: return XC_LANGUAGE_ITALIAN;
 	case CELL_SYSUTIL_LANG_PORTUGUESE_PT	: return XC_LANGUAGE_PORTUGUESE;
-	
+
 	case CELL_SYSUTIL_LANG_RUSSIAN			: return XC_LANGUAGE_RUSSIAN;
 	case CELL_SYSUTIL_LANG_KOREAN			: return XC_LANGUAGE_KOREAN;
 	case CELL_SYSUTIL_LANG_CHINESE_T		: return XC_LANGUAGE_TCHINESE;
@@ -735,8 +735,8 @@ DWORD XGetLanguage()
 	}
 
 }
-DWORD XGetLocale() 
-{ 
+DWORD XGetLocale()
+{
 	int iLang;
 	cellSysutilGetSystemParamInt(CELL_SYSUTIL_SYSTEMPARAM_ID_LANG,&iLang);
 	switch(iLang)
@@ -745,7 +745,7 @@ DWORD XGetLocale()
 	case CELL_SYSUTIL_LANG_ENGLISH_US		: return XC_LOCALE_UNITED_STATES;
 	case CELL_SYSUTIL_LANG_FRENCH			: return XC_LOCALE_FRANCE;
 
-	case CELL_SYSUTIL_LANG_SPANISH			: 
+	case CELL_SYSUTIL_LANG_SPANISH			:
 		if(app.IsAmericanSKU())
 		{
 			return XC_LOCALE_LATIN_AMERICA;
@@ -753,7 +753,7 @@ DWORD XGetLocale()
 		else
 		{
 			return XC_LOCALE_SPAIN;
-		}		
+		}
 		return XC_LOCALE_SPAIN;
 
 	case CELL_SYSUTIL_LANG_GERMAN			: return XC_LOCALE_GERMANY;
@@ -777,11 +777,11 @@ DWORD XGetLocale()
 
 	case CELL_SYSUTIL_LANG_CHINESE_S		: return XC_LOCALE_CHINA;
 	default									: return XC_LOCALE_UNITED_STATES;
-	} 
+	}
 }
-DWORD XEnableGuestSignin(BOOL fEnable) 
-{ 
-	return 0; 
+DWORD XEnableGuestSignin(BOOL fEnable)
+{
+	return 0;
 }
 
 #endif   // __PS3__

@@ -15,26 +15,26 @@ MobEffect *MobEffect::voidEffect;
 MobEffect *MobEffect::movementSpeed;
 MobEffect *MobEffect::movementSlowdown;
 MobEffect *MobEffect::digSpeed;
-MobEffect *MobEffect::digSlowdown;	
-MobEffect *MobEffect::damageBoost;	
-MobEffect *MobEffect::heal;			
-MobEffect *MobEffect::harm;				
+MobEffect *MobEffect::digSlowdown;
+MobEffect *MobEffect::damageBoost;
+MobEffect *MobEffect::heal;
+MobEffect *MobEffect::harm;
 MobEffect *MobEffect::jump;
 MobEffect *MobEffect::confusion;
-MobEffect *MobEffect::regeneration;	
+MobEffect *MobEffect::regeneration;
 MobEffect *MobEffect::damageResistance;
-MobEffect *MobEffect::fireResistance;		
-MobEffect *MobEffect::waterBreathing;	
-MobEffect *MobEffect::invisibility;	
-MobEffect *MobEffect::blindness;		
-MobEffect *MobEffect::nightVision;		
-MobEffect *MobEffect::hunger;			
-MobEffect *MobEffect::weakness;		
-MobEffect *MobEffect::poison;			
-MobEffect *MobEffect::wither;			
-MobEffect *MobEffect::healthBoost;	
-MobEffect *MobEffect::absorption;		
-MobEffect *MobEffect::saturation;		
+MobEffect *MobEffect::fireResistance;
+MobEffect *MobEffect::waterBreathing;
+MobEffect *MobEffect::invisibility;
+MobEffect *MobEffect::blindness;
+MobEffect *MobEffect::nightVision;
+MobEffect *MobEffect::hunger;
+MobEffect *MobEffect::weakness;
+MobEffect *MobEffect::poison;
+MobEffect *MobEffect::wither;
+MobEffect *MobEffect::healthBoost;
+MobEffect *MobEffect::absorption;
+MobEffect *MobEffect::saturation;
 MobEffect *MobEffect::reserved_24;
 MobEffect *MobEffect::reserved_25;
 MobEffect *MobEffect::reserved_26;
@@ -121,7 +121,7 @@ int MobEffect::getId()
 * This method should perform periodic updates on the player. Mainly used
 * for regeneration effects and the like. Other effects, such as blindness,
 * are in effect for the whole duration of the effect.
-* 
+*
 * @param mob
 * @param amplification
 */
@@ -201,7 +201,7 @@ bool MobEffect::isInstantenous()
 * This parameter says if the applyEffect method should be called depending
 * on the remaining duration ticker. For instance, the regeneration will be
 * activated every 8 ticks, healing one point of health.
-* 
+*
 * @param remainingDuration
 * @param amplification
 *            Effect amplification, starts at 0 (weakest)
@@ -355,26 +355,26 @@ unordered_map<Attribute *, AttributeModifier *> *MobEffect::getAttributeModifier
 
 void MobEffect::removeAttributeModifiers(shared_ptr<LivingEntity> entity, BaseAttributeMap *attributes, int amplifier)
 {
-	for (AUTO_VAR(it, attributeModifiers.begin()); it != attributeModifiers.end(); ++it)
+	for (auto& it : attributeModifiers)
 	{
-		AttributeInstance *attribute = attributes->getInstance(it->first);
+		AttributeInstance *attribute = attributes->getInstance(it.first);
 
 		if (attribute != NULL)
 		{
-			attribute->removeModifier(it->second);
+			attribute->removeModifier(it.second);
 		}
 	}
 }
 
 void MobEffect::addAttributeModifiers(shared_ptr<LivingEntity> entity, BaseAttributeMap *attributes, int amplifier)
 {
-	for (AUTO_VAR(it, attributeModifiers.begin()); it != attributeModifiers.end(); ++it)
+	for (auto& it : attributeModifiers)
 	{
-		AttributeInstance *attribute = attributes->getInstance(it->first);
+		AttributeInstance *attribute = attributes->getInstance(it.first);
 
 		if (attribute != NULL)
 		{
-			AttributeModifier *original = it->second;
+			AttributeModifier *original = it.second;
 			attribute->removeModifier(original);
 			attribute->addModifier(new AttributeModifier(original->getId(), getAttributeModifierValue(amplifier, original), original->getOperation()));
 		}

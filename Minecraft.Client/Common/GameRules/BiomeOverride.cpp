@@ -14,11 +14,11 @@ void BiomeOverride::writeAttributes(DataOutputStream *dos, UINT numAttrs)
 	GameRuleDefinition::writeAttributes(dos, numAttrs + 3);
 
 	ConsoleGameRules::write(dos, ConsoleGameRules::eGameRuleAttr_biomeId);
-	dos->writeUTF(_toString(m_biomeId));
+	dos->writeUTF(std::to_wstring(m_biomeId));
 	ConsoleGameRules::write(dos, ConsoleGameRules::eGameRuleAttr_tileId);
-	dos->writeUTF(_toString(m_tile));
+	dos->writeUTF(std::to_wstring(m_tile));
 	ConsoleGameRules::write(dos, ConsoleGameRules::eGameRuleAttr_topTileId);
-	dos->writeUTF(_toString(m_topTile));
+	dos->writeUTF(std::to_wstring(m_topTile));
 }
 
 void BiomeOverride::addAttribute(const wstring &attributeName, const wstring &attributeValue)

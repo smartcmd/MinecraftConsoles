@@ -17,13 +17,13 @@ bool Sensing::canSee(shared_ptr<Entity> target)
 {
 	//if ( find(seen.begin(), seen.end(), target) != seen.end() ) return true;
 	//if ( find(unseen.begin(), unseen.end(), target) != unseen.end()) return false;
-	for(AUTO_VAR(it, seen.begin()); it != seen.end(); ++it)
+	for(auto& it : seen)
 	{
-		if(target == (*it).lock()) return true;
+		if(target == it.lock()) return true;
 	}
-	for(AUTO_VAR(it, unseen.begin()); it != unseen.end(); ++it)
+	for(auto & it : unseen)
 	{
-		if(target == (*it).lock()) return false;
+		if(target == it.lock()) return false;
 	}
 
 	//util.Timer.push("canSee");

@@ -152,17 +152,16 @@ bool File::mkdirs() const
 	std::vector<std::wstring> path = stringSplit( m_abstractPathName, pathSeparator );
 
 	std::wstring pathToHere = L"";
-	AUTO_VAR(itEnd, path.end());
-	for( AUTO_VAR(it, path.begin()); it != itEnd; it++ )
+	for( auto& it : path )
 	{
 		// If this member of the vector is the root then just skip to the next
-		if( pathRoot.compare( *it ) == 0 )
+		if( pathRoot.compare(it) == 0 )
 		{			
-			pathToHere = *it;
+			pathToHere = it;
 			continue;
 		}
 
-		pathToHere = pathToHere + pathSeparator + *it;
+		pathToHere = pathToHere + pathSeparator + it;
 
 		// if not exists
 #ifdef _UNICODE

@@ -24,11 +24,10 @@ Screen::Screen()	// 4J added
 
 void Screen::render(int xm, int ym, float a)
 {
-	AUTO_VAR(itEnd, buttons.end());
-	for (AUTO_VAR(it, buttons.begin()); it != itEnd; it++)
+	for (Button* button : buttons)
 	{
-        Button *button = *it; //buttons[i];
-        button->render(minecraft, xm, ym);
+		if ( button )
+        	button->render(minecraft, xm, ym);
     }
 }
 
@@ -56,11 +55,9 @@ void Screen::mouseClicked(int x, int y, int buttonNum)
 {
     if (buttonNum == 0)
 	{
-		AUTO_VAR(itEnd, buttons.end());
-		for (AUTO_VAR(it, buttons.begin()); it != itEnd; it++)
+		for (Button* button : buttons)
 		{
-            Button *button = *it; //buttons[i];
-            if (button->clicked(minecraft, x, y))
+            if ( button && button->clicked(minecraft, x, y) )
 			{
                 clickedButton = button;
                 minecraft->soundEngine->playUI(eSoundType_RANDOM_CLICK, 1, 1);

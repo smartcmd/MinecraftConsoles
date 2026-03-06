@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Goal.h"
+#include <random>
 
 class PathfinderMob;
 

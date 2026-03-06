@@ -6,19 +6,7 @@ wstring trimString(const wstring& a);
 wstring replaceAll(const wstring& in, const wstring& replace, const wstring& with);
 
 bool equalsIgnoreCase(const wstring& a, const wstring& b);
-// 4J-PB - for use in the ::toString 
-template <class T> std::wstring _toString(T t)
-{
-	std::wostringstream oss;
-	oss << std::dec << t;
-	return oss.str();
-}
-template <class T> std::wstring _toHexString(T t)
-{
-	std::wostringstream oss;
-	oss << std::hex << t;
-	return oss.str();
-}
+
 template <class T> T _fromString(const std::wstring& s)
 {
 	std::wistringstream stream (s);

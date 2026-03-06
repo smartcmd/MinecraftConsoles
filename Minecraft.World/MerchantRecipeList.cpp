@@ -13,9 +13,9 @@ MerchantRecipeList::MerchantRecipeList(CompoundTag *tag)
 
 MerchantRecipeList::~MerchantRecipeList()
 {
-	for(AUTO_VAR(it, m_recipes.begin()); it != m_recipes.end(); ++it)
+	for(auto& it : m_recipes)
 	{
-		delete (*it);
+		delete it;
 	}
 }
 

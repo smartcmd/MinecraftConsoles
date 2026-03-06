@@ -66,8 +66,8 @@ list<VillagePieces::PieceWeight *> *VillagePieces::createPieceSet(Random *random
 	newPieces->push_back(new PieceWeight(VillagePieces::EPieceClass_TwoRoomHouse, 8, Mth::nextInt(random, 0 + villageSize, 3 + villageSize * 2)));
 
 	// silly way of filtering "infinite" buildings
-	AUTO_VAR(it, newPieces->begin());
-	while( it != newPieces->end() )
+    auto it = newPieces->begin();
+    while( it != newPieces->end() )
 	{
 		if( (*it)->maxPlaceCount == 0 )
 		{
@@ -87,9 +87,8 @@ int VillagePieces::updatePieceWeight(list<PieceWeight *> *currentPieces)
 {
 	bool hasAnyPieces = false;
 	int totalWeight = 0;
-	for( AUTO_VAR(it, currentPieces->begin()); it != currentPieces->end(); it++ )
+	for(auto& piece : *currentPieces)
 	{
-		PieceWeight *piece = *it;
 		if (piece->maxPlaceCount > 0 && piece->placeCount < piece->maxPlaceCount)
 		{
 			hasAnyPieces = true;
@@ -158,13 +157,11 @@ VillagePieces::VillagePiece *VillagePieces::generatePieceFromSmallDoor(StartPiec
 		numAttempts++;
 
 		int weightSelection = random->nextInt(totalWeight);
-		for( AUTO_VAR(it, startPiece->pieceSet->begin()); it != startPiece->pieceSet->end(); it++ )
-		{
-			PieceWeight *piece = *it;
+        for ( PieceWeight *piece : *startPiece->pieceSet )
+        {
 			weightSelection -= piece->weight;
 			if (weightSelection < 0)
 			{
-
 				if (!piece->doPlace(depth) || (piece == startPiece->previousPiece && startPiece->pieceSet->size() > 1))
 				{
 					break;
@@ -587,9 +584,9 @@ VillagePieces::StartPiece::StartPiece(BiomeSource *biomeSource, int genDepth, Ra
 
 VillagePieces::StartPiece::~StartPiece()
 {
-	for(AUTO_VAR(it, pieceSet->begin()); it != pieceSet->end(); it++ )
+	for(auto& it : *pieceSet)
 	{
-		delete (*it);
+		delete it;
 	}
 	delete pieceSet;
 }
@@ -677,14 +674,14 @@ void VillagePieces::StraightRoad::addChildren(StructurePiece *startPiece, list<S
 		{
 		case Direction::NORTH:
 			generateAndAddRoadPiece((StartPiece *) startPiece, pieces, random, boundingBox->x1 + 1, boundingBox->y0, boundingBox->z0, Direction::EAST, getGenDepth());
-			break;				
-		case Direction::SOUTH:	
+			break;
+		case Direction::SOUTH:
 			generateAndAddRoadPiece((StartPiece *) startPiece, pieces, random, boundingBox->x1 + 1, boundingBox->y0, boundingBox->z1 - 2, Direction::EAST, getGenDepth());
-			break;				
-		case Direction::EAST:	
+			break;
+		case Direction::EAST:
 			generateAndAddRoadPiece((StartPiece *) startPiece, pieces, random, boundingBox->x1 - 2, boundingBox->y0, boundingBox->z1 + 1, Direction::SOUTH, getGenDepth());
-			break;				
-		case Direction::WEST:	
+			break;
+		case Direction::WEST:
 			generateAndAddRoadPiece((StartPiece *) startPiece, pieces, random, boundingBox->x0, boundingBox->y0, boundingBox->z1 + 1, Direction::SOUTH, getGenDepth());
 			break;
 		}
@@ -989,7 +986,7 @@ bool VillagePieces::SmallTemple::postProcess(Level *level, Random *random, Bound
 	}
 
 
-	for (int z = 0; z < depth; z++) 
+	for (int z = 0; z < depth; z++)
 	{
 		for (int x = 0; x < width; x++)
 		{

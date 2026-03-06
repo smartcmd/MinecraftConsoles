@@ -22,7 +22,4 @@ public:
 	int getY();
 	bool add(TextureHolder *textureHolder);
 	void collectAssignments(vector<StitchSlot *> *result);
-
-	//@Override
-	wstring toString();
 };

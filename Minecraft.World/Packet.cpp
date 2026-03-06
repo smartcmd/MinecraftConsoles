@@ -30,7 +30,7 @@ void Packet::staticCtor()
 	map(8, true, false, true, true, typeid(SetHealthPacket), SetHealthPacket::create);
 	map(9, true, true, true, false, typeid(RespawnPacket), RespawnPacket::create);
 
-	map(10, true, true, true, false, typeid(MovePlayerPacket), MovePlayerPacket::create);	
+	map(10, true, true, true, false, typeid(MovePlayerPacket), MovePlayerPacket::create);
 	map(11, true, true, true, true, typeid(MovePlayerPacket::Pos), MovePlayerPacket::Pos::create);
 	map(12, true, true, true, true, typeid(MovePlayerPacket::Rot), MovePlayerPacket::Rot::create);
 	map(13, true, true, true, true, typeid(MovePlayerPacket::PosRot), MovePlayerPacket::PosRot::create);
@@ -182,7 +182,7 @@ int Packet::renderPos = 0;
 void Packet::map(int id, bool receiveOnClient, bool receiveOnServer, bool sendToAnyClient, bool renderStats, const type_info& clazz, packetCreateFn createFn)
 {
 #if 0
-	if (idToClassMap.count(id) > 0) throw new IllegalArgumentException(wstring(L"Duplicate packet id:") + _toString<int>(id));
+	if (idToClassMap.count(id) > 0) throw new IllegalArgumentException(wstring(L"Duplicate packet id:") + std::to_wstring(id));
 	if (classToIdMap.count(clazz) > 0) throw new IllegalArgumentException(L"Duplicate packet class:"); // TODO + clazz);
 #endif
 
@@ -228,7 +228,7 @@ void Packet::recordOutgoingPacket(shared_ptr<Packet> packet, int playerIndex)
 		idx = 100;
 	}
 #endif
-	AUTO_VAR(it, outgoingStatistics.find(idx));
+	auto it = outgoingStatistics.find(idx);
 
 	if( it == outgoingStatistics.end() )
 	{
@@ -248,8 +248,8 @@ void Packet::updatePacketStatsPIX()
 {
 #ifndef _CONTENT_PACKAGE
 #if PACKET_ENABLE_STAT_TRACKING
-	
-	for( AUTO_VAR(it, outgoingStatistics.begin()); it != outgoingStatistics.end(); it++ )
+
+	for( auto it = outgoingStatistics.begin(); it != outgoingStatistics.end(); it++ )
 	{
 		Packet::PacketStatistics *stat = it->second;
 		__int64 count = stat->getRunningCount();
@@ -265,7 +265,7 @@ void Packet::updatePacketStatsPIX()
 #endif
 }
 
-shared_ptr<Packet> Packet::getPacket(int id) 
+shared_ptr<Packet> Packet::getPacket(int id)
 {
 	// 4J: Removed try/catch
 	return idToCreateMap[id]();
@@ -332,16 +332,16 @@ shared_ptr<Packet> Packet::readPacket(DataInputStream *dis, bool isServer) // th
 		//app.DebugPrintf("Bad packet id %d\n", id);
 		__debugbreak();
 		assert(false);
-		//            throw new IOException(wstring(L"Bad packet id ") + _toString<int>(id));
+		//            throw new IOException(wstring(L"Bad packet id ") + std::to_wstring(id));
 	}
 
 	packet = getPacket(id);
-	if (packet == NULL) assert(false);//throw new IOException(wstring(L"Bad packet id ") + _toString<int>(id));
-	
+	if (packet == NULL) assert(false);//throw new IOException(wstring(L"Bad packet id ") + std::to_wstring(id));
+
 	//app.DebugPrintf("%s reading packet %d\n", isServer ? "Server" : "Client", packet->getId());
 	packet->read(dis);
 	//    }
-	//	catch (EOFException e) 
+	//	catch (EOFException e)
 	//	{
 	//       // reached end of stream
 	//        OutputDebugString("Reached end of stream");
@@ -352,7 +352,7 @@ shared_ptr<Packet> Packet::readPacket(DataInputStream *dis, bool isServer) // th
 	// 4J Stu - This changes a bit in 1.0.1, but we don't really use it so stick with what we have
 #ifndef _CONTENT_PACKAGE
 #if PACKET_ENABLE_STAT_TRACKING
-	AUTO_VAR(it, statistics.find(id));
+	auto it = statistics.find(id);
 
 	if( it == statistics.end() )
 	{
@@ -380,7 +380,7 @@ void Packet::writePacket(shared_ptr<Packet> packet, DataOutputStream *dos) // th
 void Packet::writeUtf(const wstring& value, DataOutputStream *dos) // throws IOException TODO 4J JEV, should this declare a throws?
 {
 #if 0
-	if (value.length() > Short::MAX_VALUE) 
+	if (value.length() > Short::MAX_VALUE)
 	{
 		throw new IOException(L"String too big");
 	}
@@ -408,7 +408,7 @@ wstring Packet::readUtf(DataInputStream *dis, int maxLength) // throws IOExcepti
 	}
 
 	wstring builder = L"";
-	for (int i = 0; i < stringLength; i++) 
+	for (int i = 0; i < stringLength; i++)
 	{
 		wchar_t rc = dis->readChar();
 		builder.push_back( rc );
@@ -432,7 +432,7 @@ void Packet::PacketStatistics::addPacket(int bytes)
 	count++;
 }
 
-int Packet::PacketStatistics::getCount() 
+int Packet::PacketStatistics::getCount()
 {
 	return count;
 }
@@ -446,7 +446,7 @@ double Packet::PacketStatistics::getAverageSize()
 	return (double) totalSize / count;
 }
 
-int Packet::PacketStatistics::getTotalSize() 
+int Packet::PacketStatistics::getTotalSize()
 {
 	return totalSize;
 }
