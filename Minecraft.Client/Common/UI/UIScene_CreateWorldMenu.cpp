@@ -508,10 +508,14 @@ void UIScene_CreateWorldMenu::handlePress(F64 controlId, F64 childId)
 			m_bGameModeCreative = true;
 			break;
 		case 1: // Creative
+			m_buttonGamemode.setLabel(app.GetString(IDS_GAMEMODE_ADVENTURE));
+			m_iGameModeId = GameType::ADVENTURE->getId();
+			m_bGameModeCreative = false;
+			break;
+		case 2: // Adventure
 			m_buttonGamemode.setLabel(app.GetString(IDS_GAMEMODE_SURVIVAL));
 			m_iGameModeId = GameType::SURVIVAL->getId();
 			m_bGameModeCreative = false;
-			break;
 		};
 		break;
 	case eControl_MoreOptions:
