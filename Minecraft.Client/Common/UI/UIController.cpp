@@ -574,7 +574,7 @@ void UIController::loadSkins()
 	m_iggyLibraries[eLibrary_Default] = loadSkin(L"skin.swf", L"skin.swf");
 #endif
 
-#if ( defined(_WINDOWS64) || defined(_DURANGO) || defined(__ORBIS__) )
+#if ( defined(_WIN32) || defined(_DURANGO) || defined(__ORBIS__) )
 
 #if defined(_WIN32)
 	// 4J Stu - Load the 720/480 skins so that we have something to fallback on during development
