@@ -435,4 +435,4 @@ build/*
 Minecraft.Client/Saves/
 
 # Visual Studio Per-User Config
-/Minecraft.Client/Minecraft.Client.vcxproj.user
+*.user
