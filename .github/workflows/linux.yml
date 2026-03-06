@@ -39,7 +39,16 @@ jobs:
           export PATH=$(pwd)/my_msvc/opt/msvc/bin/x64:$PATH
           CC=cl CXX=cl cmake . -DCMAKE_BUILD_TYPE=Release -DCMAKE_SYSTEM_NAME=Windows
           make -j$(nproc)
-          7z a -r LCEWindows64.zip ./x64/Release/*
+          7z a build.zip \
+          Common \
+          music \
+          redist64 \
+          Windows64 \
+          Windows64Media \
+          Effects.msscmp \
+          iggy_w64.dll \
+          Minecraft.Client.exe \
+          mss64.dll
           EOF
 
       - name: Upload artifact/s
@@ -47,6 +56,4 @@ jobs:
         with:
           name: Zip
           path: |
-            LCEWindows64.zip
-            ./x64/Release/Minecraft.Client.exe
-            ./x64/Release/Minecraft.Client.pdb
+            build.zip
