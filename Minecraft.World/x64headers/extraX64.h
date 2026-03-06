@@ -219,6 +219,7 @@ public:
     BYTE m_smallId;
     bool m_isRemote;
     bool m_isHostPlayer;
+    PlayerUID m_resolvedXuid;
     wchar_t m_gamertag[32];
 private:
 	ULONG_PTR m_customData;
