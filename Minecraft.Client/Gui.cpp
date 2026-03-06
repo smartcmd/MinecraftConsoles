@@ -846,17 +846,29 @@ void Gui::render(float a, bool mouseFree, int xMouse, int yMouse)
 	MemSect(31);
     if (minecraft->options->renderDebug)
 	{
+		const int debugLeft = 1;
+		const int debugTop = 1;
+		const float maxContentWidth = 1200.f;
+		const float maxContentHeight = 420.f;
+		float scale = (float)(screenWidth - debugLeft - 8) / maxContentWidth;
+		float scaleV = (float)(screenHeight - debugTop - 80) / maxContentHeight;
+		if (scaleV < scale) scale = scaleV;
+		if (scale > 1.f) scale = 1.f;
+		if (scale < 0.5f) scale = 0.5f;
         glPushMatrix();
+		glTranslatef((float)debugLeft, (float)debugTop, 0.f);
+		glScalef(scale, scale, 1.f);
+		glTranslatef((float)-debugLeft, (float)-debugTop, 0.f);
         if (Minecraft::warezTime > 0) glTranslatef(0, 32, 0);
-        font->drawShadow(ClientConstants::VERSION_STRING + L" (" + minecraft->fpsString + L")", iSafezoneXHalf+2, 20, 0xffffff);
-        font->drawShadow(L"Seed: " + std::to_wstring(minecraft->level->getLevelData()->getSeed() ), iSafezoneXHalf+2, 32 + 00, 0xffffff);
-        font->drawShadow(minecraft->gatherStats1(), iSafezoneXHalf+2, 32 + 10, 0xffffff);
-        font->drawShadow(minecraft->gatherStats2(), iSafezoneXHalf+2, 32 + 20, 0xffffff);
-        font->drawShadow(minecraft->gatherStats3(), iSafezoneXHalf+2, 32 + 30, 0xffffff);
-        font->drawShadow(minecraft->gatherStats4(), iSafezoneXHalf+2, 32 + 40, 0xffffff);
+        font->drawShadow(ClientConstants::VERSION_STRING + L" (" + minecraft->fpsString + L")", debugLeft, debugTop, 0xffffff);
+        font->drawShadow(L"Seed: " + std::to_wstring(minecraft->level->getLevelData()->getSeed() ), debugLeft, debugTop + 12, 0xffffff);
+        font->drawShadow(minecraft->gatherStats1(), debugLeft, debugTop + 22, 0xffffff);
+        font->drawShadow(minecraft->gatherStats2(), debugLeft, debugTop + 32, 0xffffff);
+        font->drawShadow(minecraft->gatherStats3(), debugLeft, debugTop + 42, 0xffffff);
+        font->drawShadow(minecraft->gatherStats4(), debugLeft, debugTop + 52, 0xffffff);
 
 		// TERRAIN FEATURES
-		int iYPos=82;
+		int iYPos = debugTop + 62;
 
 		if(minecraft->level->dimension->id==0)
 		{
@@ -867,18 +879,31 @@ void Gui::render(float a, bool mouseFree, int xMouse, int yMouse)
 			wfeature[eTerrainFeature_Village] = L"Village: ";
 			wfeature[eTerrainFeature_Ravine] = L"Ravine: ";
 
-			for(int i=0;i<app.m_vTerrainFeatures.size();i++)
+			float maxW = (float)(screenWidth - debugLeft - 8) / scale;
+			float maxWForContent = maxW - (float)font->width(L"...");
+			bool truncated[eTerrainFeature_Count] = {};
+
+			for (int i = 0; i < (int)app.m_vTerrainFeatures.size(); i++)
 			{
 				FEATURE_DATA *pFeatureData=app.m_vTerrainFeatures[i];
+				int type = pFeatureData->eTerrainFeature;
+				if (type < eTerrainFeature_Stronghold || type > eTerrainFeature_Ravine) continue;
+				if (truncated[type]) continue;
 
 				wstring itemInfo = L"[" + std::to_wstring( pFeatureData->x*16 ) + L", " + std::to_wstring( pFeatureData->z*16 ) + L"] ";
-				wfeature[pFeatureData->eTerrainFeature] += itemInfo;
+				if (font->width(wfeature[type] + itemInfo) <= maxWForContent)
+					wfeature[type] += itemInfo;
+				else
+				{
+					wfeature[type] += L"...";
+					truncated[type] = true;
+				}
 			}
 
 			for( int i = eTerrainFeature_Stronghold; i < (int) eTerrainFeature_Count; i++ )
 			{
-				font->drawShadow(wfeature[i], iSafezoneXHalf + 2, iYPos, 0xffffff);
 				iYPos+=10;
+				font->drawShadow(wfeature[i], debugLeft, iYPos, 0xffffff);
 			}
 		}
 
@@ -899,10 +924,10 @@ void Gui::render(float a, bool mouseFree, int xMouse, int yMouse)
 		double xBlockPos = floor(minecraft->player->x);
 		double yBlockPos = floor(minecraft->player->y);
 		double zBlockPos = floor(minecraft->player->z);
-        drawString(font, L"x: " + std::to_wstring(minecraft->player->x) + L"/ Head: " + std::to_wstring(static_cast<int>(xBlockPos)) + L"/ Chunk: " + std::to_wstring(minecraft->player->xChunk), iSafezoneXHalf+2, iYPos + 8 * 0, 0xe0e0e0);
-        drawString(font, L"y: " + std::to_wstring(minecraft->player->y) + L"/ Head: " + std::to_wstring(static_cast<int>(yBlockPos)), iSafezoneXHalf+2, iYPos + 8 * 1, 0xe0e0e0);
-        drawString(font, L"z: " + std::to_wstring(minecraft->player->z) + L"/ Head: " + std::to_wstring(static_cast<int>(zBlockPos)) + L"/ Chunk: " + std::to_wstring(minecraft->player->zChunk), iSafezoneXHalf+2, iYPos + 8 * 2, 0xe0e0e0);
-		drawString(font, L"f: " + std::to_wstring(Mth::floor(minecraft->player->yRot * 4.0f / 360.0f + 0.5) & 0x3) + L"/ yRot: " + std::to_wstring(minecraft->player->yRot), iSafezoneXHalf+2, iYPos + 8 * 3, 0xe0e0e0);
+        drawString(font, L"x: " + std::to_wstring(minecraft->player->x) + L"/ Head: " + std::to_wstring(static_cast<int>(xBlockPos)) + L"/ Chunk: " + std::to_wstring(minecraft->player->xChunk), debugLeft, iYPos + 8 * 0, 0xe0e0e0);
+        drawString(font, L"y: " + std::to_wstring(minecraft->player->y) + L"/ Head: " + std::to_wstring(static_cast<int>(yBlockPos)), debugLeft, iYPos + 8 * 1, 0xe0e0e0);
+        drawString(font, L"z: " + std::to_wstring(minecraft->player->z) + L"/ Head: " + std::to_wstring(static_cast<int>(zBlockPos)) + L"/ Chunk: " + std::to_wstring(minecraft->player->zChunk), debugLeft, iYPos + 8 * 2, 0xe0e0e0);
+		drawString(font, L"f: " + std::to_wstring(Mth::floor(minecraft->player->yRot * 4.0f / 360.0f + 0.5) & 0x3) + L"/ yRot: " + std::to_wstring(minecraft->player->yRot), debugLeft, iYPos + 8 * 3, 0xe0e0e0);
 		iYPos += 8*4;
 
 		int px = Mth::floor(minecraft->player->x);
@@ -914,7 +939,7 @@ void Gui::render(float a, bool mouseFree, int xMouse, int yMouse)
 			Biome *biome = chunkAt->getBiome(px & 15, pz & 15, minecraft->level->getBiomeSource());
 			drawString(
 				font,
-				L"b: " + biome->m_name + L" (" + std::to_wstring(biome->id) + L")", iSafezoneXHalf+2, iYPos, 0xe0e0e0);
+				L"b: " + biome->m_name + L" (" + std::to_wstring(biome->id) + L")", debugLeft, iYPos, 0xe0e0e0);
 		}
 
         glPopMatrix();
