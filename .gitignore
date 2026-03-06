@@ -433,3 +433,4 @@ build/*
 
 # Local saves
 Minecraft.Client/Saves/
+/Minecraft.Client/Minecraft.Client.vcxproj.user
