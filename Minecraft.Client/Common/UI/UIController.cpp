@@ -1867,6 +1867,7 @@ void UIController::unregisterSubstitutionTexture(const wstring &textureName, boo
 bool UIController::NavigateToScene(int iPad, EUIScene scene, void *initData, EUILayer layer, EUIGroup group)
 {
 	static bool bSeenUpdateTextThisSession = false;
+	#if 0 // Disable since we don't use this
 	// If you're navigating to the multigamejoinload, and the player hasn't seen the updates message yet, display it now
 	// display this message the first 3 times
 	if((scene==eUIScene_LoadOrJoinMenu) && (bSeenUpdateTextThisSession==false) && ( app.GetGameSettings(ProfileManager.GetPrimaryPad(),eGameSetting_DisplayUpdateMessage)!=0))
@@ -1874,6 +1875,7 @@ bool UIController::NavigateToScene(int iPad, EUIScene scene, void *initData, EUI
 		scene=eUIScene_NewUpdateMessage;
 		bSeenUpdateTextThisSession=true;
 	}
+	#endif
 
 	// if you're trying to navigate to the inventory,the crafting, pause or game info or any of the trigger scenes and there's already a menu up (because you were pressing a few buttons at the same time) then ignore the navigate
 	if(GetMenuDisplayed(iPad))

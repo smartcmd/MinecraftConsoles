@@ -83,17 +83,23 @@ void UIScene_Intro::handleInput(int iPad, int key, bool repeat, bool pressed, bo
 			case C4JStorage::eOptions_Callback_Read:
 			case C4JStorage::eOptions_Callback_Read_FileNotFound:
 				// we've either read it, or it wasn't found
+				#if 0
 				if(app.GetGameSettings(0,eGameSetting_PS3_EULA_Read)==0)
 				{
 					ui.NavigateToScene(0,eUIScene_EULA);
 				}
 				else
+				#endif
 				{
 					ui.NavigateToScene(0,eUIScene_SaveMessage);
 				}
 				break;
 			default:
-				ui.NavigateToScene(0,eUIScene_EULA);			
+				#if 0
+				ui.NavigateToScene(0,eUIScene_EULA);		
+				#else
+				ui.NavigateToScene(0,eUIScene_SaveMessage);	
+				#endif
 				break;
 			}
 #elif defined _XBOX_ONE
@@ -131,17 +137,23 @@ void UIScene_Intro::handleAnimationEnd()
 		case C4JStorage::eOptions_Callback_Read:
 		case C4JStorage::eOptions_Callback_Read_FileNotFound:
 			// we've either read it, or it wasn't found
+			#if 0
 			if(app.GetGameSettings(0,eGameSetting_PS3_EULA_Read)==0)
 			{
 				ui.NavigateToScene(0,eUIScene_EULA);
 			}
 			else
+			#endif
 			{
 				ui.NavigateToScene(0,eUIScene_SaveMessage);
 			}
 			break;
 		default:
-			ui.NavigateToScene(0,eUIScene_EULA);			
+			#if 0
+			ui.NavigateToScene(0,eUIScene_EULA);		
+			#else
+			ui.NavigateToScene(0,eUIScene_SaveMessage);	
+			#endif			
 		break;
 		}
 
