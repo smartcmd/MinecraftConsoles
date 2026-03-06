@@ -46,6 +46,8 @@ bool ButtonTile::isCubeShaped()
 
 bool ButtonTile::mayPlace(Level *level, int x, int y, int z, int face)
 {
+	if (face == 0 && level->isSolidBlockingTile(x, y + 1, z)) return true;
+	if (face == 1 && level->isTopSolidBlocking(x, y - 1, z)) return true;
 	if (face == 2 && level->isSolidBlockingTile(x, y, z + 1)) return true;
 	if (face == 3 && level->isSolidBlockingTile(x, y, z - 1)) return true;
 	if (face == 4 && level->isSolidBlockingTile(x + 1, y, z)) return true;
@@ -71,6 +73,14 @@ bool ButtonTile::mayPlace(Level *level, int x, int y, int z)
 	{
 		return true;
 	}
+	else if (level->isTopSolidBlocking(x, y - 1, z))
+	{
+		return true;
+	}
+	else if (level->isSolidBlockingTile(x, y + 1, z))
+	{
+		return true;
+	}
 	return false;
 }
 
@@ -81,7 +91,9 @@ int ButtonTile::getPlacedOnFaceDataValue(Level *level, int x, int y, int z, int 
 	int oldFlip = dir & 8;
 	dir &= 7;
 
-	if (face == 2 && level->isSolidBlockingTile(x, y, z + 1)) dir = 4;
+	if (face == 0 && level->isSolidBlockingTile(x, y + 1, z)) dir = 0;
+	else if (face == 1 && level->isTopSolidBlocking(x, y - 1, z)) dir = 5;
+	else if (face == 2 && level->isSolidBlockingTile(x, y, z + 1)) dir = 4;
 	else if (face == 3 && level->isSolidBlockingTile(x, y, z - 1)) dir = 3;
 	else if (face == 4 && level->isSolidBlockingTile(x + 1, y, z)) dir = 2;
 	else if (face == 5 && level->isSolidBlockingTile(x - 1, y, z)) dir = 1;
@@ -108,6 +120,14 @@ int ButtonTile::findFace(Level *level, int x, int y, int z)
 	{
 		return 4;
 	}
+	else if (level->isTopSolidBlocking(x, y - 1, z))
+	{
+		return 5;
+	}
+	else if (level->isSolidBlockingTile(x, y + 1, z))
+	{
+		return 0;
+	}
 	return 1;
 }
 
@@ -118,10 +138,12 @@ void ButtonTile::neighborChanged(Level *level, int x, int y, int z, int type)
 		int dir = level->getData(x, y, z) & 7;
 		bool replace = false;
 
+		if (!level->isSolidBlockingTile(x, y + 1, z) && dir == 0) replace = true;
 		if (!level->isSolidBlockingTile(x - 1, y, z) && dir == 1) replace = true;
 		if (!level->isSolidBlockingTile(x + 1, y, z) && dir == 2) replace = true;
 		if (!level->isSolidBlockingTile(x, y, z - 1) && dir == 3) replace = true;
 		if (!level->isSolidBlockingTile(x, y, z + 1) && dir == 4) replace = true;
+		if (!level->isTopSolidBlocking(x, y - 1, z) && dir == 5) replace = true;
 
 		if (replace)
 		{
@@ -174,6 +196,14 @@ void ButtonTile::updateShape(int data)
 	else if (dir == 4)
 	{
 		setShape(0.5f - r, h0, 1 - d, 0.5f + r, h1, 1);
+	}
+	else if (dir == 5)
+	{
+		setShape(0.5f - r, 0, h0, 0.5f + r, d, h1);
+	}
+	else if (dir == 0)
+	{
+		setShape(0.5f - r, 1 - d, h0, 0.5f + r, 1, h1);
 	}
 }
 
@@ -235,6 +265,7 @@ int ButtonTile::getDirectSignal(LevelSource *level, int x, int y, int z, int dir
 	if ((data & 8) == 0) return Redstone::SIGNAL_NONE;
 	int myDir = data & 7;
 
+	if (myDir == 0 && dir == 0) return Redstone::SIGNAL_MAX;
 	if (myDir == 5 && dir == 1) return Redstone::SIGNAL_MAX;
 	if (myDir == 4 && dir == 2) return Redstone::SIGNAL_MAX;
 	if (myDir == 3 && dir == 3) return Redstone::SIGNAL_MAX;
@@ -350,9 +381,13 @@ void ButtonTile::updateNeighbours(Level *level, int x, int y, int z, int dir)
 	{
 		level->updateNeighborsAt(x, y, z + 1, id);
 	}
-	else
+	else if (dir == 5)
 	{
 		level->updateNeighborsAt(x, y - 1, z, id);
+	}
+	else if (dir == 0)
+	{
+		level->updateNeighborsAt(x, y + 1, z, id);
 	}
 }
 
