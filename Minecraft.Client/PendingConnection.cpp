@@ -162,12 +162,35 @@ void PendingConnection::handleLogin(shared_ptr<LoginPacket> packet)
 	//if (true)// 4J removed !server->onlineMode)
 	bool sentDisconnect = false;
 
+	// Use the same Xuid choice as handleAcceptedLogin (offline first, online fallback).
+	// 
+	PlayerUID loginXuid = packet->m_offlineXuid;
+	if (loginXuid == INVALID_XUID) loginXuid = packet->m_onlineXuid;
+
+	bool duplicateXuid = false;
+	if (loginXuid != INVALID_XUID && server->getPlayers()->getPlayer(loginXuid) != nullptr)
+	{
+		duplicateXuid = true;
+	}
+	else if (packet->m_onlineXuid != INVALID_XUID &&
+		packet->m_onlineXuid != loginXuid &&
+		server->getPlayers()->getPlayer(packet->m_onlineXuid) != nullptr)
+	{
+		duplicateXuid = true;
+	}
+
 	if( sentDisconnect )
 	{
 		// Do nothing
 	}
 	else if( server->getPlayers()->isXuidBanned( packet->m_onlineXuid ) )
 	{
+		disconnect(DisconnectPacket::eDisconnect_Banned);
+	}
+	else if (duplicateXuid)
+	{
+		// if same XUID already in use by another player so disconnect this one.
+		app.DebugPrintf("Rejecting duplicate xuid for name: %ls\n", name.c_str());
 		disconnect(DisconnectPacket::eDisconnect_Banned);
 	}
 #ifdef _WINDOWS64
@@ -258,7 +281,7 @@ void PendingConnection::onDisconnect(DisconnectPacket::eDisconnectReason reason,
 void PendingConnection::handleGetInfo(shared_ptr<GetInfoPacket> packet)
 {
 	//try {
-	//String message = server->motd + "§" + server->players->getPlayerCount() + "§" + server->players->getMaxPlayers();
+	//String message = server->motd + "ï¿½" + server->players->getPlayerCount() + "ï¿½" + server->players->getMaxPlayers();
 	//connection->send(new DisconnectPacket(message));
 	connection->send(shared_ptr<DisconnectPacket>(new DisconnectPacket(DisconnectPacket::eDisconnect_ServerFull) ) );
 	connection->sendAndQuit();

@@ -52,7 +52,7 @@
 #include "..\Minecraft.World\net.minecraft.world.level.dimension.h"
 #include "..\Minecraft.World\net.minecraft.world.item.h"
 #include "..\Minecraft.World\Minecraft.World.h"
-#include "Windows64\Windows64_NameXuid.h"
+#include "Windows64\Windows64_Xuid.h"
 #include "ClientConnection.h"
 #include "..\Minecraft.World\HellRandomLevelSource.h"
 #include "..\Minecraft.World\net.minecraft.world.entity.animal.h"
@@ -1040,14 +1040,16 @@ shared_ptr<MultiplayerLocalPlayer> Minecraft::createExtraLocalPlayer(int idx, co
 		ProfileManager.GetXUID(idx,&playerXUIDOffline,false);
 		ProfileManager.GetXUID(idx,&playerXUIDOnline,true);
 #ifdef _WINDOWS64
+		// Compatibility rule for Win64 id migration
+		// host keeps legacy host XUID, non-host uses persistent uid.dat XUID.
 		INetworkPlayer *localNetworkPlayer = g_NetworkManager.GetLocalPlayerByUserIndex(idx);
 		if(localNetworkPlayer != NULL && localNetworkPlayer->IsHost())
 		{
-			playerXUIDOffline = Win64NameXuid::GetLegacyEmbeddedHostXuid();
+			playerXUIDOffline = Win64Xuid::GetLegacyEmbeddedHostXuid();
 		}
 		else
 		{
-			playerXUIDOffline = Win64NameXuid::ResolvePersistentXuidFromName(localplayers[idx]->name);
+			playerXUIDOffline = Win64Xuid::ResolvePersistentXuid();
 		}
 #endif
 		localplayers[idx]->setXuid(playerXUIDOffline);
@@ -4309,14 +4311,16 @@ void Minecraft::setLevel(MultiPlayerLevel *level, int message /*=-1*/, shared_pt
 			}
 #endif
 #ifdef _WINDOWS64
+			// On Windows, the implementation has been changed to use a per-client pseudo XUID based on `uid.dat`.  
+			// To maintain player data compatibility with existing worlds, the world host (the first player) will use the previous embedded pseudo XUID.
 			INetworkPlayer *localNetworkPlayer = g_NetworkManager.GetLocalPlayerByUserIndex(iPrimaryPlayer);
 			if(localNetworkPlayer != NULL && localNetworkPlayer->IsHost())
 			{
-				playerXUIDOffline = Win64NameXuid::GetLegacyEmbeddedHostXuid();
+				playerXUIDOffline = Win64Xuid::GetLegacyEmbeddedHostXuid();
 			}
 			else
 			{
-				playerXUIDOffline = Win64NameXuid::ResolvePersistentXuidFromName(player->name);
+				playerXUIDOffline = Win64Xuid::ResolvePersistentXuid();
 			}
 #endif
 			player->setXuid(playerXUIDOffline);
@@ -4502,14 +4506,15 @@ void Minecraft::respawnPlayer(int iPad, int dimension, int newEntityId)
 	ProfileManager.GetXUID(iTempPad,&playerXUIDOffline,false);
 	ProfileManager.GetXUID(iTempPad,&playerXUIDOnline,true);
 #ifdef _WINDOWS64
+	// Same compatibility rule as create/init paths.
 	INetworkPlayer *localNetworkPlayer = g_NetworkManager.GetLocalPlayerByUserIndex(iTempPad);
 	if(localNetworkPlayer != NULL && localNetworkPlayer->IsHost())
 	{
-		playerXUIDOffline = Win64NameXuid::GetLegacyEmbeddedHostXuid();
+		playerXUIDOffline = Win64Xuid::GetLegacyEmbeddedHostXuid();
 	}
 	else
 	{
-		playerXUIDOffline = Win64NameXuid::ResolvePersistentXuidFromName(player->name);
+		playerXUIDOffline = Win64Xuid::ResolvePersistentXuid();
 	}
 #endif
 	player->setXuid(playerXUIDOffline);
