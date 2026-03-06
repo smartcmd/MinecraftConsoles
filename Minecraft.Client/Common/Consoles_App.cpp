@@ -2441,10 +2441,10 @@ void CMinecraftApp::ClearGameSettingsChangedFlag(int iPad)
 
 ///////////////////////////
 //
-// Remove the debug settings in the content package build
+// Remove the debug settings in the release build
 //
 ////////////////////////////
-#ifndef _DEBUG_MENUS_ENABLED
+#ifndef _DEBUG
 unsigned int CMinecraftApp::GetGameSettingsDebugMask(int iPad,bool bOverridePlayer) //bOverridePlayer is to force the send for the server to get the read options
 {
 	return 0;
