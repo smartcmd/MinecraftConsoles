@@ -1,0 +1,58 @@
+diff --git a/Minecraft.Client/Common/Network/PlatformNetworkManagerStub.cpp b/Minecraft.Client/Common/Network/PlatformNetworkManagerStub.cpp
+index 85531e47..0611cb7e 100644
+--- a/Minecraft.Client/Common/Network/PlatformNetworkManagerStub.cpp
++++ b/Minecraft.Client/Common/Network/PlatformNetworkManagerStub.cpp
+@@ -780,7 +780,26 @@ void CPlatformNetworkManagerStub::SearchForGames()
+          std::fclose(file);
+      }
+ 
++    // -ip launch argument: add to session list so it appears in Join Game
++    if (g_Win64MultiplayerJoin && g_Win64MultiplayerIP[0] != 0)
++    {
++        FriendSessionInfo* info = new FriendSessionInfo();
++        wchar_t label[128];
++        swprintf_s(label, 128, L"%hs:%d", g_Win64MultiplayerIP, g_Win64MultiplayerPort);
++        size_t nameLen = wcslen(label);
++        info->displayLabel = new wchar_t[nameLen + 1];
++        wcscpy_s(info->displayLabel, nameLen + 1, label);
++        info->displayLabelLength = (unsigned char)nameLen;
++        info->displayLabelViewableStartIndex = 0;
++        info->data.isReadyToJoin = true;
++        info->data.isJoinable = true;
++        strncpy_s(info->data.hostIP, sizeof(info->data.hostIP), g_Win64MultiplayerIP, _TRUNCATE);
++        info->data.hostPort = g_Win64MultiplayerPort;
++        info->sessionId = (SessionID)(static_cast<uint64_t>(inet_addr(g_Win64MultiplayerIP)) | (static_cast<uint64_t>(g_Win64MultiplayerPort) << 32));
++        friendsSessions[0].push_back(info);
++    }
++
+      m_searchResultsCount[0] = (int)friendsSessions[0].size();
+ 
+      if (m_SessionsUpdatedCallback != NULL)
+diff --git a/Minecraft.Client/Windows64/Windows64_Minecraft.cpp b/Minecraft.Client/Windows64/Windows64_Minecraft.cpp
+index 1146b86d..f7072c1d 100644
+--- a/Minecraft.Client/Windows64/Windows64_Minecraft.cpp
++++ b/Minecraft.Client/Windows64/Windows64_Minecraft.cpp
+@@ -989,6 +989,10 @@ static Minecraft* InitialiseMinecraftRuntime()
+ 
+      ProfileManager.SetDebugFullOverride(true);
+ 
++    // Initialise storage manager — was accidentally left inside #if 0 in original code
++    StorageManager.Init(0, app.GetString(IDS_DEFAULT_SAVENAME), "savegame.dat", FIFTY_ONE_MB, &CConsoleMinecraftApp::DisplaySavingMessage, (LPVOID)&app, "");
++    StorageManager.StoreTMSPathName();
++
+      Tesselator::CreateNewThreadStorage(1024 * 1024);
+      AABB::CreateNewThreadStorage();
+      Vec3::CreateNewThreadStorage();
+diff --git a/Minecraft.World/ConsoleSaveFileOutputStream.cpp b/Minecraft.World/ConsoleSaveFileOutputStream.cpp
+index 3d8bb3f7..3fd9c0c5 100644
+--- a/Minecraft.World/ConsoleSaveFileOutputStream.cpp
++++ b/Minecraft.World/ConsoleSaveFileOutputStream.cpp
+@@ -66,7 +66,7 @@ void ConsoleSaveFileOutputStream::write(byteArray b)
+ 
+      BOOL result = m_saveFile->writeFile(
+          m_file,
+-        &b.data, // data buffer
++        b.data, // data buffer
+          b.length, // number of bytes to write
+          &numberOfBytesWritten // number of bytes written
+          );
