@@ -239,6 +239,7 @@ UIController::UIController()
 	m_mouseDraggingSliderId = -1;
 	m_lastHoverMouseX = -1;
 	m_lastHoverMouseY = -1;
+	m_wasControllerConnected = false;
 	m_accumulatedTicks = 0;
 	m_lastUiSfx = 0;
 
@@ -784,6 +785,38 @@ void UIController::tickInput()
 #endif
 		{
 #ifdef _WINDOWS64
+			// When a controller is plugged in and focus is NULL then set focus to the first button
+			{
+				bool controllerConnected = Win64_IsControllerConnected();
+				if (controllerConnected && !m_wasControllerConnected)
+				{
+					UIScene* pFocusScene = NULL;
+					for (int grp = 0; grp < eUIGroup_COUNT && !pFocusScene; ++grp)
+					{
+						pFocusScene = m_groups[grp]->GetTopScene(eUILayer_Debug);
+						if (!pFocusScene) pFocusScene = m_groups[grp]->GetTopScene(eUILayer_Tooltips);
+						if (!pFocusScene) pFocusScene = m_groups[grp]->GetTopScene(eUILayer_Error);
+						if (!pFocusScene) pFocusScene = m_groups[grp]->GetTopScene(eUILayer_Alert);
+						if (!pFocusScene) pFocusScene = m_groups[grp]->GetTopScene(eUILayer_Popup);
+						if (!pFocusScene) pFocusScene = m_groups[grp]->GetTopScene(eUILayer_Fullscreen);
+						if (!pFocusScene) pFocusScene = m_groups[grp]->GetTopScene(eUILayer_Scene);
+					}
+					if (pFocusScene && pFocusScene->getMovie())
+					{
+						Iggy* focusMovie = pFocusScene->getMovie();
+						IggyFocusHandle currentFocus = IGGY_FOCUS_NULL;
+						IggyFocusableObject focusables[64];
+						S32 numFocusables = 0;
+						IggyPlayerGetFocusableObjects(focusMovie, &currentFocus, focusables, 64, &numFocusables);
+						if (currentFocus == IGGY_FOCUS_NULL && numFocusables > 0)
+						{
+							IggyPlayerSetFocusRS(focusMovie, focusables[0].object, 0);
+						}
+					}
+				}
+				m_wasControllerConnected = controllerConnected;
+			}
+
 			if (!g_KBMInput.IsMouseGrabbed() && g_KBMInput.IsKBMActive())
 			{
 				UIScene* pScene = NULL;

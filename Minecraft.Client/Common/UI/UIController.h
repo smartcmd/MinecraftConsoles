@@ -166,6 +166,7 @@ private:
 	int m_mouseDraggingSliderId;
 	int m_lastHoverMouseX;
 	int m_lastHoverMouseY;
+	bool m_wasControllerConnected;
 	//bool m_bSysUIShowing;
 	bool m_bSystemUIShowing;
 	C4JThread *m_reloadSkinThread;
