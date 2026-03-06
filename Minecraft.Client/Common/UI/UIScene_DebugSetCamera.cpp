@@ -92,11 +92,32 @@ void UIScene_DebugSetCamera::onDirectEditFinished(UIControl_TextInput *input, UI
 	double val = 0;
 	if (!value.empty()) val = _fromString<double>(value);
 
-	if (input == &m_textInputX)           currentPosition->m_camX = val;
-	else if (input == &m_textInputY)      currentPosition->m_camY = val;
-	else if (input == &m_textInputZ)      currentPosition->m_camZ = val;
-	else if (input == &m_textInputYRot)   currentPosition->m_yRot = val;
-	else if (input == &m_textInputElevation) currentPosition->m_elev = val;
+	if (input == &m_textInputX)           
+	{
+		currentPosition->m_camX = val;
+		if (val > 30000000) currentPosition->m_camX = 30000000;
+
+	}
+else if (input == &m_textInputY)    
+	{
+		currentPosition->m_camY = val;
+		if (val > 300) currentPosition->m_camY = 300;
+		if (val < -16) currentPosition->m_camY = 70;
+	}
+	
+else if (input == &m_textInputZ)      
+	{
+		currentPosition->m_camZ = val;
+		if (val > 30000000) currentPosition->m_camZ = 30000000;
+	}
+else if (input == &m_textInputYRot)
+	{
+		currentPosition->m_yRot = val;
+	}
+else if (input == &m_textInputElevation)
+	{
+		currentPosition->m_elev = val;
+	}
 }
 
 bool UIScene_DebugSetCamera::handleMouseClick(F32 x, F32 y)
