@@ -32,11 +32,7 @@ UIScene_DLCMainMenu::UIScene_DLCMainMenu(int iPad, void *initData, UILayer *pare
 
 	if(m_loadedResolution == eSceneResolution_1080)
 	{
-#ifdef _DURANGO
-		m_labelXboxStore.init(IDS_XBOX_STORE);
-#else
 		m_labelXboxStore.init( L"" );
-#endif
 	}
 
 #if defined(_DURANGO)
@@ -52,10 +48,6 @@ UIScene_DLCMainMenu::UIScene_DLCMainMenu(int iPad, void *initData, UILayer *pare
 #endif
 	
 	TelemetryManager->RecordMenuShown(iPad, eUIScene_DLCMainMenu, 0);
-
-#if defined __ORBIS__ || defined __PSVITA__
-	app.GetCommerce()->ShowPsStoreIcon();
-#endif
 
 #if ( defined __PS3__ || defined __ORBIS__ || defined __PSVITA__ )
 	addTimer( PLAYER_ONLINE_TIMER_ID, PLAYER_ONLINE_TIMER_TIME );
@@ -96,9 +88,6 @@ void UIScene_DLCMainMenu::handleInput(int iPad, int key, bool repeat, bool press
 	case ACTION_MENU_CANCEL:
 		if(pressed)
 		{
-#if defined __ORBIS__ || defined __PSVITA__
-			app.GetCommerce()->HidePsStoreIcon();
-#endif
 			navigateBack();
 		}
 		break;
@@ -168,9 +157,6 @@ int UIScene_DLCMainMenu::ExitDLCMainMenu(void *pParam,int iPad,C4JStorage::EMess
 {
 	UIScene_DLCMainMenu* pClass = (UIScene_DLCMainMenu*)pParam;
 
-#if defined __ORBIS__ || defined __PSVITA__
-	app.GetCommerce()->HidePsStoreIcon();
-#endif
 	pClass->navigateBack();
 
 	return 0;

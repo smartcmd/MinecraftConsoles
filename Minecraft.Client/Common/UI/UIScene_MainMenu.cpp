@@ -46,7 +46,7 @@ UIScene_MainMenu::UIScene_MainMenu(int iPad, void *initData, UILayer *parentLaye
 	if(ProfileManager.IsFullVersion())
 	{
 		m_bTrialVersion=false;
-		m_buttons[(int)eControl_UnlockOrDLC].init(IDS_DOWNLOADABLECONTENT,eControl_UnlockOrDLC);
+		removeControl( &m_buttons[(int)eControl_UnlockOrDLC], false );
 	}
 	else
 	{
