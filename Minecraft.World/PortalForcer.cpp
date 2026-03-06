@@ -19,9 +19,9 @@ PortalForcer::PortalForcer(ServerLevel *level)
 
 PortalForcer::~PortalForcer()
 {
-	for(AUTO_VAR(it,cachedPortals.begin()); it != cachedPortals.end(); ++it)
+	for(auto& it : cachedPortals)
 	{
-		delete it->second;
+		delete it.second;
 	}
 }
 
@@ -96,8 +96,8 @@ bool PortalForcer::findPortal(shared_ptr<Entity> e, double xOriginal, double yOr
 	long hash = ChunkPos::hashCode(xc, zc);
 	bool updateCache = true;
 
-	AUTO_VAR(it, cachedPortals.find(hash));
-	if (it != cachedPortals.end())
+    auto it = cachedPortals.find(hash);
+    if (it != cachedPortals.end())
 	{
 		PortalPosition *pos = it->second;
 
@@ -271,7 +271,7 @@ bool PortalForcer::createPortal(shared_ptr<Entity> e)
 	int XZSIZE = level->dimension->getXZSize() * 16; // XZSize is chunks, convert to blocks
 	int XZOFFSET = (XZSIZE / 2) - 4; // Subtract 4 to stay away from the edges // TODO Make the 4 a constant in HellRandomLevelSource
 
-	// Move the positions that we want to check away from the edge of the world	
+	// Move the positions that we want to check away from the edge of the world
 	if( (xc - r) < -XZOFFSET )
 	{
 		app.DebugPrintf("Adjusting portal creation x due to being too close to the edge\n");
@@ -339,7 +339,7 @@ bool PortalForcer::createPortal(shared_ptr<Entity> e)
 										int yt = y + h;
 										int zt = z + (s - 1) * za - b * xa;
 
-										// 4J Stu - Changes to stop Portals being created at the border of the nether inside the bedrock		
+										// 4J Stu - Changes to stop Portals being created at the border of the nether inside the bedrock
 										if( ( xt < -XZOFFSET ) || ( xt >= XZOFFSET ) || ( zt < -XZOFFSET ) || ( zt >= XZOFFSET ) )
 										{
 											app.DebugPrintf("Skipping possible portal location as at least one block is too close to the edge\n");
@@ -399,7 +399,7 @@ next_first: continue;
 									int yt = y + h;
 									int zt = z + (s - 1) * za;
 
-									// 4J Stu - Changes to stop Portals being created at the border of the nether inside the bedrock		
+									// 4J Stu - Changes to stop Portals being created at the border of the nether inside the bedrock
 									if( ( xt < -XZOFFSET ) || ( xt >= XZOFFSET ) || ( zt < -XZOFFSET ) || ( zt >= XZOFFSET ) )
 									{
 										app.DebugPrintf("Skipping possible portal location as at least one block is too close to the edge\n");
@@ -508,8 +508,8 @@ void PortalForcer::tick(__int64 time)
 	{
 		__int64 cutoff = time - SharedConstants::TICKS_PER_SECOND * 30;
 
-		for(AUTO_VAR(it,cachedPortalKeys.begin()); it != cachedPortalKeys.end();)
-		{
+        for (auto it = cachedPortalKeys.begin(); it != cachedPortalKeys.end();)
+        {
 			__int64 key = *it;
 			PortalPosition *pos = cachedPortals[key];
 

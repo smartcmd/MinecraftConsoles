@@ -78,10 +78,8 @@ void VillageSiege::tick()
 bool VillageSiege::tryToSetupSiege()
 {
 	vector<shared_ptr<Player> > *players = &level->players;
-	//for (Player player : players)
-	for(AUTO_VAR(it, players->begin()); it != players->end(); ++it)
+	for(auto& player : *players)
 	{
-		shared_ptr<Player> player = *it;
 		shared_ptr<Village> _village = level->villages->getClosestVillage((int) player->x, (int) player->y, (int) player->z, 1);
 		village = _village;
 
@@ -103,9 +101,8 @@ bool VillageSiege::tryToSetupSiege()
 			overlaps = false;
 			vector<shared_ptr<Village> > *villages = level->villages->getVillages();
 			//for (Village v : level.villages.getVillages())
-			for(AUTO_VAR(itV, villages->begin()); itV != villages->end(); ++itV)
+			for(auto& v : *villages)
 			{
-				shared_ptr<Village>v = *itV;
 				if (v == _village) continue;
 				if (v->isInside(spawnX, spawnY, spawnZ))
 				{
@@ -132,16 +129,11 @@ bool VillageSiege::trySpawn()
 	Vec3 *spawnPos = findRandomSpawnPos(spawnX, spawnY, spawnZ);
 	if (spawnPos == NULL) return false;
 	shared_ptr<Zombie> mob;
-	//try
 	{
 		mob = shared_ptr<Zombie>( new Zombie(level) );
 		mob->finalizeMobSpawn(NULL);
 		mob->setVillager(false);
 	}
-	//catch (Exception e) {
-	//	e.printStackTrace();
-	//	return false;
-	//}
 	mob->moveTo(spawnPos->x, spawnPos->y, spawnPos->z, level->random->nextFloat() * 360, 0);
 	level->addEntity(mob);
 	shared_ptr<Village> _village = village.lock();

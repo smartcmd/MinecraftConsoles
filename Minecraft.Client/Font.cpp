@@ -60,7 +60,7 @@ Font::Font(Options *options, const wstring& name, Textures* textures, bool enfor
 	{
         int xt = i % m_cols;
         int yt = i / m_cols;
-		
+
         int x = 7;
         for (; x >= 0; x--)
 		{
@@ -70,7 +70,7 @@ Font::Font(Options *options, const wstring& name, Textures* textures, bool enfor
 			{
                 int yPixel = (yt * 8 + y) * w;
 				bool emptyPixel = (rawPixels[xPixel + yPixel] >> 24) == 0; // Check the alpha value
-                if (!emptyPixel) emptyColumn = false; 
+                if (!emptyPixel) emptyColumn = false;
             }
             if (!emptyColumn)
 			{
@@ -127,13 +127,13 @@ Font::~Font()
 #endif
 
 void Font::renderCharacter(wchar_t c)
-{	
+{
 	float xOff = c % m_cols * m_charWidth;
 	float yOff = c / m_cols * m_charWidth;
 
 	float width = charWidths[c] - .01f;
 	float height = m_charHeight - .01f;
-	
+
 	float fontWidth = m_cols * m_charWidth;
 	float fontHeight = m_rows * m_charHeight;
 
@@ -235,7 +235,7 @@ void Font::draw(const wstring &str, bool dropShadow)
 			i += 1;
 			continue;
 		}
-		
+
 		// "noise" for crazy splash screen message
 		if (noise)
 		{
@@ -245,7 +245,7 @@ void Font::draw(const wstring &str, bool dropShadow)
 				newc = random->nextInt(SharedConstants::acceptableLetters.length());
 			} while (charWidths[c + 32] != charWidths[newc + 32]);
 			c = newc;
-		}		
+		}
 
 		renderCharacter(c);
 	}
@@ -366,13 +366,12 @@ void Font::drawWordWrapInternal(const wstring& string, int x, int y, int w, int 
     vector<wstring>lines = stringSplit(string,L'\n');
     if (lines.size() > 1)
 	{
-		AUTO_VAR(itEnd, lines.end());
-		for (AUTO_VAR(it, lines.begin()); it != itEnd; it++)
-		{
+        for ( auto& it : lines )
+        {
 			// 4J Stu - Don't draw text that will be partially cutoff/overlap something it shouldn't
-			if( (y + this->wordWrapHeight(*it, w)) > h) break;
-            drawWordWrapInternal(*it, x, y, w, col, h);
-            y += this->wordWrapHeight(*it, w);
+			if( (y + this->wordWrapHeight(it, w)) > h) break;
+            drawWordWrapInternal(it, x, y, w, col, h);
+            y += this->wordWrapHeight(it, w);
         }
         return;
     }
@@ -418,10 +417,9 @@ int Font::wordWrapHeight(const wstring& string, int w)
     if (lines.size() > 1)
 	{
         int h = 0;
-		AUTO_VAR(itEnd, lines.end());
-		for (AUTO_VAR(it, lines.begin()); it != itEnd; it++)
-		{
-            h += this->wordWrapHeight(*it, w);
+        for ( auto& it : lines )
+        {
+            h += this->wordWrapHeight(it, w);
         }
         return h;
     }
@@ -483,7 +481,7 @@ bool Font::AllCharactersValid(const wstring &str)
 		int index = SharedConstants::acceptableLetters.find(c);
 
 		if ((c != ' ') && !(index > 0 && !enforceUnicodeSheet))
-		{					
+		{
 			return false;
 		}
 	}
@@ -598,7 +596,7 @@ void Font::renderUnicodeCharacter(wchar_t c)
 	float xOff = c % 16 * 16 + left;
 	float yOff = (c & 0xFF) / 16 * 16;
 	float width = right - left - .02f;
-	
+
     Tesselator *t = Tesselator::getInstance();
 	t->begin(GL_TRIANGLE_STRIP);
 	t->tex(xOff / 256.0F, yOff / 256.0F);

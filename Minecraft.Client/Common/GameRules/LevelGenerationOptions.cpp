@@ -59,7 +59,7 @@ LevelGenerationOptions::LevelGenerationOptions(DLCPack *parentPack)
 	m_pbBaseSaveData = NULL;
 	m_dwBaseSaveSize = 0;
 
-	m_parentDLCPack = parentPack;	
+	m_parentDLCPack = parentPack;
 	m_bLoadingData = false;
 }
 
@@ -67,23 +67,24 @@ LevelGenerationOptions::~LevelGenerationOptions()
 {
 	clearSchematics();
 	if(m_spawnPos != NULL) delete m_spawnPos;
-	for(AUTO_VAR(it, m_schematicRules.begin()); it != m_schematicRules.end(); ++it)
+	for (auto& it : m_schematicRules )
 	{
-		delete *it;
-	}
-	for(AUTO_VAR(it, m_structureRules.begin()); it != m_structureRules.end(); ++it)
-	{
-		delete *it;
+		delete it;
 	}
 
-	for(AUTO_VAR(it, m_biomeOverrides.begin()); it != m_biomeOverrides.end(); ++it)
+	for (auto& it : m_structureRules )
 	{
-		delete *it;
+		delete it;
 	}
 
-	for(AUTO_VAR(it, m_features.begin()); it != m_features.end(); ++it)
+	for (auto& it : m_biomeOverrides )
 	{
-		delete *it;
+		delete it;
+	}
+
+	for (auto& it : m_features )
+	{
+		delete it;
 	}
 
 	if (m_stringTable)
@@ -100,16 +101,16 @@ void LevelGenerationOptions::writeAttributes(DataOutputStream *dos, UINT numAttr
 	GameRuleDefinition::writeAttributes(dos, numAttrs + 5);
 
 	ConsoleGameRules::write(dos, ConsoleGameRules::eGameRuleAttr_spawnX);
-	dos->writeUTF(_toString(m_spawnPos->x));
+	dos->writeUTF(std::to_wstring(m_spawnPos->x));
 	ConsoleGameRules::write(dos, ConsoleGameRules::eGameRuleAttr_spawnY);
-	dos->writeUTF(_toString(m_spawnPos->y));
+	dos->writeUTF(std::to_wstring(m_spawnPos->y));
 	ConsoleGameRules::write(dos, ConsoleGameRules::eGameRuleAttr_spawnZ);
-	dos->writeUTF(_toString(m_spawnPos->z));
+	dos->writeUTF(std::to_wstring(m_spawnPos->z));
 
 	ConsoleGameRules::write(dos, ConsoleGameRules::eGameRuleAttr_seed);
-	dos->writeUTF(_toString(m_seed));
+	dos->writeUTF(std::to_wstring(m_seed));
 	ConsoleGameRules::write(dos, ConsoleGameRules::eGameRuleAttr_flatworld);
-	dos->writeUTF(_toString(m_useFlatWorld));
+	dos->writeUTF(std::to_wstring(m_useFlatWorld));
 }
 
 void LevelGenerationOptions::getChildren(vector<GameRuleDefinition *> *children)
@@ -117,18 +118,25 @@ void LevelGenerationOptions::getChildren(vector<GameRuleDefinition *> *children)
 	GameRuleDefinition::getChildren(children);
 
 	vector<ApplySchematicRuleDefinition *> used_schematics;
-	for (AUTO_VAR(it, m_schematicRules.begin()); it != m_schematicRules.end(); it++)
-		if ( !(*it)->isComplete() )
-			used_schematics.push_back( *it );
+	for (auto& it : m_schematicRules )
+		if ( it && !it->isComplete() )
+			used_schematics.push_back( it );
 
-	for(AUTO_VAR(it, m_structureRules.begin()); it!=m_structureRules.end(); it++)
-		children->push_back( *it );
-	for(AUTO_VAR(it, used_schematics.begin()); it!=used_schematics.end(); it++)
-		children->push_back( *it );
-	for(AUTO_VAR(it, m_biomeOverrides.begin()); it != m_biomeOverrides.end(); ++it)
-		children->push_back( *it );
-	for(AUTO_VAR(it, m_features.begin()); it != m_features.end(); ++it)
-		children->push_back( *it );
+	for (auto& it : m_structureRules)
+		if ( it )
+			children->push_back( it );
+
+	for (auto& it : used_schematics)
+		if ( it )
+			children->push_back( it );
+
+	for (auto& it : m_biomeOverrides)
+		if ( it )
+			children->push_back( it );
+
+	for (auto& it : m_features)
+		if ( it )
+			children->push_back( it );
 }
 
 GameRuleDefinition *LevelGenerationOptions::addChild(ConsoleGameRules::EGameRuleType ruleType)
@@ -195,7 +203,7 @@ void LevelGenerationOptions::addAttribute(const wstring &attributeName, const ws
 	{
 		if(attributeValue.compare(L"true") == 0) m_useFlatWorld = true;
 		app.DebugPrintf("LevelGenerationOptions: Adding parameter flatworld=%s\n",m_useFlatWorld?"TRUE":"FALSE");
-	}	
+	}
 	else if(attributeName.compare(L"saveName") == 0)
 	{
 		wstring string(attributeValue);
@@ -218,7 +226,7 @@ void LevelGenerationOptions::addAttribute(const wstring &attributeName, const ws
 		app.DebugPrintf("LevelGenerationOptions: Adding parameter displayName=%ls\n", getDisplayName());
 	}
 	else if(attributeName.compare(L"texturePackId") == 0)
-	{	
+	{
 		setRequiredTexturePackId( _fromString<unsigned int>(attributeValue) );
 		setRequiresTexturePack( true );
 		app.DebugPrintf("LevelGenerationOptions: Adding parameter texturePackId=%0x\n", getRequiredTexturePackId());
@@ -249,19 +257,14 @@ void LevelGenerationOptions::processSchematics(LevelChunk *chunk)
 {
 	PIXBeginNamedEvent(0,"Processing schematics for chunk (%d,%d)", chunk->x, chunk->z);
 	AABB *chunkBox = AABB::newTemp(chunk->x*16,0,chunk->z*16,chunk->x*16 + 16,Level::maxBuildHeight,chunk->z*16 + 16);
-	for( AUTO_VAR(it, m_schematicRules.begin()); it != m_schematicRules.end();++it)
-	{
-		ApplySchematicRuleDefinition *rule = *it;
+	for( ApplySchematicRuleDefinition *rule : m_schematicRules )
 		rule->processSchematic(chunkBox, chunk);
-	}
 
 	int cx = (chunk->x << 4);
 	int cz = (chunk->z << 4);
 
-	for( AUTO_VAR(it, m_structureRules.begin()); it != m_structureRules.end(); it++ )
+	for ( ConsoleGenerateStructure *structureStart : m_structureRules )
 	{
-		ConsoleGenerateStructure *structureStart = *it;
-
 		if (structureStart->getBoundingBox()->intersects(cx, cz, cx + 15, cz + 15))
 		{
 			BoundingBox *bb = new BoundingBox(cx, cz, cx + 15, cz + 15);
@@ -276,9 +279,8 @@ void LevelGenerationOptions::processSchematicsLighting(LevelChunk *chunk)
 {
 	PIXBeginNamedEvent(0,"Processing schematics (lighting) for chunk (%d,%d)", chunk->x, chunk->z);
 	AABB *chunkBox = AABB::newTemp(chunk->x*16,0,chunk->z*16,chunk->x*16 + 16,Level::maxBuildHeight,chunk->z*16 + 16);
-	for( AUTO_VAR(it, m_schematicRules.begin()); it != m_schematicRules.end();++it)
+	for ( ApplySchematicRuleDefinition *rule : m_schematicRules )
 	{
-		ApplySchematicRuleDefinition *rule = *it;
 		rule->processSchematicLighting(chunkBox, chunk);
 	}
 	PIXEndNamedEvent();
@@ -292,16 +294,14 @@ bool LevelGenerationOptions::checkIntersects(int x0, int y0, int z0, int x1, int
 	// a) ores generally being below ground/sea level and b) tutorial world additions generally being above ground/sea level
 	if(!m_bHaveMinY)
 	{
-		for(AUTO_VAR(it, m_schematicRules.begin()); it != m_schematicRules.end();++it)
+		for ( ApplySchematicRuleDefinition *rule : m_schematicRules )
 		{
-			ApplySchematicRuleDefinition *rule = *it;
 			int minY = rule->getMinY();
 			if(minY < m_minY) m_minY = minY;
 		}
 
-		for( AUTO_VAR(it, m_structureRules.begin()); it != m_structureRules.end(); it++ )
+		for ( ConsoleGenerateStructure *structureStart : m_structureRules )
 		{
-			ConsoleGenerateStructure *structureStart = *it;			
 			int minY = structureStart->getMinY();
 			if(minY < m_minY) m_minY = minY;
 		}
@@ -313,18 +313,16 @@ bool LevelGenerationOptions::checkIntersects(int x0, int y0, int z0, int x1, int
 	if( y1 < m_minY ) return false;
 
 	bool intersects = false;
-	for(AUTO_VAR(it, m_schematicRules.begin()); it != m_schematicRules.end();++it)
+	for( ApplySchematicRuleDefinition *rule : m_schematicRules )
 	{
-		ApplySchematicRuleDefinition *rule = *it;
 		intersects = rule->checkIntersects(x0,y0,z0,x1,y1,z1);
 		if(intersects) break;
 	}
 
 	if(!intersects)
 	{
-		for( AUTO_VAR(it, m_structureRules.begin()); it != m_structureRules.end(); it++ )
+		for( ConsoleGenerateStructure *structureStart : m_structureRules )
 		{
-			ConsoleGenerateStructure *structureStart = *it;			
 			intersects = structureStart->checkIntersects(x0,y0,z0,x1,y1,z1);
 			if(intersects) break;
 		}
@@ -335,9 +333,9 @@ bool LevelGenerationOptions::checkIntersects(int x0, int y0, int z0, int x1, int
 
 void LevelGenerationOptions::clearSchematics()
 {
-	for(AUTO_VAR(it, m_schematics.begin()); it != m_schematics.end(); ++it)
+	for ( auto& it : m_schematics )
 	{
-		delete it->second;
+		delete it.second;
 	}
 	m_schematics.clear();
 }
@@ -345,7 +343,7 @@ void LevelGenerationOptions::clearSchematics()
 ConsoleSchematicFile *LevelGenerationOptions::loadSchematicFile(const wstring &filename, PBYTE pbData, DWORD dwLen)
 {
 	// If we have already loaded this, just return
-	AUTO_VAR(it, m_schematics.find(filename));
+	auto it = m_schematics.find(filename);
 	if(it != m_schematics.end())
 	{
 #ifndef _CONTENT_PACKAGE
@@ -370,7 +368,7 @@ ConsoleSchematicFile *LevelGenerationOptions::getSchematicFile(const wstring &fi
 {
 	ConsoleSchematicFile *schematic = NULL;
 	// If we have already loaded this, just return
-	AUTO_VAR(it, m_schematics.find(filename));
+	auto it = m_schematics.find(filename);
 	if(it != m_schematics.end())
 	{
 		schematic = it->second;
@@ -381,7 +379,7 @@ ConsoleSchematicFile *LevelGenerationOptions::getSchematicFile(const wstring &fi
 void LevelGenerationOptions::releaseSchematicFile(const wstring &filename)
 {
 	// 4J Stu - We don't want to delete them when done, but probably want to keep a set of active schematics for the current world
-	//AUTO_VAR(it, m_schematics.find(filename));
+	// auto it = m_schematics.find(filename);
 	//if(it != m_schematics.end())
 	//{
 	//	ConsoleSchematicFile *schematic = it->second;
@@ -413,10 +411,9 @@ LPCWSTR LevelGenerationOptions::getString(const wstring &key)
 
 void LevelGenerationOptions::getBiomeOverride(int biomeId, BYTE &tile, BYTE &topTile)
 {
-	for(AUTO_VAR(it, m_biomeOverrides.begin()); it != m_biomeOverrides.end(); ++it)
+	for ( BiomeOverride *bo : m_biomeOverrides )
 	{
-		BiomeOverride *bo = *it;
-		if(bo->isBiome(biomeId))
+		if ( bo && bo->isBiome(biomeId) )
 		{
 			bo->getTileValues(tile,topTile);
 			break;
@@ -428,9 +425,8 @@ bool LevelGenerationOptions::isFeatureChunk(int chunkX, int chunkZ, StructureFea
 {
 	bool isFeature = false;
 
-	for(AUTO_VAR(it, m_features.begin()); it != m_features.end(); ++it)
+	for( StartFeature *sf : m_features )
 	{
-		StartFeature *sf = *it;
 		if(sf->isFeatureChunk(chunkX, chunkZ, feature, orientation))
 		{
 			isFeature = true;
@@ -444,17 +440,17 @@ unordered_map<wstring, ConsoleSchematicFile *> *LevelGenerationOptions::getUnfin
 {
 	// Clean schematic rules.
 	unordered_set<wstring> usedFiles = unordered_set<wstring>();
-	for (AUTO_VAR(it, m_schematicRules.begin()); it!=m_schematicRules.end(); it++)
-		if ( !(*it)->isComplete() )
-			usedFiles.insert( (*it)->getSchematicName() );
+	for ( auto& it : m_schematicRules )
+		if ( !it->isComplete() )
+			usedFiles.insert( it->getSchematicName() );
 
 	// Clean schematic files.
-	unordered_map<wstring, ConsoleSchematicFile *> *out 
+	unordered_map<wstring, ConsoleSchematicFile *> *out
 		= new unordered_map<wstring, ConsoleSchematicFile *>();
-	for (AUTO_VAR(it, usedFiles.begin()); it!=usedFiles.end(); it++)
-		out->insert( pair<wstring, ConsoleSchematicFile *>(*it, getSchematicFile(*it)) );
+	for ( auto& it : usedFiles )
+		out->insert( pair<wstring, ConsoleSchematicFile *>(it, getSchematicFile(it)) );
 
-	return out;		
+	return out;
 }
 
 void LevelGenerationOptions::loadBaseSaveData()
@@ -472,7 +468,7 @@ void LevelGenerationOptions::loadBaseSaveData()
 		{
 			// corrupt DLC
 			setLoadedData();
-			app.DebugPrintf("Failed to mount LGO DLC %d for pad %d\n",mountIndex,ProfileManager.GetPrimaryPad());	
+			app.DebugPrintf("Failed to mount LGO DLC %d for pad %d\n",mountIndex,ProfileManager.GetPrimaryPad());
 		}
 		else
 		{
@@ -604,7 +600,7 @@ int LevelGenerationOptions::packMounted(LPVOID pParam,int iPad,DWORD dwErr,DWORD
 			}
 
 		}
-#ifdef _DURANGO			
+#ifdef _DURANGO
 		DWORD result = StorageManager.UnmountInstalledDLC(L"WPACK");
 #else
 		DWORD result = StorageManager.UnmountInstalledDLC("WPACK");
@@ -619,11 +615,10 @@ int LevelGenerationOptions::packMounted(LPVOID pParam,int iPad,DWORD dwErr,DWORD
 
 void LevelGenerationOptions::reset_start()
 {
-	for (	AUTO_VAR( it, m_schematicRules.begin());
-		it != m_schematicRules.end();
-		it++	)
+	for ( auto& it : m_schematicRules )
 	{
-		(*it)->reset();
+		if ( it )
+			it->reset();
 	}
 }
 
@@ -651,7 +646,7 @@ bool LevelGenerationOptions::requiresTexturePack() { return info()->requiresText
 UINT LevelGenerationOptions::getRequiredTexturePackId() { return info()->getRequiredTexturePackId(); }
 
 wstring LevelGenerationOptions::getDefaultSaveName()
-{ 
+{
 	switch (getSrc())
 	{
 	case eSrc_fromSave:		return getString( info()->getDefaultSaveName() );
@@ -661,7 +656,7 @@ wstring LevelGenerationOptions::getDefaultSaveName()
 	return L"";
 }
 LPCWSTR LevelGenerationOptions::getWorldName()
-{ 
+{
 	switch (getSrc())
 	{
 	case eSrc_fromSave:		return getString( info()->getWorldName() );

@@ -40,10 +40,10 @@ PlayerChunkMap::PlayerChunk::~PlayerChunk()
 // flag array and adds to it for this ServerPlayer.
 void PlayerChunkMap::flagEntitiesToBeRemoved(unsigned int *flags, bool *flagToBeRemoved)
 {
-	for(AUTO_VAR(it,players.begin()); it != players.end(); it++)
+	for(auto& serverPlayer : players)
 	{
-		shared_ptr<ServerPlayer> serverPlayer = *it;
-		serverPlayer->flagEntitiesToBeRemoved(flags, flagToBeRemoved);
+		if ( serverPlayer )
+			serverPlayer->flagEntitiesToBeRemoved(flags, flagToBeRemoved);
 	}
 }
 
@@ -52,7 +52,7 @@ void PlayerChunkMap::PlayerChunk::add(shared_ptr<ServerPlayer> player, bool send
 	//app.DebugPrintf("--- Adding player to chunk x=%d\tz=%d\n",x, z);
     if (find(players.begin(),players.end(),player) != players.end())
 	{
-		// 4J-PB - At the start of the game, lots of chunks are added, and we can then move into an area that is outside the diameter of our starting area, 
+		// 4J-PB - At the start of the game, lots of chunks are added, and we can then move into an area that is outside the diameter of our starting area,
 		// but is inside the area loaded at the start.
 		app.DebugPrintf("--- Adding player to chunk x=%d\t z=%d, but they are already in there!\n",pos.x, pos.z);
 		return;
@@ -72,7 +72,7 @@ void PlayerChunkMap::PlayerChunk::add(shared_ptr<ServerPlayer> player, bool send
 	}
 
 	players.push_back(player);
-	
+
 	player->chunksToSend.push_back(pos);
 
 #ifdef _LARGE_WORLDS
@@ -85,8 +85,8 @@ void PlayerChunkMap::PlayerChunk::remove(shared_ptr<ServerPlayer> player)
 	PlayerChunkMap::PlayerChunk *toDelete = NULL;
 
 	//app.DebugPrintf("--- PlayerChunkMap::PlayerChunk::remove x=%d\tz=%d\n",x,z);
-	AUTO_VAR(it, find(players.begin(),players.end(),player));
-	if ( it == players.end())
+    auto it = find(players.begin(), players.end(), player);
+    if ( it == players.end())
 	{
 		app.DebugPrintf("--- INFO - Removing player from chunk x=%d\t z=%d, but they are not in that chunk!\n",pos.x, pos.z);
 
@@ -99,20 +99,20 @@ void PlayerChunkMap::PlayerChunk::remove(shared_ptr<ServerPlayer> player)
 		{
 			LevelChunk *chunk = parent->level->getChunk(pos.x, pos.z);
 			updateInhabitedTime(chunk);
-			AUTO_VAR(it, find(parent->knownChunks.begin(), parent->knownChunks.end(),this));
-			if(it != parent->knownChunks.end()) parent->knownChunks.erase(it);
+            auto it = find(parent->knownChunks.begin(), parent->knownChunks.end(), this);
+            if(it != parent->knownChunks.end()) parent->knownChunks.erase(it);
 		}
         __int64 id = (pos.x + 0x7fffffffLL) | ((pos.z + 0x7fffffffLL) << 32);
-		AUTO_VAR(it, parent->chunks.find(id));
-		if( it != parent->chunks.end() )
+        auto it = parent->chunks.find(id);
+        if( it != parent->chunks.end() )
 		{
 			toDelete = it->second;	// Don't delete until the end of the function, as this might be this instance
 			parent->chunks.erase(it);
 		}
         if (changes > 0)
 		{
-			AUTO_VAR(it, find(parent->changedChunks.begin(),parent->changedChunks.end(),this));
-			parent->changedChunks.erase(it);
+            auto it = find(parent->changedChunks.begin(), parent->changedChunks.end(), this);
+            parent->changedChunks.erase(it);
         }
         parent->getLevel()->cache->drop(pos.x, pos.z);
     }
@@ -125,17 +125,19 @@ void PlayerChunkMap::PlayerChunk::remove(shared_ptr<ServerPlayer> player)
 	{
 		INetworkPlayer *thisNetPlayer = player->connection->getNetworkPlayer();
 		bool noOtherPlayersFound = true;
-		
-		if( thisNetPlayer != NULL )
+
+		if( thisNetPlayer != nullptr )
 		{
-			for( AUTO_VAR(it, players.begin()); it < players.end(); ++it )
-			{
-				shared_ptr<ServerPlayer> currPlayer = *it;
-				INetworkPlayer *currNetPlayer = currPlayer->connection->getNetworkPlayer();
-				if( currNetPlayer != NULL && currNetPlayer->IsSameSystem( thisNetPlayer ) && currPlayer->seenChunks.find(pos) != currPlayer->seenChunks.end() )
+            for (auto& currPlayer : players )
+            {
+				if ( currPlayer )
 				{
-					noOtherPlayersFound = false;
-					break;
+					INetworkPlayer *currNetPlayer = currPlayer->connection->getNetworkPlayer();
+					if( currNetPlayer != NULL && currNetPlayer->IsSameSystem( thisNetPlayer ) && currPlayer->seenChunks.find(pos) != currPlayer->seenChunks.end() )
+					{
+						noOtherPlayersFound = false;
+						break;
+					}
 				}
 			}
 			if(noOtherPlayersFound)
@@ -224,7 +226,7 @@ void PlayerChunkMap::PlayerChunk::broadcast(shared_ptr<Packet> packet)
 			}
 			else
 			{
-				for(unsigned int j = 0; j < sentTo.size(); j++ )	
+				for(unsigned int j = 0; j < sentTo.size(); j++ )
 				{
 					shared_ptr<ServerPlayer> player2 = sentTo[j];
 					INetworkPlayer *otherPlayer = player2->connection->getNetworkPlayer();
@@ -286,7 +288,7 @@ void PlayerChunkMap::PlayerChunk::broadcast(shared_ptr<Packet> packet)
 			}
 			else
 			{
-				for(unsigned int j = 0; j < sentTo.size(); j++ )	
+				for(unsigned int j = 0; j < sentTo.size(); j++ )
 				{
 					shared_ptr<ServerPlayer> player2 = sentTo[j];
 					INetworkPlayer *otherPlayer = player2->connection->getNetworkPlayer();
@@ -348,7 +350,7 @@ bool PlayerChunkMap::PlayerChunk::broadcastChanges(bool allowRegionUpdate)
 
 		// Fix for buf #95007 : TCR #001 BAS Game Stability: TU12: Code: Compliance: More than 192 dropped items causes game to freeze or crash.
 		// Block region update packets can only encode ys in a range of 1 - 256
-		if( ys > 256 ) ys = 256;		
+		if( ys > 256 ) ys = 256;
 
         broadcast( shared_ptr<BlockRegionUpdatePacket>( new BlockRegionUpdatePacket(xp, yp, zp, xs, ys, zs, level) ) );
         vector<shared_ptr<TileEntity> > *tes = level->getTileEntitiesInRegion(xp, yp, zp, xp + xs, yp + ys, zp + zs);
@@ -406,9 +408,9 @@ PlayerChunkMap::PlayerChunkMap(ServerLevel *level, int dimension, int radius)
 
 PlayerChunkMap::~PlayerChunkMap()
 {
-	for( AUTO_VAR(it, chunks.begin()); it != chunks.end(); it++ )
+	for(auto& chunk : chunks)
 	{
-		delete it->second;
+		delete chunk.second;
 	}
 }
 
@@ -479,9 +481,9 @@ bool PlayerChunkMap::hasChunk(int x, int z)
 PlayerChunkMap::PlayerChunk *PlayerChunkMap::getChunk(int x, int z, bool create)
 {
     __int64 id = (x + 0x7fffffffLL) | ((z + 0x7fffffffLL) << 32);
-	AUTO_VAR(it, chunks.find(id));
+    auto it = chunks.find(id);
 
-	PlayerChunk *chunk = NULL;
+    PlayerChunk *chunk = nullptr;
 	if( it != chunks.end() )
 	{
 		chunk = it->second;
@@ -501,9 +503,9 @@ PlayerChunkMap::PlayerChunk *PlayerChunkMap::getChunk(int x, int z, bool create)
 void PlayerChunkMap::getChunkAndAddPlayer(int x, int z, shared_ptr<ServerPlayer> player)
 {
     __int64 id = (x + 0x7fffffffLL) | ((z + 0x7fffffffLL) << 32);
-	AUTO_VAR(it, chunks.find(id));
+    auto it = chunks.find(id);
 
-	if( it != chunks.end() )
+    if( it != chunks.end() )
 	{
 		it->second->add(player);
 	}
@@ -517,8 +519,8 @@ void PlayerChunkMap::getChunkAndAddPlayer(int x, int z, shared_ptr<ServerPlayer>
 // attempt to remove from main chunk map.
 void PlayerChunkMap::getChunkAndRemovePlayer(int x, int z, shared_ptr<ServerPlayer> player)
 {
-	for( AUTO_VAR(it, addRequests.begin()); it != addRequests.end(); it++ )
-	{
+    for (auto it = addRequests.begin(); it != addRequests.end(); it++)
+    {
 		if( ( it->x == x ) &&
 			( it->z == z ) &&
 			( it->player == player ) )
@@ -528,9 +530,9 @@ void PlayerChunkMap::getChunkAndRemovePlayer(int x, int z, shared_ptr<ServerPlay
 		}
 	}
     __int64 id = (x + 0x7fffffffLL) | ((z + 0x7fffffffLL) << 32);
-	AUTO_VAR(it, chunks.find(id));
+    auto it = chunks.find(id);
 
-	if( it != chunks.end() )
+    if( it != chunks.end() )
 	{
 		it->second->remove(player);
 	}
@@ -545,10 +547,10 @@ void PlayerChunkMap::tickAddRequests(shared_ptr<ServerPlayer> player)
 		int px = (int)player->x;
 		int pz = (int)player->z;
 		int minDistSq = -1;
-		
-		AUTO_VAR(itNearest, addRequests.end());
-		for( AUTO_VAR(it, addRequests.begin()); it != addRequests.end(); it++ )
-		{
+
+        auto itNearest = addRequests.end();
+        for (auto it = addRequests.begin(); it != addRequests.end(); it++)
+        {
 			if( it->player == player )
 			{
 				int xm = ( it->x  * 16 ) + 8;
@@ -732,13 +734,13 @@ void PlayerChunkMap::remove(shared_ptr<ServerPlayer> player)
             if (playerChunk != NULL) playerChunk->remove(player);
         }
 
-	AUTO_VAR(it, find(players.begin(),players.end(),player));
-	if( players.size() > 0 && it != players.end() )
+    auto it = find(players.begin(), players.end(), player);
+    if( players.size() > 0 && it != players.end() )
 		players.erase(find(players.begin(),players.end(),player));
 
 	// 4J - added - also remove any queued requests to be added to playerchunks here
-	for( AUTO_VAR(it, addRequests.begin()); it != addRequests.end(); )
-	{
+    for (auto it = addRequests.begin(); it != addRequests.end();)
+    {
 		if( it->player == player )
 		{
 			it = addRequests.erase(it);
@@ -782,7 +784,7 @@ void PlayerChunkMap::move(shared_ptr<ServerPlayer> player)
 
 	for (int x = xc - radius; x <= xc + radius; x++)
         for (int z = zc - radius; z <= zc + radius; z++)
-		{ 
+		{
 			if (!chunkInRange(x, z, last_xc, last_zc))
 			{
 				// 4J - changed from separate getChunk & add so we can wrap these operations up and queue
@@ -815,9 +817,9 @@ bool PlayerChunkMap::isPlayerIn(shared_ptr<ServerPlayer> player, int xChunk, int
 	}
 	else
 	{
-		AUTO_VAR(it1, find(chunk->players.begin(), chunk->players.end(), player));
-		AUTO_VAR(it2, find(player->chunksToSend.begin(), player->chunksToSend.end(), chunk->pos));
-		return it1 != chunk->players.end() && it2 == player->chunksToSend.end();
+        auto it1 = find(chunk->players.begin(), chunk->players.end(), player);
+        auto it2 = find(player->chunksToSend.begin(), player->chunksToSend.end(), chunk->pos);
+        return it1 != chunk->players.end() && it2 == player->chunksToSend.end();
 	}
 
 	//return chunk == NULL ? false : chunk->players->contains(player) && !player->chunksToSend->contains(chunk->pos);
@@ -844,7 +846,7 @@ void PlayerChunkMap::setRadius(int newRadius)
 
 				for (int x = xc - newRadius; x <= xc + newRadius; x++)
 					for (int z = zc - newRadius; z <= zc + newRadius; z++)
-					{ 
+					{
 						// check if this chunk is outside the old radius area
 						if ( x < xc - radius || x > xc + radius || z < zc - radius || z > zc + radius )
 						{

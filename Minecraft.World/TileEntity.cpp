@@ -78,8 +78,8 @@ void TileEntity::load(CompoundTag *tag)
 
 void TileEntity::save(CompoundTag *tag)
 {
-	AUTO_VAR(it, classIdMap.find( this->GetType() ));
-	if ( it ==  classIdMap.end() )
+    auto it = classIdMap.find(this->GetType());
+    if ( it ==  classIdMap.end() )
 	{
 		// TODO 4J Stu - Some sort of exception handling
 		//throw new RuntimeException(this->getClass() + " is missing a mapping! This is a bug!");
@@ -98,17 +98,9 @@ void TileEntity::tick()
 shared_ptr<TileEntity> TileEntity::loadStatic(CompoundTag *tag)
 {
 	shared_ptr<TileEntity> entity = nullptr;
-
-	//try
-	//{
-		AUTO_VAR(it, idCreateMap.find(tag->getString(L"id")));
-		if (it != idCreateMap.end() ) entity = shared_ptr<TileEntity>(it->second());
-	//}
-	//catch (Exception e)
-	//{
-		// TODO 4J Stu - Exception handling?
-	//	e->printStackTrace();
-	//}
+    auto it = idCreateMap.find(tag->getString(L"id"));
+    if (it != idCreateMap.end())
+        entity = shared_ptr<TileEntity>(it->second());
 	if (entity != NULL)
 	{
 		entity->load(tag);

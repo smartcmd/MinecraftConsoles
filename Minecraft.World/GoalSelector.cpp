@@ -18,10 +18,10 @@ GoalSelector::GoalSelector()
 
 GoalSelector::~GoalSelector()
 {
-	for(AUTO_VAR(it, goals.begin()); it != goals.end(); ++it)
+	for(auto& goal : goals)
 	{
-		if((*it)->canDeletePointer) delete (*it)->goal;
-		delete (*it);
+		if(goal->canDeletePointer) delete goal->goal;
+		delete goal;
 	}
 }
 
@@ -32,15 +32,15 @@ void GoalSelector::addGoal(int prio, Goal *goal, bool canDeletePointer /*= true*
 
 void GoalSelector::removeGoal(Goal *toRemove)
 {
-	for(AUTO_VAR(it, goals.begin()); it != goals.end(); )
-	{
+    for (auto it = goals.begin(); it != goals.end();)
+    {
 		InternalGoal *ig = *it;
 		Goal *goal = ig->goal;
 
 		if (goal == toRemove)
 		{
-			AUTO_VAR(it2, find(usingGoals.begin(), usingGoals.end(), ig) );
-			if (it2 != usingGoals.end())
+            auto it2 = find(usingGoals.begin(), usingGoals.end(), ig);
+            if (it2 != usingGoals.end())
 			{
 				goal->stop();
 				usingGoals.erase(it2);
@@ -63,14 +63,11 @@ void GoalSelector::tick()
 
 	if(tickCount++ % newGoalRate == 0)
 	{
-		//for (InternalGoal ig : goals)
-		for(AUTO_VAR(it, goals.begin()); it != goals.end(); ++it)
+		for(auto& ig : goals)
 		{
-			InternalGoal *ig = *it;
-			//bool isUsing = usingGoals.contains(ig);
-			AUTO_VAR(usingIt, find(usingGoals.begin(), usingGoals.end(), ig));
+            auto usingIt = find(usingGoals.begin(), usingGoals.end(), ig);
 
-			//if (isUsing)
+            //if (isUsing)
 			if(usingIt != usingGoals.end())
 			{
 				if (!canUseInSystem(ig) || !canContinueToUse(ig))
@@ -90,8 +87,8 @@ void GoalSelector::tick()
 	}
 	else
 	{
-		for(AUTO_VAR(it, usingGoals.begin() ); it != usingGoals.end(); )
-		{
+        for (auto it = usingGoals.begin(); it != usingGoals.end();)
+        {
 			InternalGoal *ig = *it;
 			if (!ig->goal->canContinueToUse())
 			{
@@ -106,21 +103,14 @@ void GoalSelector::tick()
 	}
 
 
-	//bool debug = false;
-	//if (debug && toStart.size() > 0) System.out.println("Starting: ");
-	//for (InternalGoal ig : toStart)
-	for(AUTO_VAR(it, toStart.begin()); it != toStart.end(); ++it)
+	for(auto & ig : toStart)
 	{
-		//if (debug) System.out.println(ig.goal.toString() + ", ");
-		(*it)->goal->start();
+		ig->goal->start();
 	}
 
-	//if (debug && usingGoals.size() > 0) System.out.println("Running: ");
-	//for (InternalGoal ig : usingGoals)
-	for(AUTO_VAR(it, usingGoals.begin()); it != usingGoals.end(); ++it)
+	for(auto& ig : usingGoals)
 	{
-		//if (debug) System.out.println(ig.goal.toString());
-		(*it)->goal->tick();
+		ig->goal->tick();
 	}
 }
 
@@ -137,14 +127,13 @@ bool GoalSelector::canContinueToUse(InternalGoal *ig)
 bool GoalSelector::canUseInSystem(GoalSelector::InternalGoal *goal)
 {
 	//for (InternalGoal ig : goals)
-	for(AUTO_VAR(it, goals.begin()); it != goals.end(); ++it)
+	for(auto& ig : goals)
 	{
-		InternalGoal *ig = *it;
 		if (ig == goal) continue;
 
-		AUTO_VAR(usingIt, find(usingGoals.begin(), usingGoals.end(), ig));
+        auto usingIt = find(usingGoals.begin(), usingGoals.end(), ig);
 
-		if (goal->prio >= ig->prio)
+        if (goal->prio >= ig->prio)
 		{
 			if (usingIt != usingGoals.end() && !canCoExist(goal, ig)) return false;
 		}
@@ -166,9 +155,8 @@ void GoalSelector::setNewGoalRate(int newGoalRate)
 
 void GoalSelector::setLevel(Level *level)
 {
-	for(AUTO_VAR(it, goals.begin()); it != goals.end(); ++it)
+	for(auto& ig : goals)
 	{
-		InternalGoal *ig = *it;
 		ig->goal->setLevel(level);
 	}
 }

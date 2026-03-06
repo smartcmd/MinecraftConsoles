@@ -131,7 +131,7 @@ shared_ptr<Entity> EntityIO::newEntity(const wstring& id, Level *level)
 {
 	shared_ptr<Entity> entity;
 
-	AUTO_VAR(it, idCreateMap->find(id));
+	auto it = idCreateMap->find(id);
 	if(it != idCreateMap->end() )
 	{
 		entityCreateFn create = it->second;
@@ -169,7 +169,7 @@ shared_ptr<Entity> EntityIO::loadStatic(CompoundTag *tag, Level *level)
 		tag->remove(L"Type");
 	}
 
-	AUTO_VAR(it, idCreateMap->find(tag->getString(L"id")));
+	auto it = idCreateMap->find(tag->getString(L"id"));
 	if(it != idCreateMap->end() )
 	{
 		entityCreateFn create = it->second;
@@ -197,7 +197,7 @@ shared_ptr<Entity> EntityIO::newById(int id, Level *level)
 {
 	shared_ptr<Entity> entity;
 
-	AUTO_VAR(it, numCreateMap->find(id));
+	auto it = numCreateMap->find(id);
 	if(it != numCreateMap->end() )
 	{
 		entityCreateFn create = it->second;
@@ -222,10 +222,10 @@ shared_ptr<Entity> EntityIO::newByEnumType(eINSTANCEOF eType, Level *level)
 {
 	shared_ptr<Entity> entity;
 
-	unordered_map<eINSTANCEOF, int, eINSTANCEOFKeyHash, eINSTANCEOFKeyEq>::iterator it = classNumMap->find( eType );
+	auto it = classNumMap->find( eType );
 	if( it != classNumMap->end() )
 	{
-		AUTO_VAR(it2, numCreateMap->find(it->second));
+		auto it2 = numCreateMap->find(it->second);
 		if(it2 != numCreateMap->end() )
 		{
 			entityCreateFn create = it2->second;
@@ -257,7 +257,7 @@ wstring EntityIO::getEncodeId(shared_ptr<Entity> entity)
 
 int EntityIO::getId(const wstring &encodeId)
 {
-	AUTO_VAR(it, idNumMap->find(encodeId));
+	auto it = idNumMap->find(encodeId);
 	if (it == idNumMap->end())
 	{
 		// defaults to pig...
@@ -274,7 +274,7 @@ wstring EntityIO::getEncodeId(int entityIoValue)
 	//return classIdMap.get(class1);
 	//}
 
-	AUTO_VAR(it, numClassMap->find(entityIoValue));
+	auto it = numClassMap->find(entityIoValue);
 	if(it != numClassMap->end() )
 	{
 		unordered_map<eINSTANCEOF, wstring, eINSTANCEOFKeyHash, eINSTANCEOFKeyEq>::iterator classIdIt = classIdMap->find( it->second );
@@ -291,7 +291,7 @@ int EntityIO::getNameId(int entityIoValue)
 {
 	int id = -1;
 
-	AUTO_VAR(it, idsSpawnableInCreative.find(entityIoValue));
+	auto it = idsSpawnableInCreative.find(entityIoValue);
 	if(it != idsSpawnableInCreative.end())
 	{
 		id = it->second->nameId;
@@ -302,7 +302,7 @@ int EntityIO::getNameId(int entityIoValue)
 
 eINSTANCEOF EntityIO::getType(const wstring &idString)
 {
-	AUTO_VAR(it, numClassMap->find(getId(idString)));
+	auto it = numClassMap->find(getId(idString));
 	if(it != numClassMap->end() )
 	{
 		return it->second;
@@ -312,7 +312,7 @@ eINSTANCEOF EntityIO::getType(const wstring &idString)
 
 eINSTANCEOF EntityIO::getClass(int id)
 {
-	AUTO_VAR(it, numClassMap->find(id));
+	auto it = numClassMap->find(id);
 	if(it != numClassMap->end() )
 	{
 		return it->second;

@@ -3,7 +3,7 @@
 #include "TutorialConstraints.h"
 #include "TutorialTask.h"
 
-TutorialTask::TutorialTask(Tutorial *tutorial, int descriptionId, bool enablePreCompletion, vector<TutorialConstraint *> *inConstraints, 
+TutorialTask::TutorialTask(Tutorial *tutorial, int descriptionId, bool enablePreCompletion, vector<TutorialConstraint *> *inConstraints,
 							bool bShowMinimumTime, bool bAllowFade, bool bTaskReminders)
 		: tutorial( tutorial ), descriptionId( descriptionId ), m_promptId( -1 ), enablePreCompletion( enablePreCompletion ),
 		areConstraintsEnabled( false ), bIsCompleted( false ), bHasBeenActivated( false ),
@@ -11,9 +11,8 @@ TutorialTask::TutorialTask(Tutorial *tutorial, int descriptionId, bool enablePre
 {
 	if(inConstraints != NULL)
 	{
-		for(AUTO_VAR(it, inConstraints->begin()); it < inConstraints->end(); ++it)
+		for(auto& constraint : *inConstraints)
 		{
-			TutorialConstraint *constraint = *it;
 			constraints.push_back( constraint );
 		}
 		delete inConstraints;
@@ -26,10 +25,8 @@ TutorialTask::~TutorialTask()
 {
 	enableConstraints(false);
 
-	for(AUTO_VAR(it, constraints.begin()); it < constraints.end(); ++it)
+	for(auto& constraint : constraints)
 	{
-		TutorialConstraint *constraint = *it;
-
 		if( constraint->getQueuedForRemoval() )
 		{
 			constraint->setDeleteOnDeactivate(true);
@@ -52,9 +49,8 @@ void TutorialTask::enableConstraints(bool enable, bool delayRemove /*= false*/)
 	if( !enable && (areConstraintsEnabled || !delayRemove) )
 	{
 		// Remove
-		for(AUTO_VAR(it, constraints.begin()); it != constraints.end(); ++it)
+		for(auto& constraint : constraints)
 		{
-			TutorialConstraint *constraint = *it;
 			//app.DebugPrintf(">>>>>>>> %i\n", constraints.size());
 			tutorial->RemoveConstraint( constraint, delayRemove );
 		}
@@ -63,9 +59,8 @@ void TutorialTask::enableConstraints(bool enable, bool delayRemove /*= false*/)
 	else if( !areConstraintsEnabled && enable )
 	{
 		// Add
-		for(AUTO_VAR(it, constraints.begin()); it != constraints.end(); ++it)
+		for(auto& constraint : constraints)
 		{
-			TutorialConstraint *constraint = *it;
 			tutorial->AddConstraint( constraint );
 		}
 		areConstraintsEnabled = true;

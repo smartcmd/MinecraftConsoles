@@ -66,8 +66,8 @@ void RecordingItem::registerIcons(IconRegister *iconRegister)
 
 RecordingItem *RecordingItem::getByName(const wstring &name)
 {
-	AUTO_VAR(it,BY_NAME.find(name));
-	if(it != BY_NAME.end())
+    auto it = BY_NAME.find(name);
+    if(it != BY_NAME.end())
 	{
 		return it->second;
 	}

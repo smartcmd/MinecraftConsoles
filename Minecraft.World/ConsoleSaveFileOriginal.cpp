@@ -1043,19 +1043,21 @@ void ConsoleSaveFileOriginal::ConvertToLocalPlatform()
 	}
 	// convert each of the region files to the local platform
 	vector<FileEntry *> *allFilesInSave = getFilesWithPrefix(wstring(L""));
-	for(AUTO_VAR(it, allFilesInSave->begin()); it < allFilesInSave->end(); ++it)
+	if ( allFilesInSave )
 	{
-		FileEntry *fe = *it;
-		wstring fName( fe->data.filename );
-		wstring suffix(L".mcr");
-		if( fName.compare(fName.length() - suffix.length(), suffix.length(), suffix) == 0 )
+		for (FileEntry* fe : *allFilesInSave)
 		{
-			app.DebugPrintf("Processing a region file: %ls\n",fName.c_str());
-			ConvertRegionFile(File(fe->data.filename) );
-		}
-		else
-		{
-			app.DebugPrintf("%ls is not a region file, ignoring\n", fName.c_str());
+			wstring fName(fe->data.filename);
+			wstring suffix(L".mcr");
+			if (fName.compare(fName.length() - suffix.length(), suffix.length(), suffix) == 0)
+			{
+				app.DebugPrintf("Processing a region file: %ls\n", fName.c_str());
+				ConvertRegionFile(File(fe->data.filename));
+			}
+			else
+			{
+				app.DebugPrintf("%ls is not a region file, ignoring\n", fName.c_str());
+			}
 		}
 	}
 

@@ -56,10 +56,9 @@ void ServerCommandDispatcher::logAdminCommand(shared_ptr<CommandSender> source, 
 {
 	PlayerList *playerList = MinecraftServer::getInstance()->getPlayers();
 	//for (Player player : MinecraftServer.getInstance().getPlayers().players)
-	for(AUTO_VAR(it, playerList->players.begin()); it != playerList->players.end(); ++it)
-	{
-		shared_ptr<ServerPlayer> player = *it;
-		if (player != source && playerList->isOp(player))
+    for (auto& player : playerList->players )
+    {
+		if ( player && player != source && playerList->isOp(player))
 		{
 			// TODO: Change chat packet to be able to send more bits of data
 			// 4J Stu - Take this out until we can add the name of the player performing the action. Also if the target is a mod then maybe don't need the message?

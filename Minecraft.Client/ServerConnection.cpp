@@ -1,6 +1,8 @@
 #include "stdafx.h"
 #include "Options.h"
 #include "ServerConnection.h"
+
+#include <memory>
 #include "PendingConnection.h"
 #include "PlayerConnection.h"
 #include "ServerPlayer.h"
@@ -26,8 +28,8 @@ ServerConnection::~ServerConnection()
 // 4J - added to handle incoming connections, to replace thread that original used to have
 void ServerConnection::NewIncomingSocket(Socket *socket)
 {
-	shared_ptr<PendingConnection> unconnectedClient = shared_ptr<PendingConnection>(new PendingConnection(server, socket, L"Connection #" + _toString<int>(connectionCounter++)));
-	handleConnection(unconnectedClient);	
+	shared_ptr<PendingConnection> unconnectedClient = std::make_shared<PendingConnection>(server, socket, L"Connection #" + std::to_wstring(connectionCounter++));
+	handleConnection(unconnectedClient);
 }
 
 void ServerConnection::addPlayerConnection(shared_ptr<PlayerConnection> uc)
@@ -112,8 +114,8 @@ void ServerConnection::tick()
 
 bool ServerConnection::addPendingTextureRequest(const wstring &textureName)
 {
-	AUTO_VAR(it, find( m_pendingTextureRequests.begin(), m_pendingTextureRequests.end(), textureName));
-	if( it == m_pendingTextureRequests.end() )
+    auto it = find(m_pendingTextureRequests.begin(), m_pendingTextureRequests.end(), textureName);
+    if( it == m_pendingTextureRequests.end() )
 	{
 		m_pendingTextureRequests.push_back(textureName);
 		return true;
@@ -127,14 +129,13 @@ bool ServerConnection::addPendingTextureRequest(const wstring &textureName)
 
 void ServerConnection::handleTextureReceived(const wstring &textureName)
 {
-	AUTO_VAR(it, find( m_pendingTextureRequests.begin(), m_pendingTextureRequests.end(), textureName));
-	if( it != m_pendingTextureRequests.end() )
+    auto it = find(m_pendingTextureRequests.begin(), m_pendingTextureRequests.end(), textureName);
+    if( it != m_pendingTextureRequests.end() )
 	{
 		m_pendingTextureRequests.erase(it);
 	}
-	for (unsigned int i = 0; i < players.size(); i++)
+	for (auto& player : players)
 	{
-        shared_ptr<PlayerConnection> player = players[i];
         if (!player->done)
 		{
 			player->handleTextureReceived(textureName);
@@ -144,14 +145,13 @@ void ServerConnection::handleTextureReceived(const wstring &textureName)
 
 void ServerConnection::handleTextureAndGeometryReceived(const wstring &textureName)
 {
-	AUTO_VAR(it, find( m_pendingTextureRequests.begin(), m_pendingTextureRequests.end(), textureName));
-	if( it != m_pendingTextureRequests.end() )
+    auto it = find(m_pendingTextureRequests.begin(), m_pendingTextureRequests.end(), textureName);
+    if( it != m_pendingTextureRequests.end() )
 	{
 		m_pendingTextureRequests.erase(it);
 	}
-	for (unsigned int i = 0; i < players.size(); i++)
+	for (auto& player : players)
 	{
-		shared_ptr<PlayerConnection> player = players[i];
 		if (!player->done)
 		{
 			player->handleTextureAndGeometryReceived(textureName);
@@ -172,7 +172,7 @@ void ServerConnection::handleServerSettingsChanged(shared_ptr<ServerSettingsChan
 				app.DebugPrintf("ClientConnection::handleServerSettingsChanged - Difficulty = %d",packet->data);
 				pMinecraft->levels[i]->difficulty = packet->data;
 			}
-		}	
+		}
 	}
 // 	else if(packet->action==ServerSettingsChangedPacket::HOST_IN_GAME_SETTINGS)// options
 // 	{
@@ -190,11 +190,11 @@ void ServerConnection::handleServerSettingsChanged(shared_ptr<ServerSettingsChan
 // 		{
 // 			pMinecraft->options->SetGamertagSetting(false);
 // 		}
-// 
+//
 // 		for (unsigned int i = 0; i < players.size(); i++)
 // 		{
 // 			shared_ptr<PlayerConnection> playerconnection = players[i];
-// 			playerconnection->setShowOnMaps(pMinecraft->options->GetGamertagSetting());				
+// 			playerconnection->setShowOnMaps(pMinecraft->options->GetGamertagSetting());
 // 		}
 // 	}
 }

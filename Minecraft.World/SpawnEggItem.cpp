@@ -30,7 +30,7 @@ wstring SpawnEggItem::getHoverName(shared_ptr<ItemInstance> itemInstance)
 		//elementName += " " + I18n.get("entity." + encodeId + ".name");
 	}
 	else
-	{		
+	{
 		elementName = replaceAll(elementName,L"{*CREATURE*}",L"");
 	}
 
@@ -39,8 +39,8 @@ wstring SpawnEggItem::getHoverName(shared_ptr<ItemInstance> itemInstance)
 
 int SpawnEggItem::getColor(shared_ptr<ItemInstance> item, int spriteLayer)
 {
-	AUTO_VAR(it, EntityIO::idsSpawnableInCreative.find(item->getAuxValue()));
-	if (it != EntityIO::idsSpawnableInCreative.end())
+    auto it = EntityIO ::idsSpawnableInCreative.find(item->getAuxValue());
+    if (it != EntityIO::idsSpawnableInCreative.end())
 	{
 		EntityIO::SpawnableMobInfo *spawnableMobInfo = it->second;
 		if (spriteLayer == 0) {
@@ -228,7 +228,7 @@ bool SpawnEggItem::useOn(shared_ptr<ItemInstance> itemInstance, shared_ptr<Playe
 	}
 
 	if (result != NULL)
-	{	
+	{
 		// 4J-JEV: SetCustomName is a method for Mob not LivingEntity; so change instanceof to check for Mobs.
 		if ( result->instanceof(eTYPE_MOB) && itemInstance->hasCustomHoverName() )
 		{
@@ -237,7 +237,7 @@ bool SpawnEggItem::useOn(shared_ptr<ItemInstance> itemInstance, shared_ptr<Playe
 		if ( !player->abilities.instabuild )
 		{
 			itemInstance->count--;
-		}		
+		}
 	}
 	else
 	{

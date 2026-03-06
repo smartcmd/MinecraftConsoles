@@ -63,15 +63,15 @@ void FlatLayerInfo::setStart(int start)
 
 wstring FlatLayerInfo::toString()
 {
-	wstring result = _toString<int>(id);
+	wstring result = std::to_wstring(id);
 
 	if (height > 1)
 	{
-		result = _toString<int>(height) + L"x" + result;
+		result = std::to_wstring(height) + L"x" + result;
 	}
 	if (data > 0)
 	{
-		result += L":" + _toString<int>(data);
+		result += L":" + std::to_wstring(data);
 	}
 
 	return result;

@@ -15,13 +15,13 @@ void StartFeature::writeAttributes(DataOutputStream *dos, UINT numAttrs)
 	GameRuleDefinition::writeAttributes(dos, numAttrs + 4);
 
 	ConsoleGameRules::write(dos, ConsoleGameRules::eGameRuleAttr_chunkX);
-	dos->writeUTF(_toString(m_chunkX));
+	dos->writeUTF(std::to_wstring(m_chunkX));
 	ConsoleGameRules::write(dos, ConsoleGameRules::eGameRuleAttr_chunkZ);
-	dos->writeUTF(_toString(m_chunkZ));
+	dos->writeUTF(std::to_wstring(m_chunkZ));
 	ConsoleGameRules::write(dos, ConsoleGameRules::eGameRuleAttr_feature);
-	dos->writeUTF(_toString((int)m_feature));
+	dos->writeUTF(std::to_wstring((int)m_feature));
 	ConsoleGameRules::write(dos, ConsoleGameRules::eGameRuleAttr_orientation);
-	dos->writeUTF(_toString(m_orientation));
+	dos->writeUTF(std::to_wstring(m_orientation));
 }
 
 void StartFeature::addAttribute(const wstring &attributeName, const wstring &attributeValue)

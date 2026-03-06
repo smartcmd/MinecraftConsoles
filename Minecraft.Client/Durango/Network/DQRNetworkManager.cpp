@@ -1460,7 +1460,7 @@ void DQRNetworkManager::UpdateRoomSyncPlayers(RoomSyncData *pNewSyncData)
 	{
 		PlayerSyncData *pNewPlayer = &pNewSyncData->players[i];		
 		bool bAlreadyExisted = false;
-		for( AUTO_VAR(it, tempPlayers.begin()); it != tempPlayers.end(); it++ )
+		for (auto it = tempPlayers.begin(); it != tempPlayers.end(); it++)
 		{
 			if( pNewPlayer->m_smallId == (*it)->GetSmallId() )
 			{

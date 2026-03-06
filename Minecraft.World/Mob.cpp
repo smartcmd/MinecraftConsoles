@@ -152,38 +152,38 @@ void Mob::ate()
 {
 }
 
-void Mob::defineSynchedData() 
+void Mob::defineSynchedData()
 {
 	LivingEntity::defineSynchedData();
 	entityData->define(DATA_CUSTOM_NAME_VISIBLE, (byte) 0);
 	entityData->define(DATA_CUSTOM_NAME, L"");
 }
 
-int Mob::getAmbientSoundInterval() 
+int Mob::getAmbientSoundInterval()
 {
 	return 20 * 4;
 }
 
-void Mob::playAmbientSound() 
+void Mob::playAmbientSound()
 {
 	MemSect(31);
 	int ambient = getAmbientSound();
-	if (ambient != -1) 
+	if (ambient != -1)
 	{
 		playSound(ambient, getSoundVolume(), getVoicePitch());
 	}
 	MemSect(0);
 }
 
-void Mob::baseTick() 
+void Mob::baseTick()
 {
 	LivingEntity::baseTick();
 
-	if (isAlive() && random->nextInt(1000) < ambientSoundTime++) 
+	if (isAlive() && random->nextInt(1000) < ambientSoundTime++)
 	{
 		ambientSoundTime = -getAmbientSoundInterval();
 
-		playAmbientSound();		
+		playAmbientSound();
 	}
 }
 
@@ -209,9 +209,9 @@ int Mob::getExperienceReward(shared_ptr<Player> killedBy)
 		return xpReward;
 	}
 }
-void Mob::spawnAnim() 
+void Mob::spawnAnim()
 {
-	for (int i = 0; i < 20; i++) 
+	for (int i = 0; i < 20; i++)
 	{
 		double xa = random->nextGaussian() * 0.02;
 		double ya = random->nextGaussian() * 0.02;
@@ -222,7 +222,7 @@ void Mob::spawnAnim()
 	}
 }
 
-void Mob::tick() 
+void Mob::tick()
 {
 	LivingEntity::tick();
 
@@ -245,7 +245,7 @@ float Mob::tickHeadTurn(float yBodyRotT, float walkSpeed)
 	}
 }
 
-int Mob::getAmbientSound() 
+int Mob::getAmbientSound()
 {
 	return -1;
 }
@@ -255,10 +255,10 @@ int Mob::getDeathLoot()
 	return 0;
 }
 
-void Mob::dropDeathLoot(bool wasKilledByPlayer, int playerBonusLevel) 
+void Mob::dropDeathLoot(bool wasKilledByPlayer, int playerBonusLevel)
 {
 	int loot = getDeathLoot();
-	if (loot > 0) 
+	if (loot > 0)
 	{
 		int count = random->nextInt(3);
 		if (playerBonusLevel > 0)
@@ -270,7 +270,7 @@ void Mob::dropDeathLoot(bool wasKilledByPlayer, int playerBonusLevel)
 	}
 }
 
-void Mob::addAdditonalSaveData(CompoundTag *entityTag) 
+void Mob::addAdditonalSaveData(CompoundTag *entityTag)
 {
 	LivingEntity::addAdditonalSaveData(entityTag);
 	entityTag->putBoolean(L"CanPickUpLoot", canPickUpLoot());
@@ -288,7 +288,7 @@ void Mob::addAdditonalSaveData(CompoundTag *entityTag)
 	ListTag<FloatTag> *dropChanceList = new ListTag<FloatTag>();
 	for (int i = 0; i < dropChances.length; i++)
 	{
-		dropChanceList->add(new FloatTag( _toString(i), dropChances[i]));
+		dropChanceList->add(new FloatTag( std::to_wstring(i), dropChances[i]));
 	}
 	entityTag->put(L"DropChances", dropChanceList);
 	entityTag->putString(L"CustomName", getCustomName());
@@ -316,7 +316,7 @@ void Mob::addAdditonalSaveData(CompoundTag *entityTag)
 	}
 }
 
-void Mob::readAdditionalSaveData(CompoundTag *tag) 
+void Mob::readAdditionalSaveData(CompoundTag *tag)
 {
 	LivingEntity::readAdditionalSaveData(tag);
 
@@ -362,16 +362,16 @@ void Mob::setSpeed(float speed)
 	setYya(speed);
 }
 
-void Mob::aiStep() 
+void Mob::aiStep()
 {
 	LivingEntity::aiStep();
 
 	if (!level->isClientSide && canPickUpLoot() && !dead && level->getGameRules()->getBoolean(GameRules::RULE_MOBGRIEFING))
 	{
 		vector<shared_ptr<Entity> > *entities = level->getEntitiesOfClass(typeid(ItemEntity), bb->grow(1, 0, 1));
-		for (AUTO_VAR(it, entities->begin()); it != entities->end(); ++it)
+		for (auto& it : *entities)
 		{
-			shared_ptr<ItemEntity> entity = dynamic_pointer_cast<ItemEntity>(*it);
+			shared_ptr<ItemEntity> entity = dynamic_pointer_cast<ItemEntity>(it);
 			if (entity->removed || entity->getItem() == NULL) continue;
 			shared_ptr<ItemInstance> item = entity->getItem();
 			int slot = getEquipmentSlotForItem(item);
@@ -457,12 +457,12 @@ bool Mob::useNewAi()
 	return false;
 }
 
-bool Mob::removeWhenFarAway() 
+bool Mob::removeWhenFarAway()
 {
 	return true;
 }
 
-void Mob::checkDespawn() 
+void Mob::checkDespawn()
 {
 	if (persistenceRequired)
 	{
@@ -470,23 +470,23 @@ void Mob::checkDespawn()
 		return;
 	}
 	shared_ptr<Entity> player = level->getNearestPlayer(shared_from_this(), -1);
-	if (player != NULL) 
+	if (player != NULL)
 	{
 		double xd = player->x - x;
 		double yd = player->y - y;
 		double zd = player->z - z;
 		double sd = xd * xd + yd * yd + zd * zd;
 
-		if (removeWhenFarAway() && sd > 128 * 128) 
+		if (removeWhenFarAway() && sd > 128 * 128)
 		{
 			remove();
 		}
 
-		if (noActionTime > 20 * 30 && random->nextInt(800) == 0 && sd > 32 * 32 && removeWhenFarAway()) 
+		if (noActionTime > 20 * 30 && random->nextInt(800) == 0 && sd > 32 * 32 && removeWhenFarAway())
 		{
 			remove();
 		}
-		else if (sd < 32 * 32) 
+		else if (sd < 32 * 32)
 		{
 			noActionTime = 0;
 		}
@@ -502,7 +502,7 @@ void Mob::newServerAiStep()
 	checkDespawn();
 	PIXEndNamedEvent();
 	PIXBeginNamedEvent(0,"Tick sensing");
-	sensing->tick();	
+	sensing->tick();
 	PIXEndNamedEvent();
 	PIXBeginNamedEvent(0,"Tick target selector");
 	targetSelector.tick();
@@ -534,7 +534,7 @@ void Mob::newServerAiStep()
 	PIXEndNamedEvent();
 }
 
-void Mob::serverAiStep() 
+void Mob::serverAiStep()
 {
 	LivingEntity::serverAiStep();
 
@@ -544,15 +544,15 @@ void Mob::serverAiStep()
 	checkDespawn();
 
 	float lookDistance = 8;
-	if (random->nextFloat() < 0.02f) 
+	if (random->nextFloat() < 0.02f)
 	{
 		shared_ptr<Player> player = level->getNearestPlayer(shared_from_this(), lookDistance);
-		if (player != NULL) 
+		if (player != NULL)
 		{
 			lookingAt = player;
 			lookTime = 10 + random->nextInt(20);
-		} 
-		else 
+		}
+		else
 		{
 			yRotA = (random->nextFloat() - 0.5f) * 20;
 		}
@@ -561,14 +561,14 @@ void Mob::serverAiStep()
 	if (lookingAt != NULL)
 	{
 		lookAt(lookingAt, 10.0f, (float) getMaxHeadXRot());
-		if (lookTime-- <= 0 || lookingAt->removed || lookingAt->distanceToSqr(shared_from_this()) > lookDistance * lookDistance) 
+		if (lookTime-- <= 0 || lookingAt->removed || lookingAt->distanceToSqr(shared_from_this()) > lookDistance * lookDistance)
 		{
 			lookingAt = nullptr;
 		}
-	} 
-	else 
+	}
+	else
 	{
-		if (random->nextFloat() < 0.05f) 
+		if (random->nextFloat() < 0.05f)
 		{
 			yRotA = (random->nextFloat() - 0.5f) * 20;
 		}
@@ -581,24 +581,24 @@ void Mob::serverAiStep()
 	if (inWater || inLava) jumping = random->nextFloat() < 0.8f;
 }
 
-int Mob::getMaxHeadXRot() 
+int Mob::getMaxHeadXRot()
 {
 	return 40;
 }
 
-void Mob::lookAt(shared_ptr<Entity> e, float yMax, float xMax) 
+void Mob::lookAt(shared_ptr<Entity> e, float yMax, float xMax)
 {
 	double xd = e->x - x;
 	double yd;
 	double zd = e->z - z;
 
-	
+
 	if ( e->instanceof(eTYPE_LIVINGENTITY) )
 	{
 		shared_ptr<LivingEntity> mob = dynamic_pointer_cast<LivingEntity>(e);
 		yd = (mob->y + mob->getHeadHeight()) - (y + getHeadHeight());
-	} 
-	else 
+	}
+	else
 	{
 		yd = (e->bb->y0 + e->bb->y1) / 2 - (y + getHeadHeight());
 	}
@@ -611,31 +611,31 @@ void Mob::lookAt(shared_ptr<Entity> e, float yMax, float xMax)
 	yRot = rotlerp(yRot, yRotD, yMax);
 }
 
-bool Mob::isLookingAtAnEntity() 
+bool Mob::isLookingAtAnEntity()
 {
 	return lookingAt != NULL;
 }
 
-shared_ptr<Entity> Mob::getLookingAt() 
+shared_ptr<Entity> Mob::getLookingAt()
 {
 	return lookingAt;
 }
 
-float Mob::rotlerp(float a, float b, float max) 
+float Mob::rotlerp(float a, float b, float max)
 {
 	float diff = Mth::wrapDegrees(b - a);
-	if (diff > max) 
+	if (diff > max)
 	{
 		diff = max;
 	}
-	if (diff < -max) 
+	if (diff < -max)
 	{
 		diff = -max;
 	}
 	return a + diff;
 }
 
-bool Mob::canSpawn() 
+bool Mob::canSpawn()
 {
 	// 4J - altered to use special containsAnyLiquid variant
 	return level->isUnobstructed(bb) && level->getCubes(shared_from_this(), bb)->empty() && !level->containsAnyLiquid_NoLoad(bb);
@@ -651,7 +651,7 @@ float Mob::getHeadSizeScale()
 	return 1.0f;
 }
 
-int Mob::getMaxSpawnClusterSize() 
+int Mob::getMaxSpawnClusterSize()
 {
 	return 4;
 }
@@ -815,7 +815,7 @@ void Mob::populateDefaultEquipmentEnchantments()
 /**
 * Added this method so mobs can handle their own spawn settings instead of
 * hacking MobSpawner.java
-* 
+*
 * @param groupData
 *            TODO
 * @return TODO
@@ -918,7 +918,7 @@ bool Mob::interact(shared_ptr<Player> player)
 			if (canBeLeashed())
 			{
 				shared_ptr<TamableAnimal> tamableAnimal = nullptr;
-				if (	shared_from_this()->instanceof(eTYPE_TAMABLE_ANIMAL) 
+				if (	shared_from_this()->instanceof(eTYPE_TAMABLE_ANIMAL)
 					&&	(tamableAnimal = dynamic_pointer_cast<TamableAnimal>(shared_from_this()))->isTame() ) // 4J-JEV: excuse the assignment operator in here, don't want to dyn-cast if it's avoidable.
 				{
 					if (player->getUUID().compare(tamableAnimal->getOwnerUUID()) == 0)
@@ -1007,7 +1007,7 @@ void Mob::setLeashedTo(shared_ptr<Entity> holder, bool synch)
 {
 	_isLeashed = true;
 	leashHolder = holder;
-	
+
 	ServerLevel *serverLevel = dynamic_cast<ServerLevel *>(level);
 	if (!level->isClientSide && synch && serverLevel)
 	{
@@ -1024,9 +1024,9 @@ void Mob::restoreLeashFromSave()
 		{
 			wstring leashUuid = leashInfoTag->getString(L"UUID");
 			vector<shared_ptr<Entity> > *livingEnts = level->getEntitiesOfClass(typeid(LivingEntity), bb->grow(10, 10, 10));
-			for(AUTO_VAR(it, livingEnts->begin()); it != livingEnts->end(); ++it)
+			for(auto& livingEnt : *livingEnts)
 			{
-				shared_ptr<LivingEntity> le = dynamic_pointer_cast<LivingEntity>(*it);
+				shared_ptr<LivingEntity> le = dynamic_pointer_cast<LivingEntity>(livingEnt);
 				if (le->getUUID().compare(leashUuid) == 0)
 				{
 					leashHolder = le;

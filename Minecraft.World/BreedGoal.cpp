@@ -53,16 +53,19 @@ shared_ptr<Animal> BreedGoal::getFreePartner()
 	vector<shared_ptr<Entity> > *others = level->getEntitiesOfClass(typeid(*animal), animal->bb->grow(r, r, r));
 	double dist = Double::MAX_VALUE;
 	shared_ptr<Animal> partner = nullptr;
-	for(AUTO_VAR(it, others->begin()); it != others->end(); ++it)
+	if ( others )
 	{
-		shared_ptr<Animal> p = dynamic_pointer_cast<Animal>(*it);
-		if (animal->canMate(p) && animal->distanceToSqr(p) < dist)
+		for ( auto& it : *others )
 		{
-			partner = p;
-			dist = animal->distanceToSqr(p);
+			shared_ptr<Animal> p = dynamic_pointer_cast<Animal>(it);
+			if ( p && animal->canMate(p) && animal->distanceToSqr(p) < dist)
+			{
+				partner = p;
+				dist = animal->distanceToSqr(p);
+			}
 		}
+		delete others;
 	}
-	delete others;
 	return partner;
 }
 

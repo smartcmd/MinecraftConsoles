@@ -7,6 +7,14 @@ class UIScene_Keyboard : public UIScene
 private:
 	bool m_bKeyboardDonePressed;
 
+#ifdef _WINDOWS64
+	int(*m_win64Callback)(LPVOID, const bool);
+	LPVOID m_win64CallbackParam;
+	wstring m_win64TextBuffer;
+	int m_win64MaxChars;
+	bool m_bPCMode; // Hides on-screen keyboard buttons; physical keyboard only
+#endif
+
 protected:
 	UIControl_Label m_EnterTextLabel;
 	UIControl_TextInput m_KeyboardTextInput;
@@ -49,6 +57,10 @@ public:
 	// INPUT
 	virtual void handleInput(int iPad, int key, bool repeat, bool pressed, bool released, bool &handled);
 
+#ifdef _WINDOWS64
+	virtual void tick();
+#endif
+
 	virtual void handleTimerComplete(int id);
 
 protected:
@@ -75,5 +87,9 @@ public:
 #endif
 
 	// Returns true if lower scenes in this scenes layer, or in any layer below this scenes layers should be hidden
+#ifdef _WINDOWS64
+	virtual bool hidesLowerScenes() { return true; }
+#else
 	virtual bool hidesLowerScenes() { return false; }
+#endif
 };

@@ -21,9 +21,9 @@ StructureStart::StructureStart(int x, int z)
 
 StructureStart::~StructureStart()
 {
-	for(AUTO_VAR(it, pieces.begin()); it != pieces.end(); it++ )
+	for(auto& piece : pieces)
 	{
-		delete (*it);
+		delete piece;
 	}
 	delete boundingBox;
 }
@@ -40,9 +40,9 @@ list<StructurePiece *> *StructureStart::getPieces()
 
 void StructureStart::postProcess(Level *level, Random *random, BoundingBox *chunkBB)
 {
-	AUTO_VAR(it, pieces.begin());
+    auto it = pieces.begin();
 
-	while( it != pieces.end() )
+    while( it != pieces.end() )
 	{
 		if( (*it)->getBoundingBox()->intersects(chunkBB) && !(*it)->postProcess(level, random, chunkBB))
 		{
@@ -61,9 +61,8 @@ void StructureStart::calculateBoundingBox()
 {
 	boundingBox = BoundingBox::getUnknownBox();
 
-	for( AUTO_VAR(it, pieces.begin()); it != pieces.end(); it++ )
+	for(auto& piece : pieces)
 	{
-		StructurePiece *piece = *it;
 		boundingBox->expand(piece->getBoundingBox());
 	}
 }
@@ -78,9 +77,8 @@ CompoundTag *StructureStart::createTag(int chunkX, int chunkZ)
 	tag->put(L"BB", boundingBox->createTag(L"BB"));
 
 	ListTag<CompoundTag> *childrenTags = new ListTag<CompoundTag>(L"Children");
-	for(AUTO_VAR(it, pieces.begin()); it != pieces.end(); ++it)
+	for(auto& piece : pieces)
 	{
-		StructurePiece *piece = *it;
 		childrenTags->add(piece->createTag());
 	}
 	tag->put(L"Children", childrenTags);
@@ -133,9 +131,8 @@ void StructureStart::moveBelowSeaLevel(Level *level, Random *random, int offset)
 	// move all bounding boxes
 	int dy = y1Pos - boundingBox->y1;
 	boundingBox->move(0, dy, 0);
-	for( AUTO_VAR(it, pieces.begin()); it != pieces.end(); it++ )
+	for(auto& piece : pieces)
 	{
-		StructurePiece *piece = *it;
 		piece->getBoundingBox()->move(0, dy, 0);
 	}
 }
@@ -157,9 +154,8 @@ void StructureStart::moveInsideHeights(Level *level, Random *random, int lowestA
 	// move all bounding boxes
 	int dy = y0Pos - boundingBox->y0;
 	boundingBox->move(0, dy, 0);
-	for( AUTO_VAR(it, pieces.begin()); it != pieces.end(); it++ )
+	for(auto& piece : pieces)
 	{
-		StructurePiece *piece = *it;
 		piece->getBoundingBox()->move(0, dy, 0);
 	}
 }

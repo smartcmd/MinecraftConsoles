@@ -271,23 +271,26 @@ void ChestTileEntity::tick()
 
 		float range = 5;
 		vector<shared_ptr<Entity> > *players = level->getEntitiesOfClass(typeid(Player), AABB::newTemp(x - range, y - range, z - range, x + 1 + range, y + 1 + range, z + 1 + range));
-		for (AUTO_VAR(it,players->begin()); it != players->end(); ++it)
+		if ( players )
 		{
-			shared_ptr<Player> player = dynamic_pointer_cast<Player>(*it);
-
-			ContainerMenu *containerMenu = dynamic_cast<ContainerMenu*>(player->containerMenu);
-			if (containerMenu != NULL)
+			for (auto& it : *players)
 			{
-				shared_ptr<Container> container = containerMenu->getContainer();
-				shared_ptr<Container> thisContainer = dynamic_pointer_cast<Container>(shared_from_this());
-				shared_ptr<CompoundContainer> compoundContainer = dynamic_pointer_cast<CompoundContainer>( container );
-				if ( (container == thisContainer) || (compoundContainer != NULL && compoundContainer->contains(thisContainer)) )
+				shared_ptr<Player> player = dynamic_pointer_cast<Player>(it);
+
+				ContainerMenu* containerMenu = dynamic_cast<ContainerMenu*>(player->containerMenu);
+				if (containerMenu)
 				{
-					openCount++;
+					shared_ptr<Container> container = containerMenu->getContainer();
+					shared_ptr<Container> thisContainer = dynamic_pointer_cast<Container>(shared_from_this());
+					shared_ptr<CompoundContainer> compoundContainer = dynamic_pointer_cast<CompoundContainer>(container);
+					if ((container == thisContainer) || (compoundContainer != NULL && compoundContainer->contains(thisContainer)))
+					{
+						openCount++;
+					}
 				}
 			}
+			delete players;
 		}
-		delete players;
 	}
 
 	oOpenness = openness;

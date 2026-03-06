@@ -89,11 +89,8 @@ vector<CompoundTag *> *NbtSlotFile::readAll(int slot)
     vector<int> *fileSlots = fileSlotMap[slot];
     int skipped = 0;
 
-	AUTO_VAR(itEnd, fileSlots->end());
-	for (AUTO_VAR(it, fileSlots->begin()); it != itEnd; it++)
+	for (int c : *fileSlots)
 	{
-        int c = *it; //fileSlots->at(i);
-
         int pos = 0;
         int continuesAt = -1;
         int expectedSlot = slot + 1;
@@ -114,8 +111,6 @@ vector<CompoundTag *> *NbtSlotFile::readAll(int slot)
                 skipped++;
                 goto fileSlotLoop;	// 4J - used to be continue fileSlotLoop, with for loop labelled as fileSlotLoop
             }
-
-//            if (oldSlot != expectedSlot) throw new IOException("Wrong slot! Got " + oldSlot + ", expected " + expectedSlot);	// 4J - TODO
 
 			ReadFile(raf,READ_BUFFER.data + pos,size,&numberOfBytesRead,NULL);
 
@@ -144,12 +139,12 @@ int NbtSlotFile::getFreeSlot()
 //		fileSlot = toReplace->back();
 //		toReplace->pop_back();
 //    } else
-		
+
 	if (freeFileSlots.size() > 0)
 	{
         fileSlot = freeFileSlots.back();
 		freeFileSlots.pop_back();
-    } 
+    }
 	else
 	{
         fileSlot = totalFileSlots++;
@@ -164,11 +159,9 @@ void NbtSlotFile::replaceSlot(int slot, vector<CompoundTag *> *tags)
 	DWORD numberOfBytesWritten;
 	toReplace = fileSlotMap[slot];
     fileSlotMap[slot] = new vector<int>();
-	
-	AUTO_VAR(itEndTags, tags->end());
-	for (AUTO_VAR(it, tags->begin()); it != itEndTags; it++)
+
+	for (auto tag : *tags)
 	{
-        CompoundTag *tag = *it; //tags->at(i);
         byteArray compressed = NbtIo::compress(tag);
         if (compressed.length > largest)
 		{
@@ -227,12 +220,9 @@ void NbtSlotFile::replaceSlot(int slot, vector<CompoundTag *> *tags)
         }
 		delete[] compressed.data;
     }
-	
-	AUTO_VAR(itEndToRep, toReplace->end());
-	for (AUTO_VAR(it, toReplace->begin()); it != itEndToRep; it++)
-	{
-        int c = *it; //toReplace->at(i);
 
+	for (int c : *toReplace)
+	{
 		freeFileSlots.push_back(c);
 
         seekSlotHeader(c);

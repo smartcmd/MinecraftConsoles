@@ -85,7 +85,7 @@ void Minimap::reloadColours()
 			LUT[i] =  255 << 24 | r << 16 | g << 8 | b;
 #elif defined __ORBIS__
 			r >>= 3; g >>= 3; b >>= 3;
-			LUT[i] = 1 << 15 | ( r << 10 ) | ( g << 5 ) | b; 
+			LUT[i] = 1 << 15 | ( r << 10 ) | ( g << 5 ) | b;
 #else
 			LUT[i] =  r << 24 | g << 16 | b << 8 | 255;
 #endif
@@ -144,18 +144,14 @@ void Minimap::render(shared_ptr<Player> player, Textures *textures, shared_ptr<M
 
     textures->bind(textures->loadTexture(TN_MISC_MAPICONS));//L"/misc/mapicons.png"));
 
-	AUTO_VAR(itEnd, data->decorations.end());
-
 #ifdef _LARGE_WORLDS
 	vector<MapItemSavedData::MapDecoration *> m_edgeIcons;
 #endif
 
 	// 4J-PB - stack the map icons
 	float fIconZ=-0.04f;// 4J - moved to -0.04 (was -0.02) to stop z fighting
-	for( vector<MapItemSavedData::MapDecoration *>::iterator it = data->decorations.begin(); it != itEnd; it++ )
+	for( MapItemSavedData::MapDecoration *dec : data->decorations )
 	{
-		MapItemSavedData::MapDecoration *dec = *it;
-
 		if(!dec->visible) continue;
 
 		char imgIndex = dec->img;
@@ -200,10 +196,8 @@ void Minimap::render(shared_ptr<Player> player, Textures *textures, shared_ptr<M
 	textures->bind(textures->loadTexture(TN_MISC_ADDITIONALMAPICONS));
 
 	fIconZ=-0.04f;// 4J - moved to -0.04 (was -0.02) to stop z fighting
-	for( AUTO_VAR(it,m_edgeIcons.begin()); it != m_edgeIcons.end(); it++ )
+	for( MapItemSavedData::MapDecoration *dec : m_edgeIcons )
 	{
-		MapItemSavedData::MapDecoration *dec = *it;
-		
 		char imgIndex = dec->img;
 		imgIndex -= 16;
 
@@ -253,7 +247,7 @@ void Minimap::render(shared_ptr<Player> player, Textures *textures, shared_ptr<M
 		int posy = floor(player->y);
 		int posz = floor(player->z);
 		swprintf(playerPosText, 32, L"X: %d, Y: %d, Z: %d", posx, posy, posz);
-		
+
 		font->draw(playerPosText, x, y, Minecraft::GetInstance()->getColourTable()->getColour(eMinecraftColour_Map_Text));
 	}
 //#endif

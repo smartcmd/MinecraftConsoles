@@ -15,7 +15,7 @@ HRESULT CXuiCtrl4JList::OnInit(XUIMessageInit *pInitData, BOOL& bHandled)
 void CXuiCtrl4JList::AddData( const LIST_ITEM_INFO& ItemInfo , int iSortListFromIndex, int iSortFunction)
 {
 	// need to allocate memory for the structure and its strings
-	// and remap the string pointers	
+	// and remap the string pointers
 	DWORD dwBytes=0;
 	DWORD dwLen1=0;
 	DWORD dwLen2=0;
@@ -37,7 +37,7 @@ void CXuiCtrl4JList::AddData( const LIST_ITEM_INFO& ItemInfo , int iSortListFrom
 	ZeroMemory(pItemInfo,dwBytes);
 
 	XMemCpy( pItemInfo, &ItemInfo, sizeof( LIST_ITEM_INFO ) );
-	if(dwLen1!=0) 
+	if(dwLen1!=0)
 	{
 		XMemCpy( &pItemInfo[1], ItemInfo.pwszText, dwLen1 );
 		pItemInfo->pwszText=(LPCWSTR)&pItemInfo[1];
@@ -68,13 +68,13 @@ void CXuiCtrl4JList::AddData( const LIST_ITEM_INFO& ItemInfo , int iSortListFrom
 
 	// added to force a sort order for DLC
 	//pItemInfo->iSortIndex=iSortIndex;
-	
+
 	m_vListData.push_back(pItemInfo);
 
 #ifdef _DEBUG
 
 	int iCount=0;
-	for (AUTO_VAR(it, m_vListData.begin()); it != m_vListData.end(); it++)
+	for ( auto it : m_vListData )
 	{
 		PLIST_ITEM_INFO pInfo=(PLIST_ITEM_INFO)*it;
 		app.DebugPrintf("%d. ",iCount++);
@@ -99,22 +99,10 @@ void CXuiCtrl4JList::AddData( const LIST_ITEM_INFO& ItemInfo , int iSortListFrom
 			break;
 		case eSortList_Index:
 			sort(m_vListData.begin()+iSortListFromIndex, m_vListData.end(),CXuiCtrl4JList::IndexSortFn);
-			break;		
+			break;
 		}
 	}
 	LeaveCriticalSection(&m_AccessListData);
-// #ifdef _DEBUG
-// 
-// 	iCount=0;
-// 	for (AUTO_VAR(it, m_vListData.begin()); it != m_vListData.end(); it++)
-// 	{
-// 		PLIST_ITEM_INFO pInfo=(PLIST_ITEM_INFO)*it;
-// 		app.DebugPrintf("After Sort - %d. ",iCount++);
-// 		OutputDebugStringW(pInfo->pwszText);
-// 		app.DebugPrintf(" - %d\n",pInfo->iSortIndex);
-// 
-// 	}
-// #endif
 	InsertItems( 0, 1 );
 }
 
@@ -162,13 +150,13 @@ int CXuiCtrl4JList::GetIndexByUserData(int iData)
 	return 0;
 }
 
-CXuiCtrl4JList::LIST_ITEM_INFO&	CXuiCtrl4JList::GetData(DWORD dw) 
-{ 
-	return *m_vListData[dw]; 
+CXuiCtrl4JList::LIST_ITEM_INFO&	CXuiCtrl4JList::GetData(DWORD dw)
+{
+	return *m_vListData[dw];
 }
 
-CXuiCtrl4JList::LIST_ITEM_INFO&	CXuiCtrl4JList::GetDataiData(int iData) 
-{ 
+CXuiCtrl4JList::LIST_ITEM_INFO&	CXuiCtrl4JList::GetDataiData(int iData)
+{
 	LIST_ITEM_INFO info;
 
 	for(unsigned int i=0;i<m_vListData.size();i++)
@@ -180,11 +168,11 @@ CXuiCtrl4JList::LIST_ITEM_INFO&	CXuiCtrl4JList::GetDataiData(int iData)
 		}
 	}
 
-	return *m_vListData[0]; 
+	return *m_vListData[0];
 }
 
-CXuiCtrl4JList::LIST_ITEM_INFO&	CXuiCtrl4JList::GetData(FILETIME *pFileTime) 
-{ 
+CXuiCtrl4JList::LIST_ITEM_INFO&	CXuiCtrl4JList::GetData(FILETIME *pFileTime)
+{
 	LIST_ITEM_INFO info;
 
 	for(unsigned int i=0;i<m_vListData.size();i++)
@@ -196,13 +184,13 @@ CXuiCtrl4JList::LIST_ITEM_INFO&	CXuiCtrl4JList::GetData(FILETIME *pFileTime)
 		}
 	}
 
-	return *m_vListData[0]; 
+	return *m_vListData[0];
 }
 
 bool CXuiCtrl4JList::TimeSortFn(const void *a, const void *b)
 {
 	CXuiCtrl4JList::LIST_ITEM_INFO *SaveDetailsA=(CXuiCtrl4JList::LIST_ITEM_INFO *)a;
-	CXuiCtrl4JList::LIST_ITEM_INFO *SaveDetailsB=(CXuiCtrl4JList::LIST_ITEM_INFO *)b; 
+	CXuiCtrl4JList::LIST_ITEM_INFO *SaveDetailsB=(CXuiCtrl4JList::LIST_ITEM_INFO *)b;
 
 	if(SaveDetailsA->fTime.dwHighDateTime > SaveDetailsB->fTime.dwHighDateTime)
 	{
@@ -229,14 +217,14 @@ bool CXuiCtrl4JList::TimeSortFn(const void *a, const void *b)
 bool CXuiCtrl4JList::AlphabeticSortFn(const void *a, const void *b)
 {
 	CXuiCtrl4JList::LIST_ITEM_INFO *SaveDetailsA=(CXuiCtrl4JList::LIST_ITEM_INFO *)a;
-	CXuiCtrl4JList::LIST_ITEM_INFO *SaveDetailsB=(CXuiCtrl4JList::LIST_ITEM_INFO *)b; 
+	CXuiCtrl4JList::LIST_ITEM_INFO *SaveDetailsB=(CXuiCtrl4JList::LIST_ITEM_INFO *)b;
 
 	wstring wstr1=SaveDetailsA->pwszText;
 	wstring wstr2=SaveDetailsB->pwszText;
 	if(wstr1.compare(wstr2)<0)
 	{
 		return true;
-	}	
+	}
 
 	return false;
 }
@@ -244,14 +232,14 @@ bool CXuiCtrl4JList::AlphabeticSortFn(const void *a, const void *b)
 bool CXuiCtrl4JList::IndexSortFn(const void *a, const void *b)
 {
 	CXuiCtrl4JList::LIST_ITEM_INFO *SaveDetailsA=(CXuiCtrl4JList::LIST_ITEM_INFO *)a;
-	CXuiCtrl4JList::LIST_ITEM_INFO *SaveDetailsB=(CXuiCtrl4JList::LIST_ITEM_INFO *)b; 
+	CXuiCtrl4JList::LIST_ITEM_INFO *SaveDetailsB=(CXuiCtrl4JList::LIST_ITEM_INFO *)b;
 
 	int iA=SaveDetailsA->iSortIndex;
 	int iB=SaveDetailsB->iSortIndex;
 	if(iA>iB)
 	{
 		return true;
-	}	
+	}
 
 	return false;
 }
@@ -303,10 +291,10 @@ void CXuiCtrl4JList::UpdateGraphic(FILETIME *pfTime,HXUIBRUSH hXuiBrush )
 // Gets called every frame
 HRESULT CXuiCtrl4JList::OnGetSourceDataText(XUIMessageGetSourceText *pGetSourceTextData,BOOL& bHandled)
 {
-	if( ( 0 == pGetSourceTextData->iData ) && ( ( pGetSourceTextData->bItemData ) ) ) 
+	if( ( 0 == pGetSourceTextData->iData ) && ( ( pGetSourceTextData->bItemData ) ) )
 	{
 		EnterCriticalSection(&m_AccessListData);
-		pGetSourceTextData->szText = 
+		pGetSourceTextData->szText =
 			GetData(pGetSourceTextData->iItem).pwszText;
 		LeaveCriticalSection(&m_AccessListData);
 		bHandled = TRUE;
@@ -323,7 +311,7 @@ HRESULT CXuiCtrl4JList::OnGetItemCountAll(XUIMessageGetItemCount *pGetItemCountD
 
 HRESULT CXuiCtrl4JList::OnGetSourceDataImage(XUIMessageGetSourceImage *pGetSourceImageData,BOOL& bHandled)
 {
-	if( ( 0 == pGetSourceImageData->iData ) && ( pGetSourceImageData->bItemData ) ) 
+	if( ( 0 == pGetSourceImageData->iData ) && ( pGetSourceImageData->bItemData ) )
 	{
 		// Check for a brush
 		EnterCriticalSection(&m_AccessListData);
@@ -333,7 +321,7 @@ HRESULT CXuiCtrl4JList::OnGetSourceDataImage(XUIMessageGetSourceImage *pGetSourc
 		}
 		else
 		{
-			pGetSourceImageData->szPath = 
+			pGetSourceImageData->szPath =
 				GetData(pGetSourceImageData->iItem).pwszImage;
 		}
 		LeaveCriticalSection(&m_AccessListData);
@@ -347,7 +335,7 @@ HRESULT CXuiCtrl4JList::OnGetItemEnable(XUIMessageGetItemEnable *pGetItemEnableD
 	if(m_vListData.size()!=0)
 	{
 		EnterCriticalSection(&m_AccessListData);
-		pGetItemEnableData->bEnabled = 
+		pGetItemEnableData->bEnabled =
 			GetData(pGetItemEnableData->iItem).fEnabled;
 		LeaveCriticalSection(&m_AccessListData);
 	}
@@ -356,14 +344,14 @@ HRESULT CXuiCtrl4JList::OnGetItemEnable(XUIMessageGetItemEnable *pGetItemEnableD
 }
 
 
-HRESULT CXuiCtrl4JList::SetBorder(DWORD dw,BOOL bShow) 
-{ 
+HRESULT CXuiCtrl4JList::SetBorder(DWORD dw,BOOL bShow)
+{
 	CXuiControl Control;
 	HXUIOBJ hVisual,hBorder;
 	GetItemControl(dw,&Control);
 	Control.GetVisual(&hVisual);
 	XuiElementGetChildById(hVisual,L"Border",&hBorder);
-	return XuiElementSetShow(hBorder,bShow);	
+	return XuiElementSetShow(hBorder,bShow);
 }
 
 void CXuiCtrl4JList::SetSelectionChangedHandle(HXUIOBJ hObj)

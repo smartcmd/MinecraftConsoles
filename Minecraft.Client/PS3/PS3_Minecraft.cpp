@@ -36,7 +36,7 @@ SYS_PROCESS_PARAM(1001, 0x10000);  // thread priority, and stack size
 #endif
 
 /* Encrypted ID for protected data file (*) You must edit these binaries!! */
-char secureFileId[CELL_SAVEDATA_SECUREFILEID_SIZE] = 
+char secureFileId[CELL_SAVEDATA_SECUREFILEID_SIZE] =
 {
 	0xEE, 0xA9, 0x37, 0xCC,
 	0x5B, 0xD4, 0xD9, 0x0D,
@@ -51,7 +51,7 @@ char secureFileId[CELL_SAVEDATA_SECUREFILEID_SIZE] =
 
 //#define HEAPINSPECTOR_PS3	1
 // when defining HEAPINSPECTOR_PS3, add this line to the linker settings
-// --wrap malloc --wrap free --wrap memalign --wrap calloc --wrap realloc --wrap reallocalign  --wrap _malloc_init 
+// --wrap malloc --wrap free --wrap memalign --wrap calloc --wrap realloc --wrap reallocalign  --wrap _malloc_init
 
 #if HEAPINSPECTOR_PS3
 #include "HeapInspector\Server\HeapInspectorServer.h"
@@ -149,13 +149,13 @@ extern "C" void* __wrap__malloc_init(size_t a_Boundary, size_t a_Size)
 #endif // HEAPINSPECTOR_PS3
 
 //-------------------------------------------------------------------------------------
-// Time             Since fAppTime is a float, we need to keep the quadword app time 
+// Time             Since fAppTime is a float, we need to keep the quadword app time
 //                  as a LARGE_INTEGER so that we don't lose precision after running
 //                  for a long time.
 //-------------------------------------------------------------------------------------
 
 BOOL g_bWidescreen = TRUE;
-//int  g_numberOfSpeakersForMiles = 2; // number of speakers to pass to Miles, this is setup from init_audio_hardware 
+//int  g_numberOfSpeakersForMiles = 2; // number of speakers to pass to Miles, this is setup from init_audio_hardware
 
 void DefineActions(void)
 {
@@ -216,12 +216,12 @@ void DefineActions(void)
 	InputManager.SetGameJoypadMaps(MAP_STYLE_0,MINECRAFT_ACTION_CRAFTING,				_360_JOY_BUTTON_X);
 	InputManager.SetGameJoypadMaps(MAP_STYLE_0,MINECRAFT_ACTION_RENDER_THIRD_PERSON,	_360_JOY_BUTTON_LTHUMB);
 	InputManager.SetGameJoypadMaps(MAP_STYLE_0,MINECRAFT_ACTION_GAME_INFO,				_360_JOY_BUTTON_BACK);
-	
+
 	InputManager.SetGameJoypadMaps(MAP_STYLE_0,MINECRAFT_ACTION_DPAD_LEFT,				_360_JOY_BUTTON_DPAD_LEFT);
 	InputManager.SetGameJoypadMaps(MAP_STYLE_0,MINECRAFT_ACTION_DPAD_RIGHT,				_360_JOY_BUTTON_DPAD_RIGHT);
 	InputManager.SetGameJoypadMaps(MAP_STYLE_0,MINECRAFT_ACTION_DPAD_UP,				_360_JOY_BUTTON_DPAD_UP);
-	InputManager.SetGameJoypadMaps(MAP_STYLE_0,MINECRAFT_ACTION_DPAD_DOWN,				_360_JOY_BUTTON_DPAD_DOWN);		
-	
+	InputManager.SetGameJoypadMaps(MAP_STYLE_0,MINECRAFT_ACTION_DPAD_DOWN,				_360_JOY_BUTTON_DPAD_DOWN);
+
 	if(InputManager.IsCircleCrossSwapped())
 	{
 		InputManager.SetGameJoypadMaps(MAP_STYLE_1,ACTION_MENU_A,							_360_JOY_BUTTON_B);
@@ -275,12 +275,12 @@ void DefineActions(void)
 	InputManager.SetGameJoypadMaps(MAP_STYLE_1,MINECRAFT_ACTION_CRAFTING,				_360_JOY_BUTTON_X);
 	InputManager.SetGameJoypadMaps(MAP_STYLE_1,MINECRAFT_ACTION_RENDER_THIRD_PERSON,	_360_JOY_BUTTON_RTHUMB);
 	InputManager.SetGameJoypadMaps(MAP_STYLE_1,MINECRAFT_ACTION_GAME_INFO,				_360_JOY_BUTTON_BACK);
-	
+
 	InputManager.SetGameJoypadMaps(MAP_STYLE_1,MINECRAFT_ACTION_DPAD_LEFT,				_360_JOY_BUTTON_DPAD_LEFT);
 	InputManager.SetGameJoypadMaps(MAP_STYLE_1,MINECRAFT_ACTION_DPAD_RIGHT,				_360_JOY_BUTTON_DPAD_RIGHT);
 	InputManager.SetGameJoypadMaps(MAP_STYLE_1,MINECRAFT_ACTION_DPAD_UP,				_360_JOY_BUTTON_DPAD_UP);
-	InputManager.SetGameJoypadMaps(MAP_STYLE_1,MINECRAFT_ACTION_DPAD_DOWN,				_360_JOY_BUTTON_DPAD_DOWN);	
-	
+	InputManager.SetGameJoypadMaps(MAP_STYLE_1,MINECRAFT_ACTION_DPAD_DOWN,				_360_JOY_BUTTON_DPAD_DOWN);
+
 	if(InputManager.IsCircleCrossSwapped())
 	{
 		InputManager.SetGameJoypadMaps(MAP_STYLE_2,ACTION_MENU_A,							_360_JOY_BUTTON_B);
@@ -334,11 +334,11 @@ void DefineActions(void)
 	InputManager.SetGameJoypadMaps(MAP_STYLE_2,MINECRAFT_ACTION_CRAFTING,				_360_JOY_BUTTON_X);
 	InputManager.SetGameJoypadMaps(MAP_STYLE_2,MINECRAFT_ACTION_RENDER_THIRD_PERSON,	_360_JOY_BUTTON_LTHUMB);
 	InputManager.SetGameJoypadMaps(MAP_STYLE_2,MINECRAFT_ACTION_GAME_INFO,				_360_JOY_BUTTON_BACK);
-	
+
 	InputManager.SetGameJoypadMaps(MAP_STYLE_2,MINECRAFT_ACTION_DPAD_LEFT,				_360_JOY_BUTTON_DPAD_LEFT);
 	InputManager.SetGameJoypadMaps(MAP_STYLE_2,MINECRAFT_ACTION_DPAD_RIGHT,				_360_JOY_BUTTON_DPAD_RIGHT);
 	InputManager.SetGameJoypadMaps(MAP_STYLE_2,MINECRAFT_ACTION_DPAD_UP,				_360_JOY_BUTTON_DPAD_UP);
-	InputManager.SetGameJoypadMaps(MAP_STYLE_2,MINECRAFT_ACTION_DPAD_DOWN,				_360_JOY_BUTTON_DPAD_DOWN);	
+	InputManager.SetGameJoypadMaps(MAP_STYLE_2,MINECRAFT_ACTION_DPAD_DOWN,				_360_JOY_BUTTON_DPAD_DOWN);
 }
 
 
@@ -438,7 +438,7 @@ void LoadSysModule(uint16_t module, const char* moduleName)
 
 #define LOAD_PS3_MODULE(m) LoadSysModule(m, #m)
 
-int simpleMessageBoxCallback(	UINT uiTitle, UINT uiText, 
+int simpleMessageBoxCallback(	UINT uiTitle, UINT uiText,
 								UINT *uiOptionA, UINT uiOptionC, DWORD dwPad,
 								int(*Func) (LPVOID,int,const C4JStorage::EMessageResult),
 								LPVOID lpParam )
@@ -580,7 +580,7 @@ int LoadSysModules()
 	LOAD_PS3_MODULE(CELL_SYSMODULE_AVCONF_EXT);
 
 	LOAD_PS3_MODULE(CELL_SYSMODULE_SYSUTIL_SAVEDATA);
-	 
+
 	unsigned int uiType ;
 	unsigned int uiAttributes ;
 	CellGameContentSize size,sizeBD;
@@ -598,20 +598,20 @@ int LoadSysModules()
 	if(ret < 0)
 	{
 		DEBUG_PRINTF("cellGameBootCheck() Error: 0x%x\n", ret);
-	} 
-	else 
+	}
+	else
 	{
 		DEBUG_PRINTF("cellGameBootCheck() OK\n");
 		DEBUG_PRINTF("  get_type = [%d] get_attributes = [0x%08x] dirName = [%s]\n", uiType, uiAttributes, dirName);
-		DEBUG_PRINTF("  hddFreeSizeKB = [%d] sizeKB = [%d] sysSizeKB = [%d]\n", size.hddFreeSizeKB, size.sizeKB, size.sysSizeKB); 
+		DEBUG_PRINTF("  hddFreeSizeKB = [%d] sizeKB = [%d] sysSizeKB = [%d]\n", size.hddFreeSizeKB, size.sizeKB, size.sysSizeKB);
 	}
 
-	if (uiAttributes & CELL_GAME_ATTRIBUTE_INVITE_MESSAGE) 
+	if (uiAttributes & CELL_GAME_ATTRIBUTE_INVITE_MESSAGE)
 	{
 		g_bBootedFromInvite = true;
 		DEBUG_PRINTF("Booted from invite\n");
 	}
-	if (uiAttributes & CELL_GAME_ATTRIBUTE_CUSTOM_DATA_MESSAGE) 
+	if (uiAttributes & CELL_GAME_ATTRIBUTE_CUSTOM_DATA_MESSAGE)
 	{
 		DEBUG_PRINTF("Booted from custom data\n");
 		//bootedFromCustomData = true;
@@ -623,12 +623,12 @@ int LoadSysModules()
 		bBootedFromBDPatch=true;
 		app.SetBootedFromDiscPatch();
 	}
-	// true if booting from disc, false if booting from HDD 
+	// true if booting from disc, false if booting from HDD
 	StorageManager.SetBootTypeDisc(uiType == CELL_GAME_GAMETYPE_DISC);
 
 	StorageManager.SetMessageBoxCallback(&simpleMessageBoxCallback);
 
-	cellGameContentPermit(contentInfoPath,usrdirPath);	
+	cellGameContentPermit(contentInfoPath,usrdirPath);
 	DEBUG_PRINTF("contentInfoPath - %s\n",contentInfoPath);
 	DEBUG_PRINTF("usrdirPath - %s\n",usrdirPath);
 
@@ -636,12 +636,12 @@ int LoadSysModules()
 	if(ret < 0)
 	{
 		DEBUG_PRINTF("cellGamePatchCheck() Error: 0x%x\n", ret);
-	} 
-	else 
+	}
+	else
 	{
 		DEBUG_PRINTF("cellGamePatchCheck() OK - we were booted from a disc patch!\n");
 
-		cellGameContentPermit(contentInfoPathBDPatch,usrdirPathBDPatch);	
+		cellGameContentPermit(contentInfoPathBDPatch,usrdirPathBDPatch);
 		DEBUG_PRINTF("contentInfoPath - %s\n",contentInfoPathBDPatch);
 		DEBUG_PRINTF("usrdirPath - %s\n",usrdirPathBDPatch);
 
@@ -686,7 +686,7 @@ int main()
 
 	//
 	// initialize the ps3
-	//	
+	//
 
 	int ihddFreeSizeKB=LoadSysModules();
 	ProfileManager.SetHDDFreeKB(ihddFreeSizeKB);
@@ -699,7 +699,7 @@ int main()
 
 #ifndef DISABLE_MILES_SOUND
 
-#ifdef USE_SPURS              
+#ifdef USE_SPURS
 	void * spurs_info[ 2 ];
 	spurs_info[ 0 ] = C4JThread_SPU::getSpurs2();
 	extern const CellSpursTaskBinInfo _binary_task_mssspurs_elf_taskbininfo;
@@ -753,7 +753,7 @@ int main()
 	//
 	// now initialize libAudio
 	//
-		
+
 	cellAudioInit();
 
 #endif // DISABLE_MILES_SOUND
@@ -784,7 +784,7 @@ int main()
 	{
 	case e_sku_SCEE:
 		// 4J-PB - need to be online to do this check, so let's stick with the 7+, and move this
-		
+
 		if(StorageManager.GetBootTypeDisc())
 		{
 			// set Europe age, then hone down specific countries
@@ -961,10 +961,10 @@ int main()
 	}
 	else
 	{
-		StorageManager.SetGameSaveFolderTitle((WCHAR *)app.GetString(IDS_GAMENAME));//"Minecraft: PlayStation®3 Edition");//GAMENAME);
+		StorageManager.SetGameSaveFolderTitle((WCHAR *)app.GetString(IDS_GAMENAME));//"Minecraft: PlayStationï¿½3 Edition");//GAMENAME);
 	}
-	StorageManager.SetSaveCacheFolderTitle((WCHAR *)app.GetString(IDS_SAVECACHEFILE));//"Minecraft: PlayStation®3 Edition");//GAMENAME);
-	StorageManager.SetOptionsFolderTitle((WCHAR *)app.GetString(IDS_OPTIONSFILE));//"Minecraft: PlayStation®3 Edition");//GAMENAME);
+	StorageManager.SetSaveCacheFolderTitle((WCHAR *)app.GetString(IDS_SAVECACHEFILE));//"Minecraft: PlayStationï¿½3 Edition");//GAMENAME);
+	StorageManager.SetOptionsFolderTitle((WCHAR *)app.GetString(IDS_OPTIONSFILE));//"Minecraft: PlayStationï¿½3 Edition");//GAMENAME);
 	StorageManager.SetGameSaveFolderPrefix(app.GetSaveFolderPrefix());
 	StorageManager.SetMaxSaves(99);
 	byteArray baOptionsIcon = app.getArchiveFile(L"DefaultOptionsImage320x176.png");
@@ -1014,7 +1014,7 @@ int main()
 	// Initialise TLS for AABB and Vec3 pools, for this main thread
 	AABB::CreateNewThreadStorage();
 	Vec3::CreateNewThreadStorage();
-	IntCache::CreateNewThreadStorage();	
+	IntCache::CreateNewThreadStorage();
 	OldChunkStorage::CreateNewThreadStorage();
 	Level::enableLightingCache();
 	Tile::CreateNewThreadStorage();
@@ -1029,7 +1029,7 @@ int main()
 	// set the default profile values
 	// 4J-PB - InitGameSettings already does this
 	/*for(int i=0;i<XUSER_MAX_COUNT;i++)
-	{	
+	{
 #ifdef __PS3__
 		app.SetDefaultOptions(StorageManager.GetDashboardProfileSettings(i),i);
 #else
@@ -1081,7 +1081,7 @@ int main()
 	// 4J-PB - we really need to know at this point if we are playing the trial or full game, so sleep until we know
 	while(app.GetCommerce()->LicenseChecked()==false)
 	{
-		cellSysutilCheckCallback(); 
+		cellSysutilCheckCallback();
 		Sleep(50);
 	}
 	// wait for the trophy init to complete - nonblocking semaphore
@@ -1112,7 +1112,7 @@ int main()
 
 	// 4J-PB - really want to wait until we've read the options, so we can set the right language if they've chosen one other than the default
 // 	bool bOptionsRead=false;
-// 
+//
 // 	while((bOptionsRead==false) && ShutdownManager::ShouldRun(ShutdownManager::eMainThread))
 // 	{
 // 		switch(app.GetOptionsCallbackStatus(0))
@@ -1125,7 +1125,7 @@ int main()
 // 		}
 // 		StorageManager.Tick();
 // 	}
-// 
+//
 // 	if(ShutdownManager::ShouldRun(ShutdownManager::eMainThread))
 // 	{
 // 		app.loadStringTable();
@@ -1163,7 +1163,7 @@ int main()
 		PIXBeginNamedEvent(0,"Social network manager tick");
 //		CSocialManager::Instance()->Tick();
 		PIXEndNamedEvent();
-		
+
 		// Tick sentient.
 		PIXBeginNamedEvent(0,"Sentient tick");
 		MemSect(37);
@@ -1174,22 +1174,22 @@ int main()
 		PIXBeginNamedEvent(0,"Network manager do work #1");
 		g_NetworkManager.DoWork();
 		PIXEndNamedEvent();
-		// 4J-PB - these get set every tick causing the write profile flag to be true all the time - 
+		// 4J-PB - these get set every tick causing the write profile flag to be true all the time -
 // 		app.SetGameSettingsDebugMask(0,eDebugSetting_LoadSavesFromDisk);
 // 		app.SetGameSettingsDebugMask(0,eDebugSetting_WriteSavesToDisk);
 // 		app.SetLoadSavesFromFolderEnabled(true);
 // 		app.SetWriteSavesToFolderEnabled(true);
-		
+
 		LeaderboardManager::Instance()->Tick();
 		// Render game graphics.
-		if(app.GetGameStarted()) 
+		if(app.GetGameStarted())
 		{
 
 // 			if(InputManager.ButtonPressed(0, MINECRAFT_ACTION_SNEAK_TOGGLE))
 // 			{
 // 				app.DebugPrintf("saving game...\n");
 // 				debugSaveGameDirect();
-// 
+//
 // 			}
 			pMinecraft->run_middle();
 			app.SetAppPaused( g_NetworkManager.IsLocalGame() && g_NetworkManager.GetPlayerCount() == 1 && ui.IsPauseMenuDisplayed(ProfileManager.GetPrimaryPad()) );
@@ -1272,7 +1272,7 @@ int main()
 #ifdef _DEBUG_MENUS_ENABLED
 					if(app.DebugSettingsOn())
 					{
-						app.ActionDebugMask(i);		
+						app.ActionDebugMask(i);
 					}
 					else
 					{
@@ -1323,7 +1323,7 @@ int main()
 		if(!ProfileManager.IsFullVersion())
 		{
 			// display the trial timer
-			if(app.GetGameStarted()) 
+			if(app.GetGameStarted())
 			{
 				// 4J-PB - if the game is paused, add the elapsed time to the trial timer count so it doesn't tick down
 				if(app.IsAppPaused())
@@ -1401,7 +1401,7 @@ LPVOID XMemAlloc(SIZE_T dwSize, DWORD dwAllocAttributes)
 {
 	if( !trackStarted )
 	{
-		void *p = XMemAllocDefault(dwSize,dwAllocAttributes); 
+		void *p = XMemAllocDefault(dwSize,dwAllocAttributes);
 		size_t realSize = XMemSizeDefault(p, dwAllocAttributes);
 		totalAllocGen += realSize;
 		return p;
@@ -1409,7 +1409,7 @@ LPVOID XMemAlloc(SIZE_T dwSize, DWORD dwAllocAttributes)
 
 	EnterCriticalSection(&memCS);
 
-	void *p=XMemAllocDefault(dwSize + 16,dwAllocAttributes); 
+	void *p=XMemAllocDefault(dwSize + 16,dwAllocAttributes);
 	size_t realSize = XMemSizeDefault(p,dwAllocAttributes) - 16;
 
 	if( trackEnable )
@@ -1435,7 +1435,7 @@ LPVOID XMemAlloc(SIZE_T dwSize, DWORD dwAllocAttributes)
 			trackEnable = true;
 		}
 	}
-	 
+
 	LeaveCriticalSection(&memCS);
 
 	return p;
@@ -1470,7 +1470,7 @@ void WINAPI XMemFree(PVOID pAddress, DWORD dwAllocAttributes)
 	if( pAddress )
 	{
 		size_t realSize = XMemSizeDefault(pAddress, dwAllocAttributes) - 16;
-		
+
 		if(trackEnable)
 		{
 			int sect = *(((unsigned char *)pAddress)+realSize);
@@ -1504,7 +1504,7 @@ SIZE_T WINAPI XMemSize(
 void DumpMem()
 {
 	int totalLeak = 0;
-	for(AUTO_VAR(it, allocCounts.begin()); it != allocCounts.end(); it++ )
+	for( auto it = allocCounts.begin(); it != allocCounts.end(); it++ )
 	{
 		if(it->second > 0 )
 		{
@@ -1552,7 +1552,7 @@ void MemPixStuff()
 
 	int totals[MAX_SECT] = {0};
 
-	for(AUTO_VAR(it, allocCounts.begin()); it != allocCounts.end(); it++ )
+	for( auto it = allocCounts.begin(); it != allocCounts.end(); it++ )
 	{
 		if(it->second > 0 )
 		{

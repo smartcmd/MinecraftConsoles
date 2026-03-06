@@ -55,6 +55,6 @@ void PotatoTile::registerIcons(IconRegister *iconRegister)
 {
 	for (int i = 0; i < 4; i++)
 	{
-		icons[i] = iconRegister->registerIcon(getIconName() + L"_stage_" + _toString<int>(i) );
+		icons[i] = iconRegister->registerIcon(getIconName() + L"_stage_" + std::to_wstring(i) );
 	}
 }

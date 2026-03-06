@@ -17,14 +17,14 @@
 #include "net.minecraft.h"
 #include "Tile.h"
 
-wstring Tile::TILE_DESCRIPTION_PREFIX = L"Tile."; 
+wstring Tile::TILE_DESCRIPTION_PREFIX = L"Tile.";
 
 const float Tile::INDESTRUCTIBLE_DESTROY_TIME = -1.0f;
 
 Tile::SoundType *Tile::SOUND_NORMAL = NULL;
 Tile::SoundType *Tile::SOUND_WOOD = NULL;
 Tile::SoundType *Tile::SOUND_GRAVEL = NULL;
-Tile::SoundType *Tile::SOUND_GRASS = NULL; 
+Tile::SoundType *Tile::SOUND_GRASS = NULL;
 Tile::SoundType *Tile::SOUND_STONE = NULL;
 Tile::SoundType *Tile::SOUND_METAL = NULL;
 Tile::SoundType *Tile::SOUND_GLASS = NULL;
@@ -204,7 +204,7 @@ ComparatorTile *Tile::comparator_off = NULL;
 ComparatorTile *Tile::comparator_on = NULL;
 
 DaylightDetectorTile *Tile::daylightDetector = NULL;
-Tile *Tile::redstoneBlock = NULL;	
+Tile *Tile::redstoneBlock = NULL;
 
 Tile *Tile::netherQuartz = NULL;
 HopperTile *Tile::hopper = NULL;
@@ -427,7 +427,7 @@ void Tile::staticCtor()
 	Tile::comparator_on = (ComparatorTile *) (new ComparatorTile(150, true))	->setDestroyTime(0.0f)->setLightEmission(10 / 16.0f)->setSoundType(SOUND_WOOD)->setIconName(L"comparator_on")->setDescriptionId(IDS_TILE_COMPARATOR)->setUseDescriptionId(IDS_DESC_COMPARATOR);
 
 	Tile::daylightDetector = (DaylightDetectorTile *) (new DaylightDetectorTile(151))->setDestroyTime(0.2f)->setSoundType(SOUND_WOOD)->setIconName(L"daylight_detector")->setDescriptionId(IDS_TILE_DAYLIGHT_DETECTOR)->setUseDescriptionId(IDS_DESC_DAYLIGHT_DETECTOR);
-	Tile::redstoneBlock = (new PoweredMetalTile(152))						->setBaseItemTypeAndMaterial(Item::eBaseItemType_block,	Item::eMaterial_redstone)->setDestroyTime(5.0f)->setExplodeable(10)->setSoundType(SOUND_METAL)->setIconName(L"redstone_block")->setDescriptionId(IDS_TILE_REDSTONE_BLOCK)->setUseDescriptionId(IDS_DESC_REDSTONE_BLOCK);	
+	Tile::redstoneBlock = (new PoweredMetalTile(152))						->setBaseItemTypeAndMaterial(Item::eBaseItemType_block,	Item::eMaterial_redstone)->setDestroyTime(5.0f)->setExplodeable(10)->setSoundType(SOUND_METAL)->setIconName(L"redstone_block")->setDescriptionId(IDS_TILE_REDSTONE_BLOCK)->setUseDescriptionId(IDS_DESC_REDSTONE_BLOCK);
 	Tile::netherQuartz =	(new OreTile(153))								->setDestroyTime(3.0f)->setExplodeable(5)->setSoundType(SOUND_STONE)->setIconName(L"quartz_ore")->setDescriptionId(IDS_TILE_NETHER_QUARTZ)->setUseDescriptionId(IDS_DESC_NETHER_QUARTZ_ORE);
 	Tile::hopper = (HopperTile *)(new HopperTile(154))						->setBaseItemTypeAndMaterial(Item::eBaseItemType_redstoneContainer,	Item::eMaterial_undefined)->setDestroyTime(3.0f)->setExplodeable(8)->setSoundType(SOUND_WOOD)->setIconName(L"hopper")->setDescriptionId(IDS_TILE_HOPPER)->setUseDescriptionId(IDS_DESC_HOPPER);
 	Tile::quartzBlock =		(new QuartzBlockTile(155))						->setBaseItemTypeAndMaterial(Item::eBaseItemType_structblock,	Item::eMaterial_quartz)->setSoundType(SOUND_STONE)->setDestroyTime(0.8f)->setIconName(L"quartz_block")->setDescriptionId(IDS_TILE_QUARTZ_BLOCK)->setUseDescriptionId(IDS_DESC_QUARTZ_BLOCK);
@@ -819,7 +819,7 @@ AABB *Tile::getTileAABB(Level *level, int x, int y, int z)
 	return AABB::newTemp(x + tls->xx0, y + tls->yy0, z + tls->zz0, x + tls->xx1, y + tls->yy1, z + tls->zz1);
 }
 
-void Tile::addAABBs(Level *level, int x, int y, int z, AABB *box, AABBList *boxes, shared_ptr<Entity> source) 
+void Tile::addAABBs(Level *level, int x, int y, int z, AABB *box, AABBList *boxes, shared_ptr<Entity> source)
 {
 	AABB *aabb = getAABB(level, x, y, z);
 	if (aabb != NULL && box->intersects(aabb)) boxes->push_back(aabb);
@@ -1413,7 +1413,7 @@ Tile *Tile::setIconName(const wstring &iconName)
 
 wstring Tile::getIconName()
 {
-	return iconName.empty() ? L"MISSING_ICON_TILE_" + _toString<int>(id) + L"_" + _toString<int>(descriptionId) : iconName;
+	return iconName.empty() ? L"MISSING_ICON_TILE_" + std::to_wstring(id) + L"_" + std::to_wstring(descriptionId) : iconName;
 }
 
 void Tile::registerIcons(IconRegister *iconRegister)
@@ -1527,26 +1527,26 @@ Tile::SoundType::SoundType(eMATERIALSOUND_TYPE eMaterialSound, float volume, flo
 }
 
 float Tile::SoundType::getVolume() const
-{ 
-	return volume; 
+{
+	return volume;
 }
 float Tile::SoundType::getPitch() const
-{ 
-	return pitch; 
+{
+	return pitch;
 }
 //wstring getBreakSound() const { return breakSound; }
 //wstring getStepSound()	const { return stepSound; }
 int Tile::SoundType::getBreakSound() const
-{ 
-	return iBreakSound; 
+{
+	return iBreakSound;
 }
 int Tile::SoundType::getStepSound()	const
-{ 
-	return iStepSound; 
+{
+	return iStepSound;
 }
 int Tile::SoundType::getPlaceSound() const
-{ 
-	return iPlaceSound; 
+{
+	return iPlaceSound;
 }
 
 

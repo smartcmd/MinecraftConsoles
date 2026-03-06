@@ -26,7 +26,7 @@ void DemoMode::tick()
 	{
         if (day <= (DEMO_DAYS + 1))
 		{
-            minecraft->gui->displayClientMessage(L"demo.day." + _toString<__int64>(day));
+            minecraft->gui->displayClientMessage(L"demo.day." + std::to_wstring(day));
         }
     }
 	else if (day == 1)

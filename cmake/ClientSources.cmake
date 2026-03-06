@@ -472,6 +472,7 @@ set(MINECRAFT_CLIENT_SOURCES
   "WaterDropParticle.cpp"
   "Windows64/Iggy/gdraw/gdraw_d3d11.cpp"
   "Windows64/KeyboardMouseInput.cpp"
+  "Windows64/PostProcesser.cpp"
   "Windows64/Leaderboards/WindowsLeaderboardManager.cpp"
   "Windows64/Windows64_App.cpp"
   "Windows64/Windows64_Minecraft.cpp"

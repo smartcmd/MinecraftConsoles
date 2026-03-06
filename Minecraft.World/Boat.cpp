@@ -87,7 +87,7 @@ Boat::Boat(Level *level, double x, double y, double z) : Entity( level )
 
 double Boat::getRideHeight()
 {
-	return bbHeight * 0.0f - 0.3f;
+	return heightOffset;
 }
 
 bool Boat::hurt(DamageSource *source, float hurtDamage)
@@ -283,11 +283,11 @@ void Boat::tick()
 
 			// 4J Stu - Fix for #9579 - GAMEPLAY: Boats with a player in them slowly sink under the water over time, and with no player in them they float into the sky.
 			// Just make the boats bob up and down rather than any other client-side movement when not receiving packets from server
-			if (waterPercentage < 1)
-			{
-				double bob = waterPercentage * 2 - 1;
-				yd += 0.04f * bob;
-			}
+	        if (waterPercentage > 0)
+	        {
+		        double bob = waterPercentage * 2 - 1;
+		        yd += 0.04f * bob;
+	        }
 			else
 			{
 				if (yd < 0) yd /= 2;
@@ -307,15 +307,14 @@ void Boat::tick()
 		return;
 	}
 
-	if (waterPercentage < 1)
+	if (waterPercentage > 0)
 	{
 		double bob = waterPercentage * 2 - 1;
 		yd += 0.04f * bob;
 	}
 	else
 	{
-		if (yd < 0) yd /= 2;
-		yd += 0.007f;
+		yd = 0;
 	}
 
 
@@ -405,13 +404,12 @@ void Boat::tick()
 	if(level->isClientSide) return;
 
 	vector<shared_ptr<Entity> > *entities = level->getEntities(shared_from_this(), bb->grow(0.2f, 0, 0.2f));
-	if (entities != NULL && !entities->empty())
+	if (entities && !entities->empty())
 	{
-		AUTO_VAR(itEnd, entities->end());
-		for (AUTO_VAR(it, entities->begin()); it != itEnd; it++)
+		auto riderPtr = rider.lock();
+		for ( auto& e : *entities )
 		{
-			shared_ptr<Entity> e = (*it); // entities->at(i);
-			if (e != rider.lock() && e->isPushable() && e->GetType() ==  eTYPE_BOAT)
+			if (e != riderPtr && e->isPushable() && e->GetType() ==  eTYPE_BOAT)
 			{
 				e->push(shared_from_this());
 			}

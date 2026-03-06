@@ -52,7 +52,7 @@ void FireworksItem::appendHoverText(shared_ptr<ItemInstance> itemInstance, share
 	}
 	if (fireTag->contains(TAG_FLIGHT))
 	{
-		lines->push_back(wstring(app.GetString(IDS_ITEM_FIREWORKS_FLIGHT)) + L" " + _toString<int>((fireTag->getByte(TAG_FLIGHT))));
+		lines->push_back(wstring(app.GetString(IDS_ITEM_FIREWORKS_FLIGHT)) + L" " + std::to_wstring((fireTag->getByte(TAG_FLIGHT))));
 	}
 
 	ListTag<CompoundTag> *explosions = (ListTag<CompoundTag> *) fireTag->getList(TAG_EXPLOSIONS);

@@ -9,11 +9,11 @@ GameRule::GameRule(GameRuleDefinition *definition, Connection *connection)
 
 GameRule::~GameRule()
 {
-	for(AUTO_VAR(it, m_parameters.begin()); it != m_parameters.end(); ++it)
+	for(auto& it : m_parameters )
 	{
-		if(it->second.isPointer)
+		if(it.second.isPointer)
 		{
-			delete it->second.gr;
+			delete it.second.gr;
 		}
 	}
 }
@@ -59,12 +59,12 @@ void GameRule::write(DataOutputStream *dos)
 {
 	// Find required parameters.
 	dos->writeInt(m_parameters.size());
-	for (AUTO_VAR(it, m_parameters.begin()); it != m_parameters.end(); it++)
+	for ( const auto& parameter : m_parameters )
 	{
-		wstring pName = (*it).first;
-		ValueType vType = (*it).second;
-		
-		dos->writeUTF( (*it).first );
+		wstring pName = parameter.first;
+		ValueType vType = parameter.second;
+
+		dos->writeUTF( parameter.first );
 		dos->writeBoolean( vType.isPointer );
 
 		if (vType.isPointer)
@@ -80,7 +80,7 @@ void GameRule::read(DataInputStream *dis)
 	for (int i = 0; i < savedParams; i++)
 	{
 		wstring pNames = dis->readUTF();
-		
+
 		ValueType vType = getParameter(pNames);
 
 		if (dis->readBoolean())

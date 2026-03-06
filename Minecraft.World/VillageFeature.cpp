@@ -34,15 +34,15 @@ VillageFeature::VillageFeature(unordered_map<wstring, wstring> options, int iXZS
 {
 	_init(iXZSize);
 
-	for (AUTO_VAR(it,options.begin()); it != options.end(); ++it)
+	for (auto& option : options)
 	{
-		if (it->first.compare(OPTION_SIZE_MODIFIER) == 0)
+		if (option.first.compare(OPTION_SIZE_MODIFIER) == 0)
 		{
-			villageSizeModifier = Mth::getInt(it->second, villageSizeModifier, 0);
+			villageSizeModifier = Mth::getInt(option.second, villageSizeModifier, 0);
 		}
-		else if (it->first.compare(OPTION_SPACING) == 0)
+		else if (option.first.compare(OPTION_SPACING) == 0)
 		{
-			townSpacing = Mth::getInt(it->second, townSpacing, minTownSeparation + 1);
+			townSpacing = Mth::getInt(option.second, townSpacing, minTownSeparation + 1);
 		}
 	}
 }
@@ -60,7 +60,7 @@ bool VillageFeature::isFeatureChunk(int x, int z,bool bIsSuperflat)
 #ifdef _LARGE_WORLDS
 		&& level->dimension->getXZSize() < 128
 #endif
-		) 
+		)
 		{
 			townSpacing= 16;// 4J change 32;
 		}
@@ -135,16 +135,16 @@ VillageFeature::VillageStart::VillageStart(Level *level, Random *random, int chu
 		if (pendingRoads->empty())
 		{
 			int pos = random->nextInt((int)pendingHouses->size());
-			AUTO_VAR(it, pendingHouses->begin() + pos);
-			StructurePiece *structurePiece = *it;
+            auto it = pendingHouses->begin() + pos;
+            StructurePiece *structurePiece = *it;
 			pendingHouses->erase(it);
 			structurePiece->addChildren(startRoom, &pieces, random);
 		}
 		else
 		{
 			int pos = random->nextInt((int)pendingRoads->size());
-			AUTO_VAR(it, pendingRoads->begin() + pos);
-			StructurePiece *structurePiece = *it;
+            auto it = pendingRoads->begin() + pos;
+            StructurePiece *structurePiece = *it;
 			pendingRoads->erase(it);
 			structurePiece->addChildren(startRoom, &pieces, random);
 		}
@@ -152,13 +152,12 @@ VillageFeature::VillageStart::VillageStart(Level *level, Random *random, int chu
 
 	calculateBoundingBox();
 
-	int count = 0;
-	for( AUTO_VAR(it, pieces.begin()); it != pieces.end(); it++ )
+	size_t count = 0;
+	for(auto& piece : pieces)
 	{
-		StructurePiece *piece = *it;
-		if (dynamic_cast<VillagePieces::VillageRoadPiece *>(piece) == NULL)
+		if ( piece && dynamic_cast<VillagePieces::VillageRoadPiece *>(piece) )
 		{
-			count++;
+			++count;
 		}
 	}
 	valid = count > 2;

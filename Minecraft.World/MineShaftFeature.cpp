@@ -19,11 +19,11 @@ MineShaftFeature::MineShaftFeature(unordered_map<wstring, wstring> options)
 {
 	chance = 0.01;
 
-	for(AUTO_VAR(it,options.begin()); it != options.end(); ++it)
+	for(auto& option : options)
 	{
-		if (it->first.compare(OPTION_CHANCE) == 0)
+		if (option.first.compare(OPTION_CHANCE) == 0)
 		{
-			chance = Mth::getDouble(it->second, chance);
+			chance = Mth::getDouble(option.second, chance);
 		}
 	}
 }

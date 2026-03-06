@@ -39,18 +39,17 @@ bool ShapelessRecipy::matches(shared_ptr<CraftingContainer> craftSlots, Level *l
 		{
 			shared_ptr<ItemInstance> item = craftSlots->getItem(x, y);
 
-			if (item != NULL) 
+			if (item) 
 			{
 				bool found = false;
 
-				AUTO_VAR(citEnd, ingredients->end());
-				for (AUTO_VAR(cit, ingredients->begin()); cit != citEnd; ++cit)
+				auto citEnd = ingredients->end();
+				for ( ItemInstance *ingredient : *ingredients )
 				{
-					ItemInstance *ingredient = *cit;
 					if (item->id == ingredient->id && (ingredient->getAuxValue() == Recipes::ANY_AUX_VALUE || item->getAuxValue() == ingredient->getAuxValue())) 
 					{
 						found = true;
-						AUTO_VAR( it, find(tempList.begin(), tempList.end(), ingredient ) );
+						auto it = find(tempList.begin(), tempList.end(), ingredient);
 						if(it != tempList.end() ) tempList.erase(it);
 						break;
 					}
@@ -86,9 +85,8 @@ bool ShapelessRecipy::requires(int iRecipe)
 
 	//printf("ShapelessRecipy %d\n",iRecipe);
 
-	AUTO_VAR(citEnd, ingredients->end());
 	int iCount=0;
-	for (vector<ItemInstance *>::iterator ingredient = ingredients->begin(); ingredient != citEnd; ingredient++)
+	for ( auto ingredient = ingredients->begin(); ingredient != ingredients->end(); ingredient++)
 	{
 		//printf("\tIngredient %d is %d\n",iCount++,(*ingredient)->id);
 		//if (item->id == (*ingredient)->id && ((*ingredient)->getAuxValue() == Recipes::ANY_AUX_VALUE || item->getAuxValue() == (*ingredient)->getAuxValue())) 
@@ -119,15 +117,11 @@ void ShapelessRecipy::requires(INGREDIENTS_REQUIRED *pIngReq)
 	memset(TempIngReq.iIngAuxValA,Recipes::ANY_AUX_VALUE,sizeof(int)*9);
 	ZeroMemory(TempIngReq.uiGridA,sizeof(unsigned int)*9);
 
-	AUTO_VAR(citEnd, ingredients->end());
-
-	for (vector<ItemInstance *>::const_iterator ingredient = ingredients->begin(); ingredient != citEnd; ingredient++)
+	for ( ItemInstance *expected : *ingredients )
 	{
-		ItemInstance *expected = *ingredient;
-
-		if (expected!=NULL) 
+		if ( expected ) 
 		{			
-			int iAuxVal = (*ingredient)->getAuxValue();
+			int iAuxVal = expected->getAuxValue();
 			TempIngReq.uiGridA[iCount++]=expected->id | iAuxVal<<24;
 			// 4J-PB - put the ingredients in boxes 1,2,4,5 so we can see them in a 2x2 crafting screen
 			if(iCount==2) iCount=3;

@@ -22,10 +22,9 @@ public:
 
 	void write(DataOutput *dos)
 	{
-		AUTO_VAR(itEnd, tags.end());
-		for( unordered_map<wstring, Tag *>::iterator it = tags.begin(); it != itEnd; it++ )
+		for( auto& tag : tags )
 		{
-			Tag::writeNamedTag(it->second, dos);
+			Tag::writeNamedTag(tag.second, dos);
 		}
 		dos->writeByte(Tag::TAG_End);
 	}
@@ -55,10 +54,9 @@ public:
 		// 4J - was return tags.values();
 		vector<Tag *> *ret = new vector<Tag *>;
 
-		AUTO_VAR(itEnd, tags.end());
-		for( unordered_map<wstring, Tag *>::iterator it = tags.begin(); it != itEnd; it++ )
+		for( auto& tag : tags )
 		{
-			ret->push_back(it->second);
+			ret->push_back(tag.second);
 		}
 		return ret;
 	}
@@ -130,7 +128,7 @@ public:
 
 	Tag *get(const wstring &name)
 	{
-		AUTO_VAR(it, tags.find(name));
+		auto it = tags.find(name);
 		if(it != tags.end()) return it->second;
 		return NULL;
 	}
@@ -213,7 +211,7 @@ public:
 
 	void remove(const wstring &name)
 	{
-		AUTO_VAR(it, tags.find(name));
+		auto it = tags.find(name);
 		if(it != tags.end()) tags.erase(it);
 		//tags.remove(name);
 	}
@@ -222,7 +220,7 @@ public:
 	{
 		static const int bufSize = 32;
 		static wchar_t buf[bufSize];
-		swprintf(buf,bufSize,L"%d entries",tags.size());
+		swprintf(buf,bufSize,L"%zu entries",tags.size());
 		return wstring( buf );
 	}
 
@@ -236,10 +234,9 @@ public:
 		strcpy( newPrefix, prefix);
 		strcat( newPrefix, "   ");
 
-		AUTO_VAR(itEnd, tags.end());
-		for( unordered_map<string, Tag *>::iterator it = tags.begin(); it != itEnd; it++ )
+		for( auto& it : tags )
 		{
-		it->second->print(newPrefix, out);
+			it.second->print(newPrefix, out);
 		}
 		delete[] newPrefix;
 		out << prefix << "}" << endl;
@@ -253,10 +250,9 @@ public:
 
 	virtual ~CompoundTag()
 	{
-		AUTO_VAR(itEnd, tags.end());
-		for( AUTO_VAR(it, tags.begin()); it != itEnd; it++ )
+		for( auto& tag : tags )
 		{
-			delete it->second;
+			delete tag.second;
 		}
 	}
 
@@ -264,10 +260,9 @@ public:
 	{
 		CompoundTag *tag = new CompoundTag(getName());
 
-		AUTO_VAR(itEnd, tags.end());
-		for( AUTO_VAR(it, tags.begin()); it != itEnd; it++ )
+		for( auto& it : tags )
 		{			
-			tag->put((wchar_t *)it->first.c_str(), it->second->copy());
+			tag->put((wchar_t *)it.first.c_str(), it.second->copy());
 		}
 		return tag;
 	}
@@ -281,11 +276,10 @@ public:
 			if(tags.size() == o->tags.size())
 			{
 				bool equal = true;
-				AUTO_VAR(itEnd, tags.end());
-				for( AUTO_VAR(it, tags.begin()); it != itEnd; it++ )
+				for( auto& it : tags )
 				{
-					AUTO_VAR(itFind, o->tags.find(it->first));
-					if(itFind == o->tags.end() || !it->second->equals(itFind->second) )
+					auto itFind = o->tags.find(it.first);
+					if(itFind == o->tags.end() || !it.second->equals(itFind->second) )
 					{
 						equal = false;
 						break;

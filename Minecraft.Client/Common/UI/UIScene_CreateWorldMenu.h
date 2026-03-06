@@ -51,6 +51,12 @@ private:
 	DLCPack * m_pDLCPack;
 	bool m_bRebuildTouchBoxes;
 
+#ifdef _WINDOWS64
+	bool m_bDirectEditing;
+	wstring m_worldNameBeforeEdit;
+	int m_iDirectEditCooldown;
+#endif
+
 public:
 	UIScene_CreateWorldMenu(int iPad, void *initData, UILayer *parentLayer);
 	virtual ~UIScene_CreateWorldMenu();

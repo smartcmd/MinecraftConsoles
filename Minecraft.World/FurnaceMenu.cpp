@@ -44,12 +44,10 @@ void FurnaceMenu::addSlotListener(ContainerListener *listener)
 void FurnaceMenu::broadcastChanges()
 {
 	AbstractContainerMenu::broadcastChanges();
-	
-	AUTO_VAR(itEnd, containerListeners.end());
-	for (AUTO_VAR(it, containerListeners.begin()); it != itEnd; it++)
+
+	for (auto& listener : containerListeners)
 	{
-		ContainerListener *listener = *it; //containerListeners->at(i);
-		if (tc != furnace->tickCount) 
+		if (tc != furnace->tickCount)
 		{
 			listener->setContainerData(this, 0, furnace->tickCount);
 		}
@@ -57,7 +55,7 @@ void FurnaceMenu::broadcastChanges()
 		{
 			listener->setContainerData(this, 1, furnace->litTime);
 		}
-		if (ld != furnace->litDuration) 
+		if (ld != furnace->litDuration)
 		{
 			listener->setContainerData(this, 2, furnace->litDuration);
 		}

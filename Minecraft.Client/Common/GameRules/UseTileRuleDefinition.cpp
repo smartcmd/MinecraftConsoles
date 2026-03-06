@@ -13,19 +13,19 @@ void UseTileRuleDefinition::writeAttributes(DataOutputStream *dos, UINT numAttri
 	GameRuleDefinition::writeAttributes(dos, numAttributes + 5);
 
 	ConsoleGameRules::write(dos, ConsoleGameRules::eGameRuleAttr_tileId);
-	dos->writeUTF(_toString(m_tileId));
+	dos->writeUTF(std::to_wstring(m_tileId));
 
 	ConsoleGameRules::write(dos, ConsoleGameRules::eGameRuleAttr_useCoords);
-	dos->writeUTF(_toString(m_useCoords));
+	dos->writeUTF(std::to_wstring(m_useCoords));
 
 	ConsoleGameRules::write(dos, ConsoleGameRules::eGameRuleAttr_x);
-	dos->writeUTF(_toString(m_coordinates.x));
+	dos->writeUTF(std::to_wstring(m_coordinates.x));
 
 	ConsoleGameRules::write(dos, ConsoleGameRules::eGameRuleAttr_y);
-	dos->writeUTF(_toString(m_coordinates.y));
+	dos->writeUTF(std::to_wstring(m_coordinates.y));
 
 	ConsoleGameRules::write(dos, ConsoleGameRules::eGameRuleAttr_z);
-	dos->writeUTF(_toString(m_coordinates.z));
+	dos->writeUTF(std::to_wstring(m_coordinates.z));
 }
 
 void UseTileRuleDefinition::addAttribute(const wstring &attributeName, const wstring &attributeValue)
