@@ -1,0 +1,60 @@
+{
+  "version": 6,
+  "configurePresets": [
+    {
+      "name": "windows64",
+      "displayName": "Windows64",
+      "generator": "Visual Studio 17 2022",
+      "architecture": "x64"
+    },
+    {
+      "name": "durango",
+      "displayName": "Durango",
+      "generator": "Visual Studio 17 2022",
+      "toolchainFile": "${sourceDir}/cmake/toolchains/durango.cmake"
+    },
+    {
+      "name": "orbis",
+      "displayName": "ORBIS",
+      "generator": "Visual Studio 17 2022",
+      "toolchainFile": "${sourceDir}/cmake/toolchains/orbis.cmake"
+    },
+    {
+      "name": "ps3",
+      "displayName": "PS3",
+      "generator": "Visual Studio 17 2022",
+      "toolchainFile": "${sourceDir}/cmake/toolchains/ps3.cmake"
+    },
+    {
+      "name": "psvita",
+      "displayName": "PSVita",
+      "generator": "Visual Studio 17 2022",
+      "toolchainFile": "${sourceDir}/cmake/toolchains/psvita.cmake"
+    },
+    {
+      "name": "xbox360",
+      "displayName": "Xbox 360",
+      "generator": "Visual Studio 17 2022",
+      "toolchainFile": "${sourceDir}/cmake/toolchains/xbox360.cmake"
+    }
+  ],
+  "buildPresets": [
+    { "name": "windows64-debug",   "displayName": "Windows64 - Debug",   "configurePreset": "windows64", "configuration": "Debug" },
+    { "name": "windows64-release", "displayName": "Windows64 - Release", "configurePreset": "windows64", "configuration": "Release" },
+
+    { "name": "durango-debug",     "displayName": "Durango - Debug",     "configurePreset": "durango",   "configuration": "Debug" },
+    { "name": "durango-release",   "displayName": "Durango - Release",   "configurePreset": "durango",   "configuration": "Release" },
+
+    { "name": "orbis-debug",       "displayName": "ORBIS - Debug",       "configurePreset": "orbis",     "configuration": "Debug" },
+    { "name": "orbis-release",     "displayName": "ORBIS - Release",     "configurePreset": "orbis",     "configuration": "Release" },
+
+    { "name": "ps3-debug",         "displayName": "PS3 - Debug",         "configurePreset": "ps3",       "configuration": "Debug" },
+    { "name": "ps3-release",       "displayName": "PS3 - Release",       "configurePreset": "ps3",       "configuration": "Release" },
+
+    { "name": "psvita-debug",      "displayName": "PSVita - Debug",      "configurePreset": "psvita",    "configuration": "Debug" },
+    { "name": "psvita-release",    "displayName": "PSVita - Release",    "configurePreset": "psvita",    "configuration": "Release" },
+
+    { "name": "xbox360-debug",     "displayName": "Xbox 360 - Debug",    "configurePreset": "xbox360",   "configuration": "Debug" },
+    { "name": "xbox360-release",   "displayName": "Xbox 360 - Release",  "configurePreset": "xbox360",   "configuration": "Release" }
+  ]
+}

@@ -423,7 +423,9 @@ Minecraft.World/x64_Debug/
 Minecraft.World/Release/
 Minecraft.World/x64_Release/
 
-build/*
+# CMake build output
+build/
+out/
 
 # Existing build output files
 !x64/**/Effects.msscmp
@@ -436,3 +438,5 @@ Minecraft.Client/Saves/
 
 # Visual Studio Per-User Config
 *.user
+
+.vs.old/
