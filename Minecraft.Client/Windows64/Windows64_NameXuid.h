@@ -6,6 +6,17 @@
 
 namespace Win64NameXuid
 {
+	inline PlayerUID GetLegacyEmbeddedBaseXuid()
+	{
+		return (PlayerUID)0xe000d45248242f2eULL;
+	}
+
+	inline PlayerUID GetLegacyEmbeddedHostXuid()
+	{
+		// Legacy behavior used "embedded base + smallId"; host was always smallId 0.
+		return GetLegacyEmbeddedBaseXuid();
+	}
+
 	/**
 	 * ## Resolves a persistent 64-bit player ID from the player's username.
 	 * 

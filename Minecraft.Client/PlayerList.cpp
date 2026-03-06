@@ -528,6 +528,13 @@ shared_ptr<ServerPlayer> PlayerList::getPlayerForLogin(PendingConnection *pendin
 		if (np != NULL)
 		{
 			player->setOnlineXuid(np->GetUID());
+
+			// Backward compatibility: when Minecraft.Client is hosting, keep the first
+			// host player on the legacy embedded host XUID (base + 0).
+			if (np->IsHost())
+			{
+				player->setXuid(Win64NameXuid::GetLegacyEmbeddedHostXuid());
+			}
 		}
 	}
 #endif

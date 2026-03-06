@@ -1040,7 +1040,15 @@ shared_ptr<MultiplayerLocalPlayer> Minecraft::createExtraLocalPlayer(int idx, co
 		ProfileManager.GetXUID(idx,&playerXUIDOffline,false);
 		ProfileManager.GetXUID(idx,&playerXUIDOnline,true);
 #ifdef _WINDOWS64
-		playerXUIDOffline = Win64NameXuid::ResolvePersistentXuidFromName(localplayers[idx]->name);
+		INetworkPlayer *localNetworkPlayer = g_NetworkManager.GetLocalPlayerByUserIndex(idx);
+		if(localNetworkPlayer != NULL && localNetworkPlayer->IsHost())
+		{
+			playerXUIDOffline = Win64NameXuid::GetLegacyEmbeddedHostXuid();
+		}
+		else
+		{
+			playerXUIDOffline = Win64NameXuid::ResolvePersistentXuidFromName(localplayers[idx]->name);
+		}
 #endif
 		localplayers[idx]->setXuid(playerXUIDOffline);
 		localplayers[idx]->setOnlineXuid(playerXUIDOnline);
@@ -4301,7 +4309,15 @@ void Minecraft::setLevel(MultiPlayerLevel *level, int message /*=-1*/, shared_pt
 			}
 #endif
 #ifdef _WINDOWS64
-			playerXUIDOffline = Win64NameXuid::ResolvePersistentXuidFromName(player->name);
+			INetworkPlayer *localNetworkPlayer = g_NetworkManager.GetLocalPlayerByUserIndex(iPrimaryPlayer);
+			if(localNetworkPlayer != NULL && localNetworkPlayer->IsHost())
+			{
+				playerXUIDOffline = Win64NameXuid::GetLegacyEmbeddedHostXuid();
+			}
+			else
+			{
+				playerXUIDOffline = Win64NameXuid::ResolvePersistentXuidFromName(player->name);
+			}
 #endif
 			player->setXuid(playerXUIDOffline);
 			player->setOnlineXuid(playerXUIDOnline);
@@ -4486,7 +4502,15 @@ void Minecraft::respawnPlayer(int iPad, int dimension, int newEntityId)
 	ProfileManager.GetXUID(iTempPad,&playerXUIDOffline,false);
 	ProfileManager.GetXUID(iTempPad,&playerXUIDOnline,true);
 #ifdef _WINDOWS64
-	playerXUIDOffline = Win64NameXuid::ResolvePersistentXuidFromName(player->name);
+	INetworkPlayer *localNetworkPlayer = g_NetworkManager.GetLocalPlayerByUserIndex(iTempPad);
+	if(localNetworkPlayer != NULL && localNetworkPlayer->IsHost())
+	{
+		playerXUIDOffline = Win64NameXuid::GetLegacyEmbeddedHostXuid();
+	}
+	else
+	{
+		playerXUIDOffline = Win64NameXuid::ResolvePersistentXuidFromName(player->name);
+	}
 #endif
 	player->setXuid(playerXUIDOffline);
 	player->setOnlineXuid(playerXUIDOnline);
