@@ -30,7 +30,7 @@ jobs:
       - name: Build
         run: |
           sudo -u builder sh <<'EOF'
-          set -e
+          set -ex
           export XDG_RUNTIME_DIR=/tmp/runtime-$UID
           mkdir -p "$XDG_RUNTIME_DIR"
           chmod 700 "$XDG_RUNTIME_DIR"
@@ -41,7 +41,6 @@ jobs:
           ./msvc-wine/install.sh $(pwd)/my_msvc/opt/msvc
           export PATH=$(pwd)/my_msvc/opt/msvc/bin/x64:$PATH
           ./my_msvc/opt/msvc/bin/x64/msbuild MinecraftConsoles.sln /p:Configuration=Release /p:Platform="Windows64"
-          ls -l
           EOF
 
       - name: Upload artifact/s
