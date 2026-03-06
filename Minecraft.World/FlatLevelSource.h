@@ -24,13 +24,13 @@ private:
 	boolean generateStructures;
 	VillageFeature *villageFeature;// = new VillageFeature(1);
 
-public: 
-	FlatLevelSource(Level *level, __int64 seed, bool generateStructures);
+public:
+	FlatLevelSource(Level *level, int64_t seed, bool generateStructures);
 	~FlatLevelSource();
 
-private: void prepareHeights(byteArray blocks); 
+private: void prepareHeights(byteArray blocks);
 
-public: 
+public:
 	virtual LevelChunk *create(int x, int z);
 	virtual LevelChunk *getChunk(int xOffs, int zOffs);
 	virtual bool hasChunk(int x, int y);

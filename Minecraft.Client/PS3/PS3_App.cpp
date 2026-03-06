@@ -469,7 +469,7 @@ void CConsoleMinecraftApp::FreeLocalTMSFiles(eTMSFileType eType)
 LoadSaveDataThreadParam* LoadSaveFromDisk(const wstring& pathName)
 {
 	File saveFile(pathName);
-	__int64 fileSize = saveFile.length();
+	int64_t fileSize = saveFile.length();
 	FileInputStream fis(saveFile);
 	byteArray ba(fileSize);
 	fis.read(ba);
@@ -507,8 +507,8 @@ void CConsoleMinecraftApp::TemporaryCreateGameStart()
 	StorageManager.SetSaveTitle(wWorldName.c_str());
 
 	bool isFlat = false;
-	__int64 seedValue = 0;//BiomeSource::findSeed(isFlat?LevelType::lvl_flat:LevelType::lvl_normal);	// 4J - was (new Random())->nextLong() - now trying to actually find a seed to suit our requirements
-//	__int64 seedValue =  0xfd97203ebdbf5c6f;
+	int64_t seedValue = 0;//BiomeSource::findSeed(isFlat?LevelType::lvl_flat:LevelType::lvl_normal);	// 4J - was (new Random())->nextLong() - now trying to actually find a seed to suit our requirements
+//	int64_t seedValue =  0xfd97203ebdbf5c6f;
 	unsigned int seedLow = (unsigned int )(seedValue & 0xffffffff);
 	unsigned int  seedHigh = (unsigned int )(seedValue>>32);
 #ifndef _CONTENT_PACKAGE

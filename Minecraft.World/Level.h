@@ -245,27 +245,27 @@ public:
 	void setBrightnessNoUpdateOnClient(LightLayer::variety layer, int x, int y, int z, int brightness);	// 4J added
 
 #ifdef _LARGE_WORLDS
-	typedef __uint64 lightCache_t;
+	typedef uint64_t lightCache_t;
 #else
 	typedef unsigned int lightCache_t;
 #endif
-	inline void setBrightnessCached(lightCache_t *cache, __uint64 *cacheUse, LightLayer::variety layer, int x, int y, int z, int brightness);
+	inline void setBrightnessCached(lightCache_t *cache, uint64_t *cacheUse, LightLayer::variety layer, int x, int y, int z, int brightness);
 	inline int getBrightnessCached(lightCache_t *cache, LightLayer::variety layer, int x, int y, int z);
 	inline int getEmissionCached(lightCache_t *cache, int ct, int x, int y, int z);
 	inline int getBlockingCached(lightCache_t *cache, LightLayer::variety layer, int *ct, int x, int y, int z);
 	void initCachePartial(lightCache_t *cache, int xc, int yc, int zc);
 	void initCacheComplete(lightCache_t *cache, int xc, int yc, int zc);
-	void flushCache(lightCache_t *cache, __uint64 cacheUse, LightLayer::variety layer);
+	void flushCache(lightCache_t *cache, uint64_t cacheUse, LightLayer::variety layer);
 
 	bool cachewritten;
 	static const int LIGHTING_SHIFT		= 24;
 	static const int BLOCKING_SHIFT		= 20;
 	static const int EMISSION_SHIFT		= 16;
 #ifdef _LARGE_WORLDS
-	static const __int64 LIGHTING_WRITEBACK = 0x80000000LL;
-	static const __int64 EMISSION_VALID		= 0x40000000LL;
-	static const __int64 BLOCKING_VALID	    = 0x20000000LL;
-	static const __int64 LIGHTING_VALID		= 0x10000000LL;
+	static const int64_t LIGHTING_WRITEBACK = 0x80000000LL;
+	static const int64_t EMISSION_VALID		= 0x40000000LL;
+	static const int64_t BLOCKING_VALID	    = 0x20000000LL;
+	static const int64_t LIGHTING_VALID		= 0x10000000LL;
 	static const lightCache_t POSITION_MASK		= 0xffffffff0000ffffLL;
 #else
 	static const int LIGHTING_WRITEBACK = 0x80000000;
@@ -465,11 +465,11 @@ public:
 	void setBlocksAndData(int x, int y, int z, int xs, int ys, int zs, byteArray data, bool includeLighting = true);
 	virtual void disconnect(bool sendDisconnect = true);
 	void checkSession();
-	void setGameTime(__int64 time);
-	__int64 getSeed();
-	__int64 getGameTime();
-	__int64 getDayTime();
-	void setDayTime(__int64 newTime);
+	void setGameTime(int64_t time);
+	int64_t getSeed();
+	int64_t getGameTime();
+	int64_t getDayTime();
+	void setDayTime(int64_t newTime);
 	Pos *getSharedSpawnPos();
 	void setSpawnPos(int x, int y, int z);
 	void setSpawnPos(Pos *spawnPos);

@@ -1486,12 +1486,26 @@ bool IUIScene_AbstractContainerMenu::handleKeyDown(int iPad, int iAction, bool b
 		}
 		break;
 	case ACTION_MENU_UP:
+#ifdef _WINDOWS64
+		if (g_KBMInput.WasMouseWheelConsumed())
+		{
+			handleAdditionalKeyPress(ACTION_MENU_OTHER_STICK_UP);
+			break;
+		}
+#endif
 		{
 			//ui.PlayUISFX(eSFX_Focus);
 			m_eCurrTapState = eTapStateUp;
 		}
 		break;
 	case ACTION_MENU_DOWN:
+#ifdef _WINDOWS64
+		if (g_KBMInput.WasMouseWheelConsumed())
+		{
+			handleAdditionalKeyPress(ACTION_MENU_OTHER_STICK_DOWN);
+			break;
+		}
+#endif
 		{
 			//ui.PlayUISFX(eSFX_Focus);
 			m_eCurrTapState = eTapStateDown;

@@ -9,10 +9,10 @@ class LoginPacket : public Packet, public enable_shared_from_this<LoginPacket>
 public:
 	int clientVersion;
 	wstring userName;
-	__int64 seed;
+	int64_t seed;
 	char dimension;
 	PlayerUID m_offlineXuid, m_onlineXuid;			// 4J Added
-	char difficulty;	// 4J Added	
+	char difficulty;	// 4J Added
 	bool m_friendsOnlyUGC; // 4J Added
 	DWORD m_ugcPlayersVersion; // 4J Added
 	INT m_multiplayerInstanceId; //4J Added for sentient
@@ -31,7 +31,7 @@ public:
 	BYTE maxPlayers;
 
 	LoginPacket();
-	LoginPacket(const wstring& userName, int clientVersion, LevelType *pLevelType, __int64 seed, int gameType, char dimension, BYTE mapHeight, BYTE maxPlayers, char difficulty, INT m_multiplayerInstanceId, BYTE playerIndex, bool newSeaLevel, unsigned int uiGamePrivileges, int xzSize, int hellScale); // Server -> Client
+	LoginPacket(const wstring& userName, int clientVersion, LevelType *pLevelType, int64_t seed, int gameType, char dimension, BYTE mapHeight, BYTE maxPlayers, char difficulty, INT m_multiplayerInstanceId, BYTE playerIndex, bool newSeaLevel, unsigned int uiGamePrivileges, int xzSize, int hellScale); // Server -> Client
 	LoginPacket(const wstring& userName, int clientVersion, PlayerUID offlineXuid, PlayerUID onlineXuid, bool friendsOnlyUGC, DWORD ugcPlayersVersion, DWORD skinId, DWORD capeId, bool isGuest); // Client -> Server
 
 	virtual void read(DataInputStream *dis);

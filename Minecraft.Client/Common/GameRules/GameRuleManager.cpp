@@ -385,7 +385,7 @@ bool GameRuleManager::readRuleFile(LevelGenerationOptions *lgo, byte *dIn, UINT 
 	// Read File.
 
 	// version_number
-	__int64 version = dis.readShort();
+	int64_t version = dis.readShort();
 	unsigned char compressionType = 0;
 	if(version == 0)
 	{

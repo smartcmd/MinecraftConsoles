@@ -734,7 +734,7 @@ void CPlatformNetworkManagerStub::SearchForGames()
 		info->data.playerCount = lanSessions[i].playerCount;
 		info->data.maxPlayers = lanSessions[i].maxPlayers;
 
-		info->sessionId = (SessionID)((unsigned __int64)inet_addr(lanSessions[i].hostIP) | ((unsigned __int64)lanSessions[i].hostPort << 32));
+		info->sessionId = (SessionID)((uint64_t)inet_addr(lanSessions[i].hostIP) | ((uint64_t)lanSessions[i].hostPort << 32));
 
 		friendsSessions[0].push_back(info);
 	}

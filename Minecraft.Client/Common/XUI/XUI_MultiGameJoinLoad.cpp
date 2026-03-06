@@ -1945,7 +1945,7 @@ void CScene_MultiGameJoinLoad::LoadSaveFromDisk(File *saveFile)
 	// Make our next save default to the name of the level
 	StorageManager.SetSaveTitle(saveFile->getName().c_str());
 
-	__int64 fileSize = saveFile->length();
+	int64_t fileSize = saveFile->length();
 	FileInputStream fis(*saveFile);
 	byteArray ba(fileSize);
 	fis.read(ba);

@@ -14,7 +14,7 @@ public:
 	typedef struct _ValueType
 	{
 		union{
-			__int64				i64;
+			int64_t				i64;
 			int					i;
 			char				c;
 			bool				b;
@@ -44,7 +44,7 @@ public:
 	virtual ~GameRule();
 
 	Connection *getConnection() { return m_connection; }
-	
+
 	ValueType getParameter(const wstring &parameterName);
 	void setParameter(const wstring &parameterName,ValueType value);
 	GameRuleDefinition *getGameRuleDefinition();

@@ -3791,8 +3791,8 @@ extern "C" {
     typedef   signed int            ma_int32;
     typedef unsigned int            ma_uint32;
     #if defined(_MSC_VER) && !defined(__clang__)
-        typedef   signed __int64    ma_int64;
-        typedef unsigned __int64    ma_uint64;
+        typedef   signed long long  ma_int64;
+        typedef unsigned long long  ma_uint64;
     #else
         #if defined(__clang__) || (defined(__GNUC__) && (__GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ >= 6)))
             #pragma GCC diagnostic push
@@ -11249,7 +11249,7 @@ struct ma_sound
     float* pProcessingCache;            /* Will be null if pDataSource is null. */
     ma_uint32 processingCacheFramesRemaining;
     ma_uint32 processingCacheCap;
-    ma_bool8 ownsDataSource;    
+    ma_bool8 ownsDataSource;
 
     /*
     We're declaring a resource manager data source object here to save us a malloc when loading a
@@ -11596,7 +11596,7 @@ IMPLEMENTATION
 
     #include <sys/time.h>   /* select() (used for ma_sleep()). */
     #include <time.h>       /* For nanosleep() */
-    #include <unistd.h> 
+    #include <unistd.h>
 #endif
 
 /* For fstat(), etc. */
@@ -11729,7 +11729,7 @@ IMPLEMENTATION
         #endif
 
         #if _MSC_VER >= 1600 && (defined(_MSC_FULL_VER) && _MSC_FULL_VER >= 160040219)
-            static MA_INLINE unsigned __int64 ma_xgetbv(int reg)
+            static MA_INLINE unsigned long long ma_xgetbv(int reg)
             {
                 return _xgetbv(reg);
             }
@@ -17622,7 +17622,7 @@ static ma_result ma_thread_create__posix(ma_thread* pThread, ma_thread_priority 
             (void)stackSize;  /* Suppress unused parameter warning. */
         }
         #endif
-        
+
 
         if (scheduler != -1) {
             int priorityMin = sched_get_priority_min(scheduler);
@@ -23061,7 +23061,7 @@ static ma_result ma_context_get_MMDevice__wasapi(ma_context* pContext, ma_device
     CoInitializeResult = ma_CoInitializeEx(pContext, NULL, MA_COINIT_VALUE);
     {
         hr = ma_CoCreateInstance(pContext, &MA_CLSID_MMDeviceEnumerator, NULL, CLSCTX_ALL, &MA_IID_IMMDeviceEnumerator, (void**)&pDeviceEnumerator);
-    }    
+    }
     if (CoInitializeResult == S_OK || CoInitializeResult == S_FALSE) { ma_CoUninitialize(pContext); }
 
     if (FAILED(hr)) {   /* <-- This is checking the call above to ma_CoCreateInstance(). */
@@ -29687,7 +29687,7 @@ static ma_result ma_device_start__alsa(ma_device* pDevice)
     }
 
     if (pDevice->type == ma_device_type_playback || pDevice->type == ma_device_type_duplex) {
-        /*        
+        /*
         When data is written to the device we wait for the device to get ready to receive data with poll(). In my testing
         I have observed that poll() can sometimes block forever unless the device is started explicitly with snd_pcm_start()
         or some data is written with snd_pcm_writei().
@@ -35996,7 +35996,7 @@ static ma_result ma_device_init_internal__coreaudio(ma_context* pContext, ma_dev
             #endif
         }
 
-        
+
         status = ((ma_AudioUnitSetProperty_proc)pContext->coreaudio.AudioUnitSetProperty)(pData->audioUnit, kAudioUnitProperty_StreamFormat, formatScope, formatElement, &bestFormat, sizeof(bestFormat));
         if (status != noErr) {
             ((ma_AudioComponentInstanceDispose_proc)pContext->coreaudio.AudioComponentInstanceDispose)(pData->audioUnit);
@@ -39310,7 +39310,7 @@ static void ma_stream_error_callback__aaudio(ma_AAudioStream* pStream, void* pUs
 
     (void)error;
     ma_log_postf(ma_device_get_log(pDevice), MA_LOG_LEVEL_INFO, "[AAudio] ERROR CALLBACK: error=%d, AAudioStream_getState()=%d\n", error, ((MA_PFN_AAudioStream_getState)pDevice->pContext->aaudio.AAudioStream_getState)(pStream));
-    
+
     /*
     When we get an error, we'll assume that the stream is in an erroneous state and needs to be restarted. From the documentation,
     we cannot do this from the error callback. Therefore we are going to use an event thread for the AAudio backend to do this
@@ -39322,13 +39322,13 @@ static void ma_stream_error_callback__aaudio(ma_AAudioStream* pStream, void* pUs
     else {
         job = ma_job_init(MA_JOB_TYPE_DEVICE_AAUDIO_REROUTE);
         job.data.device.aaudio.reroute.pDevice = pDevice;
-    
+
         if (pStream == pDevice->aaudio.pStreamCapture) {
             job.data.device.aaudio.reroute.deviceType = ma_device_type_capture;
         } else {
             job.data.device.aaudio.reroute.deviceType = ma_device_type_playback;
         }
-    
+
         result = ma_device_job_thread_post(&pDevice->pContext->aaudio.jobThread, &job);
         if (result != MA_SUCCESS) {
             ma_log_postf(ma_device_get_log(pDevice), MA_LOG_LEVEL_INFO, "[AAudio] Device Disconnected. Failed to post job for rerouting.\n");
@@ -39925,7 +39925,7 @@ static ma_result ma_device_reinit__aaudio(ma_device* pDevice, ma_device_type dev
 
     /* We got disconnected! Retry a few times, until we find a connected device! */
     iAttempt = 0;
-    while (iAttempt++ < maxAttempts) {        
+    while (iAttempt++ < maxAttempts) {
         /* Device tearing down? No need to reroute! */
         if (ma_atomic_bool32_get(&pDevice->aaudio.isTearingDown)) {
             result = MA_SUCCESS; /* Caller should continue as normal. */
@@ -40023,7 +40023,7 @@ static ma_result ma_device_reinit__aaudio(ma_device* pDevice, ma_device_type dev
             break;
         }
     }
-    
+
     return result;
 }
 
@@ -61704,7 +61704,7 @@ static ma_result ma_default_vfs_info(ma_vfs* pVFS, ma_vfs_file file, ma_file_inf
         /* Not implemented. Fall back to seek/tell/seek. */
         ma_int64 cursor;
         ma_int64 sizeInBytes;
-        
+
         result = ma_default_vfs_tell(pVFS, file, &cursor);
         if (result != MA_SUCCESS) {
             return result;
@@ -76937,7 +76937,7 @@ static void ma_engine_node_process_pcm_frames__sound(ma_node* pNode, const float
                 if (pSound->processingCacheFramesRemaining > 0) {
                     MA_MOVE_MEMORY(pSound->pProcessingCache, ma_offset_pcm_frames_ptr_f32(pSound->pProcessingCache, frameCountIn, dataSourceChannels), pSound->processingCacheFramesRemaining * ma_get_bytes_per_frame(ma_format_f32, dataSourceChannels));
                 }
-                
+
                 totalFramesRead += (ma_uint32)frameCountOut;   /* Safe cast. */
 
                 if (result != MA_SUCCESS || ma_sound_at_end(pSound)) {
@@ -78439,7 +78439,7 @@ static ma_result ma_sound_init_from_data_source_internal(ma_engine* pEngine, con
         if (pSound->processingCacheCap == 0) {
             pSound->processingCacheCap = 512;
         }
-        
+
         pSound->pProcessingCache = (float*)ma_calloc(pSound->processingCacheCap * ma_get_bytes_per_frame(ma_format_f32, engineNodeConfig.channelsIn), &pEngine->allocationCallbacks);
         if (pSound->pProcessingCache == NULL) {
             ma_engine_node_uninit(&pSound->engineNode, &pEngine->allocationCallbacks);

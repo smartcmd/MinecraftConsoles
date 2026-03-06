@@ -34,9 +34,9 @@ double Math::random()
 //a - a floating-point value to be rounded to a long.
 //Returns:
 //the value of the argument rounded to the nearest long value.
-__int64 Math::round( double d )
+int64_t Math::round( double d )
 {
-	return (__int64)floor( d + 0.5 );
+	return (int64_t)floor( d + 0.5 );
 }
 
 int Math::_max(int a, int b)
@@ -59,7 +59,7 @@ float Math::_min(float a, float b)
 	return a < b ? a : b;
 }
 
-float Math::wrapDegrees(float input) 
+float Math::wrapDegrees(float input)
 {
 	while(input>=360.0f)input-=360.0f;
 	if (input >= 180.0f) input -= 360.0f;
@@ -67,7 +67,7 @@ float Math::wrapDegrees(float input)
 	return input;
 }
 
-double Math::wrapDegrees(double input) 
+double Math::wrapDegrees(double input)
 {
 	while(input>=360.0)input-=360.0;
 	if (input >= 180.0) input -= 360.0;
