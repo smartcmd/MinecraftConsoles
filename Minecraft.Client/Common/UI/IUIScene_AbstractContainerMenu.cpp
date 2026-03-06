@@ -1448,6 +1448,7 @@ bool IUIScene_AbstractContainerMenu::handleKeyDown(int iPad, int iAction, bool b
 		// 4J Stu - Also enable start to exit the scene. This key is also not constrained by the tutorials.
 	case ACTION_MENU_PAUSEMENU:
 	case ACTION_MENU_B:
+	case ACTION_MENU_RIGHT_SCROLL:
 		{
 
 			ui.SetTooltips(iPad, -1);
