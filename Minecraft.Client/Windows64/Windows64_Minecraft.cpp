@@ -42,6 +42,7 @@
 #include "..\..\Minecraft.World\OldChunkStorage.h"
 #include "Common/PostProcesser.h"
 #include "Network\WinsockNetLayer.h"
+#include "Windows64_Xuid.h"
 
 #include "Xbox/resource.h"
 
@@ -1220,6 +1221,12 @@ int APIENTRY _tWinMain(_In_ HINSTANCE hInstance,
 	// Load stuff from launch options, including username
 	Win64LaunchOptions launchOptions = ParseLaunchOptions();
 	ApplyScreenMode(launchOptions.screenMode);
+
+	// Ensure uid.dat exists from startup in client mode (before any multiplayer/login path).
+	if (!launchOptions.serverMode)
+	{
+		Win64Xuid::ResolvePersistentXuid();
+	}
 
 	// If no username, let's fall back
 	if (g_Win64Username[0] == 0)
