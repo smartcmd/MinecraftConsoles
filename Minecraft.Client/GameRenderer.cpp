@@ -745,7 +745,12 @@ void GameRenderer::renderItemInHand(float a, int eye)
 			{
 				turnOnLightLayer(a);
 				PIXBeginNamedEvent(0,"Item in hand render");
+				glEnable(GL_BLEND);
+				glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+				glDepthMask(false);
 				itemInHandRenderer->render(a);
+				glDepthMask(true);
+				glDisable(GL_BLEND);
 				PIXEndNamedEvent();
 				turnOffLightLayer(a);
 			}
