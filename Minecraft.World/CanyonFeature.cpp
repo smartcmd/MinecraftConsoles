@@ -141,12 +141,12 @@ void CanyonFeature::addTunnel(__int64 seed, int xOffs, int zOffs, byteArray bloc
 							{
 								if (yy < 10)
 								{
-									blocks[p] = (byte) Tile::lava_Id;
+									blocks[p] = (uint8_t) Tile::lava_Id;
 								}
 								else
 								{
-									blocks[p] = (byte) 0;
-									if (hasGrass && blocks[p - 1] == Tile::dirt_Id) blocks[p - 1] = (byte) level->getBiome(xx + xOffs * 16, zz + zOffs * 16)->topMaterial;
+									blocks[p] = (uint8_t) 0;
+									if (hasGrass && blocks[p - 1] == Tile::dirt_Id) blocks[p - 1] = (uint8_t) level->getBiome(xx + xOffs * 16, zz + zOffs * 16)->topMaterial;
 								}
 							}
 						}

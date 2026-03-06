@@ -4,14 +4,14 @@
 class ByteTag : public Tag
 {
 public:
-	byte data;
+	uint8_t data;
 	ByteTag(const wstring &name) : Tag(name) {}
-	ByteTag(const wstring &name, byte data) : Tag(name) {this->data = data; }
+	ByteTag(const wstring &name, uint8_t data) : Tag(name) {this->data = data; }
 	
 	void write(DataOutput *dos) { dos->writeByte(data); }
 	void load(DataInput *dis, int tagDepth) { data = dis->readByte(); }
 
-	byte getId() { return TAG_Byte; }
+	uint8_t getId() { return TAG_Byte; }
 	wstring toString()
 	{
 		static wchar_t buf[32];

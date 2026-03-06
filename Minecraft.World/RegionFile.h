@@ -71,11 +71,11 @@ public:
 
     /* write a chunk at (x,z) with length bytes of data to disk */
 protected:
-    void write(int x, int z, byte *data, int length);
+    void write(int x, int z, uint8_t *data, int length);
 
     /* write a chunk data to the region file at specified sector number */
 private:
-    void write(int sectorNumber, byte *data, int length, unsigned int compLength);
+    void write(int sectorNumber, uint8_t *data, int length, unsigned int compLength);
 	void zero(int sectorNumber, int length);	// 4J added
 
     /* is this an invalid chunk coordinate? */

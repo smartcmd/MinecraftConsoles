@@ -34,7 +34,7 @@ void DLCGameRulesHeader::addData(PBYTE pbData, DWORD dwBytes)
 
 	// Init values.
 	int version_number;
-	byte compression_type;
+	uint8_t compression_type;
 	wstring texturepackid;
 
 	// Read Datastream.

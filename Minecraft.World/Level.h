@@ -475,7 +475,7 @@ public:
 	void setSpawnPos(Pos *spawnPos);
 	void ensureAdded(shared_ptr<Entity> entity);
 	virtual bool mayInteract(shared_ptr<Player> player, int xt, int yt, int zt, int content);
-	virtual void broadcastEntityEvent(shared_ptr<Entity> e, byte event);
+	virtual void broadcastEntityEvent(shared_ptr<Entity> e, uint8_t event);
 	ChunkSource *getChunkSource();
 	virtual void tileEvent(int x, int y, int z, int tile, int b0, int b1);
 	LevelStorage *getLevelStorage();

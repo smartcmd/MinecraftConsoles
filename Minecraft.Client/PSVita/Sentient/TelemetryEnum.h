@@ -234,5 +234,5 @@ enum ETelemetryChallenges
 	eTelemetryTutorial_Hopper,
 	eTelemetryTutorial_HopperMenu,
 
-	// Sent over network as a byte
+	// Sent over network as a uint8_t
 };

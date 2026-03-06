@@ -362,7 +362,7 @@ Entity::Entity(Level *level, bool useSmallId)	// 4J - added useSmallId parameter
 
 	if( entityData )
 	{
-		entityData->define(DATA_SHARED_FLAGS_ID, (byte) 0);
+		entityData->define(DATA_SHARED_FLAGS_ID, (uint8_t) 0);
 		entityData->define(DATA_AIR_SUPPLY_ID, TOTAL_AIR_SUPPLY); // 4J Stu - Brought forward from 1.2.3 to fix 38654 - Gameplay: Player will take damage when air bubbles are present if resuming game from load/autosave underwater.
 	}
 
@@ -1711,7 +1711,7 @@ void Entity::lerpMotion(double xd, double yd, double zd)
 	this->zd = zd;
 }
 
-void Entity::handleEntityEvent(byte eventId)
+void Entity::handleEntityEvent(uint8_t eventId)
 {
 }
 
@@ -1820,14 +1820,14 @@ void Entity::setSharedFlag(int flag, bool value)
 {
 	if( entityData )
 	{
-		byte currentValue = entityData->getByte(DATA_SHARED_FLAGS_ID);
+		uint8_t currentValue = entityData->getByte(DATA_SHARED_FLAGS_ID);
 		if (value)
 		{
-			entityData->set(DATA_SHARED_FLAGS_ID, (byte) (currentValue | (1 << flag)));
+			entityData->set(DATA_SHARED_FLAGS_ID, (uint8_t) (currentValue | (1 << flag)));
 		}
 		else
 		{
-			entityData->set(DATA_SHARED_FLAGS_ID, (byte) (currentValue & ~(1 << flag)));
+			entityData->set(DATA_SHARED_FLAGS_ID, (uint8_t) (currentValue & ~(1 << flag)));
 		}
 	}
 }

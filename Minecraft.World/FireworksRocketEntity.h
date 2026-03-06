@@ -28,7 +28,7 @@ public:
 
 	virtual void lerpMotion(double xd, double yd, double zd);
 	virtual void tick();
-	virtual void handleEntityEvent(byte eventId);
+	virtual void handleEntityEvent(uint8_t eventId);
 	virtual void addAdditonalSaveData(CompoundTag *tag);
 	virtual void readAdditionalSaveData(CompoundTag *tag);
 	virtual float getShadowHeightOffs();

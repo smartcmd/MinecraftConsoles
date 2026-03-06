@@ -62,8 +62,8 @@ int SignUpdatePacket::getEstimatedSize()
 	l+=sizeof(int);
 	l+=sizeof(short);
 	l+=sizeof(int);
-	l+=sizeof(byte);
-	l+=sizeof(byte);
+	l+=sizeof(uint8_t);
+	l+=sizeof(uint8_t);
 
 	for (int i = 0; i < MAX_SIGN_LINES; i++)
 		l += (int)lines[i].length();

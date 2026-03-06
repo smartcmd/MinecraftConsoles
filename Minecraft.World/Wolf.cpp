@@ -100,8 +100,8 @@ void Wolf::defineSynchedData()
 {
 	TamableAnimal::defineSynchedData();
 	entityData->define(DATA_HEALTH_ID, getHealth());
-	entityData->define(DATA_INTERESTED_ID, (byte)0);
-	entityData->define(DATA_COLLAR_COLOR, (byte) ColoredTile::getTileDataForItemAuxValue(DyePowderItem::RED));
+	entityData->define(DATA_INTERESTED_ID, (uint8_t)0);
+	entityData->define(DATA_COLLAR_COLOR, (uint8_t) ColoredTile::getTileDataForItemAuxValue(DyePowderItem::RED));
 }
 
 void Wolf::playStepSound(int xt, int yt, int zt, int t)
@@ -114,7 +114,7 @@ void Wolf::addAdditonalSaveData(CompoundTag *tag)
 	TamableAnimal::addAdditonalSaveData(tag);
 
 	tag->putBoolean(L"Angry", isAngry());
-	tag->putByte(L"CollarColor", (byte) getCollarColor());
+	tag->putByte(L"CollarColor", (uint8_t) getCollarColor());
 }
 
 void Wolf::readAdditionalSaveData(CompoundTag *tag) 
@@ -438,7 +438,7 @@ bool Wolf::mobInteract(shared_ptr<Player> player)
 	return TamableAnimal::mobInteract(player);
 }
 
-void Wolf::handleEntityEvent(byte id) 
+void Wolf::handleEntityEvent(uint8_t id) 
 {
 	if (id == EntityEvent::SHAKE_WETNESS)
 	{
@@ -485,14 +485,14 @@ bool Wolf::isAngry()
 
 void Wolf::setAngry(bool value) 
 {
-	byte current = entityData->getByte(DATA_FLAGS_ID);
+	uint8_t current = entityData->getByte(DATA_FLAGS_ID);
 	if (value) 
 	{
-		entityData->set(DATA_FLAGS_ID, (byte) (current | 0x02));
+		entityData->set(DATA_FLAGS_ID, (uint8_t) (current | 0x02));
 	} 
 	else
 	{
-		entityData->set(DATA_FLAGS_ID, (byte) (current & ~0x02));
+		entityData->set(DATA_FLAGS_ID, (uint8_t) (current & ~0x02));
 	}
 }
 
@@ -503,7 +503,7 @@ int Wolf::getCollarColor()
 
 void Wolf::setCollarColor(int color)
 {
-	entityData->set(DATA_COLLAR_COLOR, (byte) (color & 0xF));
+	entityData->set(DATA_COLLAR_COLOR, (uint8_t) (color & 0xF));
 }
 
 // 4J-PB added for tooltips
@@ -536,11 +536,11 @@ void Wolf::setIsInterested(bool value)
 {
 	if (value)
 	{
-		entityData->set(DATA_INTERESTED_ID, (byte) 1);
+		entityData->set(DATA_INTERESTED_ID, (uint8_t) 1);
 	}
 	else
 	{
-		entityData->set(DATA_INTERESTED_ID, (byte) 0);
+		entityData->set(DATA_INTERESTED_ID, (uint8_t) 0);
 	}
 }
 

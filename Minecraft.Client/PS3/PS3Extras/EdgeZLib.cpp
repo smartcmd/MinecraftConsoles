@@ -208,7 +208,7 @@ bool EdgeZLib::Compress(void* pDestination, uint32_t* pDestSize, const void* pSo
 		pDst = ((uint32_t*)pDestination);
 	}
 
-	pDst[0] = SrcSize;		// 4 byte header added for source size
+	pDst[0] = SrcSize;		// 4 uint8_t header added for source size
 
 
 	s_numElementsToCompress = 1;	//Must be set correctly before any elements are added
@@ -275,7 +275,7 @@ bool EdgeZLib::Compress(void* pDestination, uint32_t* pDestSize, const void* pSo
 		(int)SrcSize, (int)s_compressedSize,	compressionPercent, kNumDeflateTasks );
 #endif
 
-	*pDestSize = s_compressedSize + 4;		// 4 byte header for size
+	*pDestSize = s_compressedSize + 4;		// 4 uint8_t header for size
 	if(findingSizeOnly)
 		free(pDst);
 	LeaveCriticalSection(&s_critSect);

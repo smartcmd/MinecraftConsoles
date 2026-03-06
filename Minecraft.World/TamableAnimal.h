@@ -27,7 +27,7 @@ protected:
 	virtual void spawnTamingParticles(bool success);
 
 public:
-	virtual void handleEntityEvent(byte id);
+	virtual void handleEntityEvent(uint8_t id);
 	virtual bool isTame();
 	virtual void setTame(bool value);
 	virtual bool isSitting();

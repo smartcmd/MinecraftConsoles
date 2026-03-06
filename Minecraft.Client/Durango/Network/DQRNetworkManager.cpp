@@ -714,8 +714,8 @@ bool DQRNetworkManager::IsHost()
 }
 
 // Consider as "in session" from the moment that a game is created or joined, until the point where the game itself has been told via state change that we are now idle. The
-// game code requires IsInSession to return true as soon as it has asked to do one of these things (even if the state system hasn't really caught up with this request yet), and 
-// it also requires that it is informed of the state changes leading up to not being in the session, before this should report false.
+// game code requirements IsInSession to return true as soon as it has asked to do one of these things (even if the state system hasn't really caught up with this request yet), and 
+// it also requirements that it is informed of the state changes leading up to not being in the session, before this should report false.
 bool DQRNetworkManager::IsInSession()
 {
 	return m_isInSession;
@@ -1639,8 +1639,8 @@ void DQRNetworkManager::SendRoomSyncInfo()
 
 	EnterCriticalSection(&m_csRoomSyncData);
 	// Calculate the size of data we are going to be sending. This is composed of:
-	// (1) 2 byte general header
-	// (2) A single byte internal data tag
+	// (1) 2 uint8_t general header
+	// (2) A single uint8_t internal data tag
 	// (3) An unsigned int encoding the size of the combined size of all the strings in stage (5)
 	// (4) The RoomSyncData structure itself
 	// (5) A wchar NULL terminated string for every active player to encode the XUID
@@ -1660,7 +1660,7 @@ void DQRNetworkManager::SendRoomSyncInfo()
 	uint32_t sizeLow = internalBytes & 0xff;
 
 	data[0] = 0x80 | sizeHigh;			// Header - flag as internal data (0x80), sending 
-	data[1] = sizeLow;					// Data following has the a single byte to say what it is, followed by the room sync data itself
+	data[1] = sizeLow;					// Data following has the a single uint8_t to say what it is, followed by the room sync data itself
 	data[2] = DQR_INTERNAL_PLAYER_TABLE;
 
 	memcpy(data + 3, &xuidBytes, 4);
@@ -1686,8 +1686,8 @@ void DQRNetworkManager::SendAddPlayerFailed(Platform::String^ xuid)
 	if( m_isOfflineGame ) return;
 
 	// Calculate the size of data we are going to be sending. This is composed of:
-	// (1) 2 byte general header
-	// (2) A single byte internal data tag
+	// (1) 2 uint8_t general header
+	// (2) A single uint8_t internal data tag
 	// (3) An unsigned int encoding the size size of the string
 	// (5) A wchar NULL terminated string storing the xuid of the player which has failed to join
 
@@ -1702,7 +1702,7 @@ void DQRNetworkManager::SendAddPlayerFailed(Platform::String^ xuid)
 	uint32_t sizeLow = internalBytes & 0xff;
 
 	data[0] = 0x80 | sizeHigh;			// Header - flag as internal data (0x80), sending 
-	data[1] = sizeLow;					// Data following has the a single byte to say what it is, followed by the room sync data itself
+	data[1] = sizeLow;					// Data following has the a single uint8_t to say what it is, followed by the room sync data itself
 	data[2] = DQR_INTERNAL_ADD_PLAYER_FAILED;
 
 	memcpy(data + 3, &xuidBytes, 4);
@@ -1779,7 +1779,7 @@ void DQRNetworkManager::SendUnassignSmallId(int playerIndex)
 	LogCommentFormat( L"SendUnassignSmallId, channel %d\n", playerIndex);
 	// Send data with small Id setting mode - see full comment in DQRNetworkManagerEventHandlers::DataReceivedHandler
 	BYTE data[4];
-	data[0] = 0x80 | ( playerIndex << 5 );						// Send 1 byte, internal mode
+	data[0] = 0x80 | ( playerIndex << 5 );						// Send 1 uint8_t, internal mode
 	data[1] = 1;
 	data[2] = DQR_INTERNAL_UNASSIGN_SMALL_ID;					// Internal data type
 

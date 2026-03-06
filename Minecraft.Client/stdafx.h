@@ -67,7 +67,7 @@ typedef unsigned __int64 __uint64;
 #include <windowsx.h>
 #include <malloc.h>
 #include <tchar.h>
-// TODO: reference additional headers your program requires here
+// TODO: reference additional headers your program requirements here
 #include <d3d11.h>
 #include <DirectXMath.h>
 using namespace DirectX;

@@ -33,7 +33,7 @@ void MusicTileEntity::load(CompoundTag *tag)
 
 void MusicTileEntity::tune() 
 {
-	note = (byte) ((note + 1) % 25);
+	note = (uint8_t) ((note + 1) % 25);
 	setChanged();
 }
 

@@ -143,7 +143,7 @@ local const config configuration_table[10] = {
 /* 9 */ {32, 258, 258, 4096, deflate_slow}}; /* max compression */
 #endif
 
-/* Note: the deflate() code requires max_lazy >= MIN_MATCH and max_chain >= 4
+/* Note: the deflate() code requirements max_lazy >= MIN_MATCH and max_chain >= 4
  * For deflate_fast() (levels <= 3) good is ignored and lazy has a different
  * meaning.
  */
@@ -159,7 +159,7 @@ struct static_tree_desc_s {int dummy;}; /* for buggy compilers */
 #define RANK(f) (((f) << 1) - ((f) > 4 ? 9 : 0))
 
 /* ===========================================================================
- * Update a hash value with the given input byte
+ * Update a hash value with the given input uint8_t
  * IN  assertion: all calls to to UPDATE_HASH are made with consecutive
  *    input characters, so that a running hash key can be computed from the
  *    previous key instead of complete recalculation each time.
@@ -273,7 +273,7 @@ int ZEXPORT deflateInit2_(strm, level, method, windowBits, memLevel, strategy,
         strategy < 0 || strategy > Z_FIXED) {
         return Z_STREAM_ERROR;
     }
-    if (windowBits == 8) windowBits = 9;  /* until 256-byte window bug fixed */
+    if (windowBits == 8) windowBits = 9;  /* until 256-uint8_t window bug fixed */
     s = (deflate_state *) ZALLOC(strm, 1, sizeof(deflate_state));
     if (s == Z_NULL) return Z_MEM_ERROR;
     strm->state = (struct internal_state FAR *)s;
@@ -1383,7 +1383,7 @@ local void check_match(s, start, match, length)
  *
  * IN assertion: lookahead < MIN_LOOKAHEAD
  * OUT assertions: strstart <= window_size-MIN_LOOKAHEAD
- *    At least one byte has been read, or avail_in == 0; reads are
+ *    At least one uint8_t has been read, or avail_in == 0; reads are
  *    performed for at least two bytes (required for the zip translate_eol
  *    option -- not supported here).
  */
@@ -1407,7 +1407,7 @@ local void fill_window(s)
 
             } else if (more == (unsigned)(-1)) {
                 /* Very unlikely, but possible on 16 bit machine if
-                 * strstart == 0 && lookahead == 1 (input done a byte at time)
+                 * strstart == 0 && lookahead == 1 (input done a uint8_t at time)
                  */
                 more--;
             }
@@ -1566,7 +1566,7 @@ local block_state deflate_stored(s, flush)
     int flush;
 {
     /* Stored blocks are limited to 0xffff bytes, pending_buf is limited
-     * to pending_buf_size, and each stored block has a 5 byte header:
+     * to pending_buf_size, and each stored block has a 5 uint8_t header:
      */
     ulg max_block_size = 0xffff;
     ulg max_start;
@@ -1703,7 +1703,7 @@ local block_state deflate_fast(s, flush)
                  */
             }
         } else {
-            /* No match, output a literal byte */
+            /* No match, output a literal uint8_t */
             Tracevv((stderr,"%c", s->window[s->strstart]));
             _tr_tally_lit (s, s->window[s->strstart], bflush);
             s->lookahead--;
@@ -1863,7 +1863,7 @@ local block_state deflate_rle(s, flush)
     int flush;
 {
     int bflush;             /* set if current block must be flushed */
-    uInt prev;              /* byte at distance one to match */
+    uInt prev;              /* uint8_t at distance one to match */
     Bytef *scan, *strend;   /* scan goes up to strend for length of run */
 
     for (;;) {
@@ -1879,7 +1879,7 @@ local block_state deflate_rle(s, flush)
             if (s->lookahead == 0) break; /* flush the current block */
         }
 
-        /* See how many times the previous byte repeats */
+        /* See how many times the previous uint8_t repeats */
         s->match_length = 0;
         if (s->lookahead >= MIN_MATCH && s->strstart > 0) {
             scan = s->window + s->strstart - 1;
@@ -1909,7 +1909,7 @@ local block_state deflate_rle(s, flush)
             s->strstart += s->match_length;
             s->match_length = 0;
         } else {
-            /* No match, output a literal byte */
+            /* No match, output a literal uint8_t */
             Tracevv((stderr,"%c", s->window[s->strstart]));
             _tr_tally_lit (s, s->window[s->strstart], bflush);
             s->lookahead--;
@@ -1948,7 +1948,7 @@ local block_state deflate_huff(s, flush)
             }
         }
 
-        /* Output a literal byte */
+        /* Output a literal uint8_t */
         s->match_length = 0;
         Tracevv((stderr,"%c", s->window[s->strstart]));
         _tr_tally_lit (s, s->window[s->strstart], bflush);

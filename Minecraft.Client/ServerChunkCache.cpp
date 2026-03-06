@@ -756,7 +756,7 @@ bool ServerChunkCache::save(bool force, ProgressListener *progressListener)
 		}
 
 		LevelChunk *chunk = NULL;
-		byte workingThreads;
+		uint8_t workingThreads;
 		bool chunkSet = false;
 
 		// Created a roughly sorted list to match the order that the files were created in 	McRegionChunkStorage::McRegionChunkStorage.

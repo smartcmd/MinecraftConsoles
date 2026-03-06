@@ -69,10 +69,10 @@ void XShowAchievementsUI(int i) {}
 DWORD XBackgroundDownloadSetMode(XBACKGROUND_DOWNLOAD_MODE Mode) { return 0; }
 
 #ifndef _DURANGO
-void PIXAddNamedCounter(int a, char* b, ...) {}
+void PIXAddNamedCounter(int a, const char* b, ...) {}
 //#define PS3_USE_PIX_EVENTS 
 //#define PS4_USE_PIX_EVENTS 
-void PIXBeginNamedEvent(int a, char* b, ...)
+void PIXBeginNamedEvent(int a, const char *b, ...)
 {
 #ifdef PS4_USE_PIX_EVENTS
 	char buf[512];
@@ -125,7 +125,7 @@ void PIXEndNamedEvent()
 	PixDepth -= 1;
 #endif
 }
-void PIXSetMarkerDeprecated(int a, char* b, ...) {}
+void PIXSetMarkerDeprecated(int a, const char* b, ...) {}
 #else
 // 4J Stu - Removed this implementation in favour of a macro that will convert our string format
 // conversion at compile time rather than at runtime
@@ -524,8 +524,8 @@ void				C_4JProfile::Initialise(DWORD dwTitleID,
 {
 	for (int i = 0; i < 4; i++)
 	{
-		profileData[i] = new byte[iGameDefinedDataSizeX4 / 4];
-		ZeroMemory(profileData[i], sizeof(byte) * iGameDefinedDataSizeX4 / 4);
+		profileData[i] = new uint8_t[iGameDefinedDataSizeX4 / 4];
+		ZeroMemory(profileData[i], sizeof(uint8_t) * iGameDefinedDataSizeX4 / 4);
 
 		// Set some sane initial values!
 		GAME_SETTINGS* pGameSettings = (GAME_SETTINGS*)profileData[i];

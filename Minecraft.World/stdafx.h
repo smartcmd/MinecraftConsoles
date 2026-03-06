@@ -18,7 +18,7 @@ typedef unsigned __int64 __uint64;
 #include <windows.h>
 #include <malloc.h>
 #include <tchar.h>
-// TODO: reference additional headers your program requires here
+// TODO: reference additional headers your program requirements here
 #include <d3d11.h>
 #endif
 

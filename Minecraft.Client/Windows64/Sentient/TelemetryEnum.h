@@ -231,5 +231,5 @@ enum ETelemetryChallenges
 	eTelemetryTutorial_FireworksMenu,
 	eTelemetryTutorial_BeaconMenu
 
-	// Sent over network as a byte
+	// Sent over network as a uint8_t
 };

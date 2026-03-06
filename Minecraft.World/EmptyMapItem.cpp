@@ -19,7 +19,7 @@ shared_ptr<ItemInstance> EmptyMapItem::use(shared_ptr<ItemInstance> itemInstance
 	//int scale = MapItemSavedData.MAP_SIZE * 2 * (1 << data.scale);
 	//data.x = (int) (Math.round(player.x / scale) * scale);
 	//data.z = (int) (Math.round(player.z / scale) * scale);
-	//data.dimension = (byte) level.dimension.id;
+	//data.dimension = (uint8_t) level.dimension.id;
 
 	//data.setDirty();
 

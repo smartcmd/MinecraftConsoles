@@ -13,7 +13,7 @@ public:
 	int type;
 	int x, y, z;
 	int xd, yd, zd;
-	byte yRot, xRot, yHeadRot;
+	uint8_t yRot, xRot, yHeadRot;
 
 private:
 	shared_ptr<SynchedEntityData> entityData;

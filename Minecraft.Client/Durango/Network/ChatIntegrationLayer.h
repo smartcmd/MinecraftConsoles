@@ -94,7 +94,7 @@ public:
     /// <param name="uniqueRemoteConsoleIdentifier">A unique ID for the remote console</param>
     void OnIncomingChatMessage( 
 		unsigned int sessionAddress,
-		Platform::Array<byte>^ message
+		Platform::Array<uint8_t>^ message
         );
 
     /// <summary>
@@ -216,8 +216,8 @@ public:
     void ToggleRenderTargetVolume();
 
 private:
-	void GetBufferBytes( __in Windows::Storage::Streams::IBuffer^ buffer, __out byte** ppOut );
-	Windows::Storage::Streams::IBuffer^ ArrayToBuffer( __in Platform::Array<byte>^ array );
+	void GetBufferBytes( __in Windows::Storage::Streams::IBuffer^ buffer, __out uint8_t** ppOut );
+	Windows::Storage::Streams::IBuffer^ ArrayToBuffer( __in Platform::Array<uint8_t>^ array );
 
     Concurrency::critical_section m_lock;
     Microsoft::Xbox::GameChat::ChatManager^ m_chatManager;

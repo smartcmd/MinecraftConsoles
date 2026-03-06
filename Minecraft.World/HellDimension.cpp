@@ -19,9 +19,9 @@ void HellDimension::init()
 Vec3 *HellDimension::getFogColor(float td, float a) const
 {
 	int colour = Minecraft::GetInstance()->getColourTable()->getColor( eMinecraftColour_Nether_Fog_Colour );
-	byte redComponent = ((colour>>16)&0xFF);
-	byte greenComponent = ((colour>>8)&0xFF);
-	byte blueComponent = ((colour)&0xFF);
+	uint8_t redComponent = ((colour>>16)&0xFF);
+	uint8_t greenComponent = ((colour>>8)&0xFF);
+	uint8_t blueComponent = ((colour)&0xFF);
 
 	float rr = (float)redComponent/256;//0.2f;
 	float gg = (float)greenComponent/256;//0.03f;

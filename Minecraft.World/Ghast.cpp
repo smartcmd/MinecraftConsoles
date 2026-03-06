@@ -72,7 +72,7 @@ void Ghast::defineSynchedData()
 {
 	FlyingMob::defineSynchedData();
 
-	entityData->define(DATA_IS_CHARGING, (byte) 0);
+	entityData->define(DATA_IS_CHARGING, (uint8_t) 0);
 }
 
 void Ghast::registerAttributes()
@@ -175,8 +175,8 @@ void Ghast::serverAiStep()
 
 	if (!level->isClientSide) 
 	{
-		byte old = entityData->getByte(DATA_IS_CHARGING);
-		byte current = (byte) (charge > 10 ? 1 : 0);
+		uint8_t old = entityData->getByte(DATA_IS_CHARGING);
+		uint8_t current = (uint8_t) (charge > 10 ? 1 : 0);
 		if (old != current)
 		{
 			entityData->set(DATA_IS_CHARGING, current);

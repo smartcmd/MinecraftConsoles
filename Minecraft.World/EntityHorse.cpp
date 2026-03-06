@@ -100,7 +100,7 @@ void EntityHorse::defineSynchedData()
 {
 	Animal::defineSynchedData();
 	entityData->define(DATA_ID_HORSE_FLAGS, 0);
-	entityData->define(DATA_ID_TYPE, (byte) 0);
+	entityData->define(DATA_ID_TYPE, (uint8_t) 0);
 	entityData->define(DATA_ID_TYPE_VARIANT, 0);
 	entityData->define(DATA_ID_OWNER_NAME, L"");
 	entityData->define(DATA_ID_ARMOR, 0);
@@ -108,7 +108,7 @@ void EntityHorse::defineSynchedData()
 
 void EntityHorse::setType(int i)
 {
-	entityData->set(DATA_ID_TYPE, (byte) i);
+	entityData->set(DATA_ID_TYPE, (uint8_t) i);
 	clearLayeredTextureInfo();
 }
 
@@ -1459,7 +1459,7 @@ void EntityHorse::addAdditonalSaveData(CompoundTag *tag)
 			{
 				CompoundTag *compoundTag = new CompoundTag();
 
-				compoundTag->putByte(L"Slot", (byte) i);
+				compoundTag->putByte(L"Slot", (uint8_t) i);
 
 				stack->save(compoundTag);
 				listTag->add(compoundTag);
@@ -1762,7 +1762,7 @@ void EntityHorse::spawnTamingParticles(bool success)
 	}
 }
 
-void EntityHorse::handleEntityEvent(byte id)
+void EntityHorse::handleEntityEvent(uint8_t id)
 {
 	if (id == EntityEvent::TAMING_SUCCEEDED)
 	{

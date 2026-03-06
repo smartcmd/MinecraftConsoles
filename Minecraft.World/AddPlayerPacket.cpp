@@ -45,8 +45,8 @@ AddPlayerPacket::AddPlayerPacket(shared_ptr<Player> player, PlayerUID xuid, Play
 	yRot = yRotp;
 	xRot = xRotp;
 	yHeadRot = yHeadRotp; // 4J Added
-	//    yRot = (byte) (player->yRot * 256 / 360);
-	//    xRot = (byte) (player->xRot * 256 / 360);
+	//    yRot = (uint8_t) (player->yRot * 256 / 360);
+	//    xRot = (uint8_t) (player->xRot * 256 / 360);
 
 	//printf("%d: New add player (%f,%f,%f) : (%d,%d,%d) : xRot %d, yRot %d\n",id,player->x,player->y,player->z,x,y,z,xRot,yRot);
 
@@ -117,7 +117,7 @@ void AddPlayerPacket::handle(PacketListener *listener)
 
 int AddPlayerPacket::getEstimatedSize()
 {
-	int iSize= sizeof(int) + Player::MAX_NAME_LENGTH + sizeof(int) + sizeof(int) + sizeof(int) + sizeof(BYTE) + sizeof(BYTE) +sizeof(short) + sizeof(PlayerUID) + sizeof(PlayerUID) + sizeof(int) + sizeof(BYTE) + sizeof(unsigned int) + sizeof(byte);
+	int iSize= sizeof(int) + Player::MAX_NAME_LENGTH + sizeof(int) + sizeof(int) + sizeof(int) + sizeof(BYTE) + sizeof(BYTE) +sizeof(short) + sizeof(PlayerUID) + sizeof(PlayerUID) + sizeof(int) + sizeof(BYTE) + sizeof(unsigned int) + sizeof(uint8_t);
 
 	if( entityData != NULL )
 	{

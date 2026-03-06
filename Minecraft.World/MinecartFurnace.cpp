@@ -37,7 +37,7 @@ int MinecartFurnace::getType()
 void MinecartFurnace::defineSynchedData()
 {
 	Minecart::defineSynchedData();
-	entityData->define(DATA_ID_FUEL, (byte) 0);
+	entityData->define(DATA_ID_FUEL, (uint8_t) 0);
 }
 
 void MinecartFurnace::tick()
@@ -160,11 +160,11 @@ void MinecartFurnace::setHasFuel(bool fuel)
 {
 	if (fuel)
 	{
-		entityData->set(DATA_ID_FUEL, (byte) (entityData->getByte(DATA_ID_FUEL) | 1));
+		entityData->set(DATA_ID_FUEL, (uint8_t) (entityData->getByte(DATA_ID_FUEL) | 1));
 	}
 	else
 	{
-		entityData->set(DATA_ID_FUEL, (byte) (entityData->getByte(DATA_ID_FUEL) & ~1));
+		entityData->set(DATA_ID_FUEL, (uint8_t) (entityData->getByte(DATA_ID_FUEL) & ~1));
 	}
 }
 

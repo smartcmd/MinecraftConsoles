@@ -7,13 +7,13 @@ class ServerAuthDataPacket : public Packet
 #if 0
 	private String serverId;
 	private PublicKey publicKey;
-	private byte[] nonce = new byte[]{};
+	private uint8_t[] nonce = new uint8_t[]{};
 
 	public ServerAuthDataPacket() {
 		// Needed
 	}
 
-	public ServerAuthDataPacket(final String serverId, final PublicKey publicKey, final byte[] nonce) {
+	public ServerAuthDataPacket(final String serverId, final PublicKey publicKey, final uint8_t[] nonce) {
 		this.serverId = serverId;
 		this.publicKey = publicKey;
 		this.nonce = nonce;
@@ -51,7 +51,7 @@ class ServerAuthDataPacket : public Packet
 		return publicKey;
 	}
 
-	public byte[] getNonce() {
+	public uint8_t[] getNonce() {
 		return nonce;
 	}
 #endif

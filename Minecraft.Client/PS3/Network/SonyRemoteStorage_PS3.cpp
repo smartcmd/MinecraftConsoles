@@ -451,7 +451,7 @@ int SonyRemoteStorage_PS3::LoadCompressCallback(void *pParam,bool bIsCorrupt, bo
 		// We add 4 bytes to the start so that we can signal compressed data
 		// And another 4 bytes to store the decompressed data size
 		unsigned int compLength = origFilesize+8;
-		byte *compData = (byte *)malloc( compLength );
+		uint8_t *compData = (uint8_t *)malloc( compLength );
 		Compression::UseDefaultThreadStorage();
 		Compression::getCompression()->Compress(compData+8,&compLength,pOrigSaveData,origFilesize);
 		ZeroMemory(compData,8);

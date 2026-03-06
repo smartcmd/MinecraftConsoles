@@ -109,7 +109,7 @@ typedef unsigned int        UINT;
 typedef unsigned int        *PUINT;
 
 
-typedef unsigned char		byte;
+typedef unsigned char		uint8_t;
 typedef long long				__int64;
 typedef unsigned long long		__uint64;
 typedef unsigned long		DWORD;
@@ -137,7 +137,7 @@ typedef WCHAR *LPWSTR, *PWSTR;
 typedef CONST WCHAR *LPCWSTR, *PCWSTR;
 
 //
-// ANSI (Multi-byte Character) types
+// ANSI (Multi-uint8_t Character) types
 //
 typedef CHAR *PCHAR;
 typedef CHAR *LPCH, *PCH;

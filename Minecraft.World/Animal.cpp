@@ -427,7 +427,7 @@ bool Animal::canMate(shared_ptr<Animal> partner)
 	return isInLove() && partner->isInLove();
 }
 
-void Animal::handleEntityEvent(byte id)
+void Animal::handleEntityEvent(uint8_t id)
 {
 	if (id == EntityEvent::IN_LOVE_HEARTS)
 	{

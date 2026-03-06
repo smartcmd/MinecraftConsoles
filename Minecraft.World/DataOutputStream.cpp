@@ -17,11 +17,11 @@ void DataOutputStream::deleteChildStream()
 	delete stream;
 }
 
-//Writes the specified byte (the low eight bits of the argument b) to the underlying output stream.
+//Writes the specified uint8_t (the low eight bits of the argument b) to the underlying output stream.
 //If no exception is thrown, the counter written is incremented by 1.
 //Implements the write method of OutputStream.
 //Parameters:
-//b - the byte to be written.
+//b - the uint8_t to be written.
 void DataOutputStream::write(unsigned int b)
 {
 	stream->write( b );
@@ -34,7 +34,7 @@ void DataOutputStream::flush()
 	stream->flush();
 }
 
-//Writes b.length bytes from the specified byte array to this output stream.
+//Writes b.length bytes from the specified uint8_t array to this output stream.
 //The general contract for write(b) is that it should have exactly the same effect as the call write(b, 0, b.length).
 //Parameters:
 //b - the data.
@@ -43,7 +43,7 @@ void DataOutputStream::write(byteArray b)
 	write(b, 0, b.length);
 }
 
-//Writes len bytes from the specified byte array starting at offset off to the underlying output stream.
+//Writes len bytes from the specified uint8_t array starting at offset off to the underlying output stream.
 //If no exception is thrown, the counter written is incremented by len.
 //Parameters:
 //b - the data.
@@ -63,17 +63,17 @@ void DataOutputStream::close()
 	stream->close();
 }
 
-//Writes out a byte to the underlying output stream as a 1-byte value. If no exception is thrown, the counter written is incremented by 1.
+//Writes out a uint8_t to the underlying output stream as a 1-uint8_t value. If no exception is thrown, the counter written is incremented by 1.
 //Parameters:
-//v - a byte value to be written.
-void DataOutputStream::writeByte(byte a)
+//v - a uint8_t value to be written.
+void DataOutputStream::writeByte(uint8_t a)
 {
 	stream->write( a );
 }
 
 //Converts the double argument to a long using the doubleToLongBits method in class Double,
-//and then writes that long value to the underlying output stream as an 8-byte quantity,
-//high byte first. If no exception is thrown, the counter written is incremented by 8.
+//and then writes that long value to the underlying output stream as an 8-uint8_t quantity,
+//high uint8_t first. If no exception is thrown, the counter written is incremented by 8.
 //Parameters:
 //v - a double value to be written.
 void DataOutputStream::writeDouble(double a)
@@ -86,7 +86,7 @@ void DataOutputStream::writeDouble(double a)
 }
 
 //Converts the float argument to an int using the floatToIntBits method in class Float,
-//and then writes that int value to the underlying output stream as a 4-byte quantity, high byte first.
+//and then writes that int value to the underlying output stream as a 4-uint8_t quantity, high uint8_t first.
 //If no exception is thrown, the counter written is incremented by 4.
 //Parameters:
 //v - a float value to be written.
@@ -99,7 +99,7 @@ void DataOutputStream::writeFloat(float a)
 	written += 4;
 }
 
-//Writes an int to the underlying output stream as four bytes, high byte first. If no exception is thrown, the counter written is incremented by 4.
+//Writes an int to the underlying output stream as four bytes, high uint8_t first. If no exception is thrown, the counter written is incremented by 4.
 //Parameters:
 //v - an int to be written.
 void DataOutputStream::writeInt(int a)
@@ -112,7 +112,7 @@ void DataOutputStream::writeInt(int a)
 	written += 4;
 }
 
-//Writes a long to the underlying output stream as eight bytes, high byte first.
+//Writes a long to the underlying output stream as eight bytes, high uint8_t first.
 //In no exception is thrown, the counter written is incremented by 8.
 //Parameters:
 //v - a long to be written.
@@ -130,7 +130,7 @@ void DataOutputStream::writeLong(__int64 a)
 	written += 4;
 }
 
-//Writes a short to the underlying output stream as two bytes, high byte first.
+//Writes a short to the underlying output stream as two bytes, high uint8_t first.
 //If no exception is thrown, the counter written is incremented by 2.
 //Parameters:
 //v - a short to be written.
@@ -150,7 +150,7 @@ void DataOutputStream::writeUnsignedShort(unsigned short a)
 	written += 2;
 }
 
-//Writes a char to the underlying output stream as a 2-byte value, high byte first.
+//Writes a char to the underlying output stream as a 2-uint8_t value, high uint8_t first.
 //If no exception is thrown, the counter written is incremented by 2.
 //Parameters:
 //v - a char value to be written.
@@ -177,14 +177,14 @@ void DataOutputStream::writeChars(const wstring& str)
 	// Incrementing handled by the writeChar function
 }
 
-//Writes a boolean to the underlying output stream as a 1-byte value.
-//The value true is written out as the value (byte)1; the value false is written out as the value (byte)0.
+//Writes a boolean to the underlying output stream as a 1-uint8_t value.
+//The value true is written out as the value (uint8_t)1; the value false is written out as the value (uint8_t)0.
 //If no exception is thrown, the counter written is incremented by 1.
 //Parameters:
 //v - a boolean value to be written.
 void DataOutputStream::writeBoolean(bool b)
 {
-	stream->write( b ? (byte)1 : (byte)0 );
+	stream->write( b ? (uint8_t)1 : (uint8_t)0 );
 	// TODO 4J Stu - Error handling?
 	written += 1; 
 }
@@ -227,15 +227,15 @@ void DataOutputStream::writeUTF(const wstring& str)
 
 	byteArray bytearr(utflen+2);
 
-	bytearr[count++] = (byte) ((utflen >> 8) & 0xFF);
-	bytearr[count++] = (byte) ((utflen >> 0) & 0xFF);  
+	bytearr[count++] = (uint8_t) ((utflen >> 8) & 0xFF);
+	bytearr[count++] = (uint8_t) ((utflen >> 0) & 0xFF);  
 
 	int i=0;
 	for (i=0; i<strlen; i++)
 	{
 		c = str.at(i);
 		if (!((c >= 0x0001) && (c <= 0x007F))) break;
-		bytearr[count++] = (byte) c;
+		bytearr[count++] = (uint8_t) c;
 	}
 
 	for (;i < strlen; i++)
@@ -243,19 +243,19 @@ void DataOutputStream::writeUTF(const wstring& str)
 		c = str.at(i);
 		if ((c >= 0x0001) && (c <= 0x007F))
 		{
-			bytearr[count++] = (byte) c;
+			bytearr[count++] = (uint8_t) c;
 
 		}
 		else if (c > 0x07FF)
 		{
-			bytearr[count++] = (byte) (0xE0 | ((c >> 12) & 0x0F));
-			bytearr[count++] = (byte) (0x80 | ((c >>  6) & 0x3F));
-			bytearr[count++] = (byte) (0x80 | ((c >>  0) & 0x3F));
+			bytearr[count++] = (uint8_t) (0xE0 | ((c >> 12) & 0x0F));
+			bytearr[count++] = (uint8_t) (0x80 | ((c >>  6) & 0x3F));
+			bytearr[count++] = (uint8_t) (0x80 | ((c >>  0) & 0x3F));
 		}
 		else
 		{
-			bytearr[count++] = (byte) (0xC0 | ((c >>  6) & 0x1F));
-			bytearr[count++] = (byte) (0x80 | ((c >>  0) & 0x3F));
+			bytearr[count++] = (uint8_t) (0xC0 | ((c >>  6) & 0x1F));
+			bytearr[count++] = (uint8_t) (0x80 | ((c >>  0) & 0x3F));
 		}
 	}
 	write(bytearr, 0, utflen+2);

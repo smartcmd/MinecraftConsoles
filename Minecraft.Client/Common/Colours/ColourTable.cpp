@@ -4,8 +4,8 @@
 
 unordered_map<wstring,eMinecraftColour> ColourTable::s_colourNamesMap;
 
-wchar_t *ColourTable::ColourTableElements[eMinecraftColour_COUNT] =
-{
+const wchar_t *ColourTable::ColourTableElements[eMinecraftColour_COUNT] =
+    {
 	L"NOTSET",
 
 	L"Foliage_Evergreen",

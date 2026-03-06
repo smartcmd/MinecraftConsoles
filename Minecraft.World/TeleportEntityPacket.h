@@ -8,11 +8,11 @@ class TeleportEntityPacket : public Packet, public enable_shared_from_this<Telep
 public:
 	int id;
     int x, y, z;
-    byte yRot, xRot;
+    uint8_t yRot, xRot;
 
 	TeleportEntityPacket();
 	TeleportEntityPacket(shared_ptr<Entity> e);
-	TeleportEntityPacket(int id, int x, int y, int z, byte yRot, byte xRot);
+	TeleportEntityPacket(int id, int x, int y, int z, uint8_t yRot, uint8_t xRot);
 
 	virtual void read(DataInputStream *dis);
 	virtual void write(DataOutputStream *dos);

@@ -52,8 +52,8 @@ public:
 public:
 	wstring m_name;
 	int color;
-	byte topMaterial;
-	byte material;
+	uint8_t topMaterial;
+	uint8_t material;
 	int leafColor;
 	float depth;
 	float scale;

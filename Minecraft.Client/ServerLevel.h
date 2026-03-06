@@ -106,7 +106,7 @@ protected:
 public:
 	shared_ptr<Entity> getEntity(int id);
 	virtual bool addGlobalEntity(shared_ptr<Entity> e);
-	void broadcastEntityEvent(shared_ptr<Entity> e, byte event);
+	void broadcastEntityEvent(shared_ptr<Entity> e, uint8_t event);
 	virtual shared_ptr<Explosion> explode(shared_ptr<Entity> source, double x, double y, double z, float r, bool fire, bool destroyBlocks);
 	virtual void tileEvent(int x, int y, int z, int tile, int b0, int b1);
 

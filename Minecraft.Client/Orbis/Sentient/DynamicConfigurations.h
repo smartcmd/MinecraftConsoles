@@ -51,7 +51,7 @@ private:
 	static size_t s_currentConfigSize;
 
 	static size_t s_dataWrittenSize;
-	static byte *s_dataWritten;
+	static uint8_t *s_dataWritten;
 
 public:
 	static void Tick();

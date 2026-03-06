@@ -526,10 +526,10 @@ LevelChunk *OldChunkStorage::load(Level *level, CompoundTag *tag)
 
 	delete [] levelChunk->heightmap.data;
 	levelChunk->heightmap = tag->getByteArray(L"HeightMap");
-	// 4J - TerrainPopulated was a bool (java), then changed to be a byte bitfield, then replaced with TerrainPopulatedShort to store a wider bitfield
+	// 4J - TerrainPopulated was a bool (java), then changed to be a uint8_t bitfield, then replaced with TerrainPopulatedShort to store a wider bitfield
 	if( tag->get(L"TerrainPopulated") )
 	{
-		// Java bool type or byte bitfield
+		// Java bool type or uint8_t bitfield
 		levelChunk->terrainPopulated = tag->getByte(L"TerrainPopulated");
 		if( levelChunk->terrainPopulated >= 1 ) levelChunk->terrainPopulated = LevelChunk::sTerrainPopulatedAllNeighbours | LevelChunk::sTerrainPostPostProcessed;	// Convert from old bool type to new bitfield
 	}

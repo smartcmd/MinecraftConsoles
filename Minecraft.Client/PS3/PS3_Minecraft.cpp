@@ -839,7 +839,7 @@ int main()
 		ui.init(1280,480);
 
 	app.CommerceInit(); //  MGH - moved this here so GetCommerce isn't NULL
-	// 4J-PB - Kick of the check for trial or full version - requires ui to be initialised
+	// 4J-PB - Kick of the check for trial or full version - requirements ui to be initialised
 	app.GetCommerce()->CheckForTrialUpgradeKey();
 
 	static bool bTrialTimerDisplayed=true;

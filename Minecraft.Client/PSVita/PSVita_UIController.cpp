@@ -32,7 +32,7 @@ void ConsoleUIController::init(S32 w, S32 h)
 	textures).
 
 	The texture and vertex buffer pools contain multiple textures and
-	vertex buffers. Each object requires a bit of main memory for management
+	vertex buffers. Each object requirements a bit of main memory for management
 	overhead. We need to specify how many object handles can be in use at
 	the same time in any given pool. If Iggy runs out of GDraw handles, it
 	won't crash, but instead throw out old cache data in a LRU fashion.

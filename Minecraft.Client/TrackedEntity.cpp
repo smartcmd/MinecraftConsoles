@@ -152,7 +152,7 @@ void TrackedEntity::tick(EntityTracker *tracker, vector<shared_ptr<Player> > *pl
 								)
 				{
 					teleportDelay = 0;
-					packet = shared_ptr<TeleportEntityPacket>( new TeleportEntityPacket(e->entityId, xn, yn, zn, (byte) yRotn, (byte) xRotn) );
+					packet = shared_ptr<TeleportEntityPacket>( new TeleportEntityPacket(e->entityId, xn, yn, zn, (uint8_t) yRotn, (uint8_t) xRotn) );
 					//			printf("%d: New teleport rot %d\n",e->entityId,yRotn);
 					yRotp = yRotn;
 					xRotp = xRotn;
@@ -205,7 +205,7 @@ void TrackedEntity::tick(EntityTracker *tracker, vector<shared_ptr<Player> > *pl
 							( za >= -16 ) && ( za <= 15 ) &&
 							( ya >= -32 ) && ( ya <= 31 ) )
 						{
-							// use the packet with small packet with rotation if we can - 5 bits each for x & z, and 6 for y - still a byte less than the alternative
+							// use the packet with small packet with rotation if we can - 5 bits each for x & z, and 6 for y - still a uint8_t less than the alternative
 							packet = shared_ptr<MoveEntityPacketSmall>( new MoveEntityPacketSmall::PosRot(e->entityId, (char) xa, (char) ya, (char) za, 0, 0 ));
 							c1b++;
 						}
@@ -291,7 +291,7 @@ void TrackedEntity::tick(EntityTracker *tracker, vector<shared_ptr<Player> > *pl
 			if (rot)
 			{
 				// 4J: Changed this to use deltas
-				broadcast( shared_ptr<MoveEntityPacket>( new MoveEntityPacket::Rot(e->entityId, (byte) yRota, (byte) xRota)) );
+				broadcast( shared_ptr<MoveEntityPacket>( new MoveEntityPacket::Rot(e->entityId, (uint8_t) yRota, (uint8_t) xRota)) );
 				yRotp = yRotn;
 				xRotp = xRotn;
 			}
@@ -308,7 +308,7 @@ void TrackedEntity::tick(EntityTracker *tracker, vector<shared_ptr<Player> > *pl
 		int yHeadRot = Mth::floor(e->getYHeadRot() * 256 / 360);
 		if (abs(yHeadRot - yHeadRotp) >= TOLERANCE_LEVEL)
 		{
-			broadcast(shared_ptr<RotateHeadPacket>( new RotateHeadPacket(e->entityId, (byte) yHeadRot)));
+			broadcast(shared_ptr<RotateHeadPacket>( new RotateHeadPacket(e->entityId, (uint8_t) yHeadRot)));
 			yHeadRotp = yHeadRot;
 		}
 

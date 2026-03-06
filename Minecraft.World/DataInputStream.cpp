@@ -10,8 +10,8 @@ DataInputStream::DataInputStream(InputStream *in) : stream( in )
 {
 }
 
-//Reads the next byte of data from this input stream. The value byte is returned as an int in the range 0 to 255.
-//If no byte is available because the end of the stream has been reached, the value -1 is returned.
+//Reads the next uint8_t of data from this input stream. The value uint8_t is returned as an int in the range 0 to 255.
+//If no uint8_t is available because the end of the stream has been reached, the value -1 is returned.
 //This method blocks until input data is available, the end of the stream is detected, or an exception is thrown.
 //This method simply performs in.read() and returns the result.
 int DataInputStream::read()
@@ -23,10 +23,10 @@ int DataInputStream::read()
 //The number of bytes actually read is returned as an integer. This method blocks until input data is available,
 //end of file is detected, or an exception is thrown.
 //If b is null, a NullPointerException is thrown. If the length of b is zero, then no bytes are read and 0 is returned;
-//otherwise, there is an attempt to read at least one byte. If no byte is available because the stream is at end of file,
-//the value -1 is returned; otherwise, at least one byte is read and stored into b.
+//otherwise, there is an attempt to read at least one uint8_t. If no uint8_t is available because the stream is at end of file,
+//the value -1 is returned; otherwise, at least one uint8_t is read and stored into b.
 //
-//The first byte read is stored into element b[0], the next one into b[1], and so on. The number of bytes read is, at most,
+//The first uint8_t read is stored into element b[0], the next one into b[1], and so on. The number of bytes read is, at most,
 //equal to the length of b. Let k be the number of bytes actually read; these bytes will be stored in elements b[0] through b[k-1],
 //leaving elements b[k] through b[b.length-1] unaffected.
 //
@@ -49,10 +49,10 @@ int DataInputStream::read(byteArray b)
 //but a smaller number may be read, possibly zero. The number of bytes actually read is returned as an integer.
 //This method blocks until input data is available, end of file is detected, or an exception is thrown.
 //
-//If len is zero, then no bytes are read and 0 is returned; otherwise, there is an attempt to read at least one byte.
-//If no byte is available because the stream is at end of file, the value -1 is returned; otherwise, at least one byte is read and stored into b.
+//If len is zero, then no bytes are read and 0 is returned; otherwise, there is an attempt to read at least one uint8_t.
+//If no uint8_t is available because the stream is at end of file, the value -1 is returned; otherwise, at least one uint8_t is read and stored into b.
 //
-//The first byte read is stored into element b[off], the next one into b[off+1], and so on. The number of bytes read is,
+//The first uint8_t read is stored into element b[off], the next one into b[off+1], and so on. The number of bytes read is,
 //at most, equal to len. Let k be the number of bytes actually read; these bytes will be stored in elements b[off] through b[off+k-1],
 //leaving elements b[off+k] through b[off+len-1] unaffected.
 //
@@ -77,8 +77,8 @@ void DataInputStream::close()
 	stream->close();
 }
 
-//Reads one input byte and returns true if that byte is nonzero, false if that byte is zero. This method is suitable for reading
-//the byte written by the writeBoolean method of interface DataOutput.
+//Reads one input uint8_t and returns true if that uint8_t is nonzero, false if that uint8_t is zero. This method is suitable for reading
+//the uint8_t written by the writeBoolean method of interface DataOutput.
 //Returns:
 //the boolean value read.
 bool DataInputStream::readBoolean()
@@ -86,13 +86,13 @@ bool DataInputStream::readBoolean()
 	return stream->read() != 0;
 }
 
-//Reads and returns one input byte. The byte is treated as a signed value in the range -128 through 127, inclusive.
-//This method is suitable for reading the byte written by the writeByte method of interface DataOutput.
+//Reads and returns one input uint8_t. The uint8_t is treated as a signed value in the range -128 through 127, inclusive.
+//This method is suitable for reading the uint8_t written by the writeByte method of interface DataOutput.
 //Returns:
 //the 8-bit value read.
-byte DataInputStream::readByte()
+uint8_t DataInputStream::readByte()
 {
-	return (byte) stream->read();
+	return (uint8_t) stream->read();
 }
 
 unsigned char DataInputStream::readUnsignedByte()
@@ -100,7 +100,7 @@ unsigned char DataInputStream::readUnsignedByte()
 	return (unsigned char) stream->read();
 }
 
-//Reads two input bytes and returns a char value. Let a be the first byte read and b be the second byte. The value returned is:
+//Reads two input bytes and returns a char value. Let a be the first uint8_t read and b be the second uint8_t. The value returned is:
 //(char)((a << 8) | (b & 0xff))
 // 
 //This method is suitable for reading bytes written by the writeChar method of interface DataOutput.
@@ -119,7 +119,7 @@ wchar_t DataInputStream::readChar()
 //b.length bytes of input data are available, in which case a normal return is made.
 //End of file is detected, in which case an EOFException is thrown.
 //An I/O error occurs, in which case an IOException other than EOFException is thrown.
-//If b is null, a NullPointerException is thrown. If b.length is zero, then no bytes are read. Otherwise, the first byte read is
+//If b is null, a NullPointerException is thrown. If b.length is zero, then no bytes are read. Otherwise, the first uint8_t read is
 //stored into element b[0], the next one into b[1], and so on. If an exception is thrown from this method, then it may be that some but
 //not all bytes of b have been updated with data from the input stream.
 //
@@ -244,7 +244,7 @@ __int64 DataInputStream::readLong()
 	return bits;
 }
 
-//Reads two input bytes and returns a short value. Let a be the first byte read and b be the second byte. The value returned is:
+//Reads two input bytes and returns a short value. Let a be the first uint8_t read and b be the second uint8_t. The value returned is:
 //(short)((a << 8) | (b & 0xff))
 // 
 //This method is suitable for reading the bytes written by the writeShort method of interface DataOutput.
@@ -268,25 +268,25 @@ unsigned short DataInputStream::readUnsignedShort()
 //of a Unicode character string encoded in modified UTF-8 format; this string of characters is then returned as a String.
 //First, two bytes are read and used to construct an unsigned 16-bit integer in exactly the manner of the readUnsignedShort method .
 //This integer value is called the UTF length and specifies the number of additional bytes to be read. These bytes are then converted
-//to characters by considering them in groups. The length of each group is computed from the value of the first byte of the group.
-//The byte following a group, if any, is the first byte of the next group.
+//to characters by considering them in groups. The length of each group is computed from the value of the first uint8_t of the group.
+//The uint8_t following a group, if any, is the first uint8_t of the next group.
 //
-//If the first byte of a group matches the bit pattern 0xxxxxxx (where x means "may be 0 or 1"), then the group consists of just that byte.
-//The byte is zero-extended to form a character.
+//If the first uint8_t of a group matches the bit pattern 0xxxxxxx (where x means "may be 0 or 1"), then the group consists of just that uint8_t.
+//The uint8_t is zero-extended to form a character.
 //
-//If the first byte of a group matches the bit pattern 110xxxxx, then the group consists of that byte a and a second byte b.
-//If there is no byte b (because byte a was the last of the bytes to be read), or if byte b does not match the bit pattern 10xxxxxx,
+//If the first uint8_t of a group matches the bit pattern 110xxxxx, then the group consists of that uint8_t a and a second uint8_t b.
+//If there is no uint8_t b (because uint8_t a was the last of the bytes to be read), or if uint8_t b does not match the bit pattern 10xxxxxx,
 //then a UTFDataFormatException is thrown. Otherwise, the group is converted to the character:
 //
 //(char)(((a& 0x1F) << 6) | (b & 0x3F))
 // 
-//If the first byte of a group matches the bit pattern 1110xxxx, then the group consists of that byte a and two more bytes b and c.
-//If there is no byte c (because byte a was one of the last two of the bytes to be read), or either byte b or byte c does not match the bit
+//If the first uint8_t of a group matches the bit pattern 1110xxxx, then the group consists of that uint8_t a and two more bytes b and c.
+//If there is no uint8_t c (because uint8_t a was one of the last two of the bytes to be read), or either uint8_t b or uint8_t c does not match the bit
 //pattern 10xxxxxx, then a UTFDataFormatException is thrown. Otherwise, the group is converted to the character:
 //
 // (char)(((a & 0x0F) << 12) | ((b & 0x3F) << 6) | (c & 0x3F))
 // 
-//If the first byte of a group matches the pattern 1111xxxx or the pattern 10xxxxxx, then a UTFDataFormatException is thrown.
+//If the first uint8_t of a group matches the pattern 1111xxxx or the pattern 10xxxxxx, then a UTFDataFormatException is thrown.
 //If end of file is encountered at any time during this entire process, then an EOFException is thrown.
 //
 //After every group has been converted to a character by this process, the characters are gathered, in the same order in which their
@@ -330,11 +330,11 @@ wstring DataInputStream::readUTF()
 		// 11110000 = 0xF0 // Match only highest four bits
 
 		// Matching patterns:
-		// 10xxxxxx = 0x80 // ERROR, or second/third byte
+		// 10xxxxxx = 0x80 // ERROR, or second/third uint8_t
 		// 1111xxxx = 0xF0 //ERROR
-		// 0xxxxxxx = 0x00 // One byte UTF
-		// 110xxxxx = 0xC0 // Two byte UTF
-		// 1110xxxx = 0xE0 // Three byte UTF
+		// 0xxxxxxx = 0x00 // One uint8_t UTF
+		// 110xxxxx = 0xC0 // Two uint8_t UTF
+		// 1110xxxx = 0xE0 // Three uint8_t UTF
 		if( ( (firstByte & 0xC0 ) == 0x80 ) || ( (firstByte & 0xF0) == 0xF0) )
 		{
 			// TODO 4J Stu - UTFDataFormatException
@@ -342,14 +342,14 @@ wstring DataInputStream::readUTF()
 		}
 		else if( (firstByte & 0x80) == 0x00 )
 		{
-			// One byte UTF
+			// One uint8_t UTF
 			wchar_t readChar = (wchar_t)firstByte;
 			outputString.push_back( readChar );
 			continue;
 		}
 		else if( (firstByte & 0xE0) == 0xC0 )
 		{
-			// Two byte UTF
+			// Two uint8_t UTF
 
 			// No more bytes to read
 			if( !(currentByteIndex < UTFLength) )
@@ -361,13 +361,13 @@ wstring DataInputStream::readUTF()
 			int secondByte = stream->read();
 			currentByteIndex++;
 
-			// No second byte
+			// No second uint8_t
 			if( secondByte == -1 )
 			{
 				// TODO 4J Stu - EOFException
 				break;
 			}
-			// Incorrect second byte pattern
+			// Incorrect second uint8_t pattern
 			else if( (secondByte & 0xC0 ) != 0x80 )
 			{
 				// TODO 4J Stu - UTFDataFormatException
@@ -380,7 +380,7 @@ wstring DataInputStream::readUTF()
 		}
 		else if( (firstByte & 0xF0) == 0xE0 )
 		{
-			// Three byte UTF
+			// Three uint8_t UTF
 
 			// No more bytes to read
 			if( !(currentByteIndex < UTFLength) )
@@ -392,7 +392,7 @@ wstring DataInputStream::readUTF()
 			int secondByte = stream->read();
 			currentByteIndex++;
 
-			// No second byte
+			// No second uint8_t
 			if( secondByte == -1 )
 			{
 				// TODO 4J Stu - EOFException
@@ -409,13 +409,13 @@ wstring DataInputStream::readUTF()
 			int thirdByte = stream->read();
 			currentByteIndex++;
 
-			// No third byte
+			// No third uint8_t
 			if( thirdByte == -1 )
 			{
 				// TODO 4J Stu - EOFException
 				break;
 			}
-			// Incorrect second or third byte pattern
+			// Incorrect second or third uint8_t pattern
 			else if( ( (secondByte & 0xC0 ) != 0x80 ) || ( (thirdByte & 0xC0 ) != 0x80 ) )
 			{
 				// TODO 4J Stu - UTFDataFormatException
@@ -447,11 +447,11 @@ int DataInputStream::readUTFChar()
 	// 11110000 = 0xF0 // Match only highest four bits
 
 	// Matching patterns:
-	// 10xxxxxx = 0x80 // ERROR, or second/third byte
+	// 10xxxxxx = 0x80 // ERROR, or second/third uint8_t
 	// 1111xxxx = 0xF0 //ERROR
-	// 0xxxxxxx = 0x00 // One byte UTF
-	// 110xxxxx = 0xC0 // Two byte UTF
-	// 1110xxxx = 0xE0 // Three byte UTF
+	// 0xxxxxxx = 0x00 // One uint8_t UTF
+	// 110xxxxx = 0xC0 // Two uint8_t UTF
+	// 1110xxxx = 0xE0 // Three uint8_t UTF
 	if( ( (firstByte & 0xC0 ) == 0x80 ) || ( (firstByte & 0xF0) == 0xF0) )
 	{
 		// TODO 4J Stu - UTFDataFormatException
@@ -459,21 +459,21 @@ int DataInputStream::readUTFChar()
 	}
 	else if( (firstByte & 0x80) == 0x00 )
 	{
-		// One byte UTF
+		// One uint8_t UTF
 		returnValue = firstByte;
 	}
 	else if( (firstByte & 0xE0) == 0xC0 )
 	{
-		// Two byte UTF
+		// Two uint8_t UTF
 		int secondByte = stream->read();
 
-		// No second byte
+		// No second uint8_t
 		if( secondByte == -1 )
 		{
 			// TODO 4J Stu - EOFException
 			return returnValue;
 		}
-		// Incorrect second byte pattern
+		// Incorrect second uint8_t pattern
 		else if( (secondByte & 0xC0 ) != 0x80 )
 		{
 			// TODO 4J Stu - UTFDataFormatException
@@ -484,11 +484,11 @@ int DataInputStream::readUTFChar()
 	}
 	else if( (firstByte & 0xF0) == 0xE0 )
 	{
-		// Three byte UTF
+		// Three uint8_t UTF
 
 		int secondByte = stream->read();
 
-		// No second byte
+		// No second uint8_t
 		if( secondByte == -1 )
 		{
 			// TODO 4J Stu - EOFException
@@ -497,13 +497,13 @@ int DataInputStream::readUTFChar()
 
 		int thirdByte = stream->read();
 
-		// No third byte
+		// No third uint8_t
 		if( thirdByte == -1 )
 		{
 			// TODO 4J Stu - EOFException
 			return returnValue;
 		}
-		// Incorrect second or third byte pattern
+		// Incorrect second or third uint8_t pattern
 		else if( ( (secondByte & 0xC0 ) != 0x80 ) || ( (thirdByte & 0xC0 ) != 0x80 ) )
 		{
 			// TODO 4J Stu - UTFDataFormatException

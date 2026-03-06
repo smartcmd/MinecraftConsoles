@@ -9,7 +9,7 @@ public:
 	static Entity *create(Level *level) { return new MinecartTNT(level); }
 
 private:
-	static const byte EVENT_PRIME = 10;
+	static const uint8_t EVENT_PRIME = 10;
 
 	int fuse;
 
@@ -30,7 +30,7 @@ protected:
 
 public:
 	virtual void activateMinecart(int xt, int yt, int zt, bool state);
-	virtual void handleEntityEvent(byte eventId);
+	virtual void handleEntityEvent(uint8_t eventId);
 	virtual void primeFuse();
 	virtual int getFuse();
 	virtual bool isPrimed();

@@ -64,9 +64,9 @@ HRESULT Compression::CompressLZXRLE(void *pDestination, unsigned int *pDestSize,
 	unsigned char *pucOut = (unsigned char *)rleCompressBuf;
 
 	// Compress with RLE first:
-	// 0 - 254 - encodes a single byte
+	// 0 - 254 - encodes a single uint8_t
 	// 255 followed by 0, 1, 2 - encodes a 1, 2, or 3 255s
-	// 255 followed by 3-255, followed by a byte - encodes a run of n + 1 bytes
+	// 255 followed by 3-255, followed by a uint8_t - encodes a run of n + 1 bytes
 	PIXBeginNamedEvent(0,"RLE compression");
 	do
 	{
@@ -123,9 +123,9 @@ HRESULT Compression::CompressRLE(void *pDestination, unsigned int *pDestSize, vo
 	unsigned char *pucOut = (unsigned char *)rleCompressBuf;
 
 	// Compress with RLE first:
-	// 0 - 254 - encodes a single byte
+	// 0 - 254 - encodes a single uint8_t
 	// 255 followed by 0, 1, 2 - encodes a 1, 2, or 3 255s
-	// 255 followed by 3-255, followed by a byte - encodes a run of n + 1 bytes
+	// 255 followed by 3-255, followed by a uint8_t - encodes a run of n + 1 bytes
 	PIXBeginNamedEvent(0,"RLE compression");
 	do
 	{

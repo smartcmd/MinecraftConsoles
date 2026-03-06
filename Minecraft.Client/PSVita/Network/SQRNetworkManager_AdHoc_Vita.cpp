@@ -430,7 +430,7 @@ bool SQRNetworkManager_AdHoc_Vita::CreateMatchingContext(bool bServer /*= false*
 
 
 
-// Second stage of initialisation, that requires NP Manager to be online & the player to be signed in. This kicks of the creation of a context
+// Second stage of initialisation, that requirements NP Manager to be online & the player to be signed in. This kicks of the creation of a context
 // for Np Matching 2. Initialisation is finally complete when we get a callback to ContextCallback. The SQRNetworkManager_AdHoc_Vita is then finally moved
 // into SNM_INT_STATE_IDLE at this stage.
 void SQRNetworkManager_AdHoc_Vita::InitialiseAfterOnline()
@@ -960,8 +960,8 @@ bool SQRNetworkManager_AdHoc_Vita::IsReadyToPlayOrIdle()
 
 
 // Consider as "in session" from the moment that a game is created or joined, until the point where the game itself has been told via state change that we are now idle. The
-// game code requires IsInSession to return true as soon as it has asked to do one of these things (even if the state P hasn't really caught up with this request yet), and
-// it also requires that it is informed of the state changes leading up to not being in the session, before this should report false.
+// game code requirements IsInSession to return true as soon as it has asked to do one of these things (even if the state P hasn't really caught up with this request yet), and
+// it also requirements that it is informed of the state changes leading up to not being in the session, before this should report false.
 bool SQRNetworkManager_AdHoc_Vita::IsInSession()
 {
 	return m_isInSession;
@@ -2184,7 +2184,7 @@ void SQRNetworkManager_AdHoc_Vita::DeleteServerContext()
 	SetState(SNM_INT_STATE_SERVER_DELETING_CONTEXT);
 }
 
-// Creates a set of Rudp connections by the "active open" method. This requires that both ends of the connection call cellRudpInitiate to fully create a connection. We
+// Creates a set of Rudp connections by the "active open" method. This requirements that both ends of the connection call cellRudpInitiate to fully create a connection. We
 // create one connection per local play on any remote machine.
 //
 // peerMemberId is the room member Id of the remote end of the connection
@@ -2652,7 +2652,7 @@ void SQRNetworkManager_AdHoc_Vita::RudpContextCallback(int ctx_id, int event_id,
 			{
 				SQRNetworkPlayer *playerIncomingData = manager->GetPlayerFromRudpCtx( ctx_id );
 				unsigned int dataSize = playerIncomingData->GetPacketDataSize();
-				// If we're the host, and this player hasn't yet had its small id confirmed, then the first byte sent to us should be this id
+				// If we're the host, and this player hasn't yet had its small id confirmed, then the first uint8_t sent to us should be this id
 				if( manager->m_isHosting )
 				{
 					SQRNetworkPlayer *playerFrom = manager->GetPlayerFromRudpCtx( ctx_id );

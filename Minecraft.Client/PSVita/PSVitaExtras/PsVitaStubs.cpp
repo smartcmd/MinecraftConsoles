@@ -338,7 +338,7 @@ VOID VirtualMemset(LPVOID lpDestOffset, int val, SIZE_T dwSize)
 	int DestOffset = ((int)(lpDestOffset) - VIRTUAL_OFFSET);	// convert the pointer back into a virtual offset
 	int StartPage = DestOffset / VIRTUAL_PAGE_SIZE;				// which 1MB page do we start on
 	int EndPage = (DestOffset + dwSize) / VIRTUAL_PAGE_SIZE;	// which 1MB page do we end on
-	int Offset = DestOffset % VIRTUAL_PAGE_SIZE;				// what is the byte offset within the current 1MB page
+	int Offset = DestOffset % VIRTUAL_PAGE_SIZE;				// what is the uint8_t offset within the current 1MB page
 	if( StartPage == EndPage )									// early out if we're on the same page
 	{
 		uint8_t* Dest = (uint8_t*)VirtualAllocs[StartPage] + Offset;
@@ -376,7 +376,7 @@ VOID VirtualCopyTo(LPVOID lpDestOffset, LPVOID lpSrc, SIZE_T dwSize)
 	int DestOffset = ((int)(lpDestOffset) - VIRTUAL_OFFSET);	// convert the pointer back into a virtual offset
 	int StartPage = DestOffset / VIRTUAL_PAGE_SIZE;				// which 1MB page do we start on
 	int EndPage = (DestOffset + dwSize) / VIRTUAL_PAGE_SIZE;	// which 1MB page do we end on
-	int Offset = DestOffset % VIRTUAL_PAGE_SIZE;				// what is the byte offset within the current 1MB page
+	int Offset = DestOffset % VIRTUAL_PAGE_SIZE;				// what is the uint8_t offset within the current 1MB page
 	if( StartPage == EndPage )									// early out if we're on the same page
 	{
 		uint8_t* Dest = (uint8_t*)VirtualAllocs[StartPage] + Offset;
@@ -415,7 +415,7 @@ VOID VirtualCopyFrom(LPVOID lpDest, LPVOID lpSrcOffset, SIZE_T dwSize)
 	int SrcOffset = ((int)(lpSrcOffset) - VIRTUAL_OFFSET);	// convert the pointer back into a virtual offset
 	int StartPage = SrcOffset / VIRTUAL_PAGE_SIZE;			// which 1MB page do we start on
 	int EndPage = (SrcOffset + dwSize) / VIRTUAL_PAGE_SIZE;	// which 1MB page do we end on
-	int Offset = SrcOffset % VIRTUAL_PAGE_SIZE;				// what is the byte offset within the current 1MB page
+	int Offset = SrcOffset % VIRTUAL_PAGE_SIZE;				// what is the uint8_t offset within the current 1MB page
 	if( StartPage == EndPage )								// early out if we're on the same page
 	{
 		uint8_t* Src = (uint8_t*)VirtualAllocs[StartPage] + Offset;
@@ -452,11 +452,11 @@ VOID VirtualCopyFrom(LPVOID lpDest, LPVOID lpSrcOffset, SIZE_T dwSize)
 VOID VirtualMove(LPVOID lpDestOffset, LPVOID lpSrcOffset, SIZE_T dwSize) 
 {
 	int DestOffset = ((int)(lpDestOffset) - VIRTUAL_OFFSET);	// convert the pointer back into a virtual offset
-	int DestChunkOffset = DestOffset % VIRTUAL_PAGE_SIZE;		// what is the byte offset within the current 1MB page
+	int DestChunkOffset = DestOffset % VIRTUAL_PAGE_SIZE;		// what is the uint8_t offset within the current 1MB page
 	int DestPage = DestOffset / VIRTUAL_PAGE_SIZE;				// which 1MB page do we start on
 
 	int SrcOffset = ((int)(lpSrcOffset) - VIRTUAL_OFFSET);		// convert the pointer back into a virtual offset
-	int SrcChunkOffset = SrcOffset % VIRTUAL_PAGE_SIZE;			// what is the byte offset within the current 1MB page
+	int SrcChunkOffset = SrcOffset % VIRTUAL_PAGE_SIZE;			// what is the uint8_t offset within the current 1MB page
 	int SrcPage = SrcOffset / VIRTUAL_PAGE_SIZE;				// which 1MB page do we start on
 	while( dwSize )
 	{

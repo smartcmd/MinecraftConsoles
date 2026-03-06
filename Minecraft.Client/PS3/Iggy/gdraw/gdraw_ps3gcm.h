@@ -43,7 +43,7 @@ IDOC extern int gdraw_GCM_SetRendertargetMemory(void *ptr, S32 num_bytes, S32 wi
 
    All render targets allocated by GDraw have the same size (width x height pixels) and will use the same pitch;
    thus you can pack them all into one tile region, which is recommended from a performance perspective.
-   Pitch must allow for 4-byte-per-pixel rendertargets (so pitch must be at least width*4).
+   Pitch must allow for 4-uint8_t-per-pixel rendertargets (so pitch must be at least width*4).
    
    On other platforms, Iggy does not require you to correctly specify the width and height of the
    rendertargets; the size you specify is a hint, and GDraw will detect the actual

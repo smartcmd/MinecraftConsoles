@@ -10,7 +10,7 @@
 
 /* ===========================================================================
      Decompresses the source buffer into the destination buffer.  sourceLen is
-   the byte length of the source buffer. Upon entry, destLen is the total
+   the uint8_t length of the source buffer. Upon entry, destLen is the total
    size of the destination buffer, which must be large enough to hold the
    entire uncompressed data. (The size of the uncompressed data must have
    been saved previously by the compressor and transmitted to the decompressor

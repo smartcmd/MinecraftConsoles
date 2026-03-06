@@ -920,7 +920,7 @@ int main(int argc, const char *argv[] )
 	StorageManager.SetSaveTitleExtraFileSuffix(app.GetString(IDS_SAVE_SUBTITLE_SUFFIX));
 	StorageManager.SetDLCInfoMap(app.GetSonyDLCMap());
 	app.CommerceInit(); //  MGH - moved this here so GetCommerce isn't NULL
-	// 4J-PB - Kick of the check for trial or full version - requires ui to be initialised
+	// 4J-PB - Kick of the check for trial or full version - requirements ui to be initialised
 	app.GetCommerce()->CheckForTrialUpgradeKey();
 
 	////////////////

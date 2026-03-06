@@ -63,7 +63,7 @@ void Skeleton::defineSynchedData()
 {
 	Monster::defineSynchedData();
 
-	entityData->define(DATA_TYPE_ID, (byte) TYPE_DEFAULT);
+	entityData->define(DATA_TYPE_ID, (uint8_t) TYPE_DEFAULT);
 }
 
 bool Skeleton::useNewAi()
@@ -311,7 +311,7 @@ int Skeleton::getSkeletonType()
 
 void Skeleton::setSkeletonType(int type)
 {
-	entityData->set(DATA_TYPE_ID, (byte) type);
+	entityData->set(DATA_TYPE_ID, (uint8_t) type);
 
 	fireImmune = type == TYPE_WITHER;
 	if (type == TYPE_WITHER)
@@ -340,7 +340,7 @@ void Skeleton::readAdditionalSaveData(CompoundTag *tag)
 void Skeleton::addAdditonalSaveData(CompoundTag *entityTag)
 {
 	Monster::addAdditonalSaveData(entityTag);
-	entityTag->putByte(L"SkeletonType", (byte) getSkeletonType());
+	entityTag->putByte(L"SkeletonType", (uint8_t) getSkeletonType());
 }
 
 void Skeleton::setEquippedSlot(int slot, shared_ptr<ItemInstance> item)

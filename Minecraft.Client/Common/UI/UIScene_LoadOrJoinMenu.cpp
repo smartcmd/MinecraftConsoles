@@ -117,7 +117,7 @@ static wstring ReadLevelNameFromSaveFile(const wstring& filePath)
                     if (off >= 12 && off + len <= saveSize && len > 0 && len < 4 * 1024 * 1024)
                     {
                         byteArray ba;
-                        ba.data   = (byte*)(saveData + off);
+                        ba.data   = (uint8_t*)(saveData + off);
                         ba.length = len;
                         CompoundTag *root = NbtIo::decompress(ba);
                         if (root != NULL)
@@ -1051,7 +1051,7 @@ void UIScene_LoadOrJoinMenu::GetSaveInfo()
         m_pSaveDetails=StorageManager.ReturnSavesInfo();
         if(m_pSaveDetails==NULL)
         {
-            C4JStorage::ESaveGameState eSGIStatus= StorageManager.GetSavesInfo(m_iPad,NULL,this,"save");
+            C4JStorage::ESaveGameState eSGIStatus = StorageManager.GetSavesInfo(m_iPad, NULL, this, const_cast<char *>("save")); // needs to be casted as we dont have the library the function derives from as part of the build
         }
 
 #if TO_BE_IMPLEMENTED
@@ -2852,7 +2852,7 @@ int UIScene_LoadOrJoinMenu::DownloadSonyCrossSaveThreadProc( LPVOID lpParameter 
 		case eSaveTransfer_CreateDummyFile:
 			{
 				StorageManager.ResetSaveData();
-				byte *compData = (byte *)StorageManager.AllocateSaveData( app.getRemoteStorage()->getSaveFilesize() );
+				uint8_t *compData = (uint8_t *)StorageManager.AllocateSaveData( app.getRemoteStorage()->getSaveFilesize() );
 				// Make our next save default to the name of the level
 				const char* pNameUTF8 = app.getRemoteStorage()->getSaveNameUTF8();
 				mbstowcs(wSaveName, pNameUTF8, strlen(pNameUTF8)+1); // plus null

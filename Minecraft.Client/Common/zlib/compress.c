@@ -10,7 +10,7 @@
 
 /* ===========================================================================
      Compresses the source buffer into the destination buffer. The level
-   parameter has the same meaning as in deflateInit.  sourceLen is the byte
+   parameter has the same meaning as in deflateInit.  sourceLen is the uint8_t
    length of the source buffer. Upon entry, destLen is the total size of the
    destination buffer, which must be at least 0.1% larger than sourceLen plus
    12 bytes. Upon exit, destLen is the actual size of the compressed buffer.

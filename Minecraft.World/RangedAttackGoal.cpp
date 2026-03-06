@@ -11,7 +11,7 @@ void RangedAttackGoal::_init(RangedAttackMob *rangedMob, Mob *mob, double speedM
 {
 	//if (!(mob instanceof LivingEntity))
 	//{
-	//throw new IllegalArgumentException("ArrowAttackGoal requires Mob implements RangedAttackMob");
+	//throw new IllegalArgumentException("ArrowAttackGoal requirements Mob implements RangedAttackMob");
 	//}
 	rangedAttackMob = rangedMob;
 	this->mob = mob;

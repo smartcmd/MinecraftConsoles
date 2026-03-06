@@ -386,8 +386,8 @@ void DurangoStatsDebugger::retrieveStats(int iPad)
 
 	// ----------------------------------------- //
 	
-	byte runningThreads = 0;
-	byte *r_runningThreads = &runningThreads;
+	uint8_t runningThreads = 0;
+	uint8_t *r_runningThreads = &runningThreads;
 
 	if (xuid.toString().compare(L"") == 0) 
 	{

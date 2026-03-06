@@ -143,7 +143,7 @@ CompressedTileStorage::CompressedTileStorage(bool isEmpty)
 #endif
 }
 
-bool CompressedTileStorage::isRenderChunkEmpty(int y)	// y == 0, 16, 32... 112 (representing a 16 byte range) 
+bool CompressedTileStorage::isRenderChunkEmpty(int y)	// y == 0, 16, 32... 112 (representing a 16 uint8_t range) 
 {
 	int block;
 	unsigned short *blockIndices = (unsigned short *)indicesAndData;
@@ -168,7 +168,7 @@ bool CompressedTileStorage::isSameAs(CompressedTileStorage *other)
 		return false;
 	}
 
-	// Attempt to compare as much as we can in 64-byte chunks (8 groups of 8 bytes)
+	// Attempt to compare as much as we can in 64-uint8_t chunks (8 groups of 8 bytes)
 	int quickCount = allocatedSize / 64;
 	__int64 *pOld = (__int64 *)indicesAndData;
 	__int64 *pNew = (__int64 *)other->indicesAndData;
@@ -197,7 +197,7 @@ bool CompressedTileStorage::isSameAs(CompressedTileStorage *other)
 		pNew += 8;
 	}	
 
-	// Now test anything remaining just byte at a time
+	// Now test anything remaining just uint8_t at a time
 	unsigned char *pucOld = (unsigned char *)pOld;
 	unsigned char *pucNew = (unsigned char *)pNew;
 	for( int i = 0; i < allocatedSize - (quickCount * 64); i++ )
@@ -376,7 +376,7 @@ void CompressedTileStorage::setData(byteArray dataIn, unsigned int inOffset)
 		else
 		{
 			_blockIndices[i] = INDEX_TYPE_0_OR_8_BIT;
-			memToAlloc = ( memToAlloc + 3 ) & 0xfffc;		// Make sure we are 4-byte aligned for 8-bit storage
+			memToAlloc = ( memToAlloc + 3 ) & 0xfffc;		// Make sure we are 4-uint8_t aligned for 8-bit storage
 			memToAlloc += 64;
 //			type8++;
 		}
@@ -996,7 +996,7 @@ void  CompressedTileStorage::compress(int upgradeBlock/*=-1*/)
 				else
 				{
 					_blockIndices[i] = INDEX_TYPE_0_OR_8_BIT;
-					memToAlloc = ( memToAlloc + 3 ) & 0xfffc;		// Make sure we are 4-byte aligned for 8-bit storage
+					memToAlloc = ( memToAlloc + 3 ) & 0xfffc;		// Make sure we are 4-uint8_t aligned for 8-bit storage
 					memToAlloc += 64;
 				}
 			}
@@ -1037,7 +1037,7 @@ void  CompressedTileStorage::compress(int upgradeBlock/*=-1*/)
 					memToAlloc += 48;
 					break;
 				case INDEX_TYPE_0_OR_8_BIT:
-					memToAlloc = ( memToAlloc + 3 ) & 0xfffc;		// Make sure we are 4-byte aligned for 8-bit storage
+					memToAlloc = ( memToAlloc + 3 ) & 0xfffc;		// Make sure we are 4-uint8_t aligned for 8-bit storage
 					memToAlloc += 64;
 					break;
 				// Note that INDEX_TYPE_8_BIT|INDEX_TYPE_0_BIT_FLAG not in here as it doesn't need any further allocation
@@ -1169,7 +1169,7 @@ void  CompressedTileStorage::compress(int upgradeBlock/*=-1*/)
 					}
 					else
 					{
-						usDataOffset = (usDataOffset + 3 ) & 0xfffc;									// Make sure offset is 4 byte aligned
+						usDataOffset = (usDataOffset + 3 ) & 0xfffc;									// Make sure offset is 4 uint8_t aligned
 						XMemCpy( pucData + usDataOffset, unpacked_data, 64 );
 						newIndices[i] |= ( usDataOffset & INDEX_OFFSET_MASK) << INDEX_OFFSET_SHIFT;
 						usDataOffset += 64;

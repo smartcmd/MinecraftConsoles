@@ -31,7 +31,7 @@ void Spider::defineSynchedData()
 {
 	Monster::defineSynchedData();
 
-	entityData->define(DATA_FLAGS_ID, (byte) 0);
+	entityData->define(DATA_FLAGS_ID, (uint8_t) 0);
 }
 
 void Spider::tick()
@@ -172,7 +172,7 @@ bool Spider::isClimbing()
 
 void Spider::setClimbing(bool value)
 {
-	byte flags = entityData->getByte(DATA_FLAGS_ID);
+	uint8_t flags = entityData->getByte(DATA_FLAGS_ID);
 	if (value)
 	{
 		flags |= 0x1;

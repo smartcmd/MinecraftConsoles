@@ -282,7 +282,7 @@ void ChatIntegrationLayer::OnOutgoingChatPacketReady(
     __in Microsoft::Xbox::GameChat::ChatPacketEventArgs^ args 
     )
 {
-	byte *bytes;
+	uint8_t *bytes;
 	int byteCount;
 
 	GetBufferBytes(args->PacketBuffer, &bytes);
@@ -300,7 +300,7 @@ void ChatIntegrationLayer::OnOutgoingChatPacketReady(
 
 void ChatIntegrationLayer::OnIncomingChatMessage( 
 	unsigned int sessionAddress,
-	Platform::Array<byte>^ message
+	Platform::Array<uint8_t>^ message
     )
 {
     // To integrate the Chat DLL in your game, change the following code to use your game's network layer.
@@ -312,10 +312,10 @@ void ChatIntegrationLayer::OnIncomingChatMessage(
     // What exactly you use doesn't matter, but optimally it would be something that uniquely identifies a console on in the session. 
     // A Windows::Xbox::Networking::SecureDeviceAssociation^ is perfect to use if you have access to it.
 
-    // This is how you would convert from byte array to a IBuffer^
+    // This is how you would convert from uint8_t array to a IBuffer^
     //
     //    Windows::Storage::Streams::IBuffer^ destBuffer = ref new Windows::Storage::Streams::Buffer( sourceByteBufferSize );
-    //    byte* destBufferBytes = nullptr;
+    //    uint8_t* destBufferBytes = nullptr;
     //    GetBufferBytes( destBuffer, &destBufferBytes );
     //    errno_t err = memcpy_s( destBufferBytes, destBuffer->Capacity, sourceByteBuffer, sourceByteBufferSize );
     //    THROW_HR_IF(err != 0, E_FAIL);
@@ -782,7 +782,7 @@ void ChatIntegrationLayer::ToggleRenderTargetVolume()
 }
 
 
-void ChatIntegrationLayer::GetBufferBytes( __in Windows::Storage::Streams::IBuffer^ buffer, __out byte** ppOut )
+void ChatIntegrationLayer::GetBufferBytes( __in Windows::Storage::Streams::IBuffer^ buffer, __out uint8_t** ppOut )
 {
     if ( ppOut == nullptr || buffer == nullptr )
     {
@@ -797,7 +797,7 @@ void ChatIntegrationLayer::GetBufferBytes( __in Windows::Storage::Streams::IBuff
     srcBufferByteAccess->Buffer(ppOut);
 }
 
-Windows::Storage::Streams::IBuffer^ ChatIntegrationLayer::ArrayToBuffer( __in Platform::Array<byte>^ array )
+Windows::Storage::Streams::IBuffer^ ChatIntegrationLayer::ArrayToBuffer( __in Platform::Array<uint8_t>^ array )
 {
     Windows::Storage::Streams::DataWriter^ writer = ref new Windows::Storage::Streams::DataWriter();
     writer->WriteBytes(array);

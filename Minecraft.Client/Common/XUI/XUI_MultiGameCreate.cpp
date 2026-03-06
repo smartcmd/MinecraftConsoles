@@ -592,7 +592,7 @@ int CScene_MultiGameCreate::WarningTrialTexturePackReturned(void *pParam,int iPa
 		}
 		else
 		{
-			// This is called from a storage manager thread... need to set up thread storage for IntCache as CreateGame requires this to search for a suitable seed if we haven't set a seed.
+			// This is called from a storage manager thread... need to set up thread storage for IntCache as CreateGame requirements this to search for a suitable seed if we haven't set a seed.
 			IntCache::CreateNewThreadStorage();
 			CreateGame(pScene, 0);
 			IntCache::ReleaseThreadStorage();
@@ -791,7 +791,7 @@ int CScene_MultiGameCreate::ConfirmCreateReturned(void *pParam,int iPad,C4JStora
 			}
 			else
 			{
-				// This is called from a storage manager thread... need to set up thread storage for IntCache as CreateGame requires this to search for a suitable seed if we haven't set a seed.
+				// This is called from a storage manager thread... need to set up thread storage for IntCache as CreateGame requirements this to search for a suitable seed if we haven't set a seed.
 				IntCache::CreateNewThreadStorage();
 				CreateGame(pClass, 0);
 				IntCache::ReleaseThreadStorage();

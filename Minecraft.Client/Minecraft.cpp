@@ -190,7 +190,7 @@ Minecraft::Minecraft(Component *mouseComponent, Canvas *parent, MinecraftApplet 
 
 	this->parent = parent;
 	// 4J - Our actual physical frame buffer is always 1280x720 ie in a 16:9 ratio. If we want to do a 4:3 mode, we are telling the original minecraft code
-	// that the width is 3/4 what it actually is, to correctly present a 4:3 image. Have added width_phys and height_phys for any code we add that requires
+	// that the width is 3/4 what it actually is, to correctly present a 4:3 image. Have added width_phys and height_phys for any code we add that requirements
 	// to know the real physical dimensions of the frame buffer.
 	if( RenderManager.IsWidescreen() )
 	{

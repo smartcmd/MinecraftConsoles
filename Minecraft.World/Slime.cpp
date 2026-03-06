@@ -47,12 +47,12 @@ void Slime::defineSynchedData()
 {
 	Mob::defineSynchedData();
 
-	entityData->define(ID_SIZE, (byte) 1);
+	entityData->define(ID_SIZE, (uint8_t) 1);
 }
 
 void Slime::setSize(int size)
 {
-	entityData->set(ID_SIZE, (byte) size);
+	entityData->set(ID_SIZE, (uint8_t) size);
 	setSize(0.6f * size, 0.6f * size);
 	setPos(x, y, z);
 	getAttribute(SharedMonsterAttributes::MAX_HEALTH)->setBaseValue(size * size);

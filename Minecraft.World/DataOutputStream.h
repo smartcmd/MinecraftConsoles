@@ -22,7 +22,7 @@ public:
 	virtual void write(byteArray b);
 	virtual void write(byteArray b, unsigned int offset, unsigned int length);
 	virtual void close();
-	virtual void writeByte(byte a);
+	virtual void writeByte(uint8_t a);
 	virtual void writeDouble(double a);
 	virtual void writeFloat(float a);
 	virtual void writeInt(int a);

@@ -225,5 +225,5 @@ enum ETelemetryChallenges
 	eTelemetryTutorial_TradingMenu,
 	eTelemetryTutorial_Enderchest,
 
-	// Sent over network as a byte
+	// Sent over network as a uint8_t
 };

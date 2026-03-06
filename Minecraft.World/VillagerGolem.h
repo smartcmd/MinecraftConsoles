@@ -41,7 +41,7 @@ public:
 	virtual void addAdditonalSaveData(CompoundTag *tag);
 	virtual void readAdditionalSaveData(CompoundTag *tag);
 	virtual bool doHurtTarget(shared_ptr<Entity> target);
-	virtual void handleEntityEvent(byte id);
+	virtual void handleEntityEvent(uint8_t id);
 	virtual shared_ptr<Village> getVillage();
 	virtual int getAttackAnimationTick();
 	virtual void offerFlower(bool offer);

@@ -52,12 +52,12 @@ Minimap::Minimap(Font *font, Options *options, Textures *textures, bool optimise
 void Minimap::reloadColours()
 {
 	ColourTable *colourTable = Minecraft::GetInstance()->getColourTable();
-	// 4J note that this code has been extracted pretty much as it was in Minimap::render, although with some byte order changes
+	// 4J note that this code has been extracted pretty much as it was in Minimap::render, although with some uint8_t order changes
 	for( int i = 0; i < (14 * 4); i++ )	// 14 material colours currently, 4 brightnesses of each
 	{
 		if (i / 4 == 0)
 		{
-			// 4J - changed byte order to save having to reorder later
+			// 4J - changed uint8_t order to save having to reorder later
 #ifdef __ORBIS__
 			LUT[i] = 0;
 #else
@@ -78,7 +78,7 @@ void Minimap::reloadColours()
 			int g = ((color >> 8) & 0xff) * br / 255;
 			int b = ((color) & 0xff) * br / 255;
 
-			// 4J - changed byte order to save having to reorder later
+			// 4J - changed uint8_t order to save having to reorder later
 #if ( defined _DURANGO || defined _WIN64 || __PSVITA__ )
 			LUT[i] =  255 << 24 | b << 16 | g << 8 | r;
 #elif defined _XBOX

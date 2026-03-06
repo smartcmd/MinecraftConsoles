@@ -24,8 +24,8 @@ bool Textures::MIPMAP = true;
 C4JRender::eTextureFormat Textures::TEXTURE_FORMAT = C4JRender::TEXTURE_FORMAT_RxGyBzAw;
 
 int Textures::preLoadedIdx[TN_COUNT];
-wchar_t *Textures::preLoaded[TN_COUNT] =
-{
+const wchar_t *Textures::preLoaded[TN_COUNT] =
+    {
 	L"%blur%misc/pumpkinblur",
 //	L"%blur%/misc/vignette",		// Not currently used
 	L"%clamp%misc/shadow",
@@ -725,15 +725,15 @@ void Textures::loadTexture(BufferedImage *img, int id, bool blur, bool clamp)
         int b = (rawPixels[i]) & 0xff;
 
 #ifdef _XBOX
-        newPixels[i * 4 + 0] = (byte) a;
-        newPixels[i * 4 + 1] = (byte) r;
-        newPixels[i * 4 + 2] = (byte) g;
-        newPixels[i * 4 + 3] = (byte) b;
+        newPixels[i * 4 + 0] = (uint8_t) a;
+        newPixels[i * 4 + 1] = (uint8_t) r;
+        newPixels[i * 4 + 2] = (uint8_t) g;
+        newPixels[i * 4 + 3] = (uint8_t) b;
 #else
-        newPixels[i * 4 + 0] = (byte) r;
-        newPixels[i * 4 + 1] = (byte) g;
-        newPixels[i * 4 + 2] = (byte) b;
-        newPixels[i * 4 + 3] = (byte) a;
+        newPixels[i * 4 + 0] = (uint8_t) r;
+        newPixels[i * 4 + 1] = (uint8_t) g;
+        newPixels[i * 4 + 2] = (uint8_t) b;
+        newPixels[i * 4 + 3] = (uint8_t) a;
 #endif
     }
 	// 4J - now creating a buffer of the size we require dynamically
@@ -901,10 +901,10 @@ void Textures::replaceTexture(intArray rawPixels, int w, int h, int id)
             b = bb;
         }
 
-        newPixels[i * 4 + 0] = (byte) r;
-        newPixels[i * 4 + 1] = (byte) g;
-        newPixels[i * 4 + 2] = (byte) b;
-        newPixels[i * 4 + 3] = (byte) a;
+        newPixels[i * 4 + 0] = (uint8_t) r;
+        newPixels[i * 4 + 1] = (uint8_t) g;
+        newPixels[i * 4 + 2] = (uint8_t) b;
+        newPixels[i * 4 + 3] = (uint8_t) a;
     }
     ByteBuffer *pixels =  MemoryTracker::createByteBuffer(w * h * 4);	// 4J - now creating dynamically
     pixels->put(newPixels);
@@ -1520,8 +1520,8 @@ TEXTURE_NAME TUImages[] =
 };
 
 // This is for any TU textures that aren't part of our enum indexed preload set
-wchar_t *TUImagePaths[] =
-{
+const wchar_t *TUImagePaths[] =
+    {
 	L"font/Default",
 	L"font/Mojangles_7",
 	L"font/Mojangles_11",
@@ -1579,8 +1579,8 @@ TEXTURE_NAME OriginalImages[] =
 	TN_COUNT
 };
 
-wchar_t *OriginalImagesPaths[] =
-{
+const wchar_t *OriginalImagesPaths[] =
+    {
 	L"misc/watercolor.png",
 
 	NULL

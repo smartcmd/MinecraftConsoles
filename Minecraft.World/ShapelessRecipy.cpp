@@ -77,7 +77,7 @@ int ShapelessRecipy::size()
 }
 
 // 4J-PB
-bool ShapelessRecipy::requires(int iRecipe) 
+bool ShapelessRecipy::requirements(int iRecipe) 
 {
 	vector <ItemInstance *> *tempList = new vector<ItemInstance *>;
 
@@ -97,7 +97,7 @@ bool ShapelessRecipy::requires(int iRecipe)
 	return false;
 }
 
-void ShapelessRecipy::requires(INGREDIENTS_REQUIRED *pIngReq) 
+void ShapelessRecipy::requirements(INGREDIENTS_REQUIRED *pIngReq) 
 {
 	int iCount=0;
 	bool bFound;

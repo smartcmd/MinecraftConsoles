@@ -90,7 +90,7 @@ void TheEndLevelRandomLevelSource::prepareHeights(int xOffs, int zOffs, byteArra
 							} else {
 							}
 
-							blocks[offs] = (byte) tileId;
+							blocks[offs] = (uint8_t) tileId;
 							offs += step;
 							val += vala;
 						}
@@ -119,8 +119,8 @@ void TheEndLevelRandomLevelSource::buildSurfaces(int xOffs, int zOffs, byteArray
 			int runDepth = 1;
 			int run = -1;
 
-			byte top = (byte) Tile::endStone_Id;
-			byte material = (byte) Tile::endStone_Id;
+			uint8_t top = (uint8_t) Tile::endStone_Id;
+			uint8_t material = (uint8_t) Tile::endStone_Id;
 
 			for (int y = Level::genDepthMinusOne; y >= 0; y--)
 			{
@@ -139,7 +139,7 @@ void TheEndLevelRandomLevelSource::buildSurfaces(int xOffs, int zOffs, byteArray
 						if (runDepth <= 0)
 						{
 							top = 0;
-							material = (byte) Tile::endStone_Id;
+							material = (uint8_t) Tile::endStone_Id;
 						}
 
 						run = runDepth;
@@ -169,7 +169,7 @@ LevelChunk *TheEndLevelRandomLevelSource::getChunk(int xOffs, int zOffs)
 	BiomeArray biomes;
 	// 4J - now allocating this with a physical alloc & bypassing general memory management so that it will get cleanly freed
 	unsigned int blocksSize = Level::genDepth * 16 * 16;
-	byte *tileData = (byte *)XPhysicalAlloc(blocksSize, MAXULONG_PTR, 4096, PAGE_READWRITE);
+	uint8_t *tileData = (uint8_t *)XPhysicalAlloc(blocksSize, MAXULONG_PTR, 4096, PAGE_READWRITE);
 	XMemSet128(tileData,0,blocksSize);
 	byteArray blocks = byteArray(tileData,blocksSize);
 	//    byteArray blocks = byteArray(16 * level->depth * 16);

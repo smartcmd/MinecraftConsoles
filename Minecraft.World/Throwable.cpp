@@ -270,9 +270,9 @@ void Throwable::addAdditonalSaveData(CompoundTag *tag)
 	tag->putShort(L"xTile", (short) xTile);
 	tag->putShort(L"yTile", (short) yTile);
 	tag->putShort(L"zTile", (short) zTile);
-	tag->putByte(L"inTile", (byte) lastTile);
-	tag->putByte(L"shake", (byte) shakeTime);
-	tag->putByte(L"inGround", (byte) (inGround ? 1 : 0));
+	tag->putByte(L"inTile", (uint8_t) lastTile);
+	tag->putByte(L"shake", (uint8_t) shakeTime);
+	tag->putByte(L"inGround", (uint8_t) (inGround ? 1 : 0));
 
 	if (ownerName.empty() && (owner != NULL) && owner->instanceof(eTYPE_PLAYER) )
 	{

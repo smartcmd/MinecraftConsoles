@@ -316,7 +316,7 @@ protected:
 	virtual void spawnTamingParticles(bool success);
 
 public:
-	virtual void handleEntityEvent(byte id);
+	virtual void handleEntityEvent(uint8_t id);
 	virtual void positionRider();
 
 private:

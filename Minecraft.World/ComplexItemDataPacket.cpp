@@ -42,7 +42,7 @@ void ComplexItemDataPacket::write(DataOutputStream *dos) //throws IOException
 	dos->writeShort(itemId);
 	dos->writeUnsignedShort(data.length);
 
-	byteArray ba( (byte*)data.data, data.length );
+	byteArray ba( (uint8_t*)data.data, data.length );
 	dos->write(ba);
 }
 

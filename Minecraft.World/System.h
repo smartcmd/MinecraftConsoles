@@ -15,7 +15,7 @@ class System
 	template <class T> static void arraycopy(arrayWithLength<T> src, unsigned int srcPos, arrayWithLength<T> *dst, unsigned int dstPos, unsigned int length);
 
 public:
-	ArrayCopyFunctionDeclaration(byte)
+	ArrayCopyFunctionDeclaration(uint8_t)
 	ArrayCopyFunctionDeclaration(Node *)
 	ArrayCopyFunctionDeclaration(Biome *)
 	ArrayCopyFunctionDeclaration(int)

@@ -5,8 +5,8 @@
 class SharedKeyPacket : public Packet
 {
 #if 0
-	private byte[] keybytes = new byte[]{};
-	private byte[] nonce = new byte[]{};
+	private uint8_t[] keybytes = new uint8_t[]{};
+	private uint8_t[] nonce = new uint8_t[]{};
 
 	private SecretKey secretKey;
 
@@ -14,7 +14,7 @@ class SharedKeyPacket : public Packet
 		// Needed
 	}
 
-	public SharedKeyPacket(final SecretKey secretKey, final PublicKey publicKey, final byte[] nonce) {
+	public SharedKeyPacket(final SecretKey secretKey, final PublicKey publicKey, final uint8_t[] nonce) {
 		this.secretKey = secretKey;
 		this.keybytes = Crypt.encryptUsingKey(publicKey, secretKey.getEncoded());
 		this.nonce = Crypt.encryptUsingKey(publicKey, nonce);
@@ -53,7 +53,7 @@ class SharedKeyPacket : public Packet
 		return getSecretKey(null);
 	}
 
-	public byte[] getNonce(PrivateKey privateKey) {
+	public uint8_t[] getNonce(PrivateKey privateKey) {
 		if (privateKey == null) {
 			return nonce;
 		}

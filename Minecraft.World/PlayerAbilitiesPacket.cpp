@@ -25,7 +25,7 @@ PlayerAbilitiesPacket::PlayerAbilitiesPacket(Abilities *abilities)
 
 void PlayerAbilitiesPacket::read(DataInputStream *dis)
 {
-	byte bitfield = dis->readByte();
+	uint8_t bitfield = dis->readByte();
 
 	setInvulnerable((bitfield & FLAG_INVULNERABLE) > 0);
 	setFlying((bitfield & FLAG_FLYING) > 0);
@@ -37,7 +37,7 @@ void PlayerAbilitiesPacket::read(DataInputStream *dis)
 
 void PlayerAbilitiesPacket::write(DataOutputStream *dos)
 {
-	byte bitfield = 0;
+	uint8_t bitfield = 0;
 
 	if (isInvulnerable()) bitfield |= FLAG_INVULNERABLE;
 	if (isFlying()) bitfield |= FLAG_FLYING;

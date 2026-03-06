@@ -38,7 +38,7 @@ void HellFlatLevelSource::prepareHeights(int xOffs, int zOffs, byteArray blocks)
 					block = Tile::netherRack_Id;
 				} 
 
-				blocks[xc << 11 | zc << 7 | yc] = (byte) block;
+				blocks[xc << 11 | zc << 7 | yc] = (uint8_t) block;
 			}
 		}
 	}
@@ -60,7 +60,7 @@ void HellFlatLevelSource::buildSurfaces(int xOffs, int zOffs, byteArray blocks)
 				{
 					if( z - random->nextInt( 4 ) <= 0 || xOffs < -(m_XZSize/2) )
 					{
-						blocks[offs] = (byte) Tile::unbreakable_Id;
+						blocks[offs] = (uint8_t) Tile::unbreakable_Id;
 						blockSet = true;
 					}
 				}
@@ -68,7 +68,7 @@ void HellFlatLevelSource::buildSurfaces(int xOffs, int zOffs, byteArray blocks)
 				{
 					if( x - random->nextInt( 4 ) <= 0 || zOffs < -(m_XZSize/2))
 					{
-						blocks[offs] = (byte) Tile::unbreakable_Id;
+						blocks[offs] = (uint8_t) Tile::unbreakable_Id;
 						blockSet = true;
 					}
 				}
@@ -76,7 +76,7 @@ void HellFlatLevelSource::buildSurfaces(int xOffs, int zOffs, byteArray blocks)
 				{
 					if( z + random->nextInt(4) >= 15 || xOffs > (m_XZSize/2))
 					{
-						blocks[offs] = (byte) Tile::unbreakable_Id;
+						blocks[offs] = (uint8_t) Tile::unbreakable_Id;
 						blockSet = true;
 					}
 				}
@@ -84,7 +84,7 @@ void HellFlatLevelSource::buildSurfaces(int xOffs, int zOffs, byteArray blocks)
 				{
 					if( x + random->nextInt(4) >= 15 || zOffs > (m_XZSize/2) )
 					{
-						blocks[offs] = (byte) Tile::unbreakable_Id;
+						blocks[offs] = (uint8_t) Tile::unbreakable_Id;
 						blockSet = true;
 					}
 				}
@@ -93,11 +93,11 @@ void HellFlatLevelSource::buildSurfaces(int xOffs, int zOffs, byteArray blocks)
 
 				if (y >= Level::genDepthMinusOne - random->nextInt(5))
 				{
-					blocks[offs] = (byte) Tile::unbreakable_Id;
+					blocks[offs] = (uint8_t) Tile::unbreakable_Id;
 				}
 				else if (y <= 0 + random->nextInt(5))
 				{
-					blocks[offs] = (byte) Tile::unbreakable_Id;
+					blocks[offs] = (uint8_t) Tile::unbreakable_Id;
 				}
 			}
 		}
@@ -115,7 +115,7 @@ LevelChunk *HellFlatLevelSource::getChunk(int xOffs, int zOffs)
 
 	// 4J - now allocating this with a physical alloc & bypassing general memory management so that it will get cleanly freed
 	int chunksSize = Level::genDepth * 16  * 16;
-	byte *tileData = (byte *)XPhysicalAlloc(chunksSize, MAXULONG_PTR, 4096, PAGE_READWRITE);
+	uint8_t *tileData = (uint8_t *)XPhysicalAlloc(chunksSize, MAXULONG_PTR, 4096, PAGE_READWRITE);
 	XMemSet128(tileData,0,chunksSize);
 	byteArray blocks = byteArray(tileData,chunksSize);
 	//    byteArray blocks = byteArray(16 * level->depth * 16);

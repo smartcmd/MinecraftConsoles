@@ -3,7 +3,7 @@
 #include "net.minecraft.world.level.tile.h"
 #include "BasicTree.h"
 
-byte BasicTree::axisConversionArray[] = { 2, 0, 0, 1, 2, 1 };
+uint8_t BasicTree::axisConversionArray[] = { 2, 0, 0, 1, 2, 1 };
 
 BasicTree::~BasicTree()
 {
@@ -134,7 +134,7 @@ void BasicTree::prepare()
 
 }
 
-void BasicTree::crossection(int x, int y, int z, float radius, byte direction, int material)
+void BasicTree::crossection(int x, int y, int z, float radius, uint8_t direction, int material)
 {
 	PIXBeginNamedEvent(0, "BasicTree crossection");
     // Create a circular cross section.
@@ -148,8 +148,8 @@ void BasicTree::crossection(int x, int y, int z, float radius, byte direction, i
     // direction is the direction the cross section is pointed, 0 for x, 1 for y, 2 for z
     // material is the index number for the material to use
     int rad = (int) (radius + 0.618);
-    byte secidx1 = axisConversionArray[direction];
-    byte secidx2 = axisConversionArray[direction + 3];
+    uint8_t secidx1 = axisConversionArray[direction];
+    uint8_t secidx2 = axisConversionArray[direction + 3];
     int center[] = { x, y, z };
     int position[] = { 0, 0, 0 };
     int offset1 = -rad;
@@ -234,7 +234,7 @@ void BasicTree::foliageCluster(int x, int y, int z)
     while (cury >= y)
 	{
         radius = foliageShape(cury - y);
-        crossection(x, cury, z, radius, (byte) 1, Tile::leaves_Id);
+        crossection(x, cury, z, radius, (uint8_t) 1, Tile::leaves_Id);
         cury--;
     }
 	PIXEndNamedEvent();
@@ -248,8 +248,8 @@ void BasicTree::limb(int *start, int *end, int material)
     // Populate delta, the difference between start and end for all three axies.
     // Set primidx to the index with the largest overall distance traveled.
     int delta[] = { 0, 0, 0 };
-    byte idx = 0;
-    byte primidx = 0;
+    uint8_t idx = 0;
+    uint8_t primidx = 0;
     while (idx < 3)
 	{
         delta[idx] = end[idx] - start[idx];
@@ -262,8 +262,8 @@ void BasicTree::limb(int *start, int *end, int material)
     // If the largest distance is zero, don't bother to do anything else.
     if (delta[primidx] == 0) return;
     // set up the other two axis indices.
-    byte secidx1 = axisConversionArray[primidx];
-    byte secidx2 = axisConversionArray[primidx + 3];
+    uint8_t secidx1 = axisConversionArray[primidx];
+    uint8_t secidx2 = axisConversionArray[primidx + 3];
     // primsign is digit 1 or -1 depending on whether the limb is headed
     // along the positive or negative primidx axis.
     char primsign;
@@ -389,8 +389,8 @@ int BasicTree::checkLine(int *start, int *end)
     // If the first block searched is lava, return 0
 
     int delta[] = { 0, 0, 0 };
-    byte idx = 0;
-    byte primidx = 0;
+    uint8_t idx = 0;
+    uint8_t primidx = 0;
     while (idx < 3)
 	{
         delta[idx] = end[idx] - start[idx];
@@ -403,11 +403,11 @@ int BasicTree::checkLine(int *start, int *end)
     // If the largest distance is zero, don't bother to do anything else.
     if (delta[primidx] == 0) return -1;
     // set up the other two axis indices.
-    byte secidx1 = axisConversionArray[primidx];
-    byte secidx2 = axisConversionArray[primidx + 3];
+    uint8_t secidx1 = axisConversionArray[primidx];
+    uint8_t secidx2 = axisConversionArray[primidx + 3];
     // primsign is digit 1 or -1 depending on whether the limb is headed
     // along the positive or negative primidx axis.
-    char primsign; // 4J Stu - Was byte, but we use in a sum below and byte=unsigned char so we were setting endoffset incorrectly
+    char primsign; // 4J Stu - Was uint8_t, but we use in a sum below and uint8_t=unsigned char so we were setting endoffset incorrectly
     if (delta[primidx] > 0) primsign = 1;
     else primsign = -1;
     // Initilize the per-step movement for the non-primary axies.

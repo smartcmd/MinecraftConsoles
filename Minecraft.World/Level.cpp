@@ -68,7 +68,7 @@ DWORD Level::tlsIdxLightCache = TlsAlloc();
 // L	   - light value valid
 // B       - blocking value valid
 // E	   - emission value valid
-// W       - lighting value requires write
+// W       - lighting value requirements write
 // xxxxxxxxxxxxxxxx - top 16 bits of x position
 // zzzzzzzzzzzzzzzz - top 16 bits of z position
 #else
@@ -84,13 +84,13 @@ DWORD Level::tlsIdxLightCache = TlsAlloc();
 // L	   - light value valid
 // B       - blocking value valid
 // E	   - emission value valid
-// W       - lighting value requires write
+// W       - lighting value requirements write
 #endif
 
 
 void Level::enableLightingCache()
 {
-	// Allocate 16K (needs 32K for large worlds) for a 16x16x16x4 byte cache of results, plus 128K required for toCheck array. Rounding up to 256 to keep as multiple of alignement - aligning to 128K boundary for possible cache locking.
+	// Allocate 16K (needs 32K for large worlds) for a 16x16x16x4 uint8_t cache of results, plus 128K required for toCheck array. Rounding up to 256 to keep as multiple of alignement - aligning to 128K boundary for possible cache locking.
 	void *cache = (unsigned char *)XPhysicalAlloc(256 * 1024, MAXULONG_PTR, 128 * 1024, PAGE_READWRITE | MEM_LARGE_PAGES);
 	TlsSetValue(tlsIdxLightCache,cache);
 }
@@ -229,7 +229,7 @@ void inline Level::setBrightnessCached(lightCache_t *cache, __uint64 *cacheUse, 
 		cacheValue = posbits;
 	}
 
-	// Just written to it, so value is valid & requires writing back
+	// Just written to it, so value is valid & requirements writing back
 	cacheValue &= ~(15 << LIGHTING_SHIFT );
 	cacheValue |= brightness << LIGHTING_SHIFT;
 	cacheValue |= ( LIGHTING_WRITEBACK | LIGHTING_VALID );
@@ -4377,7 +4377,7 @@ bool Level::mayInteract(shared_ptr<Player> player, int xt, int yt, int zt, int c
 }
 
 
-void Level::broadcastEntityEvent(shared_ptr<Entity> e, byte event)
+void Level::broadcastEntityEvent(shared_ptr<Entity> e, uint8_t event)
 {
 }
 

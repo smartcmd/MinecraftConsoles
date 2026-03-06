@@ -36,7 +36,7 @@ class ConsoleSaveFile;
 typedef struct _MapDataMappings
 {
 	PlayerUID xuids[MAXIMUM_MAP_SAVE_DATA];
-	byte dimensions[MAXIMUM_MAP_SAVE_DATA/4];
+	uint8_t dimensions[MAXIMUM_MAP_SAVE_DATA/4];
 
 	_MapDataMappings();
 	int getDimension(int id);
@@ -47,7 +47,7 @@ typedef struct _MapDataMappings
 typedef struct _MapDataMappings_old
 {
 	PlayerUID xuids[MAXIMUM_MAP_SAVE_DATA];
-	byte dimensions[MAXIMUM_MAP_SAVE_DATA/8];
+	uint8_t dimensions[MAXIMUM_MAP_SAVE_DATA/8];
 
 	_MapDataMappings_old();
 	int getDimension(int id);

@@ -93,7 +93,7 @@ struct ShaderCode
 
 struct GDraw
 {
-   // 16-byte aligned!
+   // 16-uint8_t aligned!
    F32 projection[4]; // always 2D scale+2D translate. first two are scale, last two are translate.
 
    // scale factor converting worldspace to viewspace <0,0>..<w,h>

@@ -16,7 +16,7 @@
  * - Use pointers for available input and output checking in inffast.c
  * - Remove input and output counters in inffast.c
  * - Change inffast.c entry and loop from avail_in >= 7 to >= 6
- * - Remove unnecessary second byte pull from length extra in inffast.c
+ * - Remove unnecessary second uint8_t pull from length extra in inffast.c
  * - Unroll direct copy to three copies per loop in inffast.c
  *
  * 1.2.beta2    4 Dec 2002
@@ -30,7 +30,7 @@
  * - Add comments on state->bits assertion in inffast.c
  * - Add comments on op field in inftrees.h
  * - Fix bug in reuse of allocated window after inflateReset()
- * - Remove bit fields--back to byte structure for speed
+ * - Remove bit fields--back to uint8_t structure for speed
  * - Remove distance extra == 0 check in inflate_fast()--only helps for lengths
  * - Change post-increments to pre-increments in inflate_fast(), PPC biased?
  * - Add compile time option, POSTINC, to use post-increments instead (Intel?)
@@ -484,7 +484,7 @@ unsigned copy;
         bits = 0; \
     } while (0)
 
-/* Get a byte of input into the bit accumulator, or return from inflate()
+/* Get a uint8_t of input into the bit accumulator, or return from inflate()
    if there is no input available. */
 #define PULLBYTE() \
     do { \
@@ -513,7 +513,7 @@ unsigned copy;
         bits -= (unsigned)(n); \
     } while (0)
 
-/* Remove zero to seven bits as needed to go to a byte boundary */
+/* Remove zero to seven bits as needed to go to a uint8_t boundary */
 #define BYTEBITS() \
     do { \
         hold >>= bits & 7; \
@@ -552,10 +552,10 @@ unsigned copy;
    gives the low n bits in the accumulator.  When done, DROPBITS(n) drops
    the low n bits off the accumulator.  INITBITS() clears the accumulator
    and sets the number of available bits to zero.  BYTEBITS() discards just
-   enough bits to put the accumulator on a byte boundary.  After BYTEBITS()
-   and a NEEDBITS(8), then BITS(8) would return the next byte in the stream.
+   enough bits to put the accumulator on a uint8_t boundary.  After BYTEBITS()
+   and a NEEDBITS(8), then BITS(8) would return the next uint8_t in the stream.
 
-   NEEDBITS(n) uses PULLBYTE() to get an available byte of input, or to return
+   NEEDBITS(n) uses PULLBYTE() to get an available uint8_t of input, or to return
    if there is no input available.  The decoding of variable length codes uses
    PULLBYTE() directly in order to pull just enough bytes to decode the next
    code, and no more.
@@ -580,7 +580,7 @@ unsigned copy;
 
    A state may also return if there is not enough output space available to
    complete that state.  Those states are copying stored data, writing a
-   literal byte, and copying a matching string.
+   literal uint8_t, and copying a matching string.
 
    When returning, a "goto inf_leave" is used to update the total counters,
    update the check value, and determine whether any progress has been made
@@ -862,7 +862,7 @@ int flush;
             DROPBITS(2);
             break;
         case STORED:
-            BYTEBITS();                         /* go to byte boundary */
+            BYTEBITS();                         /* go to uint8_t boundary */
             NEEDBITS(32);
             if ((hold & 0xffff) != ((hold >> 16) ^ 0xffff)) {
                 strm->msg = (char *)"invalid stored block lengths";
@@ -1345,7 +1345,7 @@ gz_headerp head;
    or when out of input.  When called, *have is the number of pattern bytes
    found in order so far, in 0..3.  On return *have is updated to the new
    state.  If on return *have equals four, then the pattern was found and the
-   return value is how many bytes were read including the last byte of the
+   return value is how many bytes were read including the last uint8_t of the
    pattern.  If *have is less than four, then the pattern has not been found
    yet and the return value is len.  In the latter case, syncsearch() can be
    called again with more data and the *have state.  *have is initialized to
@@ -1379,7 +1379,7 @@ z_streamp strm;
 {
     unsigned len;               /* number of bytes to look at or looked at */
     unsigned long in, out;      /* temporary to save total_in and total_out */
-    unsigned char buf[4];       /* to restore bit buffer to byte string */
+    unsigned char buf[4];       /* to restore bit buffer to uint8_t string */
     struct inflate_state FAR *state;
 
     /* check parameters */

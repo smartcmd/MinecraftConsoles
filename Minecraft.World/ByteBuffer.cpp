@@ -7,25 +7,25 @@
 ByteBuffer::ByteBuffer( unsigned int capacity ) : Buffer( capacity )
 {
 	hasBackingArray = false;
-	buffer = new byte[capacity];
-	memset( buffer,0,sizeof(byte)*capacity);
+	buffer = new uint8_t[capacity];
+	memset( buffer,0,sizeof(uint8_t)*capacity);
 	byteOrder = BIGENDIAN;
 }
 
-//Allocates a new direct byte buffer.
+//Allocates a new direct uint8_t buffer.
 //The new buffer's position will be zero, its limit will be its capacity, and its mark will be undefined. Whether or not it has a backing array is unspecified.
 //
 //Parameters:
 //capacity - The new buffer's capacity, in bytes
 //Returns:
-//The new byte buffer
+//The new uint8_t buffer
 ByteBuffer *ByteBuffer::allocateDirect(int capacity)
 {
 	return new ByteBuffer(capacity);
 }
 
 
-ByteBuffer::ByteBuffer( unsigned int capacity, byte *backingArray ) : Buffer( capacity )
+ByteBuffer::ByteBuffer( unsigned int capacity, uint8_t *backingArray ) : Buffer( capacity )
 {
 	hasBackingArray = true;
 	buffer = backingArray;
@@ -37,36 +37,36 @@ ByteBuffer::~ByteBuffer()
 		delete[] buffer;
 }
 
-//Wraps a byte array into a buffer.
-//The new buffer will be backed by the given byte array; that is, modifications to the buffer will cause the array
+//Wraps a uint8_t array into a buffer.
+//The new buffer will be backed by the given uint8_t array; that is, modifications to the buffer will cause the array
 //to be modified and vice versa. The new buffer's capacity and limit will be array.length, its position will be zero,
 //and its mark will be undefined. Its backing array will be the given array, and its array offset will be zero.
 //
 //Parameters:
 //array - The array that will back this buffer
 //Returns:
-//The new byte buffer
+//The new uint8_t buffer
 ByteBuffer *ByteBuffer::wrap(byteArray &b)
 {
 	return new ByteBuffer( b.length, b.data );
 }
 
-//Allocates a new byte buffer.
+//Allocates a new uint8_t buffer.
 //The new buffer's position will be zero, its limit will be its capacity, and its mark will be undefined.
 //It will have a backing array, and its array offset will be zero.
 //
 //Parameters:
 //capacity - The new buffer's capacity, in bytes
 //Returns:
-//The new byte buffer
+//The new uint8_t buffer
 ByteBuffer *ByteBuffer::allocate(unsigned int capacity)
 {
 	return new ByteBuffer( capacity );
 }
 
-//Modifies this buffer's byte order.
+//Modifies this buffer's uint8_t order.
 //Parameters:
-//bo - The new byte order, either BIGENDIAN or LITTLEENDIAN
+//bo - The new uint8_t order, either BIGENDIAN or LITTLEENDIAN
 void ByteBuffer::order(ByteOrder bo)
 {
 	byteOrder = bo;
@@ -85,7 +85,7 @@ ByteBuffer *ByteBuffer::flip()
 }
 
 // 4J Added so we can write this to a file
-byte *ByteBuffer::getBuffer()
+uint8_t *ByteBuffer::getBuffer()
 {
 	return buffer;
 }
@@ -97,11 +97,11 @@ int ByteBuffer::getSize()
 }
 // End 4J
 
-//Absolute get method. Reads the byte at the given index.
+//Absolute get method. Reads the uint8_t at the given index.
 //Parameters:
-//index - The index from which the byte will be read
+//index - The index from which the uint8_t will be read
 //Returns:
-//The byte at the given index
+//The uint8_t at the given index
 //Throws:
 //IndexOutOfBoundsException - If index is negative or not smaller than the buffer's limit
 BYTE ByteBuffer::get(int index)
@@ -114,7 +114,7 @@ BYTE ByteBuffer::get(int index)
 
 //Relative get method for reading an int value.
 //Reads the next four bytes at this buffer's current position, composing them into an int value according to the
-//current byte order, and then increments the position by four.
+//current uint8_t order, and then increments the position by four.
 //
 //Returns:
 //The int value at the buffer's current position
@@ -143,7 +143,7 @@ int ByteBuffer::getInt()
 }
 
 //Absolute get method for reading an int value.
-//Reads four bytes at the given index, composing them into a int value according to the current byte order.
+//Reads four bytes at the given index, composing them into a int value according to the current uint8_t order.
 //
 //Parameters:
 //index - The index from which the bytes will be read
@@ -171,7 +171,7 @@ int ByteBuffer::getInt(unsigned int index)
 }
 
 //Relative get method for reading a long value.
-//Reads the next eight bytes at this buffer's current position, composing them into a long value according to the current byte order,
+//Reads the next eight bytes at this buffer's current position, composing them into a long value according to the current uint8_t order,
 //and then increments the position by eight.
 //
 //Returns:
@@ -206,7 +206,7 @@ __int64 ByteBuffer::getLong()
 
 //Relative get method for reading a short value.
 //Reads the next two bytes at this buffer's current position, composing them into a short value according to the current
-//byte order, and then increments the position by two.
+//uint8_t order, and then increments the position by two.
 //
 //Returns:
 //The short value at the buffer's current position
@@ -243,17 +243,17 @@ void ByteBuffer::getShortArray(shortArray &s)
 }
 
 //Absolute put method  (optional operation).
-//Writes the given byte into this buffer at the given index.
+//Writes the given uint8_t into this buffer at the given index.
 //
 //Parameters:
-//index - The index at which the byte will be written
-//b - The byte value to be written
+//index - The index at which the uint8_t will be written
+//b - The uint8_t value to be written
 //Returns:
 //This buffer
 //Throws:
 //IndexOutOfBoundsException - If index is negative or not smaller than the buffer's limit
 //ReadOnlyBufferException - If this buffer is read-only
-ByteBuffer *ByteBuffer::put(int index, byte b)
+ByteBuffer *ByteBuffer::put(int index, uint8_t b)
 {
 	assert( index < m_limit );
 	assert( index >= 0 );
@@ -264,7 +264,7 @@ ByteBuffer *ByteBuffer::put(int index, byte b)
 
 
 //Relative put method for writing an int value  (optional operation).
-//Writes four bytes containing the given int value, in the current byte order, into this buffer at the current position,
+//Writes four bytes containing the given int value, in the current uint8_t order, into this buffer at the current position,
 //and then increments the position by four.
 //
 //Parameters:
@@ -296,7 +296,7 @@ ByteBuffer *ByteBuffer::putInt(int value)
 }
 
 //Absolute put method for writing an int value  (optional operation).
-//Writes four bytes containing the given int value, in the current byte order, into this buffer at the given index.
+//Writes four bytes containing the given int value, in the current uint8_t order, into this buffer at the given index.
 //
 //Parameters:
 //index - The index at which the bytes will be written
@@ -326,7 +326,7 @@ ByteBuffer *ByteBuffer::putInt(unsigned int index, int value)
 }
 
 //Relative put method for writing a short value  (optional operation).
-//Writes two bytes containing the given short value, in the current byte order, into this buffer at the current position,
+//Writes two bytes containing the given short value, in the current uint8_t order, into this buffer at the current position,
 //and then increments the position by two.
 //
 //Parameters:
@@ -366,7 +366,7 @@ ByteBuffer *ByteBuffer::putShortArray(shortArray &s)
 }
 
 //Relative put method for writing a long value  (optional operation).
-//Writes eight bytes containing the given long value, in the current byte order, into this buffer at the current position,
+//Writes eight bytes containing the given long value, in the current uint8_t order, into this buffer at the current position,
 //and then increments the position by eight.
 //
 //Parameters:
@@ -404,7 +404,7 @@ ByteBuffer *ByteBuffer::putLong(__int64 value)
 }
 
 //Relative bulk put method  (optional operation).
-//This method transfers the entire content of the given source byte array into this buffer.
+//This method transfers the entire content of the given source uint8_t array into this buffer.
 //An invocation of this method of the form dst.put(a) behaves in exactly the same way as the invocation
 //
 //     dst.put(a, 0, a.length) 
@@ -427,7 +427,7 @@ byteArray ByteBuffer::array()
 	return byteArray( buffer, m_capacity );
 }
 
-//Creates a view of this byte buffer as an int buffer.
+//Creates a view of this uint8_t buffer as an int buffer.
 //The content of the new buffer will start at this buffer's current position. Changes to this buffer's content
 //will be visible in the new buffer, and vice versa; the two buffers' position, limit, and mark values will be independent.
 //
@@ -439,11 +439,11 @@ byteArray ByteBuffer::array()
 //A new int buffer 
 IntBuffer *ByteBuffer::asIntBuffer()
 {
-	// TODO 4J Stu - Is it safe to just cast our byte array pointer to another type?
+	// TODO 4J Stu - Is it safe to just cast our uint8_t array pointer to another type?
 	return new IntBuffer( (m_limit-m_position)/4, (int *) (buffer+m_position) );
 }
 
-//Creates a view of this byte buffer as a float buffer.
+//Creates a view of this uint8_t buffer as a float buffer.
 //The content of the new buffer will start at this buffer's current position. Changes to this buffer's content will be
 //visible in the new buffer, and vice versa; the two buffers' position, limit, and mark values will be independent.
 //
@@ -455,7 +455,7 @@ IntBuffer *ByteBuffer::asIntBuffer()
 //A new float buffer
 FloatBuffer *ByteBuffer::asFloatBuffer()
 {
-	// TODO 4J Stu - Is it safe to just cast our byte array pointer to another type?
+	// TODO 4J Stu - Is it safe to just cast our uint8_t array pointer to another type?
 	return new FloatBuffer( (m_limit-m_position)/4, (float *) (buffer+m_position) );
 }
 
@@ -464,9 +464,9 @@ FloatBuffer *ByteBuffer::asFloatBuffer()
 #ifdef __PS3__
 // we're using the RSX now to upload textures to vram, so we need th main ram textures allocated from io space
 ByteBuffer_IO::ByteBuffer_IO( unsigned int capacity ) 
-	: ByteBuffer(capacity, (byte*)RenderManager.allocIOMem(capacity, 64))
+	: ByteBuffer(capacity, (uint8_t*)RenderManager.allocIOMem(capacity, 64))
 {
-	memset( buffer,0,sizeof(byte)*capacity);
+	memset( buffer,0,sizeof(uint8_t)*capacity);
 	byteOrder = BIGENDIAN;
 }
 

@@ -115,7 +115,7 @@ void FireworksRocketEntity::tick()
 	}
 }
 
-void FireworksRocketEntity::handleEntityEvent(byte eventId)
+void FireworksRocketEntity::handleEntityEvent(uint8_t eventId)
 {
 	if (eventId == EntityEvent::FIREWORKS_EXPLODE && level->isClientSide)
 	{

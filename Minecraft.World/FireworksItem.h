@@ -15,14 +15,14 @@ public:
 	static const wstring TAG_E_COLORS;
 	static const wstring TAG_E_FADECOLORS;
 
-	static const byte TYPE_SMALL = 0;
-	static const byte TYPE_BIG = 1;
-	static const byte TYPE_STAR = 2;
-	static const byte TYPE_CREEPER = 3;
-	static const byte TYPE_BURST = 4;
+	static const uint8_t TYPE_SMALL = 0;
+	static const uint8_t TYPE_BIG = 1;
+	static const uint8_t TYPE_STAR = 2;
+	static const uint8_t TYPE_CREEPER = 3;
+	static const uint8_t TYPE_BURST = 4;
 
-	static const byte TYPE_MIN = TYPE_SMALL;
-	static const byte TYPE_MAX = TYPE_BURST;
+	static const uint8_t TYPE_MIN = TYPE_SMALL;
+	static const uint8_t TYPE_MAX = TYPE_BURST;
 
 	FireworksItem(int id);
 

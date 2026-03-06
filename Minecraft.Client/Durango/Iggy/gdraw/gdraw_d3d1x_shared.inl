@@ -200,7 +200,7 @@ static void safe_release(T *&p)
    }
 }
 
-static void report_d3d_error(HRESULT hr, char *call, char *context)
+static void report_d3d_error(HRESULT hr, const char *call, const char *context)
 {
    if (hr == E_OUTOFMEMORY)
       IggyGDrawSendWarning(NULL, "GDraw D3D out of memory in %s%s", call, context);
@@ -478,7 +478,7 @@ static GDrawTexture * RADLINK gdraw_MakeTextureEnd(GDraw_MakeTexture_ProcessingI
    D3D1X_(SUBRESOURCE_DATA) mipdata[24];
    S32 i, w, h, nmips, bpp;
    HRESULT hr = S_OK;
-   char *failed_call;
+   const char *failed_call;
    U8 *ptr;
 
    // generate mip maps and set up descriptors for them
@@ -700,7 +700,7 @@ static void RADLINK gdraw_DescribeVertexBuffer(GDrawVertexBuffer *vbuf, GDraw_Ve
 
 static GDrawHandle *get_color_rendertarget(GDrawStats *stats)
 {
-   char *failed_call;
+   const char *failed_call;
 
    // try to recycle LRU rendertarget
    GDrawHandle *t = gdraw_HandleCacheGetLRU(&gdraw->rendertargets);
@@ -762,7 +762,7 @@ static GDrawHandle *get_color_rendertarget(GDrawStats *stats)
 static ID3D1X(DepthStencilView) *get_rendertarget_depthbuffer(GDrawStats *stats)
 {
    if (!gdraw->depth_buffer[1]) {
-      char *failed_call;
+      const char *failed_call;
       assert(!gdraw->rt_depth_buffer);
 
       D3D1X_(TEXTURE2D_DESC) desc = { gdraw->frametex_width, gdraw->frametex_height, 1, 1, DXGI_FORMAT_D24_UNORM_S8_UINT, { 1, 0 },
@@ -2114,13 +2114,13 @@ static bool alloc_dynbuffer(U32 size)
    //
    // 1. filled polygons. these are triangulated simple polygons and thus have
    //    roughly as many triangles as they have vertices. they use either 8- or
-   //    16-byte vertex formats; this makes a worst case of 6 bytes of indices
+   //    16-uint8_t vertex formats; this makes a worst case of 6 bytes of indices
    //    for every 8 bytes of vertex data.
-   // 2. strokes and edge antialiasing. they use a 16-byte vertex format and
+   // 2. strokes and edge antialiasing. they use a 16-uint8_t vertex format and
    //    worst-case write a "double quadstrip" which has 4 triangles for every
    //    3 vertices, which means 24 bytes of index data for every 48 bytes
    //    of vertex data.
-   // 3. textured quads. they use a 16-byte vertex format, have exactly 2
+   // 3. textured quads. they use a 16-uint8_t vertex format, have exactly 2
    //    triangles for every 4 vertices, and use either a static index buffer
    //    (quad_ib) or a single triangle strip, so for our purposes they need no
    //    space to store indices at all.
@@ -2379,9 +2379,8 @@ static S32 num_pixels(S32 w, S32 h, S32 mipmaps)
    return pixels;
 }
 
-GDrawTexture * RADLINK gdraw_D3D1X_(MakeTextureFromResource)(U8 *resource_file, S32 /*len*/, IggyFileTextureRaw *texture)
-{
-   char *failed_call="";
+GDrawTexture * RADLINK gdraw_D3D1X_(MakeTextureFromResource)(U8 *resource_file, S32 /*len*/, IggyFileTextureRaw *texture){
+   const char *failed_call = "";
    U8 *free_data = 0;
    GDrawTexture *t=0;
    S32 width, height, mipmaps, size, blk;
@@ -2399,8 +2398,8 @@ GDrawTexture * RADLINK gdraw_D3D1X_(MakeTextureFromResource)(U8 *resource_file, 
    mipmaps = texture->mipmaps;
    blk = 1;
 
-   D3D1X_(TEXTURE2D_DESC) desc = { width, height, mipmaps, 1, DXGI_FORMAT_UNKNOWN, { 1, 0 },
-      D3D1X_(USAGE_IMMUTABLE), D3D1X_(BIND_SHADER_RESOURCE), 0, 0 };
+   D3D1X_(TEXTURE2D_DESC) desc = { static_cast<U32>(width), static_cast<U32>(height), static_cast<U32>(mipmaps), 1U, DXGI_FORMAT_UNKNOWN, { 1, 0 },
+      D3D1X_(USAGE_IMMUTABLE), D3D1X_(BIND_SHADER_RESOURCE), 0U, 0U };
 
    switch (texture->format) {
       case IFT_FORMAT_rgba_8888   : size= 4; d3dfmt = DXGI_FORMAT_R8G8B8A8_UNORM; break;
@@ -2409,7 +2408,7 @@ GDrawTexture * RADLINK gdraw_D3D1X_(MakeTextureFromResource)(U8 *resource_file, 
       case IFT_FORMAT_DXT5        : size=16; d3dfmt = DXGI_FORMAT_BC3_UNORM; blk = 4; break;
       default: {
          IggyGDrawSendWarning(NULL, "GDraw .iggytex raw texture format %d not supported by hardware", texture->format);
-         goto done;
+         return 0;
       }
    }
 
@@ -2425,7 +2424,7 @@ GDrawTexture * RADLINK gdraw_D3D1X_(MakeTextureFromResource)(U8 *resource_file, 
       free_data = (U8 *) IggyGDrawMalloc(total_size);
       if (!free_data) {
          IggyGDrawSendWarning(NULL, "GDraw out of memory to store texture data to pass to D3D for %d x %d texture", width, height);
-         goto done;
+         return 0;
       }
 
       U8 *cur = free_data;
@@ -2454,21 +2453,23 @@ GDrawTexture * RADLINK gdraw_D3D1X_(MakeTextureFromResource)(U8 *resource_file, 
 
    failed_call = "CreateTexture2D";
    hr = gdraw->d3d_device->CreateTexture2D(&desc, mipdata, &tex);
-   if (FAILED(hr)) goto done;
+   
+   if (SUCCEEDED(hr)) {
+      failed_call = "CreateShaderResourceView for texture creation";
+      hr = gdraw->d3d_device->CreateShaderResourceView(tex, NULL, &view);
+      
+      if (SUCCEEDED(hr)) {
+         t = gdraw_D3D1X_(WrappedTextureCreate)(view);
+      }
+   }
 
-   failed_call = "CreateShaderResourceView for texture creation";
-   hr = gdraw->d3d_device->CreateShaderResourceView(tex, NULL, &view);
-   if (FAILED(hr)) goto done;
-
-   t = gdraw_D3D1X_(WrappedTextureCreate)(view);
-
-done:
    if (FAILED(hr)) {
       report_d3d_error(hr, failed_call, "");
    }
 
-   if (free_data)
+   if (free_data) {
       IggyGDrawFree(free_data);
+   }
 
    if (!t) {
       if (view)
@@ -2478,6 +2479,7 @@ done:
    } else {
       ((GDrawHandle *) t)->handle.tex.d3d = tex;
    }
+   
    return t;
 }
 

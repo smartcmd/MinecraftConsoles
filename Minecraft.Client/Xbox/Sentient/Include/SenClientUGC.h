@@ -474,7 +474,7 @@ namespace Sentient
 	// Parameter: SenSysCompletedCallback userCallback
 	// Parameter: void * userCallbackData
 	// Download a single blob of UGC data
-	// note that zero byte downloads will fail.
+	// note that zero uint8_t downloads will fail.
 	// ID, blobVersion, and bufferSize should be coming 
 	// from SenUGCDownloadedMetaData.
 	// outBuffer should be an preallocated array of bufferSize bytes.
@@ -519,7 +519,7 @@ namespace Sentient
 	// Parameter: SenSysCompletedCallback userCallback
 	// Parameter: void * userCallbackData
 	// Download a single blob of UGC data
-	// NOTE: zero byte downloads will fail.
+	// NOTE: zero uint8_t downloads will fail.
 	// ID, mainDataRevision and bufferSize should be coming from a 
 	//   SenUGCDownloadedMetaData2 (where bufferSize comes from 
 	//   SenUGCDownloadedMetaData2's BlobInfo[mainDataBlobID].Size).

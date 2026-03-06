@@ -38,7 +38,7 @@ ItemFrame::ItemFrame(Level *level, int xTile, int yTile, int zTile, int dir) : H
 void ItemFrame::defineSynchedData() 
 {
 	getEntityData()->defineNULL(DATA_ITEM, NULL);
-	getEntityData()->define(DATA_ROTATION, (byte) 0);
+	getEntityData()->define(DATA_ROTATION, (uint8_t) 0);
 }
 
 bool ItemFrame::shouldRenderAtSqrDistance(double distance)
@@ -107,7 +107,7 @@ int ItemFrame::getRotation()
 
 void ItemFrame::setRotation(int rotation) 
 {
-	getEntityData()->set(DATA_ROTATION, (byte) (rotation % 4));
+	getEntityData()->set(DATA_ROTATION, (uint8_t) (rotation % 4));
 }
 
 void ItemFrame::addAdditonalSaveData(CompoundTag *tag) 
@@ -115,7 +115,7 @@ void ItemFrame::addAdditonalSaveData(CompoundTag *tag)
 	if (getItem() != NULL) 
 	{
 		tag->putCompound(L"Item", getItem()->save(new CompoundTag()));
-		tag->putByte(L"ItemRotation", (byte) getRotation());
+		tag->putByte(L"ItemRotation", (uint8_t) getRotation());
 		tag->putFloat(L"ItemDropChance", dropChance);
 	}
 	HangingEntity::addAdditonalSaveData(tag);

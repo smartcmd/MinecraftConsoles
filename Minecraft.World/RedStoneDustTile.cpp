@@ -335,9 +335,9 @@ void RedStoneDustTile::animateTick(Level *level, int x, int y, int z, Random *ra
 			unsigned int minColour = Minecraft::GetInstance()->getColourTable()->getColor( eMinecraftColour_Tile_RedstoneDustLitMin );
 			unsigned int maxColour = Minecraft::GetInstance()->getColourTable()->getColor( eMinecraftColour_Tile_RedstoneDustLitMax );
 
-			byte redComponent = ((minColour>>16)&0xFF) + (( (maxColour>>16)&0xFF - (minColour>>16)&0xFF)*( (data-1)/14.0f));
-			byte greenComponent = ((minColour>>8)&0xFF) + (( (maxColour>>8)&0xFF - (minColour>>8)&0xFF)*( (data-1)/14.0f));
-			byte blueComponent = ((minColour)&0xFF) + (( (maxColour)&0xFF - (minColour)&0xFF)*( (data-1)/14.0f));
+			uint8_t redComponent = ((minColour>>16)&0xFF) + (( (maxColour>>16)&0xFF - (minColour>>16)&0xFF)*( (data-1)/14.0f));
+			uint8_t greenComponent = ((minColour>>8)&0xFF) + (( (maxColour>>8)&0xFF - (minColour>>8)&0xFF)*( (data-1)/14.0f));
+			uint8_t blueComponent = ((minColour)&0xFF) + (( (maxColour)&0xFF - (minColour)&0xFF)*( (data-1)/14.0f));
 
 			colour = redComponent<<16 | greenComponent<<8 | blueComponent;
 		}

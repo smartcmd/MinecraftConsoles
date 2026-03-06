@@ -73,7 +73,7 @@ uLong ZEXPORT adler32(adler, buf, len)
     sum2 = (adler >> 16) & 0xffff;
     adler &= 0xffff;
 
-    /* in case user likes doing a byte at a time, keep it fast */
+    /* in case user likes doing a uint8_t at a time, keep it fast */
     if (len == 1) {
         adler += buf[0];
         if (adler >= BASE)
@@ -100,7 +100,7 @@ uLong ZEXPORT adler32(adler, buf, len)
         return adler | (sum2 << 16);
     }
 
-    /* do length NMAX blocks -- requires just one modulo operation */
+    /* do length NMAX blocks -- requirements just one modulo operation */
     while (len >= NMAX) {
         len -= NMAX;
         n = NMAX / 16;          /* NMAX is divisible by 16 */

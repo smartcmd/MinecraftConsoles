@@ -615,7 +615,7 @@ static void swizzle_subrect_32bpp_small(U8 * RADRESTRICT dest, U32 dx, U32 dy, U
 {
    // determine morton-order stepping constants
    U32 minor = RR_MIN(dw, dh);
-   S64 xinc = (S32) rsx_morton_encode(-1, 0, minor) * 4; // *4 since we work with byte offsets
+   S64 xinc = (S32) rsx_morton_encode(-1, 0, minor) * 4; // *4 since we work with uint8_t offsets
    S64 yinc = (S32) rsx_morton_encode(-1, 1, minor) * 4;
 
    // determine start offsets along x/y axis
@@ -705,7 +705,7 @@ static void swizzle_subrect_32bpp(U8 * RADRESTRICT dest, U32 dx, U32 dy, U32 dw,
    // main part: go through image in blocks of 8x4 pixels. (8x4 since that's one full cache line,
    // so we write pixels one cache line at a time)
    minor = RR_MIN(dw, dh);
-   incx = (S32) rsx_morton_encode(-8, 0, minor) * 4; // *4 since it's all byte offsets
+   incx = (S32) rsx_morton_encode(-8, 0, minor) * 4; // *4 since it's all uint8_t offsets
    incy = (S32) rsx_morton_encode(-4, 1, minor) * 4;
    outx0 = rsx_morton_encode(dx0, 0, minor) * 4;
    outy = rsx_morton_encode(dy0, 1, minor) * 4;

@@ -34,7 +34,7 @@ void BufferedOutputStream::close()
 	stream->close();
 }
 
-//Writes len bytes from the specified byte array starting at offset off to this buffered output stream.
+//Writes len bytes from the specified uint8_t array starting at offset off to this buffered output stream.
 //Ordinarily this method stores bytes from the given array into this stream's buffer, flushing the buffer to the
 //underlying output stream as needed. If the requested length is at least as large as this stream's buffer, however,
 //then this method will flush the buffer and write the bytes directly to the underlying output stream.
@@ -72,14 +72,14 @@ void BufferedOutputStream::write(byteArray b)
 	write( b, 0, b.length );
 }
 
-//Writes the specified byte to this buffered output stream.
+//Writes the specified uint8_t to this buffered output stream.
 //Overrides:
 //write in class FilterOutputStream
 //Parameters:
-//b - the byte to be written.
+//b - the uint8_t to be written.
 void BufferedOutputStream::write(unsigned int b)
 {
-	buf[count++] = (byte) b;
+	buf[count++] = (uint8_t) b;
 	if( count == buf.length )
 	{
 		flush();

@@ -281,24 +281,24 @@ void DQRNetworkManager::Process_RTS_MESSAGE_DATA_RECEIVED(RTS_Message &message)
 	BYTE *pEndByte = pNextByte + message.m_dataSize;
 	do
 	{
-		BYTE byte = *pNextByte;
+		BYTE uint8_t = *pNextByte;
 		switch( connectionInfo->m_state )
 		{
 			case DQRConnectionInfo::ConnectionState_HeaderByte0:
-				connectionInfo->m_currentChannel = ( byte >> 5 ) & 3;
-				connectionInfo->m_internalFlag = ( ( byte & 0x80 ) == 0x80 );
+				connectionInfo->m_currentChannel = ( uint8_t >> 5 ) & 3;
+				connectionInfo->m_internalFlag = ( ( uint8_t & 0x80 ) == 0x80 );
 
-				// Byte transfer mode. Bits 0-4 of this byte represent the upper 5 bits of our count of bytes to transfer... lower 8-bits will follow
-				connectionInfo->m_bytesRemaining = ((int)( byte & 0x1f )) << 8;
+				// Byte transfer mode. Bits 0-4 of this uint8_t represent the upper 5 bits of our count of bytes to transfer... lower 8-bits will follow
+				connectionInfo->m_bytesRemaining = ((int)( uint8_t & 0x1f )) << 8;
 				connectionInfo->m_state = DQRConnectionInfo::ConnectionState_HeaderByte1;
 				connectionInfo->m_internalDataState = DQRConnectionInfo::ConnectionState_InternalHeaderByte;
 				pNextByte++;
 				break;
 			case DQRConnectionInfo::ConnectionState_HeaderByte1:
-				// Add in the lower 8 bits of our byte count, the upper 5 were obtained from the first header byte.
-				connectionInfo->m_bytesRemaining |= byte;
+				// Add in the lower 8 bits of our uint8_t count, the upper 5 were obtained from the first header uint8_t.
+				connectionInfo->m_bytesRemaining |= uint8_t;
 
-				// If there isn't any data following, then just go back to the initial state expecting another header byte.
+				// If there isn't any data following, then just go back to the initial state expecting another header uint8_t.
 				if( connectionInfo->m_bytesRemaining == 0 )
 				{
 					connectionInfo->m_state = DQRConnectionInfo::ConnectionState_HeaderByte0;

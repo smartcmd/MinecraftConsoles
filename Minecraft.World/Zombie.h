@@ -86,7 +86,7 @@ protected:
 	virtual void startConverting(int time);
 
 public:
-	virtual void handleEntityEvent(byte id);
+	virtual void handleEntityEvent(uint8_t id);
 
 protected:
 	virtual bool removeWhenFarAway();

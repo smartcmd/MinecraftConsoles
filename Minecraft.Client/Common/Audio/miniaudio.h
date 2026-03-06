@@ -199,7 +199,7 @@ use a specific one you will need to specify the device ID in the configuration, 
     config.capture.pDeviceID = pMyCaptureDeviceID;      // Only if requesting a capture, duplex or loopback device.
     ```
 
-To retrieve the device ID you will need to perform device enumeration, however this requires the
+To retrieve the device ID you will need to perform device enumeration, however this requirements the
 use of a new concept called the "context". Conceptually speaking the context sits above the device.
 There is one context to many devices. The purpose of the context is to represent the backend at a
 more global level and to perform operations outside the scope of an individual device. Mainly it is
@@ -396,7 +396,7 @@ The start/stop time needs to be specified based on the absolute timer which is c
 engine. The current global time in PCM frames can be retrieved with
 `ma_engine_get_time_in_pcm_frames()`. The engine's global time can be changed with
 `ma_engine_set_time_in_pcm_frames()` for synchronization purposes if required. Note that scheduling
-a start time still requires an explicit call to `ma_sound_start()` before anything will play:
+a start time still requirements an explicit call to `ma_sound_start()` before anything will play:
 
     ```c
     ma_sound_set_start_time_in_pcm_frames(&sound, ma_engine_get_time_in_pcm_frames(&engine) + (ma_engine_get_sample_rate(&engine) * 2);
@@ -480,7 +480,7 @@ symbol for `ActivateAudioInterfaceAsync()`.
 The macOS build should compile cleanly without the need to download any dependencies nor link to
 any libraries or frameworks. The iOS build needs to be compiled as Objective-C and will need to
 link the relevant frameworks but should compile cleanly out of the box with Xcode. Compiling
-through the command line requires linking to `-lpthread` and `-lm`.
+through the command line requirements linking to `-lpthread` and `-lm`.
 
 Due to the way miniaudio links to frameworks at runtime, your application may not pass Apple's
 notarization process. To fix this there are two options. The first is to compile with
@@ -502,13 +502,13 @@ See this discussion for more info: https://github.com/mackron/miniaudio/issues/2
 
 2.3. Linux
 ----------
-The Linux build only requires linking to `-ldl`, `-lpthread` and `-lm`. You do not need any
+The Linux build only requirements linking to `-ldl`, `-lpthread` and `-lm`. You do not need any
 development packages. You may need to link with `-latomic` if you're compiling for 32-bit ARM.
 
 
 2.4. BSD
 --------
-The BSD build only requires linking to `-lpthread` and `-lm`. NetBSD uses audio(4), OpenBSD uses
+The BSD build only requirements linking to `-lpthread` and `-lm`. NetBSD uses audio(4), OpenBSD uses
 sndio and FreeBSD uses OSS. You may need to link with `-latomic` if you're compiling for 32-bit
 ARM.
 
@@ -517,7 +517,7 @@ ARM.
 ------------
 AAudio is the highest priority backend on Android. This should work out of the box without needing
 any kind of compiler configuration. Support for AAudio starts with Android 8 which means older
-versions will fall back to OpenSL|ES which requires API level 16+.
+versions will fall back to OpenSL|ES which requirements API level 16+.
 
 There have been reports that the OpenSL|ES backend fails to initialize on some Android based
 devices due to `dlopen()` failing to open "libOpenSLES.so". If this happens on your platform
@@ -581,7 +581,7 @@ To run locally, you'll need to use emrun:
     +----------------------------------+--------------------------------------------------------------------+
     | MA_NO_NULL                       | Disables the null backend.                                         |
     +----------------------------------+--------------------------------------------------------------------+
-    | MA_ENABLE_ONLY_SPECIFIC_BACKENDS | Disables all backends by default and requires `MA_ENABLE_*` to     |
+    | MA_ENABLE_ONLY_SPECIFIC_BACKENDS | Disables all backends by default and requirements `MA_ENABLE_*` to     |
     |                                  | enable specific backends.                                          |
     +----------------------------------+--------------------------------------------------------------------+
     | MA_ENABLE_WASAPI                 | Used in conjunction with MA_ENABLE_ONLY_SPECIFIC_BACKENDS to       |
@@ -1467,7 +1467,7 @@ can be useful to schedule a sound to start or stop:
     ma_sound_set_stop_time_in_pcm_frames(&sound, ma_engine_get_time_in_pcm_frames(&engine) + (ma_engine_get_sample_rate(&engine) * 2));
     ```
 
-Note that scheduling a start time still requires an explicit call to `ma_sound_start()` before
+Note that scheduling a start time still requirements an explicit call to `ma_sound_start()` before
 anything will play.
 
 The time is specified in global time which is controlled by the engine. You can get the engine's
@@ -3592,9 +3592,9 @@ move the read pointer forward via the consumer thread, and the write pointer for
 producer thread. If there is too much space between the pointers, move the read pointer forward. If
 there is too little space between the pointers, move the write pointer forward.
 
-You can use a ring buffer at the byte level instead of the PCM frame level by using the `ma_rb`
+You can use a ring buffer at the uint8_t level instead of the PCM frame level by using the `ma_rb`
 API. This is exactly the same, only you will use the `ma_rb` functions instead of `ma_pcm_rb` and
-instead of frame counts you will pass around byte counts.
+instead of frame counts you will pass around uint8_t counts.
 
 The maximum size of the buffer in bytes is `0x7FFFFFFF-(MA_SIMD_ALIGNMENT-1)` due to the most
 significant bit being used to encode a loop flag and the internally managed buffers always being
@@ -3674,7 +3674,7 @@ BSD
 15.4. UWP
 ---------
 - UWP only supports default playback and capture devices.
-- UWP requires the Microphone capability to be enabled in the application's manifest (Package.appxmanifest):
+- UWP requirements the Microphone capability to be enabled in the application's manifest (Package.appxmanifest):
 
     ```
     <Package ...>
@@ -7275,7 +7275,7 @@ easier, some helper callbacks are available. If the backend uses a blocking read
 backend uses a callback for data delivery, that callback must call `ma_device_handle_backend_data_callback()` from within its callback.
 This allows miniaudio to then process any necessary data conversion and then pass it to the miniaudio data callback.
 
-If the backend requires absolute flexibility with its data delivery, it can optionally implement the `onDeviceDataLoop()` callback
+If the backend requirements absolute flexibility with its data delivery, it can optionally implement the `onDeviceDataLoop()` callback
 which will allow it to implement the logic that will run on the audio thread. This is much more advanced and is completely optional.
 
 The audio thread should run data delivery logic in a loop while `ma_device_get_state() == ma_device_state_started` and no errors have been
@@ -11301,7 +11301,7 @@ typedef struct
     ma_uint32 defaultVolumeSmoothTimeInPCMFrames;   /* Defaults to 0. Controls the default amount of smoothing to apply to volume changes to sounds. High values means more smoothing at the expense of high latency (will take longer to reach the new volume). */
     ma_uint32 preMixStackSizeInBytes;               /* A stack is used for internal processing in the node graph. This allows you to configure the size of this stack. Smaller values will reduce the maximum depth of your node graph. You should rarely need to modify this. */
     ma_allocation_callbacks allocationCallbacks;
-    ma_bool32 noAutoStart;                          /* When set to true, requires an explicit call to ma_engine_start(). This is false by default, meaning the engine will be started automatically in ma_engine_init(). */
+    ma_bool32 noAutoStart;                          /* When set to true, requirements an explicit call to ma_engine_start(). This is false by default, meaning the engine will be started automatically in ma_engine_init(). */
     ma_bool32 noDevice;                             /* When set to true, don't create a default device. ma_engine_read_pcm_frames() can be called manually to read data. */
     ma_mono_expansion_mode monoExpansionMode;       /* Controls how the mono channel should be expanded to other channels when spatialization is disabled on a sound. */
     ma_vfs* pResourceManagerVFS;                    /* A pointer to a pre-allocated VFS object to use with the resource manager. This is ignored if pResourceManager is not NULL. */
@@ -11813,7 +11813,7 @@ static MA_INLINE ma_bool32 ma_has_avx()
         #if defined(_AVX_) || defined(__AVX__)
             return MA_TRUE;    /* If the compiler is allowed to freely generate AVX code we can assume support. */
         #else
-            /* AVX requires both CPU and OS support. */
+            /* AVX requirements both CPU and OS support. */
             #if defined(MA_NO_CPUID) || defined(MA_NO_XGETBV)
                 return MA_FALSE;
             #else
@@ -11847,7 +11847,7 @@ static MA_INLINE ma_bool32 ma_has_avx2(void)
         #if defined(_AVX2_) || defined(__AVX2__)
             return MA_TRUE;    /* If the compiler is allowed to freely generate AVX2 code we can assume support. */
         #else
-            /* AVX2 requires both CPU and OS support. */
+            /* AVX2 requirements both CPU and OS support. */
             #if defined(MA_NO_CPUID) || defined(MA_NO_XGETBV)
                 return MA_FALSE;
             #else
@@ -11981,7 +11981,7 @@ static MA_INLINE ma_uint32 ma_swap_endian_uint32(ma_uint32 n)
             return __builtin_bswap32(n);
         #endif
     #else
-        #error "This compiler does not support the byte swap intrinsic."
+        #error "This compiler does not support the uint8_t swap intrinsic."
     #endif
 #else
     return ((n & 0xFF000000) >> 24) |
@@ -30346,13 +30346,13 @@ PulseAudio. In PulseAudio, the data callback will *only* be called if you wrote 
 writing data, and if you don't have anything to write, just write silence. That's fine until you want to drain the stream. You see, if
 you're continuously writing data to the stream, the stream will never get drained! That means in order to drain the stream, you need to
 *not* write data to it! But remember, when you don't write data to the stream, the callback won't get fired again! Why is draining
-important? Because that's how we've defined stopping to work in miniaudio. In miniaudio, stopping the device requires it to be drained
-before returning from ma_device_stop(). So we've stopped the device, which requires us to drain, but draining requires us to *not* write
+important? Because that's how we've defined stopping to work in miniaudio. In miniaudio, stopping the device requirements it to be drained
+before returning from ma_device_stop(). So we've stopped the device, which requirements us to drain, but draining requirements us to *not* write
 data to the stream (or else it won't ever complete draining), but not writing to the stream means the callback won't get fired again!
 
-This becomes a problem when stopping and then restarting the device. When the device is stopped, it's drained, which requires us to *not*
+This becomes a problem when stopping and then restarting the device. When the device is stopped, it's drained, which requirements us to *not*
 write anything to the stream. But then, since we didn't write anything to it, the write callback will *never* get called again if we just
-resume the stream naively. This means that starting the stream requires us to write data to the stream from outside the callback. This
+resume the stream naively. This means that starting the stream requirements us to write data to the stream from outside the callback. This
 disconnect is something PulseAudio has got seriously wrong - there should only ever be a single source of data delivery, that being the
 callback. (I have tried using `pa_stream_flush()` to trigger the write callback to fire, but this just doesn't work for some reason.)
 
@@ -42076,7 +42076,7 @@ static ma_result ma_device_init__webaudio(ma_device* pDevice, const ma_device_co
     }
     #else
     {
-        /* ScriptProcessorNode. This path requires us to do almost everything in JS, but we'll do as much as we can in C. */
+        /* ScriptProcessorNode. This path requirements us to do almost everything in JS, but we'll do as much as we can in C. */
         ma_uint32 deviceIndex;
         ma_uint32 channels;
         ma_uint32 sampleRate;
@@ -56784,7 +56784,7 @@ static ma_result ma_data_converter_process_pcm_frames__channels_first(ma_data_co
 
         /*
         Before doing any processing we need to determine how many frames we should try processing
-        this iteration, for both input and output. The resampler requires us to perform format and
+        this iteration, for both input and output. The resampler requirements us to perform format and
         channel conversion before passing any data into it. If we get our input count wrong, we'll
         end up performing redundant pre-processing. This isn't the end of the world, but it does
         result in some inefficiencies proportionate to how far our estimates are off.
@@ -63155,7 +63155,7 @@ static ma_result ma_decoder_init_custom__internal(const ma_decoder_config* pConf
             if (result == MA_SUCCESS) {
                 return MA_SUCCESS;
             } else {
-                /* Initialization failed. Move on to the next one, but seek back to the start first so the next vtable starts from the first byte of the file. */
+                /* Initialization failed. Move on to the next one, but seek back to the start first so the next vtable starts from the first uint8_t of the file. */
                 result = ma_decoder_seek_bytes(pDecoder, 0, ma_seek_origin_start);
                 if (result != MA_SUCCESS) {
                     return result;  /* Failed to seek back to the start. */
@@ -75444,7 +75444,7 @@ static void ma_data_source_node_process_pcm_frames(ma_node* pNode, const float**
     MA_ASSERT(frameCount > 0);
 
     if (ma_data_source_get_data_format(pDataSourceNode->pDataSource, &format, &channels, NULL, NULL, 0) == MA_SUCCESS) { /* <-- Don't care about sample rate here. */
-        /* The node graph system requires samples be in floating point format. This is checked in ma_data_source_node_init(). */
+        /* The node graph system requirements samples be in floating point format. This is checked in ma_data_source_node_init(). */
         MA_ASSERT(format == ma_format_f32);
         (void)format;   /* Just to silence some static analysis tools. */
 
@@ -76413,7 +76413,7 @@ static ma_node_vtable g_ma_delay_node_vtable =
     NULL,
     1,  /* 1 input channels. */
     1,  /* 1 output channel. */
-    MA_NODE_FLAG_CONTINUOUS_PROCESSING  /* Delay requires continuous processing to ensure the tail get's processed. */
+    MA_NODE_FLAG_CONTINUOUS_PROCESSING  /* Delay requirements continuous processing to ensure the tail get's processed. */
 };
 
 MA_API ma_result ma_delay_node_init(ma_node_graph* pNodeGraph, const ma_delay_node_config* pConfig, const ma_allocation_callbacks* pAllocationCallbacks, ma_delay_node* pDelayNode)
@@ -78471,7 +78471,7 @@ MA_API ma_result ma_sound_init_from_file_internal(ma_engine* pEngine, const ma_s
     ma_resource_manager_pipeline_notifications notifications;
 
     /*
-    The engine requires knowledge of the channel count of the underlying data source before it can
+    The engine requirements knowledge of the channel count of the underlying data source before it can
     initialize the sound. Therefore, we need to make the resource manager wait until initialization
     of the underlying data source to be initialized so we can get access to the channel count. To
     do this, the MA_RESOURCE_MANAGER_DATA_SOURCE_FLAG_WAIT_INIT is forced.
@@ -78766,7 +78766,7 @@ MA_API ma_result ma_sound_stop_with_fade_in_pcm_frames(ma_sound* pSound, ma_uint
         return MA_INVALID_ARGS;
     }
 
-    /* Stopping with a fade out requires us to schedule the stop into the future by the fade length. */
+    /* Stopping with a fade out requirements us to schedule the stop into the future by the fade length. */
     ma_sound_set_stop_time_with_fade_in_pcm_frames(pSound, ma_engine_get_time_in_pcm_frames(ma_sound_get_engine(pSound)) + fadeLengthInFrames, fadeLengthInFrames);
 
     return MA_SUCCESS;
@@ -80011,7 +80011,7 @@ static MA_INLINE ma_uint16 ma_dr_wav__bswap16(ma_uint16 n)
     #elif defined(__GNUC__) || defined(__clang__)
         return __builtin_bswap16(n);
     #else
-        #error "This compiler does not support the byte swap intrinsic."
+        #error "This compiler does not support the uint8_t swap intrinsic."
     #endif
 #else
     return ((n & 0xFF00) >> 8) |
@@ -80038,7 +80038,7 @@ static MA_INLINE ma_uint32 ma_dr_wav__bswap32(ma_uint32 n)
             return __builtin_bswap32(n);
         #endif
     #else
-        #error "This compiler does not support the byte swap intrinsic."
+        #error "This compiler does not support the uint8_t swap intrinsic."
     #endif
 #else
     return ((n & 0xFF000000) >> 24) |
@@ -80055,7 +80055,7 @@ static MA_INLINE ma_uint64 ma_dr_wav__bswap64(ma_uint64 n)
     #elif defined(__GNUC__) || defined(__clang__)
         return __builtin_bswap64(n);
     #else
-        #error "This compiler does not support the byte swap intrinsic."
+        #error "This compiler does not support the uint8_t swap intrinsic."
     #endif
 #else
     return ((n & ((ma_uint64)0xFF000000 << 32)) >> 56) |
@@ -81733,11 +81733,11 @@ MA_PRIVATE size_t ma_dr_wav__write(ma_dr_wav* pWav, const void* pData, size_t da
     MA_DR_WAV_ASSERT(pWav->onWrite != NULL);
     return pWav->onWrite(pWav->pUserData, pData, dataSize);
 }
-MA_PRIVATE size_t ma_dr_wav__write_byte(ma_dr_wav* pWav, ma_uint8 byte)
+MA_PRIVATE size_t ma_dr_wav__write_byte(ma_dr_wav* pWav, ma_uint8 uint8_t)
 {
     MA_DR_WAV_ASSERT(pWav          != NULL);
     MA_DR_WAV_ASSERT(pWav->onWrite != NULL);
-    return pWav->onWrite(pWav->pUserData, &byte, 1);
+    return pWav->onWrite(pWav->pUserData, &uint8_t, 1);
 }
 MA_PRIVATE size_t ma_dr_wav__write_u16ne_to_le(ma_dr_wav* pWav, ma_uint16 value)
 {
@@ -81787,12 +81787,12 @@ MA_PRIVATE size_t ma_dr_wav__write_or_count(ma_dr_wav* pWav, const void* pData, 
     }
     return ma_dr_wav__write(pWav, pData, dataSize);
 }
-MA_PRIVATE size_t ma_dr_wav__write_or_count_byte(ma_dr_wav* pWav, ma_uint8 byte)
+MA_PRIVATE size_t ma_dr_wav__write_or_count_byte(ma_dr_wav* pWav, ma_uint8 uint8_t)
 {
     if (pWav == NULL) {
         return 1;
     }
-    return ma_dr_wav__write_byte(pWav, byte);
+    return ma_dr_wav__write_byte(pWav, uint8_t);
 }
 MA_PRIVATE size_t ma_dr_wav__write_or_count_u16ne_to_le(ma_dr_wav* pWav, ma_uint16 value)
 {
@@ -85149,7 +85149,7 @@ static MA_INLINE ma_uint16 ma_dr_flac__swap_endian_uint16(ma_uint16 n)
     #elif defined(__WATCOMC__) && defined(__386__)
         return _watcom_bswap16(n);
     #else
-        #error "This compiler does not support the byte swap intrinsic."
+        #error "This compiler does not support the uint8_t swap intrinsic."
     #endif
 #else
     return ((n & 0xFF00) >> 8) |
@@ -85178,7 +85178,7 @@ static MA_INLINE ma_uint32 ma_dr_flac__swap_endian_uint32(ma_uint32 n)
     #elif defined(__WATCOMC__) && defined(__386__)
         return _watcom_bswap32(n);
     #else
-        #error "This compiler does not support the byte swap intrinsic."
+        #error "This compiler does not support the uint8_t swap intrinsic."
     #endif
 #else
     return ((n & 0xFF000000) >> 24) |
@@ -85197,7 +85197,7 @@ static MA_INLINE ma_uint64 ma_dr_flac__swap_endian_uint64(ma_uint64 n)
     #elif defined(__WATCOMC__) && defined(__386__)
         return _watcom_bswap64(n);
     #else
-        #error "This compiler does not support the byte swap intrinsic."
+        #error "This compiler does not support the uint8_t swap intrinsic."
     #endif
 #else
     return ((n & ((ma_uint64)0xFF000000 << 32)) >> 56) |

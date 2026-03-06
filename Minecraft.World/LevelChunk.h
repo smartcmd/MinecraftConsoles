@@ -75,10 +75,10 @@ private:
 	SparseLightStorage *lowerBlockLight; // 0 - 127
 	SparseLightStorage *upperBlockLight; // 128 - 255
 public:
-	void getSkyLightData(byteArray data);	// Get a byte array of length 16384 ( 128 x 16 x 16 x 0.5 ), containing sky light data. Ordering same as java version.
-	void getBlockLightData(byteArray data);	// Get a byte array of length 16384 ( 128 x 16 x 16 x 0.5 ), containing block light data. Ordering same as java version.
-	void setSkyLightData(byteArray data);	// Set sky light data to data passed in input byte array of length 16384. This data must be in original (java version) order
-	void setBlockLightData(byteArray data);	// Set block light data to data passed in input byte array of length 16384. This data must be in original (java version) order
+	void getSkyLightData(byteArray data);	// Get a uint8_t array of length 16384 ( 128 x 16 x 16 x 0.5 ), containing sky light data. Ordering same as java version.
+	void getBlockLightData(byteArray data);	// Get a uint8_t array of length 16384 ( 128 x 16 x 16 x 0.5 ), containing block light data. Ordering same as java version.
+	void setSkyLightData(byteArray data);	// Set sky light data to data passed in input uint8_t array of length 16384. This data must be in original (java version) order
+	void setBlockLightData(byteArray data);	// Set block light data to data passed in input uint8_t array of length 16384. This data must be in original (java version) order
 	void setSkyLightDataAllBright();							// Set sky light data to be all fully lit
 	bool isLowerBlockStorageCompressed();
 	int isLowerBlockLightStorageCompressed();

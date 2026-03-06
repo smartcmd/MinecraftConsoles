@@ -2495,7 +2495,7 @@
 //
 // MessageText:
 //
-//  No mapping for the Unicode character exists in the target multi-byte code page.
+//  No mapping for the Unicode character exists in the target multi-uint8_t code page.
 //
 #define ERROR_NO_UNICODE_TRANSLATION     1113L
 
@@ -2704,7 +2704,7 @@
 //
 // MessageText:
 //
-//  The specified program requires a newer version of Windows.
+//  The specified program requirements a newer version of Windows.
 //
 #define ERROR_OLD_WIN_VERSION            1150L
 
@@ -2830,7 +2830,7 @@
 //
 // MessageText:
 //
-//  The indicated device requires reinitialization due to hardware errors.
+//  The indicated device requirements reinitialization due to hardware errors.
 //
 #define ERROR_DEVICE_REINITIALIZATION_NEEDED 1164L    // dderror
 
@@ -4940,7 +4940,7 @@
 //
 // MessageText:
 //
-//  This operation requires an interactive window station.
+//  This operation requirements an interactive window station.
 //
 #define ERROR_REQUIRES_INTERACTIVE_WINDOWSTATION 1459L
 
@@ -6117,7 +6117,7 @@
 //
 // MessageText:
 //
-//  The byte count is too small.
+//  The uint8_t count is too small.
 //
 #define RPC_X_BYTE_COUNT_TOO_SMALL       1782L
 
@@ -9717,7 +9717,7 @@
 //
 // MessageText:
 //
-//  This request requires a secure connection.
+//  This request requirements a secure connection.
 //
 #define ERROR_DS_CONFIDENTIALITY_REQUIRED 8237L
 
@@ -11097,7 +11097,7 @@
 //
 // MessageText:
 //
-//  A root object requires a class of 'top'.
+//  A root object requirements a class of 'top'.
 //
 #define ERROR_DS_ROOT_REQUIRES_CLASS_TOP 8432L
 
@@ -11511,7 +11511,7 @@
 //
 // MessageText:
 //
-//  The requested operation requires a directory service, and none was available.
+//  The requested operation requirements a directory service, and none was available.
 //
 #define ERROR_DS_DS_REQUIRED             8478L
 
@@ -11619,7 +11619,7 @@
 //
 // MessageText:
 //
-//  Another operation which requires exclusive access to the PDC FSMO is already in progress.
+//  Another operation which requirements exclusive access to the PDC FSMO is already in progress.
 //
 #define ERROR_DS_PDC_OPERATION_IN_PROGRESS 8490L
 
@@ -12009,7 +12009,7 @@
 //
 // MessageText:
 //
-//  The connection between client and server requires packet privacy or better.
+//  The connection between client and server requirements packet privacy or better.
 //
 #define ERROR_DS_NO_PKT_PRIVACY_ON_CONNECTION 8533L
 
@@ -12036,7 +12036,7 @@
 //
 // MessageText:
 //
-//  The operation requires that destination domain auditing be enabled.
+//  The operation requirements that destination domain auditing be enabled.
 //
 #define ERROR_DS_DESTINATION_AUDITING_NOT_ENABLED 8536L
 
@@ -12182,7 +12182,7 @@
 //
 // MessageText:
 //
-//  The operation requires that source domain auditing be enabled.
+//  The operation requirements that source domain auditing be enabled.
 //
 #define ERROR_DS_SOURCE_AUDITING_NOT_ENABLED 8552L
 
@@ -12722,7 +12722,7 @@
 //
 // MessageText:
 //
-//  Secondary DNS zone requires master IP address.
+//  Secondary DNS zone requirements master IP address.
 //
 #define DNS_ERROR_SECONDARY_REQUIRES_MASTER_IP 9612L
 
@@ -12799,7 +12799,7 @@
 //
 // MessageText:
 //
-//  Primary DNS zone requires datafile.
+//  Primary DNS zone requirements datafile.
 //
 #define DNS_ERROR_PRIMARY_REQUIRES_DATAFILE 9651L
 
@@ -15890,7 +15890,7 @@ __forceinline HRESULT HRESULT_FROM_WIN32(long x) { return x <= 0 ? (HRESULT)x : 
 //
 // MessageText:
 //
-//  The requested operation requires that JIT be in the current context and it is not
+//  The requested operation requirements that JIT be in the current context and it is not
 //
 #define CONTEXT_E_NOJIT                  _HRESULT_TYPEDEF_(0x8004E026L)
 
@@ -15899,7 +15899,7 @@ __forceinline HRESULT HRESULT_FROM_WIN32(long x) { return x <= 0 ? (HRESULT)x : 
 //
 // MessageText:
 //
-//  The requested operation requires that the current context have a Transaction, and it does not
+//  The requested operation requirements that the current context have a Transaction, and it does not
 //
 #define CONTEXT_E_NOTRANSACTION          _HRESULT_TYPEDEF_(0x8004E027L)
 
@@ -18864,7 +18864,7 @@ __forceinline HRESULT HRESULT_FROM_WIN32(long x) { return x <= 0 ? (HRESULT)x : 
 //
 // MessageText:
 //
-//  The streamed cryptographic message requires more data to complete the decode operation.
+//  The streamed cryptographic message requirements more data to complete the decode operation.
 //
 #define CRYPT_E_STREAM_INSUFFICIENT_DATA _HRESULT_TYPEDEF_(0x80091011L)
 
@@ -21062,7 +21062,7 @@ __forceinline HRESULT HRESULT_FROM_WIN32(long x) { return x <= 0 ? (HRESULT)x : 
 //
 // MessageText:
 //
-//  The operation requires a Smart Card, but no Smart Card is currently in the device.
+//  The operation requirements a Smart Card, but no Smart Card is currently in the device.
 //
 #define SCARD_E_NO_SMARTCARD             _HRESULT_TYPEDEF_(0x8010000CL)
 

@@ -51,11 +51,11 @@ void DQRNetworkManager::BytesReceivedInternal(DQRConnectionInfo *connectionInfo,
 
 	do
 	{
-		BYTE byte = *pNextByte;
+		BYTE uint8_t = *pNextByte;
 		switch( connectionInfo->m_internalDataState )
 		{
 			case DQRConnectionInfo::ConnectionState_InternalHeaderByte:
-				switch( byte )
+				switch( uint8_t )
 				{
 					case DQR_INTERNAL_ASSIGN_SMALL_IDS:
 						connectionInfo->m_internalDataState = DQRConnectionInfo::ConnectionState_InternalAssignSmallIdMask;
@@ -93,14 +93,14 @@ void DQRNetworkManager::BytesReceivedInternal(DQRConnectionInfo *connectionInfo,
 				pNextByte++;
 				break;
 			case DQRConnectionInfo::ConnectionState_InternalAssignSmallIdMask:
-				// Up to 4 smallIds are assigned at once, with the ones that are being assigned dictated by a mask byte which is passed in first.
+				// Up to 4 smallIds are assigned at once, with the ones that are being assigned dictated by a mask uint8_t which is passed in first.
 				// The small Ids themselves follow, always 4 bytes, and any that are masked as being assigned are processed, the other bytes ignored.
 				// In order work around a bug with the networking library, this particular packet (being the first this that is sent from a client)
 				// is at first sent unreliably, with retries, until a message is received back to the client, or it times out. We therefore have to be able
 				// to handle (and ignore) this being received more than once
 				DQRNetworkManager::LogCommentFormat(L"Small Ids being received");
-				connectionInfo->m_smallIdReadMask = byte;
-				// Create a uniquely allocated byte to which names have been resolved, as another one of these packets could be received whilst that asyncronous process is going o n
+				connectionInfo->m_smallIdReadMask = uint8_t;
+				// Create a uniquely allocated uint8_t to which names have been resolved, as another one of these packets could be received whilst that asyncronous process is going o n
 				connectionInfo->m_pucsmallIdReadMaskResolved = new unsigned char;
 				*connectionInfo->m_pucsmallIdReadMaskResolved = 0;
 				connectionInfo->m_internalDataState = DQRConnectionInfo::ConnectionState_InternalAssignSmallId0;
@@ -123,20 +123,20 @@ void DQRNetworkManager::BytesReceivedInternal(DQRConnectionInfo *connectionInfo,
 						// We therefore have to be able to handle (and ignore) this being received more than once - hence the check of the bool above.
 						// At this point, the connection is considered properly active from the point of view of the host.
 
-						int sessionIndex = GetSessionIndexForSmallId(byte);
+						int sessionIndex = GetSessionIndexForSmallId(uint8_t);
 						if( sessionIndex != -1 )
 						{
 							connectionInfo->m_channelActive[channel] = true;
-							connectionInfo->m_smallId[channel] = byte;
+							connectionInfo->m_smallId[channel] = uint8_t;
 					
-							m_sessionAddressFromSmallId[byte] = sessionAddress;
-							m_channelFromSmallId[byte] = channel;
+							m_sessionAddressFromSmallId[uint8_t] = sessionAddress;
+							m_channelFromSmallId[uint8_t] = channel;
 
 							auto pAsyncOp = m_primaryUserXboxLiveContext->ProfileService->GetUserProfileAsync(m_multiplayerSession->Members->GetAt(sessionIndex)->XboxUserId);
-							DQRNetworkManager::LogCommentFormat(L"Session index of %d found for player with small id %d - attempting to resolve display name\n",sessionIndex,byte);
+							DQRNetworkManager::LogCommentFormat(L"Session index of %d found for player with small id %d - attempting to resolve display name\n",sessionIndex,uint8_t);
 
 							DQRNetworkPlayer *pPlayer = new DQRNetworkPlayer(this, DQRNetworkPlayer::DNP_TYPE_REMOTE, true, 0, sessionAddress);
-							pPlayer->SetSmallId(byte);
+							pPlayer->SetSmallId(uint8_t);
 							pPlayer->SetUID(PlayerUID(m_multiplayerSession->Members->GetAt(sessionIndex)->XboxUserId->Data()));
 
 							HostGamertagResolveDetails *resolveDetails = new HostGamertagResolveDetails();
@@ -208,11 +208,11 @@ void DQRNetworkManager::BytesReceivedInternal(DQRConnectionInfo *connectionInfo,
 				pNextByte++;
 				break;
 			case DQRConnectionInfo::ConnectionState_InternalRoomSyncData:
-				connectionInfo->m_pucRoomSyncData[connectionInfo->m_roomSyncDataBytesRead++] = byte;
-				// The room sync info is sent as a 4 byte count of the length of XUID strings, then the RoomSyncData, then the XUID strings
+				connectionInfo->m_pucRoomSyncData[connectionInfo->m_roomSyncDataBytesRead++] = uint8_t;
+				// The room sync info is sent as a 4 uint8_t count of the length of XUID strings, then the RoomSyncData, then the XUID strings
 				if( connectionInfo->m_roomSyncDataBytesToRead == 0 )
 				{
-					// At first stage of reading the 4 byte count
+					// At first stage of reading the 4 uint8_t count
 					if( connectionInfo->m_roomSyncDataBytesRead == 4 )
 					{
 						memcpy( &connectionInfo->m_roomSyncDataBytesToRead, connectionInfo->m_pucRoomSyncData, 4);
@@ -289,11 +289,11 @@ void DQRNetworkManager::BytesReceivedInternal(DQRConnectionInfo *connectionInfo,
 				pNextByte++;
 				break;
 			case DQRConnectionInfo::ConnectionState_InternalAddPlayerFailedData:
-				connectionInfo->m_pucAddFailedPlayerData[connectionInfo->m_addFailedPlayerDataBytesRead++] = byte;
-				// The failed player info is sent as a 4 byte count of the length of XUID string, then the string itself
+				connectionInfo->m_pucAddFailedPlayerData[connectionInfo->m_addFailedPlayerDataBytesRead++] = uint8_t;
+				// The failed player info is sent as a 4 uint8_t count of the length of XUID string, then the string itself
 				if( connectionInfo->m_addFailedPlayerDataBytesToRead == 0 )
 				{
-					// At first stage of reading the 4 byte count
+					// At first stage of reading the 4 uint8_t count
 					if( connectionInfo->m_addFailedPlayerDataBytesRead == 4 )
 					{
 						memcpy( &connectionInfo->m_addFailedPlayerDataBytesToRead, connectionInfo->m_pucAddFailedPlayerData, 4);

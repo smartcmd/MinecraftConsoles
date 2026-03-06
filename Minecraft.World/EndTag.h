@@ -10,7 +10,7 @@ public:
 	void load(DataInput *dis, int tagDepth) {};
 	void write(DataOutput *dos) {};
 
-	byte getId() { return TAG_End; }
+	uint8_t getId() { return TAG_End; }
 	wstring toString() { return wstring( L"END" ); }
 
 	Tag *copy()

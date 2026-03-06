@@ -16,7 +16,7 @@ public:
 	virtual int read(byteArray b, unsigned int offset, unsigned int length);
 	virtual void close();
 	virtual bool readBoolean();
-	virtual byte readByte();
+	virtual uint8_t readByte();
 	virtual unsigned char readUnsignedByte();
 	virtual unsigned short readUnsignedShort();
 	virtual wchar_t readChar();

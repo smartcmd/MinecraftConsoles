@@ -86,8 +86,8 @@ Biome::Biome(int id) : id(id)
 	color = 0;
 	//  snowCovered = false;	// 4J - this isn't set by the java game any more so removing to save confusion
 
-	topMaterial = (byte) Tile::grass_Id;
-	material = (byte) Tile::dirt_Id;
+	topMaterial = (uint8_t) Tile::grass_Id;
+	material = (uint8_t) Tile::dirt_Id;
 	leafColor = 0x4EE031;
 	_hasRain = true;
 	depth = 0.1f;

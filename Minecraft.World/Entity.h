@@ -329,7 +329,7 @@ public:
 	virtual void handleInsidePortal();
 	virtual int getDimensionChangingDelay();
 	virtual void lerpMotion(double xd, double yd, double zd);
-	virtual void handleEntityEvent(byte eventId);
+	virtual void handleEntityEvent(uint8_t eventId);
 	virtual void animateHurt();
 	virtual ItemInstanceArray getEquipmentSlots(); // ItemInstance[]
 	virtual void setEquippedSlot(int slot, shared_ptr<ItemInstance> item); // 4J Stu - Brought forward change from 1.3 to fix #64688 - Customer Encountered: TU7: Content: Art: Aura of enchanted item is not displayed for other players in online game

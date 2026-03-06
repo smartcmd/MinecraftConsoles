@@ -14,8 +14,8 @@ TheEndBiome::TheEndBiome(int id) : Biome(id)
 	ambientFriendlies.clear();
 
 	enemies.push_back(new MobSpawnerData(eTYPE_ENDERMAN, 10, 4, 4));
-	topMaterial = (byte) Tile::dirt_Id;
-	material = (byte) Tile::dirt_Id;
+	topMaterial = (uint8_t) Tile::dirt_Id;
+	material = (uint8_t) Tile::dirt_Id;
 
 	decorator = new TheEndBiomeDecorator(this);
 }

@@ -105,7 +105,7 @@ void MinecartTNT::activateMinecart(int xt, int yt, int zt, bool state)
 	}
 }
 
-void MinecartTNT::handleEntityEvent(byte eventId)
+void MinecartTNT::handleEntityEvent(uint8_t eventId)
 {
 	if (eventId == EVENT_PRIME)
 	{

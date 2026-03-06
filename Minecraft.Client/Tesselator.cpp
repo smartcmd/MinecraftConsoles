@@ -326,7 +326,7 @@ void Tesselator::color(int r, int g, int b, int a)
     col = (r << 24) | (g << 16) | (b << 8) | (a);
 }
 
-void Tesselator::color(byte r, byte g, byte b)
+void Tesselator::color(uint8_t r, uint8_t g, uint8_t b)
 {
 	color(r & 0xff, g & 0xff, b & 0xff);
 }
@@ -362,7 +362,7 @@ void Tesselator::vertexUV(float x, float y, float z, float u, float v)
 //						4 - not axis aligned, use uv stored in the vertex data 4 on from this one
 //		  ll		 is an 8-bit (4 bit per u/v) index into the current lighting texture
 //
-// For quads that don't have axis aligned UVs (ie have a code for 4 in i as described above) the 8 byte vertex
+// For quads that don't have axis aligned UVs (ie have a code for 4 in i as described above) the 8 uint8_t vertex
 // is followed by a further 8 bytes which have explicit UVs defined for each vertex:
 //
 // 0000 0000 uuuu vvvv		(vertex 0)
@@ -833,7 +833,7 @@ void Tesselator::vertex(float x, float y, float z)
 		int16_t u2 = ((int16_t*)&_tex2)[0];
 		int16_t v2 = ((int16_t*)&_tex2)[1];
 #if defined _XBOX_ONE || defined __ORBIS__ 
-		// Optimisation - pack the second UVs into a single short (they could actually go in a byte), which frees up a short to store the x offset for this chunk in the vertex itself.
+		// Optimisation - pack the second UVs into a single short (they could actually go in a uint8_t), which frees up a short to store the x offset for this chunk in the vertex itself.
 		// This means that when rendering chunks, we don't need to update the vertex constants that specify the location for a chunk, when only the x offset has changed.
 		pShortData[6] = ( u2 << 8 ) | v2;
 		pShortData[7] = -xoo;
@@ -1034,15 +1034,15 @@ void Tesselator::normal(float x, float y, float z)
 #ifdef __PS3__
 	_normal = _ConvertF32toX11Y11Z10N(x,y,z);
 #elif __PSVITA__
-	// AP - casting a negative value to 'byte' on Vita results in zero. changed to a signed 8 value
+	// AP - casting a negative value to 'uint8_t' on Vita results in zero. changed to a signed 8 value
 	int8_t xx = (int8_t) (x * 127);
 	int8_t yy = (int8_t) (y * 127);
 	int8_t zz = (int8_t) (z * 127);
 	_normal = (xx & 0xff) | ((yy & 0xff) << 8) | ((zz & 0xff) << 16);
 #else
-	byte xx = (byte) (x * 127);
-	byte yy = (byte) (y * 127);
-	byte zz = (byte) (z * 127);
+	uint8_t xx = (uint8_t) (x * 127);
+	uint8_t yy = (uint8_t) (y * 127);
+	uint8_t zz = (uint8_t) (z * 127);
 	_normal = (xx & 0xff) | ((yy & 0xff) << 8) | ((zz & 0xff) << 16);
 #endif
 }

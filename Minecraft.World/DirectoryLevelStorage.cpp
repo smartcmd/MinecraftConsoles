@@ -19,7 +19,7 @@ _MapDataMappings::_MapDataMappings()
 #ifndef _DURANGO
 	ZeroMemory(xuids,sizeof(PlayerUID)*MAXIMUM_MAP_SAVE_DATA);
 #endif
-	ZeroMemory(dimensions,sizeof(byte)*(MAXIMUM_MAP_SAVE_DATA/4));
+	ZeroMemory(dimensions,sizeof(uint8_t)*(MAXIMUM_MAP_SAVE_DATA/4));
 }
 
 int _MapDataMappings::getDimension(int id)
@@ -84,7 +84,7 @@ _MapDataMappings_old::_MapDataMappings_old()
 #ifndef _DURANGO
 	ZeroMemory(xuids,sizeof(PlayerUID)*MAXIMUM_MAP_SAVE_DATA);
 #endif
-	ZeroMemory(dimensions,sizeof(byte)*(MAXIMUM_MAP_SAVE_DATA/8));
+	ZeroMemory(dimensions,sizeof(uint8_t)*(MAXIMUM_MAP_SAVE_DATA/8));
 }
 
 int _MapDataMappings_old::getDimension(int id)

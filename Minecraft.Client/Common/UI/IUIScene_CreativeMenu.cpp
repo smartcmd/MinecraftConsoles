@@ -1309,7 +1309,7 @@ bool IUIScene_CreativeMenu::overrideTooltips(ESceneSection sectionUnderPointer, 
 	return _override;
 }
 
-void IUIScene_CreativeMenu::BuildFirework(vector<shared_ptr<ItemInstance> > *list, byte type, int color, int sulphur, bool flicker, bool trail, int fadeColor/*= -1*/)
+void IUIScene_CreativeMenu::BuildFirework(vector<shared_ptr<ItemInstance> > *list, uint8_t type, int color, int sulphur, bool flicker, bool trail, int fadeColor/*= -1*/)
 {
 	/////////////////////////////////
 	// Create firecharge
@@ -1370,7 +1370,7 @@ void IUIScene_CreativeMenu::BuildFirework(vector<shared_ptr<ItemInstance> > *lis
 		expTags->add(expTag);
 
 		fireTag->put(FireworksItem::TAG_EXPLOSIONS, expTags);
-		fireTag->putByte(FireworksItem::TAG_FLIGHT, (byte) sulphur);
+		fireTag->putByte(FireworksItem::TAG_FLIGHT, (uint8_t) sulphur);
 
 		itemTag->put(FireworksItem::TAG_FIREWORKS, fireTag);
 

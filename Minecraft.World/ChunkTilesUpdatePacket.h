@@ -12,12 +12,12 @@ public:
     shortArray positions;
     byteArray blocks;
     byteArray data;
-    byte count; // 4J Was int but never has a value higher than 10
+    uint8_t count; // 4J Was int but never has a value higher than 10
 	int levelIdx;
 
 	ChunkTilesUpdatePacket();
 	~ChunkTilesUpdatePacket();
-	ChunkTilesUpdatePacket(int xc, int zc, shortArray positions, byte count, Level *level);
+	ChunkTilesUpdatePacket(int xc, int zc, shortArray positions, uint8_t count, Level *level);
 
 	virtual void read(DataInputStream *dis);
 	virtual void write(DataOutputStream *dos);

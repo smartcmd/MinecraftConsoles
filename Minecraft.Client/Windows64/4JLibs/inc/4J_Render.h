@@ -74,7 +74,7 @@ public:
 	// Vertex data handling
 	typedef enum
 	{
-		VERTEX_TYPE_PF3_TF2_CB4_NB4_XW1,		// Position 3 x float, texture 2 x float, colour 4 x byte, normal 4 x byte, padding 1 DWORD
+		VERTEX_TYPE_PF3_TF2_CB4_NB4_XW1,		// Position 3 x float, texture 2 x float, colour 4 x uint8_t, normal 4 x uint8_t, padding 1 DWORD
 		VERTEX_TYPE_COMPRESSED,					// Compressed format - see comment at top of VS_PS3_TS2_CS1.hlsl for description of layout
 		VERTEX_TYPE_PF3_TF2_CB4_NB4_XW1_LIT,	// as VERTEX_TYPE_PF3_TF2_CB4_NB4_XW1 with lighting applied,
 		VERTEX_TYPE_PF3_TF2_CB4_NB4_XW1_TEXGEN, // as VERTEX_TYPE_PF3_TF2_CB4_NB4_XW1 with tex gen

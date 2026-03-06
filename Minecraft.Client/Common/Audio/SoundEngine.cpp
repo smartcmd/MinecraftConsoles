@@ -64,9 +64,9 @@ void SoundEngine::playMusicTick() {};
 #else
 
 #ifdef _WINDOWS64
-char SoundEngine::m_szSoundPath[]={"Windows64Media\\Sound\\"};
-char SoundEngine::m_szMusicPath[]={"music\\"};
-char SoundEngine::m_szRedistName[]={"redist64"};
+const char SoundEngine::m_szSoundPath[] = {"Windows64Media\\Sound\\"};
+const char SoundEngine::m_szMusicPath[] = {"music\\"};
+const char SoundEngine::m_szRedistName[] = {"redist64"};
 #elif defined _DURANGO
 char SoundEngine::m_szSoundPath[]={"Sound\\"};
 char SoundEngine::m_szMusicPath[]={"music\\"};
@@ -103,7 +103,7 @@ char SoundEngine::m_szRedistName[]={"redist"};
 
 #endif
 
-char *SoundEngine::m_szStreamFileA[eStream_Max]=
+const char *SoundEngine::m_szStreamFileA[eStream_Max]=
 {
 	"calm1",
 	"calm2",

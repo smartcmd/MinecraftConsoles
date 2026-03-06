@@ -3310,7 +3310,7 @@ void CMinecraftApp::HandleXuiActions(void)
 						// In split screen mode, we don't want to do any async loading or flushing of the cache, just a simple respawn
 						pMinecraft->localplayers[i]->respawn();
 
-						// If the respawn requires a dimension change then the action will have changed
+						// If the respawn requirements a dimension change then the action will have changed
 						//if(app.GetXuiAction(i) == eAppAction_Respawn)
 						//{
 						//	SetAction(i,eAppAction_Idle);

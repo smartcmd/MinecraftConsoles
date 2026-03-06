@@ -1091,7 +1091,7 @@ bool ServerLevel::addGlobalEntity(shared_ptr<Entity> e)
 	return false;
 }
 
-void ServerLevel::broadcastEntityEvent(shared_ptr<Entity> e, byte event)
+void ServerLevel::broadcastEntityEvent(shared_ptr<Entity> e, uint8_t event)
 {
 	shared_ptr<Packet> p = shared_ptr<EntityEventPacket>( new EntityEventPacket(e->entityId, event) );
 	server->getLevel(dimension->id)->getTracker()->broadcastAndSend(e, p);

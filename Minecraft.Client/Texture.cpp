@@ -270,10 +270,10 @@ void Texture::writeAsBMP(const wstring &name)
 	// Write the header
 	outStream->writeShort((short)0x424d);            // 0x0000: ID - 'BM'
 	int byteSize = width * height * 4 + 54;
-	outStream->writeByte((byte)(byteSize >>  0));    // 0x0002: Raw file size
-	outStream->writeByte((byte)(byteSize >>  8));
-	outStream->writeByte((byte)(byteSize >> 16));
-	outStream->writeByte((byte)(byteSize >> 24));
+	outStream->writeByte((uint8_t)(byteSize >>  0));    // 0x0002: Raw file size
+	outStream->writeByte((uint8_t)(byteSize >>  8));
+	outStream->writeByte((uint8_t)(byteSize >> 16));
+	outStream->writeByte((uint8_t)(byteSize >> 24));
 	outStream->writeInt(0);                          // 0x0006: Reserved
 	outStream->writeByte(54);                        // 0x000A: Start of pixel data
 	outStream->writeByte(0);
@@ -283,31 +283,31 @@ void Texture::writeAsBMP(const wstring &name)
 	outStream->writeByte(0);
 	outStream->writeByte(0);
 	outStream->writeByte(0);
-	outStream->writeByte((byte)(width >>  0));       // 0x0012: Image width, in pixels
-	outStream->writeByte((byte)(width >>  8));
-	outStream->writeByte((byte)(width >> 16));
-	outStream->writeByte((byte)(width >> 24));
-	outStream->writeByte((byte)(height >>  0));      // 0x0016: Image height, in pixels
-	outStream->writeByte((byte)(height >>  8));
-	outStream->writeByte((byte)(height >> 16));
-	outStream->writeByte((byte)(height >> 24));
+	outStream->writeByte((uint8_t)(width >>  0));       // 0x0012: Image width, in pixels
+	outStream->writeByte((uint8_t)(width >>  8));
+	outStream->writeByte((uint8_t)(width >> 16));
+	outStream->writeByte((uint8_t)(width >> 24));
+	outStream->writeByte((uint8_t)(height >>  0));      // 0x0016: Image height, in pixels
+	outStream->writeByte((uint8_t)(height >>  8));
+	outStream->writeByte((uint8_t)(height >> 16));
+	outStream->writeByte((uint8_t)(height >> 24));
 	outStream->writeByte(1);                         // 0x001A: Number of color planes, must be 1
 	outStream->writeByte(0);
 	outStream->writeByte(32);                        // 0x001C: Bit depth (32bpp)
 	outStream->writeByte(0);
 	outStream->writeInt(0);                          // 0x001E: Compression mode (BI_RGB, uncompressed)
 	int bufSize = width * height * 4;
-	outStream->writeInt((byte)(bufSize >>  0));      // 0x0022: Raw size of bitmap data
-	outStream->writeInt((byte)(bufSize >>  8));
-	outStream->writeInt((byte)(bufSize >> 16));
-	outStream->writeInt((byte)(bufSize >> 24));
+	outStream->writeInt((uint8_t)(bufSize >>  0));      // 0x0022: Raw size of bitmap data
+	outStream->writeInt((uint8_t)(bufSize >>  8));
+	outStream->writeInt((uint8_t)(bufSize >> 16));
+	outStream->writeInt((uint8_t)(bufSize >> 24));
 	outStream->writeInt(0);                          // 0x0026: Horizontal resolution in ppm
 	outStream->writeInt(0);                          // 0x002A: Vertical resolution in ppm
 	outStream->writeInt(0);                          // 0x002E: Palette size (0 to match bit depth)
 	outStream->writeInt(0);                          // 0x0032: Number of important colors, 0 for all
 
 	// Pixels follow in inverted Y order
-	byte[] bytes = new byte[width * height * 4];
+	uint8_t[] bytes = new uint8_t[width * height * 4];
 	data.position(0);
 	data.get(bytes);
 	for (int y = height - 1; y >= 0; y--)
@@ -336,7 +336,7 @@ void Texture::writeAsPNG(const wstring &filename)
 #if 0
 	BufferedImage *image = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
 	ByteBuffer *buffer = this->getData();
-	byte[] bytes = new byte[width * height * 4];
+	uint8_t[] bytes = new uint8_t[width * height * 4];
 
 	buffer.position(0);
 	buffer.get(bytes);
@@ -530,10 +530,10 @@ void Texture::transferFromBuffer(intArray buffer)
 			{
 				int texel = column + x * 4;
 				data[0]->position(0);
-				data[0]->put(texel + byteRemap[0], (byte)((buffer[texel >> 2] >> 24) & 0xff));
-				data[0]->put(texel + byteRemap[1], (byte)((buffer[texel >> 2] >> 16) & 0xff));
-				data[0]->put(texel + byteRemap[2], (byte)((buffer[texel >> 2] >>  8) & 0xff));
-				data[0]->put(texel + byteRemap[3], (byte)((buffer[texel >> 2] >>  0) & 0xff));
+				data[0]->put(texel + byteRemap[0], (uint8_t)((buffer[texel >> 2] >> 24) & 0xff));
+				data[0]->put(texel + byteRemap[1], (uint8_t)((buffer[texel >> 2] >> 16) & 0xff));
+				data[0]->put(texel + byteRemap[2], (uint8_t)((buffer[texel >> 2] >>  8) & 0xff));
+				data[0]->put(texel + byteRemap[3], (uint8_t)((buffer[texel >> 2] >>  0) & 0xff));
 			}
 		}
 	}
@@ -589,10 +589,10 @@ void Texture::transferFromImage(BufferedImage *image)
 
 			// Pull ARGB bytes into either RGBA or BGRA depending on format
 
-			tempBytes[byteIndex + byteRemap[0]] = (byte)((tempPixels[intIndex] >> 24) & 0xff);
-			tempBytes[byteIndex + byteRemap[1]] = (byte)((tempPixels[intIndex] >> 16) & 0xff);
-			tempBytes[byteIndex + byteRemap[2]] = (byte)((tempPixels[intIndex] >>  8) & 0xff);
-			tempBytes[byteIndex + byteRemap[3]] = (byte)((tempPixels[intIndex] >>  0) & 0xff);
+			tempBytes[byteIndex + byteRemap[0]] = (uint8_t)((tempPixels[intIndex] >> 24) & 0xff);
+			tempBytes[byteIndex + byteRemap[1]] = (uint8_t)((tempPixels[intIndex] >> 16) & 0xff);
+			tempBytes[byteIndex + byteRemap[2]] = (uint8_t)((tempPixels[intIndex] >>  8) & 0xff);
+			tempBytes[byteIndex + byteRemap[3]] = (uint8_t)((tempPixels[intIndex] >>  0) & 0xff);
 		}
 	}
 
@@ -641,10 +641,10 @@ void Texture::transferFromImage(BufferedImage *image)
 
 						// Pull ARGB bytes into either RGBA or BGRA depending on format
 
-						tempBytes[byteIndex + byteRemap[0]] = (byte)((tempData[intIndex] >> 24) & 0xff);
-						tempBytes[byteIndex + byteRemap[1]] = (byte)((tempData[intIndex] >> 16) & 0xff);
-						tempBytes[byteIndex + byteRemap[2]] = (byte)((tempData[intIndex] >>  8) & 0xff);
-						tempBytes[byteIndex + byteRemap[3]] = (byte)((tempData[intIndex] >>  0) & 0xff);
+						tempBytes[byteIndex + byteRemap[0]] = (uint8_t)((tempData[intIndex] >> 24) & 0xff);
+						tempBytes[byteIndex + byteRemap[1]] = (uint8_t)((tempData[intIndex] >> 16) & 0xff);
+						tempBytes[byteIndex + byteRemap[2]] = (uint8_t)((tempData[intIndex] >>  8) & 0xff);
+						tempBytes[byteIndex + byteRemap[3]] = (uint8_t)((tempData[intIndex] >>  0) & 0xff);
 					}
 				}
 			}
@@ -676,10 +676,10 @@ void Texture::transferFromImage(BufferedImage *image)
 
 						// Pull ARGB bytes into either RGBA or BGRA depending on format
 
-						tempBytes[byteIndex + byteRemap[0]] = (byte)((col >> 24) & 0xff);
-						tempBytes[byteIndex + byteRemap[1]] = (byte)((col >> 16) & 0xff);
-						tempBytes[byteIndex + byteRemap[2]] = (byte)((col >>  8) & 0xff);
-						tempBytes[byteIndex + byteRemap[3]] = (byte)((col >>  0) & 0xff);
+						tempBytes[byteIndex + byteRemap[0]] = (uint8_t)((col >> 24) & 0xff);
+						tempBytes[byteIndex + byteRemap[1]] = (uint8_t)((col >> 16) & 0xff);
+						tempBytes[byteIndex + byteRemap[2]] = (uint8_t)((col >>  8) & 0xff);
+						tempBytes[byteIndex + byteRemap[3]] = (uint8_t)((col >>  0) & 0xff);
 					}
 			}
 
@@ -829,7 +829,7 @@ void Texture::updateOnGPU()
 			// the ram based buffer to it any more inside RenderManager.TextureDataUpdate
 			unsigned char *newData = RenderManager.TextureData(width,height,data[0]->getBuffer(),0,C4JRender::TEXTURE_FORMAT_RxGyBzAw);
 			ByteBuffer *oldBuffer = data[0];
-			data[0] = new ByteBuffer(data[0]->getSize(), (byte*) newData);
+			data[0] = new ByteBuffer(data[0]->getSize(), (uint8_t*) newData);
 			delete oldBuffer;
 			newData += width * height * 4;
 #else
@@ -848,7 +848,7 @@ void Texture::updateOnGPU()
 					// the ram based buffer to it any more inside RenderManager.TextureDataUpdate
 					RenderManager.TextureDataUpdate(0, 0,levelWidth,levelHeight,data[level]->getBuffer(),level);
 					ByteBuffer *oldBuffer = data[level];
-					data[level] = new ByteBuffer(data[level]->getSize(), (byte*) newData);
+					data[level] = new ByteBuffer(data[level]->getSize(), (uint8_t*) newData);
 					delete oldBuffer;
 					newData += levelWidth * levelHeight * 4;
 #else

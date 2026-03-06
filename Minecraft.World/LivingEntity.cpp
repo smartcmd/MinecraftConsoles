@@ -132,8 +132,8 @@ LivingEntity::~LivingEntity()
 void LivingEntity::defineSynchedData()
 {
 	entityData->define(DATA_EFFECT_COLOR_ID, 0);
-	entityData->define(DATA_EFFECT_AMBIENCE_ID, (byte) 0);
-	entityData->define(DATA_ARROW_COUNT_ID, (byte) 0);
+	entityData->define(DATA_EFFECT_AMBIENCE_ID, (uint8_t) 0);
+	entityData->define(DATA_ARROW_COUNT_ID, (uint8_t) 0);
 	entityData->define(DATA_HEALTH_ID, 1.0f);
 }
 
@@ -512,7 +512,7 @@ void LivingEntity::tickEffects()
 		{
 			if (activeEffects.empty())
 			{
-				entityData->set(DATA_EFFECT_AMBIENCE_ID, (byte) 0);
+				entityData->set(DATA_EFFECT_AMBIENCE_ID, (uint8_t) 0);
 				entityData->set(DATA_EFFECT_COLOR_ID, 0);
 				setInvisible(false);
 				setWeakened(false);
@@ -525,7 +525,7 @@ void LivingEntity::tickEffects()
 					values.push_back(it.second);
 				}
 				int colorValue = PotionBrewing::getColorValue(&values);
-				entityData->set(DATA_EFFECT_AMBIENCE_ID, PotionBrewing::areAllEffectsAmbient(&values) ? (byte) 1 : (byte) 0);
+				entityData->set(DATA_EFFECT_AMBIENCE_ID, PotionBrewing::areAllEffectsAmbient(&values) ? (uint8_t) 1 : (uint8_t) 0);
 				values.clear();
 				entityData->set(DATA_EFFECT_COLOR_ID, colorValue);
 				setInvisible(hasEffect(MobEffect::invisibility->id));
@@ -1149,7 +1149,7 @@ int LivingEntity::getArrowCount()
 
 void LivingEntity::setArrowCount(int count)
 {
-	entityData->set(DATA_ARROW_COUNT_ID, (byte) count);
+	entityData->set(DATA_ARROW_COUNT_ID, (uint8_t) count);
 }
 
 int LivingEntity::getCurrentSwingDuration()
@@ -1179,7 +1179,7 @@ void LivingEntity::swing()
 	}
 }
 
-void LivingEntity::handleEntityEvent(byte id)
+void LivingEntity::handleEntityEvent(uint8_t id)
 {
 	if (id == EntityEvent::HURT)
 	{

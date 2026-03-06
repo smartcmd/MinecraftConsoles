@@ -12,7 +12,7 @@ public:
 	void write(DataOutput *dos) { dos->writeDouble(data); }
 	void load(DataInput *dis, int tagDepth) { data = dis->readDouble(); }
 
-	byte getId() { return TAG_Double; }
+	uint8_t getId() { return TAG_Double; }
 	wstring toString()
 	{
 		static wchar_t buf[32];

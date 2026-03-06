@@ -11,7 +11,7 @@ bool MinecraftDynamicConfigurations::s_bUpdatedConfigs[MinecraftDynamicConfigura
 MinecraftDynamicConfigurations::EDynamic_Configs MinecraftDynamicConfigurations::s_eCurrentConfig = MinecraftDynamicConfigurations::eDynamic_Config_Max;
 size_t MinecraftDynamicConfigurations::s_currentConfigSize = 0;
 size_t MinecraftDynamicConfigurations::s_dataWrittenSize = 0;
-byte *MinecraftDynamicConfigurations::s_dataWritten = NULL;
+uint8_t *MinecraftDynamicConfigurations::s_dataWritten = NULL;
 
 void MinecraftDynamicConfigurations::Tick()
 {
@@ -90,7 +90,7 @@ void MinecraftDynamicConfigurations::GetSizeCompletedCallback(HRESULT taskResult
 {
 	if( HRESULT_SUCCEEDED(taskResult) )
 	{
-		s_dataWritten = new byte[s_currentConfigSize];
+		s_dataWritten = new uint8_t[s_currentConfigSize];
 		HRESULT hr = Sentient::SenDynamicConfigGetBytes(
 			s_eCurrentConfig,
 			s_currentConfigSize,

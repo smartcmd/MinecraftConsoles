@@ -531,7 +531,7 @@ void LevelChunk::recalcHeightmapOnly()
 				blocks = (y-1) >= Level::COMPRESSED_CHUNK_SECTION_HEIGHT?upperBlocks : lowerBlocks;
 			}
 #endif
-			heightmap[z << 4 | x] = (byte) y;
+			heightmap[z << 4 | x] = (uint8_t) y;
 			if (y < min) min = y;
 		}
 
@@ -588,7 +588,7 @@ void LevelChunk::recalcHeightmap()
 				blocks = (y-1) >= Level::COMPRESSED_CHUNK_SECTION_HEIGHT?upperBlocks : lowerBlocks;
 			}
 #endif
-			heightmap[z << 4 | x] = (byte) y;
+			heightmap[z << 4 | x] = (uint8_t) y;
 			if (y < min) min = y;
 			if (y < lowestHeightmap) lowestHeightmap = y;
 
@@ -811,7 +811,7 @@ void LevelChunk::recalcHeight(int x, int yStart, int z)
 	if (y == yOld) return;
 
 	//    level->lightColumnChanged(x, z, y, yOld);		// 4J - this call moved below & corrected - see comment further down
-	heightmap[z << 4 | x] = (byte) y;
+	heightmap[z << 4 | x] = (uint8_t) y;
 
 	if (y < minHeight)
 	{
@@ -919,7 +919,7 @@ int LevelChunk::getTile(int x, int y, int z)
 
 bool LevelChunk::setTileAndData(int x, int y, int z, int _tile, int _data)
 {
-	byte tile = (byte) _tile;
+	uint8_t tile = (uint8_t) _tile;
 
 	// Optimisation brought forward from 1.8.2, change from int to unsigned char & this special value changed from -999 to 255
 	int slot = z << 4 | x;
@@ -2047,7 +2047,7 @@ void LevelChunk::reloadBiomes()
 		for(unsigned int z = 0; z < 16; ++z)
 		{
 			Biome *biome = biomeSource->getBiome((this->x << 4) + x, (this->z << 4) + z);
-			biomes[(z << 4) | x] = (byte) ( (biome->id) & 0xff);
+			biomes[(z << 4) | x] = (uint8_t) ( (biome->id) & 0xff);
 		}
 	}
 }
@@ -2059,7 +2059,7 @@ Biome *LevelChunk::getBiome(int x, int z, BiomeSource *biomeSource)
 	{
 		Biome *biome = biomeSource->getBiome((this->x << 4) + x, (this->z << 4) + z);
 		value = biome->id;
-		biomes[(z << 4) | x] = (byte) (value & 0xff);
+		biomes[(z << 4) | x] = (uint8_t) (value & 0xff);
 	}
 	if (Biome::biomes[value] == NULL)
 	{
@@ -2146,14 +2146,14 @@ void LevelChunk::updateBiomeFlags(int x, int z)
 	}
 }
 
-// Get a byte array of length 16384 ( 128 x 16 x 16 x 0.5 ), containing data. Ordering same as java version if originalOrder set;
+// Get a uint8_t array of length 16384 ( 128 x 16 x 16 x 0.5 ), containing data. Ordering same as java version if originalOrder set;
 void LevelChunk::getDataData(byteArray data)
 {
 	lowerData->getData(data,0);
 	if(data.length > Level::COMPRESSED_CHUNK_SECTION_TILES/2) upperData->getData(data,Level::COMPRESSED_CHUNK_SECTION_TILES/2);
 }
 
-// Set data to data passed in input byte array of length 16384. This data must be in original (java version) order if originalOrder set.
+// Set data to data passed in input uint8_t array of length 16384. This data must be in original (java version) order if originalOrder set.
 void LevelChunk::setDataData(byteArray data)
 {
 	if( lowerData == NULL ) lowerData = new SparseDataStorage();
@@ -2162,21 +2162,21 @@ void LevelChunk::setDataData(byteArray data)
 	if(data.length > Level::COMPRESSED_CHUNK_SECTION_TILES/2) upperData->setData(data,Level::COMPRESSED_CHUNK_SECTION_TILES/2);
 }
 
-// Get a byte array of length 16384 ( 128 x 16 x 16 x 0.5 ), containing sky light data. Ordering same as java version if originalOrder set;
+// Get a uint8_t array of length 16384 ( 128 x 16 x 16 x 0.5 ), containing sky light data. Ordering same as java version if originalOrder set;
 void LevelChunk::getSkyLightData(byteArray data)
 {
 	lowerSkyLight->getData(data,0);
 	if(data.length > Level::COMPRESSED_CHUNK_SECTION_TILES/2) upperSkyLight->getData(data,Level::COMPRESSED_CHUNK_SECTION_TILES/2);
 }
 
-// Get a byte array of length 16384 ( 128 x 16 x 16 x 0.5 ), containing block light data. Ordering same as java version if originalOrder set;
+// Get a uint8_t array of length 16384 ( 128 x 16 x 16 x 0.5 ), containing block light data. Ordering same as java version if originalOrder set;
 void LevelChunk::getBlockLightData(byteArray data)
 {
 	lowerBlockLight->getData(data,0);
 	if(data.length > Level::COMPRESSED_CHUNK_SECTION_TILES/2) upperBlockLight->getData(data,Level::COMPRESSED_CHUNK_SECTION_TILES/2);
 }
 
-// Set sky light data to data passed in input byte array of length 16384. This data must be in original (java version) order if originalOrder set.
+// Set sky light data to data passed in input uint8_t array of length 16384. This data must be in original (java version) order if originalOrder set.
 void LevelChunk::setSkyLightData(byteArray data)
 {
 	if( lowerSkyLight == NULL ) lowerSkyLight = new SparseLightStorage(true);
@@ -2185,7 +2185,7 @@ void LevelChunk::setSkyLightData(byteArray data)
 	if(data.length > Level::COMPRESSED_CHUNK_SECTION_TILES/2) upperSkyLight->setData(data,Level::COMPRESSED_CHUNK_SECTION_TILES/2);
 }
 
-// Set block light data to data passed in input byte array of length 16384. This data must be in original (java version) order if originalOrder set.
+// Set block light data to data passed in input uint8_t array of length 16384. This data must be in original (java version) order if originalOrder set.
 void LevelChunk::setBlockLightData(byteArray data)
 {
 	if( lowerBlockLight == NULL ) lowerBlockLight = new SparseLightStorage(false);

@@ -172,7 +172,7 @@ ConsoleSaveFileOriginal::ConsoleSaveFileOriginal(const wstring &fileName, LPVOID
 						Compression::getCompression()->SetDecompressionType(SAVE_FILE_PLATFORM_LOCAL); // and then set the decompression back to the local machine's standard type
 					}
 
-					// Only ReAlloc if we need to (we might already have enough) and align to 512 byte boundaries
+					// Only ReAlloc if we need to (we might already have enough) and align to 512 uint8_t boundaries
 					DWORD currentHeapSize = pagesCommitted * CSF_PAGE_SIZE;
 
 					DWORD desiredSize = decompSize;
@@ -244,7 +244,7 @@ void ConsoleSaveFileOriginal::deleteFile( FileEntry *file )
 
 	const int bufferSize = 4096;
 	int amountToRead = bufferSize;
-	byte buffer[bufferSize];
+	uint8_t buffer[bufferSize];
 	DWORD bufferDataSize = 0;
 
 
@@ -475,12 +475,12 @@ void ConsoleSaveFileOriginal::MoveDataBeyond(FileEntry *file, DWORD nNumberOfByt
 	const DWORD bufferSize = 4096;
 	DWORD amountToRead = bufferSize;
 	//assert( nNumberOfBytesToWrite <= bufferSize );
-	static byte buffer1[bufferSize];
-	static byte buffer2[bufferSize];
+	static uint8_t buffer1[bufferSize];
+	static uint8_t buffer2[bufferSize];
 	DWORD buffer1Size = 0;
 	DWORD buffer2Size = 0;
 
-	// Only ReAlloc if we need to (we might already have enough) and align to 512 byte boundaries
+	// Only ReAlloc if we need to (we might already have enough) and align to 512 uint8_t boundaries
 	DWORD currentHeapSize = pagesCommitted * CSF_PAGE_SIZE;
 
 	DWORD desiredSize = header.GetFileSize() + nNumberOfBytesToWrite;
@@ -529,7 +529,7 @@ void ConsoleSaveFileOriginal::MoveDataBeyond(FileEntry *file, DWORD nNumberOfByt
 			uintptr_t uiFromStart = (uintptr_t)spaceStartOffset;
 			uintptr_t uiFromEnd = (uintptr_t)beginEndOfDataOffset;
 
-			// Round both of these values to get 4096 byte chunks that we will need to at least partially move
+			// Round both of these values to get 4096 uint8_t chunks that we will need to at least partially move
 			uintptr_t uiFromStartChunk = uiFromStart & ~((uintptr_t)4095);
 			uintptr_t uiFromEndChunk = (uiFromEnd - 1 ) & ~((uintptr_t)4095);
 
@@ -664,14 +664,14 @@ void ConsoleSaveFileOriginal::Flush(bool autosave, bool updateThumbnail )
 	// 4J Stu - Added TU-1 interim
 
 #ifdef __PS3__
-	// On PS3, don't compress the data as we can't really afford the extra memory this requires for the output buffer. Instead we'll be writing
+	// On PS3, don't compress the data as we can't really afford the extra memory this requirements for the output buffer. Instead we'll be writing
 	// directly from the save data.
 	StorageManager.SetSaveData(pvSaveMem,fileSize);
-	byte *compData = (byte *)pvSaveMem;
+	uint8_t *compData = (uint8_t *)pvSaveMem;
 #else
 	// Attempt to allocate the required memory
 	// We do not own this, it belongs to the StorageManager
-	byte *compData = (byte *)StorageManager.AllocateSaveData( compLength );
+	uint8_t *compData = (uint8_t *)StorageManager.AllocateSaveData( compLength );
 
 #ifdef __PSVITA__
 	// AP - make sure we always allocate just what is needed so it will only SAVE what is needed.
@@ -709,7 +709,7 @@ void ConsoleSaveFileOriginal::Flush(bool autosave, bool updateThumbnail )
 		compLength = compLength+8;
 
 		// Attempt to allocate the required memory
-		compData = (byte *)StorageManager.AllocateSaveData( compLength );
+		compData = (uint8_t *)StorageManager.AllocateSaveData( compLength );
 	}
 #endif
 

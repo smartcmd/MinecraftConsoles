@@ -62,15 +62,15 @@ local void make_crc_table OF((void));
    local void write_table OF((FILE *, const z_crc_t FAR *));
 #endif /* MAKECRCH */
 /*
-  Generate tables for a byte-wise 32-bit CRC calculation on the polynomial:
+  Generate tables for a uint8_t-wise 32-bit CRC calculation on the polynomial:
   x^32+x^26+x^23+x^22+x^16+x^12+x^11+x^10+x^8+x^7+x^5+x^4+x^2+x+1.
 
   Polynomials over GF(2) are represented in binary, one bit per coefficient,
   with the lowest powers in the most significant bit.  Then adding polynomials
   is just exclusive-or, and multiplying a polynomial by x is a right shift by
-  one.  If we call the above polynomial p, and represent a byte as the
+  one.  If we call the above polynomial p, and represent a uint8_t as the
   polynomial q, also with the lowest power in the most significant bit (so the
-  byte 0xb1 is the polynomial x^7+x^3+x+1), then the CRC is (q*x^32) mod p,
+  uint8_t 0xb1 is the polynomial x^7+x^3+x+1), then the CRC is (q*x^32) mod p,
   where a mod b means the remainder after dividing a by b.
 
   This calculation is done using the shift-register method of multiplying and
@@ -82,7 +82,7 @@ local void make_crc_table OF((void));
   q and repeat for all eight bits of q.
 
   The first table is simply the CRC of all possible eight bit values.  This is
-  all the information needed to generate CRCs on data a byte at a time for all
+  all the information needed to generate CRCs on data a uint8_t at a time for all
   combinations of CRC register values and incoming bytes.  The remaining tables
   allow for word-at-a-time CRC calculation for both big-endian and little-
   endian machines, where a word is four bytes.
@@ -117,7 +117,7 @@ local void make_crc_table()
 
 #ifdef BYFOUR
         /* generate crc for each value followed by one, two, and three zeros,
-           and then the byte reversal of those as well as the first table */
+           and then the uint8_t reversal of those as well as the first table */
         for (n = 0; n < 256; n++) {
             c = crc_table[0][n];
             crc_table[4][n] = ZSWAP32(c);
@@ -179,7 +179,7 @@ local void write_table(out, table)
 
 #else /* !DYNAMIC_CRC_TABLE */
 /* ========================================================================
- * Tables of CRC-32s of all single-byte values, made by make_crc_table().
+ * Tables of CRC-32s of all single-uint8_t values, made by make_crc_table().
  */
 #include "crc32.h"
 #endif /* DYNAMIC_CRC_TABLE */
@@ -381,7 +381,7 @@ local uLong crc32_combine_(crc1, crc2, len2)
     gf2_matrix_square(odd, even);
 
     /* apply len2 zeros to crc1 (first square will put the operator for one
-       zero byte, eight zero bits, in even) */
+       zero uint8_t, eight zero bits, in even) */
     do {
         /* apply zeros operator for this bit of len2 */
         gf2_matrix_square(even, odd);

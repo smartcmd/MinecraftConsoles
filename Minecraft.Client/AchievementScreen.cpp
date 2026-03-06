@@ -264,13 +264,13 @@ void AchievementScreen::renderBg(int xm, int ym, float a)
 
 	for ( Achievement *ach : *Achievements::achievements )
 	{
-        if ( ach == nullptr || ach->requires == nullptr) continue;
+        if ( ach == nullptr || ach->requirements == nullptr) continue;
 
         int x1 = ach->x * ACHIEVEMENT_COORD_SCALE - (int) xScroll + 11 + xBigMap;
         int y1 = ach->y * ACHIEVEMENT_COORD_SCALE - (int) yScroll + 11 + yBigMap;
 
-        int x2 = ach->requires->x * ACHIEVEMENT_COORD_SCALE - (int) xScroll + 11 + xBigMap;
-        int y2 = ach->requires->y * ACHIEVEMENT_COORD_SCALE - (int) yScroll + 11 + yBigMap;
+        int x2 = ach->requirements->x * ACHIEVEMENT_COORD_SCALE - (int) xScroll + 11 + xBigMap;
+        int y2 = ach->requirements->y * ACHIEVEMENT_COORD_SCALE - (int) yScroll + 11 + yBigMap;
 
         int color = 0;
 
@@ -400,7 +400,7 @@ void AchievementScreen::renderBg(int xm, int ym, float a)
 		else
 		{
             int width = Math::_max(font->width(name), 120);
-            wstring msg = I18n::get(L"achievement.requires", ach->requires->name);
+            wstring msg = I18n::get(L"achievement.requirements", ach->requirements->name);
             int height = font->wordWrapHeight(msg, width);
             fillGradient(x - 3, y - 3, x + width + 3, y + height + 12 + 3, 0xc0000000, 0xc0000000);
             font->drawWordWrap(msg, x, y + 12, width, 0xff705050);

@@ -34,7 +34,7 @@ public:
 
 // private:
 	static const int sc_size = 20;
-	unsigned char	m_tileIds[sc_size*sc_size*sc_size];			// byte
+	unsigned char	m_tileIds[sc_size*sc_size*sc_size];			// uint8_t
 	unsigned char	m_brightness[sc_size*sc_size*sc_size];		// 2x 4bit
 	unsigned char	m_data_flags[sc_size*sc_size*sc_size];		// 2x 4bit
 	int				m_grassColor[sc_size*sc_size];
@@ -59,7 +59,7 @@ public:
 	int m_lastHitBlockX;
 	int m_lastHitBlockY;
 	int m_lastHitBlockZ;
- 	unsigned int	m_pad[3];// padding to 16 byte alignment
+ 	unsigned int	m_pad[3];// padding to 16 uint8_t alignment
 
 
 	int getTileIdx(int x, int y, int z) 	{	return (( x - m_x0 )*sc_size*sc_size) + (( y - m_y0 )*sc_size) + ( z - m_z0 );	}

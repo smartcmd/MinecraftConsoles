@@ -18,7 +18,7 @@ public:
 		data = dis->readUTF();
 	}
 
-	byte getId() { return TAG_String; }
+	uint8_t getId() { return TAG_String; }
 
 	wstring toString()
 	{

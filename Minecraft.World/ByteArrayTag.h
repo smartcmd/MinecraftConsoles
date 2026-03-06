@@ -27,7 +27,7 @@ public:
 		dis->readFully(data);
 	}
 
-	byte getId() { return TAG_Byte_Array; }
+	uint8_t getId() { return TAG_Byte_Array; }
 
 	wstring toString()
 	{

@@ -166,7 +166,7 @@ void SparseLightStorage::setData(byteArray dataIn, unsigned int inOffset)
 			//int shift = 4 * part;
 			unsigned char *pucIn = &dataIn[ (y >> 1) + inOffset];
 
-			for( int xz = 0; xz < 128; xz++ )	// 128 ( 16 x 16 x 0.5 ) in loop as packing 2 values into each destination byte
+			for( int xz = 0; xz < 128; xz++ )	// 128 ( 16 x 16 x 0.5 ) in loop as packing 2 values into each destination uint8_t
 			{
 				*pucOut = ( ( *pucIn ) >> ( part * 4 ) ) & 15;
 				pucIn += 64;
@@ -224,7 +224,7 @@ void SparseLightStorage::getData(byteArray retArray, unsigned int retOffset)
 			int shift = 4 * part;
 			unsigned char *pucOut = &retArray.data[ (y >> 1) + retOffset];
 			unsigned char *pucIn = &data[ planeIndices[ y ] * 128 ];
-			for( int xz = 0; xz < 128; xz++ )		// 128 in loop (16 x 16 x 0.5) as input data is being treated in pairs of nybbles that are packed in the same byte
+			for( int xz = 0; xz < 128; xz++ )		// 128 in loop (16 x 16 x 0.5) as input data is being treated in pairs of nybbles that are packed in the same uint8_t
 			{
 				unsigned char value = (*pucIn) & 15;
 				*pucOut |= ( value << shift );
@@ -257,8 +257,8 @@ int SparseLightStorage::get(int x, int y, int z)
 	else
 	{
 		int planeIndex = x * 16 + z;				// Index within this xz plane
-		int byteIndex = planeIndex / 2;				// Byte index within the plane (2 tiles stored per byte)
-		int shift = ( planeIndex & 1 ) * 4;			// Bit shift within the byte
+		int byteIndex = planeIndex / 2;				// Byte index within the plane (2 tiles stored per uint8_t)
+		int shift = ( planeIndex & 1 ) * 4;			// Bit shift within the uint8_t
 		int retval = ( data[ planeIndices[y] * 128 + byteIndex ] >> shift ) & 15;
 
 		return retval;
@@ -294,8 +294,8 @@ void SparseLightStorage::set(int x, int y, int z, int val)
 	// Either data was already allocated, or we've just done that. Now store our value into the right place.
 
 	int planeIndex = x * 16 + z;				// Index within this xz plane
-	int byteIndex = planeIndex / 2;				// Byte index within the plane (2 tiles stored per byte)
-	int shift = ( planeIndex & 1 ) * 4;			// Bit shift within the byte
+	int byteIndex = planeIndex / 2;				// Byte index within the plane (2 tiles stored per uint8_t)
+	int shift = ( planeIndex & 1 ) * 4;			// Bit shift within the uint8_t
 	int mask = 0xf0 >> shift;
 
 	int idx = planeIndices[y] * 128 + byteIndex;

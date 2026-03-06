@@ -11,8 +11,6 @@
 
 #define MULTITHREAD_ENABLE
 
-typedef unsigned char byte;
-
 const int XUSER_INDEX_ANY = 255;
 const int XUSER_INDEX_FOCUS = 254;
 
@@ -332,10 +330,10 @@ public:
 #define PIXSetMarkerDeprecated(a, b, ...) PIXSetMarker(a, L ## b, __VA_ARGS__)
 #define PIXAddNamedCounter(a, b) PIXReportCounter( L ## b, a)
 #else
-void PIXAddNamedCounter(int a, char *b, ...);
-void PIXBeginNamedEvent(int a, char *b, ...);
+void PIXAddNamedCounter(int a, const char *b, ...);
+void PIXBeginNamedEvent(int a, const char *b, ...);
 void PIXEndNamedEvent();
-void PIXSetMarkerDeprecated(int a, char *b, ...);
+void PIXSetMarkerDeprecated(int a, const char *b, ...);
 #endif
 
 void XSetThreadProcessor(HANDLE a, int b);
@@ -418,7 +416,7 @@ const int QNET_SENDDATA_SEQUENTIAL = 0;
 struct XRNM_SEND_BUFFER
 {
 	DWORD dwDataSize;
-	byte *pbyData;
+	uint8_t *pbyData;
 };
 
 const int D3DBLEND_CONSTANTALPHA = 0;

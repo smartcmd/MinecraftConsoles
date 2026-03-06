@@ -138,10 +138,10 @@ namespace Sentient
 	const HRESULT SENTIENT_E_TIME_OUT						   = SENTIENT_E_FIRST_ERROR  + 0x0008; // 0x80580008	// the operation took too long to complete and has been abandoned.
 	const HRESULT SENTIENT_E_CANCELED					       = SENTIENT_E_FIRST_ERROR  + 0x0009; // 0x80580009	// the operation was canceled by user sign-out or via an explicit call to SentientCancel
 	const HRESULT SENTIENT_E_FORBIDDEN					       = SENTIENT_E_FIRST_ERROR  + 0x000a; // 0x8058000a	// the server has indicated that the supplied user is not permitted to perform this operation.
-	const HRESULT SENTIENT_E_USERINDEX_IS_ANY                  = SENTIENT_E_FIRST_ERROR  + 0x000b; // 0x8058000b    // userIndex of ANY passed to a routine that requires a specific user.
-	const HRESULT SENTIENT_E_USERINDEX_IS_NONE                 = SENTIENT_E_FIRST_ERROR  + 0x000c; // 0x8058000c    // userIndex of NONE passed to a routine that requires a user.
+	const HRESULT SENTIENT_E_USERINDEX_IS_ANY                  = SENTIENT_E_FIRST_ERROR  + 0x000b; // 0x8058000b    // userIndex of ANY passed to a routine that requirements a specific user.
+	const HRESULT SENTIENT_E_USERINDEX_IS_NONE                 = SENTIENT_E_FIRST_ERROR  + 0x000c; // 0x8058000c    // userIndex of NONE passed to a routine that requirements a user.
 	const HRESULT SENTIENT_E_USERINDEX_IS_INVALID              = SENTIENT_E_FIRST_ERROR  + 0x000d; // 0x8058000d    // userIndex is not a known value
-	const HRESULT SENTIENT_E_USERINDEX_IS_FOCUS                = SENTIENT_E_FIRST_ERROR  + 0x000e; // 0x8058000e    // userIndex of FOCUS passed to a routine that requires a specific user.
+	const HRESULT SENTIENT_E_USERINDEX_IS_FOCUS                = SENTIENT_E_FIRST_ERROR  + 0x000e; // 0x8058000e    // userIndex of FOCUS passed to a routine that requirements a specific user.
 	const HRESULT SENTIENT_E_BUFFER_EXHAUSTED                  = SENTIENT_E_FIRST_ERROR  + 0x000f; // 0x8058000f    // no more space in buffer, operation was discarded
 	const HRESULT SENTIENT_E_RETRY_INVALID_DATA                = SENTIENT_E_FIRST_ERROR  + 0x0010; // 0x80580010    // retry; data was found to be invalid either after step or whole operation finished
 	const HRESULT SENTIENT_E_UNREACHABLE					   = SENTIENT_E_FIRST_ERROR  + 0x0011; // 0x80580011    // Server was not reachable when called.  Contact senhelp for assistance.

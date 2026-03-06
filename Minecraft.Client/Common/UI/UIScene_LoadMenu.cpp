@@ -968,7 +968,7 @@ void UIScene_LoadMenu::handleTouchBoxRebuild()
 void UIScene_LoadMenu::handleTimerComplete(int id)
 {
 #ifdef __PSVITA__
-	// we cannot rebuild touch boxes in an iggy callback because it requires further iggy calls
+	// we cannot rebuild touch boxes in an iggy callback because it requirements further iggy calls
 	if(m_bRebuildTouchBoxes)
 	{
 		GetMainPanel()->UpdateControl();

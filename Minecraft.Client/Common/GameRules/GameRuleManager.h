@@ -24,8 +24,8 @@ class WstringLookup;
 class GameRuleManager
 {
 public:
-	static WCHAR *wchTagNameA[ConsoleGameRules::eGameRuleType_Count];
-	static WCHAR *wchAttrNameA[ConsoleGameRules::eGameRuleAttr_Count];
+    static const WCHAR *wchTagNameA[ConsoleGameRules::eGameRuleType_Count];
+	static const WCHAR *wchAttrNameA[ConsoleGameRules::eGameRuleAttr_Count];
 
 	static const short version_number = 2;
 
@@ -40,10 +40,10 @@ public:
 
 	void loadGameRules(DLCPack *);
 
-	LevelGenerationOptions *loadGameRules(byte *dIn, UINT dSize);
-	void loadGameRules(LevelGenerationOptions *lgo, byte *dIn, UINT dSize);
+	LevelGenerationOptions *loadGameRules(uint8_t *dIn, UINT dSize);
+	void loadGameRules(LevelGenerationOptions *lgo, uint8_t *dIn, UINT dSize);
 
-	void saveGameRules(byte **dOut, UINT *dSize); 
+	void saveGameRules(uint8_t **dOut, UINT *dSize); 
 
 private:
 	LevelGenerationOptions *readHeader(DLCGameRulesHeader *grh);
@@ -51,7 +51,7 @@ private:
 	void writeRuleFile(DataOutputStream *dos);
 
 public:
-	bool readRuleFile(LevelGenerationOptions *lgo, byte *dIn, UINT dSize, StringTable *strings); //(DLCGameRulesFile *dlcFile, StringTable *strings);
+	bool readRuleFile(LevelGenerationOptions *lgo, uint8_t *dIn, UINT dSize, StringTable *strings); //(DLCGameRulesFile *dlcFile, StringTable *strings);
 
 private:
 	void readAttributes(DataInputStream *dis, vector<wstring> *tagsAndAtts, GameRuleDefinition *rule);

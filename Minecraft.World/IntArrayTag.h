@@ -44,7 +44,7 @@ public:
 		}
 	}
 
-	byte getId() { return TAG_Int_Array; }
+	uint8_t getId() { return TAG_Int_Array; }
 
 	wstring toString()
 	{

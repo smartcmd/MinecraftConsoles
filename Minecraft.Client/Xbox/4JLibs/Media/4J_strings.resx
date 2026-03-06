@@ -118,7 +118,7 @@
     <value>This game has some features which require an Xbox LIVE enabled gamer profile, but you are currently offline.</value>
   </data>
   <data name="IDS_PRO_XBOXLIVE_NOTIFICATION">
-    <value>This feature requires a gamer profile which is signed into Xbox LIVE.</value>
+    <value>This feature requirements a gamer profile which is signed into Xbox LIVE.</value>
   </data>
   <data name="IDS_PRO_NOTONLINE_ACCEPT">
     <value>Connect to Xbox LIVE</value>

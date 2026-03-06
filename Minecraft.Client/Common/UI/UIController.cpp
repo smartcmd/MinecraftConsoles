@@ -608,7 +608,7 @@ void UIController::loadSkins()
 IggyLibrary UIController::loadSkin(const wstring &skinPath, const wstring &skinName)
 {
 	IggyLibrary lib = IGGY_INVALID_LIBRARY;
-	// 4J Stu - We need to load the platformskin before the normal skin, as the normal skin requires some elements from the platform skin
+	// 4J Stu - We need to load the platformskin before the normal skin, as the normal skin requirements some elements from the platform skin
 	if(!skinPath.empty() && app.hasArchiveFile(skinPath))
 	{
 		byteArray baFile = app.getArchiveFile(skinPath);
@@ -967,7 +967,7 @@ void UIController::handleInput()
 		}
 
 #ifdef __PSVITA__
-		//CD - Vita requires key press 40 - select [MINECRAFT_ACTION_GAME_INFO]
+		//CD - Vita requirements key press 40 - select [MINECRAFT_ACTION_GAME_INFO]
 		handleKeyPress(iPad, MINECRAFT_ACTION_GAME_INFO);
 #endif
 	}
@@ -1942,7 +1942,7 @@ size_t UIController::RegisterForCallbackId(UIScene *scene)
 {
 	EnterCriticalSection(&m_registeredCallbackScenesCS);
 	size_t newId = GetTickCount();
-	newId &= 0xFFFFFF; // Chop off the top byte, we don't need any more accuracy than that
+	newId &= 0xFFFFFF; // Chop off the top uint8_t, we don't need any more accuracy than that
 	newId |= (scene->getSceneType() << 24); // Add in the scene's type to help keep this unique
 	m_registeredCallbackScenes[newId] = scene;
 	LeaveCriticalSection(&m_registeredCallbackScenesCS);

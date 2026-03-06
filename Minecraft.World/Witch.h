@@ -37,7 +37,7 @@ protected:
 public:
 	virtual bool useNewAi();
 	virtual void aiStep();
-	virtual void handleEntityEvent(byte id);
+	virtual void handleEntityEvent(uint8_t id);
 
 protected:
 	virtual float getDamageAfterMagicAbsorb(DamageSource *damageSource, float damage);

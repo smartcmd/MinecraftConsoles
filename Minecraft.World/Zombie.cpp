@@ -68,9 +68,9 @@ void Zombie::defineSynchedData()
 {
 	Monster::defineSynchedData();
 
-	getEntityData()->define(DATA_BABY_ID, (byte) 0);
-	getEntityData()->define(DATA_VILLAGER_ID, (byte) 0);
-	getEntityData()->define(DATA_CONVERTING_ID, (byte) 0);
+	getEntityData()->define(DATA_BABY_ID, (uint8_t) 0);
+	getEntityData()->define(DATA_VILLAGER_ID, (uint8_t) 0);
+	getEntityData()->define(DATA_CONVERTING_ID, (uint8_t) 0);
 }
 
 int Zombie::getArmorValue()
@@ -87,12 +87,12 @@ bool Zombie::useNewAi()
 
 bool Zombie::isBaby()
 {
-	return getEntityData()->getByte(DATA_BABY_ID) == (byte) 1;
+	return getEntityData()->getByte(DATA_BABY_ID) == (uint8_t) 1;
 }
 
 void Zombie::setBaby(bool baby)
 {
-	getEntityData()->set(DATA_BABY_ID, (byte) (baby ? 1 : 0));
+	getEntityData()->set(DATA_BABY_ID, (uint8_t) (baby ? 1 : 0));
 
 	if (level != NULL && !level->isClientSide)
 	{
@@ -107,12 +107,12 @@ void Zombie::setBaby(bool baby)
 
 bool Zombie::isVillager()
 {
-	return getEntityData()->getByte(DATA_VILLAGER_ID) == (byte) 1;
+	return getEntityData()->getByte(DATA_VILLAGER_ID) == (uint8_t) 1;
 }
 
 void Zombie::setVillager(bool villager)
 {
-	getEntityData()->set(DATA_VILLAGER_ID, (byte) (villager ? 1 : 0));
+	getEntityData()->set(DATA_VILLAGER_ID, (uint8_t) (villager ? 1 : 0));
 }
 
 void Zombie::aiStep()
@@ -414,7 +414,7 @@ bool Zombie::mobInteract(shared_ptr<Player> player)
 void Zombie::startConverting(int time)
 {
 	villagerConversionTime = time;
-	getEntityData()->set(DATA_CONVERTING_ID, (byte) 1);
+	getEntityData()->set(DATA_CONVERTING_ID, (uint8_t) 1);
 
 	removeEffect(MobEffect::weakness->id);
 	addEffect(new MobEffectInstance(MobEffect::damageBoost->id, time, min(level->difficulty - 1, 0)));
@@ -422,7 +422,7 @@ void Zombie::startConverting(int time)
 	level->broadcastEntityEvent(shared_from_this(), EntityEvent::ZOMBIE_CONVERTING);
 }
 
-void Zombie::handleEntityEvent(byte id)
+void Zombie::handleEntityEvent(uint8_t id)
 {
 	if (id == EntityEvent::ZOMBIE_CONVERTING)
 	{
@@ -441,7 +441,7 @@ bool Zombie::removeWhenFarAway()
 
 bool Zombie::isConverting()
 {
-	return getEntityData()->getByte(DATA_CONVERTING_ID) == (byte) 1;
+	return getEntityData()->getByte(DATA_CONVERTING_ID) == (uint8_t) 1;
 }
 
 void Zombie::finishConversion()

@@ -110,7 +110,7 @@ const unsigned int FIREWORKS_CHARGE_COLOUR_NAME[] =
 void FireworksChargeItem::appendHoverText(CompoundTag *expTag, vector<HtmlString> *lines)
 {
 	// shape
-	byte type = expTag->getByte(FireworksItem::TAG_E_TYPE);
+	uint8_t type = expTag->getByte(FireworksItem::TAG_E_TYPE);
 	if (type >= FireworksItem::TYPE_MIN && type <= FireworksItem::TYPE_MAX)
 	{
 		lines->push_back(HtmlString(app.GetString(FIREWORKS_CHARGE_TYPE_NAME[type])));

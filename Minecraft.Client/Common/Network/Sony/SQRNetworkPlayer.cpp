@@ -207,7 +207,7 @@ bool SQRNetworkPlayer::HasSmallIdConfirmed()
 	return ( m_flags & SNP_FLAG_SMALLID_CONFIRMED );
 }
 
-// To confirm to the host that we are ready, send a single byte with our small id.
+// To confirm to the host that we are ready, send a single uint8_t with our small id.
 void SQRNetworkPlayer::ConfirmReady()
 {
 	SendInternal(&m_ISD, sizeof(InitSendData), e_flag_AckNotRequested);

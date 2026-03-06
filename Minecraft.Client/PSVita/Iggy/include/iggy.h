@@ -172,7 +172,7 @@ typedef struct IggyAllocator
    Iggy_AllocateFunction   *mem_alloc;
    Iggy_DeallocateFunction *mem_free;
    #ifndef __RAD64__
-   void                    *struct_padding;  // pad to 8-byte boundary
+   void                    *struct_padding;  // pad to 8-uint8_t boundary
    #endif
 } IggyAllocator;
 

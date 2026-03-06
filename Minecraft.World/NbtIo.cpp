@@ -16,7 +16,7 @@ CompoundTag *NbtIo::readCompressed(InputStream *in)
 void NbtIo::writeCompressed(CompoundTag *tag, OutputStream *out)
 {
 	// 4J - this was using a try/finally block
-	// 4J Stu - Buffer output in 1024 byte chunks so that we can allocate properly in the save file
+	// 4J Stu - Buffer output in 1024 uint8_t chunks so that we can allocate properly in the save file
 	BufferedOutputStream bos = BufferedOutputStream( out, 1024 );
 	DataOutputStream dos = DataOutputStream(&bos); // 4J - was new GZIPOutputStream as well
 	NbtIo::write(tag, &dos);

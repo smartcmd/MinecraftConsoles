@@ -9,29 +9,29 @@ class FloatBuffer;
 class ByteBuffer : public Buffer
 {
 protected:
-	byte *buffer;
+	uint8_t *buffer;
 	ByteOrder byteOrder;
 
 public:
 	ByteBuffer(unsigned int capacity);
 	static ByteBuffer *allocateDirect(int capacity);
-	ByteBuffer( unsigned int capacity, byte *backingArray );
+	ByteBuffer( unsigned int capacity, uint8_t *backingArray );
 	virtual ~ByteBuffer();
 
 	static ByteBuffer *wrap(byteArray &b);
 	static ByteBuffer *allocate(unsigned int capacity);
 	void order(ByteOrder a);
 	ByteBuffer *flip();
-	byte *getBuffer();
+	uint8_t *getBuffer();
 	int getSize();
 	int getInt();
 	int getInt(unsigned int index);
 	void get(byteArray) {}	// 4J - TODO
-	byte get(int index);
+	uint8_t get(int index);
 	__int64 getLong();
 	short getShort();
 	void getShortArray(shortArray &s);
-	ByteBuffer *put(int index, byte b);
+	ByteBuffer *put(int index, uint8_t b);
 	ByteBuffer *putInt(int value);
 	ByteBuffer *putInt(unsigned int index, int value);
 	ByteBuffer *putShort(short value);

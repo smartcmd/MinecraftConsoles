@@ -257,7 +257,7 @@ typedef struct GDrawRenderState
    U8 stencil_test;     // Only draw if these stencil bits are "set"
    U8 stencil_set;      // "Set" these stencil bits (note that actual implementation initializes stencil to 1, and "set" makes them 0)
 
-   U8 reserved[2];      // Currently unused (used to make padding to 4/8-byte boundary for following pointer explicit)
+   U8 reserved[2];      // Currently unused (used to make padding to 4/8-uint8_t boundary for following pointer explicit)
    S32 blur_passes;     // For filters that include blurring, this is the number of box filter passes to run
                                        //align 0 mod 8
 
@@ -371,7 +371,7 @@ IDOC typedef void RADLINK gdraw_draw_indexed_triangles(GDrawRenderState *r, GDra
 IDOC typedef void RADLINK gdraw_set_antialias_texture(S32 width, U8 *rgba);
 /* Specifies the 1D texture data to be used for the antialiasing gradients.
 
-   'rgba' specifies the pixel values in rgba byte order. This will only be called
+   'rgba' specifies the pixel values in rgba uint8_t order. This will only be called
    once during initialization. */
 
 ////////////////////////////////////////////////////////////
@@ -383,7 +383,7 @@ IDOC typedef void RADLINK gdraw_set_antialias_texture(S32 width, U8 *rgba);
 IDOC typedef enum gdraw_texture_format
 {
    // Platform-independent formats
-   GDRAW_TEXTURE_FORMAT_rgba32,  // 32bpp RGBA data in platform-preferred byte order (returned by $gdraw_make_texture_begin as $gdraw_texture_type)
+   GDRAW_TEXTURE_FORMAT_rgba32,  // 32bpp RGBA data in platform-preferred uint8_t order (returned by $gdraw_make_texture_begin as $gdraw_texture_type)
    GDRAW_TEXTURE_FORMAT_font,    // Alpha-only data with at least 4 bits/pixel. Data is submitted as 8 bits/pixel, conversion (if necessary) done by GDraw.
 
    // First platform-specific format index (for reference)
@@ -718,7 +718,7 @@ IDOC struct GDrawFunctions
    to dynamically configure which of RAD's supplied drawing layers
    you wish to use, or to integrate it directly into your own
    renderer by implementing your own versions of the drawing
-   functions Iggy requires.
+   functions Iggy requirements.
 */
 
 RADDEFEND

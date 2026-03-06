@@ -149,7 +149,7 @@ void FurnaceTileEntity::save(CompoundTag *base)
 		if (items[i] != NULL)
 		{
 			CompoundTag *tag = new CompoundTag();
-			tag->putByte(L"Slot", (byte) i);
+			tag->putByte(L"Slot", (uint8_t) i);
 			items[i]->save(tag);
 			listTag->add(tag);
 		}

@@ -11,7 +11,7 @@ public:
 	void write(DataOutput *dos) { dos->writeLong(data); }
 	void load(DataInput *dis, int tagDepth) { data = dis->readLong(); }
 
-	byte getId() { return TAG_Long; }
+	uint8_t getId() { return TAG_Long; }
 	wstring toString()
 	{
 		static wchar_t buf[32];

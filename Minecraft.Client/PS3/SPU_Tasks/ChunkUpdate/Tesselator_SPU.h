@@ -3,7 +3,7 @@
 #ifdef __PS3__
 #ifdef SN_TARGET_PS3_SPU
 typedef unsigned int DWORD;
-typedef unsigned char byte;
+typedef unsigned char uint8_t;
 #include <float.h>
 #else 
 #include "..\..\..\stdafx.h"
@@ -154,7 +154,7 @@ public:
     void color(float r, float g, float b, float a);
     void color(int r, int g, int b);
     void color(int r, int g, int b, int a);
-    void color(byte r, byte g, byte b);
+    void color(uint8_t r, uint8_t g, uint8_t b);
     void vertexUV(float x, float y, float z, float u, float v);
     void vertex(float x, float y, float z);
     void color(int c);

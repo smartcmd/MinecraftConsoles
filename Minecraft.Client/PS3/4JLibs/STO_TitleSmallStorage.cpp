@@ -33,7 +33,7 @@ int32_t	CTSS::TssSizeCheck(size_t	size)
 
 	if (size == 0)
 	{
-		printf("Tss File size is 0 byte. Maybe, data isn't set on the server.\n\n");
+		printf("Tss File size is 0 uint8_t. Maybe, data isn't set on the server.\n\n");
 		printf("\tThe data is set with scp. The account is generable in PS3 Developer Network.\n");
 		printf("\tThere are three server environments. for development, environment for test, and product.\n");
 	}

@@ -204,7 +204,7 @@ bool ItemEntity::hurt(DamageSource *source, float damage)
 
 void ItemEntity::addAdditonalSaveData(CompoundTag *entityTag)
 {
-	entityTag->putShort(L"Health", (byte) health);
+	entityTag->putShort(L"Health", (uint8_t) health);
 	entityTag->putShort(L"Age", (short) age);
 	if (getItem() != NULL) entityTag->putCompound(L"Item", getItem()->save(new CompoundTag()));
 }
