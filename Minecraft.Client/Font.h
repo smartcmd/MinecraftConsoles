@@ -47,6 +47,7 @@ public:
 
 private:
 	void renderCharacter(wchar_t c); // 4J added
+	void addCharacterQuad(wchar_t c);
 	void renderStyleLine(float x0, float y0, float x1, float y1); // solid line for underline/strikethrough
 
 public:
