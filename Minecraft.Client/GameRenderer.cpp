@@ -74,7 +74,7 @@ ResourceLocation GameRenderer::SNOW_LOCATION = ResourceLocation(TN_ENVIRONMENT_S
 GameRenderer::GameRenderer(Minecraft *mc)
 {
 	// 4J - added this block of initialisers
-	renderDistance = mc->options->viewDistance;
+	renderDistance = (float)(16 * 16 >> mc->options->viewDistance);
 	_tick = 0;
 	hovered = nullptr;
 	thirdDistance = 4;
