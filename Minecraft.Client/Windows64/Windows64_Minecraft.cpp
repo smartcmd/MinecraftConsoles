@@ -98,6 +98,8 @@ wchar_t g_Win64UsernameW[17] = { 0 };
 static bool g_isFullscreen = false;
 static WINDOWPLACEMENT g_wpPrev = { sizeof(g_wpPrev) };
 
+void ToggleFullscreen(); // used in ParseLaunchOptions()
+
 //--------------------------------------------------------------------------------------
 // Update the Aspect Ratio to support Any Aspect Ratio
 //--------------------------------------------------------------------------------------
@@ -110,6 +112,7 @@ struct Win64LaunchOptions
 {
 	int screenMode;
 	bool serverMode;
+	bool fullscreen;
 };
 
 static void CopyWideArgToAnsi(LPCWSTR source, char* dest, size_t destSize)
@@ -256,6 +259,8 @@ static Win64LaunchOptions ParseLaunchOptions()
 					g_Win64MultiplayerPort = (int)port;
 			}
 		}
+		else if (_wcsicmp(argv[i], L"-fullscreen") == 0)
+			options.fullscreen = true;
 	}
 
 	LocalFree(argv);
