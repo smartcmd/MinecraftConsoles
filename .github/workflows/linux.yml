@@ -1,4 +1,4 @@
-name: Build DLL (Linux)
+name: Build (Linux)
 
 on:
   workflow_dispatch:
