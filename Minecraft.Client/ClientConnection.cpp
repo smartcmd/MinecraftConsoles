@@ -1441,6 +1441,9 @@ void ClientConnection::handleChat(shared_ptr<ChatPacket> packet)
 
 	switch(packet->m_messageType)
 	{
+	case ChatPacket::e_ChatCustom:
+		message = (packet->m_stringArgs.size() >= 1) ? packet->m_stringArgs[0] : L"";
+		break;
 	case ChatPacket::e_ChatBedOccupied:
 		message = app.GetString(IDS_TILE_BED_OCCUPIED);
 		break;

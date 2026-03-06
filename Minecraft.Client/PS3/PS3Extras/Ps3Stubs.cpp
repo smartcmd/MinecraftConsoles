@@ -671,7 +671,7 @@ HANDLE FindFirstFileA(LPCSTR lpFileName, LPWIN32_FIND_DATA lpFindFileData) { PS3
 BOOL FindNextFileA(HANDLE hFindFile, LPWIN32_FIND_DATAA lpFindFileData) { PS3_STUBBED; return false;}
 
 errno_t _itoa_s(int _Value, char * _DstBuf, size_t _Size, int _Radix) { if(_Radix==10) sprintf(_DstBuf,"%d",_Value); else if(_Radix==16) sprintf(_DstBuf,"%lx",_Value); else return -1; return 0; }
-errno_t _i64toa_s(__int64 _Val, char * _DstBuf, size_t _Size, int _Radix) { if(_Radix==10) sprintf(_DstBuf,"%lld",_Val); else return -1; return 0; }
+errno_t _i64toa_s(int64_t _Val, char * _DstBuf, size_t _Size, int _Radix) { if(_Radix==10) sprintf(_DstBuf,"%lld",_Val); else return -1; return 0; }
 
 int _wtoi(const wchar_t *_Str)
 {

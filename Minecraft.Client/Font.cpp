@@ -21,6 +21,10 @@ Font::Font(Options *options, const wstring& name, Textures* textures, bool enfor
 	enforceUnicodeSheet = false;
 	bidirectional = false;
 	xPos = yPos = 0.0f;
+	m_bold = false;
+	m_italic = false;
+	m_underline = false;
+	m_strikethrough = false;
 
 	// Set up member variables
 	m_cols = cols;
@@ -126,6 +130,60 @@ Font::~Font()
 }
 #endif
 
+void Font::renderStyleLine(float x0, float y0, float x1, float y1)
+{
+	Tesselator* t = Tesselator::getInstance();
+	float u = 0.0f, v = 0.0f;
+	t->begin();
+	t->tex(u, v);
+	t->vertex(x0, y1, 0.0f);
+	t->tex(u, v);
+	t->vertex(x1, y1, 0.0f);
+	t->tex(u, v);
+	t->vertex(x1, y0, 0.0f);
+	t->tex(u, v);
+	t->vertex(x0, y0, 0.0f);
+	t->end();
+}
+
+void Font::addCharacterQuad(wchar_t c)
+{
+	float xOff = c % m_cols * m_charWidth;
+	float yOff = c / m_cols * m_charWidth;
+	float width = charWidths[c] - .01f;
+	float height = m_charHeight - .01f;
+	float fontWidth = m_cols * m_charWidth;
+	float fontHeight = m_rows * m_charHeight;
+	const float shear = m_italic ? (height * 0.25f) : 0.0f;
+	float x0 = xPos, x1 = xPos + width + shear;
+	float y0 = yPos, y1 = yPos + height;
+
+	Tesselator *t = Tesselator::getInstance();
+	t->tex(xOff / fontWidth, (yOff + 7.99f) / fontHeight);
+	t->vertex(x0, y1, 0.0f);
+	t->tex((xOff + width) / fontWidth, (yOff + 7.99f) / fontHeight);
+	t->vertex(x1, y1, 0.0f);
+	t->tex((xOff + width) / fontWidth, yOff / fontHeight);
+	t->vertex(x1, y0, 0.0f);
+	t->tex(xOff / fontWidth, yOff / fontHeight);
+	t->vertex(x0, y0, 0.0f);
+
+	if (m_bold)
+	{
+		float dx = 1.0f;
+		t->tex(xOff / fontWidth, (yOff + 7.99f) / fontHeight);
+		t->vertex(x0 + dx, y1, 0.0f);
+		t->tex((xOff + width) / fontWidth, (yOff + 7.99f) / fontHeight);
+		t->vertex(x1 + dx, y1, 0.0f);
+		t->tex((xOff + width) / fontWidth, yOff / fontHeight);
+		t->vertex(x1 + dx, y0, 0.0f);
+		t->tex(xOff / fontWidth, yOff / fontHeight);
+		t->vertex(x0 + dx, y0, 0.0f);
+	}
+
+	xPos += static_cast<float>(charWidths[c]);
+}
+
 void Font::renderCharacter(wchar_t c)
 {
 	float xOff = c % m_cols * m_charWidth;
@@ -137,43 +195,73 @@ void Font::renderCharacter(wchar_t c)
 	float fontWidth = m_cols * m_charWidth;
 	float fontHeight = m_rows * m_charHeight;
 
-    Tesselator *t = Tesselator::getInstance();
-	// 4J Stu - Changed to a quad so that we can use within a command buffer
-#if 1
+	const float shear = m_italic ? (height * 0.25f) : 0.0f;
+	float x0 = xPos, x1 = xPos + width + shear;
+	float y0 = yPos, y1 = yPos + height;
+
+	Tesselator *t = Tesselator::getInstance();
 	t->begin();
 	t->tex(xOff / fontWidth, (yOff + 7.99f) / fontHeight);
-	t->vertex(xPos, yPos + height, 0.0f);
-
+	t->vertex(x0, y1, 0.0f);
 	t->tex((xOff + width) / fontWidth, (yOff + 7.99f) / fontHeight);
-	t->vertex(xPos + width, yPos + height, 0.0f);
-
+	t->vertex(x1, y1, 0.0f);
 	t->tex((xOff + width) / fontWidth, yOff / fontHeight);
-	t->vertex(xPos + width, yPos, 0.0f);
-
+	t->vertex(x1, y0, 0.0f);
 	t->tex(xOff / fontWidth, yOff / fontHeight);
-	t->vertex(xPos, yPos, 0.0f);
-
+	t->vertex(x0, y0, 0.0f);
 	t->end();
-#else
-	t->begin(GL_TRIANGLE_STRIP);
-	t->tex(xOff / 128.0F, yOff / 128.0F);
-	t->vertex(xPos, yPos, 0.0f);
-	t->tex(xOff / 128.0F, (yOff + 7.99f) / 128.0F);
-	t->vertex(xPos, yPos + 7.99f, 0.0f);
-	t->tex((xOff + width) / 128.0F, yOff / 128.0F);
-	t->vertex(xPos + width, yPos, 0.0f);
-	t->tex((xOff + width) / 128.0F, (yOff + 7.99f) / 128.0F);
-	t->vertex(xPos + width, yPos + 7.99f, 0.0f);
-	t->end();
-#endif
 
-	xPos += (float) charWidths[c];
+	if (m_bold)
+	{
+		float dx = 1.0f;
+		t->begin();
+		t->tex(xOff / fontWidth, (yOff + 7.99f) / fontHeight);
+		t->vertex(x0 + dx, y1, 0.0f);
+		t->tex((xOff + width) / fontWidth, (yOff + 7.99f) / fontHeight);
+		t->vertex(x1 + dx, y1, 0.0f);
+		t->tex((xOff + width) / fontWidth, yOff / fontHeight);
+		t->vertex(x1 + dx, y0, 0.0f);
+		t->tex(xOff / fontWidth, yOff / fontHeight);
+		t->vertex(x0 + dx, y0, 0.0f);
+		t->end();
+	}
+
+	if (m_underline)
+		renderStyleLine(x0, y1 - 1.0f, xPos + static_cast<float>(charWidths[c]), y1);
+
+	if (m_strikethrough)
+	{
+		float mid = y0 + height * 0.5f;
+		renderStyleLine(x0, mid - 0.5f, xPos + static_cast<float>(charWidths[c]), mid + 0.5f);
+	}
+
+	xPos += static_cast<float>(charWidths[c]);
 }
 
 void Font::drawShadow(const wstring& str, int x, int y, int color)
 {
     draw(str, x + 1, y + 1, color, true);
     draw(str, x, y, color, false);
+}
+
+void Font::drawShadowLiteral(const wstring& str, int x, int y, int color)
+{
+	int shadowColor = (color & 0xFCFCFC) >> 2 | (color & 0xFF000000);
+	drawLiteral(str, x + 1, y + 1, shadowColor);
+	drawLiteral(str, x, y, color);
+}
+
+void Font::drawLiteral(const wstring& str, int x, int y, int color)
+{
+	if (str.empty()) return;
+	if ((color & 0xFC000000) == 0) color |= 0xFF000000;
+	textures->bindTexture(m_textureLocation);
+	glColor4f((color >> 16 & 255) / 255.0F, (color >> 8 & 255) / 255.0F, (color & 255) / 255.0F, (color >> 24 & 255) / 255.0F);
+	xPos = static_cast<float>(x);
+	yPos = static_cast<float>(y);
+	wstring cleanStr = sanitize(str);
+	for (size_t i = 0; i < cleanStr.length(); ++i)
+		renderCharacter(cleanStr.at(i));
 }
 
 void Font::drawShadowWordWrap(const wstring &str, int x, int y, int w, int color, int h)
@@ -193,24 +281,42 @@ wstring Font::reorderBidi(const wstring &str)
 	return str;
 }
 
+static bool isSectionFormatCode(wchar_t ca)
+{
+	if ((ca >= L'0' && ca <= L'9') || (ca >= L'a' && ca <= L'f') || (ca >= L'A' && ca <= L'F'))
+		return true;
+	wchar_t l = static_cast<wchar_t>(ca | 32);
+	return l == L'l' || l == L'o' || l == L'n' || l == L'm' || l == L'r' || l == L'k';
+}
+
 void Font::draw(const wstring &str, bool dropShadow)
 {
 	// Bind the texture
 	textures->bindTexture(m_textureLocation);
-
 	bool noise = false;
+	m_bold = m_italic = m_underline = m_strikethrough = false;
 	wstring cleanStr = sanitize(str);
 
-	for (int i = 0; i < (int)cleanStr.length(); ++i)
+	Tesselator *t = Tesselator::getInstance();
+	t->begin();
+
+	for (int i = 0; i < static_cast<int>(cleanStr.length()); ++i)
 	{
 		// Map character
 		wchar_t c = cleanStr.at(i);
 
 		if (c == 167 && i + 1 < cleanStr.length())
 		{
-			// 4J - following block was:
-			// int colorN = L"0123456789abcdefk".indexOf(str.toLowerCase().charAt(i + 1));
 			wchar_t ca = cleanStr[i+1];
+			if (!isSectionFormatCode(ca))
+			{
+				t->end();
+				renderCharacter(167);
+				renderCharacter(ca);
+				t->begin();
+				i += 1;
+				continue;
+			}
 			int colorN = 16;
 			if(( ca >= L'0' ) && (ca <= L'9')) colorN = ca - L'0';
 			else if(( ca >= L'a' ) && (ca <= L'f')) colorN = (ca - L'a') + 10;
@@ -218,20 +324,22 @@ void Font::draw(const wstring &str, bool dropShadow)
 
 			if (colorN == 16)
 			{
-				noise = true;
+				wchar_t l = static_cast<wchar_t>(ca | 32);
+				if (l == L'l') m_bold = true;
+				else if (l == L'o') m_italic = true;
+				else if (l == L'n') m_underline = true;
+				else if (l == L'm') m_strikethrough = true;
+				else if (l == L'r') m_bold = m_italic = m_underline = m_strikethrough = noise = false;
+				else if (l == L'k') noise = true;
 			}
 			else
 			{
 				noise = false;
 				if (colorN < 0 || colorN > 15) colorN = 15;
-
 				if (dropShadow) colorN += 16;
-
 				int color = colors[colorN];
 				glColor3f((color >> 16) / 255.0F, ((color >> 8) & 255) / 255.0F, (color & 255) / 255.0F);
 			}
-
-
 			i += 1;
 			continue;
 		}
@@ -247,8 +355,10 @@ void Font::draw(const wstring &str, bool dropShadow)
 			c = newc;
 		}
 
-		renderCharacter(c);
+		addCharacterQuad(c);
 	}
+
+	t->end();
 }
 
 void Font::draw(const wstring& str, int x, int y, int color, bool dropShadow)
@@ -280,17 +390,31 @@ int Font::width(const wstring& str)
 	{
 		wchar_t c = cleanStr.at(i);
 
-		if(c == 167)
+		if (c == 167)
 		{
-			// Ignore the character used to define coloured text
-			++i;
+			if (i + 1 < cleanStr.length() && isSectionFormatCode(cleanStr[i+1]))
+				++i;
+			else
+			{
+				len += charWidths[167];
+				if (i + 1 < cleanStr.length())
+					len += charWidths[static_cast<unsigned>(cleanStr[++i])];
+			}
 		}
 		else
-		{
 			len += charWidths[c];
-		}
 	}
 
+	return len;
+}
+
+int Font::widthLiteral(const wstring& str)
+{
+	wstring cleanStr = sanitize(str);
+	if (cleanStr == L"") return 0;
+	int len = 0;
+	for (size_t i = 0; i < cleanStr.length(); ++i)
+		len += charWidths[static_cast<unsigned>(cleanStr.at(i))];
 	return len;
 }
 
@@ -467,7 +591,7 @@ void Font::setBidirectional(bool bidirectional)
 
 bool Font::AllCharactersValid(const wstring &str)
 {
-	for (int i = 0; i < (int)str.length(); ++i)
+	for (int i = 0; i < static_cast<int>(str.length()); ++i)
 	{
 		wchar_t c = str.at(i);
 
@@ -512,15 +636,15 @@ void Font::renderFakeCB(IntBuffer *ib)
 			float uo = (0.0f) / 128.0f;
 			float vo = (0.0f) / 128.0f;
 
-			t->vertexUV((float)(0), (float)( 0 + s), (float)( 0), (float)( ix / 128.0f + uo), (float)( (iy + s) / 128.0f + vo));
-			t->vertexUV((float)(0 + s), (float)( 0 + s), (float)( 0), (float)( (ix + s) / 128.0f + uo), (float)( (iy + s) / 128.0f + vo));
-			t->vertexUV((float)(0 + s), (float)( 0), (float)( 0), (float)( (ix + s) / 128.0f + uo), (float)( iy / 128.0f + vo));
-			t->vertexUV((float)(0), (float)( 0), (float)( 0), (float)( ix / 128.0f + uo), (float)( iy / 128.0f + vo));
+			t->vertexUV(static_cast<float>(0), static_cast<float>(0 + s), static_cast<float>(0), static_cast<float>(ix / 128.0f + uo), static_cast<float>((iy + s) / 128.0f + vo));
+			t->vertexUV(static_cast<float>(0 + s), static_cast<float>(0 + s), static_cast<float>(0), static_cast<float>((ix + s) / 128.0f + uo), static_cast<float>((iy + s) / 128.0f + vo));
+			t->vertexUV(static_cast<float>(0 + s), static_cast<float>(0), static_cast<float>(0), static_cast<float>((ix + s) / 128.0f + uo), static_cast<float>(iy / 128.0f + vo));
+			t->vertexUV(static_cast<float>(0), static_cast<float>(0), static_cast<float>(0), static_cast<float>(ix / 128.0f + uo), static_cast<float>(iy / 128.0f + vo));
 			// target.colorBlit(texture, x + xo, y, color, ix, iy,
 		// charWidths[chars[i]], 8);
 			t->end();
 
-			glTranslatef((float)charWidths[i], 0, 0);
+			glTranslatef(static_cast<float>(charWidths[i]), 0, 0);
 		}
 		else
 		{

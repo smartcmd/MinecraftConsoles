@@ -4,13 +4,13 @@
 #include "PacketListener.h"
 #include "SetTimePacket.h"
 
-SetTimePacket::SetTimePacket() 
+SetTimePacket::SetTimePacket()
 {
 	gameTime = 0;
 	dayTime = 0;
 }
 
-SetTimePacket::SetTimePacket(__int64 gameTime, __int64 dayTime, bool tickDayTime)
+SetTimePacket::SetTimePacket(int64_t gameTime, int64_t dayTime, bool tickDayTime)
 {
 	this->gameTime = gameTime;
 	this->dayTime = dayTime;
@@ -32,7 +32,7 @@ void SetTimePacket::read(DataInputStream *dis) //throws IOException
 	dayTime = dis->readLong();
 }
 
-void SetTimePacket::write(DataOutputStream *dos) //throws IOException 
+void SetTimePacket::write(DataOutputStream *dos) //throws IOException
 {
 	dos->writeLong(gameTime);
 	dos->writeLong(dayTime);

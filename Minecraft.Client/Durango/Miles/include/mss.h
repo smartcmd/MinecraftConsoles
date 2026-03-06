@@ -39,7 +39,7 @@
 
 // doc system stuff
 #ifndef EXPAPI
-#define EXPAPI 
+#define EXPAPI
 #endif
 #ifndef EXPTYPE
 #define EXPTYPE
@@ -69,10 +69,10 @@
 // For docs
 EXPGROUP(_NullGroup)
 #define MilesVersion "9.3m" EXPMACRO
-#define MilesMajorVersion    9  EXPMACRO    
+#define MilesMajorVersion    9  EXPMACRO
 #define MilesMinorVersion    3  EXPMACRO
-#define MilesBuildNumber     11  EXPMACRO     
-#define MilesCustomization   0  EXPMACRO    
+#define MilesBuildNumber     11  EXPMACRO
+#define MilesCustomization   0  EXPMACRO
 EXPGROUP(_RootGroup)
 
 
@@ -273,14 +273,14 @@ typedef void VOIDFUNC(void);
 //================
 
 EXPGROUP(Basic Types)
-#define AILCALL EXPTAG(AILCALL) 
+#define AILCALL EXPTAG(AILCALL)
 /*
    Internal calling convention that all external Miles functions use.
 
    Usually cdecl or stdcall on Windows.
 */
 
-#define AILCALLBACK EXPTAG(AILCALLBACK docproto) 
+#define AILCALLBACK EXPTAG(AILCALLBACK docproto)
 /*
    Calling convention that user supplied callbacks <b>from</b> Miles use.
 
@@ -326,7 +326,7 @@ RADDEFSTART
   typedef CHAR *LPSTR, *PSTR;
 
   #ifdef IS_WIN64
-      typedef unsigned __int64 ULONG_PTR, *PULONG_PTR;
+      typedef unsigned long long ULONG_PTR, *PULONG_PTR;
   #else
     #ifdef _Wp64
       #if !defined(__midl) && (defined(_X86_) || defined(_M_IX86)) && _MSC_VER >= 1300
@@ -348,13 +348,13 @@ RADDEFSTART
   typedef struct HWAVEOUT__ *HWAVEOUT;
   typedef HWAVEIN  *LPHWAVEIN;
   typedef HWAVEOUT  *LPHWAVEOUT;
-  
+
   #ifndef WAVE_MAPPER
     #define WAVE_MAPPER     ((UINT)-1)
   #endif
 
   typedef struct waveformat_tag *LPWAVEFORMAT;
-  
+
   typedef struct HMIDIOUT__ *HMIDIOUT;
   typedef HMIDIOUT  *LPHMIDIOUT;
   typedef struct HWND__ *HWND;
@@ -368,9 +368,9 @@ RADDEFSTART
   // If compiling MSS DLL, use __declspec(dllexport) for both
   // declarations and definitions
   //
-  
+
   #ifdef IS_WIN32
-  
+
     #if !defined(FORNONWIN) && !defined(__RADNTBUILDLINUX__)
       #define AILLIBCALLBACK __stdcall
       #define AILCALL        __stdcall
@@ -382,20 +382,20 @@ RADDEFSTART
       #define AILCALLBACK    __cdecl
       #define AILEXPORT      __cdecl
     #endif
-  
+
     #ifdef __RADINDLL__
       #define DXDEC __declspec(dllexport)
       #define DXDEF __declspec(dllexport)
     #else
-  
+
       #if defined( __BORLANDC__ ) || defined( MSS_SPU_PROCESS )
         #define DXDEC extern
       #else
         #define DXDEC __declspec(dllimport)
       #endif
-  
+
     #endif
-  
+
     #ifdef IS_WIN64
       #define MSSDLLNAME "MSS64.DLL"
       #define MSS_REDIST_DIR_NAME "redist64"
@@ -403,11 +403,11 @@ RADDEFSTART
       #define MSSDLLNAME "MSS32.DLL"
       #define MSS_REDIST_DIR_NAME "redist"
     #endif
-  
+
     #define MSS_DIR_SEP "\\"
     #define MSS_DIR_UP ".." MSS_DIR_SEP
     #define MSS_DIR_UP_TWO MSS_DIR_UP MSS_DIR_UP
-  
+
   #endif
 
   typedef void * LPVOID;
@@ -420,7 +420,7 @@ RADDEFSTART
     #define AILLIBCALLBACK
     #define AILCALL
     #define AILEXPORT
-    #define AILCALLBACK  
+    #define AILCALLBACK
   #elif defined(__RADX86__)
     #define AILLIBCALLBACK __attribute__((cdecl))
     #define AILCALL        __attribute__((cdecl))
@@ -437,7 +437,7 @@ RADDEFSTART
     #define DXDEC extern
     #define DXDEF
   #endif
-  
+
   #ifdef __RADX64__
     #define MSS_REDIST_DIR_NAME "redist/x64"
   #elif defined(IS_X86)
@@ -447,7 +447,7 @@ RADDEFSTART
   #else
     #error "No Redist Dir Specified"
   #endif
-    
+
   #define MSS_DIR_SEP "/"
   #define MSS_DIR_UP ".." MSS_DIR_SEP
   #define MSS_DIR_UP_TWO MSS_DIR_UP MSS_DIR_UP
@@ -714,7 +714,7 @@ typedef enum
 
 #ifndef FILE_ERRS
   #define FILE_ERRS
-  
+
   #define AIL_NO_ERROR        0
   #define AIL_IO_ERROR        1
   #define AIL_OUT_OF_MEMORY   2
@@ -736,9 +736,9 @@ EXPTYPEBEGIN typedef SINTa HMSSENUM;
 EXPTYPEEND
 /*
   specifies a type used to enumerate through a list of properties.
-  
+
   $:MSS_FIRST use this value to start the enumeration process.
-  
+
 The Miles enumeration functions all work similarly - you set a local variable of type HMSSENUM to MSS_FIRST and then call
 the enumeration function until it returns 0.
 
@@ -751,7 +751,7 @@ the enumeration function until it returns 0.
 // Preference names and default values
 //
 
-#define AIL_MM_PERIOD              0 
+#define AIL_MM_PERIOD              0
 #define DEFAULT_AMP                1      // Default MM timer period = 5 msec.
 
 #define AIL_TIMERS                 1
@@ -1877,7 +1877,7 @@ typedef struct _S3DSTATE           // Portion of HSAMPLE that deals with 3D posi
    F32           lowpass_3D;       // low pass cutoff computed by falloff graph. -1 if not affected.
 
    F32           spread;
-   
+
    HSAMPLE       owner;            // May be NULL if used for temporary/internal calculations
    AILFALLOFFCB  falloff_function; // User function for min/max distance calculations, if desired
 
@@ -1915,7 +1915,7 @@ typedef struct _SAMPLE             // Sample instance
    S32        index;               // Numeric index of this sample
 
    SMPBUF     buf[8];              // Source data buffers
-   
+
    U32        src_fract;           // Fractional part of source address
 
    U32        mix_delay;           // ms until start mixing (decreased every buffer mix)
@@ -1924,7 +1924,7 @@ typedef struct _SAMPLE             // Sample instance
    U64        mix_bytes;           // total number of bytes sent to the mixer for this sample.
 
    S32        group_id;            // ID for grouped operations.
-   
+
    // size of the next dynamic arrays
    U32      chan_buf_alloced;
    U32      chan_buf_used;
@@ -1946,10 +1946,10 @@ typedef struct _SAMPLE             // Sample instance
    // these are dynamic arrays
    F32     *auto_3D_channel_levels;         // Channel levels set by 3D positioner (always 1.0 if not 3D-positioned)
    F32     *speaker_levels;                 // one level per speaker (multiplied after user or 3D)
-   
+
    S8      *speaker_enum_to_source_chan;    // array[MSS_SPEAKER_xx] = -1 if not present, else channel #
                                             // 99% of the time this is a 1:1 mapping and is zero.
-   
+
    S32      lp_any_on;                      // are any of the low pass filters on?
    S32      user_channels_need_deinterlace; // do any of the user channels require a stereo sample to be deinterlaced?
 
@@ -1989,7 +1989,7 @@ typedef struct _SAMPLE             // Sample instance
 
 
    U32      low_pass_changed;    // bit mask for what channels changed.
-   
+
    S32      bus;                 // Bus assignment for this sample.
    S32      bus_comp_sends;      // Which buses this bus routes compressor input to.
    S32      bus_comp_installed;  // Nonzero if we have a compressor installed.
@@ -2042,7 +2042,7 @@ typedef struct _SAMPLE             // Sample instance
 
    SPINFO   pipeline[N_SAMPLE_STAGES];
    S32      n_active_filters;    // # of SP_FILTER_n stages active
-   
+
    //
    // 3D-related state for all platforms (including Xbox)
    //
@@ -2113,14 +2113,14 @@ DXDEC  void    AILCALL AIL_serve(void);
 #ifdef IS_MAC
 
   typedef void * LPSTR;
-  
+
   #define WHDR_DONE 0
-  
+
   typedef struct _WAVEIN
   {
     long temp;
   } * HWAVEIN;
-  
+
   typedef struct _WAVEHDR
   {
     S32  dwFlags;
@@ -2133,7 +2133,7 @@ DXDEC  void    AILCALL AIL_serve(void);
     S32  dwLoops;
     void * lpNext;
     U32  * reserved;
-  
+
   } WAVEHDR, * LPWAVEHDR;
 
 #endif
@@ -2145,7 +2145,7 @@ typedef struct _DIG_INPUT_DRIVER *HDIGINPUT; // Handle to digital input driver
 #ifdef IS_MAC
 
   #define AIL_DIGITAL_INPUT_DEFAULT 0
-  
+
   typedef struct _DIG_INPUT_DRIVER    // Handle to digital input driver
   {
      U32  tag;                      // HDIN
@@ -2478,7 +2478,7 @@ typedef struct _DIG_DRIVER          // Handle to digital audio driver
    U32 last_ds_play;
    U32 last_ds_write;
    U32 last_ds_move;
-   
+
 #endif
 
 #ifdef IS_X86
@@ -2661,7 +2661,7 @@ typedef struct _SEQUENCE                  // XMIDI sequence state table
    void const   *EVNT;
 
    U8 const     *EVNT_ptr;                // Current event pointer
-  
+
    U8      *ICA;                          // Indirect Controller Array
 
    AILPREFIXCB   prefix_callback;         // XMIDI Callback Prefix handler
@@ -3121,13 +3121,13 @@ DXDEC  S32     AILCALL AIL_timer_thread_handle(void* o_handle);
     #elif defined(__RADANDROID__)
 
         DXDEC void AILCALL AIL_set_asset_manager(void* asset_manager);
-        
+
         DXDEC RADSS_OPEN_FUNC AILCALL RADSS_SLESInstallDriver(UINTa, UINTa);
 
         #define AIL_open_digital_driver(frequency, bits, channel, flags) \
             AIL_open_generic_digital_driver(frequency, bits, channel, flags, RADSS_SLESInstallDriver(0, 0))
 
-    
+
     #elif defined(IS_PSP2)
         DXDEC RADSS_OPEN_FUNC AILCALL RADSS_PSP2InstallDriver(UINTa, UINTa);
 
@@ -3221,7 +3221,7 @@ DXDEC  S32          AILCALL AIL_digital_handle_reacquire
   {
     Str255 version_name;
   } MSS_VersionType;
-  
+
   #define AIL_MSS_version(str,len)                        \
   {                                                       \
     long _res = HOpenResFile(0,0,"\p" MSSDLLNAME,fsRdPerm);    \
@@ -3269,11 +3269,11 @@ DXDEC  S32          AILCALL AIL_digital_handle_reacquire
       }                                                   \
     }                                                     \
   }
-  
+
   #endif
 
   DXDEC  S32          AILCALL AIL_digital_handle_release(HDIGDRIVER drvr);
-  
+
   DXDEC  S32          AILCALL AIL_digital_handle_reacquire
                                                      (HDIGDRIVER drvr);
 
@@ -3339,18 +3339,18 @@ DXDEC EXPAPI void AILCALL AIL_push_system_state(HDIGDRIVER dig, U32 flags, S16 c
 
     $* <b>MILES_PUSH_VOLUME</b> - When present, master volume will be affected in addition to sample state.
         If MILES_PUSH_RESET is present, the master volume will be set to 1.0f, otherwise it will be retained and only
-        affected when popped.    
+        affected when popped.
 
     $-
 
-    If you want more control over whether a sample will be affected by a push or a pop operation, 
+    If you want more control over whether a sample will be affected by a push or a pop operation,
     see $AIL_set_sample_level_mask.
-    
+
 */
 
 DXDEC EXPAPI void AILCALL AIL_pop_system_state(HDIGDRIVER dig, S16 crossfade_ms);
 /*
-    Pops the current system state and returns the system to the way it 
+    Pops the current system state and returns the system to the way it
     was before the last push.
 
     $:dig The driver to pop.
@@ -3374,7 +3374,7 @@ DXDEC EXPAPI void AILCALL AIL_set_sample_level_mask(HSAMPLE S, U8 mask);
     $:S The sample to set the mask for.
     $:mask The bitmask of levels for which the sample will play.
 
-    Under normal push/pop operations, a sample's mask is set when it is 
+    Under normal push/pop operations, a sample's mask is set when it is
     started to the level the system is at. If the system is pushed
     without a reset, then the mask is adjusted to include the new level.
     When a system is popped, if the sample is going to continue playing,
@@ -3435,7 +3435,7 @@ DXDEC EXPAPI HSAMPLE AILCALL AIL_allocate_bus(HDIGDRIVER dig);
     $:return The HSAMPLE for the new bus.
 
     A bus allows you to treat a group of samples as one sample. With the bus sample you can
-    do almost all of the things you can do with a normal sample handle. The only exception 
+    do almost all of the things you can do with a normal sample handle. The only exception
     is you can't adjust the playback rate of the sample.
 
     Use $AIL_bus_sample_handle to get the HSAMPLE associated with a bus.
@@ -3495,7 +3495,7 @@ DXDEC EXPAPI S32 AILCALL AIL_sample_bus(HSAMPLE S);
 
 DXDEC EXPAPI S32 AILCALL AIL_install_bus_compressor(HDIGDRIVER dig, S32 bus_index, SAMPLESTAGE filter_stage, S32 input_bus_index);
 /*
-    Installs the Compressor filter on to a bus, using another bus as the input for 
+    Installs the Compressor filter on to a bus, using another bus as the input for
     compression/limiting.
 
     $:dig The driver the busses exist on.
@@ -3508,7 +3508,7 @@ DXDEC EXPAPI S32 AILCALL AIL_install_bus_compressor(HDIGDRIVER dig, S32 bus_inde
     its signal strength to the filter, allowing it to attenuate the bus_index bus based
     on another bus's contents.
 
-    To control the compressor parameters, access the bus's HSAMPLE via $AIL_bus_sample_handle and 
+    To control the compressor parameters, access the bus's HSAMPLE via $AIL_bus_sample_handle and
     use $AIL_sample_stage_property exactly as you would any other filter. The filter's properties
     are documented under $(Compressor Filter)
 */
@@ -4325,7 +4325,7 @@ typedef void (AILCALLBACK* AILSTREAMCB)   (HSTREAM stream);
 
 #define MSS_STREAM_CHUNKS 8
 
-typedef struct _STREAM 
+typedef struct _STREAM
 {
   S32 block_oriented; // 1 if this is an ADPCM or ASI-compressed stream
   S32 using_ASI;      // 1 if using ASI decoder to uncompress stream data
@@ -4349,7 +4349,7 @@ typedef struct _STREAM
   S32 read_IO_index;    // index of buffer to be loaded into Miles next
 
   S32 bufsize;        // size of each buffer
-  
+
   U32 datarate;       // datarate in bytes per second
   S32 filerate;       // original datarate of the file
   S32 filetype;       // file format type
@@ -4987,7 +4987,7 @@ typedef struct
 OGG_INFO;
 
 DXDEC void AILCALL AIL_inspect_Ogg (OGG_INFO *inspection_state,
-                                    U8       *Ogg_file_image, 
+                                    U8       *Ogg_file_image,
                                     S32           Ogg_file_size);
 
 DXDEC S32 AILCALL AIL_enumerate_Ogg_pages (OGG_INFO *inspection_state);
@@ -5102,10 +5102,10 @@ DXDEC HDIGDRIVER AILCALL AIL_primary_digital_driver  (HDIGDRIVER new_primary);
 // 3D-related calls
 //
 
-DXDEC  S32      AILCALL AIL_room_type                (HDIGDRIVER dig, 
+DXDEC  S32      AILCALL AIL_room_type                (HDIGDRIVER dig,
                                                       S32 bus_index);
 
-DXDEC  void     AILCALL AIL_set_room_type            (HDIGDRIVER dig, 
+DXDEC  void     AILCALL AIL_set_room_type            (HDIGDRIVER dig,
                                                       S32 bus_index,
                                                       S32        room_type);
 
@@ -5180,7 +5180,7 @@ DXDEC EXPAPI void       AILCALL AIL_set_sample_3D_lowpass_falloff(HSAMPLE S, MSS
     $:graph The array of points to use as the graph.
     $:pointcount The number of points passed in. Must be less than or equal to MILES_MAX_FALLOFF_GRAPH_POINTS. Passing 0 removes the graph.
 
-    This marks a sample as having a low pass cutoff that varies as a function of distance to the listener. If 
+    This marks a sample as having a low pass cutoff that varies as a function of distance to the listener. If
     a sample has such a graph, $AIL_set_sample_low_pass_cut_off will be called constantly, and thus shouldn't be
     called otherwise.
 
@@ -5195,8 +5195,8 @@ DXDEC EXPAPI void       AILCALL AIL_set_sample_3D_exclusion_falloff(HSAMPLE S, M
     $:graph The array of points to use as the graph.
     $:pointcount The number of points passed in. Must be less than or equal to MILES_MAX_FALLOFF_GRAPH_POINTS. Passing 0 removes the graph.
 
-    This marks a sample as having an exclusion that varies as a function of distance to the listener. If 
-    a sample has such a graph, auto_3D_wet_atten will be disabled to prevent double affects, as exclusion 
+    This marks a sample as having an exclusion that varies as a function of distance to the listener. If
+    a sample has such a graph, auto_3D_wet_atten will be disabled to prevent double affects, as exclusion
     affects reverb wet level.
 
     The graph is evaluated the same as $AIL_set_sample_3D_volume_falloff.
@@ -5230,7 +5230,7 @@ DXDEC EXPAPI void AILCALL AIL_set_sample_3D_position_segments(HSAMPLE S, MSSVECT
     other computations (cones, falloffs, etc). Spatialization is done using all segments as a directional
     source.
 
-    If there is neither spread falloff nor volume falloff specified, spread will be automatically applied 
+    If there is neither spread falloff nor volume falloff specified, spread will be automatically applied
     when the listener is within min_distance to the closest point. See $AIL_set_sample_3D_spread_falloff
     and $AIL_set_sample_3D_volume_falloff.
 
@@ -5243,7 +5243,7 @@ DXDEC EXPAPI void AILCALL AIL_set_sample_3D_spread(HSAMPLE S, F32 spread);
     $:S Sample to affect.
     $:spread The value to set the spread to.
 
-    Spread is how much the directionality of a sample "spreads" to more speakers - emulating 
+    Spread is how much the directionality of a sample "spreads" to more speakers - emulating
     the effect a sound has when it occupies more than a point source. For instance, a sound
     point source that sits directly to the left of the listener would have a very strong left
     speaker signal, and a fairly weak right speaker signal. Via spread, the signal would be
@@ -5392,7 +5392,7 @@ EXPGROUP(Miles High Level Event System)
 EXPTYPE typedef struct MSSSOUNDBANK {};
 /*
    Internal structure.
-   
+
    Use $HMSOUNDBANK instead.
 */
 
@@ -5401,7 +5401,7 @@ EXPTYPE typedef struct MSSSOUNDBANK {};
 EXPTYPE typedef struct SoundBank *HMSOUNDBANK;
 /*
   Describes a handle to an open sound bank.
-  
+
   This handle typedef refers to an open soundbank which is usually obtained from the $AIL_add_soundbank function.
 */
 
@@ -5424,7 +5424,7 @@ DXDEC EXPAPI void AILCALL AIL_close_soundbank(HMSOUNDBANK bank);
     Close a soundbank previously opened with $AIL_open_soundbank.
 
     $:bank Soundbank to close.
-      
+
     Close a soundbank previously opened with $AIL_open_soundbank. Presets/events loaded from
             this soundbank are no longer valid.
 */
@@ -5448,7 +5448,7 @@ DXDEC EXPAPI char const * AILCALL AIL_get_soundbank_name(HMSOUNDBANK bank);
 
     $:return A pointer to the name of the sound bank, or 0 if the bank is invalid.
 
-    The name of the bank is the name used in asset names. This is distinct from the 
+    The name of the bank is the name used in asset names. This is distinct from the
     file name of the bank.
 
     The return value should not be deleted.
@@ -5457,7 +5457,7 @@ DXDEC EXPAPI char const * AILCALL AIL_get_soundbank_name(HMSOUNDBANK bank);
 DXDEC EXPAPI S32 AILCALL AIL_get_soundbank_mem_usage(HMSOUNDBANK bank);
 /*
     Returns the amount of data used by the soundbank management structures.
-    
+
     $:bank Soundbank to query.
     $:return Total memory allocated.
 
@@ -5476,7 +5476,7 @@ DXDEC EXPAPI S32 AILCALL AIL_enumerate_sound_presets(HMSOUNDBANK bank, HMSSENUM*
   $:return Returns 0 when enumeration is complete.
 
    Enumerates the sound presets available inside of a bank file. Example usage:
-     
+
    ${
             HMSSENUM Token = MSS_FIRST;
             const char* PresetName = 0;
@@ -5503,7 +5503,7 @@ DXDEC EXPAPI S32 AILCALL AIL_enumerate_environment_presets(HMSOUNDBANK bank, HMS
     $:return Returns 0 when enumeration is complete.
 
     Enumerates the environment presets available inside of a bank file. Example usage:
-      
+
     ${
             HMSSENUM Token = MSS_FIRST;
             const char* PresetName = 0;
@@ -5530,7 +5530,7 @@ DXDEC EXPAPI S32 AILCALL AIL_enumerate_sound_assets(HMSOUNDBANK bank, HMSSENUM* 
     $:return Returns 0 when enumeration is complete.
 
     Enumerates the sounds available inside of a bank file. Example usage:
-    
+
     ${
             HMSSENUM Token = MSS_FIRST;
             const char* SoundName = 0;
@@ -5549,7 +5549,7 @@ DXDEC EXPAPI S32 AILCALL AIL_enumerate_sound_assets(HMSOUNDBANK bank, HMSSENUM* 
     Note that name should NOT be deleted by the caller - this points at memory owned by
     Miles.
 */
-    
+
 DXDEC EXPAPI S32 AILCALL AIL_enumerate_events(HMSOUNDBANK bank, HMSSENUM* next, char const * list, char const ** name);
 /*
     Enumerate the events stored in a soundbank.
@@ -5561,7 +5561,7 @@ DXDEC EXPAPI S32 AILCALL AIL_enumerate_events(HMSOUNDBANK bank, HMSSENUM* next, 
     $:return Returns 0 when enumeration is complete.
 
     Enumerates the events available inside of a bank file. Example usage:
-      
+
     ${
             HMSSENUM Token = MSS_FIRST;
             const char* EventName = 0;
@@ -5624,7 +5624,7 @@ DXDEC EXPAPI S32 AILCALL AIL_apply_sound_preset(HSAMPLE sample, HMSOUNDBANK bank
     $:return Returns 0 on fail - check for sample/bank validity, and that the preset is in the correct bank.
 
     This will alter the properties on a given sample, based on the given preset.
-*/    
+*/
 
 DXDEC EXPAPI S32 AILCALL AIL_unapply_raw_sound_preset(HSAMPLE sample, void* preset);
 /*
@@ -5644,7 +5644,7 @@ DXDEC EXPAPI S32 AILCALL AIL_unapply_sound_preset(HSAMPLE sample, HMSOUNDBANK ba
     $:return Returns 0 on fail - check for sample/bank validity, and that the preset is in the correct bank.
 
     Presets may or may not affect any given property. Only the properties affected by the specified
-    preset will have their values restored to default. 
+    preset will have their values restored to default.
 */
 
 typedef S32 (*MilesResolveFunc)(void* context, char const* exp, S32 explen, EXPOUT void* output, S32 isfloat);
@@ -5658,7 +5658,7 @@ typedef S32 (*MilesResolveFunc)(void* context, char const* exp, S32 explen, EXPO
     $:isfloat nonzero if the output needs to be a float.
 
     The function callback should convert variable expressions in to an output value of the
-    requested type. 
+    requested type.
 */
 
 DXDEC EXPAPI S32 AILCALL AIL_resolve_raw_sound_preset(void* preset, void* context, MilesResolveFunc eval);
@@ -5777,7 +5777,7 @@ DXDEC EXPAPI S32 AILCALL AIL_sound_asset_info(HMSOUNDBANK bank, char const* name
     $:name The name of the sound asset to find.
     $:out_name Optional - Pointer to a buffer that is filled with the sound filename to use for loading.
     $:out_info Pointer to a $MILESBANKSOUNDINFO structure that is filled with meta data about the sound asset.
-    $:return Returns the byte size of the buffer required for out_name. 
+    $:return Returns the byte size of the buffer required for out_name.
 
     This function must be called in order to resolve the sound asset name to
     something that can be used by miles. To ensure safe buffer containment, call
@@ -5832,7 +5832,7 @@ typedef struct _MEMDUMP* HMEMDUMP;
 
         ReturnType = "HMSSEVENTCONSTRUCT", "An empty event to be passed to the various step addition functions, or 0 if out of memory."
 
-        Discussion = "Primarily designed for offline use, this function is the first step in 
+        Discussion = "Primarily designed for offline use, this function is the first step in
             creating an event that can be consumed by the MilesEvent system. Usage is as follows:
 
             HMSSEVENTCONSTRUCT hEvent = AIL_create_event();
@@ -5850,7 +5850,7 @@ typedef struct _MEMDUMP* HMEMDUMP;
 
             Note that if immediately passed to AIL_enqueue_event(), the memory must remain valid until the following
             $AIL_complete_event_queue_processing.
-            
+
             Events are generally tailored to the MilesEvent system, even though there is nothing preventing you
             from writing your own event system, or creation ui.
             "
@@ -5906,7 +5906,7 @@ EXPTYPEEND
 /*
     Determines the usage of the sound names list in the $AIL_add_start_sound_event_step.
 
-    $:MILES_START_STEP_RANDOM Randomly select from the list, and allow the same 
+    $:MILES_START_STEP_RANDOM Randomly select from the list, and allow the same
         sound to play twice in a row. This is the only selection type that doesn't require
         a state variable.
     $:MILES_START_STEP_NO_REPEATS Randomly select from the list, but prevent the last sound from being the same.
@@ -5926,10 +5926,10 @@ EXPTYPEEND
         Name = "AIL_add_start_sound_event_step", "Adds a step to a given event to start a sound with the given specifications."
 
         In = "HMSSEVENTCONSTRUCT", "i_Event", "The event to add the step to."
-        In = "const char*", "i_SoundNames", "The names and associated weights for the event step to choose from. 
-            If there are multiple names listed, the sound will be chosen at random based on the given weights. This 
+        In = "const char*", "i_SoundNames", "The names and associated weights for the event step to choose from.
+            If there are multiple names listed, the sound will be chosen at random based on the given weights. This
             string is of the form 'BankName1/SoundName1:Weight1:BankName2/SoundName2:Weight2:' etc. The string must always
-            terminate in a ':'. Weight must be between 0 and 200. To provide a null sound to randomly choose to not play anything, use 
+            terminate in a ':'. Weight must be between 0 and 200. To provide a null sound to randomly choose to not play anything, use
             an empty string as an entry."
 
         In = "const char*", "i_PresetName", "[optional] The name of the preset, of the form 'PresetList/PresetName'"
@@ -5944,7 +5944,7 @@ EXPTYPEEND
         In = "U8", "i_CanLoad", "If nonzero, the sound is allowed to hit the disk instead of only accessing cached sounds. If true, this might cause a hitch."
         In = "U16", "i_Delay", "The minimum delay in ms to apply to the sound before start."
         In = "U16", "i_DelayMax", "The maximum delay in ms to apply to the sound before start."
-        In = "U8", "i_Priority", "The priority to assign to the sound. If a sound encounters a limit based on its labels, it will evict any sound 
+        In = "U8", "i_Priority", "The priority to assign to the sound. If a sound encounters a limit based on its labels, it will evict any sound
             with a priority strictly less than the given priority."
         In = "U8", "i_LoopCount", "The loop count as per AIL_set_sample_loop_count."
         In = "const char*", "i_StartOffset", "[optional] The name of the marker to use as the sound's initial offset."
@@ -5969,19 +5969,19 @@ DXDEC
 S32
 AILCALL
 AIL_add_start_sound_event_step(
-    HMSSEVENTCONSTRUCT i_Event, 
+    HMSSEVENTCONSTRUCT i_Event,
     const char* i_SoundNames,
-    const char* i_PresetName, 
+    const char* i_PresetName,
     U8 i_PresetIsDynamic,
     const char* i_EventName,
     const char* i_StartMarker, const char* i_EndMarker,
     char const* i_StateVar, char const* i_VarInit,
-    const char* i_Labels, U32 i_Streaming, U8 i_CanLoad, 
+    const char* i_Labels, U32 i_Streaming, U8 i_CanLoad,
     U16 i_Delay, U16 i_DelayMax, U8 i_Priority, U8 i_LoopCount,
     const char* i_StartOffset,
     F32 i_VolMin, F32 i_VolMax, F32 i_PitchMin, F32 i_PitchMax,
     F32 i_FadeInTime,
-    U8 i_EvictionType, 
+    U8 i_EvictionType,
     U8 i_SelectType
     );
 
@@ -6004,7 +6004,7 @@ AIL_add_start_sound_event_step(
 
             In order to release the data loaded by this event, AIL_add_uncache_sounds_event_step() needs to
             be called with the same parameters.
-            
+
             If you are using MilesEvent, the data is refcounted so the sound will not be freed until all
             samples using it complete."
     }
@@ -6089,7 +6089,7 @@ DXDEC
 S32
 AILCALL
 AIL_add_control_sounds_event_step(
-    HMSSEVENTCONSTRUCT i_Event, 
+    HMSSEVENTCONSTRUCT i_Event,
     const char* i_Labels, const char* i_MarkerStart, const char* i_MarkerEnd, const char* i_Position,
     const char* i_PresetName,
     U8 i_PresetApplyType,
@@ -6191,7 +6191,7 @@ DXDEC EXPAPI S32 AILCALL AIL_add_setblend_event_step(HMSSEVENTCONSTRUCT i_Event,
     Defines a named blend function to be referenced by a blended sound later.
 
     $:i_Event The event to add the step to.
-    $:i_Name The name of the blend. This is the name that will be 
+    $:i_Name The name of the blend. This is the name that will be
         referenced by the state variable in start sound, as well as the variable name
         to set by the game to update the blend for an instance.
     $:i_SoundCount The number of sounds this blend will affect. Max 10.
@@ -6226,7 +6226,7 @@ DXDEC EXPAPI S32 AILCALL AIL_add_setblend_event_step(HMSSEVENTCONSTRUCT i_Event,
             Miles max sample count."
     }
 */
-DXDEC S32 AILCALL 
+DXDEC S32 AILCALL
 AIL_add_sound_limit_event_step(HMSSEVENTCONSTRUCT i_Event, char const* i_LimitName, const char* i_SoundLimits);
 
 /*!
@@ -6257,8 +6257,8 @@ AIL_add_sound_limit_event_step(HMSSEVENTCONSTRUCT i_Event, char const* i_LimitNa
             AIL_add_persist_preset_event_step(hEvent, 0, `"Underwater`", 0);"
     }
 */
-DXDEC S32 AILCALL 
-AIL_add_persist_preset_event_step(HMSSEVENTCONSTRUCT i_Event, const char* i_PresetName, const char* i_PersistName, 
+DXDEC S32 AILCALL
+AIL_add_persist_preset_event_step(HMSSEVENTCONSTRUCT i_Event, const char* i_PresetName, const char* i_PersistName,
     const char* i_Labels, U8 i_IsDynamic
     );
 
@@ -6272,13 +6272,13 @@ DXDEC EXPAPI S32 AILCALL AIL_get_event_contents(HMSOUNDBANK bank, char const * n
       thus shouldn't be checked via strlen, etc.
     $:return Returns 0 on fail.
 
-    Normally, event contents are meant to be handled by the Miles high-level system via $AIL_enqueue_event, 
+    Normally, event contents are meant to be handled by the Miles high-level system via $AIL_enqueue_event,
     rather than inspected directly.
 */
 
 DXDEC EXPAPI S32 AILCALL AIL_add_clear_state_event_step(HMSSEVENTCONSTRUCT i_Event);
 /*
-    Clears all persistent state in the runtime. 
+    Clears all persistent state in the runtime.
 
     $:i_Event The event to add the step to.
 
@@ -6311,7 +6311,7 @@ DXDEC EXPAPI S32 AILCALL AIL_add_enable_limit_event_step(HMSSEVENTCONSTRUCT i_Ev
 DXDEC EXPAPI S32 AILCALL AIL_add_set_lfo_event_step(HMSSEVENTCONSTRUCT i_Event, char const* i_Name, char const* i_Base, char const* i_Amp, char const* i_Freq, S32 i_Invert, S32 i_Polarity, S32 i_Waveform, S32 i_DutyCycle, S32 i_IsLFO);
 /*
     Adds a step to define a variable that oscillates over time.
-	
+
     $:i_Event The event to add the step to.
 	$:i_Name The nane of the variable to oscillate.
 	$:i_Base The value to oscillate around, or a variable name to use as the base.
@@ -6327,15 +6327,15 @@ DXDEC EXPAPI S32 AILCALL AIL_add_set_lfo_event_step(HMSSEVENTCONSTRUCT i_Event, 
 DXDEC EXPAPI S32 AILCALL AIL_add_move_var_event_step(HMSSEVENTCONSTRUCT i_Event, char const* i_Name, const F32 i_Times[2], const S32 i_InterpolationTypes[2], const F32 i_Values[3]);
 /*
     Adds a step to set and move a variable over time on a curve.
-	
+
     $:i_Event The event to add the step to.
 	$:i_Name The variable to move.
 	$:i_Times The midpoint and final times for the curves
 	$:i_InterpolationTypes The curve type for the two curves - Curve In (0), Curve Out (1), S-Curve (2), Linear (3)
 	$:i_Values The initial, midpoint, and final values for the variable.
-	
+
 	The variable is locked to this curve over the timeperiod - no interpolation from a previous value is done.
-	
+
 	If an existing move var exists when the new one is added, the old one is replaced.
 */
 
@@ -6450,7 +6450,7 @@ struct EVENT_STEP_INFO
             U8 isdynamic;
         } persist;
 
-        struct 
+        struct
         {
             MSSSTRINGC name;
             MSSSTRINGC labels;
@@ -6522,7 +6522,7 @@ struct EVENT_STEP_INFO
             the string location of the next event step in the buffer."
 
         Discussion = "This function parses the event string in to a struct for usage by the user. This function should only be
-            used by the MilesEvent system. It returns the pointer to the next step to be passed to this function to get the 
+            used by the MilesEvent system. It returns the pointer to the next step to be passed to this function to get the
             next step. In this manner it can be used in a loop:
 
             // Create an event to stop all sounds.
@@ -6610,11 +6610,11 @@ EXPTYPE typedef void* HEVENTSYSTEM;
 DXDEC EXPAPI HEVENTSYSTEM AILCALL AIL_startup_event_system(HDIGDRIVER dig, S32 command_buf_len, EXPOUT char* memory_buf, S32 memory_len);
 /*
    Initializes the Miles Event system and associates it with an open digital driver.
-   
+
    $:dig The digital sound driver that this event system should use.
    $:command_buf_len An optional number of bytes to use for the command buffer. If you pass 0, a reasonable default will be used (currently 5K).
-   $:memory_buf An optional pointer to a memory buffer buffer that the event system will use for all event allocations. 
-            Note that the sound data itself is not stored in this buffer - it is only for internal buffers, the command buffer, and instance data. 
+   $:memory_buf An optional pointer to a memory buffer buffer that the event system will use for all event allocations.
+            Note that the sound data itself is not stored in this buffer - it is only for internal buffers, the command buffer, and instance data.
             Use 0 to let Miles to allocate this buffer itself.
    $:memory_len If memory_buf is non-null, then this parameter provides the length.  If memory_buf is null, the Miles will
       allocate this much memory for internal buffers. If both memory_buf and memory_len are null, the Miles will allocate reasonable default (currently 64K).
@@ -6633,8 +6633,8 @@ DXDEC EXPAPI HEVENTSYSTEM AILCALL AIL_add_event_system(HDIGDRIVER dig);
     $:return A handle to the event system to use in various high level functions.
 
     Both systems will access the same set of loaded soundbanks, and are updated when $AIL_begin_event_queue_processing is called.
-    
-    To enqueue events to the new system, use $AIL_enqueue_event_system. 
+
+    To enqueue events to the new system, use $AIL_enqueue_event_system.
 
     To iterate the sounds for the new system, pass the $HEVENTSYSTEM as the first parameter to $AIL_enumerate_sound_instances.
 
@@ -6646,7 +6646,7 @@ DXDEC EXPAPI HEVENTSYSTEM AILCALL AIL_add_event_system(HDIGDRIVER dig);
 DXDEC EXPAPI void AILCALL AIL_shutdown_event_system( void );
 /*
   Shuts down the Miles event system.
-      
+
   This function will closes everything in the event system - it ignores reference counts. It will free
   all event memory, sound banks, and samples used by the system.
 */
@@ -6660,10 +6660,10 @@ DXDEC EXPAPI HMSOUNDBANK AILCALL AIL_add_soundbank(char const * filename, char c
     $:return The handle to the newly loaded soundbank (zero on failure).
 
     This function opens the sound bank and makes it available to the event system.  The filename
-    is the name on the media, and the name is the symbolic name you used in the Miles Sound Studio. 
+    is the name on the media, and the name is the symbolic name you used in the Miles Sound Studio.
     You might, for example, be using a soundbank with a platform extension, like: 'gamebank_ps3.msscmp',
     and while using the name 'gamebank' for authoring and auditioning.
-    
+
     Sound data is not loaded when this function is called - it is only loaded when the relevant Cache Sounds
     is played, or a sound requiring it plays.
 
@@ -6685,7 +6685,7 @@ DXDEC EXPAPI S32 AILCALL AIL_release_soundbank(HMSOUNDBANK bank);
 
    Any other data references still existing (queued events, persisted presets, etc) will report errors when used,
    but will not crash.
-   
+
    Releasing a sound bank does not free any cached sounds loaded from the bank - any sounds from the bank should be freed
    via a Purge Sounds event step. If this does not occur, the sound data will still be loaded, but the
    sound metadata will be gone, so Start Sound events will not work. Purge Sounds will still work.
@@ -6698,24 +6698,24 @@ DXDEC U8 const * AILCALL AIL_find_event(HMSOUNDBANK bank,char const* event_name)
     (EXPAPI removed to prevent release in docs)
 
     Searches for an event by name in the event system.
-    
+
     $:bank The soundbank to search within, or 0 to search all open banks (which is the normal case).
     $:event_name The name of the event to find.  This name should be of the form "soundbank/event_list/event_name".
     $:return A pointer to the event contents (or 0, if the event isn't found).
-    
+
     This function is normally used as the event parameter for $AIL_enqueue_event. It
     searches one or all open soundbanks for a particular event name.
-    
-    <b>This is deprecated</b>. If you know the event name, you should use $AIL_enqueue_event_by_name, or $AIL_enqueue_event with 
+
+    <b>This is deprecated</b>. If you know the event name, you should use $AIL_enqueue_event_by_name, or $AIL_enqueue_event with
     MILESEVENT_ENQUEUE_BY_NAME.
-    
+
     Events that are not enqueued by name can not be tracked by the Auditioner.
 */
 
 DXDEC EXPAPI U64 AILCALL AIL_enqueue_event_system(HEVENTSYSTEM system, U8 const * event, void* user_buffer, S32 user_buffer_len, S32 enqueue_flags, U64 apply_to_ID );
 /*
     Enqueue an event to a specific system. Used only if you have multiple event systems running.
-    
+
     $:system The event system to attach the event to.
     $:return See $AIL_enqueue_event for return description.
 
@@ -6728,10 +6728,10 @@ DXDEC EXPAPI U64 AILCALL AIL_enqueue_event_by_name(char const* name);
 
     $:name The full name of the event, eg "soundbank/path/to/event".
     $:return See $AIL_enqueue_event for return description.
-    
-    This is the most basic way to enqueue an event. It enqueues an event by name, and as a result the event will be tracked by the auditioner. 
-    
-    For when you need more control over the event, but still want it to be tracked by the auditioner, it is equivalent 
+
+    This is the most basic way to enqueue an event. It enqueues an event by name, and as a result the event will be tracked by the auditioner.
+
+    For when you need more control over the event, but still want it to be tracked by the auditioner, it is equivalent
     to calling $AIL_enqueue_event_end_named($AIL_enqueue_event_start(), name)
 
     For introduction to the auditioning system, see $integrating_events.
@@ -6743,9 +6743,9 @@ DXDEC EXPAPI S32 AILCALL AIL_enqueue_event_start();
 
     $:return A token used for passing to functions that add data to the event.
 
-    This is used to pass more data to an event that will be executed. For instance, if 
+    This is used to pass more data to an event that will be executed. For instance, if
     an event is going to spatialize a sound, but there's no need to move the sound over the course of
-    its lifetime, you can add positional data to the event via $AIL_enqueue_event_position. When a 
+    its lifetime, you can add positional data to the event via $AIL_enqueue_event_position. When a
     sound is started it will use that for its initial position, and there is no need to do any
     game object <-> event id tracking.
 
@@ -6762,7 +6762,7 @@ DXDEC EXPAPI S32 AILCALL AIL_enqueue_event_start();
 
     The enqueue process is still completely thread safe. No locks are used, however only 8
     enqueues can be "assembling" at the same time - if more than that occur, the $AIL_enqueue_event_start
-    will yield the thread until a slot is open. 
+    will yield the thread until a slot is open.
 
     The ONLY time that should happen is if events enqueues are started but never ended:
 
@@ -6838,7 +6838,7 @@ DXDEC EXPAPI S32 AILCALL AIL_enqueue_event_buffer(S32* token, void* user_buffer,
         user buffer contents, and then exposed during sound enumeration. This is equivalent in spirit to
         the void* value that often accompanies callbacks. In this case, user_buffer_len is ignored, as
         user_buffer is never dereferenced.
-    $* <b>Buffer</b> If user_buffer_is_ptr is 0, then user_buffer_len bytes are copied from user_buffer and 
+    $* <b>Buffer</b> If user_buffer_is_ptr is 0, then user_buffer_len bytes are copied from user_buffer and
         carried with the event. During sound enumeration this buffer is made available, and you never have to
         worry about memory management.
     $-
@@ -6855,7 +6855,7 @@ DXDEC EXPAPI S32 AILCALL AIL_enqueue_event_buffer(S32* token, void* user_buffer,
         data->game_stat = 1;
         data->needed_info = 2;
 
-        // Pointer - the "data" pointer will be copied directly, so we can't free() "data" until after the sound 
+        // Pointer - the "data" pointer will be copied directly, so we can't free() "data" until after the sound
         // completes and we're done using it in the enumeration loop.
         S32 ptr_token = AIL_enqueue_event_start();
         AIL_enqueue_event_buffer(&ptr_token, data, 0, 1);
@@ -6874,7 +6874,7 @@ DXDEC EXPAPI S32 AILCALL AIL_enqueue_event_buffer(S32* token, void* user_buffer,
         data.game_stat = 1;
         data.needed_info = 2;
 
-        // Buffer - the "data" structure will be copied internally, so we can free() the data - or just use 
+        // Buffer - the "data" structure will be copied internally, so we can free() the data - or just use
         // a stack variable like this
         S32 buf_token = AIL_enqueue_event_start();
         AIL_enqueue_event_buffer(&buf_token, &data, sizeof(data), 0);
@@ -6895,7 +6895,7 @@ DXDEC EXPAPI S32 AILCALL AIL_enqueue_event_variablef(S32* token, char const* nam
     $:value The value of the variable to set.
     $:return 0 if the enqueue buffer is full
 
-    When a sound starts, the given variable will be set to the given value prior to any possible 
+    When a sound starts, the given variable will be set to the given value prior to any possible
     references being used by presets.
 */
 
@@ -6904,7 +6904,7 @@ DXDEC EXPAPI S32 AILCALL AIL_enqueue_event_filter(S32* token, U64 apply_to_ID);
     Limits the effects of the event to sounds started by the given ID.
 
     $:token A token created with $AIL_enqueue_event_start
-    $:apply_to_ID The ID to use for filtering. This can be either a sound or event ID. For an 
+    $:apply_to_ID The ID to use for filtering. This can be either a sound or event ID. For an
         event, it will apply to all sounds started by the event, and any events queued by that event.
     $:return 0 if the enqueue buffer is full
 
@@ -6932,7 +6932,7 @@ DXDEC EXPAPI S32 AILCALL AIL_enqueue_event_selection(S32* token, U32 selection);
     $:selection The value to use for selecting the sound to play.
     $:return 0 if the enqueue buffer is full
 
-    The selection index is used to programatically select a sound from the 
+    The selection index is used to programatically select a sound from the
     loaded banks. The index passed in replaces any numeric value at the end
     of the sound name existing in any start sound event step. For example, if
     a start sound event plays "mybank/sound1", and the event is queued with
@@ -6969,52 +6969,52 @@ DXDEC EXPAPI U64 AILCALL AIL_enqueue_event_end_named(S32 token, char const* even
     As with all of the enqueue functions it is completely thread-safe.
 
     Upon completion of this function, the enqueue slot is release and available for another
-    $AIL_enqueue_event_start. 
+    $AIL_enqueue_event_start.
 */
 
 DXDEC EXPAPI U64 AILCALL AIL_enqueue_event(U8 const * event_or_name, void* user_buffer, S32 user_buffer_len, S32 enqueue_flags, U64 apply_to_ID );
 /*
     Enqueue an event to be processed by the next $AIL_begin_event_queue_processing function.
-    
-    $:event_or_name Pointer to the event contents to queue, or the name of the event to find and queue. 
+
+    $:event_or_name Pointer to the event contents to queue, or the name of the event to find and queue.
             If an event, the contents must be valid until the next call to $AIL_begin_event_queue_processing.
             If a name, the string is copied internally and does not have any lifetime requirements, and MILES_ENQUEUE_BY_NAME must be present in enqueue_flags.
-    $:user_buffer Pointer to a user buffer. Depending on $(AIL_enqueue_event::enqueue_flags), this pointer can be saved directly, or its contents copied into the sound instance. 
-            This data is then accessible later, when enumerating the instances. 
+    $:user_buffer Pointer to a user buffer. Depending on $(AIL_enqueue_event::enqueue_flags), this pointer can be saved directly, or its contents copied into the sound instance.
+            This data is then accessible later, when enumerating the instances.
     $:user_buffer_len Size of the buffer pointed to by user_buffer.
     $:enqueue_flags Optional $MILESEVENTENQUEUEFLAGS logically OR'd together that control how to enqueue this event (default is 0).
     $:apply_to_ID Optional value that is used for events that affect sound instances. Normally,
-      when Miles triggers one of these event steps, it matches the name and labels stored with the event step. However, if 
+      when Miles triggers one of these event steps, it matches the name and labels stored with the event step. However, if
       you specify an apply_to_ID value, then event step will only run on sounds that matches this QueuedID,InstanceID,or EventID too.  This is how you
-      execute events only specific sound instances.  QueuedIDs are returned from each call $AIL_enqueue_event. 
+      execute events only specific sound instances.  QueuedIDs are returned from each call $AIL_enqueue_event.
       InstanceIDs and EventIDs are returned from $AIL_enumerate_sound_instances.
-    $:return  On success, returns QueuedID value that is unique to this queued event for the rest of this 
+    $:return  On success, returns QueuedID value that is unique to this queued event for the rest of this
               program run (you can use this ID to uniquely identify sounds triggered from this event).
-    
+
      This function enqueues an event to be triggered - this is how you begin execution of an event.  First, you
      queue it, and then later (usually once a game frame), you call $AIL_begin_event_queue_processing to
      execute an event.
-          
-     This function is very lightweight.  It does nothing more than post the event and data to a 
+
+     This function is very lightweight.  It does nothing more than post the event and data to a
      command buffer that gets executed via $AIL_begin_event_queue_processing.
 
     The user_buffer parameter can be used in different ways. If no flags are passed in, then
     Miles will copy the data from user_buffer (user_buffer_len bytes long) and store the data with
     the queued sound - you can then free the user_buffer data completely!  This lets Miles keep track
-    of all your sound related memory directly and is the normal way to use the system (it is very 
+    of all your sound related memory directly and is the normal way to use the system (it is very
     convenient once you get used to it).
 
     If you instead pass the MILESEVENT_ENQUEUE_BUFFER_PTR flag, then user_buffer pointer will
     simply be associated with each sound that this event may start. In this case, user_buffer_len
     is ignored.
-            
-    In both cases, when you later enumerate the sound instances, you can access your sound data 
+
+    In both cases, when you later enumerate the sound instances, you can access your sound data
     with the $(MILESEVENTSOUNDINFO::UserBuffer) field.
-            
+
     You can call this function from any number threads - it's designed to be called from anywhere in your game.
 
     If you want events you queue to be captured by Miles Studio, then they have to be passed by name. This can be done
-    by either using the convenience function $AIL_enqueue_event_by_name, or by using the MILESEVENT_ENQUEUE_BY_NAME flag and 
+    by either using the convenience function $AIL_enqueue_event_by_name, or by using the MILESEVENT_ENQUEUE_BY_NAME flag and
     passing the name in event_or_name. For introduction to the auditioning system, see $integrating_events.
 */
 
@@ -7044,23 +7044,23 @@ DXDEC EXPAPI S32 AILCALL AIL_begin_event_queue_processing( void );
 /*
     Begin execution of all of the enqueued events.
 
-    $:return Return 0 on failure. The only failures are unrecoverable errors in the queued events 
+    $:return Return 0 on failure. The only failures are unrecoverable errors in the queued events
       (out of memory, bank file not found, bad data, etc).  You can get the specific error by
       calling $AIL_last_error.
-    
+
       This function executes all the events currently in the queue. This is where all major
             processing takes place in the event system.
-            
+
             Once you execute this functions, then sound instances will be in one of three states:
-            
+
             $(MILESEVENTSOUNDSTATUS::MILESEVENT_SOUND_STATUS_PENDING)[MILESEVENT_SOUND_STATUS_PENDING] - these are new sound instances that were
             created by events that had a "Start Sound Step". Note that these instances aren't audible yet,
             so that you have a chance to modify game driven properties (like the 3D position)
-            on the sound before Miles begins to play it.  
-            
+            on the sound before Miles begins to play it.
+
             $(MILESEVENTSOUNDSTATUS::MILESEVENT_SOUND_STATUS_PLAYING)[MILESEVENT_SOUND_STATUS_PLAYING] - these are sound instances that were previously
             started and are continuing to play (you might update the 3D position for these, for example).
-            
+
             $(MILESEVENTSOUNDSTATUS::MILESEVENT_SOUND_STATUS_COMPLETE)[MILESEVENT_SOUND_STATUS_COMPLETE] - these are sound instances that finished playing
             since the last this frame (you might use this status to free any game related memory, for example).
 
@@ -7082,7 +7082,7 @@ ${
             MILESEVENTSOUNDINFO Info;
 
             HMSSENUM SoundEnum = MSS_FIRST;
-            while ( $AIL_enumerate_sound_instances( &SoundEnum, MILESEVENT_SOUND_STATUS_PENDING | MILESEVENT_SOUND_STATUS_COMPLETE, 0, &Info ) )    
+            while ( $AIL_enumerate_sound_instances( &SoundEnum, MILESEVENT_SOUND_STATUS_PENDING | MILESEVENT_SOUND_STATUS_COMPLETE, 0, &Info ) )
             {
                 game_type * game_data = (game_type*) Info.UserBuffer; // returns the game_data pointer from the enqueue
 
@@ -7098,13 +7098,13 @@ ${
                 }
             }
 
-            $AIL_complete_event_queue_processing( ); 
-  $}          
-            
-            Note that if any event step drastically fails, the rest of the command queue is 
+            $AIL_complete_event_queue_processing( );
+  $}
+
+            Note that if any event step drastically fails, the rest of the command queue is
             skipped, and this function returns 0! For this reason, you shouldn't assume
             that a start sound event will always result in a completed sound later.
-            
+
             Therefore, you should allocate memory that you want associated with a sound instance
             during the enumeration loop, rather than at enqueue time.  Otherwise, you
             need to detect that the sound didn't start and then free the memory (which can be complicated).
@@ -7120,7 +7120,7 @@ EXPTYPE typedef struct _MILESEVENTSOUNDINFO
     HSTREAM Stream;
     void* UserBuffer;
     S32 UserBufferLen;
-    S32 Status; 
+    S32 Status;
     U32 Flags;
     S32 UsedDelay;
     F32 UsedVolume;
@@ -7130,10 +7130,10 @@ EXPTYPE typedef struct _MILESEVENTSOUNDINFO
 } MILESEVENTSOUNDINFO;
 /*
   Sound instance data that is associated with each active sound instance.
-  
+
   $:QueuedID A unique ID that identifies the queued event that started this sound. Returned from each call to $AIL_enqueue_event.
   $:EventID A unique ID that identifies the actual event that started this sound. This is the same as QueuedID unless the sound
-    was started by a completion event or a event exec step. In that case, the QueuedID represents the ID returned from 
+    was started by a completion event or a event exec step. In that case, the QueuedID represents the ID returned from
     $AIL_enqueue_event, and EventID represents the completion event.
   $:InstanceID A unique ID that identified this specific sound instance (note that one QueuedID can trigger multiple InstanceIDs).
   $:Sample The $HSAMPLE for this playing sound.
@@ -7148,7 +7148,7 @@ EXPTYPE typedef struct _MILESEVENTSOUNDINFO
   $:UsedSound The name of the sound used as a result of randomization. This pointer should NOT be deleted
     and is only valid for the until the next call in to Miles.
   $:HasCompletionEvent Nonzero if the sound will fire an event upon completion.
-  
+
   This structure is returned by the $AIL_enumerate_sound_instances function. It
   returns information about an active sound instance.
 */
@@ -7157,7 +7157,7 @@ DXDEC EXPAPI void AILCALL AIL_set_variable_int(UINTa context, char const* name, 
 /*
     Sets a named variable that the designer can reference in the tool.
 
-    $:context The context the variable is set for. Can be either a $HEVENTSYSTEM 
+    $:context The context the variable is set for. Can be either a $HEVENTSYSTEM
             to set a global variable for a specific system, 0 to set a global variable
             for the default system, or an $HMSSENUM from $AIL_enumerate_sound_instances.
     $:name The name of the variable to set.
@@ -7183,14 +7183,14 @@ DXDEC EXPAPI void AILCALL AIL_set_variable_int(UINTa context, char const* name, 
         // A preset referencing "MyVar" for FirstSound will get 10. Any other sound will
         // get 20.
     $}
-    
+
 */
 
 DXDEC EXPAPI void AILCALL AIL_set_variable_float(UINTa context, char const* name, F32 value);
 /*
     Sets a named variable that the designer can reference in the tool.
 
-    $:context The context the variable is set for. Can be either a $HEVENTSYSTEM 
+    $:context The context the variable is set for. Can be either a $HEVENTSYSTEM
             to set a global variable for a specific system, 0 to set a global variable
             for the default system, or an $HMSSENUM from $AIL_enumerate_sound_instances.
     $:name The name of the variable to set.
@@ -7265,7 +7265,7 @@ DXDEC EXPAPI void AILCALL AIL_set_sound_start_offset(HMSSENUM sound, S32 offset,
     the sound starting. Generally you don't need to do this manually, since the sound designer should do
     this, however if you need to restart a sound that stopped - for example a stream that went to error -
     you will have to set the start position via code.
-    
+
     However, since there can be a delay between the time the sound is first seen in the sound iteration and
     the time it gets set to the data, start positions set via the low level miles calls can get lost, so
     use this.
@@ -7281,11 +7281,11 @@ DXDEC EXPAPI S32 AILCALL AIL_enumerate_sound_instances(HEVENTSYSTEM system, HMSS
     $:statuses Or-ed list of status values to enumerate. Use 0 for all status types.
     $:label_query A query to match sound instance labels against.  Use 0 to skip label matching.
     $:search_for_ID Match only instances that have a QueuedID,InstanceID,or EventID that matches this value. Use 0 to skip ID matching.
-    $:info Returns the data for each sound instance. 
+    $:info Returns the data for each sound instance.
     $:return  Returns 0 when enumeration is complete.
 
     Enumerates the sound instances. This will generally be used between
-      calls to $AIL_begin_event_queue_processing and $AIL_complete_event_queue_processing to 
+      calls to $AIL_begin_event_queue_processing and $AIL_complete_event_queue_processing to
       manage the sound instances.
 
     The label_query is a list of labels to match, separated by commas.  By default, comma-separated
@@ -7302,11 +7302,11 @@ DXDEC EXPAPI S32 AILCALL AIL_enumerate_sound_instances(HEVENTSYSTEM system, HMSS
             $(MILESEVENTSOUNDSTATUS::MILESEVENT_SOUND_STATUS_PENDING)[MILESEVENT_SOUND_STATUS_PENDING] - these are new sound instances that were
             created by events that had a "Start Sound Step". Note that these instances aren't audible yet,
             so that you have a chance to modify game driven properties (like the 3D position)
-            on the sound before Miles begins to play it.  
-            
+            on the sound before Miles begins to play it.
+
             $(MILESEVENTSOUNDSTATUS::MILESEVENT_SOUND_STATUS_PLAYING)[MILESEVENT_SOUND_STATUS_PLAYING] - these are sound instances that were previously
             started and are continuing to play (you might update the 3D position for these, for example).
-            
+
             $(MILESEVENTSOUNDSTATUS::MILESEVENT_SOUND_STATUS_COMPLETE)[MILESEVENT_SOUND_STATUS_COMPLETE] - these are sound instances that finished playing
             since the last this frame (you might use this status to free any game related memory, for example).
 
@@ -7315,7 +7315,7 @@ ${
             HMSSENUM SoundEnum = MSS_FIRST;
             MILESEVENTSOUNDINFO Info;
 
-            while ( $AIL_enumerate_sound_instances( &SoundEnum, 0, 0, &Info ) )    
+            while ( $AIL_enumerate_sound_instances( &SoundEnum, 0, 0, &Info ) )
             {
               if ( Info.Status != MILESEVENT_SOUND_STATUS_COMPLETE )
               {
@@ -7330,23 +7330,23 @@ $}
 
 EXPTYPEBEGIN typedef S32 MILESEVENTSOUNDSTATUS;
 #define MILESEVENT_SOUND_STATUS_PENDING 0x1
-#define MILESEVENT_SOUND_STATUS_PLAYING 0x2 
+#define MILESEVENT_SOUND_STATUS_PLAYING 0x2
 #define MILESEVENT_SOUND_STATUS_COMPLETE 0x4
 EXPTYPEEND
 /*
   Specifies the status of a sound instance.
-  
+
   $:MILESEVENT_SOUND_STATUS_PENDING New sound instances that were
             created by events that had a "Start Sound Step". Note that these instances aren't audible yet,
             so that you have a chance to modify game driven properties (like the 3D position)
-            on the sound before Miles begins to play it. 
-                    
+            on the sound before Miles begins to play it.
+
   $:MILESEVENT_SOUND_STATUS_PLAYING Sound instances that were previously
             started and are continuing to play (you might update the 3D position for these, for example).
-            
+
   $:MILESEVENT_SOUND_STATUS_COMPLETE Sound instances that finished playing
             since the last this frame (you might use this status to free any game related memory, for example).
-  
+
   These are the status values that each sound instance can have.  Use $AIL_enumerate_sound_instances to retrieve them.
 */
 
@@ -7360,13 +7360,13 @@ EXPTYPEBEGIN typedef U32 MILESEVENTSOUNDFLAG;
 EXPTYPEEND
 /*
   Specifies the status of a sound instance.
-  
+
   $:MILESEVENT_SOUND_FLAG_MISSING_SOUND The event system tried to look up the sound requested from a Start Sound event
     and couldn't find anything in the loaded banks.
   $:MILESEVENT_SOUND_FLAG_EVICTED The sound was evicted due to a sound instance limit being hit. Another sound was selected
     as being higher priority, and this sound was stopped as a result. This can be the result of either a Label Sound Limit,
     or a limit on the sound itself.
-  $:MILESEVENT_SOUND_FLAG_WAITING_ASYNC The sound is pending because the data for it is currently being loaded. 
+  $:MILESEVENT_SOUND_FLAG_WAITING_ASYNC The sound is pending because the data for it is currently being loaded.
     The sound will start when sufficient data has been loaded to hopefully avoid a skip.
   $:MILESEVENT_SONUD_FLAG_PENDING_ASYNC The sound has started playing, but the data still isn't completely loaded, and it's possible
     that the sound playback will catch up to the read position under poor I/O conditions.
@@ -7375,7 +7375,7 @@ EXPTYPEEND
     sound data is asynchronously loaded, or specify the sound in a Cache Sounds step prior to attempting to start it.
   $:MILESEVENT_SOUND_FLAG_FAILED_ASYNC The sound tried to load and the asynchronous I/O operation failed - most likely either the media
     was removed during load, or the file was not found.
-  
+
   These are the flag values that each sound instance can have.  Use $AIL_enumerate_sound_instances to retrieve them. Instances
   may have more than one flag, logically 'or'ed together.
 */
@@ -7383,16 +7383,16 @@ EXPTYPEEND
 DXDEC EXPAPI S32 AILCALL AIL_complete_event_queue_processing( void );
 /*
   Completes the queue processing (which is started with $AIL_begin_event_queue_processing ).
-        
+
   $:return Returns 0 on failure.
 
-  This function must be called as a pair with $AIL_begin_event_queue_processing. 
-  
-  In $AIL_begin_event_queue_processing, all the new sound instances are queued up, but they haven't 
-  started playing yet.  Old sound instances that have finished playing are still valid - they 
-  haven't been freed yet.  $AIL_complete_event_queue_processing actually starts the sound instances 
+  This function must be called as a pair with $AIL_begin_event_queue_processing.
+
+  In $AIL_begin_event_queue_processing, all the new sound instances are queued up, but they haven't
+  started playing yet.  Old sound instances that have finished playing are still valid - they
+  haven't been freed yet.  $AIL_complete_event_queue_processing actually starts the sound instances
   and frees the completed ones - it's the 2nd half of the event processing.
-  
+
   Usually you call $AIL_enumerate_sound_instances before this function to manage all the sound
   instances.
 */
@@ -7400,7 +7400,7 @@ DXDEC EXPAPI S32 AILCALL AIL_complete_event_queue_processing( void );
 DXDEC EXPAPI U64 AILCALL AIL_stop_sound_instances(char const * label_query, U64 apply_to_ID);
 /*
     Allows the programmer to manually enqueue a stop sound event into the event system.
-    
+
     $:label_query A query to match sound instance labels against.  Use 0 to skip label matching.
     $:apply_to_ID An optional value returned from a previous $AIL_enqueue_event or $AIL_enumerate_sound_instances that
       tells Miles to stop only those instances who's QueuedID,InstanceID,or EventID matches this value.
@@ -7408,7 +7408,7 @@ DXDEC EXPAPI U64 AILCALL AIL_stop_sound_instances(char const * label_query, U64 
 
     Enqueues an event to stop all sounds matching the specified label query (see $AIL_enumerate_sound_instances
     for a description of the label_query format).
-    
+
     Usually the programmer should trigger a named event that the sound designed can fill out to stop the necessary sounds,
     however, if a single sound (for example associated with an enemy that the player just killed) needs to be stopped,
     this function accomplishes that, and is captured by the auditioner for replay.
@@ -7417,7 +7417,7 @@ DXDEC EXPAPI U64 AILCALL AIL_stop_sound_instances(char const * label_query, U64 
 DXDEC EXPAPI U64 AILCALL AIL_pause_sound_instances(char const * label_query, U64 apply_to_ID);
 /*
     Allows the programmer to manually enqueue a pause sound event into the event system.
-    
+
     $:label_query A query to match sound instance labels against.  Use 0 to skip label matching.
     $:apply_to_ID An optional value returned from a previous $AIL_enqueue_event or $AIL_enumerate_sound_instances that
       tells Miles to pause only those instances who's QueuedID,InstanceID,or EventID matches this value.
@@ -7425,7 +7425,7 @@ DXDEC EXPAPI U64 AILCALL AIL_pause_sound_instances(char const * label_query, U64
 
     Enqueues an event to pause all sounds matching the specified label query (see $AIL_enumerate_sound_instances
     for a description of the label_query format).
-    
+
     Usually the programmer should trigger a named event that the sound designed can fill out to pause the necessary sounds,
     however, if a single sound (for example associated with an enemy that has been put in to stasis) needs to be paused,
     this function accomplishes that, and is captured by the auditioner for replay.
@@ -7434,7 +7434,7 @@ DXDEC EXPAPI U64 AILCALL AIL_pause_sound_instances(char const * label_query, U64
 DXDEC EXPAPI U64 AILCALL AIL_resume_sound_instances(char const * label_query, U64 apply_to_ID);
 /*
     Allows the programmer to manually enqueue a resume sound event into the event system.
-    
+
     $:label_query A query to match sound instance labels against.  Use 0 to skip label matching.
     $:apply_to_ID An optional value returned from a previous $AIL_enqueue_event or $AIL_enumerate_sound_instances that
       tells Miles to resume only those instances who's QueuedID,InstanceID,or EventID matches this value.
@@ -7442,17 +7442,17 @@ DXDEC EXPAPI U64 AILCALL AIL_resume_sound_instances(char const * label_query, U6
 
     Enqueues an event to resume all sounds matching the specified label query (see $AIL_enumerate_sound_instances
     for a description of the label_query format).
-    
+
     Usually the programmer should trigger a named event that the sound designed can fill out to resume the necessary sounds,
     however, if a single sound (for example associated with an enemy that has been restored from stasis) needs to be resumed,
     this function accomplishes that, and is captured by the auditioner for replay.
 */
 
-DXDEC EXPAPI U64 AILCALL AIL_start_sound_instance(HMSOUNDBANK bank, char const * sound, U8 loop_count, 
+DXDEC EXPAPI U64 AILCALL AIL_start_sound_instance(HMSOUNDBANK bank, char const * sound, U8 loop_count,
     S32 should_stream, char const * labels, void* user_buffer, S32 user_buffer_len, S32 enqueue_flags );
 /*
     Allows the programmer to manually enqueue a start sound event into the event system.
-    
+
     $:bank The bank containing the sound to start.
     $:sound The name of the sound file to start, including bank name, e.g. "BankName/SoundName"
     $:loop_count The loop count to assign to the sound. 0 for infinite, 1 for play once, or just the number of times to loop.
@@ -7463,10 +7463,10 @@ DXDEC EXPAPI U64 AILCALL AIL_start_sound_instance(HMSOUNDBANK bank, char const *
     $:enqueue_flags See the enqueue_flags description in $AIL_enqueue_event.
     $:return Returns a non-zero EnqueueID on success.
 
-    Enqueues an event to start the specified sound asset. 
-    
+    Enqueues an event to start the specified sound asset.
+
     Usually the programmer should trigger an event that the sound designer has specifically
-    create to start the appropriate sounds, but this function gives the programmer 
+    create to start the appropriate sounds, but this function gives the programmer
     manual control, if necessary. <b>This function is not captured by the auditioner.</b>
 */
 
@@ -7488,7 +7488,7 @@ DXDEC EXPAPI S32 AILCALL AIL_set_sound_label_limits(HEVENTSYSTEM system, char co
 
   Every time an event triggers a sound to be played, the sound limits are checked, and, if exceeded, a sound is dropped (based
   on the settings in the event step).
-  
+
   Usually event limits are set by a sound designer via an event, but this lets the programmer override the limits at runtime.
   Note that this replaces those events, it does not supplement.
 */
@@ -7503,7 +7503,7 @@ DXDEC EXPAPI S32 AILCALL AIL_enumerate_preset_persists(HEVENTSYSTEM system, HMSS
             that this pointer can change frame to frame and should be immediately copied to a client-allocated
             buffer if persistence is desired.
     $:return Returns 0 when enumeration is complete.
-    
+
     This function lets you enumerate all the persisting presets that are currently active in the system.  It
     is mostly a debugging aid.
 */
@@ -7511,12 +7511,12 @@ DXDEC EXPAPI S32 AILCALL AIL_enumerate_preset_persists(HEVENTSYSTEM system, HMSS
 DXDEC EXPAPI char * AILCALL AIL_text_dump_event_system(void);
 /*
     Returns a big string describing the current state of the event system.
-    
-    $:return String description of current systems state. 
+
+    $:return String description of current systems state.
 
     This function is a debugging aid - it can be used to show all of the active allocations,
     active sounds, etc.
-    
+
     You must delete the pointer returned from this function with $AIL_mem_free_lock.
 */
 
@@ -7535,7 +7535,7 @@ EXPTYPE typedef struct _MILESEVENTSTATE
 } MILESEVENTSTATE;
 /*
   returns the current state of the Miles Event System.
-  
+
   $:CommandBufferSize The size of the command buffer in bytes. See also the $AIL_startup_event_system.
   $:HeapSize The total size of memory used by the event system for management structures, and is allocated during startup. This does not include loaded file sizes.
   $:HeapRemaining The number of bytes in HeapSize that is remaining.
@@ -7615,7 +7615,7 @@ EXPTYPE typedef struct _MILESBANKFUNCTIONS
 } MILESBANKFUNCTIONS;
 /*
   specifies callbacks for each of the Miles event system.
-  
+
   $:FreeAll Callback that tells you to free all user-side bank memory.
   $:GetPreset Callback to retrieve a sound preset.
   $:GetEnvironment Callback to retrieve an environment preset.
@@ -7645,13 +7645,13 @@ DXDEC EXPAPI void AILCALL AIL_set_event_sample_functions(HSAMPLE (*CreateSampleC
 
     In the callback, SoundName is the name of the asset in Miles Studio, and SoundFileName
     is the value returned from Container_GetSound() (see also $AIL_set_event_bank_functions).
-    
+
 */
 
 DXDEC EXPAPI void AILCALL AIL_set_event_bank_functions(MILESBANKFUNCTIONS const * Functions);
 /*
   Allows you to override the internal bank file resource management..
-  
+
   $:Functions A pointer to a structure containing all the callback functions.
 
   This function is used to completely override the high-level resource management system.
@@ -7856,7 +7856,7 @@ EXPTYPEEND
     $:MILES_PLAT_IPHONE Apple iDevices
     $:MILES_PLAT_LINUX Linux Flavors
     $:MILES_PLAT_WII Nintendo Wii
-    $:MILES_PLAT_PSP2 Sony NGP 
+    $:MILES_PLAT_PSP2 Sony NGP
 
     Values representing the various platforms the high level tool allows.
 */
@@ -7891,11 +7891,11 @@ EXPGROUP(Miles High Level Event System)
 DXDEC EXPAPI void AILCALL AIL_event_system_state(HEVENTSYSTEM system, MILESEVENTSTATE* state);
 /*
   Returns an information structure about the current state of the Miles Event System.
-  
+
   $:system The system to retrieve information for, or zero for the default system.
   $:state A pointer to a structure to receive the state information.
 
-  This function is a debugging aid - it returns information for the event system. 
+  This function is a debugging aid - it returns information for the event system.
 */
 
 DXDEC EXPAPI U32 AILCALL AIL_event_system_command_queue_remaining();
@@ -7923,7 +7923,7 @@ DXDEC EXPAPI S32 AILCALL AIL_get_event_length(char const* i_EventName);
 // Callback for the error handler.
 EXPAPI typedef void AILCALLBACK AILEVENTERRORCB(S64 i_RelevantId, char const* i_Resource);
 /*
-  The function prototype to use for a callback that will be made when the event system 
+  The function prototype to use for a callback that will be made when the event system
   encounters an unrecoverable error.
 
   $:i_RelevantId The ID of the asset that encountered the error, as best known. EventID or SoundID.
@@ -7937,7 +7937,7 @@ EXPAPI typedef void AILCALLBACK AILEVENTERRORCB(S64 i_RelevantId, char const* i_
 EXPAPI typedef S32 AILCALLBACK MSS_USER_RAND( void );
 /*
   The function definition to use when defining your own random function.
-  
+
   You can define a function with this prototype and pass it to $AIL_register_random
   if you want to tie the Miles random calls in with your game's (for logging and such).
 */
@@ -7953,7 +7953,7 @@ DXDEC EXPAPI void AILCALL AIL_set_event_error_callback(AILEVENTERRORCB * i_Error
     can sometimes be somewhat invisible. This function allows you to see what went wrong,
     when it went wrong.
 
-    The basic usage is to have the callback check $AIL_last_error() for the overall category of 
+    The basic usage is to have the callback check $AIL_last_error() for the overall category of
     failure. The parameter passed to the callback might provide some context, but it can and will
     be zero on occasion. Generally it will represent the resource string that is being worked on when the error
     occurred.
@@ -8009,7 +8009,7 @@ typedef C8 *  (AILCALL *FLT_ERROR)(void);
 
 typedef HDRIVERSTATE (AILCALL *FLT_OPEN_DRIVER) (MSS_ALLOC_TYPE * palloc,
                                                  MSS_FREE_TYPE  * pfree,
-                                                 UINTa         user,  
+                                                 UINTa         user,
                                                  HDIGDRIVER dig, void * memory);
 
 typedef FLTRESULT    (AILCALL *FLT_CLOSE_DRIVER) (HDRIVERSTATE state);

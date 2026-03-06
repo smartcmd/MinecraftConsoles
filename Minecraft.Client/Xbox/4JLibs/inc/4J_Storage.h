@@ -5,7 +5,7 @@ using namespace std;
 
 class CXuiStringTable;
 
-typedef struct  
+typedef struct
 {
 	FILETIME fTime;
 	XCONTENT_DATA Content;
@@ -34,7 +34,7 @@ class C4JStorage
 
 public:
 	// Structs defined in the DLC_Creator, but added here to be used in the app
-	typedef struct  
+	typedef struct
 	{
 		unsigned int	uiFileSize;
 		DWORD			dwType;
@@ -52,7 +52,7 @@ public:
 	DLC_FILE_PARAM, *PDLC_FILE_PARAM;
 	// End of DLC_Creator structs
 
-	typedef struct  
+	typedef struct
 	{
  		WCHAR                               wchDisplayName[XCONTENT_MAX_DISPLAYNAME_LENGTH];
  		CHAR                                szFileName[XCONTENT_MAX_FILENAME_LENGTH];
@@ -62,7 +62,7 @@ public:
 	CACHEINFOSTRUCT;
 
 	// structure to hold DLC info in TMS
-	typedef struct  
+	typedef struct
 	{
 		DWORD dwVersion;
 		DWORD dwNewOffers;
@@ -102,7 +102,7 @@ public:
 	enum ESaveGameControlState
 	{
 		ESaveGameControl_Idle=0,
-		ESaveGameControl_Save,	
+		ESaveGameControl_Save,
 		ESaveGameControl_InternalRequestingDevice,
 		ESaveGameControl_InternalGetSaveName,
 		ESaveGameControl_InternalSaving,
@@ -189,7 +189,7 @@ public:
 		TMS_UGCTYPE_MAX
 	};
 
-	typedef struct  
+	typedef struct
 	{
 		CHAR			szFilename[256];
 		int				iFileSize;
@@ -197,14 +197,14 @@ public:
 	}
 	TMSPP_FILE_DETAILS, *PTMSPP_FILE_DETAILS;
 
-	typedef struct  
+	typedef struct
 	{
 		int iCount;
 		PTMSPP_FILE_DETAILS FileDetailsA;
 	}
 	TMSPP_FILE_LIST, *PTMSPP_FILE_LIST;
 
-	typedef struct  
+	typedef struct
 	{
 		DWORD dwSize;
 		PBYTE pbData;
@@ -241,7 +241,7 @@ public:
 	PVOID						AllocateSaveData(unsigned int uiBytes);
 	void						SaveSaveData(unsigned int uiBytes,PBYTE pbThumbnail=NULL,DWORD cbThumbnail=0,PBYTE pbTextData=NULL, DWORD dwTextLen=0);
 	void						CopySaveDataToNewSave(PBYTE pbThumbnail,DWORD cbThumbnail,WCHAR *wchNewName,int ( *Func)(LPVOID lpParam, bool), LPVOID lpParam);
-	void						SetSaveDeviceSelected(unsigned int uiPad,bool bSelected);	
+	void						SetSaveDeviceSelected(unsigned int uiPad,bool bSelected);
 	bool						GetSaveDeviceSelected(unsigned int iPad);
 	C4JStorage::ELoadGameStatus	DoesSaveExist(bool *pbExists);
 	bool						EnoughSpaceForAMinSaveGame();
@@ -260,13 +260,13 @@ public:
 	// DLC
 	void								RegisterMarketplaceCountsCallback(int ( *Func)(LPVOID lpParam, C4JStorage::DLC_TMS_DETAILS *, int), LPVOID lpParam );
 	void								SetDLCPackageRoot(char *pszDLCRoot);
-	C4JStorage::EDLCStatus				GetDLCOffers(int iPad,int( *Func)(LPVOID, int, DWORD, int),LPVOID lpParam, DWORD dwOfferTypesBitmask=XMARKETPLACE_OFFERING_TYPE_CONTENT);	
+	C4JStorage::EDLCStatus				GetDLCOffers(int iPad,int( *Func)(LPVOID, int, DWORD, int),LPVOID lpParam, DWORD dwOfferTypesBitmask=XMARKETPLACE_OFFERING_TYPE_CONTENT);
 	DWORD								CancelGetDLCOffers();
 	void								ClearDLCOffers();
 	//XMARKETPLACE_CONTENTOFFER_INFO&		GetOffer(DWORD dw);
 	XMARKETPLACE_CURRENCY_CONTENTOFFER_INFO&		GetOffer(DWORD dw);
 	int									GetOfferCount();
-	DWORD								InstallOffer(int iOfferIDC,unsigned __int64 *ullOfferIDA,int( *Func)(LPVOID, int, int),LPVOID lpParam, bool bTrial=false);
+	DWORD								InstallOffer(int iOfferIDC,uint64_t *ullOfferIDA,int( *Func)(LPVOID, int, int),LPVOID lpParam, bool bTrial=false);
 	DWORD								GetAvailableDLCCount( int iPad);
 
 	C4JStorage::EDLCStatus				GetInstalledDLC(int iPad,int( *Func)(LPVOID, int, int),LPVOID lpParam);
@@ -297,7 +297,7 @@ public:
 	HRESULT								TMSPP_SetTitleGroupID(LPCSTR szGroupID);
 
 // #ifdef _DEBUG
-// 	void SetSaveName(int i);					
+// 	void SetSaveName(int i);
 // #endif
 	// string table for all the Storage problems. Loaded by the application
 	CXuiStringTable				*m_pStringTable;

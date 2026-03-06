@@ -6,7 +6,7 @@
 #include "..\Minecraft.Client\ServerLevel.h"
 #include "PortalForcer.h"
 
-PortalForcer::PortalPosition::PortalPosition(int x, int y, int z, __int64 time) : Pos(x, y, z)
+PortalForcer::PortalPosition::PortalPosition(int x, int y, int z, int64_t time) : Pos(x, y, z)
 {
 	lastUsed = time;
 }
@@ -502,15 +502,15 @@ next_second: continue;
 	return true;
 }
 
-void PortalForcer::tick(__int64 time)
+void PortalForcer::tick(int64_t time)
 {
 	if (time % (SharedConstants::TICKS_PER_SECOND * 5) == 0)
 	{
-		__int64 cutoff = time - SharedConstants::TICKS_PER_SECOND * 30;
+		int64_t cutoff = time - SharedConstants::TICKS_PER_SECOND * 30;
 
         for (auto it = cachedPortalKeys.begin(); it != cachedPortalKeys.end();)
         {
-			__int64 key = *it;
+			int64_t key = *it;
 			PortalPosition *pos = cachedPortals[key];
 
 			if (pos == NULL || pos->lastUsed < cutoff)

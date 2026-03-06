@@ -14,24 +14,24 @@ class ZonedChunkStorage : public ChunkStorage
 {
 public:
     static const int BIT_TERRAIN_POPULATED;
-		   
+
     static const int CHUNKS_PER_ZONE_BITS; // = 32
     static const int CHUNKS_PER_ZONE; // ^2
-		   
+
     static const int CHUNK_WIDTH;
-		   
+
     static const int CHUNK_HEADER_SIZE;
     static const int CHUNK_SIZE;
     static const int CHUNK_LAYERS ;
     static const int CHUNK_SIZE_BYTES;
-		   
+
     static const ByteOrder BYTEORDER;
 
     File dir;
 
 private:
-    unordered_map<__int64, ZoneFile *> zoneFiles;
-    __int64 tickCount;
+    unordered_map<int64_t, ZoneFile *> zoneFiles;
+    int64_t tickCount;
 
 public:
 	ZonedChunkStorage(File dir);

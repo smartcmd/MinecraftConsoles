@@ -13,7 +13,7 @@
 const double CustomLevelSource::SNOW_SCALE = 0.3;
 const double CustomLevelSource::SNOW_CUTOFF = 0.5;
 
-CustomLevelSource::CustomLevelSource(Level *level, __int64 seed, bool generateStructures) : generateStructures( generateStructures )
+CustomLevelSource::CustomLevelSource(Level *level, int64_t seed, bool generateStructures) : generateStructures( generateStructures )
 {
 #ifdef _OVERRIDE_HEIGHTMAP
 	m_XZSize = level->getLevelData()->getXZSize();
@@ -328,7 +328,7 @@ void CustomLevelSource::buildSurfaces(int xOffs, int zOffs, byteArray blocks, Bi
 							run = runDepth;
 							if (y >= waterHeight - 1) blocks[offs] = top;
 							else blocks[offs] = material;
-						} 
+						}
 						else if (run > 0)
 						{
 							run--;
@@ -402,7 +402,7 @@ LevelChunk *CustomLevelSource::getChunk(int xOffs, int zOffs)
 	// addCaves(xOffs, zOffs, blocks);
 	// addTowns(xOffs, zOffs, blocks);
 
-	//    levelChunk->recalcHeightmap();		// 4J - removed & moved into its own method	
+	//    levelChunk->recalcHeightmap();		// 4J - removed & moved into its own method
 
 	// 4J - this now creates compressed block data from the blocks array passed in, so moved it until after the blocks are actually finalised. We also
 	// now need to free the passed in blocks as the LevelChunk doesn't use the passed in allocation anymore.
@@ -507,8 +507,8 @@ void CustomLevelSource::postProcess(ChunkSource *parent, int xt, int zt)
 	}
 
 	pprandom->setSeed(level->getSeed());
-	__int64 xScale = pprandom->nextLong() / 2 * 2 + 1;
-	__int64 zScale = pprandom->nextLong() / 2 * 2 + 1;
+	int64_t xScale = pprandom->nextLong() / 2 * 2 + 1;
+	int64_t zScale = pprandom->nextLong() / 2 * 2 + 1;
 	pprandom->setSeed(((xt * xScale) + (zt * zScale)) ^ level->getSeed());
 
 	bool hasVillage = false;

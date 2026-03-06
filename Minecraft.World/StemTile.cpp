@@ -187,10 +187,10 @@ void StemTile::spawnResources(Level *level, int x, int y, int z, int data, float
 	Item *seed = NULL;
 	if (fruit == Tile::pumpkin) seed = Item::seeds_pumpkin;
 	if (fruit == Tile::melon) seed = Item::seeds_melon;
-	for (int i = 0; i < 3; i++)
-	{
-		popResource(level, x, y, z, shared_ptr<ItemInstance>(new ItemInstance(seed)));
-	}
+    if (seed != NULL)
+    {
+        popResource(level, x, y, z, shared_ptr<ItemInstance>(new ItemInstance(seed)));
+    }
 }
 
 int StemTile::getResource(int data, Random *random, int playerBonusLevel)

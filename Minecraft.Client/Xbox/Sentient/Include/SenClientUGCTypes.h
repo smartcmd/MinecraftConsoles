@@ -43,7 +43,7 @@ namespace Sentient
 	};
 
 	typedef unsigned int SenUGCMetaDataFlags;
-	enum 
+	enum
 	{
 		SenUGCMetaDataFlags_NoFlags			=	0x00000000,
 		SenUGCMetaDataFlags_FriendsCanEdit	=	0x00000001,
@@ -66,7 +66,7 @@ namespace Sentient
 #pragma warning ( disable : 4996 )	// @TODO - Removed once Int16 Descriptors are deprecated
 			memset(descriptors, 0, sizeof(SenUGCDescriptor) * NrUgcDescriptors);
 #pragma warning ( default : 4996 )
-			memset(descriptors2, 0, sizeof(__int64) * NrUgcDescriptors);
+			memset(descriptors2, 0, sizeof(long long) * NrUgcDescriptors);
 		}
 
 		SenUGCID			parentID;
@@ -80,10 +80,10 @@ namespace Sentient
 		wchar_t				shortName[ShortNameLength];
 
 		static const int	NrUgcDescriptors			=	4;
-		
+
 		__declspec(deprecated("Descriptors have increased in size (from Int16 to Int64).  Please Use descriptors2 instead"))
 		SenUGCDescriptor	descriptors[NrUgcDescriptors];
-		__int64				descriptors2[NrUgcDescriptors];
+		long long				descriptors2[NrUgcDescriptors];
 
 		static const int	BlobSizeLimit				=	1024;
 		size_t				metaDataBlobSize;
@@ -160,10 +160,10 @@ namespace Sentient
 
 	enum SenUGCSortBy
 	{
-		SenUGCSortBy_CreationDate,			
-		SenUGCSortBy_TopFavorites,			
-		SenUGCSortBy_TopReviewScoreAverage, 
-		SenUGCSortBy_TopDownloadsTotal		
+		SenUGCSortBy_CreationDate,
+		SenUGCSortBy_TopFavorites,
+		SenUGCSortBy_TopReviewScoreAverage,
+		SenUGCSortBy_TopDownloadsTotal
 	};
 
 	enum SenUGCAuthorType
@@ -211,7 +211,7 @@ namespace Sentient
 	};
 
 	// ***** Leaderboard types
-	typedef __int64 SenLeaderboardEntryValue;
+	typedef long long SenLeaderboardEntryValue;
 	typedef ULONGLONG SenLeaderboardActorId;
 
 	enum SenLeaderboardSortType
@@ -224,7 +224,7 @@ namespace Sentient
 	/// @brief          Leaderboard Metadata retrieval flag.
 	///
 	/// @details        When retrieving Leaderboard information, a client can choose
-	///					to bypass retrieval or retrieve specific details regarding the 
+	///					to bypass retrieval or retrieve specific details regarding the
 	///					Metadata stored for a given Leaderboard or Leaderboard Entry.
 	///
 	enum SenLeaderboardMetadataFlag

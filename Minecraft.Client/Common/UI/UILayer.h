@@ -66,12 +66,12 @@ public:
 
 	// INPUT
 	void handleInput(int iPad, int key, bool repeat, bool pressed, bool released, bool &handled);
-#ifdef __PSVITA__	
+#ifdef __PSVITA__
 	// Current active scene
 	UIScene *getCurrentScene();
 #endif
 	// FOCUS
-	
+
 	bool updateFocusState(bool allowedFocus = false);
 
 public:
@@ -87,7 +87,7 @@ public:
 
 	void handleUnlockFullVersion();
 	UIScene *FindScene(EUIScene sceneType);
-	
-	void PrintTotalMemoryUsage(__int64 &totalStatic, __int64 &totalDynamic);
+
+	void PrintTotalMemoryUsage(int64_t &totalStatic, int64_t &totalDynamic);
 
 };

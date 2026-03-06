@@ -48,10 +48,10 @@ void GuiComponent::fill(int x0, int y0, int x1, int y1, int col)
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     glColor4f(r, g, b, a);
     t->begin();
-    t->vertex((float)(x0), (float)( y1), (float)( 0));
-    t->vertex((float)(x1), (float)( y1), (float)( 0));
-    t->vertex((float)(x1), (float)( y0), (float)( 0));
-    t->vertex((float)(x0), (float)( y0), (float)( 0));
+    t->vertex(static_cast<float>(x0), static_cast<float>(y1), static_cast<float>(0));
+    t->vertex(static_cast<float>(x1), static_cast<float>(y1), static_cast<float>(0));
+    t->vertex(static_cast<float>(x1), static_cast<float>(y0), static_cast<float>(0));
+    t->vertex(static_cast<float>(x0), static_cast<float>(y0), static_cast<float>(0));
     t->end();
     glEnable(GL_TEXTURE_2D);
     glDisable(GL_BLEND);
@@ -77,11 +77,11 @@ void GuiComponent::fillGradient(int x0, int y0, int x1, int y1, int col1, int co
     Tesselator *t = Tesselator::getInstance();
     t->begin();
     t->color(r1, g1, b1, a1);
-    t->vertex((float)(x1), (float)( y0), blitOffset);
-    t->vertex((float)(x0), (float)( y0), blitOffset);
+    t->vertex(static_cast<float>(x1), static_cast<float>(y0), blitOffset);
+    t->vertex(static_cast<float>(x0), static_cast<float>(y0), blitOffset);
     t->color(r2, g2, b2, a2);
-    t->vertex((float)(x0), (float)( y1), blitOffset);
-    t->vertex((float)(x1), (float)( y1), blitOffset);
+    t->vertex(static_cast<float>(x0), static_cast<float>(y1), blitOffset);
+    t->vertex(static_cast<float>(x1), static_cast<float>(y1), blitOffset);
     t->end();
 
     glShadeModel(GL_FLAT);
@@ -105,6 +105,11 @@ void GuiComponent::drawString(Font *font, const wstring& str, int x, int y, int 
 	font->drawShadow(str, x, y, color);
 }
 
+void GuiComponent::drawStringLiteral(Font *font, const wstring& str, int x, int y, int color)
+{
+	font->drawShadowLiteral(str, x, y, color);
+}
+
 void GuiComponent::blit(int x, int y, int sx, int sy, int w, int h)
 {
     float us = 1 / 256.0f;
@@ -117,20 +122,20 @@ void GuiComponent::blit(int x, int y, int sx, int sy, int w, int h)
 	const float extraShift = 0.75f;
 
 	// 4J - subtracting extraShift (actual screen pixels, so need to compensate for physical & game width) from each x & y coordinate to compensate for centre of pixels in directx vs openGL
-	float dx = ( extraShift * (float)Minecraft::GetInstance()->width ) / (float)Minecraft::GetInstance()->width_phys;
+	float dx = ( extraShift * static_cast<float>(Minecraft::GetInstance()->width) ) / static_cast<float>(Minecraft::GetInstance()->width_phys);
 	// 4J - Also factor in the scaling from gui coordinate space to the screen. This varies based on user-selected gui scale, and whether we are in a viewport mode or not
 	dx /= Gui::currentGuiScaleFactor;
 	float dy = extraShift / Gui::currentGuiScaleFactor;
 	// Ensure that the x/y, width and height are actually pixel aligned at our current scale factor - in particular, for split screen mode with the default (3X)
 	// scale, we have an overall scale factor of 3 * 0.5 = 1.5, and so any odd pixels won't align
-	float fx = (floorf((float)x * Gui::currentGuiScaleFactor)) / Gui::currentGuiScaleFactor;
-	float fy = (floorf((float)y * Gui::currentGuiScaleFactor)) / Gui::currentGuiScaleFactor;
-	float fw = (floorf((float)w * Gui::currentGuiScaleFactor)) / Gui::currentGuiScaleFactor;
-	float fh = (floorf((float)h * Gui::currentGuiScaleFactor)) / Gui::currentGuiScaleFactor;
+	float fx = (floorf(static_cast<float>(x) * Gui::currentGuiScaleFactor)) / Gui::currentGuiScaleFactor;
+	float fy = (floorf(static_cast<float>(y) * Gui::currentGuiScaleFactor)) / Gui::currentGuiScaleFactor;
+	float fw = (floorf(static_cast<float>(w) * Gui::currentGuiScaleFactor)) / Gui::currentGuiScaleFactor;
+	float fh = (floorf(static_cast<float>(h) * Gui::currentGuiScaleFactor)) / Gui::currentGuiScaleFactor;
 
-    t->vertexUV(fx + 0 - dx,  fy + fh - dy, (float)( blitOffset), (float)( (sx + 0) * us), (float)( (sy + h) * vs));
-    t->vertexUV(fx + fw - dx, fy + fh - dy, (float)( blitOffset), (float)( (sx + w) * us), (float)( (sy + h) * vs));
-    t->vertexUV(fx + fw - dx, fy + 0 - dy, (float)( blitOffset), (float)( (sx + w) * us), (float)( (sy + 0) * vs));
-    t->vertexUV(fx + 0 - dx,  fy + 0 - dy, (float)( blitOffset), (float)( (sx + 0) * us), (float)( (sy + 0) * vs));
+    t->vertexUV(fx + 0 - dx,  fy + fh - dy, static_cast<float>(blitOffset), static_cast<float>((sx + 0) * us), static_cast<float>((sy + h) * vs));
+    t->vertexUV(fx + fw - dx, fy + fh - dy, static_cast<float>(blitOffset), static_cast<float>((sx + w) * us), static_cast<float>((sy + h) * vs));
+    t->vertexUV(fx + fw - dx, fy + 0 - dy, static_cast<float>(blitOffset), static_cast<float>((sx + w) * us), static_cast<float>((sy + 0) * vs));
+    t->vertexUV(fx + 0 - dx,  fy + 0 - dy, static_cast<float>(blitOffset), static_cast<float>((sx + 0) * us), static_cast<float>((sy + 0) * vs));
     t->end();
 }

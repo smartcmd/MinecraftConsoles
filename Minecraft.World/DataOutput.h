@@ -10,7 +10,7 @@ public:
 	virtual void writeDouble(double a) = 0;
 	virtual void writeFloat(float a) = 0;
 	virtual void writeInt(int a) = 0;
-	virtual void writeLong(__int64 a) = 0;
+	virtual void writeLong(int64_t a) = 0;
 	virtual void writeShort(short a) = 0;
 	virtual void writeBoolean(bool v) = 0;
 	virtual void writeChar(wchar_t v) = 0;

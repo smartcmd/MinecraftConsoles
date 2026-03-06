@@ -78,7 +78,7 @@ void DataOutputStream::writeByte(byte a)
 //v - a double value to be written.
 void DataOutputStream::writeDouble(double a)
 {
-	__int64 bits = Double::doubleToLongBits( a );
+	int64_t bits = Double::doubleToLongBits( a );
 
 	writeLong( bits );
 	// TODO 4J Stu - Error handling?
@@ -116,7 +116,7 @@ void DataOutputStream::writeInt(int a)
 //In no exception is thrown, the counter written is incremented by 8.
 //Parameters:
 //v - a long to be written.
-void DataOutputStream::writeLong(__int64 a)
+void DataOutputStream::writeLong(int64_t a)
 {
 	stream->write( (a >> 56) & 0xff );
 	stream->write( (a >> 48) & 0xff );
@@ -186,7 +186,7 @@ void DataOutputStream::writeBoolean(bool b)
 {
 	stream->write( b ? (byte)1 : (byte)0 );
 	// TODO 4J Stu - Error handling?
-	written += 1; 
+	written += 1;
 }
 
 //Writes a string to the underlying output stream using modified UTF-8 encoding in a machine-independent manner.
@@ -228,7 +228,7 @@ void DataOutputStream::writeUTF(const wstring& str)
 	byteArray bytearr(utflen+2);
 
 	bytearr[count++] = (byte) ((utflen >> 8) & 0xFF);
-	bytearr[count++] = (byte) ((utflen >> 0) & 0xFF);  
+	bytearr[count++] = (byte) ((utflen >> 0) & 0xFF);
 
 	int i=0;
 	for (i=0; i<strlen; i++)

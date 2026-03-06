@@ -236,7 +236,7 @@ Recipes::Recipes()
 		L"## ", //
 		L"###", //
 
-		L'#', Tile::cobblestone,
+		L'#', Tile::stoneBrick,
 		L'S');
 
 	addShapedRecipy(new ItemInstance(Tile::stairs_netherBricks, 4), //

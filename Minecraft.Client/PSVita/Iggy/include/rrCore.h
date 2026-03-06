@@ -114,8 +114,8 @@
   #define __RADLITTLEENDIAN__
   #ifdef __i386__
     #define __RADX86__
-  #else 
-    #define __RADARM__       
+  #else
+    #define __RADARM__
   #endif
   #define RADINLINE inline
   #define RADRESTRICT __restrict
@@ -132,7 +132,7 @@
   #define __RADX86__
 #else
   #error Unknown processor
-#endif    
+#endif
   #define __RADLITTLEENDIAN__
   #define RADINLINE inline
   #define RADRESTRICT __restrict
@@ -155,7 +155,7 @@
       #define __RADNACL__
       #define __RAD32__
       #define __RADLITTLEENDIAN__
-      #define __RADX86__           
+      #define __RADX86__
       #define RADINLINE inline
       #define RADRESTRICT __restrict
 
@@ -196,7 +196,7 @@
       #define __RAD64REGS__
       #define __RADLITTLEENDIAN__
       #define RADINLINE inline
-      #define RADRESTRICT __restrict    
+      #define RADRESTRICT __restrict
 
       #undef  RADSTRUCT
       #define RADSTRUCT struct __attribute__((__packed__))
@@ -265,7 +265,7 @@
       #endif
       #undef RADSTRUCT
       #define RADSTRUCT struct __attribute__((__packed__))
-      
+
     #elif defined(CAFE) // has to be before HOLLYWOOD_REV since it also defines it
 
       #define __RADWIIU__
@@ -480,7 +480,7 @@
 
           #undef RADRESTRICT  /* could have been defined above... */
           #define RADRESTRICT __restrict
-        
+
           #undef RADSTRUCT
           #define RADSTRUCT struct __attribute__((__packed__))
         #endif
@@ -885,7 +885,7 @@
       #define RAD_ALIGN(type,var,num) type __declspec(align(num)) var
     #else
       // NOTE: / / is a guaranteed parse error in C/C++.
-      #define RAD_ALIGN(type,var,num) RAD_ALIGN_USED_BUT_NOT_DEFINED / / 
+      #define RAD_ALIGN(type,var,num) RAD_ALIGN_USED_BUT_NOT_DEFINED / /
     #endif
 
 	// WARNING : RAD_TLS should really only be used for debug/tools stuff
@@ -917,8 +917,8 @@
         #define RAD_S32 signed int
         // But pointers are 64 bits.
         #if (_MSC_VER >= 1300 && defined(_Wp64) && _Wp64 )
-          #define RAD_SINTa __w64 signed __int64
-          #define RAD_UINTa __w64 unsigned __int64
+          #define RAD_SINTa __w64 signed long long
+          #define RAD_UINTa __w64 unsigned long long
         #else // non-vc.net compiler or /Wp64 turned off
           #define RAD_UINTa unsigned long long
           #define RAD_SINTa signed long long
@@ -976,8 +976,8 @@
       #define RAD_U64 unsigned long long
       #define RAD_S64 signed long long
     #elif defined(__RADX64__) || defined(__RAD32__)
-      #define RAD_U64 unsigned __int64
-      #define RAD_S64 signed __int64
+      #define RAD_U64 unsigned long long
+      #define RAD_S64 signed long long
     #else
       // 16-bit
       typedef RADSTRUCT RAD_U64  // do this so that we don't accidentally use U64s
@@ -1134,7 +1134,7 @@
 
     // helpers for doing an if ( ) with expect :
     // if ( RAD_LIKELY(expr) ) { ... }
-    
+
     #define RAD_LIKELY(expr)            RAD_EXPECT(expr,1)
     #define RAD_UNLIKELY(expr)          RAD_EXPECT(expr,0)
 
@@ -1324,7 +1324,7 @@
        __pragma(warning(push)) \
       __pragma(warning(disable:4127)) \
     } while(0) \
-    __pragma(warning(pop)) 
+    __pragma(warning(pop))
 
     #define RAD_STATEMENT_END_TRUE \
        __pragma(warning(push)) \
@@ -1333,10 +1333,10 @@
     __pragma(warning(pop))
 
   #else
-    #define RAD_USE_STANDARD_LOOP_CONSTRUCT  
+    #define RAD_USE_STANDARD_LOOP_CONSTRUCT
   #endif
 #else
-    #define RAD_USE_STANDARD_LOOP_CONSTRUCT  
+    #define RAD_USE_STANDARD_LOOP_CONSTRUCT
 #endif
 
 #ifdef RAD_USE_STANDARD_LOOP_CONSTRUCT
@@ -1345,7 +1345,7 @@
 
   #define RAD_STATEMENT_END_FALSE \
     } while ( (void)0,0 )
-    
+
   #define RAD_STATEMENT_END_TRUE \
     } while ( (void)1,1 )
 
@@ -1355,7 +1355,7 @@
   RAD_STATEMENT_START \
     code \
   RAD_STATEMENT_END_FALSE
-  
+
 #define RAD_INFINITE_LOOP( code ) \
   RAD_STATEMENT_START \
     code \
@@ -1363,7 +1363,7 @@
 
 
 // Must be placed after variable declarations for code compiled as .c
-#if defined(_MSC_VER) && _MSC_VER >= 1700 // in 2012 aka 11.0 and later 
+#if defined(_MSC_VER) && _MSC_VER >= 1700 // in 2012 aka 11.0 and later
 #   define RR_UNUSED_VARIABLE(x) (void) x
 #else
 #   define RR_UNUSED_VARIABLE(x) (void)(sizeof(x))
@@ -1473,7 +1473,7 @@
   // just to make gcc shut up about derefing null :
   #define RR_MEMBER_OFFSET_PTR(type,member,ptr)  ( (SINTa) &(((type *)(ptr))->member)  - (SINTa)(ptr) )
   #define RR_MEMBER_SIZE_PTR(type,member,ptr)	( sizeof( ((type *) (ptr))->member) )
-   
+
   // MEMBER_TO_OWNER takes a pointer to a member and gives you back the base of the object
   //  you should then RR_ASSERT( &(ret->member) == ptr );
   #define RR_MEMBER_TO_OWNER(type,member,ptr)    (type *)( ((char *)(ptr)) - RR_MEMBER_OFFSET_PTR(type,member,ptr) )
@@ -1482,7 +1482,7 @@
 // Cache / prefetch macros :
 
 // RR_PREFETCH for various platforms :
-// 
+//
 // RR_PREFETCH_SEQUENTIAL : prefetch memory for reading in a sequential scan
 //		platforms that automatically prefetch sequential (eg. PC) should be a no-op here
 // RR_PREFETCH_WRITE_INVALIDATE : prefetch memory for writing - contents of memory are undefined
@@ -1707,7 +1707,7 @@ extern fp_rrDisplayAssertion * g_fp_rrDisplayAssertion;
 #define rrDisplayAssertion(i,n,l,f,m)	( ( g_fp_rrDisplayAssertion ) ? (*g_fp_rrDisplayAssertion)(i,n,l,f,m) : 1 )
 
 //-----------------------------------------------------------
-      
+
 // RAD_NO_BREAK : option if you don't like your assert to break
 //  CB : RR_BREAK is *always* a break ; RR_ASSERT_BREAK is optional
 #ifdef RAD_NO_BREAK
@@ -1725,7 +1725,7 @@ extern fp_rrDisplayAssertion * g_fp_rrDisplayAssertion;
 #define RR_ASSERT_LITE_ALWAYS(exp)     RAD_STATEMENT_WRAPPER( if ( ! (exp) ) { RR_ASSERT_BREAK(); } )
 
 //-----------------------------------
-#ifdef RR_DO_ASSERTS 
+#ifdef RR_DO_ASSERTS
 
 #define RR_ASSERT(exp)           RR_ASSERT_ALWAYS(exp)
 #define RR_ASSERT_LITE(exp)      RR_ASSERT_LITE_ALWAYS(exp)
@@ -1883,7 +1883,7 @@ unsigned long  __cdecl _byteswap_ulong  (unsigned long  _Long);
 #define RR_BSWAP16   _byteswap_ushort
 #define RR_BSWAP32  _byteswap_ulong
 
-unsigned __int64 __cdecl _byteswap_uint64 (unsigned __int64 val);
+unsigned long long __cdecl _byteswap_uint64 (unsigned long long val);
 #pragma intrinsic(_byteswap_uint64)
 #define RR_BSWAP64  _byteswap_uint64
 
@@ -1909,7 +1909,7 @@ RADFORCEINLINE unsigned long RR_BSWAP32 (unsigned long _Long)
    return _Long;
 }
 
-RADFORCEINLINE unsigned __int64 RR_BSWAP64 (unsigned __int64 _Long)
+RADFORCEINLINE unsigned long long RR_BSWAP64 (unsigned long long _Long)
 {
    __asm {
       mov eax, DWORD PTR _Long
@@ -2250,10 +2250,10 @@ void           __storewordbytereverse (unsigned int   val, int offset, void *bas
 
 #if ( defined(_MSC_VER) && _MSC_VER >= 1300)
 
-unsigned __int64 __cdecl _rotl64(unsigned __int64 _Val, int _Shift);
+unsigned long long __cdecl _rotl64(unsigned long long _Val, int _Shift);
 #pragma intrinsic(_rotl64)
 
-#define RR_ROTL64(x,k)  _rotl64((unsigned __int64)(x),(int)(k))
+#define RR_ROTL64(x,k)  _rotl64((unsigned long long)(x),(int)(k))
 
 #elif defined(__RADCELL__)
 
@@ -2262,7 +2262,7 @@ unsigned __int64 __cdecl _rotl64(unsigned __int64 _Val, int _Shift);
 
 #elif defined(__RADLINUX__) || defined(__RADMACAPI__)
 
-//APTODO: Just to compile linux. Should we be doing better than this? If not, combine with above. 
+//APTODO: Just to compile linux. Should we be doing better than this? If not, combine with above.
 #define RR_ROTL64(u64,num)  ( ( (u64) << (num) ) | ( (u64) >> (64 - (num))) )
 
 #else

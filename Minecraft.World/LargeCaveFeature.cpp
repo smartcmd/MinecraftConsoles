@@ -4,12 +4,12 @@
 #include "net.minecraft.world.level.biome.h"
 #include "LargeCaveFeature.h"
 
-void LargeCaveFeature::addRoom(__int64 seed, int xOffs, int zOffs, byteArray blocks, double xRoom, double yRoom, double zRoom)
+void LargeCaveFeature::addRoom(int64_t seed, int xOffs, int zOffs, byteArray blocks, double xRoom, double yRoom, double zRoom)
 {
 	addTunnel(seed, xOffs, zOffs, blocks, xRoom, yRoom, zRoom, 1 + random->nextFloat() * 6, 0, 0, -1, -1, 0.5);
 }
 
-void LargeCaveFeature::addTunnel(__int64 seed, int xOffs, int zOffs, byteArray blocks, double xCave, double yCave, double zCave, float thickness, float yRot, float xRot, int step, int dist, double yScale)
+void LargeCaveFeature::addTunnel(int64_t seed, int xOffs, int zOffs, byteArray blocks, double xCave, double yCave, double zCave, float thickness, float yRot, float xRot, int step, int dist, double yScale)
 {
 	double xMid = xOffs * 16 + 8;
 	double zMid = zOffs * 16 + 8;
@@ -123,7 +123,7 @@ void LargeCaveFeature::addTunnel(__int64 seed, int xOffs, int zOffs, byteArray b
 		}
 		if (detectedWater) continue;
 
-		for (int xx = x0; xx < x1; xx++) 
+		for (int xx = x0; xx < x1; xx++)
 		{
 			double xd = ((xx + xOffs * 16 + 0.5) - xCave) / rad;
 			for (int zz = z0; zz < z1; zz++)
@@ -142,7 +142,7 @@ void LargeCaveFeature::addTunnel(__int64 seed, int xOffs, int zOffs, byteArray b
 							if (block == Tile::grass_Id) hasGrass = true;
 							if (block == Tile::stone_Id || block == Tile::dirt_Id || block == Tile::grass_Id)
 							{
-								if (yy < 10) 
+								if (yy < 10)
 								{
 									blocks[p] = (byte) Tile::lava_Id;
 								}

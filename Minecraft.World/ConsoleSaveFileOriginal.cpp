@@ -35,7 +35,7 @@ ConsoleSaveFileOriginal::ConsoleSaveFileOriginal(const wstring &fileName, LPVOID
 		// We'll only be committing these as required to grow the storage we need, which will
 		// the storage to grow without having to use realloc.
 
-		// AP - The Vita doesn't have virtual memory so a pretend system has been implemented in PSVitaStubs.cpp. 
+		// AP - The Vita doesn't have virtual memory so a pretend system has been implemented in PSVitaStubs.cpp.
 		// All access to the memory must be done via the access function as the pointer returned from VirtualAlloc
 		// can't be used directly.
 		pvHeap = VirtualAlloc(NULL, MAX_PAGE_COUNT * CSF_PAGE_SIZE, RESERVE_ALLOCATION, PAGE_READWRITE );
@@ -116,7 +116,7 @@ ConsoleSaveFileOriginal::ConsoleSaveFileOriginal(const wstring &fileName, LPVOID
 #endif
 			app.DebugPrintf("Filesize - %d, Adjusted size - %d\n",fileSize,storageLength);
 			fileSize = storageLength;
-		} 
+		}
 
 #ifdef __PSVITA__
 		if(plat == SAVE_FILE_PLATFORM_PSVITA)
@@ -202,7 +202,7 @@ ConsoleSaveFileOriginal::ConsoleSaveFileOriginal(const wstring &fileName, LPVOID
 
 	}
 	else
-	{	
+	{
 		// Clear the first 8 bytes that reference the header
 		header.WriteHeader( pvSaveMem );
 	}
@@ -213,7 +213,7 @@ ConsoleSaveFileOriginal::~ConsoleSaveFileOriginal()
 	VirtualFree( pvHeap, MAX_PAGE_COUNT * CSF_PAGE_SIZE, MEM_DECOMMIT );
 	pagesCommitted = 0;
 	// Make sure we don't have any thumbnail data still waiting round - we can't need it now we've destroyed the save file anyway
-#if defined _XBOX 
+#if defined _XBOX
 	app.GetSaveThumbnail(NULL,NULL);
 #elif defined __PS3__
 	app.GetSaveThumbnail(NULL,NULL, NULL,NULL);
@@ -463,6 +463,23 @@ BOOL ConsoleSaveFileOriginal::closeHandle( FileEntry *file )
 void ConsoleSaveFileOriginal::finalizeWrite()
 {
 	LockSaveAccess();
+
+	// Ensure buffer is large enough for the full file including header table.
+	// New file entries (e.g. from RegionFile creation) increase GetFileSize()
+	// without triggering MoveDataBeyond, so the committed pages may be short.
+	DWORD currentHeapSize = pagesCommitted * CSF_PAGE_SIZE;
+	DWORD desiredSize = header.GetFileSize();
+	if( desiredSize > currentHeapSize )
+	{
+		unsigned int pagesRequired = ( desiredSize + (CSF_PAGE_SIZE - 1 ) ) / CSF_PAGE_SIZE;
+		void *pvRet = VirtualAlloc(pvHeap, pagesRequired * CSF_PAGE_SIZE, COMMIT_ALLOCATION, PAGE_READWRITE);
+		if( pvRet == NULL )
+		{
+			__debugbreak();
+		}
+		pagesCommitted = pagesRequired;
+	}
+
 	header.WriteHeader( pvSaveMem );
 	ReleaseSaveAccess();
 }
@@ -548,7 +565,7 @@ void ConsoleSaveFileOriginal::MoveDataBeyond(FileEntry *file, DWORD nNumberOfByt
 				if ( uiCopyEnd > uiFromEnd )
 				{
 					// Needs to be clamped to the end of our region
-					uiCopyEnd = uiFromEnd;					
+					uiCopyEnd = uiFromEnd;
 				}
 #ifdef __PSVITA__
 				// AP - use this to access the virtual memory
@@ -758,7 +775,7 @@ void ConsoleSaveFileOriginal::Flush(bool autosave, bool updateThumbnail )
 		BYTE bTextMetadata[88];
 		ZeroMemory(bTextMetadata,88);
 
-		__int64 seed = 0;
+		int64_t seed = 0;
 		bool hasSeed = false;
 		if(MinecraftServer::getInstance()!= NULL && MinecraftServer::getInstance()->levels[0]!=NULL)
 		{
@@ -774,7 +791,7 @@ void ConsoleSaveFileOriginal::Flush(bool autosave, bool updateThumbnail )
 
 #ifdef _XBOX
 		StorageManager.SaveSaveData( compLength+8,pbThumbnailData,dwThumbnailDataSize,bTextMetadata,iTextMetadataBytes );
-		delete [] pbThumbnailData;	
+		delete [] pbThumbnailData;
 #ifndef _CONTENT_PACKAGE
 		if( app.DebugSettingsOn())
 		{
