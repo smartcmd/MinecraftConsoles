@@ -187,10 +187,7 @@ void SoundEngine::init(Options* pOptions)
     m_bSystemMusicPlaying = false;
 
     app.DebugPrintf("---miniaudio initialized\n");
-
-	AllocConsole();
-	freopen("CONOUT$", "w", stdout);
-
+	
     return;
 }
 
