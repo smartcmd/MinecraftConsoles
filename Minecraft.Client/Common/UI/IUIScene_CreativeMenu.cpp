@@ -1099,13 +1099,7 @@ void IUIScene_CreativeMenu::handleAdditionalKeyPress(int iAction)
 		break;
 	case ACTION_MENU_OTHER_STICK_DOWN:
 		{
-			int pageStep = TabSpec::rows;
-#ifdef _WINDOWS64
-			if (g_KBMInput.WasMouseWheelConsumed())
-			{
-				pageStep = 1;
-			}
-#endif
+			int pageStep = 1;
 			m_tabPage[m_curTab] += pageStep;
 			if(m_tabPage[m_curTab] >= specs[m_curTab]->getPageCount())
 			{
@@ -1119,13 +1113,7 @@ void IUIScene_CreativeMenu::handleAdditionalKeyPress(int iAction)
 		break;
 	case ACTION_MENU_OTHER_STICK_UP:
 		{
-			int pageStep = TabSpec::rows;
-#ifdef _WINDOWS64
-			if (g_KBMInput.WasMouseWheelConsumed())
-			{
-				pageStep = 1;
-			}
-#endif
+			int pageStep = 1;
 			m_tabPage[m_curTab] -= pageStep;
 			if(m_tabPage[m_curTab] < 0)
 			{
