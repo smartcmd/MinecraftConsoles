@@ -98,8 +98,6 @@ wchar_t g_Win64UsernameW[17] = { 0 };
 static bool g_isFullscreen = false;
 static WINDOWPLACEMENT g_wpPrev = { sizeof(g_wpPrev) };
 
-void ToggleFullscreen(); // used in ParseLaunchOptions()
-
 //--------------------------------------------------------------------------------------
 // Update the Aspect Ratio to support Any Aspect Ratio
 //--------------------------------------------------------------------------------------
@@ -1250,7 +1248,7 @@ int APIENTRY _tWinMain(_In_ HINSTANCE hInstance,
 	}
 
 	// Restore fullscreen state from previous session
-	if (LoadFullscreenOption() && !g_isFullscreen)
+	if (LoadFullscreenOption() && !g_isFullscreen || launchOptions.fullscreen)
 	{
 		ToggleFullscreen();
 	}
