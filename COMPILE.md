@@ -41,6 +41,20 @@ cd .\build\Debug
 
 Notes:
 - The CMake build is Windows-only and x64-only.
-- Contributors on macOS or Linux need a Windows machine or VM to build the project. Running the game via Wine is separate from having a supported build environment.
 - Post-build asset copy is automatic for `MinecraftClient` in CMake (Debug and Release variants).
 - The game relies on relative paths (for example `Common\Media\...`), so launching from the output directory is required.
+
+## Building on Linux
+
+In order to build on linux you'll need git cmake & wine once you've installed those you can run this after cloning the repository which will build via [msvc-wine](https://github.com/mstorsjo/msvc-wine) 
+
+```sh
+export WINE=$(command -v wine64 || command -v wine || false)
+$WINE wineboot
+git clone https://github.com/mstorsjo/msvc-wine
+./msvc-wine/vsdownload.py --accept-license --dest $(pwd)/my_msvc/opt/msvc
+./msvc-wine/install.sh $(pwd)/my_msvc/opt/msvc
+export PATH=$(pwd)/my_msvc/opt/msvc/bin/x64:$PATH
+CC=cl CXX=cl cmake . -DCMAKE_BUILD_TYPE=Release -DCMAKE_SYSTEM_NAME=Windows
+make -j$(nproc)
+```
