@@ -1450,28 +1450,37 @@ bool IUIScene_AbstractContainerMenu::handleKeyDown(int iPad, int iAction, bool b
 	case ACTION_MENU_B:
 	case ACTION_MENU_RIGHT_SCROLL:
 		{
+			bool allowedCloseInventory = true;
 
-			ui.SetTooltips(iPad, -1);
-
-			// 4J Stu - Fix for #11302 - TCR 001: Network Connectivity: Host crashed after being killed by the client while accessing a chest during burst packet loss.
-			// We need to make sure that we call closeContainer() anytime this menu is closed, even if it is forced to close by some other reason (like the player dying)
-			// Therefore I have moved this call to the OnDestroy() method to make sure that it always happens.
-			//Minecraft::GetInstance()->localplayers[pInputData->UserIndex]->closeContainer();
-
-			// Return to the game. We should really callback to the app here as well
-			// to let it know that we have closed the ui incase we need to do things when that happens
-
-			if(m_bNavigateBack)
-			{
-				ui.NavigateBack(iPad);
-			}
-			else
-			{
-				ui.CloseUIScenes(iPad);
+			bool isKBMCloseInventory = iAction == ACTION_MENU_RIGHT_SCROLL && g_KBMInput.IsKBMActive();
+			
+			if (isKBMCloseInventory) {
+				allowedCloseInventory = g_KBMInput.IsKeyPressed(KeyboardMouseInput::KEY_INVENTORY);
 			}
 
-			bHandled = true;
-			return S_OK;
+			if (allowedCloseInventory) {
+				ui.SetTooltips(iPad, -1);
+
+				// 4J Stu - Fix for #11302 - TCR 001: Network Connectivity: Host crashed after being killed by the client while accessing a chest during burst packet loss.
+				// We need to make sure that we call closeContainer() anytime this menu is closed, even if it is forced to close by some other reason (like the player dying)
+				// Therefore I have moved this call to the OnDestroy() method to make sure that it always happens.
+				//Minecraft::GetInstance()->localplayers[pInputData->UserIndex]->closeContainer();
+
+				// Return to the game. We should really callback to the app here as well
+				// to let it know that we have closed the ui incase we need to do things when that happens
+
+				if (m_bNavigateBack)
+				{
+					ui.NavigateBack(iPad);
+				}
+				else
+				{
+					ui.CloseUIScenes(iPad);
+				}
+
+				bHandled = true;
+				return S_OK;
+			}
 		}
 		break;
 	case ACTION_MENU_LEFT:
