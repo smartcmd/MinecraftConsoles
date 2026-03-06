@@ -56,42 +56,42 @@ void PSVitaInit()
 	int err = sceFiosInitialize(&params);
 	assert(err == SCE_FIOS_OK);
 }
-char* getConsoleHomePath() 
-{ 
-	return contentInfoPath; 
+char* getConsoleHomePath()
+{
+	return contentInfoPath;
 }
 
-char* getUsrDirRoot() 
-{ 
-	return driveRoot; 
+char* getUsrDirRoot()
+{
+	return driveRoot;
 }
 
-char* getUsrDirPath() 
-{ 
-	return usrdirPath; 
+char* getUsrDirPath()
+{
+	return usrdirPath;
 }
 
-char* getConsoleHomePathBDPatch() 
-{ 
-	return contentInfoPathBDPatch; 
+char* getConsoleHomePathBDPatch()
+{
+	return contentInfoPathBDPatch;
 }
 
-char* getUsrDirPathBDPatch() 
-{ 
-	return usrdirPathBDPatch; 
+char* getUsrDirPathBDPatch()
+{
+	return usrdirPathBDPatch;
 }
 
 
-char* getDirName() 
-{ 
-	return dirName; 
+char* getDirName()
+{
+	return dirName;
 }
 
 int _wcsicmp( const wchar_t * dst, const wchar_t * src )
 {
 	wchar_t f,l;
 
-	// validation section 
+	// validation section
 	// 	_VALIDATE_RETURN(dst != NULL, EINVAL, _NLSCMPERROR);
 	// 	_VALIDATE_RETURN(src != NULL, EINVAL, _NLSCMPERROR);
 
@@ -117,7 +117,7 @@ size_t wcsnlen(const wchar_t *wcs, size_t maxsize)
 	return n;
 }
 
-VOID GetSystemTime(	LPSYSTEMTIME lpSystemTime) 
+VOID GetSystemTime(	LPSYSTEMTIME lpSystemTime)
 {
 	SceDateTime dateTime;
 	int err = sceRtcGetCurrentClock(&dateTime, 0);
@@ -133,8 +133,8 @@ VOID GetSystemTime(	LPSYSTEMTIME lpSystemTime)
 	lpSystemTime->wMilliseconds = sceRtcGetMicrosecond(&dateTime)/1000;
 }
 BOOL FileTimeToSystemTime(CONST FILETIME *lpFileTime, LPSYSTEMTIME lpSystemTime) { PSVITA_STUBBED; return false; }
-BOOL SystemTimeToFileTime(CONST SYSTEMTIME *lpSystemTime, LPFILETIME lpFileTime) 
-{ 
+BOOL SystemTimeToFileTime(CONST SYSTEMTIME *lpSystemTime, LPFILETIME lpFileTime)
+{
 	SceUInt64 diffHundredNanos;
 	SceDateTime dateTime;
 	int err = sceRtcGetCurrentClock(&dateTime, 0);
@@ -143,11 +143,11 @@ BOOL SystemTimeToFileTime(CONST SYSTEMTIME *lpSystemTime, LPFILETIME lpFileTime)
 
 	lpFileTime->dwHighDateTime = diffHundredNanos >> 32;
 	lpFileTime->dwLowDateTime = diffHundredNanos & 0xffffffff;
-	return true; 
+	return true;
 }
 
-VOID GetLocalTime(LPSYSTEMTIME lpSystemTime) 
-{ 
+VOID GetLocalTime(LPSYSTEMTIME lpSystemTime)
+{
 	SceDateTime dateTime;
 	int err = sceRtcGetCurrentClockLocalTime(&dateTime);
 	assert(err == SCE_OK);
@@ -163,26 +163,26 @@ VOID GetLocalTime(LPSYSTEMTIME lpSystemTime)
 }
 
 HANDLE CreateEvent(void* lpEventAttributes,	BOOL bManualReset,	BOOL bInitialState,	LPCSTR lpName) { PSVITA_STUBBED; return NULL; }
-VOID Sleep(DWORD dwMilliseconds) 
-{ 
+VOID Sleep(DWORD dwMilliseconds)
+{
 	C4JThread::Sleep(dwMilliseconds);
 }
 
 BOOL SetThreadPriority(HANDLE hThread, int nPriority) { PSVITA_STUBBED; return FALSE; }
 DWORD WaitForSingleObject(HANDLE hHandle, DWORD dwMilliseconds) { PSVITA_STUBBED; return false; }
 
-LONG InterlockedCompareExchangeRelease(LONG volatile *Destination, LONG Exchange,LONG Comperand	) 
-{ 
+LONG InterlockedCompareExchangeRelease(LONG volatile *Destination, LONG Exchange,LONG Comperand	)
+{
 	return sceAtomicCompareAndSwap32((int32_t*)Destination, (int32_t)Comperand, (int32_t)Exchange);
 }
 
-LONG64 InterlockedCompareExchangeRelease64(LONG64 volatile *Destination, LONG64 Exchange, LONG64 Comperand) 
-{ 
+LONG64 InterlockedCompareExchangeRelease64(LONG64 volatile *Destination, LONG64 Exchange, LONG64 Comperand)
+{
 	return sceAtomicCompareAndSwap64((int64_t*)Destination, (int64_t)Comperand, (int64_t)Exchange);
 }
 
 
-VOID InitializeCriticalSection(PCRITICAL_SECTION CriticalSection) 
+VOID InitializeCriticalSection(PCRITICAL_SECTION CriticalSection)
 {
 	char name[1] = {0};
 
@@ -191,7 +191,7 @@ VOID InitializeCriticalSection(PCRITICAL_SECTION CriticalSection)
 }
 
 
-VOID InitializeCriticalSectionAndSpinCount(PCRITICAL_SECTION CriticalSection, ULONG SpinCount) 
+VOID InitializeCriticalSectionAndSpinCount(PCRITICAL_SECTION CriticalSection, ULONG SpinCount)
 {
 	// no spin count on PSVita
 	InitializeCriticalSection(CriticalSection);
@@ -203,16 +203,16 @@ VOID DeleteCriticalSection(PCRITICAL_SECTION CriticalSection)
 	PSVITA_ASSERT_SCE_ERROR(err);
 }
 
-extern CRITICAL_SECTION g_singleThreadCS; 
+extern CRITICAL_SECTION g_singleThreadCS;
 
-VOID EnterCriticalSection(PCRITICAL_SECTION CriticalSection) 
+VOID EnterCriticalSection(PCRITICAL_SECTION CriticalSection)
 {
 	int err = sceKernelLockLwMutex ((SceKernelLwMutexWork *)(&CriticalSection->mutex), 1, NULL);
 	PSVITA_ASSERT_SCE_ERROR(err);
 }
 
 
-VOID LeaveCriticalSection(PCRITICAL_SECTION CriticalSection) 
+VOID LeaveCriticalSection(PCRITICAL_SECTION CriticalSection)
 {
 	int err =  sceKernelUnlockLwMutex ((SceKernelLwMutexWork *)(&CriticalSection->mutex), 1);
 	PSVITA_ASSERT_SCE_ERROR(err);
@@ -272,8 +272,8 @@ VOID LeaveCriticalRWSection(PCRITICAL_RW_SECTION CriticalSection, bool Write)
 
 
 
-BOOL CloseHandle(HANDLE hObject) 
-{ 
+BOOL CloseHandle(HANDLE hObject)
+{
 	sceFiosFHCloseSync(NULL,(SceFiosFH)((int32_t)hObject));
 	return true;
 }
@@ -292,8 +292,8 @@ BOOL TlsSetValue(DWORD dwTlsIndex, LPVOID lpTlsValue) { return PSVitaTLSStorage:
 static void* VirtualAllocs[1000];	// a list of 1MB allocations
 static int VirtualNumAllocs = 0;	// how many 1MB chunks have been allocated
 
-LPVOID VirtualAlloc(LPVOID lpAddress, SIZE_T dwSize, DWORD flAllocationType, DWORD flProtect) 
-{ 
+LPVOID VirtualAlloc(LPVOID lpAddress, SIZE_T dwSize, DWORD flAllocationType, DWORD flProtect)
+{
 	if( flAllocationType == MEM_COMMIT )
 	{
 		// how many pages do we need
@@ -319,7 +319,7 @@ LPVOID VirtualAlloc(LPVOID lpAddress, SIZE_T dwSize, DWORD flAllocationType, DWO
 	return (void*) VIRTUAL_OFFSET;
 }
 
-BOOL VirtualFree(LPVOID lpAddress, SIZE_T dwSize, DWORD dwFreeType) 
+BOOL VirtualFree(LPVOID lpAddress, SIZE_T dwSize, DWORD dwFreeType)
 {
 	while( VirtualNumAllocs )
 	{
@@ -333,7 +333,7 @@ BOOL VirtualFree(LPVOID lpAddress, SIZE_T dwSize, DWORD dwFreeType)
 
 
 // memset a section of the virtual chunks
-VOID VirtualMemset(LPVOID lpDestOffset, int val, SIZE_T dwSize) 
+VOID VirtualMemset(LPVOID lpDestOffset, int val, SIZE_T dwSize)
 {
 	int DestOffset = ((int)(lpDestOffset) - VIRTUAL_OFFSET);	// convert the pointer back into a virtual offset
 	int StartPage = DestOffset / VIRTUAL_PAGE_SIZE;				// which 1MB page do we start on
@@ -371,7 +371,7 @@ VOID VirtualMemset(LPVOID lpDestOffset, int val, SIZE_T dwSize)
 
 
 // copy a block of memory to the virtual chunks
-VOID VirtualCopyTo(LPVOID lpDestOffset, LPVOID lpSrc, SIZE_T dwSize) 
+VOID VirtualCopyTo(LPVOID lpDestOffset, LPVOID lpSrc, SIZE_T dwSize)
 {
 	int DestOffset = ((int)(lpDestOffset) - VIRTUAL_OFFSET);	// convert the pointer back into a virtual offset
 	int StartPage = DestOffset / VIRTUAL_PAGE_SIZE;				// which 1MB page do we start on
@@ -410,7 +410,7 @@ VOID VirtualCopyTo(LPVOID lpDestOffset, LPVOID lpSrc, SIZE_T dwSize)
 }
 
 // copy a block of memory from the virtual chunks
-VOID VirtualCopyFrom(LPVOID lpDest, LPVOID lpSrcOffset, SIZE_T dwSize) 
+VOID VirtualCopyFrom(LPVOID lpDest, LPVOID lpSrcOffset, SIZE_T dwSize)
 {
 	int SrcOffset = ((int)(lpSrcOffset) - VIRTUAL_OFFSET);	// convert the pointer back into a virtual offset
 	int StartPage = SrcOffset / VIRTUAL_PAGE_SIZE;			// which 1MB page do we start on
@@ -449,7 +449,7 @@ VOID VirtualCopyFrom(LPVOID lpDest, LPVOID lpSrcOffset, SIZE_T dwSize)
 }
 
 // copy a block of memory between the virtual chunks
-VOID VirtualMove(LPVOID lpDestOffset, LPVOID lpSrcOffset, SIZE_T dwSize) 
+VOID VirtualMove(LPVOID lpDestOffset, LPVOID lpSrcOffset, SIZE_T dwSize)
 {
 	int DestOffset = ((int)(lpDestOffset) - VIRTUAL_OFFSET);	// convert the pointer back into a virtual offset
 	int DestChunkOffset = DestOffset % VIRTUAL_PAGE_SIZE;		// what is the byte offset within the current 1MB page
@@ -652,7 +652,7 @@ DWORD GetFileSize( HANDLE hFile, LPDWORD lpFileSizeHigh	)
 {
 	SceFiosFH fh = (SceFiosFH)(hFile);
 
-	// 4J Stu - sceFiosFHGetSize didn't seem to work...so doing this for now	
+	// 4J Stu - sceFiosFHGetSize didn't seem to work...so doing this for now
 	//SceFiosSize FileSize;
 	//FileSize=sceFiosFHGetSize(fh);
 	SceFiosStat statData;
@@ -694,7 +694,7 @@ BOOL WriteFile(	HANDLE hFile, LPCVOID lpBuffer, DWORD nNumberOfBytesToWrite, LPD
 	return FALSE;
 }
 
-BOOL ReadFile(HANDLE hFile, LPVOID lpBuffer, DWORD nNumberOfBytesToRead, LPDWORD lpNumberOfBytesRead, LPOVERLAPPED lpOverlapped ) 
+BOOL ReadFile(HANDLE hFile, LPVOID lpBuffer, DWORD nNumberOfBytesToRead, LPDWORD lpNumberOfBytesRead, LPOVERLAPPED lpOverlapped )
 {
 	SceFiosFH fh = (SceFiosFH)((int64_t)hFile);
 	// sceFiosFHReadSync - Non-negative values are the number of bytes read, 0 <= result <= length. Negative values are error codes.
@@ -743,7 +743,7 @@ void replaceBackslashes(char* szFilename)
 	}
 }
 
-HANDLE CreateFileA(LPCSTR lpFileName, DWORD dwDesiredAccess, DWORD dwShareMode, LPSECURITY_ATTRIBUTES lpSecurityAttributes, DWORD dwCreationDisposition, DWORD dwFlagsAndAttributes, HANDLE hTemplateFile) 
+HANDLE CreateFileA(LPCSTR lpFileName, DWORD dwDesiredAccess, DWORD dwShareMode, LPSECURITY_ATTRIBUTES lpSecurityAttributes, DWORD dwCreationDisposition, DWORD dwFlagsAndAttributes, HANDLE hTemplateFile)
 {
 	char filePath[256];
 	std::string mountedPath = StorageManager.GetMountedPath(lpFileName);
@@ -768,7 +768,7 @@ HANDLE CreateFileA(LPCSTR lpFileName, DWORD dwDesiredAccess, DWORD dwShareMode, 
 #ifndef _CONTENT_PACKAGE
 	printf("*** Opening %s\n",filePath);
 #endif
-	
+
 	SceFiosFH fh;
 	int err = sceFiosFHOpenSync(NULL, &fh, filePath, NULL);
 	assert( err == SCE_FIOS_OK );
@@ -776,8 +776,8 @@ HANDLE CreateFileA(LPCSTR lpFileName, DWORD dwDesiredAccess, DWORD dwShareMode, 
 	return (void*)fh;
 }
 
-BOOL CreateDirectoryA(LPCSTR lpPathName, LPSECURITY_ATTRIBUTES lpSecurityAttributes) 
-{ 
+BOOL CreateDirectoryA(LPCSTR lpPathName, LPSECURITY_ATTRIBUTES lpSecurityAttributes)
+{
 #ifndef _CONTENT_PACKAGE
 	char filePath[256];
 	sprintf(filePath,"%s/%s",usrdirPath, lpPathName );
@@ -794,12 +794,12 @@ BOOL CreateDirectoryA(LPCSTR lpPathName, LPSECURITY_ATTRIBUTES lpSecurityAttribu
 
 BOOL DeleteFileA(LPCSTR lpFileName) { PSVITA_STUBBED; return false; }
 
-// BOOL XCloseHandle(HANDLE a) 
-// { 
-// 	cellFsClose(int(a)); 
+// BOOL XCloseHandle(HANDLE a)
+// {
+// 	cellFsClose(int(a));
 // }
 
-DWORD GetFileAttributesA(LPCSTR lpFileName) 
+DWORD GetFileAttributesA(LPCSTR lpFileName)
 {
 	char filePath[256];
 	std::string mountedPath = StorageManager.GetMountedPath(lpFileName);
@@ -835,7 +835,7 @@ VOID DebugBreak(VOID) { SCE_BREAK(); }
 
 
 DWORD GetLastError(VOID) { PSVITA_STUBBED; return 0; }
-VOID GlobalMemoryStatus(LPMEMORYSTATUS lpBuffer) 
+VOID GlobalMemoryStatus(LPMEMORYSTATUS lpBuffer)
 {
 	PSVITA_STUBBED;
 	/*	malloc_managed_size stat;
@@ -850,9 +850,9 @@ VOID GlobalMemoryStatus(LPMEMORYSTATUS lpBuffer)
 	lpBuffer->dwAvailVirtual = stat.max_system_size - stat.current_inuse_size;*/
 }
 
-DWORD GetTickCount() 
+DWORD GetTickCount()
 {
-	// This function returns the current system time at this function is called. 
+	// This function returns the current system time at this function is called.
 	// The system time is represented the time elapsed since the system starts up in microseconds.
 
 	uint64_t sysTime = sceKernelGetProcessTimeWide();
@@ -861,11 +861,11 @@ DWORD GetTickCount()
 }
 
 // we should really use libperf for this kind of thing, but this will do for now.
-BOOL QueryPerformanceFrequency(LARGE_INTEGER *lpFrequency) 
-{ 
+BOOL QueryPerformanceFrequency(LARGE_INTEGER *lpFrequency)
+{
 	// microseconds
-	lpFrequency->QuadPart =  (1000 * 1000);		
-	return false; 
+	lpFrequency->QuadPart =  (1000 * 1000);
+	return false;
 }
 BOOL QueryPerformanceCounter(LARGE_INTEGER *lpPerformanceCount)
 {
@@ -875,24 +875,24 @@ BOOL QueryPerformanceCounter(LARGE_INTEGER *lpPerformanceCount)
 }
 
 #ifndef _FINAL_BUILD
-VOID OutputDebugStringW(LPCWSTR lpOutputString) 
-{ 
-	wprintf(lpOutputString); 
+VOID OutputDebugStringW(LPCWSTR lpOutputString)
+{
+	wprintf(lpOutputString);
 }
 
-VOID OutputDebugString(LPCSTR lpOutputString) 
-{ 
-	printf(lpOutputString); 
+VOID OutputDebugString(LPCSTR lpOutputString)
+{
+	printf(lpOutputString);
 }
 
-VOID OutputDebugStringA(LPCSTR lpOutputString) 
-{ 
-	printf(lpOutputString); 
+VOID OutputDebugStringA(LPCSTR lpOutputString)
+{
+	printf(lpOutputString);
 }
 #endif // _CONTENT_PACKAGE
 
 BOOL GetFileAttributesExA(LPCSTR lpFileName,GET_FILEEX_INFO_LEVELS fInfoLevelId,LPVOID lpFileInformation)
-{ 
+{
 	WIN32_FILE_ATTRIBUTE_DATA *fileInfoBuffer = (WIN32_FILE_ATTRIBUTE_DATA*) lpFileInformation;
 
 	char filePath[256];
@@ -921,27 +921,27 @@ BOOL GetFileAttributesExA(LPCSTR lpFileName,GET_FILEEX_INFO_LEVELS fInfoLevelId,
 }
 
 HANDLE FindFirstFileA(LPCSTR lpFileName, LPWIN32_FIND_DATA lpFindFileData)
-{ 
-	PSVITA_STUBBED; 
+{
+	PSVITA_STUBBED;
 	return 0;
 }
 
-BOOL FindNextFileA(HANDLE hFindFile, LPWIN32_FIND_DATAA lpFindFileData) 
-{ 
+BOOL FindNextFileA(HANDLE hFindFile, LPWIN32_FIND_DATAA lpFindFileData)
+{
 	PSVITA_STUBBED;
 	return false;
 }
 
 errno_t _itoa_s(int _Value, char * _DstBuf, size_t _Size, int _Radix) { if(_Radix==10) sprintf(_DstBuf,"%d",_Value); else if(_Radix==16) sprintf(_DstBuf,"%lx",_Value); else return -1; return 0; }
-errno_t _i64toa_s(__int64 _Val, char * _DstBuf, size_t _Size, int _Radix) { if(_Radix==10) sprintf(_DstBuf,"%lld",_Val); else return -1; return 0; }
+errno_t _i64toa_s(long long _Val, char * _DstBuf, size_t _Size, int _Radix) { if(_Radix==10) sprintf(_DstBuf,"%lld",_Val); else return -1; return 0; }
 
 int _wtoi(const wchar_t *_Str)
 {
 	return wcstol(_Str, NULL, 10);
 }
 
-DWORD XGetLanguage() 
-{ 
+DWORD XGetLanguage()
+{
 	// check if we should override the system language or not
 	unsigned char ucLang = app.GetMinecraftLanguage(0);
 	if (ucLang != MINECRAFT_LANGUAGE_DEFAULT) return ucLang;
@@ -979,8 +979,8 @@ DWORD XGetLanguage()
 	}
 
 }
-DWORD XGetLocale() 
-{ 
+DWORD XGetLocale()
+{
 	// check if we should override the system locale or not
 	unsigned char ucLocale = app.GetMinecraftLocale(0);
 	if (ucLocale != MINECRAFT_LANGUAGE_DEFAULT) return ucLocale;
@@ -993,7 +993,7 @@ DWORD XGetLocale()
 	case SCE_SYSTEM_PARAM_LANG_ENGLISH_US		: return XC_LOCALE_UNITED_STATES;
 	case SCE_SYSTEM_PARAM_LANG_FRENCH			: return XC_LOCALE_FRANCE;
 
-	case SCE_SYSTEM_PARAM_LANG_SPANISH			: 
+	case SCE_SYSTEM_PARAM_LANG_SPANISH			:
 		if(app.IsAmericanSKU())
 		{
 			return XC_LOCALE_LATIN_AMERICA;
@@ -1027,7 +1027,7 @@ DWORD XGetLocale()
 	}
 }
 
-DWORD XEnableGuestSignin(BOOL fEnable) 
-{ 
-	return 0; 
+DWORD XEnableGuestSignin(BOOL fEnable)
+{
+	return 0;
 }

@@ -57,7 +57,6 @@
 #include <unordered_map>
 #include <unordered_set>
 #include <vector>
-typedef unsigned __int64 __uint64;
 #endif
 
 #ifdef  _WINDOWS64

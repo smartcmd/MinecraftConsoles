@@ -39,5 +39,5 @@ public:
 private:
 	IQNetPlayer *m_qnetPlayer;
 	Socket *m_pSocket;
-	__int64 m_lastChunkPacketTime;
+	int64_t m_lastChunkPacketTime;
 };

@@ -1358,7 +1358,7 @@ void Tile::handleRain(Level *level, int x, int y, int z)
 {
 }
 
-void Tile::levelTimeChanged(Level *level, __int64 delta, __int64 newTime)
+void Tile::levelTimeChanged(Level *level, int64_t delta, int64_t newTime)
 {
 }
 

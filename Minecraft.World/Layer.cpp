@@ -16,7 +16,7 @@ libdivide::divider<long long> fast_d7(7);
 libdivide::divider<long long> fast_d10(10);
 #endif
 
-LayerArray Layer::getDefaultLayers(__int64 seed, LevelType *levelType)
+LayerArray Layer::getDefaultLayers(int64_t seed, LevelType *levelType)
 {
 	// 4J - Some changes moved here from 1.2.3. Temperature & downfall layers are no longer created & returned, and a debug layer is isn't.
 	// For reference with regard to future merging, things NOT brought forward from the 1.2.3 version are new layer types that we
@@ -58,7 +58,7 @@ LayerArray Layer::getDefaultLayers(__int64 seed, LevelType *levelType)
 		biomeLayer = shared_ptr<Layer>(new ZoomLayer(1000 + i, biomeLayer));
 
 		if (i == 0) biomeLayer = shared_ptr<Layer>(new AddIslandLayer(3, biomeLayer));
-		
+
 		if (i == 0)
 		{
 			// 4J - moved mushroom islands to here. This skips 3 zooms that the old location of the add was, making them about 1/8 of the original size. Adding
@@ -68,13 +68,13 @@ LayerArray Layer::getDefaultLayers(__int64 seed, LevelType *levelType)
 		}
 
 		if (i == 1 )
-		{	
+		{
 			// 4J - now expand mushroom islands up again. This does a simple region grow to add a new mushroom island element when any of the neighbours are also mushroom islands.
 			// This helps make the islands into nice compact shapes of the type that are actually likely to be able to make an island out of the sea in a small space. Also
 			// helps the shore layer from doing too much damage in shrinking the islands we are making
-			biomeLayer = shared_ptr<Layer>(new GrowMushroomIslandLayer(5, biomeLayer));	
+			biomeLayer = shared_ptr<Layer>(new GrowMushroomIslandLayer(5, biomeLayer));
 			// Note - this reduces the size of mushroom islands by turning their edges into shores. We are doing this at i == 1 rather than i == 0 as the original does
-			biomeLayer = shared_ptr<Layer>(new ShoreLayer(1000, biomeLayer));		
+			biomeLayer = shared_ptr<Layer>(new ShoreLayer(1000, biomeLayer));
 
 			biomeLayer = shared_ptr<Layer>(new SwampRiversLayer(1000, biomeLayer));
 		}
@@ -107,7 +107,7 @@ LayerArray Layer::getDefaultLayers(__int64 seed, LevelType *levelType)
 	return result;
 }
 
-Layer::Layer(__int64 seedMixup)
+Layer::Layer(int64_t seedMixup)
 {
 	parent = nullptr;
 
@@ -120,7 +120,7 @@ Layer::Layer(__int64 seedMixup)
 	this->seedMixup += seedMixup;
 }
 
-void Layer::init(__int64 seed)
+void Layer::init(int64_t seed)
 {
 	this->seed = seed;
 	if (parent != NULL) parent->init(seed);
@@ -132,7 +132,7 @@ void Layer::init(__int64 seed)
 	this->seed += seedMixup;
 }
 
-void Layer::initRandom(__int64 x, __int64 y)
+void Layer::initRandom(int64_t x, int64_t y)
 {
 	rval = seed;
 	rval *= rval * 6364136223846793005l + 1442695040888963407l;

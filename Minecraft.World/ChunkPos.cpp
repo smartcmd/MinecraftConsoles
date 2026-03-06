@@ -6,16 +6,16 @@ ChunkPos::ChunkPos(int x, int z) : x( x ), z( z )
 {
 }
 
-__int64 ChunkPos::hashCode(int x, int z)
+int64_t ChunkPos::hashCode(int x, int z)
 {
-	__int64 xx = x;
-	__int64 zz = z;
+	int64_t xx = x;
+	int64_t zz = z;
 	return (xx & 0xffffffffl) | ((zz & 0xffffffffl) << 32l);
 }
 
 int ChunkPos::hashCode()
 {
-	__int64 hash = hashCode(x, z);
+	int64_t hash = hashCode(x, z);
 	int h1 = (int) (hash);
 	int h2 = (int) (hash >> 32l);
 	return h1 ^ h2;
@@ -63,7 +63,7 @@ wstring ChunkPos::toString()
     return L"[" + std::to_wstring(x) + L", " + std::to_wstring(z) + L"]";
 }
 
-__int64 ChunkPos::hash_fnct(const ChunkPos &k)
+int64_t ChunkPos::hash_fnct(const ChunkPos &k)
 {
 	return k.hashCode(k.x,k.z);
 }

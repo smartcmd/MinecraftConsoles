@@ -329,11 +329,11 @@ void UIScene::loadMovie()
 	}
 
 	byteArray baFile = ui.getMovieData(moviePath.c_str());
-	__int64 beforeLoad = ui.iggyAllocCount;
+	int64_t beforeLoad = ui.iggyAllocCount;
 	swf = IggyPlayerCreateFromMemory ( baFile.data , baFile.length, NULL);
-	__int64 afterLoad = ui.iggyAllocCount;
+	int64_t afterLoad = ui.iggyAllocCount;
 	IggyPlayerInitializeAndTickRS ( swf );
-	__int64 afterTick = ui.iggyAllocCount;
+	int64_t afterTick = ui.iggyAllocCount;
 
 	if(!swf)
 	{
@@ -362,8 +362,8 @@ void UIScene::loadMovie()
 	IggyMemoryUseInfo memoryInfo;
 	rrbool res;
 	int iteration = 0;
-	__int64 totalStatic = 0;
-	__int64 totalDynamic = 0;
+	int64_t totalStatic = 0;
+	int64_t totalDynamic = 0;
 	while(res = IggyDebugGetMemoryUseInfo ( swf ,
 		NULL ,
 		0 ,
@@ -406,15 +406,15 @@ void UIScene::getDebugMemoryUseRecursive(const wstring &moviePath, IggyMemoryUse
 	}
 }
 
-void UIScene::PrintTotalMemoryUsage(__int64 &totalStatic, __int64 &totalDynamic)
+void UIScene::PrintTotalMemoryUsage(int64_t &totalStatic, int64_t &totalDynamic)
 {
 	if(!swf) return;
 
 	IggyMemoryUseInfo memoryInfo;
 	rrbool res;
 	int iteration = 0;
-	__int64 sceneStatic = 0;
-	__int64 sceneDynamic = 0;
+	int64_t sceneStatic = 0;
+	int64_t sceneDynamic = 0;
 	while(res = IggyDebugGetMemoryUseInfo ( swf ,
 		NULL ,
 		"" ,

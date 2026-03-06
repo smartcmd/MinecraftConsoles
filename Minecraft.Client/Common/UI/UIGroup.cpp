@@ -81,7 +81,7 @@ void UIGroup::tick()
 	}
 
 	// Handle deferred update focus
-	if (m_updateFocusStateCountdown > 0) 
+	if (m_updateFocusStateCountdown > 0)
 	{
 		m_updateFocusStateCountdown--;
 		if (m_updateFocusStateCountdown == 0)_UpdateFocusState();
@@ -233,7 +233,7 @@ void UIGroup::handleInput(int iPad, int key, bool repeat, bool pressed, bool rel
 	}
 }
 
-// FOCUS 
+// FOCUS
 
 // Check that a layer may recieve focus, specifically that there is no infocus layer above
 bool UIGroup::RequestFocus(UILayer* layerPtr)
@@ -389,16 +389,16 @@ unsigned int UIGroup::GetLayerIndex(UILayer* layerPtr)
 	// can't get here...
 	return 0;
 }
-	
-void UIGroup::PrintTotalMemoryUsage(__int64 &totalStatic, __int64 &totalDynamic)
+
+void UIGroup::PrintTotalMemoryUsage(int64_t &totalStatic, int64_t &totalDynamic)
 {
-	__int64 groupStatic = 0;
-	__int64 groupDynamic = 0;
+	int64_t groupStatic = 0;
+	int64_t groupDynamic = 0;
 	app.DebugPrintf(app.USER_SR, "-- BEGIN GROUP %d\n",m_group);
 	for(unsigned int i = 0; i < eUILayer_COUNT; ++i)
 	{
 		app.DebugPrintf(app.USER_SR, "  \\- BEGIN LAYER %d\n",i);
-		m_layers[i]->PrintTotalMemoryUsage(groupStatic, groupDynamic);		
+		m_layers[i]->PrintTotalMemoryUsage(groupStatic, groupDynamic);
 		app.DebugPrintf(app.USER_SR, "  \\- END LAYER %d\n",i);
 	}
 	app.DebugPrintf(app.USER_SR, "-- Group static: %d, Group dynamic: %d\n", groupStatic, groupDynamic);
@@ -412,7 +412,7 @@ int UIGroup::getCommandBufferList()
 	return m_commandBufferList;
 }
 
-// Returns the first scene of given type if it exists, NULL otherwise 
+// Returns the first scene of given type if it exists, NULL otherwise
 UIScene *UIGroup::FindScene(EUIScene sceneType)
 {
 	UIScene *pScene = NULL;

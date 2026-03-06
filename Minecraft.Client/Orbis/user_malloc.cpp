@@ -38,7 +38,7 @@ int user_malloc_init(void)
 	int res;
 	void *addr;
 	uint64_t dmemSize = SCE_KERNEL_MAIN_DMEM_SIZE;
-	
+
 	s_heapLength = ((size_t)4608) * 1024 * 1024;	// Initial allocation for the application
 	s_heapLength -= ((size_t)4) * 1024 * 1024;		// Allocated for TLS
 	s_heapLength -= ((size_t)2) * 1024 * 1024;		// 64K (sometimes?) allocated for razor - rounding up to 2MB here to match our alignment
@@ -106,10 +106,10 @@ void *user_malloc(size_t size)
 {
 #if 0
 	static int throttle = 0;
-	static __int64 lasttime = 0;
+	static int64_t lasttime = 0;
 	if( ( throttle % 100 ) == 0 )
 	{
-		__int64 nowtime = System::currentTimeMillis();
+		int64_t nowtime = System::currentTimeMillis();
 		if( ( nowtime - lasttime ) > 20000 )
 		{
 			lasttime = nowtime;

@@ -44,7 +44,7 @@ void StringTable::ProcessStringTableData(void)
 	app.getLocale(locales);
 
 	bool foundLang = false;
-	__int64 bytesToSkip = 0;
+	int64_t bytesToSkip = 0;
 	int dataSize = 0;
 
 	//
