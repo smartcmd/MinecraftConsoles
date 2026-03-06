@@ -188,7 +188,7 @@ void UIScene_DebugSetCamera::handlePress(F64 controlId, F64 childId)
 			UIKeyboardInitData kbData;
 			kbData.title       = L"Enter value";
 			kbData.defaultText = L"";
-			kbData.maxChars    = 25;
+			kbData.maxChars    = 8;
 			kbData.callback    = &UIScene_DebugSetCamera::KeyboardCompleteCallback;
 			kbData.lpParam     = this;
 			ui.NavigateToScene(m_iPad, eUIScene_Keyboard, &kbData, eUILayer_Fullscreen, eUIGroup_Fullscreen);
