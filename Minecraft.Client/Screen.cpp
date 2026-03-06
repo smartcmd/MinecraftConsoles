@@ -49,7 +49,7 @@ wstring Screen::getClipboard()
 	wstring out;
 	if (h)
 	{
-		const wchar_t *p = (const wchar_t *)GlobalLock(h);
+		const wchar_t *p = reinterpret_cast<const wchar_t*>(GlobalLock(h));
 		if (p) { out = p; GlobalUnlock(h); }
 	}
 	CloseClipboard();
@@ -215,10 +215,10 @@ void Screen::updateEvents()
 		else if (vk == VK_TAB)     mappedKey = Keyboard::KEY_TAB;
 		else if (vk >= 'A' && vk <= 'Z')
 		{
-			ch = (wchar_t)(vk - 'A' + L'a');
-			if (g_KBMInput.IsKeyDown(VK_LSHIFT) || g_KBMInput.IsKeyDown(VK_RSHIFT)) ch = (wchar_t)vk;
+			ch = static_cast<wchar_t>(vk - 'A' + L'a');
+			if (g_KBMInput.IsKeyDown(VK_LSHIFT) || g_KBMInput.IsKeyDown(VK_RSHIFT)) ch = static_cast<wchar_t>(vk);
 		}
-		else if (vk >= '0' && vk <= '9') ch = (wchar_t)vk;
+		else if (vk >= '0' && vk <= '9') ch = static_cast<wchar_t>(vk);
 		else if (vk == VK_SPACE) ch = L' ';
 
 		if (mappedKey != -1) keyPressed(ch, mappedKey);
@@ -306,10 +306,10 @@ void Screen::renderDirtBackground(int vo)
     float s = 32;
     t->begin();
     t->color(0x404040);
-    t->vertexUV((float)(0), (float)( height), (float)( 0), (float)( 0), (float)( height / s + vo));
-    t->vertexUV((float)(width), (float)( height), (float)( 0), (float)( width / s), (float)( height / s + vo));
-    t->vertexUV((float)(width), (float)( 0), (float)( 0), (float)( width / s), (float)( 0 + vo));
-    t->vertexUV((float)(0), (float)( 0), (float)( 0), (float)( 0), (float)( 0 + vo));
+    t->vertexUV(static_cast<float>(0), static_cast<float>(height), static_cast<float>(0), static_cast<float>(0), static_cast<float>(height / s + vo));
+    t->vertexUV(static_cast<float>(width), static_cast<float>(height), static_cast<float>(0), static_cast<float>(width / s), static_cast<float>(height / s + vo));
+    t->vertexUV(static_cast<float>(width), static_cast<float>(0), static_cast<float>(0), static_cast<float>(width / s), static_cast<float>(0 + vo));
+    t->vertexUV(static_cast<float>(0), static_cast<float>(0), static_cast<float>(0), static_cast<float>(0), static_cast<float>(0 + vo));
     t->end();
 #endif
 }

@@ -575,13 +575,13 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	case WM_CHAR:
 		// Buffer typed characters so UIScene_Keyboard can dispatch them to the Iggy Flash player
 		if (wParam >= 0x20 || wParam == 0x08 || wParam == 0x0D) // printable chars + backspace + enter
-			g_KBMInput.OnChar((wchar_t)wParam);
+			g_KBMInput.OnChar(static_cast<wchar_t>(wParam));
 		break;
 
 	case WM_KEYDOWN:
 	case WM_SYSKEYDOWN:
 	{
-		int vk = (int)wParam;
+		int vk = static_cast<int>(wParam);
 		if ((lParam & 0x40000000) && vk != VK_LEFT && vk != VK_RIGHT && vk != VK_BACK)
 			break;
 #ifdef _WINDOWS64
@@ -609,7 +609,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	case WM_KEYUP:
 	case WM_SYSKEYUP:
 	{
-		int vk = (int)wParam;
+		int vk = static_cast<int>(wParam);
 		if (vk == VK_SHIFT)
 			vk = (MapVirtualKey((lParam >> 16) & 0xFF, MAPVK_VSC_TO_VK_EX) == VK_RSHIFT) ? VK_RSHIFT : VK_LSHIFT;
 		else if (vk == VK_CONTROL)

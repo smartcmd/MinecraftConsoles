@@ -189,15 +189,15 @@ void Font::renderCharacter(wchar_t c)
 	}
 
 	if (m_underline)
-		renderStyleLine(x0, y1 - 1.0f, xPos + (float)charWidths[c], y1);
+		renderStyleLine(x0, y1 - 1.0f, xPos + static_cast<float>(charWidths[c]), y1);
 
 	if (m_strikethrough)
 	{
 		float mid = y0 + height * 0.5f;
-		renderStyleLine(x0, mid - 0.5f, xPos + (float)charWidths[c], mid + 0.5f);
+		renderStyleLine(x0, mid - 0.5f, xPos + static_cast<float>(charWidths[c]), mid + 0.5f);
 	}
 
-	xPos += (float) charWidths[c];
+	xPos += static_cast<float>(charWidths[c]);
 }
 
 void Font::drawShadow(const wstring& str, int x, int y, int color)
@@ -219,8 +219,8 @@ void Font::drawLiteral(const wstring& str, int x, int y, int color)
 	if ((color & 0xFC000000) == 0) color |= 0xFF000000;
 	textures->bindTexture(m_textureLocation);
 	glColor4f((color >> 16 & 255) / 255.0F, (color >> 8 & 255) / 255.0F, (color & 255) / 255.0F, (color >> 24 & 255) / 255.0F);
-	xPos = (float)x;
-	yPos = (float)y;
+	xPos = static_cast<float>(x);
+	yPos = static_cast<float>(y);
 	wstring cleanStr = sanitize(str);
 	for (size_t i = 0; i < cleanStr.length(); ++i)
 		renderCharacter(cleanStr.at(i));
@@ -247,7 +247,7 @@ static bool isSectionFormatCode(wchar_t ca)
 {
 	if ((ca >= L'0' && ca <= L'9') || (ca >= L'a' && ca <= L'f') || (ca >= L'A' && ca <= L'F'))
 		return true;
-	wchar_t l = (wchar_t)(ca | 32);
+	wchar_t l = static_cast<wchar_t>(ca | 32);
 	return l == L'l' || l == L'o' || l == L'n' || l == L'm' || l == L'r' || l == L'k';
 }
 
@@ -260,7 +260,7 @@ void Font::draw(const wstring &str, bool dropShadow)
 	m_bold = m_italic = m_underline = m_strikethrough = false;
 	wstring cleanStr = sanitize(str);
 
-	for (int i = 0; i < (int)cleanStr.length(); ++i)
+	for (int i = 0; i < static_cast<int>(cleanStr.length()); ++i)
 	{
 		// Map character
 		wchar_t c = cleanStr.at(i);
@@ -282,7 +282,7 @@ void Font::draw(const wstring &str, bool dropShadow)
 
 			if (colorN == 16)
 			{
-				wchar_t l = (wchar_t)(ca | 32);
+				wchar_t l = static_cast<wchar_t>(ca | 32);
 				if (l == L'l') m_bold = true;
 				else if (l == L'o') m_italic = true;
 				else if (l == L'n') m_underline = true;
@@ -358,7 +358,7 @@ int Font::width(const wstring& str)
 			{
 				len += charWidths[167];
 				if (i + 1 < cleanStr.length())
-					len += charWidths[(unsigned)cleanStr[++i]];
+					len += charWidths[static_cast<unsigned>(cleanStr[++i])];
 			}
 		}
 		else
@@ -374,7 +374,7 @@ int Font::widthLiteral(const wstring& str)
 	if (cleanStr == L"") return 0;
 	int len = 0;
 	for (size_t i = 0; i < cleanStr.length(); ++i)
-		len += charWidths[(unsigned)cleanStr.at(i)];
+		len += charWidths[static_cast<unsigned>(cleanStr.at(i))];
 	return len;
 }
 
@@ -551,7 +551,7 @@ void Font::setBidirectional(bool bidirectional)
 
 bool Font::AllCharactersValid(const wstring &str)
 {
-	for (int i = 0; i < (int)str.length(); ++i)
+	for (int i = 0; i < static_cast<int>(str.length()); ++i)
 	{
 		wchar_t c = str.at(i);
 
@@ -596,15 +596,15 @@ void Font::renderFakeCB(IntBuffer *ib)
 			float uo = (0.0f) / 128.0f;
 			float vo = (0.0f) / 128.0f;
 
-			t->vertexUV((float)(0), (float)( 0 + s), (float)( 0), (float)( ix / 128.0f + uo), (float)( (iy + s) / 128.0f + vo));
-			t->vertexUV((float)(0 + s), (float)( 0 + s), (float)( 0), (float)( (ix + s) / 128.0f + uo), (float)( (iy + s) / 128.0f + vo));
-			t->vertexUV((float)(0 + s), (float)( 0), (float)( 0), (float)( (ix + s) / 128.0f + uo), (float)( iy / 128.0f + vo));
-			t->vertexUV((float)(0), (float)( 0), (float)( 0), (float)( ix / 128.0f + uo), (float)( iy / 128.0f + vo));
+			t->vertexUV(static_cast<float>(0), static_cast<float>(0 + s), static_cast<float>(0), static_cast<float>(ix / 128.0f + uo), static_cast<float>((iy + s) / 128.0f + vo));
+			t->vertexUV(static_cast<float>(0 + s), static_cast<float>(0 + s), static_cast<float>(0), static_cast<float>((ix + s) / 128.0f + uo), static_cast<float>((iy + s) / 128.0f + vo));
+			t->vertexUV(static_cast<float>(0 + s), static_cast<float>(0), static_cast<float>(0), static_cast<float>((ix + s) / 128.0f + uo), static_cast<float>(iy / 128.0f + vo));
+			t->vertexUV(static_cast<float>(0), static_cast<float>(0), static_cast<float>(0), static_cast<float>(ix / 128.0f + uo), static_cast<float>(iy / 128.0f + vo));
 			// target.colorBlit(texture, x + xo, y, color, ix, iy,
 		// charWidths[chars[i]], 8);
 			t->end();
 
-			glTranslatef((float)charWidths[i], 0, 0);
+			glTranslatef(static_cast<float>(charWidths[i]), 0, 0);
 		}
 		else
 		{

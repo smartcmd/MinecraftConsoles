@@ -973,7 +973,7 @@ void Gui::render(float a, bool mouseFree, int xMouse, int yMouse)
 
 #if defined(_WINDOWS64)
     glPushMatrix();
-    glTranslatef(0.0f, (float)(screenHeight - iSafezoneYHalf - iTooltipsYOffset - 16 - 3 + 22) - 24.0f, 0.0f);
+    glTranslatef(0.0f, static_cast<float>(screenHeight - iSafezoneYHalf - iTooltipsYOffset - 16 - 3 + 22) - 24.0f, 0.0f);
 
 	if(bDisplayGui)
 	{
@@ -988,13 +988,13 @@ void Gui::render(float a, bool mouseFree, int xMouse, int yMouse)
 				if (t < 0) t = 0;
 				if (t > 1) t = 1;
 				t = t * t;
-				int alpha = (int) (255 * t);
+				int alpha = static_cast<int>(255 * t);
 				if (isChatting) alpha = 255;
 
 				if (alpha > 0)
 				{
 					int x = iSafezoneXHalf+2;
-					int y = -((int)i) * 9;
+					int y = -(static_cast<int>(i)) * 9;
 					if(bTwoPlayerSplitscreen)
 					{
 						y+= iHeightOffset;

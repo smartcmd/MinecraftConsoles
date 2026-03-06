@@ -37,14 +37,14 @@ void ChatScreen::removed()
 void ChatScreen::tick()
 {
 	frame++;
-	if (cursorIndex > (int)message.length())
-		cursorIndex = (int)message.length();
+	if (cursorIndex > static_cast<int>(message.length()))
+		cursorIndex = static_cast<int>(message.length());
 }
 
 void ChatScreen::handlePasteRequest()
 {
 	wstring pasted = Screen::getClipboard();
-	for (size_t i = 0; i < pasted.length() && (int)message.length() < SharedConstants::maxChatLength; i++)
+	for (size_t i = 0; i < pasted.length() && static_cast<int>(message.length()) < SharedConstants::maxChatLength; i++)
 	{
 		if (isAllowedChatChar(pasted[i]))
 		{
@@ -57,7 +57,7 @@ void ChatScreen::handlePasteRequest()
 void ChatScreen::applyHistoryMessage()
 {
 	message = s_historyIndex >= 0 ? s_chatHistory[s_historyIndex] : s_historyDraft;
-	cursorIndex = (int)message.length();
+	cursorIndex = static_cast<int>(message.length());
 }
 
 void ChatScreen::handleHistoryUp()
@@ -66,7 +66,7 @@ void ChatScreen::handleHistoryUp()
 	if (s_historyIndex == -1)
 	{
 		s_historyDraft = message;
-		s_historyIndex = (int)s_chatHistory.size() - 1;
+		s_historyIndex = static_cast<int>(s_chatHistory.size()) - 1;
 	}
 	else if (s_historyIndex > 0)
 		s_historyIndex--;
@@ -76,7 +76,7 @@ void ChatScreen::handleHistoryUp()
 void ChatScreen::handleHistoryDown()
 {
 	if (s_chatHistory.empty()) return;
-	if (s_historyIndex < (int)s_chatHistory.size() - 1)
+	if (s_historyIndex < static_cast<int>(s_chatHistory.size()) - 1)
 		s_historyIndex++;
 	else
 		s_historyIndex = -1;
@@ -121,7 +121,7 @@ void ChatScreen::keyPressed(wchar_t ch, int eventKey)
     }
     if (eventKey == Keyboard::KEY_RIGHT)
 	{
-        if (cursorIndex < (int)message.length())
+        if (cursorIndex < static_cast<int>(message.length()))
             cursorIndex++;
         return;
     }
@@ -131,7 +131,7 @@ void ChatScreen::keyPressed(wchar_t ch, int eventKey)
         cursorIndex--;
         return;
     }
-    if (isAllowedChatChar(ch) && (int)message.length() < SharedConstants::maxChatLength)
+    if (isAllowedChatChar(ch) && static_cast<int>(message.length()) < SharedConstants::maxChatLength)
 	{
         message.insert(cursorIndex, 1, ch);
         cursorIndex++;
@@ -172,7 +172,7 @@ void ChatScreen::mouseClicked(int x, int y, int buttonNum)
             if (insertLen > 0)
 			{
                 message = message.substr(0, cursorIndex) + minecraft->gui->selectedName.substr(0, insertLen) + message.substr(cursorIndex);
-                cursorIndex += (int)insertLen;
+                cursorIndex += static_cast<int>(insertLen);
             }
         }
 		else
