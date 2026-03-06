@@ -6,6 +6,7 @@ using namespace std;
 
 #include "UIEnums.h"
 #include "UIControl_Base.h"
+#include "UIControl_TextInput.h"
 
 class ItemRenderer;
 class UILayer;
@@ -16,22 +17,26 @@ class UILayer;
 	virtual bool mapElementsAndNames() \
 	{ \
 		parentClass::mapElementsAndNames(); \
-		IggyValuePath *currentRoot = IggyPlayerRootPath ( getMovie() );
+		IggyValuePath *currentRoot = IggyPlayerRootPath ( getMovie() ); \
+		UIControl *_mapPanel = NULL;
 
 #define UI_END_MAP_ELEMENTS_AND_NAMES() \
 		return true; \
 	}
 
 #define UI_MAP_ELEMENT( var, name) \
-	{ var.setupControl(this, currentRoot , name ); m_controls.push_back(&var); }
+	{ var.setupControl(this, currentRoot , name ); var.m_pParentPanel = _mapPanel; m_controls.push_back(&var); }
 
 #define UI_BEGIN_MAP_CHILD_ELEMENTS( parent ) \
 	{ \
 		IggyValuePath *lastRoot = currentRoot; \
-		currentRoot = parent.getIggyValuePath();
+		UIControl *_lastPanel = _mapPanel; \
+		currentRoot = parent.getIggyValuePath(); \
+		_mapPanel = &parent;
 
 #define UI_END_MAP_CHILD_ELEMENTS() \
 		currentRoot = lastRoot; \
+		_mapPanel = _lastPanel; \
 	}
 
 #define UI_MAP_NAME( var, name ) \
@@ -141,8 +146,10 @@ public:
 	virtual void tick();
 
 	IggyName registerFastName(const wstring &name);
+#if defined(__PSVITA__) || defined(_WINDOWS64)
+	void SetFocusToElement(int iID);
+#endif
 #ifdef __PSVITA__
-	void SetFocusToElement(int iID); 
 	void UpdateSceneControls();
 #endif
 protected:
@@ -176,6 +183,19 @@ public:
 
 	// returns main panel if controls are not living in the root
 	virtual UIControl* GetMainPanel();
+
+#ifdef _WINDOWS64
+	// Direct edit support: scenes override to register their text inputs.
+	// Base class handles tickDirectEdit in tick(), click-outside-to-deselect
+	// in handleMouseClick(), and provides isDirectEditBlocking() for guards.
+	virtual void getDirectEditInputs(vector<UIControl_TextInput*> &inputs) {}
+	virtual void onDirectEditFinished(UIControl_TextInput *input, UIControl_TextInput::EDirectEditResult result) {}
+	bool isDirectEditBlocking();
+
+	// Mouse click dispatch. Hit-tests C++ controls and picks the smallest-area
+	// match, then calls handlePress. Override for custom behaviour (e.g. crafting).
+	virtual bool handleMouseClick(F32 x, F32 y);
+#endif
 
 	void removeControl( UIControl_Base *control, bool centreScene);
 	void slideLeft();

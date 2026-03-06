@@ -1169,8 +1169,6 @@ void GameRenderer::render(float a, bool bFirst)
 
 		lastNsTime = System::nanoTime();
 
-		ApplyGammaPostProcess();
-
 		if (!mc->options->hideGui || mc->screen != NULL)
 		{
 			mc->gui->render(a, mc->screen != NULL, xMouse, yMouse);
@@ -1196,6 +1194,7 @@ void GameRenderer::render(float a, bool bFirst)
 		if (mc->screen != NULL && mc->screen->particles != NULL) mc->screen->particles->render(a);
 	}
 
+	ApplyGammaPostProcess();
 }
 
 void GameRenderer::renderLevel(float a)
