@@ -971,7 +971,7 @@ void Gui::render(float a, bool mouseFree, int xMouse, int yMouse)
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     glDisable(GL_ALPHA_TEST);
 
-#if defined(_WINDOWS64)
+#if 0 // defined(_WINDOWS64) // Temporarily disable this chat in favor of iggy chat until we have better visual parity
     glPushMatrix();
     glTranslatef(0.0f, static_cast<float>(screenHeight - iSafezoneYHalf - iTooltipsYOffset - 16 - 3 + 22) - 24.0f, 0.0f);
 

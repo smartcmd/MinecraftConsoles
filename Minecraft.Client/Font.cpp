@@ -146,6 +146,44 @@ void Font::renderStyleLine(float x0, float y0, float x1, float y1)
 	t->end();
 }
 
+void Font::addCharacterQuad(wchar_t c)
+{
+	float xOff = c % m_cols * m_charWidth;
+	float yOff = c / m_cols * m_charWidth;
+	float width = charWidths[c] - .01f;
+	float height = m_charHeight - .01f;
+	float fontWidth = m_cols * m_charWidth;
+	float fontHeight = m_rows * m_charHeight;
+	const float shear = m_italic ? (height * 0.25f) : 0.0f;
+	float x0 = xPos, x1 = xPos + width + shear;
+	float y0 = yPos, y1 = yPos + height;
+
+	Tesselator *t = Tesselator::getInstance();
+	t->tex(xOff / fontWidth, (yOff + 7.99f) / fontHeight);
+	t->vertex(x0, y1, 0.0f);
+	t->tex((xOff + width) / fontWidth, (yOff + 7.99f) / fontHeight);
+	t->vertex(x1, y1, 0.0f);
+	t->tex((xOff + width) / fontWidth, yOff / fontHeight);
+	t->vertex(x1, y0, 0.0f);
+	t->tex(xOff / fontWidth, yOff / fontHeight);
+	t->vertex(x0, y0, 0.0f);
+
+	if (m_bold)
+	{
+		float dx = 1.0f;
+		t->tex(xOff / fontWidth, (yOff + 7.99f) / fontHeight);
+		t->vertex(x0 + dx, y1, 0.0f);
+		t->tex((xOff + width) / fontWidth, (yOff + 7.99f) / fontHeight);
+		t->vertex(x1 + dx, y1, 0.0f);
+		t->tex((xOff + width) / fontWidth, yOff / fontHeight);
+		t->vertex(x1 + dx, y0, 0.0f);
+		t->tex(xOff / fontWidth, yOff / fontHeight);
+		t->vertex(x0 + dx, y0, 0.0f);
+	}
+
+	xPos += static_cast<float>(charWidths[c]);
+}
+
 void Font::renderCharacter(wchar_t c)
 {
 	float xOff = c % m_cols * m_charWidth;
@@ -255,10 +293,12 @@ void Font::draw(const wstring &str, bool dropShadow)
 {
 	// Bind the texture
 	textures->bindTexture(m_textureLocation);
-
 	bool noise = false;
 	m_bold = m_italic = m_underline = m_strikethrough = false;
 	wstring cleanStr = sanitize(str);
+
+	Tesselator *t = Tesselator::getInstance();
+	t->begin();
 
 	for (int i = 0; i < static_cast<int>(cleanStr.length()); ++i)
 	{
@@ -270,8 +310,10 @@ void Font::draw(const wstring &str, bool dropShadow)
 			wchar_t ca = cleanStr[i+1];
 			if (!isSectionFormatCode(ca))
 			{
+				t->end();
 				renderCharacter(167);
 				renderCharacter(ca);
+				t->begin();
 				i += 1;
 				continue;
 			}
@@ -294,14 +336,10 @@ void Font::draw(const wstring &str, bool dropShadow)
 			{
 				noise = false;
 				if (colorN < 0 || colorN > 15) colorN = 15;
-
 				if (dropShadow) colorN += 16;
-
 				int color = colors[colorN];
 				glColor3f((color >> 16) / 255.0F, ((color >> 8) & 255) / 255.0F, (color & 255) / 255.0F);
 			}
-
-
 			i += 1;
 			continue;
 		}
@@ -317,8 +355,10 @@ void Font::draw(const wstring &str, bool dropShadow)
 			c = newc;
 		}
 
-		renderCharacter(c);
+		addCharacterQuad(c);
 	}
+
+	t->end();
 }
 
 void Font::draw(const wstring& str, int x, int y, int color, bool dropShadow)

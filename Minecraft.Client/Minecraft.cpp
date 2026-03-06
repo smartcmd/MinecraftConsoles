@@ -1499,7 +1499,7 @@ void Minecraft::run_middle()
 						}
 
 						// Utility keys always work regardless of KBM active state
-						if(g_KBMInput.IsKeyPressed(KeyboardMouseInput::KEY_PAUSE) && !ui.IsTutorialVisible(i) && !ui.GetMenuDisplayed(i))
+						if(g_KBMInput.IsKeyPressed(KeyboardMouseInput::KEY_PAUSE) && !ui.GetMenuDisplayed(i))
 						{
 							localplayers[i]->ullButtonsPressed|=1LL<<MINECRAFT_ACTION_PAUSEMENU;
 							app.DebugPrintf("PAUSE PRESSED (keyboard) - ipad = %d\n",i);
@@ -1522,7 +1522,7 @@ void Minecraft::run_middle()
 					}
 #endif
 
-#ifndef _FINAL_BUILD
+#if _DEBUG // ndef _FINAL_BUILD // Disable conflicting debug functionality in release builds
 					if( app.DebugSettingsOn() && app.GetUseDPadForDebug() )
 					{
 						localplayers[i]->ullDpad_last = 0;
@@ -3651,7 +3651,7 @@ void Minecraft::tick(bool bFirst, bool bUpdateTextures)
 
 		if (player->missTime > 0) player->missTime--;
 
-#ifdef _DEBUG_MENUS_ENABLED
+#ifdef _DEBUG//_MENUS_ENABLED // disable DPad cheats on release builds
 		if(app.DebugSettingsOn())
 		{
 #ifndef __PSVITA__
