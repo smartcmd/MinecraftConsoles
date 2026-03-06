@@ -126,40 +126,16 @@ void KeyboardMouseInput::Tick()
 		}
 	}
 
-	#ifdef _WINDOWS64
-		if (!IsGameInFront())
-		{
-			ClipCursor(NULL);
-			while (ShowCursor(TRUE) < 0) {}
-		}
-		else if (m_cursorHiddenForUI)
-		{
-			ClipCursor(NULL);
-		}
-		else if (m_mouseGrabbed && g_hWnd)
-		{
-			ClipCursorToWindow(g_hWnd);
-		
-			RECT rc;
-			GetClientRect(g_hWnd, &rc);
-			POINT center;
-			center.x = (rc.right - rc.left) / 2;
-			center.y = (rc.bottom - rc.top) / 2;
-			ClientToScreen(g_hWnd, &center);
-			SetCursorPos(center.x, center.y);
-		}
-	#else
-		if ((m_mouseGrabbed || m_cursorHiddenForUI) && g_hWnd)
-		{
-			RECT rc;
-			GetClientRect(g_hWnd, &rc);
-			POINT center;
-			center.x = (rc.right - rc.left) / 2;
-			center.y = (rc.bottom - rc.top) / 2;
-			ClientToScreen(g_hWnd, &center);
-			SetCursorPos(center.x, center.y);
-		}
-	#endif
+	if ((m_mouseGrabbed || m_cursorHiddenForUI) && m_windowFocused && g_hWnd)
+	{
+		RECT rc;
+		GetClientRect(g_hWnd, &rc);
+		POINT center;
+		center.x = (rc.right - rc.left) / 2;
+		center.y = (rc.bottom - rc.top) / 2;
+		ClientToScreen(g_hWnd, &center);
+		SetCursorPos(center.x, center.y);
+	}
 }
 
 void KeyboardMouseInput::OnKeyDown(int vkCode)

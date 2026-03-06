@@ -234,7 +234,7 @@ void UIScene::initialiseMovie()
 	m_bUpdateOpacity = true;
 }
 
-#ifdef __PSVITA__
+#if defined(__PSVITA__) || defined(_WINDOWS64)
 void UIScene::SetFocusToElement(int iID)
 {
 	IggyDataValue result;
@@ -447,6 +447,19 @@ void UIScene::tick()
 		IggyPlayerTickRS( swf );
 		m_hasTickedOnce = true;
 	}
+
+#ifdef _WINDOWS64
+	{
+		vector<UIControl_TextInput*> inputs;
+		getDirectEditInputs(inputs);
+		for (size_t i = 0; i < inputs.size(); i++)
+		{
+			UIControl_TextInput::EDirectEditResult result = inputs[i]->tickDirectEdit();
+			if (result != UIControl_TextInput::eDirectEdit_Continue)
+				onDirectEditFinished(inputs[i], result);
+		}
+	}
+#endif
 }
 
 UIControl* UIScene::GetMainPanel()
@@ -454,6 +467,113 @@ UIControl* UIScene::GetMainPanel()
 	return NULL;
 }
 
+#ifdef _WINDOWS64
+bool UIScene::isDirectEditBlocking()
+{
+	vector<UIControl_TextInput*> inputs;
+	getDirectEditInputs(inputs);
+	for (size_t i = 0; i < inputs.size(); i++)
+	{
+		if (inputs[i]->isDirectEditing() || inputs[i]->getDirectEditCooldown() > 0)
+			return true;
+	}
+	return false;
+}
+
+bool UIScene::handleMouseClick(F32 x, F32 y)
+{
+	S32 panelOffsetX = 0, panelOffsetY = 0;
+	UIControl *pMainPanel = GetMainPanel();
+	if (pMainPanel)
+	{
+		pMainPanel->UpdateControl();
+		panelOffsetX = pMainPanel->getXPos();
+		panelOffsetY = pMainPanel->getYPos();
+	}
+
+	// Click-outside-to-deselect: confirm any active direct edit if
+	// the click landed outside the editing text input.
+	{
+		vector<UIControl_TextInput*> deInputs;
+		getDirectEditInputs(deInputs);
+		for (size_t i = 0; i < deInputs.size(); i++)
+		{
+			if (!deInputs[i]->isDirectEditing())
+				continue;
+			deInputs[i]->UpdateControl();
+			S32 cx = deInputs[i]->getXPos() + panelOffsetX;
+			S32 cy = deInputs[i]->getYPos() + panelOffsetY;
+			S32 cw = deInputs[i]->getWidth();
+			S32 ch = deInputs[i]->getHeight();
+			if (!(cw > 0 && ch > 0 && x >= cx && x <= cx + cw && y >= cy && y <= cy + ch))
+			{
+				deInputs[i]->confirmDirectEdit();
+				onDirectEditFinished(deInputs[i], UIControl_TextInput::eDirectEdit_Confirmed);
+			}
+		}
+	}
+
+	vector<UIControl *> *controls = GetControls();
+	if (!controls) return false;
+
+	// Hit-test controls and pick the smallest-area match to handle
+	// overlapping Flash bounds correctly without sacrificing precision.
+	int bestId = -1;
+	S32 bestArea = INT_MAX;
+	UIControl *bestCtrl = NULL;
+
+	for (size_t i = 0; i < controls->size(); ++i)
+	{
+		UIControl *ctrl = (*controls)[i];
+		if (!ctrl || ctrl->getHidden() || !ctrl->getVisible() || ctrl->getId() < 0)
+			continue;
+
+		UIControl::eUIControlType type = ctrl->getControlType();
+		if (type != UIControl::eButton && type != UIControl::eTextInput &&
+			type != UIControl::eCheckBox)
+			continue;
+
+		if (pMainPanel && ctrl->getParentPanel() != pMainPanel)
+			continue;
+
+		ctrl->UpdateControl();
+		S32 cx = ctrl->getXPos() + panelOffsetX;
+		S32 cy = ctrl->getYPos() + panelOffsetY;
+		S32 cw = ctrl->getWidth();
+		S32 ch = ctrl->getHeight();
+		if (cw <= 0 || ch <= 0)
+			continue;
+
+		if (x >= cx && x <= cx + cw && y >= cy && y <= cy + ch)
+		{
+			S32 area = cw * ch;
+			if (area < bestArea)
+			{
+				bestArea = area;
+				bestId = ctrl->getId();
+				bestCtrl = ctrl;
+			}
+		}
+	}
+
+	if (bestId >= 0 && bestCtrl)
+	{
+		if (bestCtrl->getControlType() == UIControl::eCheckBox)
+		{
+			UIControl_CheckBox *cb = (UIControl_CheckBox *)bestCtrl;
+			bool newState = !cb->IsChecked();
+			cb->setChecked(newState);
+			handleCheckboxToggled((F64)bestId, newState);
+		}
+		else
+		{
+			handlePress((F64)bestId, 0);
+		}
+		return true;
+	}
+	return false;
+}
+#endif
 
 void UIScene::addTimer(int id, int ms)
 {
@@ -534,11 +654,12 @@ void UIScene::removeControl( UIControl_Base *control, bool centreScene)
 	// update the button positions since they may have changed
 	UpdateSceneControls();
 
-	// mark the button as removed
-	control->setHidden(true);
 	// remove it from the touchboxes
 	ui.TouchBoxRebuild(control->getParentScene());
 #endif
+
+	// mark the button as removed so hover/touch hit-tests skip it
+	control->setHidden(true);
 
 }
 
@@ -900,6 +1021,25 @@ void UIScene::sendInputToMovie(int key, bool repeat, bool pressed, bool released
 		app.DebugPrintf("UI WARNING: Ignoring input as game action does not translate to an Iggy keycode\n");
 		return;
 	}
+
+#ifdef _WINDOWS64
+	// If a navigation key is pressed with no focused element, focus the first
+	// available one so arrow keys work even when the mouse is over empty space.
+	if(pressed && (iggyKeyCode == IGGY_KEYCODE_UP || iggyKeyCode == IGGY_KEYCODE_DOWN ||
+	               iggyKeyCode == IGGY_KEYCODE_LEFT || iggyKeyCode == IGGY_KEYCODE_RIGHT))
+	{
+		IggyFocusHandle currentFocus = IGGY_FOCUS_NULL;
+		IggyFocusableObject focusables[64];
+		S32 numFocusables = 0;
+		IggyPlayerGetFocusableObjects(swf, &currentFocus, focusables, 64, &numFocusables);
+		if(currentFocus == IGGY_FOCUS_NULL && numFocusables > 0)
+		{
+			IggyPlayerSetFocusRS(swf, focusables[0].object, 0);
+			return;
+		}
+	}
+#endif
+
 	IggyEvent keyEvent;
 	// 4J Stu - Keyloc is always standard as we don't care about shift/alt
 	IggyMakeEventKey( &keyEvent, pressed?IGGY_KEYEVENT_Down:IGGY_KEYEVENT_Up, (IggyKeycode)iggyKeyCode, IGGY_KEYLOC_Standard );

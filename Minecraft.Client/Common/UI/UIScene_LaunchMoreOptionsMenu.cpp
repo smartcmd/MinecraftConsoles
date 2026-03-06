@@ -257,6 +257,9 @@ void UIScene_LaunchMoreOptionsMenu::handleDestroy()
 void UIScene_LaunchMoreOptionsMenu::handleInput(int iPad, int key, bool repeat, bool pressed, bool released, bool &handled)
 {
 	if(m_bIgnoreInput) return;
+#ifdef _WINDOWS64
+	if (isDirectEditBlocking()) return;
+#endif
 
 	//app.DebugPrintf("UIScene_DebugOverlay handling input for pad %d, key %d, down- %s, pressed- %s, released- %s\n", iPad, key, down?"TRUE":"FALSE", pressed?"TRUE":"FALSE", released?"TRUE":"FALSE");
 	ui.AnimateKeyPress(m_iPad, key, repeat, pressed, released);
@@ -334,7 +337,9 @@ void UIScene_LaunchMoreOptionsMenu::handleTouchInput(unsigned int iPad, S32 x, S
 		}
 	}
 }
+#endif
 
+#if defined(__PSVITA__) || defined(_WINDOWS64)
 UIControl* UIScene_LaunchMoreOptionsMenu::GetMainPanel()
 {
 	if(m_tabIndex == 0)
@@ -546,11 +551,16 @@ int UIScene_LaunchMoreOptionsMenu::KeyboardCompleteSeedCallback(LPVOID lpParam,b
 {
 	UIScene_LaunchMoreOptionsMenu *pClass=(UIScene_LaunchMoreOptionsMenu *)lpParam;
 	pClass->m_bIgnoreInput=false;
-	// 4J HEG - No reason to set value if keyboard was cancelled
 	if (bRes)
 	{
+#ifdef _WINDOWS64
+		uint16_t pchText[128];
+		ZeroMemory(pchText, 128 * sizeof(uint16_t));
+		Win64_GetKeyboardText(pchText, 128);
+		pClass->m_editSeed.setLabel((wchar_t *)pchText);
+		pClass->m_params->seed = (wchar_t *)pchText;
+#else
 #ifdef __PSVITA__
-		//CD - Changed to 2048 [SCE_IME_MAX_TEXT_LENGTH]
 		uint16_t pchText[2048];
 		ZeroMemory(pchText, 2048 * sizeof(uint16_t) );
 #else
@@ -560,18 +570,52 @@ int UIScene_LaunchMoreOptionsMenu::KeyboardCompleteSeedCallback(LPVOID lpParam,b
 		InputManager.GetText(pchText);
 		pClass->m_editSeed.setLabel((wchar_t *)pchText);
 		pClass->m_params->seed = (wchar_t *)pchText;
+#endif
 	}
 	return 0;
 }
 
+#ifdef _WINDOWS64
+void UIScene_LaunchMoreOptionsMenu::getDirectEditInputs(vector<UIControl_TextInput*> &inputs)
+{
+	inputs.push_back(&m_editSeed);
+}
+
+void UIScene_LaunchMoreOptionsMenu::onDirectEditFinished(UIControl_TextInput *input, UIControl_TextInput::EDirectEditResult result)
+{
+	if (result == UIControl_TextInput::eDirectEdit_Confirmed)
+		m_params->seed = input->getEditBuffer();
+}
+#endif
+
 void UIScene_LaunchMoreOptionsMenu::handlePress(F64 controlId, F64 childId)
 {
 	if(m_bIgnoreInput) return;
+#ifdef _WINDOWS64
+	if (isDirectEditBlocking()) return;
+#endif
 
 	switch((int)controlId)
 	{
 	case eControl_EditSeed:
 		{
+#ifdef _WINDOWS64
+			if (g_KBMInput.IsKBMActive())
+			{
+				m_editSeed.beginDirectEdit(60);
+			}
+			else
+			{
+				m_bIgnoreInput = true;
+				UIKeyboardInitData kbData;
+				kbData.title       = app.GetString(IDS_CREATE_NEW_WORLD_SEED);
+				kbData.defaultText = m_editSeed.getLabel();
+				kbData.maxChars    = 60;
+				kbData.callback    = &UIScene_LaunchMoreOptionsMenu::KeyboardCompleteSeedCallback;
+				kbData.lpParam     = this;
+				ui.NavigateToScene(m_iPad, eUIScene_Keyboard, &kbData);
+			}
+#else
 			m_bIgnoreInput=true;
 #ifdef __PS3__
 			int language = XGetLanguage();
@@ -583,12 +627,12 @@ void UIScene_LaunchMoreOptionsMenu::handlePress(F64 controlId, F64 childId)
 				InputManager.RequestKeyboard(app.GetString(IDS_CREATE_NEW_WORLD_SEED),m_editSeed.getLabel(),(DWORD)0,60,&UIScene_LaunchMoreOptionsMenu::KeyboardCompleteSeedCallback,this,C_4JInput::EKeyboardMode_Default);
 				break;
 			default:
-				// 4J Stu - Use a different keyboard for non-asian languages so we don't have prediction on
 				InputManager.RequestKeyboard(app.GetString(IDS_CREATE_NEW_WORLD_SEED),m_editSeed.getLabel(),(DWORD)0,60,&UIScene_LaunchMoreOptionsMenu::KeyboardCompleteSeedCallback,this,C_4JInput::EKeyboardMode_Alphabet_Extended);
 				break;
 			}
 #else
 			InputManager.RequestKeyboard(app.GetString(IDS_CREATE_NEW_WORLD_SEED),m_editSeed.getLabel(),(DWORD)0,60,&UIScene_LaunchMoreOptionsMenu::KeyboardCompleteSeedCallback,this,C_4JInput::EKeyboardMode_Default);
+#endif
 #endif
 		}
 		break;
