@@ -23,8 +23,10 @@ UIScene_DebugOverlay::UIScene_DebugOverlay(int iPad, void *initData, UILayer *pa
 
 	Minecraft *pMinecraft = Minecraft::GetInstance();
 	WCHAR TempString[256];
-	swprintf( (WCHAR *)TempString, 256, L"Set fov (%d)", (int)pMinecraft->gameRenderer->GetFovVal());
-	m_sliderFov.init(TempString,eControl_FOV,0,100,(int)pMinecraft->gameRenderer->GetFovVal());
+	int fovSliderVal = app.GetGameSettings(m_iPad, eGameSetting_FOV);
+	int fovDeg = 70 + fovSliderVal * 40 / 100;
+	swprintf( (WCHAR *)TempString, 256, L"Set fov (%d)", fovDeg);
+	m_sliderFov.init(TempString,eControl_FOV,0,100,fovSliderVal);
 
 	float currentTime = pMinecraft->level->getLevelData()->getGameTime() % 24000;
 	swprintf( (WCHAR *)TempString, 256, L"Set time (unsafe) (%d)", (int)currentTime);
@@ -273,10 +275,15 @@ void UIScene_DebugOverlay::handleSliderMove(F64 sliderId, F64 currentValue)
 	case eControl_FOV:
 		{
 			Minecraft *pMinecraft = Minecraft::GetInstance();
-			pMinecraft->gameRenderer->SetFovVal((float)currentValue);
+			int v = (int)currentValue;
+			if (v < 0) v = 0;
+			if (v > 100) v = 100;
+			int fovDeg = 70 + v * 40 / 100;
+			pMinecraft->gameRenderer->SetFovVal((float)fovDeg);
+			app.SetGameSettings(m_iPad, eGameSetting_FOV, v);
 
 			WCHAR TempString[256];
-			swprintf( (WCHAR *)TempString, 256, L"Set fov (%d)", (int)currentValue);
+			swprintf( (WCHAR *)TempString, 256, L"Set fov (%d)", fovDeg);
 			m_sliderFov.setLabel(TempString);
 		}
 		break;
