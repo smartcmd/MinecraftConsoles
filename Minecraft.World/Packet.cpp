@@ -157,9 +157,9 @@ IllegalArgumentException::IllegalArgumentException(const wstring& information)
 	this->information = information;
 }
 
-IOException::IOException(const wstring& information)
+IOException::IOException(const wstring &info) : std::runtime_error("IOException")
 {
-	this->information = information;
+    this->information = info;
 }
 
 Packet::Packet() : createTime( System::currentTimeMillis() )
@@ -379,12 +379,10 @@ void Packet::writePacket(shared_ptr<Packet> packet, DataOutputStream *dos) // th
 
 void Packet::writeUtf(const wstring& value, DataOutputStream *dos) // throws IOException TODO 4J JEV, should this declare a throws?
 {
-#if 0
 	if (value.length() > Short::MAX_VALUE)
 	{
-		throw new IOException(L"String too big");
+		throw IOException(L"Packet::writeUtf - String too big");
 	}
-#endif
 
 	dos->writeShort((short)value.length());
 	dos->writeChars(value);
@@ -394,20 +392,15 @@ wstring Packet::readUtf(DataInputStream *dis, int maxLength) // throws IOExcepti
 {
 
 	short stringLength = dis->readShort();
-	if (stringLength > maxLength)
+
+	if (stringLength > maxLength || stringLength < 0)
 	{
-		wstringstream stream;
-		stream << L"Received string length longer than maximum allowed (" << stringLength << " > " << maxLength << ")";
-		assert(false);
-		//        throw new IOException( stream.str() );
-	}
-	if (stringLength < 0)
-	{
-		assert(false);
-		//        throw new IOException(L"Received string length is less than zero! Weird string!");
+		throw IOException(L"Packet::readUtf - Invalid string passed");
 	}
 
 	wstring builder = L"";
+	builder.reserve(stringLength);
+
 	for (int i = 0; i < stringLength; i++)
 	{
 		wchar_t rc = dis->readChar();

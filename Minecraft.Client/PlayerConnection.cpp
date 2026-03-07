@@ -35,6 +35,9 @@
 #include "..\Minecraft.World\net.minecraft.world.item.crafting.h"
 #include "Options.h"
 
+// MinecraftConsoles Added
+#include "..\Minecraft.World\Exceptions.h"
+
 Random PlayerConnection::random;
 
 PlayerConnection::PlayerConnection(MinecraftServer *server, Connection *connection, shared_ptr<ServerPlayer> player)
@@ -88,6 +91,18 @@ void PlayerConnection::tick()
 
 	didTick = false;
 	tickCount++;
+
+	try 
+	{
+		connection->tick();
+	}
+	catch (const IOException& e)
+	{
+		app.DebugPrintF("IOException -- %ls\n", e.information);
+		disconnect(DisconnectPacket::eDisconnect_None);
+		return;
+	}
+
 	connection->tick();
 	if(done) return;
 
