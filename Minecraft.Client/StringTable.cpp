@@ -68,7 +68,7 @@ void StringTable::ProcessStringTableData(void)
 		}
 
 		if (!foundLang)
-			app.Printf("StringTable:: Can't find language '%ls'.\n", it_locales->c_str());
+			app.DebugPrintf("StringTable:: Can't find language '%ls'.\n", it_locales->c_str());
 	}
 
 	if(foundLang)
