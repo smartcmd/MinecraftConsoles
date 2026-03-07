@@ -1,5 +1,7 @@
 name: Nightly Release
-
+permissions:
+  contents: write
+  
 on:
   workflow_dispatch: 
   push:
@@ -24,6 +26,10 @@ jobs:
     
     - name: Build
       run: MSBuild.exe MinecraftConsoles.sln /p:Configuration=Debug /p:Platform="Windows64"
+
+    - name: lazyfix
+      shell: pwsh
+      run: Copy-Item -Path "C:/Program Files/Microsoft Visual Studio/2022/Enterprise/VC/Redist/MSVC/*/debug_nonredist/x64/*/*.dll" -Destination "./x64/Debug/";  Copy-Item -Path "C:/Windows/System32/ucrtbased.dll" -Destination "./x64/Debug/"
 
     - name: Zip Build
       run: 7z a -r LCEWindows64.zip ./x64/Debug/*
