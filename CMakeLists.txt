@@ -51,6 +51,7 @@ target_include_directories(MinecraftClient PRIVATE
   "${CMAKE_CURRENT_SOURCE_DIR}/Minecraft.Client/Windows64/Iggy/include"
   "${CMAKE_CURRENT_SOURCE_DIR}/Minecraft.Client/Xbox/Sentient/Include"
   "${CMAKE_CURRENT_SOURCE_DIR}/Minecraft.World/x64headers"
+  "${CMAKE_CURRENT_SOURCE_DIR}/include/"
 )
 target_compile_definitions(MinecraftClient PRIVATE
   $<$<CONFIG:Debug>:_LARGE_WORLDS;_DEBUG_MENUS_ENABLED;_DEBUG;_CRT_NON_CONFORMING_SWPRINTFS;_CRT_SECURE_NO_WARNINGS;_WINDOWS64>
