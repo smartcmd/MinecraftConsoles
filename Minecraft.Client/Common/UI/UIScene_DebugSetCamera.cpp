@@ -96,7 +96,7 @@ void UIScene_DebugSetCamera::onDirectEditFinished(UIControl_TextInput *input, UI
 	{
 		currentPosition->m_camX = val;
 		if (val > 30000000) currentPosition->m_camX = 30000000;
-
+		if (val < -30000000) currentPosition->m_camX = -30000000;
 	}
 else if (input == &m_textInputY)    
 	{
@@ -109,6 +109,7 @@ else if (input == &m_textInputZ)
 	{
 		currentPosition->m_camZ = val;
 		if (val > 30000000) currentPosition->m_camZ = 30000000;
+		if (val < -30000000) currentPosition->m_camZ = -30000000;
 	}
 else if (input == &m_textInputYRot)
 	{
