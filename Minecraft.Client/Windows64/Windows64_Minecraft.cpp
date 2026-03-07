@@ -5,6 +5,8 @@
 
 #include <assert.h>
 #include <iostream>
+#include <vector>
+#include <cwctype>
 #include <ShellScalingApi.h>
 #include <shellapi.h>
 #include "GameConfig\Minecraft.spa.h"
@@ -47,6 +49,7 @@
 #include "..\GameRenderer.h"
 #include "Network\WinsockNetLayer.h"
 #include "Windows64_Xuid.h"
+#include "Win64LanguageRuntime.h"
 
 #include "Xbox/resource.h"
 
@@ -116,7 +119,145 @@ struct Win64LaunchOptions
 	int screenMode;
 	bool serverMode;
 	bool fullscreen;
+	bool tryAllLanguages;
+	std::wstring forceLocaleCode;
+	std::vector<std::wstring> extraLocaleCodes;
 };
+
+static bool ParseLanguageCode(const std::wstring& localeCode, DWORD& outLanguage, DWORD& outLocale);
+
+static bool IsOptionToken(const std::wstring& arg, const wchar_t* longName, const wchar_t* shortName)
+{
+	const std::wstring longDash = L"--" + std::wstring(longName);
+	const std::wstring shortDash = L"-" + std::wstring(shortName);
+	const std::wstring longSlash = L"/" + std::wstring(longName);
+	const std::wstring shortSlash = L"/" + std::wstring(shortName);
+
+	return (_wcsicmp(arg.c_str(), longDash.c_str()) == 0)
+		|| (_wcsicmp(arg.c_str(), shortDash.c_str()) == 0)
+		|| (_wcsicmp(arg.c_str(), longSlash.c_str()) == 0)
+		|| (_wcsicmp(arg.c_str(), shortSlash.c_str()) == 0);
+}
+
+static bool TryReadOptionValue(const std::wstring& arg, const wchar_t* longName, const wchar_t* shortName, std::wstring& outValue)
+{
+	const std::wstring longEq1 = L"--" + std::wstring(longName) + L"=";
+	const std::wstring longEq2 = L"--" + std::wstring(longName) + L":";
+	const std::wstring shortEq1 = L"-" + std::wstring(shortName) + L"=";
+	const std::wstring shortEq2 = L"-" + std::wstring(shortName) + L":";
+	const std::wstring longSlash1 = L"/" + std::wstring(longName) + L":";
+	const std::wstring shortSlash1 = L"/" + std::wstring(shortName) + L":";
+
+	if (arg.size() >= longEq1.size() && _wcsnicmp(arg.c_str(), longEq1.c_str(), (int)longEq1.size()) == 0) { outValue = arg.substr(longEq1.size()); return true; }
+	if (arg.size() >= longEq2.size() && _wcsnicmp(arg.c_str(), longEq2.c_str(), (int)longEq2.size()) == 0) { outValue = arg.substr(longEq2.size()); return true; }
+	if (arg.size() >= shortEq1.size() && _wcsnicmp(arg.c_str(), shortEq1.c_str(), (int)shortEq1.size()) == 0) { outValue = arg.substr(shortEq1.size()); return true; }
+	if (arg.size() >= shortEq2.size() && _wcsnicmp(arg.c_str(), shortEq2.c_str(), (int)shortEq2.size()) == 0) { outValue = arg.substr(shortEq2.size()); return true; }
+	if (arg.size() >= longSlash1.size() && _wcsnicmp(arg.c_str(), longSlash1.c_str(), (int)longSlash1.size()) == 0) { outValue = arg.substr(longSlash1.size()); return true; }
+	if (arg.size() >= shortSlash1.size() && _wcsnicmp(arg.c_str(), shortSlash1.c_str(), (int)shortSlash1.size()) == 0) { outValue = arg.substr(shortSlash1.size()); return true; }
+
+	return false;
+}
+
+static void DetectWinApiDefaultLanguage(DWORD& outLanguage, DWORD& outLocale)
+{
+	outLanguage = XC_LANGUAGE_ENGLISH;
+	outLocale = XC_LOCALE_UNITED_STATES;
+
+	wchar_t localeName[LOCALE_NAME_MAX_LENGTH] = { 0 };
+	if (GetUserDefaultLocaleName(localeName, LOCALE_NAME_MAX_LENGTH) <= 0)
+	{
+		return;
+	}
+
+	std::wstring detected = localeName;
+	for (size_t i = 0; i < detected.size(); ++i)
+	{
+		if (detected[i] == L'_')
+			detected[i] = L'-';
+	}
+
+	if (!ParseLanguageCode(detected, outLanguage, outLocale))
+	{
+		if (detected.size() >= 2)
+		{
+			std::wstring twoLetter = detected.substr(0, 2);
+			if (twoLetter == L"en") ParseLanguageCode(L"en-US", outLanguage, outLocale);
+			else if (twoLetter == L"de") ParseLanguageCode(L"de-DE", outLanguage, outLocale);
+			else if (twoLetter == L"fr") ParseLanguageCode(L"fr-FR", outLanguage, outLocale);
+			else if (twoLetter == L"es") ParseLanguageCode(L"es-ES", outLanguage, outLocale);
+			else if (twoLetter == L"it") ParseLanguageCode(L"it-IT", outLanguage, outLocale);
+			else if (twoLetter == L"pt") ParseLanguageCode(L"pt-PT", outLanguage, outLocale);
+			else if (twoLetter == L"ja") ParseLanguageCode(L"ja-JP", outLanguage, outLocale);
+			else if (twoLetter == L"ko") ParseLanguageCode(L"ko-KR", outLanguage, outLocale);
+			else if (twoLetter == L"ru") ParseLanguageCode(L"ru-RU", outLanguage, outLocale);
+			else if (twoLetter == L"nl") ParseLanguageCode(L"nl-NL", outLanguage, outLocale);
+			else if (twoLetter == L"pl") ParseLanguageCode(L"pl-PL", outLanguage, outLocale);
+			else if (twoLetter == L"sv") ParseLanguageCode(L"sv-SE", outLanguage, outLocale);
+			else if (twoLetter == L"tr") ParseLanguageCode(L"tr-TR", outLanguage, outLocale);
+			else if (twoLetter == L"da") ParseLanguageCode(L"da-DK", outLanguage, outLocale);
+			else if (twoLetter == L"fi") ParseLanguageCode(L"fi-FI", outLanguage, outLocale);
+			else if (twoLetter == L"el") ParseLanguageCode(L"el-GR", outLanguage, outLocale);
+			else if (twoLetter == L"cs") ParseLanguageCode(L"cs-CZ", outLanguage, outLocale);
+			else if (twoLetter == L"sk") ParseLanguageCode(L"sk-SK", outLanguage, outLocale);
+			else if (twoLetter == L"zh") ParseLanguageCode(L"zh-CHT", outLanguage, outLocale);
+		}
+	}
+}
+
+static std::wstring TrimArg(const std::wstring& value)
+{
+	if (value.empty())
+		return value;
+
+	size_t start = 0;
+	while (start < value.size() && iswspace(value[start]))
+		++start;
+
+	size_t end = value.size();
+	while (end > start && iswspace(value[end - 1]))
+		--end;
+
+	return value.substr(start, end - start);
+}
+
+static bool ParseLanguageCode(const std::wstring& localeCode, DWORD& outLanguage, DWORD& outLocale)
+{
+	if (localeCode == L"en-US" || localeCode == L"en")
+	{
+		outLanguage = XC_LANGUAGE_ENGLISH;
+		outLocale = XC_LOCALE_UNITED_STATES;
+		return true;
+	}
+	if (localeCode == L"en-GB")
+	{
+		outLanguage = XC_LANGUAGE_ENGLISH;
+		outLocale = XC_LOCALE_GREAT_BRITAIN;
+		return true;
+	}
+	if (localeCode == L"de-DE") { outLanguage = XC_LANGUAGE_GERMAN; outLocale = XC_LOCALE_GERMANY; return true; }
+	if (localeCode == L"fr-FR") { outLanguage = XC_LANGUAGE_FRENCH; outLocale = XC_LOCALE_FRANCE; return true; }
+	if (localeCode == L"es-ES") { outLanguage = XC_LANGUAGE_SPANISH; outLocale = XC_LOCALE_SPAIN; return true; }
+	if (localeCode == L"es-MX" || localeCode == L"la-LAS") { outLanguage = XC_LANGUAGE_SPANISH; outLocale = XC_LOCALE_LATIN_AMERICA; return true; }
+	if (localeCode == L"it-IT") { outLanguage = XC_LANGUAGE_ITALIAN; outLocale = XC_LOCALE_ITALY; return true; }
+	if (localeCode == L"pt-BR") { outLanguage = XC_LANGUAGE_PORTUGUESE; outLocale = XC_LOCALE_BRAZIL; return true; }
+	if (localeCode == L"pt-PT") { outLanguage = XC_LANGUAGE_PORTUGUESE; outLocale = XC_LOCALE_PORTUGAL; return true; }
+	if (localeCode == L"ja-JP") { outLanguage = XC_LANGUAGE_JAPANESE; outLocale = XC_LOCALE_JAPAN; return true; }
+	if (localeCode == L"ko-KR") { outLanguage = XC_LANGUAGE_KOREAN; outLocale = XC_LOCALE_KOREA; return true; }
+	if (localeCode == L"zh-CHT" || localeCode == L"zh-TW") { outLanguage = XC_LANGUAGE_TCHINESE; outLocale = XC_LOCALE_TAIWAN; return true; }
+	if (localeCode == L"ru-RU") { outLanguage = XC_LANGUAGE_RUSSIAN; outLocale = XC_LOCALE_RUSSIAN_FEDERATION; return true; }
+	if (localeCode == L"nl-NL") { outLanguage = XC_LANGUAGE_DUTCH; outLocale = XC_LOCALE_NETHERLANDS; return true; }
+	if (localeCode == L"pl-PL") { outLanguage = XC_LANGUAGE_POLISH; outLocale = XC_LOCALE_POLAND; return true; }
+	if (localeCode == L"sv-SE") { outLanguage = XC_LANGUAGE_SWEDISH; outLocale = XC_LOCALE_SWEDEN; return true; }
+	if (localeCode == L"tr-TR") { outLanguage = XC_LANGUAGE_TURKISH; outLocale = XC_LOCALE_TURKEY; return true; }
+	if (localeCode == L"nb-NO" || localeCode == L"no-NO") { outLanguage = XC_LANGUAGE_BNORWEGIAN; outLocale = XC_LOCALE_NORWAY; return true; }
+	if (localeCode == L"da-DK" || localeCode == L"da-DA") { outLanguage = XC_LANGUAGE_DANISH; outLocale = XC_LOCALE_DENMARK; return true; }
+	if (localeCode == L"fi-FI") { outLanguage = XC_LANGUAGE_FINISH; outLocale = XC_LOCALE_FINLAND; return true; }
+	if (localeCode == L"el-GR") { outLanguage = XC_LANGUAGE_GREEK; outLocale = XC_LOCALE_GREECE; return true; }
+	if (localeCode == L"cs-CZ") { outLanguage = XC_LANGUAGE_CZECH; outLocale = XC_LOCALE_CZECH_REPUBLIC; return true; }
+	if (localeCode == L"sk-SK") { outLanguage = XC_LANGUAGE_SLOVAK; outLocale = XC_LOCALE_SLOVAK_REPUBLIC; return true; }
+
+	return false;
+}
 
 static void CopyWideArgToAnsi(LPCWSTR source, char* dest, size_t destSize)
 {
@@ -201,6 +342,8 @@ static Win64LaunchOptions ParseLaunchOptions()
 	Win64LaunchOptions options = {};
 	options.screenMode = 0;
 	options.serverMode = false;
+	options.fullscreen = false;
+	options.tryAllLanguages = false;
 
 	g_Win64MultiplayerJoin = false;
 	g_Win64MultiplayerPort = WIN64_NET_DEFAULT_PORT;
@@ -209,6 +352,7 @@ static Win64LaunchOptions ParseLaunchOptions()
 	g_Win64DedicatedServerBindIP[0] = 0;
 
 	int argc = 0;
+	app.DebugPrintf("[Win64] Raw command line: %ls\n", GetCommandLineW());
 	LPWSTR* argv = CommandLineToArgvW(GetCommandLineW(), &argc);
 	if (argv == NULL)
 		return options;
@@ -232,11 +376,14 @@ static Win64LaunchOptions ParseLaunchOptions()
 
 	for (int i = 1; i < argc; ++i)
 	{
-		if (_wcsicmp(argv[i], L"-name") == 0 && (i + 1) < argc)
+		std::wstring currentArg = argv[i];
+		std::wstring inlineValue;
+
+		if (IsOptionToken(currentArg, L"name", L"name") && (i + 1) < argc)
 		{
 			CopyWideArgToAnsi(argv[++i], g_Win64Username, sizeof(g_Win64Username));
 		}
-		else if (_wcsicmp(argv[i], L"-ip") == 0 && (i + 1) < argc)
+		else if (IsOptionToken(currentArg, L"ip", L"ip") && (i + 1) < argc)
 		{
 			char ipBuf[256];
 			CopyWideArgToAnsi(argv[++i], ipBuf, sizeof(ipBuf));
@@ -250,7 +397,7 @@ static Win64LaunchOptions ParseLaunchOptions()
 				g_Win64MultiplayerJoin = true;
 			}
 		}
-		else if (_wcsicmp(argv[i], L"-port") == 0 && (i + 1) < argc)
+		else if (IsOptionToken(currentArg, L"port", L"port") && (i + 1) < argc)
 		{
 			wchar_t* endPtr = NULL;
 			long port = wcstol(argv[++i], &endPtr, 10);
@@ -262,8 +409,52 @@ static Win64LaunchOptions ParseLaunchOptions()
 					g_Win64MultiplayerPort = (int)port;
 			}
 		}
-		else if (_wcsicmp(argv[i], L"-fullscreen") == 0)
+		else if (IsOptionToken(currentArg, L"fullscreen", L"fullscreen"))
 			options.fullscreen = true;
+		else if (TryReadOptionValue(currentArg, L"language", L"lang", inlineValue))
+		{
+			options.forceLocaleCode = TrimArg(inlineValue);
+		}
+		else if (IsOptionToken(currentArg, L"language", L"lang") && (i + 1) < argc)
+		{
+			options.forceLocaleCode = TrimArg(argv[++i]);
+		}
+		else if (TryReadOptionValue(currentArg, L"addlanguages", L"languages", inlineValue)
+			|| TryReadOptionValue(currentArg, L"languages", L"languages", inlineValue))
+		{
+			wstring languagesArg = TrimArg(inlineValue);
+			size_t start = 0;
+			while (start < languagesArg.size())
+			{
+				size_t comma = languagesArg.find(L',', start);
+				wstring token = (comma == wstring::npos) ? languagesArg.substr(start) : languagesArg.substr(start, comma - start);
+				if (!token.empty())
+					options.extraLocaleCodes.push_back(token);
+				if (comma == wstring::npos)
+					break;
+				start = comma + 1;
+			}
+		}
+		else if ((IsOptionToken(currentArg, L"addlanguages", L"languages") || IsOptionToken(currentArg, L"languages", L"languages")) && (i + 1) < argc)
+		{
+			wstring languagesArg = TrimArg(argv[++i]);
+			size_t start = 0;
+			while (start < languagesArg.size())
+			{
+				size_t comma = languagesArg.find(L',', start);
+				wstring token = (comma == wstring::npos) ? languagesArg.substr(start) : languagesArg.substr(start, comma - start);
+				token = TrimArg(token);
+				if (!token.empty())
+					options.extraLocaleCodes.push_back(token);
+				if (comma == wstring::npos)
+					break;
+				start = comma + 1;
+			}
+		}
+		else if (IsOptionToken(currentArg, L"tryalllanguages", L"tryalllanguages"))
+		{
+			options.tryAllLanguages = true;
+		}
 	}
 
 	LocalFree(argv);
@@ -1240,6 +1431,38 @@ int APIENTRY _tWinMain(_In_ HINSTANCE hInstance,
 
 	// Load stuff from launch options, including username
 	Win64LaunchOptions launchOptions = ParseLaunchOptions();
+	app.DebugPrintf("[Win64] Launch options parsed: language='%ls', extraLanguages=%d, tryAll=%s\n",
+		launchOptions.forceLocaleCode.c_str(),
+		(int)launchOptions.extraLocaleCodes.size(),
+		launchOptions.tryAllLanguages ? "true" : "false");
+	Win64SetForceLocaleCode(launchOptions.forceLocaleCode);
+	Win64SetExtraLanguageCodes(launchOptions.extraLocaleCodes);
+	Win64SetTryAllLanguagesAtStartup(launchOptions.tryAllLanguages);
+
+	if (!launchOptions.forceLocaleCode.empty())
+	{
+		DWORD language = XC_LANGUAGE_ENGLISH;
+		DWORD locale = XC_LOCALE_UNITED_STATES;
+		if (ParseLanguageCode(launchOptions.forceLocaleCode, language, locale))
+		{
+			Win64SetLanguageLocale(language, locale);
+		}
+		else
+		{
+			app.DebugPrintf("[Win64] Invalid -language argument '%ls' - defaulting to English.\n", launchOptions.forceLocaleCode.c_str());
+			MessageBoxW(NULL, L"Unsupported -language code. Defaulting to English (en-US).", L"Minecraft Localization", MB_OK | MB_ICONWARNING);
+			Win64ForceEnglishLanguage();
+		}
+	}
+	else
+	{
+		DWORD language = XC_LANGUAGE_ENGLISH;
+		DWORD locale = XC_LOCALE_UNITED_STATES;
+		DetectWinApiDefaultLanguage(language, locale);
+		Win64SetLanguageLocale(language, locale);
+		app.DebugPrintf("[Win64] Default locale from WinAPI: lang=%u locale=%u\n", (unsigned int)language, (unsigned int)locale);
+	}
+
 	ApplyScreenMode(launchOptions.screenMode);
 
 	// Ensure uid.dat exists from startup in client mode (before any multiplayer/login path).

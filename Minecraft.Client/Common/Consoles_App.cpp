@@ -58,6 +58,9 @@
 #else
 #include "UI\UI.h"
 #include "UI\UIScene_PauseMenu.h"
+#ifdef _WINDOWS64
+#include "..\Windows64\Win64LanguageRuntime.h"
+#endif
 #endif
 #ifdef __PS3__
 #include <sys/tty.h>
@@ -1797,6 +1800,15 @@ void CMinecraftApp::SetMinecraftLanguage(int iPad, unsigned char ucLanguage)
 {
 	GameSettingsA[iPad]->ucLanguage = ucLanguage;
 	GameSettingsA[iPad]->bSettingsChanged = true;
+
+#ifdef _WINDOWS64
+	DWORD currentLocale = XGetLocale();
+	if (GameSettingsA[iPad]->ucLocale != MINECRAFT_LANGUAGE_DEFAULT)
+	{
+		currentLocale = GameSettingsA[iPad]->ucLocale;
+	}
+	Win64SetLanguageLocale(ucLanguage, currentLocale);
+#endif
 }
 
 unsigned char CMinecraftApp::GetMinecraftLanguage(int iPad)
@@ -1816,6 +1828,15 @@ void CMinecraftApp::SetMinecraftLocale(int iPad, unsigned char ucLocale)
 {
 	GameSettingsA[iPad]->ucLocale = ucLocale;
 	GameSettingsA[iPad]->bSettingsChanged = true;
+
+#ifdef _WINDOWS64
+	DWORD currentLanguage = XGetLanguage();
+	if (GameSettingsA[iPad]->ucLanguage != MINECRAFT_LANGUAGE_DEFAULT)
+	{
+		currentLanguage = GameSettingsA[iPad]->ucLanguage;
+	}
+	Win64SetLanguageLocale(currentLanguage, ucLocale);
+#endif
 }
 
 unsigned char CMinecraftApp::GetMinecraftLocale(int iPad)
@@ -9601,6 +9622,20 @@ void CMinecraftApp::getLocale(vector<wstring> &vecWstrLocales)
 	vector<eMCLang> locales;
 
 	DWORD dwSystemLanguage = XGetLanguage( );
+	DWORD dwSystemLocale = XGetLocale( );
+
+	int primaryPad = ProfileManager.GetPrimaryPad();
+	if (primaryPad >= 0 && primaryPad < XUSER_MAX_COUNT && GameSettingsA[primaryPad] != NULL)
+	{
+		if (GameSettingsA[primaryPad]->ucLanguage != MINECRAFT_LANGUAGE_DEFAULT)
+		{
+			dwSystemLanguage = GameSettingsA[primaryPad]->ucLanguage;
+		}
+		if (GameSettingsA[primaryPad]->ucLocale != MINECRAFT_LANGUAGE_DEFAULT)
+		{
+			dwSystemLocale = GameSettingsA[primaryPad]->ucLocale;
+		}
+	}
 
 	// 4J-PB - restrict the 360 language until we're ready to have them in
 
@@ -9620,7 +9655,7 @@ void CMinecraftApp::getLocale(vector<wstring> &vecWstrLocales)
 		locales.push_back(eMCLang_esES);
 		break;
 	case XC_LANGUAGE_PORTUGUESE         :
-		if(XGetLocale()==XC_LOCALE_BRAZIL)
+		if(dwSystemLocale==XC_LOCALE_BRAZIL)
 		{
 			locales.push_back(eMCLang_ptBR);
 		}
@@ -9641,7 +9676,7 @@ void CMinecraftApp::getLocale(vector<wstring> &vecWstrLocales)
 	{
 
 	case XC_LANGUAGE_ENGLISH:
-		switch(XGetLocale())
+		switch(dwSystemLocale)
 		{
 		case XC_LOCALE_AUSTRALIA:
 		case XC_LOCALE_CANADA:
@@ -9669,7 +9704,7 @@ void CMinecraftApp::getLocale(vector<wstring> &vecWstrLocales)
 		locales.push_back(eMCLang_jaJP);
 		break;
 	case XC_LANGUAGE_GERMAN             :
-		switch(XGetLocale())
+		switch(dwSystemLocale)
 		{
 		case XC_LOCALE_AUSTRIA:
 			locales.push_back(eMCLang_deAT);
@@ -9683,7 +9718,7 @@ void CMinecraftApp::getLocale(vector<wstring> &vecWstrLocales)
 		locales.push_back(eMCLang_deDE);
 		break;
 	case XC_LANGUAGE_FRENCH             :
-		switch(XGetLocale())
+		switch(dwSystemLocale)
 		{
 		case XC_LOCALE_BELGIUM:
 			locales.push_back(eMCLang_frBE);
@@ -9700,7 +9735,7 @@ void CMinecraftApp::getLocale(vector<wstring> &vecWstrLocales)
 		locales.push_back(eMCLang_frFR);
 		break;
 	case XC_LANGUAGE_SPANISH            :
-		switch(XGetLocale())
+		switch(dwSystemLocale)
 		{
 		case XC_LOCALE_MEXICO:
 		case XC_LOCALE_ARGENTINA:
@@ -9723,7 +9758,7 @@ void CMinecraftApp::getLocale(vector<wstring> &vecWstrLocales)
 		locales.push_back(eMCLang_koKR);
 		break;
 	case XC_LANGUAGE_TCHINESE           :
-		switch(XGetLocale())
+		switch(dwSystemLocale)
 		{
 		case XC_LOCALE_HONG_KONG:
 			locales.push_back(eMCLang_zhHK);
@@ -9739,7 +9774,7 @@ void CMinecraftApp::getLocale(vector<wstring> &vecWstrLocales)
 		locales.push_back(eMCLang_zhCHT);
 		break;
 	case XC_LANGUAGE_PORTUGUESE         :
-		if(XGetLocale()==XC_LOCALE_BRAZIL)
+		if(dwSystemLocale==XC_LOCALE_BRAZIL)
 		{
 			locales.push_back(eMCLang_ptBR);
 		}
@@ -9764,7 +9799,7 @@ void CMinecraftApp::getLocale(vector<wstring> &vecWstrLocales)
 		locales.push_back(eMCLang_nnNO);
 		break;
 	case XC_LANGUAGE_DUTCH              :
-		switch(XGetLocale())
+		switch(dwSystemLocale)
 		{
 		case XC_LOCALE_BELGIUM:
 			locales.push_back(eMCLang_nlBE);
@@ -9775,7 +9810,7 @@ void CMinecraftApp::getLocale(vector<wstring> &vecWstrLocales)
 		locales.push_back(eMCLang_nlNL);
 		break;
 	case XC_LANGUAGE_SCHINESE           :
-		switch(XGetLocale())
+		switch(dwSystemLocale)
 		{
 		case XC_LOCALE_SINGAPORE:
 			locales.push_back(eMCLang_zhSG);
