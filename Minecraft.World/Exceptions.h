@@ -1,7 +1,5 @@
 #pragma once
 
-// izzint - TODO: these other exceptions should really be implemented
-
 class EOFException : public std::runtime_error
 {
 public:
