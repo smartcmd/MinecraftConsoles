@@ -7,9 +7,9 @@ class MobCategory
 {
 public:
 	// 4J - putting constants for xbox spawning in one place to tidy things up a bit - all numbers are per level
-	static const int CONSOLE_MONSTERS_HARD_LIMIT = 75; //50									// Max number of enemies (skeleton, zombie, creeper etc) that the mob spawner will produce
-	static const int CONSOLE_ANIMALS_HARD_LIMIT = 75;  //50									// Max number of animals (cows, sheep, pigs) that the mob spawner will produce	
-	static const int CONSOLE_AMBIENT_HARD_LIMIT = 30;  //20								// Ambient mobs
+	static const int CONSOLE_MONSTERS_HARD_LIMIT = 70; //50									// Max number of enemies (skeleton, zombie, creeper etc) that the mob spawner will produce
+	static const int CONSOLE_ANIMALS_HARD_LIMIT = 70;  //50									// Max number of animals (cows, sheep, pigs) that the mob spawner will produce	
+	static const int CONSOLE_AMBIENT_HARD_LIMIT = 20;  //20								// Ambient mobs
 
 	static const int MAX_XBOX_CHICKENS = 16; //8										// Max number of chickens that the mob spawner will produce
 	static const int MAX_XBOX_WOLVES = 16; //8										// Max number of wolves that the mob spawner will produce
