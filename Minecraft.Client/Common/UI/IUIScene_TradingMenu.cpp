@@ -1,11 +1,11 @@
 #include "stdafx.h"
-#include "..\..\..\Minecraft.World\net.minecraft.world.item.trading.h"
-#include "..\..\..\Minecraft.World\net.minecraft.world.inventory.h"
-#include "..\..\..\Minecraft.World\net.minecraft.world.item.h"
-#include "..\..\..\Minecraft.World\net.minecraft.network.packet.h"
-#include "..\..\Minecraft.h"
-#include "..\..\MultiPlayerLocalPlayer.h"
-#include "..\..\ClientConnection.h"
+#include "../../../Minecraft.World/net.minecraft.world.item.trading.h"
+#include "../../../Minecraft.World/net.minecraft.world.inventory.h"
+#include "../../../Minecraft.World/net.minecraft.world.item.h"
+#include "../../../Minecraft.World/net.minecraft.network.packet.h"
+#include "../../Minecraft.h"
+#include "../../MultiPlayerLocalPlayer.h"
+#include "../../ClientConnection.h"
 #include "IUIScene_TradingMenu.h"
 
 IUIScene_TradingMenu::IUIScene_TradingMenu()

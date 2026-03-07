@@ -1,6 +1,6 @@
 #pragma once
 #include "TutorialTask.h"
-#include "..\..\..\Minecraft.World\Recipy.h"
+#include "../../../Minecraft.World/Recipy.h"
 
 class XuiCraftingTask : public TutorialTask
 {

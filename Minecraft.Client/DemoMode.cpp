@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "DemoMode.h"
-#include "..\Minecraft.World\net.minecraft.world.level.h"
+#include "../Minecraft.World/net.minecraft.world.level.h"
 
 DemoMode::DemoMode(Minecraft *minecraft) : SurvivalMode(minecraft)
 {

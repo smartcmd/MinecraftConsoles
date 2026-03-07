@@ -6,7 +6,7 @@
 #include "XUI_Ctrl_4JList.h"
 #include "XUI_Ctrl_4JIcon.h"
 #include "XUI_LoadSettings.h"
-#include "..\..\ProgressRenderer.h"
+#include "../../ProgressRenderer.h"
 #include "XUI_TransferToXboxOne.h"
 
 

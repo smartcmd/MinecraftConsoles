@@ -1,9 +1,9 @@
 #include "stdafx.h"
 #include "Tesselator.h"
-#include "..\Minecraft.World\BasicTypeContainers.h"
-#include "..\Minecraft.World\FloatBuffer.h"
-#include "..\Minecraft.World\IntBuffer.h"
-#include "..\Minecraft.World\ByteBuffer.h"
+#include "../Minecraft.World/BasicTypeContainers.h"
+#include "../Minecraft.World/FloatBuffer.h"
+#include "../Minecraft.World/IntBuffer.h"
+#include "../Minecraft.World/ByteBuffer.h"
 
 bool Tesselator::TRIANGLE_MODE = false;
 bool Tesselator::USE_VBO = false;

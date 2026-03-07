@@ -1,8 +1,8 @@
 #include "stdafx.h"
 
 #include "XUI_Ctrl_LoadingProgress.h"
-#include "..\..\Minecraft.h"
-#include "..\..\ProgressRenderer.h"
+#include "../../Minecraft.h"
+#include "../../ProgressRenderer.h"
 
 int CXuiCtrlLoadingProgress::GetValue()
 {

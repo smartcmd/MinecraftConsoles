@@ -4,16 +4,16 @@
 #include "stdafx.h"
 
 #include <assert.h>
-#include "..\XUI\XUI_SocialPost.h"
-#include "..\..\..\Minecraft.World\StringHelpers.h"
-#include "..\..\..\Minecraft.World\SharedConstants.h"
-#include "..\..\..\Minecraft.World\Random.h"
-#include "..\..\..\Minecraft.Client\SurvivalMode.h"
-#include "..\..\..\Minecraft.Client\CreateWorldScreen.h"
-#include "..\..\..\Minecraft.World\ConsoleSaveFileIO.h"
-#include "..\..\..\Minecraft.World\AABB.h"
-#include "..\..\..\Minecraft.World\Vec3.h"
-#include "..\..\LocalPlayer.h"
+#include "../XUI/XUI_SocialPost.h"
+#include "../../../Minecraft.World/StringHelpers.h"
+#include "../../../Minecraft.World/SharedConstants.h"
+#include "../../../Minecraft.World/Random.h"
+#include "../../../Minecraft.Client/SurvivalMode.h"
+#include "../../../Minecraft.Client/CreateWorldScreen.h"
+#include "../../../Minecraft.World/ConsoleSaveFileIO.h"
+#include "../../../Minecraft.World/AABB.h"
+#include "../../../Minecraft.World/Vec3.h"
+#include "../../LocalPlayer.h"
 
 
 //----------------------------------------------------------------------------------

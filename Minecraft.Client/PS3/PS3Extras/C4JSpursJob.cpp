@@ -7,7 +7,7 @@
 #include <cell/spurs.h>
 #include "C4JSpursJob.h"
 #include "C4JThread_SPU.h"
-// #include "PS3\SPU_Tasks\SPUMemTools\SPUMemTools.h"
+// #include "PS3/SPU_Tasks/SPUMemTools/SPUMemTools.h"
 
 
 using namespace cell::Spurs::JobQueue;

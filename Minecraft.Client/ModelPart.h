@@ -1,9 +1,9 @@
 #pragma once
-#include "..\Minecraft.World\ArrayWithLength.h"
+#include "../Minecraft.World/ArrayWithLength.h"
 #include "Vertex.h"
 #include "Polygon.h"
 #include "Model.h"
-#include "..\Minecraft.Client\SkinBox.h"
+#include "../Minecraft.Client/SkinBox.h"
 
 class Cube;
 

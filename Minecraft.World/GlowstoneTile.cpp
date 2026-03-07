@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "Glowstonetile.h"
+#include "GlowstoneTile.h"
 #include "net.minecraft.world.item.h"
 
 Glowstonetile::Glowstonetile(int id, Material *material) : Tile(id, material)

@@ -5,9 +5,9 @@
 #include "Button.h"
 #include "Font.h"
 #include "Lighting.h"
-#include "..\Minecraft.World\net.minecraft.locale.h"
-#include "..\Minecraft.World\net.minecraft.stats.h"
-#include "..\Minecraft.World\net.minecraft.world.item.h"
+#include "../Minecraft.World/net.minecraft.locale.h"
+#include "../Minecraft.World/net.minecraft.stats.h"
+#include "../Minecraft.World/net.minecraft.world.item.h"
 
 const float StatsScreen::SLOT_TEX_SIZE = 128.0f;
 ItemRenderer *StatsScreen::itemRenderer = NULL;

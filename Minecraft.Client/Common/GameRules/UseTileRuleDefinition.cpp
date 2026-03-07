@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "..\..\..\Minecraft.World\StringHelpers.h"
+#include "../../../Minecraft.World/StringHelpers.h"
 #include "UseTileRuleDefinition.h"
 
 UseTileRuleDefinition::UseTileRuleDefinition()

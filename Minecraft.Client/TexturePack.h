@@ -1,7 +1,7 @@
 #pragma once
 using namespace std;
 
-#include "Common\App_enums.h"
+#include "Common/App_enums.h"
 
 class InputStream;
 class Minecraft;

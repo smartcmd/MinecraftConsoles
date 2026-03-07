@@ -4,8 +4,8 @@
 #include "stdafx.h"
 
 #include <assert.h>
-#include "..\..\Minecraft.h"
-#include "..\..\..\Minecraft.World\DisconnectPacket.h"
+#include "../../Minecraft.h"
+#include "../../../Minecraft.World/DisconnectPacket.h"
 
 //----------------------------------------------------------------------------------
 // Performs initialization tasks - retrieves controls.

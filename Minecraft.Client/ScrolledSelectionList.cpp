@@ -3,7 +3,7 @@
 #include "Button.h"
 #include "Tesselator.h"
 #include "Textures.h"
-#include "..\Minecraft.World\System.h"
+#include "../Minecraft.World/System.h"
 
 ScrolledSelectionList::ScrolledSelectionList(Minecraft *minecraft, int width, int height, int y0, int y1, int itemHeight)
 {

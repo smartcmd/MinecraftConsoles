@@ -1,5 +1,5 @@
 #pragma once
-#include "..\Minecraft.World\ArrayWithLength.h"
+#include "../Minecraft.World/ArrayWithLength.h"
 #include "Vertex.h"
 #include "Polygon.h"
 

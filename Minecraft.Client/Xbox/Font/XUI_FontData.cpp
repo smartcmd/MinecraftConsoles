@@ -1,9 +1,9 @@
 #include "stdafx.h"
-#include "..\..\stubs.h"
-#include "..\..\Minecraft.h"
-#include "..\..\Textures.h"
+#include "../../stubs.h"
+#include "../../Minecraft.h"
+#include "../../Textures.h"
 #include "XUI_FontData.h"
-#include "..\..\..\Minecraft.World\StringHelpers.h"
+#include "../../../Minecraft.World/StringHelpers.h"
 
 
 #define USE_NEW 0

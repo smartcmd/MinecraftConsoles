@@ -11,9 +11,9 @@
 #include <pspnet_adhoc.h>
 #include <adhoc_matching.h>
 
-#include "PSVita\PSVitaExtras\Conf.h"
-#include "Common\Network\Sony\SonyHttp.h"
-#include "..\..\..\Minecraft.World\C4JThread.h"
+#include "PSVita/PSVitaExtras/Conf.h"
+#include "Common/Network/Sony/SonyHttp.h"
+#include "../../../Minecraft.World/C4JThread.h"
 
 
 #define MATCHING_PORT						(1)

@@ -1,9 +1,9 @@
 #pragma once
 using namespace std;
-#include "..\Media\xuiscene_inventory.h"
+#include "../Media/xuiscene_inventory.h"
 #include "XUI_Scene_AbstractContainer.h"
 #include "XUI_CustomMessages.h"
-#include "..\UI\IUIScene_InventoryMenu.h"
+#include "../UI/IUIScene_InventoryMenu.h"
 
 #define INVENTORY_UPDATE_EFFECTS_TIMER_ID (10)
 #define INVENTORY_UPDATE_EFFECTS_TIMER_TIME (1000) // 1 second

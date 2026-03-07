@@ -6,7 +6,7 @@
 #include <np.h>
 #include <np/drm.h>
 #include <np/commerce2.h>
-#include "Common\Network\Sony\SonyCommerce.h"
+#include "Common/Network/Sony/SonyCommerce.h"
 
 #define SCE_TOOLKIT_NP_SKU_PRICE_LEN	(SCE_NP_COMMERCE2_CURRENCY_CODE_LEN \
 	+ SCE_NP_COMMERCE2_CURRENCY_SYMBOL_LEN \

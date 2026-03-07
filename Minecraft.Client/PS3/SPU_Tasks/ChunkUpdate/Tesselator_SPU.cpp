@@ -9,16 +9,16 @@
 #include <cell/spurs.h>
 #include <cell/dma.h>
 #include <math.h>
-#include "..\Common\spu_assert.h"
+#include "../Common/spu_assert.h"
 #endif // SN_TARGET_PS3_SPU
 
 #include "Tesselator_SPU.h"
 
 static const bool sc_verbose = false;
-// #include "..\Minecraft.World\BasicTypeContainers.h"
-// #include "..\Minecraft.World\FloatBuffer.h"
-// #include "..\Minecraft.World\IntBuffer.h"
-// #include "..\Minecraft.World\ByteBuffer.h"
+// #include "../Minecraft.World/BasicTypeContainers.h"
+// #include "../Minecraft.World/FloatBuffer.h"
+// #include "../Minecraft.World/IntBuffer.h"
+// #include "../Minecraft.World/ByteBuffer.h"
 
 #ifdef SN_TARGET_PS3_SPU
 

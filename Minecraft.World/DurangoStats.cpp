@@ -12,16 +12,16 @@
 #include "Item.h"
 #include "Level.h"
 
-#include "..\Minecraft.Client\Minecraft.h"
+#include "../Minecraft.Client/Minecraft.h"
 #include "LevelData.h"
 #include "LevelSettings.h"
 
-#include "..\Minecraft.Client\LocalPlayer.h"
-#include "..\Minecraft.Client\MultiPlayerLocalPlayer.h"
+#include "../Minecraft.Client/LocalPlayer.h"
+#include "../Minecraft.Client/MultiPlayerLocalPlayer.h"
 
 #include "EntityIO.h"
 
-#include "..\Minecraft.Client\Durango\ServiceConfig\Events-XBLA.8-149E11AEEvents.h"
+#include "../Minecraft.Client/Durango/ServiceConfig/Events-XBLA.8-149E11AEEvents.h"
 
 #include "DurangoStats.h"
 

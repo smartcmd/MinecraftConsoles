@@ -8,21 +8,21 @@
 
 #include "base64.h"
 
-#include "Common\Consoles_App.h"
-#include "Common\Network\Sony\SQRNetworkManager.h"
+#include "Common/Consoles_App.h"
+#include "Common/Network/Sony/SQRNetworkManager.h"
 
-#include "..\..\..\Minecraft.World\StringHelpers.h"
+#include "../../../Minecraft.World/StringHelpers.h"
 
 
 #ifdef __ORBIS__
-#include "Orbis\OrbisExtras\ShutdownManager.h"
-#include "Orbis\Orbis_App.h"
+#include "Orbis/OrbisExtras/ShutdownManager.h"
+#include "Orbis/Orbis_App.h"
 #elif defined __PSVITA__
-#include "PSVita\PSVitaExtras\ShutdownManager.h"
-#include "PSVita\PSVita_App.h"
+#include "PSVita/PSVitaExtras/ShutdownManager.h"
+#include "PSVita/PSVita_App.h"
 #elif defined __PS3__
-#include "PS3\PS3Extras\ShutdownManager.h"
-#include "PS3\PS3_App.h"
+#include "PS3/PS3Extras/ShutdownManager.h"
+#include "PS3/PS3_App.h"
 #else
 #error "SonyLeaderboardManager is included for a non-sony platform."
 #endif

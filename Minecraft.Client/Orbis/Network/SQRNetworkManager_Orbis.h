@@ -8,7 +8,7 @@
 #include <unordered_map>
 // #include "SonyVoiceChat_Orbis.h"
 
-#include "..\..\Common\Network\Sony\SQRNetworkManager.h"
+#include "../../Common/Network/Sony/SQRNetworkManager.h"
 
 class SQRNetworkPlayer;
 class ISQRNetworkManagerListener;

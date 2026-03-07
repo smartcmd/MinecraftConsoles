@@ -2,8 +2,8 @@
 #include "MinecraftServer.h"
 #include "PlayerList.h"
 #include "ServerPlayer.h"
-#include "..\Minecraft.World\net.minecraft.commands.h"
-#include "..\Minecraft.World\net.minecraft.commands.common.h"
+#include "../Minecraft.World/net.minecraft.commands.h"
+#include "../Minecraft.World/net.minecraft.commands.common.h"
 #include "TeleportCommand.h"
 #include "ServerCommandDispatcher.h"
 

@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "..\Minecraft.World\FloatBuffer.h"
+#include "../Minecraft.World/FloatBuffer.h"
 #include "Frustum.h"
 
 Frustum *Frustum::frustum = new Frustum();

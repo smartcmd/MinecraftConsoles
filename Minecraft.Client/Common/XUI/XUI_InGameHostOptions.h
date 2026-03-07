@@ -1,5 +1,5 @@
 #pragma once
-#include "..\Media\xuiscene_ingame_host_options.h"
+#include "../Media/xuiscene_ingame_host_options.h"
 
 class CScene_InGameHostOptions : public CXuiSceneImpl
 {

@@ -5,7 +5,7 @@
 #include "net.minecraft.world.effect.h"
 #include "net.minecraft.world.level.h"
 #include "net.minecraft.world.h"
-#include "..\Minecraft.Client\Textures.h"
+#include "../Minecraft.Client/Textures.h"
 #include "CaveSpider.h"
 
 

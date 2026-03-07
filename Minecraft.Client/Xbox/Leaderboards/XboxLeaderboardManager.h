@@ -3,7 +3,7 @@
 #include <xuiresource.h>
 #include <xuiapp.h>
 
-#include "..\..\Common\Leaderboards\LeaderboardManager.h"
+#include "../../Common/Leaderboards/LeaderboardManager.h"
 
 class XboxLeaderboardManager : public LeaderboardManager
 {

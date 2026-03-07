@@ -12,7 +12,7 @@
 #include "net.minecraft.world.phys.h"
 #include "SynchedEntityData.h"
 #include "StringHelpers.h"
-#include "..\Minecraft.Client\Textures.h"
+#include "../Minecraft.Client/Textures.h"
 #include "GenericStats.h"
 #include "Ozelot.h"
 

@@ -1,6 +1,6 @@
 #include "stdafx.h"
-#include "..\Minecraft.World\net.minecraft.world.level.tile.entity.h"
-#include "..\Minecraft.World\net.minecraft.world.level.h"
+#include "../Minecraft.World/net.minecraft.world.level.tile.entity.h"
+#include "../Minecraft.World/net.minecraft.world.level.h"
 #include "BeaconRenderer.h"
 #include "Tesselator.h"
 

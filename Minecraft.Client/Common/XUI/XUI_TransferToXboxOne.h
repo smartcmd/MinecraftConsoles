@@ -2,7 +2,7 @@
 using namespace std;
 //#include <vector>
 
-#include "..\Media\xuiscene_TransferToXboxOne.h"
+#include "../Media/xuiscene_TransferToXboxOne.h"
 
 
 class CXuiCtrl4JList;

@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "Color.h"
-#include "..\Minecraft.Client\Minecraft.h"
+#include "../Minecraft.Client/Minecraft.h"
 #include "net.minecraft.world.level.levelgen.feature.h"
 #include "net.minecraft.world.level.tile.h"
 #include "net.minecraft.world.level.h"

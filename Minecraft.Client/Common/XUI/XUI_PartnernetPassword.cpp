@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "XUI_PartnernetPassword.h"
-#include "..\XUI\XUI_Ctrl_4JList.h"
+#include "../XUI/XUI_Ctrl_4JList.h"
 
 #ifdef _CONTENT_PACKAGE
 #ifndef _FINAL_BUILD

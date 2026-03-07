@@ -1,8 +1,8 @@
 #pragma once
 using namespace std;
 
-#include "..\Minecraft.World\Entity.h"
-#include "..\Minecraft.World\ParticleTypes.h"
+#include "../Minecraft.World/Entity.h"
+#include "../Minecraft.World/ParticleTypes.h"
 #include "ParticleEngine.h"
 class Tesselator;
 class CompoundTag;

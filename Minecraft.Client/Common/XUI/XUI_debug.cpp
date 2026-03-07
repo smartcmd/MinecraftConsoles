@@ -5,7 +5,7 @@
 
 #include <assert.h>
 #include "XUI_Debug.h"
-#include "..\..\..\Minecraft.Client\StatsCounter.h"
+#include "../../../Minecraft.Client/StatsCounter.h"
 
 LPCWSTR CScene_Debug::m_DebugCheckboxTextA[eDebugSetting_Max+1]=
 {

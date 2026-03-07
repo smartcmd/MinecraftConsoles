@@ -1,6 +1,6 @@
 #pragma once
 
-#include "..\..\Common\Network\NetworkPlayerInterface.h"
+#include "../../Common/Network/NetworkPlayerInterface.h"
 
 // This is an implementation of the INetworkPlayer interface, for Xbox 360. It effectively wraps the IQNetPlayer class in a non-platform-specific way. It is
 // managed by PlatformNetworkManagerXbox.

@@ -1,8 +1,8 @@
 #include "stdafx.h"
 #include "CraftingScreen.h"
 #include "Textures.h"
-#include "MultiplayerLocalPlayer.h"
-#include "..\Minecraft.World\net.minecraft.world.inventory.h"
+#include "MultiPlayerLocalPlayer.h"
+#include "../Minecraft.World/net.minecraft.world.inventory.h"
 
 CraftingScreen::CraftingScreen(shared_ptr<Inventory> inventory, Level *level, int x, int y, int z) : AbstractContainerScreen(new CraftingMenu(inventory, level, x, y, z))
 {

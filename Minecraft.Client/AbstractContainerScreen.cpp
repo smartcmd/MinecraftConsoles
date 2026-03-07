@@ -1,38 +1,37 @@
-#include "stdafx.h"
 #include "AbstractContainerScreen.h"
-#include "ItemRenderer.h"
-#include "MultiplayerLocalPlayer.h"
-#include "Lighting.h"
+#include "../Minecraft.World/net.minecraft.locale.h"
+#include "../Minecraft.World/net.minecraft.world.inventory.h"
+#include "../Minecraft.World/net.minecraft.world.item.h"
 #include "GameMode.h"
+#include "ItemRenderer.h"
 #include "KeyMapping.h"
+#include "Lighting.h"
+#include "MultiPlayerLocalPlayer.h"
 #include "Options.h"
-#include "..\Minecraft.World\net.minecraft.world.inventory.h"
-#include "..\Minecraft.World\net.minecraft.locale.h"
-#include "..\Minecraft.World\net.minecraft.world.item.h"
+#include "stdafx.h"
 
 ItemRenderer *AbstractContainerScreen::itemRenderer = new ItemRenderer();
 
 AbstractContainerScreen::AbstractContainerScreen(AbstractContainerMenu *menu)
 {
-	// 4J - added initialisers
-	imageWidth = 176;
-	imageHeight = 166;
+    // 4J - added initialisers
+    imageWidth = 176;
+    imageHeight = 166;
 
-	this->menu = menu;
+    this->menu = menu;
 }
 
 void AbstractContainerScreen::init()
 {
     Screen::init();
     minecraft->player->containerMenu = menu;
-// 	leftPos = (width - imageWidth) / 2;
-// 	topPos = (height - imageHeight) / 2;
-
+    // 	leftPos = (width - imageWidth) / 2;
+    // 	topPos = (height - imageHeight) / 2;
 }
 
 void AbstractContainerScreen::render(int xm, int ym, float a)
 {
-	// 4J Stu - Not used
+    // 4J Stu - Not used
 #if 0
     renderBackground();
     int xo = (width - imageWidth) / 2;
@@ -121,7 +120,7 @@ void AbstractContainerScreen::renderLabels()
 
 void AbstractContainerScreen::renderSlot(Slot *slot)
 {
-	// 4J Unused
+    // 4J Unused
 #if 0
     int x = slot->x;
     int y = slot->y;
@@ -148,7 +147,7 @@ void AbstractContainerScreen::renderSlot(Slot *slot)
 Slot *AbstractContainerScreen::findSlot(int x, int y)
 {
     for (Slot* slot : menu->slots )
-	{
+	  {
         if (isHovering(slot, x, y)) return slot;
     }
     return NULL;
@@ -162,14 +161,13 @@ bool AbstractContainerScreen::isHovering(Slot *slot, int xm, int ym)
     ym -= yo;
 
     return xm >= slot->x - 1 && xm < slot->x + 16 + 1 && ym >= slot->y - 1 && ym < slot->y + 16 + 1;
-
 }
 
 void AbstractContainerScreen::mouseClicked(int x, int y, int buttonNum)
 {
     Screen::mouseClicked(x, y, buttonNum);
     if (buttonNum == 0 || buttonNum == 1)
-	{
+    {
         Slot *slot = findSlot(x, y);
 
         int xo = (width - imageWidth) / 2;
@@ -177,40 +175,45 @@ void AbstractContainerScreen::mouseClicked(int x, int y, int buttonNum)
         bool clickedOutside = (x < xo || y < yo || x >= xo + imageWidth || y >= yo + imageHeight);
 
         int slotId = -1;
-        if (slot != NULL) slotId = slot->index;
+        if (slot != NULL)
+        {
+            slotId = slot->index;
+        }
 
         if (clickedOutside)
-		{
+        {
             slotId = AbstractContainerMenu::CLICKED_OUTSIDE;
         }
 
         if (slotId != -1)
-		{
+        {
             bool quickKey = slotId != AbstractContainerMenu::CLICKED_OUTSIDE && (Keyboard::isKeyDown(Keyboard::KEY_LSHIFT) || Keyboard::isKeyDown(Keyboard::KEY_RSHIFT));
             minecraft->gameMode->handleInventoryMouseClick(menu->containerId, slotId, buttonNum, quickKey, minecraft->player);
         }
     }
-
 }
 
 void AbstractContainerScreen::mouseReleased(int x, int y, int buttonNum)
 {
     if (buttonNum == 0)
-	{
+    {
     }
 }
 
 void AbstractContainerScreen::keyPressed(wchar_t eventCharacter, int eventKey)
 {
     if (eventKey == Keyboard::KEY_ESCAPE || eventKey == minecraft->options->keyBuild->key)
-	{
+    {
         minecraft->player->closeContainer();
     }
 }
 
 void AbstractContainerScreen::removed()
 {
-    if (minecraft->player == NULL) return;
+    if (minecraft->player == NULL)
+    {
+        return;
+    }
 }
 
 void AbstractContainerScreen::slotsChanged(shared_ptr<Container> container)
@@ -219,12 +222,15 @@ void AbstractContainerScreen::slotsChanged(shared_ptr<Container> container)
 
 bool AbstractContainerScreen::isPauseScreen()
 {
-	return false;
+    return false;
 }
 
 void AbstractContainerScreen::tick()
 {
     Screen::tick();
-    if (!minecraft->player->isAlive() || minecraft->player->removed) minecraft->player->closeContainer();
-
+    if (!minecraft->player->isAlive() || minecraft->player->removed)
+    {
+        minecraft->player->closeContainer();
+    }
 }
+

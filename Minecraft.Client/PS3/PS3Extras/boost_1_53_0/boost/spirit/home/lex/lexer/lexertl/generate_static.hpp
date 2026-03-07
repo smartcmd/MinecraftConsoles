@@ -910,8 +910,8 @@ namespace boost { namespace spirit { namespace lex { namespace lexertl
         os_ << "#if !defined(BOOST_SPIRIT_LEXER_NEXT_TOKEN_" << guard << ")\n";
         os_ << "#define BOOST_SPIRIT_LEXER_NEXT_TOKEN_" << guard << "\n\n";
 
-        os_ << "#include <boost/detail/iterator.hpp>\n";
-        os_ << "#include <boost/spirit/home/support/detail/lexer/char_traits.hpp>\n\n";
+        os_ << "#include <boost/detail/iterator.hpp>/n";
+        os_ << "#include <boost/spirit/home/support/detail/lexer/char_traits.hpp>/n/n";
 
         generate_delimiter(os_);
         os_ << "// the generated table of state names and the tokenizer have to be\n"

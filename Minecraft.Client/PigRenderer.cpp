@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "PigRenderer.h"
-#include "..\Minecraft.World\net.minecraft.world.entity.animal.h"
+#include "../Minecraft.World/net.minecraft.world.entity.animal.h"
 
 ResourceLocation PigRenderer::PIG_LOCATION = ResourceLocation(TN_MOB_PIG);
 ResourceLocation PigRenderer::SADDLE_LOCATION = ResourceLocation(TN_MOB_SADDLE);

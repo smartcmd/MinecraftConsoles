@@ -2,7 +2,7 @@
 
 #include <assert.h>
 #include "XUI_DebugTips.h"
-#include "..\..\..\Minecraft.World\StringHelpers.h"
+#include "../../../Minecraft.World/StringHelpers.h"
 
 //----------------------------------------------------------------------------------
 // Performs initialization tasks - retrieves controls.

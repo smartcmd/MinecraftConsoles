@@ -1,6 +1,6 @@
 #pragma once
 
-#include "..\Minecraft.World\DefaultDispenseItemBehavior.h"
+#include "../Minecraft.World/DefaultDispenseItemBehavior.h"
 
 class Projectile;
 

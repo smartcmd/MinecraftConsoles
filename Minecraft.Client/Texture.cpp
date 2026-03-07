@@ -1,11 +1,11 @@
 #include "stdafx.h"
-#include "..\Minecraft.World\ByteBuffer.h"
+#include "../Minecraft.World/ByteBuffer.h"
 #include "Rect2i.h"
 #include "TextureManager.h"
 #include "Texture.h"
 
 #ifdef __PS3__
-#include "PS3\SPU_Tasks\Texture_blit\Texture_blit.h"
+#include "PS3/SPU_Tasks/Texture_blit/Texture_blit.h"
 #include "C4JSpursJob.h"
 static const int sc_maxTextureBlits = 256;
 static Texture_blit_DataIn g_textureBlitDataIn[sc_maxTextureBlits] __attribute__((__aligned__(16)));

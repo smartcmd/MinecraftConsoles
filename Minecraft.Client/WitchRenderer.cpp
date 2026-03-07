@@ -3,7 +3,7 @@
 #include "WitchRenderer.h"
 #include "WitchModel.h"
 #include "ModelPart.h"
-#include "..\Minecraft.World\net.minecraft.world.item.h"
+#include "../Minecraft.World/net.minecraft.world.item.h"
 
 ResourceLocation WitchRenderer::WITCH_LOCATION = ResourceLocation(TN_MOB_WITCH);
 

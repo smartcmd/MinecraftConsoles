@@ -44,7 +44,7 @@
 #include "FlowerPotTile.h"
 #include "FurnaceTile.h"
 #include "GlassTile.h"
-#include "Glowstonetile.h"
+#include "GlowstoneTile.h"
 #include "GrassTile.h"
 #include "GravelTile.h"
 #include "HalfSlabTile.h"

@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include <assert.h>
-#include "..\XUI\XUI_SaveMessage.h"
+#include "../XUI/XUI_SaveMessage.h"
 
 //----------------------------------------------------------------------------------
 // Performs initialization tasks - retrieves controls.

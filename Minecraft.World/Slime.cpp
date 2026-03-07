@@ -13,7 +13,7 @@
 #include "net.minecraft.world.damagesource.h"
 #include "com.mojang.nbt.h"
 #include "Slime.h"
-#include "..\Minecraft.Client\Textures.h"
+#include "../Minecraft.Client/Textures.h"
 #include "SoundTypes.h"
 
 

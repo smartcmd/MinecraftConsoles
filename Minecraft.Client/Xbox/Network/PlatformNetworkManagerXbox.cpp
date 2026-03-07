@@ -1,9 +1,9 @@
 #include "stdafx.h"
-#include "..\..\..\Minecraft.World\Socket.h"
-#include "..\..\..\Minecraft.World\StringHelpers.h"
+#include "../../../Minecraft.World/Socket.h"
+#include "../../../Minecraft.World/StringHelpers.h"
 #include "PlatformNetworkManagerXbox.h"
 #include "NetworkPlayerXbox.h"
-#include "..\..\Common\Network\GameNetworkManager.h"
+#include "../../Common/Network/GameNetworkManager.h"
 
 CPlatformNetworkManagerXbox *g_pPlatformNetworkManager;
 

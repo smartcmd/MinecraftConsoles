@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "QuadrupedModel.h"
-#include "..\Minecraft.World\Mth.h"
+#include "../Minecraft.World/Mth.h"
 #include "ModelPart.h"
 
 QuadrupedModel::QuadrupedModel(int legSize, float g) : Model()

@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "SilverfishModel.h"
 #include "Cube.h"
-#include "..\Minecraft.World\Mth.h"
+#include "../Minecraft.World/Mth.h"
 #include "ModelPart.h"
 
 const int SilverfishModel::BODY_SIZES[BODY_COUNT][3] = {

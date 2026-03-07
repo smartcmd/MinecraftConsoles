@@ -1,7 +1,7 @@
 #pragma once 
 
 
-#include "Common\Network\Sony\sceRemoteStorage\header\sceRemoteStorage.h"
+#include "Common/Network/Sony/sceRemoteStorage/header/sceRemoteStorage.h"
 
 class SonyRemoteStorage_PS3 : public SonyRemoteStorage
 {

@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "InventoryScreen.h"
-#include "MultiplayerLocalPlayer.h"
+#include "MultiPlayerLocalPlayer.h"
 #include "Font.h"
 #include "EntityRenderDispatcher.h"
 #include "Lighting.h"
@@ -8,7 +8,7 @@
 #include "Button.h"
 #include "AchievementScreen.h"
 #include "StatsScreen.h"
-#include "..\Minecraft.World\net.minecraft.stats.h"
+#include "../Minecraft.World/net.minecraft.stats.h"
 
 InventoryScreen::InventoryScreen(shared_ptr<Player> player) : AbstractContainerScreen(player->inventoryMenu)
 {

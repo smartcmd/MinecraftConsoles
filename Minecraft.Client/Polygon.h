@@ -1,7 +1,7 @@
 #pragma once
 #include "Vertex.h"
 #include "Tesselator.h"
-#include "..\Minecraft.World\ArrayWithLength.h"
+#include "../Minecraft.World/ArrayWithLength.h"
 
 class _Polygon
 {

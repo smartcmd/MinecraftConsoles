@@ -6,7 +6,7 @@
 #include "net.minecraft.world.h"
 #include "SoundTypes.h"
 #include "FireChargeItem.h"
-#include "tile.h"
+#include "Tile.h"
 
 FireChargeItem::FireChargeItem(int id) : Item(id)
 {

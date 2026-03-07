@@ -4,19 +4,19 @@
 
 #include "base64.h"
 
-#include "..\Orbis_App.h"
-#include "..\..\Common\Consoles_App.h"
+#include "../Orbis_App.h"
+#include "../../Common/Consoles_App.h"
 
-#include "Common\Network\Sony\SQRNetworkManager.h"
+#include "Common/Network/Sony/SQRNetworkManager.h"
 
-#include "..\..\..\Minecraft.World\StringHelpers.h"
+#include "../../../Minecraft.World/StringHelpers.h"
 
 #include <cstdlib>
 
 #include <np.h>
 //#include <sys/ppu_thread.h>
 
-#include "Orbis\OrbisExtras\ShutdownManager.h"
+#include "Orbis/OrbisExtras/ShutdownManager.h"
 
 
 LeaderboardManager *LeaderboardManager::m_instance = new OrbisLeaderboardManager(); //Singleton instance of the LeaderboardManager

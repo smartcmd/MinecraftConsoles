@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "SpiderModel.h"
-#include "..\Minecraft.World\Mth.h"
+#include "../Minecraft.World/Mth.h"
 #include "ModelPart.h"
 
 SpiderModel::SpiderModel() : Model()

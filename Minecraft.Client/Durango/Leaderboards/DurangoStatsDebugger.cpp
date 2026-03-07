@@ -1,15 +1,15 @@
 #include "stdafx.h"
 
-#include "..\Minecraft.World\Tile.h"
-#include "..\Minecraft.World\Item.h"
+#include "../Minecraft.World/Tile.h"
+#include "../Minecraft.World/Item.h"
 
-#include "..\Minecraft.World\DurangoStats.h"
+#include "../Minecraft.World/DurangoStats.h"
 
-#include "..\Minecraft.World\EntityIO.h"
+#include "../Minecraft.World/EntityIO.h"
 
-#include "..\Minecraft.World\StringHelpers.h"
+#include "../Minecraft.World/StringHelpers.h"
 
-#include "Common\Console_Awards_enum.h"
+#include "Common/Console_Awards_enum.h"
 
 #include "DurangoStatsDebugger.h"
 

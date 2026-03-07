@@ -1,6 +1,6 @@
 #include "stdafx.h"
-#include "..\Minecraft.Client\MinecraftServer.h"
-#include "..\Minecraft.Client\ServerLevel.h"
+#include "../Minecraft.Client/MinecraftServer.h"
+#include "../Minecraft.Client/ServerLevel.h"
 #include "net.minecraft.commands.h"
 #include "net.minecraft.world.level.h"
 #include "net.minecraft.world.level.storage.h"

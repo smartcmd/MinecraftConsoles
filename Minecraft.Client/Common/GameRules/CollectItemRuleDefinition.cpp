@@ -1,10 +1,10 @@
 #include "stdafx.h"
-#include "..\..\WstringLookup.h"
-#include "..\..\..\Minecraft.World\StringHelpers.h"
+#include "../../WstringLookup.h"
+#include "../../../Minecraft.World/StringHelpers.h"
 #include "CollectItemRuleDefinition.h"
-#include "..\..\..\Minecraft.World\net.minecraft.world.item.h"
-#include "..\..\..\Minecraft.World\Connection.h"
-#include "..\..\..\Minecraft.World\net.minecraft.network.packet.h"
+#include "../../../Minecraft.World/net.minecraft.world.item.h"
+#include "../../../Minecraft.World/Connection.h"
+#include "../../../Minecraft.World/net.minecraft.network.packet.h"
 
 CollectItemRuleDefinition::CollectItemRuleDefinition()
 {

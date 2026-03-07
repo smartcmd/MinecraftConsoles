@@ -3,8 +3,8 @@
 #include "UIComponent_Panorama.h"
 #include "Minecraft.h"
 #include "MultiPlayerLevel.h"
-#include "..\..\..\Minecraft.World\net.minecraft.world.level.dimension.h"
-#include "..\..\..\Minecraft.World\net.minecraft.world.level.storage.h"
+#include "../../../Minecraft.World/net.minecraft.world.level.dimension.h"
+#include "../../../Minecraft.World/net.minecraft.world.level.storage.h"
 
 UIComponent_Panorama::UIComponent_Panorama(int iPad, void *initData, UILayer *parentLayer) : UIScene(iPad, parentLayer)
 {

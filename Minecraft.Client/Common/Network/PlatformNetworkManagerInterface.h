@@ -2,7 +2,7 @@
 using namespace std;
 #include <vector>
 #include <qnet.h>
-#include "..\..\..\Minecraft.World\C4JThread.h"
+#include "../../../Minecraft.World/C4JThread.h"
 #include "NetworkPlayerInterface.h"
 #include "SessionInfo.h"
 

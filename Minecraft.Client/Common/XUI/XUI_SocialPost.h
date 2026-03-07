@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../media\xuiscene_socialpost.h"
+#include "../media/xuiscene_socialpost.h"
 #include "XUI_Ctrl_4JEdit.h"
 #include "XUI_CustomMessages.h"
 

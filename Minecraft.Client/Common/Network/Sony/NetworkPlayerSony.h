@@ -1,6 +1,6 @@
 #pragma once
 
-#include "..\..\Common\Network\NetworkPlayerInterface.h"
+#include "../../Common/Network/NetworkPlayerInterface.h"
 #include "SQRNetworkPlayer.h"
 
 // This is an implementation of the INetworkPlayer interface, for Sony platforms. It effectively wraps the SQRNetworkPlayer class in a non-platform-specific way.

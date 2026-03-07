@@ -2,7 +2,7 @@
 #include "ControlsScreen.h"
 #include "Options.h"
 #include "SmallButton.h"
-#include "..\Minecraft.World\net.minecraft.locale.h"
+#include "../Minecraft.World/net.minecraft.locale.h"
 
 ControlsScreen::ControlsScreen(Screen *lastScreen, Options *options)
 {

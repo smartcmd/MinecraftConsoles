@@ -4,8 +4,8 @@
 #include "UI.h"
 #include "UIScene_DebugCreateSchematic.h"
 #include "Minecraft.h"
-#include "..\..\..\Minecraft.World\StringHelpers.h"
-#include "..\..\..\Minecraft.World\net.minecraft.world.level.h"
+#include "../../../Minecraft.World/StringHelpers.h"
+#include "../../../Minecraft.World/net.minecraft.world.level.h"
 
 UIScene_DebugCreateSchematic::UIScene_DebugCreateSchematic(int iPad, void *initData, UILayer *parentLayer) : UIScene(iPad, parentLayer)
 {

@@ -12,9 +12,9 @@
 #include "../ps4__np_conf.h"
 #include "Orbis_NPToolkit.h"
 #include "SonyVoiceChat_Orbis.h"
-#include "Common\Network\Sony\SonyHttp.h"
-#include "..\..\..\Minecraft.World\C4JThread.h"
-// #include "..\PS3Extras\PS3Strings.h"
+#include "Common/Network/Sony/SonyHttp.h"
+#include "../../../Minecraft.World/C4JThread.h"
+// #include "../PS3Extras/PS3Strings.h"
 
 
 int (* SQRNetworkManager_Orbis::s_SignInCompleteCallbackFn)(void *pParam, bool bContinue, int pad) = NULL;

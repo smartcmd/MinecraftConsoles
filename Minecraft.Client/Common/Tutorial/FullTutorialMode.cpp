@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "..\..\Minecraft.h"
+#include "../../Minecraft.h"
 #include "FullTutorial.h"
 #include "FullTutorialMode.h"
 

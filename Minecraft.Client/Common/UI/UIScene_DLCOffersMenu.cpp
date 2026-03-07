@@ -1,13 +1,13 @@
 #include "stdafx.h"
 #include "UI.h"
 #include "UIScene_DLCOffersMenu.h"
-#include "..\..\..\Minecraft.World\StringHelpers.h"
+#include "../../../Minecraft.World/StringHelpers.h"
 #if defined(__PS3__) || defined(__ORBIS__) || defined (__PSVITA__)
-#include "Common\Network\Sony\SonyHttp.h"
+#include "Common/Network/Sony/SonyHttp.h"
 #endif
 
 #ifdef __PSVITA__
-#include "PSVita\Network\SonyCommerce_Vita.h"
+#include "PSVita/Network/SonyCommerce_Vita.h"
 #endif
 
 #define PLAYER_ONLINE_TIMER_ID 0

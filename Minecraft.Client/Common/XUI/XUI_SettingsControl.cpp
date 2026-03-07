@@ -2,7 +2,7 @@
 //
 
 #include "stdafx.h"
-#include "..\XUI\XUI_SettingsControl.h"
+#include "../XUI/XUI_SettingsControl.h"
 
 //----------------------------------------------------------------------------------
 // Performs initialization tasks - retrieves controls.
