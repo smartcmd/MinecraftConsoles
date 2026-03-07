@@ -1480,13 +1480,31 @@ void Minecraft::run_middle()
 								localplayers[i]->ullButtonsPressed|=1LL<<MINECRAFT_ACTION_USE;
 
 							if(g_KBMInput.IsKeyPressed(KeyboardMouseInput::KEY_INVENTORY))
-								localplayers[i]->ullButtonsPressed|=1LL<<MINECRAFT_ACTION_INVENTORY;
+							{
+								if(ui.IsSceneInStack(i, eUIScene_InventoryMenu))
+								{
+									ui.CloseUIScenes(i);
+								}
+								else
+								{
+									localplayers[i]->ullButtonsPressed|=1LL<<MINECRAFT_ACTION_INVENTORY;
+								}
+							}
 
 							if(g_KBMInput.IsKeyPressed(KeyboardMouseInput::KEY_DROP))
 								localplayers[i]->ullButtonsPressed|=1LL<<MINECRAFT_ACTION_DROP;
 
 							if(g_KBMInput.IsKeyPressed(KeyboardMouseInput::KEY_CRAFTING) || g_KBMInput.IsKeyPressed(KeyboardMouseInput::KEY_CRAFTING_ALT))
+							{
+							if(ui.IsSceneInStack(i, eUIScene_Crafting2x2Menu) || ui.IsSceneInStack(i, eUIScene_Crafting3x3Menu) || ui.IsSceneInStack(i, eUIScene_CreativeMenu))
+							{
+								ui.CloseUIScenes(i);
+							}
+							else
+							{
 								localplayers[i]->ullButtonsPressed|=1LL<<MINECRAFT_ACTION_CRAFTING;
+							}
+						}
 
 							for (int slot = 0; slot < 9; slot++)
 							{

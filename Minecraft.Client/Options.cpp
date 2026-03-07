@@ -238,6 +238,10 @@ void Options::set(const Options::Option *item, float fVal)
 	{
 		gamma = fVal;
 	}
+	if (item == Option::RENDER_DISTANCE)
+	{
+		viewDistance = fVal;
+	}
 }
 
 void Options::toggle(const Options::Option *option, int dir)
@@ -292,6 +296,7 @@ float Options::getProgressValue(const Options::Option *item)
     if (item == Option::MUSIC) return music;
     if (item == Option::SOUND) return sound;
     if (item == Option::SENSITIVITY) return sensitivity;
+	if (item == Option::RENDER_DISTANCE) return viewDistance;
     return 0;
 }
 

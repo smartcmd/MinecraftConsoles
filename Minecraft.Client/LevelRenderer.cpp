@@ -61,6 +61,7 @@
 #include "..\Minecraft.World\SoundTypes.h"
 #include "FrustumCuller.h"
 #include "..\Minecraft.World\BasicTypeContainers.h"
+#include "Common/UI/UIScene_SettingsGraphicsMenu.h"	
 
 //#define DISABLE_SPU_CODE
 
@@ -426,8 +427,11 @@ void LevelRenderer::allChanged(int playerIndex)
 	Tile::leaves->setFancy(mc->options->fancyGraphics);
 	lastViewDistance = mc->options->viewDistance;
 
+	int realviewDistance = UIScene_SettingsGraphicsMenu::LevelToDistance(3 - mc->options->viewDistance) + 2;
+	int realrenderArea = (realviewDistance * realviewDistance * 4);
+
 	// Calculate size of area we can render based on number of players we need to render for
-	int dist = (int)sqrtf( (float)PLAYER_RENDER_AREA / (float)activePlayers() );
+	int dist = (int)sqrtf( (float)realrenderArea / (float)activePlayers() );
 
 	// AP - poor little Vita just can't cope with such a big area
 #ifdef __PSVITA__
