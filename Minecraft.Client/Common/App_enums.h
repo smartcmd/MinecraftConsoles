@@ -178,6 +178,8 @@ enum eGameSetting
 	// PSVita
 	eGameSetting_PSVita_NetworkModeAdhoc,
 
+	// Windows64
+	eGameSetting_JavaFlightControls,
 
 };
 
