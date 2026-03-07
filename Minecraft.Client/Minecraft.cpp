@@ -2352,10 +2352,6 @@ void Minecraft::tick(bool bFirst, bool bUpdateTextures)
 #ifdef _WINDOWS64
 		if (!g_KBMInput.IsMouseGrabbed() && g_KBMInput.IsWindowFocused())
 		{
-            g_KBMInput.SetMouseGrabbed(false);
-		}
-
-		if (screen == NULL && !g_KBMInput.IsMouseGrabbed() && g_KBMInput.IsWindowFocused()) {
             g_KBMInput.SetMouseGrabbed(true);
 		}
 #endif
