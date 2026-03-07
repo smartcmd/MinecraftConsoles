@@ -817,8 +817,14 @@ void CPlatformNetworkManagerStub::SearchForGames()
 				info->data.isReadyToJoin = true;
 				info->data.isJoinable = true;
 				strncpy_s(info->data.hostIP, sizeof(info->data.hostIP), ip.c_str(), _TRUNCATE);
-				info->data.hostPort = stoi(port);
-				info->sessionId = (SessionID)(static_cast<uint64_t>(inet_addr(ip.c_str())) | (static_cast<uint64_t>(stoi(port)) << 32));
+
+				int portNum = stoi(port);
+				info->data.hostPort = portNum;
+
+				//Has IP so IPv4 and 6 both are a valid sess id
+				uint64_t ipHash = (uint64_t)std::hash<std::string>{}(ip);
+				info->sessionId = (SessionID)(ipHash ^ ((uint64_t)portNum << 32));
+
 				friendsSessions[0].push_back(info);
 			}
 		}
@@ -826,6 +832,80 @@ void CPlatformNetworkManagerStub::SearchForGames()
 		std::fclose(file);
 	}
 
+	file = std::fopen("servers.dat", "rb");
+	if (file) {
+		fseek(file, 0, SEEK_END);
+		long fileSize = ftell(file);
+		fseek(file, 0, SEEK_SET);
+
+		byte* buf = new byte[fileSize];
+		fread(buf, 1, fileSize, file);
+		fclose(file);
+
+		byteArray data;
+		data.data = buf;
+		data.length = fileSize;
+
+		ByteArrayInputStream bais(data);
+		DataInputStream dis(&bais);
+
+		CompoundTag* root = NbtIo::read((DataInput*)&dis);
+
+		if (root) {
+			ListTag<Tag>* servers = root->getList(L"servers");
+
+			for (int i = 0; i < servers->size(); i++) {
+				CompoundTag* server = (CompoundTag*)servers->get(i);
+				wstring name = server->getString(L"name");
+				wstring ipPort = server->getString(L"ip");
+				string ipPortA(ipPort.begin(), ipPort.end());
+				string ip = ipPortA;
+				int    port = 25565;
+
+				if (!ipPortA.empty() && ipPortA[0] == '[') {
+					//IPv6 [address]:port
+					size_t close = ipPortA.find(']');
+					if (close != string::npos) {
+						ip = ipPortA.substr(1, close - 1);
+						if (close + 1 < ipPortA.size() && ipPortA[close + 1] == ':')
+							port = stoi(ipPortA.substr(close + 2));
+					}
+				}
+				else if (ipPortA.find(':') != ipPortA.rfind(':')) {
+					// IPv6
+					ip = ipPortA;
+				}
+				else {
+					// IPv4 / hostname
+					size_t colon = ipPortA.rfind(':');
+					if (colon != string::npos) {
+						ip = ipPortA.substr(0, colon);
+						port = stoi(ipPortA.substr(colon + 1));
+					}
+				}
+
+				FriendSessionInfo* info = new FriendSessionInfo();
+
+				size_t nameLen = name.size();
+				info->displayLabel = new wchar_t[nameLen + 1];
+				wcsncpy_s(info->displayLabel, nameLen + 1, name.c_str(), _TRUNCATE);
+				info->displayLabelLength = (unsigned char)nameLen;
+				info->displayLabelViewableStartIndex = 0;
+				info->data.isReadyToJoin = true;
+				info->data.isJoinable = true;
+				strncpy_s(info->data.hostIP, sizeof(info->data.hostIP), ip.c_str(), _TRUNCATE);
+				info->data.hostPort = port;
+
+				info->sessionId = i; //I think this should be fine
+				friendsSessions[0].push_back(info);
+			}
+
+			delete root;
+		}
+
+		bais.reset();
+		delete[] buf;
+	}
 	m_searchResultsCount[0] = (int)friendsSessions[0].size();
 
 	if (m_SessionsUpdatedCallback != NULL)

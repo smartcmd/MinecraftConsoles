@@ -65,7 +65,8 @@ class WinsockNetLayer
 public:
 	static bool Initialize();
 	static void Shutdown();
-
+	
+	static bool IsNumericAddress(const char* addr);
 	static bool HostGame(int port, const char* bindIp = NULL);
 	static bool JoinGame(const char* ip, int port);
 
