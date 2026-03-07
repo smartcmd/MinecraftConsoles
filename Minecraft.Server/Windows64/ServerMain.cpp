@@ -83,9 +83,10 @@ static BOOL WINAPI ConsoleCtrlHandlerProc(DWORD ctrlType)
 }
 
 /**
- * サーバー停止通知が到達するまで待機する終了用スレッド関数
+ * **Wait For Server Stopped Signal**
  *
- * シャットダウン時にネットワーク層の停止完了を同期するために使う
+ * Thread entry used during shutdown to wait until the network layer reports server stop completion
+ * 停止通知待機用の終了スレッド処理
  */
 static int WaitForServerStoppedThreadProc(void *)
 {
@@ -258,10 +259,11 @@ static void ApplyServerPropertiesToDedicatedConfig(const ServerPropertiesConfig 
 }
 
 /**
- * 非同期処理進行に必須なコアサブシステムを1フレーム分進める
+ * **Tick Core Async Subsystems**
  *
- * ストレージ/プロフィール/ネットワークの進行停止を防ぐため、
- * 待機ループ中も継続的に呼び出す
+ * Advances core subsystems for one frame to keep async processing alive
+ * Call continuously even inside wait loops to avoid stalling storage/profile/network work
+ * 非同期進行維持のためのティック処理
  */
 static void TickCoreSystems()
 {
@@ -271,7 +273,10 @@ static void TickCoreSystems()
 }
 
 /**
- * キュー済みの XUI / サーバーアクションを1回処理する
+ * **Handle Queued XUI Server Action Once**
+ *
+ * Processes queued XUI/server action once
+ * XUIアクションの単発処理
  */
 static void HandleXuiActions()
 {
@@ -302,7 +307,7 @@ int main(int argc, char **argv)
 	SetConsoleCtrlHandler(ConsoleCtrlHandlerProc, TRUE);
 	SetExeWorkingDirectory();
 
-	// server.properties の値をベース設定として読み込み、CLI で必要に応じて上書きする
+	// Load base settings from server.properties, then override with CLI values when provided
 	ServerPropertiesConfig serverProperties = LoadServerPropertiesConfig();
 	ApplyServerPropertiesToDedicatedConfig(serverProperties, &config);
 
@@ -445,12 +450,12 @@ int main(int argc, char **argv)
 	app.SetGameHostOption(eGameHostOption_DoDaylightCycle, serverProperties.doDaylightCycle ? 1 : 0);
 
 	StorageManager.SetSaveDisabled(serverProperties.disableSaving);
-	// server.properties から world 名と固定 save-id を取得し、
-	// WorldManager にロード/新規作成判定を委譲する
+	// Read world name and fixed save-id from server.properties
+	// Delegate load-vs-create decision to WorldManager
 	std::wstring targetWorldName = serverProperties.worldName;
 	if (targetWorldName.empty())
 	{
-		targetWorldName = L"world"; // デフォ名
+		targetWorldName = L"world"; // Default world name
 	}
 	WorldBootstrapResult worldBootstrap = BootstrapWorldForServer(serverProperties, kServerActionPad, &TickCoreSystems);
 	if (worldBootstrap.status == eWorldBootstrap_Loaded)
@@ -458,8 +463,8 @@ int main(int argc, char **argv)
 		const std::string &loadedSaveFilename = worldBootstrap.resolvedSaveId;
 		if (!loadedSaveFilename.empty() && _stricmp(loadedSaveFilename.c_str(), serverProperties.worldSaveId.c_str()) != 0)
 		{
-			// 実際に読み込まれた save-id を設定ファイルへ戻して、
-			// 次回起動時の探索キーを揃える
+			// Persist the actually loaded save-id back to config
+			// Keep lookup keys aligned for next startup
 			LogWorldIO("updating level-id to loaded save filename");
 			serverProperties.worldSaveId = loadedSaveFilename;
 			if (!SaveServerPropertiesConfig(serverProperties))
@@ -516,8 +521,8 @@ int main(int argc, char **argv)
 	LogInfof("startup", "Dedicated server listening on %s:%d", g_Win64MultiplayerIP, g_Win64MultiplayerPort);
 	if (worldBootstrap.status == eWorldBootstrap_CreatedNew && !g_shutdownRequested && !app.m_bShutdown)
 	{
-		// Windows64 では新規ワールド直後の saveToDisc を抑止しているため
-		// Dedicated Server はここで初回保存を明示的に実行する
+		// Windows64 suppresses saveToDisc right after new world creation
+		// Dedicated Server explicitly runs the initial save here
 		LogWorldIO("requesting initial save for newly created world");
 		WaitForWorldActionIdle(kServerActionPad, 5000, &TickCoreSystems, &HandleXuiActions);
 		app.SetXuiServerAction(kServerActionPad, eXuiServerAction_AutoSaveGame);
@@ -582,7 +587,7 @@ int main(int argc, char **argv)
 	}
 
 	LogWorldIO("requesting save before shutdown");
-	// 終了時保存の前に Idle へ戻して、既存の action と競合しないようにする
+	// Return to Idle before shutdown save to avoid action conflicts
 	WaitForWorldActionIdle(kServerActionPad, 5000, &TickCoreSystems, &HandleXuiActions);
 	app.SetXuiServerAction(kServerActionPad, eXuiServerAction_SaveGame);
 	if (!WaitForWorldActionIdle(kServerActionPad, 15000, &TickCoreSystems, &HandleXuiActions))

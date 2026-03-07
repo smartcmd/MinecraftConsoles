@@ -51,12 +51,14 @@ struct SaveDataLoadContext
 };
 
 /**
- * `StorageManager` に保存先ID（`level-id`）を反映する
+ * **Apply Save ID To StorageManager**
  *
- * - 起動直後や保存直前に毎回同じIDを設定し、保存先のブレを防ぐ
- * - 空文字は無効値として無視する
+ * Applies the configured save destination ID (`level-id`) to `StorageManager`
+ * - Re-applies the same ID at startup and before save to avoid destination drift
+ * - Ignores empty values as invalid
+ * 保存先IDの適用処理
  *
- * @param saveFilename 正規化済みの保存先ID
+ * @param saveFilename Normalized save destination ID
  */
 static void SetStorageSaveUniqueFilename(const std::string &saveFilename)
 {
@@ -94,9 +96,10 @@ static void LogEnumeratedSaveInfo(int index, const SAVE_INFO &saveInfo)
 }
 
 /**
- * セーブ一覧取得 (callback)
+ * **Save List Callback**
  *
- * 非同期結果を `SaveInfoQueryContext` に取り込み、待機側へ完了通知する
+ * Captures async save-list results into `SaveInfoQueryContext` and marks completion for the waiter
+ * セーブ一覧取得の完了通知
  */
 static int GetSavesInfoCallbackProc(LPVOID lpParam, SAVE_DETAILS *pSaveDetails, const bool bRes)
 {
@@ -111,9 +114,10 @@ static int GetSavesInfoCallbackProc(LPVOID lpParam, SAVE_DETAILS *pSaveDetails, 
 }
 
 /**
- * セーブデータロード (callback)
+ * **Save Data Load Callback**
  *
- * 破損判定などの結果を `SaveDataLoadContext` に反映する
+ * Writes load results such as corruption status into `SaveDataLoadContext`
+ * セーブ読み込み結果の反映
  */
 static int LoadSaveDataCallbackProc(LPVOID lpParam, const bool bIsCorrupt, const bool bIsOwner)
 {
@@ -128,13 +132,14 @@ static int LoadSaveDataCallbackProc(LPVOID lpParam, const bool bIsCorrupt, const
 }
 
 /**
- * セーブ一覧取得の完了を待機する
+ * **Wait For Save List Completion**
  *
- * - callback 完了通知を第一候補として待つ
- * - 実装差異により callback より先に `ReturnSavesInfo()` が埋まるケースもあるため、
- *   ポーリング経路でも救済する
+ * Waits until save-list retrieval completes
+ * - Prefers callback completion as the primary signal
+ * - Also falls back to polling because some environments populate `ReturnSavesInfo()` before callback
+ * セーブ一覧待機の補助処理
  *
- * @return 完了を検知できたら `true`
+ * @return `true` when completion is detected
  */
 static bool WaitForSaveInfoResult(SaveInfoQueryContext *context, DWORD timeoutMs, WorldManagerTickProc tickProc)
 {
@@ -148,8 +153,8 @@ static bool WaitForSaveInfoResult(SaveInfoQueryContext *context, DWORD timeoutMs
 
 		if (context->details == NULL)
 		{
-			// 実装/環境によっては callback より先に ReturnSavesInfo が埋まるため、
-			// callback 完了待ちだけに依存せずポーリングでも救済する
+			// Some implementations fill ReturnSavesInfo before the callback
+			// Keep polling as a fallback instead of relying only on callback completion
 			SAVE_DETAILS *details = StorageManager.ReturnSavesInfo();
 			if (details != NULL)
 			{
@@ -171,9 +176,12 @@ static bool WaitForSaveInfoResult(SaveInfoQueryContext *context, DWORD timeoutMs
 }
 
 /**
- * セーブ本体ロード完了 callback を待機する
+ * **Wait For Save Data Load Completion**
  *
- * @return callback 到達で `true`、タイムアウト時は `false`
+ * Waits for the save-data load callback to complete
+ * セーブ本体の読み込み待機
+ *
+ * @return `true` when callback is reached, `false` on timeout
  */
 static bool WaitForSaveLoadResult(SaveDataLoadContext *context, DWORD timeoutMs, WorldManagerTickProc tickProc)
 {
@@ -196,9 +204,10 @@ static bool WaitForSaveLoadResult(SaveDataLoadContext *context, DWORD timeoutMs,
 }
 
 /**
- * ワールド名ベースで `SAVE_INFO` が一致するか判定する
+ * **Match SAVE_INFO By World Name**
  *
- * タイトルと保存先ファイル名の両方を比較対象にする
+ * Compares both save title and save filename against the target world name
+ * ワールド名一致判定
  */
 static bool SaveInfoMatchesWorldName(const SAVE_INFO &saveInfo, const std::wstring &targetWorldName)
 {
@@ -223,7 +232,10 @@ static bool SaveInfoMatchesWorldName(const SAVE_INFO &saveInfo, const std::wstri
 }
 
 /**
- * 保存先ID（`UTF8SaveFilename`）で `SAVE_INFO` が一致するか判定する
+ * **Match SAVE_INFO By Save Filename**
+ *
+ * Checks whether `SAVE_INFO` matches by save destination ID (`UTF8SaveFilename`)
+ * 保存先ID一致判定
  */
 static bool SaveInfoMatchesSaveFilename(const SAVE_INFO &saveInfo, const std::string &targetSaveFilename)
 {
@@ -236,30 +248,34 @@ static bool SaveInfoMatchesSaveFilename(const SAVE_INFO &saveInfo, const std::st
 }
 
 /**
- * ワールド識別情報（`level-name` + `level-id`）をストレージ側へ適用する
+ * **Apply World Identity To Storage**
  *
- * - 表示名だけ/IDだけの片設定を避け、両方を常に明示する
- * - 環境差異で新規保存先が増殖する事象を回避するための防御策
+ * Applies world identity (`level-name` + `level-id`) to storage
+ * - Always sets both display name and ID to avoid partial configuration
+ * - Helps prevent unintended new save destinations across environment differences
+ * 保存先と表示名の同期処理
  */
 static void ApplyWorldStorageTarget(const std::wstring &worldName, const std::string &saveId)
 {
-	// タイトル(表示名)と保存先ID(実体フォルダ名)を明示的に両方設定する
-	// どちらか片方だけだと環境によって新規保存先が生成されることがある
+	// Set both title (display name) and save ID (actual folder name) explicitly
+	// Setting only one side can create unexpected new save targets in some environments
 	StorageManager.SetSaveTitle(worldName.c_str());
 	SetStorageSaveUniqueFilename(saveId);
 }
 
 /**
- * 対象ワールドに一致するセーブを探索し、見つかれば起動用バイナリを抽出する
+ * **Prepare World Save Data For Startup**
  *
- * 一致判定の優先順位:
- * 1. `level-id`（`UTF8SaveFilename`）の完全一致
- * 2. フォールバックとして `level-name` とタイトル/ファイル名一致
+ * Searches for a save matching the target world and extracts startup payload when found
+ * Match priority:
+ * 1. Exact match by `level-id` (`UTF8SaveFilename`)
+ * 2. Fallback match by `level-name` against title or filename
+ * ワールド一致セーブの探索処理
  *
  * @return
- * - `eWorldSaveLoad_Loaded`: 既存セーブをロードできた
- * - `eWorldSaveLoad_NotFound`: 一致セーブなし
- * - `eWorldSaveLoad_Failed`: API失敗/破損/データ不正
+ * - `eWorldSaveLoad_Loaded`: Existing save loaded successfully
+ * - `eWorldSaveLoad_NotFound`: No matching save found
+ * - `eWorldSaveLoad_Failed`: API failure, corruption, or invalid data
  */
 static EWorldSaveLoadResult PrepareWorldSaveData(
 	const std::wstring &targetWorldName,
@@ -315,8 +331,8 @@ static EWorldSaveLoadResult PrepareWorldSaveData(
 	int matchedIndex = -1;
 	if (!targetSaveFilename.empty())
 	{
-		// 1) 保存先IDが指定されている場合は最優先で一致検索
-		//    これが最も安定して「同じワールド」を再利用できる(勝手に上書きで新規作成されることがある)
+		// 1) If save ID is provided, search by it first
+		//    This is the most stable way to reuse the same world target
 		for (int i = 0; i < infoContext.details->iSaveC; ++i)
 		{
 			LogEnumeratedSaveInfo(i, infoContext.details->SaveInfoA[i]);
@@ -338,8 +354,8 @@ static EWorldSaveLoadResult PrepareWorldSaveData(
 
 	for (int i = 0; i < infoContext.details->iSaveC; ++i)
 	{
-		// 2) 保存先IDで見つからない場合は互換フォールバックとして
-		//    タイトル/ファイル名と worldName の一致を試す
+		// 2) If no save matched by ID, try compatibility fallback
+		//    Match worldName against save title or save filename
 		if (matchedIndex >= 0)
 		{
 			break;
@@ -375,7 +391,7 @@ static EWorldSaveLoadResult PrepareWorldSaveData(
 	std::string resolvedSaveFilename;
 	if (matchedSaveInfo->UTF8SaveFilename[0] != 0)
 	{
-		// 実際に見つかった保存先IDを優先採用し、今後の保存も同じ先に固定する
+		// Prefer the save ID that was actually matched, then keep using it for future saves
 		resolvedSaveFilename = matchedSaveInfo->UTF8SaveFilename;
 		SetStorageSaveUniqueFilename(resolvedSaveFilename);
 	}
@@ -414,7 +430,7 @@ static EWorldSaveLoadResult PrepareWorldSaveData(
 	unsigned int saveSize = StorageManager.GetSaveSize();
 	if (saveSize == 0)
 	{
-		// 読み込み成功扱いでも実データが0byteなら安全側で失敗扱いにする
+		// Treat zero-byte payload as failure even when load API reports success
 		LogWorldIO("loaded save has zero size");
 		return eWorldSaveLoad_Failed;
 	}
@@ -434,11 +450,13 @@ static EWorldSaveLoadResult PrepareWorldSaveData(
 }
 
 /**
- * サーバー起動時のワールド状態を確定する
+ * **Bootstrap World State For Server Startup**
  *
- * - 既存セーブがあればロードして返す
- * - 見つからなければ新規ワールド文脈を準備して返す
- * - 失敗時は起動中断判断のため `Failed` を返す
+ * Determines final world startup state
+ * - Returns loaded save data when an existing save is found
+ * - Prepares a new world context when not found
+ * - Returns `Failed` when startup should be aborted
+ * サーバー起動時のワールド確定処理
  */
 WorldBootstrapResult BootstrapWorldForServer(
 	const ServerPropertiesConfig &config,
@@ -478,8 +496,8 @@ WorldBootstrapResult BootstrapWorldForServer(
 	}
 	else if (worldLoadResult == eWorldSaveLoad_NotFound)
 	{
-		// 一致セーブがない場合のみ新規コンテキストを作る
-		// この時点で saveId を固定しておくことで、次回起動時に同じ場所へ保存される
+		// Create a new context only when no matching save exists
+		// Fix saveId here so the next startup writes to the same location
 		result.status = eWorldBootstrap_CreatedNew;
 		result.resolvedSaveId = targetSaveFilename;
 		LogStartupStep("configured world not found; creating new world");
@@ -496,9 +514,10 @@ WorldBootstrapResult BootstrapWorldForServer(
 }
 
 /**
- * サーバー側 XUI アクションが `Idle` に戻るまで待機する
+ * **Wait Until Server XUI Action Is Idle**
  *
- * 保存アクション中も tick/handle を継続し、非同期処理の進行停止を防ぐ
+ * Keeps tick/handle running during save action so async processing does not stall
+ * XUIアクション待機中の進行維持処理
  */
 bool WaitForWorldActionIdle(
 	int actionPad,
@@ -509,8 +528,8 @@ bool WaitForWorldActionIdle(
 	DWORD start = GetTickCount();
 	while (app.GetXuiServerAction(actionPad) != eXuiServerAction_Idle && !MinecraftServer::serverHalted())
 	{
-		// 待機中もネットワーク/ストレージ進行を止めない
-		// ここを止めると save action 自体が進まずタイムアウトしやすい
+		// Keep network and storage progressing while waiting
+		// If this stops, save action itself may stall and time out
 		if (tickProc != NULL)
 		{
 			tickProc();

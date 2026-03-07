@@ -196,22 +196,24 @@ static std::string LogLevelToPropertyValue(EServerLogLevel level)
 }
 
 /**
- * 任意文字列を保存先IDとして安全な形式に正規化する
+ * **Normalize Save ID**
  *
- * 変換ルール:
- * - 英字は小文字化
- * - `[a-z0-9_.-]` のみ保持
- * - 空白/非対応文字は `_` に置換
- * - 空値は `world` に補正
- * - 最大長はストレージ制約に合わせて制限
+ * Normalizes an arbitrary string into a safe save destination ID
+ * Conversion rules:
+ * - Lowercase alphabetic characters
+ * - Keep only `[a-z0-9_.-]`
+ * - Replace spaces and unsupported characters with `_`
+ * - Fallback to `world` when empty
+ * - Enforce max length to match storage constraints
+ * 保存先IDの正規化処理
  */
 static std::string NormalizeSaveId(const std::string &source)
 {
 	std::string out;
 	out.reserve(source.length());
 
-	// Storage 側の保存先IDとして安全に扱える文字セットへ正規化する
-	// 不正文字は '_' に落とし、大小は吸収して衝突を減らす
+	// Normalize into a character set that is safe for storage save IDs
+	// Replace invalid characters with '_' and fold letter case to reduce collisions
 	for (size_t i = 0; i < source.length(); ++i)
 	{
 		unsigned char ch = (unsigned char)source[i];
@@ -241,13 +243,13 @@ static std::string NormalizeSaveId(const std::string &source)
 		out = "world";
 	}
 
-	// 先頭文字が扱いづらいケースを避けるため、必要に応じて接頭辞を付与する
+	// Add a prefix when needed to avoid awkward leading characters
 	if (!((out[0] >= 'a' && out[0] <= 'z') || (out[0] >= '0' && out[0] <= '9')))
 	{
 		out = std::string("w_") + out;
 	}
 
-	// 4J 側の filename バッファ制約に合わせて長さを制限する
+	// Clamp length to the 4J-side filename buffer constraint
 	if (out.length() > kMaxSaveIdLength)
 	{
 		out.resize(kMaxSaveIdLength);
@@ -271,11 +273,13 @@ static void ApplyDefaultServerProperties(std::unordered_map<std::string, std::st
 }
 
 /**
- * `server.properties` 形式のテキストをパースして key/value を抽出する
+ * **Parse server.properties Text**
  *
- * - `#` / `!` 始まりはコメントとして無視
- * - `=` または `:` を区切りとして解釈
- * - 不正行はスキップして継続
+ * Extracts key/value pairs from `server.properties` format text
+ * - Ignores lines starting with `#` or `!` as comments
+ * - Accepts `=` or `:` as separators
+ * - Skips invalid lines and continues
+ * server.propertiesのパース処理
  */
 static bool ReadServerPropertiesFile(const char *filePath, std::unordered_map<std::string, std::string> *properties, int *outParsedCount)
 {
@@ -351,9 +355,11 @@ static bool ReadServerPropertiesFile(const char *filePath, std::unordered_map<st
 }
 
 /**
- * key/value を `server.properties` として書き戻す
+ * **Write server.properties Text**
  *
- * 出力順を安定化するため、キーをソートして保存する
+ * Writes key/value data back as `server.properties`
+ * Sorts keys before writing to keep output order stable
+ * server.propertiesの書き戻し処理
  */
 static bool WriteServerPropertiesFile(const char *filePath, const std::unordered_map<std::string, std::string> &properties)
 {
@@ -574,12 +580,14 @@ static std::string ReadNormalizedLevelTypeProperty(
 }
 
 /**
- * 実効的なワールド設定を読み込み、欠損/不正を補正して返す
+ * **Load Effective Server Properties Config**
  *
- * - ファイルが無い場合はデフォルトで生成
- * - 必須キー欠損時は補完
- * - `level-id` を安全形式へ正規化
- * - 修正が発生した場合は自動で再保存
+ * Loads effective world settings, repairs missing or invalid values, and returns normalized config
+ * - Creates defaults when file is missing
+ * - Fills required keys when absent
+ * - Normalizes `level-id` to a safe format
+ * - Auto-saves when any fix is applied
+ * 実効設定の読み込みと補正処理
  */
 ServerPropertiesConfig LoadServerPropertiesConfig()
 {
@@ -620,7 +628,7 @@ ServerPropertiesConfig LoadServerPropertiesConfig()
 
 	for (std::unordered_map<std::string, std::string>::const_iterator it = loaded.begin(); it != loaded.end(); ++it)
 	{
-		// 既存値をデフォルトへ上書きマージして、未知キーも可能な限り維持する
+		// Merge loaded values over defaults and keep unknown keys whenever possible
 		merged[it->first] = it->second;
 	}
 
@@ -634,13 +642,13 @@ ServerPropertiesConfig LoadServerPropertiesConfig()
 	std::string worldSaveId = TrimAscii(merged["level-id"]);
 	if (worldSaveId.empty())
 	{
-		// level-id が未設定なら level-name から自動生成して保存先を固定する
+		// If level-id is missing, derive it from level-name to lock save destination
 		worldSaveId = NormalizeSaveId(worldName);
 		shouldWrite = true;
 	}
 	else
 	{
-		// 既存の level-id も正規化して、将来の不整合を防ぐ
+		// Normalize existing level-id as well to avoid future inconsistencies
 		std::string normalized = NormalizeSaveId(worldSaveId);
 		if (normalized != worldSaveId)
 		{
@@ -713,10 +721,12 @@ ServerPropertiesConfig LoadServerPropertiesConfig()
 }
 
 /**
- * ワールド識別情報を保存しつつ、他設定キーを可能な限り保持する
+ * **Save World Identity While Preserving Other Keys**
  *
- * - 既存ファイルを読み取り、未知キーも含めてマージ
- * - `level-name` / `level-id` のみ更新して書き戻す
+ * Saves world identity fields while preserving as many other settings as possible
+ * - Reads existing file and merges including unknown keys
+ * - Updates only `level-name` and `level-id` before writing back
+ * ワールド識別情報の保存処理
  */
 bool SaveServerPropertiesConfig(const ServerPropertiesConfig &config)
 {
@@ -729,7 +739,7 @@ bool SaveServerPropertiesConfig(const ServerPropertiesConfig &config)
 	{
 		for (std::unordered_map<std::string, std::string>::const_iterator it = loaded.begin(); it != loaded.end(); ++it)
 		{
-			// 呼び出し側が触っていないキーを落とさないように、既存内容を保持する
+			// Keep existing content so keys untouched by caller are not dropped
 			merged[it->first] = it->second;
 		}
 	}
@@ -737,7 +747,7 @@ bool SaveServerPropertiesConfig(const ServerPropertiesConfig &config)
 	std::string worldName = TrimAscii(WideToUtf8(config.worldName));
 	if (worldName.empty())
 	{
-		worldName = "world"; // デフォルト名
+		worldName = "world"; // Default world name
 	}
 
 	std::string worldSaveId = TrimAscii(config.worldSaveId);

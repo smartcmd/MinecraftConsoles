@@ -10,34 +10,40 @@ typedef struct _LoadSaveDataThreadParam LoadSaveDataThreadParam;
 
 namespace ServerRuntime
 {
-	/** 非同期ストレージ/ネットワーク待機中に回すティック関数 */
+	/** Tick callback used while waiting on async storage/network work */
 	typedef void (*WorldManagerTickProc)();
-	/** サーバーアクション待機中に任意で回すアクション処理関数 */
+	/** Optional action handler used while waiting for server actions */
 	typedef void (*WorldManagerHandleActionsProc)();
 
 	/**
-	 * ワールド起動準備（既存ロード/新規作成）の結果種別
+	 * **World Bootstrap Status**
+	 *
+	 * Result type for world startup preparation, either loading an existing world or creating a new one
+	 * ワールド起動準備の結果種別
 	 */
 	enum EWorldBootstrapStatus
 	{
-		/** 既存ワールドを発見し、ロードできた */
+		/** Found and loaded an existing world */
 		eWorldBootstrap_Loaded,
-		/** 一致するセーブが無く、新規ワールド文脈を作成した */
+		/** No matching save was found, created a new world context */
 		eWorldBootstrap_CreatedNew,
-		/** 起動準備に失敗し、サーバー起動を中断すべき状態 */
+		/** Bootstrap failed and server startup should be aborted */
 		eWorldBootstrap_Failed
 	};
 
 	/**
+	 * **World Bootstrap Result**
+	 *
+	 * Output payload returned by world startup preparation
 	 * ワールド起動準備の出力データ
 	 */
 	struct WorldBootstrapResult
 	{
-		/** 起動準備ステータス */
+		/** Bootstrap status */
 		EWorldBootstrapStatus status;
-		/** サーバー初期化用のセーブデータ（新規時は `NULL`） */
+		/** Save data used for server initialization, `NULL` when creating a new world */
 		LoadSaveDataThreadParam *saveData;
-		/** 実際に採用された保存先ID */
+		/** Save ID that was actually selected */
 		std::string resolvedSaveId;
 
 		WorldBootstrapResult()
@@ -48,16 +54,18 @@ namespace ServerRuntime
 	};
 
 	/**
-	 * サーバー起動用に、対象ワールドのロード/新規作成を確定する
+	 * **Bootstrap Target World For Server Startup**
 	 *
-	 * - `server.properties` の `level-name` / `level-id` を適用
-	 * - 既存セーブが見つかればロード
-	 * - 見つからない場合のみ新規ワールドとして起動文脈を作成
+	 * Resolves whether the target world should be loaded from an existing save or created as new
+	 * - Applies `level-name` and `level-id` from `server.properties`
+	 * - Loads when a matching save exists
+	 * - Creates a new world context only when no save matches
+	 * サーバー起動時のロードか新規作成かを確定する
 	 *
-	 * @param config 正規化済みの `server.properties`
-	 * @param actionPad ストレージ非同期APIで使うpadId
-	 * @param tickProc 非同期完了待ち中に回すティック関数
-	 * @return セーブデータ有無を含む起動準備結果
+	 * @param config Normalized `server.properties` values
+	 * @param actionPad padId used by async storage APIs
+	 * @param tickProc Tick callback run while waiting for async completion
+	 * @return Bootstrap result including whether save data was loaded
 	 */
 	WorldBootstrapResult BootstrapWorldForServer(
 		const ServerPropertiesConfig &config,
@@ -65,13 +73,16 @@ namespace ServerRuntime
 		WorldManagerTickProc tickProc);
 
 	/**
-	 * サーバーアクション状態が `Idle` へ戻るまで待機する
+	 * **Wait Until Server Action Returns To Idle**
 	 *
-	 * @param actionPad 監視対象のpadId
-	 * @param timeoutMs タイムアウト時間（ミリ秒）
-	 * @param tickProc 待機ループ中に回すティック関数
-	 * @param handleActionsProc 任意のアクション処理関数
-	 * @return タイムアウト前に `Idle` 到達で `true`
+	 * Waits until server action state reaches `Idle`
+	 * サーバーアクションの待機処理
+	 *
+	 * @param actionPad padId to monitor
+	 * @param timeoutMs Timeout in milliseconds
+	 * @param tickProc Tick callback run inside the wait loop
+	 * @param handleActionsProc Optional action handler callback
+	 * @return `true` when `Idle` is reached before timeout
 	 */
 	bool WaitForWorldActionIdle(
 		int actionPad,

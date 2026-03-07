@@ -13,11 +13,14 @@ namespace ServerRuntime
 	};
 
 	/**
-	 * 文字列をログレベルへ変換する（`debug`/`info`/`warn`/`error`）
+	 * **Parse Log Level String**
 	 *
-	 * @param value 変換元文字列
-	 * @param outLevel 変換結果の出力先
-	 * @return 変換成功時 `true`
+	 * Converts a string value into log level (`debug`/`info`/`warn`/`error`)
+	 * ログレベル文字列の変換処理
+	 *
+	 * @param value Source string
+	 * @param outLevel Output location for parsed level
+	 * @return `true` when conversion succeeds
 	 */
 	bool TryParseServerLogLevel(const char *value, EServerLogLevel *outLevel);
 
@@ -29,7 +32,7 @@ namespace ServerRuntime
 	void LogWarn(const char *category, const char *message);
 	void LogError(const char *category, const char *message);
 
-	/** 指定レベル・カテゴリでフォーマットログを出力する */
+	/** Emit formatted log output with the specified level and category */
 	void LogDebugf(const char *category, const char *format, ...);
 	void LogInfof(const char *category, const char *format, ...);
 	void LogWarnf(const char *category, const char *format, ...);
