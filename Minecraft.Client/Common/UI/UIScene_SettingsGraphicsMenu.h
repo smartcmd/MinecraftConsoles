@@ -1,6 +1,8 @@
 #pragma once
 
 #include "UIScene.h"
+#include "Common/UI/UIControl_CheckBox.h"
+#include "Common/UI/UIControl_Slider.h"
 
 class UIScene_SettingsGraphicsMenu : public UIScene
 {
@@ -47,6 +49,8 @@ public:
 	virtual void handleInput(int iPad, int key, bool repeat, bool pressed, bool released, bool &handled);
 
 	virtual void handleSliderMove(F64 sliderId, F64 currentValue);
+
+	static int LevelToDistance(int dist);
 
 	static int DistanceToLevel(int dist);
 };

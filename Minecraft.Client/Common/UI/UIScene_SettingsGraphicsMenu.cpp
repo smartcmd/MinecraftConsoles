@@ -30,14 +30,14 @@ namespace
 		if (sliderValue > FOV_SLIDER_MAX) sliderValue = FOV_SLIDER_MAX;
 		return FOV_MIN + ((sliderValue * (FOV_MAX - FOV_MIN)) / FOV_SLIDER_MAX);
 	}
+}
 
-	int LevelToDistance(int level)
-	{
-		static const int table[6] = {2,4,8,16,32,64};
-		if(level < 0) level = 0;
-		if(level > 5) level = 5;
-		return table[level];
-	}
+int UIScene_SettingsGraphicsMenu::LevelToDistance(int level)
+{
+	static const int table[6] = {2,4,8,16,32,64};
+	if(level < 0) level = 0;
+	if(level > 5) level = 5;
+	return table[level];
 }
 
 int UIScene_SettingsGraphicsMenu::DistanceToLevel(int dist)
@@ -47,7 +47,7 @@ int UIScene_SettingsGraphicsMenu::DistanceToLevel(int dist)
         if(table[i] == dist)
             return i;
     }
-    return 2;
+    return 3;
 }
 
 UIScene_SettingsGraphicsMenu::UIScene_SettingsGraphicsMenu(int iPad, void *initData, UILayer *parentLayer) : UIScene(iPad, parentLayer)

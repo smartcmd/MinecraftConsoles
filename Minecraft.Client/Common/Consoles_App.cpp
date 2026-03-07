@@ -2309,8 +2309,12 @@ unsigned char CMinecraftApp::GetGameSettings(int iPad,eGameSetting eVal)
 		return GameSettingsA[iPad]->ucSoundFXVolume;
 		break;
 	case eGameSetting_RenderDistance:
-		return (GameSettingsA[iPad]->uiBitmaskValues >> 16) & 0xFF;
+		{
+		int val = (GameSettingsA[iPad]->uiBitmaskValues >> 16) & 0xFF;
+		if(val == 0) return val = 16; //brain
+		return val;
 		break;
+		}
 	case eGameSetting_Gamma:
 		return GameSettingsA[iPad]->ucGamma;
 		break;
@@ -9571,61 +9575,6 @@ bool CMinecraftApp::IsLocalMultiplayerAvailable()
 void CMinecraftApp::getLocale(vector<wstring> &vecWstrLocales)
 {
 	vector<eMCLang> locales;
-
-#ifdef _WINDOWS64
-	unsigned char forcedLang = GetMinecraftLanguage(0);
-
-	if (forcedLang != MINECRAFT_LANGUAGE_DEFAULT)
-	{
-		switch (forcedLang)
-		{
-		case MINECRAFT_LANGUAGE_ENGLISH		:
-			locales.push_back(eMCLang_enUS);
-			break;
-
-		case MINECRAFT_LANGUAGE_JAPANESE	:
-			locales.push_back(eMCLang_jaJP);
-			break;
-
-		case MINECRAFT_LANGUAGE_GERMAN		:
-			locales.push_back(eMCLang_deDE);
-			break;
-
-		case MINECRAFT_LANGUAGE_FRENCH		:
-			locales.push_back(eMCLang_frFR);
-			break;
-
-		case MINECRAFT_LANGUAGE_SPANISH		:
-			locales.push_back(eMCLang_esES);
-			break;
-
-		case MINECRAFT_LANGUAGE_LATINAMERICANSPANISH	:
-			locales.push_back(eMCLang_laLAS);
-			locales.push_back(eMCLang_esMX);
-			break;
-
-		case MINECRAFT_LANGUAGE_ITALIAN		:
-			locales.push_back(eMCLang_itIT);
-			break;
-
-		case MINECRAFT_LANGUAGE_KOREAN		:
-			locales.push_back(eMCLang_koKR);
-			break;
-
-		case MINECRAFT_LANGUAGE_TCHINESE		:
-			locales.push_back(eMCLang_zhCHT);
-			break;
-
-		case MINECRAFT_LANGUAGE_PORTUGUESE		:
-			locales.push_back(eMCLang_ptPT);
-			break;
-
-		case MINECRAFT_LANGUAGE_BRAZILIAN		:
-			locales.push_back(eMCLang_ptBR);
-			break;
-		}
-	}
-#endif
 
 	DWORD dwSystemLanguage = XGetLanguage( );
 
