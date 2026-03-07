@@ -61,7 +61,7 @@ UIScene_InGamePlayerOptionsMenu::UIScene_InGamePlayerOptionsMenu(int iPad, void 
 
 	if(m_editingSelf)
 	{
-#ifndef _DEBUG // (defined(_CONTENT_PACKAGE) || defined(_FINAL_BUILD) && !defined(_DEBUG_MENUS_ENABLED))
+#if (defined(_CONTENT_PACKAGE) || defined(_FINAL_BUILD) && !defined(_DEBUG_MENUS_ENABLED))
 		removeControl( &m_checkboxes[eControl_Op], true );
 #else
 		m_checkboxes[eControl_Op].init(L"DEBUG: Creative",eControl_Op,Player::getPlayerGamePrivilege(m_playerPrivileges,Player::ePlayerGamePrivilege_CreativeMode));
