@@ -4,7 +4,9 @@
 
 class UIScene_DebugSetCamera : public UIScene
 {
+double currentX;
 double currentY;
+double currentZ;
 private:
 	enum eControls
 	{
