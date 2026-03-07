@@ -40,25 +40,24 @@ set(MINECRAFT_SHARED_DEFINES
   _WINDOWS64
 )
 
+set(WORLD_DIR  "${CMAKE_CURRENT_SOURCE_DIR}/Minecraft.World")
+set(CLIENT_DIR "${CMAKE_CURRENT_SOURCE_DIR}/Minecraft.Client")
+
 # ---
 # Sources
 # ---
-include("${CMAKE_CURRENT_SOURCE_DIR}/cmake/WorldSources.cmake")
-include("${CMAKE_CURRENT_SOURCE_DIR}/cmake/ClientSources.cmake")
-
-list(TRANSFORM MINECRAFT_WORLD_SOURCES PREPEND "${CMAKE_CURRENT_SOURCE_DIR}/Minecraft.World/")
-list(TRANSFORM MINECRAFT_CLIENT_SOURCES PREPEND "${CMAKE_CURRENT_SOURCE_DIR}/Minecraft.Client/")
-list(APPEND MINECRAFT_CLIENT_SOURCES
-  "${CMAKE_CURRENT_SOURCE_DIR}/Minecraft.Client/Xbox/MinecraftWindows.rc"
-)
+add_subdirectory(Minecraft.World)
+list(TRANSFORM MINECRAFT_WORLD_SOURCES PREPEND "${WORLD_DIR}/")
+add_subdirectory(Minecraft.Client)
+list(TRANSFORM MINECRAFT_CLIENT_SOURCES PREPEND "${CLIENT_DIR}/")
 
 # ---
 # MinecraftWorld
 # ---
 add_library(MinecraftWorld STATIC ${MINECRAFT_WORLD_SOURCES})
 target_include_directories(MinecraftWorld
-  PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/Minecraft.World"
-  PUBLIC  "${CMAKE_CURRENT_SOURCE_DIR}/Minecraft.World/x64headers"
+  PRIVATE "${WORLD_DIR}"
+  PUBLIC  "${WORLD_DIR}/x64headers"
 )
 target_compile_definitions(MinecraftWorld PRIVATE
   ${MINECRAFT_SHARED_DEFINES}
@@ -73,9 +72,9 @@ endif()
 # ---
 add_executable(MinecraftClient WIN32 ${MINECRAFT_CLIENT_SOURCES})
 target_include_directories(MinecraftClient PRIVATE
-  "${CMAKE_CURRENT_SOURCE_DIR}/Minecraft.Client"
-  "${CMAKE_CURRENT_SOURCE_DIR}/Minecraft.Client/Windows64/Iggy/include"
-  "${CMAKE_CURRENT_SOURCE_DIR}/Minecraft.Client/Xbox/Sentient/Include"
+  "${CLIENT_DIR}"
+  "${CLIENT_DIR}/Windows64/Iggy/include"
+  "${CLIENT_DIR}/Xbox/Sentient/Include"
 )
 target_compile_definitions(MinecraftClient PRIVATE
   ${MINECRAFT_SHARED_DEFINES}
@@ -97,18 +96,18 @@ target_link_libraries(MinecraftClient PRIVATE
   XInput9_1_0
   wsock32
   legacy_stdio_definitions
-  "${CMAKE_CURRENT_SOURCE_DIR}/Minecraft.Client/Windows64/Iggy/lib/iggy_w64.lib"
-  "${CMAKE_CURRENT_SOURCE_DIR}/Minecraft.Client/Windows64/Iggy/lib/iggyperfmon_w64.lib"
-  "${CMAKE_CURRENT_SOURCE_DIR}/Minecraft.Client/Windows64/Iggy/lib/iggyexpruntime_w64.lib"
+  "${CLIENT_DIR}/Windows64/Iggy/lib/iggy_w64.lib"
+  "${CLIENT_DIR}/Windows64/Iggy/lib/iggyperfmon_w64.lib"
+  "${CLIENT_DIR}/Windows64/Iggy/lib/iggyexpruntime_w64.lib"
   $<$<CONFIG:Debug>: # Debug 4J libraries
-    "${CMAKE_CURRENT_SOURCE_DIR}/Minecraft.Client/Windows64/4JLibs/libs/4J_Input_d.lib"
-    "${CMAKE_CURRENT_SOURCE_DIR}/Minecraft.Client/Windows64/4JLibs/libs/4J_Storage_d.lib"
-    "${CMAKE_CURRENT_SOURCE_DIR}/Minecraft.Client/Windows64/4JLibs/libs/4J_Render_PC_d.lib"
+    "${CLIENT_DIR}/Windows64/4JLibs/libs/4J_Input_d.lib"
+    "${CLIENT_DIR}/Windows64/4JLibs/libs/4J_Storage_d.lib"
+    "${CLIENT_DIR}/Windows64/4JLibs/libs/4J_Render_PC_d.lib"
   >
   $<$<NOT:$<CONFIG:Debug>>: # Release 4J libraries
-    "${CMAKE_CURRENT_SOURCE_DIR}/Minecraft.Client/Windows64/4JLibs/libs/4J_Input.lib"
-    "${CMAKE_CURRENT_SOURCE_DIR}/Minecraft.Client/Windows64/4JLibs/libs/4J_Storage.lib"
-    "${CMAKE_CURRENT_SOURCE_DIR}/Minecraft.Client/Windows64/4JLibs/libs/4J_Render_PC.lib"
+    "${CLIENT_DIR}/Windows64/4JLibs/libs/4J_Input.lib"
+    "${CLIENT_DIR}/Windows64/4JLibs/libs/4J_Storage.lib"
+    "${CLIENT_DIR}/Windows64/4JLibs/libs/4J_Render_PC.lib"
   >
 )
 

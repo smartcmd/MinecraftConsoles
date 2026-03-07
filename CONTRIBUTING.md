@@ -27,4 +27,4 @@ We request that all PRs made for this repo use our PR template to the fullest ex
 # Visual Studio
 Visual Studio can directly open the `CMakeLists.txt` file in the root of the repo, just open the folder you cloned the repo into and it should automatically detect the `CMakeLists.txt` and set up the project.
 
-We also suggest pressing 'Switch between solutions and available views' in the solution explorer toolbar to switch to the 'CMake Targets View', which is more intuitive for navigating the project.
+We also suggest right clicking a folder in the solution explorer and switching to the 'CMake Targets View', which is more intuitive for navigating the project.
