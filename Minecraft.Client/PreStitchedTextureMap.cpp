@@ -246,7 +246,6 @@ StitchedTexture *PreStitchedTextureMap::getTexture(const wstring &name)
 {
 #ifndef _CONTENT_PACKAGE
 	app.DebugPrintf("Not implemented!\n");
-	__debugbreak();
 #endif
 	return NULL;
 #if 0
@@ -277,7 +276,7 @@ Icon *PreStitchedTextureMap::registerIcon(const wstring &name)
 	{
 		app.DebugPrintf("Don't register NULL\n");
 #ifndef _CONTENT_PACKAGE
-		__debugbreak();
+		app.DebugPrintf("Stub!")
 #endif
 		result = missingPosition;
 		//new RuntimeException("Don't register null!").printStackTrace();
@@ -290,7 +289,7 @@ Icon *PreStitchedTextureMap::registerIcon(const wstring &name)
 	{
 #ifndef _CONTENT_PACKAGE
 		app.DebugPrintf("Could not find uv data for icon %ls\n", name.c_str() );
-		__debugbreak();
+		app.DebugPrintf("Stub!")
 #endif
 		result = missingPosition;
 	}
