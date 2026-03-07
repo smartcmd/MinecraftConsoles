@@ -103,7 +103,7 @@ char SoundEngine::m_szRedistName[]={"redist"};
 
 #endif
 
-char *SoundEngine::m_szStreamFileA[eStream_Max]=
+const char *SoundEngine::m_szStreamFileA[eStream_Max]=
 {
 	"calm1",
 	"calm2",

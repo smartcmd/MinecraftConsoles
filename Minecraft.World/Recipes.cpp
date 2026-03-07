@@ -1312,7 +1312,7 @@ void Recipes::buildRecipeIngredientsArray(void)
 	int iCount=0;
 	for (auto& recipe : *recipies)
 	{
-		recipe->requires(&m_pRecipeIngredientsRequired[iCount++]);
+		recipe->reqs(&m_pRecipeIngredientsRequired[iCount++]);
 	}
 
 	//printf("Total recipes in buildRecipeIngredientsArray - %d",iCount);
