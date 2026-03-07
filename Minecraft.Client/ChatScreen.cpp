@@ -140,19 +140,84 @@ void ChatScreen::keyPressed(wchar_t ch, int eventKey)
 
 void ChatScreen::render(int xm, int ym, float a)
 {
-    fill(2, height - 14, width - 2, height - 2, 0x80000000);
+    int iPad = minecraft->player->GetXboxPad();
+    int uiSetting = app.GetGameSettings(iPad, eGameSetting_UISize);
+
+    float textScale = 0.6f;
+    int barTopOffset = 14;
+    int barBottomOffset = 2;
+    int textYOffset = 12;
+    int yAdjust = 0;
+    int widthsubtract = 2;
+
+    if (uiSetting == 0) 
+    {
+        textScale = textScale * 1.25f;
+        barTopOffset = 10;
+        barBottomOffset = 0;
+        textYOffset = 8;
+        yAdjust = 115;
+        widthsubtract = -210;
+    }
+    else if (uiSetting == 1)
+    {
+        textScale = textScale * 1.0f;
+        barTopOffset = 14;
+        barBottomOffset = 2;
+        textYOffset = 12;
+        yAdjust = 0;
+        widthsubtract = 2;
+    }
+    else if (uiSetting == 2)
+    {
+        textScale = textScale * 0.75f;
+        barTopOffset = 18;
+        barBottomOffset = 6;
+        textYOffset = 16;
+        yAdjust = -58;
+        widthsubtract = 110;
+    }
+
+    int barY = height - barTopOffset + yAdjust;
+    int barBottom = height - barBottomOffset + yAdjust;
+    int textY = height - textYOffset + yAdjust;
+
+    fill(2, barY, width - widthsubtract, barBottom, 0x80000000);
+
     const wstring prefix = L"> ";
     int x = 4;
-    drawString(font, prefix, x, height - 12, 0xe0e0e0);
+
+    drawString(font, prefix, x, textY, 0xe0e0e0);
+    
     x += font->width(prefix);
     wstring beforeCursor = message.substr(0, cursorIndex);
     wstring afterCursor = message.substr(cursorIndex);
-    drawStringLiteral(font, beforeCursor, x, height - 12, 0xe0e0e0);
-    x += font->widthLiteral(beforeCursor);
+
+    glPushMatrix();
+    glTranslatef((float)x, (float)textY, 0);
+    glScalef(textScale, textScale, 1.0f);
+    font->drawShadowLiteralCustom(beforeCursor, 0, 0, 1, 1, 0xe0e0e0, 0x000000);
+    glPopMatrix();
+
+    x += (int)(font->widthLiteral(beforeCursor) * textScale);
+
     if (frame / 6 % 2 == 0)
-        drawString(font, L"_", x, height - 12, 0xe0e0e0);
-    x += font->width(L"_");
-    drawStringLiteral(font, afterCursor, x, height - 12, 0xe0e0e0);
+    {
+        glPushMatrix();
+        glTranslatef((float)x, (float)textY, 0);
+        glScalef(textScale, textScale, 1.0f);
+        font->drawShadowLiteralCustom(L"_", 0, 0, 1, 1, 0xe0e0e0, 0x000000);
+        glPopMatrix();
+    }
+
+    x += (int)(font->width(L"_") * textScale);
+
+    glPushMatrix();
+    glTranslatef((float)x, (float)textY, 0);
+    glScalef(textScale, textScale, 1.0f);
+    font->drawShadowLiteralCustom(afterCursor, 0, 0, 1, 1, 0xe0e0e0, 0x000000);
+    glPopMatrix();
+
     Screen::render(xm, ym, a);
 }
 

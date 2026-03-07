@@ -1084,7 +1084,29 @@ void Gui::render(float a, bool mouseFree, int xMouse, int yMouse)
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     glDisable(GL_ALPHA_TEST);
 
-#if 0 // defined(_WINDOWS64) // Temporarily disable this chat in favor of iggy chat until we have better visual parity
+#if defined(_WINDOWS64)
+	int uiSetting = app.GetGameSettings(iPad, eGameSetting_UISize); 
+	
+    float scaleFactor = 1.0f;
+	float textScale = 0.65f;
+	int backgroundtop = 13;
+
+	if (uiSetting == 0)
+    {
+        textScale = textScale * 1.5;
+		int backgroundtop = 10;
+    }
+    else if (uiSetting == 1)
+    {
+        textScale = textScale * 1;
+		int backgroundtop = 13;
+    }
+    else if (uiSetting == 2)
+    {
+        textScale = textScale * 0.75;
+		int backgroundtop = 16;
+    }
+
     glPushMatrix();
     glTranslatef(0.0f, static_cast<float>(screenHeight - iSafezoneYHalf - iTooltipsYOffset - 16 - 3 + 22) - 24.0f, 0.0f);
 
@@ -1107,16 +1129,22 @@ void Gui::render(float a, bool mouseFree, int xMouse, int yMouse)
 				if (alpha > 0)
 				{
 					int x = iSafezoneXHalf+2;
-					int y = -(static_cast<int>(i)) * 9;
+					int y = -(static_cast<int>(i)) * 13 - 19;
 					if(bTwoPlayerSplitscreen)
 					{
 						y+= iHeightOffset;
 					}
 
 					wstring msg = guiMessages[iPad][i].string;
-					this->fill(0, y - 1, screenWidth/fScaleFactorWidth, y + 8, (alpha / 2) << 24);
+					int bgColor = ((alpha / 2) << 24) | (0x404040);
+					this->fill(0, y - 3 - 1, screenWidth/fScaleFactorWidth, y + 10 - 1, bgColor);
 					glEnable(GL_BLEND);
-					font->drawShadow(msg, iSafezoneXHalf+4, y, 0xffffff + (alpha << 24));
+
+					glPushMatrix();
+					glTranslatef((float)(iSafezoneXHalf+4), (float)(y), 0);
+					glScalef(textScale, textScale, scaleFactor);
+					font->drawShadowLiteralCustom(msg, 0, 0, 1, 1, 0xffffff + (alpha << 24), 0x000000 + (alpha / 2 << 24));
+					glPopMatrix();
 				}
 			}
 		}

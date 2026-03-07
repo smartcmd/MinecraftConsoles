@@ -251,6 +251,12 @@ void Font::drawShadowLiteral(const wstring& str, int x, int y, int color)
 	drawLiteral(str, x, y, color);
 }
 
+void Font::drawShadowLiteralCustom(const wstring& str, int x, int y, int xplus, int yplus, int color, int shadowColor)
+{
+    drawLiteral(str, x + xplus, y + yplus, shadowColor);
+    drawLiteral(str, x, y, color);
+}
+
 void Font::drawLiteral(const wstring& str, int x, int y, int color)
 {
 	if (str.empty()) return;
