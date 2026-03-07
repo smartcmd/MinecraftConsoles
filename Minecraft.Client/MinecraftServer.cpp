@@ -626,6 +626,9 @@ bool MinecraftServer::initServer(int64_t seed, NetworkGameInitData *initData, DW
 	app.SetGameHostOption(eGameHostOption_FireSpreads, GetDedicatedServerBool(settings, L"fire-spreads", app.GetGameHostOption(eGameHostOption_FireSpreads) > 0) ? 1 : 0);
 	app.SetGameHostOption(eGameHostOption_TNT, GetDedicatedServerBool(settings, L"tnt", app.GetGameHostOption(eGameHostOption_TNT) > 0) ? 1 : 0);
 
+	// Use helper to update the caps based on what was set earlier
+	MobCategory::updateMobCaps(app.GetGameHostOption(eGameHostOption_WorldMobCap));
+
 	app.DebugPrintf("\n*** SERVER SETTINGS ***\n");
 	app.DebugPrintf("ServerSettings: host-friends-only is %s\n",(app.GetGameHostOption(eGameHostOption_FriendsOfFriends)>0)?"on":"off");
 	app.DebugPrintf("ServerSettings: game-type is %s\n",(app.GetGameHostOption(eGameHostOption_GameType)==0)?"Survival Mode":"Creative Mode");
