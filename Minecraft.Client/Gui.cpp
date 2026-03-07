@@ -859,17 +859,20 @@ void Gui::render(float a, bool mouseFree, int xMouse, int yMouse)
 		glTranslatef((float)debugLeft, (float)debugTop, 0.f);
 		glScalef(scale, scale, 1.f);
 		glTranslatef((float)-debugLeft, (float)-debugTop, 0.f);
-        if (Minecraft::warezTime > 0) glTranslatef(0, 32, 0);
-        font->drawShadow(ClientConstants::VERSION_STRING + L" (" + minecraft->fpsString + L")", debugLeft, debugTop, 0xffffff);
-        font->drawShadow(L"Seed: " + std::to_wstring(minecraft->level->getLevelData()->getSeed() ), debugLeft, debugTop + 12, 0xffffff);
-        font->drawShadow(minecraft->gatherStats1(), debugLeft, debugTop + 22, 0xffffff);
-        font->drawShadow(minecraft->gatherStats2(), debugLeft, debugTop + 32, 0xffffff);
-        font->drawShadow(minecraft->gatherStats3(), debugLeft, debugTop + 42, 0xffffff);
-        font->drawShadow(minecraft->gatherStats4(), debugLeft, debugTop + 52, 0xffffff);
 
-		// TERRAIN FEATURES
-		int iYPos = debugTop + 62;
+		std::vector<std::wstring> lines;
 
+		// Header lines (drawn with drawShadow, white)
+        lines.push_back(ClientConstants::VERSION_STRING);
+        lines.push_back(minecraft->fpsString);
+        lines.push_back(L"Seed: " + std::to_wstring(minecraft->level->getLevelData()->getSeed()));
+        lines.push_back(minecraft->gatherStats1());
+        lines.push_back(minecraft->gatherStats2());
+        lines.push_back(minecraft->gatherStats3());
+        lines.push_back(minecraft->gatherStats4());
+
+#ifdef _DEBUG // Only show terrain features in debug builds not release
+		// TERRAIN FEATURES		
 		if(minecraft->level->dimension->id==0)
 		{
 			wstring wfeature[eTerrainFeature_Count];
@@ -900,35 +903,23 @@ void Gui::render(float a, bool mouseFree, int xMouse, int yMouse)
 				}
 			}
 
-			for( int i = eTerrainFeature_Stronghold; i < (int) eTerrainFeature_Count; i++ )
+			lines.push_back(L""); // Add a spacer line
+            for (int i = eTerrainFeature_Stronghold; i <= (int) eTerrainFeature_Ravine; i++)
 			{
-				iYPos+=10;
-				font->drawShadow(wfeature[i], debugLeft, iYPos, 0xffffff);
+                lines.push_back(wfeature[i]);
 			}
+            lines.push_back(L"");
 		}
+#endif
 
-		//font->drawShadow(minecraft->gatherStats5(), iSafezoneXHalf+2, 32 + 10, 0xffffff);
-       {
-			/* 4J - removed
-            long max = Runtime.getRuntime().maxMemory();
-            long total = Runtime.getRuntime().totalMemory();
-            long free = Runtime.getRuntime().freeMemory();
-            long used = total - free;
-            String msg = "Used memory: " + (used * 100 / max) + "% (" + (used / 1024 / 1024) + "MB) of " + (max / 1024 / 1024) + "MB";
-            drawString(font, msg, screenWidth - font.width(msg) - 2, 2, 0xe0e0e0);
-            msg = "Allocated memory: " + (total * 100 / max) + "% (" + (total / 1024 / 1024) + "MB)";
-            drawString(font, msg, screenWidth - font.width(msg) - 2, 12, 0xe0e0e0);
-			*/
-        }
 		// 4J Stu - Moved these so that they don't overlap
 		double xBlockPos = floor(minecraft->player->x);
 		double yBlockPos = floor(minecraft->player->y);
 		double zBlockPos = floor(minecraft->player->z);
-        drawString(font, L"x: " + std::to_wstring(minecraft->player->x) + L"/ Head: " + std::to_wstring(static_cast<int>(xBlockPos)) + L"/ Chunk: " + std::to_wstring(minecraft->player->xChunk), debugLeft, iYPos + 8 * 0, 0xe0e0e0);
-        drawString(font, L"y: " + std::to_wstring(minecraft->player->y) + L"/ Head: " + std::to_wstring(static_cast<int>(yBlockPos)), debugLeft, iYPos + 8 * 1, 0xe0e0e0);
-        drawString(font, L"z: " + std::to_wstring(minecraft->player->z) + L"/ Head: " + std::to_wstring(static_cast<int>(zBlockPos)) + L"/ Chunk: " + std::to_wstring(minecraft->player->zChunk), debugLeft, iYPos + 8 * 2, 0xe0e0e0);
-		drawString(font, L"f: " + std::to_wstring(Mth::floor(minecraft->player->yRot * 4.0f / 360.0f + 0.5) & 0x3) + L"/ yRot: " + std::to_wstring(minecraft->player->yRot), debugLeft, iYPos + 8 * 3, 0xe0e0e0);
-		iYPos += 8*4;
+        lines.push_back(L"x: " + std::to_wstring(minecraft->player->x) + L"/ Head: " + std::to_wstring(static_cast<int>(xBlockPos)) + L"/ Chunk: " + std::to_wstring(minecraft->player->xChunk));
+        lines.push_back(L"y: " + std::to_wstring(minecraft->player->y) + L"/ Head: " + std::to_wstring(static_cast<int>(yBlockPos)));
+        lines.push_back(L"z: " + std::to_wstring(minecraft->player->z) + L"/ Head: " + std::to_wstring(static_cast<int>(zBlockPos)) + L"/ Chunk: " + std::to_wstring(minecraft->player->zChunk));
+        lines.push_back(L"f: " + std::to_wstring(Mth::floor(minecraft->player->yRot * 4.0f / 360.0f + 0.5) & 0x3) + L"/ yRot: " + std::to_wstring(minecraft->player->yRot));
 
 		int px = Mth::floor(minecraft->player->x);
 		int py = Mth::floor(minecraft->player->y);
@@ -937,10 +928,16 @@ void Gui::render(float a, bool mouseFree, int xMouse, int yMouse)
 		{
 			LevelChunk *chunkAt = minecraft->level->getChunkAt(px, pz);
 			Biome *biome = chunkAt->getBiome(px & 15, pz & 15, minecraft->level->getBiomeSource());
-			drawString(
-				font,
-				L"b: " + biome->m_name + L" (" + std::to_wstring(biome->id) + L")", debugLeft, iYPos, 0xe0e0e0);
+            lines.push_back(L"b: " + biome->m_name + L" (" + std::to_wstring(biome->id) + L")");
 		}
+
+		// Loop through the lines and draw them all on screen
+		int yPos = debugTop;
+        for (const auto &line : lines)
+        {
+            drawString(font, line, debugLeft, yPos, 0xffffff);
+            yPos += 10;
+        }
 
         glPopMatrix();
     }
