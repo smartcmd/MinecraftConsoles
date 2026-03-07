@@ -40,5 +40,5 @@ jobs:
           Debug Version of minecraftconsoles 
         files: |
             LCEWindows64.zip
-            ./x64/Release/Minecraft.Client.exe
-            ./x64/Release/Minecraft.Client.pdb
+            ./x64/Debug/Minecraft.Client.exe
+            ./x64/Debug/Minecraft.Client.pdb
