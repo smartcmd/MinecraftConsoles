@@ -128,10 +128,6 @@ void Witch::aiStep()
 			{
 				potion = PotionBrewing::POTION_ID_SWIFTNESS;
 			}
-			else if (random->nextFloat() < 0.25f && getTarget() != NULL && !hasEffect(MobEffect::movementSpeed) && getTarget()->distanceToSqr(shared_from_this()) > 11 * 11)
-			{
-				potion = PotionBrewing::POTION_ID_SWIFTNESS;
-			}
 
 			if (potion > -1)
 			{
