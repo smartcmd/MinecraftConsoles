@@ -4,7 +4,10 @@
 
 class EOFException : public std::runtime_error
 {
+public:
+    std::wstring information;
 
+	EOFException(const std::wstring &information);
 };
 
 class IllegalArgumentException : public std::runtime_error
@@ -26,5 +29,7 @@ public:
 class RuntimeException : public std::runtime_error
 {
 public:
+    std::wstring information;
+
 	RuntimeException(const std::wstring& information);
 };
