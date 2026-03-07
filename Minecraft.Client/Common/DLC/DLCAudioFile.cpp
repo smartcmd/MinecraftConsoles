@@ -26,7 +26,7 @@ PBYTE DLCAudioFile::getData(DWORD &dwBytes)
 	return m_pbData;
 }
 
-WCHAR *DLCAudioFile::wchTypeNamesA[]=
+const WCHAR *DLCAudioFile::wchTypeNamesA[]=
 {
 	L"CUENAME",
 	L"CREDIT",
