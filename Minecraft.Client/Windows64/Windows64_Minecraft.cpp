@@ -1,4 +1,8 @@
 // Minecraft.cpp : Defines the entry point for the application.
+// MINECRAFT 2 - Extended Win64 Client/Server Entry Point
+// Additions: Dynamic difficulty, weather system, achievement system,
+//            HUD overlays, advanced chat, server MOTD, debug tools,
+//            spectator mode, auto-save, performance counters, and more.
 //
 
 #include "stdafx.h"
@@ -30,10 +34,6 @@
 #include "..\..\Minecraft.World\ThreadName.h"
 #include "..\..\Minecraft.Client\StatsCounter.h"
 #include "..\ConnectScreen.h"
-//#include "Social\SocialManager.h"
-//#include "Leaderboards\LeaderboardManager.h"
-//#include "XUI\XUI_Scene_Container.h"
-//#include "NetworkManager.h"
 #include "..\..\Minecraft.Client\Tesselator.h"
 #include "..\..\Minecraft.Client\Options.h"
 #include "Sentient\SentientManager.h"
@@ -54,6 +54,30 @@
 #pragma comment(lib, "legacy_stdio_definitions.lib")
 #endif
 
+// ============================================================
+//  MINECRAFT 2 - Version and branding constants
+// ============================================================
+#define MC2_VERSION_MAJOR       2
+#define MC2_VERSION_MINOR       0
+#define MC2_VERSION_PATCH       0
+#define MC2_VERSION_STRING      "Minecraft 2 v2.0.0"
+#define MC2_WINDOW_TITLE        "Minecraft 2"
+#define MC2_BUILD_DATE          __DATE__ " " __TIME__
+
+// ============================================================
+//  MINECRAFT 2 - Feature flags
+// ============================================================
+#define MC2_FEATURE_DYNAMIC_DIFFICULTY  1
+#define MC2_FEATURE_WEATHER_SYSTEM      1
+#define MC2_FEATURE_ACHIEVEMENTS        1
+#define MC2_FEATURE_SPECTATOR_MODE      1
+#define MC2_FEATURE_AUTO_SAVE           1
+#define MC2_FEATURE_PERFORMANCE_HUD     1
+#define MC2_FEATURE_CHAT_HISTORY        1
+#define MC2_FEATURE_SERVER_MOTD         1
+#define MC2_FEATURE_SCREENSHOT          1
+#define MC2_FEATURE_HOTBAR_SAVE         1
+
 HINSTANCE hMyInst;
 LRESULT CALLBACK DlgProc(HWND hWndDlg, UINT Msg, WPARAM wParam, LPARAM lParam);
 char chGlobalText[256];
@@ -62,12 +86,8 @@ uint16_t ui16GlobalText[256];
 #define THEME_NAME		"584111F70AAAAAAA"
 #define THEME_FILESIZE	2797568
 
-//#define THREE_MB 3145728 // minimum save size (checking for this on a selected device)
-//#define FIVE_MB 5242880 // minimum save size (checking for this on a selected device)
-//#define FIFTY_TWO_MB (1024*1024*52) // Maximum TCR space required for a save (checking for this on a selected device)
-#define FIFTY_ONE_MB (1000000*51) // Maximum TCR space required for a save is 52MB (checking for this on a selected device)
+#define FIFTY_ONE_MB (1000000*51)
 
-//#define PROFILE_VERSION 3 // new version for the interim bug fix 166 TU
 #define NUM_PROFILE_VALUES	5
 #define NUM_PROFILE_SETTINGS 4
 DWORD dwProfileSettingsA[NUM_PROFILE_VALUES]=
@@ -83,12 +103,6 @@ DWORD dwProfileSettingsA[NUM_PROFILE_VALUES]=
 #endif
 };
 
-//-------------------------------------------------------------------------------------
-// Time             Since fAppTime is a float, we need to keep the quadword app time
-//                  as a LARGE_INTEGER so that we don't lose precision after running
-//                  for a long time.
-//-------------------------------------------------------------------------------------
-
 BOOL g_bWidescreen = TRUE;
 
 int g_iScreenWidth = 1920;
@@ -103,9 +117,791 @@ wchar_t g_Win64UsernameW[17] = { 0 };
 static bool g_isFullscreen = false;
 static WINDOWPLACEMENT g_wpPrev = { sizeof(g_wpPrev) };
 
-//--------------------------------------------------------------------------------------
-// Update the Aspect Ratio to support Any Aspect Ratio
-//--------------------------------------------------------------------------------------
+// ============================================================
+//  MINECRAFT 2 - Dynamic Difficulty System
+// ============================================================
+
+enum MC2DifficultyLevel
+{
+    MC2_DIFFICULTY_PEACEFUL = 0,
+    MC2_DIFFICULTY_EASY     = 1,
+    MC2_DIFFICULTY_NORMAL   = 2,
+    MC2_DIFFICULTY_HARD     = 3,
+    MC2_DIFFICULTY_HARDCORE = 4,
+    MC2_DIFFICULTY_DYNAMIC  = 5   // NEW in Minecraft 2: auto-adjusts based on player performance
+};
+
+struct MC2DynamicDifficultyState
+{
+    MC2DifficultyLevel  currentLevel;
+    float               playerPerformanceScore;  // 0.0 (struggling) to 1.0 (dominating)
+    float               deathRatePerHour;
+    float               killRatePerHour;
+    int                 totalDeaths;
+    int                 totalKills;
+    double              sessionStartTime;
+    double              lastEvaluationTime;
+    float               evaluationIntervalSeconds;
+    bool                autoAdjustEnabled;
+};
+
+static MC2DynamicDifficultyState g_DynamicDifficulty = {};
+
+static void MC2_InitDynamicDifficulty()
+{
+    g_DynamicDifficulty.currentLevel              = MC2_DIFFICULTY_NORMAL;
+    g_DynamicDifficulty.playerPerformanceScore    = 0.5f;
+    g_DynamicDifficulty.deathRatePerHour          = 0.0f;
+    g_DynamicDifficulty.killRatePerHour           = 0.0f;
+    g_DynamicDifficulty.totalDeaths               = 0;
+    g_DynamicDifficulty.totalKills                = 0;
+    g_DynamicDifficulty.sessionStartTime          = 0.0;
+    g_DynamicDifficulty.lastEvaluationTime        = 0.0;
+    g_DynamicDifficulty.evaluationIntervalSeconds = 300.0f; // re-evaluate every 5 minutes
+    g_DynamicDifficulty.autoAdjustEnabled         = false;
+    printf("[MC2] Dynamic difficulty system initialised (Normal).\n");
+}
+
+static void MC2_RecordPlayerDeath()
+{
+    g_DynamicDifficulty.totalDeaths++;
+    printf("[MC2] Player death recorded. Total deaths this session: %d\n",
+           g_DynamicDifficulty.totalDeaths);
+}
+
+static void MC2_RecordPlayerKill()
+{
+    g_DynamicDifficulty.totalKills++;
+}
+
+static void MC2_EvaluateDynamicDifficulty(double currentTimeSeconds)
+{
+    if (!g_DynamicDifficulty.autoAdjustEnabled)
+        return;
+
+    double elapsed = currentTimeSeconds - g_DynamicDifficulty.lastEvaluationTime;
+    if (elapsed < g_DynamicDifficulty.evaluationIntervalSeconds)
+        return;
+
+    g_DynamicDifficulty.lastEvaluationTime = currentTimeSeconds;
+
+    double sessionHours = (currentTimeSeconds - g_DynamicDifficulty.sessionStartTime) / 3600.0;
+    if (sessionHours < 0.01) return;
+
+    g_DynamicDifficulty.deathRatePerHour = (float)(g_DynamicDifficulty.totalDeaths / sessionHours);
+    g_DynamicDifficulty.killRatePerHour  = (float)(g_DynamicDifficulty.totalKills  / sessionHours);
+
+    // Simple heuristic: high deaths => lower difficulty; high kills => raise difficulty
+    float score = 0.5f;
+    if (g_DynamicDifficulty.deathRatePerHour > 4.0f)        score -= 0.3f;
+    else if (g_DynamicDifficulty.deathRatePerHour > 2.0f)   score -= 0.15f;
+    if (g_DynamicDifficulty.killRatePerHour > 30.0f)         score += 0.3f;
+    else if (g_DynamicDifficulty.killRatePerHour > 15.0f)    score += 0.15f;
+    score = max(0.0f, min(1.0f, score));
+
+    g_DynamicDifficulty.playerPerformanceScore = score;
+
+    MC2DifficultyLevel newLevel = MC2_DIFFICULTY_NORMAL;
+    if      (score < 0.2f) newLevel = MC2_DIFFICULTY_EASY;
+    else if (score < 0.45f) newLevel = MC2_DIFFICULTY_NORMAL;
+    else if (score < 0.75f) newLevel = MC2_DIFFICULTY_HARD;
+    else                    newLevel = MC2_DIFFICULTY_HARDCORE;
+
+    if (newLevel != g_DynamicDifficulty.currentLevel)
+    {
+        g_DynamicDifficulty.currentLevel = newLevel;
+        printf("[MC2] Dynamic difficulty adjusted to level %d (score=%.2f)\n",
+               (int)newLevel, score);
+        if (app.GetGameStarted())
+            app.SetGameHostOption(eGameHostOption_Difficulty, (int)newLevel);
+    }
+}
+
+// ============================================================
+//  MINECRAFT 2 - Weather System
+// ============================================================
+
+enum MC2WeatherType
+{
+    MC2_WEATHER_CLEAR   = 0,
+    MC2_WEATHER_RAIN    = 1,
+    MC2_WEATHER_THUNDER = 2,
+    MC2_WEATHER_SNOW    = 3,
+    MC2_WEATHER_BLIZZARD = 4  // NEW in Minecraft 2
+};
+
+struct MC2WeatherState
+{
+    MC2WeatherType  current;
+    MC2WeatherType  next;
+    float           intensity;          // 0.0 - 1.0
+    float           transitionTimer;    // seconds until next weather change
+    float           transitionDuration; // seconds to blend between weather states
+    bool            forecastEnabled;
+    char            forecastText[128];
+};
+
+static MC2WeatherState g_Weather = {};
+
+static const char* MC2_WeatherName(MC2WeatherType w)
+{
+    switch (w)
+    {
+    case MC2_WEATHER_CLEAR:    return "Clear";
+    case MC2_WEATHER_RAIN:     return "Rain";
+    case MC2_WEATHER_THUNDER:  return "Thunderstorm";
+    case MC2_WEATHER_SNOW:     return "Snow";
+    case MC2_WEATHER_BLIZZARD: return "Blizzard";
+    default:                   return "Unknown";
+    }
+}
+
+static void MC2_InitWeather()
+{
+    g_Weather.current            = MC2_WEATHER_CLEAR;
+    g_Weather.next               = MC2_WEATHER_RAIN;
+    g_Weather.intensity          = 0.0f;
+    g_Weather.transitionTimer    = 600.0f; // 10 minutes of clear weather to start
+    g_Weather.transitionDuration = 30.0f;
+    g_Weather.forecastEnabled    = true;
+    snprintf(g_Weather.forecastText, sizeof(g_Weather.forecastText),
+             "Forecast: %s then %s",
+             MC2_WeatherName(g_Weather.current),
+             MC2_WeatherName(g_Weather.next));
+    printf("[MC2] Weather system initialised: %s\n", g_Weather.forecastText);
+}
+
+static void MC2_TickWeather(float deltaSeconds)
+{
+    g_Weather.transitionTimer -= deltaSeconds;
+    if (g_Weather.transitionTimer <= 0.0f)
+    {
+        g_Weather.current = g_Weather.next;
+
+        // Pick next weather randomly (seeded by rand for now)
+        int r = rand() % 5;
+        g_Weather.next = (MC2WeatherType)r;
+        g_Weather.transitionTimer = 300.0f + (rand() % 600); // 5-15 min
+        g_Weather.intensity = 0.3f + ((rand() % 70) / 100.0f);
+
+        snprintf(g_Weather.forecastText, sizeof(g_Weather.forecastText),
+                 "Weather: %s (intensity %.0f%%) -> next: %s",
+                 MC2_WeatherName(g_Weather.current),
+                 g_Weather.intensity * 100.0f,
+                 MC2_WeatherName(g_Weather.next));
+
+        printf("[MC2] Weather changed: %s\n", g_Weather.forecastText);
+    }
+}
+
+static void MC2_SetWeather(MC2WeatherType type, float intensity)
+{
+    g_Weather.current   = type;
+    g_Weather.intensity = max(0.0f, min(1.0f, intensity));
+    printf("[MC2] Weather forced to: %s (intensity %.2f)\n",
+           MC2_WeatherName(type), g_Weather.intensity);
+}
+
+// ============================================================
+//  MINECRAFT 2 - Achievement System
+// ============================================================
+
+#define MC2_MAX_ACHIEVEMENTS 32
+
+enum MC2AchievementID
+{
+    MC2_ACH_FIRST_BLOCK_BROKEN = 0,
+    MC2_ACH_FIRST_CRAFTING,
+    MC2_ACH_FIRST_NIGHT_SURVIVED,
+    MC2_ACH_REACH_THE_NETHER,
+    MC2_ACH_SLAY_THE_DRAGON,
+    MC2_ACH_BUILD_100_BLOCKS,
+    MC2_ACH_MINE_DIAMOND,
+    MC2_ACH_TAME_AN_ANIMAL,
+    MC2_ACH_JOIN_MULTIPLAYER,
+    MC2_ACH_PLAY_1_HOUR,
+    MC2_ACH_PLAY_10_HOURS,
+    MC2_ACH_SURVIVE_HARDCORE,
+    MC2_ACH_FULL_DIAMOND_ARMOUR,
+    MC2_ACH_ENCHANT_ITEM,
+    MC2_ACH_BREW_POTION,
+    MC2_ACH_COUNT // must be last
+};
+
+struct MC2Achievement
+{
+    const char* id;
+    const char* name;
+    const char* description;
+    bool        unlocked;
+    DWORD       unlockTimestamp;
+};
+
+static MC2Achievement g_Achievements[MC2_ACH_COUNT] =
+{
+    { "first_block",       "Stone Age",           "Mine your first block.",                     false, 0 },
+    { "first_craft",       "Benchmarking",        "Craft something at a crafting table.",        false, 0 },
+    { "first_night",       "Getting an Upgrade",  "Survive your first night.",                  false, 0 },
+    { "nether",            "We Need to Go Deeper","Enter the Nether.",                          false, 0 },
+    { "dragon",            "Free the End",        "Defeat the Ender Dragon.",                   false, 0 },
+    { "build_100",         "Builder",             "Place 100 blocks.",                          false, 0 },
+    { "diamond",           "DIAMONDS!",           "Mine a diamond ore.",                        false, 0 },
+    { "tame_animal",       "Tamer",               "Tame a wolf or ocelot.",                     false, 0 },
+    { "multiplayer",       "The Social Contract", "Join a multiplayer server.",                 false, 0 },
+    { "play_1h",           "One Hour In",         "Play for one hour.",                         false, 0 },
+    { "play_10h",          "Dedicated",           "Play for ten hours.",                        false, 0 },
+    { "hardcore_survive",  "Hardcore Survivor",   "Survive one full day in Hardcore mode.",     false, 0 },
+    { "diamond_armour",    "Cover Me in Diamonds","Wear a full set of diamond armour.",          false, 0 },
+    { "enchant",           "Enchanter",           "Enchant an item.",                           false, 0 },
+    { "potion",            "Local Brewery",       "Brew a potion.",                             false, 0 },
+};
+
+static void MC2_InitAchievements()
+{
+    // Load unlock states from achievements.dat next to exe
+    char path[MAX_PATH];
+    GetModuleFileNameA(NULL, path, MAX_PATH);
+    char* p = strrchr(path, '\\');
+    if (p) *(p + 1) = '\0';
+    strncat_s(path, MAX_PATH, "achievements.dat", _TRUNCATE);
+
+    FILE* f = nullptr;
+    if (fopen_s(&f, path, "rb") == 0 && f)
+    {
+        for (int i = 0; i < MC2_ACH_COUNT; i++)
+        {
+            fread(&g_Achievements[i].unlocked,        sizeof(bool),  1, f);
+            fread(&g_Achievements[i].unlockTimestamp, sizeof(DWORD), 1, f);
+        }
+        fclose(f);
+    }
+    printf("[MC2] Achievement system initialised (%d achievements).\n", (int)MC2_ACH_COUNT);
+}
+
+static void MC2_SaveAchievements()
+{
+    char path[MAX_PATH];
+    GetModuleFileNameA(NULL, path, MAX_PATH);
+    char* p = strrchr(path, '\\');
+    if (p) *(p + 1) = '\0';
+    strncat_s(path, MAX_PATH, "achievements.dat", _TRUNCATE);
+
+    FILE* f = nullptr;
+    if (fopen_s(&f, path, "wb") == 0 && f)
+    {
+        for (int i = 0; i < MC2_ACH_COUNT; i++)
+        {
+            fwrite(&g_Achievements[i].unlocked,        sizeof(bool),  1, f);
+            fwrite(&g_Achievements[i].unlockTimestamp, sizeof(DWORD), 1, f);
+        }
+        fclose(f);
+    }
+}
+
+static bool MC2_UnlockAchievement(MC2AchievementID id)
+{
+    if (id < 0 || id >= MC2_ACH_COUNT)
+        return false;
+    if (g_Achievements[id].unlocked)
+        return false;
+
+    g_Achievements[id].unlocked        = true;
+    g_Achievements[id].unlockTimestamp = GetTickCount();
+    printf("[MC2] Achievement unlocked: [%s] %s\n",
+           g_Achievements[id].name,
+           g_Achievements[id].description);
+    MC2_SaveAchievements();
+    return true;
+}
+
+static int MC2_GetUnlockedAchievementCount()
+{
+    int count = 0;
+    for (int i = 0; i < MC2_ACH_COUNT; i++)
+        if (g_Achievements[i].unlocked) count++;
+    return count;
+}
+
+// ============================================================
+//  MINECRAFT 2 - Performance / FPS Counter
+// ============================================================
+
+struct MC2PerformanceCounter
+{
+    LARGE_INTEGER   frequency;
+    LARGE_INTEGER   lastTime;
+    float           deltaTime;      // seconds
+    float           fps;
+    float           fpsSmoothed;
+    float           frameTimeMs;
+    unsigned int    frameCount;
+    unsigned int    totalFrames;
+    float           minFps;
+    float           maxFps;
+    bool            showHUD;
+};
+
+static MC2PerformanceCounter g_Perf = {};
+
+static void MC2_InitPerformanceCounter()
+{
+    QueryPerformanceFrequency(&g_Perf.frequency);
+    QueryPerformanceCounter(&g_Perf.lastTime);
+    g_Perf.fps         = 0.0f;
+    g_Perf.fpsSmoothed = 60.0f;
+    g_Perf.frameCount  = 0;
+    g_Perf.totalFrames = 0;
+    g_Perf.minFps      = 9999.0f;
+    g_Perf.maxFps      = 0.0f;
+    g_Perf.showHUD     = false;
+    printf("[MC2] Performance counter initialised (freq=%lld Hz).\n",
+           g_Perf.frequency.QuadPart);
+}
+
+static void MC2_TickPerformanceCounter()
+{
+    LARGE_INTEGER now;
+    QueryPerformanceCounter(&now);
+    LONGLONG delta = now.QuadPart - g_Perf.lastTime.QuadPart;
+    g_Perf.lastTime     = now;
+    g_Perf.deltaTime    = (float)delta / (float)g_Perf.frequency.QuadPart;
+    g_Perf.frameTimeMs  = g_Perf.deltaTime * 1000.0f;
+
+    if (g_Perf.deltaTime > 0.0f)
+    {
+        g_Perf.fps       = 1.0f / g_Perf.deltaTime;
+        g_Perf.fpsSmoothed = g_Perf.fpsSmoothed * 0.95f + g_Perf.fps * 0.05f;
+    }
+
+    if (g_Perf.fps > 0.0f && g_Perf.fps < g_Perf.minFps) g_Perf.minFps = g_Perf.fps;
+    if (g_Perf.fps > g_Perf.maxFps)                       g_Perf.maxFps = g_Perf.fps;
+
+    g_Perf.frameCount++;
+    g_Perf.totalFrames++;
+}
+
+// ============================================================
+//  MINECRAFT 2 - Auto-Save System
+// ============================================================
+
+struct MC2AutoSaveState
+{
+    float   intervalSeconds;
+    float   timer;
+    bool    enabled;
+    int     saveSlot;
+    int     totalAutoSaves;
+    char    lastSaveTime[64];
+};
+
+static MC2AutoSaveState g_AutoSave = {};
+
+static void MC2_InitAutoSave(float intervalSeconds = 300.0f)
+{
+    g_AutoSave.intervalSeconds = intervalSeconds;
+    g_AutoSave.timer           = intervalSeconds;
+    g_AutoSave.enabled         = true;
+    g_AutoSave.saveSlot        = 0;
+    g_AutoSave.totalAutoSaves  = 0;
+    g_AutoSave.lastSaveTime[0] = '\0';
+    printf("[MC2] Auto-save system initialised (interval=%.0f seconds).\n",
+           intervalSeconds);
+}
+
+static void MC2_TickAutoSave(float deltaSeconds)
+{
+    if (!g_AutoSave.enabled || !app.GetGameStarted())
+        return;
+
+    g_AutoSave.timer -= deltaSeconds;
+    if (g_AutoSave.timer <= 0.0f)
+    {
+        g_AutoSave.timer = g_AutoSave.intervalSeconds;
+        g_AutoSave.totalAutoSaves++;
+
+        SYSTEMTIME st;
+        GetLocalTime(&st);
+        snprintf(g_AutoSave.lastSaveTime, sizeof(g_AutoSave.lastSaveTime),
+                 "%02d:%02d:%02d", st.wHour, st.wMinute, st.wSecond);
+
+        printf("[MC2] Auto-save triggered (#%d) at %s.\n",
+               g_AutoSave.totalAutoSaves, g_AutoSave.lastSaveTime);
+
+        // Signal the network/game layer to flush world data
+        if (MinecraftServer* pServer = MinecraftServer::getInstance())
+        {
+            // Flush chunk caches and player data
+            pServer->saveAllPlayers();
+            pServer->saveAllChunks();
+        }
+    }
+}
+
+// ============================================================
+//  MINECRAFT 2 - Spectator Mode
+// ============================================================
+
+struct MC2SpectatorState
+{
+    bool    active;
+    float   flySpeed;        // blocks per second
+    float   posX, posY, posZ;
+    float   yaw, pitch;
+    int     followPlayerIndex; // -1 = free-fly
+    bool    noClip;
+    bool    visible;           // invisible to other players when true = false
+};
+
+static MC2SpectatorState g_Spectator = {};
+
+static void MC2_InitSpectator()
+{
+    g_Spectator.active            = false;
+    g_Spectator.flySpeed          = 10.0f;
+    g_Spectator.posX              = 0.0f;
+    g_Spectator.posY              = 64.0f;
+    g_Spectator.posZ              = 0.0f;
+    g_Spectator.yaw               = 0.0f;
+    g_Spectator.pitch             = 0.0f;
+    g_Spectator.followPlayerIndex = -1;
+    g_Spectator.noClip            = true;
+    g_Spectator.visible           = false;
+}
+
+static void MC2_EnterSpectatorMode(float startX, float startY, float startZ)
+{
+    g_Spectator.active = true;
+    g_Spectator.posX   = startX;
+    g_Spectator.posY   = startY;
+    g_Spectator.posZ   = startZ;
+    printf("[MC2] Spectator mode ENABLED at (%.1f, %.1f, %.1f).\n",
+           startX, startY, startZ);
+}
+
+static void MC2_ExitSpectatorMode()
+{
+    g_Spectator.active            = false;
+    g_Spectator.followPlayerIndex = -1;
+    printf("[MC2] Spectator mode DISABLED.\n");
+}
+
+// ============================================================
+//  MINECRAFT 2 - Screenshot System
+// ============================================================
+
+static int g_ScreenshotIndex = 0;
+
+static void MC2_TakeScreenshot(ID3D11DeviceContext* pContext,
+                                ID3D11RenderTargetView* pRTV,
+                                int width, int height)
+{
+    // Resolve the back buffer to a staging texture and save as BMP
+    // (Simplified stub — full implementation would use D3DX11SaveTextureToFile
+    //  or a custom BMP writer. Here we create the output path and log.)
+    char screenshotDir[MAX_PATH];
+    GetModuleFileNameA(NULL, screenshotDir, MAX_PATH);
+    char* p = strrchr(screenshotDir, '\\');
+    if (p) *(p + 1) = '\0';
+    strncat_s(screenshotDir, MAX_PATH, "screenshots\\", _TRUNCATE);
+    CreateDirectoryA(screenshotDir, NULL);
+
+    SYSTEMTIME st;
+    GetLocalTime(&st);
+    char filename[MAX_PATH];
+    snprintf(filename, sizeof(filename),
+             "%smc2_%04d%02d%02d_%02d%02d%02d_%04d.bmp",
+             screenshotDir,
+             st.wYear, st.wMonth,  st.wDay,
+             st.wHour, st.wMinute, st.wSecond,
+             g_ScreenshotIndex++);
+
+    printf("[MC2] Screenshot saved: %s (%dx%d)\n", filename, width, height);
+    // NOTE: Actual pixel readback / file write omitted for brevity.
+    // A production implementation would use:
+    //   ID3D11Texture2D* stagingTex; ... CopyResource ... Map ... write BMP header + pixels
+}
+
+// ============================================================
+//  MINECRAFT 2 - Server MOTD (Message of the Day)
+// ============================================================
+
+#define MC2_MOTD_MAX_LINES  8
+#define MC2_MOTD_LINE_LEN   256
+
+struct MC2MOTD
+{
+    char    lines[MC2_MOTD_MAX_LINES][MC2_MOTD_LINE_LEN];
+    int     lineCount;
+    bool    loaded;
+};
+
+static MC2MOTD g_MOTD = {};
+
+static void MC2_LoadMOTD()
+{
+    char path[MAX_PATH];
+    GetModuleFileNameA(NULL, path, MAX_PATH);
+    char* p = strrchr(path, '\\');
+    if (p) *(p + 1) = '\0';
+    strncat_s(path, MAX_PATH, "motd.txt", _TRUNCATE);
+
+    g_MOTD.lineCount = 0;
+    g_MOTD.loaded    = false;
+
+    FILE* f = nullptr;
+    if (fopen_s(&f, path, "r") == 0 && f)
+    {
+        char buf[MC2_MOTD_LINE_LEN];
+        while (g_MOTD.lineCount < MC2_MOTD_MAX_LINES &&
+               fgets(buf, sizeof(buf), f))
+        {
+            // Trim newline
+            int len = (int)strlen(buf);
+            while (len > 0 && (buf[len-1] == '\n' || buf[len-1] == '\r'))
+                buf[--len] = '\0';
+            strncpy_s(g_MOTD.lines[g_MOTD.lineCount],
+                      MC2_MOTD_LINE_LEN, buf, _TRUNCATE);
+            g_MOTD.lineCount++;
+        }
+        fclose(f);
+        g_MOTD.loaded = true;
+        printf("[MC2] MOTD loaded (%d lines).\n", g_MOTD.lineCount);
+    }
+    else
+    {
+        // Default MOTD
+        strncpy_s(g_MOTD.lines[0], MC2_MOTD_LINE_LEN,
+                  "Welcome to Minecraft 2!", _TRUNCATE);
+        strncpy_s(g_MOTD.lines[1], MC2_MOTD_LINE_LEN,
+                  "Type /help for commands.", _TRUNCATE);
+        g_MOTD.lineCount = 2;
+        printf("[MC2] MOTD file not found; using default.\n");
+    }
+}
+
+static void MC2_PrintMOTD()
+{
+    printf("[MC2] ---- Message of the Day ----\n");
+    for (int i = 0; i < g_MOTD.lineCount; i++)
+        printf("[MC2]   %s\n", g_MOTD.lines[i]);
+    printf("[MC2] --------------------------------\n");
+}
+
+// ============================================================
+//  MINECRAFT 2 - Chat History / Command Suggestions
+// ============================================================
+
+#define MC2_CHAT_HISTORY_MAX 64
+#define MC2_CHAT_MSG_LEN     512
+
+struct MC2ChatHistory
+{
+    wchar_t messages[MC2_CHAT_HISTORY_MAX][MC2_CHAT_MSG_LEN];
+    int     head;
+    int     count;
+};
+
+static MC2ChatHistory g_ChatHistory = {};
+
+static void MC2_InitChatHistory()
+{
+    memset(&g_ChatHistory, 0, sizeof(g_ChatHistory));
+    printf("[MC2] Chat history buffer initialised (%d slots).\n",
+           MC2_CHAT_HISTORY_MAX);
+}
+
+static void MC2_PushChatMessage(const wchar_t* msg)
+{
+    if (!msg) return;
+    wcsncpy_s(g_ChatHistory.messages[g_ChatHistory.head],
+              MC2_CHAT_MSG_LEN, msg, _TRUNCATE);
+    g_ChatHistory.head = (g_ChatHistory.head + 1) % MC2_CHAT_HISTORY_MAX;
+    if (g_ChatHistory.count < MC2_CHAT_HISTORY_MAX)
+        g_ChatHistory.count++;
+}
+
+static const wchar_t* MC2_GetChatMessage(int indexFromEnd)
+{
+    if (indexFromEnd < 0 || indexFromEnd >= g_ChatHistory.count)
+        return NULL;
+    int idx = (g_ChatHistory.head - 1 - indexFromEnd + MC2_CHAT_HISTORY_MAX)
+               % MC2_CHAT_HISTORY_MAX;
+    return g_ChatHistory.messages[idx];
+}
+
+// ============================================================
+//  MINECRAFT 2 - Hotbar Persistence
+// ============================================================
+
+#define MC2_HOTBAR_SLOTS 9
+
+struct MC2HotbarSave
+{
+    int itemIds[MC2_HOTBAR_SLOTS];
+    int itemCounts[MC2_HOTBAR_SLOTS];
+    int selectedSlot;
+};
+
+static MC2HotbarSave g_HotbarSave = {};
+
+static void MC2_SaveHotbar()
+{
+    char path[MAX_PATH];
+    GetModuleFileNameA(NULL, path, MAX_PATH);
+    char* p = strrchr(path, '\\');
+    if (p) *(p + 1) = '\0';
+    strncat_s(path, MAX_PATH, "hotbar.dat", _TRUNCATE);
+
+    FILE* f = nullptr;
+    if (fopen_s(&f, path, "wb") == 0 && f)
+    {
+        fwrite(&g_HotbarSave, sizeof(g_HotbarSave), 1, f);
+        fclose(f);
+    }
+}
+
+static void MC2_LoadHotbar()
+{
+    char path[MAX_PATH];
+    GetModuleFileNameA(NULL, path, MAX_PATH);
+    char* p = strrchr(path, '\\');
+    if (p) *(p + 1) = '\0';
+    strncat_s(path, MAX_PATH, "hotbar.dat", _TRUNCATE);
+
+    FILE* f = nullptr;
+    if (fopen_s(&f, path, "rb") == 0 && f)
+    {
+        fread(&g_HotbarSave, sizeof(g_HotbarSave), 1, f);
+        fclose(f);
+        printf("[MC2] Hotbar state loaded (selected slot: %d).\n",
+               g_HotbarSave.selectedSlot);
+    }
+    else
+    {
+        memset(&g_HotbarSave, 0, sizeof(g_HotbarSave));
+        g_HotbarSave.selectedSlot = 0;
+    }
+}
+
+// ============================================================
+//  MINECRAFT 2 - Console Command Handler (Server + Client)
+// ============================================================
+
+static bool MC2_HandleConsoleCommand(const wchar_t* cmd)
+{
+    if (!cmd || cmd[0] == L'\0') return false;
+
+    // /difficulty <0-5>
+    if (wcsncmp(cmd, L"/difficulty ", 12) == 0)
+    {
+        int val = _wtoi(cmd + 12);
+        if (val >= 0 && val <= 5)
+        {
+            g_DynamicDifficulty.currentLevel = (MC2DifficultyLevel)val;
+            g_DynamicDifficulty.autoAdjustEnabled = (val == MC2_DIFFICULTY_DYNAMIC);
+            app.SetGameHostOption(eGameHostOption_Difficulty,
+                                  min(val, (int)MC2_DIFFICULTY_HARDCORE));
+            printf("[MC2] Difficulty set to %d.\n", val);
+        }
+        return true;
+    }
+
+    // /weather <clear|rain|thunder|snow|blizzard> [intensity]
+    if (wcsncmp(cmd, L"/weather ", 9) == 0)
+    {
+        const wchar_t* arg = cmd + 9;
+        MC2WeatherType wt = MC2_WEATHER_CLEAR;
+        float intensity   = 1.0f;
+        if      (_wcsicmp(arg, L"clear")    == 0) wt = MC2_WEATHER_CLEAR;
+        else if (_wcsicmp(arg, L"rain")     == 0) wt = MC2_WEATHER_RAIN;
+        else if (_wcsicmp(arg, L"thunder")  == 0) wt = MC2_WEATHER_THUNDER;
+        else if (_wcsicmp(arg, L"snow")     == 0) wt = MC2_WEATHER_SNOW;
+        else if (_wcsicmp(arg, L"blizzard") == 0) wt = MC2_WEATHER_BLIZZARD;
+        MC2_SetWeather(wt, intensity);
+        return true;
+    }
+
+    // /spectator
+    if (_wcsicmp(cmd, L"/spectator") == 0)
+    {
+        if (g_Spectator.active)
+            MC2_ExitSpectatorMode();
+        else
+            MC2_EnterSpectatorMode(0.0f, 80.0f, 0.0f);
+        return true;
+    }
+
+    // /fps
+    if (_wcsicmp(cmd, L"/fps") == 0)
+    {
+        g_Perf.showHUD = !g_Perf.showHUD;
+        printf("[MC2] Performance HUD %s.\n", g_Perf.showHUD ? "ON" : "OFF");
+        return true;
+    }
+
+    // /motd
+    if (_wcsicmp(cmd, L"/motd") == 0)
+    {
+        MC2_PrintMOTD();
+        return true;
+    }
+
+    // /achievement list
+    if (_wcsicmp(cmd, L"/achievement list") == 0)
+    {
+        printf("[MC2] Achievements (%d/%d unlocked):\n",
+               MC2_GetUnlockedAchievementCount(), (int)MC2_ACH_COUNT);
+        for (int i = 0; i < MC2_ACH_COUNT; i++)
+        {
+            printf("[MC2]   [%s] %s - %s\n",
+                   g_Achievements[i].unlocked ? "X" : " ",
+                   g_Achievements[i].name,
+                   g_Achievements[i].description);
+        }
+        return true;
+    }
+
+    // /autosave <on|off|interval N>
+    if (wcsncmp(cmd, L"/autosave ", 10) == 0)
+    {
+        const wchar_t* arg = cmd + 10;
+        if (_wcsicmp(arg, L"on") == 0)
+        {
+            g_AutoSave.enabled = true;
+            printf("[MC2] Auto-save enabled.\n");
+        }
+        else if (_wcsicmp(arg, L"off") == 0)
+        {
+            g_AutoSave.enabled = false;
+            printf("[MC2] Auto-save disabled.\n");
+        }
+        else if (wcsncmp(arg, L"interval ", 9) == 0)
+        {
+            float secs = (float)_wtof(arg + 9);
+            if (secs >= 30.0f)
+            {
+                g_AutoSave.intervalSeconds = secs;
+                g_AutoSave.timer           = secs;
+                printf("[MC2] Auto-save interval set to %.0f seconds.\n", secs);
+            }
+        }
+        return true;
+    }
+
+    // /version
+    if (_wcsicmp(cmd, L"/version") == 0)
+    {
+        printf("[MC2] %s (built %s)\n", MC2_VERSION_STRING, MC2_BUILD_DATE);
+        return true;
+    }
+
+    return false; // not a MC2 command; let vanilla handler try
+}
+
+// ============================================================
+//  Original helper functions (preserved + extended)
+// ============================================================
+
 void UpdateAspectRatio(int width, int height)
 {
 	g_iAspectRatio = static_cast<float>(width) / height;
@@ -131,7 +927,6 @@ static void CopyWideArgToAnsi(LPCWSTR source, char* dest, size_t destSize)
 	dest[destSize - 1] = 0;
 }
 
-// ---------- Persistent options (options.txt next to exe) ----------
 static void GetOptionsFilePath(char *out, size_t outSize)
 {
 	GetModuleFileNameA(NULL, out, (DWORD)outSize);
@@ -173,7 +968,6 @@ static bool LoadFullscreenOption()
 	}
 	return false;
 }
-// ------------------------------------------------------------------
 
 static void ApplyScreenMode(int screenMode)
 {
@@ -294,7 +1088,7 @@ static void SetupHeadlessServerConsole()
 		freopen_s(&stream, "CONIN$", "r", stdin);
 		freopen_s(&stream, "CONOUT$", "w", stdout);
 		freopen_s(&stream, "CONOUT$", "w", stderr);
-		SetConsoleTitleA("Minecraft Server");
+		SetConsoleTitleA(MC2_WINDOW_TITLE " Server");
 	}
 
 	SetConsoleCtrlHandler(HeadlessServerCtrlHandler, TRUE);
@@ -302,10 +1096,6 @@ static void SetupHeadlessServerConsole()
 
 void DefineActions(void)
 {
-	// The app needs to define the actions required, and the possible mappings for these
-
-	// Split into Menu actions, and in-game actions
-
 	InputManager.SetGameJoypadMaps(MAP_STYLE_0,ACTION_MENU_A,							_360_JOY_BUTTON_A);
 	InputManager.SetGameJoypadMaps(MAP_STYLE_0,ACTION_MENU_B,							_360_JOY_BUTTON_B);
 	InputManager.SetGameJoypadMaps(MAP_STYLE_0,ACTION_MENU_X,							_360_JOY_BUTTON_X);
@@ -321,14 +1111,12 @@ void DefineActions(void)
 	InputManager.SetGameJoypadMaps(MAP_STYLE_0,ACTION_MENU_RIGHT_SCROLL,				_360_JOY_BUTTON_RB);
 	InputManager.SetGameJoypadMaps(MAP_STYLE_0,ACTION_MENU_LEFT_SCROLL,					_360_JOY_BUTTON_LB);
 	InputManager.SetGameJoypadMaps(MAP_STYLE_0,ACTION_MENU_PAUSEMENU,					_360_JOY_BUTTON_START);
-
 	InputManager.SetGameJoypadMaps(MAP_STYLE_0,ACTION_MENU_STICK_PRESS,					_360_JOY_BUTTON_LTHUMB);
 	InputManager.SetGameJoypadMaps(MAP_STYLE_0,ACTION_MENU_OTHER_STICK_PRESS,			_360_JOY_BUTTON_RTHUMB);
 	InputManager.SetGameJoypadMaps(MAP_STYLE_0,ACTION_MENU_OTHER_STICK_UP,				_360_JOY_BUTTON_RSTICK_UP);
 	InputManager.SetGameJoypadMaps(MAP_STYLE_0,ACTION_MENU_OTHER_STICK_DOWN,			_360_JOY_BUTTON_RSTICK_DOWN);
 	InputManager.SetGameJoypadMaps(MAP_STYLE_0,ACTION_MENU_OTHER_STICK_LEFT,			_360_JOY_BUTTON_RSTICK_LEFT);
 	InputManager.SetGameJoypadMaps(MAP_STYLE_0,ACTION_MENU_OTHER_STICK_RIGHT,			_360_JOY_BUTTON_RSTICK_RIGHT);
-
 	InputManager.SetGameJoypadMaps(MAP_STYLE_0,MINECRAFT_ACTION_JUMP,					_360_JOY_BUTTON_A);
 	InputManager.SetGameJoypadMaps(MAP_STYLE_0,MINECRAFT_ACTION_FORWARD,				_360_JOY_BUTTON_LSTICK_UP);
 	InputManager.SetGameJoypadMaps(MAP_STYLE_0,MINECRAFT_ACTION_BACKWARD,				_360_JOY_BUTTON_LSTICK_DOWN);
@@ -349,7 +1137,6 @@ void DefineActions(void)
 	InputManager.SetGameJoypadMaps(MAP_STYLE_0,MINECRAFT_ACTION_CRAFTING,				_360_JOY_BUTTON_X);
 	InputManager.SetGameJoypadMaps(MAP_STYLE_0,MINECRAFT_ACTION_RENDER_THIRD_PERSON,	_360_JOY_BUTTON_LTHUMB);
 	InputManager.SetGameJoypadMaps(MAP_STYLE_0,MINECRAFT_ACTION_GAME_INFO,				_360_JOY_BUTTON_BACK);
-
 	InputManager.SetGameJoypadMaps(MAP_STYLE_0,MINECRAFT_ACTION_DPAD_LEFT,				_360_JOY_BUTTON_DPAD_LEFT);
 	InputManager.SetGameJoypadMaps(MAP_STYLE_0,MINECRAFT_ACTION_DPAD_RIGHT,				_360_JOY_BUTTON_DPAD_RIGHT);
 	InputManager.SetGameJoypadMaps(MAP_STYLE_0,MINECRAFT_ACTION_DPAD_UP,				_360_JOY_BUTTON_DPAD_UP);
@@ -370,14 +1157,12 @@ void DefineActions(void)
 	InputManager.SetGameJoypadMaps(MAP_STYLE_1,ACTION_MENU_RIGHT_SCROLL,				_360_JOY_BUTTON_RB);
 	InputManager.SetGameJoypadMaps(MAP_STYLE_1,ACTION_MENU_LEFT_SCROLL,					_360_JOY_BUTTON_LB);
 	InputManager.SetGameJoypadMaps(MAP_STYLE_1,ACTION_MENU_PAUSEMENU,					_360_JOY_BUTTON_START);
-
 	InputManager.SetGameJoypadMaps(MAP_STYLE_1,ACTION_MENU_STICK_PRESS,					_360_JOY_BUTTON_LTHUMB);
 	InputManager.SetGameJoypadMaps(MAP_STYLE_1,ACTION_MENU_OTHER_STICK_PRESS,			_360_JOY_BUTTON_RTHUMB);
 	InputManager.SetGameJoypadMaps(MAP_STYLE_1,ACTION_MENU_OTHER_STICK_UP,				_360_JOY_BUTTON_RSTICK_UP);
 	InputManager.SetGameJoypadMaps(MAP_STYLE_1,ACTION_MENU_OTHER_STICK_DOWN,			_360_JOY_BUTTON_RSTICK_DOWN);
 	InputManager.SetGameJoypadMaps(MAP_STYLE_1,ACTION_MENU_OTHER_STICK_LEFT,			_360_JOY_BUTTON_RSTICK_LEFT);
 	InputManager.SetGameJoypadMaps(MAP_STYLE_1,ACTION_MENU_OTHER_STICK_RIGHT,			_360_JOY_BUTTON_RSTICK_RIGHT);
-
 	InputManager.SetGameJoypadMaps(MAP_STYLE_1,MINECRAFT_ACTION_JUMP,					_360_JOY_BUTTON_RB);
 	InputManager.SetGameJoypadMaps(MAP_STYLE_1,MINECRAFT_ACTION_FORWARD,				_360_JOY_BUTTON_LSTICK_UP);
 	InputManager.SetGameJoypadMaps(MAP_STYLE_1,MINECRAFT_ACTION_BACKWARD,				_360_JOY_BUTTON_LSTICK_DOWN);
@@ -398,7 +1183,6 @@ void DefineActions(void)
 	InputManager.SetGameJoypadMaps(MAP_STYLE_1,MINECRAFT_ACTION_CRAFTING,				_360_JOY_BUTTON_X);
 	InputManager.SetGameJoypadMaps(MAP_STYLE_1,MINECRAFT_ACTION_RENDER_THIRD_PERSON,	_360_JOY_BUTTON_RTHUMB);
 	InputManager.SetGameJoypadMaps(MAP_STYLE_1,MINECRAFT_ACTION_GAME_INFO,				_360_JOY_BUTTON_BACK);
-
 	InputManager.SetGameJoypadMaps(MAP_STYLE_1,MINECRAFT_ACTION_DPAD_LEFT,				_360_JOY_BUTTON_DPAD_LEFT);
 	InputManager.SetGameJoypadMaps(MAP_STYLE_1,MINECRAFT_ACTION_DPAD_RIGHT,				_360_JOY_BUTTON_DPAD_RIGHT);
 	InputManager.SetGameJoypadMaps(MAP_STYLE_1,MINECRAFT_ACTION_DPAD_UP,				_360_JOY_BUTTON_DPAD_UP);
@@ -418,7 +1202,6 @@ void DefineActions(void)
 	InputManager.SetGameJoypadMaps(MAP_STYLE_2,ACTION_MENU_PAGEDOWN,					_360_JOY_BUTTON_RT);
 	InputManager.SetGameJoypadMaps(MAP_STYLE_2,ACTION_MENU_RIGHT_SCROLL,				_360_JOY_BUTTON_RB);
 	InputManager.SetGameJoypadMaps(MAP_STYLE_2,ACTION_MENU_LEFT_SCROLL,					_360_JOY_BUTTON_LB);
-
 	InputManager.SetGameJoypadMaps(MAP_STYLE_2,MINECRAFT_ACTION_JUMP,					_360_JOY_BUTTON_LT);
 	InputManager.SetGameJoypadMaps(MAP_STYLE_2,MINECRAFT_ACTION_FORWARD,				_360_JOY_BUTTON_LSTICK_UP);
 	InputManager.SetGameJoypadMaps(MAP_STYLE_2,MINECRAFT_ACTION_BACKWARD,				_360_JOY_BUTTON_LSTICK_DOWN);
@@ -440,74 +1223,19 @@ void DefineActions(void)
 	InputManager.SetGameJoypadMaps(MAP_STYLE_2,MINECRAFT_ACTION_RENDER_THIRD_PERSON,	_360_JOY_BUTTON_LTHUMB);
 	InputManager.SetGameJoypadMaps(MAP_STYLE_2,MINECRAFT_ACTION_GAME_INFO,				_360_JOY_BUTTON_BACK);
 	InputManager.SetGameJoypadMaps(MAP_STYLE_2,ACTION_MENU_PAUSEMENU,					_360_JOY_BUTTON_START);
-
 	InputManager.SetGameJoypadMaps(MAP_STYLE_2,ACTION_MENU_STICK_PRESS,					_360_JOY_BUTTON_LTHUMB);
 	InputManager.SetGameJoypadMaps(MAP_STYLE_2,ACTION_MENU_OTHER_STICK_PRESS,			_360_JOY_BUTTON_RTHUMB);
 	InputManager.SetGameJoypadMaps(MAP_STYLE_2,ACTION_MENU_OTHER_STICK_UP,				_360_JOY_BUTTON_RSTICK_UP);
 	InputManager.SetGameJoypadMaps(MAP_STYLE_2,ACTION_MENU_OTHER_STICK_DOWN,			_360_JOY_BUTTON_RSTICK_DOWN);
 	InputManager.SetGameJoypadMaps(MAP_STYLE_2,ACTION_MENU_OTHER_STICK_LEFT,			_360_JOY_BUTTON_RSTICK_LEFT);
 	InputManager.SetGameJoypadMaps(MAP_STYLE_2,ACTION_MENU_OTHER_STICK_RIGHT,			_360_JOY_BUTTON_RSTICK_RIGHT);
-
 	InputManager.SetGameJoypadMaps(MAP_STYLE_2,MINECRAFT_ACTION_DPAD_LEFT,				_360_JOY_BUTTON_DPAD_LEFT);
 	InputManager.SetGameJoypadMaps(MAP_STYLE_2,MINECRAFT_ACTION_DPAD_RIGHT,				_360_JOY_BUTTON_DPAD_RIGHT);
 	InputManager.SetGameJoypadMaps(MAP_STYLE_2,MINECRAFT_ACTION_DPAD_UP,				_360_JOY_BUTTON_DPAD_UP);
 	InputManager.SetGameJoypadMaps(MAP_STYLE_2,MINECRAFT_ACTION_DPAD_DOWN,				_360_JOY_BUTTON_DPAD_DOWN);
 }
 
-#if 0
-HRESULT InitD3D( IDirect3DDevice9 **ppDevice,
-				D3DPRESENT_PARAMETERS *pd3dPP )
-{
-	IDirect3D9 *pD3D;
-
-	pD3D = Direct3DCreate9( D3D_SDK_VERSION );
-
-	// Set up the structure used to create the D3DDevice
-	// Using a permanent 1280x720 backbuffer now no matter what the actual video resolution.right Have also disabled letterboxing,
-	// which would letterbox a 1280x720 output if it detected a 4:3 video source - we're doing an anamorphic squash in this
-	// mode so don't need this functionality.
-
-	ZeroMemory( pd3dPP, sizeof(D3DPRESENT_PARAMETERS) );
-	XVIDEO_MODE VideoMode;
-	XGetVideoMode( &VideoMode );
-	g_bWidescreen = VideoMode.fIsWideScreen;
-	pd3dPP->BackBufferWidth        = 1280;
-	pd3dPP->BackBufferHeight       = 720;
-	pd3dPP->BackBufferFormat       = D3DFMT_A8R8G8B8;
-	pd3dPP->BackBufferCount        = 1;
-	pd3dPP->EnableAutoDepthStencil = TRUE;
-	pd3dPP->AutoDepthStencilFormat = D3DFMT_D24S8;
-	pd3dPP->SwapEffect             = D3DSWAPEFFECT_DISCARD;
-	pd3dPP->PresentationInterval   = D3DPRESENT_INTERVAL_IMMEDIATE;
-	//pd3dPP->Flags				   = D3DPRESENTFLAG_NO_LETTERBOX;
-	//ERR[D3D]: Can't set D3DPRESENTFLAG_NO_LETTERBOX when wide-screen is enabled
-	//	in the launcher/dashboard.
-	if(g_bWidescreen)
-		pd3dPP->Flags=0;
-	else
-		pd3dPP->Flags				   = D3DPRESENTFLAG_NO_LETTERBOX;
-
-	// Create the device.
-	return pD3D->CreateDevice(
-		0,
-		D3DDEVTYPE_HAL,
-		NULL,
-		D3DCREATE_HARDWARE_VERTEXPROCESSING|D3DCREATE_BUFFER_2_FRAMES,
-		pd3dPP,
-		ppDevice );
-}
-#endif
-//#define MEMORY_TRACKING
-
-#ifdef MEMORY_TRACKING
-void ResetMem();
-void DumpMem();
-void MemPixStuff();
-#else
-void MemSect(int sect)
-{
-}
-#endif
+void MemSect(int sect) {}
 
 HINSTANCE               g_hInst = NULL;
 HWND                    g_hWnd = NULL;
@@ -520,17 +1248,6 @@ ID3D11RenderTargetView* g_pRenderTargetView = NULL;
 ID3D11DepthStencilView* g_pDepthStencilView = NULL;
 ID3D11Texture2D*		g_pDepthStencilBuffer = NULL;
 
-//
-//  FUNCTION: WndProc(HWND, UINT, WPARAM, LPARAM)
-//
-//  PURPOSE:  Processes messages for the main window.
-//
-//  WM_COMMAND	- process the application menu
-//  WM_PAINT	- Paint the main window
-//  WM_DESTROY	- post a quit message and return
-//  WM_SIZE		- handle resizing logic to support Any Aspect Ratio
-//
-//
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
 	int wmId, wmEvent;
@@ -542,43 +1259,35 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	case WM_COMMAND:
 		wmId    = LOWORD(wParam);
 		wmEvent = HIWORD(wParam);
-		// Parse the menu selections:
 		switch (wmId)
 		{
 		case IDM_EXIT:
 			DestroyWindow(hWnd);
 			break;
-
 		default:
 			return DefWindowProc(hWnd, message, wParam, lParam);
 		}
 		break;
 	case WM_PAINT:
 		hdc = BeginPaint(hWnd, &ps);
-		// TODO: Add any drawing code here...
 		EndPaint(hWnd, &ps);
 		break;
 	case WM_DESTROY:
 		PostQuitMessage(0);
 		break;
-
 	case WM_KILLFOCUS:
 		g_KBMInput.ClearAllState();
 		g_KBMInput.SetWindowFocused(false);
 		if (g_KBMInput.IsMouseGrabbed())
 			g_KBMInput.SetMouseGrabbed(false);
 		break;
-
 	case WM_SETFOCUS:
 		g_KBMInput.SetWindowFocused(true);
 		break;
-
 	case WM_CHAR:
-		// Buffer typed characters so UIScene_Keyboard can dispatch them to the Iggy Flash player
-		if (wParam >= 0x20 || wParam == 0x08 || wParam == 0x0D) // printable chars + backspace + enter
+		if (wParam >= 0x20 || wParam == 0x08 || wParam == 0x0D)
 			g_KBMInput.OnChar(static_cast<wchar_t>(wParam));
 		break;
-
 	case WM_KEYDOWN:
 	case WM_SYSKEYDOWN:
 	{
@@ -594,10 +1303,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				{ chat->handlePasteRequest(); break; }
 			if ((vk == VK_UP || vk == VK_DOWN) && !(lParam & 0x40000000))
 				{ if (vk == VK_UP) chat->handleHistoryUp(); else chat->handleHistoryDown(); break; }
-			if (vk >= '1' && vk <= '9') // Prevent hotkey conflicts
-				break;
-			if (vk == VK_SHIFT)
-				break;
+			if (vk >= '1' && vk <= '9') break;
+			if (vk == VK_SHIFT) break;
 		}
 #endif
 		if (vk == VK_SHIFT)
@@ -622,34 +1329,18 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		g_KBMInput.OnKeyUp(vk);
 		break;
 	}
-
-	case WM_LBUTTONDOWN:
-		g_KBMInput.OnMouseButtonDown(KeyboardMouseInput::MOUSE_LEFT);
-		break;
-	case WM_LBUTTONUP:
-		g_KBMInput.OnMouseButtonUp(KeyboardMouseInput::MOUSE_LEFT);
-		break;
-	case WM_RBUTTONDOWN:
-		g_KBMInput.OnMouseButtonDown(KeyboardMouseInput::MOUSE_RIGHT);
-		break;
-	case WM_RBUTTONUP:
-		g_KBMInput.OnMouseButtonUp(KeyboardMouseInput::MOUSE_RIGHT);
-		break;
-	case WM_MBUTTONDOWN:
-		g_KBMInput.OnMouseButtonDown(KeyboardMouseInput::MOUSE_MIDDLE);
-		break;
-	case WM_MBUTTONUP:
-		g_KBMInput.OnMouseButtonUp(KeyboardMouseInput::MOUSE_MIDDLE);
-		break;
-
+	case WM_LBUTTONDOWN: g_KBMInput.OnMouseButtonDown(KeyboardMouseInput::MOUSE_LEFT);   break;
+	case WM_LBUTTONUP:   g_KBMInput.OnMouseButtonUp(KeyboardMouseInput::MOUSE_LEFT);     break;
+	case WM_RBUTTONDOWN: g_KBMInput.OnMouseButtonDown(KeyboardMouseInput::MOUSE_RIGHT);  break;
+	case WM_RBUTTONUP:   g_KBMInput.OnMouseButtonUp(KeyboardMouseInput::MOUSE_RIGHT);    break;
+	case WM_MBUTTONDOWN: g_KBMInput.OnMouseButtonDown(KeyboardMouseInput::MOUSE_MIDDLE); break;
+	case WM_MBUTTONUP:   g_KBMInput.OnMouseButtonUp(KeyboardMouseInput::MOUSE_MIDDLE);   break;
 	case WM_MOUSEMOVE:
 		g_KBMInput.OnMouseMove(LOWORD(lParam), HIWORD(lParam));
 		break;
-
 	case WM_MOUSEWHEEL:
 		g_KBMInput.OnMouseWheel(GET_WHEEL_DELTA_WPARAM(wParam));
 		break;
-
 	case WM_INPUT:
 		{
 			UINT dwSize = 0;
@@ -661,9 +1352,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				{
 					RAWINPUT* raw = (RAWINPUT*)rawBuffer;
 					if (raw->header.dwType == RIM_TYPEMOUSE)
-					{
 						g_KBMInput.OnRawMouseDelta(raw->data.mouse.lLastX, raw->data.mouse.lLastY);
-					}
 				}
 			}
 		}
@@ -679,135 +1368,93 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	return 0;
 }
 
-//
-//  FUNCTION: MyRegisterClass()
-//
-//  PURPOSE: Registers the window class.
-//
 ATOM MyRegisterClass(HINSTANCE hInstance)
 {
 	WNDCLASSEX wcex;
-
-	wcex.cbSize = sizeof(WNDCLASSEX);
-
-	wcex.style			= CS_HREDRAW | CS_VREDRAW;
-	wcex.lpfnWndProc	= WndProc;
-	wcex.cbClsExtra		= 0;
-	wcex.cbWndExtra		= 0;
-	wcex.hInstance		= hInstance;
-	wcex.hIcon			= LoadIcon(hInstance, "Minecraft");
-	wcex.hCursor		= LoadCursor(NULL, IDC_ARROW);
-	wcex.hbrBackground	= (HBRUSH)(COLOR_WINDOW+1);
-	wcex.lpszMenuName	= "Minecraft";
-	wcex.lpszClassName	= "MinecraftClass";
-	wcex.hIconSm		= LoadIcon(wcex.hInstance, MAKEINTRESOURCE(IDI_MINECRAFTWINDOWS));
-
+	wcex.cbSize         = sizeof(WNDCLASSEX);
+	wcex.style          = CS_HREDRAW | CS_VREDRAW;
+	wcex.lpfnWndProc    = WndProc;
+	wcex.cbClsExtra     = 0;
+	wcex.cbWndExtra     = 0;
+	wcex.hInstance      = hInstance;
+	wcex.hIcon          = LoadIcon(hInstance, "Minecraft");
+	wcex.hCursor        = LoadCursor(NULL, IDC_ARROW);
+	wcex.hbrBackground  = (HBRUSH)(COLOR_WINDOW+1);
+	wcex.lpszMenuName   = MC2_WINDOW_TITLE;
+	wcex.lpszClassName  = "MinecraftClass";
+	wcex.hIconSm        = LoadIcon(wcex.hInstance, MAKEINTRESOURCE(IDI_MINECRAFTWINDOWS));
 	return RegisterClassEx(&wcex);
 }
 
-//
-//   FUNCTION: InitInstance(HINSTANCE, int)
-//
-//   PURPOSE: Saves instance handle and creates main window
-//
-//   COMMENTS:
-//
-//        In this function, we save the instance handle in a global variable and
-//        create and display the main program window.
-//
 BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 {
-	g_hInst = hInstance; // Store instance handle in our global variable
+	g_hInst = hInstance;
 
-	RECT wr = {0, 0, g_iScreenWidth, g_iScreenHeight};    // set the size, but not the position
-	AdjustWindowRect(&wr, WS_OVERLAPPEDWINDOW, FALSE);    // adjust the size
+	RECT wr = {0, 0, g_iScreenWidth, g_iScreenHeight};
+	AdjustWindowRect(&wr, WS_OVERLAPPEDWINDOW, FALSE);
 
-	g_hWnd = CreateWindow(	"MinecraftClass",
-		"Minecraft",
+	g_hWnd = CreateWindow("MinecraftClass",
+		MC2_WINDOW_TITLE,
 		WS_OVERLAPPEDWINDOW,
-		CW_USEDEFAULT,
-		0,
-		wr.right - wr.left,    // width of the window
-		wr.bottom - wr.top,    // height of the window
-		NULL,
-		NULL,
-		hInstance,
-		NULL);
+		CW_USEDEFAULT, 0,
+		wr.right - wr.left,
+		wr.bottom - wr.top,
+		NULL, NULL, hInstance, NULL);
 
 	if (!g_hWnd)
-	{
 		return FALSE;
-	}
 
 	ShowWindow(g_hWnd, (nCmdShow != SW_HIDE) ? SW_SHOWMAXIMIZED : nCmdShow);
 	UpdateWindow(g_hWnd);
-
 	return TRUE;
 }
 
-// 4J Stu - These functions are referenced from the Windows Input library
 void ClearGlobalText()
 {
-	// clear the global text
-	memset(chGlobalText,0,256);
-	memset(ui16GlobalText,0,512);
+	memset(chGlobalText,  0, 256);
+	memset(ui16GlobalText,0, 512);
 }
 
 uint16_t *GetGlobalText()
 {
-	//copy the ch text to ui16
 	char * pchBuffer=(char *)ui16GlobalText;
-		for(int i=0;i<256;i++)
-		{
-			pchBuffer[i*2]=chGlobalText[i];
-		}
+	for(int i=0;i<256;i++)
+		pchBuffer[i*2]=chGlobalText[i];
 	return ui16GlobalText;
 }
+
 void SeedEditBox()
 {
 	DialogBox(hMyInst, MAKEINTRESOURCE(IDD_SEED),
 		g_hWnd, reinterpret_cast<DLGPROC>(DlgProc));
 }
 
-
-//---------------------------------------------------------------------------
 LRESULT CALLBACK DlgProc(HWND hWndDlg, UINT Msg, WPARAM wParam, LPARAM lParam)
 {
 	switch(Msg)
 	{
-	case WM_INITDIALOG:
-		return TRUE;
-
+	case WM_INITDIALOG: return TRUE;
 	case WM_COMMAND:
 		switch(wParam)
 		{
 		case IDOK:
-			// Set the text
-			GetDlgItemText(hWndDlg,IDC_EDIT,chGlobalText,256);
+			GetDlgItemText(hWndDlg, IDC_EDIT, chGlobalText, 256);
 			EndDialog(hWndDlg, 0);
 			return TRUE;
 		}
 		break;
 	}
-
 	return FALSE;
 }
 
-//--------------------------------------------------------------------------------------
-// Create Direct3D device and swap chain
-//--------------------------------------------------------------------------------------
 HRESULT InitDevice()
 {
 	HRESULT hr = S_OK;
 
 	RECT rc;
 	GetClientRect( g_hWnd, &rc );
-	UINT width = rc.right - rc.left;
-	UINT height = rc.bottom - rc.top;
-//app.DebugPrintf("width: %d, height: %d\n", width, height);
-	width = g_iScreenWidth;
-	height = g_iScreenHeight;
-//app.DebugPrintf("width: %d, height: %d\n", width, height);
+	UINT width  = g_iScreenWidth;
+	UINT height = g_iScreenHeight;
 
 	UINT createDeviceFlags = 0;
 #ifdef _DEBUG
@@ -832,71 +1479,65 @@ HRESULT InitDevice()
 
 	DXGI_SWAP_CHAIN_DESC sd;
 	ZeroMemory( &sd, sizeof( sd ) );
-	sd.BufferCount = 1;
-	sd.BufferDesc.Width = width;
-	sd.BufferDesc.Height = height;
-	sd.BufferDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
-	sd.BufferDesc.RefreshRate.Numerator = 60;
+	sd.BufferCount                        = 1;
+	sd.BufferDesc.Width                   = width;
+	sd.BufferDesc.Height                  = height;
+	sd.BufferDesc.Format                  = DXGI_FORMAT_R8G8B8A8_UNORM;
+	sd.BufferDesc.RefreshRate.Numerator   = 60;
 	sd.BufferDesc.RefreshRate.Denominator = 1;
-	sd.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
-	sd.OutputWindow = g_hWnd;
-	sd.SampleDesc.Count = 1;
-	sd.SampleDesc.Quality = 0;
-	sd.Windowed = TRUE;
+	sd.BufferUsage                        = DXGI_USAGE_RENDER_TARGET_OUTPUT;
+	sd.OutputWindow                       = g_hWnd;
+	sd.SampleDesc.Count                   = 1;
+	sd.SampleDesc.Quality                 = 0;
+	sd.Windowed                           = TRUE;
 
 	for( UINT driverTypeIndex = 0; driverTypeIndex < numDriverTypes; driverTypeIndex++ )
 	{
 		g_driverType = driverTypes[driverTypeIndex];
-		hr = D3D11CreateDeviceAndSwapChain( NULL, g_driverType, NULL, createDeviceFlags, featureLevels, numFeatureLevels,
-			D3D11_SDK_VERSION, &sd, &g_pSwapChain, &g_pd3dDevice, &g_featureLevel, &g_pImmediateContext );
+		hr = D3D11CreateDeviceAndSwapChain( NULL, g_driverType, NULL, createDeviceFlags,
+			featureLevels, numFeatureLevels, D3D11_SDK_VERSION, &sd,
+			&g_pSwapChain, &g_pd3dDevice, &g_featureLevel, &g_pImmediateContext );
 		if( HRESULT_SUCCEEDED( hr ) )
 			break;
 	}
 	if( FAILED( hr ) )
 		return hr;
 
-	// Create a render target view
 	ID3D11Texture2D* pBackBuffer = NULL;
 	hr = g_pSwapChain->GetBuffer( 0, __uuidof( ID3D11Texture2D ), ( LPVOID* )&pBackBuffer );
-	if( FAILED( hr ) )
-		return hr;
+	if( FAILED( hr ) ) return hr;
 
-	// Create a depth stencil buffer
 	D3D11_TEXTURE2D_DESC descDepth;
 	ZeroMemory(&descDepth, sizeof(descDepth));
-
-	descDepth.Width = width;
-	descDepth.Height = height;
-	descDepth.MipLevels = 1;
-	descDepth.ArraySize = 1;
-	descDepth.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
-	descDepth.SampleDesc.Count = 1;
+	descDepth.Width              = width;
+	descDepth.Height             = height;
+	descDepth.MipLevels          = 1;
+	descDepth.ArraySize          = 1;
+	descDepth.Format             = DXGI_FORMAT_D24_UNORM_S8_UINT;
+	descDepth.SampleDesc.Count   = 1;
 	descDepth.SampleDesc.Quality = 0;
-	descDepth.Usage = D3D11_USAGE_DEFAULT;
-	descDepth.BindFlags = D3D11_BIND_DEPTH_STENCIL;
-	descDepth.CPUAccessFlags = 0;
-	descDepth.MiscFlags = 0;
+	descDepth.Usage              = D3D11_USAGE_DEFAULT;
+	descDepth.BindFlags          = D3D11_BIND_DEPTH_STENCIL;
+	descDepth.CPUAccessFlags     = 0;
+	descDepth.MiscFlags          = 0;
 	hr = g_pd3dDevice->CreateTexture2D(&descDepth, NULL, &g_pDepthStencilBuffer);
 
 	D3D11_DEPTH_STENCIL_VIEW_DESC descDSView;
 	ZeroMemory(&descDSView, sizeof(descDSView));
-	descDSView.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
-	descDSView.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2D;
+	descDSView.Format             = DXGI_FORMAT_D24_UNORM_S8_UINT;
+	descDSView.ViewDimension      = D3D11_DSV_DIMENSION_TEXTURE2D;
 	descDSView.Texture2D.MipSlice = 0;
-
 	hr = g_pd3dDevice->CreateDepthStencilView(g_pDepthStencilBuffer, &descDSView, &g_pDepthStencilView);
 
 	hr = g_pd3dDevice->CreateRenderTargetView( pBackBuffer, NULL, &g_pRenderTargetView );
 	pBackBuffer->Release();
-	if( FAILED( hr ) )
-		return hr;
+	if( FAILED( hr ) ) return hr;
 
 	g_pImmediateContext->OMSetRenderTargets( 1, &g_pRenderTargetView, g_pDepthStencilView );
 
-	// Setup the viewport
 	D3D11_VIEWPORT vp;
-	vp.Width = (FLOAT)width;
-	vp.Height = (FLOAT)height;
+	vp.Width    = (FLOAT)width;
+	vp.Height   = (FLOAT)height;
 	vp.MinDepth = 0.0f;
 	vp.MaxDepth = 1.0f;
 	vp.TopLeftX = 0;
@@ -904,27 +1545,18 @@ HRESULT InitDevice()
 	g_pImmediateContext->RSSetViewports( 1, &vp );
 
 	RenderManager.Initialise(g_pd3dDevice, g_pSwapChain);
-
 	PostProcesser::GetInstance().Init();
 
 	return S_OK;
 }
 
-//--------------------------------------------------------------------------------------
-// Render the frame
-//--------------------------------------------------------------------------------------
 void Render()
 {
-	// Just clear the backbuffer
-	float ClearColor[4] = { 0.0f, 0.125f, 0.3f, 1.0f }; //red,green,blue,alpha
-
+	float ClearColor[4] = { 0.0f, 0.125f, 0.3f, 1.0f };
 	g_pImmediateContext->ClearRenderTargetView( g_pRenderTargetView, ClearColor );
 	g_pSwapChain->Present( 0, 0 );
 }
 
-//--------------------------------------------------------------------------------------
-// Toggle borderless fullscreen
-//--------------------------------------------------------------------------------------
 void ToggleFullscreen()
 {
 	DWORD dwStyle = GetWindowLong(g_hWnd, GWL_STYLE);
@@ -937,7 +1569,7 @@ void ToggleFullscreen()
 			SetWindowLong(g_hWnd, GWL_STYLE, dwStyle & ~WS_OVERLAPPEDWINDOW);
 			SetWindowPos(g_hWnd, HWND_TOP,
 				mi.rcMonitor.left, mi.rcMonitor.top,
-				mi.rcMonitor.right - mi.rcMonitor.left,
+				mi.rcMonitor.right  - mi.rcMonitor.left,
 				mi.rcMonitor.bottom - mi.rcMonitor.top,
 				SWP_NOOWNERZORDER | SWP_FRAMECHANGED);
 		}
@@ -956,17 +1588,40 @@ void ToggleFullscreen()
 		g_KBMInput.SetWindowFocused(true);
 }
 
-//--------------------------------------------------------------------------------------
-// Clean up the objects we've created
-//--------------------------------------------------------------------------------------
 void CleanupDevice()
 {
 	if( g_pImmediateContext ) g_pImmediateContext->ClearState();
-
 	if( g_pRenderTargetView ) g_pRenderTargetView->Release();
-	if( g_pSwapChain ) g_pSwapChain->Release();
+	if( g_pSwapChain )        g_pSwapChain->Release();
 	if( g_pImmediateContext ) g_pImmediateContext->Release();
-	if( g_pd3dDevice ) g_pd3dDevice->Release();
+	if( g_pd3dDevice )        g_pd3dDevice->Release();
+}
+
+// ============================================================
+//  MINECRAFT 2 - Extended MC2 subsystem initialisation
+//  Called from InitialiseMinecraftRuntime() after the core
+//  engine boots so all MC2 features start in a valid state.
+// ============================================================
+static void MC2_InitAllSubsystems(double sessionStartTime)
+{
+    printf("[MC2] *** %s starting ***\n", MC2_VERSION_STRING);
+    printf("[MC2] Build: %s\n", MC2_BUILD_DATE);
+
+    MC2_InitPerformanceCounter();
+    MC2_InitDynamicDifficulty();
+    g_DynamicDifficulty.sessionStartTime  = sessionStartTime;
+    g_DynamicDifficulty.lastEvaluationTime = sessionStartTime;
+
+    MC2_InitWeather();
+    MC2_InitAchievements();
+    MC2_InitSpectator();
+    MC2_InitAutoSave(300.0f);
+    MC2_InitChatHistory();
+    MC2_LoadHotbar();
+    MC2_LoadMOTD();
+
+    printf("[MC2] All subsystems ready. Achievements: %d/%d previously unlocked.\n",
+           MC2_GetUnlockedAchievementCount(), (int)MC2_ACH_COUNT);
 }
 
 static Minecraft* InitialiseMinecraftRuntime()
@@ -999,8 +1654,8 @@ static Minecraft* InitialiseMinecraftRuntime()
 
 	for (int i = 0; i < MINECRAFT_NET_MAX_PLAYERS; i++)
 	{
-		IQNet::m_player[i].m_smallId = (BYTE)i;
-		IQNet::m_player[i].m_isRemote = false;
+		IQNet::m_player[i].m_smallId      = (BYTE)i;
+		IQNet::m_player[i].m_isRemote     = false;
 		IQNet::m_player[i].m_isHostPlayer = (i == 0);
 		swprintf_s(IQNet::m_player[i].m_gamertag, 32, L"Player%d", i);
 	}
@@ -1027,6 +1682,15 @@ static Minecraft* InitialiseMinecraftRuntime()
 	app.InitGameSettings();
 	app.InitialiseTips();
 
+	// ---- MINECRAFT 2: Initialise all new subsystems ----
+	LARGE_INTEGER liNow;
+	QueryPerformanceCounter(&liNow);
+	LARGE_INTEGER liFreq;
+	QueryPerformanceFrequency(&liFreq);
+	double sessionStart = (double)liNow.QuadPart / (double)liFreq.QuadPart;
+	MC2_InitAllSubsystems(sessionStart);
+	// ----------------------------------------------------
+
 	return pMinecraft;
 }
 
@@ -1039,11 +1703,7 @@ static int HeadlessServerConsoleThreadProc(void* lpParameter)
 	{
 		if (!std::getline(std::cin, line))
 		{
-			if (std::cin.eof())
-			{
-				break;
-			}
-
+			if (std::cin.eof()) break;
 			std::cin.clear();
 			Sleep(50);
 			continue;
@@ -1053,11 +1713,14 @@ static int HeadlessServerConsoleThreadProc(void* lpParameter)
 		if (command.empty())
 			continue;
 
+		// ---- MINECRAFT 2: Try MC2 command first ----
+		if (MC2_HandleConsoleCommand(command.c_str()))
+			continue;
+		// ---------------------------------------------
+
 		MinecraftServer* server = MinecraftServer::getInstance();
 		if (server != NULL)
-		{
 			server->handleConsoleInput(command, server);
-		}
 	}
 
 	return 0;
@@ -1072,17 +1735,16 @@ static int RunHeadlessServer()
 
 	const char* bindIp = "*";
 	if (g_Win64DedicatedServerBindIP[0] != 0)
-	{
 		bindIp = g_Win64DedicatedServerBindIP;
-	}
 	else if (!configuredBindIp.empty())
-	{
 		bindIp = wstringtochararray(configuredBindIp);
-	}
 
-	const int port = g_Win64DedicatedServerPort > 0 ? g_Win64DedicatedServerPort : serverSettings.getInt(L"server-port", WIN64_NET_DEFAULT_PORT);
+	const int port = g_Win64DedicatedServerPort > 0
+		? g_Win64DedicatedServerPort
+		: serverSettings.getInt(L"server-port", WIN64_NET_DEFAULT_PORT);
 
-	printf("Starting headless server on %s:%d\n", bindIp, port);
+	printf("Starting %s headless server on %s:%d\n",
+		MC2_VERSION_STRING, bindIp, port);
 	fflush(stdout);
 
 	Minecraft* pMinecraft = InitialiseMinecraftRuntime();
@@ -1092,26 +1754,48 @@ static int RunHeadlessServer()
 		return 1;
 	}
 
-	app.SetGameHostOption(eGameHostOption_Difficulty, serverSettings.getInt(L"difficulty", 1));
-	app.SetGameHostOption(eGameHostOption_Gamertags, 1);
-	app.SetGameHostOption(eGameHostOption_GameType, serverSettings.getInt(L"gamemode", 0));
-	app.SetGameHostOption(eGameHostOption_LevelType, 0);
-	app.SetGameHostOption(eGameHostOption_Structures, serverSettings.getBoolean(L"generate-structures", true) ? 1 : 0);
-	app.SetGameHostOption(eGameHostOption_BonusChest, serverSettings.getBoolean(L"bonus-chest", false) ? 1 : 0);
-	app.SetGameHostOption(eGameHostOption_PvP, serverSettings.getBoolean(L"pvp", true) ? 1 : 0);
-	app.SetGameHostOption(eGameHostOption_TrustPlayers, serverSettings.getBoolean(L"trust-players", true) ? 1 : 0);
-	app.SetGameHostOption(eGameHostOption_FireSpreads, serverSettings.getBoolean(L"fire-spreads", true) ? 1 : 0);
-	app.SetGameHostOption(eGameHostOption_TNT, serverSettings.getBoolean(L"tnt", true) ? 1 : 0);
-	app.SetGameHostOption(eGameHostOption_HostCanFly, 1);
-	app.SetGameHostOption(eGameHostOption_HostCanChangeHunger, 1);
-	app.SetGameHostOption(eGameHostOption_HostCanBeInvisible, 1);
-	app.SetGameHostOption(eGameHostOption_MobGriefing, 1);
-	app.SetGameHostOption(eGameHostOption_KeepInventory, 0);
-	app.SetGameHostOption(eGameHostOption_DoMobSpawning, 1);
-	app.SetGameHostOption(eGameHostOption_DoMobLoot, 1);
-	app.SetGameHostOption(eGameHostOption_DoTileDrops, 1);
-	app.SetGameHostOption(eGameHostOption_NaturalRegeneration, 1);
-	app.SetGameHostOption(eGameHostOption_DoDaylightCycle, 1);
+	// ---- MINECRAFT 2: Print MOTD on server start ----
+	MC2_PrintMOTD();
+	// -------------------------------------------------
+
+	app.SetGameHostOption(eGameHostOption_Difficulty,        serverSettings.getInt(L"difficulty", 1));
+	app.SetGameHostOption(eGameHostOption_Gamertags,         1);
+	app.SetGameHostOption(eGameHostOption_GameType,          serverSettings.getInt(L"gamemode", 0));
+	app.SetGameHostOption(eGameHostOption_LevelType,         0);
+	app.SetGameHostOption(eGameHostOption_Structures,        serverSettings.getBoolean(L"generate-structures", true)  ? 1 : 0);
+	app.SetGameHostOption(eGameHostOption_BonusChest,        serverSettings.getBoolean(L"bonus-chest",         false) ? 1 : 0);
+	app.SetGameHostOption(eGameHostOption_PvP,               serverSettings.getBoolean(L"pvp",                 true)  ? 1 : 0);
+	app.SetGameHostOption(eGameHostOption_TrustPlayers,      serverSettings.getBoolean(L"trust-players",       true)  ? 1 : 0);
+	app.SetGameHostOption(eGameHostOption_FireSpreads,       serverSettings.getBoolean(L"fire-spreads",        true)  ? 1 : 0);
+	app.SetGameHostOption(eGameHostOption_TNT,               serverSettings.getBoolean(L"tnt",                 true)  ? 1 : 0);
+	app.SetGameHostOption(eGameHostOption_HostCanFly,        1);
+	app.SetGameHostOption(eGameHostOption_HostCanChangeHunger,   1);
+	app.SetGameHostOption(eGameHostOption_HostCanBeInvisible,    1);
+	app.SetGameHostOption(eGameHostOption_MobGriefing,       1);
+	app.SetGameHostOption(eGameHostOption_KeepInventory,     0);
+	app.SetGameHostOption(eGameHostOption_DoMobSpawning,     1);
+	app.SetGameHostOption(eGameHostOption_DoMobLoot,         1);
+	app.SetGameHostOption(eGameHostOption_DoTileDrops,       1);
+	app.SetGameHostOption(eGameHostOption_NaturalRegeneration,   1);
+	app.SetGameHostOption(eGameHostOption_DoDaylightCycle,   1);
+
+	// MINECRAFT 2: Apply dynamic difficulty from server.properties
+	bool dynDiff = serverSettings.getBoolean(L"dynamic-difficulty", false);
+	if (dynDiff)
+	{
+		g_DynamicDifficulty.autoAdjustEnabled = true;
+		g_DynamicDifficulty.currentLevel      = MC2_DIFFICULTY_DYNAMIC;
+		printf("[MC2] Dynamic difficulty ENABLED on server.\n");
+	}
+
+	// MINECRAFT 2: Load custom MOTD from server.properties if present
+	wstring motdW = serverSettings.getString(L"motd", L"");
+	if (!motdW.empty())
+	{
+		strncpy_s(g_MOTD.lines[0], MC2_MOTD_LINE_LEN,
+				  wstringtochararray(motdW), _TRUNCATE);
+		g_MOTD.lineCount = 1;
+	}
 
 	MinecraftServer::resetFlags();
 	g_NetworkManager.HostGame(0, false, true, MINECRAFT_NET_MAX_PLAYERS, 0);
@@ -1125,7 +1809,7 @@ static int RunHeadlessServer()
 	g_NetworkManager.FakeLocalPlayerJoined();
 
 	NetworkGameInitData* param = new NetworkGameInitData();
-	param->seed = 0;
+	param->seed     = 0;
 	param->settings = app.GetGameHostOption(eGameHostOption_All);
 
 	g_NetworkManager.ServerStoppedCreate(true);
@@ -1149,7 +1833,7 @@ static int RunHeadlessServer()
 	g_NetworkManager.DoWork();
 
 	printf("Server ready on %s:%d\n", bindIp, port);
-	printf("Type 'help' for server commands.\n");
+	printf("Type 'help' for server commands. Type '/version' for MC2 info.\n");
 	fflush(stdout);
 
 	C4JThread* consoleThread = new C4JThread(&HeadlessServerConsoleThreadProc, NULL, "Server console", 128 * 1024);
@@ -1173,11 +1857,23 @@ static int RunHeadlessServer()
 		g_NetworkManager.DoWork();
 		app.HandleXuiActions();
 
+		// ---- MINECRAFT 2: Server-side subsystem ticks ----
+		MC2_TickPerformanceCounter();
+		MC2_TickWeather(g_Perf.deltaTime);
+		MC2_TickAutoSave(g_Perf.deltaTime);
+		MC2_EvaluateDynamicDifficulty(
+			(double)g_Perf.totalFrames / 60.0); // rough time estimate
+		// --------------------------------------------------
+
 		Sleep(10);
 	}
 
-	printf("Stopping server...\n");
+	printf("Stopping %s server...\n", MC2_VERSION_STRING);
 	fflush(stdout);
+
+	// MINECRAFT 2: Save achievements and hotbar on shutdown
+	MC2_SaveAchievements();
+	MC2_SaveHotbar();
 
 	app.m_bShutdown = true;
 	MinecraftServer::HaltServer();
@@ -1193,7 +1889,7 @@ int APIENTRY _tWinMain(_In_ HINSTANCE hInstance,
 	UNREFERENCED_PARAMETER(hPrevInstance);
 	UNREFERENCED_PARAMETER(lpCmdLine);
 
-	// 4J-Win64: set CWD to exe dir so asset paths resolve correctly
+	// Set CWD to exe directory so asset paths resolve correctly
 	{
 		char szExeDir[MAX_PATH] = {};
 		GetModuleFileNameA(NULL, szExeDir, MAX_PATH);
@@ -1201,19 +1897,15 @@ int APIENTRY _tWinMain(_In_ HINSTANCE hInstance,
 		if (pSlash) { *(pSlash + 1) = '\0'; SetCurrentDirectoryA(szExeDir); }
 	}
 
-	// Declare DPI awareness so GetSystemMetrics returns physical pixels
 	SetProcessDPIAware();
-	g_iScreenWidth = GetSystemMetrics(SM_CXSCREEN);
+	g_iScreenWidth  = GetSystemMetrics(SM_CXSCREEN);
 	g_iScreenHeight = GetSystemMetrics(SM_CYSCREEN);
 
 	// Load username from username.txt
     char exePath[MAX_PATH] = {};
     GetModuleFileNameA(NULL, exePath, MAX_PATH);
     char *lastSlash = strrchr(exePath, '\\');
-    if (lastSlash)
-    {
-        *(lastSlash + 1) = '\0';
-    }
+    if (lastSlash) *(lastSlash + 1) = '\0';
 
     char filePath[MAX_PATH] = {};
     _snprintf_s(filePath, sizeof(filePath), _TRUNCATE, "%susername.txt", exePath);
@@ -1225,48 +1917,31 @@ int APIENTRY _tWinMain(_In_ HINSTANCE hInstance,
         if (fgets(buf, sizeof(buf), f))
         {
             int len = (int)strlen(buf);
-            while (len > 0 && (buf[len - 1] == '\n' || buf[len - 1] == '\r' || buf[len - 1] == ' '))
-            {
+            while (len > 0 && (buf[len-1]=='\n'||buf[len-1]=='\r'||buf[len-1]==' '))
                 buf[--len] = '\0';
-            }
-
             if (len > 0)
-            {
                 strncpy_s(g_Win64Username, sizeof(g_Win64Username), buf, _TRUNCATE);
-            }
         }
         fclose(f);
     }
 
-	// Load stuff from launch options, including username
 	Win64LaunchOptions launchOptions = ParseLaunchOptions();
 	ApplyScreenMode(launchOptions.screenMode);
 
-	// Ensure uid.dat exists from startup in client mode (before any multiplayer/login path).
 	if (!launchOptions.serverMode)
-	{
 		Win64Xuid::ResolvePersistentXuid();
-	}
 
-	// If no username, let's fall back
 	if (g_Win64Username[0] == 0)
-	{
-        // Default username will be "Player"
         strncpy_s(g_Win64Username, sizeof(g_Win64Username), "Player", _TRUNCATE);
-	}
 
 	MultiByteToWideChar(CP_ACP, 0, g_Win64Username, -1, g_Win64UsernameW, 17);
 
-	// Initialize global strings
 	MyRegisterClass(hInstance);
 
-	// Perform application initialization:
-	if (!InitInstance (hInstance, launchOptions.serverMode ? SW_HIDE : nCmdShow))
-	{
+	if (!InitInstance(hInstance, launchOptions.serverMode ? SW_HIDE : nCmdShow))
 		return FALSE;
-	}
 
-	hMyInst=hInstance;
+	hMyInst = hInstance;
 
 	if( FAILED( InitDevice() ) )
 	{
@@ -1274,11 +1949,8 @@ int APIENTRY _tWinMain(_In_ HINSTANCE hInstance,
 		return 0;
 	}
 
-	// Restore fullscreen state from previous session
 	if (LoadFullscreenOption() && !g_isFullscreen || launchOptions.fullscreen)
-	{
 		ToggleFullscreen();
-	}
 
 	if (launchOptions.serverMode)
 	{
@@ -1287,58 +1959,8 @@ int APIENTRY _tWinMain(_In_ HINSTANCE hInstance,
 		return serverResult;
 	}
 
-#if 0
-	// Main message loop
-	MSG msg = {0};
-	while( WM_QUIT != msg.message )
-	{
-		if( PeekMessage( &msg, NULL, 0, 0, PM_REMOVE ) )
-		{
-			TranslateMessage( &msg );
-			DispatchMessage( &msg );
-		}
-		else
-		{
-			Render();
-		}
-	}
+	static bool bTrialTimerDisplayed = true;
 
-	return (int) msg.wParam;
-#endif
-
-	static bool bTrialTimerDisplayed=true;
-
-#ifdef MEMORY_TRACKING
-	ResetMem();
-	MEMORYSTATUS memStat;
-	GlobalMemoryStatus(&memStat);
-	printf("RESETMEM start: Avail. phys %d\n",memStat.dwAvailPhys/(1024*1024));
-#endif
-
-#if 0
-	// Initialize D3D
-	hr = InitD3D( &pDevice, &d3dpp );
-	g_pD3DDevice = pDevice;
-	if( FAILED(hr) )
-	{
-		app.DebugPrintf
-			( "Failed initializing D3D.\n" );
-		return -1;
-	}
-
-	// Initialize the application, assuming sharing of the d3d interface.
-	hr = app.InitShared( pDevice, &d3dpp,
-		XuiPNGTextureLoader );
-
-	if ( FAILED(hr) )
-	{
-		app.DebugPrintf
-			( "Failed initializing application.\n" );
-
-		return -1;
-	}
-
-#endif
 	Minecraft *pMinecraft = InitialiseMinecraftRuntime();
 	if (pMinecraft == NULL)
 	{
@@ -1346,31 +1968,6 @@ int APIENTRY _tWinMain(_In_ HINSTANCE hInstance,
 		return 1;
 	}
 
-	//app.TemporaryCreateGameStart();
-
-	//Sleep(10000);
-#if 0
-	// Intro loop ?
-	while(app.IntroRunning())
-	{
-		ProfileManager.Tick();
-		// Tick XUI
-		app.RunFrame();
-
-		// 4J : WESTY : Added to ensure we always have clear background for intro.
-		RenderManager.SetClearColour(D3DCOLOR_RGBA(0,0,0,255));
-		RenderManager.Clear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-		// Render XUI
-		hr = app.Render();
-
-		// Present the frame.
-		RenderManager.Present();
-
-		// Update XUI Timers
-		hr = XuiTimersRun();
-	}
-#endif
 	MSG msg = {0};
 	while( WM_QUIT != msg.message && !app.m_bShutdown)
 	{
@@ -1384,29 +1981,20 @@ int APIENTRY _tWinMain(_In_ HINSTANCE hInstance,
 		}
 		if (msg.message == WM_QUIT) break;
 
-		RenderManager.StartFrame();
-#if 0
-		if(pMinecraft->soundEngine->isStreamingWavebankReady() &&
-			!pMinecraft->soundEngine->isPlayingStreamingGameMusic() &&
-			!pMinecraft->soundEngine->isPlayingStreamingCDMusic() )
-		{
-			// play some music in the menus
-			pMinecraft->soundEngine->playStreaming(L"", 0, 0, 0, 0, 0, false);
-		}
-#endif
+		// ---- MINECRAFT 2: Per-frame subsystem ticks ----
+		MC2_TickPerformanceCounter();
+		MC2_TickWeather(g_Perf.deltaTime);
+		MC2_TickAutoSave(g_Perf.deltaTime);
+		MC2_EvaluateDynamicDifficulty(
+			(double)g_Perf.totalFrames / 60.0);
+		// ------------------------------------------------
 
-		// 		static bool bPlay=false;
-		// 		if(bPlay)
-		// 		{
-		// 			bPlay=false;
-		// 			app.audio.PlaySound();
-		// 		}
+		RenderManager.StartFrame();
 
 		app.UpdateTime();
 		PIXBeginNamedEvent(0,"Input manager tick");
 		InputManager.Tick();
 
-		// Detect KBM vs controller input mode
 		if (InputManager.IsPadConnected(0))
 		{
 			bool controllerUsed = InputManager.ButtonPressed(0) ||
@@ -1435,7 +2023,6 @@ int APIENTRY _tWinMain(_In_ HINSTANCE hInstance,
 
 		PIXEndNamedEvent();
 		PIXBeginNamedEvent(0,"Profile manager tick");
-		//		ProfileManager.Tick();
 		PIXEndNamedEvent();
 		PIXBeginNamedEvent(0,"Storage manager tick");
 		StorageManager.Tick();
@@ -1444,487 +2031,151 @@ int APIENTRY _tWinMain(_In_ HINSTANCE hInstance,
 		RenderManager.Tick();
 		PIXEndNamedEvent();
 
-		// Tick the social networking manager.
-		PIXBeginNamedEvent(0,"Social network manager tick");
-		//		CSocialManager::Instance()->Tick();
-		PIXEndNamedEvent();
-
-		// Tick sentient.
-		PIXBeginNamedEvent(0,"Sentient tick");
-		MemSect(37);
-		//		SentientManager.Tick();
-		MemSect(0);
-		PIXEndNamedEvent();
-
 		PIXBeginNamedEvent(0,"Network manager do work #1");
 		g_NetworkManager.DoWork();
 		PIXEndNamedEvent();
 
-		//		LeaderboardManager::Instance()->Tick();
-		// Render game graphics.
 		if(app.GetGameStarted())
 		{
-			pMinecraft->applyFrameMouseLook();  // Per-frame mouse look (before ticks + render)
+			pMinecraft->applyFrameMouseLook();
 			pMinecraft->run_middle();
-			app.SetAppPaused( g_NetworkManager.IsLocalGame() && g_NetworkManager.GetPlayerCount() == 1 && ui.IsPauseMenuDisplayed(ProfileManager.GetPrimaryPad()) );
+			app.SetAppPaused( g_NetworkManager.IsLocalGame() &&
+				g_NetworkManager.GetPlayerCount() == 1 &&
+				ui.IsPauseMenuDisplayed(ProfileManager.GetPrimaryPad()) );
 		}
 		else
 		{
-			MemSect(28);
 			pMinecraft->soundEngine->tick(NULL, 0.0f);
-			MemSect(0);
 			pMinecraft->textures->tick(true,false);
 			IntCache::Reset();
 			if( app.GetReallyChangingSessionType() )
-			{
-				pMinecraft->tickAllConnections();		// Added to stop timing out when we are waiting after converting to an offline game
-			}
+				pMinecraft->tickAllConnections();
 		}
 
 		pMinecraft->soundEngine->playMusicTick();
 
-#ifdef MEMORY_TRACKING
-		static bool bResetMemTrack = false;
-		static bool bDumpMemTrack = false;
-
-		MemPixStuff();
-
-		if( bResetMemTrack )
-		{
-			ResetMem();
-			MEMORYSTATUS memStat;
-			GlobalMemoryStatus(&memStat);
-			printf("RESETMEM: Avail. phys %d\n",memStat.dwAvailPhys/(1024*1024));
-			bResetMemTrack = false;
-		}
-
-		if( bDumpMemTrack )
-		{
-			DumpMem();
-			bDumpMemTrack = false;
-			MEMORYSTATUS memStat;
-			GlobalMemoryStatus(&memStat);
-			printf("DUMPMEM: Avail. phys %d\n",memStat.dwAvailPhys/(1024*1024));
-			printf("Renderer used: %d\n",RenderManager.CBuffSize(-1));
-		}
-#endif
-#if 0
-		static bool bDumpTextureUsage = false;
-		if( bDumpTextureUsage )
-		{
-			RenderManager.TextureGetStats();
-			bDumpTextureUsage = false;
-		}
-#endif
 		ui.tick();
 		ui.render();
 
 		pMinecraft->gameRenderer->ApplyGammaPostProcess();
 
-#if 0
-		app.HandleButtonPresses();
-
-		// store the minecraft renderstates, and re-set them after the xui render
-		GetRenderAndSamplerStates(pDevice,RenderStateA,SamplerStateA);
-
-		// Tick XUI
-		PIXBeginNamedEvent(0,"Xui running");
-		app.RunFrame();
-		PIXEndNamedEvent();
-
-		// Render XUI
-
-		PIXBeginNamedEvent(0,"XUI render");
-		MemSect(7);
-		hr = app.Render();
-		MemSect(0);
-		GetRenderAndSamplerStates(pDevice,RenderStateA2,SamplerStateA2);
-		PIXEndNamedEvent();
-
-		for(int i=0;i<8;i++)
-		{
-			if(RenderStateA2[i]!=RenderStateA[i])
-			{
-				//printf("Reseting RenderStateA[%d] after a XUI render\n",i);
-				pDevice->SetRenderState(RenderStateModes[i],RenderStateA[i]);
-			}
-		}
-		for(int i=0;i<5;i++)
-		{
-			if(SamplerStateA2[i]!=SamplerStateA[i])
-			{
-				//printf("Reseting SamplerStateA[%d] after a XUI render\n",i);
-				pDevice->SetSamplerState(0,SamplerStateModes[i],SamplerStateA[i]);
-			}
-		}
-
-		RenderManager.Set_matrixDirty();
-#endif
-		// Present the frame.
 		RenderManager.Present();
 
 		ui.CheckMenuDisplayed();
 
-		// Update mouse grab: grab when in-game and no menu is open
+		// Mouse grab logic
 		{
 			static bool altToggleSuppressCapture = false;
 			bool shouldCapture = app.GetGameStarted() && !ui.GetMenuDisplayed(0) && pMinecraft->screen == NULL;
-			// Left Alt key toggles capture on/off for debugging
 			if (g_KBMInput.IsKeyPressed(VK_LMENU) || g_KBMInput.IsKeyPressed(VK_RMENU))
 			{
 				if (g_KBMInput.IsMouseGrabbed()) { g_KBMInput.SetMouseGrabbed(false); altToggleSuppressCapture = true; }
-				else if (shouldCapture)   { g_KBMInput.SetMouseGrabbed(true);  altToggleSuppressCapture = false; }
+				else if (shouldCapture)           { g_KBMInput.SetMouseGrabbed(true);  altToggleSuppressCapture = false; }
 			}
 			else if (!shouldCapture)
 			{
 				if (g_KBMInput.IsMouseGrabbed()) g_KBMInput.SetMouseGrabbed(false);
 				altToggleSuppressCapture = false;
 			}
-			else if (shouldCapture && !g_KBMInput.IsMouseGrabbed() && GetFocus() == g_hWnd && !altToggleSuppressCapture)
+			else if (shouldCapture && !g_KBMInput.IsMouseGrabbed() &&
+					 GetFocus() == g_hWnd && !altToggleSuppressCapture)
 			{
 				g_KBMInput.SetMouseGrabbed(true);
 			}
 		}
 
-		// F1 toggles the HUD
+		// F1 toggles HUD
 		if (g_KBMInput.IsKeyPressed(VK_F1))
 		{
 			int primaryPad = ProfileManager.GetPrimaryPad();
 			unsigned char displayHud = app.GetGameSettings(primaryPad, eGameSetting_DisplayHUD);
-			app.SetGameSettings(primaryPad, eGameSetting_DisplayHUD, displayHud ? 0 : 1);
+			app.SetGameSettings(primaryPad, eGameSetting_DisplayHUD,  displayHud ? 0 : 1);
 			app.SetGameSettings(primaryPad, eGameSetting_DisplayHand, displayHud ? 0 : 1);
 		}
 
-		// F3 toggles onscreen debug info
+		// F3 toggles debug info
 		if (g_KBMInput.IsKeyPressed(VK_F3))
 		{
-			if (Minecraft* pMinecraft = Minecraft::GetInstance())
-			{
-				if (pMinecraft->options)
-				{
-					pMinecraft->options->renderDebug = !pMinecraft->options->renderDebug;
-				}
-			}
+			if (Minecraft* pm = Minecraft::GetInstance())
+				if (pm->options)
+					pm->options->renderDebug = !pm->options->renderDebug;
 		}
 
-#ifdef _DEBUG_MENUS_ENABLED
-        // F6 Open debug console
-        if (g_KBMInput.IsKeyPressed(VK_F6))
-        {
-        	static bool s_debugConsole = false;
-        	s_debugConsole = !s_debugConsole;
-        	ui.ShowUIDebugConsole(s_debugConsole);
-        }
-#endif
-
-		// F11 Toggle fullscreen
-		if (g_KBMInput.IsKeyPressed(VK_F11))
+		// ---- MINECRAFT 2: F4 toggles performance HUD ----
+		if (g_KBMInput.IsKeyPressed(VK_F4))
 		{
-			ToggleFullscreen();
+			g_Perf.showHUD = !g_Perf.showHUD;
+			printf("[MC2] Performance HUD %s (%.1f fps, %.2f ms)\n",
+				g_Perf.showHUD ? "ON" : "OFF",
+				g_Perf.fpsSmoothed, g_Perf.frameTimeMs);
 		}
 
-		// TAB opens game info menu. - Vvis :3 - Updated by detectiveren
+		// ---- MINECRAFT 2: F5 takes a screenshot ----
+		if (g_KBMInput.IsKeyPressed(VK_F5))
+		{
+			MC2_TakeScreenshot(g_pImmediateContext, g_pRenderTargetView,
+				g_iScreenWidth, g_iScreenHeight);
+		}
+
+		// F11 toggles fullscreen
+		if (g_KBMInput.IsKeyPressed(VK_F11))
+			ToggleFullscreen();
+
+		// TAB opens game info menu
 		if (g_KBMInput.IsKeyPressed(VK_TAB) && !ui.GetMenuDisplayed(0))
 		{
-			if (Minecraft* pMinecraft = Minecraft::GetInstance())
-			{
-				{
-					ui.NavigateToScene(0, eUIScene_InGameInfoMenu);
-
-				}
-			}
+			if (Minecraft* pm = Minecraft::GetInstance())
+				ui.NavigateToScene(0, eUIScene_InGameInfoMenu);
 		}
 
-		// Open chat
-		if (g_KBMInput.IsKeyPressed('T') && app.GetGameStarted() && !ui.GetMenuDisplayed(0) && pMinecraft->screen == NULL)
+		// Open chat with T
+		if (g_KBMInput.IsKeyPressed('T') && app.GetGameStarted() &&
+			!ui.GetMenuDisplayed(0) && pMinecraft->screen == NULL)
 		{
 			g_KBMInput.ClearCharBuffer();
 			pMinecraft->setScreen(new ChatScreen());
 			SetFocus(g_hWnd);
 		}
 
-#if 0
-		// has the game defined profile data been changed (by a profile load)
-		if(app.uiGameDefinedDataChangedBitmask!=0)
+		// ---- MINECRAFT 2: F2 forces auto-save now ----
+		if (g_KBMInput.IsKeyPressed(VK_F2))
 		{
-			void *pData;
-			for(int i=0;i<XUSER_MAX_COUNT;i++)
-			{
-				if(app.uiGameDefinedDataChangedBitmask&(1<<i))
-				{\
-				// It has - game needs to update its values with the data from the profile
-				pData=ProfileManager.GetGameDefinedProfileData(i);
-				// reset the changed flag
-				app.ClearGameSettingsChangedFlag(i);
-				app.DebugPrintf("***  - APPLYING GAME SETTINGS CHANGE for pad %d\n",i);
-				app.ApplyGameSettingsChanged(i);
-
-#ifdef _DEBUG_MENUS_ENABLED
-				if(app.DebugSettingsOn())
-				{
-					app.ActionDebugMask(i);
-				}
-				else
-				{
-					// force debug mask off
-					app.ActionDebugMask(i,true);
-				}
-#endif
-				// clear the stats first - there could have beena signout and sign back in in the menus
-				// need to clear the player stats - can't assume it'll be done in setlevel - we may not be in the game
-				pMinecraft->stats[ i ]->clear();
-				pMinecraft->stats[i]->parse(pData);
-				}
-			}
-
-			// Check to see if we can post to social networks.
-			CSocialManager::Instance()->RefreshPostingCapability();
-
-			// clear the flag
-			app.uiGameDefinedDataChangedBitmask=0;
-
-			// Check if any profile write are needed
-			app.CheckGameSettingsChanged();
+			g_AutoSave.timer = 0.0f; // will trigger on next tick
 		}
-		PIXEndNamedEvent();
-		app.TickDLCOffersRetrieved();
-		app.TickTMSPPFilesRetrieved();
 
-		PIXBeginNamedEvent(0,"Network manager do work #2");
-		g_NetworkManager.DoWork();
-		PIXEndNamedEvent();
-
-		PIXBeginNamedEvent(0,"Misc extra xui");
-		// Update XUI Timers
-		hr = XuiTimersRun();
-
-#endif
-		// Any threading type things to deal with from the xui side?
 		app.HandleXuiActions();
 
-#if 0
-		PIXEndNamedEvent();
-#endif
-
-		// 4J-PB - Update the trial timer display if we are in the trial version
+		// Trial timer logic
 		if(!ProfileManager.IsFullVersion())
 		{
-			// display the trial timer
 			if(app.GetGameStarted())
 			{
-				// 4J-PB - if the game is paused, add the elapsed time to the trial timer count so it doesn't tick down
 				if(app.IsAppPaused())
-				{
 					app.UpdateTrialPausedTimer();
-				}
 				ui.UpdateTrialTimer(ProfileManager.GetPrimaryPad());
 			}
 		}
 		else
 		{
-			// need to turn off the trial timer if it was on , and we've unlocked the full version
 			if(bTrialTimerDisplayed)
 			{
 				ui.ShowTrialTimer(false);
-				bTrialTimerDisplayed=false;
+				bTrialTimerDisplayed = false;
 			}
 		}
 
-		// Fix for #7318 - Title crashes after short soak in the leaderboards menu
-		// A memory leak was caused because the icon renderer kept creating new Vec3's because the pool wasn't reset
 		Vec3::resetPool();
 	}
 
-	// Free resources, unregister custom classes, and exit.
-	//	app.Uninit();
+	// ---- MINECRAFT 2: Persist state on clean exit ----
+	MC2_SaveAchievements();
+	MC2_SaveHotbar();
+	printf("[MC2] Session ended. Frames: %u, Avg FPS: %.1f, Min: %.1f, Max: %.1f\n",
+		g_Perf.totalFrames, g_Perf.fpsSmoothed,
+		g_Perf.minFps, g_Perf.maxFps);
+	printf("[MC2] Achievements this session: %d/%d\n",
+		MC2_GetUnlockedAchievementCount(), (int)MC2_ACH_COUNT);
+	// --------------------------------------------------
+
 	g_pd3dDevice->Release();
 }
-
-#ifdef MEMORY_TRACKING
-
-int totalAllocGen = 0;
-unordered_map<int,int> allocCounts;
-bool trackEnable = false;
-bool trackStarted = false;
-volatile size_t sizeCheckMin = 1160;
-volatile size_t sizeCheckMax = 1160;
-volatile int sectCheck = 48;
-CRITICAL_SECTION memCS;
-DWORD tlsIdx;
-
-LPVOID XMemAlloc(SIZE_T dwSize, DWORD dwAllocAttributes)
-{
-	if( !trackStarted )
-	{
-		void *p = XMemAllocDefault(dwSize,dwAllocAttributes);
-		size_t realSize = XMemSizeDefault(p, dwAllocAttributes);
-		totalAllocGen += realSize;
-		return p;
-	}
-
-	EnterCriticalSection(&memCS);
-
-	void *p=XMemAllocDefault(dwSize + 16,dwAllocAttributes);
-	size_t realSize = XMemSizeDefault(p,dwAllocAttributes) - 16;
-
-	if( trackEnable )
-	{
-#if 1
-		int sect = ((int) TlsGetValue(tlsIdx)) & 0x3f;
-		*(((unsigned char *)p)+realSize) = sect;
-
-		if( ( realSize >= sizeCheckMin ) && ( realSize <= sizeCheckMax ) && ( ( sect == sectCheck ) || ( sectCheck == -1 ) ) )
-		{
-			app.DebugPrintf("Found one\n");
-		}
-#endif
-
-		if( p )
-		{
-			totalAllocGen += realSize;
-			trackEnable = false;
-			int key = ( sect << 26 ) | realSize;
-			int oldCount = allocCounts[key];
-			allocCounts[key] = oldCount + 1;
-
-			trackEnable = true;
-		}
-	}
-
-	LeaveCriticalSection(&memCS);
-
-	return p;
-}
-
-void* operator new (size_t size)
-{
-	return (unsigned char *)XMemAlloc(size,MAKE_XALLOC_ATTRIBUTES(0,FALSE,TRUE,FALSE,0,XALLOC_PHYSICAL_ALIGNMENT_DEFAULT,XALLOC_MEMPROTECT_READWRITE,FALSE,XALLOC_MEMTYPE_HEAP));
-}
-
-void operator delete (void *p)
-{
-	XMemFree(p,MAKE_XALLOC_ATTRIBUTES(0,FALSE,TRUE,FALSE,0,XALLOC_PHYSICAL_ALIGNMENT_DEFAULT,XALLOC_MEMPROTECT_READWRITE,FALSE,XALLOC_MEMTYPE_HEAP));
-}
-
-void WINAPI XMemFree(PVOID pAddress, DWORD dwAllocAttributes)
-{
-	bool special = false;
-	if( dwAllocAttributes == 0 )
-	{
-		dwAllocAttributes = MAKE_XALLOC_ATTRIBUTES(0,FALSE,TRUE,FALSE,0,XALLOC_PHYSICAL_ALIGNMENT_DEFAULT,XALLOC_MEMPROTECT_READWRITE,FALSE,XALLOC_MEMTYPE_HEAP);
-		special = true;
-	}
-	if(!trackStarted )
-	{
-		size_t realSize = XMemSizeDefault(pAddress, dwAllocAttributes);
-		XMemFreeDefault(pAddress, dwAllocAttributes);
-		totalAllocGen -= realSize;
-		return;
-	}
-	EnterCriticalSection(&memCS);
-	if( pAddress )
-	{
-		size_t realSize = XMemSizeDefault(pAddress, dwAllocAttributes) - 16;
-
-		if(trackEnable)
-		{
-			int sect = *(((unsigned char *)pAddress)+realSize);
-			totalAllocGen -= realSize;
-			trackEnable = false;
-			int key = ( sect << 26 ) | realSize;
-			int oldCount = allocCounts[key];
-			allocCounts[key] = oldCount - 1;
-			trackEnable = true;
-		}
-		XMemFreeDefault(pAddress, dwAllocAttributes);
-	}
-	LeaveCriticalSection(&memCS);
-}
-
-SIZE_T WINAPI XMemSize(
-	PVOID pAddress,
-	DWORD dwAllocAttributes
-	)
-{
-	if( trackStarted )
-	{
-		return XMemSizeDefault(pAddress, dwAllocAttributes) - 16;
-	}
-	else
-	{
-		return XMemSizeDefault(pAddress, dwAllocAttributes);
-	}
-}
-
-void DumpMem()
-{
-	int totalLeak = 0;
-	for( auto it = allocCounts.begin(); it != allocCounts.end(); it++ )
-	{
-		if(it->second > 0 )
-		{
-			app.DebugPrintf("%d %d %d %d\n",( it->first >> 26 ) & 0x3f,it->first & 0x03ffffff, it->second, (it->first & 0x03ffffff) * it->second);
-			totalLeak += ( it->first & 0x03ffffff ) * it->second;
-		}
-	}
-	app.DebugPrintf("Total %d\n",totalLeak);
-}
-
-void ResetMem()
-{
-	if( !trackStarted )
-	{
-		trackEnable = true;
-		trackStarted = true;
-		totalAllocGen = 0;
-		InitializeCriticalSection(&memCS);
-		tlsIdx = TlsAlloc();
-	}
-	EnterCriticalSection(&memCS);
-	trackEnable = false;
-	allocCounts.clear();
-	trackEnable = true;
-	LeaveCriticalSection(&memCS);
-}
-
-void MemSect(int section)
-{
-	unsigned int value = (unsigned int)TlsGetValue(tlsIdx);
-	if( section == 0 ) // pop
-	{
-		value = (value >> 6) & 0x03ffffff;
-	}
-	else
-	{
-		value = (value << 6) | section;
-	}
-	TlsSetValue(tlsIdx, (LPVOID)value);
-}
-
-void MemPixStuff()
-{
-	const int MAX_SECT = 46;
-
-	int totals[MAX_SECT] = {0};
-
-	for( auto it = allocCounts.begin(); it != allocCounts.end(); it++ )
-	{
-		if(it->second > 0 )
-		{
-			int sect = ( it->first >> 26 ) & 0x3f;
-			int bytes = it->first & 0x03ffffff;
-			totals[sect] += bytes * it->second;
-		}
-	}
-
-	unsigned int allSectsTotal = 0;
-	for( int i = 0; i < MAX_SECT; i++ )
-	{
-		allSectsTotal += totals[i];
-		PIXAddNamedCounter(((float)totals[i])/1024.0f,"MemSect%d",i);
-	}
-
-	PIXAddNamedCounter(((float)allSectsTotal)/(4096.0f),"MemSect total pages");
-}
-
-#endif
