@@ -68,7 +68,7 @@ void StringTable::ProcessStringTableData(void)
 		}
 
 		if (!foundLang)
-			app.DebugPrintf("StringTable:: Can't find language '%ls'.\n", it_locales->c_str());
+			app.Printf("StringTable:: Can't find language '%ls'.\n", it_locales->c_str());
 	}
 
 	if(foundLang)
@@ -142,7 +142,6 @@ LPCWSTR StringTable::getString(const wstring &id)
 #ifndef _CONTENT_PACKAGE
 	if (isStatic)
 	{
-		__debugbreak();
 		return L"";
 	}
 #endif
@@ -164,7 +163,6 @@ LPCWSTR StringTable::getString(int id)
 #ifndef _CONTENT_PACKAGE
 	if (!isStatic)
 	{
-		__debugbreak();
 		return L"";
 	}
 #endif
