@@ -12,6 +12,8 @@ UIControl::UIControl()
 	m_isVisible = true;
 	m_bHidden = false;
 	m_eControlType = eNoControl;
+	m_id = -1;
+	m_pParentPanel = NULL;
 }
 
 bool UIControl::setupControl(UIScene *scene, IggyValuePath *parent, const string &controlName)

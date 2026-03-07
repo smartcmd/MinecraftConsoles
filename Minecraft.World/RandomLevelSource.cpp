@@ -26,7 +26,7 @@ static PerlinNoise_DataIn g_depthNoise_SPU __attribute__((__aligned__(16)));
 const double RandomLevelSource::SNOW_SCALE = 0.3;
 const double RandomLevelSource::SNOW_CUTOFF = 0.5;
 
-RandomLevelSource::RandomLevelSource(Level *level, __int64 seed, bool generateStructures) : generateStructures( generateStructures )
+RandomLevelSource::RandomLevelSource(Level *level, int64_t seed, bool generateStructures) : generateStructures( generateStructures )
 {
 	m_XZSize = level->getLevelData()->getXZSize();
 #ifdef _LARGE_WORLDS
@@ -166,9 +166,9 @@ float RandomLevelSource::getHeightFalloff(int xxx, int zzz, int* pEMin)
 	float comp = 0.0f;
 	int emin = getMinDistanceToEdge(xxx, zzz, worldSize, falloffStart);
 	// check if we have a larger world that should have moats
-	int expandedWorldSizes[3] = {LEVEL_WIDTH_CLASSIC*16, 
-								LEVEL_WIDTH_SMALL*16, 
-								LEVEL_WIDTH_MEDIUM*16}; 
+	int expandedWorldSizes[3] = {LEVEL_WIDTH_CLASSIC*16,
+								LEVEL_WIDTH_SMALL*16,
+								LEVEL_WIDTH_MEDIUM*16};
 	bool expandedMoatValues[3] = {m_classicEdgeMoat, m_smallEdgeMoat, m_mediumEdgeMoat};
 	for(int i=0;i<3;i++)
 	{
@@ -435,7 +435,7 @@ void RandomLevelSource::buildSurfaces(int xOffs, int zOffs, byteArray blocks, Bi
 							run = runDepth;
 							if (y >= waterHeight - 1) blocks[offs] = top;
 							else blocks[offs] = material;
-						} 
+						}
 						else if (run > 0)
 						{
 							run--;
@@ -503,7 +503,7 @@ LevelChunk *RandomLevelSource::getChunk(int xOffs, int zOffs)
 	// addCaves(xOffs, zOffs, blocks);
 	// addTowns(xOffs, zOffs, blocks);
 
-	//    levelChunk->recalcHeightmap();		// 4J - removed & moved into its own method	
+	//    levelChunk->recalcHeightmap();		// 4J - removed & moved into its own method
 
 	// 4J - this now creates compressed block data from the blocks array passed in, so moved it until after the blocks are actually finalised. We also
 	// now need to free the passed in blocks as the LevelChunk doesn't use the passed in allocation anymore.
@@ -629,7 +629,7 @@ doubleArray RandomLevelSource::getHeights(doubleArray buffer, int x, int y, int 
 				if (rdepth < -1) rdepth = -1;
 				rdepth = rdepth / 1.4;
 				rdepth /= 2;
-			} 
+			}
 			else
 			{
 				if (rdepth > 1) rdepth = 1;
@@ -766,8 +766,8 @@ void RandomLevelSource::postProcess(ChunkSource *parent, int xt, int zt)
 	}
 
 	pprandom->setSeed(level->getSeed());
-	__int64 xScale = pprandom->nextLong() / 2 * 2 + 1;
-	__int64 zScale = pprandom->nextLong() / 2 * 2 + 1;
+	int64_t xScale = pprandom->nextLong() / 2 * 2 + 1;
+	int64_t zScale = pprandom->nextLong() / 2 * 2 + 1;
 	pprandom->setSeed(((xt * xScale) + (zt * zScale)) ^ level->getSeed());
 
 	bool hasVillage = false;

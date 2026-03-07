@@ -75,7 +75,7 @@ private:
 	bool hasCrashed;
 
 	C4JThread::EventQueue* levelTickEventQueue;
-	
+
 	static void levelTickUpdateFunc(void* pParam);
 	static void levelTickThreadInitFunc();
 
@@ -170,11 +170,11 @@ private:
 	LevelStorageSource *levelSource;
 public:
 	static const int frameTimes_length = 512;
-	static __int64 frameTimes[frameTimes_length];
+	static int64_t frameTimes[frameTimes_length];
 	static const int tickTimes_length = 512;
-	static __int64 tickTimes[tickTimes_length];
+	static int64_t tickTimes[tickTimes_length];
 	static int frameTimePos;
-	static __int64 warezTime;
+	static int64_t warezTime;
 private:
 	int rightClickDelay;
 public:
@@ -230,9 +230,9 @@ private:
 	//    String grabHugeScreenshot(File workDir2, int width, int height, int ssWidth, int ssHeight);	// 4J - removed
 
 	// 4J - per player thing?
-	__int64 lastTimer;
+	int64_t lastTimer;
 
-	void renderFpsMeter(__int64 tickTime);
+	void renderFpsMeter(int64_t tickTime);
 public:
 	void stop();
 	// 4J removed
@@ -253,7 +253,7 @@ public:
 	//bool isRaining ;
 
 	// 4J - Moved to per player
-	//__int64 lastTickTime;
+	//int64_t lastTickTime;
 
 private:
 	// 4J- per player?
@@ -300,7 +300,7 @@ public:
 
 	static int maxSupportedTextureSize();
 	void delayTextureReload();
-	static __int64 currentTimeMillis();
+	static int64_t currentTimeMillis();
 
 #ifdef _DURANGO
 	static void inGameSignInCheckAllPrivilegesCallback(LPVOID lpParam, bool hasPrivileges, int iPad);

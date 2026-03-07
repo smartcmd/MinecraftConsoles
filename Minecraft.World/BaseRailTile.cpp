@@ -142,10 +142,8 @@ bool BaseRailTile::Rail::connectsTo(Rail *rail)
 {
 	if(m_bValidRail)
 	{
-		AUTO_VAR(itEnd, connections.end());
-		for (AUTO_VAR(it, connections.begin()); it != itEnd; it++)
+		for ( const auto& p : connections )
 		{
-			TilePos *p = *it; //connections[i];
 			if (p->x == rail->x && p->z == rail->z)
 			{
 				return true;
@@ -159,10 +157,8 @@ bool BaseRailTile::Rail::hasConnection(int x, int y, int z)
 {
 	if(m_bValidRail)
 	{
-		AUTO_VAR(itEnd, connections.end());
-		for (AUTO_VAR(it, connections.begin()); it != itEnd; it++)
+		for ( const auto& p : connections )
 		{
-			TilePos *p = *it; //connections[i];
 			if (p->x == x && p->z == z)
 			{
 				return true;
@@ -332,10 +328,9 @@ void BaseRailTile::Rail::place(bool hasSignal, bool first)
 		{
 			level->setData(x, y, z, data, Tile::UPDATE_ALL);
 
-			AUTO_VAR(itEnd, connections.end());
-			for (AUTO_VAR(it, connections.begin()); it != itEnd; it++)
+			for ( auto& it : connections )
 			{
-				Rail *neighbor = getRail(*it);
+				Rail *neighbor = getRail(it);
 				if (neighbor == NULL) continue;
 				neighbor->removeSoftConnections();
 

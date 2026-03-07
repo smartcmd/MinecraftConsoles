@@ -8,7 +8,7 @@
 
 #include "ConsoleSaveFileIO.h"
 
-SavedDataStorage::SavedDataStorage(LevelStorage *levelStorage) 
+SavedDataStorage::SavedDataStorage(LevelStorage *levelStorage)
 {
 	/*
 	cache = new unordered_map<wstring, shared_ptr<SavedData> >;
@@ -22,15 +22,15 @@ SavedDataStorage::SavedDataStorage(LevelStorage *levelStorage)
 
 shared_ptr<SavedData> SavedDataStorage::get(const type_info& clazz, const wstring& id)
 {
-	AUTO_VAR(it, cache.find( id ));
-	if (it != cache.end()) return (*it).second;
+    auto it = cache.find(id);
+    if (it != cache.end()) return (*it).second;
 
 	shared_ptr<SavedData> data = nullptr;
     if (levelStorage != NULL)
 	{
 		//File file = levelStorage->getDataFile(id);
 		ConsoleSavePath file = levelStorage->getDataFile(id);
-		if (!file.getName().empty() && levelStorage->getSaveFile()->doesFileExist( file ) ) 
+		if (!file.getName().empty() && levelStorage->getSaveFile()->doesFileExist( file ) )
 		{
 			// mob = dynamic_pointer_cast<Mob>(Mob::_class->newInstance( level ));
 		    //data = clazz.getConstructor(String.class).newInstance(id);
@@ -69,18 +69,18 @@ shared_ptr<SavedData> SavedDataStorage::get(const type_info& clazz, const wstrin
     return data;
 }
 
-void SavedDataStorage::set(const wstring& id, shared_ptr<SavedData> data) 
+void SavedDataStorage::set(const wstring& id, shared_ptr<SavedData> data)
 {
 	if (data == NULL)
 	{
 		// TODO 4J Stu - throw new RuntimeException("Can't set null data");
 		assert( false );
 	}
-	AUTO_VAR(it, cache.find(id));
-	if ( it != cache.end() )
+    auto it = cache.find(id);
+    if ( it != cache.end() )
 	{
-		AUTO_VAR(it2, find( savedDatas.begin(), savedDatas.end(), it->second ));
-		if( it2 != savedDatas.end() )
+        auto it2 = find(savedDatas.begin(), savedDatas.end(), it->second);
+        if( it2 != savedDatas.end() )
 		{
 			savedDatas.erase( it2 );
 		}
@@ -92,10 +92,8 @@ void SavedDataStorage::set(const wstring& id, shared_ptr<SavedData> data)
 
 void SavedDataStorage::save()
 {
-	AUTO_VAR(itEnd, savedDatas.end());
-	for (AUTO_VAR(it, savedDatas.begin()); it != itEnd; it++)
+	for (auto& data : savedDatas)
 	{
-        shared_ptr<SavedData> data = *it; //savedDatas->at(i);
         if (data->isDirty())
 		{
             save(data);
@@ -139,16 +137,12 @@ void SavedDataStorage::loadAuxValues()
         CompoundTag *tags = NbtIo::read(&dis);
         dis.close();
 
-		Tag *tag;
 		vector<Tag *> *allTags = tags->getAllTags();
-		AUTO_VAR(itEnd, allTags->end());
-		for (AUTO_VAR(it, allTags->begin()); it != itEnd; it++)
+        for ( Tag *tag : *allTags )
 		{
-			tag = *it; //tags->getAllTags()->at(i);
-
-            if (dynamic_cast<ShortTag *>(tag) != NULL)
+            if (dynamic_cast<ShortTag *>(tag))
 			{
-                ShortTag *sTag = (ShortTag *) tag;
+                ShortTag *sTag = static_cast<ShortTag *>(tag);
                 wstring id = sTag->getName();
                 short val = sTag->data;
                 usedAuxIds.insert( uaiMapType::value_type( id, val ) );
@@ -160,7 +154,7 @@ void SavedDataStorage::loadAuxValues()
 
 int SavedDataStorage::getFreeAuxValueFor(const wstring& id)
 {
-	AUTO_VAR(it, usedAuxIds.find( id ));
+    auto it = usedAuxIds.find(id);
     short val = 0;
     if ( it != usedAuxIds.end() )
 	{
@@ -177,11 +171,10 @@ int SavedDataStorage::getFreeAuxValueFor(const wstring& id)
         CompoundTag *tag = new CompoundTag();
 
 		// TODO 4J Stu - This was iterating over the keySet in Java, so potentially we are looking at more items?
-		AUTO_VAR(itEndAuxIds, usedAuxIds.end());
-		for(uaiMapType::iterator it2 = usedAuxIds.begin(); it2 != itEndAuxIds; it2++)
+		for(auto& it : usedAuxIds)
 		{
-			short value = it2->second;
-			tag->putShort( (wchar_t *) it2->first.c_str(), value);
+			short value = it.second;
+			tag->putShort(it.first.c_str(), value);
         }
 
 		ConsoleSaveFileOutputStream fos = ConsoleSaveFileOutputStream(levelStorage->getSaveFile(), file);

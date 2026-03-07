@@ -21,52 +21,52 @@ DurangoLeaderboardManager::DurangoLeaderboardManager()
 
 	m_difficulty = 0;
 	m_type = eStatsType_UNDEFINED;
-	m_statNames = ref new PC::Vector<P::String^>();	
+	m_statNames = ref new PC::Vector<P::String^>();
 	m_xboxUserIds = ref new PC::Vector<P::String^>();
 	m_leaderboardAsyncOp = nullptr;
 	m_statsAsyncOp = nullptr;
 
 	for(unsigned int difficulty = 0; difficulty < 4; ++difficulty)
 	{
-		m_leaderboardNames[difficulty][eStatsType_Travelling] = L"LeaderboardTravelling" + _toString(difficulty);
-		m_leaderboardNames[difficulty][eStatsType_Mining] = L"LeaderboardMining" + _toString(difficulty);
-		m_leaderboardNames[difficulty][eStatsType_Farming] = L"LeaderboardFarming" + _toString(difficulty);
-		m_leaderboardNames[difficulty][eStatsType_Kills] = L"LeaderboardKills" + _toString(difficulty);
+		m_leaderboardNames[difficulty][eStatsType_Travelling] = L"LeaderboardTravelling" + std::to_wstring(difficulty);
+		m_leaderboardNames[difficulty][eStatsType_Mining] = L"LeaderboardMining" + std::to_wstring(difficulty);
+		m_leaderboardNames[difficulty][eStatsType_Farming] = L"LeaderboardFarming" + std::to_wstring(difficulty);
+		m_leaderboardNames[difficulty][eStatsType_Kills] = L"LeaderboardKills" + std::to_wstring(difficulty);
 
-		m_socialLeaderboardNames[difficulty][eStatsType_Travelling] = L"Leaderboard.LeaderboardId.0.DifficultyLevelId." + _toString(difficulty);
-		m_socialLeaderboardNames[difficulty][eStatsType_Mining] = L"Leaderboard.LeaderboardId.1.DifficultyLevelId." + _toString(difficulty);
-		m_socialLeaderboardNames[difficulty][eStatsType_Farming] = L"Leaderboard.LeaderboardId.2.DifficultyLevelId." + _toString(difficulty);
-		m_socialLeaderboardNames[difficulty][eStatsType_Kills] = L"Leaderboard.LeaderboardId.3.DifficultyLevelId." + _toString(difficulty);
+		m_socialLeaderboardNames[difficulty][eStatsType_Travelling] = L"Leaderboard.LeaderboardId.0.DifficultyLevelId." + std::to_wstring(difficulty);
+		m_socialLeaderboardNames[difficulty][eStatsType_Mining] = L"Leaderboard.LeaderboardId.1.DifficultyLevelId." + std::to_wstring(difficulty);
+		m_socialLeaderboardNames[difficulty][eStatsType_Farming] = L"Leaderboard.LeaderboardId.2.DifficultyLevelId." + std::to_wstring(difficulty);
+		m_socialLeaderboardNames[difficulty][eStatsType_Kills] = L"Leaderboard.LeaderboardId.3.DifficultyLevelId." + std::to_wstring(difficulty);
 
-		m_leaderboardStatNames[difficulty][eStatsType_Travelling].push_back( L"DistanceTravelled.DifficultyLevelId." + _toString(difficulty) + L".TravelMethodId.0"); // Walked
-		m_leaderboardStatNames[difficulty][eStatsType_Travelling].push_back( L"DistanceTravelled.DifficultyLevelId." + _toString(difficulty) + L".TravelMethodId.2"); // Fallen
-		m_leaderboardStatNames[difficulty][eStatsType_Travelling].push_back( L"DistanceTravelled.DifficultyLevelId." + _toString(difficulty) + L".TravelMethodId.4"); // Minecart
-		m_leaderboardStatNames[difficulty][eStatsType_Travelling].push_back( L"DistanceTravelled.DifficultyLevelId." + _toString(difficulty) + L".TravelMethodId.5"); // Boat
+		m_leaderboardStatNames[difficulty][eStatsType_Travelling].push_back( L"DistanceTravelled.DifficultyLevelId." + std::to_wstring(difficulty) + L".TravelMethodId.0"); // Walked
+		m_leaderboardStatNames[difficulty][eStatsType_Travelling].push_back( L"DistanceTravelled.DifficultyLevelId." + std::to_wstring(difficulty) + L".TravelMethodId.2"); // Fallen
+		m_leaderboardStatNames[difficulty][eStatsType_Travelling].push_back( L"DistanceTravelled.DifficultyLevelId." + std::to_wstring(difficulty) + L".TravelMethodId.4"); // Minecart
+		m_leaderboardStatNames[difficulty][eStatsType_Travelling].push_back( L"DistanceTravelled.DifficultyLevelId." + std::to_wstring(difficulty) + L".TravelMethodId.5"); // Boat
 
-		m_leaderboardStatNames[difficulty][eStatsType_Mining].push_back( L"BlockBroken.DifficultyLevelId." + _toString(difficulty) + L".BlockId.3"); // Dirt
-		m_leaderboardStatNames[difficulty][eStatsType_Mining].push_back( L"BlockBroken.DifficultyLevelId." + _toString(difficulty) + L".BlockId.4"); // Cobblestone
-		m_leaderboardStatNames[difficulty][eStatsType_Mining].push_back( L"BlockBroken.DifficultyLevelId." + _toString(difficulty) + L".BlockId.12"); // Sand
-		m_leaderboardStatNames[difficulty][eStatsType_Mining].push_back( L"BlockBroken.DifficultyLevelId." + _toString(difficulty) + L".BlockId.1"); // Stone
-		m_leaderboardStatNames[difficulty][eStatsType_Mining].push_back( L"BlockBroken.DifficultyLevelId." + _toString(difficulty) + L".BlockId.13"); // Gravel
-		m_leaderboardStatNames[difficulty][eStatsType_Mining].push_back( L"BlockBroken.DifficultyLevelId." + _toString(difficulty) + L".BlockId.82"); // Clay
-		m_leaderboardStatNames[difficulty][eStatsType_Mining].push_back( L"BlockBroken.DifficultyLevelId." + _toString(difficulty) + L".BlockId.49"); // Obsidian
+		m_leaderboardStatNames[difficulty][eStatsType_Mining].push_back( L"BlockBroken.DifficultyLevelId." + std::to_wstring(difficulty) + L".BlockId.3"); // Dirt
+		m_leaderboardStatNames[difficulty][eStatsType_Mining].push_back( L"BlockBroken.DifficultyLevelId." + std::to_wstring(difficulty) + L".BlockId.4"); // Cobblestone
+		m_leaderboardStatNames[difficulty][eStatsType_Mining].push_back( L"BlockBroken.DifficultyLevelId." + std::to_wstring(difficulty) + L".BlockId.12"); // Sand
+		m_leaderboardStatNames[difficulty][eStatsType_Mining].push_back( L"BlockBroken.DifficultyLevelId." + std::to_wstring(difficulty) + L".BlockId.1"); // Stone
+		m_leaderboardStatNames[difficulty][eStatsType_Mining].push_back( L"BlockBroken.DifficultyLevelId." + std::to_wstring(difficulty) + L".BlockId.13"); // Gravel
+		m_leaderboardStatNames[difficulty][eStatsType_Mining].push_back( L"BlockBroken.DifficultyLevelId." + std::to_wstring(difficulty) + L".BlockId.82"); // Clay
+		m_leaderboardStatNames[difficulty][eStatsType_Mining].push_back( L"BlockBroken.DifficultyLevelId." + std::to_wstring(difficulty) + L".BlockId.49"); // Obsidian
 
-		m_leaderboardStatNames[difficulty][eStatsType_Farming].push_back( L"McItemAcquired.DifficultyLevelId." + _toString(difficulty) + L".AcquisitionMethodId.1.ItemId.344"); // Eggs
-		m_leaderboardStatNames[difficulty][eStatsType_Farming].push_back( L"BlockBroken.DifficultyLevelId." + _toString(difficulty) + L".BlockId.59"); // Wheat
-		m_leaderboardStatNames[difficulty][eStatsType_Farming].push_back( L"BlockBroken.DifficultyLevelId." + _toString(difficulty) + L".BlockId.39"); // Mushroom
-		m_leaderboardStatNames[difficulty][eStatsType_Farming].push_back( L"BlockBroken.DifficultyLevelId." + _toString(difficulty) + L".BlockId.83"); // Sugarcane
-		m_leaderboardStatNames[difficulty][eStatsType_Farming].push_back( L"McItemAcquired.DifficultyLevelId." + _toString(difficulty) + L".AcquisitionMethodId.2.ItemId.335"); // Milk
-		m_leaderboardStatNames[difficulty][eStatsType_Farming].push_back( L"McItemAcquired.DifficultyLevelId." + _toString(difficulty) + L".AcquisitionMethodId.1.ItemId.86"); // Pumpkin
+		m_leaderboardStatNames[difficulty][eStatsType_Farming].push_back( L"McItemAcquired.DifficultyLevelId." + std::to_wstring(difficulty) + L".AcquisitionMethodId.1.ItemId.344"); // Eggs
+		m_leaderboardStatNames[difficulty][eStatsType_Farming].push_back( L"BlockBroken.DifficultyLevelId." + std::to_wstring(difficulty) + L".BlockId.59"); // Wheat
+		m_leaderboardStatNames[difficulty][eStatsType_Farming].push_back( L"BlockBroken.DifficultyLevelId." + std::to_wstring(difficulty) + L".BlockId.39"); // Mushroom
+		m_leaderboardStatNames[difficulty][eStatsType_Farming].push_back( L"BlockBroken.DifficultyLevelId." + std::to_wstring(difficulty) + L".BlockId.83"); // Sugarcane
+		m_leaderboardStatNames[difficulty][eStatsType_Farming].push_back( L"McItemAcquired.DifficultyLevelId." + std::to_wstring(difficulty) + L".AcquisitionMethodId.2.ItemId.335"); // Milk
+		m_leaderboardStatNames[difficulty][eStatsType_Farming].push_back( L"McItemAcquired.DifficultyLevelId." + std::to_wstring(difficulty) + L".AcquisitionMethodId.1.ItemId.86"); // Pumpkin
 
-		m_leaderboardStatNames[difficulty][eStatsType_Kills].push_back( L"MobKilledTotal.DifficultyLevelId." + _toString(difficulty) + L".EnemyRoleId.54"); // Zombie
-		m_leaderboardStatNames[difficulty][eStatsType_Kills].push_back( L"MobKilledTotal.DifficultyLevelId." + _toString(difficulty) + L".EnemyRoleId.51"); // Skeleton
-		m_leaderboardStatNames[difficulty][eStatsType_Kills].push_back( L"MobKilledTotal.DifficultyLevelId." + _toString(difficulty) + L".EnemyRoleId.50"); // Creeper
-		m_leaderboardStatNames[difficulty][eStatsType_Kills].push_back( L"MobKilledTotal.DifficultyLevelId." + _toString(difficulty) + L".EnemyRoleId.52"); // Spider
-		m_leaderboardStatNames[difficulty][eStatsType_Kills].push_back( L"MobKilledTotal.DifficultyLevelId." + _toString(difficulty) + L".EnemyRoleId.49"); // Spider Jockey
-		m_leaderboardStatNames[difficulty][eStatsType_Kills].push_back( L"MobKilledTotal.DifficultyLevelId." + _toString(difficulty) + L".EnemyRoleId.57"); // Zombie Pigman
-		m_leaderboardStatNames[difficulty][eStatsType_Kills].push_back( L"MobKilledTotal.DifficultyLevelId." + _toString(difficulty) + L".EnemyRoleId.55"); // Slime
+		m_leaderboardStatNames[difficulty][eStatsType_Kills].push_back( L"MobKilledTotal.DifficultyLevelId." + std::to_wstring(difficulty) + L".EnemyRoleId.54"); // Zombie
+		m_leaderboardStatNames[difficulty][eStatsType_Kills].push_back( L"MobKilledTotal.DifficultyLevelId." + std::to_wstring(difficulty) + L".EnemyRoleId.51"); // Skeleton
+		m_leaderboardStatNames[difficulty][eStatsType_Kills].push_back( L"MobKilledTotal.DifficultyLevelId." + std::to_wstring(difficulty) + L".EnemyRoleId.50"); // Creeper
+		m_leaderboardStatNames[difficulty][eStatsType_Kills].push_back( L"MobKilledTotal.DifficultyLevelId." + std::to_wstring(difficulty) + L".EnemyRoleId.52"); // Spider
+		m_leaderboardStatNames[difficulty][eStatsType_Kills].push_back( L"MobKilledTotal.DifficultyLevelId." + std::to_wstring(difficulty) + L".EnemyRoleId.49"); // Spider Jockey
+		m_leaderboardStatNames[difficulty][eStatsType_Kills].push_back( L"MobKilledTotal.DifficultyLevelId." + std::to_wstring(difficulty) + L".EnemyRoleId.57"); // Zombie Pigman
+		m_leaderboardStatNames[difficulty][eStatsType_Kills].push_back( L"MobKilledTotal.DifficultyLevelId." + std::to_wstring(difficulty) + L".EnemyRoleId.55"); // Slime
 	}
-}																						   
+}
 
 void DurangoLeaderboardManager::Tick()
 {
@@ -93,7 +93,7 @@ void DurangoLeaderboardManager::Tick()
 				{
 					app.DebugPrintf("[LeaderboardManager] Second continuation\n");
 					m_statsAsyncOp = nullptr;
-					
+
 					WFC::IVectorView<MXS::UserStatistics::UserStatisticsResult^>^ resultList = resultListTask.get();
 
 					if (m_xboxLiveContext == nullptr) throw(ref new P::Exception(-1));
@@ -170,7 +170,7 @@ void DurangoLeaderboardManager::Tick()
 
 			eStatsReturn ret = view.m_numQueries > 0 ? eStatsReturn_Success : eStatsReturn_NoResults;
 
-			if (m_readListener != NULL) 
+			if (m_readListener != NULL)
 			{
 				app.DebugPrintf("[LeaderboardManager] OnStatsReadComplete(%i, %i, _)\n", ret, m_readCount);
 				m_readListener->OnStatsReadComplete(ret, m_maxRank, view);
@@ -380,10 +380,10 @@ void DurangoLeaderboardManager::CancelOperation()
 	//if (m_transactionCtx != 0)
 	//{
 	//	int ret = sceNpScoreAbortTransaction(m_transactionCtx);
-	//	
+	//
 	//	if (ret < 0)
 	//	{
-	//		app.DebugPrintf("[LeaderboardManager] CancelOperation(): Problem encountered aborting current operation, 0x%X.\n", ret);		
+	//		app.DebugPrintf("[LeaderboardManager] CancelOperation(): Problem encountered aborting current operation, 0x%X.\n", ret);
 	//	}
 	//	else
 	//	{
@@ -415,20 +415,20 @@ void DurangoLeaderboardManager::runLeaderboardRequest(WF::IAsyncOperation<MXSL::
 
 	app.DebugPrintf("[LeaderboardManager] Running request\n");
 	CC::create_task(asyncOp)
-		.then( [this, readCount, difficulty, type, filter] (CC::task<MXSL::LeaderboardResult^> resultTask) 
+		.then( [this, readCount, difficulty, type, filter] (CC::task<MXSL::LeaderboardResult^> resultTask)
 	{
 		try
 		{
 			app.DebugPrintf("[LeaderboardManager] First continuation.\n");
 
 			m_leaderboardAsyncOp = nullptr;
-			
+
 			MXSL::LeaderboardResult^ lastResult = resultTask.get();
 
-			app.DebugPrintf( 
-				"Name: %ls - Filter: %ls - Rows: Retrieved=%d Total=%d Requested=%d.\n", 
-				lastResult->DisplayName->Data(), 
-				LeaderboardManager::filterNames[ (int) filter ].c_str(),  
+			app.DebugPrintf(
+				"Name: %ls - Filter: %ls - Rows: Retrieved=%d Total=%d Requested=%d.\n",
+				lastResult->DisplayName->Data(),
+				LeaderboardManager::filterNames[ (int) filter ].c_str(),
 				lastResult->Rows->Size, lastResult->TotalRowCount, readCount
 				);
 
@@ -459,21 +459,21 @@ void DurangoLeaderboardManager::runLeaderboardRequest(WF::IAsyncOperation<MXSL::
 			m_readCount = lastResult->Rows->Size;
 
 			if (m_scores != NULL) delete [] m_scores;
-			m_scores = new ReadScore[m_readCount];	
+			m_scores = new ReadScore[m_readCount];
 			ZeroMemory(m_scores, sizeof(ReadScore) * m_readCount);
-			
+
 			m_xboxUserIds->Clear();
 
 			app.DebugPrintf("[LeaderboardManager] Retrieved Scores:\n");
 			for( UINT index = 0; index < lastResult->Rows->Size; index++ )
 			{
 				MXSL::LeaderboardRow^ row = lastResult->Rows->GetAt(index);
-				
+
 				app.DebugPrintf(
-					"\tIndex: %d\tRank: %d\tPercentile: %.1f%%\tXboxUserId: %ls\tValue: %ls.\n", 
+					"\tIndex: %d\tRank: %d\tPercentile: %.1f%%\tXboxUserId: %ls\tValue: %ls.\n",
 					index,
 					row->Rank,
-					row->Percentile * 100, 
+					row->Percentile * 100,
 					row->XboxUserId->Data(),
 					row->Values->GetAt(0)->Data()
 					);
@@ -484,7 +484,7 @@ void DurangoLeaderboardManager::runLeaderboardRequest(WF::IAsyncOperation<MXSL::
 
 				// 4J-JEV: Added to help determine if this player's score is hidden due to their privacy settings.
 				m_scores[index].m_totalScore = (unsigned long) _fromString<long long>(row->Values->GetAt(0)->Data());
-				
+
 				m_xboxUserIds->Append(row->XboxUserId);
 			}
 
@@ -681,12 +681,12 @@ void DurangoLeaderboardManager::setState(EStatsState newState)
 		};
 		break;
 	};
-	
+
 #ifndef _CONTENT_PACKAGE
 	app.DebugPrintf(
-		"[LeaderboardManager] %s state transition:\t%ls(%d) -> %ls(%d).\n", 
+		"[LeaderboardManager] %s state transition:\t%ls(%d) -> %ls(%d).\n",
 		(validTransition ? "Valid" : "INVALID"),
-		stateToString(m_eStatsState).c_str(),	m_eStatsState, 
+		stateToString(m_eStatsState).c_str(),	m_eStatsState,
 		stateToString(newState).c_str(),		newState
 		);
 #endif

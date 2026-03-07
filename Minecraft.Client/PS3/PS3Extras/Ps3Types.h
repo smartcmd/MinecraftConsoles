@@ -7,7 +7,8 @@
 #define BOOST_ENABLE_ASSERT_HANDLER
 #include <typeinfo>
 
-#include <stddef.h>
+#include <cstdint>
+#include <cstddef>
 #include <boost/typeof/typeof.hpp>
 #include <boost/tr1/memory.hpp>
 #include "boost/tr1/unordered_map.hpp"
@@ -35,29 +36,28 @@ using boost::hash;
 
 
 // user the pool_allocator for all unordered_set and unordered_map instances
-// template <	class T, class H = hash<T>, class P = std::equal_to<T>, class A = boost::pool_allocator<T> > 
-// 	class unordered_set : public std::tr1::unordered_set<T, H, P, A > 
+// template <	class T, class H = hash<T>, class P = std::equal_to<T>, class A = boost::pool_allocator<T> >
+// 	class unordered_set : public std::tr1::unordered_set<T, H, P, A >
 // {};
-// 
-// template <class K, class T, class H = hash<K>, class P = std::equal_to<K>, class A = boost::pool_allocator<std::pair<const K,T> > > 
-// 	class unordered_map : public std::tr1::unordered_map<K, T, H, P, A > 
+//
+// template <class K, class T, class H = hash<K>, class P = std::equal_to<K>, class A = boost::pool_allocator<std::pair<const K,T> > >
+// 	class unordered_map : public std::tr1::unordered_map<K, T, H, P, A >
 // {};
 
 
 
-// template <	class T, class H = hash<T>, class P = std::equal_to<T>, class A = C4JPoolAllocator<T> > 
-// class unordered_set : public std::tr1::unordered_set<T, H, P, A > 
+// template <	class T, class H = hash<T>, class P = std::equal_to<T>, class A = C4JPoolAllocator<T> >
+// class unordered_set : public std::tr1::unordered_set<T, H, P, A >
 // {};
-// 
-// template <class K, class T, class H = hash<K>, class P = std::equal_to<K>, class A = C4JPoolAllocator<std::pair<const K,T> > > 
-// class unordered_map : public std::tr1::unordered_map<K, T, H, P, A > 
+//
+// template <class K, class T, class H = hash<K>, class P = std::equal_to<K>, class A = C4JPoolAllocator<std::pair<const K,T> > >
+// class unordered_map : public std::tr1::unordered_map<K, T, H, P, A >
 // {};
 
 
 // using boost::ublas::vector;
 
 #define static_assert(a,b) BOOST_STATIC_ASSERT(a)
-#define AUTO_VAR BOOST_AUTO
 
 class Cnullptr{
 public:
@@ -111,21 +111,19 @@ typedef unsigned int        *PUINT;
 
 
 typedef unsigned char		byte;
-typedef long long				__int64;
-typedef unsigned long long		__uint64;
 typedef unsigned long		DWORD;
 typedef int                 INT;
 typedef unsigned long ULONG_PTR, *PULONG_PTR;
 typedef ULONG_PTR SIZE_T, *PSIZE_T;
 
-typedef __int64 LONG64, *PLONG64;
+typedef long long LONG64, *PLONG64;
 
 #define VOID void
 typedef char CHAR;
 typedef short SHORT;
 typedef long LONG;
-typedef __int64 LONGLONG;
-typedef __uint64 ULONGLONG;
+typedef int64_t LONGLONG;
+typedef uint64_t ULONGLONG;
 
 
 #define CONST               const

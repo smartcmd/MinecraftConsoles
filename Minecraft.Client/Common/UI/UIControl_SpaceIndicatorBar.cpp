@@ -24,7 +24,7 @@ bool UIControl_SpaceIndicatorBar::setupControl(UIScene *scene, IggyValuePath *pa
 	return success;
 }
 
-void UIControl_SpaceIndicatorBar::init(UIString label, int id, __int64 min, __int64 max)
+void UIControl_SpaceIndicatorBar::init(UIString label, int id, int64_t min, int64_t max)
 {
 	m_label = label;
 	m_id = id;
@@ -61,11 +61,11 @@ void UIControl_SpaceIndicatorBar::reset()
 	setSaveGameOffset(0.0f);
 }
 
-void UIControl_SpaceIndicatorBar::addSave(__int64 size)
+void UIControl_SpaceIndicatorBar::addSave(int64_t size)
 {
 	float startPercent = (float)((m_currentTotal-m_min))/(m_max-m_min);
 
-	m_sizeAndOffsets.push_back( pair<__int64, float>(size, startPercent) );
+	m_sizeAndOffsets.push_back( pair<int64_t, float>(size, startPercent) );
 
 	m_currentTotal += size;
 	setTotalSize(m_currentTotal);
@@ -75,7 +75,7 @@ void UIControl_SpaceIndicatorBar::selectSave(int index)
 {
 	if(index >= 0 && index < m_sizeAndOffsets.size())
 	{
-		pair<__int64,float> values = m_sizeAndOffsets[index];
+		pair<int64_t,float> values = m_sizeAndOffsets[index];
 		setSaveSize(values.first);
 		setSaveGameOffset(values.second);
 	}
@@ -86,7 +86,7 @@ void UIControl_SpaceIndicatorBar::selectSave(int index)
 	}
 }
 
-void UIControl_SpaceIndicatorBar::setSaveSize(__int64 size)
+void UIControl_SpaceIndicatorBar::setSaveSize(int64_t size)
 {
 	m_currentSave = size;
 
@@ -99,7 +99,7 @@ void UIControl_SpaceIndicatorBar::setSaveSize(__int64 size)
 	IggyResult out = IggyPlayerCallMethodRS ( m_parentScene->getMovie() , &result, getIggyValuePath() , m_setSaveSizeFunc , 1 , value );
 }
 
-void UIControl_SpaceIndicatorBar::setTotalSize(__int64 size)
+void UIControl_SpaceIndicatorBar::setTotalSize(int64_t size)
 {
 	float percent = (float)((m_currentTotal-m_min))/(m_max-m_min);
 

@@ -97,14 +97,14 @@ void CreateWorldScreen::buttonClicked(Button *button)
         if (done) return;
         done = true;
 
-        __int64 seedValue = (new Random())->nextLong();
+        int64_t seedValue = (new Random())->nextLong();
         wstring seedString = seedEdit->getValue();
 
 		if (seedString.length() != 0)
 		{
             // try to convert it to a long first
 //            try {	// 4J - removed try/catch
-            __int64 value = _fromString<__int64>(seedString);
+            int64_t value = _fromString<int64_t>(seedString);
             if (value != 0)
 			{
                 seedValue = value;

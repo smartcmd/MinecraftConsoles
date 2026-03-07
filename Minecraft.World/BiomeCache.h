@@ -10,7 +10,7 @@ private:
 	static const int ZONE_SIZE_MASK = ZONE_SIZE - 1;
 
 	const BiomeSource *source;
-	__int64 lastUpdateTime;
+	int64_t lastUpdateTime;
 
 public:
 	class Block
@@ -22,7 +22,7 @@ public:
 // 		BiomeArray biomes;
 		byteArray biomeIndices;
 		int x, z;
-		__int64 lastUse;
+		int64_t lastUse;
 
 		Block(int x, int z, BiomeCache *parent);
 		~Block();
@@ -32,7 +32,7 @@ public:
 	};
 
 private:
-	unordered_map<__int64,Block *,LongKeyHash,LongKeyEq> cached;		// 4J - was LongHashMap
+	unordered_map<int64_t,Block *,LongKeyHash,LongKeyEq> cached;		// 4J - was LongHashMap
 	vector<Block *> all; // was ArrayList<Block>
 
 public:

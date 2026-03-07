@@ -101,7 +101,7 @@ int Settings::getInt(const wstring& key, int defaultValue)
 {
 	if(properties.find(key) == properties.end())
 	{
-		properties[key] = _toString<int>(defaultValue);
+		properties[key] = std::to_wstring(defaultValue);
 		saveProperties();
 	}
 	return _fromString<int>(properties[key]);

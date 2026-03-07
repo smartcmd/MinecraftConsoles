@@ -1102,12 +1102,12 @@ SIZE_T WINAPI XMemSize(
 void DumpMem()
 {
 	int totalLeak = 0;
-	for(AUTO_VAR(it, allocCounts.begin()); it != allocCounts.end(); it++ )
+	for( auto& it : allocCounts )
 	{
-		if(it->second > 0 )
+		if(it.second > 0 )
 		{
-			app.DebugPrintf("%d %d %d %d\n",( it->first >> 26 ) & 0x3f,it->first & 0x03ffffff, it->second, (it->first & 0x03ffffff) * it->second);
-			totalLeak += ( it->first & 0x03ffffff ) * it->second;
+			app.DebugPrintf("%d %d %d %d\n",( it.first >> 26 ) & 0x3f,it.first & 0x03ffffff, it.second, (it.first & 0x03ffffff) * it.second);
+			totalLeak += ( it.first & 0x03ffffff ) * it.second;
 		}
 	}
 	app.DebugPrintf("Total %d\n",totalLeak);
@@ -1150,13 +1150,13 @@ void MemPixStuff()
 
 	int totals[MAX_SECT] = {0};
 
-	for(AUTO_VAR(it, allocCounts.begin()); it != allocCounts.end(); it++ )
+	for ( auto& it : allocCounts )
 	{
-		if(it->second > 0 )
+		if ( it.second > 0 )
 		{
-			int sect = ( it->first >> 26 ) & 0x3f;
-			int bytes = it->first & 0x03ffffff;
-			totals[sect] += bytes * it->second;
+			int sect = ( it.first >> 26 ) & 0x3f;
+			int bytes = it.first & 0x03ffffff;
+			totals[sect] += bytes * it.second;
 		}
 	}
 

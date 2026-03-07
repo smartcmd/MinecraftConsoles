@@ -55,6 +55,10 @@ protected:
 
 	virtual UIControl *getSection(ESceneSection eSection);
 
+#ifdef _WINDOWS64
+	virtual void getDirectEditInputs(vector<UIControl_TextInput*> &inputs);
+	virtual void onDirectEditFinished(UIControl_TextInput *input, UIControl_TextInput::EDirectEditResult result);
+#endif
 	static int KeyboardCompleteCallback(LPVOID lpParam,bool bRes);
 	virtual void handleEditNamePressed();
 	virtual void setEditNameValue(const wstring &name);

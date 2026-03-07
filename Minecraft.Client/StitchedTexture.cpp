@@ -48,12 +48,15 @@ StitchedTexture::StitchedTexture(const wstring &name, const wstring &filename) :
 
 void StitchedTexture::freeFrameTextures()
 {
-	if( frames ) 
+	if ( frames )
 	{
-		for(AUTO_VAR(it, frames->begin()); it != frames->end(); ++it)
+		for (auto& frame : *frames)
 		{
-			TextureManager::getInstance()->unregisterTexture(L"", *it);
-			delete *it;
+			if ( frame )
+			{
+				TextureManager::getInstance()->unregisterTexture(L"", frame);
+				delete frame;
+			}
 		}
 		delete frames;
 	}
@@ -61,9 +64,10 @@ void StitchedTexture::freeFrameTextures()
 
 StitchedTexture::~StitchedTexture()
 {
-	for(AUTO_VAR(it, frames->begin()); it != frames->end(); ++it)
+	for(auto& frame : *frames)
 	{
-		delete *it;
+		if ( frame )
+			delete frame;
 	}
 	delete frames;
 }
@@ -241,7 +245,7 @@ int StitchedTexture::getFrames()
 * 4*10,3,2,1,
 * 0
 * </code> or similar
-* 
+*
 * @param bufferedReader
 */
 void StitchedTexture::loadAnimationFrames(BufferedReader *bufferedReader)
@@ -265,20 +269,19 @@ void StitchedTexture::loadAnimationFrames(BufferedReader *bufferedReader)
 		{
 			std::vector<std::wstring> tokens = stringSplit(line, L',');
 			//for (String token : tokens)
-			for(AUTO_VAR(it, tokens.begin()); it != tokens.end(); ++it)
+			for( const auto& token : tokens)
 			{
-				wstring token = *it;
 				int multiPos = token.find_first_of('*');
 				if (multiPos > 0)
 				{
 					int frame = _fromString<int>(token.substr(0, multiPos));
 					int count = _fromString<int>(token.substr(multiPos + 1));
-					results->push_back( intPairVector::value_type(frame, count));
+					results->emplace_back(frame, count);
 				}
 				else
 				{
 					int tokenVal = _fromString<int>(token);
-					results->push_back( intPairVector::value_type(tokenVal, 1));
+					results->emplace_back(tokenVal, 1);
 				}
 			}
 		}
@@ -311,21 +314,22 @@ void StitchedTexture::loadAnimationFrames(const wstring &string)
 	intPairVector *results = new intPairVector();
 
 	std::vector<std::wstring> tokens = stringSplit(trimString(string), L',');
-	//for (String token : tokens)
-	for(AUTO_VAR(it, tokens.begin()); it != tokens.end(); ++it)
+
+	wstring token;
+	for(auto& it : tokens)
 	{
-		wstring token = trimString(*it);
+		token = trimString(it);
 		int multiPos = token.find_first_of('*');
 		if (multiPos > 0)
 		{
 			int frame = _fromString<int>(token.substr(0, multiPos));
 			int count = _fromString<int>(token.substr(multiPos + 1));
-			results->push_back( intPairVector::value_type(frame, count));
+			results->emplace_back(frame, count);
 		}
 		else if(!token.empty())
 		{
 			int tokenVal = _fromString<int>(token);
-			results->push_back( intPairVector::value_type(tokenVal, 1));
+			results->emplace_back(tokenVal, 1);
 		}
 	}
 

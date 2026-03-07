@@ -86,7 +86,7 @@ void ItemRenderer::render(shared_ptr<Entity> _itemEntity, double x, double y, do
 	{
         glRotatef(spin, 0, 1, 0);
 
-		if (m_bItemFrame) 
+		if (m_bItemFrame)
 		{
 			glScalef(1.25f, 1.25f, 1.25f);
 			glTranslatef(0, 0.05f, 0);
@@ -104,7 +104,7 @@ void ItemRenderer::render(shared_ptr<Entity> _itemEntity, double x, double y, do
         for (int i = 0; i < count; i++)
 		{
             glPushMatrix();
-            if (i > 0) 
+            if (i > 0)
 			{
                 float xo = (random->nextFloat() * 2 - 1) * 0.2f / s;
                 float yo = (random->nextFloat() * 2 - 1) * 0.2f / s;
@@ -119,13 +119,13 @@ void ItemRenderer::render(shared_ptr<Entity> _itemEntity, double x, double y, do
 	}
 	else if (item->getIconType() == Icon::TYPE_ITEM && item->getItem()->hasMultipleSpriteLayers())
 	{
-		if (m_bItemFrame) 
+		if (m_bItemFrame)
 		{
 			glScalef(1 / 1.95f, 1 / 1.95f, 1 / 1.95f);
 			glTranslatef(0, -0.05f, 0);
 			glDisable(GL_LIGHTING);
-		} 
-		else 
+		}
+		else
 		{
 			glScalef(1 / 2.0f, 1 / 2.0f, 1 / 2.0f);
 		}
@@ -155,17 +155,17 @@ void ItemRenderer::render(shared_ptr<Entity> _itemEntity, double x, double y, do
 	}
 	else
 	{
-		if (m_bItemFrame) 
+		if (m_bItemFrame)
 		{
 			glScalef(1 / 1.95f, 1 / 1.95f, 1 / 1.95f);
 			glTranslatef(0, -0.05f, 0);
 			glDisable(GL_LIGHTING);
-		} 
-		else 
+		}
+		else
 		{
 			glScalef(1 / 2.0f, 1 / 2.0f, 1 / 2.0f);
 		}
-		
+
 		// 4J Stu - For rendering the static compass, we give it a non-zero aux value
 		if(item->id == Item::compass_Id) item->setAuxValue(255);
 		if(item->id == Item::compass_Id) item->setAuxValue(0);
@@ -212,7 +212,7 @@ void ItemRenderer::renderItemBillboard(shared_ptr<ItemEntity> entity, Icon *icon
 
 	if (entityRenderDispatcher->options->fancyGraphics)
 	{
-		// Consider forcing the mipmap LOD level to use, if this is to be rendered from a larger than standard source texture. 
+		// Consider forcing the mipmap LOD level to use, if this is to be rendered from a larger than standard source texture.
 		int iconWidth = icon->getWidth();
 		int LOD = -1;	// Default to not doing anything special with LOD forcing
 		if( iconWidth == 32 )
@@ -262,7 +262,7 @@ void ItemRenderer::renderItemBillboard(shared_ptr<ItemEntity> entity, Icon *icon
 		for (int i = 0; i < count; i++)
 		{
 			glTranslatef(0, 0, width + margin);
-			
+
 			bool bIsTerrain = false;
 			if (item->getIconType() == Icon::TYPE_TERRAIN && Tile::tiles[item->id] != NULL)
 			{
@@ -270,7 +270,7 @@ void ItemRenderer::renderItemBillboard(shared_ptr<ItemEntity> entity, Icon *icon
                 bindTexture(&TextureAtlas::LOCATION_BLOCKS); // TODO: Do this sanely by Icon
             }
 			else
-			{                
+			{
 				bindTexture(&TextureAtlas::LOCATION_ITEMS); // TODO: Do this sanely by Icon
             }
 
@@ -395,7 +395,7 @@ void ItemRenderer::renderGuiItem(Font *font, Textures *textures, shared_ptr<Item
 		PIXBeginNamedEvent(0,"Potion gui item render %d\n",itemIcon);
 		// special double-layered
 		glDisable(GL_LIGHTING);
-		
+
 		ResourceLocation *location = getTextureLocation(item->getIconType());
         textures->bindTexture(location);
 
@@ -487,7 +487,7 @@ void ItemRenderer::renderAndDecorateItem(Font *font, Textures *textures, const s
 
 // 4J - added isConstantBlended and blendFactor parameters. This is true if the gui item is being rendered from a context where it already has blending enabled to do general interface fading
 // (ie from the gui rather than xui). In this case we dno't want to enable/disable blending, and do need to restore the blend state when we are done.
-void ItemRenderer::renderAndDecorateItem(Font *font, Textures *textures, const shared_ptr<ItemInstance> item, float x, float y,float fScaleX, float fScaleY,float fAlpha, bool isFoil, bool isConstantBlended, bool useCompiled)	
+void ItemRenderer::renderAndDecorateItem(Font *font, Textures *textures, const shared_ptr<ItemInstance> item, float x, float y,float fScaleX, float fScaleY,float fAlpha, bool isFoil, bool isConstantBlended, bool useCompiled)
 {
     if (item == NULL)
 	{
@@ -495,7 +495,7 @@ void ItemRenderer::renderAndDecorateItem(Font *font, Textures *textures, const s
     }
 
     renderGuiItem(font, textures, item, x, y,fScaleX,fScaleY,fAlpha, useCompiled);
-	
+
 	if (isFoil || item->isFoil())
 	{
 		glDepthFunc(GL_GREATER);
@@ -504,7 +504,7 @@ void ItemRenderer::renderAndDecorateItem(Font *font, Textures *textures, const s
 		textures->bindTexture(&ItemInHandRenderer::ENCHANT_GLINT_LOCATION); // 4J was "%blur%/misc/glint.png"
 		blitOffset -= 50;
 		if( !isConstantBlended )	glEnable(GL_BLEND);
-		
+
 		glBlendFunc(GL_DST_COLOR, GL_ONE);		// 4J - changed blend equation from GL_DST_COLOR, GL_DST_COLOR so we can fade this out
 
 		float blendFactor = isConstantBlended ? Gui::currentGuiBlendFactor : 1.0f;
@@ -597,7 +597,7 @@ void ItemRenderer::renderGuiItemDecorations(Font *font, Textures *textures, shar
 	{
         return;
     }
-	
+
     if (item->count > 1 || !countText.empty() || item->GetForceNumberDisplay())
 	{
 		MemSect(31);
@@ -607,11 +607,11 @@ void ItemRenderer::renderGuiItemDecorations(Font *font, Textures *textures, shar
 			int count = item->count;
 			if(count > 64)
 			{
-				amount = _toString<int>(64) + L"+";
+				amount = L"64+";
 			}
 			else
 			{
-				amount = _toString<int>(item->count);
+				amount = std::to_wstring(item->count);
 			}
 		}
 		MemSect(0);

@@ -29,7 +29,7 @@ wstring MonsterPlacerItem::getHoverName(shared_ptr<ItemInstance> itemInstance)
 		//elementName += " " + I18n.get("entity." + encodeId + ".name");
 	}
 	else
-	{		
+	{
 		elementName = replaceAll(elementName,L"{*CREATURE*}",L"");
 	}
 
@@ -38,8 +38,8 @@ wstring MonsterPlacerItem::getHoverName(shared_ptr<ItemInstance> itemInstance)
 
 int MonsterPlacerItem::getColor(shared_ptr<ItemInstance> item, int spriteLayer)
 {
-	AUTO_VAR(it, EntityIO::idsSpawnableInCreative.find(item->getAuxValue()));
-	if (it != EntityIO::idsSpawnableInCreative.end())
+    auto it = EntityIO::idsSpawnableInCreative.find(item->getAuxValue());
+    if (it != EntityIO::idsSpawnableInCreative.end())
 	{
 		EntityIO::SpawnableMobInfo *spawnableMobInfo = it->second;
 		if (spriteLayer == 0) {
@@ -193,7 +193,7 @@ bool MonsterPlacerItem::useOn(shared_ptr<ItemInstance> itemInstance, shared_ptr<
 	x += Facing::STEP_X[face];
 	y += Facing::STEP_Y[face];
 	z += Facing::STEP_Z[face];
-	
+
 	double yOff = 0;
 	// 4J-PB - missing parentheses added
 	if (face == Facing::UP && (tile == Tile::fence_Id || tile == Tile::netherFence_Id))
@@ -211,11 +211,11 @@ bool MonsterPlacerItem::useOn(shared_ptr<ItemInstance> itemInstance, shared_ptr<
 	}
 
 	if (spawned)
-	{		
+	{
 		if (!player->abilities.instabuild)
 		{
 			itemInstance->count--;
-		}		
+		}
 	}
 	else
 	{

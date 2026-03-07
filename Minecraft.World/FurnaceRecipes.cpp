@@ -10,12 +10,12 @@ void FurnaceRecipes::staticCtor()
 	FurnaceRecipes::instance = new FurnaceRecipes();
 }
 
-FurnaceRecipes *FurnaceRecipes::getInstance() 
+FurnaceRecipes *FurnaceRecipes::getInstance()
 {
 	return instance;
 }
 
-FurnaceRecipes::FurnaceRecipes() 
+FurnaceRecipes::FurnaceRecipes()
 {
 	addFurnaceRecipy(Tile::ironOre_Id, new ItemInstance(Item::ironIngot), .7f);
 	addFurnaceRecipy(Tile::goldOre_Id, new ItemInstance(Item::goldIngot), 1);
@@ -33,7 +33,7 @@ FurnaceRecipes::FurnaceRecipes()
 	addFurnaceRecipy(Tile::emeraldOre_Id, new ItemInstance(Item::emerald), 1);
 	addFurnaceRecipy(Item::potato_Id, new ItemInstance(Item::potatoBaked), .35f);
 	addFurnaceRecipy(Tile::netherRack_Id, new ItemInstance(Item::netherbrick), .1f);
-	
+
 	// special silk touch related recipes:
 	addFurnaceRecipy(Tile::coalOre_Id, new ItemInstance(Item::coal), .1f);
 	addFurnaceRecipy(Tile::redStoneOre_Id, new ItemInstance(Item::redStone), .7f);
@@ -43,38 +43,38 @@ FurnaceRecipes::FurnaceRecipes()
 
 }
 
-void FurnaceRecipes::addFurnaceRecipy(int itemId, ItemInstance *result, float value) 
+void FurnaceRecipes::addFurnaceRecipy(int itemId, ItemInstance *result, float value)
 {
 	//recipies->put(itemId, result);
 	recipies[itemId]=result;
 	recipeValue[result->id] = value;
 }
 
-bool FurnaceRecipes::isFurnaceItem(int itemId) 
+bool FurnaceRecipes::isFurnaceItem(int itemId)
 {
-	AUTO_VAR(it, recipies.find(itemId));
-	return it != recipies.end();
+    auto it = recipies.find(itemId);
+    return it != recipies.end();
 }
 
-ItemInstance *FurnaceRecipes::getResult(int itemId) 
+ItemInstance *FurnaceRecipes::getResult(int itemId)
 {
-	AUTO_VAR(it, recipies.find(itemId));
-	if(it != recipies.end())
+    auto it = recipies.find(itemId);
+    if(it != recipies.end())
 	{
 		return it->second;
 	}
 	return NULL;
 }
 
-unordered_map<int, ItemInstance *> *FurnaceRecipes::getRecipies() 
+unordered_map<int, ItemInstance *> *FurnaceRecipes::getRecipies()
 {
 	return &recipies;
 }
 
 float FurnaceRecipes::getRecipeValue(int itemId)
 {
-	AUTO_VAR(it, recipeValue.find(itemId));
-	if (it != recipeValue.end())
+    auto it = recipeValue.find(itemId);
+    if (it != recipeValue.end())
 	{
 		return it->second;
 	}

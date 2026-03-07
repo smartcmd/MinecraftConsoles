@@ -27,10 +27,8 @@ bool PlayGoal::canUse()
 
 	vector<shared_ptr<Entity> > *children = mob->level->getEntitiesOfClass(typeid(Villager), mob->bb->grow(6, 3, 6));
 	double closestDistSqr = Double::MAX_VALUE;
-	//for (Entity c : children)
-	for(AUTO_VAR(it, children->begin()); it != children->end(); ++it)
+	for(auto& c : *children)
 	{
-		shared_ptr<Entity> c = *it;
 		if (c.get() == mob) continue;
 		shared_ptr<Villager> friendV = dynamic_pointer_cast<Villager>(c);
 		if (friendV->isChasing()) continue;

@@ -76,21 +76,21 @@ wstring Stat::TimeFormatter::format(int value)
     if (years > 0.5)
 	{
         return decimalFormat->format(years) + L" y";
-    } 
-	else if (days > 0.5) 
+    }
+	else if (days > 0.5)
 	{
         return decimalFormat->format(days) + L" d";
     }
 	else if (hours > 0.5)
 	{
         return decimalFormat->format(hours) + L" h";
-    } 
-	else if (minutes > 0.5) 
+    }
+	else if (minutes > 0.5)
 	{
         return decimalFormat->format(minutes) + L" m";
     }
 
-    return _toString<double>(seconds) + L" s";
+    return std::to_wstring(seconds) + L" s";
 }
 
 wstring Stat::DefaultFormat::format(int value)
@@ -103,13 +103,13 @@ wstring Stat::DistanceFormatter::format(int cm)
     double meters = cm / 100.0;
     double kilometers = meters / 1000.0;
 
-    if (kilometers > 0.5) 
+    if (kilometers > 0.5)
 	{
         return decimalFormat->format(kilometers) + L" km";
 
-    } else if (meters > 0.5) 
+    } else if (meters > 0.5)
 	{
         return decimalFormat->format(meters) + L" m";
     }
-    return _toString<int>(cm) + L" cm";
+    return std::to_wstring(cm) + L" cm";
 }

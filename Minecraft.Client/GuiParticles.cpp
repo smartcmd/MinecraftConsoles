@@ -37,10 +37,8 @@ void GuiParticles::render(float a)
 #if 0
     mc->textures->bindTexture(L"/gui/particles.png");
 
-	AUTO_VAR(itEnd, particles.end());
-	for (AUTO_VAR(it, particles.begin()); it != itEnd; it++)
+	for ( GuiParticle *gp : particles )
 	{
-        GuiParticle *gp = *it; //particles[i];
         int xx = (int) (gp->xo + (gp->x - gp->xo) * a - 4);
         int yy = (int) (gp->yo + (gp->y - gp->yo) * a - 4);
 

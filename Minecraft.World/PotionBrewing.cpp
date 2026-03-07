@@ -197,9 +197,8 @@ int PotionBrewing::getColorValue(vector<MobEffectInstance *> *effects)
 	float count = 0;
 
 	//for (MobEffectInstance effect : effects){
-	for(AUTO_VAR(it, effects->begin()); it != effects->end(); ++it)
+	for(auto& effect : *effects)
 	{
-		MobEffectInstance *effect = *it;
 		int potionColor = colourTable->getColor( MobEffect::effects[effect->getId()]->getColor() );
 
 		for (int potency = 0; potency <= effect->getAmplifier(); potency++)
@@ -220,9 +219,8 @@ int PotionBrewing::getColorValue(vector<MobEffectInstance *> *effects)
 
 bool PotionBrewing::areAllEffectsAmbient(vector<MobEffectInstance *> *effects)
 {
-	for(AUTO_VAR(it, effects->begin()); it != effects->end(); ++it)
+	for(auto& effect : *effects)
 	{
-		MobEffectInstance *effect = *it;
 		if (!effect->isAmbient()) return false;
 	}
 
@@ -233,8 +231,8 @@ int PotionBrewing::getColorValue(int brew, bool includeDisabledEffects)
 {
 	if (!includeDisabledEffects)
 	{
-		AUTO_VAR(colIt, cachedColors.find(brew));
-		if (colIt != cachedColors.end())
+        auto colIt = cachedColors.find(brew);
+        if (colIt != cachedColors.end())
 		{
 			return colIt->second;//cachedColors.get(brew);
 		}
@@ -242,9 +240,8 @@ int PotionBrewing::getColorValue(int brew, bool includeDisabledEffects)
 		int color = getColorValue(effects);
 		if(effects != NULL)
 		{
-			for(AUTO_VAR(it, effects->begin()); it != effects->end(); ++it)
+			for(auto& effect : *effects)
 			{
-				MobEffectInstance *effect = *it;
 				delete effect;
 			}
 			delete effects;
@@ -566,8 +563,8 @@ vector<MobEffectInstance *> *PotionBrewing::getEffects(int brew, bool includeDis
 			continue;
 		}
 		//wstring durationString = potionEffectDuration.get(effect->getId());
-		AUTO_VAR(effIt, potionEffectDuration.find(effect->getId()));
-		if ( effIt == potionEffectDuration.end() )
+        auto effIt = potionEffectDuration.find(effect->getId());
+        if ( effIt == potionEffectDuration.end() )
 		{
 			continue;
 		}
@@ -577,9 +574,9 @@ vector<MobEffectInstance *> *PotionBrewing::getEffects(int brew, bool includeDis
 		if (duration > 0)
 		{
 			int amplifier = 0;
-			AUTO_VAR(ampIt, potionEffectAmplifier.find(effect->getId()));
-			if (ampIt != potionEffectAmplifier.end())
-			{				
+            auto ampIt = potionEffectAmplifier.find(effect->getId());
+            if (ampIt != potionEffectAmplifier.end())
+			{
 				wstring amplifierString = ampIt->second;
 				amplifier = parseEffectFormulaValue(amplifierString, 0, (int)amplifierString.length(), brew);
 				if (amplifier < 0)

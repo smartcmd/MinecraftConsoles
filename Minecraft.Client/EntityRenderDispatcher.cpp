@@ -169,10 +169,9 @@ EntityRenderDispatcher::EntityRenderDispatcher()
 	renderers[eTYPE_LIGHTNINGBOLT] = new LightningBoltRenderer();
 	glDisable(GL_LIGHTING);
 
-	AUTO_VAR(itEnd, renderers.end());
-	for( classToRendererMap::iterator it = renderers.begin(); it != itEnd; it++ )
+	for( auto& it : renderers )
 	{
-		it->second->init(this);
+		it.second->init(this);
 	}
 
 	isGuiRender = false;	// 4J added
@@ -182,7 +181,7 @@ EntityRenderer *EntityRenderDispatcher::getRenderer(eINSTANCEOF e)
 {
 	if( (e & eTYPE_PLAYER) == eTYPE_PLAYER) e = eTYPE_PLAYER;
 	//EntityRenderer * r = renderers[e];
-	AUTO_VAR(it, renderers.find( e )); // 4J Stu - The .at and [] accessors insert elements if they don't exist
+	auto it = renderers.find(e); // 4J Stu - The .at and [] accessors insert elements if they don't exist
 
 	if( it == renderers.end() )
 	{
@@ -305,10 +304,9 @@ Font *EntityRenderDispatcher::getFont()
 
 void EntityRenderDispatcher::registerTerrainTextures(IconRegister *iconRegister)
 {
-	//for (EntityRenderer<? extends Entity> renderer : renderers.values())
-	for(AUTO_VAR(it, renderers.begin()); it != renderers.end(); ++it)
+	for( auto& it : renderers )
 	{
-		EntityRenderer *renderer = it->second;
+		EntityRenderer *renderer = it.second;
 		renderer->registerTerrainTextures(iconRegister);
 	}
 }

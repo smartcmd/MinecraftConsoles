@@ -54,16 +54,18 @@ DLCPack::DLCPack(const wstring &name,const wstring &productID,DWORD dwLicenseMas
 
 DLCPack::~DLCPack()
 {
-	for(AUTO_VAR(it, m_childPacks.begin()); it != m_childPacks.end(); ++it)
+	for( auto& it : m_childPacks )
 	{
-		delete *it;
+		if ( it )
+			delete it;
 	}
 
 	for(unsigned int i = 0; i < DLCManager::e_DLCType_Max; ++i)
 	{
-		for(AUTO_VAR(it,m_files[i].begin()); it != m_files[i].end(); ++it)
+		for (auto& it : m_files[i] )
 		{
-			delete *it;
+			if ( it )
+				delete it;
 		}
 	}
 
@@ -161,7 +163,7 @@ void DLCPack::addParameter(DLCManager::EDLCParameterType type, const wstring &va
 
 bool DLCPack::getParameterAsUInt(DLCManager::EDLCParameterType type, unsigned int &param)
 {
-	AUTO_VAR(it,m_parameters.find((int)type));
+	auto it = m_parameters.find((int)type);
 	if(it != m_parameters.end())
 	{
 		switch(type)
@@ -270,7 +272,7 @@ bool DLCPack::doesPackContainFile(DLCManager::EDLCType type, const wstring &path
 	else
 	{
 		g_pathCmpString = &path;
-		AUTO_VAR(it, find_if( m_files[type].begin(), m_files[type].end(), pathCmp ));
+		auto it = find_if(m_files[type].begin(), m_files[type].end(), pathCmp);
 		hasFile = it != m_files[type].end();
 		if(!hasFile && m_parentPack )
 		{
@@ -316,7 +318,7 @@ DLCFile *DLCPack::getFile(DLCManager::EDLCType type, const wstring &path)
 	else
 	{
 		g_pathCmpString = &path;
-		AUTO_VAR(it, find_if( m_files[type].begin(), m_files[type].end(), pathCmp ));
+		auto it = find_if(m_files[type].begin(), m_files[type].end(), pathCmp);
 
 		if(it == m_files[type].end())
 		{
@@ -368,9 +370,9 @@ DWORD DLCPack::getFileIndexAt(DLCManager::EDLCType type, const wstring &path, bo
 	DWORD foundIndex = 0;
 	found = false;
 	DWORD index = 0;
-	for(AUTO_VAR(it, m_files[type].begin()); it != m_files[type].end(); ++it)
+	for( auto& it : m_files[type] )
 	{
-		if(path.compare((*it)->getPath()) == 0)
+		if(path.compare(it->getPath()) == 0)
 		{
 			foundIndex = index;
 			found = true;

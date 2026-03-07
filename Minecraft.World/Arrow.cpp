@@ -249,10 +249,8 @@ void Arrow::tick()
 	shared_ptr<Entity> hitEntity = nullptr;
 	vector<shared_ptr<Entity> > *objects = level->getEntities(shared_from_this(), this->bb->expand(xd, yd, zd)->grow(1, 1, 1));
 	double nearest = 0;
-	AUTO_VAR(itEnd, objects->end());
-	for (AUTO_VAR(it, objects->begin()); it != itEnd; it++)
+	for ( auto& e : *objects )
 	{
-		shared_ptr<Entity> e = *it; //objects->at(i);
 		if (!e->isPickable() || (e == owner && flightTime < 5)) continue;
 
 		float rr = 0.3f;

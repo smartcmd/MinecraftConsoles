@@ -24,7 +24,7 @@ bool UIControl_EnchantmentButton::setupControl(UIScene *scene, IggyValuePath *pa
 	UIControl::setControlType(UIControl::eEnchantmentButton);
 	bool success = UIControl_Button::setupControl(scene,parent,controlName);
 
-	//Button specific initialisers	
+	//Button specific initialisers
 	m_funcChangeState = registerFastName(L"ChangeState");
 
 	return success;
@@ -40,7 +40,7 @@ void UIControl_EnchantmentButton::ReInit()
 {
 	UIControl_Button::ReInit();
 
-	
+
 	m_lastState = eState_Inactive;
 	m_lastCost = 0;
 	m_bHasFocus = false;
@@ -54,10 +54,10 @@ void UIControl_EnchantmentButton::tick()
 }
 
 void UIControl_EnchantmentButton::render(IggyCustomDrawCallbackRegion *region)
-{	
+{
 	UIScene_EnchantingMenu *enchantingScene = (UIScene_EnchantingMenu *)m_parentScene;
 	EnchantmentMenu *menu = enchantingScene->getMenu();
-	
+
 	float width = region->x1 - region->x0;
 	float height = region->y1 - region->y0;
 	float xo = width/2;
@@ -101,7 +101,7 @@ void UIControl_EnchantmentButton::render(IggyCustomDrawCallbackRegion *region)
 		glEnable(GL_ALPHA_TEST);
 		glAlphaFunc(GL_GREATER, 0.1f);
 		Minecraft *pMinecraft = Minecraft::GetInstance();
-		wstring line = _toString<int>(cost);
+		wstring line = std::to_wstring(cost);
 		Font *font = pMinecraft->altFont;
 		//int col = 0x685E4A;
 		unsigned int col = m_textColour;
@@ -143,7 +143,7 @@ void UIControl_EnchantmentButton::updateState()
 	EState state = eState_Inactive;
 
 	int cost = menu->costs[m_index];
-	
+
 	Minecraft *pMinecraft = Minecraft::GetInstance();
 	if(cost > pMinecraft->localplayers[enchantingScene->getPad()]->experienceLevel && !pMinecraft->localplayers[enchantingScene->getPad()]->abilities.instabuild)
 	{
@@ -165,7 +165,7 @@ void UIControl_EnchantmentButton::updateState()
 
 	if(cost != m_lastCost)
 	{
-		setLabel( _toString<int>(cost) );
+		setLabel( std::to_wstring(cost) );
 		m_lastCost = cost;
 		m_enchantmentString = EnchantmentNames::instance.getRandomName();
 	}

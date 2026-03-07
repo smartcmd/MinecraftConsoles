@@ -14,7 +14,7 @@
 #include "DoorItem.h"
 
 /**
-* 
+*
 * A structure piece is a construction or room, located somewhere in the world
 * with a given orientatino (out of Direction.java). Structure pieces have a
 * bounding box that says where the piece is located and its bounds, and the
@@ -113,10 +113,9 @@ bool StructurePiece::isInChunk( ChunkPos* pos )
 
 StructurePiece* StructurePiece::findCollisionPiece( list< StructurePiece* > *pieces, BoundingBox* box )
 {
-	for ( AUTO_VAR(it, pieces->begin()); it != pieces->end(); it++ )
+	for (auto& piece : *pieces)
 	{
-		StructurePiece* piece = *it;
-		if ( piece->getBoundingBox() != NULL && piece->getBoundingBox()->intersects( box ) )
+		if ( piece && piece->getBoundingBox() && piece->getBoundingBox()->intersects( box ) )
 		{
 			return piece;
 		}
@@ -125,7 +124,7 @@ StructurePiece* StructurePiece::findCollisionPiece( list< StructurePiece* > *pie
 }
 
 // 4J-PB - Added from 1.2.3
-TilePos *StructurePiece::getLocatorPosition() 
+TilePos *StructurePiece::getLocatorPosition()
 {
 	return new TilePos(boundingBox->getXCenter(), boundingBox->getYCenter(), boundingBox->getZCenter());
 }
@@ -559,7 +558,7 @@ void StructurePiece::placeBlock( Level* level, int block, int data, int x, int y
 * The purpose of this method is to wrap the getTile call on Level, in order
 * to prevent the level from generating chunks that shouldn't be loaded yet.
 * Returns 0 if the call is out of bounds.
-* 
+*
 * @param level
 * @param x
 * @param y

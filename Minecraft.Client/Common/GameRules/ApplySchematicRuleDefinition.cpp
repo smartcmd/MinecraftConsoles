@@ -37,19 +37,19 @@ void ApplySchematicRuleDefinition::writeAttributes(DataOutputStream *dos, UINT n
 	ConsoleGameRules::write(dos, ConsoleGameRules::eGameRuleAttr_filename);
 	dos->writeUTF(m_schematicName);
 	ConsoleGameRules::write(dos, ConsoleGameRules::eGameRuleAttr_x);
-	dos->writeUTF(_toString(m_location->x));
+	dos->writeUTF(std::to_wstring(m_location->x));
 	ConsoleGameRules::write(dos, ConsoleGameRules::eGameRuleAttr_y);
-	dos->writeUTF(_toString(m_location->y));
+	dos->writeUTF(std::to_wstring(m_location->y));
 	ConsoleGameRules::write(dos, ConsoleGameRules::eGameRuleAttr_z);
-	dos->writeUTF(_toString(m_location->z));
+	dos->writeUTF(std::to_wstring(m_location->z));
 	ConsoleGameRules::write(dos, ConsoleGameRules::eGameRuleAttr_rot);
 
 	switch (m_rotation)
 	{
-	case ConsoleSchematicFile::eSchematicRot_0:		dos->writeUTF(_toString( 0 )); break;
-	case ConsoleSchematicFile::eSchematicRot_90:	dos->writeUTF(_toString( 90 )); break;
-	case ConsoleSchematicFile::eSchematicRot_180:	dos->writeUTF(_toString( 180 )); break;
-	case ConsoleSchematicFile::eSchematicRot_270:	dos->writeUTF(_toString( 270 )); break;
+	case ConsoleSchematicFile::eSchematicRot_0:		dos->writeUTF(L"0"); break;
+	case ConsoleSchematicFile::eSchematicRot_90:	dos->writeUTF(L"90"); break;
+	case ConsoleSchematicFile::eSchematicRot_180:	dos->writeUTF(L"180"); break;
+	case ConsoleSchematicFile::eSchematicRot_270:	dos->writeUTF(L"270"); break;
 	}
 }
 
@@ -113,7 +113,7 @@ void ApplySchematicRuleDefinition::addAttribute(const wstring &attributeName, co
 			m_rotation = ConsoleSchematicFile::eSchematicRot_0;
 			break;
 		};
-		
+
 		//app.DebugPrintf("ApplySchematicRuleDefinition: Adding parameter rot=%d\n",m_rotation);
 	}
 	else if(attributeName.compare(L"dim") == 0)
@@ -160,7 +160,7 @@ void ApplySchematicRuleDefinition::processSchematic(AABB *chunkBox, LevelChunk *
 {
 	if( m_completed ) return;
 	if(chunk->level->dimension->id != m_dimension) return;
-	
+
 	PIXBeginNamedEvent(0, "Processing ApplySchematicRuleDefinition");
 	if(m_schematic == NULL) m_schematic = m_levelGenOptions->getSchematicFile(m_schematicName);
 
@@ -199,7 +199,7 @@ void ApplySchematicRuleDefinition::processSchematicLighting(AABB *chunkBox, Leve
 {
 	if( m_completed ) return;
 	if(chunk->level->dimension->id != m_dimension) return;
-	
+
 	PIXBeginNamedEvent(0, "Processing ApplySchematicRuleDefinition (lighting)");
 	if(m_schematic == NULL) m_schematic = m_levelGenOptions->getSchematicFile(m_schematicName);
 

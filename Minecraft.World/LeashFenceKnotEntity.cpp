@@ -79,9 +79,9 @@ bool LeashFenceKnotEntity::interact(shared_ptr<Player> player)
 			vector<shared_ptr<Entity> > *mobs = level->getEntitiesOfClass(typeid(Mob), AABB::newTemp(x - range, y - range, z - range, x + range, y + range, z + range));
 			if (mobs != NULL)
 			{
-				for(AUTO_VAR(it, mobs->begin()); it != mobs->end(); ++it)
+				for(auto& it : *mobs)
 				{
-					shared_ptr<Mob> mob = dynamic_pointer_cast<Mob>( *it );
+					shared_ptr<Mob> mob = dynamic_pointer_cast<Mob>( it );
 					if (mob->isLeashed() && mob->getLeashHolder() == player)
 					{
 						mob->setLeashedTo(shared_from_this(), true);
@@ -103,9 +103,9 @@ bool LeashFenceKnotEntity::interact(shared_ptr<Player> player)
 			vector<shared_ptr<Entity> > *mobs = level->getEntitiesOfClass(typeid(Mob), AABB::newTemp(x - range, y - range, z - range, x + range, y + range, z + range));
 			if (mobs != NULL)
 			{
-				for(AUTO_VAR(it, mobs->begin()); it != mobs->end(); ++it)
+				for(auto& it : *mobs)
 				{
-					shared_ptr<Mob> mob = dynamic_pointer_cast<Mob>( *it );
+					shared_ptr<Mob> mob = dynamic_pointer_cast<Mob>( it );
 					if (mob->isLeashed() && mob->getLeashHolder() == shared_from_this())
 					{
 						mob->dropLeash(true, false);
@@ -142,9 +142,9 @@ shared_ptr<LeashFenceKnotEntity> LeashFenceKnotEntity::findKnotAt(Level *level, 
 	vector<shared_ptr<Entity> > *knots = level->getEntitiesOfClass(typeid(LeashFenceKnotEntity), AABB::newTemp(x - 1.0, y - 1.0, z - 1.0, x + 1.0, y + 1.0, z + 1.0));
 	if (knots != NULL)
 	{
-		for(AUTO_VAR(it, knots->begin()); it != knots->end(); ++it)
-		{
-			shared_ptr<LeashFenceKnotEntity> knot = dynamic_pointer_cast<LeashFenceKnotEntity>( *it );
+        for (auto& it : *knots )
+        {
+			shared_ptr<LeashFenceKnotEntity> knot = dynamic_pointer_cast<LeashFenceKnotEntity>( it );
 			if (knot->xTile == x && knot->yTile == y && knot->zTile == z)
 			{
 				delete knots;

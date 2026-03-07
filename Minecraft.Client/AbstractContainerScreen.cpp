@@ -51,12 +51,9 @@ void AbstractContainerScreen::render(int xm, int ym, float a)
     glEnable(GL_RESCALE_NORMAL);
 
     Slot *hoveredSlot = NULL;
-	
-	AUTO_VAR(itEnd, menu->slots->end());
-	for (AUTO_VAR(it, menu->slots->begin()); it != itEnd; it++)
-	{
-        Slot *slot = *it; //menu->slots->at(i);
 
+	for ( Slot *slot : *menu->slots )
+	{
         renderSlot(slot);
 
         if (isHovering(slot, xm, ym))
@@ -149,14 +146,9 @@ void AbstractContainerScreen::renderSlot(Slot *slot)
 
 Slot *AbstractContainerScreen::findSlot(int x, int y)
 {
-    AUTO_VAR(itEnd, menu->slots->end());
-    for (AUTO_VAR(it, menu->slots->begin()); it != itEnd; it++)
-    {
-        Slot *slot = *it; // menu->slots->at(i);
-        if (isHovering(slot, x, y))
-        {
-            return slot;
-        }
+    for (Slot* slot : menu->slots )
+	  {
+        if (isHovering(slot, x, y)) return slot;
     }
     return NULL;
 }

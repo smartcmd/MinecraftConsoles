@@ -26,6 +26,9 @@ private:
 	FreezePlayerParam *fpp;
 
 	eControls m_keyboardCallbackControl;
+#ifdef _WINDOWS64
+	UIControl_TextInput* getTextInputForControl(eControls ctrl);
+#endif
 
 public:
 	UIScene_DebugSetCamera(int iPad, void *initData, UILayer *parentLayer);
@@ -54,6 +57,12 @@ protected:
 	UI_END_MAP_ELEMENTS_AND_NAMES()
 
 	virtual wstring getMoviePath();
+	virtual void tick();
+#ifdef _WINDOWS64
+	virtual void getDirectEditInputs(vector<UIControl_TextInput*> &inputs);
+	virtual void onDirectEditFinished(UIControl_TextInput *input, UIControl_TextInput::EDirectEditResult result);
+	virtual bool handleMouseClick(F32 x, F32 y);
+#endif
 
 public:
 	// INPUT

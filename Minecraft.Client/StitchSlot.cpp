@@ -120,9 +120,8 @@ bool StitchSlot::add(TextureHolder *textureHolder)
 	}
 
 	//for (final StitchSlot subSlot : subSlots)
-	for(AUTO_VAR(it, subSlots->begin()); it != subSlots->end(); ++it)
+	for ( StitchSlot *subSlot : *subSlots )
 	{
-		StitchSlot *subSlot = *it;
 		if (subSlot->add(textureHolder))
 		{
 			return true;
@@ -134,23 +133,15 @@ bool StitchSlot::add(TextureHolder *textureHolder)
 
 void StitchSlot::collectAssignments(vector<StitchSlot *> *result)
 {
-	if (textureHolder != NULL)
+	if (textureHolder)
 	{
 		result->push_back(this);
 	}
-	else if (subSlots != NULL)
+	else if (subSlots)
 	{
-		//for (StitchSlot subSlot : subSlots)
-		for(AUTO_VAR(it, subSlots->begin()); it != subSlots->end(); ++it)
+		for(StitchSlot *subSlot : *subSlots)
 		{
-			StitchSlot *subSlot = *it;
 			subSlot->collectAssignments(result);
 		}
 	}
-}
-
-//@Override
-wstring StitchSlot::toString()
-{
-	return L"Slot{originX=" + _toString(originX) + L", originY=" + _toString(originY) + L", width=" + _toString(width) + L", height=" + _toString(height) + L", texture=" + _toString(textureHolder) + L", subSlots=" + _toString(subSlots) + L'}';
 }

@@ -100,12 +100,10 @@ const int MobSpawner::tick(ServerLevel *level, bool spawnEnemies, bool spawnFrie
 	}
 	MemSect(20);
 	chunksToPoll.clear();
-	
+
 #if 0
-	AUTO_VAR(itEnd, level->players.end());
-	for (AUTO_VAR(it, level->players.begin()); it != itEnd; it++)
+	for (auto& player : level->players)
 	{
-		shared_ptr<Player> player = *it; //level->players.at(i);
 		int xx = Mth::floor(player->x / 16);
 		int zz = Mth::floor(player->z / 16);
 
@@ -164,20 +162,20 @@ const int MobSpawner::tick(ServerLevel *level, bool spawnEnemies, bool spawnFrie
 #ifdef __PSVITA__
 					ChunkPos cp = ChunkPos( ( xx[i] - r  ) + l , ( zz[i] - r ));
 					if( chunksToPoll.find( cp ) )	chunksToPoll.insert(cp, true);
-					cp = ChunkPos( ( xx[i] + r ), ( zz[i] - r ) + l    );												 
+					cp = ChunkPos( ( xx[i] + r ), ( zz[i] - r ) + l    );
 					if( chunksToPoll.find( cp ) )	chunksToPoll.insert(cp, true);
-					cp = ChunkPos( ( xx[i] + r ) - l , ( zz[i] + r ));													 
+					cp = ChunkPos( ( xx[i] + r ) - l , ( zz[i] + r ));
 					if( chunksToPoll.find( cp ) )	chunksToPoll.insert(cp, true);
-					cp = ChunkPos( ( xx[i] - r ), ( zz[i] + r ) - l);													 
+					cp = ChunkPos( ( xx[i] - r ), ( zz[i] + r ) - l);
 					if( chunksToPoll.find( cp ) )	chunksToPoll.insert(cp, true);
 #else
 					ChunkPos cp = ChunkPos( ( xx[i] - r  ) + l , ( zz[i] - r ));
 					if( chunksToPoll.find( cp ) == chunksToPoll.end() )	chunksToPoll.insert(std::pair<ChunkPos,bool>(cp, true));
-					cp = ChunkPos( ( xx[i] + r ), ( zz[i] - r ) + l    );												 
+					cp = ChunkPos( ( xx[i] + r ), ( zz[i] - r ) + l    );
 					if( chunksToPoll.find( cp ) == chunksToPoll.end() )	chunksToPoll.insert(std::pair<ChunkPos,bool>(cp, true));
-					cp = ChunkPos( ( xx[i] + r ) - l , ( zz[i] + r ));													 
+					cp = ChunkPos( ( xx[i] + r ) - l , ( zz[i] + r ));
 					if( chunksToPoll.find( cp ) == chunksToPoll.end() )	chunksToPoll.insert(std::pair<ChunkPos,bool>(cp, true));
-					cp = ChunkPos( ( xx[i] - r ), ( zz[i] + r ) - l);													 
+					cp = ChunkPos( ( xx[i] - r ), ( zz[i] + r ) - l);
 					if( chunksToPoll.find( cp ) == chunksToPoll.end() )	chunksToPoll.insert(std::pair<ChunkPos,bool>(cp, true));
 #endif
 
@@ -224,16 +222,15 @@ const int MobSpawner::tick(ServerLevel *level, bool spawnEnemies, bool spawnFrie
 		{
 			SCustomMapNode *it = chunksToPoll.get(i);
 #else
-		AUTO_VAR(itEndCTP, chunksToPoll.end());
-		for (AUTO_VAR(it, chunksToPoll.begin()); it != itEndCTP; it++)
+		for (auto& it : chunksToPoll)
 		   {
 #endif
-			   if( it->second )
+			   if( it.second )
 			   {
 				// don't add mobs to edge chunks, to prevent adding mobs "outside" of the active playground
 				   continue;
 			   }
-			   ChunkPos *cp = (ChunkPos *) (&it->first);
+			   ChunkPos *cp = (ChunkPos *) (&it.first);
 
 			   // 4J - don't let this actually create/load a chunk that isn't here already - we'll let the normal updateDirtyChunks etc. processes do that, so it can happen on another thread
 			   if( !level->hasChunk(cp->x,cp->z) ) continue;
@@ -399,7 +396,7 @@ bool MobSpawner::isSpawnPositionOk(MobCategory *category, Level *level, int x, i
 		// 4J - changed to spawn water things only in deep water
 		int yo = 0;
 		int liquidCount = 0;
-		
+
 		while( ( y - yo ) >= 0 && ( yo < 5 ) )
 		{
 			if( level->getMaterial(x, y - yo, z)->isLiquid() ) liquidCount++;

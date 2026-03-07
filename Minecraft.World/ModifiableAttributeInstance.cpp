@@ -15,12 +15,12 @@ ModifiableAttributeInstance::ModifiableAttributeInstance(BaseAttributeMap *attri
 
 ModifiableAttributeInstance::~ModifiableAttributeInstance()
 {
-	for (int i = 0; i < AttributeModifier::TOTAL_OPERATIONS; i++)
+	for (auto& modifier : modifiers)
 	{
-		for (AUTO_VAR(it, modifiers[i].begin()); it != modifiers[i].end(); ++it)
+		for (auto it : modifier)
 		{
 			// Delete all modifiers
-			delete *it;
+			delete it;
 		}
 	}
 }
@@ -51,14 +51,12 @@ unordered_set<AttributeModifier *> *ModifiableAttributeInstance::getModifiers(in
 // Returns a pointer to a new vector of all modifiers
 void ModifiableAttributeInstance::getModifiers(unordered_set<AttributeModifier *>& result)
 {
-	for (int i = 0; i < AttributeModifier::TOTAL_OPERATIONS; i++)
+	for (auto& modifier : modifiers)
 	{
-		unordered_set<AttributeModifier *> *opModifiers = &modifiers[i];
-
-		for (AUTO_VAR(it, opModifiers->begin()); it != opModifiers->end(); ++it)
+		for (auto& opModifier : modifier)
 		{
-			result.insert(*it);
-		}		
+			result.insert(opModifier);
+		}
 	}
 }
 
@@ -66,20 +64,20 @@ AttributeModifier *ModifiableAttributeInstance::getModifier(eMODIFIER_ID id)
 {
 	AttributeModifier *modifier = NULL;
 
-	AUTO_VAR(it, modifierById.find(id));
-	if(it != modifierById.end())
+    auto it = modifierById.find(id);
+    if(it != modifierById.end())
 	{
 		modifier = it->second;
 	}
 
-	return modifier; 
+	return modifier;
 }
 
 void ModifiableAttributeInstance::addModifiers(unordered_set<AttributeModifier *> *modifiers)
 {
-	for (AUTO_VAR(it, modifiers->begin()); it != modifiers->end(); ++it)
+	for (auto& modifier : *modifiers)
 	{
-		addModifier(*it);
+		addModifier(modifier);
 	}
 }
 
@@ -87,7 +85,7 @@ void ModifiableAttributeInstance::addModifiers(unordered_set<AttributeModifier *
 void ModifiableAttributeInstance::addModifier(AttributeModifier *modifier)
 {
 	// Can't add modifiers with the same ID (unless the modifier is anonymous)
-	if (modifier->getId() != eModifierId_ANONYMOUS && getModifier(modifier->getId()) != NULL) 
+	if (modifier->getId() != eModifierId_ANONYMOUS && getModifier(modifier->getId()) != NULL)
 	{
 		assert(0);
 		// throw new IllegalArgumentException("Modifier is already applied on this attribute!");
@@ -108,13 +106,13 @@ void ModifiableAttributeInstance::setDirty()
 
 void ModifiableAttributeInstance::removeModifier(AttributeModifier *modifier)
 {
-	for (int i = 0; i < AttributeModifier::TOTAL_OPERATIONS; i++)
+	for (auto& mod : modifiers)
 	{
-		for (AUTO_VAR(it, modifiers[i].begin()); it != modifiers[i].end(); ++it)
-		{
-			if (modifier->equals(*it))
+        for (auto& it : mod )
+        {
+			if (modifier->equals(it))
 			{
-				modifiers[i].erase(it);
+				mod.erase(it);
 				break;
 			}
 		}
@@ -136,9 +134,9 @@ void ModifiableAttributeInstance::removeModifiers()
 	unordered_set<AttributeModifier *> removingModifiers;
 	getModifiers(removingModifiers);
 
-	for (AUTO_VAR(it, removingModifiers.begin()); it != removingModifiers.end(); ++it)
+	for (auto& it : removingModifiers)
 	{
-		removeModifier(*it);
+		removeModifier(it);
 	}
 }
 
@@ -159,25 +157,22 @@ double ModifiableAttributeInstance::calculateValue()
 	unordered_set<AttributeModifier *> *modifiers;
 
 	modifiers = getModifiers(AttributeModifier::OPERATION_ADDITION);
-	for (AUTO_VAR(it, modifiers->begin()); it != modifiers->end(); ++it)
+	for (auto& modifier : *modifiers)
 	{
-		AttributeModifier *modifier = *it;
 		base += modifier->getAmount();
 	}
 
 	double result = base;
 
 	modifiers = getModifiers(AttributeModifier::OPERATION_MULTIPLY_BASE);
-	for (AUTO_VAR(it, modifiers->begin()); it != modifiers->end(); ++it)
+	for (auto& modifier : *modifiers)
 	{
-		AttributeModifier *modifier = *it;
 		result += base * modifier->getAmount();
 	}
-	
+
 	modifiers = getModifiers(AttributeModifier::OPERATION_MULTIPLY_TOTAL);
-	for (AUTO_VAR(it, modifiers->begin()); it != modifiers->end(); ++it)
+	for (auto& modifier : *modifiers)
 	{
-		AttributeModifier *modifier = *it;
 		result *= 1 + modifier->getAmount();
 	}
 

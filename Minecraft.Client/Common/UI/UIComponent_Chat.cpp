@@ -55,10 +55,16 @@ void UIComponent_Chat::handleTimerComplete(int id)
 			float opacity = pGui->getOpacity(m_iPad, i);
 			if( opacity > 0 )
 			{
+#ifdef _WINDOWS64
+				// Chat drawn by Gui::render with color codes. Hides Iggy chat to avoid double chats.
+				m_controlLabelBackground[i].setOpacity(0);
+				m_labelChatText[i].setOpacity(0);
+				m_labelChatText[i].setLabel(L"");
+#else
 				m_controlLabelBackground[i].setOpacity(opacity);
 				m_labelChatText[i].setOpacity(opacity);
 				m_labelChatText[i].setLabel( pGui->getMessage(m_iPad,i) );
-
+#endif
 				anyVisible = true;
 			}
 			else

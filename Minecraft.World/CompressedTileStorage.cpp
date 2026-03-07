@@ -143,7 +143,7 @@ CompressedTileStorage::CompressedTileStorage(bool isEmpty)
 #endif
 }
 
-bool CompressedTileStorage::isRenderChunkEmpty(int y)	// y == 0, 16, 32... 112 (representing a 16 byte range) 
+bool CompressedTileStorage::isRenderChunkEmpty(int y)	// y == 0, 16, 32... 112 (representing a 16 byte range)
 {
 	int block;
 	unsigned short *blockIndices = (unsigned short *)indicesAndData;
@@ -152,7 +152,7 @@ bool CompressedTileStorage::isRenderChunkEmpty(int y)	// y == 0, 16, 32... 112 (
 		for( int z = 0; z < 16; z += 4 )
 	{
 		getBlock(&block, x, y, z);
-		__uint64 *comp = (__uint64 *)&blockIndices[block];
+		uint64_t *comp = (uint64_t *)&blockIndices[block];
 		// Are the 4 y regions stored here all zero? (INDEX_TYPE_0_OR_8_BIT | INDEX_TYPE_0_BIT_FLAG )
 		if( ( *comp ) != 0x0007000700070007L ) return false;
 	}
@@ -170,18 +170,18 @@ bool CompressedTileStorage::isSameAs(CompressedTileStorage *other)
 
 	// Attempt to compare as much as we can in 64-byte chunks (8 groups of 8 bytes)
 	int quickCount = allocatedSize / 64;
-	__int64 *pOld = (__int64 *)indicesAndData;
-	__int64 *pNew = (__int64 *)other->indicesAndData;
+	int64_t *pOld = (int64_t *)indicesAndData;
+	int64_t *pNew = (int64_t *)other->indicesAndData;
 	for( int i = 0; i < quickCount; i++ )
 	{
-		__int64 d0 = pOld[0] ^ pNew[0];
-		__int64 d1 = pOld[1] ^ pNew[1];
-		__int64 d2 = pOld[2] ^ pNew[2];
-		__int64 d3 = pOld[3] ^ pNew[3];
-		__int64 d4 = pOld[4] ^ pNew[4];
-		__int64 d5 = pOld[5] ^ pNew[5];
-		__int64 d6 = pOld[6] ^ pNew[6];
-		__int64 d7 = pOld[7] ^ pNew[7];
+		int64_t d0 = pOld[0] ^ pNew[0];
+		int64_t d1 = pOld[1] ^ pNew[1];
+		int64_t d2 = pOld[2] ^ pNew[2];
+		int64_t d3 = pOld[3] ^ pNew[3];
+		int64_t d4 = pOld[4] ^ pNew[4];
+		int64_t d5 = pOld[5] ^ pNew[5];
+		int64_t d6 = pOld[6] ^ pNew[6];
+		int64_t d7 = pOld[7] ^ pNew[7];
 		d0 |= d1;
 		d2 |= d3;
 		d4 |= d5;
@@ -195,7 +195,7 @@ bool CompressedTileStorage::isSameAs(CompressedTileStorage *other)
 		}
 		pOld += 8;
 		pNew += 8;
-	}	
+	}
 
 	// Now test anything remaining just byte at a time
 	unsigned char *pucOld = (unsigned char *)pOld;
@@ -262,7 +262,7 @@ inline int CompressedTileStorage::getIndex(int block, int tile)
 // and z is:					___________zzzz
 // and maps to this bit of b	________bb_____
 //         and this bit of t    ___________tt__
-// 
+//
 
 inline void CompressedTileStorage::getBlockAndTile(int *block, int *tile, int x, int y, int z)
 {
@@ -303,7 +303,7 @@ void CompressedTileStorage::setData(byteArray dataIn, unsigned int inOffset)
 	int offsets[512];
 	int memToAlloc = 0;
 //	static int type0 = 0, type1 = 0, type2 = 0, type4 = 0, type8 = 0, chunkTotal = 0;
-	
+
 	// Loop round all blocks
 	for( int i = 0; i < 512; i++ )
 	{
@@ -333,8 +333,8 @@ void CompressedTileStorage::setData(byteArray dataIn, unsigned int inOffset)
 			}
 		}
 #else
-		__uint64 usedFlags[4] = {0,0,0,0};
-		__int64 i64_1 = 1;	// MGH - instead of 1i64, which is MS specific
+		uint64_t usedFlags[4] = {0,0,0,0};
+		int64_t i64_1 = 1;	// MGH - instead of 1i64, which is MS specific
 		for( int j = 0; j < 64; j++ )			// This loop of 64 is to go round the 4 x 4 tiles in the block
 		{
 			int tile = data[getIndex(i,j)];
@@ -890,7 +890,7 @@ void  CompressedTileStorage::compress(int upgradeBlock/*=-1*/)
 		unsigned char *unpacked_data = NULL;
 		unsigned char *packed_data;
 
-		// First task is to find out what type of storage each block needs. Need to unpack each where required. 
+		// First task is to find out what type of storage each block needs. Need to unpack each where required.
 		// Note that we don't need to fully unpack the data at this stage since we are only interested in working out how many unique types of tiles are in each block, not
 		// what those actual tile ids are.
 		if( upgradeBlock == -1 )
@@ -951,8 +951,8 @@ void  CompressedTileStorage::compress(int upgradeBlock/*=-1*/)
 				}
 #else
 
-				__uint64 usedFlags[4] = {0,0,0,0};
-				__int64 i64_1 = 1;	// MGH - instead of 1i64, which is MS specific
+				uint64_t usedFlags[4] = {0,0,0,0};
+				int64_t i64_1 = 1;	// MGH - instead of 1i64, which is MS specific
 				for( int j = 0; j < 64; j++ )			// This loop of 64 is to go round the 4x4x4 tiles in the block
 				{
 					int tiletype = unpacked_data[j];
@@ -1026,7 +1026,7 @@ void  CompressedTileStorage::compress(int upgradeBlock/*=-1*/)
 				}
 			}
 			switch(_blockIndices[i])
-			{				
+			{
 				case INDEX_TYPE_1_BIT:
 					memToAlloc += 10;
 					break;
@@ -1097,7 +1097,7 @@ void  CompressedTileStorage::compress(int upgradeBlock/*=-1*/)
 				else
 				{
 					packed_data = data + ( ( blockIndices[i] >> INDEX_OFFSET_SHIFT ) & INDEX_OFFSET_MASK);
-					
+
 					int dataSize = 8 << indexTypeOld;		// 8, 16 or 32 bytes of per-tile storage
 					dataSize += 1 << ( 1 << indexTypeOld );	// 2, 4 or 16 bytes to store each tile type
 					newIndices[i] |= ( usDataOffset & INDEX_OFFSET_MASK) << INDEX_OFFSET_SHIFT;
@@ -1290,7 +1290,7 @@ int CompressedTileStorage::getHighestNonEmptyY()
 
 		if(found) break;
 	}
-	
+
 	int highestNonEmptyY = -1;
 	if(found)
 	{

@@ -70,7 +70,7 @@ void PigZombie::tick()
 	Zombie::tick();
 }
 
-bool PigZombie::canSpawn() 
+bool PigZombie::canSpawn()
 {
 	return level->difficulty > Difficulty::PEACEFUL && level->isUnobstructed(bb) && level->getCubes(shared_from_this(), bb)->empty() && !level->containsAnyLiquid(bb);
 }
@@ -107,11 +107,9 @@ bool PigZombie::hurt(DamageSource *source, float dmg)
 	shared_ptr<Entity> sourceEntity = source->getEntity();
 	if ( sourceEntity != NULL && sourceEntity->instanceof(eTYPE_PLAYER) )
 	{
-		vector<shared_ptr<Entity> > *nearby = level->getEntities( shared_from_this(), bb->grow(32, 32, 32));		
-		AUTO_VAR(itEnd, nearby->end());
-		for (AUTO_VAR(it, nearby->begin()); it != itEnd; it++)
+		vector<shared_ptr<Entity> > *nearby = level->getEntities( shared_from_this(), bb->grow(32, 32, 32));
+		for (auto& e : *nearby)
 		{
-			shared_ptr<Entity> e = *it; //nearby->at(i);
 			if ( e->instanceof(eTYPE_PIGZOMBIE) )
 			{
 				shared_ptr<PigZombie> pigZombie = dynamic_pointer_cast<PigZombie>(e);

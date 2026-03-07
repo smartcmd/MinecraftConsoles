@@ -64,7 +64,7 @@ public:
 public:
 	PlayerList(MinecraftServer *server);
 	~PlayerList();
-	void placeNewPlayer(Connection *connection, shared_ptr<ServerPlayer> player, shared_ptr<LoginPacket> packet);
+	bool placeNewPlayer(Connection *connection, shared_ptr<ServerPlayer> player, shared_ptr<LoginPacket> packet);
 
 protected:
 	void updateEntireScoreboard(ServerScoreboard *scoreboard, shared_ptr<ServerPlayer> player);

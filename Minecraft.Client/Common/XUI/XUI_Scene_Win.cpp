@@ -20,7 +20,7 @@ const float CScene_Win::PLAYER_SCROLL_SPEED = 3.0f;
 // Performs initialization tasks - retrieves controls.
 //----------------------------------------------------------------------------------
 HRESULT CScene_Win::OnInit( XUIMessageInit* pInitData, BOOL& bHandled )
-{	
+{
 	m_iPad = *(int *)pInitData->pvInitData;
 
 	m_bIgnoreInput = false;
@@ -194,8 +194,8 @@ void CScene_Win::updateNoise()
 {
 	Minecraft *pMinecraft = Minecraft::GetInstance();
 	noiseString = noNoiseString;
-	
-	int length = 0;
+
+	size_t length = 0;
 	wchar_t replacements[64];
 	wstring replaceString = L"";
 	wchar_t randomChar = L'a';
@@ -205,18 +205,18 @@ void CScene_Win::updateNoise()
 
 	wstring tag = L"{*NOISE*}";
 
-	AUTO_VAR(it, m_noiseLengths.begin());
-	int found=(int)noiseString.find_first_of(L"{");
+    auto it = m_noiseLengths.begin();
+    size_t found = noiseString.find_first_of(L"{");
 	while (found!=string::npos && it != m_noiseLengths.end() )
 	{
 		length = *it;
 		++it;
 
 		replaceString = L"";
-		for(int i = 0; i < length; ++i)
+		for(size_t i = 0; i < length; ++i)
 		{
-			randomChar = SharedConstants::acceptableLetters[random->nextInt((int)SharedConstants::acceptableLetters.length())];
-			
+			randomChar = SharedConstants::acceptableLetters[random->nextInt(SharedConstants::acceptableLetters.length())];
+
 			wstring randomCharStr = L"";
 			randomCharStr.push_back(randomChar);
 			if(randomChar == L'<')
@@ -262,7 +262,7 @@ void CScene_Win::updateNoise()
 		//ib.put(listPos + 256 + random->nextInt(2) + 8 + (darken ? 16 : 0));
 		//ib.put(listPos + pos + 32);
 
-		found=(int)noiseString.find_first_of(L"{",found+1);
+		found = noiseString.find_first_of(L"{",found+1);
 	}
 }
 

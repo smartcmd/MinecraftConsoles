@@ -81,10 +81,9 @@ shared_ptr<ItemInstance> BoatItem::use(shared_ptr<ItemInstance> itemInstance, Le
 	bool hitEntity = false;
 	float overlap = 1;
 	vector<shared_ptr<Entity> > *objects = level->getEntities(player, player->bb->expand(b->x * (range), b->y * (range), b->z * (range))->grow(overlap, overlap, overlap));
-	//for (int i = 0; i < objects.size(); i++) {
-	for(AUTO_VAR(it, objects->begin()); it != objects->end(); ++it)
+
+	for( auto& e : *objects )
 	{
-		shared_ptr<Entity> e = *it; //objects.get(i);
 		if (!e->isPickable()) continue;
 
 		float rr = e->getPickRadius();

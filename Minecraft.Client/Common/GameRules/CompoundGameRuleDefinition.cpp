@@ -11,17 +11,17 @@ CompoundGameRuleDefinition::CompoundGameRuleDefinition()
 
 CompoundGameRuleDefinition::~CompoundGameRuleDefinition()
 {
-	for(AUTO_VAR(it, m_children.begin()); it != m_children.end(); ++it)
+	for (auto it : m_children )
 	{
-		delete (*it);
+		delete it;
 	}
 }
 
 void CompoundGameRuleDefinition::getChildren(vector<GameRuleDefinition *> *children)
 {
 	GameRuleDefinition::getChildren(children);
-	for (AUTO_VAR(it, m_children.begin()); it != m_children.end(); it++)
-		children->push_back(*it);
+	for (auto& it : m_children )
+		children->push_back(it);
 }
 
 GameRuleDefinition *CompoundGameRuleDefinition::addChild(ConsoleGameRules::EGameRuleType ruleType)
@@ -40,7 +40,7 @@ GameRuleDefinition *CompoundGameRuleDefinition::addChild(ConsoleGameRules::EGame
 		rule = new UseTileRuleDefinition();
 	}
 	else if(ruleType == ConsoleGameRules::eGameRuleType_UpdatePlayerRule)
-	{		
+	{
 		rule = new UpdatePlayerRuleDefinition();
 	}
 	else
@@ -57,17 +57,17 @@ void CompoundGameRuleDefinition::populateGameRule(GameRulesInstance::EGameRulesI
 {
 	GameRule *newRule = NULL;
 	int i = 0;
-	for(AUTO_VAR(it, m_children.begin()); it != m_children.end(); ++it)
+	for (auto& it : m_children )
 	{
-		newRule = new GameRule(*it, rule->getConnection() );
-		(*it)->populateGameRule(type,newRule);
+		newRule = new GameRule(it, rule->getConnection() );
+		it->populateGameRule(type,newRule);
 
 		GameRule::ValueType value;
 		value.gr = newRule;
 		value.isPointer = true;
 
 		// Somehow add the newRule to the current rule
-		rule->setParameter(L"rule" + _toString<int>(i),value);
+		rule->setParameter(L"rule" + std::to_wstring(i),value);
 		++i;
 	}
 	GameRuleDefinition::populateGameRule(type, rule);
@@ -76,14 +76,14 @@ void CompoundGameRuleDefinition::populateGameRule(GameRulesInstance::EGameRulesI
 bool CompoundGameRuleDefinition::onUseTile(GameRule *rule, int tileId, int x, int y, int z)
 {
 	bool statusChanged = false;
-	for(AUTO_VAR(it, rule->m_parameters.begin()); it != rule->m_parameters.end(); ++it)
+	for (auto& it : rule->m_parameters )
 	{
-		if(it->second.isPointer)
+		if(it.second.isPointer)
 		{
-			bool changed = it->second.gr->getGameRuleDefinition()->onUseTile(it->second.gr,tileId,x,y,z);
+			bool changed = it.second.gr->getGameRuleDefinition()->onUseTile(it.second.gr,tileId,x,y,z);
 			if(!statusChanged && changed)
 			{
-				m_lastRuleStatusChanged = it->second.gr->getGameRuleDefinition();
+				m_lastRuleStatusChanged = it.second.gr->getGameRuleDefinition();
 				statusChanged = true;
 			}
 		}
@@ -94,14 +94,14 @@ bool CompoundGameRuleDefinition::onUseTile(GameRule *rule, int tileId, int x, in
 bool CompoundGameRuleDefinition::onCollectItem(GameRule *rule, shared_ptr<ItemInstance> item)
 {
 	bool statusChanged = false;
-	for(AUTO_VAR(it, rule->m_parameters.begin()); it != rule->m_parameters.end(); ++it)
+	for (auto& it : rule->m_parameters )
 	{
-		if(it->second.isPointer)
+		if(it.second.isPointer)
 		{
-			bool changed = it->second.gr->getGameRuleDefinition()->onCollectItem(it->second.gr,item);
+			bool changed = it.second.gr->getGameRuleDefinition()->onCollectItem(it.second.gr,item);
 			if(!statusChanged && changed)
-			{				
-				m_lastRuleStatusChanged = it->second.gr->getGameRuleDefinition();
+			{
+				m_lastRuleStatusChanged = it.second.gr->getGameRuleDefinition();
 				statusChanged = true;
 			}
 		}
@@ -111,8 +111,8 @@ bool CompoundGameRuleDefinition::onCollectItem(GameRule *rule, shared_ptr<ItemIn
 
 void CompoundGameRuleDefinition::postProcessPlayer(shared_ptr<Player> player)
 {
-	for(AUTO_VAR(it, m_children.begin()); it != m_children.end(); ++it)
+	for (auto it : m_children )
 	{
-		(*it)->postProcessPlayer(player);
+		it->postProcessPlayer(player);
 	}
 }

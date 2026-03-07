@@ -22,13 +22,13 @@ void CollectItemRuleDefinition::writeAttributes(DataOutputStream *dos, UINT numA
 	GameRuleDefinition::writeAttributes(dos, numAttributes + 3);
 
 	ConsoleGameRules::write(dos, ConsoleGameRules::eGameRuleAttr_itemId);
-	dos->writeUTF( _toString( m_itemId ) );
+	dos->writeUTF( std::to_wstring( m_itemId ) );
 
 	ConsoleGameRules::write(dos, ConsoleGameRules::eGameRuleAttr_auxValue);
-	dos->writeUTF( _toString( m_auxValue ) );
+	dos->writeUTF( std::to_wstring( m_auxValue ) );
 
 	ConsoleGameRules::write(dos, ConsoleGameRules::eGameRuleAttr_quantity);
-	dos->writeUTF( _toString( m_quantity ) );
+	dos->writeUTF( std::to_wstring( m_quantity ) );
 }
 
 void CollectItemRuleDefinition::addAttribute(const wstring &attributeName, const wstring &attributeValue)
@@ -108,9 +108,9 @@ wstring CollectItemRuleDefinition::generateXml(shared_ptr<ItemInstance> item)
 	wstring xml = L"";
 	if(item != NULL)
 	{
-		xml = L"<CollectItemRule itemId=\"" + _toString<int>(item->id) + L"\" quantity=\"SET\" descriptionName=\"OPTIONAL\" promptName=\"OPTIONAL\"";
-		if(item->getAuxValue() != 0) xml += L" auxValue=\"" + _toString<int>(item->getAuxValue()) + L"\"";
-		if(item->get4JData() != 0) xml += L" dataTag=\"" + _toString<int>(item->get4JData()) + L"\"";
+		xml = L"<CollectItemRule itemId=\"" + std::to_wstring(item->id) + L"\" quantity=\"SET\" descriptionName=\"OPTIONAL\" promptName=\"OPTIONAL\"";
+		if(item->getAuxValue() != 0) xml += L" auxValue=\"" + std::to_wstring(item->getAuxValue()) + L"\"";
+		if(item->get4JData() != 0) xml += L" dataTag=\"" + std::to_wstring(item->get4JData()) + L"\"";
 		xml += L"/>\n";
 	}
 	return xml;

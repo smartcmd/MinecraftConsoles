@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "ServerLevelListener.h"
+
 #include "EntityTracker.h"
 #include "MinecraftServer.h"
 #include "ServerLevel.h"
@@ -18,7 +19,7 @@ ServerLevelListener::ServerLevelListener(MinecraftServer *server, ServerLevel *l
 	this->level = level;
 }
 
-// 4J removed - 
+// 4J removed -
 /*
 void ServerLevelListener::addParticle(const wstring& name, double x, double y, double z, double xa, double ya, double za)
 {
@@ -48,8 +49,7 @@ void ServerLevelListener::entityRemoved(shared_ptr<Entity> entity)
 // 4J added
 void ServerLevelListener::playerRemoved(shared_ptr<Entity> entity)
 {
-	shared_ptr<ServerPlayer> player = dynamic_pointer_cast<ServerPlayer>(entity);
-	player->getLevel()->getTracker()->removePlayer(entity);
+	dynamic_pointer_cast<ServerPlayer>(entity)->getLevel()->getTracker()->removePlayer(entity);
 }
 
 void ServerLevelListener::playSound(int iSound, double x, double y, double z, float volume, float pitch, float fClipSoundDist)
@@ -59,10 +59,10 @@ void ServerLevelListener::playSound(int iSound, double x, double y, double z, fl
 		app.DebugPrintf("ServerLevelListener received request for sound less than 0, so ignoring\n");
 	}
 	else
-	{	
+	{
 		// 4J-PB - I don't want to broadcast player sounds to my local machine, since we're already playing these in the LevelRenderer::playSound.
 		// The PC version does seem to do this and the result is I can stop walking , and then I'll hear my footstep sound with a delay
-		server->getPlayers()->broadcast(x, y, z, volume > 1 ? 16 * volume : 16, level->dimension->id, shared_ptr<LevelSoundPacket>(new LevelSoundPacket(iSound, x, y, z, volume, pitch)));
+		server->getPlayers()->broadcast(x, y, z, volume > 1 ? 16 * volume : 16, level->dimension->id, std::make_shared<LevelSoundPacket>(iSound, x, y, z, volume, pitch));
 	}
 }
 
@@ -73,10 +73,10 @@ void ServerLevelListener::playSoundExceptPlayer(shared_ptr<Player> player, int i
 		app.DebugPrintf("ServerLevelListener received request for sound less than 0, so ignoring\n");
 	}
 	else
-	{	
+	{
 		// 4J-PB - I don't want to broadcast player sounds to my local machine, since we're already playing these in the LevelRenderer::playSound.
 		// The PC version does seem to do this and the result is I can stop walking , and then I'll hear my footstep sound with a delay
-		server->getPlayers()->broadcast(player,x, y, z, volume > 1 ? 16 * volume : 16, level->dimension->id, shared_ptr<LevelSoundPacket>(new LevelSoundPacket(iSound, x, y, z, volume, pitch)));
+		server->getPlayers()->broadcast(player,x, y, z, volume > 1 ? 16 * volume : 16, level->dimension->id, std::make_shared<LevelSoundPacket>(iSound, x, y, z, volume, pitch));
 	}
 }
 
@@ -103,28 +103,27 @@ void ServerLevelListener::playStreamingMusic(const wstring& name, int x, int y, 
 
 void ServerLevelListener::levelEvent(shared_ptr<Player> source, int type, int x, int y, int z, int data)
 {
-	server->getPlayers()->broadcast(source, x, y, z, 64, level->dimension->id, shared_ptr<LevelEventPacket>( new LevelEventPacket(type, x, y, z, data, false) ) );
+	server->getPlayers()->broadcast(source, x, y, z, 64, level->dimension->id, std::make_shared<LevelEventPacket>( type, x, y, z, data, false ) );
 }
 
 void ServerLevelListener::globalLevelEvent(int type, int sourceX, int sourceY, int sourceZ, int data)
 {
-	server->getPlayers()->broadcastAll( shared_ptr<LevelEventPacket>( new LevelEventPacket(type, sourceX, sourceY, sourceZ, data, true)) );
+	server->getPlayers()->broadcastAll( std::make_shared<LevelEventPacket>( type, sourceX, sourceY, sourceZ, data, true) );
 }
 
 void ServerLevelListener::destroyTileProgress(int id, int x, int y, int z, int progress)
 {
 	//for (ServerPlayer p : server->getPlayers()->players)
-	for(AUTO_VAR(it, server->getPlayers()->players.begin()); it != server->getPlayers()->players.end(); ++it)
+	for(auto& p : server->getPlayers()->players)
 	{
-		shared_ptr<ServerPlayer> p = *it;
-		if (p == NULL || p->level != level || p->entityId == id) continue;
+		if (p == nullptr || p->level != level || p->entityId == id) continue;
 		double xd = (double) x - p->x;
 		double yd = (double) y - p->y;
 		double zd = (double) z - p->z;
 
 		if (xd * xd + yd * yd + zd * zd < 32 * 32)
 		{
-			p->connection->send(shared_ptr<TileDestructionPacket>(new TileDestructionPacket(id, x, y, z, progress)));
+			p->connection->send(std::make_shared<TileDestructionPacket>(id, x, y, z, progress));
 		}
 	}
 }

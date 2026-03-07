@@ -8,6 +8,11 @@
 #include "WinsockNetLayer.h"
 #include "..\..\Common\Network\PlatformNetworkManagerStub.h"
 #include "..\..\..\Minecraft.World\Socket.h"
+#include "..\..\..\Minecraft.World\DisconnectPacket.h"
+#include "..\..\Minecraft.h"
+#include "..\4JLibs\inc\4J_Profile.h"
+
+static bool RecvExact(SOCKET sock, BYTE* buf, int len);
 
 SOCKET WinsockNetLayer::s_listenSocket = INVALID_SOCKET;
 SOCKET WinsockNetLayer::s_hostConnectionSocket = INVALID_SOCKET;
@@ -21,7 +26,7 @@ bool WinsockNetLayer::s_initialized = false;
 
 BYTE WinsockNetLayer::s_localSmallId = 0;
 BYTE WinsockNetLayer::s_hostSmallId = 0;
-BYTE WinsockNetLayer::s_nextSmallId = 1;
+unsigned int WinsockNetLayer::s_nextSmallId = 1;
 
 CRITICAL_SECTION WinsockNetLayer::s_sendLock;
 CRITICAL_SECTION WinsockNetLayer::s_connectionsLock;
@@ -46,6 +51,8 @@ std::vector<BYTE> WinsockNetLayer::s_disconnectedSmallIds;
 
 CRITICAL_SECTION WinsockNetLayer::s_freeSmallIdLock;
 std::vector<BYTE> WinsockNetLayer::s_freeSmallIds;
+SOCKET WinsockNetLayer::s_smallIdToSocket[256];
+CRITICAL_SECTION WinsockNetLayer::s_smallIdToSocketLock;
 
 bool g_Win64MultiplayerHost = false;
 bool g_Win64MultiplayerJoin = false;
@@ -73,6 +80,9 @@ bool WinsockNetLayer::Initialize()
 	InitializeCriticalSection(&s_discoveryLock);
 	InitializeCriticalSection(&s_disconnectLock);
 	InitializeCriticalSection(&s_freeSmallIdLock);
+	InitializeCriticalSection(&s_smallIdToSocketLock);
+	for (int i = 0; i < 256; i++)
+		s_smallIdToSocket[i] = INVALID_SOCKET;
 
 	s_initialized = true;
 
@@ -137,6 +147,7 @@ void WinsockNetLayer::Shutdown()
 		s_disconnectedSmallIds.clear();
 		DeleteCriticalSection(&s_freeSmallIdLock);
 		s_freeSmallIds.clear();
+		DeleteCriticalSection(&s_smallIdToSocketLock);
 		WSACleanup();
 		s_initialized = false;
 	}
@@ -155,6 +166,10 @@ bool WinsockNetLayer::HostGame(int port, const char* bindIp)
 	EnterCriticalSection(&s_freeSmallIdLock);
 	s_freeSmallIds.clear();
 	LeaveCriticalSection(&s_freeSmallIdLock);
+	EnterCriticalSection(&s_smallIdToSocketLock);
+	for (int i = 0; i < 256; i++)
+		s_smallIdToSocket[i] = INVALID_SOCKET;
+	LeaveCriticalSection(&s_smallIdToSocketLock);
 
 	struct addrinfo hints = {};
 	struct addrinfo* result = NULL;
@@ -289,6 +304,27 @@ bool WinsockNetLayer::JoinGame(const char* ip, int port)
 			continue;
 		}
 
+		if (assignBuf[0] == WIN64_SMALLID_REJECT)
+		{
+			BYTE rejectBuf[5];
+			if (!RecvExact(s_hostConnectionSocket, rejectBuf, 5))
+			{
+				app.DebugPrintf("Failed to receive reject reason from host\n");
+				closesocket(s_hostConnectionSocket);
+				s_hostConnectionSocket = INVALID_SOCKET;
+				Sleep(200);
+				continue;
+			}
+			// rejectBuf[0] = packet id (255), rejectBuf[1..4] = 4-byte big-endian reason
+			int reason = ((rejectBuf[1] & 0xff) << 24) | ((rejectBuf[2] & 0xff) << 16) |
+				((rejectBuf[3] & 0xff) << 8) | (rejectBuf[4] & 0xff);
+			Minecraft::GetInstance()->connectionDisconnected(ProfileManager.GetPrimaryPad(), (DisconnectPacket::eDisconnectReason)reason);
+			closesocket(s_hostConnectionSocket);
+			s_hostConnectionSocket = INVALID_SOCKET;
+			freeaddrinfo(result);
+			return false;
+		}
+
 		assignedSmallId = assignBuf[0];
 		connected = true;
 		break;
@@ -370,18 +406,31 @@ bool WinsockNetLayer::SendToSmallId(BYTE targetSmallId, const void* data, int da
 
 SOCKET WinsockNetLayer::GetSocketForSmallId(BYTE smallId)
 {
-	EnterCriticalSection(&s_connectionsLock);
-	for (size_t i = 0; i < s_connections.size(); i++)
-	{
-		if (s_connections[i].smallId == smallId && s_connections[i].active)
-		{
-			SOCKET sock = s_connections[i].tcpSocket;
-			LeaveCriticalSection(&s_connectionsLock);
-			return sock;
-		}
-	}
-	LeaveCriticalSection(&s_connectionsLock);
-	return INVALID_SOCKET;
+	EnterCriticalSection(&s_smallIdToSocketLock);
+	SOCKET sock = s_smallIdToSocket[smallId];
+	LeaveCriticalSection(&s_smallIdToSocketLock);
+	return sock;
+}
+
+void WinsockNetLayer::ClearSocketForSmallId(BYTE smallId)
+{
+	EnterCriticalSection(&s_smallIdToSocketLock);
+	s_smallIdToSocket[smallId] = INVALID_SOCKET;
+	LeaveCriticalSection(&s_smallIdToSocketLock);
+}
+
+// Send reject handshake: sentinel 0xFF + DisconnectPacket wire format (1 byte id 255 + 4 byte big-endian reason). Then caller closes socket.
+static void SendRejectWithReason(SOCKET clientSocket, DisconnectPacket::eDisconnectReason reason)
+{
+	BYTE buf[6];
+	buf[0] = WIN64_SMALLID_REJECT;
+	buf[1] = (BYTE)255; // DisconnectPacket packet id
+	int r = (int)reason;
+	buf[2] = (BYTE)((r >> 24) & 0xff);
+	buf[3] = (BYTE)((r >> 16) & 0xff);
+	buf[4] = (BYTE)((r >> 8) & 0xff);
+	buf[5] = (BYTE)(r & 0xff);
+	send(clientSocket, (const char*)buf, sizeof(buf), 0);
 }
 
 static bool RecvExact(SOCKET sock, BYTE* buf, int len)
@@ -440,6 +489,15 @@ DWORD WINAPI WinsockNetLayer::AcceptThreadProc(LPVOID param)
 			continue;
 		}
 
+		extern CPlatformNetworkManagerStub* g_pPlatformNetworkManager;
+		if (g_pPlatformNetworkManager != NULL && !g_pPlatformNetworkManager->CanAcceptMoreConnections())
+		{
+			app.DebugPrintf("Win64 LAN: Rejecting connection, server at max players\n");
+			SendRejectWithReason(clientSocket, DisconnectPacket::eDisconnect_ServerFull);
+			closesocket(clientSocket);
+			continue;
+		}
+
 		BYTE assignedSmallId;
 		EnterCriticalSection(&s_freeSmallIdLock);
 		if (!s_freeSmallIds.empty())
@@ -447,14 +505,15 @@ DWORD WINAPI WinsockNetLayer::AcceptThreadProc(LPVOID param)
 			assignedSmallId = s_freeSmallIds.back();
 			s_freeSmallIds.pop_back();
 		}
-		else if (s_nextSmallId < MINECRAFT_NET_MAX_PLAYERS)
+		else if (s_nextSmallId < (unsigned int)MINECRAFT_NET_MAX_PLAYERS)
 		{
-			assignedSmallId = s_nextSmallId++;
+			assignedSmallId = (BYTE)s_nextSmallId++;
 		}
 		else
 		{
 			LeaveCriticalSection(&s_freeSmallIdLock);
 			app.DebugPrintf("Win64 LAN: Server full, rejecting connection\n");
+			SendRejectWithReason(clientSocket, DisconnectPacket::eDisconnect_ServerFull);
 			closesocket(clientSocket);
 			continue;
 		}
@@ -481,6 +540,10 @@ DWORD WINAPI WinsockNetLayer::AcceptThreadProc(LPVOID param)
 		LeaveCriticalSection(&s_connectionsLock);
 
 		app.DebugPrintf("Win64 LAN: Client connected, assigned smallId=%d\n", assignedSmallId);
+
+		EnterCriticalSection(&s_smallIdToSocketLock);
+		s_smallIdToSocket[assignedSmallId] = clientSocket;
+		LeaveCriticalSection(&s_smallIdToSocketLock);
 
 		IQNetPlayer* qnetPlayer = &IQNet::m_player[assignedSmallId];
 
@@ -721,6 +784,13 @@ void WinsockNetLayer::UpdateAdvertisePlayerCount(BYTE count)
 {
 	EnterCriticalSection(&s_advertiseLock);
 	s_advertiseData.playerCount = count;
+	LeaveCriticalSection(&s_advertiseLock);
+}
+
+void WinsockNetLayer::UpdateAdvertiseMaxPlayers(BYTE maxPlayers)
+{
+	EnterCriticalSection(&s_advertiseLock);
+	s_advertiseData.maxPlayers = maxPlayers;
 	LeaveCriticalSection(&s_advertiseLock);
 }
 

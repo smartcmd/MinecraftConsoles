@@ -78,11 +78,8 @@ vector<wstring> *ArchiveFile::getFileList()
 {
 	vector<wstring> *out = new vector<wstring>();
 	
-	for (	AUTO_VAR(it, m_index.begin());
-			it != m_index.end();
-			it++	)
-
-		out->push_back( it->first );
+	for ( const auto& it : m_index )
+		out->push_back( it.first );
 
 	return out;
 }
@@ -100,7 +97,7 @@ int ArchiveFile::getFileSize(const wstring &filename)
 byteArray ArchiveFile::getFile(const wstring &filename)
 {
 	byteArray out;
-	AUTO_VAR(it,m_index.find(filename));
+	auto it = m_index.find(filename);
 
 	if(it == m_index.end())
 	{

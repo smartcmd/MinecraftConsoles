@@ -58,7 +58,7 @@ private:
 	vector<shared_ptr<TileEntity> > m_tileEntities;
 	vector< pair<Vec3 *, CompoundTag *> > m_entities;
 
-public:	
+public:
 	byteArray m_data;
 
 public:
@@ -72,8 +72,8 @@ public:
 	void save(DataOutputStream *dos);
 	void load(DataInputStream *dis);
 
-	__int64 applyBlocksAndData(LevelChunk *chunk, AABB *chunkBox, AABB *destinationBox, ESchematicRotation rot);
-	__int64 applyLighting(LevelChunk *chunk, AABB *chunkBox, AABB *destinationBox, ESchematicRotation rot);
+	int64_t applyBlocksAndData(LevelChunk *chunk, AABB *chunkBox, AABB *destinationBox, ESchematicRotation rot);
+	int64_t applyLighting(LevelChunk *chunk, AABB *chunkBox, AABB *destinationBox, ESchematicRotation rot);
 	void applyTileEntities(LevelChunk *chunk, AABB *chunkBox, AABB *destinationBox, ESchematicRotation rot);
 
 	static void generateSchematicFile(DataOutputStream *dos, Level *level, int xStart, int yStart, int zStart, int xEnd, int yEnd, int zEnd, bool bSaveMobs, Compression::ECompressionTypes);

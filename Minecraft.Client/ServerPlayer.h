@@ -41,7 +41,7 @@ private:
 	int lastSentExp;
 	int invulnerableTime;
 	int viewDistance;
-	__int64 lastActionTime;
+	int64_t lastActionTime;
 	int lastBrupSendTickCount; // 4J Added
 
 public:
@@ -169,5 +169,5 @@ public:
 
 protected:
 	// 4J Added to record telemetry of player deaths, this should store the last source of damage
-	ETelemetryChallenges m_lastDamageSource;	
+	ETelemetryChallenges m_lastDamageSource;
 };

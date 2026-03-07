@@ -21,6 +21,8 @@
 #include "PlayerChunkMap.h"
 #include <qnet.h>
 
+#include <memory>
+
 TrackedEntity::TrackedEntity(shared_ptr<Entity> e, int range, int updateInterval, bool trackDelta)
 {
 	// 4J added initialisers
@@ -68,20 +70,20 @@ void TrackedEntity::tick(EntityTracker *tracker, vector<shared_ptr<Player> > *pl
 	}
 
 	// Moving forward  special case for item frames
-	if (e->GetType()== eTYPE_ITEM_FRAME && tickCount % 10 == 0) 
+	if (e->GetType()== eTYPE_ITEM_FRAME && tickCount % 10 == 0)
 	{
 		shared_ptr<ItemFrame> frame = dynamic_pointer_cast<ItemFrame> (e);
 		shared_ptr<ItemInstance> item = frame->getItem();
 
-		if (item != NULL && item->getItem()->id == Item::map_Id && !e->removed) 
+		if (item != NULL && item->getItem()->id == Item::map_Id && !e->removed)
 		{
 			shared_ptr<MapItemSavedData> data = Item::map->getSavedData(item, e->level);
-			for (AUTO_VAR(it,players->begin() ); it != players->end(); ++it)
+			for (auto& it : *players)
 			{
-				shared_ptr<ServerPlayer> player = dynamic_pointer_cast<ServerPlayer>(*it);
+				shared_ptr<ServerPlayer> player = dynamic_pointer_cast<ServerPlayer>(it);
 				data->tickCarriedBy(player, item);
 
-				if (!player->removed && player->connection && player->connection->countDelayedPackets() <= 5) 
+				if (!player->removed && player->connection && player->connection->countDelayedPackets() <= 5)
 				{
 					shared_ptr<Packet> packet = Item::map->getUpdatePacket(item, e->level, player);
 					if (packet != NULL) player->connection->send(packet);
@@ -90,7 +92,7 @@ void TrackedEntity::tick(EntityTracker *tracker, vector<shared_ptr<Player> > *pl
 		}
 
 		shared_ptr<SynchedEntityData> entityData = e->getEntityData();
-		if (entityData->isDirty()) 
+		if (entityData->isDirty())
 		{
 			broadcastAndSend( shared_ptr<SetEntityDataPacket>( new SetEntityDataPacket(e->entityId, entityData, false) ) );
 		}
@@ -112,7 +114,7 @@ void TrackedEntity::tick(EntityTracker *tracker, vector<shared_ptr<Player> > *pl
 			int xn = Mth::floor(e->x * 32.0);
 			int yn = Mth::floor(e->y * 32.0);
 			int zn = Mth::floor(e->z * 32.0);
-			
+
 			int xa = xn - xp;
 			int ya = yn - yp;
 			int za = zn - zp;
@@ -122,7 +124,7 @@ void TrackedEntity::tick(EntityTracker *tracker, vector<shared_ptr<Player> > *pl
 			// 4J - this pos flag used to be set based on abs(xn) etc. but that just seems wrong
 			bool pos = abs(xa) >= TOLERANCE_LEVEL || abs(ya) >= TOLERANCE_LEVEL || abs(za) >= TOLERANCE_LEVEL || (tickCount % (SharedConstants::TICKS_PER_SECOND * 3) == 0);
 
-			// Keep rotation deltas in +/- 180 degree range 
+			// Keep rotation deltas in +/- 180 degree range
 			while( yRota > 127 ) yRota -= 256;
 			while( yRota < -128 ) yRota += 256;
 			while( xRota > 127 ) xRota -= 256;
@@ -293,7 +295,7 @@ void TrackedEntity::tick(EntityTracker *tracker, vector<shared_ptr<Player> > *pl
 				yRotp = yRotn;
 				xRotp = xRotn;
 			}
-			
+
 			xp = Mth::floor(e->x * 32.0);
 			yp = Mth::floor(e->y * 32.0);
 			zp = Mth::floor(e->z * 32.0);
@@ -354,15 +356,14 @@ void TrackedEntity::broadcast(shared_ptr<Packet> packet)
 		// 4J-PB - due to the knockback on a player being hit, we need to send to all players, but limit the network traffic here to players that have not already had it sent to their system
 		vector< shared_ptr<ServerPlayer> > sentTo;
 
-		// 4J - don't send to a player we've already sent this data to that shares the same machine. 
+		// 4J - don't send to a player we've already sent this data to that shares the same machine.
 		// EntityMotionPacket used to limit themselves to sending once to each machine
 		// by only sending to the primary player on each machine. This was causing trouble for split screen
 		// as only the primary player would get a knockback velocity. Now these packets can be sent to any
 		// player, but we try to restrict the network impact this has by not resending to the one machine
 
-		for( AUTO_VAR(it, seenBy.begin()); it != seenBy.end(); it++ )
+		for( auto& player : seenBy)
 		{
-			shared_ptr<ServerPlayer> player = *it;
 			bool dontSend = false;
 			if( sentTo.size() )
 			{
@@ -373,20 +374,12 @@ void TrackedEntity::broadcast(shared_ptr<Packet> packet)
 				}
 				else
 				{
-					for(unsigned int j = 0; j < sentTo.size(); j++ )	
+					for(auto& player2 : sentTo)
 					{
-						shared_ptr<ServerPlayer> player2 = sentTo[j];
 						INetworkPlayer *otherPlayer = player2->connection->getNetworkPlayer();
 						if( otherPlayer != NULL && thisPlayer->IsSameSystem(otherPlayer) )
 						{
 							dontSend = true;
-							// #ifdef _DEBUG
-							// 					shared_ptr<SetEntityMotionPacket> emp= dynamic_pointer_cast<SetEntityMotionPacket> (packet);
-							// 					if(emp!=NULL)
-							// 					{
-							// 						app.DebugPrintf("Not sending this SetEntityMotionPacket to player - it's already been sent to a player on their console\n");
-							// 					}
-							// #endif
 						}
 					}
 				}
@@ -397,7 +390,7 @@ void TrackedEntity::broadcast(shared_ptr<Packet> packet)
 			}
 
 
-			(*it)->connection->send(packet);
+			player->connection->send(packet);
 			sentTo.push_back(player);
 		}
 	}
@@ -405,9 +398,9 @@ void TrackedEntity::broadcast(shared_ptr<Packet> packet)
 	{
 		// This packet hasn't got canSendToAnyClient set, so just send to everyone here, and it
 
-		for( AUTO_VAR(it, seenBy.begin()); it != seenBy.end(); it++ )
+		for(auto& it : seenBy)
 		{
-			(*it)->connection->send(packet);
+			it->connection->send(packet);
 		}
 	}
 }
@@ -425,16 +418,16 @@ void TrackedEntity::broadcastAndSend(shared_ptr<Packet> packet)
 
 void TrackedEntity::broadcastRemoved()
 {
-	for( AUTO_VAR(it, seenBy.begin()); it != seenBy.end(); it++ )
+	for(const auto& it : seenBy)
 	{
-		(*it)->entitiesToRemove.push_back(e->entityId);
+		it->entitiesToRemove.push_back(e->entityId);
 	}
 }
 
 void TrackedEntity::removePlayer(shared_ptr<ServerPlayer> sp)
 {
-	AUTO_VAR(it, seenBy.find( sp ));
-	if( it != seenBy.end() )
+    auto it = seenBy.find(sp);
+    if( it != seenBy.end() )
 	{
 		sp->entitiesToRemove.push_back(e->entityId);
 		seenBy.erase( it );
@@ -598,19 +591,17 @@ void TrackedEntity::updatePlayer(EntityTracker *tracker, shared_ptr<ServerPlayer
 		{
 			shared_ptr<LivingEntity> mob = dynamic_pointer_cast<LivingEntity>(e);
 			vector<MobEffectInstance *> *activeEffects = mob->getActiveEffects();
-			for(AUTO_VAR(it, activeEffects->begin()); it != activeEffects->end(); ++it)
+			for(auto& effect : *activeEffects)
 			{
-				MobEffectInstance *effect = *it;
-
-				sp->connection->send(shared_ptr<UpdateMobEffectPacket>( new UpdateMobEffectPacket(e->entityId, effect) ) );
+				sp->connection->send(std::make_shared<UpdateMobEffectPacket>( e->entityId, effect ) );
 			}
 			delete activeEffects;
 		}
 	}
 	else if (visibility == eVisibility_NotVisible)
 	{
-		AUTO_VAR(it, seenBy.find(sp));
-		if (it != seenBy.end())
+        auto it = seenBy.find(sp);
+        if (it != seenBy.end())
 		{
 			seenBy.erase(it);
 			sp->entitiesToRemove.push_back(e->entityId);
@@ -774,7 +765,7 @@ shared_ptr<Packet> TrackedEntity::getAddEntityPacket()
 	else if (e->instanceof(eTYPE_ITEM_FRAME))
 	{
 		shared_ptr<ItemFrame> frame = dynamic_pointer_cast<ItemFrame>(e);
-		
+
 		{
 
 			int ix= (int)frame->xTile;
@@ -812,8 +803,8 @@ shared_ptr<Packet> TrackedEntity::getAddEntityPacket()
 
 void TrackedEntity::clear(shared_ptr<ServerPlayer> sp)
 {
-	AUTO_VAR(it, seenBy.find(sp));
-	if (it != seenBy.end())
+    auto it = seenBy.find(sp);
+    if (it != seenBy.end())
 	{
 		seenBy.erase(it);
 		sp->entitiesToRemove.push_back(e->entityId);

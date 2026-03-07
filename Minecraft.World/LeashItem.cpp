@@ -38,9 +38,9 @@ bool LeashItem::bindPlayerMobs(shared_ptr<Player> player, Level *level, int x, i
 	vector<shared_ptr<Entity> > *mobs = level->getEntitiesOfClass(typeid(Mob), AABB::newTemp(x - range, y - range, z - range, x + range, y + range, z + range));
 	if (mobs != NULL)
 	{
-		for(AUTO_VAR(it,mobs->begin()); it != mobs->end(); ++it)
+		for(auto& it : *mobs)
 		{
-			shared_ptr<Mob> mob = dynamic_pointer_cast<Mob>(*it);
+			shared_ptr<Mob> mob = dynamic_pointer_cast<Mob>(it);
 			if (mob->isLeashed() && mob->getLeashHolder() == player)
 			{
 				if (activeKnot == NULL)
@@ -64,9 +64,9 @@ bool LeashItem::bindPlayerMobsTest(shared_ptr<Player> player, Level *level, int 
 
 	if (mobs != NULL)
 	{
-		for(AUTO_VAR(it,mobs->begin()); it != mobs->end(); ++it)
+		for(auto& it : *mobs)
 		{
-			shared_ptr<Mob> mob = dynamic_pointer_cast<Mob>(*it);
+			shared_ptr<Mob> mob = dynamic_pointer_cast<Mob>(it);
 			if (mob->isLeashed() && mob->getLeashHolder() == player) return true;
 		}
 	}

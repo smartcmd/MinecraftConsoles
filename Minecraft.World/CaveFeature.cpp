@@ -20,7 +20,7 @@ bool CaveFeature::place(Level *level, Random *random, int x, int y, int z)
 	double radius = random->nextDouble() * 4 + 2;
 	double fuss = random->nextDouble() * 0.6;
 
-	__int64 seed = random->nextLong();
+	int64_t seed = random->nextLong();
 	random->setSeed(seed);
 	vector<TilePos *> toRemove;
 
@@ -70,17 +70,13 @@ bool CaveFeature::place(Level *level, Random *random, int x, int y, int z)
 				}
 	}
 
-	AUTO_VAR(itEnd, toRemove.end());
-	for (AUTO_VAR(it, toRemove.begin()); it != itEnd; it++)
+	for ( auto& p : toRemove )
 	{
-		TilePos *p = *it; //toRemove[i];
 		level->setTileAndData(p->x, p->y, p->z, 0, 0, Tile::UPDATE_CLIENTS);
 	}
 
-	itEnd = toRemove.end();
-	for (AUTO_VAR(it, toRemove.begin()); it != itEnd; it++)
+	for ( auto& p : toRemove )
 	{
-		TilePos *p = *it; //toRemove[i];
 		if (level->getTile(p->x, p->y - 1, p->z) == Tile::dirt_Id && level->getDaytimeRawBrightness(p->x, p->y, p->z) > 8)
 		{
 			level->setTileAndData(p->x, p->y - 1, p->z, Tile::grass_Id, 0, Tile::UPDATE_CLIENTS);

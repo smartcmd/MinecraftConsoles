@@ -216,7 +216,7 @@ void Stats::buildBlockStats()
 
 bool Stats::itemStatsLoaded = false;
 
-void Stats::buildItemStats() 
+void Stats::buildItemStats()
 {
 	itemStatsLoaded = true;
 	buildCraftableStats();
@@ -239,7 +239,7 @@ void Stats::buildCraftableStats()
 	craftableStatsLoaded = true;
 
 	//Collected stats
-	
+
 	itemsCollected = StatArray(32000);
 
 	ItemStat* newStat = new ItemStat(ITEMS_COLLECTED_OFFSET + 0, L"collectItem.egg", Item::egg->id);
@@ -248,12 +248,12 @@ void Stats::buildCraftableStats()
 	newStat->postConstruct();
 
 	// 4J Stu - The following stats were added as it was too easy to cheat the leaderboards by dropping and picking up these items
-	// They are now changed to mining the block which involves a tiny bit more effort	
+	// They are now changed to mining the block which involves a tiny bit more effort
 	newStat = new ItemStat(BLOCKS_MINED_OFFSET + 18, L"mineBlock.wheat", Tile::wheat_Id);
 	blocksMinedStats->push_back(newStat);
 	blocksMined[Tile::wheat_Id] = newStat;
 	newStat->postConstruct();
-	
+
 	newStat = new ItemStat(BLOCKS_MINED_OFFSET + 19, L"mineBlock.mushroom1", Tile::mushroom_brown_Id);
 	blocksMinedStats->push_back(newStat);
 	blocksMined[Tile::mushroom_brown_Id] = newStat;
@@ -522,7 +522,7 @@ void Stats::buildAdditionalStats()
 		rainbowCollection = StatArray(16);
 		for (unsigned int i = 0; i < 16; i++)
 		{
-			generalStat = new GeneralStat(offset++, L"rainbowCollection." + _toString<unsigned int>(i));
+			generalStat = new GeneralStat(offset++, L"rainbowCollection." + std::to_wstring(i));
 			generalStats->push_back(generalStat);
 			rainbowCollection[i] = generalStat;
 			generalStat->postConstruct();
@@ -531,7 +531,7 @@ void Stats::buildAdditionalStats()
 		biomesVisisted = StatArray(23);
 		for (unsigned int i = 0; i < 23; i++)
 		{
-			generalStat = new GeneralStat(offset++, L"biomesVisited." + _toString<unsigned int>(i));
+			generalStat = new GeneralStat(offset++, L"biomesVisited." + std::to_wstring(i));
 			generalStats->push_back(generalStat);
 			biomesVisisted[i] = generalStat;
 			generalStat->postConstruct();
@@ -548,10 +548,10 @@ void Stats::buildAdditionalStats()
 		itemStat->postConstruct();
 	}
 #endif
-	
+
 }
 
-Stat *Stats::get(int key) 
+Stat *Stats::get(int key)
 {
 	return statsById->at(key);
 }

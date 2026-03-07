@@ -70,11 +70,11 @@ HRESULT CXuiCtrlEnchantmentButtonText::OnRender(XUIMessageRender *pRenderData, B
 	D3DXMATRIX matrix;
 	xuiControl.GetFullXForm(&matrix);
 	float bwidth,bheight;
-	xuiControl.GetBounds(&bwidth,&bheight);				
+	xuiControl.GetBounds(&bwidth,&bheight);
 
 	// Annoyingly, XUI renders everything to a z of 0 so if we want to render anything that needs the z-buffer on top of it, then we need to clear it.
 	// Clear just the region required for this control.
-	D3DRECT clearRect; 
+	D3DRECT clearRect;
 	clearRect.x1 = (int)(matrix._41) - 2;
 	clearRect.y1 = (int)(matrix._42) - 2;
 	clearRect.x2 = (int)(matrix._41 + ( bwidth  * matrix._11 )) + 2;
@@ -124,7 +124,7 @@ HRESULT CXuiCtrlEnchantmentButtonText::OnRender(XUIMessageRender *pRenderData, B
 	glColor4f(1, 1, 1, 1);
 	if (cost != 0)
 	{
-		wstring line = _toString<int>(cost);
+		wstring line = std::to_wstring(cost);
 		Font *font = pMinecraft->altFont;
 		//int col = 0x685E4A;
 		unsigned int col = m_textColour;

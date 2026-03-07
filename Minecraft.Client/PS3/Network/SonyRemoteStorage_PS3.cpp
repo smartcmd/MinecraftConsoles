@@ -27,21 +27,21 @@
 void SonyRemoteStorage_PS3::npauthhandler(int event, int result, void *arg)
 {
 #ifdef __PS3__
-	if (event != SCE_NP_MANAGER_EVENT_GOT_TICKET || result <= 0) 
+	if (event != SCE_NP_MANAGER_EVENT_GOT_TICKET || result <= 0)
 	{
 		app.DebugPrintf("Could not retrieve ticket: 0x%x\n", result);
-	} 
-	else 
+	}
+	else
 	{
 		psnTicketSize = result;
 		psnTicket = malloc(psnTicketSize);
-		if (psnTicket == NULL) 
+		if (psnTicket == NULL)
 		{
 			app.DebugPrintf("Failed to allocate for ticket\n");
 		}
 
 		int ret = sceNpManagerGetTicket(psnTicket, &psnTicketSize);
-		if (ret < 0) 
+		if (ret < 0)
 		{
 			app.DebugPrintf("Could not retrieve ticket: 0x%x\n", ret);
 			free(psnTicket);
@@ -60,7 +60,7 @@ int SonyRemoteStorage_PS3::initPreconditions()
 	SceNpId npId;
 
 	ret = sceNpManagerGetNpId(&npId);
-	if(ret < 0) 
+	if(ret < 0)
 	{
 		return ret;
 	}
@@ -68,12 +68,12 @@ int SonyRemoteStorage_PS3::initPreconditions()
 	ticketVersion.major = 3;
 	ticketVersion.minor = 0;
 	ret = sceNpManagerRequestTicket2(&npId, &ticketVersion, TICKETING_SERVICE_ID, NULL, 0, NULL, 0);
-	if(ret < 0) 
+	if(ret < 0)
 	{
 		return ret;
 	}
 	m_waitingForTicket = true;
-	while(m_waitingForTicket) 
+	while(m_waitingForTicket)
 	{
 		cellSysutilCheckCallback();
 		sys_timer_usleep(50000); //50 milliseconds.
@@ -104,12 +104,12 @@ void SonyRemoteStorage_PS3::internalCallback(const SceRemoteStorageEvent event, 
 		break;
 
 	case GET_DATA_RESULT:
-		if(retCode >= 0) 
+		if(retCode >= 0)
 		{
 			app.DebugPrintf("Get Data success \n");
 			m_status = e_getDataSucceeded;
-		} 
-		else 
+		}
+		else
 		{
 			app.DebugPrintf("An error occurred while Get Data was being processed. retCode: 0x%x \n", retCode);
 			m_status = e_error;
@@ -126,12 +126,12 @@ void SonyRemoteStorage_PS3::internalCallback(const SceRemoteStorageEvent event, 
 		break;
 
 	case GET_STATUS_RESULT:
-		if(retCode >= 0) 
+		if(retCode >= 0)
 		{
 			app.DebugPrintf("Get Status success \n");
 			app.DebugPrintf("Remaining Syncs for this user: %llu\n", outputGetStatus->remainingSyncs);
 			app.DebugPrintf("Number of files on the cloud: %d\n", outputGetStatus->numFiles);
-			for(int i = 0; i < outputGetStatus->numFiles; i++) 
+			for(int i = 0; i < outputGetStatus->numFiles; i++)
 			{
 				app.DebugPrintf("\n*** File %d information: ***\n", (i + 1));
 				app.DebugPrintf("File name: %s \n", outputGetStatus->data[i].fileName);
@@ -142,8 +142,8 @@ void SonyRemoteStorage_PS3::internalCallback(const SceRemoteStorageEvent event, 
 				app.DebugPrintf("Visibility: \"%s\" \n", (outputGetStatus->data[i].visibility ==  0)?"Private":((outputGetStatus->data[i].visibility ==  1)?"Public read only":"Public read and write"));
 			}
 			m_status = e_getStatusSucceeded;
-		} 
-		else 
+		}
+		else
 		{
 			app.DebugPrintf("An error occurred while Get Status was being processed. retCode: 0x%x \n", retCode);
 			m_status = e_error;
@@ -158,12 +158,12 @@ void SonyRemoteStorage_PS3::internalCallback(const SceRemoteStorageEvent event, 
 		break;
 
 	case SET_DATA_RESULT:
-		if(retCode >= 0) 
+		if(retCode >= 0)
 		{
 			app.DebugPrintf("Set Data success \n");
 			m_status = e_setDataSucceeded;
-		} 
-		else 
+		}
+		else
 		{
 			app.DebugPrintf("An error occurred while Set Data was being processed. retCode: 0x%x \n", retCode);
 			m_status = e_error;
@@ -230,7 +230,7 @@ bool SonyRemoteStorage_PS3::init(CallbackFunc cb, LPVOID lpParam)
 	params.callback = staticInternalCallback;
 	params.userData = this;
 	params.thread.threadAffinity = 0; //Not used in PS3
-	params.thread.threadPriority = 1000; //Must be between [0-3071], being 0 the highest. 
+	params.thread.threadPriority = 1000; //Must be between [0-3071], being 0 the highest.
 	params.psnTicket = psnTicket;
 	params.psnTicketSize = psnTicketSize;
 	strcpy(params.clientId, CLIENT_ID);
@@ -246,20 +246,20 @@ bool SonyRemoteStorage_PS3::init(CallbackFunc cb, LPVOID lpParam)
 // 	SceRemoteStorageAbortReqParams abortParams;
 
 	ret = sceRemoteStorageInit(params);
-	if(ret >= 0 || ret == SCE_REMOTE_STORAGE_ERROR_ALREADY_INITIALISED) 
+	if(ret >= 0 || ret == SCE_REMOTE_STORAGE_ERROR_ALREADY_INITIALISED)
 	{
 // 		abortParams.requestId = ret;
 		//ret = sceRemoteStorageAbort(abortParams);
 		app.DebugPrintf("Session will be created \n");
-		//if(ret >= 0) 
+		//if(ret >= 0)
 		//{
 		//	printf("Session aborted \n");
-		//} else 
+		//} else
 		//{
 		//	printf("Error aborting session: 0x%x \n", ret);
 		//}
-	} 
-	else 
+	}
+	else
 	{
 		app.DebugPrintf("Error creating session: 0x%x \n", ret);
 		return false;
@@ -279,12 +279,12 @@ bool SonyRemoteStorage_PS3::getRemoteFileInfo(SceRemoteStorageStatus* pInfo, Cal
 	reqId = sceRemoteStorageGetStatus(params, outputGetStatus);
 	m_status = e_getStatusInProgress;
 
-	if(reqId >= 0) 
+	if(reqId >= 0)
 	{
 		app.DebugPrintf("Get Status request sent \n");
 		return true;
-	} 
-	else 
+	}
+	else
 	{
 		app.DebugPrintf("Error sending Get Status request: 0x%x \n", reqId);
 		return false;
@@ -303,11 +303,11 @@ void SonyRemoteStorage_PS3::abort()
 		params.requestId = reqId;
 		int ret = sceRemoteStorageAbort(params);
 
-		if(ret >= 0) 
+		if(ret >= 0)
 		{
 			app.DebugPrintf("Abort request done \n");
-		} 
-		else 
+		}
+		else
 		{
 			app.DebugPrintf("Error in Abort request: 0x%x \n", ret);
 		}
@@ -345,7 +345,7 @@ bool SonyRemoteStorage_PS3::setDataInternal()
 		char seed[22];
 		app.GetImageTextData(m_thumbnailData, m_thumbnailDataSize,(unsigned char *)seed, uiHostOptions, bHostOptionsRead, uiTexturePack);
 
-		__int64 iSeed = strtoll(seed,NULL,10);
+		int64_t iSeed = strtoll(seed,NULL,10);
 		char seedHex[17];
 		sprintf(seedHex,"%016llx",iSeed);
 		memcpy(descData.m_seed,seedHex,16); // Don't copy null
@@ -377,14 +377,14 @@ bool SonyRemoteStorage_PS3::setDataInternal()
 	reqId = sceRemoteStorageSetData(params);
 
 	app.DebugPrintf("\n*******************************\n");
-	if(reqId >= 0) 
+	if(reqId >= 0)
 	{
 		app.DebugPrintf("Set Data request sent \n");
 		m_bTransferStarted = true;
 		m_status = e_setDataInProgress;
 		return true;
-	} 
-	else 
+	}
+	else
 	{
 		app.DebugPrintf("Error sending Set Data request: 0x%x \n", reqId);
 		return false;
@@ -406,12 +406,12 @@ bool SonyRemoteStorage_PS3::getData( const char* remotePath, const char* localPa
 	reqId = sceRemoteStorageGetData(params, &outputGetData);
 
 	app.DebugPrintf("\n*******************************\n");
-	if(reqId >= 0) 
+	if(reqId >= 0)
 	{
 		app.DebugPrintf("Get Data request sent \n");
 		m_bTransferStarted = true;
 		m_status = e_getDataInProgress;
-	} else 
+	} else
 	{
 		app.DebugPrintf("Error sending Get Data request: 0x%x \n", reqId);
 	}

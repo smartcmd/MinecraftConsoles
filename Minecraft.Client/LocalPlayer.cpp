@@ -143,39 +143,8 @@ void LocalPlayer::serverAiStep()
 {
 	Player::serverAiStep();
 	
-	if( abilities.flying && abilities.mayfly )
-	{
-		// snap y rotation for flying to nearest 90 degrees in world space
-		float fMag = sqrtf(input->xa * input->xa + input->ya * input->ya);
-		// Don't bother for tiny inputs
-		if( fMag >= 0.1f )
-		{
-			// Get angle (in player rotated space) of input controls
-			float yRotInput = atan2f(input->ya, input->xa) * (180.0f / PI);
-			// Now get in world space
-			float yRotFinal = yRotInput + yRot;
-			// Snap this to nearest 90 degrees
-			float yRotSnapped = floorf((yRotFinal / 45.0f) + 0.5f) * 45.0f;
-			// Find out how much we had to move to do this snap
-			float yRotDiff = yRotSnapped - yRotFinal;
-			// Apply the same difference to the player rotated space angle
-			float yRotInputAdjust = yRotInput + yRotDiff;
-			
-			// Calculate final x/y player-space movement required
-			this->xxa = cos(yRotInputAdjust * ( PI / 180.0f) ) * fMag;
-			this->yya = sin(yRotInputAdjust * ( PI / 180.0f) ) * fMag;
-		}
-		else
-		{
-			this->xxa = input->xa;
-			this->yya = input->ya;
-		}
-	}
-	else
-	{
-		this->xxa = input->xa;
-		this->yya = input->ya;
-	}
+	this->xxa = input->xa;
+	this->yya = input->ya;
 	this->jumping = input->jumping;
 
 	yBobO = yBob;

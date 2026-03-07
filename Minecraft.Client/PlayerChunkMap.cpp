@@ -12,6 +12,7 @@
 #include "../Minecraft.World/ArrayWithLength.h"
 #include "../Minecraft.World/System.h"
 #include "PlayerList.h"
+#include <unordered_set>
 
 PlayerChunkMap::PlayerChunk::PlayerChunk(int x, int z, PlayerChunkMap *pcm) : pos(x,z)
 {
@@ -40,10 +41,10 @@ PlayerChunkMap::PlayerChunk::~PlayerChunk()
 // flag array and adds to it for this ServerPlayer.
 void PlayerChunkMap::flagEntitiesToBeRemoved(unsigned int *flags, bool *flagToBeRemoved)
 {
-	for(AUTO_VAR(it,players.begin()); it != players.end(); it++)
+	for(auto& serverPlayer : players)
 	{
-		shared_ptr<ServerPlayer> serverPlayer = *it;
-		serverPlayer->flagEntitiesToBeRemoved(flags, flagToBeRemoved);
+		if ( serverPlayer )
+			serverPlayer->flagEntitiesToBeRemoved(flags, flagToBeRemoved);
 	}
 }
 
@@ -52,7 +53,7 @@ void PlayerChunkMap::PlayerChunk::add(shared_ptr<ServerPlayer> player, bool send
 	//app.DebugPrintf("--- Adding player to chunk x=%d\tz=%d\n",x, z);
     if (find(players.begin(),players.end(),player) != players.end())
 	{
-		// 4J-PB - At the start of the game, lots of chunks are added, and we can then move into an area that is outside the diameter of our starting area, 
+		// 4J-PB - At the start of the game, lots of chunks are added, and we can then move into an area that is outside the diameter of our starting area,
 		// but is inside the area loaded at the start.
 		app.DebugPrintf("--- Adding player to chunk x=%d\t z=%d, but they are already in there!\n",pos.x, pos.z);
 		return;
@@ -72,7 +73,7 @@ void PlayerChunkMap::PlayerChunk::add(shared_ptr<ServerPlayer> player, bool send
 	}
 
 	players.push_back(player);
-	
+
 	player->chunksToSend.push_back(pos);
 
 #ifdef _LARGE_WORLDS
@@ -85,8 +86,8 @@ void PlayerChunkMap::PlayerChunk::remove(shared_ptr<ServerPlayer> player)
 	PlayerChunkMap::PlayerChunk *toDelete = NULL;
 
 	//app.DebugPrintf("--- PlayerChunkMap::PlayerChunk::remove x=%d\tz=%d\n",x,z);
-	AUTO_VAR(it, find(players.begin(),players.end(),player));
-	if ( it == players.end())
+    auto it = find(players.begin(), players.end(), player);
+    if ( it == players.end())
 	{
 		app.DebugPrintf("--- INFO - Removing player from chunk x=%d\t z=%d, but they are not in that chunk!\n",pos.x, pos.z);
 
@@ -99,20 +100,20 @@ void PlayerChunkMap::PlayerChunk::remove(shared_ptr<ServerPlayer> player)
 		{
 			LevelChunk *chunk = parent->level->getChunk(pos.x, pos.z);
 			updateInhabitedTime(chunk);
-			AUTO_VAR(it, find(parent->knownChunks.begin(), parent->knownChunks.end(),this));
-			if(it != parent->knownChunks.end()) parent->knownChunks.erase(it);
+            auto it = find(parent->knownChunks.begin(), parent->knownChunks.end(), this);
+            if(it != parent->knownChunks.end()) parent->knownChunks.erase(it);
 		}
-        __int64 id = (pos.x + 0x7fffffffLL) | ((pos.z + 0x7fffffffLL) << 32);
-		AUTO_VAR(it, parent->chunks.find(id));
-		if( it != parent->chunks.end() )
+        int64_t id = (pos.x + 0x7fffffffLL) | ((pos.z + 0x7fffffffLL) << 32);
+        auto it = parent->chunks.find(id);
+        if( it != parent->chunks.end() )
 		{
 			toDelete = it->second;	// Don't delete until the end of the function, as this might be this instance
 			parent->chunks.erase(it);
 		}
         if (changes > 0)
 		{
-			AUTO_VAR(it, find(parent->changedChunks.begin(),parent->changedChunks.end(),this));
-			parent->changedChunks.erase(it);
+            auto it = find(parent->changedChunks.begin(), parent->changedChunks.end(), this);
+            parent->changedChunks.erase(it);
         }
         parent->getLevel()->cache->drop(pos.x, pos.z);
     }
@@ -125,17 +126,19 @@ void PlayerChunkMap::PlayerChunk::remove(shared_ptr<ServerPlayer> player)
 	{
 		INetworkPlayer *thisNetPlayer = player->connection->getNetworkPlayer();
 		bool noOtherPlayersFound = true;
-		
-		if( thisNetPlayer != NULL )
+
+		if( thisNetPlayer != nullptr )
 		{
-			for( AUTO_VAR(it, players.begin()); it < players.end(); ++it )
-			{
-				shared_ptr<ServerPlayer> currPlayer = *it;
-				INetworkPlayer *currNetPlayer = currPlayer->connection->getNetworkPlayer();
-				if( currNetPlayer != NULL && currNetPlayer->IsSameSystem( thisNetPlayer ) && currPlayer->seenChunks.find(pos) != currPlayer->seenChunks.end() )
+            for (auto& currPlayer : players )
+            {
+				if ( currPlayer )
 				{
-					noOtherPlayersFound = false;
-					break;
+					INetworkPlayer *currNetPlayer = currPlayer->connection->getNetworkPlayer();
+					if( currNetPlayer != NULL && currNetPlayer->IsSameSystem( thisNetPlayer ) && currPlayer->seenChunks.find(pos) != currPlayer->seenChunks.end() )
+					{
+						noOtherPlayersFound = false;
+						break;
+					}
 				}
 			}
 			if(noOtherPlayersFound)
@@ -202,106 +205,53 @@ void PlayerChunkMap::PlayerChunk::prioritiseTileChanges()
 	prioritised = true;
 }
 
+// One system id per machine so we send at most once per system. Local = 256, remote = GetSmallId().
+static int getSystemIdForSentTo(INetworkPlayer* np)
+{
+	if (np == NULL) return -1;
+	return np->IsLocal() ? 256 : (int)np->GetSmallId();
+}
+
 void PlayerChunkMap::PlayerChunk::broadcast(shared_ptr<Packet> packet)
 {
-	vector< shared_ptr<ServerPlayer> > sentTo;
-    for (unsigned int i = 0; i < players.size(); i++)
+	std::unordered_set<int> sentToSystemIds;  // O(1) "already sent to this system" check instead of O(N) scan
+	for (unsigned int i = 0; i < players.size(); i++)
 	{
-        shared_ptr<ServerPlayer> player = players[i];
-
-		// 4J - don't send to a player we've already sent this data to that shares the same machine. TileUpdatePacket,
-		// ChunkTilesUpdatePacket and SignUpdatePacket all used to limit themselves to sending once to each machine
-		// by only sending to the primary player on each machine. This was causing trouble for split screen
-		// as updates were only coming in for the region round this one player. Now these packets can be sent to any
-		// player, but we try to restrict the network impact this has by not resending to the one machine
-		bool dontSend = false;
-		if( sentTo.size() )
-		{
-			INetworkPlayer *thisPlayer = player->connection->getNetworkPlayer();
-			if( thisPlayer == NULL )
-			{
-				dontSend = true;
-			}
-			else
-			{
-				for(unsigned int j = 0; j < sentTo.size(); j++ )	
-				{
-					shared_ptr<ServerPlayer> player2 = sentTo[j];
-					INetworkPlayer *otherPlayer = player2->connection->getNetworkPlayer();
-					if( otherPlayer != NULL && thisPlayer->IsSameSystem(otherPlayer) )
-					{
-						dontSend = true;
-					}
-				}
-			}
-		}
-		if( dontSend )
-		{
+		shared_ptr<ServerPlayer> player = players[i];
+		INetworkPlayer* thisPlayer = player->connection->getNetworkPlayer();
+		if (thisPlayer == NULL) continue;
+		int sysId = getSystemIdForSentTo(thisPlayer);
+		if (sysId >= 0 && sentToSystemIds.find(sysId) != sentToSystemIds.end())
 			continue;
-		}
 
-		// 4J Changed to get the flag index for the player before we send a packet. This flag is updated when we queue
-		// for send the first BlockRegionUpdatePacket for this chunk to that player/players system. Therefore there is no need to
-		// send tile updates or other updates until that has been sent
 		int flagIndex = ServerPlayer::getFlagIndexForChunk(pos, parent->dimension);
-        if (player->seenChunks.find(pos) != player->seenChunks.end() && (player->connection->isLocal() || g_NetworkManager.SystemFlagGet(player->connection->getNetworkPlayer(),flagIndex) ))
+		if (player->seenChunks.find(pos) != player->seenChunks.end() && (player->connection->isLocal() || g_NetworkManager.SystemFlagGet(thisPlayer, flagIndex)))
 		{
-            player->connection->send(packet);
-			sentTo.push_back(player);
-        }
-    }
-	// Now also check round all the players that are involved in this game. We also want to send the packet
-	// to them if their system hasn't received it already, but they have received the first BlockRegionUpdatePacket for this
-	// chunk
-
-	// Make sure we are only doing this for BlockRegionUpdatePacket, ChunkTilesUpdatePacket and TileUpdatePacket.
-	// We'll be potentially sending to players who aren't on the same level as this packet is intended for,
-	// and only these 3 packets have so far been updated to be able to encode the level so they are robust
-	// enough to cope with this
-	if(!( ( packet->getId() == 51 ) || ( packet->getId() == 52 ) || ( packet->getId() == 53 ) ) )
-	{
-		return;
+			player->connection->send(packet);
+			if (sysId >= 0) sentToSystemIds.insert(sysId);
+		}
 	}
+	// Also send to other server players who have this chunk (may not be in this chunk's players list)
+	if (!((packet->getId() == 51) || (packet->getId() == 52) || (packet->getId() == 53)))
+		return;
 
-	for( int i = 0; i < parent->level->getServer()->getPlayers()->players.size(); i++ )
+	const vector<shared_ptr<ServerPlayer> >& allPlayers = parent->level->getServer()->getPlayers()->players;
+	for (size_t i = 0; i < allPlayers.size(); i++)
 	{
-		shared_ptr<ServerPlayer> player = parent->level->getServer()->getPlayers()->players[i];
-		// Don't worry about local players, they get all their updates through sharing level with the server anyway
-		if ( player->connection == NULL ) continue;
-		if( player->connection->isLocal() ) continue;
+		shared_ptr<ServerPlayer> player = allPlayers[i];
+		if (player->connection == NULL || player->connection->isLocal()) continue;
 
-		// Don't worry about this player if they haven't had this chunk yet (this flag will be the
-		// same for all players on the same system)
-		int flagIndex = ServerPlayer::getFlagIndexForChunk(pos,parent->dimension);
-		if(!g_NetworkManager.SystemFlagGet(player->connection->getNetworkPlayer(),flagIndex)) continue;
+		INetworkPlayer* thisPlayer = player->connection->getNetworkPlayer();
+		if (thisPlayer == NULL) continue;
+		int sysId = getSystemIdForSentTo(thisPlayer);
+		if (sysId >= 0 && sentToSystemIds.find(sysId) != sentToSystemIds.end())
+			continue;
 
-		// From here on the same rules as in the loop above - don't send it if we've already sent to the same system
-		bool dontSend = false;
-		if( sentTo.size() )
-		{
-			INetworkPlayer *thisPlayer = player->connection->getNetworkPlayer();
-			if( thisPlayer == NULL )
-			{
-				dontSend = true;
-			}
-			else
-			{
-				for(unsigned int j = 0; j < sentTo.size(); j++ )	
-				{
-					shared_ptr<ServerPlayer> player2 = sentTo[j];
-					INetworkPlayer *otherPlayer = player2->connection->getNetworkPlayer();
-					if( otherPlayer != NULL && thisPlayer->IsSameSystem(otherPlayer) )
-					{
-						dontSend = true;
-					}
-				}
-			}
-		}
-		if( !dontSend )
-		{
-            player->connection->send(packet);
-			sentTo.push_back(player);
-		}
+		int flagIndex = ServerPlayer::getFlagIndexForChunk(pos, parent->dimension);
+		if (!g_NetworkManager.SystemFlagGet(thisPlayer, flagIndex)) continue;
+
+		player->connection->send(packet);
+		if (sysId >= 0) sentToSystemIds.insert(sysId);
 	}
 }
 
@@ -348,7 +298,7 @@ bool PlayerChunkMap::PlayerChunk::broadcastChanges(bool allowRegionUpdate)
 
 		// Fix for buf #95007 : TCR #001 BAS Game Stability: TU12: Code: Compliance: More than 192 dropped items causes game to freeze or crash.
 		// Block region update packets can only encode ys in a range of 1 - 256
-		if( ys > 256 ) ys = 256;		
+		if( ys > 256 ) ys = 256;
 
         broadcast( shared_ptr<BlockRegionUpdatePacket>( new BlockRegionUpdatePacket(xp, yp, zp, xs, ys, zs, level) ) );
         vector<shared_ptr<TileEntity> > *tes = level->getTileEntitiesInRegion(xp, yp, zp, xp + xs, yp + ys, zp + zs);
@@ -406,9 +356,9 @@ PlayerChunkMap::PlayerChunkMap(ServerLevel *level, int dimension, int radius)
 
 PlayerChunkMap::~PlayerChunkMap()
 {
-	for( AUTO_VAR(it, chunks.begin()); it != chunks.end(); it++ )
+	for(auto& chunk : chunks)
 	{
-		delete it->second;
+		delete chunk.second;
 	}
 }
 
@@ -419,7 +369,7 @@ ServerLevel *PlayerChunkMap::getLevel()
 
 void PlayerChunkMap::tick()
 {
-	__int64 time = level->getGameTime();
+	int64_t time = level->getGameTime();
 
 	if (time - lastInhabitedUpdate > Level::TICKS_PER_DAY / 3)
 	{
@@ -472,16 +422,16 @@ void PlayerChunkMap::tick()
 
 bool PlayerChunkMap::hasChunk(int x, int z)
 {
-    __int64 id = (x + 0x7fffffffLL) | ((z + 0x7fffffffLL) << 32);
+    int64_t id = (x + 0x7fffffffLL) | ((z + 0x7fffffffLL) << 32);
 	return chunks.find(id) != chunks.end();
 }
 
 PlayerChunkMap::PlayerChunk *PlayerChunkMap::getChunk(int x, int z, bool create)
 {
-    __int64 id = (x + 0x7fffffffLL) | ((z + 0x7fffffffLL) << 32);
-	AUTO_VAR(it, chunks.find(id));
+    int64_t id = (x + 0x7fffffffLL) | ((z + 0x7fffffffLL) << 32);
+    auto it = chunks.find(id);
 
-	PlayerChunk *chunk = NULL;
+    PlayerChunk *chunk = nullptr;
 	if( it != chunks.end() )
 	{
 		chunk = it->second;
@@ -500,10 +450,10 @@ PlayerChunkMap::PlayerChunk *PlayerChunkMap::getChunk(int x, int z, bool create)
 // queue a request for it to be created.
 void PlayerChunkMap::getChunkAndAddPlayer(int x, int z, shared_ptr<ServerPlayer> player)
 {
-    __int64 id = (x + 0x7fffffffLL) | ((z + 0x7fffffffLL) << 32);
-	AUTO_VAR(it, chunks.find(id));
+    int64_t id = (x + 0x7fffffffLL) | ((z + 0x7fffffffLL) << 32);
+    auto it = chunks.find(id);
 
-	if( it != chunks.end() )
+    if( it != chunks.end() )
 	{
 		it->second->add(player);
 	}
@@ -517,8 +467,8 @@ void PlayerChunkMap::getChunkAndAddPlayer(int x, int z, shared_ptr<ServerPlayer>
 // attempt to remove from main chunk map.
 void PlayerChunkMap::getChunkAndRemovePlayer(int x, int z, shared_ptr<ServerPlayer> player)
 {
-	for( AUTO_VAR(it, addRequests.begin()); it != addRequests.end(); it++ )
-	{
+    for (auto it = addRequests.begin(); it != addRequests.end(); it++)
+    {
 		if( ( it->x == x ) &&
 			( it->z == z ) &&
 			( it->player == player ) )
@@ -527,10 +477,10 @@ void PlayerChunkMap::getChunkAndRemovePlayer(int x, int z, shared_ptr<ServerPlay
 			return;
 		}
 	}
-    __int64 id = (x + 0x7fffffffLL) | ((z + 0x7fffffffLL) << 32);
-	AUTO_VAR(it, chunks.find(id));
+    int64_t id = (x + 0x7fffffffLL) | ((z + 0x7fffffffLL) << 32);
+    auto it = chunks.find(id);
 
-	if( it != chunks.end() )
+    if( it != chunks.end() )
 	{
 		it->second->remove(player);
 	}
@@ -545,10 +495,10 @@ void PlayerChunkMap::tickAddRequests(shared_ptr<ServerPlayer> player)
 		int px = (int)player->x;
 		int pz = (int)player->z;
 		int minDistSq = -1;
-		
-		AUTO_VAR(itNearest, addRequests.end());
-		for( AUTO_VAR(it, addRequests.begin()); it != addRequests.end(); it++ )
-		{
+
+        auto itNearest = addRequests.end();
+        for (auto it = addRequests.begin(); it != addRequests.end(); it++)
+        {
 			if( it->player == player )
 			{
 				int xm = ( it->x  * 16 ) + 8;
@@ -732,13 +682,13 @@ void PlayerChunkMap::remove(shared_ptr<ServerPlayer> player)
             if (playerChunk != NULL) playerChunk->remove(player);
         }
 
-	AUTO_VAR(it, find(players.begin(),players.end(),player));
-	if( players.size() > 0 && it != players.end() )
+    auto it = find(players.begin(), players.end(), player);
+    if( players.size() > 0 && it != players.end() )
 		players.erase(find(players.begin(),players.end(),player));
 
 	// 4J - added - also remove any queued requests to be added to playerchunks here
-	for( AUTO_VAR(it, addRequests.begin()); it != addRequests.end(); )
-	{
+    for (auto it = addRequests.begin(); it != addRequests.end();)
+    {
 		if( it->player == player )
 		{
 			it = addRequests.erase(it);
@@ -782,7 +732,7 @@ void PlayerChunkMap::move(shared_ptr<ServerPlayer> player)
 
 	for (int x = xc - radius; x <= xc + radius; x++)
         for (int z = zc - radius; z <= zc + radius; z++)
-		{ 
+		{
 			if (!chunkInRange(x, z, last_xc, last_zc))
 			{
 				// 4J - changed from separate getChunk & add so we can wrap these operations up and queue
@@ -815,9 +765,9 @@ bool PlayerChunkMap::isPlayerIn(shared_ptr<ServerPlayer> player, int xChunk, int
 	}
 	else
 	{
-		AUTO_VAR(it1, find(chunk->players.begin(), chunk->players.end(), player));
-		AUTO_VAR(it2, find(player->chunksToSend.begin(), player->chunksToSend.end(), chunk->pos));
-		return it1 != chunk->players.end() && it2 == player->chunksToSend.end();
+        auto it1 = find(chunk->players.begin(), chunk->players.end(), player);
+        auto it2 = find(player->chunksToSend.begin(), player->chunksToSend.end(), chunk->pos);
+        return it1 != chunk->players.end() && it2 == player->chunksToSend.end();
 	}
 
 	//return chunk == NULL ? false : chunk->players->contains(player) && !player->chunksToSend->contains(chunk->pos);
@@ -844,7 +794,7 @@ void PlayerChunkMap::setRadius(int newRadius)
 
 				for (int x = xc - newRadius; x <= xc + newRadius; x++)
 					for (int z = zc - newRadius; z <= zc + newRadius; z++)
-					{ 
+					{
 						// check if this chunk is outside the old radius area
 						if ( x < xc - radius || x > xc + radius || z < zc - radius || z > zc + radius )
 						{

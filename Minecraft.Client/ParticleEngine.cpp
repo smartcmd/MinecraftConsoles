@@ -22,7 +22,7 @@ ParticleEngine::ParticleEngine(Level *level, Textures *textures)
         this->level = level;
     }
     this->textures = textures;
-	
+
 	this->random = new Random();
 }
 
@@ -256,8 +256,8 @@ void ParticleEngine::moveParticleInList(shared_ptr<Particle> particle, int sourc
 	int l = particle->level->dimension->id == 0 ? 0 : ( particle->level->dimension->id == -1 ? 1 : 2);
     for (int tt = 0; tt < TEXTURE_COUNT; tt++)
 	{
-		AUTO_VAR(it, find(particles[l][tt][source].begin(), particles[l][tt][source].end(), particle) );
-		if(it != particles[l][tt][source].end() )
+        auto it = find(particles[l][tt][source].begin(), particles[l][tt][source].end(), particle);
+        if(it != particles[l][tt][source].end() )
 		{
 			(*it) = particles[l][tt][source].back();
 			particles[l][tt][source].pop_back();
@@ -277,5 +277,5 @@ wstring ParticleEngine::countParticles()
 			total += particles[l][tt][list].size();
 		}
 	}
-	return _toString<int>(total);
+	return std::to_wstring(total);
 }

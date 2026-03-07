@@ -32,7 +32,7 @@ UIScene_InventoryMenu::UIScene_InventoryMenu(int iPad, void *_initData, UILayer 
 		m_previousTutorialState = gameMode->getTutorial()->getCurrentState();
 		gameMode->getTutorial()->changeTutorialState(e_Tutorial_State_Inventory_Menu, this);
 	}
-	
+
 	InventoryMenu *menu = (InventoryMenu *)initData->player->inventoryMenu;
 
 	initData->player->awardStat(GenericStats::openInventory(),GenericStats::param_openInventory());
@@ -261,10 +261,8 @@ void UIScene_InventoryMenu::updateEffectsDisplay()
 	int iValue = 0;
 	IggyDataValue *UpdateValue = new IggyDataValue[activeEffects->size()*2];
 
-	for(AUTO_VAR(it, activeEffects->begin()); it != activeEffects->end(); ++it)
-	{	
-		MobEffectInstance *effect = *it;
-
+	for(auto& effect : *activeEffects)
+	{
 		if(effect->getDuration() >= m_bEffectTime[effect->getId()])
 		{
 			wstring effectString = app.GetString( effect->getDescriptionId() );//I18n.get(effect.getDescriptionId()).trim();

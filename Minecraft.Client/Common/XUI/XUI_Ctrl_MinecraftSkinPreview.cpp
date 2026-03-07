@@ -145,7 +145,7 @@ void CXuiCtrlMinecraftSkinPreview::CycleNextAnimation()
 
 void CXuiCtrlMinecraftSkinPreview::CyclePreviousAnimation()
 {
-	m_currentAnimation = (ESkinPreviewAnimations)(m_currentAnimation - 1);	
+	m_currentAnimation = (ESkinPreviewAnimations)(m_currentAnimation - 1);
 	if(m_currentAnimation < e_SkinPreviewAnimation_Walking) m_currentAnimation = (ESkinPreviewAnimations)(e_SkinPreviewAnimation_Count - 1);
 
 	m_swingTime = 0.0f;
@@ -253,13 +253,11 @@ HRESULT CXuiCtrlMinecraftSkinPreview::OnRender(XUIMessageRender *pRenderData, BO
 	{
 		// 4J-PB - any additional parts to turn on for this player (skin dependent)
 		//vector<ModelPart *> *pAdditionalModelParts=mob->GetAdditionalModelParts();
-		
-		if(m_pvAdditionalModelParts && m_pvAdditionalModelParts->size()!=0)
-		{	
-			for(AUTO_VAR(it, m_pvAdditionalModelParts->begin()); it != m_pvAdditionalModelParts->end(); ++it)
-			{
-				ModelPart *pModelPart=*it;
 
+		if(m_pvAdditionalModelParts && m_pvAdditionalModelParts->size()!=0)
+		{
+			for(auto& pModelPart : *m_pvAdditionalModelParts)
+			{
 				pModelPart->visible=true;
 			}
 		}
@@ -269,11 +267,9 @@ HRESULT CXuiCtrlMinecraftSkinPreview::OnRender(XUIMessageRender *pRenderData, BO
 
 		// hide the additional parts
 		if(m_pvAdditionalModelParts && m_pvAdditionalModelParts->size()!=0)
-		{	
-			for(AUTO_VAR(it, m_pvAdditionalModelParts->begin()); it != m_pvAdditionalModelParts->end(); ++it)
+		{
+			for(auto& pModelPart : *m_pvAdditionalModelParts)
 			{
-				ModelPart *pModelPart=*it;
-
 				pModelPart->visible=false;
 			}
 		}
@@ -344,7 +340,7 @@ void CXuiCtrlMinecraftSkinPreview::render(EntityRenderer *renderer, double x, do
     float bodyRot = m_yRot; //(mob->yBodyRotO + (mob->yBodyRot - mob->yBodyRotO) * a);
     float headRot = m_yRot; //(mob->yRotO + (mob->yRot - mob->yRotO) * a);
     float headRotx = 0; //(mob->xRotO + (mob->xRot - mob->xRotO) * a);
-	
+
 	//setupPosition(mob, x, y, z);
 	// is equivalent to
 	glTranslatef((float) x, (float) y, (float) z);
@@ -515,7 +511,7 @@ bool CXuiCtrlMinecraftSkinPreview::bindTexture(const wstring& urlTexture, int ba
     Textures *t = Minecraft::GetInstance()->textures;
 
 	// 4J-PB - no http textures on the xbox, mem textures instead
-	
+
 	//int id = t->loadHttpTexture(urlTexture, backupTexture);
 	int id = t->loadMemTexture(urlTexture, backupTexture);
 
@@ -535,7 +531,7 @@ bool CXuiCtrlMinecraftSkinPreview::bindTexture(const wstring& urlTexture, const 
     Textures *t = Minecraft::GetInstance()->textures;
 
 	// 4J-PB - no http textures on the xbox, mem textures instead
-	
+
 	//int id = t->loadHttpTexture(urlTexture, backupTexture);
 	int id = t->loadMemTexture(urlTexture, backupTexture);
 

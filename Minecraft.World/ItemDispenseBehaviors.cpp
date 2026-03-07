@@ -288,9 +288,9 @@ shared_ptr<ItemInstance> FilledBucketDispenseBehavior::execute(BlockSource *sour
 		return dispensed;
 	}
 
-	return DefaultDispenseItemBehavior::dispense(source, dispensed);
+	outcome = LEFT_ITEM;
+	return dispensed;
 }
-
 
 /* EmptyBucket */
 

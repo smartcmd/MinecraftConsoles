@@ -84,10 +84,8 @@ void RedStoneDustTile::updatePowerStrength(Level *level, int x, int y, int z)
 	vector<TilePos> updates = vector<TilePos>(toUpdate.begin(), toUpdate.end());
 	toUpdate.clear();
 
-	AUTO_VAR(itEnd, updates.end());
-	for(AUTO_VAR(it, updates.begin()); it != itEnd; it++)
+	for(auto& tp : updates)
 	{
-		TilePos tp = *it;
 		level->updateNeighborsAt(tp.x, tp.y, tp.z, id);
 	}
 }
@@ -399,7 +397,7 @@ void RedStoneDustTile::registerIcons(IconRegister *iconRegister)
 	icon = iconCross;
 }
 
-Icon *RedStoneDustTile::getTexture(const wstring &name) 
+Icon *RedStoneDustTile::getTexture(const wstring &name)
 {
 #ifdef __PSVITA__
 	// AP - alpha cut out is expensive on vita. Set the Alpha Cut out flag

@@ -1,0 +1,18 @@
+---
+# Enable all modernize checks, but explicitly exclude trailing return types
+Checks: >
+  -*,
+  modernize-*,
+  google-readability-casting,
+  cppcoreguidelines-pro-type-cstyle-cast,
+  -modernize-use-trailing-return-type
+
+# Pass the C++14 flag to the internal Clang compiler
+ExtraArgs: ['-std=c++14']
+
+CheckOptions:
+  - key:             modernize-loop-convert.MinConfidence
+    value:           reasonable
+  - key:             modernize-use-auto.MinTypeNameLength
+    value:           5
+...

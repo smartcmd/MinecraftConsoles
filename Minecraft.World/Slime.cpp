@@ -84,7 +84,7 @@ ePARTICLE_TYPE Slime::getParticleName()
 
 int Slime::getSquishSound()
 {
-	return getSize() > 1 ? eSoundType_MOB_SLIME_BIG : eSoundType_MOB_SLIME;
+	return getSize() > 1 ? eSoundType_MOB_SLIME_BIG : eSoundType_MOB_SLIME_SMALL;
 }
 
 void Slime::tick()
@@ -236,12 +236,12 @@ int Slime::getAttackDamage()
 
 int Slime::getHurtSound() 
 {
-	return getSize() > 1 ? eSoundType_MOB_SLIME_BIG : eSoundType_MOB_SLIME;
+	return getSize() > 1 ? eSoundType_MOB_SLIME_BIG : eSoundType_MOB_SLIME_SMALL;
 }
 
 int Slime::getDeathSound()
 {
-	return getSize() > 1 ? eSoundType_MOB_SLIME_BIG : eSoundType_MOB_SLIME;
+	return getSize() > 1 ? eSoundType_MOB_SLIME_BIG : eSoundType_MOB_SLIME_SMALL;
 }
 
 int Slime::getDeathLoot()

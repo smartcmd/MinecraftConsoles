@@ -346,11 +346,9 @@ void Minecart::tick()
 		vector<shared_ptr<Entity> > *entities = level->getEntities(shared_from_this(), bb->grow(0.2f, 0, 0.2f));
 		if (entities != NULL && !entities->empty())
 		{
-			AUTO_VAR(itEnd, entities->end());
-			for (AUTO_VAR(it, entities->begin()); it != itEnd; it++)
+			for (auto& e : *entities)
 			{
-				shared_ptr<Entity> e = (*it); //entities->at(i);
-				if (e != rider.lock() && e->isPushable() && e->instanceof(eTYPE_MINECART))
+				if ( e && e != rider.lock() && e->isPushable() && e->instanceof(eTYPE_MINECART))
 				{
 					shared_ptr<Minecart> cart = dynamic_pointer_cast<Minecart>(e);
 					cart->m_bHasPushedCartThisTick = false;
@@ -455,7 +453,7 @@ void Minecart::moveAlongTrack(int xt, int yt, int zt, double maxSpeed, double sl
 	xd = pow * xD / dd;
 	zd = pow * zD / dd;
 
-	
+
 	if ( rider.lock() != NULL && rider.lock()->instanceof(eTYPE_LIVINGENTITY) )
 	{
 		shared_ptr<LivingEntity> living = dynamic_pointer_cast<LivingEntity>(rider.lock());

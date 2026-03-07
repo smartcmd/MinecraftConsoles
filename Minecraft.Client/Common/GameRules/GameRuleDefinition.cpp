@@ -18,15 +18,15 @@ void GameRuleDefinition::write(DataOutputStream *dos)
 	ConsoleGameRules::write(dos, eType); // stringID
 
 	writeAttributes(dos, 0);
-	
+
 	// 4J-JEV: Get children.
 	vector<GameRuleDefinition *> *children = new vector<GameRuleDefinition *>();
 	getChildren( children );
 
 	// Write children.
 	dos->writeInt( children->size() );
-	for (AUTO_VAR(it, children->begin()); it != children->end(); it++)
-		(*it)->write(dos);
+	for ( auto& it : *children )
+		it->write(dos);
 }
 
 void GameRuleDefinition::writeAttributes(DataOutputStream *dos, UINT numAttributes)
@@ -40,7 +40,7 @@ void GameRuleDefinition::writeAttributes(DataOutputStream *dos, UINT numAttribut
 	dos->writeUTF(m_promptId);
 
 	ConsoleGameRules::write(dos, ConsoleGameRules::eGameRuleAttr_dataTag);
-	dos->writeUTF(_toString(m_4JDataValue));
+	dos->writeUTF(std::to_wstring(m_4JDataValue));
 }
 
 void GameRuleDefinition::getChildren(vector<GameRuleDefinition *> *children) {}
@@ -116,13 +116,13 @@ vector<GameRuleDefinition *> *GameRuleDefinition::enumerate()
 
 unordered_map<GameRuleDefinition *, int> *GameRuleDefinition::enumerateMap()
 {
-	unordered_map<GameRuleDefinition *, int> *out 
+	unordered_map<GameRuleDefinition *, int> *out
 		= new unordered_map<GameRuleDefinition *, int>();
 
 	int i = 0;
 	vector<GameRuleDefinition *> *gRules = enumerate();
-	for (AUTO_VAR(it, gRules->begin()); it != gRules->end(); it++)
-		out->insert( pair<GameRuleDefinition *, int>( *it, i++ ) );
+	for ( auto& it : *gRules )
+		out->emplace(it, i++);
 
 	return out;
 }

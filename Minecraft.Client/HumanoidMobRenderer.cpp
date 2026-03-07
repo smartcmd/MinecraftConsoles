@@ -53,7 +53,7 @@ ResourceLocation *HumanoidMobRenderer::getArmorLocation(ArmorItem *armorItem, in
 	case 4:
 		break;
 	};
-	wstring path = wstring(L"armor/" + MATERIAL_NAMES[armorItem->modelIndex]).append(L"_").append(_toString<int>(layer == 2 ? 2 : 1)).append((overlay ? L"_b" :L"")).append(L".png");
+	wstring path = wstring(L"armor/" + MATERIAL_NAMES[armorItem->modelIndex]).append(L"_").append(std::to_wstring(layer == 2 ? 2 : 1)).append((overlay ? L"_b" :L"")).append(L".png");
 
 	std::map<wstring, ResourceLocation>::iterator it = ARMOR_LOCATION_CACHE.find(path);
 
@@ -74,7 +74,7 @@ ResourceLocation *HumanoidMobRenderer::getArmorLocation(ArmorItem *armorItem, in
 }
 
 void HumanoidMobRenderer::prepareSecondPassArmor(shared_ptr<LivingEntity> mob, int layer, float a)
-{        
+{
 	shared_ptr<ItemInstance> itemInstance = mob->getArmor(3 - layer);
 	if (itemInstance != NULL) {
 		Item *item = itemInstance->getItem();
@@ -193,7 +193,7 @@ void HumanoidMobRenderer::additionalRendering(shared_ptr<LivingEntity> mob, floa
 		// 4J-PB - need to disable rendering armour/skulls/pumpkins for some special skins (Daleks)
 
 		if((mob->getAnimOverrideBitmask()&(1<<HumanoidModel::eAnim_DontRenderArmour))==0)
-		{	
+		{
 			glPushMatrix();
 			humanoidModel->head->translateTo(1 / 16.0f);
 

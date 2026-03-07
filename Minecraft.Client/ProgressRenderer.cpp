@@ -24,7 +24,7 @@ void ProgressRenderer::progressStart(int title)
 
 void ProgressRenderer::progressStartNoAbort(int string)
 {
-    noAbort = true;	
+    noAbort = true;
     _progressStart(string);
 }
 
@@ -36,7 +36,7 @@ void ProgressRenderer::_progressStart(int title)
         if (noAbort) return;
 //        throw new StopGameException();		// 4J - removed
     }
-	
+
 	EnterCriticalSection( &ProgressRenderer::s_progress );
 	lastPercent = 0;
     this->title = title;
@@ -88,7 +88,7 @@ void ProgressRenderer::progressStagePercentage(int i)
     }
 
 
-    __int64 now = System::currentTimeMillis();
+    int64_t now = System::currentTimeMillis();
     if (now - lastTime < 20) return;
     lastTime = now;
 

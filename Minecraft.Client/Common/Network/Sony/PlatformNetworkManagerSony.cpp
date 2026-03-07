@@ -7,21 +7,21 @@
 
 CPlatformNetworkManagerSony *g_pPlatformNetworkManager;
 
-bool CPlatformNetworkManagerSony::IsLocalGame() 
-{ 
-	return m_bIsOfflineGame; 
+bool CPlatformNetworkManagerSony::IsLocalGame()
+{
+	return m_bIsOfflineGame;
 }
-bool CPlatformNetworkManagerSony::IsPrivateGame() 
-{ 
-	return m_bIsPrivateGame; 
+bool CPlatformNetworkManagerSony::IsPrivateGame()
+{
+	return m_bIsPrivateGame;
 }
-bool CPlatformNetworkManagerSony::IsLeavingGame() 
-{ 
-	return m_bLeavingGame; 
+bool CPlatformNetworkManagerSony::IsLeavingGame()
+{
+	return m_bLeavingGame;
 }
-void CPlatformNetworkManagerSony::ResetLeavingGame() 
-{ 
-	m_bLeavingGame = false; 
+void CPlatformNetworkManagerSony::ResetLeavingGame()
+{
+	m_bLeavingGame = false;
 }
 
 
@@ -188,9 +188,8 @@ void CPlatformNetworkManagerSony::HandlePlayerJoined(SQRNetworkPlayer *         
 		{
 			// Do we already have a primary player for this system?
 			bool systemHasPrimaryPlayer = false;
-			for(AUTO_VAR(it, m_machineSQRPrimaryPlayers.begin()); it < m_machineSQRPrimaryPlayers.end(); ++it)
+			for( SQRNetworkPlayer *pQNetPrimaryPlayer : m_machineSQRPrimaryPlayers )
 			{
-				SQRNetworkPlayer *pQNetPrimaryPlayer = *it;
 				if( pSQRPlayer->IsSameSystem(pQNetPrimaryPlayer) )
 				{
 					systemHasPrimaryPlayer = true;
@@ -202,7 +201,7 @@ void CPlatformNetworkManagerSony::HandlePlayerJoined(SQRNetworkPlayer *         
 		}
     }
 	g_NetworkManager.PlayerJoining( networkPlayer );
-	
+
 	if( createFakeSocket == true && !m_bHostChanged )
 	{
 		g_NetworkManager.CreateSocket( networkPlayer, localPlayer );
@@ -224,7 +223,7 @@ void CPlatformNetworkManagerSony::HandlePlayerJoined(SQRNetworkPlayer *         
 		g_NetworkManager.UpdateAndSetGameSessionData();
 		SystemFlagAddPlayer( networkPlayer );
 	}
-	
+
 	for( int idx = 0; idx < XUSER_MAX_COUNT; ++idx)
 	{
 		if(playerChangedCallback[idx] != NULL)
@@ -293,7 +292,7 @@ void CPlatformNetworkManagerSony::HandlePlayerLeaving(SQRNetworkPlayer *pSQRPlay
 						break;
 					}
 				}
-				AUTO_VAR(it, find( m_machineSQRPrimaryPlayers.begin(), m_machineSQRPrimaryPlayers.end(), pSQRPlayer));
+				auto it = find( m_machineSQRPrimaryPlayers.begin(), m_machineSQRPrimaryPlayers.end(), pSQRPlayer);
 				if( it != m_machineSQRPrimaryPlayers.end() )
 				{
 					m_machineSQRPrimaryPlayers.erase( it );
@@ -309,7 +308,7 @@ void CPlatformNetworkManagerSony::HandlePlayerLeaving(SQRNetworkPlayer *pSQRPlay
 		}
 
 		g_NetworkManager.PlayerLeaving( networkPlayer );
-	
+
 		for( int idx = 0; idx < XUSER_MAX_COUNT; ++idx)
 		{
 			if(playerChangedCallback[idx] != NULL)
@@ -374,7 +373,7 @@ bool CPlatformNetworkManagerSony::Initialise(CGameNetworkManager *pGameNetworkMa
 #ifdef __ORBIS__
 	m_pSQRNet = new SQRNetworkManager_Orbis(this);
 	m_pSQRNet->Initialise();
-#elif defined __PS3__ 	
+#elif defined __PS3__
 	m_pSQRNet = new SQRNetworkManager_PS3(this);
 	m_pSQRNet->Initialise();
 #else // __PSVITA__
@@ -405,7 +404,7 @@ bool CPlatformNetworkManagerSony::Initialise(CGameNetworkManager *pGameNetworkMa
 	{
 		playerChangedCallback[ i ] = NULL;
 	}
-	
+
 	m_bLeavingGame = false;
 	m_bLeaveGameOnTick = false;
 	m_bHostChanged = false;
@@ -419,7 +418,7 @@ bool CPlatformNetworkManagerSony::Initialise(CGameNetworkManager *pGameNetworkMa
 
 	m_searchResultsCount = 0;
 	m_pSearchResults = NULL;
-	
+
 	m_lastSearchStartTime = 0;
 
     // Success!
@@ -458,7 +457,7 @@ int CPlatformNetworkManagerSony::CorrectErrorIDS(int IDS)
 	bool preferSignoutError = false;
 	int state;
 
-#if defined __PSVITA__			// MGH - to fix devtrack #6258 
+#if defined __PSVITA__			// MGH - to fix devtrack #6258
 	if(!ProfileManager.IsSignedInPSN(ProfileManager.GetPrimaryPad()))
 		preferSignoutError = true;
 #elif defined __ORBIS__
@@ -529,9 +528,8 @@ int CPlatformNetworkManagerSony::CorrectErrorIDS(int IDS)
 bool CPlatformNetworkManagerSony::isSystemPrimaryPlayer(SQRNetworkPlayer *pSQRPlayer)
 {
 	bool playerIsSystemPrimary = false;
-	for(AUTO_VAR(it, m_machineSQRPrimaryPlayers.begin()); it < m_machineSQRPrimaryPlayers.end(); ++it)
+	for( SQRNetworkPlayer *pSQRPrimaryPlayer : m_machineSQRPrimaryPlayers )
 	{
-		SQRNetworkPlayer *pSQRPrimaryPlayer = *it;
 		if( pSQRPrimaryPlayer == pSQRPlayer )
 		{
 			playerIsSystemPrimary = true;
@@ -552,7 +550,7 @@ void CPlatformNetworkManagerSony::DoWork()
          m_notificationListener,
          0,							// Any notification
          &dwNotifyId,
-         &ulpNotifyParam) 
+         &ulpNotifyParam)
 		)
 	{
 
@@ -650,7 +648,7 @@ bool CPlatformNetworkManagerSony::IsInStatsEnabledSession()
 	DWORD dataSize = sizeof(QNET_LIVE_STATS_MODE);
 	QNET_LIVE_STATS_MODE statsMode;
 	m_pIQNet->GetOpt(QNET_OPTION_LIVE_STATS_MODE, &statsMode , &dataSize );
-	
+
 	// Use QNET_LIVE_STATS_MODE_AUTO if there is another way to check if stats are enabled or not
 	bool statsEnabled = statsMode == QNET_LIVE_STATS_MODE_ENABLED;
 	return m_pIQNet->GetState() != QNET_STATE_IDLE && statsEnabled;
@@ -732,7 +730,7 @@ bool CPlatformNetworkManagerSony::LeaveGame(bool bMigrateHost)
 
 	// If we are the host wait for the game server to end
 	if(m_pSQRNet->IsHost() && g_NetworkManager.ServerStoppedValid())
-	{ 
+	{
 		m_pSQRNet->EndGame();
 		g_NetworkManager.ServerStoppedWait();
 		g_NetworkManager.ServerStoppedDestroy();
@@ -887,7 +885,7 @@ void CPlatformNetworkManagerSony::UnRegisterPlayerChangedCallback(int iPad, void
 
 void CPlatformNetworkManagerSony::HandleSignInChange()
 {
-	return;	
+	return;
 }
 
 bool CPlatformNetworkManagerSony::_RunNetworkGame()
@@ -930,7 +928,7 @@ void CPlatformNetworkManagerSony::UpdateAndSetGameSessionData(INetworkPlayer *pN
 	{
 		m_hostGameSessionData.hostPlayerUID.setForAdhoc();
 	}
-#endif 
+#endif
 
 	m_hostGameSessionData.m_uiGameHostSettings = app.GetGameHostOption(eGameHostOption_All);
 
@@ -1066,8 +1064,8 @@ bool CPlatformNetworkManagerSony::SystemFlagGet(INetworkPlayer *pNetworkPlayer, 
 wstring CPlatformNetworkManagerSony::GatherStats()
 {
 #if 0
-	return L"Queue messages: " + _toString(((NetworkPlayerXbox *)GetHostPlayer())->GetQNetPlayer()->GetSendQueueSize( NULL, QNET_GETSENDQUEUESIZE_MESSAGES ) )
-		+ L" Queue bytes: " + _toString( ((NetworkPlayerXbox *)GetHostPlayer())->GetQNetPlayer()->GetSendQueueSize( NULL, QNET_GETSENDQUEUESIZE_BYTES  ) );
+	return L"Queue messages: " + std::to_wstring(((NetworkPlayerXbox *)GetHostPlayer())->GetQNetPlayer()->GetSendQueueSize( NULL, QNET_GETSENDQUEUESIZE_MESSAGES ) )
+		+ L" Queue bytes: " + std::to_wstring( ((NetworkPlayerXbox *)GetHostPlayer())->GetQNetPlayer()->GetSendQueueSize( NULL, QNET_GETSENDQUEUESIZE_BYTES  ) );
 #else
 	return L"";
 #endif
@@ -1192,7 +1190,7 @@ bool CPlatformNetworkManagerSony::GetGameSessionInfo(int iPad, SessionID session
 
 			bool foundSession = false;
 			FriendSessionInfo *sessionInfo = NULL;
-			AUTO_VAR(itFriendSession, friendsSessions[iPad].begin());
+			auto itFriendSession = friendsSessions[iPad].begin();
 			for(itFriendSession = friendsSessions[iPad].begin(); itFriendSession < friendsSessions[iPad].end(); ++itFriendSession)
 			{
 				sessionInfo = *itFriendSession;
@@ -1224,7 +1222,7 @@ bool CPlatformNetworkManagerSony::GetGameSessionInfo(int iPad, SessionID session
 				else
 				{
 					swprintf(sessionInfo->displayLabel,app.GetString(IDS_GAME_HOST_NAME_UNKNOWN));
-				}				
+				}
 				sessionInfo->displayLabelLength = wcslen( sessionInfo->displayLabel );
 
 				// If this host wasn't disabled use this one.
@@ -1283,7 +1281,7 @@ INetworkPlayer *CPlatformNetworkManagerSony::addNetworkPlayer(SQRNetworkPlayer *
 void CPlatformNetworkManagerSony::removeNetworkPlayer(SQRNetworkPlayer *pSQRPlayer)
 {
 	INetworkPlayer *pNetworkPlayer = getNetworkPlayer(pSQRPlayer);
-	for( AUTO_VAR(it, currentNetworkPlayers.begin()); it != currentNetworkPlayers.end(); it++ )
+	for( auto it = currentNetworkPlayers.begin(); it != currentNetworkPlayers.end(); it++ )
 	{
 		if( *it == pNetworkPlayer )
 		{
@@ -1301,7 +1299,7 @@ INetworkPlayer *CPlatformNetworkManagerSony::getNetworkPlayer(SQRNetworkPlayer *
 
 INetworkPlayer *CPlatformNetworkManagerSony::GetLocalPlayerByUserIndex(int userIndex )
 {
-	return getNetworkPlayer(m_pSQRNet->GetLocalPlayerByUserIndex(userIndex)); 
+	return getNetworkPlayer(m_pSQRNet->GetLocalPlayerByUserIndex(userIndex));
 }
 
 INetworkPlayer *CPlatformNetworkManagerSony::GetPlayerByIndex(int playerIndex)
@@ -1400,7 +1398,7 @@ bool CPlatformNetworkManagerSony::setAdhocMode( bool bAdhoc )
 {
 	if(m_bUsingAdhocMode != bAdhoc)
 	{
-		m_bUsingAdhocMode = bAdhoc; 
+		m_bUsingAdhocMode = bAdhoc;
 		if(m_bUsingAdhocMode)
 		{
 			// uninit the PSN, and init adhoc
@@ -1419,14 +1417,14 @@ bool CPlatformNetworkManagerSony::setAdhocMode( bool bAdhoc )
 		else
 		{
 			if(m_pSQRNet_Vita_Adhoc->IsInitialised())
-			{			
-				int ret = sceNetCtlAdhocDisconnect(); 
+			{
+				int ret = sceNetCtlAdhocDisconnect();
 				// uninit the adhoc, and init psn
 				m_pSQRNet_Vita_Adhoc->UnInitialise();
 			}
 
 			if(m_pSQRNet_Vita->IsInitialised()==false)
-			{			
+			{
 				m_pSQRNet_Vita->Initialise();
 			}
 

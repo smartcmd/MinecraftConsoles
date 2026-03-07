@@ -524,7 +524,7 @@ bool BasicTree::place(Level *level, Random *random, int x, int y, int z)
 
     // Initialize the instance fields for the level and the seed.
     thisLevel = level;
-    __int64 seed = random->nextLong();
+    int64_t seed = random->nextLong();
     rnd->setSeed(seed);
     // Initialize the origin of the tree trunk
     origin[0] = x;

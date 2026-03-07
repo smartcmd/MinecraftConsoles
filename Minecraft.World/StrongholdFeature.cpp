@@ -53,21 +53,21 @@ StrongholdFeature::StrongholdFeature(unordered_map<wstring, wstring> options)
 {
 	_init();
 
-	for (AUTO_VAR(it, options.begin()); it != options.end(); ++it)
+	for (auto& option : options)
 	{
-		if (it->first.compare(OPTION_DISTANCE) == 0)
+		if (option.first.compare(OPTION_DISTANCE) == 0)
 		{
-			distance = Mth::getDouble(it->second, distance, 1);
+			distance = Mth::getDouble(option.second, distance, 1);
 		}
-		else if (it->first.compare(OPTION_COUNT) == 0)
+		else if (option.first.compare(OPTION_COUNT) == 0)
 		{
 			// 4J-JEV: Removed, we only have the one stronghold.
 			//strongholdPos = new ChunkPos[ Mth::getInt(it->second, strongholdPos_length, 1) ];
 			assert(false);
 		}
-		else if (it->first.compare(OPTION_SPREAD) == 0)
+		else if (option.first.compare(OPTION_SPREAD) == 0)
 		{
-			spread = Mth::getInt(it->second, spread, 1);
+			spread = Mth::getInt(option.second, spread, 1);
 		}
 	}
 }
@@ -174,7 +174,7 @@ bool StrongholdFeature::isFeatureChunk(int x, int z,bool bIsSuperflat)
 #ifdef _LARGE_WORLDS
 			angle = random.nextDouble() * PI * 2.0 * circle / (double) spread;
 #endif
-		} 
+		}
 		while(!hasFoundValidPos && findAttempts < MAX_STRONGHOLD_ATTEMPTS);
 
 		if(!hasFoundValidPos)
@@ -255,8 +255,8 @@ StrongholdFeature::StrongholdStart::StrongholdStart(Level *level, Random *random
 	while (!pendingChildren->empty())
 	{
 		int pos = random->nextInt((int)pendingChildren->size());
-		AUTO_VAR(it, pendingChildren->begin() + pos);
-		StructurePiece *structurePiece = *it;
+        auto it = pendingChildren->begin() + pos;
+        StructurePiece *structurePiece = *it;
 		pendingChildren->erase(it);
 		structurePiece->addChildren(startRoom, &pieces, random);
 	}

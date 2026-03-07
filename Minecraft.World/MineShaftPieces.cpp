@@ -103,9 +103,9 @@ MineShaftPieces::MineShaftRoom::MineShaftRoom(int genDepth, Random *random, int 
 
 MineShaftPieces::MineShaftRoom::~MineShaftRoom()
 {
-	for(AUTO_VAR(it, childEntranceBoxes.begin()); it != childEntranceBoxes.end(); ++it)
+	for(auto& it : childEntranceBoxes)
 	{
-		delete (*it);
+		delete it;
 	}
 }
 
@@ -204,9 +204,8 @@ bool MineShaftPieces::MineShaftRoom::postProcess(Level *level, Random *random, B
 
 	// room air
 	generateBox(level, chunkBB, boundingBox->x0, boundingBox->y0 + 1, boundingBox->z0, boundingBox->x1, min(boundingBox->y0 + 3, boundingBox->y1), boundingBox->z1, 0, 0, false);
-	for(AUTO_VAR(it, childEntranceBoxes.begin()); it != childEntranceBoxes.end(); ++it)
+	for(auto& entranceBox : childEntranceBoxes)
 	{
-		BoundingBox *entranceBox = *it;
 		generateBox(level, chunkBB, entranceBox->x0, entranceBox->y1 - (DEFAULT_SHAFT_HEIGHT - 1), entranceBox->z0, entranceBox->x1, entranceBox->y1, entranceBox->z1, 0, 0, false);
 	}
 	generateUpperHalfSphere(level, chunkBB, boundingBox->x0, boundingBox->y0 + 4, boundingBox->z0, boundingBox->x1, boundingBox->y1, boundingBox->z1, 0, false);
@@ -217,9 +216,8 @@ bool MineShaftPieces::MineShaftRoom::postProcess(Level *level, Random *random, B
 void MineShaftPieces::MineShaftRoom::addAdditonalSaveData(CompoundTag *tag)
 {
 	ListTag<IntArrayTag> *entrances = new ListTag<IntArrayTag>(L"Entrances");
-	for (AUTO_VAR(it,childEntranceBoxes.begin()); it != childEntranceBoxes.end(); ++it)
+	for (auto& bb : childEntranceBoxes)
 	{
-		BoundingBox *bb =*it;
 		entrances->add(bb->createTag(L""));
 	}
 	tag->put(L"Entrances", entrances);
@@ -523,12 +521,12 @@ bool MineShaftPieces::MineShaftCorridor::postProcess(Level *level, Random *rando
 	}
 
 	// prevent air floating
-	for (int x = x0; x <= x1; x++) 
+	for (int x = x0; x <= x1; x++)
 	{
-		for (int z = 0; z <= length; z++) 
+		for (int z = 0; z <= length; z++)
 		{
 			int block = getBlock(level, x, -1, z, chunkBB);
-			if (block == 0) 
+			if (block == 0)
 			{
 				placeBlock(level, Tile::wood_Id, 0, x, -1, z, chunkBB);
 			}
@@ -687,12 +685,12 @@ bool MineShaftPieces::MineShaftCrossing::postProcess(Level *level, Random *rando
 	// prevent air floating
 	// note: use world coordinates because the corridor hasn't defined
 	// orientation
-	for (int x = boundingBox->x0; x <= boundingBox->x1; x++) 
+	for (int x = boundingBox->x0; x <= boundingBox->x1; x++)
 	{
-		for (int z = boundingBox->z0; z <= boundingBox->z1; z++) 
+		for (int z = boundingBox->z0; z <= boundingBox->z1; z++)
 		{
 			int block = getBlock(level, x, boundingBox->y0 - 1, z, chunkBB);
-			if (block == 0) 
+			if (block == 0)
 			{
 				placeBlock(level, Tile::wood_Id, 0, x, boundingBox->y0 - 1, z, chunkBB);
 			}

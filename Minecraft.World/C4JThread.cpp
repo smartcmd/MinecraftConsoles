@@ -183,7 +183,7 @@ C4JThread::~C4JThread()
 
 	EnterCriticalSection(&ms_threadListCS);
 
-	for( AUTO_VAR(it,ms_threadList.begin()); it != ms_threadList.end(); it++ )
+	for (auto it = ms_threadList.begin(); it != ms_threadList.end(); it++)
 	{
 		if( (*it) == this )
 		{

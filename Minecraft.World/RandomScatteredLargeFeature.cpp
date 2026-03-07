@@ -34,11 +34,11 @@ RandomScatteredLargeFeature::RandomScatteredLargeFeature(unordered_map<wstring, 
 {
 	_init();
 
-	for(AUTO_VAR(it, options.begin()); it != options.end(); ++it)
+	for(auto& option : options)
 	{
-		if (it->first.compare(OPTION_SPACING) == 0)
+		if (option.first.compare(OPTION_SPACING) == 0)
 		{
-			spacing = Mth::getInt(it->second, spacing, minSeparation + 1);
+			spacing = Mth::getInt(option.second, spacing, minSeparation + 1);
 		}
 	}
 }
@@ -75,9 +75,8 @@ bool RandomScatteredLargeFeature::isFeatureChunk(int x, int z, bool bIsSuperflat
 	if (forcePlacement || (x == xCenterFeatureChunk && z == zCenterFeatureChunk))
 	{
 		Biome *biome = level->getBiomeSource()->getBiome(x * 16 + 8, z * 16 + 8);
-		for (AUTO_VAR(it,allowedBiomes.begin()); it != allowedBiomes.end(); ++it)
+		for ( const auto& a : allowedBiomes)
 		{
-			Biome *a = *it;
 			if (biome == a)
 			{
 				return true;
@@ -129,8 +128,8 @@ bool RandomScatteredLargeFeature::isSwamphut(int cellX, int cellY, int cellZ)
 		return false;
 	}
 	StructurePiece *first = NULL;
-	AUTO_VAR(it, structureAt->pieces.begin());
-	if(it != structureAt->pieces.end() ) first = *it;
+    auto it = structureAt->pieces.begin();
+    if(it != structureAt->pieces.end() ) first = *it;
 	return dynamic_cast<ScatteredFeaturePieces::SwamplandHut *>(first) != NULL;
 }
 

@@ -13,16 +13,16 @@ void XboxStructureActionPlaceBlock::writeAttributes(DataOutputStream *dos, UINT 
 	ConsoleGenerateStructureAction::writeAttributes(dos, numAttrs + 5);
 
 	ConsoleGameRules::write(dos, ConsoleGameRules::eGameRuleAttr_x);
-	dos->writeUTF(_toString(m_x));
+	dos->writeUTF(std::to_wstring(m_x));
 	ConsoleGameRules::write(dos, ConsoleGameRules::eGameRuleAttr_y);
-	dos->writeUTF(_toString(m_y));
+	dos->writeUTF(std::to_wstring(m_y));
 	ConsoleGameRules::write(dos, ConsoleGameRules::eGameRuleAttr_z);
-	dos->writeUTF(_toString(m_z));
+	dos->writeUTF(std::to_wstring(m_z));
 
 	ConsoleGameRules::write(dos, ConsoleGameRules::eGameRuleAttr_data);
-	dos->writeUTF(_toString(m_data));
+	dos->writeUTF(std::to_wstring(m_data));
 	ConsoleGameRules::write(dos, ConsoleGameRules::eGameRuleAttr_block);
-	dos->writeUTF(_toString(m_tile));
+	dos->writeUTF(std::to_wstring(m_tile));
 }
 
 

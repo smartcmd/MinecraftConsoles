@@ -387,8 +387,10 @@ vector<HtmlString> *IUIScene_BeaconMenu::GetSectionHoverText(ESceneSection eSect
 
 			desc = new vector<HtmlString>();
 
-			HtmlString string( app.GetString(MobEffect::effects[effectId]->getDescriptionId()), eHTMLColor_White );
-			desc->push_back( string );
+			if (effectId < MobEffect::e_MobEffectIcon_COUNT && MobEffect::effects[effectId]) {
+				HtmlString string( app.GetString(MobEffect::effects[effectId]->getDescriptionId()), eHTMLColor_White );
+				desc->push_back( string );
+			}
 		}
 		break;
 	}

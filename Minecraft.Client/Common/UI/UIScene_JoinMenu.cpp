@@ -534,6 +534,48 @@ void UIScene_JoinMenu::JoinGame(UIScene_JoinMenu* pClass)
 
 			if( exitReasonStringId == -1 )
 			{
+				Minecraft* pMinecraft = Minecraft::GetInstance();
+				int primaryPad = ProfileManager.GetPrimaryPad();
+				if( pMinecraft->m_connectionFailed[primaryPad] )
+				{
+					switch( pMinecraft->m_connectionFailedReason[primaryPad] )
+					{
+					case DisconnectPacket::eDisconnect_LoginTooLong:
+						exitReasonStringId = IDS_DISCONNECTED_LOGIN_TOO_LONG;
+						break;
+					case DisconnectPacket::eDisconnect_ServerFull:
+						exitReasonStringId = IDS_DISCONNECTED_SERVER_FULL;
+						break;
+					case DisconnectPacket::eDisconnect_Kicked:
+						exitReasonStringId = IDS_DISCONNECTED_KICKED;
+						break;
+					case DisconnectPacket::eDisconnect_NoUGC_AllLocal:
+						exitReasonStringId = IDS_NO_USER_CREATED_CONTENT_PRIVILEGE_ALL_LOCAL;
+						break;
+					case DisconnectPacket::eDisconnect_NoUGC_Single_Local:
+						exitReasonStringId = IDS_NO_USER_CREATED_CONTENT_PRIVILEGE_SINGLE_LOCAL;
+						break;
+					case DisconnectPacket::eDisconnect_NoFlying:
+						exitReasonStringId = IDS_DISCONNECTED_FLYING;
+						break;
+					case DisconnectPacket::eDisconnect_Quitting:
+						exitReasonStringId = IDS_DISCONNECTED_SERVER_QUIT;
+						break;
+					case DisconnectPacket::eDisconnect_OutdatedServer:
+						exitReasonStringId = IDS_DISCONNECTED_SERVER_OLD;
+						break;
+					case DisconnectPacket::eDisconnect_OutdatedClient:
+						exitReasonStringId = IDS_DISCONNECTED_CLIENT_OLD;
+						break;
+					default:
+						exitReasonStringId = IDS_CONNECTION_LOST_SERVER;
+						break;
+					}
+				}
+			}
+
+			if( exitReasonStringId == -1 )
+			{
 				ui.NavigateBack(pClass->m_iPad);
 			}
 			else

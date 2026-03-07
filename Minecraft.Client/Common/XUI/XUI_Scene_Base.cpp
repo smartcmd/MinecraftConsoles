@@ -36,7 +36,7 @@ HRESULT CXuiSceneBase::OnInit( XUIMessageInit* pInitData, BOOL& bHandled )
 	MapChildControls();
 
 	// Display the tooltips
-	HRESULT hr = S_OK; 
+	HRESULT hr = S_OK;
 	CXuiElement xuiElement = m_hObj;
 	HXUIOBJ hTemp;
 
@@ -169,7 +169,7 @@ void CXuiSceneBase::_TickAllBaseScenes()
 
 	// make sure there's not a mount going on before using the textures
 	if(bCheckTexturePack && app.DLCInstallProcessCompleted() )
-	{	
+	{
 		TexturePack *tPack = pMinecraft->skins->getSelected();
 
 		if(tPack->getId()!=app.GetRequiredTexturePackID())
@@ -186,7 +186,7 @@ void CXuiSceneBase::_TickAllBaseScenes()
 
 				pMinecraft->skins->selectTexturePackById(app.GetRequiredTexturePackID());
 
-				// probably had background downloads enabled, so turn them off 
+				// probably had background downloads enabled, so turn them off
 				XBackgroundDownloadSetMode(XBACKGROUND_DOWNLOAD_MODE_AUTO);
 			}
 			else
@@ -223,7 +223,7 @@ void CXuiSceneBase::_TickAllBaseScenes()
 		{
 			if(pMinecraft->localplayers[i] != NULL && pMinecraft->localplayers[i]->dimension == 1 && !ui.GetMenuDisplayed(i) && app.GetGameSettings(i,eGameSetting_DisplayHUD))
 			{
-				int iGuiScale;	
+				int iGuiScale;
 
 				if(pMinecraft->localplayers[i]->m_iScreenSection == C4JRender::VIEWPORT_TYPE_FULLSCREEN)
 				{
@@ -234,7 +234,7 @@ void CXuiSceneBase::_TickAllBaseScenes()
 					iGuiScale=app.GetGameSettings(i,eGameSetting_UISizeSplitscreen);
 				}
 				m_BossHealthGroup[i].SetShow(TRUE);
-				m_BossHealthText[i].SetText( app.GetString( IDS_BOSS_ENDERDRAGON_HEALTH ) );		
+				m_BossHealthText[i].SetText( app.GetString( IDS_BOSS_ENDERDRAGON_HEALTH ) );
 
 				if(pMinecraft->localplayers[i]->m_iScreenSection == C4JRender::VIEWPORT_TYPE_FULLSCREEN)
 				{
@@ -364,7 +364,7 @@ void CXuiSceneBase::_TickAllBaseScenes()
 							break;
 						}
 					}
-				}				
+				}
 
 				m_pBossHealthProgress[i].SetRange(0, boss->getMaxHealth() );
 				m_pBossHealthProgress[i].SetValue( boss->getSynchedHealth() );
@@ -468,15 +468,15 @@ void CXuiSceneBase::_TickAllBaseScenes()
 		XUIMessage xuiMsg;
 		CustomMessage_TickScene( &xuiMsg );
 		XuiSendMessage( app.GetCurrentHUDScene(i), &xuiMsg );
-		
+
 		bool bDisplayGui=app.GetGameStarted() && !ui.GetMenuDisplayed(i) && !(app.GetXuiAction(i)==eAppAction_AutosaveSaveGameCapturedThumbnail) && app.GetGameSettings(i,eGameSetting_DisplayHUD)!=0;
 		if(bDisplayGui && pMinecraft->localplayers[i] != NULL)
 		{
-			XuiElementSetShow(app.GetCurrentHUDScene(i),TRUE);			
+			XuiElementSetShow(app.GetCurrentHUDScene(i),TRUE);
 		}
 		else
 		{
-			XuiElementSetShow(app.GetCurrentHUDScene(i),FALSE);	
+			XuiElementSetShow(app.GetCurrentHUDScene(i),FALSE);
 		}
 	}
 }
@@ -495,18 +495,18 @@ HRESULT CXuiSceneBase::_SetEnableTooltips( unsigned int iPad, BOOL bVal )
 HRESULT CXuiSceneBase::_SetTooltipText( unsigned int iPad, unsigned int uiTooltip, int iTextID )
 {
 	ASSERT( uiTooltip < BUTTONS_TOOLTIP_MAX );
-	
+
 	XUIRect xuiRect, xuiRectSmall;
 	HRESULT hr=S_OK;
 	LPCWSTR pString=NULL;
 	float fWidth,fHeight;
-	
+
 	// Want to be able to show just a button (for RB LB)
 	if(iTextID>=0)
 	{
 		pString=app.GetString(iTextID);
 	}
- 
+
 	if(hTooltipText[iPad][uiTooltip]==NULL)
 	{
  		HXUIOBJ hObj=NULL;
@@ -514,7 +514,7 @@ HRESULT CXuiSceneBase::_SetTooltipText( unsigned int iPad, unsigned int uiToolti
 		hr=XuiElementGetChildById(hObj,L"text_ButtonText",&hTooltipText[iPad][uiTooltip]);
 		hr=XuiElementGetPosition(hTooltipText[iPad][uiTooltip],&m_vPosTextInTooltip[uiTooltip]);
 	}
- 
+
 	if(hTooltipTextSmall[iPad][uiTooltip]==NULL)
 	{
  		HXUIOBJ hObj=NULL;
@@ -525,8 +525,8 @@ HRESULT CXuiSceneBase::_SetTooltipText( unsigned int iPad, unsigned int uiToolti
 
 	if(iTextID>=0)
 	{
-		hr=XuiTextPresenterMeasureText(hTooltipText[iPad][uiTooltip], pString, &xuiRect);	
-	
+		hr=XuiTextPresenterMeasureText(hTooltipText[iPad][uiTooltip], pString, &xuiRect);
+
 		// Change the size of the whole button to be the width of the measured text, plus the position the text element starts in the visual (which is the offset by the size of the button graphic)
 		XuiElementGetBounds(m_Buttons[iPad][uiTooltip].m_hObj,&fWidth, &fHeight);
 		XuiElementSetBounds(m_Buttons[iPad][uiTooltip].m_hObj,xuiRect.right+1+m_vPosTextInTooltip[uiTooltip].x,fHeight);
@@ -537,7 +537,7 @@ HRESULT CXuiSceneBase::_SetTooltipText( unsigned int iPad, unsigned int uiToolti
 
 
 		hr=XuiTextPresenterMeasureText(hTooltipTextSmall[iPad][uiTooltip], pString, &xuiRectSmall);
-	
+
 		// Change the size of the whole button to be the width of the measured text, plus the position the text element starts in the visual (which is the offset by the size of the button graphic)
 		XuiElementGetBounds(m_ButtonsSmall[iPad][uiTooltip].m_hObj,&fWidth, &fHeight);
 		XuiElementSetBounds(m_ButtonsSmall[iPad][uiTooltip].m_hObj,xuiRectSmall.right+1+m_vPosTextInTooltipSmall[uiTooltip].x,fHeight);
@@ -749,7 +749,7 @@ HRESULT CXuiSceneBase::_SetTooltipsEnabled( unsigned int iPad, bool bA, bool bB,
 	m_Buttons[iPad][BUTTON_TOOLTIP_LB].SetEnable( bLB );
 	m_Buttons[iPad][BUTTON_TOOLTIP_RB].SetEnable( bRB );
 	m_Buttons[iPad][BUTTON_TOOLTIP_LS].SetEnable( bLS );
-	
+
 	m_ButtonsSmall[iPad][BUTTON_TOOLTIP_A].SetEnable( bA );
 	m_ButtonsSmall[iPad][BUTTON_TOOLTIP_B].SetEnable( bB );
 	m_ButtonsSmall[iPad][BUTTON_TOOLTIP_X].SetEnable( bX );
@@ -860,7 +860,7 @@ HRESULT CXuiSceneBase::_ShowBackground( unsigned int iPad, BOOL bShow )
 
 		if(bShow && pMinecraft->level!=NULL)
 		{
-			__int64 i64TimeOfDay =0;
+			int64_t i64TimeOfDay =0;
 			// are we in the Nether? - Leave the time as 0 if we are, so we show daylight
 			if(pMinecraft->level->dimension->id==0)
 			{
@@ -945,11 +945,11 @@ HRESULT CXuiSceneBase::_ShowPressStart(unsigned int iPad)
 	int nStart, nEnd;
 // 	XuiElementFindNamedFrame(  m_hObj, L"StartFlash", &nStart );
 // 	XuiElementFindNamedFrame(  m_hObj, L"EndFlash", &nEnd );
-// 	XuiElementPlayTimeline(  m_hObj, nStart, nStart, nEnd, TRUE, TRUE ); 
+// 	XuiElementPlayTimeline(  m_hObj, nStart, nStart, nEnd, TRUE, TRUE );
 	XuiElementFindNamedFrame(  hObj, L"StartFlash", &nStart );
 	XuiElementFindNamedFrame(  hObj, L"EndFlash", &nEnd );
-	XuiElementPlayTimeline(  hObj, nStart, nStart, nEnd, TRUE, TRUE ); 
-	
+	XuiElementPlayTimeline(  hObj, nStart, nStart, nEnd, TRUE, TRUE );
+
 	return S_OK;
 }
 
@@ -960,7 +960,7 @@ HRESULT CXuiSceneBase::_HidePressStart()
 
 HRESULT CXuiSceneBase::_UpdateAutosaveCountdownTimer(unsigned int uiSeconds)
 {
-	WCHAR wcAutosaveCountdown[100]; 
+	WCHAR wcAutosaveCountdown[100];
 	swprintf( wcAutosaveCountdown, 100, app.GetString(IDS_AUTOSAVE_COUNTDOWN),uiSeconds);
 	m_TrialTimer.SetText(wcAutosaveCountdown);
 	return S_OK;
@@ -974,7 +974,7 @@ HRESULT CXuiSceneBase::_ShowAutosaveCountdownTimer(BOOL bVal)
 
 HRESULT CXuiSceneBase::_UpdateTrialTimer(unsigned int iPad)
 {
-	WCHAR wcTime[20]; 
+	WCHAR wcTime[20];
 
 	DWORD dwTimeTicks=(DWORD)app.getTrialTimer();
 
@@ -982,7 +982,7 @@ HRESULT CXuiSceneBase::_UpdateTrialTimer(unsigned int iPad)
 	{
 		dwTimeTicks=m_dwTrialTimerLimitSecs;
 	}
-	
+
 	dwTimeTicks=m_dwTrialTimerLimitSecs-dwTimeTicks;
 
 #ifndef _CONTENT_PACKAGE
@@ -1038,7 +1038,7 @@ bool CXuiSceneBase::_PressStartPlaying(unsigned int iPad)
 HRESULT CXuiSceneBase::_SetPlayerBaseScenePosition( unsigned int iPad, EBaseScenePosition position )
 {
 	// turn off the empty quadrant logo
-	if(m_hEmptyQuadrantLogo!=NULL) 
+	if(m_hEmptyQuadrantLogo!=NULL)
 	{
 		XuiElementSetShow(m_hEmptyQuadrantLogo,FALSE);
 	}
@@ -1086,12 +1086,12 @@ HRESULT CXuiSceneBase::_SetPlayerBaseScenePosition( unsigned int iPad, EBaseScen
 		XuiElementSetShow( m_TooltipGroupSmall[iPad].m_hObj, TRUE);
 	}
 
-	if(!RenderManager.IsHiDef() && !RenderManager.IsWidescreen()) 
-	{	
+	if(!RenderManager.IsHiDef() && !RenderManager.IsWidescreen())
+	{
 		//640x480 ->1280x720
 		scale.x = 2.0f; scale.y = 1.5f; scale.z = 1.0f;
 		XuiElementSetScale(m_hObj, &scale);
-		
+
 		return S_OK;
 	}
 
@@ -1127,7 +1127,7 @@ HRESULT CXuiSceneBase::_SetPlayerBaseScenePosition( unsigned int iPad, EBaseScen
 		// No position adjustment
 	case e_BaseScene_Fullscreen:
 		tooltipsPos.x=SAFEZONE_HALF_WIDTH;
-		tooltipsPos.y=XUI_BASE_SCENE_HEIGHT-SAFEZONE_HALF_HEIGHT-fTooltipHeight;	
+		tooltipsPos.y=XUI_BASE_SCENE_HEIGHT-SAFEZONE_HALF_HEIGHT-fTooltipHeight;
 		crouchIconPos.x=SAFEZONE_HALF_WIDTH;
 		crouchIconPos.y=SAFEZONE_HALF_HEIGHT;
 		fBackWidth=XUI_BASE_SCENE_WIDTH;
@@ -1303,7 +1303,7 @@ void CXuiSceneBase::_UpdateSelectedItemPos(unsigned int iPad)
 
 
 	// Only adjust if fullscreen for now, leaving code to move others if required, but it's too far up the screen when on the bottom quadrants
-	if( (m_playerBaseScenePosition[iPad] == e_BaseScene_Fullscreen) && 
+	if( (m_playerBaseScenePosition[iPad] == e_BaseScene_Fullscreen) &&
 		(RenderManager.IsHiDef() || RenderManager.IsWidescreen()) )
 	{
 		D3DXVECTOR3 selectedItemPos;
@@ -1328,17 +1328,17 @@ void CXuiSceneBase::_UpdateSelectedItemPos(unsigned int iPad)
 
 		// The move applies to the whole scene, so we'll need to move tooltips back in some cases
 
-		selectedItemPos.y=XUI_BASE_SCENE_HEIGHT-SAFEZONE_HALF_HEIGHT-fTooltipHeight - fSelectedItemHeight;	
+		selectedItemPos.y=XUI_BASE_SCENE_HEIGHT-SAFEZONE_HALF_HEIGHT-fTooltipHeight - fSelectedItemHeight;
 		selectedItemPos.x = XUI_BASE_SCENE_WIDTH_HALF - (fSelectedItemWidth/2.0f);
 
 		// Adjust selectedItemPos based on what gui is displayed
 
 
-		// 4J-PB - selected the gui scale based on the slider settings, and on whether we're in Creative or Survival		
+		// 4J-PB - selected the gui scale based on the slider settings, and on whether we're in Creative or Survival
 		float fYOffset=0.0f;
 
 		unsigned char 	ucGuiScale=app.GetGameSettings(iPad,eGameSetting_UISize) + 2;
-		
+
 		if(Minecraft::GetInstance() != NULL && Minecraft::GetInstance()->localgameModes[iPad] != NULL && Minecraft::GetInstance()->localgameModes[iPad]->canHurtPlayer())
 		{
 			// SURVIVAL MODE - Move up further because of hearts, shield and xp
@@ -1353,7 +1353,7 @@ void CXuiSceneBase::_UpdateSelectedItemPos(unsigned int iPad)
 			default: // 2
 				fYOffset = -94.0f;
 				break;
-			}  
+			}
 		}
 		else
 		{
@@ -1368,7 +1368,7 @@ void CXuiSceneBase::_UpdateSelectedItemPos(unsigned int iPad)
 			default: // 2
 				fYOffset = -58.0f;
 				break;
-			}  
+			}
 		}
 
 
@@ -1425,14 +1425,14 @@ void CXuiSceneBase::_UpdateSelectedItemPos(unsigned int iPad)
 		// 4J-PB - If it's in split screen vertical, adjust the position
 		// Adjust selectedItemPos based on what gui is displayed
 		if((m_playerBaseScenePosition[iPad]==e_BaseScene_Left) || (m_playerBaseScenePosition[iPad]==e_BaseScene_Right))
-		{	
+		{
 			float scale=0.5f;
 			selectedItemPos.y -= (scale * 88.0f);
 			if(Minecraft::GetInstance() != NULL && Minecraft::GetInstance()->localgameModes[iPad] != NULL && Minecraft::GetInstance()->localgameModes[iPad]->canHurtPlayer())
 			{
 				selectedItemPos.y -= (scale * 80.0f);
 			}
-		
+
 			// 4J-PB - selected the gui scale based on the slider settings
 			unsigned char ucGuiScale;
 			float fYOffset=0.0f;
@@ -1455,7 +1455,7 @@ void CXuiSceneBase::_UpdateSelectedItemPos(unsigned int iPad)
 			default: // 2
 				fYOffset = 85.0f;
 				break;
-			}  
+			}
 			selectedItemPos.y+=fYOffset;
 		}
 
@@ -1606,7 +1606,7 @@ HRESULT CXuiSceneBase::_DisplayGamertag( unsigned int iPad, BOOL bDisplay )
 	{
 		// The host decides whether these are on or off
 		if(app.GetGameSettings(ProfileManager.GetPrimaryPad(),eGameSetting_DisplaySplitscreenGamertags)!=0)
-		{		
+		{
 			if(Minecraft::GetInstance() != NULL && Minecraft::GetInstance()->localplayers[iPad]!=NULL)
 			{
 				wstring wsGamertag = convStringToWstring( ProfileManager.GetGamertag(iPad));
@@ -1621,7 +1621,7 @@ HRESULT CXuiSceneBase::_DisplayGamertag( unsigned int iPad, BOOL bDisplay )
 	}
 	// The host decides whether these are on or off
 	if(app.GetGameSettings(ProfileManager.GetPrimaryPad(),eGameSetting_DisplaySplitscreenGamertags)!=0)
-	{		
+	{
 		XuiElementSetShow(m_hGamerTagA[iPad],bDisplay);
 
 		// set the opacity of the gamertag
@@ -1712,11 +1712,11 @@ void CXuiSceneBase::_HideAllGameUIElements()
 		m_uiSelectedItemOpacityCountDown[i] = 0;
 		m_selectedItemA[i].SetShow(FALSE);
 		m_selectedItemSmallA[i].SetShow(FALSE);
-		
+
 		m_BossHealthGroup[i].SetShow(FALSE);
 		m_bossHealthVisible[i] = FALSE;
 
-		XuiElementSetShow(app.GetCurrentHUDScene(i),FALSE);	
+		XuiElementSetShow(app.GetCurrentHUDScene(i),FALSE);
 
 		_DisplayGamertag(i,FALSE);
 	}
@@ -1845,12 +1845,12 @@ void CXuiSceneBase::ReLayout( unsigned int iPad )
 			if( i>0 && lastVisible!=-1 )
 			{
 				float width, height;
-				XuiElementGetBounds(m_Buttons[iPad][lastVisible].m_hObj, &width, &height); 
+				XuiElementGetBounds(m_Buttons[iPad][lastVisible].m_hObj, &width, &height);
 
 				// 4J Stu - This is for horizontal layout, will need changed if we do vertical layout
 				lastPos.x += width + m_iTooltipSpacingGap;
 
-				XuiElementGetBounds(m_ButtonsSmall[iPad][lastVisible].m_hObj, &width, &height); 
+				XuiElementGetBounds(m_ButtonsSmall[iPad][lastVisible].m_hObj, &width, &height);
 				// 4J Stu - This is for horizontal layout, will need changed if we do vertical layout
 				lastPosSmall.x += width + m_iTooltipSpacingGapSmall;
 			}
@@ -1948,15 +1948,15 @@ HRESULT CXuiSceneBase::SetTooltips( unsigned int iPad, int iA, int iB, int iX, i
 			}
 			else
 			{
-				// does the tooltip need to change?	
+				// does the tooltip need to change?
 				if(CXuiSceneBase::Instance->m_iCurrentTooltipTextID[iPad][i]!=iTooptipsA[i] || forceUpdate)
 				{
 					CXuiSceneBase::Instance->SetTooltipText(iPad, i, iTooptipsA[i] );
-				}				
+				}
 				CXuiSceneBase::Instance->_ShowTooltip(iPad, i, true );
 			}
 		}
-		
+
 	}
 	return S_OK;
 }
@@ -2067,14 +2067,14 @@ HRESULT CXuiSceneBase::SetPlayerBasePositions(EBaseScenePosition pad0, EBaseScen
 }
 
 HRESULT CXuiSceneBase::UpdatePlayerBasePositions()
-{	
+{
 	EBaseScenePosition padPositions[XUSER_MAX_COUNT];
 
 	for(unsigned int idx = 0; idx < XUSER_MAX_COUNT; ++idx)
 	{
 		padPositions[idx] = e_BaseScene_NotSet;
 	}
-	
+
 	Minecraft *pMinecraft = Minecraft::GetInstance();
 
 	// If the game is not started (or is being held paused for a bit) then display all scenes fullscreen
@@ -2134,7 +2134,7 @@ HRESULT CXuiSceneBase::UpdatePlayerBasePositions()
 					padPositions[idx] = e_BaseScene_Right;
 					break;
 				case C4JRender::VIEWPORT_TYPE_QUADRANT_TOP_LEFT:
-					padPositions[idx] = e_BaseScene_Top_Left;				
+					padPositions[idx] = e_BaseScene_Top_Left;
 					break;
 				case C4JRender::VIEWPORT_TYPE_QUADRANT_TOP_RIGHT:
 					padPositions[idx] = e_BaseScene_Top_Right;
@@ -2168,7 +2168,7 @@ void CXuiSceneBase::UpdateSelectedItemPos(int iPad)
 	CXuiSceneBase::Instance->_UpdateSelectedItemPos(iPad);
 }
 
-HXUIOBJ CXuiSceneBase::GetPlayerBaseScene(int iPad) 
+HXUIOBJ CXuiSceneBase::GetPlayerBaseScene(int iPad)
 {
 	return CXuiSceneBase::Instance->_GetPlayerBaseScene(iPad);
 }

@@ -13,9 +13,6 @@ public:
 	static ResourceLocation DEFAULT_LOCATION;
 
 private:
-	// 4J Added
-	static const unsigned int s_nametagColors[MINECRAFT_NET_MAX_PLAYERS];
-
 	HumanoidModel *humanoidModel;
     HumanoidModel *armorParts1;
     HumanoidModel *armorParts2;

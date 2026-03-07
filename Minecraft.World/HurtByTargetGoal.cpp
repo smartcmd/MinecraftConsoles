@@ -26,9 +26,9 @@ void HurtByTargetGoal::start()
 	{
 		double within = getFollowDistance();
 		vector<shared_ptr<Entity> > *nearby = mob->level->getEntitiesOfClass(typeid(*mob), AABB::newTemp(mob->x, mob->y, mob->z, mob->x + 1, mob->y + 1, mob->z + 1)->grow(within, 4, within));
-		for(AUTO_VAR(it, nearby->begin()); it != nearby->end(); ++it)
+		for(auto& it : *nearby)
 		{
-			shared_ptr<PathfinderMob> other = dynamic_pointer_cast<PathfinderMob>(*it);
+			shared_ptr<PathfinderMob> other = dynamic_pointer_cast<PathfinderMob>(it);
 			if (this->mob->shared_from_this() == other) continue;
 			if (other->getTarget() != NULL) continue;
 			if (other->isAlliedTo(mob->getLastHurtByMob())) continue; // don't target allies

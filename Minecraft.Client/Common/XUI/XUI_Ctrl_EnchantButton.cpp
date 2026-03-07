@@ -69,7 +69,7 @@ HRESULT CXuiCtrlEnchantmentButton::OnGetSourceDataText(XUIMessageGetSourceText *
 			// Light background and focus background
 			SetEnable(TRUE);
 		}
-		m_costString = _toString<int>(cost);
+		m_costString = std::to_wstring(cost);
 		m_lastCost = cost;
 	}
 	if(cost == 0)
@@ -79,7 +79,7 @@ HRESULT CXuiCtrlEnchantmentButton::OnGetSourceDataText(XUIMessageGetSourceText *
 		pGetSourceTextData->bDisplay = FALSE;
 	}
 	else
-	{		
+	{
 		pGetSourceTextData->szText = m_costString.c_str();
 		pGetSourceTextData->bDisplay = TRUE;
 	}

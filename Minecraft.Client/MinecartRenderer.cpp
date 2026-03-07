@@ -23,7 +23,7 @@ void MinecartRenderer::render(shared_ptr<Entity> _cart, double x, double y, doub
 
 	bindTexture(cart);
 
-	__int64 seed = cart->entityId * 493286711l;
+	int64_t seed = cart->entityId * 493286711l;
 	seed = seed * seed * 4392167121l + seed * 98761;
 
 	float xo = ((((seed >> 16) & 0x7) + 0.5f) / 8.0f - 0.5f) * 0.004f;

@@ -105,11 +105,13 @@ MultiPlayerChunkCache::~MultiPlayerChunkCache()
 	delete cache;
 	delete hasData;
 
-	AUTO_VAR(itEnd, loadedChunkList.end());
-	for (AUTO_VAR(it, loadedChunkList.begin()); it != itEnd; it++)
-		delete *it;
+    for (auto& it : loadedChunkList)
+    {
+		if ( it )
+        	delete it;
+    }
 
-	DeleteCriticalSection(&m_csLoadCreate);
+    DeleteCriticalSection(&m_csLoadCreate);
 }
 
 
@@ -146,7 +148,7 @@ void MultiPlayerChunkCache::drop(int x, int z)
 	{
 		// Added parameter here specifies that we don't want to delete tile entities, as they won't get recreated unless they've got update packets
 		// The tile entities are in general only created on the client by virtue of the chunk rebuild
-		chunk->unload(false);	
+		chunk->unload(false);
 
 		// 4J - We just want to clear out the entities in the chunk, but everything else should be valid
 		chunk->loaded = true;
@@ -174,7 +176,7 @@ LevelChunk *MultiPlayerChunkCache::create(int x, int z)
 			// 4J-JEV: We are about to use shared data, abort if the server is stopped and the data is deleted.
 			if (MinecraftServer::getInstance()->serverHalted()) return NULL;
 
-			// If we're the host, then don't create the chunk, share data from the server's copy 
+			// If we're the host, then don't create the chunk, share data from the server's copy
 #ifdef _LARGE_WORLDS
 			LevelChunk *serverChunk = MinecraftServer::getInstance()->getLevel(level->dimension->id)->cache->getChunkLoadedOrUnloaded(x,z);
 #else
@@ -193,7 +195,7 @@ LevelChunk *MultiPlayerChunkCache::create(int x, int z)
 			chunk = new LevelChunk(level, bytes, x, z);
 
 			// 4J - changed to use new methods for lighting
-			chunk->setSkyLightDataAllBright(); 
+			chunk->setSkyLightDataAllBright();
 			//			Arrays::fill(chunk->skyLight->data, (byte) 255);
 		}
 
@@ -294,7 +296,7 @@ wstring MultiPlayerChunkCache::gatherStats()
 	EnterCriticalSection(&m_csLoadCreate);
 	int size = (int)loadedChunkList.size();
 	LeaveCriticalSection(&m_csLoadCreate);
-	return L"MultiplayerChunkCache: " + _toString<int>(size);
+	return L"MultiplayerChunkCache: " + std::to_wstring(size);
 
 }
 

@@ -11,16 +11,16 @@ UpdatePlayerRuleDefinition::UpdatePlayerRuleDefinition()
 {
 	m_bUpdateHealth = m_bUpdateFood = m_bUpdateYRot = false;;
 	m_health = 0;
-	m_food = 0;	
+	m_food = 0;
 	m_spawnPos = NULL;
 	m_yRot = 0.0f;
 }
 
 UpdatePlayerRuleDefinition::~UpdatePlayerRuleDefinition()
 {
-	for(AUTO_VAR(it, m_items.begin()); it != m_items.end(); ++it)
+	for(auto& item : m_items)
 	{
-		delete *it;
+		delete item;
 	}
 }
 
@@ -33,34 +33,34 @@ void UpdatePlayerRuleDefinition::writeAttributes(DataOutputStream *dos, UINT num
 	GameRuleDefinition::writeAttributes(dos, numAttributes + attrCount );
 
 	ConsoleGameRules::write(dos, ConsoleGameRules::eGameRuleAttr_spawnX);
-	dos->writeUTF(_toString(m_spawnPos->x));
+	dos->writeUTF(std::to_wstring(m_spawnPos->x));
 	ConsoleGameRules::write(dos, ConsoleGameRules::eGameRuleAttr_spawnY);
-	dos->writeUTF(_toString(m_spawnPos->y));
+	dos->writeUTF(std::to_wstring(m_spawnPos->y));
 	ConsoleGameRules::write(dos, ConsoleGameRules::eGameRuleAttr_spawnZ);
-	dos->writeUTF(_toString(m_spawnPos->z));
+	dos->writeUTF(std::to_wstring(m_spawnPos->z));
 
 	if(m_bUpdateYRot)
 	{
 		ConsoleGameRules::write(dos, ConsoleGameRules::eGameRuleAttr_yRot);
-		dos->writeUTF(_toString(m_yRot));
+		dos->writeUTF(std::to_wstring(m_yRot));
 	}
 	if(m_bUpdateHealth)
 	{
 		ConsoleGameRules::write(dos, ConsoleGameRules::eGameRuleAttr_food);
-		dos->writeUTF(_toString(m_health));
+		dos->writeUTF(std::to_wstring(m_health));
 	}
 	if(m_bUpdateFood)
 	{
 		ConsoleGameRules::write(dos, ConsoleGameRules::eGameRuleAttr_health);
-		dos->writeUTF(_toString(m_food));
+		dos->writeUTF(std::to_wstring(m_food));
 	}
 }
 
 void UpdatePlayerRuleDefinition::getChildren(vector<GameRuleDefinition *> *children)
 {
 	GameRuleDefinition::getChildren(children);
-	for(AUTO_VAR(it, m_items.begin()); it!=m_items.end(); it++)
-		children->push_back(*it);
+	for(auto& item : m_items)
+		children->push_back(item);
 }
 
 GameRuleDefinition *UpdatePlayerRuleDefinition::addChild(ConsoleGameRules::EGameRuleType ruleType)
@@ -162,10 +162,8 @@ void UpdatePlayerRuleDefinition::postProcessPlayer(shared_ptr<Player> player)
 
 	if(m_spawnPos != NULL || m_bUpdateYRot) player->absMoveTo(x,y,z,yRot,xRot);
 
-	for(AUTO_VAR(it, m_items.begin()); it != m_items.end(); ++it)
+	for(auto& addItem : m_items)
 	{
-		AddItemRuleDefinition *addItem = *it;
-
 		addItem->addItemToContainer(player->inventory, -1);
 	}
 }
