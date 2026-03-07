@@ -16,7 +16,14 @@ DataInputStream::DataInputStream(InputStream *in) : stream( in )
 //This method simply performs in.read() and returns the result.
 int DataInputStream::read()
 {
-	return stream->read();
+	int result = stream->read();
+
+	if (result == -1)
+    {
+        throw EOFException(L"DataInputStream::read - end of stream"); // izzint - implementation 4j didn't do for some reason
+    }
+
+	return result;
 }
 
 //Reads some number of bytes from the contained input stream and stores them into the buffer array b.
@@ -134,7 +141,7 @@ bool DataInputStream::readFully(byteArray b)
 		int byteRead = stream->read();
 		if( byteRead == -1 )
 		{
-			return false;
+            throw EOFException(L"DataInputStream::readFully - end of stream");
 		}
 		else
 		{
@@ -153,7 +160,7 @@ bool DataInputStream::readFully(charArray b)
 		int byteRead = stream->read();
 		if( byteRead == -1 )
 		{
-			return false;
+            throw EOFException(L"DataInputStream::readFully - end of stream");
 		}
 		else
 		{
