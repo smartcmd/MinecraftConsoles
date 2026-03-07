@@ -50,6 +50,7 @@ void KeyboardMouseInput::Init()
 	m_mouseWheelAccum = 0;
 	m_mouseWheelConsumed = false;
 	m_mouseGrabbed = false;
+    m_mouseActive = true;
 	m_cursorHiddenForUI = false;
 	m_windowFocused = true;
 	m_hasInput = false;
@@ -200,9 +201,14 @@ int KeyboardMouseInput::GetMouseWheel()
 
 void KeyboardMouseInput::OnRawMouseDelta(int dx, int dy)
 {
+    if (!m_mouseActive)
+        return;
+
 	m_mouseDeltaAccumX += dx;
 	m_mouseDeltaAccumY += dy;
 }
+
+
 
 bool KeyboardMouseInput::IsKeyDown(int vkCode) const
 {

@@ -368,13 +368,6 @@ void Player::tick()
 		foodData.tick(dynamic_pointer_cast<Player>(shared_from_this()));
 	}
 
-	#ifdef _WINDOWS64
-    if (g_KBMInput.IsKeyDown(VK_LSHIFT) && this->isSleeping())
-    {
-        stopSleepInBed(true, true, false);
-    }
-	#endif
-
 	// 4J Stu Debugging
 	if (!level->isClientSide)
 	{
@@ -1865,10 +1858,7 @@ Player::BedSleepingResult Player::startSleepInBed(int x, int y, int z, bool bTes
 		setPos(x + .5f, y + 15.0f / 16.0f, z + .5f);
 	}
 	m_isSleeping = true;
-
-	#ifdef _WINDOWS64
-    Minecraft::GetInstance()->setScreen(new Screen());
-	#endif
+	g_KBMInput.SetActiveMouse(false);
 
 	sleepCounter = 0;
 	bedPosition = new Pos(x, y, z);
@@ -1940,6 +1930,8 @@ void Player::stopSleepInBed(bool forcefulWakeUp, bool updateLevelList, bool save
 	}
 
 	m_isSleeping = false;
+    g_KBMInput.SetActiveMouse(true);
+
 	if (!level->isClientSide && updateLevelList)
 	{
 		level->updateSleepingPlayerList();
@@ -1956,10 +1948,6 @@ void Player::stopSleepInBed(bool forcefulWakeUp, bool updateLevelList, bool save
 	{
 		setRespawnPosition(bedPosition, false);
 	}
-
-	#ifdef _WINDOWS64
-    Minecraft::GetInstance()->setScreen(nullptr);
-	#endif
 }
 
 

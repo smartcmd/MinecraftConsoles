@@ -84,6 +84,9 @@ public:
 	void SetScreenCursorHidden(bool hidden) { m_screenWantsCursorHidden = hidden; }
 	bool IsScreenCursorHidden() const { return m_screenWantsCursorHidden; }
 
+	void SetActiveMouse(bool active) { m_mouseActive = active; }
+    bool IsActiveMouse() { return m_mouseActive; }
+
 	// Text input: buffer characters typed while the native keyboard scene is open
 	void OnChar(wchar_t c);
 	bool ConsumeChar(wchar_t &outChar);
@@ -132,6 +135,8 @@ private:
 	bool m_hasInput;
 
 	bool m_kbmActive;
+
+	bool m_mouseActive;
 
 	bool m_screenWantsCursorHidden;
 
