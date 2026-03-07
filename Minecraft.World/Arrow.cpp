@@ -303,16 +303,20 @@ void Arrow::tick()
 				damageSource = DamageSource::arrow(dynamic_pointer_cast<Arrow>(shared_from_this()), owner);
 			}
 
+			if(!res->entity->isInvulnerable())
+			{
+				if (isOnFire() && res->entity->GetType() != eTYPE_ENDERMAN)
+				{
+					res->entity->setOnFire(5);
+				}
+			}
+
 			if(res->entity->hurt(damageSource, dmg))
 			{
 				// Firx for #67839 - Customer Encountered: Bows enchanted with "Flame" still set things on fire if pvp/attack animals is turned off
 				// 4J Stu - We should not set the entity on fire unless we can cause some damage (this doesn't necessarily mean that the arrow hit lowered their health)
 				// set targets on fire first because we want cooked
 				// pork/chicken/steak
-				if (isOnFire() && res->entity->GetType() != eTYPE_ENDERMAN)
-				{
-					res->entity->setOnFire(5);
-				}
 
 				if (res->entity->instanceof(eTYPE_LIVINGENTITY))
 				{
