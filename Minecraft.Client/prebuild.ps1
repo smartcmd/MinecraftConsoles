@@ -1,12 +1,13 @@
 $sha = (git rev-parse --short=7 HEAD)
 $ref = (git symbolic-ref HEAD)
-$build = -1
+$build = 560 # Note: Build/network has to stay static for now, as without it builds wont be able to play together. We can change it later when we have a better versioning scheme in place.
 $suffix = ""
 
+# TODO Re-enable
 # If we are running in GitHub Actions, use the run number as the build number
-if ($env:GITHUB_RUN_NUMBER) {
-    $build = $env:GITHUB_RUN_NUMBER
-}
+# if ($env:GITHUB_RUN_NUMBER) {
+#     $build = $env:GITHUB_RUN_NUMBER
+# }
 
 # If we have uncommitted changes, add a suffix to the version string
 if (git status --porcelain) {
