@@ -87,12 +87,13 @@ private:
 
     bool isInClouds;
 
-	float m_fov;
-public:
+	float m_fov[4];
+
+  public:
 	GameRenderer(Minecraft *mc);
 	~GameRenderer();
-	void SetFovVal(float fov);
-	float GetFovVal();
+    void SetFovVal(int playerIdx, float fov);
+    float GetFovVal(int playerIdx);
 
 public:
 	void tick(bool bFirst);
