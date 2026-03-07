@@ -861,8 +861,7 @@ void Gui::render(float a, bool mouseFree, int xMouse, int yMouse)
 		glTranslatef((float)-debugLeft, (float)-debugTop, 0.f);
         if (Minecraft::warezTime > 0) glTranslatef(0, 32, 0);
 
-        font->drawShadow(ClientConstants::VERSION_STRING + L" (" + minecraft->fpsString + L")", iSafezoneXHalf+2, 20, 0xffffff);
-        font->drawShadow(L"Seed: " + std::to_wstring(minecraft->level->getLevelData()->getSeed() ), iSafezoneXHalf+2, 32 + 00, 0xffffff);
+        font->drawShadow(ClientConstants::VERSION_STRING + L" (" + minecraft->fpsString + L")", iSafezoneXHalf+2, 15, 0xffffff);
         // font->drawShadow(minecraft->gatherStats4(), iSafezoneXHalf+2, 32 + 40, 0xffffff);
 	/*
 	long max = Runtime.getRuntime().maxMemory();
@@ -877,6 +876,7 @@ void Gui::render(float a, bool mouseFree, int xMouse, int yMouse)
 
 	// 4J Stu - Moved these so that they don't overlap
 	int iYPos = 82;
+
 	wchar_t buffer[256];
 
 	double xBlockPos = floor(minecraft->player->x);
@@ -895,19 +895,20 @@ void Gui::render(float a, bool mouseFree, int xMouse, int yMouse)
         font->drawShadow(buffer, iSafezoneXHalf+2, iYPos + 8 * 2, 0xe0e0e0);
 
 	font->drawShadow(L"f: " + std::to_wstring(Mth::floor(minecraft->player->yRot * 4.0f / 360.0f + 0.5) & 0x3) + L"/ yRot: " + std::to_wstring(minecraft->player->yRot), iSafezoneXHalf+2, iYPos + 8 * 3, 0xe0e0e0);
-		iYPos += 8*4;
 
-		int px = Mth::floor(minecraft->player->x);
-		int py = Mth::floor(minecraft->player->y);
-		int pz = Mth::floor(minecraft->player->z);
-		if (minecraft->level != NULL && minecraft->level->hasChunkAt(px, py, pz))
-		{
-			LevelChunk *chunkAt = minecraft->level->getChunkAt(px, pz);
-			Biome *biome = chunkAt->getBiome(px & 15, pz & 15, minecraft->level->getBiomeSource());
-			drawString(
-				font,
-				L"b: " + biome->m_name + L" (" + std::to_wstring(biome->id) + L")", debugLeft, iYPos, 0xe0e0e0);
-		}
+	font->drawShadow(L"Seed: " + std::to_wstring(minecraft->level->getLevelData()->getSeed() ), iSafezoneXHalf+2, iYPos + 8 * 4, 0xe0e0e0);
+
+	iYPos += 8*5;
+
+	int px = Mth::floor(minecraft->player->x);
+	int py = Mth::floor(minecraft->player->y);
+	int pz = Mth::floor(minecraft->player->z);
+	if (minecraft->level != NULL && minecraft->level->hasChunkAt(px, py, pz))
+	{
+		LevelChunk *chunkAt = minecraft->level->getChunkAt(px, pz);
+		Biome *biome = chunkAt->getBiome(px & 15, pz & 15, minecraft->level->getBiomeSource());
+		font->drawShadow( L"b: " + biome->m_name + L" (" + std::to_wstring(biome->id) + L")", iSafezoneXHalf+2, iYPos, 0xe0e0e0);
+	}
 
         glPopMatrix();
     }
