@@ -657,6 +657,11 @@ void UIScene_LaunchMoreOptionsMenu::handleSliderMove(F64 sliderId, F64 currentVa
 	int value = (int)currentValue;
 	switch((int)sliderId)
 	{
+	case eControl_WorldMobCap:
+		m_sliderWorldMobCap.handleSliderMove(value);
+		m_params->worldMobCap = value;
+		m_sliderWorldMobCap.setLabel(UIString::UIString("Mob Cap Size: " + m_iWorldMobCapTitleA[m_params->worldMobCap]));
+		break;
 	case eControl_WorldSize:
 #ifdef _LARGE_WORLDS
 		m_sliderWorldSize.handleSliderMove(value);
@@ -674,11 +679,6 @@ void UIScene_LaunchMoreOptionsMenu::handleSliderMove(F64 sliderId, F64 currentVa
 			m_sliderWorldResize.setLabel(app.GetString(m_iWorldSizeTitleA[value]));
 		}
 #endif
-		break;
-	case eControl_WorldMobCap:
-		m_sliderWorldMobCap.handleSliderMove(value);
-		m_params->worldMobCap = value;
-		m_sliderWorldMobCap.setLabel(UIString::UIString("Mob Cap Size: " + m_iWorldMobCapTitleA[m_params->worldMobCap]));
 		break;
 	}
 }

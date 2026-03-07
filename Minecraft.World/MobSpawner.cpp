@@ -215,7 +215,7 @@ const int MobSpawner::tick(ServerLevel *level, bool spawnEnemies, bool spawnFrie
 		bool usesChunkLimit = app.GetGameHostOption(eGameHostOption_WorldMobCap) == 3;
 		if (usesChunkLimit)
 		{
-			// Use Java logic for the max count instead, accounting for chunks polled and the size of a chunk.
+			// Use Java logic for the max count instead, accounting for chunks polled and the magic number.
 			maxInstances = mobCategory->getMaxInstancesPerChunk() * chunksToPoll.size() / MAGIC_NUMBER;
 		}
 
@@ -351,7 +351,7 @@ const int MobSpawner::tick(ServerLevel *level, bool spawnEnemies, bool spawnFrie
 								   if( level->countInstanceOf(mobType, true) >= maxEndermen ) continue;
 							   }
 							   else if( level->countInstanceOf(mobType, true) >= ( maxInstances / 2 ) ) continue;
-{						   }
+						   }
 
 						   mob->moveTo(xx, yy, zz, level->random->nextFloat() * 360, 0);
 
@@ -436,7 +436,7 @@ bool MobSpawner::isSpawnPositionOk(MobCategory *category, Level *level, int x, i
 		int tt = level->getTile(x, y - 1, z);
 		return tt != Tile::unbreakable_Id && !level->isSolidBlockingTile(x, y, z) && !level->getMaterial(x, y, z)->isLiquid() && !level->isSolidBlockingTile(x, y + 1, z);
 	}
-				}
+}
 
 void MobSpawner::postProcessSpawnMobs(Level *level, Biome *biome, int xo, int zo, int cellWidth, int cellHeight, Random *random)
 {
