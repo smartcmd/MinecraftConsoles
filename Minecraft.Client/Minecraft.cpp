@@ -4759,7 +4759,6 @@ void Minecraft::main()
 			app.DebugPrintf("<xs:enumeration value=\"%d\"><xs:annotation><xs:documentation>%ls</xs:documentation></xs:annotation></xs:enumeration>\n", i, app.GetString( Tile::tiles[i]->getDescriptionId() ));
 		}
 	}
-	__debugbreak();
 #endif
 
 	// 4J-PB - Can't call this for the first 5 seconds of a game - MS rule
