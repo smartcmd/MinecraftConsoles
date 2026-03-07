@@ -837,7 +837,7 @@ int CMinecraftApp::SetDefaultOptions(C_4JProfile::PROFILESETTINGS *pSettings,con
 	SetGameSettings(iPad,eGameSetting_SoundFXVolume,DEFAULT_VOLUME_LEVEL);
 	SetGameSettings(iPad,eGameSetting_RenderDistance,16);
 	SetGameSettings(iPad,eGameSetting_Gamma,50);
-	SetGameSettings(iPad,eGameSetting_FOV,0);
+	SetGameSettings(iPad,eGameSetting_FOV,75); // jvnpr -- default to 75% between 30 and 110, which is 90 (70 internal)
 
 	// 4J-PB - Don't reset the difficult level if we're in-game
 	if(Minecraft::GetInstance()->level==NULL)
@@ -1406,8 +1406,9 @@ void CMinecraftApp::ActionGameSettings(int iPad,eGameSetting eVal)
 	case eGameSetting_FOV:
 		if(iPad==ProfileManager.GetPrimaryPad())
 		{
-			float fovDeg = 70.0f + (float)GameSettingsA[iPad]->ucFov * 40.0f / 100.0f;
-			pMinecraft->gameRenderer->SetFovVal(fovDeg);
+			float simulatedFovDeg = 30.0f + (float)GameSettingsA[iPad]->ucFov * 80.0f / 100.0f; // jvnpr -- convert 0-80 to 30-110
+			float trueFovDeg = ( 55.0f / 80.0f ) * (simulatedFovDeg - 30.0f) + 30.0f; // jnvpr -- further convert 30-110 to a range from 30-85 to better reflect JE fov values
+			pMinecraft->gameRenderer->SetFovVal(trueFovDeg);
 			pMinecraft->options->set(Options::Option::FOV, (float)GameSettingsA[iPad]->ucFov / 100.0f);
 		}
 		break;

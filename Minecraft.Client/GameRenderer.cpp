@@ -132,6 +132,8 @@ GameRenderer::GameRenderer(Minecraft *mc)
 
 	m_fov=70.0f;
 
+	h_fov=70.0f; // jvnpr -- Hardcoded hand FOV to prevent scaling with main renderer fov
+
 	// 4J Stu - Init these so they are setup before the tick
 	for( int i = 0; i < 4; i++ )
 	{
@@ -714,14 +716,14 @@ void GameRenderer::renderItemInHand(float a, int eye)
 
 	// 4J - have split out fov & aspect calculation so we can take into account viewports
 	float fov, aspect;
-	getFovAndAspect(fov, aspect, a, false);
+	getFovAndAspect(fov, aspect, a, false); // jvnpr -- don't need to run fov calc since it's hardcoded now but it's probably better to just leave this
 
 	if (zoom != 1)
 	{
 		glTranslatef((float) zoom_x, (float) -zoom_y, 0);
 		glScaled(zoom, zoom, 1);
 	}
-	gluPerspective(fov, aspect, 0.05f, renderDistance * 2);
+	gluPerspective(h_fov, aspect, 0.05f, renderDistance * 2); // jvnpr -- hardcoded h_fov to fix hand fov scaling
 
 	if (mc->gameMode->isCutScene())
 	{

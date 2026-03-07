@@ -88,6 +88,8 @@ private:
     bool isInClouds;
 
 	float m_fov;
+
+	float h_fov; // jvnpr -- Hardcoded hand FOV to prevent scaling with main renderer fov
 public:
 	GameRenderer(Minecraft *mc);
 	~GameRenderer();
