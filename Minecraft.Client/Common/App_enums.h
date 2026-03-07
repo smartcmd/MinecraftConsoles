@@ -636,6 +636,7 @@ enum eGameHostOption
 	eGameHostOption_BedrockFog,
 	eGameHostOption_NoHUD,
 	eGameHostOption_WorldSize,
+	eGameHostOption_WorldMobCap,
 	eGameHostOption_All,
 
 	eGameHostOption_DisableSaving,

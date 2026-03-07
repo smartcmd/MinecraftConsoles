@@ -12,6 +12,8 @@ class Level;
 class MobSpawner
 {
 private:
+	// For some reason, this constant is used in Java as the dividend for the max count of a mob category in the level, thus this is done to keep parity.
+    static const int CHUNK_HORIZONTAL_SCALE = 289;
 	static const int MIN_SPAWN_DISTANCE;
 
 protected:

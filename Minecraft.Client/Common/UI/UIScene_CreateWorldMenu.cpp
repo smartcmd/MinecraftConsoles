@@ -11,6 +11,7 @@
 #include "..\..\..\Minecraft.World\BiomeSource.h"
 #include "..\..\..\Minecraft.World\IntCache.h"
 #include "..\..\..\Minecraft.World\LevelType.h"
+#include "..\..\..\Minecraft.World\MobCategory.h"
 #include "..\..\DLCTexturePack.h"
 
 #ifdef __PSVITA__
@@ -1213,6 +1214,10 @@ void UIScene_CreateWorldMenu::CreateGame(UIScene_CreateWorldMenu* pClass, DWORD 
 	pClass->m_MoreOptionsParams.currentWorldSize = (EGameHostOptionWorldSize)(pClass->m_MoreOptionsParams.worldSize+1);
 	pClass->m_MoreOptionsParams.newWorldSize = (EGameHostOptionWorldSize)(pClass->m_MoreOptionsParams.worldSize+1);
 #endif
+	app.SetGameHostOption(eGameHostOption_WorldMobCap, pClass->m_MoreOptionsParams.worldMobCap );
+
+	// Use helper to update the caps based on what was set earlier
+	MobCategory::updateMobCaps(pClass->m_MoreOptionsParams.worldMobCap);
 
 	g_NetworkManager.HostGame(dwLocalUsersMask,isClientSide,isPrivate,MINECRAFT_NET_MAX_PLAYERS,0);
 

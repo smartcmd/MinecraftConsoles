@@ -15,6 +15,14 @@ int m_iWorldSizeTitleA[4] =
 };
 #endif
 
+string m_iWorldMobCapTitleA[4] =
+{
+	"Small",
+	"Medium",
+	"Large",
+	"Unlimited"
+};
+
 UIScene_LaunchMoreOptionsMenu::UIScene_LaunchMoreOptionsMenu(int iPad, void *initData, UILayer *parentLayer) : UIScene(iPad, parentLayer)
 {
 	// Setup all the Iggy references we need for this scene
@@ -131,6 +139,10 @@ UIScene_LaunchMoreOptionsMenu::UIScene_LaunchMoreOptionsMenu(int iPad, void *ini
 	// #endif
 
 	m_tabIndex = m_params->bGenerateOptions ? TAB_WORLD_OPTIONS : TAB_GAME_OPTIONS;
+
+
+	// Introduce a mob cap slider for large worlds. If there were a better solution for this it would be nice...
+	m_sliderWorldMobCap.init(UIString::UIString("Mob Cap Size: " + m_iWorldMobCapTitleA[m_params->worldMobCap]),eControl_WorldMobCap,0,3,m_params->worldMobCap);
 
 	// set the default text
 #ifdef _LARGE_WORLDS
@@ -662,6 +674,11 @@ void UIScene_LaunchMoreOptionsMenu::handleSliderMove(F64 sliderId, F64 currentVa
 			m_sliderWorldResize.setLabel(app.GetString(m_iWorldSizeTitleA[value]));
 		}
 #endif
+		break;
+	case eControl_WorldMobCap:
+		m_sliderWorldMobCap.handleSliderMove(value);
+		m_params->worldMobCap = value;
+		m_sliderWorldMobCap.setLabel(UIString::UIString("Mob Cap Size: " + m_iWorldMobCapTitleA[m_params->worldMobCap]));
 		break;
 	}
 }
