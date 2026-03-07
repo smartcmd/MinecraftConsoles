@@ -633,10 +633,76 @@ void PlayerConnection::handleChat(shared_ptr<ChatPacket> packet)
 
 void PlayerConnection::handleCommand(const wstring& message)
 {
-	// 4J - TODO
-#if 0
-	server.getCommandDispatcher().performCommand(player, message);
-#endif
+	wstring commandStr = message;
+    stripWhitespaceForHtml(commandStr, true);
+
+    vector<wstring> args;
+    if (message.find(' ') >= 0)
+    {
+        args = stringSplit(commandStr, ' ');
+        commandStr = args[0];
+        args.erase(args.begin());
+    }
+
+    if (commandStr == L"/kill")
+    {
+        server->getCommandDispatcher()->performCommand(player, eGameCommand_Kill, byteArray());
+    }
+    else if (commandStr == L"/gamemode")
+	{
+		ByteArrayOutputStream baos(2);
+        DataOutputStream dos(&baos);
+
+		if (args.size() == 0)
+        {
+            player->sendMessage(L"Incorrect command usage!");
+            return;
+        }
+
+        dos.writeUTF(args[0]);
+
+		if (args.size() >= 2)
+        {
+            // Player was specified in the command arguments
+            shared_ptr<ServerPlayer> serverPlayer = server->getPlayers()->getPlayer(args[1]);
+            string playerName = wstringtochararray(args[1]);
+            if (!serverPlayer)
+            {
+				// Player not found
+                player->sendMessage(L"Player '" + args[1] + L"' not found!");
+                return;
+			}
+
+            PlayerUID uid = serverPlayer->getXuid();
+            dos.writePlayerUID(uid);
+        }
+        else
+        {
+			// Set own gamemode
+            dos.writePlayerUID(player->getXuid());
+        }
+
+		server->getCommandDispatcher()->performCommand(player, eGameCommand_GameMode, baos.toByteArray());
+	}
+	else if (commandStr == L"/teleport" || commandStr == L"/tp")
+	{
+		if (args.size() == 0)
+        {
+            player->sendMessage(L"Incorrect command usage!");
+            return;
+        }
+
+		if (args.size() >= 4)
+        {
+			app.DebugPrintf("size much");
+        }
+
+		app.DebugPrintf("Teleported");
+	}
+    else
+    {
+        player->sendMessage(L"Unknown command!");
+    }
 }
 
 void PlayerConnection::handleAnimate(shared_ptr<AnimatePacket> packet)

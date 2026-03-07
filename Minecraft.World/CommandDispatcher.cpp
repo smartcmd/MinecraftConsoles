@@ -15,9 +15,7 @@ int CommandDispatcher::performCommand(shared_ptr<CommandSender> sender, EGameCom
 		}
 		else
 		{
-#ifndef _CONTENT_PACKAGE
-			sender->sendMessage(L"\u00A7cYou do not have permission to use this command.");
-#endif
+			sender->sendMessage(L"You do not have permission to use this command.");
 		}
 	}
 	else

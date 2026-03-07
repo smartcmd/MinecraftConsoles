@@ -1,5 +1,7 @@
 #include "stdafx.h"
 #include "net.minecraft.commands.h"
+#include "../Minecraft.Client/ServerPlayer.h"
+#include "LevelSettings.h"
 #include "GameModeCommand.h"
 
 EGameCommand GameModeCommand::getId()
@@ -12,39 +14,54 @@ int GameModeCommand::getPermissionLevel()
 	return LEVEL_GAMEMASTERS;
 }
 
-void GameModeCommand::execute(shared_ptr<CommandSender> source, byteArray commandData)
-{
-	//if (args.length > 0) {
-	//	GameType newMode = getModeForString(source, args[0]);
-	//	Player player = args.length >= 2 ? convertToPlayer(source, args[1]) : convertSourceToPlayer(source);
+ void GameModeCommand::execute(shared_ptr<CommandSender> source, byteArray commandData)
+ {
 
-	//	player.setGameMode(newMode);
-	//	player.fallDistance = 0; // reset falldistance so flying people do not die :P
+    ByteArrayInputStream bais(commandData);
+    DataInputStream dis(&bais);
+ 
+    wstring gamemodeStr = dis.readUTF();
+    PlayerUID uid = dis.readPlayerUID();
 
-	//	ChatMessageComponent mode = ChatMessageComponent.forTranslation("gameMode." + newMode.getName());
+    GameType *gamemode = getModeForString(source, gamemodeStr);
+    shared_ptr<ServerPlayer> player = getPlayer(uid);
+ 
+	if (gamemode != NULL)
+    {
+        player->setGameMode(gamemode);
+        player->fallDistance = 0;
+ 
+        //ChatMessageComponent mode = ChatMessageComponent.forTranslation("gameMode."  newMode.getName());
 
-	//	if (player != source) {
-	//		logAdminAction(source, AdminLogCommand.LOGTYPE_DONT_SHOW_TO_SELF, "commands.gamemode.success.other", player.getAName(), mode);
-	//	} else {
-	//		logAdminAction(source, AdminLogCommand.LOGTYPE_DONT_SHOW_TO_SELF, "commands.gamemode.success.self", mode);
-	//	}
-
-	//	return;
-	//}
-
-	//throw new UsageException("commands.gamemode.usage");
-}
+        if (player != source)
+        {
+            logAdminAction(source, ChatPacket::e_ChatCustom, L"Set game mode of " + player->getName() + L" to " + gamemode->getName(), gamemode->getId(), player->getAName());
+            //logAdminAction(source, AdminLogCommand::LOGTYPE_DONT_SHOW_TO_SELF, "commands.gamemode.success.other", player->getAName(), mode);
+        }
+        else
+        {
+            logAdminAction(source, ChatPacket::e_ChatCustom, L"Set own game mode to " + gamemode->getName(), gamemode->getId(), player->getAName());
+            //logAdminAction(source, AdminLogCommand::LOGTYPE_DONT_SHOW_TO_SELF, "commands.gamemode.success.self", mode);
+        }
+	}
+ }
 
 GameType *GameModeCommand::getModeForString(shared_ptr<CommandSender> source, const wstring &name)
 {
-	return NULL;
-	//if (name.equalsIgnoreCase(GameType.SURVIVAL.getName()) || name.equalsIgnoreCase("s")) {
-	//	return GameType.SURVIVAL;
-	//} else if (name.equalsIgnoreCase(GameType.CREATIVE.getName()) || name.equalsIgnoreCase("c")) {
-	//	return GameType.CREATIVE;
-	//} else if (name.equalsIgnoreCase(GameType.ADVENTURE.getName()) || name.equalsIgnoreCase("a")) {
-	//	return GameType.ADVENTURE;
-	//} else {
-	//	return LevelSettings.validateGameType(convertArgToInt(source, name, 0, GameType.values().length - 2));
-	//}
+    if (equalsIgnoreCase(name, GameType::SURVIVAL->getName()) || equalsIgnoreCase(name, L"s"))
+	{
+		return GameType::SURVIVAL;
+    }
+    else if (equalsIgnoreCase(name, GameType::CREATIVE->getName()) || equalsIgnoreCase(name, L"c"))
+    {
+		return GameType::CREATIVE;
+    }
+    else if (equalsIgnoreCase(name, GameType::ADVENTURE->getName()) || equalsIgnoreCase(name, L"a"))
+    {
+		return GameType::ADVENTURE;
+	}
+	else
+	{
+        return NULL;
+	}
 }
