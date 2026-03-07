@@ -618,12 +618,16 @@ bool MinecraftServer::initServer(int64_t seed, NetworkGameInitData *initData, DW
 
 	app.SetGameHostOption(eGameHostOption_Difficulty, GetDedicatedServerInt(settings, L"difficulty", app.GetGameHostOption(eGameHostOption_Difficulty)));
 	app.SetGameHostOption(eGameHostOption_GameType, GetDedicatedServerInt(settings, L"gamemode", app.GetGameHostOption(eGameHostOption_GameType)));
+	app.SetGameHostOption(eGameHostOption_WorldMobCap, GetDedicatedServerInt(settings, L"world-mob-cap", app.GetGameHostOption(eGameHostOption_WorldMobCap)));
 	app.SetGameHostOption(eGameHostOption_Structures, GetDedicatedServerBool(settings, L"generate-structures", app.GetGameHostOption(eGameHostOption_Structures) > 0) ? 1 : 0);
 	app.SetGameHostOption(eGameHostOption_BonusChest, GetDedicatedServerBool(settings, L"bonus-chest", app.GetGameHostOption(eGameHostOption_BonusChest) > 0) ? 1 : 0);
 	app.SetGameHostOption(eGameHostOption_PvP, GetDedicatedServerBool(settings, L"pvp", app.GetGameHostOption(eGameHostOption_PvP) > 0) ? 1 : 0);
 	app.SetGameHostOption(eGameHostOption_TrustPlayers, GetDedicatedServerBool(settings, L"trust-players", app.GetGameHostOption(eGameHostOption_TrustPlayers) > 0) ? 1 : 0);
 	app.SetGameHostOption(eGameHostOption_FireSpreads, GetDedicatedServerBool(settings, L"fire-spreads", app.GetGameHostOption(eGameHostOption_FireSpreads) > 0) ? 1 : 0);
 	app.SetGameHostOption(eGameHostOption_TNT, GetDedicatedServerBool(settings, L"tnt", app.GetGameHostOption(eGameHostOption_TNT) > 0) ? 1 : 0);
+
+	// Use helper to update the caps based on what was set earlier
+	MobCategory::updateMobCaps(app.GetGameHostOption(eGameHostOption_WorldMobCap));
 
 	app.DebugPrintf("\n*** SERVER SETTINGS ***\n");
 	app.DebugPrintf("ServerSettings: host-friends-only is %s\n",(app.GetGameHostOption(eGameHostOption_FriendsOfFriends)>0)?"on":"off");

@@ -7,32 +7,32 @@ class MobCategory
 {
 public:
 	// 4J - putting constants for xbox spawning in one place to tidy things up a bit - all numbers are per level
-	static const int CONSOLE_MONSTERS_HARD_LIMIT = 50;									// Max number of enemies (skeleton, zombie, creeper etc) that the mob spawner will produce
-	static const int CONSOLE_ANIMALS_HARD_LIMIT = 50;									// Max number of animals (cows, sheep, pigs) that the mob spawner will produce	
-	static const int CONSOLE_AMBIENT_HARD_LIMIT = 20;									// Ambient mobs
+	static int maxNaturalMonsters;						// Max number of enemies (skeleton, zombie, creeper etc) that the mob spawner will produce
+	static int maxNaturalAnimals;						// Max number of animals (cows, sheep, pigs) that the mob spawner will produce	
+	static int maxNaturalAmbient;						// Ambient mobs
+	static int maxNaturalSquid;							// Max number of squid that the mob spawner will produce
+	static int maxNaturalChickens;						// Max number of chickens that the mob spawner will produce
+	static int maxNaturalWolves;						// Max number of wolves that the mob spawner will produce
+	static int maxNaturalMushroomCows;					// Max number of mushroom cows that the mob spawner will produce
 
-	static const int MAX_XBOX_CHICKENS = 8;										// Max number of chickens that the mob spawner will produce
-	static const int MAX_XBOX_WOLVES = 8;										// Max number of wolves that the mob spawner will produce
-	static const int MAX_XBOX_MUSHROOMCOWS = 2;									// Max number of mushroom cows that the mob spawner will produce
-	static const int MAX_XBOX_SNOWMEN = 16;										// Max number of snow golems that can be created by placing blocks - 4J-PB increased limit due to player requests
-	static const int MAX_XBOX_IRONGOLEM = 16;									// Max number of iron golems that can be created by placing blocks - 4J-PB increased limit due to player requests
-	static const int CONSOLE_SQUID_HARD_LIMIT = 5;
-	static const int MAX_CONSOLE_BOSS = 1;										// Max number of bosses (enderdragon/wither)
-	
-	static const int MAX_XBOX_ANIMALS_WITH_BREEDING = CONSOLE_ANIMALS_HARD_LIMIT + 20;	// Max number of animals that we can produce (in total), when breeding
-	static const int MAX_XBOX_CHICKENS_WITH_BREEDING = MAX_XBOX_CHICKENS + 8;	// Max number of chickens that we can produce (in total), when breeding/hatching
-	static const int MAX_XBOX_MUSHROOMCOWS_WITH_BREEDING = MAX_XBOX_MUSHROOMCOWS + 20;	// Max number of mushroom cows that we can produce (in total), when breeding
-	static const int MAX_XBOX_WOLVES_WITH_BREEDING = MAX_XBOX_WOLVES + 8;		// Max number of wolves that we can produce (in total), when breeding
-	static const int MAX_VILLAGERS_WITH_BREEDING = 35;
+	static int maxSnowGolems;							// Max number of snow golems that can be created by placing blocks - 4J-PB increased limit due to player requests
+	static int maxIronGolems;							// Max number of iron golems that can be created by placing blocks - 4J-PB increased limit due to player requests
+	static int maxBosses;								// Max number of bosses (enderdragon/wither)
 
-	static const int MAX_XBOX_ANIMALS_WITH_SPAWN_EGG = MAX_XBOX_ANIMALS_WITH_BREEDING + 20;
-	static const int MAX_XBOX_CHICKENS_WITH_SPAWN_EGG = MAX_XBOX_CHICKENS_WITH_BREEDING + 10;
-	static const int MAX_XBOX_WOLVES_WITH_SPAWN_EGG = MAX_XBOX_WOLVES_WITH_BREEDING + 10;
-	static const int MAX_XBOX_MONSTERS_WITH_SPAWN_EGG = CONSOLE_MONSTERS_HARD_LIMIT + 20;
-	static const int MAX_XBOX_VILLAGERS_WITH_SPAWN_EGG = MAX_VILLAGERS_WITH_BREEDING + 15; // 4J-PB - increased this limit due to player requests
-	static const int MAX_XBOX_MUSHROOMCOWS_WITH_SPAWN_EGG = MAX_XBOX_MUSHROOMCOWS_WITH_BREEDING + 8;
-	static const int MAX_XBOX_SQUIDS_WITH_SPAWN_EGG = CONSOLE_SQUID_HARD_LIMIT + 8;
-	static const int MAX_AMBIENT_WITH_SPAWN_EGG = CONSOLE_AMBIENT_HARD_LIMIT + 8;
+	static int maxAnimalsWithBreeding;					// Max number of animals that we can produce (in total), when breeding
+	static int maxChickensWithBreeding;					// Max number of chickens that we can produce (in total), when breeding/hatching
+	static int maxMushroomCowsWithBreeding;				// Max number of mushroom cows that we can produce (in total), when breeding
+	static int maxWolvesWithBreeding;					// Max number of wolves that we can produce (in total), when breeding
+	static int maxVillagersWithBreeding;				// Max number of villagers that we can produce (in total), when breeding
+
+	static int maxAnimalsWithSpawnEgg;					// Max number of animals that we can produce (in total), when using spawn eggs
+	static int maxChickensWithSpawnEgg;					// Max number of chickens that we can produce (in total), when using spawn eggs
+	static int maxWolvesWithSpawnEgg;					// Max number of wolves that we can produce (in total), when using spawn eggs
+	static int maxMonstersWithSpawnEgg;					// Max number of monsters that we can produce (in total), when using spawn eggs
+	static int maxVillagersWithSpawnEgg;				// Max number of villagers that we can produce (in total), when using spawn eggs - 4J-PB increased limit due to player requests
+	static int maxMushroomCowsWithSpawnEgg;				// Max number of mushroom cows that we can produce (in total), when using spawn eggs
+	static int maxSquidsWithSpawnEgg;					// Max number of squids that we can produce (in total), when using spawn eggs
+	static int maxAmbientWithSpawnEgg;					// Max number of ambient mobs that we can produce (in total), when using spawn eggs
 
 	/*
 		Maximum animals = 50 + 20 + 20 = 90
@@ -65,14 +65,14 @@ public:
 
 private:
 	const int m_max;
-	const int m_maxPerLevel;
+	int m_maxPerLevel = 0;
 	const Material *spawnPositionMaterial;
 	const bool m_isFriendly;
 	const bool m_isPersistent;
 	const bool m_isSingleType; // 4J Added
 	const eINSTANCEOF m_eBase; // 4J added
 
-	MobCategory(int maxVar, Material *spawnPositionMaterial, bool isFriendly, bool isPersistent, eINSTANCEOF eBase, bool isSingleType, int maxPerLevel);
+	MobCategory(int maxVar, Material *spawnPositionMaterial, bool isFriendly, bool isPersistent, eINSTANCEOF eBase, bool isSingleType);
 
 public:
 	const type_info getBaseClass();
@@ -85,5 +85,7 @@ public:
 	bool isPersistent();
 
 public:
+	// Add a function to update the mob caps
+	static void updateMobCaps(int mode);
 	static void staticCtor();
 };

@@ -8,6 +8,7 @@
 #include "..\..\MinecraftServer.h"
 #include "..\..\..\Minecraft.World\LevelSettings.h"
 #include "..\..\..\Minecraft.World\StringHelpers.h"
+#include "..\..\..\Minecraft.World\MobCategory.h"
 #if defined(__PS3__) || defined(__ORBIS__) || defined(__PSVITA__)
 #include "Common\Network\Sony\SonyHttp.h"
 #endif
@@ -479,6 +480,8 @@ void UIScene_LoadMenu::tick()
 			m_MoreOptionsParams.bDisableSaving = app.GetGameHostOption(uiHostOptions,eGameHostOption_DisableSaving)>0?TRUE:FALSE;
 			m_MoreOptionsParams.currentWorldSize = (EGameHostOptionWorldSize)app.GetGameHostOption(uiHostOptions,eGameHostOption_WorldSize);
 			m_MoreOptionsParams.newWorldSize = m_MoreOptionsParams.currentWorldSize;
+			// Load world mob cap option
+			m_MoreOptionsParams.worldMobCap = app.GetGameHostOption(uiHostOptions,eGameHostOption_WorldMobCap);
 
 			m_MoreOptionsParams.bMobGriefing = app.GetGameHostOption(uiHostOptions, eGameHostOption_MobGriefing);
 			m_MoreOptionsParams.bKeepInventory = app.GetGameHostOption(uiHostOptions, eGameHostOption_KeepInventory);
@@ -1616,6 +1619,10 @@ void UIScene_LoadMenu::StartGameFromSave(UIScene_LoadMenu* pClass, DWORD dwLocal
 #ifdef _LARGE_WORLDS
 	app.SetGameHostOption(eGameHostOption_WorldSize, pClass->m_MoreOptionsParams.worldSize+1 );  // 0 is GAME_HOST_OPTION_WORLDSIZE_UNKNOWN
 #endif
+	app.SetGameHostOption(eGameHostOption_WorldMobCap, pClass->m_MoreOptionsParams.worldMobCap );
+
+	// Use helper to update the caps based on what was set earlier
+	MobCategory::updateMobCaps(pClass->m_MoreOptionsParams.worldMobCap);
 // 	app.SetGameNewWorldSize(64, true );
 //	app.SetGameNewWorldSize(0, false );
 

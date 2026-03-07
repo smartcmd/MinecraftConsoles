@@ -356,6 +356,7 @@ typedef struct _LaunchMoreOptionsMenuInitData
 
 	wstring seed;
 	int worldSize;
+	int worldMobCap;
 	bool bDisableSaving;
 
 	EGameHostOptionWorldSize currentWorldSize;
@@ -372,6 +373,7 @@ typedef struct _LaunchMoreOptionsMenuInitData
 		bTNT = true;
 		iPad = -1;
 		worldSize = 3;
+		worldMobCap = 0;
 		seed = L"";
 		bDisableSaving = false;
 		newWorldSize = e_worldSize_Unknown;

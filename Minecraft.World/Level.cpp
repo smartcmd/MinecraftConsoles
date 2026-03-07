@@ -4692,6 +4692,10 @@ void Level::decrementUnsavedChunkCount()
 
 bool Level::canCreateMore(eINSTANCEOF type, ESPAWN_TYPE spawnType)
 {
+	if (app.GetGameHostOption(eGameHostOption_WorldMobCap) == 3)
+	{
+		return true;
+	}
 	int count = 0;
 	int max = 0;
 	if(spawnType == eSpawnType_Egg || spawnType == eSpawnType_Portal)
@@ -4700,52 +4704,52 @@ bool Level::canCreateMore(eINSTANCEOF type, ESPAWN_TYPE spawnType)
 		{
 		case eTYPE_VILLAGER:
 			count = countInstanceOf( eTYPE_VILLAGER, true);
-			max = MobCategory::MAX_XBOX_VILLAGERS_WITH_SPAWN_EGG;
+			max = MobCategory::maxVillagersWithSpawnEgg;
 			break;
 		case eTYPE_CHICKEN:
 			count = countInstanceOf( eTYPE_CHICKEN, true);
-			max = MobCategory::MAX_XBOX_CHICKENS_WITH_SPAWN_EGG;
+			max = MobCategory::maxChickensWithSpawnEgg;
 			break;
 		case eTYPE_WOLF:
 			count = countInstanceOf( eTYPE_WOLF, true);
-			max = MobCategory::MAX_XBOX_WOLVES_WITH_SPAWN_EGG;
+			max = MobCategory::maxWolvesWithSpawnEgg;
 			break;
 		case eTYPE_MUSHROOMCOW:
 			count = countInstanceOf( eTYPE_MUSHROOMCOW, true);
-			max = MobCategory::MAX_XBOX_MUSHROOMCOWS_WITH_SPAWN_EGG;
+			max = MobCategory::maxMushroomCowsWithSpawnEgg;
 			break;
 		case eTYPE_SQUID:
 			count = countInstanceOf( eTYPE_SQUID, true);
-			max = MobCategory::MAX_XBOX_SQUIDS_WITH_SPAWN_EGG;
+			max = MobCategory::maxSquidsWithSpawnEgg;
 			break;
 		case eTYPE_SNOWMAN:
 			count = countInstanceOf( eTYPE_SNOWMAN, true);
-			max = MobCategory::MAX_XBOX_SNOWMEN;
+			max = MobCategory::maxSnowGolems;
 			break;
 		case eTYPE_VILLAGERGOLEM:
 			count = countInstanceOf( eTYPE_VILLAGERGOLEM, true);
-			max = MobCategory::MAX_XBOX_IRONGOLEM;
+			max = MobCategory::maxIronGolems;
 			break;
 		case eTYPE_WITHERBOSS:
 			count = countInstanceOf(eTYPE_WITHERBOSS, true) + countInstanceOf(eTYPE_ENDERDRAGON, true);
-			max = MobCategory::MAX_CONSOLE_BOSS;
+			max = MobCategory::maxBosses;
 			break;
 		default:
 			if((type & eTYPE_ANIMALS_SPAWN_LIMIT_CHECK) == eTYPE_ANIMALS_SPAWN_LIMIT_CHECK)
 			{
 				count = countInstanceOf( eTYPE_ANIMALS_SPAWN_LIMIT_CHECK, false);
-				max = MobCategory::MAX_XBOX_ANIMALS_WITH_SPAWN_EGG;
+				max = MobCategory::maxAnimalsWithSpawnEgg;
 			}
 			// 4J: Use eTYPE_ENEMY instead of monster (slimes and ghasts aren't monsters)
 			else if(Entity::instanceof(type, eTYPE_ENEMY))
 			{
 				count = countInstanceOf(eTYPE_ENEMY, false);
-				max = MobCategory::MAX_XBOX_MONSTERS_WITH_SPAWN_EGG;
+				max = MobCategory::maxMonstersWithSpawnEgg;
 			}
 			else if( (type & eTYPE_AMBIENT) == eTYPE_AMBIENT)
 			{
 				count = countInstanceOf( eTYPE_AMBIENT, false);
-				max = MobCategory::MAX_AMBIENT_WITH_SPAWN_EGG;
+				max = MobCategory::maxAmbientWithSpawnEgg;
 			}
 			// 4J: Added minecart and boats
 			else if (Entity::instanceof(type, eTYPE_MINECART))
@@ -4766,25 +4770,25 @@ bool Level::canCreateMore(eINSTANCEOF type, ESPAWN_TYPE spawnType)
 		{
 		case eTYPE_VILLAGER:
 			count = countInstanceOf( eTYPE_VILLAGER, true);
-			max = MobCategory::MAX_VILLAGERS_WITH_BREEDING;
+			max = MobCategory::maxVillagersWithBreeding;
 			break;
 		case eTYPE_CHICKEN:
 			count = countInstanceOf( eTYPE_CHICKEN, true);
-			max = MobCategory::MAX_XBOX_CHICKENS_WITH_BREEDING;
+			max = MobCategory::maxChickensWithBreeding;
 			break;
 		case eTYPE_WOLF:
 			count = countInstanceOf( eTYPE_WOLF, true);
-			max = MobCategory::MAX_XBOX_WOLVES_WITH_BREEDING;
+			max = MobCategory::maxWolvesWithBreeding;
 			break;
 		case eTYPE_MUSHROOMCOW:
 			count = countInstanceOf( eTYPE_MUSHROOMCOW, true);
-			max = MobCategory::MAX_XBOX_MUSHROOMCOWS_WITH_BREEDING;
+			max = MobCategory::maxMushroomCowsWithBreeding;
 			break;
 		default:
 			if((type & eTYPE_ANIMALS_SPAWN_LIMIT_CHECK) == eTYPE_ANIMALS_SPAWN_LIMIT_CHECK)
 			{
 				count = countInstanceOf( eTYPE_ANIMALS_SPAWN_LIMIT_CHECK, false);
-				max = MobCategory::MAX_XBOX_ANIMALS_WITH_BREEDING;
+				max = MobCategory::maxAnimalsWithBreeding;
 			}
 			else if( (type & eTYPE_MONSTER) == eTYPE_MONSTER)
 			{
