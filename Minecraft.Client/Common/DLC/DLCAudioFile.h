@@ -28,7 +28,7 @@ public:
 		e_AudioParamType_Max,
 
 	};
-	static WCHAR *wchTypeNamesA[e_AudioParamType_Max];
+	static const WCHAR *wchTypeNamesA[e_AudioParamType_Max];
 
 	DLCAudioFile(const wstring &path);
 

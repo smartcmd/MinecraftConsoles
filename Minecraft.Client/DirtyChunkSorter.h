@@ -2,7 +2,7 @@
 class Chunk;
 class Mob;
 
-class DirtyChunkSorter : public std::binary_function<const Chunk *,const Chunk *,bool> 
+class DirtyChunkSorter
 {
 private:
 	shared_ptr<LivingEntity> cameraEntity;
