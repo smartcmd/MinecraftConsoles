@@ -46,6 +46,7 @@
 #include "..\..\Minecraft.Client\Tesselator.h"
 #include "..\Common\Console_Awards_enum.h"
 #include "..\..\Minecraft.Client\Options.h"
+#include "..\GameRenderer.h"
 #include "Sentient\SentientManager.h"
 #include "..\..\Minecraft.World\IntCache.h"
 #include "..\Textures.h"
@@ -904,6 +905,9 @@ int main()
 #endif
 		ui.tick();
 		ui.render();
+
+		pMinecraft->gameRenderer->ApplyGammaPostProcess();
+
 #if 0
 		app.HandleButtonPresses();
 

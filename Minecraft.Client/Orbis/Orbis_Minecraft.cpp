@@ -32,6 +32,7 @@
 //#include "NetworkManager.h"
 #include "..\..\Minecraft.Client\Tesselator.h"
 #include "..\..\Minecraft.Client\Options.h"
+#include "..\GameRenderer.h"
 #include "Sentient\SentientManager.h"
 #include "..\..\Minecraft.World\IntCache.h"
 #include "..\Textures.h"
@@ -1302,6 +1303,9 @@ int main(int argc, const char *argv[] )
 #endif
 		ui.tick();
 		ui.render();
+
+		pMinecraft->gameRenderer->ApplyGammaPostProcess();
+
 #if 0
 		app.HandleButtonPresses();
 

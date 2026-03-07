@@ -945,9 +945,9 @@ float GameRenderer::ComputeGammaFromSlider(float slider0to100)
     slider = min(slider, 100.0f);
 
     if (slider > 50.0f)
-        return 1.0f + (slider - 50.0f) / 50.0f * 3.0f; // 1.0 -> 4.0
+        return 1.0f + (slider - 50.0f) / 50.0f * 0.5f; // 1.0 -> 1.5
     else
-        return 1.0f - (50.0f - slider) / 50.0f * 0.85f; // 1.0 -> 0.15
+        return 1.0f - (50.0f - slider) / 50.0f * 0.5f; // 1.0 -> 0.5
 }
 
 void GameRenderer::CachePlayerGammas()
@@ -1057,20 +1057,36 @@ void GameRenderer::ApplyGammaPostProcess() const
     D3D11_VIEWPORT vps[NUM_LIGHT_TEXTURES];
     float gammas[NUM_LIGHT_TEXTURES];
     const UINT n = BuildPlayerViewports(vps, gammas, NUM_LIGHT_TEXTURES);
-    if (n == 0)
-        return;
 
-    bool anyEffect = false;
-    for (UINT i = 0; i < n; ++i)
+    float gamma = 1.0f;
+    bool hasPlayers = n > 0;
+
+    if (hasPlayers)
     {
-        if (gammas[i] < 0.99f || gammas[i] > 1.01f)
+        bool anyEffect = false;
+        for (UINT i = 0; i < n; ++i)
         {
-            anyEffect = true;
-            break;
+            if (gammas[i] < 0.99f || gammas[i] > 1.01f)
+            {
+                anyEffect = true;
+                break;
+            }
         }
+        if (!anyEffect)
+            return;
     }
-    if (!anyEffect)
+    else
+    {
+        const float slider = app.GetGameSettings(0, eGameSetting_Gamma);
+        gamma = ComputeGammaFromSlider(slider);
+        if (gamma < 0.99f || gamma > 1.01f)
+        {
+            PostProcesser::GetInstance().SetGamma(gamma);
+            PostProcesser::GetInstance().Apply();
+            return;
+        }
         return;
+    }
 
     if (n == 1)
     {
@@ -1175,35 +1191,33 @@ void GameRenderer::render(float a, bool bFirst)
 			renderLevel(a, lastNsTime + 1000000000 / maxFps);
 		}
 
-		lastNsTime = System::nanoTime();
+			lastNsTime = System::nanoTime();
 
-		if (!mc->options->hideGui || mc->screen != NULL)
-		{
-			mc->gui->render(a, mc->screen != NULL, xMouse, yMouse);
+			if (!mc->options->hideGui || mc->screen != NULL)
+			{
+				mc->gui->render(a, mc->screen != NULL, xMouse, yMouse);
+			}
 		}
-	}
-	else
-	{
-		glViewport(0, 0, mc->width, mc->height);
-		glMatrixMode(GL_PROJECTION);
-		glLoadIdentity();
-		glMatrixMode(GL_MODELVIEW);
-		glLoadIdentity();
-		setupGuiScreen();
+		else
+		{
+			glViewport(0, 0, mc->width, mc->height);
+			glMatrixMode(GL_PROJECTION);
+			glLoadIdentity();
+			glMatrixMode(GL_MODELVIEW);
+			glLoadIdentity();
+			setupGuiScreen();
 
-		lastNsTime = System::nanoTime();
-	}
+			lastNsTime = System::nanoTime();
+		}
 
 
-	if (mc->screen != NULL)
-	{
-		glClear(GL_DEPTH_BUFFER_BIT);
-		mc->screen->render(xMouse, yMouse, a);
-		if (mc->screen != NULL && mc->screen->particles != NULL) mc->screen->particles->render(a);
-	}
-
-	ApplyGammaPostProcess();
-}
+			if (mc->screen != NULL)
+			{
+				glClear(GL_DEPTH_BUFFER_BIT);
+				mc->screen->render(xMouse, yMouse, a);
+				if (mc->screen != NULL && mc->screen->particles != NULL) mc->screen->particles->render(a);
+			}
+		}
 
 void GameRenderer::renderLevel(float a)
 {
