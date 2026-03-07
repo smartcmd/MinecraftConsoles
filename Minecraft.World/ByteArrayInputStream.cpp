@@ -25,11 +25,11 @@ ByteArrayInputStream::ByteArrayInputStream(byteArray buf)
 	this->buf = buf;
 }
 
-//Reads the next uint8_t of data from this input stream. The value uint8_t is returned as an int in the range 0 to 255.
+//Reads the next byte of data from this input stream. The value uint8_t is returned as an int in the range 0 to 255.
 //If no uint8_t is available because the end of the stream has been reached, the value -1 is returned.
 //This read method cannot block.
 //Returns:
-//the next uint8_t of data, or -1 if the end of the stream has been reached.
+//the next byte of data, or -1 if the end of the stream has been reached.
 int ByteArrayInputStream::read()
 {
 	if( pos >= count )

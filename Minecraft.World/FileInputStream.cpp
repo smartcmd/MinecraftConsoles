@@ -57,7 +57,7 @@ FileInputStream::~FileInputStream()
 
 //Reads a uint8_t of data from this input stream. This method blocks if no input is yet available.
 //Returns:
-//the next uint8_t of data, or -1 if the end of the file is reached.
+//the next byte of data, or -1 if the end of the file is reached.
 int FileInputStream::read()
 {
 	uint8_t byteRead = 0;

@@ -419,7 +419,7 @@ void WinsockNetLayer::ClearSocketForSmallId(BYTE smallId)
 	LeaveCriticalSection(&s_smallIdToSocketLock);
 }
 
-// Send reject handshake: sentinel 0xFF + DisconnectPacket wire format (1 uint8_t id 255 + 4 uint8_t big-endian reason). Then caller closes socket.
+// Send reject handshake: sentinel 0xFF + DisconnectPacket wire format (1 byte id 255 + 4 byte big-endian reason). Then caller closes socket.
 static void SendRejectWithReason(SOCKET clientSocket, DisconnectPacket::eDisconnectReason reason)
 {
 	BYTE buf[6];

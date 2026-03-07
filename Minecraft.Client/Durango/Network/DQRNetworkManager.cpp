@@ -1779,7 +1779,7 @@ void DQRNetworkManager::SendUnassignSmallId(int playerIndex)
 	LogCommentFormat( L"SendUnassignSmallId, channel %d\n", playerIndex);
 	// Send data with small Id setting mode - see full comment in DQRNetworkManagerEventHandlers::DataReceivedHandler
 	BYTE data[4];
-	data[0] = 0x80 | ( playerIndex << 5 );						// Send 1 uint8_t, internal mode
+	data[0] = 0x80 | ( playerIndex << 5 );						// Send 1 byte, internal mode
 	data[1] = 1;
 	data[2] = DQR_INTERNAL_UNASSIGN_SMALL_ID;					// Internal data type
 

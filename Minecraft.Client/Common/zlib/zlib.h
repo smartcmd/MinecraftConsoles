@@ -83,11 +83,11 @@ typedef void   (*free_func)  OF((voidpf opaque, voidpf address));
 struct internal_state;
 
 typedef struct z_stream_s {
-    z_const Bytef *next_in;     /* next input uint8_t */
+    z_const Bytef *next_in;     /* next input byte */
     uInt     avail_in;  /* number of bytes available at next_in */
     uLong    total_in;  /* total number of input bytes read so far */
 
-    Bytef    *next_out; /* next output uint8_t should be put there */
+    Bytef    *next_out; /* next output byte should be put there */
     uInt     avail_out; /* remaining free space at next_out */
     uLong    total_out; /* total number of bytes output so far */
 
@@ -278,17 +278,17 @@ ZEXTERN int ZEXPORT deflate OF((z_streamp strm, int flush));
   maximize compression.
 
     If the parameter flush is set to Z_SYNC_FLUSH, all pending output is
-  flushed to the output buffer and the output is aligned on a uint8_t boundary, so
+  flushed to the output buffer and the output is aligned on a byte boundary, so
   that the decompressor can get all input data available so far.  (In
   particular avail_in is zero after the call if enough output space has been
   provided before the call.) Flushing may degrade compression for some
   compression algorithms and so it should be used only when necessary.  This
   completes the current deflate block and follows it with an empty stored block
-  that is three bits plus filler bits to the next uint8_t, followed by four bytes
+  that is three bits plus filler bits to the next byte, followed by four bytes
   (00 00 ff ff).
 
     If flush is set to Z_PARTIAL_FLUSH, all pending output is flushed to the
-  output buffer, but the output is not aligned to a uint8_t boundary.  All of the
+  output buffer, but the output is not aligned to a byte boundary.  All of the
   input data so far will be available to the decompressor, as for Z_SYNC_FLUSH.
   This completes the current deflate block and follows it with an empty fixed
   codes block that is 10 bits long.  This assures that enough bytes are output
@@ -296,8 +296,8 @@ ZEXTERN int ZEXPORT deflate OF((z_streamp strm, int flush));
   block.
 
     If flush is set to Z_BLOCK, a deflate block is completed and emitted, as
-  for Z_SYNC_FLUSH, but the output is not aligned on a uint8_t boundary, and up to
-  seven bits of the current block are held to be written as the next uint8_t after
+  for Z_SYNC_FLUSH, but the output is not aligned on a byte boundary, and up to
+  seven bits of the current block are held to be written as the next byte after
   the next deflate block is completed.  In this case, the decompressor may not
   be provided enough bits at this point in order to complete decompression of
   the data provided so far to the compressor.  It may need to wait for the next

@@ -2088,7 +2088,7 @@ size_t UIController::RegisterForCallbackId(UIScene *scene)
 {
 	EnterCriticalSection(&m_registeredCallbackScenesCS);
 	size_t newId = GetTickCount();
-	newId &= 0xFFFFFF; // Chop off the top uint8_t, we don't need any more accuracy than that
+	newId &= 0xFFFFFF; // Chop off the top byte, we don't need any more accuracy than that
 	newId |= (scene->getSceneType() << 24); // Add in the scene's type to help keep this unique
 	m_registeredCallbackScenes[newId] = scene;
 	LeaveCriticalSection(&m_registeredCallbackScenesCS);

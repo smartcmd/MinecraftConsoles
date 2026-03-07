@@ -1169,7 +1169,7 @@ void  CompressedTileStorage::compress(int upgradeBlock/*=-1*/)
 					}
 					else
 					{
-						usDataOffset = (usDataOffset + 3 ) & 0xfffc;									// Make sure offset is 4 uint8_t aligned
+						usDataOffset = (usDataOffset + 3 ) & 0xfffc;									// Make sure offset is 4 byte aligned
 						XMemCpy( pucData + usDataOffset, unpacked_data, 64 );
 						newIndices[i] |= ( usDataOffset & INDEX_OFFSET_MASK) << INDEX_OFFSET_SHIFT;
 						usDataOffset += 64;

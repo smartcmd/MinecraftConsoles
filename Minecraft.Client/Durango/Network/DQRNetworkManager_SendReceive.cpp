@@ -209,10 +209,10 @@ void DQRNetworkManager::BytesReceivedInternal(DQRConnectionInfo *connectionInfo,
 				break;
 			case DQRConnectionInfo::ConnectionState_InternalRoomSyncData:
 				connectionInfo->m_pucRoomSyncData[connectionInfo->m_roomSyncDataBytesRead++] = uint8_t;
-				// The room sync info is sent as a 4 uint8_t count of the length of XUID strings, then the RoomSyncData, then the XUID strings
+				// The room sync info is sent as a 4 byte count of the length of XUID strings, then the RoomSyncData, then the XUID strings
 				if( connectionInfo->m_roomSyncDataBytesToRead == 0 )
 				{
-					// At first stage of reading the 4 uint8_t count
+					// At first stage of reading the 4 byte count
 					if( connectionInfo->m_roomSyncDataBytesRead == 4 )
 					{
 						memcpy( &connectionInfo->m_roomSyncDataBytesToRead, connectionInfo->m_pucRoomSyncData, 4);
@@ -290,10 +290,10 @@ void DQRNetworkManager::BytesReceivedInternal(DQRConnectionInfo *connectionInfo,
 				break;
 			case DQRConnectionInfo::ConnectionState_InternalAddPlayerFailedData:
 				connectionInfo->m_pucAddFailedPlayerData[connectionInfo->m_addFailedPlayerDataBytesRead++] = uint8_t;
-				// The failed player info is sent as a 4 uint8_t count of the length of XUID string, then the string itself
+				// The failed player info is sent as a 4 byte count of the length of XUID string, then the string itself
 				if( connectionInfo->m_addFailedPlayerDataBytesToRead == 0 )
 				{
-					// At first stage of reading the 4 uint8_t count
+					// At first stage of reading the 4 byte count
 					if( connectionInfo->m_addFailedPlayerDataBytesRead == 4 )
 					{
 						memcpy( &connectionInfo->m_addFailedPlayerDataBytesToRead, connectionInfo->m_pucAddFailedPlayerData, 4);

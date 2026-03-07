@@ -97,12 +97,12 @@ int32_t sceRemoteStorageGetStatus(const SceRemoteStorageStatusReqParams & params
 /// Gets section of data from a file specified.
 ///
 /// Gets section of data from a file specified. The amount of data requested can be of any size. To request this information the name of file, the number of bytes and
-/// the uint8_t to start reading along with a buffer to store such data must be provided.
+/// the byte to start reading along with a buffer to store such data must be provided.
 /// Metadata information of the file, as description or visibility, will be provided only in the case the first amount of bytes for the file are requested (offset = 0). 
 /// This method does make use of the callback to inform the user of success termination. The SceRemoteStorageData pointer must be a pointer to a valid 
 /// location in memory until the callback is called as the output information will be stored in such location.
 ///
-/// @param params		The structure containing the file name to read, the start uint8_t to start reading and the amount of bytes to read. 
+/// @param params		The structure containing the file name to read, the start byte to start reading and the amount of bytes to read. 
 /// @param status		The structure where the output information will be stored. The memory location being pointed must be valid until the callback gets called.
 ///
 /// @retval SCE_REMOTE_STORAGE_SUCCESS						The operation was successfully registered on the thread.

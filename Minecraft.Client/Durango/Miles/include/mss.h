@@ -1900,7 +1900,7 @@ typedef struct _SMPBUF
 {
    void const *start;          // Sample buffer address (W)
    U32             len;            // Sample buffer size in bytes (W)
-   U32             pos;            // Index to next uint8_t (R/W)
+   U32             pos;            // Index to next byte (R/W)
    U32             done;           // Nonzero if buffer with len=0 sent by app
    S32             reset_ASI;      // Reset the ASI decoder at the end of the buffer
    S32             reset_seek_pos; // New destination offset in stream source data, for ASI codecs that care

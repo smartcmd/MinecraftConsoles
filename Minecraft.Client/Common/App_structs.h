@@ -33,7 +33,7 @@ typedef struct
 	unsigned char ucSoundFXVolume;
 	unsigned char ucSensitivity;
 	unsigned char ucGamma;
-	unsigned char ucPad01; // 1 uint8_t of padding inserted here
+	unsigned char ucPad01; // 1 byte of padding inserted here
 	unsigned short usBitmaskValues; // bit 0,1 -	difficulty		
 	// bit 2 -		view bob
 	// bit 3 -		player visible in a map
@@ -65,7 +65,7 @@ typedef struct
 			// In-Menu sensitivity
 			unsigned char ucMenuSensitivity;
 			unsigned char ucInterfaceOpacity;
-			unsigned char ucPad02;  // 1 uint8_t padding
+			unsigned char ucPad02;  // 1 byte padding
 			unsigned char ucFov;
 
 			// Adding another bitmask flag for more settings for 1.8.2

@@ -16,9 +16,9 @@ typedef struct _GameSessionData
 	char szPlayers[MINECRAFT_NET_MAX_PLAYERS][XUSER_NAME_SIZE];		// 128 bytes ( 8*16)
 	unsigned int m_uiGameHostSettings;								//   4 bytes
 	unsigned int texturePackParentId;										//   4 bytes
-	unsigned char subTexturePackId;									//   1 uint8_t
+	unsigned char subTexturePackId;									//   1 byte
 
-	bool isJoinable;												//   1 uint8_t
+	bool isJoinable;												//   1 byte
 
 	_GameSessionData()
 	{
@@ -40,12 +40,12 @@ typedef struct _GameSessionData
 	GameSessionUID players[MINECRAFT_NET_MAX_PLAYERS];					//  64 bytes ( 8*8 ) on xbox, 192 ( 24*8) on PS3
 	unsigned int m_uiGameHostSettings;								//   4 bytes
 	unsigned int texturePackParentId;										//   4 bytes
-	unsigned char subTexturePackId;									//   1 uint8_t
+	unsigned char subTexturePackId;									//   1 byte
 
-	bool isJoinable;												//   1 uint8_t
+	bool isJoinable;												//   1 byte
 
-	unsigned char playerCount;										//   1 uint8_t
-	bool isReadyToJoin;												//   1 uint8_t
+	unsigned char playerCount;										//   1 byte
+	bool isReadyToJoin;												//   1 byte
 
 	_GameSessionData()
 	{

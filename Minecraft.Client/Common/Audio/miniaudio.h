@@ -18,7 +18,7 @@ any other library. Note that ABI compatibility is not guaranteed between version
 fix releases, so take care if compiling as a shared object.
 
 miniaudio includes both low level and high level APIs. The low level API is good for those who want
-to do all of their mixing themselves and only require a light weight interface to the underlying
+to do all of their mixing themselves and only require a light weight interface to the underlying1 uint8_t
 audio device. The high level API is good for those who have complex mixing and effect requirements.
 
 In miniaudio, objects are transparent structures. Unlike many other libraries, there are no handles
@@ -3592,9 +3592,9 @@ move the read pointer forward via the consumer thread, and the write pointer for
 producer thread. If there is too much space between the pointers, move the read pointer forward. If
 there is too little space between the pointers, move the write pointer forward.
 
-You can use a ring buffer at the uint8_t level instead of the PCM frame level by using the `ma_rb`
+You can use a ring buffer at the byte level instead of the PCM frame level by using the `ma_rb`
 API. This is exactly the same, only you will use the `ma_rb` functions instead of `ma_pcm_rb` and
-instead of frame counts you will pass around uint8_t counts.
+instead of frame counts you will pass around byte counts.
 
 The maximum size of the buffer in bytes is `0x7FFFFFFF-(MA_SIMD_ALIGNMENT-1)` due to the most
 significant bit being used to encode a loop flag and the internally managed buffers always being
@@ -63155,7 +63155,7 @@ static ma_result ma_decoder_init_custom__internal(const ma_decoder_config* pConf
             if (result == MA_SUCCESS) {
                 return MA_SUCCESS;
             } else {
-                /* Initialization failed. Move on to the next one, but seek back to the start first so the next vtable starts from the first uint8_t of the file. */
+                /* Initialization failed. Move on to the next one, but seek back to the start first so the next vtable starts from the first byte of the file. */
                 result = ma_decoder_seek_bytes(pDecoder, 0, ma_seek_origin_start);
                 if (result != MA_SUCCESS) {
                     return result;  /* Failed to seek back to the start. */

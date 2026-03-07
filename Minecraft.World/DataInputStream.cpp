@@ -10,7 +10,7 @@ DataInputStream::DataInputStream(InputStream *in) : stream( in )
 {
 }
 
-//Reads the next uint8_t of data from this input stream. The value uint8_t is returned as an int in the range 0 to 255.
+//Reads the next byte of data from this input stream. The value uint8_t is returned as an int in the range 0 to 255.
 //If no uint8_t is available because the end of the stream has been reached, the value -1 is returned.
 //This method blocks until input data is available, the end of the stream is detected, or an exception is thrown.
 //This method simply performs in.read() and returns the result.

@@ -5518,7 +5518,7 @@ int stb_vorbis_get_samples_float(stb_vorbis *f, int channels, float **buffer, in
     0.996 - bugfix: fast-huffman decode initialized incorrectly for sparse codebooks; fixing gives 10% speedup - found by Terje Mathisen
     0.995 - bugfix: fix to 'effective' overrun detection - found by Terje Mathisen
     0.994 - bugfix: garbage decode on final VQ symbol of a non-multiple - found by Terje Mathisen
-    0.993 - bugfix: pushdata API required 1 extra uint8_t for empty page (failed to consume final page if empty) - found by Terje Mathisen
+    0.993 - bugfix: pushdata API required 1 extra byte for empty page (failed to consume final page if empty) - found by Terje Mathisen
     0.992 - fixes for MinGW warning
     0.991 - turn fast-float-conversion on by default
     0.990 - fix push-mode seek recovery if you seek into the headers

@@ -99,7 +99,7 @@ typedef struct internal_state {
     int   status;        /* as the name implies */
     Bytef *pending_buf;  /* output still pending */
     ulg   pending_buf_size; /* size of pending_buf */
-    Bytef *pending_out;  /* next pending uint8_t to output to the stream */
+    Bytef *pending_out;  /* next pending byte to output to the stream */
     uInt   pending;      /* nb of bytes in the pending buffer */
     int   wrap;          /* bit 0 true for zlib, bit 1 true for gzip */
     gz_headerp  gzhead;  /* gzip header information to write */
@@ -144,7 +144,7 @@ typedef struct internal_state {
     uInt  hash_shift;
     /* Number of bits by which ins_h must be shifted at each input
      * step. It must be such that after MIN_MATCH steps, the oldest
-     * uint8_t no longer takes part in the hash key, that is:
+     * byte no longer takes part in the hash key, that is:
      *   hash_shift * MIN_MATCH >= hash_bits
      */
 
@@ -272,7 +272,7 @@ typedef struct internal_state {
 
 } FAR deflate_state;
 
-/* Output a uint8_t on the stream.
+/* Output a byte on the stream.
  * IN assertion: there is enough room in pending_buf.
  */
 #define put_byte(s, c) {s->pending_buf[s->pending++] = (c);}
