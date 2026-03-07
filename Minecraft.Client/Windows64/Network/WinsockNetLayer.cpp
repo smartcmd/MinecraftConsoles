@@ -315,7 +315,7 @@ bool WinsockNetLayer::JoinGame(const char* ip, int port)
 				Sleep(200);
 				continue;
 			}
-			// rejectBuf[0] = packet id (255), rejectBuf[1..4] = 4-uint8_t big-endian reason
+			// rejectBuf[0] = packet id (255), rejectBuf[1..4] = 4-byte big-endian reason
 			int reason = ((rejectBuf[1] & 0xff) << 24) | ((rejectBuf[2] & 0xff) << 16) |
 				((rejectBuf[3] & 0xff) << 8) | (rejectBuf[4] & 0xff);
 			Minecraft::GetInstance()->connectionDisconnected(ProfileManager.GetPrimaryPad(), (DisconnectPacket::eDisconnectReason)reason);

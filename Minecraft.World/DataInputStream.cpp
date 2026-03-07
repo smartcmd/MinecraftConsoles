@@ -280,13 +280,13 @@ unsigned short DataInputStream::readUnsignedShort()
 //
 //(char)(((a& 0x1F) << 6) | (b & 0x3F))
 //
-//If the first uint8_t of a group matches the bit pattern 1110xxxx, then the group consists of that uint8_t a and two more bytes b and c.
-//If there is no uint8_t c (because uint8_t a was one of the last two of the bytes to be read), or either uint8_t b or uint8_t c does not match the bit
+//If the first byte of a group matches the bit pattern 1110xxxx, then the group consists of that byte a and two more bytes b and c.
+//If there is no byte c (because byte a was one of the last two of the bytes to be read), or either byte b or byte c does not match the bit
 //pattern 10xxxxxx, then a UTFDataFormatException is thrown. Otherwise, the group is converted to the character:
 //
 // (char)(((a & 0x0F) << 12) | ((b & 0x3F) << 6) | (c & 0x3F))
 //
-//If the first uint8_t of a group matches the pattern 1111xxxx or the pattern 10xxxxxx, then a UTFDataFormatException is thrown.
+//If the first byte of a group matches the pattern 1111xxxx or the pattern 10xxxxxx, then a UTFDataFormatException is thrown.
 //If end of file is encountered at any time during this entire process, then an EOFException is thrown.
 //
 //After every group has been converted to a character by this process, the characters are gathered, in the same order in which their

@@ -33,6 +33,7 @@ typedef unsigned int        UINT;
 typedef unsigned int        *PUINT;
 
 
+typedef unsigned char		byte;
 typedef unsigned int		DWORD;
 typedef int                 INT;
 typedef unsigned long		ULONG_PTR, *PULONG_PTR;

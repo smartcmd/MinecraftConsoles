@@ -1660,7 +1660,7 @@ void DQRNetworkManager::SendRoomSyncInfo()
 	uint32_t sizeLow = internalBytes & 0xff;
 
 	data[0] = 0x80 | sizeHigh;			// Header - flag as internal data (0x80), sending
-	data[1] = sizeLow;					// Data following has the a single uint8_t to say what it is, followed by the room sync data itself
+	data[1] = sizeLow;					// Data following has the a single byte to say what it is, followed by the room sync data itself
 	data[2] = DQR_INTERNAL_PLAYER_TABLE;
 
 	memcpy(data + 3, &xuidBytes, 4);
@@ -1702,7 +1702,7 @@ void DQRNetworkManager::SendAddPlayerFailed(Platform::String^ xuid)
 	uint32_t sizeLow = internalBytes & 0xff;
 
 	data[0] = 0x80 | sizeHigh;			// Header - flag as internal data (0x80), sending
-	data[1] = sizeLow;					// Data following has the a single uint8_t to say what it is, followed by the room sync data itself
+	data[1] = sizeLow;					// Data following has the a single byte to say what it is, followed by the room sync data itself
 	data[2] = DQR_INTERNAL_ADD_PLAYER_FAILED;
 
 	memcpy(data + 3, &xuidBytes, 4);

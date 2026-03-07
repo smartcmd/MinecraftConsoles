@@ -84,7 +84,7 @@ namespace Win64Xuid
 		if (readBytes == 0)
 			return false;
 
-		// Compatibility: earlier experiments may have written raw 8-uint8_t uid.dat.
+		// Compatibility: earlier experiments may have written raw 8-byte uid.dat.
 		if (readBytes == sizeof(uint64_t))
 		{
 			uint64_t raw = 0;
