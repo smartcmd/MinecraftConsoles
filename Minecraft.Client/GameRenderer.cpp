@@ -937,9 +937,9 @@ float GameRenderer::ComputeGammaFromSlider(float slider0to100)
     slider = min(slider, 100.0f);
 
     if (slider > 50.0f)
-        return 1.0f + (slider - 50.0f) / 50.0f * 3.0f; // 1.0 -> 4.0
+        return 1.0f + (slider - 50.0f) / 50.0f * 1.2f; // 1.0 -> 2.2
     else
-        return 1.0f - (50.0f - slider) / 50.0f * 0.85f; // 1.0 -> 0.15
+        return 1.0f - (50.0f - slider) / 50.0f * 0.5f; // 1.0 -> 0.5
 }
 
 void GameRenderer::CachePlayerGammas()
