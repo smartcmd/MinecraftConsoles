@@ -944,7 +944,8 @@ void Gui::render(float a, bool mouseFree, int xMouse, int yMouse)
 
         lines.push_back(L"Facing: " + cardinalDirection + L" (" + angleString + L")");
 
-		if (minecraft->level != NULL && minecraft->level->hasChunkAt(xBlockPos, yBlockPos, zBlockPos))
+		// We have to limit y to 256 as we don't get any information past that
+		if (minecraft->level != NULL && minecraft->level->hasChunkAt(xBlockPos, fmod(yBlockPos, 256), zBlockPos))
 		{
             LevelChunk *chunkAt = minecraft->level->getChunkAt(xBlockPos, zBlockPos);
 
