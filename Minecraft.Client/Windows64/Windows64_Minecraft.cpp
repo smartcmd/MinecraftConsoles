@@ -44,6 +44,7 @@
 #include "..\..\Minecraft.World\compression.h"
 #include "..\..\Minecraft.World\OldChunkStorage.h"
 #include "Common/PostProcesser.h"
+#include "..\GameRenderer.h"
 #include "Network\WinsockNetLayer.h"
 #include "Windows64_Xuid.h"
 
@@ -1515,6 +1516,9 @@ int APIENTRY _tWinMain(_In_ HINSTANCE hInstance,
 #endif
 		ui.tick();
 		ui.render();
+
+		pMinecraft->gameRenderer->ApplyGammaPostProcess();
+
 #if 0
 		app.HandleButtonPresses();
 
