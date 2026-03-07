@@ -14,7 +14,7 @@ ItemRenderer *AbstractContainerScreen::itemRenderer = new ItemRenderer();
 
 AbstractContainerScreen::AbstractContainerScreen(AbstractContainerMenu *menu)
 {
-	// 4J - added initialisers
+	// 4J - added initialisersss
 	imageWidth = 176;
 	imageHeight = 166;
 
