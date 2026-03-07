@@ -45,6 +45,8 @@ private:
     bool m_wineMode = false;
     D3D11_VIEWPORT m_customViewport;
     bool m_useCustomViewport = false;
+    UINT m_gammaTexWidth = 0;
+    UINT m_gammaTexHeight = 0;
 
     struct GammaCBData
     {
