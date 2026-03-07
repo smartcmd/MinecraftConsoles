@@ -44,6 +44,7 @@
 #include "..\..\Minecraft.World\compression.h"
 #include "..\..\Minecraft.World\OldChunkStorage.h"
 #include "Common/PostProcesser.h"
+#include "..\GameRenderer.h"
 #include "Network\WinsockNetLayer.h"
 #include "Windows64_Xuid.h"
 
@@ -594,6 +595,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			if ((vk == VK_UP || vk == VK_DOWN) && !(lParam & 0x40000000))
 				{ if (vk == VK_UP) chat->handleHistoryUp(); else chat->handleHistoryDown(); break; }
 			if (vk >= '1' && vk <= '9') // Prevent hotkey conflicts
+				break;
+			if (vk == VK_SHIFT)
 				break;
 		}
 #endif
@@ -1515,6 +1518,9 @@ int APIENTRY _tWinMain(_In_ HINSTANCE hInstance,
 #endif
 		ui.tick();
 		ui.render();
+
+		pMinecraft->gameRenderer->ApplyGammaPostProcess();
+
 #if 0
 		app.HandleButtonPresses();
 
