@@ -216,7 +216,7 @@ const int MobSpawner::tick(ServerLevel *level, bool spawnEnemies, bool spawnFrie
 		if (usesChunkLimit)
 		{
 			// Use Java logic for the max count instead, accounting for chunks polled and the size of a chunk.
-			maxInstances = mobCategory->getMaxInstancesPerChunk() * chunksToPoll.size() / CHUNK_HORIZONTAL_SCALE;
+			maxInstances = mobCategory->getMaxInstancesPerChunk() * chunksToPoll.size() / MAGIC_NUMBER;
 		}
 
 		// 4J - this is now quite different to the java version. We just have global max counts for the level whereas the original has a max per chunk that
