@@ -110,11 +110,7 @@ wchar_t DataInputStream::readChar()
 {
 	int a = stream->read();
 	int b = stream->read();
-<<<<<<< HEAD
-	return static_cast<wchar_t>((a << 8) | (b & 0xff)); 
-=======
-	return (wchar_t)((a << 8) | (b & 0xff));
->>>>>>> origin/main
+	return static_cast<wchar_t>((a << 8) | (b & 0xff));
 }
 
 //Reads some bytes from an input stream and stores them into the buffer array b. The number of bytes read is equal to the length of b.

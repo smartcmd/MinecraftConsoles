@@ -57,13 +57,8 @@ LayerArray Layer::getDefaultLayers(int64_t seed, LevelType *levelType)
 	{
 		biomeLayer = std::make_shared<ZoomLayer>(1000 + i, biomeLayer);
 
-<<<<<<< HEAD
-		if (i == 0) biomeLayer = std::make_shared<AddIslandLayer>(3, biomeLayer);
-		
-=======
-		if (i == 0) biomeLayer = shared_ptr<Layer>(new AddIslandLayer(3, biomeLayer));
+	if (i == 0) biomeLayer = std::make_shared<AddIslandLayer>(3, biomeLayer);
 
->>>>>>> origin/main
 		if (i == 0)
 		{
 			// 4J - moved mushroom islands to here. This skips 3 zooms that the old location of the add was, making them about 1/8 of the original size. Adding
@@ -77,15 +72,9 @@ LayerArray Layer::getDefaultLayers(int64_t seed, LevelType *levelType)
 			// 4J - now expand mushroom islands up again. This does a simple region grow to add a new mushroom island element when any of the neighbours are also mushroom islands.
 			// This helps make the islands into nice compact shapes of the type that are actually likely to be able to make an island out of the sea in a small space. Also
 			// helps the shore layer from doing too much damage in shrinking the islands we are making
-<<<<<<< HEAD
-			biomeLayer = std::make_shared<GrowMushroomIslandLayer>(5, biomeLayer);	
+			biomeLayer = std::make_shared<GrowMushroomIslandLayer>(5, biomeLayer);
 			// Note - this reduces the size of mushroom islands by turning their edges into shores. We are doing this at i == 1 rather than i == 0 as the original does
-			biomeLayer = std::make_shared<ShoreLayer>(1000, biomeLayer);		
-=======
-			biomeLayer = shared_ptr<Layer>(new GrowMushroomIslandLayer(5, biomeLayer));
-			// Note - this reduces the size of mushroom islands by turning their edges into shores. We are doing this at i == 1 rather than i == 0 as the original does
-			biomeLayer = shared_ptr<Layer>(new ShoreLayer(1000, biomeLayer));
->>>>>>> origin/main
+			biomeLayer = std::make_shared<ShoreLayer>(1000, biomeLayer);
 
 			biomeLayer = std::make_shared<SwampRiversLayer>(1000, biomeLayer);
 		}

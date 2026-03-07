@@ -334,12 +334,7 @@ void UIScene_AnvilMenu::onDirectEditFinished(UIControl_TextInput *input, UIContr
 
 int UIScene_AnvilMenu::KeyboardCompleteCallback(LPVOID lpParam,bool bRes)
 {
-<<<<<<< HEAD
-	// 4J HEG - No reason to set value if keyboard was cancelled
 	UIScene_AnvilMenu *pClass=static_cast<UIScene_AnvilMenu *>(lpParam);
-=======
-	UIScene_AnvilMenu *pClass=(UIScene_AnvilMenu *)lpParam;
->>>>>>> origin/main
 	pClass->setIgnoreInput(false);
 
 	if (bRes)
@@ -348,8 +343,8 @@ int UIScene_AnvilMenu::KeyboardCompleteCallback(LPVOID lpParam,bool bRes)
 		uint16_t pchText[128];
 		ZeroMemory(pchText, 128 * sizeof(uint16_t));
 		Win64_GetKeyboardText(pchText, 128);
-		pClass->setEditNameValue((wchar_t *)pchText);
-		pClass->m_itemName = (wchar_t *)pchText;
+		pClass->setEditNameValue(reinterpret_cast<wchar_t *>(pchText));
+		pClass->m_itemName = reinterpret_cast<wchar_t *>(pchText);
 		pClass->updateItemName();
 #else
 		uint16_t pchText[128];

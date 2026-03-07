@@ -137,11 +137,6 @@ int NetworkPlayerXbox::GetTimeSinceLastChunkPacket_ms()
 		return INT_MAX;
 	}
 
-<<<<<<< HEAD
-	__int64 currentTime = System::currentTimeMillis();
+	const int64_t currentTime = System::currentTimeMillis();
 	return static_cast<int>(currentTime - m_lastChunkPacketTime);
-=======
-	int64_t currentTime = System::currentTimeMillis();
-	return (int)( currentTime - m_lastChunkPacketTime );
->>>>>>> origin/main
 }

@@ -180,13 +180,9 @@ void SparseLightStorage::setData(byteArray dataIn, unsigned int inOffset)
 
 	// Get new data and count packed info
 #pragma warning ( disable : 4826 )
-	int64_t newDataAndCount = ((int64_t) planeIndices) & 0x0000ffffffffffffL;
+	int64_t newDataAndCount = reinterpret_cast<int64_t>(planeIndices) & 0x0000ffffffffffffL;
 #pragma warning ( default : 4826 )
-<<<<<<< HEAD
-	newDataAndCount |= static_cast<__int64>(allocatedPlaneCount) << 48;
-=======
-	newDataAndCount |= ((int64_t)allocatedPlaneCount) << 48;
->>>>>>> origin/main
+	newDataAndCount |= static_cast<int64_t>(allocatedPlaneCount) << 48;
 
 	updateDataAndCount( newDataAndCount );
 }
@@ -379,13 +375,8 @@ int SparseLightStorage::getDataRegion(byteArray dataInOut, int x0, int y0, int z
 		}
 	}
 	ptrdiff_t count = pucOut - &dataInOut.data[offset];
-<<<<<<< HEAD
-	
-	return static_cast<int>(count);
-=======
 
-	return (int)count;
->>>>>>> origin/main
+	return static_cast<int>(count);
 }
 
 void SparseLightStorage::addNewPlane(int y)
@@ -418,11 +409,7 @@ void SparseLightStorage::addNewPlane(int y)
 #pragma warning ( disable : 4826 )
 		int64_t newDataAndCount = ((int64_t) dataPointer) & 0x0000ffffffffffffL;
 #pragma warning ( default : 4826 )
-<<<<<<< HEAD
-		newDataAndCount |= static_cast<__int64>(linesUsed) << 48;
-=======
-		newDataAndCount |= ((int64_t)linesUsed) << 48;
->>>>>>> origin/main
+		newDataAndCount |= static_cast<int64_t>(linesUsed) << 48;
 
 		// Attempt to update the data & count atomically. This command will Only succeed if the data stored at
 		// dataAndCount is equal to lastDataAndCount, and will return the value present just before the write took place
@@ -590,11 +577,7 @@ int SparseLightStorage::compress()
 #pragma warning ( disable : 4826 )
 		int64_t newDataAndCount = ((int64_t) newIndicesAndData) & 0x0000ffffffffffffL;
 #pragma warning ( default : 4826 )
-<<<<<<< HEAD
-		newDataAndCount |= static_cast<__int64>(planesToAlloc) << 48;
-=======
-		newDataAndCount |= ((int64_t)planesToAlloc) << 48;
->>>>>>> origin/main
+		newDataAndCount |= static_cast<int64_t>(planesToAlloc) << 48;
 
 		// Attempt to update the data & count atomically. This command will Only succeed if the data stored at
 		// dataAndCount is equal to lastDataAndCount, and will return the value present just before the write took place
@@ -653,11 +636,7 @@ void SparseLightStorage::read(DataInputStream *dis)
 #pragma warning ( disable : 4826 )
 	int64_t newDataAndCount = ((int64_t) dataPointer) & 0x0000ffffffffffffL;
 #pragma warning ( default : 4826 )
-<<<<<<< HEAD
-	newDataAndCount |= static_cast<__int64>(count) << 48;
-=======
-	newDataAndCount |= ((int64_t)count) << 48;
->>>>>>> origin/main
+	newDataAndCount |= static_cast<int64_t>(count) << 48;
 
 	updateDataAndCount( newDataAndCount );
 }

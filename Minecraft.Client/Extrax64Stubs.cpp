@@ -68,7 +68,7 @@ DWORD XContentGetThumbnail(DWORD dwUserIndex, const XCONTENT_DATA* pContentData,
 void XShowAchievementsUI(int i) {}
 DWORD XBackgroundDownloadSetMode(XBACKGROUND_DOWNLOAD_MODE Mode) { return 0; }
 
-#ifndef _DURANGO
+#if !defined(_DURANGO) && !defined(_WIN64)
 void PIXAddNamedCounter(int a, const char* b, ...) {}
 //#define PS3_USE_PIX_EVENTS 
 //#define PS4_USE_PIX_EVENTS 
@@ -126,7 +126,9 @@ void PIXEndNamedEvent()
 #endif
 }
 void PIXSetMarkerDeprecated(int a, const char* b, ...) {}
-#else
+#endif
+
+#if 0//__PSVITA__
 // 4J Stu - Removed this implementation in favour of a macro that will convert our string format
 // conversion at compile time rather than at runtime
 //void PIXBeginNamedEvent(int a, char *b, ...)

@@ -18,11 +18,7 @@ LevelData::LevelData(CompoundTag *tag)
 	{
 		wstring generatorName = tag->getString(L"generatorName");
 		m_pGenerator = LevelType::getLevelType(generatorName);
-<<<<<<< HEAD
-		if (m_pGenerator == nullptr) 
-=======
-		if (m_pGenerator == NULL)
->>>>>>> origin/main
+		if (m_pGenerator == nullptr)
 		{
 			m_pGenerator = LevelType::lvl_normal;
 		}

@@ -41,13 +41,8 @@ void Random::nextBytes(byte *bytes, unsigned int count)
 double Random::nextDouble()
 {
 
-<<<<<<< HEAD
-    return ((static_cast<__int64>(next(26)) << 27) + next(27))
+    return ((static_cast<int64_t>(next(26)) << 27) + next(27))
         / static_cast<double>(1LL << 53);
-=======
-    return (((int64_t)next(26) << 27) + next(27))
-        / (double)(1LL << 53);
->>>>>>> origin/main
 }
 
 double Random::nextGaussian()
@@ -84,11 +79,7 @@ int Random::nextInt(int n)
 
 
     if ((n & -n) == n)  // i.e., n is a power of 2
-<<<<<<< HEAD
-        return static_cast<int>(((__int64)next(31) * n) >> 31); // 4J Stu - Made __int64 instead of long
-=======
-        return (int)(((int64_t)next(31) * n) >> 31); // 4J Stu - Made int64_t instead of long
->>>>>>> origin/main
+        return static_cast<int>((static_cast<int64_t>(next(31)) * n) >> 31); // 4J Stu - Made int64_t instead of long
 
     int bits, val;
     do
@@ -106,11 +97,7 @@ float Random::nextFloat()
 
 int64_t Random::nextLong()
 {
-<<<<<<< HEAD
-	return (static_cast<__int64>(next(32)) << 32) + next(32);
-=======
-	return ((int64_t)next(32) << 32) + next(32);
->>>>>>> origin/main
+	return (static_cast<int64_t>(next(32)) << 32) + next(32);
 }
 
 bool Random::nextBoolean()

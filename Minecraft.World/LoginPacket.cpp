@@ -100,11 +100,7 @@ void LoginPacket::read(DataInputStream *dis) //throws IOException
 	userName = readUtf(dis, Player::MAX_NAME_LENGTH);
 	wstring typeName = readUtf(dis, 16);
 	m_pLevelType = LevelType::getLevelType(typeName);
-<<<<<<< HEAD
-	if (m_pLevelType == nullptr) 
-=======
-	if (m_pLevelType == NULL)
->>>>>>> origin/main
+	if (m_pLevelType == nullptr)
 	{
 		m_pLevelType = LevelType::lvl_normal;
 	}
@@ -139,11 +135,7 @@ void LoginPacket::write(DataOutputStream *dos) //throws IOException
 {
 	dos->writeInt(clientVersion);
 	writeUtf(userName, dos);
-<<<<<<< HEAD
-	if (m_pLevelType == nullptr) 
-=======
-	if (m_pLevelType == NULL)
->>>>>>> origin/main
+	if (m_pLevelType == nullptr)
 	{
 		writeUtf(L"", dos);
 	}
@@ -182,18 +174,10 @@ void LoginPacket::handle(PacketListener *listener)
 int LoginPacket::getEstimatedSize()
 {
 	int length=0;
-<<<<<<< HEAD
-	if (m_pLevelType != nullptr) 
-=======
-	if (m_pLevelType != NULL)
->>>>>>> origin/main
+	if (m_pLevelType != nullptr)
 	{
 		length = static_cast<int>(m_pLevelType->getGeneratorName().length());
 	}
 
-<<<<<<< HEAD
-	return static_cast<int>(sizeof(int) + userName.length() + 4 + 6 + sizeof(__int64) + sizeof(char) + sizeof(int) + (2 * sizeof(PlayerUID)) + 1 + sizeof(char) + sizeof(BYTE) + sizeof(bool) + sizeof(bool) + length + sizeof(unsigned int));
-=======
-	return (int)(sizeof(int) + userName.length() + 4 + 6 + sizeof(int64_t) + sizeof(char) + sizeof(int) + (2*sizeof(PlayerUID)) +1 + sizeof(char) + sizeof(BYTE) + sizeof(bool) + sizeof(bool) + length + sizeof(unsigned int));
->>>>>>> origin/main
+	return static_cast<int>(sizeof(int) + userName.length() + 4 + 6 + sizeof(int64_t) + sizeof(char) + sizeof(int) + (2 * sizeof(PlayerUID)) + 1 + sizeof(char) + sizeof(BYTE) + sizeof(bool) + sizeof(bool) + length + sizeof(unsigned int));
 }

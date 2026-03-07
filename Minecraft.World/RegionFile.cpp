@@ -198,15 +198,9 @@ DataInputStream *RegionFile::getChunkDataInputStream(int x, int z) // TODO - was
 
 	m_saveFile->LockSaveAccess();
 
-<<<<<<< HEAD
-	//SetFilePointer(file,sectorNumber * SECTOR_BYTES,0,FILE_BEGIN);	
-	m_saveFile->setFilePointer( fileEntry, sectorNumber * SECTOR_BYTES, nullptr, FILE_BEGIN);
-	
-=======
 	//SetFilePointer(file,sectorNumber * SECTOR_BYTES,0,FILE_BEGIN);
-	m_saveFile->setFilePointer( fileEntry, sectorNumber * SECTOR_BYTES, NULL, FILE_BEGIN);
+	m_saveFile->setFilePointer( fileEntry, sectorNumber * SECTOR_BYTES, nullptr, FILE_BEGIN);
 
->>>>>>> origin/main
 	unsigned int length;
 	unsigned int decompLength;
 	unsigned int readDecompLength;
@@ -378,13 +372,8 @@ void RegionFile::write(int x, int z, byte *data, int length)		// TODO - was sync
 					* file
 					*/
 	//            debug("SAVE", x, z, length, "grow");
-<<<<<<< HEAD
-				//SetFilePointer(file,0,0,FILE_END);			
-				m_saveFile->setFilePointer( fileEntry, 0, nullptr, FILE_END );
-=======
 				//SetFilePointer(file,0,0,FILE_END);
-				m_saveFile->setFilePointer( fileEntry, 0, NULL, FILE_END );
->>>>>>> origin/main
+				m_saveFile->setFilePointer( fileEntry, 0, nullptr, FILE_END );
 
 				sectorNumber = static_cast<int>(sectorFree->size());
 	#ifndef _CONTENT_PACAKGE
@@ -417,13 +406,8 @@ void RegionFile::write(int x, int z, byte *data, int length)		// TODO - was sync
 void RegionFile::write(int sectorNumber, byte *data, int length, unsigned int compLength)
 {
 	DWORD numberOfBytesWritten = 0;
-<<<<<<< HEAD
-	//SetFilePointer(file,sectorNumber * SECTOR_BYTES,0,FILE_BEGIN);	
-	m_saveFile->setFilePointer( fileEntry, sectorNumber * SECTOR_BYTES, nullptr, FILE_BEGIN );
-=======
 	//SetFilePointer(file,sectorNumber * SECTOR_BYTES,0,FILE_BEGIN);
-	m_saveFile->setFilePointer( fileEntry, sectorNumber * SECTOR_BYTES, NULL, FILE_BEGIN );
->>>>>>> origin/main
+	m_saveFile->setFilePointer( fileEntry, sectorNumber * SECTOR_BYTES, nullptr, FILE_BEGIN );
 
 	// 4J - this differs a bit from the java file format. Java has length stored as an int, then a type as a byte, then length-1 bytes of data
 	// We store length and decompression length as ints, then length bytes of xbox LZX compressed data
@@ -441,13 +425,8 @@ void RegionFile::write(int sectorNumber, byte *data, int length, unsigned int co
 void RegionFile::zero(int sectorNumber, int length)
 {
 	DWORD numberOfBytesWritten = 0;
-<<<<<<< HEAD
-	//SetFilePointer(file,sectorNumber * SECTOR_BYTES,0,FILE_BEGIN);	
-	m_saveFile->setFilePointer( fileEntry, sectorNumber * SECTOR_BYTES, nullptr, FILE_BEGIN );
-=======
 	//SetFilePointer(file,sectorNumber * SECTOR_BYTES,0,FILE_BEGIN);
-	m_saveFile->setFilePointer( fileEntry, sectorNumber * SECTOR_BYTES, NULL, FILE_BEGIN );
->>>>>>> origin/main
+	m_saveFile->setFilePointer( fileEntry, sectorNumber * SECTOR_BYTES, nullptr, FILE_BEGIN );
 	m_saveFile->zeroFile( fileEntry, length, &numberOfBytesWritten );
 }
 
@@ -493,13 +472,9 @@ void RegionFile::setOffset(int x, int z, int offset)
 
 	DWORD numberOfBytesWritten = 0;
 	offsets[x + z * 32] = offset;
-<<<<<<< HEAD
-	m_saveFile->setFilePointer( fileEntry, (x + z * 32) * 4, nullptr, FILE_BEGIN );
-	
-=======
-	m_saveFile->setFilePointer( fileEntry, (x + z * 32) * 4, NULL, FILE_BEGIN );
 
->>>>>>> origin/main
+	m_saveFile->setFilePointer( fileEntry, (x + z * 32) * 4, nullptr, FILE_BEGIN );
+
 	m_saveFile->writeFile(fileEntry,&offset,4,&numberOfBytesWritten);
 }
 
@@ -512,13 +487,8 @@ void RegionFile::setTimestamp(int x, int z, int value)
 
 	DWORD numberOfBytesWritten = 0;
 	chunkTimestamps[x + z * 32] = value;
-<<<<<<< HEAD
 	m_saveFile->setFilePointer( fileEntry, SECTOR_BYTES + (x + z * 32) * 4, nullptr, FILE_BEGIN );
-	
-=======
-	m_saveFile->setFilePointer( fileEntry, SECTOR_BYTES + (x + z * 32) * 4, NULL, FILE_BEGIN );
 
->>>>>>> origin/main
 	m_saveFile->writeFile(fileEntry,&value,4,&numberOfBytesWritten);
 }
 

@@ -92,12 +92,8 @@ bool Zombie::isBaby()
 
 void Zombie::setBaby(bool baby)
 {
-<<<<<<< HEAD
-	getEntityData()->set(DATA_BABY_ID, static_cast<byte>(baby ? 1 : 0));
-=======
 	getEntityData()->set(DATA_BABY_ID, (byte) (baby ? 1 : 0));
 	updateSize(baby);
->>>>>>> origin/main
 
 	if (level != nullptr && !level->isClientSide)
 	{

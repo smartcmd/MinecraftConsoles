@@ -227,13 +227,8 @@ void DataOutputStream::writeUTF(const wstring& str)
 
 	byteArray bytearr(utflen+2);
 
-<<<<<<< HEAD
 	bytearr[count++] = static_cast<byte>((utflen >> 8) & 0xFF);
-	bytearr[count++] = static_cast<byte>((utflen >> 0) & 0xFF);  
-=======
-	bytearr[count++] = (byte) ((utflen >> 8) & 0xFF);
-	bytearr[count++] = (byte) ((utflen >> 0) & 0xFF);
->>>>>>> origin/main
+	bytearr[count++] = static_cast<byte>((utflen >> 0) & 0xFF);
 
 	int i=0;
 	for (i=0; i<strlen; i++)

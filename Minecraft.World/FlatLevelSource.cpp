@@ -140,12 +140,8 @@ wstring FlatLevelSource::gatherStats()
 vector<Biome::MobSpawnerData *> *FlatLevelSource::getMobsAt(MobCategory *mobCategory, int x, int y, int z)
 {
  	Biome *biome = level->getBiome(x, z);
-<<<<<<< HEAD
- 	if (biome == nullptr) 
-=======
  	if (biome == NULL)
->>>>>>> origin/main
- 	{
+	{
  		return nullptr;
  	}
  	return biome->getMobs(mobCategory);

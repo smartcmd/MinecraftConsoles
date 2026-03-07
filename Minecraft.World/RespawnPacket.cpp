@@ -47,11 +47,7 @@ void RespawnPacket::read(DataInputStream *dis) //throws IOException
 	mapHeight = dis->readShort();
 	wstring typeName = readUtf(dis, 16);
 	m_pLevelType = LevelType::getLevelType(typeName);
-<<<<<<< HEAD
-	if (m_pLevelType == nullptr) 
-=======
-	if (m_pLevelType == NULL)
->>>>>>> origin/main
+	if (m_pLevelType == nullptr)
 	{
 		m_pLevelType = LevelType::lvl_normal;
 	}
@@ -72,11 +68,7 @@ void RespawnPacket::write(DataOutputStream *dos) //throws IOException
 	dos->writeByte(dimension);
 	dos->writeByte(playerGameType->getId());
 	dos->writeShort(mapHeight);
-<<<<<<< HEAD
-	if (m_pLevelType == nullptr) 
-=======
-	if (m_pLevelType == NULL)
->>>>>>> origin/main
+	if (m_pLevelType == nullptr)
 	{
 		writeUtf(L"", dos);
 	}
@@ -97,11 +89,7 @@ void RespawnPacket::write(DataOutputStream *dos) //throws IOException
 int RespawnPacket::getEstimatedSize()
 {
 	int length=0;
-<<<<<<< HEAD
-	if (m_pLevelType != nullptr) 
-=======
-	if (m_pLevelType != NULL)
->>>>>>> origin/main
+	if (m_pLevelType != nullptr)
 	{
 		length = static_cast<int>(m_pLevelType->getGeneratorName().length());
 	}

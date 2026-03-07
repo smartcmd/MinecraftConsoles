@@ -213,13 +213,8 @@ ConsoleSaveFileOriginal::~ConsoleSaveFileOriginal()
 	VirtualFree( pvHeap, MAX_PAGE_COUNT * CSF_PAGE_SIZE, MEM_DECOMMIT );
 	pagesCommitted = 0;
 	// Make sure we don't have any thumbnail data still waiting round - we can't need it now we've destroyed the save file anyway
-<<<<<<< HEAD
-#if defined _XBOX 
-	app.GetSaveThumbnail(nullptr,nullptr);
-=======
 #if defined _XBOX
 	app.GetSaveThumbnail(NULL,NULL);
->>>>>>> origin/main
 #elif defined __PS3__
 	app.GetSaveThumbnail(nullptr,nullptr, nullptr,nullptr);
 #endif

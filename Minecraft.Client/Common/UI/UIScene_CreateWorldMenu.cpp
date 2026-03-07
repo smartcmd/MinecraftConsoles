@@ -287,136 +287,68 @@ void UIScene_CreateWorldMenu::handleDestroy()
 
 void UIScene_CreateWorldMenu::tick()
 {
-    UIScene::tick();
+	UIScene::tick();
 
-#ifdef _WINDOWS64
-    // Cooldown timer to absorb ACTION_MENU_OK immediately after finishing text edit
-    if (m_iDirectEditCooldown > 0)
-        m_iDirectEditCooldown--;
+	if(m_iSetTexturePackDescription >= 0 )
+	{
+		UpdateTexturePackDescription( m_iSetTexturePackDescription );
+		m_iSetTexturePackDescription = -1;
+	}
+	if(m_bShowTexturePackDescription)
+	{
+		slideLeft();
+		m_texturePackDescDisplayed = true;
 
-    // Direct world name keyboard editing
-    if (m_bDirectEditing)
-    {
-        wchar_t ch;
-        bool changed = false;
-
-        // Consume UTF‑16 char input
-        while (g_KBMInput.ConsumeChar(ch))
-        {
-            if (ch == 0x08) // backspace
-            {
-                if (!m_worldName.empty())
-                {
-                    m_worldName.pop_back();
-                    changed = true;
-                }
-            }
-            else if (ch == 0x0D) // enter → confirm edit
-            {
-                m_bDirectEditing = false;
-                m_iDirectEditCooldown = 4; // absorb the matching ACTION_MENU_OK
-                m_editWorldName.setLabel(m_worldName.c_str());
-            }
-            else if (static_cast<int>(m_worldName.length()) < 25)
-            {
-                // Append typed character
-                m_worldName += ch;
-                changed = true;
-            }
-        }
-
-        // Escape = cancel & restore original name
-        if (m_bDirectEditing && g_KBMInput.IsKeyPressed(VK_ESCAPE))
-        {
-            m_worldName = m_worldNameBeforeEdit;
-            m_bDirectEditing = false;
-            m_iDirectEditCooldown = 4;
-
-            m_editWorldName.setLabel(m_worldName.c_str());
-            m_buttonCreateWorld.setEnable(!m_worldName.empty());
-        }
-        else if (changed)
-        {
-            // Update displayed label while typing
-            m_editWorldName.setLabel(m_worldName.c_str());
-            m_buttonCreateWorld.setEnable(!m_worldName.empty());
-        }
-    }
-#endif // _WINDOWS64
-
-
-    // ---------------------------------------------------------
-    // origin/main logic begins
-    // ---------------------------------------------------------
-
-    if (m_iSetTexturePackDescription >= 0)
-    {
-        UpdateTexturePackDescription(m_iSetTexturePackDescription);
-        m_iSetTexturePackDescription = -1;
-    }
-
-    if (m_bShowTexturePackDescription)
-    {
-        slideLeft();
-        m_texturePackDescDisplayed = true;
-        m_bShowTexturePackDescription = false;
-    }
+		m_bShowTexturePackDescription = false;
+	}
 
 #ifdef __ORBIS__
-    // check the status of the PSPlus common dialog
-    switch (sceNpCommerceDialogUpdateStatus())
-    {
-    case SCE_COMMON_DIALOG_STATUS_FINISHED:
-        {
-            SceNpCommerceDialogResult Result;
-            sceNpCommerceDialogGetResult(&Result);
-            sceNpCommerceDialogTerminate();
+	// check the status of the PSPlus common dialog
+	switch (sceNpCommerceDialogUpdateStatus())
+	{
+	case SCE_COMMON_DIALOG_STATUS_FINISHED:
+		{
+			SceNpCommerceDialogResult Result;
+			sceNpCommerceDialogGetResult(&Result);
+			sceNpCommerceDialogTerminate();
 
-            if (Result.authorized)
-            {
-                ProfileManager.PsPlusUpdate(ProfileManager.GetPrimaryPad(), &Result);
-                // they just became a PSPlus member
-                checkStateAndStartGame();
-            }
-            else
-            {
-                // continue offline?
-                UINT uiIDA[1];
-                uiIDA[0] = IDS_PRO_NOTONLINE_DECLINE;
+			if(Result.authorized)
+			{
+				ProfileManager.PsPlusUpdate(ProfileManager.GetPrimaryPad(), &Result);
+				// they just became a PSPlus member
+				checkStateAndStartGame();
+			}
+			else
+			{
+				// continue offline?
+				UINT uiIDA[1];
+				uiIDA[0]=IDS_PRO_NOTONLINE_DECLINE;
 
-                // warning about missing PSPlus
-                ui.RequestAlertMessage(
-                    IDS_PLAY_OFFLINE,
-                    IDS_NO_PLAYSTATIONPLUS,
-                    uiIDA,
-                    1,
-                    ProfileManager.GetPrimaryPad(),
-                    &UIScene_CreateWorldMenu::ContinueOffline,
-                    dynamic_cast<UIScene_CreateWorldMenu*>(this));
-            }
-        }
-        break;
-
-    default:
-        break;
-    }
-#endif // __ORBIS__
+				// Give the player a warning about the texture pack missing
+				ui.RequestAlertMessage(IDS_PLAY_OFFLINE,IDS_NO_PLAYSTATIONPLUS, uiIDA, 1, ProfileManager.GetPrimaryPad(),&UIScene_CreateWorldMenu::ContinueOffline,dynamic_cast<UIScene_CreateWorldMenu*>(this));
+			}
+		}
+		break;
+	default:
+		break;
+	}
+#endif
 }
 
-
 #ifdef __ORBIS__
-int UIScene_CreateWorldMenu::ContinueOffline(void* pParam, int iPad, C4JStorage::EMessageResult result)
+int UIScene_CreateWorldMenu::ContinueOffline(void *pParam,int iPad,C4JStorage::EMessageResult result)
 {
-    UIScene_CreateWorldMenu* pClass = static_cast<UIScene_CreateWorldMenu*>(pParam);
+	UIScene_CreateWorldMenu* pClass = (UIScene_CreateWorldMenu*)pParam;
 
-    // results switched for this dialog
-    if (result == C4JStorage::EMessage_ResultAccept)
-    {
-        pClass->m_MoreOptionsParams.bOnlineGame = false;
-        pClass->checkStateAndStartGame();
-    }
-    return 0;
+	// results switched for this dialog
+	if(result==C4JStorage::EMessage_ResultAccept)
+	{
+		pClass->m_MoreOptionsParams.bOnlineGame=false;
+		pClass->checkStateAndStartGame();
+	}
+	return 0;
 }
+
 #endif
 
 #ifdef _WINDOWS64
@@ -1203,7 +1135,7 @@ void UIScene_CreateWorldMenu::CreateGame(UIScene_CreateWorldMenu* pClass, DWORD 
 	if (wSeed.length() != 0)
 	{
 		int64_t value = 0;
-		const unsigned int len = static_cast<unsigned int>(wSeed.length());
+		unsigned int len = static_cast<unsigned int>(wSeed.length());
 
 		//Check if the input string contains a numerical value
 		bool isNumber = true;

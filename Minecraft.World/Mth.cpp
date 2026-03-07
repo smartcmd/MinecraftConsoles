@@ -53,11 +53,7 @@ int Mth::floor(float v)
 
 int64_t Mth::lfloor(double v)
 {
-<<<<<<< HEAD
-	__int64 i = static_cast<__int64>(v);
-=======
-	int64_t i = (int64_t) v;
->>>>>>> origin/main
+	int64_t i = static_cast<int64_t>(v);
 	return v < i ? i - 1 : i;
 }
 

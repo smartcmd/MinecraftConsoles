@@ -211,11 +211,7 @@ wstring HellFlatLevelSource::gatherStats()
 vector<Biome::MobSpawnerData *> *HellFlatLevelSource::getMobsAt(MobCategory *mobCategory, int x, int y, int z)
 {
 	Biome *biome = level->getBiome(x, z);
-<<<<<<< HEAD
-	if (biome == nullptr) 
-=======
-	if (biome == NULL)
->>>>>>> origin/main
+	if (biome == nullptr)
 	{
 		return nullptr;
 	}

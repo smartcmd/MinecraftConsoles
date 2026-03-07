@@ -858,27 +858,6 @@ void UIController::tickInput()
 								sceneMouseX = sceneMouseX * ((F32)pScene->getRenderWidth() / (F32)winW);
 								sceneMouseY = sceneMouseY * ((F32)pScene->getRenderHeight() / (F32)winH);
 							}
-<<<<<<< HEAD
-
-							if (hitObject != currentFocus)
-							{
-								IggyPlayerSetFocusRS(movie, hitObject, 0);
-							}
-						}
-					}
-
-					// Convert mouse to scene/movie coordinates for slider hit testing
-					F32 sceneMouseX = mouseX;
-					F32 sceneMouseY = mouseY;
-					{
-						S32 displayWidth = 0, displayHeight = 0;
-						pScene->GetParentLayer()->getRenderDimensions(displayWidth, displayHeight);
-						if (displayWidth > 0 && displayHeight > 0)
-						{
-							sceneMouseX = mouseX * (static_cast<F32>(pScene->getRenderWidth()) / static_cast<F32>(displayWidth));
-							sceneMouseY = mouseY * (static_cast<F32>(pScene->getRenderHeight()) / static_cast<F32>(displayHeight));
-=======
->>>>>>> origin/main
 						}
 					}
 
@@ -1052,14 +1031,10 @@ void UIController::tickInput()
 								if (!ctrl || ctrl->getControlType() != UIControl::eSlider || !ctrl->getVisible())
 									continue;
 
-<<<<<<< HEAD
-								UIControl_Slider *pSlider = static_cast<UIControl_Slider *>(ctrl);
-=======
 								if (pMainPanel && ctrl->getParentPanel() != pMainPanel)
 									continue;
 
-								UIControl_Slider *pSlider = (UIControl_Slider *)ctrl;
->>>>>>> origin/main
+								UIControl_Slider *pSlider = static_cast<UIControl_Slider *>(ctrl);
 								pSlider->UpdateControl();
 								S32 cx = pSlider->getXPos() + panelOffsetX;
 								S32 cy = pSlider->getYPos() + panelOffsetY;

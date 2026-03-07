@@ -158,13 +158,8 @@ public:
 
 	int64_t getLong(const wstring &name)
 	{
-<<<<<<< HEAD
-		if (tags.find(name) == tags.end()) return (__int64)0;
-		return static_cast<LongTag *>(tags[name])->data;
-=======
 		if (tags.find(name) == tags.end()) return (int64_t)0;
 		return ((LongTag *) tags[name])->data;
->>>>>>> origin/main
 	}
 
 	float getFloat(const wstring &name)

@@ -195,13 +195,8 @@ void inline Level::setBrightnessCached(lightCache_t *cache, uint64_t *cacheUse, 
 		( ( z & 0x3f0 ) >> 4 );
 #ifdef _LARGE_WORLDS
 	// Add in the higher bits for x and z
-<<<<<<< HEAD
-	posbits |=  ( ( static_cast<__uint64>(x) & 0x3FFFC00L) << 38) |
-		( ( static_cast<__uint64>(z) & 0x3FFFC00L) << 22);
-=======
-	posbits |=  ( ( ((uint64_t)x) & 0x3FFFC00L) << 38) |
-		( ( ((uint64_t)z) & 0x3FFFC00L) << 22);
->>>>>>> origin/main
+	posbits |=  ( ( static_cast<uint64_t>(x) & 0x3FFFC00L) << 38) |
+		( ( static_cast<uint64_t>(z) & 0x3FFFC00L) << 22);
 #endif
 
 	lightCache_t cacheValue = cache[idx];
@@ -258,14 +253,8 @@ inline int Level::getBrightnessCached(lightCache_t *cache, LightLayer::variety l
 		( ( y & 0x0f0 ) << 2 ) |
 		( ( z & 0x3f0 ) >> 4 );
 #ifdef _LARGE_WORLDS
-	// Add in the higher bits for x and z
-<<<<<<< HEAD
-	posbits |=  ( ( static_cast<__uint64>(x) & 0x3FFFC00L) << 38) |
-		( ( static_cast<__uint64>(z) & 0x3FFFC00L) << 22);
-=======
-	posbits |=  ( ( ((uint64_t)x) & 0x3FFFC00L) << 38) |
-		( ( ((uint64_t)z) & 0x3FFFC00L) << 22);
->>>>>>> origin/main
+	posbits |=  ( ( static_cast<uint64_t>(x) & 0x3FFFC00L) << 38) |
+		( ( static_cast<uint64_t>(z) & 0x3FFFC00L) << 22);
 #endif
 
 	lightCache_t cacheValue = cache[idx];
@@ -331,13 +320,8 @@ inline int Level::getEmissionCached(lightCache_t *cache, int ct, int x, int y, i
 		( ( z & 0x3f0 ) >> 4 );
 #ifdef _LARGE_WORLDS
 	// Add in the higher bits for x and z
-<<<<<<< HEAD
-	posbits |=  ( ( static_cast<__uint64>(x) & 0x3FFFC00) << 38) |
-		( ( static_cast<__uint64>(z) & 0x3FFFC00) << 22);
-=======
-	posbits |=  ( ( ((uint64_t)x) & 0x3FFFC00) << 38) |
-		( ( ((uint64_t)z) & 0x3FFFC00) << 22);
->>>>>>> origin/main
+	posbits |=  ( ( static_cast<uint64_t>(x) & 0x3FFFC00) << 38) |
+		( ( static_cast<uint64_t>(z) & 0x3FFFC00) << 22);
 #endif
 
 	lightCache_t cacheValue = cache[idx];
@@ -412,13 +396,8 @@ inline int Level::getBlockingCached(lightCache_t *cache, LightLayer::variety lay
 		( ( z & 0x3f0 ) >> 4 );
 #ifdef _LARGE_WORLDS
 	// Add in the higher bits for x and z
-<<<<<<< HEAD
-	posbits |=  ( ( static_cast<__uint64>(x) & 0x3FFFC00L) << 38) |
-		( ( static_cast<__uint64>(z) & 0x3FFFC00L) << 22);
-=======
-	posbits |=  ( ( ((uint64_t)x) & 0x3FFFC00L) << 38) |
-		( ( ((uint64_t)z) & 0x3FFFC00L) << 22);
->>>>>>> origin/main
+	posbits |=  ( ( static_cast<uint64_t>(x) & 0x3FFFC00L) << 38) |
+		( ( static_cast<uint64_t>(z) & 0x3FFFC00L) << 22);
 #endif
 
 	lightCache_t cacheValue = cache[idx];
@@ -3457,13 +3436,8 @@ int Level::getExpectedLight(lightCache_t *cache, int x, int y, int z, LightLayer
 // 4J - Made changes here so that lighting goes through a cache, if enabled for this thread
 void Level::checkLight(LightLayer::variety layer, int xc, int yc, int zc, bool force, bool rootOnlyEmissive)
 {
-<<<<<<< HEAD
 	lightCache_t *cache = static_cast<lightCache_t *>(TlsGetValue(tlsIdxLightCache));
-	__uint64 cacheUse = 0;
-=======
-	lightCache_t *cache = (lightCache_t *)TlsGetValue(tlsIdxLightCache);
 	uint64_t cacheUse = 0;
->>>>>>> origin/main
 
 	if( force )
 	{
@@ -3502,7 +3476,7 @@ void Level::checkLight(LightLayer::variety layer, int xc, int yc, int zc, bool f
 	}
 	else
 	{
-		toCheck = (int *)(cache + (16*16*16));
+		toCheck = reinterpret_cast<int *>(cache + (16 * 16 * 16));
 	}
 
 	int checkedPosition = 0;
