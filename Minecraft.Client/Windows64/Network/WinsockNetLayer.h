@@ -13,6 +13,7 @@
 
 #define WIN64_NET_DEFAULT_PORT 25565
 #define WIN64_NET_MAX_CLIENTS 255
+#define WIN64_SMALLID_REJECT 0xFF
 #define WIN64_NET_RECV_BUFFER_SIZE 65536
 #define WIN64_NET_MAX_PACKET_SIZE (4 * 1024 * 1024)
 #define WIN64_LAN_DISCOVERY_PORT 25566
@@ -89,6 +90,7 @@ public:
 	static bool StartAdvertising(int gamePort, const wchar_t* hostName, unsigned int gameSettings, unsigned int texPackId, unsigned char subTexId, unsigned short netVer);
 	static void StopAdvertising();
 	static void UpdateAdvertisePlayerCount(BYTE count);
+	static void UpdateAdvertiseMaxPlayers(BYTE maxPlayers);
 	static void UpdateAdvertiseJoinable(bool joinable);
 
 	static bool StartDiscovery();
@@ -141,6 +143,12 @@ private:
 
 	static CRITICAL_SECTION s_freeSmallIdLock;
 	static std::vector<BYTE> s_freeSmallIds;
+	// O(1) smallId -> socket lookup so we don't scan s_connections (which never shrinks) on every send
+	static SOCKET s_smallIdToSocket[256];
+	static CRITICAL_SECTION s_smallIdToSocketLock;
+
+public:
+	static void ClearSocketForSmallId(BYTE smallId);
 };
 
 extern bool g_Win64MultiplayerHost;

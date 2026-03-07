@@ -56,11 +56,8 @@ PlayerList::PlayerList(MinecraftServer *server)
 
 	//int viewDistance = server->settings->getInt(L"view-distance", 10);
 
-#ifdef _WINDOWS64
-	maxPlayers = MINECRAFT_NET_MAX_PLAYERS;
-#else
-	maxPlayers = server->settings->getInt(L"max-players", 20);
-#endif
+	int rawMax = server->settings->getInt(L"max-players", 8);
+	maxPlayers = (unsigned int)Mth::clamp(rawMax, 1, MINECRAFT_NET_MAX_PLAYERS);
 	doWhiteList = false;
 	InitializeCriticalSection(&m_kickPlayersCS);
 	InitializeCriticalSection(&m_closePlayersCS);
@@ -521,11 +518,7 @@ if (player->riding != NULL)
 
 shared_ptr<ServerPlayer> PlayerList::getPlayerForLogin(PendingConnection *pendingConnection, const wstring& userName, PlayerUID xuid, PlayerUID onlineXuid)
 {
-#ifdef _WINDOWS64
-	if (players.size() >= (unsigned int)MINECRAFT_NET_MAX_PLAYERS)
-#else
 	if (players.size() >= (unsigned int)maxPlayers)
-#endif
 	{
 		pendingConnection->disconnect(DisconnectPacket::eDisconnect_ServerFull);
 		return shared_ptr<ServerPlayer>();

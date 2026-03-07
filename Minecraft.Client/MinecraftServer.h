@@ -18,7 +18,11 @@ class LevelType;
 class ProgressRenderer;
 class CommandDispatcher;
 
+#if defined(_WINDOWS64)
+#define MINECRAFT_SERVER_SLOW_QUEUE_DELAY 0 // Removed slow queue because at large player counts, chunks stopped appearing
+#else
 #define MINECRAFT_SERVER_SLOW_QUEUE_DELAY 250
+#endif
 
 #if defined _XBOX_ONE || defined _XBOX || defined __ORBIS__ || defined __PS3__ || defined __PSVITA__
 #define _ACK_CHUNK_SEND_THROTTLING

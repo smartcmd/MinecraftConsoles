@@ -8,6 +8,8 @@
 #include "..\..\Windows64\Windows64_Xuid.h"
 #include "..\..\Minecraft.h"
 #include "..\..\User.h"
+#include "..\..\MinecraftServer.h"
+#include "..\..\PlayerList.h"
 #include <iostream>
 #endif
 
@@ -238,12 +240,30 @@ void CPlatformNetworkManagerStub::DoWork()
 				qnetPlayer->m_resolvedXuid = INVALID_XUID;
 				qnetPlayer->m_gamertag[0] = 0;
 				qnetPlayer->SetCustomDataValue(0);
-				WinsockNetLayer::PushFreeSmallId(disconnectedSmallId);
 				if (IQNet::s_playerCount > 1)
 					IQNet::s_playerCount--;
 			}
+			// Always return smallId to the free pool so it can be reused (game may have already cleared the slot).
+			WinsockNetLayer::PushFreeSmallId(disconnectedSmallId);
+			// Clear O(1) socket lookup so GetSocketForSmallId stays fast (s_connections never shrinks).
+			WinsockNetLayer::ClearSocketForSmallId(disconnectedSmallId);
+			// Clear chunk visibility flags for this system so rejoin gets fresh chunk state.
+			SystemFlagRemoveBySmallId((int)disconnectedSmallId);
 		}
 	}
+#endif
+}
+
+bool CPlatformNetworkManagerStub::CanAcceptMoreConnections()
+{
+#ifdef _WINDOWS64
+	MinecraftServer* server = MinecraftServer::getInstance();
+	if (server == NULL) return true;
+	PlayerList* list = server->getPlayerList();
+	if (list == NULL) return true;
+	return (unsigned int)list->players.size() < (unsigned int)list->getMaxPlayers();
+#else
+	return true;
 #endif
 }
 
@@ -581,6 +601,7 @@ CPlatformNetworkManagerStub::PlayerFlags::PlayerFlags(INetworkPlayer *pNetworkPl
 	this->flags = new unsigned char [ count / 8 ];
 	memset( this->flags, 0, count / 8 );
 	this->count = count;
+	this->m_smallId = (pNetworkPlayer && pNetworkPlayer->IsLocal()) ? 256 : (pNetworkPlayer ? (int)pNetworkPlayer->GetSmallId() : -1);
 }
 CPlatformNetworkManagerStub::PlayerFlags::~PlayerFlags()
 {
@@ -609,6 +630,23 @@ void CPlatformNetworkManagerStub::SystemFlagRemovePlayer(INetworkPlayer *pNetwor
 	for( unsigned int i = 0; i < m_playerFlags.size(); i++ )
 	{
 		if( m_playerFlags[i]->m_pNetworkPlayer == pNetworkPlayer )
+		{
+			delete m_playerFlags[i];
+			m_playerFlags[i] = m_playerFlags.back();
+			m_playerFlags.pop_back();
+			return;
+		}
+	}
+}
+
+// Clear chunk flags for a system when they disconnect (by smallId). Call even when we don't find the player,
+// so we always clear and the smallId can be reused without stale "chunk seen" state.
+void CPlatformNetworkManagerStub::SystemFlagRemoveBySmallId(int smallId)
+{
+	if (smallId < 0) return;
+	for (unsigned int i = 0; i < m_playerFlags.size(); i++)
+	{
+		if (m_playerFlags[i]->m_smallId == smallId)
 		{
 			delete m_playerFlags[i];
 			m_playerFlags[i] = m_playerFlags.back();
