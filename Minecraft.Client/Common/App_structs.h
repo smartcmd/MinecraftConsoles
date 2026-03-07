@@ -65,7 +65,7 @@ typedef struct
 			// In-Menu sensitivity
 			unsigned char ucMenuSensitivity;
 			unsigned char ucInterfaceOpacity;
-			unsigned char ucPad02;  // 1 uint8_t padding
+			unsigned char ucPad02;  // 1 byte padding
 			unsigned char ucFov;
 
 			// Adding another bitmask flag for more settings for 1.8.2

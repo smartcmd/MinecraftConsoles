@@ -143,7 +143,7 @@ CompressedTileStorage::CompressedTileStorage(bool isEmpty)
 #endif
 }
 
-bool CompressedTileStorage::isRenderChunkEmpty(int y)	// y == 0, 16, 32... 112 (representing a 16 uint8_t range)
+bool CompressedTileStorage::isRenderChunkEmpty(int y)	// y == 0, 16, 32... 112 (representing a 16 byte range)
 {
 	int block;
 	unsigned short *blockIndices = (unsigned short *)indicesAndData;

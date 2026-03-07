@@ -5777,7 +5777,7 @@ DXDEC EXPAPI S32 AILCALL AIL_sound_asset_info(HMSOUNDBANK bank, char const* name
     $:name The name of the sound asset to find.
     $:out_name Optional - Pointer to a buffer that is filled with the sound filename to use for loading.
     $:out_info Pointer to a $MILESBANKSOUNDINFO structure that is filled with meta data about the sound asset.
-    $:return Returns the uint8_t size of the buffer required for out_name.
+    $:return Returns the byte size of the buffer required for out_name.
 
     This function must be called in order to resolve the sound asset name to
     something that can be used by miles. To ensure safe buffer containment, call
