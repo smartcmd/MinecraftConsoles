@@ -2308,13 +2308,6 @@ void CMinecraftApp::SetGameSettings(int iPad,eGameSetting eVal,unsigned char ucV
 			GameSettingsA[iPad]->bSettingsChanged=true;
 		}
 		break;
-	case eGameSetting_JavaFlightControls:
-		if(ucVal==1)
-			GameSettingsA[iPad]->uiBitmaskValues|=GAMESETTING_JAVAFLIGHTCONTROLS;
-		else
-			GameSettingsA[iPad]->uiBitmaskValues&=~GAMESETTING_JAVAFLIGHTCONTROLS;
-		GameSettingsA[iPad]->bSettingsChanged=true;
-		break;
 
 	}
 }
@@ -2450,9 +2443,6 @@ unsigned char CMinecraftApp::GetGameSettings(int iPad,eGameSetting eVal)
 
 	case eGameSetting_PSVita_NetworkModeAdhoc:
 		return (GameSettingsA[iPad]->uiBitmaskValues&GAMESETTING_PSVITANETWORKMODEADHOC)>>17;
-
-	case eGameSetting_JavaFlightControls:
-		return (GameSettingsA[iPad]->uiBitmaskValues&GAMESETTING_JAVAFLIGHTCONTROLS)?1:0;
 
 	}
 	return 0;
