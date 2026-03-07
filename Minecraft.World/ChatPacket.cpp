@@ -57,7 +57,7 @@ void ChatPacket::read(DataInputStream *dis)
 	int intCount = (packedCounts >> 0) & 0xF;
 	
 	// izzint - again, why didn't 4j patch this out??
-    if (stringCount > 15 || intCount > MAX_LENGTH)
+    if (stringCount > 3 || intCount > 1)
     {
         throw IOException(L"ChatPacket::read - too many string arguments");
 	}
