@@ -153,6 +153,20 @@ void WinsockNetLayer::Shutdown()
 	}
 }
 
+bool WinsockNetLayer::IsNumericAddress(const char* addr)
+{
+	if (addr == NULL)
+		return false;
+
+	if (strchr(addr, ':') != NULL)
+		return true;// IPv6
+
+	if (inet_addr(addr) != INADDR_NONE)
+		return true;// IPv4
+
+	return false;// hostname
+}
+
 bool WinsockNetLayer::HostGame(int port, const char* bindIp)
 {
 	if (!s_initialized && !Initialize()) return false;
@@ -171,18 +185,23 @@ bool WinsockNetLayer::HostGame(int port, const char* bindIp)
 		s_smallIdToSocket[i] = INVALID_SOCKET;
 	LeaveCriticalSection(&s_smallIdToSocketLock);
 
-	struct addrinfo hints = {};
-	struct addrinfo* result = NULL;
-
-	hints.ai_family = AF_INET;
-	hints.ai_socktype = SOCK_STREAM;
-	hints.ai_protocol = IPPROTO_TCP;
-	hints.ai_flags = (bindIp == NULL || bindIp[0] == 0) ? AI_PASSIVE : 0;
-
 	char portStr[16];
 	sprintf_s(portStr, "%d", port);
-
 	const char* resolvedBindIp = (bindIp != NULL && bindIp[0] != 0) ? bindIp : NULL;
+
+	struct addrinfo hints = {};
+	hints.ai_family = AF_UNSPEC;
+	hints.ai_socktype = SOCK_STREAM;
+	hints.ai_protocol = IPPROTO_TCP;
+
+	if (resolvedBindIp == NULL)
+		hints.ai_flags = AI_PASSIVE;
+	else if (IsNumericAddress(resolvedBindIp))
+		hints.ai_flags = AI_NUMERICHOST;
+	else
+		hints.ai_flags = 0;
+
+	struct addrinfo* result = NULL;
 	int iResult = getaddrinfo(resolvedBindIp, portStr, &hints, &result);
 	if (iResult != 0)
 	{
@@ -201,8 +220,8 @@ bool WinsockNetLayer::HostGame(int port, const char* bindIp)
 		return false;
 	}
 
-	int opt = 1;
-	setsockopt(s_listenSocket, SOL_SOCKET, SO_REUSEADDR, (const char*)&opt, sizeof(opt));
+	DWORD ipv6only = 0;
+	setsockopt(s_listenSocket, IPPROTO_IPV6, IPV6_V6ONLY, (const char*)&ipv6only, sizeof(ipv6only));
 
 	iResult = ::bind(s_listenSocket, result->ai_addr, (int)result->ai_addrlen);
 	freeaddrinfo(result);
@@ -226,7 +245,7 @@ bool WinsockNetLayer::HostGame(int port, const char* bindIp)
 	s_active = true;
 	s_connected = true;
 
-	s_acceptThread = CreateThread(NULL, 0, AcceptThreadProc, NULL, 0, NULL);
+	s_acceptThread = CreateThread(NULL, 0, AcceptThreadProc, (LPVOID)s_listenSocket, 0, NULL);
 
 	app.DebugPrintf("Win64 LAN: Hosting on %s:%d\n",
 		resolvedBindIp != NULL ? resolvedBindIp : "*",
@@ -252,7 +271,12 @@ bool WinsockNetLayer::JoinGame(const char* ip, int port)
 	struct addrinfo hints = {};
 	struct addrinfo* result = NULL;
 
-	hints.ai_family = AF_INET;
+	if (IsNumericAddress(ip))
+		hints.ai_flags = AI_NUMERICHOST;
+	else
+		hints.ai_flags = 0;
+
+	hints.ai_family = AF_UNSPEC;
 	hints.ai_socktype = SOCK_STREAM;
 	hints.ai_protocol = IPPROTO_TCP;
 
@@ -468,9 +492,11 @@ void WinsockNetLayer::HandleDataReceived(BYTE fromSmallId, BYTE toSmallId, unsig
 
 DWORD WINAPI WinsockNetLayer::AcceptThreadProc(LPVOID param)
 {
+	SOCKET listenSock = (SOCKET)(uintptr_t)param;
+
 	while (s_active)
 	{
-		SOCKET clientSocket = accept(s_listenSocket, NULL, NULL);
+		SOCKET clientSocket = accept(listenSock, NULL, NULL);
 		if (clientSocket == INVALID_SOCKET)
 		{
 			if (s_active)
