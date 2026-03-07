@@ -1379,8 +1379,8 @@ bool IUIScene_AbstractContainerMenu::handleKeyDown(int iPad, int iAction, bool b
 					{
 						int currentIndex = getCurrentIndex(m_eCurrSection) - getSectionStartOffset(m_eCurrSection);
 
-						bool bSlotHasItem = !isSlotEmpty(m_eCurrSection, currentIndex);
-						if (bSlotHasItem)
+						bool bcanPlaySound = !isSlotEmpty(m_eCurrSection, currentIndex);
+						if (bcanPlaySound)
 							ui.PlayUISFX(eSFX_Press);
 					}
 				}
@@ -1390,8 +1390,8 @@ bool IUIScene_AbstractContainerMenu::handleKeyDown(int iPad, int iAction, bool b
 				{
 					int currentIndex = getCurrentIndex(m_eCurrSection) - getSectionStartOffset(m_eCurrSection);
 
-					bool bSlotHasItem = !isSlotEmpty(m_eCurrSection, currentIndex);
-					if (bSlotHasItem)
+					bool bcanPlaySound = !isSlotEmpty(m_eCurrSection, currentIndex);
+					if (bcanPlaySound)
 						ui.PlayUISFX(eSFX_Press);
 				}
 				//

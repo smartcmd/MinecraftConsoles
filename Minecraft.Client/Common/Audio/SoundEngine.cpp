@@ -187,7 +187,7 @@ void SoundEngine::init(Options* pOptions)
     m_bSystemMusicPlaying = false;
 
     app.DebugPrintf("---miniaudio initialized\n");
-
+	
     return;
 }
 
@@ -265,7 +265,6 @@ void SoundEngine::updateMiniAudio()
             finalVolume = 1.0f;
 
         ma_sound_set_volume(&s->sound, finalVolume);
-
         ma_sound_set_pitch(&s->sound, s->info.pitch);
 
         if (s->info.bIs3D)
@@ -471,67 +470,64 @@ void SoundEngine::play(int iSound, float x, float y, float z, float volume, floa
     char finalPath[256];
     sprintf_s(finalPath, "%s.wav", basePath);
 
-    if (!FileExists(finalPath))
-    {
-        int count = 0;
+	const char* extensions[] = { ".ogg", ".wav", ".mp3" };
+	size_t extCount = sizeof(extensions) / sizeof(extensions[0]);
+	bool found = false;
 
-        for (size_t i = 1; i < 32; i++)
-        {
-            char numberedFolder[256];
-            sprintf_s(numberedFolder, "%s%d", basePath, i);
-
-            DWORD attr = GetFileAttributesA(numberedFolder);
-
-            if (attr != INVALID_FILE_ATTRIBUTES &&
-                (attr & FILE_ATTRIBUTE_DIRECTORY))
-            {
-                count++;
-            }
-            else
-            {
-                break;
-            }
-        }
-
-        char chosenFolder[256];
-
-        if (count == 0)
-        {
-            sprintf_s(chosenFolder, "%s", basePath);
-        }
-        else
-        {
-            int chosen = (rand() % count) + 1;
-            sprintf_s(chosenFolder, "%s%d", basePath, chosen);
-        }
-
-        char searchPattern[256];
-        sprintf_s(searchPattern, "%s\\*.wav", chosenFolder);
-
-        WIN32_FIND_DATAA findData;
-        HANDLE hFind = FindFirstFileA(searchPattern, &findData);
-
-		const char* extensions[] = { ".ogg", ".wav", ".mp3" };
-		size_t extCount = sizeof(extensions) / sizeof(extensions[0]);
-		bool found = false;
-		for (size_t i = 0; i < extCount; i++)
+	for (size_t extIdx = 0; extIdx < extCount; extIdx++)
+	{
+		char basePlusExt[256];
+		sprintf_s(basePlusExt, "%s%s", basePath, extensions[extIdx]);
+		
+		DWORD attr = GetFileAttributesA(basePlusExt);
+		if (attr != INVALID_FILE_ATTRIBUTES && !(attr & FILE_ATTRIBUTE_DIRECTORY))
 		{
-			sprintf_s(searchPattern, "%s\\*%s", chosenFolder, extensions[i]);
-			hFind = FindFirstFileA(searchPattern, &findData);
-			if (hFind != INVALID_HANDLE_VALUE)
+			sprintf_s(finalPath, "%s", basePlusExt);
+			found = true;
+			break;
+		}
+	}
+
+	if (!found)
+	{
+		int count = 0;
+
+		for (size_t extIdx = 0; extIdx < extCount; extIdx++)
+		{
+			for (size_t i = 1; i < 32; i++)
 			{
-				found = true;
-				break;
+				char numberedPath[256];
+				sprintf_s(numberedPath, "%s%d%s", basePath, i, extensions[extIdx]);
+				
+				DWORD attr = GetFileAttributesA(numberedPath);
+				if (attr != INVALID_FILE_ATTRIBUTES && !(attr & FILE_ATTRIBUTE_DIRECTORY))
+				{
+					count = i;
+				}
 			}
 		}
-		if (hFind == INVALID_HANDLE_VALUE)
-		{
-			app.DebugPrintf("No sound files found in %s\n", chosenFolder);
-			return;
-		}
 
-		sprintf_s(finalPath, "%s\\%s", chosenFolder, findData.cFileName);
-		FindClose(hFind);
+		if (count > 0)
+		{
+			int chosen = (rand() % count) + 1;
+			for (size_t extIdx = 0; extIdx < extCount; extIdx++)
+			{
+				char numberedPath[256];
+				sprintf_s(numberedPath, "%s%d%s", basePath, chosen, extensions[extIdx]);
+				
+				DWORD attr = GetFileAttributesA(numberedPath);
+				if (attr != INVALID_FILE_ATTRIBUTES && !(attr & FILE_ATTRIBUTE_DIRECTORY))
+				{
+					sprintf_s(finalPath, "%s", numberedPath);
+					found = true;
+					break;
+				}
+			}
+			if (!found)
+			{
+				sprintf_s(finalPath, "%s%d.wav", basePath, chosen);
+			}
+		}
 	}
 
     MiniAudioSound* s = new MiniAudioSound();
@@ -649,6 +645,7 @@ void SoundEngine::playUI(int iSound, float volume, float pitch)
     float finalVolume = volume * m_MasterEffectsVolume;
     if (finalVolume > 1.0f)
         finalVolume = 1.0f;
+	printf("UI Sound volume set to %f\nEffects volume: %f\n", finalVolume, m_MasterEffectsVolume);
 
     ma_sound_set_volume(&s->sound, finalVolume);
     ma_sound_set_pitch(&s->sound, pitch);
