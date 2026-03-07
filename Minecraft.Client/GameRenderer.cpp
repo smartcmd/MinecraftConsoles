@@ -130,12 +130,11 @@ GameRenderer::GameRenderer(Minecraft *mc)
 	darkenWorldAmount = 0.0f;
 	darkenWorldAmountO = 0.0f;
 
-	m_fov=70.0f;
-
 	// 4J Stu - Init these so they are setup before the tick
 	for( int i = 0; i < 4; i++ )
 	{
 		fov[i] = oFov[i] = 1.0f;
+        m_fov[i] = 70.0f;
 	}
 
 	this->mc = mc;
@@ -358,54 +357,51 @@ void GameRenderer::pick(float a)
 	}
 }
 
-void GameRenderer::SetFovVal(float fov)
-{
-	m_fov=fov;
-}
-
-float GameRenderer::GetFovVal()
-{
-	return m_fov;
-}
-
 void GameRenderer::tickFov()
 {
-	shared_ptr<LocalPlayer>player = dynamic_pointer_cast<LocalPlayer>(mc->cameraTargetPlayer);
+    shared_ptr<LocalPlayer> player = dynamic_pointer_cast<LocalPlayer>(mc->cameraTargetPlayer);
+    int playerIdx = player ? player->GetXboxPad() : 0;
+    tFov[playerIdx] = player->getFieldOfViewModifier();
+    oFov[playerIdx] = fov[playerIdx];
+    fov[playerIdx] += (tFov[playerIdx] - fov[playerIdx]) * 0.5f;
+    if (fov[playerIdx] > 1.5f)
+    {
+        fov[playerIdx] = 1.5f;
+    }
+    if (fov[playerIdx] < 0.1f)
+    {
+        fov[playerIdx] = 0.1f;
+    }
+}
 
-	int playerIdx = player ? player->GetXboxPad() : 0;
-	tFov[playerIdx] = player->getFieldOfViewModifier();
+void GameRenderer::SetFovVal(int playerIdx, float fov)
+{
+    m_fov[playerIdx] = fov;
+}
 
-	oFov[playerIdx] = fov[playerIdx];
-	fov[playerIdx] += (tFov[playerIdx] - fov[playerIdx]) * 0.5f;
-
-	if (fov[playerIdx] > 1.5f) fov[playerIdx] = 1.5f;
-	if (fov[playerIdx] < 0.1f) fov[playerIdx] = 0.1f;
+float GameRenderer::GetFovVal(int playerIdx)
+{
+    return m_fov[playerIdx];
 }
 
 float GameRenderer::getFov(float a, bool applyEffects)
 {
-	if (cameraFlip > 0 ) return 90;
-
-	shared_ptr<LocalPlayer> player = dynamic_pointer_cast<LocalPlayer>(mc->cameraTargetPlayer);
-	int playerIdx = player ? player->GetXboxPad() : 0;
-	float fov = m_fov;//70;
-	if (applyEffects)
-	{
-		fov += mc->options->fov * 40;
-		fov *= oFov[playerIdx] + (this->fov[playerIdx] - oFov[playerIdx]) * a;
-	}
-	if (player->getHealth() <= 0)
-	{
-		float duration = player->deathTime + a;
-
-		fov /= ((1 - 500 / (duration + 500)) * 2.0f + 1);
-	}
-
-	int t = Camera::getBlockAt(mc->level, player, a);
-	if (t != 0 && Tile::tiles[t]->material == Material::water) fov = fov * 60 / 70;
-
-	return fov + fovOffsetO + (fovOffset - fovOffsetO) * a;
-
+    if (cameraFlip > 0 ) return 90;
+    shared_ptr<LocalPlayer> player = dynamic_pointer_cast<LocalPlayer>(mc->cameraTargetPlayer);
+    int playerIdx = player ? player->GetXboxPad() : 0;
+    float fov = m_fov[playerIdx];//70;
+    if (applyEffects)
+    {
+        fov *= oFov[playerIdx] + (this->fov[playerIdx] - oFov[playerIdx]) * a;
+    }
+    if (player->getHealth() <= 0)
+    {
+        float duration = player->deathTime + a;
+        fov /= ((1 - 500 / (duration + 500)) * 2.0f + 1);
+    }
+    int t = Camera::getBlockAt(mc->level, player, a);
+    if (t != 0 && Tile::tiles[t]->material == Material::water) fov = fov * 60 / 70;
+    return fov + fovOffsetO + (fovOffset - fovOffsetO) * a;
 }
 
 void GameRenderer::bobHurt(float a)

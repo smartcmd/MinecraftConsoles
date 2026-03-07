@@ -219,7 +219,7 @@ void UIScene_SettingsGraphicsMenu::handleSliderMove(F64 sliderId, F64 currentVal
 			m_sliderFOV.handleSliderMove(value);
 			Minecraft* pMinecraft = Minecraft::GetInstance();
 			int fovValue = sliderValueToFov(value);
-			pMinecraft->gameRenderer->SetFovVal((float)fovValue);
+            pMinecraft->gameRenderer->SetFovVal(m_iPad, (float)fovValue);
 			app.SetGameSettings(m_iPad, eGameSetting_FOV, value);
 			WCHAR TempString[256];
 			swprintf((WCHAR*)TempString, 256, L"FOV: %d", fovValue);

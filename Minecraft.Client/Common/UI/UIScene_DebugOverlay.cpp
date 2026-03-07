@@ -279,7 +279,7 @@ void UIScene_DebugOverlay::handleSliderMove(F64 sliderId, F64 currentValue)
 			if (v < 0) v = 0;
 			if (v > 100) v = 100;
 			int fovDeg = 70 + v * 40 / 100;
-			pMinecraft->gameRenderer->SetFovVal((float)fovDeg);
+            pMinecraft->gameRenderer->SetFovVal(m_iPad, (float)fovDeg);
 			app.SetGameSettings(m_iPad, eGameSetting_FOV, v);
 
 			WCHAR TempString[256];
