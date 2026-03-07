@@ -682,6 +682,12 @@ bool MinecraftServer::initServer(int64_t seed, NetworkGameInitData *initData, DW
 	}
 #endif
 	setPlayers(new PlayerList(this));
+#ifdef _WINDOWS64
+	{
+		int maxP = getPlayerList()->getMaxPlayers();
+		WinsockNetLayer::UpdateAdvertiseMaxPlayers((BYTE)(maxP > 255 ? 255 : maxP));
+	}
+#endif
 
 	// 4J-JEV: Need to wait for levelGenerationOptions to load.
 	while ( app.getLevelGenerationOptions() != NULL && !app.getLevelGenerationOptions()->hasLoadedData() )
@@ -2347,15 +2353,19 @@ void MinecraftServer::chunkPacketManagement_PostTick()
 }
 
 #else
-// 4J Added
+// 4J Added - round-robin chunk sends by player index. Compare vs the player at the current queue index,
+// not GetSessionIndex() (smallId), so reused smallIds after many connect/disconnects still get chunk sends.
 bool MinecraftServer::chunkPacketManagement_CanSendTo(INetworkPlayer *player)
 {
 	if( player == NULL ) return false;
 
 	int time = GetTickCount();
-	if( player->GetSessionIndex() == s_slowQueuePlayerIndex && (time - s_slowQueueLastTime) > MINECRAFT_SERVER_SLOW_QUEUE_DELAY )
+	DWORD currentPlayerCount = g_NetworkManager.GetPlayerCount();
+	if( currentPlayerCount == 0 ) return false;
+	int index = s_slowQueuePlayerIndex % (int)currentPlayerCount;
+	INetworkPlayer *queuePlayer = g_NetworkManager.GetPlayerByIndex( index );
+	if( queuePlayer != NULL && (player == queuePlayer || player->IsSameSystem(queuePlayer)) && (time - s_slowQueueLastTime) > MINECRAFT_SERVER_SLOW_QUEUE_DELAY )
 	{
-//		app.DebugPrintf("Slow queue OK for player #%d\n", player->GetSessionIndex());
 		return true;
 	}
 

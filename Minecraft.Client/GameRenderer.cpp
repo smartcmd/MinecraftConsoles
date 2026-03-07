@@ -74,7 +74,7 @@ ResourceLocation GameRenderer::SNOW_LOCATION = ResourceLocation(TN_ENVIRONMENT_S
 GameRenderer::GameRenderer(Minecraft *mc)
 {
 	// 4J - added this block of initialisers
-	renderDistance = 0;
+	renderDistance = (float)(16 * 16 >> mc->options->viewDistance);
 	_tick = 0;
 	hovered = nullptr;
 	thirdDistance = 4;
@@ -614,7 +614,15 @@ void GameRenderer::getFovAndAspect(float& fov, float& aspect, float a, bool appl
 
 void GameRenderer::setupCamera(float a, int eye)
 {
-	renderDistance = (float)(16 * 16 >> (mc->options->viewDistance));
+	if (mc->options->viewDistance >= 0)
+	{
+		renderDistance = (float)(16 * 16 >> mc->options->viewDistance);
+	}
+	else
+	{
+		renderDistance = (float)((16 * 16) << (-mc->options->viewDistance));
+	}
+
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
 

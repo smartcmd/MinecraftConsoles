@@ -56,11 +56,8 @@ PlayerList::PlayerList(MinecraftServer *server)
 
 	//int viewDistance = server->settings->getInt(L"view-distance", 10);
 
-#ifdef _WINDOWS64
-	maxPlayers = MINECRAFT_NET_MAX_PLAYERS;
-#else
-	maxPlayers = server->settings->getInt(L"max-players", 20);
-#endif
+	int rawMax = server->settings->getInt(L"max-players", 8);
+	maxPlayers = (unsigned int)Mth::clamp(rawMax, 1, MINECRAFT_NET_MAX_PLAYERS);
 	doWhiteList = false;
 	InitializeCriticalSection(&m_kickPlayersCS);
 	InitializeCriticalSection(&m_closePlayersCS);
@@ -79,7 +76,7 @@ PlayerList::~PlayerList()
 	DeleteCriticalSection(&m_closePlayersCS);
 }
 
-void PlayerList::placeNewPlayer(Connection *connection, shared_ptr<ServerPlayer> player, shared_ptr<LoginPacket> packet)
+bool PlayerList::placeNewPlayer(Connection *connection, shared_ptr<ServerPlayer> player, shared_ptr<LoginPacket> packet)
 {
 	CompoundTag *playerTag = load(player);
 
@@ -129,13 +126,13 @@ void PlayerList::placeNewPlayer(Connection *connection, shared_ptr<ServerPlayer>
 
 	ServerLevel *level = server->getLevel(player->dimension);
 
-	DWORD playerIndex = 0;
+	DWORD playerIndex = (DWORD)MINECRAFT_NET_MAX_PLAYERS;
 	{
 		bool usedIndexes[MINECRAFT_NET_MAX_PLAYERS];
 		ZeroMemory( &usedIndexes, MINECRAFT_NET_MAX_PLAYERS * sizeof(bool) );
-        for (auto& player : players )
+        for (auto& p : players )
         {
-			usedIndexes[player->getPlayerIndex()] = true;
+			usedIndexes[p->getPlayerIndex()] = true;
 		}
 		for(unsigned int i = 0; i < MINECRAFT_NET_MAX_PLAYERS; ++i)
 		{
@@ -145,6 +142,12 @@ void PlayerList::placeNewPlayer(Connection *connection, shared_ptr<ServerPlayer>
 				break;
 			}
 		}
+	}
+	if (playerIndex >= (unsigned int)MINECRAFT_NET_MAX_PLAYERS)
+	{
+		connection->send(shared_ptr<DisconnectPacket>(new DisconnectPacket(DisconnectPacket::eDisconnect_ServerFull)));
+		connection->sendAndQuit();
+		return false;
 	}
 	player->setPlayerIndex( playerIndex );
 	player->setCustomSkin( packet->m_playerSkinId );
@@ -233,8 +236,9 @@ void PlayerList::placeNewPlayer(Connection *connection, shared_ptr<ServerPlayer>
 
 	addPlayerToReceiving( player );
 
+	int maxPlayersForPacket = getMaxPlayers() > 255 ? 255 : getMaxPlayers();
 	playerConnection->send( shared_ptr<LoginPacket>( new LoginPacket(L"", player->entityId, level->getLevelData()->getGenerator(), level->getSeed(), player->gameMode->getGameModeForPlayer()->getId(),
-		(byte) level->dimension->id, (byte) level->getMaxBuildHeight(), (byte) getMaxPlayers(),
+		(byte) level->dimension->id, (byte) level->getMaxBuildHeight(), (byte) maxPlayersForPacket,
 		level->difficulty, TelemetryManager->GetMultiplayerInstanceID(), (BYTE)playerIndex, level->useNewSeaLevel(), player->getAllPlayerGamePrivileges(),
 		level->getLevelData()->getXZSize(), level->getLevelData()->getHellScale() ) ) );
 	playerConnection->send( shared_ptr<SetSpawnPositionPacket>( new SetSpawnPositionPacket(spawnPos->x, spawnPos->y, spawnPos->z) ) );
@@ -296,6 +300,7 @@ void PlayerList::placeNewPlayer(Connection *connection, shared_ptr<ServerPlayer>
 			}
 		}
 	}
+	return true;
 }
 
 void PlayerList::updateEntireScoreboard(ServerScoreboard *scoreboard, shared_ptr<ServerPlayer> player)
@@ -513,11 +518,7 @@ if (player->riding != NULL)
 
 shared_ptr<ServerPlayer> PlayerList::getPlayerForLogin(PendingConnection *pendingConnection, const wstring& userName, PlayerUID xuid, PlayerUID onlineXuid)
 {
-#ifdef _WINDOWS64
-	if (players.size() >= (unsigned int)MINECRAFT_NET_MAX_PLAYERS)
-#else
 	if (players.size() >= (unsigned int)maxPlayers)
-#endif
 	{
 		pendingConnection->disconnect(DisconnectPacket::eDisconnect_ServerFull);
 		return shared_ptr<ServerPlayer>();

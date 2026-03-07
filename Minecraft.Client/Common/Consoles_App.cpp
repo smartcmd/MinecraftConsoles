@@ -835,6 +835,7 @@ int CMinecraftApp::SetDefaultOptions(C_4JProfile::PROFILESETTINGS *pSettings,con
 {
 	SetGameSettings(iPad,eGameSetting_MusicVolume,DEFAULT_VOLUME_LEVEL);
 	SetGameSettings(iPad,eGameSetting_SoundFXVolume,DEFAULT_VOLUME_LEVEL);
+	SetGameSettings(iPad,eGameSetting_RenderDistance,16);
 	SetGameSettings(iPad,eGameSetting_Gamma,50);
 	SetGameSettings(iPad,eGameSetting_FOV,0);
 
@@ -1330,6 +1331,7 @@ void CMinecraftApp::ApplyGameSettingsChanged(int iPad)
 {
 	ActionGameSettings(iPad,eGameSetting_MusicVolume	);
 	ActionGameSettings(iPad,eGameSetting_SoundFXVolume	);
+	ActionGameSettings(iPad,eGameSetting_RenderDistance	);
 	ActionGameSettings(iPad,eGameSetting_Gamma			);
 	ActionGameSettings(iPad,eGameSetting_FOV			);
 	ActionGameSettings(iPad,eGameSetting_Difficulty		);
@@ -1377,6 +1379,15 @@ void CMinecraftApp::ActionGameSettings(int iPad,eGameSetting eVal)
 		if(iPad==ProfileManager.GetPrimaryPad())
 		{
 			pMinecraft->options->set(Options::Option::SOUND,((float)GameSettingsA[iPad]->ucSoundFXVolume)/100.0f);
+		}
+		break;
+	case eGameSetting_RenderDistance:
+		if(iPad == ProfileManager.GetPrimaryPad())
+		{
+			int dist = (GameSettingsA[iPad]->uiBitmaskValues >> 16) & 0xFF;
+
+			int level = UIScene_SettingsGraphicsMenu::DistanceToLevel(dist);
+			pMinecraft->options->set(Options::Option::RENDER_DISTANCE, 3 - level);
 		}
 		break;
 	case eGameSetting_Gamma:
@@ -1848,6 +1859,17 @@ void CMinecraftApp::SetGameSettings(int iPad,eGameSetting eVal,unsigned char ucV
 			GameSettingsA[iPad]->bSettingsChanged=true;
 		}
 		break;
+	case eGameSetting_RenderDistance:
+		{
+			unsigned int val = ucVal & 0xFF;
+
+			GameSettingsA[iPad]->uiBitmaskValues &= ~(0xFF << 16);
+			GameSettingsA[iPad]->uiBitmaskValues |= val << 16;
+			if(iPad == ProfileManager.GetPrimaryPad())
+				ActionGameSettings(iPad,eVal);
+			GameSettingsA[iPad]->bSettingsChanged = true;
+		}
+		break;
 	case eGameSetting_Gamma:
 		if(GameSettingsA[iPad]->ucGamma!=ucVal)
 		{
@@ -2307,6 +2329,13 @@ unsigned char CMinecraftApp::GetGameSettings(int iPad,eGameSetting eVal)
 	case eGameSetting_SoundFXVolume:
 		return GameSettingsA[iPad]->ucSoundFXVolume;
 		break;
+	case eGameSetting_RenderDistance:
+		{
+		int val = (GameSettingsA[iPad]->uiBitmaskValues >> 16) & 0xFF;
+		if(val == 0) return val = 16; //brain
+		return val;
+		break;
+		}
 	case eGameSetting_Gamma:
 		return GameSettingsA[iPad]->ucGamma;
 		break;

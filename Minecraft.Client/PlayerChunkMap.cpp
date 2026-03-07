@@ -12,6 +12,7 @@
 #include "..\Minecraft.World\ArrayWithLength.h"
 #include "..\Minecraft.World\System.h"
 #include "PlayerList.h"
+#include <unordered_set>
 
 PlayerChunkMap::PlayerChunk::PlayerChunk(int x, int z, PlayerChunkMap *pcm) : pos(x,z)
 {
@@ -204,106 +205,53 @@ void PlayerChunkMap::PlayerChunk::prioritiseTileChanges()
 	prioritised = true;
 }
 
+// One system id per machine so we send at most once per system. Local = 256, remote = GetSmallId().
+static int getSystemIdForSentTo(INetworkPlayer* np)
+{
+	if (np == NULL) return -1;
+	return np->IsLocal() ? 256 : (int)np->GetSmallId();
+}
+
 void PlayerChunkMap::PlayerChunk::broadcast(shared_ptr<Packet> packet)
 {
-	vector< shared_ptr<ServerPlayer> > sentTo;
-    for (unsigned int i = 0; i < players.size(); i++)
+	std::unordered_set<int> sentToSystemIds;  // O(1) "already sent to this system" check instead of O(N) scan
+	for (unsigned int i = 0; i < players.size(); i++)
 	{
-        shared_ptr<ServerPlayer> player = players[i];
-
-		// 4J - don't send to a player we've already sent this data to that shares the same machine. TileUpdatePacket,
-		// ChunkTilesUpdatePacket and SignUpdatePacket all used to limit themselves to sending once to each machine
-		// by only sending to the primary player on each machine. This was causing trouble for split screen
-		// as updates were only coming in for the region round this one player. Now these packets can be sent to any
-		// player, but we try to restrict the network impact this has by not resending to the one machine
-		bool dontSend = false;
-		if( sentTo.size() )
-		{
-			INetworkPlayer *thisPlayer = player->connection->getNetworkPlayer();
-			if( thisPlayer == NULL )
-			{
-				dontSend = true;
-			}
-			else
-			{
-				for(unsigned int j = 0; j < sentTo.size(); j++ )
-				{
-					shared_ptr<ServerPlayer> player2 = sentTo[j];
-					INetworkPlayer *otherPlayer = player2->connection->getNetworkPlayer();
-					if( otherPlayer != NULL && thisPlayer->IsSameSystem(otherPlayer) )
-					{
-						dontSend = true;
-					}
-				}
-			}
-		}
-		if( dontSend )
-		{
+		shared_ptr<ServerPlayer> player = players[i];
+		INetworkPlayer* thisPlayer = player->connection->getNetworkPlayer();
+		if (thisPlayer == NULL) continue;
+		int sysId = getSystemIdForSentTo(thisPlayer);
+		if (sysId >= 0 && sentToSystemIds.find(sysId) != sentToSystemIds.end())
 			continue;
-		}
 
-		// 4J Changed to get the flag index for the player before we send a packet. This flag is updated when we queue
-		// for send the first BlockRegionUpdatePacket for this chunk to that player/players system. Therefore there is no need to
-		// send tile updates or other updates until that has been sent
 		int flagIndex = ServerPlayer::getFlagIndexForChunk(pos, parent->dimension);
-        if (player->seenChunks.find(pos) != player->seenChunks.end() && (player->connection->isLocal() || g_NetworkManager.SystemFlagGet(player->connection->getNetworkPlayer(),flagIndex) ))
+		if (player->seenChunks.find(pos) != player->seenChunks.end() && (player->connection->isLocal() || g_NetworkManager.SystemFlagGet(thisPlayer, flagIndex)))
 		{
-            player->connection->send(packet);
-			sentTo.push_back(player);
-        }
-    }
-	// Now also check round all the players that are involved in this game. We also want to send the packet
-	// to them if their system hasn't received it already, but they have received the first BlockRegionUpdatePacket for this
-	// chunk
-
-	// Make sure we are only doing this for BlockRegionUpdatePacket, ChunkTilesUpdatePacket and TileUpdatePacket.
-	// We'll be potentially sending to players who aren't on the same level as this packet is intended for,
-	// and only these 3 packets have so far been updated to be able to encode the level so they are robust
-	// enough to cope with this
-	if(!( ( packet->getId() == 51 ) || ( packet->getId() == 52 ) || ( packet->getId() == 53 ) ) )
-	{
-		return;
+			player->connection->send(packet);
+			if (sysId >= 0) sentToSystemIds.insert(sysId);
+		}
 	}
+	// Also send to other server players who have this chunk (may not be in this chunk's players list)
+	if (!((packet->getId() == 51) || (packet->getId() == 52) || (packet->getId() == 53)))
+		return;
 
-	for( int i = 0; i < parent->level->getServer()->getPlayers()->players.size(); i++ )
+	const vector<shared_ptr<ServerPlayer> >& allPlayers = parent->level->getServer()->getPlayers()->players;
+	for (size_t i = 0; i < allPlayers.size(); i++)
 	{
-		shared_ptr<ServerPlayer> player = parent->level->getServer()->getPlayers()->players[i];
-		// Don't worry about local players, they get all their updates through sharing level with the server anyway
-		if ( player->connection == NULL ) continue;
-		if( player->connection->isLocal() ) continue;
+		shared_ptr<ServerPlayer> player = allPlayers[i];
+		if (player->connection == NULL || player->connection->isLocal()) continue;
 
-		// Don't worry about this player if they haven't had this chunk yet (this flag will be the
-		// same for all players on the same system)
-		int flagIndex = ServerPlayer::getFlagIndexForChunk(pos,parent->dimension);
-		if(!g_NetworkManager.SystemFlagGet(player->connection->getNetworkPlayer(),flagIndex)) continue;
+		INetworkPlayer* thisPlayer = player->connection->getNetworkPlayer();
+		if (thisPlayer == NULL) continue;
+		int sysId = getSystemIdForSentTo(thisPlayer);
+		if (sysId >= 0 && sentToSystemIds.find(sysId) != sentToSystemIds.end())
+			continue;
 
-		// From here on the same rules as in the loop above - don't send it if we've already sent to the same system
-		bool dontSend = false;
-		if( sentTo.size() )
-		{
-			INetworkPlayer *thisPlayer = player->connection->getNetworkPlayer();
-			if( thisPlayer == NULL )
-			{
-				dontSend = true;
-			}
-			else
-			{
-				for(unsigned int j = 0; j < sentTo.size(); j++ )
-				{
-					shared_ptr<ServerPlayer> player2 = sentTo[j];
-					INetworkPlayer *otherPlayer = player2->connection->getNetworkPlayer();
-					if( otherPlayer != NULL && thisPlayer->IsSameSystem(otherPlayer) )
-					{
-						dontSend = true;
-					}
-				}
-			}
-		}
-		if( !dontSend )
-		{
-            player->connection->send(packet);
-			sentTo.push_back(player);
-		}
+		int flagIndex = ServerPlayer::getFlagIndexForChunk(pos, parent->dimension);
+		if (!g_NetworkManager.SystemFlagGet(thisPlayer, flagIndex)) continue;
+
+		player->connection->send(packet);
+		if (sysId >= 0) sentToSystemIds.insert(sysId);
 	}
 }
 
