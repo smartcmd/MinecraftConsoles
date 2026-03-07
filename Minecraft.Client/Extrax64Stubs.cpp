@@ -606,18 +606,15 @@ bool				C_4JProfile::QuerySigninStatus(void) { return true; }
 void				C_4JProfile::GetXUID(int iPad, PlayerUID * pXuid, bool bOnlineXuid)
 {
 #ifdef _WINDOWS64
-	if (iPad != 0)
-	{
-		*pXuid = INVALID_XUID;
-		return;
-	}
-	// LoginPacket reads this value as client identity:
-	// - host keeps legacy host XUID for world compatibility
-	// - non-host uses persistent uid.dat-backed XUID
+	// Split-screen local players (pad 1-3) need unique XUIDs derived from the
+	// legacy base so the save system and per-player data can tell them apart.
+	// Only pad 0 participates in networking with a "real" identity.
 	if (IQNet::s_isHosting)
-		*pXuid = Win64Xuid::GetLegacyEmbeddedHostXuid();
-	else
+		*pXuid = Win64Xuid::GetLegacyEmbeddedHostXuid() + iPad;
+	else if (iPad == 0)
 		*pXuid = Win64Xuid::ResolvePersistentXuid();
+	else
+		*pXuid = Win64Xuid::GetLegacyEmbeddedBaseXuid() + iPad;
 #else
 	* pXuid = 0xe000d45248242f2e + iPad;
 #endif
