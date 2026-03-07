@@ -49,7 +49,7 @@
 #define GAME_HOST_OPTION_BITMASK_ALL				0xFFFFFFFF
 
 #define GAME_HOST_OPTION_BITMASK_WORLDSIZE_BITSHIFT		20
-#define GAME_HOST_OPTION_BITMASK_WORLDMOBCAP_BITSHIFT	28 // Set to this value as there is no other remaining space
+#define GAME_HOST_OPTION_BITMASK_WORLDMOBCAP_BITSHIFT	30 // Set to this value as there is no other remaining space
 
 enum EGameHostOptionWorldSize
 {

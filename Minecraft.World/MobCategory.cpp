@@ -5,6 +5,33 @@
 #include "Material.h"
 #include "MobCategory.h"
 
+int MobCategory::maxNaturalMonsters = 0;
+int MobCategory::maxNaturalAnimals = 0;
+int MobCategory::maxNaturalAmbient = 0;
+int MobCategory::maxNaturalSquid = 0;
+int MobCategory::maxNaturalChickens = 0;
+int MobCategory::maxNaturalWolves = 0;
+int MobCategory::maxNaturalMushroomCows = 0;
+
+int MobCategory::maxSnowGolems = 0;
+int MobCategory::maxIronGolems = 0;
+int MobCategory::maxBosses = 0;
+
+int MobCategory::maxAnimalsWithBreeding = 0;
+int MobCategory::maxChickensWithBreeding = 0;
+int MobCategory::maxMushroomCowsWithBreeding = 0;
+int MobCategory::maxWolvesWithBreeding = 0;
+int MobCategory::maxVillagersWithBreeding = 0;
+
+int MobCategory::maxAnimalsWithSpawnEgg = 0;
+int MobCategory::maxChickensWithSpawnEgg = 0;
+int MobCategory::maxWolvesWithSpawnEgg = 0;
+int MobCategory::maxMonstersWithSpawnEgg = 0;
+int MobCategory::maxVillagersWithSpawnEgg = 0;
+int MobCategory::maxMushroomCowsWithSpawnEgg = 0;
+int MobCategory::maxSquidsWithSpawnEgg = 0;
+int MobCategory::maxAmbientWithSpawnEgg = 0;
+
 MobCategory *MobCategory::monster = NULL;
 MobCategory *MobCategory::creature = NULL;
 MobCategory *MobCategory::ambient = NULL;
