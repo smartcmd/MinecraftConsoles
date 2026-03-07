@@ -925,7 +925,10 @@ void Gui::render(float a, bool mouseFree, int xMouse, int yMouse)
         int yChunkOffset = yBlockPos - yChunkPos * 16;
         int zChunkOffset = zBlockPos - zChunkPos * 16;
 
-        lines.push_back(L"XYZ: " + std::to_wstring(minecraft->player->x) + L" / " + std::to_wstring(minecraft->player->y) + L" / " + std::to_wstring(minecraft->player->z));
+		WCHAR posString[44]; // Allows upto 7 digit positions (+-9_999_999)
+        swprintf(posString, 44, L"%.3f / %.5f / %.3f", minecraft->player->x, minecraft->player->y, minecraft->player->z);
+
+        lines.push_back(L"XYZ: " + std::wstring(posString));
         lines.push_back(L"Block: " + std::to_wstring(static_cast<int>(xBlockPos)) + L" " + std::to_wstring(static_cast<int>(yBlockPos)) + L" " + std::to_wstring(static_cast<int>(zBlockPos)));
         lines.push_back(L"Chunk: " + std::to_wstring(xChunkOffset) + L" " + std::to_wstring(yChunkOffset) + L" " + std::to_wstring(zChunkOffset) + L" in " + std::to_wstring(xChunkPos) + L" " + std::to_wstring(yChunkPos) + L" " + std::to_wstring(zChunkPos));
 
