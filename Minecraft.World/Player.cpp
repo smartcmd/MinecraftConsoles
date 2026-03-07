@@ -1934,6 +1934,8 @@ void Player::stopSleepInBed(bool forcefulWakeUp, bool updateLevelList, bool save
 	m_isSleeping = false;
 	#ifdef _WINDOWS64
     g_KBMInput.SetActiveMouse(true);
+    g_KBMInput.OnMouseButtonUp(KeyboardMouseInput::MOUSE_LEFT);
+    g_KBMInput.OnMouseButtonUp(KeyboardMouseInput::MOUSE_RIGHT);
 	#endif
 
 	if (!level->isClientSide && updateLevelList)

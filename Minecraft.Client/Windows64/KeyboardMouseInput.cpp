@@ -160,6 +160,9 @@ void KeyboardMouseInput::OnKeyUp(int vkCode)
 
 void KeyboardMouseInput::OnMouseButtonDown(int button)
 {
+    if (!m_mouseActive)
+        return;
+
 	if (button >= 0 && button < MAX_MOUSE_BUTTONS)
 	{
 		if (!m_mouseButtonDown[button])
@@ -170,6 +173,10 @@ void KeyboardMouseInput::OnMouseButtonDown(int button)
 
 void KeyboardMouseInput::OnMouseButtonUp(int button)
 {
+    if (!m_mouseActive)
+        return;
+
+
 	if (button >= 0 && button < MAX_MOUSE_BUTTONS)
 	{
 		if (m_mouseButtonDown[button])
@@ -180,12 +187,18 @@ void KeyboardMouseInput::OnMouseButtonUp(int button)
 
 void KeyboardMouseInput::OnMouseMove(int x, int y)
 {
+    if (!m_mouseActive)
+        return;
+
 	m_mouseX = x;
 	m_mouseY = y;
 }
 
 void KeyboardMouseInput::OnMouseWheel(int delta)
 {
+    if (!m_mouseActive)
+        return;
+
 	// Normalize from raw Windows delta (multiples of WHEEL_DELTA=120) to discrete notch counts
 	m_mouseWheelAccum += delta / WHEEL_DELTA;
 }
@@ -263,6 +276,9 @@ bool KeyboardMouseInput::IsMouseButtonReleased(int button) const
 
 void KeyboardMouseInput::ConsumeMouseDelta(float &dx, float &dy)
 {
+    if (!m_mouseActive)
+        return;
+
 	dx = static_cast<float>(m_mouseDeltaAccumX);
 	dy = static_cast<float>(m_mouseDeltaAccumY);
 	m_mouseDeltaAccumX = 0;
