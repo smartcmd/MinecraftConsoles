@@ -461,16 +461,20 @@ void UIScene_CreateWorldMenu::handlePress(F64 controlId, F64 childId)
 	case eControl_GameModeToggle:
 		switch(m_iGameModeId)
 		{
-		case 0: // Survival
+		case 0: // Creative
 			m_buttonGamemode.setLabel(app.GetString(IDS_GAMEMODE_CREATIVE));
 			m_iGameModeId = GameType::CREATIVE->getId();
 			m_bGameModeCreative = true;
 			break;
-		case 1: // Creative
+		case 1: // Adventure
+			m_buttonGamemode.setLabel(app.GetString(IDS_GAMEMODE_ADVENTURE));
+			m_iGameModeId = GameType::ADVENTURE->getId();
+			m_bGameModeCreative = false;
+			break;
+		case 2: // Survival 
 			m_buttonGamemode.setLabel(app.GetString(IDS_GAMEMODE_SURVIVAL));
 			m_iGameModeId = GameType::SURVIVAL->getId();
 			m_bGameModeCreative = false;
-			break;
 		};
 		break;
 	case eControl_MoreOptions:

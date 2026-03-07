@@ -254,7 +254,7 @@ void UIScene_InGamePlayerOptionsMenu::handleReload()
 
 	if(m_editingSelf)
 	{
-#if (defined(_CONTENT_PACKAGE) || defined(_FINAL_BUILD) && !defined(_DEBUG_MENUS_ENABLED))
+#ifndef _DEBUG //(defined(_CONTENT_PACKAGE) || defined(_FINAL_BUILD) && !defined(_DEBUG_MENUS_ENABLED))
 		removeControl( &m_checkboxes[eControl_Op], true );
 #endif
 		
@@ -348,7 +348,7 @@ void UIScene_InGamePlayerOptionsMenu::handleInput(int iPad, int key, bool repeat
 			bool cheats = app.GetGameHostOption(eGameHostOption_CheatsEnabled) != 0;
 			if(m_editingSelf)
 			{
-#if (defined(_CONTENT_PACKAGE) || defined(_FINAL_BUILD) && !defined(_DEBUG_MENUS_ENABLED))
+#ifndef _DEBUG // (defined(_CONTENT_PACKAGE) || defined(_FINAL_BUILD) && !defined(_DEBUG_MENUS_ENABLED))
 #else
 				Player::setPlayerGamePrivilege(m_playerPrivileges,Player::ePlayerGamePrivilege_CreativeMode,m_checkboxes[eControl_Op].IsChecked());
 #endif
