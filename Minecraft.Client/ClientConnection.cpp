@@ -151,8 +151,33 @@ ClientConnection::~ClientConnection()
 
 void ClientConnection::tick()
 {
-	if (!done) connection->tick();
-	connection->flush();
+    if (done) return;
+
+    try
+    {
+        connection->tick();
+        connection->flush();
+	}
+    catch (const IOException &e)
+    {
+        app.DebugPrintf("IOException - %ls\n", e.information.c_str());
+        this->done;
+    }
+    catch (const RuntimeException &e)
+    {
+        app.DebugPrintf("RuntimeException - %ls\n", e.information.c_str());
+        this->done;
+    }
+    catch (const IllegalArgumentException &e)
+    {
+        app.DebugPrintf("IllegalArgumentException - %ls\n", e.information.c_str());
+        this->done;
+    }
+    catch (const EOFException &e)
+    {
+        app.DebugPrintf("EOFException - %ls\n", e.information.c_str());
+        this->done;
+    }
 }
 
 INetworkPlayer *ClientConnection::getNetworkPlayer()
