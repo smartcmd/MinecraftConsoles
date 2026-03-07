@@ -44,7 +44,7 @@ jobs:
           ./msvc-wine/vsdownload.py --accept-license --dest $(pwd)/my_msvc
           ./msvc-wine/install.sh $(pwd)/my_msvc
           export PATH=$(pwd)/my_msvc/bin/x64:$PATH
-          cmake .. -B . -GNinja -DCMAKE_BUILD_TYPE=${{ matrix.configuration }} -DWINDOWS_SDK_PATH=$(pwd)/my_msvc -DCMAKE_TOOLCHAIN_FILE=./toolchain-linux-winsdk.cmake
+          cmake .. -B . -GNinja -DCMAKE_BUILD_TYPE=${{ matrix.configuration }} -DWINDOWS_SDK_PATH=$(pwd)/my_msvc -DCMAKE_TOOLCHAIN_FILE=../cmake/LinuxCrosscompile.cmake
           ninja
           EOF
 
