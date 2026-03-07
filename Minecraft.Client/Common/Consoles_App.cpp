@@ -1408,7 +1408,6 @@ void CMinecraftApp::ActionGameSettings(int iPad,eGameSetting eVal)
 		{
 			float fovDeg = 70.0f + (float)GameSettingsA[iPad]->ucFov * 40.0f / 100.0f;
 			pMinecraft->gameRenderer->SetFovVal(fovDeg);
-			pMinecraft->options->set(Options::Option::FOV, (float)GameSettingsA[iPad]->ucFov / 100.0f);
 		}
 		break;
 	case eGameSetting_Difficulty:		
