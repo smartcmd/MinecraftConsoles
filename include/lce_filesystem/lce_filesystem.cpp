@@ -1,5 +1,4 @@
-#include "stdafx.h"
-#include "Filesystem.h"
+#include "lce_filesystem.h"
 
 #ifdef _WINDOWS64
 #include <windows.h>

@@ -1,5 +1,5 @@
 set(MINECRAFT_CLIENT_SOURCES
-  "../include/Filesystem/Filesystem.cpp"
+  "../include/lce_filesystem/lce_filesystem.cpp"
 
   "AbstractTexturePack.cpp"
   "AchievementPopup.cpp"

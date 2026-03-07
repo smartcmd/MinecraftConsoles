@@ -732,7 +732,7 @@
     <Filter Include="include">
       <UniqueIdentifier>{d8cdea16-28f5-4993-baf8-26a129e50c84}</UniqueIdentifier>
     </Filter>
-    <Filter Include="include\Filesystem">
+    <Filter Include="include\lce_filesystem">
       <UniqueIdentifier>{70b1f1aa-fe50-4aab-9a6c-14df8cb1f231}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
@@ -3790,8 +3790,8 @@
     <ClInclude Include="Common\Audio\stb_vorbis.h">
       <Filter>Common\Source Files\Audio</Filter>
     </ClInclude>
-    <ClInclude Include="..\include\Filesystem\Filesystem.h">
-      <Filter>include\Filesystem</Filter>
+    <ClInclude Include="..\include\lce_filesystem\Filce_filesystemlesystem.h">
+      <Filter>include\lce_filesystem</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -5946,8 +5946,8 @@
     <ClCompile Include="Windows64\Network\WinsockNetLayer.cpp">
       <Filter>Windows64\Source Files\Network</Filter>
     </ClCompile>
-    <ClCompile Include="..\include\Filesystem\Filesystem.cpp">
-      <Filter>include\Filesystem</Filter>
+    <ClCompile Include="..\include\lce_filesystem\lce_filesystem.cpp">
+      <Filter>include\lce_filesystem</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
