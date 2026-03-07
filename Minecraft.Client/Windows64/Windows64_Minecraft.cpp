@@ -595,6 +595,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				{ if (vk == VK_UP) chat->handleHistoryUp(); else chat->handleHistoryDown(); break; }
 			if (vk >= '1' && vk <= '9') // Prevent hotkey conflicts
 				break;
+			if (vk == VK_SHIFT)
+				break;
 		}
 #endif
 		if (vk == VK_SHIFT)
