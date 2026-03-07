@@ -21,17 +21,6 @@ jobs:
 
     - name: Setup msbuild
       uses: microsoft/setup-msbuild@v2
-    
-    - name: Set BuildVer.h
-      shell: bash
-      run: |
-        cat > Minecraft.Client/Common/BuildVer.h << EOF
-        #pragma once
-        #define VER_PRODUCTBUILD $GITHUB_RUN_NUMBER
-        #define VER_PRODUCTVERSION_STR_W L"${GITHUB_SHA::7} ($GITHUB_REF)"
-        #define VER_FILEVERSION_STR_W VER_PRODUCTVERSION_STR_W
-        #define VER_NETWORK VER_PRODUCTBUILD
-        EOF
 
     - name: Build
       run: MSBuild.exe MinecraftConsoles.sln /p:Configuration=Release /p:Platform="Windows64"
