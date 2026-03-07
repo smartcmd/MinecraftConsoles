@@ -862,69 +862,46 @@ void Gui::render(float a, bool mouseFree, int xMouse, int yMouse)
 
 		std::vector<std::wstring> lines;
 
-		// Header lines (drawn with drawShadow, white)
+		// Header lines
         lines.push_back(ClientConstants::VERSION_STRING);
         lines.push_back(minecraft->fpsString);
-        lines.push_back(L"Seed: " + std::to_wstring(minecraft->level->getLevelData()->getSeed()));
-        lines.push_back(minecraft->gatherStats1());
-        lines.push_back(minecraft->gatherStats2());
-        lines.push_back(minecraft->gatherStats3());
-        lines.push_back(minecraft->gatherStats4());
+        lines.push_back(L"E: " + std::to_wstring(minecraft->level->getAllEntities().size())); // Could maybe use entity::shouldRender to work out how many are rendered but thats like expensive
+        lines.push_back(minecraft->gatherStats4()); // Chunk Cache
 
-#ifdef _DEBUG // Only show terrain features in debug builds not release
-		// TERRAIN FEATURES		
-		if(minecraft->level->dimension->id==0)
-		{
-			wstring wfeature[eTerrainFeature_Count];
-
-			wfeature[eTerrainFeature_Stronghold] = L"Stronghold: ";
-			wfeature[eTerrainFeature_Mineshaft] = L"Mineshaft: ";
-			wfeature[eTerrainFeature_Village] = L"Village: ";
-			wfeature[eTerrainFeature_Ravine] = L"Ravine: ";
-
-			float maxW = (float)(screenWidth - debugLeft - 8) / scale;
-			float maxWForContent = maxW - (float)font->width(L"...");
-			bool truncated[eTerrainFeature_Count] = {};
-
-			for (int i = 0; i < (int)app.m_vTerrainFeatures.size(); i++)
-			{
-				FEATURE_DATA *pFeatureData=app.m_vTerrainFeatures[i];
-				int type = pFeatureData->eTerrainFeature;
-				if (type < eTerrainFeature_Stronghold || type > eTerrainFeature_Ravine) continue;
-				if (truncated[type]) continue;
-
-				wstring itemInfo = L"[" + std::to_wstring( pFeatureData->x*16 ) + L", " + std::to_wstring( pFeatureData->z*16 ) + L"] ";
-				if (font->width(wfeature[type] + itemInfo) <= maxWForContent)
-					wfeature[type] += itemInfo;
-				else
-				{
-					wfeature[type] += L"...";
-					truncated[type] = true;
-				}
-			}
-
-			lines.push_back(L""); // Add a spacer line
-            for (int i = eTerrainFeature_Stronghold; i <= (int) eTerrainFeature_Ravine; i++)
-			{
-                lines.push_back(wfeature[i]);
-			}
-            lines.push_back(L"");
+		// Dimension
+        wstring dimension = L"unknown";
+        switch (minecraft->player->dimension)
+        {
+        case -1:
+            dimension = L"minecraft:the_nether";
+            break;
+        case 0:
+            dimension = L"minecraft:overworld";
+            break;
+        case 1:
+			dimension = L"minecraft:the_end";
+			break;
 		}
-#endif
+        lines.push_back(dimension);
 
-		// 4J Stu - Moved these so that they don't overlap
+        lines.push_back(L""); // Spacer
+
+		// Players block pos
         int xBlockPos = Mth::floor(minecraft->player->x);
         int yBlockPos = Mth::floor(minecraft->player->y);
         int zBlockPos = Mth::floor(minecraft->player->z);
 
+		// Chunk player is in
         int xChunkPos = minecraft->player->xChunk;
         int yChunkPos = minecraft->player->yChunk;
         int zChunkPos = minecraft->player->zChunk;
 
+		// Players offset within the chunk
 		int xChunkOffset = xBlockPos - xChunkPos * 16;
         int yChunkOffset = yBlockPos - yChunkPos * 16;
         int zChunkOffset = zBlockPos - zChunkPos * 16;
 
+		// Format the position like java with limited decumal places
 		WCHAR posString[44]; // Allows upto 7 digit positions (+-9_999_999)
         swprintf(posString, 44, L"%.3f / %.5f / %.3f", minecraft->player->x, minecraft->player->y, minecraft->player->z);
 
@@ -970,9 +947,76 @@ void Gui::render(float a, bool mouseFree, int xMouse, int yMouse)
 		if (minecraft->level != NULL && minecraft->level->hasChunkAt(xBlockPos, yBlockPos, zBlockPos))
 		{
             LevelChunk *chunkAt = minecraft->level->getChunkAt(xBlockPos, zBlockPos);
+
+			int skyLight = chunkAt->getBrightness(LightLayer::Sky, xChunkOffset, yChunkOffset, zChunkOffset);
+            int blockLight = chunkAt->getBrightness(LightLayer::Block, xChunkOffset, yChunkOffset, zChunkOffset);
+            int maxLight = fmax(skyLight, blockLight);
+            lines.push_back(L"Light: " + std::to_wstring(maxLight) + L" (" + std::to_wstring(skyLight) + L" sky, " + std::to_wstring(blockLight) + L" block)");
+
+			lines.push_back(L"CH S: " + std::to_wstring(chunkAt->getHeightmap(xChunkOffset, zChunkOffset)));
+
             Biome *biome = chunkAt->getBiome(xChunkOffset, zChunkOffset, minecraft->level->getBiomeSource());
             lines.push_back(L"Biome: " + biome->m_name + L" (" + std::to_wstring(biome->id) + L")");
+
+            lines.push_back(L"Difficulty: " + std::to_wstring(minecraft->level->difficulty) + L" (Day " + std::to_wstring(minecraft->level->getGameTime() / Level::TICKS_PER_DAY) + L")");
 		}
+
+
+		// This is all LCE only stuff, it was never on java
+        lines.push_back(L""); // Spacer
+        lines.push_back(L"Seed: " + std::to_wstring(minecraft->level->getLevelData()->getSeed()));
+        lines.push_back(minecraft->gatherStats1()); // Time to autosave
+        lines.push_back(minecraft->gatherStats2()); // Empty currently - CPlatformNetworkManagerStub::GatherStats()
+        lines.push_back(minecraft->gatherStats3()); // RTT
+		
+#ifdef _DEBUG // Only show terrain features in debug builds not release
+        // TERRAIN FEATURES
+        if (minecraft->level->dimension->id == 0)
+        {
+            wstring wfeature[eTerrainFeature_Count];
+
+            wfeature[eTerrainFeature_Stronghold] = L"Stronghold: ";
+            wfeature[eTerrainFeature_Mineshaft] = L"Mineshaft: ";
+            wfeature[eTerrainFeature_Village] = L"Village: ";
+            wfeature[eTerrainFeature_Ravine] = L"Ravine: ";
+
+            float maxW = (float)(screenWidth - debugLeft - 8) / scale;
+            float maxWForContent = maxW - (float)font->width(L"...");
+            bool truncated[eTerrainFeature_Count] = {};
+
+            for (int i = 0; i < (int)app.m_vTerrainFeatures.size(); i++)
+            {
+                FEATURE_DATA *pFeatureData = app.m_vTerrainFeatures[i];
+                int type = pFeatureData->eTerrainFeature;
+                if (type < eTerrainFeature_Stronghold || type > eTerrainFeature_Ravine)
+                {
+                    continue;
+                }
+                if (truncated[type])
+                {
+                    continue;
+                }
+
+                wstring itemInfo = L"[" + std::to_wstring(pFeatureData->x * 16) + L", " + std::to_wstring(pFeatureData->z * 16) + L"] ";
+                if (font->width(wfeature[type] + itemInfo) <= maxWForContent)
+                {
+                    wfeature[type] += itemInfo;
+                }
+                else
+                {
+                    wfeature[type] += L"...";
+                    truncated[type] = true;
+                }
+            }
+
+            lines.push_back(L""); // Add a spacer line
+            for (int i = eTerrainFeature_Stronghold; i <= (int)eTerrainFeature_Ravine; i++)
+            {
+                lines.push_back(wfeature[i]);
+            }
+            lines.push_back(L"");
+        }
+#endif
 
 		// Loop through the lines and draw them all on screen
 		int yPos = debugTop;
