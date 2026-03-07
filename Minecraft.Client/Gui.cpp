@@ -860,7 +860,7 @@ void Gui::render(float a, bool mouseFree, int xMouse, int yMouse)
 		glScalef(scale, scale, 1.f);
 		glTranslatef((float)-debugLeft, (float)-debugTop, 0.f);
 
-		std::vector<std::wstring> lines;
+		vector<wstring> lines;
 
         lines.push_back(ClientConstants::VERSION_STRING);
         lines.push_back(minecraft->fpsString);
