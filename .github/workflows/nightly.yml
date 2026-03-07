@@ -37,7 +37,8 @@ jobs:
         tag_name: nightly
         name: Nightly Release
         body: |
-          Debug Version of minecraftconsoles |
+          Debug Version of minecraftconsoles 
+        files: |
             LCEWindows64.zip
             ./x64/Release/Minecraft.Client.exe
             ./x64/Release/Minecraft.Client.pdb
