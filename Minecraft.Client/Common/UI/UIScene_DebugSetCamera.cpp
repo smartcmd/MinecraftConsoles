@@ -22,8 +22,13 @@ UIScene_DebugSetCamera::UIScene_DebugSetCamera(int iPad, void *initData, UILayer
 		Vec3 *vec = pMinecraft->localplayers[playerNo]->getPos(1.0);
 
 		currentPosition->m_camX = vec->x;
+		currentX = currentPosition->m_camX;
+
 		currentPosition->m_camY = vec->y - 1.62;// pMinecraft->localplayers[playerNo]->getHeadHeight();
+		currentY = currentPosition->m_camY;
+
 		currentPosition->m_camZ = vec->z;
+		currentZ = currentPosition->m_camZ;
 
 		currentPosition->m_yRot = pMinecraft->localplayers[playerNo]->yRot;
 		currentPosition->m_elev = pMinecraft->localplayers[playerNo]->xRot;
@@ -95,27 +100,27 @@ void UIScene_DebugSetCamera::onDirectEditFinished(UIControl_TextInput *input, UI
 	if (input == &m_textInputX)           
 	{
 		currentPosition->m_camX = val;
-		if (val > 30000000) currentPosition->m_camX = 30000000;
-		if (val < -30000000) currentPosition->m_camX = -30000000;
+		if (val > 30000000) currentPosition->m_camX = currentX;
+		if (val < -30000000) currentPosition->m_camX = -currentX;
 	}
-else if (input == &m_textInputY)    
+	else if (input == &m_textInputY)    
 	{
 		currentPosition->m_camY = val;
-		if (val > 300) currentPosition->m_camY = 300;
-		if (val < -16) currentPosition->m_camY = 70;
+		if (val > 256) currentPosition->m_camY = currentY;
+		if (val < 0) currentPosition->m_camY = currentY;
 	}
 	
-else if (input == &m_textInputZ)      
+	else if (input == &m_textInputZ)      
 	{
 		currentPosition->m_camZ = val;
-		if (val > 30000000) currentPosition->m_camZ = 30000000;
-		if (val < -30000000) currentPosition->m_camZ = -30000000;
+		if (val > 30000000) currentPosition->m_camZ = currentZ;
+		if (val < -30000000) currentPosition->m_camZ = -currentZ;
 	}
-else if (input == &m_textInputYRot)
+	else if (input == &m_textInputYRot)
 	{
 		currentPosition->m_yRot = val;
 	}
-else if (input == &m_textInputElevation)
+	else if (input == &m_textInputElevation)
 	{
 		currentPosition->m_elev = val;
 	}
