@@ -240,7 +240,7 @@ void SQRNetworkManager_PS3::Terminate()
 	} while( m_basicEventThread->isRunning() );
 }
 
-// Second stage of initialisation, that requirements NP Manager to be online & the player to be signed in. This kicks of the creation of a context
+// Second stage of initialisation, that requires NP Manager to be online & the player to be signed in. This kicks of the creation of a context
 // for Np Matching 2. Initialisation is finally complete when we get a callback to ContextCallback. The SQRNetworkManager_PS3 is then finally moved
 // into SNM_INT_STATE_IDLE at this stage.
 void SQRNetworkManager_PS3::InitialiseAfterOnline()
@@ -778,8 +778,8 @@ bool SQRNetworkManager_PS3::IsReadyToPlayOrIdle()
 
 
 // Consider as "in session" from the moment that a game is created or joined, until the point where the game itself has been told via state change that we are now idle. The
-// game code requirements IsInSession to return true as soon as it has asked to do one of these things (even if the state system hasn't really caught up with this request yet), and
-// it also requirements that it is informed of the state changes leading up to not being in the session, before this should report false.
+// game code requires IsInSession to return true as soon as it has asked to do one of these things (even if the state system hasn't really caught up with this request yet), and
+// it also requires that it is informed of the state changes leading up to not being in the session, before this should report false.
 bool SQRNetworkManager_PS3::IsInSession()
 {
 	return m_isInSession;
@@ -1066,7 +1066,7 @@ bool SQRNetworkManager_PS3::AddLocalPlayerByUserIndex(int idx)
 		m_roomSyncData.setPlayerCount(m_roomSyncData.getPlayerCount()+1);
 
 		// And do any adjusting necessary to the mappings from this room data, to the SQRNetworkPlayers.
-		// This will also create the required new SQRNetworkPlayer and do all the callbacks that requirements etc.
+		// This will also create the required new SQRNetworkPlayer and do all the callbacks that requires etc.
 		MapRoomSlotPlayers();
 
 		// Sync this back out to our networked clients...
@@ -1146,7 +1146,7 @@ bool SQRNetworkManager_PS3::RemoveLocalPlayerByUserIndex(int idx)
 				memset(&m_roomSyncData.players[m_roomSyncData.getPlayerCount()],0,sizeof(PlayerSyncData));
 
 				// And do any adjusting necessary to the mappings from this room data, to the SQRNetworkPlayers.
-				// This will also delete the SQRNetworkPlayer and do all the callbacks that requirements etc.
+				// This will also delete the SQRNetworkPlayer and do all the callbacks that requires etc.
 				MapRoomSlotPlayers(roomSlotPlayerCount);
 				m_aRoomSlotPlayers[m_roomSyncData.getPlayerCount()] = NULL;
 
@@ -1714,7 +1714,7 @@ void SQRNetworkManager_PS3::SyncRoomData()
 	sceNpMatching2SetRoomDataInternal ( m_matchingContext, &reqParam, NULL, &m_setRoomDataRequestId );
 }
 
-// Check if the matching context is valid, and if not attempt to create one. If to do this requirements starting an asynchronous process, then sets the internal state to the state passed in
+// Check if the matching context is valid, and if not attempt to create one. If to do this requires starting an asynchronous process, then sets the internal state to the state passed in
 // before doing this.
 // Returns true on success.
 bool SQRNetworkManager_PS3::GetMatchingContext(eSQRNetworkManagerInternalState asyncState)
@@ -2137,7 +2137,7 @@ void SQRNetworkManager_PS3::DeleteServerContext()
 	}
 }
 
-// Creates a set of Rudp connections by the "active open" method. This requirements that both ends of the connection call cellRudpInitiate to fully create a connection. We
+// Creates a set of Rudp connections by the "active open" method. This requires that both ends of the connection call cellRudpInitiate to fully create a connection. We
 // create one connection per local play on any remote machine.
 //
 // peerMemberId is the room member Id of the remote end of the connection
@@ -2414,7 +2414,7 @@ void SQRNetworkManager_PS3::DefaultRequestCallback(SceNpMatching2ContextId id, S
 	SQRNetworkManager_PS3 *manager = (SQRNetworkManager_PS3 *)arg;
 	if( id != manager->m_matchingContext ) return;
 
-	// PS3 requirements a call to get any data that is passed with the callback. On PS3, the data is just passed in directly - do the getting of data here on PS3 to get it into the same state as the PS4
+	// PS3 requires a call to get any data that is passed with the callback. On PS3, the data is just passed in directly - do the getting of data here on PS3 to get it into the same state as the PS4
 #ifdef __PS3__
 	void *data = 0;
 	bool dataError = false;
@@ -2679,7 +2679,7 @@ void SQRNetworkManager_PS3::DefaultRequestCallback(SceNpMatching2ContextId id, S
 			break;
 		// This is the response to sceNpMatching2GetRoomMemberDataInternal.This only happens on the host, as a response to an incoming connection being established, when we
 		// kick off the request for room member internal data so that we can determine what local players that remote machine is intending to bring into the game. At this point we can
-		// activate the host end of each of the Rupd connection that this machine requirements. We can also update our player slot data (which gets syncronised back out to other room members) at this point.
+		// activate the host end of each of the Rupd connection that this machine requires. We can also update our player slot data (which gets syncronised back out to other room members) at this point.
 		case SCE_NP_MATCHING2_REQUEST_EVENT_GetRoomMemberDataInternal:
 			if( errorCode == 0 )
 			{

@@ -132,7 +132,7 @@ bool LevelRenderer_FindNearestChunk_DataIn::MultiplayerChunkCache::getChunkEmpty
 }
 
 
-bool LevelRenderer_FindNearestChunk_DataIn::CompressedTileStorage::isRenderChunkEmpty(int y)	// y == 0, 16, 32... 112 (representing a 16 byte range) 
+bool LevelRenderer_FindNearestChunk_DataIn::CompressedTileStorage::isRenderChunkEmpty(int y)	// y == 0, 16, 32... 112 (representing a 16 uint8_t range) 
 {
 	int blockIdx;
 	unsigned short *blockIndices = (unsigned short *)indicesAndData;

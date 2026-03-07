@@ -11,7 +11,7 @@
 #include "ByteArrayTag.h"
 #include "IntArrayTag.h"
 
-class CompoundTag : public Tag    
+class CompoundTag : public Tag
 {
 private:
 	unordered_map<wstring, Tag *> tags;
@@ -86,7 +86,7 @@ public:
 		tags[name] = (new IntTag(name,value));
 	}
 
-	void putLong(const wstring &name, __int64 value)
+	void putLong(const wstring &name, int64_t value)
 	{
 		tags[name] = (new LongTag(name,value));
 	}
@@ -156,9 +156,9 @@ public:
 		return ((IntTag *) tags[name])->data;
 	}
 
-	__int64 getLong(const wstring &name)
+	int64_t getLong(const wstring &name)
 	{
-		if (tags.find(name) == tags.end()) return (__int64)0;
+		if (tags.find(name) == tags.end()) return (int64_t)0;
 		return ((LongTag *) tags[name])->data;
 	}
 
@@ -261,7 +261,7 @@ public:
 		CompoundTag *tag = new CompoundTag(getName());
 
 		for( auto& it : tags )
-		{			
+		{
 			tag->put((wchar_t *)it.first.c_str(), it.second->copy());
 		}
 		return tag;

@@ -6,14 +6,14 @@
 
 const WCHAR *ConsoleSoundEngine::wchSoundNames[eSoundType_MAX]=
 {
-	L"mob.chicken",						//	eSoundType_MOB_CHICKEN_AMBIENT	
-	L"mob.chickenhurt",					//	eSoundType_MOB_CHICKEN_HURT
-	L"mob.chickenplop",					//	eSoundType_MOB_CHICKENPLOP
-	L"mob.cow",							//	eSoundType_MOB_COW_AMBIENT
-	L"mob.cowhurt",						//	eSoundType_MOB_COW_HURT
-	L"mob.pig",							//	eSoundType_MOB_PIG_AMBIENT
-	L"mob.pigdeath",					//	eSoundType_MOB_PIG_DEATH
-	L"mob.sheep",						//	eSoundType_MOB_SHEEP_AMBIENT
+	L"mob.chicken.say",						//	eSoundType_MOB_CHICKEN_AMBIENT	
+	L"mob.chicken.hurt",					//	eSoundType_MOB_CHICKEN_HURT
+	L"mob.chicken.plop",					//	eSoundType_MOB_CHICKENPLOP
+	L"mob.cow.say",							//	eSoundType_MOB_COW_AMBIENT
+	L"mob.cow.hurt",						//	eSoundType_MOB_COW_HURT
+	L"mob.pig.say",							//	eSoundType_MOB_PIG_AMBIENT
+	L"mob.pig.death",					//	eSoundType_MOB_PIG_DEATH
+	L"mob.sheep.say",						//	eSoundType_MOB_SHEEP_AMBIENT
 	L"mob.wolf.growl",					//	eSoundType_MOB_WOLF_GROWL
 	L"mob.wolf.whine",					//	eSoundType_MOB_WOLF_WHINE
 	L"mob.wolf.panting",				//	eSoundType_MOB_WOLF_PANTING
@@ -43,15 +43,15 @@ const WCHAR *ConsoleSoundEngine::wchSoundNames[eSoundType_MAX]=
 	L"mob.silverfish.step",				//	eSoundType_MOB_SILVERFISH_STEP,
 	L"mob.skeleton",					//	eSoundType_MOB_SKELETON_AMBIENT,
 	L"mob.skeletonhurt",				//	eSoundType_MOB_SKELETON_HURT,
-	L"mob.spider",						//	eSoundType_MOB_SPIDER_AMBIENT,
-	L"mob.spiderdeath",					//	eSoundType_MOB_SPIDER_DEATH,
+	L"mob.spider.say",						//	eSoundType_MOB_SPIDER_AMBIENT,
+	L"mob.spider.death",					//	eSoundType_MOB_SPIDER_DEATH,
 	L"mob.slime",						//	eSoundType_MOB_SLIME,
-	L"mob.slimeattack",					//	eSoundType_MOB_SLIME_ATTACK,
-	L"mob.creeper",						//	eSoundType_MOB_CREEPER_HURT,
-	L"mob.creeperdeath",				//	eSoundType_MOB_CREEPER_DEATH,
-	L"mob.zombie",						//	eSoundType_MOB_ZOMBIE_AMBIENT,
-	L"mob.zombiehurt",					//	eSoundType_MOB_ZOMBIE_HURT,
-	L"mob.zombiedeath",					//	eSoundType_MOB_ZOMBIE_DEATH,
+	L"mob.slime.attack",					//	eSoundType_MOB_SLIME_ATTACK,
+	L"mob.creeper.say",						//	eSoundType_MOB_CREEPER_HURT,
+	L"mob.creeper.death",				//	eSoundType_MOB_CREEPER_DEATH,
+	L"mob.zombie.say",						//	eSoundType_MOB_ZOMBIE_AMBIENT,
+	L"mob.zombie.hurt",					//	eSoundType_MOB_ZOMBIE_HURT,
+	L"mob.zombie.death",					//	eSoundType_MOB_ZOMBIE_DEATH,
 	L"mob.zombie.wood",					//	eSoundType_MOB_ZOMBIE_WOOD,
 	L"mob.zombie.woodbreak",			//	eSoundType_MOB_ZOMBIE_WOOD_BREAK,
 	L"mob.zombie.metal",				//	eSoundType_MOB_ZOMBIE_METAL,
@@ -86,7 +86,7 @@ const WCHAR *ConsoleSoundEngine::wchSoundNames[eSoundType_MAX]=
 	L"random.door_close",				//	eSoundType_RANDOM_DOOR_CLOSE,
 	L"ambient.weather.rain",			//	eSoundType_AMBIENT_WEATHER_RAIN,
 	L"ambient.weather.thunder",			//	eSoundType_AMBIENT_WEATHER_THUNDER,
-	L"ambient.cave.cave",				//	eSoundType_CAVE_CAVE, DON'T USE FOR XBOX 360!!!
+	L"ambient.cave",				//	eSoundType_CAVE_CAVE, DON'T USE FOR XBOX 360!!!
 #ifdef _XBOX
 	L"ambient.cave.cave2",				//	eSoundType_CAVE_CAVE2 - removed the two sounds that were at 192k in the first ambient cave event
 #endif
@@ -210,9 +210,9 @@ const WCHAR *ConsoleSoundEngine::wchSoundNames[eSoundType_MAX]=
 	L"mob.horse.soft",					//eSoundType_MOB_HORSE_SOFT,
 	L"mob.horse.jump",					//eSoundType_MOB_HORSE_JUMP,
 
-	L"mob.witch.idle",					//eSoundType_MOB_WITCH_IDLE,			<--- missing
-	L"mob.witch.hurt",					//eSoundType_MOB_WITCH_HURT,			<--- missing
-	L"mob.witch.death",					//eSoundType_MOB_WITCH_DEATH,			<--- missing
+	L"mob.witch.ambient",					//eSoundType_MOB_WITCH_IDLE,
+	L"mob.witch.hurt",					//eSoundType_MOB_WITCH_HURT,
+	L"mob.witch.death",					//eSoundType_MOB_WITCH_DEATH,
 
 	L"mob.slime.big",					//eSoundType_MOB_SLIME_BIG,
 	L"mob.slime.small",					//eSoundType_MOB_SLIME_SMALL,

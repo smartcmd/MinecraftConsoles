@@ -46,6 +46,7 @@
 #include "..\..\Minecraft.Client\Tesselator.h"
 #include "..\Common\Console_Awards_enum.h"
 #include "..\..\Minecraft.Client\Options.h"
+#include "..\GameRenderer.h"
 #include "Sentient\SentientManager.h"
 #include "..\..\Minecraft.World\IntCache.h"
 #include "..\Textures.h"
@@ -657,7 +658,7 @@ int main()
 	StorageManager.SetDLCInfoMap(app.GetSonyDLCMap());
 	app.CommerceInit(); //  MGH - moved this here so GetCommerce isn't NULL
 
-	// 4J-PB - Kick of the check for trial or full version - requirements ui to be initialised
+	// 4J-PB - Kick of the check for trial or full version - requires ui to be initialised
 	app.GetCommerce()->CheckForTrialUpgradeKey();
 
 
@@ -904,6 +905,9 @@ int main()
 #endif
 		ui.tick();
 		ui.render();
+
+		pMinecraft->gameRenderer->ApplyGammaPostProcess();
+
 #if 0
 		app.HandleButtonPresses();
 

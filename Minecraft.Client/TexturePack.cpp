@@ -58,7 +58,7 @@ wstring TexturePack::getPath(bool bTitleUpdateTexture /*= false*/,const char *pc
 	}
 
 #elif __PSVITA__
-	char *pchUsrDir="";//getUsrDirPath();
+	const char *pchUsrDir="";//getUsrDirPath();
 	wstring wstr (pchUsrDir, pchUsrDir+strlen(pchUsrDir));
 
 	if(bTitleUpdateTexture)

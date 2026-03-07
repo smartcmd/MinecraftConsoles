@@ -163,6 +163,12 @@ void UIScene_Keyboard::tick()
 {
 	UIScene::tick();
 
+	// Sync our buffer from Flash so we pick up changes made via controller/on-screen buttons.
+	// Without this, switching between controller and keyboard would use stale text.
+	const wchar_t* flashText = m_KeyboardTextInput.getLabel();
+	if (flashText)
+		m_win64TextBuffer = flashText;
+
 	// Accumulate physical keyboard chars into our own buffer, then push to Flash via setLabel.
 	// This bypasses Iggy's focus system (char events only route to the focused element).
 	// The char buffer is cleared on open so Enter/clicks from the triggering action don't leak in.

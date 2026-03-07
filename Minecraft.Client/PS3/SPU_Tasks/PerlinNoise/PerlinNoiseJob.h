@@ -13,7 +13,7 @@ public:
 	void set(PerlinNoise* pNoise, doubleArray& buffer, int x, int y, int z, int xSize, int ySize, int zSize, double xScale, double yScale, double zScale)
 	{
 		int arraySize = xSize * ySize * zSize;
-		// make sure it's 16 byte aligned
+		// make sure it's 16 uint8_t aligned
 		if(arraySize & 1)
 			arraySize++;
 		if (buffer.data == NULL) 

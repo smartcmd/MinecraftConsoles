@@ -4,13 +4,7 @@
 //
 #pragma once
 
-#ifdef __PS3__
-#else
-#endif
-
-#if ( defined _XBOX || defined _WINDOWS64  || defined _DURANGO )
-typedef unsigned __int64 __uint64;
-#endif
+#include <cstdint>
 
 #ifdef _WINDOWS64
 #define WIN32_LEAN_AND_MEAN             // Exclude rarely-used stuff from Windows headers
@@ -18,7 +12,7 @@ typedef unsigned __int64 __uint64;
 #include <windows.h>
 #include <malloc.h>
 #include <tchar.h>
-// TODO: reference additional headers your program requirements here
+// TODO: reference additional headers your program requires here
 #include <d3d11.h>
 #endif
 

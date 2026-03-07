@@ -13,7 +13,7 @@ public:
 	virtual double readDouble() = 0;
 	virtual float readFloat() = 0;
 	virtual int readInt() = 0;
-	virtual __int64 readLong() = 0;
+	virtual int64_t readLong() = 0;
 	virtual short readShort() = 0;
 	virtual wchar_t readChar() = 0;
 	virtual wstring readUTF() = 0;

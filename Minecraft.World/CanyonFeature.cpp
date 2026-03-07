@@ -4,7 +4,7 @@
 #include "net.minecraft.world.level.tile.h"
 #include "net.minecraft.world.level.biome.h"
 
-void CanyonFeature::addTunnel(__int64 seed, int xOffs, int zOffs, byteArray blocks, double xCave, double yCave, double zCave, float thickness, float yRot, float xRot, int step, int dist, double yScale)
+void CanyonFeature::addTunnel(int64_t seed, int xOffs, int zOffs, byteArray blocks, double xCave, double yCave, double zCave, float thickness, float yRot, float xRot, int step, int dist, double yScale)
 {
 	MemSect(49);
 	Random *random = new Random(seed);

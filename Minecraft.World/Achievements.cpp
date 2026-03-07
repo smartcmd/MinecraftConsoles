@@ -108,7 +108,7 @@ void Achievements::staticCtor()
 
 	// 4J Stu - The order of these achievemnts is very important, as they map directly to data stored in the profile data. New achievements should be added at the end.
 	
-	// 4J : WESTY : Added new achievements. Note, params "x", "y", "icon" and "requirements" are ignored on xbox.
+	// 4J : WESTY : Added new achievements. Note, params "x", "y", "icon" and "requires" are ignored on xbox.
 	Achievements::leaderOfThePack		= (new Achievement(eAward_LeaderOfThePack,		L"leaderOfThePack",		0, 0,	Tile::treeTrunk,	(Achievement *) buildSword))->setAwardLocallyOnly()->postConstruct();
 	Achievements::MOARTools				= (new Achievement(eAward_MOARTools,			L"MOARTools",			0, 0,	Tile::treeTrunk,	(Achievement *) buildSword))->setAwardLocallyOnly()->postConstruct();
 	Achievements::dispenseWithThis		= (new Achievement(eAward_DispenseWithThis,		L"dispenseWithThis",	0, 0,	Tile::treeTrunk,	(Achievement *) buildSword))->postConstruct();

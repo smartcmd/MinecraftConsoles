@@ -13,19 +13,19 @@ public:
 
 private: 
 	const wstring desc;
-    DescFormatter *descFormatter;
+	DescFormatter *descFormatter;
 
 public:
 	const shared_ptr<ItemInstance> icon;
 
 private:
-    bool isGoldenVar;
+	bool isGoldenVar;
 	void _init();
 
 public:
 	Achievement(int id, const wstring& name, int x, int y, Item *icon, Achievement *requirements);
-    Achievement(int id, const wstring& name, int x, int y, Tile *icon, Achievement *requirements);
-    Achievement(int id, const wstring& name, int x, int y, shared_ptr<ItemInstance> icon, Achievement *requirements);
+	Achievement(int id, const wstring& name, int x, int y, Tile *icon, Achievement *requirements);
+	Achievement(int id, const wstring& name, int x, int y, shared_ptr<ItemInstance> icon, Achievement *requirements);
 
 	Achievement *setAwardLocallyOnly();
 	Achievement *setGolden();

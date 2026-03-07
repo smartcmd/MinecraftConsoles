@@ -86,6 +86,7 @@ char secureFileId[CELL_SAVEDATA_SECUREFILEID_SIZE] =
 #include "..\..\Minecraft.Client\Tesselator.h"
 #include "..\Common\Console_Awards_enum.h"
 #include "..\..\Minecraft.Client\Options.h"
+#include "..\GameRenderer.h"
 #include "Sentient\SentientManager.h"
 #include "..\..\Minecraft.World\IntCache.h"
 #include "..\Textures.h"
@@ -839,7 +840,7 @@ int main()
 		ui.init(1280,480);
 
 	app.CommerceInit(); //  MGH - moved this here so GetCommerce isn't NULL
-	// 4J-PB - Kick of the check for trial or full version - requirements ui to be initialised
+	// 4J-PB - Kick of the check for trial or full version - requires ui to be initialised
 	app.GetCommerce()->CheckForTrialUpgradeKey();
 
 	static bool bTrialTimerDisplayed=true;
@@ -1244,6 +1245,8 @@ int main()
 #endif
 		ui.tick();
 		ui.render();
+
+		pMinecraft->gameRenderer->ApplyGammaPostProcess();
 
 		// Present the frame.
 		PIXBeginNamedEvent(0,"Frame present");

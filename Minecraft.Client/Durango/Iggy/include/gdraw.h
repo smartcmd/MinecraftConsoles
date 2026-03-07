@@ -718,7 +718,7 @@ IDOC struct GDrawFunctions
    to dynamically configure which of RAD's supplied drawing layers
    you wish to use, or to integrate it directly into your own
    renderer by implementing your own versions of the drawing
-   functions Iggy requirements.
+   functions Iggy requires.
 */
 
 RADDEFEND

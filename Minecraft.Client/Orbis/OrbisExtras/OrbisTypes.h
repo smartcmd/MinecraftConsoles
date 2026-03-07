@@ -1,6 +1,6 @@
 #pragma once
 
-//#include "winerror.h"
+#include <cstdint>
 
 typedef unsigned int       DWORD;
 typedef int                 BOOL;
@@ -33,9 +33,6 @@ typedef unsigned int        UINT;
 typedef unsigned int        *PUINT;
 
 
-typedef unsigned char		uint8_t;
-typedef long 			    __int64;
-typedef unsigned long		__uint64;
 typedef unsigned int		DWORD;
 typedef int                 INT;
 typedef unsigned long		ULONG_PTR, *PULONG_PTR;

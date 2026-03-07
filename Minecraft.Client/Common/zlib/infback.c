@@ -167,7 +167,7 @@ struct inflate_state FAR *state;
         } \
     } while (0)
 
-/* Get a uint8_t of input into the bit accumulator, or return from inflateBack()
+/* Get a byte of input into the bit accumulator, or return from inflateBack()
    with an error if there is no input available. */
 #define PULLBYTE() \
     do { \
@@ -197,7 +197,7 @@ struct inflate_state FAR *state;
         bits -= (unsigned)(n); \
     } while (0)
 
-/* Remove zero to seven bits as needed to go to a uint8_t boundary */
+/* Remove zero to seven bits as needed to go to a byte boundary */
 #define BYTEBITS() \
     do { \
         hold >>= bits & 7; \
@@ -325,7 +325,7 @@ void FAR *out_desc;
 
         case STORED:
             /* get and verify stored block length */
-            BYTEBITS();                         /* go to uint8_t boundary */
+            BYTEBITS();                         /* go to byte boundary */
             NEEDBITS(32);
             if ((hold & 0xffff) != ((hold >> 16) ^ 0xffff)) {
                 strm->msg = (char *)"invalid stored block lengths";

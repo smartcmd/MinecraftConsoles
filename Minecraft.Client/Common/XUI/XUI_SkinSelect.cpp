@@ -7,7 +7,7 @@
 //#define SKIN_SELECT_PACK_PLAYER_CUSTOM 1
 #define SKIN_SELECT_MAX_DEFAULTS 2
 
-WCHAR *CScene_SkinSelect::wchDefaultNamesA[]=
+const WCHAR *CScene_SkinSelect::wchDefaultNamesA[]=
 {
 	L"USE LOCALISED VERSION", // Server selected
 	L"Steve",

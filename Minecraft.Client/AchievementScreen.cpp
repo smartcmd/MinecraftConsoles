@@ -400,7 +400,7 @@ void AchievementScreen::renderBg(int xm, int ym, float a)
 		else
 		{
             int width = Math::_max(font->width(name), 120);
-            wstring msg = I18n::get(L"achievement.requirements", ach->requirements->name);
+            wstring msg = I18n::get(L"achievement.requires", ach->requirements->name);
             int height = font->wordWrapHeight(msg, width);
             fillGradient(x - 3, y - 3, x + width + 3, y + height + 12 + 3, 0xc0000000, 0xc0000000);
             font->drawWordWrap(msg, x, y + 12, width, 0xff705050);

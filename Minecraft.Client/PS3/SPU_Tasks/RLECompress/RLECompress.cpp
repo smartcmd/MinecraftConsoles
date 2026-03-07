@@ -123,9 +123,9 @@ void RLECompress(void *pPPUSrc, int srcSize, void* pPPUDst, int* pDstSize)
 	int endPos = srcSize-1;
 
 	// Compress with RLE first:
-	// 0 - 254 - encodes a single byte
+	// 0 - 254 - encodes a single uint8_t
 	// 255 followed by 0, 1, 2 - encodes a 1, 2, or 3 255s
-	// 255 followed by 3-255, followed by a byte - encodes a run of n + 1 bytes
+	// 255 followed by 3-255, followed by a uint8_t - encodes a run of n + 1 bytes
 	do
 	{
 		unsigned char thisOne = srcBuffer.getCurrent();

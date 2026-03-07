@@ -26,12 +26,12 @@ public:
 	virtual void writeDouble(double a);
 	virtual void writeFloat(float a);
 	virtual void writeInt(int a);
-	virtual void writeLong(__int64 a);
+	virtual void writeLong(int64_t a);
 	virtual void writeShort(short a);
 	virtual void writeUnsignedShort(unsigned short a);
 	virtual void writeChar(wchar_t a);
 	virtual void writeChars(const wstring& a);
-	virtual void writeBoolean(bool b);	
+	virtual void writeBoolean(bool b);
 	virtual void writeUTF(const wstring& a);
 	virtual void writePlayerUID(PlayerUID player);
 	virtual void flush();

@@ -123,7 +123,7 @@ void UIScene_CreativeMenu::handleTimerComplete(int id)
 {
 	if(id == GAME_CREATIVE_TOUCHUPDATE_TIMER_ID)
 	{
-		// we cannot rebuild touch boxes in an iggy callback because it requirements further iggy calls
+		// we cannot rebuild touch boxes in an iggy callback because it requires further iggy calls
 		GetMainPanel()->UpdateControl();
 		ui.TouchBoxRebuild(this);
 		killTimer(GAME_CREATIVE_TOUCHUPDATE_TIMER_ID);

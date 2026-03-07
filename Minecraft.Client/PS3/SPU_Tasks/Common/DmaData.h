@@ -23,8 +23,8 @@ public:
 
 	static void get(void* dest, uintptr_t ea, unsigned int dmaSize)
 	{
-		spu_assert((ea % 0x10) == 0); //  make sure we're 16 byte aligned
-		spu_assert((uint32_t(dest) % 0x10) == 0); //  make sure we're 16 byte aligned
+		spu_assert((ea % 0x10) == 0); //  make sure we're 16 uint8_t aligned
+		spu_assert((uint32_t(dest) % 0x10) == 0); //  make sure we're 16 uint8_t aligned
 		spu_assert((dmaSize % 0x10) == 0); //  and that the transfer is a multiple of 16 bytes
 		spu_assert(ea >256*1024); //  and that we're not targetting SPU memory
 		// start memory transfer
@@ -82,8 +82,8 @@ public:
 	{
 		if(sc_verbose)
 			spu_print("DMA SPU->PPU  start: 0x%08x -> 0x%08x : size : %d bytes .... ", (unsigned int)src, (unsigned int)ea, dmaSize);
-		spu_assert((ea % 0x10) == 0); //  make sure we're 16 byte aligned
-		spu_assert((uint32_t(src) % 0x10) == 0); //  make sure we're 16 byte aligned
+		spu_assert((ea % 0x10) == 0); //  make sure we're 16 uint8_t aligned
+		spu_assert((uint32_t(src) % 0x10) == 0); //  make sure we're 16 uint8_t aligned
 	spu_assert((dmaSize % 0x10) == 0); //  and that the transfer is a multiple of 16 bytes
 		spu_assert(ea >256*1024); //  and that we're not targetting SPU memory
 		cellDmaLargePut(src, ea, dmaSize, g_pSpursJobContext->dmaTag, 0, 0);
@@ -98,8 +98,8 @@ public:
 	{
 		if(sc_verbose)
 			spu_print("DMA SPU->PPU : 0x%08x -> 0x%08x : size : %d bytes\n", (unsigned int)src, (unsigned int)ea, dmaSize);
-		spu_assert((ea % 0x10) == 0); //  make sure we're 16 byte aligned
-		spu_assert((uint32_t(src) % 0x10) == 0); //  make sure we're 16 byte aligned
+		spu_assert((ea % 0x10) == 0); //  make sure we're 16 uint8_t aligned
+		spu_assert((uint32_t(src) % 0x10) == 0); //  make sure we're 16 uint8_t aligned
 		spu_assert((dmaSize % 0x10) == 0); //  and that the transfer is a multiple of 16 bytes
 		spu_assert(ea >256*1024); //  and that we're not targetting SPU memory
 		cellDmaUnalignedPut(src, ea, dmaSize, g_pSpursJobContext->dmaTag, 0, 0);

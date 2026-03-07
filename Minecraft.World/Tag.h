@@ -39,7 +39,7 @@ public:
     static Tag *readNamedTag(DataInput *dis, int tagDepth);
     static void writeNamedTag(Tag *tag, DataOutput *dos);
     static Tag *newTag(uint8_t type, const wstring &name);
-    static const wchar_t *getTagName(uint8_t type);
+    static wchar_t *getTagName(uint8_t type);
 	virtual ~Tag() {}
 	virtual bool equals(Tag *obj); // 4J Brought forward from 1.2
 	virtual Tag *copy() = 0; // 4J Brought foward from 1.2

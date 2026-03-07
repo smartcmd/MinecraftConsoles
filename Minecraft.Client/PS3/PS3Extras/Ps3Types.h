@@ -2,12 +2,15 @@
 
 #pragma once
 
+#include <cstdint>
+
 
 #define BOOST_NO_CXX11_NULLPTR
 #define BOOST_ENABLE_ASSERT_HANDLER
 #include <typeinfo>
 
-#include <stddef.h>
+#include <cstdint>
+#include <cstddef>
 #include <boost/typeof/typeof.hpp>
 #include <boost/tr1/memory.hpp>
 #include "boost/tr1/unordered_map.hpp"
@@ -109,22 +112,19 @@ typedef unsigned int        UINT;
 typedef unsigned int        *PUINT;
 
 
-typedef unsigned char		uint8_t;
-typedef long long				__int64;
-typedef unsigned long long		__uint64;
 typedef unsigned long		DWORD;
 typedef int                 INT;
 typedef unsigned long ULONG_PTR, *PULONG_PTR;
 typedef ULONG_PTR SIZE_T, *PSIZE_T;
 
-typedef __int64 LONG64, *PLONG64;
+typedef long long LONG64, *PLONG64;
 
 #define VOID void
 typedef char CHAR;
 typedef short SHORT;
 typedef long LONG;
-typedef __int64 LONGLONG;
-typedef __uint64 ULONGLONG;
+typedef int64_t LONGLONG;
+typedef uint64_t ULONGLONG;
 
 
 #define CONST               const

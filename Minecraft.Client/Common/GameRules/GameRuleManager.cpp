@@ -13,7 +13,7 @@
 #include "GameRuleManager.h"
 
 const WCHAR *GameRuleManager::wchTagNameA[] =
-    {
+{
 	L"", // eGameRuleType_Root
 	L"MapOptions", // eGameRuleType_LevelGenerationOptions
 	L"ApplySchematic", // eGameRuleType_ApplySchematic
@@ -35,7 +35,7 @@ const WCHAR *GameRuleManager::wchTagNameA[] =
 };
 
 const WCHAR *GameRuleManager::wchAttrNameA[] =
-    {
+{
 	L"descriptionName", // eGameRuleAttr_descriptionName
 	L"promptName", // eGameRuleAttr_promptName
 	L"dataTag", // eGameRuleAttr_dataTag
@@ -385,7 +385,7 @@ bool GameRuleManager::readRuleFile(LevelGenerationOptions *lgo, uint8_t *dIn, UI
 	// Read File.
 
 	// version_number
-	__int64 version = dis.readShort();
+	int64_t version = dis.readShort();
 	unsigned char compressionType = 0;
 	if(version == 0)
 	{

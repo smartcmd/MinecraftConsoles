@@ -11,6 +11,8 @@
 
 #define MULTITHREAD_ENABLE
 
+#include <cstdint>
+
 const int XUSER_INDEX_ANY = 255;
 const int XUSER_INDEX_FOCUS = 254;
 
@@ -19,7 +21,7 @@ const int XUSER_MAX_COUNT = 1;
 const int MINECRAFT_NET_MAX_PLAYERS = 4;
 #else
 const int XUSER_MAX_COUNT = 4;
-const int MINECRAFT_NET_MAX_PLAYERS = 8;
+const int MINECRAFT_NET_MAX_PLAYERS = 256;
 #endif
 
 

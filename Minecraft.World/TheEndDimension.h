@@ -6,7 +6,7 @@ class TheEndDimension : public Dimension
 public:
 	virtual void init();
 	virtual ChunkSource *createRandomLevelSource() const;
-	virtual float getTimeOfDay(__int64 time, float a) const;
+	virtual float getTimeOfDay(int64_t time, float a) const;
 	virtual float *getSunriseColor(float td, float a);
 	virtual Vec3 *getFogColor(float td, float a) const;
 	virtual bool hasGround();

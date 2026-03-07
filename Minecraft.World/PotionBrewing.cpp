@@ -63,7 +63,7 @@ const int PotionBrewing::DEFAULT_APPEARANCES[] =
 /* 4J-JEV: Fix for #81196,
  * Bit 13 is always set in functional potions.
  * Therefore if bit 13 is on, don't use netherwart!
- * Added "&!13" which requirements that bit 13 be turned off.
+ * Added "&!13" which requires that bit 13 be turned off.
  */
 const wstring PotionBrewing::MOD_NETHERWART = L"+4&!13"; // L"+4"
 
@@ -80,7 +80,7 @@ const wstring PotionBrewing::MOD_MAGMACREAM = L"+0+1-2-3&4-4+13";
 const wstring PotionBrewing::MOD_REDSTONE = L"-5+6-7"; // redstone increases duration
 const wstring PotionBrewing::MOD_GLOWSTONE = L"+5-6-7"; // glowstone increases amplification
 // 4J Stu - Don't require bit 13 to be set. We don't use it in the creative menu. Side effect is you can make a (virtually useless) Splash Mundane potion with water bottle and gunpowder
-const wstring PotionBrewing::MOD_GUNPOWDER = L"+14";//&13-13"; // gunpowder makes them throwable! // gunpowder requirements 13 and sets 14
+const wstring PotionBrewing::MOD_GUNPOWDER = L"+14";//&13-13"; // gunpowder makes them throwable! // gunpowder requires 13 and sets 14
 #else
 const wstring PotionBrewing::MOD_WATER = L"-1-3-5-7-9-11-13";
 const wstring PotionBrewing::MOD_SUGAR = L"+0";
@@ -92,7 +92,7 @@ const wstring PotionBrewing::MOD_BLAZEPOWDER = L"+14";
 const wstring PotionBrewing::MOD_MAGMACREAM = L"+14+6+1";
 const wstring PotionBrewing::MOD_REDSTONE = L""; // redstone increases duration
 const wstring PotionBrewing::MOD_GLOWSTONE = L""; // glowstone increases amplification
-const wstring PotionBrewing::MOD_GUNPOWDER = L""; // gunpowder makes them throwable! // gunpowder requirements 13 and sets 14
+const wstring PotionBrewing::MOD_GUNPOWDER = L""; // gunpowder makes them throwable! // gunpowder requires 13 and sets 14
 #endif
 
 PotionBrewing::intStringMap PotionBrewing::potionEffectDuration;

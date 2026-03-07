@@ -61,7 +61,7 @@
 
     - The maximum bytes that a single length/distance pair can output is 258
       bytes, which is the maximum length that can be coded.  inflate_fast()
-      requirements strm->avail_out >= 258 for each loop to avoid checking for
+      requires strm->avail_out >= 258 for each loop to avoid checking for
       output space.
  */
 void ZLIB_INTERNAL inflate_fast(strm, start)

@@ -57,7 +57,6 @@
 #include <unordered_map>
 #include <unordered_set>
 #include <vector>
-typedef unsigned __int64 __uint64;
 #endif
 
 #ifdef  _WINDOWS64
@@ -67,7 +66,7 @@ typedef unsigned __int64 __uint64;
 #include <windowsx.h>
 #include <malloc.h>
 #include <tchar.h>
-// TODO: reference additional headers your program requirements here
+// TODO: reference additional headers your program requires here
 #include <d3d11.h>
 #include <DirectXMath.h>
 using namespace DirectX;

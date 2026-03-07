@@ -161,7 +161,7 @@ bool  CCompressedTileStorage_compress::compress(int upgradeBlock/*=-1*/)
 				else
 				{
 					_blockIndices[i] = INDEX_TYPE_0_OR_8_BIT;
-					memToAlloc = ( memToAlloc + 3 ) & 0xfffc;		// Make sure we are 4-byte aligned for 8-bit storage
+					memToAlloc = ( memToAlloc + 3 ) & 0xfffc;		// Make sure we are 4-uint8_t aligned for 8-bit storage
 					memToAlloc += 64;
 				}
 			}
@@ -202,7 +202,7 @@ bool  CCompressedTileStorage_compress::compress(int upgradeBlock/*=-1*/)
 				memToAlloc += 48;
 				break;
 			case INDEX_TYPE_0_OR_8_BIT:
-				memToAlloc = ( memToAlloc + 3 ) & 0xfffc;		// Make sure we are 4-byte aligned for 8-bit storage
+				memToAlloc = ( memToAlloc + 3 ) & 0xfffc;		// Make sure we are 4-uint8_t aligned for 8-bit storage
 				memToAlloc += 64;
 				break;
 				// Note that INDEX_TYPE_8_BIT|INDEX_TYPE_0_BIT_FLAG not in here as it doesn't need any further allocation
@@ -320,7 +320,7 @@ bool  CCompressedTileStorage_compress::compress(int upgradeBlock/*=-1*/)
 					}
 					else
 					{
-						usDataOffset = (usDataOffset + 3 ) & 0xfffc;									// Make sure offset is 4 byte aligned
+						usDataOffset = (usDataOffset + 3 ) & 0xfffc;									// Make sure offset is 4 uint8_t aligned
 						memcpy( pucData + usDataOffset, unpacked_data, 64 );
 						newIndices[i] |= ( usDataOffset & INDEX_OFFSET_MASK) << INDEX_OFFSET_SHIFT;
 						usDataOffset += 64;

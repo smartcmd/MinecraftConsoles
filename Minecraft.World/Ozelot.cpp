@@ -60,7 +60,7 @@ void Ozelot::defineSynchedData()
 {
 	TamableAnimal::defineSynchedData();
 
-	entityData->define(DATA_TYPE_ID, (byte) TYPE_OZELOT);
+	entityData->define(DATA_TYPE_ID, (uint8_t) TYPE_OZELOT);
 }
 
 void Ozelot::serverAiMobStep()
@@ -294,7 +294,7 @@ int Ozelot::getCatType()
 
 void Ozelot::setCatType(int type)
 {
-	entityData->set(DATA_TYPE_ID, (byte) type);
+	entityData->set(DATA_TYPE_ID, (uint8_t) type);
 }
 
 bool Ozelot::canSpawn()

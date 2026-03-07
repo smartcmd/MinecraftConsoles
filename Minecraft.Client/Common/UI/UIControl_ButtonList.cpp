@@ -159,7 +159,7 @@ void UIControl_ButtonList::setButtonLabel(int iButtonId, const wstring &label)
 	IggyResult out = IggyPlayerCallMethodRS ( m_parentScene->getMovie(), &result, getIggyValuePath(), m_funcSetButtonLabel, 2 , value );
 }
 
-#ifdef __PSVITA__
+#if defined(__PSVITA__) || defined(_WINDOWS64)
 void UIControl_ButtonList::SetTouchFocus(S32 iX, S32 iY, bool bRepeat)
 {
 	IggyDataValue result;

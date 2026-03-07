@@ -24,7 +24,7 @@ class WstringLookup;
 class GameRuleManager
 {
 public:
-    static const WCHAR *wchTagNameA[ConsoleGameRules::eGameRuleType_Count];
+	static const WCHAR *wchTagNameA[ConsoleGameRules::eGameRuleType_Count];
 	static const WCHAR *wchAttrNameA[ConsoleGameRules::eGameRuleAttr_Count];
 
 	static const short version_number = 2;

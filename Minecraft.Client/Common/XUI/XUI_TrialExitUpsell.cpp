@@ -2,7 +2,7 @@
 #include "XUI_TrialExitUpsell.h"
 
 // wchImages[TRIAL_EXIT_UPSELL_IMAGE_COUNT]
-WCHAR *CScene_TrialExitUpsell::wchImages[]=
+const WCHAR *CScene_TrialExitUpsell::wchImages[]=
 {
 	L"Graphics/UpsellScreenshots/Screenshot1.png",
 	L"Graphics/UpsellScreenshots/Screenshot2.png",

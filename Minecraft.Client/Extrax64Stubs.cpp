@@ -72,7 +72,7 @@ DWORD XBackgroundDownloadSetMode(XBACKGROUND_DOWNLOAD_MODE Mode) { return 0; }
 void PIXAddNamedCounter(int a, const char* b, ...) {}
 //#define PS3_USE_PIX_EVENTS 
 //#define PS4_USE_PIX_EVENTS 
-void PIXBeginNamedEvent(int a, const char *b, ...)
+void PIXBeginNamedEvent(int a, const char* b, ...)
 {
 #ifdef PS4_USE_PIX_EVENTS
 	char buf[512];

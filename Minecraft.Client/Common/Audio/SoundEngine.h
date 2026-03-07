@@ -148,10 +148,10 @@ private:
 	ma_sound m_musicStream;
 	bool m_musicStreamActive;
 
-	static const char m_szSoundPath[];
-    static const char m_szMusicPath[];
-    static const char m_szRedistName[];
-    static const char *m_szStreamFileA[eStream_Max];
+	static char m_szSoundPath[];
+	static char m_szMusicPath[];
+	static char m_szRedistName[];
+	static const char *m_szStreamFileA[eStream_Max];
 
 	AUDIO_LISTENER m_ListenerA[MAX_LOCAL_PLAYERS];
 	int m_validListenerCount;

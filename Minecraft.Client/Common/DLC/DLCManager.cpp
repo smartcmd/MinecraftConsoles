@@ -7,8 +7,8 @@
 #include "..\..\Minecraft.h"
 #include "..\..\TexturePackRepository.h"
 
-const WCHAR *DLCManager::wchTypeNamesA[] =
-    {
+const WCHAR *DLCManager::wchTypeNamesA[]=
+{
 	L"DISPLAYNAME",
 	L"THEMENAME",
 	L"FREE", 

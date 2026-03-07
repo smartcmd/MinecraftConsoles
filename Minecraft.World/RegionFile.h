@@ -16,7 +16,7 @@ private:
 	static const int VERSION_GZIP = 1;
     static const int VERSION_DEFLATE = 2;
 	static const int VERSION_XBOX = 3;
-	
+
     static const int SECTOR_BYTES = 4096;
     static const int SECTOR_INTS = SECTOR_BYTES / 4;
 
@@ -31,7 +31,7 @@ private:
 	int *chunkTimestamps;
 	vector<bool> *sectorFree;
 	int sizeDelta;
-	__int64 _lastModified;
+	int64_t _lastModified;
 	bool m_bIsEmpty;			// 4J added
 
 public:
@@ -39,7 +39,7 @@ public:
 	~RegionFile();
 
     /* the modification date of the region file when it was first opened */
-    __int64 lastModified();
+    int64_t lastModified();
 
     /* gets how much the region file has grown since it was last checked */
     int getSizeDelta();

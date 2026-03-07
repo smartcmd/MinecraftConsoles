@@ -60,6 +60,7 @@ public:
 	virtual bool hurt(DamageSource *source, float dmg);
 	virtual void tick();
 	virtual bool doHurtTarget(shared_ptr<Entity> target);
+	virtual void updateSize(bool isBaby);
 
 protected:
 	virtual int getAmbientSound();

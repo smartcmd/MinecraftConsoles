@@ -12,7 +12,7 @@ class CXuiCtrlMinecraftSkinPreview;
 class CScene_SkinSelect : public CXuiSceneImpl
 {
 private:
-	static WCHAR *wchDefaultNamesA[eDefaultSkins_Count];
+	static const WCHAR *wchDefaultNamesA[eDefaultSkins_Count];
 
 	// 4J Stu - How many to show on each side of the main control
 	static const BYTE sidePreviewControls = 4;

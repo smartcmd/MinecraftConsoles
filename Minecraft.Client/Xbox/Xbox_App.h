@@ -29,9 +29,9 @@ private:
 	std::list< SceneStackPair > m_sceneStack[XUSER_MAX_COUNT];	
 
 	// XUI scene names
-	static WCHAR *wchSceneA[eUIScene_COUNT];
-	static WCHAR *wchTypefaceA[4];
-	static WCHAR *wchTypefaceLocatorA[4];
+	static const WCHAR *wchSceneA[eUIScene_COUNT];
+	static const WCHAR *wchTypefaceA[4];
+	static const WCHAR *wchTypefaceLocatorA[4];
 	
 	WCHAR m_SceneName[50];
 public:
@@ -189,7 +189,7 @@ public:
 
 private:
 	static WCHAR m_wchTMSXZP[];
-	static WCHAR *CConsoleMinecraftApp::wchExt[MAX_EXTENSION_TYPES];
+	static const WCHAR *CConsoleMinecraftApp::wchExt[MAX_EXTENSION_TYPES];
 
 
 };

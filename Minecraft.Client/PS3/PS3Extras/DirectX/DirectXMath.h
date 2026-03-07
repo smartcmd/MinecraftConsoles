@@ -230,7 +230,7 @@ typedef __declspec(align(16)) uint32_t __vector4i[4];
 #endif
 
 //------------------------------------------------------------------------------
-// Vector intrinsic: Four 32 bit floating point components aligned on a 16 byte 
+// Vector intrinsic: Four 32 bit floating point components aligned on a 16 uint8_t 
 // boundary and mapped to hardware vector registers
 #if defined(_XM_SSE_INTRINSICS_) && !defined(_XM_NO_INTRINSICS_)
 typedef __m128 XMVECTOR;
@@ -346,7 +346,7 @@ XMVECTOR    operator/ (FXMVECTOR V, float S);
 
 //------------------------------------------------------------------------------
 // Matrix type: Sixteen 32 bit floating point components aligned on a
-// 16 byte boundary and mapped to four hardware vector registers
+// 16 uint8_t boundary and mapped to four hardware vector registers
 
 struct XMMATRIX;
 
@@ -427,7 +427,7 @@ struct XMFLOAT2
     XMFLOAT2& operator= (const XMFLOAT2& Float2) { x = Float2.x; y = Float2.y; return *this; }
 };
 
-// 2D Vector; 32 bit floating point components aligned on a 16 byte boundary
+// 2D Vector; 32 bit floating point components aligned on a 16 uint8_t boundary
 __declspec(align(16)) struct XMFLOAT2A : public XMFLOAT2
 {
     XMFLOAT2A() : XMFLOAT2() {}
@@ -479,7 +479,7 @@ struct XMFLOAT3
     XMFLOAT3& operator= (const XMFLOAT3& Float3) { x = Float3.x; y = Float3.y; z = Float3.z; return *this; }
 };
 
-// 3D Vector; 32 bit floating point components aligned on a 16 byte boundary
+// 3D Vector; 32 bit floating point components aligned on a 16 uint8_t boundary
 __declspec(align(16)) struct XMFLOAT3A : public XMFLOAT3
 {
     XMFLOAT3A() : XMFLOAT3() {}
@@ -534,7 +534,7 @@ struct XMFLOAT4
     XMFLOAT4& operator= (const XMFLOAT4& Float4) { x = Float4.x; y = Float4.y; z = Float4.z; w = Float4.w; return *this; }
 };
 
-// 4D Vector; 32 bit floating point components aligned on a 16 byte boundary
+// 4D Vector; 32 bit floating point components aligned on a 16 uint8_t boundary
 __declspec(align(16)) struct XMFLOAT4A : public XMFLOAT4
 {
     XMFLOAT4A() : XMFLOAT4() {}
@@ -632,7 +632,7 @@ struct XMFLOAT4X3
 
 };
 
-// 4x3 Matrix: 32 bit floating point components aligned on a 16 byte boundary
+// 4x3 Matrix: 32 bit floating point components aligned on a 16 uint8_t boundary
 __declspec(align(16)) struct XMFLOAT4X3A : public XMFLOAT4X3
 {
     XMFLOAT4X3A() : XMFLOAT4X3() {}
@@ -678,7 +678,7 @@ struct XMFLOAT4X4
     XMFLOAT4X4& operator= (const XMFLOAT4X4& Float4x4);
 };
 
-// 4x4 Matrix: 32 bit floating point components aligned on a 16 byte boundary
+// 4x4 Matrix: 32 bit floating point components aligned on a 16 uint8_t boundary
 __declspec(align(16)) struct XMFLOAT4X4A : public XMFLOAT4X4
 {
     XMFLOAT4X4A() : XMFLOAT4X4() {}

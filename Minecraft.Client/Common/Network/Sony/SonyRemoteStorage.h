@@ -1,4 +1,4 @@
-#pragma once 
+#pragma once
 
 
 #include "..\..\Common\Network\Sony\sceRemoteStorage\header\sceRemoteStorage.h"
@@ -43,7 +43,7 @@ public:
 	char m_saveFileDesc[128];
 
 	class DescriptionData
-	{ 
+	{
 		// this stuff is read from a JSON query, so it all has to be text based, max 256 bytes
 	public:
 		char			m_platform[4];
@@ -54,7 +54,7 @@ public:
 	};
 
 	class DescriptionData_V2
-	{ 
+	{
 		// this stuff is read from a JSON query, so it all has to be text based, max 256 bytes
 	public:
 		char			m_platformNone[4];  // set to no platform, to indicate we're using the newer version of the data
@@ -73,7 +73,7 @@ public:
 	public:
 		int				m_descDataVersion;
 		ESavePlatform	m_savePlatform;
-		__int64			m_seed;
+		int64_t			m_seed;
 		uint32_t		m_hostOptions;
 		uint32_t		m_texturePack;
 		uint32_t		m_saveVersion;
@@ -115,7 +115,7 @@ public:
 	const char* getLocalFilename();
 	const char* getSaveNameUTF8();
 	ESavePlatform getSavePlatform();
-	__int64 getSaveSeed();
+	int64_t getSaveSeed();
 	unsigned int getSaveHostOptions();
 	unsigned int getSaveTexturePack();
 
@@ -140,7 +140,7 @@ public:
 	static int LoadSaveDataThumbnailReturned(LPVOID lpParam,PBYTE pbThumbnail,DWORD dwThumbnailBytes);
 	static int setDataThread(void* lpParam);
 
-	SonyRemoteStorage() : m_memPoolBuffer(NULL), m_bInitialised(false),m_getInfoStatus(e_noInfoFound) {} 
+	SonyRemoteStorage() : m_memPoolBuffer(NULL), m_bInitialised(false),m_getInfoStatus(e_noInfoFound) {}
 
 protected:
 	const char* getRemoteSaveFilename();
@@ -154,7 +154,7 @@ protected:
 	unsigned int m_thumbnailDataSize;
 	C4JThread* m_SetDataThread;
 	PSAVE_INFO m_setDataSaveInfo;
-	__int64 m_startTime;
+	int64_t m_startTime;
 
 	bool m_bAborting;
 	bool m_bTransferStarted;

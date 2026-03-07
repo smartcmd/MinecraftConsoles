@@ -128,11 +128,11 @@ local int gz_look(state)
 
     /* look for gzip magic bytes -- if there, do gzip decoding (note: there is
        a logical dilemma here when considering the case of a partially written
-       gzip file, to wit, if a single 31 uint8_t is written, then we cannot tell
-       whether this is a single-uint8_t file, or just a partially written gzip
+       gzip file, to wit, if a single 31 byte is written, then we cannot tell
+       whether this is a single-byte file, or just a partially written gzip
        file -- for here we assume that if a gzip file is being written, then
        the header will be written in a single operation, so that reading a
-       single uint8_t is sufficient indication that it is not a gzip file) */
+       single byte is sufficient indication that it is not a gzip file) */
     if (strm->avail_in > 1 &&
             strm->next_in[0] == 31 && strm->next_in[1] == 139) {
         inflateReset(strm);
@@ -447,7 +447,7 @@ int ZEXPORT gzungetc(c, file)
     if (c < 0)
         return -1;
 
-    /* if output buffer empty, put uint8_t at end (allows more pushing) */
+    /* if output buffer empty, put byte at end (allows more pushing) */
     if (state->x.have == 0) {
         state->x.have = 1;
         state->x.next = state->out + (state->size << 1) - 1;
@@ -463,7 +463,7 @@ int ZEXPORT gzungetc(c, file)
         return -1;
     }
 
-    /* slide output data if needed and insert uint8_t before existing data */
+    /* slide output data if needed and insert byte before existing data */
     if (state->x.next == state->out) {
         unsigned char *src = state->out + state->x.have;
         unsigned char *dest = state->out + (state->size << 1);

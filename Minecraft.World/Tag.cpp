@@ -153,7 +153,7 @@ Tag *Tag::newTag(uint8_t type, const wstring &name)
 	return NULL;
 }
 
-const wchar_t *Tag::getTagName(uint8_t type)
+wchar_t *Tag::getTagName(uint8_t type)
 {
 	switch (type)
 	{

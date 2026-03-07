@@ -41,8 +41,8 @@
    |   Usage      | Nullness | ZeroTerminated |  Extent                     |
    |--------------|----------|----------------|-----------------------------|
    | _In_         | <>       | <>             | <>                          |
-   | _Out_        | opt_     | z_             | [byte]cap_[c_|x_]( size )   |
-   | _Inout_      |          |                | [byte]count_[c_|x_]( size ) |
+   | _Out_        | opt_     | z_             | [uint8_t]cap_[c_|x_]( size )   |
+   | _Inout_      |          |                | [uint8_t]count_[c_|x_]( size ) |
    | _Deref_out_  |          |                | ptrdiff_cap_( ptr )         |
    |--------------|          |                | ptrdiff_count_( ptr )       |
    | _Ret_        |          |                |                             |
@@ -77,7 +77,7 @@
    | Unit | Writ\Readable | Argument Type |
    |------|---------------|---------------|
    |  <>  | cap_          | <>            |
-   | byte | count_        | c_            |
+   | uint8_t | count_        | c_            |
    |      |               | x_            |
    |------|---------------|---------------|
 
@@ -1355,7 +1355,7 @@ typedef struct _$M _$M;
              with LPSTR and LPWSTR), that amount is used. Otherwise, the buffer is one
              element long. Must be used with _in, _out, or _inout.
  _ecount : The buffer size is an explicit element count.
- _bcount : The buffer size is an explicit byte count.
+ _bcount : The buffer size is an explicit uint8_t count.
 
  Output: Describes how much of the buffer will be initialized by the function. For
            _inout buffers, this also describes how much is initialized at entry. Omit this

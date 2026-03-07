@@ -4,7 +4,7 @@
 
 
 byteArray NbtSlotFile::READ_BUFFER(1024*1024);
-__int64 NbtSlotFile::largest = 0;
+int64_t NbtSlotFile::largest = 0;
 
 NbtSlotFile::NbtSlotFile(File file)
 {

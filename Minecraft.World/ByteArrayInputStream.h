@@ -19,7 +19,7 @@ public:
 	virtual int read(byteArray b);
 	virtual int read(byteArray b, unsigned int offset, unsigned int length);
 	virtual void close();
-	virtual __int64 skip(__int64 n);
+	virtual int64_t skip(int64_t n);
 
 	// 4J Stu Added - Sometimes we don't want to delete the data on destroying this
 	void reset() { buf = byteArray(); count = 0; mark = 0; pos = 0; }

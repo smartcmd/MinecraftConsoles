@@ -2,7 +2,7 @@
 
 #include "TutorialTask.h"
 
-// A tutorial task that requirements each of the task to be completed in order until the last one is complete.
+// A tutorial task that requires each of the task to be completed in order until the last one is complete.
 // If an earlier task that was complete is now not complete then it's hint should be shown.
 class ProcedureCompoundTask : public TutorialTask
 {

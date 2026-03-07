@@ -640,7 +640,7 @@ local void build_tree(s, desc)
         }
     }
 
-    /* The pkzip format requirements that at least one distance code exists,
+    /* The pkzip format requires that at least one distance code exists,
      * and that at least one bit should be sent even if there is only one
      * possible code. So to avoid special checks later on we force at least
      * two codes of non zero frequency.
@@ -814,7 +814,7 @@ local int build_bl_tree(s)
      */
 
     /* Determine the number of bit length codes to send. The pkzip format
-     * requirements that at least 4 bit length codes be sent. (appnote.txt says
+     * requires that at least 4 bit length codes be sent. (appnote.txt says
      * 3 but the actual value used is 4.)
      */
     for (max_blindex = BL_CODES-1; max_blindex >= 3; max_blindex--) {
@@ -996,7 +996,7 @@ void ZLIB_INTERNAL _tr_flush_block(s, buf, stored_len, last)
     if (last) {
         bi_windup(s);
 #ifdef DEBUG
-        s->compressed_len += 7;  /* align on uint8_t boundary */
+        s->compressed_len += 7;  /* align on byte boundary */
 #endif
     }
     Tracev((stderr,"\ncomprlen %lu(%lu) ", s->compressed_len>>3,
@@ -1072,7 +1072,7 @@ local void compress_block(s, ltree, dtree)
         dist = s->d_buf[lx];
         lc = s->l_buf[lx++];
         if (dist == 0) {
-            send_code(s, lc, ltree); /* send a literal uint8_t */
+            send_code(s, lc, ltree); /* send a literal byte */
             Tracecv(isgraph(lc), (stderr," '%c' ", lc));
         } else {
             /* Here, lc is the match length - MIN_MATCH */
@@ -1181,7 +1181,7 @@ local void bi_flush(s)
 }
 
 /* ===========================================================================
- * Flush the bit buffer and align the output on a uint8_t boundary
+ * Flush the bit buffer and align the output on a byte boundary
  */
 local void bi_windup(s)
     deflate_state *s;
@@ -1208,7 +1208,7 @@ local void copy_block(s, buf, len, header)
     unsigned len;     /* its length */
     int      header;  /* true if block header must be written */
 {
-    bi_windup(s);        /* align on uint8_t boundary */
+    bi_windup(s);        /* align on byte boundary */
 
     if (header) {
         put_short(s, (ush)len);

@@ -3,7 +3,7 @@
 #ifdef __PS3__
 #ifdef SN_TARGET_PS3_SPU
 typedef unsigned int DWORD;
-typedef unsigned char uint8_t;
+#include <cstdint>
 #include <float.h>
 #else 
 #include "..\..\..\stdafx.h"

@@ -190,7 +190,7 @@ LPCWSTR apwstrLocale[10] =
 	L"pt-PT"  // Portuguese
 };
 
-WCHAR *CConsoleMinecraftApp::wchTypefaceA[]=
+const WCHAR *CConsoleMinecraftApp::wchTypefaceA[]=
 {
 	L"Mojangles",
 	L"SDBookM",
@@ -198,7 +198,7 @@ WCHAR *CConsoleMinecraftApp::wchTypefaceA[]=
 	L"DFHeiMedium-B5",
 };
 
-WCHAR *CConsoleMinecraftApp::wchTypefaceLocatorA[]=
+const WCHAR *CConsoleMinecraftApp::wchTypefaceLocatorA[]=
 {
 	L"media/font/Mojangles.ttf",
 	L"media/font/KOR/BOKMSD.ttf",
@@ -206,7 +206,7 @@ WCHAR *CConsoleMinecraftApp::wchTypefaceLocatorA[]=
 	L"media/font/CHT/DFHeiMedium-B5.ttf",
 };
 
-WCHAR *CConsoleMinecraftApp::wchSceneA[]=
+const WCHAR *CConsoleMinecraftApp::wchSceneA[]=
 {
 	L"xuiscene_partnernetpassword",
 	L"xuiscene_intro",
@@ -2695,7 +2695,7 @@ void CConsoleMinecraftApp::FatalLoadError(void)
 	ExitGame();
 }
 
-WCHAR *CConsoleMinecraftApp::wchExt[MAX_EXTENSION_TYPES]=
+const WCHAR *CConsoleMinecraftApp::wchExt[MAX_EXTENSION_TYPES]=
 {
 	L"png",
 	L"inf",

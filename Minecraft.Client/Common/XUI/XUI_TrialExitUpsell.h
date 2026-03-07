@@ -9,7 +9,7 @@
 class CScene_TrialExitUpsell : public CXuiSceneImpl
 {
 private:
-	static WCHAR *wchImages[TRIAL_EXIT_UPSELL_IMAGE_COUNT];
+	static const WCHAR *wchImages[TRIAL_EXIT_UPSELL_IMAGE_COUNT];
 
 protected:
 	CXuiImageElement m_image1, m_image2;

@@ -25,7 +25,7 @@ C4JRender::eTextureFormat Textures::TEXTURE_FORMAT = C4JRender::TEXTURE_FORMAT_R
 
 int Textures::preLoadedIdx[TN_COUNT];
 const wchar_t *Textures::preLoaded[TN_COUNT] =
-    {
+{
 	L"%blur%misc/pumpkinblur",
 //	L"%blur%/misc/vignette",		// Not currently used
 	L"%clamp%misc/shadow",
@@ -1521,7 +1521,7 @@ TEXTURE_NAME TUImages[] =
 
 // This is for any TU textures that aren't part of our enum indexed preload set
 const wchar_t *TUImagePaths[] =
-    {
+{
 	L"font/Default",
 	L"font/Mojangles_7",
 	L"font/Mojangles_11",
@@ -1580,7 +1580,7 @@ TEXTURE_NAME OriginalImages[] =
 };
 
 const wchar_t *OriginalImagesPaths[] =
-    {
+{
 	L"misc/watercolor.png",
 
 	NULL

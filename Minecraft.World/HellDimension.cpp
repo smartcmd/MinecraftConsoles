@@ -48,7 +48,7 @@ ChunkSource *HellDimension::createRandomLevelSource() const
 	}
 	else
 #endif
-	if (levelType == LevelType::lvl_flat) 
+	if (levelType == LevelType::lvl_flat)
 	{
 		return new HellFlatLevelSource(level, level->getSeed());
 	}
@@ -68,7 +68,7 @@ bool HellDimension::isValidSpawn(int x, int z) const
     return false;
 }
 
-float HellDimension::getTimeOfDay(__int64 time, float a) const
+float HellDimension::getTimeOfDay(int64_t time, float a) const
 {
 	return 0.5f;
 }

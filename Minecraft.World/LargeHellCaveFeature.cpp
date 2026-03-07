@@ -3,12 +3,12 @@
 #include "LargeHellCaveFeature.h"
 #include "net.minecraft.world.level.tile.h"
 
-void LargeHellCaveFeature::addRoom(__int64 seed, int xOffs, int zOffs, byteArray blocks, double xRoom, double yRoom, double zRoom)
+void LargeHellCaveFeature::addRoom(int64_t seed, int xOffs, int zOffs, byteArray blocks, double xRoom, double yRoom, double zRoom)
 {
 	addTunnel(seed, xOffs, zOffs, blocks, xRoom, yRoom, zRoom, 1 + random->nextFloat() * 6, 0, 0, -1, -1, 0.5);
 }
 
-void LargeHellCaveFeature::addTunnel(__int64 seed, int xOffs, int zOffs, byteArray blocks, double xCave, double yCave, double zCave, float thickness, float yRot, float xRot, int step, int dist, double yScale)
+void LargeHellCaveFeature::addTunnel(int64_t seed, int xOffs, int zOffs, byteArray blocks, double xCave, double yCave, double zCave, float thickness, float yRot, float xRot, int step, int dist, double yScale)
 {
 	double xMid = xOffs * 16 + 8;
 	double zMid = zOffs * 16 + 8;
