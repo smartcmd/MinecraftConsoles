@@ -23,7 +23,7 @@ jobs:
 
     - name: Setup msbuild
       uses: microsoft/setup-msbuild@v2
-    
+
     - name: Build
       run: MSBuild.exe MinecraftConsoles.sln /p:Configuration=Debug /p:Platform="Windows64"
 
@@ -36,7 +36,6 @@ jobs:
 
     - name: Update release
       uses: andelf/nightly-release@main
-
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
