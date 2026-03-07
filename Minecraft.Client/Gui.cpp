@@ -862,10 +862,13 @@ void Gui::render(float a, bool mouseFree, int xMouse, int yMouse)
 
 		std::vector<std::wstring> lines;
 
-		// Header lines
         lines.push_back(ClientConstants::VERSION_STRING);
         lines.push_back(minecraft->fpsString);
         lines.push_back(L"E: " + std::to_wstring(minecraft->level->getAllEntities().size())); // Could maybe use entity::shouldRender to work out how many are rendered but thats like expensive
+		// TODO Add server information with packet counts - once multiplayer is more stable
+        int renderDistance = app.GetGameSettings(iPad, eGameSetting_RenderDistance);
+		// Calculate the chunk sections using 16 * (2n + 1)^2
+        lines.push_back(L"C: " + std::to_wstring(16 * (2 * renderDistance + 1) * (2 * renderDistance + 1)) + L" D: " + std::to_wstring(renderDistance));
         lines.push_back(minecraft->gatherStats4()); // Chunk Cache
 
 		// Dimension
