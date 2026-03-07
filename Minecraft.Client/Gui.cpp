@@ -1005,7 +1005,11 @@ void Gui::render(float a, bool mouseFree, int xMouse, int yMouse)
 					this->fill(0, y - 3 - 1, screenWidth/fScaleFactorWidth, y + 10 - 1, bgColor);
 					glEnable(GL_BLEND);
 
-					font->drawShadowLiteral(msg, iSafezoneXHalf+4, y + 0, 0xffffff + (alpha << 24));
+					glPushMatrix();
+					glTranslatef((float)(iSafezoneXHalf+4), (float)(y), 0);
+					glScalef(0.6f, 0.6f, 1.0f);
+					font->drawShadowLiteral(msg, 0, 0, 0xffffff + (alpha << 24));
+					glPopMatrix();
 				}
 			}
 		}
