@@ -1,5 +1,5 @@
 $sha = (git rev-parse --short=7 HEAD)
-$ref = (git symbolic-ref HEAD)
+$ref = (git symbolic-ref --short HEAD)
 $build = 560 # Note: Build/network has to stay static for now, as without it builds wont be able to play together. We can change it later when we have a better versioning scheme in place.
 $suffix = ""
 
