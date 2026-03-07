@@ -68,11 +68,11 @@ class SQRNetworkPlayer
 	};
 
 #ifndef _CONTENT_PACKAGE
-	std::vector<__int64> m_ackStats;
+	std::vector<int64_t> m_ackStats;
 	int m_minAckTime;
 	int m_maxAckTime;
 	int m_totalAcks;
-	__int64 m_totalAckTime;
+	int64_t m_totalAckTime;
 	int m_averageAckTime;
 #endif
 
@@ -89,7 +89,7 @@ class SQRNetworkPlayer
 	{
 	public:
 		unsigned char				m_smallId;				// Id to uniquely and permanently identify this player between machines - assigned by the server
-		PlayerUID					m_UID;			
+		PlayerUID					m_UID;
 	};
 
 	SQRNetworkPlayer(SQRNetworkManager *manager, eSQRNetworkPlayerType playerType, bool onHost, SceNpMatching2RoomMemberId roomMemberId, int localPlayerIdx, int rudpCtx, PlayerUID *pUID);
@@ -114,7 +114,7 @@ class SQRNetworkPlayer
 	int							WriteDataPacket(const void* data, int dataSize, AckFlags ackFlags);
 	void						ReadAck();
 	void						WriteAck();
-	
+
 	int							GetOutstandingAckCount();
 	int							GetSendQueueSizeBytes();
 	int							GetSendQueueSizeMessages();

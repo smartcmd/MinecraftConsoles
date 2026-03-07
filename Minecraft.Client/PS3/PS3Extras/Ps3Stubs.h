@@ -29,7 +29,7 @@ LPVOID TlsGetValue(DWORD dwTlsIndex);
 BOOL TlsSetValue(DWORD dwTlsIndex, LPVOID lpTlsValue);
 
 
-typedef struct _RECT 
+typedef struct _RECT
 {
 	LONG left;
 	LONG top;
@@ -53,16 +53,16 @@ typedef int errno_t;
 // 	//  The following field is used for blocking when there is contention for
 // 	//  the resource
 // 	//
-// 
+//
 // 	union {
 // 		ULONG_PTR RawEvent[4];
 // 	} Synchronization;
-// 
+//
 // 	//
 // 	//  The following three fields control entering and exiting the critical
 // 	//  section for the resource
 // 	//
-// 
+//
 // 	LONG LockCount;
 // 	LONG RecursionCount;
 // 	HANDLE OwningThread;
@@ -219,7 +219,7 @@ typedef struct _MEMORYSTATUS {
 #define THREAD_PRIORITY_IDLE            THREAD_BASE_PRIORITY_IDLE
 
 #define WAIT_TIMEOUT                     258L
-#define STATUS_ABANDONED_WAIT_0          ((DWORD   )0x00000080L)    
+#define STATUS_ABANDONED_WAIT_0          ((DWORD   )0x00000080L)
 #define WAIT_ABANDONED         ((STATUS_ABANDONED_WAIT_0 ) + 0 )
 
 #define MAXUINT_PTR  (~((UINT_PTR)0))
@@ -261,17 +261,17 @@ typedef struct _MEMORYSTATUS {
 #define GENERIC_EXECUTE                  (0x20000000L)
 #define GENERIC_ALL                      (0x10000000L)
 
-#define FILE_SHARE_READ                 0x00000001  
-#define FILE_SHARE_WRITE                0x00000002  
-#define FILE_SHARE_DELETE               0x00000004  
-#define FILE_ATTRIBUTE_READONLY             0x00000001  
-#define FILE_ATTRIBUTE_HIDDEN               0x00000002  
-#define FILE_ATTRIBUTE_SYSTEM               0x00000004  
-#define FILE_ATTRIBUTE_DIRECTORY            0x00000010  
-#define FILE_ATTRIBUTE_ARCHIVE              0x00000020  
-#define FILE_ATTRIBUTE_DEVICE               0x00000040  
-#define FILE_ATTRIBUTE_NORMAL               0x00000080  
-#define FILE_ATTRIBUTE_TEMPORARY            0x00000100  
+#define FILE_SHARE_READ                 0x00000001
+#define FILE_SHARE_WRITE                0x00000002
+#define FILE_SHARE_DELETE               0x00000004
+#define FILE_ATTRIBUTE_READONLY             0x00000001
+#define FILE_ATTRIBUTE_HIDDEN               0x00000002
+#define FILE_ATTRIBUTE_SYSTEM               0x00000004
+#define FILE_ATTRIBUTE_DIRECTORY            0x00000010
+#define FILE_ATTRIBUTE_ARCHIVE              0x00000020
+#define FILE_ATTRIBUTE_DEVICE               0x00000040
+#define FILE_ATTRIBUTE_NORMAL               0x00000080
+#define FILE_ATTRIBUTE_TEMPORARY            0x00000100
 
 #define FILE_FLAG_WRITE_THROUGH         0x80000000
 #define FILE_FLAG_OVERLAPPED            0x40000000
@@ -291,38 +291,38 @@ typedef struct _MEMORYSTATUS {
 #define OPEN_ALWAYS         4
 #define TRUNCATE_EXISTING   5
 
-#define PAGE_NOACCESS          0x01     
-#define PAGE_READONLY          0x02     
-#define PAGE_READWRITE         0x04     
-#define PAGE_WRITECOPY         0x08     
-#define PAGE_EXECUTE           0x10     
-#define PAGE_EXECUTE_READ      0x20     
-#define PAGE_EXECUTE_READWRITE 0x40     
-#define PAGE_EXECUTE_WRITECOPY 0x80     
-#define PAGE_GUARD            0x100     
-#define PAGE_NOCACHE          0x200     
-#define PAGE_WRITECOMBINE     0x400     
-#define PAGE_USER_READONLY   0x1000     
-#define PAGE_USER_READWRITE  0x2000     
-#define MEM_COMMIT           0x1000     
-#define MEM_RESERVE          0x2000     
-#define MEM_DECOMMIT         0x4000     
-#define MEM_RELEASE          0x8000     
-#define MEM_FREE            0x10000     
-#define MEM_PRIVATE         0x20000     
-#define MEM_RESET           0x80000     
-#define MEM_TOP_DOWN       0x100000     
-#define MEM_NOZERO         0x800000     
-#define MEM_LARGE_PAGES  0x20000000     
-#define MEM_HEAP         0x40000000     
-#define MEM_16MB_PAGES   0x80000000     
+#define PAGE_NOACCESS          0x01
+#define PAGE_READONLY          0x02
+#define PAGE_READWRITE         0x04
+#define PAGE_WRITECOPY         0x08
+#define PAGE_EXECUTE           0x10
+#define PAGE_EXECUTE_READ      0x20
+#define PAGE_EXECUTE_READWRITE 0x40
+#define PAGE_EXECUTE_WRITECOPY 0x80
+#define PAGE_GUARD            0x100
+#define PAGE_NOCACHE          0x200
+#define PAGE_WRITECOMBINE     0x400
+#define PAGE_USER_READONLY   0x1000
+#define PAGE_USER_READWRITE  0x2000
+#define MEM_COMMIT           0x1000
+#define MEM_RESERVE          0x2000
+#define MEM_DECOMMIT         0x4000
+#define MEM_RELEASE          0x8000
+#define MEM_FREE            0x10000
+#define MEM_PRIVATE         0x20000
+#define MEM_RESET           0x80000
+#define MEM_TOP_DOWN       0x100000
+#define MEM_NOZERO         0x800000
+#define MEM_LARGE_PAGES  0x20000000
+#define MEM_HEAP         0x40000000
+#define MEM_16MB_PAGES   0x80000000
 
 #define IGNORE              0       // Ignore signal
 #define INFINITE            0xFFFFFFFF  // Infinite timeout
 #define WAIT_FAILED ((DWORD)0xFFFFFFFF)
-#define STATUS_WAIT_0                    ((DWORD   )0x00000000L)    
+#define STATUS_WAIT_0                    ((DWORD   )0x00000000L)
 #define WAIT_OBJECT_0       ((STATUS_WAIT_0 ) + 0 )
-#define STATUS_PENDING                   ((DWORD   )0x00000103L)    
+#define STATUS_PENDING                   ((DWORD   )0x00000103L)
 #define STILL_ACTIVE                        STATUS_PENDING
 
 DWORD GetLastError(VOID);
@@ -364,11 +364,11 @@ VOID OutputDebugString(LPCSTR lpOutputString);
 VOID OutputDebugStringA(LPCSTR lpOutputString);
 
 errno_t _itoa_s(int _Value, char * _DstBuf, size_t _Size, int _Radix);
-errno_t _i64toa_s(__int64 _Val, char * _DstBuf, size_t _Size, int _Radix);
+errno_t _i64toa_s(int64_t _Val, char * _DstBuf, size_t _Size, int _Radix);
 
 int _wtoi(const wchar_t *_Str);
 
-#define __declspec(a) 
+#define __declspec(a)
 extern "C" int _wcsicmp (const wchar_t * dst, const wchar_t * src);
 
 size_t wcsnlen(const wchar_t *wcs, size_t maxsize);

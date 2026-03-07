@@ -2171,7 +2171,7 @@ void UIScene_LoadOrJoinMenu::LoadSaveFromDisk(File *saveFile, ESavePlatform save
     // Make our next save default to the name of the level
     StorageManager.SetSaveTitle(saveFile->getName().c_str());
 
-    __int64 fileSize = saveFile->length();
+    int64_t fileSize = saveFile->length();
     FileInputStream fis(*saveFile);
     byteArray ba(fileSize);
     fis.read(ba);
@@ -2235,7 +2235,7 @@ void UIScene_LoadOrJoinMenu::LoadSaveFromCloud()
     mbstowcs(wSaveName, app.getRemoteStorage()->getSaveNameUTF8(), strlen(app.getRemoteStorage()->getSaveNameUTF8())+1); // plus null
     StorageManager.SetSaveTitle(wSaveName);
 
-    __int64 fileSize = cloudFile.length();
+    int64_t fileSize = cloudFile.length();
     FileInputStream fis(cloudFile);
     byteArray ba(fileSize);
     fis.read(ba);
@@ -3579,7 +3579,7 @@ int UIScene_LoadOrJoinMenu::DownloadXbox360SaveThreadProc( LPVOID lpParameter )
 						bool bHostOptionsRead = false;
 						unsigned int uiHostOptions = 0;
 						DWORD dwTexturePack;
-						__int64 seedVal;
+						int64_t seedVal;
 
 						char szSeed[50];
 						ZeroMemory(szSeed,50);

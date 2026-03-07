@@ -1,13 +1,13 @@
-// 4J-PB - 
-// The ATG Framework is a common set of C++ class libraries that is used by the samples in the XDK, and was developed by the Advanced Technology Group (ATG). 
-// The ATG Framework offers a clean and consistent format for the samples. These classes define functions used by all the samples. 
-// The ATG Framework together with the samples demonstrates best practices and innovative techniques for Xbox 360. There are many useful sections of code in the samples. 
-// You are encouraged to incorporate this code into your titles. 
+// 4J-PB -
+// The ATG Framework is a common set of C++ class libraries that is used by the samples in the XDK, and was developed by the Advanced Technology Group (ATG).
+// The ATG Framework offers a clean and consistent format for the samples. These classes define functions used by all the samples.
+// The ATG Framework together with the samples demonstrates best practices and innovative techniques for Xbox 360. There are many useful sections of code in the samples.
+// You are encouraged to incorporate this code into your titles.
 
 
 //-------------------------------------------------------------------------------------
 //  AtgXmlParser.cpp
-//  
+//
 //  Simple callback non-validating XML parser implementation.
 //
 //  Xbox Advanced Technology Group.
@@ -35,7 +35,7 @@ XMLParser::XMLParser()
 // Name: XMLParser::~XMLParser
 //-------------------------------------------------------------------------------------
 XMLParser::~XMLParser()
-{    
+{
 }
 
 
@@ -51,11 +51,11 @@ VOID XMLParser::FillBuffer()
 
     if( m_hFile == NULL )
     {
-        if( m_uInXMLBufferCharsLeft > XML_READ_BUFFER_SIZE )                    
+        if( m_uInXMLBufferCharsLeft > XML_READ_BUFFER_SIZE )
             NChars = XML_READ_BUFFER_SIZE;
         else
             NChars = m_uInXMLBufferCharsLeft;
-        
+
         CopyMemory( m_pReadBuf, m_pInXMLBuffer, NChars );
         m_uInXMLBufferCharsLeft -= NChars;
         m_pInXMLBuffer += NChars;
@@ -69,7 +69,7 @@ VOID XMLParser::FillBuffer()
     }
 
     m_dwCharsConsumed += NChars;
-    __int64 iProgress = m_dwCharsTotal ? (( (__int64)m_dwCharsConsumed * 1000 ) / (__int64)m_dwCharsTotal) : 0;
+    int64_t iProgress = m_dwCharsTotal ? (( (int64_t)m_dwCharsConsumed * 1000 ) / (int64_t)m_dwCharsTotal) : 0;
     m_pISAXCallback->SetParseProgress( (DWORD)iProgress );
 
     m_pReadBuf[ NChars ] = '\0';
@@ -89,7 +89,7 @@ VOID XMLParser::SkipNextAdvance()
 
 //-------------------------------------------------------------------------------------
 // Name: XMLParser::ConsumeSpace
-// Desc: Skips spaces in the current stream 
+// Desc: Skips spaces in the current stream
 //-------------------------------------------------------------------------------------
 HRESULT XMLParser::ConsumeSpace()
 {
@@ -104,29 +104,29 @@ HRESULT XMLParser::ConsumeSpace()
     {
         if( FAILED( hr = AdvanceCharacter() ) )
             return hr;
-    } 
-    SkipNextAdvance();   
+    }
+    SkipNextAdvance();
     return S_OK;
 }
 
 
 //-------------------------------------------------------------------------------------
 // Name: XMLParser::ConvertEscape
-// Desc: Copies and converts an escape sequence into m_pWriteBuf 
+// Desc: Copies and converts an escape sequence into m_pWriteBuf
 //-------------------------------------------------------------------------------------
 HRESULT XMLParser::ConvertEscape()
-{      
+{
     HRESULT hr;
     WCHAR wVal = 0;
-        
+
     if( FAILED( hr = AdvanceCharacter() ) )
         return hr;
 
-    // all escape sequences start with &, so ignore the first character    
-    
+    // all escape sequences start with &, so ignore the first character
+
     if( FAILED( hr = AdvanceCharacter() ) )
         return hr;
-    
+
     if ( m_Ch == '#' )     // character as hex or decimal
     {
         if( FAILED( hr = AdvanceCharacter() ) )
@@ -135,9 +135,9 @@ HRESULT XMLParser::ConvertEscape()
         {
             if( FAILED( hr = AdvanceCharacter() ) )
                 return hr;
-            
+
             while ( m_Ch != ';' )
-            {                
+            {
                 wVal *= 16;
 
                 if ( ( m_Ch >= '0' ) && ( m_Ch <= '9' ) )
@@ -151,11 +151,11 @@ HRESULT XMLParser::ConvertEscape()
                 else if ( ( m_Ch >= 'A' ) && ( m_Ch <= 'F' ) )
                 {
                     wVal += m_Ch - 'A' + 10;
-                }                     
+                }
                 else
                 {
-                    Error( E_INVALID_XML_SYNTAX, "Expected hex digit as part of &#x escape sequence" );                        
-                    return E_INVALID_XML_SYNTAX; 
+                    Error( E_INVALID_XML_SYNTAX, "Expected hex digit as part of &#x escape sequence" );
+                    return E_INVALID_XML_SYNTAX;
                 }
 
                 if( FAILED( hr = AdvanceCharacter() ) )
@@ -165,7 +165,7 @@ HRESULT XMLParser::ConvertEscape()
         else                    // decimal number
         {
             while ( m_Ch != ';' )
-            {                
+            {
                 wVal *= 10;
 
                 if ( ( m_Ch >= '0' ) && ( m_Ch <= '9' ) )
@@ -174,7 +174,7 @@ HRESULT XMLParser::ConvertEscape()
                 }
                 else
                 {
-                    Error( E_INVALID_XML_SYNTAX, "Expected decimal digit as part of &# escape sequence" );                        
+                    Error( E_INVALID_XML_SYNTAX, "Expected decimal digit as part of &# escape sequence" );
                     return E_INVALID_XML_SYNTAX;
                 }
 
@@ -187,7 +187,7 @@ HRESULT XMLParser::ConvertEscape()
         m_Ch = wVal;
 
         return S_OK;
-    }  
+    }
 
     // must be an entity reference
 
@@ -197,13 +197,13 @@ HRESULT XMLParser::ConvertEscape()
     SkipNextAdvance();
     if( FAILED( hr = AdvanceName() ) )
         return hr;
-      
+
     EntityRefLen = (UINT)( m_pWritePtr - pEntityRefVal );
     m_pWritePtr = pEntityRefVal;
 
     if ( EntityRefLen == 0 )
     {
-        Error( E_INVALID_XML_SYNTAX, "Expecting entity name after &" );                        
+        Error( E_INVALID_XML_SYNTAX, "Expecting entity name after &" );
         return E_INVALID_XML_SYNTAX;
     }
 
@@ -219,7 +219,7 @@ HRESULT XMLParser::ConvertEscape()
         wVal = '"';
     else
     {
-        Error( E_INVALID_XML_SYNTAX, "Unrecognized entity name after & - (should be lt, gt, amp, apos, or quot)" );                        
+        Error( E_INVALID_XML_SYNTAX, "Unrecognized entity name after & - (should be lt, gt, amp, apos, or quot)" );
         return E_INVALID_XML_SYNTAX;   // return false if unrecognized token sequence
     }
 
@@ -228,10 +228,10 @@ HRESULT XMLParser::ConvertEscape()
 
     if( m_Ch != ';' )
     {
-        Error( E_INVALID_XML_SYNTAX, "Expected terminating ; for entity reference" );                                            
+        Error( E_INVALID_XML_SYNTAX, "Expected terminating ; for entity reference" );
         return E_INVALID_XML_SYNTAX;   // malformed reference - needs terminating ;
     }
-    
+
     m_Ch = wVal;
     return S_OK;
 }
@@ -250,41 +250,41 @@ HRESULT XMLParser::AdvanceAttrVal()
         return hr;
 
     if( ( m_Ch != '"' ) && ( m_Ch != '\'' ) )
-    {        
-        Error( E_INVALID_XML_SYNTAX, "Attribute values must be enclosed in quotes" );     
+    {
+        Error( E_INVALID_XML_SYNTAX, "Attribute values must be enclosed in quotes" );
         return E_INVALID_XML_SYNTAX;
     }
 
     wQuoteChar = m_Ch;
-    
+
     for( ;; )
     {
         if( FAILED( hr = AdvanceCharacter() ) )
-            return hr;      
-        else if( m_Ch == wQuoteChar )     
-            break;        
+            return hr;
+        else if( m_Ch == wQuoteChar )
+            break;
         else if( m_Ch == '&' )
         {
             SkipNextAdvance();
             if( FAILED( hr = ConvertEscape() ) )
-                return hr;  
+                return hr;
         }
-        else if( m_Ch == '<' )   
+        else if( m_Ch == '<' )
         {
-            Error( E_INVALID_XML_SYNTAX, "Illegal character '<' in element tag" );     
-            return E_INVALID_XML_SYNTAX;        
+            Error( E_INVALID_XML_SYNTAX, "Illegal character '<' in element tag" );
+            return E_INVALID_XML_SYNTAX;
         }
-        
+
         // copy character into the buffer
-        
-        if( m_pWritePtr - m_pWriteBuf >= XML_WRITE_BUFFER_SIZE ) 
+
+        if( m_pWritePtr - m_pWriteBuf >= XML_WRITE_BUFFER_SIZE )
         {
-            Error( E_INVALID_XML_SYNTAX, "Total element tag size may not be more than %d characters", XML_WRITE_BUFFER_SIZE );     
-            return E_INVALID_XML_SYNTAX;               
+            Error( E_INVALID_XML_SYNTAX, "Total element tag size may not be more than %d characters", XML_WRITE_BUFFER_SIZE );
+            return E_INVALID_XML_SYNTAX;
         }
-        
+
         *m_pWritePtr = m_Ch;
-        m_pWritePtr++;        
+        m_pWritePtr++;
     }
     return S_OK;
 }
@@ -296,18 +296,18 @@ HRESULT XMLParser::AdvanceAttrVal()
 //       Ignores leading whitespace.  Currently does not support unicode names
 //-------------------------------------------------------------------------------------
 HRESULT XMLParser::AdvanceName()
-{   
+{
     HRESULT hr;
 
     if( FAILED( hr = AdvanceCharacter() ) )
-        return hr; 
+        return hr;
 
     if( ( ( m_Ch < 'A' ) || ( m_Ch > 'Z' ) ) &&
         ( ( m_Ch < 'a' ) || ( m_Ch > 'z' ) ) &&
         ( m_Ch != '_' ) && ( m_Ch != ':' ) )
     {
-        Error( E_INVALID_XML_SYNTAX, "Names must start with an alphabetic character or _ or :" );     
-        return E_INVALID_XML_SYNTAX;   
+        Error( E_INVALID_XML_SYNTAX, "Names must start with an alphabetic character or _ or :" );
+        return E_INVALID_XML_SYNTAX;
     }
 
     while( ( ( m_Ch >= 'A' ) && ( m_Ch <= 'Z' ) ) ||
@@ -319,17 +319,17 @@ HRESULT XMLParser::AdvanceName()
 
         if( m_pWritePtr - m_pWriteBuf >= XML_WRITE_BUFFER_SIZE )
         {
-            Error( E_INVALID_XML_SYNTAX, "Total element tag size may not be more than %d characters", XML_WRITE_BUFFER_SIZE );     
+            Error( E_INVALID_XML_SYNTAX, "Total element tag size may not be more than %d characters", XML_WRITE_BUFFER_SIZE );
             return E_INVALID_XML_SYNTAX;
-        }        
+        }
 
         *m_pWritePtr = m_Ch;
         m_pWritePtr++;
 
         if( FAILED( hr = AdvanceCharacter() ) )
-            return hr; 
+            return hr;
     }
-    
+
     SkipNextAdvance();
     return S_OK;
 }
@@ -343,7 +343,7 @@ HRESULT XMLParser::AdvanceName()
 //       Returns S_OK if there are more characters, E_ABORT for no characters to read
 //-------------------------------------------------------------------------------------
 HRESULT XMLParser::AdvanceCharacter( BOOL bOkToFail )
-{  
+{
     if( m_bSkipNextAdvance )
     {
         m_bSkipNextAdvance = FALSE;
@@ -351,20 +351,20 @@ HRESULT XMLParser::AdvanceCharacter( BOOL bOkToFail )
     }
 
     // If we hit EOF in the middle of a character,
-    // it's ok-- we'll just have a corrupt last character 
+    // it's ok-- we'll just have a corrupt last character
     // (the buffer is padded with double NULLs )
 
     if ( ( m_pReadPtr[0] == '\0' ) && ( m_pReadPtr[1] == '\0' ) )
     {
         // Read more from the file
-        FillBuffer(); 
+        FillBuffer();
 
         // We are at EOF if it is still NULL
         if ( ( m_pReadPtr[0] == '\0' ) && ( m_pReadPtr[1] == '\0' ) )
         {
             if( !bOkToFail )
             {
-                Error( E_INVALID_XML_SYNTAX, "Unexpected EOF while parsing XML file" );     
+                Error( E_INVALID_XML_SYNTAX, "Unexpected EOF while parsing XML file" );
                 return E_INVALID_XML_SYNTAX;
             }
             else
@@ -372,7 +372,7 @@ HRESULT XMLParser::AdvanceCharacter( BOOL bOkToFail )
                 return E_FAIL;
             }
         }
-    }       
+    }
 
     if( m_bUnicode == FALSE )
     {
@@ -382,13 +382,13 @@ HRESULT XMLParser::AdvanceCharacter( BOOL bOkToFail )
     else // if( m_bUnicode == TRUE )
     {
         m_Ch = *((WCHAR *)m_pReadPtr);
-        
+
         if( m_bReverseBytes )
         {
             m_Ch = ( m_Ch << 8 ) + ( m_Ch >> 8 );
         }
-        
-        m_pReadPtr += 2;       
+
+        m_pReadPtr += 2;
     }
 
     if( m_Ch == '\n' )
@@ -398,114 +398,114 @@ HRESULT XMLParser::AdvanceCharacter( BOOL bOkToFail )
     }
     else if( m_Ch != '\r' )
         m_pISAXCallback->m_LinePos++;
-    
+
     return S_OK;
 }
 
 
 //-------------------------------------------------------------------------------------
 // Name: XMLParser::AdvanceElement
-// Desc: Builds <element> data, calls callback 
+// Desc: Builds <element> data, calls callback
 //-------------------------------------------------------------------------------------
 HRESULT XMLParser::AdvanceElement()
-{    
+{
     HRESULT hr;
 
     // write ptr at the beginning of the buffer
     m_pWritePtr = m_pWriteBuf;
-    
+
     if( FAILED( hr = AdvanceCharacter() ) )
-        return hr; 
-    
+        return hr;
+
     // if first character wasn't '<', we wouldn't be here
-    
+
     if( FAILED( hr = AdvanceCharacter() ) )
-        return hr; 
+        return hr;
 
     if( m_Ch == '!' )
     {
-        if( FAILED( hr = AdvanceCharacter() ) ) 
-            return hr; 
+        if( FAILED( hr = AdvanceCharacter() ) )
+            return hr;
         if ( m_Ch == '-' )
         {
-            if( FAILED( hr = AdvanceCharacter() ) ) 
-                return hr; 
-            if( m_Ch != '-' )                       
+            if( FAILED( hr = AdvanceCharacter() ) )
+                return hr;
+            if( m_Ch != '-' )
             {
                 Error( E_INVALID_XML_SYNTAX, "Expecting '-' after '<!-'" );
                 return E_INVALID_XML_SYNTAX;
             }
-            if( FAILED( hr = AdvanceComment() ) )   
-                return hr; 
+            if( FAILED( hr = AdvanceComment() ) )
+                return hr;
             return S_OK;
         }
-    
-        if( m_Ch != '[' )     
+
+        if( m_Ch != '[' )
         {
             Error( E_INVALID_XML_SYNTAX, "Expecting '<![CDATA['" );
             return E_INVALID_XML_SYNTAX;
         }
-        if( FAILED( hr = AdvanceCharacter() ) ) 
-            return hr;             
-        if( m_Ch != 'C' )                       
+        if( FAILED( hr = AdvanceCharacter() ) )
+            return hr;
+        if( m_Ch != 'C' )
         {
             Error( E_INVALID_XML_SYNTAX, "Expecting '<![CDATA['" );
             return E_INVALID_XML_SYNTAX;
         }
-        if( FAILED( hr = AdvanceCharacter() ) ) 
-            return hr;             
-        if( m_Ch != 'D' )                       
+        if( FAILED( hr = AdvanceCharacter() ) )
+            return hr;
+        if( m_Ch != 'D' )
         {
             Error( E_INVALID_XML_SYNTAX, "Expecting '<![CDATA['" );
             return E_INVALID_XML_SYNTAX;
         }
-        if( FAILED( hr = AdvanceCharacter() ) ) 
-            return hr;             
-        if( m_Ch != 'A' )                       
+        if( FAILED( hr = AdvanceCharacter() ) )
+            return hr;
+        if( m_Ch != 'A' )
         {
             Error( E_INVALID_XML_SYNTAX, "Expecting '<![CDATA['" );
             return E_INVALID_XML_SYNTAX;
         }
-        if( FAILED( hr = AdvanceCharacter() ) ) 
-            return hr; 
-        if( m_Ch != 'T' )                       
+        if( FAILED( hr = AdvanceCharacter() ) )
+            return hr;
+        if( m_Ch != 'T' )
         {
             Error( E_INVALID_XML_SYNTAX, "Expecting '<![CDATA['" );
             return E_INVALID_XML_SYNTAX;
         }
-        if( FAILED( hr = AdvanceCharacter() ) ) 
-            return hr; 
-        if( m_Ch != 'A' )                       
+        if( FAILED( hr = AdvanceCharacter() ) )
+            return hr;
+        if( m_Ch != 'A' )
         {
             Error( E_INVALID_XML_SYNTAX, "Expecting '<![CDATA['" );
             return E_INVALID_XML_SYNTAX;
         }
-        if( FAILED( hr = AdvanceCharacter() ) ) 
-            return hr; 
-        if( m_Ch != '[' )                       
+        if( FAILED( hr = AdvanceCharacter() ) )
+            return hr;
+        if( m_Ch != '[' )
         {
             Error( E_INVALID_XML_SYNTAX, "Expecting '<![CDATA['" );
             return E_INVALID_XML_SYNTAX;
         }
-        if( FAILED( hr = AdvanceCDATA() ) )     
+        if( FAILED( hr = AdvanceCDATA() ) )
             return hr;
     }
-    else if( m_Ch == '/' ) 
+    else if( m_Ch == '/' )
     {
         WCHAR *pEntityRefVal = m_pWritePtr;
-     
-        if( FAILED( hr = AdvanceName() ) ) 
+
+        if( FAILED( hr = AdvanceName() ) )
             return hr;
 
-        if( FAILED( m_pISAXCallback->ElementEnd( pEntityRefVal, 
+        if( FAILED( m_pISAXCallback->ElementEnd( pEntityRefVal,
                                                 (UINT) ( m_pWritePtr - pEntityRefVal ) ) ) )
             return E_ABORT;
-        
-        if( FAILED( hr = ConsumeSpace() ) ) 
+
+        if( FAILED( hr = ConsumeSpace() ) )
             return hr;
 
-        if( FAILED( hr = AdvanceCharacter() ) ) 
-            return hr;  
+        if( FAILED( hr = AdvanceCharacter() ) )
+            return hr;
 
         if( m_Ch != '>' )
         {
@@ -513,42 +513,42 @@ HRESULT XMLParser::AdvanceElement()
             return E_INVALID_XML_SYNTAX;
         }
     }
-    else if( m_Ch == '?' )  
+    else if( m_Ch == '?' )
     {
         // just skip any xml header tag since not really important after identifying character set
         for( ;; )
         {
-            if( FAILED( hr = AdvanceCharacter() ) )             
-                return hr;           
-            
+            if( FAILED( hr = AdvanceCharacter() ) )
+                return hr;
+
             if ( m_Ch == '>' )
                 return S_OK;
         }
     }
     else
     {
-        XMLAttribute   Attributes[ XML_MAX_ATTRIBUTES_PER_ELEMENT ]; 
+        XMLAttribute   Attributes[ XML_MAX_ATTRIBUTES_PER_ELEMENT ];
         UINT           NumAttrs;
 
         WCHAR *pEntityRefVal = m_pWritePtr;
         UINT  EntityRefLen;
 
         NumAttrs = 0;
-    
+
         SkipNextAdvance();
 
         // Entity tag
-        if( FAILED( hr = AdvanceName() ) ) 
+        if( FAILED( hr = AdvanceName() ) )
             return hr;
 
         EntityRefLen = (UINT)( m_pWritePtr - pEntityRefVal );
 
-        if( FAILED( hr = ConsumeSpace() ) ) 
+        if( FAILED( hr = ConsumeSpace() ) )
             return hr;
-        
+
         if( FAILED( hr = AdvanceCharacter() ) )
-            return hr;         
-                
+            return hr;
+
         // read attributes
         while( ( m_Ch != '>' ) && ( m_Ch != '/' ) )
         {
@@ -556,31 +556,31 @@ HRESULT XMLParser::AdvanceElement()
 
             if ( NumAttrs >= XML_MAX_ATTRIBUTES_PER_ELEMENT )
             {
-                 Error( E_INVALID_XML_SYNTAX, "Elements may not have more than %d attributes", XML_MAX_ATTRIBUTES_PER_ELEMENT );                     
-                return E_INVALID_XML_SYNTAX;                
+                 Error( E_INVALID_XML_SYNTAX, "Elements may not have more than %d attributes", XML_MAX_ATTRIBUTES_PER_ELEMENT );
+                return E_INVALID_XML_SYNTAX;
             }
 
             Attributes[ NumAttrs ].strName = m_pWritePtr;
-            
+
             // Attribute name
             if( FAILED( hr = AdvanceName() ) )
                 return hr;
-            
+
             Attributes[ NumAttrs ].NameLen = (UINT)( m_pWritePtr - Attributes[ NumAttrs ].strName );
 
             if( FAILED( hr = ConsumeSpace() ) )
                 return hr;
 
-            if( FAILED( hr = AdvanceCharacter() ) ) 
-                return hr;         
+            if( FAILED( hr = AdvanceCharacter() ) )
+                return hr;
 
-            if( m_Ch != '=' ) 
+            if( m_Ch != '=' )
             {
                 Error( E_INVALID_XML_SYNTAX, "Expecting '=' character after attribute name" );
                 return E_INVALID_XML_SYNTAX;
             }
-              
-            if( FAILED( hr = ConsumeSpace() ) ) 
+
+            if( FAILED( hr = ConsumeSpace() ) )
                 return hr;
 
             Attributes[ NumAttrs ].strValue = m_pWritePtr;
@@ -588,29 +588,29 @@ HRESULT XMLParser::AdvanceElement()
             if( FAILED( hr = AdvanceAttrVal() ) )
                 return hr;
 
-            Attributes[ NumAttrs ].ValueLen = (UINT)( m_pWritePtr - 
+            Attributes[ NumAttrs ].ValueLen = (UINT)( m_pWritePtr -
                 Attributes[ NumAttrs ].strValue );
 
             ++NumAttrs;
-                   
+
             if( FAILED( hr = ConsumeSpace() ) )
-                return hr;                       
+                return hr;
 
             if( FAILED( hr = AdvanceCharacter() ) )
-                return hr;         
+                return hr;
         }
 
         if( m_Ch == '/' )
         {
             if( FAILED( hr = AdvanceCharacter() ) )
-                return hr;         
+                return hr;
             if( m_Ch != '>' )
             {
                 Error( E_INVALID_XML_SYNTAX, "Expecting '>' after '/' in element tag" );
                 return E_INVALID_XML_SYNTAX;
             }
 
-            if( FAILED( m_pISAXCallback->ElementBegin( pEntityRefVal, EntityRefLen, 
+            if( FAILED( m_pISAXCallback->ElementBegin( pEntityRefVal, EntityRefLen,
                                                        Attributes, NumAttrs ) ) )
                 return E_ABORT;
 
@@ -619,7 +619,7 @@ HRESULT XMLParser::AdvanceElement()
         }
         else
         {
-            if( FAILED( m_pISAXCallback->ElementBegin( pEntityRefVal, EntityRefLen, 
+            if( FAILED( m_pISAXCallback->ElementBegin( pEntityRefVal, EntityRefLen,
                                                        Attributes, NumAttrs ) ) )
                 return E_ABORT;
         }
@@ -637,7 +637,7 @@ HRESULT XMLParser::AdvanceCDATA()
 {
     HRESULT hr;
     WORD wStage = 0;
-    
+
     if( FAILED( m_pISAXCallback->CDATABegin() ) )
         return E_ABORT;
 
@@ -645,10 +645,10 @@ HRESULT XMLParser::AdvanceCDATA()
     {
         if( FAILED( hr = AdvanceCharacter() ) )
             return hr;
-        
+
         *m_pWritePtr = m_Ch;
         m_pWritePtr++;
-                        
+
         if( ( m_Ch == ']' ) && ( wStage == 0 ) )
             wStage = 1;
         else if( ( m_Ch == ']' ) && ( wStage == 1 ) )
@@ -666,9 +666,9 @@ HRESULT XMLParser::AdvanceCDATA()
             if( FAILED( m_pISAXCallback->CDATAData( m_pWriteBuf, (UINT)( m_pWritePtr - m_pWriteBuf ), TRUE ) ) )
                 return E_ABORT;
             m_pWritePtr = m_pWriteBuf;
-        }        
+        }
     }
-    
+
     if( FAILED( m_pISAXCallback->CDATAData( m_pWriteBuf, (UINT)( m_pWritePtr - m_pWriteBuf ), FALSE ) ) )
         return E_ABORT;
 
@@ -676,7 +676,7 @@ HRESULT XMLParser::AdvanceCDATA()
 
     if( FAILED( m_pISAXCallback->CDATAEnd() ) )
         return E_ABORT;
-    
+
     return S_OK;
 }
 
@@ -694,24 +694,24 @@ HRESULT XMLParser::AdvanceComment()
     {
         if( FAILED( hr = AdvanceCharacter() ) )
             return hr;
-        
+
         if (( m_Ch == '-' ) && ( wStage == 0 ))
             wStage = 1;
         else if (( m_Ch == '-' ) && ( wStage == 1 ))
             wStage = 2;
-        else if (( m_Ch == '>' ) && ( wStage == 2 ))                    
-            break;        
+        else if (( m_Ch == '>' ) && ( wStage == 2 ))
+            break;
         else
-            wStage = 0;      
+            wStage = 0;
     }
-    
+
     return S_OK;
 }
 
 
 //-------------------------------------------------------------------------------------
 // Name: XMLParser::RegisterSAXCallbackInterface
-// Desc: Registers callback interface 
+// Desc: Registers callback interface
 //-------------------------------------------------------------------------------------
 VOID XMLParser::RegisterSAXCallbackInterface( ISAXCallback *pISAXCallback )
 {
@@ -721,7 +721,7 @@ VOID XMLParser::RegisterSAXCallbackInterface( ISAXCallback *pISAXCallback )
 
 //-------------------------------------------------------------------------------------
 // Name: XMLParser::GetSAXCallbackInterface
-// Desc: Returns current callback interface 
+// Desc: Returns current callback interface
 //-------------------------------------------------------------------------------------
 ISAXCallback* XMLParser::GetSAXCallbackInterface()
 {
@@ -740,7 +740,7 @@ HRESULT XMLParser::MainParseLoop()
 
     if( FAILED( m_pISAXCallback->StartDocument() ) )
         return E_ABORT;
-    
+
     m_pWritePtr = m_pWriteBuf;
 
     FillBuffer();
@@ -751,57 +751,57 @@ HRESULT XMLParser::MainParseLoop()
         m_bReverseBytes = FALSE;
         m_pReadPtr += 2;
     }
-    else if ( *((WCHAR *) m_pReadBuf ) == 0xFFFE )    
+    else if ( *((WCHAR *) m_pReadBuf ) == 0xFFFE )
     {
         m_bUnicode = TRUE;
         m_bReverseBytes = TRUE;
-        m_pReadPtr += 2;        
+        m_pReadPtr += 2;
     }
-    else if ( *((WCHAR *) m_pReadBuf ) == 0x003C )    
-    {
-        m_bUnicode = TRUE;      
-        m_bReverseBytes = FALSE;
-    }
-    else if ( *((WCHAR *) m_pReadBuf ) == 0x3C00 )    
+    else if ( *((WCHAR *) m_pReadBuf ) == 0x003C )
     {
         m_bUnicode = TRUE;
-        m_bReverseBytes = TRUE;        
+        m_bReverseBytes = FALSE;
+    }
+    else if ( *((WCHAR *) m_pReadBuf ) == 0x3C00 )
+    {
+        m_bUnicode = TRUE;
+        m_bReverseBytes = TRUE;
     }
     else if ( m_pReadBuf[ 0 ] == 0x3C )
     {
-        m_bUnicode = FALSE;     
-        m_bReverseBytes = FALSE;        
+        m_bUnicode = FALSE;
+        m_bReverseBytes = FALSE;
     }
     else
-    {        
+    {
         Error( E_INVALID_XML_SYNTAX, "Unrecognized encoding (parser does not support UTF-8 language encodings)" );
-        return E_INVALID_XML_SYNTAX;        
+        return E_INVALID_XML_SYNTAX;
     }
-            
+
     for( ;; )
     {
         if( FAILED( AdvanceCharacter( TRUE ) ) )
         {
             if ( ( (UINT) ( m_pWritePtr - m_pWriteBuf ) != 0 ) && ( !bWhiteSpaceOnly ) )
-            {                
-                if( FAILED( m_pISAXCallback->ElementContent( m_pWriteBuf, (UINT)( m_pWritePtr - m_pWriteBuf ), FALSE ) ) )                
-                    return E_ABORT;                                    
+            {
+                if( FAILED( m_pISAXCallback->ElementContent( m_pWriteBuf, (UINT)( m_pWritePtr - m_pWriteBuf ), FALSE ) ) )
+                    return E_ABORT;
 
                 bWhiteSpaceOnly = TRUE;
             }
-            
+
             if( FAILED( m_pISAXCallback->EndDocument() ) )
                 return E_ABORT;
-                
-            return S_OK;            
+
+            return S_OK;
         }
 
         if( m_Ch == '<' )
         {
             if( ( (UINT) ( m_pWritePtr - m_pWriteBuf ) != 0 ) && ( !bWhiteSpaceOnly ) )
-            {                
-                if( FAILED( m_pISAXCallback->ElementContent( m_pWriteBuf, (UINT)( m_pWritePtr - m_pWriteBuf ), FALSE ) ) )                
-                    return E_ABORT;                
+            {
+                if( FAILED( m_pISAXCallback->ElementContent( m_pWriteBuf, (UINT)( m_pWritePtr - m_pWriteBuf ), FALSE ) ) )
+                    return E_ABORT;
 
                 bWhiteSpaceOnly = TRUE;
             }
@@ -810,45 +810,45 @@ HRESULT XMLParser::MainParseLoop()
 
             m_pWritePtr = m_pWriteBuf;
 
-            if( FAILED( hr = AdvanceElement() ) )              
-                return hr;                     
+            if( FAILED( hr = AdvanceElement() ) )
+                return hr;
 
             m_pWritePtr = m_pWriteBuf;
         }
-        else 
+        else
         {
             if( m_Ch == '&' )
             {
                 SkipNextAdvance();
-                if( FAILED( hr = ConvertEscape() ) )                                                                              
-                    return hr;            
+                if( FAILED( hr = ConvertEscape() ) )
+                    return hr;
             }
 
-            if( bWhiteSpaceOnly && ( m_Ch != ' ' ) && ( m_Ch != '\n' ) && ( m_Ch != '\r' ) && 
-                                    ( m_Ch != '\t' ) ) 
+            if( bWhiteSpaceOnly && ( m_Ch != ' ' ) && ( m_Ch != '\n' ) && ( m_Ch != '\r' ) &&
+                                    ( m_Ch != '\t' ) )
             {
                 bWhiteSpaceOnly = FALSE;
             }
 
             *m_pWritePtr = m_Ch;
             m_pWritePtr++;
-            
+
             if( m_pWritePtr - m_pWriteBuf >= XML_WRITE_BUFFER_SIZE )
             {
                 if( !bWhiteSpaceOnly )
-                {                    
-                    if( FAILED( m_pISAXCallback->ElementContent( m_pWriteBuf, 
-                                                                    ( UINT ) ( m_pWritePtr - m_pWriteBuf ), 
+                {
+                    if( FAILED( m_pISAXCallback->ElementContent( m_pWriteBuf,
+                                                                    ( UINT ) ( m_pWritePtr - m_pWriteBuf ),
                                                                     TRUE ) ) )
                     {
-                        return E_ABORT;                        
+                        return E_ABORT;
                     }
                 }
 
                 m_pWritePtr = m_pWriteBuf;
                 bWhiteSpaceOnly = TRUE;
             }
-        }         
+        }
     }
 }
 
@@ -858,31 +858,31 @@ HRESULT XMLParser::MainParseLoop()
 // Desc: Builds element data
 //-------------------------------------------------------------------------------------
 HRESULT XMLParser::ParseXMLFile( CONST CHAR *strFilename )
-{    
+{
     HRESULT hr;
 
     if( m_pISAXCallback == NULL )
         return E_NOINTERFACE;
 
-    m_pISAXCallback->m_LineNum = 1;  
+    m_pISAXCallback->m_LineNum = 1;
     m_pISAXCallback->m_LinePos = 0;
     m_pISAXCallback->m_strFilename = strFilename;  // save this off only while we parse the file
 
     m_bSkipNextAdvance = FALSE;
-    m_pReadPtr = m_pReadBuf;   
-    
+    m_pReadPtr = m_pReadBuf;
+
     m_pReadBuf[ 0 ] = '\0';
-    m_pReadBuf[ 1 ] = '\0';    
-   
+    m_pReadBuf[ 1 ] = '\0';
+
     m_pInXMLBuffer = NULL;
     m_uInXMLBufferCharsLeft = 0;
-    m_hFile = CreateFile( strFilename, GENERIC_READ, FILE_SHARE_READ, NULL, OPEN_EXISTING, FILE_FLAG_SEQUENTIAL_SCAN, NULL );    
+    m_hFile = CreateFile( strFilename, GENERIC_READ, FILE_SHARE_READ, NULL, OPEN_EXISTING, FILE_FLAG_SEQUENTIAL_SCAN, NULL );
 
     if( m_hFile == INVALID_HANDLE_VALUE )
-    {        
+    {
         Error( E_COULD_NOT_OPEN_FILE, "Error opening file" );
         hr = E_COULD_NOT_OPEN_FILE;
-       
+
     }
     else
     {
@@ -892,14 +892,14 @@ HRESULT XMLParser::ParseXMLFile( CONST CHAR *strFilename )
         m_dwCharsConsumed = 0;
         hr = MainParseLoop();
     }
-    
+
     // Close the file
     if( m_hFile != INVALID_HANDLE_VALUE )
         CloseHandle( m_hFile );
     m_hFile = INVALID_HANDLE_VALUE;
 
     // we no longer own strFilename, so un-set it
-    m_pISAXCallback->m_strFilename = NULL;  
+    m_pISAXCallback->m_strFilename = NULL;
 
     return hr;
 }
@@ -909,38 +909,38 @@ HRESULT XMLParser::ParseXMLFile( CONST CHAR *strFilename )
 // Desc: Builds element data
 //-------------------------------------------------------------------------------------
 HRESULT XMLParser::ParseXMLBuffer( CONST CHAR *strBuffer, UINT uBufferSize )
-{    
+{
     HRESULT hr;
- 
+
     if( m_pISAXCallback == NULL )
         return E_NOINTERFACE;
 
-    m_pISAXCallback->m_LineNum = 1;  
+    m_pISAXCallback->m_LineNum = 1;
     m_pISAXCallback->m_LinePos = 0;
     m_pISAXCallback->m_strFilename = "";  // save this off only while we parse the file
 
     m_bSkipNextAdvance = FALSE;
     m_pReadPtr = m_pReadBuf;
-    
+
     m_pReadBuf[ 0 ] = '\0';
-    m_pReadBuf[ 1 ] = '\0';    
+    m_pReadBuf[ 1 ] = '\0';
 
     m_hFile = NULL;
     m_pInXMLBuffer = strBuffer;
     m_uInXMLBufferCharsLeft = uBufferSize;
     m_dwCharsTotal = uBufferSize;
     m_dwCharsConsumed = 0;
-    
+
     hr = MainParseLoop();
 
     // we no longer own strFilename, so un-set it
-    m_pISAXCallback->m_strFilename = NULL;  
+    m_pISAXCallback->m_strFilename = NULL;
 
     return hr;
 }
 
 //-------------------------------------------------------------------------------------
-// XMLParser::Error()      
+// XMLParser::Error()
 //      Logs an error through the callback interface
 //-------------------------------------------------------------------------------------
 #ifdef  _Printf_format_string_  // VC++ 2008 and later support this annotation
@@ -955,7 +955,7 @@ VOID XMLParser::Error( HRESULT hErr, CONST CHAR* strFormat, ... )
     va_start( pArglist, strFormat );
 
     vsprintf( strBuffer, strFormat, pArglist );
-    
+
     m_pISAXCallback->Error( hErr, strBuffer );
     va_end( pArglist );
 }

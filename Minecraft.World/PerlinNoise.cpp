@@ -77,8 +77,8 @@ doubleArray PerlinNoise::getRegion(doubleArray buffer, int x, int y, int z, int 
         double xx = x * pow * xScale;
         double yy = y * pow * yScale;
         double zz = z * pow * zScale;
-        __int64 xb = Mth::lfloor(xx);
-        __int64 zb = Mth::lfloor(zz);
+        int64_t xb = Mth::lfloor(xx);
+        int64_t zb = Mth::lfloor(zz);
         xx -= xb;
         zz -= zb;
         xb %= 16777216;

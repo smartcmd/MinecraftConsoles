@@ -2,7 +2,7 @@
 #include "ByteBuffer.h"
 #include "ZoneIo.h"
 
-ZoneIo::ZoneIo(HANDLE channel, __int64 pos)
+ZoneIo::ZoneIo(HANDLE channel, int64_t pos)
 {
 	this->channel = channel;
 	this->pos = pos;

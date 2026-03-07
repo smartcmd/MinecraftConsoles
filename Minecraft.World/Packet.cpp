@@ -252,11 +252,11 @@ void Packet::updatePacketStatsPIX()
 	for( auto it = outgoingStatistics.begin(); it != outgoingStatistics.end(); it++ )
 	{
 		Packet::PacketStatistics *stat = it->second;
-		__int64 count = stat->getRunningCount();
+		int64_t count = stat->getRunningCount();
 		wchar_t pixName[256];
 		swprintf_s(pixName,L"Packet count %d",stat->id);
 //		PIXReportCounter(pixName,(float)count);
-		__int64 total = stat->getRunningTotal();
+		int64_t total = stat->getRunningTotal();
 		swprintf_s(pixName,L"Packet bytes %d",stat->id);
 		PIXReportCounter(pixName,(float)total);
 		stat->IncrementPos();
@@ -451,10 +451,10 @@ int Packet::PacketStatistics::getTotalSize()
 	return totalSize;
 }
 
-__int64 Packet::PacketStatistics::getRunningTotal()
+int64_t Packet::PacketStatistics::getRunningTotal()
 {
-	__int64 total = 0;
-	__int64 currentTime = System::currentTimeMillis();
+	int64_t total = 0;
+	int64_t currentTime = System::currentTimeMillis();
 	for( int i = 0; i < TOTAL_TICKS; i++ )
 	{
 		if( currentTime - timeSamples[i] <= 1000 )
@@ -465,10 +465,10 @@ __int64 Packet::PacketStatistics::getRunningTotal()
 	return total;
 }
 
-__int64 Packet::PacketStatistics::getRunningCount()
+int64_t Packet::PacketStatistics::getRunningCount()
 {
-	__int64 total = 0;
-	__int64 currentTime = System::currentTimeMillis();
+	int64_t total = 0;
+	int64_t currentTime = System::currentTimeMillis();
 	for( int i = 0; i < TOTAL_TICKS; i++ )
 	{
 		if( currentTime - timeSamples[i] <= 1000 )

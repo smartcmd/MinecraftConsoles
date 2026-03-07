@@ -121,7 +121,7 @@ void UIScene_HelpAndOptionsMenu::updateComponents()
 
 void UIScene_HelpAndOptionsMenu::handleReload()
 {
-#ifdef _FINAL_BUILD
+#ifndef _DEBUG // def _FINAL_BUILD // disable debug settings in release builds
 	removeControl( &m_buttons[BUTTON_HAO_DEBUG], false);
 #else
 	if(!app.DebugSettingsOn()) removeControl( &m_buttons[BUTTON_HAO_DEBUG], false);

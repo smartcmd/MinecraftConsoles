@@ -50,7 +50,7 @@ void CConsoleMinecraftApp::HandleDLCLicenseChange()
 				// Clear the DLC installed flag so the scenes will pick up the new dlc (could be a full pack install)
 				app.ClearDLCInstalled();
 				app.DebugPrintf(">>> HandleDLCLicenseChange - Updating license for DLC [%ls]\n",xOffer.wszOfferName);
-				pack->updateLicenseMask(1);			
+				pack->updateLicenseMask(1);
 			}
 			else
 			{
@@ -100,7 +100,7 @@ void CConsoleMinecraftApp::ExitGame()
 }
 void CConsoleMinecraftApp::FatalLoadError()
 {
-	// 4J-PB - 
+	// 4J-PB -
 	//for(int i=0;i<10;i++)
 	{
 #ifndef _CONTENT_PACKAGE
@@ -204,7 +204,7 @@ int CConsoleMinecraftApp::LoadLocalDLCImage(WCHAR *wchName,PBYTE *ppbImageData,D
 	// load the local file
 	WCHAR wchFilename[64];
 
-	
+
 	// 4J-PB - Read the file containing the product codes. This will be different for the SCEE/SCEA/SCEJ builds
 	swprintf(wchFilename,L"DLCImages/%s",wchName);
 	HANDLE hFile = CreateFile(wchFilename, GENERIC_READ, 0, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
@@ -269,7 +269,7 @@ void CConsoleMinecraftApp::TemporaryCreateGameStart()
 	StorageManager.SetSaveTitle(wWorldName.c_str());
 
 	bool isFlat = false;
-	__int64 seedValue = BiomeSource::findSeed(isFlat?LevelType::lvl_flat:LevelType::lvl_normal);	// 4J - was (new Random())->nextLong() - now trying to actually find a seed to suit our requirements
+	int64_t seedValue = BiomeSource::findSeed(isFlat?LevelType::lvl_flat:LevelType::lvl_normal);	// 4J - was (new Random())->nextLong() - now trying to actually find a seed to suit our requirements
 
 	NetworkGameInitData *param = new NetworkGameInitData();
 	param->seed = seedValue;
@@ -308,7 +308,7 @@ void CConsoleMinecraftApp::TemporaryCreateGameStart()
 	thread->Run();
 }
 
-typedef struct  
+typedef struct
 {
 	eDLCContentType e_DLC_Type;
 	//WCHAR *wchDisplayName;
@@ -397,7 +397,7 @@ bool CConsoleMinecraftApp::UpdateProductId(XCONTENT_DATA &Data)
 		app.DebugPrintf("Couldn't find %ls\n",Data.wszDisplayName);
 	}
 
-	return false;	
+	return false;
 }
 
 void CConsoleMinecraftApp::Shutdown()
@@ -455,7 +455,7 @@ int CConsoleMinecraftApp::Callback_TMSPPReadBannedList(void *pParam,int iPad, in
 {
 	app.DebugPrintf("CConsoleMinecraftApp::Callback_TMSPPReadBannedList\n");
 	C4JStorage::PTMSPP_FILEDATA pFileData=(C4JStorage::PTMSPP_FILEDATA)lpvData;
-	
+
 	CConsoleMinecraftApp* pClass = (CConsoleMinecraftApp*)pParam;
 
 	if(pFileData)
@@ -471,7 +471,7 @@ int CConsoleMinecraftApp::Callback_TMSPPReadBannedList(void *pParam,int iPad, in
 		// mark the level as not checked against banned levels - it'll be checked once the level starts
 		app.SetBanListCheck(iPad,false);
 
-		// Xbox One will clear things within the DownloadBlob 
+		// Xbox One will clear things within the DownloadBlob
 #ifndef _XBOX_ONE
 		delete [] pFileData->pbData;
 		delete [] pFileData;
@@ -558,11 +558,11 @@ int CConsoleMinecraftApp::Callback_TMSPPRetrieveFileList(void *pParam,int iPad, 
 	CConsoleMinecraftApp* pClass = (CConsoleMinecraftApp*)pParam;
 	app.DebugPrintf("CConsoleMinecraftApp::Callback_TMSPPRetrieveFileList\n");
 	if(lpvData!=NULL)
-	{	
+	{
 		vector<C4JStorage::PTMSPP_FILE_DETAILS> *pvTmsFileDetails=(vector<C4JStorage::PTMSPP_FILE_DETAILS> *)lpvData;
 
 		if(pvTmsFileDetails->size()>0)
-		{	
+		{
 	#ifdef _DEBUG
 			// dump out the file list
 			app.DebugPrintf("TMSPP filecount - %d\nFiles - \n",pvTmsFileDetails->size());
@@ -707,7 +707,7 @@ void CConsoleMinecraftApp::Callback_SaveGameIncomplete(void *pParam, C4JStorage:
 {
 	CConsoleMinecraftApp* pClass = (CConsoleMinecraftApp*)pParam;
 
-	if (	saveIncompleteType == C4JStorage::ESaveIncomplete_OutOfQuota 
+	if (	saveIncompleteType == C4JStorage::ESaveIncomplete_OutOfQuota
 		||	saveIncompleteType == C4JStorage::ESaveIncomplete_OutOfLocalStorage )
 	{
 		StorageManager.SetSaveDisabled(true);
@@ -718,10 +718,10 @@ void CConsoleMinecraftApp::Callback_SaveGameIncomplete(void *pParam, C4JStorage:
 		else																message = IDS_SAVE_INCOMPLETE_EXPLANATION_LOCAL_STORAGE;
 
 		UINT uiIDA[3] =
-		{ 
-			IDS_SAVE_INCOMPLETE_RETRY_SAVING, 
-			IDS_SAVE_INCOMPLETE_DISABLE_SAVING, 
-			IDS_SAVE_INCOMPLETE_DELETE_SAVES 
+		{
+			IDS_SAVE_INCOMPLETE_RETRY_SAVING,
+			IDS_SAVE_INCOMPLETE_DISABLE_SAVING,
+			IDS_SAVE_INCOMPLETE_DELETE_SAVES
 		};
 
 		if ( ui.RequestMessageBox( IDS_SAVE_INCOMPLETE_TITLE, message, uiIDA,3,0,Callback_SaveGameIncompleteMessageBoxReturned,pClass, app.GetStringTable()) == C4JStorage::EMessage_Busy)

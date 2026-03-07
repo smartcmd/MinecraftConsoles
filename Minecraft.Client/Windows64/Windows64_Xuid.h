@@ -85,9 +85,9 @@ namespace Win64Xuid
 			return false;
 
 		// Compatibility: earlier experiments may have written raw 8-byte uid.dat.
-		if (readBytes == sizeof(unsigned __int64))
+		if (readBytes == sizeof(uint64_t))
 		{
-			unsigned __int64 raw = 0;
+			uint64_t raw = 0;
 			memcpy(&raw, buffer, sizeof(raw));
 			PlayerUID parsed = (PlayerUID)raw;
 			if (IsPersistedUidValid(parsed))
@@ -106,7 +106,7 @@ namespace Win64Xuid
 
 		errno = 0;
 		char* end = NULL;
-		unsigned __int64 raw = _strtoui64(begin, &end, 0);
+		uint64_t raw = _strtoui64(begin, &end, 0);
 		if (begin == end || errno != 0)
 			return false;
 
@@ -140,7 +140,7 @@ namespace Win64Xuid
 		return written > 0;
 	}
 
-	inline unsigned __int64 Mix64(unsigned __int64 x)
+	inline uint64_t Mix64(uint64_t x)
 	{
 		x += 0x9E3779B97F4A7C15ULL;
 		x = (x ^ (x >> 30)) * 0xBF58476D1CE4E5B9ULL;
@@ -153,20 +153,20 @@ namespace Win64Xuid
 		// Avoid rand_s dependency: mix several Win64 runtime values into a 64-bit seed.
 		FILETIME ft = {};
 		GetSystemTimeAsFileTime(&ft);
-		unsigned __int64 t = (((unsigned __int64)ft.dwHighDateTime) << 32) | ft.dwLowDateTime;
+		uint64_t t = (((uint64_t)ft.dwHighDateTime) << 32) | ft.dwLowDateTime;
 
 		LARGE_INTEGER qpc = {};
 		QueryPerformanceCounter(&qpc);
 
-		unsigned __int64 seed = t;
-		seed ^= (unsigned __int64)qpc.QuadPart;
-		seed ^= ((unsigned __int64)GetCurrentProcessId() << 32);
-		seed ^= (unsigned __int64)GetCurrentThreadId();
-		seed ^= (unsigned __int64)GetTickCount();
-		seed ^= (unsigned __int64)(size_t)&qpc;
-		seed ^= (unsigned __int64)(size_t)GetModuleHandleA(NULL);
+		uint64_t seed = t;
+		seed ^= (uint64_t)qpc.QuadPart;
+		seed ^= ((uint64_t)GetCurrentProcessId() << 32);
+		seed ^= (uint64_t)GetCurrentThreadId();
+		seed ^= (uint64_t)GetTickCount();
+		seed ^= (uint64_t)(size_t)&qpc;
+		seed ^= (uint64_t)(size_t)GetModuleHandleA(NULL);
 
-		unsigned __int64 raw = Mix64(seed) ^ Mix64(seed + 0xA0761D6478BD642FULL);
+		uint64_t raw = Mix64(seed) ^ Mix64(seed + 0xA0761D6478BD642FULL);
 		raw ^= 0x8F4B2D6C1A93E705ULL;
 		raw |= 0x8000000000000000ULL;
 

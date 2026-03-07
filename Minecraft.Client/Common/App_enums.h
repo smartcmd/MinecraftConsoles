@@ -135,6 +135,7 @@ enum eGameSetting
 	eGameSetting_SoundFXVolume,
 	eGameSetting_RenderDistance,
 	eGameSetting_Gamma,
+	eGameSetting_FOV,
 	eGameSetting_Difficulty,
 	eGameSetting_Sensitivity_InGame,
 	eGameSetting_Sensitivity_InMenu,

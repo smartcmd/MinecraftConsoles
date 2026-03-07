@@ -3,7 +3,7 @@
 #include "net.minecraft.world.level.biome.h"
 
 
-GrowMushroomIslandLayer::GrowMushroomIslandLayer(__int64 seedMixup, shared_ptr<Layer> parent) : Layer(seedMixup)
+GrowMushroomIslandLayer::GrowMushroomIslandLayer(int64_t seedMixup, shared_ptr<Layer> parent) : Layer(seedMixup)
 {
 	this->parent = parent;
 }
@@ -25,10 +25,10 @@ intArray GrowMushroomIslandLayer::getArea(int xo, int yo, int w, int h)
             int n2 = p[(x + 2) + (y + 0) * pw];
             int n3 = p[(x + 0) + (y + 2) * pw];
             int n4 = p[(x + 2) + (y + 2) * pw];
-	
+
             int c = p[(x + 1) + (y + 1) * pw];
 
-			if( ( n1 == Biome::mushroomIsland->id ) || ( n2 == Biome::mushroomIsland->id ) || ( n3 == Biome::mushroomIsland->id ) || ( n4 == Biome::mushroomIsland->id ) ) 
+			if( ( n1 == Biome::mushroomIsland->id ) || ( n2 == Biome::mushroomIsland->id ) || ( n3 == Biome::mushroomIsland->id ) || ( n4 == Biome::mushroomIsland->id ) )
 			{
 				result[x + y * w] = Biome::mushroomIsland->id;
 			}

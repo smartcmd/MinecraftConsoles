@@ -25,11 +25,11 @@ static SceRemoteStorageStatus statParams;
 // {
 // 	app.DebugPrintf("remoteStorageGetCallback err : 0x%08x\n");
 // }
-// 
+//
 // void remoteStorageCallback(LPVOID lpParam, SonyRemoteStorage::Status s, int error_code)
 // {
 // 	app.DebugPrintf("remoteStorageCallback err : 0x%08x\n");
-// 
+//
 // 	app.getRemoteStorage()->getRemoteFileInfo(&statParams, remoteStorageGetInfoCallback, NULL);
 // }
 
@@ -193,7 +193,7 @@ ESavePlatform SonyRemoteStorage::getSavePlatform()
 
 }
 
-__int64 SonyRemoteStorage::getSaveSeed()
+int64_t SonyRemoteStorage::getSaveSeed()
 {
 	if(m_getInfoStatus != e_infoFound)
 		return 0;
@@ -223,9 +223,9 @@ const char* SonyRemoteStorage::getRemoteSaveFilename()
 
 int SonyRemoteStorage::getSaveFilesize()
 {
-	if(m_getInfoStatus == e_infoFound) 
+	if(m_getInfoStatus == e_infoFound)
 	{
-		return m_remoteFileInfo->fileSize; 
+		return m_remoteFileInfo->fileSize;
 	}
 	return 0;
 }
@@ -288,9 +288,9 @@ bool SonyRemoteStorage::saveIsAvailable()
 	if(m_getInfoStatus != e_infoFound)
 		return false;
 #ifdef __PS3__
-	return (getSavePlatform() == SAVE_FILE_PLATFORM_PSVITA); 
+	return (getSavePlatform() == SAVE_FILE_PLATFORM_PSVITA);
 #elif defined __PSVITA__
-	return (getSavePlatform() == SAVE_FILE_PLATFORM_PS3); 
+	return (getSavePlatform() == SAVE_FILE_PLATFORM_PS3);
 #else // __ORBIS__
 	return true;
 #endif
@@ -320,7 +320,7 @@ int SonyRemoteStorage::getDataProgress()
 	int nextChunk = ((sizeTransferred + chunkSize) * 100) / totalSize;
 
 
-	__int64 time = System::currentTimeMillis();
+	int64_t time = System::currentTimeMillis();
 	int elapsedSecs = (time - m_startTime) / 1000;
 	float estimatedTransfered = float(elapsedSecs * transferRatePerSec);
 	int progVal = m_dataProgress + (estimatedTransfered / float(totalSize)) * 100;
@@ -341,15 +341,15 @@ bool SonyRemoteStorage::shutdown()
 	if(m_bInitialised)
 	{
 		int ret = sceRemoteStorageTerm();
-		if(ret >= 0) 
+		if(ret >= 0)
 		{
 			app.DebugPrintf("Term request done \n");
 			m_bInitialised = false;
 			free(m_memPoolBuffer);
 			m_memPoolBuffer = NULL;
 			return true;
-		} 
-		else 
+		}
+		else
 		{
 			app.DebugPrintf("Error in Term request: 0x%x \n", ret);
 			return false;
@@ -409,7 +409,7 @@ void SonyRemoteStorage::GetDescriptionData( DescriptionData& descData)
 		char seed[22];
 		app.GetImageTextData(m_thumbnailData, m_thumbnailDataSize,(unsigned char *)seed, uiHostOptions, bHostOptionsRead, uiTexturePack);
 
-		__int64 iSeed = strtoll(seed,NULL,10);
+		int64_t iSeed = strtoll(seed,NULL,10);
 		SetU64HexBytes(descData.m_seed, iSeed);
 		// Save the host options that this world was last played with
 		SetU32HexBytes(descData.m_hostOptions, uiHostOptions);
@@ -433,7 +433,7 @@ void SonyRemoteStorage::GetDescriptionData( DescriptionData_V2& descData)
 	char descDataVersion[9];
 	sprintf(descDataVersion,"%08x",sc_CurrentDescDataVersion);
 	memcpy(descData.m_descDataVersion,descDataVersion,8); // Don't copy null
-	
+
 
 	descData.m_platform[0] = SAVE_FILE_PLATFORM_LOCAL & 0xff;
 	descData.m_platform[1] = (SAVE_FILE_PLATFORM_LOCAL >> 8) & 0xff;
@@ -448,7 +448,7 @@ void SonyRemoteStorage::GetDescriptionData( DescriptionData_V2& descData)
 		char seed[22];
 		app.GetImageTextData(m_thumbnailData, m_thumbnailDataSize,(unsigned char *)seed, uiHostOptions, bHostOptionsRead, uiTexturePack);
 
-		__int64 iSeed = strtoll(seed,NULL,10);
+		int64_t iSeed = strtoll(seed,NULL,10);
 		SetU64HexBytes(descData.m_seed, iSeed);
 		// Save the host options that this world was last played with
 		SetU32HexBytes(descData.m_hostOptions, uiHostOptions);
@@ -468,7 +468,7 @@ void SonyRemoteStorage::GetDescriptionData( DescriptionData_V2& descData)
 uint32_t SonyRemoteStorage::GetU32FromHexBytes(char* hexBytes)
 {
 	char hexString[9];
-	ZeroMemory(hexString,9);	
+	ZeroMemory(hexString,9);
 	memcpy(hexString, hexBytes,8);
 
 	uint32_t u32Val = 0;
@@ -481,7 +481,7 @@ uint32_t SonyRemoteStorage::GetU32FromHexBytes(char* hexBytes)
 uint64_t SonyRemoteStorage::GetU64FromHexBytes(char* hexBytes)
 {
 	char hexString[17];
-	ZeroMemory(hexString,17);	
+	ZeroMemory(hexString,17);
 	memcpy(hexString, hexBytes,16);
 
 	uint64_t u64Val = 0;
