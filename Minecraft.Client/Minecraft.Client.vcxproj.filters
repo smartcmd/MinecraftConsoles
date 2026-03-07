@@ -3790,6 +3790,9 @@
     <ClInclude Include="Common\Audio\stb_vorbis.h">
       <Filter>Common\Source Files\Audio</Filter>
     </ClInclude>
+    <ClInclude Include="Windows64\Win64LanguageRuntime.h">
+      <Filter>Windows64</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">

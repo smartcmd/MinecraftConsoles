@@ -1,4 +1,5 @@
 #include "stdafx.h"
+#include "Windows64\Win64LanguageRuntime.h"
 #ifndef __PS3__
 //#include <compressapi.h>
 #endif // __PS3__
@@ -502,9 +503,67 @@ void XMemDestroyDecompressionContext(XMEMDECOMPRESSION_CONTEXT Context)
 
 //#ifndef __PS3__
 #if !(defined _DURANGO || defined __PS3__ || defined __ORBIS__ || defined __PSVITA__)
-DWORD XGetLanguage() { return 1; }
-DWORD XGetLocale() { return 0; }
+static DWORD s_win64Language = XC_LANGUAGE_ENGLISH;
+static DWORD s_win64Locale = XC_LOCALE_UNITED_STATES;
+static bool s_win64TryAllLanguagesAtStartup = false;
+static bool s_win64LanguageValidationFailed = false;
+static std::wstring s_win64ForceLocaleCode;
+static std::vector<std::wstring> s_win64ExtraLanguageCodes;
+
+DWORD XGetLanguage() { return s_win64Language; }
+DWORD XGetLocale() { return s_win64Locale; }
 DWORD XEnableGuestSignin(BOOL fEnable) { return 0; }
+
+void Win64SetLanguageLocale(DWORD language, DWORD locale)
+{
+	s_win64Language = language;
+	s_win64Locale = locale;
+}
+
+void Win64ForceEnglishLanguage()
+{
+	Win64SetLanguageLocale(XC_LANGUAGE_ENGLISH, XC_LOCALE_UNITED_STATES);
+}
+
+void Win64SetForceLocaleCode(const std::wstring& localeCode)
+{
+	s_win64ForceLocaleCode = localeCode;
+}
+
+const std::wstring& Win64GetForceLocaleCode()
+{
+	return s_win64ForceLocaleCode;
+}
+
+void Win64SetTryAllLanguagesAtStartup(bool enabled)
+{
+	s_win64TryAllLanguagesAtStartup = enabled;
+}
+
+bool Win64GetTryAllLanguagesAtStartup()
+{
+	return s_win64TryAllLanguagesAtStartup;
+}
+
+void Win64SetLanguageValidationFailed(bool failed)
+{
+	s_win64LanguageValidationFailed = failed;
+}
+
+bool Win64GetLanguageValidationFailed()
+{
+	return s_win64LanguageValidationFailed;
+}
+
+void Win64SetExtraLanguageCodes(const std::vector<std::wstring>& localeCodes)
+{
+	s_win64ExtraLanguageCodes = localeCodes;
+}
+
+const std::vector<std::wstring>& Win64GetExtraLanguageCodes()
+{
+	return s_win64ExtraLanguageCodes;
+}
 #endif
 
 

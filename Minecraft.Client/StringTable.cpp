@@ -1,5 +1,8 @@
 #include "StdAfx.h"
 #include "StringTable.h"
+#ifdef _WINDOWS64
+#include "Windows64\Win64LanguageRuntime.h"
+#endif
 
 StringTable::StringTable(void)
 {
@@ -42,6 +45,59 @@ void StringTable::ProcessStringTableData(void)
 
 	vector<wstring> locales;
 	app.getLocale(locales);
+
+#ifdef _WINDOWS64
+	std::wstring forcedLocale = Win64GetForceLocaleCode();
+	if (!forcedLocale.empty())
+	{
+		app.DebugPrintf("StringTable:: forced locale request '%ls'.\n", forcedLocale.c_str());
+		locales.insert(locales.begin(), forcedLocale);
+	}
+
+	const std::vector<std::wstring>& extraLocales = Win64GetExtraLanguageCodes();
+	for (size_t i = 0; i < extraLocales.size(); ++i)
+	{
+		if (!extraLocales[i].empty())
+			locales.insert(locales.begin(), extraLocales[i]);
+	}
+
+	if (Win64GetTryAllLanguagesAtStartup() && !Win64GetLanguageValidationFailed())
+	{
+		static const wchar_t* kStandardLocales[] =
+		{
+			L"en-US", L"en-GB", L"de-DE", L"fr-FR", L"es-ES", L"es-MX", L"it-IT", L"pt-PT", L"pt-BR",
+			L"ja-JP", L"ko-KR", L"zh-CHT", L"ru-RU", L"nl-NL", L"pl-PL", L"sv-SE", L"tr-TR", L"nb-NO",
+			L"da-DK", L"fi-FI", L"cs-CZ", L"sk-SK", L"el-GR", L"la-LAS"
+		};
+
+		for (unsigned int i = 0; i < sizeof(kStandardLocales) / sizeof(kStandardLocales[0]); ++i)
+		{
+			const std::wstring localeCode = kStandardLocales[i];
+			bool foundLocale = false;
+			for (size_t j = 0; j < langSizeMap.size(); ++j)
+			{
+				if (langSizeMap[j].first == localeCode)
+				{
+					foundLocale = true;
+					break;
+				}
+			}
+
+			if (!foundLocale)
+			{
+				std::wstring msg = L"Missing language localization asset for locale: " + localeCode +
+					L"\n\nDefaulting language to English (en-US).";
+				MessageBoxW(NULL, msg.c_str(), L"Minecraft Localization", MB_OK | MB_ICONERROR);
+				Win64SetLanguageValidationFailed(true);
+				Win64ForceEnglishLanguage();
+				locales.clear();
+				locales.push_back(L"en-US");
+				locales.push_back(L"en-EN");
+				break;
+			}
+		}
+	}
+#endif
 
 	bool foundLang = false;
 	int64_t bytesToSkip = 0;
@@ -118,6 +174,16 @@ void StringTable::ProcessStringTableData(void)
 	else
 	{
 		app.DebugPrintf("Failed to get language\n");
+#ifdef _WINDOWS64
+		std::wstring forcedLocale = Win64GetForceLocaleCode();
+		if (!forcedLocale.empty())
+		{
+			std::wstring msg = L"Failed to load locale '" + forcedLocale + L"'.\n\nDefaulting to English (en-US).";
+			MessageBoxW(NULL, msg.c_str(), L"Minecraft Localization", MB_OK | MB_ICONERROR);
+			Win64ForceEnglishLanguage();
+			Win64SetForceLocaleCode(L"");
+		}
+#endif
 #ifdef _DEBUG
 		__debugbreak();
 #endif
@@ -181,8 +247,3 @@ LPCWSTR StringTable::getString(int id)
 	else
 		return L"";
 }
-
-
-
-
-

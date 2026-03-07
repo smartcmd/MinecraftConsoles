@@ -2,7 +2,7 @@
 #include "UI.h"
 #include "UIScene_SettingsOptionsMenu.h"
 
-#if defined(_XBOX_ONE)
+#if defined(_XBOX_ONE) || defined(_WINDOWS64)
 #define _ENABLE_LANGUAGE_SELECT
 #endif
 
@@ -137,14 +137,7 @@ UIScene_SettingsOptionsMenu::UIScene_SettingsOptionsMenu(int iPad, void *initDat
 	// MGH - disabled the language select for the patch build, we'll re-enable afterwards
 	// 4J Stu - Removed it with a preprocessor def as we turn this off in various places
 #ifdef _ENABLE_LANGUAGE_SELECT
-	if (app.GetGameStarted())	
-	{
-		removeControl( &m_buttonLanguageSelect, false );
-	}
-	else						
-	{
-		m_buttonLanguageSelect.init(IDS_LANGUAGE_SELECTOR, eControl_Languages);
-	}
+	m_buttonLanguageSelect.init(IDS_LANGUAGE_SELECTOR, eControl_Languages);
 #else
 	removeControl( &m_buttonLanguageSelect, false );
 #endif
@@ -361,14 +354,7 @@ void UIScene_SettingsOptionsMenu::handleReload()
 	// MGH - disabled the language select for the patch build, we'll re-enable afterwards
 	// 4J Stu - Removed it with a preprocessor def as we turn this off in various places
 #ifdef _ENABLE_LANGUAGE_SELECT
-	// 4J-JEV: Changing languages in-game will produce many a bug.
-	if (app.GetGameStarted())	
-	{
-		removeControl( &m_buttonLanguageSelect, false );
-	}
-	else						
-	{
-	}
+	// Enabled on Win64/Xbox One for runtime language switching.
 #else
 	removeControl( &m_buttonLanguageSelect, false );
 #endif
