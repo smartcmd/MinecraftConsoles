@@ -1804,14 +1804,24 @@ GDrawTexture * RADLINK UIController::TextureSubstitutionCreateCallback ( void * 
 
 			// 4J Stu - All our flash controls that allow replacing textures use a special 64x64 symbol
 			// Force this size here so that our images don't get scaled wildly
-	#if (defined __ORBIS__ || defined _DURANGO || defined _WINDOWS64 )
+	#if (defined __ORBIS__ || defined _DURANGO )
 			*width = 96;
 			*height = 96;
 	#else
 			*width = 64;
 			*height = 64;
-
 	#endif
+
+	#if defined _WINDOWS64
+            // Only set the size to 96x96 for 1080p on Windows
+            // This matches the logic defining m_loadedResolution in UIScene
+            if (uiController->getScreenHeight() > 720)
+            {
+                *width = 96;
+                *height = 96;
+			}
+	#endif
+
 			*destroy_callback_data = (void *)id;
 
 			app.DebugPrintf("Found substitution texture %ls (%d) - %dx%d\n", (wchar_t *)texture_name, id, image.getWidth(), image.getHeight());
