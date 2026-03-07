@@ -860,74 +860,41 @@ void Gui::render(float a, bool mouseFree, int xMouse, int yMouse)
 		glScalef(scale, scale, 1.f);
 		glTranslatef((float)-debugLeft, (float)-debugTop, 0.f);
         if (Minecraft::warezTime > 0) glTranslatef(0, 32, 0);
-        font->drawShadow(ClientConstants::VERSION_STRING + L" (" + minecraft->fpsString + L")", debugLeft, debugTop, 0xffffff);
-        font->drawShadow(L"Seed: " + std::to_wstring(minecraft->level->getLevelData()->getSeed() ), debugLeft, debugTop + 12, 0xffffff);
-        font->drawShadow(minecraft->gatherStats1(), debugLeft, debugTop + 22, 0xffffff);
-        font->drawShadow(minecraft->gatherStats2(), debugLeft, debugTop + 32, 0xffffff);
-        font->drawShadow(minecraft->gatherStats3(), debugLeft, debugTop + 42, 0xffffff);
-        font->drawShadow(minecraft->gatherStats4(), debugLeft, debugTop + 52, 0xffffff);
 
-		// TERRAIN FEATURES
-		int iYPos = debugTop + 62;
+        font->drawShadow(ClientConstants::VERSION_STRING + L" (" + minecraft->fpsString + L")", iSafezoneXHalf+2, 20, 0xffffff);
+        font->drawShadow(L"Seed: " + std::to_wstring(minecraft->level->getLevelData()->getSeed() ), iSafezoneXHalf+2, 32 + 00, 0xffffff);
+        // font->drawShadow(minecraft->gatherStats4(), iSafezoneXHalf+2, 32 + 40, 0xffffff);
+	/*
+	long max = Runtime.getRuntime().maxMemory();
+        long total = Runtime.getRuntime().totalMemory();
+        long free = Runtime.getRuntime().freeMemory();
+        long used = total - free;
+        std::string msg = "Used memory: " + (used * 100 / max) + "% (" + (used / 1024 / 1024) + "MB) of " + (max / 1024 / 1024) + "MB";
+        drawString(font, msg, screenWidth - font.width(msg) - 2, 2, 0xe0e0e0);
+        msg = "Allocated memory: " + (total * 100 / max) + "% (" + (total / 1024 / 1024) + "MB)";
+        drawString(font, msg, screenWidth - font.width(msg) - 2, 12, 0xe0e0e0);
+	*/
 
-		if(minecraft->level->dimension->id==0)
-		{
-			wstring wfeature[eTerrainFeature_Count];
+	// 4J Stu - Moved these so that they don't overlap
+	int iYPos = 82;
+	wchar_t buffer[256];
 
-			wfeature[eTerrainFeature_Stronghold] = L"Stronghold: ";
-			wfeature[eTerrainFeature_Mineshaft] = L"Mineshaft: ";
-			wfeature[eTerrainFeature_Village] = L"Village: ";
-			wfeature[eTerrainFeature_Ravine] = L"Ravine: ";
+	double xBlockPos = floor(minecraft->player->x);
+	double yBlockPos = floor(minecraft->player->y);
+	double zBlockPos = floor(minecraft->player->z);
 
-			float maxW = (float)(screenWidth - debugLeft - 8) / scale;
-			float maxWForContent = maxW - (float)font->width(L"...");
-			bool truncated[eTerrainFeature_Count] = {};
+	// Round x coordinates to the 2nd decimal
 
-			for (int i = 0; i < (int)app.m_vTerrainFeatures.size(); i++)
-			{
-				FEATURE_DATA *pFeatureData=app.m_vTerrainFeatures[i];
-				int type = pFeatureData->eTerrainFeature;
-				if (type < eTerrainFeature_Stronghold || type > eTerrainFeature_Ravine) continue;
-				if (truncated[type]) continue;
+	swprintf(buffer, 256, L"x: %.2f", minecraft->player->x);
+        font->drawShadow(buffer, iSafezoneXHalf+2, iYPos + 8 * 0, 0xe0e0e0);
 
-				wstring itemInfo = L"[" + std::to_wstring( pFeatureData->x*16 ) + L", " + std::to_wstring( pFeatureData->z*16 ) + L"] ";
-				if (font->width(wfeature[type] + itemInfo) <= maxWForContent)
-					wfeature[type] += itemInfo;
-				else
-				{
-					wfeature[type] += L"...";
-					truncated[type] = true;
-				}
-			}
+	swprintf(buffer, 256, L"y: %.2f", minecraft->player->y);
+        font->drawShadow(buffer, iSafezoneXHalf+2, iYPos + 8 * 1, 0xe0e0e0);
 
-			for( int i = eTerrainFeature_Stronghold; i < (int) eTerrainFeature_Count; i++ )
-			{
-				iYPos+=10;
-				font->drawShadow(wfeature[i], debugLeft, iYPos, 0xffffff);
-			}
-		}
+	swprintf(buffer, 256, L"z: %.2f", minecraft->player->z);
+        font->drawShadow(buffer, iSafezoneXHalf+2, iYPos + 8 * 2, 0xe0e0e0);
 
-		//font->drawShadow(minecraft->gatherStats5(), iSafezoneXHalf+2, 32 + 10, 0xffffff);
-       {
-			/* 4J - removed
-            long max = Runtime.getRuntime().maxMemory();
-            long total = Runtime.getRuntime().totalMemory();
-            long free = Runtime.getRuntime().freeMemory();
-            long used = total - free;
-            String msg = "Used memory: " + (used * 100 / max) + "% (" + (used / 1024 / 1024) + "MB) of " + (max / 1024 / 1024) + "MB";
-            drawString(font, msg, screenWidth - font.width(msg) - 2, 2, 0xe0e0e0);
-            msg = "Allocated memory: " + (total * 100 / max) + "% (" + (total / 1024 / 1024) + "MB)";
-            drawString(font, msg, screenWidth - font.width(msg) - 2, 12, 0xe0e0e0);
-			*/
-        }
-		// 4J Stu - Moved these so that they don't overlap
-		double xBlockPos = floor(minecraft->player->x);
-		double yBlockPos = floor(minecraft->player->y);
-		double zBlockPos = floor(minecraft->player->z);
-        drawString(font, L"x: " + std::to_wstring(minecraft->player->x) + L"/ Head: " + std::to_wstring(static_cast<int>(xBlockPos)) + L"/ Chunk: " + std::to_wstring(minecraft->player->xChunk), debugLeft, iYPos + 8 * 0, 0xe0e0e0);
-        drawString(font, L"y: " + std::to_wstring(minecraft->player->y) + L"/ Head: " + std::to_wstring(static_cast<int>(yBlockPos)), debugLeft, iYPos + 8 * 1, 0xe0e0e0);
-        drawString(font, L"z: " + std::to_wstring(minecraft->player->z) + L"/ Head: " + std::to_wstring(static_cast<int>(zBlockPos)) + L"/ Chunk: " + std::to_wstring(minecraft->player->zChunk), debugLeft, iYPos + 8 * 2, 0xe0e0e0);
-		drawString(font, L"f: " + std::to_wstring(Mth::floor(minecraft->player->yRot * 4.0f / 360.0f + 0.5) & 0x3) + L"/ yRot: " + std::to_wstring(minecraft->player->yRot), debugLeft, iYPos + 8 * 3, 0xe0e0e0);
+	font->drawShadow(L"f: " + std::to_wstring(Mth::floor(minecraft->player->yRot * 4.0f / 360.0f + 0.5) & 0x3) + L"/ yRot: " + std::to_wstring(minecraft->player->yRot), iSafezoneXHalf+2, iYPos + 8 * 3, 0xe0e0e0);
 		iYPos += 8*4;
 
 		int px = Mth::floor(minecraft->player->x);

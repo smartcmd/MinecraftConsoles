@@ -6,7 +6,8 @@ class SharedConstants
 {
 	public:
 		static void staticCtor();
-		static const wstring VERSION_STRING;
+		static const wstring GetVersion() {
+			return L"1.6.4"; }
 		static const int NETWORK_PROTOCOL_VERSION = 78;
 		static const bool INGAME_DEBUG_OUTPUT = false;
 		
