@@ -913,22 +913,62 @@ void Gui::render(float a, bool mouseFree, int xMouse, int yMouse)
 #endif
 
 		// 4J Stu - Moved these so that they don't overlap
-		double xBlockPos = floor(minecraft->player->x);
-		double yBlockPos = floor(minecraft->player->y);
-		double zBlockPos = floor(minecraft->player->z);
-        lines.push_back(L"x: " + std::to_wstring(minecraft->player->x) + L"/ Head: " + std::to_wstring(static_cast<int>(xBlockPos)) + L"/ Chunk: " + std::to_wstring(minecraft->player->xChunk));
-        lines.push_back(L"y: " + std::to_wstring(minecraft->player->y) + L"/ Head: " + std::to_wstring(static_cast<int>(yBlockPos)));
-        lines.push_back(L"z: " + std::to_wstring(minecraft->player->z) + L"/ Head: " + std::to_wstring(static_cast<int>(zBlockPos)) + L"/ Chunk: " + std::to_wstring(minecraft->player->zChunk));
-        lines.push_back(L"f: " + std::to_wstring(Mth::floor(minecraft->player->yRot * 4.0f / 360.0f + 0.5) & 0x3) + L"/ yRot: " + std::to_wstring(minecraft->player->yRot));
+        int xBlockPos = Mth::floor(minecraft->player->x);
+        int yBlockPos = Mth::floor(minecraft->player->y);
+        int zBlockPos = Mth::floor(minecraft->player->z);
 
-		int px = Mth::floor(minecraft->player->x);
-		int py = Mth::floor(minecraft->player->y);
-		int pz = Mth::floor(minecraft->player->z);
-		if (minecraft->level != NULL && minecraft->level->hasChunkAt(px, py, pz))
+        int xChunkPos = minecraft->player->xChunk;
+        int yChunkPos = minecraft->player->yChunk;
+        int zChunkPos = minecraft->player->zChunk;
+
+		int xChunkOffset = xBlockPos - xChunkPos * 16;
+        int yChunkOffset = yBlockPos - yChunkPos * 16;
+        int zChunkOffset = zBlockPos - zChunkPos * 16;
+
+        lines.push_back(L"XYZ: " + std::to_wstring(minecraft->player->x) + L" / " + std::to_wstring(minecraft->player->y) + L" / " + std::to_wstring(minecraft->player->z));
+        lines.push_back(L"Block: " + std::to_wstring(static_cast<int>(xBlockPos)) + L" " + std::to_wstring(static_cast<int>(yBlockPos)) + L" " + std::to_wstring(static_cast<int>(zBlockPos)));
+        lines.push_back(L"Chunk: " + std::to_wstring(xChunkOffset) + L" " + std::to_wstring(yChunkOffset) + L" " + std::to_wstring(zChunkOffset) + L" in " + std::to_wstring(xChunkPos) + L" " + std::to_wstring(yChunkPos) + L" " + std::to_wstring(zChunkPos));
+
+		// Wrap the yRot to 360 then adjust to (-180 to 180) range to match java
+		float yRotDisplay = fmod(minecraft->player->yRot, 360.0f);
+        if (yRotDisplay > 180.0f)
+        {
+            yRotDisplay -= 360.0f;
+        }
+        if (yRotDisplay < -180.0f)
+        {
+            yRotDisplay += 360.0f;
+        }
+        // Generate the angle string in the format "yRot / xRot" with one decimal place, similar to java edition
+        WCHAR angleString[16];
+        swprintf(angleString, 16, L"%.1f / %.1f", yRotDisplay, minecraft->player->xRot);
+
+		// Work out the named direction
+        int direction = Mth::floor(minecraft->player->yRot * 4.0f / 360.0f + 0.5) & 0x3;
+        wstring cardinalDirection;
+        switch (direction)
+        {
+        case 0:
+            cardinalDirection = L"south";
+            break;
+        case 1:
+            cardinalDirection = L"west";
+            break;
+        case 2:
+            cardinalDirection = L"north";
+            break;
+        case 3:
+            cardinalDirection = L"east";
+            break;
+        }
+
+        lines.push_back(L"Facing: " + cardinalDirection + L" (" + angleString + L")");
+
+		if (minecraft->level != NULL && minecraft->level->hasChunkAt(xBlockPos, yBlockPos, zBlockPos))
 		{
-			LevelChunk *chunkAt = minecraft->level->getChunkAt(px, pz);
-			Biome *biome = chunkAt->getBiome(px & 15, pz & 15, minecraft->level->getBiomeSource());
-            lines.push_back(L"b: " + biome->m_name + L" (" + std::to_wstring(biome->id) + L")");
+            LevelChunk *chunkAt = minecraft->level->getChunkAt(xBlockPos, zBlockPos);
+            Biome *biome = chunkAt->getBiome(xChunkOffset, zChunkOffset, minecraft->level->getBiomeSource());
+            lines.push_back(L"Biome: " + biome->m_name + L" (" + std::to_wstring(biome->id) + L")");
 		}
 
 		// Loop through the lines and draw them all on screen
