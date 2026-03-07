@@ -29,7 +29,7 @@ jobs:
       run: 7z a -r LCEWindows64.zip ./x64/Debug/*
 
     - name: Update release
-      uses: andelf/nightly-debug@main
+      uses: andelf/nightly-release@main
 
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
