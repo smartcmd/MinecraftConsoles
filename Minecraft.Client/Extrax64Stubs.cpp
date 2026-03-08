@@ -536,7 +536,9 @@ void				C_4JProfile::Initialise(DWORD dwTitleID,
 		pGameSettings->usBitmaskValues |= 0x1000; //eGameSetting_Autosave - 2
 		pGameSettings->usBitmaskValues |= 0x8000; //eGameSetting_Tooltips - on
 		pGameSettings->uiBitmaskValues = 0L; // reset
+		pGameSettings->uiBitmaskValues |= GAMESETTING_FANCYGRAPHICS;					//eGameSetting_FancyGraphics - on
 		pGameSettings->uiBitmaskValues |= GAMESETTING_CLOUDS;					//eGameSetting_Clouds - on
+		pGameSettings->uiBitmaskValues |= GAMESETTING_AMBIENTOCCLUSION;					//eGameSetting_AmbientOcclusion - on
 		pGameSettings->uiBitmaskValues |= GAMESETTING_ONLINE;					//eGameSetting_GameSetting_Online - on
 		pGameSettings->uiBitmaskValues |= GAMESETTING_FRIENDSOFFRIENDS;		//eGameSetting_GameSetting_FriendsOfFriends - on
 		pGameSettings->uiBitmaskValues |= GAMESETTING_DISPLAYUPDATEMSG;		//eGameSetting_DisplayUpdateMessage (counter)

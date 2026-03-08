@@ -4896,7 +4896,7 @@ bool TileRenderer::tesselateBlockInWorld( Tile* tt, int x, int y, int z )
 		b = cb;
 	}
 
-	if ( Tile::lightEmission[tt->id] == 0 )//4J - TODO/remove (Minecraft::useAmbientOcclusion())
+	if (Tile::lightEmission[tt->id] == 0 && Minecraft::useAmbientOcclusion())
 	{
 		return tesselateBlockInWorldWithAmbienceOcclusionTexLighting(tt, x, y, z, r, g, b, 0, smoothShapeLighting);
 	}
@@ -4925,7 +4925,7 @@ bool TileRenderer::tesselateBlockInWorld( Tile* tt, int x, int y, int z, int fac
 		b = cb;
 	}
 
-	if ( Tile::lightEmission[tt->id] == 0 )//4J - TODO/remove (Minecraft::useAmbientOcclusion())
+	if (Tile::lightEmission[tt->id] == 0 && Minecraft::useAmbientOcclusion())
 	{
 		return tesselateBlockInWorldWithAmbienceOcclusionTexLighting( tt, x, y, z, r, g, b, faceFlags, smoothShapeLighting );
 	}
