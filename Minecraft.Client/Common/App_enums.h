@@ -147,6 +147,7 @@ enum eGameSetting
 	eGameSetting_GamertagsVisible,
 	eGameSetting_FancyGraphics,
 	eGameSetting_AmbientOcclusion,
+	eGameSetting_OldSwingAnimation,
 	// Interim TU 1.6.6
 	eGameSetting_Autosave,
 	eGameSetting_DisplaySplitscreenGamertags,
