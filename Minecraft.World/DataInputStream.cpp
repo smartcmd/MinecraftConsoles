@@ -90,7 +90,15 @@ void DataInputStream::close()
 //the boolean value read.
 bool DataInputStream::readBoolean()
 {
-	return stream->read() != 0;
+    int val = stream->read();
+
+    // izzint - strange situation
+    if ((val) == -1)
+    {
+        throw EOFException(L"DataInputStream::readBoolean - end of stream");
+    }
+
+    return val != 0;
 }
 
 //Reads and returns one input byte. The byte is treated as a signed value in the range -128 through 127, inclusive.
@@ -99,12 +107,28 @@ bool DataInputStream::readBoolean()
 //the 8-bit value read.
 byte DataInputStream::readByte()
 {
-	return (byte) stream->read();
+	int val = stream->read();
+
+	// izzint - strange situation
+    if ((val) == -1)
+    {
+        throw EOFException(L"DataInputStream::readByte - end of stream");
+    }
+
+	return static_cast<byte>(val);
 }
 
 unsigned char DataInputStream::readUnsignedByte()
 {
-	return (unsigned char) stream->read();
+    int val = stream->read();
+
+    // izzint - strange situation
+    if ((val) == -1)
+    {
+        throw EOFException(L"DataInputStream::readUnsignedByte - end of stream");
+    }
+
+    return static_cast<unsigned char>(val);
 }
 
 //Reads two input bytes and returns a char value. Let a be the first byte read and b be the second byte. The value returned is:
@@ -117,6 +141,13 @@ wchar_t DataInputStream::readChar()
 {
 	int a = stream->read();
 	int b = stream->read();
+
+	// izzint - strange situation
+    if ((a | b) < 0)
+    {
+        throw EOFException(L"DataInputStream::readChar - end of stream");
+    }
+
 	return (wchar_t)((a << 8) | (b & 0xff));
 }
 
@@ -133,25 +164,6 @@ wchar_t DataInputStream::readChar()
 //Parameters:
 //b - the buffer into which the data is read.
 bool DataInputStream::readFully(byteArray b)
-{
-	// TODO 4J Stu - I am not entirely sure if this matches the implementation of the Java library
-	// TODO 4J Stu - Need to handle exceptions here is we throw them in other InputStreams
-	for(unsigned int i = 0; i < b.length ;i++)
-	{
-		int byteRead = stream->read();
-		if( byteRead == -1 )
-		{
-            throw EOFException(L"DataInputStream::readFully - end of stream");
-		}
-		else
-		{
-			b[i] = byteRead;
-		}
-	}
-	return true;
-}
-
-bool DataInputStream::readFully(charArray b)
 {
 	// TODO 4J Stu - I am not entirely sure if this matches the implementation of the Java library
 	// TODO 4J Stu - Need to handle exceptions here is we throw them in other InputStreams
@@ -208,6 +220,13 @@ int DataInputStream::readInt()
 	int b = stream->read();
 	int c = stream->read();
 	int d = stream->read();
+
+	// izzint - strange situation
+    if ((a | b | c | d) < 0)
+    {
+        throw EOFException(L"DataInputStream::readInt - end of stream");
+	}
+
 	int bits = (((a & 0xff) << 24) | ((b & 0xff) << 16) |
 		((c & 0xff) << 8) | (d & 0xff));
 	return bits;
@@ -239,14 +258,20 @@ int64_t DataInputStream::readLong()
 	int64_t g = stream->read();
 	int64_t h = stream->read();
 
-	int64_t bits = (((a & 0xff) << 56) |
-		((b & 0xff) << 48) |
-		((c & 0xff) << 40) |
-		((d & 0xff) << 32) |
-		((e & 0xff) << 24) |
-		((f & 0xff) << 16) |
-		((g & 0xff) <<  8) |
-		((h & 0xff)));
+	// izzint - strange situation
+    if ((a | b | c | d | e| f | g | h) < 0)
+    {
+        throw EOFException(L"DataInputStream::readLong - end of stream");
+    }
+
+	int64_t bits = ((((int64_t)(a & 0xff)) << 56) |
+						(((int64_t)(b & 0xff)) << 48) |
+						(((int64_t)(c & 0xff)) << 40) |
+						(((int64_t)(d & 0xff)) << 32) |
+						(((int64_t)(e & 0xff)) << 24) |
+						(((int64_t)(f & 0xff)) << 16) |
+						(((int64_t)(g & 0xff)) << 8) |
+						((int64_t)(h & 0xff)));
 
 	return bits;
 }
@@ -261,6 +286,13 @@ short DataInputStream::readShort()
 {
 	int a = stream->read();
 	int b = stream->read();
+
+	// izzint - strange situation
+    if ((a | b) < 0)
+    {
+        throw EOFException(L"DataInputStream::readShort - end of stream");
+    }
+
 	return (short)((a << 8) | (b & 0xff));
 }
 
@@ -268,6 +300,13 @@ unsigned short DataInputStream::readUnsignedShort()
 {
 	int a = stream->read();
 	int b = stream->read();
+
+	// izzint - strange situation
+    if ((a | b) < 0)
+    {
+        throw EOFException(L"DataInputStream::readUnsignedShort - end of stream");
+    }
+
 	return (unsigned short)((a << 8) | (b & 0xff));
 }
 
@@ -331,7 +370,6 @@ wstring DataInputStream::readUTF()
 
 	// izzint - let's hope our checks before work! :]
     wstring outputString;
-    outputString.reserve(UTFLength);
 
 	unsigned short currentByteIndex = 0;
 	while( currentByteIndex < UTFLength )
@@ -445,12 +483,12 @@ wstring DataInputStream::readUTF()
 
 int DataInputStream::readUTFChar()
 {
-	int returnValue = -1;
 	int firstByte = stream->read();
 
-	if( firstByte == -1 )
-		// TODO 4J Stu - EOFException
-		return returnValue;
+	if (firstByte == -1)
+    {
+        throw EOFException(L"DataInputStream::readUTFChar - end of stream");
+    }
 
 	// Masking patterns:
 	// 10000000 = 0x80 // Match only highest bit
@@ -466,13 +504,12 @@ int DataInputStream::readUTFChar()
 	// 1110xxxx = 0xE0 // Three byte UTF
 	if( ( (firstByte & 0xC0 ) == 0x80 ) || ( (firstByte & 0xF0) == 0xF0) )
 	{
-		// TODO 4J Stu - UTFDataFormatException
-		return returnValue;
+        throw IOException(L"DataInputStream::readUTFChar - invalid UTF character");
 	}
 	else if( (firstByte & 0x80) == 0x00 )
 	{
 		// One byte UTF
-		returnValue = firstByte;
+		return firstByte;
 	}
 	else if( (firstByte & 0xE0) == 0xC0 )
 	{
@@ -482,17 +519,15 @@ int DataInputStream::readUTFChar()
 		// No second byte
 		if( secondByte == -1 )
 		{
-			// TODO 4J Stu - EOFException
-			return returnValue;
+            throw EOFException(L"DataInputStream::readUTFChar - end of stream");
 		}
 		// Incorrect second byte pattern
 		else if( (secondByte & 0xC0 ) != 0x80 )
 		{
-			// TODO 4J Stu - UTFDataFormatException
-			return returnValue;
+            throw IOException(L"DataInputStream::readUTFChar - invalid UTF character");
 		}
 
-		returnValue = ((firstByte& 0x1F) << 6) | (secondByte & 0x3F);
+		return ((firstByte& 0x1F) << 6) | (secondByte & 0x3F);
 	}
 	else if( (firstByte & 0xF0) == 0xE0 )
 	{
@@ -503,8 +538,7 @@ int DataInputStream::readUTFChar()
 		// No second byte
 		if( secondByte == -1 )
 		{
-			// TODO 4J Stu - EOFException
-			return returnValue;
+            throw EOFException(L"DataInputStream::readUTFChar - end of stream");
 		}
 
 		int thirdByte = stream->read();
@@ -512,19 +546,18 @@ int DataInputStream::readUTFChar()
 		// No third byte
 		if( thirdByte == -1 )
 		{
-			// TODO 4J Stu - EOFException
-			return returnValue;
+            throw EOFException(L"DataInputStream::readUTFChar - end of stream");
 		}
 		// Incorrect second or third byte pattern
 		else if( ( (secondByte & 0xC0 ) != 0x80 ) || ( (thirdByte & 0xC0 ) != 0x80 ) )
 		{
-			// TODO 4J Stu - UTFDataFormatException
-			return returnValue;
+            throw IOException(L"DataInputStream::readUTFChar - invalid UTF character");
 		}
 
-		returnValue = (((firstByte & 0x0F) << 12) | ((secondByte & 0x3F) << 6) | (thirdByte & 0x3F));
+		return (((firstByte & 0x0F) << 12) | ((secondByte & 0x3F) << 6) | (thirdByte & 0x3F));
 	}
-	return returnValue;
+
+    throw IOException(L"DataInputStream::readUTFChar - unknown byte pattern"); // izzint - somebody who knows more about utf-8 should make these better
 }
 
 // 4J Added
