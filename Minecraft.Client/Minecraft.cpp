@@ -1485,6 +1485,10 @@ void Minecraft::run_middle()
 								{
 									ui.CloseUIScenes(i);
 								}
+								else if(gameMode->hasInfiniteItems())
+								{
+									localplayers[i]->ullButtonsPressed|=1LL<<MINECRAFT_ACTION_CRAFTING;
+								}
 								else
 								{
 									localplayers[i]->ullButtonsPressed|=1LL<<MINECRAFT_ACTION_INVENTORY;
@@ -1499,6 +1503,10 @@ void Minecraft::run_middle()
 							if(ui.IsSceneInStack(i, eUIScene_Crafting2x2Menu) || ui.IsSceneInStack(i, eUIScene_Crafting3x3Menu) || ui.IsSceneInStack(i, eUIScene_CreativeMenu))
 							{
 								ui.CloseUIScenes(i);
+							}
+							else if(gameMode->hasInfiniteItems())
+							{
+								localplayers[i]->ullButtonsPressed|=1LL<<MINECRAFT_ACTION_INVENTORY;
 							}
 							else
 							{
