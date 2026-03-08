@@ -1,5 +1,11 @@
 # Compile Instructions
-
+# Compile Instructions
+## Preperation
+1. Download D3D11SDKLayers.dll on place it in system32
+2. Install the Windows 10 sdk on the 
+offical microsoft website
+`https://learn.microsoft.com/en-us/windows/apps/windows-sdk/downloads`
+3. Open powershell and type the following command `DISM /Online /Add-Capability /CapabilityName:Tools.Graphics.DirectX~~~~0.0.1.0`
 ## Visual Studio (`.sln`)
 
 1. Open `MinecraftConsoles.sln` in Visual Studio 2022.
