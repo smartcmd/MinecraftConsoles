@@ -16,6 +16,7 @@
 #include "commands\CliCommandStop.h"
 #include "commands\CliCommandTp.h"
 #include "..\Common\StringUtils.h"
+#include "..\ServerShutdown.h"
 #include "..\ServerLogger.h"
 #include "..\..\Minecraft.Client\MinecraftServer.h"
 #include "..\..\Minecraft.Client\PlayerList.h"
@@ -188,7 +189,7 @@ namespace ServerRuntime
 
 	void ServerCliEngine::RequestShutdown() const
 	{
-		MinecraftServer::HaltServer();
+		RequestDedicatedServerShutdown();
 	}
 
 	std::vector<std::string> ServerCliEngine::GetOnlinePlayerNamesUtf8() const

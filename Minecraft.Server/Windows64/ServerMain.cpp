@@ -10,6 +10,7 @@
 #include "..\ServerLogger.h"
 #include "..\ServerLogManager.h"
 #include "..\ServerProperties.h"
+#include "..\ServerShutdown.h"
 #include "..\WorldManager.h"
 #include "..\Console\ServerCli.h"
 #include "Tesselator.h"
@@ -68,6 +69,15 @@ static volatile bool g_shutdownRequested = false;
 static const DWORD kDefaultAutosaveIntervalMs = 60 * 1000;
 static const int kServerActionPad = 0;
 
+namespace ServerRuntime
+{
+	void RequestDedicatedServerShutdown()
+	{
+		g_shutdownRequested = true;
+		app.m_bShutdown = true;
+	}
+}
+
 /**
  * Calls Access::Shutdown automatically once dedicated access control was initialized successfully
  * アクセス制御初期化後のShutdownを自動化する
@@ -104,8 +114,7 @@ static BOOL WINAPI ConsoleCtrlHandlerProc(DWORD ctrlType)
 	case CTRL_BREAK_EVENT:
 	case CTRL_CLOSE_EVENT:
 	case CTRL_SHUTDOWN_EVENT:
-		g_shutdownRequested = true;
-		app.m_bShutdown = true;
+		ServerRuntime::RequestDedicatedServerShutdown();
 		return TRUE;
 	default:
 		return FALSE;
