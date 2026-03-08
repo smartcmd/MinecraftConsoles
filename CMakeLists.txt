@@ -63,7 +63,10 @@ target_compile_definitions(MinecraftClient PRIVATE
 if(MSVC)
   configure_msvc_target(MinecraftClient)
   target_link_options(MinecraftClient PRIVATE
-    $<$<CONFIG:Release>:/LTCG /INCREMENTAL:NO>
+    /SUBSYSTEM:CONSOLE
+    /ENTRY:WinMainCRTStartup
+    $<$<CONFIG:Release>:/LTCG>
+    $<$<CONFIG:Release>:/INCREMENTAL:NO>
   )
 endif()
 
