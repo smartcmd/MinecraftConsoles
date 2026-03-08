@@ -838,10 +838,8 @@ int CMinecraftApp::SetDefaultOptions(C_4JProfile::PROFILESETTINGS *pSettings,con
 	SetGameSettings(iPad,eGameSetting_RenderDistance,16);
 	SetGameSettings(iPad,eGameSetting_Gamma,50);
 	
-	// jvnpr -- FOV setting is stored as 0-100 but mapped to 0-80 (offset from 30-110). FOV is calculated from the equiation: ( eGameSetting_FOV * 0.8 ) + 30
-	// Default value of 75 is an FOV of 90. Displayed / stored FOV is further clamped to a range from 30-85 for internal use because an FOV of 85 on LCE is the equivalent of 110 on other platforms. (This is why 110 on LCE is so much wider than on Java)
-	// FOV of 90 is internally an FOV of ~70, which is the default. 
-	SetGameSettings(iPad,eGameSetting_FOV,75); 
+	// jvnpr -- FOV setting is stored as 0-100 but mapped to 0-80 (offset from 30-110).
+	SetGameSettings(iPad,eGameSetting_FOV,75); // jvnpr -- new default is fov of 90 because legacy console edition default is 90
 
 	// 4J-PB - Don't reset the difficult level if we're in-game
 	if(Minecraft::GetInstance()->level==NULL)
@@ -1410,10 +1408,8 @@ void CMinecraftApp::ActionGameSettings(int iPad,eGameSetting eVal)
 	case eGameSetting_FOV:
 		if(iPad==ProfileManager.GetPrimaryPad())
 		{
-			float simulatedFovDeg = 30.0f + (float)GameSettingsA[iPad]->ucFov * 80.0f / 100.0f; // jvnpr -- convert 0-80 to 30-110
-			float trueFovDeg = ( 55.0f / 80.0f ) * (simulatedFovDeg - 30.0f) + 30.0f; // jnvpr -- further convert 30-110 to a range from 30-85 to better reflect JE fov values
-			pMinecraft->gameRenderer->SetFovVal(trueFovDeg);
-			pMinecraft->options->set(Options::Option::FOV, (float)GameSettingsA[iPad]->ucFov / 100.0f);
+			float v = (float)GameSettingsA[iPad]->ucFov * 80.0f / 100.0f; // jvnpr -- convert 0-80 to 30-110
+			pMinecraft->options->fov = ( v / 40.0f ) - 1;
 		}
 		break;
 	case eGameSetting_Difficulty:		
