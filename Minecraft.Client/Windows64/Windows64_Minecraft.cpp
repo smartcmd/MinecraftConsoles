@@ -288,14 +288,31 @@ static BOOL WINAPI HeadlessServerCtrlHandler(DWORD ctrlType)
 
 static void SetupHeadlessServerConsole()
 {
-	if (AllocConsole())
+	// Verify console handles are valid before redirecting CRT streams
+	HANDLE hStdOut = GetStdHandle(STD_OUTPUT_HANDLE);
+	HANDLE hStdIn  = GetStdHandle(STD_INPUT_HANDLE);
+	bool hasConsole =
+		hStdOut != NULL && hStdOut != INVALID_HANDLE_VALUE &&
+		hStdIn  != NULL && hStdIn  != INVALID_HANDLE_VALUE;
+
+	if (!hasConsole)
 	{
-		FILE* stream = NULL;
-		freopen_s(&stream, "CONIN$", "r", stdin);
-		freopen_s(&stream, "CONOUT$", "w", stdout);
-		freopen_s(&stream, "CONOUT$", "w", stderr);
-		SetConsoleTitleA("Minecraft Server");
+		if (!AttachConsole(ATTACH_PARENT_PROCESS))
+		{
+			if (!AllocConsole())
+			{
+				// No console available at all; skip stream redirection.
+				SetConsoleCtrlHandler(HeadlessServerCtrlHandler, TRUE);
+				return;
+			}
+		}
 	}
+
+	FILE* stream = NULL;
+	freopen_s(&stream, "CONIN$", "r", stdin);
+	freopen_s(&stream, "CONOUT$", "w", stdout);
+	freopen_s(&stream, "CONOUT$", "w", stderr);
+	SetConsoleTitleA("Minecraft Server");
 
 	SetConsoleCtrlHandler(HeadlessServerCtrlHandler, TRUE);
 }
@@ -1240,6 +1257,15 @@ int APIENTRY _tWinMain(_In_ HINSTANCE hInstance,
 
 	// Load stuff from launch options, including username
 	Win64LaunchOptions launchOptions = ParseLaunchOptions();
+
+	// The exe is linked as /SUBSYSTEM:CONSOLE so that the shell waits for it
+	// (required for Docker / piped output in server mode).  In client mode we
+	// don't need the console, so detach from it immediately.
+	if (!launchOptions.serverMode)
+	{
+		FreeConsole();
+	}
+
 	ApplyScreenMode(launchOptions.screenMode);
 
 	// Ensure uid.dat exists from startup in client mode (before any multiplayer/login path).
