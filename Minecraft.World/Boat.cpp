@@ -27,7 +27,7 @@ void Boat::_init()
 
 	blocksBuilding = true;
 	setSize(1.5f, 0.6f);
-	heightOffset = bbHeight / 2.0f;
+	heightOffset = (bbHeight / 2.0f) + 0.2f;
 
 	// 4J Stu - This function call had to be moved here from the Entity ctor to ensure that
 	// the derived version of the function is called
@@ -194,7 +194,7 @@ void Boat::tick()
 	yo = y;
 	zo = z;
 
-
+	// Check how much of the boat is in water
 	int steps = 5;
 	double waterPercentage = 0;
 	for (int i = 0; i < steps; i++)
@@ -208,33 +208,14 @@ void Boat::tick()
 		}
 	}
 
+	// Create particles
 	double lastSpeed = sqrt(xd * xd + zd * zd);
-	if (lastSpeed > MAX_COLLISION_SPEED)
+	if (lastSpeed > MAX_COLLISION_SPEED && waterPercentage > 0)
 	{
-		double xa = cos(yRot * PI / 180);
-		double za = sin(yRot * PI / 180);
-
-		for (int i = 0; i < 1 + lastSpeed * 60; i++)
-		{
-
-			double side = (random->nextFloat() * 2 - 1);
-
-			double side2 = (random->nextInt(2) * 2 - 1) * 0.7;
-			if (random->nextBoolean())
-			{
-				double xx = x - xa * side * 0.8 + za * side2;
-				double zz = z - za * side * 0.8 - xa * side2;
-				level->addParticle(eParticleType_splash, xx, y - 2 / 16.0f, zz, +xd, yd, +zd);
-			}
-			else
-			{
-				double xx = x + xa + za * side * 0.7;
-				double zz = z + za - xa * side * 0.7;
-				level->addParticle(eParticleType_splash, xx, y - 2 / 16.0f, zz, +xd, yd, +zd);
-			}
-		}
+		createSplash(lastSpeed);
 	}
 
+	// Interpolation
 	if (level->isClientSide && doLerp)
 	{
 		if (lSteps > 0)
@@ -254,7 +235,6 @@ void Boat::tick()
 		}
 		else
 		{
-#if 1
 			// Original
 			//double xt = x + xd;
 			//double yt = y + yd;
@@ -273,51 +253,25 @@ void Boat::tick()
 			xd *= 0.99f;
 			yd *= 0.95f;
 			zd *= 0.99f;
-#else
-			// 4J Stu - Fix for #8280 - Gameplay : Boats behave erratically when exited next to land.
-			// The client shouldn't change the position of the boat
-			double xt = x;// + xd;
-			double yt = y + yd;
-			double zt = z;// + zd;
-			this->setPos(xt, yt, zt);
-
-			// 4J Stu - Fix for #9579 - GAMEPLAY: Boats with a player in them slowly sink under the water over time, and with no player in them they float into the sky.
-			// Just make the boats bob up and down rather than any other client-side movement when not receiving packets from server
-	        if (waterPercentage > 0)
-	        {
-		        double bob = waterPercentage * 2 - 1;
-		        yd += 0.04f * bob;
-	        }
-			else
-			{
-				if (yd < 0) yd /= 2;
-				yd += 0.007f;
-			}
-			//if (onGround)
-			//{
-			xd *= 0.5f;
-			yd *= 0.5f;
-			zd *= 0.5f;
-			//}
-			//xd *= 0.99f;
-			//yd *= 0.95f;
-			//zd *= 0.99f;
-#endif
 		}
 		return;
 	}
 
+	// Bob in water
 	if (waterPercentage > 0)
 	{
 		double bob = waterPercentage * 2 - 1;
 		yd += 0.04f * bob;
 	}
-	else
+
+	// Reimplement gravity again (??)
+	int tileUnder = level->getTile(Mth::floor(x), Mth::floor(y-0.15), Mth::floor(z));
+	if (tileUnder == 0 && !onGround)
 	{
-		yd = 0;
+		yd -= 0.04f;
 	}
 
-
+	// Rider controls
 	if ( rider.lock() != nullptr && rider.lock()->instanceof(eTYPE_LIVINGENTITY) )
 	{
 		shared_ptr<LivingEntity> livingRider = dynamic_pointer_cast<LivingEntity>(rider.lock());
@@ -354,6 +308,7 @@ void Boat::tick()
 		if (acceleration < MIN_ACCELERATION) acceleration = MIN_ACCELERATION;
 	}
 
+	// Slow on ground
 	if (onGround)
 	{
 		xd *= 0.5f;
@@ -362,6 +317,7 @@ void Boat::tick()
 	}
 	move(xd, yd, zd);
 
+	// Break boat on high speed collision
 	if ((horizontalCollision && lastSpeed > 0.20))
 	{
 		if (!level->isClientSide && !removed)
@@ -401,6 +357,7 @@ void Boat::tick()
 	yRot += (float) rotDiff;
 	setRot(yRot, xRot);
 
+	// Server code after this
 	if(level->isClientSide) return;
 
 	vector<shared_ptr<Entity> > *entities = level->getEntities(shared_from_this(), bb->grow(0.2f, 0, 0.2f));
@@ -444,13 +401,38 @@ void Boat::tick()
 	}
 }
 
+void Boat::createSplash(double particleStrengh) {
+	double xa = cos(yRot * PI / 180);
+	double za = sin(yRot * PI / 180);
+
+	for (int i = 0; i < 1 + particleStrengh * 60; i++)
+	{
+		double side = (random->nextFloat() * 2 - 1);
+
+		double side2 = (random->nextInt(2) * 2 - 1) * 0.7;
+		if (random->nextBoolean())
+		{
+			double xx = x - xa * side * 0.8 + za * side2;
+			double zz = z - za * side * 0.8 - xa * side2;
+			level->addParticle(eParticleType_splash, xx, y - 2 / 16.0f, zz, +xd, yd, +zd);
+		}
+		else
+		{
+			double xx = x + xa + za * side * 0.7;
+			double zz = z + za - xa * side * 0.7;
+			level->addParticle(eParticleType_splash, xx, y - 2 / 16.0f, zz, +xd, yd, +zd);
+		}
+	}
+}
+
 void Boat::positionRider()
 {
 	if (rider.lock() == nullptr) return;
 
 	double xa = cos(yRot * PI / 180) * 0.4;
 	double za = sin(yRot * PI / 180) * 0.4;
-	rider.lock()->setPos(x + xa, y + getRideHeight() + rider.lock()->getRidingHeight(), z + za);
+	// We minus 0.4 to ensure that the player is not hovering above the boat.
+	rider.lock()->setPos(x + xa, y + getRideHeight() + rider.lock()->getRidingHeight()-0.4, z + za);
 }
 
 
@@ -523,3 +505,4 @@ void Boat::setDoLerp(bool doLerp)
 {
 	this->doLerp = doLerp;
 }
+
