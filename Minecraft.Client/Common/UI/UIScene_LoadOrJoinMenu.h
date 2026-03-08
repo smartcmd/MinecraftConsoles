@@ -175,6 +175,18 @@ public:
 
 private:
 	void CheckAndJoinGame(int gameIndex);
+
+#ifdef _WINDOWS64
+	static const int ADD_SERVER_BUTTON_INDEX = 0;
+	enum eAddServerPhase { eAddServer_Idle, eAddServer_IP, eAddServer_Port, eAddServer_Name };
+	eAddServerPhase m_addServerPhase;
+	wstring m_addServerIP;
+	wstring m_addServerPort;
+	void BeginAddServer();
+	void AppendServerToFile(const wstring& ip, const wstring& port, const wstring& name);
+	static int AddServerKeyboardCallback(LPVOID lpParam, bool bRes);
+#endif
+
 #if defined(__PS3__) || defined(__PSVITA__) || defined(__ORBIS__)
 	static int MustSignInReturnedPSN(void *pParam,int iPad,C4JStorage::EMessageResult result);
 	static int PSN_SignInReturned(void *pParam,bool bContinue, int iPad);

@@ -427,6 +427,7 @@ void ClientConnection::handleAddEntity(shared_ptr<AddEntityPacket> packet)
 	{
 	case AddEntityPacket::MINECART:
 		e = Minecart::createMinecart(level, x, y, z, packet->data);
+		break;
 	case AddEntityPacket::FISH_HOOK:
 		{
 			// 4J Stu - Brought forward from 1.4 to be able to drop XP from fishing

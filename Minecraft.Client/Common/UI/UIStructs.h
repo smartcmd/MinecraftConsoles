@@ -280,6 +280,9 @@ typedef struct _JoinMenuInitData
 {
 	FriendSessionInfo *selectedSession;
 	int iPad;
+#ifdef _WINDOWS64
+	int serverIndex; // Index of the server in servers.db, -1 if not a saved server
+#endif
 } JoinMenuInitData;
 
 // Native keyboard (Windows64 replacement for InputManager.RequestKeyboard WinAPI dialog)
