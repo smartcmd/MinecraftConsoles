@@ -289,7 +289,7 @@ Icon *PreStitchedTextureMap::registerIcon(const wstring &name)
 	{
 #ifndef _CONTENT_PACKAGE
 		app.DebugPrintf("Could not find uv data for icon %ls\n", name.c_str() );
-		app.DebugPrintf("Stub!")
+		app.DebugPrintf("Stub!");
 #endif
 		result = missingPosition;
 	}
