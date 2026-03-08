@@ -1479,6 +1479,30 @@ void Minecraft::run_middle()
 							if(g_KBMInput.IsMouseButtonPressed(KeyboardMouseInput::MOUSE_RIGHT))
 								localplayers[i]->ullButtonsPressed|=1LL<<MINECRAFT_ACTION_USE;
 
+							if (g_KBMInput.IsMouseButtonPressed(KeyboardMouseInput::MOUSE_MIDDLE) && gameMode->hasInfiniteItems() && hitResult && hitResult->type == HitResult::TILE)
+							{
+								int x = hitResult->x, y = hitResult->y, z = hitResult->z;
+
+								int tileId = level->getTile(x, y, z);
+
+								if (tileId > 0 && tileId < Tile::TILE_NUM_COUNT)
+								{
+									Tile *tile = Tile::tiles[tileId];
+
+									int clonedTileId = tile->cloneTileId(level, x, y, z);
+									int clonedTileData = tile->cloneTileData(level, x, y, z);
+
+									localplayers[i]->inventory->grabTexture(clonedTileId, clonedTileData, true, true);
+
+									shared_ptr<ItemInstance> selectedItem = localplayers[i]->inventory->getSelected();
+									if (gameMode && selectedItem)
+									{
+										// Hotbar starts at slot 36
+										gameMode->handleCreativeModeItemAdd(selectedItem, 36 + player->inventory->selected);
+									}
+								}
+							}
+
 							if(g_KBMInput.IsKeyPressed(KeyboardMouseInput::KEY_INVENTORY))
 							{
 								if(ui.IsSceneInStack(i, eUIScene_InventoryMenu))
