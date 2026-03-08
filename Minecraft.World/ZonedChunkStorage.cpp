@@ -184,6 +184,28 @@ void ZonedChunkStorage::flush()
 
 void ZonedChunkStorage::loadEntities(Level *level, LevelChunk *lc)
 {
+    auto addRidingEntities = [level, lc](shared_ptr<Entity> rider, CompoundTag *riderTag)
+    {
+        CompoundTag *mountTag = riderTag;
+        shared_ptr<Entity> ridingEntity = rider;
+
+        while (mountTag != NULL && mountTag->contains(Entity::RIDING_TAG))
+        {
+            CompoundTag *nextMountTag = mountTag->getCompound(Entity::RIDING_TAG);
+            shared_ptr<Entity> mount = EntityIO::loadStatic(nextMountTag, level);
+            if (mount == nullptr)
+            {
+                break;
+            }
+
+            lc->addEntity(mount);
+            ridingEntity->ride(mount);
+
+            ridingEntity = mount;
+            mountTag = nextMountTag;
+        }
+    };
+
     int slot = getSlot(lc->x, lc->z);
     ZoneFile *zoneFile = getZoneFile(lc->x, lc->z, true);
     vector<CompoundTag *> *tags = zoneFile->entityFile->readAll(slot);
@@ -194,7 +216,11 @@ void ZonedChunkStorage::loadEntities(Level *level, LevelChunk *lc)
         if (type == 0)
 		{
             shared_ptr<Entity> e = EntityIO::loadStatic(tag, level);
-            if (e != nullptr) lc->addEntity(e);
+            if (e != nullptr)
+            {
+                lc->addEntity(e);
+                addRidingEntities(e, tag);
+            }
         }
 		else if (type == 1)
 		{

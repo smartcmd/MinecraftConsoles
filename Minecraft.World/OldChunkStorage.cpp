@@ -392,6 +392,28 @@ void OldChunkStorage::save(LevelChunk *lc, Level *level, CompoundTag *tag)
 
 void OldChunkStorage::loadEntities(LevelChunk *lc, Level *level, CompoundTag *tag)
 {
+	auto addRidingEntities = [lc, level](shared_ptr<Entity> rider, CompoundTag *riderTag)
+	{
+		CompoundTag *mountTag = riderTag;
+		shared_ptr<Entity> ridingEntity = rider;
+
+		while (mountTag != NULL && mountTag->contains(Entity::RIDING_TAG))
+		{
+			CompoundTag *nextMountTag = mountTag->getCompound(Entity::RIDING_TAG);
+			shared_ptr<Entity> mount = EntityIO::loadStatic(nextMountTag, level);
+			if (mount == NULL)
+			{
+				break;
+			}
+
+			lc->addEntity(mount);
+			ridingEntity->ride(mount);
+
+			ridingEntity = mount;
+			mountTag = nextMountTag;
+		}
+	};
+
 	ListTag<CompoundTag> *entityTags = (ListTag<CompoundTag> *) tag->getList(L"Entities");
 	if (entityTags != NULL)
 	{
@@ -403,6 +425,7 @@ void OldChunkStorage::loadEntities(LevelChunk *lc, Level *level, CompoundTag *ta
 			if (te != NULL)
 			{
 				lc->addEntity(te);
+				addRidingEntities(te, teTag);
 			}
 		}
 	}

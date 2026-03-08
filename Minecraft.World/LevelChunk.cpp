@@ -1420,6 +1420,29 @@ void LevelChunk::load()
 #ifdef _LARGE_WORLDS
 		if(m_bUnloaded && m_unloadedEntitiesTag)
 		{
+			auto addRidingEntities = [this](shared_ptr<Entity> rider, CompoundTag *riderTag)
+			{
+				CompoundTag *mountTag = riderTag;
+				shared_ptr<Entity> ridingEntity = rider;
+
+				while (mountTag != NULL && mountTag->contains(Entity::RIDING_TAG))
+				{
+					CompoundTag *nextMountTag = mountTag->getCompound(Entity::RIDING_TAG);
+					shared_ptr<Entity> mount = EntityIO::loadStatic(nextMountTag, level);
+					if (mount == NULL)
+					{
+						break;
+					}
+
+					mount->onLoadedFromSave();
+					addEntity(mount);
+					ridingEntity->ride(mount);
+
+					ridingEntity = mount;
+					mountTag = nextMountTag;
+				}
+			};
+
 			ListTag<CompoundTag> *entityTags = (ListTag<CompoundTag> *) m_unloadedEntitiesTag->getList(L"Entities");
 			if (entityTags != NULL)
 			{
@@ -1431,6 +1454,7 @@ void LevelChunk::load()
 					{
 						ent->onLoadedFromSave();
 						addEntity(ent);
+						addRidingEntities(ent, teTag);
 					}
 				}
 			}
