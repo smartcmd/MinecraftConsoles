@@ -502,6 +502,9 @@ void UIScene_LaunchMoreOptionsMenu::handleFocusChange(F64 controlId, F64 childId
 	case eControl_EditSeed:
 		stringId = IDS_GAMEOPTION_SEED;
 		break;
+	case eControl_WorldMobCap:
+		stringId = IDS_GAMEOPTION_SEED;
+		break;
 #ifdef _LARGE_WORLDS
 	case eControl_WorldSize:
 		stringId = IDS_GAMEOPTION_WORLD_SIZE;

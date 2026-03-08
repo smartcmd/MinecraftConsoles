@@ -62,8 +62,7 @@ private:
 	UIControl_TextInput m_editSeed;
 	UIControl_Slider m_sliderWorldSize;
 	UIControl_Slider m_sliderWorldResize;
-	UIControl_Label m_labelWorldMobCap; // Added ~ Mob cap label for user control
-	UIControl_Slider m_sliderWorldMobCap;
+	UIControl_Slider m_sliderWorldMobCap; // Added ~ Mob cap slider for user control
 	IggyName m_funcSetMenuType, m_funcChangeTab, m_funcSetDescription;
 	UI_BEGIN_MAP_ELEMENTS_AND_NAMES(UIScene)
 		UI_MAP_ELEMENT( m_labelGameOptions, "LabelGame")
@@ -102,7 +101,6 @@ private:
 			UI_MAP_ELEMENT( m_labelRandomSeed, "RandomSeed")
 			UI_MAP_ELEMENT( m_labelWorldSize, "WorldSize")
 			UI_MAP_ELEMENT( m_sliderWorldSize, "WorldSizeSlider")
-			UI_MAP_ELEMENT( m_labelWorldMobCap, "WorldMobCap")
 			UI_MAP_ELEMENT( m_sliderWorldMobCap, "WorldMobCapSlider")
 
 			UI_MAP_ELEMENT( m_checkboxes[eLaunchCheckbox_Structures], "CheckboxStructures")
