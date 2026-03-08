@@ -78,17 +78,47 @@ PlayerConnection::~PlayerConnection()
 
 void PlayerConnection::tick()
 {
-	if( done ) return;
-
-	if( m_bCloseOnTick )
-	{
-		disconnect( DisconnectPacket::eDisconnect_Closed );
-		return;
+    if (done || m_bCloseOnTick)
+    {
+        if (m_bCloseOnTick && !done)
+        {
+            disconnect(DisconnectPacket::eDisconnect_Closed);
+		}
+        return;
 	}
 
 	didTick = false;
 	tickCount++;
-	connection->tick();
+
+	try 
+	{
+		connection->tick();
+	}
+	catch (const IOException& e)
+	{
+        app.DebugPrintf("IOException - %ls\n", e.information.c_str());
+        disconnect(DisconnectPacket::eDisconnect_UnexpectedPacket);
+		return;
+	}
+    catch (const RuntimeException &e)
+    {
+        app.DebugPrintf("RuntimeException - %ls\n", e.information.c_str());
+        disconnect(DisconnectPacket::eDisconnect_None); // izzint - no good disconnect packet for this, just keep as-is
+        return;
+    }
+    catch (const IllegalArgumentException &e)
+    {
+        app.DebugPrintf("IllegalArgumentException - %ls\n", e.information.c_str());
+        disconnect(DisconnectPacket::eDisconnect_None); // izzint - no good disconnect packet for this, just keep as-is
+        return;
+    }
+    catch (const EOFException &e)
+    {
+        app.DebugPrintf("EOFException - %ls\n", e.information.c_str());
+        disconnect(DisconnectPacket::eDisconnect_EndOfStream);
+        return;
+    }
+
 	if(done) return;
 
 	if ((tickCount - lastKeepAliveTick) > 20 * 1)

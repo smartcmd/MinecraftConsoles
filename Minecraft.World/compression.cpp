@@ -237,9 +237,20 @@ HRESULT Compression::DecompressLZXRLE(void *pDestination, unsigned int *pDestSiz
 	unsigned char *dynamicRleBuf = NULL;
 	HRESULT decompressResult;
 
-	if(*pDestSize > rleSize)
+
+	unsigned int safeRleSize = max(rleSize, *pDestSize);
+
+	const unsigned int MAX_RLE_ALLOC = 16 * 1024 * 1024; // 16 MB
+	if(safeRleSize > MAX_RLE_ALLOC)
 	{
-		rleSize = *pDestSize;
+		LeaveCriticalSection(&rleDecompressLock);
+		*pDestSize = 0;
+		return E_FAIL;
+	}
+
+	if(safeRleSize > staticRleSize)
+	{
+		rleSize = safeRleSize;
 		dynamicRleBuf = new unsigned char[rleSize];
 		decompressResult = Decompress(dynamicRleBuf, &rleSize, pSource, SrcSize);
 		pucIn = (unsigned char *)dynamicRleBuf;
@@ -605,5 +616,3 @@ void Compression::SetDecompressionType(ESavePlatform platform)
 }
 
 /*Compression gCompression;*/
-
-

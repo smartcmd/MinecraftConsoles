@@ -152,15 +152,13 @@ void Packet::staticCtor()
 	map(255, true, true, true, false, typeid(DisconnectPacket), DisconnectPacket::create);
 }
 
-IllegalArgumentException::IllegalArgumentException(const wstring& information)
-{
-	this->information = information;
-}
+IllegalArgumentException::IllegalArgumentException(const wstring &info) : std::runtime_error("IllegalArgumentException"), information(info) {}
 
-IOException::IOException(const wstring& information)
-{
-	this->information = information;
-}
+EOFException::EOFException(const wstring &info) : std::runtime_error("EOFException"), information(info) {}
+
+IOException::IOException(const wstring &info) : std::runtime_error("IOException"), information(info) {}
+
+RuntimeException::RuntimeException(const wstring &info) : std::runtime_error("RuntimeException"), information(info) {}
 
 Packet::Packet() : createTime( System::currentTimeMillis() )
 {
@@ -282,12 +280,7 @@ byteArray Packet::readBytes(DataInputStream *datainputstream)
 	int size = datainputstream->readShort();
 	if (size < 0)
 	{
-		app.DebugPrintf("Key was smaller than nothing!  Weird key!");
-#ifndef _CONTENT_PACKAGE
-		__debugbreak();
-#endif
-		return byteArray();
-		//throw new IOException("Key was smaller than nothing!  Weird key!");
+		throw IOException(L"Key was smaller than nothing!  Weird key!");
 	}
 
 	byteArray bytes(size);
@@ -295,7 +288,6 @@ byteArray Packet::readBytes(DataInputStream *datainputstream)
 
 	return bytes;
 }
-
 
 bool Packet::canSendToAnyClient(shared_ptr<Packet> packet)
 {
@@ -357,7 +349,10 @@ shared_ptr<Packet> Packet::readPacket(DataInputStream *dis, bool isServer) // th
 	}
 
 	packet = getPacket(id);
-	if (packet == NULL) assert(false);//throw new IOException(wstring(L"Bad packet id ") + std::to_wstring(id));
+    if (packet == nullptr) 
+	{
+        throw IOException(wstring(L"Bad packet id ") + std::to_wstring(id));
+	}
 
 	s_lastIds[s_lastIdPos] = id;
 	s_lastIdPos = (s_lastIdPos + 1) % 8;
@@ -403,12 +398,10 @@ void Packet::writePacket(shared_ptr<Packet> packet, DataOutputStream *dos) // th
 
 void Packet::writeUtf(const wstring& value, DataOutputStream *dos) // throws IOException TODO 4J JEV, should this declare a throws?
 {
-#if 0
 	if (value.length() > Short::MAX_VALUE)
 	{
-		throw new IOException(L"String too big");
+		throw IOException(L"Packet::writeUtf - String too big");
 	}
-#endif
 
 	dos->writeShort((short)value.length());
 	dos->writeChars(value);
@@ -418,20 +411,15 @@ wstring Packet::readUtf(DataInputStream *dis, int maxLength) // throws IOExcepti
 {
 
 	short stringLength = dis->readShort();
-	if (stringLength > maxLength)
+
+	if (stringLength > maxLength || stringLength < 0)
 	{
-		wstringstream stream;
-		stream << L"Received string length longer than maximum allowed (" << stringLength << " > " << maxLength << ")";
-		assert(false);
-		//        throw new IOException( stream.str() );
-	}
-	if (stringLength < 0)
-	{
-		assert(false);
-		//        throw new IOException(L"Received string length is less than zero! Weird string!");
+		throw IOException(L"Packet::readUtf - Invalid string passed");
 	}
 
 	wstring builder = L"";
+	builder.reserve(stringLength);
+
 	for (int i = 0; i < stringLength; i++)
 	{
 		wchar_t rc = dis->readChar();

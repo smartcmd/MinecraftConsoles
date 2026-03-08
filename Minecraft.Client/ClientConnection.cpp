@@ -158,8 +158,33 @@ ClientConnection::~ClientConnection()
 
 void ClientConnection::tick()
 {
-	if (!done) connection->tick();
-	connection->flush();
+    if (done) return;
+
+    try
+    {
+        connection->tick();
+        connection->flush();
+	}
+    catch (const IOException &e)
+    {
+        app.DebugPrintf("IOException - %ls\n", e.information.c_str());
+        this->done;
+    }
+    catch (const RuntimeException &e)
+    {
+        app.DebugPrintf("RuntimeException - %ls\n", e.information.c_str());
+        this->done;
+    }
+    catch (const IllegalArgumentException &e)
+    {
+        app.DebugPrintf("IllegalArgumentException - %ls\n", e.information.c_str());
+        this->done;
+    }
+    catch (const EOFException &e)
+    {
+        app.DebugPrintf("EOFException - %ls\n", e.information.c_str());
+        this->done;
+    }
 }
 
 INetworkPlayer *ClientConnection::getNetworkPlayer()
@@ -2941,7 +2966,16 @@ void ClientConnection::handleContainerOpen(shared_ptr<ContainerOpenPacket> packe
 			case ContainerOpenPacket::LARGE_CHEST:		chestString = IDS_CHEST_LARGE;		break;
 			case ContainerOpenPacket::ENDER_CHEST:		chestString = IDS_TILE_ENDERCHEST;	break;
 			case ContainerOpenPacket::CONTAINER:		chestString = IDS_CHEST;			break;
-			default: assert(false);						chestString = -1;					break;
+			default:
+                throw IOException(L"ClientConnection::handleContainerOpen - invalid container type");
+			}
+
+
+
+			// izzint - surprised how little checks are here
+			const int MAX_CONTAINER_SIZE = 54; // double chest should be max, right?
+			if (packet->size < 0 || packet->size > MAX_CONTAINER_SIZE) {
+                throw IOException(L"ClientConnection::handleContainerOpen - invalid container size");
 			}
 
 			if( player->openContainer(shared_ptr<SimpleContainer>( new SimpleContainer(chestString, packet->title, packet->customName, packet->size) )))

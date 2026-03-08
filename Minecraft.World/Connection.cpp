@@ -591,30 +591,32 @@ int Connection::runRead(void* lpParam)
 	con->readThreads++;
 	LeaveCriticalSection(cs);
 
-	//try {
+	try {
+		MemSect(19);
+		while (con->running && !con->quitting && ShutdownManager::ShouldRun(ShutdownManager::eConnectionReadThreads))
+		{
+			while (con->readTick())
+				;
 
-	MemSect(19);
-	while (con->running && !con->quitting && ShutdownManager::ShouldRun(ShutdownManager::eConnectionReadThreads))
-	{
-		while (con->readTick())
-			;
-
-		// try {
-		//Sleep(100L);
-		// TODO - 4J Stu - 1.8.2 changes these sleeps to 2L, but not sure whether we should do that as well
-		con->m_hWakeReadThread->WaitForSignal(100L);
+			// try {
+			//Sleep(100L);
+			// TODO - 4J Stu - 1.8.2 changes these sleeps to 2L, but not sure whether we should do that as well
+			con->m_hWakeReadThread->WaitForSignal(100L);
+		}
+		MemSect(0);
 	}
-	MemSect(0);
-
-	/* 4J JEV, removed try/catch
-	} catch (InterruptedException e) {
-	}
-	}
-	} finally {
-	synchronized (threadCounterLock) {
-	readThreads--;
-	}
-	} */
+    catch (EOFException e)
+    {
+        app.DebugPrintf("EOFException - %ls\n", e.information.c_str());
+        con->running = false;
+        con->quitting = true;
+    }
+    catch (IOException e)
+    {
+        app.DebugPrintf("IOException - %ls\n", e.information.c_str());
+        con->running = false;
+        con->quitting = true;
+    }
 
 	ShutdownManager::HasFinished(ShutdownManager::eConnectionReadThreads);
 	return 0;
