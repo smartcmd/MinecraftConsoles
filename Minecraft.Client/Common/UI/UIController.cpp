@@ -529,43 +529,24 @@ void UIController::loadSkins()
 #elif defined __PSVITA__
 	platformSkinPath = L"skinVita.swf";
 #elif defined _WINDOWS64
-	if(m_fScreenHeight>720.0f)
-	{
-		platformSkinPath = L"skinHDWin.swf";
-	}
-	else
-	{
-		platformSkinPath = L"skinWin.swf";
-	}
+	// Windows64/Durango/Orbis always load HD skin libraries unconditionally,
+	// which import "platformskinHD.swf" by name.  The platform skin must
+	// therefore always be the HD variant regardless of screen resolution.
+	platformSkinPath = L"skinHDWin.swf";
 #elif defined _DURANGO
-	if(m_fScreenHeight>720.0f)
-	{
-		platformSkinPath = L"skinHDDurango.swf";
-	}
-	else
-	{
-		platformSkinPath = L"skinDurango.swf";
-	}
+	platformSkinPath = L"skinHDDurango.swf";
 #elif defined __ORBIS__
-	if(m_fScreenHeight>720.0f)
-	{
-		platformSkinPath = L"skinHDOrbis.swf";
-	}
-	else
-	{
-		platformSkinPath = L"skinOrbis.swf";
-	}
+	platformSkinPath = L"skinHDOrbis.swf";
 
 #endif
-	// Every platform has one of these, so nothing shared
-	if(m_fScreenHeight>720.0f)
-	{
-		m_iggyLibraries[eLibrary_Platform] = loadSkin(platformSkinPath, L"platformskinHD.swf");
-	}
-	else
-	{
-		m_iggyLibraries[eLibrary_Platform] = loadSkin(platformSkinPath, L"platformskin.swf");
-	}
+	// Every platform has one of these, so nothing shared.
+	// On HD platforms (Win64/Durango/Orbis) the skin libraries always import
+	// "platformskinHD.swf", so we must register under that name at any resolution.
+#if defined(_WINDOWS64) || defined(_DURANGO) || defined(__ORBIS__)
+	m_iggyLibraries[eLibrary_Platform] = loadSkin(platformSkinPath, L"platformskinHD.swf");
+#else
+	m_iggyLibraries[eLibrary_Platform] = loadSkin(platformSkinPath, L"platformskin.swf");
+#endif
 
 #if defined(__PS3__) || defined(__PSVITA__)
 	m_iggyLibraries[eLibrary_GraphicsDefault] = loadSkin(L"skinGraphics.swf", L"skinGraphics.swf");
