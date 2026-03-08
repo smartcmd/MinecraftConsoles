@@ -215,9 +215,18 @@ bool EnchantmentMenu::stillValid(shared_ptr<Player> player)
 
 shared_ptr<ItemInstance> EnchantmentMenu::quickMoveStack(shared_ptr<Player> player, int slotIndex)
 {
+	if (slotIndex < 0 || slotIndex >= static_cast<int>(slots.size()))
+	{
+		return nullptr;
+	}
+
 	shared_ptr<ItemInstance> clicked = nullptr;
 	Slot *slot = slots.at(slotIndex);
-	Slot *IngredientSlot = slots.at(INGREDIENT_SLOT);
+	Slot *IngredientSlot = nullptr;
+	if (INGREDIENT_SLOT >= 0 && INGREDIENT_SLOT < static_cast<int>(slots.size()))
+	{
+		IngredientSlot = slots.at(INGREDIENT_SLOT);
+	}
 
 	if (slot != nullptr && slot->hasItem())
 	{

@@ -15,7 +15,17 @@ MobRenderer::MobRenderer(Model *model, float shadow) : LivingEntityRenderer(mode
 
 void MobRenderer::render(shared_ptr<Entity> _mob, double x, double y, double z, float rot, float a)
 {
+	if (_mob == nullptr)
+	{
+		return;
+	}
+
 	shared_ptr<Mob> mob = dynamic_pointer_cast<Mob>(_mob);
+
+	if (mob == nullptr)
+	{
+		return;
+	}
 
 	LivingEntityRenderer::render(mob, x, y, z, rot, a);
 	renderLeash(mob, x, y, z, rot, a);

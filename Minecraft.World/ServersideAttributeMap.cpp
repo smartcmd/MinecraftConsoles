@@ -72,6 +72,10 @@ unordered_set<AttributeInstance *> *ServersideAttributeMap::getSyncableAttribute
 	for (size_t i = 0; i < atts.size(); i++)
 	{
 		AttributeInstance *instance = atts.at(i);
+		if (instance == nullptr)
+		{
+			continue;
+		}
 
 		if (instance->getAttribute()->isClientSyncable())
 		{

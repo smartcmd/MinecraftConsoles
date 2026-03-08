@@ -131,11 +131,19 @@ Slot *AbstractContainerMenu::getSlotFor(shared_ptr<Container> c, int index)
 
 Slot *AbstractContainerMenu::getSlot(int index)
 {
+	if (index < 0 || index >= static_cast<int>(slots.size()))
+	{
+		return nullptr;
+	}
 	return slots.at(index);
 }
 
 shared_ptr<ItemInstance> AbstractContainerMenu::quickMoveStack(shared_ptr<Player> player, int slotIndex)
 {
+	if (slotIndex < 0 || slotIndex >= static_cast<int>(slots.size()))
+	{
+		return nullptr;
+	}
 	Slot *slot = slots.at(slotIndex);
 	if (slot != nullptr)
 	{
@@ -251,7 +259,7 @@ shared_ptr<ItemInstance> AbstractContainerMenu::clicked(int slotIndex, int butto
 		}
 		else if (clickType == CLICK_QUICK_MOVE)
 		{
-			if (slotIndex < 0) return nullptr;
+			if (slotIndex < 0 || slotIndex >= static_cast<int>(slots.size())) return nullptr;
 			Slot *slot = slots.at(slotIndex);
 			if(slot != nullptr && slot->mayPickup(player))
 			{
@@ -408,6 +416,7 @@ shared_ptr<ItemInstance> AbstractContainerMenu::clicked(int slotIndex, int butto
 	}
 	else if (clickType == CLICK_SWAP && buttonNum >= 0 && buttonNum < 9)
 	{
+		if (slotIndex < 0 || slotIndex >= static_cast<int>(slots.size())) return nullptr;
 		Slot *slot = slots.at(slotIndex);
 		if (slot->mayPickup(player))
 		{
@@ -449,6 +458,7 @@ shared_ptr<ItemInstance> AbstractContainerMenu::clicked(int slotIndex, int butto
 	}
 	else if (clickType == CLICK_CLONE && player->abilities.instabuild && inventory->getCarried() == nullptr && slotIndex >= 0)
 	{
+		if (slotIndex >= static_cast<int>(slots.size())) return nullptr;
 		Slot *slot = slots.at(slotIndex);
 		if (slot != nullptr && slot->hasItem())
 		{
@@ -459,6 +469,7 @@ shared_ptr<ItemInstance> AbstractContainerMenu::clicked(int slotIndex, int butto
 	}
 	else if (clickType == CLICK_THROW && inventory->getCarried() == nullptr && slotIndex >= 0)
 	{
+		if (slotIndex >= static_cast<int>(slots.size())) return nullptr;
 		Slot *slot = slots.at(slotIndex);
 		if (slot != nullptr && slot->hasItem() && slot->mayPickup(player))
 		{
@@ -469,6 +480,7 @@ shared_ptr<ItemInstance> AbstractContainerMenu::clicked(int slotIndex, int butto
 	}
 		else if (clickType == CLICK_PICKUP_ALL && slotIndex >= 0)
 	{
+		if (slotIndex >= static_cast<int>(slots.size())) return nullptr;
 		Slot *slot = slots.at(slotIndex);
 		shared_ptr<ItemInstance> carried = inventory->getCarried();
 

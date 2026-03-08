@@ -83,6 +83,11 @@ void ParticleEngine::tick()
 
 void ParticleEngine::render(shared_ptr<Entity> player, float a, int list)
 {
+	if (player == nullptr)
+	{
+		return;
+	}
+
 	// 4J - change brought forward from 1.2.3
     float xa = Camera::xa;
     float za = Camera::za;

@@ -244,6 +244,11 @@ void EntityRenderDispatcher::prepare(Level *level, Textures *textures, Font *fon
 
 void EntityRenderDispatcher::render(shared_ptr<Entity> entity, float a)
 {
+	if (entity == nullptr)
+	{
+		return;
+	}
+
 	double x = entity->xOld + (entity->x - entity->xOld) * a;
 	double y = entity->yOld + (entity->y - entity->yOld) * a;
 	double z = entity->zOld + (entity->z - entity->zOld) * a;

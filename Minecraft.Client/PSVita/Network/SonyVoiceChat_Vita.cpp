@@ -668,7 +668,7 @@ void SonyVoiceChat_Vita::tick()
 		
 		EnterCriticalSection(&m_csRemoteConnections);
 		
-		for(size_t i=m_remoteConnections.size()-1;i>=0;i--)
+		for(int i = (int)m_remoteConnections.size() - 1; i >= 0; i--)
 		{
 			if(m_remoteConnections[i]->m_bFlaggedForShutdown)
 			{

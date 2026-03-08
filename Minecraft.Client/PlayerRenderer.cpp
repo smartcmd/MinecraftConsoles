@@ -153,9 +153,15 @@ void PlayerRenderer::prepareSecondPassArmor(shared_ptr<LivingEntity> _player, in
 
 void PlayerRenderer::render(shared_ptr<Entity> _mob, double x, double y, double z, float rot, float a)
 {
+	if (_mob == nullptr)
+	{
+		return;
+	}
+
 	// 4J - dynamic cast required because we aren't using templates/generics in our version
 	shared_ptr<Player> mob = dynamic_pointer_cast<Player>(_mob);
 
+	if(mob == nullptr) return;
 	if(mob->hasInvisiblePrivilege()) return;
 
     shared_ptr<ItemInstance> item = mob->inventory->getSelected();

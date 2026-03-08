@@ -102,7 +102,7 @@ void UILayer::render(S32 width, S32 height, C4JRender::eViewportType viewport)
 bool UILayer::IsSceneInStack(EUIScene scene)
 {
 	bool inStack = false;
-	for(size_t i = (int)m_sceneStack.size() - 1;i >= 0; --i)
+	for(int i = static_cast<int>(m_sceneStack.size()) - 1; i >= 0; --i)
 	{
 		if(m_sceneStack[i]->getSceneType() == scene)
 		{
@@ -118,7 +118,7 @@ bool UILayer::HasFocus(int iPad)
 	bool hasFocus = false;
 	if(m_hasFocus)
 	{
-		for(size_t i = (int)m_sceneStack.size() - 1;i >= 0; --i)
+		for(int i = (int)m_sceneStack.size() - 1; i >= 0; --i)
 		{
 			if(m_sceneStack[i]->stealsFocus() )
 			{
@@ -146,7 +146,7 @@ bool UILayer::hidesLowerScenes()
 	}
 	if(!hidesScenes && !m_sceneStack.empty())
 	{
-		for(size_t i = (int)m_sceneStack.size() - 1;i >= 0; --i)
+		for(int i = static_cast<int>(m_sceneStack.size()) - 1; i >= 0; --i)
 		{
 			if(m_sceneStack[i]->hidesLowerScenes())
 			{

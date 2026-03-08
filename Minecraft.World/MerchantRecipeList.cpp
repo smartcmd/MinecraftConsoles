@@ -21,7 +21,12 @@ MerchantRecipeList::~MerchantRecipeList()
 
 MerchantRecipe *MerchantRecipeList::getRecipeFor(shared_ptr<ItemInstance> buyA, shared_ptr<ItemInstance> buyB, int selectionHint)
 {
-	if (selectionHint > 0 && selectionHint < m_recipes.size())
+	if (buyA == nullptr)
+	{
+		return nullptr;
+	}
+
+	if (selectionHint > 0 && selectionHint < static_cast<int>(m_recipes.size()))
 	{
 		// attempt to match vs the hint
 		MerchantRecipe *r = m_recipes.at(selectionHint);
@@ -166,6 +171,10 @@ void MerchantRecipeList::push_back(MerchantRecipe *recipe)
 
 MerchantRecipe *MerchantRecipeList::at(size_t index)
 {
+	if (index >= m_recipes.size())
+	{
+		return nullptr;
+	}
 	return m_recipes.at(index);
 }
 

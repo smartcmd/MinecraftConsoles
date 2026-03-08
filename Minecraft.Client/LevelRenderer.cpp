@@ -507,6 +507,11 @@ void LevelRenderer::allChanged(int playerIndex)
 
 void LevelRenderer::renderEntities(Vec3 *cam, Culler *culler, float a)
 {
+	if (mc == nullptr || mc->player == nullptr)
+	{
+		return;
+	}
+
 	int playerIndex = mc->player->GetXboxPad();	// 4J added
 
 	// 4J Stu - Set these up every time, even when not rendering as other things (like particle render) may depend on it for those frames.
@@ -524,6 +529,10 @@ void LevelRenderer::renderEntities(Vec3 *cam, Culler *culler, float a)
 	culledEntities = 0;
 
 	shared_ptr<Entity> player = mc->cameraTargetPlayer;
+	if (player == nullptr)
+	{
+		return;
+	}
 
 	EntityRenderDispatcher::xOff = (player->xOld + (player->x - player->xOld) * a);
 	EntityRenderDispatcher::yOff = (player->yOld + (player->y - player->yOld) * a);
@@ -758,12 +767,21 @@ int compare (const void * a, const void * b)
 
 int LevelRenderer::renderChunks(int from, int to, int layer, double alpha)
 {
+	if (mc == nullptr || mc->player == nullptr)
+	{
+		return 0;
+	}
+
 	int playerIndex = mc->player->GetXboxPad();	// 4J added
 
 #if 1
 	// 4J - cut down version, we're not using offsetted render lists, or a sorted chunk list, anymore
 	mc->gameRenderer->turnOnLightLayer(alpha);		// 4J - brought forward from 1.8.2
 	shared_ptr<LivingEntity> player = mc->cameraTargetPlayer;
+	if (player == nullptr)
+	{
+		return 0;
+	}
 	double xOff = player->xOld + (player->x - player->xOld) * alpha;
 	double yOff = player->yOld + (player->y - player->yOld) * alpha;
 	double zOff = player->zOld + (player->z - player->zOld) * alpha;

@@ -37,7 +37,17 @@ float LivingEntityRenderer::rotlerp(float from, float to, float a)
 
 void LivingEntityRenderer::render(shared_ptr<Entity> _mob, double x, double y, double z, float rot, float a)
 {
+	if (_mob == nullptr)
+	{
+		return;
+	}
+
 	shared_ptr<LivingEntity> mob = dynamic_pointer_cast<LivingEntity>(_mob);
+
+	if (mob == nullptr)
+	{
+		return;
+	}
 
 	glPushMatrix();
 	glDisable(GL_CULL_FACE);

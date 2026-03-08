@@ -373,6 +373,11 @@ void ItemInHandRenderer::render(float a)
     float h = oHeight + (height - oHeight) * a;
     shared_ptr<Player> player = minecraft->player;
 
+	if (player == nullptr)
+	{
+		return;
+	}
+
 	// 4J - added so we can adjust the position of the hands for horizontal & vertical split screens
 	float fudgeX = 0.0f;
 	float fudgeY = 0.0f;

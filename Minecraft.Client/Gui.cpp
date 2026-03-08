@@ -63,6 +63,12 @@ void Gui::render(float a, bool mouseFree, int xMouse, int yMouse)
 	// 4J Stu - I have copied this code for XUI_BaseScene. If/when it gets changed it should be broken out
 	// 4J - altered to force full screen mode to 3X scaling, and any split screen modes to 2X scaling. This is so that the further scaling by 0.5 that
 	// happens in split screen modes results in a final scaling of 1 rather than 1.5.
+	
+	if (minecraft->player == nullptr)
+	{
+		return;
+	}
+	
 	int splitYOffset;// = 20;	// This offset is applied when doing the 2X scaling above to move the gui out of the way of the tool tips
 	int guiScale;// = ( minecraft->player->m_iScreenSection == C4JRender::VIEWPORT_TYPE_FULLSCREEN ? 3 : 2 );
 	int iPad=minecraft->player->GetXboxPad();
@@ -845,7 +851,7 @@ void Gui::render(float a, bool mouseFree, int xMouse, int yMouse)
 
 #ifndef _FINAL_BUILD
 	MemSect(31);
-    if (minecraft->options->renderDebug)
+    if (minecraft->options->renderDebug && minecraft->player != nullptr && minecraft->level != nullptr)
 	{
 		const int debugLeft = 1;
 		const int debugTop = 1;
