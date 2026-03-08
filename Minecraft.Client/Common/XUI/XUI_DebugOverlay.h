@@ -7,8 +7,8 @@ using namespace std;
 class RegionFile;
 class DataOutputStream;
 class ConsoleSaveFile;
-#include "..\..\..\Minecraft.World\File.h"
-#include "..\..\..\Minecraft.World\Entity.h"
+#include "../../../Minecraft.World/File.h"
+#include "../../../Minecraft.World/Entity.h"
 
 class CScene_DebugOverlay : public CXuiSceneImpl
 {

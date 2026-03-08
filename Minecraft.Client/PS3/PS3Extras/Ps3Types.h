@@ -71,7 +71,7 @@ extern Cnullptr nullptr;
 
 
 // #include <math.h>
-// #include "DirectX\DirectXMath.h"
+// #include "DirectX/DirectXMath.h"
 // using namespace DirectX;
 
 #define S_OK 0

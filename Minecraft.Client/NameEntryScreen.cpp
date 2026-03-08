@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "NameEntryScreen.h"
 #include "Button.h"
-#include "..\Minecraft.World\StringHelpers.h"
+#include "../Minecraft.World/StringHelpers.h"
 
 const wstring NameEntryScreen::allowedChars = L"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789 ,.:-_'*!\"#%/()=+?[]{}<>";
 

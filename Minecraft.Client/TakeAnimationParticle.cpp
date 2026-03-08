@@ -1,9 +1,9 @@
 #include "stdafx.h"
 #include "TakeAnimationParticle.h"
 #include "EntityRenderDispatcher.h"
-#include "..\Minecraft.World\net.minecraft.world.item.h"
-#include "..\Minecraft.World\net.minecraft.world.level.h"
-#include "..\Minecraft.World\Mth.h"
+#include "../Minecraft.World/net.minecraft.world.item.h"
+#include "../Minecraft.World/net.minecraft.world.level.h"
+#include "../Minecraft.World/Mth.h"
 
 TakeAnimationParticle::TakeAnimationParticle(Level *level, shared_ptr<Entity> item, shared_ptr<Entity> target, float yOffs) : Particle(level, item->x, item->y, item->z, item->xd, item->yd, item->zd)
 {

@@ -1,7 +1,7 @@
 #include "stdafx.h"
-#include "..\..\..\Minecraft.World\Entity.h"
-#include "..\..\..\Minecraft.World\Level.h"
-#include "..\..\..\Minecraft.World\ItemInstance.h"
+#include "../../../Minecraft.World/Entity.h"
+#include "../../../Minecraft.World/Level.h"
+#include "../../../Minecraft.World/ItemInstance.h"
 #include "UseItemTask.h"
 
 UseItemTask::UseItemTask(const int itemId, Tutorial *tutorial, int descriptionId,

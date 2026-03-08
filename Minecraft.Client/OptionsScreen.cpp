@@ -5,7 +5,7 @@
 #include "Options.h"
 #include "ControlsScreen.h"
 #include "VideoSettingsScreen.h"
-#include "..\Minecraft.World\net.minecraft.locale.h"
+#include "../Minecraft.World/net.minecraft.locale.h"
 
 OptionsScreen::OptionsScreen(Screen *lastScreen, Options *options)
 {

@@ -1,13 +1,13 @@
 #include "stdafx.h"
 #include <string>
 #include <unordered_map>
-#include "..\..\Minecraft.h"
-#include "..\..\MultiplayerLocalPlayer.h"
+#include "../../Minecraft.h"
+#include "../../MultiPlayerLocalPlayer.h"
 #include "Tutorial.h"
 #include "TutorialConstraints.h"
 #include "InfoTask.h"
-#include "..\..\..\Minecraft.World\Material.h"
-#include "..\..\Windows64\KeyboardMouseInput.h"
+#include "../../../Minecraft.World/Material.h"
+#include "../../KeyboardMouseInput.h"
 
 InfoTask::InfoTask(Tutorial *tutorial, int descriptionId, int promptId /*= -1*/, bool requiresUserInput /*= false*/,
 	int iMapping /*= 0*/, ETelemetryChallenges telemetryEvent /*= eTelemetryTutorial_NoEvent*/)

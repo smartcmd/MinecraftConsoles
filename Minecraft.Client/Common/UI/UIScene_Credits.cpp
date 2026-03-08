@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "UI.h"
-#include "..\Minecraft.World\StringHelpers.h"
+#include "../Minecraft.World/StringHelpers.h"
 #include "UIScene_Credits.h"
 
 #define CREDIT_ICON -2

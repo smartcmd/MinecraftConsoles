@@ -1,5 +1,5 @@
 #pragma once
-#include "..\Media\xuiscene_partnernetpassword.h"
+#include "../Media/xuiscene_partnernetpassword.h"
 #include "XUI_Ctrl_4JEdit.h"
 
 #ifdef _CONTENT_PACKAGE

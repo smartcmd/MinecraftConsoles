@@ -1,7 +1,7 @@
 #include "stdafx.h"
 
 #include "SonyCommerce.h"
-#include "..\PS3Extras\ShutdownManager.h"
+#include "../PS3Extras/ShutdownManager.h"
 #include <sys/event.h>
 
 

@@ -1,9 +1,9 @@
 #include "stdafx.h"
 #include "UI.h"
-#include "..\..\..\Minecraft.World\net.minecraft.world.inventory.h"
-#include "..\..\..\Minecraft.World\net.minecraft.world.entity.animal.h"
+#include "../../../Minecraft.World/net.minecraft.world.inventory.h"
+#include "../../../Minecraft.World/net.minecraft.world.entity.animal.h"
 #include "MultiPlayerLocalPlayer.h"
-#include "..\..\Minecraft.h"
+#include "../../Minecraft.h"
 #include "UIScene_HorseInventoryMenu.h"
 
 UIScene_HorseInventoryMenu::UIScene_HorseInventoryMenu(int iPad, void *_initData, UILayer *parentLayer) : UIScene_AbstractContainerMenu(iPad, parentLayer)

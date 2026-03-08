@@ -4,7 +4,7 @@
 #include "stdafx.h"
 
 #include <assert.h>
-#include "..\XUI\XUI_Intro.h"
+#include "../XUI/XUI_Intro.h"
 
 #define TIMELINE_NORMAL		0
 #define TIMELINE_ESRBFADE	1

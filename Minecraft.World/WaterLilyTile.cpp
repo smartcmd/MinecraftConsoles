@@ -2,7 +2,7 @@
 #include "WaterLilyTile.h"
 #include "net.minecraft.world.level.h"
 #include "net.minecraft.world.entity.item.h"
-#include "..\Minecraft.Client\Minecraft.h"
+#include "../Minecraft.Client/Minecraft.h"
 #include "AABB.h"
 
 WaterlilyTile::WaterlilyTile(int id) : Bush(id)

@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "..\Minecraft.World\net.minecraft.world.entity.monster.h"
+#include "../Minecraft.World/net.minecraft.world.entity.monster.h"
 #include "LavaSlimeModel.h"
 #include "LavaSlimeRenderer.h"
 

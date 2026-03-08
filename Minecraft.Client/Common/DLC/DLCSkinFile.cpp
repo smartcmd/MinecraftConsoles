@@ -1,11 +1,11 @@
 #include "stdafx.h"
 #include "DLCManager.h"
 #include "DLCSkinFile.h"
-#include "..\..\ModelPart.h"
-#include "..\..\EntityRenderer.h"
-#include "..\..\EntityRenderDispatcher.h"
-#include "..\..\..\Minecraft.World\Player.h"
-#include "..\..\..\Minecraft.World\StringHelpers.h"
+#include "../../ModelPart.h"
+#include "../../EntityRenderer.h"
+#include "../../EntityRenderDispatcher.h"
+#include "../../../Minecraft.World/Player.h"
+#include "../../../Minecraft.World/StringHelpers.h"
 
 DLCSkinFile::DLCSkinFile(const wstring &path) : DLCFile(DLCManager::e_DLCType_Skin,path)
 {

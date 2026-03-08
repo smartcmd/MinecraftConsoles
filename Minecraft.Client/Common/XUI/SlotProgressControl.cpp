@@ -1,7 +1,7 @@
 #include "stdafx.h"
 
-#include "..\..\..\Minecraft.World\Slot.h"
-#include "..\..\..\Minecraft.World\ItemInstance.h"
+#include "../../../Minecraft.World/Slot.h"
+#include "../../../Minecraft.World/ItemInstance.h"
 
 #include "SlotItemControlBase.h"
 #include "SlotProgressControl.h"

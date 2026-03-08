@@ -1,6 +1,6 @@
 #pragma once
 #include "Model.h"
-#include "..\Minecraft.World\Mob.h"
+#include "../Minecraft.World/Mob.h"
 
 class WolfModel : public Model
 {

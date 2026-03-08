@@ -1,5 +1,5 @@
 #pragma once
-#include "..\Media\xuiscene_text_entry.h"
+#include "../Media/xuiscene_text_entry.h"
 #include "XUI_Ctrl_4JEdit.h"
 
 

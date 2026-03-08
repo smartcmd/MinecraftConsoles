@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Common\Leaderboards\LeaderboardManager.h"
+#include "Common/Leaderboards/LeaderboardManager.h"
 
 class WindowsLeaderboardManager : public LeaderboardManager
 {

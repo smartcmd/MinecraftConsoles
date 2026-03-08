@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "IUIScene_ContainerMenu.h"
-#include "..\..\..\Minecraft.World\net.minecraft.world.inventory.h"
+#include "../../../Minecraft.World/net.minecraft.world.inventory.h"
 
 IUIScene_AbstractContainerMenu::ESceneSection IUIScene_ContainerMenu::GetSectionAndSlotInDirection( ESceneSection eSection, ETapState eTapDirection, int *piTargetX, int *piTargetY )
 {

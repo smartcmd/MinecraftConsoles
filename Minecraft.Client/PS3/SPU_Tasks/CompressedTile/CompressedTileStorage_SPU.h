@@ -6,8 +6,8 @@
 #include "SparseDataStorage_SPU.h"
 
 #ifndef SN_TARGET_PS3_SPU
-#include "..\..\..\stdafx.h"
-#include "..\..\..\..\Minecraft.World\Region.h"
+#include "../../../stdafx.h"
+#include "../../../../Minecraft.World/Region.h"
 #endif // SN_TARGET_PS3_SPU
 
 //#include "xmcore.h"

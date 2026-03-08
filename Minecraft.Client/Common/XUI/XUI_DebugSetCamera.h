@@ -1,7 +1,7 @@
 #pragma once
-#include "..\Media\xuiscene_debug_set_camera.h"
+#include "../Media/xuiscene_debug_set_camera.h"
 #include "XUI_Ctrl_4JEdit.h"
-#include "..\..\Common\GameRules\ConsoleSchematicFile.h"
+#include "../../Common/GameRules/ConsoleSchematicFile.h"
 
 class CScene_DebugSetCamera : public CXuiSceneImpl
 {

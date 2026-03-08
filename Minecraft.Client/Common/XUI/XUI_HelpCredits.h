@@ -5,7 +5,7 @@
 #define MAX_CREDIT_STRINGS		360
 // 213
 
-#include "..\UI\UIStructs.h"
+#include "../UI/UIStructs.h"
 
 class CScene_Credits : public CXuiSceneImpl
 {

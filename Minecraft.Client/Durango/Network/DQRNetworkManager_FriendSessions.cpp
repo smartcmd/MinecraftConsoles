@@ -5,11 +5,11 @@
 #include <collection.h>
 #include <ppltasks.h>
 #include <ws2tcpip.h>
-#include "..\Minecraft.World\StringHelpers.h"
+#include "../Minecraft.World/StringHelpers.h"
 #include "base64.h"
 
 #ifdef _DURANGO
-#include "..\Minecraft.World\DurangoStats.h"
+#include "../Minecraft.World/DurangoStats.h"
 #endif
 
 #include "ChatIntegrationLayer.h"

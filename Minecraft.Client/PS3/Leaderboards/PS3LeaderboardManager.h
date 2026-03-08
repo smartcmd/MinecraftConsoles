@@ -1,9 +1,9 @@
 #pragma once
 
-#include "..\..\Common\Leaderboards\LeaderboardManager.h"
-#include "..\..\..\Minecraft.World\x64headers\extraX64.h"
+#include "../../Common/Leaderboards/LeaderboardManager.h"
+#include "../../../Minecraft.World/x64headers/extraX64.h"
 
-#include "PS3\Passphrase\ps3__np_conf.h"
+#include "PS3/Passphrase/ps3__np_conf.h"
 
 using namespace std;
 

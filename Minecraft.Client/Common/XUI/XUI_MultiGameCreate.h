@@ -1,5 +1,5 @@
 #pragma once
-#include "..\Media\xuiscene_multi_create.h"
+#include "../Media/xuiscene_multi_create.h"
 #include "XUI_Ctrl_4JEdit.h"
 #include "XUI_Ctrl_SliderWrapper.h"
 #include "XUI_MultiGameLaunchMoreOptions.h"

@@ -1,7 +1,7 @@
 #pragma once
 #ifdef _DEBUG_MENUS_ENABLED
 #include "UIScene.h"
-#include "..\..\Common\GameRules\ConsoleSchematicFile.h"
+#include "../../Common/GameRules/ConsoleSchematicFile.h"
 
 class UIScene_DebugCreateSchematic : public UIScene
 {

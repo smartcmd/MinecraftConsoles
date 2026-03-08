@@ -15,7 +15,7 @@
 #include "Skeleton.h"
 #include "Creeper.h"
 #include "Arrow.h"
-#include "..\Minecraft.Client\Textures.h"
+#include "../Minecraft.Client/Textures.h"
 #include "SoundTypes.h"
 
 

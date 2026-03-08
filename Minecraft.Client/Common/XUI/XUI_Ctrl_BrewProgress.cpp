@@ -1,8 +1,8 @@
 #include "stdafx.h"
 
-#include "..\..\..\Minecraft.World\net.minecraft.world.level.tile.entity.h"
-#include "..\..\..\Minecraft.World\SharedConstants.h"
-#include "..\..\..\Minecraft.World\net.minecraft.world.item.alchemy.h"
+#include "../../../Minecraft.World/net.minecraft.world.level.tile.entity.h"
+#include "../../../Minecraft.World/SharedConstants.h"
+#include "../../../Minecraft.World/net.minecraft.world.item.alchemy.h"
 #include "XUI_Ctrl_BrewProgress.h"
 
 int CXuiCtrlBrewProgress::GetValue()

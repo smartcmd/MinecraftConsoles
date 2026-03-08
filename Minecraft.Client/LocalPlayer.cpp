@@ -16,45 +16,45 @@
 #include "CreativeMode.h"
 #include "GameRenderer.h"
 #include "ItemInHandRenderer.h"
-#include "..\Minecraft.World\AttributeInstance.h"
-#include "..\Minecraft.World\LevelData.h"
-#include "..\Minecraft.World\net.minecraft.world.damagesource.h"
-#include "..\Minecraft.World\net.minecraft.world.item.h"
-#include "..\Minecraft.World\net.minecraft.world.food.h"
-#include "..\Minecraft.World\net.minecraft.world.effect.h"
-#include "..\Minecraft.World\net.minecraft.world.entity.player.h"
-#include "..\Minecraft.World\net.minecraft.world.entity.monster.h"
-#include "..\Minecraft.World\ItemEntity.h"
-#include "..\Minecraft.World\net.minecraft.world.level.h"
-#include "..\Minecraft.World\net.minecraft.world.level.tile.entity.h"
-#include "..\Minecraft.World\net.minecraft.world.phys.h"
-#include "..\Minecraft.World\net.minecraft.stats.h"
-#include "..\Minecraft.World\com.mojang.nbt.h"
-#include "..\Minecraft.World\Random.h"
-#include "..\Minecraft.World\TileEntity.h"
-#include "..\Minecraft.World\Mth.h"
+#include "../Minecraft.World/AttributeInstance.h"
+#include "../Minecraft.World/LevelData.h"
+#include "../Minecraft.World/net.minecraft.world.damagesource.h"
+#include "../Minecraft.World/net.minecraft.world.item.h"
+#include "../Minecraft.World/net.minecraft.world.food.h"
+#include "../Minecraft.World/net.minecraft.world.effect.h"
+#include "../Minecraft.World/net.minecraft.world.entity.player.h"
+#include "../Minecraft.World/net.minecraft.world.entity.monster.h"
+#include "../Minecraft.World/ItemEntity.h"
+#include "../Minecraft.World/net.minecraft.world.level.h"
+#include "../Minecraft.World/net.minecraft.world.level.tile.entity.h"
+#include "../Minecraft.World/net.minecraft.world.phys.h"
+#include "../Minecraft.World/net.minecraft.stats.h"
+#include "../Minecraft.World/com.mojang.nbt.h"
+#include "../Minecraft.World/Random.h"
+#include "../Minecraft.World/TileEntity.h"
+#include "../Minecraft.World/Mth.h"
 #include "AchievementPopup.h"
 #include "CritParticle.h"
 
 // 4J : WESTY : Added for new achievements.
-#include "..\Minecraft.World\item.h"
-#include "..\Minecraft.World\mapitem.h"
-#include "..\Minecraft.World\tile.h"
+#include "../Minecraft.World/Item.h"
+#include "../Minecraft.World/MapItem.h"
+#include "../Minecraft.World/Tile.h"
 
 // 4J Stu - Added for tutorial callbacks
 #include "Minecraft.h"
 
-#include "..\Minecraft.World\Minecart.h"
-#include "..\Minecraft.World\Boat.h"
-#include "..\Minecraft.World\Pig.h"
+#include "../Minecraft.World/Minecart.h"
+#include "../Minecraft.World/Boat.h"
+#include "../Minecraft.World/Pig.h"
 
-#include "..\Minecraft.World\StringHelpers.h"
+#include "../Minecraft.World/StringHelpers.h"
 
 #include "Options.h"
-#include "..\Minecraft.World\Dimension.h"
+#include "../Minecraft.World/Dimension.h"
 
 #ifndef _DURANGO
-#include "..\Minecraft.World\CommonStats.h"
+#include "../Minecraft.World/CommonStats.h"
 #endif
 
 
@@ -1233,7 +1233,7 @@ void LocalPlayer::setAndBroadcastCustomCape(DWORD capeId)
 }
 
 // 4J TODO - Remove
-#include "..\Minecraft.World\LevelChunk.h"
+#include "../Minecraft.World/LevelChunk.h"
 void LocalPlayer::mapPlayerChunk(const unsigned int flagTileType)
 {
 	int cx = this->xChunk;

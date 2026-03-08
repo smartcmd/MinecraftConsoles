@@ -1,5 +1,5 @@
 #pragma once
-#include "..\..\..\Minecraft.World\Random.h"
+#include "../../../Minecraft.World/Random.h"
 
 using namespace std;
 

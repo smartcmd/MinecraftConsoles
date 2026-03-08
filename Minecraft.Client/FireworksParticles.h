@@ -1,6 +1,6 @@
 #pragma once
 #include "Particle.h"
-#include "..\Minecraft.World\CompoundTag.h"
+#include "../Minecraft.World/CompoundTag.h"
 
 class ParticleEngine;
 

@@ -323,7 +323,8 @@ set(MINECRAFT_CLIENT_SOURCES
   "HumanoidModel.cpp"
   "InBedChatScreen.cpp"
   "Input.cpp"
-  "iob_shim.asm"
+  $<$<CXX_COMPILER_ID:MSVC>:iob_shim.asm>
+  $<$<CXX_COMPILER_ID:Clang>:IobShim.cpp>
   "ItemFrameRenderer.cpp"
   "ItemInHandRenderer.cpp"
   "ItemRenderer.cpp"

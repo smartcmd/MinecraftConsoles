@@ -1,7 +1,7 @@
 #pragma once
 
-#include "..\..\Common\Network\Sony\SonyCommerce.h"
-#include "..\..\Common\Network\Sony\SonyRemoteStorage.h"
+#include "../../Common/Network/Sony/SonyCommerce.h"
+#include "../../Common/Network/Sony/SonyRemoteStorage.h"
 
 #define PRODUCT_CODE_SIZE 9
 #define SAVEFOLDERPREFIX_SIZE 10

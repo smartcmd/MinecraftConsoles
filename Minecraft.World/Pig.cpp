@@ -14,7 +14,7 @@
 #include "net.minecraft.world.entity.player.h"
 #include "net.minecraft.world.entity.global.h"
 #include "Pig.h"
-#include "..\Minecraft.Client\Textures.h"
+#include "../Minecraft.Client/Textures.h"
 #include "MobCategory.h"
 
 

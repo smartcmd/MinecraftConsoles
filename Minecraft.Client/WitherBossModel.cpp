@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "WitherBossModel.h"
-#include "..\Minecraft.World\WitherBoss.h"
+#include "../Minecraft.World/WitherBoss.h"
 #include "ModelPart.h"
 
 WitherBossModel::WitherBossModel()

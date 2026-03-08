@@ -1,8 +1,8 @@
 #include "stdafx.h"
-#include "..\..\..\Minecraft.World\StringHelpers.h"
+#include "../../../Minecraft.World/StringHelpers.h"
 #include "XUI_DebugSchematicCreator.h"
-#include "..\..\..\Minecraft.World\ChunkSource.h"
-#include "..\..\..\Minecraft.World\net.minecraft.world.level.h"
+#include "../../../Minecraft.World/ChunkSource.h"
+#include "../../../Minecraft.World/net.minecraft.world.level.h"
 
 #ifndef _CONTENT_PACKAGE
 HRESULT CScene_DebugSchematicCreator::OnInit( XUIMessageInit *pInitData, BOOL &bHandled )

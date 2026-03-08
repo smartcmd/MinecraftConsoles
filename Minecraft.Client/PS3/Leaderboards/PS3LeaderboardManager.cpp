@@ -4,19 +4,19 @@
 
 #include "base64.h"
 
-#include "..\PS3_App.h"
-#include "..\..\Common\Consoles_App.h"
+#include "../PS3_App.h"
+#include "../../Common/Consoles_App.h"
 
-#include "Common\Network\Sony\SQRNetworkManager.h"
+#include "Common/Network/Sony/SQRNetworkManager.h"
 
-#include "..\..\..\Minecraft.World\StringHelpers.h"
+#include "../../../Minecraft.World/StringHelpers.h"
 
 #include <cstdlib>
 
 #include <np.h>
 #include <sys/ppu_thread.h>
 
-#include "PS3\PS3Extras\ShutdownManager.h"
+#include "PS3/PS3Extras/ShutdownManager.h"
 
 #ifdef __PS3__
 LeaderboardManager *LeaderboardManager::m_instance = new PS3LeaderboardManager(); //Singleton instance of the LeaderboardManager

@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "..\Minecraft.World\JavaMath.h"
+#include "../Minecraft.World/JavaMath.h"
 #include "SnowShovelParticle.h"
 
 void SnowShovelParticle::init(Level *level, double x, double y, double z, double xa, double ya, double za, float scale)

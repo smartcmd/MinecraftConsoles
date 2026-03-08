@@ -1,7 +1,7 @@
 #pragma once
-#include "..\Minecraft.World\net.minecraft.world.entity.player.h"
-#include "..\Minecraft.World\net.minecraft.world.inventory.ContainerListener.h"
-#include "..\Minecraft.World\ChunkPos.h"
+#include "../Minecraft.World/net.minecraft.world.entity.player.h"
+#include "../Minecraft.World/net.minecraft.world.inventory.ContainerListener.h"
+#include "../Minecraft.World/ChunkPos.h"
 class PlayerConnection;
 class MinecraftServer;
 class ServerPlayerGameMode;

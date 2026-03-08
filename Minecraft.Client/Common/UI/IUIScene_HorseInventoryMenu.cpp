@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "IUIScene_HorseInventoryMenu.h"
-#include "..\..\..\Minecraft.World\net.minecraft.world.entity.animal.h"
+#include "../../../Minecraft.World/net.minecraft.world.entity.animal.h"
 
 IUIScene_AbstractContainerMenu::ESceneSection IUIScene_HorseInventoryMenu::GetSectionAndSlotInDirection( ESceneSection eSection, ETapState eTapDirection, int *piTargetX, int *piTargetY )
 {

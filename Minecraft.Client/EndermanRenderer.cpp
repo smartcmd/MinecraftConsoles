@@ -2,8 +2,8 @@
 #include "EndermanRenderer.h"
 #include "EndermanModel.h"
 #include "TextureAtlas.h"
-#include "..\Minecraft.World\net.minecraft.world.entity.monster.h"
-#include "..\Minecraft.World\net.minecraft.world.level.tile.h"
+#include "../Minecraft.World/net.minecraft.world.entity.monster.h"
+#include "../Minecraft.World/net.minecraft.world.level.tile.h"
 
 ResourceLocation EndermanRenderer::ENDERMAN_EYES_LOCATION = ResourceLocation(TN_MOB_ENDERMAN_EYES);
 ResourceLocation EndermanRenderer::ENDERMAN_LOCATION = ResourceLocation(TN_MOB_ENDERMAN);

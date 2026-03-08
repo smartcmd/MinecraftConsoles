@@ -37,10 +37,10 @@
 #include "Player.h"
 #include "ParticleTypes.h"
 
-#include "..\Minecraft.Client\Textures.h"
+#include "../Minecraft.Client/Textures.h"
 
-#include "..\Minecraft.Client\LocalPlayer.h"
-#include "..\Minecraft.Client\HumanoidModel.h"
+#include "../Minecraft.Client/LocalPlayer.h"
+#include "../Minecraft.Client/HumanoidModel.h"
 #include "SoundTypes.h"
 
 

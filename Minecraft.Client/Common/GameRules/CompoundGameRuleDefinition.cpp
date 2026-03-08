@@ -1,6 +1,6 @@
 #include "stdafx.h"
-#include "..\..\..\Minecraft.World\StringHelpers.h"
-#include "..\..\..\Minecraft.World\net.minecraft.world.item.h"
+#include "../../../Minecraft.World/StringHelpers.h"
+#include "../../../Minecraft.World/net.minecraft.world.item.h"
 #include "CompoundGameRuleDefinition.h"
 #include "ConsoleGameRules.h"
 

@@ -2,10 +2,10 @@
 #include "UI.h"
 #include "UIScene.h"
 
-#include "..\..\Lighting.h"
-#include "..\..\LocalPlayer.h"
-#include "..\..\ItemRenderer.h"
-#include "..\..\..\Minecraft.World\net.minecraft.world.item.h"
+#include "../../Lighting.h"
+#include "../../LocalPlayer.h"
+#include "../../ItemRenderer.h"
+#include "../../../Minecraft.World/net.minecraft.world.item.h"
 
 UIScene::UIScene(int iPad, UILayer *parentLayer)
 {

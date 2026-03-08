@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "XboxStructureActionPlaceBlock.h"
-#include "..\..\..\Minecraft.World\StringHelpers.h"
-#include "..\..\..\Minecraft.World\net.minecraft.world.level.levelgen.structure.h"
+#include "../../../Minecraft.World/StringHelpers.h"
+#include "../../../Minecraft.World/net.minecraft.world.level.levelgen.structure.h"
 
 XboxStructureActionPlaceBlock::XboxStructureActionPlaceBlock()
 {

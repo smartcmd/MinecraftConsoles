@@ -4,9 +4,9 @@
 #include "Tesselator.h"
 #include "TextureAtlas.h"
 #include "TileRenderer.h"
-#include "..\Minecraft.World\net.minecraft.world.level.h"
-#include "..\Minecraft.World\PistonPieceEntity.h"
-#include "..\Minecraft.World\net.minecraft.world.level.tile.h"
+#include "../Minecraft.World/net.minecraft.world.level.h"
+#include "../Minecraft.World/PistonPieceEntity.h"
+#include "../Minecraft.World/net.minecraft.world.level.tile.h"
 
 ResourceLocation PistonPieceRenderer::SIGN_LOCATION = ResourceLocation(TN_ITEM_SIGN);
 

@@ -1,7 +1,7 @@
 #pragma once
 
-#include "../media\xuiscene_DLCOffers.h"
-#include "../media\xuiscene_DLCMain.h"
+#include "../media/xuiscene_DLCOffers.h"
+#include "../media/xuiscene_DLCMain.h"
 
 
 #include "XUI_CustomMessages.h"

@@ -4,11 +4,11 @@
 #include "HumanoidModel.h"
 #include "ModelPart.h"
 #include "EntityRenderDispatcher.h"
-#include "..\Minecraft.World\net.minecraft.world.item.h"
-#include "..\Minecraft.World\net.minecraft.world.level.tile.h"
-#include "..\Minecraft.World\net.minecraft.world.entity.h"
-#include "..\Minecraft.World\net.minecraft.world.entity.monster.h"
-#include "..\Minecraft.World\net.minecraft.h"
+#include "../Minecraft.World/net.minecraft.world.item.h"
+#include "../Minecraft.World/net.minecraft.world.level.tile.h"
+#include "../Minecraft.World/net.minecraft.world.entity.h"
+#include "../Minecraft.World/net.minecraft.world.entity.monster.h"
+#include "../Minecraft.World/net.minecraft.h"
 
 const wstring HumanoidMobRenderer::MATERIAL_NAMES[5] = { L"cloth", L"chain", L"iron", L"diamond", L"gold" };
 std::map<wstring, ResourceLocation> HumanoidMobRenderer::ARMOR_LOCATION_CACHE;

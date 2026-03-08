@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "ZombieModel.h"
 #include "VillagerZombieModel.h"
-#include "..\Minecraft.World\net.minecraft.world.entity.monster.h"
+#include "../Minecraft.World/net.minecraft.world.entity.monster.h"
 #include "ZombieRenderer.h"
 
 ResourceLocation ZombieRenderer::ZOMBIE_PIGMAN_LOCATION(TN_MOB_PIGZOMBIE);

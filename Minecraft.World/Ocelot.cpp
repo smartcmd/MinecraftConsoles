@@ -14,9 +14,9 @@
 #include "net.minecraft.world.phys.h"
 #include "SynchedEntityData.h"
 #include "StringHelpers.h"
-#include "..\Minecraft.Client\Textures.h"
-#include "..\Minecraft.Client\Minecraft.h"
-#include "..\Minecraft.Client\MultiPlayerLocalPlayer.h"
+#include "../Minecraft.Client/Textures.h"
+#include "../Minecraft.Client/Minecraft.h"
+#include "../Minecraft.Client/MultiPlayerLocalPlayer.h"
 #include "GenericStats.h"
 #include "Ocelot.h"
 

@@ -1,16 +1,16 @@
 #include "stdafx.h"
 
-#include "..\Minecraft.World\StringHelpers.h"
+#include "../Minecraft.World/StringHelpers.h"
 
-#include "..\Minecraft.World\Player.h"
-#include "..\Minecraft.World\Level.h"
-#include "..\Minecraft.World\LevelData.h"
-#include "..\Minecraft.World\LevelSettings.h"
+#include "../Minecraft.World/Player.h"
+#include "../Minecraft.World/Level.h"
+#include "../Minecraft.World/LevelData.h"
+#include "../Minecraft.World/LevelSettings.h"
 
-#include "Common\Network\GameNetworkManager.h"
+#include "Common/Network/GameNetworkManager.h"
 #include "MultiPlayerLocalPlayer.h"
 
-#include "..\ServiceConfig\Events-XBLA.8-149E11AEEvents.h"
+#include "../ServiceConfig/Events-XBLA.8-149E11AEEvents.h"
 
 #include "DurangoTelemetry.h"
 

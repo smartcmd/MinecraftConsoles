@@ -2,12 +2,12 @@
 #include <xuiresource.h>
 #include <xuiapp.h>
 #include <assert.h>
-#include "..\..\..\Minecraft.World\LevelSettings.h"
-#include "..\..\..\Minecraft.World\StringHelpers.h"
+#include "../../../Minecraft.World/LevelSettings.h"
+#include "../../../Minecraft.World/StringHelpers.h"
 #include "XUI_MultiGameInfo.h"
 #include "XUI_MultiGameJoinLoad.h"
-#include "..\..\..\Minecraft.World\LevelSettings.h"
-#include "..\..\..\Minecraft.World\Difficulty.h"
+#include "../../../Minecraft.World/LevelSettings.h"
+#include "../../../Minecraft.World/Difficulty.h"
 
 #define UPDATE_PLAYERS_TIMER_ID 0
 #define UPDATE_PLAYERS_TIMER_TIME 30000

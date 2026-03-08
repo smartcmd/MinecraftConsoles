@@ -1,5 +1,5 @@
 #pragma once
-#include "..\Minecraft.World\net.minecraft.network.h"
+#include "../Minecraft.World/net.minecraft.network.h"
 class Minecraft;
 class MultiPlayerLevel;
 class SavedDataStorage;

@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "..\Minecraft.World\net.minecraft.world.entity.animal.h"
+#include "../Minecraft.World/net.minecraft.world.entity.animal.h"
 #include "OzelotRenderer.h"
 
 OzelotRenderer::OzelotRenderer(Model *model, float shadow) : MobRenderer(model, shadow)

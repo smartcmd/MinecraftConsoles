@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "net.minecraft.commands.h"
-#include "..\Minecraft.Client\MinecraftServer.h"
-#include "..\Minecraft.Client\ServerLevel.h"
+#include "../Minecraft.Client/MinecraftServer.h"
+#include "../Minecraft.Client/ServerLevel.h"
 #include "net.minecraft.network.packet.h"
 #include "TimeCommand.h"
 

@@ -4,19 +4,19 @@
 #include "stdafx.h"
 
 #include <assert.h>
-#include "..\XUI\XUI_Reinstall.h"
-#include "..\..\..\Minecraft.World\AABB.h"
-#include "..\..\..\Minecraft.World\Vec3.h"
-#include "..\..\..\Minecraft.World\net.minecraft.stats.h"
-#include "..\..\..\Minecraft.Client\StatsCounter.h"
-#include "..\..\..\Minecraft.World\Entity.h"
-#include "..\..\..\Minecraft.World\Level.h"
-#include "..\..\..\Minecraft.Client\LocalPlayer.h"
-#include "..\..\MinecraftServer.h"
-#include "..\..\ProgressRenderer.h"
-#include "..\..\..\Minecraft.World\DisconnectPacket.h"
-#include "..\..\Minecraft.h"
-#include "..\..\Options.h"
+#include "../XUI/XUI_Reinstall.h"
+#include "../../../Minecraft.World/AABB.h"
+#include "../../../Minecraft.World/Vec3.h"
+#include "../../../Minecraft.World/net.minecraft.stats.h"
+#include "../../../Minecraft.Client/StatsCounter.h"
+#include "../../../Minecraft.World/Entity.h"
+#include "../../../Minecraft.World/Level.h"
+#include "../../../Minecraft.Client/LocalPlayer.h"
+#include "../../MinecraftServer.h"
+#include "../../ProgressRenderer.h"
+#include "../../../Minecraft.World/DisconnectPacket.h"
+#include "../../Minecraft.h"
+#include "../../Options.h"
 
 
 

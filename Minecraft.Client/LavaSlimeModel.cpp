@@ -1,8 +1,8 @@
 #include "stdafx.h"
-#include "..\Minecraft.World\Mth.h"
+#include "../Minecraft.World/Mth.h"
 #include "LavaSlimeModel.h"
 #include "ModelPart.h"
-#include "..\Minecraft.World\LavaSlime.h"
+#include "../Minecraft.World/LavaSlime.h"
 
 
 LavaSlimeModel::LavaSlimeModel() 

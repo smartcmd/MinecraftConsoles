@@ -9,7 +9,7 @@
 #include "SocialManager.h"
 #include <assert.h>
 #include <xgraphics.h>
-#include "..\Sentient\SentientManager.h"
+#include "../Sentient/SentientManager.h"
 
 ///////////////////////////////////////////////////////////////////////////
 // Constants.

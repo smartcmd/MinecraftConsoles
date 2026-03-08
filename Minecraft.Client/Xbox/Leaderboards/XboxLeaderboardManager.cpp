@@ -2,7 +2,7 @@
 
 #include "XboxLeaderboardManager.h"
 
-#include "..\Network\NetworkPlayerXbox.h"
+#include "../Network/NetworkPlayerXbox.h"
 
 #ifdef _XBOX
 LeaderboardManager *LeaderboardManager::m_instance = new XboxLeaderboardManager(); //Singleton instance of the LeaderboardManager

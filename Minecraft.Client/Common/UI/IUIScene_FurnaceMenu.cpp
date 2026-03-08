@@ -1,7 +1,7 @@
 #include "stdafx.h"
 
 #include "IUIScene_FurnaceMenu.h"
-#include "..\..\..\Minecraft.World\net.minecraft.world.inventory.h"
+#include "../../../Minecraft.World/net.minecraft.world.inventory.h"
 
 IUIScene_AbstractContainerMenu::ESceneSection IUIScene_FurnaceMenu::GetSectionAndSlotInDirection( ESceneSection eSection, ETapState eTapDirection, int *piTargetX, int *piTargetY )
 {

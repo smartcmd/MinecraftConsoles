@@ -3,236 +3,234 @@
 
 #include "stdafx.h"
 
+#include "../../Minecraft.World/AABB.h"
+#include "../../Minecraft.World/ItemInstance.h"
+#include "../../Minecraft.World/Language.h"
+#include "../../Minecraft.World/Level.h"
+#include "../../Minecraft.World/MapItem.h"
+#include "../../Minecraft.World/Recipes.h"
+#include "../../Minecraft.World/Recipy.h"
+#include "../../Minecraft.World/StringHelpers.h"
+#include "../../Minecraft.World/Vec3.h"
+#include "../../Minecraft.World/net.minecraft.world.level.tile.h"
+#include "../LocalPlayer.h"
+#include "../MinecraftServer.h"
 #include <assert.h>
-#include "..\MinecraftServer.h"
-#include "..\LocalPlayer.h"
-#include "..\..\Minecraft.World\ItemInstance.h"
-#include "..\..\Minecraft.World\MapItem.h"
-#include "..\..\Minecraft.World\Recipes.h"
-#include "..\..\Minecraft.World\Recipy.h"
-#include "..\..\Minecraft.World\Language.h"
-#include "..\..\Minecraft.World\StringHelpers.h"
-#include "..\..\Minecraft.World\AABB.h"
-#include "..\..\Minecraft.World\Vec3.h"
-#include "..\..\Minecraft.World\Level.h"
-#include "..\..\Minecraft.World\net.minecraft.world.level.tile.h"
 
-#include "Leaderboards\GameProgress.h"
-#include "..\ClientConnection.h"
-#include "..\User.h"
-#include "..\..\Minecraft.World\Socket.h"
-#include "..\..\Minecraft.World\ThreadName.h"
-#include "..\..\Minecraft.Client\StatsCounter.h"
-#include "..\ConnectScreen.h"
-#include "Leaderboards\DurangoLeaderboardManager.h"
-#include "..\..\Minecraft.Client\Tesselator.h"
-#include "..\..\Minecraft.Client\Options.h"
-#include "..\GameRenderer.h"
-#include "Sentient\SentientManager.h"
-#include "..\..\Minecraft.World\IntCache.h"
-#include "..\Textures.h"
+#include "../../Minecraft.Client/Options.h"
+#include "../../Minecraft.Client/StatsCounter.h"
+#include "../../Minecraft.Client/Tesselator.h"
+#include "../../Minecraft.World/IntCache.h"
+#include "../../Minecraft.World/OldChunkStorage.h"
+#include "../../Minecraft.World/Socket.h"
+#include "../../Minecraft.World/ThreadName.h"
+#include "../../Minecraft.World/compression.h"
+#include "../ClientConnection.h"
+#include "../ConnectScreen.h"
+#include "../GameRenderer.h"
+#include "../Textures.h"
+#include "../User.h"
+#include "Leaderboards/DurangoLeaderboardManager.h"
+#include "Leaderboards/GameProgress.h"
 #include "Resource.h"
-#include "..\..\Minecraft.World\compression.h"
-#include "..\..\Minecraft.World\OldChunkStorage.h"
+#include "Sentient/SentientManager.h"
 #include <agile.h>
 
-//using namespace Windows::Xbox::Input;
+// using namespace Windows::Xbox::Input;
 using namespace Windows::Foundation::Collections;
 
-#define THEME_NAME		"584111F70AAAAAAA"
-#define THEME_FILESIZE	2797568
+#define THEME_NAME "584111F70AAAAAAA"
+#define THEME_FILESIZE 2797568
 
-//#define THREE_MB 3145728 // minimum save size (checking for this on a selected device)
-//#define FIVE_MB 5242880 // minimum save size (checking for this on a selected device)
-//#define FIFTY_TWO_MB (1024*1024*52) // Maximum TCR space required for a save (checking for this on a selected device)
-#define FIFTY_ONE_MB (1000000*51) // Maximum TCR space required for a save is 52MB (checking for this on a selected device)
+// #define THREE_MB 3145728 // minimum save size (checking for this on a selected device)
+// #define FIVE_MB 5242880 // minimum save size (checking for this on a selected device)
+// #define FIFTY_TWO_MB (1024*1024*52) // Maximum TCR space required for a save (checking for this on a selected device)
+#define FIFTY_ONE_MB (1000000 * 51) // Maximum TCR space required for a save is 52MB (checking for this on a selected device)
 
-//#define PROFILE_VERSION 3 // new version for the interim bug fix 166 TU
-#define NUM_PROFILE_VALUES	5
+// #define PROFILE_VERSION 3 // new version for the interim bug fix 166 TU
+#define NUM_PROFILE_VALUES 5
 #define NUM_PROFILE_SETTINGS 4
-DWORD dwProfileSettingsA[NUM_PROFILE_VALUES]=
-{
+DWORD dwProfileSettingsA[NUM_PROFILE_VALUES] =
+    {
 #ifdef _XBOX
-	XPROFILE_OPTION_CONTROLLER_VIBRATION,
-	XPROFILE_GAMER_YAXIS_INVERSION,
-	XPROFILE_GAMER_CONTROL_SENSITIVITY,
-	XPROFILE_GAMER_ACTION_MOVEMENT_CONTROL,
-	XPROFILE_TITLE_SPECIFIC1,
+        XPROFILE_OPTION_CONTROLLER_VIBRATION,
+        XPROFILE_GAMER_YAXIS_INVERSION,
+        XPROFILE_GAMER_CONTROL_SENSITIVITY,
+        XPROFILE_GAMER_ACTION_MOVEMENT_CONTROL,
+        XPROFILE_TITLE_SPECIFIC1,
 #else
-	0,0,0,0,0
+        0, 0, 0, 0, 0
 #endif
 };
 
 //-------------------------------------------------------------------------------------
-// Time             Since fAppTime is a float, we need to keep the quadword app time 
+// Time             Since fAppTime is a float, we need to keep the quadword app time
 //                  as a LARGE_INTEGER so that we don't lose precision after running
 //                  for a long time.
 //-------------------------------------------------------------------------------------
 
-
 BOOL g_bWidescreen = TRUE;
-
 
 void DefineActions(void)
 {
-	// The app needs to define the actions required, and the possible mappings for these
+    // The app needs to define the actions required, and the possible mappings for these
 
-	// Split into Menu actions, and in-game actions
+    // Split into Menu actions, and in-game actions
 
-	InputManager.SetGameJoypadMaps(MAP_STYLE_0,ACTION_MENU_A,							_360_JOY_BUTTON_A);
-	InputManager.SetGameJoypadMaps(MAP_STYLE_0,ACTION_MENU_B,							_360_JOY_BUTTON_B | _360_GTC_BACK);
-	InputManager.SetGameJoypadMaps(MAP_STYLE_0,ACTION_MENU_X,							_360_JOY_BUTTON_X);
-	InputManager.SetGameJoypadMaps(MAP_STYLE_0,ACTION_MENU_Y,							_360_JOY_BUTTON_Y);
-	InputManager.SetGameJoypadMaps(MAP_STYLE_0,ACTION_MENU_OK,							_360_JOY_BUTTON_A);
-	InputManager.SetGameJoypadMaps(MAP_STYLE_0,ACTION_MENU_CANCEL,						_360_JOY_BUTTON_B | _360_GTC_BACK);
-	InputManager.SetGameJoypadMaps(MAP_STYLE_0,ACTION_MENU_UP,							_360_JOY_BUTTON_DPAD_UP | _360_JOY_BUTTON_LSTICK_UP);
-	InputManager.SetGameJoypadMaps(MAP_STYLE_0,ACTION_MENU_DOWN,						_360_JOY_BUTTON_DPAD_DOWN | _360_JOY_BUTTON_LSTICK_DOWN);
-	InputManager.SetGameJoypadMaps(MAP_STYLE_0,ACTION_MENU_LEFT,						_360_JOY_BUTTON_DPAD_LEFT | _360_JOY_BUTTON_LSTICK_LEFT);
-	InputManager.SetGameJoypadMaps(MAP_STYLE_0,ACTION_MENU_RIGHT,						_360_JOY_BUTTON_DPAD_RIGHT | _360_JOY_BUTTON_LSTICK_RIGHT);
-	InputManager.SetGameJoypadMaps(MAP_STYLE_0,ACTION_MENU_PAGEUP,						_360_JOY_BUTTON_LT);
-	InputManager.SetGameJoypadMaps(MAP_STYLE_0,ACTION_MENU_PAGEDOWN,					_360_JOY_BUTTON_RT);
-	InputManager.SetGameJoypadMaps(MAP_STYLE_0,ACTION_MENU_RIGHT_SCROLL,				_360_JOY_BUTTON_RB);
-	InputManager.SetGameJoypadMaps(MAP_STYLE_0,ACTION_MENU_LEFT_SCROLL,					_360_JOY_BUTTON_LB);
-	InputManager.SetGameJoypadMaps(MAP_STYLE_0,ACTION_MENU_PAUSEMENU,					_360_JOY_BUTTON_START | _360_GTC_MENU);
+    InputManager.SetGameJoypadMaps(MAP_STYLE_0, ACTION_MENU_A, _360_JOY_BUTTON_A);
+    InputManager.SetGameJoypadMaps(MAP_STYLE_0, ACTION_MENU_B, _360_JOY_BUTTON_B | _360_GTC_BACK);
+    InputManager.SetGameJoypadMaps(MAP_STYLE_0, ACTION_MENU_X, _360_JOY_BUTTON_X);
+    InputManager.SetGameJoypadMaps(MAP_STYLE_0, ACTION_MENU_Y, _360_JOY_BUTTON_Y);
+    InputManager.SetGameJoypadMaps(MAP_STYLE_0, ACTION_MENU_OK, _360_JOY_BUTTON_A);
+    InputManager.SetGameJoypadMaps(MAP_STYLE_0, ACTION_MENU_CANCEL, _360_JOY_BUTTON_B | _360_GTC_BACK);
+    InputManager.SetGameJoypadMaps(MAP_STYLE_0, ACTION_MENU_UP, _360_JOY_BUTTON_DPAD_UP | _360_JOY_BUTTON_LSTICK_UP);
+    InputManager.SetGameJoypadMaps(MAP_STYLE_0, ACTION_MENU_DOWN, _360_JOY_BUTTON_DPAD_DOWN | _360_JOY_BUTTON_LSTICK_DOWN);
+    InputManager.SetGameJoypadMaps(MAP_STYLE_0, ACTION_MENU_LEFT, _360_JOY_BUTTON_DPAD_LEFT | _360_JOY_BUTTON_LSTICK_LEFT);
+    InputManager.SetGameJoypadMaps(MAP_STYLE_0, ACTION_MENU_RIGHT, _360_JOY_BUTTON_DPAD_RIGHT | _360_JOY_BUTTON_LSTICK_RIGHT);
+    InputManager.SetGameJoypadMaps(MAP_STYLE_0, ACTION_MENU_PAGEUP, _360_JOY_BUTTON_LT);
+    InputManager.SetGameJoypadMaps(MAP_STYLE_0, ACTION_MENU_PAGEDOWN, _360_JOY_BUTTON_RT);
+    InputManager.SetGameJoypadMaps(MAP_STYLE_0, ACTION_MENU_RIGHT_SCROLL, _360_JOY_BUTTON_RB);
+    InputManager.SetGameJoypadMaps(MAP_STYLE_0, ACTION_MENU_LEFT_SCROLL, _360_JOY_BUTTON_LB);
+    InputManager.SetGameJoypadMaps(MAP_STYLE_0, ACTION_MENU_PAUSEMENU, _360_JOY_BUTTON_START | _360_GTC_MENU);
 
-	InputManager.SetGameJoypadMaps(MAP_STYLE_0,ACTION_MENU_GTC_PAUSE,					_360_GTC_PAUSE);
-	InputManager.SetGameJoypadMaps(MAP_STYLE_0,ACTION_MENU_GTC_RESUME,					_360_GTC_PLAY);
+    InputManager.SetGameJoypadMaps(MAP_STYLE_0, ACTION_MENU_GTC_PAUSE, _360_GTC_PAUSE);
+    InputManager.SetGameJoypadMaps(MAP_STYLE_0, ACTION_MENU_GTC_RESUME, _360_GTC_PLAY);
 
-	InputManager.SetGameJoypadMaps(MAP_STYLE_0,ACTION_MENU_STICK_PRESS,					_360_JOY_BUTTON_LTHUMB);
-	InputManager.SetGameJoypadMaps(MAP_STYLE_0,ACTION_MENU_OTHER_STICK_PRESS,			_360_JOY_BUTTON_RTHUMB);
-	InputManager.SetGameJoypadMaps(MAP_STYLE_0,ACTION_MENU_OTHER_STICK_UP,				_360_JOY_BUTTON_RSTICK_UP);
-	InputManager.SetGameJoypadMaps(MAP_STYLE_0,ACTION_MENU_OTHER_STICK_DOWN,			_360_JOY_BUTTON_RSTICK_DOWN);
-	InputManager.SetGameJoypadMaps(MAP_STYLE_0,ACTION_MENU_OTHER_STICK_LEFT,			_360_JOY_BUTTON_RSTICK_LEFT);
-	InputManager.SetGameJoypadMaps(MAP_STYLE_0,ACTION_MENU_OTHER_STICK_RIGHT,			_360_JOY_BUTTON_RSTICK_RIGHT);
+    InputManager.SetGameJoypadMaps(MAP_STYLE_0, ACTION_MENU_STICK_PRESS, _360_JOY_BUTTON_LTHUMB);
+    InputManager.SetGameJoypadMaps(MAP_STYLE_0, ACTION_MENU_OTHER_STICK_PRESS, _360_JOY_BUTTON_RTHUMB);
+    InputManager.SetGameJoypadMaps(MAP_STYLE_0, ACTION_MENU_OTHER_STICK_UP, _360_JOY_BUTTON_RSTICK_UP);
+    InputManager.SetGameJoypadMaps(MAP_STYLE_0, ACTION_MENU_OTHER_STICK_DOWN, _360_JOY_BUTTON_RSTICK_DOWN);
+    InputManager.SetGameJoypadMaps(MAP_STYLE_0, ACTION_MENU_OTHER_STICK_LEFT, _360_JOY_BUTTON_RSTICK_LEFT);
+    InputManager.SetGameJoypadMaps(MAP_STYLE_0, ACTION_MENU_OTHER_STICK_RIGHT, _360_JOY_BUTTON_RSTICK_RIGHT);
 
-	InputManager.SetGameJoypadMaps(MAP_STYLE_0,MINECRAFT_ACTION_JUMP,					_360_JOY_BUTTON_A);
-	InputManager.SetGameJoypadMaps(MAP_STYLE_0,MINECRAFT_ACTION_FORWARD,				_360_JOY_BUTTON_LSTICK_UP);
-	InputManager.SetGameJoypadMaps(MAP_STYLE_0,MINECRAFT_ACTION_BACKWARD,				_360_JOY_BUTTON_LSTICK_DOWN);
-	InputManager.SetGameJoypadMaps(MAP_STYLE_0,MINECRAFT_ACTION_LEFT,					_360_JOY_BUTTON_LSTICK_LEFT);
-	InputManager.SetGameJoypadMaps(MAP_STYLE_0,MINECRAFT_ACTION_RIGHT,					_360_JOY_BUTTON_LSTICK_RIGHT);
-	InputManager.SetGameJoypadMaps(MAP_STYLE_0,MINECRAFT_ACTION_LOOK_LEFT,				_360_JOY_BUTTON_RSTICK_LEFT);
-	InputManager.SetGameJoypadMaps(MAP_STYLE_0,MINECRAFT_ACTION_LOOK_RIGHT,				_360_JOY_BUTTON_RSTICK_RIGHT);
-	InputManager.SetGameJoypadMaps(MAP_STYLE_0,MINECRAFT_ACTION_LOOK_UP,				_360_JOY_BUTTON_RSTICK_UP);
-	InputManager.SetGameJoypadMaps(MAP_STYLE_0,MINECRAFT_ACTION_LOOK_DOWN,				_360_JOY_BUTTON_RSTICK_DOWN);
-	InputManager.SetGameJoypadMaps(MAP_STYLE_0,MINECRAFT_ACTION_USE,					_360_JOY_BUTTON_LT);
-	InputManager.SetGameJoypadMaps(MAP_STYLE_0,MINECRAFT_ACTION_ACTION,					_360_JOY_BUTTON_RT);
-	InputManager.SetGameJoypadMaps(MAP_STYLE_0,MINECRAFT_ACTION_RIGHT_SCROLL,			_360_JOY_BUTTON_RB);
-	InputManager.SetGameJoypadMaps(MAP_STYLE_0,MINECRAFT_ACTION_LEFT_SCROLL,			_360_JOY_BUTTON_LB);
-	InputManager.SetGameJoypadMaps(MAP_STYLE_0,MINECRAFT_ACTION_INVENTORY,				_360_JOY_BUTTON_Y);
-	InputManager.SetGameJoypadMaps(MAP_STYLE_0,MINECRAFT_ACTION_PAUSEMENU,				_360_JOY_BUTTON_START | _360_GTC_MENU);
-	InputManager.SetGameJoypadMaps(MAP_STYLE_0,MINECRAFT_ACTION_DROP,					_360_JOY_BUTTON_B);
-	InputManager.SetGameJoypadMaps(MAP_STYLE_0,MINECRAFT_ACTION_SNEAK_TOGGLE,			_360_JOY_BUTTON_RTHUMB);
-	InputManager.SetGameJoypadMaps(MAP_STYLE_0,MINECRAFT_ACTION_CRAFTING,				_360_JOY_BUTTON_X);
-	InputManager.SetGameJoypadMaps(MAP_STYLE_0,MINECRAFT_ACTION_RENDER_THIRD_PERSON,	_360_JOY_BUTTON_LTHUMB);
-	InputManager.SetGameJoypadMaps(MAP_STYLE_0,MINECRAFT_ACTION_GAME_INFO,				_360_JOY_BUTTON_BACK | _360_GTC_VIEW);
-	
-	InputManager.SetGameJoypadMaps(MAP_STYLE_0,MINECRAFT_ACTION_DPAD_LEFT,				_360_JOY_BUTTON_DPAD_LEFT);
-	InputManager.SetGameJoypadMaps(MAP_STYLE_0,MINECRAFT_ACTION_DPAD_RIGHT,				_360_JOY_BUTTON_DPAD_RIGHT);
-	InputManager.SetGameJoypadMaps(MAP_STYLE_0,MINECRAFT_ACTION_DPAD_UP,				_360_JOY_BUTTON_DPAD_UP);
-	InputManager.SetGameJoypadMaps(MAP_STYLE_0,MINECRAFT_ACTION_DPAD_DOWN,				_360_JOY_BUTTON_DPAD_DOWN);		
+    InputManager.SetGameJoypadMaps(MAP_STYLE_0, MINECRAFT_ACTION_JUMP, _360_JOY_BUTTON_A);
+    InputManager.SetGameJoypadMaps(MAP_STYLE_0, MINECRAFT_ACTION_FORWARD, _360_JOY_BUTTON_LSTICK_UP);
+    InputManager.SetGameJoypadMaps(MAP_STYLE_0, MINECRAFT_ACTION_BACKWARD, _360_JOY_BUTTON_LSTICK_DOWN);
+    InputManager.SetGameJoypadMaps(MAP_STYLE_0, MINECRAFT_ACTION_LEFT, _360_JOY_BUTTON_LSTICK_LEFT);
+    InputManager.SetGameJoypadMaps(MAP_STYLE_0, MINECRAFT_ACTION_RIGHT, _360_JOY_BUTTON_LSTICK_RIGHT);
+    InputManager.SetGameJoypadMaps(MAP_STYLE_0, MINECRAFT_ACTION_LOOK_LEFT, _360_JOY_BUTTON_RSTICK_LEFT);
+    InputManager.SetGameJoypadMaps(MAP_STYLE_0, MINECRAFT_ACTION_LOOK_RIGHT, _360_JOY_BUTTON_RSTICK_RIGHT);
+    InputManager.SetGameJoypadMaps(MAP_STYLE_0, MINECRAFT_ACTION_LOOK_UP, _360_JOY_BUTTON_RSTICK_UP);
+    InputManager.SetGameJoypadMaps(MAP_STYLE_0, MINECRAFT_ACTION_LOOK_DOWN, _360_JOY_BUTTON_RSTICK_DOWN);
+    InputManager.SetGameJoypadMaps(MAP_STYLE_0, MINECRAFT_ACTION_USE, _360_JOY_BUTTON_LT);
+    InputManager.SetGameJoypadMaps(MAP_STYLE_0, MINECRAFT_ACTION_ACTION, _360_JOY_BUTTON_RT);
+    InputManager.SetGameJoypadMaps(MAP_STYLE_0, MINECRAFT_ACTION_RIGHT_SCROLL, _360_JOY_BUTTON_RB);
+    InputManager.SetGameJoypadMaps(MAP_STYLE_0, MINECRAFT_ACTION_LEFT_SCROLL, _360_JOY_BUTTON_LB);
+    InputManager.SetGameJoypadMaps(MAP_STYLE_0, MINECRAFT_ACTION_INVENTORY, _360_JOY_BUTTON_Y);
+    InputManager.SetGameJoypadMaps(MAP_STYLE_0, MINECRAFT_ACTION_PAUSEMENU, _360_JOY_BUTTON_START | _360_GTC_MENU);
+    InputManager.SetGameJoypadMaps(MAP_STYLE_0, MINECRAFT_ACTION_DROP, _360_JOY_BUTTON_B);
+    InputManager.SetGameJoypadMaps(MAP_STYLE_0, MINECRAFT_ACTION_SNEAK_TOGGLE, _360_JOY_BUTTON_RTHUMB);
+    InputManager.SetGameJoypadMaps(MAP_STYLE_0, MINECRAFT_ACTION_CRAFTING, _360_JOY_BUTTON_X);
+    InputManager.SetGameJoypadMaps(MAP_STYLE_0, MINECRAFT_ACTION_RENDER_THIRD_PERSON, _360_JOY_BUTTON_LTHUMB);
+    InputManager.SetGameJoypadMaps(MAP_STYLE_0, MINECRAFT_ACTION_GAME_INFO, _360_JOY_BUTTON_BACK | _360_GTC_VIEW);
 
-	InputManager.SetGameJoypadMaps(MAP_STYLE_1,ACTION_MENU_A,							_360_JOY_BUTTON_A);
-	InputManager.SetGameJoypadMaps(MAP_STYLE_1,ACTION_MENU_B,							_360_JOY_BUTTON_B | _360_GTC_BACK);
-	InputManager.SetGameJoypadMaps(MAP_STYLE_1,ACTION_MENU_X,							_360_JOY_BUTTON_X);
-	InputManager.SetGameJoypadMaps(MAP_STYLE_1,ACTION_MENU_Y,							_360_JOY_BUTTON_Y);
-	InputManager.SetGameJoypadMaps(MAP_STYLE_1,ACTION_MENU_OK,							_360_JOY_BUTTON_A);
-	InputManager.SetGameJoypadMaps(MAP_STYLE_1,ACTION_MENU_CANCEL,						_360_JOY_BUTTON_B | _360_GTC_BACK);
-	InputManager.SetGameJoypadMaps(MAP_STYLE_1,ACTION_MENU_UP,							_360_JOY_BUTTON_DPAD_UP | _360_JOY_BUTTON_LSTICK_UP);
-	InputManager.SetGameJoypadMaps(MAP_STYLE_1,ACTION_MENU_DOWN,						_360_JOY_BUTTON_DPAD_DOWN | _360_JOY_BUTTON_LSTICK_DOWN);
-	InputManager.SetGameJoypadMaps(MAP_STYLE_1,ACTION_MENU_LEFT,						_360_JOY_BUTTON_DPAD_LEFT | _360_JOY_BUTTON_LSTICK_LEFT);
-	InputManager.SetGameJoypadMaps(MAP_STYLE_1,ACTION_MENU_RIGHT,						_360_JOY_BUTTON_DPAD_RIGHT | _360_JOY_BUTTON_LSTICK_RIGHT);
-	InputManager.SetGameJoypadMaps(MAP_STYLE_1,ACTION_MENU_PAGEUP,						_360_JOY_BUTTON_LB);
-	InputManager.SetGameJoypadMaps(MAP_STYLE_1,ACTION_MENU_PAGEDOWN,					_360_JOY_BUTTON_RT);
-	InputManager.SetGameJoypadMaps(MAP_STYLE_1,ACTION_MENU_RIGHT_SCROLL,				_360_JOY_BUTTON_RB);
-	InputManager.SetGameJoypadMaps(MAP_STYLE_1,ACTION_MENU_LEFT_SCROLL,					_360_JOY_BUTTON_LB);
-	InputManager.SetGameJoypadMaps(MAP_STYLE_1,ACTION_MENU_PAUSEMENU,					_360_JOY_BUTTON_START | _360_GTC_MENU);
+    InputManager.SetGameJoypadMaps(MAP_STYLE_0, MINECRAFT_ACTION_DPAD_LEFT, _360_JOY_BUTTON_DPAD_LEFT);
+    InputManager.SetGameJoypadMaps(MAP_STYLE_0, MINECRAFT_ACTION_DPAD_RIGHT, _360_JOY_BUTTON_DPAD_RIGHT);
+    InputManager.SetGameJoypadMaps(MAP_STYLE_0, MINECRAFT_ACTION_DPAD_UP, _360_JOY_BUTTON_DPAD_UP);
+    InputManager.SetGameJoypadMaps(MAP_STYLE_0, MINECRAFT_ACTION_DPAD_DOWN, _360_JOY_BUTTON_DPAD_DOWN);
 
-	InputManager.SetGameJoypadMaps(MAP_STYLE_1,ACTION_MENU_GTC_PAUSE,					_360_GTC_PAUSE);
-	InputManager.SetGameJoypadMaps(MAP_STYLE_1,ACTION_MENU_GTC_RESUME,					_360_GTC_PLAY);
+    InputManager.SetGameJoypadMaps(MAP_STYLE_1, ACTION_MENU_A, _360_JOY_BUTTON_A);
+    InputManager.SetGameJoypadMaps(MAP_STYLE_1, ACTION_MENU_B, _360_JOY_BUTTON_B | _360_GTC_BACK);
+    InputManager.SetGameJoypadMaps(MAP_STYLE_1, ACTION_MENU_X, _360_JOY_BUTTON_X);
+    InputManager.SetGameJoypadMaps(MAP_STYLE_1, ACTION_MENU_Y, _360_JOY_BUTTON_Y);
+    InputManager.SetGameJoypadMaps(MAP_STYLE_1, ACTION_MENU_OK, _360_JOY_BUTTON_A);
+    InputManager.SetGameJoypadMaps(MAP_STYLE_1, ACTION_MENU_CANCEL, _360_JOY_BUTTON_B | _360_GTC_BACK);
+    InputManager.SetGameJoypadMaps(MAP_STYLE_1, ACTION_MENU_UP, _360_JOY_BUTTON_DPAD_UP | _360_JOY_BUTTON_LSTICK_UP);
+    InputManager.SetGameJoypadMaps(MAP_STYLE_1, ACTION_MENU_DOWN, _360_JOY_BUTTON_DPAD_DOWN | _360_JOY_BUTTON_LSTICK_DOWN);
+    InputManager.SetGameJoypadMaps(MAP_STYLE_1, ACTION_MENU_LEFT, _360_JOY_BUTTON_DPAD_LEFT | _360_JOY_BUTTON_LSTICK_LEFT);
+    InputManager.SetGameJoypadMaps(MAP_STYLE_1, ACTION_MENU_RIGHT, _360_JOY_BUTTON_DPAD_RIGHT | _360_JOY_BUTTON_LSTICK_RIGHT);
+    InputManager.SetGameJoypadMaps(MAP_STYLE_1, ACTION_MENU_PAGEUP, _360_JOY_BUTTON_LB);
+    InputManager.SetGameJoypadMaps(MAP_STYLE_1, ACTION_MENU_PAGEDOWN, _360_JOY_BUTTON_RT);
+    InputManager.SetGameJoypadMaps(MAP_STYLE_1, ACTION_MENU_RIGHT_SCROLL, _360_JOY_BUTTON_RB);
+    InputManager.SetGameJoypadMaps(MAP_STYLE_1, ACTION_MENU_LEFT_SCROLL, _360_JOY_BUTTON_LB);
+    InputManager.SetGameJoypadMaps(MAP_STYLE_1, ACTION_MENU_PAUSEMENU, _360_JOY_BUTTON_START | _360_GTC_MENU);
 
-	InputManager.SetGameJoypadMaps(MAP_STYLE_1,ACTION_MENU_STICK_PRESS,					_360_JOY_BUTTON_LTHUMB);
-	InputManager.SetGameJoypadMaps(MAP_STYLE_1,ACTION_MENU_OTHER_STICK_PRESS,			_360_JOY_BUTTON_RTHUMB);
-	InputManager.SetGameJoypadMaps(MAP_STYLE_1,ACTION_MENU_OTHER_STICK_UP,				_360_JOY_BUTTON_RSTICK_UP);
-	InputManager.SetGameJoypadMaps(MAP_STYLE_1,ACTION_MENU_OTHER_STICK_DOWN,			_360_JOY_BUTTON_RSTICK_DOWN);
-	InputManager.SetGameJoypadMaps(MAP_STYLE_1,ACTION_MENU_OTHER_STICK_LEFT,			_360_JOY_BUTTON_RSTICK_LEFT);
-	InputManager.SetGameJoypadMaps(MAP_STYLE_1,ACTION_MENU_OTHER_STICK_RIGHT,			_360_JOY_BUTTON_RSTICK_RIGHT);
+    InputManager.SetGameJoypadMaps(MAP_STYLE_1, ACTION_MENU_GTC_PAUSE, _360_GTC_PAUSE);
+    InputManager.SetGameJoypadMaps(MAP_STYLE_1, ACTION_MENU_GTC_RESUME, _360_GTC_PLAY);
 
-	InputManager.SetGameJoypadMaps(MAP_STYLE_1,MINECRAFT_ACTION_JUMP,					_360_JOY_BUTTON_RB);
-	InputManager.SetGameJoypadMaps(MAP_STYLE_1,MINECRAFT_ACTION_FORWARD,				_360_JOY_BUTTON_LSTICK_UP);
-	InputManager.SetGameJoypadMaps(MAP_STYLE_1,MINECRAFT_ACTION_BACKWARD,				_360_JOY_BUTTON_LSTICK_DOWN);
-	InputManager.SetGameJoypadMaps(MAP_STYLE_1,MINECRAFT_ACTION_LEFT,					_360_JOY_BUTTON_LSTICK_LEFT);
-	InputManager.SetGameJoypadMaps(MAP_STYLE_1,MINECRAFT_ACTION_RIGHT,					_360_JOY_BUTTON_LSTICK_RIGHT);
-	InputManager.SetGameJoypadMaps(MAP_STYLE_1,MINECRAFT_ACTION_LOOK_LEFT,				_360_JOY_BUTTON_RSTICK_LEFT);
-	InputManager.SetGameJoypadMaps(MAP_STYLE_1,MINECRAFT_ACTION_LOOK_RIGHT,				_360_JOY_BUTTON_RSTICK_RIGHT);
-	InputManager.SetGameJoypadMaps(MAP_STYLE_1,MINECRAFT_ACTION_LOOK_UP,				_360_JOY_BUTTON_RSTICK_UP);
-	InputManager.SetGameJoypadMaps(MAP_STYLE_1,MINECRAFT_ACTION_LOOK_DOWN,				_360_JOY_BUTTON_RSTICK_DOWN);
-	InputManager.SetGameJoypadMaps(MAP_STYLE_1,MINECRAFT_ACTION_USE,					_360_JOY_BUTTON_RT);
-	InputManager.SetGameJoypadMaps(MAP_STYLE_1,MINECRAFT_ACTION_ACTION,					_360_JOY_BUTTON_LT);
-	InputManager.SetGameJoypadMaps(MAP_STYLE_1,MINECRAFT_ACTION_RIGHT_SCROLL,			_360_JOY_BUTTON_DPAD_RIGHT);
-	InputManager.SetGameJoypadMaps(MAP_STYLE_1,MINECRAFT_ACTION_LEFT_SCROLL,			_360_JOY_BUTTON_DPAD_LEFT);
-	InputManager.SetGameJoypadMaps(MAP_STYLE_1,MINECRAFT_ACTION_INVENTORY,				_360_JOY_BUTTON_Y);
-	InputManager.SetGameJoypadMaps(MAP_STYLE_1,MINECRAFT_ACTION_PAUSEMENU,				_360_JOY_BUTTON_START | _360_GTC_MENU);
-	InputManager.SetGameJoypadMaps(MAP_STYLE_1,MINECRAFT_ACTION_DROP,					_360_JOY_BUTTON_B);
-	InputManager.SetGameJoypadMaps(MAP_STYLE_1,MINECRAFT_ACTION_SNEAK_TOGGLE,			_360_JOY_BUTTON_LTHUMB);
-	InputManager.SetGameJoypadMaps(MAP_STYLE_1,MINECRAFT_ACTION_CRAFTING,				_360_JOY_BUTTON_X);
-	InputManager.SetGameJoypadMaps(MAP_STYLE_1,MINECRAFT_ACTION_RENDER_THIRD_PERSON,	_360_JOY_BUTTON_RTHUMB);
-	InputManager.SetGameJoypadMaps(MAP_STYLE_1,MINECRAFT_ACTION_GAME_INFO,				_360_JOY_BUTTON_BACK | _360_GTC_VIEW);
-	
-	InputManager.SetGameJoypadMaps(MAP_STYLE_1,MINECRAFT_ACTION_DPAD_LEFT,				_360_JOY_BUTTON_DPAD_LEFT);
-	InputManager.SetGameJoypadMaps(MAP_STYLE_1,MINECRAFT_ACTION_DPAD_RIGHT,				_360_JOY_BUTTON_DPAD_RIGHT);
-	InputManager.SetGameJoypadMaps(MAP_STYLE_1,MINECRAFT_ACTION_DPAD_UP,				_360_JOY_BUTTON_DPAD_UP);
-	InputManager.SetGameJoypadMaps(MAP_STYLE_1,MINECRAFT_ACTION_DPAD_DOWN,				_360_JOY_BUTTON_DPAD_DOWN);	
-	
-	InputManager.SetGameJoypadMaps(MAP_STYLE_2,ACTION_MENU_A,							_360_JOY_BUTTON_A);
-	InputManager.SetGameJoypadMaps(MAP_STYLE_2,ACTION_MENU_B,							_360_JOY_BUTTON_B | _360_GTC_BACK);
-	InputManager.SetGameJoypadMaps(MAP_STYLE_2,ACTION_MENU_X,							_360_JOY_BUTTON_X);
-	InputManager.SetGameJoypadMaps(MAP_STYLE_2,ACTION_MENU_Y,							_360_JOY_BUTTON_Y);
-	InputManager.SetGameJoypadMaps(MAP_STYLE_2,ACTION_MENU_OK,							_360_JOY_BUTTON_A);
-	InputManager.SetGameJoypadMaps(MAP_STYLE_2,ACTION_MENU_CANCEL,						_360_JOY_BUTTON_B | _360_GTC_BACK);
-	InputManager.SetGameJoypadMaps(MAP_STYLE_2,ACTION_MENU_UP,							_360_JOY_BUTTON_DPAD_UP | _360_JOY_BUTTON_LSTICK_UP);
-	InputManager.SetGameJoypadMaps(MAP_STYLE_2,ACTION_MENU_DOWN,						_360_JOY_BUTTON_DPAD_DOWN | _360_JOY_BUTTON_LSTICK_DOWN);
-	InputManager.SetGameJoypadMaps(MAP_STYLE_2,ACTION_MENU_LEFT,						_360_JOY_BUTTON_DPAD_LEFT | _360_JOY_BUTTON_LSTICK_LEFT);
-	InputManager.SetGameJoypadMaps(MAP_STYLE_2,ACTION_MENU_RIGHT,						_360_JOY_BUTTON_DPAD_RIGHT | _360_JOY_BUTTON_LSTICK_RIGHT);
-	InputManager.SetGameJoypadMaps(MAP_STYLE_2,ACTION_MENU_PAGEUP,						_360_JOY_BUTTON_DPAD_UP | _360_JOY_BUTTON_LB);
-	InputManager.SetGameJoypadMaps(MAP_STYLE_2,ACTION_MENU_PAGEDOWN,					_360_JOY_BUTTON_RT);
-	InputManager.SetGameJoypadMaps(MAP_STYLE_2,ACTION_MENU_RIGHT_SCROLL,				_360_JOY_BUTTON_RB);
-	InputManager.SetGameJoypadMaps(MAP_STYLE_2,ACTION_MENU_LEFT_SCROLL,					_360_JOY_BUTTON_LB);
-	InputManager.SetGameJoypadMaps(MAP_STYLE_2,ACTION_MENU_PAUSEMENU,					_360_JOY_BUTTON_START | _360_GTC_MENU);
-	InputManager.SetGameJoypadMaps(MAP_STYLE_2,ACTION_MENU_STICK_PRESS,					_360_JOY_BUTTON_LTHUMB);
-	InputManager.SetGameJoypadMaps(MAP_STYLE_2,ACTION_MENU_OTHER_STICK_PRESS,			_360_JOY_BUTTON_RTHUMB);
-	InputManager.SetGameJoypadMaps(MAP_STYLE_2,ACTION_MENU_OTHER_STICK_UP,				_360_JOY_BUTTON_RSTICK_UP);
-	InputManager.SetGameJoypadMaps(MAP_STYLE_2,ACTION_MENU_OTHER_STICK_DOWN,			_360_JOY_BUTTON_RSTICK_DOWN);
-	InputManager.SetGameJoypadMaps(MAP_STYLE_2,ACTION_MENU_OTHER_STICK_LEFT,			_360_JOY_BUTTON_RSTICK_LEFT);
-	InputManager.SetGameJoypadMaps(MAP_STYLE_2,ACTION_MENU_OTHER_STICK_RIGHT,			_360_JOY_BUTTON_RSTICK_RIGHT);
+    InputManager.SetGameJoypadMaps(MAP_STYLE_1, ACTION_MENU_STICK_PRESS, _360_JOY_BUTTON_LTHUMB);
+    InputManager.SetGameJoypadMaps(MAP_STYLE_1, ACTION_MENU_OTHER_STICK_PRESS, _360_JOY_BUTTON_RTHUMB);
+    InputManager.SetGameJoypadMaps(MAP_STYLE_1, ACTION_MENU_OTHER_STICK_UP, _360_JOY_BUTTON_RSTICK_UP);
+    InputManager.SetGameJoypadMaps(MAP_STYLE_1, ACTION_MENU_OTHER_STICK_DOWN, _360_JOY_BUTTON_RSTICK_DOWN);
+    InputManager.SetGameJoypadMaps(MAP_STYLE_1, ACTION_MENU_OTHER_STICK_LEFT, _360_JOY_BUTTON_RSTICK_LEFT);
+    InputManager.SetGameJoypadMaps(MAP_STYLE_1, ACTION_MENU_OTHER_STICK_RIGHT, _360_JOY_BUTTON_RSTICK_RIGHT);
 
-	InputManager.SetGameJoypadMaps(MAP_STYLE_2,ACTION_MENU_GTC_PAUSE,					_360_GTC_PAUSE);
-	InputManager.SetGameJoypadMaps(MAP_STYLE_2,ACTION_MENU_GTC_RESUME,					_360_GTC_PLAY);
+    InputManager.SetGameJoypadMaps(MAP_STYLE_1, MINECRAFT_ACTION_JUMP, _360_JOY_BUTTON_RB);
+    InputManager.SetGameJoypadMaps(MAP_STYLE_1, MINECRAFT_ACTION_FORWARD, _360_JOY_BUTTON_LSTICK_UP);
+    InputManager.SetGameJoypadMaps(MAP_STYLE_1, MINECRAFT_ACTION_BACKWARD, _360_JOY_BUTTON_LSTICK_DOWN);
+    InputManager.SetGameJoypadMaps(MAP_STYLE_1, MINECRAFT_ACTION_LEFT, _360_JOY_BUTTON_LSTICK_LEFT);
+    InputManager.SetGameJoypadMaps(MAP_STYLE_1, MINECRAFT_ACTION_RIGHT, _360_JOY_BUTTON_LSTICK_RIGHT);
+    InputManager.SetGameJoypadMaps(MAP_STYLE_1, MINECRAFT_ACTION_LOOK_LEFT, _360_JOY_BUTTON_RSTICK_LEFT);
+    InputManager.SetGameJoypadMaps(MAP_STYLE_1, MINECRAFT_ACTION_LOOK_RIGHT, _360_JOY_BUTTON_RSTICK_RIGHT);
+    InputManager.SetGameJoypadMaps(MAP_STYLE_1, MINECRAFT_ACTION_LOOK_UP, _360_JOY_BUTTON_RSTICK_UP);
+    InputManager.SetGameJoypadMaps(MAP_STYLE_1, MINECRAFT_ACTION_LOOK_DOWN, _360_JOY_BUTTON_RSTICK_DOWN);
+    InputManager.SetGameJoypadMaps(MAP_STYLE_1, MINECRAFT_ACTION_USE, _360_JOY_BUTTON_RT);
+    InputManager.SetGameJoypadMaps(MAP_STYLE_1, MINECRAFT_ACTION_ACTION, _360_JOY_BUTTON_LT);
+    InputManager.SetGameJoypadMaps(MAP_STYLE_1, MINECRAFT_ACTION_RIGHT_SCROLL, _360_JOY_BUTTON_DPAD_RIGHT);
+    InputManager.SetGameJoypadMaps(MAP_STYLE_1, MINECRAFT_ACTION_LEFT_SCROLL, _360_JOY_BUTTON_DPAD_LEFT);
+    InputManager.SetGameJoypadMaps(MAP_STYLE_1, MINECRAFT_ACTION_INVENTORY, _360_JOY_BUTTON_Y);
+    InputManager.SetGameJoypadMaps(MAP_STYLE_1, MINECRAFT_ACTION_PAUSEMENU, _360_JOY_BUTTON_START | _360_GTC_MENU);
+    InputManager.SetGameJoypadMaps(MAP_STYLE_1, MINECRAFT_ACTION_DROP, _360_JOY_BUTTON_B);
+    InputManager.SetGameJoypadMaps(MAP_STYLE_1, MINECRAFT_ACTION_SNEAK_TOGGLE, _360_JOY_BUTTON_LTHUMB);
+    InputManager.SetGameJoypadMaps(MAP_STYLE_1, MINECRAFT_ACTION_CRAFTING, _360_JOY_BUTTON_X);
+    InputManager.SetGameJoypadMaps(MAP_STYLE_1, MINECRAFT_ACTION_RENDER_THIRD_PERSON, _360_JOY_BUTTON_RTHUMB);
+    InputManager.SetGameJoypadMaps(MAP_STYLE_1, MINECRAFT_ACTION_GAME_INFO, _360_JOY_BUTTON_BACK | _360_GTC_VIEW);
 
-	InputManager.SetGameJoypadMaps(MAP_STYLE_2,MINECRAFT_ACTION_JUMP,					_360_JOY_BUTTON_LT);
-	InputManager.SetGameJoypadMaps(MAP_STYLE_2,MINECRAFT_ACTION_FORWARD,				_360_JOY_BUTTON_LSTICK_UP);
-	InputManager.SetGameJoypadMaps(MAP_STYLE_2,MINECRAFT_ACTION_BACKWARD,				_360_JOY_BUTTON_LSTICK_DOWN);
-	InputManager.SetGameJoypadMaps(MAP_STYLE_2,MINECRAFT_ACTION_LEFT,					_360_JOY_BUTTON_LSTICK_LEFT);
-	InputManager.SetGameJoypadMaps(MAP_STYLE_2,MINECRAFT_ACTION_RIGHT,					_360_JOY_BUTTON_LSTICK_RIGHT);
-	InputManager.SetGameJoypadMaps(MAP_STYLE_2,MINECRAFT_ACTION_LOOK_LEFT,				_360_JOY_BUTTON_RSTICK_LEFT);
-	InputManager.SetGameJoypadMaps(MAP_STYLE_2,MINECRAFT_ACTION_LOOK_RIGHT,				_360_JOY_BUTTON_RSTICK_RIGHT);
-	InputManager.SetGameJoypadMaps(MAP_STYLE_2,MINECRAFT_ACTION_LOOK_UP,				_360_JOY_BUTTON_RSTICK_UP);
-	InputManager.SetGameJoypadMaps(MAP_STYLE_2,MINECRAFT_ACTION_LOOK_DOWN,				_360_JOY_BUTTON_RSTICK_DOWN);
-	InputManager.SetGameJoypadMaps(MAP_STYLE_2,MINECRAFT_ACTION_USE,					_360_JOY_BUTTON_RT);
-	InputManager.SetGameJoypadMaps(MAP_STYLE_2,MINECRAFT_ACTION_ACTION,					_360_JOY_BUTTON_A);
-	InputManager.SetGameJoypadMaps(MAP_STYLE_2,MINECRAFT_ACTION_RIGHT_SCROLL,			_360_JOY_BUTTON_DPAD_RIGHT);
-	InputManager.SetGameJoypadMaps(MAP_STYLE_2,MINECRAFT_ACTION_LEFT_SCROLL,			_360_JOY_BUTTON_DPAD_LEFT);
-	InputManager.SetGameJoypadMaps(MAP_STYLE_2,MINECRAFT_ACTION_INVENTORY,				_360_JOY_BUTTON_Y);
-	InputManager.SetGameJoypadMaps(MAP_STYLE_2,MINECRAFT_ACTION_PAUSEMENU,				_360_JOY_BUTTON_START | _360_GTC_MENU);
-	InputManager.SetGameJoypadMaps(MAP_STYLE_2,MINECRAFT_ACTION_DROP,					_360_JOY_BUTTON_B);
-	InputManager.SetGameJoypadMaps(MAP_STYLE_2,MINECRAFT_ACTION_SNEAK_TOGGLE,			_360_JOY_BUTTON_LB);
-	InputManager.SetGameJoypadMaps(MAP_STYLE_2,MINECRAFT_ACTION_CRAFTING,				_360_JOY_BUTTON_X);
-	InputManager.SetGameJoypadMaps(MAP_STYLE_2,MINECRAFT_ACTION_RENDER_THIRD_PERSON,	_360_JOY_BUTTON_LTHUMB);
-	InputManager.SetGameJoypadMaps(MAP_STYLE_2,MINECRAFT_ACTION_GAME_INFO,				_360_JOY_BUTTON_BACK | _360_GTC_VIEW);
-	
-	InputManager.SetGameJoypadMaps(MAP_STYLE_2,MINECRAFT_ACTION_DPAD_LEFT,				_360_JOY_BUTTON_DPAD_LEFT);
-	InputManager.SetGameJoypadMaps(MAP_STYLE_2,MINECRAFT_ACTION_DPAD_RIGHT,				_360_JOY_BUTTON_DPAD_RIGHT);
-	InputManager.SetGameJoypadMaps(MAP_STYLE_2,MINECRAFT_ACTION_DPAD_UP,				_360_JOY_BUTTON_DPAD_UP);
-	InputManager.SetGameJoypadMaps(MAP_STYLE_2,MINECRAFT_ACTION_DPAD_DOWN,				_360_JOY_BUTTON_DPAD_DOWN);	
+    InputManager.SetGameJoypadMaps(MAP_STYLE_1, MINECRAFT_ACTION_DPAD_LEFT, _360_JOY_BUTTON_DPAD_LEFT);
+    InputManager.SetGameJoypadMaps(MAP_STYLE_1, MINECRAFT_ACTION_DPAD_RIGHT, _360_JOY_BUTTON_DPAD_RIGHT);
+    InputManager.SetGameJoypadMaps(MAP_STYLE_1, MINECRAFT_ACTION_DPAD_UP, _360_JOY_BUTTON_DPAD_UP);
+    InputManager.SetGameJoypadMaps(MAP_STYLE_1, MINECRAFT_ACTION_DPAD_DOWN, _360_JOY_BUTTON_DPAD_DOWN);
+
+    InputManager.SetGameJoypadMaps(MAP_STYLE_2, ACTION_MENU_A, _360_JOY_BUTTON_A);
+    InputManager.SetGameJoypadMaps(MAP_STYLE_2, ACTION_MENU_B, _360_JOY_BUTTON_B | _360_GTC_BACK);
+    InputManager.SetGameJoypadMaps(MAP_STYLE_2, ACTION_MENU_X, _360_JOY_BUTTON_X);
+    InputManager.SetGameJoypadMaps(MAP_STYLE_2, ACTION_MENU_Y, _360_JOY_BUTTON_Y);
+    InputManager.SetGameJoypadMaps(MAP_STYLE_2, ACTION_MENU_OK, _360_JOY_BUTTON_A);
+    InputManager.SetGameJoypadMaps(MAP_STYLE_2, ACTION_MENU_CANCEL, _360_JOY_BUTTON_B | _360_GTC_BACK);
+    InputManager.SetGameJoypadMaps(MAP_STYLE_2, ACTION_MENU_UP, _360_JOY_BUTTON_DPAD_UP | _360_JOY_BUTTON_LSTICK_UP);
+    InputManager.SetGameJoypadMaps(MAP_STYLE_2, ACTION_MENU_DOWN, _360_JOY_BUTTON_DPAD_DOWN | _360_JOY_BUTTON_LSTICK_DOWN);
+    InputManager.SetGameJoypadMaps(MAP_STYLE_2, ACTION_MENU_LEFT, _360_JOY_BUTTON_DPAD_LEFT | _360_JOY_BUTTON_LSTICK_LEFT);
+    InputManager.SetGameJoypadMaps(MAP_STYLE_2, ACTION_MENU_RIGHT, _360_JOY_BUTTON_DPAD_RIGHT | _360_JOY_BUTTON_LSTICK_RIGHT);
+    InputManager.SetGameJoypadMaps(MAP_STYLE_2, ACTION_MENU_PAGEUP, _360_JOY_BUTTON_DPAD_UP | _360_JOY_BUTTON_LB);
+    InputManager.SetGameJoypadMaps(MAP_STYLE_2, ACTION_MENU_PAGEDOWN, _360_JOY_BUTTON_RT);
+    InputManager.SetGameJoypadMaps(MAP_STYLE_2, ACTION_MENU_RIGHT_SCROLL, _360_JOY_BUTTON_RB);
+    InputManager.SetGameJoypadMaps(MAP_STYLE_2, ACTION_MENU_LEFT_SCROLL, _360_JOY_BUTTON_LB);
+    InputManager.SetGameJoypadMaps(MAP_STYLE_2, ACTION_MENU_PAUSEMENU, _360_JOY_BUTTON_START | _360_GTC_MENU);
+    InputManager.SetGameJoypadMaps(MAP_STYLE_2, ACTION_MENU_STICK_PRESS, _360_JOY_BUTTON_LTHUMB);
+    InputManager.SetGameJoypadMaps(MAP_STYLE_2, ACTION_MENU_OTHER_STICK_PRESS, _360_JOY_BUTTON_RTHUMB);
+    InputManager.SetGameJoypadMaps(MAP_STYLE_2, ACTION_MENU_OTHER_STICK_UP, _360_JOY_BUTTON_RSTICK_UP);
+    InputManager.SetGameJoypadMaps(MAP_STYLE_2, ACTION_MENU_OTHER_STICK_DOWN, _360_JOY_BUTTON_RSTICK_DOWN);
+    InputManager.SetGameJoypadMaps(MAP_STYLE_2, ACTION_MENU_OTHER_STICK_LEFT, _360_JOY_BUTTON_RSTICK_LEFT);
+    InputManager.SetGameJoypadMaps(MAP_STYLE_2, ACTION_MENU_OTHER_STICK_RIGHT, _360_JOY_BUTTON_RSTICK_RIGHT);
+
+    InputManager.SetGameJoypadMaps(MAP_STYLE_2, ACTION_MENU_GTC_PAUSE, _360_GTC_PAUSE);
+    InputManager.SetGameJoypadMaps(MAP_STYLE_2, ACTION_MENU_GTC_RESUME, _360_GTC_PLAY);
+
+    InputManager.SetGameJoypadMaps(MAP_STYLE_2, MINECRAFT_ACTION_JUMP, _360_JOY_BUTTON_LT);
+    InputManager.SetGameJoypadMaps(MAP_STYLE_2, MINECRAFT_ACTION_FORWARD, _360_JOY_BUTTON_LSTICK_UP);
+    InputManager.SetGameJoypadMaps(MAP_STYLE_2, MINECRAFT_ACTION_BACKWARD, _360_JOY_BUTTON_LSTICK_DOWN);
+    InputManager.SetGameJoypadMaps(MAP_STYLE_2, MINECRAFT_ACTION_LEFT, _360_JOY_BUTTON_LSTICK_LEFT);
+    InputManager.SetGameJoypadMaps(MAP_STYLE_2, MINECRAFT_ACTION_RIGHT, _360_JOY_BUTTON_LSTICK_RIGHT);
+    InputManager.SetGameJoypadMaps(MAP_STYLE_2, MINECRAFT_ACTION_LOOK_LEFT, _360_JOY_BUTTON_RSTICK_LEFT);
+    InputManager.SetGameJoypadMaps(MAP_STYLE_2, MINECRAFT_ACTION_LOOK_RIGHT, _360_JOY_BUTTON_RSTICK_RIGHT);
+    InputManager.SetGameJoypadMaps(MAP_STYLE_2, MINECRAFT_ACTION_LOOK_UP, _360_JOY_BUTTON_RSTICK_UP);
+    InputManager.SetGameJoypadMaps(MAP_STYLE_2, MINECRAFT_ACTION_LOOK_DOWN, _360_JOY_BUTTON_RSTICK_DOWN);
+    InputManager.SetGameJoypadMaps(MAP_STYLE_2, MINECRAFT_ACTION_USE, _360_JOY_BUTTON_RT);
+    InputManager.SetGameJoypadMaps(MAP_STYLE_2, MINECRAFT_ACTION_ACTION, _360_JOY_BUTTON_A);
+    InputManager.SetGameJoypadMaps(MAP_STYLE_2, MINECRAFT_ACTION_RIGHT_SCROLL, _360_JOY_BUTTON_DPAD_RIGHT);
+    InputManager.SetGameJoypadMaps(MAP_STYLE_2, MINECRAFT_ACTION_LEFT_SCROLL, _360_JOY_BUTTON_DPAD_LEFT);
+    InputManager.SetGameJoypadMaps(MAP_STYLE_2, MINECRAFT_ACTION_INVENTORY, _360_JOY_BUTTON_Y);
+    InputManager.SetGameJoypadMaps(MAP_STYLE_2, MINECRAFT_ACTION_PAUSEMENU, _360_JOY_BUTTON_START | _360_GTC_MENU);
+    InputManager.SetGameJoypadMaps(MAP_STYLE_2, MINECRAFT_ACTION_DROP, _360_JOY_BUTTON_B);
+    InputManager.SetGameJoypadMaps(MAP_STYLE_2, MINECRAFT_ACTION_SNEAK_TOGGLE, _360_JOY_BUTTON_LB);
+    InputManager.SetGameJoypadMaps(MAP_STYLE_2, MINECRAFT_ACTION_CRAFTING, _360_JOY_BUTTON_X);
+    InputManager.SetGameJoypadMaps(MAP_STYLE_2, MINECRAFT_ACTION_RENDER_THIRD_PERSON, _360_JOY_BUTTON_LTHUMB);
+    InputManager.SetGameJoypadMaps(MAP_STYLE_2, MINECRAFT_ACTION_GAME_INFO, _360_JOY_BUTTON_BACK | _360_GTC_VIEW);
+
+    InputManager.SetGameJoypadMaps(MAP_STYLE_2, MINECRAFT_ACTION_DPAD_LEFT, _360_JOY_BUTTON_DPAD_LEFT);
+    InputManager.SetGameJoypadMaps(MAP_STYLE_2, MINECRAFT_ACTION_DPAD_RIGHT, _360_JOY_BUTTON_DPAD_RIGHT);
+    InputManager.SetGameJoypadMaps(MAP_STYLE_2, MINECRAFT_ACTION_DPAD_UP, _360_JOY_BUTTON_DPAD_UP);
+    InputManager.SetGameJoypadMaps(MAP_STYLE_2, MINECRAFT_ACTION_DPAD_DOWN, _360_JOY_BUTTON_DPAD_DOWN);
 }
 
 #if 0
@@ -278,7 +276,7 @@ HRESULT InitD3D( IDirect3DDevice9 **ppDevice,
 		ppDevice );
 }
 #endif
-//#define MEMORY_TRACKING
+// #define MEMORY_TRACKING
 
 #ifdef MEMORY_TRACKING
 void ResetMem();
@@ -290,26 +288,25 @@ void MemSect(int sect)
 }
 #endif
 
-
-HINSTANCE               g_hInst = NULL;
+HINSTANCE g_hInst = NULL;
 
 Platform::Agile<Windows::UI::Core::CoreWindow> g_window;
-Windows::Foundation::Rect                       g_windowBounds;
+Windows::Foundation::Rect g_windowBounds;
 
-D3D_DRIVER_TYPE         g_driverType = D3D_DRIVER_TYPE_NULL;
-D3D_FEATURE_LEVEL       g_featureLevel = D3D_FEATURE_LEVEL_11_0;
+D3D_DRIVER_TYPE g_driverType = D3D_DRIVER_TYPE_NULL;
+D3D_FEATURE_LEVEL g_featureLevel = D3D_FEATURE_LEVEL_11_0;
 Microsoft::WRL::ComPtr<ID3D11Device1> g_d3dDevice;
-Microsoft::WRL::ComPtr<ID3D11DeviceContext1>    g_d3dContext;
-Microsoft::WRL::ComPtr<IDXGISwapChain1>         g_swapChain;
-Microsoft::WRL::ComPtr<ID3D11RenderTargetView>  g_renderTargetView;
-Microsoft::WRL::ComPtr<ID3D11DepthStencilView>  g_depthStencilView;
-Microsoft::WRL::ComPtr<ID3D11Texture2D>         g_depthStencil;
+Microsoft::WRL::ComPtr<ID3D11DeviceContext1> g_d3dContext;
+Microsoft::WRL::ComPtr<IDXGISwapChain1> g_swapChain;
+Microsoft::WRL::ComPtr<ID3D11RenderTargetView> g_renderTargetView;
+Microsoft::WRL::ComPtr<ID3D11DepthStencilView> g_depthStencilView;
+Microsoft::WRL::ComPtr<ID3D11Texture2D> g_depthStencil;
 
 void CreateDevice();
 void CreateResources();
-void InitializeDurango(Windows::UI::Core::CoreWindow^ window)
+void InitializeDurango(Windows::UI::Core::CoreWindow ^ window)
 {
-	SetThreadAffinityMask(GetCurrentThread(),1);
+    SetThreadAffinityMask(GetCurrentThread(), 1);
 
     g_window = window;
 
@@ -319,20 +316,20 @@ void InitializeDurango(Windows::UI::Core::CoreWindow^ window)
 
     // TODO: Begin asynchronous loading of game assets.
 
-	C4JThread::StaticInit();
+    C4JThread::StaticInit();
 }
 
 namespace DX
 {
-    inline void ThrowIfFailed(HRESULT hr)
+inline void ThrowIfFailed(HRESULT hr)
+{
+    if (FAILED(hr))
     {
-        if (FAILED(hr))
-        {
-            // Set a breakpoint on this line to catch DirectX API errors
-            throw Platform::Exception::CreateException(hr);
-        }
+        // Set a breakpoint on this line to catch DirectX API errors
+        throw Platform::Exception::CreateException(hr);
     }
 }
+} // namespace DX
 
 void CreateDevice()
 {
@@ -340,8 +337,8 @@ void CreateDevice()
     // It is recommended usage, and is required for compatibility with Direct2D.
     UINT creationFlags = D3D11_CREATE_DEVICE_FAST_KICKOFFS;
 #ifndef _CONTENT_PACKAGE
-	creationFlags |= D3D11_CREATE_DEVICE_VALIDATED;
-	creationFlags |= D3D11_CREATE_DEVICE_INSTRUMENTED;
+    creationFlags |= D3D11_CREATE_DEVICE_VALIDATED;
+    creationFlags |= D3D11_CREATE_DEVICE_INSTRUMENTED;
 #endif
 
     // This array defines the set of DirectX hardware feature levels this app will support.
@@ -349,9 +346,8 @@ void CreateDevice()
     // Don't forget to declare your application's minimum required feature level in its
     // description.  All applications are assumed to support 9.1 unless otherwise stated.
     D3D_FEATURE_LEVEL featureLevels[] =
-    {
-        D3D_FEATURE_LEVEL_11_0
-    };
+        {
+            D3D_FEATURE_LEVEL_11_0};
 
     // Create the DX11 API device object, and get a corresponding context.
     Microsoft::WRL::ComPtr<ID3D11Device> device;
@@ -359,18 +355,17 @@ void CreateDevice()
 
     DX::ThrowIfFailed(
         D3D11CreateDevice(
-            nullptr,                    // specify null to use the default adapter
+            nullptr, // specify null to use the default adapter
             D3D_DRIVER_TYPE_HARDWARE,
-            nullptr,                    // leave as nullptr unless software device
-            creationFlags,              // optionally set debug and Direct2D compatibility flags
-            featureLevels,              // list of feature levels this app can support
-            ARRAYSIZE(featureLevels),   // number of entries in above list
-            D3D11_SDK_VERSION,          // always set this to D3D11_SDK_VERSION
-            &device,                    // returns the Direct3D device created
-            &g_featureLevel,            // returns feature level of device created
-            &context                    // returns the device immediate context
-            )
-        );
+            nullptr,                  // leave as nullptr unless software device
+            creationFlags,            // optionally set debug and Direct2D compatibility flags
+            featureLevels,            // list of feature levels this app can support
+            ARRAYSIZE(featureLevels), // number of entries in above list
+            D3D11_SDK_VERSION,        // always set this to D3D11_SDK_VERSION
+            &device,                  // returns the Direct3D device created
+            &g_featureLevel,          // returns feature level of device created
+            &context                  // returns the device immediate context
+            ));
 
     // Get the DirectX11.1 device by QI off the DirectX11 one.
     DX::ThrowIfFailed(device.As(&g_d3dDevice));
@@ -388,14 +383,14 @@ void CreateResources()
 
     // If the swap chain already exists, resize it,
     // otherwise create one.
-    if(g_swapChain != nullptr)
+    if (g_swapChain != nullptr)
     {
         DX::ThrowIfFailed(g_swapChain->ResizeBuffers(2, 0, 0, DXGI_FORMAT_B8G8R8A8_UNORM, 0));
     }
     else
     {
-       // First, retrieve the underlying DXGI Device from the D3D Device
-        Microsoft::WRL::ComPtr<IDXGIDevice1>  dxgiDevice;
+        // First, retrieve the underlying DXGI Device from the D3D Device
+        Microsoft::WRL::ComPtr<IDXGIDevice1> dxgiDevice;
         DX::ThrowIfFailed(g_d3dDevice.As(&dxgiDevice));
 
         // Identify the physical adapter (GPU or card) this device is running on.
@@ -412,7 +407,7 @@ void CreateResources()
         swapChainDesc.Width = 1920;
         swapChainDesc.Height = 1080;
         swapChainDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
-		swapChainDesc.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT | DXGI_USAGE_SHADER_INPUT;
+        swapChainDesc.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT | DXGI_USAGE_SHADER_INPUT;
         swapChainDesc.BufferCount = 2;
         swapChainDesc.Stereo = false;
         swapChainDesc.SampleDesc.Count = 1;
@@ -422,7 +417,7 @@ void CreateResources()
         swapChainDesc.Flags = 0;
 
         // Create a SwapChain from a CoreWindow.
-        DX::ThrowIfFailed(dxgiFactory->CreateSwapChainForCoreWindow(g_d3dDevice.Get(), reinterpret_cast<IUnknown*>(g_window.Get()), &swapChainDesc, nullptr, &g_swapChain));
+        DX::ThrowIfFailed(dxgiFactory->CreateSwapChainForCoreWindow(g_d3dDevice.Get(), reinterpret_cast<IUnknown *>(g_window.Get()), &swapChainDesc, nullptr, &g_swapChain));
     }
 
     // Obtain the backbuffer for this window which will be the final 3D rendertarget.
@@ -451,7 +446,7 @@ void CreateResources()
 
     // Set the current viewport using the descriptor.
     g_d3dContext->RSSetViewports(1, &viewPort);
-	g_d3dContext->OMSetRenderTargets( 1, g_renderTargetView.GetAddressOf(), g_depthStencilView.Get() );
+    g_d3dContext->OMSetRenderTargets(1, g_renderTargetView.GetAddressOf(), g_depthStencilView.Get());
 }
 
 //--------------------------------------------------------------------------------------
@@ -460,12 +455,11 @@ void CreateResources()
 void Render()
 {
     // Just clear the backbuffer
-    float ClearColor[4] = { 0.0f, 0.125f, 0.3f, 1.0f }; //red,green,blue,alpha
+    float ClearColor[4] = {0.0f, 0.125f, 0.3f, 1.0f}; // red,green,blue,alpha
 
-    g_d3dContext->ClearRenderTargetView( g_renderTargetView.Get(), ClearColor );
-    g_swapChain->Present( 0, 0 );
+    g_d3dContext->ClearRenderTargetView(g_renderTargetView.Get(), ClearColor);
+    g_swapChain->Present(0, 0);
 }
-
 
 void oldWinMainInit()
 {
@@ -488,12 +482,11 @@ void oldWinMainInit()
 	return (int) msg.wParam;
 #endif
 
-
 #ifdef MEMORY_TRACKING
-	ResetMem();
-	MEMORYSTATUS memStat;
-	GlobalMemoryStatus(&memStat);
-	printf("RESETMEM start: Avail. phys %d\n",memStat.dwAvailPhys/(1024*1024));
+    ResetMem();
+    MEMORYSTATUS memStat;
+    GlobalMemoryStatus(&memStat);
+    printf("RESETMEM start: Avail. phys %d\n", memStat.dwAvailPhys / (1024 * 1024));
 #endif
 
 #if 0
@@ -518,21 +511,20 @@ void oldWinMainInit()
 		
 		return -1;
 	}
-	
-	
+
 #endif
 
-	app.loadMediaArchive();
+    app.loadMediaArchive();
 
-	RenderManager.Initialise(g_d3dDevice.Get(), g_swapChain.Get());
+    RenderManager.Initialise(g_d3dDevice.Get(), g_swapChain.Get());
 
-	app.loadStringTable();
+    app.loadStringTable();
 
-	ui.init(g_d3dDevice,g_d3dContext,g_renderTargetView,g_depthStencilView,1920,1080);
+    ui.init(g_d3dDevice, g_d3dContext, g_renderTargetView, g_depthStencilView, 1920, 1080);
 
-	////////////////
-	// Initialise //
-	////////////////
+    ////////////////
+    // Initialise //
+    ////////////////
 
 #if 0
 	// 4J Stu - XACT was creating these automatically, but we need them for QNet. The setup params
@@ -553,103 +545,99 @@ void oldWinMainInit()
 		app.FatalLoadError();
     }
 #endif
-	app.InitTime();
+    app.InitTime();
 
-	// Set the number of possible joypad layouts that the user can switch between, and the number of actions
-	InputManager.Initialise(1,3,MINECRAFT_ACTION_MAX, ACTION_MAX_MENU);
+    // Set the number of possible joypad layouts that the user can switch between, and the number of actions
+    InputManager.Initialise(1, 3, MINECRAFT_ACTION_MAX, ACTION_MAX_MENU);
 
-	// Set the default joypad action mappings for Minecraft
-	DefineActions();
-	InputManager.SetJoypadMapVal(0,0);
-	InputManager.SetKeyRepeatRate(0.3f,0.2f);
+    // Set the default joypad action mappings for Minecraft
+    DefineActions();
+    InputManager.SetJoypadMapVal(0, 0);
+    InputManager.SetKeyRepeatRate(0.3f, 0.2f);
 
-	// looks like the Durango controller is a good bit more sensitive than XBOX360/PS3. Defaults in the lib are 10000 for deadzone and 32767 for movement range
-	InputManager.SetDeadzoneAndMovementRange(10000,20000,32767);
+    // looks like the Durango controller is a good bit more sensitive than XBOX360/PS3. Defaults in the lib are 10000 for deadzone and 32767 for movement range
+    InputManager.SetDeadzoneAndMovementRange(10000, 20000, 32767);
 
-	// Initialise the profile manager with the game Title ID, Offer ID, a profile version number, and the number of profile values and settings
-	ProfileManager.Initialise(SERVICE_CONFIG_ID, TITLE_PRODUCT_ID);
+    // Initialise the profile manager with the game Title ID, Offer ID, a profile version number, and the number of profile values and settings
+    ProfileManager.Initialise(SERVICE_CONFIG_ID, TITLE_PRODUCT_ID);
 
-	ProfileManager.RegisterPresence(CONTEXT_PRESENCE_IDLE,L"Idle");
-	ProfileManager.RegisterPresence(CONTEXT_PRESENCE_MENUS,L"InMenus");
-	ProfileManager.RegisterPresence(CONTEXT_PRESENCE_MULTIPLAYER,L"PlayingMultiplayer");
-	ProfileManager.RegisterPresence(CONTEXT_PRESENCE_MULTIPLAYEROFFLINE,L"PlayingMultiplayerOffline");
-	ProfileManager.RegisterPresence(CONTEXT_PRESENCE_MULTIPLAYER_1P,L"PlayingAlone");
-	ProfileManager.RegisterPresence(CONTEXT_PRESENCE_MULTIPLAYER_1POFFLINE,L"PlayingAloneOffline");
+    ProfileManager.RegisterPresence(CONTEXT_PRESENCE_IDLE, L"Idle");
+    ProfileManager.RegisterPresence(CONTEXT_PRESENCE_MENUS, L"InMenus");
+    ProfileManager.RegisterPresence(CONTEXT_PRESENCE_MULTIPLAYER, L"PlayingMultiplayer");
+    ProfileManager.RegisterPresence(CONTEXT_PRESENCE_MULTIPLAYEROFFLINE, L"PlayingMultiplayerOffline");
+    ProfileManager.RegisterPresence(CONTEXT_PRESENCE_MULTIPLAYER_1P, L"PlayingAlone");
+    ProfileManager.RegisterPresence(CONTEXT_PRESENCE_MULTIPLAYER_1POFFLINE, L"PlayingAloneOffline");
 
-	// Fix for XboxOne #165025 - XR-049: Compliance: Title does not display Rich Presence strings for profiles in main menu.
-	ProfileManager.SetGameActivityForAllActiveUsers(CONTEXT_PRESENCE_IDLE);
+    // Fix for XboxOne #165025 - XR-049: Compliance: Title does not display Rich Presence strings for profiles in main menu.
+    ProfileManager.SetGameActivityForAllActiveUsers(CONTEXT_PRESENCE_IDLE);
 
-	Compression::CreateNewThreadStorage();	
-	app.ReadLocalDLCList();
+    Compression::CreateNewThreadStorage();
+    app.ReadLocalDLCList();
 
-	// initialise the storage manager with a default save display name, a Minimum save size, and a callback for displaying the saving message
-	StorageManager.Init(0,app.GetString(IDS_DEFAULT_SAVENAME),"savegame.dat",FIFTY_ONE_MB,&CConsoleMinecraftApp::DisplaySavingMessage,(LPVOID)&app, app.UpdateProductId,SERVICE_CONFIG_ID,TITLE_PRODUCT_ID);
+    // initialise the storage manager with a default save display name, a Minimum save size, and a callback for displaying the saving message
+    StorageManager.Init(0, app.GetString(IDS_DEFAULT_SAVENAME), "savegame.dat", FIFTY_ONE_MB, &CConsoleMinecraftApp::DisplaySavingMessage, (LPVOID)&app, app.UpdateProductId, SERVICE_CONFIG_ID, TITLE_PRODUCT_ID);
 
-	StorageManager.SetMaxSaves(99);
+    StorageManager.SetMaxSaves(99);
 
-	byteArray baSaveThumbnail = app.getArchiveFile(L"DefaultSaveThumbnail64x64.png");
+    byteArray baSaveThumbnail = app.getArchiveFile(L"DefaultSaveThumbnail64x64.png");
 
-	StorageManager.InitialiseProfileData(PROFILE_VERSION_BUILD_JUNE14,
-		NUM_PROFILE_VALUES,
-		NUM_PROFILE_SETTINGS,
-		dwProfileSettingsA,
-		app.GAME_DEFINED_PROFILE_DATA_BYTES*XUSER_MAX_COUNT,
-		&app.uiGameDefinedDataChangedBitmask);
+    StorageManager.InitialiseProfileData(PROFILE_VERSION_BUILD_JUNE14,
+                                         NUM_PROFILE_VALUES,
+                                         NUM_PROFILE_SETTINGS,
+                                         dwProfileSettingsA,
+                                         app.GAME_DEFINED_PROFILE_DATA_BYTES * XUSER_MAX_COUNT,
+                                         &app.uiGameDefinedDataChangedBitmask);
 
-	StorageManager.SetDefaultImages((PBYTE)baSaveThumbnail.data, baSaveThumbnail.length);
+    StorageManager.SetDefaultImages((PBYTE)baSaveThumbnail.data, baSaveThumbnail.length);
 
-	// Set function to be called if a save game operation can't complete due to running out of storage space etc.
-	StorageManager.SetIncompleteSaveCallback(CConsoleMinecraftApp::Callback_SaveGameIncomplete, (LPVOID)&app);
+    // Set function to be called if a save game operation can't complete due to running out of storage space etc.
+    StorageManager.SetIncompleteSaveCallback(CConsoleMinecraftApp::Callback_SaveGameIncomplete, (LPVOID)&app);
 
-	// set a function to be called when there's a sign in change, so we can exit a level if the primary player signs out
-	ProfileManager.SetSignInChangeCallback(&CConsoleMinecraftApp::SignInChangeCallback,(LPVOID)&app);
+    // set a function to be called when there's a sign in change, so we can exit a level if the primary player signs out
+    ProfileManager.SetSignInChangeCallback(&CConsoleMinecraftApp::SignInChangeCallback, (LPVOID)&app);
 
-	// Set a callback for the default player options to be set - when there is no profile data for the player
-	StorageManager.SetDefaultOptionsCallback(&CConsoleMinecraftApp::DefaultOptionsCallback,(LPVOID)&app);
-	StorageManager.SetOptionsDataCallback(&CConsoleMinecraftApp::OptionsDataCallback,(LPVOID)&app);
+    // Set a callback for the default player options to be set - when there is no profile data for the player
+    StorageManager.SetDefaultOptionsCallback(&CConsoleMinecraftApp::DefaultOptionsCallback, (LPVOID)&app);
+    StorageManager.SetOptionsDataCallback(&CConsoleMinecraftApp::OptionsDataCallback, (LPVOID)&app);
 
+    // Set a callback to deal with old profile versions needing updated to new versions
+    StorageManager.SetOldProfileVersionCallback(&CConsoleMinecraftApp::OldProfileVersionCallback, (LPVOID)&app);
 
-	// Set a callback to deal with old profile versions needing updated to new versions
-	StorageManager.SetOldProfileVersionCallback(&CConsoleMinecraftApp::OldProfileVersionCallback,(LPVOID)&app);
+    g_NetworkManager.Initialise();
 
-	g_NetworkManager.Initialise();
+    // Initialise TLS for tesselator, for this main thread
+    Tesselator::CreateNewThreadStorage(1024 * 1024);
+    // Initialise TLS for AABB and Vec3 pools, for this main thread
+    AABB::CreateNewThreadStorage();
+    Vec3::CreateNewThreadStorage();
+    IntCache::CreateNewThreadStorage();
+    OldChunkStorage::CreateNewThreadStorage();
+    Level::enableLightingCache();
+    Tile::CreateNewThreadStorage();
 
+    // 4J-PB - after the init, which will have read all the local DLC, update the product ids by reading the local dlc file
+    StorageManager.UpdateDLCProductIDs();
 
-	// Initialise TLS for tesselator, for this main thread
-	Tesselator::CreateNewThreadStorage(1024*1024);
-	// Initialise TLS for AABB and Vec3 pools, for this main thread
-	AABB::CreateNewThreadStorage();
-	Vec3::CreateNewThreadStorage();
-	IntCache::CreateNewThreadStorage();
-	OldChunkStorage::CreateNewThreadStorage();
-	Level::enableLightingCache();
-	Tile::CreateNewThreadStorage();
+    Minecraft::main();
+    Minecraft *pMinecraft = Minecraft::GetInstance();
+    app.InitGameSettings();
 
-	//4J-PB - after the init, which will have read all the local DLC, update the product ids by reading the local dlc file
-	StorageManager.UpdateDLCProductIDs();
+    // read the options here for controller 0
+    // 4J-PB - we have no valid user to read a profile for on Xbox One, and there's no EULA anyway
+    // StorageManager.ReadFromProfile(0);
 
-	Minecraft::main();
-	Minecraft *pMinecraft=Minecraft::GetInstance();	
-	app.InitGameSettings();
+    app.InitialiseDLCDetails();
+    StorageManager.SetLicenseChangeFn(&app.HandleDLCLicenseChange);
 
-	// read the options here for controller 0
-	// 4J-PB - we have no valid user to read a profile for on Xbox One, and there's no EULA anyway
-	//StorageManager.ReadFromProfile(0);
+    // debug switch to trial version
+    ProfileManager.SetDebugFullOverride(true);
 
-	app.InitialiseDLCDetails();
-	StorageManager.SetLicenseChangeFn(&app.HandleDLCLicenseChange);
-
-
-	// debug switch to trial version
-	ProfileManager.SetDebugFullOverride(true);
-	
-	// set default values for controllers
-// 	for(int i=0;i<4;i++)
-// 	{
-// 		//app.SetDefaultOptions(app.GetGameDefinedProfileData(i),i);
-// 		app.SetDefaultOptions(ProfileManager.GetGameDefinedProfileData(i),i);
-// 	}
-
+    // set default values for controllers
+    // 	for(int i=0;i<4;i++)
+    // 	{
+    // 		//app.SetDefaultOptions(app.GetGameDefinedProfileData(i),i);
+    // 		app.SetDefaultOptions(ProfileManager.GetGameDefinedProfileData(i),i);
+    // 	}
 
 #if 0
 	//bool bDisplayPauseMenu=false;
@@ -680,16 +668,14 @@ void oldWinMainInit()
 	// Update the base scene quick selects now that the minecraft class exists
 	//CXuiSceneBase::UpdateScreenSettings(0);
 #endif
-	app.InitialiseTips();
+    app.InitialiseTips();
 #if 0
 
 	DWORD initData=0;
 
-
-
 #ifndef _FINAL_BUILD
 #ifndef _DEBUG
-	#pragma message(__LOC__"Need to define the _FINAL_BUILD before submission")
+#pragma message(__LOC__ "Need to define the _FINAL_BUILD before submission")
 #endif
 #endif
 
@@ -700,11 +686,9 @@ void oldWinMainInit()
 	app.NavigateToScene(XUSER_INDEX_ANY,eUIScene_Intro,&initData);
 #endif
 
+    // app.TemporaryCreateGameStart();
 
-
-	//app.TemporaryCreateGameStart();
-
-	//Sleep(10000);
+    // Sleep(10000);
 #if 0
 	// Intro loop ?
 	while(app.IntroRunning())
@@ -730,10 +714,10 @@ void oldWinMainInit()
 }
 void oldWinMainTick()
 {
-	static bool bTrialTimerDisplayed=true;
+    static bool bTrialTimerDisplayed = true;
 
-		Minecraft *pMinecraft=Minecraft::GetInstance();
-		RenderManager.StartFrame();
+    Minecraft *pMinecraft = Minecraft::GetInstance();
+    RenderManager.StartFrame();
 #if 0
 		if(pMinecraft->soundEngine->isStreamingWavebankReady() &&
 			!pMinecraft->soundEngine->isPlayingStreamingGameMusic() &&
@@ -743,85 +727,84 @@ void oldWinMainTick()
 			pMinecraft->soundEngine->playStreaming(L"", 0, 0, 0, 0, 0, false);
 		}
 #endif
-		app.UpdateTime();
-		PIXBeginNamedEvent(0,"Input manager tick");
-		InputManager.Tick();
-		PIXEndNamedEvent();
-		PIXBeginNamedEvent(0,"Profile manager tick");
-		ProfileManager.Tick();
-		PIXEndNamedEvent();
-		PIXBeginNamedEvent(0,"Storage manager tick");
-		StorageManager.Tick();
-		PIXEndNamedEvent();
-		PIXBeginNamedEvent(0,"Render manager tick");
-		RenderManager.Tick();
-		PIXEndNamedEvent();
+    app.UpdateTime();
+    PIXBeginNamedEvent(0, "Input manager tick");
+    InputManager.Tick();
+    PIXEndNamedEvent();
+    PIXBeginNamedEvent(0, "Profile manager tick");
+    ProfileManager.Tick();
+    PIXEndNamedEvent();
+    PIXBeginNamedEvent(0, "Storage manager tick");
+    StorageManager.Tick();
+    PIXEndNamedEvent();
+    PIXBeginNamedEvent(0, "Render manager tick");
+    RenderManager.Tick();
+    PIXEndNamedEvent();
 
-		// Tick the social networking manager.
-		PIXBeginNamedEvent(0,"Social network manager tick");
-//		CSocialManager::Instance()->Tick();
-		PIXEndNamedEvent();
-		
-		// Tick sentient.
-		PIXBeginNamedEvent(0,"Sentient tick");
-		MemSect(37);
-//		SentientManager.Tick();
-		MemSect(0);
-		PIXEndNamedEvent();
+    // Tick the social networking manager.
+    PIXBeginNamedEvent(0, "Social network manager tick");
+    //		CSocialManager::Instance()->Tick();
+    PIXEndNamedEvent();
 
-		GameProgress::Tick();
+    // Tick sentient.
+    PIXBeginNamedEvent(0, "Sentient tick");
+    MemSect(37);
+    //		SentientManager.Tick();
+    MemSect(0);
+    PIXEndNamedEvent();
 
-		PIXBeginNamedEvent(PIX_COLOR_INDEX(2),"Network manager do work #1");
-		g_NetworkManager.DoWork();
-		PIXEndNamedEvent();
+    GameProgress::Tick();
 
-		LeaderboardManager::Instance()->Tick();
-		// Render game graphics.
-		if(app.GetGameStarted()) 
-		{
-			pMinecraft->run_middle();
-			app.SetAppPaused( g_NetworkManager.IsLocalGame() && g_NetworkManager.GetPlayerCount() == 1 && ui.IsPauseMenuDisplayed(ProfileManager.GetPrimaryPad()) );
-		}
-		else
-		{
-			MemSect(28);
-			pMinecraft->soundEngine->tick(NULL, 0.0f);
-			MemSect(0);
-			pMinecraft->textures->tick(true,false);
-			IntCache::Reset();
-			if( app.GetReallyChangingSessionType() )
-			{
-				pMinecraft->tickAllConnections();		// Added to stop timing out when we are waiting after converting to an offline game
-			}
-		}
+    PIXBeginNamedEvent(PIX_COLOR_INDEX(2), "Network manager do work #1");
+    g_NetworkManager.DoWork();
+    PIXEndNamedEvent();
 
-		pMinecraft->soundEngine->playMusicTick();
+    LeaderboardManager::Instance()->Tick();
+    // Render game graphics.
+    if (app.GetGameStarted())
+    {
+        pMinecraft->run_middle();
+        app.SetAppPaused(g_NetworkManager.IsLocalGame() && g_NetworkManager.GetPlayerCount() == 1 && ui.IsPauseMenuDisplayed(ProfileManager.GetPrimaryPad()));
+    }
+    else
+    {
+        MemSect(28);
+        pMinecraft->soundEngine->tick(NULL, 0.0f);
+        MemSect(0);
+        pMinecraft->textures->tick(true, false);
+        IntCache::Reset();
+        if (app.GetReallyChangingSessionType())
+        {
+            pMinecraft->tickAllConnections(); // Added to stop timing out when we are waiting after converting to an offline game
+        }
+    }
 
+    pMinecraft->soundEngine->playMusicTick();
 
 #ifdef MEMORY_TRACKING
-		static bool bResetMemTrack = false;
-		static bool bDumpMemTrack = false;
+    static bool bResetMemTrack = false;
+    static bool bDumpMemTrack = false;
 
-		MemPixStuff();
+    MemPixStuff();
 
-		if( bResetMemTrack )
-		{
-			ResetMem();
-			MEMORYSTATUS memStat;
-			GlobalMemoryStatus(&memStat);
-			printf("RESETMEM: Avail. phys %d\n",memStat.dwAvailPhys/(1024*1024));
-			bResetMemTrack = false;
-		}
+    if (bResetMemTrack)
+    {
+        ResetMem();
+        MEMORYSTATUS memStat;
+        GlobalMemoryStatus(&memStat);
+        printf("RESETMEM: Avail. phys %d\n", memStat.dwAvailPhys / (1024 * 1024));
+        bResetMemTrack = false;
+    }
 
-		if( bDumpMemTrack )
-		{
-			DumpMem();
-			bDumpMemTrack = false;
-			MEMORYSTATUS memStat;
-			GlobalMemoryStatus(&memStat);
-			printf("DUMPMEM: Avail. phys %d\n",memStat.dwAvailPhys/(1024*1024));
-			printf("Renderer used: %d\n",RenderManager.CBuffSize(-1));
-		}
+    if (bDumpMemTrack)
+    {
+        DumpMem();
+        bDumpMemTrack = false;
+        MEMORYSTATUS memStat;
+        GlobalMemoryStatus(&memStat);
+        printf("DUMPMEM: Avail. phys %d\n", memStat.dwAvailPhys / (1024 * 1024));
+        printf("Renderer used: %d\n", RenderManager.CBuffSize(-1));
+    }
 #endif
 #if 0
 		static bool bDumpTextureUsage = false;
@@ -831,10 +814,10 @@ void oldWinMainTick()
 			bDumpTextureUsage = false;
 		}
 #endif
-		ui.tick();
-		ui.render();
+    ui.tick();
+    ui.render();
 
-		pMinecraft->gameRenderer->ApplyGammaPostProcess();
+    pMinecraft->gameRenderer->ApplyGammaPostProcess();
 
 #if 0
 		app.HandleButtonPresses();
@@ -884,111 +867,110 @@ void oldWinMainTick()
 		}
 #endif
 
-		// Present the frame.
-		RenderManager.Present();
+    // Present the frame.
+    RenderManager.Present();
 
-		ui.CheckMenuDisplayed();
+    ui.CheckMenuDisplayed();
 
-		PIXBeginNamedEvent(0,"Profile load check");
-		// has the game defined profile data been changed (by a profile load)
-		if(app.uiGameDefinedDataChangedBitmask!=0)
-		{
-			void *pData;
-			for(int i=0;i<XUSER_MAX_COUNT;i++)
-			{
-				if(app.uiGameDefinedDataChangedBitmask&(1<<i))
-				{
-					// It has - game needs to update its values with the data from the profile
-					pData=StorageManager.GetGameDefinedProfileData(i);
-					// reset the changed flag
-					app.ClearGameSettingsChangedFlag(i);
-					app.DebugPrintf("***  - APPLYING GAME SETTINGS CHANGE for pad %d\n",i);
-					app.ApplyGameSettingsChanged(i);
+    PIXBeginNamedEvent(0, "Profile load check");
+    // has the game defined profile data been changed (by a profile load)
+    if (app.uiGameDefinedDataChangedBitmask != 0)
+    {
+        void *pData;
+        for (int i = 0; i < XUSER_MAX_COUNT; i++)
+        {
+            if (app.uiGameDefinedDataChangedBitmask & (1 << i))
+            {
+                // It has - game needs to update its values with the data from the profile
+                pData = StorageManager.GetGameDefinedProfileData(i);
+                // reset the changed flag
+                app.ClearGameSettingsChangedFlag(i);
+                app.DebugPrintf("***  - APPLYING GAME SETTINGS CHANGE for pad %d\n", i);
+                app.ApplyGameSettingsChanged(i);
 
 #ifdef _DEBUG_MENUS_ENABLED
-					if(app.DebugSettingsOn())
-					{
-						app.ActionDebugMask(i);		
-					}
-					else
-					{
-						// force debug mask off
-						app.ActionDebugMask(i,true);
-					}
+                if (app.DebugSettingsOn())
+                {
+                    app.ActionDebugMask(i);
+                }
+                else
+                {
+                    // force debug mask off
+                    app.ActionDebugMask(i, true);
+                }
 #endif
-					// clear the stats first - there could have beena signout and sign back in in the menus
-					// need to clear the player stats - can't assume it'll be done in setlevel - we may not be in the game
-					pMinecraft->stats[ i ]->clear();
-					pMinecraft->stats[i]->parse(pData);
-				}
-			}
+                // clear the stats first - there could have beena signout and sign back in in the menus
+                // need to clear the player stats - can't assume it'll be done in setlevel - we may not be in the game
+                pMinecraft->stats[i]->clear();
+                pMinecraft->stats[i]->parse(pData);
+            }
+        }
 
 #if 0
 			// Check to see if we can post to social networks.
 			CSocialManager::Instance()->RefreshPostingCapability();
 #endif
 
-			// clear the flag
-			app.uiGameDefinedDataChangedBitmask=0;
+        // clear the flag
+        app.uiGameDefinedDataChangedBitmask = 0;
 
-			// Check if any profile write are needed
-			app.CheckGameSettingsChanged();
+        // Check if any profile write are needed
+        app.CheckGameSettingsChanged();
+    }
+    PIXEndNamedEvent();
+    app.TickTMSPPFilesRetrieved();
 
-		}
-		PIXEndNamedEvent();
-		app.TickTMSPPFilesRetrieved();
+    app.TickDLCOffersRetrieved();
 
-		app.TickDLCOffersRetrieved();
-
-		PIXBeginNamedEvent(0,"Network manager do work #2");
-		// 4J Stu - Added this back as it was causing horrendous lag (and eventually a crash on a client) when playing with multiple clients
-		g_NetworkManager.DoWork();		// TODO - consider putting this back in. Removed because we are having trouble with how long the tick is taking on Durango
-		PIXEndNamedEvent();
+    PIXBeginNamedEvent(0, "Network manager do work #2");
+    // 4J Stu - Added this back as it was causing horrendous lag (and eventually a crash on a client) when playing with multiple clients
+    g_NetworkManager.DoWork(); // TODO - consider putting this back in. Removed because we are having trouble with how long the tick is taking on Durango
+    PIXEndNamedEvent();
 
 #if 0
 		PIXBeginNamedEvent(0,"Misc extra xui");
 		// Update XUI Timers
 		hr = XuiTimersRun();
 #endif
-		// Any threading type things to deal with from the xui side?
-		app.HandleXuiActions();
+    // Any threading type things to deal with from the xui side?
+    app.HandleXuiActions();
 #if 0
 		PIXEndNamedEvent();
 #endif
 
-		// 4J-PB - Update the trial timer display if we are in the trial version
-		if(!ProfileManager.IsFullVersion())
-		{
-			// display the trial timer
-			if(app.GetGameStarted()) 
-			{
-				// 4J-PB - if the game is paused, add the elapsed time to the trial timer count so it doesn't tick down
-				if(app.IsAppPaused())
-				{
-					app.UpdateTrialPausedTimer();
-				}
-				ui.UpdateTrialTimer(ProfileManager.GetPrimaryPad());
-			}
-		}
-		else
-		{
-			// need to turn off the trial timer if it was on , and we've unlocked the full version
-			if(bTrialTimerDisplayed)
-			{
-				ui.ShowTrialTimer(false);
-				bTrialTimerDisplayed=false;
-			}
-		}
+    // 4J-PB - Update the trial timer display if we are in the trial version
+    if (!ProfileManager.IsFullVersion())
+    {
+        // display the trial timer
+        if (app.GetGameStarted())
+        {
+            // 4J-PB - if the game is paused, add the elapsed time to the trial timer count so it doesn't tick down
+            if (app.IsAppPaused())
+            {
+                app.UpdateTrialPausedTimer();
+            }
+            ui.UpdateTrialTimer(ProfileManager.GetPrimaryPad());
+        }
+    }
+    else
+    {
+        // need to turn off the trial timer if it was on , and we've unlocked the full version
+        if (bTrialTimerDisplayed)
+        {
+            ui.ShowTrialTimer(false);
+            bTrialTimerDisplayed = false;
+        }
+    }
 
-		// Fix for #7318 - Title crashes after short soak in the leaderboards menu
-		// A memory leak was caused because the icon renderer kept creating new Vec3's because the pool wasn't reset
-		Vec3::resetPool();
+    // Fix for #7318 - Title crashes after short soak in the leaderboards menu
+    // A memory leak was caused because the icon renderer kept creating new Vec3's because the pool wasn't reset
+    Vec3::resetPool();
 }
 
 #ifdef MEMORY_TRACKING
 
 int totalAllocGen = 0;
-unordered_map<int,int> allocCounts;
+unordered_map<int, int> allocCounts;
 bool trackEnable = false;
 bool trackStarted = false;
 volatile size_t sizeCheckMin = 1160;
@@ -999,179 +981,176 @@ DWORD tlsIdx;
 
 LPVOID XMemAlloc(SIZE_T dwSize, DWORD dwAllocAttributes)
 {
-	if( !trackStarted )
-	{
-		void *p = XMemAllocDefault(dwSize,dwAllocAttributes); 
-		size_t realSize = XMemSizeDefault(p, dwAllocAttributes);
-		totalAllocGen += realSize;
-		return p;
-	}
+    if (!trackStarted)
+    {
+        void *p = XMemAllocDefault(dwSize, dwAllocAttributes);
+        size_t realSize = XMemSizeDefault(p, dwAllocAttributes);
+        totalAllocGen += realSize;
+        return p;
+    }
 
-	EnterCriticalSection(&memCS);
+    EnterCriticalSection(&memCS);
 
-	void *p=XMemAllocDefault(dwSize + 16,dwAllocAttributes); 
-	size_t realSize = XMemSizeDefault(p,dwAllocAttributes) - 16;
+    void *p = XMemAllocDefault(dwSize + 16, dwAllocAttributes);
+    size_t realSize = XMemSizeDefault(p, dwAllocAttributes) - 16;
 
-	if( trackEnable )
-	{
+    if (trackEnable)
+    {
 #if 1
-		int sect = ((int) TlsGetValue(tlsIdx)) & 0x3f;
-		*(((unsigned char *)p)+realSize) = sect;
+        int sect = ((int)TlsGetValue(tlsIdx)) & 0x3f;
+        *(((unsigned char *)p) + realSize) = sect;
 
-		if( ( realSize >= sizeCheckMin ) && ( realSize <= sizeCheckMax ) && ( ( sect == sectCheck ) || ( sectCheck == -1 ) ) )
-		{
-			app.DebugPrintf("Found one\n");
-		}
+        if ((realSize >= sizeCheckMin) && (realSize <= sizeCheckMax) && ((sect == sectCheck) || (sectCheck == -1)))
+        {
+            app.DebugPrintf("Found one\n");
+        }
 #endif
 
-		if( p )
-		{
-			totalAllocGen += realSize;
-			trackEnable = false;
-			int key = ( sect << 26 ) | realSize;
-			int oldCount = allocCounts[key];
-			allocCounts[key] = oldCount + 1;
+        if (p)
+        {
+            totalAllocGen += realSize;
+            trackEnable = false;
+            int key = (sect << 26) | realSize;
+            int oldCount = allocCounts[key];
+            allocCounts[key] = oldCount + 1;
 
-			trackEnable = true;
-		}
-	}
-	 
-	LeaveCriticalSection(&memCS);
+            trackEnable = true;
+        }
+    }
 
-	return p;
+    LeaveCriticalSection(&memCS);
+
+    return p;
 }
 
-void* operator new (size_t size)
+void *operator new(size_t size)
 {
-	return (unsigned char *)XMemAlloc(size,MAKE_XALLOC_ATTRIBUTES(0,FALSE,TRUE,FALSE,0,XALLOC_PHYSICAL_ALIGNMENT_DEFAULT,XALLOC_MEMPROTECT_READWRITE,FALSE,XALLOC_MEMTYPE_HEAP));
+    return (unsigned char *)XMemAlloc(size, MAKE_XALLOC_ATTRIBUTES(0, FALSE, TRUE, FALSE, 0, XALLOC_PHYSICAL_ALIGNMENT_DEFAULT, XALLOC_MEMPROTECT_READWRITE, FALSE, XALLOC_MEMTYPE_HEAP));
 }
 
-void operator delete (void *p)
+void operator delete(void *p)
 {
-	XMemFree(p,MAKE_XALLOC_ATTRIBUTES(0,FALSE,TRUE,FALSE,0,XALLOC_PHYSICAL_ALIGNMENT_DEFAULT,XALLOC_MEMPROTECT_READWRITE,FALSE,XALLOC_MEMTYPE_HEAP));
+    XMemFree(p, MAKE_XALLOC_ATTRIBUTES(0, FALSE, TRUE, FALSE, 0, XALLOC_PHYSICAL_ALIGNMENT_DEFAULT, XALLOC_MEMPROTECT_READWRITE, FALSE, XALLOC_MEMTYPE_HEAP));
 }
 
 void WINAPI XMemFree(PVOID pAddress, DWORD dwAllocAttributes)
 {
-	bool special = false;
-	if( dwAllocAttributes == 0 )
-	{
-		dwAllocAttributes = MAKE_XALLOC_ATTRIBUTES(0,FALSE,TRUE,FALSE,0,XALLOC_PHYSICAL_ALIGNMENT_DEFAULT,XALLOC_MEMPROTECT_READWRITE,FALSE,XALLOC_MEMTYPE_HEAP);
-		special = true;
-	}
-	if(!trackStarted )
-	{
-		size_t realSize = XMemSizeDefault(pAddress, dwAllocAttributes);
-		XMemFreeDefault(pAddress, dwAllocAttributes);
-		totalAllocGen -= realSize;
-		return;
-	}
-	EnterCriticalSection(&memCS);
-	if( pAddress )
-	{
-		size_t realSize = XMemSizeDefault(pAddress, dwAllocAttributes) - 16;
-		
-		if(trackEnable)
-		{
-			int sect = *(((unsigned char *)pAddress)+realSize);
-			totalAllocGen -= realSize;
-			trackEnable = false;
-			int key = ( sect << 26 ) | realSize;
-			int oldCount = allocCounts[key];
-			allocCounts[key] = oldCount - 1;
-			trackEnable = true;
+    bool special = false;
+    if (dwAllocAttributes == 0)
+    {
+        dwAllocAttributes = MAKE_XALLOC_ATTRIBUTES(0, FALSE, TRUE, FALSE, 0, XALLOC_PHYSICAL_ALIGNMENT_DEFAULT, XALLOC_MEMPROTECT_READWRITE, FALSE, XALLOC_MEMTYPE_HEAP);
+        special = true;
+    }
+    if (!trackStarted)
+    {
+        size_t realSize = XMemSizeDefault(pAddress, dwAllocAttributes);
+        XMemFreeDefault(pAddress, dwAllocAttributes);
+        totalAllocGen -= realSize;
+        return;
+    }
+    EnterCriticalSection(&memCS);
+    if (pAddress)
+    {
+        size_t realSize = XMemSizeDefault(pAddress, dwAllocAttributes) - 16;
 
-		}
-		XMemFreeDefault(pAddress, dwAllocAttributes);
-	}
-	LeaveCriticalSection(&memCS);
+        if (trackEnable)
+        {
+            int sect = *(((unsigned char *)pAddress) + realSize);
+            totalAllocGen -= realSize;
+            trackEnable = false;
+            int key = (sect << 26) | realSize;
+            int oldCount = allocCounts[key];
+            allocCounts[key] = oldCount - 1;
+            trackEnable = true;
+        }
+        XMemFreeDefault(pAddress, dwAllocAttributes);
+    }
+    LeaveCriticalSection(&memCS);
 }
 
 SIZE_T WINAPI XMemSize(
-         PVOID pAddress,
-         DWORD dwAllocAttributes
-)
+    PVOID pAddress,
+    DWORD dwAllocAttributes)
 {
-	if( trackStarted )
-	{
-		return XMemSizeDefault(pAddress, dwAllocAttributes) - 16;
-	}
-	else
-	{
-		return XMemSizeDefault(pAddress, dwAllocAttributes);
-	}
+    if (trackStarted)
+    {
+        return XMemSizeDefault(pAddress, dwAllocAttributes) - 16;
+    }
+    else
+    {
+        return XMemSizeDefault(pAddress, dwAllocAttributes);
+    }
 }
-
 
 void DumpMem()
 {
-	int totalLeak = 0;
-	for( auto& it : allocCounts )
-	{
-		if(it.second > 0 )
-		{
-			app.DebugPrintf("%d %d %d %d\n",( it.first >> 26 ) & 0x3f,it.first & 0x03ffffff, it.second, (it.first & 0x03ffffff) * it.second);
-			totalLeak += ( it.first & 0x03ffffff ) * it.second;
-		}
-	}
-	app.DebugPrintf("Total %d\n",totalLeak);
+    int totalLeak = 0;
+    for (auto &it : allocCounts)
+    {
+        if (it.second > 0)
+        {
+            app.DebugPrintf("%d %d %d %d\n", (it.first >> 26) & 0x3f, it.first & 0x03ffffff, it.second, (it.first & 0x03ffffff) * it.second);
+            totalLeak += (it.first & 0x03ffffff) * it.second;
+        }
+    }
+    app.DebugPrintf("Total %d\n", totalLeak);
 }
 
 void ResetMem()
 {
-	if( !trackStarted )
-	{
-		trackEnable = true;
-		trackStarted = true;
-		totalAllocGen = 0;
-		InitializeCriticalSection(&memCS);
-		tlsIdx = TlsAlloc();
-	}
-	EnterCriticalSection(&memCS);
-	trackEnable = false;
-	allocCounts.clear();
-	trackEnable = true;
-	LeaveCriticalSection(&memCS);
+    if (!trackStarted)
+    {
+        trackEnable = true;
+        trackStarted = true;
+        totalAllocGen = 0;
+        InitializeCriticalSection(&memCS);
+        tlsIdx = TlsAlloc();
+    }
+    EnterCriticalSection(&memCS);
+    trackEnable = false;
+    allocCounts.clear();
+    trackEnable = true;
+    LeaveCriticalSection(&memCS);
 }
 
 void MemSect(int section)
 {
-	unsigned int value = (unsigned int)TlsGetValue(tlsIdx);
-	if( section == 0 ) // pop
-	{
-		value = (value >> 6) & 0x03ffffff;
-	}
-	else
-	{
-		value = (value << 6) | section;
-	}
-	TlsSetValue(tlsIdx, (LPVOID)value);
+    unsigned int value = (unsigned int)TlsGetValue(tlsIdx);
+    if (section == 0) // pop
+    {
+        value = (value >> 6) & 0x03ffffff;
+    }
+    else
+    {
+        value = (value << 6) | section;
+    }
+    TlsSetValue(tlsIdx, (LPVOID)value);
 }
 
 void MemPixStuff()
 {
-	const int MAX_SECT = 46;
+    const int MAX_SECT = 46;
 
-	int totals[MAX_SECT] = {0};
+    int totals[MAX_SECT] = {0};
 
-	for ( auto& it : allocCounts )
-	{
-		if ( it.second > 0 )
-		{
-			int sect = ( it.first >> 26 ) & 0x3f;
-			int bytes = it.first & 0x03ffffff;
-			totals[sect] += bytes * it.second;
-		}
-	}
+    for (auto &it : allocCounts)
+    {
+        if (it.second > 0)
+        {
+            int sect = (it.first >> 26) & 0x3f;
+            int bytes = it.first & 0x03ffffff;
+            totals[sect] += bytes * it.second;
+        }
+    }
 
-	unsigned int allSectsTotal = 0;
-	for( int i = 0; i < MAX_SECT; i++ )
-	{
-		allSectsTotal += totals[i];
-		PIXAddNamedCounter(((float)totals[i])/1024.0f,"MemSect%d",i);
-	}
+    unsigned int allSectsTotal = 0;
+    for (int i = 0; i < MAX_SECT; i++)
+    {
+        allSectsTotal += totals[i];
+        PIXAddNamedCounter(((float)totals[i]) / 1024.0f, "MemSect%d", i);
+    }
 
-	PIXAddNamedCounter(((float)allSectsTotal)/(4096.0f),"MemSect total pages");
+    PIXAddNamedCounter(((float)allSectsTotal) / (4096.0f), "MemSect total pages");
 }
 
 #endif

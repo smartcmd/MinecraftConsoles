@@ -4,10 +4,10 @@
 #include "Font.h"
 #include "Textures.h"
 #include "Lighting.h"
-#include "..\Minecraft.World\System.h"
-#include "..\Minecraft.World\net.minecraft.locale.h"
-#include "..\Minecraft.World\net.minecraft.stats.h"
-#include "..\Minecraft.World\SharedConstants.h"
+#include "../Minecraft.World/System.h"
+#include "../Minecraft.World/net.minecraft.locale.h"
+#include "../Minecraft.World/net.minecraft.stats.h"
+#include "../Minecraft.World/SharedConstants.h"
 
 AchievementPopup::AchievementPopup(Minecraft *mc)
 {

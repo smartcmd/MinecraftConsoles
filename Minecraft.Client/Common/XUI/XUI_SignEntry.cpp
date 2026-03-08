@@ -1,11 +1,11 @@
 #include "stdafx.h"
-#include "..\..\..\MultiplayerLevel.h"
-#include "..\..\..\Minecraft.World\SignTileEntity.h"
-#include "..\..\..\Minecraft.World\Entity.h"
-#include "..\..\..\Minecraft.World\Level.h"
-#include "..\..\..\Minecraft.Client\LocalPlayer.h"
-#include "..\..\..\Minecraft.Client\ClientConnection.h"
-#include "..\..\..\Minecraft.Client\MultiPlayerLocalPlayer.h"
+#include "../../../MultiplayerLevel.h"
+#include "../../../Minecraft.World/SignTileEntity.h"
+#include "../../../Minecraft.World/Entity.h"
+#include "../../../Minecraft.World/Level.h"
+#include "../../../Minecraft.Client/LocalPlayer.h"
+#include "../../../Minecraft.Client/ClientConnection.h"
+#include "../../../Minecraft.Client/MultiPlayerLocalPlayer.h"
 #include "XUI_SignEntry.h"
 
 HRESULT CScene_SignEntry::OnInit( XUIMessageInit* pInitData, BOOL& bHandled )

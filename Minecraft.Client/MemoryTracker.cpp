@@ -1,8 +1,8 @@
 #include "stdafx.h"
 #include "MemoryTracker.h"
-#include "..\Minecraft.World\IntBuffer.h"
-#include "..\Minecraft.World\ByteBuffer.h"
-#include "..\Minecraft.World\FloatBuffer.h"
+#include "../Minecraft.World/IntBuffer.h"
+#include "../Minecraft.World/ByteBuffer.h"
+#include "../Minecraft.World/FloatBuffer.h"
 
 unordered_map<int,int> MemoryTracker::GL_LIST_IDS;
 vector<int> MemoryTracker::TEXTURE_IDS;

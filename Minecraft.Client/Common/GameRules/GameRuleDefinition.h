@@ -3,7 +3,7 @@ using namespace std;
 #include <unordered_map>
 #include <string>
 
-#include "..\..\..\Minecraft.World\ItemInstance.h"
+#include "../../../Minecraft.World/ItemInstance.h"
 #include "ConsoleGameRulesConstants.h"
 
 #include "GameRulesInstance.h"

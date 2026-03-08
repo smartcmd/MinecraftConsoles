@@ -3,10 +3,10 @@
 #include "PlayerList.h"
 #include "ServerPlayer.h"
 #include "PlayerConnection.h"
-#include "..\Minecraft.World\net.minecraft.commands.h"
-#include "..\Minecraft.World\net.minecraft.network.packet.h"
-#include "..\Minecraft.World\net.minecraft.world.level.h"
-#include "..\Minecraft.World\net.minecraft.world.level.dimension.h"
+#include "../Minecraft.World/net.minecraft.commands.h"
+#include "../Minecraft.World/net.minecraft.network.packet.h"
+#include "../Minecraft.World/net.minecraft.world.level.h"
+#include "../Minecraft.World/net.minecraft.world.level.dimension.h"
 #include "TeleportCommand.h"
 
 EGameCommand TeleportCommand::getId()

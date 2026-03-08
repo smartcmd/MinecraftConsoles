@@ -5,11 +5,7 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
-if(NOT WIN32)
-  message(FATAL_ERROR "This CMake build currently supports Windows only.")
-endif()
-
-if(NOT CMAKE_SIZEOF_VOID_P EQUAL 8)
+if(NOT CMAKE_SIZEOF_VOID_P EQUAL 8 AND WIN32) # triggers when cross compiling on linux
   message(FATAL_ERROR "Use a 64-bit generator/toolchain (x64).")
 endif()
 
@@ -31,9 +27,12 @@ include("${CMAKE_CURRENT_SOURCE_DIR}/cmake/ClientSources.cmake")
 
 list(TRANSFORM MINECRAFT_WORLD_SOURCES PREPEND "${CMAKE_CURRENT_SOURCE_DIR}/Minecraft.World/")
 list(TRANSFORM MINECRAFT_CLIENT_SOURCES PREPEND "${CMAKE_CURRENT_SOURCE_DIR}/Minecraft.Client/")
-list(APPEND MINECRAFT_CLIENT_SOURCES
-  "${CMAKE_CURRENT_SOURCE_DIR}/Minecraft.Client/Xbox/MinecraftWindows.rc"
-)
+
+if(NOT CMAKE_CROSSCOMPILING) # broken when cross compiling (can't include sdkddkver.h)
+  list(APPEND MINECRAFT_CLIENT_SOURCES
+    "${CMAKE_CURRENT_SOURCE_DIR}/Minecraft.Client/Xbox/MinecraftWindows.rc"
+  )
+endif()
 
 add_library(MinecraftWorld STATIC ${MINECRAFT_WORLD_SOURCES})
 target_include_directories(MinecraftWorld PRIVATE
@@ -43,6 +42,7 @@ target_include_directories(MinecraftWorld PRIVATE
 target_compile_definitions(MinecraftWorld PRIVATE
   $<$<CONFIG:Debug>:_LARGE_WORLDS;_DEBUG_MENUS_ENABLED;_DEBUG;_LIB;_CRT_NON_CONFORMING_SWPRINTFS;_CRT_SECURE_NO_WARNINGS;_WINDOWS64>
   $<$<NOT:$<CONFIG:Debug>>:_LARGE_WORLDS;_DEBUG_MENUS_ENABLED;_LIB;_CRT_NON_CONFORMING_SWPRINTFS;_CRT_SECURE_NO_WARNINGS;_WINDOWS64>
+  $<$<BOOL:CMAKE_CROSSCOMPILING>:LCE_CROSSCOMP>
 )
 if(MSVC)
   configure_msvc_target(MinecraftWorld)
@@ -59,6 +59,7 @@ target_include_directories(MinecraftClient PRIVATE
 target_compile_definitions(MinecraftClient PRIVATE
   $<$<CONFIG:Debug>:_LARGE_WORLDS;_DEBUG_MENUS_ENABLED;_DEBUG;_CRT_NON_CONFORMING_SWPRINTFS;_CRT_SECURE_NO_WARNINGS;_WINDOWS64>
   $<$<NOT:$<CONFIG:Debug>>:_LARGE_WORLDS;_DEBUG_MENUS_ENABLED;_CRT_NON_CONFORMING_SWPRINTFS;_CRT_SECURE_NO_WARNINGS;_WINDOWS64>
+  $<$<BOOL:CMAKE_CROSSCOMPILING>:LCE_CROSSCOMP>
 )
 if(MSVC)
   configure_msvc_target(MinecraftClient)
@@ -74,7 +75,8 @@ set_target_properties(MinecraftClient PROPERTIES
 target_link_libraries(MinecraftClient PRIVATE
   MinecraftWorld
   d3d11
-  XInput9_1_0
+  xinput9_1_0 # Changed capitalization to fix builds on case-sensitive filesystems
+  shcore      # ditto
   wsock32
   legacy_stdio_definitions
   "${CMAKE_CURRENT_SOURCE_DIR}/Minecraft.Client/Windows64/Iggy/lib/iggy_w64.lib"

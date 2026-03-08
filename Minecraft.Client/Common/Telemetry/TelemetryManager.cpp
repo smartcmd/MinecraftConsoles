@@ -2,9 +2,9 @@
 
 #include "MultiPlayerLocalPlayer.h"
 
-#include "..\Minecraft.World\LevelSettings.h"
-#include "..\Minecraft.World\LevelData.h"
-#include "..\Minecraft.World\Level.h"
+#include "../Minecraft.World/LevelSettings.h"
+#include "../Minecraft.World/LevelData.h"
+#include "../Minecraft.World/Level.h"
 
 #include "TelemetryManager.h"
 

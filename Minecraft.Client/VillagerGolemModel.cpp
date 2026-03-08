@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "..\Minecraft.World\net.minecraft.world.entity.animal.h"
+#include "../Minecraft.World/net.minecraft.world.entity.animal.h"
 #include "ModelPart.h"
 #include "VillagerGolemModel.h"
 

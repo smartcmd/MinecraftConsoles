@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "OcelotRenderer.h"
-#include "..\Minecraft.World\net.minecraft.world.entity.animal.h"
+#include "../Minecraft.World/net.minecraft.world.entity.animal.h"
 
 ResourceLocation OcelotRenderer::CAT_BLACK_LOCATION = ResourceLocation(TN_MOB_CAT_BLACK);
 ResourceLocation OcelotRenderer::CAT_OCELOT_LOCATION = ResourceLocation(TN_MOB_OCELOT);

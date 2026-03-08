@@ -3,8 +3,8 @@
 #include "Textures.h"
 #include "LocalPlayer.h"
 #include "Font.h"
-#include "..\Minecraft.World\net.minecraft.world.inventory.h"
-#include "..\Minecraft.World\FurnaceTileEntity.h"
+#include "../Minecraft.World/net.minecraft.world.inventory.h"
+#include "../Minecraft.World/FurnaceTileEntity.h"
 
 FurnaceScreen::FurnaceScreen(shared_ptr<Inventory> inventory, shared_ptr<FurnaceTileEntity> furnace) : AbstractContainerScreen(new FurnaceMenu(inventory, furnace))
 {

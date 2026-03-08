@@ -2,11 +2,11 @@
 #include "UI.h"
 #include "UIScene_AbstractContainerMenu.h"
 
-#include "..\..\..\Minecraft.World\net.minecraft.world.inventory.h"
-#include "..\..\..\Minecraft.World\net.minecraft.world.item.h"
-#include "..\..\MultiplayerLocalPlayer.h"
+#include "../../../Minecraft.World/net.minecraft.world.inventory.h"
+#include "../../../Minecraft.World/net.minecraft.world.item.h"
+#include "../../MultiPlayerLocalPlayer.h"
 #ifdef _WINDOWS64
-#include "..\..\Windows64\KeyboardMouseInput.h"
+#include "../../Windows64/KeyboardMouseInput.h"
 #endif
 
 UIScene_AbstractContainerMenu::UIScene_AbstractContainerMenu(int iPad, UILayer *parentLayer) : UIScene(iPad, parentLayer)

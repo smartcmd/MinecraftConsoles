@@ -1,6 +1,6 @@
 #include "stdafx.h"
-#include "..\Minecraft.World\JavaMath.h"
-#include "..\Minecraft.World\Random.h"
+#include "../Minecraft.World/JavaMath.h"
+#include "../Minecraft.World/Random.h"
 #include "FlameParticle.h"
 
 FlameParticle::FlameParticle(Level *level, double x, double y, double z, double xd, double yd, double zd) : Particle(level, x, y, z, xd, yd, zd)

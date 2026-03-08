@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "..\XUI\XUI_SettingsAudio.h"
+#include "../XUI/XUI_SettingsAudio.h"
 
 //----------------------------------------------------------------------------------
 // Performs initialization tasks - retrieves controls.

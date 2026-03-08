@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "ShutdownManager.h"
-#include "..\..\Common\Leaderboards\LeaderboardManager.h"
-#include "..\..\MinecraftServer.h"
+#include "../../Common/Leaderboards/LeaderboardManager.h"
+#include "../../MinecraftServer.h"
 #ifdef __PS3__
 #include "C4JSpursJob.h"
 

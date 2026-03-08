@@ -1,6 +1,6 @@
 #pragma once
 #include "MobRenderer.h"
-#include "..\Minecraft.World\Player.h"
+#include "../Minecraft.World/Player.h"
 
 class HumanoidModel;
 

@@ -1,5 +1,5 @@
 #pragma once
-#include "..\Minecraft.World\Vec3.h"
+#include "../Minecraft.World/Vec3.h"
 
 class Vertex
 {

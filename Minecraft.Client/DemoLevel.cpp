@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "DemoLevel.h"
-#include "..\Minecraft.World\net.minecraft.world.level.storage.h"
+#include "../Minecraft.World/net.minecraft.world.level.storage.h"
 
 DemoLevel::DemoLevel(shared_ptr<LevelStorage> levelStorage, const wstring& levelName) : Level(levelStorage, levelName, DEMO_LEVEL_SEED)
 {

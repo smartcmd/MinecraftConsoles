@@ -1,8 +1,8 @@
 #pragma once
 
-#include "..\..\..\Minecraft.World\DurangoStats.h"
+#include "../../../Minecraft.World/DurangoStats.h"
 
-#include "..\..\Common\Telemetry\TelemetryManager.h"
+#include "../../Common/Telemetry/TelemetryManager.h"
 
 class CDurangoTelemetryManager : public CTelemetryManager
 {

@@ -1,7 +1,7 @@
 #pragma once
 using namespace std;
-#include "..\Minecraft.World\Random.h"
-#include "..\Minecraft.Client\SkinBox.h"
+#include "../Minecraft.World/Random.h"
+#include "../Minecraft.Client/SkinBox.h"
 class Mob;
 class ModelPart;
 class TexOffs;

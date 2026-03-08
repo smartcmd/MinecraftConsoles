@@ -1,6 +1,6 @@
 #pragma once
 
-#include "item.h"
+#include "Item.h"
 
 class HangingEntity;
 

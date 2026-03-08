@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "SquidModel.h"
-#include "..\Minecraft.World\Mth.h"
+#include "../Minecraft.World/Mth.h"
 #include "ModelPart.h"
 
 SquidModel::SquidModel() : Model()

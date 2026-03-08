@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "PSVita_PlayerUID.h"
-#include "..\Minecraft.World\StringHelpers.h"
+#include "../Minecraft.World/StringHelpers.h"
 
 // taken from Boost, there is no TR1 equivalent
 template <class T>

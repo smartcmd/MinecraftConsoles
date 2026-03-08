@@ -1,9 +1,9 @@
 #include "stdafx.h"
 #include "InBedChatScreen.h"
 #include "Button.h"
-#include "MultiplayerLocalPlayer.h"
-#include "..\Minecraft.World\net.minecraft.locale.h"
-#include "..\Minecraft.World\StringHelpers.h"
+#include "MultiPlayerLocalPlayer.h"
+#include "../Minecraft.World/net.minecraft.locale.h"
+#include "../Minecraft.World/StringHelpers.h"
 
 void InBedChatScreen::init()
 {

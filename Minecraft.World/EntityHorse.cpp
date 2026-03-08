@@ -13,8 +13,8 @@
 #include "net.minecraft.world.level.tile.h"
 #include "net.minecraft.world.inventory.h"
 #include "net.minecraft.world.phys.h"
-#include "..\Minecraft.Client\Textures.h"
-#include "..\Minecraft.Client\Minecraft.h"
+#include "../Minecraft.Client/Textures.h"
+#include "../Minecraft.Client/Minecraft.h"
 #include "BasicTypeContainers.h"
 #include "EntityHorse.h"
 

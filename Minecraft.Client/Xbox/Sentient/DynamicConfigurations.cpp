@@ -1,6 +1,6 @@
 #include "stdafx.h"
-#include "Include\SenClientMain.h"
-#include "Include\SenClientDynamicConfig.h"
+#include "Include/SenClientMain.h"
+#include "Include/SenClientDynamicConfig.h"
 #include "DynamicConfigurations.h"
 
 

@@ -1,6 +1,6 @@
 #pragma once
 #include "Screen.h"
-#include "..\Minecraft.World\net.minecraft.stats.h"
+#include "../Minecraft.World/net.minecraft.stats.h"
 class StatsCounter;
 
 class AchievementScreen : public Screen

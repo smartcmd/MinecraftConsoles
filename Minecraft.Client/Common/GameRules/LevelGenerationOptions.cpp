@@ -2,13 +2,13 @@
 
 #include <unordered_set>
 
-#include "..\..\..\Minecraft.World\StringHelpers.h"
-#include "..\..\..\Minecraft.World\Pos.h"
-#include "..\..\..\Minecraft.World\net.minecraft.world.phys.h"
-#include "..\..\..\Minecraft.World\net.minecraft.world.level.h"
-#include "..\..\..\Minecraft.World\net.minecraft.world.level.chunk.h"
-#include "Common\DLC\DLCGameRulesHeader.h"
-#include "..\..\StringTable.h"
+#include "../../../Minecraft.World/StringHelpers.h"
+#include "../../../Minecraft.World/Pos.h"
+#include "../../../Minecraft.World/net.minecraft.world.phys.h"
+#include "../../../Minecraft.World/net.minecraft.world.level.h"
+#include "../../../Minecraft.World/net.minecraft.world.level.chunk.h"
+#include "Common/DLC/DLCGameRulesHeader.h"
+#include "../../StringTable.h"
 #include "LevelGenerationOptions.h"
 #include "ConsoleGameRules.h"
 

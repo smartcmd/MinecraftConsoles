@@ -5,11 +5,11 @@
 #include "JoinMultiplayerScreen.h"
 #include "Tesselator.h"
 #include "Textures.h"
-#include "..\Minecraft.World\StringHelpers.h"
-#include "..\Minecraft.World\InputOutputStream.h"
-#include "..\Minecraft.World\net.minecraft.locale.h"
-#include "..\Minecraft.World\System.h"
-#include "..\Minecraft.World\Random.h"
+#include "../Minecraft.World/StringHelpers.h"
+#include "../Minecraft.World/InputOutputStream.h"
+#include "../Minecraft.World/net.minecraft.locale.h"
+#include "../Minecraft.World/System.h"
+#include "../Minecraft.World/Random.h"
 #include "TitleScreen.h"
 
 Random *TitleScreen::random = new Random();

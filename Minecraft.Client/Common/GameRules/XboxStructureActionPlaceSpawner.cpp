@@ -1,9 +1,9 @@
 #include "stdafx.h"
-#include "..\..\..\Minecraft.World\StringHelpers.h"
+#include "../../../Minecraft.World/StringHelpers.h"
 #include "XboxStructureActionPlaceSpawner.h"
-#include "..\..\..\Minecraft.World\net.minecraft.world.level.levelgen.structure.h"
-#include "..\..\..\Minecraft.World\net.minecraft.world.level.h"
-#include "..\..\..\Minecraft.World\net.minecraft.world.level.tile.entity.h"
+#include "../../../Minecraft.World/net.minecraft.world.level.levelgen.structure.h"
+#include "../../../Minecraft.World/net.minecraft.world.level.h"
+#include "../../../Minecraft.World/net.minecraft.world.level.tile.entity.h"
 
 XboxStructureActionPlaceSpawner::XboxStructureActionPlaceSpawner()
 {

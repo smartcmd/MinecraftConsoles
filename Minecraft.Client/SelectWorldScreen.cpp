@@ -5,9 +5,9 @@
 #include "CreateWorldScreen.h"
 #include "RenameWorldScreen.h"
 #include "DemoMode.h"
-#include "..\Minecraft.World\net.minecraft.locale.h"
-#include "..\Minecraft.World\net.minecraft.world.level.h"
-#include "..\Minecraft.World\net.minecraft.world.level.storage.h"
+#include "../Minecraft.World/net.minecraft.locale.h"
+#include "../Minecraft.World/net.minecraft.world.level.h"
+#include "../Minecraft.World/net.minecraft.world.level.storage.h"
 
 
 SelectWorldScreen::SelectWorldScreen(Screen *lastScreen)

@@ -1,7 +1,7 @@
 #pragma once
 using namespace std;
 
-#include "..\Minecraft.World\IconRegister.h"
+#include "../Minecraft.World/IconRegister.h"
 
 class Icon;
 class StitchedTexture;

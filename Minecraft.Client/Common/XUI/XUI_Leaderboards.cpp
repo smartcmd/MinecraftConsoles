@@ -2,8 +2,8 @@
 #include <xuiresource.h>
 #include <xuiapp.h>
 #include "XUI_Leaderboards.h"
-#include "..\..\..\Minecraft.World\Tile.h"
-#include "..\..\..\Minecraft.World\Item.h"
+#include "../../../Minecraft.World/Tile.h"
+#include "../../../Minecraft.World/Item.h"
 #include "XUI_Ctrl_CraftIngredientSlot.h"
 #include "XUI_XZP_Icons.h"
 

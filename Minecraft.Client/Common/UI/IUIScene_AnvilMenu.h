@@ -1,6 +1,6 @@
 #pragma once
 #include "IUIScene_AbstractContainerMenu.h"
-#include "..\..\..\Minecraft.World\net.minecraft.world.inventory.ContainerListener.h"
+#include "../../../Minecraft.World/net.minecraft.world.inventory.ContainerListener.h"
 
 // The 0-indexed slot in the inventory list that lines up with the result slot
 #define ANVIL_SCENE_RESULT_SLOT_UP_OFFSET 5

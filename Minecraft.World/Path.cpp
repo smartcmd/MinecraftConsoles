@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "net.minecraft.world.entity.h"
 #include "net.minecraft.world.level.pathfinder.h"
-#include "path.h"
+#include "Path.h"
 
 Path::~Path()
 {
