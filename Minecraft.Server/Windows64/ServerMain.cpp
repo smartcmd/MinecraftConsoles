@@ -32,6 +32,8 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include <atomic>
+
 extern ATOM MyRegisterClass(HINSTANCE hInstance);
 extern BOOL InitInstance(HINSTANCE hInstance, int nCmdShow);
 extern HRESULT InitDevice();
@@ -65,16 +67,20 @@ struct DedicatedServerConfig
 	bool showHelp;
 };
 
-static volatile bool g_shutdownRequested = false;
+static std::atomic<bool> g_shutdownRequested(false);
 static const DWORD kDefaultAutosaveIntervalMs = 60 * 1000;
 static const int kServerActionPad = 0;
+
+static bool IsShutdownRequested()
+{
+	return g_shutdownRequested.load();
+}
 
 namespace ServerRuntime
 {
 	void RequestDedicatedServerShutdown()
 	{
-		g_shutdownRequested = true;
-		app.m_bShutdown = true;
+		g_shutdownRequested.store(true);
 	}
 }
 
@@ -552,7 +558,7 @@ int main(int argc, char **argv)
 	C4JThread *startThread = new C4JThread(&CGameNetworkManager::RunNetworkGameThreadProc, (LPVOID)param, "RunNetworkGame");
 	startThread->Run();
 
-	while (startThread->isRunning() && !g_shutdownRequested)
+	while (startThread->isRunning() && !IsShutdownRequested())
 	{
 		TickCoreSystems();
 		Sleep(10);
@@ -574,7 +580,7 @@ int main(int argc, char **argv)
 
 	LogStartupStep("server startup complete");
 	LogInfof("startup", "Dedicated server listening on %s:%d", g_Win64MultiplayerIP, g_Win64MultiplayerPort);
-	if (worldBootstrap.status == eWorldBootstrap_CreatedNew && !g_shutdownRequested && !app.m_bShutdown)
+	if (worldBootstrap.status == eWorldBootstrap_CreatedNew && !IsShutdownRequested() && !app.m_bShutdown)
 	{
 		// Windows64 suppresses saveToDisc right after new world creation
 		// Dedicated Server explicitly runs the initial save here
@@ -601,13 +607,13 @@ int main(int argc, char **argv)
 	ServerRuntime::ServerCli serverCli;
 	serverCli.Start();
 
-	while (!g_shutdownRequested && !app.m_bShutdown)
+	while (!IsShutdownRequested() && !app.m_bShutdown)
 	{
 		TickCoreSystems();
 		HandleXuiActions();
 		serverCli.Poll();
 
-		if (g_shutdownRequested || app.m_bShutdown)
+		if (IsShutdownRequested() || app.m_bShutdown)
 		{
 			break;
 		}
@@ -638,6 +644,7 @@ int main(int argc, char **argv)
 		Sleep(10);
 	}
 	serverCli.Stop();
+	app.m_bShutdown = true;
 
 	LogInfof("shutdown", "Dedicated server stopped");
 	MinecraftServer *server = MinecraftServer::getInstance();
