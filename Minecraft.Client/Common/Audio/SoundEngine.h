@@ -151,7 +151,7 @@ private:
 	static char m_szSoundPath[];
 	static char m_szMusicPath[];
 	static char m_szRedistName[];
-	static char *m_szStreamFileA[eStream_Max];
+	static const char *m_szStreamFileA[eStream_Max];
 
 	AUDIO_LISTENER m_ListenerA[MAX_LOCAL_PLAYERS];
 	int m_validListenerCount;

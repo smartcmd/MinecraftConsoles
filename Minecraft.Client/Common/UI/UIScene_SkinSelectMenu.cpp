@@ -13,7 +13,7 @@
 //#define SKIN_SELECT_PACK_PLAYER_CUSTOM 1
 #define SKIN_SELECT_MAX_DEFAULTS 2
 
-WCHAR *UIScene_SkinSelectMenu::wchDefaultNamesA[]=
+const WCHAR *UIScene_SkinSelectMenu::wchDefaultNamesA[]=
 {
 	L"USE LOCALISED VERSION", // Server selected
 	L"Steve",

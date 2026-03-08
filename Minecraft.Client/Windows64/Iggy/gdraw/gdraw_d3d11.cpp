@@ -56,7 +56,7 @@ typedef ID3D11DeviceContext ID3D1XContext;
 typedef F32 ViewCoord;
 typedef gdraw_d3d11_resourcetype gdraw_resourcetype;
 
-static void report_d3d_error(HRESULT hr, char *call, char *context);
+static void report_d3d_error(HRESULT hr, const char *call, const char *context);
 
 static void *map_buffer(ID3D1XContext *ctx, ID3D11Buffer *buf, bool discard)
 {
