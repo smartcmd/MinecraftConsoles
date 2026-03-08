@@ -43,6 +43,12 @@
 #include "..\Minecraft.Client\HumanoidModel.h"
 #include "SoundTypes.h"
 
+#include "..\Minecraft.Client\Minecraft.h"
+#include "..\Minecraft.Client\Screen.h"
+#ifdef _WINDOWS64
+#include "..\Minecraft.Client\Windows64\KeyboardMouseInput.h"
+#endif
+
 
 
 void Player::_init()
@@ -1852,6 +1858,10 @@ Player::BedSleepingResult Player::startSleepInBed(int x, int y, int z, bool bTes
 		setPos(x + .5f, y + 15.0f / 16.0f, z + .5f);
 	}
 	m_isSleeping = true;
+	#ifdef _WINDOWS64
+	g_KBMInput.SetActiveMouse(false);
+	#endif
+
 	sleepCounter = 0;
 	bedPosition = new Pos(x, y, z);
 	xd = zd = yd = 0;
@@ -1922,6 +1932,12 @@ void Player::stopSleepInBed(bool forcefulWakeUp, bool updateLevelList, bool save
 	}
 
 	m_isSleeping = false;
+	#ifdef _WINDOWS64
+    g_KBMInput.SetActiveMouse(true);
+    g_KBMInput.OnMouseButtonUp(KeyboardMouseInput::MOUSE_LEFT);
+    g_KBMInput.OnMouseButtonUp(KeyboardMouseInput::MOUSE_RIGHT);
+	#endif
+
 	if (!level->isClientSide && updateLevelList)
 	{
 		level->updateSleepingPlayerList();

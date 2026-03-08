@@ -2275,6 +2275,7 @@ void Minecraft::tick(bool bFirst, bool bUpdateTextures)
 	int iPad=player->GetXboxPad();
 	//OutputDebugString("Minecraft::tick\n");
 
+
 	//4J-PB - only tick this player's stats
 	stats[iPad]->tick(iPad);
 
@@ -2323,6 +2324,7 @@ void Minecraft::tick(bool bFirst, bool bUpdateTextures)
 	* progressRenderer.progressStagePercentage(0); } else {
 	* serverConnection.tick(); serverConnection.sendPosition(player); } }
 	*/
+    
 	if (screen == NULL && player != NULL )
 	{
 		if (player->getHealth() <= 0 && !ui.GetMenuDisplayed(iPad) )
@@ -2331,7 +2333,7 @@ void Minecraft::tick(bool bFirst, bool bUpdateTextures)
 		}
 		else if (player->isSleeping() && level != NULL && level->isClientSide)
 		{
-			//            setScreen(new InBedChatScreen());		// 4J - TODO put back in
+			//setScreen(new InBedChatScreen());		// 4J - TODO put back in
 		}
 	}
 	else if (screen != NULL && (dynamic_cast<InBedChatScreen *>(screen)!=NULL) && !player->isSleeping())
@@ -2368,7 +2370,7 @@ void Minecraft::tick(bool bFirst, bool bUpdateTextures)
 #ifdef _WINDOWS64
 		if (!g_KBMInput.IsMouseGrabbed() && g_KBMInput.IsWindowFocused())
 		{
-			g_KBMInput.SetMouseGrabbed(true);
+            g_KBMInput.SetMouseGrabbed(true);
 		}
 #endif
 		// 4J-PB - add some tooltips if required
