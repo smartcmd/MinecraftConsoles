@@ -1331,11 +1331,17 @@ bool UIScene::hasRegisteredSubstitutionTexture(const wstring &textureName)
 
 void UIScene::_handleFocusChange(F64 controlId, F64 childId)
 {
-	m_iFocusControl = (int)controlId;
-	m_iFocusChild = (int)childId;
+	int newControl = (int)controlId;
+	int newChild = (int)childId;
 
-	handleFocusChange(controlId, childId);
-	ui.PlayUISFX(eSFX_Focus);
+	if (newControl != m_iFocusControl || newChild != m_iFocusChild)
+	{
+		m_iFocusControl = newControl;
+		m_iFocusChild = newChild;
+
+		handleFocusChange(controlId, childId);
+		ui.PlayUISFX(eSFX_Focus);
+	}
 }
 
 void UIScene::_handleInitFocus(F64 controlId, F64 childId)
