@@ -1481,7 +1481,6 @@ void Minecraft::run_middle()
 								localplayers[i]->ullButtonsPressed|=1LL<<MINECRAFT_ACTION_USE;
 
 							bool isClosableByEitherKey = ui.IsSceneInStack(i, eUIScene_FurnaceMenu) ||
-								ui.IsSceneInStack(i, eUIScene_FurnaceMenu) ||
 								ui.IsSceneInStack(i, eUIScene_ContainerMenu) ||
 								ui.IsSceneInStack(i, eUIScene_DispenserMenu) ||
 								ui.IsSceneInStack(i, eUIScene_EnchantingMenu) ||
