@@ -1257,6 +1257,72 @@ int APIENTRY _tWinMain(_In_ HINSTANCE hInstance,
 
 	MultiByteToWideChar(CP_ACP, 0, g_Win64Username, -1, g_Win64UsernameW, 17);
 
+	// convert servers.txt to servers.db
+	if (GetFileAttributesA("servers.txt") != INVALID_FILE_ATTRIBUTES &&
+		GetFileAttributesA("servers.db") == INVALID_FILE_ATTRIBUTES)
+	{
+		FILE* txtFile = nullptr;
+		if (fopen_s(&txtFile, "servers.txt", "r") == 0 && txtFile)
+		{
+			struct MigEntry { std::string ip; uint16_t port; std::string name; };
+			std::vector<MigEntry> migEntries;
+			char line[512];
+
+			while (fgets(line, sizeof(line), txtFile))
+			{
+				int l = (int)strlen(line);
+				while (l > 0 && (line[l - 1] == '\n' || line[l - 1] == '\r' || line[l - 1] == ' '))
+					line[--l] = '\0';
+				if (l == 0) continue;
+
+				std::string srvIP = line;
+
+				if (!fgets(line, sizeof(line), txtFile)) break;
+				l = (int)strlen(line);
+				while (l > 0 && (line[l - 1] == '\n' || line[l - 1] == '\r' || line[l - 1] == ' '))
+					line[--l] = '\0';
+				uint16_t srvPort = (uint16_t)atoi(line);
+
+				std::string srvName;
+				if (fgets(line, sizeof(line), txtFile))
+				{
+					l = (int)strlen(line);
+					while (l > 0 && (line[l - 1] == '\n' || line[l - 1] == '\r' || line[l - 1] == ' '))
+						line[--l] = '\0';
+					srvName = line;
+				}
+
+				if (!srvIP.empty() && srvPort > 0)
+					migEntries.push_back({srvIP, srvPort, srvName});
+			}
+			fclose(txtFile);
+
+			if (!migEntries.empty())
+			{
+				FILE* dbFile = nullptr;
+				if (fopen_s(&dbFile, "servers.db", "wb") == 0 && dbFile)
+				{
+					fwrite("MCSV", 1, 4, dbFile);
+					uint32_t ver = 1;
+					uint32_t cnt = (uint32_t)migEntries.size();
+					fwrite(&ver, sizeof(uint32_t), 1, dbFile);
+					fwrite(&cnt, sizeof(uint32_t), 1, dbFile);
+					for (size_t i = 0; i < migEntries.size(); i++)
+					{
+						uint16_t ipLen = (uint16_t)migEntries[i].ip.length();
+						fwrite(&ipLen, sizeof(uint16_t), 1, dbFile);
+						fwrite(migEntries[i].ip.c_str(), 1, ipLen, dbFile);
+						fwrite(&migEntries[i].port, sizeof(uint16_t), 1, dbFile);
+						uint16_t nameLen = (uint16_t)migEntries[i].name.length();
+						fwrite(&nameLen, sizeof(uint16_t), 1, dbFile);
+						fwrite(migEntries[i].name.c_str(), 1, nameLen, dbFile);
+					}
+					fclose(dbFile);
+				}
+			}
+		}
+	}
+
 	// Initialize global strings
 	MyRegisterClass(hInstance);
 

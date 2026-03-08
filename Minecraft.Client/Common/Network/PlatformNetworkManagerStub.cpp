@@ -777,52 +777,55 @@ void CPlatformNetworkManagerStub::SearchForGames()
 		friendsSessions[0].push_back(info);
 	}
 
-	std::FILE* file = std::fopen("servers.txt", "r");
+	std::FILE* file = std::fopen("servers.db", "rb");
 
 	if (file) {
-		wstring wline;
-		int phase = 0;
+		char magic[4] = {};
+		if (std::fread(magic, 1, 4, file) == 4 && memcmp(magic, "MCSV", 4) == 0)
+		{
+			uint32_t version = 0, count = 0;
+			std::fread(&version, sizeof(uint32_t), 1, file);
+			std::fread(&count, sizeof(uint32_t), 1, file);
 
-		string ip;
-		wstring port;
-		wstring name;
+			if (version == 1)
+			{
+				for (uint32_t s = 0; s < count; s++)
+				{
+					uint16_t ipLen = 0, port = 0, nameLen = 0;
+					if (std::fread(&ipLen, sizeof(uint16_t), 1, file) != 1) break;
+					if (ipLen == 0 || ipLen > 256) break;
 
-		char buffer[512];
-		while (std::fgets(buffer, sizeof(buffer), file)) {
-			if (phase == 0) {
-				ip = buffer;
-				if (!ip.empty() && (ip.back() == '\n' || ip.back() == '\r'))
-					ip.pop_back();
-				phase = 1;
-			}
-			else if (phase == 1) {
-				wline = convStringToWstring(buffer);
-				port = wline;
-				phase = 2;
-			}
-			else if (phase == 2) {
-				wline = convStringToWstring(buffer);
-				name = wline;
-				phase = 0;
+					char ipBuf[257] = {};
+					if (std::fread(ipBuf, 1, ipLen, file) != ipLen) break;
 
-				//THEY GET DELETED AFTER USE LIKE 30 LINES UP!!
-				FriendSessionInfo* info = new FriendSessionInfo();
-				wchar_t label[128];
-				wcsncpy_s(label, sizeof(label)/sizeof(wchar_t), name.c_str(), _TRUNCATE);
-				size_t nameLen = wcslen(label);
-				info->displayLabel = new wchar_t[nameLen+1];
-				wcscpy_s(info->displayLabel, nameLen + 1, label);
-				info->displayLabelLength = (unsigned char)nameLen;
-				info->displayLabelViewableStartIndex = 0;
-				info->data.isReadyToJoin = true;
-				info->data.isJoinable = true;
-				strncpy_s(info->data.hostIP, sizeof(info->data.hostIP), ip.c_str(), _TRUNCATE);
-				info->data.hostPort = stoi(port);
-				info->sessionId = (SessionID)(static_cast<uint64_t>(inet_addr(ip.c_str())) | (static_cast<uint64_t>(stoi(port)) << 32));
-				friendsSessions[0].push_back(info);
+					if (std::fread(&port, sizeof(uint16_t), 1, file) != 1) break;
+
+					if (std::fread(&nameLen, sizeof(uint16_t), 1, file) != 1) break;
+					if (nameLen > 256) break;
+
+					char nameBuf[257] = {};
+					if (nameLen > 0)
+					{
+						if (std::fread(nameBuf, 1, nameLen, file) != nameLen) break;
+					}
+
+					wstring wName = convStringToWstring(nameBuf);
+
+					FriendSessionInfo* info = new FriendSessionInfo();
+					size_t nLen = wName.length();
+					info->displayLabel = new wchar_t[nLen + 1];
+					wcscpy_s(info->displayLabel, nLen + 1, wName.c_str());
+					info->displayLabelLength = (unsigned char)nLen;
+					info->displayLabelViewableStartIndex = 0;
+					info->data.isReadyToJoin = true;
+					info->data.isJoinable = true;
+					strncpy_s(info->data.hostIP, sizeof(info->data.hostIP), ipBuf, _TRUNCATE);
+					info->data.hostPort = port;
+					info->sessionId = (SessionID)(static_cast<uint64_t>(inet_addr(ipBuf)) | (static_cast<uint64_t>(port) << 32));
+					friendsSessions[0].push_back(info);
+				}
 			}
 		}
-
 		std::fclose(file);
 	}
 
@@ -848,7 +851,7 @@ vector<FriendSessionInfo *> *CPlatformNetworkManagerStub::GetSessionList(int iPa
 {
 	vector<FriendSessionInfo*>* filteredList = new vector<FriendSessionInfo*>();
 	for (size_t i = 0; i < friendsSessions[0].size(); i++)
-		filteredList->push_back(friendsSessions[0][i]);
+		filteredList->push_back(new FriendSessionInfo(*friendsSessions[0][i]));
 	return filteredList;
 }
 

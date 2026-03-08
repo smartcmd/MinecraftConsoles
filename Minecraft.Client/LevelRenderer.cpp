@@ -545,7 +545,8 @@ void LevelRenderer::renderEntities(Vec3 *cam, Culler *culler, float a)
 
 	for (auto& entity : entities)
 	{
-		bool shouldRender = (entity->shouldRender(cam) && (entity->noCulling || culler->isVisible(entity->bb)));
+		bool isPlayerVehicle = (entity == mc->cameraTargetPlayer->riding);
+		bool shouldRender = (entity->shouldRender(cam) && (entity->noCulling || isPlayerVehicle || culler->isVisible(entity->bb)));
 
 		// Render the mob if the mob's leash holder is within the culler
 		if ( !shouldRender && entity->instanceof(eTYPE_MOB) )

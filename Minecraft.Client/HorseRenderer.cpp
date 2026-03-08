@@ -55,8 +55,15 @@ void HorseRenderer::renderModel(shared_ptr<LivingEntity> mob, float wp, float ws
 
 void HorseRenderer::bindTexture(ResourceLocation *location)
 {
-	// Set up (potentially) multiple texture layers for the horse
-	entityRenderDispatcher->textures->bindTextureLayers(location);
+	if (location->getTextureCount() > 1)
+	{
+		// Set up multiple texture layers for the horse
+		entityRenderDispatcher->textures->bindTextureLayers(location);
+	}
+	else
+	{
+		EntityRenderer::bindTexture(location);
+	}
 }
 
 ResourceLocation *HorseRenderer::getTextureLocation(shared_ptr<Entity> entity)
