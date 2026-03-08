@@ -402,8 +402,13 @@ UIScene_LoadOrJoinMenu::~UIScene_LoadOrJoinMenu()
     g_NetworkManager.SetSessionsUpdatedCallback( NULL, NULL );
     app.SetLiveLinkRequired( false );
 
-    delete m_currentSessions;
-    m_currentSessions = NULL;
+    if (m_currentSessions)
+    {
+        for (auto& it : *m_currentSessions)
+            delete it;
+        delete m_currentSessions;
+        m_currentSessions = NULL;
+    }
 
 #if TO_BE_IMPLEMENTED
     // Reset the background downloading, in case we changed it by attempting to download a texture pack
@@ -520,6 +525,9 @@ void UIScene_LoadOrJoinMenu::Initialise()
 {
     m_iSaveListIndex = 0;
 	m_iGameListIndex = 0;
+#ifdef _WINDOWS64
+	m_addServerPhase = eAddServer_Idle;
+#endif
 
     m_iDefaultButtonsC = 0;
 	m_iMashUpButtonsC=0;
@@ -1051,8 +1059,7 @@ void UIScene_LoadOrJoinMenu::GetSaveInfo()
         m_pSaveDetails=StorageManager.ReturnSavesInfo();
         if(m_pSaveDetails==NULL)
         {
-            char savename[] = "save";
-            C4JStorage::ESaveGameState eSGIStatus = StorageManager.GetSavesInfo(m_iPad, NULL, this, savename);
+            C4JStorage::ESaveGameState eSGIStatus= StorageManager.GetSavesInfo(m_iPad,NULL,this,"save");
         }
 
 #if TO_BE_IMPLEMENTED
@@ -1471,6 +1478,10 @@ void UIScene_LoadOrJoinMenu::handleFocusChange(F64 controlId, F64 childId)
 	{
 	case eControl_GamesList:
 		m_iGameListIndex = childId;
+#ifdef _WINDOWS64
+		// Offset past the "Add Server" button so m_iGameListIndex is a session index
+		m_iGameListIndex -= 1;
+#endif
 		m_buttonListGames.updateChildFocus( (int) childId );
 		break;
 	case eControl_SavesList:
@@ -1598,6 +1609,14 @@ void UIScene_LoadOrJoinMenu::handlePress(F64 controlId, F64 childId)
         break;
     case eControl_GamesList:
         {
+#ifdef _WINDOWS64
+            if ((int)childId == ADD_SERVER_BUTTON_INDEX)
+            {
+                ui.PlayUISFX(eSFX_Press);
+                BeginAddServer();
+                break;
+            }
+#endif
             m_bIgnoreInput=true;
 
 			m_eAction = eAction_JoinGame;
@@ -1607,6 +1626,10 @@ void UIScene_LoadOrJoinMenu::handlePress(F64 controlId, F64 childId)
 
 			{
 				int nIndex = (int)childId;
+#ifdef _WINDOWS64
+				// Offset by 1 because the "Add Server" button is at index 0
+				nIndex -= 1;
+#endif
 				m_iGameListIndex = nIndex;
 				CheckAndJoinGame(nIndex);
 			}
@@ -1744,12 +1767,34 @@ void UIScene_LoadOrJoinMenu::CheckAndJoinGame(int gameIndex)
 #endif
 #endif
 
-		//CScene_MultiGameInfo::JoinMenuInitData *initData = new CScene_MultiGameInfo::JoinMenuInitData();
 		m_initData->iPad = 0;;
 		m_initData->selectedSession = m_currentSessions->at( gameIndex );
+#ifdef _WINDOWS64
+		{
 
-		// check that we have the texture pack available
-		// If it's not the default texture pack
+			int serverDbCount = 0;
+			FILE* dbFile = fopen("servers.db", "rb");
+			if (dbFile)
+			{
+				char magic[4] = {};
+				if (fread(magic, 1, 4, dbFile) == 4 && memcmp(magic, "MCSV", 4) == 0)
+				{
+					uint32_t version = 0, count = 0;
+					fread(&version, sizeof(uint32_t), 1, dbFile);
+					fread(&count, sizeof(uint32_t), 1, dbFile);
+					if (version == 1)
+						serverDbCount = (int)count;
+				}
+				fclose(dbFile);
+			}
+			int lanCount = (int)m_currentSessions->size() - serverDbCount;
+			if (gameIndex >= lanCount && lanCount >= 0)
+				m_initData->serverIndex = gameIndex - lanCount;
+			else
+				m_initData->serverIndex = -1; 
+		}
+#endif
+
 		if(m_initData->selectedSession->data.texturePackParentId!=0)
 		{
 			int texturePacksCount = Minecraft::GetInstance()->skins->getTexturePackCount();
@@ -1767,8 +1812,7 @@ void UIScene_LoadOrJoinMenu::CheckAndJoinGame(int gameIndex)
 
 			if(bHasTexturePackInstalled==false)
 			{
-				// upsell the texture pack
-				// tell sentient about the upsell of the full version of the skin pack
+
 #ifdef _XBOX
 				ULONGLONG ullOfferID_Full;
 				app.GetDLCFullOfferIDForPackID(m_initData->selectedSession->data.texturePackParentId,&ullOfferID_Full);
@@ -1781,8 +1825,6 @@ void UIScene_LoadOrJoinMenu::CheckAndJoinGame(int gameIndex)
 				//uiIDA[1]=IDS_TEXTURE_PACK_TRIALVERSION;
 				uiIDA[1]=IDS_CONFIRM_CANCEL;
 
-
-				// Give the player a warning about the texture pack missing
 				ui.RequestAlertMessage(IDS_DLC_TEXTUREPACK_NOT_PRESENT_TITLE, IDS_DLC_TEXTUREPACK_NOT_PRESENT, uiIDA, 2, m_iPad,&UIScene_LoadOrJoinMenu::TexturePackDialogReturned,this);
 
 				return;
@@ -1800,7 +1842,6 @@ void UIScene_LoadOrJoinMenu::CheckAndJoinGame(int gameIndex)
 		m_controlJoinTimer.setVisible( false );
 
 #ifdef _XBOX
-		// Reset the background downloading, in case we changed it by attempting to download a texture pack
 		XBackgroundDownloadSetMode(XBACKGROUND_DOWNLOAD_MODE_AUTO);
 #endif
 
@@ -1896,7 +1937,13 @@ void UIScene_LoadOrJoinMenu::UpdateGamesList()
     if(DoesGamesListHaveFocus() && m_buttonListGames.getItemCount() > 0)
     {
         unsigned int nIndex = m_buttonListGames.getCurrentSelection();
+#ifdef _WINDOWS64
+        // Offset past the "Add Server" button
+        if (nIndex > 0)
+            pSelectedSession = m_currentSessions->at( nIndex - 1 );
+#else
         pSelectedSession = m_currentSessions->at( nIndex );
+#endif
     }
 
     SessionID selectedSessionId;
@@ -1912,8 +1959,37 @@ void UIScene_LoadOrJoinMenu::UpdateGamesList()
     int iY = -1;
     int iX=-1;
 
-    delete m_currentSessions;
-    m_currentSessions = g_NetworkManager.GetSessionList( m_iPad, 1, m_bShowingPartyGamesOnly );
+    vector<FriendSessionInfo*>* newSessions = g_NetworkManager.GetSessionList( m_iPad, 1, m_bShowingPartyGamesOnly );
+
+    if (m_currentSessions != NULL && m_currentSessions->size() == newSessions->size())
+    {
+        bool same = true;
+        for (size_t i = 0; i < newSessions->size(); i++)
+        {
+            if (memcmp(&(*m_currentSessions)[i]->sessionId, &(*newSessions)[i]->sessionId, sizeof(SessionID)) != 0 ||
+                wcscmp((*m_currentSessions)[i]->displayLabel ? (*m_currentSessions)[i]->displayLabel : L"",
+                       (*newSessions)[i]->displayLabel ? (*newSessions)[i]->displayLabel : L"") != 0)
+            {
+                same = false;
+                break;
+            }
+        }
+        if (same)
+        {
+            for (auto& it : *newSessions)
+                delete it;
+            delete newSessions;
+            return;
+        }
+    }
+
+    if (m_currentSessions)
+    {
+        for (auto& it : *m_currentSessions)
+            delete it;
+        delete m_currentSessions;
+    }
+    m_currentSessions = newSessions;
 
     // Update the xui list displayed
     unsigned int xuiListSize = m_buttonListGames.getItemCount();
@@ -1948,6 +2024,11 @@ void UIScene_LoadOrJoinMenu::UpdateGamesList()
 
     // clear out the games list and re-fill
     m_buttonListGames.clearList();
+
+#ifdef _WINDOWS64
+    // Always add the "Add Server" button as the first entry in the games list
+    m_buttonListGames.addItem(wstring(L"Add Server"));
+#endif
 
     if( filteredListSize > 0 )
     {
@@ -2014,7 +2095,12 @@ void UIScene_LoadOrJoinMenu::UpdateGamesList()
 
             if(memcmp( &selectedSessionId, &sessionInfo->sessionId, sizeof(SessionID) ) == 0)
             {
+#ifdef _WINDOWS64
+                // Offset past the "Add Server" button
+                m_buttonListGames.setCurrentSelection(sessionIndex + 1);
+#else
                 m_buttonListGames.setCurrentSelection(sessionIndex);
+#endif
                 break;
             }
             ++sessionIndex;
@@ -4051,3 +4137,168 @@ int UIScene_LoadOrJoinMenu::CopySaveErrorDialogFinishedCallback(void *pParam,int
 }
 
 #endif // _XBOX_ONE
+#ifdef _WINDOWS64
+// adding servers bellow
+
+void UIScene_LoadOrJoinMenu::BeginAddServer()
+{
+    m_addServerPhase = eAddServer_IP;
+    m_addServerIP.clear();
+    m_addServerPort.clear();
+
+    UIKeyboardInitData kbData;
+    kbData.title       = L"Server Address";
+    kbData.defaultText = L"";
+    kbData.maxChars    = 128;
+    kbData.callback    = &UIScene_LoadOrJoinMenu::AddServerKeyboardCallback;
+    kbData.lpParam     = this;
+    kbData.pcMode      = g_KBMInput.IsKBMActive();
+    ui.NavigateToScene(m_iPad, eUIScene_Keyboard, &kbData);
+}
+
+int UIScene_LoadOrJoinMenu::AddServerKeyboardCallback(LPVOID lpParam, bool bRes)
+{
+    UIScene_LoadOrJoinMenu *pClass = (UIScene_LoadOrJoinMenu *)lpParam;
+
+    if (!bRes)
+    {
+        pClass->m_addServerPhase = eAddServer_Idle;
+        pClass->m_bIgnoreInput = false;
+        return 0;
+    }
+
+    uint16_t ui16Text[256];
+    ZeroMemory(ui16Text, sizeof(ui16Text));
+    Win64_GetKeyboardText(ui16Text, 256);
+
+    wchar_t wBuf[256] = {};
+    for (int k = 0; k < 255 && ui16Text[k]; k++)
+        wBuf[k] = (wchar_t)ui16Text[k];
+
+    if (wBuf[0] == 0)
+    {
+        pClass->m_addServerPhase = eAddServer_Idle;
+        pClass->m_bIgnoreInput = false;
+        return 0;
+    }
+
+    switch (pClass->m_addServerPhase)
+    {
+    case eAddServer_IP:
+    {
+        pClass->m_addServerIP = wBuf;
+        pClass->m_addServerPhase = eAddServer_Port;
+
+        UIKeyboardInitData kbData;
+        kbData.title       = L"Server Port";
+        kbData.defaultText = L"25565";
+        kbData.maxChars    = 6;
+        kbData.callback    = &UIScene_LoadOrJoinMenu::AddServerKeyboardCallback;
+        kbData.lpParam     = pClass;
+        kbData.pcMode      = g_KBMInput.IsKBMActive();
+        ui.NavigateToScene(pClass->m_iPad, eUIScene_Keyboard, &kbData);
+        break;
+    }
+    case eAddServer_Port:
+    {
+        pClass->m_addServerPort = wBuf;
+        pClass->m_addServerPhase = eAddServer_Name;
+
+        UIKeyboardInitData kbData;
+        kbData.title       = L"Server Name";
+        kbData.defaultText = L"Minecraft Server";
+        kbData.maxChars    = 64;
+        kbData.callback    = &UIScene_LoadOrJoinMenu::AddServerKeyboardCallback;
+        kbData.lpParam     = pClass;
+        kbData.pcMode      = g_KBMInput.IsKBMActive();
+        ui.NavigateToScene(pClass->m_iPad, eUIScene_Keyboard, &kbData);
+        break;
+    }
+    case eAddServer_Name:
+    {
+        wstring name = wBuf;
+        pClass->AppendServerToFile(pClass->m_addServerIP, pClass->m_addServerPort, name);
+        pClass->m_addServerPhase = eAddServer_Idle;
+        pClass->m_bIgnoreInput = false;
+
+        g_NetworkManager.ForceFriendsSessionRefresh();
+        break;
+    }
+    default:
+        pClass->m_addServerPhase = eAddServer_Idle;
+        pClass->m_bIgnoreInput = false;
+        break;
+    }
+
+    return 0;
+}
+
+void UIScene_LoadOrJoinMenu::AppendServerToFile(const wstring& ip, const wstring& port, const wstring& name)
+{
+    char narrowIP[256] = {};
+    char narrowPort[16] = {};
+    char narrowName[256] = {};
+    wcstombs(narrowIP, ip.c_str(), sizeof(narrowIP) - 1);
+    wcstombs(narrowPort, port.c_str(), sizeof(narrowPort) - 1);
+    wcstombs(narrowName, name.c_str(), sizeof(narrowName) - 1);
+
+    uint16_t portNum = (uint16_t)atoi(narrowPort);
+
+    struct ServerEntry { std::string ip; uint16_t port; std::string name; };
+    std::vector<ServerEntry> entries;
+
+    FILE* file = fopen("servers.db", "rb");
+    if (file)
+    {
+        char magic[4] = {};
+        if (fread(magic, 1, 4, file) == 4 && memcmp(magic, "MCSV", 4) == 0)
+        {
+            uint32_t version = 0, count = 0;
+            fread(&version, sizeof(uint32_t), 1, file);
+            fread(&count, sizeof(uint32_t), 1, file);
+            if (version == 1)
+            {
+                for (uint32_t s = 0; s < count; s++)
+                {
+                    uint16_t ipLen = 0, p = 0, nameLen = 0;
+                    if (fread(&ipLen, sizeof(uint16_t), 1, file) != 1) break;
+                    if (ipLen == 0 || ipLen > 256) break;
+                    char ipBuf[257] = {};
+                    if (fread(ipBuf, 1, ipLen, file) != ipLen) break;
+                    if (fread(&p, sizeof(uint16_t), 1, file) != 1) break;
+                    if (fread(&nameLen, sizeof(uint16_t), 1, file) != 1) break;
+                    if (nameLen > 256) break;
+                    char nameBuf[257] = {};
+                    if (nameLen > 0 && fread(nameBuf, 1, nameLen, file) != nameLen) break;
+                    entries.push_back({std::string(ipBuf), p, std::string(nameBuf)});
+                }
+            }
+        }
+        fclose(file);
+    }
+
+    entries.push_back({std::string(narrowIP), portNum, std::string(narrowName)});
+
+    file = fopen("servers.db", "wb");
+    if (file)
+    {
+        fwrite("MCSV", 1, 4, file);
+        uint32_t version = 1;
+        uint32_t count = (uint32_t)entries.size();
+        fwrite(&version, sizeof(uint32_t), 1, file);
+        fwrite(&count, sizeof(uint32_t), 1, file);
+
+        for (size_t i = 0; i < entries.size(); i++)
+        {
+            uint16_t ipLen = (uint16_t)entries[i].ip.length();
+            fwrite(&ipLen, sizeof(uint16_t), 1, file);
+            fwrite(entries[i].ip.c_str(), 1, ipLen, file);
+            fwrite(&entries[i].port, sizeof(uint16_t), 1, file);
+            uint16_t nameLen = (uint16_t)entries[i].name.length();
+            fwrite(&nameLen, sizeof(uint16_t), 1, file);
+            fwrite(entries[i].name.c_str(), 1, nameLen, file);
+        }
+        fclose(file);
+    }
+}
+#endif // _WINDOWS64

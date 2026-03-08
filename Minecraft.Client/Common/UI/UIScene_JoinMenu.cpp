@@ -21,12 +21,19 @@ UIScene_JoinMenu::UIScene_JoinMenu(int iPad, void *_initData, UILayer *parentLay
 	m_friendInfoUpdatedOK = false;
 	m_friendInfoUpdatedERROR = false;
 	m_friendInfoRequestIssued = false;
+#ifdef _WINDOWS64
+	m_serverIndex = initData->serverIndex;
+	m_editServerPhase = eEditServer_Idle;
+	m_editServerButtonIndex = -1;
+	m_deleteServerButtonIndex = -1;
+#endif
 }
 
 void UIScene_JoinMenu::updateTooltips()
 {
 	int iA = -1;
 	int iY = -1;
+	int iX = -1;
 	if (getControlFocus() == eControl_GamePlayers)
 	{
 #ifdef _DURANGO
@@ -38,7 +45,15 @@ void UIScene_JoinMenu::updateTooltips()
 		iA = IDS_TOOLTIPS_SELECT;
 	}
 
-	ui.SetTooltips( DEFAULT_XUI_MENU_USER, iA, IDS_TOOLTIPS_BACK, -1, iY );
+#ifdef _WINDOWS64
+	if (m_serverIndex >= 0)
+	{
+		iX = IDS_TOOLTIPS_DELETE;
+		iY = IDS_TITLE_RENAME;
+	}
+#endif
+
+	ui.SetTooltips( DEFAULT_XUI_MENU_USER, iA, IDS_TOOLTIPS_BACK, iX, iY );
 
 }
 
@@ -104,6 +119,16 @@ void UIScene_JoinMenu::tick()
 				// Leave the loop when we hit the first empty player name
 				break;
 			}
+		}
+#endif
+
+#ifdef _WINDOWS64
+		if (m_serverIndex >= 0)
+		{
+			m_editServerButtonIndex = m_buttonListPlayers.getItemCount();
+			m_buttonListPlayers.addItem(L"Edit Server");
+			m_deleteServerButtonIndex = m_buttonListPlayers.getItemCount();
+			m_buttonListPlayers.addItem(L"Delete Server");
 		}
 #endif
 
@@ -279,11 +304,37 @@ void UIScene_JoinMenu::handleInput(int iPad, int key, bool repeat, bool pressed,
 		}
 		break;
 #endif
+#ifdef _WINDOWS64
+	case ACTION_MENU_X:
+		if(pressed && m_serverIndex >= 0)
+		{
+			BeginDeleteServer();
+			handled = true;
+		}
+		break;
+	case ACTION_MENU_Y:
+		if(pressed && m_serverIndex >= 0)
+		{
+			BeginEditServer();
+			handled = true;
+		}
+		break;
+#endif
 	case ACTION_MENU_OK:
 		if (getControlFocus() != eControl_GamePlayers)
 		{
 			sendInputToMovie(key, repeat, pressed, released);
 		}
+#ifdef _WINDOWS64
+		else if (pressed && m_serverIndex >= 0)
+		{
+			int sel = m_buttonListPlayers.getCurrentSelection();
+			if (sel == m_editServerButtonIndex)
+				BeginEditServer();
+			else if (sel == m_deleteServerButtonIndex)
+				BeginDeleteServer();
+		}
+#endif
 		handled = true;
 		break;
 #ifdef __ORBIS__
@@ -318,6 +369,16 @@ void UIScene_JoinMenu::handlePress(F64 controlId, F64 childId)
 		}
 		break;
 	case eControl_GamePlayers:
+#ifdef _WINDOWS64
+		if (m_serverIndex >= 0)
+		{
+			int sel = (int)childId;
+			if (sel == m_editServerButtonIndex)
+				BeginEditServer();
+			else if (sel == m_deleteServerButtonIndex)
+				BeginDeleteServer();
+		}
+#endif
 		break;
 	};
 }
@@ -636,3 +697,278 @@ void UIScene_JoinMenu::handleTimerComplete(int id)
 		break;
 	};
 }
+
+#ifdef _WINDOWS64
+void UIScene_JoinMenu::BeginDeleteServer()
+{
+	m_bIgnoreInput = true;
+	UINT uiIDA[2];
+	uiIDA[0] = IDS_CONFIRM_CANCEL;
+	uiIDA[1] = IDS_CONFIRM_OK;
+	ui.RequestAlertMessage(IDS_TOOLTIPS_DELETE, IDS_TEXT_DELETE_SAVE, uiIDA, 2, m_iPad, &UIScene_JoinMenu::DeleteServerDialogReturned, this);
+}
+
+int UIScene_JoinMenu::DeleteServerDialogReturned(void *pParam, int iPad, C4JStorage::EMessageResult result)
+{
+	UIScene_JoinMenu* pClass = (UIScene_JoinMenu*)pParam;
+
+	if (result == C4JStorage::EMessage_ResultDecline)
+	{
+		pClass->RemoveServerFromFile();
+		g_NetworkManager.ForceFriendsSessionRefresh();
+		pClass->navigateBack();
+	}
+	else
+	{
+		pClass->m_bIgnoreInput = false;
+	}
+
+	return 0;
+}
+
+void UIScene_JoinMenu::BeginEditServer()
+{
+	m_bIgnoreInput = true;
+	m_editServerPhase = eEditServer_IP;
+	m_editServerIP.clear();
+	m_editServerPort.clear();
+
+	wchar_t wDefaultIP[64] = {};
+	mbstowcs(wDefaultIP, m_selectedSession->data.hostIP, 63);
+
+	UIKeyboardInitData kbData;
+	kbData.title       = L"Server Address";
+	kbData.defaultText = wDefaultIP;
+	kbData.maxChars    = 128;
+	kbData.callback    = &UIScene_JoinMenu::EditServerKeyboardCallback;
+	kbData.lpParam     = this;
+	kbData.pcMode      = g_KBMInput.IsKBMActive();
+	ui.NavigateToScene(m_iPad, eUIScene_Keyboard, &kbData);
+}
+
+int UIScene_JoinMenu::EditServerKeyboardCallback(LPVOID lpParam, bool bRes)
+{
+	UIScene_JoinMenu *pClass = (UIScene_JoinMenu *)lpParam;
+
+	if (!bRes)
+	{
+		pClass->m_editServerPhase = eEditServer_Idle;
+		pClass->m_bIgnoreInput = false;
+		return 0;
+	}
+
+	uint16_t ui16Text[256];
+	ZeroMemory(ui16Text, sizeof(ui16Text));
+	Win64_GetKeyboardText(ui16Text, 256);
+
+	wchar_t wBuf[256] = {};
+	for (int k = 0; k < 255 && ui16Text[k]; k++)
+		wBuf[k] = (wchar_t)ui16Text[k];
+
+	if (wBuf[0] == 0)
+	{
+		pClass->m_editServerPhase = eEditServer_Idle;
+		pClass->m_bIgnoreInput = false;
+		return 0;
+	}
+
+	switch (pClass->m_editServerPhase)
+	{
+	case eEditServer_IP:
+	{
+		pClass->m_editServerIP = wBuf;
+		pClass->m_editServerPhase = eEditServer_Port;
+
+		wchar_t wDefaultPort[16] = {};
+		swprintf(wDefaultPort, 16, L"%d", pClass->m_selectedSession->data.hostPort);
+
+		UIKeyboardInitData kbData;
+		kbData.title       = L"Server Port";
+		kbData.defaultText = wDefaultPort;
+		kbData.maxChars    = 6;
+		kbData.callback    = &UIScene_JoinMenu::EditServerKeyboardCallback;
+		kbData.lpParam     = pClass;
+		kbData.pcMode      = g_KBMInput.IsKBMActive();
+		ui.NavigateToScene(pClass->m_iPad, eUIScene_Keyboard, &kbData);
+		break;
+	}
+	case eEditServer_Port:
+	{
+		pClass->m_editServerPort = wBuf;
+		pClass->m_editServerPhase = eEditServer_Name;
+
+		wchar_t wDefaultName[64] = {};
+		if (pClass->m_selectedSession->displayLabel)
+			wcsncpy(wDefaultName, pClass->m_selectedSession->displayLabel, 63);
+
+		UIKeyboardInitData kbData;
+		kbData.title       = L"Server Name";
+		kbData.defaultText = wDefaultName;
+		kbData.maxChars    = 64;
+		kbData.callback    = &UIScene_JoinMenu::EditServerKeyboardCallback;
+		kbData.lpParam     = pClass;
+		kbData.pcMode      = g_KBMInput.IsKBMActive();
+		ui.NavigateToScene(pClass->m_iPad, eUIScene_Keyboard, &kbData);
+		break;
+	}
+	case eEditServer_Name:
+	{
+		wstring newName = wBuf;
+		pClass->UpdateServerInFile(pClass->m_editServerIP, pClass->m_editServerPort, newName);
+		pClass->m_editServerPhase = eEditServer_Idle;
+		pClass->m_bIgnoreInput = false;
+
+		g_NetworkManager.ForceFriendsSessionRefresh();
+		pClass->navigateBack();
+		break;
+	}
+	default:
+		pClass->m_editServerPhase = eEditServer_Idle;
+		pClass->m_bIgnoreInput = false;
+		break;
+	}
+
+	return 0;
+}
+
+void UIScene_JoinMenu::UpdateServerInFile(const wstring& newIP, const wstring& newPort, const wstring& newName)
+{
+	char narrowNewIP[256] = {};
+	char narrowNewPort[16] = {};
+	char narrowNewName[256] = {};
+	wcstombs(narrowNewIP, newIP.c_str(), sizeof(narrowNewIP) - 1);
+	wcstombs(narrowNewPort, newPort.c_str(), sizeof(narrowNewPort) - 1);
+	wcstombs(narrowNewName, newName.c_str(), sizeof(narrowNewName) - 1);
+
+	uint16_t newPortNum = (uint16_t)atoi(narrowNewPort);
+
+	struct ServerEntry { std::string ip; uint16_t port; std::string name; };
+	std::vector<ServerEntry> entries;
+
+	FILE* file = fopen("servers.db", "rb");
+	if (file)
+	{
+		char magic[4] = {};
+		if (fread(magic, 1, 4, file) == 4 && memcmp(magic, "MCSV", 4) == 0)
+		{
+			uint32_t version = 0, count = 0;
+			fread(&version, sizeof(uint32_t), 1, file);
+			fread(&count, sizeof(uint32_t), 1, file);
+			if (version == 1)
+			{
+				for (uint32_t s = 0; s < count; s++)
+				{
+					uint16_t ipLen = 0, p = 0, nameLen = 0;
+					if (fread(&ipLen, sizeof(uint16_t), 1, file) != 1) break;
+					if (ipLen == 0 || ipLen > 256) break;
+					char ipBuf[257] = {};
+					if (fread(ipBuf, 1, ipLen, file) != ipLen) break;
+					if (fread(&p, sizeof(uint16_t), 1, file) != 1) break;
+					if (fread(&nameLen, sizeof(uint16_t), 1, file) != 1) break;
+					if (nameLen > 256) break;
+					char nameBuf[257] = {};
+					if (nameLen > 0 && fread(nameBuf, 1, nameLen, file) != nameLen) break;
+					entries.push_back({std::string(ipBuf), p, std::string(nameBuf)});
+				}
+			}
+		}
+		fclose(file);
+	}
+
+	// Find and update the matching entry by original IP and port
+	int idx = m_serverIndex;
+	if (idx >= 0 && idx < (int)entries.size())
+	{
+		entries[idx].ip = std::string(narrowNewIP);
+		entries[idx].port = newPortNum;
+		entries[idx].name = std::string(narrowNewName);
+	}
+
+	file = fopen("servers.db", "wb");
+	if (file)
+	{
+		fwrite("MCSV", 1, 4, file);
+		uint32_t version = 1;
+		uint32_t count = (uint32_t)entries.size();
+		fwrite(&version, sizeof(uint32_t), 1, file);
+		fwrite(&count, sizeof(uint32_t), 1, file);
+
+		for (size_t i = 0; i < entries.size(); i++)
+		{
+			uint16_t ipLen = (uint16_t)entries[i].ip.length();
+			fwrite(&ipLen, sizeof(uint16_t), 1, file);
+			fwrite(entries[i].ip.c_str(), 1, ipLen, file);
+			fwrite(&entries[i].port, sizeof(uint16_t), 1, file);
+			uint16_t nameLen = (uint16_t)entries[i].name.length();
+			fwrite(&nameLen, sizeof(uint16_t), 1, file);
+			fwrite(entries[i].name.c_str(), 1, nameLen, file);
+		}
+		fclose(file);
+	}
+}
+
+void UIScene_JoinMenu::RemoveServerFromFile()
+{
+	struct ServerEntry { std::string ip; uint16_t port; std::string name; };
+	std::vector<ServerEntry> entries;
+
+	FILE* file = fopen("servers.db", "rb");
+	if (file)
+	{
+		char magic[4] = {};
+		if (fread(magic, 1, 4, file) == 4 && memcmp(magic, "MCSV", 4) == 0)
+		{
+			uint32_t version = 0, count = 0;
+			fread(&version, sizeof(uint32_t), 1, file);
+			fread(&count, sizeof(uint32_t), 1, file);
+			if (version == 1)
+			{
+				for (uint32_t s = 0; s < count; s++)
+				{
+					uint16_t ipLen = 0, p = 0, nameLen = 0;
+					if (fread(&ipLen, sizeof(uint16_t), 1, file) != 1) break;
+					if (ipLen == 0 || ipLen > 256) break;
+					char ipBuf[257] = {};
+					if (fread(ipBuf, 1, ipLen, file) != ipLen) break;
+					if (fread(&p, sizeof(uint16_t), 1, file) != 1) break;
+					if (fread(&nameLen, sizeof(uint16_t), 1, file) != 1) break;
+					if (nameLen > 256) break;
+					char nameBuf[257] = {};
+					if (nameLen > 0 && fread(nameBuf, 1, nameLen, file) != nameLen) break;
+					entries.push_back({std::string(ipBuf), p, std::string(nameBuf)});
+				}
+			}
+		}
+		fclose(file);
+	}
+
+	// Remove the entry at m_serverIndex
+	int idx = m_serverIndex;
+	if (idx >= 0 && idx < (int)entries.size())
+	{
+		entries.erase(entries.begin() + idx);
+	}
+
+	file = fopen("servers.db", "wb");
+	if (file)
+	{
+		fwrite("MCSV", 1, 4, file);
+		uint32_t version = 1;
+		uint32_t count = (uint32_t)entries.size();
+		fwrite(&version, sizeof(uint32_t), 1, file);
+		fwrite(&count, sizeof(uint32_t), 1, file);
+
+		for (size_t i = 0; i < entries.size(); i++)
+		{
+			uint16_t ipLen = (uint16_t)entries[i].ip.length();
+			fwrite(&ipLen, sizeof(uint16_t), 1, file);
+			fwrite(entries[i].ip.c_str(), 1, ipLen, file);
+			fwrite(&entries[i].port, sizeof(uint16_t), 1, file);
+			uint16_t nameLen = (uint16_t)entries[i].name.length();
+			fwrite(&nameLen, sizeof(uint16_t), 1, file);
+			fwrite(entries[i].name.c_str(), 1, nameLen, file);
+		}
+		fclose(file);
+	}
+}
+#endif // _WINDOWS64
