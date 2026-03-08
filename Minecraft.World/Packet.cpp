@@ -327,9 +327,30 @@ shared_ptr<Packet> Packet::readPacket(DataInputStream *dis, bool isServer) // th
 	id = dis->read();
 	if (id == -1) return nullptr;
 
+	// Track last few good packets for diagnosing TCP desync
+	static thread_local int s_lastIds[8] = {};
+	static thread_local int s_lastIdPos = 0;
+	static thread_local int s_packetCount = 0;
+
 	if ((isServer && serverReceivedPackets.find(id) == serverReceivedPackets.end()) || (!isServer && clientReceivedPackets.find(id) == clientReceivedPackets.end()))
 	{
-		//app.DebugPrintf("Bad packet id %d\n", id);
+		app.DebugPrintf("*** BAD PACKET ID %d (0x%02X) isServer=%d totalPacketsRead=%d\n", id, id, isServer ? 1 : 0, s_packetCount);
+		app.DebugPrintf("*** Last %d good packet IDs (oldest first): ", 8);
+		for (int dbg = 0; dbg < 8; dbg++)
+		{
+			int idx = (s_lastIdPos + dbg) % 8;
+			app.DebugPrintf("%d ", s_lastIds[idx]);
+		}
+		app.DebugPrintf("\n");
+		// Dump the next 32 bytes from the stream to see what follows
+		app.DebugPrintf("*** Next bytes in stream: ");
+		for (int dbg = 0; dbg < 32; dbg++)
+		{
+			int b = dis->read();
+			if (b == -1) { app.DebugPrintf("[EOS] "); break; }
+			app.DebugPrintf("%02X ", b);
+		}
+		app.DebugPrintf("\n");
 		__debugbreak();
 		assert(false);
 		//            throw new IOException(wstring(L"Bad packet id ") + std::to_wstring(id));
@@ -338,7 +359,10 @@ shared_ptr<Packet> Packet::readPacket(DataInputStream *dis, bool isServer) // th
 	packet = getPacket(id);
 	if (packet == NULL) assert(false);//throw new IOException(wstring(L"Bad packet id ") + std::to_wstring(id));
 
-	//app.DebugPrintf("%s reading packet %d\n", isServer ? "Server" : "Client", packet->getId());
+	s_lastIds[s_lastIdPos] = id;
+	s_lastIdPos = (s_lastIdPos + 1) % 8;
+	s_packetCount++;
+
 	packet->read(dis);
 	//    }
 	//	catch (EOFException e)
@@ -372,7 +396,7 @@ shared_ptr<Packet> Packet::readPacket(DataInputStream *dis, bool isServer) // th
 
 void Packet::writePacket(shared_ptr<Packet> packet, DataOutputStream *dos) // throws IOException TODO 4J JEV, should this declare a throws?
 {
-	//app.DebugPrintf("Writing packet %d\n", packet->getId());
+	//app.DebugPrintf("NET WRITE: packet id=%d (0x%02X) estSize=%d\n", packet->getId(), packet->getId(), packet->getEstimatedSize());
 	dos->write(packet->getId());
 	packet->write(dos);
 }

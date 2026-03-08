@@ -256,7 +256,6 @@ void ServerLevel::tick()
 	if (time % (saveInterval) == (dimension->id * dimension->id * (saveInterval/2)))
 #endif
 	{
-		//app.DebugPrintf("Incremental save\n");
 		PIXBeginNamedEvent(0,"Incremental save");
 		save(false, NULL);
 		PIXEndNamedEvent();

@@ -930,6 +930,14 @@ void ItemInHandRenderer::tick()
 
 }
 
+void ItemInHandRenderer::reset()
+{
+	selectedItem = nullptr;
+	lastSlot = -1;
+	height = 0.0f;
+	oHeight = 0.0f;
+}
+
 void ItemInHandRenderer::itemPlaced()
 {
 	height = 0;

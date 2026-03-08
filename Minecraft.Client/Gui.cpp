@@ -895,14 +895,14 @@ void Gui::render(float a, bool mouseFree, int xMouse, int yMouse)
         int zBlockPos = Mth::floor(minecraft->player->z);
 
 		// Chunk player is in
-        int xChunkPos = minecraft->player->xChunk;
-        int yChunkPos = minecraft->player->yChunk;
-        int zChunkPos = minecraft->player->zChunk;
+        int xChunkPos = xBlockPos >> 4;
+        int yChunkPos = yBlockPos >> 4;
+        int zChunkPos = zBlockPos >> 4;
 
 		// Players offset within the chunk
-		int xChunkOffset = xBlockPos - xChunkPos * 16;
-        int yChunkOffset = yBlockPos - yChunkPos * 16;
-        int zChunkOffset = zBlockPos - zChunkPos * 16;
+		int xChunkOffset = xBlockPos & 15;
+        int yChunkOffset = yBlockPos & 15;
+        int zChunkOffset = zBlockPos & 15;
 
 		// Format the position like java with limited decumal places
 		WCHAR posString[44]; // Allows upto 7 digit positions (+-9_999_999)
@@ -951,18 +951,20 @@ void Gui::render(float a, bool mouseFree, int xMouse, int yMouse)
 		if (minecraft->level != NULL && minecraft->level->hasChunkAt(xBlockPos, fmod(yBlockPos, 256), zBlockPos))
 		{
             LevelChunk *chunkAt = minecraft->level->getChunkAt(xBlockPos, zBlockPos);
+			if (chunkAt != NULL)
+			{
+				int skyLight = chunkAt->getBrightness(LightLayer::Sky, xChunkOffset, yChunkOffset, zChunkOffset);
+				int blockLight = chunkAt->getBrightness(LightLayer::Block, xChunkOffset, yChunkOffset, zChunkOffset);
+				int maxLight = fmax(skyLight, blockLight);
+				lines.push_back(L"Light: " + std::to_wstring(maxLight) + L" (" + std::to_wstring(skyLight) + L" sky, " + std::to_wstring(blockLight) + L" block)");
 
-			int skyLight = chunkAt->getBrightness(LightLayer::Sky, xChunkOffset, yChunkOffset, zChunkOffset);
-            int blockLight = chunkAt->getBrightness(LightLayer::Block, xChunkOffset, yChunkOffset, zChunkOffset);
-            int maxLight = fmax(skyLight, blockLight);
-            lines.push_back(L"Light: " + std::to_wstring(maxLight) + L" (" + std::to_wstring(skyLight) + L" sky, " + std::to_wstring(blockLight) + L" block)");
+				lines.push_back(L"CH S: " + std::to_wstring(chunkAt->getHeightmap(xChunkOffset, zChunkOffset)));
 
-			lines.push_back(L"CH S: " + std::to_wstring(chunkAt->getHeightmap(xChunkOffset, zChunkOffset)));
+				Biome *biome = chunkAt->getBiome(xChunkOffset, zChunkOffset, minecraft->level->getBiomeSource());
+				lines.push_back(L"Biome: " + biome->m_name + L" (" + std::to_wstring(biome->id) + L")");
 
-            Biome *biome = chunkAt->getBiome(xChunkOffset, zChunkOffset, minecraft->level->getBiomeSource());
-            lines.push_back(L"Biome: " + biome->m_name + L" (" + std::to_wstring(biome->id) + L")");
-
-            lines.push_back(L"Difficulty: " + std::to_wstring(minecraft->level->difficulty) + L" (Day " + std::to_wstring(minecraft->level->getGameTime() / Level::TICKS_PER_DAY) + L")");
+				lines.push_back(L"Difficulty: " + std::to_wstring(minecraft->level->difficulty) + L" (Day " + std::to_wstring(minecraft->level->getGameTime() / Level::TICKS_PER_DAY) + L")");
+			}
 		}
 
 
