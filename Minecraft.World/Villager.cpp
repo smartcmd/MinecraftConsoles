@@ -513,7 +513,7 @@ void Villager::addOffers(int addCount)
 	}
 
 	// shuffle the list to make it more interesting
-	std::random_shuffle(newOffers->begin(), newOffers->end());
+    std::shuffle(newOffers->begin(), newOffers->end(), std::mt19937{std::random_device{}()});
 
 	if (offers == NULL)
 	{

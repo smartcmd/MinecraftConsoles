@@ -28,7 +28,11 @@ const char* PostProcesser::g_gammaPSCode =
     "float4 main(float4 pos : SV_Position, float2 uv : TEXCOORD0) : SV_Target\n"
     "{\n"
     "    float4 color = sceneTex.Sample(sceneSampler, uv);\n"
-    "    color.rgb = pow(max(color.rgb, 0.0), 1.0 / gamma);\n"
+    "\n"
+    "    color.rgb = max(color.rgb, 0.0);\n"
+    "\n"
+    "    color.rgb = pow(color.rgb, 1.0 / gamma);\n"
+    "\n"
     "    return color;\n"
     "}\n";
 
@@ -74,6 +78,9 @@ void PostProcesser::Init()
     D3D11_TEXTURE2D_DESC bbDesc;
     pBackBuffer->GetDesc(&bbDesc);
     pBackBuffer->Release();
+
+    m_gammaTexWidth = bbDesc.Width;
+    m_gammaTexHeight = bbDesc.Height;
 
     DXGI_FORMAT texFormat = bbDesc.Format;
     if (m_wineMode)
@@ -219,7 +226,9 @@ void PostProcesser::Apply() const
     if (FAILED(hr))
         return;
 
-    ctx->CopyResource(m_pGammaOffscreenTex, pBackBuffer);
+    D3D11_BOX srcBox = { 0, 0, 0, m_gammaTexWidth, m_gammaTexHeight, 1 };
+    ctx->CopySubresourceRegion(m_pGammaOffscreenTex, 0, 0, 0, 0, pBackBuffer, 0, &srcBox);
+    pBackBuffer->Release();
 
     D3D11_MAPPED_SUBRESOURCE mapped;
     const D3D11_MAP mapType = m_wineMode ? D3D11_MAP_WRITE_NO_OVERWRITE : D3D11_MAP_WRITE_DISCARD;
@@ -236,15 +245,11 @@ void PostProcesser::Apply() const
     ctx->OMGetRenderTargets(1, &oldRTV, &oldDSV);
 
     UINT numViewports = 1;
-    D3D11_VIEWPORT oldViewport;
+    D3D11_VIEWPORT oldViewport = {};
     ctx->RSGetViewports(&numViewports, &oldViewport);
 
     ID3D11RenderTargetView* bbRTV = g_pRenderTargetView;
     ctx->OMSetRenderTargets(1, &bbRTV, nullptr);
-
-    D3D11_TEXTURE2D_DESC bbDesc;
-    pBackBuffer->GetDesc(&bbDesc);
-    pBackBuffer->Release();
 
     D3D11_VIEWPORT vp;
     if (m_useCustomViewport)
@@ -253,8 +258,8 @@ void PostProcesser::Apply() const
     }
     else
     {
-        vp.Width = static_cast<FLOAT>(bbDesc.Width);
-        vp.Height = static_cast<FLOAT>(bbDesc.Height);
+        vp.Width = static_cast<FLOAT>(m_gammaTexWidth);
+        vp.Height = static_cast<FLOAT>(m_gammaTexHeight);
         vp.MinDepth = 0.0f;
         vp.MaxDepth = 1.0f;
         vp.TopLeftX = 0;
@@ -313,7 +318,8 @@ void PostProcesser::CopyBackbuffer()
     if (FAILED(hr))
         return;
 
-    ctx->CopyResource(m_pGammaOffscreenTex, pBackBuffer);
+    D3D11_BOX srcBox = { 0, 0, 0, m_gammaTexWidth, m_gammaTexHeight, 1 };
+    ctx->CopySubresourceRegion(m_pGammaOffscreenTex, 0, 0, 0, 0, pBackBuffer, 0, &srcBox);
     pBackBuffer->Release();
 }
 
@@ -342,7 +348,7 @@ void PostProcesser::ApplyFromCopied() const
     ctx->OMGetRenderTargets(1, &oldRTV, &oldDSV);
 
     UINT numViewports = 1;
-    D3D11_VIEWPORT oldViewport;
+    D3D11_VIEWPORT oldViewport = {};
     ctx->RSGetViewports(&numViewports, &oldViewport);
 
     ID3D11RenderTargetView* bbRTV = g_pRenderTargetView;
@@ -355,10 +361,8 @@ void PostProcesser::ApplyFromCopied() const
     }
     else
     {
-        D3D11_TEXTURE2D_DESC texDesc;
-        m_pGammaOffscreenTex->GetDesc(&texDesc);
-        vp.Width = static_cast<FLOAT>(texDesc.Width);
-        vp.Height = static_cast<FLOAT>(texDesc.Height);
+        vp.Width = static_cast<FLOAT>(m_gammaTexWidth);
+        vp.Height = static_cast<FLOAT>(m_gammaTexHeight);
         vp.MinDepth = 0.0f;
         vp.MaxDepth = 1.0f;
         vp.TopLeftX = 0;

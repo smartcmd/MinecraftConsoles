@@ -39,3 +39,5 @@ foreach ($copy in $copies) {
 		xcopy /q /y /i /s /e /d "$src" "$dst" 2>$null
     }
 }
+
+git restore "**/BuildVer.h"

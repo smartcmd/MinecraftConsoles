@@ -332,10 +332,10 @@ public:
 #define PIXSetMarkerDeprecated(a, b, ...) PIXSetMarker(a, L ## b, __VA_ARGS__)
 #define PIXAddNamedCounter(a, b) PIXReportCounter( L ## b, a)
 #else
-void PIXAddNamedCounter(int a, char *b, ...);
-void PIXBeginNamedEvent(int a, char *b, ...);
+void PIXAddNamedCounter(int a, const char *b, ...);
+void PIXBeginNamedEvent(int a, const char *b, ...);
 void PIXEndNamedEvent();
-void PIXSetMarkerDeprecated(int a, char *b, ...);
+void PIXSetMarkerDeprecated(int a, const char *b, ...);
 #endif
 
 void XSetThreadProcessor(HANDLE a, int b);

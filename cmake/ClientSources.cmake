@@ -1,4 +1,6 @@
 set(MINECRAFT_CLIENT_SOURCES
+  "../include/lce_filesystem/lce_filesystem.cpp"
+
   "AbstractTexturePack.cpp"
   "AchievementPopup.cpp"
   "AchievementScreen.cpp"
@@ -48,7 +50,6 @@ set(MINECRAFT_CLIENT_SOURCES
   "Common/DLC/DLCSkinFile.cpp"
   "Common/DLC/DLCTextureFile.cpp"
   "Common/DLC/DLCUIDataFile.cpp"
-  "Common/Filesystem/Filesystem.cpp"
   "Common/GameRules/AddEnchantmentRuleDefinition.cpp"
   "Common/GameRules/AddItemRuleDefinition.cpp"
   "Common/GameRules/ApplySchematicRuleDefinition.cpp"
