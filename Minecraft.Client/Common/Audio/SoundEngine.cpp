@@ -25,7 +25,7 @@
 #include <vector>
 #include <memory>
 #include <mutex>
-#include "..\Filesystem\Filesystem.h"
+#include <lce_filesystem\lce_filesystem.h>
 
 #ifdef __ORBIS__
 #include <audioout.h>
@@ -103,7 +103,7 @@ char SoundEngine::m_szRedistName[]={"redist"};
 
 #endif
 
-char *SoundEngine::m_szStreamFileA[eStream_Max]=
+const char *SoundEngine::m_szStreamFileA[eStream_Max]=
 {
 	"calm1",
 	"calm2",

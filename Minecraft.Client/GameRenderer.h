@@ -81,7 +81,9 @@ private:
     float m_cachedGammaPerPlayer[NUM_LIGHT_TEXTURES];
     static float ComputeGammaFromSlider(float slider0to100);
     void CachePlayerGammas();
+public:
     void ApplyGammaPostProcess() const;
+private:
     bool ComputeViewportForPlayer(int j, D3D11_VIEWPORT& outViewport) const;
     uint32_t BuildPlayerViewports(D3D11_VIEWPORT* outViewports, float* outGammas, UINT maxCount) const;
 

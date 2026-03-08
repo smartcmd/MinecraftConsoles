@@ -186,6 +186,29 @@ namespace Win64Xuid
 		return xuid;
 	}
 
+	inline PlayerUID DeriveXuidForPad(PlayerUID baseXuid, int iPad)
+	{
+		if (iPad == 0)
+			return baseXuid;
+
+		// Deterministic per-pad XUID: hash the base XUID with the pad number.
+		// Produces a fully unique 64-bit value with no risk of overlap.
+		// Suggested by rtm516 to avoid adjacent-integer collisions from the old "+ iPad" approach.
+		uint64_t raw = Mix64((uint64_t)baseXuid + (uint64_t)iPad);
+		raw |= 0x8000000000000000ULL; // keep high bit set like all our XUIDs
+
+		PlayerUID xuid = (PlayerUID)raw;
+		if (!IsPersistedUidValid(xuid))
+		{
+			raw ^= 0x0100000000000001ULL;
+			xuid = (PlayerUID)raw;
+		}
+		if (!IsPersistedUidValid(xuid))
+			xuid = (PlayerUID)(0xD15EA5E000000001ULL + iPad);
+
+		return xuid;
+	}
+
 	inline PlayerUID ResolvePersistentXuid()
 	{
 		// Process-local cache: uid.dat is immutable during runtime and this path is hot.

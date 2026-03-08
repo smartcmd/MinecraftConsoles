@@ -859,88 +859,178 @@ void Gui::render(float a, bool mouseFree, int xMouse, int yMouse)
 		glTranslatef((float)debugLeft, (float)debugTop, 0.f);
 		glScalef(scale, scale, 1.f);
 		glTranslatef((float)-debugLeft, (float)-debugTop, 0.f);
-        if (Minecraft::warezTime > 0) glTranslatef(0, 32, 0);
-        font->drawShadow(ClientConstants::VERSION_STRING + L" (" + minecraft->fpsString + L")", debugLeft, debugTop, 0xffffff);
-        font->drawShadow(L"Seed: " + std::to_wstring(minecraft->level->getLevelData()->getSeed() ), debugLeft, debugTop + 12, 0xffffff);
-        font->drawShadow(minecraft->gatherStats1(), debugLeft, debugTop + 22, 0xffffff);
-        font->drawShadow(minecraft->gatherStats2(), debugLeft, debugTop + 32, 0xffffff);
-        font->drawShadow(minecraft->gatherStats3(), debugLeft, debugTop + 42, 0xffffff);
-        font->drawShadow(minecraft->gatherStats4(), debugLeft, debugTop + 52, 0xffffff);
 
-		// TERRAIN FEATURES
-		int iYPos = debugTop + 62;
+		vector<wstring> lines;
 
-		if(minecraft->level->dimension->id==0)
-		{
-			wstring wfeature[eTerrainFeature_Count];
+        lines.push_back(ClientConstants::VERSION_STRING);
+        lines.push_back(minecraft->fpsString);
+        lines.push_back(L"E: " + std::to_wstring(minecraft->level->getAllEntities().size())); // Could maybe use entity::shouldRender to work out how many are rendered but thats like expensive
+		// TODO Add server information with packet counts - once multiplayer is more stable
+        int renderDistance = app.GetGameSettings(iPad, eGameSetting_RenderDistance);
+		// Calculate the chunk sections using 16 * (2n + 1)^2
+        lines.push_back(L"C: " + std::to_wstring(16 * (2 * renderDistance + 1) * (2 * renderDistance + 1)) + L" D: " + std::to_wstring(renderDistance));
+        lines.push_back(minecraft->gatherStats4()); // Chunk Cache
 
-			wfeature[eTerrainFeature_Stronghold] = L"Stronghold: ";
-			wfeature[eTerrainFeature_Mineshaft] = L"Mineshaft: ";
-			wfeature[eTerrainFeature_Village] = L"Village: ";
-			wfeature[eTerrainFeature_Ravine] = L"Ravine: ";
-
-			float maxW = (float)(screenWidth - debugLeft - 8) / scale;
-			float maxWForContent = maxW - (float)font->width(L"...");
-			bool truncated[eTerrainFeature_Count] = {};
-
-			for (int i = 0; i < (int)app.m_vTerrainFeatures.size(); i++)
-			{
-				FEATURE_DATA *pFeatureData=app.m_vTerrainFeatures[i];
-				int type = pFeatureData->eTerrainFeature;
-				if (type < eTerrainFeature_Stronghold || type > eTerrainFeature_Ravine) continue;
-				if (truncated[type]) continue;
-
-				wstring itemInfo = L"[" + std::to_wstring( pFeatureData->x*16 ) + L", " + std::to_wstring( pFeatureData->z*16 ) + L"] ";
-				if (font->width(wfeature[type] + itemInfo) <= maxWForContent)
-					wfeature[type] += itemInfo;
-				else
-				{
-					wfeature[type] += L"...";
-					truncated[type] = true;
-				}
-			}
-
-			for( int i = eTerrainFeature_Stronghold; i < (int) eTerrainFeature_Count; i++ )
-			{
-				iYPos+=10;
-				font->drawShadow(wfeature[i], debugLeft, iYPos, 0xffffff);
-			}
+		// Dimension
+        wstring dimension = L"unknown";
+        switch (minecraft->player->dimension)
+        {
+        case -1:
+            dimension = L"minecraft:the_nether";
+            break;
+        case 0:
+            dimension = L"minecraft:overworld";
+            break;
+        case 1:
+			dimension = L"minecraft:the_end";
+			break;
 		}
+        lines.push_back(dimension);
 
-		//font->drawShadow(minecraft->gatherStats5(), iSafezoneXHalf+2, 32 + 10, 0xffffff);
-       {
-			/* 4J - removed
-            long max = Runtime.getRuntime().maxMemory();
-            long total = Runtime.getRuntime().totalMemory();
-            long free = Runtime.getRuntime().freeMemory();
-            long used = total - free;
-            String msg = "Used memory: " + (used * 100 / max) + "% (" + (used / 1024 / 1024) + "MB) of " + (max / 1024 / 1024) + "MB";
-            drawString(font, msg, screenWidth - font.width(msg) - 2, 2, 0xe0e0e0);
-            msg = "Allocated memory: " + (total * 100 / max) + "% (" + (total / 1024 / 1024) + "MB)";
-            drawString(font, msg, screenWidth - font.width(msg) - 2, 12, 0xe0e0e0);
-			*/
+        lines.push_back(L""); // Spacer
+
+		// Players block pos
+        int xBlockPos = Mth::floor(minecraft->player->x);
+        int yBlockPos = Mth::floor(minecraft->player->y);
+        int zBlockPos = Mth::floor(minecraft->player->z);
+
+		// Chunk player is in
+        int xChunkPos = xBlockPos >> 4;
+        int yChunkPos = yBlockPos >> 4;
+        int zChunkPos = zBlockPos >> 4;
+
+		// Players offset within the chunk
+		int xChunkOffset = xBlockPos & 15;
+        int yChunkOffset = yBlockPos & 15;
+        int zChunkOffset = zBlockPos & 15;
+
+		// Format the position like java with limited decumal places
+		WCHAR posString[44]; // Allows upto 7 digit positions (+-9_999_999)
+        swprintf(posString, 44, L"%.3f / %.5f / %.3f", minecraft->player->x, minecraft->player->y, minecraft->player->z);
+
+        lines.push_back(L"XYZ: " + std::wstring(posString));
+        lines.push_back(L"Block: " + std::to_wstring(static_cast<int>(xBlockPos)) + L" " + std::to_wstring(static_cast<int>(yBlockPos)) + L" " + std::to_wstring(static_cast<int>(zBlockPos)));
+        lines.push_back(L"Chunk: " + std::to_wstring(xChunkOffset) + L" " + std::to_wstring(yChunkOffset) + L" " + std::to_wstring(zChunkOffset) + L" in " + std::to_wstring(xChunkPos) + L" " + std::to_wstring(yChunkPos) + L" " + std::to_wstring(zChunkPos));
+
+		// Wrap the yRot to 360 then adjust to (-180 to 180) range to match java
+		float yRotDisplay = fmod(minecraft->player->yRot, 360.0f);
+        if (yRotDisplay > 180.0f)
+        {
+            yRotDisplay -= 360.0f;
         }
-		// 4J Stu - Moved these so that they don't overlap
-		double xBlockPos = floor(minecraft->player->x);
-		double yBlockPos = floor(minecraft->player->y);
-		double zBlockPos = floor(minecraft->player->z);
-        drawString(font, L"x: " + std::to_wstring(minecraft->player->x) + L"/ Head: " + std::to_wstring(static_cast<int>(xBlockPos)) + L"/ Chunk: " + std::to_wstring(minecraft->player->xChunk), debugLeft, iYPos + 8 * 0, 0xe0e0e0);
-        drawString(font, L"y: " + std::to_wstring(minecraft->player->y) + L"/ Head: " + std::to_wstring(static_cast<int>(yBlockPos)), debugLeft, iYPos + 8 * 1, 0xe0e0e0);
-        drawString(font, L"z: " + std::to_wstring(minecraft->player->z) + L"/ Head: " + std::to_wstring(static_cast<int>(zBlockPos)) + L"/ Chunk: " + std::to_wstring(minecraft->player->zChunk), debugLeft, iYPos + 8 * 2, 0xe0e0e0);
-		drawString(font, L"f: " + std::to_wstring(Mth::floor(minecraft->player->yRot * 4.0f / 360.0f + 0.5) & 0x3) + L"/ yRot: " + std::to_wstring(minecraft->player->yRot), debugLeft, iYPos + 8 * 3, 0xe0e0e0);
-		iYPos += 8*4;
+        if (yRotDisplay < -180.0f)
+        {
+            yRotDisplay += 360.0f;
+        }
+        // Generate the angle string in the format "yRot / xRot" with one decimal place, similar to java edition
+        WCHAR angleString[16];
+        swprintf(angleString, 16, L"%.1f / %.1f", yRotDisplay, minecraft->player->xRot);
 
-		int px = Mth::floor(minecraft->player->x);
-		int py = Mth::floor(minecraft->player->y);
-		int pz = Mth::floor(minecraft->player->z);
-		if (minecraft->level != NULL && minecraft->level->hasChunkAt(px, py, pz))
+		// Work out the named direction
+        int direction = Mth::floor(minecraft->player->yRot * 4.0f / 360.0f + 0.5) & 0x3;
+        wstring cardinalDirection;
+        switch (direction)
+        {
+        case 0:
+            cardinalDirection = L"south";
+            break;
+        case 1:
+            cardinalDirection = L"west";
+            break;
+        case 2:
+            cardinalDirection = L"north";
+            break;
+        case 3:
+            cardinalDirection = L"east";
+            break;
+        }
+
+        lines.push_back(L"Facing: " + cardinalDirection + L" (" + angleString + L")");
+
+		// We have to limit y to 256 as we don't get any information past that
+		if (minecraft->level != NULL && minecraft->level->hasChunkAt(xBlockPos, fmod(yBlockPos, 256), zBlockPos))
 		{
-			LevelChunk *chunkAt = minecraft->level->getChunkAt(px, pz);
-			Biome *biome = chunkAt->getBiome(px & 15, pz & 15, minecraft->level->getBiomeSource());
-			drawString(
-				font,
-				L"b: " + biome->m_name + L" (" + std::to_wstring(biome->id) + L")", debugLeft, iYPos, 0xe0e0e0);
+            LevelChunk *chunkAt = minecraft->level->getChunkAt(xBlockPos, zBlockPos);
+			if (chunkAt != NULL)
+			{
+				int skyLight = chunkAt->getBrightness(LightLayer::Sky, xChunkOffset, yChunkOffset, zChunkOffset);
+				int blockLight = chunkAt->getBrightness(LightLayer::Block, xChunkOffset, yChunkOffset, zChunkOffset);
+				int maxLight = fmax(skyLight, blockLight);
+				lines.push_back(L"Light: " + std::to_wstring(maxLight) + L" (" + std::to_wstring(skyLight) + L" sky, " + std::to_wstring(blockLight) + L" block)");
+
+				lines.push_back(L"CH S: " + std::to_wstring(chunkAt->getHeightmap(xChunkOffset, zChunkOffset)));
+
+				Biome *biome = chunkAt->getBiome(xChunkOffset, zChunkOffset, minecraft->level->getBiomeSource());
+				lines.push_back(L"Biome: " + biome->m_name + L" (" + std::to_wstring(biome->id) + L")");
+
+				lines.push_back(L"Difficulty: " + std::to_wstring(minecraft->level->difficulty) + L" (Day " + std::to_wstring(minecraft->level->getGameTime() / Level::TICKS_PER_DAY) + L")");
+			}
 		}
+
+
+		// This is all LCE only stuff, it was never on java
+        lines.push_back(L""); // Spacer
+        lines.push_back(L"Seed: " + std::to_wstring(minecraft->level->getLevelData()->getSeed()));
+        lines.push_back(minecraft->gatherStats1()); // Time to autosave
+        lines.push_back(minecraft->gatherStats2()); // Empty currently - CPlatformNetworkManagerStub::GatherStats()
+        lines.push_back(minecraft->gatherStats3()); // RTT
+		
+#ifdef _DEBUG // Only show terrain features in debug builds not release
+        // TERRAIN FEATURES
+        if (minecraft->level->dimension->id == 0)
+        {
+            wstring wfeature[eTerrainFeature_Count];
+
+            wfeature[eTerrainFeature_Stronghold] = L"Stronghold: ";
+            wfeature[eTerrainFeature_Mineshaft] = L"Mineshaft: ";
+            wfeature[eTerrainFeature_Village] = L"Village: ";
+            wfeature[eTerrainFeature_Ravine] = L"Ravine: ";
+
+            float maxW = (float)(screenWidth - debugLeft - 8) / scale;
+            float maxWForContent = maxW - (float)font->width(L"...");
+            bool truncated[eTerrainFeature_Count] = {};
+
+            for (int i = 0; i < (int)app.m_vTerrainFeatures.size(); i++)
+            {
+                FEATURE_DATA *pFeatureData = app.m_vTerrainFeatures[i];
+                int type = pFeatureData->eTerrainFeature;
+                if (type < eTerrainFeature_Stronghold || type > eTerrainFeature_Ravine)
+                {
+                    continue;
+                }
+                if (truncated[type])
+                {
+                    continue;
+                }
+
+                wstring itemInfo = L"[" + std::to_wstring(pFeatureData->x * 16) + L", " + std::to_wstring(pFeatureData->z * 16) + L"] ";
+                if (font->width(wfeature[type] + itemInfo) <= maxWForContent)
+                {
+                    wfeature[type] += itemInfo;
+                }
+                else
+                {
+                    wfeature[type] += L"...";
+                    truncated[type] = true;
+                }
+            }
+
+            lines.push_back(L""); // Add a spacer line
+            for (int i = eTerrainFeature_Stronghold; i <= (int)eTerrainFeature_Ravine; i++)
+            {
+                lines.push_back(wfeature[i]);
+            }
+            lines.push_back(L"");
+        }
+#endif
+
+		// Loop through the lines and draw them all on screen
+		int yPos = debugTop;
+        for (const auto &line : lines)
+        {
+            drawString(font, line, debugLeft, yPos, 0xffffff);
+            yPos += 10;
+        }
 
         glPopMatrix();
     }

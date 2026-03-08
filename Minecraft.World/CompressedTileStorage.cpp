@@ -146,7 +146,9 @@ CompressedTileStorage::CompressedTileStorage(bool isEmpty)
 bool CompressedTileStorage::isRenderChunkEmpty(int y)	// y == 0, 16, 32... 112 (representing a 16 byte range)
 {
 	int block;
-	unsigned short *blockIndices = (unsigned short *)indicesAndData;
+	unsigned char *localIndicesAndData = indicesAndData;
+	if(!localIndicesAndData) return true;
+	unsigned short *blockIndices = (unsigned short *)localIndicesAndData;
 
 	for( int x = 0; x < 16; x += 4 )
 		for( int z = 0; z < 16; z += 4 )
@@ -533,8 +535,12 @@ void CompressedTileStorage::getData(byteArray retArray, unsigned int retOffset)
 // Gets all tile values into an array of length 32768.
 void CompressedTileStorage::getData(byteArray retArray, unsigned int retOffset)
 {
-	unsigned short *blockIndices = (unsigned short *)indicesAndData;
-	unsigned char *data = indicesAndData + 1024;
+	// Snapshot pointer to avoid race with compress() swapping indicesAndData
+	unsigned char *localIndicesAndData = indicesAndData;
+	if(!localIndicesAndData) return;
+
+	unsigned short *blockIndices = (unsigned short *)localIndicesAndData;
+	unsigned char *data = localIndicesAndData + 1024;
 
 	for( int i = 0; i < 512; i++ )
 	{
@@ -588,10 +594,13 @@ void CompressedTileStorage::getData(byteArray retArray, unsigned int retOffset)
 // Get an individual tile value
 int  CompressedTileStorage::get(int x, int y, int z)
 {
-	if(!indicesAndData) return 0;
+	// Take a local snapshot of indicesAndData to avoid a race with compress() which swaps the pointer.
+	// Both blockIndices and data must reference the same buffer, otherwise index offsets won't match.
+	unsigned char *localIndicesAndData = indicesAndData;
+	if(!localIndicesAndData) return 0;
 
-	unsigned short *blockIndices = (unsigned short *)indicesAndData;
-	unsigned char *data = indicesAndData + 1024;
+	unsigned short *blockIndices = (unsigned short *)localIndicesAndData;
+	unsigned char *data = localIndicesAndData + 1024;
 
 	int block, tile;
 	getBlockAndTile( &block, &tile, x, y, z );
@@ -1223,7 +1232,10 @@ int CompressedTileStorage::getAllocatedSize(int *count0, int *count1, int *count
 	*count4 = 0;
 	*count8 = 0;
 
-	unsigned short *blockIndices = (unsigned short *)indicesAndData;
+	// Volatile read: compress() can swap indicesAndData concurrently outside cs_write
+	unsigned char *localIndicesAndData = *(unsigned char *volatile *)&indicesAndData;
+	if(!localIndicesAndData) return 0;
+	unsigned short *blockIndices = (unsigned short *)localIndicesAndData;
 	for(int i = 0; i < 512; i++ )
 	{
 		unsigned short idxType = blockIndices[i] & INDEX_TYPE_MASK;
@@ -1256,7 +1268,9 @@ int CompressedTileStorage::getAllocatedSize(int *count0, int *count1, int *count
 
 int CompressedTileStorage::getHighestNonEmptyY()
 {
-	unsigned short *blockIndices = (unsigned short *)indicesAndData;
+	unsigned char *localIndicesAndData = indicesAndData;
+	if(!localIndicesAndData) return -1;
+	unsigned short *blockIndices = (unsigned short *)localIndicesAndData;
 	unsigned int highestYBlock = 0;
 	bool found = false;
 
@@ -1297,19 +1311,26 @@ int CompressedTileStorage::getHighestNonEmptyY()
 		// Multiply by the number of vertical tiles in a block, and then add that again to be at the top of the block
 		highestNonEmptyY = (highestYBlock * 4) + 4;
 	}
+	else
+	{
+		app.DebugPrintf("[CTS-WARN] getHighestNonEmptyY() returned -1! allocatedSize=%d indicesAndData=%p\n",
+			allocatedSize, indicesAndData);
+	}
 	return highestNonEmptyY;
 }
 
 void CompressedTileStorage::write(DataOutputStream *dos)
 {
 	dos->writeInt(allocatedSize);
-	if(indicesAndData)
+	// Volatile read: compress() can swap indicesAndData concurrently outside cs_write
+	unsigned char *localIndicesAndData = *(unsigned char *volatile *)&indicesAndData;
+	if(localIndicesAndData)
 	{
 		if(LOCALSYTEM_ENDIAN == BIGENDIAN)
 		{
 			// The first 1024 bytes are an array of shorts, so we need to reverse the endianness
 			byteArray indicesCopy(1024);
-			memcpy(indicesCopy.data, indicesAndData, 1024);
+			memcpy(indicesCopy.data, localIndicesAndData, 1024);
 			reverseIndices(indicesCopy.data);
 			dos->write(indicesCopy);
 			delete [] indicesCopy.data;
@@ -1317,13 +1338,13 @@ void CompressedTileStorage::write(DataOutputStream *dos)
 			// Write the rest of the data
 			if(allocatedSize > 1024)
 			{
-				byteArray dataWrapper(indicesAndData + 1024, allocatedSize - 1024);
+				byteArray dataWrapper(localIndicesAndData + 1024, allocatedSize - 1024);
 				dos->write(dataWrapper);
 			}
 		}
 		else
 		{
-			byteArray wrapper(indicesAndData, allocatedSize);
+			byteArray wrapper(localIndicesAndData, allocatedSize);
 			dos->write(wrapper);
 		}
 	}

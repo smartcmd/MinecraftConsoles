@@ -143,6 +143,12 @@ void ConsoleUIController::endCustomDraw(IggyCustomDrawCallbackRegion *region)
 	PIXEndNamedEvent();
 }
 
+void ConsoleUIController::updateRenderTargets(ID3D11RenderTargetView* rtv, ID3D11DepthStencilView* dsv)
+{
+	m_pRenderTargetView = rtv;
+	m_pDepthStencilView = dsv;
+}
+
 void ConsoleUIController::setTileOrigin(S32 xPos, S32 yPos)
 {
 	gdraw_D3D11_SetTileOrigin( m_pRenderTargetView,

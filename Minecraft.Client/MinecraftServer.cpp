@@ -2169,11 +2169,15 @@ void MinecraftServer::tick()
 	}
 	Entity::tickExtraWandering();	// 4J added
 
-	PIXBeginNamedEvent(0,"Connection tick");
-	connection->tick();
-	PIXEndNamedEvent();
+	// Process player disconnect/kick queue BEFORE ticking connections.
+	// PendingConnection::handleLogin rejects duplicate XUIDs, so the old
+	// player must be removed from PlayerList before a reconnecting client's
+	// LoginPacket is processed.
 	PIXBeginNamedEvent(0,"Players tick");
 	players->tick();
+	PIXEndNamedEvent();
+	PIXBeginNamedEvent(0,"Connection tick");
+	connection->tick();
 	PIXEndNamedEvent();
 
 	// 4J - removed

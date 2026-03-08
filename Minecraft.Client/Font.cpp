@@ -149,7 +149,7 @@ void Font::renderStyleLine(float x0, float y0, float x1, float y1)
 void Font::addCharacterQuad(wchar_t c)
 {
 	float xOff = c % m_cols * m_charWidth;
-	float yOff = c / m_cols * m_charWidth;
+	float yOff = c / m_cols * m_charHeight; // was m_charWidth — wrong when glyphs aren't square
 	float width = charWidths[c] - .01f;
 	float height = m_charHeight - .01f;
 	float fontWidth = m_cols * m_charWidth;
@@ -187,7 +187,7 @@ void Font::addCharacterQuad(wchar_t c)
 void Font::renderCharacter(wchar_t c)
 {
 	float xOff = c % m_cols * m_charWidth;
-	float yOff = c / m_cols * m_charWidth;
+	float yOff = c / m_cols * m_charHeight; // was m_charWidth — wrong when glyphs aren't square
 
 	float width = charWidths[c] - .01f;
 	float height = m_charHeight - .01f;

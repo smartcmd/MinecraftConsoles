@@ -2,7 +2,7 @@
 class Entity;
 class Chunk;
 
-class DistanceChunkSorter : public std::binary_function<const Chunk *,const Chunk *,bool> 
+class DistanceChunkSorter
 {
 private:
 	double ix, iy, iz;

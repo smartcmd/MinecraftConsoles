@@ -595,9 +595,10 @@ void GameRenderer::unZoomRegion()
 // 4J added as we have more complex adjustments to make for fov & aspect on account of viewports
 void GameRenderer::getFovAndAspect(float& fov, float& aspect, float a, bool applyEffects)
 {
-	// 4J - split out aspect ratio and fov here so we can adjust for viewports - we might need to revisit these as
-	// they are maybe be too generous for performance.
-	aspect = mc->width / (float) mc->height;
+	// Use the real window dimensions so the perspective updates on resize.
+	extern int g_rScreenWidth;
+	extern int g_rScreenHeight;
+	aspect = g_rScreenWidth / static_cast<float>(g_rScreenHeight);
 	fov = getFov(a, applyEffects);
 
 	if( ( mc->player->m_iScreenSection == C4JRender::VIEWPORT_TYPE_SPLIT_TOP ) ||
@@ -947,9 +948,9 @@ float GameRenderer::ComputeGammaFromSlider(float slider0to100)
     slider = min(slider, 100.0f);
 
     if (slider > 50.0f)
-        return 1.0f + (slider - 50.0f) / 50.0f * 3.0f; // 1.0 -> 4.0
+        return 1.0f + (slider - 50.0f) / 50.0f * 1.2f; // 1.0 -> 1.5
     else
-        return 1.0f - (50.0f - slider) / 50.0f * 0.85f; // 1.0 -> 0.15
+        return 1.0f - (50.0f - slider) / 50.0f * 0.4f; // 1.0 -> 0.5
 }
 
 void GameRenderer::CachePlayerGammas()
@@ -970,6 +971,10 @@ void GameRenderer::CachePlayerGammas()
 
 bool GameRenderer::ComputeViewportForPlayer(int j, D3D11_VIEWPORT &outViewport) const
 {
+    // Use the actual backbuffer dimensions so viewports adapt to window resize.
+    extern int g_rScreenWidth;
+    extern int g_rScreenHeight;
+
     int active = 0;
     int indexMap[NUM_LIGHT_TEXTURES] = {-1, -1, -1, -1};
     for (int i = 0; i < XUSER_MAX_COUNT && i < NUM_LIGHT_TEXTURES; ++i)
@@ -982,8 +987,8 @@ bool GameRenderer::ComputeViewportForPlayer(int j, D3D11_VIEWPORT &outViewport) 
     {
         outViewport.TopLeftX = 0.0f;
         outViewport.TopLeftY = 0.0f;
-        outViewport.Width = static_cast<FLOAT>(mc->width);
-        outViewport.Height = static_cast<FLOAT>(mc->height);
+        outViewport.Width = static_cast<FLOAT>(g_rScreenWidth);
+        outViewport.Height = static_cast<FLOAT>(g_rScreenHeight);
         outViewport.MinDepth = 0.0f;
         outViewport.MaxDepth = 1.0f;
         return true;
@@ -999,8 +1004,8 @@ bool GameRenderer::ComputeViewportForPlayer(int j, D3D11_VIEWPORT &outViewport) 
     if (k < 0)
         return false;
 
-    const float width = static_cast<float>(mc->width);
-    const float height = static_cast<float>(mc->height);
+    const float width = static_cast<float>(g_rScreenWidth);
+    const float height = static_cast<float>(g_rScreenHeight);
 
     if (active == 2)
     {
@@ -1059,20 +1064,36 @@ void GameRenderer::ApplyGammaPostProcess() const
     D3D11_VIEWPORT vps[NUM_LIGHT_TEXTURES];
     float gammas[NUM_LIGHT_TEXTURES];
     const UINT n = BuildPlayerViewports(vps, gammas, NUM_LIGHT_TEXTURES);
-    if (n == 0)
-        return;
 
-    bool anyEffect = false;
-    for (UINT i = 0; i < n; ++i)
+    float gamma = 1.0f;
+    bool hasPlayers = n > 0;
+
+    if (hasPlayers)
     {
-        if (gammas[i] < 0.99f || gammas[i] > 1.01f)
+        bool anyEffect = false;
+        for (UINT i = 0; i < n; ++i)
         {
-            anyEffect = true;
-            break;
+            if (gammas[i] < 0.99f || gammas[i] > 1.01f)
+            {
+                anyEffect = true;
+                break;
+            }
         }
+        if (!anyEffect)
+            return;
     }
-    if (!anyEffect)
+    else
+    {
+        const float slider = app.GetGameSettings(0, eGameSetting_Gamma);
+        gamma = ComputeGammaFromSlider(slider);
+        if (gamma < 0.99f || gamma > 1.01f)
+        {
+            PostProcesser::GetInstance().SetGamma(gamma);
+            PostProcesser::GetInstance().Apply();
+            return;
+        }
         return;
+    }
 
     if (n == 1)
     {
@@ -1157,7 +1178,7 @@ void GameRenderer::render(float a, bool bFirst)
 	if (mc->noRender) return;
 	GameRenderer::anaglyph3d = mc->options->anaglyph3d;
 
-	glViewport(0, 0, mc->width, mc->height);	// 4J - added
+	glViewport(0, 0, mc->width, mc->height);	// 4J - added (no-op on Win64, viewport set by StateSetViewport)
 	ScreenSizeCalculator ssc(mc->options, mc->width, mc->height);
 	int screenWidth = ssc.getWidth();
 	int screenHeight = ssc.getHeight();
@@ -1177,35 +1198,33 @@ void GameRenderer::render(float a, bool bFirst)
 			renderLevel(a, lastNsTime + 1000000000 / maxFps);
 		}
 
-		lastNsTime = System::nanoTime();
+			lastNsTime = System::nanoTime();
 
-		if (!mc->options->hideGui || mc->screen != NULL)
-		{
-			mc->gui->render(a, mc->screen != NULL, xMouse, yMouse);
+			if (!mc->options->hideGui || mc->screen != NULL)
+			{
+				mc->gui->render(a, mc->screen != NULL, xMouse, yMouse);
+			}
 		}
-	}
-	else
-	{
-		glViewport(0, 0, mc->width, mc->height);
-		glMatrixMode(GL_PROJECTION);
-		glLoadIdentity();
-		glMatrixMode(GL_MODELVIEW);
-		glLoadIdentity();
-		setupGuiScreen();
+		else
+		{
+			glViewport(0, 0, mc->width, mc->height);
+			glMatrixMode(GL_PROJECTION);
+			glLoadIdentity();
+			glMatrixMode(GL_MODELVIEW);
+			glLoadIdentity();
+			setupGuiScreen();
 
-		lastNsTime = System::nanoTime();
-	}
+			lastNsTime = System::nanoTime();
+		}
 
 
-	if (mc->screen != NULL)
-	{
-		glClear(GL_DEPTH_BUFFER_BIT);
-		mc->screen->render(xMouse, yMouse, a);
-		if (mc->screen != NULL && mc->screen->particles != NULL) mc->screen->particles->render(a);
-	}
-
-	ApplyGammaPostProcess();
-}
+			if (mc->screen != NULL)
+			{
+				glClear(GL_DEPTH_BUFFER_BIT);
+				mc->screen->render(xMouse, yMouse, a);
+				if (mc->screen != NULL && mc->screen->particles != NULL) mc->screen->particles->render(a);
+			}
+		}
 
 void GameRenderer::renderLevel(float a)
 {

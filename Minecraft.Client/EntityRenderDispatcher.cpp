@@ -234,6 +234,7 @@ void EntityRenderDispatcher::prepare(Level *level, Textures *textures, Font *fon
 	if (pl->ThirdPersonView() == 2)
 	{
 		playerRotY += 180;
+		playerRotX = -playerRotX;
 	}
 
 	xPlayer = player->xOld + (player->x - player->xOld) * a;

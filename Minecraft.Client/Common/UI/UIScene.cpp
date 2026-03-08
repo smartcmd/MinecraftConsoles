@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "UI.h"
 #include "UIScene.h"
+#include "UISplitScreenHelpers.h"
 
 #include "..\..\Lighting.h"
 #include "..\..\LocalPlayer.h"
@@ -285,26 +286,8 @@ void UIScene::loadMovie()
 	moviePath.append(L"Vita.swf");
 	m_loadedResolution = eSceneResolution_Vita;
 #elif defined _WINDOWS64
-	if(ui.getScreenHeight() == 720)
-	{
-		moviePath.append(L"720.swf");
-		m_loadedResolution = eSceneResolution_720;
-	}
-	else if(ui.getScreenHeight() == 480)
-	{
-		moviePath.append(L"480.swf");
-		m_loadedResolution = eSceneResolution_480;
-	}
-	else if(ui.getScreenHeight() < 720)
-	{
-		moviePath.append(L"Vita.swf");
-		m_loadedResolution = eSceneResolution_Vita;
-	}
-	else
-	{
-		moviePath.append(L"1080.swf");
-		m_loadedResolution = eSceneResolution_1080;
-	}
+	moviePath.append(L"1080.swf");
+	m_loadedResolution = eSceneResolution_1080;
 #else
 	moviePath.append(L"1080.swf");
 	m_loadedResolution = eSceneResolution_1080;
@@ -332,8 +315,6 @@ void UIScene::loadMovie()
 	int64_t beforeLoad = ui.iggyAllocCount;
 	swf = IggyPlayerCreateFromMemory ( baFile.data , baFile.length, NULL);
 	int64_t afterLoad = ui.iggyAllocCount;
-	IggyPlayerInitializeAndTickRS ( swf );
-	int64_t afterTick = ui.iggyAllocCount;
 
 	if(!swf)
 	{
@@ -343,17 +324,44 @@ void UIScene::loadMovie()
 #endif
 		app.FatalLoadError();
 	}
-	app.DebugPrintf( app.USER_SR, "Loaded iggy movie %ls\n", moviePath.c_str() );
+
+	// Read movie dimensions from the SWF header (available immediately after
+	// CreateFromMemory, no init tick needed).
 	IggyProperties *properties = IggyPlayerProperties ( swf );
 	m_movieHeight = properties->movie_height_in_pixels;
 	m_movieWidth = properties->movie_width_in_pixels;
-
 	m_renderWidth = m_movieWidth;
 	m_renderHeight = m_movieHeight;
 
-	S32 width, height;
-	m_parentLayer->getRenderDimensions(width, height);
-	IggyPlayerSetDisplaySize( swf, width, height );
+	// Set display size BEFORE the init tick to match what render() will use.
+	// InitializeAndTickRS runs ActionScript that creates text fields. If the
+	// display size here differs from what render() passes to SetDisplaySize,
+	// Iggy can cache glyph rasterizations at one scale during init and then
+	// reuse them at a different scale during draw, producing mixed glyph sizes.
+#ifdef _WINDOWS64
+	{
+		S32 fitW, fitH, fitOffX, fitOffY;
+		Fit16x9(ui.getScreenWidth(), ui.getScreenHeight(), fitW, fitH, fitOffX, fitOffY);
+		IggyPlayerSetDisplaySize( swf, fitW, fitH );
+	}
+#else
+	IggyPlayerSetDisplaySize( swf, m_movieWidth, m_movieHeight );
+#endif
+
+	IggyPlayerInitializeAndTickRS ( swf );
+	int64_t afterTick = ui.iggyAllocCount;
+
+#ifdef _WINDOWS64
+	// Flush Iggy's internal font caches so all glyphs get rasterized fresh
+	// at the current display scale on the first Draw. Without this, stale
+	// cache entries from a previous scene (loaded at a different display size)
+	// cause mixed glyph sizes. ResizeD3D already calls this, which is why
+	// fonts look correct after a resize but break when a scene reloads
+	// without one.
+	IggyFlushInstalledFonts();
+#endif
+
+	app.DebugPrintf( app.USER_SR, "Loaded iggy movie %ls\n", moviePath.c_str() );
 
 	IggyPlayerSetUserdata(swf,this);
 
@@ -685,9 +693,23 @@ void UIScene::render(S32 width, S32 height, C4JRender::eViewportType viewport)
 {
 	if(m_bIsReloading) return;
 	if(!m_hasTickedOnce || !swf) return;
-	ui.setupRenderPosition(viewport);
-	IggyPlayerSetDisplaySize( swf, width, height );
-	IggyPlayerDraw( swf );
+
+	if(viewport != C4JRender::VIEWPORT_TYPE_FULLSCREEN)
+	{
+		F32 originX, originY, viewW, viewH;
+		GetViewportRect(ui.getScreenWidth(), ui.getScreenHeight(), viewport, originX, originY, viewW, viewH);
+		S32 fitW, fitH, offsetX, offsetY;
+		Fit16x9(viewW, viewH, fitW, fitH, offsetX, offsetY);
+		ui.setupRenderPosition((S32)originX + offsetX, (S32)originY + offsetY);
+		IggyPlayerSetDisplaySize( swf, fitW, fitH );
+		IggyPlayerDraw( swf );
+	}
+	else
+	{
+		ui.setupRenderPosition(viewport);
+		IggyPlayerSetDisplaySize( swf, width, height );
+		IggyPlayerDraw( swf );
+	}
 }
 
 void UIScene::setOpacity(float percent)
@@ -1331,11 +1353,17 @@ bool UIScene::hasRegisteredSubstitutionTexture(const wstring &textureName)
 
 void UIScene::_handleFocusChange(F64 controlId, F64 childId)
 {
-	m_iFocusControl = (int)controlId;
-	m_iFocusChild = (int)childId;
+	int newControl = (int)controlId;
+	int newChild = (int)childId;
 
-	handleFocusChange(controlId, childId);
-	ui.PlayUISFX(eSFX_Focus);
+	if (newControl != m_iFocusControl || newChild != m_iFocusChild)
+	{
+		m_iFocusControl = newControl;
+		m_iFocusChild = newChild;
+
+		handleFocusChange(controlId, childId);
+		ui.PlayUISFX(eSFX_Focus);
+	}
 }
 
 void UIScene::_handleInitFocus(F64 controlId, F64 childId)

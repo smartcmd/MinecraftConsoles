@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "UI.h"
 #include "UIScene_HUD.h"
+#include "UISplitScreenHelpers.h"
 #include "BossMobGuiInfo.h"
 #include "..\..\Minecraft.h"
 #include "..\..\MultiplayerLocalPlayer.h"
@@ -265,8 +266,6 @@ void UIScene_HUD::handleReload()
 	SetHudSize(iGuiScale);
 
 	SetDisplayName(ProfileManager.GetDisplayName(m_iPad));
-
-	repositionHud();
 
 	SetTooltipsEnabled(((ui.GetMenuDisplayed(ProfileManager.GetPrimaryPad())) || (app.GetGameSettings(ProfileManager.GetPrimaryPad(),eGameSetting_Tooltips) != 0)));
 }
@@ -697,6 +696,7 @@ void UIScene_HUD::render(S32 width, S32 height, C4JRender::eViewportType viewpor
 		S32 tileWidth = width;
 		S32 tileHeight = height;
 
+		bool needsYTile = false;
 		switch( viewport )
 		{
 		case C4JRender::VIEWPORT_TYPE_SPLIT_LEFT:
@@ -704,23 +704,25 @@ void UIScene_HUD::render(S32 width, S32 height, C4JRender::eViewportType viewpor
 			tileHeight = (S32)(ui.getScreenHeight());
 			break;
 		case C4JRender::VIEWPORT_TYPE_SPLIT_TOP:
-			tileWidth = (S32)(ui.getScreenWidth());
-			tileYStart = (S32)(m_movieHeight / 2);
-			break;
 		case C4JRender::VIEWPORT_TYPE_SPLIT_BOTTOM:
 			tileWidth = (S32)(ui.getScreenWidth());
-			tileYStart = (S32)(m_movieHeight / 2);
+			needsYTile = true;
 			break;
 		case C4JRender::VIEWPORT_TYPE_QUADRANT_TOP_LEFT:
 		case C4JRender::VIEWPORT_TYPE_QUADRANT_TOP_RIGHT:
 		case C4JRender::VIEWPORT_TYPE_QUADRANT_BOTTOM_LEFT:
 		case C4JRender::VIEWPORT_TYPE_QUADRANT_BOTTOM_RIGHT:
-			tileYStart = (S32)(m_movieHeight / 2);
+			needsYTile = true;
 			break;
 		}
 
-		IggyPlayerSetDisplaySize( getMovie(), m_movieWidth, m_movieHeight );
-		
+		F32 scale;
+		ComputeTileScale(tileWidth, tileHeight, m_movieWidth, m_movieHeight, needsYTile, scale, tileYStart);
+
+		IggyPlayerSetDisplaySize( getMovie(), (S32)(m_movieWidth * scale), (S32)(m_movieHeight * scale) );
+
+		repositionHud(tileWidth, tileHeight, scale);
+
 		m_renderWidth = tileWidth;
 		m_renderHeight = tileHeight;
 
@@ -730,7 +732,7 @@ void UIScene_HUD::render(S32 width, S32 height, C4JRender::eViewportType viewpor
 			tileYStart ,
 			tileXStart + tileWidth ,
 			tileYStart + tileHeight ,
-			0 ); 
+			0 );
 		IggyPlayerDrawTilesEnd ( getMovie() );
 	}
 	else
@@ -790,34 +792,24 @@ void UIScene_HUD::handleTimerComplete(int id)
 	//setVisible(anyVisible);
 }
 
-void UIScene_HUD::repositionHud()
+void UIScene_HUD::repositionHud(S32 tileWidth, S32 tileHeight, F32 scale)
 {
 	if(!m_bSplitscreen) return;
 
-	S32 width = 0;
-	S32 height = 0;
-	m_parentLayer->getRenderDimensions( width, height );
+	// Pass the visible tile area in SWF coordinates so ActionScript
+	// positions elements (crosshair, hotbar, etc.) centered in the
+	// actually visible region, not the raw viewport.
+	S32 visibleW = (S32)(tileWidth / scale);
+	S32 visibleH = (S32)(tileHeight / scale);
 
-	switch( m_parentLayer->getViewport() )
-	{
-	case C4JRender::VIEWPORT_TYPE_SPLIT_LEFT:
-	case C4JRender::VIEWPORT_TYPE_SPLIT_RIGHT:
-		height = (S32)(ui.getScreenHeight());
-		break;
-	case C4JRender::VIEWPORT_TYPE_SPLIT_TOP:
-	case C4JRender::VIEWPORT_TYPE_SPLIT_BOTTOM:
-		width = (S32)(ui.getScreenWidth());
-		break;
-	}
-
-	app.DebugPrintf(app.USER_SR, "Reposition HUD with dims %d, %d\n", width, height );
+	app.DebugPrintf(app.USER_SR, "Reposition HUD: tile %dx%d, scale %.3f, visible SWF %dx%d\n", tileWidth, tileHeight, scale, visibleW, visibleH );
 
 	IggyDataValue result;
 	IggyDataValue value[2];
 	value[0].type = IGGY_DATATYPE_number;
-	value[0].number = width;
+	value[0].number = visibleW;
 	value[1].type = IGGY_DATATYPE_number;
-	value[1].number = height;
+	value[1].number = visibleH;
 	IggyResult out = IggyPlayerCallMethodRS ( getMovie() , &result, IggyPlayerRootPath( getMovie() ), m_funcRepositionHud , 2 , value );
 }
 
