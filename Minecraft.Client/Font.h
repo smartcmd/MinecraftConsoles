@@ -54,6 +54,8 @@ public:
     void drawShadow(const wstring& str, int x, int y, int color);
 	void drawShadowLiteral(const wstring& str, int x, int y, int color); // draw without interpreting § codes
 	void drawShadowLiteralCustom(const wstring& str, int x, int y, int xplus, int yplus, int color, int shadowColor); // custom shadow color
+	void drawShadowFloat(const wstring &str, float x, float y, float xplus, float yplus, int color, int shadowColor); // Test Float Drawing
+	void drawLiteralFloat(const wstring& str, float x, float y, int color);
 	void drawShadowWordWrap(const wstring &str, int x, int y, int w, int color, int h); // 4J Added h param
     void draw(const wstring &str, int x, int y, int color);
 	/**

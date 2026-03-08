@@ -154,7 +154,7 @@ void ChatScreen::render(int xm, int ym, float a)
     {
         textScale = textScale * 1.25f;
         barTopOffset = 10;
-        barBottomOffset = 0;
+        barBottomOffset = -2;
         textYOffset = 8;
         yAdjust = 115;
         widthsubtract = -210;
@@ -170,7 +170,7 @@ void ChatScreen::render(int xm, int ym, float a)
     }
     else if (uiSetting == 2)
     {
-        textScale = textScale * 0.75f;
+        textScale = textScale * 0.8f;
         barTopOffset = 18;
         barBottomOffset = 6;
         textYOffset = 16;

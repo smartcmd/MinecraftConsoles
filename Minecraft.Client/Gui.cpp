@@ -976,22 +976,20 @@ void Gui::render(float a, bool mouseFree, int xMouse, int yMouse)
 	
     float scaleFactor = 1.0f;
 	float textScale = 0.65f;
-	int backgroundtop = 13;
+	int bgfirsty = 2;
+	int bgsecondy = 9;
 
 	if (uiSetting == 0)
     {
         textScale = textScale * 1.5;
-		int backgroundtop = 10;
     }
     else if (uiSetting == 1)
     {
         textScale = textScale * 1;
-		int backgroundtop = 13;
     }
     else if (uiSetting == 2)
     {
         textScale = textScale * 0.75;
-		int backgroundtop = 16;
     }
 
     glPushMatrix();
@@ -1024,13 +1022,14 @@ void Gui::render(float a, bool mouseFree, int xMouse, int yMouse)
 
 					wstring msg = guiMessages[iPad][i].string;
 					int bgColor = ((alpha / 2) << 24) | (0x404040);
-					this->fill(0, y - 3 - 1, screenWidth/fScaleFactorWidth, y + 10 - 1, bgColor);
+					this->fill(0, y - bgfirsty, screenWidth/fScaleFactorWidth, y + bgsecondy, bgColor);
 					glEnable(GL_BLEND);
 
 					glPushMatrix();
 					glTranslatef((float)(iSafezoneXHalf+4), (float)(y), 0);
 					glScalef(textScale, textScale, scaleFactor);
-					font->drawShadowLiteralCustom(msg, 0, 0, 1, 1, 0xffffff + (alpha << 24), 0x000000 + (alpha / 2 << 24));
+					font->drawShadowFloat(msg, 0, 0, 0.5, 0.5, 0xffffff + (alpha << 24), 0x000000 + (alpha / 2 << 24));
+					//font->drawShadowLiteralCustom(msg, 0, 0, 1, 1, 0xffffff + (alpha << 24), 0x000000 + (alpha / 2 << 24));
 					glPopMatrix();
 				}
 			}
