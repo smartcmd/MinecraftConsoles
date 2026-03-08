@@ -1959,13 +1959,37 @@ void UIScene_LoadOrJoinMenu::UpdateGamesList()
     int iY = -1;
     int iX=-1;
 
+    vector<FriendSessionInfo*>* newSessions = g_NetworkManager.GetSessionList( m_iPad, 1, m_bShowingPartyGamesOnly );
+
+    if (m_currentSessions != NULL && m_currentSessions->size() == newSessions->size())
+    {
+        bool same = true;
+        for (size_t i = 0; i < newSessions->size(); i++)
+        {
+            if (memcmp(&(*m_currentSessions)[i]->sessionId, &(*newSessions)[i]->sessionId, sizeof(SessionID)) != 0 ||
+                wcscmp((*m_currentSessions)[i]->displayLabel ? (*m_currentSessions)[i]->displayLabel : L"",
+                       (*newSessions)[i]->displayLabel ? (*newSessions)[i]->displayLabel : L"") != 0)
+            {
+                same = false;
+                break;
+            }
+        }
+        if (same)
+        {
+            for (auto& it : *newSessions)
+                delete it;
+            delete newSessions;
+            return;
+        }
+    }
+
     if (m_currentSessions)
     {
         for (auto& it : *m_currentSessions)
             delete it;
         delete m_currentSessions;
     }
-    m_currentSessions = g_NetworkManager.GetSessionList( m_iPad, 1, m_bShowingPartyGamesOnly );
+    m_currentSessions = newSessions;
 
     // Update the xui list displayed
     unsigned int xuiListSize = m_buttonListGames.getItemCount();
