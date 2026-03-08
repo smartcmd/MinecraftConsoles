@@ -43,12 +43,25 @@ ChatPacket::ChatPacket(const wstring& message, EChatPacketMessage type, int sour
 // Read chat packet (throws IOException)
 void ChatPacket::read(DataInputStream *dis) 
 {
-	m_messageType = (EChatPacketMessage) dis->readShort();
+	// izzint - TODO: i could see this validation being hardcoded becoming
+	// a problem for people who want to expand on chat types, plz review!
+    short msgType = dis->readShort();
+    if (msgType < e_ChatCustom || msgType > e_ChatCommandTeleportToMe)
+    {
+        throw IOException(L"ChatPacket::read - invalid chat type");
+	}
+    m_messageType = static_cast<EChatPacketMessage>(msgType);
 
 	short packedCounts = dis->readShort();
 	int stringCount = (packedCounts >> 4) & 0xF;
 	int intCount = (packedCounts >> 0) & 0xF;
 	
+	// izzint - again, why didn't 4j patch this out??
+    if (stringCount > 3 || intCount > 1)
+    {
+        throw IOException(L"ChatPacket::read - too many string arguments");
+	}
+
 	for(int i = 0; i < stringCount; i++)
 	{
 		m_stringArgs.push_back(readUtf(dis, MAX_LENGTH));
