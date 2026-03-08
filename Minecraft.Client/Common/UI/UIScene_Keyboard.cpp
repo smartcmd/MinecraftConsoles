@@ -269,6 +269,15 @@ void UIScene_Keyboard::handleInput(int iPad, int key, bool repeat, bool pressed,
 	switch(key)
 	{
 	case ACTION_MENU_OK:
+#ifdef _WINDOWS64
+		if (m_bPCMode)
+		{
+			// pressing enter sometimes causes a "y" to be entered.
+			handled = true;
+			break;
+		}
+#endif
+		// fall through for controller mode
 	case ACTION_MENU_LEFT:
 	case ACTION_MENU_RIGHT:
 	case ACTION_MENU_UP:
