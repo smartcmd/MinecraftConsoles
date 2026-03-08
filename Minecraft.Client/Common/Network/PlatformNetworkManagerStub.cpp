@@ -811,54 +811,45 @@ void CPlatformNetworkManagerStub::SearchForGames()
 		friendsSessions[0].push_back(info);
 	}
 
-	std::FILE* file = std::fopen("servers.db", "rb");
+	std::FILE* file = std::fopen("servers.txt", "r");
 
 	if (file) {
-		char magic[4] = {};
-		if (std::fread(magic, 1, 4, file) == 4 && memcmp(magic, "MCSV", 4) == 0)
+		char line[512];
+		while (std::fgets(line, sizeof(line), file))
 		{
-			uint32_t version = 0, count = 0;
-			std::fread(&version, sizeof(uint32_t), 1, file);
-			std::fread(&count, sizeof(uint32_t), 1, file);
+			int l = (int)strlen(line);
+			while (l > 0 && (line[l - 1] == '\n' || line[l - 1] == '\r' || line[l - 1] == ' '))
+				line[--l] = '\0';
+			if (l == 0) continue;
 
-			if (version == 1)
-			{
-				for (uint32_t s = 0; s < count; s++)
-				{
-					uint16_t ipLen = 0, port = 0, nameLen = 0;
-					if (std::fread(&ipLen, sizeof(uint16_t), 1, file) != 1) break;
-					if (ipLen == 0 || ipLen > 256) break;
+			// Format: name:ip:port
+			char* lastColon = strrchr(line, ':');
+			if (!lastColon) continue;
+			*lastColon = '\0';
+			uint16_t port = (uint16_t)atoi(lastColon + 1);
 
-					char ipBuf[257] = {};
-					if (std::fread(ipBuf, 1, ipLen, file) != ipLen) break;
+			char* secondColon = strrchr(line, ':');
+			if (!secondColon) continue;
+			*secondColon = '\0';
+			char* ipBuf = secondColon + 1;
+			char* nameBuf = line;
 
-					if (std::fread(&port, sizeof(uint16_t), 1, file) != 1) break;
+			if (port == 0 || strlen(ipBuf) == 0) continue;
 
-					if (std::fread(&nameLen, sizeof(uint16_t), 1, file) != 1) break;
-					if (nameLen > 256) break;
+			wstring wName = convStringToWstring(nameBuf);
 
-					char nameBuf[257] = {};
-					if (nameLen > 0)
-					{
-						if (std::fread(nameBuf, 1, nameLen, file) != nameLen) break;
-					}
-
-					wstring wName = convStringToWstring(nameBuf);
-
-					FriendSessionInfo* info = new FriendSessionInfo();
-					size_t nLen = wName.length();
-					info->displayLabel = new wchar_t[nLen + 1];
-					wcscpy_s(info->displayLabel, nLen + 1, wName.c_str());
-					info->displayLabelLength = (unsigned char)nLen;
-					info->displayLabelViewableStartIndex = 0;
-					info->data.isReadyToJoin = true;
-					info->data.isJoinable = true;
-					strncpy_s(info->data.hostIP, sizeof(info->data.hostIP), ipBuf, _TRUNCATE);
-					info->data.hostPort = port;
-					info->sessionId = (SessionID)(static_cast<uint64_t>(inet_addr(ipBuf)) | (static_cast<uint64_t>(port) << 32));
-					friendsSessions[0].push_back(info);
-				}
-			}
+			FriendSessionInfo* info = new FriendSessionInfo();
+			size_t nLen = wName.length();
+			info->displayLabel = new wchar_t[nLen + 1];
+			wcscpy_s(info->displayLabel, nLen + 1, wName.c_str());
+			info->displayLabelLength = (unsigned char)nLen;
+			info->displayLabelViewableStartIndex = 0;
+			info->data.isReadyToJoin = true;
+			info->data.isJoinable = true;
+			strncpy_s(info->data.hostIP, sizeof(info->data.hostIP), ipBuf, _TRUNCATE);
+			info->data.hostPort = port;
+			info->sessionId = (SessionID)(static_cast<uint64_t>(inet_addr(ipBuf)) | (static_cast<uint64_t>(port) << 32));
+			friendsSessions[0].push_back(info);
 		}
 		std::fclose(file);
 	}

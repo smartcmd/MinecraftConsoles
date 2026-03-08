@@ -281,7 +281,7 @@ typedef struct _JoinMenuInitData
 	FriendSessionInfo *selectedSession;
 	int iPad;
 #ifdef _WINDOWS64
-	int serverIndex; // Index of the server in servers.db, -1 if not a saved server
+	int serverIndex; // Index of the server in servers.txt, -1 if not a saved server
 #endif
 } JoinMenuInitData;
 

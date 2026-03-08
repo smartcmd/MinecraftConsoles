@@ -840,134 +840,100 @@ void UIScene_JoinMenu::UpdateServerInFile(const wstring& newIP, const wstring& n
 	wcstombs(narrowNewPort, newPort.c_str(), sizeof(narrowNewPort) - 1);
 	wcstombs(narrowNewName, newName.c_str(), sizeof(narrowNewName) - 1);
 
-	uint16_t newPortNum = (uint16_t)atoi(narrowNewPort);
-
-	struct ServerEntry { std::string ip; uint16_t port; std::string name; };
+	struct ServerEntry { std::string ip; std::string port; std::string name; };
 	std::vector<ServerEntry> entries;
 
-	FILE* file = fopen("servers.db", "rb");
+	FILE* file = fopen("servers.txt", "r");
 	if (file)
 	{
-		char magic[4] = {};
-		if (fread(magic, 1, 4, file) == 4 && memcmp(magic, "MCSV", 4) == 0)
+		char line[512];
+		while (fgets(line, sizeof(line), file))
 		{
-			uint32_t version = 0, count = 0;
-			fread(&version, sizeof(uint32_t), 1, file);
-			fread(&count, sizeof(uint32_t), 1, file);
-			if (version == 1)
-			{
-				for (uint32_t s = 0; s < count; s++)
-				{
-					uint16_t ipLen = 0, p = 0, nameLen = 0;
-					if (fread(&ipLen, sizeof(uint16_t), 1, file) != 1) break;
-					if (ipLen == 0 || ipLen > 256) break;
-					char ipBuf[257] = {};
-					if (fread(ipBuf, 1, ipLen, file) != ipLen) break;
-					if (fread(&p, sizeof(uint16_t), 1, file) != 1) break;
-					if (fread(&nameLen, sizeof(uint16_t), 1, file) != 1) break;
-					if (nameLen > 256) break;
-					char nameBuf[257] = {};
-					if (nameLen > 0 && fread(nameBuf, 1, nameLen, file) != nameLen) break;
-					entries.push_back({std::string(ipBuf), p, std::string(nameBuf)});
-				}
-			}
+			int l = (int)strlen(line);
+			while (l > 0 && (line[l - 1] == '\n' || line[l - 1] == '\r' || line[l - 1] == ' '))
+				line[--l] = '\0';
+			if (l == 0) continue;
+
+			char* lastColon = strrchr(line, ':');
+			if (!lastColon) continue;
+			*lastColon = '\0';
+			std::string port(lastColon + 1);
+
+			char* secondColon = strrchr(line, ':');
+			if (!secondColon) continue;
+			*secondColon = '\0';
+			std::string ip(secondColon + 1);
+			std::string name(line);
+
+			uint16_t portVal = (uint16_t)atoi(port.c_str());
+			if (portVal == 0 || ip.empty()) continue;
+
+			entries.push_back({ip, port, name});
 		}
 		fclose(file);
 	}
 
-	// Find and update the matching entry by original IP and port
 	int idx = m_serverIndex;
 	if (idx >= 0 && idx < (int)entries.size())
 	{
 		entries[idx].ip = std::string(narrowNewIP);
-		entries[idx].port = newPortNum;
+		entries[idx].port = std::string(narrowNewPort);
 		entries[idx].name = std::string(narrowNewName);
 	}
 
-	file = fopen("servers.db", "wb");
+	file = fopen("servers.txt", "w");
 	if (file)
 	{
-		fwrite("MCSV", 1, 4, file);
-		uint32_t version = 1;
-		uint32_t count = (uint32_t)entries.size();
-		fwrite(&version, sizeof(uint32_t), 1, file);
-		fwrite(&count, sizeof(uint32_t), 1, file);
-
 		for (size_t i = 0; i < entries.size(); i++)
-		{
-			uint16_t ipLen = (uint16_t)entries[i].ip.length();
-			fwrite(&ipLen, sizeof(uint16_t), 1, file);
-			fwrite(entries[i].ip.c_str(), 1, ipLen, file);
-			fwrite(&entries[i].port, sizeof(uint16_t), 1, file);
-			uint16_t nameLen = (uint16_t)entries[i].name.length();
-			fwrite(&nameLen, sizeof(uint16_t), 1, file);
-			fwrite(entries[i].name.c_str(), 1, nameLen, file);
-		}
+			fprintf(file, "%s:%s:%s\n", entries[i].name.c_str(), entries[i].ip.c_str(), entries[i].port.c_str());
 		fclose(file);
 	}
 }
 
 void UIScene_JoinMenu::RemoveServerFromFile()
 {
-	struct ServerEntry { std::string ip; uint16_t port; std::string name; };
+	struct ServerEntry { std::string name; std::string ip; std::string port; };
 	std::vector<ServerEntry> entries;
 
-	FILE* file = fopen("servers.db", "rb");
+	FILE* file = fopen("servers.txt", "r");
 	if (file)
 	{
-		char magic[4] = {};
-		if (fread(magic, 1, 4, file) == 4 && memcmp(magic, "MCSV", 4) == 0)
+		char line[512];
+		while (fgets(line, sizeof(line), file))
 		{
-			uint32_t version = 0, count = 0;
-			fread(&version, sizeof(uint32_t), 1, file);
-			fread(&count, sizeof(uint32_t), 1, file);
-			if (version == 1)
-			{
-				for (uint32_t s = 0; s < count; s++)
-				{
-					uint16_t ipLen = 0, p = 0, nameLen = 0;
-					if (fread(&ipLen, sizeof(uint16_t), 1, file) != 1) break;
-					if (ipLen == 0 || ipLen > 256) break;
-					char ipBuf[257] = {};
-					if (fread(ipBuf, 1, ipLen, file) != ipLen) break;
-					if (fread(&p, sizeof(uint16_t), 1, file) != 1) break;
-					if (fread(&nameLen, sizeof(uint16_t), 1, file) != 1) break;
-					if (nameLen > 256) break;
-					char nameBuf[257] = {};
-					if (nameLen > 0 && fread(nameBuf, 1, nameLen, file) != nameLen) break;
-					entries.push_back({std::string(ipBuf), p, std::string(nameBuf)});
-				}
-			}
+			int l = (int)strlen(line);
+			while (l > 0 && (line[l - 1] == '\n' || line[l - 1] == '\r' || line[l - 1] == ' '))
+				line[--l] = '\0';
+			if (l == 0) continue;
+
+			char* lastColon = strrchr(line, ':');
+			if (!lastColon) continue;
+			*lastColon = '\0';
+			std::string port(lastColon + 1);
+
+			char* secondColon = strrchr(line, ':');
+			if (!secondColon) continue;
+			*secondColon = '\0';
+			std::string ip(secondColon + 1);
+			std::string name(line);
+
+			uint16_t portVal = (uint16_t)atoi(port.c_str());
+			if (portVal == 0 || ip.empty()) continue;
+
+			entries.push_back({name, ip, port});
 		}
 		fclose(file);
 	}
 
-	// Remove the entry at m_serverIndex
 	int idx = m_serverIndex;
 	if (idx >= 0 && idx < (int)entries.size())
-	{
 		entries.erase(entries.begin() + idx);
-	}
 
-	file = fopen("servers.db", "wb");
+	file = fopen("servers.txt", "w");
 	if (file)
 	{
-		fwrite("MCSV", 1, 4, file);
-		uint32_t version = 1;
-		uint32_t count = (uint32_t)entries.size();
-		fwrite(&version, sizeof(uint32_t), 1, file);
-		fwrite(&count, sizeof(uint32_t), 1, file);
-
 		for (size_t i = 0; i < entries.size(); i++)
-		{
-			uint16_t ipLen = (uint16_t)entries[i].ip.length();
-			fwrite(&ipLen, sizeof(uint16_t), 1, file);
-			fwrite(entries[i].ip.c_str(), 1, ipLen, file);
-			fwrite(&entries[i].port, sizeof(uint16_t), 1, file);
-			uint16_t nameLen = (uint16_t)entries[i].name.length();
-			fwrite(&nameLen, sizeof(uint16_t), 1, file);
-			fwrite(entries[i].name.c_str(), 1, nameLen, file);
-		}
+			fprintf(file, "%s:%s:%s\n", entries[i].name.c_str(), entries[i].ip.c_str(), entries[i].port.c_str());
 		fclose(file);
 	}
 }

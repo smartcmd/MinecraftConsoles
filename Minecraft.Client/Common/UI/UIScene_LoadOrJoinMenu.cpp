@@ -1773,17 +1773,30 @@ void UIScene_LoadOrJoinMenu::CheckAndJoinGame(int gameIndex)
 		{
 
 			int serverDbCount = 0;
-			FILE* dbFile = fopen("servers.db", "rb");
+			FILE* dbFile = fopen("servers.txt", "r");
 			if (dbFile)
 			{
-				char magic[4] = {};
-				if (fread(magic, 1, 4, dbFile) == 4 && memcmp(magic, "MCSV", 4) == 0)
+				char line[512];
+				while (fgets(line, sizeof(line), dbFile))
 				{
-					uint32_t version = 0, count = 0;
-					fread(&version, sizeof(uint32_t), 1, dbFile);
-					fread(&count, sizeof(uint32_t), 1, dbFile);
-					if (version == 1)
-						serverDbCount = (int)count;
+					int l = (int)strlen(line);
+					while (l > 0 && (line[l - 1] == '\n' || line[l - 1] == '\r' || line[l - 1] == ' '))
+						line[--l] = '\0';
+					if (l == 0) continue;
+
+					char* lastColon = strrchr(line, ':');
+					if (!lastColon) continue;
+					*lastColon = '\0';
+					uint16_t port = (uint16_t)atoi(lastColon + 1);
+
+					char* secondColon = strrchr(line, ':');
+					if (!secondColon) continue;
+					*secondColon = '\0';
+					char* ipBuf = secondColon + 1;
+
+					if (port == 0 || strlen(ipBuf) == 0) continue;
+
+					serverDbCount++;
 				}
 				fclose(dbFile);
 			}
@@ -4242,62 +4255,10 @@ void UIScene_LoadOrJoinMenu::AppendServerToFile(const wstring& ip, const wstring
     wcstombs(narrowPort, port.c_str(), sizeof(narrowPort) - 1);
     wcstombs(narrowName, name.c_str(), sizeof(narrowName) - 1);
 
-    uint16_t portNum = (uint16_t)atoi(narrowPort);
-
-    struct ServerEntry { std::string ip; uint16_t port; std::string name; };
-    std::vector<ServerEntry> entries;
-
-    FILE* file = fopen("servers.db", "rb");
+    FILE* file = fopen("servers.txt", "a");
     if (file)
     {
-        char magic[4] = {};
-        if (fread(magic, 1, 4, file) == 4 && memcmp(magic, "MCSV", 4) == 0)
-        {
-            uint32_t version = 0, count = 0;
-            fread(&version, sizeof(uint32_t), 1, file);
-            fread(&count, sizeof(uint32_t), 1, file);
-            if (version == 1)
-            {
-                for (uint32_t s = 0; s < count; s++)
-                {
-                    uint16_t ipLen = 0, p = 0, nameLen = 0;
-                    if (fread(&ipLen, sizeof(uint16_t), 1, file) != 1) break;
-                    if (ipLen == 0 || ipLen > 256) break;
-                    char ipBuf[257] = {};
-                    if (fread(ipBuf, 1, ipLen, file) != ipLen) break;
-                    if (fread(&p, sizeof(uint16_t), 1, file) != 1) break;
-                    if (fread(&nameLen, sizeof(uint16_t), 1, file) != 1) break;
-                    if (nameLen > 256) break;
-                    char nameBuf[257] = {};
-                    if (nameLen > 0 && fread(nameBuf, 1, nameLen, file) != nameLen) break;
-                    entries.push_back({std::string(ipBuf), p, std::string(nameBuf)});
-                }
-            }
-        }
-        fclose(file);
-    }
-
-    entries.push_back({std::string(narrowIP), portNum, std::string(narrowName)});
-
-    file = fopen("servers.db", "wb");
-    if (file)
-    {
-        fwrite("MCSV", 1, 4, file);
-        uint32_t version = 1;
-        uint32_t count = (uint32_t)entries.size();
-        fwrite(&version, sizeof(uint32_t), 1, file);
-        fwrite(&count, sizeof(uint32_t), 1, file);
-
-        for (size_t i = 0; i < entries.size(); i++)
-        {
-            uint16_t ipLen = (uint16_t)entries[i].ip.length();
-            fwrite(&ipLen, sizeof(uint16_t), 1, file);
-            fwrite(entries[i].ip.c_str(), 1, ipLen, file);
-            fwrite(&entries[i].port, sizeof(uint16_t), 1, file);
-            uint16_t nameLen = (uint16_t)entries[i].name.length();
-            fwrite(&nameLen, sizeof(uint16_t), 1, file);
-            fwrite(entries[i].name.c_str(), 1, nameLen, file);
-        }
+        fprintf(file, "%s:%s:%s\n", narrowName, narrowIP, narrowPort);
         fclose(file);
     }
 }

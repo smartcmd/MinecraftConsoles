@@ -63,7 +63,7 @@ private:
 	bool m_friendInfoUpdatedERROR;
 
 #ifdef _WINDOWS64
-	int m_serverIndex; // Index in servers.db, -1 if not a saved server
+	int m_serverIndex; // Index in servers.txt, -1 if not a saved server
 	enum eEditServerPhase { eEditServer_Idle, eEditServer_IP, eEditServer_Port, eEditServer_Name };
 	eEditServerPhase m_editServerPhase;
 	wstring m_editServerIP;
