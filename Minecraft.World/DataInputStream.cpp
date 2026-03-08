@@ -501,7 +501,7 @@ int DataInputStream::readUTFChar()
 
 	if (firstByte == -1)
     {
-        throw EOFException(L"DataInputStream::readUTFChar - end of stream");
+        return -1;
     }
 
 	// Masking patterns:

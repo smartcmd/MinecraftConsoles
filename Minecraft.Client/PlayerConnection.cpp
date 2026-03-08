@@ -35,9 +35,6 @@
 #include "..\Minecraft.World\net.minecraft.world.item.crafting.h"
 #include "Options.h"
 
-// MinecraftConsoles Added
-#include "..\Minecraft.World\Exceptions.h"
-
 Random PlayerConnection::random;
 
 PlayerConnection::PlayerConnection(MinecraftServer *server, Connection *connection, shared_ptr<ServerPlayer> player)
