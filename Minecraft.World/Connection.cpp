@@ -250,6 +250,14 @@ bool Connection::writeTick()
 		// Otherwise just buffer the packet with other outgoing packets as the java game did
 		if(packet->shouldDelay)
 		{
+			// Flush any buffered data BEFORE writing directly to the socket.
+			// bufferedDos and sos->writeWithFlags both write to the same underlying
+			// socket stream. If bufferedDos has unflushed bytes (from packets written
+			// via the outgoing queue above), writing directly to sos here would send
+			// the delayed packet's bytes BEFORE the buffered bytes, desynchronizing
+			// the TCP stream on the receiving end.
+			bufferedDos->flush();
+
 			Packet::writePacket(packet, byteArrayDos);
 
 			// 4J Stu - Changed this so that rather than writing to the network stream through a buffered stream we want to:
@@ -341,7 +349,7 @@ bool Connection::readTick()
 //		printf("Con:0x%x readTick close EOS\n",this);
 
 		// 4J Stu - Remove this line
-		// Fix for #10410 - UI: If the player is removed from a splitscreened host’s game, the next game that player joins will produce a message stating that the host has left.
+		// Fix for #10410 - UI: If the player is removed from a splitscreened hostï¿½s game, the next game that player joins will produce a message stating that the host has left.
 		//close(DisconnectPacket::eDisconnect_EndOfStream);
 	}
 

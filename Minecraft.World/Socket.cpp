@@ -137,6 +137,9 @@ void Socket::pushDataToQueue(const BYTE * pbData, DWORD dwDataSize, bool fromHos
 		return;
 	}
 
+	//app.DebugPrintf("SOCKET PUSH: %u bytes to queue[%d] firstByte=0x%02X smallId=%d\n",
+	//	dwDataSize, queueIdx, dwDataSize > 0 ? pbData[0] : 0, networkPlayerSmallId);
+
 	EnterCriticalSection(&m_queueLockNetwork[queueIdx]);
 	for( unsigned int i = 0; i < dwDataSize; i++ )
 	{
@@ -311,7 +314,8 @@ void Socket::SocketInputStreamLocal::close()
 {
 	m_streamOpen = false;
 	EnterCriticalSection(&s_hostQueueLock[m_queueIdx]);
-	s_hostQueue[m_queueIdx].empty();
+	std::queue<byte> empty;
+	std::swap(s_hostQueue[m_queueIdx], empty);
 	LeaveCriticalSection(&s_hostQueueLock[m_queueIdx]);
 }
 
@@ -359,7 +363,8 @@ void Socket::SocketOutputStreamLocal::close()
 {
 	m_streamOpen = false;
 	EnterCriticalSection(&s_hostQueueLock[m_queueIdx]);
-	s_hostQueue[m_queueIdx].empty();
+	std::queue<byte> empty;
+	std::swap(s_hostQueue[m_queueIdx], empty);
 	LeaveCriticalSection(&s_hostQueueLock[m_queueIdx]);
 }
 

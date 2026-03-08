@@ -26,7 +26,7 @@ bool WinsockNetLayer::s_initialized = false;
 
 BYTE WinsockNetLayer::s_localSmallId = 0;
 BYTE WinsockNetLayer::s_hostSmallId = 0;
-unsigned int WinsockNetLayer::s_nextSmallId = 1;
+unsigned int WinsockNetLayer::s_nextSmallId = XUSER_MAX_COUNT;
 
 CRITICAL_SECTION WinsockNetLayer::s_sendLock;
 CRITICAL_SECTION WinsockNetLayer::s_connectionsLock;
@@ -53,6 +53,10 @@ CRITICAL_SECTION WinsockNetLayer::s_freeSmallIdLock;
 std::vector<BYTE> WinsockNetLayer::s_freeSmallIds;
 SOCKET WinsockNetLayer::s_smallIdToSocket[256];
 CRITICAL_SECTION WinsockNetLayer::s_smallIdToSocketLock;
+
+SOCKET WinsockNetLayer::s_splitScreenSocket[XUSER_MAX_COUNT] = { INVALID_SOCKET, INVALID_SOCKET, INVALID_SOCKET, INVALID_SOCKET };
+BYTE WinsockNetLayer::s_splitScreenSmallId[XUSER_MAX_COUNT] = { 0xFF, 0xFF, 0xFF, 0xFF };
+HANDLE WinsockNetLayer::s_splitScreenRecvThread[XUSER_MAX_COUNT] = { NULL, NULL, NULL, NULL };
 
 bool g_Win64MultiplayerHost = false;
 bool g_Win64MultiplayerJoin = false;
@@ -111,6 +115,15 @@ void WinsockNetLayer::Shutdown()
 		s_hostConnectionSocket = INVALID_SOCKET;
 	}
 
+	// Stop accept loop first so no new RecvThread can be created while shutting down.
+	if (s_acceptThread != NULL)
+	{
+		WaitForSingleObject(s_acceptThread, 2000);
+		CloseHandle(s_acceptThread);
+		s_acceptThread = NULL;
+	}
+
+	std::vector<HANDLE> recvThreads;
 	EnterCriticalSection(&s_connectionsLock);
 	for (size_t i = 0; i < s_connections.size(); i++)
 	{
@@ -118,17 +131,26 @@ void WinsockNetLayer::Shutdown()
 		if (s_connections[i].tcpSocket != INVALID_SOCKET)
 		{
 			closesocket(s_connections[i].tcpSocket);
+			s_connections[i].tcpSocket = INVALID_SOCKET;
+		}
+		if (s_connections[i].recvThread != NULL)
+		{
+			recvThreads.push_back(s_connections[i].recvThread);
+			s_connections[i].recvThread = NULL;
 		}
 	}
-	s_connections.clear();
 	LeaveCriticalSection(&s_connectionsLock);
 
-	if (s_acceptThread != NULL)
+	// Wait for all host-side receive threads to exit before destroying state.
+	for (size_t i = 0; i < recvThreads.size(); i++)
 	{
-		WaitForSingleObject(s_acceptThread, 2000);
-		CloseHandle(s_acceptThread);
-		s_acceptThread = NULL;
+		WaitForSingleObject(recvThreads[i], 2000);
+		CloseHandle(recvThreads[i]);
 	}
+
+	EnterCriticalSection(&s_connectionsLock);
+	s_connections.clear();
+	LeaveCriticalSection(&s_connectionsLock);
 
 	if (s_clientRecvThread != NULL)
 	{
@@ -137,16 +159,38 @@ void WinsockNetLayer::Shutdown()
 		s_clientRecvThread = NULL;
 	}
 
+	for (int i = 0; i < XUSER_MAX_COUNT; i++)
+	{
+		if (s_splitScreenSocket[i] != INVALID_SOCKET)
+		{
+			closesocket(s_splitScreenSocket[i]);
+			s_splitScreenSocket[i] = INVALID_SOCKET;
+		}
+		if (s_splitScreenRecvThread[i] != NULL)
+		{
+			WaitForSingleObject(s_splitScreenRecvThread[i], 2000);
+			CloseHandle(s_splitScreenRecvThread[i]);
+			s_splitScreenRecvThread[i] = NULL;
+		}
+		s_splitScreenSmallId[i] = 0xFF;
+	}
+
 	if (s_initialized)
 	{
+		EnterCriticalSection(&s_disconnectLock);
+		s_disconnectedSmallIds.clear();
+		LeaveCriticalSection(&s_disconnectLock);
+
+		EnterCriticalSection(&s_freeSmallIdLock);
+		s_freeSmallIds.clear();
+		LeaveCriticalSection(&s_freeSmallIdLock);
+
 		DeleteCriticalSection(&s_sendLock);
 		DeleteCriticalSection(&s_connectionsLock);
 		DeleteCriticalSection(&s_advertiseLock);
 		DeleteCriticalSection(&s_discoveryLock);
 		DeleteCriticalSection(&s_disconnectLock);
-		s_disconnectedSmallIds.clear();
 		DeleteCriticalSection(&s_freeSmallIdLock);
-		s_freeSmallIds.clear();
 		DeleteCriticalSection(&s_smallIdToSocketLock);
 		WSACleanup();
 		s_initialized = false;
@@ -160,7 +204,7 @@ bool WinsockNetLayer::HostGame(int port, const char* bindIp)
 	s_isHost = true;
 	s_localSmallId = 0;
 	s_hostSmallId = 0;
-	s_nextSmallId = 1;
+	s_nextSmallId = XUSER_MAX_COUNT;
 	s_hostGamePort = port;
 
 	EnterCriticalSection(&s_freeSmallIdLock);
@@ -247,6 +291,17 @@ bool WinsockNetLayer::JoinGame(const char* ip, int port)
 	{
 		closesocket(s_hostConnectionSocket);
 		s_hostConnectionSocket = INVALID_SOCKET;
+	}
+
+	// Wait for old client recv thread to fully exit before starting a new connection.
+	// Without this, the old thread can read from the new socket (s_hostConnectionSocket
+	// is a global) and steal bytes from the new connection's TCP stream, causing
+	// packet stream misalignment on reconnect.
+	if (s_clientRecvThread != NULL)
+	{
+		WaitForSingleObject(s_clientRecvThread, 5000);
+		CloseHandle(s_clientRecvThread);
+		s_clientRecvThread = NULL;
 	}
 
 	struct addrinfo hints = {};
@@ -351,6 +406,13 @@ bool WinsockNetLayer::SendOnSocket(SOCKET sock, const void* data, int dataSize)
 {
 	if (sock == INVALID_SOCKET || dataSize <= 0) return false;
 
+	// TODO: s_sendLock is a single global lock for ALL sockets. If one client's
+	// send() blocks (TCP window full, slow WiFi), every other write thread stalls
+	// waiting for this lock — no data flows to any player until the slow send
+	// completes. This scales badly with player count (8+ players = noticeable).
+	// Fix: replace with per-socket locks indexed by smallId (s_perSocketSendLock[256]).
+	// The lock only needs to prevent interleaving of header+payload on the SAME socket;
+	// sends to different sockets are independent and should never block each other.
 	EnterCriticalSection(&s_sendLock);
 
 	BYTE header[4];
@@ -450,19 +512,28 @@ void WinsockNetLayer::HandleDataReceived(BYTE fromSmallId, BYTE toSmallId, unsig
 	INetworkPlayer* pPlayerFrom = g_NetworkManager.GetPlayerBySmallId(fromSmallId);
 	INetworkPlayer* pPlayerTo = g_NetworkManager.GetPlayerBySmallId(toSmallId);
 
-	if (pPlayerFrom == NULL || pPlayerTo == NULL) return;
+	if (pPlayerFrom == NULL || pPlayerTo == NULL)
+	{
+		app.DebugPrintf("NET RECV: DROPPED %u bytes from=%d to=%d (player NULL: from=%p to=%p)\n",
+			dataSize, fromSmallId, toSmallId, pPlayerFrom, pPlayerTo);
+		return;
+	}
 
 	if (s_isHost)
 	{
 		::Socket* pSocket = pPlayerFrom->GetSocket();
 		if (pSocket != NULL)
 			pSocket->pushDataToQueue(data, dataSize, false);
+		else
+			app.DebugPrintf("NET RECV: DROPPED %u bytes, host pSocket NULL for from=%d\n", dataSize, fromSmallId);
 	}
 	else
 	{
 		::Socket* pSocket = pPlayerTo->GetSocket();
 		if (pSocket != NULL)
 			pSocket->pushDataToQueue(data, dataSize, true);
+		else
+			app.DebugPrintf("NET RECV: DROPPED %u bytes, client pSocket NULL for to=%d\n", dataSize, toSmallId);
 	}
 }
 
@@ -525,6 +596,7 @@ DWORD WINAPI WinsockNetLayer::AcceptThreadProc(LPVOID param)
 		{
 			app.DebugPrintf("Failed to send small ID to client\n");
 			closesocket(clientSocket);
+			PushFreeSmallId(assignedSmallId);
 			continue;
 		}
 
@@ -662,7 +734,16 @@ bool WinsockNetLayer::PopDisconnectedSmallId(BYTE* outSmallId)
 void WinsockNetLayer::PushFreeSmallId(BYTE smallId)
 {
 	EnterCriticalSection(&s_freeSmallIdLock);
-	s_freeSmallIds.push_back(smallId);
+	// Guard against double-recycle: the reconnect path (queueSmallIdForRecycle) and
+	// the DoWork disconnect path can both push the same smallId. If we allow duplicates,
+	// AcceptThread will hand out the same smallId to two different connections.
+	bool alreadyFree = false;
+	for (size_t i = 0; i < s_freeSmallIds.size(); i++)
+	{
+		if (s_freeSmallIds[i] == smallId) { alreadyFree = true; break; }
+	}
+	if (!alreadyFree)
+		s_freeSmallIds.push_back(smallId);
 	LeaveCriticalSection(&s_freeSmallIdLock);
 }
 
@@ -680,6 +761,171 @@ void WinsockNetLayer::CloseConnectionBySmallId(BYTE smallId)
 		}
 	}
 	LeaveCriticalSection(&s_connectionsLock);
+}
+
+BYTE WinsockNetLayer::GetSplitScreenSmallId(int padIndex)
+{
+	if (padIndex <= 0 || padIndex >= XUSER_MAX_COUNT) return 0xFF;
+	return s_splitScreenSmallId[padIndex];
+}
+
+SOCKET WinsockNetLayer::GetLocalSocket(BYTE senderSmallId)
+{
+	if (senderSmallId == s_localSmallId)
+		return s_hostConnectionSocket;
+	for (int i = 1; i < XUSER_MAX_COUNT; i++)
+	{
+		if (s_splitScreenSmallId[i] == senderSmallId && s_splitScreenSocket[i] != INVALID_SOCKET)
+			return s_splitScreenSocket[i];
+	}
+	return INVALID_SOCKET;
+}
+
+bool WinsockNetLayer::JoinSplitScreen(int padIndex, BYTE* outSmallId)
+{
+	if (!s_active || s_isHost || padIndex <= 0 || padIndex >= XUSER_MAX_COUNT)
+		return false;
+
+	if (s_splitScreenSocket[padIndex] != INVALID_SOCKET)
+	{
+		return false;
+	}
+
+	struct addrinfo hints = {};
+	struct addrinfo* result = NULL;
+	hints.ai_family = AF_INET;
+	hints.ai_socktype = SOCK_STREAM;
+	hints.ai_protocol = IPPROTO_TCP;
+
+	char portStr[16];
+	sprintf_s(portStr, "%d", g_Win64MultiplayerPort);
+	if (getaddrinfo(g_Win64MultiplayerIP, portStr, &hints, &result) != 0 || result == NULL)
+	{
+		app.DebugPrintf("Win64 LAN: Split-screen getaddrinfo failed for %s:%d\n", g_Win64MultiplayerIP, g_Win64MultiplayerPort);
+		return false;
+	}
+
+	SOCKET sock = socket(result->ai_family, result->ai_socktype, result->ai_protocol);
+	if (sock == INVALID_SOCKET)
+	{
+		freeaddrinfo(result);
+		return false;
+	}
+
+	int noDelay = 1;
+	setsockopt(sock, IPPROTO_TCP, TCP_NODELAY, (const char*)&noDelay, sizeof(noDelay));
+
+	if (connect(sock, result->ai_addr, (int)result->ai_addrlen) == SOCKET_ERROR)
+	{
+		app.DebugPrintf("Win64 LAN: Split-screen connect() failed: %d\n", WSAGetLastError());
+		closesocket(sock);
+		freeaddrinfo(result);
+		return false;
+	}
+	freeaddrinfo(result);
+
+	BYTE assignBuf[1];
+	if (!RecvExact(sock, assignBuf, 1))
+	{
+		app.DebugPrintf("Win64 LAN: Split-screen failed to receive smallId\n");
+		closesocket(sock);
+		return false;
+	}
+
+	if (assignBuf[0] == WIN64_SMALLID_REJECT)
+	{
+		BYTE rejectBuf[5];
+		RecvExact(sock, rejectBuf, 5);
+		app.DebugPrintf("Win64 LAN: Split-screen connection rejected\n");
+		closesocket(sock);
+		return false;
+	}
+
+	BYTE assignedSmallId = assignBuf[0];
+	s_splitScreenSocket[padIndex] = sock;
+	s_splitScreenSmallId[padIndex] = assignedSmallId;
+	*outSmallId = assignedSmallId;
+
+	app.DebugPrintf("Win64 LAN: Split-screen pad %d connected, assigned smallId=%d\n", padIndex, assignedSmallId);
+
+	int* threadParam = new int;
+	*threadParam = padIndex;
+	s_splitScreenRecvThread[padIndex] = CreateThread(NULL, 0, SplitScreenRecvThreadProc, threadParam, 0, NULL);
+	if (s_splitScreenRecvThread[padIndex] == NULL)
+	{
+		delete threadParam;
+		closesocket(sock);
+		s_splitScreenSocket[padIndex] = INVALID_SOCKET;
+		s_splitScreenSmallId[padIndex] = 0xFF;
+		app.DebugPrintf("Win64 LAN: CreateThread failed for split-screen pad %d\n", padIndex);
+		return false;
+	}
+
+	return true;
+}
+
+void WinsockNetLayer::CloseSplitScreenConnection(int padIndex)
+{
+	if (padIndex <= 0 || padIndex >= XUSER_MAX_COUNT) return;
+
+	if (s_splitScreenSocket[padIndex] != INVALID_SOCKET)
+	{
+		closesocket(s_splitScreenSocket[padIndex]);
+		s_splitScreenSocket[padIndex] = INVALID_SOCKET;
+	}
+	s_splitScreenSmallId[padIndex] = 0xFF;
+	if (s_splitScreenRecvThread[padIndex] != NULL)
+	{
+		WaitForSingleObject(s_splitScreenRecvThread[padIndex], 2000);
+		CloseHandle(s_splitScreenRecvThread[padIndex]);
+		s_splitScreenRecvThread[padIndex] = NULL;
+	}
+}
+
+DWORD WINAPI WinsockNetLayer::SplitScreenRecvThreadProc(LPVOID param)
+{
+	int padIndex = *(int*)param;
+	delete (int*)param;
+
+	SOCKET sock = s_splitScreenSocket[padIndex];
+	BYTE localSmallId = s_splitScreenSmallId[padIndex];
+	std::vector<BYTE> recvBuf;
+	recvBuf.resize(WIN64_NET_RECV_BUFFER_SIZE);
+
+	while (s_active && s_splitScreenSocket[padIndex] != INVALID_SOCKET)
+	{
+		BYTE header[4];
+		if (!RecvExact(sock, header, 4))
+		{
+			app.DebugPrintf("Win64 LAN: Split-screen pad %d disconnected from host\n", padIndex);
+			break;
+		}
+
+		int packetSize = ((uint32_t)header[0] << 24) | ((uint32_t)header[1] << 16) |
+			((uint32_t)header[2] << 8) | ((uint32_t)header[3]);
+		if (packetSize <= 0 || packetSize > WIN64_NET_MAX_PACKET_SIZE)
+		{
+			app.DebugPrintf("Win64 LAN: Split-screen pad %d invalid packet size %d\n", padIndex, packetSize);
+			break;
+		}
+
+		if ((int)recvBuf.size() < packetSize)
+			recvBuf.resize(packetSize);
+
+		if (!RecvExact(sock, &recvBuf[0], packetSize))
+		{
+			app.DebugPrintf("Win64 LAN: Split-screen pad %d disconnected from host (body)\n", padIndex);
+			break;
+		}
+
+		HandleDataReceived(s_hostSmallId, localSmallId, &recvBuf[0], packetSize);
+	}
+
+	EnterCriticalSection(&s_disconnectLock);
+	s_disconnectedSmallIds.push_back(localSmallId);
+	LeaveCriticalSection(&s_disconnectLock);
+
+	return 0;
 }
 
 DWORD WINAPI WinsockNetLayer::ClientRecvThreadProc(LPVOID param)

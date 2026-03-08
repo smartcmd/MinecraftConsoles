@@ -48,6 +48,11 @@
 #include "Network\WinsockNetLayer.h"
 #include "Windows64_Xuid.h"
 
+// Forward-declare the internal Renderer class and its global instance from 4J_Render_PC_d.lib.
+// C4JRender (RenderManager) is a stateless wrapper — all D3D state lives in InternalRenderManager.
+class Renderer;
+extern Renderer InternalRenderManager;
+
 #include "Xbox/resource.h"
 
 #ifdef _MSC_VER
@@ -91,10 +96,20 @@ DWORD dwProfileSettingsA[NUM_PROFILE_VALUES]=
 
 BOOL g_bWidescreen = TRUE;
 
+// Screen resolution — auto-detected from the monitor at startup.
+// The 3D world renders at native resolution; Flash UI is 16:9-fitted and centered
+// within each viewport (pillarboxed on ultrawide, letterboxed on tall displays).
+// ApplyScreenMode() can still override these for debug/test resolutions via launch args.
 int g_iScreenWidth = 1920;
 int g_iScreenHeight = 1080;
 
+// Real window dimensions — updated on every WM_SIZE so the 3D perspective
+// always matches the current window, even after a resize.
+int g_rScreenWidth = 1920;
+int g_rScreenHeight = 1080;
+
 float g_iAspectRatio = static_cast<float>(g_iScreenWidth) / g_iScreenHeight;
+static bool g_bResizeReady = false;
 
 char g_Win64Username[17] = { 0 };
 wchar_t g_Win64UsernameW[17] = { 0 };
@@ -102,14 +117,6 @@ wchar_t g_Win64UsernameW[17] = { 0 };
 // Fullscreen toggle state
 static bool g_isFullscreen = false;
 static WINDOWPLACEMENT g_wpPrev = { sizeof(g_wpPrev) };
-
-//--------------------------------------------------------------------------------------
-// Update the Aspect Ratio to support Any Aspect Ratio
-//--------------------------------------------------------------------------------------
-void UpdateAspectRatio(int width, int height)
-{
-	g_iAspectRatio = static_cast<float>(width) / height;
-}
 
 struct Win64LaunchOptions
 {
@@ -531,6 +538,11 @@ ID3D11Texture2D*		g_pDepthStencilBuffer = NULL;
 //  WM_SIZE		- handle resizing logic to support Any Aspect Ratio
 //
 //
+static bool ResizeD3D(int newW, int newH); // forward declaration
+static bool g_bInSizeMove = false;     // true while the user is dragging the window border
+static int  g_pendingResizeW = 0;      // deferred resize dimensions
+static int  g_pendingResizeH = 0;
+
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
 	int wmId, wmEvent;
@@ -668,9 +680,40 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			}
 		}
 		break;
+	case WM_ENTERSIZEMOVE:
+		g_bInSizeMove = true;
+		break;
+
+	case WM_EXITSIZEMOVE:
+		g_bInSizeMove = false;
+		if (g_pendingResizeW > 0 && g_pendingResizeH > 0)
+		{
+			// g_rScreenWidth/Height updated inside ResizeD3D to backbuffer dims
+			ResizeD3D(g_pendingResizeW, g_pendingResizeH);
+			g_pendingResizeW = 0;
+			g_pendingResizeH = 0;
+		}
+		break;
+
 	case WM_SIZE:
 		{
-			UpdateAspectRatio(LOWORD(lParam), HIWORD(lParam));
+			int newW = LOWORD(lParam);
+			int newH = HIWORD(lParam);
+			if (newW > 0 && newH > 0)
+			{
+				if (g_bInSizeMove)
+				{
+					// Just store the latest size, resize when dragging ends
+					g_pendingResizeW = newW;
+					g_pendingResizeH = newH;
+				}
+				else
+				{
+					// Immediate resize (maximize, programmatic resize, etc.)
+					// g_rScreenWidth/Height updated inside ResizeD3D to backbuffer dims
+					ResizeD3D(newW, newH);
+				}
+			}
 		}
 		break;
 	default:
@@ -719,7 +762,7 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 {
 	g_hInst = hInstance; // Store instance handle in our global variable
 
-	RECT wr = {0, 0, g_iScreenWidth, g_iScreenHeight};    // set the size, but not the position
+	RECT wr = {0, 0, g_rScreenWidth, g_rScreenHeight};    // set the size, but not the position
 	AdjustWindowRect(&wr, WS_OVERLAPPEDWINDOW, FALSE);    // adjust the size
 
 	g_hWnd = CreateWindow(	"MinecraftClass",
@@ -805,8 +848,8 @@ HRESULT InitDevice()
 	UINT width = rc.right - rc.left;
 	UINT height = rc.bottom - rc.top;
 //app.DebugPrintf("width: %d, height: %d\n", width, height);
-	width = g_iScreenWidth;
-	height = g_iScreenHeight;
+	width = g_rScreenWidth;
+	height = g_rScreenHeight;
 //app.DebugPrintf("width: %d, height: %d\n", width, height);
 
 	UINT createDeviceFlags = 0;
@@ -838,7 +881,7 @@ HRESULT InitDevice()
 	sd.BufferDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
 	sd.BufferDesc.RefreshRate.Numerator = 60;
 	sd.BufferDesc.RefreshRate.Denominator = 1;
-	sd.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
+	sd.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT | DXGI_USAGE_SHADER_INPUT;
 	sd.OutputWindow = g_hWnd;
 	sd.SampleDesc.Count = 1;
 	sd.SampleDesc.Quality = 0;
@@ -923,6 +966,281 @@ void Render()
 }
 
 //--------------------------------------------------------------------------------------
+// Rebuild D3D11 resources after a window resize
+//--------------------------------------------------------------------------------------
+static bool ResizeD3D(int newW, int newH)
+{
+	if (newW <= 0 || newH <= 0) return false;
+	if (!g_pSwapChain) return false;
+	if (!g_bResizeReady) return false;
+
+	int bbW = newW;
+	int bbH = newH;
+
+	// InternalRenderManager member offsets (from decompiled Renderer.h):
+	//   0x10  m_pDevice              (ID3D11Device*)
+	//   0x18  m_pDeviceContext       (ID3D11DeviceContext*)
+	//   0x20  m_pSwapChain           (IDXGISwapChain*)
+	//   0x28  renderTargetView       (ID3D11RenderTargetView*)  — backbuffer RTV
+	//   0x50  renderTargetShaderResourceView (ID3D11ShaderResourceView*)
+	//   0x98  depthStencilView       (ID3D11DepthStencilView*)
+	//   0x5138 backBufferWidth       (DWORD) — used by StartFrame() for viewport
+	//   0x513C backBufferHeight      (DWORD) — used by StartFrame() for viewport
+	//
+	// Strategy: destroy old swap chain, create new one, patch Renderer's internal
+	// pointers directly. This avoids both ResizeBuffers (outstanding ref issues)
+	// and Initialise() (which wipes the texture table via memset).
+	// The Renderer's old RTV/SRV/DSV are intentionally NOT released — they become
+	// orphaned with the old swap chain. Tiny leak, but avoids fighting unknown refs.
+	char* pRM = (char*)&InternalRenderManager;
+	ID3D11RenderTargetView**    ppRM_RTV     = (ID3D11RenderTargetView**)(pRM + 0x28);
+	ID3D11ShaderResourceView**  ppRM_SRV     = (ID3D11ShaderResourceView**)(pRM + 0x50);
+	ID3D11DepthStencilView**    ppRM_DSV     = (ID3D11DepthStencilView**)(pRM + 0x98);
+	IDXGISwapChain**            ppRM_SC      = (IDXGISwapChain**)(pRM + 0x20);
+	DWORD*                      pRM_BBWidth  = (DWORD*)(pRM + 0x5138);
+	DWORD*                      pRM_BBHeight = (DWORD*)(pRM + 0x513C);
+
+	// Verify offsets by checking device and swap chain pointers
+	ID3D11Device** ppRM_Device = (ID3D11Device**)(pRM + 0x10);
+	if (*ppRM_Device != g_pd3dDevice || *ppRM_SC != g_pSwapChain)
+	{
+		app.DebugPrintf("[RESIZE] ERROR: RenderManager offset verification failed! "
+			"device=%p (expected %p) swapchain=%p (expected %p)\n",
+			*ppRM_Device, g_pd3dDevice, *ppRM_SC, g_pSwapChain);
+		return false;
+	}
+
+	// Cross-check backbuffer dimension offsets against swap chain desc
+	DXGI_SWAP_CHAIN_DESC oldScDesc;
+	g_pSwapChain->GetDesc(&oldScDesc);
+	bool bbDimsValid = (*pRM_BBWidth == oldScDesc.BufferDesc.Width &&
+	                    *pRM_BBHeight == oldScDesc.BufferDesc.Height);
+	if (!bbDimsValid)
+	{
+		app.DebugPrintf("[RESIZE] WARNING: backBuffer dim offsets wrong: "
+			"stored=%ux%u, swapchain=%ux%u\n",
+			*pRM_BBWidth, *pRM_BBHeight, oldScDesc.BufferDesc.Width, oldScDesc.BufferDesc.Height);
+	}
+
+	RenderManager.Suspend();
+	while (!RenderManager.Suspended()) { Sleep(1); }
+
+	PostProcesser::GetInstance().Cleanup();
+
+	g_pImmediateContext->ClearState();
+	g_pImmediateContext->Flush();
+
+	// Release OUR views and depth buffer
+	if (g_pRenderTargetView) { g_pRenderTargetView->Release(); g_pRenderTargetView = NULL; }
+	if (g_pDepthStencilView) { g_pDepthStencilView->Release(); g_pDepthStencilView = NULL; }
+	if (g_pDepthStencilBuffer) { g_pDepthStencilBuffer->Release(); g_pDepthStencilBuffer = NULL; }
+
+	gdraw_D3D11_PreReset();
+
+	// Get IDXGIFactory from the existing device BEFORE destroying the old swap chain.
+	// If anything fails before we have a new swap chain, we abort without destroying
+	// the old one — leaving the Renderer in a valid (old-size) state.
+	IDXGISwapChain* pOldSwapChain = g_pSwapChain;
+	bool success = false;
+	HRESULT hr;
+
+	IDXGIDevice* dxgiDevice = NULL;
+	IDXGIAdapter* dxgiAdapter = NULL;
+	IDXGIFactory* dxgiFactory = NULL;
+	hr = g_pd3dDevice->QueryInterface(__uuidof(IDXGIDevice), (void**)&dxgiDevice);
+	if (FAILED(hr)) goto postReset;
+	hr = dxgiDevice->GetParent(__uuidof(IDXGIAdapter), (void**)&dxgiAdapter);
+	if (FAILED(hr)) { dxgiDevice->Release(); goto postReset; }
+	hr = dxgiAdapter->GetParent(__uuidof(IDXGIFactory), (void**)&dxgiFactory);
+	dxgiAdapter->Release();
+	dxgiDevice->Release();
+	if (FAILED(hr)) goto postReset;
+
+	// Create new swap chain at backbuffer size
+	{
+		DXGI_SWAP_CHAIN_DESC sd = {};
+		sd.BufferCount = 1;
+		sd.BufferDesc.Width = bbW;
+		sd.BufferDesc.Height = bbH;
+		sd.BufferDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
+		sd.BufferDesc.RefreshRate.Numerator = 60;
+		sd.BufferDesc.RefreshRate.Denominator = 1;
+		sd.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT | DXGI_USAGE_SHADER_INPUT;
+		sd.OutputWindow = g_hWnd;
+		sd.SampleDesc.Count = 1;
+		sd.SampleDesc.Quality = 0;
+		sd.Windowed = TRUE;
+
+		IDXGISwapChain* pNewSwapChain = NULL;
+		hr = dxgiFactory->CreateSwapChain(g_pd3dDevice, &sd, &pNewSwapChain);
+		dxgiFactory->Release();
+		if (FAILED(hr) || pNewSwapChain == NULL)
+		{
+			app.DebugPrintf("[RESIZE] CreateSwapChain FAILED hr=0x%08X — keeping old swap chain\n", (unsigned)hr);
+			goto postReset;
+		}
+
+		// New swap chain created successfully — NOW destroy the old one.
+		// The Renderer's internal RTV/SRV still reference the old backbuffer —
+		// those COM objects become orphaned (tiny leak, harmless). We DON'T
+		// release them because unknown code may also hold refs.
+		pOldSwapChain->Release();
+		g_pSwapChain = pNewSwapChain;
+	}
+
+	// Patch Renderer's swap chain pointer
+	*ppRM_SC = g_pSwapChain;
+
+	// Create render target views from new backbuffer
+	{
+		ID3D11Texture2D* pBackBuffer = NULL;
+		hr = g_pSwapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), (LPVOID*)&pBackBuffer);
+		if (FAILED(hr)) goto postReset;
+
+		// Our RTV
+		hr = g_pd3dDevice->CreateRenderTargetView(pBackBuffer, NULL, &g_pRenderTargetView);
+		if (FAILED(hr)) { pBackBuffer->Release(); goto postReset; }
+
+		// Renderer's internal RTV (offset 0x28)
+		hr = g_pd3dDevice->CreateRenderTargetView(pBackBuffer, NULL, ppRM_RTV);
+		if (FAILED(hr)) { pBackBuffer->Release(); goto postReset; }
+
+		// Renderer's SRV: separate texture matching backbuffer dims (used by CaptureThumbnail)
+		D3D11_TEXTURE2D_DESC backDesc = {};
+		pBackBuffer->GetDesc(&backDesc);
+		pBackBuffer->Release();
+
+		D3D11_TEXTURE2D_DESC srvDesc = backDesc;
+		srvDesc.BindFlags = D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE;
+		ID3D11Texture2D* srvTexture = NULL;
+		hr = g_pd3dDevice->CreateTexture2D(&srvDesc, NULL, &srvTexture);
+		if (SUCCEEDED(hr))
+		{
+			hr = g_pd3dDevice->CreateShaderResourceView(srvTexture, NULL, ppRM_SRV);
+			srvTexture->Release();
+		}
+		if (FAILED(hr)) goto postReset;
+	}
+
+	// Recreate depth stencil at backbuffer size
+	{
+		D3D11_TEXTURE2D_DESC descDepth = {};
+		descDepth.Width = bbW;
+		descDepth.Height = bbH;
+		descDepth.MipLevels = 1;
+		descDepth.ArraySize = 1;
+		descDepth.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
+		descDepth.SampleDesc.Count = 1;
+		descDepth.SampleDesc.Quality = 0;
+		descDepth.Usage = D3D11_USAGE_DEFAULT;
+		descDepth.BindFlags = D3D11_BIND_DEPTH_STENCIL;
+		hr = g_pd3dDevice->CreateTexture2D(&descDepth, NULL, &g_pDepthStencilBuffer);
+		if (FAILED(hr)) goto postReset;
+
+		D3D11_DEPTH_STENCIL_VIEW_DESC descDSView = {};
+		descDSView.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
+		descDSView.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2D;
+		hr = g_pd3dDevice->CreateDepthStencilView(g_pDepthStencilBuffer, &descDSView, &g_pDepthStencilView);
+		if (FAILED(hr)) goto postReset;
+	}
+
+	// Patch Renderer's DSV (AddRef because both we and the Renderer reference it)
+	g_pDepthStencilView->AddRef();
+	*ppRM_DSV = g_pDepthStencilView;
+
+	// Update Renderer's cached backbuffer dimensions (StartFrame uses these for viewport)
+	if (bbDimsValid)
+	{
+		*pRM_BBWidth  = (DWORD)bbW;
+		*pRM_BBHeight = (DWORD)bbH;
+	}
+
+	// Rebind render targets and viewport
+	g_pImmediateContext->OMSetRenderTargets(1, &g_pRenderTargetView, g_pDepthStencilView);
+	{
+		D3D11_VIEWPORT vp = {};
+		vp.Width = (FLOAT)bbW;
+		vp.Height = (FLOAT)bbH;
+		vp.MinDepth = 0.0f;
+		vp.MaxDepth = 1.0f;
+		g_pImmediateContext->RSSetViewports(1, &vp);
+	}
+
+	ui.updateRenderTargets(g_pRenderTargetView, g_pDepthStencilView);
+	ui.updateScreenSize(bbW, bbH);
+
+	// Track actual backbuffer dimensions for the rest of the engine
+	g_rScreenWidth = bbW;
+	g_rScreenHeight = bbH;
+
+	success = true;
+
+postReset:
+	if (!success && g_pSwapChain != NULL)
+	{
+		// Failure recovery: recreate our views from whatever swap chain survived
+		// so ui.m_pRenderTargetView / m_pDepthStencilView don't dangle.
+		DXGI_SWAP_CHAIN_DESC recoveryDesc;
+		g_pSwapChain->GetDesc(&recoveryDesc);
+		int recW = (int)recoveryDesc.BufferDesc.Width;
+		int recH = (int)recoveryDesc.BufferDesc.Height;
+
+		if (g_pRenderTargetView == NULL)
+		{
+			ID3D11Texture2D* pBB = NULL;
+			if (SUCCEEDED(g_pSwapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), (LPVOID*)&pBB)))
+			{
+				g_pd3dDevice->CreateRenderTargetView(pBB, NULL, &g_pRenderTargetView);
+				pBB->Release();
+			}
+		}
+		if (g_pDepthStencilView == NULL)
+		{
+			D3D11_TEXTURE2D_DESC dd = {};
+			dd.Width = recW; dd.Height = recH; dd.MipLevels = 1; dd.ArraySize = 1;
+			dd.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
+			dd.SampleDesc.Count = 1; dd.Usage = D3D11_USAGE_DEFAULT;
+			dd.BindFlags = D3D11_BIND_DEPTH_STENCIL;
+			if (g_pDepthStencilBuffer == NULL)
+				g_pd3dDevice->CreateTexture2D(&dd, NULL, &g_pDepthStencilBuffer);
+			if (g_pDepthStencilBuffer != NULL)
+			{
+				D3D11_DEPTH_STENCIL_VIEW_DESC dsvd = {};
+				dsvd.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
+				dsvd.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2D;
+				g_pd3dDevice->CreateDepthStencilView(g_pDepthStencilBuffer, &dsvd, &g_pDepthStencilView);
+			}
+		}
+		if (g_pRenderTargetView != NULL)
+			g_pImmediateContext->OMSetRenderTargets(1, &g_pRenderTargetView, g_pDepthStencilView);
+
+		ui.updateRenderTargets(g_pRenderTargetView, g_pDepthStencilView);
+
+		// If the surviving swap chain is the OLD one, dims are unchanged.
+		// If it's the NEW one (partial failure after swap), update to new dims.
+		if (g_pSwapChain != pOldSwapChain)
+		{
+			g_rScreenWidth = recW;
+			g_rScreenHeight = recH;
+			ui.updateScreenSize(recW, recH);
+		}
+
+		app.DebugPrintf("[RESIZE] FAILED but recovered views at %dx%d\n", g_rScreenWidth, g_rScreenHeight);
+	}
+
+	gdraw_D3D11_PostReset();
+	gdraw_D3D11_SetRendertargetSize(g_rScreenWidth, g_rScreenHeight);
+	if (success)
+		IggyFlushInstalledFonts();
+	RenderManager.Resume();
+
+	if (success)
+		PostProcesser::GetInstance().Init();
+
+	return success;
+}
+
+//--------------------------------------------------------------------------------------
 // Toggle borderless fullscreen
 //--------------------------------------------------------------------------------------
 void ToggleFullscreen()
@@ -963,6 +1281,8 @@ void CleanupDevice()
 {
 	if( g_pImmediateContext ) g_pImmediateContext->ClearState();
 
+	if( g_pDepthStencilView ) g_pDepthStencilView->Release();
+	if( g_pDepthStencilBuffer ) g_pDepthStencilBuffer->Release();
 	if( g_pRenderTargetView ) g_pRenderTargetView->Release();
 	if( g_pSwapChain ) g_pSwapChain->Release();
 	if( g_pImmediateContext ) g_pImmediateContext->Release();
@@ -976,7 +1296,7 @@ static Minecraft* InitialiseMinecraftRuntime()
 	RenderManager.Initialise(g_pd3dDevice, g_pSwapChain);
 
 	app.loadStringTable();
-	ui.init(g_pd3dDevice, g_pImmediateContext, g_pRenderTargetView, g_pDepthStencilView, g_iScreenWidth, g_iScreenHeight);
+	ui.init(g_pd3dDevice, g_pImmediateContext, g_pRenderTargetView, g_pDepthStencilView, g_rScreenWidth, g_rScreenHeight);
 
 	InputManager.Initialise(1, 3, MINECRAFT_ACTION_MAX, ACTION_MAX_MENU);
 	g_KBMInput.Init();
@@ -1203,8 +1523,12 @@ int APIENTRY _tWinMain(_In_ HINSTANCE hInstance,
 
 	// Declare DPI awareness so GetSystemMetrics returns physical pixels
 	SetProcessDPIAware();
-	g_iScreenWidth = GetSystemMetrics(SM_CXSCREEN);
-	g_iScreenHeight = GetSystemMetrics(SM_CYSCREEN);
+	// Use the native monitor resolution for the window and swap chain,
+	// but keep g_iScreenWidth/Height at 1920x1080 for logical resolution
+	// (SWF selection, ortho projection, game logic). The real window
+	// dimensions are tracked by g_rScreenWidth/g_rScreenHeight.
+	g_rScreenWidth = GetSystemMetrics(SM_CXSCREEN);
+	g_rScreenHeight = GetSystemMetrics(SM_CYSCREEN);
 
 	// Load username from username.txt
     char exePath[MAX_PATH] = {};
@@ -1411,6 +1735,7 @@ int APIENTRY _tWinMain(_In_ HINSTANCE hInstance,
 		CleanupDevice();
 		return 1;
 	}
+	g_bResizeReady = true;
 
 	//app.TemporaryCreateGameStart();
 
@@ -1449,6 +1774,14 @@ int APIENTRY _tWinMain(_In_ HINSTANCE hInstance,
 			if (msg.message == WM_QUIT) break;
 		}
 		if (msg.message == WM_QUIT) break;
+
+		// When the window is minimized (e.g. "Show Desktop"), skip rendering entirely
+		// to avoid pegging the GPU at 100% presenting to a non-visible swap chain.
+		if (IsIconic(g_hWnd))
+		{
+			Sleep(100);
+			continue;
+		}
 
 		RenderManager.StartFrame();
 #if 0

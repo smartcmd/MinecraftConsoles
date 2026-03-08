@@ -426,7 +426,6 @@ void ServerPlayer::doChunkSendingTick(bool dontDelayChunks)
 					//     unloaded on the client and so just gradually build up more and more of the finite set of chunks as the player moves
 					if( !g_NetworkManager.SystemFlagGet(connection->getNetworkPlayer(),flagIndex) )
 					{
-						//						app.DebugPrintf("Creating BRUP for %d %d\n",nearest.x, nearest.z);
 						PIXBeginNamedEvent(0,"Creation BRUP for sending\n");
 						int64_t before = System::currentTimeMillis();
 						shared_ptr<BlockRegionUpdatePacket> packet = shared_ptr<BlockRegionUpdatePacket>( new BlockRegionUpdatePacket(nearest.x * 16, 0, nearest.z * 16, 16, Level::maxBuildHeight, 16, level) );

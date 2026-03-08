@@ -38,6 +38,7 @@ UIScene_Keyboard::UIScene_Keyboard(int iPad, void *initData, UILayer *parentLaye
 	}
 
 	m_win64TextBuffer = defaultText;
+	m_iCursorPos = (int)m_win64TextBuffer.length();
 
 	m_EnterTextLabel.init(titleText);
 	m_KeyboardTextInput.init(defaultText, -1);
@@ -111,6 +112,9 @@ UIScene_Keyboard::UIScene_Keyboard(int iPad, void *initData, UILayer *parentLaye
 			if (IggyValuePathMakeNameRef(&keyPath, root, s_keyNames[i]))
 				IggyValueSetBooleanRS(&keyPath, nameVisible, NULL, false);
 		}
+
+		m_KeyboardTextInput.setCaretVisible(true);
+		m_KeyboardTextInput.setCaretIndex(m_iCursorPos);
 	}
 #endif
 
@@ -165,9 +169,13 @@ void UIScene_Keyboard::tick()
 
 	// Sync our buffer from Flash so we pick up changes made via controller/on-screen buttons.
 	// Without this, switching between controller and keyboard would use stale text.
-	const wchar_t* flashText = m_KeyboardTextInput.getLabel();
-	if (flashText)
-		m_win64TextBuffer = flashText;
+	// In PC mode we own the buffer — skip sync to preserve cursor position.
+	if (!m_bPCMode)
+	{
+		const wchar_t* flashText = m_KeyboardTextInput.getLabel();
+		if (flashText)
+			m_win64TextBuffer = flashText;
+	}
 
 	// Accumulate physical keyboard chars into our own buffer, then push to Flash via setLabel.
 	// This bypasses Iggy's focus system (char events only route to the focused element).
@@ -178,7 +186,16 @@ void UIScene_Keyboard::tick()
 	{
 		if (ch == 0x08) // backspace
 		{
-			if (!m_win64TextBuffer.empty())
+			if (m_bPCMode)
+			{
+				if (m_iCursorPos > 0)
+				{
+					m_win64TextBuffer.erase(m_iCursorPos - 1, 1);
+					m_iCursorPos--;
+					changed = true;
+				}
+			}
+			else if (!m_win64TextBuffer.empty())
 			{
 				m_win64TextBuffer.pop_back();
 				changed = true;
@@ -194,13 +211,45 @@ void UIScene_Keyboard::tick()
 		}
 		else if ((int)m_win64TextBuffer.length() < m_win64MaxChars)
 		{
-			m_win64TextBuffer += ch;
+			if (m_bPCMode)
+			{
+				m_win64TextBuffer.insert(m_iCursorPos, 1, ch);
+				m_iCursorPos++;
+			}
+			else
+			{
+				m_win64TextBuffer += ch;
+			}
+			changed = true;
+		}
+	}
+
+	if (m_bPCMode)
+	{
+		// Arrow keys, Home, End, Delete for cursor movement
+		if (g_KBMInput.IsKeyPressed(VK_LEFT) && m_iCursorPos > 0)
+			m_iCursorPos--;
+		if (g_KBMInput.IsKeyPressed(VK_RIGHT) && m_iCursorPos < (int)m_win64TextBuffer.length())
+			m_iCursorPos++;
+		if (g_KBMInput.IsKeyPressed(VK_HOME))
+			m_iCursorPos = 0;
+		if (g_KBMInput.IsKeyPressed(VK_END))
+			m_iCursorPos = (int)m_win64TextBuffer.length();
+		if (g_KBMInput.IsKeyPressed(VK_DELETE) && m_iCursorPos < (int)m_win64TextBuffer.length())
+		{
+			m_win64TextBuffer.erase(m_iCursorPos, 1);
 			changed = true;
 		}
 	}
 
 	if (changed)
 		m_KeyboardTextInput.setLabel(m_win64TextBuffer.c_str(), true /*instant*/);
+
+	if (m_bPCMode)
+	{
+		m_KeyboardTextInput.setCaretVisible(true);
+		m_KeyboardTextInput.setCaretIndex(m_iCursorPos);
+	}
 }
 #endif
 
@@ -286,7 +335,10 @@ void UIScene_Keyboard::handleInput(int iPad, int key, bool repeat, bool pressed,
 	case ACTION_MENU_RIGHT:
 	case ACTION_MENU_UP:
 	case ACTION_MENU_DOWN:
-		sendInputToMovie(key, repeat, pressed, released);
+#ifdef _WINDOWS64
+		if (!m_bPCMode)
+#endif
+			sendInputToMovie(key, repeat, pressed, released);
 		handled = true;
 		break;
 	}

@@ -997,8 +997,15 @@ void Textures::replaceTextureDirect(shortArray rawPixels, int w, int h, int id)
 
 void Textures::releaseTexture(int id)
 {
+    if (id <= 0) return;
     loadedImages.erase(id);
-    glDeleteTextures(id);
+    // TextureFree() has no bounds check and crashes on stale IDs (e.g. after
+    // RenderManager.Initialise() which memsets the texture table to zero).
+    // TextureGetTexture() IS safe — returns NULL for invalid/unallocated IDs.
+    if (RenderManager.TextureGetTexture(id) != NULL)
+    {
+        glDeleteTextures(id);
+    }
 }
 
 int Textures::loadHttpTexture(const wstring& url, const wstring& backup)

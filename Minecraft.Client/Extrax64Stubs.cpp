@@ -192,7 +192,16 @@ void IQNetPlayer::SendData(IQNetPlayer * player, const void* pvData, DWORD dwDat
 {
 	if (WinsockNetLayer::IsActive())
 	{
-		WinsockNetLayer::SendToSmallId(player->m_smallId, pvData, dwDataSize);
+		if (!WinsockNetLayer::IsHosting() && !m_isRemote)
+		{
+			SOCKET sock = WinsockNetLayer::GetLocalSocket(m_smallId);
+			if (sock != INVALID_SOCKET)
+				WinsockNetLayer::SendOnSocket(sock, pvData, dwDataSize);
+		}
+		else
+		{
+			WinsockNetLayer::SendToSmallId(player->m_smallId, pvData, dwDataSize);
+		}
 	}
 }
 bool IQNetPlayer::IsSameSystem(IQNetPlayer * player) { return (this == player) || (!m_isRemote && !player->m_isRemote); }
@@ -243,7 +252,20 @@ void Win64_SetupRemoteQNetPlayer(IQNetPlayer * player, BYTE smallId, bool isHost
 
 static bool Win64_IsActivePlayer(IQNetPlayer* p, DWORD index);
 
-HRESULT IQNet::AddLocalPlayerByUserIndex(DWORD dwUserIndex) { return S_OK; }
+HRESULT IQNet::AddLocalPlayerByUserIndex(DWORD dwUserIndex) {
+	if (dwUserIndex >= MINECRAFT_NET_MAX_PLAYERS) return E_FAIL;
+	m_player[dwUserIndex].m_isRemote = false;
+	m_player[dwUserIndex].m_isHostPlayer = false;
+	// Give the joining player a distinct gamertag
+	extern wchar_t g_Win64UsernameW[17];
+	if (dwUserIndex == 0)
+		wcscpy_s(m_player[0].m_gamertag, 32, g_Win64UsernameW);
+	else
+		swprintf_s(m_player[dwUserIndex].m_gamertag, 32, L"%s(%d)", g_Win64UsernameW, dwUserIndex + 1);
+	if (dwUserIndex >= s_playerCount)
+		s_playerCount = dwUserIndex + 1;
+	return S_OK;
+}
 IQNetPlayer* IQNet::GetHostPlayer() { return &m_player[0]; }
 IQNetPlayer* IQNet::GetLocalPlayerByUserIndex(DWORD dwUserIndex)
 {
@@ -255,13 +277,31 @@ IQNetPlayer* IQNet::GetLocalPlayerByUserIndex(DWORD dwUserIndex)
 			return &m_player[dwUserIndex];
 		return NULL;
 	}
-	if (dwUserIndex != 0)
-		return NULL;
-	for (DWORD i = 0; i < s_playerCount; i++)
+	if (dwUserIndex == 0)
 	{
-		if (!m_player[i].m_isRemote && Win64_IsActivePlayer(&m_player[i], i))
-			return &m_player[i];
+		// Primary pad: use direct index when networking is active (smallId may not be 0)
+		if (WinsockNetLayer::IsActive())
+		{
+			DWORD idx = WinsockNetLayer::GetLocalSmallId();
+			if (idx < MINECRAFT_NET_MAX_PLAYERS &&
+				!m_player[idx].m_isRemote &&
+				Win64_IsActivePlayer(&m_player[idx], idx))
+				return &m_player[idx];
+			return NULL;
+		}
+		// Offline: scan for first local player
+		for (DWORD i = 0; i < s_playerCount; i++)
+		{
+			if (!m_player[i].m_isRemote && Win64_IsActivePlayer(&m_player[i], i))
+				return &m_player[i];
+		}
+		return NULL;
 	}
+	// Split-screen pads 1-3: the player is at m_player[dwUserIndex] with isRemote=false
+	if (dwUserIndex < MINECRAFT_NET_MAX_PLAYERS &&
+		!m_player[dwUserIndex].m_isRemote &&
+		Win64_IsActivePlayer(&m_player[dwUserIndex], dwUserIndex))
+		return &m_player[dwUserIndex];
 	return NULL;
 }
 static bool Win64_IsActivePlayer(IQNetPlayer * p, DWORD index)
@@ -582,7 +622,7 @@ void				C_4JProfile::SetTrialTextStringTable(CXuiStringTable * pStringTable, int
 void				C_4JProfile::SetTrialAwardText(eAwardType AwardType, int iTitle, int iText) {}
 int					C_4JProfile::GetLockedProfile() { return 0; }
 void				C_4JProfile::SetLockedProfile(int iProf) {}
-bool				C_4JProfile::IsSignedIn(int iQuadrant) { return (iQuadrant == 0); }
+bool				C_4JProfile::IsSignedIn(int iQuadrant) { return (iQuadrant == 0) || InputManager.IsPadConnected(iQuadrant); }
 bool				C_4JProfile::IsSignedInLive(int iProf) { return true; }
 bool				C_4JProfile::IsGuest(int iQuadrant) { return false; }
 UINT				C_4JProfile::RequestSignInUI(bool bFromInvite, bool bLocalGame, bool bNoGuestsAllowed, bool bMultiplayerSignIn, bool bAddUser, int(*Func)(LPVOID, const bool, const int iPad), LPVOID lpParam, int iQuadrant) { return 0; }
@@ -593,18 +633,10 @@ bool				C_4JProfile::QuerySigninStatus(void) { return true; }
 void				C_4JProfile::GetXUID(int iPad, PlayerUID * pXuid, bool bOnlineXuid)
 {
 #ifdef _WINDOWS64
-	if (iPad != 0)
-	{
-		*pXuid = INVALID_XUID;
-		return;
-	}
-	// LoginPacket reads this value as client identity:
-	// - host keeps legacy host XUID for world compatibility
-	// - non-host uses persistent uid.dat-backed XUID
-	if (IQNet::s_isHosting)
-		*pXuid = Win64Xuid::GetLegacyEmbeddedHostXuid();
-	else
-		*pXuid = Win64Xuid::ResolvePersistentXuid();
+	// Each pad gets a unique XUID derived from the persistent uid.dat value.
+	// Pad 0 uses the base XUID directly. Pads 1-3 get a deterministic hash
+	// of (base + pad) to produce fully independent IDs with no overlap risk.
+	*pXuid = Win64Xuid::DeriveXuidForPad(Win64Xuid::ResolvePersistentXuid(), iPad);
 #else
 	* pXuid = 0xe000d45248242f2e + iPad;
 #endif
@@ -634,8 +666,24 @@ void				C_4JProfile::SetPrimaryPad(int iPad) {}
 char fakeGamerTag[32] = "PlayerName";
 void				SetFakeGamertag(char* name) { strcpy_s(fakeGamerTag, name); }
 #else
-char* C_4JProfile::GetGamertag(int iPad) { extern char g_Win64Username[17]; return g_Win64Username; }
-wstring				C_4JProfile::GetDisplayName(int iPad) { extern wchar_t g_Win64UsernameW[17]; return g_Win64UsernameW; }
+char* C_4JProfile::GetGamertag(int iPad) {
+	extern char g_Win64Username[17];
+	if (iPad > 0 && iPad < XUSER_MAX_COUNT && IQNet::m_player[iPad].m_gamertag[0] != 0 &&
+		!IQNet::m_player[iPad].m_isRemote)
+	{
+		static char s_padGamertag[XUSER_MAX_COUNT][17];
+		WideCharToMultiByte(CP_ACP, 0, IQNet::m_player[iPad].m_gamertag, -1, s_padGamertag[iPad], 17, NULL, NULL);
+		return s_padGamertag[iPad];
+	}
+	return g_Win64Username;
+}
+wstring C_4JProfile::GetDisplayName(int iPad) {
+	extern wchar_t g_Win64UsernameW[17];
+	if (iPad > 0 && iPad < XUSER_MAX_COUNT && IQNet::m_player[iPad].m_gamertag[0] != 0 &&
+		!IQNet::m_player[iPad].m_isRemote)
+		return IQNet::m_player[iPad].m_gamertag;
+	return g_Win64UsernameW;
+}
 #endif
 bool				C_4JProfile::IsFullVersion() { return s_bProfileIsFullVersion; }
 void				C_4JProfile::SetSignInChangeCallback(void (*Func)(LPVOID, bool, unsigned int), LPVOID lpParam) {}

@@ -257,6 +257,7 @@ public:
 	// RENDERING
 	float getScreenWidth() { return m_fScreenWidth; }
 	float getScreenHeight() { return m_fScreenHeight; }
+	void updateScreenSize(S32 w, S32 h) { m_fScreenWidth = (float)w; m_fScreenHeight = (float)h; app.DebugPrintf("[UI-INIT] updateScreenSize: %d x %d\n", w, h); }
 
 	virtual void render() = 0;
 	void getRenderDimensions(C4JRender::eViewportType viewport, S32 &width, S32 &height);
