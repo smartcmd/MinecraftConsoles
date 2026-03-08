@@ -305,10 +305,20 @@ unsigned short DataInputStream::readUnsignedShort()
 //a Unicode string.
 wstring DataInputStream::readUTF()
 {
-	wstring outputString;
 	int a = stream->read();
 	int b = stream->read();
+    if (a == -1 || b == -1)
+    {
+        throw EOFException(L"DataInputStream::readUTF - end of stream");
+	}
+
 	unsigned short UTFLength = (unsigned short) (((a & 0xff) << 8) | (b & 0xff));
+    const unsigned short UTF_MAX_LENGTH = 32767;
+
+	if (UTFLength > UTF_MAX_LENGTH)
+    {
+        throw IOException(L"DataInputStream::readUTF - string exceeds maximum length");
+    }
 
 	//// 4J Stu - I decided while writing DataOutputStream that we didn't need to bother using the UTF8 format
 	//// used in the java libs, and just write in/out as wchar_t all the time
@@ -319,6 +329,9 @@ wstring DataInputStream::readUTF()
 		outputString.push_back(theChar);
 	}*/
 
+	// izzint - let's hope our checks before work! :]
+    wstring outputString;
+    outputString.reserve(UTFLength);
 
 	unsigned short currentByteIndex = 0;
 	while( currentByteIndex < UTFLength )
@@ -326,9 +339,10 @@ wstring DataInputStream::readUTF()
 		int firstByte = stream->read();
 		currentByteIndex++;
 
-		if( firstByte == -1 )
-			// TODO 4J Stu - EOFException
-			break;
+		if (firstByte == -1)
+        {
+            throw EOFException(L"DataInputStream::readUTF - end of stream");
+        }
 
 		// Masking patterns:
 		// 10000000 = 0x80 // Match only highest bit
@@ -344,8 +358,7 @@ wstring DataInputStream::readUTF()
 		// 1110xxxx = 0xE0 // Three byte UTF
 		if( ( (firstByte & 0xC0 ) == 0x80 ) || ( (firstByte & 0xF0) == 0xF0) )
 		{
-			// TODO 4J Stu - UTFDataFormatException
-			break;
+            throw IOException(L"DataInputStream::readUTF - invalid UTF-8 byte");
 		}
 		else if( (firstByte & 0x80) == 0x00 )
 		{
@@ -361,8 +374,7 @@ wstring DataInputStream::readUTF()
 			// No more bytes to read
 			if( !(currentByteIndex < UTFLength) )
 			{
-				// TODO 4J Stu - UTFDataFormatException
-				break;
+                throw IOException(L"DataInputStream::readUTF - invalid UTF character");
 			}
 
 			int secondByte = stream->read();
@@ -371,14 +383,12 @@ wstring DataInputStream::readUTF()
 			// No second byte
 			if( secondByte == -1 )
 			{
-				// TODO 4J Stu - EOFException
-				break;
+                throw EOFException(L"DataInputStream::readUTF - end of stream");
 			}
 			// Incorrect second byte pattern
 			else if( (secondByte & 0xC0 ) != 0x80 )
 			{
-				// TODO 4J Stu - UTFDataFormatException
-				break;
+                throw IOException(L"DataInputStream::readUTF - invalid UTF character");
 			}
 
 			wchar_t readChar = (wchar_t)( ((firstByte& 0x1F) << 6) | (secondByte & 0x3F) );
@@ -392,8 +402,7 @@ wstring DataInputStream::readUTF()
 			// No more bytes to read
 			if( !(currentByteIndex < UTFLength) )
 			{
-				// TODO 4J Stu - UTFDataFormatException
-				break;
+                throw IOException(L"DataInputStream::readUTF - invalid UTF character");
 			}
 
 			int secondByte = stream->read();
@@ -402,15 +411,13 @@ wstring DataInputStream::readUTF()
 			// No second byte
 			if( secondByte == -1 )
 			{
-				// TODO 4J Stu - EOFException
-				break;
+                throw EOFException(L"DataInputStream::readUTF - end of stream");
 			}
 
 			// No more bytes to read
 			if( !(currentByteIndex < UTFLength) )
 			{
-				// TODO 4J Stu - UTFDataFormatException
-				break;
+                throw IOException(L"DataInputStream::readUTF - invalid UTF character");
 			}
 
 			int thirdByte = stream->read();
@@ -419,14 +426,12 @@ wstring DataInputStream::readUTF()
 			// No third byte
 			if( thirdByte == -1 )
 			{
-				// TODO 4J Stu - EOFException
-				break;
+                throw EOFException(L"DataInputStream::readUTF - end of stream");
 			}
 			// Incorrect second or third byte pattern
 			else if( ( (secondByte & 0xC0 ) != 0x80 ) || ( (thirdByte & 0xC0 ) != 0x80 ) )
 			{
-				// TODO 4J Stu - UTFDataFormatException
-				break;
+                throw IOException(L"DataInputStream::readUTF - invalid UTF character");
 			}
 
 			wchar_t readChar = (wchar_t)(((firstByte & 0x0F) << 12) | ((secondByte & 0x3F) << 6) | (thirdByte & 0x3F));
