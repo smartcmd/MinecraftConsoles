@@ -1481,13 +1481,24 @@ void Minecraft::run_middle()
 
 							if(g_KBMInput.IsKeyPressed(KeyboardMouseInput::KEY_INVENTORY))
 							{
-								if(ui.IsSceneInStack(i, eUIScene_InventoryMenu))
+								if(
+									ui.IsSceneInStack(i, eUIScene_AnvilMenu) || 
+									ui.IsSceneInStack(i, eUIScene_BeaconMenu)  || 
+									ui.IsSceneInStack(i, eUIScene_BrewingStandMenu) || 
+									ui.IsSceneInStack(i, eUIScene_ContainerMenu) || 
+									ui.IsSceneInStack(i, eUIScene_DispenserMenu) || 
+									ui.IsSceneInStack(i, eUIScene_EnchantingMenu) || 
+									ui.IsSceneInStack(i, eUIScene_HopperMenu) || 
+									ui.IsSceneInStack(i, eUIScene_HorseMenu) || 
+									ui.IsSceneInStack(i, eUIScene_InventoryMenu) || 
+									ui.IsSceneInStack(i, eUIScene_FurnaceMenu) || 
+									ui.IsSceneInStack(i, eUIScene_TradingMenu))
 								{
 									ui.CloseUIScenes(i);
 								}
 								else
 								{
-									localplayers[i]->ullButtonsPressed|=1LL<<MINECRAFT_ACTION_INVENTORY;
+								localplayers[i]->ullButtonsPressed|=1LL<<MINECRAFT_ACTION_INVENTORY;
 								}
 							}
 
