@@ -112,6 +112,28 @@ target_link_libraries(MinecraftClient PRIVATE
 )
 
 # ---
+# Build versioning
+# ---
+set(BUILDVER_SCRIPT "${CMAKE_CURRENT_SOURCE_DIR}/cmake/GenerateBuildVer.cmake")
+
+add_custom_target(GenerateBuildVer
+  COMMAND ${CMAKE_COMMAND}
+    "-DOUTPUT_FILE=${CLIENT_DIR}/Common/BuildVer.h"
+    -P "${BUILDVER_SCRIPT}"
+  COMMENT "Generating BuildVer.h..."
+  VERBATIM
+)
+
+add_dependencies(MinecraftClient GenerateBuildVer)
+
+add_custom_command(TARGET MinecraftClient POST_BUILD
+  COMMAND git restore "**/BuildVer.h"
+  WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}"
+  COMMENT "Restoring BuildVer.h..."
+  VERBATIM
+)
+
+# ---
 # Asset / redist copy
 # ---
 include("${CMAKE_CURRENT_SOURCE_DIR}/cmake/AssetCopyTargets.cmake")
@@ -137,4 +159,4 @@ set_property(DIRECTORY PROPERTY VS_STARTUP_PROJECT MinecraftClient)
 
 # Setup folders for Visual Studio, just hides the build targets under a sub folder
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
-set_property(TARGET CopyRedist PROPERTY FOLDER "Build")
+set_property(TARGET CopyRedist GenerateBuildVer PROPERTY FOLDER "Build")
