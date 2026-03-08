@@ -837,7 +837,11 @@ int CMinecraftApp::SetDefaultOptions(C_4JProfile::PROFILESETTINGS *pSettings,con
 	SetGameSettings(iPad,eGameSetting_SoundFXVolume,DEFAULT_VOLUME_LEVEL);
 	SetGameSettings(iPad,eGameSetting_RenderDistance,16);
 	SetGameSettings(iPad,eGameSetting_Gamma,50);
-	SetGameSettings(iPad,eGameSetting_FOV,75); // jvnpr -- default to 75% between 30 and 110, which is 90 (70 internal)
+	
+	// jvnpr -- FOV setting is stored as 0-100 but mapped to 0-80 (offset from 30-110). FOV is calculated from the equiation: ( eGameSetting_FOV * 0.8 ) + 30
+	// Default value of 75 is an FOV of 90. Displayed / stored FOV is further clamped to a range from 30-85 for internal use because an FOV of 85 on LCE is the equivalent of 110 on other platforms. (This is why 110 on LCE is so much wider than on Java)
+	// FOV of 90 is internally an FOV of ~70, which is the default. 
+	SetGameSettings(iPad,eGameSetting_FOV,75); 
 
 	// 4J-PB - Don't reset the difficult level if we're in-game
 	if(Minecraft::GetInstance()->level==NULL)

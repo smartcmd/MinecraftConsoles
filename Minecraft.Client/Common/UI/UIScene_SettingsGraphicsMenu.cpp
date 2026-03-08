@@ -5,39 +5,6 @@
 #include "..\..\Options.h"
 #include "..\..\GameRenderer.h"
 
-namespace
-{
-	/*
-
-	jvnpr -- commented out this code from the kbm refactor to modify fov system :p
-
-	const int FOV_MIN = 70;
-	const int FOV_MAX = 110;
-	const int FOV_SLIDER_MAX = 100;
-
-	int clampFov(int value)
-	{
-		if (value < FOV_MIN) return FOV_MIN;
-		if (value > FOV_MAX) return FOV_MAX;
-		return value;
-	}
-
-	int fovToSliderValue(float fov)
-	{
-		int clampedFov = clampFov((int)(fov + 0.5f));
-		return ((clampedFov - FOV_MIN) * FOV_SLIDER_MAX) / (FOV_MAX - FOV_MIN);
-	}
-
-	int sliderValueToFov(int sliderValue)
-	{
-		if (sliderValue < 0) sliderValue = 0;
-		if (sliderValue > FOV_SLIDER_MAX) sliderValue = FOV_SLIDER_MAX;
-		return FOV_MIN + ((sliderValue * (FOV_MAX - FOV_MIN)) / FOV_SLIDER_MAX);
-	}
-
-	*/
-}
-
 int UIScene_SettingsGraphicsMenu::LevelToDistance(int level)
 {
 	static const int table[6] = {2,4,8,16,32,64};
@@ -77,8 +44,6 @@ UIScene_SettingsGraphicsMenu::UIScene_SettingsGraphicsMenu(int iPad, void *initD
 	swprintf( (WCHAR *)TempString, 256, L"%ls: %d%%", app.GetString( IDS_SLIDER_GAMMA ),app.GetGameSettings(m_iPad,eGameSetting_Gamma));	
 	m_sliderGamma.init(TempString,eControl_Gamma,0,100,app.GetGameSettings(m_iPad,eGameSetting_Gamma));
 
-	//int initialFovSlider = app.GetGameSettings(m_iPad, eGameSetting_FOV);
-	//int initialFovDeg = sliderValueToFov(initialFovSlider);
 	swprintf((WCHAR*)TempString, 256, L"FOV: %d", (int)(30.0f + app.GetGameSettings(m_iPad, eGameSetting_FOV) * 80.0f / 100.0f));
 	m_sliderFOV.init(TempString, eControl_FOV, 0, 80, (app.GetGameSettings(m_iPad, eGameSetting_FOV)) * 80.0f / 100.0f);
 	
@@ -221,26 +186,16 @@ void UIScene_SettingsGraphicsMenu::handleSliderMove(F64 sliderId, F64 currentVal
 		break;
 
 	case eControl_FOV:
-		{ /* jvnpr -- commented code from keyboard mouse refactor
-			m_sliderFOV.handleSliderMove(value);
-			int fovVal = value + 30;
-			Minecraft* pMinecraft = Minecraft::GetInstance();
-			//int fovValue = sliderValueToFov(value);
-			pMinecraft->gameRenderer->SetFovVal((float)fovVal);
-			app.SetGameSettings(m_iPad, eGameSetting_FOV, fovVal);
-			WCHAR TempString[256];
-			swprintf((WCHAR*)TempString, 256, L"FOV: %d", fovVal);
-			m_sliderFOV.setLabel(TempString);
+		{ 
 
-			*/
-
+			// jvnpr -- code in Consoles_App.cpp should always reflect the same calculations as here so that controller and mouse inputs work the same.
 			int v = (int)currentValue;
 			m_sliderFOV.handleSliderMove(v);
 			Minecraft *pMinecraft = Minecraft::GetInstance();
 			if (v < 0) v = 0;
 			if (v > 80) v = 80;
 			int simulatedFovDeg = v + 30; // jvnpr -- convert 0-80 to 30-110
-			float trueFovDeg = ( 55.0f / 80.0f ) * (simulatedFovDeg - 30.0f) + 30.0f; // jvnpr -- further convert 30-110 to a range from 30-85 to better reflect JE fov values
+			float trueFovDeg = ( 55.0f / 80.0f ) * (simulatedFovDeg - 30.0f) + 30.0f; // jvnpr -- further convert 30-110 to an internal range of 30-85 to better reflect JE fov values
 			pMinecraft->gameRenderer->SetFovVal(trueFovDeg);
 			app.SetGameSettings(m_iPad, eGameSetting_FOV, (v / (80.0f / 100.0f)));
 

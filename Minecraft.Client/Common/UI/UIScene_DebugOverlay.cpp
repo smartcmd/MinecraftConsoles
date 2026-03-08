@@ -274,12 +274,13 @@ void UIScene_DebugOverlay::handleSliderMove(F64 sliderId, F64 currentValue)
 		break;
 	case eControl_FOV:
 		{
+			// jvnpr -- code here is copied from UIScene_SettingsGraphicsMenu.cpp for consistency
 			int v = (int)currentValue;
 			Minecraft *pMinecraft = Minecraft::GetInstance();
 			if (v < 0) v = 0;
 			if (v > 80) v = 80;
 			int simulatedFovDeg = v + 30; // jvnpr -- convert 0-80 to 30-110
-			float trueFovDeg = ( 55.0f / 80.0f ) * (simulatedFovDeg - 30.0f) + 30.0f; // jvnpr -- further convert 30-110 to a range from 30-85 to better reflect JE fov values
+			float trueFovDeg = ( 55.0f / 80.0f ) * (simulatedFovDeg - 30.0f) + 30.0f; // jvnpr -- further convert 30-110 to an internal range of 30-85 to better reflect JE fov values
 			pMinecraft->gameRenderer->SetFovVal(trueFovDeg);
 			app.SetGameSettings(m_iPad, eGameSetting_FOV, (v / (80.0f / 100.0f)));
 
