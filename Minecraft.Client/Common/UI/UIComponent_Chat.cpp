@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "UI.h"
 #include "UIComponent_Chat.h"
+#include "UISplitScreenHelpers.h"
 #include "..\..\Minecraft.h"
 #include "..\..\Gui.h"
 
@@ -120,6 +121,7 @@ void UIComponent_Chat::render(S32 width, S32 height, C4JRender::eViewportType vi
 		S32 tileWidth = width;
 		S32 tileHeight = height;
 
+		bool needsYTile = false;
 		switch( viewport )
 		{
 		case C4JRender::VIEWPORT_TYPE_SPLIT_LEFT:
@@ -127,25 +129,30 @@ void UIComponent_Chat::render(S32 width, S32 height, C4JRender::eViewportType vi
 			tileHeight = (S32)(ui.getScreenHeight());
 			break;
 		case C4JRender::VIEWPORT_TYPE_SPLIT_TOP:
-			tileWidth = (S32)(ui.getScreenWidth());
-			tileYStart = (S32)(m_movieHeight / 2);
-			break;
 		case C4JRender::VIEWPORT_TYPE_SPLIT_BOTTOM:
 			tileWidth = (S32)(ui.getScreenWidth());
-			tileYStart = (S32)(m_movieHeight / 2);
+			needsYTile = true;
 			break;
 		case C4JRender::VIEWPORT_TYPE_QUADRANT_TOP_LEFT:
 		case C4JRender::VIEWPORT_TYPE_QUADRANT_TOP_RIGHT:
 		case C4JRender::VIEWPORT_TYPE_QUADRANT_BOTTOM_LEFT:
 		case C4JRender::VIEWPORT_TYPE_QUADRANT_BOTTOM_RIGHT:
-			tileYStart = (S32)(m_movieHeight / 2);
+			needsYTile = true;
 			break;
 		}
 
-		IggyPlayerSetDisplaySize( getMovie(), m_movieWidth, m_movieHeight );
+		F32 scale;
+		ComputeTileScale(tileWidth, tileHeight, m_movieWidth, m_movieHeight, needsYTile, scale, tileYStart);
+		IggyPlayerSetDisplaySize( getMovie(), (S32)(m_movieWidth * scale), (S32)(m_movieHeight * scale) );
+
+		S32 contentOffX, contentOffY;
+		ComputeSplitContentOffset(viewport, m_movieWidth, m_movieHeight, scale, tileWidth, tileHeight, tileYStart, contentOffX, contentOffY);
+		xPos += contentOffX;
+		yPos += contentOffY;
+		ui.setupRenderPosition(xPos, yPos);
 
 		IggyPlayerDrawTilesStart ( getMovie() );
-		
+
 		m_renderWidth = tileWidth;
 		m_renderHeight = tileHeight;
 		IggyPlayerDrawTile ( getMovie() ,
@@ -153,7 +160,7 @@ void UIComponent_Chat::render(S32 width, S32 height, C4JRender::eViewportType vi
 			tileYStart ,
 			tileXStart + tileWidth ,
 			tileYStart + tileHeight ,
-			0 ); 
+			0 );
 		IggyPlayerDrawTilesEnd ( getMovie() );
 	}
 	else

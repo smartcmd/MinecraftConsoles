@@ -968,6 +968,10 @@ void GameRenderer::CachePlayerGammas()
 
 bool GameRenderer::ComputeViewportForPlayer(int j, D3D11_VIEWPORT &outViewport) const
 {
+    // Use the actual backbuffer dimensions, not the game's logical size.
+    extern int g_iScreenWidth;
+    extern int g_iScreenHeight;
+
     int active = 0;
     int indexMap[NUM_LIGHT_TEXTURES] = {-1, -1, -1, -1};
     for (int i = 0; i < XUSER_MAX_COUNT && i < NUM_LIGHT_TEXTURES; ++i)
@@ -980,8 +984,8 @@ bool GameRenderer::ComputeViewportForPlayer(int j, D3D11_VIEWPORT &outViewport) 
     {
         outViewport.TopLeftX = 0.0f;
         outViewport.TopLeftY = 0.0f;
-        outViewport.Width = static_cast<FLOAT>(mc->width);
-        outViewport.Height = static_cast<FLOAT>(mc->height);
+        outViewport.Width = static_cast<FLOAT>(g_iScreenWidth);
+        outViewport.Height = static_cast<FLOAT>(g_iScreenHeight);
         outViewport.MinDepth = 0.0f;
         outViewport.MaxDepth = 1.0f;
         return true;
@@ -997,8 +1001,8 @@ bool GameRenderer::ComputeViewportForPlayer(int j, D3D11_VIEWPORT &outViewport) 
     if (k < 0)
         return false;
 
-    const float width = static_cast<float>(mc->width);
-    const float height = static_cast<float>(mc->height);
+    const float width = static_cast<float>(g_iScreenWidth);
+    const float height = static_cast<float>(g_iScreenHeight);
 
     if (active == 2)
     {
@@ -1171,7 +1175,7 @@ void GameRenderer::render(float a, bool bFirst)
 	if (mc->noRender) return;
 	GameRenderer::anaglyph3d = mc->options->anaglyph3d;
 
-	glViewport(0, 0, mc->width, mc->height);	// 4J - added
+	glViewport(0, 0, mc->width, mc->height);	// 4J - added (no-op on Win64, viewport set by StateSetViewport)
 	ScreenSizeCalculator ssc(mc->options, mc->width, mc->height);
 	int screenWidth = ssc.getWidth();
 	int screenHeight = ssc.getHeight();

@@ -93,38 +93,47 @@ void UIComponent_Panorama::render(S32 width, S32 height, C4JRender::eViewportTyp
 		}
 		ui.setupRenderPosition(xPos, yPos);
 
-		if((viewport == C4JRender::VIEWPORT_TYPE_SPLIT_LEFT) ||	(viewport == C4JRender::VIEWPORT_TYPE_SPLIT_RIGHT))
+		S32 tileXStart = 0;
+		S32 tileYStart = 0;
+		S32 tileWidth = width;
+		S32 tileHeight = height;
+
+		if((viewport == C4JRender::VIEWPORT_TYPE_SPLIT_LEFT) || (viewport == C4JRender::VIEWPORT_TYPE_SPLIT_RIGHT))
 		{
-			// Need to render at full height, but only the left side of the scene
-			S32 tileXStart = 0;
-			S32 tileYStart = 0;
-			S32 tileWidth = width;
-			S32 tileHeight = (S32)(ui.getScreenHeight());
-
-			IggyPlayerSetDisplaySize( getMovie(), m_movieWidth, m_movieHeight );
-
-			IggyPlayerDrawTilesStart ( getMovie() );
-
-			m_renderWidth = tileWidth;
-			m_renderHeight = tileHeight;
-			IggyPlayerDrawTile ( getMovie() ,
-				tileXStart ,
-				tileYStart ,
-				tileXStart + tileWidth ,
-				tileYStart + tileHeight ,
-				0 );
-			IggyPlayerDrawTilesEnd ( getMovie() );
+			tileHeight = (S32)(ui.getScreenHeight());
 		}
 		else
 		{
-			// Need to render at full height, and full width. But compressed into the viewport
-			IggyPlayerSetDisplaySize( getMovie(), ui.getScreenWidth(), ui.getScreenHeight()/2 );
-			IggyPlayerDraw( getMovie() );
+			tileWidth = (S32)(ui.getScreenWidth());
+			tileYStart = (S32)(ui.getScreenHeight() / 2);
 		}
+
+		F32 scaleW = (F32)(tileXStart + tileWidth) / (F32)m_movieWidth;
+		F32 scaleH = (F32)(tileYStart + tileHeight) / (F32)m_movieHeight;
+		F32 scale = (scaleW > scaleH) ? scaleW : scaleH;
+		if(scale < 1.0f) scale = 1.0f;
+
+		IggyPlayerSetDisplaySize( getMovie(), (S32)(m_movieWidth * scale), (S32)(m_movieHeight * scale) );
+
+		IggyPlayerDrawTilesStart ( getMovie() );
+
+		m_renderWidth = tileWidth;
+		m_renderHeight = tileHeight;
+		IggyPlayerDrawTile ( getMovie() ,
+			tileXStart ,
+			tileYStart ,
+			tileXStart + tileWidth ,
+			tileYStart + tileHeight ,
+			0 );
+		IggyPlayerDrawTilesEnd ( getMovie() );
 	}
 	else
 	{
-		UIScene::render(width, height, viewport);
+		if(m_bIsReloading) return;
+		if(!m_hasTickedOnce || !getMovie()) return;
+		ui.setupRenderPosition(0, 0);
+		IggyPlayerSetDisplaySize( getMovie(), (S32)ui.getScreenWidth(), (S32)ui.getScreenHeight() );
+		IggyPlayerDraw( getMovie() );
 	}
 }
 

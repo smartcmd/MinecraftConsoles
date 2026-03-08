@@ -289,8 +289,13 @@ int CPlatformNetworkManagerStub::GetLocalPlayerMask(int playerIndex)
 
 bool CPlatformNetworkManagerStub::AddLocalPlayerByUserIndex( int userIndex )
 {
-	NotifyPlayerJoined(m_pIQNet->GetLocalPlayerByUserIndex(userIndex));
-	return ( m_pIQNet->AddLocalPlayerByUserIndex(userIndex) == S_OK );
+	if ( m_pIQNet->AddLocalPlayerByUserIndex(userIndex) != S_OK )
+		return false;
+	// Player is now registered in IQNet — get a pointer and notify the network layer.
+	// Use the static array directly: GetLocalPlayerByUserIndex checks customData which
+	// isn't set until addNetworkPlayer runs inside NotifyPlayerJoined.
+	NotifyPlayerJoined(&IQNet::m_player[userIndex]);
+	return true;
 }
 
 bool CPlatformNetworkManagerStub::RemoveLocalPlayerByUserIndex( int userIndex )

@@ -91,6 +91,10 @@ DWORD dwProfileSettingsA[NUM_PROFILE_VALUES]=
 
 BOOL g_bWidescreen = TRUE;
 
+// Screen resolution — auto-detected from the monitor at startup.
+// The 3D world renders at native resolution; Flash UI is 16:9-fitted and centered
+// within each viewport (pillarboxed on ultrawide, letterboxed on tall displays).
+// ApplyScreenMode() can still override these for debug/test resolutions via launch args.
 int g_iScreenWidth = 1920;
 int g_iScreenHeight = 1080;
 

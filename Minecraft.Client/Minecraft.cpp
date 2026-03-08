@@ -2357,16 +2357,21 @@ void Minecraft::tick(bool bFirst, bool bUpdateTextures)
 	}
 
 #ifdef _WINDOWS64
-	if ((screen != NULL || ui.GetMenuDisplayed(iPad)) && g_KBMInput.IsMouseGrabbed())
+	// Mouse grab/release only for the primary (KBM) player — splitscreen
+	// players use controllers and must never fight over the cursor state.
+	if (iPad == ProfileManager.GetPrimaryPad())
 	{
-		g_KBMInput.SetMouseGrabbed(false);
+		if ((screen != NULL || ui.GetMenuDisplayed(iPad)) && g_KBMInput.IsMouseGrabbed())
+		{
+			g_KBMInput.SetMouseGrabbed(false);
+		}
 	}
 #endif
 
 	if (screen == NULL && !ui.GetMenuDisplayed(iPad) )
 	{
 #ifdef _WINDOWS64
-		if (!g_KBMInput.IsMouseGrabbed() && g_KBMInput.IsWindowFocused())
+		if (iPad == ProfileManager.GetPrimaryPad() && !g_KBMInput.IsMouseGrabbed() && g_KBMInput.IsWindowFocused())
 		{
 			g_KBMInput.SetMouseGrabbed(true);
 		}
@@ -4642,8 +4647,14 @@ void Minecraft::startAndConnectTo(const wstring& name, const wstring& sid, const
 
 	Minecraft *minecraft;
 	// 4J - was new Minecraft(frame, canvas, NULL, 854, 480, fullScreen);
+	// Logical width is proportional to the real screen aspect ratio so that
+	// the ortho projection and HUD layout match the viewport without stretching.
+	extern int g_iScreenWidth;
+	extern int g_iScreenHeight;
+	int logicalH = 720;
+	int logicalW = logicalH * g_iScreenWidth / g_iScreenHeight;
 
-	minecraft = new Minecraft(NULL, NULL, NULL, 1280, 720, fullScreen);
+	minecraft = new Minecraft(NULL, NULL, NULL, logicalW, logicalH, fullScreen);
 
 	/* - 4J - removed
 	{

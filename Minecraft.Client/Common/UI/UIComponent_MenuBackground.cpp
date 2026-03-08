@@ -68,24 +68,29 @@ void UIComponent_MenuBackground::render(S32 width, S32 height, C4JRender::eViewp
 			break;
 		case C4JRender::VIEWPORT_TYPE_SPLIT_TOP:
 			tileWidth = (S32)(ui.getScreenWidth());
-			tileYStart = (S32)(m_movieHeight / 2);
+			tileYStart = (S32)(ui.getScreenHeight() / 2);
 			break;
 		case C4JRender::VIEWPORT_TYPE_SPLIT_BOTTOM:
 			tileWidth = (S32)(ui.getScreenWidth());
-			tileYStart = (S32)(m_movieHeight / 2);
+			tileYStart = (S32)(ui.getScreenHeight() / 2);
 			break;
 		case C4JRender::VIEWPORT_TYPE_QUADRANT_TOP_LEFT:
 		case C4JRender::VIEWPORT_TYPE_QUADRANT_TOP_RIGHT:
 		case C4JRender::VIEWPORT_TYPE_QUADRANT_BOTTOM_LEFT:
 		case C4JRender::VIEWPORT_TYPE_QUADRANT_BOTTOM_RIGHT:
-			tileYStart = (S32)(m_movieHeight / 2);
+			tileYStart = (S32)(ui.getScreenHeight() / 2);
 			break;
 		}
 
-		IggyPlayerSetDisplaySize( getMovie(), m_movieWidth, m_movieHeight );
+		F32 scaleW = (F32)(tileXStart + tileWidth) / (F32)m_movieWidth;
+		F32 scaleH = (F32)(tileYStart + tileHeight) / (F32)m_movieHeight;
+		F32 scale = (scaleW > scaleH) ? scaleW : scaleH;
+		if(scale < 1.0f) scale = 1.0f;
+
+		IggyPlayerSetDisplaySize( getMovie(), (S32)(m_movieWidth * scale), (S32)(m_movieHeight * scale) );
 
 		IggyPlayerDrawTilesStart ( getMovie() );
-		
+
 		m_renderWidth = tileWidth;
 		m_renderHeight = tileHeight;
 		IggyPlayerDrawTile ( getMovie() ,
@@ -93,11 +98,15 @@ void UIComponent_MenuBackground::render(S32 width, S32 height, C4JRender::eViewp
 			tileYStart ,
 			tileXStart + tileWidth ,
 			tileYStart + tileHeight ,
-			0 ); 
+			0 );
 		IggyPlayerDrawTilesEnd ( getMovie() );
 	}
 	else
 	{
-		UIScene::render(width, height, viewport);
+		if(m_bIsReloading) return;
+		if(!m_hasTickedOnce || !getMovie()) return;
+		ui.setupRenderPosition(0, 0);
+		IggyPlayerSetDisplaySize( getMovie(), (S32)ui.getScreenWidth(), (S32)ui.getScreenHeight() );
+		IggyPlayerDraw( getMovie() );
 	}
 }

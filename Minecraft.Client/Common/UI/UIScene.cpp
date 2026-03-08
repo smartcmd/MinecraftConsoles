@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "UI.h"
 #include "UIScene.h"
+#include "UISplitScreenHelpers.h"
 
 #include "..\..\Lighting.h"
 #include "..\..\LocalPlayer.h"
@@ -685,9 +686,23 @@ void UIScene::render(S32 width, S32 height, C4JRender::eViewportType viewport)
 {
 	if(m_bIsReloading) return;
 	if(!m_hasTickedOnce || !swf) return;
-	ui.setupRenderPosition(viewport);
-	IggyPlayerSetDisplaySize( swf, width, height );
-	IggyPlayerDraw( swf );
+
+	if(viewport != C4JRender::VIEWPORT_TYPE_FULLSCREEN)
+	{
+		F32 originX, originY, viewW, viewH;
+		GetViewportRect(ui.getScreenWidth(), ui.getScreenHeight(), viewport, originX, originY, viewW, viewH);
+		S32 fitW, fitH, offsetX, offsetY;
+		Fit16x9(viewW, viewH, fitW, fitH, offsetX, offsetY);
+		ui.setupRenderPosition((S32)originX + offsetX, (S32)originY + offsetY);
+		IggyPlayerSetDisplaySize( swf, fitW, fitH );
+		IggyPlayerDraw( swf );
+	}
+	else
+	{
+		ui.setupRenderPosition(viewport);
+		IggyPlayerSetDisplaySize( swf, width, height );
+		IggyPlayerDraw( swf );
+	}
 }
 
 void UIScene::setOpacity(float percent)
