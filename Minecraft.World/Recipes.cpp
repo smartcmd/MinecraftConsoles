@@ -629,13 +629,11 @@ Recipes::Recipes()
 		L'#', Item::brick,
 		L'D');
 
-	// torch made of charcoal - moved to be the default due to the tutorial using it
 	addShapedRecipy(new ItemInstance(Tile::torch, 4), //
 		L"ssczcig",
 		L"X", //
 		L"#", //
-
-		L'X', new ItemInstance(Item::coal, 1, CoalItem::CHAR_COAL),//
+		L'X', new ItemInstance(Item::coal, 1, CoalItem::STONE_COAL),//
 		L'#', Item::stick,
 		L'T');
 
@@ -643,7 +641,8 @@ Recipes::Recipes()
 		L"ssczcig",
 		L"X", //
 		L"#", //
-		L'X', new ItemInstance(Item::coal, 1, CoalItem::STONE_COAL),//
+
+		L'X', new ItemInstance(Item::coal, 1, CoalItem::CHAR_COAL),//
 		L'#', Item::stick,
 		L'T');
 
