@@ -276,7 +276,7 @@ Icon *PreStitchedTextureMap::registerIcon(const wstring &name)
 	{
 		app.DebugPrintf("Don't register NULL\n");
 #ifndef _CONTENT_PACKAGE
-		app.DebugPrintf("Stub!")
+		app.DebugPrintf("Stub!");
 #endif
 		result = missingPosition;
 		//new RuntimeException("Don't register null!").printStackTrace();
