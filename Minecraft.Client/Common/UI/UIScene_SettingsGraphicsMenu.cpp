@@ -58,7 +58,9 @@ UIScene_SettingsGraphicsMenu::UIScene_SettingsGraphicsMenu(int iPad, void *initD
 	
 	m_bNotInGame=(Minecraft::GetInstance()->level==NULL);
 
+	m_checkboxFancyGraphics.init(L"Fancy Graphics " ,eControl_FancyGraphics,(app.GetGameSettings(m_iPad,eGameSetting_FancyGraphics)!=0));
 	m_checkboxClouds.init(app.GetString(IDS_CHECKBOX_RENDER_CLOUDS),eControl_Clouds,(app.GetGameSettings(m_iPad,eGameSetting_Clouds)!=0));
+	m_checkboxAmbientOcclusion.init(L"Ambient Occlusion " ,eControl_AmbientOcclusion,(app.GetGameSettings(m_iPad,eGameSetting_AmbientOcclusion)!=0));
 	m_checkboxBedrockFog.init(app.GetString(IDS_CHECKBOX_RENDER_BEDROCKFOG),eControl_BedrockFog,(app.GetGameSettings(m_iPad,eGameSetting_BedrockFog)!=0));
 	m_checkboxCustomSkinAnim.init(app.GetString(IDS_CHECKBOX_CUSTOM_SKIN_ANIM),eControl_CustomSkinAnim,(app.GetGameSettings(m_iPad,eGameSetting_CustomSkinAnim)!=0));
 
@@ -161,7 +163,9 @@ void UIScene_SettingsGraphicsMenu::handleInput(int iPad, int key, bool repeat, b
 		if(pressed)
 		{
 			// check the checkboxes
+			app.SetGameSettings(m_iPad,eGameSetting_FancyGraphics,m_checkboxFancyGraphics.IsChecked()?1:0);
 			app.SetGameSettings(m_iPad,eGameSetting_Clouds,m_checkboxClouds.IsChecked()?1:0);
+			app.SetGameSettings(m_iPad,eGameSetting_AmbientOcclusion,m_checkboxAmbientOcclusion.IsChecked()?1:0);
 			app.SetGameSettings(m_iPad,eGameSetting_BedrockFog,m_checkboxBedrockFog.IsChecked()?1:0);
 			app.SetGameSettings(m_iPad,eGameSetting_CustomSkinAnim,m_checkboxCustomSkinAnim.IsChecked()?1:0);
 
