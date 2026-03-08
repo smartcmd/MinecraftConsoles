@@ -9,3 +9,5 @@
 #include "KillCommand.h"
 #include "TimeCommand.h"
 #include "ToggleDownfallCommand.h"
+#include "WeatherCommand.h"
+#include "SummonCommand.h"

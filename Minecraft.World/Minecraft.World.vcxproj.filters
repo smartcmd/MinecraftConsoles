@@ -3197,6 +3197,9 @@
     <ClInclude Include="FireworksMenu.h">
       <Filter>net\minecraft\world\inventory</Filter>
     </ClInclude>
+    <ClInclude Include="SummonCommand.h">
+      <Filter>net\minecraft\commands\common</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -5625,6 +5628,12 @@
     </ClCompile>
     <ClCompile Include="EmptyMapItem.cpp">
       <Filter>net\minecraft\world\item</Filter>
+    </ClCompile>
+    <ClCompile Include="WeatherCommand.cpp">
+      <Filter>net\minecraft\commands\common</Filter>
+    </ClCompile>
+    <ClCompile Include="SummonCommand.cpp">
+      <Filter>net\minecraft\commands\common</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

@@ -2808,6 +2808,7 @@
     <ClInclude Include="StoneButtonTile.h" />
     <ClInclude Include="StructureFeatureIO.h" />
     <ClInclude Include="StructureFeatureSavedData.h" />
+    <ClInclude Include="SummonCommand.h" />
     <ClInclude Include="SwampRiversLayer.h" />
     <ClInclude Include="SwellGoal.h" />
     <ClInclude Include="TakeFlowerGoal.h" />
@@ -3635,7 +3636,9 @@
     <ClCompile Include="StoneButtonTile.cpp" />
     <ClCompile Include="StructureFeatureIO.cpp" />
     <ClCompile Include="StructureFeatureSavedData.cpp" />
+    <ClCompile Include="SummonCommand.cpp" />
     <ClCompile Include="Team.cpp" />
+    <ClCompile Include="WeatherCommand.cpp" />
     <ClCompile Include="WeightedPressurePlateTile.cpp" />
     <ClCompile Include="WoodButtonTile.cpp" />
     <ClCompile Include="WoolTileItem.cpp" />

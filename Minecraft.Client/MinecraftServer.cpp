@@ -196,7 +196,7 @@ static bool ExecuteConsoleCommand(MinecraftServer *server, const wstring &rawCom
 
 	if (action == L"help" || action == L"?")
 	{
-		server->info(L"Commands: help, stop, list, say <message>, save-all, time <set day|night|ticks|add ticks>, weather <clear|rain|thunder> [seconds], tp <player> <target>, give <player> <itemId> [amount] [aux], enchant <player> <enchantId> [level], kill <player>");
+		server->info(L"Commands: help, stop, list, say <message>, save-all, time <set day|night|ticks|add ticks>, weather <clear|rain|thunder> [seconds], tp <player> <target>, give <player> <itemId> [amount] [aux], enchant <player> <enchantId> [level], kill <player>, summon <entity> <x> <y> <z> [dimension]");
 		return true;
 	}
 
@@ -535,6 +535,135 @@ static bool ExecuteConsoleCommand(MinecraftServer *server, const wstring &rawCom
 
 		player->hurt(DamageSource::outOfWorld, 3.4e38f);
 		server->info(L"Killed " + player->getName() + L".");
+		return true;
+	}
+
+	if (action == L"summon")
+	{
+		if (tokens.size() < 4)
+		{
+			server->warn(L"Usage: summon <entity> <x> <y> <z> [dimension]");
+			server->warn(L"Dimensions: 0=Overworld, -1=Nether, 1=End");
+			return false;
+		}
+
+		wstring entityType = tokens[1];
+		int x = 0, y = 0, z = 0;
+		int dimension = 0;
+
+		if (!TryParseIntValue(tokens[2], x) || !TryParseIntValue(tokens[3], y) || !TryParseIntValue(tokens[4], z))
+		{
+			server->warn(L"Invalid coordinates. Usage: summon <entity> <x> <y> <z>");
+			return false;
+		}
+
+		if (tokens.size() >= 5)
+		{
+			if (!TryParseIntValue(tokens[5], dimension))
+			{
+				server->warn(L"Invalid dimension. Use: 0=Overworld, -1=Nether, 1=End");
+				return false;
+			}
+
+			if (dimension != 0 && dimension != -1 && dimension != 1)
+			{
+				server->warn(L"Invalid dimension. Use: 0=Overworld, -1=Nether, 1=End");
+				return false;
+			}
+		}
+		ServerLevel* level = server->getLevel(dimension);
+		if (level == NULL)
+		{
+			server->warn(L"Could not access level");
+			return false;
+		}
+
+		int entityId = -1;
+		wchar_t* endptr;
+		long numId = wcstol(entityType.c_str(), &endptr, 10);
+		if (*endptr == L'\0')
+		{
+			entityId = (int)numId;
+		}
+		else
+		{
+			if (entityType == L"creeper") entityId = 50;
+			else if (entityType == L"skeleton") entityId = 51;
+			else if (entityType == L"spider") entityId = 52;
+			else if (entityType == L"giant") entityId = 53;
+			else if (entityType == L"zombie") entityId = 54;
+			else if (entityType == L"slime") entityId = 55;
+			else if (entityType == L"ghast") entityId = 56;
+			else if (entityType == L"pigzombie") entityId = 57;
+			else if (entityType == L"enderman") entityId = 58;
+			else if (entityType == L"cavespider") entityId = 59;
+			else if (entityType == L"silverfish") entityId = 60;
+			else if (entityType == L"blaze") entityId = 61;
+			else if (entityType == L"lavaslime") entityId = 62;
+			else if (entityType == L"enderdragon") entityId = 63;
+			else if (entityType == L"wither") entityId = 64;
+			else if (entityType == L"bat") entityId = 65;
+			else if (entityType == L"witch") entityId = 66;
+			else if (entityType == L"pig") entityId = 90;
+			else if (entityType == L"sheep") entityId = 91;
+			else if (entityType == L"cow") entityId = 92;
+			else if (entityType == L"chicken") entityId = 93;
+			else if (entityType == L"squid") entityId = 94;
+			else if (entityType == L"wolf") entityId = 95;
+			else if (entityType == L"mushroomcow") entityId = 96;
+			else if (entityType == L"snowman") entityId = 97;
+			else if (entityType == L"ocelot") entityId = 98;
+			else if (entityType == L"villagergolem") entityId = 99;
+			else if (entityType == L"horse") entityId = 100;
+			else if (entityType == L"villager") entityId = 120;
+			else if (entityType == L"item") entityId = 1;
+			else if (entityType == L"xporb") entityId = 2;
+			else if (entityType == L"painting") entityId = 9;
+			else if (entityType == L"arrow") entityId = 10;
+			else if (entityType == L"snowball") entityId = 11;
+			else if (entityType == L"fireball") entityId = 12;
+			else if (entityType == L"smallfireball") entityId = 13;
+			else if (entityType == L"enderpearl") entityId = 14;
+			else if (entityType == L"potion") entityId = 16;
+			else if (entityType == L"experiencebottle") entityId = 17;
+			else if (entityType == L"itemframe") entityId = 18;
+			else if (entityType == L"witherskull") entityId = 19;
+			else if (entityType == L"tnt") entityId = 20;
+			else if (entityType == L"fallingsand") entityId = 21;
+			else if (entityType == L"fireworks") entityId = 22;
+			else if (entityType == L"boat") entityId = 41;
+			else if (entityType == L"minecart") entityId = 42;
+			else if (entityType == L"chestminecart") entityId = 43;
+			else if (entityType == L"furnaceminecart") entityId = 44;
+			else if (entityType == L"tntminecart") entityId = 45;
+			else if (entityType == L"hopperminecart") entityId = 46;
+			else if (entityType == L"spawnerminecart") entityId = 47;
+			else
+			{
+				server->warn(L"Unknown entity type: " + entityType);
+				return false;
+			}
+		}
+
+		shared_ptr<Entity> entity = EntityIO::newById(entityId, level);
+    
+		if (entity == NULL)
+		{
+			server->warn(L"Failed to summon entity: " + entityType);
+			return false;
+		}
+
+		entity->setPos(x + 0.5, y, z + 0.5);
+
+		level->addEntity(entity);
+
+		wstring dimensionName;
+		if (dimension == 0) dimensionName = L"Overworld";
+		else if (dimension == -1) dimensionName = L"Nether";
+		else if (dimension == 1) dimensionName = L"End";
+
+    server->info(L"Summoned " + entityType + L" at (" + 
+                 std::to_wstring(x) + L", " + std::to_wstring(y) + L", " + std::to_wstring(z) + L") in " + dimensionName);
 		return true;
 	}
 

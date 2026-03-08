@@ -5,6 +5,7 @@
 #include "..\Minecraft.World\net.minecraft.commands.h"
 #include "..\Minecraft.World\net.minecraft.commands.common.h"
 #include "TeleportCommand.h"
+
 #include "ServerCommandDispatcher.h"
 
 ServerCommandDispatcher::ServerCommandDispatcher()
@@ -18,6 +19,8 @@ ServerCommandDispatcher::ServerCommandDispatcher()
 	addCommand(new TeleportCommand());
 	addCommand(new GiveItemCommand());
 	addCommand(new EnchantItemCommand());
+	addCommand(new WeatherCommand());
+	addCommand(new SummonCommand());
 	//addCommand(new EmoteCommand());
 	//addCommand(new ShowSeedCommand());
 	//addCommand(new HelpCommand());

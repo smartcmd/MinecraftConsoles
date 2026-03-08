@@ -12,5 +12,7 @@ enum EGameCommand
 	eGameCommand_Time,
 	eGameCommand_ToggleDownfall,
 	eGameCommand_Teleport,
+	eGameCommand_Weather,
+	eGameCommand_Summon,
 	eGameCommand_COUNT
 };
