@@ -1814,8 +1814,8 @@ GDrawTexture * RADLINK UIController::TextureSubstitutionCreateCallback ( void * 
 
 	#if defined _WINDOWS64
             // Only set the size to 96x96 for 1080p on Windows
-            // This matches the logic defining m_loadedResolution in UIScene
-            if (uiController->getScreenHeight() > 720)
+            UIScene *scene = uiController->GetTopScene(0);
+            if (scene->getSceneResolution() == UIScene::eSceneResolution_1080)
             {
                 *width = 96;
                 *height = 96;
