@@ -4240,6 +4240,10 @@ void Level::setBlocksAndData(int x, int y, int z, int xs, int ys, int zs, byteAr
 			if (z0 < 0) z0 = 0;
 			if (z1 > 16) z1 = 16;
 			LevelChunk *lc = getChunk(xc, zc);
+			if(lc->isEmpty())
+			{
+				app.DebugPrintf("[SETBLOCKS-BUG] getChunk(%d,%d) returned EmptyLevelChunk! Data will be LOST\n", xc, zc);
+			}
 			// 4J Stu - Unshare before we make any changes incase the server is already another step ahead of us
 			// Fix for #7904 - Gameplay: Players can dupe torches by throwing them repeatedly into water.
 			// This is quite expensive so only actually do it if we are hosting, online, and the update will actually

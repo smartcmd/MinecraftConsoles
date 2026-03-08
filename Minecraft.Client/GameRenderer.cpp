@@ -593,9 +593,10 @@ void GameRenderer::unZoomRegion()
 // 4J added as we have more complex adjustments to make for fov & aspect on account of viewports
 void GameRenderer::getFovAndAspect(float& fov, float& aspect, float a, bool applyEffects)
 {
-	// 4J - split out aspect ratio and fov here so we can adjust for viewports - we might need to revisit these as
-	// they are maybe be too generous for performance.
-	aspect = mc->width / (float) mc->height;
+	// Use the real window dimensions so the perspective updates on resize.
+	extern int g_rScreenWidth;
+	extern int g_rScreenHeight;
+	aspect = g_rScreenWidth / static_cast<float>(g_rScreenHeight);
 	fov = getFov(a, applyEffects);
 
 	if( ( mc->player->m_iScreenSection == C4JRender::VIEWPORT_TYPE_SPLIT_TOP ) ||
@@ -968,6 +969,10 @@ void GameRenderer::CachePlayerGammas()
 
 bool GameRenderer::ComputeViewportForPlayer(int j, D3D11_VIEWPORT &outViewport) const
 {
+    // Use the actual backbuffer dimensions so viewports adapt to window resize.
+    extern int g_rScreenWidth;
+    extern int g_rScreenHeight;
+
     int active = 0;
     int indexMap[NUM_LIGHT_TEXTURES] = {-1, -1, -1, -1};
     for (int i = 0; i < XUSER_MAX_COUNT && i < NUM_LIGHT_TEXTURES; ++i)
@@ -980,8 +985,8 @@ bool GameRenderer::ComputeViewportForPlayer(int j, D3D11_VIEWPORT &outViewport) 
     {
         outViewport.TopLeftX = 0.0f;
         outViewport.TopLeftY = 0.0f;
-        outViewport.Width = static_cast<FLOAT>(mc->width);
-        outViewport.Height = static_cast<FLOAT>(mc->height);
+        outViewport.Width = static_cast<FLOAT>(g_rScreenWidth);
+        outViewport.Height = static_cast<FLOAT>(g_rScreenHeight);
         outViewport.MinDepth = 0.0f;
         outViewport.MaxDepth = 1.0f;
         return true;
@@ -997,8 +1002,8 @@ bool GameRenderer::ComputeViewportForPlayer(int j, D3D11_VIEWPORT &outViewport) 
     if (k < 0)
         return false;
 
-    const float width = static_cast<float>(mc->width);
-    const float height = static_cast<float>(mc->height);
+    const float width = static_cast<float>(g_rScreenWidth);
+    const float height = static_cast<float>(g_rScreenHeight);
 
     if (active == 2)
     {
@@ -1171,7 +1176,7 @@ void GameRenderer::render(float a, bool bFirst)
 	if (mc->noRender) return;
 	GameRenderer::anaglyph3d = mc->options->anaglyph3d;
 
-	glViewport(0, 0, mc->width, mc->height);	// 4J - added
+	glViewport(0, 0, mc->width, mc->height);	// 4J - added (no-op on Win64, viewport set by StateSetViewport)
 	ScreenSizeCalculator ssc(mc->options, mc->width, mc->height);
 	int screenWidth = ssc.getWidth();
 	int screenHeight = ssc.getHeight();

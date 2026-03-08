@@ -996,6 +996,13 @@ void gdraw_D3D1X_(SetTileOrigin)(ID3D1X(RenderTargetView) *main_rt, ID3D1X(Depth
 
 static void RADLINK gdraw_SetViewSizeAndWorldScale(S32 w, S32 h, F32 scalex, F32 scaley)
 {
+   static S32 s_lastW = 0, s_lastH = 0;
+   static F32 s_lastSx = 0, s_lastSy = 0;
+   if (w != s_lastW || h != s_lastH || scalex != s_lastSx || scaley != s_lastSy) {
+      app.DebugPrintf("[GDRAW] SetViewSize: fw=%d fh=%d scale=%.6f,%.6f frametex=%dx%d vx=%d vy=%d\n",
+         w, h, scalex, scaley, gdraw->frametex_width, gdraw->frametex_height, gdraw->vx, gdraw->vy);
+      s_lastW = w; s_lastH = h; s_lastSx = scalex; s_lastSy = scaley;
+   }
    memset(gdraw->frame, 0, sizeof(gdraw->frame));
    gdraw->cur = gdraw->frame;
    gdraw->fw = w;

@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "UI.h"
 #include "UIScene_AbstractContainerMenu.h"
+#include "UISplitScreenHelpers.h"
 
 #include "..\..\..\Minecraft.World\net.minecraft.world.inventory.h"
 #include "..\..\..\Minecraft.World\net.minecraft.world.item.h"
@@ -187,14 +188,19 @@ void UIScene_AbstractContainerMenu::PlatformInitialize(int iPad, int startIndex)
 	IggyEvent mouseEvent;
 	S32 width, height;
 	m_parentLayer->getRenderDimensions(width, height);
+
+	C4JRender::eViewportType vp = m_parentLayer->getViewport();
+	if(vp != C4JRender::VIEWPORT_TYPE_FULLSCREEN)
+		Fit16x9(width, height);
+
 	S32 x = m_pointerPos.x*((float)width/m_movieWidth);
-	S32 y = m_pointerPos.y*((float)height/m_movieHeight); 
+	S32 y = m_pointerPos.y*((float)height/m_movieHeight);
 	IggyMakeEventMouseMove( &mouseEvent, x, y);
 
 	IggyEventResult result;
 	IggyPlayerDispatchEventRS ( getMovie() , &mouseEvent , &result );
 
-#ifdef USE_POINTER_ACCEL	
+#ifdef USE_POINTER_ACCEL
 	m_fPointerVelX = 0.0f;
 	m_fPointerVelY = 0.0f;
 	m_fPointerAccelX = 0.0f;
@@ -211,6 +217,10 @@ void UIScene_AbstractContainerMenu::tick()
 	IggyEvent mouseEvent;
 	S32 width, height;
 	m_parentLayer->getRenderDimensions(width, height);
+
+	C4JRender::eViewportType vp = m_parentLayer->getViewport();
+	if(vp != C4JRender::VIEWPORT_TYPE_FULLSCREEN)
+		Fit16x9(width, height);
 
 	S32 x = (S32)(m_pointerPos.x * ((float)width / m_movieWidth));
 	S32 y = (S32)(m_pointerPos.y * ((float)height / m_movieHeight));
@@ -249,6 +259,27 @@ void UIScene_AbstractContainerMenu::render(S32 width, S32 height, C4JRender::eVi
 	UIScene::render(width, height, viewpBort);
 
 	m_needsCacheRendered = false;
+}
+
+void UIScene_AbstractContainerMenu::getMouseToSWFScale(float &scaleX, float &scaleY)
+{
+	extern HWND g_hWnd;
+	RECT rc;
+	GetClientRect(g_hWnd, &rc);
+	int winW = rc.right - rc.left;
+	int winH = rc.bottom - rc.top;
+	if(winW <= 0 || winH <= 0) { scaleX = 1.0f; scaleY = 1.0f; return; }
+
+	S32 renderW, renderH;
+	C4JRender::eViewportType vp = GetParentLayer()->getViewport();
+	ui.getRenderDimensions(vp, renderW, renderH);
+	if(vp != C4JRender::VIEWPORT_TYPE_FULLSCREEN)
+		Fit16x9(renderW, renderH);
+
+	float screenW = (float)ui.getScreenWidth();
+	float screenH = (float)ui.getScreenHeight();
+	scaleX = (float)m_movieWidth * screenW / ((float)renderW * (float)winW);
+	scaleY = (float)m_movieHeight * screenH / ((float)renderH * (float)winH);
 }
 
 void UIScene_AbstractContainerMenu::customDraw(IggyCustomDrawCallbackRegion *region)
