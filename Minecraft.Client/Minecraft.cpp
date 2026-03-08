@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "Minecraft.h"
+#include "Common/UI/UIScene.h"
 #include "GameMode.h"
 #include "Timer.h"
 #include "ProgressRenderer.h"
@@ -9,6 +10,7 @@
 #include "User.h"
 #include "Textures.h"
 #include "GameRenderer.h"
+#include "ItemInHandRenderer.h"
 #include "HumanoidModel.h"
 #include "Options.h"
 #include "TexturePackRepository.h"
@@ -216,6 +218,7 @@ Minecraft::Minecraft(Component *mouseComponent, Canvas *parent, MinecraftApplet 
 		m_pendingLocalConnections[i] = NULL;
 		m_connectionFailed[i] = false;
 		localgameModes[i]=NULL;
+		localitemInHandRenderers[i] = NULL;
 	}
 
 	animateTickLevel = NULL;	// 4J added
@@ -1479,9 +1482,22 @@ void Minecraft::run_middle()
 							if(g_KBMInput.IsMouseButtonPressed(KeyboardMouseInput::MOUSE_RIGHT))
 								localplayers[i]->ullButtonsPressed|=1LL<<MINECRAFT_ACTION_USE;
 
+							bool isClosableByEitherKey = ui.IsSceneInStack(i, eUIScene_FurnaceMenu) ||
+								ui.IsSceneInStack(i, eUIScene_ContainerMenu) ||
+								ui.IsSceneInStack(i, eUIScene_DispenserMenu) ||
+								ui.IsSceneInStack(i, eUIScene_EnchantingMenu) ||
+								ui.IsSceneInStack(i, eUIScene_BrewingStandMenu) ||
+								ui.IsSceneInStack(i, eUIScene_TradingMenu) ||
+								ui.IsSceneInStack(i, eUIScene_AnvilMenu) ||
+								ui.IsSceneInStack(i, eUIScene_HopperMenu) ||
+								ui.IsSceneInStack(i, eUIScene_BeaconMenu) ||
+								ui.IsSceneInStack(i, eUIScene_InventoryMenu) ||
+								ui.IsSceneInStack(i, eUIScene_HorseMenu);
+							bool isEditing = ui.GetTopScene(i) && ui.GetTopScene(i)->isDirectEditBlocking();
+
 							if(g_KBMInput.IsKeyPressed(KeyboardMouseInput::KEY_INVENTORY))
 							{
-								if(ui.IsSceneInStack(i, eUIScene_InventoryMenu))
+								if(isClosableByEitherKey && !isEditing)
 								{
 									ui.CloseUIScenes(i);
 								}
@@ -1496,7 +1512,7 @@ void Minecraft::run_middle()
 
 							if(g_KBMInput.IsKeyPressed(KeyboardMouseInput::KEY_CRAFTING) || g_KBMInput.IsKeyPressed(KeyboardMouseInput::KEY_CRAFTING_ALT))
 							{
-							if(ui.IsSceneInStack(i, eUIScene_Crafting2x2Menu) || ui.IsSceneInStack(i, eUIScene_Crafting3x3Menu) || ui.IsSceneInStack(i, eUIScene_CreativeMenu))
+							if((ui.IsSceneInStack(i, eUIScene_Crafting2x2Menu) || ui.IsSceneInStack(i, eUIScene_Crafting3x3Menu) || ui.IsSceneInStack(i, eUIScene_CreativeMenu) || isClosableByEitherKey) && !isEditing)
 							{
 								ui.CloseUIScenes(i);
 							}
@@ -4225,6 +4241,17 @@ void Minecraft::setLevel(MultiPlayerLevel *level, int message /*=-1*/, shared_pt
 
 	// 4J - stop update thread from processing this level, which blocks until it is safe to move on - will be re-enabled if we set the level to be non-NULL
 	gameRenderer->DisableUpdateThread();
+
+	if (level == NULL || player == NULL)
+	{
+		for (int i = 0; i < XUSER_MAX_COUNT; ++i)
+		{
+			if (localitemInHandRenderers[i] != NULL)
+			{
+				localitemInHandRenderers[i]->reset();
+			}
+		}
+	}
 
 	for(unsigned int i = 0; i < levels.length; ++i)
 	{
