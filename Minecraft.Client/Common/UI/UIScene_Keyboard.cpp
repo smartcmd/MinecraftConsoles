@@ -211,23 +211,30 @@ void UIScene_Keyboard::handleInput(int iPad, int key, bool repeat, bool pressed,
 
 	if(repeat || pressed)
 	{
-		switch(key)
+		if (key == ACTION_MENU_CANCEL)
 		{
-		case ACTION_MENU_CANCEL:
 #ifdef _WINDOWS64
-			{
-				// Cache before navigateBack() destroys this scene
-				int(*cb)(LPVOID, const bool) = m_win64Callback;
-				LPVOID cbParam = m_win64CallbackParam;
-				navigateBack();
-				if (cb)
-					cb(cbParam, false);
-			}
+			// Cache before navigateBack() destroys this scene
+			int(*cb)(LPVOID, const bool) = m_win64Callback;
+			LPVOID cbParam = m_win64CallbackParam;
+			navigateBack();
+			if (cb)
+				cb(cbParam, false);
 #else
 			navigateBack();
 #endif
 			handled = true;
-			break;
+			return;
+		}
+
+		// Don't handle on-screen buttons
+		if (m_bPCMode)
+		{
+			return;
+		}
+
+		switch(key)
+		{
 		case ACTION_MENU_X:					// X
 			out = IggyPlayerCallMethodRS ( getMovie() , &result, IggyPlayerRootPath( getMovie() ), m_funcBackspaceButtonPressed, 0 , NULL );
 			handled = true;
