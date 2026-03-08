@@ -200,7 +200,7 @@ static void safe_release(T *&p)
    }
 }
 
-static void report_d3d_error(HRESULT hr, char *call, char *context)
+static void report_d3d_error(HRESULT hr, const char *call, const char *context)
 {
    if (hr == E_OUTOFMEMORY)
       IggyGDrawSendWarning(NULL, "GDraw D3D out of memory in %s%s", call, context);
@@ -478,7 +478,7 @@ static GDrawTexture * RADLINK gdraw_MakeTextureEnd(GDraw_MakeTexture_ProcessingI
    D3D1X_(SUBRESOURCE_DATA) mipdata[24];
    S32 i, w, h, nmips, bpp;
    HRESULT hr = S_OK;
-   char *failed_call;
+   const char *failed_call;
    U8 *ptr;
 
    // generate mip maps and set up descriptors for them
@@ -700,7 +700,7 @@ static void RADLINK gdraw_DescribeVertexBuffer(GDrawVertexBuffer *vbuf, GDraw_Ve
 
 static GDrawHandle *get_color_rendertarget(GDrawStats *stats)
 {
-   char *failed_call;
+   const char *failed_call;
 
    // try to recycle LRU rendertarget
    GDrawHandle *t = gdraw_HandleCacheGetLRU(&gdraw->rendertargets);
@@ -762,7 +762,7 @@ static GDrawHandle *get_color_rendertarget(GDrawStats *stats)
 static ID3D1X(DepthStencilView) *get_rendertarget_depthbuffer(GDrawStats *stats)
 {
    if (!gdraw->depth_buffer[1]) {
-      char *failed_call;
+      const char *failed_call;
       assert(!gdraw->rt_depth_buffer);
 
       D3D1X_(TEXTURE2D_DESC) desc = { static_cast<U32>(gdraw->frametex_width), static_cast<U32>(gdraw->frametex_height), 1U, 1U, DXGI_FORMAT_D24_UNORM_S8_UINT, { 1, 0 },
@@ -2384,7 +2384,7 @@ static S32 num_pixels(S32 w, S32 h, S32 mipmaps)
 
 GDrawTexture * RADLINK gdraw_D3D1X_(MakeTextureFromResource)(U8 *resource_file, S32 /*len*/, IggyFileTextureRaw *texture)
 {
-   char *failed_call="";
+   const char *failed_call="";
    U8 *free_data = 0;
    GDrawTexture *t=0;
    S32 width, height, mipmaps, size, blk;
@@ -2405,6 +2405,8 @@ GDrawTexture * RADLINK gdraw_D3D1X_(MakeTextureFromResource)(U8 *resource_file, 
    D3D1X_(TEXTURE2D_DESC) desc = { static_cast<U32>(width), static_cast<U32>(height), static_cast<U32>(mipmaps), 1U, DXGI_FORMAT_UNKNOWN, { 1, 0 },
       D3D1X_(USAGE_IMMUTABLE), D3D1X_(BIND_SHADER_RESOURCE), 0U, 0U };
 
+   bool done = false;
+
    switch (texture->format) {
       case IFT_FORMAT_rgba_8888   : size= 4; d3dfmt = DXGI_FORMAT_R8G8B8A8_UNORM; break;
       case IFT_FORMAT_DXT1        : size= 8; d3dfmt = DXGI_FORMAT_BC1_UNORM; blk = 4; break;
@@ -2412,60 +2414,62 @@ GDrawTexture * RADLINK gdraw_D3D1X_(MakeTextureFromResource)(U8 *resource_file, 
       case IFT_FORMAT_DXT5        : size=16; d3dfmt = DXGI_FORMAT_BC3_UNORM; blk = 4; break;
       default: {
          IggyGDrawSendWarning(NULL, "GDraw .iggytex raw texture format %d not supported by hardware", texture->format);
-         goto done;
+         done = true;
       }
    }
 
-   desc.Format = d3dfmt;
-
-   U8 *data = resource_file + texture->file_offset;
-
-   if (texture->format == IFT_FORMAT_i_8 || texture->format == IFT_FORMAT_i_4) {
-      // convert from intensity to luma+alpha
-      S32 i;
-      S32 total_size = 2 * num_pixels(width,height,mipmaps);
-
-      free_data = (U8 *) IggyGDrawMalloc(total_size);
-      if (!free_data) {
-         IggyGDrawSendWarning(NULL, "GDraw out of memory to store texture data to pass to D3D for %d x %d texture", width, height);
-         goto done;
-      }
-
-      U8 *cur = free_data;
-
-      for (k=0; k < mipmaps; ++k) {
-         S32 w = RR_MAX(width >> k, 1);
-         S32 h = RR_MAX(height >> k, 1);
-         for (i=0; i < w*h; ++i) {
-            cur[0] = cur[1] = *data++;
-            cur += 2;
+   if (!done) {
+      desc.Format = d3dfmt;
+      
+      U8 *data = resource_file + texture->file_offset;
+      
+      if (texture->format == IFT_FORMAT_i_8 || texture->format == IFT_FORMAT_i_4) {
+         // convert from intensity to luma+alpha
+         S32 i;
+         S32 total_size = 2 * num_pixels(width,height,mipmaps);
+      
+         free_data = (U8 *) IggyGDrawMalloc(total_size);
+         if (!free_data) {
+            IggyGDrawSendWarning(NULL, "GDraw out of memory to store texture data to pass to D3D for %d x %d texture", width, height);
+            done = true;
+         } else {
+            U8 *cur = free_data;
+            
+            for (k=0; k < mipmaps; ++k) {
+               S32 w = RR_MAX(width >> k, 1);
+               S32 h = RR_MAX(height >> k, 1);
+               for (i=0; i < w*h; ++i) {
+                  cur[0] = cur[1] = *data++;
+                  cur += 2;
+               }
+            }
+            data = free_data;
          }
       }
-      data = free_data;
+      
+      if (!done) {
+         for (k=0; k < mipmaps; ++k) {
+            S32 w = RR_MAX(width >> k, 1);
+            S32 h = RR_MAX(height >> k, 1);
+            S32 blkw = (w + blk-1) / blk;
+            S32 blkh = (h + blk-1) / blk;
+         
+            mipdata[k].pSysMem     = data;
+            mipdata[k].SysMemPitch = blkw * size;
+            data += blkw * blkh * size;
+         }
+         
+         failed_call = "CreateTexture2D";
+         hr = gdraw->d3d_device->CreateTexture2D(&desc, mipdata, &tex);
+         if (!FAILED(hr)) {
+             failed_call = "CreateShaderResourceView for texture creation";
+             hr = gdraw->d3d_device->CreateShaderResourceView(tex, NULL, &view);
+             if (!FAILED(hr))
+                 t = gdraw_D3D1X_(WrappedTextureCreate)(view);
+         }
+      }
    }
 
-   for (k=0; k < mipmaps; ++k) {
-      S32 w = RR_MAX(width >> k, 1);
-      S32 h = RR_MAX(height >> k, 1);
-      S32 blkw = (w + blk-1) / blk;
-      S32 blkh = (h + blk-1) / blk;
-
-      mipdata[k].pSysMem     = data;
-      mipdata[k].SysMemPitch = blkw * size;
-      data += blkw * blkh * size;
-   }
-
-   failed_call = "CreateTexture2D";
-   hr = gdraw->d3d_device->CreateTexture2D(&desc, mipdata, &tex);
-   if (FAILED(hr)) goto done;
-
-   failed_call = "CreateShaderResourceView for texture creation";
-   hr = gdraw->d3d_device->CreateShaderResourceView(tex, NULL, &view);
-   if (FAILED(hr)) goto done;
-
-   t = gdraw_D3D1X_(WrappedTextureCreate)(view);
-
-done:
    if (FAILED(hr)) {
       report_d3d_error(hr, failed_call, "");
    }
