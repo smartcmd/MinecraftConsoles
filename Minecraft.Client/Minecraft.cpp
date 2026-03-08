@@ -9,6 +9,7 @@
 #include "User.h"
 #include "Textures.h"
 #include "GameRenderer.h"
+#include "ItemInHandRenderer.h"
 #include "HumanoidModel.h"
 #include "Options.h"
 #include "TexturePackRepository.h"
@@ -216,6 +217,7 @@ Minecraft::Minecraft(Component *mouseComponent, Canvas *parent, MinecraftApplet 
 		m_pendingLocalConnections[i] = NULL;
 		m_connectionFailed[i] = false;
 		localgameModes[i]=NULL;
+		localitemInHandRenderers[i] = NULL;
 	}
 
 	animateTickLevel = NULL;	// 4J added
@@ -4225,6 +4227,17 @@ void Minecraft::setLevel(MultiPlayerLevel *level, int message /*=-1*/, shared_pt
 
 	// 4J - stop update thread from processing this level, which blocks until it is safe to move on - will be re-enabled if we set the level to be non-NULL
 	gameRenderer->DisableUpdateThread();
+
+	if (level == NULL || player == NULL)
+	{
+		for (int i = 0; i < XUSER_MAX_COUNT; ++i)
+		{
+			if (localitemInHandRenderers[i] != NULL)
+			{
+				localitemInHandRenderers[i]->reset();
+			}
+		}
+	}
 
 	for(unsigned int i = 0; i < levels.length; ++i)
 	{
