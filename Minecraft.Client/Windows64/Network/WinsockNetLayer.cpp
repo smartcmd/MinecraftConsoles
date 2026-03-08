@@ -8,11 +8,19 @@
 #include "WinsockNetLayer.h"
 #include "..\..\Common\Network\PlatformNetworkManagerStub.h"
 #include "..\..\..\Minecraft.World\Socket.h"
+
+#if defined(MINECRAFT_SERVER_BUILD)
+#include "..\..\..\Minecraft.Server\Access\Access.h"
+#endif
 #include "..\..\..\Minecraft.World\DisconnectPacket.h"
 #include "..\..\Minecraft.h"
 #include "..\4JLibs\inc\4J_Profile.h"
 
 static bool RecvExact(SOCKET sock, BYTE* buf, int len);
+
+#if defined(MINECRAFT_SERVER_BUILD)
+static bool TryGetNumericRemoteIp(const sockaddr_in &remoteAddress, std::string *outIp);
+#endif
 
 SOCKET WinsockNetLayer::s_listenSocket = INVALID_SOCKET;
 SOCKET WinsockNetLayer::s_hostConnectionSocket = INVALID_SOCKET;
@@ -61,6 +69,7 @@ char g_Win64MultiplayerIP[256] = "127.0.0.1";
 bool g_Win64DedicatedServer = false;
 int g_Win64DedicatedServerPort = WIN64_NET_DEFAULT_PORT;
 char g_Win64DedicatedServerBindIP[256] = "";
+bool g_Win64DedicatedServerLanAdvertise = true;
 
 bool WinsockNetLayer::Initialize()
 {
@@ -86,7 +95,11 @@ bool WinsockNetLayer::Initialize()
 
 	s_initialized = true;
 
-	StartDiscovery();
+	// Dedicated Server does not use LAN session discovery and therefore does not initiate discovery.
+	if (!g_Win64DedicatedServer)
+	{
+		StartDiscovery();
+	}
 
 	return true;
 }
@@ -111,6 +124,15 @@ void WinsockNetLayer::Shutdown()
 		s_hostConnectionSocket = INVALID_SOCKET;
 	}
 
+	// Stop accept loop first so no new RecvThread can be created while shutting down.
+	if (s_acceptThread != NULL)
+	{
+		WaitForSingleObject(s_acceptThread, 2000);
+		CloseHandle(s_acceptThread);
+		s_acceptThread = NULL;
+	}
+
+	std::vector<HANDLE> recvThreads;
 	EnterCriticalSection(&s_connectionsLock);
 	for (size_t i = 0; i < s_connections.size(); i++)
 	{
@@ -118,17 +140,26 @@ void WinsockNetLayer::Shutdown()
 		if (s_connections[i].tcpSocket != INVALID_SOCKET)
 		{
 			closesocket(s_connections[i].tcpSocket);
+			s_connections[i].tcpSocket = INVALID_SOCKET;
+		}
+		if (s_connections[i].recvThread != NULL)
+		{
+			recvThreads.push_back(s_connections[i].recvThread);
+			s_connections[i].recvThread = NULL;
 		}
 	}
-	s_connections.clear();
 	LeaveCriticalSection(&s_connectionsLock);
 
-	if (s_acceptThread != NULL)
+	// Ensure all host-side receive threads have exited before destroying locks.
+	for (size_t i = 0; i < recvThreads.size(); i++)
 	{
-		WaitForSingleObject(s_acceptThread, 2000);
-		CloseHandle(s_acceptThread);
-		s_acceptThread = NULL;
+		WaitForSingleObject(recvThreads[i], 2000);
+		CloseHandle(recvThreads[i]);
 	}
+
+	EnterCriticalSection(&s_connectionsLock);
+	s_connections.clear();
+	LeaveCriticalSection(&s_connectionsLock);
 
 	if (s_clientRecvThread != NULL)
 	{
@@ -139,12 +170,19 @@ void WinsockNetLayer::Shutdown()
 
 	if (s_initialized)
 	{
+		EnterCriticalSection(&s_disconnectLock);
+		s_disconnectedSmallIds.clear();
+		LeaveCriticalSection(&s_disconnectLock);
+
+		EnterCriticalSection(&s_freeSmallIdLock);
+		s_freeSmallIds.clear();
+		LeaveCriticalSection(&s_freeSmallIdLock);
+
 		DeleteCriticalSection(&s_sendLock);
 		DeleteCriticalSection(&s_connectionsLock);
 		DeleteCriticalSection(&s_advertiseLock);
 		DeleteCriticalSection(&s_discoveryLock);
 		DeleteCriticalSection(&s_disconnectLock);
-		s_disconnectedSmallIds.clear();
 		DeleteCriticalSection(&s_freeSmallIdLock);
 		s_freeSmallIds.clear();
 		DeleteCriticalSection(&s_smallIdToSocketLock);
@@ -445,6 +483,27 @@ static bool RecvExact(SOCKET sock, BYTE* buf, int len)
 	return true;
 }
 
+#if defined(MINECRAFT_SERVER_BUILD)
+static bool TryGetNumericRemoteIp(const sockaddr_in &remoteAddress, std::string *outIp)
+{
+	if (outIp == NULL)
+	{
+		return false;
+	}
+
+	outIp->clear();
+	char ipBuffer[64] = {};
+	const char *ip = inet_ntop(AF_INET, (void *)&remoteAddress.sin_addr, ipBuffer, sizeof(ipBuffer));
+	if (ip == NULL || ip[0] == 0)
+	{
+		return false;
+	}
+
+	*outIp = ip;
+	return true;
+}
+#endif
+
 void WinsockNetLayer::HandleDataReceived(BYTE fromSmallId, BYTE toSmallId, unsigned char* data, unsigned int dataSize)
 {
 	INetworkPlayer* pPlayerFrom = g_NetworkManager.GetPlayerBySmallId(fromSmallId);
@@ -470,7 +529,10 @@ DWORD WINAPI WinsockNetLayer::AcceptThreadProc(LPVOID param)
 {
 	while (s_active)
 	{
-		SOCKET clientSocket = accept(s_listenSocket, NULL, NULL);
+		sockaddr_in remoteAddress;
+		ZeroMemory(&remoteAddress, sizeof(remoteAddress));
+		int remoteAddressLength = sizeof(remoteAddress);
+		SOCKET clientSocket = accept(s_listenSocket, (sockaddr*)&remoteAddress, &remoteAddressLength);
 		if (clientSocket == INVALID_SOCKET)
 		{
 			if (s_active)
@@ -480,6 +542,20 @@ DWORD WINAPI WinsockNetLayer::AcceptThreadProc(LPVOID param)
 
 		int noDelay = 1;
 		setsockopt(clientSocket, IPPROTO_TCP, TCP_NODELAY, (const char*)&noDelay, sizeof(noDelay));
+
+#if defined(MINECRAFT_SERVER_BUILD)
+		if (g_Win64DedicatedServer)
+		{
+			std::string remoteIp;
+			if (TryGetNumericRemoteIp(remoteAddress, &remoteIp) && ServerRuntime::Access::IsIpBanned(remoteIp))
+			{
+				app.DebugPrintf("Win64 LAN: Rejecting banned ip %s\n", remoteIp.c_str());
+				SendRejectWithReason(clientSocket, DisconnectPacket::eDisconnect_Banned);
+				closesocket(clientSocket);
+				continue;
+			}
+		}
+#endif
 
 		extern QNET_STATE _iQNetStubState;
 		if (_iQNetStubState != QNET_STATE_GAME_PLAY)

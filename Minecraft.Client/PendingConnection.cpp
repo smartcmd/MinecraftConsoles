@@ -180,11 +180,21 @@ void PendingConnection::handleLogin(shared_ptr<LoginPacket> packet)
 		duplicateXuid = true;
 	}
 
+	bool bannedXuid = false;
+	if (loginXuid != INVALID_XUID)
+	{
+		bannedXuid = server->getPlayers()->isXuidBanned(loginXuid);
+	}
+	if (!bannedXuid && packet->m_onlineXuid != INVALID_XUID && packet->m_onlineXuid != loginXuid)
+	{
+		bannedXuid = server->getPlayers()->isXuidBanned(packet->m_onlineXuid);
+	}
+
 	if( sentDisconnect )
 	{
 		// Do nothing
 	}
-	else if( server->getPlayers()->isXuidBanned( packet->m_onlineXuid ) )
+	else if (bannedXuid)
 	{
 		disconnect(DisconnectPacket::eDisconnect_Banned);
 	}

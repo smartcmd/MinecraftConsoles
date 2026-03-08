@@ -423,6 +423,12 @@ Minecraft.World/x64_Debug/
 Minecraft.World/Release/
 Minecraft.World/x64_Release/
 
+Minecraft.Server/x64/
+Minecraft.Server/Debug/
+Minecraft.Server/x64_Debug/
+Minecraft.Server/Release/
+Minecraft.Server/x64_Release/
+
 build/*
 
 # Existing build output files
@@ -434,6 +440,9 @@ build/*
 # Local saves
 Minecraft.Client/Saves/
 
+tmp*/
+_server_asset_probe/
+server-data/
 # Visual Studio Per-User Config
 *.user
 /out

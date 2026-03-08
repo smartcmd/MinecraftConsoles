@@ -195,10 +195,12 @@ bool	CGameNetworkManager::StartNetworkGame(Minecraft *minecraft, LPVOID lpParame
 #endif
 
 	int64_t seed = 0;
+	bool dedicatedNoLocalHostPlayer = false;
 	if(lpParameter != NULL)
 	{
 		NetworkGameInitData *param = (NetworkGameInitData *)lpParameter;
 		seed = param->seed;
+		dedicatedNoLocalHostPlayer = param->dedicatedNoLocalHostPlayer;
 
 		app.setLevelGenerationOptions(param->levelGen);
 		if(param->levelGen != NULL)
@@ -354,187 +356,202 @@ bool	CGameNetworkManager::StartNetworkGame(Minecraft *minecraft, LPVOID lpParame
 	// PRIMARY PLAYER
 
 	vector<ClientConnection *> createdConnections;
-	ClientConnection *connection;
+	ClientConnection *connection = NULL;
 
-	if( g_NetworkManager.IsHost() )
+	if( g_NetworkManager.IsHost() && dedicatedNoLocalHostPlayer )
 	{
-		connection = new ClientConnection(minecraft, NULL);
-	}
-	else
-	{
-		INetworkPlayer *pNetworkPlayer = g_NetworkManager.GetLocalPlayerByUserIndex(ProfileManager.GetLockedProfile());
-		if(pNetworkPlayer == NULL)
-		{
-			MinecraftServer::HaltServer();
-			app.DebugPrintf("%d\n",ProfileManager.GetLockedProfile());
-			// If the player is NULL here then something went wrong in the session setup, and continuing will end up in a crash
-			return false;
-		}
+		app.DebugPrintf("Dedicated server mode: skipping local host client connection\n");
 
-		Socket *socket = pNetworkPlayer->GetSocket();
-
-		// Fix for #13259 - CRASH: Gameplay: loading process is halted when player loads saved data
-		if(socket == NULL)
-		{
-			assert(false);
-			MinecraftServer::HaltServer();
-			// If the socket is NULL here then something went wrong in the session setup, and continuing will end up in a crash
-			return false;
-		}
-
-		connection = new ClientConnection(minecraft, socket);
-	}
-
-	if( !connection->createdOk )
-	{
-		assert(false);
-		delete connection;
-		connection = NULL;
-		MinecraftServer::HaltServer();
-		return false;
-	}
-
-	connection->send( shared_ptr<PreLoginPacket>( new PreLoginPacket(minecraft->user->name) ) );
-
-	// Tick connection until we're ready to go. The stages involved in this are:
-	// (1) Creating the ClientConnection sends a prelogin packet to the server
-	// (2) the server sends a prelogin back, which is handled by the clientConnection, and returns a login packet
-	// (3) the server sends a login back, which is handled by the client connection to start the game
-	if( !g_NetworkManager.IsHost() )
-	{
-		Minecraft::GetInstance()->progressRenderer->progressStart(IDS_PROGRESS_CONNECTING);
-	}
-	else
-	{
-		// 4J Stu - Host needs to generate a unique multiplayer id for sentient telemetry reporting
+		// Keep telemetry behavior consistent with host path.
 		INT multiplayerInstanceId = TelemetryManager->GenerateMultiplayerInstanceId();
 		TelemetryManager->SetMultiplayerInstanceId(multiplayerInstanceId);
-	}
-	TexturePack *tPack = Minecraft::GetInstance()->skins->getSelected();
-	do
-	{
-		app.DebugPrintf("ticking connection A\n");
-		connection->tick();
-
-		// 4J Stu - We were ticking this way too fast which could cause the connection to time out
-		// The connections should tick at 20 per second
-		Sleep(50);
-	} while ( (IsInSession() && !connection->isStarted() && !connection->isClosed() && !g_NetworkManager.IsLeavingGame()) || tPack->isLoadingData() || (Minecraft::GetInstance()->skins->needsUIUpdate() || ui.IsReloadingSkin()) );
-	ui.CleanUpSkinReload();
-
-	// 4J Stu - Fix for #11279 - CRASH: TCR 001: BAS Game Stability: Signing out of game will cause title to crash
-	// We need to break out of the above loop if m_bLeavingGame is set, and close the connection
-	if( g_NetworkManager.IsLeavingGame() || !IsInSession() )
-	{
-		connection->close();
-	}
-
-	if( connection->isStarted() && !connection->isClosed() )
-	{
-		createdConnections.push_back( connection );
-
-		int primaryPad = ProfileManager.GetPrimaryPad();
-		app.SetRichPresenceContext(primaryPad,CONTEXT_GAME_STATE_BLANK);
-		if (GetPlayerCount() > 1)	// Are we offline or online, and how many players are there
-		{
-			if (IsLocalGame())	ProfileManager.SetCurrentGameActivity(primaryPad,CONTEXT_PRESENCE_MULTIPLAYEROFFLINE,false);
-			else				ProfileManager.SetCurrentGameActivity(primaryPad,CONTEXT_PRESENCE_MULTIPLAYER,false);
-		}
-		else
-		{
-			if(IsLocalGame())	ProfileManager.SetCurrentGameActivity(primaryPad,CONTEXT_PRESENCE_MULTIPLAYER_1POFFLINE,false);
-			else				ProfileManager.SetCurrentGameActivity(primaryPad,CONTEXT_PRESENCE_MULTIPLAYER_1P,false);
-		}
-
-
-		// ALL OTHER LOCAL PLAYERS
-		for(int idx = 0; idx < XUSER_MAX_COUNT; ++idx)
-		{
-			// Already have setup the primary pad
-			if(idx == ProfileManager.GetPrimaryPad() ) continue;
-
-			if( GetLocalPlayerByUserIndex(idx) != NULL && !ProfileManager.IsSignedIn(idx) )
-			{
-				INetworkPlayer *pNetworkPlayer = g_NetworkManager.GetLocalPlayerByUserIndex(idx);
-				Socket *socket = pNetworkPlayer->GetSocket();
-				app.DebugPrintf("Closing socket due to player %d not being signed in any more\n");
-				if( !socket->close(false) ) socket->close(true);
-
-				continue;
-			}
-
-			// By default when we host we only have the local player, but currently allow multiple local players to join
-			// when joining any other way, so just because they are signed in doesn't mean they are in the session
-			// 4J Stu - If they are in the session, then we should add them to the game. Otherwise we won't be able to add them later
-			INetworkPlayer *pNetworkPlayer = g_NetworkManager.GetLocalPlayerByUserIndex(idx);
-			if( pNetworkPlayer == NULL )
-				continue;
-
-			ClientConnection *connection;
-
-			Socket *socket = pNetworkPlayer->GetSocket();
-			connection = new ClientConnection(minecraft, socket, idx);
-
-			minecraft->addPendingLocalConnection(idx, connection);
-			//minecraft->createExtraLocalPlayer(idx, (convStringToWstring( ProfileManager.GetGamertag(idx) )).c_str(), idx, connection);
-
-			// Open the socket on the server end to accept incoming data
-			Socket::addIncomingSocket(socket);
-
-			connection->send( shared_ptr<PreLoginPacket>( new PreLoginPacket(convStringToWstring( ProfileManager.GetGamertag(idx) )) ) );
-
-			createdConnections.push_back( connection );
-
-			// Tick connection until we're ready to go. The stages involved in this are:
-			// (1) Creating the ClientConnection sends a prelogin packet to the server
-			// (2) the server sends a prelogin back, which is handled by the clientConnection, and returns a login packet
-			// (3) the server sends a login back, which is handled by the client connection to start the game
-			do
-			{
-				// We need to keep ticking the connections for players that already logged in
-                for (auto& it : createdConnections )
-                {
-					if ( it )
-						it->tick();
-				}
-
-				// 4J Stu - We were ticking this way too fast which could cause the connection to time out
-				// The connections should tick at 20 per second
-				Sleep(50);
-				app.DebugPrintf("<***> %d %d %d %d %d\n",IsInSession(), !connection->isStarted(),!connection->isClosed(),ProfileManager.IsSignedIn(idx),!g_NetworkManager.IsLeavingGame());
-#if defined _XBOX || __PS3__
-			} while (IsInSession() && !connection->isStarted() && !connection->isClosed() && ProfileManager.IsSignedIn(idx) && !g_NetworkManager.IsLeavingGame() );
-#else
-				// TODO - This SHOULD be something just like the code above but temporarily changing here so that we don't have to depend on the profilemanager behaviour
-			} while (IsInSession() && !connection->isStarted() && !connection->isClosed() && !g_NetworkManager.IsLeavingGame() );
-#endif
-
-			// 4J Stu - Fix for #11279 - CRASH: TCR 001: BAS Game Stability: Signing out of game will cause title to crash
-			// We need to break out of the above loop if m_bLeavingGame is set, and stop creating new connections
-			// The connections in the createdConnections vector get closed at the end of the thread
-			if( g_NetworkManager.IsLeavingGame() || !IsInSession() ) break;
-
-			if( ProfileManager.IsSignedIn(idx) && !connection->isClosed() )
-			{
-				app.SetRichPresenceContext(idx,CONTEXT_GAME_STATE_BLANK);
-				if (IsLocalGame())	ProfileManager.SetCurrentGameActivity(idx,CONTEXT_PRESENCE_MULTIPLAYEROFFLINE,false);
-				else				ProfileManager.SetCurrentGameActivity(idx,CONTEXT_PRESENCE_MULTIPLAYER,false);
-			}
-			else
-			{
-				connection->close();
-                auto it = find(createdConnections.begin(), createdConnections.end(), connection);
-                if(it != createdConnections.end() ) createdConnections.erase( it );
-			}
-		}
 
 		app.SetGameMode( eMode_Multiplayer );
 	}
-	else if ( connection->isClosed() || !IsInSession())
+	else
 	{
-//		assert(false);
-		MinecraftServer::HaltServer();
-		return false;
+		if( g_NetworkManager.IsHost() )
+		{
+			connection = new ClientConnection(minecraft, NULL);
+		}
+		else
+		{
+			INetworkPlayer *pNetworkPlayer = g_NetworkManager.GetLocalPlayerByUserIndex(ProfileManager.GetLockedProfile());
+			if(pNetworkPlayer == NULL)
+			{
+				MinecraftServer::HaltServer();
+				app.DebugPrintf("%d\n",ProfileManager.GetLockedProfile());
+				// If the player is NULL here then something went wrong in the session setup, and continuing will end up in a crash
+				return false;
+			}
+
+			Socket *socket = pNetworkPlayer->GetSocket();
+
+			// Fix for #13259 - CRASH: Gameplay: loading process is halted when player loads saved data
+			if(socket == NULL)
+			{
+				assert(false);
+				MinecraftServer::HaltServer();
+				// If the socket is NULL here then something went wrong in the session setup, and continuing will end up in a crash
+				return false;
+			}
+
+			connection = new ClientConnection(minecraft, socket);
+		}
+
+		if( !connection->createdOk )
+		{
+			assert(false);
+			delete connection;
+			connection = NULL;
+			MinecraftServer::HaltServer();
+			return false;
+		}
+
+		connection->send( shared_ptr<PreLoginPacket>( new PreLoginPacket(minecraft->user->name) ) );
+
+		// Tick connection until we're ready to go. The stages involved in this are:
+		// (1) Creating the ClientConnection sends a prelogin packet to the server
+		// (2) the server sends a prelogin back, which is handled by the clientConnection, and returns a login packet
+		// (3) the server sends a login back, which is handled by the client connection to start the game
+		if( !g_NetworkManager.IsHost() )
+		{
+			Minecraft::GetInstance()->progressRenderer->progressStart(IDS_PROGRESS_CONNECTING);
+		}
+		else
+		{
+			// 4J Stu - Host needs to generate a unique multiplayer id for sentient telemetry reporting
+			INT multiplayerInstanceId = TelemetryManager->GenerateMultiplayerInstanceId();
+			TelemetryManager->SetMultiplayerInstanceId(multiplayerInstanceId);
+		}
+		TexturePack *tPack = Minecraft::GetInstance()->skins->getSelected();
+		do
+		{
+			app.DebugPrintf("ticking connection A\n");
+			connection->tick();
+
+			// 4J Stu - We were ticking this way too fast which could cause the connection to time out
+			// The connections should tick at 20 per second
+			Sleep(50);
+		} while ( (IsInSession() && !connection->isStarted() && !connection->isClosed() && !g_NetworkManager.IsLeavingGame()) || tPack->isLoadingData() || (Minecraft::GetInstance()->skins->needsUIUpdate() || ui.IsReloadingSkin()) );
+		ui.CleanUpSkinReload();
+
+		// 4J Stu - Fix for #11279 - CRASH: TCR 001: BAS Game Stability: Signing out of game will cause title to crash
+		// We need to break out of the above loop if m_bLeavingGame is set, and close the connection
+		if( g_NetworkManager.IsLeavingGame() || !IsInSession() )
+		{
+			connection->close();
+		}
+
+		if( connection->isStarted() && !connection->isClosed() )
+		{
+			createdConnections.push_back( connection );
+
+			int primaryPad = ProfileManager.GetPrimaryPad();
+			app.SetRichPresenceContext(primaryPad,CONTEXT_GAME_STATE_BLANK);
+			if (GetPlayerCount() > 1)	// Are we offline or online, and how many players are there
+			{
+				if (IsLocalGame())	ProfileManager.SetCurrentGameActivity(primaryPad,CONTEXT_PRESENCE_MULTIPLAYEROFFLINE,false);
+				else				ProfileManager.SetCurrentGameActivity(primaryPad,CONTEXT_PRESENCE_MULTIPLAYER,false);
+			}
+			else
+			{
+				if(IsLocalGame())	ProfileManager.SetCurrentGameActivity(primaryPad,CONTEXT_PRESENCE_MULTIPLAYER_1POFFLINE,false);
+				else				ProfileManager.SetCurrentGameActivity(primaryPad,CONTEXT_PRESENCE_MULTIPLAYER_1P,false);
+			}
+
+
+			// ALL OTHER LOCAL PLAYERS
+			for(int idx = 0; idx < XUSER_MAX_COUNT; ++idx)
+			{
+				// Already have setup the primary pad
+				if(idx == ProfileManager.GetPrimaryPad() ) continue;
+
+				if( GetLocalPlayerByUserIndex(idx) != NULL && !ProfileManager.IsSignedIn(idx) )
+				{
+					INetworkPlayer *pNetworkPlayer = g_NetworkManager.GetLocalPlayerByUserIndex(idx);
+					Socket *socket = pNetworkPlayer->GetSocket();
+					app.DebugPrintf("Closing socket due to player %d not being signed in any more\n");
+					if( !socket->close(false) ) socket->close(true);
+
+					continue;
+				}
+
+				// By default when we host we only have the local player, but currently allow multiple local players to join
+				// when joining any other way, so just because they are signed in doesn't mean they are in the session
+				// 4J Stu - If they are in the session, then we should add them to the game. Otherwise we won't be able to add them later
+				INetworkPlayer *pNetworkPlayer = g_NetworkManager.GetLocalPlayerByUserIndex(idx);
+				if( pNetworkPlayer == NULL )
+					continue;
+
+				ClientConnection *connection;
+
+				Socket *socket = pNetworkPlayer->GetSocket();
+				connection = new ClientConnection(minecraft, socket, idx);
+
+				minecraft->addPendingLocalConnection(idx, connection);
+				//minecraft->createExtraLocalPlayer(idx, (convStringToWstring( ProfileManager.GetGamertag(idx) )).c_str(), idx, connection);
+
+				// Open the socket on the server end to accept incoming data
+				Socket::addIncomingSocket(socket);
+
+				connection->send( shared_ptr<PreLoginPacket>( new PreLoginPacket(convStringToWstring( ProfileManager.GetGamertag(idx) )) ) );
+
+				createdConnections.push_back( connection );
+
+				// Tick connection until we're ready to go. The stages involved in this are:
+				// (1) Creating the ClientConnection sends a prelogin packet to the server
+				// (2) the server sends a prelogin back, which is handled by the clientConnection, and returns a login packet
+				// (3) the server sends a login back, which is handled by the client connection to start the game
+				do
+				{
+					// We need to keep ticking the connections for players that already logged in
+					for (auto& it : createdConnections)
+					{
+						if (it)
+						{
+							it->tick();
+						}
+					}
+
+					// 4J Stu - We were ticking this way too fast which could cause the connection to time out
+					// The connections should tick at 20 per second
+					Sleep(50);
+					app.DebugPrintf("<***> %d %d %d %d %d\n",IsInSession(), !connection->isStarted(),!connection->isClosed(),ProfileManager.IsSignedIn(idx),!g_NetworkManager.IsLeavingGame());
+#if defined _XBOX || __PS3__
+				} while (IsInSession() && !connection->isStarted() && !connection->isClosed() && ProfileManager.IsSignedIn(idx) && !g_NetworkManager.IsLeavingGame() );
+#else
+					// TODO - This SHOULD be something just like the code above but temporarily changing here so that we don't have to depend on the profilemanager behaviour
+				} while (IsInSession() && !connection->isStarted() && !connection->isClosed() && !g_NetworkManager.IsLeavingGame() );
+#endif
+
+				// 4J Stu - Fix for #11279 - CRASH: TCR 001: BAS Game Stability: Signing out of game will cause title to crash
+				// We need to break out of the above loop if m_bLeavingGame is set, and stop creating new connections
+				// The connections in the createdConnections vector get closed at the end of the thread
+				if( g_NetworkManager.IsLeavingGame() || !IsInSession() ) break;
+
+				if( ProfileManager.IsSignedIn(idx) && !connection->isClosed() )
+				{
+					app.SetRichPresenceContext(idx,CONTEXT_GAME_STATE_BLANK);
+					if (IsLocalGame())	ProfileManager.SetCurrentGameActivity(idx,CONTEXT_PRESENCE_MULTIPLAYEROFFLINE,false);
+					else				ProfileManager.SetCurrentGameActivity(idx,CONTEXT_PRESENCE_MULTIPLAYER,false);
+				}
+				else
+				{
+					connection->close();
+					auto it = find(createdConnections.begin(), createdConnections.end(), connection);
+					if(it != createdConnections.end() ) createdConnections.erase( it );
+				}
+			}
+
+			app.SetGameMode( eMode_Multiplayer );
+		}
+		else if ( connection->isClosed() || !IsInSession())
+		{
+//			assert(false);
+			MinecraftServer::HaltServer();
+			return false;
+		}
 	}
 
 

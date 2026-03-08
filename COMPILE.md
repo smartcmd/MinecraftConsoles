@@ -3,7 +3,9 @@
 ## Visual Studio (`.sln`)
 
 1. Open `MinecraftConsoles.sln` in Visual Studio 2022.
-2. Set `Minecraft.Client` as the Startup Project.
+2. Set Startup Project:
+   - Client: `Minecraft.Client`
+   - Dedicated server: `Minecraft.Server`
 3. Select configuration:
    - `Debug` (recommended), or
    - `Release`
@@ -11,6 +13,17 @@
 5. Build and run:
    - `Build > Build Solution` (or `Ctrl+Shift+B`)
    - Start debugging with `F5`.
+
+### Dedicated server debug arguments
+
+- Default debugger arguments for `Minecraft.Server`:
+  - `-port 25565 -bind 0.0.0.0 -name DedicatedServer`
+- You can override arguments in:
+  - `Project Properties > Debugging > Command Arguments`
+- `Minecraft.Server` post-build copies only the dedicated-server asset set:
+  - `Common/Media/MediaWindows64.arc`
+  - `Common/res`
+  - `Windows64/GameHDD`
 
 ## CMake (Windows x64)
 
@@ -32,11 +45,30 @@ Build Release:
 cmake --build build --config Release --target MinecraftClient
 ```
 
+Build Dedicated Server (Debug):
+
+```powershell
+cmake --build build --config Debug --target MinecraftServer
+```
+
+Build Dedicated Server (Release):
+
+```powershell
+cmake --build build --config Release --target MinecraftServer
+```
+
 Run executable:
 
 ```powershell
 cd .\build\Debug
 .\MinecraftClient.exe
+```
+
+Run dedicated server:
+
+```powershell
+cd .\build\Debug
+.\Minecraft.Server.exe -port 25565 -bind 0.0.0.0 -name DedicatedServer
 ```
 
 Notes:

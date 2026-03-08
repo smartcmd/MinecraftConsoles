@@ -46,19 +46,30 @@ void ServerConnection::handleConnection(shared_ptr<PendingConnection> uc)
 
 void ServerConnection::stop()
 {
+	std::vector<shared_ptr<PendingConnection> > pendingSnapshot;
 	EnterCriticalSection(&pending_cs);
-    for (unsigned int i = 0; i < pending.size(); i++)
-	{
-        shared_ptr<PendingConnection> uc = pending[i];
-        uc->connection->close(DisconnectPacket::eDisconnect_Closed);
-    }
+	pendingSnapshot = pending;
 	LeaveCriticalSection(&pending_cs);
 
-    for (unsigned int i = 0; i < players.size(); i++)
+	for (unsigned int i = 0; i < pendingSnapshot.size(); i++)
 	{
-        shared_ptr<PlayerConnection> player = players[i];
-        player->connection->close(DisconnectPacket::eDisconnect_Closed);
-    }
+		shared_ptr<PendingConnection> uc = pendingSnapshot[i];
+		if (uc != NULL && !uc->done)
+		{
+			uc->disconnect(DisconnectPacket::eDisconnect_Closed);
+		}
+	}
+
+	// Disconnect through PlayerConnection so clients receive a proper DisconnectPacket before socket close.
+	std::vector<shared_ptr<PlayerConnection> > playerSnapshot = players;
+	for (unsigned int i = 0; i < playerSnapshot.size(); i++)
+	{
+		shared_ptr<PlayerConnection> player = playerSnapshot[i];
+		if (player != NULL && !player->done)
+		{
+			player->disconnect(DisconnectPacket::eDisconnect_Quitting);
+		}
+	}
 }
 
 void ServerConnection::tick()
