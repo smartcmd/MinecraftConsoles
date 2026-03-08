@@ -1479,10 +1479,15 @@ void Minecraft::run_middle()
 							if(g_KBMInput.IsMouseButtonPressed(KeyboardMouseInput::MOUSE_RIGHT))
 								localplayers[i]->ullButtonsPressed|=1LL<<MINECRAFT_ACTION_USE;
 
-							if (g_KBMInput.IsMouseButtonPressed(KeyboardMouseInput::MOUSE_MIDDLE) && gameMode->hasInfiniteItems() && hitResult && hitResult->type == HitResult::TILE)
+							if (g_KBMInput.IsMouseButtonPressed(KeyboardMouseInput::MOUSE_MIDDLE) && hitResult && hitResult->type == HitResult::TILE)
 							{
+								auto inventory = localplayers[i]->inventory;
+								auto inventoryMenu = localplayers[i]->inventoryMenu;
+								bool isInCreative = gameMode->hasInfiniteItems();
+
 								int x = hitResult->x, y = hitResult->y, z = hitResult->z;
 
+								int containerId = inventoryMenu->containerId;
 								int tileId = level->getTile(x, y, z);
 
 								if (tileId > 0 && tileId < Tile::TILE_NUM_COUNT)
@@ -1492,13 +1497,63 @@ void Minecraft::run_middle()
 									int clonedTileId = tile->cloneTileId(level, x, y, z);
 									int clonedTileData = tile->cloneTileData(level, x, y, z);
 
-									localplayers[i]->inventory->grabTexture(clonedTileId, clonedTileData, true, true);
+									int itemSlot = inventory->getSlot(clonedTileId, clonedTileData);
+									int firstEmpty = inventory->getFreeSlot();
 
-									shared_ptr<ItemInstance> selectedItem = localplayers[i]->inventory->getSelected();
-									if (gameMode && selectedItem)
+									if (itemSlot >= 0)
 									{
-										// Hotbar starts at slot 36
-										gameMode->handleCreativeModeItemAdd(selectedItem, 36 + player->inventory->selected);
+										// Item is already in hotbar
+										if (itemSlot < 9)
+										{
+											inventory->selected = itemSlot;
+										}
+										// There are free slots in the hotbar
+										else if (firstEmpty >= 0 && firstEmpty < 9)
+										{
+											inventory->selected = firstEmpty;
+											// Use quick move the item
+											gameMode->handleInventoryMouseClick(
+												containerId,
+												itemSlot,
+												AbstractContainerMenu::CLICK_QUICK_MOVE,
+												true,
+												localplayers[i]
+											);
+										}
+										// Swap with item in inventory
+										else {
+											int currentHotbarSlot = inventory->selected;
+											short changeUid = inventoryMenu->backup(inventory);
+
+											// Perform client side swap and sync with server using CLICK_SWAP to avoid ghost blocks
+											shared_ptr<ItemInstance> clicked = inventoryMenu->clicked(
+												itemSlot, 
+												currentHotbarSlot, 
+												AbstractContainerMenu::CLICK_SWAP, 
+												localplayers[i]
+											);
+
+											localplayers[i]->connection->send(make_shared<ContainerClickPacket>(
+												containerId, 
+												itemSlot, 
+												currentHotbarSlot, 
+												AbstractContainerMenu::CLICK_SWAP,
+												clicked, 
+												changeUid
+											));
+										}
+									}
+									else if (isInCreative)
+									{
+										localplayers[i]->inventory->grabTexture(clonedTileId, clonedTileData, true, true);
+
+										shared_ptr<ItemInstance> selectedItem = localplayers[i]->inventory->getSelected();
+										if (gameMode && selectedItem)
+										{
+											// Hotbar starts at slot 36
+											// Sync new item instance with the server in creative mode
+											gameMode->handleCreativeModeItemAdd(selectedItem, 36 + localplayers[i]->inventory->selected);
+										}
 									}
 								}
 							}

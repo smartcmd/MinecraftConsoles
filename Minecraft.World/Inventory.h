@@ -39,13 +39,11 @@ public:
 	bool IsHeldItem();
 	static int getSelectionSize();
 
-private:
 	int getSlot(int tileId);
 	int getSlot(int tileId, int data);
 
 	int getSlotWithRemainingSpace(shared_ptr<ItemInstance> item);
 
-public:
 	int getFreeSlot();
 	void grabTexture(int id, int data, bool checkData, bool mayReplace);
 	void swapPaint(int wheel);
