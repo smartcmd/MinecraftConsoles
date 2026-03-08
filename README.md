@@ -6,7 +6,7 @@
 
 ## Introduction
 
-This is a fork of [MinecraftConsoles](https://github.com/smartcmd/MinecraftConsoles)
+This is a fork of [MinecraftConsoles](https://github.com/smartcmd/MinecraftConsoles) that tries to fix the debug exe and make it launch again without visual studio
 
 ## Download
 [Here](https://github.com/Tuff-CWC/MinecraftConsolesDebug/releases/tag/nightly)
