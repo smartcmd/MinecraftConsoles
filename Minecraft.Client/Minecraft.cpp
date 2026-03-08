@@ -1454,6 +1454,7 @@ void Minecraft::run_middle()
 					if(InputManager.ButtonPressed(i, ACTION_MENU_GTC_PAUSE))					localplayers[i]->ullButtonsPressed|=1LL<<ACTION_MENU_GTC_PAUSE;
 #endif
 					if(InputManager.ButtonPressed(i, MINECRAFT_ACTION_DROP))					localplayers[i]->ullButtonsPressed|=1LL<<MINECRAFT_ACTION_DROP;
+					if(InputManager.ButtonPressed(i, MINECRAFT_ACTION_PICK_ITEM))				localplayers[i]->ullButtonsPressed|=1LL<<MINECRAFT_ACTION_PICK_ITEM;
 
 					// 4J-PB - If we're flying, the sneak needs to be held on to go down
 					if(localplayers[i]->abilities.flying)
