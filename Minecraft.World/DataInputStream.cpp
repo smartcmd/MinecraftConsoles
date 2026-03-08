@@ -182,6 +182,20 @@ bool DataInputStream::readFully(byteArray b)
 	return true;
 }
 
+bool DataInputStream::readFully(charArray b)
+{
+    for (unsigned int i = 0; i < b.length; i++)
+    {
+        int byteRead = stream->read();
+        if (byteRead == -1)
+        {
+            throw EOFException(L"DataInputStream::readFully - end of stream");
+        }
+        b[i] = byteRead;
+    }
+    return true;
+}
+
 //Reads eight input bytes and returns a double value. It does this by first constructing a long value in exactly the manner
 //of the readlong method, then converting this long value to a double in exactly the manner of the method Double.longBitsToDouble.
 //This method is suitable for reading bytes written by the writeDouble method of interface DataOutput.
