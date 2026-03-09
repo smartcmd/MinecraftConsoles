@@ -739,9 +739,9 @@ void Chunk::rebuild_SPU()
 				{
 					// 4J - get tile from those copied into our local array in earlier optimisation
 					unsigned char tileId = pOutData->getTile(x,y,z);
-					if (tileId > 0)
+                    if (tileId > 0 && tileId != 0xff)
 					{
-						if (currentLayer == 0 && Tile::tiles[tileId]->isEntityTile())
+                        if (currentLayer == 0 && Tile::tiles[tileId] && Tile::tiles[tileId]->isEntityTile())
 						{
 							shared_ptr<TileEntity> et = region.getTileEntity(x, y, z);
 							if (TileEntityRenderDispatcher::instance->hasRenderer(et))
@@ -754,6 +754,7 @@ void Chunk::rebuild_SPU()
 						{
 
 							Tile *tile = Tile::tiles[tileId];
+							if (!tile) continue;
 							int renderLayer = tile->getRenderLayer();
 
 							if (renderLayer != currentLayer)

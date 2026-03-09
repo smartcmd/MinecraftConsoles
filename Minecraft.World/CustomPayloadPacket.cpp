@@ -43,7 +43,7 @@ void CustomPayloadPacket::read(DataInputStream *dis)
 	identifier = readUtf(dis, 20);
 	length = dis->readShort();
 
-	if (length > 0 && length < Short::MAX_VALUE)
+	if (length > 0 && length <= Short::MAX_VALUE)
 	{
 		if(data.data != nullptr)
 		{

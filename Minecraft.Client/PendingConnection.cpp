@@ -190,34 +190,11 @@ void PendingConnection::handleLogin(shared_ptr<LoginPacket> packet)
 	}
 	else if (duplicateXuid)
 	{
-		// The old player is still in PlayerList (disconnect hasn't been
-		// processed yet).  Force-close the stale connection so the
-		// reconnecting client isn't rejected.
-		app.DebugPrintf("RECONNECT: Duplicate xuid for name: %ls, forcing old connection closed\n", name.c_str());
-		shared_ptr<ServerPlayer> stalePlayer = server->getPlayers()->getPlayer(loginXuid);
-		if (stalePlayer == nullptr && packet->m_onlineXuid != INVALID_XUID)
-			stalePlayer = server->getPlayers()->getPlayer(packet->m_onlineXuid);
-
-		if (stalePlayer != nullptr && stalePlayer->connection != nullptr)
-		{
-			BYTE oldSmallId = 0;
-			if (stalePlayer->connection->connection != nullptr && stalePlayer->connection->connection->getSocket() != nullptr)
-				oldSmallId = stalePlayer->connection->connection->getSocket()->getSmallId();
-			app.DebugPrintf("RECONNECT: Force-disconnecting old player smallId=%d\n", oldSmallId);
-			stalePlayer->connection->disconnect(DisconnectPacket::eDisconnect_Closed);
-
-			// Queue the old SmallId for recycling so it's not permanently leaked.
-			// PlayerList::tick() will call PushFreeSmallId/ClearSocketForSmallId.
-			if (oldSmallId != 0)
-				server->getPlayers()->queueSmallIdForRecycle(oldSmallId);
-
-			app.DebugPrintf("RECONNECT: Old player force-disconnect complete\n");
-		}
-
-		// Accept the login now that the old entry is removed.
-		app.DebugPrintf("RECONNECT: Calling handleAcceptedLogin for new connection\n");
-		handleAcceptedLogin(packet);
-		app.DebugPrintf("RECONNECT: handleAcceptedLogin complete\n");
+		// Reject the incoming connection — a player with this UID is already
+		// on the server.  Allowing duplicates causes invisible players and
+		// other undefined behaviour.
+		app.DebugPrintf("LOGIN: Rejecting duplicate xuid for name: %ls\n", name.c_str());
+		disconnect(DisconnectPacket::eDisconnect_Banned);
 	}
 #ifdef _WINDOWS64
 	else if (g_bRejectDuplicateNames)

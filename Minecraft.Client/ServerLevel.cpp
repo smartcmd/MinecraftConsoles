@@ -1077,7 +1077,12 @@ void ServerLevel::entityRemoved(shared_ptr<Entity> e)
 
 shared_ptr<Entity> ServerLevel::getEntity(int id)
 {
-	return entitiesById[id];
+    auto it = entitiesById.find(id);
+    if (it != entitiesById.end())
+    {
+        return it->second;
+    }
+    return nullptr;
 }
 
 bool ServerLevel::addGlobalEntity(shared_ptr<Entity> e)

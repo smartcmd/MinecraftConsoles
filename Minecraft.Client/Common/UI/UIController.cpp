@@ -522,33 +522,9 @@ void UIController::tick()
 
 void UIController::loadSkins()
 {
-	wstring platformSkinPath = L"";
-
 #ifdef __PS3__
-	platformSkinPath = L"skinPS3.swf";
-#elif defined __PSVITA__
-	platformSkinPath = L"skinVita.swf";
-#elif defined _WINDOWS64
-	// Windows64/Durango/Orbis always load HD skin libraries unconditionally,
-	// which import "platformskinHD.swf" by name.  The platform skin must
-	// therefore always be the HD variant regardless of screen resolution.
-	platformSkinPath = L"skinHDWin.swf";
-#elif defined _DURANGO
-	platformSkinPath = L"skinHDDurango.swf";
-#elif defined __ORBIS__
-	platformSkinPath = L"skinHDOrbis.swf";
+	m_iggyLibraries[eLibrary_Platform] = loadSkin(L"skinPS3.swf", L"platformskin.swf");
 
-#endif
-	// Every platform has one of these, so nothing shared.
-	// On HD platforms (Win64/Durango/Orbis) the skin libraries always import
-	// "platformskinHD.swf", so we must register under that name at any resolution.
-#if defined(_WINDOWS64) || defined(_DURANGO) || defined(__ORBIS__)
-	m_iggyLibraries[eLibrary_Platform] = loadSkin(platformSkinPath, L"platformskinHD.swf");
-#else
-	m_iggyLibraries[eLibrary_Platform] = loadSkin(platformSkinPath, L"platformskin.swf");
-#endif
-
-#if defined(__PS3__) || defined(__PSVITA__)
 	m_iggyLibraries[eLibrary_GraphicsDefault] = loadSkin(L"skinGraphics.swf", L"skinGraphics.swf");
 	m_iggyLibraries[eLibrary_GraphicsHUD] = loadSkin(L"skinGraphicsHud.swf", L"skinGraphicsHud.swf");
 	m_iggyLibraries[eLibrary_GraphicsInGame] = loadSkin(L"skinGraphicsInGame.swf", L"skinGraphicsInGame.swf");
@@ -559,13 +535,28 @@ void UIController::loadSkins()
 	m_iggyLibraries[eLibrary_HUD] = loadSkin(L"skinHud.swf", L"skinHud.swf");
 	m_iggyLibraries[eLibrary_Tooltips] = loadSkin(L"skinTooltips.swf", L"skinTooltips.swf");
 	m_iggyLibraries[eLibrary_Default] = loadSkin(L"skin.swf", L"skin.swf");
-#endif
 
-#if ( defined(_WINDOWS64) || defined(_DURANGO) || defined(__ORBIS__) )
+#elif defined __PSVITA__
+	m_iggyLibraries[eLibrary_Platform] = loadSkin(L"skinVita.swf", L"platformskin.swf");
 
-#if defined(_WINDOWS64)
-	// 4J Stu - Load the 720/480 skins so that we have something to fallback on during development
-#ifndef _FINAL_BUILD
+	m_iggyLibraries[eLibrary_GraphicsDefault] = loadSkin(L"skinGraphics.swf", L"skinGraphics.swf");
+	m_iggyLibraries[eLibrary_GraphicsHUD] = loadSkin(L"skinGraphicsHud.swf", L"skinGraphicsHud.swf");
+	m_iggyLibraries[eLibrary_GraphicsInGame] = loadSkin(L"skinGraphicsInGame.swf", L"skinGraphicsInGame.swf");
+	m_iggyLibraries[eLibrary_GraphicsTooltips] = loadSkin(L"skinGraphicsTooltips.swf", L"skinGraphicsTooltips.swf");
+	m_iggyLibraries[eLibrary_GraphicsLabels] = loadSkin(L"skinGraphicsLabels.swf", L"skinGraphicsLabels.swf");
+	m_iggyLibraries[eLibrary_Labels] = loadSkin(L"skinLabels.swf", L"skinLabels.swf");
+	m_iggyLibraries[eLibrary_InGame] = loadSkin(L"skinInGame.swf", L"skinInGame.swf");
+	m_iggyLibraries[eLibrary_HUD] = loadSkin(L"skinHud.swf", L"skinHud.swf");
+	m_iggyLibraries[eLibrary_Tooltips] = loadSkin(L"skinTooltips.swf", L"skinTooltips.swf");
+	m_iggyLibraries[eLibrary_Default] = loadSkin(L"skin.swf", L"skin.swf");
+
+#elif defined _WINDOWS64
+	// HD platform skin — required by skinHD*.swf (1080p scene SWFs)
+	m_iggyLibraries[eLibrary_Platform] = loadSkin(L"skinHDWin.swf", L"platformskinHD.swf");
+	// Non-HD platform skin — required by skin*.swf (720p/480p scene SWFs)
+	m_iggyLibraries[eLibraryFallback_Platform] = loadSkin(L"skinWin.swf", L"platformskin.swf");
+
+	// Non-HD skin set (720p/480p scenes import these)
 	m_iggyLibraries[eLibraryFallback_GraphicsDefault] = loadSkin(L"skinGraphics.swf", L"skinGraphics.swf");
 	m_iggyLibraries[eLibraryFallback_GraphicsHUD] = loadSkin(L"skinGraphicsHud.swf", L"skinGraphicsHud.swf");
 	m_iggyLibraries[eLibraryFallback_GraphicsInGame] = loadSkin(L"skinGraphicsInGame.swf", L"skinGraphicsInGame.swf");
@@ -576,8 +567,21 @@ void UIController::loadSkins()
 	m_iggyLibraries[eLibraryFallback_HUD] = loadSkin(L"skinHud.swf", L"skinHud.swf");
 	m_iggyLibraries[eLibraryFallback_Tooltips] = loadSkin(L"skinTooltips.swf", L"skinTooltips.swf");
 	m_iggyLibraries[eLibraryFallback_Default] = loadSkin(L"skin.swf", L"skin.swf");
-#endif
-#endif
+
+	// HD skin set (1080p scenes import these)
+	m_iggyLibraries[eLibrary_GraphicsDefault] = loadSkin(L"skinHDGraphics.swf", L"skinHDGraphics.swf");
+	m_iggyLibraries[eLibrary_GraphicsHUD] = loadSkin(L"skinHDGraphicsHud.swf", L"skinHDGraphicsHud.swf");
+	m_iggyLibraries[eLibrary_GraphicsInGame] = loadSkin(L"skinHDGraphicsInGame.swf", L"skinHDGraphicsInGame.swf");
+	m_iggyLibraries[eLibrary_GraphicsTooltips] = loadSkin(L"skinHDGraphicsTooltips.swf", L"skinHDGraphicsTooltips.swf");
+	m_iggyLibraries[eLibrary_GraphicsLabels] = loadSkin(L"skinHDGraphicsLabels.swf", L"skinHDGraphicsLabels.swf");
+	m_iggyLibraries[eLibrary_Labels] = loadSkin(L"skinHDLabels.swf", L"skinHDLabels.swf");
+	m_iggyLibraries[eLibrary_InGame] = loadSkin(L"skinHDInGame.swf", L"skinHDInGame.swf");
+	m_iggyLibraries[eLibrary_HUD] = loadSkin(L"skinHDHud.swf", L"skinHDHud.swf");
+	m_iggyLibraries[eLibrary_Tooltips] = loadSkin(L"skinHDTooltips.swf", L"skinHDTooltips.swf");
+	m_iggyLibraries[eLibrary_Default] = loadSkin(L"skinHD.swf", L"skinHD.swf");
+
+#elif defined _DURANGO
+	m_iggyLibraries[eLibrary_Platform] = loadSkin(L"skinHDDurango.swf", L"platformskinHD.swf");
 
 	m_iggyLibraries[eLibrary_GraphicsDefault] = loadSkin(L"skinHDGraphics.swf", L"skinHDGraphics.swf");
 	m_iggyLibraries[eLibrary_GraphicsHUD] = loadSkin(L"skinHDGraphicsHud.swf", L"skinHDGraphicsHud.swf");
@@ -589,7 +593,21 @@ void UIController::loadSkins()
 	m_iggyLibraries[eLibrary_HUD] = loadSkin(L"skinHDHud.swf", L"skinHDHud.swf");
 	m_iggyLibraries[eLibrary_Tooltips] = loadSkin(L"skinHDTooltips.swf", L"skinHDTooltips.swf");
 	m_iggyLibraries[eLibrary_Default] = loadSkin(L"skinHD.swf", L"skinHD.swf");
-#endif // HD platforms
+
+#elif defined __ORBIS__
+	m_iggyLibraries[eLibrary_Platform] = loadSkin(L"skinHDOrbis.swf", L"platformskinHD.swf");
+
+	m_iggyLibraries[eLibrary_GraphicsDefault] = loadSkin(L"skinHDGraphics.swf", L"skinHDGraphics.swf");
+	m_iggyLibraries[eLibrary_GraphicsHUD] = loadSkin(L"skinHDGraphicsHud.swf", L"skinHDGraphicsHud.swf");
+	m_iggyLibraries[eLibrary_GraphicsInGame] = loadSkin(L"skinHDGraphicsInGame.swf", L"skinHDGraphicsInGame.swf");
+	m_iggyLibraries[eLibrary_GraphicsTooltips] = loadSkin(L"skinHDGraphicsTooltips.swf", L"skinHDGraphicsTooltips.swf");
+	m_iggyLibraries[eLibrary_GraphicsLabels] = loadSkin(L"skinHDGraphicsLabels.swf", L"skinHDGraphicsLabels.swf");
+	m_iggyLibraries[eLibrary_Labels] = loadSkin(L"skinHDLabels.swf", L"skinHDLabels.swf");
+	m_iggyLibraries[eLibrary_InGame] = loadSkin(L"skinHDInGame.swf", L"skinHDInGame.swf");
+	m_iggyLibraries[eLibrary_HUD] = loadSkin(L"skinHDHud.swf", L"skinHDHud.swf");
+	m_iggyLibraries[eLibrary_Tooltips] = loadSkin(L"skinHDTooltips.swf", L"skinHDTooltips.swf");
+	m_iggyLibraries[eLibrary_Default] = loadSkin(L"skinHD.swf", L"skinHD.swf");
+#endif
 }
 
 IggyLibrary UIController::loadSkin(const wstring &skinPath, const wstring &skinName)
@@ -1810,14 +1828,24 @@ GDrawTexture * RADLINK UIController::TextureSubstitutionCreateCallback ( void * 
 
 			// 4J Stu - All our flash controls that allow replacing textures use a special 64x64 symbol
 			// Force this size here so that our images don't get scaled wildly
-	#if (defined __ORBIS__ || defined _DURANGO || defined _WINDOWS64 )
+	#if (defined __ORBIS__ || defined _DURANGO )
 			*width = 96;
 			*height = 96;
 	#else
 			*width = 64;
 			*height = 64;
-
 	#endif
+
+	#if defined _WINDOWS64
+            // Only set the size to 96x96 for 1080p on Windows
+            UIScene *scene = uiController->GetTopScene(0);
+            if (scene->getSceneResolution() == UIScene::eSceneResolution_1080)
+            {
+                *width = 96;
+                *height = 96;
+			}
+	#endif
+
 			*destroy_callback_data = (void *)id;
 
 			app.DebugPrintf("Found substitution texture %ls (%d) - %dx%d\n", static_cast<wchar_t *>(texture_name), id, image.getWidth(), image.getHeight());

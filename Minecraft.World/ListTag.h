@@ -26,21 +26,16 @@ public:
 
 	void load(DataInput *dis, int tagDepth)
 	{
-		if (tagDepth > MAX_DEPTH)
-		{
-#ifndef _CONTENT_PACKAGE
-			printf("Tried to read NBT tag with too high complexity, depth > %d", MAX_DEPTH);
-			__debugbreak();
-#endif
-			return;
-		}
 		type = dis->readByte();
 		int size = dis->readInt();
+        if (size < 0 || size > MAX_DEPTH)
+			size = 0;
 
 		list.clear();
 		for (int i = 0; i < size; i++)
 		{
 			Tag *tag = Tag::newTag(type, L"");
+            if (tag == nullptr) break;
 			tag->load(dis, tagDepth);
 			list.push_back(tag);
 		}
