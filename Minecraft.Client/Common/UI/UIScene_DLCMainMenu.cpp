@@ -121,11 +121,11 @@ void UIScene_DLCMainMenu::handleInput(int iPad, int key, bool repeat, bool press
 
 void UIScene_DLCMainMenu::handlePress(F64 controlId, F64 childId)
 {
-	switch((int)controlId)
+	switch(static_cast<int>(controlId))
 	{
 	case eControl_OffersList:
 		{
-			int iIndex = (int)childId;
+			int iIndex = static_cast<int>(childId);
 			DLCOffersParam *param = new DLCOffersParam();
 			param->iPad = m_iPad;
 
@@ -134,7 +134,7 @@ void UIScene_DLCMainMenu::handlePress(F64 controlId, F64 childId)
 
 			// Xbox One will have requested the marketplace content - there is only that type
 #ifndef _XBOX_ONE
-			app.AddDLCRequest((eDLCMarketplaceType)iIndex, true);
+			app.AddDLCRequest(static_cast<eDLCMarketplaceType>(iIndex), true);
 #endif
 			killTimer(PLAYER_ONLINE_TIMER_ID);
 			ui.NavigateToScene(m_iPad, eUIScene_DLCOffersMenu, param);
@@ -166,7 +166,7 @@ void UIScene_DLCMainMenu::handleTimerComplete(int id)
 
 int UIScene_DLCMainMenu::ExitDLCMainMenu(void *pParam,int iPad,C4JStorage::EMessageResult result)
 {
-	UIScene_DLCMainMenu* pClass = (UIScene_DLCMainMenu*)pParam;
+	UIScene_DLCMainMenu* pClass = static_cast<UIScene_DLCMainMenu *>(pParam);
 
 #if defined __ORBIS__ || defined __PSVITA__
 	app.GetCommerce()->HidePsStoreIcon();

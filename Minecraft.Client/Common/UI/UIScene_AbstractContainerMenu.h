@@ -38,6 +38,7 @@ public:
 	int getPad() { return m_iPad; }
 	int getMovieWidth() { return m_movieWidth; }
 	int getMovieHeight() { return m_movieHeight; }
+	void getMouseToSWFScale(float &scaleX, float &scaleY);
 	bool getIgnoreInput() { return m_bIgnoreInput; }
 	void setIgnoreInput(bool bVal) { m_bIgnoreInput=bVal; }
 
@@ -53,7 +54,7 @@ protected:
 	virtual bool isSlotEmpty(ESceneSection eSection, int iSlot);
 	virtual void adjustPointerForSafeZone();
 
-	virtual UIControl *getSection(ESceneSection eSection) { return NULL; }
+	virtual UIControl *getSection(ESceneSection eSection) { return nullptr; }
 	virtual int GetBaseSlotCount() { return 0; }
 
 public:

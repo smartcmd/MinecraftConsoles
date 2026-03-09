@@ -593,11 +593,11 @@ void UIScene_Credits::tick()
 		}
 
 		// Set up the new text element.
-		if(pDef->m_Text!=NULL) // 4J-PB - think the RAD logo ones aren't set up yet and are coming is as null
+		if(pDef->m_Text!=nullptr) // 4J-PB - think the RAD logo ones aren't set up yet and are coming is as null
 		{
 			if ( pDef->m_iStringID[0] == CREDIT_ICON )
 			{
-				addImage((ECreditIcons)pDef->m_iStringID[1]);
+				addImage(static_cast<ECreditIcons>(pDef->m_iStringID[1]));
 			}			
 			else // using additional translated string.
 			{
@@ -670,7 +670,7 @@ void UIScene_Credits::setNextLabel(const wstring &label, ECreditTextTypes size)
 	value[0].string16 = stringVal;
 
 	value[1].type = IGGY_DATATYPE_number;
-	value[1].number = (int)size;
+	value[1].number = static_cast<int>(size);
 
 	value[2].type = IGGY_DATATYPE_boolean;
 	value[2].boolval = (m_iCurrDefIndex == (m_iNumTextDefs - 1));
@@ -684,7 +684,7 @@ void UIScene_Credits::addImage(ECreditIcons icon)
 	IggyDataValue value[2];
 
 	value[0].type = IGGY_DATATYPE_number;
-	value[0].number = (int)icon;
+	value[0].number = static_cast<int>(icon);
 
 	value[1].type = IGGY_DATATYPE_boolean;
 	value[1].boolval = (m_iCurrDefIndex == (m_iNumTextDefs - 1));

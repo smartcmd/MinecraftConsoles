@@ -38,7 +38,7 @@ void DefaultDispenseItemBehavior::spawnItem(Level *world, shared_ptr<ItemInstanc
 	double spawnY = position->getY();
 	double spawnZ = position->getZ();
 
-	shared_ptr<ItemEntity> itemEntity = shared_ptr<ItemEntity>(new ItemEntity(world, spawnX, spawnY - 0.3, spawnZ, item));
+	shared_ptr<ItemEntity> itemEntity = std::make_shared<ItemEntity>(world, spawnX, spawnY - 0.3, spawnZ, item);
 
 	double pow = world->random->nextDouble() * 0.1 + 0.2;
 	itemEntity->xd = facing->getStepX() * pow;

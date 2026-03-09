@@ -293,7 +293,7 @@ typedef struct
 
 	// Messages
 	C4JStorage::EMessageResult			RequestMessageBox(UINT uiTitle, UINT uiText, UINT *uiOptionA,UINT uiOptionC, DWORD dwPad=USER_INDEX_ANY,
-		int( *Func)(LPVOID,int,const C4JStorage::EMessageResult)=NULL,LPVOID lpParam=NULL, StringTable *pStringTable=NULL, WCHAR *pwchFormatString=NULL,DWORD dwFocusButton=0);
+		int( *Func)(LPVOID,int,const C4JStorage::EMessageResult)=nullptr,LPVOID lpParam=nullptr, StringTable *pStringTable=nullptr, WCHAR *pwchFormatString=nullptr,DWORD dwFocusButton=0);
 
 
 	C4JStorage::EMessageResult			GetMessageBoxResult();
@@ -350,7 +350,7 @@ typedef struct
 	void						FreeSaveData();
 	void						SetSaveDataSize(unsigned int uiBytes); // after a successful compression, update the size of the gamedata
 
-	//void						SaveSaveData(unsigned int uiBytes,PBYTE pbThumbnail=NULL,DWORD cbThumbnail=0,PBYTE pbTextData=NULL, DWORD dwTextLen=0);
+	//void						SaveSaveData(unsigned int uiBytes,PBYTE pbThumbnail=nullptr,DWORD cbThumbnail=0,PBYTE pbTextData=nullptr, DWORD dwTextLen=0);
 	C4JStorage::ESaveGameState		SaveSaveData(int( *Func)(LPVOID ,const bool),LPVOID lpParam, bool bDataFileOnly = false);
 	void						CopySaveDataToNewSave(PBYTE pbThumbnail,DWORD cbThumbnail,WCHAR *wchNewName,int ( *Func)(LPVOID lpParam, bool), LPVOID lpParam);
 	void						SetSaveDeviceSelected(unsigned int uiPad,bool bSelected);	
@@ -383,8 +383,8 @@ typedef struct
 	DWORD								GetAvailableDLCCount( int iPad);
 	CONTENT_DATA&						GetDLC(DWORD dw);
 	C4JStorage::EDLCStatus				GetInstalledDLC(int iPad,int( *Func)(LPVOID, int, int),LPVOID lpParam);
-	DWORD								MountInstalledDLC(int iPad,DWORD dwDLC,int( *Func)(LPVOID, int, DWORD,DWORD),LPVOID lpParam,LPCSTR szMountDrive = NULL);
-	DWORD								UnmountInstalledDLC(LPCSTR szMountDrive = NULL);
+	DWORD								MountInstalledDLC(int iPad,DWORD dwDLC,int( *Func)(LPVOID, int, DWORD,DWORD),LPVOID lpParam,LPCSTR szMountDrive = nullptr);
+	DWORD								UnmountInstalledDLC(LPCSTR szMountDrive = nullptr);
 	void								GetMountedDLCFileList(const char* szMountDrive, std::vector<std::string>& fileList);
 	std::string							GetMountedPath(std::string szMount);
 	C4JStorage::ETMSStatus				ReadTMSFile(int iQuadrant,eGlobalStorage eStorageFacility,C4JStorage::eTMS_FileType eFileType, WCHAR *pwchFilename,BYTE **ppBuffer,DWORD *pdwBufferSize,int( *Func)(LPVOID, WCHAR *,int, bool, int),LPVOID lpParam, int iAction) { return C4JStorage::ETMSStatus_Idle; }
@@ -400,7 +400,7 @@ typedef struct
 	
 	bool								CheckForTrialUpgradeKey(void( *Func)(LPVOID, bool),LPVOID lpParam);
 
-	C4JStorage::ETMSStatus				TMSPP_ReadFile(int iPad,C4JStorage::eGlobalStorage eStorageFacility,C4JStorage::eTMS_FILETYPEVAL eFileTypeVal,LPCSTR szFilename,int( *Func)(LPVOID,int,int,PTMSPP_FILEDATA, LPCSTR)/*=NULL*/,LPVOID lpParam/*=NULL*/, int iUserData/*=0*/) {return C4JStorage::ETMSStatus_Idle;}
+	C4JStorage::ETMSStatus				TMSPP_ReadFile(int iPad,C4JStorage::eGlobalStorage eStorageFacility,C4JStorage::eTMS_FILETYPEVAL eFileTypeVal,LPCSTR szFilename,int( *Func)(LPVOID,int,int,PTMSPP_FILEDATA, LPCSTR)/*=nullptr*/,LPVOID lpParam/*=nullptr*/, int iUserData/*=0*/) {return C4JStorage::ETMSStatus_Idle;}
 
 	// PROFILE DATA
 	int					SetDefaultOptionsCallback(int( *Func)(LPVOID,PROFILESETTINGS *, const int iPad),LPVOID lpParam);

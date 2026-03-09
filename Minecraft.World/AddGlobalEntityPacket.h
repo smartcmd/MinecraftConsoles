@@ -20,6 +20,6 @@ public:
 	virtual int getEstimatedSize();
 
 public:
-	static shared_ptr<Packet> create() { return shared_ptr<Packet>(new AddGlobalEntityPacket()); }
+	static shared_ptr<Packet> create() { return std::make_shared<AddGlobalEntityPacket>(); }
 	virtual int getId() { return 71; }
 };

@@ -46,10 +46,10 @@ void HopperTileEntity::save(CompoundTag *base)
 
 	for (int i = 0; i < items.length; i++)
 	{
-		if (items[i] != NULL)
+		if (items[i] != nullptr)
 		{
 			CompoundTag *tag = new CompoundTag();
-			tag->putByte(L"Slot", (byte) i);
+			tag->putByte(L"Slot", static_cast<byte>(i));
 			items[i]->save(tag);
 			listTag->add(tag);
 		}
@@ -76,7 +76,7 @@ shared_ptr<ItemInstance> HopperTileEntity::getItem(unsigned int slot)
 
 shared_ptr<ItemInstance> HopperTileEntity::removeItem(unsigned int slot, int count)
 {
-	if (items[slot] != NULL)
+	if (items[slot] != nullptr)
 	{
 		if (items[slot]->count <= count)
 		{
@@ -96,7 +96,7 @@ shared_ptr<ItemInstance> HopperTileEntity::removeItem(unsigned int slot, int cou
 
 shared_ptr<ItemInstance> HopperTileEntity::removeItemNoUpdate(int slot)
 {
-	if (items[slot] != NULL)
+	if (items[slot] != nullptr)
 	{
 		shared_ptr<ItemInstance> item = items[slot];
 		items[slot] = nullptr;
@@ -108,7 +108,7 @@ shared_ptr<ItemInstance> HopperTileEntity::removeItemNoUpdate(int slot)
 void HopperTileEntity::setItem(unsigned int slot, shared_ptr<ItemInstance> item)
 {
 	items[slot] = item;
-	if (item != NULL && item->count > getMaxStackSize()) item->count = getMaxStackSize();
+	if (item != nullptr && item->count > getMaxStackSize()) item->count = getMaxStackSize();
 }
 
 wstring HopperTileEntity::getName()
@@ -158,7 +158,7 @@ bool HopperTileEntity::canPlaceItem(int slot, shared_ptr<ItemInstance> item)
 
 void HopperTileEntity::tick()
 {
-	if (level == NULL || level->isClientSide) return;
+	if (level == nullptr || level->isClientSide) return;
 
 	cooldownTime--;
 
@@ -171,7 +171,7 @@ void HopperTileEntity::tick()
 
 bool HopperTileEntity::tryMoveItems()
 {
-	if (level == NULL || level->isClientSide) return false;
+	if (level == nullptr || level->isClientSide) return false;
 
 	if (!isOnCooldown() && HopperTile::isTurnedOn(getData()))
 	{
@@ -192,19 +192,19 @@ bool HopperTileEntity::tryMoveItems()
 bool HopperTileEntity::ejectItems()
 {
 	shared_ptr<Container> container = getAttachedContainer();
-	if (container == NULL)
+	if (container == nullptr)
 	{
 		return false;
 	}
 
 	for (int slot = 0; slot < getContainerSize(); slot++)
 	{
-		if (getItem(slot) == NULL) continue;
+		if (getItem(slot) == nullptr) continue;
 
 		shared_ptr<ItemInstance> original = getItem(slot)->copy();
 		shared_ptr<ItemInstance> result = addItem(container.get(), removeItem(slot, 1), Facing::OPPOSITE_FACING[HopperTile::getAttachedFace(getData())]);
 
-		if (result == NULL || result->count == 0)
+		if (result == nullptr || result->count == 0)
 		{
 			container->setChanged();
 			return true;
@@ -222,12 +222,12 @@ bool HopperTileEntity::suckInItems(Hopper *hopper)
 {
 	shared_ptr<Container> container = getSourceContainer(hopper);
 
-	if (container != NULL)
+	if (container != nullptr)
 	{
 		int face = Facing::DOWN;
 
 		shared_ptr<WorldlyContainer> worldly = dynamic_pointer_cast<WorldlyContainer>(container);
-		if ( (worldly != NULL) && (face > -1) )
+		if ( (worldly != nullptr) && (face > -1) )
 		{
 			intArray slots = worldly->getSlotsForFace(face);
 
@@ -249,7 +249,7 @@ bool HopperTileEntity::suckInItems(Hopper *hopper)
 	{
 		shared_ptr<ItemEntity> above = getItemAt(hopper->getLevel(), hopper->getLevelX(), hopper->getLevelY() + 1, hopper->getLevelZ());
 
-		if (above != NULL)
+		if (above != nullptr)
 		{
 			return addItem(hopper, above);
 		}
@@ -262,12 +262,12 @@ bool HopperTileEntity::tryTakeInItemFromSlot(Hopper *hopper, Container *containe
 {
 	shared_ptr<ItemInstance> item = container->getItem(slot);
 
-	if (item != NULL && canTakeItemFromContainer(container, item, slot, face))
+	if (item != nullptr && canTakeItemFromContainer(container, item, slot, face))
 	{
 		shared_ptr<ItemInstance> original = item->copy();
 		shared_ptr<ItemInstance> result = addItem(hopper, container->removeItem(slot, 1), -1);
 
-		if (result == NULL || result->count == 0)
+		if (result == nullptr || result->count == 0)
 		{
 			container->setChanged();
 			return true;
@@ -284,12 +284,12 @@ bool HopperTileEntity::tryTakeInItemFromSlot(Hopper *hopper, Container *containe
 bool HopperTileEntity::addItem(Container *container, shared_ptr<ItemEntity> item)
 {
 	bool changed = false;
-	if (item == NULL) return false;
+	if (item == nullptr) return false;
 
 	shared_ptr<ItemInstance> copy = item->getItem()->copy();
 	shared_ptr<ItemInstance> result = addItem(container, copy, -1);
 
-	if (result == NULL || result->count == 0)
+	if (result == nullptr || result->count == 0)
 	{
 		changed = true;
 
@@ -305,12 +305,12 @@ bool HopperTileEntity::addItem(Container *container, shared_ptr<ItemEntity> item
 
 shared_ptr<ItemInstance> HopperTileEntity::addItem(Container *container, shared_ptr<ItemInstance> item, int face)
 {
-	if (dynamic_cast<WorldlyContainer *>( container ) != NULL && face > -1)
+	if (dynamic_cast<WorldlyContainer *>( container ) != nullptr && face > -1)
 	{
-		WorldlyContainer *worldly = (WorldlyContainer *) container;
+		WorldlyContainer *worldly = static_cast<WorldlyContainer *>(container);
 		intArray slots = worldly->getSlotsForFace(face);
 
-		for (int i = 0; i < slots.length && item != NULL && item->count > 0; i++)
+		for (int i = 0; i < slots.length && item != nullptr && item->count > 0; i++)
 		{
 			item = tryMoveInItem(container, item, slots[i], face);
 		}
@@ -318,13 +318,13 @@ shared_ptr<ItemInstance> HopperTileEntity::addItem(Container *container, shared_
 	else
 	{
 		int size = container->getContainerSize();
-		for (int i = 0; i < size && item != NULL && item->count > 0; i++)
+		for (int i = 0; i < size && item != nullptr && item->count > 0; i++)
 		{
 			item = tryMoveInItem(container, item, i, face);
 		}
 	}
 
-	if (item != NULL && item->count == 0)
+	if (item != nullptr && item->count == 0)
 	{
 		item = nullptr;
 	}
@@ -335,13 +335,13 @@ shared_ptr<ItemInstance> HopperTileEntity::addItem(Container *container, shared_
 bool HopperTileEntity::canPlaceItemInContainer(Container *container, shared_ptr<ItemInstance> item, int slot, int face)
 {
 	if (!container->canPlaceItem(slot, item)) return false;
-	if ( dynamic_cast<WorldlyContainer *>( container ) != NULL && !dynamic_cast<WorldlyContainer *>( container )->canPlaceItemThroughFace(slot, item, face)) return false;
+	if ( dynamic_cast<WorldlyContainer *>( container ) != nullptr && !dynamic_cast<WorldlyContainer *>( container )->canPlaceItemThroughFace(slot, item, face)) return false;
 	return true;
 }
 
 bool HopperTileEntity::canTakeItemFromContainer(Container *container, shared_ptr<ItemInstance> item, int slot, int face)
 {
-	if (dynamic_cast<WorldlyContainer *>( container ) != NULL && !dynamic_cast<WorldlyContainer *>( container )->canTakeItemThroughFace(slot, item, face)) return false;
+	if (dynamic_cast<WorldlyContainer *>( container ) != nullptr && !dynamic_cast<WorldlyContainer *>( container )->canTakeItemThroughFace(slot, item, face)) return false;
 	return true;
 }
 
@@ -352,7 +352,7 @@ shared_ptr<ItemInstance> HopperTileEntity::tryMoveInItem(Container *container, s
 	if (canPlaceItemInContainer(container, item, slot, face))
 	{
 		bool success = false;
-		if (current == NULL)
+		if (current == nullptr)
 		{
 			container->setItem(slot, item);
 			item = nullptr;
@@ -370,7 +370,7 @@ shared_ptr<ItemInstance> HopperTileEntity::tryMoveInItem(Container *container, s
 		if (success)
 		{
 			HopperTileEntity *hopper = dynamic_cast<HopperTileEntity *>(container);
-			if (hopper != NULL)
+			if (hopper != nullptr)
 			{
 				hopper->setCooldown(MOVE_ITEM_SPEED);
 				container->setChanged();
@@ -420,25 +420,25 @@ shared_ptr<Container> HopperTileEntity::getContainerAt(Level *level, double x, d
 	shared_ptr<TileEntity> entity = level->getTileEntity(xt, yt, zt);
 
 	result = dynamic_pointer_cast<Container>(entity);
-	if (result != NULL)
+	if (result != nullptr)
 	{
-		if ( dynamic_pointer_cast<ChestTileEntity>(result) != NULL )
+		if ( dynamic_pointer_cast<ChestTileEntity>(result) != nullptr )
 		{
 			int id = level->getTile(xt, yt, zt);
 			Tile *tile = Tile::tiles[id];
 
-			if ( dynamic_cast<ChestTile *>( tile ) != NULL )
+			if ( dynamic_cast<ChestTile *>( tile ) != nullptr )
 			{
-				result = ((ChestTile *) tile)->getContainer(level, xt, yt, zt);
+				result = static_cast<ChestTile *>(tile)->getContainer(level, xt, yt, zt);
 			}
 		}
 	}
 
-	if (result == NULL)
+	if (result == nullptr)
 	{
 		vector<shared_ptr<Entity> > *entities = level->getEntities(nullptr, AABB::newTemp(x, y, z, x + 1, y + 1, z + 1), EntitySelector::CONTAINER_ENTITY_SELECTOR);
 
-		if ( (entities != NULL) && (entities->size() > 0) )
+		if ( (entities != nullptr) && (entities->size() > 0) )
 		{
 			result = dynamic_pointer_cast<Container>( entities->at( level->random->nextInt(entities->size()) ) );
 		}
@@ -489,14 +489,14 @@ bool HopperTileEntity::isOnCooldown()
 // 4J Added
 shared_ptr<TileEntity> HopperTileEntity::clone()
 {
-	shared_ptr<HopperTileEntity> result = shared_ptr<HopperTileEntity>( new HopperTileEntity() );
+	shared_ptr<HopperTileEntity> result = std::make_shared<HopperTileEntity>();
 	TileEntity::clone(result);
 
 	result->name = name;
 	result->cooldownTime = cooldownTime;
 	for (unsigned int i = 0; i < items.length; i++)
 	{
-		if (items[i] != NULL)
+		if (items[i] != nullptr)
 		{
 			result->items[i] = ItemInstance::clone(items[i]);
 		}

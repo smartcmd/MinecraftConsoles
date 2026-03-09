@@ -6,5 +6,5 @@ class DLCCapeFile : public DLCFile
 public:
 	DLCCapeFile(const wstring &path);
 
-	virtual void addData(PBYTE pbData, DWORD dwBytes);
+    void addData(PBYTE pbData, DWORD dwBytes) override;
 };

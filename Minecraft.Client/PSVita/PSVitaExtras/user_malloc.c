@@ -52,14 +52,14 @@ typedef struct
 	int Malloc_BlocksAlloced;			// this shows how many block node chunks have been allocated in Malloc_BlocksMemory
 } SThreadStorage;
 
-__thread SThreadStorage *Malloc_ThreadStorage = NULL;
+__thread SThreadStorage *Malloc_ThreadStorage = nullptr;
 
 /**E Replace _malloc_init function. */
 /**J _malloc_init 関数と置き換わる */
 void user_malloc_init(void)
 {
 	int res;
-	void *base = NULL;
+	void *base = nullptr;
 
 	/**E Allocate a memory block from the kernel */
 	/**J カーネルからメモリブロックを確保する */
@@ -80,7 +80,7 @@ void user_malloc_init(void)
 			/**E Generate mspace */
 			/**J mspace を生成する */
 			s_mspace = mspace_create(base, HEAP_SIZE);
-			if (s_mspace == NULL) {
+			if (s_mspace == nullptr) {
 				/**E Error handling */
 				/**J エラー処理 */
 				sceLibcSetHeapInitError(HEAP_ERROR3);
@@ -95,7 +95,7 @@ void user_malloc_finalize(void)
 {
 	int res;
 
-	if (s_mspace != NULL) {
+	if (s_mspace != nullptr) {
 		/**E Free mspace */
 		/**J mspace を解放する */
 		res = mspace_destroy(s_mspace);
@@ -104,7 +104,7 @@ void user_malloc_finalize(void)
 			/**J エラー処理 */
 			__breakpoint(0);
 		}
-		s_mspace = NULL;
+		s_mspace = nullptr;
 	}
 
 	if (SCE_OK <= s_heapUid) {
@@ -125,9 +125,9 @@ void user_malloc_finalize(void)
 void user_registerthread()
 {
 	Malloc_ThreadStorage = mspace_malloc(s_mspace, sizeof(SThreadStorage));
-	Malloc_ThreadStorage->Malloc_Blocks = NULL;
+	Malloc_ThreadStorage->Malloc_Blocks = nullptr;
 	Malloc_ThreadStorage->Malloc_BlocksAlloced = 0;
-	Malloc_ThreadStorage->Malloc_MemoryPool = NULL;
+	Malloc_ThreadStorage->Malloc_MemoryPool = nullptr;
 }
 
 // before a thread is destroyed make sure we free any space it might be holding on to
@@ -157,7 +157,7 @@ void user_removethread()
 		}
 
 		mspace_free(s_mspace, psStorage);
-		Malloc_ThreadStorage = NULL;
+		Malloc_ThreadStorage = nullptr;
 	}
 }
 
@@ -165,19 +165,19 @@ void user_removethread()
 /**J malloc 関数と置き換わる */
 void *user_malloc(size_t size)
 {
-	void *p = NULL;
+	void *p = nullptr;
 
 	SThreadStorage *psStorage = Malloc_ThreadStorage;
 	if( psStorage )
 	{
 		// is this the first time we've malloced
-		if( psStorage->Malloc_MemoryPool == NULL )
+		if( psStorage->Malloc_MemoryPool == nullptr )
 		{
 			// create an array of pointers to Block nodes, one pointer for each memory bytes size up to 1036
 			psStorage->Malloc_MemoryPool = mspace_malloc(s_mspace, (MaxRetainedBytes+1) * 4);
 			for( int i = 0;i < (MaxRetainedBytes+1);i += 1 )
 			{
-				psStorage->Malloc_MemoryPool[i] = NULL;
+				psStorage->Malloc_MemoryPool[i] = nullptr;
 			}
 		}
 
@@ -261,7 +261,7 @@ void user_free(void *ptr)
 			}
 
 			// we need a block node to retain the memory on our stack. do we have any block nodes available
-			if( psStorage->Malloc_Blocks == NULL )
+			if( psStorage->Malloc_Blocks == nullptr )
 			{
 				if( psStorage->Malloc_BlocksAlloced == Malloc_BlocksMemorySize ) 
 				{
@@ -319,7 +319,7 @@ void *user_calloc(size_t nelem, size_t size)
 /**J realloc 関数と置き換わる */
 void *user_realloc(void *ptr, size_t size)
 {
-	void* p = NULL;
+	void* p = nullptr;
 
 	if( Malloc_ThreadStorage )
 	{

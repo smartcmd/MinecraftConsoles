@@ -17,12 +17,12 @@ bool OfferFlowerGoal::canUse()
 	if (!golem->level->isDay()) return false;
 	if (golem->getRandom()->nextInt(8000) != 0) return false;
 	villager = weak_ptr<Villager>(dynamic_pointer_cast<Villager>( golem->level->getClosestEntityOfClass(typeid(Villager), golem->bb->grow(6, 2, 6), golem->shared_from_this()) ));
-	return villager.lock() != NULL;
+	return villager.lock() != nullptr;
 }
 
 bool OfferFlowerGoal::canContinueToUse()
 {
-	return _tick > 0 && villager.lock() != NULL;
+	return _tick > 0 && villager.lock() != nullptr;
 }
 
 void OfferFlowerGoal::start()

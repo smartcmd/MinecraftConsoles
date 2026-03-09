@@ -58,7 +58,7 @@ void CombatTracker::recordDamage(DamageSource *source, float health, float damag
 
 shared_ptr<ChatPacket> CombatTracker::getDeathMessagePacket()
 {
-	if (entries.size() == 0) return shared_ptr<ChatPacket>(new ChatPacket(mob->getNetworkName()));
+	if (entries.size() == 0) return std::make_shared<ChatPacket>(mob->getNetworkName());
 
 	CombatEntry *knockOffEntry = getMostSignificantFall();
 	CombatEntry *killingBlow = entries[entries.size() - 1];
@@ -67,7 +67,7 @@ shared_ptr<ChatPacket> CombatTracker::getDeathMessagePacket()
 
 	shared_ptr<Entity> killingEntity = killingBlow->getSource()->getEntity();
 
-	if (knockOffEntry != NULL && killingBlow->getSource()->equals(DamageSource::fall))
+	if (knockOffEntry != nullptr && killingBlow->getSource()->equals(DamageSource::fall))
 	{
 		shared_ptr<Entity> attackerEntity = knockOffEntry->getSource()->getEntity();
 
@@ -91,36 +91,36 @@ shared_ptr<ChatPacket> CombatTracker::getDeathMessagePacket()
 				break;
 			}
 
-			result = shared_ptr<ChatPacket>(new ChatPacket(mob->getNetworkName(), message));
+			result = std::make_shared<ChatPacket>(mob->getNetworkName(), message);
 		}
-		else if (attackerEntity != NULL && (killingEntity == NULL || attackerEntity != killingEntity))
+		else if (attackerEntity != nullptr && (killingEntity == nullptr || attackerEntity != killingEntity))
 		{
 			shared_ptr<ItemInstance> attackerItem = attackerEntity->instanceof(eTYPE_LIVINGENTITY) ? dynamic_pointer_cast<LivingEntity>(attackerEntity)->getCarriedItem() : nullptr;
 
-			if (attackerItem != NULL && attackerItem->hasCustomHoverName())
+			if (attackerItem != nullptr && attackerItem->hasCustomHoverName())
 			{
-				result = shared_ptr<ChatPacket>(new ChatPacket(mob->getNetworkName(), ChatPacket::e_ChatDeathFellAssistItem, attackerEntity->GetType(), attackerEntity->getNetworkName(), attackerItem->getHoverName()));
+				result = std::make_shared<ChatPacket>(mob->getNetworkName(), ChatPacket::e_ChatDeathFellAssistItem, attackerEntity->GetType(), attackerEntity->getNetworkName(), attackerItem->getHoverName());
 			}
 			else
 			{
-				result = shared_ptr<ChatPacket>(new ChatPacket(mob->getNetworkName(), ChatPacket::e_ChatDeathFellAssist, attackerEntity->GetType(), attackerEntity->getNetworkName()));
+				result = std::make_shared<ChatPacket>(mob->getNetworkName(), ChatPacket::e_ChatDeathFellAssist, attackerEntity->GetType(), attackerEntity->getNetworkName());
 			}
 		}
-		else if (killingEntity != NULL)
+		else if (killingEntity != nullptr)
 		{
 			shared_ptr<ItemInstance> killerItem = killingEntity->instanceof(eTYPE_LIVINGENTITY) ? dynamic_pointer_cast<LivingEntity>(killingEntity)->getCarriedItem() : nullptr;
-			if (killerItem != NULL && killerItem->hasCustomHoverName())
+			if (killerItem != nullptr && killerItem->hasCustomHoverName())
 			{
-				result = shared_ptr<ChatPacket>(new ChatPacket(mob->getNetworkName(), ChatPacket::e_ChatDeathFellFinishItem, killingEntity->GetType(), killingEntity->getNetworkName(), killerItem->getHoverName()));
+				result = std::make_shared<ChatPacket>(mob->getNetworkName(), ChatPacket::e_ChatDeathFellFinishItem, killingEntity->GetType(), killingEntity->getNetworkName(), killerItem->getHoverName());
 			}
 			else
 			{
-				result = shared_ptr<ChatPacket>(new ChatPacket(mob->getNetworkName(), ChatPacket::e_ChatDeathFellFinish, killingEntity->GetType(), killingEntity->getNetworkName()));
+				result = std::make_shared<ChatPacket>(mob->getNetworkName(), ChatPacket::e_ChatDeathFellFinish, killingEntity->GetType(), killingEntity->getNetworkName());
 			}
 		}
 		else
 		{
-			result = shared_ptr<ChatPacket>(new ChatPacket(mob->getNetworkName(), ChatPacket::e_ChatDeathFellKiller));
+			result = std::make_shared<ChatPacket>(mob->getNetworkName(), ChatPacket::e_ChatDeathFellKiller);
 		}
 	}
 	else
@@ -140,20 +140,20 @@ shared_ptr<LivingEntity> CombatTracker::getKiller()
 
 	for ( CombatEntry *entry : entries )
 	{
-		if ( entry->getSource() != NULL && entry->getSource()->getEntity() != NULL && entry->getSource()->getEntity()->instanceof(eTYPE_PLAYER) && (bestPlayer == NULL || entry->getDamage() > bestPlayerDamage))
+		if ( entry->getSource() != nullptr && entry->getSource()->getEntity() != nullptr && entry->getSource()->getEntity()->instanceof(eTYPE_PLAYER) && (bestPlayer == nullptr || entry->getDamage() > bestPlayerDamage))
 		{
 			bestPlayerDamage = entry->getDamage();
 			bestPlayer = dynamic_pointer_cast<Player>(entry->getSource()->getEntity());
 		}
 
-		if ( entry->getSource() != NULL && entry->getSource()->getEntity() != NULL && entry->getSource()->getEntity()->instanceof(eTYPE_LIVINGENTITY) && (bestMob == NULL || entry->getDamage() > bestMobDamage))
+		if ( entry->getSource() != nullptr && entry->getSource()->getEntity() != nullptr && entry->getSource()->getEntity()->instanceof(eTYPE_LIVINGENTITY) && (bestMob == nullptr || entry->getDamage() > bestMobDamage))
 		{
 			bestMobDamage = entry->getDamage();
 			bestMob = dynamic_pointer_cast<LivingEntity>(entry->getSource()->getEntity());
 		}
 	}
 
-	if (bestPlayer != NULL && bestPlayerDamage >= bestMobDamage / 3)
+	if (bestPlayer != nullptr && bestPlayerDamage >= bestMobDamage / 3)
 	{
 		return bestPlayer;
 	}
@@ -165,20 +165,20 @@ shared_ptr<LivingEntity> CombatTracker::getKiller()
 
 CombatEntry *CombatTracker::getMostSignificantFall()
 {
-	CombatEntry *result = NULL;
-	CombatEntry *alternative = NULL;
+	CombatEntry *result = nullptr;
+	CombatEntry *alternative = nullptr;
 	int altDamage = 0;
 	float bestFall = 0;
 
-	for (int i = 0; i < entries.size(); i++)
+	for (size_t i = 0; i < entries.size(); i++)
 	{
 		CombatEntry *entry = entries.at(i);
-		CombatEntry *previous = i > 0 ? entries.at(i - 1) : NULL;
+		CombatEntry *previous = i > 0 ? entries.at(i - 1) : nullptr;
 
 		bool isFall = entry->getSource()->equals(DamageSource::fall);
 		bool isOutOfWorld = entry->getSource()->equals(DamageSource::outOfWorld);
 
-		if ((isFall || isOutOfWorld) && (entry->getFallDistance() > 0) && (result == NULL || entry->getFallDistance() > bestFall))
+		if ((isFall || isOutOfWorld) && (entry->getFallDistance() > 0) && (result == nullptr || entry->getFallDistance() > bestFall))
 		{
 			if (i > 0)
 			{
@@ -191,23 +191,23 @@ CombatEntry *CombatTracker::getMostSignificantFall()
 			bestFall = entry->getFallDistance();
 		}
 
-		if (entry->getLocation() != eLocation_GENERIC && (alternative == NULL || entry->getDamage() > altDamage))
+		if (entry->getLocation() != eLocation_GENERIC && (alternative == nullptr || entry->getDamage() > altDamage))
 		{
 			alternative = entry;
 		}
 	}
 
-	if (bestFall > 5 && result != NULL)
+	if (bestFall > 5 && result != nullptr)
 	{
 		return result;
 	}
-	else if (altDamage > 5 && alternative != NULL)
+	else if (altDamage > 5 && alternative != nullptr)
 	{
 		return alternative;
 	}
 	else
 	{
-		return NULL;
+		return nullptr;
 	}
 }
 

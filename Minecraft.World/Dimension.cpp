@@ -30,7 +30,7 @@ void Dimension::updateLightRamp()
 	float ambientLight = 0.00f;
 	for (int i = 0; i <= Level::MAX_BRIGHTNESS; i++)
 	{
-		float v = (1 - i / (float) (Level::MAX_BRIGHTNESS));
+		float v = (1 - i / static_cast<float>(Level::MAX_BRIGHTNESS));
 		brightnessRamp[i] = ((1 - v) / (v * 3 + 1)) * (1 - ambientLight) + ambientLight;
 	}
 }
@@ -70,7 +70,7 @@ Dimension::~Dimension()
 {
 	delete[] brightnessRamp;
 
-	if(biomeSource != NULL)
+	if(biomeSource != nullptr)
 		delete biomeSource;
 }
 
@@ -115,7 +115,7 @@ bool Dimension::isValidSpawn(int x, int z) const
 
 float Dimension::getTimeOfDay(int64_t time, float a) const
 {
-	int dayStep = (int) (time % Level::TICKS_PER_DAY);
+	int dayStep = static_cast<int>(time % Level::TICKS_PER_DAY);
 	float td = (dayStep + a) / Level::TICKS_PER_DAY - 0.25f;
 	if (td < 0) td += 1;
 	if (td > 1) td -= 1;
@@ -127,7 +127,7 @@ float Dimension::getTimeOfDay(int64_t time, float a) const
 
 int Dimension::getMoonPhase(int64_t time) const
 {
-	return ((int) (time / Level::TICKS_PER_DAY)) % 8;
+	return static_cast<int>(time / Level::TICKS_PER_DAY) % 8;
 }
 
 bool Dimension::isNaturalDimension()
@@ -161,7 +161,7 @@ float *Dimension::getSunriseColor(float td, float a)
 		return sunriseCol;
 	}
 
-	return NULL;
+	return nullptr;
 }
 
 Vec3 *Dimension::getFogColor(float td, float a) const
@@ -192,12 +192,12 @@ Dimension *Dimension::getNew(int id)
 	if (id == 0) return new NormalDimension();
 	if (id == 1) return new TheEndDimension();
 
-	return NULL;
+	return nullptr;
 }
 
 float Dimension::getCloudHeight()
 {
-	return (float)Level::genDepth;
+	return static_cast<float>(Level::genDepth);
 }
 
 bool Dimension::hasGround()
@@ -207,7 +207,7 @@ bool Dimension::hasGround()
 
 Pos *Dimension::getSpawnPos()
 {
-	return NULL;
+	return nullptr;
 }
 
 int Dimension::getSpawnYPosition()

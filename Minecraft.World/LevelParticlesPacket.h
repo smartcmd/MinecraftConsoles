@@ -34,6 +34,6 @@ public:
 	int getEstimatedSize();
 
 public:
-	static shared_ptr<Packet> create() { return shared_ptr<Packet>(new LevelParticlesPacket()); }
+	static shared_ptr<Packet> create() { return std::make_shared<LevelParticlesPacket>(); }
 	virtual int getId() { return 63; }
 };

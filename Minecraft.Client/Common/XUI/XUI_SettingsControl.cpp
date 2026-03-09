@@ -10,9 +10,9 @@
 HRESULT CScene_SettingsControl::OnInit( XUIMessageInit* pInitData, BOOL& bHandled )
 {
 	WCHAR TempString[256];
-	m_iPad=*(int *)pInitData->pvInitData;
+	m_iPad=*static_cast<int *>(pInitData->pvInitData);
 	// if we're not in the game, we need to use basescene 0 
-	bool bNotInGame=(Minecraft::GetInstance()->level==NULL);
+	bool bNotInGame=(Minecraft::GetInstance()->level==nullptr);
 
 	MapChildControls();
 
@@ -66,13 +66,13 @@ HRESULT CScene_SettingsControl::OnNotifyValueChanged( HXUIOBJ hObjSource, XUINot
 	if(hObjSource==m_SliderA[SLIDER_SETTINGS_SENSITIVITY_INGAME].GetSlider() )
 	{
 		app.SetGameSettings(m_iPad,eGameSetting_Sensitivity_InGame,pNotifyValueChanged->nValue);
-		swprintf( (WCHAR *)TempString, 256, L"%ls: %d%%", app.GetString( IDS_SLIDER_SENSITIVITY_INGAME ),pNotifyValueChanged->nValue);		
+		swprintf( static_cast<WCHAR *>(TempString), 256, L"%ls: %d%%", app.GetString( IDS_SLIDER_SENSITIVITY_INGAME ),pNotifyValueChanged->nValue);		
 		m_SliderA[SLIDER_SETTINGS_SENSITIVITY_INGAME].SetText(TempString);
 	}
 	else if(hObjSource==m_SliderA[SLIDER_SETTINGS_SENSITIVITY_INMENU].GetSlider() )
 	{
 		app.SetGameSettings(m_iPad,eGameSetting_Sensitivity_InMenu,pNotifyValueChanged->nValue);
-		swprintf( (WCHAR *)TempString, 256, L"%ls: %d%%", app.GetString( IDS_SLIDER_SENSITIVITY_INMENU ),pNotifyValueChanged->nValue);		
+		swprintf( static_cast<WCHAR *>(TempString), 256, L"%ls: %d%%", app.GetString( IDS_SLIDER_SENSITIVITY_INMENU ),pNotifyValueChanged->nValue);		
 		m_SliderA[SLIDER_SETTINGS_SENSITIVITY_INMENU].SetText(TempString);
 	}
 
@@ -120,7 +120,7 @@ HRESULT CScene_SettingsControl::OnControlNavigate(XUIMessageControlNavigate *pCo
 	// added so we can skip greyed out items
 	pControlNavigateData->hObjDest=XuiControlGetNavigation(pControlNavigateData->hObjSource,pControlNavigateData->nControlNavigate,TRUE,TRUE);
 
-	if(pControlNavigateData->hObjDest!=NULL)
+	if(pControlNavigateData->hObjDest!=nullptr)
 	{
 		bHandled=TRUE;
 	}
@@ -218,7 +218,7 @@ HRESULT CScene_SettingsControl::OnTransitionStart( XUIMessageTransition *pTransi
 
 HRESULT CScene_SettingsControl::OnNavReturn(HXUIOBJ hObj,BOOL& rfHandled)
 {
-	bool bNotInGame=(Minecraft::GetInstance()->level==NULL);
+	bool bNotInGame=(Minecraft::GetInstance()->level==nullptr);
 
 	// if we're not in the game, we need to use basescene 0 
 	if(bNotInGame)

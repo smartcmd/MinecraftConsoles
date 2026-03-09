@@ -24,12 +24,12 @@ AddPlayerPacket::AddPlayerPacket()
 	m_capeId = 0;
 	m_uiGamePrivileges = 0;
 	entityData = nullptr;
-	unpack = NULL;
+	unpack = nullptr;
 }
 
 AddPlayerPacket::~AddPlayerPacket()
 {
-	if(unpack != NULL) delete unpack;
+	if(unpack != nullptr) delete unpack;
 }
 
 AddPlayerPacket::AddPlayerPacket(shared_ptr<Player> player, PlayerUID xuid, PlayerUID OnlineXuid,int xp, int yp, int zp, int yRotp, int xRotp, int yHeadRotp) 
@@ -51,17 +51,17 @@ AddPlayerPacket::AddPlayerPacket(shared_ptr<Player> player, PlayerUID xuid, Play
 	//printf("%d: New add player (%f,%f,%f) : (%d,%d,%d) : xRot %d, yRot %d\n",id,player->x,player->y,player->z,x,y,z,xRot,yRot);
 
 	shared_ptr<ItemInstance> itemInstance = player->inventory->getSelected();
-	carriedItem = itemInstance == NULL ? 0 : itemInstance->id;
+	carriedItem = itemInstance == nullptr ? 0 : itemInstance->id;
 
 	this->xuid = xuid;
 	this->OnlineXuid = OnlineXuid;
-	m_playerIndex = (BYTE)player->getPlayerIndex();
+	m_playerIndex = static_cast<BYTE>(player->getPlayerIndex());
 	m_skinId = player->getCustomSkin();
 	m_capeId = player->getCustomCape();
 	m_uiGamePrivileges = player->getAllPlayerGamePrivileges();
 
 	entityData = player->getEntityData();
-	unpack = NULL;
+	unpack = nullptr;
 }
 
 void AddPlayerPacket::read(DataInputStream *dis) //throws IOException
@@ -119,11 +119,11 @@ int AddPlayerPacket::getEstimatedSize()
 {
 	int iSize= sizeof(int) + Player::MAX_NAME_LENGTH + sizeof(int) + sizeof(int) + sizeof(int) + sizeof(BYTE) + sizeof(BYTE) +sizeof(short) + sizeof(PlayerUID) + sizeof(PlayerUID) + sizeof(int) + sizeof(BYTE) + sizeof(unsigned int) + sizeof(byte);
 
-	if( entityData != NULL )
+	if( entityData != nullptr )
 	{
 		iSize += entityData->getSizeInBytes();
 	}
-	else if( unpack != NULL )
+	else if( unpack != nullptr )
 	{
 		// 4J Stu - This is an incoming value which we aren't currently analysing
 		//iSize += unpack->get
@@ -134,7 +134,7 @@ int AddPlayerPacket::getEstimatedSize()
 
 vector<shared_ptr<SynchedEntityData::DataItem> > *AddPlayerPacket::getUnpackedData() 
 {
-	if (unpack == NULL)
+	if (unpack == nullptr)
 	{
 		unpack = entityData->getAll();
 	}

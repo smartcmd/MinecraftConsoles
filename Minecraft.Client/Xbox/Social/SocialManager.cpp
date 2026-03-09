@@ -67,14 +67,14 @@ CSocialManager::CSocialManager()
 
 // WESTY : Not sure if we even need to get social access key!
 /*
-	m_pAccessKeyText = NULL; 
+	m_pAccessKeyText = nullptr; 
 	m_dwAccessKeyTextSize = 0;
 */
 
-	m_pMainImageBuffer = NULL;
+	m_pMainImageBuffer = nullptr;
 	m_dwMainImageBufferSize = 0;
 
-	m_PostPreviewImage.pBytes = NULL;
+	m_PostPreviewImage.pBytes = nullptr;
 	m_dwCurrRequestUser = -1;
 
 	ZeroMemory(m_wchTitleA,sizeof(WCHAR)*MAX_SOCIALPOST_CAPTION);
@@ -304,14 +304,14 @@ bool CSocialManager::AreAllUsersAllowedToPostImages()
 void CSocialManager::DestroyMainPostImage()
 {
 	delete [] m_PostImageParams.pFullImage;
-	m_PostImageParams.pFullImage=NULL;
+	m_PostImageParams.pFullImage=nullptr;
 	m_dwMainImageBufferSize=0;
  }
 
 void CSocialManager::DestroyPreviewPostImage()
 {
 	XPhysicalFree( (void *)m_PostPreviewImage.pBytes );
-	m_PostPreviewImage.pBytes = NULL;
+	m_PostPreviewImage.pBytes = nullptr;
 }
 
 void CSocialManager::SetSocialPostText(LPCWSTR pwchTitle, LPCWSTR pwchCaption, LPCWSTR pwchDesc)
@@ -459,7 +459,7 @@ bool CSocialManager::PostImageToSocialNetwork( ESocialNetwork eSocialNetwork, DW
 
 	bool bResult = false;
 
-	PBYTE pbData=NULL;
+	PBYTE pbData=nullptr;
 	DWORD dwDataSize;
 
 	app.GetScreenshot(dwUserIndex,&pbData,&dwDataSize);
@@ -536,10 +536,10 @@ bool CSocialManager::GetSocialNetworkAccessKey( ESocialNetwork eSocialNetwork, D
 	DWORD dwResult;
 
 	// Ensure that we free any previously used access key buffer.
-	if ( m_pAccessKeyText != NULL )
+	if ( m_pAccessKeyText != nullptr )
 	{
 		delete [] m_pAccessKeyText;
-		m_pAccessKeyText = NULL;
+		m_pAccessKeyText = nullptr;
 	}
 
 	// Get social network ID and permissions.
@@ -554,39 +554,39 @@ bool CSocialManager::GetSocialNetworkAccessKey( ESocialNetwork eSocialNetwork, D
 	{
 		if ( bUsingKinect )
 		{
-			dwResult = XShowNuiSocialGetUserToken( dwUserTrackingIndex, dwUserIndex, dwSocialNetworkID, pRequiredPermissions, m_pAccessKeyText, &( m_dwAccessKeyTextSize ), NULL );
+			dwResult = XShowNuiSocialGetUserToken( dwUserTrackingIndex, dwUserIndex, dwSocialNetworkID, pRequiredPermissions, m_pAccessKeyText, &( m_dwAccessKeyTextSize ), nullptr );
 
 			// If buffer for key text was not large enough, reallocate buffer that is large enough and try again.
 			if ( dwResult == ERROR_INSUFFICIENT_BUFFER )
 			{
 				delete [] m_pAccessKeyText;
 				m_pAccessKeyText = new wchar_t[ m_dwAccessKeyTextSize ];
-				dwResult = XShowNuiSocialGetUserToken( dwUserTrackingIndex, dwUserIndex, dwSocialNetworkID, pRequiredPermissions, m_pAccessKeyText, &( m_dwAccessKeyTextSize ), NULL );
+				dwResult = XShowNuiSocialGetUserToken( dwUserTrackingIndex, dwUserIndex, dwSocialNetworkID, pRequiredPermissions, m_pAccessKeyText, &( m_dwAccessKeyTextSize ), nullptr );
 			}
 		}
 		else // using standard controller interface.
 		{
-			dwResult = XShowSocialGetUserToken( dwUserIndex, dwSocialNetworkID, pRequiredPermissions, m_pAccessKeyText, &( m_dwAccessKeyTextSize ), NULL );
+			dwResult = XShowSocialGetUserToken( dwUserIndex, dwSocialNetworkID, pRequiredPermissions, m_pAccessKeyText, &( m_dwAccessKeyTextSize ), nullptr );
 
 			// If buffer for key text was not large enough, reallocate buffer that is large enough and try again.
 			if ( dwResult == ERROR_INSUFFICIENT_BUFFER )
 			{
 				delete [] m_pAccessKeyText;
 				m_pAccessKeyText = new wchar_t[ m_dwAccessKeyTextSize ];
-				dwResult = XShowSocialGetUserToken( dwUserIndex, dwSocialNetworkID, pRequiredPermissions, m_pAccessKeyText, &( m_dwAccessKeyTextSize ), NULL );
+				dwResult = XShowSocialGetUserToken( dwUserIndex, dwSocialNetworkID, pRequiredPermissions, m_pAccessKeyText, &( m_dwAccessKeyTextSize ), nullptr );
 			}
 		}
 	}
 	else // we are trying to obtain cached user access key.
 	{
-		dwResult = XSocialGetUserToken( dwUserIndex, dwSocialNetworkID, pRequiredPermissions, m_pAccessKeyText, &( m_dwAccessKeyTextSize ), NULL );
+		dwResult = XSocialGetUserToken( dwUserIndex, dwSocialNetworkID, pRequiredPermissions, m_pAccessKeyText, &( m_dwAccessKeyTextSize ), nullptr );
 
 		// If buffer for key text was not large enough, reallocate buffer that is large enough and try again.
 		if ( dwResult == ERROR_INSUFFICIENT_BUFFER )
 		{
 			delete [] m_pAccessKeyText;
 			m_pAccessKeyText = new wchar_t[ m_dwAccessKeyTextSize ];
-			dwResult = XSocialGetUserToken( dwUserIndex, dwSocialNetworkID, pRequiredPermissions, m_pAccessKeyText, &( m_dwAccessKeyTextSize ), NULL );
+			dwResult = XSocialGetUserToken( dwUserIndex, dwSocialNetworkID, pRequiredPermissions, m_pAccessKeyText, &( m_dwAccessKeyTextSize ), nullptr );
 		}
 	}
 

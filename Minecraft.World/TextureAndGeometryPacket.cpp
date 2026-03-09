@@ -10,21 +10,21 @@ TextureAndGeometryPacket::TextureAndGeometryPacket()
 {
 	this->textureName = L"";
 	this->dwTextureBytes = 0;
-	this->pbData = NULL;
+	this->pbData = nullptr;
 	this->dwBoxC = 0;
-	this->BoxDataA = NULL;
+	this->BoxDataA = nullptr;
 	uiAnimOverrideBitmask=0;
 }
 
 TextureAndGeometryPacket::~TextureAndGeometryPacket()
 {
 	// can't free these - they're used elsewhere
-// 	if(this->BoxDataA!=NULL)
+// 	if(this->BoxDataA!=nullptr)
 // 	{
 // 		delete [] this->BoxDataA;
 // 	}
 //
-// 	if(this->pbData!=NULL)
+// 	if(this->pbData!=nullptr)
 // 	{
 // 		delete [] this->pbData;
 // 	}
@@ -43,7 +43,7 @@ TextureAndGeometryPacket::TextureAndGeometryPacket(const wstring &textureName, P
 	this->pbData = pbData;
 	this->dwTextureBytes = dwBytes;
 	this->dwBoxC = 0;
-	this->BoxDataA=NULL;
+	this->BoxDataA=nullptr;
 	this->uiAnimOverrideBitmask=0;
 }
 
@@ -75,7 +75,7 @@ TextureAndGeometryPacket::TextureAndGeometryPacket(const wstring &textureName, P
 	}
 	else
 	{
-		this->BoxDataA=NULL;
+		this->BoxDataA=nullptr;
 	}
 }
 
@@ -93,14 +93,14 @@ TextureAndGeometryPacket::TextureAndGeometryPacket(const wstring &textureName, P
 	this->pbData = pbData;
 	this->dwTextureBytes = dwBytes;
 	this->uiAnimOverrideBitmask = uiAnimOverrideBitmask;
-	if(pvSkinBoxes==NULL)
+	if(pvSkinBoxes==nullptr)
 	{
 		this->dwBoxC=0;
-		this->BoxDataA=NULL;
+		this->BoxDataA=nullptr;
 	}
 	else
 	{
-		this->dwBoxC = (DWORD)pvSkinBoxes->size();
+		this->dwBoxC = static_cast<DWORD>(pvSkinBoxes->size());
 		this->BoxDataA= new SKIN_BOX [this->dwBoxC];
 		int iCount=0;
 
@@ -120,8 +120,8 @@ void TextureAndGeometryPacket::handle(PacketListener *listener)
 void TextureAndGeometryPacket::read(DataInputStream *dis) //throws IOException
 {
 	textureName = dis->readUTF();
-	dwSkinID = (DWORD)dis->readInt();
-	dwTextureBytes = (DWORD)dis->readShort();
+	dwSkinID = static_cast<DWORD>(dis->readInt());
+	dwTextureBytes = static_cast<DWORD>(dis->readShort());
 
 	if(dwTextureBytes>0)
 	{
@@ -134,7 +134,7 @@ void TextureAndGeometryPacket::read(DataInputStream *dis) //throws IOException
 	}
 	uiAnimOverrideBitmask = dis->readInt();
 
-	dwBoxC = (DWORD)dis->readShort();
+	dwBoxC = static_cast<DWORD>(dis->readShort());
 
 	if(dwBoxC>0)
 	{
@@ -143,7 +143,7 @@ void TextureAndGeometryPacket::read(DataInputStream *dis) //throws IOException
 
 	for(DWORD i=0;i<dwBoxC;i++)
 	{
-		this->BoxDataA[i].ePart = (eBodyPart) dis->readShort();
+		this->BoxDataA[i].ePart = static_cast<eBodyPart>(dis->readShort());
 		this->BoxDataA[i].fX = dis->readFloat();
 		this->BoxDataA[i].fY = dis->readFloat();
 		this->BoxDataA[i].fZ = dis->readFloat();
@@ -159,17 +159,17 @@ void TextureAndGeometryPacket::write(DataOutputStream *dos) //throws IOException
 {
 	dos->writeUTF(textureName);
 	dos->writeInt(dwSkinID);
-	dos->writeShort((short)dwTextureBytes);
+	dos->writeShort(static_cast<short>(dwTextureBytes));
 	for(DWORD i=0;i<dwTextureBytes;i++)
 	{
 		dos->writeByte(this->pbData[i]);
 	}
 	dos->writeInt(uiAnimOverrideBitmask);
 
-	dos->writeShort((short)dwBoxC);
+	dos->writeShort(static_cast<short>(dwBoxC));
 	for(DWORD i=0;i<dwBoxC;i++)
 	{
-		dos->writeShort((short)this->BoxDataA[i].ePart);
+		dos->writeShort(static_cast<short>(this->BoxDataA[i].ePart));
 		dos->writeFloat(this->BoxDataA[i].fX);
 		dos->writeFloat(this->BoxDataA[i].fY);
 		dos->writeFloat(this->BoxDataA[i].fZ);

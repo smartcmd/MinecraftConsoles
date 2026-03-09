@@ -42,7 +42,7 @@
 	    
 	3. Many functions are designed for asynchronous use, and will internally create a task that
 		will only finish after feedback from the server.
-		a. These functions can be either blocking or asynchronous. If the callback pointer is NULL
+		a. These functions can be either blocking or asynchronous. If the callback pointer is nullptr
 			then it is a blocking call.
 		b. If the call is asynchronous, then it will always return instantly, and will return S_OK
 			if a task has been created.

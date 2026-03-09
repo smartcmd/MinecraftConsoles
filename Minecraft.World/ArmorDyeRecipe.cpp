@@ -13,12 +13,12 @@ bool ArmorDyeRecipe::matches(shared_ptr<CraftingContainer> craftSlots, Level *le
 	for (int slot = 0; slot < craftSlots->getContainerSize(); slot++)
 	{
 		shared_ptr<ItemInstance> item = craftSlots->getItem(slot);
-		if (item == NULL) continue;
+		if (item == nullptr) continue;
 
 		ArmorItem *armor = dynamic_cast<ArmorItem *>(item->getItem());
 		if (armor)
 		{
-			if (armor->getMaterial() == ArmorItem::ArmorMaterial::CLOTH && target == NULL)
+			if (armor->getMaterial() == ArmorItem::ArmorMaterial::CLOTH && target == nullptr)
 			{
 				target = item;
 			}
@@ -37,7 +37,7 @@ bool ArmorDyeRecipe::matches(shared_ptr<CraftingContainer> craftSlots, Level *le
 		}
 	}
 
-	return target != NULL && !dyes.empty();
+	return target != nullptr && !dyes.empty();
 }
 
 shared_ptr<ItemInstance> ArmorDyeRecipe::assembleDyedArmor(shared_ptr<CraftingContainer> craftSlots)
@@ -46,19 +46,19 @@ shared_ptr<ItemInstance> ArmorDyeRecipe::assembleDyedArmor(shared_ptr<CraftingCo
 	int colorTotals[3] = {0,0,0};
 	int intensityTotal = 0;
 	int colourCounts = 0;
-	ArmorItem *armor = NULL;
+	ArmorItem *armor = nullptr;
 
-	if(craftSlots != NULL)
+	if(craftSlots != nullptr)
 	{
 		for (int slot = 0; slot < craftSlots->getContainerSize(); slot++)
 		{
 			shared_ptr<ItemInstance> item = craftSlots->getItem(slot);
-			if (item == NULL) continue;
+			if (item == nullptr) continue;
 
 			armor = dynamic_cast<ArmorItem *>(item->getItem());
 			if (armor)
 			{
-				if (armor->getMaterial() == ArmorItem::ArmorMaterial::CLOTH && target == NULL)
+				if (armor->getMaterial() == ArmorItem::ArmorMaterial::CLOTH && target == nullptr)
 				{
 					target = item->copy();
 					target->count = 1;
@@ -66,9 +66,9 @@ shared_ptr<ItemInstance> ArmorDyeRecipe::assembleDyedArmor(shared_ptr<CraftingCo
 					if (armor->hasCustomColor(item))
 					{
 						int color = armor->getColor(target);
-						float red = (float) ((color >> 16) & 0xFF) / 0xFF;
-						float green = (float) ((color >> 8) & 0xFF) / 0xFF;
-						float blue = (float) (color & 0xFF) / 0xFF;
+						float red = static_cast<float>((color >> 16) & 0xFF) / 0xFF;
+						float green = static_cast<float>((color >> 8) & 0xFF) / 0xFF;
+						float blue = static_cast<float>(color & 0xFF) / 0xFF;
 
 						intensityTotal += max(red, max(green, blue)) * 0xFF;
 
@@ -86,9 +86,9 @@ shared_ptr<ItemInstance> ArmorDyeRecipe::assembleDyedArmor(shared_ptr<CraftingCo
 			else if (item->id == Item::dye_powder_Id)
 			{
 				int tileData = ColoredTile::getTileDataForItemAuxValue(item->getAuxValue());
-				int red = (int) (Sheep::COLOR[tileData][0] * 0xFF);
-				int green = (int) (Sheep::COLOR[tileData][1] * 0xFF);
-				int blue = (int) (Sheep::COLOR[tileData][2] * 0xFF);
+				int red = static_cast<int>(Sheep::COLOR[tileData][0] * 0xFF);
+				int green = static_cast<int>(Sheep::COLOR[tileData][1] * 0xFF);
+				int blue = static_cast<int>(Sheep::COLOR[tileData][2] * 0xFF);
 
 				intensityTotal += max(red, max(green, blue));
 
@@ -104,19 +104,19 @@ shared_ptr<ItemInstance> ArmorDyeRecipe::assembleDyedArmor(shared_ptr<CraftingCo
 		}
 	}
 
-	if (armor == NULL) return nullptr;
+	if (armor == nullptr) return nullptr;
 
 	int red = (colorTotals[0] / colourCounts);
 	int green = (colorTotals[1] / colourCounts);
 	int blue = (colorTotals[2] / colourCounts);
 
-	float averageIntensity = (float) intensityTotal / colourCounts;
-	float resultIntensity = (float) max(red, max(green, blue));
+	float averageIntensity = static_cast<float>(intensityTotal) / colourCounts;
+	float resultIntensity = static_cast<float>(max(red, max(green, blue)));
 	//        System.out.println(averageIntensity + ", " + resultIntensity);
 
-	red = (int) ((float) red * averageIntensity / resultIntensity);
-	green = (int) ((float) green * averageIntensity / resultIntensity);
-	blue = (int) ((float) blue * averageIntensity / resultIntensity);
+	red = static_cast<int>((float)red * averageIntensity / resultIntensity);
+	green = static_cast<int>((float)green * averageIntensity / resultIntensity);
+	blue = static_cast<int>((float)blue * averageIntensity / resultIntensity);
 
 	int rgb = red;
 	rgb = (rgb << 8) + green;
@@ -138,7 +138,7 @@ int ArmorDyeRecipe::size()
 
 const ItemInstance *ArmorDyeRecipe::getResultItem()
 {
-	return NULL;
+	return nullptr;
 }
 
 const int ArmorDyeRecipe::getGroup()
@@ -175,7 +175,7 @@ void ArmorDyeRecipe::reqs(INGREDIENTS_REQUIRED *pIngReq)
 #if 0
 	for ( ItemInstance *expected : *ingredients )
 	{
-		if (expected!=NULL) 
+		if (expected!=nullptr) 
 		{			
 			int iAuxVal = expected->getAuxValue();
 			TempIngReq.uiGridA[iCount++]=expected->id | iAuxVal<<24;

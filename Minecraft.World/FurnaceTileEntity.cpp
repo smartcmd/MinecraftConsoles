@@ -53,7 +53,7 @@ shared_ptr<ItemInstance> FurnaceTileEntity::removeItem(unsigned int slot, int co
 {
 	m_charcoalUsed = false;
 
-	if (items[slot] != NULL)
+	if (items[slot] != nullptr)
 	{
 		if (items[slot]->count <= count)
 		{
@@ -79,7 +79,7 @@ shared_ptr<ItemInstance> FurnaceTileEntity::removeItemNoUpdate(int slot)
 {
 	m_charcoalUsed = false;
 
-	if (items[slot] != NULL)
+	if (items[slot] != nullptr)
 	{
 		shared_ptr<ItemInstance> item = items[slot];
 		items[slot] = nullptr;
@@ -92,7 +92,7 @@ shared_ptr<ItemInstance> FurnaceTileEntity::removeItemNoUpdate(int slot)
 void FurnaceTileEntity::setItem(unsigned int slot, shared_ptr<ItemInstance> item)
 {
 	items[slot] = item;
-	if (item != NULL && item->count > getMaxStackSize()) item->count = getMaxStackSize();
+	if (item != nullptr && item->count > getMaxStackSize()) item->count = getMaxStackSize();
 }
 
 
@@ -140,16 +140,16 @@ void FurnaceTileEntity::load(CompoundTag *base)
 void FurnaceTileEntity::save(CompoundTag *base)
 {
 	TileEntity::save(base);
-	base->putShort(L"BurnTime", (short) (litTime));
-	base->putShort(L"CookTime", (short) (tickCount));
+	base->putShort(L"BurnTime", static_cast<short>(litTime));
+	base->putShort(L"CookTime", static_cast<short>(tickCount));
 	ListTag<CompoundTag> *listTag = new ListTag<CompoundTag>();
 
 	for (unsigned int i = 0; i < items.length; i++)
 	{
-		if (items[i] != NULL)
+		if (items[i] != nullptr)
 		{
 			CompoundTag *tag = new CompoundTag();
-			tag->putByte(L"Slot", (byte) i);
+			tag->putByte(L"Slot", static_cast<byte>(i));
 			items[i]->save(tag);
 			listTag->add(tag);
 		}
@@ -194,7 +194,7 @@ void FurnaceTileEntity::tick()
 		litTime--;
 	}
 
-	if ( level != NULL && !level->isClientSide)
+	if ( level != nullptr && !level->isClientSide)
 	{
 		if (litTime == 0 && canBurn())
 		{
@@ -202,7 +202,7 @@ void FurnaceTileEntity::tick()
 			if (litTime > 0)
 			{
 				changed = true;
-				if (items[SLOT_FUEL] != NULL)
+				if (items[SLOT_FUEL] != nullptr)
 				{
 					// 4J Added: Keep track of whether charcoal was used in production of current stack.
 					if ( items[SLOT_FUEL]->getItem()->id == Item::coal_Id
@@ -215,7 +215,7 @@ void FurnaceTileEntity::tick()
 					if (items[SLOT_FUEL]->count == 0)
 					{
 						Item *remaining = items[SLOT_FUEL]->getItem()->getCraftingRemainingItem();
-						items[SLOT_FUEL] = remaining != NULL ? shared_ptr<ItemInstance>(new ItemInstance(remaining)) : nullptr;
+						items[SLOT_FUEL] = remaining != nullptr ? std::make_shared<ItemInstance>(remaining) : nullptr;
 					}
 				}
 			}
@@ -249,10 +249,10 @@ void FurnaceTileEntity::tick()
 
 bool FurnaceTileEntity::canBurn()
 {
-	if (items[SLOT_INPUT] == NULL) return false;
+	if (items[SLOT_INPUT] == nullptr) return false;
 	const ItemInstance *burnResult = FurnaceRecipes::getInstance()->getResult(items[SLOT_INPUT]->getItem()->id);
-	if (burnResult == NULL) return false;
-	if (items[SLOT_RESULT] == NULL) return true;
+	if (burnResult == nullptr) return false;
+	if (items[SLOT_RESULT] == nullptr) return true;
 	if (!items[SLOT_RESULT]->sameItem_not_shared(burnResult)) return false;
 	if (items[SLOT_RESULT]->count < getMaxStackSize() && items[SLOT_RESULT]->count < items[SLOT_RESULT]->getMaxStackSize()) return true;
 	if (items[SLOT_RESULT]->count < burnResult->getMaxStackSize()) return true;
@@ -265,7 +265,7 @@ void FurnaceTileEntity::burn()
 	if (!canBurn()) return;
 
 	const ItemInstance *result = FurnaceRecipes::getInstance()->getResult(items[SLOT_INPUT]->getItem()->id);
-	if (items[SLOT_RESULT] == NULL) items[SLOT_RESULT] = result->copy();
+	if (items[SLOT_RESULT] == nullptr) items[SLOT_RESULT] = result->copy();
 	else if (items[SLOT_RESULT]->id == result->id) items[SLOT_RESULT]->count++;
 
 	items[SLOT_INPUT]->count--;
@@ -275,12 +275,12 @@ void FurnaceTileEntity::burn()
 
 int FurnaceTileEntity::getBurnDuration(shared_ptr<ItemInstance> itemInstance)
 {
-	if (itemInstance == NULL) return 0;
+	if (itemInstance == nullptr) return 0;
 	int id = itemInstance->getItem()->id;
 
 	Item *item = itemInstance->getItem();
 
-	if (id < 256 && Tile::tiles[id] != NULL)
+	if (id < 256 && Tile::tiles[id] != nullptr)
 	{
 		Tile *tile = Tile::tiles[id];
 
@@ -300,15 +300,15 @@ int FurnaceTileEntity::getBurnDuration(shared_ptr<ItemInstance> itemInstance)
 		}
 	}
 
-	if (dynamic_cast<DiggerItem *>(item) && ((DiggerItem *) item)->getTier() == Item::Tier::WOOD)
+	if (dynamic_cast<DiggerItem *>(item) && static_cast<DiggerItem *>(item)->getTier() == Item::Tier::WOOD)
 	{
 		return BURN_INTERVAL;
 	}
-	else if (dynamic_cast<WeaponItem *>(item) && ((WeaponItem *) item)->getTier() == Item::Tier::WOOD)
+	else if (dynamic_cast<WeaponItem *>(item) && static_cast<WeaponItem *>(item)->getTier() == Item::Tier::WOOD)
 	{
 		return BURN_INTERVAL;
 	}
-	else if (dynamic_cast<HoeItem *>(item) && ((HoeItem *) item)->getTier() == Item::Tier::WOOD)
+	else if (dynamic_cast<HoeItem *>(item) && static_cast<HoeItem *>(item)->getTier() == Item::Tier::WOOD)
 	{
 		return BURN_INTERVAL;
 	}
@@ -396,7 +396,7 @@ bool FurnaceTileEntity::canTakeItemThroughFace(int slot, shared_ptr<ItemInstance
 // 4J Added
 shared_ptr<TileEntity> FurnaceTileEntity::clone()
 {
-	shared_ptr<FurnaceTileEntity> result = shared_ptr<FurnaceTileEntity>( new FurnaceTileEntity() );
+	shared_ptr<FurnaceTileEntity> result = std::make_shared<FurnaceTileEntity>();
 	TileEntity::clone(result);
 
 	result->litTime = litTime;
@@ -405,7 +405,7 @@ shared_ptr<TileEntity> FurnaceTileEntity::clone()
 
 	for (unsigned int i = 0; i < items.length; i++)
 	{
-		if (items[i] != NULL)
+		if (items[i] != nullptr)
 		{
 			result->items[i] = ItemInstance::clone(items[i]);
 		}

@@ -148,7 +148,7 @@ This should be tracked independently of saved games (restoring a save should not
 */
 INT CTelemetryManager::GetSecondsSinceInitialize()
 {
-	return (INT)(app.getAppTime() - m_initialiseTime);
+	return static_cast<INT>(app.getAppTime() - m_initialiseTime);
 }
 
 /*
@@ -165,21 +165,21 @@ INT CTelemetryManager::GetMode(DWORD dwUserId)
 	
 	Minecraft *pMinecraft = Minecraft::GetInstance();
 
-	if( pMinecraft->localplayers[dwUserId] != NULL && pMinecraft->localplayers[dwUserId]->level != NULL && pMinecraft->localplayers[dwUserId]->level->getLevelData() != NULL )
+	if( pMinecraft->localplayers[dwUserId] != nullptr && pMinecraft->localplayers[dwUserId]->level != nullptr && pMinecraft->localplayers[dwUserId]->level->getLevelData() != nullptr )
 	{
 		GameType *gameType = pMinecraft->localplayers[dwUserId]->level->getLevelData()->getGameType();
 
 		if (gameType->isSurvival())
 		{
-			mode = (INT)eTelem_ModeId_Survival;
+			mode = static_cast<INT>(eTelem_ModeId_Survival);
 		}
 		else if (gameType->isCreative())
 		{
-			mode = (INT)eTelem_ModeId_Creative;
+			mode = static_cast<INT>(eTelem_ModeId_Creative);
 		}
 		else
 		{
-			mode = (INT)eTelem_ModeId_Undefined;
+			mode = static_cast<INT>(eTelem_ModeId_Undefined);
 		}
 	}
 	return mode;
@@ -198,11 +198,11 @@ INT CTelemetryManager::GetSubMode(DWORD dwUserId)
 
 	if(Minecraft::GetInstance()->isTutorial())
 	{
-		subMode = (INT)eTelem_SubModeId_Tutorial;
+		subMode = static_cast<INT>(eTelem_SubModeId_Tutorial);
 	}
 	else
 	{
-		subMode = (INT)eTelem_SubModeId_Normal;
+		subMode = static_cast<INT>(eTelem_SubModeId_Normal);
 	}
 
 	return subMode;
@@ -220,7 +220,7 @@ INT CTelemetryManager::GetLevelId(DWORD dwUserId)
 {
 	INT levelId = (INT)eTelem_LevelId_Undefined;
 
-	levelId = (INT)eTelem_LevelId_PlayerGeneratedLevel;
+	levelId = static_cast<INT>(eTelem_LevelId_PlayerGeneratedLevel);
 
 	return levelId;
 }
@@ -237,18 +237,18 @@ INT CTelemetryManager::GetSubLevelId(DWORD dwUserId)
 
 	Minecraft *pMinecraft = Minecraft::GetInstance();
 
-	if(pMinecraft->localplayers[dwUserId] != NULL)	
+	if(pMinecraft->localplayers[dwUserId] != nullptr)	
 	{
 		switch(pMinecraft->localplayers[dwUserId]->dimension)
 		{
 		case 0:
-			subLevelId = (INT)eTelem_SubLevelId_Overworld;
+			subLevelId = static_cast<INT>(eTelem_SubLevelId_Overworld);
 			break;
 		case -1:
-			subLevelId = (INT)eTelem_SubLevelId_Nether;
+			subLevelId = static_cast<INT>(eTelem_SubLevelId_Nether);
 			break;
 		case 1:
-			subLevelId = (INT)eTelem_SubLevelId_End;
+			subLevelId = static_cast<INT>(eTelem_SubLevelId_End);
 			break;
 		};
 	}
@@ -272,7 +272,7 @@ Helps differentiate level attempts when a play plays the same mode/level - espec
 */
 INT CTelemetryManager::GetLevelInstanceID()
 {
-	return (INT)m_levelInstanceID;
+	return static_cast<INT>(m_levelInstanceID);
 }
 
 /*
@@ -314,19 +314,19 @@ INT CTelemetryManager::GetSingleOrMultiplayer()
 
 	if(app.GetLocalPlayerCount() == 1 && g_NetworkManager.GetOnlinePlayerCount() == 0)
 	{
-		singleOrMultiplayer = (INT)eSen_SingleOrMultiplayer_Single_Player;
+		singleOrMultiplayer = static_cast<INT>(eSen_SingleOrMultiplayer_Single_Player);
 	}
 	else if(app.GetLocalPlayerCount() > 1 && g_NetworkManager.GetOnlinePlayerCount() == 0)
 	{
-		singleOrMultiplayer = (INT)eSen_SingleOrMultiplayer_Multiplayer_Local;
+		singleOrMultiplayer = static_cast<INT>(eSen_SingleOrMultiplayer_Multiplayer_Local);
 	}
 	else if(app.GetLocalPlayerCount() == 1 && g_NetworkManager.GetOnlinePlayerCount() > 0)
 	{
-		singleOrMultiplayer = (INT)eSen_SingleOrMultiplayer_Multiplayer_Live;
+		singleOrMultiplayer = static_cast<INT>(eSen_SingleOrMultiplayer_Multiplayer_Live);
 	}
 	else if(app.GetLocalPlayerCount() > 1 && g_NetworkManager.GetOnlinePlayerCount() > 0)
 	{
-		singleOrMultiplayer = (INT)eSen_SingleOrMultiplayer_Multiplayer_Both_Local_and_Live;
+		singleOrMultiplayer = static_cast<INT>(eSen_SingleOrMultiplayer_Multiplayer_Both_Local_and_Live);
 	}
 
 	return singleOrMultiplayer;
@@ -343,16 +343,16 @@ INT CTelemetryManager::GetDifficultyLevel(INT diff)
 	switch(diff)
 	{
 	case 0:
-		difficultyLevel = (INT)eSen_DifficultyLevel_Easiest;
+		difficultyLevel = static_cast<INT>(eSen_DifficultyLevel_Easiest);
 		break;
 	case 1:
-		difficultyLevel = (INT)eSen_DifficultyLevel_Easier;
+		difficultyLevel = static_cast<INT>(eSen_DifficultyLevel_Easier);
 		break;
 	case 2:
-		difficultyLevel = (INT)eSen_DifficultyLevel_Normal;
+		difficultyLevel = static_cast<INT>(eSen_DifficultyLevel_Normal);
 		break;
 	case 3:
-		difficultyLevel = (INT)eSen_DifficultyLevel_Harder;
+		difficultyLevel = static_cast<INT>(eSen_DifficultyLevel_Harder);
 		break;
 	}
 
@@ -372,11 +372,11 @@ INT CTelemetryManager::GetLicense()
 
 	if(ProfileManager.IsFullVersion())
 	{
-		license = (INT)eSen_License_Full_Purchased_Title;
+		license = static_cast<INT>(eSen_License_Full_Purchased_Title);
 	}
 	else
 	{
-		license = (INT)eSen_License_Trial_or_Demo;
+		license = static_cast<INT>(eSen_License_Trial_or_Demo);
 	}
 	return license;
 }
@@ -411,15 +411,15 @@ INT CTelemetryManager::GetAudioSettings(DWORD dwUserId)
 
 		if(volume == 0)
 		{
-			audioSettings = (INT)eSen_AudioSettings_Off;
+			audioSettings = static_cast<INT>(eSen_AudioSettings_Off);
 		}
 		else if(volume == DEFAULT_VOLUME_LEVEL)
 		{
-			audioSettings = (INT)eSen_AudioSettings_On_Default;
+			audioSettings = static_cast<INT>(eSen_AudioSettings_On_Default);
 		}
 		else
 		{
-			audioSettings = (INT)eSen_AudioSettings_On_CustomSetting;
+			audioSettings = static_cast<INT>(eSen_AudioSettings_On_CustomSetting);
 		}
 	}
 	return audioSettings;

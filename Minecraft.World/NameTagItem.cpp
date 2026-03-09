@@ -10,7 +10,7 @@ bool NameTagItem::interactEnemy(shared_ptr<ItemInstance> itemInstance, shared_pt
 {
 	if (!itemInstance->hasCustomHoverName()) return false;
 
-	if ( (target != NULL) && target->instanceof(eTYPE_MOB) )
+	if ( (target != nullptr) && target->instanceof(eTYPE_MOB) )
 	{
 		shared_ptr<Mob> mob = dynamic_pointer_cast<Mob>(target);
 		mob->setCustomName(itemInstance->getHoverName());

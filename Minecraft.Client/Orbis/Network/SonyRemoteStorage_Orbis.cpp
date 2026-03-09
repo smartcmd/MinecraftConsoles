@@ -26,7 +26,7 @@ static 	SceRemoteStorageData s_getDataOutput;
 
 void SonyRemoteStorage_Orbis::staticInternalCallback(const SceRemoteStorageEvent event, int32_t retCode, void * userData)
 {
-	((SonyRemoteStorage_Orbis*)userData)->internalCallback(event, retCode);
+	static_cast<SonyRemoteStorage_Orbis *>(userData)->internalCallback(event, retCode);
 }
 void SonyRemoteStorage_Orbis::internalCallback(const SceRemoteStorageEvent event, int32_t retCode)
 {
@@ -196,7 +196,7 @@ bool SonyRemoteStorage_Orbis::init(CallbackFunc cb, LPVOID lpParam)
 // 	memcpy(clientId.id, CLIENT_ID, strlen(CLIENT_ID));
 // 	authParams.pClientId = &clientId;	
 
-// 	ret = sceNpAuthGetAuthorizationCode(reqId, &authParams, &authCode, NULL);
+// 	ret = sceNpAuthGetAuthorizationCode(reqId, &authParams, &authCode, nullptr);
 // 	if (ret < 0) {
 // 		app.DebugPrintf("Failed to get auth code 0x%x\n", ret);
 // 	}
@@ -223,7 +223,7 @@ bool SonyRemoteStorage_Orbis::init(CallbackFunc cb, LPVOID lpParam)
 	params.timeout.sendMs = 120 * 1000;		//120 seconds is the default
 
 	params.pool.memPoolSize = 7 * 1024 * 1024;
-	if(m_memPoolBuffer == NULL)
+	if(m_memPoolBuffer == nullptr)
 		m_memPoolBuffer = malloc(params.pool.memPoolSize);
 
 	params.pool.memPoolBuffer = m_memPoolBuffer;	

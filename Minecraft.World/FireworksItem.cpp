@@ -26,7 +26,7 @@ bool FireworksItem::useOn(shared_ptr<ItemInstance> instance, shared_ptr<Player> 
 
 	if (!level->isClientSide)
 	{
-		shared_ptr<FireworksRocketEntity> f = shared_ptr<FireworksRocketEntity>( new FireworksRocketEntity(level, x + clickX, y + clickY, z + clickZ, instance) );
+		shared_ptr<FireworksRocketEntity> f(new FireworksRocketEntity(level, x + clickX, y + clickY, z + clickZ, instance));
 		level->addEntity(f);
 
 		if (!player->abilities.instabuild)
@@ -46,7 +46,7 @@ void FireworksItem::appendHoverText(shared_ptr<ItemInstance> itemInstance, share
 		return;
 	}
 	CompoundTag *fireTag = itemInstance->getTag()->getCompound(TAG_FIREWORKS);
-	if (fireTag == NULL)
+	if (fireTag == nullptr)
 	{
 		return;
 	}
@@ -56,7 +56,7 @@ void FireworksItem::appendHoverText(shared_ptr<ItemInstance> itemInstance, share
 	}
 
 	ListTag<CompoundTag> *explosions = (ListTag<CompoundTag> *) fireTag->getList(TAG_EXPLOSIONS);
-	if (explosions != NULL && explosions->size() > 0)
+	if (explosions != nullptr && explosions->size() > 0)
 	{
 
 		for (int i = 0; i < explosions->size(); i++)
@@ -69,7 +69,7 @@ void FireworksItem::appendHoverText(shared_ptr<ItemInstance> itemInstance, share
 			if (eLines.size() > 0)
 			{
 				// Indent lines after first line
-				for (int i = 1; i < eLines.size(); i++)
+				for (size_t i = 1; i < eLines.size(); i++)
 				{
 					eLines[i].indent = true;
 				}

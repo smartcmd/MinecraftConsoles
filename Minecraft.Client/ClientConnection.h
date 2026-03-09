@@ -43,6 +43,7 @@ public:
 
 private:
 	DWORD m_userIndex; // 4J Added
+	bool isPrimaryConnection() const;
 public:
 	SavedDataStorage *savedDataStorage;
     ClientConnection(Minecraft *minecraft, const wstring& ip, int port);

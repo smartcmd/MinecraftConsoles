@@ -71,7 +71,7 @@ const float smallUV = ( 1.0f / 16.0f );
 
 void TileRenderer_SPU::_init()
 {
-	fixedTexture = NULL;
+	fixedTexture = nullptr;
 	xFlipTexture = false;
 	noCulling = false;
 	blsmooth = 1;
@@ -103,7 +103,7 @@ TileRenderer_SPU::TileRenderer_SPU( ChunkRebuildData* level )
 
 TileRenderer_SPU::TileRenderer_SPU()
 {
-	this->level = NULL;
+	this->level = nullptr;
 	_init();
 }
 
@@ -122,12 +122,12 @@ void TileRenderer_SPU::setFixedTexture( Icon_SPU *fixedTexture )
 
 void TileRenderer_SPU::clearFixedTexture()
 {
-	this->fixedTexture = NULL;
+	this->fixedTexture = nullptr;
 }
 
 bool TileRenderer_SPU::hasFixedTexture()
 {
-	return fixedTexture != NULL;
+	return fixedTexture != nullptr;
 }
 
 void TileRenderer_SPU::setShape(float x0, float y0, float z0, float x1, float y1, float z1)
@@ -270,7 +270,7 @@ bool TileRenderer_SPU::tesselateInWorld( Tile_SPU* tt, int x, int y, int z, int 
 		retVal = tesselateStemInWorld( tt, x, y, z );
 		break;
 	case Tile_SPU::SHAPE_LILYPAD:
-		retVal = tesselateLilypadInWorld( (WaterlilyTile_SPU*)tt, x, y, z );
+		retVal = tesselateLilypadInWorld( static_cast<WaterlilyTile_SPU *>(tt), x, y, z );
 		break;
 	case Tile_SPU::SHAPE_ROWS:
 		retVal = tesselateRowInWorld( tt, x, y, z );
@@ -279,7 +279,7 @@ bool TileRenderer_SPU::tesselateInWorld( Tile_SPU* tt, int x, int y, int z, int 
 		retVal = tesselateTorchInWorld( tt, x, y, z );
 		break;
 	case Tile_SPU::SHAPE_FIRE:
-		retVal = tesselateFireInWorld( (FireTile_SPU *)tt, x, y, z );
+		retVal = tesselateFireInWorld( static_cast<FireTile_SPU *>(tt), x, y, z );
 		break;
 	case Tile_SPU::SHAPE_RED_DUST:
 		retVal = tesselateDustInWorld( tt, x, y, z );
@@ -291,19 +291,19 @@ bool TileRenderer_SPU::tesselateInWorld( Tile_SPU* tt, int x, int y, int z, int 
 		retVal = tesselateDoorInWorld( tt, x, y, z );
 		break;
 	case Tile_SPU::SHAPE_RAIL:
-		retVal = tesselateRailInWorld( ( RailTile_SPU* )tt, x, y, z );
+		retVal = tesselateRailInWorld( static_cast<RailTile_SPU *>(tt), x, y, z );
 		break;
 	case Tile_SPU::SHAPE_STAIRS:
-		retVal = tesselateStairsInWorld( (StairTile_SPU *)tt, x, y, z );
+		retVal = tesselateStairsInWorld( static_cast<StairTile_SPU *>(tt), x, y, z );
 		break;
 	case Tile_SPU::SHAPE_EGG:
-		retVal = tesselateEggInWorld((EggTile_SPU*) tt, x, y, z);
+		retVal = tesselateEggInWorld(static_cast<EggTile_SPU *>(tt), x, y, z);
 		break;
 	case Tile_SPU::SHAPE_FENCE:
-		retVal = tesselateFenceInWorld( ( FenceTile_SPU* )tt, x, y, z );
+		retVal = tesselateFenceInWorld( static_cast<FenceTile_SPU *>(tt), x, y, z );
 		break;
 	case Tile_SPU::SHAPE_WALL:
-		retVal = tesselateWallInWorld( (WallTile_SPU *) tt, x, y, z);
+		retVal = tesselateWallInWorld( static_cast<WallTile_SPU *>(tt), x, y, z);
 		break;
 	case Tile_SPU::SHAPE_LEVER:
 		retVal = tesselateLeverInWorld( tt, x, y, z );
@@ -318,7 +318,7 @@ bool TileRenderer_SPU::tesselateInWorld( Tile_SPU* tt, int x, int y, int z, int 
 		retVal = tesselateBedInWorld( tt, x, y, z );
 		break;
 	case Tile_SPU::SHAPE_DIODE:
-		retVal = tesselateDiodeInWorld( (DiodeTile_SPU *)tt, x, y, z );
+		retVal = tesselateDiodeInWorld( static_cast<DiodeTile_SPU *>(tt), x, y, z );
 		break;
 	case Tile_SPU::SHAPE_PISTON_BASE:
 		retVal = tesselatePistonBaseInWorld( tt, x, y, z, false, forceData );
@@ -333,7 +333,7 @@ bool TileRenderer_SPU::tesselateInWorld( Tile_SPU* tt, int x, int y, int z, int 
 		retVal = tesselateVineInWorld( tt, x, y, z );
 		break;
 	case Tile_SPU::SHAPE_FENCE_GATE:
-		retVal = tesselateFenceGateInWorld( ( FenceGateTile_SPU* )tt, x, y, z );
+		retVal = tesselateFenceGateInWorld( static_cast<FenceGateTile_SPU *>(tt), x, y, z );
 		break;
 	case Tile_SPU::SHAPE_CAULDRON:
 		retVal = tesselateCauldronInWorld((CauldronTile_SPU* ) tt, x, y, z);
@@ -345,7 +345,7 @@ bool TileRenderer_SPU::tesselateInWorld( Tile_SPU* tt, int x, int y, int z, int 
 		retVal = tesselateAnvilInWorld((AnvilTile_SPU *) tt, x, y, z);
 		break;
 	case Tile_SPU::SHAPE_BREWING_STAND:
-		retVal = tesselateBrewingStandInWorld((BrewingStandTile_SPU* ) tt, x, y, z);
+		retVal = tesselateBrewingStandInWorld(static_cast<BrewingStandTile_SPU *>(tt), x, y, z);
 		break;
 	case Tile_SPU::SHAPE_PORTAL_FRAME:
 		retVal = tesselateAirPortalFrameInWorld((TheEndPortalFrameTile *)tt, x, y, z);
@@ -838,7 +838,7 @@ bool TileRenderer_SPU::tesselateFlowerPotInWorld(FlowerPotTile_SPU *tt, int x, i
 		float xOff = 0;
 		float yOff = 4;
 		float zOff = 0;
-		Tile *plant = NULL;
+		Tile *plant = nullptr;
 
 		switch (type)
 		{
@@ -858,7 +858,7 @@ bool TileRenderer_SPU::tesselateFlowerPotInWorld(FlowerPotTile_SPU *tt, int x, i
 
 		t->addOffset(xOff / 16.0f, yOff / 16.0f, zOff / 16.0f);
 
-		if (plant != NULL)
+		if (plant != nullptr)
 		{
 			tesselateInWorld(plant, x, y, z);
 		}
@@ -1099,23 +1099,23 @@ bool TileRenderer_SPU::tesselateTorchInWorld( Tile_SPU* tt, int x, int y, int z 
 	float		h = 0.20f;
 	if ( dir == 1 )
 	{
-		tesselateTorch( tt, (float)x - r2, (float)y + h, (float)z, -r, 0.0f, 0 );
+		tesselateTorch( tt, static_cast<float>(x) - r2, static_cast<float>(y) + h, static_cast<float>(z), -r, 0.0f, 0 );
 	}
 	else if ( dir == 2 )
 	{
-		tesselateTorch( tt, (float)x + r2, (float)y + h, (float)z, +r, 0.0f, 0 );
+		tesselateTorch( tt, static_cast<float>(x) + r2, static_cast<float>(y) + h, static_cast<float>(z), +r, 0.0f, 0 );
 	}
 	else if ( dir == 3 )
 	{
-		tesselateTorch( tt, (float)x, (float)y + h, z - r2, 0.0f, -r, 0 );
+		tesselateTorch( tt, static_cast<float>(x), static_cast<float>(y) + h, z - r2, 0.0f, -r, 0 );
 	}
 	else if ( dir == 4 )
 	{
-		tesselateTorch( tt, (float)x, (float)y + h, (float)z + r2, 0.0f, +r, 0 );
+		tesselateTorch( tt, static_cast<float>(x), static_cast<float>(y) + h, static_cast<float>(z) + r2, 0.0f, +r, 0 );
 	}
 	else
 	{
-		tesselateTorch( tt, (float)x, (float)y, (float)z, 0.0f, 0.0f, 0 );
+		tesselateTorch( tt, static_cast<float>(x), static_cast<float>(y), static_cast<float>(z), 0.0f, 0.0f, 0 );
 	}
 	return true;
 
@@ -1724,7 +1724,7 @@ bool TileRenderer_SPU::tesselateLeverInWorld( Tile_SPU* tt, int x, int y, int z 
 		}
 	}
 
-	Vec3*		c0 = NULL, *c1 = NULL, *c2 = NULL, *c3 = NULL;
+	Vec3*		c0 = nullptr, *c1 = nullptr, *c2 = nullptr, *c3 = nullptr;
 	for ( int i = 0; i < 6; i++ )
 	{
 		if ( i == 0 )
@@ -1897,7 +1897,7 @@ bool TileRenderer_SPU::tesselateTripwireSourceInWorld(Tile_SPU *tt, int x, int y
 		corners[i]->z += z + 0.5;
 	}
 
-	Vec3 *c0 = NULL, *c1 = NULL, *c2 = NULL, *c3 = NULL;
+	Vec3 *c0 = nullptr, *c1 = nullptr, *c2 = nullptr, *c3 = nullptr;
 	int stickX0 = 7;
 	int stickX1 = 9;
 	int stickY0 = 9;
@@ -2321,15 +2321,15 @@ bool TileRenderer_SPU::tesselateFireInWorld( FireTile_SPU* tt, int x, int y, int
 		float	z0_ = z + 0.5f - 0.3f;
 		float	z1_ = z + 0.5f + 0.3f;
 
-		t->vertexUV( ( float )( x0_ ), ( float )( y + h ), ( float )( z + 1 ), ( float )( u1 ), ( float )( v0 ) );
-		t->vertexUV( ( float )( x0 ), ( float )( y + 0 ), ( float )( z + 1 ), ( float )( u1 ), ( float )( v1 ) );
-		t->vertexUV( ( float )( x0 ), ( float )( y + 0 ), ( float )( z + 0 ), ( float )( u0 ), ( float )( v1 ) );
-		t->vertexUV( ( float )( x0_ ), ( float )( y + h ), ( float )( z + 0 ), ( float )( u0 ), ( float )( v0 ) );
+		t->vertexUV( ( float )( x0_ ), ( float )( y + h ), static_cast<float>(z + 1), ( float )( u1 ), ( float )( v0 ) );
+		t->vertexUV( ( float )( x0 ), static_cast<float>(y + 0), static_cast<float>(z + 1), ( float )( u1 ), ( float )( v1 ) );
+		t->vertexUV( ( float )( x0 ), static_cast<float>(y + 0), static_cast<float>(z + 0), ( float )( u0 ), ( float )( v1 ) );
+		t->vertexUV( ( float )( x0_ ), ( float )( y + h ), static_cast<float>(z + 0), ( float )( u0 ), ( float )( v0 ) );
 
-		t->vertexUV( ( float )( x1_ ), ( float )( y + h ), ( float )( z + 0 ), ( float )( u1 ), ( float )( v0 ) );
-		t->vertexUV( ( float )( x1 ), ( float )( y + 0 ), ( float )( z + 0 ), ( float )( u1 ), ( float )( v1 ) );
-		t->vertexUV( ( float )( x1 ), ( float )( y + 0 ), ( float )( z + 1 ), ( float )( u0 ), ( float )( v1 ) );
-		t->vertexUV( ( float )( x1_ ), ( float )( y + h ), ( float )( z + 1 ), ( float )( u0 ), ( float )( v0 ) );
+		t->vertexUV( ( float )( x1_ ), ( float )( y + h ), static_cast<float>(z + 0), ( float )( u1 ), ( float )( v0 ) );
+		t->vertexUV( ( float )( x1 ), static_cast<float>(y + 0), static_cast<float>(z + 0), ( float )( u1 ), ( float )( v1 ) );
+		t->vertexUV( ( float )( x1 ), static_cast<float>(y + 0), static_cast<float>(z + 1), ( float )( u0 ), ( float )( v1 ) );
+		t->vertexUV( ( float )( x1_ ), ( float )( y + h ), static_cast<float>(z + 1), ( float )( u0 ), ( float )( v0 ) );
 
 		tex = secondTex;
 		u0 = tex->getU0();
@@ -2337,15 +2337,15 @@ bool TileRenderer_SPU::tesselateFireInWorld( FireTile_SPU* tt, int x, int y, int
 		u1 = tex->getU1();
 		v1 = tex->getV1();
 
-		t->vertexUV( ( float )( x + 1 ), ( float )( y + h ), ( float )( z1_ ), ( float )( u1 ), ( float )( v0 ) );
-		t->vertexUV( ( float )( x + 1 ), ( float )( y + 0 ), ( float )( z1 ), ( float )( u1 ), ( float )( v1 ) );
-		t->vertexUV( ( float )( x + 0 ), ( float )( y + 0 ), ( float )( z1 ), ( float )( u0 ), ( float )( v1 ) );
-		t->vertexUV( ( float )( x + 0 ), ( float )( y + h ), ( float )( z1_ ), ( float )( u0 ), ( float )( v0 ) );
+		t->vertexUV( static_cast<float>(x + 1), ( float )( y + h ), ( float )( z1_ ), ( float )( u1 ), ( float )( v0 ) );
+		t->vertexUV( static_cast<float>(x + 1), static_cast<float>(y + 0), ( float )( z1 ), ( float )( u1 ), ( float )( v1 ) );
+		t->vertexUV( static_cast<float>(x + 0), static_cast<float>(y + 0), ( float )( z1 ), ( float )( u0 ), ( float )( v1 ) );
+		t->vertexUV( static_cast<float>(x + 0), ( float )( y + h ), ( float )( z1_ ), ( float )( u0 ), ( float )( v0 ) );
 
-		t->vertexUV( ( float )( x + 0 ), ( float )( y + h ), ( float )( z0_ ), ( float )( u1 ), ( float )( v0 ) );
-		t->vertexUV( ( float )( x + 0 ), ( float )( y + 0 ), ( float )( z0 ), ( float )( u1 ), ( float )( v1 ) );
-		t->vertexUV( ( float )( x + 1 ), ( float )( y + 0 ), ( float )( z0 ), ( float )( u0 ), ( float )( v1 ) );
-		t->vertexUV( ( float )( x + 1 ), ( float )( y + h ), ( float )( z0_ ), ( float )( u0 ), ( float )( v0 ) );
+		t->vertexUV( static_cast<float>(x + 0), ( float )( y + h ), ( float )( z0_ ), ( float )( u1 ), ( float )( v0 ) );
+		t->vertexUV( static_cast<float>(x + 0), static_cast<float>(y + 0), ( float )( z0 ), ( float )( u1 ), ( float )( v1 ) );
+		t->vertexUV( static_cast<float>(x + 1), static_cast<float>(y + 0), ( float )( z0 ), ( float )( u0 ), ( float )( v1 ) );
+		t->vertexUV( static_cast<float>(x + 1), ( float )( y + h ), ( float )( z0_ ), ( float )( u0 ), ( float )( v0 ) );
 
 		x0 = x + 0.5f - 0.5f;
 		x1 = x + 0.5f + 0.5f;
@@ -2357,15 +2357,15 @@ bool TileRenderer_SPU::tesselateFireInWorld( FireTile_SPU* tt, int x, int y, int
 		z0_ = z + 0.5f - 0.4f;
 		z1_ = z + 0.5f + 0.4f;
 
-		t->vertexUV( ( float )( x0_ ), ( float )( y + h ), ( float )( z + 0 ), ( float )( u0 ), ( float )( v0 ) );
-		t->vertexUV( ( float )( x0 ), ( float )( y + 0 ), ( float )( z + 0 ), ( float )( u0 ), ( float )( v1 ) );
-		t->vertexUV( ( float )( x0 ), ( float )( y + 0 ), ( float )( z + 1 ), ( float )( u1 ), ( float )( v1 ) );
-		t->vertexUV( ( float )( x0_ ), ( float )( y + h ), ( float )( z + 1 ), ( float )( u1 ), ( float )( v0 ) );
+		t->vertexUV( ( float )( x0_ ), ( float )( y + h ), static_cast<float>(z + 0), ( float )( u0 ), ( float )( v0 ) );
+		t->vertexUV( ( float )( x0 ), static_cast<float>(y + 0), static_cast<float>(z + 0), ( float )( u0 ), ( float )( v1 ) );
+		t->vertexUV( ( float )( x0 ), static_cast<float>(y + 0), static_cast<float>(z + 1), ( float )( u1 ), ( float )( v1 ) );
+		t->vertexUV( ( float )( x0_ ), ( float )( y + h ), static_cast<float>(z + 1), ( float )( u1 ), ( float )( v0 ) );
 
-		t->vertexUV( ( float )( x1_ ), ( float )( y + h ), ( float )( z + 1 ), ( float )( u0 ), ( float )( v0 ) );
-		t->vertexUV( ( float )( x1 ), ( float )( y + 0 ), ( float )( z + 1 ), ( float )( u0 ), ( float )( v1 ) );
-		t->vertexUV( ( float )( x1 ), ( float )( y + 0 ), ( float )( z + 0 ), ( float )( u1 ), ( float )( v1 ) );
-		t->vertexUV( ( float )( x1_ ), ( float )( y + h ), ( float )( z + 0 ), ( float )( u1 ), ( float )( v0 ) );
+		t->vertexUV( ( float )( x1_ ), ( float )( y + h ), static_cast<float>(z + 1), ( float )( u0 ), ( float )( v0 ) );
+		t->vertexUV( ( float )( x1 ), static_cast<float>(y + 0), static_cast<float>(z + 1), ( float )( u0 ), ( float )( v1 ) );
+		t->vertexUV( ( float )( x1 ), static_cast<float>(y + 0), static_cast<float>(z + 0), ( float )( u1 ), ( float )( v1 ) );
+		t->vertexUV( ( float )( x1_ ), ( float )( y + h ), static_cast<float>(z + 0), ( float )( u1 ), ( float )( v0 ) );
 
 		tex = firstTex;
 		u0 = tex->getU0();
@@ -2373,15 +2373,15 @@ bool TileRenderer_SPU::tesselateFireInWorld( FireTile_SPU* tt, int x, int y, int
 		u1 = tex->getU1();
 		v1 = tex->getV1();
 
-		t->vertexUV( ( float )( x + 0 ), ( float )( y + h ), ( float )( z1_ ), ( float )( u0 ), ( float )( v0 ) );
-		t->vertexUV( ( float )( x + 0 ), ( float )( y + 0 ), ( float )( z1 ), ( float )( u0 ), ( float )( v1 ) );
-		t->vertexUV( ( float )( x + 1 ), ( float )( y + 0 ), ( float )( z1 ), ( float )( u1 ), ( float )( v1 ) );
-		t->vertexUV( ( float )( x + 1 ), ( float )( y + h ), ( float )( z1_ ), ( float )( u1 ), ( float )( v0 ) );
+		t->vertexUV( static_cast<float>(x + 0), ( float )( y + h ), ( float )( z1_ ), ( float )( u0 ), ( float )( v0 ) );
+		t->vertexUV( static_cast<float>(x + 0), static_cast<float>(y + 0), ( float )( z1 ), ( float )( u0 ), ( float )( v1 ) );
+		t->vertexUV( static_cast<float>(x + 1), static_cast<float>(y + 0), ( float )( z1 ), ( float )( u1 ), ( float )( v1 ) );
+		t->vertexUV( static_cast<float>(x + 1), ( float )( y + h ), ( float )( z1_ ), ( float )( u1 ), ( float )( v0 ) );
 
-		t->vertexUV( ( float )( x + 1 ), ( float )( y + h ), ( float )( z0_ ), ( float )( u0 ), ( float )( v0 ) );
-		t->vertexUV( ( float )( x + 1 ), ( float )( y + 0 ), ( float )( z0 ), ( float )( u0 ), ( float )( v1 ) );
-		t->vertexUV( ( float )( x + 0 ), ( float )( y + 0 ), ( float )( z0 ), ( float )( u1 ), ( float )( v1 ) );
-		t->vertexUV( ( float )( x + 0 ), ( float )( y + h ), ( float )( z0_ ), ( float )( u1 ), ( float )( v0 ) );
+		t->vertexUV( static_cast<float>(x + 1), ( float )( y + h ), ( float )( z0_ ), ( float )( u0 ), ( float )( v0 ) );
+		t->vertexUV( static_cast<float>(x + 1), static_cast<float>(y + 0), ( float )( z0 ), ( float )( u0 ), ( float )( v1 ) );
+		t->vertexUV( static_cast<float>(x + 0), static_cast<float>(y + 0), ( float )( z0 ), ( float )( u1 ), ( float )( v1 ) );
+		t->vertexUV( static_cast<float>(x + 0), ( float )( y + h ), ( float )( z0_ ), ( float )( u1 ), ( float )( v0 ) );
 	}
 	else
 	{
@@ -2425,10 +2425,10 @@ bool TileRenderer_SPU::tesselateFireInWorld( FireTile_SPU* tt, int x, int y, int
 		{
 			t->vertexUV( ( float )( x + 1 - r ), ( float )( y + h + yo ), ( float )( z +
 						 0.0f ), ( float )( u0 ), ( float )( v0 ) );
-			t->vertexUV( ( float )( x + 1 - 0 ), ( float )( y + 0 + yo ), ( float )( z +
-						 0.0f ), ( float )( u0 ), ( float )( v1 ) );
-			t->vertexUV( ( float )( x + 1 - 0 ), ( float )( y + 0 + yo ), ( float )( z +
-						 1.0f ), ( float )( u1 ), ( float )( v1 ) );
+			t->vertexUV( static_cast<float>(x + 1 - 0), ( float )( y + 0 + yo ), ( float )( z +
+                                                                                            0.0f ), ( float )( u0 ), ( float )( v1 ) );
+			t->vertexUV( static_cast<float>(x + 1 - 0), ( float )( y + 0 + yo ), ( float )( z +
+                                                                                            1.0f ), ( float )( u1 ), ( float )( v1 ) );
 			t->vertexUV( ( float )( x + 1 - r ), ( float )( y + h + yo ), ( float )( z +
 						 1.0f ), ( float )( u1 ), ( float )( v0 ) );
 
@@ -2504,14 +2504,14 @@ bool TileRenderer_SPU::tesselateFireInWorld( FireTile_SPU* tt, int x, int y, int
 
 			if ( ( ( x + y + z ) & 1 ) == 0 )
 			{
-				t->vertexUV( ( float )( x0_ ), ( float )( y + h ), ( float )( z +
-							 0 ), ( float )( u1 ), ( float )( v0 ) );
-				t->vertexUV( ( float )( x0 ), ( float )( y + 0 ), ( float )( z +
-							 0 ), ( float )( u1 ), ( float )( v1 ) );
-				t->vertexUV( ( float )( x0 ), ( float )( y + 0 ), ( float )( z +
-							 1 ), ( float )( u0 ), ( float )( v1 ) );
-				t->vertexUV( ( float )( x0_ ), ( float )( y + h ), ( float )( z +
-							 1 ), ( float )( u0 ), ( float )( v0 ) );
+				t->vertexUV( ( float )( x0_ ), ( float )( y + h ), static_cast<float>(z +
+                                                                                      0), ( float )( u1 ), ( float )( v0 ) );
+				t->vertexUV( ( float )( x0 ), static_cast<float>(y + 0), static_cast<float>(z +
+                                                                                            0), ( float )( u1 ), ( float )( v1 ) );
+				t->vertexUV( ( float )( x0 ), static_cast<float>(y + 0), static_cast<float>(z +
+                                                                                            1), ( float )( u0 ), ( float )( v1 ) );
+				t->vertexUV( ( float )( x0_ ), ( float )( y + h ), static_cast<float>(z +
+                                                                                      1), ( float )( u0 ), ( float )( v0 ) );
 
 				tex = secondTex;
 				u0 = tex->getU0();
@@ -2523,10 +2523,10 @@ bool TileRenderer_SPU::tesselateFireInWorld( FireTile_SPU* tt, int x, int y, int
 							 1.0f ), ( float )( u1 ), ( float )( v0 ) );
 				t->vertexUV( ( float )( x1 ), ( float )( y + 0.0f ), ( float )( z +
 							 1.0f ), ( float )( u1 ), ( float )( v1 ) );
-				t->vertexUV( ( float )( x1 ), ( float )( y + 0.0f ), ( float )( z +
-							 0 ), ( float )( u0 ), ( float )( v1 ) );
-				t->vertexUV( ( float )( x1_ ), ( float )( y + h ), ( float )( z +
-							 0 ), ( float )( u0 ), ( float )( v0 ) );
+				t->vertexUV( ( float )( x1 ), ( float )( y + 0.0f ), static_cast<float>(z +
+                                                                                        0), ( float )( u0 ), ( float )( v1 ) );
+				t->vertexUV( ( float )( x1_ ), ( float )( y + h ), static_cast<float>(z +
+                                                                                      0), ( float )( u0 ), ( float )( v0 ) );
 			}
 			else
 			{
@@ -2789,15 +2789,15 @@ bool TileRenderer_SPU::tesselateRailInWorld( RailTile_SPU* tt, int x, int y, int
 
 	float		r = 1 / 16.0f;
 
-	float		x0 = ( float )( x + 1 );
-	float		x1 = ( float )( x + 1 );
-	float		x2 = ( float )( x + 0 );
-	float		x3 = ( float )( x + 0 );
+	float		x0 = static_cast<float>(x + 1);
+	float		x1 = static_cast<float>(x + 1);
+	float		x2 = static_cast<float>(x + 0);
+	float		x3 = static_cast<float>(x + 0);
 
-	float		z0 = ( float )( z + 0 );
-	float		z1 = ( float )( z + 1 );
-	float		z2 = ( float )( z + 1 );
-	float		z3 = ( float )( z + 0 );
+	float		z0 = static_cast<float>(z + 0);
+	float		z1 = static_cast<float>(z + 1);
+	float		z2 = static_cast<float>(z + 1);
+	float		z3 = static_cast<float>(z + 0);
 
 	float		y0 = ( float )( y + r );
 	float		y1 = ( float )( y + r );
@@ -2806,24 +2806,24 @@ bool TileRenderer_SPU::tesselateRailInWorld( RailTile_SPU* tt, int x, int y, int
 
 	if ( data == 1 || data == 2 || data == 3 || data == 7 )
 	{
-		x0 = x3 = ( float )( x + 1 );
-		x1 = x2 = ( float )( x + 0 );
-		z0 = z1 = ( float )( z + 1 );
-		z2 = z3 = ( float )( z + 0 );
+		x0 = x3 = static_cast<float>(x + 1);
+		x1 = x2 = static_cast<float>(x + 0);
+		z0 = z1 = static_cast<float>(z + 1);
+		z2 = z3 = static_cast<float>(z + 0);
 	}
 	else if ( data == 8 )
 	{
-		x0 = x1 = ( float )( x + 0 );
-		x2 = x3 = ( float )( x + 1 );
-		z0 = z3 = ( float )( z + 1 );
-		z1 = z2 = ( float )( z + 0 );
+		x0 = x1 = static_cast<float>(x + 0);
+		x2 = x3 = static_cast<float>(x + 1);
+		z0 = z3 = static_cast<float>(z + 1);
+		z1 = z2 = static_cast<float>(z + 0);
 	}
 	else if ( data == 9 )
 	{
-		x0 = x3 = ( float )( x + 0 );
-		x1 = x2 = ( float )( x + 1 );
-		z0 = z1 = ( float )( z + 0 );
-		z2 = z3 = ( float )( z + 1 );
+		x0 = x3 = static_cast<float>(x + 0);
+		x1 = x2 = static_cast<float>(x + 1);
+		z0 = z1 = static_cast<float>(z + 0);
+		z2 = z3 = static_cast<float>(z + 1);
 	}
 
 	if ( data == 2 || data == 4 )
@@ -3555,9 +3555,9 @@ bool TileRenderer_SPU::tesselateCrossInWorld( Tile_SPU* tt, int x, int y, int z 
 	}
 	t->color( br * r, br * g, br * b );
 
-	float		xt = (float)x;
-	float		yt = (float)y;
-	float		zt = (float)z;
+	float		xt = static_cast<float>(x);
+	float		yt = static_cast<float>(y);
+	float		zt = static_cast<float>(z);
 
 	if (tt->id == Tile_SPU::tallgrass_Id)
 	{
@@ -3575,7 +3575,7 @@ bool TileRenderer_SPU::tesselateCrossInWorld( Tile_SPU* tt, int x, int y, int z 
 
 bool TileRenderer_SPU::tesselateStemInWorld( Tile_SPU* _tt, int x, int y, int z )
 {
-	StemTile_SPU*	tt = ( StemTile_SPU* )_tt;
+	StemTile_SPU*	tt = static_cast<StemTile_SPU *>(_tt);
 	Tesselator_SPU* t = getTesselator();
 
 	float		br;
@@ -3805,7 +3805,7 @@ bool TileRenderer_SPU::tesselateLilypadInWorld(WaterlilyTile_SPU *tt, int x, int
     int64_t seed = (x * 3129871) ^ (z * 116129781l) ^ (y);
     seed = seed * seed * 42317861 + seed * 11;
 
-    int dir = (int) ((seed >> 16) & 0x3);
+    int dir = static_cast<int>((seed >> 16) & 0x3);
 
 
 
@@ -4017,7 +4017,7 @@ bool TileRenderer_SPU::tesselateWaterInWorld( Tile_SPU* tt, int x, int y, int z 
 	{
 		changed = true;
 		Icon_SPU *tex = getTexture( tt, 1, data );
-		float	angle = ( float )LiquidTile_SPU::getSlopeAngle( level, x, y, z, m );
+		float	angle = static_cast<float>(LiquidTile_SPU::getSlopeAngle(level, x, y, z, m));
 		if ( angle > -999 )
 		{
 			tex = getTexture( tt, 2, data );
@@ -4112,8 +4112,8 @@ bool TileRenderer_SPU::tesselateWaterInWorld( Tile_SPU* tt, int x, int y, int z 
 			{
 				hh0 = ( float )( h0 );
 				hh1 = ( float )( h3 );
-				x0 = ( float )( x );
-				x1 = ( float )( x + 1 );
+				x0 = static_cast<float>(x);
+				x1 = static_cast<float>(x + 1);
 				z0 = ( float )( z + offs);
 				z1 = ( float )( z + offs);
 			}
@@ -4121,8 +4121,8 @@ bool TileRenderer_SPU::tesselateWaterInWorld( Tile_SPU* tt, int x, int y, int z 
 			{
 				hh0 = ( float )( h2 );
 				hh1 = ( float )( h1 );
-				x0 = ( float )( x + 1 );
-				x1 = ( float )( x );
+				x0 = static_cast<float>(x + 1);
+				x1 = static_cast<float>(x);
 				z0 = ( float )( z + 1 - offs);
 				z1 = ( float )( z + 1 - offs);
 			}
@@ -4132,8 +4132,8 @@ bool TileRenderer_SPU::tesselateWaterInWorld( Tile_SPU* tt, int x, int y, int z 
 				hh1 = ( float )( h0 );
 				x0 = ( float )( x + offs);
 				x1 = ( float )( x + offs);
-				z0 = ( float )( z + 1 );
-				z1 = ( float )( z );
+				z0 = static_cast<float>(z + 1);
+				z1 = static_cast<float>(z);
 			}
 			else
 			{
@@ -4141,8 +4141,8 @@ bool TileRenderer_SPU::tesselateWaterInWorld( Tile_SPU* tt, int x, int y, int z 
 				hh1 = ( float )( h2 );
 				x0 = ( float )( x + 1 - offs);
 				x1 = ( float )( x + 1 - offs);
-				z0 = ( float )( z );
-				z1 = ( float )( z + 1 );
+				z0 = static_cast<float>(z);
+				z1 = static_cast<float>(z + 1);
 			}
 
 
@@ -4172,8 +4172,8 @@ bool TileRenderer_SPU::tesselateWaterInWorld( Tile_SPU* tt, int x, int y, int z 
 			t->color( c11 * br * r, c11 * br * g, c11 * br * b );
 			t->vertexUV( ( float )( x0 ), ( float )( y + hh0 ), ( float )( z0 ), ( float )( u0 ), ( float )( v01 ) );
 			t->vertexUV( ( float )( x1 ), ( float )( y + hh1 ), ( float )( z1 ), ( float )( u1 ), ( float )( v02 ) );
-			t->vertexUV( ( float )( x1 ), ( float )( y + 0 ), ( float )( z1 ), ( float )( u1 ), ( float )( v1 ) );
-			t->vertexUV( ( float )( x0 ), ( float )( y + 0 ), ( float )( z0 ), ( float )( u0 ), ( float )( v1 ) );
+			t->vertexUV( ( float )( x1 ), static_cast<float>(y + 0), ( float )( z1 ), ( float )( u1 ), ( float )( v1 ) );
+			t->vertexUV( ( float )( x0 ), static_cast<float>(y + 0), ( float )( z0 ), ( float )( u0 ), ( float )( v1 ) );
 
 		}
 
@@ -4586,7 +4586,7 @@ bool TileRenderer_SPU::tesselateBlockInWorldWithAmbienceOcclusionTexLighting( Ti
 	else
 	{
 /*#ifdef _DEBUG
-		if(dynamic_cast<StairTile *>(tt)!=NULL)
+		if(dynamic_cast<StairTile *>(tt)!=nullptr)
 		{
 			// stair tile
 			faceFlags |= tt->shouldRenderFace( level, pX, pY - 1, pZ, 0 ) ? 0x01 : 0;
@@ -4786,7 +4786,7 @@ bool TileRenderer_SPU::tesselateBlockInWorldWithAmbienceOcclusionTexLighting( Ti
 		c4g *= ll4;
 		c4b *= ll4;
 
-		renderFaceDown( tt, ( float )pX, ( float )pY, ( float )pZ, getTexture( tt, level, pX, pY, pZ, 0 ) );
+		renderFaceDown( tt, static_cast<float>(pX), static_cast<float>(pY), static_cast<float>(pZ), getTexture( tt, level, pX, pY, pZ, 0 ) );
 	}
 	if ( faceFlags & 0x02 )
 	{
@@ -4878,7 +4878,7 @@ bool TileRenderer_SPU::tesselateBlockInWorldWithAmbienceOcclusionTexLighting( Ti
 		c4b *= ll4;
 
 
-		renderFaceUp( tt, ( float )pX, ( float )pY, ( float )pZ, getTexture( tt, level, pX, pY, pZ, 1 ) );
+		renderFaceUp( tt, static_cast<float>(pX), static_cast<float>(pY), static_cast<float>(pZ), getTexture( tt, level, pX, pY, pZ, 1 ) );
 	}
 	if ( faceFlags & 0x04 )
 	{
@@ -4946,14 +4946,14 @@ bool TileRenderer_SPU::tesselateBlockInWorldWithAmbienceOcclusionTexLighting( Ti
 				float _ll2 = (ll00z + ll0Yz + llX0z + llXYz) / 4.0f;
 				float _ll3 = (ll0yz + ll00z + llXyz + llX0z) / 4.0f;
 				float _ll4 = (llxyz + llx0z + ll0yz + ll00z) / 4.0f;
-				ll1 = (float) (_ll1 * tileShapeY1 * (1.0 - tileShapeX0) + _ll2 * tileShapeY0 * tileShapeX0 + _ll3 * (1.0 - tileShapeY1) * tileShapeX0 + _ll4 * (1.0 - tileShapeY1)
-					* (1.0 - tileShapeX0));
-				ll2 = (float) (_ll1 * tileShapeY1 * (1.0 - tileShapeX1) + _ll2 * tileShapeY1 * tileShapeX1 + _ll3 * (1.0 - tileShapeY1) * tileShapeX1 + _ll4 * (1.0 - tileShapeY1)
-					* (1.0 - tileShapeX1));
-				ll3 = (float) (_ll1 * tileShapeY0 * (1.0 - tileShapeX1) + _ll2 * tileShapeY0 * tileShapeX1 + _ll3 * (1.0 - tileShapeY0) * tileShapeX1 + _ll4 * (1.0 - tileShapeY0)
-					* (1.0 - tileShapeX1));
-				ll4 = (float) (_ll1 * tileShapeY0 * (1.0 - tileShapeX0) + _ll2 * tileShapeY0 * tileShapeX0 + _ll3 * (1.0 - tileShapeY0) * tileShapeX0 + _ll4 * (1.0 - tileShapeY0)
-					* (1.0 - tileShapeX0));
+				ll1 = static_cast<float>(_ll1 * tileShapeY1 * (1.0 - tileShapeX0) + _ll2 * tileShapeY0 * tileShapeX0 + _ll3 * (1.0 - tileShapeY1) * tileShapeX0 + _ll4 * (1.0 - tileShapeY1)
+                                         * (1.0 - tileShapeX0));
+				ll2 = static_cast<float>(_ll1 * tileShapeY1 * (1.0 - tileShapeX1) + _ll2 * tileShapeY1 * tileShapeX1 + _ll3 * (1.0 - tileShapeY1) * tileShapeX1 + _ll4 * (1.0 - tileShapeY1)
+                                         * (1.0 - tileShapeX1));
+				ll3 = static_cast<float>(_ll1 * tileShapeY0 * (1.0 - tileShapeX1) + _ll2 * tileShapeY0 * tileShapeX1 + _ll3 * (1.0 - tileShapeY0) * tileShapeX1 + _ll4 * (1.0 - tileShapeY0)
+                                         * (1.0 - tileShapeX1));
+				ll4 = static_cast<float>(_ll1 * tileShapeY0 * (1.0 - tileShapeX0) + _ll2 * tileShapeY0 * tileShapeX0 + _ll3 * (1.0 - tileShapeY0) * tileShapeX0 + _ll4 * (1.0 - tileShapeY0)
+                                         * (1.0 - tileShapeX0));
 
 				int _tc1 = blend(ccx0z, ccxYz, cc0Yz, cc00z);
 				int _tc2 = blend(cc0Yz, ccX0z, ccXYz, cc00z);
@@ -4998,7 +4998,7 @@ bool TileRenderer_SPU::tesselateBlockInWorldWithAmbienceOcclusionTexLighting( Ti
 
 
 		Icon_SPU *tex = getTexture(tt, level, pX, pY, pZ, 2);
-		renderNorth( tt, ( float )pX, ( float )pY, ( float )pZ, tex );
+		renderNorth( tt, static_cast<float>(pX), static_cast<float>(pY), static_cast<float>(pZ), tex );
 
 		if ( fancy && (tex == &Tile_SPU::ms_pTileData->iconData[Tile_SPU::grass_Id] && !hasFixedTexture() ))
 		{
@@ -5015,7 +5015,7 @@ bool TileRenderer_SPU::tesselateBlockInWorldWithAmbienceOcclusionTexLighting( Ti
 			c3b *= pBaseBlue;
 			c4b *= pBaseBlue;
 			bool prev = t->setMipmapEnable( false );	// 4J added - this is rendering the little bit of grass at the top of the side of dirt, don't mipmap it
-			renderNorth( tt, ( float )pX, ( float )pY, ( float )pZ, GrassTile_SPU::getSideTextureOverlay() );
+			renderNorth( tt, static_cast<float>(pX), static_cast<float>(pY), static_cast<float>(pZ), GrassTile_SPU::getSideTextureOverlay() );
 			t->setMipmapEnable( prev );
 		}
 	}
@@ -5082,14 +5082,14 @@ bool TileRenderer_SPU::tesselateBlockInWorldWithAmbienceOcclusionTexLighting( Ti
 				float _ll4 = (ll00Z + ll0YZ + llX0Z + llXYZ) / 4.0f;
 				float _ll3 = (ll0yZ + ll00Z + llXyZ + llX0Z) / 4.0f;
 				float _ll2 = (llxyZ + llx0Z + ll0yZ + ll00Z) / 4.0f;
-				ll1 = (float) (_ll1 * tileShapeY1 * (1.0 - tileShapeX0) + _ll4 * tileShapeY1 * tileShapeX0 + _ll3 * (1.0 - tileShapeY1) * tileShapeX0 + _ll2 * (1.0 - tileShapeY1)
-					* (1.0 - tileShapeX0));
-				ll2 = (float) (_ll1 * tileShapeY0 * (1.0 - tileShapeX0) + _ll4 * tileShapeY0 * tileShapeX0 + _ll3 * (1.0 - tileShapeY0) * tileShapeX0 + _ll2 * (1.0 - tileShapeY0)
-					* (1.0 - tileShapeX0));
-				ll3 = (float) (_ll1 * tileShapeY0 * (1.0 - tileShapeX1) + _ll4 * tileShapeY0 * tileShapeX1 + _ll3 * (1.0 - tileShapeY0) * tileShapeX1 + _ll2 * (1.0 - tileShapeY0)
-					* (1.0 - tileShapeX1));
-				ll4 = (float) (_ll1 * tileShapeY1 * (1.0 - tileShapeX1) + _ll4 * tileShapeY1 * tileShapeX1 + _ll3 * (1.0 - tileShapeY1) * tileShapeX1 + _ll2 * (1.0 - tileShapeY1)
-					* (1.0 - tileShapeX1));
+				ll1 = static_cast<float>(_ll1 * tileShapeY1 * (1.0 - tileShapeX0) + _ll4 * tileShapeY1 * tileShapeX0 + _ll3 * (1.0 - tileShapeY1) * tileShapeX0 + _ll2 * (1.0 - tileShapeY1)
+                                         * (1.0 - tileShapeX0));
+				ll2 = static_cast<float>(_ll1 * tileShapeY0 * (1.0 - tileShapeX0) + _ll4 * tileShapeY0 * tileShapeX0 + _ll3 * (1.0 - tileShapeY0) * tileShapeX0 + _ll2 * (1.0 - tileShapeY0)
+                                         * (1.0 - tileShapeX0));
+				ll3 = static_cast<float>(_ll1 * tileShapeY0 * (1.0 - tileShapeX1) + _ll4 * tileShapeY0 * tileShapeX1 + _ll3 * (1.0 - tileShapeY0) * tileShapeX1 + _ll2 * (1.0 - tileShapeY0)
+                                         * (1.0 - tileShapeX1));
+				ll4 = static_cast<float>(_ll1 * tileShapeY1 * (1.0 - tileShapeX1) + _ll4 * tileShapeY1 * tileShapeX1 + _ll3 * (1.0 - tileShapeY1) * tileShapeX1 + _ll2 * (1.0 - tileShapeY1)
+                                         * (1.0 - tileShapeX1));
 
 				int _tc1 = blend(ccx0Z, ccxYZ, cc0YZ, cc00Z);
 				int _tc4 = blend(cc0YZ, ccX0Z, ccXYZ, cc00Z);
@@ -5134,7 +5134,7 @@ bool TileRenderer_SPU::tesselateBlockInWorldWithAmbienceOcclusionTexLighting( Ti
 		c4g *= ll4;
 		c4b *= ll4;
 		Icon_SPU *tex = getTexture(tt, level, pX, pY, pZ, 3);
-		renderSouth( tt, ( float )pX, ( float )pY, ( float )pZ, getTexture(tt, level, pX, pY, pZ, 3 ) );
+		renderSouth( tt, static_cast<float>(pX), static_cast<float>(pY), static_cast<float>(pZ), getTexture(tt, level, pX, pY, pZ, 3 ) );
 
 		if ( fancy && (tex == &Tile_SPU::ms_pTileData->iconData[Tile_SPU::grass_Id] && !hasFixedTexture() ))
 		{
@@ -5151,7 +5151,7 @@ bool TileRenderer_SPU::tesselateBlockInWorldWithAmbienceOcclusionTexLighting( Ti
 			c3b *= pBaseBlue;
 			c4b *= pBaseBlue;
 			bool prev = t->setMipmapEnable( false );	// 4J added - this is rendering the little bit of grass at the top of the side of dirt, don't mipmap it
-			renderSouth( tt, ( float )pX, ( float )pY, ( float )pZ, GrassTile_SPU::getSideTextureOverlay() );
+			renderSouth( tt, static_cast<float>(pX), static_cast<float>(pY), static_cast<float>(pZ), GrassTile_SPU::getSideTextureOverlay() );
 			t->setMipmapEnable( prev );
 		}
 	}
@@ -5217,14 +5217,14 @@ bool TileRenderer_SPU::tesselateBlockInWorldWithAmbienceOcclusionTexLighting( Ti
 				float _ll1 = (llx00 + llx0Z + llxY0 + llxYZ) / 4.0f;
 				float _ll2 = (llx0z + llx00 + llxYz + llxY0) / 4.0f;
 				float _ll3 = (llxyz + llxy0 + llx0z + llx00) / 4.0f;
-				ll1 = (float) (_ll1 * tileShapeY1 * tileShapeZ1 + _ll2 * tileShapeY1 * (1.0 - tileShapeZ1) + _ll3 * (1.0 - tileShapeY1) * (1.0 - tileShapeZ1) + _ll4 * (1.0 - tileShapeY1)
-					* tileShapeZ1);
-				ll2 = (float) (_ll1 * tileShapeY1 * tileShapeZ0 + _ll2 * tileShapeY1 * (1.0 - tileShapeZ0) + _ll3 * (1.0 - tileShapeY1) * (1.0 - tileShapeZ0) + _ll4 * (1.0 - tileShapeY1)
-					* tileShapeZ0);
-				ll3 = (float) (_ll1 * tileShapeY0 * tileShapeZ0 + _ll2 * tileShapeY0 * (1.0 - tileShapeZ0) + _ll3 * (1.0 - tileShapeY0) * (1.0 - tileShapeZ0) + _ll4 * (1.0 - tileShapeY0)
-					* tileShapeZ0);
-				ll4 = (float) (_ll1 * tileShapeY0 * tileShapeZ1 + _ll2 * tileShapeY0 * (1.0 - tileShapeZ1) + _ll3 * (1.0 - tileShapeY0) * (1.0 - tileShapeZ1) + _ll4 * (1.0 - tileShapeY0)
-					* tileShapeZ1);
+				ll1 = static_cast<float>(_ll1 * tileShapeY1 * tileShapeZ1 + _ll2 * tileShapeY1 * (1.0 - tileShapeZ1) + _ll3 * (1.0 - tileShapeY1) * (1.0 - tileShapeZ1) + _ll4 * (1.0 - tileShapeY1)
+                                         * tileShapeZ1);
+				ll2 = static_cast<float>(_ll1 * tileShapeY1 * tileShapeZ0 + _ll2 * tileShapeY1 * (1.0 - tileShapeZ0) + _ll3 * (1.0 - tileShapeY1) * (1.0 - tileShapeZ0) + _ll4 * (1.0 - tileShapeY1)
+                                         * tileShapeZ0);
+				ll3 = static_cast<float>(_ll1 * tileShapeY0 * tileShapeZ0 + _ll2 * tileShapeY0 * (1.0 - tileShapeZ0) + _ll3 * (1.0 - tileShapeY0) * (1.0 - tileShapeZ0) + _ll4 * (1.0 - tileShapeY0)
+                                         * tileShapeZ0);
+				ll4 = static_cast<float>(_ll1 * tileShapeY0 * tileShapeZ1 + _ll2 * tileShapeY0 * (1.0 - tileShapeZ1) + _ll3 * (1.0 - tileShapeY0) * (1.0 - tileShapeZ1) + _ll4 * (1.0 - tileShapeY0)
+                                         * tileShapeZ1);
 
 				int _tc4 = blend(ccxy0, ccxyZ, ccx0Z, ccx00);
 				int _tc1 = blend(ccx0Z, ccxY0, ccxYZ, ccx00);
@@ -5269,7 +5269,7 @@ bool TileRenderer_SPU::tesselateBlockInWorldWithAmbienceOcclusionTexLighting( Ti
 		c4g *= ll4;
 		c4b *= ll4;
 		Icon_SPU *tex = getTexture(tt, level, pX, pY, pZ, 4);
-		renderWest( tt, ( float )pX, ( float )pY, ( float )pZ, tex );
+		renderWest( tt, static_cast<float>(pX), static_cast<float>(pY), static_cast<float>(pZ), tex );
 
 		if ( fancy && (tex == &Tile_SPU::ms_pTileData->iconData[Tile_SPU::grass_Id] && !hasFixedTexture() ))
 		{
@@ -5286,7 +5286,7 @@ bool TileRenderer_SPU::tesselateBlockInWorldWithAmbienceOcclusionTexLighting( Ti
 			c3b *= pBaseBlue;
 			c4b *= pBaseBlue;
 			bool prev = t->setMipmapEnable( false );	// 4J added - this is rendering the little bit of grass at the top of the side of dirt, don't mipmap it
-			renderWest( tt, ( float )pX, ( float )pY, ( float )pZ, GrassTile_SPU::getSideTextureOverlay() );
+			renderWest( tt, static_cast<float>(pX), static_cast<float>(pY), static_cast<float>(pZ), GrassTile_SPU::getSideTextureOverlay() );
 			t->setMipmapEnable( prev );
 		}
 	}
@@ -5352,14 +5352,14 @@ bool TileRenderer_SPU::tesselateBlockInWorldWithAmbienceOcclusionTexLighting( Ti
 				float _ll2 = (llXyz + llXy0 + llX0z + llX00) / 4.0f;
 				float _ll3 = (llX0z + llX00 + llXYz + llXY0) / 4.0f;
 				float _ll4 = (llX00 + llX0Z + llXY0 + llXYZ) / 4.0f;
-				ll1 = (float) (_ll1 * (1.0 - tileShapeY0) * tileShapeZ1 + _ll2 * (1.0 - tileShapeY0) * (1.0 - tileShapeZ1) + _ll3 * tileShapeY0 * (1.0 - tileShapeZ1) + _ll4 * tileShapeY0
-					* tileShapeZ1);
-				ll2 = (float) (_ll1 * (1.0 - tileShapeY0) * tileShapeZ0 + _ll2 * (1.0 - tileShapeY0) * (1.0 - tileShapeZ0) + _ll3 * tileShapeY0 * (1.0 - tileShapeZ0) + _ll4 * tileShapeY0
-					* tileShapeZ0);
-				ll3 = (float) (_ll1 * (1.0 - tileShapeY1) * tileShapeZ0 + _ll2 * (1.0 - tileShapeY1) * (1.0 - tileShapeZ0) + _ll3 * tileShapeY1 * (1.0 - tileShapeZ0) + _ll4 * tileShapeY1
-					* tileShapeZ0);
-				ll4 = (float) (_ll1 * (1.0 - tileShapeY1) * tileShapeZ1 + _ll2 * (1.0 - tileShapeY1) * (1.0 - tileShapeZ1) + _ll3 * tileShapeY1 * (1.0 - tileShapeZ1) + _ll4 * tileShapeY1
-					* tileShapeZ1);
+				ll1 = static_cast<float>(_ll1 * (1.0 - tileShapeY0) * tileShapeZ1 + _ll2 * (1.0 - tileShapeY0) * (1.0 - tileShapeZ1) + _ll3 * tileShapeY0 * (1.0 - tileShapeZ1) + _ll4 * tileShapeY0
+                                         * tileShapeZ1);
+				ll2 = static_cast<float>(_ll1 * (1.0 - tileShapeY0) * tileShapeZ0 + _ll2 * (1.0 - tileShapeY0) * (1.0 - tileShapeZ0) + _ll3 * tileShapeY0 * (1.0 - tileShapeZ0) + _ll4 * tileShapeY0
+                                         * tileShapeZ0);
+				ll3 = static_cast<float>(_ll1 * (1.0 - tileShapeY1) * tileShapeZ0 + _ll2 * (1.0 - tileShapeY1) * (1.0 - tileShapeZ0) + _ll3 * tileShapeY1 * (1.0 - tileShapeZ0) + _ll4 * tileShapeY1
+                                         * tileShapeZ0);
+				ll4 = static_cast<float>(_ll1 * (1.0 - tileShapeY1) * tileShapeZ1 + _ll2 * (1.0 - tileShapeY1) * (1.0 - tileShapeZ1) + _ll3 * tileShapeY1 * (1.0 - tileShapeZ1) + _ll4 * tileShapeY1
+                                         * tileShapeZ1);
 
 				int _tc1 = blend(ccXy0, ccXyZ, ccX0Z, ccX00);
 				int _tc4 = blend(ccX0Z, ccXY0, ccXYZ, ccX00);
@@ -5405,7 +5405,7 @@ bool TileRenderer_SPU::tesselateBlockInWorldWithAmbienceOcclusionTexLighting( Ti
 		c4b *= ll4;
 
 		Icon_SPU *tex = getTexture(tt, level, pX, pY, pZ, 5);
-		renderEast( tt, ( float )pX, ( float )pY, ( float )pZ, tex );
+		renderEast( tt, static_cast<float>(pX), static_cast<float>(pY), static_cast<float>(pZ), tex );
 		if ( fancy && (tex == &Tile_SPU::ms_pTileData->iconData[Tile_SPU::grass_Id] && !hasFixedTexture() ))
 		{
 			c1r *= pBaseRed;
@@ -5422,7 +5422,7 @@ bool TileRenderer_SPU::tesselateBlockInWorldWithAmbienceOcclusionTexLighting( Ti
 			c4b *= pBaseBlue;
 
 			bool prev = t->setMipmapEnable( false );	// 4J added - this is rendering the little bit of grass at the top of the side of dirt, don't mipmap it
-			renderEast( tt, ( float )pX, ( float )pY, ( float )pZ, GrassTile_SPU::getSideTextureOverlay() );
+			renderEast( tt, static_cast<float>(pX), static_cast<float>(pY), static_cast<float>(pZ), GrassTile_SPU::getSideTextureOverlay() );
 			t->setMipmapEnable( prev );
 		}
 	}
@@ -6005,8 +6005,8 @@ int TileRenderer_SPU::blend( int a, int b, int c, int def )
 int TileRenderer_SPU::blend(int a, int b, int c, int d, float fa, float fb, float fc, float fd)
 {
 
-	int top = (int) ((float) ((a >> 16) & 0xff) * fa + (float) ((b >> 16) & 0xff) * fb + (float) ((c >> 16) & 0xff) * fc + (float) ((d >> 16) & 0xff) * fd) & 0xff;
-	int bottom = (int) ((float) (a & 0xff) * fa + (float) (b & 0xff) * fb + (float) (c & 0xff) * fc + (float) (d & 0xff) * fd) & 0xff;
+	int top = static_cast<int>((float)((a >> 16) & 0xff) * fa + (float)((b >> 16) & 0xff) * fb + (float)((c >> 16) & 0xff) * fc + (float)((d >> 16) & 0xff) * fd) & 0xff;
+	int bottom = static_cast<int>((float)(a & 0xff) * fa + (float)(b & 0xff) * fb + (float)(c & 0xff) * fc + (float)(d & 0xff) * fd) & 0xff;
 	return (top << 16) | bottom;
 }
 
@@ -7626,7 +7626,7 @@ Icon_SPU *TileRenderer_SPU::getTexture(Tile_SPU *tile)
 
 Icon_SPU *TileRenderer_SPU::getTextureOrMissing(Icon_SPU *Icon_SPU)
 {
-	if (Icon_SPU == NULL) 
+	if (Icon_SPU == nullptr) 
 	{
 		assert(0);
 	//	return minecraft->textures->getMissingIcon_SPU(Icon_SPU::TYPE_TERRAIN);

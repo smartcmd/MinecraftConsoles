@@ -5,7 +5,7 @@
 
 ThinFenceTile::ThinFenceTile(int id, const wstring &tex, const wstring &edgeTex, Material *material, bool dropsResources) : Tile(id, material,isSolidRender())
 {
-	iconSide = NULL;
+	iconSide = nullptr;
 	edgeTexture = edgeTex;
 	this->dropsResources = dropsResources;
 	this->texture = tex;
@@ -144,7 +144,7 @@ bool ThinFenceTile::isSilkTouchable()
 
 shared_ptr<ItemInstance> ThinFenceTile::getSilkTouchItemInstance(int data)
 {
-	return shared_ptr<ItemInstance>(new ItemInstance(id, 1, data));
+	return std::make_shared<ItemInstance>(id, 1, data);
 }
 
 void ThinFenceTile::registerIcons(IconRegister *iconRegister)

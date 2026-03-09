@@ -47,7 +47,7 @@ void UIScene_SettingsControlMenu::updateTooltips()
 
 void UIScene_SettingsControlMenu::updateComponents()
 {
-	bool bNotInGame=(Minecraft::GetInstance()->level==NULL);
+	bool bNotInGame=(Minecraft::GetInstance()->level==nullptr);
 	if(bNotInGame)
 	{
 		m_parentLayer->showComponent(m_iPad,eUIComponent_Panorama,true);
@@ -93,8 +93,8 @@ void UIScene_SettingsControlMenu::handleInput(int iPad, int key, bool repeat, bo
 void UIScene_SettingsControlMenu::handleSliderMove(F64 sliderId, F64 currentValue)
 {
 	WCHAR TempString[256];
-	int value = (int)currentValue;
-	switch((int)sliderId)
+	int value = static_cast<int>(currentValue);
+	switch(static_cast<int>(sliderId))
 	{
 	case eControl_SensitivityInGame:
 		m_sliderSensitivityInGame.handleSliderMove(value);

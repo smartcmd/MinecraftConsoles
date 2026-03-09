@@ -10,7 +10,7 @@
 IUIScene_AnvilMenu::IUIScene_AnvilMenu()
 {
 	m_inventory = nullptr;
-	m_repairMenu = NULL;
+	m_repairMenu = nullptr;
 	m_itemName = L"";
 }
 
@@ -231,7 +231,7 @@ void IUIScene_AnvilMenu::handleTick()
 void IUIScene_AnvilMenu::updateItemName()
 {
 	Slot *slot = m_repairMenu->getSlot(AnvilMenu::INPUT_SLOT);
-	if (slot != NULL && slot->hasItem())
+	if (slot != nullptr && slot->hasItem())
 	{
 		if (!slot->getItem()->hasCustomHoverName() && m_itemName.compare(slot->getItem()->getHoverName())==0)
 		{
@@ -245,7 +245,7 @@ void IUIScene_AnvilMenu::updateItemName()
 	ByteArrayOutputStream baos;
 	DataOutputStream dos(&baos);
 	dos.writeUTF(m_itemName);
-	Minecraft::GetInstance()->localplayers[getPad()]->connection->send(shared_ptr<CustomPayloadPacket>(new CustomPayloadPacket(CustomPayloadPacket::SET_ITEM_NAME_PACKET, baos.toByteArray())));
+	Minecraft::GetInstance()->localplayers[getPad()]->connection->send(std::make_shared<CustomPayloadPacket>(CustomPayloadPacket::SET_ITEM_NAME_PACKET, baos.toByteArray()));
 }
 
 void IUIScene_AnvilMenu::refreshContainer(AbstractContainerMenu *container, vector<shared_ptr<ItemInstance> > *items)
@@ -257,10 +257,10 @@ void IUIScene_AnvilMenu::slotChanged(AbstractContainerMenu *container, int slotI
 {
 	if (slotIndex == AnvilMenu::INPUT_SLOT)
 	{
-		m_itemName = item == NULL ? L"" : item->getHoverName();
+		m_itemName = item == nullptr ? L"" : item->getHoverName();
 		setEditNameValue(m_itemName);
-		setEditNameEditable(item != NULL);
-		if (item != NULL)
+		setEditNameEditable(item != nullptr);
+		if (item != nullptr)
 		{
 			updateItemName();
 		}

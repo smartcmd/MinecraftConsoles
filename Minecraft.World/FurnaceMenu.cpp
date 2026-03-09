@@ -86,7 +86,7 @@ shared_ptr<ItemInstance> FurnaceMenu::quickMoveStack(shared_ptr<Player> player, 
 
 	bool charcoalUsed = furnace->wasCharcoalUsed();
 
-	if (slot != NULL && slot->hasItem())
+	if (slot != nullptr && slot->hasItem())
 	{
 		shared_ptr<ItemInstance> stack = slot->getItem();
 		clicked = stack->copy();
@@ -112,7 +112,7 @@ shared_ptr<ItemInstance> FurnaceMenu::quickMoveStack(shared_ptr<Player> player, 
 				return nullptr;
 			}
 		}
-		else if (FurnaceRecipes::getInstance()->getResult(stack->getItem()->id) != NULL)
+		else if (FurnaceRecipes::getInstance()->getResult(stack->getItem()->id) != nullptr)
 		{
 			if (!moveItemStackTo(stack, INGREDIENT_SLOT, INGREDIENT_SLOT + 1, false))
 			{

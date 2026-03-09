@@ -84,7 +84,7 @@ vector<wstring> *StatParam::getStats()
 	return out;
 }
 
-DurangoStatsDebugger *DurangoStatsDebugger::instance = NULL;
+DurangoStatsDebugger *DurangoStatsDebugger::instance = nullptr;
 
 DurangoStatsDebugger::DurangoStatsDebugger()
 {
@@ -320,7 +320,7 @@ DurangoStatsDebugger *DurangoStatsDebugger::Initialize()
 
 void DurangoStatsDebugger::PrintStats(int iPad)
 {
-	if (instance == NULL) instance = Initialize();
+	if (instance == nullptr) instance = Initialize();
 
 	vector<wstring> *tmp = instance->getStats();
 	instance->m_printQueue.insert(instance->m_printQueue.end(), tmp->begin(), tmp->end());

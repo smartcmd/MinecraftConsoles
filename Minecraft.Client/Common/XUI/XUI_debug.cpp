@@ -50,7 +50,7 @@ LPCWSTR CScene_Debug::m_DebugButtonTextA[eDebugButton_Max+1]=
 //----------------------------------------------------------------------------------
 HRESULT CScene_Debug::OnInit( XUIMessageInit* pInitData, BOOL& bHandled )
 {
-	m_iPad=*(int *)pInitData->pvInitData;
+	m_iPad=*static_cast<int *>(pInitData->pvInitData);
 
 	// set text and enable any debug options required
 	int iCheckboxIndex=0;
@@ -89,7 +89,7 @@ HRESULT CScene_Debug::OnInit( XUIMessageInit* pInitData, BOOL& bHandled )
 			XuiCreateObject( XUI_CLASS_CHECKBOX, &m_DebugCheckboxDataA[iCheckboxIndex].hXuiObj );
 			XuiObjectFromHandle( m_DebugCheckboxDataA[iCheckboxIndex].hXuiObj, &m_DebugCheckboxDataA[iCheckboxIndex].pvData );
 
-			pCheckbox = (CXuiCheckbox *)m_DebugCheckboxDataA[iCheckboxIndex].pvData;
+			pCheckbox = static_cast<CXuiCheckbox *>(m_DebugCheckboxDataA[iCheckboxIndex].pvData);
 			//m_phXuiObjA[iElementIndex] = pCheckbox->m_hObj;
 			pCheckbox->SetText(m_DebugCheckboxTextA[iCheckboxIndex]);
 			pCheckbox->SetShow(TRUE);
@@ -139,7 +139,7 @@ HRESULT CScene_Debug::OnInit( XUIMessageInit* pInitData, BOOL& bHandled )
 		XuiCreateObject( XUI_CLASS_BUTTON, &m_DebugButtonDataA[iButtonIndex].hXuiObj );
 		XuiObjectFromHandle( m_DebugButtonDataA[iButtonIndex].hXuiObj, &m_DebugButtonDataA[iButtonIndex].pvData );
 
-		pButton = (CXuiControl *)m_DebugButtonDataA[iButtonIndex].pvData;
+		pButton = static_cast<CXuiControl *>(m_DebugButtonDataA[iButtonIndex].pvData);
 		//m_phXuiObjA[iElementIndex] = pCheckbox->m_hObj;
 		pButton->SetText(m_DebugButtonTextA[iButtonIndex]);
 		pButton->SetShow(TRUE);
@@ -171,7 +171,7 @@ HRESULT CScene_Debug::OnInit( XUIMessageInit* pInitData, BOOL& bHandled )
 
 	for(int i=0;i<iCheckboxIndex;i++)
 	{
-		CXuiCheckbox *pCheckbox = (CXuiCheckbox *)m_DebugCheckboxDataA[i].pvData;
+		CXuiCheckbox *pCheckbox = static_cast<CXuiCheckbox *>(m_DebugCheckboxDataA[i].pvData);
 		pCheckbox->SetCheck( (uiDebugBitmask&(1<<i)) ?TRUE:FALSE);
 	}
 
@@ -213,7 +213,7 @@ HRESULT CScene_Debug::OnKeyDown(XUIMessageInput* pInputData, BOOL& rfHandled)
 		// check all the settings
 		for(int i=0;i<m_iTotalCheckboxElements;i++)
 		{
-			CXuiCheckbox *pCheckbox = (CXuiCheckbox *)m_DebugCheckboxDataA[i].pvData;
+			CXuiCheckbox *pCheckbox = static_cast<CXuiCheckbox *>(m_DebugCheckboxDataA[i].pvData);
 			uiDebugBitmask|=pCheckbox->IsChecked()?(1<<iCurrentBitmaskIndex):0;
 			iCurrentBitmaskIndex++;
 		}

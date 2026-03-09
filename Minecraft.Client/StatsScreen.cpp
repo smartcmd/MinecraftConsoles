@@ -10,15 +10,15 @@
 #include "..\Minecraft.World\net.minecraft.world.item.h"
 
 const float StatsScreen::SLOT_TEX_SIZE = 128.0f;
-ItemRenderer *StatsScreen::itemRenderer = NULL;
+ItemRenderer *StatsScreen::itemRenderer = nullptr;
 
 StatsScreen::StatsScreen(Screen *lastScreen, StatsCounter *stats)
 {
 	// 4J - added initialisers
 	itemRenderer = new ItemRenderer();
-	statsList = NULL;
-	itemStatsList = NULL;
-	blockStatsList = NULL;
+	statsList = nullptr;
+	itemStatsList = nullptr;
+	blockStatsList = nullptr;
     this->lastScreen = lastScreen;
     this->stats = stats;
 }
@@ -107,7 +107,7 @@ StatsScreen::GeneralStatisticsList::GeneralStatisticsList(StatsScreen *ss) : Scr
 
 int StatsScreen::GeneralStatisticsList::getNumberOfItems()
 {
-	return (int)Stats::generalStats->size();
+	return static_cast<int>(Stats::generalStats->size());
 }
 
 void StatsScreen::GeneralStatisticsList::selectItem(int item, bool doubleClick)
@@ -293,7 +293,7 @@ void StatsScreen::StatisticsList::clickedHeader(int headerMouseX, int headerMous
 
 int StatsScreen::StatisticsList::getNumberOfItems()
 {
-	return (int)statItemList.size();
+	return static_cast<int>(statItemList.size());
 }
 
 ItemStat *StatsScreen::StatisticsList::getSlotStat(int slot)
@@ -303,7 +303,7 @@ ItemStat *StatsScreen::StatisticsList::getSlotStat(int slot)
 
 void StatsScreen::StatisticsList::renderStat(ItemStat *stat, int x, int y, bool shaded)
 {
-    if (stat != NULL)
+    if (stat != nullptr)
 	{
         wstring msg = stat->format(parent->stats->getTotalValue(stat));
         parent->drawString(parent->font, msg, x - parent->font->width(msg), y + SLOT_TEXT_OFFSET, shaded ? 0xffffff : 0x909090);
@@ -373,7 +373,7 @@ void StatsScreen::StatisticsList::renderMousehoverTooltip(ItemStat *stat, int x,
 {
 	// 4J Stu - Unused
 #if 0
-    if (stat == NULL)
+    if (stat == nullptr)
 	{
         return;
     }
@@ -429,11 +429,11 @@ StatsScreen::ItemStatisticsList::ItemStatisticsList(StatsScreen *ss) : StatsScre
 		{
             addToList = true;
         }
-		else if (Stats::itemBroke[id] != NULL && parent->stats->getTotalValue(Stats::itemBroke[id]) > 0)
+		else if (Stats::itemBroke[id] != nullptr && parent->stats->getTotalValue(Stats::itemBroke[id]) > 0)
 		{
             addToList = true;
         }
-		else if (Stats::itemCrafted[id] != NULL && parent->stats->getTotalValue(Stats::itemCrafted[id]) > 0)
+		else if (Stats::itemCrafted[id] != nullptr && parent->stats->getTotalValue(Stats::itemCrafted[id]) > 0)
 		{
             addToList = true;
         }
@@ -556,11 +556,11 @@ StatsScreen::BlockStatisticsList::BlockStatisticsList(StatsScreen *ss) : Statist
 		{
             addToList = true;
         }
-		else if (Stats::itemUsed[id] != NULL && parent->stats->getTotalValue(Stats::itemUsed[id]) > 0)
+		else if (Stats::itemUsed[id] != nullptr && parent->stats->getTotalValue(Stats::itemUsed[id]) > 0)
 		{
             addToList = true;
         }
-		else if (Stats::itemCrafted[id] != NULL && parent->stats->getTotalValue(Stats::itemCrafted[id]) > 0)
+		else if (Stats::itemCrafted[id] != nullptr && parent->stats->getTotalValue(Stats::itemCrafted[id]) > 0)
 		{
             addToList = true;
         }

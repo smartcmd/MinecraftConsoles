@@ -38,7 +38,7 @@ HRESULT CScene_MultiGameCreate::OnInit( XUIMessageInit* pInitData, BOOL& bHandle
 {
 	m_bSetup = false;
 	m_texturePackDescDisplayed = false;
-	m_iConfigA=NULL;
+	m_iConfigA=nullptr;
 
 	WCHAR TempString[256];
 	MapChildControls();
@@ -52,7 +52,7 @@ HRESULT CScene_MultiGameCreate::OnInit( XUIMessageInit* pInitData, BOOL& bHandle
 	XuiControlSetText(m_labelRandomSeed,app.GetString(IDS_CREATE_NEW_WORLD_RANDOM_SEED));
 	XuiControlSetText(m_pTexturePacksList->m_hObj,app.GetString(IDS_DLC_MENU_TEXTUREPACKS));
 
-	CreateWorldMenuInitData *params = (CreateWorldMenuInitData *)pInitData->pvInitData;
+	CreateWorldMenuInitData *params = static_cast<CreateWorldMenuInitData *>(pInitData->pvInitData);
 
 	m_MoreOptionsParams.bGenerateOptions=TRUE;
 	m_MoreOptionsParams.bStructures=TRUE;
@@ -139,7 +139,7 @@ HRESULT CScene_MultiGameCreate::OnInit( XUIMessageInit* pInitData, BOOL& bHandle
 	wstring wWorldName = m_EditWorldName.GetText();
 
 	// set the caret to the end of the default text
-	m_EditWorldName.SetCaretPosition((int)wWorldName.length());
+	m_EditWorldName.SetCaretPosition(static_cast<int>(wWorldName.length()));
 	// In the dashboard, there's room for about 30 W characters on two lines before they go over the top of things
 	m_EditWorldName.SetTextLimit(25);
 
@@ -189,8 +189,8 @@ HRESULT CScene_MultiGameCreate::OnInit( XUIMessageInit* pInitData, BOOL& bHandle
 
 			if(dwImageBytes > 0 && pbImageData)
 			{
-				ListInfo.fEnabled = TRUE;
-				DLCTexturePack *pDLCTexPack=(DLCTexturePack *)tp;
+				ListInfo.fEnabled = true;
+				DLCTexturePack *pDLCTexPack=static_cast<DLCTexturePack *>(tp);
 				if(pDLCTexPack)
 				{
 					int id=pDLCTexPack->getDLCParentPackId();
@@ -222,7 +222,7 @@ HRESULT CScene_MultiGameCreate::OnInit( XUIMessageInit* pInitData, BOOL& bHandle
 
 		// 4J-PB - there may be texture packs we don't have, so use the info from TMS for this
 
-		DLC_INFO *pDLCInfo=NULL;
+		DLC_INFO *pDLCInfo=nullptr;
 
 		// first pass - look to see if there are any that are not in the list
 		bool bTexturePackAlreadyListed;
@@ -322,7 +322,7 @@ HRESULT CScene_MultiGameCreate::OnNotifyPressEx(HXUIOBJ hObjPressed, XUINotifyPr
 			// texture pack hasn't been set yet, so check what it will be
 			TexturePack *pTexturePack = pMinecraft->skins->getTexturePackById(m_MoreOptionsParams.dwTexturePack);
 
-			if(pTexturePack==NULL)
+			if(pTexturePack==nullptr)
 			{
 				// They've selected a texture pack they don't have yet
 				// upsell
@@ -391,7 +391,7 @@ HRESULT CScene_MultiGameCreate::OnNotifyPressEx(HXUIOBJ hObjPressed, XUINotifyPr
 			// texture pack hasn't been set yet, so check what it will be
 			TexturePack *pTexturePack = pMinecraft->skins->getTexturePackById(m_MoreOptionsParams.dwTexturePack);
 
-			if(pTexturePack==NULL)
+			if(pTexturePack== nullptr)
 			{
 				// corrupt DLC so set it to the default textures
 				m_MoreOptionsParams.dwTexturePack=0;
@@ -419,7 +419,7 @@ HRESULT CScene_MultiGameCreate::OnNotifyPressEx(HXUIOBJ hObjPressed, XUINotifyPr
 						DLC_INFO *pDLCInfo = app.GetDLCInfoForTrialOfferID(m_pDLCPack->getPurchaseOfferId());
 						ULONGLONG ullOfferID_Full;
 
-						if(pDLCInfo!=NULL)
+						if(pDLCInfo!=nullptr)
 						{
 							ullOfferID_Full=pDLCInfo->ullOfferID_Full;
 						}
@@ -485,7 +485,7 @@ HRESULT CScene_MultiGameCreate::OnNotifyPressEx(HXUIOBJ hObjPressed, XUINotifyPr
 					SetShow( TRUE );
 					UINT uiIDA[1];
 					uiIDA[0]=IDS_CONFIRM_OK;
-					StorageManager.RequestMessageBox( IDS_FAILED_TO_CREATE_GAME_TITLE, IDS_NO_USER_CREATED_CONTENT_PRIVILEGE_CREATE, uiIDA,1,ProfileManager.GetPrimaryPad(),NULL,NULL, app.GetStringTable());
+					StorageManager.RequestMessageBox( IDS_FAILED_TO_CREATE_GAME_TITLE, IDS_NO_USER_CREATED_CONTENT_PRIVILEGE_CREATE, uiIDA,1,ProfileManager.GetPrimaryPad(),nullptr,nullptr, app.GetStringTable());
 				}
 				else
 				{
@@ -522,7 +522,7 @@ HRESULT CScene_MultiGameCreate::OnNotifyPressEx(HXUIOBJ hObjPressed, XUINotifyPr
 
 int CScene_MultiGameCreate::UnlockTexturePackReturned(void *pParam,int iPad,C4JStorage::EMessageResult result)
 {
-	CScene_MultiGameCreate* pScene = (CScene_MultiGameCreate*)pParam;
+	CScene_MultiGameCreate* pScene = static_cast<CScene_MultiGameCreate *>(pParam);
 #ifdef _XBOX
 	if(result==C4JStorage::EMessage_ResultAccept)
 	{
@@ -531,7 +531,7 @@ int CScene_MultiGameCreate::UnlockTexturePackReturned(void *pParam,int iPad,C4JS
 			ULONGLONG ullIndexA[1];
 			DLC_INFO *pDLCInfo = app.GetDLCInfoForTrialOfferID(pScene->m_pDLCPack->getPurchaseOfferId());
 
-			if(pDLCInfo!=NULL)
+			if(pDLCInfo!=nullptr)
 			{
 				ullIndexA[0]=pDLCInfo->ullOfferID_Full;
 			}
@@ -540,7 +540,7 @@ int CScene_MultiGameCreate::UnlockTexturePackReturned(void *pParam,int iPad,C4JS
 				ullIndexA[0]=pScene->m_pDLCPack->getPurchaseOfferId();
 			}
 
-			StorageManager.InstallOffer(1,ullIndexA,NULL,NULL);
+			StorageManager.InstallOffer(1,ullIndexA,nullptr,nullptr);
 
 			// the license change coming in when the offer has been installed will cause this scene to refresh
 		}
@@ -558,7 +558,7 @@ int CScene_MultiGameCreate::UnlockTexturePackReturned(void *pParam,int iPad,C4JS
 
 int CScene_MultiGameCreate::WarningTrialTexturePackReturned(void *pParam,int iPad,C4JStorage::EMessageResult result)
 {
-	CScene_MultiGameCreate* pScene = (CScene_MultiGameCreate*)pParam;
+	CScene_MultiGameCreate* pScene = static_cast<CScene_MultiGameCreate *>(pParam);
 	pScene->m_bIgnoreInput = false;
 	pScene->SetShow( TRUE );
 	bool isClientSide = ProfileManager.IsSignedInLive(ProfileManager.GetPrimaryPad()) && pScene->m_MoreOptionsParams.bOnlineGame;
@@ -588,7 +588,7 @@ int CScene_MultiGameCreate::WarningTrialTexturePackReturned(void *pParam,int iPa
 		{
 			UINT uiIDA[1];
 			uiIDA[0]=IDS_CONFIRM_OK;
-			StorageManager.RequestMessageBox( IDS_FAILED_TO_CREATE_GAME_TITLE, IDS_NO_USER_CREATED_CONTENT_PRIVILEGE_CREATE, uiIDA,1,ProfileManager.GetPrimaryPad(),NULL,NULL, app.GetStringTable());
+			StorageManager.RequestMessageBox( IDS_FAILED_TO_CREATE_GAME_TITLE, IDS_NO_USER_CREATED_CONTENT_PRIVILEGE_CREATE, uiIDA,1,ProfileManager.GetPrimaryPad(),nullptr,nullptr, app.GetStringTable());
 		}
 		else
 		{
@@ -634,7 +634,7 @@ HRESULT CScene_MultiGameCreate::OnNotifyValueChanged (HXUIOBJ hObjSource, XUINot
 	else if(hObjSource==m_SliderDifficulty.GetSlider() )
 	{
 		app.SetGameSettings(m_iPad,eGameSetting_Difficulty,pValueChangedData->nValue);
-		swprintf( (WCHAR *)TempString, 256, L"%ls: %ls", app.GetString( IDS_SLIDER_DIFFICULTY ),app.GetString(m_iDifficultyTitleSettingA[pValueChangedData->nValue]));
+		swprintf( static_cast<WCHAR *>(TempString), 256, L"%ls: %ls", app.GetString( IDS_SLIDER_DIFFICULTY ),app.GetString(m_iDifficultyTitleSettingA[pValueChangedData->nValue]));
 		m_SliderDifficulty.SetText(TempString);
 	}
 
@@ -645,7 +645,7 @@ HRESULT CScene_MultiGameCreate::OnControlNavigate(XUIMessageControlNavigate *pCo
 {
 	pControlNavigateData->hObjDest=XuiControlGetNavigation(pControlNavigateData->hObjSource,pControlNavigateData->nControlNavigate,TRUE,TRUE);
 
-	if(pControlNavigateData->hObjDest==NULL)
+	if(pControlNavigateData->hObjDest==nullptr)
 	{
 		pControlNavigateData->hObjDest=pControlNavigateData->hObjSource;
 	}
@@ -706,7 +706,7 @@ HRESULT CScene_MultiGameCreate::OnTimer( XUIMessageTimer *pTimer, BOOL& bHandled
 				if(m_iConfigA[i]!=-1)
 				{
 					DWORD dwBytes=0;
-					PBYTE pbData=NULL;
+					PBYTE pbData=nullptr;
 					//app.DebugPrintf("Retrieving iConfig %d from TPD\n",m_iConfigA[i]);
 
 					app.GetTPD(m_iConfigA[i],&pbData,&dwBytes);
@@ -715,7 +715,7 @@ HRESULT CScene_MultiGameCreate::OnTimer( XUIMessageTimer *pTimer, BOOL& bHandled
 					if(dwBytes > 0 && pbData)
 					{
 						DWORD dwImageBytes=0;
-						PBYTE pbImageData=NULL;
+						PBYTE pbImageData=nullptr;
 
 						app.GetFileFromTPD(eTPDFileType_Icon,pbData,dwBytes,&pbImageData,&dwImageBytes );
 						ListInfo.fEnabled = TRUE;
@@ -754,7 +754,7 @@ HRESULT CScene_MultiGameCreate::OnTimer( XUIMessageTimer *pTimer, BOOL& bHandled
 
 int CScene_MultiGameCreate::ConfirmCreateReturned(void *pParam,int iPad,C4JStorage::EMessageResult result)
 {
-	CScene_MultiGameCreate* pClass = (CScene_MultiGameCreate*)pParam;
+	CScene_MultiGameCreate* pClass = static_cast<CScene_MultiGameCreate *>(pParam);
 
 	if(result==C4JStorage::EMessage_ResultAccept)
 	{
@@ -787,7 +787,7 @@ int CScene_MultiGameCreate::ConfirmCreateReturned(void *pParam,int iPad,C4JStora
 				pClass->SetShow( TRUE );
 				UINT uiIDA[1];
 				uiIDA[0]=IDS_CONFIRM_OK;
-				StorageManager.RequestMessageBox( IDS_FAILED_TO_CREATE_GAME_TITLE, IDS_NO_USER_CREATED_CONTENT_PRIVILEGE_CREATE, uiIDA,1,ProfileManager.GetPrimaryPad(),NULL,NULL, app.GetStringTable());
+				StorageManager.RequestMessageBox( IDS_FAILED_TO_CREATE_GAME_TITLE, IDS_NO_USER_CREATED_CONTENT_PRIVILEGE_CREATE, uiIDA,1,ProfileManager.GetPrimaryPad(),nullptr,nullptr, app.GetStringTable());
 			}
 			else
 			{
@@ -808,7 +808,7 @@ int CScene_MultiGameCreate::ConfirmCreateReturned(void *pParam,int iPad,C4JStora
 
 int CScene_MultiGameCreate::StartGame_SignInReturned(void *pParam,bool bContinue, int iPad)
 {
-	CScene_MultiGameCreate* pClass = (CScene_MultiGameCreate*)pParam;
+	CScene_MultiGameCreate* pClass = static_cast<CScene_MultiGameCreate *>(pParam);
 
 	if(bContinue==true)
 	{
@@ -844,7 +844,7 @@ int CScene_MultiGameCreate::StartGame_SignInReturned(void *pParam,bool bContinue
 					pClass->SetShow( TRUE );
 					UINT uiIDA[1];
 					uiIDA[0]=IDS_CONFIRM_OK;
-					StorageManager.RequestMessageBox( IDS_FAILED_TO_CREATE_GAME_TITLE, IDS_NO_USER_CREATED_CONTENT_PRIVILEGE_CREATE, uiIDA,1,ProfileManager.GetPrimaryPad(),NULL,NULL, app.GetStringTable());
+					StorageManager.RequestMessageBox( IDS_FAILED_TO_CREATE_GAME_TITLE, IDS_NO_USER_CREATED_CONTENT_PRIVILEGE_CREATE, uiIDA,1,ProfileManager.GetPrimaryPad(),nullptr,nullptr, app.GetStringTable());
 				}
 				else
 				{
@@ -852,7 +852,7 @@ int CScene_MultiGameCreate::StartGame_SignInReturned(void *pParam,bool bContinue
 					pClass->SetShow( TRUE );
 					UINT uiIDA[1];
 					uiIDA[0]=IDS_CONFIRM_OK;
-					StorageManager.RequestMessageBox( IDS_NO_MULTIPLAYER_PRIVILEGE_TITLE, IDS_NO_MULTIPLAYER_PRIVILEGE_HOST_TEXT, uiIDA,1,ProfileManager.GetPrimaryPad(),NULL,NULL, app.GetStringTable());
+					StorageManager.RequestMessageBox( IDS_NO_MULTIPLAYER_PRIVILEGE_TITLE, IDS_NO_MULTIPLAYER_PRIVILEGE_HOST_TEXT, uiIDA,1,ProfileManager.GetPrimaryPad(),nullptr,nullptr, app.GetStringTable());
 				}
 			}
 			else
@@ -889,7 +889,7 @@ void CScene_MultiGameCreate::CreateGame(CScene_MultiGameCreate* pClass, DWORD dw
 	// Make our next save default to the name of the level
 	StorageManager.SetSaveTitle((wchar_t *)wWorldName.c_str());
 
-	BOOL bHasSeed = (pClass->m_EditSeed.GetText() != NULL);
+	BOOL bHasSeed = (pClass->m_EditSeed.GetText() != nullptr);
 
 	wstring wSeed;
 	if(bHasSeed)
@@ -909,7 +909,7 @@ void CScene_MultiGameCreate::CreateGame(CScene_MultiGameCreate* pClass, DWORD dw
 	if (wSeed.length() != 0)
 	{
 		int64_t value = 0;
-		unsigned int len = (unsigned int)wSeed.length();
+		const unsigned int len = static_cast<unsigned int>(wSeed.length());
 
 		//Check if the input string contains a numerical value
 		bool isNumber = true;
@@ -946,7 +946,7 @@ void CScene_MultiGameCreate::CreateGame(CScene_MultiGameCreate* pClass, DWORD dw
 
 	NetworkGameInitData *param = new NetworkGameInitData();
 	param->seed = seedValue;
-	param->saveData = NULL;
+	param->saveData = nullptr;
 	param->texturePackId = pClass->m_MoreOptionsParams.dwTexturePack;
 
 	Minecraft *pMinecraft = Minecraft::GetInstance();
@@ -979,7 +979,7 @@ void CScene_MultiGameCreate::CreateGame(CScene_MultiGameCreate* pClass, DWORD dw
 
 	LoadingInputParams *loadingParams = new LoadingInputParams();
 	loadingParams->func = &CGameNetworkManager::RunNetworkGameThreadProc;
-	loadingParams->lpParam = (LPVOID)param;
+	loadingParams->lpParam = static_cast<LPVOID>(param);
 
 	// Reset the autosave time
 	app.SetAutosaveTimerTime();
@@ -1095,12 +1095,12 @@ void CScene_MultiGameCreate::UpdateTexturePackDescription(int index)
 	int iTexPackId=m_pTexturePacksList->GetData(index).iData;
 	TexturePack *tp = Minecraft::GetInstance()->skins->getTexturePackById(iTexPackId);
 
-	if(tp==NULL)
+	if(tp==nullptr)
 	{
 		// this is probably a texture pack icon added from TMS
 
 		DWORD dwBytes=0,dwFileBytes=0;
-		PBYTE pbData=NULL,pbFileData=NULL;
+		PBYTE pbData=nullptr,pbFileData=nullptr;
 
 		CXuiCtrl4JList::LIST_ITEM_INFO ListItem;
 		// get the current index of the list, and then get the data
@@ -1130,7 +1130,7 @@ void CScene_MultiGameCreate::UpdateTexturePackDescription(int index)
 		}
 		else
 		{
-			m_texturePackComparison->UseBrush(NULL);
+			m_texturePackComparison->UseBrush(nullptr);
 		}
 	}
 	else
@@ -1156,7 +1156,7 @@ void CScene_MultiGameCreate::UpdateTexturePackDescription(int index)
 		}
 		else
 		{
-			m_texturePackComparison->UseBrush(NULL);
+			m_texturePackComparison->UseBrush(nullptr);
 		}
 	}
 }
@@ -1168,7 +1168,7 @@ void CScene_MultiGameCreate::UpdateCurrentTexturePack()
 	TexturePack *tp = Minecraft::GetInstance()->skins->getTexturePackById(iTexPackId);
 
 	// if the texture pack is null, you don't have it yet
-	if(tp==NULL)
+	if(tp==nullptr)
 	{
 		// Upsell
 
@@ -1217,7 +1217,7 @@ void CScene_MultiGameCreate::UpdateCurrentTexturePack()
 
 int CScene_MultiGameCreate::TexturePackDialogReturned(void *pParam,int iPad,C4JStorage::EMessageResult result)
 {
-	CScene_MultiGameCreate *pClass = (CScene_MultiGameCreate *)pParam;
+	CScene_MultiGameCreate *pClass = static_cast<CScene_MultiGameCreate *>(pParam);
 	pClass->m_currentTexturePackIndex = pClass->m_pTexturePacksList->GetCurSel();
 	// Exit with or without saving
 	// Decline means install full version of the texture pack in this dialog
@@ -1236,7 +1236,7 @@ int CScene_MultiGameCreate::TexturePackDialogReturned(void *pParam,int iPad,C4JS
 		if( result==C4JStorage::EMessage_ResultAccept ) // Full version
 		{
 			ullIndexA[0]=ullOfferID_Full;
-			StorageManager.InstallOffer(1,ullIndexA,NULL,NULL);
+			StorageManager.InstallOffer(1,ullIndexA,nullptr,nullptr);
 
 		}
 		else // trial version
@@ -1246,7 +1246,7 @@ int CScene_MultiGameCreate::TexturePackDialogReturned(void *pParam,int iPad,C4JS
 			if(pDLCInfo->ullOfferID_Trial!=0LL)
 			{
 				ullIndexA[0]=pDLCInfo->ullOfferID_Trial;
-				StorageManager.InstallOffer(1,ullIndexA,NULL,NULL);
+				StorageManager.InstallOffer(1,ullIndexA,nullptr,nullptr);
 			}
 		}
 	}
@@ -1295,7 +1295,7 @@ HRESULT CScene_MultiGameCreate::OnCustomMessage_DLCMountingComplete()
 			ListInfo.fEnabled = TRUE;
 			hr=XuiCreateTextureBrushFromMemory(pbImageData,dwImageBytes,&ListInfo.hXuiBrush);
 
-			DLCTexturePack *pDLCTexPack=(DLCTexturePack *)tp;
+			DLCTexturePack *pDLCTexPack=static_cast<DLCTexturePack *>(tp);
 			if(pDLCTexPack)
 			{
 				int id=pDLCTexPack->getDLCParentPackId();
@@ -1319,7 +1319,7 @@ HRESULT CScene_MultiGameCreate::OnCustomMessage_DLCMountingComplete()
 
 	// 4J-PB - there may be texture packs we don't have, so use the info from TMS for this
 	// REMOVE UNTIL WORKING
-	DLC_INFO *pDLCInfo=NULL;
+	DLC_INFO *pDLCInfo=nullptr;
 
 	// first pass - look to see if there are any that are not in the list
 	bool bTexturePackAlreadyListed;
@@ -1352,7 +1352,7 @@ HRESULT CScene_MultiGameCreate::OnCustomMessage_DLCMountingComplete()
 		// add a TMS request for them
 		app.DebugPrintf("+++ Adding TMSPP request for texture pack data\n");
 		app.AddTMSPPFileTypeRequest(e_DLC_TexturePackData);
-		if(m_iConfigA!=NULL)
+		if(m_iConfigA!=nullptr)
 		{
 			delete m_iConfigA;
 		}
@@ -1392,6 +1392,6 @@ void CScene_MultiGameCreate::ClearTexturePackDescription()
 {
 	m_texturePackTitle.SetText(L" ");
 	m_texturePackDescription.SetText(L" ");
-	m_texturePackComparison->UseBrush(NULL);
-	m_texturePackIcon->UseBrush(NULL);
+	m_texturePackComparison->UseBrush(nullptr);
+	m_texturePackIcon->UseBrush(nullptr);
 }

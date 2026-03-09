@@ -11,7 +11,7 @@ UIScene_QuadrantSignin::UIScene_QuadrantSignin(int iPad, void *_initData, UILaye
 	// Setup all the Iggy references we need for this scene
 	initialiseMovie();
 
-	m_signInInfo = *((SignInInfo *)_initData);
+	m_signInInfo = *static_cast<SignInInfo *>(_initData);
 
 	m_bIgnoreInput = false;
 	
@@ -167,7 +167,7 @@ int UIScene_QuadrantSignin::SignInReturned(void *pParam,bool bContinue, int iPad
 {
 	app.DebugPrintf("SignInReturned for pad %d\n", iPad);
 
-	UIScene_QuadrantSignin *pClass = (UIScene_QuadrantSignin *)pParam;
+	UIScene_QuadrantSignin *pClass = static_cast<UIScene_QuadrantSignin *>(pParam);
 
 #ifdef _XBOX_ONE
 	if(bContinue && pClass->m_signInInfo.requireOnline && ProfileManager.IsSignedIn(iPad))
@@ -264,7 +264,7 @@ void UIScene_QuadrantSignin::setControllerState(int iPad, EControllerStatus stat
 		value[0].number = iPad;
 
 		value[1].type = IGGY_DATATYPE_number;
-		value[1].number = (int)state;
+		value[1].number = static_cast<int>(state);
 
 		IggyResult out = IggyPlayerCallMethodRS ( getMovie() , &result, IggyPlayerRootPath( getMovie() ), m_funcSetControllerStatus , 2 , value );
 	}
@@ -272,9 +272,9 @@ void UIScene_QuadrantSignin::setControllerState(int iPad, EControllerStatus stat
 
 int UIScene_QuadrantSignin::AvatarReturned(LPVOID lpParam,PBYTE pbThumbnail,DWORD dwThumbnailBytes)
 {
-	UIScene_QuadrantSignin *pClass = (UIScene_QuadrantSignin *)lpParam;
+	UIScene_QuadrantSignin *pClass = static_cast<UIScene_QuadrantSignin *>(lpParam);
 	app.DebugPrintf(app.USER_SR,"AvatarReturned callback\n");
-	if(pbThumbnail != NULL)
+	if(pbThumbnail != nullptr)
 	{
 		// 4J-JEV - Added to ensure each new texture gets a unique name.
 		static unsigned int quadrantImageCount = 0;

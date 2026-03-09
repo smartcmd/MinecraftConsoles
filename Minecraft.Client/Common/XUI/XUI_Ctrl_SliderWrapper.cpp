@@ -10,11 +10,11 @@ HRESULT CXuiCtrlSliderWrapper::OnInit( XUIMessageInit* pInitData, BOOL& bHandled
 
 	XuiElementGetChildById(m_hObj,L"FocusSink",&hObjChild);
 	XuiObjectFromHandle( hObjChild, &pObj );
-	m_pFocusSink = (CXuiControl *)pObj;
+	m_pFocusSink = static_cast<CXuiControl *>(pObj);
 
 	XuiElementGetChildById(m_hObj,L"XuiSlider",&hObjChild);
 	XuiObjectFromHandle( hObjChild, &pObj );
-	m_pSlider = (CXuiSlider *)pObj;
+	m_pSlider = static_cast<CXuiSlider *>(pObj);
 
 	m_sliderActive = false;
 	m_bDisplayVal=true;
@@ -119,7 +119,7 @@ HRESULT CXuiCtrlSliderWrapper::SetValueDisplay( BOOL bShow )
 	hr=XuiControlGetVisual(pThis->m_pSlider->m_hObj,&hVisual);
 	hr=XuiElementGetChildById(hVisual,L"Text_Value",&hText);
 
-	if(hText!=NULL)
+	if(hText!=nullptr)
 	{
 		XuiElementSetShow(hText,bShow);
 	}
@@ -132,7 +132,7 @@ LPCWSTR CXuiCtrlSliderWrapper::GetText(  )
 	CXuiCtrlSliderWrapper *pThis;
 	HRESULT hr = XuiObjectFromHandle(m_hObj, (void **) &pThis);
 	if (FAILED(hr))
-		return NULL;
+		return nullptr;
 	return pThis->m_pSlider->GetText();
 	//return S_OK;
 }
@@ -159,7 +159,7 @@ HXUIOBJ CXuiCtrlSliderWrapper::GetSlider()
 	CXuiCtrlSliderWrapper *pThis;
 	HRESULT hr = XuiObjectFromHandle(m_hObj, (void **) &pThis);
 	if (FAILED(hr))
-		return NULL;
+		return nullptr;
 	return pThis->m_pSlider->m_hObj;
 }
 

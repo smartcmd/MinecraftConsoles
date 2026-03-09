@@ -46,7 +46,7 @@ shared_ptr<Entity> Monster::findAttackTarget()
 #endif
 
 	shared_ptr<Player> player = level->getNearestAttackablePlayer(shared_from_this(), 16);
-	if (player != NULL && canSee(player) ) return player;
+	if (player != nullptr && canSee(player) ) return player;
 	return shared_ptr<Player>();
 }
 
@@ -75,7 +75,7 @@ bool Monster::hurt(DamageSource *source, float dmg)
 */
 bool Monster::doHurtTarget(shared_ptr<Entity> target)
 {
-	float dmg = (float) getAttribute(SharedMonsterAttributes::ATTACK_DAMAGE)->getValue();
+	float dmg = static_cast<float>(getAttribute(SharedMonsterAttributes::ATTACK_DAMAGE)->getValue());
 	int knockback = 0;
 
 	

@@ -71,8 +71,8 @@ void CXuiSceneAbstractContainer::PlatformInitialize(int iPad, int startIndex)
 	m_fPointerMaxX = fPanelWidth + fPointerWidth;
 	m_fPointerMaxY = fPanelHeight + (fPointerHeight/2);
 
-// 	m_hPointerText=NULL;
-// 	m_hPointerTextBkg=NULL;
+// 	m_hPointerText=nullptr;
+// 	m_hPointerTextBkg=nullptr;
 
 	UIVec2D itemPos;
 	UIVec2D itemSize;
@@ -113,7 +113,7 @@ void CXuiSceneAbstractContainer::PlatformInitialize(int iPad, int startIndex)
 	// Disable the default navigation behaviour for all slot lsit items (prevent old style cursor navigation).
 	for ( int iSection = m_eFirstSection; iSection < m_eMaxSection; ++iSection )
 	{
-		ESceneSection eSection = ( ESceneSection )( iSection );
+		ESceneSection eSection = static_cast<ESceneSection>(iSection);
 
 		if(!IsSectionSlotList(eSection)) continue;
 
@@ -170,7 +170,7 @@ HRESULT CXuiSceneAbstractContainer::OnTransitionStart( XUIMessageTransition *pTr
 			InitDataAssociations(m_iPad, m_menu);
 		}
 
-		HXUIOBJ hObj=NULL;
+		HXUIOBJ hObj=nullptr;
 		HRESULT hr=XuiControlGetVisual(m_pointerControl->m_hObj,&hObj);
 		hr=XuiElementGetChildById(hObj,L"text_measurer",&m_hPointerTextMeasurer);
 		hr=XuiElementGetChildById(hObj,L"text_name",&m_hPointerText);

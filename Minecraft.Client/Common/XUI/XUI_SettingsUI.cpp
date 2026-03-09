@@ -10,9 +10,9 @@
 HRESULT CScene_SettingsUI::OnInit( XUIMessageInit* pInitData, BOOL& bHandled )
 {
 	WCHAR TempString[256];
-	m_iPad=*(int *)pInitData->pvInitData;
+	m_iPad=*static_cast<int *>(pInitData->pvInitData);
 	// if we're not in the game, we need to use basescene 0 
-	bool bNotInGame=(Minecraft::GetInstance()->level==NULL);
+	bool bNotInGame=(Minecraft::GetInstance()->level==nullptr);
 	bool bPrimaryPlayer = ProfileManager.GetPrimaryPad()==m_iPad;
 
 	MapChildControls();
@@ -115,7 +115,7 @@ HRESULT CScene_SettingsUI::OnNotifyValueChanged( HXUIOBJ hObjSource, XUINotifyVa
 		// slider is 1 to 3
 
 		// is this different from the current value?
-		swprintf( (WCHAR *)TempString, 256, L"%ls: %d", app.GetString( IDS_SLIDER_UISIZE ),pNotifyValueChanged->nValue);		
+		swprintf( static_cast<WCHAR *>(TempString), 256, L"%ls: %d", app.GetString( IDS_SLIDER_UISIZE ),pNotifyValueChanged->nValue);		
 		m_SliderA[SLIDER_SETTINGS_UISIZE].SetText(TempString);
 		if(pNotifyValueChanged->nValue != app.GetGameSettings(m_iPad,eGameSetting_UISize)+1)
 		{
@@ -126,7 +126,7 @@ HRESULT CScene_SettingsUI::OnNotifyValueChanged( HXUIOBJ hObjSource, XUINotifyVa
 	}
 	else if(hObjSource==m_SliderA[SLIDER_SETTINGS_UISIZESPLITSCREEN].GetSlider() )
 	{
-		swprintf( (WCHAR *)TempString, 256, L"%ls: %d", app.GetString( IDS_SLIDER_UISIZESPLITSCREEN ),pNotifyValueChanged->nValue);		
+		swprintf( static_cast<WCHAR *>(TempString), 256, L"%ls: %d", app.GetString( IDS_SLIDER_UISIZESPLITSCREEN ),pNotifyValueChanged->nValue);		
 		m_SliderA[SLIDER_SETTINGS_UISIZESPLITSCREEN].SetText(TempString);
 
 		if(pNotifyValueChanged->nValue != app.GetGameSettings(m_iPad,eGameSetting_UISizeSplitscreen)+1)
@@ -210,7 +210,7 @@ HRESULT CScene_SettingsUI::OnControlNavigate(XUIMessageControlNavigate *pControl
 	// added so we can skip greyed out items
 	pControlNavigateData->hObjDest=XuiControlGetNavigation(pControlNavigateData->hObjSource,pControlNavigateData->nControlNavigate,TRUE,TRUE);
 
-	if(pControlNavigateData->hObjDest!=NULL)
+	if(pControlNavigateData->hObjDest!=nullptr)
 	{
 		bHandled=TRUE;
 	}
@@ -353,7 +353,7 @@ HRESULT CScene_SettingsUI::OnTransitionStart( XUIMessageTransition *pTransition,
 
 HRESULT CScene_SettingsUI::OnNavReturn(HXUIOBJ hObj,BOOL& rfHandled)
 {
-	bool bNotInGame=(Minecraft::GetInstance()->level==NULL);
+	bool bNotInGame=(Minecraft::GetInstance()->level==nullptr);
 
 	// if we're not in the game, we need to use basescene 0 
 	if(bNotInGame)

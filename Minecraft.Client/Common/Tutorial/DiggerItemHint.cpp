@@ -22,7 +22,7 @@ DiggerItemHint::DiggerItemHint(eTutorial_Hint id, Tutorial *tutorial, int descri
 
 int DiggerItemHint::startDestroyBlock(shared_ptr<ItemInstance> item, Tile *tile)
 {
-	if(item != NULL)
+	if(item != nullptr)
 	{
 		bool itemFound = false;
 		for(unsigned int i=0;i<m_iItemsCount;i++)
@@ -48,7 +48,7 @@ int DiggerItemHint::startDestroyBlock(shared_ptr<ItemInstance> item, Tile *tile)
 
 int DiggerItemHint::attack(shared_ptr<ItemInstance> item, shared_ptr<Entity> entity)
 {
-	if(item != NULL)
+	if(item != nullptr)
 	{
 		bool itemFound = false;
 		for(unsigned int i=0;i<m_iItemsCount;i++)

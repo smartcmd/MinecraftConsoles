@@ -25,10 +25,10 @@ HRESULT CXuiCtrlEnchantmentButtonText::OnInit(XUIMessageInit* pInitData, BOOL& r
 	Minecraft *pMinecraft=Minecraft::GetInstance();
 
 	ScreenSizeCalculator ssc(pMinecraft->options, pMinecraft->width_phys, pMinecraft->height_phys);
-	m_fScreenWidth=(float)pMinecraft->width_phys;
-	m_fRawWidth=(float)ssc.rawWidth;
-	m_fScreenHeight=(float)pMinecraft->height_phys;
-	m_fRawHeight=(float)ssc.rawHeight;
+	m_fScreenWidth=static_cast<float>(pMinecraft->width_phys);
+	m_fRawWidth=static_cast<float>(ssc.rawWidth);
+	m_fScreenHeight=static_cast<float>(pMinecraft->height_phys);
+	m_fRawHeight=static_cast<float>(ssc.rawHeight);
 
 	HXUIOBJ parent = m_hObj;
 	HXUICLASS hcInventoryClass = XuiFindClass( L"CXuiCtrlEnchantmentButton" );
@@ -38,13 +38,13 @@ HRESULT CXuiCtrlEnchantmentButtonText::OnInit(XUIMessageInit* pInitData, BOOL& r
 	{
 		XuiElementGetParent(parent,&parent);
 		currentClass = XuiGetObjectClass( parent );
-	} while (parent != NULL && !XuiClassDerivesFrom( currentClass, hcInventoryClass ) );
+	} while (parent != nullptr && !XuiClassDerivesFrom( currentClass, hcInventoryClass ) );
 
-	assert( parent != NULL );
+	assert( parent != nullptr );
 
 	VOID *pObj;
 	XuiObjectFromHandle( parent, &pObj );
-	m_parentControl = (CXuiCtrlEnchantmentButton *)pObj;
+	m_parentControl = static_cast<CXuiCtrlEnchantmentButton *>(pObj);
 
 	m_lastCost = 0;
 	m_enchantmentString = L"";
@@ -75,10 +75,10 @@ HRESULT CXuiCtrlEnchantmentButtonText::OnRender(XUIMessageRender *pRenderData, B
 	// Annoyingly, XUI renders everything to a z of 0 so if we want to render anything that needs the z-buffer on top of it, then we need to clear it.
 	// Clear just the region required for this control.
 	D3DRECT clearRect;
-	clearRect.x1 = (int)(matrix._41) - 2;
-	clearRect.y1 = (int)(matrix._42) - 2;
-	clearRect.x2 = (int)(matrix._41 + ( bwidth  * matrix._11 )) + 2;
-	clearRect.y2 = (int)(matrix._42 + ( bheight * matrix._22 )) + 2;
+	clearRect.x1 = static_cast<int>(matrix._41) - 2;
+	clearRect.y1 = static_cast<int>(matrix._42) - 2;
+	clearRect.x2 = static_cast<int>(matrix._41 + (bwidth * matrix._11)) + 2;
+	clearRect.y2 = static_cast<int>(matrix._42 + (bheight * matrix._22)) + 2;
 
 	RenderManager.Clear(GL_DEPTH_BUFFER_BIT, &clearRect);
 	//					glClear(GL_DEPTH_BUFFER_BIT);

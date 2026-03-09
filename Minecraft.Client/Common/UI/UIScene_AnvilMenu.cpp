@@ -16,13 +16,13 @@ UIScene_AnvilMenu::UIScene_AnvilMenu(int iPad, void *_initData, UILayer *parentL
 
 	m_labelAnvil.init( app.GetString(IDS_REPAIR_AND_NAME) );
 
-	AnvilScreenInput *initData = (AnvilScreenInput *)_initData;
+	AnvilScreenInput *initData = static_cast<AnvilScreenInput *>(_initData);
 	m_inventory = initData->inventory;
 
 	Minecraft *pMinecraft = Minecraft::GetInstance();
-	if( pMinecraft->localgameModes[iPad] != NULL )
+	if( pMinecraft->localgameModes[iPad] != nullptr )
 	{
-		TutorialMode *gameMode = (TutorialMode *)pMinecraft->localgameModes[iPad];
+		TutorialMode *gameMode = static_cast<TutorialMode *>(pMinecraft->localgameModes[iPad]);
 		m_previousTutorialState = gameMode->getTutorial()->getCurrentState();
 		gameMode->getTutorial()->changeTutorialState(e_Tutorial_State_Anvil_Menu, this);
 	}
@@ -263,7 +263,7 @@ void UIScene_AnvilMenu::setSectionSelectedSlot(ESceneSection eSection, int x, in
 
 	int index = (y * cols) + x;
 
-	UIControl_SlotList *slotList = NULL;
+	UIControl_SlotList *slotList = nullptr;
 	switch( eSection )
 	{
 	case eSectionAnvilItem1:
@@ -291,7 +291,7 @@ void UIScene_AnvilMenu::setSectionSelectedSlot(ESceneSection eSection, int x, in
 
 UIControl *UIScene_AnvilMenu::getSection(ESceneSection eSection)
 {
-	UIControl *control = NULL;
+	UIControl *control = nullptr;
 	switch( eSection )
 	{
 	case eSectionAnvilItem1:
@@ -334,7 +334,7 @@ void UIScene_AnvilMenu::onDirectEditFinished(UIControl_TextInput *input, UIContr
 
 int UIScene_AnvilMenu::KeyboardCompleteCallback(LPVOID lpParam,bool bRes)
 {
-	UIScene_AnvilMenu *pClass=(UIScene_AnvilMenu *)lpParam;
+	UIScene_AnvilMenu *pClass=static_cast<UIScene_AnvilMenu *>(lpParam);
 	pClass->setIgnoreInput(false);
 
 	if (bRes)
@@ -343,8 +343,8 @@ int UIScene_AnvilMenu::KeyboardCompleteCallback(LPVOID lpParam,bool bRes)
 		uint16_t pchText[128];
 		ZeroMemory(pchText, 128 * sizeof(uint16_t));
 		Win64_GetKeyboardText(pchText, 128);
-		pClass->setEditNameValue((wchar_t *)pchText);
-		pClass->m_itemName = (wchar_t *)pchText;
+		pClass->setEditNameValue(reinterpret_cast<wchar_t *>(pchText));
+		pClass->m_itemName = reinterpret_cast<wchar_t *>(pchText);
 		pClass->updateItemName();
 #else
 		uint16_t pchText[128];
@@ -395,7 +395,7 @@ void UIScene_AnvilMenu::handleEditNamePressed()
 		break;
 	}
 #else
-	InputManager.RequestKeyboard(app.GetString(IDS_TITLE_RENAME),m_textInputAnvil.getLabel(),(DWORD)m_iPad,30,&UIScene_AnvilMenu::KeyboardCompleteCallback,this,C_4JInput::EKeyboardMode_Default);
+	InputManager.RequestKeyboard(app.GetString(IDS_TITLE_RENAME),m_textInputAnvil.getLabel(),static_cast<DWORD>(m_iPad),30,&UIScene_AnvilMenu::KeyboardCompleteCallback,this,C_4JInput::EKeyboardMode_Default);
 #endif
 #endif
 }

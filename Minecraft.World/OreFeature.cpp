@@ -35,8 +35,8 @@ bool OreFeature::place(Level *level, Random *random, int x, int y, int z)
 
 	bool collisionsExpected = false;
 
-	LevelGenerationOptions *levelGenOptions = NULL;
-	if( app.getLevelGenerationOptions() != NULL )
+	LevelGenerationOptions *levelGenOptions = nullptr;
+	if( app.getLevelGenerationOptions() != nullptr )
 	{
 		levelGenOptions = app.getLevelGenerationOptions();
 
@@ -83,7 +83,7 @@ bool OreFeature::place(Level *level, Random *random, int x, int y, int z)
 		int zt1 = Mth::floor(zz + halfR);
 
 		// 4J Stu Added to stop ore features generating areas previously place by game rule generation
-		if(collisionsExpected && levelGenOptions != NULL)
+		if(collisionsExpected && levelGenOptions != nullptr)
 		{
 			bool intersects = levelGenOptions->checkIntersects(xt0, yt0, zt0, xt1, yt1, zt1);
 			if(intersects)

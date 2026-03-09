@@ -80,9 +80,9 @@ void EyeOfEnderSignal::lerpMotion(double xd, double yd, double zd)
 	this->zd = zd;
 	if (xRotO == 0 && yRotO == 0)
 	{
-		float sd = (float) sqrt(xd * xd + zd * zd);
-		yRotO = yRot = (float) (atan2(xd, zd) * 180 / PI);
-		xRotO = xRot = (float) (atan2(yd, (double)sd) * 180 / PI);
+		float sd = static_cast<float>(sqrt(xd * xd + zd * zd));
+		yRotO = yRot = static_cast<float>(atan2(xd, zd) * 180 / PI);
+		xRotO = xRot = static_cast<float>(atan2(yd, (double)sd) * 180 / PI);
 	}
 }
 
@@ -97,9 +97,9 @@ void EyeOfEnderSignal::tick()
 	y += yd;
 	z += zd;
 
-	float sd = (float) sqrt(xd * xd + zd * zd);
-	yRot = (float) (atan2(xd, zd) * 180 / PI);
-	xRot = (float) (atan2(yd, (double)sd) * 180 / PI);
+	float sd = static_cast<float>(sqrt(xd * xd + zd * zd));
+	yRot = static_cast<float>(atan2(xd, zd) * 180 / PI);
+	xRot = static_cast<float>(atan2(yd, (double)sd) * 180 / PI);
 
 	while (xRot - xRotO < -180)
 		xRotO -= 360;
@@ -117,8 +117,8 @@ void EyeOfEnderSignal::tick()
 	if (!level->isClientSide)
 	{
 		double dx = tx - x, dz = tz - z;
-		float tdist = (float) sqrt(dx * dx + dz * dz);
-		float angle = (float) atan2(dz, dx);
+		float tdist = static_cast<float>(sqrt(dx * dx + dz * dz));
+		float angle = static_cast<float>(atan2(dz, dx));
 		double tspeed = (sd + (tdist - sd) * .0025);
 		if (tdist < 1)
 		{
@@ -163,11 +163,11 @@ void EyeOfEnderSignal::tick()
 			remove();
 			if (surviveAfterDeath)
 			{
-				level->addEntity(shared_ptr<ItemEntity>( new ItemEntity(level, x, y, z, shared_ptr<ItemInstance>(new ItemInstance(Item::eyeOfEnder)))));
+				level->addEntity(std::make_shared<ItemEntity>(level, x, y, z, shared_ptr<ItemInstance>(new ItemInstance(Item::eyeOfEnder))));
 			}
 			else
 			{
-				level->levelEvent(LevelEvent::PARTICLES_EYE_OF_ENDER_DEATH, (int) Math::round(x), (int) Math::round(y), (int) Math::round(z), 0);
+				level->levelEvent(LevelEvent::PARTICLES_EYE_OF_ENDER_DEATH, static_cast<int>(Math::round(x)), static_cast<int>(Math::round(y)), static_cast<int>(Math::round(z)), 0);
 			}
 		}
 	}

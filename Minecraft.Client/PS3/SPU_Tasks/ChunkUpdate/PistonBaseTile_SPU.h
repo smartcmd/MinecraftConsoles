@@ -8,7 +8,7 @@ class PistonBaseTile_SPU : public Tile_SPU
 public:
 	PistonBaseTile_SPU(int id) : Tile_SPU(id) {}
 //	virtual void updateShape(float x0, float y0, float z0, float x1, float y1, float z1);
-	virtual Icon_SPU *getTexture(int face, int data) { return NULL; }
+	virtual Icon_SPU *getTexture(int face, int data) { return nullptr; }
     virtual int getRenderShape() { return SHAPE_PISTON_BASE; }
     virtual bool isSolidRender(bool isServerLevel = false) { return false; }
 

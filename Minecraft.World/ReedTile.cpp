@@ -78,7 +78,7 @@ bool ReedTile::canSurvive(Level *level, int x, int y, int z)
 
 AABB *ReedTile::getAABB(Level *level, int x, int y, int z)
 {
-	return NULL;
+	return nullptr;
 }
 
 int ReedTile::getResource(int data, Random *random, int playerBonusLevel)

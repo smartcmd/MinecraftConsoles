@@ -61,8 +61,8 @@ STRING_VERIFY_RESPONSE;
 class C4JStringTable
 {
 public:
-	LPCWSTR Lookup(LPCWSTR szId) {return NULL;}
-	LPCWSTR Lookup(UINT nIndex) {return NULL;}
+	LPCWSTR Lookup(LPCWSTR szId) {return nullptr;}
+	LPCWSTR Lookup(UINT nIndex) {return nullptr;}
 	void Clear();
 	HRESULT Load(LPCWSTR szId) {return S_OK;}
 };
@@ -126,8 +126,8 @@ public:
 
 	void				SetMenuDisplayed(int iPad, bool bVal);
 
-// 	EKeyboardResult		RequestKeyboard(UINT uiTitle, UINT uiText, UINT uiDesc, DWORD dwPad, WCHAR *pwchResult, UINT uiResultSize,int( *Func)(LPVOID,const bool),LPVOID lpParam,EKeyboardMode eMode,C4JStringTable *pStringTable=NULL);
-// 	EKeyboardResult		RequestKeyboard(UINT uiTitle, LPCWSTR pwchDefault, UINT uiDesc, DWORD dwPad, WCHAR *pwchResult, UINT uiResultSize,int( *Func)(LPVOID,const bool),LPVOID lpParam, EKeyboardMode eMode,C4JStringTable *pStringTable=NULL);
+// 	EKeyboardResult		RequestKeyboard(UINT uiTitle, UINT uiText, UINT uiDesc, DWORD dwPad, WCHAR *pwchResult, UINT uiResultSize,int( *Func)(LPVOID,const bool),LPVOID lpParam,EKeyboardMode eMode,C4JStringTable *pStringTable=nullptr);
+// 	EKeyboardResult		RequestKeyboard(UINT uiTitle, LPCWSTR pwchDefault, UINT uiDesc, DWORD dwPad, WCHAR *pwchResult, UINT uiResultSize,int( *Func)(LPVOID,const bool),LPVOID lpParam, EKeyboardMode eMode,C4JStringTable *pStringTable=nullptr);
 	EKeyboardResult		RequestKeyboard(LPCWSTR Title, LPCWSTR Text, DWORD dwPad, int iMaxChars, int( *Func)(LPVOID,const bool),LPVOID lpParam,C_4JInput::EKeyboardMode eMode);
 	void				DestroyKeyboard();
 

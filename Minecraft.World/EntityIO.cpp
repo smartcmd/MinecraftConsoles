@@ -135,8 +135,8 @@ shared_ptr<Entity> EntityIO::newEntity(const wstring& id, Level *level)
 	if(it != idCreateMap->end() )
 	{
 		entityCreateFn create = it->second;
-		if (create != NULL) entity = shared_ptr<Entity>(create(level));
-		if( ( entity != NULL ) && entity->GetType() == eTYPE_ENDERDRAGON )
+		if (create != nullptr) entity = shared_ptr<Entity>(create(level));
+		if( ( entity != nullptr ) && entity->GetType() == eTYPE_ENDERDRAGON )
 		{
 			dynamic_pointer_cast<EnderDragon>(entity)->AddParts();		// 4J added to finalise creation
 		}
@@ -173,14 +173,14 @@ shared_ptr<Entity> EntityIO::loadStatic(CompoundTag *tag, Level *level)
 	if(it != idCreateMap->end() )
 	{
 		entityCreateFn create = it->second;
-		if (create != NULL) entity = shared_ptr<Entity>(create(level));
-		if( ( entity != NULL ) && entity->GetType() == eTYPE_ENDERDRAGON )
+		if (create != nullptr) entity = shared_ptr<Entity>(create(level));
+		if( ( entity != nullptr ) && entity->GetType() == eTYPE_ENDERDRAGON )
 		{
 			dynamic_pointer_cast<EnderDragon>(entity)->AddParts();		// 4J added to finalise creation
 		}
 	}
 
-	if (entity != NULL)
+	if (entity != nullptr)
 	{
 		entity->load(tag);
 	}
@@ -201,14 +201,14 @@ shared_ptr<Entity> EntityIO::newById(int id, Level *level)
 	if(it != numCreateMap->end() )
 	{
 		entityCreateFn create = it->second;
-		if (create != NULL) entity = shared_ptr<Entity>(create(level));
-		if( ( entity != NULL ) && entity->GetType() == eTYPE_ENDERDRAGON )
+		if (create != nullptr) entity = shared_ptr<Entity>(create(level));
+		if( ( entity != nullptr ) && entity->GetType() == eTYPE_ENDERDRAGON )
 		{
 			dynamic_pointer_cast<EnderDragon>(entity)->AddParts();		// 4J added to finalise creation
 		}
 	}
 
-	if (entity != NULL)
+	if (entity != nullptr)
 	{
 	}
 	else
@@ -229,8 +229,8 @@ shared_ptr<Entity> EntityIO::newByEnumType(eINSTANCEOF eType, Level *level)
 		if(it2 != numCreateMap->end() )
 		{
 			entityCreateFn create = it2->second;
-			if (create != NULL) entity = shared_ptr<Entity>(create(level));
-			if( ( entity != NULL ) && entity->GetType() == eTYPE_ENDERDRAGON )
+			if (create != nullptr) entity = shared_ptr<Entity>(create(level));
+			if( ( entity != nullptr ) && entity->GetType() == eTYPE_ENDERDRAGON )
 			{
 				dynamic_pointer_cast<EnderDragon>(entity)->AddParts();		// 4J added to finalise creation
 			}

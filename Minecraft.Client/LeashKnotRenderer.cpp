@@ -19,7 +19,7 @@ void LeashKnotRenderer::render(shared_ptr<Entity> entity, double x, double y, do
     glPushMatrix();
     glDisable(GL_CULL_FACE);
 
-    glTranslatef((float) x, (float) y, (float) z);
+    glTranslatef(static_cast<float>(x), static_cast<float>(y), static_cast<float>(z));
 
     float scale = 1 / 16.0f;
     glEnable(GL_RESCALE_NORMAL);

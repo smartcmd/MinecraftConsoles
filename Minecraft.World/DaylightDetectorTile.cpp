@@ -62,7 +62,7 @@ void DaylightDetectorTile::updateSignalStrength(Level *level, int x, int y, int 
 		sunAngle = sunAngle + (PI * 2.0f - sunAngle) * .2f;
 	}
 
-	target = Math::round((float) target * Mth::cos(sunAngle));
+	target = Math::round(static_cast<float>(target) * Mth::cos(sunAngle));
 	if (target < 0)
 	{
 		target = 0;
@@ -95,7 +95,7 @@ bool DaylightDetectorTile::isSignalSource()
 
 shared_ptr<TileEntity> DaylightDetectorTile::newTileEntity(Level *level)
 {
-	return shared_ptr<DaylightDetectorTileEntity>( new DaylightDetectorTileEntity() );
+	return std::make_shared<DaylightDetectorTileEntity>();
 }
 
 Icon *DaylightDetectorTile::getTexture(int face, int data)

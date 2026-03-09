@@ -14,15 +14,15 @@ UIScene_BrewingStandMenu::UIScene_BrewingStandMenu(int iPad, void *_initData, UI
 	m_progressBrewingArrow.init(L"",0,0,PotionBrewing::BREWING_TIME_SECONDS * SharedConstants::TICKS_PER_SECOND,0);
 	m_progressBrewingBubbles.init(L"",0,0,30,0);
 
-	BrewingScreenInput *initData = (BrewingScreenInput *)_initData;
+	BrewingScreenInput *initData = static_cast<BrewingScreenInput *>(_initData);
 	m_brewingStand = initData->brewingStand;
 
 	m_labelBrewingStand.init( m_brewingStand->getName() );
 
 	Minecraft *pMinecraft = Minecraft::GetInstance();
-	if( pMinecraft->localgameModes[initData->iPad] != NULL )
+	if( pMinecraft->localgameModes[initData->iPad] != nullptr )
 	{
-		TutorialMode *gameMode = (TutorialMode *)pMinecraft->localgameModes[initData->iPad];
+		TutorialMode *gameMode = static_cast<TutorialMode *>(pMinecraft->localgameModes[initData->iPad]);
 		m_previousTutorialState = gameMode->getTutorial()->getCurrentState();
 		gameMode->getTutorial()->changeTutorialState(e_Tutorial_State_Brewing_Menu, this);
 	}
@@ -249,7 +249,7 @@ void UIScene_BrewingStandMenu::setSectionSelectedSlot(ESceneSection eSection, in
 
 	int index = (y * cols) + x;
 
-	UIControl_SlotList *slotList = NULL;
+	UIControl_SlotList *slotList = nullptr;
 	switch( eSection )
 	{
 	case eSectionBrewingBottle1:
@@ -280,7 +280,7 @@ void UIScene_BrewingStandMenu::setSectionSelectedSlot(ESceneSection eSection, in
 
 UIControl *UIScene_BrewingStandMenu::getSection(ESceneSection eSection)
 {
-	UIControl *control = NULL;
+	UIControl *control = nullptr;
 	switch( eSection )
 	{
 	case eSectionBrewingBottle1:

@@ -20,9 +20,9 @@ LevelSoundPacket::LevelSoundPacket()
 LevelSoundPacket::LevelSoundPacket(int sound, double x, double y, double z, float volume, float pitch)
 {
 	this->sound = sound;
-	this->x = (int) (x * LOCATION_ACCURACY);
-	this->y = (int) (y * LOCATION_ACCURACY);
-	this->z = (int) (z * LOCATION_ACCURACY);
+	this->x = static_cast<int>(x * LOCATION_ACCURACY);
+	this->y = static_cast<int>(y * LOCATION_ACCURACY);
+	this->z = static_cast<int>(z * LOCATION_ACCURACY);
 	this->volume = volume;
 	// 4J-PB - Let's make the pitch a float so it doesn't get mangled and make the noteblock people unhappy
 	//this->pitch = (int) (pitch * PITCH_ACCURACY);

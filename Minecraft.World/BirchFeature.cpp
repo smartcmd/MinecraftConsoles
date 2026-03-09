@@ -42,7 +42,7 @@ bool BirchFeature::place(Level *level, Random *random, int x, int y, int z)
 	if ((belowTile != Tile::grass_Id && belowTile != Tile::dirt_Id) || y >= Level::maxBuildHeight - treeHeight - 1) return false;
 
 	// 4J Stu Added to stop tree features generating areas previously place by game rule generation
-	if(app.getLevelGenerationOptions() != NULL)
+	if(app.getLevelGenerationOptions() != nullptr)
 	{
 		LevelGenerationOptions *levelGenOptions = app.getLevelGenerationOptions();
 		int radius = 3;
