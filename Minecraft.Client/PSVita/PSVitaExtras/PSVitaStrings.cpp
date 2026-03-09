@@ -15,7 +15,7 @@ uint8_t *mallocAndCreateUTF8ArrayFromString(int iID)
 	if( result != S_OK ) 
 	{
 		app.DebugPrintf("sceCesUcsContextInit failed\n");
-		return NULL;
+		return nullptr;
 	}
 
 	uint32_t utf16Len;
@@ -44,7 +44,7 @@ uint8_t *mallocAndCreateUTF8ArrayFromString(int iID)
 	if( result != SCE_OK ) 
 	{
 		app.DebugPrintf("sceCesUtf16StrToUtf8Str: conversion error : 0x%x\n", result);
-		return NULL;
+		return nullptr;
 	}
 
 	return strUtf8;

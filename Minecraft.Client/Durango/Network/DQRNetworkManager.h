@@ -221,7 +221,7 @@ public:
 	class SessionSearchResult
 	{
 	public:
-		SessionSearchResult() { m_extData = NULL; }
+		SessionSearchResult() { m_extData = nullptr; }
 		~SessionSearchResult() { free(m_extData); }
 		wstring			m_partyId;
 		wstring			m_sessionName;

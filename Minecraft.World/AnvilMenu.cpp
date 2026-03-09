@@ -8,8 +8,8 @@
 
 AnvilMenu::AnvilMenu(shared_ptr<Inventory> inventory, Level *level, int xt, int yt, int zt, shared_ptr<Player> player)
 {
-	resultSlots = shared_ptr<ResultContainer>( new ResultContainer() );
-	repairSlots = shared_ptr<RepairContainer>( new RepairContainer(this,IDS_REPAIR_AND_NAME, true, 2) );
+	resultSlots = std::make_shared<ResultContainer>();
+	repairSlots = std::make_shared<RepairContainer>(this,IDS_REPAIR_AND_NAME, true, 2);
 	cost = 0;
 	repairItemCountCost = 0;
 
@@ -55,7 +55,7 @@ void AnvilMenu::createResult()
 
 	if (DEBUG_COST) app.DebugPrintf("----");
 
-	if (input == NULL)
+	if (input == nullptr)
 	{
 		resultSlots->setItem(0, nullptr);
 		cost = 0;
@@ -68,15 +68,15 @@ void AnvilMenu::createResult()
 		unordered_map<int,int> *enchantments = EnchantmentHelper::getEnchantments(result);
 		bool usingBook = false;
 
-		tax += input->getBaseRepairCost() + (addition == NULL ? 0 : addition->getBaseRepairCost());
+		tax += input->getBaseRepairCost() + (addition == nullptr ? 0 : addition->getBaseRepairCost());
 		if (DEBUG_COST)
 		{
-			app.DebugPrintf("Starting with base repair tax of %d (%d + %d)\n", tax, input->getBaseRepairCost(), (addition == NULL ? 0 : addition->getBaseRepairCost()));
+			app.DebugPrintf("Starting with base repair tax of %d (%d + %d)\n", tax, input->getBaseRepairCost(), (addition == nullptr ? 0 : addition->getBaseRepairCost()));
 		}
 
 		repairItemCountCost = 0;
 
-		if (addition != NULL)
+		if (addition != nullptr)
 		{
 			usingBook = addition->id == Item::enchantedBook_Id && Item::enchantedBook->getEnchantments(addition)->size() > 0;
 
@@ -290,10 +290,10 @@ void AnvilMenu::createResult()
 			result = nullptr;
 		}
 
-		if (result != NULL)
+		if (result != nullptr)
 		{
 			int baseCost = result->getBaseRepairCost();
-			if (addition != NULL && baseCost < addition->getBaseRepairCost()) baseCost = addition->getBaseRepairCost();
+			if (addition != nullptr && baseCost < addition->getBaseRepairCost()) baseCost = addition->getBaseRepairCost();
 			if (result->hasCustomHoverName()) baseCost -= 9;
 			if (baseCost < 0) baseCost = 0;
 			baseCost += 2;
@@ -344,7 +344,7 @@ void AnvilMenu::removed(shared_ptr<Player> player)
 	for (int i = 0; i < repairSlots->getContainerSize(); i++)
 	{
 		shared_ptr<ItemInstance> item = repairSlots->removeItemNoUpdate(i);
-		if (item != NULL)
+		if (item != nullptr)
 		{
 			player->drop(item);
 		}
@@ -362,7 +362,7 @@ shared_ptr<ItemInstance> AnvilMenu::quickMoveStack(shared_ptr<Player> player, in
 {
 	shared_ptr<ItemInstance> clicked = nullptr;
 	Slot *slot = slots.at(slotIndex);
-	if (slot != NULL && slot->hasItem())
+	if (slot != nullptr && slot->hasItem())
 	{
 		shared_ptr<ItemInstance> stack = slot->getItem();
 		clicked = stack->copy();

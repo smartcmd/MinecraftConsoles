@@ -27,10 +27,10 @@ UIControl_MinecraftHorse::UIControl_MinecraftHorse()
 	Minecraft *pMinecraft=Minecraft::GetInstance();
 
 	ScreenSizeCalculator ssc(pMinecraft->options, pMinecraft->width_phys, pMinecraft->height_phys);
-	m_fScreenWidth=(float)pMinecraft->width_phys;
-	m_fRawWidth=(float)ssc.rawWidth;
-	m_fScreenHeight=(float)pMinecraft->height_phys;
-	m_fRawHeight=(float)ssc.rawHeight;
+	m_fScreenWidth=static_cast<float>(pMinecraft->width_phys);
+	m_fRawWidth=static_cast<float>(ssc.rawWidth);
+	m_fScreenHeight=static_cast<float>(pMinecraft->height_phys);
+	m_fRawHeight=static_cast<float>(ssc.rawHeight);
 }
 
 void UIControl_MinecraftHorse::render(IggyCustomDrawCallbackRegion *region)
@@ -49,7 +49,7 @@ void UIControl_MinecraftHorse::render(IggyCustomDrawCallbackRegion *region)
 	glTranslatef(xo, yo - (height / 7.5f), 50.0f);
 
 	//UIScene_InventoryMenu *containerMenu = (UIScene_InventoryMenu *)m_parentScene;
-	UIScene_HorseInventoryMenu *containerMenu = (UIScene_HorseInventoryMenu *)m_parentScene;
+	UIScene_HorseInventoryMenu *containerMenu = static_cast<UIScene_HorseInventoryMenu *>(m_parentScene);
 
 	shared_ptr<LivingEntity> entityHorse = containerMenu->m_horse;
 

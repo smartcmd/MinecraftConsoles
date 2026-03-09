@@ -50,15 +50,15 @@ void UIScene_AbstractContainerMenu::handleDestroy()
 #endif
 
 	Minecraft *pMinecraft = Minecraft::GetInstance();
-	if( pMinecraft->localgameModes[m_iPad] != NULL )
+	if( pMinecraft->localgameModes[m_iPad] != nullptr )
 	{
-		TutorialMode *gameMode = (TutorialMode *)pMinecraft->localgameModes[m_iPad];
-		if(gameMode != NULL) gameMode->getTutorial()->changeTutorialState(m_previousTutorialState);
+		TutorialMode *gameMode = static_cast<TutorialMode *>(pMinecraft->localgameModes[m_iPad]);
+		if(gameMode != nullptr) gameMode->getTutorial()->changeTutorialState(m_previousTutorialState);
 	}
 
 	// 4J Stu - Fix for #11302 - TCR 001: Network Connectivity: Host crashed after being killed by the client while accessing a chest during burst packet loss.
 	// We need to make sure that we call closeContainer() anytime this menu is closed, even if it is forced to close by some other reason (like the player dying)	
-	if(pMinecraft->localplayers[m_iPad] != NULL && pMinecraft->localplayers[m_iPad]->containerMenu->containerId == m_menu->containerId)
+	if(pMinecraft->localplayers[m_iPad] != nullptr && pMinecraft->localplayers[m_iPad]->containerMenu->containerId == m_menu->containerId)
 	{
 		pMinecraft->localplayers[m_iPad]->closeContainer();
 	}
@@ -150,8 +150,8 @@ void UIScene_AbstractContainerMenu::PlatformInitialize(int iPad, int startIndex)
 	m_fPointerMaxX = m_fPanelMaxX + fPointerWidth;
 	m_fPointerMaxY = m_fPanelMaxY + (fPointerHeight/2);
 
-// 	m_hPointerText=NULL;
-// 	m_hPointerTextBkg=NULL;
+// 	m_hPointerText=nullptr;
+// 	m_hPointerTextBkg=nullptr;
 
 	// Put the pointer over first item in use row to start with.
 	UIVec2D itemPos;
@@ -193,8 +193,8 @@ void UIScene_AbstractContainerMenu::PlatformInitialize(int iPad, int startIndex)
 	if(vp != C4JRender::VIEWPORT_TYPE_FULLSCREEN)
 		Fit16x9(width, height);
 
-	S32 x = m_pointerPos.x*((float)width/m_movieWidth);
-	S32 y = m_pointerPos.y*((float)height/m_movieHeight);
+	S32 x = m_pointerPos.x*(static_cast<float>(width)/m_movieWidth);
+	S32 y = m_pointerPos.y*(static_cast<float>(height)/m_movieHeight);
 	IggyMakeEventMouseMove( &mouseEvent, x, y);
 
 	IggyEventResult result;
@@ -222,8 +222,8 @@ void UIScene_AbstractContainerMenu::tick()
 	if(vp != C4JRender::VIEWPORT_TYPE_FULLSCREEN)
 		Fit16x9(width, height);
 
-	S32 x = (S32)(m_pointerPos.x * ((float)width / m_movieWidth));
-	S32 y = (S32)(m_pointerPos.y * ((float)height / m_movieHeight));
+	S32 x = static_cast<S32>(m_pointerPos.x * (static_cast<float>(width) / m_movieWidth));
+	S32 y = static_cast<S32>(m_pointerPos.y * (static_cast<float>(height) / m_movieHeight));
 
 	IggyMakeEventMouseMove( &mouseEvent, x, y);
 
@@ -278,14 +278,14 @@ void UIScene_AbstractContainerMenu::getMouseToSWFScale(float &scaleX, float &sca
 
 	float screenW = (float)ui.getScreenWidth();
 	float screenH = (float)ui.getScreenHeight();
-	scaleX = (float)m_movieWidth * screenW / ((float)renderW * (float)winW);
-	scaleY = (float)m_movieHeight * screenH / ((float)renderH * (float)winH);
+	scaleX = static_cast<float>(m_movieWidth) * screenW / (static_cast<float>(renderW) * static_cast<float>(winW));
+	scaleY = static_cast<float>(m_movieHeight) * screenH / (static_cast<float>(renderH) * static_cast<float>(winH));
 }
 
 void UIScene_AbstractContainerMenu::customDraw(IggyCustomDrawCallbackRegion *region)
 {
 	Minecraft *pMinecraft = Minecraft::GetInstance();
-	if(pMinecraft->localplayers[m_iPad] == NULL || pMinecraft->localgameModes[m_iPad] == NULL) return;
+	if(pMinecraft->localplayers[m_iPad] == nullptr || pMinecraft->localgameModes[m_iPad] == nullptr) return;
 
 	shared_ptr<ItemInstance> item = nullptr;
 	int slotId = -1;
@@ -296,7 +296,7 @@ void UIScene_AbstractContainerMenu::customDraw(IggyCustomDrawCallbackRegion *reg
 	}
 	else
 	{
-		swscanf((wchar_t*)region->name,L"slot_%d",&slotId);
+		swscanf(static_cast<wchar_t *>(region->name),L"slot_%d",&slotId);
 		if (slotId == -1)
 		{
 			app.DebugPrintf("This is not the control we are looking for\n");
@@ -309,7 +309,7 @@ void UIScene_AbstractContainerMenu::customDraw(IggyCustomDrawCallbackRegion *reg
 		}
 	}
 
-	if(item != NULL) customDrawSlotControl(region,m_iPad,item,m_menu->isValidIngredient(item, slotId)?1.0f:0.5f,item->isFoil(),true);
+	if(item != nullptr) customDrawSlotControl(region,m_iPad,item,m_menu->isValidIngredient(item, slotId)?1.0f:0.5f,item->isFoil(),true);
 }
 
 void UIScene_AbstractContainerMenu::handleInput(int iPad, int key, bool repeat, bool pressed, bool released, bool &handled)
@@ -368,7 +368,7 @@ Slot *UIScene_AbstractContainerMenu::getSlot(ESceneSection eSection, int iSlot)
 {
 	Slot *slot = m_menu->getSlot( getSectionStartOffset(eSection) + iSlot );
 	if(slot) return slot;
-	else return NULL;
+	else return nullptr;
 }
 
 bool UIScene_AbstractContainerMenu::isSlotEmpty(ESceneSection eSection, int iSlot)

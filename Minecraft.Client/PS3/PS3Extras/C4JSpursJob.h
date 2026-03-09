@@ -28,7 +28,7 @@
 // 
 // 	void  CompressedTileStorage::compress_SPUSendEvent(int upgradeBlock/*=-1*/)
 // 	{
-// 		if(g_pCompressSPUThread == NULL)
+// 		if(g_pCompressSPUThread == nullptr)
 // 		{
 // 			sys_event_port_create(&g_basicEventPort, SYS_EVENT_PORT_LOCAL, SYS_EVENT_PORT_NO_NAME);
 // 			sys_event_queue_attribute_t queue_attr = {SYS_SYNC_PRIORITY, SYS_PPU_QUEUE};
@@ -194,7 +194,7 @@ private:
 	cell::Spurs::JobQueue::JobQueue<JOB_QUEUE_DEPTH> *pJobQueue;
 
 public:
-	static C4JSpursJobQueue& getMainJobQueue() {if(m_pMainJobQueue == NULL) m_pMainJobQueue = new C4JSpursJobQueue; return *m_pMainJobQueue;}
+	static C4JSpursJobQueue& getMainJobQueue() {if(m_pMainJobQueue == nullptr) m_pMainJobQueue = new C4JSpursJobQueue; return *m_pMainJobQueue;}
 	
 	C4JSpursJobQueue();
 	void shutdown();

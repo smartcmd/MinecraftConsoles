@@ -63,7 +63,7 @@ bool Bush::canSurvive(Level *level, int x, int y, int z)
 
 AABB *Bush::getAABB(Level *level, int x, int y, int z)
 {
-	return NULL;
+	return nullptr;
 }
 
 bool Bush::blocksLight()

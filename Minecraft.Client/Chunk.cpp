@@ -32,13 +32,13 @@ void Chunk::CreateNewThreadStorage()
 
 void Chunk::ReleaseThreadStorage()
 {
-	unsigned char *tileIds = (unsigned char *)TlsGetValue(tlsIdx);
+	unsigned char *tileIds = static_cast<unsigned char *>(TlsGetValue(tlsIdx));
 	delete tileIds;
 }
 
 unsigned char *Chunk::GetTileIdsStorage()
 {
-	unsigned char *tileIds = (unsigned char *)TlsGetValue(tlsIdx);
+	unsigned char *tileIds = static_cast<unsigned char *>(TlsGetValue(tlsIdx));
 	return tileIds;
 }
 #else
@@ -148,7 +148,7 @@ void Chunk::setPos(int x, int y, int z)
 
 void Chunk::translateToPos()
 {
-	glTranslatef((float)xRenderOffs, (float)yRenderOffs, (float)zRenderOffs);
+	glTranslatef(static_cast<float>(xRenderOffs), static_cast<float>(yRenderOffs), static_cast<float>(zRenderOffs));
 }
 
 
@@ -173,7 +173,7 @@ void Chunk::makeCopyForRebuild(Chunk *source)
 	this->ym = source->ym;
 	this->zm = source->zm;
 	this->bb = source->bb;
-	this->clipChunk = NULL;
+	this->clipChunk = nullptr;
 	this->id = source->id;
 	this->globalRenderableTileEntities = source->globalRenderableTileEntities;
 	this->globalRenderableTileEntities_cs = source->globalRenderableTileEntities_cs;
@@ -400,7 +400,7 @@ void Chunk::rebuild()
 							glTranslatef(zs / 2.0f, ys / 2.0f, zs / 2.0f);
 #endif
 							t->begin();
-							t->offset((float)(-this->x), (float)(-this->y), (float)(-this->z));
+							t->offset(static_cast<float>(-this->x), static_cast<float>(-this->y), static_cast<float>(-this->z));
 						}
 
 						Tile *tile = Tile::tiles[tileId];
@@ -522,7 +522,7 @@ void Chunk::rebuild()
 		else
 		{
 			// Easy case - nothing already existing for this chunk. Add them all in.
-			for( int i = 0; i < renderableTileEntities.size(); i++ )
+			for( size_t i = 0; i < renderableTileEntities.size(); i++ )
 			{
 				(*globalRenderableTileEntities)[key].push_back(renderableTileEntities[i]);
 			}
@@ -681,7 +681,7 @@ void Chunk::rebuild_SPU()
 	// render chunk is 16 x 16 x 16. We wouldn't have to actually get all of it if the data was ordered differently, but currently
 	// it is ordered by x then z then y so just getting a small range of y out of it would involve getting the whole thing into
 	// the cache anyway.
-	ChunkRebuildData* pOutData = NULL;
+	ChunkRebuildData* pOutData = nullptr;
 	g_rebuildDataIn.buildForChunk(&region, level, x0, y0, z0);
 
  	Tesselator::Bounds bounds;
@@ -740,9 +740,9 @@ void Chunk::rebuild_SPU()
 				{
 					// 4J - get tile from those copied into our local array in earlier optimisation
 					unsigned char tileId = pOutData->getTile(x,y,z);
-					if (tileId > 0)
+                    if (tileId > 0 && tileId != 0xff)
 					{
-						if (currentLayer == 0 && Tile::tiles[tileId]->isEntityTile())
+                        if (currentLayer == 0 && Tile::tiles[tileId] && Tile::tiles[tileId]->isEntityTile())
 						{
 							shared_ptr<TileEntity> et = region.getTileEntity(x, y, z);
 							if (TileEntityRenderDispatcher::instance->hasRenderer(et))
@@ -755,6 +755,7 @@ void Chunk::rebuild_SPU()
 						{
 
 							Tile *tile = Tile::tiles[tileId];
+							if (!tile) continue;
 							int renderLayer = tile->getRenderLayer();
 
 							if (renderLayer != currentLayer)
@@ -827,7 +828,7 @@ void Chunk::rebuild_SPU()
 			}
 
 			// Now go through the current list. If these are already in the list, then unflag the remove flag. If they aren't, then add
-			for( int i = 0; i < renderableTileEntities.size(); i++ )
+			for( size_t i = 0; i < renderableTileEntities.size(); i++ )
 			{
 				auto it2 = find( it->second.begin(), it->second.end(), renderableTileEntities[i] );
 				if( it2 == it->second.end() )
@@ -843,7 +844,7 @@ void Chunk::rebuild_SPU()
 		else
 		{
 			// Easy case - nothing already existing for this chunk. Add them all in.
-			for( int i = 0; i < renderableTileEntities.size(); i++ )
+			for( size_t i = 0; i < renderableTileEntities.size(); i++ )
 			{
 				(*globalRenderableTileEntities)[key].push_back(renderableTileEntities[i]);
 			}
@@ -937,17 +938,17 @@ void Chunk::rebuild_SPU()
 
 float Chunk::distanceToSqr(shared_ptr<Entity> player) const
 {
-	float xd = (float) (player->x - xm);
-	float yd = (float) (player->y - ym);
-	float zd = (float) (player->z - zm);
+	float xd = static_cast<float>(player->x - xm);
+	float yd = static_cast<float>(player->y - ym);
+	float zd = static_cast<float>(player->z - zm);
 	return xd * xd + yd * yd + zd * zd;
 }
 
 float Chunk::squishedDistanceToSqr(shared_ptr<Entity> player)
 {
-	float xd = (float) (player->x - xm);
-	float yd = (float) (player->y - ym) * 2;
-	float zd = (float) (player->z - zm);
+	float xd = static_cast<float>(player->x - xm);
+	float yd = static_cast<float>(player->y - ym) * 2;
+	float zd = static_cast<float>(player->z - zm);
 	return xd * xd + yd * yd + zd * zd;
 }
 
@@ -982,7 +983,7 @@ void Chunk::reset()
 void Chunk::_delete()
 {
 	reset();
-	level = NULL;
+	level = nullptr;
 }
 
 int Chunk::getList(int layer)

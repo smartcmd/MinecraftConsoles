@@ -25,7 +25,7 @@ void EnderCrystalRenderer::render(shared_ptr<Entity> _crystal, double x, double 
 
 	float tt = crystal->time + a;
 	glPushMatrix();
-	glTranslatef((float) x, (float) y, (float) z);
+	glTranslatef(static_cast<float>(x), static_cast<float>(y), static_cast<float>(z));
 	bindTexture(&ENDER_CRYSTAL_LOCATION);
 	float hh = sin(tt * 0.2f) / 2 + 0.5f;
 	hh = hh * hh + hh;

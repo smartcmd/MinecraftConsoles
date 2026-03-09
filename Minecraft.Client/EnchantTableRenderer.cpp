@@ -28,7 +28,7 @@ void EnchantTableRenderer::render(shared_ptr<TileEntity> _table, double x, doubl
 #endif
 
 	glPushMatrix();
-	glTranslatef((float) x + 0.5f, (float) y + 12 / 16.0f, (float) z + 0.5f);
+	glTranslatef(static_cast<float>(x) + 0.5f, static_cast<float>(y) + 12 / 16.0f, static_cast<float>(z) + 0.5f);
 
 	float tt = table->time + a;
 

@@ -3,7 +3,7 @@
 #include "Facing_SPU.h"
 #include "ChunkRebuildData.h"
 
-void HalfSlabTile_SPU::updateShape(ChunkRebuildData *level, int x, int y, int z, int forceData /* = -1 */, TileEntity* forceEntity /* = NULL */)
+void HalfSlabTile_SPU::updateShape(ChunkRebuildData *level, int x, int y, int z, int forceData /* = -1 */, TileEntity* forceEntity /* = nullptr */)
 {
 	if (fullSize()) 
 	{

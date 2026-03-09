@@ -284,10 +284,10 @@ CConsoleMinecraftApp::CConsoleMinecraftApp() : CMinecraftApp()
 	m_bRead_TMS_XUIDS_XML=false;
 	m_bRead_TMS_Config_XML=false;
 	m_bRead_TMS_DLCINFO_XML=false;
-	m_pXuidsFileBuffer=NULL;
+	m_pXuidsFileBuffer=nullptr;
 	m_dwXuidsFileSize=0;
 	ZeroMemory(m_ScreenshotBuffer,sizeof(LPD3DXBUFFER)*XUSER_MAX_COUNT);
-	m_ThumbnailBuffer=NULL;
+	m_ThumbnailBuffer=nullptr;
 #ifdef _DEBUG_MENUS_ENABLED
 	debugOverlayCreated = false;
 #endif
@@ -301,12 +301,12 @@ CConsoleMinecraftApp::CConsoleMinecraftApp() : CMinecraftApp()
 		m_bContainerMenuDisplayed[i]=false;
 		m_bIgnoreAutosaveMenuDisplayed[i]=false;
 		m_bIgnorePlayerJoinMenuDisplayed[i]=false;
-		m_hCurrentScene[i]=NULL;
-		m_hFirstScene[i]=NULL;
+		m_hCurrentScene[i]=nullptr;
+		m_hFirstScene[i]=nullptr;
 	}
 
 	m_titleDeploymentType = XTITLE_DEPLOYMENT_DOWNLOAD;
-    DWORD dwResult = XTitleGetDeploymentType(&m_titleDeploymentType, NULL);
+    DWORD dwResult = XTitleGetDeploymentType(&m_titleDeploymentType, nullptr);
     if( dwResult == ERROR_SUCCESS )
     {
         switch( m_titleDeploymentType )
@@ -658,7 +658,7 @@ void CConsoleMinecraftApp::GetPreviewImage(int iPad,XSOCIAL_PREVIEWIMAGE *previe
 	preview->pBytes = (BYTE *)XPhysicalAlloc(sizeBytes, MAXULONG_PTR, 0, PAGE_READWRITE | PAGE_WRITECOMBINE );
 	memcpy( (void *)preview->pBytes, (void *)m_PreviewBuffer[iPad].pBytes, sizeBytes );
 	XPhysicalFree((LPVOID)m_PreviewBuffer[iPad].pBytes);
-	m_PreviewBuffer[iPad].pBytes = NULL;
+	m_PreviewBuffer[iPad].pBytes = nullptr;
 }
 
 void CConsoleMinecraftApp::CaptureScreenshot(int iPad)
@@ -678,7 +678,7 @@ HRESULT CConsoleMinecraftApp::LoadXuiResources()
 	HRESULT hr;
 
 	// load from the .xzp file
-	const ULONG_PTR c_ModuleHandle = (ULONG_PTR)GetModuleHandle(NULL);
+	const ULONG_PTR c_ModuleHandle = (ULONG_PTR)GetModuleHandle(nullptr);
 
 
 	//#ifdef _CONTENT_PACKAGE
@@ -894,7 +894,7 @@ HRESULT CConsoleMinecraftApp::LoadXuiResources()
 	// 	int iStringC=0;
 	// 	LPCWSTR lpTempString;
 	//
-	// 	while((lpTempString=StringTable.Lookup(iStringC))!=NULL)
+	// 	while((lpTempString=StringTable.Lookup(iStringC))!=nullptr)
 	// 	{
 	// 		DebugPrintf("STRING %d = ",iStringC);
 	// 		OutputDebugStringW(lpTempString);
@@ -914,17 +914,17 @@ HRESULT CConsoleMinecraftApp::LoadXuiResources()
 	wsprintfW(szResourceLocator,L"section://%X,%s#%s",c_ModuleHandle,L"media", L"media/");
 	if(RenderManager.IsHiDef())
 	{
-		hr=LoadFirstScene( szResourceLocator, L"xuiscene_base.xur", NULL, &mainBaseScene );
+		hr=LoadFirstScene( szResourceLocator, L"xuiscene_base.xur", nullptr, &mainBaseScene );
 	}
 	else
 	{
 		if(RenderManager.IsWidescreen())
 		{
-			hr=LoadFirstScene( szResourceLocator, L"xuiscene_base.xur", NULL, &mainBaseScene );
+			hr=LoadFirstScene( szResourceLocator, L"xuiscene_base.xur", nullptr, &mainBaseScene );
 		}
 		else
 		{
-			hr=LoadFirstScene( szResourceLocator, L"xuiscene_base_480.xur", NULL, &mainBaseScene );
+			hr=LoadFirstScene( szResourceLocator, L"xuiscene_base_480.xur", nullptr, &mainBaseScene );
 		}
 	}
 	if( FAILED(hr) ) app.FatalLoadError();
@@ -989,7 +989,7 @@ HRESULT CConsoleMinecraftApp::RegisterFont(eFont eFontLanguage,eFont eFontFallba
 	HRESULT hr=S_OK;
 	const DWORD LOCATOR_SIZE = 256; // Use this to allocate space to hold a ResourceLocator string
 	WCHAR szResourceLocator[ LOCATOR_SIZE ];
-	const ULONG_PTR c_ModuleHandle = (ULONG_PTR)GetModuleHandle(NULL);
+	const ULONG_PTR c_ModuleHandle = (ULONG_PTR)GetModuleHandle(nullptr);
 
 	wsprintfW(szResourceLocator,L"section://%X,%s#%s",c_ModuleHandle,L"media", wchTypefaceLocatorA[eFontLanguage]);
 	// 4J Stu - Check that the font file actually exists
@@ -1003,7 +1003,7 @@ HRESULT CConsoleMinecraftApp::RegisterFont(eFont eFontLanguage,eFont eFontFallba
 	{
 		if(eFontFallback!=eFont_None)
 		{
-			hr = RegisterDefaultTypeface( wchTypefaceA[eFontLanguage],szResourceLocator,NULL,0.0f,wchTypefaceA[eFontFallback]);
+			hr = RegisterDefaultTypeface( wchTypefaceA[eFontLanguage],szResourceLocator,nullptr,0.0f,wchTypefaceA[eFontFallback]);
 		}
 		else
 		{
@@ -1410,7 +1410,7 @@ void CConsoleMinecraftApp::OverrideFontRenderer(bool set, bool immediate)
 			}
 			else
 			{
-				XuiFontSetRenderer( NULL );
+				XuiFontSetRenderer( nullptr );
 			}
 			m_bFontRendererOverridden = set;
 
@@ -1451,7 +1451,7 @@ void CConsoleMinecraftApp::CaptureSaveThumbnail()
 void CConsoleMinecraftApp::GetSaveThumbnail(PBYTE *pbData,DWORD *pdwSize)
 {
 	// on a save caused by a create world, the thumbnail capture won't have happened
-	if(m_ThumbnailBuffer!=NULL)
+	if(m_ThumbnailBuffer!=nullptr)
 	{
 		if( pbData )
 		{
@@ -1460,28 +1460,28 @@ void CConsoleMinecraftApp::GetSaveThumbnail(PBYTE *pbData,DWORD *pdwSize)
 			memcpy(*pbData,m_ThumbnailBuffer->GetBufferPointer(),*pdwSize);
 		}
 		m_ThumbnailBuffer->Release();
-		m_ThumbnailBuffer=NULL;
+		m_ThumbnailBuffer=nullptr;
 	}
 }
 void CConsoleMinecraftApp::ReleaseSaveThumbnail()
 {
-	if(m_ThumbnailBuffer!=NULL)
+	if(m_ThumbnailBuffer!=nullptr)
 	{
 		m_ThumbnailBuffer->Release();
-		m_ThumbnailBuffer=NULL;
+		m_ThumbnailBuffer=nullptr;
 	}
 }
 
 void CConsoleMinecraftApp::GetScreenshot(int iPad,PBYTE *pbData,DWORD *pdwSize)
 {
 	// on a save caused by a create world, the thumbnail capture won't have happened
-	if(m_ScreenshotBuffer[iPad]!=NULL)
+	if(m_ScreenshotBuffer[iPad]!=nullptr)
 	{
 		*pbData= new BYTE [m_ScreenshotBuffer[iPad]->GetBufferSize()];
 		*pdwSize=m_ScreenshotBuffer[iPad]->GetBufferSize();
 		memcpy(*pbData,m_ScreenshotBuffer[iPad]->GetBufferPointer(),*pdwSize);
 		m_ScreenshotBuffer[iPad]->Release();
-		m_ScreenshotBuffer[iPad]=NULL;
+		m_ScreenshotBuffer[iPad]=nullptr;
 	}
 }
 
@@ -1492,13 +1492,13 @@ void CConsoleMinecraftApp::EnableDebugOverlay(bool enable,int iPad)
 
 	if(enable && !debugOverlayCreated)
 	{
-		const ULONG_PTR c_ModuleHandle = (ULONG_PTR)GetModuleHandle(NULL);
+		const ULONG_PTR c_ModuleHandle = (ULONG_PTR)GetModuleHandle(nullptr);
 
 		const DWORD LOCATOR_SIZE = 256; // Use this to allocate space to hold a ResourceLocator string
 		WCHAR szResourceLocator[ LOCATOR_SIZE ];
 
 		wsprintfW(szResourceLocator,L"section://%X,%s#%s",c_ModuleHandle,L"media", L"media/");
-		hr = XuiSceneCreate(szResourceLocator, L"xuiscene_debugoverlay.xur", NULL, &m_hDebugOverlay);
+		hr = XuiSceneCreate(szResourceLocator, L"xuiscene_debugoverlay.xur", nullptr, &m_hDebugOverlay);
 		debugContainerScene.AddChild(m_hDebugOverlay);
 		debugContainerScene.SetShow(false);
 
@@ -1644,7 +1644,7 @@ WCHAR *CConsoleMinecraftApp::GetSceneName(EUIScene eScene,bool bAppendToName,boo
 	return m_SceneName;
 }
 
-HRESULT CConsoleMinecraftApp::NavigateToScene(int iPad,EUIScene eScene, void *initData /* = NULL */, bool forceUsePad /*= false*/, BOOL bStayVisible /* = FALSE */, HXUIOBJ *phResultingScene /*= NULL*/ )
+HRESULT CConsoleMinecraftApp::NavigateToScene(int iPad,EUIScene eScene, void *initData /* = nullptr */, bool forceUsePad /*= false*/, BOOL bStayVisible /* = FALSE */, HXUIOBJ *phResultingScene /*= nullptr*/ )
 {
 	ASSERT(m_bDefaultTypefaceRegistered);
 	ASSERT(m_bSkinLoaded);
@@ -1690,7 +1690,7 @@ HRESULT CConsoleMinecraftApp::NavigateToScene(int iPad,EUIScene eScene, void *in
 	}
 
 	// load from the .xzp file
-	const ULONG_PTR c_ModuleHandle = (ULONG_PTR)GetModuleHandle(NULL);
+	const ULONG_PTR c_ModuleHandle = (ULONG_PTR)GetModuleHandle(nullptr);
 
 	HXUIOBJ hScene;
 	HRESULT hr;
@@ -1701,7 +1701,7 @@ HRESULT CConsoleMinecraftApp::NavigateToScene(int iPad,EUIScene eScene, void *in
 
 	// If the init data is null, put the player pad in there
 
-	if(initData==NULL)
+	if(initData==nullptr)
 	{
 		initData = &iPad;
 	}
@@ -1843,7 +1843,7 @@ HRESULT CConsoleMinecraftApp::NavigateToScene(int iPad,EUIScene eScene, void *in
 			m_bPauseMenuDisplayed[iPad] = true;
 
 			Minecraft *pMinecraft = Minecraft::GetInstance();
-			if(pMinecraft != NULL && pMinecraft->localgameModes[iPad] != NULL )
+			if(pMinecraft != nullptr && pMinecraft->localgameModes[iPad] != nullptr )
 			{
 				TutorialMode *gameMode = (TutorialMode *)pMinecraft->localgameModes[iPad];
 
@@ -1883,7 +1883,7 @@ HRESULT CConsoleMinecraftApp::NavigateToScene(int iPad,EUIScene eScene, void *in
 		break;
 	}
 
-	if(phResultingScene!=NULL)
+	if(phResultingScene!=nullptr)
 	{
 		*phResultingScene=hScene;
 	}
@@ -1997,7 +1997,7 @@ HRESULT CConsoleMinecraftApp::CloseXuiScenes(int iPad, bool forceUsePad /*= fals
 	}
 
 	Minecraft *pMinecraft = Minecraft::GetInstance();
-	if(pMinecraft != NULL && pMinecraft->localgameModes[iPad] != NULL )
+	if(pMinecraft != nullptr && pMinecraft->localgameModes[iPad] != nullptr )
 	{
 		TutorialMode *gameMode = (TutorialMode *)pMinecraft->localgameModes[iPad];
 
@@ -2132,7 +2132,7 @@ HRESULT CConsoleMinecraftApp::RemoveBackScene(int iPad)
 					}
 				}
 
-				XuiSceneSetBackScene(hBack, NULL);
+				XuiSceneSetBackScene(hBack, nullptr);
 				XuiDestroyObject( hBack );
 			}
 		}
@@ -2163,7 +2163,7 @@ HRESULT CConsoleMinecraftApp::NavigateToHomeMenu()
 	// unload any texture pack audio
 	// if there is audio in use, clear out the audio, and unmount the pack
 	TexturePack *pTexPack=Minecraft::GetInstance()->skins->getSelected();
-	DLCTexturePack *pDLCTexPack=NULL;
+	DLCTexturePack *pDLCTexPack=nullptr;
 
 	if(pTexPack->hasAudio())
 	{
@@ -2179,11 +2179,11 @@ HRESULT CConsoleMinecraftApp::NavigateToHomeMenu()
 		// need to stop the streaming audio - by playing streaming audio from the default texture pack now
 		pMinecraft->soundEngine->playStreaming(L"", 0, 0, 0, 0, 0);
 
-		if(pDLCTexPack->m_pStreamedWaveBank!=NULL)
+		if(pDLCTexPack->m_pStreamedWaveBank!=nullptr)
 		{
 			pDLCTexPack->m_pStreamedWaveBank->Destroy();
 		}
-		if(pDLCTexPack->m_pSoundBank!=NULL)
+		if(pDLCTexPack->m_pSoundBank!=nullptr)
 		{
 			pDLCTexPack->m_pSoundBank->Destroy();
 		}
@@ -2193,7 +2193,7 @@ HRESULT CConsoleMinecraftApp::NavigateToHomeMenu()
 
 	g_NetworkManager.ForceFriendsSessionRefresh();
 
-	hr = NavigateToScene(XUSER_INDEX_ANY,eUIScene_MainMenu,NULL);
+	hr = NavigateToScene(XUSER_INDEX_ANY,eUIScene_MainMenu,nullptr);
 	return hr;
 }
 
@@ -2217,7 +2217,7 @@ void CConsoleMinecraftApp::SetChatTextDisplayed(int iPad, bool bVal)
 
 void CConsoleMinecraftApp::ReloadChatScene(int iPad, bool bJoining /*= false*/, bool bForce /*= false*/)
 {
-	if(m_hFirstChatScene[iPad] == NULL || m_hCurrentChatScene[iPad] == NULL) return;
+	if(m_hFirstChatScene[iPad] == nullptr || m_hCurrentChatScene[iPad] == nullptr) return;
 
 	// Re-create the chat scene so it is the correct size. It starts without any visible lines.
 	BOOL chatSceneVisible = FALSE;
@@ -2236,7 +2236,7 @@ void CConsoleMinecraftApp::ReloadChatScene(int iPad, bool bJoining /*= false*/, 
 	{
 		if( m_hFirstChatScene[iPad] != m_hCurrentChatScene[iPad] ) XuiSceneNavigateBack(m_hCurrentChatScene[iPad], m_hFirstChatScene[iPad],iPad);
 		m_hCurrentChatScene[iPad] = m_hFirstChatScene[iPad];
-		app.NavigateToScene(iPad,eUIComponent_Chat,NULL,true);
+		app.NavigateToScene(iPad,eUIComponent_Chat,nullptr,true);
 
 		XuiElementSetShow( m_hCurrentChatScene[iPad], chatSceneVisible);
 	}
@@ -2298,7 +2298,7 @@ void CConsoleMinecraftApp::ReloadChatScene(int iPad, bool bJoining /*= false*/, 
 
 void CConsoleMinecraftApp::ReloadHudScene(int iPad, bool bJoining /*= false*/, bool bForce /*= false*/)
 {
-	if(m_hFirstHudScene[iPad] == NULL || m_hCurrentHudScene[iPad] == NULL) return;
+	if(m_hFirstHudScene[iPad] == nullptr || m_hCurrentHudScene[iPad] == nullptr) return;
 
 	// Re-create the hud scene so it is the correct size. It starts without any visible lines.
 	BOOL hudSceneVisible = FALSE;
@@ -2317,7 +2317,7 @@ void CConsoleMinecraftApp::ReloadHudScene(int iPad, bool bJoining /*= false*/, b
 	{
 		if( m_hFirstHudScene[iPad] != m_hCurrentHudScene[iPad] ) XuiSceneNavigateBack(m_hCurrentHudScene[iPad], m_hFirstHudScene[iPad],iPad);
 		m_hCurrentHudScene[iPad] = m_hFirstHudScene[iPad];
-		app.NavigateToScene(iPad,eUIScene_HUD,NULL,true);
+		app.NavigateToScene(iPad,eUIScene_HUD,nullptr,true);
 
 		XuiElementSetShow( m_hCurrentHudScene[iPad], hudSceneVisible);
 	}
@@ -2333,7 +2333,7 @@ void CConsoleMinecraftApp::AdjustSplitscreenScene(HXUIOBJ hScene,D3DXVECTOR3 *pv
 	XuiElementGetPosition(hScene,pvOriginalPosition);
 	vec=*pvOriginalPosition;
 
-	if( pMinecraft->localplayers[iPad] != NULL )
+	if( pMinecraft->localplayers[iPad] != nullptr )
 	{
 		switch( pMinecraft->localplayers[iPad]->m_iScreenSection)
 		{
@@ -2382,7 +2382,7 @@ void CConsoleMinecraftApp::AdjustSplitscreenScene(HXUIOBJ hScene,D3DXVECTOR3 *pv
 
 	vec=*pvOriginalPosition;
 
-	if( pMinecraft->localplayers[iPad] != NULL )
+	if( pMinecraft->localplayers[iPad] != nullptr )
 	{
 		switch( pMinecraft->localplayers[iPad]->m_iScreenSection)
 		{
@@ -2449,7 +2449,7 @@ HRESULT CConsoleMinecraftApp::AdjustSplitscreenScene_PlayerChanged(HXUIOBJ hScen
 		// 4J Stu - Return S_FALSE to inidicate that the scene has been closed
 		return S_FALSE;
 	}
-	else if ( pMinecraft->localplayers[iPad] != NULL )
+	else if ( pMinecraft->localplayers[iPad] != nullptr )
 	{
 		// we need to reposition the scenes since the players will have moved around
 
@@ -2510,7 +2510,7 @@ HRESULT CConsoleMinecraftApp::AdjustSplitscreenScene_PlayerChanged(HXUIOBJ hScen
 		// 4J Stu - Return S_FALSE to inidicate that the scene has been closed
 		return S_FALSE;
 	}
-	else if ( pMinecraft->localplayers[iPad] != NULL )
+	else if ( pMinecraft->localplayers[iPad] != nullptr )
 	{
 		// we need to reposition the scenes since the players will have moved around
 
@@ -2560,7 +2560,7 @@ HRESULT CConsoleMinecraftApp::AdjustSplitscreenScene_PlayerChanged(HXUIOBJ hScen
 
 void CConsoleMinecraftApp::StoreLaunchData()
 {
-	LD_DEMO* pDemoData = NULL;
+	LD_DEMO* pDemoData = nullptr;
 
 
 	DWORD dwStatus = XGetLaunchDataSize( &m_dwLaunchDataSize );
@@ -2578,7 +2578,7 @@ void CConsoleMinecraftApp::StoreLaunchData()
 
 void CConsoleMinecraftApp::ExitGame()
 {
-	if(m_pLaunchData!=NULL)
+	if(m_pLaunchData!=nullptr)
 	{
 		LD_DEMO* pDemoData = (LD_DEMO*)( m_pLaunchData );
 		XSetLaunchData( pDemoData, m_dwLaunchDataSize );
@@ -2605,7 +2605,7 @@ void CConsoleMinecraftApp::FatalLoadError(void)
 
 	memset(&MessageBoxOverlap, 0, sizeof(MessageBoxOverlap));
 
-	//HANDLE messageBoxThread = CreateThread(NULL, 0, &CMinecraftApp::ShowFatalLoadMessageBoxThreadProc, &MessageBoxOverlap, 0, NULL);
+	//HANDLE messageBoxThread = CreateThread(nullptr, 0, &CMinecraftApp::ShowFatalLoadMessageBoxThreadProc, &MessageBoxOverlap, 0, nullptr);
 	//
 	//WaitForSingleObjectEx(messageBoxThread, // handle to object
 	//	20000, // time-out interval
@@ -2775,7 +2775,7 @@ int CConsoleMinecraftApp::LoadLocalTMSFile(WCHAR *wchTMSFile)
 	if(iTMSFileIndex!=-1)
 	{
 		// can we find the tms file in our xzp?
-		if(TMSFileA[iTMSFileIndex].pbData==NULL) // if we haven't already loaded it
+		if(TMSFileA[iTMSFileIndex].pbData==nullptr) // if we haven't already loaded it
 		{
 			swprintf(szResourceLocator, LOCATOR_SIZE, L"%ls#TMSFiles/%ls",m_wchTMSXZP, wchTMSFile);
 
@@ -2793,10 +2793,10 @@ void CConsoleMinecraftApp::FreeLocalTMSFiles(eTMSFileType eType)
 	{
 		if((eType==eTMSFileType_All) ||(eType==TMSFileA[i].eTMSType))
 		{
-			if(TMSFileA[i].pbData!=NULL)
+			if(TMSFileA[i].pbData!=nullptr)
 			{
 				XuiFree(TMSFileA[i].pbData);
-				TMSFileA[i].pbData=NULL;
+				TMSFileA[i].pbData=nullptr;
 				TMSFileA[i].uiSize=0;
 			}
 		}
@@ -2807,148 +2807,148 @@ void CConsoleMinecraftApp::FreeLocalTMSFiles(eTMSFileType eType)
 TMS_FILE CConsoleMinecraftApp::TMSFileA[TMS_COUNT] =
 {
 	// skin packs
-	{ L"SP1", eFileExtensionType_PNG, eTMSFileType_MinecraftStore, NULL, 0 , 0},
-	{ L"SP2", eFileExtensionType_PNG, eTMSFileType_MinecraftStore, NULL, 0 , 0},
-	{ L"SP3", eFileExtensionType_PNG, eTMSFileType_MinecraftStore, NULL, 0 , 0},
-	{ L"SP4", eFileExtensionType_PNG, eTMSFileType_MinecraftStore, NULL, 0 , 0},
-	{ L"SP5", eFileExtensionType_PNG, eTMSFileType_MinecraftStore, NULL, 0 , 0},
-	{ L"SP6", eFileExtensionType_PNG, eTMSFileType_MinecraftStore, NULL, 0 , 0},
-	{ L"SPF", eFileExtensionType_PNG, eTMSFileType_MinecraftStore, NULL, 0 , 0},
-	{ L"SPB", eFileExtensionType_PNG, eTMSFileType_MinecraftStore, NULL, 0 , 0},
-	{ L"SPC", eFileExtensionType_PNG, eTMSFileType_MinecraftStore, NULL, 0 , 0},
-	{ L"SPZ", eFileExtensionType_PNG, eTMSFileType_MinecraftStore, NULL, 0 , 0},
-	{ L"SPM", eFileExtensionType_PNG, eTMSFileType_MinecraftStore, NULL, 0 , 0},
-	{ L"SPI", eFileExtensionType_PNG, eTMSFileType_MinecraftStore, NULL, 0 , 0},
-	{ L"SPG", eFileExtensionType_PNG, eTMSFileType_MinecraftStore, NULL, 0 , 0},
+	{ L"SP1", eFileExtensionType_PNG, eTMSFileType_MinecraftStore, nullptr, 0 , 0},
+	{ L"SP2", eFileExtensionType_PNG, eTMSFileType_MinecraftStore, nullptr, 0 , 0},
+	{ L"SP3", eFileExtensionType_PNG, eTMSFileType_MinecraftStore, nullptr, 0 , 0},
+	{ L"SP4", eFileExtensionType_PNG, eTMSFileType_MinecraftStore, nullptr, 0 , 0},
+	{ L"SP5", eFileExtensionType_PNG, eTMSFileType_MinecraftStore, nullptr, 0 , 0},
+	{ L"SP6", eFileExtensionType_PNG, eTMSFileType_MinecraftStore, nullptr, 0 , 0},
+	{ L"SPF", eFileExtensionType_PNG, eTMSFileType_MinecraftStore, nullptr, 0 , 0},
+	{ L"SPB", eFileExtensionType_PNG, eTMSFileType_MinecraftStore, nullptr, 0 , 0},
+	{ L"SPC", eFileExtensionType_PNG, eTMSFileType_MinecraftStore, nullptr, 0 , 0},
+	{ L"SPZ", eFileExtensionType_PNG, eTMSFileType_MinecraftStore, nullptr, 0 , 0},
+	{ L"SPM", eFileExtensionType_PNG, eTMSFileType_MinecraftStore, nullptr, 0 , 0},
+	{ L"SPI", eFileExtensionType_PNG, eTMSFileType_MinecraftStore, nullptr, 0 , 0},
+	{ L"SPG", eFileExtensionType_PNG, eTMSFileType_MinecraftStore, nullptr, 0 , 0},
 
 	 //themes
-	{ L"ThSt", eFileExtensionType_PNG, eTMSFileType_MinecraftStore, NULL, 0 , 0},
-	{ L"ThIr", eFileExtensionType_PNG, eTMSFileType_MinecraftStore, NULL, 0 , 0},
-	{ L"ThGo", eFileExtensionType_PNG, eTMSFileType_MinecraftStore, NULL, 0 , 0},
-	{ L"ThDi", eFileExtensionType_PNG, eTMSFileType_MinecraftStore, NULL, 0 , 0},
-	{ L"ThAw", eFileExtensionType_PNG, eTMSFileType_MinecraftStore, NULL, 0 , 0},
+	{ L"ThSt", eFileExtensionType_PNG, eTMSFileType_MinecraftStore, nullptr, 0 , 0},
+	{ L"ThIr", eFileExtensionType_PNG, eTMSFileType_MinecraftStore, nullptr, 0 , 0},
+	{ L"ThGo", eFileExtensionType_PNG, eTMSFileType_MinecraftStore, nullptr, 0 , 0},
+	{ L"ThDi", eFileExtensionType_PNG, eTMSFileType_MinecraftStore, nullptr, 0 , 0},
+	{ L"ThAw", eFileExtensionType_PNG, eTMSFileType_MinecraftStore, nullptr, 0 , 0},
 
 	 //gamerpics
-	{ L"GPAn", eFileExtensionType_PNG , eTMSFileType_MinecraftStore, NULL, 0, 0},
-	{ L"GPCo", eFileExtensionType_PNG , eTMSFileType_MinecraftStore, NULL, 0, 0},
-	{ L"GPEn", eFileExtensionType_PNG , eTMSFileType_MinecraftStore, NULL, 0, 0},
-	{ L"GPFo", eFileExtensionType_PNG , eTMSFileType_MinecraftStore, NULL, 0, 0},
-	{ L"GPTo", eFileExtensionType_PNG , eTMSFileType_MinecraftStore, NULL, 0, 0},
-	{ L"GPBA", eFileExtensionType_PNG , eTMSFileType_MinecraftStore, NULL, 0, 0},
-	{ L"GPFa", eFileExtensionType_PNG , eTMSFileType_MinecraftStore, NULL, 0, 0},
-	{ L"GPME", eFileExtensionType_PNG , eTMSFileType_MinecraftStore, NULL, 0, 0},
-	{ L"GPMF", eFileExtensionType_PNG , eTMSFileType_MinecraftStore, NULL, 0, 0},
-	{ L"GPMM", eFileExtensionType_PNG , eTMSFileType_MinecraftStore, NULL, 0, 0},
-	{ L"GPSE", eFileExtensionType_PNG , eTMSFileType_MinecraftStore, NULL, 0, 0},
+	{ L"GPAn", eFileExtensionType_PNG , eTMSFileType_MinecraftStore, nullptr, 0, 0},
+	{ L"GPCo", eFileExtensionType_PNG , eTMSFileType_MinecraftStore, nullptr, 0, 0},
+	{ L"GPEn", eFileExtensionType_PNG , eTMSFileType_MinecraftStore, nullptr, 0, 0},
+	{ L"GPFo", eFileExtensionType_PNG , eTMSFileType_MinecraftStore, nullptr, 0, 0},
+	{ L"GPTo", eFileExtensionType_PNG , eTMSFileType_MinecraftStore, nullptr, 0, 0},
+	{ L"GPBA", eFileExtensionType_PNG , eTMSFileType_MinecraftStore, nullptr, 0, 0},
+	{ L"GPFa", eFileExtensionType_PNG , eTMSFileType_MinecraftStore, nullptr, 0, 0},
+	{ L"GPME", eFileExtensionType_PNG , eTMSFileType_MinecraftStore, nullptr, 0, 0},
+	{ L"GPMF", eFileExtensionType_PNG , eTMSFileType_MinecraftStore, nullptr, 0, 0},
+	{ L"GPMM", eFileExtensionType_PNG , eTMSFileType_MinecraftStore, nullptr, 0, 0},
+	{ L"GPSE", eFileExtensionType_PNG , eTMSFileType_MinecraftStore, nullptr, 0, 0},
 
-	{ L"GPOr", eFileExtensionType_PNG , eTMSFileType_MinecraftStore, NULL, 0, 0},
-	{ L"GPMi", eFileExtensionType_PNG , eTMSFileType_MinecraftStore, NULL, 0, 0},
-	{ L"GPMB", eFileExtensionType_PNG , eTMSFileType_MinecraftStore, NULL, 0, 0},
-	{ L"GPBr", eFileExtensionType_PNG , eTMSFileType_MinecraftStore, NULL, 0, 0},
+	{ L"GPOr", eFileExtensionType_PNG , eTMSFileType_MinecraftStore, nullptr, 0, 0},
+	{ L"GPMi", eFileExtensionType_PNG , eTMSFileType_MinecraftStore, nullptr, 0, 0},
+	{ L"GPMB", eFileExtensionType_PNG , eTMSFileType_MinecraftStore, nullptr, 0, 0},
+	{ L"GPBr", eFileExtensionType_PNG , eTMSFileType_MinecraftStore, nullptr, 0, 0},
 
-	{ L"GPM1", eFileExtensionType_PNG, eTMSFileType_MinecraftStore, NULL, 0, 0},
-	{ L"GPM2", eFileExtensionType_PNG, eTMSFileType_MinecraftStore, NULL, 0, 0},
-	{ L"GPM3", eFileExtensionType_PNG, eTMSFileType_MinecraftStore, NULL, 0, 0},
+	{ L"GPM1", eFileExtensionType_PNG, eTMSFileType_MinecraftStore, nullptr, 0, 0},
+	{ L"GPM2", eFileExtensionType_PNG, eTMSFileType_MinecraftStore, nullptr, 0, 0},
+	{ L"GPM3", eFileExtensionType_PNG, eTMSFileType_MinecraftStore, nullptr, 0, 0},
 
 //avatar items
-	{ L"AH_0001", eFileExtensionType_PNG, eTMSFileType_MinecraftStore, NULL, 0, 0 },
-	{ L"AH_0002", eFileExtensionType_PNG, eTMSFileType_MinecraftStore, NULL, 0, 0 },
-	{ L"AH_0003", eFileExtensionType_PNG, eTMSFileType_MinecraftStore, NULL, 0, 0 },
-	{ L"AH_0004", eFileExtensionType_PNG, eTMSFileType_MinecraftStore, NULL, 0, 0 },
-	{ L"AH_0005", eFileExtensionType_PNG, eTMSFileType_MinecraftStore, NULL, 0, 0 },
-	{ L"AH_0006", eFileExtensionType_PNG, eTMSFileType_MinecraftStore, NULL, 0, 0 },
-	{ L"AH_0007", eFileExtensionType_PNG, eTMSFileType_MinecraftStore, NULL, 0, 0 },
-	{ L"AH_0008", eFileExtensionType_PNG, eTMSFileType_MinecraftStore, NULL, 0, 0 },
-	{ L"AH_0009", eFileExtensionType_PNG, eTMSFileType_MinecraftStore, NULL, 0, 0 },
-	{ L"AH_0010", eFileExtensionType_PNG, eTMSFileType_MinecraftStore, NULL, 0, 0 },
-	{ L"AH_0011", eFileExtensionType_PNG, eTMSFileType_MinecraftStore, NULL, 0, 0 },
-	{ L"AH_0012", eFileExtensionType_PNG, eTMSFileType_MinecraftStore, NULL, 0, 0 },
-	{ L"AH_0013", eFileExtensionType_PNG, eTMSFileType_MinecraftStore, NULL, 0, 0 },
+	{ L"AH_0001", eFileExtensionType_PNG, eTMSFileType_MinecraftStore, nullptr, 0, 0 },
+	{ L"AH_0002", eFileExtensionType_PNG, eTMSFileType_MinecraftStore, nullptr, 0, 0 },
+	{ L"AH_0003", eFileExtensionType_PNG, eTMSFileType_MinecraftStore, nullptr, 0, 0 },
+	{ L"AH_0004", eFileExtensionType_PNG, eTMSFileType_MinecraftStore, nullptr, 0, 0 },
+	{ L"AH_0005", eFileExtensionType_PNG, eTMSFileType_MinecraftStore, nullptr, 0, 0 },
+	{ L"AH_0006", eFileExtensionType_PNG, eTMSFileType_MinecraftStore, nullptr, 0, 0 },
+	{ L"AH_0007", eFileExtensionType_PNG, eTMSFileType_MinecraftStore, nullptr, 0, 0 },
+	{ L"AH_0008", eFileExtensionType_PNG, eTMSFileType_MinecraftStore, nullptr, 0, 0 },
+	{ L"AH_0009", eFileExtensionType_PNG, eTMSFileType_MinecraftStore, nullptr, 0, 0 },
+	{ L"AH_0010", eFileExtensionType_PNG, eTMSFileType_MinecraftStore, nullptr, 0, 0 },
+	{ L"AH_0011", eFileExtensionType_PNG, eTMSFileType_MinecraftStore, nullptr, 0, 0 },
+	{ L"AH_0012", eFileExtensionType_PNG, eTMSFileType_MinecraftStore, nullptr, 0, 0 },
+	{ L"AH_0013", eFileExtensionType_PNG, eTMSFileType_MinecraftStore, nullptr, 0, 0 },
 
-	{ L"AT_0001", eFileExtensionType_PNG, eTMSFileType_MinecraftStore, NULL, 0, 0 },
-	{ L"AT_0002", eFileExtensionType_PNG, eTMSFileType_MinecraftStore, NULL, 0, 0 },
-	{ L"AT_0003", eFileExtensionType_PNG, eTMSFileType_MinecraftStore, NULL, 0, 0 },
-	{ L"AT_0004", eFileExtensionType_PNG, eTMSFileType_MinecraftStore, NULL, 0, 0 },
-	{ L"AT_0005", eFileExtensionType_PNG, eTMSFileType_MinecraftStore, NULL, 0, 0 },
-	{ L"AT_0006", eFileExtensionType_PNG, eTMSFileType_MinecraftStore, NULL, 0, 0 },
-	{ L"AT_0007", eFileExtensionType_PNG, eTMSFileType_MinecraftStore, NULL, 0, 0 },
-	{ L"AT_0008", eFileExtensionType_PNG, eTMSFileType_MinecraftStore, NULL, 0, 0 },
-	{ L"AT_0009", eFileExtensionType_PNG, eTMSFileType_MinecraftStore, NULL, 0, 0 },
-	{ L"AT_0010", eFileExtensionType_PNG, eTMSFileType_MinecraftStore, NULL, 0, 0 },
-	{ L"AT_0011", eFileExtensionType_PNG, eTMSFileType_MinecraftStore, NULL, 0, 0 },
-	{ L"AT_0012", eFileExtensionType_PNG, eTMSFileType_MinecraftStore, NULL, 0, 0 },
-	{ L"AT_0013", eFileExtensionType_PNG, eTMSFileType_MinecraftStore, NULL, 0, 0 },
-	{ L"AT_0014", eFileExtensionType_PNG, eTMSFileType_MinecraftStore, NULL, 0, 0 },
-	{ L"AT_0015", eFileExtensionType_PNG, eTMSFileType_MinecraftStore, NULL, 0, 0 },
-	{ L"AT_0016", eFileExtensionType_PNG, eTMSFileType_MinecraftStore, NULL, 0, 0 },
-	{ L"AT_0017", eFileExtensionType_PNG, eTMSFileType_MinecraftStore, NULL, 0, 0 },
-	{ L"AT_0018", eFileExtensionType_PNG, eTMSFileType_MinecraftStore, NULL, 0, 0 },
-	{ L"AT_0019", eFileExtensionType_PNG, eTMSFileType_MinecraftStore, NULL, 0, 0 },
-	{ L"AT_0020", eFileExtensionType_PNG, eTMSFileType_MinecraftStore, NULL, 0, 0 },
-	{ L"AT_0021", eFileExtensionType_PNG, eTMSFileType_MinecraftStore, NULL, 0, 0 },
-	{ L"AT_0022", eFileExtensionType_PNG, eTMSFileType_MinecraftStore, NULL, 0, 0 },
-	{ L"AT_0023", eFileExtensionType_PNG, eTMSFileType_MinecraftStore, NULL, 0, 0 },
-	{ L"AT_0024", eFileExtensionType_PNG, eTMSFileType_MinecraftStore, NULL, 0, 0 },
-	{ L"AT_0025", eFileExtensionType_PNG, eTMSFileType_MinecraftStore, NULL, 0, 0 },
-	{ L"AT_0026", eFileExtensionType_PNG, eTMSFileType_MinecraftStore, NULL, 0, 0 },
+	{ L"AT_0001", eFileExtensionType_PNG, eTMSFileType_MinecraftStore, nullptr, 0, 0 },
+	{ L"AT_0002", eFileExtensionType_PNG, eTMSFileType_MinecraftStore, nullptr, 0, 0 },
+	{ L"AT_0003", eFileExtensionType_PNG, eTMSFileType_MinecraftStore, nullptr, 0, 0 },
+	{ L"AT_0004", eFileExtensionType_PNG, eTMSFileType_MinecraftStore, nullptr, 0, 0 },
+	{ L"AT_0005", eFileExtensionType_PNG, eTMSFileType_MinecraftStore, nullptr, 0, 0 },
+	{ L"AT_0006", eFileExtensionType_PNG, eTMSFileType_MinecraftStore, nullptr, 0, 0 },
+	{ L"AT_0007", eFileExtensionType_PNG, eTMSFileType_MinecraftStore, nullptr, 0, 0 },
+	{ L"AT_0008", eFileExtensionType_PNG, eTMSFileType_MinecraftStore, nullptr, 0, 0 },
+	{ L"AT_0009", eFileExtensionType_PNG, eTMSFileType_MinecraftStore, nullptr, 0, 0 },
+	{ L"AT_0010", eFileExtensionType_PNG, eTMSFileType_MinecraftStore, nullptr, 0, 0 },
+	{ L"AT_0011", eFileExtensionType_PNG, eTMSFileType_MinecraftStore, nullptr, 0, 0 },
+	{ L"AT_0012", eFileExtensionType_PNG, eTMSFileType_MinecraftStore, nullptr, 0, 0 },
+	{ L"AT_0013", eFileExtensionType_PNG, eTMSFileType_MinecraftStore, nullptr, 0, 0 },
+	{ L"AT_0014", eFileExtensionType_PNG, eTMSFileType_MinecraftStore, nullptr, 0, 0 },
+	{ L"AT_0015", eFileExtensionType_PNG, eTMSFileType_MinecraftStore, nullptr, 0, 0 },
+	{ L"AT_0016", eFileExtensionType_PNG, eTMSFileType_MinecraftStore, nullptr, 0, 0 },
+	{ L"AT_0017", eFileExtensionType_PNG, eTMSFileType_MinecraftStore, nullptr, 0, 0 },
+	{ L"AT_0018", eFileExtensionType_PNG, eTMSFileType_MinecraftStore, nullptr, 0, 0 },
+	{ L"AT_0019", eFileExtensionType_PNG, eTMSFileType_MinecraftStore, nullptr, 0, 0 },
+	{ L"AT_0020", eFileExtensionType_PNG, eTMSFileType_MinecraftStore, nullptr, 0, 0 },
+	{ L"AT_0021", eFileExtensionType_PNG, eTMSFileType_MinecraftStore, nullptr, 0, 0 },
+	{ L"AT_0022", eFileExtensionType_PNG, eTMSFileType_MinecraftStore, nullptr, 0, 0 },
+	{ L"AT_0023", eFileExtensionType_PNG, eTMSFileType_MinecraftStore, nullptr, 0, 0 },
+	{ L"AT_0024", eFileExtensionType_PNG, eTMSFileType_MinecraftStore, nullptr, 0, 0 },
+	{ L"AT_0025", eFileExtensionType_PNG, eTMSFileType_MinecraftStore, nullptr, 0, 0 },
+	{ L"AT_0026", eFileExtensionType_PNG, eTMSFileType_MinecraftStore, nullptr, 0, 0 },
 
-	{ L"AP_0001", eFileExtensionType_PNG, eTMSFileType_MinecraftStore, NULL, 0, 0 },
-	{ L"AP_0002", eFileExtensionType_PNG, eTMSFileType_MinecraftStore, NULL, 0, 0 },
-	{ L"AP_0003", eFileExtensionType_PNG, eTMSFileType_MinecraftStore, NULL, 0, 0 },
-	{ L"AP_0004", eFileExtensionType_PNG, eTMSFileType_MinecraftStore, NULL, 0, 0 },
-	{ L"AP_0005", eFileExtensionType_PNG, eTMSFileType_MinecraftStore, NULL, 0, 0 },
-	{ L"AP_0006", eFileExtensionType_PNG, eTMSFileType_MinecraftStore, NULL, 0, 0 },
-	{ L"AP_0007", eFileExtensionType_PNG, eTMSFileType_MinecraftStore, NULL, 0, 0 },
-	{ L"AP_0009", eFileExtensionType_PNG, eTMSFileType_MinecraftStore, NULL, 0, 0 },
-	{ L"AP_0010", eFileExtensionType_PNG, eTMSFileType_MinecraftStore, NULL, 0, 0 },
-	{ L"AP_0011", eFileExtensionType_PNG, eTMSFileType_MinecraftStore, NULL, 0, 0 },
-	{ L"AP_0012", eFileExtensionType_PNG, eTMSFileType_MinecraftStore, NULL, 0, 0 },
-	{ L"AP_0013", eFileExtensionType_PNG, eTMSFileType_MinecraftStore, NULL, 0, 0 },
-	{ L"AP_0014", eFileExtensionType_PNG, eTMSFileType_MinecraftStore, NULL, 0, 0 },
-	{ L"AP_0015", eFileExtensionType_PNG, eTMSFileType_MinecraftStore, NULL, 0, 0 },
-	{ L"AP_0016", eFileExtensionType_PNG, eTMSFileType_MinecraftStore, NULL, 0, 0 },
-	{ L"AP_0017", eFileExtensionType_PNG, eTMSFileType_MinecraftStore, NULL, 0, 0 },
-	{ L"AP_0018", eFileExtensionType_PNG, eTMSFileType_MinecraftStore, NULL, 0, 0 },
+	{ L"AP_0001", eFileExtensionType_PNG, eTMSFileType_MinecraftStore, nullptr, 0, 0 },
+	{ L"AP_0002", eFileExtensionType_PNG, eTMSFileType_MinecraftStore, nullptr, 0, 0 },
+	{ L"AP_0003", eFileExtensionType_PNG, eTMSFileType_MinecraftStore, nullptr, 0, 0 },
+	{ L"AP_0004", eFileExtensionType_PNG, eTMSFileType_MinecraftStore, nullptr, 0, 0 },
+	{ L"AP_0005", eFileExtensionType_PNG, eTMSFileType_MinecraftStore, nullptr, 0, 0 },
+	{ L"AP_0006", eFileExtensionType_PNG, eTMSFileType_MinecraftStore, nullptr, 0, 0 },
+	{ L"AP_0007", eFileExtensionType_PNG, eTMSFileType_MinecraftStore, nullptr, 0, 0 },
+	{ L"AP_0009", eFileExtensionType_PNG, eTMSFileType_MinecraftStore, nullptr, 0, 0 },
+	{ L"AP_0010", eFileExtensionType_PNG, eTMSFileType_MinecraftStore, nullptr, 0, 0 },
+	{ L"AP_0011", eFileExtensionType_PNG, eTMSFileType_MinecraftStore, nullptr, 0, 0 },
+	{ L"AP_0012", eFileExtensionType_PNG, eTMSFileType_MinecraftStore, nullptr, 0, 0 },
+	{ L"AP_0013", eFileExtensionType_PNG, eTMSFileType_MinecraftStore, nullptr, 0, 0 },
+	{ L"AP_0014", eFileExtensionType_PNG, eTMSFileType_MinecraftStore, nullptr, 0, 0 },
+	{ L"AP_0015", eFileExtensionType_PNG, eTMSFileType_MinecraftStore, nullptr, 0, 0 },
+	{ L"AP_0016", eFileExtensionType_PNG, eTMSFileType_MinecraftStore, nullptr, 0, 0 },
+	{ L"AP_0017", eFileExtensionType_PNG, eTMSFileType_MinecraftStore, nullptr, 0, 0 },
+	{ L"AP_0018", eFileExtensionType_PNG, eTMSFileType_MinecraftStore, nullptr, 0, 0 },
 
-	{ L"AP_0019", eFileExtensionType_PNG, eTMSFileType_MinecraftStore, NULL, 0, 0 },
-	{ L"AP_0020", eFileExtensionType_PNG, eTMSFileType_MinecraftStore, NULL, 0, 0 },
-	{ L"AP_0021", eFileExtensionType_PNG, eTMSFileType_MinecraftStore, NULL, 0, 0 },
-	{ L"AP_0022", eFileExtensionType_PNG, eTMSFileType_MinecraftStore, NULL, 0, 0 },
-	{ L"AP_0023", eFileExtensionType_PNG, eTMSFileType_MinecraftStore, NULL, 0, 0 },
-	{ L"AP_0024", eFileExtensionType_PNG, eTMSFileType_MinecraftStore, NULL, 0, 0 },
-	{ L"AP_0025", eFileExtensionType_PNG, eTMSFileType_MinecraftStore, NULL, 0, 0 },
-	{ L"AP_0026", eFileExtensionType_PNG, eTMSFileType_MinecraftStore, NULL, 0, 0 },
-	{ L"AP_0027", eFileExtensionType_PNG, eTMSFileType_MinecraftStore, NULL, 0, 0 },
-	{ L"AP_0028", eFileExtensionType_PNG, eTMSFileType_MinecraftStore, NULL, 0, 0 },
-	{ L"AP_0029", eFileExtensionType_PNG, eTMSFileType_MinecraftStore, NULL, 0, 0 },
-	{ L"AP_0030", eFileExtensionType_PNG, eTMSFileType_MinecraftStore, NULL, 0, 0 },
-	{ L"AP_0031", eFileExtensionType_PNG, eTMSFileType_MinecraftStore, NULL, 0, 0 },
-	{ L"AP_0032", eFileExtensionType_PNG, eTMSFileType_MinecraftStore, NULL, 0, 0 },
-	{ L"AP_0033", eFileExtensionType_PNG, eTMSFileType_MinecraftStore, NULL, 0, 0 },
+	{ L"AP_0019", eFileExtensionType_PNG, eTMSFileType_MinecraftStore, nullptr, 0, 0 },
+	{ L"AP_0020", eFileExtensionType_PNG, eTMSFileType_MinecraftStore, nullptr, 0, 0 },
+	{ L"AP_0021", eFileExtensionType_PNG, eTMSFileType_MinecraftStore, nullptr, 0, 0 },
+	{ L"AP_0022", eFileExtensionType_PNG, eTMSFileType_MinecraftStore, nullptr, 0, 0 },
+	{ L"AP_0023", eFileExtensionType_PNG, eTMSFileType_MinecraftStore, nullptr, 0, 0 },
+	{ L"AP_0024", eFileExtensionType_PNG, eTMSFileType_MinecraftStore, nullptr, 0, 0 },
+	{ L"AP_0025", eFileExtensionType_PNG, eTMSFileType_MinecraftStore, nullptr, 0, 0 },
+	{ L"AP_0026", eFileExtensionType_PNG, eTMSFileType_MinecraftStore, nullptr, 0, 0 },
+	{ L"AP_0027", eFileExtensionType_PNG, eTMSFileType_MinecraftStore, nullptr, 0, 0 },
+	{ L"AP_0028", eFileExtensionType_PNG, eTMSFileType_MinecraftStore, nullptr, 0, 0 },
+	{ L"AP_0029", eFileExtensionType_PNG, eTMSFileType_MinecraftStore, nullptr, 0, 0 },
+	{ L"AP_0030", eFileExtensionType_PNG, eTMSFileType_MinecraftStore, nullptr, 0, 0 },
+	{ L"AP_0031", eFileExtensionType_PNG, eTMSFileType_MinecraftStore, nullptr, 0, 0 },
+	{ L"AP_0032", eFileExtensionType_PNG, eTMSFileType_MinecraftStore, nullptr, 0, 0 },
+	{ L"AP_0033", eFileExtensionType_PNG, eTMSFileType_MinecraftStore, nullptr, 0, 0 },
 
-	{ L"AA_0001", eFileExtensionType_PNG, eTMSFileType_MinecraftStore, NULL, 0 , 0 },
+	{ L"AA_0001", eFileExtensionType_PNG, eTMSFileType_MinecraftStore, nullptr, 0 , 0 },
 
 	// Mash-up Packs
-	{ L"MPMA", eFileExtensionType_PNG, eTMSFileType_MinecraftStore, NULL, 0, 0 },
-	{ L"MPMA", eFileExtensionType_DAT, eTMSFileType_TexturePack, NULL, 0, 1024 },
-	{ L"MPSR", eFileExtensionType_PNG, eTMSFileType_MinecraftStore, NULL, 0, 0 },
-	{ L"MPSR", eFileExtensionType_DAT, eTMSFileType_TexturePack, NULL, 0, 1025 },
-	{ L"MPHA", eFileExtensionType_PNG, eTMSFileType_MinecraftStore, NULL, 0, 0 },
-	{ L"MPHA", eFileExtensionType_DAT, eTMSFileType_TexturePack, NULL, 0, 1026 },
+	{ L"MPMA", eFileExtensionType_PNG, eTMSFileType_MinecraftStore, nullptr, 0, 0 },
+	{ L"MPMA", eFileExtensionType_DAT, eTMSFileType_TexturePack, nullptr, 0, 1024 },
+	{ L"MPSR", eFileExtensionType_PNG, eTMSFileType_MinecraftStore, nullptr, 0, 0 },
+	{ L"MPSR", eFileExtensionType_DAT, eTMSFileType_TexturePack, nullptr, 0, 1025 },
+	{ L"MPHA", eFileExtensionType_PNG, eTMSFileType_MinecraftStore, nullptr, 0, 0 },
+	{ L"MPHA", eFileExtensionType_DAT, eTMSFileType_TexturePack, nullptr, 0, 1026 },
 
 	// Texture Packs
-	{ L"TP01", eFileExtensionType_PNG, eTMSFileType_MinecraftStore, NULL, 0, 0 },
-	{ L"TP01", eFileExtensionType_DAT, eTMSFileType_TexturePack, NULL, 0, 2049 },
-	{ L"TP02", eFileExtensionType_PNG, eTMSFileType_MinecraftStore, NULL, 0, 0 },
-	{ L"TP02", eFileExtensionType_DAT, eTMSFileType_TexturePack, NULL, 0, 2053 },
-	{ L"TP04", eFileExtensionType_PNG, eTMSFileType_MinecraftStore, NULL, 0, 0 },
-	{ L"TP04", eFileExtensionType_DAT, eTMSFileType_TexturePack, NULL, 0, 2051 },
-	{ L"TP05", eFileExtensionType_PNG, eTMSFileType_MinecraftStore, NULL, 0, 0 },
-	{ L"TP05", eFileExtensionType_DAT, eTMSFileType_TexturePack, NULL, 0, 2054 },
-	{ L"TP06", eFileExtensionType_PNG, eTMSFileType_MinecraftStore, NULL, 0, 0 },
-	{ L"TP06", eFileExtensionType_DAT, eTMSFileType_TexturePack, NULL, 0, 2050 },
-	{ L"TP07", eFileExtensionType_PNG, eTMSFileType_MinecraftStore, NULL, 0, 0 },
-	{ L"TP07", eFileExtensionType_DAT, eTMSFileType_TexturePack, NULL, 0, 2055 },
+	{ L"TP01", eFileExtensionType_PNG, eTMSFileType_MinecraftStore, nullptr, 0, 0 },
+	{ L"TP01", eFileExtensionType_DAT, eTMSFileType_TexturePack, nullptr, 0, 2049 },
+	{ L"TP02", eFileExtensionType_PNG, eTMSFileType_MinecraftStore, nullptr, 0, 0 },
+	{ L"TP02", eFileExtensionType_DAT, eTMSFileType_TexturePack, nullptr, 0, 2053 },
+	{ L"TP04", eFileExtensionType_PNG, eTMSFileType_MinecraftStore, nullptr, 0, 0 },
+	{ L"TP04", eFileExtensionType_DAT, eTMSFileType_TexturePack, nullptr, 0, 2051 },
+	{ L"TP05", eFileExtensionType_PNG, eTMSFileType_MinecraftStore, nullptr, 0, 0 },
+	{ L"TP05", eFileExtensionType_DAT, eTMSFileType_TexturePack, nullptr, 0, 2054 },
+	{ L"TP06", eFileExtensionType_PNG, eTMSFileType_MinecraftStore, nullptr, 0, 0 },
+	{ L"TP06", eFileExtensionType_DAT, eTMSFileType_TexturePack, nullptr, 0, 2050 },
+	{ L"TP07", eFileExtensionType_PNG, eTMSFileType_MinecraftStore, nullptr, 0, 0 },
+	{ L"TP07", eFileExtensionType_DAT, eTMSFileType_TexturePack, nullptr, 0, 2055 },
 
 };
 

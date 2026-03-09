@@ -13,7 +13,7 @@ DWORD TheEndPortal::tlsIdx = TlsAlloc();
 // 4J - allowAnywhere is a static in java, implementing as TLS here to make thread safe
 bool TheEndPortal::allowAnywhere()
 {
-	return (TlsGetValue(tlsIdx) != NULL);
+	return (TlsGetValue(tlsIdx) != nullptr);
 }
 
 void TheEndPortal::allowAnywhere(bool set)
@@ -28,7 +28,7 @@ TheEndPortal::TheEndPortal(int id, Material *material) : BaseEntityTile(id, mate
 
 shared_ptr<TileEntity> TheEndPortal::newTileEntity(Level *level)
 {
-	return shared_ptr<TileEntity>(new TheEndPortalTileEntity());
+	return std::make_shared<TheEndPortalTileEntity>();
 }
 
 void TheEndPortal::updateShape(LevelSource *level, int x, int y, int z, int forceData, shared_ptr<TileEntity> forceEntity) // 4J added forceData, forceEntity param
@@ -66,7 +66,7 @@ void TheEndPortal::entityInside(Level *level, int x, int y, int z, shared_ptr<En
 {
 	if (entity->GetType() == eTYPE_EXPERIENCEORB ) return;		// 4J added
 
-	if (entity->riding == NULL && entity->rider.lock() == NULL)
+	if (entity->riding == nullptr && entity->rider.lock() == nullptr)
 	{
 		if (!level->isClientSide)
 		{

@@ -272,7 +272,7 @@ HRESULT InitD3D( IDirect3DDevice9 **ppDevice,
 	return pD3D->CreateDevice(
 		0, 
 		D3DDEVTYPE_HAL,
-		NULL,
+		nullptr,
 		D3DCREATE_HARDWARE_VERTEXPROCESSING|D3DCREATE_BUFFER_2_FRAMES,
 		pd3dPP,
 		ppDevice );
@@ -291,7 +291,7 @@ void MemSect(int sect)
 #endif
 
 
-HINSTANCE               g_hInst = NULL;
+HINSTANCE               g_hInst = nullptr;
 
 Platform::Agile<Windows::UI::Core::CoreWindow> g_window;
 Windows::Foundation::Rect                       g_windowBounds;
@@ -474,7 +474,7 @@ void oldWinMainInit()
     MSG msg = {0};
     while( WM_QUIT != msg.message )
     {
-        if( PeekMessage( &msg, NULL, 0, 0, PM_REMOVE ) )
+        if( PeekMessage( &msg, nullptr, 0, 0, PM_REMOVE ) )
         {
             TranslateMessage( &msg );
             DispatchMessage( &msg );
@@ -546,7 +546,7 @@ void oldWinMainInit()
     }
 
     // Create an XAudio2 mastering voice (utilized by XHV2 when voice data is mixed to main speakers)
-    hr = g_pXAudio2->CreateMasteringVoice(&g_pXAudio2MasteringVoice, XAUDIO2_DEFAULT_CHANNELS, XAUDIO2_DEFAULT_SAMPLERATE, 0, 0, NULL);
+    hr = g_pXAudio2->CreateMasteringVoice(&g_pXAudio2MasteringVoice, XAUDIO2_DEFAULT_CHANNELS, XAUDIO2_DEFAULT_SAMPLERATE, 0, 0, nullptr);
     if ( FAILED( hr ) )
     {
         app.DebugPrintf( "Creating XAudio2 mastering voice failed (err = 0x%08x)!\n", hr );
@@ -583,7 +583,7 @@ void oldWinMainInit()
 	app.ReadLocalDLCList();
 
 	// initialise the storage manager with a default save display name, a Minimum save size, and a callback for displaying the saving message
-	StorageManager.Init(0,app.GetString(IDS_DEFAULT_SAVENAME),"savegame.dat",FIFTY_ONE_MB,&CConsoleMinecraftApp::DisplaySavingMessage,(LPVOID)&app, app.UpdateProductId,SERVICE_CONFIG_ID,TITLE_PRODUCT_ID);
+	StorageManager.Init(0,app.GetString(IDS_DEFAULT_SAVENAME),"savegame.dat",FIFTY_ONE_MB,&CConsoleMinecraftApp::DisplaySavingMessage,static_cast<LPVOID>(&app), app.UpdateProductId,SERVICE_CONFIG_ID,TITLE_PRODUCT_ID);
 
 	StorageManager.SetMaxSaves(99);
 
@@ -596,21 +596,21 @@ void oldWinMainInit()
 		app.GAME_DEFINED_PROFILE_DATA_BYTES*XUSER_MAX_COUNT,
 		&app.uiGameDefinedDataChangedBitmask);
 
-	StorageManager.SetDefaultImages((PBYTE)baSaveThumbnail.data, baSaveThumbnail.length);
+	StorageManager.SetDefaultImages(static_cast<PBYTE>(baSaveThumbnail.data), baSaveThumbnail.length);
 
 	// Set function to be called if a save game operation can't complete due to running out of storage space etc.
-	StorageManager.SetIncompleteSaveCallback(CConsoleMinecraftApp::Callback_SaveGameIncomplete, (LPVOID)&app);
+	StorageManager.SetIncompleteSaveCallback(CConsoleMinecraftApp::Callback_SaveGameIncomplete, static_cast<LPVOID>(&app));
 
 	// set a function to be called when there's a sign in change, so we can exit a level if the primary player signs out
 	ProfileManager.SetSignInChangeCallback(&CConsoleMinecraftApp::SignInChangeCallback,(LPVOID)&app);
 
 	// Set a callback for the default player options to be set - when there is no profile data for the player
-	StorageManager.SetDefaultOptionsCallback(&CConsoleMinecraftApp::DefaultOptionsCallback,(LPVOID)&app);
-	StorageManager.SetOptionsDataCallback(&CConsoleMinecraftApp::OptionsDataCallback,(LPVOID)&app);
+	StorageManager.SetDefaultOptionsCallback(&CConsoleMinecraftApp::DefaultOptionsCallback,static_cast<LPVOID>(&app));
+	StorageManager.SetOptionsDataCallback(&CConsoleMinecraftApp::OptionsDataCallback,static_cast<LPVOID>(&app));
 
 
 	// Set a callback to deal with old profile versions needing updated to new versions
-	StorageManager.SetOldProfileVersionCallback(&CConsoleMinecraftApp::OldProfileVersionCallback,(LPVOID)&app);
+	StorageManager.SetOldProfileVersionCallback(&CConsoleMinecraftApp::OldProfileVersionCallback,static_cast<LPVOID>(&app));
 
 	g_NetworkManager.Initialise();
 
@@ -785,7 +785,7 @@ void oldWinMainTick()
 		else
 		{
 			MemSect(28);
-			pMinecraft->soundEngine->tick(NULL, 0.0f);
+			pMinecraft->soundEngine->tick(nullptr, 0.0f);
 			MemSect(0);
 			pMinecraft->textures->tick(true,false);
 			IntCache::Reset();

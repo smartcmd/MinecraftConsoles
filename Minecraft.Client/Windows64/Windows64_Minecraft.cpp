@@ -47,6 +47,7 @@
 #include "..\GameRenderer.h"
 #include "Network\WinsockNetLayer.h"
 #include "Windows64_Xuid.h"
+#include "Common/UI/UI.h"
 
 // Forward-declare the internal Renderer class and its global instance from 4J_Render_PC_d.lib.
 // C4JRender (RenderManager) is a stateless wrapper — all D3D state lives in InternalRenderManager.
@@ -87,7 +88,6 @@ DWORD dwProfileSettingsA[NUM_PROFILE_VALUES]=
 	0,0,0,0,0
 #endif
 };
-
 //-------------------------------------------------------------------------------------
 // Time             Since fAppTime is a float, we need to keep the quadword app time
 //                  as a LARGE_INTEGER so that we don't lose precision after running
@@ -131,17 +131,17 @@ static void CopyWideArgToAnsi(LPCWSTR source, char* dest, size_t destSize)
 		return;
 
 	dest[0] = 0;
-	if (source == NULL)
+	if (source == nullptr)
 		return;
 
-	WideCharToMultiByte(CP_ACP, 0, source, -1, dest, (int)destSize, NULL, NULL);
+	WideCharToMultiByte(CP_ACP, 0, source, -1, dest, static_cast<int>(destSize), nullptr, nullptr);
 	dest[destSize - 1] = 0;
 }
 
 // ---------- Persistent options (options.txt next to exe) ----------
 static void GetOptionsFilePath(char *out, size_t outSize)
 {
-	GetModuleFileNameA(NULL, out, (DWORD)outSize);
+	GetModuleFileNameA(nullptr, out, static_cast<DWORD>(outSize));
 	char *p = strrchr(out, '\\');
 	if (p) *(p + 1) = '\0';
 	strncat_s(out, outSize, "options.txt", _TRUNCATE);
@@ -217,7 +217,7 @@ static Win64LaunchOptions ParseLaunchOptions()
 
 	int argc = 0;
 	LPWSTR* argv = CommandLineToArgvW(GetCommandLineW(), &argc);
-	if (argv == NULL)
+	if (argv == nullptr)
 		return options;
 
 	if (argc > 1 && lstrlenW(argv[1]) == 1)
@@ -259,14 +259,14 @@ static Win64LaunchOptions ParseLaunchOptions()
 		}
 		else if (_wcsicmp(argv[i], L"-port") == 0 && (i + 1) < argc)
 		{
-			wchar_t* endPtr = NULL;
-			long port = wcstol(argv[++i], &endPtr, 10);
+			wchar_t* endPtr = nullptr;
+			const long port = wcstol(argv[++i], &endPtr, 10);
 			if (endPtr != argv[i] && *endPtr == 0 && port > 0 && port <= 65535)
 			{
 				if (options.serverMode)
-					g_Win64DedicatedServerPort = (int)port;
+					g_Win64DedicatedServerPort = static_cast<int>(port);
 				else
-					g_Win64MultiplayerPort = (int)port;
+					g_Win64MultiplayerPort = static_cast<int>(port);
 			}
 		}
 		else if (_wcsicmp(argv[i], L"-fullscreen") == 0)
@@ -297,7 +297,7 @@ static void SetupHeadlessServerConsole()
 {
 	if (AllocConsole())
 	{
-		FILE* stream = NULL;
+		FILE* stream = nullptr;
 		freopen_s(&stream, "CONIN$", "r", stdin);
 		freopen_s(&stream, "CONOUT$", "w", stdout);
 		freopen_s(&stream, "CONOUT$", "w", stderr);
@@ -498,7 +498,7 @@ HRESULT InitD3D( IDirect3DDevice9 **ppDevice,
 	return pD3D->CreateDevice(
 		0,
 		D3DDEVTYPE_HAL,
-		NULL,
+		nullptr,
 		D3DCREATE_HARDWARE_VERTEXPROCESSING|D3DCREATE_BUFFER_2_FRAMES,
 		pd3dPP,
 		ppDevice );
@@ -516,16 +516,16 @@ void MemSect(int sect)
 }
 #endif
 
-HINSTANCE               g_hInst = NULL;
-HWND                    g_hWnd = NULL;
+HINSTANCE               g_hInst = nullptr;
+HWND                    g_hWnd = nullptr;
 D3D_DRIVER_TYPE         g_driverType = D3D_DRIVER_TYPE_NULL;
 D3D_FEATURE_LEVEL       g_featureLevel = D3D_FEATURE_LEVEL_11_0;
-ID3D11Device*           g_pd3dDevice = NULL;
-ID3D11DeviceContext*    g_pImmediateContext = NULL;
-IDXGISwapChain*         g_pSwapChain = NULL;
-ID3D11RenderTargetView* g_pRenderTargetView = NULL;
-ID3D11DepthStencilView* g_pDepthStencilView = NULL;
-ID3D11Texture2D*		g_pDepthStencilBuffer = NULL;
+ID3D11Device*           g_pd3dDevice = nullptr;
+ID3D11DeviceContext*    g_pImmediateContext = nullptr;
+IDXGISwapChain*         g_pSwapChain = nullptr;
+ID3D11RenderTargetView* g_pRenderTargetView = nullptr;
+ID3D11DepthStencilView* g_pDepthStencilView = nullptr;
+ID3D11Texture2D*		g_pDepthStencilBuffer = nullptr;
 
 //
 //  FUNCTION: WndProc(HWND, UINT, WPARAM, LPARAM)
@@ -598,7 +598,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		if ((lParam & 0x40000000) && vk != VK_LEFT && vk != VK_RIGHT && vk != VK_BACK)
 			break;
 #ifdef _WINDOWS64
-		Minecraft* pm = Minecraft::GetInstance();
+		const Minecraft* pm = Minecraft::GetInstance();
 		ChatScreen* chat = pm && pm->screen ? dynamic_cast<ChatScreen*>(pm->screen) : nullptr;
 		if (chat)
 		{
@@ -665,13 +665,13 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	case WM_INPUT:
 		{
 			UINT dwSize = 0;
-			GetRawInputData((HRAWINPUT)lParam, RID_INPUT, NULL, &dwSize, sizeof(RAWINPUTHEADER));
+			GetRawInputData((HRAWINPUT)lParam, RID_INPUT, nullptr, &dwSize, sizeof(RAWINPUTHEADER));
 			if (dwSize > 0 && dwSize <= 256)
 			{
 				BYTE rawBuffer[256];
 				if (GetRawInputData((HRAWINPUT)lParam, RID_INPUT, rawBuffer, &dwSize, sizeof(RAWINPUTHEADER)) == dwSize)
 				{
-					RAWINPUT* raw = (RAWINPUT*)rawBuffer;
+					const RAWINPUT* raw = (RAWINPUT*)rawBuffer;
 					if (raw->header.dwType == RIM_TYPEMOUSE)
 					{
 						g_KBMInput.OnRawMouseDelta(raw->data.mouse.lLastX, raw->data.mouse.lLastY);
@@ -739,7 +739,7 @@ ATOM MyRegisterClass(HINSTANCE hInstance)
 	wcex.cbWndExtra		= 0;
 	wcex.hInstance		= hInstance;
 	wcex.hIcon			= LoadIcon(hInstance, "Minecraft");
-	wcex.hCursor		= LoadCursor(NULL, IDC_ARROW);
+	wcex.hCursor		= LoadCursor(nullptr, IDC_ARROW);
 	wcex.hbrBackground	= (HBRUSH)(COLOR_WINDOW+1);
 	wcex.lpszMenuName	= "Minecraft";
 	wcex.lpszClassName	= "MinecraftClass";
@@ -772,10 +772,10 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 		0,
 		wr.right - wr.left,    // width of the window
 		wr.bottom - wr.top,    // height of the window
-		NULL,
-		NULL,
+		nullptr,
+		nullptr,
 		hInstance,
-		NULL);
+		nullptr);
 
 	if (!g_hWnd)
 	{
@@ -890,7 +890,7 @@ HRESULT InitDevice()
 	for( UINT driverTypeIndex = 0; driverTypeIndex < numDriverTypes; driverTypeIndex++ )
 	{
 		g_driverType = driverTypes[driverTypeIndex];
-		hr = D3D11CreateDeviceAndSwapChain( NULL, g_driverType, NULL, createDeviceFlags, featureLevels, numFeatureLevels,
+		hr = D3D11CreateDeviceAndSwapChain( nullptr, g_driverType, nullptr, createDeviceFlags, featureLevels, numFeatureLevels,
 			D3D11_SDK_VERSION, &sd, &g_pSwapChain, &g_pd3dDevice, &g_featureLevel, &g_pImmediateContext );
 		if( HRESULT_SUCCEEDED( hr ) )
 			break;
@@ -899,7 +899,7 @@ HRESULT InitDevice()
 		return hr;
 
 	// Create a render target view
-	ID3D11Texture2D* pBackBuffer = NULL;
+	ID3D11Texture2D* pBackBuffer = nullptr;
 	hr = g_pSwapChain->GetBuffer( 0, __uuidof( ID3D11Texture2D ), ( LPVOID* )&pBackBuffer );
 	if( FAILED( hr ) )
 		return hr;
@@ -919,7 +919,7 @@ HRESULT InitDevice()
 	descDepth.BindFlags = D3D11_BIND_DEPTH_STENCIL;
 	descDepth.CPUAccessFlags = 0;
 	descDepth.MiscFlags = 0;
-	hr = g_pd3dDevice->CreateTexture2D(&descDepth, NULL, &g_pDepthStencilBuffer);
+	hr = g_pd3dDevice->CreateTexture2D(&descDepth, nullptr, &g_pDepthStencilBuffer);
 
 	D3D11_DEPTH_STENCIL_VIEW_DESC descDSView;
 	ZeroMemory(&descDSView, sizeof(descDSView));
@@ -929,7 +929,7 @@ HRESULT InitDevice()
 
 	hr = g_pd3dDevice->CreateDepthStencilView(g_pDepthStencilBuffer, &descDSView, &g_pDepthStencilView);
 
-	hr = g_pd3dDevice->CreateRenderTargetView( pBackBuffer, NULL, &g_pRenderTargetView );
+	hr = g_pd3dDevice->CreateRenderTargetView( pBackBuffer, nullptr, &g_pRenderTargetView );
 	pBackBuffer->Release();
 	if( FAILED( hr ) )
 		return hr;
@@ -938,8 +938,8 @@ HRESULT InitDevice()
 
 	// Setup the viewport
 	D3D11_VIEWPORT vp;
-	vp.Width = (FLOAT)width;
-	vp.Height = (FLOAT)height;
+	vp.Width = static_cast<FLOAT>(width);
+	vp.Height = static_cast<FLOAT>(height);
 	vp.MinDepth = 0.0f;
 	vp.MaxDepth = 1.0f;
 	vp.TopLeftX = 0;
@@ -959,7 +959,7 @@ HRESULT InitDevice()
 void Render()
 {
 	// Just clear the backbuffer
-	float ClearColor[4] = { 0.0f, 0.125f, 0.3f, 1.0f }; //red,green,blue,alpha
+	const float ClearColor[4] = { 0.0f, 0.125f, 0.3f, 1.0f }; //red,green,blue,alpha
 
 	g_pImmediateContext->ClearRenderTargetView( g_pRenderTargetView, ClearColor );
 	g_pSwapChain->Present( 0, 0 );
@@ -1245,7 +1245,7 @@ postReset:
 //--------------------------------------------------------------------------------------
 void ToggleFullscreen()
 {
-	DWORD dwStyle = GetWindowLong(g_hWnd, GWL_STYLE);
+	const DWORD dwStyle = GetWindowLong(g_hWnd, GWL_STYLE);
 	if (!g_isFullscreen)
 	{
 		MONITORINFO mi = { sizeof(mi) };
@@ -1264,7 +1264,7 @@ void ToggleFullscreen()
 	{
 		SetWindowLong(g_hWnd, GWL_STYLE, dwStyle | WS_OVERLAPPEDWINDOW);
 		SetWindowPlacement(g_hWnd, &g_wpPrev);
-		SetWindowPos(g_hWnd, NULL, 0, 0, 0, 0,
+		SetWindowPos(g_hWnd, nullptr, 0, 0, 0, 0,
 			SWP_NOMOVE | SWP_NOSIZE | SWP_NOZORDER | SWP_NOOWNERZORDER | SWP_FRAMECHANGED);
 	}
 	g_isFullscreen = !g_isFullscreen;
@@ -1319,7 +1319,7 @@ static Minecraft* InitialiseMinecraftRuntime()
 
 	for (int i = 0; i < MINECRAFT_NET_MAX_PLAYERS; i++)
 	{
-		IQNet::m_player[i].m_smallId = (BYTE)i;
+		IQNet::m_player[i].m_smallId = static_cast<BYTE>(i);
 		IQNet::m_player[i].m_isRemote = false;
 		IQNet::m_player[i].m_isHostPlayer = (i == 0);
 		swprintf_s(IQNet::m_player[i].m_gamertag, 32, L"Player%d", i);
@@ -1341,8 +1341,8 @@ static Minecraft* InitialiseMinecraftRuntime()
 
 	Minecraft::main();
 	Minecraft* pMinecraft = Minecraft::GetInstance();
-	if (pMinecraft == NULL)
-		return NULL;
+	if (pMinecraft == nullptr)
+		return nullptr;
 
 	app.InitGameSettings();
 	app.InitialiseTips();
@@ -1374,7 +1374,7 @@ static int HeadlessServerConsoleThreadProc(void* lpParameter)
 			continue;
 
 		MinecraftServer* server = MinecraftServer::getInstance();
-		if (server != NULL)
+		if (server != nullptr)
 		{
 			server->handleConsoleInput(command, server);
 		}
@@ -1388,7 +1388,7 @@ static int RunHeadlessServer()
 	SetupHeadlessServerConsole();
 
 	Settings serverSettings(new File(L"server.properties"));
-	wstring configuredBindIp = serverSettings.getString(L"server-ip", L"");
+	const wstring configuredBindIp = serverSettings.getString(L"server-ip", L"");
 
 	const char* bindIp = "*";
 	if (g_Win64DedicatedServerBindIP[0] != 0)
@@ -1405,8 +1405,8 @@ static int RunHeadlessServer()
 	printf("Starting headless server on %s:%d\n", bindIp, port);
 	fflush(stdout);
 
-	Minecraft* pMinecraft = InitialiseMinecraftRuntime();
-	if (pMinecraft == NULL)
+	const Minecraft* pMinecraft = InitialiseMinecraftRuntime();
+	if (pMinecraft == nullptr)
 	{
 		fprintf(stderr, "Failed to initialise the Minecraft runtime.\n");
 		return 1;
@@ -1472,13 +1472,13 @@ static int RunHeadlessServer()
 	printf("Type 'help' for server commands.\n");
 	fflush(stdout);
 
-	C4JThread* consoleThread = new C4JThread(&HeadlessServerConsoleThreadProc, NULL, "Server console", 128 * 1024);
+	C4JThread* consoleThread = new C4JThread(&HeadlessServerConsoleThreadProc, nullptr, "Server console", 128 * 1024);
 	consoleThread->Run();
 
 	MSG msg = { 0 };
 	while (WM_QUIT != msg.message && !app.m_bShutdown && !MinecraftServer::serverHalted())
 	{
-		if (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE))
+		if (PeekMessage(&msg, nullptr, 0, 0, PM_REMOVE))
 		{
 			TranslateMessage(&msg);
 			DispatchMessage(&msg);
@@ -1516,7 +1516,7 @@ int APIENTRY _tWinMain(_In_ HINSTANCE hInstance,
 	// 4J-Win64: set CWD to exe dir so asset paths resolve correctly
 	{
 		char szExeDir[MAX_PATH] = {};
-		GetModuleFileNameA(NULL, szExeDir, MAX_PATH);
+		GetModuleFileNameA(nullptr, szExeDir, MAX_PATH);
 		char *pSlash = strrchr(szExeDir, '\\');
 		if (pSlash) { *(pSlash + 1) = '\0'; SetCurrentDirectoryA(szExeDir); }
 	}
@@ -1532,7 +1532,7 @@ int APIENTRY _tWinMain(_In_ HINSTANCE hInstance,
 
 	// Load username from username.txt
     char exePath[MAX_PATH] = {};
-    GetModuleFileNameA(NULL, exePath, MAX_PATH);
+    GetModuleFileNameA(nullptr, exePath, MAX_PATH);
     char *lastSlash = strrchr(exePath, '\\');
     if (lastSlash)
     {
@@ -1548,7 +1548,7 @@ int APIENTRY _tWinMain(_In_ HINSTANCE hInstance,
         char buf[128] = {};
         if (fgets(buf, sizeof(buf), f))
         {
-            int len = (int)strlen(buf);
+            int len = static_cast<int>(strlen(buf));
             while (len > 0 && (buf[len - 1] == '\n' || buf[len - 1] == '\r' || buf[len - 1] == ' '))
             {
                 buf[--len] = '\0';
@@ -1563,7 +1563,7 @@ int APIENTRY _tWinMain(_In_ HINSTANCE hInstance,
     }
 
 	// Load stuff from launch options, including username
-	Win64LaunchOptions launchOptions = ParseLaunchOptions();
+	const Win64LaunchOptions launchOptions = ParseLaunchOptions();
 	ApplyScreenMode(launchOptions.screenMode);
 
 	// Ensure uid.dat exists from startup in client mode (before any multiplayer/login path).
@@ -1672,7 +1672,7 @@ int APIENTRY _tWinMain(_In_ HINSTANCE hInstance,
 
 	if (launchOptions.serverMode)
 	{
-		int serverResult = RunHeadlessServer();
+		const int serverResult = RunHeadlessServer();
 		CleanupDevice();
 		return serverResult;
 	}
@@ -1682,7 +1682,7 @@ int APIENTRY _tWinMain(_In_ HINSTANCE hInstance,
 	MSG msg = {0};
 	while( WM_QUIT != msg.message )
 	{
-		if( PeekMessage( &msg, NULL, 0, 0, PM_REMOVE ) )
+		if( PeekMessage( &msg, nullptr, 0, 0, PM_REMOVE ) )
 		{
 			TranslateMessage( &msg );
 			DispatchMessage( &msg );
@@ -1730,7 +1730,7 @@ int APIENTRY _tWinMain(_In_ HINSTANCE hInstance,
 
 #endif
 	Minecraft *pMinecraft = InitialiseMinecraftRuntime();
-	if (pMinecraft == NULL)
+	if (pMinecraft == nullptr)
 	{
 		CleanupDevice();
 		return 1;
@@ -1767,7 +1767,7 @@ int APIENTRY _tWinMain(_In_ HINSTANCE hInstance,
 	{
 		g_KBMInput.Tick();
 
-		while( PeekMessage( &msg, NULL, 0, 0, PM_REMOVE ) )
+		while( PeekMessage( &msg, nullptr, 0, 0, PM_REMOVE ) )
 		{
 			TranslateMessage( &msg );
 			DispatchMessage( &msg );
@@ -1808,7 +1808,7 @@ int APIENTRY _tWinMain(_In_ HINSTANCE hInstance,
 		// Detect KBM vs controller input mode
 		if (InputManager.IsPadConnected(0))
 		{
-			bool controllerUsed = InputManager.ButtonPressed(0) ||
+			const bool controllerUsed = InputManager.ButtonPressed(0) ||
 				InputManager.GetJoypadStick_LX(0, false) != 0.0f ||
 				InputManager.GetJoypadStick_LY(0, false) != 0.0f ||
 				InputManager.GetJoypadStick_RX(0, false) != 0.0f ||
@@ -1870,7 +1870,7 @@ int APIENTRY _tWinMain(_In_ HINSTANCE hInstance,
 		else
 		{
 			MemSect(28);
-			pMinecraft->soundEngine->tick(NULL, 0.0f);
+			pMinecraft->soundEngine->tick(nullptr, 0.0f);
 			MemSect(0);
 			pMinecraft->textures->tick(true,false);
 			IntCache::Reset();
@@ -1967,7 +1967,7 @@ int APIENTRY _tWinMain(_In_ HINSTANCE hInstance,
 		// Update mouse grab: grab when in-game and no menu is open
 		{
 			static bool altToggleSuppressCapture = false;
-			bool shouldCapture = app.GetGameStarted() && !ui.GetMenuDisplayed(0) && pMinecraft->screen == NULL;
+			const bool shouldCapture = app.GetGameStarted() && !ui.GetMenuDisplayed(0) && pMinecraft->screen == nullptr;
 			// Left Alt key toggles capture on/off for debugging
 			if (g_KBMInput.IsKeyPressed(VK_LMENU) || g_KBMInput.IsKeyPressed(VK_RMENU))
 			{
@@ -1988,8 +1988,8 @@ int APIENTRY _tWinMain(_In_ HINSTANCE hInstance,
 		// F1 toggles the HUD
 		if (g_KBMInput.IsKeyPressed(VK_F1))
 		{
-			int primaryPad = ProfileManager.GetPrimaryPad();
-			unsigned char displayHud = app.GetGameSettings(primaryPad, eGameSetting_DisplayHUD);
+			const int primaryPad = ProfileManager.GetPrimaryPad();
+			const unsigned char displayHud = app.GetGameSettings(primaryPad, eGameSetting_DisplayHUD);
 			app.SetGameSettings(primaryPad, eGameSetting_DisplayHUD, displayHud ? 0 : 1);
 			app.SetGameSettings(primaryPad, eGameSetting_DisplayHand, displayHud ? 0 : 1);
 		}
@@ -1997,7 +1997,7 @@ int APIENTRY _tWinMain(_In_ HINSTANCE hInstance,
 		// F3 toggles onscreen debug info
 		if (g_KBMInput.IsKeyPressed(VK_F3))
 		{
-			if (Minecraft* pMinecraft = Minecraft::GetInstance())
+			if (const Minecraft* pMinecraft = Minecraft::GetInstance())
 			{
 				if (pMinecraft->options)
 				{

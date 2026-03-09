@@ -53,42 +53,42 @@ void UIAbstractBitmapFont::registerFont()
 
 IggyFontMetrics * RADLINK UIAbstractBitmapFont::GetFontMetrics_Callback(void *user_context,IggyFontMetrics *metrics)
 {
-	return ((UIAbstractBitmapFont *) user_context)->GetFontMetrics(metrics);
+	return static_cast<UIAbstractBitmapFont *>(user_context)->GetFontMetrics(metrics);
 }
 
 S32 RADLINK UIAbstractBitmapFont::GetCodepointGlyph_Callback(void *user_context,U32 codepoint)
 {
-	return ((UIAbstractBitmapFont *) user_context)->GetCodepointGlyph(codepoint);
+	return static_cast<UIAbstractBitmapFont *>(user_context)->GetCodepointGlyph(codepoint);
 }
 
 IggyGlyphMetrics * RADLINK UIAbstractBitmapFont::GetGlyphMetrics_Callback(void *user_context,S32 glyph,IggyGlyphMetrics *metrics)
 {
-	return ((UIAbstractBitmapFont *) user_context)->GetGlyphMetrics(glyph,metrics);
+	return static_cast<UIAbstractBitmapFont *>(user_context)->GetGlyphMetrics(glyph,metrics);
 }
 
 rrbool RADLINK UIAbstractBitmapFont::IsGlyphEmpty_Callback(void *user_context,S32 glyph)
 {
-	return ((UIAbstractBitmapFont *) user_context)->IsGlyphEmpty(glyph);
+	return static_cast<UIAbstractBitmapFont *>(user_context)->IsGlyphEmpty(glyph);
 }
 
 F32 RADLINK UIAbstractBitmapFont::GetKerningForGlyphPair_Callback(void *user_context,S32 first_glyph,S32 second_glyph)
 {
-	return ((UIAbstractBitmapFont *) user_context)->GetKerningForGlyphPair(first_glyph,second_glyph);
+	return static_cast<UIAbstractBitmapFont *>(user_context)->GetKerningForGlyphPair(first_glyph,second_glyph);
 }
 
 rrbool RADLINK UIAbstractBitmapFont::CanProvideBitmap_Callback(void *user_context,S32 glyph,F32 pixel_scale)
 {
-	return ((UIAbstractBitmapFont *) user_context)->CanProvideBitmap(glyph,pixel_scale);
+	return static_cast<UIAbstractBitmapFont *>(user_context)->CanProvideBitmap(glyph,pixel_scale);
 }
 
 rrbool RADLINK UIAbstractBitmapFont::GetGlyphBitmap_Callback(void *user_context,S32 glyph,F32 pixel_scale,IggyBitmapCharacter *bitmap)
 {
-	return ((UIAbstractBitmapFont *) user_context)->GetGlyphBitmap(glyph,pixel_scale,bitmap);
+	return static_cast<UIAbstractBitmapFont *>(user_context)->GetGlyphBitmap(glyph,pixel_scale,bitmap);
 }
 
 void RADLINK UIAbstractBitmapFont::FreeGlyphBitmap_Callback(void *user_context,S32 glyph,F32 pixel_scale,IggyBitmapCharacter *bitmap)
 {
-	return ((UIAbstractBitmapFont *) user_context)->FreeGlyphBitmap(glyph,pixel_scale,bitmap);
+	return static_cast<UIAbstractBitmapFont *>(user_context)->FreeGlyphBitmap(glyph,pixel_scale,bitmap);
 }
 
 UIBitmapFont::UIBitmapFont(	SFontData &sfontdata )
@@ -325,7 +325,7 @@ rrbool UIBitmapFont::GetGlyphBitmap(S32 glyph,F32 pixel_scale,IggyBitmapCharacte
 
 	// 4J-PB - this was chopping off the top of the characters, so accented ones were losing a couple of pixels at the top
 	// DaveK has reduced the height of the accented capitalised characters, and we've dropped this from 0.65 to 0.64 
-	bitmap->top_left_y = -((S32) m_cFontData->getFontData()->m_uiGlyphHeight) * m_cFontData->getFontData()->m_fAscent;
+	bitmap->top_left_y = -static_cast<S32>(m_cFontData->getFontData()->m_uiGlyphHeight) * m_cFontData->getFontData()->m_fAscent;
 
 	bitmap->oversample = 0;
 
@@ -385,7 +385,7 @@ rrbool UIBitmapFont::GetGlyphBitmap(S32 glyph,F32 pixel_scale,IggyBitmapCharacte
 	bitmap->stride_in_bytes = m_cFontData->getFontData()->m_uiGlyphMapX;
 
 	// 4J-JEV: Additional information needed to release memory afterwards.
-	bitmap->user_context_for_free = NULL;
+	bitmap->user_context_for_free = nullptr;
 
 	return true;
 }

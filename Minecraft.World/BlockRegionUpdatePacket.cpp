@@ -105,6 +105,12 @@ void BlockRegionUpdatePacket::read(DataInputStream *dis) //throws IOException
 	levelIdx = ( size >> 30 ) & 3;
 	size &= 0x3fffffff;
 
+	const int MAX_COMPRESSED_CHUNK_SIZE = 5 * 1024 * 1024;
+    if (size < 0 || size > MAX_COMPRESSED_CHUNK_SIZE)
+    {
+        size = 0;
+    }
+
 	if(size == 0)
 	{
 		buffer = byteArray();

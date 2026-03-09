@@ -7,7 +7,7 @@
 #include "TextureManager.h"
 #include "..\Minecraft.World\StringHelpers.h"
 
-TextureManager *TextureManager::instance = NULL;
+TextureManager *TextureManager::instance = nullptr;
 
 void TextureManager::createInstance()
 {
@@ -36,7 +36,7 @@ Texture *TextureManager::getTexture(const wstring &name)
 		return idToTextureMap.find(stringToIDMap.find(name)->second)->second;
 	}
 
-	return NULL;
+	return nullptr;
 }
 
 void TextureManager::registerName(const wstring &name, Texture *texture)
@@ -136,7 +136,7 @@ vector<Texture *> *TextureManager::createTextures(const wstring &filename, bool 
 		for (int i = 0; i < frameCount; i++)
 		{
 			BufferedImage *subImage = image->getSubimage(0, frameHeight * i, frameWidth, frameHeight);
-			Texture *texture = createTexture(texName, mode, frameWidth, frameHeight, clamp, format, minFilter, magFilter, mipmap || image->getData(1) != NULL, subImage);
+			Texture *texture = createTexture(texName, mode, frameWidth, frameHeight, clamp, format, minFilter, magFilter, mipmap || image->getData(1) != nullptr, subImage);
 			delete subImage;
 			result->push_back(texture);
 		}
@@ -146,7 +146,7 @@ vector<Texture *> *TextureManager::createTextures(const wstring &filename, bool 
 		// TODO: Remove this hack -- fix proper rotation support (needed for 'off-aspect textures')
 		if (width == height)
 		{
-			result->push_back(createTexture(texName, mode, width, height, clamp, format, minFilter, magFilter, mipmap || image->getData(1) != NULL, image));
+			result->push_back(createTexture(texName, mode, width, height, clamp, format, minFilter, magFilter, mipmap || image->getData(1) != nullptr, image));
 		}
 		else
 		{
@@ -191,6 +191,6 @@ Texture *TextureManager::createTexture(const wstring &name, int mode, int width,
 Texture *TextureManager::createTexture(const wstring &name, int mode, int width, int height, int format, bool mipmap)
 {
 	// 4J Stu - Don't clamp as it causes issues with how we signal non-mipmmapped textures to the pixel shader
-	//return createTexture(name, mode, width, height, Texture::WM_CLAMP, format, Texture::TFLT_NEAREST, Texture::TFLT_NEAREST, mipmap, NULL);
-	return createTexture(name, mode, width, height, Texture::WM_WRAP, format, Texture::TFLT_NEAREST, Texture::TFLT_NEAREST, mipmap, NULL);
+	//return createTexture(name, mode, width, height, Texture::WM_CLAMP, format, Texture::TFLT_NEAREST, Texture::TFLT_NEAREST, mipmap, nullptr);
+	return createTexture(name, mode, width, height, Texture::WM_WRAP, format, Texture::TFLT_NEAREST, Texture::TFLT_NEAREST, mipmap, nullptr);
 }

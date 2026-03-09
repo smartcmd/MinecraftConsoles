@@ -29,7 +29,7 @@ UIScene_SettingsOptionsMenu::UIScene_SettingsOptionsMenu(int iPad, void *initDat
 	// Setup all the Iggy references we need for this scene
 	initialiseMovie();
 	
-	m_bNotInGame=(Minecraft::GetInstance()->level==NULL);
+	m_bNotInGame=(Minecraft::GetInstance()->level==nullptr);
 
 	m_checkboxViewBob.init(IDS_VIEW_BOBBING,eControl_ViewBob,(app.GetGameSettings(m_iPad,eGameSetting_ViewBob)!=0));
 	m_checkboxShowHints.init(IDS_HINTS,eControl_ShowHints,(app.GetGameSettings(m_iPad,eGameSetting_Hints)!=0));
@@ -99,7 +99,7 @@ UIScene_SettingsOptionsMenu::UIScene_SettingsOptionsMenu(int iPad, void *initDat
 	bool bRemoveAutosave=false;
 	bool bRemoveInGameGamertags=false;
 	
-	bool bNotInGame=(Minecraft::GetInstance()->level==NULL);
+	bool bNotInGame=(Minecraft::GetInstance()->level==nullptr);
 	bool bPrimaryPlayer = ProfileManager.GetPrimaryPad()==m_iPad;
 	if(!bPrimaryPlayer)
 	{
@@ -196,7 +196,7 @@ void UIScene_SettingsOptionsMenu::updateTooltips()
 
 void UIScene_SettingsOptionsMenu::updateComponents()
 {
-	bool bNotInGame=(Minecraft::GetInstance()->level==NULL);
+	bool bNotInGame=(Minecraft::GetInstance()->level==nullptr);
 	if(bNotInGame)
 	{
 		m_parentLayer->showComponent(m_iPad,eUIComponent_Panorama,true);
@@ -243,7 +243,7 @@ void UIScene_SettingsOptionsMenu::handlePress(F64 controlId, F64 childId)
 	//CD - Added for audio
 	ui.PlayUISFX(eSFX_Press);
 
-	switch((int)controlId)
+	switch(static_cast<int>(controlId))
 	{
 	case eControl_Languages:
 		m_bNavigateToLanguageSelector = true;
@@ -324,7 +324,7 @@ void UIScene_SettingsOptionsMenu::handleReload()
 	bool bRemoveAutosave=false;
 	bool bRemoveInGameGamertags=false;
 	
-	bool bNotInGame=(Minecraft::GetInstance()->level==NULL);
+	bool bNotInGame=(Minecraft::GetInstance()->level==nullptr);
 	bool bPrimaryPlayer = ProfileManager.GetPrimaryPad()==m_iPad;
 	if(!bPrimaryPlayer)
 	{
@@ -378,8 +378,8 @@ void UIScene_SettingsOptionsMenu::handleReload()
 
 void UIScene_SettingsOptionsMenu::handleSliderMove(F64 sliderId, F64 currentValue)
 {
-	int value = (int)currentValue;
-	switch((int)sliderId)
+	int value = static_cast<int>(currentValue);
+	switch(static_cast<int>(sliderId))
 	{
 	case eControl_Autosave:
 		m_sliderAutosave.handleSliderMove(value);

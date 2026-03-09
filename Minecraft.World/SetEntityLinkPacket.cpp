@@ -18,7 +18,7 @@ SetEntityLinkPacket::SetEntityLinkPacket(int linkType, shared_ptr<Entity> source
 {
 	type = linkType;
 	this->sourceId = sourceEntity->entityId;
-	this->destId = destEntity != NULL ? destEntity->entityId : -1;
+	this->destId = destEntity != nullptr ? destEntity->entityId : -1;
 }
 
 int SetEntityLinkPacket::getEstimatedSize() 

@@ -91,13 +91,13 @@ DWORD Level::tlsIdxLightCache = TlsAlloc();
 void Level::enableLightingCache()
 {
 	// Allocate 16K (needs 32K for large worlds) for a 16x16x16x4 byte cache of results, plus 128K required for toCheck array. Rounding up to 256 to keep as multiple of alignement - aligning to 128K boundary for possible cache locking.
-	void *cache = (unsigned char *)XPhysicalAlloc(256 * 1024, MAXULONG_PTR, 128 * 1024, PAGE_READWRITE | MEM_LARGE_PAGES);
+	void *cache = static_cast<unsigned char *>(XPhysicalAlloc(256 * 1024, MAXULONG_PTR, 128 * 1024, PAGE_READWRITE | MEM_LARGE_PAGES));
 	TlsSetValue(tlsIdxLightCache,cache);
 }
 
 void Level::destroyLightingCache()
 {
-	lightCache_t *cache = (lightCache_t *)TlsGetValue(tlsIdxLightCache);
+	lightCache_t *cache = static_cast<lightCache_t *>(TlsGetValue(tlsIdxLightCache));
 	XPhysicalFree(cache);
 }
 
@@ -109,7 +109,7 @@ inline int GetIndex(int x, int y, int z)
 void Level::initCachePartial(lightCache_t *cache, int xc, int yc, int zc)
 {
 	cachewritten = false;
-	if( cache == NULL ) return;
+	if( cache == nullptr ) return;
 
 	int idx;
 	if( !(yc & 0xffffff00) )
@@ -180,7 +180,7 @@ void Level::initCacheComplete(lightCache_t *cache, int xc, int yc, int zc)
 // Set a brightness value, going through the cache if  enabled for this thread
 void inline Level::setBrightnessCached(lightCache_t *cache, uint64_t *cacheUse, LightLayer::variety layer, int x, int y, int z, int brightness)
 {
-	if( cache == NULL )
+	if( cache == nullptr )
 	{
 		setBrightness(layer, x, y, z, brightness, true);
 		return;
@@ -195,8 +195,8 @@ void inline Level::setBrightnessCached(lightCache_t *cache, uint64_t *cacheUse, 
 		( ( z & 0x3f0 ) >> 4 );
 #ifdef _LARGE_WORLDS
 	// Add in the higher bits for x and z
-	posbits |=  ( ( ((uint64_t)x) & 0x3FFFC00L) << 38) |
-		( ( ((uint64_t)z) & 0x3FFFC00L) << 22);
+	posbits |=  ( ( static_cast<uint64_t>(x) & 0x3FFFC00L) << 38) |
+		( ( static_cast<uint64_t>(z) & 0x3FFFC00L) << 22);
 #endif
 
 	lightCache_t cacheValue = cache[idx];
@@ -243,7 +243,7 @@ void inline Level::setBrightnessCached(lightCache_t *cache, uint64_t *cacheUse, 
 // Get a brightness value, going through the cache if  enabled for this thread
 inline int Level::getBrightnessCached(lightCache_t *cache, LightLayer::variety layer, int x, int y, int z)
 {
-	if( cache == NULL ) return getBrightness(layer, x, y, z);
+	if( cache == nullptr ) return getBrightness(layer, x, y, z);
 	if( y & 0xffffff00 ) return getBrightness(layer, x, y, z);		// Fall back on original method for out-of-bounds y
 
 	int idx = ( ( x & 15 ) << 8 ) |
@@ -253,9 +253,8 @@ inline int Level::getBrightnessCached(lightCache_t *cache, LightLayer::variety l
 		( ( y & 0x0f0 ) << 2 ) |
 		( ( z & 0x3f0 ) >> 4 );
 #ifdef _LARGE_WORLDS
-	// Add in the higher bits for x and z
-	posbits |=  ( ( ((uint64_t)x) & 0x3FFFC00L) << 38) |
-		( ( ((uint64_t)z) & 0x3FFFC00L) << 22);
+	posbits |=  ( ( static_cast<uint64_t>(x) & 0x3FFFC00L) << 38) |
+		( ( static_cast<uint64_t>(z) & 0x3FFFC00L) << 22);
 #endif
 
 	lightCache_t cacheValue = cache[idx];
@@ -311,7 +310,7 @@ inline int Level::getBrightnessCached(lightCache_t *cache, LightLayer::variety l
 // Get a block emission value, going through the cache if  enabled for this thread
 inline int Level::getEmissionCached(lightCache_t *cache, int ct, int x, int y, int z)
 {
-	if( cache == NULL )	return Tile::lightEmission[ct];
+	if( cache == nullptr )	return Tile::lightEmission[ct];
 
 	int idx = ( ( x & 15 ) << 8 ) |
 		( ( y & 15 ) << 4 ) |
@@ -321,8 +320,8 @@ inline int Level::getEmissionCached(lightCache_t *cache, int ct, int x, int y, i
 		( ( z & 0x3f0 ) >> 4 );
 #ifdef _LARGE_WORLDS
 	// Add in the higher bits for x and z
-	posbits |=  ( ( ((uint64_t)x) & 0x3FFFC00) << 38) |
-		( ( ((uint64_t)z) & 0x3FFFC00) << 22);
+	posbits |=  ( ( static_cast<uint64_t>(x) & 0x3FFFC00) << 38) |
+		( ( static_cast<uint64_t>(z) & 0x3FFFC00) << 22);
 #endif
 
 	lightCache_t cacheValue = cache[idx];
@@ -382,7 +381,7 @@ inline int Level::getEmissionCached(lightCache_t *cache, int ct, int x, int y, i
 // Get a tile light blocking value, going through cache if enabled for this thread
 inline int Level::getBlockingCached(lightCache_t *cache, LightLayer::variety layer, int *ct, int x, int y, int z)
 {
-	if( cache == NULL )
+	if( cache == nullptr )
 	{
 		int t = getTile(x,y,z);
 		if(ct) 	*ct = t;
@@ -397,8 +396,8 @@ inline int Level::getBlockingCached(lightCache_t *cache, LightLayer::variety lay
 		( ( z & 0x3f0 ) >> 4 );
 #ifdef _LARGE_WORLDS
 	// Add in the higher bits for x and z
-	posbits |=  ( ( ((uint64_t)x) & 0x3FFFC00L) << 38) |
-		( ( ((uint64_t)z) & 0x3FFFC00L) << 22);
+	posbits |=  ( ( static_cast<uint64_t>(x) & 0x3FFFC00L) << 38) |
+		( ( static_cast<uint64_t>(z) & 0x3FFFC00L) << 22);
 #endif
 
 	lightCache_t cacheValue = cache[idx];
@@ -561,17 +560,17 @@ void Level::_init()
 	random = new Random();
 	isNew = false;
 
-	dimension = NULL;
+	dimension = nullptr;
 
-	chunkSource = NULL;
+	chunkSource = nullptr;
 
 	levelStorage = nullptr;
 
-	levelData = NULL;
+	levelData = nullptr;
 
 	isFindingSpawn = false;
 
-	savedDataStorage = NULL;
+	savedDataStorage = nullptr;
 
 	spawnEnemies = true;
 
@@ -604,9 +603,9 @@ Biome *Level::getBiome(int x, int z)
 	if (hasChunkAt(x, 0, z))
 	{
 		LevelChunk *lc = getChunkAt(x, z);
-		if (lc != NULL)
+		if (lc != nullptr)
 		{
-			// Water chunks at the edge of the world return NULL for their biome as they can't store it, so should fall back on the normal method below
+			// Water chunks at the edge of the world return nullptr for their biome as they can't store it, so should fall back on the normal method below
 			Biome *biome = lc->getBiome(x & 0xf, z & 0xf, dimension->biomeSource);
 			if( biome ) return biome;
 		}
@@ -630,9 +629,9 @@ Level::Level(shared_ptr<LevelStorage> levelStorage, const wstring& name, Dimensi
 	savedDataStorage = new SavedDataStorage(levelStorage.get());
 
 	shared_ptr<Villages> savedVillages = dynamic_pointer_cast<Villages>(savedDataStorage->get(typeid(Villages), Villages::VILLAGE_FILE_ID));
-	if (savedVillages == NULL)
+	if (savedVillages == nullptr)
 	{
-		villages = shared_ptr<Villages>(new Villages(this));
+		villages = std::make_shared<Villages>(this);
 		savedDataStorage->set(Villages::VILLAGE_FILE_ID, villages);
 	}
 	else
@@ -642,7 +641,7 @@ Level::Level(shared_ptr<LevelStorage> levelStorage, const wstring& name, Dimensi
 	}
 
 	dimension->init(this);
-	chunkSource = NULL;	// 4J - added flag so chunk source can be called from derived class instead
+	chunkSource = nullptr;	// 4J - added flag so chunk source can be called from derived class instead
 
 	updateSkyBrightness();
 	prepareWeather();
@@ -651,7 +650,7 @@ Level::Level(shared_ptr<LevelStorage> levelStorage, const wstring& name, Dimensi
 Level::Level(shared_ptr<LevelStorage>levelStorage, const wstring& levelName, LevelSettings *levelSettings)
 	: seaLevel( constSeaLevel )
 {
-	_init(levelStorage, levelName, levelSettings, NULL, true);
+	_init(levelStorage, levelName, levelSettings, nullptr, true);
 }
 
 
@@ -668,9 +667,9 @@ void Level::_init(shared_ptr<LevelStorage>levelStorage, const wstring& levelName
 	savedDataStorage = new SavedDataStorage(levelStorage.get());
 
 	shared_ptr<Villages> savedVillages = dynamic_pointer_cast<Villages>(savedDataStorage->get(typeid(Villages), Villages::VILLAGE_FILE_ID));
-	if (savedVillages == NULL)
+	if (savedVillages == nullptr)
 	{
-		villages = shared_ptr<Villages>(new Villages(this));
+		villages = std::make_shared<Villages>(this);
 		savedDataStorage->set(Villages::VILLAGE_FILE_ID, villages);
 	}
 	else
@@ -680,14 +679,14 @@ void Level::_init(shared_ptr<LevelStorage>levelStorage, const wstring& levelName
 	}
 
 	levelData = levelStorage->prepareLevel();
-	isNew = levelData == NULL;
+	isNew = levelData == nullptr;
 
-	if (fixedDimension != NULL)
+	if (fixedDimension != nullptr)
 	{
 		dimension = fixedDimension;
 	}
 	// 4J Remove TU9 as getDimensions was never accurate. This path was never used anyway as we always set fixedDimension
-	//else if (levelData != NULL && levelData->getDimension() != 0)
+	//else if (levelData != nullptr && levelData->getDimension() != 0)
 	//{
 	//	dimension = Dimension::getNew(levelData->getDimension());
 	//}
@@ -696,7 +695,7 @@ void Level::_init(shared_ptr<LevelStorage>levelStorage, const wstring& levelName
 		dimension = Dimension::getNew(0);
 	}
 
-	if (levelData == NULL)
+	if (levelData == nullptr)
 	{
 		levelData = new LevelData(levelSettings, levelName);
 	}
@@ -708,7 +707,7 @@ void Level::_init(shared_ptr<LevelStorage>levelStorage, const wstring& levelName
 
 	((Dimension *) dimension)->init( this );
 
-	chunkSource = doCreateChunkSource ? createChunkSource() : NULL;	// 4J - added flag so chunk source can be called from derived class instead
+	chunkSource = doCreateChunkSource ? createChunkSource() : nullptr;	// 4J - added flag so chunk source can be called from derived class instead
 
 	// 4J Stu- Moved to derived classes
 	//if (!levelData->isInitialized())
@@ -740,7 +739,7 @@ Level::~Level()
 	DeleteCriticalSection(&m_checkLightCS);
 
 	// 4J-PB - savedDataStorage is shared between overworld and nether levels in the server, so it will already have been deleted on the first level delete
-	if(savedDataStorage!=NULL) delete savedDataStorage;
+	if(savedDataStorage!=nullptr) delete savedDataStorage;
 
 	DeleteCriticalSection(&m_entitiesCS);
 	DeleteCriticalSection(&m_tileEntityListCS);
@@ -807,7 +806,7 @@ bool Level::isEmptyTile(int x, int y, int z)
 bool Level::isEntityTile(int x, int y, int z)
 {
 	int t = getTile(x, y, z);
-	if (Tile::tiles[t] != NULL && Tile::tiles[t]->isEntityTile())
+	if (Tile::tiles[t] != nullptr && Tile::tiles[t]->isEntityTile())
 	{
 		return true;
 	}
@@ -817,7 +816,7 @@ bool Level::isEntityTile(int x, int y, int z)
 int Level::getTileRenderShape(int x, int y, int z)
 {
 	int t = getTile(x, y, z);
-	if (Tile::tiles[t] != NULL)
+	if (Tile::tiles[t] != nullptr)
 	{
 		return Tile::tiles[t]->getRenderShape();
 	}
@@ -827,7 +826,7 @@ int Level::getTileRenderShape(int x, int y, int z)
 // 4J Added to slightly optimise and avoid getTile call if we already know the tile
 int Level::getTileRenderShape(int t)
 {
-	if (Tile::tiles[t] != NULL)
+	if (Tile::tiles[t] != nullptr)
 	{
 		return Tile::tiles[t]->getRenderShape();
 	}
@@ -954,7 +953,7 @@ bool Level::setTileAndData(int x, int y, int z, int tile, int data, int updateFl
 		{
 			tileUpdated(x, y, z, oldTile);
 			Tile *tobj = Tile::tiles[tile];
-			if (tobj != NULL && tobj->hasAnalogOutputSignal()) updateNeighbourForOutputSignal(x, y, z, tile);
+			if (tobj != nullptr && tobj->hasAnalogOutputSignal()) updateNeighbourForOutputSignal(x, y, z, tile);
 		}
 	}
 	return result;
@@ -1011,7 +1010,7 @@ bool Level::setData(int x, int y, int z, int data, int updateFlags, bool forceUp
 		{
 			tileUpdated(x, y, z, tile);
 			Tile *tobj = Tile::tiles[tile];
-			if (tobj != NULL && tobj->hasAnalogOutputSignal()) updateNeighbourForOutputSignal(x, y, z, tile);
+			if (tobj != nullptr && tobj->hasAnalogOutputSignal()) updateNeighbourForOutputSignal(x, y, z, tile);
 		}
 	}
 	return result;
@@ -1145,7 +1144,7 @@ void Level::neighborChanged(int x, int y, int z, int type)
 	int id = getTile(x, y, z);
 	Tile *tile = Tile::tiles[id];
 
-	if (tile != NULL)
+	if (tile != nullptr)
 	{
 		tile->neighborChanged(this, x, y, z, type);
 	}
@@ -1336,7 +1335,7 @@ int Level::getBrightness(LightLayer::variety layer, int x, int y, int z)
 	int idx = ix * chunkSourceXZSize + iz;
 	LevelChunk *c = chunkSourceCache[idx];
 
-	if( c == NULL ) return (int)layer;
+	if( c == nullptr ) return (int)layer;
 
 	if (y < 0) y = 0;
 	if (y >= maxBuildHeight) y = maxBuildHeight - 1;
@@ -1377,7 +1376,7 @@ void Level::getNeighbourBrightnesses(int *brightnesses, LightLayer::variety laye
 		{
 			for( int i = 0; i < 6; i++ )
 			{
-				brightnesses[i] = (int)layer;
+				brightnesses[i] = static_cast<int>(layer);
 			}
 			return;
 		}
@@ -1388,11 +1387,11 @@ void Level::getNeighbourBrightnesses(int *brightnesses, LightLayer::variety laye
 		// 4J Stu - The java LightLayer was an enum class type with a member "surrounding" which is what we
 		// were returning here. Surrounding has the same value as the enum value in our C++ code, so just cast
 		// it to an int
-		if( c == NULL )
+		if( c == nullptr )
 		{
 			for( int i = 0; i < 6; i++ )
 			{
-				brightnesses[i] = (int)layer;
+				brightnesses[i] = static_cast<int>(layer);
 			}
 			return;
 		}
@@ -1497,8 +1496,8 @@ HitResult *Level::clip(Vec3 *a, Vec3 *b, bool liquid)
 
 HitResult *Level::clip(Vec3 *a, Vec3 *b, bool liquid, bool solidOnly)
 {
-	if (Double::isNaN(a->x) || Double::isNaN(a->y) || Double::isNaN(a->z)) return NULL;
-	if (Double::isNaN(b->x) || Double::isNaN(b->y) || Double::isNaN(b->z)) return NULL;
+	if (Double::isNaN(a->x) || Double::isNaN(a->y) || Double::isNaN(a->z)) return nullptr;
+	if (Double::isNaN(b->x) || Double::isNaN(b->y) || Double::isNaN(b->z)) return nullptr;
 
 	int xTile1 = Mth::floor(b->x);
 	int yTile1 = Mth::floor(b->y);
@@ -1512,7 +1511,7 @@ HitResult *Level::clip(Vec3 *a, Vec3 *b, bool liquid, bool solidOnly)
 		int t = getTile(xTile0, yTile0, zTile0);
 		int data = getData(xTile0, yTile0, zTile0);
 		Tile *tile = Tile::tiles[t];
-		if (solidOnly && tile != NULL && tile->getAABB(this, xTile0, yTile0, zTile0) == NULL)
+		if (solidOnly && tile != nullptr && tile->getAABB(this, xTile0, yTile0, zTile0) == nullptr)
 		{
 			// No collision
 
@@ -1520,15 +1519,15 @@ HitResult *Level::clip(Vec3 *a, Vec3 *b, bool liquid, bool solidOnly)
 		else if (t > 0 && tile->mayPick(data, liquid))
 		{
 			HitResult *r = tile->clip(this, xTile0, yTile0, zTile0, a, b);
-			if (r != NULL) return r;
+			if (r != nullptr) return r;
 		}
 	}
 
 	int maxIterations = 200;
 	while (maxIterations-- >= 0)
 	{
-		if (Double::isNaN(a->x) || Double::isNaN(a->y) || Double::isNaN(a->z)) return NULL;
-		if (xTile0 == xTile1 && yTile0 == yTile1 && zTile0 == zTile1) return NULL;
+		if (Double::isNaN(a->x) || Double::isNaN(a->y) || Double::isNaN(a->z)) return nullptr;
+		if (xTile0 == xTile1 && yTile0 == yTile1 && zTile0 == zTile1) return nullptr;
 
 		bool xClipped = true;
 		bool yClipped = true;
@@ -1592,19 +1591,19 @@ HitResult *Level::clip(Vec3 *a, Vec3 *b, bool liquid, bool solidOnly)
 		}
 
 		Vec3 *tPos = Vec3::newTemp(a->x, a->y, a->z);
-		xTile0 = (int) (tPos->x = floor(a->x));
+		xTile0 = static_cast<int>(tPos->x = floor(a->x));
 		if (face == 5)
 		{
 			xTile0--;
 			tPos->x++;
 		}
-		yTile0 = (int) (tPos->y = floor(a->y));
+		yTile0 = static_cast<int>(tPos->y = floor(a->y));
 		if (face == 1)
 		{
 			yTile0--;
 			tPos->y++;
 		}
-		zTile0 = (int) (tPos->z = floor(a->z));
+		zTile0 = static_cast<int>(tPos->z = floor(a->z));
 		if (face == 3)
 		{
 			zTile0--;
@@ -1614,7 +1613,7 @@ HitResult *Level::clip(Vec3 *a, Vec3 *b, bool liquid, bool solidOnly)
 		int t = getTile(xTile0, yTile0, zTile0);
 		int data = getData(xTile0, yTile0, zTile0);
 		Tile *tile = Tile::tiles[t];
-		if (solidOnly && tile != NULL && tile->getAABB(this, xTile0, yTile0, zTile0) == NULL)
+		if (solidOnly && tile != nullptr && tile->getAABB(this, xTile0, yTile0, zTile0) == nullptr)
 		{
 			// No collision
 
@@ -1622,16 +1621,16 @@ HitResult *Level::clip(Vec3 *a, Vec3 *b, bool liquid, bool solidOnly)
 		else if (t > 0 && tile->mayPick(data, liquid))
 		{
 			HitResult *r = tile->clip(this, xTile0, yTile0, zTile0, a, b);
-			if (r != NULL) return r;
+			if (r != nullptr) return r;
 		}
 	}
-	return NULL;
+	return nullptr;
 }
 
 
 void Level::playEntitySound(shared_ptr<Entity> entity, int iSound, float volume, float pitch)
 {
-	if(entity == NULL) return;
+	if(entity == nullptr) return;
 	for (auto& listener : listeners)
 	{
 		// 4J-PB - if the entity is a local player, don't play the sound
@@ -1650,7 +1649,7 @@ void Level::playEntitySound(shared_ptr<Entity> entity, int iSound, float volume,
 
 void Level::playPlayerSound(shared_ptr<Player> entity, int iSound, float volume, float pitch)
 {
-	if (entity == NULL) return;
+	if (entity == nullptr) return;
 	for (auto& listener : listeners)
 	{
 		listener->playSoundExceptPlayer(entity, iSound, entity->x, entity->y - entity->heightOffset, entity->z, volume, pitch);
@@ -1703,7 +1702,7 @@ bool Level::addEntity(shared_ptr<Entity> e)
 	int xc = Mth::floor(e->x / 16);
 	int zc = Mth::floor(e->z / 16);
 
-	if(e == NULL)
+	if(e == nullptr)
 	{
 		return false;
 	}
@@ -1892,7 +1891,7 @@ AABBList *Level::getCubes(shared_ptr<Entity> source, AABB *box, bool noEntities/
 					for (int y = y0 - 1; y < y1; y++)
 					{
 						Tile *tile = Tile::tiles[getTile(x, y, z)];
-						if (tile != NULL)
+						if (tile != nullptr)
 						{
 							tile->addAABBs(this, x, y, z, box, &boxes, source);
 						}
@@ -1938,13 +1937,13 @@ AABBList *Level::getCubes(shared_ptr<Entity> source, AABB *box, bool noEntities/
 		for (auto& it : *ee)
 		{
 			AABB *collideBox = it->getCollideBox();
-			if (collideBox != NULL && collideBox->intersects(box))
+			if (collideBox != nullptr && collideBox->intersects(box))
 			{
 				boxes.push_back(collideBox);
 			}
 
 			collideBox = source->getCollideAgainstBox(it);
-			if (collideBox != NULL && collideBox->intersects(box))
+			if (collideBox != nullptr && collideBox->intersects(box))
 			{
 				boxes.push_back(collideBox);
 			}
@@ -1975,7 +1974,7 @@ AABBList *Level::getTileCubes(AABB *box, bool blockAtEdge/* = false */)
 	//			{
 	//				Tile *tile = Tile::tiles[getTile(x, y, z)];
 
-	//				if (tile != NULL)
+	//				if (tile != nullptr)
 	//				{
 	//					tile->addAABBs(this, x, y, z, box, &boxes);
 	//				}
@@ -2001,7 +2000,7 @@ int Level::getOldSkyDarken(float a)
 	br *= 1 - (getRainLevel(a) * 5 / 16.0f);
 	br *= 1 - (getThunderLevel(a) * 5 / 16.0f);
 	br = 1 - br;
-	return ((int) (br * 11));
+	return static_cast<int>(br * 11);
 }
 
 //4J - change brought forward from 1.8.2
@@ -2087,7 +2086,7 @@ float Level::getTimeOfDay(float a)
 	* getTimeOfDay and changed it before releasing (without
 	* re-committing)... that should be the only difference // jeb
 	*/
-	/* if (this != NULL) return 0.5f; */
+	/* if (this != nullptr) return 0.5f; */
 
 	// 4J Added if so we can override timeOfDay without changing the time that affects ticking of things
 	return dimension->getTimeOfDay(levelData->getDayTime(), a);;
@@ -2303,7 +2302,7 @@ void Level::tickEntities()
 	{
 		shared_ptr<Entity> e = entities.at(i);
 
-		if (e->riding != NULL)
+		if (e->riding != nullptr)
 		{
 			if (e->riding->removed || e->riding->rider.lock() != e)
 			{
@@ -2381,7 +2380,7 @@ void Level::tickEntities()
 			if (hasChunk(te->x >> 4, te->z >> 4))
 			{
 				LevelChunk *lc = getChunk(te->x >> 4, te->z >> 4);
-				if (lc != NULL) lc->removeTileEntity(te->x & 15, te->y, te->z & 15);
+				if (lc != nullptr) lc->removeTileEntity(te->x & 15, te->y, te->z & 15);
 			}
 		}
 		else
@@ -2437,7 +2436,7 @@ void Level::tickEntities()
 				if (hasChunk(e->x >> 4, e->z >> 4))
 				{
 					LevelChunk *lc = getChunk(e->x >> 4, e->z >> 4);
-					if (lc != NULL) lc->setTileEntity(e->x & 15, e->y, e->z & 15, e);
+					if (lc != nullptr) lc->setTileEntity(e->x & 15, e->y, e->z & 15, e);
 				}
 
 				sendTileUpdated(e->x, e->y, e->z);
@@ -2503,7 +2502,7 @@ void Level::tick(shared_ptr<Entity> e, bool actual)
 #endif
 	{
 		e->tickCount++;
-		if (e->riding != NULL)
+		if (e->riding != nullptr)
 		{
 			e->rideTick();
 		}
@@ -2550,7 +2549,7 @@ void Level::tick(shared_ptr<Entity> e, bool actual)
 
 	if (actual && e->inChunk)
 	{
-		if (e->rider.lock() != NULL)
+		if (e->rider.lock() != nullptr)
 		{
 			if (e->rider.lock()->removed || e->rider.lock()->riding != e)
 			{
@@ -2600,7 +2599,7 @@ bool Level::containsAnyBlocks(AABB *box)
 			for (int z = z0; z < z1; z++)
 			{
 				Tile *tile = Tile::tiles[getTile(x, y, z)];
-				if (tile != NULL)
+				if (tile != nullptr)
 				{
 					return true;
 				}
@@ -2627,7 +2626,7 @@ bool Level::containsAnyLiquid(AABB *box)
 			for (int z = z0; z < z1; z++)
 			{
 				Tile *tile = Tile::tiles[getTile(x, y, z)];
-				if (tile != NULL && tile->material->isLiquid())
+				if (tile != nullptr && tile->material->isLiquid())
 				{
 					return true;
 				}
@@ -2657,7 +2656,7 @@ bool Level::containsAnyLiquid_NoLoad(AABB *box)
 			{
 				if( !hasChunkAt(x,y,z) ) return true;				// If we don't have it, it might be liquid...
 				Tile *tile = Tile::tiles[getTile(x, y, z)];
-				if (tile != NULL && tile->material->isLiquid())
+				if (tile != nullptr && tile->material->isLiquid())
 				{
 					return true;
 				}
@@ -2715,7 +2714,7 @@ bool Level::checkAndHandleWater(AABB *box, Material *material, shared_ptr<Entity
 			for (int z = z0; z < z1; z++)
 			{
 				Tile *tile = Tile::tiles[getTile(x, y, z)];
-				if (tile != NULL && tile->material == material)
+				if (tile != nullptr && tile->material == material)
 				{
 					double yt0 = y + 1 - LiquidTile::getHeight(getData(x, y, z));
 					if (y1 >= yt0)
@@ -2755,7 +2754,7 @@ bool Level::containsMaterial(AABB *box, Material *material)
 			for (int z = z0; z < z1; z++)
 			{
 				Tile *tile = Tile::tiles[getTile(x, y, z)];
-				if (tile != NULL && tile->material == material)
+				if (tile != nullptr && tile->material == material)
 				{
 					return true;
 				}
@@ -2782,7 +2781,7 @@ bool Level::containsLiquid(AABB *box, Material *material)
 			for (int z = z0; z < z1; z++)
 			{
 				Tile *tile = Tile::tiles[getTile(x, y, z)];
-				if (tile != NULL && tile->material == material)
+				if (tile != nullptr && tile->material == material)
 				{
 					int data = getData(x, y, z);
 					double yh1 = y + 1;
@@ -2810,7 +2809,7 @@ shared_ptr<Explosion> Level::explode(shared_ptr<Entity> source, double x, double
 
 shared_ptr<Explosion> Level::explode(shared_ptr<Entity> source, double x, double y, double z, float r, bool fire, bool destroyBlocks)
 {
-	shared_ptr<Explosion> explosion = shared_ptr<Explosion>( new Explosion(this, source, x, y, z, r) );
+	shared_ptr<Explosion> explosion = std::make_shared<Explosion>(this, source, x, y, z, r);
 	explosion->fire = fire;
 	explosion->destroyBlocks = destroyBlocks;
 	explosion->explode();
@@ -2834,12 +2833,12 @@ float Level::getSeenPercent(Vec3 *center, AABB *bb)
 				double y = bb->y0 + (bb->y1 - bb->y0) * yy;
 				double z = bb->z0 + (bb->z1 - bb->z0) * zz;
 				HitResult *res = clip(Vec3::newTemp(x, y, z), center);
-				if ( res == NULL) hits++;
+				if ( res == nullptr) hits++;
 				delete res;
 				count++;
 			}
 
-			return hits / (float) count;
+			return hits / static_cast<float>(count);
 }
 
 
@@ -2896,7 +2895,7 @@ shared_ptr<TileEntity> Level::getTileEntity(int x, int y, int z)
 	if (updatingTileEntities)
 	{
 		EnterCriticalSection(&m_tileEntityListCS);
-		for (int i = 0; i < pendingTileEntities.size(); i++)
+		for (size_t i = 0; i < pendingTileEntities.size(); i++)
 		{
 			shared_ptr<TileEntity> e = pendingTileEntities.at(i);
 			if (!e->isRemoved() && e->x == x && e->y == y && e->z == z)
@@ -2908,16 +2907,16 @@ shared_ptr<TileEntity> Level::getTileEntity(int x, int y, int z)
 		LeaveCriticalSection(&m_tileEntityListCS);
 	}
 
-	if (tileEntity == NULL)
+	if (tileEntity == nullptr)
 	{
 		LevelChunk *lc = getChunk(x >> 4, z >> 4);
-		if (lc != NULL)
+		if (lc != nullptr)
 		{
 			tileEntity = lc->getTileEntity(x & 15, y, z & 15);
 		}
 	}
 
-	if (tileEntity == NULL)
+	if (tileEntity == nullptr)
 	{
 		EnterCriticalSection(&m_tileEntityListCS);
 		for(auto& e : pendingTileEntities)
@@ -2936,7 +2935,7 @@ shared_ptr<TileEntity> Level::getTileEntity(int x, int y, int z)
 
 void Level::setTileEntity(int x, int y, int z, shared_ptr<TileEntity> tileEntity)
 {
-	if (tileEntity != NULL && !tileEntity->isRemoved())
+	if (tileEntity != nullptr && !tileEntity->isRemoved())
 	{
 		EnterCriticalSection(&m_tileEntityListCS);
 		if (updatingTileEntities)
@@ -2967,7 +2966,7 @@ void Level::setTileEntity(int x, int y, int z, shared_ptr<TileEntity> tileEntity
 			tileEntityList.push_back(tileEntity);
 
 			LevelChunk *lc = getChunk(x >> 4, z >> 4);
-			if (lc != NULL) lc->setTileEntity(x & 15, y, z & 15, tileEntity);
+			if (lc != nullptr) lc->setTileEntity(x & 15, y, z & 15, tileEntity);
 		}
 		LeaveCriticalSection(&m_tileEntityListCS);
 	}
@@ -2977,7 +2976,7 @@ void Level::removeTileEntity(int x, int y, int z)
 {
 	EnterCriticalSection(&m_tileEntityListCS);
 	shared_ptr<TileEntity> te = getTileEntity(x, y, z);
-	if (te != NULL && updatingTileEntities)
+	if (te != nullptr && updatingTileEntities)
 	{
 		te->setRemoved();
         auto it = find(pendingTileEntities.begin(), pendingTileEntities.end(), te);
@@ -2988,7 +2987,7 @@ void Level::removeTileEntity(int x, int y, int z)
 	}
 	else
 	{
-		if (te != NULL)
+		if (te != nullptr)
 		{
             auto it = find(pendingTileEntities.begin(), pendingTileEntities.end(), te);
             if( it != pendingTileEntities.end() )
@@ -3002,7 +3001,7 @@ void Level::removeTileEntity(int x, int y, int z)
 			}
 		}
 		LevelChunk *lc = getChunk(x >> 4, z >> 4);
-		if (lc != NULL) lc->removeTileEntity(x & 15, y, z & 15);
+		if (lc != nullptr) lc->removeTileEntity(x & 15, y, z & 15);
 	}
 	LeaveCriticalSection(&m_tileEntityListCS);
 }
@@ -3015,7 +3014,7 @@ void Level::markForRemoval(shared_ptr<TileEntity> entity)
 bool Level::isSolidRenderTile(int x, int y, int z)
 {
 	Tile *tile = Tile::tiles[getTile(x, y, z)];
-	if (tile == NULL) return false;
+	if (tile == nullptr) return false;
 
 	// 4J - addition here to make rendering big blocks of leaves more efficient. Normally leaves never consider themselves as solid, so
 	// blocks of leaves will have all sides of each block completely visible. Changing to consider as solid if this block is surrounded by
@@ -3031,7 +3030,7 @@ bool Level::isSolidRenderTile(int x, int y, int z)
 		for( int i = 0; i < 6; i++ )
 		{
 			int t = getTile(x + axo[i], y + ayo[i] , z + azo[i]);
-			if( ( t != Tile::leaves_Id ) && ( ( Tile::tiles[t] == NULL ) || !Tile::tiles[t]->isSolidRender() ) )
+			if( ( t != Tile::leaves_Id ) && ( ( Tile::tiles[t] == nullptr ) || !Tile::tiles[t]->isSolidRender() ) )
 			{
 				return false;
 			}
@@ -3061,25 +3060,25 @@ bool Level::isSolidBlockingTileInLoadedChunk(int x, int y, int z, bool valueIfNo
 		return valueIfNotLoaded;
 	}
 	LevelChunk *chunk = chunkSource->getChunk(x >> 4, z >> 4);
-	if (chunk == NULL || chunk->isEmpty())
+	if (chunk == nullptr || chunk->isEmpty())
 	{
 		return valueIfNotLoaded;
 	}
 
 	Tile *tile = Tile::tiles[getTile(x, y, z)];
-	if (tile == NULL) return false;
+	if (tile == nullptr) return false;
 	return tile->material->isSolidBlocking() && tile->isCubeShaped();
 }
 
 bool Level::isFullAABBTile(int x, int y, int z)
 {
 	int tile = getTile(x, y, z);
-	if (tile == 0 || Tile::tiles[tile] == NULL)
+	if (tile == 0 || Tile::tiles[tile] == nullptr)
 	{
 		return false;
 	}
 	AABB *aabb = Tile::tiles[tile]->getAABB(this, x, y, z);
-	return aabb != NULL && aabb->getSize() >= 1;
+	return aabb != nullptr && aabb->getSize() >= 1;
 }
 
 bool Level::isTopSolidBlocking(int x, int y, int z)
@@ -3091,19 +3090,19 @@ bool Level::isTopSolidBlocking(int x, int y, int z)
 
 bool Level::isTopSolidBlocking(Tile *tile, int data)
 {
-	if (tile == NULL) return false;
+	if (tile == nullptr) return false;
 
 	if (tile->material->isSolidBlocking() && tile->isCubeShaped()) return true;
-	if (dynamic_cast<StairTile *>(tile) != NULL)
+	if (dynamic_cast<StairTile *>(tile) != nullptr)
 	{
 		return (data & StairTile::UPSIDEDOWN_BIT) == StairTile::UPSIDEDOWN_BIT;
 	}
-	if (dynamic_cast<HalfSlabTile *>(tile) != NULL)
+	if (dynamic_cast<HalfSlabTile *>(tile) != nullptr)
 	{
 		return (data & HalfSlabTile::TOP_SLOT_BIT) == HalfSlabTile::TOP_SLOT_BIT;
 	}
-	if (dynamic_cast<HopperTile *>(tile) != NULL) return true;
-	if (dynamic_cast<TopSnowTile *>(tile) != NULL) return (data & TopSnowTile::HEIGHT_MASK) == TopSnowTile::MAX_HEIGHT + 1;
+	if (dynamic_cast<HopperTile *>(tile) != nullptr) return true;
+	if (dynamic_cast<TopSnowTile *>(tile) != nullptr) return (data & TopSnowTile::HEIGHT_MASK) == TopSnowTile::MAX_HEIGHT + 1;
 	return false;
 }
 
@@ -3258,7 +3257,7 @@ void Level::buildAndPrepareChunksToPoll()
 	// 4J - rewritten to add chunks interleaved by player, and to add them from the centre outwards. We're going to be
 	// potentially adding less creatures than the original so that our count stays consistent with number of players added, so
 	// we want to make sure as best we can that the ones we do add are near the active players
-	int playerCount = (int)players.size();
+	int playerCount = static_cast<int>(players.size());
 	int *xx = new int[playerCount];
 	int *zz = new int[playerCount];
 	for (size_t i = 0; i < playerCount; i++)
@@ -3320,7 +3319,7 @@ void Level::tickClientSideTiles(int xo, int zo, LevelChunk *lc)
 		if (id == 0 && this->getDaytimeRawBrightness(x, y, z) <= random->nextInt(8) && getBrightness(LightLayer::Sky, x, y, z) <= 0)
 		{
 			shared_ptr<Player> player = getNearestPlayer(x + 0.5, y + 0.5, z + 0.5, 8);
-			if (player != NULL && player->distanceToSqr(x + 0.5, y + 0.5, z + 0.5) > 2 * 2)
+			if (player != nullptr && player->distanceToSqr(x + 0.5, y + 0.5, z + 0.5) > 2 * 2)
 			{
 				// 4J-PB - Fixed issue with cave audio event having 2 sounds at 192k
 #ifdef _XBOX
@@ -3437,7 +3436,7 @@ int Level::getExpectedLight(lightCache_t *cache, int x, int y, int z, LightLayer
 // 4J - Made changes here so that lighting goes through a cache, if enabled for this thread
 void Level::checkLight(LightLayer::variety layer, int xc, int yc, int zc, bool force, bool rootOnlyEmissive)
 {
-	lightCache_t *cache = (lightCache_t *)TlsGetValue(tlsIdxLightCache);
+	lightCache_t *cache = static_cast<lightCache_t *>(TlsGetValue(tlsIdxLightCache));
 	uint64_t cacheUse = 0;
 
 	if( force )
@@ -3471,13 +3470,13 @@ void Level::checkLight(LightLayer::variety layer, int xc, int yc, int zc, bool f
 	// If we're in cached mode, then use memory allocated after the cached data itself for the toCheck array, in an attempt to make both that & the other cached data sit on the CPU L2 cache better.
 
 	int *toCheck;
-	if( cache == NULL )
+	if( cache == nullptr )
 	{
 		toCheck = toCheckLevel;
 	}
 	else
 	{
-		toCheck = (int *)(cache + (16*16*16));
+		toCheck = reinterpret_cast<int *>(cache + (16 * 16 * 16));
 	}
 
 	int checkedPosition = 0;
@@ -3551,7 +3550,7 @@ void Level::checkLight(LightLayer::variety layer, int xc, int yc, int zc, bool f
 									if( ( yy < 0 ) || ( yy >= maxBuildHeight ) ) continue;
 
 									// 4J - some changes here brought forward from 1.2.3
-									int block = max(1, getBlockingCached(cache, layer, NULL, xx, yy, zz) );
+									int block = max(1, getBlockingCached(cache, layer, nullptr, xx, yy, zz) );
 									current = getBrightnessCached(cache, layer, xx, yy, zz);
 									if ((current == expected - block) && (toCheckCount < (32 * 32 * 32))) // 4J - 32 * 32 * 32 was toCheck.length
 									{
@@ -3670,13 +3669,13 @@ bool Level::tickPendingTicks(bool force)
 
 vector<TickNextTickData> *Level::fetchTicksInChunk(LevelChunk *chunk, bool remove)
 {
-	return NULL;
+	return nullptr;
 }
 
 
 vector<shared_ptr<Entity> > *Level::getEntities(shared_ptr<Entity> except, AABB *bb)
 {
-	return getEntities(except, bb, NULL);
+	return getEntities(except, bb, nullptr);
 }
 
 vector<shared_ptr<Entity> > *Level::getEntities(shared_ptr<Entity> except, AABB *bb, const EntitySelector *selector)
@@ -3720,7 +3719,7 @@ vector<shared_ptr<Entity> > *Level::getEntities(shared_ptr<Entity> except, AABB 
 
 vector<shared_ptr<Entity> > *Level::getEntitiesOfClass(const type_info& baseClass, AABB *bb)
 {
-	return getEntitiesOfClass(baseClass, bb, NULL);
+	return getEntitiesOfClass(baseClass, bb, nullptr);
 }
 
 vector<shared_ptr<Entity> > *Level::getEntitiesOfClass(const type_info& baseClass, AABB *bb, const EntitySelector *selector)
@@ -3814,7 +3813,7 @@ unsigned int Level::countInstanceOf(BaseObject::Class *clas)
 
 // 4J - added - more limited (but faster) version of above, used to count water animals, animals, monsters for the mob spawner
 // singleType flag should be true if we are just trying to match eINSTANCEOF exactly, and false if it is a eINSTANCEOF from a group (eTYPE_WATERANIMAL, eTYPE_ANIMAL, eTYPE_MONSTER)
-unsigned int Level::countInstanceOf(eINSTANCEOF clas, bool singleType, unsigned int *protectedCount/* = NULL*/, unsigned int *couldWanderCount/* = NULL*/)
+unsigned int Level::countInstanceOf(eINSTANCEOF clas, bool singleType, unsigned int *protectedCount/* = nullptr*/, unsigned int *couldWanderCount/* = nullptr*/)
 {
 	unsigned int count = 0;
 	if( protectedCount ) *protectedCount = 0;
@@ -3932,16 +3931,16 @@ bool Level::mayPlace(int tileId, int x, int y, int z, bool ignoreEntities, int f
 	Tile *tile = Tile::tiles[tileId];
 
 	AABB *aabb = tile->getAABB(this, x, y, z);
-	if (ignoreEntities) aabb = NULL;
-	if (aabb != NULL && !isUnobstructed(aabb, ignoreEntity)) return false;
-	if (targetTile != NULL &&
+	if (ignoreEntities) aabb = nullptr;
+	if (aabb != nullptr && !isUnobstructed(aabb, ignoreEntity)) return false;
+	if (targetTile != nullptr &&
 		(targetTile == Tile::water || targetTile == Tile::calmWater || targetTile == Tile::lava ||
 		targetTile == Tile::calmLava || targetTile == Tile::fire || targetTile->material->isReplaceable()))
 	{
-		targetTile = NULL;
+		targetTile = nullptr;
 	}
-	if (targetTile != NULL && targetTile->material == Material::decoration && tile == Tile::anvil) return true;
-	if (tileId > 0 && targetTile == NULL)
+	if (targetTile != nullptr && targetTile->material == Material::decoration && tile == Tile::anvil) return true;
+	if (tileId > 0 && targetTile == nullptr)
 	{
 		if (tile->mayPlace(this, x, y, z, face, item))
 		{
@@ -3964,7 +3963,7 @@ Path *Level::findPath(shared_ptr<Entity> from, shared_ptr<Entity> to, float maxD
 	int y = Mth::floor(from->y + 1);
 	int z = Mth::floor(from->z);
 
-	int r = (int) (maxDist + 16);
+	int r = static_cast<int>(maxDist + 16);
 	int x1 = x - r;
 	int y1 = y - r;
 	int z1 = z - r;
@@ -3983,7 +3982,7 @@ Path *Level::findPath(shared_ptr<Entity> from, int xBest, int yBest, int zBest, 
 	int y = Mth::floor(from->y);
 	int z = Mth::floor(from->z);
 
-	int r = (int) (maxDist + 8);
+	int r = static_cast<int>(maxDist + 8);
 	int x1 = x - r;
 	int y1 = y - r;
 	int z1 = z - r;
@@ -4523,7 +4522,7 @@ int Level::getHeight()
 
 Tickable *Level::makeSoundUpdater(shared_ptr<Minecart> minecart)
 {
-	return NULL;
+	return nullptr;
 }
 
 Random *Level::getRandomFor(int x, int z, int blend)

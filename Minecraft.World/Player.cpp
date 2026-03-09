@@ -50,7 +50,7 @@ void Player::_init()
 	registerAttributes();
 	setHealth(getMaxHealth());
 
-	inventory = shared_ptr<Inventory>( new Inventory( this ) );
+	inventory = std::make_shared<Inventory>(this);
 
 	userType = 0;
 	oBob = bob = 0.0f;
@@ -64,17 +64,17 @@ void Player::_init()
 	customTextureUrl2 = L"";
 	m_uiPlayerCurrentSkin=0;
 
-	bedPosition = NULL;
+	bedPosition = nullptr;
 
 	sleepCounter = 0;
 	deathFadeCounter=0;
 
 	bedOffsetX = bedOffsetY = bedOffsetZ = 0.0f;
-	stats = NULL;
+	stats = nullptr;
 
-	respawnPosition = NULL;
+	respawnPosition = nullptr;
 	respawnForced = false;
-	minecartAchievementPos = NULL;
+	minecartAchievementPos = nullptr;
 
 	fishing = nullptr;
 
@@ -97,7 +97,7 @@ void Player::_init()
 
 	m_uiGamePrivileges = 0;
 
-	m_ppAdditionalModelParts=NULL;
+	m_ppAdditionalModelParts=nullptr;
 	m_bCheckedForModelParts=false;
 	m_bCheckedDLCForModelParts=false;
 
@@ -105,7 +105,7 @@ void Player::_init()
 	m_ePlayerNameValidState=ePlayerNameValid_NotSet;
 #endif
 
-	enderChestInventory = shared_ptr<PlayerEnderChestContainer>(new PlayerEnderChestContainer());
+	enderChestInventory = std::make_shared<PlayerEnderChestContainer>();
 
 	m_bAwardedOnARail=false;
 }
@@ -175,8 +175,8 @@ void Player::defineSynchedData()
 {
 	LivingEntity::defineSynchedData();
 
-	entityData->define(DATA_PLAYER_FLAGS_ID, (byte) 0);
-	entityData->define(DATA_PLAYER_ABSORPTION_ID, (float) 0);
+	entityData->define(DATA_PLAYER_FLAGS_ID, static_cast<byte>(0));
+	entityData->define(DATA_PLAYER_ABSORPTION_ID, static_cast<float>(0));
 	entityData->define(DATA_SCORE_ID, (int) 0);
 }
 
@@ -192,7 +192,7 @@ int Player::getUseItemDuration()
 
 bool Player::isUsingItem()
 {
-	return useItem != NULL;
+	return useItem != nullptr;
 }
 
 int Player::getTicksUsingItem()
@@ -206,7 +206,7 @@ int Player::getTicksUsingItem()
 
 void Player::releaseUsingItem()
 {
-	if (useItem != NULL)
+	if (useItem != nullptr)
 	{
 		useItem->releaseUsing(level, dynamic_pointer_cast<Player>( shared_from_this() ), useItemDuration);
 
@@ -237,13 +237,13 @@ bool Player::isBlocking()
 // 4J Stu - Added for things that should only be ticked once per simulation frame
 void Player::updateFrameTick()
 {
-	if (useItem != NULL)
+	if (useItem != nullptr)
 	{
 		shared_ptr<ItemInstance> item = inventory->getSelected();
 		// 4J Stu - Fix for #45508 - TU5: Gameplay: Eating one piece of food will result in a second piece being eaten as well
-		// Original code was item != useItem. Changed this now to use the equals function, and add the NULL check as well for the other possible not equals (useItem is not NULL if we are here)
+		// Original code was item != useItem. Changed this now to use the equals function, and add the nullptr check as well for the other possible not equals (useItem is not nullptr if we are here)
 		// This is because the useItem and item could be different objects due to an inventory update from the server, but still be the same item (with the same id,count and auxvalue)
-		if (item == NULL || !item->equals(useItem) )
+		if (item == nullptr || !item->equals(useItem) )
 		{
 			stopUsingItem();
 		}
@@ -316,7 +316,7 @@ void Player::tick()
 
 	if (!level->isClientSide)
 	{
-		if (containerMenu != NULL && !containerMenu->stillValid( dynamic_pointer_cast<Player>( shared_from_this() ) ))
+		if (containerMenu != nullptr && !containerMenu->stillValid( dynamic_pointer_cast<Player>( shared_from_this() ) ))
 		{
 			closeContainer();
 			containerMenu = inventoryMenu;
@@ -348,12 +348,12 @@ void Player::tick()
 	zCloak += zca * 0.25;
 	yCloak += yca * 0.25;
 
-	if (riding == NULL)
+	if (riding == nullptr)
 	{
-		if( minecartAchievementPos != NULL )
+		if( minecartAchievementPos != nullptr )
 		{
 			delete minecartAchievementPos;
-			minecartAchievementPos = NULL;
+			minecartAchievementPos = nullptr;
 		}
 	}
 
@@ -573,13 +573,13 @@ void Player::spawnEatParticles(shared_ptr<ItemInstance> useItem, int count)
 
 void Player::completeUsingItem()
 {
-	if (useItem != NULL)
+	if (useItem != nullptr)
 	{
 		spawnEatParticles(useItem, 16);
 
 		int oldCount = useItem->count;
 		shared_ptr<ItemInstance> itemInstance = useItem->useTimeDepleted(level, dynamic_pointer_cast<Player>(shared_from_this()));
-		if (itemInstance != useItem || (itemInstance != NULL && itemInstance->count != oldCount))
+		if (itemInstance != useItem || (itemInstance != nullptr && itemInstance->count != oldCount))
 		{
 			inventory->items[inventory->selected] = itemInstance;
 			if (itemInstance->count == 0)
@@ -615,11 +615,11 @@ void Player::closeContainer()
 
 void Player::ride(shared_ptr<Entity> e)
 {
-	if (riding != NULL && e == NULL)
+	if (riding != nullptr && e == nullptr)
 	{
 		if (!level->isClientSide) findStandUpPosition(riding);
 
-		if (riding != NULL)
+		if (riding != nullptr)
 		{
 			riding->rider = weak_ptr<Entity>();
 		}
@@ -657,13 +657,13 @@ void Player::setCustomSkin(DWORD skinId)
 		DWORD defaultSkinIndex = GET_DEFAULT_SKIN_ID_FROM_BITMASK(skinId);
 		if( ugcSkinIndex == 0 && defaultSkinIndex > 0 )
 		{
-			playerSkin = (EDefaultSkins) defaultSkinIndex;
+			playerSkin = static_cast<EDefaultSkins>(defaultSkinIndex);
 		}
 	}
 
 	if( playerSkin == eDefaultSkins_ServerSelected)
 	{
-		playerSkin = (EDefaultSkins)(m_playerIndex + 1);
+		playerSkin = static_cast<EDefaultSkins>(m_playerIndex + 1);
 	}
 
 	// We always set a default skin, since we may be waiting for the player's custom skin to be transmitted
@@ -675,7 +675,7 @@ void Player::setCustomSkin(DWORD skinId)
 	// set the new player additional boxes
 	/*vector<ModelPart *> *pvModelParts=app.GetAdditionalModelParts(m_dwSkinId);
 
-	if(pvModelParts==NULL)
+	if(pvModelParts==nullptr)
 	{
 	// we don't have the data from the dlc skin yet
 	app.DebugPrintf("Couldn't get model parts for skin %X\n",m_dwSkinId);
@@ -683,7 +683,7 @@ void Player::setCustomSkin(DWORD skinId)
 	// do we have it from the DLC pack?
 	DLCSkinFile *pDLCSkinFile = app.m_dlcManager.getSkinFile(this->customTextureUrl);
 
-	if(pDLCSkinFile!=NULL)
+	if(pDLCSkinFile!=nullptr)
 	{
 	DWORD dwBoxC=pDLCSkinFile->getAdditionalBoxesCount();
 	if(dwBoxC!=0)
@@ -694,13 +694,13 @@ void Player::setCustomSkin(DWORD skinId)
 	}
 	else
 	{
-	this->SetAdditionalModelParts(NULL);
+	this->SetAdditionalModelParts(nullptr);
 	}
 	app.SetAnimOverrideBitmask(pDLCSkinFile->getSkinID(),pDLCSkinFile->getAnimOverrideBitmask());
 	}
 	else
 	{
-	this->SetAdditionalModelParts(NULL);
+	this->SetAdditionalModelParts(nullptr);
 	}
 	}
 	else
@@ -713,7 +713,7 @@ void Player::setCustomSkin(DWORD skinId)
 	// reset the check for model parts
 	m_bCheckedForModelParts=false;
 	m_bCheckedDLCForModelParts=false;
-	this->SetAdditionalModelParts(NULL);
+	this->SetAdditionalModelParts(nullptr);
 
 
 }
@@ -964,7 +964,7 @@ void Player::rideTick()
 	checkRidingStatistiscs(x - preX, y - preY, z - preZ);
 
 	// riding can be set to null inside 'Entity::rideTick()'.
-	if ( riding != NULL	&& (riding->GetType() & eTYPE_PIG) == eTYPE_PIG )
+	if ( riding != nullptr	&& (riding->GetType() & eTYPE_PIG) == eTYPE_PIG )
 	{
 		// 4J Stu - I don't know why we would want to do this, but it means that the players head is locked in position and can't move around
 		//xRot = preXRot;
@@ -1018,9 +1018,9 @@ void Player::aiStep()
 		flyingSpeed += defaultFlySpeed * 0.3f;
 	}
 
-	setSpeed((float) speed->getValue());
+	setSpeed(static_cast<float>(speed->getValue()));
 
-	float tBob = (float) sqrt(xd * xd + zd * zd);
+	float tBob = static_cast<float>(sqrt(xd * xd + zd * zd));
 
 	// 4J added - we were getting a NaN with zero xd & zd
 	if(( xd * xd + zd * zd ) < 0.00001f )
@@ -1028,7 +1028,7 @@ void Player::aiStep()
 		tBob = 0.0f;
 	}
 
-	float tTilt = (float) atan(-yd * 0.2f) * 15.0f;
+	float tTilt = static_cast<float>(atan(-yd * 0.2f)) * 15.0f;
 	if (tBob > 0.1f) tBob = 0.1f;
 	if (!onGround || getHealth() <= 0) tBob = 0;
 	if (onGround || getHealth() <= 0) tTilt = 0;
@@ -1039,8 +1039,8 @@ void Player::aiStep()
 
 	if (getHealth() > 0)
 	{
-		AABB *pickupArea = NULL;
-		if (riding != NULL && !riding->removed)
+		AABB *pickupArea = nullptr;
+		if (riding != nullptr && !riding->removed)
 		{
 			// if the player is riding, also touch entities under the
 			// pig/horse
@@ -1052,7 +1052,7 @@ void Player::aiStep()
 		}
 
 		vector<shared_ptr<Entity> > *entities = level->getEntities(shared_from_this(), pickupArea);
-		if (entities != NULL)
+		if (entities != nullptr)
 		{
 			for (auto& e : *entities)
 			{
@@ -1097,14 +1097,14 @@ void Player::die(DamageSource *source)
 	// 4J - TODO need to use a xuid
 	if ( app.isXuidNotch( m_xuid ) )
 	{
-		drop(shared_ptr<ItemInstance>( new ItemInstance(Item::apple, 1) ), true);
+		drop(std::make_shared<ItemInstance>(Item::apple, 1), true);
 	}
 	if (!level->getGameRules()->getBoolean(GameRules::RULE_KEEPINVENTORY))
 	{
 		inventory->dropAll();
 	}
 
-	if (source != NULL)
+	if (source != nullptr)
 	{
 		xd = -Mth::cos((hurtDir + yRot) * PI / 180) * 0.1f;
 		zd = -Mth::sin((hurtDir + yRot) * PI / 180) * 0.1f;
@@ -1157,7 +1157,7 @@ bool Player::isCreativeModeAllowed()
 
 shared_ptr<ItemEntity> Player::drop(bool all)
 {
-	return drop(inventory->removeItem(inventory->selected, all && inventory->getSelected() != NULL ? inventory->getSelected()->count : 1), false);
+	return drop(inventory->removeItem(inventory->selected, all && inventory->getSelected() != nullptr ? inventory->getSelected()->count : 1), false);
 }
 
 shared_ptr<ItemEntity> Player::drop(shared_ptr<ItemInstance> item)
@@ -1167,10 +1167,10 @@ shared_ptr<ItemEntity> Player::drop(shared_ptr<ItemInstance> item)
 
 shared_ptr<ItemEntity> Player::drop(shared_ptr<ItemInstance> item, bool randomly)
 {
-	if (item == NULL) return nullptr;
+	if (item == nullptr) return nullptr;
 	if (item->count == 0) return nullptr;
 
-	shared_ptr<ItemEntity> thrownItem = shared_ptr<ItemEntity>( new ItemEntity(level, x, y - 0.3f + getHeadHeight(), z, item) );
+	shared_ptr<ItemEntity> thrownItem = std::make_shared<ItemEntity>(level, x, y - 0.3f + getHeadHeight(), z, item);
 	thrownItem->throwTime = 20 * 2;
 
 	thrownItem->setThrower(getName());
@@ -1221,7 +1221,7 @@ float Player::getDestroySpeed(Tile *tile, bool hasProperTool)
 		int efficiency = EnchantmentHelper::getDiggingBonus(dynamic_pointer_cast<LivingEntity>(shared_from_this()));
 		shared_ptr<ItemInstance> item = inventory->getSelected();
 
-		if (efficiency > 0 && item != NULL)
+		if (efficiency > 0 && item != nullptr)
 		{
 			float boost = efficiency * efficiency + 1;
 
@@ -1305,14 +1305,14 @@ void Player::addAdditonalSaveData(CompoundTag *entityTag)
 	entityTag->put(L"Inventory", inventory->save(new ListTag<CompoundTag>()));
 	entityTag->putInt(L"SelectedItemSlot", inventory->selected);
 	entityTag->putBoolean(L"Sleeping", m_isSleeping);
-	entityTag->putShort(L"SleepTimer", (short) sleepCounter);
+	entityTag->putShort(L"SleepTimer", static_cast<short>(sleepCounter));
 
 	entityTag->putFloat(L"XpP", experienceProgress);
 	entityTag->putInt(L"XpLevel", experienceLevel);
 	entityTag->putInt(L"XpTotal", totalExperience);
 	entityTag->putInt(L"Score", getScore());
 
-	if (respawnPosition != NULL)
+	if (respawnPosition != nullptr)
 	{
 		entityTag->putInt(L"SpawnX", respawnPosition->x);
 		entityTag->putInt(L"SpawnY", respawnPosition->y);
@@ -1407,10 +1407,10 @@ bool Player::hurt(DamageSource *source, float dmg)
 	if (dmg == 0) return false;
 
 	shared_ptr<Entity> attacker = source->getEntity();
-	if ( attacker != NULL && attacker->instanceof(eTYPE_ARROW) )
+	if ( attacker != nullptr && attacker->instanceof(eTYPE_ARROW) )
 	{
 		shared_ptr<Arrow> arrow = dynamic_pointer_cast<Arrow>(attacker);
-		if ( arrow->owner != NULL)
+		if ( arrow->owner != nullptr)
 		{
 			attacker = arrow->owner;
 		}
@@ -1424,7 +1424,7 @@ bool Player::canHarmPlayer(shared_ptr<Player> target)
 	Team *team = getTeam();
 	Team *otherTeam = target->getTeam();
 
-	if (team == NULL)
+	if (team == nullptr)
 	{
 		return true;
 	}
@@ -1455,11 +1455,11 @@ float Player::getArmorCoverPercentage()
 	int count = 0;
 	for (int i = 0; i < inventory->armor.length; i++)
 	{
-		if (inventory->armor[i] != NULL) {
+		if (inventory->armor[i] != nullptr) {
 			count++;
 		}
 	}
-	return (float) count / (float) inventory->armor.length;
+	return static_cast<float>(count) / static_cast<float>(inventory->armor.length);
 }
 
 void Player::actuallyHurt(DamageSource *source, float dmg)
@@ -1526,13 +1526,13 @@ bool Player::interact(shared_ptr<Entity> entity)
 	shared_ptr<Player> thisPlayer = dynamic_pointer_cast<Player>(shared_from_this());
 
 	shared_ptr<ItemInstance> item = getSelectedItem();
-	shared_ptr<ItemInstance> itemClone = (item != NULL) ? item->copy() : nullptr;
+	shared_ptr<ItemInstance> itemClone = (item != nullptr) ? item->copy() : nullptr;
 	if ( entity->interact(thisPlayer) )
 	{
 		// [EB]: Added rude check to see if we're still talking about the
 		// same item; this code caused bucket->milkbucket to be deleted because
 		// the milkbuckets' stack got decremented to 0.
-		if (item != NULL && item == getSelectedItem())
+		if (item != nullptr && item == getSelectedItem())
 		{
 			if (item->count <= 0 && !abilities.instabuild)
 			{
@@ -1546,7 +1546,7 @@ bool Player::interact(shared_ptr<Entity> entity)
 		return true;
 	}
 
-	if ( (item != NULL) && entity->instanceof(eTYPE_LIVINGENTITY) )
+	if ( (item != nullptr) && entity->instanceof(eTYPE_LIVINGENTITY) )
 	{
 		// 4J - PC Comments
 		// Hack to prevent item stacks from decrementing if the player has
@@ -1594,7 +1594,7 @@ void Player::attack(shared_ptr<Entity> entity)
 		return;
 	}
 
-	float dmg = (float) getAttribute(SharedMonsterAttributes::ATTACK_DAMAGE)->getValue();
+	float dmg = static_cast<float>(getAttribute(SharedMonsterAttributes::ATTACK_DAMAGE)->getValue());
 
 	int knockback = 0;
 	float magicBoost = 0;
@@ -1613,7 +1613,7 @@ void Player::attack(shared_ptr<Entity> entity)
 
 	if (dmg > 0 || magicBoost > 0)
 	{
-		bool bCrit = fallDistance > 0 && !onGround && !onLadder() && !isInWater() && !hasEffect(MobEffect::blindness) && (riding == NULL) && entity->instanceof(eTYPE_LIVINGENTITY);
+		bool bCrit = fallDistance > 0 && !onGround && !onLadder() && !isInWater() && !hasEffect(MobEffect::blindness) && (riding == nullptr) && entity->instanceof(eTYPE_LIVINGENTITY);
 		if (bCrit && dmg > 0)
 		{
 			dmg *= 1.5f;
@@ -1671,12 +1671,12 @@ void Player::attack(shared_ptr<Entity> entity)
 		if ( entity->instanceof(eTYPE_MULTIENTITY_MOB_PART) )
 		{
 			shared_ptr<Entity> multiMob = dynamic_pointer_cast<Entity>((dynamic_pointer_cast<MultiEntityMobPart>(entity))->parentMob.lock());
-			if ( (multiMob != NULL) && multiMob->instanceof(eTYPE_LIVINGENTITY) )
+			if ( (multiMob != nullptr) && multiMob->instanceof(eTYPE_LIVINGENTITY) )
 			{
 				hurtTarget = dynamic_pointer_cast<LivingEntity>( multiMob );
 			}
 		}
-		if ( (item != NULL) && hurtTarget->instanceof(eTYPE_LIVINGENTITY) )
+		if ( (item != nullptr) && hurtTarget->instanceof(eTYPE_LIVINGENTITY) )
 		{
 			item->hurtEnemy(dynamic_pointer_cast<LivingEntity>(hurtTarget), dynamic_pointer_cast<Player>( shared_from_this() ) );
 			if (item->count <= 0)
@@ -1737,14 +1737,14 @@ void Player::animateRespawn(shared_ptr<Player> player, Level *level)
 
 Slot *Player::getInventorySlot(int slotId)
 {
-	return NULL;
+	return nullptr;
 }
 
 void Player::remove()
 {
 	LivingEntity::remove();
 	inventoryMenu->removed( dynamic_pointer_cast<Player>( shared_from_this() ) );
-	if (containerMenu != NULL)
+	if (containerMenu != nullptr)
 	{
 		containerMenu->removed( dynamic_pointer_cast<Player>( shared_from_this() ) );
 	}
@@ -1909,12 +1909,12 @@ void Player::stopSleepInBed(bool forcefulWakeUp, bool updateLevelList, bool save
 
 	Pos *pos = bedPosition;
 	Pos *standUp = bedPosition;
-	if (pos != NULL && level->getTile(pos->x, pos->y, pos->z) == Tile::bed_Id)
+	if (pos != nullptr && level->getTile(pos->x, pos->y, pos->z) == Tile::bed_Id)
 	{
 		BedTile::setOccupied(level, pos->x, pos->y, pos->z, false);
 
 		standUp = BedTile::findStandUpPosition(level, pos->x, pos->y, pos->z, 0);
-		if (standUp == NULL)
+		if (standUp == nullptr)
 		{
 			standUp = new Pos(pos->x, pos->y + 1, pos->z);
 		}
@@ -1968,7 +1968,7 @@ Pos *Player::checkBedValidRespawnPosition(Level *level, Pos *pos, bool forced)
 		{
 			return pos;
 		}
-		return NULL;
+		return nullptr;
 	}
 	// make sure the bed still has a stand-up position
 	Pos *standUp = BedTile::findStandUpPosition(level, pos->x, pos->y, pos->z, 0);
@@ -1977,7 +1977,7 @@ Pos *Player::checkBedValidRespawnPosition(Level *level, Pos *pos, bool forced)
 
 float Player::getSleepRotation()
 {
-	if (bedPosition != NULL)
+	if (bedPosition != nullptr)
 	{
 		int data = level->getData(bedPosition->x, bedPosition->y, bedPosition->z);
 		int direction = BedTile::getDirection(data);
@@ -2028,11 +2028,11 @@ void Player::setPlayerFlag(int flag, bool value)
 	byte currentValue = entityData->getByte(DATA_PLAYER_FLAGS_ID);
 	if (value)
 	{
-		entityData->set(DATA_PLAYER_FLAGS_ID, (byte) (currentValue | (1 << flag)));
+		entityData->set(DATA_PLAYER_FLAGS_ID, static_cast<byte>(currentValue | (1 << flag)));
 	}
 	else
 	{
-		entityData->set(DATA_PLAYER_FLAGS_ID, (byte) (currentValue & ~(1 << flag)));
+		entityData->set(DATA_PLAYER_FLAGS_ID, static_cast<byte>(currentValue & ~(1 << flag)));
 	}
 }
 
@@ -2059,21 +2059,21 @@ bool Player::isRespawnForced()
 
 void Player::setRespawnPosition(Pos *respawnPosition, bool forced)
 {
-	if (respawnPosition != NULL)
+	if (respawnPosition != nullptr)
 	{
 		this->respawnPosition = new Pos(*respawnPosition);
 		respawnForced = forced;
 	}
 	else
 	{
-		this->respawnPosition = NULL;
+		this->respawnPosition = nullptr;
 		respawnForced = false;
 	}
 }
 
 void Player::awardStat(Stat *stat, byteArray paramBlob)
 {
-	if (paramBlob.data != NULL)
+	if (paramBlob.data != nullptr)
 	{
 		delete [] paramBlob.data;
 	}
@@ -2102,7 +2102,7 @@ void Player::travel(float xa, float ya)
 {
 	double preX = x, preY = y, preZ = z;
 
-	if (abilities.flying && riding == NULL)
+	if (abilities.flying && riding == nullptr)
 	{
 		double ydo = yd;
 		float ofs = flyingSpeed;
@@ -2121,19 +2121,19 @@ void Player::travel(float xa, float ya)
 
 float Player::getSpeed()
 {
-	return (float) getAttribute(SharedMonsterAttributes::MOVEMENT_SPEED)->getValue();
+	return static_cast<float>(getAttribute(SharedMonsterAttributes::MOVEMENT_SPEED)->getValue());
 }
 
 void Player::checkMovementStatistiscs(double dx, double dy, double dz)
 {
 
-	if (riding != NULL)
+	if (riding != nullptr)
 	{
 		return;
 	}
 	if (isUnderLiquid(Material::water))
 	{
-		int distance = (int) Math::round(sqrt(dx * dx + dy * dy + dz * dz) * 100.0f);
+		int distance = static_cast<int>(Math::round(sqrt(dx * dx + dy * dy + dz * dz) * 100.0f));
 		if (distance > 0)
 		{
 			//awardStat(Stats::diveOneCm, distance);
@@ -2142,7 +2142,7 @@ void Player::checkMovementStatistiscs(double dx, double dy, double dz)
 	}
 	else if (isInWater())
 	{
-		int horizontalDistance = (int) Math::round(sqrt(dx * dx + dz * dz) * 100.0f);
+		int horizontalDistance = static_cast<int>(Math::round(sqrt(dx * dx + dz * dz) * 100.0f));
 		if (horizontalDistance > 0)
 		{
 			distanceSwim += horizontalDistance;
@@ -2159,7 +2159,7 @@ void Player::checkMovementStatistiscs(double dx, double dy, double dz)
 	{
 		if (dy > 0)
 		{
-			distanceClimb += (int) Math::round(dy * 100.0f);
+			distanceClimb += static_cast<int>(Math::round(dy * 100.0f));
 			if( distanceClimb >= 100 )
 			{
 				int newDistance = distanceClimb - (distanceClimb % 100);
@@ -2170,7 +2170,7 @@ void Player::checkMovementStatistiscs(double dx, double dy, double dz)
 	}
 	else if (onGround)
 	{
-		int horizontalDistance = (int) Math::round(sqrt(dx * dx + dz * dz) * 100.0f);
+		int horizontalDistance = static_cast<int>(Math::round(sqrt(dx * dx + dz * dz) * 100.0f));
 		if (horizontalDistance > 0)
 		{
 			distanceWalk += horizontalDistance;
@@ -2195,9 +2195,9 @@ void Player::checkMovementStatistiscs(double dx, double dy, double dz)
 
 void Player::checkRidingStatistiscs(double dx, double dy, double dz)
 {
-	if (riding != NULL)
+	if (riding != nullptr)
 	{
-		int distance = (int) Math::round(sqrt(dx * dx + dy * dy + dz * dz) * 100.0f);
+		int distance = static_cast<int>(Math::round(sqrt(dx * dx + dy * dy + dz * dz) * 100.0f));
 		if (distance > 0)
 		{
 			if ( riding->instanceof(eTYPE_MINECART) )
@@ -2211,7 +2211,7 @@ void Player::checkRidingStatistiscs(double dx, double dy, double dz)
 				}
 
 				int dist = 0;
-				if (minecartAchievementPos == NULL)
+				if (minecartAchievementPos == nullptr)
 				{
 					minecartAchievementPos = new Pos(Mth::floor(x), Mth::floor(y), Mth::floor(z));
 				}
@@ -2278,7 +2278,7 @@ void Player::causeFallDamage(float distance)
 
 	if (distance >= 2)
 	{
-		distanceFall += (int) Math::round(distance * 100.0);
+		distanceFall += static_cast<int>(Math::round(distance * 100.0));
 		if( distanceFall >= 100 )
 		{
 			int newDistance = distanceFall - (distanceFall % 100);
@@ -2309,7 +2309,7 @@ void Player::killed(shared_ptr<LivingEntity> mob)
 				awardStat(GenericStats::killsSkeleton(), GenericStats::param_noArgs());
 			break;
 		case eTYPE_SPIDER:
-			if( mob->rider.lock() != NULL && mob->rider.lock()->GetType() == eTYPE_SKELETON )
+			if( mob->rider.lock() != nullptr && mob->rider.lock()->GetType() == eTYPE_SKELETON )
 				awardStat(GenericStats::killsSpiderJockey(), GenericStats::param_noArgs());
 			else
 				awardStat(GenericStats::killsSpider(), GenericStats::param_noArgs());
@@ -2348,7 +2348,7 @@ void Player::makeStuckInWeb()
 Icon *Player::getItemInHandIcon(shared_ptr<ItemInstance> item, int layer)
 {
 	Icon *icon = LivingEntity::getItemInHandIcon(item, layer);
-	if (item->id == Item::fishingRod->id && fishing != NULL)
+	if (item->id == Item::fishingRod->id && fishing != nullptr)
 	{
 		icon = Item::fishingRod->getEmptyIcon();
 	}
@@ -2356,7 +2356,7 @@ Icon *Player::getItemInHandIcon(shared_ptr<ItemInstance> item, int layer)
 	{
 		return item->getItem()->getLayerIcon(item->getAuxValue(), layer);
 	}
-	else if (useItem != NULL && item->id == Item::bow_Id)
+	else if (useItem != nullptr && item->id == Item::bow_Id)
 	{
 		int ticksHeld = (item->getUseDuration() - useItemDuration);
 		if (ticksHeld >= BowItem::MAX_DRAW_DURATION - 2)
@@ -2388,7 +2388,7 @@ void Player::increaseXp(int i)
 	{
 		i = max;
 	}
-	experienceProgress += (float) i / getXpNeededForNextLevel();
+	experienceProgress += static_cast<float>(i) / getXpNeededForNextLevel();
 	totalExperience += i;
 	while (experienceProgress >= 1)
 	{
@@ -2502,7 +2502,7 @@ bool Player::mayDestroyBlockAt(int x, int y, int z)
 		{
 			return true;
 		}
-		else if (getSelectedItem() != NULL)
+		else if (getSelectedItem() != nullptr)
 		{
 			shared_ptr<ItemInstance> carried = getSelectedItem();
 
@@ -2521,7 +2521,7 @@ bool Player::mayUseItemAt(int x, int y, int z, int face, shared_ptr<ItemInstance
 	{
 		return true;
 	}
-	if (item != NULL)
+	if (item != nullptr)
 	{
 		return item->mayBePlacedInAdventureMode();
 	}
@@ -2714,7 +2714,7 @@ int Player::hash_fnct(const shared_ptr<Player> k)
 #ifdef __PS3__
 	return (int)boost::hash_value( k->name ); // 4J Stu - Names are completely unique?
 #else
-	return (int)std::hash<wstring>{}(k->name); // 4J Stu - Names are completely unique?
+	return static_cast<int>(std::hash<wstring>{}(k->name)); // 4J Stu - Names are completely unique?
 #endif //__PS3__
 }
 
@@ -2806,7 +2806,7 @@ void Player::setPlayerGamePrivilege(unsigned int &uiGamePrivileges, EPlayerGameP
 bool Player::isAllowedToUse(Tile *tile)
 {
 	bool allowed = true;
-	if(tile != NULL && app.GetGameHostOption(eGameHostOption_TrustPlayers) == 0)
+	if(tile != nullptr && app.GetGameHostOption(eGameHostOption_TrustPlayers) == 0)
 	{
 		allowed = false;
 
@@ -2877,7 +2877,7 @@ bool Player::isAllowedToUse(Tile *tile)
 bool Player::isAllowedToUse(shared_ptr<ItemInstance> item)
 {
 	bool allowed = true;
-	if(item != NULL && app.GetGameHostOption(eGameHostOption_TrustPlayers) == 0)
+	if(item != nullptr && app.GetGameHostOption(eGameHostOption_TrustPlayers) == 0)
 	{
 		if(getPlayerGamePrivilege(Player::ePlayerGamePrivilege_CannotBuild) != 0)
 		{
@@ -3085,7 +3085,7 @@ bool Player::canCreateParticles()
 
 vector<ModelPart *> *Player::GetAdditionalModelParts()
 {
-	if(m_ppAdditionalModelParts==NULL && !m_bCheckedForModelParts)
+	if(m_ppAdditionalModelParts==nullptr && !m_bCheckedForModelParts)
 	{
 		bool hasCustomTexture = !customTextureUrl.empty();
 		bool customTextureIsDefaultSkin = customTextureUrl.substr(0,3).compare(L"def") == 0;
@@ -3094,11 +3094,11 @@ vector<ModelPart *> *Player::GetAdditionalModelParts()
 		m_ppAdditionalModelParts=app.GetAdditionalModelParts(m_dwSkinId);
 
 		// If it's a default texture (which has no parts), we have the parts, or we already have the texture (in which case we should have parts if there are any) then we are done
-		if(!hasCustomTexture || customTextureIsDefaultSkin || m_ppAdditionalModelParts != NULL || app.IsFileInMemoryTextures(customTextureUrl))
+		if(!hasCustomTexture || customTextureIsDefaultSkin || m_ppAdditionalModelParts != nullptr || app.IsFileInMemoryTextures(customTextureUrl))
 		{
 			m_bCheckedForModelParts=true;
 		}
-		if(m_ppAdditionalModelParts == NULL && !m_bCheckedDLCForModelParts)
+		if(m_ppAdditionalModelParts == nullptr && !m_bCheckedDLCForModelParts)
 		{
 			m_bCheckedDLCForModelParts = true;
 
@@ -3108,7 +3108,7 @@ vector<ModelPart *> *Player::GetAdditionalModelParts()
 			// do we have it from the DLC pack?
 			DLCSkinFile *pDLCSkinFile = app.m_dlcManager.getSkinFile(this->customTextureUrl);
 
-			if(pDLCSkinFile!=NULL)
+			if(pDLCSkinFile!=nullptr)
 			{
 				DWORD dwBoxC=pDLCSkinFile->getAdditionalBoxesCount();
 				if(dwBoxC!=0)

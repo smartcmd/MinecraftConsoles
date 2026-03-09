@@ -76,7 +76,7 @@ LevelChunk *McRegionChunkStorage::load(Level *level, int x, int z)
 
 #ifdef SPLIT_SAVES
 	// If we can't find the chunk in the save file, then we should remove any entities we might have for that chunk
-	if(regionChunkInputStream == NULL)
+	if(regionChunkInputStream == nullptr)
 	{
 		int64_t index = ((int64_t)(x) << 32) | (((int64_t)(z))&0x00000000FFFFFFFF);
 
@@ -89,11 +89,11 @@ LevelChunk *McRegionChunkStorage::load(Level *level, int x, int z)
 	}
 #endif
 
-	LevelChunk *levelChunk = NULL;
+	LevelChunk *levelChunk = nullptr;
 
 	if(m_saveFile->getOriginalSaveVersion() >= SAVE_FILE_VERSION_COMPRESSED_CHUNK_STORAGE)
 	{
-		if (regionChunkInputStream != NULL)
+		if (regionChunkInputStream != nullptr)
 		{
 			MemSect(9);
 			levelChunk = OldChunkStorage::load(level, regionChunkInputStream);
@@ -106,14 +106,14 @@ LevelChunk *McRegionChunkStorage::load(Level *level, int x, int z)
 	else
 	{
 		CompoundTag *chunkData;
-		if (regionChunkInputStream != NULL)
+		if (regionChunkInputStream != nullptr)
 		{
 			MemSect(8);
 			chunkData = NbtIo::read((DataInput *)regionChunkInputStream);
 			MemSect(0);
 		} else
 		{
-			return NULL;
+			return nullptr;
 		}
 
 		regionChunkInputStream->deleteChildStream();
@@ -125,7 +125,7 @@ LevelChunk *McRegionChunkStorage::load(Level *level, int x, int z)
 			sprintf(buf,"Chunk file at %d, %d is missing level data, skipping\n",x, z);
 			app.DebugPrintf(buf);
 			delete chunkData;
-			return NULL;
+			return nullptr;
 		}
 		if (!chunkData->getCompound(L"Level")->contains(L"Blocks"))
 		{
@@ -133,7 +133,7 @@ LevelChunk *McRegionChunkStorage::load(Level *level, int x, int z)
 			sprintf(buf,"Chunk file at %d, %d is missing block data, skipping\n",x, z);
 			app.DebugPrintf(buf);
 			delete chunkData;
-			return NULL;
+			return nullptr;
 		}
 		MemSect(9);
 		levelChunk = OldChunkStorage::load(level, chunkData->getCompound(L"Level"));
@@ -146,7 +146,7 @@ LevelChunk *McRegionChunkStorage::load(Level *level, int x, int z)
 			app.DebugPrintf(buf);
 			delete levelChunk;
 			delete chunkData;
-			return NULL;
+			return nullptr;
 
 			// 4J Stu - We delete the data within OldChunkStorage::load, so we can never reload from it
 			//chunkData->putInt(L"xPos", x);
@@ -330,8 +330,8 @@ void McRegionChunkStorage::staticCtor()
 		sprintf(threadName,"McRegion Save thread %d\n",i);
 		SetThreadName(0, threadName);
 
-		//saveThreads[j] = CreateThread(NULL,0,runSaveThreadProc,&threadData[j],CREATE_SUSPENDED,&threadId[j]);
-		s_saveThreads[i] = new C4JThread(runSaveThreadProc,NULL,threadName);
+		//saveThreads[j] = CreateThread(nullptr,0,runSaveThreadProc,&threadData[j],CREATE_SUSPENDED,&threadId[j]);
+		s_saveThreads[i] = new C4JThread(runSaveThreadProc,nullptr,threadName);
 
 
 		//app.DebugPrintf("Created new thread: %s\n",threadName);
@@ -359,7 +359,7 @@ int McRegionChunkStorage::runSaveThreadProc(LPVOID lpParam)
 	bool running = true;
 	size_t lastQueueSize = 0;
 
-	DataOutputStream *dos = NULL;
+	DataOutputStream *dos = nullptr;
 	while(running)
 	{
 		if( TryEnterCriticalSection(&cs_memory) )
@@ -382,7 +382,7 @@ int McRegionChunkStorage::runSaveThreadProc(LPVOID lpParam)
 				PIXEndNamedEvent();
 			}
 			delete dos;
-			dos = NULL;
+			dos = nullptr;
 
 			EnterCriticalSection(&cs_memory);
 			s_runningThreadCount--;

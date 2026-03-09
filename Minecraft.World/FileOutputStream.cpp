@@ -24,20 +24,20 @@ FileOutputStream::FileOutputStream(const File &file) : m_fileHandle( INVALID_HAN
 		file.getPath().c_str() , // file name
 		GENERIC_WRITE, // access mode
 		0, // share mode // TODO 4J Stu - Will we need to share file? Probably not but...
-		NULL, // Unused
+		nullptr, // Unused
 		OPEN_ALWAYS , // how to create
 		FILE_ATTRIBUTE_NORMAL , // file attributes
-		NULL // Unsupported
+		nullptr // Unsupported
 		);
 #else
 	m_fileHandle = CreateFile(
 		wstringtofilename(file.getPath()) , // file name
 		GENERIC_WRITE, // access mode
 		0, // share mode // TODO 4J Stu - Will we need to share file? Probably not but...
-		NULL, // Unused
+		nullptr, // Unused
 		OPEN_ALWAYS , // how to create
 		FILE_ATTRIBUTE_NORMAL , // file attributes
-		NULL // Unsupported
+		nullptr // Unsupported
 		);
 #endif
 
@@ -61,14 +61,14 @@ void FileOutputStream::write(unsigned int b)
 {	
 	DWORD numberOfBytesWritten;
 
-	byte value = (byte) b;
+	byte value = static_cast<byte>(b);
 
 	BOOL result = WriteFile(
 		m_fileHandle, // handle to file
 		&value, // data buffer
 		1, // number of bytes to write
 		&numberOfBytesWritten, // number of bytes written
-		NULL // overlapped buffer
+		nullptr // overlapped buffer
 		);
 
 	if( result == 0 )
@@ -93,7 +93,7 @@ void FileOutputStream::write(byteArray b)
 		&b.data, // data buffer
 		b.length, // number of bytes to write
 		&numberOfBytesWritten, // number of bytes written
-		NULL // overlapped buffer
+		nullptr // overlapped buffer
 		);
 
 	if( result == 0 )
@@ -123,7 +123,7 @@ void FileOutputStream::write(byteArray b, unsigned int offset, unsigned int leng
 		&b[offset], // data buffer
 		length, // number of bytes to write
 		&numberOfBytesWritten, // number of bytes written
-		NULL // overlapped buffer
+		nullptr // overlapped buffer
 		);
 
 	if( result == 0 )

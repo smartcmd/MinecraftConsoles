@@ -41,7 +41,7 @@ int Entity::extraWanderCount = 0;
 int Entity::getSmallId()
 {
 	unsigned int *puiUsedFlags = entityIdUsedFlags;
-	unsigned int *puiRemovedFlags = NULL;
+	unsigned int *puiRemovedFlags = nullptr;
 
 	// If we are the server (we should be, if we are allocating small Ids), then check with the server if there are any small Ids which are
 	// still in the ServerPlayer's vectors of entities to be removed - these are used to gather up a set of entities into one network packet
@@ -260,7 +260,7 @@ void Entity::_init(bool useSmallId, Level *level)
 	riding = nullptr;
 	forcedLoading = false;
 
-	//level = NULL; // Level is assigned to in the original c_tor code
+	//level = nullptr; // Level is assigned to in the original c_tor code
 	xo = yo = zo = 0.0;
 	x = y = z = 0.0;
 	xd = yd = zd = 0.0;
@@ -312,7 +312,7 @@ void Entity::_init(bool useSmallId, Level *level)
 	// values that need to be sent to clients in SMP
 	if( useSmallId )
 	{
-		entityData = shared_ptr<SynchedEntityData>(new SynchedEntityData());
+		entityData = std::make_shared<SynchedEntityData>();
 	}
 	else
 	{
@@ -355,14 +355,14 @@ Entity::Entity(Level *level, bool useSmallId)	// 4J - added useSmallId parameter
 	// resetPos();
 	setPos(0, 0, 0);
 
-	if (level != NULL)
+	if (level != nullptr)
 	{
 		dimension = level->dimension->id;
 	}
 
 	if( entityData )
 	{
-		entityData->define(DATA_SHARED_FLAGS_ID, (byte) 0);
+		entityData->define(DATA_SHARED_FLAGS_ID, static_cast<byte>(0));
 		entityData->define(DATA_AIR_SUPPLY_ID, TOTAL_AIR_SUPPLY); // 4J Stu - Brought forward from 1.2.3 to fix 38654 - Gameplay: Player will take damage when air bubbles are present if resuming game from load/autosave underwater.
 	}
 
@@ -398,7 +398,7 @@ return entityId;
 
 void Entity::resetPos()
 {
-	if (level == NULL) return;
+	if (level == nullptr) return;
 
 	shared_ptr<Entity> sharedThis = shared_from_this();
 	while (true && y > 0)
@@ -510,7 +510,7 @@ void Entity::baseTick()
 	// 4J Stu - Not needed
 	//util.Timer.push("entityBaseTick");
 
-	if (riding != NULL && riding->removed)
+	if (riding != nullptr && riding->removed)
 	{
 		riding = nullptr;
 	}
@@ -533,7 +533,7 @@ void Entity::baseTick()
 			{
 				if (server->isNetherEnabled())
 				{
-					if (riding == NULL)
+					if (riding == nullptr)
 					{
 						if (portalTime++ >= waitTime)
 						{
@@ -883,7 +883,7 @@ void Entity::move(double xa, double ya, double za, bool noEntityCubes)   // 4J -
 	double zm = z - zo;
 
 
-	if (makeStepSound() && !isPlayerSneaking && riding == NULL)
+	if (makeStepSound() && !isPlayerSneaking && riding == nullptr)
 	{
 		int xt = Mth::floor(x);
 		int yt = Mth::floor(y - 0.2f - heightOffset);
@@ -907,7 +907,7 @@ void Entity::move(double xa, double ya, double za, bool noEntityCubes)   // 4J -
 
 		if (moveDist > nextStep && t > 0)
 		{
-			nextStep = (int) moveDist + 1;
+			nextStep = static_cast<int>(moveDist) + 1;
 			if (isInWater())
 			{
 				float speed = Mth::sqrt(xd * xd * 0.2f + yd * yd + zd * zd * 0.2f) * 0.35f;
@@ -1023,13 +1023,13 @@ void Entity::checkFallDamage(double ya, bool onGround)
 	}
 	else
 	{
-		if (ya < 0) fallDistance -= (float) ya;
+		if (ya < 0) fallDistance -= static_cast<float>(ya);
 	}
 }
 
 AABB *Entity::getCollideBox()
 {
-	return NULL;
+	return nullptr;
 }
 
 void Entity::burn(int dmg)
@@ -1047,7 +1047,7 @@ bool Entity::isFireImmune()
 
 void Entity::causeFallDamage(float distance)
 {
-	if (rider.lock() != NULL) rider.lock()->causeFallDamage(distance);
+	if (rider.lock() != nullptr) rider.lock()->causeFallDamage(distance);
 }
 
 
@@ -1072,7 +1072,7 @@ bool Entity::updateInWaterState()
 			MemSect(31);
 			playSound(eSoundType_RANDOM_SPLASH, speed, 1 + (random->nextFloat() - random->nextFloat()) * 0.4f);
 			MemSect(0);
-			float yt = (float) Mth::floor(bb->y0);
+			float yt = static_cast<float>(Mth::floor(bb->y0));
 			for (int i = 0; i < 1 + bbWidth * 20; i++)
 			{
 				float xo = (random->nextFloat() * 2 - 1) * bbWidth;
@@ -1202,9 +1202,9 @@ void Entity::moveTo(double x, double y, double z, float yRot, float xRot)
 
 float Entity::distanceTo(shared_ptr<Entity> e)
 {
-	float xd = (float) (x - e->x);
-	float yd = (float) (y - e->y);
-	float zd = (float) (z - e->z);
+	float xd = static_cast<float>(x - e->x);
+	float yd = static_cast<float>(y - e->y);
+	float zd = static_cast<float>(z - e->z);
 	return sqrt(xd * xd + yd * yd + zd * zd);
 }
 
@@ -1348,7 +1348,7 @@ bool Entity::saveAsMount(CompoundTag *entityTag)
 bool Entity::save(CompoundTag *entityTag)
 {
 	wstring id = getEncodeId();
-	if (removed || id.empty() || (rider.lock() != NULL) )
+	if (removed || id.empty() || (rider.lock() != nullptr) )
 	{
 		return false;
 	}
@@ -1365,8 +1365,8 @@ void Entity::saveWithoutId(CompoundTag *entityTag)
 	entityTag->put(L"Rotation", newFloatList(2, yRot, xRot));
 
 	entityTag->putFloat(L"FallDistance", fallDistance);
-	entityTag->putShort(L"Fire", (short) onFire);
-	entityTag->putShort(L"Air", (short) getAirSupply());
+	entityTag->putShort(L"Fire", static_cast<short>(onFire));
+	entityTag->putShort(L"Air", static_cast<short>(getAirSupply()));
 	entityTag->putBoolean(L"OnGround", onGround);
 	entityTag->putInt(L"Dimension", dimension);
 	entityTag->putBoolean(L"Invulnerable", invulnerable);
@@ -1376,7 +1376,7 @@ void Entity::saveWithoutId(CompoundTag *entityTag)
 
 	addAdditonalSaveData(entityTag);
 
-	if (riding != NULL)
+	if (riding != nullptr)
 	{
 		CompoundTag *ridingTag = new CompoundTag(RIDING_TAG);
 		if (riding->saveAsMount(ridingTag))
@@ -1511,7 +1511,7 @@ shared_ptr<ItemEntity> Entity::spawnAtLocation(int resource, int count)
 
 shared_ptr<ItemEntity> Entity::spawnAtLocation(int resource, int count, float yOffs)
 {
-	return spawnAtLocation(shared_ptr<ItemInstance>( new ItemInstance(resource, count, 0) ), yOffs);
+	return spawnAtLocation(std::make_shared<ItemInstance>(resource, count, 0), yOffs);
 }
 
 shared_ptr<ItemEntity> Entity::spawnAtLocation(shared_ptr<ItemInstance> itemInstance, float yOffs)
@@ -1520,7 +1520,7 @@ shared_ptr<ItemEntity> Entity::spawnAtLocation(shared_ptr<ItemInstance> itemInst
 	{
 		return nullptr;
 	}
-	shared_ptr<ItemEntity> ie = shared_ptr<ItemEntity>( new ItemEntity(level, x, y + yOffs, z, itemInstance) );
+	shared_ptr<ItemEntity> ie = std::make_shared<ItemEntity>(level, x, y + yOffs, z, itemInstance);
 	ie->throwTime = 10;
 	level->addEntity(ie);
 	return ie;
@@ -1556,7 +1556,7 @@ bool Entity::interact(shared_ptr<Player> player)
 
 AABB *Entity::getCollideAgainstBox(shared_ptr<Entity> entity)
 {
-	return NULL;
+	return nullptr;
 }
 
 void Entity::rideTick()
@@ -1569,7 +1569,7 @@ void Entity::rideTick()
 	xd = yd = zd = 0;
 	tick();
 
-	if (riding == NULL) return;
+	if (riding == nullptr) return;
 
 	// Sets riders old&new position to it's mount's old&new position (plus the ride y-seperatation).
 	riding->positionRider();
@@ -1605,7 +1605,7 @@ void Entity::rideTick()
 void Entity::positionRider()
 {
 	shared_ptr<Entity> lockedRider = rider.lock();
-	if( lockedRider == NULL)
+	if( lockedRider == nullptr)
 	{
 		return;
 	}
@@ -1627,9 +1627,9 @@ void Entity::ride(shared_ptr<Entity> e)
 	xRideRotA = 0;
 	yRideRotA = 0;
 
-	if (e == NULL)
+	if (e == nullptr)
 	{
-		if (riding != NULL)
+		if (riding != nullptr)
 		{
 			// 4J Stu - Position should already be updated before the SetEntityLinkPacket comes in
 			if(!level->isClientSide) moveTo(riding->x, riding->bb->y0 + riding->bbHeight, riding->z, yRot, xRot);
@@ -1638,7 +1638,7 @@ void Entity::ride(shared_ptr<Entity> e)
 		riding = nullptr;
 		return;
 	}
-	if (riding != NULL)
+	if (riding != nullptr)
 	{
 		riding->rider = weak_ptr<Entity>();
 	}
@@ -1677,7 +1677,7 @@ float Entity::getPickRadius()
 
 Vec3 *Entity::getLookAngle()
 {
-	return NULL;
+	return nullptr;
 }
 
 void Entity::handleInsidePortal()
@@ -1721,7 +1721,7 @@ void Entity::animateHurt()
 
 ItemInstanceArray Entity::getEquipmentSlots() // ItemInstance[]
 {
-	return ItemInstanceArray();	// Default ctor creates NULL internal array
+	return ItemInstanceArray();	// Default ctor creates nullptr internal array
 }
 
 // 4J Stu - Brought forward change from 1.3 to fix #64688 - Customer Encountered: TU7: Content: Art: Aura of enchanted item is not displayed for other players in online game
@@ -1736,7 +1736,7 @@ bool Entity::isOnFire()
 
 bool Entity::isRiding()
 {
-	return riding != NULL;
+	return riding != nullptr;
 }
 
 bool Entity::isSneaking()
@@ -1823,11 +1823,11 @@ void Entity::setSharedFlag(int flag, bool value)
 		byte currentValue = entityData->getByte(DATA_SHARED_FLAGS_ID);
 		if (value)
 		{
-			entityData->set(DATA_SHARED_FLAGS_ID, (byte) (currentValue | (1 << flag)));
+			entityData->set(DATA_SHARED_FLAGS_ID, static_cast<byte>(currentValue | (1 << flag)));
 		}
 		else
 		{
-			entityData->set(DATA_SHARED_FLAGS_ID, (byte) (currentValue & ~(1 << flag)));
+			entityData->set(DATA_SHARED_FLAGS_ID, static_cast<byte>(currentValue & ~(1 << flag)));
 		}
 	}
 }
@@ -1841,7 +1841,7 @@ int Entity::getAirSupply()
 // 4J Stu - Brought forward from 1.2.3 to fix 38654 - Gameplay: Player will take damage when air bubbles are present if resuming game from load/autosave underwater.
 void Entity::setAirSupply(int supply)
 {
-	entityData->set(DATA_AIR_SUPPLY_ID, (short) supply);
+	entityData->set(DATA_AIR_SUPPLY_ID, static_cast<short>(supply));
 }
 
 void Entity::thunderHit(const LightningBolt *lightningBolt)
@@ -1937,7 +1937,7 @@ wstring Entity::getAName()
 
 vector<shared_ptr<Entity> > *Entity::getSubEntities()
 {
-	return NULL;
+	return nullptr;
 }
 
 bool Entity::is(shared_ptr<Entity> other)
@@ -2023,7 +2023,7 @@ void Entity::changeDimension(int i)
 	server->getPlayers()->repositionAcrossDimension(shared_from_this(), lastDimension, oldLevel, newLevel);
 	shared_ptr<Entity> newEntity = EntityIO::newEntity(EntityIO::getEncodeId(shared_from_this()), newLevel);
 
-	if (newEntity != NULL)
+	if (newEntity != nullptr)
 	{
 		newEntity->restoreFrom(shared_from_this(), true);
 

@@ -3,14 +3,14 @@
 
 BufferedImage *MobSkinTextureProcessor::process(BufferedImage *in)
 {
-    if (in == NULL) return NULL;
+    if (in == nullptr) return nullptr;
 
     width = 64;
     height = 32;
 
     BufferedImage *out = new BufferedImage(width, height, BufferedImage::TYPE_INT_ARGB);
     Graphics *g = out->getGraphics();
-    g->drawImage(in, 0, 0, NULL);
+    g->drawImage(in, 0, 0, nullptr);
     g->dispose();
 
     pixels = out->getData();

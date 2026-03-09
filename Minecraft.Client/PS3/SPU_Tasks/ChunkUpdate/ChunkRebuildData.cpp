@@ -241,12 +241,12 @@ void ChunkRebuildData::createTileData()
 			m_tileData.signalSource.set(i, Tile::tiles[i]->isSignalSource());
 			m_tileData.cubeShaped.set(i, Tile::tiles[i]->isCubeShaped());
 
-			m_tileData.xx0[i] = (float)Tile::tiles[i]->getShapeX0();
-			m_tileData.yy0[i] = (float)Tile::tiles[i]->getShapeY0();
-			m_tileData.zz0[i] = (float)Tile::tiles[i]->getShapeZ0();
-			m_tileData.xx1[i] = (float)Tile::tiles[i]->getShapeX1();
-			m_tileData.yy1[i] = (float)Tile::tiles[i]->getShapeY1();
-			m_tileData.zz1[i] = (float)Tile::tiles[i]->getShapeZ1();
+			m_tileData.xx0[i] = static_cast<float>(Tile::tiles[i]->getShapeX0());
+			m_tileData.yy0[i] = static_cast<float>(Tile::tiles[i]->getShapeY0());
+			m_tileData.zz0[i] = static_cast<float>(Tile::tiles[i]->getShapeZ0());
+			m_tileData.xx1[i] = static_cast<float>(Tile::tiles[i]->getShapeX1());
+			m_tileData.yy1[i] = static_cast<float>(Tile::tiles[i]->getShapeY1());
+			m_tileData.zz1[i] = static_cast<float>(Tile::tiles[i]->getShapeZ1());
 			Icon* pTex = Tile::tiles[i]->icon;
 			if(pTex)
 			{
@@ -269,17 +269,17 @@ void ChunkRebuildData::createTileData()
 	setIconSPUFromIcon(&m_tileData.grass_iconSideOverlay, Tile::grass->iconSideOverlay);
 
 	// ThinFence
-	setIconSPUFromIcon(&m_tileData.ironFence_EdgeTexture, ((ThinFenceTile*)Tile::ironFence)->getEdgeTexture());
-	setIconSPUFromIcon(&m_tileData.thinGlass_EdgeTexture, ((ThinFenceTile*)Tile::thinGlass)->getEdgeTexture());
+	setIconSPUFromIcon(&m_tileData.ironFence_EdgeTexture, static_cast<ThinFenceTile *>(Tile::ironFence)->getEdgeTexture());
+	setIconSPUFromIcon(&m_tileData.thinGlass_EdgeTexture, static_cast<ThinFenceTile *>(Tile::thinGlass)->getEdgeTexture());
 
 	//FarmTile
-	setIconSPUFromIcon(&m_tileData.farmTile_Dry, ((FarmTile*)Tile::farmland)->iconDry);
-	setIconSPUFromIcon(&m_tileData.farmTile_Wet, ((FarmTile*)Tile::farmland)->iconWet);
+	setIconSPUFromIcon(&m_tileData.farmTile_Dry, static_cast<FarmTile *>(Tile::farmland)->iconDry);
+	setIconSPUFromIcon(&m_tileData.farmTile_Wet, static_cast<FarmTile *>(Tile::farmland)->iconWet);
 
 	// DoorTile
 	for(int i=0;i<8; i++)
 	{
-		setIconSPUFromIcon(&m_tileData.doorTile_Icons[i], ((DoorTile*)Tile::door_wood)->icons[i]);
+		setIconSPUFromIcon(&m_tileData.doorTile_Icons[i], static_cast<DoorTile *>(Tile::door_wood)->icons[i]);
 		// we're not supporting flipped icons, so manually flip here
 		if(i>=4)
 			m_tileData.doorTile_Icons[i].flipHorizontal();
@@ -291,20 +291,20 @@ void ChunkRebuildData::createTileData()
 
 	// SandStoneTile
 	for(int i=0;i<3; i++)
-		setIconSPUFromIcon(&m_tileData.sandStone_icons[i], ((SandStoneTile*)Tile::sandStone)->icons[i]);
-	setIconSPUFromIcon(&m_tileData.sandStone_iconTop, ((SandStoneTile*)Tile::sandStone)->iconTop);
-	setIconSPUFromIcon(&m_tileData.sandStone_iconBottom, ((SandStoneTile*)Tile::sandStone)->iconBottom);
+		setIconSPUFromIcon(&m_tileData.sandStone_icons[i], static_cast<SandStoneTile *>(Tile::sandStone)->icons[i]);
+	setIconSPUFromIcon(&m_tileData.sandStone_iconTop, static_cast<SandStoneTile *>(Tile::sandStone)->iconTop);
+	setIconSPUFromIcon(&m_tileData.sandStone_iconBottom, static_cast<SandStoneTile *>(Tile::sandStone)->iconBottom);
 
 	// WoodTile
 // 	assert(WoodTile_SPU::WOOD_NAMES_LENGTH == 4);
 	for(int i=0;i<4; i++)
-		setIconSPUFromIcon(&m_tileData.woodTile_icons[i], ((WoodTile*)Tile::wood)->icons[i]);
+		setIconSPUFromIcon(&m_tileData.woodTile_icons[i], static_cast<WoodTile *>(Tile::wood)->icons[i]);
 
 	// TreeTile
 // 	assert(TreeTile_SPU::TREE_NAMES_LENGTH == 4);
 	for(int i=0;i<4; i++)
-		setIconSPUFromIcon(&m_tileData.treeTile_icons[i], ((TreeTile*)Tile::treeTrunk)->icons[i]);
-	setIconSPUFromIcon(&m_tileData.treeTile_iconTop, ((TreeTile*)Tile::treeTrunk)->iconTop);
+		setIconSPUFromIcon(&m_tileData.treeTile_icons[i], static_cast<TreeTile *>(Tile::treeTrunk)->icons[i]);
+	setIconSPUFromIcon(&m_tileData.treeTile_iconTop, static_cast<TreeTile *>(Tile::treeTrunk)->iconTop);
 
 	// LeafTile
 	for(int i=0;i<2; i++)
@@ -313,12 +313,12 @@ void ChunkRebuildData::createTileData()
 
 	// CropTile
 	for(int i=0;i<8; i++)
-		setIconSPUFromIcon(&m_tileData.cropTile_icons[i], ((CropTile*)Tile::crops)->icons[i]);
+		setIconSPUFromIcon(&m_tileData.cropTile_icons[i], static_cast<CropTile *>(Tile::crops)->icons[i]);
 
 	// FurnaceTile
-	setIconSPUFromIcon(&m_tileData.furnaceTile_iconTop, ((FurnaceTile*)Tile::furnace)->iconTop);
-	setIconSPUFromIcon(&m_tileData.furnaceTile_iconFront, ((FurnaceTile*)Tile::furnace)->iconFront);
-	setIconSPUFromIcon(&m_tileData.furnaceTile_iconFront_lit, ((FurnaceTile*)Tile::furnace_lit)->iconFront);
+	setIconSPUFromIcon(&m_tileData.furnaceTile_iconTop, static_cast<FurnaceTile *>(Tile::furnace)->iconTop);
+	setIconSPUFromIcon(&m_tileData.furnaceTile_iconFront, static_cast<FurnaceTile *>(Tile::furnace)->iconFront);
+	setIconSPUFromIcon(&m_tileData.furnaceTile_iconFront_lit, static_cast<FurnaceTile *>(Tile::furnace_lit)->iconFront);
 
 	//LiquidTile
 	setIconSPUFromIcon(&m_tileData.liquidTile_iconWaterStill, (Tile::water)->icons[0]);
@@ -332,64 +332,64 @@ void ChunkRebuildData::createTileData()
 
 	// Sapling
 	for(int i=0;i<4;i++)
-		setIconSPUFromIcon(&m_tileData.sapling_icons[i], ((Sapling*)Tile::sapling)->icons[i]);
+		setIconSPUFromIcon(&m_tileData.sapling_icons[i], static_cast<Sapling *>(Tile::sapling)->icons[i]);
 
-	m_tileData.glassTile_allowSame = ((GlassTile*)Tile::glass)->allowSame;
-	m_tileData.iceTile_allowSame = ((IceTile*)Tile::ice)->allowSame;
+	m_tileData.glassTile_allowSame = static_cast<GlassTile *>(Tile::glass)->allowSame;
+	m_tileData.iceTile_allowSame = static_cast<IceTile *>(Tile::ice)->allowSame;
 
 	// DispenserTile
-	setIconSPUFromIcon(&m_tileData.dispenserTile_iconTop, ((DispenserTile*)Tile::dispenser)->iconTop);
-	setIconSPUFromIcon(&m_tileData.dispenserTile_iconFront, ((DispenserTile*)Tile::dispenser)->iconFront);
-	setIconSPUFromIcon(&m_tileData.dispenserTile_iconFrontVertical, ((DispenserTile*)Tile::dispenser)->iconFrontVertical);
+	setIconSPUFromIcon(&m_tileData.dispenserTile_iconTop, static_cast<DispenserTile *>(Tile::dispenser)->iconTop);
+	setIconSPUFromIcon(&m_tileData.dispenserTile_iconFront, static_cast<DispenserTile *>(Tile::dispenser)->iconFront);
+	setIconSPUFromIcon(&m_tileData.dispenserTile_iconFrontVertical, static_cast<DispenserTile *>(Tile::dispenser)->iconFrontVertical);
 
 	// RailTile
-	setIconSPUFromIcon(&m_tileData.railTile_iconTurn, ((RailTile*)Tile::rail)->iconTurn);
-	setIconSPUFromIcon(&m_tileData.railTile_iconTurnGolden, ((RailTile*)Tile::goldenRail)->iconTurn);
+	setIconSPUFromIcon(&m_tileData.railTile_iconTurn, static_cast<RailTile *>(Tile::rail)->iconTurn);
+	setIconSPUFromIcon(&m_tileData.railTile_iconTurnGolden, static_cast<RailTile *>(Tile::goldenRail)->iconTurn);
 
 	for(int i=0;i<2;i++)
-		setIconSPUFromIcon(&m_tileData.detectorRailTile_icons[i], ((DetectorRailTile*)Tile::detectorRail)->icons[i]);
+		setIconSPUFromIcon(&m_tileData.detectorRailTile_icons[i], static_cast<DetectorRailTile *>(Tile::detectorRail)->icons[i]);
 
 	// tntTile
-	setIconSPUFromIcon(&m_tileData.tntTile_iconBottom, ((TntTile*)Tile::tnt)->iconBottom);
-	setIconSPUFromIcon(&m_tileData.tntTile_iconTop, ((TntTile*)Tile::tnt)->iconTop);
+	setIconSPUFromIcon(&m_tileData.tntTile_iconBottom, static_cast<TntTile *>(Tile::tnt)->iconBottom);
+	setIconSPUFromIcon(&m_tileData.tntTile_iconTop, static_cast<TntTile *>(Tile::tnt)->iconTop);
 
 	// workbenchTile
-	setIconSPUFromIcon(&m_tileData.workBench_iconFront, ((WorkbenchTile*)Tile::workBench)->iconFront);
-	setIconSPUFromIcon(&m_tileData.workBench_iconTop, ((WorkbenchTile*)Tile::workBench)->iconTop);
+	setIconSPUFromIcon(&m_tileData.workBench_iconFront, static_cast<WorkbenchTile *>(Tile::workBench)->iconFront);
+	setIconSPUFromIcon(&m_tileData.workBench_iconTop, static_cast<WorkbenchTile *>(Tile::workBench)->iconTop);
 
 	// cactusTile
-	setIconSPUFromIcon(&m_tileData.cactusTile_iconTop, ((CactusTile*)Tile::cactus)->iconTop);
-	setIconSPUFromIcon(&m_tileData.cactusTile_iconBottom, ((CactusTile*)Tile::cactus)->iconBottom);
+	setIconSPUFromIcon(&m_tileData.cactusTile_iconTop, static_cast<CactusTile *>(Tile::cactus)->iconTop);
+	setIconSPUFromIcon(&m_tileData.cactusTile_iconBottom, static_cast<CactusTile *>(Tile::cactus)->iconBottom);
 
 	// recordPlayer
-	setIconSPUFromIcon(&m_tileData.recordPlayer_iconTop, ((RecordPlayerTile*)Tile::recordPlayer)->iconTop);
+	setIconSPUFromIcon(&m_tileData.recordPlayer_iconTop, static_cast<RecordPlayerTile *>(Tile::recordPlayer)->iconTop);
 
 	// pumpkin 
-	setIconSPUFromIcon(&m_tileData.pumpkinTile_iconTop, ((PumpkinTile*)Tile::pumpkin)->iconTop);
-	setIconSPUFromIcon(&m_tileData.pumpkinTile_iconFace, ((PumpkinTile*)Tile::pumpkin)->iconFace);
-	setIconSPUFromIcon(&m_tileData.pumpkinTile_iconFaceLit, ((PumpkinTile*)Tile::litPumpkin)->iconFace);
+	setIconSPUFromIcon(&m_tileData.pumpkinTile_iconTop, static_cast<PumpkinTile *>(Tile::pumpkin)->iconTop);
+	setIconSPUFromIcon(&m_tileData.pumpkinTile_iconFace, static_cast<PumpkinTile *>(Tile::pumpkin)->iconFace);
+	setIconSPUFromIcon(&m_tileData.pumpkinTile_iconFaceLit, static_cast<PumpkinTile *>(Tile::litPumpkin)->iconFace);
 
 	// cakeTile 
-	setIconSPUFromIcon(&m_tileData.cakeTile_iconTop, ((CakeTile*)Tile::cake)->iconTop);
-	setIconSPUFromIcon(&m_tileData.cakeTile_iconBottom, ((CakeTile*)Tile::cake)->iconBottom);
-	setIconSPUFromIcon(&m_tileData.cakeTile_iconInner, ((CakeTile*)Tile::cake)->iconInner);
+	setIconSPUFromIcon(&m_tileData.cakeTile_iconTop, static_cast<CakeTile *>(Tile::cake)->iconTop);
+	setIconSPUFromIcon(&m_tileData.cakeTile_iconBottom, static_cast<CakeTile *>(Tile::cake)->iconBottom);
+	setIconSPUFromIcon(&m_tileData.cakeTile_iconInner, static_cast<CakeTile *>(Tile::cake)->iconInner);
 
 	// SmoothStoneBrickTile
 	for(int i=0;i<4;i++)
-		setIconSPUFromIcon(&m_tileData.smoothStoneBrick_icons[i], ((SmoothStoneBrickTile*)Tile::stoneBrickSmooth)->icons[i]);
+		setIconSPUFromIcon(&m_tileData.smoothStoneBrick_icons[i], static_cast<SmoothStoneBrickTile *>(Tile::stoneBrickSmooth)->icons[i]);
 
 	// HugeMushroomTile
 	for(int i=0;i<2;i++)
-		setIconSPUFromIcon(&m_tileData.hugeMushroom_icons[i], ((HugeMushroomTile*)Tile::hugeMushroom1)->icons[i]);
-	setIconSPUFromIcon(&m_tileData.hugeMushroom_iconStem, ((HugeMushroomTile*)Tile::hugeMushroom1)->iconStem);
-	setIconSPUFromIcon(&m_tileData.hugeMushroom_iconInside, ((HugeMushroomTile*)Tile::hugeMushroom1)->iconInside);
+		setIconSPUFromIcon(&m_tileData.hugeMushroom_icons[i], static_cast<HugeMushroomTile *>(Tile::hugeMushroom1)->icons[i]);
+	setIconSPUFromIcon(&m_tileData.hugeMushroom_iconStem, static_cast<HugeMushroomTile *>(Tile::hugeMushroom1)->iconStem);
+	setIconSPUFromIcon(&m_tileData.hugeMushroom_iconInside, static_cast<HugeMushroomTile *>(Tile::hugeMushroom1)->iconInside);
 
 
 	// MelonTile
-	setIconSPUFromIcon(&m_tileData.melonTile_iconTop, ((MelonTile*)Tile::melon)->iconTop);
+	setIconSPUFromIcon(&m_tileData.melonTile_iconTop, static_cast<MelonTile *>(Tile::melon)->iconTop);
 
 	// StemTile
-	setIconSPUFromIcon(&m_tileData.stemTile_iconAngled, ((StemTile*)Tile::melonStem)->iconAngled);
+	setIconSPUFromIcon(&m_tileData.stemTile_iconAngled, static_cast<StemTile *>(Tile::melonStem)->iconAngled);
 
 	// MycelTile
 	setIconSPUFromIcon(&m_tileData.mycelTile_iconTop, (Tile::mycel)->iconTop);
@@ -397,14 +397,14 @@ void ChunkRebuildData::createTileData()
 
 	// NetherStalkTile
 	for(int i=0;i<3;i++)
-		setIconSPUFromIcon(&m_tileData.netherStalk_icons[i], ((NetherStalkTile*)Tile::netherStalk)->icons[i]);
+		setIconSPUFromIcon(&m_tileData.netherStalk_icons[i], static_cast<NetherStalkTile *>(Tile::netherStalk)->icons[i]);
 
 	// EnchantmentTableTile
-	setIconSPUFromIcon(&m_tileData.enchantmentTable_iconTop, ((EnchantmentTableTile*)Tile::enchantTable)->iconTop);
-	setIconSPUFromIcon(&m_tileData.enchantmentTable_iconBottom, ((EnchantmentTableTile*)Tile::enchantTable)->iconBottom);
+	setIconSPUFromIcon(&m_tileData.enchantmentTable_iconTop, static_cast<EnchantmentTableTile *>(Tile::enchantTable)->iconTop);
+	setIconSPUFromIcon(&m_tileData.enchantmentTable_iconBottom, static_cast<EnchantmentTableTile *>(Tile::enchantTable)->iconBottom);
 
 	//BrewingStandTile
-	setIconSPUFromIcon(&m_tileData.brewingStand_iconBase, ((BrewingStandTile*)Tile::brewingStand)->iconBase);
+	setIconSPUFromIcon(&m_tileData.brewingStand_iconBase, static_cast<BrewingStandTile *>(Tile::brewingStand)->iconBase);
 
 	//RedStoneDust
 	setIconSPUFromIcon(&m_tileData.redStoneDust_iconCross, (Tile::redStoneDust)->iconCross);
@@ -412,32 +412,32 @@ void ChunkRebuildData::createTileData()
 	setIconSPUFromIcon(&m_tileData.redStoneDust_iconCrossOver, (Tile::redStoneDust)->iconCrossOver);
 	setIconSPUFromIcon(&m_tileData.redStoneDust_iconLineOver, (Tile::redStoneDust)->iconLineOver);
 
-	setIconSPUFromIcon(&m_tileData.stoneSlab_iconSide, ((StoneSlabTile*)(Tile::stoneSlab))->iconSide);
+	setIconSPUFromIcon(&m_tileData.stoneSlab_iconSide, static_cast<StoneSlabTile *>(Tile::stoneSlab)->iconSide);
 
 	for(int i=0;i<16;i++)
-		setIconSPUFromIcon(&m_tileData.clothTile_icons[i], ((ClothTile*)Tile::cloth)->icons[i]);
+		setIconSPUFromIcon(&m_tileData.clothTile_icons[i], static_cast<ClothTile *>(Tile::cloth)->icons[i]);
 
 	// CarrotTile
 	for(int i=0;i<4;i++)
-		setIconSPUFromIcon(&m_tileData.carrot_icons[i], ((CarrotTile*)Tile::carrots)->icons[i]);
+		setIconSPUFromIcon(&m_tileData.carrot_icons[i], static_cast<CarrotTile *>(Tile::carrots)->icons[i]);
 
 	// PotatoTile
 	for(int i=0;i<4;i++)
-		setIconSPUFromIcon(&m_tileData.potato_icons[i], ((PotatoTile*)Tile::potatoes)->icons[i]);
+		setIconSPUFromIcon(&m_tileData.potato_icons[i], static_cast<PotatoTile *>(Tile::potatoes)->icons[i]);
 
 	// AnvilTile
 	for(int i=0;i<3;i++)
-		setIconSPUFromIcon(&m_tileData.anvil_icons[i], ((AnvilTile*)Tile::anvil)->icons[i]);
+		setIconSPUFromIcon(&m_tileData.anvil_icons[i], static_cast<AnvilTile *>(Tile::anvil)->icons[i]);
 
 
 	// QuartzBlockTile
 	for(int i=0;i<5;i++)
-		setIconSPUFromIcon(&m_tileData.quartzBlock_icons[i], ((QuartzBlockTile*)Tile::quartzBlock)->icons[i]);
+		setIconSPUFromIcon(&m_tileData.quartzBlock_icons[i], static_cast<QuartzBlockTile *>(Tile::quartzBlock)->icons[i]);
 
-	setIconSPUFromIcon(&m_tileData.quartzBlock_iconChiseledTop, ((QuartzBlockTile*)Tile::quartzBlock)->iconChiseledTop);
-	setIconSPUFromIcon(&m_tileData.quartzBlock_iconLinesTop, ((QuartzBlockTile*)Tile::quartzBlock)->iconLinesTop);
-	setIconSPUFromIcon(&m_tileData.quartzBlock_iconTop, ((QuartzBlockTile*)Tile::quartzBlock)->iconTop);
-	setIconSPUFromIcon(&m_tileData.quartzBlock_iconBottom, ((QuartzBlockTile*)Tile::quartzBlock)->iconBottom);
+	setIconSPUFromIcon(&m_tileData.quartzBlock_iconChiseledTop, static_cast<QuartzBlockTile *>(Tile::quartzBlock)->iconChiseledTop);
+	setIconSPUFromIcon(&m_tileData.quartzBlock_iconLinesTop, static_cast<QuartzBlockTile *>(Tile::quartzBlock)->iconLinesTop);
+	setIconSPUFromIcon(&m_tileData.quartzBlock_iconTop, static_cast<QuartzBlockTile *>(Tile::quartzBlock)->iconTop);
+	setIconSPUFromIcon(&m_tileData.quartzBlock_iconBottom, static_cast<QuartzBlockTile *>(Tile::quartzBlock)->iconBottom);
 }
 
 // extern int g_lastHitBlockX;
@@ -696,7 +696,7 @@ bool ChunkRebuildData::isEmptyTile(int x, int y, int z)
 bool ChunkRebuildData::isSolidRenderTile(int x, int y, int z)
 {
 	TileRef_SPU tile(getTile(x,y,z));
-	if (tile.getPtr() == NULL) return false;
+	if (tile.getPtr() == nullptr) return false;
 
 
 	// 4J - addition here to make rendering big blocks of leaves more efficient. Normally leaves never consider themselves as solid, so
@@ -727,7 +727,7 @@ bool ChunkRebuildData::isSolidRenderTile(int x, int y, int z)
 bool ChunkRebuildData::isSolidBlockingTile(int x, int y, int z)
 {
 	TileRef_SPU tile(getTile(x, y, z));
-	if (tile.getPtr() == NULL) return false;
+	if (tile.getPtr() == nullptr) return false;
 	bool ret =  tile->getMaterial()->blocksMotion() && tile->isCubeShaped();
 	return ret;
 }

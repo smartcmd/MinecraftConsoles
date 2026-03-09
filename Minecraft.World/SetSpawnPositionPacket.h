@@ -20,6 +20,6 @@ public:
 	virtual bool isAync();
 
 public:
-	static shared_ptr<Packet> create() { return shared_ptr<Packet>(new SetSpawnPositionPacket()); }
+	static shared_ptr<Packet> create() { return std::make_shared<SetSpawnPositionPacket>(); }
 	virtual int getId() { return 6; }
 };

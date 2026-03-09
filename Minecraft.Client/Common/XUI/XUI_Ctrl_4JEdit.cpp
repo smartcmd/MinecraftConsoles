@@ -10,7 +10,7 @@ HRESULT CXuiCtrl4JEdit::OnInit(XUIMessageInit* pInitData, BOOL& rfHandled)
 	// set a limit for the text box
 	m_uTextLimit=XUI_4JEDIT_MAX_CHARS-1;
 	XuiEditSetTextLimit(m_hObj,m_uTextLimit);
-	//  Find the text limit. (Add one for NULL terminator)
+	//  Find the text limit. (Add one for nullptr terminator)
 	//m_uTextLimit = min( XuiEditGetTextLimit(m_hObj) + 1, XUI_4JEDIT_MAX_CHARS);
 
 	ZeroMemory( wchText , sizeof(WCHAR)*(m_uTextLimit+1) );
@@ -127,7 +127,7 @@ HRESULT CXuiCtrl4JEdit::OnChar(XUIMessageChar* pInputData, BOOL& rfHandled)
 	XuiSendMessage( hBaseObj, &xuiMsg );
 
  	rfHandled = TRUE;
- 	SendNotifyValueChanged((int)pInputData->wch);
+ 	SendNotifyValueChanged(static_cast<int>(pInputData->wch));
 
 	return hr;
 }    
@@ -145,7 +145,7 @@ HRESULT CXuiCtrl4JEdit::OnKeyDown(XUIMessageInput* pInputData, BOOL& rfHandled)
 
 	if( pThis->m_bReadOnly ) return hr;
 
-	//  Find the text limit. (Add one for NULL terminator)
+	//  Find the text limit. (Add one for nullptr terminator)
 	//m_uTextLimit = min( XuiEditGetTextLimit(m_hObj) + 1, XUI_4JEDIT_MAX_CHARS);
 
 	if((((pInputData->dwKeyCode == VK_PAD_A) && (pInputData->wch == 0)) || (pInputData->dwKeyCode == VK_PAD_START)) && !(pInputData->dwFlags & XUI_INPUT_FLAG_REPEAT))
@@ -185,14 +185,14 @@ HRESULT CXuiCtrl4JEdit::SendNotifyValueChanged(int iValue)
 
 int CXuiCtrl4JEdit::KeyboardReturned(void *pParam,bool bSet)
 {
-	CXuiCtrl4JEdit* pClass = (CXuiCtrl4JEdit*)pParam;
+	CXuiCtrl4JEdit* pClass = static_cast<CXuiCtrl4JEdit *>(pParam);
 	HRESULT hr = S_OK;
 
 	if(bSet)
 	{
 		pClass->SetText(pClass->wchText);
 		// need to move the caret to the end of the newly set text
-		XuiEditSetCaretPosition(pClass->m_hObj, (int)wcsnlen(pClass->wchText, 50));
+		XuiEditSetCaretPosition(pClass->m_hObj, static_cast<int>(wcsnlen(pClass->wchText, 50)));
 		pClass->SendNotifyValueChanged(10); // 10 for a return
 	}
 

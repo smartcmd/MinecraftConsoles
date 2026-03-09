@@ -114,7 +114,7 @@ public:
 	void addPendingLocalConnection(int idx, ClientConnection *connection);
 	void connectionDisconnected(int idx, DisconnectPacket::eDisconnectReason reason) { m_connectionFailed[idx] = true; m_connectionFailedReason[idx] = reason; }
 
-	shared_ptr<MultiplayerLocalPlayer> createExtraLocalPlayer(int idx, const wstring& name, int pad, int iDimension, ClientConnection *clientConnection = NULL,MultiPlayerLevel *levelpassedin=NULL);
+	shared_ptr<MultiplayerLocalPlayer> createExtraLocalPlayer(int idx, const wstring& name, int pad, int iDimension, ClientConnection *clientConnection = nullptr,MultiPlayerLevel *levelpassedin=nullptr);
 	void createPrimaryLocalPlayer(int iPad);
 	bool setLocalPlayerIdx(int idx);
 	int getLocalPlayerIdx();

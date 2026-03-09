@@ -21,7 +21,7 @@ public:
 	bool isSolidRender(bool isServerLevel = false) { return false; }
 	bool isCubeShaped() { return false; }
 	int getRenderShape() { return Tile_SPU::SHAPE_BLOCK;}
-	void updateShape(ChunkRebuildData *level, int x, int y, int z, int forceData = -1, TileEntity* forceEntity = NULL)	// 4J added forceData, forceEntity param
+	void updateShape(ChunkRebuildData *level, int x, int y, int z, int forceData = -1, TileEntity* forceEntity = nullptr)	// 4J added forceData, forceEntity param
 	{
 		setShape(level->getData(x, y, z));
 	}

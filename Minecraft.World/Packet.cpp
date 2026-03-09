@@ -267,8 +267,12 @@ void Packet::updatePacketStatsPIX()
 
 shared_ptr<Packet> Packet::getPacket(int id)
 {
-	// 4J: Removed try/catch
-	return idToCreateMap[id]();
+    auto it = idToCreateMap.find(id);
+    if (it == idToCreateMap.end())
+    {
+        return nullptr;
+    }
+    return it->second();
 }
 
 void Packet::writeBytes(DataOutputStream *dataoutputstream, byteArray bytes)
@@ -334,30 +338,11 @@ shared_ptr<Packet> Packet::readPacket(DataInputStream *dis, bool isServer) // th
 
 	if ((isServer && serverReceivedPackets.find(id) == serverReceivedPackets.end()) || (!isServer && clientReceivedPackets.find(id) == clientReceivedPackets.end()))
 	{
-		app.DebugPrintf("*** BAD PACKET ID %d (0x%02X) isServer=%d totalPacketsRead=%d\n", id, id, isServer ? 1 : 0, s_packetCount);
-		app.DebugPrintf("*** Last %d good packet IDs (oldest first): ", 8);
-		for (int dbg = 0; dbg < 8; dbg++)
-		{
-			int idx = (s_lastIdPos + dbg) % 8;
-			app.DebugPrintf("%d ", s_lastIds[idx]);
-		}
-		app.DebugPrintf("\n");
-		// Dump the next 32 bytes from the stream to see what follows
-		app.DebugPrintf("*** Next bytes in stream: ");
-		for (int dbg = 0; dbg < 32; dbg++)
-		{
-			int b = dis->read();
-			if (b == -1) { app.DebugPrintf("[EOS] "); break; }
-			app.DebugPrintf("%02X ", b);
-		}
-		app.DebugPrintf("\n");
-		__debugbreak();
-		assert(false);
-		//            throw new IOException(wstring(L"Bad packet id ") + std::to_wstring(id));
+        return nullptr;
 	}
 
 	packet = getPacket(id);
-	if (packet == NULL) assert(false);//throw new IOException(wstring(L"Bad packet id ") + std::to_wstring(id));
+	if (packet == nullptr) return nullptr;//throw new IOException(wstring(L"Bad packet id ") + std::to_wstring(id));
 
 	s_lastIds[s_lastIdPos] = id;
 	s_lastIdPos = (s_lastIdPos + 1) % 8;
@@ -369,7 +354,7 @@ shared_ptr<Packet> Packet::readPacket(DataInputStream *dis, bool isServer) // th
 	//	{
 	//       // reached end of stream
 	//        OutputDebugString("Reached end of stream");
-	//        return NULL;
+	//        return nullptr;
 	//    }
 
 	// 4J - Don't bother tracking stats in a content package
@@ -410,7 +395,7 @@ void Packet::writeUtf(const wstring& value, DataOutputStream *dos) // throws IOE
 	}
 #endif
 
-	dos->writeShort((short)value.length());
+	dos->writeShort(static_cast<short>(value.length()));
 	dos->writeChars(value);
 }
 
@@ -418,11 +403,9 @@ wstring Packet::readUtf(DataInputStream *dis, int maxLength) // throws IOExcepti
 {
 
 	short stringLength = dis->readShort();
-	if (stringLength > maxLength)
+	if (stringLength > maxLength || stringLength <= 0)
 	{
-		wstringstream stream;
-		stream << L"Received string length longer than maximum allowed (" << stringLength << " > " << maxLength << ")";
-		assert(false);
+        return L"";
 		//        throw new IOException( stream.str() );
 	}
 	if (stringLength < 0)
@@ -467,7 +450,7 @@ double Packet::PacketStatistics::getAverageSize()
 	{
 		return 0;
 	}
-	return (double) totalSize / count;
+	return static_cast<double>(totalSize) / count;
 }
 
 int Packet::PacketStatistics::getTotalSize()
@@ -531,12 +514,12 @@ shared_ptr<ItemInstance> Packet::readItem(DataInputStream *dis)
 {
 	shared_ptr<ItemInstance> item = nullptr;
 	int id = dis->readShort();
-	if (id >= 0)
+    if (id >= 0 && id < 32000) // todo: should turn Item::ITEM_NUM_COUNT into a global define 
 	{
 		int count = dis->readByte();
 		int damage = dis->readShort();
 
-		item = shared_ptr<ItemInstance>( new ItemInstance(id, count, damage) );
+		item = std::make_shared<ItemInstance>(id, count, damage);
 		// 4J Stu - Always read/write the tag
 		//if (Item.items[id].canBeDepleted() || Item.items[id].shouldOverrideMultiplayerNBT())
 		{
@@ -549,7 +532,7 @@ shared_ptr<ItemInstance> Packet::readItem(DataInputStream *dis)
 
 void Packet::writeItem(shared_ptr<ItemInstance> item, DataOutputStream *dos)
 {
-	if (item == NULL)
+	if (item == nullptr)
 	{
 		dos->writeShort(-1);
 	}
@@ -569,9 +552,16 @@ void Packet::writeItem(shared_ptr<ItemInstance> item, DataOutputStream *dos)
 CompoundTag *Packet::readNbt(DataInputStream *dis)
 {
 	int size = dis->readShort();
-	if (size < 0) return NULL;
+	if (size <= 0) return nullptr;
+
+	const int MAX_NBT_SIZE = 32767;
+	if (size > MAX_NBT_SIZE) return nullptr;
 	byteArray buff(size);
-	dis->readFully(buff);
+	if (!dis->readFully(buff))
+	{
+		delete [] buff.data;
+        return nullptr;
+	}
 	CompoundTag *result = (CompoundTag *) NbtIo::decompress(buff);
 	delete [] buff.data;
 	return result;
@@ -579,14 +569,14 @@ CompoundTag *Packet::readNbt(DataInputStream *dis)
 
 void Packet::writeNbt(CompoundTag *tag, DataOutputStream *dos)
 {
-	if (tag == NULL)
+	if (tag == nullptr)
 	{
 		dos->writeShort(-1);
 	}
 	else
 	{
 		byteArray buff = NbtIo::compress(tag);
-		dos->writeShort((short) buff.length);
+		dos->writeShort(static_cast<short>(buff.length));
 		dos->write(buff);
 		delete [] buff.data;
 	}

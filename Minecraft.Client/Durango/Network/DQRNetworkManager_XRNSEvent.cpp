@@ -84,7 +84,7 @@ void DQRNetworkManagerEventHandlers::DataReceivedHandler(Platform::Object^ sessi
 		}
 		rtsMessage.m_sessionAddress = args->SessionAddress;
 		rtsMessage.m_dataSize = args->Data->Length;
-		rtsMessage.m_pucData = (unsigned char *)malloc(rtsMessage.m_dataSize);
+		rtsMessage.m_pucData = static_cast<unsigned char *>(malloc(rtsMessage.m_dataSize));
 		memcpy( rtsMessage.m_pucData, args->Data->Data, rtsMessage.m_dataSize );
 		m_pDQRNet->m_RTSMessageQueueIncoming.push(rtsMessage);
 		LeaveCriticalSection(&m_pDQRNet->m_csRTSMessageQueueIncoming);
@@ -311,7 +311,7 @@ void DQRNetworkManager::Process_RTS_MESSAGE_DATA_RECEIVED(RTS_Message &message)
 				break;
 			case DQRConnectionInfo::ConnectionState_ReadBytes:
 				// At this stage we can send up to connectionInfo->m_bytesRemaining bytes, or the number of bytes that we have remaining in the data received, whichever is lowest.
-				int bytesInBuffer = (int)(pEndByte - pNextByte);
+				int bytesInBuffer = static_cast<int>(pEndByte - pNextByte);
 				int bytesToReceive = ( ( connectionInfo->m_bytesRemaining < bytesInBuffer ) ? connectionInfo->m_bytesRemaining : bytesInBuffer );
 
 				if( connectionInfo->m_internalFlag )
@@ -438,7 +438,7 @@ void DQRNetworkManager::Process_RTS_MESSAGE_STATUS_TERMINATED(RTS_Message &messa
 
 int DQRNetworkManager::_RTSDoWorkThread(void* lpParameter)
 {
-	DQRNetworkManager *pDQR = (DQRNetworkManager *)lpParameter;
+	DQRNetworkManager *pDQR = static_cast<DQRNetworkManager *>(lpParameter);
 	return pDQR->RTSDoWorkThread();
 }
 
@@ -603,7 +603,7 @@ void DQRNetworkManager::RTS_StartCient()
 	EnterCriticalSection(&m_csRTSMessageQueueOutgoing);
 	RTS_Message message;
 	message.m_eType = eRTSMessageType::RTS_MESSAGE_START_CLIENT;
-	message.m_pucData = NULL;
+	message.m_pucData = nullptr;
 	message.m_dataSize = 0;
 	m_RTSMessageQueueOutgoing.push(message);
 	LeaveCriticalSection(&m_csRTSMessageQueueOutgoing);
@@ -614,7 +614,7 @@ void DQRNetworkManager::RTS_StartHost()
 	EnterCriticalSection(&m_csRTSMessageQueueOutgoing);
 	RTS_Message message;
 	message.m_eType = eRTSMessageType::RTS_MESSAGE_START_HOST;
-	message.m_pucData = NULL;
+	message.m_pucData = nullptr;
 	message.m_dataSize = 0;
 	m_RTSMessageQueueOutgoing.push(message);
 	LeaveCriticalSection(&m_csRTSMessageQueueOutgoing);
@@ -625,7 +625,7 @@ void DQRNetworkManager::RTS_Terminate()
 	EnterCriticalSection(&m_csRTSMessageQueueOutgoing);
 	RTS_Message message;
 	message.m_eType = eRTSMessageType::RTS_MESSAGE_TERMINATE;
-	message.m_pucData = NULL;
+	message.m_pucData = nullptr;
 	message.m_dataSize = 0;
 	m_RTSMessageQueueOutgoing.push(message);
 	LeaveCriticalSection(&m_csRTSMessageQueueOutgoing);
@@ -636,7 +636,7 @@ void DQRNetworkManager::RTS_SendData(unsigned char *pucData, unsigned int dataSi
 	EnterCriticalSection(&m_csRTSMessageQueueOutgoing);
 	RTS_Message message;
 	message.m_eType = eRTSMessageType::RTS_MESSAGE_SEND_DATA;
-	message.m_pucData = (unsigned char *)malloc(dataSize);
+	message.m_pucData = static_cast<unsigned char *>(malloc(dataSize));
 	memcpy(message.m_pucData, pucData, dataSize);
 	message.m_dataSize = dataSize;
 	message.m_sessionAddress = sessionAddress;

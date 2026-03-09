@@ -9,7 +9,7 @@
 
 ControllerTask::ControllerTask(Tutorial *tutorial, int descriptionId, bool enablePreCompletion, bool showMinimumTime,
 								int mappings[], unsigned int mappingsLength, int iCompletionMaskA[], int iCompletionMaskACount, int iSouthpawMappings[], unsigned int uiSouthpawMappingsCount)
-	: TutorialTask( tutorial, descriptionId, enablePreCompletion, NULL, showMinimumTime )
+	: TutorialTask( tutorial, descriptionId, enablePreCompletion, nullptr, showMinimumTime )
 {
 	for(unsigned int i = 0; i < mappingsLength; ++i)
 	{

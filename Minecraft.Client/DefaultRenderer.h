@@ -5,5 +5,5 @@ class DefaultRenderer : public EntityRenderer
 {
 public:
 	virtual void render(shared_ptr<Entity> entity, double x, double y, double z, float rot, float a);
-	virtual ResourceLocation *getTextureLocation(shared_ptr<Entity> mob) { return NULL; };
+	virtual ResourceLocation *getTextureLocation(shared_ptr<Entity> mob) { return nullptr; };
 };

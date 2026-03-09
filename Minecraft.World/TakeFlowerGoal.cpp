@@ -53,12 +53,12 @@ bool TakeFlowerGoal::canUse()
 
 bool TakeFlowerGoal::canContinueToUse()
 {
-	return golem.lock() != NULL && golem.lock()->getOfferFlowerTick() > 0;
+	return golem.lock() != nullptr && golem.lock()->getOfferFlowerTick() > 0;
 }
 
 void TakeFlowerGoal::start()
 {
-	pickupTick = villager->getRandom()->nextInt((int) (OfferFlowerGoal::OFFER_TICKS * 0.8));
+	pickupTick = villager->getRandom()->nextInt(static_cast<int>(OfferFlowerGoal::OFFER_TICKS * 0.8));
 	takeFlower = false;
 	golem.lock()->getNavigation()->stop();
 }

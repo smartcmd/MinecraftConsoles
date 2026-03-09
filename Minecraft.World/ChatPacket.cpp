@@ -43,7 +43,7 @@ ChatPacket::ChatPacket(const wstring& message, EChatPacketMessage type, int sour
 // Read chat packet (throws IOException)
 void ChatPacket::read(DataInputStream *dis) 
 {
-	m_messageType = (EChatPacketMessage) dis->readShort();
+	m_messageType = static_cast<EChatPacketMessage>(dis->readShort());
 
 	short packedCounts = dis->readShort();
 	int stringCount = (packedCounts >> 4) & 0xF;
@@ -71,12 +71,12 @@ void ChatPacket::write(DataOutputStream *dos)
 
 	dos->writeShort(packedCounts);
 
-	for(int i = 0; i < m_stringArgs.size(); i++)
+	for(size_t i = 0; i < m_stringArgs.size(); i++)
 	{
 		writeUtf(m_stringArgs[i], dos);
 	}
 
-	for(int i = 0; i < m_intArgs.size(); i++)
+	for(size_t i = 0; i < m_intArgs.size(); i++)
 	{
 		dos->writeInt(m_intArgs[i]);
 	}
@@ -92,7 +92,7 @@ void ChatPacket::handle(PacketListener *listener)
 int ChatPacket::getEstimatedSize() 
 {
 	int stringsSize = 0;
-	for(int i = 0; i < m_stringArgs.size(); i++)
+	for(size_t i = 0; i < m_stringArgs.size(); i++)
 	{
 		stringsSize += m_stringArgs[i].length();
 	}

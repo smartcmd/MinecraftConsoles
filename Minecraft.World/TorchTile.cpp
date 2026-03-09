@@ -11,7 +11,7 @@ TorchTile::TorchTile(int id) : Tile(id, Material::decoration,isSolidRender())
 
 AABB *TorchTile::getAABB(Level *level, int x, int y, int z)
 {
-	return NULL;
+	return nullptr;
 }
 
 AABB *TorchTile::getTileAABB(Level *level, int x, int y, int z)

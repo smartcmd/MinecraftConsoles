@@ -93,7 +93,7 @@ shared_ptr<Packet> SignTileEntity::getUpdatePacket()
 	{
 		copy[i] = m_wsmessages[i];
 	}
-	return shared_ptr<SignUpdatePacket>( new SignUpdatePacket(x, y, z, m_bVerified, m_bCensored, copy) );
+	return std::make_shared<SignUpdatePacket>(x, y, z, m_bVerified, m_bCensored, copy);
 }
 
 bool SignTileEntity::isEditable() 
@@ -181,7 +181,7 @@ void SignTileEntity::SetMessage(int iIndex,wstring &wsText)
 int SignTileEntity::StringVerifyCallback(LPVOID lpParam,STRING_VERIFY_RESPONSE *pResults)
 {
 	// results will be in m_pStringVerifyResponse
-	SignTileEntity *pClass=(SignTileEntity *)lpParam;
+	SignTileEntity *pClass=static_cast<SignTileEntity *>(lpParam);
 
 	pClass->m_bVerified=true;
 	pClass->m_bCensored=false;
@@ -195,7 +195,7 @@ int SignTileEntity::StringVerifyCallback(LPVOID lpParam,STRING_VERIFY_RESPONSE *
 
 	if(!pClass->level->isClientSide)
 	{
-		ServerLevel *serverLevel = (ServerLevel *)pClass->level;
+		ServerLevel *serverLevel = static_cast<ServerLevel *>(pClass->level);
 		// 4J Stu - This callback gets called on the main thread, but tried to access things on the server thread. Change to go through the protected method.
 		//pClass->level->sendTileUpdated(pClass->x, pClass->y, pClass->z);
 		serverLevel->queueSendTileUpdate(pClass->x, pClass->y, pClass->z);
@@ -207,7 +207,7 @@ int SignTileEntity::StringVerifyCallback(LPVOID lpParam,STRING_VERIFY_RESPONSE *
 // 4J Added
 shared_ptr<TileEntity> SignTileEntity::clone()
 {
-	shared_ptr<SignTileEntity> result = shared_ptr<SignTileEntity>( new SignTileEntity() );
+	shared_ptr<SignTileEntity> result = std::make_shared<SignTileEntity>();
 	TileEntity::clone(result);
 
 	result->m_wsmessages[0] = m_wsmessages[0];

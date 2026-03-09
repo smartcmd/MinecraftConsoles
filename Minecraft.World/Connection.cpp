@@ -61,17 +61,17 @@ Connection::~Connection()
 
 	// These should all have been destroyed in close() but no harm in checking again
 	delete byteArrayDos;
-	byteArrayDos = NULL;
+	byteArrayDos = nullptr;
 	delete baos;
-	baos = NULL;
+	baos = nullptr;
 	if( bufferedDos )
 	{
 		bufferedDos->deleteChildStream();
 		delete bufferedDos;
-		bufferedDos = NULL;
+		bufferedDos = nullptr;
 	}
 	delete dis;
-	dis = NULL;
+	dis = nullptr;
 }
 
 Connection::Connection(Socket *socket, const wstring& id, PacketListener *packetListener) // throws IOException
@@ -108,10 +108,10 @@ Connection::Connection(Socket *socket, const wstring& id, PacketListener *packet
 	const char *szId = wstringtofilename(id);
 	char readThreadName[256];
 	char writeThreadName[256];
-	sprintf(readThreadName,"%s read\n",szId);
-	sprintf(writeThreadName,"%s write\n",szId);
+    sprintf_s(readThreadName, sizeof(readThreadName), "%.240s read\n", szId);
+    sprintf_s(writeThreadName, sizeof(writeThreadName), "%.240s write\n", szId);
 
-	readThread = new C4JThread(runRead, (void*)this, readThreadName, READ_STACK_SIZE);
+	readThread = new C4JThread(runRead, static_cast<void *>(this), readThreadName, READ_STACK_SIZE);
 	writeThread = new C4JThread(runWrite, this, writeThreadName, WRITE_STACK_SIZE);
 	readThread->SetProcessor(CPU_CORE_CONNECTIONS);
 	writeThread->SetProcessor(CPU_CORE_CONNECTIONS );
@@ -185,7 +185,7 @@ bool Connection::writeTick()
 	bool didSomething = false;
 
 	// 4J Stu - If the connection is closed and the output stream has been deleted
-	if(bufferedDos==NULL || byteArrayDos==NULL)
+	if(bufferedDos==nullptr || byteArrayDos==nullptr)
 		return didSomething;
 
 	// try {
@@ -326,14 +326,14 @@ bool Connection::readTick()
 	bool didSomething = false;
 
 	// 4J Stu - If the connection has closed and the input stream has been deleted
-	if(dis==NULL)
+	if(dis==nullptr)
 		return didSomething;
 
 	//try {
 
 	shared_ptr<Packet> packet = Packet::readPacket(dis, packetListener->isServerPacketListener());
 
-	if (packet != NULL)
+	if (packet != nullptr)
 	{
 		readSizes[packet->getId()] += packet->getEstimatedSize() + 1;
 		EnterCriticalSection(&incoming_cs);
@@ -385,8 +385,8 @@ void Connection::close(DisconnectPacket::eDisconnectReason reason, ...)
 	disconnectReason = reason;//va_arg( input, const wstring );
 
 	vector<void *> objs = vector<void *>();
-	void *i = NULL;
-	while (i != NULL)
+	void *i = nullptr;
+	while (i != nullptr)
 	{
 		i = va_arg( input, void* );
 		objs.push_back(i);
@@ -398,7 +398,7 @@ void Connection::close(DisconnectPacket::eDisconnectReason reason, ...)
 	}
 	else
 	{
-		disconnectReasonObjects = NULL;
+		disconnectReasonObjects = nullptr;
 	}
 
 	//	int count = 0, sum = 0, i = first;
@@ -415,7 +415,7 @@ void Connection::close(DisconnectPacket::eDisconnectReason reason, ...)
 	//	return( sum ? (sum / count) : 0 );
 
 
-//	CreateThread(NULL, 0, runClose, this, 0, &closeThreadID);
+//	CreateThread(nullptr, 0, runClose, this, 0, &closeThreadID);
 
 	running = false;
 
@@ -427,24 +427,24 @@ void Connection::close(DisconnectPacket::eDisconnectReason reason, ...)
 	writeThread->WaitForCompletion(INFINITE);
 
 	delete dis;
-	dis = NULL;
+	dis = nullptr;
 	if( bufferedDos )
 	{
 		bufferedDos->close();
 		bufferedDos->deleteChildStream();
 		delete bufferedDos;
-		bufferedDos = NULL;
+		bufferedDos = nullptr;
 	}
 	if( byteArrayDos )
 	{
 		byteArrayDos->close();
 		delete byteArrayDos;
-		byteArrayDos = NULL;
+		byteArrayDos = nullptr;
 	}
 	if( socket )
 	{
 		socket->close(packetListener->isServerPacketListener());
-		socket = NULL;
+		socket = nullptr;
 	}
 }
 
@@ -481,7 +481,7 @@ void Connection::tick()
 	tickCount++;
     if (tickCount % 20 == 0)
 	{
-        send( shared_ptr<KeepAlivePacket>( new KeepAlivePacket() ) );
+        send(std::make_shared<KeepAlivePacket>());
     }
 
 	// 4J Stu - 1.8.2 changed from 100 to 1000
@@ -506,7 +506,7 @@ void Connection::tick()
 	LeaveCriticalSection(&incoming_cs);
 
 	// MGH - moved the packet handling outside of the incoming_cs block, as it was locking up sometimes when disconnecting
-	for(int i=0; i<packetsToHandle.size();i++)
+	for(size_t i = 0; i < packetsToHandle.size(); i++)
 	{
 		PIXBeginNamedEvent(0,"Handling packet %d\n",packetsToHandle[i]->getId());
 		packetsToHandle[i]->handle(packetListener);
@@ -560,22 +560,22 @@ void Connection::sendAndQuit()
 		close(DisconnectPacket::eDisconnect_Closed);
 	}
 #else
-	CreateThread(NULL, 0, runSendAndQuit, this, 0, &saqThreadID);
+	CreateThread(nullptr, 0, runSendAndQuit, this, 0, &saqThreadID);
 #endif
 }
 
 int Connection::countDelayedPackets()
 {
-	return (int)outgoing_slow.size();
+	return static_cast<int>(outgoing_slow.size());
 }
 
 
 int Connection::runRead(void* lpParam)
 {
 	ShutdownManager::HasStarted(ShutdownManager::eConnectionReadThreads);
-	Connection *con = (Connection *)lpParam;
+	Connection *con = static_cast<Connection *>(lpParam);
 
-	if (con == NULL)
+	if (con == nullptr)
 	{
 #ifdef __PS3__
 		ShutdownManager::HasFinished(ShutdownManager::eConnectionReadThreads);
@@ -623,9 +623,9 @@ int Connection::runRead(void* lpParam)
 int Connection::runWrite(void* lpParam)
 {
 	ShutdownManager::HasStarted(ShutdownManager::eConnectionWriteThreads);
-	Connection *con = dynamic_cast<Connection *>((Connection *) lpParam);
+	Connection *con = dynamic_cast<Connection *>(static_cast<Connection *>(lpParam));
 
-	if (con == NULL)
+	if (con == nullptr)
 	{
 		ShutdownManager::HasFinished(ShutdownManager::eConnectionWriteThreads);
 		return 0;
@@ -652,8 +652,8 @@ int Connection::runWrite(void* lpParam)
 		// TODO - 4J Stu - 1.8.2 changes these sleeps to 2L, but not sure whether we should do that as well	
 		waitResult = con->m_hWakeWriteThread->WaitForSignal(100L);
 
-		if (con->bufferedDos != NULL) con->bufferedDos->flush();
-		//if (con->byteArrayDos != NULL) con->byteArrayDos->flush();
+		if (con->bufferedDos != nullptr) con->bufferedDos->flush();
+		//if (con->byteArrayDos != nullptr) con->byteArrayDos->flush();
 	}
 
 
@@ -668,9 +668,9 @@ int Connection::runWrite(void* lpParam)
 
 int Connection::runClose(void* lpParam)
 {
-	Connection *con = dynamic_cast<Connection *>((Connection *) lpParam);
+	Connection *con = dynamic_cast<Connection *>(static_cast<Connection *>(lpParam));
 
-	if (con == NULL) return 0;
+	if (con == nullptr) return 0;
 
 	//try {
 
@@ -691,10 +691,10 @@ int Connection::runClose(void* lpParam)
 
 int Connection::runSendAndQuit(void* lpParam)
 {
-	Connection *con = dynamic_cast<Connection *>((Connection *) lpParam);
+	Connection *con = dynamic_cast<Connection *>(static_cast<Connection *>(lpParam));
 //	printf("Con:0x%x runSendAndQuit\n",con);
 
-	if (con == NULL) return 0;
+	if (con == nullptr) return 0;
 
 	//try {
 

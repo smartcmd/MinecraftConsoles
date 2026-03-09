@@ -14,7 +14,7 @@ CRITICAL_SECTION Socket::s_hostQueueLock[2];
 std::queue<byte> Socket::s_hostQueue[2];
 Socket::SocketOutputStreamLocal *Socket::s_hostOutStream[2];
 Socket::SocketInputStreamLocal *Socket::s_hostInStream[2];
-ServerConnection *Socket::s_serverConnection = NULL;
+ServerConnection *Socket::s_serverConnection = nullptr;
 
 void Socket::Initialise(ServerConnection *serverConnection)
 {
@@ -67,7 +67,7 @@ Socket::Socket(bool response)
 	{		
 		m_endClosed[i] = false;
 	}
-	m_socketClosedEvent = NULL;
+	m_socketClosedEvent = nullptr;
 	createdOk = true;
 	networkPlayerSmallId = g_NetworkManager.GetHostPlayer()->GetSmallId();
 }
@@ -80,8 +80,8 @@ Socket::Socket(INetworkPlayer *player, bool response /* = false*/, bool hostLoca
 	for( int i = 0; i < 2; i++ )
 	{
 		InitializeCriticalSection(&m_queueLockNetwork[i]);		
-		m_inputStream[i] = NULL;
-		m_outputStream[i] = NULL;		
+		m_inputStream[i] = nullptr;
+		m_outputStream[i] = nullptr;		
 		m_endClosed[i] = false;
 	}
 	
@@ -105,7 +105,7 @@ Socket::Socket(INetworkPlayer *player, bool response /* = false*/, bool hostLoca
 
 SocketAddress *Socket::getRemoteSocketAddress()
 {
-	return NULL;
+	return nullptr;
 }
 
 INetworkPlayer *Socket::getPlayer()
@@ -115,7 +115,7 @@ INetworkPlayer *Socket::getPlayer()
 
 void Socket::setPlayer(INetworkPlayer *player)
 {
-	if(player!=NULL)
+	if(player!=nullptr)
 	{
 		networkPlayerSmallId = player->GetSmallId();
 	}
@@ -141,6 +141,11 @@ void Socket::pushDataToQueue(const BYTE * pbData, DWORD dwDataSize, bool fromHos
 	//	dwDataSize, queueIdx, dwDataSize > 0 ? pbData[0] : 0, networkPlayerSmallId);
 
 	EnterCriticalSection(&m_queueLockNetwork[queueIdx]);
+    if (m_queueNetwork[queueIdx].size() + dwDataSize > 2 * 1024 * 1024)
+    {
+        LeaveCriticalSection(&m_queueLockNetwork[queueIdx]);
+        return;
+    }
 	for( unsigned int i = 0; i < dwDataSize; i++ )
 	{
 		m_queueNetwork[queueIdx].push(*pbData++);
@@ -150,7 +155,7 @@ void Socket::pushDataToQueue(const BYTE * pbData, DWORD dwDataSize, bool fromHos
 
 void Socket::addIncomingSocket(Socket *socket)
 {
-	if( s_serverConnection != NULL )
+	if( s_serverConnection != nullptr )
 	{
 		s_serverConnection->NewIncomingSocket(socket);
 	}
@@ -243,7 +248,7 @@ bool Socket::close(bool isServerConnection)
 		allClosed = true;
 		m_endClosed[m_end] = true;
 	}
-	if( allClosed && m_socketClosedEvent != NULL )
+	if( allClosed && m_socketClosedEvent != nullptr )
 	{
 		m_socketClosedEvent->Set();
 	}
@@ -334,7 +339,7 @@ void Socket::SocketOutputStreamLocal::write(unsigned int b)
 		return;
 	}
 	EnterCriticalSection(&s_hostQueueLock[m_queueIdx]);
-	s_hostQueue[m_queueIdx].push((byte)b);
+	s_hostQueue[m_queueIdx].push(static_cast<byte>(b));
 	LeaveCriticalSection(&s_hostQueueLock[m_queueIdx]);
 }
 
@@ -447,7 +452,7 @@ void Socket::SocketOutputStreamNetwork::write(unsigned int b)
 	if( m_streamOpen != true ) return;
 	byteArray barray;
 	byte bb;
-	bb = (byte)b;
+	bb = static_cast<byte>(b);
 	barray.data = &bb;
 	barray.length = 1;
 	write(barray, 0, 1);
@@ -493,15 +498,15 @@ void Socket::SocketOutputStreamNetwork::writeWithFlags(byteArray b, unsigned int
 		buffer.dwDataSize = length;
 
 		INetworkPlayer *hostPlayer = g_NetworkManager.GetHostPlayer();
-		if(hostPlayer == NULL)
+		if(hostPlayer == nullptr)
 		{
-			app.DebugPrintf("Trying to write to network, but the hostPlayer is NULL\n");
+			app.DebugPrintf("Trying to write to network, but the hostPlayer is nullptr\n");
 			return;
 		}
 		INetworkPlayer *socketPlayer = m_socket->getPlayer();
-		if(socketPlayer == NULL)
+		if(socketPlayer == nullptr)
 		{
-			app.DebugPrintf("Trying to write to network, but the socketPlayer is NULL\n");
+			app.DebugPrintf("Trying to write to network, but the socketPlayer is nullptr\n");
 			return;
 		}
 
@@ -522,7 +527,7 @@ void Socket::SocketOutputStreamNetwork::writeWithFlags(byteArray b, unsigned int
 
 			hostPlayer->SendData(socketPlayer, buffer.pbyData, buffer.dwDataSize, lowPriority, requireAck);
 
-	// 		DWORD queueSize = hostPlayer->GetSendQueueSize( NULL, QNET_GETSENDQUEUESIZE_BYTES  );
+	// 		DWORD queueSize = hostPlayer->GetSendQueueSize( nullptr, QNET_GETSENDQUEUESIZE_BYTES  );
 	// 		if( queueSize > 24000 )
 	// 		{
 	// 			//printf("Queue size is: %d, forcing doWork()\n",queueSize);

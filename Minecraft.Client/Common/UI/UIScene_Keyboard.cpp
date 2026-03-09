@@ -17,8 +17,8 @@ UIScene_Keyboard::UIScene_Keyboard(int iPad, void *initData, UILayer *parentLaye
 	initialiseMovie();
 
 #ifdef _WINDOWS64
-	m_win64Callback = NULL;
-	m_win64CallbackParam = NULL;
+	m_win64Callback = nullptr;
+	m_win64CallbackParam = nullptr;
 	m_win64TextBuffer = L"";
 	m_win64MaxChars = 25;
 
@@ -28,7 +28,7 @@ UIScene_Keyboard::UIScene_Keyboard(int iPad, void *initData, UILayer *parentLaye
 	m_bPCMode = false;
 	if (initData)
 	{
-		UIKeyboardInitData* kbData = (UIKeyboardInitData*)initData;
+		UIKeyboardInitData* kbData = static_cast<UIKeyboardInitData *>(initData);
 		m_win64Callback = kbData->callback;
 		m_win64CallbackParam = kbData->lpParam;
 		if (kbData->title)       titleText        = kbData->title;
@@ -106,11 +106,11 @@ UIScene_Keyboard::UIScene_Keyboard(int iPad, void *initData, UILayer *parentLaye
 		};
 		IggyName nameVisible = registerFastName(L"visible");
 		IggyValuePath* root = IggyPlayerRootPath(getMovie());
-		for (int i = 0; i < (int)(sizeof(s_keyNames) / sizeof(s_keyNames[0])); ++i)
+		for (int i = 0; i < static_cast<int>(sizeof(s_keyNames) / sizeof(s_keyNames[0])); ++i)
 		{
 			IggyValuePath keyPath;
 			if (IggyValuePathMakeNameRef(&keyPath, root, s_keyNames[i]))
-				IggyValueSetBooleanRS(&keyPath, nameVisible, NULL, false);
+				IggyValueSetBooleanRS(&keyPath, nameVisible, nullptr, false);
 		}
 
 		m_KeyboardTextInput.setCaretVisible(true);
@@ -209,7 +209,7 @@ void UIScene_Keyboard::tick()
 				m_bKeyboardDonePressed = true;
 			}
 		}
-		else if ((int)m_win64TextBuffer.length() < m_win64MaxChars)
+		else if (static_cast<int>(m_win64TextBuffer.length()) < m_win64MaxChars)
 		{
 			if (m_bPCMode)
 			{
@@ -292,23 +292,23 @@ void UIScene_Keyboard::handleInput(int iPad, int key, bool repeat, bool pressed,
 			}
 #endif
 			if (key == ACTION_MENU_X)
-				out = IggyPlayerCallMethodRS ( getMovie() , &result, IggyPlayerRootPath( getMovie() ), m_funcBackspaceButtonPressed, 0 , NULL );
+				out = IggyPlayerCallMethodRS ( getMovie() , &result, IggyPlayerRootPath( getMovie() ), m_funcBackspaceButtonPressed, 0 , nullptr);
 			else if (key == ACTION_MENU_PAGEUP)
-				out = IggyPlayerCallMethodRS ( getMovie() , &result, IggyPlayerRootPath( getMovie() ), m_funcSymbolButtonPressed, 0 , NULL );
+				out = IggyPlayerCallMethodRS ( getMovie() , &result, IggyPlayerRootPath( getMovie() ), m_funcSymbolButtonPressed, 0 , nullptr);
 			else if (key == ACTION_MENU_Y)
-				out = IggyPlayerCallMethodRS ( getMovie() , &result, IggyPlayerRootPath( getMovie() ), m_funcSpaceButtonPressed, 0 , NULL );
+				out = IggyPlayerCallMethodRS ( getMovie() , &result, IggyPlayerRootPath( getMovie() ), m_funcSpaceButtonPressed, 0 , nullptr);
 			else if (key == ACTION_MENU_STICK_PRESS)
-				out = IggyPlayerCallMethodRS ( getMovie() , &result, IggyPlayerRootPath( getMovie() ), m_funcCapsButtonPressed, 0 , NULL );
+				out = IggyPlayerCallMethodRS ( getMovie() , &result, IggyPlayerRootPath( getMovie() ), m_funcCapsButtonPressed, 0 , nullptr);
 			else if (key == ACTION_MENU_LEFT_SCROLL)
-				out = IggyPlayerCallMethodRS ( getMovie() , &result, IggyPlayerRootPath( getMovie() ), m_funcCursorLeftButtonPressed, 0 , NULL );
+				out = IggyPlayerCallMethodRS ( getMovie() , &result, IggyPlayerRootPath( getMovie() ), m_funcCursorLeftButtonPressed, 0 , nullptr);
 			else if (key == ACTION_MENU_RIGHT_SCROLL)
-				out = IggyPlayerCallMethodRS ( getMovie() , &result, IggyPlayerRootPath( getMovie() ), m_funcCursorRightButtonPressed, 0 , NULL );
+				out = IggyPlayerCallMethodRS ( getMovie() , &result, IggyPlayerRootPath( getMovie() ), m_funcCursorRightButtonPressed, 0 , nullptr);
 			handled = true;
 			break;
 		case ACTION_MENU_PAUSEMENU:			// Start
 			if(!m_bKeyboardDonePressed)
 			{
-				out = IggyPlayerCallMethodRS ( getMovie() , &result, IggyPlayerRootPath( getMovie() ), m_funcDoneButtonPressed, 0 , NULL );
+				out = IggyPlayerCallMethodRS ( getMovie() , &result, IggyPlayerRootPath( getMovie() ), m_funcDoneButtonPressed, 0 , nullptr );
 				
 				// kick off done timer
 				addTimer(KEYBOARD_DONE_TIMER_ID,KEYBOARD_DONE_TIMER_TIME);
@@ -346,7 +346,7 @@ void UIScene_Keyboard::handleInput(int iPad, int key, bool repeat, bool pressed,
 
 void UIScene_Keyboard::handlePress(F64 controlId, F64 childId)
 {
-	if((int)controlId == 0)
+	if(static_cast<int>(controlId) == 0)
 	{
 		// Done has been pressed. At this point we can query for the input string and pass it on to wherever it is needed.
 		// we can not query for m_KeyboardTextInput.getLabel() here because we're in an iggy callback so we need to wait a frame.

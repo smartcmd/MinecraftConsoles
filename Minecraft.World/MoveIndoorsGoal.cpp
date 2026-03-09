@@ -22,10 +22,10 @@ bool MoveIndoorsGoal::canUse()
 	if (mob->getRandom()->nextInt(50) != 0) return false;
 	if (insideX != -1 && mob->distanceToSqr(insideX, mob->y, insideZ) < 2 * 2) return false;
 	shared_ptr<Village> village = mob->level->villages->getClosestVillage(Mth::floor(mob->x), Mth::floor(mob->y), Mth::floor(mob->z), 14);
-	if (village == NULL) return false;
+	if (village == nullptr) return false;
 	shared_ptr<DoorInfo> _doorInfo = village->getBestDoorInfo(Mth::floor(mob->x), Mth::floor(mob->y), Mth::floor(mob->z));
 	doorInfo = _doorInfo;
-	return _doorInfo != NULL;
+	return _doorInfo != nullptr;
 }
 
 bool MoveIndoorsGoal::canContinueToUse()
@@ -37,7 +37,7 @@ void MoveIndoorsGoal::start()
 {
 	insideX = -1;
 	shared_ptr<DoorInfo> _doorInfo = doorInfo.lock();
-	if( _doorInfo == NULL )
+	if( _doorInfo == nullptr )
 	{
 		doorInfo = weak_ptr<DoorInfo>();
 		return;
@@ -45,7 +45,7 @@ void MoveIndoorsGoal::start()
 	if (mob->distanceToSqr(_doorInfo->getIndoorX(), _doorInfo->y, _doorInfo->getIndoorZ()) > 16 * 16)
 	{
 		Vec3 *pos = RandomPos::getPosTowards(dynamic_pointer_cast<PathfinderMob>(mob->shared_from_this()), 14, 3, Vec3::newTemp(_doorInfo->getIndoorX() + 0.5, _doorInfo->getIndoorY(), _doorInfo->getIndoorZ() + 0.5));
-		if (pos != NULL) mob->getNavigation()->moveTo(pos->x, pos->y, pos->z, 1.0f);
+		if (pos != nullptr) mob->getNavigation()->moveTo(pos->x, pos->y, pos->z, 1.0f);
 	}
 	else mob->getNavigation()->moveTo(_doorInfo->getIndoorX() + 0.5, _doorInfo->getIndoorY(), _doorInfo->getIndoorZ() + 0.5, 1.0f);
 }
@@ -53,7 +53,7 @@ void MoveIndoorsGoal::start()
 void MoveIndoorsGoal::stop()
 {
 	shared_ptr<DoorInfo> _doorInfo = doorInfo.lock();
-	if( _doorInfo == NULL )
+	if( _doorInfo == nullptr )
 	{
 		doorInfo = weak_ptr<DoorInfo>();
 		return;

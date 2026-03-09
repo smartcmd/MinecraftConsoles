@@ -60,7 +60,7 @@ void UIControl_ButtonList::ReInit()
 void UIControl_ButtonList::clearList()
 {
 	IggyDataValue result;
-	IggyResult out = IggyPlayerCallMethodRS ( m_parentScene->getMovie() , &result, getIggyValuePath(), m_removeAllItemsFunc , 0 , NULL );
+	IggyResult out = IggyPlayerCallMethodRS ( m_parentScene->getMovie() , &result, getIggyValuePath(), m_removeAllItemsFunc , 0 , nullptr );
 
 	m_itemCount = 0;
 }
@@ -82,7 +82,7 @@ void UIControl_ButtonList::addItem(const string &label, int data)
 
 	IggyStringUTF8 stringVal;
 	stringVal.string = (char*)label.c_str();
-	stringVal.length = (S32)label.length();
+	stringVal.length = static_cast<S32>(label.length());
 	value[0].type = IGGY_DATATYPE_string_UTF8;
 	value[0].string8 = stringVal;
 

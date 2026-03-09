@@ -63,7 +63,7 @@ void UIControl_SpaceIndicatorBar::reset()
 
 void UIControl_SpaceIndicatorBar::addSave(int64_t size)
 {
-	float startPercent = (float)((m_currentTotal-m_min))/(m_max-m_min);
+	float startPercent = static_cast<float>((m_currentTotal - m_min))/(m_max-m_min);
 
 	m_sizeAndOffsets.push_back( pair<int64_t, float>(size, startPercent) );
 
@@ -90,7 +90,7 @@ void UIControl_SpaceIndicatorBar::setSaveSize(int64_t size)
 {
 	m_currentSave = size;
 
-	float percent = (float)((m_currentSave-m_min))/(m_max-m_min);
+	float percent = static_cast<float>((m_currentSave - m_min))/(m_max-m_min);
 
 	IggyDataValue result;
 	IggyDataValue value[1];
@@ -101,7 +101,7 @@ void UIControl_SpaceIndicatorBar::setSaveSize(int64_t size)
 
 void UIControl_SpaceIndicatorBar::setTotalSize(int64_t size)
 {
-	float percent = (float)((m_currentTotal-m_min))/(m_max-m_min);
+	float percent = static_cast<float>((m_currentTotal - m_min))/(m_max-m_min);
 
 	IggyDataValue result;
 	IggyDataValue value[1];

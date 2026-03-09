@@ -226,7 +226,7 @@ static void debug_check_raw_values(GDrawHandleCache *c)
             s = s->next;
          }
          s = c->active;
-         while (s != NULL) {
+         while (s != nullptr) {
             assert(s->raw_ptr != t->raw_ptr);
             s = s->next;
          }
@@ -368,7 +368,7 @@ static void gdraw_HandleTransitionInsertBefore(GDrawHandle *t, GDrawHandleState 
 {
    check_lists(t->cache);
    assert(t->state != GDRAW_HANDLE_STATE_sentinel); // sentinels should never get here!
-   assert(t->state != (U32) new_state); // code should never call "transition" if it's not transitioning!
+   assert(t->state != static_cast<U32>(new_state)); // code should never call "transition" if it's not transitioning!
    // unlink from prev state
    t->prev->next = t->next;
    t->next->prev = t->prev;
@@ -433,7 +433,7 @@ static rrbool gdraw_HandleCacheLockStats(GDrawHandle *t, void *owner, GDrawStats
 
 static rrbool gdraw_HandleCacheLock(GDrawHandle *t, void *owner)
 {
-   return gdraw_HandleCacheLockStats(t, owner, NULL);
+   return gdraw_HandleCacheLockStats(t, owner, nullptr);
 }
 
 static void gdraw_HandleCacheUnlock(GDrawHandle *t)
@@ -461,11 +461,11 @@ static void gdraw_HandleCacheInit(GDrawHandleCache *c, S32 num_handles, S32 byte
    c->is_thrashing = false;
    c->did_defragment = false;
    for (i=0; i < GDRAW_HANDLE_STATE__count; i++) {
-      c->state[i].owner = NULL;
-      c->state[i].cache = NULL; // should never follow cache link from sentinels!
+      c->state[i].owner = nullptr;
+      c->state[i].cache = nullptr; // should never follow cache link from sentinels!
       c->state[i].next = c->state[i].prev = &c->state[i];
 #ifdef GDRAW_MANAGE_MEM
-      c->state[i].raw_ptr = NULL;
+      c->state[i].raw_ptr = nullptr;
 #endif
       c->state[i].fence.value = 0;
       c->state[i].bytes = 0;
@@ -478,7 +478,7 @@ static void gdraw_HandleCacheInit(GDrawHandleCache *c, S32 num_handles, S32 byte
       c->handle[i].bytes = 0;
       c->handle[i].state = GDRAW_HANDLE_STATE_free;
 #ifdef GDRAW_MANAGE_MEM
-      c->handle[i].raw_ptr = NULL;
+      c->handle[i].raw_ptr = nullptr;
 #endif
    }
    c->state[GDRAW_HANDLE_STATE_free].next = &c->handle[0];
@@ -486,10 +486,10 @@ static void gdraw_HandleCacheInit(GDrawHandleCache *c, S32 num_handles, S32 byte
    c->prev_frame_start.value = 0;
    c->prev_frame_end.value = 0;
 #ifdef GDRAW_MANAGE_MEM
-   c->alloc = NULL;
+   c->alloc = nullptr;
 #endif
 #ifdef GDRAW_MANAGE_MEM_TWOPOOL
-   c->alloc_other = NULL;
+   c->alloc_other = nullptr;
 #endif
    check_lists(c);
 }
@@ -497,14 +497,14 @@ static void gdraw_HandleCacheInit(GDrawHandleCache *c, S32 num_handles, S32 byte
 static GDrawHandle *gdraw_HandleCacheAllocateBegin(GDrawHandleCache *c)
 {
    GDrawHandle *free_list = &c->state[GDRAW_HANDLE_STATE_free];
-   GDrawHandle *t = NULL;
+   GDrawHandle *t = nullptr;
    if (free_list->next != free_list) {
       t = free_list->next;
       gdraw_HandleTransitionTo(t, GDRAW_HANDLE_STATE_alloc);
       t->bytes = 0;
       t->owner = 0;
 #ifdef GDRAW_MANAGE_MEM
-      t->raw_ptr = NULL;
+      t->raw_ptr = nullptr;
 #endif
 #ifdef GDRAW_CORRUPTION_CHECK
       t->has_check_value = false;
@@ -563,7 +563,7 @@ static GDrawHandle *gdraw_HandleCacheGetLRU(GDrawHandleCache *c)
    // at the front of the LRU list are the oldest ones, since in-use resources
    // will get appended on every transition from "locked" to "live".
    GDrawHandle *sentinel = &c->state[GDRAW_HANDLE_STATE_live];
-   return (sentinel->next != sentinel) ? sentinel->next : NULL;
+   return (sentinel->next != sentinel) ? sentinel->next : nullptr;
 }
 
 static void gdraw_HandleCacheTick(GDrawHandleCache *c, GDrawFence now)
@@ -778,7 +778,7 @@ static GDrawTexture *gdraw_BlurPass(GDrawFunctions *g, GDrawBlurInfo *c, GDrawRe
    if (!g->TextureDrawBufferBegin(draw_bounds, GDRAW_TEXTURE_FORMAT_rgba32, GDRAW_TEXTUREDRAWBUFFER_FLAGS_needs_color | GDRAW_TEXTUREDRAWBUFFER_FLAGS_needs_alpha, 0, gstats))
       return r->tex[0];
 
-   c->BlurPass(r, taps, data, draw_bounds, tc, (F32) c->h / c->frametex_height, clamp, gstats);
+   c->BlurPass(r, taps, data, draw_bounds, tc, static_cast<F32>(c->h) / c->frametex_height, clamp, gstats);
    return g->TextureDrawBufferEnd(gstats);
 }
 
@@ -830,7 +830,7 @@ static GDrawTexture *gdraw_BlurPassDownsample(GDrawFunctions *g, GDrawBlurInfo *
    assert(clamp[0] <= clamp[2]);
    assert(clamp[1] <= clamp[3]);
 
-   c->BlurPass(r, taps, data, &z, tc, (F32) c->h / c->frametex_height, clamp, gstats);
+   c->BlurPass(r, taps, data, &z, tc, static_cast<F32>(c->h) / c->frametex_height, clamp, gstats);
    return g->TextureDrawBufferEnd(gstats);
 }
 
@@ -842,7 +842,7 @@ static void gdraw_BlurAxis(S32 axis, GDrawFunctions *g, GDrawBlurInfo *c, GDrawR
    GDrawTexture *t;
    F32 data[MAX_TAPS][4];
    S32 off_axis = 1-axis;
-   S32 w = ((S32) ceil((blur_width-1)/2))*2+1;  // 1.2 => 3, 2.8 => 3, 3.2 => 5
+   S32 w = static_cast<S32>(ceil((blur_width - 1) / 2))*2+1;  // 1.2 => 3, 2.8 => 3, 3.2 => 5
    F32 edge_weight = 1 - (w - blur_width)/2;   // 3 => 0 => 1;   1.2 => 1.8 => 0.9 => 0.1
    F32 inverse_weight = 1.0f / blur_width;
 
@@ -949,7 +949,7 @@ static void gdraw_BlurAxis(S32 axis, GDrawFunctions *g, GDrawBlurInfo *c, GDrawR
          // max coverage is 25 samples, or a filter width of 13. with 7 taps, we sample
          // 13 samples in one pass, max coverage is 13*13 samples or (13*13-1)/2 width,
          // which is ((2T-1)*(2T-1)-1)/2 or (4T^2 - 4T + 1 -1)/2 or 2T^2 - 2T or 2T*(T-1)
-         S32 w_mip = (S32) ceil(linear_remap(w, MAX_TAPS+1, MAX_TAPS*MAX_TAPS, 2, MAX_TAPS));
+         S32 w_mip = static_cast<S32>(ceil(linear_remap(w, MAX_TAPS+1, MAX_TAPS*MAX_TAPS, 2, MAX_TAPS)));
          S32 downsample = w_mip;
          F32 sample_spacing = texel;
          if (downsample < 2) downsample = 2;
@@ -1095,7 +1095,7 @@ static void make_pool_aligned(void **start, S32 *num_bytes, U32 alignment)
    if (addr_aligned != addr_orig) {
       S32 diff = (S32) (addr_aligned - addr_orig);
       if (*num_bytes < diff) { 
-         *start = NULL;
+         *start = nullptr;
          *num_bytes = 0;
          return;
       } else {
@@ -1132,7 +1132,7 @@ static void *gdraw_arena_alloc(GDrawArena *arena, U32 size, U32 align)
    UINTa remaining = arena->end - arena->current;
    UINTa total_size = (ptr - arena->current) + size;
    if (remaining < total_size) // doesn't fit
-      return NULL;
+      return nullptr;
 
    arena->current = ptr + size;
    return ptr;
@@ -1157,7 +1157,7 @@ static void *gdraw_arena_alloc(GDrawArena *arena, U32 size, U32 align)
 //   (i.e. block->next->prev == block->prev->next == block)
 // - All allocated blocks are also kept in a hash table, indexed by their
 //   pointer (to allow free to locate the corresponding block_info quickly).
-//   There's a single-linked, NULL-terminated list of elements in each hash
+//   There's a single-linked, nullptr-terminated list of elements in each hash
 //   bucket.
 // - The physical block list is ordered. It always contains all currently
 //   active blocks and spans the whole managed memory range. There are no
@@ -1166,7 +1166,7 @@ static void *gdraw_arena_alloc(GDrawArena *arena, U32 size, U32 align)
 //   they are coalesced immediately.
 // - The maximum number of blocks that could ever be necessary is allocated
 //   on initialization. All block_infos not currently in use are kept in a
-//   single-linked, NULL-terminated list of unused blocks. Every block is either
+//   single-linked, nullptr-terminated list of unused blocks. Every block is either
 //   in the physical block list or the unused list, and the total number of
 //   blocks is constant.
 // These invariants always hold before and after an allocation/free.
@@ -1384,7 +1384,7 @@ static void gfxalloc_check2(gfx_allocator *alloc)
 
 static gfx_block_info *gfxalloc_pop_unused(gfx_allocator *alloc)
 {
-   GFXALLOC_ASSERT(alloc->unused_list != NULL);
+   GFXALLOC_ASSERT(alloc->unused_list != nullptr);
    GFXALLOC_ASSERT(alloc->unused_list->is_unused);
    GFXALLOC_IF_CHECK(GFXALLOC_ASSERT(alloc->num_unused);)
 
@@ -1457,7 +1457,7 @@ static gfx_allocator *gfxalloc_create(void *mem, U32 mem_size, U32 align, U32 ma
    U32 i, max_blocks, size;
 
    if (!align || (align & (align - 1)) != 0) // align must be >0 and a power of 2
-      return NULL;
+      return nullptr;
 
    // for <= max_allocs live allocs, there's <= 2*max_allocs+1 blocks. worst case:
    // [free][used][free] .... [free][used][free]
@@ -1465,7 +1465,7 @@ static gfx_allocator *gfxalloc_create(void *mem, U32 mem_size, U32 align, U32 ma
    size = sizeof(gfx_allocator) + max_blocks * sizeof(gfx_block_info);
    a = (gfx_allocator *) IggyGDrawMalloc(size);
    if (!a)
-      return NULL;
+      return nullptr;
 
    memset(a, 0, size);
 
@@ -1506,16 +1506,16 @@ static gfx_allocator *gfxalloc_create(void *mem, U32 mem_size, U32 align, U32 ma
    a->blocks[i].is_unused = 1;
 
    gfxalloc_check(a);
-   debug_complete_check(a, NULL, 0,0);
+   debug_complete_check(a, nullptr, 0,0);
    return a;
 }
 
 static void *gfxalloc_alloc(gfx_allocator *alloc, U32 size_in_bytes)
 {
-   gfx_block_info *cur, *best = NULL;
+   gfx_block_info *cur, *best = nullptr;
    U32 i, best_wasted = ~0u;
    U32 size = size_in_bytes;
-debug_complete_check(alloc, NULL, 0,0);
+debug_complete_check(alloc, nullptr, 0,0);
 gfxalloc_check(alloc);
    GFXALLOC_IF_CHECK(GFXALLOC_ASSERT(alloc->num_blocks == alloc->num_alloc + alloc->num_free + alloc->num_unused);)
    GFXALLOC_IF_CHECK(GFXALLOC_ASSERT(alloc->num_free <= alloc->num_blocks+1);)
@@ -1565,7 +1565,7 @@ gfxalloc_check(alloc);
 debug_check_overlap(alloc->cache, best->ptr, best->size);
       return best->ptr;
    } else
-      return NULL; // not enough space!
+      return nullptr; // not enough space!
 }
 
 static void gfxalloc_free(gfx_allocator *alloc, void *ptr)
@@ -1735,7 +1735,7 @@ static void gdraw_DefragmentMain(GDrawHandleCache *c, U32 flags, GDrawStats *sta
    // (unused for allocated blocks, we'll use it to store a back-pointer to the corresponding handle)
    for (b = alloc->blocks[0].next_phys; b != alloc->blocks; b=b->next_phys)
       if (!b->is_free)
-         b->prev = NULL;
+         b->prev = nullptr;
 
    // go through all handles and store a pointer to the handle in the corresponding memory block
    for (i=0; i < c->max_handles; i++)
@@ -1748,7 +1748,7 @@ static void gdraw_DefragmentMain(GDrawHandleCache *c, U32 flags, GDrawStats *sta
                break;
             }
 
-         GFXALLOC_ASSERT(b != NULL); // didn't find this block anywhere!
+         GFXALLOC_ASSERT(b != nullptr); // didn't find this block anywhere!
       }
 
    // clear alloc hash table (we rebuild it during defrag)
@@ -1910,7 +1910,7 @@ static rrbool gdraw_CanDefragment(GDrawHandleCache *c)
 static rrbool gdraw_MigrateResource(GDrawHandle *t, GDrawStats *stats)
 {
    GDrawHandleCache *c = t->cache;
-   void *ptr = NULL;
+   void *ptr = nullptr;
 
    assert(t->state == GDRAW_HANDLE_STATE_live || t->state == GDRAW_HANDLE_STATE_locked || t->state == GDRAW_HANDLE_STATE_pinned);
    // anything we migrate should be in the "other" (old) pool
@@ -2300,7 +2300,7 @@ static void gdraw_bufring_init(gdraw_bufring * RADRESTRICT ring, void *ptr, U32 
 
 static void gdraw_bufring_shutdown(gdraw_bufring * RADRESTRICT ring)
 {
-   ring->cur = NULL;
+   ring->cur = nullptr;
    ring->seg_size = 0;
 }
 
@@ -2310,7 +2310,7 @@ static void *gdraw_bufring_alloc(gdraw_bufring * RADRESTRICT ring, U32 size, U32
    gdraw_bufring_seg *seg;
 
    if (size > ring->seg_size)
-      return NULL; // nope, won't fit
+      return nullptr; // nope, won't fit
 
    assert(align <= ring->align);
 
@@ -2415,7 +2415,7 @@ static rrbool gdraw_res_free_lru(GDrawHandleCache *c, GDrawStats *stats)
    // was it referenced since end of previous frame (=in this frame)?
    // if some, we're thrashing; report it to the user, but only once per frame.
    if (c->prev_frame_end.value < r->fence.value && !c->is_thrashing) {
-      IggyGDrawSendWarning(NULL, c->is_vertex ? "GDraw Thrashing vertex memory" : "GDraw Thrashing texture memory");
+      IggyGDrawSendWarning(nullptr, c->is_vertex ? "GDraw Thrashing vertex memory" : "GDraw Thrashing texture memory");
       c->is_thrashing = true;
    }
 
@@ -2435,8 +2435,8 @@ static GDrawHandle *gdraw_res_alloc_outofmem(GDrawHandleCache *c, GDrawHandle *t
 {
    if (t)
       gdraw_HandleCacheAllocateFail(t);
-   IggyGDrawSendWarning(NULL, c->is_vertex ? "GDraw Out of static vertex buffer %s" : "GDraw Out of texture %s", failed_type);
-   return NULL;
+   IggyGDrawSendWarning(nullptr, c->is_vertex ? "GDraw Out of static vertex buffer %s" : "GDraw Out of texture %s", failed_type);
+   return nullptr;
 }
 
 #ifndef GDRAW_MANAGE_MEM
@@ -2445,7 +2445,7 @@ static GDrawHandle *gdraw_res_alloc_begin(GDrawHandleCache *c, S32 size, GDrawSt
 {
    GDrawHandle *t;
    if (size > c->total_bytes)
-      gdraw_res_alloc_outofmem(c, NULL, "memory (single resource larger than entire pool)");
+      gdraw_res_alloc_outofmem(c, nullptr, "memory (single resource larger than entire pool)");
    else {
       // given how much data we're going to allocate, throw out
       // data until there's "room" (this basically lets us use
@@ -2453,7 +2453,7 @@ static GDrawHandle *gdraw_res_alloc_begin(GDrawHandleCache *c, S32 size, GDrawSt
       // packing it and being exact)
       while (c->bytes_free < size) {
          if (!gdraw_res_free_lru(c, stats)) {
-            gdraw_res_alloc_outofmem(c, NULL, "memory");
+            gdraw_res_alloc_outofmem(c, nullptr, "memory");
             break;
          }
       }
@@ -2468,8 +2468,8 @@ static GDrawHandle *gdraw_res_alloc_begin(GDrawHandleCache *c, S32 size, GDrawSt
       // we'd trade off cost of regenerating)
       if (gdraw_res_free_lru(c, stats)) {
          t = gdraw_HandleCacheAllocateBegin(c);
-         if (t == NULL) {
-            gdraw_res_alloc_outofmem(c, NULL, "handles");
+         if (t == nullptr) {
+            gdraw_res_alloc_outofmem(c, nullptr, "handles");
          }
       }
    }
@@ -2513,7 +2513,7 @@ static void gdraw_res_kill(GDrawHandle *r, GDrawStats *stats)
 {
    GDRAW_FENCE_FLUSH(); // dead list is sorted by fence index - make sure all fence values are current.
 
-   r->owner = NULL;
+   r->owner = nullptr;
    gdraw_HandleCacheInsertDead(r);
    gdraw_res_reap(r->cache, stats);
 }
@@ -2521,11 +2521,11 @@ static void gdraw_res_kill(GDrawHandle *r, GDrawStats *stats)
 static GDrawHandle *gdraw_res_alloc_begin(GDrawHandleCache *c, S32 size, GDrawStats *stats)
 {
    GDrawHandle *t;
-   void *ptr = NULL;
+   void *ptr = nullptr;
 
    gdraw_res_reap(c, stats); // NB this also does GDRAW_FENCE_FLUSH();
    if (size > c->total_bytes)
-      return gdraw_res_alloc_outofmem(c, NULL, "memory (single resource larger than entire pool)");
+      return gdraw_res_alloc_outofmem(c, nullptr, "memory (single resource larger than entire pool)");
    
    // now try to allocate a handle
    t = gdraw_HandleCacheAllocateBegin(c);
@@ -2537,7 +2537,7 @@ static GDrawHandle *gdraw_res_alloc_begin(GDrawHandleCache *c, S32 size, GDrawSt
       gdraw_res_free_lru(c, stats);
       t = gdraw_HandleCacheAllocateBegin(c);
       if (!t)
-         return gdraw_res_alloc_outofmem(c, NULL, "handles");
+         return gdraw_res_alloc_outofmem(c, nullptr, "handles");
    }
 
    // try to allocate first
