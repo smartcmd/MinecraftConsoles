@@ -635,7 +635,7 @@ void ConsoleSchematicFile::generateSchematicFile(DataOutputStream *dos, Level *l
 	}
 
 #ifndef _CONTENT_PACKAGE
-	if(p!=blockCount) return 0;
+	if(p!=blockCount) return;
 #endif
 
 	// We don't know how this will compress - just make a fixed length buffer to initially decompress into
