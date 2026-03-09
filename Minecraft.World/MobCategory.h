@@ -7,32 +7,32 @@ class MobCategory
 {
 public:
 	// 4J - putting constants for xbox spawning in one place to tidy things up a bit - all numbers are per level
-	static int maxNaturalMonsters;						// Max number of enemies (skeleton, zombie, creeper etc) that the mob spawner will produce
-	static int maxNaturalAnimals;						// Max number of animals (cows, sheep, pigs) that the mob spawner will produce	
-	static int maxNaturalAmbient;						// Ambient mobs
-	static int maxNaturalSquid;							// Max number of squid that the mob spawner will produce
-	static int maxNaturalChickens;						// Max number of chickens that the mob spawner will produce
-	static int maxNaturalWolves;						// Max number of wolves that the mob spawner will produce
-	static int maxNaturalMushroomCows;					// Max number of mushroom cows that the mob spawner will produce
+	static int max_natural_monsters;						// Max number of enemies (skeleton, zombie, creeper etc) that the mob spawner will produce
+	static int max_natural_animals;						// Max number of animals (cows, sheep, pigs) that the mob spawner will produce	
+	static int max_natural_ambient;						// Ambient mobs
+	static int max_natural_squid;							// Max number of squid that the mob spawner will produce
+	static int max_natural_chickens;						// Max number of chickens that the mob spawner will produce
+	static int max_natural_wolves;						// Max number of wolves that the mob spawner will produce
+	static int max_natural_mushroomcows;					// Max number of mushroom cows that the mob spawner will produce
 
-	static int maxSnowGolems;							// Max number of snow golems that can be created by placing blocks - 4J-PB increased limit due to player requests
-	static int maxIronGolems;							// Max number of iron golems that can be created by placing blocks - 4J-PB increased limit due to player requests
-	static int maxBosses;								// Max number of bosses (enderdragon/wither)
+	static int max_snow_golems;							// Max number of snow golems that can be created by placing blocks - 4J-PB increased limit due to player requests
+	static int max_iron_golems;							// Max number of iron golems that can be created by placing blocks - 4J-PB increased limit due to player requests
+	static int max_bosses;								// Max number of bosses (enderdragon/wither)
 
-	static int maxAnimalsWithBreeding;					// Max number of animals that we can produce (in total), when breeding
-	static int maxChickensWithBreeding;					// Max number of chickens that we can produce (in total), when breeding/hatching
-	static int maxMushroomCowsWithBreeding;				// Max number of mushroom cows that we can produce (in total), when breeding
-	static int maxWolvesWithBreeding;					// Max number of wolves that we can produce (in total), when breeding
-	static int maxVillagersWithBreeding;				// Max number of villagers that we can produce (in total), when breeding
+	static int max_animals_with_breeding;					// Max number of animals that we can produce (in total), when breeding
+	static int max_chickens_with_breeding;					// Max number of chickens that we can produce (in total), when breeding/hatching
+	static int max_mushroomcows_with_breeding;				// Max number of mushroom cows that we can produce (in total), when breeding
+	static int max_wolves_with_breeding;					// Max number of wolves that we can produce (in total), when breeding
+	static int max_villagers_with_breeding;				// Max number of villagers that we can produce (in total), when breeding
 
-	static int maxAnimalsWithSpawnEgg;					// Max number of animals that we can produce (in total), when using spawn eggs
-	static int maxChickensWithSpawnEgg;					// Max number of chickens that we can produce (in total), when using spawn eggs
-	static int maxWolvesWithSpawnEgg;					// Max number of wolves that we can produce (in total), when using spawn eggs
-	static int maxMonstersWithSpawnEgg;					// Max number of monsters that we can produce (in total), when using spawn eggs
-	static int maxVillagersWithSpawnEgg;				// Max number of villagers that we can produce (in total), when using spawn eggs - 4J-PB increased limit due to player requests
-	static int maxMushroomCowsWithSpawnEgg;				// Max number of mushroom cows that we can produce (in total), when using spawn eggs
-	static int maxSquidsWithSpawnEgg;					// Max number of squids that we can produce (in total), when using spawn eggs
-	static int maxAmbientWithSpawnEgg;					// Max number of ambient mobs that we can produce (in total), when using spawn eggs
+	static int max_animals_with_spawn_egg;					// Max number of animals that we can produce (in total), when using spawn eggs
+	static int max_chickens_with_spawn_egg;					// Max number of chickens that we can produce (in total), when using spawn eggs
+	static int max_wolves_with_spawn_egg;					// Max number of wolves that we can produce (in total), when using spawn eggs
+	static int max_monsters_with_spawn_egg;					// Max number of monsters that we can produce (in total), when using spawn eggs
+	static int max_villagers_with_spawn_egg;				// Max number of villagers that we can produce (in total), when using spawn eggs - 4J-PB increased limit due to player requests
+	static int max_mushroomcows_with_spawn_egg;				// Max number of mushroom cows that we can produce (in total), when using spawn eggs
+	static int max_squids_with_spawn_egg;					// Max number of squids that we can produce (in total), when using spawn eggs
+	static int max_ambient_with_spawn_egg;					// Max number of ambient mobs that we can produce (in total), when using spawn eggs
 
 	/*
 		Maximum animals = 50 + 20 + 20 = 90

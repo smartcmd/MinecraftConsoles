@@ -227,16 +227,16 @@ vector<Biome::MobSpawnerData *> *Biome::getMobs(MobCategory *category)
 		if (app.GetGameHostOption(eGameHostOption_NoMobCap))
 		{
 			// Only input into this if necessary, this should be after all others are set up for this biome as well
-			if (allFriendlies.empty()) {
+			if (all_friendlies.empty()) {
 				// If empty, reserve the combined size of all mob spawner data
-				allFriendlies.reserve(friendlies.size() + friendlies_chicken.size() + friendlies_wolf.size() + friendlies_mushroomcow.size());
-				// Combine each vector into allFriendlies
-				allFriendlies.insert(allFriendlies.end(), friendlies.begin(), friendlies.end());
-				allFriendlies.insert(allFriendlies.end(), friendlies_chicken.begin(), friendlies_chicken.end());
-				allFriendlies.insert(allFriendlies.end(), friendlies_wolf.begin(), friendlies_wolf.end());
-				allFriendlies.insert(allFriendlies.end(), friendlies_mushroomcow.begin(), friendlies_mushroomcow.end());
+				all_friendlies.reserve(friendlies.size() + friendlies_chicken.size() + friendlies_wolf.size() + friendlies_mushroomcow.size());
+				// Combine each vector into all_friendlies
+				all_friendlies.insert(all_friendlies.end(), friendlies.begin(), friendlies.end());
+				all_friendlies.insert(all_friendlies.end(), friendlies_chicken.begin(), friendlies_chicken.end());
+				all_friendlies.insert(all_friendlies.end(), friendlies_wolf.begin(), friendlies_wolf.end());
+				all_friendlies.insert(all_friendlies.end(), friendlies_mushroomcow.begin(), friendlies_mushroomcow.end());
 			}
-			return &allFriendlies; // Use combined vector when using Java logic
+			return &all_friendlies; // Use combined vector when using Java logic
 		}
 		return &friendlies;
 	}

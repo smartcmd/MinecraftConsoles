@@ -5,32 +5,32 @@
 #include "Material.h"
 #include "MobCategory.h"
 
-int MobCategory::maxNaturalMonsters = 0;
-int MobCategory::maxNaturalAnimals = 0;
-int MobCategory::maxNaturalAmbient = 0;
-int MobCategory::maxNaturalSquid = 0;
-int MobCategory::maxNaturalChickens = 0;
-int MobCategory::maxNaturalWolves = 0;
-int MobCategory::maxNaturalMushroomCows = 0;
+int MobCategory::max_natural_monsters = 0;
+int MobCategory::max_natural_animals = 0;
+int MobCategory::max_natural_ambient = 0;
+int MobCategory::max_natural_squid = 0;
+int MobCategory::max_natural_chickens = 0;
+int MobCategory::max_natural_wolves = 0;
+int MobCategory::max_natural_mushroomcows = 0;
 
-int MobCategory::maxSnowGolems = 0;
-int MobCategory::maxIronGolems = 0;
-int MobCategory::maxBosses = 0;
+int MobCategory::max_snow_golems = 0;
+int MobCategory::max_iron_golems = 0;
+int MobCategory::max_bosses = 0;
 
-int MobCategory::maxAnimalsWithBreeding = 0;
-int MobCategory::maxChickensWithBreeding = 0;
-int MobCategory::maxMushroomCowsWithBreeding = 0;
-int MobCategory::maxWolvesWithBreeding = 0;
-int MobCategory::maxVillagersWithBreeding = 0;
+int MobCategory::max_animals_with_breeding = 0;
+int MobCategory::max_chickens_with_breeding = 0;
+int MobCategory::max_mushroomcows_with_breeding = 0;
+int MobCategory::max_wolves_with_breeding = 0;
+int MobCategory::max_villagers_with_breeding = 0;
 
-int MobCategory::maxAnimalsWithSpawnEgg = 0;
-int MobCategory::maxChickensWithSpawnEgg = 0;
-int MobCategory::maxWolvesWithSpawnEgg = 0;
-int MobCategory::maxMonstersWithSpawnEgg = 0;
-int MobCategory::maxVillagersWithSpawnEgg = 0;
-int MobCategory::maxMushroomCowsWithSpawnEgg = 0;
-int MobCategory::maxSquidsWithSpawnEgg = 0;
-int MobCategory::maxAmbientWithSpawnEgg = 0;
+int MobCategory::max_animals_with_spawn_egg = 0;
+int MobCategory::max_chickens_with_spawn_egg = 0;
+int MobCategory::max_wolves_with_spawn_egg = 0;
+int MobCategory::max_monsters_with_spawn_egg = 0;
+int MobCategory::max_villagers_with_spawn_egg = 0;
+int MobCategory::max_mushroomcows_with_spawn_egg = 0;
+int MobCategory::max_squids_with_spawn_egg = 0;
+int MobCategory::max_ambient_with_spawn_egg = 0;
 
 MobCategory *MobCategory::monster = nullptr;
 MobCategory *MobCategory::creature = nullptr;
@@ -64,36 +64,36 @@ void MobCategory::staticCtor()
 	values[5] = creature_chicken;
 	values[6] = creature_mushroomcow;
 	
-	maxNaturalMonsters = 50;
-	maxNaturalAnimals = 50;
-	maxNaturalAmbient = 20;
-	maxNaturalSquid = 5;
-	maxNaturalChickens = 8;
-	maxNaturalWolves = 8;
-	maxNaturalMushroomCows = 2;
-	maxSnowGolems = 16;
-	maxIronGolems = 16;
-	maxBosses = 1;
-	maxVillagersWithBreeding = 35;
-	monster->m_maxPerLevel = maxNaturalMonsters;
-	creature->m_maxPerLevel = maxNaturalAnimals;
-	ambient->m_maxPerLevel = maxNaturalAmbient;
-	waterCreature->m_maxPerLevel = maxNaturalSquid;
-	creature_wolf->m_maxPerLevel = maxNaturalWolves;
-	creature_chicken->m_maxPerLevel = maxNaturalChickens;
-	creature_mushroomcow->m_maxPerLevel = maxNaturalMushroomCows;
-	maxAnimalsWithBreeding = maxNaturalAnimals + 20;
-	maxChickensWithBreeding = maxNaturalChickens + 8;
-	maxMushroomCowsWithBreeding = maxNaturalMushroomCows + 20;
-	maxWolvesWithBreeding = maxNaturalWolves + 8;
-	maxAnimalsWithSpawnEgg = maxAnimalsWithBreeding + 20;
-	maxChickensWithSpawnEgg = maxChickensWithBreeding + 10;
-	maxWolvesWithSpawnEgg = maxWolvesWithBreeding + 10;
-	maxMonstersWithSpawnEgg = maxNaturalMonsters + 20;
-	maxVillagersWithSpawnEgg = maxVillagersWithBreeding + 15;
-	maxMushroomCowsWithSpawnEgg = maxMushroomCowsWithBreeding + 8;
-	maxSquidsWithSpawnEgg = maxNaturalSquid + 8;
-	maxAmbientWithSpawnEgg = maxNaturalAmbient + 8;
+	max_natural_monsters = 50;
+	max_natural_animals = 50;
+	max_natural_ambient = 20;
+	max_natural_squid = 5;
+	max_natural_chickens = 8;
+	max_natural_wolves = 8;
+	max_natural_mushroomcows = 2;
+	max_snow_golems = 16;
+	max_iron_golems = 16;
+	max_bosses = 1;
+	max_villagers_with_breeding = 35;
+	monster->m_maxPerLevel = max_natural_monsters;
+	creature->m_maxPerLevel = max_natural_animals;
+	ambient->m_maxPerLevel = max_natural_ambient;
+	waterCreature->m_maxPerLevel = max_natural_squid;
+	creature_wolf->m_maxPerLevel = max_natural_wolves;
+	creature_chicken->m_maxPerLevel = max_natural_chickens;
+	creature_mushroomcow->m_maxPerLevel = max_natural_mushroomcows;
+	max_animals_with_breeding = max_natural_animals + 20;
+	max_chickens_with_breeding = max_natural_chickens + 8;
+	max_mushroomcows_with_breeding = max_natural_mushroomcows + 20;
+	max_wolves_with_breeding = max_natural_wolves + 8;
+	max_animals_with_spawn_egg = max_animals_with_breeding + 20;
+	max_chickens_with_spawn_egg = max_chickens_with_breeding + 10;
+	max_wolves_with_spawn_egg = max_wolves_with_breeding + 10;
+	max_monsters_with_spawn_egg = max_natural_monsters + 20;
+	max_villagers_with_spawn_egg = max_villagers_with_breeding + 15;
+	max_mushroomcows_with_spawn_egg = max_mushroomcows_with_breeding + 8;
+	max_squids_with_spawn_egg = max_natural_squid + 8;
+	max_ambient_with_spawn_egg = max_natural_ambient + 8;
 }
 
 MobCategory::MobCategory(int maxVar, Material *spawnPositionMaterial, bool isFriendly, bool isPersistent, eINSTANCEOF eBase, bool isSingleType)
