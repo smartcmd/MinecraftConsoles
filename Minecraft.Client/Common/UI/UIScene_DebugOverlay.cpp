@@ -24,7 +24,7 @@ UIScene_DebugOverlay::UIScene_DebugOverlay(int iPad, void *initData, UILayer *pa
 
 	Minecraft *pMinecraft = Minecraft::GetInstance();
 	WCHAR TempString[256];
-	int fovSliderVal = app.GetGameSettings(m_iPad, eGameSetting_FOV) * 80.0f / 100.0f;
+	int fovSliderVal = (app.GetGameSettings(m_iPad, eGameSetting_FOV) - 101) * 80.0f / 100.0f;
 	int fovDeg = 30 + fovSliderVal * 80 / 100;
 	swprintf( (WCHAR *)TempString, 256, L"Set fov (%d)", fovDeg);
 	m_sliderFov.init(TempString,eControl_FOV,0,80,fovSliderVal);
@@ -287,16 +287,6 @@ void UIScene_DebugOverlay::handleSliderMove(F64 sliderId, F64 currentValue)
 			swprintf( (WCHAR *)TempString, 256, L"FOV: %d", displayFOV);
 			m_sliderFov.setLabel(TempString);
 
-			/*
-			int simulatedFovDeg = v + 30; // jvnpr -- convert 0-80 to 30-110
-			float trueFovDeg = (30.0f + (v / ( 80.0f / 100.0f )) * (50.0f / 100.0f)); // jvnpr -- further convert 30-110 to an internal range of 30-85 to better reflect JE fov values
-			pMinecraft->gameRenderer->SetFovVal(trueFovDeg);
-			app.SetGameSettings(m_iPad, eGameSetting_FOV, (v / (80.0f / 100.0f)));
-
-			WCHAR TempString[256];
-			swprintf( (WCHAR *)TempString, 256, L"FOV: %d (True: %d)", simulatedFovDeg, (int)trueFovDeg);
-			m_sliderFov.setLabel(TempString);
-			*/
 		}
 		break;
 	};

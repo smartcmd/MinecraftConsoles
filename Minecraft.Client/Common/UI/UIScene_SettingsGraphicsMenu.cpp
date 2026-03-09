@@ -28,14 +28,14 @@ UIScene_SettingsGraphicsMenu::UIScene_SettingsGraphicsMenu(int iPad, void *initD
 	// Setup all the Iggy references we need for this scene
 	initialiseMovie();
 	Minecraft* pMinecraft = Minecraft::GetInstance();
-	
+
 	m_bNotInGame=(Minecraft::GetInstance()->level==NULL);
 
 	m_checkboxClouds.init(app.GetString(IDS_CHECKBOX_RENDER_CLOUDS),eControl_Clouds,(app.GetGameSettings(m_iPad,eGameSetting_Clouds)!=0));
 	m_checkboxBedrockFog.init(app.GetString(IDS_CHECKBOX_RENDER_BEDROCKFOG),eControl_BedrockFog,(app.GetGameSettings(m_iPad,eGameSetting_BedrockFog)!=0));
 	m_checkboxCustomSkinAnim.init(app.GetString(IDS_CHECKBOX_CUSTOM_SKIN_ANIM),eControl_CustomSkinAnim,(app.GetGameSettings(m_iPad,eGameSetting_CustomSkinAnim)!=0));
 
-	
+
 	WCHAR TempString[256];
 
 	swprintf((WCHAR*)TempString, 256, L"Render Distance: %d",app.GetGameSettings(m_iPad,eGameSetting_RenderDistance));	
@@ -44,14 +44,21 @@ UIScene_SettingsGraphicsMenu::UIScene_SettingsGraphicsMenu(int iPad, void *initD
 	swprintf( (WCHAR *)TempString, 256, L"%ls: %d%%", app.GetString( IDS_SLIDER_GAMMA ),app.GetGameSettings(m_iPad,eGameSetting_Gamma));	
 	m_sliderGamma.init(TempString,eControl_Gamma,0,100,app.GetGameSettings(m_iPad,eGameSetting_Gamma));
 
-	swprintf((WCHAR*)TempString, 256, L"FOV: %d", (int)(30.0f + app.GetGameSettings(m_iPad, eGameSetting_FOV) * 80.0f / 100.0f));
-	m_sliderFOV.init(TempString, eControl_FOV, 0, 80, (app.GetGameSettings(m_iPad, eGameSetting_FOV)) * 80.0f / 100.0f);
+	if ((int)(30.0f + (app.GetGameSettings(m_iPad, eGameSetting_FOV) - 101) * 80.0f / 100.0f) == 90)
+	{
+		swprintf((WCHAR*)TempString, 256, L"FOV: Default");
+	}
+	else
+	{
+		swprintf((WCHAR*)TempString, 256, L"FOV: %d", (int)(30.0f + (app.GetGameSettings(m_iPad, eGameSetting_FOV) - 101) * 80.0f / 100.0f));
+	}
+	m_sliderFOV.init(TempString, eControl_FOV, 0, 80, ((app.GetGameSettings(m_iPad, eGameSetting_FOV)) - 101) * 80.0f / 100.0f);
 	
 	swprintf( (WCHAR *)TempString, 256, L"%ls: %d%%", app.GetString( IDS_SLIDER_INTERFACEOPACITY ),app.GetGameSettings(m_iPad,eGameSetting_InterfaceOpacity));	
 	m_sliderInterfaceOpacity.init(TempString,eControl_InterfaceOpacity,0,100,app.GetGameSettings(m_iPad,eGameSetting_InterfaceOpacity));
 
-	doHorizontalResizeCheck();
-	
+	doHorizontalResizeCheck(); 
+
 	bool bInGame=(Minecraft::GetInstance()->level!=NULL);
 	bool bIsPrimaryPad=(ProfileManager.GetPrimaryPad()==m_iPad);
 	// if we're not in the game, we need to use basescene 0 
@@ -196,12 +203,19 @@ void UIScene_SettingsGraphicsMenu::handleSliderMove(F64 sliderId, F64 currentVal
 			if (v > 80) v = 80;
 			int displayFOV = v + 30; // jvnpr -- convert 0-80 to 30-110
 
-			pMinecraft->options->fov = ( v / 40.0f ) - 1 ; // jvnpr -- use FOV option instead of hooking into gamerenderer (range from -1 to 1 for 30-110)
+			pMinecraft->options->fov = (v / 40.0f) - 1; // jvnpr -- use FOV option instead of hooking into gamerenderer (range from -1 to 1 for 30-110)
 			WCHAR TempString[256];
-			swprintf( (WCHAR *)TempString, 256, L"FOV: %d", displayFOV);
+			
+			if (v + 30 == 90) {
+				swprintf((WCHAR*)TempString, 256, L"FOV: Default", displayFOV); // when fov is 90 display "FOV: Default (90)"
+			}
+			else {
+				swprintf((WCHAR*)TempString, 256, L"FOV: %d", displayFOV);
+			}
+			
 			m_sliderFOV.setLabel(TempString);
 			
-			app.SetGameSettings(m_iPad, eGameSetting_FOV, (v / ( 80.0f / 100.0f )));
+			app.SetGameSettings(m_iPad, eGameSetting_FOV, (v / ( 80.0f / 100.0f )) + 101); // offset from storing as 0-100 to 101-201 to detect whether we use old system and convert
 		}
 		break;
 
