@@ -1056,7 +1056,7 @@ void  CompressedTileStorage::compress(int upgradeBlock/*=-1*/)
 #ifndef _DURANGO
 			MEMORYSTATUS memStatus;
 			GlobalMemoryStatus(&memStatus);
-			__debugbreak();
+			// __debugbreak();
 #endif
 		}
 		unsigned char *pucData = newIndicesAndData + 1024;

@@ -122,7 +122,7 @@ void ConsoleSchematicFile::load(DataInputStream *dis)
 				{
 #ifndef _CONTENT_PACKAGE
 					app.DebugPrintf("ConsoleSchematicFile has read a NULL tile entity\n");
-					__debugbreak();
+					// __debugbreak();
 #endif
 				}
 				else
@@ -635,7 +635,7 @@ void ConsoleSchematicFile::generateSchematicFile(DataOutputStream *dos, Level *l
 	}
 
 #ifndef _CONTENT_PACKAGE
-	if(p!=blockCount) __debugbreak();
+	if(p!=blockCount) // __debugbreak();
 #endif
 
 	// We don't know how this will compress - just make a fixed length buffer to initially decompress into

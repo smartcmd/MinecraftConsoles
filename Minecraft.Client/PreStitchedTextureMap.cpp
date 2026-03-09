@@ -227,7 +227,7 @@ void PreStitchedTextureMap::makeTextureAnimated(TexturePack *texturePack, Stitch
 		if(first->getWidth() != tex->getWidth() || first->getHeight() != tex->getHeight())
 		{
 			app.DebugPrintf("%ls - first w - %d, h - %d, tex w - %d, h - %d\n",textureFileName.c_str(),first->getWidth(),tex->getWidth(),first->getHeight(),tex->getHeight());
-			//__debugbreak();
+			//// __debugbreak();
 		}
 #endif
 

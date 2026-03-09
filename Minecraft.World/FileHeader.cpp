@@ -298,7 +298,7 @@ void FileHeader::ReadHeader( LPVOID saveMem, ESavePlatform plat /*= SAVE_FILE_PL
 	default:
 #ifndef _CONTENT_PACKAGE
 		app.DebugPrintf("**********  Invalid save version %d\n",m_saveVersion);
-		__debugbreak();
+		// __debugbreak();
 #endif
 		break;
 	}

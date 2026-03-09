@@ -518,7 +518,7 @@ void LocalPlayer::changeDimension(int i)
 			//minecraft.setScreen(new WinScreen());
 #ifndef _CONTENT_PACKAGE
 		app.DebugPrintf("LocalPlayer::changeDimension from 1 to 1 but WinScreen has not been implemented.\n");
-		__debugbreak();
+		// __debugbreak();
 #endif
 		}
 		else

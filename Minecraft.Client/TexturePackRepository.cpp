@@ -338,7 +338,7 @@ bool TexturePackRepository::selectTexturePackById(DWORD id)
 		app.DebugPrintf("Failed to select texture pack %d as it is not in the list\n", id);
 #ifndef _CONTENT_PACKAGE
 		// TODO - 4J Stu: We should report this to the player in some way
-		//__debugbreak();
+		//// __debugbreak();
 #endif
 		// Fail safely
 		if( selectSkin( DEFAULT_TEXTURE_PACK ) )

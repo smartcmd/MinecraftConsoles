@@ -487,7 +487,7 @@ void SoundEngine::play(int iSound, float x, float y, float z, float volume, floa
 	{
 #ifndef _CONTENT_PACKAGE
 #ifdef _DEBUG
-		__debugbreak();
+		// __debugbreak();
 #endif
 		//wprintf(L"WARNING: Sound cue not found - %ls\n", name.c_str() );
 		app.DebugPrintf("Not found: %s\n",xboxName);

@@ -598,7 +598,7 @@ public:
 
 		if ( (m_falsePositives.size() > 0) || (m_falseNegatives.size() > 0) )
 		{
-			__debugbreak();
+			// __debugbreak();
 		}
 	}
 };

@@ -87,7 +87,7 @@ void Stitcher::stitch()
 		{
 			app.DebugPrintf("Stitcher exception!\n");
 #ifndef _CONTENT_PACKAGE
-			__debugbreak();
+			// __debugbreak();
 #endif
 			//throw new StitcherException(textureHolder);
 		}

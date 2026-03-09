@@ -97,7 +97,7 @@ int Entity::getSmallId()
 	}
 
 	app.DebugPrintf("Out of small entity Ids... possible leak?\n");
-	__debugbreak();
+	// __debugbreak();
 	return -1;
 }
 

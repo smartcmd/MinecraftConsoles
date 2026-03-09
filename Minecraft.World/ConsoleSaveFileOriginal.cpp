@@ -68,7 +68,7 @@ ConsoleSaveFileOriginal::ConsoleSaveFileOriginal(const wstring &fileName, LPVOID
 	if( pagesCommitted != 0 )
 	{
 #ifndef _CONTENT_PACKAGE
-		__debugbreak();
+		// __debugbreak();
 #endif
 	}
 
@@ -79,7 +79,7 @@ ConsoleSaveFileOriginal::ConsoleSaveFileOriginal(const wstring &fileName, LPVOID
 	{
 #ifndef _CONTENT_PACKAGE
 		// Out of physical memory
-		__debugbreak();
+		// __debugbreak();
 #endif
 	}
 	pagesCommitted = pagesRequired;
@@ -184,7 +184,7 @@ ConsoleSaveFileOriginal::ConsoleSaveFileOriginal(const wstring &fileName, LPVOID
 						if( pvRet == NULL )
 						{
 							// Out of physical memory
-							__debugbreak();
+							// __debugbreak();
 						}
 						pagesCommitted = pagesRequired;
 					}
@@ -475,7 +475,7 @@ void ConsoleSaveFileOriginal::finalizeWrite()
 		void *pvRet = VirtualAlloc(pvHeap, pagesRequired * CSF_PAGE_SIZE, COMMIT_ALLOCATION, PAGE_READWRITE);
 		if( pvRet == NULL )
 		{
-			__debugbreak();
+			// __debugbreak();
 		}
 		pagesCommitted = pagesRequired;
 	}
@@ -509,7 +509,7 @@ void ConsoleSaveFileOriginal::MoveDataBeyond(FileEntry *file, DWORD nNumberOfByt
 		if( pvRet == NULL )
 		{
 			// Out of physical memory
-			__debugbreak();
+			// __debugbreak();
 		}
 		pagesCommitted = pagesRequired;
 	}

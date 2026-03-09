@@ -92,7 +92,7 @@ Tag *Tag::readNamedTag(DataInput *dis, int tagDepth)
 	{
 		app.DebugPrintf("readNamedTag read a type of 255\n");
 #ifndef _CONTENT_PACKAGE
-		__debugbreak();
+		// __debugbreak();
 #endif
 		return new EndTag();
 	}

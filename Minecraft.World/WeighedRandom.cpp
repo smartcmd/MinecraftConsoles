@@ -15,7 +15,7 @@ WeighedRandomItem *WeighedRandom::getRandomItem(Random *random, vector<WeighedRa
 {
     if (totalWeight <= 0)
 	{
-        __debugbreak();
+        // __debugbreak();
     }
 
 	int selection = random->nextInt(totalWeight);
@@ -50,7 +50,7 @@ WeighedRandomItem *WeighedRandom::getRandomItem(Random *random, WeighedRandomIte
 {
     if (totalWeight <= 0)
 	{
-        __debugbreak();
+        // __debugbreak();
     }
 
     int selection = random->nextInt(totalWeight);

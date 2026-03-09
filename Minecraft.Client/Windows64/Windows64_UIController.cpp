@@ -24,7 +24,7 @@ void ConsoleUIController::init(ID3D11Device *dev, ID3D11DeviceContext *ctx, ID3D
 	{
 		app.DebugPrintf("Failed to initialise GDraw!\n");
 #ifndef _CONTENT_PACKAGE
-		__debugbreak();
+		// __debugbreak();
 #endif
 		app.FatalLoadError();
 	}

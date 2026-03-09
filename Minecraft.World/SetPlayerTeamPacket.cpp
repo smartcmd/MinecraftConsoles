@@ -39,14 +39,14 @@ SetPlayerTeamPacket::SetPlayerTeamPacket(PlayerTeam *team, vector<wstring> *play
 	{
 		app.DebugPrintf("Method must be join or leave for player constructor");
 #ifndef _CONTENT_PACKAGE
-		__debugbreak();
+		// __debugbreak();
 #endif
 	}
 	if (playerNames == NULL || playerNames->empty())
 	{
 		app.DebugPrintf("Players cannot be null/empty");
 #ifndef _CONTENT_PACKAGE
-		__debugbreak();
+		// __debugbreak();
 #endif
 	}
 
