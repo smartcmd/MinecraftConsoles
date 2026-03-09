@@ -195,7 +195,7 @@ EventWriteAchievementGet(__in_opt PCWSTR UserId, __in LPCGUID PlayerSessionId, _
 
     EtxFillCommonFields_v7(&EventData[0], scratch, 64);
 
-    EventDataDescCreate(&EventData[1], (UserId != NULL) ? UserId : L"", (UserId != NULL) ? (ULONG)((wcslen(UserId) + 1) * sizeof(WCHAR)) : (ULONG)sizeof(L""));
+    EventDataDescCreate(&EventData[1], (UserId != nullptr) ? UserId : L"", (UserId != nullptr) ? (ULONG)((wcslen(UserId) + 1) * sizeof(WCHAR)) : (ULONG)sizeof(L""));
     EventDataDescCreate(&EventData[2], PlayerSessionId, sizeof(GUID));
     EventDataDescCreate(&EventData[3], &AchievementId, sizeof(AchievementId));
 
@@ -216,7 +216,7 @@ EventWriteAchievemntUnlocked(__in_opt PCWSTR UserId, __in LPCGUID PlayerSessionI
 
     EtxFillCommonFields_v7(&EventData[0], scratch, 64);
 
-    EventDataDescCreate(&EventData[1], (UserId != NULL) ? UserId : L"", (UserId != NULL) ? (ULONG)((wcslen(UserId) + 1) * sizeof(WCHAR)) : (ULONG)sizeof(L""));
+    EventDataDescCreate(&EventData[1], (UserId != nullptr) ? UserId : L"", (UserId != nullptr) ? (ULONG)((wcslen(UserId) + 1) * sizeof(WCHAR)) : (ULONG)sizeof(L""));
     EventDataDescCreate(&EventData[2], PlayerSessionId, sizeof(GUID));
     EventDataDescCreate(&EventData[3], &SecondsSinceInitialize, sizeof(SecondsSinceInitialize));
     EventDataDescCreate(&EventData[4], &Mode, sizeof(Mode));
@@ -246,7 +246,7 @@ EventWriteBanLevel(__in_opt PCWSTR UserId, __in LPCGUID PlayerSessionId, __in co
 
     EtxFillCommonFields_v7(&EventData[0], scratch, 64);
 
-    EventDataDescCreate(&EventData[1], (UserId != NULL) ? UserId : L"", (UserId != NULL) ? (ULONG)((wcslen(UserId) + 1) * sizeof(WCHAR)) : (ULONG)sizeof(L""));
+    EventDataDescCreate(&EventData[1], (UserId != nullptr) ? UserId : L"", (UserId != nullptr) ? (ULONG)((wcslen(UserId) + 1) * sizeof(WCHAR)) : (ULONG)sizeof(L""));
     EventDataDescCreate(&EventData[2], PlayerSessionId, sizeof(GUID));
     EventDataDescCreate(&EventData[3], &SecondsSinceInitialize, sizeof(SecondsSinceInitialize));
     EventDataDescCreate(&EventData[4], &Mode, sizeof(Mode));
@@ -274,7 +274,7 @@ EventWriteBlockBroken(__in_opt PCWSTR UserId, __in LPCGUID PlayerSessionId, __in
 
     EtxFillCommonFields_v7(&EventData[0], scratch, 64);
 
-    EventDataDescCreate(&EventData[1], (UserId != NULL) ? UserId : L"", (UserId != NULL) ? (ULONG)((wcslen(UserId) + 1) * sizeof(WCHAR)) : (ULONG)sizeof(L""));
+    EventDataDescCreate(&EventData[1], (UserId != nullptr) ? UserId : L"", (UserId != nullptr) ? (ULONG)((wcslen(UserId) + 1) * sizeof(WCHAR)) : (ULONG)sizeof(L""));
     EventDataDescCreate(&EventData[2], PlayerSessionId, sizeof(GUID));
     EventDataDescCreate(&EventData[3], &DifficultyLevelId, sizeof(DifficultyLevelId));
     EventDataDescCreate(&EventData[4], &BlockId, sizeof(BlockId));
@@ -298,7 +298,7 @@ EventWriteBlockPlaced(__in_opt PCWSTR UserId, __in LPCGUID PlayerSessionId, __in
 
     EtxFillCommonFields_v7(&EventData[0], scratch, 64);
 
-    EventDataDescCreate(&EventData[1], (UserId != NULL) ? UserId : L"", (UserId != NULL) ? (ULONG)((wcslen(UserId) + 1) * sizeof(WCHAR)) : (ULONG)sizeof(L""));
+    EventDataDescCreate(&EventData[1], (UserId != nullptr) ? UserId : L"", (UserId != nullptr) ? (ULONG)((wcslen(UserId) + 1) * sizeof(WCHAR)) : (ULONG)sizeof(L""));
     EventDataDescCreate(&EventData[2], PlayerSessionId, sizeof(GUID));
     EventDataDescCreate(&EventData[3], &DifficultyLevelId, sizeof(DifficultyLevelId));
     EventDataDescCreate(&EventData[4], &BlockId, sizeof(BlockId));
@@ -322,7 +322,7 @@ EventWriteChestfulOfCobblestone(__in_opt PCWSTR UserId, __in LPCGUID PlayerSessi
 
     EtxFillCommonFields_v7(&EventData[0], scratch, 64);
 
-    EventDataDescCreate(&EventData[1], (UserId != NULL) ? UserId : L"", (UserId != NULL) ? (ULONG)((wcslen(UserId) + 1) * sizeof(WCHAR)) : (ULONG)sizeof(L""));
+    EventDataDescCreate(&EventData[1], (UserId != nullptr) ? UserId : L"", (UserId != nullptr) ? (ULONG)((wcslen(UserId) + 1) * sizeof(WCHAR)) : (ULONG)sizeof(L""));
     EventDataDescCreate(&EventData[2], PlayerSessionId, sizeof(GUID));
     EventDataDescCreate(&EventData[3], &Cobblecount, sizeof(Cobblecount));
 
@@ -343,7 +343,7 @@ EventWriteEnteredNewBiome(__in_opt PCWSTR UserId, __in LPCGUID PlayerSessionId, 
 
     EtxFillCommonFields_v7(&EventData[0], scratch, 64);
 
-    EventDataDescCreate(&EventData[1], (UserId != NULL) ? UserId : L"", (UserId != NULL) ? (ULONG)((wcslen(UserId) + 1) * sizeof(WCHAR)) : (ULONG)sizeof(L""));
+    EventDataDescCreate(&EventData[1], (UserId != nullptr) ? UserId : L"", (UserId != nullptr) ? (ULONG)((wcslen(UserId) + 1) * sizeof(WCHAR)) : (ULONG)sizeof(L""));
     EventDataDescCreate(&EventData[2], PlayerSessionId, sizeof(GUID));
     EventDataDescCreate(&EventData[3], &BiomeId, sizeof(BiomeId));
 
@@ -364,7 +364,7 @@ EventWriteGameProgress(__in_opt PCWSTR UserId, __in LPCGUID PlayerSessionId, __i
 
     EtxFillCommonFields_v7(&EventData[0], scratch, 64);
 
-    EventDataDescCreate(&EventData[1], (UserId != NULL) ? UserId : L"", (UserId != NULL) ? (ULONG)((wcslen(UserId) + 1) * sizeof(WCHAR)) : (ULONG)sizeof(L""));
+    EventDataDescCreate(&EventData[1], (UserId != nullptr) ? UserId : L"", (UserId != nullptr) ? (ULONG)((wcslen(UserId) + 1) * sizeof(WCHAR)) : (ULONG)sizeof(L""));
     EventDataDescCreate(&EventData[2], PlayerSessionId, sizeof(GUID));
     EventDataDescCreate(&EventData[3], &CompletionPercent, sizeof(CompletionPercent));
 
@@ -385,7 +385,7 @@ EventWriteIncDistanceTravelled(__in_opt PCWSTR UserId, __in LPCGUID PlayerSessio
 
     EtxFillCommonFields_v7(&EventData[0], scratch, 64);
 
-    EventDataDescCreate(&EventData[1], (UserId != NULL) ? UserId : L"", (UserId != NULL) ? (ULONG)((wcslen(UserId) + 1) * sizeof(WCHAR)) : (ULONG)sizeof(L""));
+    EventDataDescCreate(&EventData[1], (UserId != nullptr) ? UserId : L"", (UserId != nullptr) ? (ULONG)((wcslen(UserId) + 1) * sizeof(WCHAR)) : (ULONG)sizeof(L""));
     EventDataDescCreate(&EventData[2], PlayerSessionId, sizeof(GUID));
     EventDataDescCreate(&EventData[3], &DifficultyLevelId, sizeof(DifficultyLevelId));
     EventDataDescCreate(&EventData[4], &Distance, sizeof(Distance));
@@ -408,7 +408,7 @@ EventWriteIncTimePlayed(__in_opt PCWSTR UserId, __in LPCGUID PlayerSessionId, __
 
     EtxFillCommonFields_v7(&EventData[0], scratch, 64);
 
-    EventDataDescCreate(&EventData[1], (UserId != NULL) ? UserId : L"", (UserId != NULL) ? (ULONG)((wcslen(UserId) + 1) * sizeof(WCHAR)) : (ULONG)sizeof(L""));
+    EventDataDescCreate(&EventData[1], (UserId != nullptr) ? UserId : L"", (UserId != nullptr) ? (ULONG)((wcslen(UserId) + 1) * sizeof(WCHAR)) : (ULONG)sizeof(L""));
     EventDataDescCreate(&EventData[2], PlayerSessionId, sizeof(GUID));
     EventDataDescCreate(&EventData[3], &DifficultyLevelId, sizeof(DifficultyLevelId));
     EventDataDescCreate(&EventData[4], &TimePlayed, sizeof(TimePlayed));
@@ -430,7 +430,7 @@ EventWriteLeaderboardTotals(__in_opt PCWSTR UserId, __in LPCGUID PlayerSessionId
 
     EtxFillCommonFields_v7(&EventData[0], scratch, 64);
 
-    EventDataDescCreate(&EventData[1], (UserId != NULL) ? UserId : L"", (UserId != NULL) ? (ULONG)((wcslen(UserId) + 1) * sizeof(WCHAR)) : (ULONG)sizeof(L""));
+    EventDataDescCreate(&EventData[1], (UserId != nullptr) ? UserId : L"", (UserId != nullptr) ? (ULONG)((wcslen(UserId) + 1) * sizeof(WCHAR)) : (ULONG)sizeof(L""));
     EventDataDescCreate(&EventData[2], PlayerSessionId, sizeof(GUID));
     EventDataDescCreate(&EventData[3], &DifficultyLevelId, sizeof(DifficultyLevelId));
     EventDataDescCreate(&EventData[4], &LeaderboardId, sizeof(LeaderboardId));
@@ -453,7 +453,7 @@ EventWriteLevelExit(__in_opt PCWSTR UserId, __in LPCGUID PlayerSessionId, __in c
 
     EtxFillCommonFields_v7(&EventData[0], scratch, 64);
 
-    EventDataDescCreate(&EventData[1], (UserId != NULL) ? UserId : L"", (UserId != NULL) ? (ULONG)((wcslen(UserId) + 1) * sizeof(WCHAR)) : (ULONG)sizeof(L""));
+    EventDataDescCreate(&EventData[1], (UserId != nullptr) ? UserId : L"", (UserId != nullptr) ? (ULONG)((wcslen(UserId) + 1) * sizeof(WCHAR)) : (ULONG)sizeof(L""));
     EventDataDescCreate(&EventData[2], PlayerSessionId, sizeof(GUID));
     EventDataDescCreate(&EventData[3], &SecondsSinceInitialize, sizeof(SecondsSinceInitialize));
     EventDataDescCreate(&EventData[4], &Mode, sizeof(Mode));
@@ -482,7 +482,7 @@ EventWriteLevelResume(__in_opt PCWSTR UserId, __in LPCGUID PlayerSessionId, __in
 
     EtxFillCommonFields_v7(&EventData[0], scratch, 64);
 
-    EventDataDescCreate(&EventData[1], (UserId != NULL) ? UserId : L"", (UserId != NULL) ? (ULONG)((wcslen(UserId) + 1) * sizeof(WCHAR)) : (ULONG)sizeof(L""));
+    EventDataDescCreate(&EventData[1], (UserId != nullptr) ? UserId : L"", (UserId != nullptr) ? (ULONG)((wcslen(UserId) + 1) * sizeof(WCHAR)) : (ULONG)sizeof(L""));
     EventDataDescCreate(&EventData[2], PlayerSessionId, sizeof(GUID));
     EventDataDescCreate(&EventData[3], &SecondsSinceInitialize, sizeof(SecondsSinceInitialize));
     EventDataDescCreate(&EventData[4], &Mode, sizeof(Mode));
@@ -516,7 +516,7 @@ EventWriteLevelSaveOrCheckpoint(__in_opt PCWSTR UserId, __in LPCGUID PlayerSessi
 
     EtxFillCommonFields_v7(&EventData[0], scratch, 64);
 
-    EventDataDescCreate(&EventData[1], (UserId != NULL) ? UserId : L"", (UserId != NULL) ? (ULONG)((wcslen(UserId) + 1) * sizeof(WCHAR)) : (ULONG)sizeof(L""));
+    EventDataDescCreate(&EventData[1], (UserId != nullptr) ? UserId : L"", (UserId != nullptr) ? (ULONG)((wcslen(UserId) + 1) * sizeof(WCHAR)) : (ULONG)sizeof(L""));
     EventDataDescCreate(&EventData[2], PlayerSessionId, sizeof(GUID));
     EventDataDescCreate(&EventData[3], &SecondsSinceInitialize, sizeof(SecondsSinceInitialize));
     EventDataDescCreate(&EventData[4], &Mode, sizeof(Mode));
@@ -546,7 +546,7 @@ EventWriteLevelStart(__in_opt PCWSTR UserId, __in LPCGUID PlayerSessionId, __in 
 
     EtxFillCommonFields_v7(&EventData[0], scratch, 64);
 
-    EventDataDescCreate(&EventData[1], (UserId != NULL) ? UserId : L"", (UserId != NULL) ? (ULONG)((wcslen(UserId) + 1) * sizeof(WCHAR)) : (ULONG)sizeof(L""));
+    EventDataDescCreate(&EventData[1], (UserId != nullptr) ? UserId : L"", (UserId != nullptr) ? (ULONG)((wcslen(UserId) + 1) * sizeof(WCHAR)) : (ULONG)sizeof(L""));
     EventDataDescCreate(&EventData[2], PlayerSessionId, sizeof(GUID));
     EventDataDescCreate(&EventData[3], &SecondsSinceInitialize, sizeof(SecondsSinceInitialize));
     EventDataDescCreate(&EventData[4], &Mode, sizeof(Mode));
@@ -579,10 +579,10 @@ EventWriteMcItemAcquired(__in_opt PCWSTR UserId, __in const signed int SectionId
 
     EtxFillCommonFields_v7(&EventData[0], scratch, 64);
 
-    EventDataDescCreate(&EventData[1], (UserId != NULL) ? UserId : L"", (UserId != NULL) ? (ULONG)((wcslen(UserId) + 1) * sizeof(WCHAR)) : (ULONG)sizeof(L""));
+    EventDataDescCreate(&EventData[1], (UserId != nullptr) ? UserId : L"", (UserId != nullptr) ? (ULONG)((wcslen(UserId) + 1) * sizeof(WCHAR)) : (ULONG)sizeof(L""));
     EventDataDescCreate(&EventData[2], &SectionId, sizeof(SectionId));
     EventDataDescCreate(&EventData[3], PlayerSessionId, sizeof(GUID));
-    EventDataDescCreate(&EventData[4], (MultiplayerCorrelationId != NULL) ? MultiplayerCorrelationId : L"", (MultiplayerCorrelationId != NULL) ? (ULONG)((wcslen(MultiplayerCorrelationId) + 1) * sizeof(WCHAR)) : (ULONG)sizeof(L""));
+    EventDataDescCreate(&EventData[4], (MultiplayerCorrelationId != nullptr) ? MultiplayerCorrelationId : L"", (MultiplayerCorrelationId != nullptr) ? (ULONG)((wcslen(MultiplayerCorrelationId) + 1) * sizeof(WCHAR)) : (ULONG)sizeof(L""));
     EventDataDescCreate(&EventData[5], &GameplayModeId, sizeof(GameplayModeId));
     EventDataDescCreate(&EventData[6], &DifficultyLevelId, sizeof(DifficultyLevelId));
     EventDataDescCreate(&EventData[7], &ItemId, sizeof(ItemId));
@@ -610,10 +610,10 @@ EventWriteMcItemUsed(__in_opt PCWSTR UserId, __in const signed int SectionId, __
 
     EtxFillCommonFields_v7(&EventData[0], scratch, 64);
 
-    EventDataDescCreate(&EventData[1], (UserId != NULL) ? UserId : L"", (UserId != NULL) ? (ULONG)((wcslen(UserId) + 1) * sizeof(WCHAR)) : (ULONG)sizeof(L""));
+    EventDataDescCreate(&EventData[1], (UserId != nullptr) ? UserId : L"", (UserId != nullptr) ? (ULONG)((wcslen(UserId) + 1) * sizeof(WCHAR)) : (ULONG)sizeof(L""));
     EventDataDescCreate(&EventData[2], &SectionId, sizeof(SectionId));
     EventDataDescCreate(&EventData[3], PlayerSessionId, sizeof(GUID));
-    EventDataDescCreate(&EventData[4], (MultiplayerCorrelationId != NULL) ? MultiplayerCorrelationId : L"", (MultiplayerCorrelationId != NULL) ? (ULONG)((wcslen(MultiplayerCorrelationId) + 1) * sizeof(WCHAR)) : (ULONG)sizeof(L""));
+    EventDataDescCreate(&EventData[4], (MultiplayerCorrelationId != nullptr) ? MultiplayerCorrelationId : L"", (MultiplayerCorrelationId != nullptr) ? (ULONG)((wcslen(MultiplayerCorrelationId) + 1) * sizeof(WCHAR)) : (ULONG)sizeof(L""));
     EventDataDescCreate(&EventData[5], &GameplayModeId, sizeof(GameplayModeId));
     EventDataDescCreate(&EventData[6], &DifficultyLevelId, sizeof(DifficultyLevelId));
     EventDataDescCreate(&EventData[7], &ItemId, sizeof(ItemId));
@@ -641,7 +641,7 @@ EventWriteMenuShown(__in_opt PCWSTR UserId, __in LPCGUID PlayerSessionId, __in c
 
     EtxFillCommonFields_v7(&EventData[0], scratch, 64);
 
-    EventDataDescCreate(&EventData[1], (UserId != NULL) ? UserId : L"", (UserId != NULL) ? (ULONG)((wcslen(UserId) + 1) * sizeof(WCHAR)) : (ULONG)sizeof(L""));
+    EventDataDescCreate(&EventData[1], (UserId != nullptr) ? UserId : L"", (UserId != nullptr) ? (ULONG)((wcslen(UserId) + 1) * sizeof(WCHAR)) : (ULONG)sizeof(L""));
     EventDataDescCreate(&EventData[2], PlayerSessionId, sizeof(GUID));
     EventDataDescCreate(&EventData[3], &SecondsSinceInitialize, sizeof(SecondsSinceInitialize));
     EventDataDescCreate(&EventData[4], &Mode, sizeof(Mode));
@@ -671,7 +671,7 @@ EventWriteMobInteract(__in_opt PCWSTR UserId, __in LPCGUID PlayerSessionId, __in
 
     EtxFillCommonFields_v7(&EventData[0], scratch, 64);
 
-    EventDataDescCreate(&EventData[1], (UserId != NULL) ? UserId : L"", (UserId != NULL) ? (ULONG)((wcslen(UserId) + 1) * sizeof(WCHAR)) : (ULONG)sizeof(L""));
+    EventDataDescCreate(&EventData[1], (UserId != nullptr) ? UserId : L"", (UserId != nullptr) ? (ULONG)((wcslen(UserId) + 1) * sizeof(WCHAR)) : (ULONG)sizeof(L""));
     EventDataDescCreate(&EventData[2], PlayerSessionId, sizeof(GUID));
     EventDataDescCreate(&EventData[3], &MobId, sizeof(MobId));
     EventDataDescCreate(&EventData[4], &InteractionId, sizeof(InteractionId));
@@ -693,10 +693,10 @@ EventWriteMobKilled(__in_opt PCWSTR UserId, __in const signed int SectionId, __i
 
     EtxFillCommonFields_v7(&EventData[0], scratch, 64);
 
-    EventDataDescCreate(&EventData[1], (UserId != NULL) ? UserId : L"", (UserId != NULL) ? (ULONG)((wcslen(UserId) + 1) * sizeof(WCHAR)) : (ULONG)sizeof(L""));
+    EventDataDescCreate(&EventData[1], (UserId != nullptr) ? UserId : L"", (UserId != nullptr) ? (ULONG)((wcslen(UserId) + 1) * sizeof(WCHAR)) : (ULONG)sizeof(L""));
     EventDataDescCreate(&EventData[2], &SectionId, sizeof(SectionId));
     EventDataDescCreate(&EventData[3], PlayerSessionId, sizeof(GUID));
-    EventDataDescCreate(&EventData[4], (MultiplayerCorrelationId != NULL) ? MultiplayerCorrelationId : L"", (MultiplayerCorrelationId != NULL) ? (ULONG)((wcslen(MultiplayerCorrelationId) + 1) * sizeof(WCHAR)) : (ULONG)sizeof(L""));
+    EventDataDescCreate(&EventData[4], (MultiplayerCorrelationId != nullptr) ? MultiplayerCorrelationId : L"", (MultiplayerCorrelationId != nullptr) ? (ULONG)((wcslen(MultiplayerCorrelationId) + 1) * sizeof(WCHAR)) : (ULONG)sizeof(L""));
     EventDataDescCreate(&EventData[5], &GameplayModeId, sizeof(GameplayModeId));
     EventDataDescCreate(&EventData[6], &DifficultyLevelId, sizeof(DifficultyLevelId));
     EventDataDescCreate(&EventData[7], RoundId, sizeof(GUID));
@@ -728,11 +728,11 @@ EventWriteMultiplayerRoundEnd(__in_opt PCWSTR UserId, __in LPCGUID RoundId, __in
 
     EtxFillCommonFields_v7(&EventData[0], scratch, 64);
 
-    EventDataDescCreate(&EventData[1], (UserId != NULL) ? UserId : L"", (UserId != NULL) ? (ULONG)((wcslen(UserId) + 1) * sizeof(WCHAR)) : (ULONG)sizeof(L""));
+    EventDataDescCreate(&EventData[1], (UserId != nullptr) ? UserId : L"", (UserId != nullptr) ? (ULONG)((wcslen(UserId) + 1) * sizeof(WCHAR)) : (ULONG)sizeof(L""));
     EventDataDescCreate(&EventData[2], RoundId, sizeof(GUID));
     EventDataDescCreate(&EventData[3], &SectionId, sizeof(SectionId));
     EventDataDescCreate(&EventData[4], PlayerSessionId, sizeof(GUID));
-    EventDataDescCreate(&EventData[5], (MultiplayerCorrelationId != NULL) ? MultiplayerCorrelationId : L"", (MultiplayerCorrelationId != NULL) ? (ULONG)((wcslen(MultiplayerCorrelationId) + 1) * sizeof(WCHAR)) : (ULONG)sizeof(L""));
+    EventDataDescCreate(&EventData[5], (MultiplayerCorrelationId != nullptr) ? MultiplayerCorrelationId : L"", (MultiplayerCorrelationId != nullptr) ? (ULONG)((wcslen(MultiplayerCorrelationId) + 1) * sizeof(WCHAR)) : (ULONG)sizeof(L""));
     EventDataDescCreate(&EventData[6], &GameplayModeId, sizeof(GameplayModeId));
     EventDataDescCreate(&EventData[7], &MatchTypeId, sizeof(MatchTypeId));
     EventDataDescCreate(&EventData[8], &DifficultyLevelId, sizeof(DifficultyLevelId));
@@ -756,11 +756,11 @@ EventWriteMultiplayerRoundStart(__in_opt PCWSTR UserId, __in LPCGUID RoundId, __
 
     EtxFillCommonFields_v7(&EventData[0], scratch, 64);
 
-    EventDataDescCreate(&EventData[1], (UserId != NULL) ? UserId : L"", (UserId != NULL) ? (ULONG)((wcslen(UserId) + 1) * sizeof(WCHAR)) : (ULONG)sizeof(L""));
+    EventDataDescCreate(&EventData[1], (UserId != nullptr) ? UserId : L"", (UserId != nullptr) ? (ULONG)((wcslen(UserId) + 1) * sizeof(WCHAR)) : (ULONG)sizeof(L""));
     EventDataDescCreate(&EventData[2], RoundId, sizeof(GUID));
     EventDataDescCreate(&EventData[3], &SectionId, sizeof(SectionId));
     EventDataDescCreate(&EventData[4], PlayerSessionId, sizeof(GUID));
-    EventDataDescCreate(&EventData[5], (MultiplayerCorrelationId != NULL) ? MultiplayerCorrelationId : L"", (MultiplayerCorrelationId != NULL) ? (ULONG)((wcslen(MultiplayerCorrelationId) + 1) * sizeof(WCHAR)) : (ULONG)sizeof(L""));
+    EventDataDescCreate(&EventData[5], (MultiplayerCorrelationId != nullptr) ? MultiplayerCorrelationId : L"", (MultiplayerCorrelationId != nullptr) ? (ULONG)((wcslen(MultiplayerCorrelationId) + 1) * sizeof(WCHAR)) : (ULONG)sizeof(L""));
     EventDataDescCreate(&EventData[6], &GameplayModeId, sizeof(GameplayModeId));
     EventDataDescCreate(&EventData[7], &MatchTypeId, sizeof(MatchTypeId));
     EventDataDescCreate(&EventData[8], &DifficultyLevelId, sizeof(DifficultyLevelId));
@@ -782,7 +782,7 @@ EventWriteOnARail(__in_opt PCWSTR UserId, __in LPCGUID PlayerSessionId, __in con
 
     EtxFillCommonFields_v7(&EventData[0], scratch, 64);
 
-    EventDataDescCreate(&EventData[1], (UserId != NULL) ? UserId : L"", (UserId != NULL) ? (ULONG)((wcslen(UserId) + 1) * sizeof(WCHAR)) : (ULONG)sizeof(L""));
+    EventDataDescCreate(&EventData[1], (UserId != nullptr) ? UserId : L"", (UserId != nullptr) ? (ULONG)((wcslen(UserId) + 1) * sizeof(WCHAR)) : (ULONG)sizeof(L""));
     EventDataDescCreate(&EventData[2], PlayerSessionId, sizeof(GUID));
     EventDataDescCreate(&EventData[3], &Distance, sizeof(Distance));
 
@@ -803,7 +803,7 @@ EventWriteOverkill(__in_opt PCWSTR UserId, __in LPCGUID PlayerSessionId, __in co
 
     EtxFillCommonFields_v7(&EventData[0], scratch, 64);
 
-    EventDataDescCreate(&EventData[1], (UserId != NULL) ? UserId : L"", (UserId != NULL) ? (ULONG)((wcslen(UserId) + 1) * sizeof(WCHAR)) : (ULONG)sizeof(L""));
+    EventDataDescCreate(&EventData[1], (UserId != nullptr) ? UserId : L"", (UserId != nullptr) ? (ULONG)((wcslen(UserId) + 1) * sizeof(WCHAR)) : (ULONG)sizeof(L""));
     EventDataDescCreate(&EventData[2], PlayerSessionId, sizeof(GUID));
     EventDataDescCreate(&EventData[3], &Damage, sizeof(Damage));
 
@@ -824,7 +824,7 @@ EventWritePauseOrInactive(__in_opt PCWSTR UserId, __in LPCGUID PlayerSessionId, 
 
     EtxFillCommonFields_v7(&EventData[0], scratch, 64);
 
-    EventDataDescCreate(&EventData[1], (UserId != NULL) ? UserId : L"", (UserId != NULL) ? (ULONG)((wcslen(UserId) + 1) * sizeof(WCHAR)) : (ULONG)sizeof(L""));
+    EventDataDescCreate(&EventData[1], (UserId != nullptr) ? UserId : L"", (UserId != nullptr) ? (ULONG)((wcslen(UserId) + 1) * sizeof(WCHAR)) : (ULONG)sizeof(L""));
     EventDataDescCreate(&EventData[2], PlayerSessionId, sizeof(GUID));
     EventDataDescCreate(&EventData[3], &SecondsSinceInitialize, sizeof(SecondsSinceInitialize));
     EventDataDescCreate(&EventData[4], &Mode, sizeof(Mode));
@@ -852,7 +852,7 @@ EventWritePlayedMusicDisc(__in_opt PCWSTR UserId, __in LPCGUID PlayerSessionId, 
 
     EtxFillCommonFields_v7(&EventData[0], scratch, 64);
 
-    EventDataDescCreate(&EventData[1], (UserId != NULL) ? UserId : L"", (UserId != NULL) ? (ULONG)((wcslen(UserId) + 1) * sizeof(WCHAR)) : (ULONG)sizeof(L""));
+    EventDataDescCreate(&EventData[1], (UserId != nullptr) ? UserId : L"", (UserId != nullptr) ? (ULONG)((wcslen(UserId) + 1) * sizeof(WCHAR)) : (ULONG)sizeof(L""));
     EventDataDescCreate(&EventData[2], PlayerSessionId, sizeof(GUID));
     EventDataDescCreate(&EventData[3], &DiscId, sizeof(DiscId));
 
@@ -873,7 +873,7 @@ EventWritePlayerDiedOrFailed(__in_opt PCWSTR UserId, __in LPCGUID PlayerSessionI
 
     EtxFillCommonFields_v7(&EventData[0], scratch, 64);
 
-    EventDataDescCreate(&EventData[1], (UserId != NULL) ? UserId : L"", (UserId != NULL) ? (ULONG)((wcslen(UserId) + 1) * sizeof(WCHAR)) : (ULONG)sizeof(L""));
+    EventDataDescCreate(&EventData[1], (UserId != nullptr) ? UserId : L"", (UserId != nullptr) ? (ULONG)((wcslen(UserId) + 1) * sizeof(WCHAR)) : (ULONG)sizeof(L""));
     EventDataDescCreate(&EventData[2], PlayerSessionId, sizeof(GUID));
     EventDataDescCreate(&EventData[3], &SecondsSinceInitialize, sizeof(SecondsSinceInitialize));
     EventDataDescCreate(&EventData[4], &Mode, sizeof(Mode));
@@ -908,9 +908,9 @@ EventWritePlayerSessionEnd(__in_opt PCWSTR UserId, __in LPCGUID PlayerSessionId,
 
     EtxFillCommonFields_v7(&EventData[0], scratch, 64);
 
-    EventDataDescCreate(&EventData[1], (UserId != NULL) ? UserId : L"", (UserId != NULL) ? (ULONG)((wcslen(UserId) + 1) * sizeof(WCHAR)) : (ULONG)sizeof(L""));
+    EventDataDescCreate(&EventData[1], (UserId != nullptr) ? UserId : L"", (UserId != nullptr) ? (ULONG)((wcslen(UserId) + 1) * sizeof(WCHAR)) : (ULONG)sizeof(L""));
     EventDataDescCreate(&EventData[2], PlayerSessionId, sizeof(GUID));
-    EventDataDescCreate(&EventData[3], (MultiplayerCorrelationId != NULL) ? MultiplayerCorrelationId : L"", (MultiplayerCorrelationId != NULL) ? (ULONG)((wcslen(MultiplayerCorrelationId) + 1) * sizeof(WCHAR)) : (ULONG)sizeof(L""));
+    EventDataDescCreate(&EventData[3], (MultiplayerCorrelationId != nullptr) ? MultiplayerCorrelationId : L"", (MultiplayerCorrelationId != nullptr) ? (ULONG)((wcslen(MultiplayerCorrelationId) + 1) * sizeof(WCHAR)) : (ULONG)sizeof(L""));
     EventDataDescCreate(&EventData[4], &GameplayModeId, sizeof(GameplayModeId));
     EventDataDescCreate(&EventData[5], &DifficultyLevelId, sizeof(DifficultyLevelId));
     EventDataDescCreate(&EventData[6], &ExitStatusId, sizeof(ExitStatusId));
@@ -932,9 +932,9 @@ EventWritePlayerSessionPause(__in_opt PCWSTR UserId, __in LPCGUID PlayerSessionI
 
     EtxFillCommonFields_v7(&EventData[0], scratch, 64);
 
-    EventDataDescCreate(&EventData[1], (UserId != NULL) ? UserId : L"", (UserId != NULL) ? (ULONG)((wcslen(UserId) + 1) * sizeof(WCHAR)) : (ULONG)sizeof(L""));
+    EventDataDescCreate(&EventData[1], (UserId != nullptr) ? UserId : L"", (UserId != nullptr) ? (ULONG)((wcslen(UserId) + 1) * sizeof(WCHAR)) : (ULONG)sizeof(L""));
     EventDataDescCreate(&EventData[2], PlayerSessionId, sizeof(GUID));
-    EventDataDescCreate(&EventData[3], (MultiplayerCorrelationId != NULL) ? MultiplayerCorrelationId : L"", (MultiplayerCorrelationId != NULL) ? (ULONG)((wcslen(MultiplayerCorrelationId) + 1) * sizeof(WCHAR)) : (ULONG)sizeof(L""));
+    EventDataDescCreate(&EventData[3], (MultiplayerCorrelationId != nullptr) ? MultiplayerCorrelationId : L"", (MultiplayerCorrelationId != nullptr) ? (ULONG)((wcslen(MultiplayerCorrelationId) + 1) * sizeof(WCHAR)) : (ULONG)sizeof(L""));
 
     return EtxEventWrite(&XBLA_149E11AEEvents[28], &XBLA_149E11AEProvider, XBLA_149E11AEHandle, ARGUMENT_COUNT_XBLA_149E11AE_PlayerSessionPause, EventData);
 }
@@ -953,9 +953,9 @@ EventWritePlayerSessionResume(__in_opt PCWSTR UserId, __in LPCGUID PlayerSession
 
     EtxFillCommonFields_v7(&EventData[0], scratch, 64);
 
-    EventDataDescCreate(&EventData[1], (UserId != NULL) ? UserId : L"", (UserId != NULL) ? (ULONG)((wcslen(UserId) + 1) * sizeof(WCHAR)) : (ULONG)sizeof(L""));
+    EventDataDescCreate(&EventData[1], (UserId != nullptr) ? UserId : L"", (UserId != nullptr) ? (ULONG)((wcslen(UserId) + 1) * sizeof(WCHAR)) : (ULONG)sizeof(L""));
     EventDataDescCreate(&EventData[2], PlayerSessionId, sizeof(GUID));
-    EventDataDescCreate(&EventData[3], (MultiplayerCorrelationId != NULL) ? MultiplayerCorrelationId : L"", (MultiplayerCorrelationId != NULL) ? (ULONG)((wcslen(MultiplayerCorrelationId) + 1) * sizeof(WCHAR)) : (ULONG)sizeof(L""));
+    EventDataDescCreate(&EventData[3], (MultiplayerCorrelationId != nullptr) ? MultiplayerCorrelationId : L"", (MultiplayerCorrelationId != nullptr) ? (ULONG)((wcslen(MultiplayerCorrelationId) + 1) * sizeof(WCHAR)) : (ULONG)sizeof(L""));
     EventDataDescCreate(&EventData[4], &GameplayModeId, sizeof(GameplayModeId));
     EventDataDescCreate(&EventData[5], &DifficultyLevelId, sizeof(DifficultyLevelId));
 
@@ -976,9 +976,9 @@ EventWritePlayerSessionStart(__in_opt PCWSTR UserId, __in LPCGUID PlayerSessionI
 
     EtxFillCommonFields_v7(&EventData[0], scratch, 64);
 
-    EventDataDescCreate(&EventData[1], (UserId != NULL) ? UserId : L"", (UserId != NULL) ? (ULONG)((wcslen(UserId) + 1) * sizeof(WCHAR)) : (ULONG)sizeof(L""));
+    EventDataDescCreate(&EventData[1], (UserId != nullptr) ? UserId : L"", (UserId != nullptr) ? (ULONG)((wcslen(UserId) + 1) * sizeof(WCHAR)) : (ULONG)sizeof(L""));
     EventDataDescCreate(&EventData[2], PlayerSessionId, sizeof(GUID));
-    EventDataDescCreate(&EventData[3], (MultiplayerCorrelationId != NULL) ? MultiplayerCorrelationId : L"", (MultiplayerCorrelationId != NULL) ? (ULONG)((wcslen(MultiplayerCorrelationId) + 1) * sizeof(WCHAR)) : (ULONG)sizeof(L""));
+    EventDataDescCreate(&EventData[3], (MultiplayerCorrelationId != nullptr) ? MultiplayerCorrelationId : L"", (MultiplayerCorrelationId != nullptr) ? (ULONG)((wcslen(MultiplayerCorrelationId) + 1) * sizeof(WCHAR)) : (ULONG)sizeof(L""));
     EventDataDescCreate(&EventData[4], &GameplayModeId, sizeof(GameplayModeId));
     EventDataDescCreate(&EventData[5], &DifficultyLevelId, sizeof(DifficultyLevelId));
 
@@ -999,7 +999,7 @@ EventWriteRecordMediaShareUpload(__in_opt PCWSTR UserId, __in LPCGUID PlayerSess
 
     EtxFillCommonFields_v7(&EventData[0], scratch, 64);
 
-    EventDataDescCreate(&EventData[1], (UserId != NULL) ? UserId : L"", (UserId != NULL) ? (ULONG)((wcslen(UserId) + 1) * sizeof(WCHAR)) : (ULONG)sizeof(L""));
+    EventDataDescCreate(&EventData[1], (UserId != nullptr) ? UserId : L"", (UserId != nullptr) ? (ULONG)((wcslen(UserId) + 1) * sizeof(WCHAR)) : (ULONG)sizeof(L""));
     EventDataDescCreate(&EventData[2], PlayerSessionId, sizeof(GUID));
     EventDataDescCreate(&EventData[3], &SecondsSinceInitialize, sizeof(SecondsSinceInitialize));
     EventDataDescCreate(&EventData[4], &Mode, sizeof(Mode));
@@ -1027,7 +1027,7 @@ EventWriteRichPresenceState(__in_opt PCWSTR UserId, __in LPCGUID PlayerSessionId
 
     EtxFillCommonFields_v7(&EventData[0], scratch, 64);
 
-    EventDataDescCreate(&EventData[1], (UserId != NULL) ? UserId : L"", (UserId != NULL) ? (ULONG)((wcslen(UserId) + 1) * sizeof(WCHAR)) : (ULONG)sizeof(L""));
+    EventDataDescCreate(&EventData[1], (UserId != nullptr) ? UserId : L"", (UserId != nullptr) ? (ULONG)((wcslen(UserId) + 1) * sizeof(WCHAR)) : (ULONG)sizeof(L""));
     EventDataDescCreate(&EventData[2], PlayerSessionId, sizeof(GUID));
     EventDataDescCreate(&EventData[3], &ContextID, sizeof(ContextID));
 
@@ -1048,7 +1048,7 @@ EventWriteSkinChanged(__in_opt PCWSTR UserId, __in LPCGUID PlayerSessionId, __in
 
     EtxFillCommonFields_v7(&EventData[0], scratch, 64);
 
-    EventDataDescCreate(&EventData[1], (UserId != NULL) ? UserId : L"", (UserId != NULL) ? (ULONG)((wcslen(UserId) + 1) * sizeof(WCHAR)) : (ULONG)sizeof(L""));
+    EventDataDescCreate(&EventData[1], (UserId != nullptr) ? UserId : L"", (UserId != nullptr) ? (ULONG)((wcslen(UserId) + 1) * sizeof(WCHAR)) : (ULONG)sizeof(L""));
     EventDataDescCreate(&EventData[2], PlayerSessionId, sizeof(GUID));
     EventDataDescCreate(&EventData[3], &SecondsSinceInitialize, sizeof(SecondsSinceInitialize));
     EventDataDescCreate(&EventData[4], &Mode, sizeof(Mode));
@@ -1077,7 +1077,7 @@ EventWriteTexturePackLoaded(__in_opt PCWSTR UserId, __in LPCGUID PlayerSessionId
 
     EtxFillCommonFields_v7(&EventData[0], scratch, 64);
 
-    EventDataDescCreate(&EventData[1], (UserId != NULL) ? UserId : L"", (UserId != NULL) ? (ULONG)((wcslen(UserId) + 1) * sizeof(WCHAR)) : (ULONG)sizeof(L""));
+    EventDataDescCreate(&EventData[1], (UserId != nullptr) ? UserId : L"", (UserId != nullptr) ? (ULONG)((wcslen(UserId) + 1) * sizeof(WCHAR)) : (ULONG)sizeof(L""));
     EventDataDescCreate(&EventData[2], PlayerSessionId, sizeof(GUID));
     EventDataDescCreate(&EventData[3], &SecondsSinceInitialize, sizeof(SecondsSinceInitialize));
     EventDataDescCreate(&EventData[4], &Mode, sizeof(Mode));
@@ -1107,7 +1107,7 @@ EventWriteUnbanLevel(__in_opt PCWSTR UserId, __in LPCGUID PlayerSessionId, __in 
 
     EtxFillCommonFields_v7(&EventData[0], scratch, 64);
 
-    EventDataDescCreate(&EventData[1], (UserId != NULL) ? UserId : L"", (UserId != NULL) ? (ULONG)((wcslen(UserId) + 1) * sizeof(WCHAR)) : (ULONG)sizeof(L""));
+    EventDataDescCreate(&EventData[1], (UserId != nullptr) ? UserId : L"", (UserId != nullptr) ? (ULONG)((wcslen(UserId) + 1) * sizeof(WCHAR)) : (ULONG)sizeof(L""));
     EventDataDescCreate(&EventData[2], PlayerSessionId, sizeof(GUID));
     EventDataDescCreate(&EventData[3], &SecondsSinceInitialize, sizeof(SecondsSinceInitialize));
     EventDataDescCreate(&EventData[4], &Mode, sizeof(Mode));
@@ -1135,7 +1135,7 @@ EventWriteUnpauseOrActive(__in_opt PCWSTR UserId, __in LPCGUID PlayerSessionId, 
 
     EtxFillCommonFields_v7(&EventData[0], scratch, 64);
 
-    EventDataDescCreate(&EventData[1], (UserId != NULL) ? UserId : L"", (UserId != NULL) ? (ULONG)((wcslen(UserId) + 1) * sizeof(WCHAR)) : (ULONG)sizeof(L""));
+    EventDataDescCreate(&EventData[1], (UserId != nullptr) ? UserId : L"", (UserId != nullptr) ? (ULONG)((wcslen(UserId) + 1) * sizeof(WCHAR)) : (ULONG)sizeof(L""));
     EventDataDescCreate(&EventData[2], PlayerSessionId, sizeof(GUID));
     EventDataDescCreate(&EventData[3], &SecondsSinceInitialize, sizeof(SecondsSinceInitialize));
     EventDataDescCreate(&EventData[4], &Mode, sizeof(Mode));
@@ -1163,7 +1163,7 @@ EventWriteUpsellPresented(__in_opt PCWSTR UserId, __in LPCGUID PlayerSessionId, 
 
     EtxFillCommonFields_v7(&EventData[0], scratch, 64);
 
-    EventDataDescCreate(&EventData[1], (UserId != NULL) ? UserId : L"", (UserId != NULL) ? (ULONG)((wcslen(UserId) + 1) * sizeof(WCHAR)) : (ULONG)sizeof(L""));
+    EventDataDescCreate(&EventData[1], (UserId != nullptr) ? UserId : L"", (UserId != nullptr) ? (ULONG)((wcslen(UserId) + 1) * sizeof(WCHAR)) : (ULONG)sizeof(L""));
     EventDataDescCreate(&EventData[2], PlayerSessionId, sizeof(GUID));
     EventDataDescCreate(&EventData[3], &SecondsSinceInitialize, sizeof(SecondsSinceInitialize));
     EventDataDescCreate(&EventData[4], &Mode, sizeof(Mode));
@@ -1193,7 +1193,7 @@ EventWriteUpsellResponded(__in_opt PCWSTR UserId, __in LPCGUID PlayerSessionId, 
 
     EtxFillCommonFields_v7(&EventData[0], scratch, 64);
 
-    EventDataDescCreate(&EventData[1], (UserId != NULL) ? UserId : L"", (UserId != NULL) ? (ULONG)((wcslen(UserId) + 1) * sizeof(WCHAR)) : (ULONG)sizeof(L""));
+    EventDataDescCreate(&EventData[1], (UserId != nullptr) ? UserId : L"", (UserId != nullptr) ? (ULONG)((wcslen(UserId) + 1) * sizeof(WCHAR)) : (ULONG)sizeof(L""));
     EventDataDescCreate(&EventData[2], PlayerSessionId, sizeof(GUID));
     EventDataDescCreate(&EventData[3], &SecondsSinceInitialize, sizeof(SecondsSinceInitialize));
     EventDataDescCreate(&EventData[4], &Mode, sizeof(Mode));

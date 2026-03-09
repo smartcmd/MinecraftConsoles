@@ -273,24 +273,24 @@ static int pshader_basic_econst[28] = {
 };
 
 static ProgramWithCachedVariableLocations pshader_basic_arr[18] = {
-   { { pshader_basic_0 }, { NULL }, { -1, 7, -1, -1, -1, } },
-   { { pshader_basic_1 }, { NULL }, { -1, 7, -1, (int) (intptr_t) (pshader_basic_econst + 0), -1, } },
-   { { pshader_basic_2 }, { NULL }, { -1, 7, -1, (int) (intptr_t) (pshader_basic_econst + 0), -1, } },
-   { { pshader_basic_3 }, { NULL }, { 0, 7, -1, -1, -1, } },
-   { { pshader_basic_4 }, { NULL }, { 0, 7, -1, (int) (intptr_t) (pshader_basic_econst + 2), -1, } },
-   { { pshader_basic_5 }, { NULL }, { 0, 7, -1, (int) (intptr_t) (pshader_basic_econst + 4), -1, } },
-   { { pshader_basic_6 }, { NULL }, { 0, 7, -1, -1, -1, } },
-   { { pshader_basic_7 }, { NULL }, { 0, 7, -1, (int) (intptr_t) (pshader_basic_econst + 6), -1, } },
-   { { pshader_basic_8 }, { NULL }, { 0, 7, -1, (int) (intptr_t) (pshader_basic_econst + 6), -1, } },
-   { { pshader_basic_9 }, { NULL }, { 0, 7, -1, -1, -1, } },
-   { { pshader_basic_10 }, { NULL }, { 0, 7, -1, (int) (intptr_t) (pshader_basic_econst + 8), -1, } },
-   { { pshader_basic_11 }, { NULL }, { 0, 7, -1, (int) (intptr_t) (pshader_basic_econst + 10), -1, } },
-   { { pshader_basic_12 }, { NULL }, { 0, 7, -1, -1, (int) (intptr_t) (pshader_basic_econst + 12), } },
-   { { pshader_basic_13 }, { NULL }, { 0, 7, -1, (int) (intptr_t) (pshader_basic_econst + 16), (int) (intptr_t) (pshader_basic_econst + 18), } },
-   { { pshader_basic_14 }, { NULL }, { 0, 7, -1, (int) (intptr_t) (pshader_basic_econst + 22), (int) (intptr_t) (pshader_basic_econst + 24), } },
-   { { pshader_basic_15 }, { NULL }, { 0, 7, -1, -1, -1, } },
-   { { pshader_basic_16 }, { NULL }, { 0, 7, -1, (int) (intptr_t) (pshader_basic_econst + 2), -1, } },
-   { { pshader_basic_17 }, { NULL }, { 0, 7, -1, (int) (intptr_t) (pshader_basic_econst + 6), -1, } },
+   { { pshader_basic_0 }, { nullptr }, { -1, 7, -1, -1, -1, } },
+   { { pshader_basic_1 }, { nullptr }, { -1, 7, -1, static_cast<int>((intptr_t)(pshader_basic_econst + 0)), -1, } },
+   { { pshader_basic_2 }, { nullptr }, { -1, 7, -1, static_cast<int>((intptr_t)(pshader_basic_econst + 0)), -1, } },
+   { { pshader_basic_3 }, { nullptr }, { 0, 7, -1, -1, -1, } },
+   { { pshader_basic_4 }, { nullptr }, { 0, 7, -1, static_cast<int>((intptr_t)(pshader_basic_econst + 2)), -1, } },
+   { { pshader_basic_5 }, { nullptr }, { 0, 7, -1, static_cast<int>((intptr_t)(pshader_basic_econst + 4)), -1, } },
+   { { pshader_basic_6 }, { nullptr }, { 0, 7, -1, -1, -1, } },
+   { { pshader_basic_7 }, { nullptr }, { 0, 7, -1, static_cast<int>((intptr_t)(pshader_basic_econst + 6)), -1, } },
+   { { pshader_basic_8 }, { nullptr }, { 0, 7, -1, static_cast<int>((intptr_t)(pshader_basic_econst + 6)), -1, } },
+   { { pshader_basic_9 }, { nullptr }, { 0, 7, -1, -1, -1, } },
+   { { pshader_basic_10 }, { nullptr }, { 0, 7, -1, static_cast<int>((intptr_t)(pshader_basic_econst + 8)), -1, } },
+   { { pshader_basic_11 }, { nullptr }, { 0, 7, -1, static_cast<int>((intptr_t)(pshader_basic_econst + 10)), -1, } },
+   { { pshader_basic_12 }, { nullptr }, { 0, 7, -1, -1, static_cast<int>((intptr_t)(pshader_basic_econst + 12)), } },
+   { { pshader_basic_13 }, { nullptr }, { 0, 7, -1, static_cast<int>((intptr_t)(pshader_basic_econst + 16)), static_cast<int>((intptr_t)(pshader_basic_econst + 18)), } },
+   { { pshader_basic_14 }, { nullptr }, { 0, 7, -1, static_cast<int>((intptr_t)(pshader_basic_econst + 22)), static_cast<int>((intptr_t)(pshader_basic_econst + 24)), } },
+   { { pshader_basic_15 }, { nullptr }, { 0, 7, -1, -1, -1, } },
+   { { pshader_basic_16 }, { nullptr }, { 0, 7, -1, static_cast<int>((intptr_t)(pshader_basic_econst + 2)), -1, } },
+   { { pshader_basic_17 }, { nullptr }, { 0, 7, -1, static_cast<int>((intptr_t)(pshader_basic_econst + 6)), -1, } },
 };
 
 static unsigned char pshader_exceptional_blend_1[368] = {
@@ -536,19 +536,19 @@ static int pshader_exceptional_blend_econst[4] = {
 };
 
 static ProgramWithCachedVariableLocations pshader_exceptional_blend_arr[13] = {
-   { { NULL }, { NULL }, { -1, -1, -1, -1, } },
-   { { pshader_exceptional_blend_1 }, { NULL }, { 0, 1, -1, (int) (intptr_t) (pshader_exceptional_blend_econst + 0), } },
-   { { pshader_exceptional_blend_2 }, { NULL }, { 0, 1, -1, (int) (intptr_t) (pshader_exceptional_blend_econst + 0), } },
-   { { pshader_exceptional_blend_3 }, { NULL }, { 0, 1, -1, (int) (intptr_t) (pshader_exceptional_blend_econst + 0), } },
-   { { pshader_exceptional_blend_4 }, { NULL }, { 0, 1, -1, (int) (intptr_t) (pshader_exceptional_blend_econst + 0), } },
-   { { pshader_exceptional_blend_5 }, { NULL }, { 0, 1, -1, (int) (intptr_t) (pshader_exceptional_blend_econst + 0), } },
-   { { pshader_exceptional_blend_6 }, { NULL }, { 0, 1, -1, (int) (intptr_t) (pshader_exceptional_blend_econst + 0), } },
-   { { pshader_exceptional_blend_7 }, { NULL }, { 0, 1, -1, (int) (intptr_t) (pshader_exceptional_blend_econst + 0), } },
-   { { pshader_exceptional_blend_8 }, { NULL }, { 0, 1, -1, (int) (intptr_t) (pshader_exceptional_blend_econst + 0), } },
-   { { pshader_exceptional_blend_9 }, { NULL }, { 0, 1, -1, (int) (intptr_t) (pshader_exceptional_blend_econst + 0), } },
-   { { pshader_exceptional_blend_10 }, { NULL }, { 0, 1, -1, (int) (intptr_t) (pshader_exceptional_blend_econst + 0), } },
-   { { pshader_exceptional_blend_11 }, { NULL }, { 0, 1, -1, (int) (intptr_t) (pshader_exceptional_blend_econst + 2), } },
-   { { pshader_exceptional_blend_12 }, { NULL }, { 0, 1, -1, (int) (intptr_t) (pshader_exceptional_blend_econst + 2), } },
+   { { nullptr }, { nullptr }, { -1, -1, -1, -1, } },
+   { { pshader_exceptional_blend_1 }, { nullptr }, { 0, 1, -1, static_cast<int>((intptr_t)(pshader_exceptional_blend_econst + 0)), } },
+   { { pshader_exceptional_blend_2 }, { nullptr }, { 0, 1, -1, static_cast<int>((intptr_t)(pshader_exceptional_blend_econst + 0)), } },
+   { { pshader_exceptional_blend_3 }, { nullptr }, { 0, 1, -1, static_cast<int>((intptr_t)(pshader_exceptional_blend_econst + 0)), } },
+   { { pshader_exceptional_blend_4 }, { nullptr }, { 0, 1, -1, static_cast<int>((intptr_t)(pshader_exceptional_blend_econst + 0)), } },
+   { { pshader_exceptional_blend_5 }, { nullptr }, { 0, 1, -1, static_cast<int>((intptr_t)(pshader_exceptional_blend_econst + 0)), } },
+   { { pshader_exceptional_blend_6 }, { nullptr }, { 0, 1, -1, static_cast<int>((intptr_t)(pshader_exceptional_blend_econst + 0)), } },
+   { { pshader_exceptional_blend_7 }, { nullptr }, { 0, 1, -1, static_cast<int>((intptr_t)(pshader_exceptional_blend_econst + 0)), } },
+   { { pshader_exceptional_blend_8 }, { nullptr }, { 0, 1, -1, static_cast<int>((intptr_t)(pshader_exceptional_blend_econst + 0)), } },
+   { { pshader_exceptional_blend_9 }, { nullptr }, { 0, 1, -1, static_cast<int>((intptr_t)(pshader_exceptional_blend_econst + 0)), } },
+   { { pshader_exceptional_blend_10 }, { nullptr }, { 0, 1, -1, static_cast<int>((intptr_t)(pshader_exceptional_blend_econst + 0)), } },
+   { { pshader_exceptional_blend_11 }, { nullptr }, { 0, 1, -1, static_cast<int>((intptr_t)(pshader_exceptional_blend_econst + 2)), } },
+   { { pshader_exceptional_blend_12 }, { nullptr }, { 0, 1, -1, static_cast<int>((intptr_t)(pshader_exceptional_blend_econst + 2)), } },
 };
 
 static unsigned char pshader_filter_0[416] = {
@@ -1121,38 +1121,38 @@ static int pshader_filter_econst[90] = {
 };
 
 static ProgramWithCachedVariableLocations pshader_filter_arr[32] = {
-   { { pshader_filter_0 }, { NULL }, { 0, 1, (int) (intptr_t) (pshader_filter_econst + 0), (int) (intptr_t) (pshader_filter_econst + 2), -1, (int) (intptr_t) (pshader_filter_econst + 5), (int) (intptr_t) (pshader_filter_econst + 8), -1, } },
-   { { pshader_filter_1 }, { NULL }, { 0, 1, (int) (intptr_t) (pshader_filter_econst + 11), (int) (intptr_t) (pshader_filter_econst + 2), -1, (int) (intptr_t) (pshader_filter_econst + 5), (int) (intptr_t) (pshader_filter_econst + 8), -1, } },
-   { { pshader_filter_2 }, { NULL }, { 0, 1, -1, (int) (intptr_t) (pshader_filter_econst + 13), 2, (int) (intptr_t) (pshader_filter_econst + 16), (int) (intptr_t) (pshader_filter_econst + 5), -1, } },
-   { { pshader_filter_3 }, { NULL }, { 0, 1, -1, (int) (intptr_t) (pshader_filter_econst + 13), 2, (int) (intptr_t) (pshader_filter_econst + 16), (int) (intptr_t) (pshader_filter_econst + 5), -1, } },
-   { { pshader_filter_4 }, { NULL }, { 0, 1, (int) (intptr_t) (pshader_filter_econst + 19), (int) (intptr_t) (pshader_filter_econst + 2), -1, (int) (intptr_t) (pshader_filter_econst + 5), (int) (intptr_t) (pshader_filter_econst + 8), -1, } },
-   { { pshader_filter_5 }, { NULL }, { 0, 1, (int) (intptr_t) (pshader_filter_econst + 11), (int) (intptr_t) (pshader_filter_econst + 2), -1, (int) (intptr_t) (pshader_filter_econst + 5), (int) (intptr_t) (pshader_filter_econst + 8), -1, } },
-   { { pshader_filter_6 }, { NULL }, { 0, 1, -1, (int) (intptr_t) (pshader_filter_econst + 2), 2, (int) (intptr_t) (pshader_filter_econst + 5), (int) (intptr_t) (pshader_filter_econst + 8), -1, } },
-   { { pshader_filter_7 }, { NULL }, { 0, 1, -1, (int) (intptr_t) (pshader_filter_econst + 13), 2, (int) (intptr_t) (pshader_filter_econst + 16), (int) (intptr_t) (pshader_filter_econst + 5), -1, } },
-   { { pshader_filter_8 }, { NULL }, { -1, 1, (int) (intptr_t) (pshader_filter_econst + 21), -1, -1, -1, (int) (intptr_t) (pshader_filter_econst + 24), -1, } },
-   { { pshader_filter_9 }, { NULL }, { -1, -1, (int) (intptr_t) (pshader_filter_econst + 27), -1, -1, -1, -1, -1, } },
-   { { pshader_filter_10 }, { NULL }, { 0, 1, -1, (int) (intptr_t) (pshader_filter_econst + 2), 2, (int) (intptr_t) (pshader_filter_econst + 5), (int) (intptr_t) (pshader_filter_econst + 8), -1, } },
-   { { pshader_filter_11 }, { NULL }, { 0, -1, -1, (int) (intptr_t) (pshader_filter_econst + 29), 2, (int) (intptr_t) (pshader_filter_econst + 32), -1, -1, } },
-   { { NULL }, { NULL }, { -1, -1, -1, -1, -1, -1, -1, -1, } },
-   { { NULL }, { NULL }, { -1, -1, -1, -1, -1, -1, -1, -1, } },
-   { { NULL }, { NULL }, { -1, -1, -1, -1, -1, -1, -1, -1, } },
-   { { NULL }, { NULL }, { -1, -1, -1, -1, -1, -1, -1, -1, } },
-   { { pshader_filter_16 }, { NULL }, { 0, 1, (int) (intptr_t) (pshader_filter_econst + 35), (int) (intptr_t) (pshader_filter_econst + 37), -1, (int) (intptr_t) (pshader_filter_econst + 41), (int) (intptr_t) (pshader_filter_econst + 46), (int) (intptr_t) (pshader_filter_econst + 49), } },
-   { { pshader_filter_17 }, { NULL }, { 0, 1, (int) (intptr_t) (pshader_filter_econst + 47), (int) (intptr_t) (pshader_filter_econst + 37), -1, (int) (intptr_t) (pshader_filter_econst + 41), (int) (intptr_t) (pshader_filter_econst + 51), (int) (intptr_t) (pshader_filter_econst + 35), } },
-   { { pshader_filter_18 }, { NULL }, { 0, 1, -1, (int) (intptr_t) (pshader_filter_econst + 37), 2, (int) (intptr_t) (pshader_filter_econst + 54), (int) (intptr_t) (pshader_filter_econst + 59), -1, } },
-   { { pshader_filter_19 }, { NULL }, { 0, 1, -1, (int) (intptr_t) (pshader_filter_econst + 62), 2, (int) (intptr_t) (pshader_filter_econst + 41), (int) (intptr_t) (pshader_filter_econst + 66), -1, } },
-   { { pshader_filter_20 }, { NULL }, { 0, 1, (int) (intptr_t) (pshader_filter_econst + 35), (int) (intptr_t) (pshader_filter_econst + 37), -1, (int) (intptr_t) (pshader_filter_econst + 41), (int) (intptr_t) (pshader_filter_econst + 46), (int) (intptr_t) (pshader_filter_econst + 49), } },
-   { { pshader_filter_21 }, { NULL }, { 0, 1, (int) (intptr_t) (pshader_filter_econst + 47), (int) (intptr_t) (pshader_filter_econst + 37), -1, (int) (intptr_t) (pshader_filter_econst + 41), (int) (intptr_t) (pshader_filter_econst + 51), (int) (intptr_t) (pshader_filter_econst + 35), } },
-   { { pshader_filter_22 }, { NULL }, { 0, 1, -1, (int) (intptr_t) (pshader_filter_econst + 69), 2, (int) (intptr_t) (pshader_filter_econst + 41), (int) (intptr_t) (pshader_filter_econst + 73), -1, } },
-   { { pshader_filter_23 }, { NULL }, { 0, 1, -1, (int) (intptr_t) (pshader_filter_econst + 62), 2, (int) (intptr_t) (pshader_filter_econst + 41), (int) (intptr_t) (pshader_filter_econst + 66), -1, } },
-   { { pshader_filter_24 }, { NULL }, { 0, 1, (int) (intptr_t) (pshader_filter_econst + 35), (int) (intptr_t) (pshader_filter_econst + 37), -1, (int) (intptr_t) (pshader_filter_econst + 41), (int) (intptr_t) (pshader_filter_econst + 46), (int) (intptr_t) (pshader_filter_econst + 49), } },
-   { { pshader_filter_25 }, { NULL }, { 0, -1, (int) (intptr_t) (pshader_filter_econst + 76), (int) (intptr_t) (pshader_filter_econst + 37), -1, (int) (intptr_t) (pshader_filter_econst + 41), -1, (int) (intptr_t) (pshader_filter_econst + 67), } },
-   { { pshader_filter_26 }, { NULL }, { 0, 1, -1, (int) (intptr_t) (pshader_filter_econst + 78), 2, (int) (intptr_t) (pshader_filter_econst + 82), (int) (intptr_t) (pshader_filter_econst + 87), -1, } },
-   { { pshader_filter_27 }, { NULL }, { 0, -1, -1, (int) (intptr_t) (pshader_filter_econst + 37), 2, (int) (intptr_t) (pshader_filter_econst + 41), -1, -1, } },
-   { { NULL }, { NULL }, { -1, -1, -1, -1, -1, -1, -1, -1, } },
-   { { NULL }, { NULL }, { -1, -1, -1, -1, -1, -1, -1, -1, } },
-   { { NULL }, { NULL }, { -1, -1, -1, -1, -1, -1, -1, -1, } },
-   { { NULL }, { NULL }, { -1, -1, -1, -1, -1, -1, -1, -1, } },
+   { { pshader_filter_0 }, { nullptr }, { 0, 1, static_cast<int>((intptr_t)(pshader_filter_econst + 0)), static_cast<int>((intptr_t)(pshader_filter_econst + 2)), -1, static_cast<int>((intptr_t)(pshader_filter_econst + 5)), static_cast<int>((intptr_t)(pshader_filter_econst + 8)), -1, } },
+   { { pshader_filter_1 }, { nullptr }, { 0, 1, static_cast<int>((intptr_t)(pshader_filter_econst + 11)), static_cast<int>((intptr_t)(pshader_filter_econst + 2)), -1, static_cast<int>((intptr_t)(pshader_filter_econst + 5)), static_cast<int>((intptr_t)(pshader_filter_econst + 8)), -1, } },
+   { { pshader_filter_2 }, { nullptr }, { 0, 1, -1, static_cast<int>((intptr_t)(pshader_filter_econst + 13)), 2, static_cast<int>((intptr_t)(pshader_filter_econst + 16)), static_cast<int>((intptr_t)(pshader_filter_econst + 5)), -1, } },
+   { { pshader_filter_3 }, { nullptr }, { 0, 1, -1, static_cast<int>((intptr_t)(pshader_filter_econst + 13)), 2, static_cast<int>((intptr_t)(pshader_filter_econst + 16)), static_cast<int>((intptr_t)(pshader_filter_econst + 5)), -1, } },
+   { { pshader_filter_4 }, { nullptr }, { 0, 1, static_cast<int>((intptr_t)(pshader_filter_econst + 19)), static_cast<int>((intptr_t)(pshader_filter_econst + 2)), -1, static_cast<int>((intptr_t)(pshader_filter_econst + 5)), static_cast<int>((intptr_t)(pshader_filter_econst + 8)), -1, } },
+   { { pshader_filter_5 }, { nullptr }, { 0, 1, static_cast<int>((intptr_t)(pshader_filter_econst + 11)), static_cast<int>((intptr_t)(pshader_filter_econst + 2)), -1, static_cast<int>((intptr_t)(pshader_filter_econst + 5)), static_cast<int>((intptr_t)(pshader_filter_econst + 8)), -1, } },
+   { { pshader_filter_6 }, { nullptr }, { 0, 1, -1, static_cast<int>((intptr_t)(pshader_filter_econst + 2)), 2, static_cast<int>((intptr_t)(pshader_filter_econst + 5)), static_cast<int>((intptr_t)(pshader_filter_econst + 8)), -1, } },
+   { { pshader_filter_7 }, { nullptr }, { 0, 1, -1, static_cast<int>((intptr_t)(pshader_filter_econst + 13)), 2, static_cast<int>((intptr_t)(pshader_filter_econst + 16)), static_cast<int>((intptr_t)(pshader_filter_econst + 5)), -1, } },
+   { { pshader_filter_8 }, { nullptr }, { -1, 1, static_cast<int>((intptr_t)(pshader_filter_econst + 21)), -1, -1, -1, static_cast<int>((intptr_t)(pshader_filter_econst + 24)), -1, } },
+   { { pshader_filter_9 }, { nullptr }, { -1, -1, static_cast<int>((intptr_t)(pshader_filter_econst + 27)), -1, -1, -1, -1, -1, } },
+   { { pshader_filter_10 }, { nullptr }, { 0, 1, -1, static_cast<int>((intptr_t)(pshader_filter_econst + 2)), 2, static_cast<int>((intptr_t)(pshader_filter_econst + 5)), static_cast<int>((intptr_t)(pshader_filter_econst + 8)), -1, } },
+   { { pshader_filter_11 }, { nullptr }, { 0, -1, -1, static_cast<int>((intptr_t)(pshader_filter_econst + 29)), 2, static_cast<int>((intptr_t)(pshader_filter_econst + 32)), -1, -1, } },
+   { { nullptr }, { nullptr }, { -1, -1, -1, -1, -1, -1, -1, -1, } },
+   { { nullptr }, { nullptr }, { -1, -1, -1, -1, -1, -1, -1, -1, } },
+   { { nullptr }, { nullptr }, { -1, -1, -1, -1, -1, -1, -1, -1, } },
+   { { nullptr }, { nullptr }, { -1, -1, -1, -1, -1, -1, -1, -1, } },
+   { { pshader_filter_16 }, { nullptr }, { 0, 1, static_cast<int>((intptr_t)(pshader_filter_econst + 35)), static_cast<int>((intptr_t)(pshader_filter_econst + 37)), -1, static_cast<int>((intptr_t)(pshader_filter_econst + 41)), static_cast<int>((intptr_t)(pshader_filter_econst + 46)), static_cast<int>((intptr_t)(pshader_filter_econst + 49)), } },
+   { { pshader_filter_17 }, { nullptr }, { 0, 1, static_cast<int>((intptr_t)(pshader_filter_econst + 47)), static_cast<int>((intptr_t)(pshader_filter_econst + 37)), -1, static_cast<int>((intptr_t)(pshader_filter_econst + 41)), static_cast<int>((intptr_t)(pshader_filter_econst + 51)), static_cast<int>((intptr_t)(pshader_filter_econst + 35)), } },
+   { { pshader_filter_18 }, { nullptr }, { 0, 1, -1, static_cast<int>((intptr_t)(pshader_filter_econst + 37)), 2, static_cast<int>((intptr_t)(pshader_filter_econst + 54)), static_cast<int>((intptr_t)(pshader_filter_econst + 59)), -1, } },
+   { { pshader_filter_19 }, { nullptr }, { 0, 1, -1, static_cast<int>((intptr_t)(pshader_filter_econst + 62)), 2, static_cast<int>((intptr_t)(pshader_filter_econst + 41)), static_cast<int>((intptr_t)(pshader_filter_econst + 66)), -1, } },
+   { { pshader_filter_20 }, { nullptr }, { 0, 1, static_cast<int>((intptr_t)(pshader_filter_econst + 35)), static_cast<int>((intptr_t)(pshader_filter_econst + 37)), -1, static_cast<int>((intptr_t)(pshader_filter_econst + 41)), static_cast<int>((intptr_t)(pshader_filter_econst + 46)), static_cast<int>((intptr_t)(pshader_filter_econst + 49)), } },
+   { { pshader_filter_21 }, { nullptr }, { 0, 1, static_cast<int>((intptr_t)(pshader_filter_econst + 47)), static_cast<int>((intptr_t)(pshader_filter_econst + 37)), -1, static_cast<int>((intptr_t)(pshader_filter_econst + 41)), static_cast<int>((intptr_t)(pshader_filter_econst + 51)), static_cast<int>((intptr_t)(pshader_filter_econst + 35)), } },
+   { { pshader_filter_22 }, { nullptr }, { 0, 1, -1, static_cast<int>((intptr_t)(pshader_filter_econst + 69)), 2, static_cast<int>((intptr_t)(pshader_filter_econst + 41)), static_cast<int>((intptr_t)(pshader_filter_econst + 73)), -1, } },
+   { { pshader_filter_23 }, { nullptr }, { 0, 1, -1, static_cast<int>((intptr_t)(pshader_filter_econst + 62)), 2, static_cast<int>((intptr_t)(pshader_filter_econst + 41)), static_cast<int>((intptr_t)(pshader_filter_econst + 66)), -1, } },
+   { { pshader_filter_24 }, { nullptr }, { 0, 1, static_cast<int>((intptr_t)(pshader_filter_econst + 35)), static_cast<int>((intptr_t)(pshader_filter_econst + 37)), -1, static_cast<int>((intptr_t)(pshader_filter_econst + 41)), static_cast<int>((intptr_t)(pshader_filter_econst + 46)), static_cast<int>((intptr_t)(pshader_filter_econst + 49)), } },
+   { { pshader_filter_25 }, { nullptr }, { 0, -1, static_cast<int>((intptr_t)(pshader_filter_econst + 76)), static_cast<int>((intptr_t)(pshader_filter_econst + 37)), -1, static_cast<int>((intptr_t)(pshader_filter_econst + 41)), -1, static_cast<int>((intptr_t)(pshader_filter_econst + 67)), } },
+   { { pshader_filter_26 }, { nullptr }, { 0, 1, -1, static_cast<int>((intptr_t)(pshader_filter_econst + 78)), 2, static_cast<int>((intptr_t)(pshader_filter_econst + 82)), static_cast<int>((intptr_t)(pshader_filter_econst + 87)), -1, } },
+   { { pshader_filter_27 }, { nullptr }, { 0, -1, -1, static_cast<int>((intptr_t)(pshader_filter_econst + 37)), 2, static_cast<int>((intptr_t)(pshader_filter_econst + 41)), -1, -1, } },
+   { { nullptr }, { nullptr }, { -1, -1, -1, -1, -1, -1, -1, -1, } },
+   { { nullptr }, { nullptr }, { -1, -1, -1, -1, -1, -1, -1, -1, } },
+   { { nullptr }, { nullptr }, { -1, -1, -1, -1, -1, -1, -1, -1, } },
+   { { nullptr }, { nullptr }, { -1, -1, -1, -1, -1, -1, -1, -1, } },
 };
 
 static unsigned char pshader_blur_2[368] = {
@@ -1560,16 +1560,16 @@ static int pshader_blur_econst[256] = {
 };
 
 static ProgramWithCachedVariableLocations pshader_blur_arr[10] = {
-   { { NULL }, { NULL }, { -1, -1, -1, } },
-   { { NULL }, { NULL }, { -1, -1, -1, } },
-   { { pshader_blur_2 }, { NULL }, { 0, (int) (intptr_t) (pshader_blur_econst + 0), (int) (intptr_t) (pshader_blur_econst + 13), } },
-   { { pshader_blur_3 }, { NULL }, { 0, (int) (intptr_t) (pshader_blur_econst + 18), (int) (intptr_t) (pshader_blur_econst + 33), } },
-   { { pshader_blur_4 }, { NULL }, { 0, (int) (intptr_t) (pshader_blur_econst + 40), (int) (intptr_t) (pshader_blur_econst + 57), } },
-   { { pshader_blur_5 }, { NULL }, { 0, (int) (intptr_t) (pshader_blur_econst + 66), (int) (intptr_t) (pshader_blur_econst + 85), } },
-   { { pshader_blur_6 }, { NULL }, { 0, (int) (intptr_t) (pshader_blur_econst + 96), (int) (intptr_t) (pshader_blur_econst + 117), } },
-   { { pshader_blur_7 }, { NULL }, { 0, (int) (intptr_t) (pshader_blur_econst + 130), (int) (intptr_t) (pshader_blur_econst + 153), } },
-   { { pshader_blur_8 }, { NULL }, { 0, (int) (intptr_t) (pshader_blur_econst + 168), (int) (intptr_t) (pshader_blur_econst + 193), } },
-   { { pshader_blur_9 }, { NULL }, { 0, (int) (intptr_t) (pshader_blur_econst + 210), (int) (intptr_t) (pshader_blur_econst + 237), } },
+   { { nullptr }, { nullptr }, { -1, -1, -1, } },
+   { { nullptr }, { nullptr }, { -1, -1, -1, } },
+   { { pshader_blur_2 }, { nullptr }, { 0, static_cast<int>((intptr_t)(pshader_blur_econst + 0)), static_cast<int>((intptr_t)(pshader_blur_econst + 13)), } },
+   { { pshader_blur_3 }, { nullptr }, { 0, static_cast<int>((intptr_t)(pshader_blur_econst + 18)), static_cast<int>((intptr_t)(pshader_blur_econst + 33)), } },
+   { { pshader_blur_4 }, { nullptr }, { 0, static_cast<int>((intptr_t)(pshader_blur_econst + 40)), static_cast<int>((intptr_t)(pshader_blur_econst + 57)), } },
+   { { pshader_blur_5 }, { nullptr }, { 0, static_cast<int>((intptr_t)(pshader_blur_econst + 66)), static_cast<int>((intptr_t)(pshader_blur_econst + 85)), } },
+   { { pshader_blur_6 }, { nullptr }, { 0, static_cast<int>((intptr_t)(pshader_blur_econst + 96)), static_cast<int>((intptr_t)(pshader_blur_econst + 117)), } },
+   { { pshader_blur_7 }, { nullptr }, { 0, static_cast<int>((intptr_t)(pshader_blur_econst + 130)), static_cast<int>((intptr_t)(pshader_blur_econst + 153)), } },
+   { { pshader_blur_8 }, { nullptr }, { 0, static_cast<int>((intptr_t)(pshader_blur_econst + 168)), static_cast<int>((intptr_t)(pshader_blur_econst + 193)), } },
+   { { pshader_blur_9 }, { nullptr }, { 0, static_cast<int>((intptr_t)(pshader_blur_econst + 210)), static_cast<int>((intptr_t)(pshader_blur_econst + 237)), } },
 };
 
 static unsigned char pshader_color_matrix_0[336] = {
@@ -1598,7 +1598,7 @@ static int pshader_color_matrix_econst[12] = {
 };
 
 static ProgramWithCachedVariableLocations pshader_color_matrix_arr[1] = {
-   { { pshader_color_matrix_0 }, { NULL }, { 0, (int) (intptr_t) (pshader_color_matrix_econst + 0), } },
+   { { pshader_color_matrix_0 }, { nullptr }, { 0, static_cast<int>((intptr_t)(pshader_color_matrix_econst + 0)), } },
 };
 
 static unsigned char vshader_vsps3_0[272] = {
@@ -1655,8 +1655,8 @@ static unsigned char vshader_vsps3_2[240] = {
 };
 
 static ProgramWithCachedVariableLocations vshader_vsps3_arr[3] = {
-   { { vshader_vsps3_0 }, { NULL }, { } },
-   { { vshader_vsps3_1 }, { NULL }, { } },
-   { { vshader_vsps3_2 }, { NULL }, { } },
+   { { vshader_vsps3_0 }, { nullptr }, { } },
+   { { vshader_vsps3_1 }, { nullptr }, { } },
+   { { vshader_vsps3_2 }, { nullptr }, { } },
 };
 

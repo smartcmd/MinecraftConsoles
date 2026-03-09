@@ -10,7 +10,7 @@ CommandBlock::CommandBlock(int id) : BaseEntityTile(id, Material::metal, isSolid
 
 shared_ptr<TileEntity> CommandBlock::newTileEntity(Level *level)
 {
-	return shared_ptr<CommandBlockEntity>( new CommandBlockEntity() );
+	return std::make_shared<CommandBlockEntity>();
 }
 
 void CommandBlock::neighborChanged(Level *level, int x, int y, int z, int type)
@@ -38,7 +38,7 @@ void CommandBlock::tick(Level *level, int x, int y, int z, Random *random)
 {
 	shared_ptr<TileEntity> tileEntity = level->getTileEntity(x, y, z);
 
-	if (tileEntity != NULL && dynamic_pointer_cast<CommandBlockEntity>( tileEntity ) != NULL)
+	if (tileEntity != nullptr && dynamic_pointer_cast<CommandBlockEntity>( tileEntity ) != nullptr)
 	{
 		shared_ptr<CommandBlockEntity> commandBlock = dynamic_pointer_cast<CommandBlockEntity>( tileEntity );
 		commandBlock->setSuccessCount(commandBlock->performCommand(level));
@@ -55,7 +55,7 @@ bool CommandBlock::use(Level *level, int x, int y, int z, shared_ptr<Player> pla
 {
 	shared_ptr<CommandBlockEntity> amce = dynamic_pointer_cast<CommandBlockEntity>( level->getTileEntity(x, y, z) );
 
-	if (amce != NULL)
+	if (amce != nullptr)
 	{
 		player->openTextEdit(amce);
 	}
@@ -72,7 +72,7 @@ int CommandBlock::getAnalogOutputSignal(Level *level, int x, int y, int z, int d
 {
 	shared_ptr<TileEntity> tileEntity = level->getTileEntity(x, y, z);
 
-	if (tileEntity != NULL && dynamic_pointer_cast<CommandBlockEntity>( tileEntity ) != NULL)
+	if (tileEntity != nullptr && dynamic_pointer_cast<CommandBlockEntity>( tileEntity ) != nullptr)
 	{
 		return dynamic_pointer_cast<CommandBlockEntity>( tileEntity )->getSuccessCount();
 	}

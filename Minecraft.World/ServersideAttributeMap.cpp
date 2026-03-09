@@ -17,7 +17,7 @@ AttributeInstance *ServersideAttributeMap::getInstance(eATTRIBUTE_ID id)
 
 	// 4J: Removed legacy name
 	// If we didn't find it, search by legacy name
-	/*if (result == NULL)
+	/*if (result == nullptr)
 	{
 		auto it = attributesByLegacy.find(name);
 		if(it != attributesByLegacy.end())
@@ -43,7 +43,7 @@ AttributeInstance *ServersideAttributeMap::registerAttribute(Attribute *attribut
 	// 4J: Removed legacy name
 	// If this is a ranged attribute also add to legacy name map
 	/*RangedAttribute *rangedAttribute = dynamic_cast<RangedAttribute*>(attribute);
-	if (rangedAttribute != NULL && rangedAttribute->getImportLegacyName() != L"")
+	if (rangedAttribute != nullptr && rangedAttribute->getImportLegacyName() != L"")
 	{
 		attributesByLegacy.insert(std::pair<wstring, AttributeInstance*>(rangedAttribute->getImportLegacyName(), instance));
 	}*/
@@ -69,9 +69,13 @@ unordered_set<AttributeInstance *> *ServersideAttributeMap::getSyncableAttribute
 	unordered_set<AttributeInstance *> *result = new unordered_set<AttributeInstance *>();
 	vector<AttributeInstance *> atts;
 	getAttributes(atts);
-	for (int i = 0; i < atts.size(); i++)
+	for (size_t i = 0; i < atts.size(); i++)
 	{
 		AttributeInstance *instance = atts.at(i);
+		if (instance == nullptr)
+		{
+			continue;
+		}
 
 		if (instance->getAttribute()->isClientSyncable())
 		{

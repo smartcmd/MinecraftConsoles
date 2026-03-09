@@ -14,9 +14,9 @@ bool RestrictOpenDoorGoal::canUse()
 {
 	if (mob->level->isDay()) return false;
 	shared_ptr<Village> village = mob->level->villages->getClosestVillage(Mth::floor(mob->x), Mth::floor(mob->y), Mth::floor(mob->z), 16);
-	if (village == NULL) return false;
+	if (village == nullptr) return false;
 	shared_ptr<DoorInfo> _doorInfo = village->getClosestDoorInfo(Mth::floor(mob->x), Mth::floor(mob->y), Mth::floor(mob->z));
-	if (_doorInfo == NULL) return false;
+	if (_doorInfo == nullptr) return false;
 	doorInfo = _doorInfo;
 	return _doorInfo->distanceToInsideSqr(Mth::floor(mob->x), Mth::floor(mob->y), Mth::floor(mob->z)) < 1.5 * 1.5;
 }
@@ -25,7 +25,7 @@ bool RestrictOpenDoorGoal::canContinueToUse()
 {
 	if (mob->level->isDay()) return false;
 	shared_ptr<DoorInfo> _doorInfo = doorInfo.lock();
-	if ( _doorInfo == NULL ) return false;
+	if ( _doorInfo == nullptr ) return false;
 	return !_doorInfo->removed && _doorInfo->isInsideSide(Mth::floor(mob->x), Mth::floor(mob->z));
 }
 

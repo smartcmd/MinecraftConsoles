@@ -13,5 +13,5 @@ EnchantmentInstance::EnchantmentInstance(int id, int level) : WeighedRandomItem(
 // 4J Added
 EnchantmentInstance *EnchantmentInstance::copy()
 {
-	return new EnchantmentInstance((Enchantment *)enchantment, (int)level);
+	return new EnchantmentInstance((Enchantment *)enchantment, static_cast<int>(level));
 }

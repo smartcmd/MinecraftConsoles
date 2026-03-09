@@ -45,10 +45,10 @@ namespace Sentient
     enum SenResourceID : INT32
     {
 		/// This is used to indicate a failed search, an invalid resource structure, or sometimes to substitute for a default.
-        SenResourceID_Invalid     = (INT32)SenResourceType_Invalid << 24,
+        SenResourceID_Invalid     = static_cast<INT32>(SenResourceType_Invalid) << 24,
 
         /// This is the first VIP reward costume and there is one for each title.
-        SenResourceID_Superstar_0 = (INT32)SenResourceType_Avatar  << 24,
+        SenResourceID_Superstar_0 = static_cast<INT32>(SenResourceType_Avatar)  << 24,
         /// This is the second VIP reward costume and there is one for each title.
         SenResourceID_Superstar_1,
         /// This is the third VIP reward costume and there is one for each title.
@@ -59,15 +59,15 @@ namespace Sentient
         SenResourceID_Superstar_4,
 
         /// This is used for the cross-sell screen and contains things such as an image, offerID, strings, etc.
-        SenResourceID_BoxArt_0    = (INT32)SenResourceType_BoxArt  << 24,
+        SenResourceID_BoxArt_0    = static_cast<INT32>(SenResourceType_BoxArt)  << 24,
 
         /// This is used for game-private config files, and is only the base of the range.
 		/// Titles may use the entire 24-bit space for various custom config files.
-        SenResourceID_Config_0    = (INT32)SenResourceType_Config  << 24,
+        SenResourceID_Config_0    = static_cast<INT32>(SenResourceType_Config)  << 24,
 
         /// This is used for server-supplied help files/text.
 		/// At the moment, this is not supported.
-        SenResourceID_Help_0      = (INT32)SenResourceType_Help    << 24,
+        SenResourceID_Help_0      = static_cast<INT32>(SenResourceType_Help)    << 24,
 
     };
 

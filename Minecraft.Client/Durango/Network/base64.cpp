@@ -109,13 +109,13 @@ void base64_decode(Platform::String ^encoded_string, unsigned char *output, unsi
 
 	while (in_len-- && ( encoded_string->Data()[in_] != L'=') && is_base64(encoded_string->Data()[in_]))
 	{
-		char_array_4[i++] = (unsigned char)(encoded_string->Data()[in_]);
+		char_array_4[i++] = static_cast<unsigned char>(encoded_string->Data()[in_]);
 		in_++;
 		if (i ==4)
 		{
 			for (i = 0; i <4; i++)
 			{
-				char_array_4[i] = (unsigned char )base64_chars.find(char_array_4[i]);
+				char_array_4[i] = static_cast<unsigned char>(base64_chars.find(char_array_4[i]));
 			}
 
 			char_array_3[0] = (char_array_4[0] << 2) + ((char_array_4[1] & 0x30) >> 4);
@@ -140,7 +140,7 @@ void base64_decode(Platform::String ^encoded_string, unsigned char *output, unsi
 
 		for (j = 0; j <4; j++)
 		{
-			char_array_4[j] = (unsigned char )base64_chars.find(char_array_4[j]);
+			char_array_4[j] = static_cast<unsigned char>(base64_chars.find(char_array_4[j]));
 		}
 
 		char_array_3[0] = (char_array_4[0] << 2) + ((char_array_4[1] & 0x30) >> 4);

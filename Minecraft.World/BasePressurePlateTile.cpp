@@ -43,7 +43,7 @@ int BasePressurePlateTile::getTickDelay(Level *level)
 
 AABB *BasePressurePlateTile::getAABB(Level *level, int x, int y, int z)
 {
-	return NULL;
+	return nullptr;
 }
 
 bool BasePressurePlateTile::isSolidRender(bool isServerLevel)

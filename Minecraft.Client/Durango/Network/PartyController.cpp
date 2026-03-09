@@ -103,7 +103,7 @@ void PartyController::RefreshPartyView()
             }
             catch ( Platform::Exception^ ex )
             {
-                if( ex->HResult != (int)Windows::Xbox::Multiplayer::PartyErrorStatus::EmptyParty )
+                if( ex->HResult != static_cast<int>(Windows::Xbox::Multiplayer::PartyErrorStatus::EmptyParty) )
                 {
 //                    LogCommentWithError( L"GetPartyView failed", ex->HResult  );
                 }
@@ -181,7 +181,7 @@ bool PartyController::AddLocalUsersToParty(int userMask, Windows::Xbox::System::
 				bool alreadyInSession = false;
 				if( session )
 				{
-					if( m_pDQRNet->IsPlayerInSession( ProfileManager.GetUser(i, true)->XboxUserId, session, NULL ) )
+					if( m_pDQRNet->IsPlayerInSession( ProfileManager.GetUser(i, true)->XboxUserId, session, nullptr ) )
 					{
 						alreadyInSession = true;
 					}
@@ -577,7 +577,7 @@ void PartyController::OnPartyRosterChanged( PartyRosterChangedEventArgs^ eventAr
 		// Still a party, find out who left
 		for( int i = 0; i < eventArgs->RemovedMembers->Size; i++ )
 		{
-			DQRNetworkPlayer *player = m_pDQRNet->GetPlayerByXuid(PlayerUID(eventArgs->RemovedMembers->GetAt(i)->Data()));
+			DQRNetworkPlayer *player = m_pDQRNet->GetPlayerByXuid(static_cast<PlayerUID>(eventArgs->RemovedMembers->GetAt(i)->Data()));
 			if( player )
 			{
 				if( player->IsLocal() )
@@ -621,7 +621,7 @@ void PartyController::AddAvailableGamePlayers(IVectorView<GamePlayer^>^ availabl
         }
 #endif
 
-		if( m_pDQRNet->IsPlayerInSession(player->XboxUserId, currentSession, NULL))
+		if( m_pDQRNet->IsPlayerInSession(player->XboxUserId, currentSession, nullptr))
         {
 			DQRNetworkManager::LogComment( L"Player is already in session; skipping join request: " + player->XboxUserId->ToString() );
             continue;
@@ -639,7 +639,7 @@ void PartyController::AddAvailableGamePlayers(IVectorView<GamePlayer^>^ availabl
 				{
 					bFoundLocal = true;
 					// Check that they aren't in the game already (don't see how this could be the case anyway)
-					if( m_pDQRNet->GetPlayerByXuid( PlayerUID(player->XboxUserId->Data()) ) == NULL )
+					if( m_pDQRNet->GetPlayerByXuid( static_cast<PlayerUID>(player->XboxUserId->Data()) ) == nullptr )
 					{
 						// And check whether they are signed in yet or not
 						int userIdx = -1;
@@ -838,7 +838,7 @@ void PartyController::OnGameSessionReady( GameSessionReadyEventArgs^ eventArgs )
 				if( !isAJoiningXuid )	// Isn't someone we are actively trying to join
 				{
 					if( (!bInSession) ||                 // If not in a game session at all
-						( ( m_pDQRNet->GetState() == DQRNetworkManager::DNM_INT_STATE_PLAYING ) && ( m_pDQRNet->GetPlayerByXuid( PlayerUID(memberXUID->Data()) ) == NULL ) )  // Or we're fully in, and this player isn't in it
+						( ( m_pDQRNet->GetState() == DQRNetworkManager::DNM_INT_STATE_PLAYING ) && ( m_pDQRNet->GetPlayerByXuid( static_cast<PlayerUID>(memberXUID->Data()) ) == nullptr ) )  // Or we're fully in, and this player isn't in it
 						)
 					{
 						for( int j = 4; j < 12; j++ )		// Final check that we have a gamepad for this xuid so that we might possibly be able to pair someone up
@@ -1201,5 +1201,5 @@ double PartyController::GetTimeBetweenInSeconds(Windows::Foundation::DateTime dt
 {
     const uint64 tickPerSecond = 10000000i64;
     uint64 deltaTime = dt2.UniversalTime - dt1.UniversalTime;
-    return (double)deltaTime / (double)tickPerSecond;
+    return static_cast<double>(deltaTime) / static_cast<double>(tickPerSecond);
 }

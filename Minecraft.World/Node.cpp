@@ -10,7 +10,7 @@ void Node::_init()
 
 	closed = false;
 
-	cameFrom = NULL;
+	cameFrom = nullptr;
 }
 
 Node::Node(const int x, const int y, const int z) :
@@ -35,9 +35,9 @@ int Node::createHash(const int x, const int y, const int z)
 
 float Node::distanceTo(Node *to)
 {
-	float xd = (float) ( to->x - x );
-	float yd = (float) ( to->y - y );
-	float zd = (float) ( to->z - z );
+	float xd = static_cast<float>(to->x - x);
+	float yd = static_cast<float>(to->y - y);
+	float zd = static_cast<float>(to->z - z);
 	return Mth::sqrt(xd * xd + yd * yd + zd * zd);
 }
 
@@ -52,7 +52,7 @@ float Node::distanceToSqr(Node *to)
 bool Node::equals(Node *o)
 {
 	//4J Jev, never used anything other than a node.
-	//if (dynamic_cast<Node *>((Node *) o) != NULL)
+	//if (dynamic_cast<Node *>((Node *) o) != nullptr)
 	//{
 		return hash == o->hash && x == o->x && y == o->y && z == o->z;
 	//}

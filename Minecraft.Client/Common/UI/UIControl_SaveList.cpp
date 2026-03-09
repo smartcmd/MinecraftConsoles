@@ -52,7 +52,7 @@ void UIControl_SaveList::addItem(const string &label, const wstring &iconName, i
 
 	IggyStringUTF8 stringVal;
 	stringVal.string = (char*)label.c_str();
-	stringVal.length = (S32)label.length();
+	stringVal.length = static_cast<S32>(label.length());
 	value[0].type = IGGY_DATATYPE_string_UTF8;
 	value[0].string8 = stringVal;
 
@@ -74,7 +74,7 @@ void UIControl_SaveList::addItem(const wstring &label, const wstring &iconName, 
 
 	IggyStringUTF16 stringVal;
 	stringVal.string = (IggyUTF16*)label.c_str();
-	stringVal.length = (S32)label.length();
+	stringVal.length = static_cast<S32>(label.length());
 	value[0].type = IGGY_DATATYPE_string_UTF16;
 	value[0].string16 = stringVal;
 

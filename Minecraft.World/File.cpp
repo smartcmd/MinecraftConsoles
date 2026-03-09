@@ -24,7 +24,7 @@ File::File( const File &parent, const std::wstring& child )
 }
 
 //Creates a new File instance by converting the given pathname string into an abstract pathname.
-File::File( const wstring& pathname ) //: parent( NULL )
+File::File( const wstring& pathname ) //: parent( nullptr )
 {
 	// #ifndef _CONTENT_PACKAGE
 	// 	char buf[256];
@@ -62,7 +62,7 @@ File::File( const wstring& pathname ) //: parent( NULL )
 	if( path.back().compare( pathRoot ) != 0 )
 	this->parent = new File( &path );
 	else
-	this->parent = NULL;
+	this->parent = nullptr;
 	}
 	*/
 }
@@ -75,7 +75,7 @@ File::File( const std::wstring& parent, const std::wstring& child  ) //: m_abstr
 
 //Creates a new File instance by converting the given path vector into an abstract pathname.
 /*
-File::File( vector<wstring> *path ) : parent( NULL )
+File::File( vector<wstring> *path ) : parent( nullptr )
 {
 m_abstractPathName = path->back();
 path->pop_back();
@@ -86,7 +86,7 @@ if( path->size() > 0 )
 if( path->back().compare( pathRoot ) != 0 )
 this->parent = new File( path );
 else
-this->parent = NULL;
+this->parent = nullptr;
 }
 }
 */
@@ -120,10 +120,10 @@ bool File::_delete()
 bool File::mkdir() const
 {
 #ifdef _UNICODE
-	return CreateDirectory( getPath().c_str(),  NULL) != 0;
+	return CreateDirectory( getPath().c_str(),  nullptr) != 0;
 
 #else
-	return CreateDirectory( wstringtofilename(getPath()),  NULL) != 0;
+	return CreateDirectory( wstringtofilename(getPath()),  nullptr) != 0;
 #endif
 }
 
@@ -167,7 +167,7 @@ bool File::mkdirs() const
 #ifdef _UNICODE
 		if( GetFileAttributes(  pathToHere.c_str() ) == -1 )
 		{
-			DWORD result = CreateDirectory( pathToHere.c_str(),  NULL);
+			DWORD result = CreateDirectory( pathToHere.c_str(),  nullptr);
 			if( result == 0 )
 			{
 				// Failed to create
@@ -177,7 +177,7 @@ bool File::mkdirs() const
 #else
 		if( GetFileAttributes(  wstringtofilename(pathToHere) ) == -1 )
 		{
-			DWORD result = CreateDirectory( wstringtofilename(pathToHere),  NULL);
+			DWORD result = CreateDirectory( wstringtofilename(pathToHere),  nullptr);
 			if( result == 0 )
 			{
 				// Failed to create
@@ -321,7 +321,7 @@ std::vector<File *> *File::listFiles() const
 	else
 		sprintf(filePath,"%s/%s",getUsrDirPath(), lpFileName );
 
-	bool exists = sceFiosDirectoryExistsSync( NULL, filePath );
+	bool exists = sceFiosDirectoryExistsSync( nullptr, filePath );
 	if( !exists  )
 	{
 		app.DebugPrintf("\nsceFiosDirectoryExistsSync - Directory doesn't exist\n");
@@ -334,7 +334,7 @@ std::vector<File *> *File::listFiles() const
 	SceFiosDH dh = SCE_FIOS_DH_INVALID;
 	SceFiosBuffer buf;
 	buf.length = 0;
-	SceFiosOp op = sceFiosDHOpen(NULL, &dh, filePath, buf);
+	SceFiosOp op = sceFiosDHOpen(nullptr, &dh, filePath, buf);
 
 	int err = sceFiosOpWait(op);
 	if( err != SCE_FIOS_OK  )
@@ -346,24 +346,24 @@ std::vector<File *> *File::listFiles() const
 	buf.set(pBuf, (size_t)size);
 
 	sceFiosOpDelete( op );
-	sceFiosDHClose(NULL, dh);
+	sceFiosDHClose(nullptr, dh);
 
-	err = sceFiosDHOpenSync(NULL, &dh, filePath, buf);
+	err = sceFiosDHOpenSync(nullptr, &dh, filePath, buf);
 	if( err != SCE_FIOS_OK  )
 	{
 		app.DebugPrintf("\nsceFiosDHOpenSync = 0x%x\n",err);
 	}
 	SceFiosDirEntry entry;
 	ZeroMemory(&entry, sizeof(SceFiosDirEntry));
-	err = sceFiosDHReadSync(NULL, dh, &entry);
+	err = sceFiosDHReadSync(nullptr, dh, &entry);
 	while( err == SCE_FIOS_OK)
 	{
 		vOutput->push_back( new File( *this, filenametowstring( entry.fullPath + entry.offsetToName ) ) );
 		ZeroMemory(&entry, sizeof(SceFiosDirEntry));
-		err = sceFiosDHReadSync(NULL, dh, &entry);
+		err = sceFiosDHReadSync(nullptr, dh, &entry);
 	};
 
-	sceFiosDHClose(NULL, dh);
+	sceFiosDHClose(nullptr, dh);
 	delete pBuf;
 #else
 
@@ -418,7 +418,7 @@ std::vector<File *> *File::listFiles(FileFilter *filter) const
 {
 	// TODO 4J Stu - Also need to check for I/O errors?
 	if( !isDirectory() )
-		return NULL;
+		return nullptr;
 
 	std::vector<File *> *vOutput = new std::vector<File *>();
 
@@ -576,7 +576,7 @@ int64_t File::length()
 
 	// check if the file exists first
 	SceFiosStat  statData;
-	if(sceFiosStatSync(NULL, filePath, &statData) != SCE_FIOS_OK)
+	if(sceFiosStatSync(nullptr, filePath, &statData) != SCE_FIOS_OK)
 	{
 		return 0;
 	}
@@ -660,7 +660,7 @@ const std::wstring File::getPath() const
 {
 	/*
 	wstring path;
-	if ( parent != NULL)
+	if ( parent != nullptr)
 	path = parent->getPath();
 	else
 	path = wstring(pathRoot);
@@ -673,7 +673,7 @@ const std::wstring File::getPath() const
 
 std::wstring File::getName() const
 {
-	unsigned int sep = (unsigned int )(m_abstractPathName.find_last_of( this->pathSeparator ));
+	size_t sep = m_abstractPathName.find_last_of(this->pathSeparator);
 	return m_abstractPathName.substr( sep + 1, m_abstractPathName.length() );
 }
 
@@ -687,7 +687,7 @@ int File::hash_fnct(const File &k)
 {
 	int hashCode = 0;
 
-	//if (k->parent != NULL)
+	//if (k->parent != nullptr)
 	//	hashCode = hash_fnct(k->getParent());
 
 	wchar_t *ref = (wchar_t *) k.m_abstractPathName.c_str();

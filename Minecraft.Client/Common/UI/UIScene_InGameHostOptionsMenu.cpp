@@ -126,7 +126,7 @@ void UIScene_InGameHostOptionsMenu::handleInput(int iPad, int key, bool repeat, 
 				shared_ptr<MultiplayerLocalPlayer> player = pMinecraft->localplayers[m_iPad];
 				if(player->connection)
 				{
-					player->connection->send( shared_ptr<ServerSettingsChangedPacket>( new ServerSettingsChangedPacket( ServerSettingsChangedPacket::HOST_IN_GAME_SETTINGS, hostOptions) ) );
+					player->connection->send(std::make_shared<ServerSettingsChangedPacket>(ServerSettingsChangedPacket::HOST_IN_GAME_SETTINGS, hostOptions));
 				}
 			}
 
@@ -153,7 +153,7 @@ void UIScene_InGameHostOptionsMenu::handlePress(F64 controlId, F64 childId)
 	TeleportMenuInitData *initData = new TeleportMenuInitData();
 	initData->iPad = m_iPad;
 	initData->teleportToPlayer = false;
-	if( (int)controlId == eControl_TeleportToPlayer )
+	if( static_cast<int>(controlId) == eControl_TeleportToPlayer )
 	{
 		initData->teleportToPlayer = true;
 	}

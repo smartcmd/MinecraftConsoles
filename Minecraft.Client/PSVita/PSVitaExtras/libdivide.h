@@ -210,7 +210,7 @@ LIBDIVIDE_API __m128i libdivide_s64_do_vector_alg4(__m128i numers, const struct 
 static inline uint32_t libdivide__mullhi_u32(uint32_t x, uint32_t y) {
     uint64_t xl = x, yl = y;
     uint64_t rl = xl * yl;
-    return (uint32_t)(rl >> 32);
+    return static_cast<uint32_t>(rl >> 32);
 }
 
 static uint64_t libdivide__mullhi_u64(uint64_t x, uint64_t y) {
@@ -221,12 +221,12 @@ static uint64_t libdivide__mullhi_u64(uint64_t x, uint64_t y) {
 #else
     //full 128 bits are x0 * y0 + (x0 * y1 << 32) + (x1 * y0 << 32) + (x1 * y1 << 64)
     const uint32_t mask = 0xFFFFFFFF;
-    const uint32_t x0 = (uint32_t)(x & mask), x1 = (uint32_t)(x >> 32);
-    const uint32_t y0 = (uint32_t)(y & mask), y1 = (uint32_t)(y >> 32);
+    const uint32_t x0 = static_cast<uint32_t>(x & mask), x1 = static_cast<uint32_t>(x >> 32);
+    const uint32_t y0 = static_cast<uint32_t>(y & mask), y1 = static_cast<uint32_t>(y >> 32);
     const uint32_t x0y0_hi = libdivide__mullhi_u32(x0, y0);
-    const uint64_t x0y1 = x0 * (uint64_t)y1;
-    const uint64_t x1y0 = x1 * (uint64_t)y0;
-    const uint64_t x1y1 = x1 * (uint64_t)y1;
+    const uint64_t x0y1 = x0 * static_cast<uint64_t>(y1);
+    const uint64_t x1y0 = x1 * static_cast<uint64_t>(y0);
+    const uint64_t x1y1 = x1 * static_cast<uint64_t>(y1);
 
     uint64_t temp = x1y0 + x0y0_hi;
     uint64_t temp_lo = temp & mask, temp_hi = temp >> 32;
@@ -242,12 +242,12 @@ static inline int64_t libdivide__mullhi_s64(int64_t x, int64_t y) {
 #else
     //full 128 bits are x0 * y0 + (x0 * y1 << 32) + (x1 * y0 << 32) + (x1 * y1 << 64)
     const uint32_t mask = 0xFFFFFFFF;
-    const uint32_t x0 = (uint32_t)(x & mask), y0 = (uint32_t)(y & mask);
-    const int32_t x1 = (int32_t)(x >> 32), y1 = (int32_t)(y >> 32);
+    const uint32_t x0 = static_cast<uint32_t>(x & mask), y0 = static_cast<uint32_t>(y & mask);
+    const int32_t x1 = static_cast<int32_t>(x >> 32), y1 = static_cast<int32_t>(y >> 32);
     const uint32_t x0y0_hi = libdivide__mullhi_u32(x0, y0);
-    const int64_t t = x1*(int64_t)y0 + x0y0_hi;
-    const int64_t w1 = x0*(int64_t)y1 + (t & mask);
-    return x1*(int64_t)y1 + (t >> 32) + (w1 >> 32);
+    const int64_t t = x1*static_cast<int64_t>(y0) + x0y0_hi;
+    const int64_t w1 = x0*static_cast<int64_t>(y1) + (t & mask);
+    return x1*static_cast<int64_t>(y1) + (t >> 32) + (w1 >> 32);
 #endif
 }
 
@@ -398,7 +398,7 @@ static inline int32_t libdivide__count_trailing_zeros64(uint64_t val) {
     /* Pretty good way to count trailing zeros.  Note that this hangs for val = 0! */
     uint32_t lo = val & 0xFFFFFFFF;
     if (lo != 0) return libdivide__count_trailing_zeros32(lo);
-    return 32 + libdivide__count_trailing_zeros32((uint32_t)(val >> 32));
+    return 32 + libdivide__count_trailing_zeros32(static_cast<uint32_t>(val >> 32));
 #endif
 }
 
@@ -444,9 +444,9 @@ static uint32_t libdivide_64_div_32_to_32(uint32_t u1, uint32_t u0, uint32_t v, 
 }
 #else
 static uint32_t libdivide_64_div_32_to_32(uint32_t u1, uint32_t u0, uint32_t v, uint32_t *r) {
-    uint64_t n = (((uint64_t)u1) << 32) | u0;
-    uint32_t result = (uint32_t)(n / v);
-    *r = (uint32_t)(n - result * (uint64_t)v);
+    uint64_t n = (static_cast<uint64_t>(u1) << 32) | u0;
+    uint32_t result = static_cast<uint32_t>(n / v);
+    *r = static_cast<uint32_t>(n - result * static_cast<uint64_t>(v));
     return result;
 }
 #endif
@@ -478,9 +478,9 @@ static uint64_t libdivide_128_div_64_to_64(uint64_t u1, uint64_t u0, uint64_t v,
     int s;                  // Shift amount for norm.
 
     if (u1 >= v) {            // If overflow, set rem.
-        if (r != NULL)         // to an impossible value,
-            *r = (uint64_t)(-1);    // and return the largest
-        return (uint64_t)(-1);}    // possible quotient.
+        if (r != nullptr)         // to an impossible value,
+            *r = static_cast<uint64_t>(-1);    // and return the largest
+        return static_cast<uint64_t>(-1);}    // possible quotient.
 
     /* count leading zeros */
     s = libdivide__count_leading_zeros64(v); // 0 <= s <= 63.
@@ -513,7 +513,7 @@ again2:
         rhat = rhat + vn1;
         if (rhat < b) goto again2;}
 
-    if (r != NULL)            // If remainder is wanted,
+    if (r != nullptr)            // If remainder is wanted,
         *r = (un21*b + un0 - q0*v) >> s;     // return it.
     return q1*b + q0;
 }
@@ -770,14 +770,14 @@ __m128i libdivide_u64_do_vector_alg2(__m128i numers, const struct libdivide_u64_
 static inline int32_t libdivide__mullhi_s32(int32_t x, int32_t y) {
     int64_t xl = x, yl = y;
     int64_t rl = xl * yl;
-    return (int32_t)(rl >> 32); //needs to be arithmetic shift
+    return static_cast<int32_t>(rl >> 32); //needs to be arithmetic shift
 }
 
 struct libdivide_s32_t libdivide_s32_gen(int32_t d) {
     struct libdivide_s32_t result;
 
     /* If d is a power of 2, or negative a power of 2, we have to use a shift.  This is especially important because the magic algorithm fails for -1.  To check if d is a power of 2 or its inverse, it suffices to check whether its absolute value has exactly one bit set.  This works even for INT_MIN, because abs(INT_MIN) == INT_MIN, and INT_MIN has one bit set and is a power of 2.  */
-    uint32_t absD = (uint32_t)(d < 0 ? -d : d); //gcc optimizes this to the fast abs trick
+    uint32_t absD = static_cast<uint32_t>(d < 0 ? -d : d); //gcc optimizes this to the fast abs trick
     if ((absD & (absD - 1)) == 0) { //check if exactly one bit is set, don't care if absD is 0 since that's divide by zero
         result.magic = 0;
         result.more = libdivide__count_trailing_zeros32(absD) | (d < 0 ? LIBDIVIDE_NEGATIVE_DIVISOR : 0) | LIBDIVIDE_S32_SHIFT_PATH;
@@ -805,7 +805,7 @@ struct libdivide_s32_t libdivide_s32_gen(int32_t d) {
             more = floor_log_2_d | LIBDIVIDE_ADD_MARKER | (d < 0 ? LIBDIVIDE_NEGATIVE_DIVISOR : 0); //use the general algorithm
         }
         proposed_m += 1;
-        result.magic = (d < 0 ? -(int32_t)proposed_m : (int32_t)proposed_m);
+        result.magic = (d < 0 ? -static_cast<int32_t>(proposed_m) : static_cast<int32_t>(proposed_m));
         result.more = more;
 
     }
@@ -818,14 +818,14 @@ int32_t libdivide_s32_do(int32_t numer, const struct libdivide_s32_t *denom) {
         uint8_t shifter = more & LIBDIVIDE_32_SHIFT_MASK;
         int32_t q = numer + ((numer >> 31) & ((1 << shifter) - 1));
         q = q >> shifter;
-        int32_t shiftMask = (int8_t)more >> 7; //must be arithmetic shift and then sign-extend
+        int32_t shiftMask = static_cast<int8_t>(more) >> 7; //must be arithmetic shift and then sign-extend
         q = (q ^ shiftMask) - shiftMask;
         return q;
     }
     else {
         int32_t q = libdivide__mullhi_s32(denom->magic, numer);
         if (more & LIBDIVIDE_ADD_MARKER) {
-            int32_t sign = (int8_t)more >> 7; //must be arithmetic shift and then sign extend
+            int32_t sign = static_cast<int8_t>(more) >> 7; //must be arithmetic shift and then sign extend
             q += ((numer ^ sign) - sign);
         }
         q >>= more & LIBDIVIDE_32_SHIFT_MASK;
@@ -946,7 +946,7 @@ struct libdivide_s64_t libdivide_s64_gen(int64_t d) {
     struct libdivide_s64_t result;
 
     /* If d is a power of 2, or negative a power of 2, we have to use a shift.  This is especially important because the magic algorithm fails for -1.  To check if d is a power of 2 or its inverse, it suffices to check whether its absolute value has exactly one bit set.  This works even for INT_MIN, because abs(INT_MIN) == INT_MIN, and INT_MIN has one bit set and is a power of 2.  */
-    const uint64_t absD = (uint64_t)(d < 0 ? -d : d); //gcc optimizes this to the fast abs trick
+    const uint64_t absD = static_cast<uint64_t>(d < 0 ? -d : d); //gcc optimizes this to the fast abs trick
     if ((absD & (absD - 1)) == 0) { //check if exactly one bit is set, don't care if absD is 0 since that's divide by zero
         result.more = libdivide__count_trailing_zeros64(absD) | (d < 0 ? LIBDIVIDE_NEGATIVE_DIVISOR : 0);
         result.magic = 0;
@@ -974,7 +974,7 @@ struct libdivide_s64_t libdivide_s64_gen(int64_t d) {
         }
         proposed_m += 1;
         result.more = more;
-        result.magic = (d < 0 ? -(int64_t)proposed_m : (int64_t)proposed_m);
+        result.magic = (d < 0 ? -static_cast<int64_t>(proposed_m) : static_cast<int64_t>(proposed_m));
     }
     return result;
 }
@@ -986,14 +986,14 @@ int64_t libdivide_s64_do(int64_t numer, const struct libdivide_s64_t *denom) {
         uint32_t shifter = more & LIBDIVIDE_64_SHIFT_MASK;
         int64_t q = numer + ((numer >> 63) & ((1LL << shifter) - 1));
         q = q >> shifter;
-        int64_t shiftMask = (int8_t)more >> 7; //must be arithmetic shift and then sign-extend
+        int64_t shiftMask = static_cast<int8_t>(more) >> 7; //must be arithmetic shift and then sign-extend
         q = (q ^ shiftMask) - shiftMask;
         return q;
     }
     else {
         int64_t q = libdivide__mullhi_s64(magic, numer);
         if (more & LIBDIVIDE_ADD_MARKER) {
-            int64_t sign = (int8_t)more >> 7; //must be arithmetic shift and then sign extend
+            int64_t sign = static_cast<int8_t>(more) >> 7; //must be arithmetic shift and then sign extend
             q += ((numer ^ sign) - sign);
         }
         q >>= more & LIBDIVIDE_64_SHIFT_MASK;
@@ -1141,11 +1141,11 @@ namespace libdivide_internal {
 #endif
 
     /* Some bogus unswitch functions for unsigned types so the same (presumably templated) code can work for both signed and unsigned. */
-    uint32_t crash_u32(uint32_t, const libdivide_u32_t *) { abort(); return *(uint32_t *)NULL; }
-    uint64_t crash_u64(uint64_t, const libdivide_u64_t *) { abort(); return *(uint64_t *)NULL; }
+    uint32_t crash_u32(uint32_t, const libdivide_u32_t *) { abort(); return *static_cast<uint32_t *>(nullptr); }
+    uint64_t crash_u64(uint64_t, const libdivide_u64_t *) { abort(); return *static_cast<uint64_t *>(nullptr); }
 #if LIBDIVIDE_USE_SSE2
-    __m128i crash_u32_vector(__m128i, const libdivide_u32_t *) { abort(); return *(__m128i *)NULL; }
-    __m128i crash_u64_vector(__m128i, const libdivide_u64_t *) { abort(); return *(__m128i *)NULL; }
+    __m128i crash_u32_vector(__m128i, const libdivide_u32_t *) { abort(); return *(__m128i *)nullptr; }
+    __m128i crash_u64_vector(__m128i, const libdivide_u64_t *) { abort(); return *(__m128i *)nullptr; }
 #endif
 
     template<typename IntType, typename DenomType, DenomType gen_func(IntType), int get_algo(const DenomType *), IntType do_func(IntType, const DenomType *), MAYBE_VECTOR_PARAM>

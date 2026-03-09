@@ -6,7 +6,7 @@
 
 CompoundGameRuleDefinition::CompoundGameRuleDefinition()
 {
-	m_lastRuleStatusChanged = NULL;
+	m_lastRuleStatusChanged = nullptr;
 }
 
 CompoundGameRuleDefinition::~CompoundGameRuleDefinition()
@@ -26,7 +26,7 @@ void CompoundGameRuleDefinition::getChildren(vector<GameRuleDefinition *> *child
 
 GameRuleDefinition *CompoundGameRuleDefinition::addChild(ConsoleGameRules::EGameRuleType ruleType)
 {
-	GameRuleDefinition *rule = NULL;
+	GameRuleDefinition *rule = nullptr;
 	if(ruleType == ConsoleGameRules::eGameRuleType_CompleteAllRule)
 	{
 		rule = new CompleteAllRuleDefinition();
@@ -49,13 +49,13 @@ GameRuleDefinition *CompoundGameRuleDefinition::addChild(ConsoleGameRules::EGame
 		wprintf(L"CompoundGameRuleDefinition: Attempted to add invalid child rule - %d\n", ruleType );
 #endif
 	}
-	if(rule != NULL) m_children.push_back(rule);
+	if(rule != nullptr) m_children.push_back(rule);
 	return rule;
 }
 
 void CompoundGameRuleDefinition::populateGameRule(GameRulesInstance::EGameRulesInstanceType type, GameRule *rule)
 {
-	GameRule *newRule = NULL;
+	GameRule *newRule = nullptr;
 	int i = 0;
 	for (auto& it : m_children )
 	{

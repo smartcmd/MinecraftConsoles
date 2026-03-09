@@ -113,15 +113,42 @@ public:
 
 	FriendSessionInfo()
 	{
-		displayLabel = NULL;
+		displayLabel = nullptr;
 		displayLabelLength = 0;
 		displayLabelViewableStartIndex = 0;
 		hasPartyMember = false;
 	}
 
+	FriendSessionInfo(const FriendSessionInfo& other)
+	{
+		sessionId = other.sessionId;
+#ifdef _XBOX
+		searchResult = other.searchResult;
+#elif defined(__PS3__) || defined(__ORBIS__) || defined (__PSVITA__)
+		searchResult = other.searchResult;
+#elif defined(_DURANGO)
+		searchResult = other.searchResult;
+#endif
+		displayLabelLength = other.displayLabelLength;
+		displayLabelViewableStartIndex = other.displayLabelViewableStartIndex;
+		data = other.data;
+		hasPartyMember = other.hasPartyMember;
+		if (other.displayLabel != NULL)
+		{
+			displayLabel = new wchar_t[displayLabelLength + 1];
+			wcscpy_s(displayLabel, displayLabelLength + 1, other.displayLabel);
+		}
+		else
+		{
+			displayLabel = NULL;
+		}
+	}
+
+	FriendSessionInfo& operator=(const FriendSessionInfo&) = delete;
+
 	~FriendSessionInfo()
 	{
-		if (displayLabel != NULL)
-			delete displayLabel;
+		if (displayLabel != nullptr)
+			delete[] displayLabel;
 	}
 };

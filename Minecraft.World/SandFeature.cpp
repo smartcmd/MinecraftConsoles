@@ -22,7 +22,7 @@ bool SandFeature::place(Level *level, Random *random, int x, int y, int z)
 	int yr = 2;
 
 	// 4J Stu Added to stop tree features generating areas previously place by game rule generation
-	if(app.getLevelGenerationOptions() != NULL)
+	if(app.getLevelGenerationOptions() != nullptr)
 	{
 		LevelGenerationOptions *levelGenOptions = app.getLevelGenerationOptions();
 		bool intersects = levelGenOptions->checkIntersects(x - r, y - yr, z - r, x + r, y + yr, z + r);

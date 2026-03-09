@@ -12,7 +12,7 @@ LeashItem::LeashItem(int id) : Item(id)
 bool LeashItem::useOn(shared_ptr<ItemInstance> itemInstance, shared_ptr<Player> player, Level *level, int x, int y, int z, int face, float clickX, float clickY, float clickZ, bool bTestUseOnOnly)
 {
 	int tile = level->getTile(x, y, z);
-	if (Tile::tiles[tile] != NULL && Tile::tiles[tile]->getRenderShape() == Tile::SHAPE_FENCE)
+	if (Tile::tiles[tile] != nullptr && Tile::tiles[tile]->getRenderShape() == Tile::SHAPE_FENCE)
 	{
 		if (bTestUseOnOnly) return bindPlayerMobsTest(player, level, x,y,z);
 
@@ -36,14 +36,14 @@ bool LeashItem::bindPlayerMobs(shared_ptr<Player> player, Level *level, int x, i
 	bool foundMobs = false;
 	double range = 7;
 	vector<shared_ptr<Entity> > *mobs = level->getEntitiesOfClass(typeid(Mob), AABB::newTemp(x - range, y - range, z - range, x + range, y + range, z + range));
-	if (mobs != NULL)
+	if (mobs != nullptr)
 	{
 		for(auto& it : *mobs)
 		{
 			shared_ptr<Mob> mob = dynamic_pointer_cast<Mob>(it);
 			if (mob->isLeashed() && mob->getLeashHolder() == player)
 			{
-				if (activeKnot == NULL)
+				if (activeKnot == nullptr)
 				{
 					activeKnot = LeashFenceKnotEntity::createAndAddKnot(level, x, y, z);
 				}
@@ -62,7 +62,7 @@ bool LeashItem::bindPlayerMobsTest(shared_ptr<Player> player, Level *level, int 
 	double range = 7;
 	vector<shared_ptr<Entity> > *mobs = level->getEntitiesOfClass(typeid(Mob), AABB::newTemp(x - range, y - range, z - range, x + range, y + range, z + range));
 
-	if (mobs != NULL)
+	if (mobs != nullptr)
 	{
 		for(auto& it : *mobs)
 		{

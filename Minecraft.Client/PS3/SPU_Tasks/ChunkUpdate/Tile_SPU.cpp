@@ -92,7 +92,7 @@
 #include <new>
 #include "AnvilTile_SPU.h"
 
-TileData_SPU* Tile_SPU::ms_pTileData = NULL;
+TileData_SPU* Tile_SPU::ms_pTileData = nullptr;
 
 Tile_SPU Tile_SPU::m_tiles[256];
 
@@ -181,7 +181,7 @@ Icon_SPU *Tile_SPU::getTexture(ChunkRebuildData *level, int x, int y, int z, int
 		}
 
 
-		Icon_SPU *icon = NULL;
+		Icon_SPU *icon = nullptr;
 		if(opaque)
 		{
 			LeafTile_SPU::setFancy(false);
@@ -215,13 +215,13 @@ Icon_SPU *Tile_SPU::getTexture(int face)
 // void Tile_SPU::addAABBs(Level *level, int x, int y, int z, AABB *box, AABBList *boxes, Entity *source) 
 // {
 // 	AABB *aabb = getAABB(level, x, y, z);
-// 	if (aabb != NULL && box->intersects(aabb)) boxes->push_back(aabb);
+// 	if (aabb != nullptr && box->intersects(aabb)) boxes->push_back(aabb);
 // }
 // 
 // void Tile_SPU::addAABBs(Level *level, int x, int y, int z, AABB *box, AABBList *boxes)
 // {
 // 	AABB *aabb = getAABB(level, x, y, z);
-// 	if (aabb != NULL && box->intersects(aabb)) boxes->push_back(aabb);
+// 	if (aabb != nullptr && box->intersects(aabb)) boxes->push_back(aabb);
 // }
 // 
 // AABB *Tile_SPU::getAABB(Level *level, int x, int y, int z)
@@ -368,18 +368,18 @@ Icon_SPU *Tile_SPU::getTexture(int face)
 // 	Vec3 *zh0 = a->clipZ(b, zz0);
 // 	Vec3 *zh1 = a->clipZ(b, zz1);
 // 
-// 	Vec3 *closest = NULL;
+// 	Vec3 *closest = nullptr;
 // 
-// 	if (containsX(xh0) && (closest == NULL || a->distanceTo(xh0) < a->distanceTo(closest))) closest = xh0;
-// 	if (containsX(xh1) && (closest == NULL || a->distanceTo(xh1) < a->distanceTo(closest))) closest = xh1;
-// 	if (containsY(yh0) && (closest == NULL || a->distanceTo(yh0) < a->distanceTo(closest))) closest = yh0;
-// 	if (containsY(yh1) && (closest == NULL || a->distanceTo(yh1) < a->distanceTo(closest))) closest = yh1;
-// 	if (containsZ(zh0) && (closest == NULL || a->distanceTo(zh0) < a->distanceTo(closest))) closest = zh0;
-// 	if (containsZ(zh1) && (closest == NULL || a->distanceTo(zh1) < a->distanceTo(closest))) closest = zh1;
+// 	if (containsX(xh0) && (closest == nullptr || a->distanceTo(xh0) < a->distanceTo(closest))) closest = xh0;
+// 	if (containsX(xh1) && (closest == nullptr || a->distanceTo(xh1) < a->distanceTo(closest))) closest = xh1;
+// 	if (containsY(yh0) && (closest == nullptr || a->distanceTo(yh0) < a->distanceTo(closest))) closest = yh0;
+// 	if (containsY(yh1) && (closest == nullptr || a->distanceTo(yh1) < a->distanceTo(closest))) closest = yh1;
+// 	if (containsZ(zh0) && (closest == nullptr || a->distanceTo(zh0) < a->distanceTo(closest))) closest = zh0;
+// 	if (containsZ(zh1) && (closest == nullptr || a->distanceTo(zh1) < a->distanceTo(closest))) closest = zh1;
 // 
 // 	LeaveCriticalSection(&m_csShape);
 // 
-// 	if (closest == NULL) return NULL;
+// 	if (closest == nullptr) return nullptr;
 // 
 // 	int face = -1;
 // 
@@ -395,19 +395,19 @@ Icon_SPU *Tile_SPU::getTexture(int face)
 // 
 // bool Tile_SPU::containsX(Vec3 *v)
 // {
-// 	if( v == NULL) return false;
+// 	if( v == nullptr) return false;
 // 	return v->y >= yy0 && v->y <= yy1 && v->z >= zz0 && v->z <= zz1;
 // }
 // 
 // bool Tile_SPU::containsY(Vec3 *v)
 // {
-// 	if( v == NULL) return false;
+// 	if( v == nullptr) return false;
 // 	return v->x >= xx0 && v->x <= xx1 && v->z >= zz0 && v->z <= zz1;
 // }
 // 
 // bool Tile_SPU::containsZ(Vec3 *v)
 // {
-// 	if( v == NULL) return false;
+// 	if( v == nullptr) return false;
 // 	return v->x >= xx0 && v->x <= xx1 && v->y >= yy0 && v->y <= yy1;
 // }
 // 
@@ -516,7 +516,7 @@ void Tile_SPU::updateDefaultShape()
 // 	// 4J Stu - Special case - only record a crop destroy if is fully grown
 // 	if(id==Tile_SPU::crops_Id)
 // 	{
-// 		if( Tile_SPU::crops->getResource(data, NULL, 0) > 0 )
+// 		if( Tile_SPU::crops->getResource(data, nullptr, 0) > 0 )
 // 			player->awardStat(Stats::blocksMined[id], 1);
 // 	}
 // 	else
@@ -533,7 +533,7 @@ void Tile_SPU::updateDefaultShape()
 //     if (isCubeShaped() && !isEntityTile[id] && EnchantmentHelper::hasSilkTouch(player->inventory))
 // 	{
 //         shared_ptr<ItemInstance> item = getSilkTouchItemInstance(data);
-//         if (item != NULL)
+//         if (item != nullptr)
 // 		{
 //             popResource(level, x, y, z, item);
 //         }
@@ -625,7 +625,7 @@ float Tile_SPU::getShadeBrightness(ChunkRebuildData *level, int x, int y, int z)
 Tile_SPU* Tile_SPU::createFromID( int tileID )
 {
 	if(tileID == 0)
-		return NULL;
+		return nullptr;
 
 	if(m_tiles[tileID].id != -1)
 		return &m_tiles[tileID];

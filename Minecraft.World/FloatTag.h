@@ -29,7 +29,7 @@ public:
 	{
 		if (Tag::equals(obj))
 		{
-			FloatTag *o = (FloatTag *) obj;
+			FloatTag *o = static_cast<FloatTag *>(obj);
 			return data == o->data;
 		}
 		return false;

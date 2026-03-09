@@ -4,12 +4,12 @@
 
 CustomSet::CustomSet()
 {
-	m_NodePool = NULL;
+	m_NodePool = nullptr;
 	m_NodePoolSize = 0;
 	m_NodePoolIndex = 0;
 
 	m_HashSize = 1024;
-	m_HashTable = (SCustomSetNode**) malloc(m_HashSize * sizeof(SCustomSetNode));
+	m_HashTable = static_cast<SCustomSetNode **>(malloc(m_HashSize * sizeof(SCustomSetNode)));
 
 	clear();
 }
@@ -85,7 +85,7 @@ void CustomSet::insert(const ChunkPos &Key)
 	unsigned int Index = Hash & (m_HashSize-1);
 	Node->Hash = Hash;
 	Node->key = Key;
-	Node->Next = NULL;
+	Node->Next = nullptr;
 
 	// are any nodes in this hash index
 	if( !m_HashTable[Index] )
@@ -113,16 +113,16 @@ void CustomSet::resize()
 	SCustomSetNode **NodePool;
 	if( m_NodePool )
 	{
-		NodePool = (SCustomSetNode**) realloc(m_NodePool, m_NodePoolSize * sizeof(SCustomSetNode));
+		NodePool = static_cast<SCustomSetNode **>(realloc(m_NodePool, m_NodePoolSize * sizeof(SCustomSetNode)));
 	}
 	else
 	{
-		NodePool = (SCustomSetNode**) malloc(m_NodePoolSize * sizeof(SCustomSetNode));
+		NodePool = static_cast<SCustomSetNode **>(malloc(m_NodePoolSize * sizeof(SCustomSetNode)));
 	}
 
 	for( int i = 0;i < m_NodePoolSize - OldPoolSize;i += 1 )
 	{
-		NodePool[i + OldPoolSize] = (SCustomSetNode*) malloc(sizeof(SCustomSetNode));
+		NodePool[i + OldPoolSize] = static_cast<SCustomSetNode *>(malloc(sizeof(SCustomSetNode)));
 	}
 
 	m_NodePool = NodePool;

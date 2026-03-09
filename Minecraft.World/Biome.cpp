@@ -13,34 +13,34 @@
 //public static final Biome[] biomes = new Biome[256];
 Biome *Biome::biomes[256];
 
-Biome *Biome::ocean = NULL;
-Biome *Biome::plains = NULL;
-Biome *Biome::desert = NULL;
+Biome *Biome::ocean = nullptr;
+Biome *Biome::plains = nullptr;
+Biome *Biome::desert = nullptr;
 
-Biome *Biome::extremeHills = NULL;
-Biome *Biome::forest = NULL;
-Biome *Biome::taiga = NULL;
+Biome *Biome::extremeHills = nullptr;
+Biome *Biome::forest = nullptr;
+Biome *Biome::taiga = nullptr;
 
-Biome *Biome::swampland = NULL;
-Biome *Biome::river = NULL;
+Biome *Biome::swampland = nullptr;
+Biome *Biome::river = nullptr;
 
-Biome *Biome::hell = NULL;
-Biome *Biome::sky = NULL;
+Biome *Biome::hell = nullptr;
+Biome *Biome::sky = nullptr;
 
-Biome *Biome::frozenOcean = NULL;
-Biome *Biome::frozenRiver = NULL;
-Biome *Biome::iceFlats = NULL;
-Biome *Biome::iceMountains = NULL;
-Biome *Biome::mushroomIsland = NULL;
-Biome *Biome::mushroomIslandShore = NULL;
-Biome *Biome::beaches = NULL;
-Biome *Biome::desertHills = NULL;
-Biome *Biome::forestHills = NULL;
-Biome *Biome::taigaHills = NULL;
-Biome *Biome::smallerExtremeHills = NULL;
+Biome *Biome::frozenOcean = nullptr;
+Biome *Biome::frozenRiver = nullptr;
+Biome *Biome::iceFlats = nullptr;
+Biome *Biome::iceMountains = nullptr;
+Biome *Biome::mushroomIsland = nullptr;
+Biome *Biome::mushroomIslandShore = nullptr;
+Biome *Biome::beaches = nullptr;
+Biome *Biome::desertHills = nullptr;
+Biome *Biome::forestHills = nullptr;
+Biome *Biome::taigaHills = nullptr;
+Biome *Biome::smallerExtremeHills = nullptr;
 
-Biome *Biome::jungle = NULL;
-Biome *Biome::jungleHills = NULL;
+Biome *Biome::jungle = nullptr;
+Biome *Biome::jungleHills = nullptr;
 
 
 void Biome::staticCtor()
@@ -86,8 +86,8 @@ Biome::Biome(int id) : id(id)
 	color = 0;
 	//  snowCovered = false;	// 4J - this isn't set by the java game any more so removing to save confusion
 
-	topMaterial = (byte) Tile::grass_Id;
-	material = (byte) Tile::dirt_Id;
+	topMaterial = static_cast<byte>(Tile::grass_Id);
+	material = static_cast<byte>(Tile::dirt_Id);
 	leafColor = 0x4EE031;
 	_hasRain = true;
 	depth = 0.1f;
@@ -95,7 +95,7 @@ Biome::Biome(int id) : id(id)
 	temperature = 0.5f;
 	downfall = 0.5f;
 	//waterColor = 0xffffff; // 4J Stu - Not used
-	decorator = NULL;
+	decorator = nullptr;
 
 	m_grassColor = eMinecraftColour_NOT_SET;
 	m_foliageColor = eMinecraftColour_NOT_SET;
@@ -132,7 +132,7 @@ Biome::Biome(int id) : id(id)
 
 Biome::~Biome()
 {
-	if(decorator != NULL) delete decorator;
+	if(decorator != nullptr) delete decorator;
 }
 
 BiomeDecorator *Biome::createDecorator()
@@ -228,7 +228,7 @@ vector<Biome::MobSpawnerData *> *Biome::getMobs(MobCategory *category)
 	if (category == MobCategory::creature_wolf) return &friendlies_wolf;
 	if (category == MobCategory::creature_mushroomcow) return &friendlies_mushroomcow;
 	if (category == MobCategory::ambient) return &ambientFriendlies;
-	return NULL;
+	return nullptr;
 }
 
 bool Biome::hasSnow()
@@ -261,12 +261,12 @@ float Biome::getCreatureProbability()
 
 int Biome::getDownfallInt()
 {
-	return (int) (downfall * 65536);
+	return static_cast<int>(downfall * 65536);
 }
 
 int Biome::getTemperatureInt()
 {
-	return (int) (temperature * 65536);
+	return static_cast<int>(temperature * 65536);
 }
 
 // 4J - brought forward from 1.2.3

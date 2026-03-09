@@ -26,7 +26,7 @@ protected:
 public:
 	// 4J-PB - added to replace (e instanceof Type), avoiding dynamic casts
 	eINSTANCEOF GetType()						{ return eTYPE_LIVINGENTITY;}
-	static Entity *create(Level *level) { return NULL; }
+	static Entity *create(Level *level) { return nullptr; }
 
 private:
 	static AttributeModifier *SPEED_MODIFIER_SPRINTING;

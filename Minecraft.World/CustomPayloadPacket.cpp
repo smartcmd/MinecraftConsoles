@@ -23,7 +23,7 @@ CustomPayloadPacket::CustomPayloadPacket(const wstring &identifier, byteArray da
 	this->identifier = identifier;
 	this->data = data;
 
-	if (data.data != NULL)
+	if (data.data != nullptr)
 	{
 		length = data.length;
 
@@ -43,9 +43,9 @@ void CustomPayloadPacket::read(DataInputStream *dis)
 	identifier = readUtf(dis, 20);
 	length = dis->readShort();
 
-	if (length > 0 && length < Short::MAX_VALUE)
+	if (length > 0 && length <= Short::MAX_VALUE)
 	{
-		if(data.data != NULL)
+		if(data.data != nullptr)
 		{
 			delete [] data.data;
 		}
@@ -57,8 +57,8 @@ void CustomPayloadPacket::read(DataInputStream *dis)
 void CustomPayloadPacket::write(DataOutputStream *dos)
 {
 	writeUtf(identifier, dos);
-	dos->writeShort((short) length);
-	if (data.data != NULL)
+	dos->writeShort(static_cast<short>(length));
+	if (data.data != nullptr)
 	{
 		dos->write(data);
 	}

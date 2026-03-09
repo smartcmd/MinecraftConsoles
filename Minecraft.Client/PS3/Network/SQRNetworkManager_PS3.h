@@ -125,7 +125,7 @@ private:
 	void											LocalDataSend(SQRNetworkPlayer *playerFrom, SQRNetworkPlayer *playerTo, const void *data, unsigned int dataSize);
 	int												GetSessionIndex(SQRNetworkPlayer *player);
 
-	bool											AddRemotePlayersAndSync( SceNpMatching2RoomMemberId memberId, int playerMask, bool *isFull = NULL );
+	bool											AddRemotePlayersAndSync( SceNpMatching2RoomMemberId memberId, int playerMask, bool *isFull = nullptr );
 	void											RemoveRemotePlayersAndSync( SceNpMatching2RoomMemberId memberId, int mask );
 	void											RemoveNetworkPlayers( int mask );
 	void											SetLocalPlayersAndSync();

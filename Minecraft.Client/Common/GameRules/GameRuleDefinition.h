@@ -61,6 +61,6 @@ public:
 
 	// Static functions
 	static GameRulesInstance *generateNewGameRulesInstance(GameRulesInstance::EGameRulesInstanceType type, LevelRuleset *rules, Connection *connection);
-	static wstring generateDescriptionString(ConsoleGameRules::EGameRuleType defType, const wstring &description, void *data = NULL, int dataLength = 0);
+	static wstring generateDescriptionString(ConsoleGameRules::EGameRuleType defType, const wstring &description, void *data = nullptr, int dataLength = 0);
 
 };

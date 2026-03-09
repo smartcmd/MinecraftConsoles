@@ -20,6 +20,23 @@
 // #endif
 // #endif
 
+#ifdef _WINDOWS64
+#define _HAS_STD_BYTE 0     // solve (std::)'byte' ambiguity with windows headers
+#define WIN32_LEAN_AND_MEAN // Exclude rarely-used stuff from Windows headers
+// Windows Header Files:
+#include <malloc.h>
+#include <tchar.h>
+#include <windows.h>
+#include <windowsx.h>
+// TODO: reference additional headers your program requires here
+#include <DirectXMath.h>
+#include <d3d11.h>
+using namespace DirectX;
+
+#define HRESULT_SUCCEEDED(hr) (((HRESULT)(hr)) >= 0)
+
+#endif
+
 #ifdef __PS3__
 
 #include "Ps3Types.h"
@@ -58,23 +75,6 @@
 #include <unordered_set>
 #include <vector>
 #endif
-
-#ifdef  _WINDOWS64
-#define WIN32_LEAN_AND_MEAN             // Exclude rarely-used stuff from Windows headers
-// Windows Header Files:
-#include <windows.h>
-#include <windowsx.h>
-#include <malloc.h>
-#include <tchar.h>
-// TODO: reference additional headers your program requires here
-#include <d3d11.h>
-#include <DirectXMath.h>
-using namespace DirectX;
-
-#define HRESULT_SUCCEEDED(hr) (((HRESULT)(hr)) >= 0)
-
-#endif
-
 
 
 #ifdef _DURANGO

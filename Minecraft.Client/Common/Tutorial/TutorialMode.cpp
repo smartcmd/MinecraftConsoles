@@ -15,7 +15,7 @@ TutorialMode::TutorialMode(int iPad, Minecraft *minecraft, ClientConnection *con
 
 TutorialMode::~TutorialMode()
 {
-	if(tutorial != NULL)
+	if(tutorial != nullptr)
 		delete tutorial;
 }
 
@@ -38,7 +38,7 @@ bool TutorialMode::destroyBlock(int x, int y, int z, int face)
 	}
 	shared_ptr<ItemInstance> item = minecraft->player->getSelectedItem();
 	int damageBefore;
-	if(item != NULL)
+	if(item != nullptr)
 	{
 		damageBefore = item->getDamageValue();
 	}
@@ -46,7 +46,7 @@ bool TutorialMode::destroyBlock(int x, int y, int z, int face)
 
 	if(!tutorial->m_allTutorialsComplete)
 	{
-		if ( item != NULL && item->isDamageableItem() )
+		if ( item != nullptr && item->isDamageableItem() )
 		{		
 			int max = item->getMaxDamage();
 			int damageNow = item->getDamageValue();
@@ -88,7 +88,7 @@ bool TutorialMode::useItemOn(shared_ptr<Player> player, Level *level, shared_ptr
 
 		if(!bTestUseOnly)
 		{	
-			if(item != NULL)
+			if(item != nullptr)
 			{
 				haveItem = true;
 				itemCount = item->count;

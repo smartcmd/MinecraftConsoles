@@ -20,7 +20,7 @@ UIScene_LaunchMoreOptionsMenu::UIScene_LaunchMoreOptionsMenu(int iPad, void *ini
 	// Setup all the Iggy references we need for this scene
 	initialiseMovie();
 
-	m_params = (LaunchMoreOptionsMenuInitData *)initData;
+	m_params = static_cast<LaunchMoreOptionsMenuInitData *>(initData);
 
 	m_labelWorldOptions.init(app.GetString(IDS_WORLD_OPTIONS));
 
@@ -116,9 +116,9 @@ UIScene_LaunchMoreOptionsMenu::UIScene_LaunchMoreOptionsMenu(int iPad, void *ini
 	if(m_params->currentWorldSize != e_worldSize_Unknown)
 	{
 		m_labelWorldResize.init(app.GetString(IDS_INCREASE_WORLD_SIZE));
-		int min= int(m_params->currentWorldSize)-1;
+		int min= static_cast<int>(m_params->currentWorldSize)-1;
 		int max=3;
-		int curr = int(m_params->newWorldSize)-1;
+		int curr = static_cast<int>(m_params->newWorldSize)-1;
 		m_sliderWorldResize.init(app.GetString(m_iWorldSizeTitleA[curr]),eControl_WorldResize,min,max,curr);
 		m_checkboxes[eLaunchCheckbox_WorldResizeType].init(app.GetString(IDS_INCREASE_WORLD_SIZE_OVERWRITE_EDGES),eLaunchCheckbox_WorldResizeType,m_params->newWorldSizeOverwriteEdges);
 	}
@@ -308,7 +308,7 @@ void UIScene_LaunchMoreOptionsMenu::handleInput(int iPad, int key, bool repeat, 
 			m_tabIndex = m_tabIndex == 0 ? 1 : 0;
 			updateTooltips();
 			IggyDataValue result;
-			IggyResult out = IggyPlayerCallMethodRS ( getMovie() , &result, IggyPlayerRootPath( getMovie() ), m_funcChangeTab , 0 , NULL );
+			IggyResult out = IggyPlayerCallMethodRS ( getMovie() , &result, IggyPlayerRootPath( getMovie() ), m_funcChangeTab , 0 , nullptr );
 		}
 		break;
 	}
@@ -330,7 +330,7 @@ void UIScene_LaunchMoreOptionsMenu::handleTouchInput(unsigned int iPad, S32 x, S
 				m_tabIndex = iNewTabIndex;
 				updateTooltips();
 				IggyDataValue result;
-				IggyResult out = IggyPlayerCallMethodRS ( getMovie() , &result, IggyPlayerRootPath( getMovie() ), m_funcChangeTab , 0 , NULL );
+				IggyResult out = IggyPlayerCallMethodRS ( getMovie() , &result, IggyPlayerRootPath( getMovie() ), m_funcChangeTab , 0 , nullptr );
 			}
 			ui.TouchBoxRebuild(this);
 			break;
@@ -354,7 +354,7 @@ void UIScene_LaunchMoreOptionsMenu::handleCheckboxToggled(F64 controlId, bool se
 	//CD - Added for audio
 	ui.PlayUISFX(eSFX_Press);
 
-	switch((EControls)((int)controlId))
+	switch(static_cast<EControls>((int)controlId))
 	{
 	case eLaunchCheckbox_Online:
 		m_params->bOnlineGame = selected;
@@ -428,7 +428,7 @@ void UIScene_LaunchMoreOptionsMenu::handleCheckboxToggled(F64 controlId, bool se
 void UIScene_LaunchMoreOptionsMenu::handleFocusChange(F64 controlId, F64 childId)
 {
 	int stringId = 0;
-	switch((int)controlId)
+	switch(static_cast<int>(controlId))
 	{
 	case eLaunchCheckbox_Online:
 		stringId = IDS_GAMEOPTION_ONLINE;
@@ -549,7 +549,7 @@ void UIScene_LaunchMoreOptionsMenu::handleTimerComplete(int id)
 
 int UIScene_LaunchMoreOptionsMenu::KeyboardCompleteSeedCallback(LPVOID lpParam,bool bRes)
 {
-	UIScene_LaunchMoreOptionsMenu *pClass=(UIScene_LaunchMoreOptionsMenu *)lpParam;
+	UIScene_LaunchMoreOptionsMenu *pClass=static_cast<UIScene_LaunchMoreOptionsMenu *>(lpParam);
 	pClass->m_bIgnoreInput=false;
 	if (bRes)
 	{
@@ -595,7 +595,7 @@ void UIScene_LaunchMoreOptionsMenu::handlePress(F64 controlId, F64 childId)
 	if (isDirectEditBlocking()) return;
 #endif
 
-	switch((int)controlId)
+	switch(static_cast<int>(controlId))
 	{
 	case eControl_EditSeed:
 		{
@@ -642,8 +642,8 @@ void UIScene_LaunchMoreOptionsMenu::handlePress(F64 controlId, F64 childId)
 
 void UIScene_LaunchMoreOptionsMenu::handleSliderMove(F64 sliderId, F64 currentValue)
 {
-	int value = (int)currentValue;
-	switch((int)sliderId)
+	int value = static_cast<int>(currentValue);
+	switch(static_cast<int>(sliderId))
 	{
 	case eControl_WorldSize:
 #ifdef _LARGE_WORLDS
@@ -654,11 +654,11 @@ void UIScene_LaunchMoreOptionsMenu::handleSliderMove(F64 sliderId, F64 currentVa
 		break;
 	case eControl_WorldResize:
 #ifdef _LARGE_WORLDS
-		EGameHostOptionWorldSize changedSize = EGameHostOptionWorldSize(value+1);
+		EGameHostOptionWorldSize changedSize = static_cast<EGameHostOptionWorldSize>(value + 1);
 		if(changedSize >= m_params->currentWorldSize)
 		{
 			m_sliderWorldResize.handleSliderMove(value);
-			m_params->newWorldSize = EGameHostOptionWorldSize(value+1);
+			m_params->newWorldSize = static_cast<EGameHostOptionWorldSize>(value + 1);
 			m_sliderWorldResize.setLabel(app.GetString(m_iWorldSizeTitleA[value]));
 		}
 #endif

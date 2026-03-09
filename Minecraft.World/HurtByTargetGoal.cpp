@@ -30,7 +30,7 @@ void HurtByTargetGoal::start()
 		{
 			shared_ptr<PathfinderMob> other = dynamic_pointer_cast<PathfinderMob>(it);
 			if (this->mob->shared_from_this() == other) continue;
-			if (other->getTarget() != NULL) continue;
+			if (other->getTarget() != nullptr) continue;
 			if (other->isAlliedTo(mob->getLastHurtByMob())) continue; // don't target allies
 			other->setTarget(mob->getLastHurtByMob());
 		}

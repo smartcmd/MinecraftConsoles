@@ -53,7 +53,7 @@ void PigZombie::tick()
 		AttributeInstance *speed = getAttribute(SharedMonsterAttributes::MOVEMENT_SPEED);
 		speed->removeModifier(SPEED_MODIFIER_ATTACKING);
 
-		if (attackTarget != NULL)
+		if (attackTarget != nullptr)
 		{
 			speed->addModifier(new AttributeModifier(*SPEED_MODIFIER_ATTACKING));
 		}
@@ -78,7 +78,7 @@ bool PigZombie::canSpawn()
 void PigZombie::addAdditonalSaveData(CompoundTag *tag)
 {
 	Zombie::addAdditonalSaveData(tag);
-	tag->putShort(L"Anger", (short) angerTime);
+	tag->putShort(L"Anger", static_cast<short>(angerTime));
 }
 
 void PigZombie::readAdditionalSaveData(CompoundTag *tag)
@@ -105,7 +105,7 @@ shared_ptr<Entity> PigZombie::findAttackTarget()
 bool PigZombie::hurt(DamageSource *source, float dmg)
 {
 	shared_ptr<Entity> sourceEntity = source->getEntity();
-	if ( sourceEntity != NULL && sourceEntity->instanceof(eTYPE_PLAYER) )
+	if ( sourceEntity != nullptr && sourceEntity->instanceof(eTYPE_PLAYER) )
 	{
 		vector<shared_ptr<Entity> > *nearby = level->getEntities( shared_from_this(), bb->grow(32, 32, 32));
 		for (auto& e : *nearby)
@@ -174,7 +174,7 @@ int PigZombie::getDeathLoot()
 
 void PigZombie::populateDefaultEquipmentSlots()
 {
-	setEquippedSlot(SLOT_WEAPON, shared_ptr<ItemInstance>( new ItemInstance(Item::sword_gold)) );
+	setEquippedSlot(SLOT_WEAPON, std::make_shared<ItemInstance>(Item::sword_gold));
 }
 
 MobGroupData *PigZombie::finalizeMobSpawn(MobGroupData *groupData, int extraData /*= 0*/) // 4J Added extraData param

@@ -315,7 +315,7 @@ void TileCompressData_SPU::loadAndUncompressLowerSection(int block, int x0, int 
 
 	// tile IDs first
 	// ---------------------------
-	if(m_lowerBlocks[block] != NULL)
+	if(m_lowerBlocks[block] != nullptr)
 	{
 		int dmaSize = padTo16(m_lowerBlocksSize[block]);
 		DmaData_SPU::getAndWait(m_pTileStorage->getDataPtr(), (uint32_t)m_lowerBlocks[block], dmaSize);
@@ -366,7 +366,7 @@ void TileCompressData_SPU::loadAndUncompressLowerSection(int block, int x0, int 
 
 void TileCompressData_SPU::loadAndUncompressUpperSection(int block, int x0, int z0, int x1, int z1)
 {
-	if(m_upperBlocks[block] != NULL)
+	if(m_upperBlocks[block] != nullptr)
 	{
 		int dmaSize = padTo16(m_upperBlocksSize[block]);
 		DmaData_SPU::getAndWait(m_pTileStorage->getDataPtr(), (uint32_t)m_upperBlocks[block], dmaSize);
@@ -507,7 +507,7 @@ void TileCompressData_SPU::setForChunk( Region* region, int x0, int y0, int z0 )
 				}
 				else
 				{
-					m_lowerBlocks[i*3+j] = NULL;
+					m_lowerBlocks[i*3+j] = nullptr;
 					m_lowerBlocksSize[i*3+j] = 0;
 					m_lowerSkyLight[i*3+j] = 0;
 					m_lowerBlockLight[i*3+j] = 0;
@@ -527,7 +527,7 @@ void TileCompressData_SPU::setForChunk( Region* region, int x0, int y0, int z0 )
 			}
 				else
 				{
-					m_upperBlocks[i*3+j] = NULL;
+					m_upperBlocks[i*3+j] = nullptr;
 					m_upperBlocksSize[i*3+j] = 0;
 					m_upperSkyLight[i*3+j] = 0;
 					m_upperBlockLight[i*3+j] = 0;

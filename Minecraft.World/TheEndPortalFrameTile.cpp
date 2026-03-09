@@ -9,8 +9,8 @@ const wstring TheEndPortalFrameTile::TEXTURE_EYE = L"endframe_eye";
 
 TheEndPortalFrameTile::TheEndPortalFrameTile(int id) : Tile(id, Material::glass, isSolidRender() )
 {
-	iconTop = NULL;
-	iconEye = NULL;
+	iconTop = nullptr;
+	iconEye = nullptr;
 }
 
 Icon *TheEndPortalFrameTile::getTexture(int face, int data)

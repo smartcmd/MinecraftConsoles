@@ -73,7 +73,7 @@ public:
 	virtual bool tick() = 0;
 	virtual bool shouldSave() = 0;
 
-	virtual LevelChunk **getCache() { return NULL; }		// 4J added
+	virtual LevelChunk **getCache() { return nullptr; }		// 4J added
 	virtual void dataReceived(int x, int z) {}				// 4J added
 
 	/**

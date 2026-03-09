@@ -35,12 +35,12 @@ const Rarity *EnchantedBookItem::getRarity(shared_ptr<ItemInstance> itemInstance
 
 ListTag<CompoundTag> *EnchantedBookItem::getEnchantments(shared_ptr<ItemInstance> item)
 {
-	if (item->tag == NULL || !item->tag->contains((wchar_t *)TAG_STORED_ENCHANTMENTS.c_str()))
+	if (item->tag == nullptr || !item->tag->contains((wchar_t *)TAG_STORED_ENCHANTMENTS.c_str()))
 	{
 		return new ListTag<CompoundTag>();
 	}
 
-	return (ListTag<CompoundTag> *) item->tag->get((wchar_t *)TAG_STORED_ENCHANTMENTS.c_str());
+	return static_cast<ListTag<CompoundTag> *>(item->tag->get((wchar_t *)TAG_STORED_ENCHANTMENTS.c_str()));
 }
 
 void EnchantedBookItem::appendHoverText(shared_ptr<ItemInstance> itemInstance, shared_ptr<Player> player, vector<HtmlString> *lines, bool advanced)
@@ -49,7 +49,7 @@ void EnchantedBookItem::appendHoverText(shared_ptr<ItemInstance> itemInstance, s
 
 	ListTag<CompoundTag> *list = getEnchantments(itemInstance);
 
-	if (list != NULL)
+	if (list != nullptr)
 	{
 		wstring unformatted = L"";
 		for (int i = 0; i < list->size(); i++)
@@ -57,7 +57,7 @@ void EnchantedBookItem::appendHoverText(shared_ptr<ItemInstance> itemInstance, s
 			int type = list->get(i)->getShort((wchar_t *)ItemInstance::TAG_ENCH_ID);
 			int level = list->get(i)->getShort((wchar_t *)ItemInstance::TAG_ENCH_LEVEL);
 
-			if (Enchantment::enchantments[type] != NULL)
+			if (Enchantment::enchantments[type] != nullptr)
 			{
 				lines->push_back(Enchantment::enchantments[type]->getFullname(level));
 			}
@@ -78,7 +78,7 @@ void EnchantedBookItem::addEnchantment(shared_ptr<ItemInstance> item, Enchantmen
 		{
 			if (tag->getShort((wchar_t *)ItemInstance::TAG_ENCH_LEVEL) < enchantment->level)
 			{
-				tag->putShort((wchar_t *)ItemInstance::TAG_ENCH_LEVEL, (short) enchantment->level);
+				tag->putShort((wchar_t *)ItemInstance::TAG_ENCH_LEVEL, static_cast<short>(enchantment->level));
 			}
 
 			add = false;
@@ -90,8 +90,8 @@ void EnchantedBookItem::addEnchantment(shared_ptr<ItemInstance> item, Enchantmen
 	{
 		CompoundTag *tag = new CompoundTag();
 
-		tag->putShort((wchar_t *)ItemInstance::TAG_ENCH_ID, (short) enchantment->enchantment->id);
-		tag->putShort((wchar_t *)ItemInstance::TAG_ENCH_LEVEL, (short) enchantment->level);
+		tag->putShort((wchar_t *)ItemInstance::TAG_ENCH_ID, static_cast<short>(enchantment->enchantment->id));
+		tag->putShort((wchar_t *)ItemInstance::TAG_ENCH_LEVEL, static_cast<short>(enchantment->level));
 
 		enchantments->add(tag);
 	}
@@ -102,7 +102,7 @@ void EnchantedBookItem::addEnchantment(shared_ptr<ItemInstance> item, Enchantmen
 
 shared_ptr<ItemInstance> EnchantedBookItem::createForEnchantment(EnchantmentInstance *enchant)
 {
-	shared_ptr<ItemInstance> item = shared_ptr<ItemInstance>(new ItemInstance(this));
+	shared_ptr<ItemInstance> item = std::make_shared<ItemInstance>(this);
 	addEnchantment(item, enchant);
 	return item;
 }
@@ -118,7 +118,7 @@ void EnchantedBookItem::createForEnchantment(Enchantment *enchant, vector<shared
 shared_ptr<ItemInstance> EnchantedBookItem::createForRandomLoot(Random *random)
 {
 	Enchantment *enchantment = Enchantment::validEnchantments[random->nextInt(Enchantment::validEnchantments.size())];
-	shared_ptr<ItemInstance> book = shared_ptr<ItemInstance>(new ItemInstance(id, 1, 0));
+	shared_ptr<ItemInstance> book = std::make_shared<ItemInstance>(id, 1, 0);
 	int level = Mth::nextInt(random, enchantment->getMinLevel(), enchantment->getMaxLevel());
 
 	addEnchantment(book, new EnchantmentInstance(enchantment, level));
@@ -134,7 +134,7 @@ WeighedTreasure *EnchantedBookItem::createForRandomTreasure(Random *random)
 WeighedTreasure *EnchantedBookItem::createForRandomTreasure(Random *random, int minCount, int maxCount, int weight)
 {
 	Enchantment *enchantment = Enchantment::validEnchantments[random->nextInt(Enchantment::validEnchantments.size())];
-	shared_ptr<ItemInstance> book = shared_ptr<ItemInstance>(new ItemInstance(id, 1, 0));
+	shared_ptr<ItemInstance> book = std::make_shared<ItemInstance>(id, 1, 0);
 	int level = Mth::nextInt(random, enchantment->getMinLevel(), enchantment->getMaxLevel());
 
 	addEnchantment(book, new EnchantmentInstance(enchantment, level));

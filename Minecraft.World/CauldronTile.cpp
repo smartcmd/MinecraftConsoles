@@ -13,9 +13,9 @@ const wstring CauldronTile::TEXTURE_BOTTOM = L"cauldron_bottom";
 
 CauldronTile::CauldronTile(int id) : Tile(id, Material::metal, isSolidRender())
 {
-	iconInner = NULL;
-	iconTop = NULL;
-	iconBottom = NULL;
+	iconInner = nullptr;
+	iconTop = nullptr;
+	iconBottom = nullptr;
 }
 
 Icon *CauldronTile::getTexture(int face, int data)
@@ -43,7 +43,7 @@ Icon *CauldronTile::getTexture(const wstring &name)
 {
 	if (name.compare(TEXTURE_INSIDE) == 0) return Tile::cauldron->iconInner;
 	if (name.compare(TEXTURE_BOTTOM) == 0) return Tile::cauldron->iconBottom;
-	return NULL;
+	return nullptr;
 }
 
 void CauldronTile::addAABBs(Level *level, int x, int y, int z, AABB *box, AABBList *boxes, shared_ptr<Entity> source)
@@ -93,7 +93,7 @@ bool CauldronTile::use(Level *level, int x, int y, int z, shared_ptr<Player> pla
 	}
 
 	shared_ptr<ItemInstance> item = player->inventory->getSelected();
-	if (item == NULL)
+	if (item == nullptr)
 	{
 		return true;
 	}
@@ -107,7 +107,7 @@ bool CauldronTile::use(Level *level, int x, int y, int z, shared_ptr<Player> pla
 		{
 			if (!player->abilities.instabuild)
 			{
-				player->inventory->setItem(player->inventory->selected, shared_ptr<ItemInstance>(new ItemInstance(Item::bucket_empty)));
+				player->inventory->setItem(player->inventory->selected, std::make_shared<ItemInstance>(Item::bucket_empty));
 			}
 
 			level->setData(x, y, z, 3, Tile::UPDATE_CLIENTS);
@@ -119,10 +119,10 @@ bool CauldronTile::use(Level *level, int x, int y, int z, shared_ptr<Player> pla
 	{
 		if (fillLevel > 0)
 		{
-			shared_ptr<ItemInstance> potion = shared_ptr<ItemInstance>(new ItemInstance(Item::potion, 1, 0));
+			shared_ptr<ItemInstance> potion = std::make_shared<ItemInstance>(Item::potion, 1, 0);
 			if (!player->inventory->add(potion))
 			{
-				level->addEntity(shared_ptr<ItemEntity>(new ItemEntity(level, x + 0.5, y + 1.5, z + 0.5, potion)));
+				level->addEntity(std::make_shared<ItemEntity>(level, x + 0.5, y + 1.5, z + 0.5, potion));
 			}
 			// 4J Stu - Brought forward change to update inventory when filling bottles with water
 			else if (player->instanceof(eTYPE_SERVERPLAYER))

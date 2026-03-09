@@ -20,6 +20,6 @@ void IUIScene_CommandBlockMenu::ConfirmButtonClicked()
 	dos.writeInt(m_commandBlock->z);
 	dos.writeUTF(GetCommand());
 
-	Minecraft::GetInstance()->localplayers[GetPad()]->connection->send(shared_ptr<CustomPayloadPacket>(new CustomPayloadPacket(CustomPayloadPacket::SET_ADVENTURE_COMMAND_PACKET, baos.toByteArray())));
+	Minecraft::GetInstance()->localplayers[GetPad()]->connection->send(std::make_shared<CustomPayloadPacket>(CustomPayloadPacket::SET_ADVENTURE_COMMAND_PACKET, baos.toByteArray()));
 }
 

@@ -35,11 +35,11 @@ ExperienceOrb::ExperienceOrb(Level *level, double x, double y, double z, int cou
 	heightOffset = bbHeight / 2.0f;
 	setPos(x, y, z);
 
-	yRot = (float) (Math::random() * 360);
+	yRot = static_cast<float>(Math::random() * 360);
 
-	xd = (float) (Math::random() * 0.2f - 0.1f) * 2;
-	yd = (float) (Math::random() * 0.2) * 2;
-	zd = (float) (Math::random() * 0.2f - 0.1f) * 2;
+	xd = static_cast<float>(Math::random() * 0.2f - 0.1f) * 2;
+	yd = static_cast<float>(Math::random() * 0.2) * 2;
+	zd = static_cast<float>(Math::random() * 0.2f - 0.1f) * 2;
 
 	value = count;
 }
@@ -70,7 +70,7 @@ int ExperienceOrb::getLightColor(float a)
 
 	int br1 = (br) & 0xff;
 	int br2 = (br >> 16) & 0xff;
-	br1 += (int) (l * 15 * 16);
+	br1 += static_cast<int>(l * 15 * 16);
 	if (br1 > 15 * 16) br1 = 15 * 16;
 	//        br2 = 15*16;
 	return br1 | br2 << 16;
@@ -99,13 +99,13 @@ void ExperienceOrb::tick()
 	// Usually exp orbs will get created at the same time so smoothen the lagspikes
 	if (followingTime < tickCount - SharedConstants::TICKS_PER_SECOND + (entityId % 100))
 	{
-		if (followingPlayer == NULL || followingPlayer->distanceToSqr(shared_from_this()) > maxDist * maxDist)
+		if (followingPlayer == nullptr || followingPlayer->distanceToSqr(shared_from_this()) > maxDist * maxDist)
 		{
 			followingPlayer = level->getNearestPlayer(shared_from_this(), maxDist);
 		}
 		followingTime = tickCount;
 	}
-	if (followingPlayer != NULL)
+	if (followingPlayer != nullptr)
 	{
 		double xdd = (followingPlayer->x - x) / maxDist;
 		double ydd = (followingPlayer->y + followingPlayer->getHeadHeight() - y) / maxDist;
@@ -176,9 +176,9 @@ bool ExperienceOrb::hurt(DamageSource *source, float damage)
 
 void ExperienceOrb::addAdditonalSaveData(CompoundTag *entityTag)
 {
-	entityTag->putShort(L"Health", (byte) health);
-	entityTag->putShort(L"Age", (short) age);
-	entityTag->putShort(L"Value", (short) value);
+	entityTag->putShort(L"Health", static_cast<byte>(health));
+	entityTag->putShort(L"Age", static_cast<short>(age));
+	entityTag->putShort(L"Value", static_cast<short>(value));
 }
 
 void ExperienceOrb::readAdditionalSaveData(CompoundTag *tag)

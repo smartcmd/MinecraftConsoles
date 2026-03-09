@@ -47,12 +47,12 @@ void Slime::defineSynchedData()
 {
 	Mob::defineSynchedData();
 
-	entityData->define(ID_SIZE, (byte) 1);
+	entityData->define(ID_SIZE, static_cast<byte>(1));
 }
 
 void Slime::setSize(int size)
 {
-	entityData->set(ID_SIZE, (byte) size);
+	entityData->set(ID_SIZE, static_cast<byte>(size));
 	setSize(0.6f * size, 0.6f * size);
 	setPos(x, y, z);
 	getAttribute(SharedMonsterAttributes::MAX_HEALTH)->setBaseValue(size * size);
@@ -135,14 +135,14 @@ void Slime::serverAiStep()
 {
 	checkDespawn();
 	shared_ptr<Player> player = level->getNearestAttackablePlayer(shared_from_this(), 16);
-	if (player != NULL)
+	if (player != nullptr)
 	{
 		lookAt(player, 10, 20);
 	}
 	if (onGround && jumpDelay-- <= 0) 
 	{
 		jumpDelay = getJumpDelay();
-		if (player != NULL)
+		if (player != nullptr)
 		{
 			jumpDelay /= 3;
 		}
@@ -155,7 +155,7 @@ void Slime::serverAiStep()
 		// 4J Removed TU7 to bring forward change to fix lava slime render in MP
 		//targetSquish = 1;
 		xxa = 1 - random->nextFloat() * 2;
-		yya = (float) 1 * getSize();
+		yya = static_cast<float>(1) * getSize();
 	} 
 	else
 	{
@@ -179,7 +179,7 @@ int Slime::getJumpDelay()
 
 shared_ptr<Slime> Slime::createChild()
 {
-	return shared_ptr<Slime>( new Slime(level) );
+	return std::make_shared<Slime>(level);
 }
 
 void Slime::remove()

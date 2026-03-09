@@ -45,7 +45,7 @@ void ChunkStorageProfilerDecorator::tick()
 #ifdef __PSVITA__
 			sprintf(buf,"Average load time: %f (%lld)",0.000001 * (double) timeSpentLoading / (double) loadCount, loadCount);
 #else
-			sprintf(buf,"Average load time: %f (%I64d)",0.000001 * (double) timeSpentLoading / (double) loadCount, loadCount);
+			sprintf(buf,"Average load time: %f (%I64d)",0.000001 * static_cast<double>(timeSpentLoading) / static_cast<double>(loadCount), loadCount);
 #endif
 			app.DebugPrintf(buf);
 #endif
@@ -56,7 +56,7 @@ void ChunkStorageProfilerDecorator::tick()
 #ifdef __PSVITA__
 			sprintf(buf,"Average save time: %f (%lld)",0.000001 * (double) timeSpentSaving / (double) loadCount, loadCount);
 #else
-			sprintf(buf,"Average save time: %f (%I64d)",0.000001 * (double) timeSpentSaving / (double) loadCount, loadCount);
+			sprintf(buf,"Average save time: %f (%I64d)",0.000001 * static_cast<double>(timeSpentSaving) / static_cast<double>(loadCount), loadCount);
 #endif
 			app.DebugPrintf(buf);
 #endif
