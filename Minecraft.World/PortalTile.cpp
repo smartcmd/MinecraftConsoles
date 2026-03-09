@@ -11,7 +11,7 @@ PortalTile::PortalTile(int id) : HalfTransparentTile(id, L"portal", Material::po
 	setTicking(true);
 }
 
-void PortalTile::tick(Level *level, int x, int y, int z, Random *random)
+void PortalTile::tick(Level* level, int x, int y, int z, Random* random)
 {
 	HalfTransparentTile::tick(level, x, y, z, random);
 
@@ -28,7 +28,7 @@ void PortalTile::tick(Level *level, int x, int y, int z, Random *random)
 			// spawn a pig man here
 			int iResult = 0;
 			shared_ptr<Entity> entity = SpawnEggItem::spawnMobAt(level, 57, x + .5, y0 + 1.1, z + .5, &iResult);
-			if (entity != NULL)
+			if (entity != nullptr)
 			{
 				entity->changingDimensionDelay = entity->getDimensionChangingDelay();
 			}
@@ -36,12 +36,12 @@ void PortalTile::tick(Level *level, int x, int y, int z, Random *random)
 	}
 }
 
-AABB *PortalTile::getAABB(Level *level, int x, int y, int z)
+AABB* PortalTile::getAABB(Level* level, int x, int y, int z)
 {
-	return NULL;
+	return nullptr;
 }
 
-void PortalTile::updateShape(LevelSource *level, int x, int y, int z, int forceData, shared_ptr<TileEntity> forceEntity) // 4J added forceData, forceEntity param
+void PortalTile::updateShape(LevelSource* level, int x, int y, int z, int forceData, shared_ptr<TileEntity> forceEntity) // 4J added forceData, forceEntity param
 {
 	if (level->getTile(x - 1, y, z) == id || level->getTile(x + 1, y, z) == id)
 	{
@@ -67,21 +67,8 @@ bool PortalTile::isCubeShaped()
 	return false;
 }
 
-bool PortalTile::trySpawnPortal(Level *level, int x, int y, int z, bool actuallySpawn)
+bool PortalTile::validPortalFrame(Level* level, int x, int y, int z, int xd, int zd, bool actuallySpawn)
 {
-	int xd = 0;
-	int zd = 0;
-	if (level->getTile(x - 1, y, z) == Tile::obsidian_Id || level->getTile(x + 1, y, z) == Tile::obsidian_Id) xd = 1;
-	if (level->getTile(x, y, z - 1) == Tile::obsidian_Id || level->getTile(x, y, z + 1) == Tile::obsidian_Id) zd = 1;
-
-	if (xd == zd) return false;
-
-	if (level->getTile(x - xd, y, z - zd) == 0)
-	{
-		x -= xd;
-		z -= zd;
-	}
-
 	for (int xx = -1; xx <= 2; xx++)
 	{
 		for (int yy = -1; yy <= 3; yy++)
@@ -102,7 +89,7 @@ bool PortalTile::trySpawnPortal(Level *level, int x, int y, int z, bool actually
 		}
 	}
 
-	if( !actuallySpawn )
+	if (!actuallySpawn)
 		return true;
 
 	for (int xx = 0; xx < 2; xx++)
@@ -114,10 +101,61 @@ bool PortalTile::trySpawnPortal(Level *level, int x, int y, int z, bool actually
 	}
 
 	return true;
+}
+
+
+bool PortalTile::trySpawnPortal(Level* level, int x, int y, int z, bool actuallySpawn)
+{
+	int xd = 0;
+	int zd = 0;
+	if (level->getTile(x - 1, y, z) == Tile::obsidian_Id || level->getTile(x + 1, y, z) == Tile::obsidian_Id) xd = 1;
+	if (level->getTile(x, y, z - 1) == Tile::obsidian_Id || level->getTile(x, y, z + 1) == Tile::obsidian_Id) zd = 1;
+
+	bool twoPosible = false; // two neth portals posible (x and z direction)
+	if (xd == zd)
+	{
+		if (xd == 1) twoPosible = true;
+		else return false;
+	}
+
+	bool changedx = false; // changed x so it can be reverted if two portals are posible
+	if (level->getTile(x - xd, y, z) == 0)
+	{
+		level->setTileAndData(x, y + 6, z, Tile::dirt_Id, 0, Tile::UPDATE_CLIENTS);
+		changedx = true;
+		x--;
+	}
+	else if (level->getTile(x, y, z - zd) == 0)
+	{
+		level->setTileAndData(x, y + 7, z, Tile::dirt_Id, 0, Tile::UPDATE_CLIENTS);
+		z--;
+	}
+
+	if (!twoPosible)
+	{
+		if (!PortalTile::validPortalFrame(level, x, y, z, xd, zd, actuallySpawn)) return false;
+	}
+	else
+	{
+		if (!PortalTile::validPortalFrame(level, x, y, z, xd, 0, actuallySpawn))
+		{
+			if (level->getTile(x, y, z - zd) == 0)
+			{
+				level->setTileAndData(x, y + 7, z, Tile::dirt_Id, 0, Tile::UPDATE_CLIENTS);
+				z--;
+			}
+			if (changedx) x++;
+			if (!PortalTile::validPortalFrame(level, x, y, z, 0, zd, actuallySpawn))
+			{
+				return false;
+			}
+		}
+	}
+	return true;
 
 }
 
-void PortalTile::neighborChanged(Level *level, int x, int y, int z, int type)
+void PortalTile::neighborChanged(Level* level, int x, int y, int z, int type)
 {
 	int xd = 0;
 	int zd = 1;
@@ -166,7 +204,7 @@ void PortalTile::neighborChanged(Level *level, int x, int y, int z, int type)
 
 }
 
-bool PortalTile::shouldRenderFace(LevelSource *level, int x, int y, int z, int face)
+bool PortalTile::shouldRenderFace(LevelSource* level, int x, int y, int z, int face)
 {
 	if (level->getTile(x, y, z) == id) return false;
 
@@ -187,7 +225,7 @@ bool PortalTile::shouldRenderFace(LevelSource *level, int x, int y, int z, int f
 	return false;
 }
 
-int PortalTile::getResourceCount(Random *random)
+int PortalTile::getResourceCount(Random* random)
 {
 	return 0;
 }
@@ -197,14 +235,14 @@ int PortalTile::getRenderLayer()
 	return 1;
 }
 
-void PortalTile::entityInside(Level *level, int x, int y, int z, shared_ptr<Entity> entity)
+void PortalTile::entityInside(Level* level, int x, int y, int z, shared_ptr<Entity> entity)
 {
-	if (entity->GetType() == eTYPE_EXPERIENCEORB ) return;		// 4J added
+	if (entity->GetType() == eTYPE_EXPERIENCEORB) return;		// 4J added
 
-	if (entity->riding == NULL && entity->rider.lock() == NULL) entity->handleInsidePortal();
+	if (entity->riding == nullptr && entity->rider.lock() == nullptr) entity->handleInsidePortal();
 }
 
-void PortalTile::animateTick(Level *level, int xt, int yt, int zt, Random *random)
+void PortalTile::animateTick(Level* level, int xt, int yt, int zt, Random* random)
 {
 	if (random->nextInt(100) == 0)
 	{
@@ -237,7 +275,7 @@ void PortalTile::animateTick(Level *level, int xt, int yt, int zt, Random *rando
 	}
 }
 
-int PortalTile::cloneTileId(Level *level, int x, int y, int z)
+int PortalTile::cloneTileId(Level* level, int x, int y, int z)
 {
 	return 0;
 }
