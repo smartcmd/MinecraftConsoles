@@ -516,6 +516,12 @@ bool MultiPlayerGameMode::handleCraftItem(int recipe, shared_ptr<Player> player)
 
 	connection->send(std::make_shared<CraftItemPacket>(recipe, changeUid));
 
+	int gridData[9];
+	for(int i = 0; i < 9; i++) gridData[i] = -1;
+	bool is2x2 = false;
+
+	connection->send(std::make_shared<CraftItemGridPacket>(recipe, changeUid, is2x2, gridData));
+
     return true;
 }
 
