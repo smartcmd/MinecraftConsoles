@@ -60,13 +60,13 @@ void ResultSlot::onTake(shared_ptr<Player> player, shared_ptr<ItemInstance> carr
 	for (unsigned int i = 0; i < craftSlots->getContainerSize(); i++)
 	{
 		shared_ptr<ItemInstance> item = craftSlots->getItem(i);
-		if (item != NULL)
+		if (item != nullptr)
 		{
 			craftSlots->removeItem(i, 1);
 
 			if (item->getItem()->hasCraftingRemainingItem())
 			{
-				shared_ptr<ItemInstance> craftResult = shared_ptr<ItemInstance>(new ItemInstance(item->getItem()->getCraftingRemainingItem()));
+				shared_ptr<ItemInstance> craftResult = std::make_shared<ItemInstance>(item->getItem()->getCraftingRemainingItem());
 
 				/*
 				* Try to place this in the player's inventory (See we.java for new method)
@@ -77,7 +77,7 @@ void ResultSlot::onTake(shared_ptr<Player> player, shared_ptr<ItemInstance> carr
 				}
 
 				// If this slot is now empty, place it there (current behavior)
-				if (craftSlots->getItem(i) == NULL)
+				if (craftSlots->getItem(i) == nullptr)
 				{
 					craftSlots->setItem(i, craftResult);
 				}

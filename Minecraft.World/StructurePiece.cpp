@@ -14,7 +14,7 @@
 #include "DoorItem.h"
 
 /**
-* 
+*
 * A structure piece is a construction or room, located somewhere in the world
 * with a given orientatino (out of Direction.java). Structure pieces have a
 * bounding box that says where the piece is located and its bounds, and the
@@ -44,7 +44,7 @@
 
 StructurePiece::StructurePiece()
 {
-	boundingBox = NULL;
+	boundingBox = nullptr;
 	orientation = 0;
 	genDepth = 0;
 	// for reflection
@@ -52,14 +52,14 @@ StructurePiece::StructurePiece()
 
 StructurePiece::StructurePiece( int genDepth )
 {
-	boundingBox = NULL;
+	boundingBox = nullptr;
 	this->genDepth = genDepth;
 	orientation = Direction::UNDEFINED;
 }
 
 StructurePiece::~StructurePiece()
 {
-	if(boundingBox != NULL) delete boundingBox;
+	if(boundingBox != nullptr) delete boundingBox;
 }
 
 CompoundTag *StructurePiece::createTag()
@@ -113,19 +113,18 @@ bool StructurePiece::isInChunk( ChunkPos* pos )
 
 StructurePiece* StructurePiece::findCollisionPiece( list< StructurePiece* > *pieces, BoundingBox* box )
 {
-	for ( AUTO_VAR(it, pieces->begin()); it != pieces->end(); it++ )
+	for (auto& piece : *pieces)
 	{
-		StructurePiece* piece = *it;
-		if ( piece->getBoundingBox() != NULL && piece->getBoundingBox()->intersects( box ) )
+		if ( piece && piece->getBoundingBox() && piece->getBoundingBox()->intersects( box ) )
 		{
 			return piece;
 		}
 	}
-	return NULL;
+	return nullptr;
 }
 
 // 4J-PB - Added from 1.2.3
-TilePos *StructurePiece::getLocatorPosition() 
+TilePos *StructurePiece::getLocatorPosition()
 {
 	return new TilePos(boundingBox->getXCenter(), boundingBox->getYCenter(), boundingBox->getZCenter());
 }
@@ -438,7 +437,7 @@ int StructurePiece::getOrientationData( int tile, int data )
 			}
 		}
 	}
-	else if (tile == Tile::tripWireSource_Id || (Tile::tiles[tile] != NULL && dynamic_cast<DirectionalTile *>(Tile::tiles[tile])))
+	else if (tile == Tile::tripWireSource_Id || (Tile::tiles[tile] != nullptr && dynamic_cast<DirectionalTile *>(Tile::tiles[tile])))
 	{
 		if (orientation == Direction::SOUTH)
 		{
@@ -559,7 +558,7 @@ void StructurePiece::placeBlock( Level* level, int block, int data, int x, int y
 * The purpose of this method is to wrap the getTile call on Level, in order
 * to prevent the level from generating chunks that shouldn't be loaded yet.
 * Returns 0 if the call is out of bounds.
-* 
+*
 * @param level
 * @param x
 * @param y
@@ -731,15 +730,15 @@ void StructurePiece::maybeGenerateBlock( Level* level, BoundingBox* chunkBB, Ran
 void StructurePiece::generateUpperHalfSphere( Level* level, BoundingBox* chunkBB, int x0, int y0, int z0, int x1,
 											 int y1, int z1, int fillTile, bool skipAir )
 {
-	float	diagX = (float)( x1 - x0 + 1 );
-	float	diagY = (float)( y1 - y0 + 1 );
-	float	diagZ = (float)( z1 - z0 + 1 );
+	float	diagX = static_cast<float>(x1 - x0 + 1);
+	float	diagY = static_cast<float>(y1 - y0 + 1);
+	float	diagZ = static_cast<float>(z1 - z0 + 1);
 	float	cx = x0 + diagX / 2;
 	float	cz = z0 + diagZ / 2;
 
 	for ( int y = y0; y <= y1; y++ )
 	{
-		float normalizedYDistance = ( float )( y - y0 ) / diagY;
+		float normalizedYDistance = static_cast<float>(y - y0) / diagY;
 
 		for ( int x = x0; x <= x1; x++ )
 		{
@@ -817,7 +816,7 @@ bool StructurePiece::createChest( Level* level, BoundingBox* chunkBB, Random* ra
 		{
 			level->setTileAndData( worldX, worldY, worldZ, Tile::chest->id, 0, Tile::UPDATE_CLIENTS );
 			shared_ptr<ChestTileEntity> chest = dynamic_pointer_cast<ChestTileEntity>(level->getTileEntity( worldX, worldY, worldZ ));
-			if ( chest != NULL ) WeighedTreasure::addChestItems( random, treasure, chest, numRolls );
+			if ( chest != nullptr ) WeighedTreasure::addChestItems( random, treasure, chest, numRolls );
 			return true;
 		}
 	}
@@ -836,7 +835,7 @@ bool StructurePiece::createDispenser(Level *level, BoundingBox *chunkBB, Random 
 		{
 			level->setTileAndData(worldX, worldY, worldZ, Tile::dispenser_Id, getOrientationData(Tile::dispenser_Id, facing), Tile::UPDATE_CLIENTS);
 			shared_ptr<DispenserTileEntity> dispenser = dynamic_pointer_cast<DispenserTileEntity>(level->getTileEntity(worldX, worldY, worldZ));
-			if (dispenser != NULL) WeighedTreasure::addDispenserItems(random, items, dispenser, numRolls);
+			if (dispenser != nullptr) WeighedTreasure::addDispenserItems(random, items, dispenser, numRolls);
 			return true;
 		}
 	}

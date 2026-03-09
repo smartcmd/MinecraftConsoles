@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "IUIScene_CreativeMenu.h"
 
+#include "UI.h"
 #include "..\..\Minecraft.h"
 #include "..\..\MultiplayerLocalPlayer.h"
 #include "..\..\..\Minecraft.World\net.minecraft.world.inventory.h"
@@ -13,14 +14,13 @@
 #include "..\..\..\Minecraft.World\JavaMath.h"
 
 // 4J JEV - Images for each tab.
-IUIScene_CreativeMenu::TabSpec **IUIScene_CreativeMenu::specs = NULL;
+IUIScene_CreativeMenu::TabSpec **IUIScene_CreativeMenu::specs = nullptr;
 
 vector< shared_ptr<ItemInstance> > IUIScene_CreativeMenu::categoryGroups[eCreativeInventoryGroupsCount];
 
 #define ITEM(id) list->push_back( shared_ptr<ItemInstance>(new ItemInstance(id, 1, 0)) );
 #define ITEM_AUX(id, aux) list->push_back( shared_ptr<ItemInstance>(new ItemInstance(id, 1, aux)) );
 #define DEF(index) list = &categoryGroups[index];
-
 
 void IUIScene_CreativeMenu::staticCtor()
 {
@@ -60,7 +60,7 @@ void IUIScene_CreativeMenu::staticCtor()
 		ITEM_AUX(Tile::treeTrunk_Id, 0)
 		ITEM_AUX(Tile::treeTrunk_Id, TreeTile::DARK_TRUNK)
 		ITEM_AUX(Tile::treeTrunk_Id, TreeTile::BIRCH_TRUNK)
-		ITEM_AUX(Tile::treeTrunk_Id, TreeTile::JUNGLE_TRUNK)	
+		ITEM_AUX(Tile::treeTrunk_Id, TreeTile::JUNGLE_TRUNK)
 		ITEM(Tile::gravel_Id)
 		ITEM(Tile::redBrick_Id)
 		ITEM(Tile::mossyCobblestone_Id)
@@ -144,7 +144,7 @@ void IUIScene_CreativeMenu::staticCtor()
 		ITEM(Tile::sponge_Id)
 		ITEM(Tile::melon_Id)
 		ITEM(Tile::pumpkin_Id)
-		ITEM(Tile::litPumpkin_Id)	
+		ITEM(Tile::litPumpkin_Id)
 		ITEM_AUX(Tile::sapling_Id, Sapling::TYPE_DEFAULT)
 		ITEM_AUX(Tile::sapling_Id, Sapling::TYPE_EVERGREEN)
 		ITEM_AUX(Tile::sapling_Id, Sapling::TYPE_BIRCH)
@@ -321,7 +321,7 @@ void IUIScene_CreativeMenu::staticCtor()
 		ITEM(Tile::anvil_Id);
 		ITEM(Item::bed_Id)
 		ITEM(Item::bucket_empty_Id)
-		ITEM(Item::bucket_lava_Id)	
+		ITEM(Item::bucket_lava_Id)
 		ITEM(Item::bucket_water_Id)
 		ITEM(Item::bucket_milk_Id)
 		ITEM(Item::cauldron_Id)
@@ -408,7 +408,7 @@ void IUIScene_CreativeMenu::staticCtor()
 		ITEM(Item::beef_cooked_Id)
 		ITEM(Item::beef_raw_Id)
 		ITEM(Item::chicken_raw_Id)
-		ITEM(Item::chicken_cooked_Id)		
+		ITEM(Item::chicken_cooked_Id)
 		ITEM(Item::rotten_flesh_Id)
 		ITEM(Item::spiderEye_Id)
 		ITEM(Item::potato_Id)
@@ -430,7 +430,7 @@ void IUIScene_CreativeMenu::staticCtor()
 		ITEM(Item::pickAxe_wood_Id)
 		ITEM(Item::hatchet_wood_Id)
 		ITEM(Item::hoe_wood_Id)
-		
+
 		ITEM(Item::emptyMap_Id)
 		ITEM(Item::helmet_chain_Id)
 		ITEM(Item::chestplate_chain_Id)
@@ -441,7 +441,7 @@ void IUIScene_CreativeMenu::staticCtor()
 		ITEM(Item::pickAxe_stone_Id)
 		ITEM(Item::hatchet_stone_Id)
 		ITEM(Item::hoe_stone_Id)
-		
+
 		ITEM(Item::bow_Id)
 		ITEM(Item::helmet_iron_Id)
 		ITEM(Item::chestplate_iron_Id)
@@ -452,7 +452,7 @@ void IUIScene_CreativeMenu::staticCtor()
 		ITEM(Item::pickAxe_iron_Id)
 		ITEM(Item::hatchet_iron_Id)
 		ITEM(Item::hoe_iron_Id)
-		
+
 		ITEM(Item::arrow_Id)
 		ITEM(Item::helmet_gold_Id)
 		ITEM(Item::chestplate_gold_Id)
@@ -488,14 +488,14 @@ void IUIScene_CreativeMenu::staticCtor()
 		for(unsigned int i = 0; i < Enchantment::enchantments.length; ++i)
 		{
 			Enchantment *enchantment = Enchantment::enchantments[i];
-			if (enchantment == NULL || enchantment->category == NULL) continue;
+			if (enchantment == nullptr || enchantment->category == nullptr) continue;
 			list->push_back(Item::enchantedBook->createForEnchantment(new EnchantmentInstance(enchantment, enchantment->getMaxLevel())));
 		}
 
 #ifndef _CONTENT_PACKAGE
 		if(app.DebugSettingsOn())
 		{
-			shared_ptr<ItemInstance> debugSword = shared_ptr<ItemInstance>(new ItemInstance(Item::sword_diamond_Id, 1, 0));
+			shared_ptr<ItemInstance> debugSword = std::make_shared<ItemInstance>(Item::sword_diamond_Id, 1, 0);
 			debugSword->enchant( Enchantment::damageBonus, 50 );
 			debugSword->setHoverName(L"Sword of Debug");
 			list->push_back(debugSword);
@@ -514,7 +514,7 @@ void IUIScene_CreativeMenu::staticCtor()
 		ITEM(Item::brick_Id)
 		ITEM(Item::netherbrick_Id)
 		ITEM(Item::stick_Id)
-		ITEM(Item::bowl_Id)		
+		ITEM(Item::bowl_Id)
 		ITEM(Item::bone_Id)
 		ITEM(Item::string_Id)
 		ITEM(Item::feather_Id)
@@ -523,13 +523,13 @@ void IUIScene_CreativeMenu::staticCtor()
 		ITEM(Item::gunpowder_Id)
 		ITEM(Item::clay_Id)
 		ITEM(Item::yellowDust_Id)
-		ITEM(Item::seeds_wheat_Id)	
+		ITEM(Item::seeds_wheat_Id)
 		ITEM(Item::seeds_melon_Id)
 		ITEM(Item::seeds_pumpkin_Id)
 		ITEM(Item::wheat_Id)
 		ITEM(Item::reeds_Id)
 		ITEM(Item::egg_Id)
-		ITEM(Item::sugar_Id)		
+		ITEM(Item::sugar_Id)
 		ITEM(Item::slimeBall_Id)
 		ITEM(Item::blazeRod_Id)
 		ITEM(Item::goldNugget_Id)
@@ -562,7 +562,7 @@ void IUIScene_CreativeMenu::staticCtor()
 		ITEM(Item::magmaCream_Id)
 		ITEM(Item::speckledMelon_Id)
 		ITEM(Item::glassBottle_Id)
-		ITEM_AUX(Item::potion_Id,0) // Water bottle		
+		ITEM_AUX(Item::potion_Id,0) // Water bottle
 		//ITEM_AUX(Item::potion_Id,MACRO_MAKEPOTION_AUXVAL(0, 0, MASK_TYPE_AWKWARD)) // Awkward Potion
 
 
@@ -594,7 +594,7 @@ void IUIScene_CreativeMenu::staticCtor()
 			//ITEM_AUX(Item::potion_Id,MACRO_MAKEPOTION_AUXVAL(0, MASK_LEVEL2, MASK_INSTANTHEALTH))
 			//ITEM_AUX(Item::potion_Id,MACRO_MAKEPOTION_AUXVAL(0, MASK_LEVEL2, MASK_NIGHTVISION))
 			//ITEM_AUX(Item::potion_Id,MACRO_MAKEPOTION_AUXVAL(0, MASK_LEVEL2, MASK_INVISIBILITY))
-			
+
 			ITEM_AUX(Item::potion_Id,MACRO_MAKEPOTION_AUXVAL(0, 0, MASK_WEAKNESS))
 			ITEM_AUX(Item::potion_Id,MACRO_MAKEPOTION_AUXVAL(0, MASK_LEVEL2, MASK_STRENGTH))
 			ITEM_AUX(Item::potion_Id,MACRO_MAKEPOTION_AUXVAL(0, 0, MASK_SLOWNESS))
@@ -669,11 +669,11 @@ void IUIScene_CreativeMenu::staticCtor()
 	// Top Row
 	ECreative_Inventory_Groups blocksGroup[] = {eCreativeInventory_BuildingBlocks};
 	specs[eCreativeInventoryTab_BuildingBlocks] = new TabSpec(L"Structures", IDS_GROUPNAME_BUILDING_BLOCKS, 1, blocksGroup);
-	
+
 #ifndef _CONTENT_PACKAGE
 	ECreative_Inventory_Groups decorationsGroup[] = {eCreativeInventory_Decoration};
 	ECreative_Inventory_Groups debugDecorationsGroup[] = {eCreativeInventory_ArtToolsDecorations};
-	specs[eCreativeInventoryTab_Decorations] = new TabSpec(L"Decoration", IDS_GROUPNAME_DECORATIONS, 1, decorationsGroup, 0, NULL, 1, debugDecorationsGroup);
+	specs[eCreativeInventoryTab_Decorations] = new TabSpec(L"Decoration", IDS_GROUPNAME_DECORATIONS, 1, decorationsGroup, 0, nullptr, 1, debugDecorationsGroup);
 #else
 	ECreative_Inventory_Groups decorationsGroup[] = {eCreativeInventory_Decoration};
 	specs[eCreativeInventoryTab_Decorations] = new TabSpec(L"Decoration", IDS_GROUPNAME_DECORATIONS, 1, decorationsGroup);
@@ -707,7 +707,7 @@ void IUIScene_CreativeMenu::staticCtor()
 #ifndef _CONTENT_PACKAGE
 	ECreative_Inventory_Groups miscGroup[] = {eCreativeInventory_Misc};
 	ECreative_Inventory_Groups debugMiscGroup[] = {eCreativeInventory_ArtToolsMisc};
-	specs[eCreativeInventoryTab_Misc] = new TabSpec(L"Misc", IDS_GROUPNAME_MISCELLANEOUS, 1, miscGroup, 0, NULL, 1, debugMiscGroup);
+	specs[eCreativeInventoryTab_Misc] = new TabSpec(L"Misc", IDS_GROUPNAME_MISCELLANEOUS, 1, miscGroup, 0, nullptr, 1, debugMiscGroup);
 #else
 	ECreative_Inventory_Groups miscGroup[] = {eCreativeInventory_Misc};
 	specs[eCreativeInventoryTab_Misc] = new TabSpec(L"Misc", IDS_GROUPNAME_MISCELLANEOUS, 1, miscGroup);
@@ -720,7 +720,7 @@ IUIScene_CreativeMenu::IUIScene_CreativeMenu()
 	m_creativeSlotX = m_creativeSlotY = m_inventorySlotX = m_inventorySlotY = 0;
 
 	// 4J JEV - Settup Tabs
-	for (int i = 0; i < eCreativeInventoryTab_COUNT; i++) 
+	for (int i = 0; i < eCreativeInventoryTab_COUNT; i++)
 	{
 		m_tabDynamicPos[i] = 0;
 		m_tabPage[i] = 0;
@@ -735,7 +735,7 @@ void IUIScene_CreativeMenu::switchTab(ECreativeInventoryTabs tab)
 	if(tab != m_curTab) updateTabHighlightAndText(tab);
 
 	m_curTab = tab;
-	
+
 	updateScrollCurrentPage(m_tabPage[m_curTab] + 1, specs[m_curTab]->getPageCount());
 
 	specs[tab]->populateMenu(itemPickerMenu,m_tabDynamicPos[m_curTab], m_tabPage[m_curTab]);
@@ -766,12 +766,12 @@ void IUIScene_CreativeMenu::ScrollBar(UIVec2D pointerPos)
 
 // 4J JEV - Tab Spec Struct
 
-IUIScene_CreativeMenu::TabSpec::TabSpec(LPCWSTR icon, int descriptionId, int staticGroupsCount, ECreative_Inventory_Groups *staticGroups, int dynamicGroupsCount, ECreative_Inventory_Groups *dynamicGroups, int debugGroupsCount /*= 0*/, ECreative_Inventory_Groups *debugGroups /*= NULL*/)
+IUIScene_CreativeMenu::TabSpec::TabSpec(LPCWSTR icon, int descriptionId, int staticGroupsCount, ECreative_Inventory_Groups *staticGroups, int dynamicGroupsCount, ECreative_Inventory_Groups *dynamicGroups, int debugGroupsCount /*= 0*/, ECreative_Inventory_Groups *debugGroups /*= nullptr*/)
 	: m_icon(icon), m_descriptionId(descriptionId), m_staticGroupsCount(staticGroupsCount), m_dynamicGroupsCount(dynamicGroupsCount), m_debugGroupsCount(debugGroupsCount)
 {
-	
+
 	m_pages = 0;
-	m_staticGroupsA = NULL;
+	m_staticGroupsA = nullptr;
 
 	unsigned int dynamicItems = 0;
 	m_staticItems = 0;
@@ -786,7 +786,7 @@ IUIScene_CreativeMenu::TabSpec::TabSpec(LPCWSTR icon, int descriptionId, int sta
 		}
 	}
 
-	m_debugGroupsA = NULL;
+	m_debugGroupsA = nullptr;
 	m_debugItems = 0;
 	if(debugGroupsCount > 0)
 	{
@@ -798,8 +798,8 @@ IUIScene_CreativeMenu::TabSpec::TabSpec(LPCWSTR icon, int descriptionId, int sta
 		}
 	}
 
-	m_dynamicGroupsA = NULL;
-	if(dynamicGroupsCount > 0 && dynamicGroups != NULL)
+	m_dynamicGroupsA = nullptr;
+	if(dynamicGroupsCount > 0 && dynamicGroups != nullptr)
 	{
 		m_dynamicGroupsA  = new ECreative_Inventory_Groups[dynamicGroupsCount];
 		for(int i = 0; i < dynamicGroupsCount; ++i)
@@ -816,9 +816,9 @@ IUIScene_CreativeMenu::TabSpec::TabSpec(LPCWSTR icon, int descriptionId, int sta
 
 IUIScene_CreativeMenu::TabSpec::~TabSpec()
 {
-	if(m_staticGroupsA != NULL) delete [] m_staticGroupsA;
-	if(m_dynamicGroupsA != NULL) delete [] m_dynamicGroupsA;
-	if(m_debugGroupsA != NULL) delete [] m_debugGroupsA;
+	if(m_staticGroupsA != nullptr) delete [] m_staticGroupsA;
+	if(m_dynamicGroupsA != nullptr) delete [] m_dynamicGroupsA;
+	if(m_debugGroupsA != nullptr) delete [] m_debugGroupsA;
 }
 
 void IUIScene_CreativeMenu::TabSpec::populateMenu(AbstractContainerMenu *menu, int dynamicIndex, unsigned int page)
@@ -826,10 +826,10 @@ void IUIScene_CreativeMenu::TabSpec::populateMenu(AbstractContainerMenu *menu, i
 	int lastSlotIndex = 0;
 
 	// Fill the dynamic group
-	if(m_dynamicGroupsCount > 0 && m_dynamicGroupsA != NULL)
+	if(m_dynamicGroupsCount > 0 && m_dynamicGroupsA != nullptr)
 	{
-		for(AUTO_VAR(it, categoryGroups[m_dynamicGroupsA[dynamicIndex]].rbegin()); it != categoryGroups[m_dynamicGroupsA[dynamicIndex]].rend() && lastSlotIndex < MAX_SIZE; ++it)
-		{
+        for (auto it = categoryGroups[m_dynamicGroupsA[dynamicIndex]].rbegin(); it != categoryGroups[m_dynamicGroupsA[dynamicIndex]].rend() && lastSlotIndex < MAX_SIZE; ++it)
+        {
 			Slot *slot = menu->getSlot(++lastSlotIndex);
 			slot->set( *it );
 		}
@@ -953,11 +953,11 @@ unsigned int IUIScene_CreativeMenu::TabSpec::getPageCount()
 IUIScene_CreativeMenu::ItemPickerMenu::ItemPickerMenu(	shared_ptr<SimpleContainer> smp, shared_ptr<Inventory> inv ) : AbstractContainerMenu()
 {
 	inventory = inv;
-	creativeContainer = smp; 
+	creativeContainer = smp;
 
 	//int startLength = slots->size();
 
-	Slot *slot = NULL;
+	Slot *slot = nullptr;
 	for (int i = 0; i < TabSpec::MAX_SIZE; i++)
 	{
 		// 4J JEV -  These values get set by addSlot anyway.
@@ -994,7 +994,7 @@ IUIScene_AbstractContainerMenu::ESceneSection IUIScene_CreativeMenu::GetSectionA
 	switch( eSection )
 	{
 	case eSectionInventoryCreativeSelector:
-		if (eTapDirection == eTapStateDown || eTapDirection == eTapStateUp) 
+		if (eTapDirection == eTapStateDown || eTapDirection == eTapStateUp)
 		{
 			newSection = eSectionInventoryCreativeUsing;
 		}
@@ -1036,11 +1036,11 @@ bool IUIScene_CreativeMenu::handleValidKeyPress(int iPad, int buttonNum, BOOL qu
 		{
 			shared_ptr<ItemInstance> newItem = m_menu->getSlot(i)->getItem();
 
-			if(newItem != NULL)
+			if(newItem != nullptr)
 			{
 				m_menu->getSlot(i)->set(nullptr);
 				// call this function to synchronize multiplayer item bar
-				pMinecraft->localgameModes[iPad]->handleCreativeModeItemAdd(nullptr, i - (int)m_menu->slots.size() + 9 + InventoryMenu::USE_ROW_SLOT_START);
+				pMinecraft->localgameModes[iPad]->handleCreativeModeItemAdd(nullptr, i - static_cast<int>(m_menu->slots.size()) + 9 + InventoryMenu::USE_ROW_SLOT_START);
 			}
 		}
 		return true;
@@ -1054,7 +1054,7 @@ void IUIScene_CreativeMenu::handleOutsideClicked(int iPad, int buttonNum, BOOL q
 	Minecraft *pMinecraft = Minecraft::GetInstance();
 
 	shared_ptr<Inventory> playerInventory = pMinecraft->localplayers[iPad]->inventory;
-	if (playerInventory->getCarried() != NULL)
+	if (playerInventory->getCarried() != nullptr)
 	{
 		if (buttonNum == 0)
 		{
@@ -1081,9 +1081,9 @@ void IUIScene_CreativeMenu::handleAdditionalKeyPress(int iAction)
 		dir = -1;
 		// Fall through intentional
 	case ACTION_MENU_RIGHT_SCROLL:
-		{		
-			ECreativeInventoryTabs tab = (ECreativeInventoryTabs)(m_curTab + dir);
-			if (tab < 0) tab = (ECreativeInventoryTabs)(eCreativeInventoryTab_COUNT - 1);
+		{
+			ECreativeInventoryTabs tab = static_cast<ECreativeInventoryTabs>(m_curTab + dir);
+			if (tab < 0) tab = static_cast<ECreativeInventoryTabs>(eCreativeInventoryTab_COUNT - 1);
 			if (tab >= eCreativeInventoryTab_COUNT) tab = eCreativeInventoryTab_BuildingBlocks;
 			switchTab(tab);
 			ui.PlayUISFX(eSFX_Focus);
@@ -1099,13 +1099,7 @@ void IUIScene_CreativeMenu::handleAdditionalKeyPress(int iAction)
 		break;
 	case ACTION_MENU_OTHER_STICK_DOWN:
 		{
-			int pageStep = TabSpec::rows;
-#ifdef _WINDOWS64
-			if (g_KBMInput.WasMouseWheelConsumed())
-			{
-				pageStep = 1;
-			}
-#endif
+			int pageStep = 1;
 			m_tabPage[m_curTab] += pageStep;
 			if(m_tabPage[m_curTab] >= specs[m_curTab]->getPageCount())
 			{
@@ -1119,13 +1113,7 @@ void IUIScene_CreativeMenu::handleAdditionalKeyPress(int iAction)
 		break;
 	case ACTION_MENU_OTHER_STICK_UP:
 		{
-			int pageStep = TabSpec::rows;
-#ifdef _WINDOWS64
-			if (g_KBMInput.WasMouseWheelConsumed())
-			{
-				pageStep = 1;
-			}
-#endif
+			int pageStep = 1;
 			m_tabPage[m_curTab] -= pageStep;
 			if(m_tabPage[m_curTab] < 0)
 			{
@@ -1155,7 +1143,7 @@ void IUIScene_CreativeMenu::handleSlotListClicked(ESceneSection eSection, int bu
 			shared_ptr<Inventory> playerInventory = pMinecraft->localplayers[getPad()]->inventory;
 			shared_ptr<ItemInstance> carried = playerInventory->getCarried();
 			shared_ptr<ItemInstance> clicked = m_menu->getSlot(currentIndex)->getItem();
-			if (clicked != NULL)
+			if (clicked != nullptr)
 			{
 				playerInventory->setCarried(ItemInstance::clone(clicked));
 				carried = playerInventory->getCarried();
@@ -1188,7 +1176,7 @@ void IUIScene_CreativeMenu::handleSlotListClicked(ESceneSection eSection, int bu
 		m_menu->clicked(currentIndex, buttonNum, quickKeyHeld?AbstractContainerMenu::CLICK_QUICK_MOVE:AbstractContainerMenu::CLICK_PICKUP, pMinecraft->localplayers[getPad()]);
 		shared_ptr<ItemInstance> newItem = m_menu->getSlot(currentIndex)->getItem();
 		// call this function to synchronize multiplayer item bar
-		pMinecraft->localgameModes[getPad()]->handleCreativeModeItemAdd(newItem, currentIndex - (int)m_menu->slots.size() + 9 + InventoryMenu::USE_ROW_SLOT_START);
+		pMinecraft->localgameModes[getPad()]->handleCreativeModeItemAdd(newItem, currentIndex - static_cast<int>(m_menu->slots.size()) + 9 + InventoryMenu::USE_ROW_SLOT_START);
 
 		if(m_bCarryingCreativeItem)
 		{
@@ -1236,7 +1224,7 @@ bool IUIScene_CreativeMenu::getEmptyInventorySlot(shared_ptr<ItemInstance> item,
 	for(unsigned int i = TabSpec::MAX_SIZE; i < TabSpec::MAX_SIZE + 9; ++i)
 	{
 		shared_ptr<ItemInstance> slotItem = m_menu->getSlot(i)->getItem();
-		if( slotItem != NULL && slotItem->sameItemWithTags(item) && (slotItem->GetCount() + item->GetCount() <= item->getMaxStackSize() ))
+		if( slotItem != nullptr && slotItem->sameItemWithTags(item) && (slotItem->GetCount() + item->GetCount() <= item->getMaxStackSize() ))
 		{
 			sameItemFound = true;
 			slotX = i - TabSpec::MAX_SIZE;
@@ -1249,7 +1237,7 @@ bool IUIScene_CreativeMenu::getEmptyInventorySlot(shared_ptr<ItemInstance> item,
 		// Find an empty slot
 		for(unsigned int i = TabSpec::MAX_SIZE; i < TabSpec::MAX_SIZE + 9; ++i)
 		{
-			if( m_menu->getSlot(i)->getItem() == NULL )
+			if( m_menu->getSlot(i)->getItem() == nullptr )
 			{
 				slotX = i - TabSpec::MAX_SIZE;
 				emptySlotFound = true;
@@ -1328,7 +1316,7 @@ void IUIScene_CreativeMenu::BuildFirework(vector<shared_ptr<ItemInstance> > *lis
 	// diamonds give trails
 	if (trail) expTag->putBoolean(FireworksItem::TAG_E_TRAIL, true);
 
-	intArray colorArray(colors.size());
+	intArray colorArray(static_cast<unsigned int>(colors.size()));
 	for (int i = 0; i < colorArray.length; i++)
 	{
 		colorArray[i] = colors.at(i);
@@ -1347,7 +1335,7 @@ void IUIScene_CreativeMenu::BuildFirework(vector<shared_ptr<ItemInstance> > *lis
 		vector<int> colors;
 		colors.push_back(DyePowderItem::COLOR_RGB[fadeColor]);
 
-		intArray colorArray(colors.size());
+		intArray colorArray(static_cast<unsigned int>(colors.size()));
 		for (int i = 0; i < colorArray.length; i++)
 		{
 			colorArray[i] = colors.at(i);
@@ -1362,7 +1350,7 @@ void IUIScene_CreativeMenu::BuildFirework(vector<shared_ptr<ItemInstance> > *lis
 	shared_ptr<ItemInstance> firework;
 
 	{
-		firework = shared_ptr<ItemInstance>( new ItemInstance(Item::fireworks) );
+		firework = std::make_shared<ItemInstance>(Item::fireworks);
 		CompoundTag *itemTag = new CompoundTag();
 		CompoundTag *fireTag = new CompoundTag(FireworksItem::TAG_FIREWORKS);
 		ListTag<CompoundTag> *expTags = new ListTag<CompoundTag>(FireworksItem::TAG_EXPLOSIONS);
@@ -1370,12 +1358,12 @@ void IUIScene_CreativeMenu::BuildFirework(vector<shared_ptr<ItemInstance> > *lis
 		expTags->add(expTag);
 
 		fireTag->put(FireworksItem::TAG_EXPLOSIONS, expTags);
-		fireTag->putByte(FireworksItem::TAG_FLIGHT, (byte) sulphur);
+		fireTag->putByte(FireworksItem::TAG_FLIGHT, static_cast<byte>(sulphur));
 
 		itemTag->put(FireworksItem::TAG_FIREWORKS, fireTag);
 
 		firework->setTag(itemTag);
-	}			
+	}
 
 	list->push_back(firework);
 }

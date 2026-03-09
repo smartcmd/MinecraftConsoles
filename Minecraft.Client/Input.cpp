@@ -84,7 +84,7 @@ void Input::tick(LocalPlayer *player)
     }
 
 	// 4J: In flying mode, don't actually toggle sneaking (unless we're riding in which case we need to sneak to dismount)
-	if(!player->abilities.flying || player->riding != NULL)
+	if(!player->abilities.flying || player->riding != nullptr)
 	{
 		if((player->ullButtonsPressed&(1LL<<MINECRAFT_ACTION_SNEAK_TOGGLE)) && pMinecraft->localgameModes[iPad]->isInputAllowed(MINECRAFT_ACTION_SNEAK_TOGGLE))
 		{
@@ -104,8 +104,7 @@ void Input::tick(LocalPlayer *player)
 			}
 		}
 
-		// Ctrl + forward = sprint (hold to sprint)
-		if (!player->abilities.flying)
+		// Ctrl + forward = sprint (hold to sprint, including while flying)
 		{
 			bool ctrlHeld = g_KBMInput.IsKeyDown(KeyboardMouseInput::KEY_SPRINT);
 			bool movingForward = (kbYA > 0.0f);
@@ -118,10 +117,6 @@ void Input::tick(LocalPlayer *player)
 			{
 				sprinting = false;
 			}
-		}
-		else
-		{
-			sprinting = false;
 		}
 	}
 	else if (iPad == 0)
@@ -142,9 +137,9 @@ void Input::tick(LocalPlayer *player)
 	float ty = 0.0f;
 
 	if( pMinecraft->localgameModes[iPad]->isInputAllowed(MINECRAFT_ACTION_LOOK_LEFT) || pMinecraft->localgameModes[iPad]->isInputAllowed(MINECRAFT_ACTION_LOOK_RIGHT) )
-		tx = InputManager.GetJoypadStick_RX(iPad)*(((float)app.GetGameSettings(iPad,eGameSetting_Sensitivity_InGame))/100.0f); // apply sensitivity to look
+		tx = InputManager.GetJoypadStick_RX(iPad)*(static_cast<float>(app.GetGameSettings(iPad, eGameSetting_Sensitivity_InGame))/100.0f); // apply sensitivity to look
 	if( pMinecraft->localgameModes[iPad]->isInputAllowed(MINECRAFT_ACTION_LOOK_UP) || pMinecraft->localgameModes[iPad]->isInputAllowed(MINECRAFT_ACTION_LOOK_DOWN) )
-		ty = InputManager.GetJoypadStick_RY(iPad)*(((float)app.GetGameSettings(iPad,eGameSetting_Sensitivity_InGame))/100.0f); // apply sensitivity to look
+		ty = InputManager.GetJoypadStick_RY(iPad)*(static_cast<float>(app.GetGameSettings(iPad, eGameSetting_Sensitivity_InGame))/100.0f); // apply sensitivity to look
 
 #ifndef _CONTENT_PACKAGE
 	if (app.GetFreezePlayers())	tx = ty = 0.0f;
@@ -171,7 +166,7 @@ void Input::tick(LocalPlayer *player)
 #ifdef _WINDOWS64
 	if (iPad == 0 && g_KBMInput.IsMouseGrabbed() && g_KBMInput.IsKBMActive())
 	{
-		float mouseSensitivity = ((float)app.GetGameSettings(iPad,eGameSetting_Sensitivity_InGame)) / 100.0f;
+		float mouseSensitivity = static_cast<float>(app.GetGameSettings(iPad, eGameSetting_Sensitivity_InGame)) / 100.0f;
 		float mouseLookScale = 5.0f;
 		float mx = g_KBMInput.GetLookX(mouseSensitivity * mouseLookScale);
 		float my = g_KBMInput.GetLookY(mouseSensitivity * mouseLookScale);

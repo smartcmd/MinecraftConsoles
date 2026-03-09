@@ -8,7 +8,7 @@
 
 #include "ConsoleSaveFileIO.h"
 
-SavedDataStorage::SavedDataStorage(LevelStorage *levelStorage) 
+SavedDataStorage::SavedDataStorage(LevelStorage *levelStorage)
 {
 	/*
 	cache = new unordered_map<wstring, shared_ptr<SavedData> >;
@@ -22,30 +22,30 @@ SavedDataStorage::SavedDataStorage(LevelStorage *levelStorage)
 
 shared_ptr<SavedData> SavedDataStorage::get(const type_info& clazz, const wstring& id)
 {
-	AUTO_VAR(it, cache.find( id ));
-	if (it != cache.end()) return (*it).second;
+    auto it = cache.find(id);
+    if (it != cache.end()) return (*it).second;
 
 	shared_ptr<SavedData> data = nullptr;
-    if (levelStorage != NULL)
+    if (levelStorage != nullptr)
 	{
 		//File file = levelStorage->getDataFile(id);
 		ConsoleSavePath file = levelStorage->getDataFile(id);
-		if (!file.getName().empty() && levelStorage->getSaveFile()->doesFileExist( file ) ) 
+		if (!file.getName().empty() && levelStorage->getSaveFile()->doesFileExist( file ) )
 		{
 			// mob = dynamic_pointer_cast<Mob>(Mob::_class->newInstance( level ));
 		    //data = clazz.getConstructor(String.class).newInstance(id);
 
 			if( clazz == typeid(MapItemSavedData) )
 			{
-				data = dynamic_pointer_cast<SavedData>( shared_ptr<MapItemSavedData>(new MapItemSavedData(id)) );
+				data = dynamic_pointer_cast<SavedData>(std::make_shared<MapItemSavedData>(id));
 			}
 			else if( clazz == typeid(Villages) )
 			{
-				data = dynamic_pointer_cast<SavedData>( shared_ptr<Villages>(new Villages(id) ) );
+				data = dynamic_pointer_cast<SavedData>(std::make_shared<Villages>(id));
 			}
 			else if( clazz == typeid(StructureFeatureSavedData) )
 			{
-				data = dynamic_pointer_cast<SavedData>( shared_ptr<StructureFeatureSavedData>( new StructureFeatureSavedData(id) ) );
+				data = dynamic_pointer_cast<SavedData>(std::make_shared<StructureFeatureSavedData>(id));
 			}
 			else
 			{
@@ -61,7 +61,7 @@ shared_ptr<SavedData> SavedDataStorage::get(const type_info& clazz, const wstrin
 		}
     }
 
-    if (data != NULL)
+    if (data != nullptr)
 	{
         cache.insert( unordered_map<wstring, shared_ptr<SavedData> >::value_type( id , data ) );
         savedDatas.push_back(data);
@@ -69,18 +69,18 @@ shared_ptr<SavedData> SavedDataStorage::get(const type_info& clazz, const wstrin
     return data;
 }
 
-void SavedDataStorage::set(const wstring& id, shared_ptr<SavedData> data) 
+void SavedDataStorage::set(const wstring& id, shared_ptr<SavedData> data)
 {
-	if (data == NULL)
+	if (data == nullptr)
 	{
 		// TODO 4J Stu - throw new RuntimeException("Can't set null data");
 		assert( false );
 	}
-	AUTO_VAR(it, cache.find(id));
-	if ( it != cache.end() )
+    auto it = cache.find(id);
+    if ( it != cache.end() )
 	{
-		AUTO_VAR(it2, find( savedDatas.begin(), savedDatas.end(), it->second ));
-		if( it2 != savedDatas.end() )
+        auto it2 = find(savedDatas.begin(), savedDatas.end(), it->second);
+        if( it2 != savedDatas.end() )
 		{
 			savedDatas.erase( it2 );
 		}
@@ -92,10 +92,8 @@ void SavedDataStorage::set(const wstring& id, shared_ptr<SavedData> data)
 
 void SavedDataStorage::save()
 {
-	AUTO_VAR(itEnd, savedDatas.end());
-	for (AUTO_VAR(it, savedDatas.begin()); it != itEnd; it++)
+	for (auto& data : savedDatas)
 	{
-        shared_ptr<SavedData> data = *it; //savedDatas->at(i);
         if (data->isDirty())
 		{
             save(data);
@@ -106,7 +104,7 @@ void SavedDataStorage::save()
 
 void SavedDataStorage::save(shared_ptr<SavedData> data)
 {
-    if (levelStorage == NULL) return;
+    if (levelStorage == nullptr) return;
     //File file = levelStorage->getDataFile(data->id);
 	ConsoleSavePath file = levelStorage->getDataFile(data->id);
 	if (!file.getName().empty())
@@ -129,7 +127,7 @@ void SavedDataStorage::loadAuxValues()
 {
     usedAuxIds.clear();
 
-    if (levelStorage == NULL) return;
+    if (levelStorage == nullptr) return;
     //File file = levelStorage->getDataFile(L"idcounts");
 	ConsoleSavePath file = levelStorage->getDataFile(L"idcounts");
 	if (!file.getName().empty() && levelStorage->getSaveFile()->doesFileExist( file ) )
@@ -139,16 +137,12 @@ void SavedDataStorage::loadAuxValues()
         CompoundTag *tags = NbtIo::read(&dis);
         dis.close();
 
-		Tag *tag;
 		vector<Tag *> *allTags = tags->getAllTags();
-		AUTO_VAR(itEnd, allTags->end());
-		for (AUTO_VAR(it, allTags->begin()); it != itEnd; it++)
+        for ( Tag *tag : *allTags )
 		{
-			tag = *it; //tags->getAllTags()->at(i);
-
-            if (dynamic_cast<ShortTag *>(tag) != NULL)
+            if (dynamic_cast<ShortTag *>(tag))
 			{
-                ShortTag *sTag = (ShortTag *) tag;
+                ShortTag *sTag = static_cast<ShortTag *>(tag);
                 wstring id = sTag->getName();
                 short val = sTag->data;
                 usedAuxIds.insert( uaiMapType::value_type( id, val ) );
@@ -160,7 +154,7 @@ void SavedDataStorage::loadAuxValues()
 
 int SavedDataStorage::getFreeAuxValueFor(const wstring& id)
 {
-	AUTO_VAR(it, usedAuxIds.find( id ));
+    auto it = usedAuxIds.find(id);
     short val = 0;
     if ( it != usedAuxIds.end() )
 	{
@@ -169,7 +163,7 @@ int SavedDataStorage::getFreeAuxValueFor(const wstring& id)
     }
 
 	usedAuxIds[id] = val;
-    if (levelStorage == NULL) return val;
+    if (levelStorage == nullptr) return val;
     //File file = levelStorage->getDataFile(L"idcounts");
 	ConsoleSavePath file = levelStorage->getDataFile(L"idcounts");
     if (!file.getName().empty())
@@ -177,11 +171,10 @@ int SavedDataStorage::getFreeAuxValueFor(const wstring& id)
         CompoundTag *tag = new CompoundTag();
 
 		// TODO 4J Stu - This was iterating over the keySet in Java, so potentially we are looking at more items?
-		AUTO_VAR(itEndAuxIds, usedAuxIds.end());
-		for(uaiMapType::iterator it2 = usedAuxIds.begin(); it2 != itEndAuxIds; it2++)
+		for(auto& it : usedAuxIds)
 		{
-			short value = it2->second;
-			tag->putShort( (wchar_t *) it2->first.c_str(), value);
+			short value = it.second;
+			tag->putShort(it.first.c_str(), value);
         }
 
 		ConsoleSaveFileOutputStream fos = ConsoleSaveFileOutputStream(levelStorage->getSaveFile(), file);
@@ -195,7 +188,7 @@ int SavedDataStorage::getFreeAuxValueFor(const wstring& id)
 // 4J Added
 int SavedDataStorage::getAuxValueForMap(PlayerUID xuid, int dimension, int centreXC, int centreZC, int scale)
 {
-	if( levelStorage == NULL )
+	if( levelStorage == nullptr )
 	{
 		switch(dimension)
 		{

@@ -42,7 +42,7 @@ IDOC extern GDrawFunctions * gdraw_D3D11_CreateContext(ID3D11Device *dev, ID3D11
    There can only be one D3D GDraw context active at any one time.
 
    If initialization fails for some reason (the main reason would be an out of memory condition),
-   NULL is returned. Otherwise, you can pass the return value to IggySetGDraw. */
+   nullptr is returned. Otherwise, you can pass the return value to IggySetGDraw. */
 
 IDOC extern void gdraw_D3D11_DestroyContext(void);
 /* Destroys the current GDraw context, if any. */
@@ -70,7 +70,7 @@ IDOC extern void gdraw_D3D11_SetTileOrigin(ID3D11RenderTargetView *main_rt, ID3D
    If your rendertarget uses multisampling, you also need to specify a shader
    resource view for a non-MSAA rendertarget texture (identically sized to main_rt)
    in non_msaa_rt. This is only used if the Flash content includes non-standard
-   blend modes which have to use a special blend shader, so you can leave it NULL
+   blend modes which have to use a special blend shader, so you can leave it nullptr
    if you forbid such content.
 
    You need to call this before Iggy calls any rendering functions. */

@@ -23,9 +23,9 @@ Vec3 *HellDimension::getFogColor(float td, float a) const
 	byte greenComponent = ((colour>>8)&0xFF);
 	byte blueComponent = ((colour)&0xFF);
 
-	float rr = (float)redComponent/256;//0.2f;
-	float gg = (float)greenComponent/256;//0.03f;
-	float bb = (float)blueComponent/256;//0.03f;
+	float rr = static_cast<float>(redComponent)/256;//0.2f;
+	float gg = static_cast<float>(greenComponent)/256;//0.03f;
+	float bb = static_cast<float>(blueComponent)/256;//0.03f;
 	return Vec3::newTemp(rr, gg, bb);
 }
 
@@ -34,7 +34,7 @@ void HellDimension::updateLightRamp()
     float ambientLight = 0.10f;
     for (int i = 0; i <= Level::MAX_BRIGHTNESS; i++)
 	{
-        float v = (1 - i / (float) (Level::MAX_BRIGHTNESS));
+        float v = (1 - i / static_cast<float>(Level::MAX_BRIGHTNESS));
         brightnessRamp[i] = ((1 - v) / (v * 3 + 1)) * (1 - ambientLight) + ambientLight;
     }
 }
@@ -48,7 +48,7 @@ ChunkSource *HellDimension::createRandomLevelSource() const
 	}
 	else
 #endif
-	if (levelType == LevelType::lvl_flat) 
+	if (levelType == LevelType::lvl_flat)
 	{
 		return new HellFlatLevelSource(level, level->getSeed());
 	}
@@ -68,7 +68,7 @@ bool HellDimension::isValidSpawn(int x, int z) const
     return false;
 }
 
-float HellDimension::getTimeOfDay(__int64 time, float a) const
+float HellDimension::getTimeOfDay(int64_t time, float a) const
 {
 	return 0.5f;
 }
@@ -85,5 +85,5 @@ bool HellDimension::isFoggyAt(int x, int z)
 
 int HellDimension::getXZSize()
 {
-	return ceil((float)level->getLevelData()->getXZSize() / level->getLevelData()->getHellScale());
+	return ceil(static_cast<float>(level->getLevelData()->getXZSize()) / level->getLevelData()->getHellScale());
 }

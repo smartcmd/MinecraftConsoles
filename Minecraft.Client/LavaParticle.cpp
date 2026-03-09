@@ -15,7 +15,7 @@ LavaParticle::LavaParticle(Level *level, double x, double y, double z) : Particl
     size *= (random->nextFloat() * 2 + 0.2f);
     oSize = size;
 
-    lifetime = (int) (16 / (Math::random() * 0.8 + 0.2));
+    lifetime = static_cast<int>(16 / (Math::random() * 0.8 + 0.2));
     noPhysics = false;
     setMiscTex(49);
 }
@@ -40,7 +40,7 @@ float LavaParticle::getBrightness(float a)
 
 void LavaParticle::render(Tesselator *t, float a, float xa, float ya, float za, float xa2, float za2)
 {
-    float s = (age + a) / (float) lifetime;
+    float s = (age + a) / static_cast<float>(lifetime);
     size = oSize * (1 - s*s);
     Particle::render(t, a, xa, ya, za, xa2, za2);
 }
@@ -52,7 +52,7 @@ void LavaParticle::tick()
     zo = z;
 
     if (age++ >= lifetime) remove();
-    float odds = age / (float) lifetime;
+    float odds = age / static_cast<float>(lifetime);
     if (random->nextFloat() > odds) level->addParticle(eParticleType_smoke, x, y, z, xd, yd, zd);
 
     yd -= 0.03;

@@ -84,7 +84,7 @@ void NetherWartTile::spawnResources(Level *level, int x, int y, int z, int data,
 	}
 	for (int i = 0; i < count; i++)
 	{
-		popResource(level, x, y, z, shared_ptr<ItemInstance>(new ItemInstance(Item::netherwart_seeds)));
+		popResource(level, x, y, z, std::make_shared<ItemInstance>(Item::netherwart_seeds));
 	}
 }
 
@@ -107,6 +107,6 @@ void NetherWartTile::registerIcons(IconRegister *iconRegister)
 {
 	for (int i = 0; i < NETHER_STALK_TEXTURE_COUNT; i++)
 	{
-		icons[i] = iconRegister->registerIcon(getIconName() + L"_stage_" + _toString<int>(i) );
+		icons[i] = iconRegister->registerIcon(getIconName() + L"_stage_" + std::to_wstring(i) );
 	}
 }

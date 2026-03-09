@@ -15,13 +15,13 @@ void StartFeature::writeAttributes(DataOutputStream *dos, UINT numAttrs)
 	GameRuleDefinition::writeAttributes(dos, numAttrs + 4);
 
 	ConsoleGameRules::write(dos, ConsoleGameRules::eGameRuleAttr_chunkX);
-	dos->writeUTF(_toString(m_chunkX));
+	dos->writeUTF(std::to_wstring(m_chunkX));
 	ConsoleGameRules::write(dos, ConsoleGameRules::eGameRuleAttr_chunkZ);
-	dos->writeUTF(_toString(m_chunkZ));
+	dos->writeUTF(std::to_wstring(m_chunkZ));
 	ConsoleGameRules::write(dos, ConsoleGameRules::eGameRuleAttr_feature);
-	dos->writeUTF(_toString((int)m_feature));
+	dos->writeUTF(std::to_wstring((int)m_feature));
 	ConsoleGameRules::write(dos, ConsoleGameRules::eGameRuleAttr_orientation);
-	dos->writeUTF(_toString(m_orientation));
+	dos->writeUTF(std::to_wstring(m_orientation));
 }
 
 void StartFeature::addAttribute(const wstring &attributeName, const wstring &attributeValue)
@@ -47,7 +47,7 @@ void StartFeature::addAttribute(const wstring &attributeName, const wstring &att
 	else if(attributeName.compare(L"feature") == 0)
 	{
 		int value = _fromString<int>(attributeValue);
-		m_feature = (StructureFeature::EFeatureTypes)value;
+		m_feature = static_cast<StructureFeature::EFeatureTypes>(value);
 		app.DebugPrintf("StartFeature: Adding parameter feature=%d\n",m_feature);
 	}
 	else
@@ -58,6 +58,6 @@ void StartFeature::addAttribute(const wstring &attributeName, const wstring &att
 
 bool StartFeature::isFeatureChunk(int chunkX, int chunkZ, StructureFeature::EFeatureTypes feature, int *orientation)
 {
-	if(orientation != NULL) *orientation = m_orientation;
+	if(orientation != nullptr) *orientation = m_orientation;
 	return chunkX == m_chunkX && chunkZ == m_chunkZ && feature == m_feature;
 }

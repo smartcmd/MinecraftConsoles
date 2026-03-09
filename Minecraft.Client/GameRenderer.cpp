@@ -51,6 +51,7 @@
 #include "TexturePackRepository.h"
 #include "TexturePack.h"
 #include "TextureAtlas.h"
+#include "Common/PostProcesser.h"
 
 bool GameRenderer::anaglyph3d = false;
 int GameRenderer::anaglyphPass = 0;
@@ -73,7 +74,7 @@ ResourceLocation GameRenderer::SNOW_LOCATION = ResourceLocation(TN_ENVIRONMENT_S
 GameRenderer::GameRenderer(Minecraft *mc)
 {
 	// 4J - added this block of initialisers
-	renderDistance = 0;
+	renderDistance = static_cast<float>(16 * 16 >> mc->options->viewDistance);
 	_tick = 0;
 	hovered = nullptr;
 	thirdDistance = 4;
@@ -105,8 +106,8 @@ GameRenderer::GameRenderer(Minecraft *mc)
 	zoom = 1;
 	zoom_x = 0;
 	zoom_y = 0;
-	rainXa = NULL;
-	rainZa = NULL;
+	rainXa = nullptr;
+	rainZa = nullptr;
 	lastActiveTime = Minecraft::currentTimeMillis();
 	lastNsTime = 0;
 	random = new Random();
@@ -138,7 +139,7 @@ GameRenderer::GameRenderer(Minecraft *mc)
 	}
 
 	this->mc = mc;
-	itemInHandRenderer = NULL;
+	itemInHandRenderer = nullptr;
 
 	// 4J-PB - set up the local players iteminhand renderers here - needs to be done with lighting enabled so that the render geometry gets compiled correctly
 	glEnable(GL_LIGHTING);
@@ -169,7 +170,7 @@ GameRenderer::GameRenderer(Minecraft *mc)
 	m_updateEvents->Set(eUpdateEventIsFinished);
 
 	InitializeCriticalSection(&m_csDeleteStack);
-	m_updateThread = new C4JThread(runUpdate, NULL, "Chunk update");
+	m_updateThread = new C4JThread(runUpdate, nullptr, "Chunk update");
 #ifdef __PS3__
 	m_updateThread->SetPriority(THREAD_PRIORITY_ABOVE_NORMAL);
 #endif// __PS3__
@@ -181,12 +182,12 @@ GameRenderer::GameRenderer(Minecraft *mc)
 // 4J Stu Added to go with 1.8.2 change
 GameRenderer::~GameRenderer()
 {
-	if(rainXa != NULL) delete [] rainXa;
-	if(rainZa != NULL) delete [] rainZa;
+	if(rainXa != nullptr) delete [] rainXa;
+	if(rainZa != nullptr) delete [] rainZa;
 }
 
 void GameRenderer::tick(bool first)		// 4J - add bFirst
-{ 
+{
 	tickFov();
 	tickLightTexture();		// 4J - change brought forward from 1.8.2
 	fogBrO = fogBr;
@@ -210,7 +211,7 @@ void GameRenderer::tick(bool first)		// 4J - add bFirst
 		accumulatedSmoothYO = 0;
 	}
 
-	if (mc->cameraTargetPlayer == NULL)
+	if (mc->cameraTargetPlayer == nullptr)
 	{
 		mc->cameraTargetPlayer = dynamic_pointer_cast<Mob>(mc->player);
 	}
@@ -229,7 +230,7 @@ void GameRenderer::tick(bool first)		// 4J - add bFirst
 	darkenWorldAmountO = darkenWorldAmount;
 	if (BossMobGuiInfo::darkenWorld)
 	{
-		darkenWorldAmount += 1.0f / ((float) SharedConstants::TICKS_PER_SECOND * 1);
+		darkenWorldAmount += 1.0f / (static_cast<float>(SharedConstants::TICKS_PER_SECOND) * 1);
 		if (darkenWorldAmount > 1)
 		{
 			darkenWorldAmount = 1;
@@ -238,7 +239,7 @@ void GameRenderer::tick(bool first)		// 4J - add bFirst
 	}
 	else if (darkenWorldAmount > 0)
 	{
-		darkenWorldAmount -= 1.0f / ((float) SharedConstants::TICKS_PER_SECOND * 4);
+		darkenWorldAmount -= 1.0f / (static_cast<float>(SharedConstants::TICKS_PER_SECOND) * 4);
 	}
 
 	if( mc->player != mc->localplayers[ProfileManager.GetPrimaryPad()] ) return; // 4J added for split screen - only do rest of processing for once per frame
@@ -248,8 +249,8 @@ void GameRenderer::tick(bool first)		// 4J - add bFirst
 
 void GameRenderer::pick(float a)
 {
-	if (mc->cameraTargetPlayer == NULL) return;
-	if (mc->level == NULL) return;
+	if (mc->cameraTargetPlayer == nullptr) return;
+	if (mc->level == nullptr) return;
 
 	mc->crosshairPickMob = nullptr;
 
@@ -279,7 +280,7 @@ void GameRenderer::pick(float a)
 			( hitz < minxz ) || ( hitz > maxxz) )
 		{
 			delete mc->hitResult;
-			mc->hitResult = NULL;
+			mc->hitResult = nullptr;
 		}
 	}
 
@@ -296,7 +297,7 @@ void GameRenderer::pick(float a)
 		range = dist;
 	}
 
-	if (mc->hitResult != NULL)
+	if (mc->hitResult != nullptr)
 	{
 		dist = mc->hitResult->pos->distanceTo(from);
 	}
@@ -308,11 +309,9 @@ void GameRenderer::pick(float a)
 	vector<shared_ptr<Entity> > *objects = mc->level->getEntities(mc->cameraTargetPlayer, mc->cameraTargetPlayer->bb->expand(b->x * (range), b->y * (range), b->z * (range))->grow(overlap, overlap, overlap));
 	double nearest = dist;
 
-	AUTO_VAR(itEnd, objects->end());
-	for (AUTO_VAR(it, objects->begin()); it != itEnd; it++)
-	{
-		shared_ptr<Entity> e = *it; //objects->at(i);
-		if (!e->isPickable()) continue;
+    for (auto& e : *objects )
+    {
+		if ( e == nullptr || !e->isPickable() ) continue;
 
 		float rr = e->getPickRadius();
 		AABB *bb = e->bb->grow(rr, rr, rr);
@@ -325,17 +324,18 @@ void GameRenderer::pick(float a)
 				nearest = 0;
 			}
 		}
-		else if (p != NULL)
+		else if (p != nullptr)
 		{
 			double dd = from->distanceTo(p->pos);
-			if (e == mc->cameraTargetPlayer->riding != NULL)
-			{
-				if (nearest == 0)
-				{
-					hovered = e;
-				}
-			}
-			else 
+            auto const riding = mc->cameraTargetPlayer->riding;
+            if (riding != nullptr && e == riding)
+            {
+                if (nearest == 0)
+                {
+                    hovered = e;
+                }
+            }
+			else
 			{
 				hovered = e;
 				nearest = dd;
@@ -344,11 +344,11 @@ void GameRenderer::pick(float a)
 		delete p;
 	}
 
-	if (hovered != NULL)
+	if (hovered != nullptr)
 	{
-		if (nearest < dist || (mc->hitResult == NULL))
+		if (nearest < dist || (mc->hitResult == nullptr))
 		{
-			if( mc->hitResult != NULL )
+			if( mc->hitResult != nullptr )
 				delete mc->hitResult;
 			mc->hitResult = new HitResult(hovered);
 			if (hovered->instanceof(eTYPE_LIVINGENTITY))
@@ -476,7 +476,7 @@ void GameRenderer::moveCameraToPlayer(float a)
 				int data = mc->level->getData(Mth::floor(player->x), Mth::floor(player->y), Mth::floor(player->z));
 
 				int direction = data & 3;
-				glRotatef((float)direction * 90,0.0f, 1.0f, 0.0f);
+				glRotatef(static_cast<float>(direction) * 90,0.0f, 1.0f, 0.0f);
 			}
 			glRotatef(player->yRotO + (player->yRot - player->yRotO) * a + 180, 0, -1, 0);
 			glRotatef(player->xRotO + (player->xRot - player->xRotO) * a, -1, 0, 0);
@@ -494,7 +494,7 @@ void GameRenderer::moveCameraToPlayer(float a)
 			float rotationY = thirdRotationO + (thirdRotation - thirdRotationO) * a;
 			float xRot = thirdTiltO + (thirdTilt - thirdTiltO) * a;
 
-			glTranslatef(0, 0, (float) -cameraDist);
+			glTranslatef(0, 0, static_cast<float>(-cameraDist));
 			glRotatef(xRot, 1, 0, 0);
 			glRotatef(rotationY, 0, 1, 0);
 		}
@@ -523,9 +523,9 @@ void GameRenderer::moveCameraToPlayer(float a)
 
 			for (int i = 0; i < 8; i++)
 			{
-				float xo = (float)((i & 1) * 2 - 1);
-				float yo = (float)(((i >> 1) & 1) * 2 - 1);
-				float zo = (float)(((i >> 2) & 1) * 2 - 1);
+				float xo = static_cast<float>((i & 1) * 2 - 1);
+				float yo = static_cast<float>(((i >> 1) & 1) * 2 - 1);
+				float zo = static_cast<float>(((i >> 2) & 1) * 2 - 1);
 
 				xo *= 0.1f;
 				yo *= 0.1f;
@@ -533,7 +533,7 @@ void GameRenderer::moveCameraToPlayer(float a)
 
 				// 4J - corrected bug here where zo was also added to x component
 				HitResult *hr = mc->level->clip(Vec3::newTemp(x + xo, y + yo, z + zo), Vec3::newTemp(x - xd + xo, y - yd + yo, z - zd + zo));
-				if (hr != NULL)
+				if (hr != nullptr)
 				{
 					double dist = hr->pos->distanceTo(Vec3::newTemp(x, y, z));
 					if (dist < cameraDist) cameraDist = dist;
@@ -541,7 +541,7 @@ void GameRenderer::moveCameraToPlayer(float a)
 				}
 			}
 
-			glTranslatef(0, 0, (float) -cameraDist);
+			glTranslatef(0, 0, static_cast<float>(-cameraDist));
 		}
 	}
 	else
@@ -594,9 +594,10 @@ void GameRenderer::unZoomRegion()
 // 4J added as we have more complex adjustments to make for fov & aspect on account of viewports
 void GameRenderer::getFovAndAspect(float& fov, float& aspect, float a, bool applyEffects)
 {
-	// 4J - split out aspect ratio and fov here so we can adjust for viewports - we might need to revisit these as
-	// they are maybe be too generous for performance. 
-	aspect = mc->width / (float) mc->height;
+	// Use the real window dimensions so the perspective updates on resize.
+	extern int g_rScreenWidth;
+	extern int g_rScreenHeight;
+	aspect = g_rScreenWidth / static_cast<float>(g_rScreenHeight);
 	fov = getFov(a, applyEffects);
 
 	if( ( mc->player->m_iScreenSection == C4JRender::VIEWPORT_TYPE_SPLIT_TOP ) ||
@@ -615,7 +616,15 @@ void GameRenderer::getFovAndAspect(float& fov, float& aspect, float a, bool appl
 
 void GameRenderer::setupCamera(float a, int eye)
 {
-	renderDistance = (float)(16 * 16 >> (mc->options->viewDistance));
+	if (mc->options->viewDistance >= 0)
+	{
+		renderDistance = static_cast<float>(16 * 16 >> mc->options->viewDistance);
+	}
+	else
+	{
+		renderDistance = static_cast<float>((16 * 16) << (-mc->options->viewDistance));
+	}
+
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
 
@@ -628,7 +637,7 @@ void GameRenderer::setupCamera(float a, int eye)
 
 	if (zoom != 1)
 	{
-		glTranslatef((float) zoom_x, (float) -zoom_y, 0);
+		glTranslatef(static_cast<float>(zoom_x), static_cast<float>(-zoom_y), 0);
 		glScaled(zoom, zoom, 1);
 	}
 	gluPerspective(fov, aspect, 0.05f, renderDistance * 2);
@@ -693,7 +702,7 @@ void GameRenderer::renderItemInHand(float a, int eye)
 	bool renderHand = true;
 
 	// 4J-PB - to turn off the hand for screenshots, but not when the item held is a map
-	if ( localplayer!=NULL)
+	if ( localplayer!=nullptr)
 	{
 		shared_ptr<ItemInstance> item = localplayer->inventory->getSelected();
 		if(!(item && item->getItem()->id==Item::map_Id)  && app.GetGameSettings(localplayer->GetXboxPad(),eGameSetting_DisplayHand)==0 ) renderHand = false;
@@ -711,7 +720,7 @@ void GameRenderer::renderItemInHand(float a, int eye)
 
 	if (zoom != 1)
 	{
-		glTranslatef((float) zoom_x, (float) -zoom_y, 0);
+		glTranslatef(static_cast<float>(zoom_x), static_cast<float>(-zoom_y), 0);
 		glScaled(zoom, zoom, 1);
 	}
 	gluPerspective(fov, aspect, 0.05f, renderDistance * 2);
@@ -735,14 +744,14 @@ void GameRenderer::renderItemInHand(float a, int eye)
 	bool bNoLegAnim =(localplayer->getAnimOverrideBitmask()&( (1<<HumanoidModel::eAnim_NoLegAnim) | (1<<HumanoidModel::eAnim_NoBobbing) ))!=0;
 	if(app.GetGameSettings(localplayer->GetXboxPad(),eGameSetting_ViewBob) && !localplayer->abilities.flying && !bNoLegAnim) bobView(a);
 
-	// 4J: Skip hand rendering if render hand is off 
+	// 4J: Skip hand rendering if render hand is off
 	if (renderHand)
 	{
 		// 4J-PB - changing this to be per player
 		//if (!mc->options->thirdPersonView && !mc->cameraTargetPlayer->isSleeping())
 		if (!localplayer->ThirdPersonView() && !mc->cameraTargetPlayer->isSleeping())
 		{
-			if (!mc->options->hideGui && !mc->gameMode->isCutScene()) 
+			if (!mc->options->hideGui && !mc->gameMode->isCutScene())
 			{
 				turnOnLightLayer(a);
 				PIXBeginNamedEvent(0,"Item in hand render");
@@ -770,7 +779,7 @@ void GameRenderer::renderItemInHand(float a, int eye)
 // 4J - change brought forward from 1.8.2
 void GameRenderer::turnOffLightLayer(double alpha)
 {	// 4J - TODO
-#if 0	
+#if 0
 	if (SharedConstants::TEXTURE_LIGHTING)
 	{
 		glClientActiveTexture(GL_TEXTURE1);
@@ -823,8 +832,8 @@ void GameRenderer::turnOnLightLayer(double alpha)
 // 4J - change brought forward from 1.8.2
 void GameRenderer::tickLightTexture()
 {
-	blrt += (float)((Math::random() - Math::random()) * Math::random() * Math::random());
-	blgt += (float)((Math::random() - Math::random()) * Math::random() * Math::random());
+	blrt += static_cast<float>((Math::random() - Math::random()) * Math::random() * Math::random());
+	blgt += static_cast<float>((Math::random() - Math::random()) * Math::random() * Math::random());
 	blrt *= 0.9;
 	blgt *= 0.9;
 	blr += (blrt - blr) * 1;
@@ -834,124 +843,252 @@ void GameRenderer::tickLightTexture()
 
 void GameRenderer::updateLightTexture(float a)
 {
-	// 4J-JEV: Now doing light textures on PER PLAYER basis.
-	// 4J - we *had* added separate light textures for all dimensions, and this loop to update them all here
-	for(int j = 0; j < XUSER_MAX_COUNT; j++ )
-	{
-		// Loop over all the players
-		shared_ptr<MultiplayerLocalPlayer> player = Minecraft::GetInstance()->localplayers[j];
-		if (player == NULL) continue;
+    CachePlayerGammas();
 
-		Level *level = player->level;		// 4J - was mc->level when it was just to update the one light texture
+    for (int j = 0; j < XUSER_MAX_COUNT; j++)
+    {
+        shared_ptr<MultiplayerLocalPlayer> player = Minecraft::GetInstance()->localplayers[j];
+        if (player == nullptr)
+            continue;
 
-		float skyDarken1 = level->getSkyDarken((float) 1);
-		for (int i = 0; i < 256; i++)
-		{
-			float darken = skyDarken1 * 0.95f + 0.05f;
-			float sky = level->dimension->brightnessRamp[i / 16] * darken;
-			float block = level->dimension->brightnessRamp[i % 16] * (blr * 0.1f + 1.5f);
+        Level *level = player->level;
 
-			if (level->skyFlashTime > 0)
-			{
-				sky = level->dimension->brightnessRamp[i / 16];
-			}
+        const float skyDarken1 = level->getSkyDarken(1.0f);
+        for (int i = 0; i < 256; i++)
+        {
+            const float darken = skyDarken1 * 0.95f + 0.05f;
+            float sky = level->dimension->brightnessRamp[i / 16] * darken;
+            const float block = level->dimension->brightnessRamp[i % 16] * (blr * 0.1f + 1.5f);
 
-			float rs = sky * (skyDarken1 * 0.65f + 0.35f);
-			float gs = sky * (skyDarken1 * 0.65f + 0.35f);
-			float bs = sky;
+            if (level->skyFlashTime < 0)
+            {
+                sky = level->dimension->brightnessRamp[i / 16];
+            }
 
-			float rb = block;
-			float gb = block * ((block * 0.6f + 0.4f) * 0.6f + 0.4f);
-			float bb = block * ((block * block) * 0.6f + 0.4f);
+            const float rs = sky * (skyDarken1 * 0.65f + 0.35f);
+            const float gs = sky * (skyDarken1 * 0.65f + 0.35f);
+            const float bs = sky;
 
-			float _r = (rs + rb);
-			float _g = (gs + gb);
-			float _b = (bs + bb);
+            const float rb = block;
+            const float gb = block * ((block * 0.6f + 0.4f) * 0.6f + 0.4f);
+            const float bb = block * ((block * block) * 0.6f + 0.4f);
 
-			_r = _r * 0.96f + 0.03f;
-			_g = _g * 0.96f + 0.03f;
-			_b = _b * 0.96f + 0.03f;
+            float _r = (rs + rb);
+            float _g = (gs + gb);
+            float _b = (bs + bb);
 
-			if (darkenWorldAmount > 0)
-			{
-				float amount = darkenWorldAmountO + (darkenWorldAmount - darkenWorldAmountO) * a;
-				_r = _r * (1.0f - amount) + (_r * .7f) * amount;
-				_g = _g * (1.0f - amount) + (_g * .6f) * amount;
-				_b = _b * (1.0f - amount) + (_b * .6f) * amount;
-			}
+            _r = _r * 0.96f + 0.03f;
+            _g = _g * 0.96f + 0.03f;
+            _b = _b * 0.96f + 0.03f;
 
-			if (level->dimension->id == 1)
-			{
-				_r = (0.22f + rb * 0.75f);
-				_g = (0.28f + gb * 0.75f);
-				_b = (0.25f + bb * 0.75f);
-			}
+            if (darkenWorldAmount > 0)
+            {
+                const float amount = darkenWorldAmountO + (darkenWorldAmount - darkenWorldAmountO) * a;
+                _r = _r * (1.0f - amount) + (_r * 0.7f) * amount;
+                _g = _g * (1.0f - amount) + (_g * 0.6f) * amount;
+                _b = _b * (1.0f - amount) + (_b * 0.6f) * amount;
+            }
 
-			if (player->hasEffect(MobEffect::nightVision))
-			{
-				float scale = getNightVisionScale(player, a);
-				{
-					float dist = 1.0f / _r;
-					if (dist > (1.0f / _g))
-					{
-						dist = (1.0f / _g);
-					}
-					if (dist > (1.0f / _b))
-					{
-						dist = (1.0f / _b);
-					}
-					_r = _r * (1.0f - scale) + (_r * dist) * scale;
-					_g = _g * (1.0f - scale) + (_g * dist) * scale;
-					_b = _b * (1.0f - scale) + (_b * dist) * scale;
-				}
-			}
+            if (level->dimension->id == 1)
+            {
+                _r = (0.22f + rb * 0.75f);
+                _g = (0.28f + gb * 0.75f);
+                _b = (0.25f + bb * 0.75f);
+            }
 
-			if (_r > 1) _r = 1;
-			if (_g > 1) _g = 1;
-			if (_b > 1) _b = 1;
+            if (player->hasEffect(MobEffect::nightVision))
+            {
+                const float scale = getNightVisionScale(player, a);
+                float dist = 1.0f / _r;
+                if (dist > (1.0f / _g))
+                    dist = (1.0f / _g);
+                if (dist > (1.0f / _b))
+                    dist = (1.0f / _b);
+                _r = _r * (1.0f - scale) + (_r * dist) * scale;
+                _g = _g * (1.0f - scale) + (_g * dist) * scale;
+                _b = _b * (1.0f - scale) + (_b * dist) * scale;
+            }
 
-			float brightness = mc->options->gamma;
+            if (_r > 1.0f)
+                _r = 1.0f;
+            if (_r < 0.0f)
+                _r = 0.0f;
+            if (_g > 1.0f)
+                _g = 1.0f;
+            if (_g < 0.0f)
+                _g = 0.0f;
+            if (_b > 1.0f)
+                _b = 1.0f;
+            if (_b < 0.0f)
+                _b = 0.0f;
 
-			float ir = 1 - _r;
-			float ig = 1 - _g;
-			float ib = 1 - _b;
-			ir = 1 - (ir * ir * ir * ir);
-			ig = 1 - (ig * ig * ig * ig);
-			ib = 1 - (ib * ib * ib * ib);
-			_r = _r * (1 - brightness) + ir * brightness;
-			_g = _g * (1 - brightness) + ig * brightness;
-			_b = _b * (1 - brightness) + ib * brightness;
-
-			_r = _r * 0.96f + 0.03f;
-			_g = _g * 0.96f + 0.03f;
-			_b = _b * 0.96f + 0.03f;
-
-			if (_r > 1) _r = 1;
-			if (_g > 1) _g = 1;
-			if (_b > 1) _b = 1;
-			if (_r < 0) _r = 0;
-			if (_g < 0) _g = 0;
-			if (_b < 0) _b = 0;
-
-			int alpha = 255;
-			int r = (int) (_r * 255);
-			int g = (int) (_g * 255);
-			int b = (int) (_b * 255);
+            constexpr int alpha = 255;
+            const int r = static_cast<int>(_r * 255);
+            const int g = static_cast<int>(_g * 255);
+            const int b = static_cast<int>(_b * 255);
 
 #if ( defined _DURANGO || defined _WIN64 || __PSVITA__ )
-			lightPixels[j][i] = alpha << 24 | b << 16 | g << 8 | r;
+            lightPixels[j][i] = alpha << 24 | b << 16 | g << 8 | r;
 #elif ( defined _XBOX || defined __ORBIS__ )
-			lightPixels[j][i] = alpha << 24 | r << 16 | g << 8 | b;
+            lightPixels[j][i] = alpha << 24 | r << 16 | g << 8 | b;
 #else
-			lightPixels[j][i] = r << 24 | g << 16 | b << 8 | alpha;
+            lightPixels[j][i] = r << 24 | g << 16 | b << 8 | alpha;
 #endif
-		}
+        }
 
-		mc->textures->replaceTextureDirect( lightPixels[j], 16, 16, getLightTexture(j,level) );
-		// lightTexture->upload(); // 4J: not relevant
+        mc->textures->replaceTextureDirect(lightPixels[j], 16, 16, getLightTexture(j, level));
+    }
+}
 
-		//_updateLightTexture = false;
-	}
+float GameRenderer::ComputeGammaFromSlider(float slider0to100)
+{
+    float slider = slider0to100;
+    slider = max(slider, 0.0f);
+    slider = min(slider, 100.0f);
+
+    if (slider > 50.0f)
+        return 1.0f + (slider - 50.0f) / 50.0f * 1.2f; // 1.0 -> 1.5
+    else
+        return 1.0f - (50.0f - slider) / 50.0f * 0.4f; // 1.0 -> 0.5
+}
+
+void GameRenderer::CachePlayerGammas()
+{
+    const float slider = app.GetGameSettings(ProfileManager.GetPrimaryPad(), eGameSetting_Gamma);
+    const float gamma = ComputeGammaFromSlider(slider);
+
+    for (int j = 0; j < XUSER_MAX_COUNT && j < NUM_LIGHT_TEXTURES; ++j)
+        m_cachedGammaPerPlayer[j] = gamma;
+}
+
+bool GameRenderer::ComputeViewportForPlayer(int j, D3D11_VIEWPORT &outViewport) const
+{
+    extern int g_rScreenWidth;
+    extern int g_rScreenHeight;
+
+    std::shared_ptr<MultiplayerLocalPlayer> player = Minecraft::GetInstance()->localplayers[j];
+    if (!player)
+        return false;
+
+    const float w = static_cast<float>(g_rScreenWidth);
+    const float h = static_cast<float>(g_rScreenHeight);
+    const float halfW = w * 0.5f;
+    const float halfH = h * 0.5f;
+
+    outViewport.MinDepth = 0.0f;
+    outViewport.MaxDepth = 1.0f;
+
+    switch (static_cast<C4JRender::eViewportType>(player->m_iScreenSection))
+    {
+    case C4JRender::VIEWPORT_TYPE_SPLIT_TOP:
+        outViewport.TopLeftX = 0;     outViewport.TopLeftY = 0;
+        outViewport.Width    = w;     outViewport.Height   = halfH;
+        break;
+    case C4JRender::VIEWPORT_TYPE_SPLIT_BOTTOM:
+        outViewport.TopLeftX = 0;     outViewport.TopLeftY = halfH;
+        outViewport.Width    = w;     outViewport.Height   = halfH;
+        break;
+    case C4JRender::VIEWPORT_TYPE_SPLIT_LEFT:
+        outViewport.TopLeftX = 0;     outViewport.TopLeftY = 0;
+        outViewport.Width    = halfW; outViewport.Height   = h;
+        break;
+    case C4JRender::VIEWPORT_TYPE_SPLIT_RIGHT:
+        outViewport.TopLeftX = halfW; outViewport.TopLeftY = 0;
+        outViewport.Width    = halfW; outViewport.Height   = h;
+        break;
+    case C4JRender::VIEWPORT_TYPE_QUADRANT_TOP_LEFT:
+        outViewport.TopLeftX = 0;     outViewport.TopLeftY = 0;
+        outViewport.Width    = halfW; outViewport.Height   = halfH;
+        break;
+    case C4JRender::VIEWPORT_TYPE_QUADRANT_TOP_RIGHT:
+        outViewport.TopLeftX = halfW; outViewport.TopLeftY = 0;
+        outViewport.Width    = halfW; outViewport.Height   = halfH;
+        break;
+    case C4JRender::VIEWPORT_TYPE_QUADRANT_BOTTOM_LEFT:
+        outViewport.TopLeftX = 0;     outViewport.TopLeftY = halfH;
+        outViewport.Width    = halfW; outViewport.Height   = halfH;
+        break;
+    case C4JRender::VIEWPORT_TYPE_QUADRANT_BOTTOM_RIGHT:
+        outViewport.TopLeftX = halfW; outViewport.TopLeftY = halfH;
+        outViewport.Width    = halfW; outViewport.Height   = halfH;
+        break;
+    default:
+        outViewport.TopLeftX = 0;     outViewport.TopLeftY = 0;
+        outViewport.Width    = w;     outViewport.Height   = h;
+        break;
+    }
+    return true;
+}
+
+uint32_t GameRenderer::BuildPlayerViewports(D3D11_VIEWPORT *outViewports, float *outGammas, UINT maxCount) const
+{
+    UINT count = 0;
+    for (int j = 0; j < XUSER_MAX_COUNT && j < NUM_LIGHT_TEXTURES && count < maxCount; ++j)
+    {
+        if (!Minecraft::GetInstance()->localplayers[j])
+            continue;
+        D3D11_VIEWPORT vp;
+        if (!ComputeViewportForPlayer(j, vp))
+            continue;
+        outViewports[count] = vp;
+        outGammas[count] = m_cachedGammaPerPlayer[j];
+        ++count;
+    }
+    return count;
+}
+
+void GameRenderer::ApplyGammaPostProcess() const
+{
+    D3D11_VIEWPORT vps[NUM_LIGHT_TEXTURES];
+    float gammas[NUM_LIGHT_TEXTURES];
+    const UINT n = BuildPlayerViewports(vps, gammas, NUM_LIGHT_TEXTURES);
+
+    float gamma = 1.0f;
+    bool hasPlayers = n > 0;
+
+    if (hasPlayers)
+    {
+        bool anyEffect = false;
+        for (UINT i = 0; i < n; ++i)
+        {
+            if (gammas[i] < 0.99f || gammas[i] > 1.01f)
+            {
+                anyEffect = true;
+                break;
+            }
+        }
+        if (!anyEffect)
+            return;
+    }
+    else
+    {
+        const float slider = app.GetGameSettings(0, eGameSetting_Gamma);
+        gamma = ComputeGammaFromSlider(slider);
+        if (gamma < 0.99f || gamma > 1.01f)
+        {
+            PostProcesser::GetInstance().SetGamma(gamma);
+            PostProcesser::GetInstance().Apply();
+            return;
+        }
+        return;
+    }
+
+    if (n == 1)
+    {
+        PostProcesser::GetInstance().SetGamma(gammas[0]);
+        PostProcesser::GetInstance().Apply();
+    }
+    else
+    {
+        PostProcesser::GetInstance().CopyBackbuffer();
+        for (UINT i = 0; i < n; ++i)
+        {
+            PostProcesser::GetInstance().SetGamma(gammas[i]);
+            PostProcesser::GetInstance().SetViewport(vps[i]);
+            PostProcesser::GetInstance().ApplyFromCopied();
+        }
+        PostProcesser::GetInstance().ResetViewport();
+    }
 }
 
 float GameRenderer::getNightVisionScale(shared_ptr<Player> player, float a)
@@ -980,6 +1117,11 @@ int GameRenderer::getLightTexture(int iPad, Level *level)
 
 void GameRenderer::render(float a, bool bFirst)
 {
+	if (mc->player == nullptr)
+	{
+		return;
+	}
+
 	if( _updateLightTexture && bFirst) updateLightTexture(a);
 	if (Display::isActive())
 	{
@@ -1016,57 +1158,56 @@ void GameRenderer::render(float a, bool bFirst)
 	}
 #endif
 
-	if (mc->noRender) return;
-	GameRenderer::anaglyph3d = mc->options->anaglyph3d;
+    if (mc->noRender)
+        return;
+    anaglyph3d = mc->options->anaglyph3d;
 
-	glViewport(0, 0, mc->width, mc->height);	// 4J - added
+	glViewport(0, 0, mc->width, mc->height);	// 4J - added (no-op on Win64, viewport set by StateSetViewport)
 	ScreenSizeCalculator ssc(mc->options, mc->width, mc->height);
-	int screenWidth = ssc.getWidth();
-	int screenHeight = ssc.getHeight();
-	int xMouse = Mouse::getX() * screenWidth / mc->width;
-	int yMouse = screenHeight - Mouse::getY() * screenHeight / mc->height - 1;
+	const int screenWidth = ssc.getWidth();
+	const int screenHeight = ssc.getHeight();
+	const int xMouse = Mouse::getX() * screenWidth / mc->width;
+	const int yMouse = screenHeight - Mouse::getY() * screenHeight / mc->height - 1;
 
-	int maxFps = getFpsCap(mc->options->framerateLimit);
+    const int maxFps = getFpsCap(mc->options->framerateLimit);
 
-	if (mc->level != NULL)
-	{
-		if (mc->options->framerateLimit == 0)
-		{
-			renderLevel(a, 0);
-		}
-		else
-		{
-			renderLevel(a, lastNsTime + 1000000000 / maxFps);
-		}
+    if (mc->level != nullptr)
+    {
+        if (mc->options->framerateLimit == 0)
+        {
+            renderLevel(a, 0);
+        }
+        else
+        {
+            renderLevel(a, lastNsTime + 1000000000 / maxFps);
+        }
 
-		lastNsTime = System::nanoTime();
+        lastNsTime = System::nanoTime();
 
+        if (!mc->options->hideGui || mc->screen != nullptr)
+        {
+            mc->gui->render(a, mc->screen != nullptr, xMouse, yMouse);
+        }
+    }
+    else
+    {
+        glViewport(0, 0, mc->width, mc->height);
+        glMatrixMode(GL_PROJECTION);
+        glLoadIdentity();
+        glMatrixMode(GL_MODELVIEW);
+        glLoadIdentity();
+        setupGuiScreen();
 
-		if (!mc->options->hideGui || mc->screen != NULL)
-		{
-			mc->gui->render(a, mc->screen != NULL, xMouse, yMouse);
-		}
-	}
-	else
-	{
-		glViewport(0, 0, mc->width, mc->height);
-		glMatrixMode(GL_PROJECTION);
-		glLoadIdentity();
-		glMatrixMode(GL_MODELVIEW);
-		glLoadIdentity();
-		setupGuiScreen();
+        lastNsTime = System::nanoTime();
+    }
 
-		lastNsTime = System::nanoTime();
-	}
-
-
-	if (mc->screen != NULL)
-	{
-		glClear(GL_DEPTH_BUFFER_BIT);
-		mc->screen->render(xMouse, yMouse, a);
-		if (mc->screen != NULL && mc->screen->particles != NULL) mc->screen->particles->render(a);
-	}
-
+    if (mc->screen != nullptr)
+    {
+        glClear(GL_DEPTH_BUFFER_BIT);
+        mc->screen->render(xMouse, yMouse, a);
+        if (mc->screen != nullptr && mc->screen->particles != nullptr)
+            mc->screen->particles->render(a);
+    }
 }
 
 void GameRenderer::renderLevel(float a)
@@ -1111,7 +1252,7 @@ int GameRenderer::runUpdate(LPVOID lpParam)
 	Vec3::CreateNewThreadStorage();
 	AABB::CreateNewThreadStorage();
 	IntCache::CreateNewThreadStorage();
-	Tesselator::CreateNewThreadStorage(1024*1024);	
+	Tesselator::CreateNewThreadStorage(1024*1024);
 	Compression::UseDefaultThreadStorage();
 	RenderManager.InitialiseContext();
 #ifdef _LARGE_WORLDS
@@ -1185,7 +1326,7 @@ int GameRenderer::runUpdate(LPVOID lpParam)
 
 		AABB::resetPool();
 		Vec3::resetPool();
-		IntCache::Reset();	
+		IntCache::Reset();
 		m_updateEvents->Set(eUpdateEventIsFinished);
 	}
 
@@ -1217,12 +1358,12 @@ void GameRenderer::DisableUpdateThread()
 	if( !updateRunning) return;
 	app.DebugPrintf("------------------DisableUpdateThread--------------------\n");
 	updateRunning = false;
-	m_updateEvents->Clear(eUpdateCanRun);	
+	m_updateEvents->Clear(eUpdateCanRun);
 	m_updateEvents->WaitForSingle(eUpdateEventIsFinished,INFINITE);
 #endif
 }
 
-void GameRenderer::renderLevel(float a, __int64 until)
+void GameRenderer::renderLevel(float a, int64_t until)
 {
 	//	if (updateLightTexture) updateLightTexture();	// 4J - TODO - Java 1.0.1 has this line enabled, should check why - don't want to put it in now in case it breaks split-screen
 
@@ -1233,7 +1374,7 @@ void GameRenderer::renderLevel(float a, __int64 until)
 	// going to do for the primary player, and the other players can just view whatever they have loaded in - we're sharing render data between players.
 	bool updateChunks = ( mc->player == mc->localplayers[ProfileManager.GetPrimaryPad()] );
 
-	//	if (mc->cameraTargetPlayer == NULL)	// 4J - removed condition as we want to update this is mc->player changes for different local players
+	//	if (mc->cameraTargetPlayer == nullptr)	// 4J - removed condition as we want to update this is mc->player changes for different local players
 	{
 		mc->cameraTargetPlayer = mc->player;
 	}
@@ -1305,7 +1446,7 @@ void GameRenderer::renderLevel(float a, __int64 until)
 
 				if (until == 0) break;
 
-				__int64 diff = until - System::nanoTime();
+				int64_t diff = until - System::nanoTime();
 				if (diff < 0) break;
 				if (diff > 1000000000) break;
 			} while (true);
@@ -1361,7 +1502,7 @@ void GameRenderer::renderLevel(float a, __int64 until)
 			PIXEndNamedEvent();
 			turnOffLightLayer(a);		// 4J - brought forward from 1.8.2
 
-			if ( (mc->hitResult != NULL) && cameraEntity->isUnderLiquid(Material::water) && cameraEntity->instanceof(eTYPE_PLAYER) ) //&& !mc->options.hideGui)
+			if ( (mc->hitResult != nullptr) && cameraEntity->isUnderLiquid(Material::water) && cameraEntity->instanceof(eTYPE_PLAYER) ) //&& !mc->options.hideGui)
 			{
 				shared_ptr<Player> player = dynamic_pointer_cast<Player>(cameraEntity);
 				glDisable(GL_ALPHA_TEST);
@@ -1430,7 +1571,7 @@ void GameRenderer::renderLevel(float a, __int64 until)
 
 		if ( (zoom == 1) && cameraEntity->instanceof(eTYPE_PLAYER) ) //&& !mc->options.hideGui)
 		{
-			if (mc->hitResult != NULL && !cameraEntity->isUnderLiquid(Material::water))
+			if (mc->hitResult != nullptr && !cameraEntity->isUnderLiquid(Material::water))
 			{
 				shared_ptr<Player> player = dynamic_pointer_cast<Player>(cameraEntity);
 				glDisable(GL_ALPHA_TEST);
@@ -1520,7 +1661,7 @@ void GameRenderer::tickRain()
 	double rainPosZ = 0;
 	int rainPosSamples = 0;
 
-	int rainCount = (int) (100 * rainLevel * rainLevel);
+	int rainCount = static_cast<int>(100 * rainLevel * rainLevel);
 	if (mc->options->particles == 1)
 	{
 		rainCount >>= 1;
@@ -1543,7 +1684,7 @@ void GameRenderer::tickRain()
 			{
 				if (Tile::tiles[t]->material == Material::lava)
 				{
-					mc->particleEngine->add( shared_ptr<SmokeParticle>( new SmokeParticle(level, x + xa, y + 0.1f - Tile::tiles[t]->getShapeY0(), z + za, 0, 0, 0) ) );
+					mc->particleEngine->add(std::make_shared<SmokeParticle>(level, x + xa, y + 0.1f - Tile::tiles[t]->getShapeY0(), z + za, 0, 0, 0));
 				}
 				else
 				{
@@ -1553,7 +1694,7 @@ void GameRenderer::tickRain()
 						rainPosY = y + 0.1f - Tile::tiles[t]->getShapeY0();
 						rainPosZ = z + za;
 					}
-					mc->particleEngine->add( shared_ptr<WaterDropParticle>( new WaterDropParticle(level, x + xa, y + 0.1f - Tile::tiles[t]->getShapeY0(), z + za) ) );
+					mc->particleEngine->add(std::make_shared<WaterDropParticle>(level, x + xa, y + 0.1f - Tile::tiles[t]->getShapeY0(), z + za));
 				}
 			}
 		}
@@ -1588,7 +1729,7 @@ void GameRenderer::renderSnowAndRain(float a)
 
 	turnOnLightLayer(a);
 
-	if (rainXa == NULL) 
+	if (rainXa == nullptr)
 	{
 		rainXa = new float[32 * 32];
 		rainZa = new float[32 * 32];
@@ -1709,9 +1850,9 @@ void GameRenderer::renderSnowAndRain(float a)
 					float Alpha = ((1 - dd * dd) * 0.5f + 0.5f) * rainLevel;
 					int tex2 = (level->getLightColor(x, yl, z, 0) * 3 + 0xf000f0) / 4;
 					t->tileRainQuad(x - xa + 0.5, yy0, z - za + 0.5, 0 * s, yy0 * s / 4.0f + ra * s,
-						x + xa + 0.5, yy0, z + za + 0.5, 1 * s, yy0 * s / 4.0f + ra * s, 
-						x + xa + 0.5, yy1, z + za + 0.5, 1 * s, yy1 * s / 4.0f + ra * s, 
-						x - xa + 0.5, yy1, z - za + 0.5, 0 * s, yy1 * s / 4.0f + ra * s, 
+						x + xa + 0.5, yy0, z + za + 0.5, 1 * s, yy0 * s / 4.0f + ra * s,
+						x + xa + 0.5, yy1, z + za + 0.5, 1 * s, yy1 * s / 4.0f + ra * s,
+						x - xa + 0.5, yy1, z - za + 0.5, 0 * s, yy1 * s / 4.0f + ra * s,
 						br, br, br, Alpha, br, br, br, 0, tex2);
 #else
 					t->tex2(level->getLightColor(x, yl, z, 0));
@@ -1735,11 +1876,11 @@ void GameRenderer::renderSnowAndRain(float a)
 						t->begin();
 					}
 					float ra = (((_tick) & 511) + a) / 512.0f;
-					float uo = random->nextFloat() + time * 0.01f * (float) random->nextGaussian();
-					float vo = random->nextFloat() + time * (float) random->nextGaussian() * 0.001f;
+					float uo = random->nextFloat() + time * 0.01f * static_cast<float>(random->nextGaussian());
+					float vo = random->nextFloat() + time * static_cast<float>(random->nextGaussian()) * 0.001f;
 					double xd = (x + 0.5f) - player->x;
 					double zd = (z + 0.5f) - player->z;
-					float dd = (float) sqrt(xd * xd + zd * zd) / r;
+					float dd = static_cast<float>(sqrt(xd * xd + zd * zd)) / r;
 					float br = 1;
 					t->offset(-xo * 1, -yo * 1, -zo * 1);
 #ifdef __PSVITA__
@@ -1747,9 +1888,9 @@ void GameRenderer::renderSnowAndRain(float a)
 					float Alpha = ((1 - dd * dd) * 0.3f + 0.5f) * rainLevel;
 					int tex2 = (level->getLightColor(x, yl, z, 0) * 3 + 0xf000f0) / 4;
 					t->tileRainQuad(x - xa + 0.5, yy0, z - za + 0.5, 0 * s + uo, yy0 * s / 4.0f + ra * s + vo,
-						x + xa + 0.5, yy0, z + za + 0.5, 1 * s + uo, yy0 * s / 4.0f + ra * s + vo, 
-						x + xa + 0.5, yy1, z + za + 0.5, 1 * s + uo, yy1 * s / 4.0f + ra * s + vo, 
-						x - xa + 0.5, yy1, z - za + 0.5, 0 * s + uo, yy1 * s / 4.0f + ra * s + vo, 
+						x + xa + 0.5, yy0, z + za + 0.5, 1 * s + uo, yy0 * s / 4.0f + ra * s + vo,
+						x + xa + 0.5, yy1, z + za + 0.5, 1 * s + uo, yy1 * s / 4.0f + ra * s + vo,
+						x - xa + 0.5, yy1, z - za + 0.5, 0 * s + uo, yy1 * s / 4.0f + ra * s + vo,
 						br, br, br, Alpha, br, br, br, Alpha, tex2);
 #else
 					t->tex2((level->getLightColor(x, yl, z, 0) * 3 + 0xf000f0) / 4);
@@ -1781,7 +1922,7 @@ void GameRenderer::setupGuiScreen(int forceScale /*=-1*/)
 	glClear(GL_DEPTH_BUFFER_BIT);
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
-	glOrtho(0, (float)ssc.rawWidth, (float)ssc.rawHeight, 0, 1000, 3000);
+	glOrtho(0, static_cast<float>(ssc.rawWidth), static_cast<float>(ssc.rawHeight), 0, 1000, 3000);
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 	glTranslatef(0, 0, -2000);
@@ -1793,27 +1934,27 @@ void GameRenderer::setupClearColor(float a)
 	shared_ptr<LivingEntity> player = mc->cameraTargetPlayer;
 
 	float whiteness = 1.0f / (4 - mc->options->viewDistance);
-	whiteness = 1 - (float) pow((double)whiteness, 0.25);
+	whiteness = 1 - static_cast<float>(pow(static_cast<double>(whiteness), 0.25));
 
 	Vec3 *skyColor = level->getSkyColor(mc->cameraTargetPlayer, a);
-	float sr = (float) skyColor->x;
-	float sg = (float) skyColor->y;
-	float sb = (float) skyColor->z;
+	float sr = static_cast<float>(skyColor->x);
+	float sg = static_cast<float>(skyColor->y);
+	float sb = static_cast<float>(skyColor->z);
 
 	Vec3 *fogColor = level->getFogColor(a);
-	fr = (float) fogColor->x;
-	fg = (float) fogColor->y;
-	fb = (float) fogColor->z;
+	fr = static_cast<float>(fogColor->x);
+	fg = static_cast<float>(fogColor->y);
+	fb = static_cast<float>(fogColor->z);
 
 	if (mc->options->viewDistance < 2)
 	{
 		Vec3 *sunAngle = Mth::sin(level->getSunAngle(a)) > 0 ? Vec3::newTemp(-1, 0, 0) : Vec3::newTemp(1, 0, 0);
-		float d = (float) player->getViewVector(a)->dot(sunAngle);
+		float d = static_cast<float>(player->getViewVector(a)->dot(sunAngle));
 		if (d < 0) d = 0;
 		if (d > 0)
 		{
 			float *c = level->dimension->getSunriseColor(level->getTimeOfDay(a), a);
-			if (c != NULL)
+			if (c != nullptr)
 			{
 				d *= c[3];
 				fr = fr * (1 - d) + c[0] * d;
@@ -1849,9 +1990,9 @@ void GameRenderer::setupClearColor(float a)
 	if (isInClouds)
 	{
 		Vec3 *cc = level->getCloudColor(a);
-		fr = (float) cc->x;
-		fg = (float) cc->y;
-		fb = (float) cc->z;
+		fr = static_cast<float>(cc->x);
+		fg = static_cast<float>(cc->y);
+		fb = static_cast<float>(cc->z);
 	}
 	else if (t != 0 && Tile::tiles[t]->material == Material::water)
 	{
@@ -1862,9 +2003,9 @@ void GameRenderer::setupClearColor(float a)
 		byte greenComponent = ((colour>>8)&0xFF);
 		byte blueComponent = ((colour)&0xFF);
 
-		fr = (float)redComponent/256 + clearness;//0.02f;
-		fg = (float)greenComponent/256 + clearness;//0.02f;
-		fb = (float)blueComponent/256 + clearness;//0.2f;
+		fr = static_cast<float>(redComponent)/256 + clearness;//0.02f;
+		fg = static_cast<float>(greenComponent)/256 + clearness;//0.02f;
+		fb = static_cast<float>(blueComponent)/256 + clearness;//0.2f;
 	}
 	else if (t != 0 && Tile::tiles[t]->material == Material::lava)
 	{
@@ -1873,9 +2014,9 @@ void GameRenderer::setupClearColor(float a)
 		byte greenComponent = ((colour>>8)&0xFF);
 		byte blueComponent = ((colour)&0xFF);
 
-		fr = (float)redComponent/256;//0.6f;
-		fg = (float)greenComponent/256;//0.1f;
-		fb = (float)blueComponent/256;//0.00f;
+		fr = static_cast<float>(redComponent)/256;//0.6f;
+		fg = static_cast<float>(greenComponent)/256;//0.1f;
+		fb = static_cast<float>(blueComponent)/256;//0.00f;
 	}
 
 	float brr = fogBrO + (fogBr - fogBrO) * a;
@@ -1890,7 +2031,7 @@ void GameRenderer::setupClearColor(float a)
 		int duration = player->getEffect(MobEffect::blindness)->getDuration();
 		if (duration < 20)
 		{
-			yy = yy * (1.0f - (float) duration / 20.0f);
+			yy = yy * (1.0f - static_cast<float>(duration) / 20.0f);
 		}
 		else
 		{
@@ -1995,7 +2136,7 @@ void GameRenderer::setupFog(int i, float alpha)
 		int duration = player->getEffect(MobEffect::blindness)->getDuration();
 		if (duration < 20)
 		{
-			distance = 5.0f + (renderDistance - 5.0f) * (1.0f - (float) duration / 20.0f);
+			distance = 5.0f + (renderDistance - 5.0f) * (1.0f - static_cast<float>(duration) / 20.0f);
 		}
 
 		glFogi(GL_FOG_MODE, GL_LINEAR);
@@ -2050,7 +2191,7 @@ void GameRenderer::setupFog(int i, float alpha)
 				{
 					if (yy < 0) yy = 0;
 					yy = yy * yy;
-					float dist = 100 * (float) yy;
+					float dist = 100 * static_cast<float>(yy);
 					if (dist < 5) dist = 5;
 					if (distance > dist) distance = dist;
 				}
@@ -2077,7 +2218,7 @@ void GameRenderer::setupFog(int i, float alpha)
 		}
 		*/
 
-		if (mc->level->dimension->isFoggyAt((int) player->x, (int) player->z))
+		if (mc->level->dimension->isFoggyAt(static_cast<int>(player->x), static_cast<int>(player->z)))
 		{
 			glFogf(GL_FOG_START, distance * 0.05f);
 			glFogf(GL_FOG_END, min(distance, 16 * 16 * .75f) * .5f);

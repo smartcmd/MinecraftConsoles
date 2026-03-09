@@ -1,6 +1,8 @@
 #include "stdafx.h"
 #include "Options.h"
 #include "ServerConnection.h"
+
+#include <memory>
 #include "PendingConnection.h"
 #include "PlayerConnection.h"
 #include "ServerPlayer.h"
@@ -26,8 +28,8 @@ ServerConnection::~ServerConnection()
 // 4J - added to handle incoming connections, to replace thread that original used to have
 void ServerConnection::NewIncomingSocket(Socket *socket)
 {
-	shared_ptr<PendingConnection> unconnectedClient = shared_ptr<PendingConnection>(new PendingConnection(server, socket, L"Connection #" + _toString<int>(connectionCounter++)));
-	handleConnection(unconnectedClient);	
+	shared_ptr<PendingConnection> unconnectedClient = std::make_shared<PendingConnection>(server, socket, L"Connection #" + std::to_wstring(connectionCounter++));
+	handleConnection(unconnectedClient);
 }
 
 void ServerConnection::addPlayerConnection(shared_ptr<PlayerConnection> uc)
@@ -44,19 +46,30 @@ void ServerConnection::handleConnection(shared_ptr<PendingConnection> uc)
 
 void ServerConnection::stop()
 {
+	std::vector<shared_ptr<PendingConnection> > pendingSnapshot;
 	EnterCriticalSection(&pending_cs);
-    for (unsigned int i = 0; i < pending.size(); i++)
-	{
-        shared_ptr<PendingConnection> uc = pending[i];
-        uc->connection->close(DisconnectPacket::eDisconnect_Closed);
-    }
+	pendingSnapshot = pending;
 	LeaveCriticalSection(&pending_cs);
 
-    for (unsigned int i = 0; i < players.size(); i++)
+	for (unsigned int i = 0; i < pendingSnapshot.size(); i++)
 	{
-        shared_ptr<PlayerConnection> player = players[i];
-        player->connection->close(DisconnectPacket::eDisconnect_Closed);
-    }
+		shared_ptr<PendingConnection> uc = pendingSnapshot[i];
+		if (uc != NULL && !uc->done)
+		{
+			uc->disconnect(DisconnectPacket::eDisconnect_Closed);
+		}
+	}
+
+	// Snapshot to avoid iterator invalidation if disconnect modifies the vector.
+	std::vector<shared_ptr<PlayerConnection> > playerSnapshot = players;
+	for (unsigned int i = 0; i < playerSnapshot.size(); i++)
+	{
+		shared_ptr<PlayerConnection> player = playerSnapshot[i];
+		if (player != NULL && !player->done)
+		{
+			player->disconnect(DisconnectPacket::eDisconnect_Quitting);
+		}
+	}
 }
 
 void ServerConnection::tick()
@@ -76,7 +89,7 @@ void ServerConnection::tick()
 	//            uc.disconnect("Internal server error");
 	//            logger.log(Level.WARNING, "Failed to handle packet: " + e, e);
 	//        }
-			if(uc->connection != NULL) uc->connection->flush();
+			if(uc->connection != nullptr) uc->connection->flush();
 		}
 	}
 
@@ -105,15 +118,18 @@ void ServerConnection::tick()
             players.erase(players.begin()+i);
 			i--;
         }
-        player->connection->flush();
+        else
+        {
+            player->connection->flush();
+        }
     }
 
 }
 
 bool ServerConnection::addPendingTextureRequest(const wstring &textureName)
 {
-	AUTO_VAR(it, find( m_pendingTextureRequests.begin(), m_pendingTextureRequests.end(), textureName));
-	if( it == m_pendingTextureRequests.end() )
+    auto it = find(m_pendingTextureRequests.begin(), m_pendingTextureRequests.end(), textureName);
+    if( it == m_pendingTextureRequests.end() )
 	{
 		m_pendingTextureRequests.push_back(textureName);
 		return true;
@@ -127,14 +143,13 @@ bool ServerConnection::addPendingTextureRequest(const wstring &textureName)
 
 void ServerConnection::handleTextureReceived(const wstring &textureName)
 {
-	AUTO_VAR(it, find( m_pendingTextureRequests.begin(), m_pendingTextureRequests.end(), textureName));
-	if( it != m_pendingTextureRequests.end() )
+    auto it = find(m_pendingTextureRequests.begin(), m_pendingTextureRequests.end(), textureName);
+    if( it != m_pendingTextureRequests.end() )
 	{
 		m_pendingTextureRequests.erase(it);
 	}
-	for (unsigned int i = 0; i < players.size(); i++)
+	for (auto& player : players)
 	{
-        shared_ptr<PlayerConnection> player = players[i];
         if (!player->done)
 		{
 			player->handleTextureReceived(textureName);
@@ -144,14 +159,13 @@ void ServerConnection::handleTextureReceived(const wstring &textureName)
 
 void ServerConnection::handleTextureAndGeometryReceived(const wstring &textureName)
 {
-	AUTO_VAR(it, find( m_pendingTextureRequests.begin(), m_pendingTextureRequests.end(), textureName));
-	if( it != m_pendingTextureRequests.end() )
+    auto it = find(m_pendingTextureRequests.begin(), m_pendingTextureRequests.end(), textureName);
+    if( it != m_pendingTextureRequests.end() )
 	{
 		m_pendingTextureRequests.erase(it);
 	}
-	for (unsigned int i = 0; i < players.size(); i++)
+	for (auto& player : players)
 	{
-		shared_ptr<PlayerConnection> player = players[i];
 		if (!player->done)
 		{
 			player->handleTextureAndGeometryReceived(textureName);
@@ -167,12 +181,12 @@ void ServerConnection::handleServerSettingsChanged(shared_ptr<ServerSettingsChan
 	{
 		for(unsigned int i = 0; i < pMinecraft->levels.length; ++i)
 		{
-			if( pMinecraft->levels[i] != NULL )
+			if( pMinecraft->levels[i] != nullptr )
 			{
 				app.DebugPrintf("ClientConnection::handleServerSettingsChanged - Difficulty = %d",packet->data);
 				pMinecraft->levels[i]->difficulty = packet->data;
 			}
-		}	
+		}
 	}
 // 	else if(packet->action==ServerSettingsChangedPacket::HOST_IN_GAME_SETTINGS)// options
 // 	{
@@ -190,11 +204,11 @@ void ServerConnection::handleServerSettingsChanged(shared_ptr<ServerSettingsChan
 // 		{
 // 			pMinecraft->options->SetGamertagSetting(false);
 // 		}
-// 
+//
 // 		for (unsigned int i = 0; i < players.size(); i++)
 // 		{
 // 			shared_ptr<PlayerConnection> playerconnection = players[i];
-// 			playerconnection->setShowOnMaps(pMinecraft->options->GetGamertagSetting());				
+// 			playerconnection->setShowOnMaps(pMinecraft->options->GetGamertagSetting());
 // 		}
 // 	}
 }

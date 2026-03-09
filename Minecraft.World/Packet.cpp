@@ -30,7 +30,7 @@ void Packet::staticCtor()
 	map(8, true, false, true, true, typeid(SetHealthPacket), SetHealthPacket::create);
 	map(9, true, true, true, false, typeid(RespawnPacket), RespawnPacket::create);
 
-	map(10, true, true, true, false, typeid(MovePlayerPacket), MovePlayerPacket::create);	
+	map(10, true, true, true, false, typeid(MovePlayerPacket), MovePlayerPacket::create);
 	map(11, true, true, true, true, typeid(MovePlayerPacket::Pos), MovePlayerPacket::Pos::create);
 	map(12, true, true, true, true, typeid(MovePlayerPacket::Rot), MovePlayerPacket::Rot::create);
 	map(13, true, true, true, true, typeid(MovePlayerPacket::PosRot), MovePlayerPacket::PosRot::create);
@@ -182,7 +182,7 @@ int Packet::renderPos = 0;
 void Packet::map(int id, bool receiveOnClient, bool receiveOnServer, bool sendToAnyClient, bool renderStats, const type_info& clazz, packetCreateFn createFn)
 {
 #if 0
-	if (idToClassMap.count(id) > 0) throw new IllegalArgumentException(wstring(L"Duplicate packet id:") + _toString<int>(id));
+	if (idToClassMap.count(id) > 0) throw new IllegalArgumentException(wstring(L"Duplicate packet id:") + std::to_wstring(id));
 	if (classToIdMap.count(clazz) > 0) throw new IllegalArgumentException(L"Duplicate packet class:"); // TODO + clazz);
 #endif
 
@@ -228,7 +228,7 @@ void Packet::recordOutgoingPacket(shared_ptr<Packet> packet, int playerIndex)
 		idx = 100;
 	}
 #endif
-	AUTO_VAR(it, outgoingStatistics.find(idx));
+	auto it = outgoingStatistics.find(idx);
 
 	if( it == outgoingStatistics.end() )
 	{
@@ -248,15 +248,15 @@ void Packet::updatePacketStatsPIX()
 {
 #ifndef _CONTENT_PACKAGE
 #if PACKET_ENABLE_STAT_TRACKING
-	
-	for( AUTO_VAR(it, outgoingStatistics.begin()); it != outgoingStatistics.end(); it++ )
+
+	for( auto it = outgoingStatistics.begin(); it != outgoingStatistics.end(); it++ )
 	{
 		Packet::PacketStatistics *stat = it->second;
-		__int64 count = stat->getRunningCount();
+		int64_t count = stat->getRunningCount();
 		wchar_t pixName[256];
 		swprintf_s(pixName,L"Packet count %d",stat->id);
 //		PIXReportCounter(pixName,(float)count);
-		__int64 total = stat->getRunningTotal();
+		int64_t total = stat->getRunningTotal();
 		swprintf_s(pixName,L"Packet bytes %d",stat->id);
 		PIXReportCounter(pixName,(float)total);
 		stat->IncrementPos();
@@ -265,10 +265,14 @@ void Packet::updatePacketStatsPIX()
 #endif
 }
 
-shared_ptr<Packet> Packet::getPacket(int id) 
+shared_ptr<Packet> Packet::getPacket(int id)
 {
-	// 4J: Removed try/catch
-	return idToCreateMap[id]();
+    auto it = idToCreateMap.find(id);
+    if (it == idToCreateMap.end())
+    {
+        return nullptr;
+    }
+    return it->second();
 }
 
 void Packet::writeBytes(DataOutputStream *dataoutputstream, byteArray bytes)
@@ -327,32 +331,37 @@ shared_ptr<Packet> Packet::readPacket(DataInputStream *dis, bool isServer) // th
 	id = dis->read();
 	if (id == -1) return nullptr;
 
+	// Track last few good packets for diagnosing TCP desync
+	static thread_local int s_lastIds[8] = {};
+	static thread_local int s_lastIdPos = 0;
+	static thread_local int s_packetCount = 0;
+
 	if ((isServer && serverReceivedPackets.find(id) == serverReceivedPackets.end()) || (!isServer && clientReceivedPackets.find(id) == clientReceivedPackets.end()))
 	{
-		//app.DebugPrintf("Bad packet id %d\n", id);
-		__debugbreak();
-		assert(false);
-		//            throw new IOException(wstring(L"Bad packet id ") + _toString<int>(id));
+        return nullptr;
 	}
 
 	packet = getPacket(id);
-	if (packet == NULL) assert(false);//throw new IOException(wstring(L"Bad packet id ") + _toString<int>(id));
-	
-	//app.DebugPrintf("%s reading packet %d\n", isServer ? "Server" : "Client", packet->getId());
+	if (packet == nullptr) return nullptr;//throw new IOException(wstring(L"Bad packet id ") + std::to_wstring(id));
+
+	s_lastIds[s_lastIdPos] = id;
+	s_lastIdPos = (s_lastIdPos + 1) % 8;
+	s_packetCount++;
+
 	packet->read(dis);
 	//    }
-	//	catch (EOFException e) 
+	//	catch (EOFException e)
 	//	{
 	//       // reached end of stream
 	//        OutputDebugString("Reached end of stream");
-	//        return NULL;
+	//        return nullptr;
 	//    }
 
 	// 4J - Don't bother tracking stats in a content package
 	// 4J Stu - This changes a bit in 1.0.1, but we don't really use it so stick with what we have
 #ifndef _CONTENT_PACKAGE
 #if PACKET_ENABLE_STAT_TRACKING
-	AUTO_VAR(it, statistics.find(id));
+	auto it = statistics.find(id);
 
 	if( it == statistics.end() )
 	{
@@ -372,7 +381,7 @@ shared_ptr<Packet> Packet::readPacket(DataInputStream *dis, bool isServer) // th
 
 void Packet::writePacket(shared_ptr<Packet> packet, DataOutputStream *dos) // throws IOException TODO 4J JEV, should this declare a throws?
 {
-	//app.DebugPrintf("Writing packet %d\n", packet->getId());
+	//app.DebugPrintf("NET WRITE: packet id=%d (0x%02X) estSize=%d\n", packet->getId(), packet->getId(), packet->getEstimatedSize());
 	dos->write(packet->getId());
 	packet->write(dos);
 }
@@ -380,13 +389,13 @@ void Packet::writePacket(shared_ptr<Packet> packet, DataOutputStream *dos) // th
 void Packet::writeUtf(const wstring& value, DataOutputStream *dos) // throws IOException TODO 4J JEV, should this declare a throws?
 {
 #if 0
-	if (value.length() > Short::MAX_VALUE) 
+	if (value.length() > Short::MAX_VALUE)
 	{
 		throw new IOException(L"String too big");
 	}
 #endif
 
-	dos->writeShort((short)value.length());
+	dos->writeShort(static_cast<short>(value.length()));
 	dos->writeChars(value);
 }
 
@@ -394,11 +403,9 @@ wstring Packet::readUtf(DataInputStream *dis, int maxLength) // throws IOExcepti
 {
 
 	short stringLength = dis->readShort();
-	if (stringLength > maxLength)
+	if (stringLength > maxLength || stringLength <= 0)
 	{
-		wstringstream stream;
-		stream << L"Received string length longer than maximum allowed (" << stringLength << " > " << maxLength << ")";
-		assert(false);
+        return L"";
 		//        throw new IOException( stream.str() );
 	}
 	if (stringLength < 0)
@@ -408,7 +415,7 @@ wstring Packet::readUtf(DataInputStream *dis, int maxLength) // throws IOExcepti
 	}
 
 	wstring builder = L"";
-	for (int i = 0; i < stringLength; i++) 
+	for (int i = 0; i < stringLength; i++)
 	{
 		wchar_t rc = dis->readChar();
 		builder.push_back( rc );
@@ -432,7 +439,7 @@ void Packet::PacketStatistics::addPacket(int bytes)
 	count++;
 }
 
-int Packet::PacketStatistics::getCount() 
+int Packet::PacketStatistics::getCount()
 {
 	return count;
 }
@@ -443,18 +450,18 @@ double Packet::PacketStatistics::getAverageSize()
 	{
 		return 0;
 	}
-	return (double) totalSize / count;
+	return static_cast<double>(totalSize) / count;
 }
 
-int Packet::PacketStatistics::getTotalSize() 
+int Packet::PacketStatistics::getTotalSize()
 {
 	return totalSize;
 }
 
-__int64 Packet::PacketStatistics::getRunningTotal()
+int64_t Packet::PacketStatistics::getRunningTotal()
 {
-	__int64 total = 0;
-	__int64 currentTime = System::currentTimeMillis();
+	int64_t total = 0;
+	int64_t currentTime = System::currentTimeMillis();
 	for( int i = 0; i < TOTAL_TICKS; i++ )
 	{
 		if( currentTime - timeSamples[i] <= 1000 )
@@ -465,10 +472,10 @@ __int64 Packet::PacketStatistics::getRunningTotal()
 	return total;
 }
 
-__int64 Packet::PacketStatistics::getRunningCount()
+int64_t Packet::PacketStatistics::getRunningCount()
 {
-	__int64 total = 0;
-	__int64 currentTime = System::currentTimeMillis();
+	int64_t total = 0;
+	int64_t currentTime = System::currentTimeMillis();
 	for( int i = 0; i < TOTAL_TICKS; i++ )
 	{
 		if( currentTime - timeSamples[i] <= 1000 )
@@ -507,12 +514,12 @@ shared_ptr<ItemInstance> Packet::readItem(DataInputStream *dis)
 {
 	shared_ptr<ItemInstance> item = nullptr;
 	int id = dis->readShort();
-	if (id >= 0)
+    if (id >= 0 && id < 32000) // todo: should turn Item::ITEM_NUM_COUNT into a global define 
 	{
 		int count = dis->readByte();
 		int damage = dis->readShort();
 
-		item = shared_ptr<ItemInstance>( new ItemInstance(id, count, damage) );
+		item = std::make_shared<ItemInstance>(id, count, damage);
 		// 4J Stu - Always read/write the tag
 		//if (Item.items[id].canBeDepleted() || Item.items[id].shouldOverrideMultiplayerNBT())
 		{
@@ -525,7 +532,7 @@ shared_ptr<ItemInstance> Packet::readItem(DataInputStream *dis)
 
 void Packet::writeItem(shared_ptr<ItemInstance> item, DataOutputStream *dos)
 {
-	if (item == NULL)
+	if (item == nullptr)
 	{
 		dos->writeShort(-1);
 	}
@@ -545,9 +552,16 @@ void Packet::writeItem(shared_ptr<ItemInstance> item, DataOutputStream *dos)
 CompoundTag *Packet::readNbt(DataInputStream *dis)
 {
 	int size = dis->readShort();
-	if (size < 0) return NULL;
+	if (size <= 0) return nullptr;
+
+	const int MAX_NBT_SIZE = 32767;
+	if (size > MAX_NBT_SIZE) return nullptr;
 	byteArray buff(size);
-	dis->readFully(buff);
+	if (!dis->readFully(buff))
+	{
+		delete [] buff.data;
+        return nullptr;
+	}
 	CompoundTag *result = (CompoundTag *) NbtIo::decompress(buff);
 	delete [] buff.data;
 	return result;
@@ -555,14 +569,14 @@ CompoundTag *Packet::readNbt(DataInputStream *dis)
 
 void Packet::writeNbt(CompoundTag *tag, DataOutputStream *dos)
 {
-	if (tag == NULL)
+	if (tag == nullptr)
 	{
 		dos->writeShort(-1);
 	}
 	else
 	{
 		byteArray buff = NbtIo::compress(tag);
-		dos->writeShort((short) buff.length);
+		dos->writeShort(static_cast<short>(buff.length));
 		dos->write(buff);
 		delete [] buff.data;
 	}

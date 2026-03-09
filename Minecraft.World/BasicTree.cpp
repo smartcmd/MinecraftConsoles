@@ -34,7 +34,7 @@ BasicTree::BasicTree(bool doUpdate) : Feature(doUpdate)
     trunkWidth = 1;
     heightVariance = 12;
     foliageHeight = 4;
-	foliageCoords = NULL;
+	foliageCoords = nullptr;
 	foliageCoordsLength = 0;
 }
 
@@ -44,9 +44,9 @@ void BasicTree::prepare()
     // Populate the list of foliage cluster locations.
     // Designed to be overridden in child classes to change basic
     // tree properties (trunk width, branch angle, foliage density, etc..).
-    trunkHeight = (int) (height * trunkHeightScale);
+    trunkHeight = static_cast<int>(height * trunkHeightScale);
     if (trunkHeight >= height) trunkHeight = height - 1;
-    int clustersPerY = (int) (1.382 + pow(foliageDensity * height / 13.0, 2));
+    int clustersPerY = static_cast<int>(1.382 + pow(foliageDensity * height / 13.0, 2));
     if (clustersPerY < 1) clustersPerY = 1;
     // The foliage coordinates are a list of [x,y,z,y of branch base] values for each cluster
 	int **tempFoliageCoords = new int *[clustersPerY * height];
@@ -100,7 +100,7 @@ void BasicTree::prepare()
                 }
 				else
 				{
-                    checkBranchBase[1] = (int) (checkStart[1] - branchHeight);
+                    checkBranchBase[1] = static_cast<int>(checkStart[1] - branchHeight);
                 }
                 // Now check the branch path
                 if (checkLine(checkBranchBase, checkStart) == -1)
@@ -126,7 +126,7 @@ void BasicTree::prepare()
 	for( int i = clusterCount; i < clustersPerY * height; i++ )
 	{
 		delete [] tempFoliageCoords[i];
-		tempFoliageCoords[i] = NULL;
+		tempFoliageCoords[i] = nullptr;
 	}
 	// 4J - original code for above is the following, it isn't obvious to me why it is doing a copy of the array, so let's not for now
 //    foliageCoords = new int[clusterCount][4];
@@ -147,7 +147,7 @@ void BasicTree::crossection(int x, int y, int z, float radius, byte direction, i
     // radius is the radius of the section from the center
     // direction is the direction the cross section is pointed, 0 for x, 1 for y, 2 for z
     // material is the index number for the material to use
-    int rad = (int) (radius + 0.618);
+    int rad = static_cast<int>(radius + 0.618);
     byte secidx1 = axisConversionArray[direction];
     byte secidx2 = axisConversionArray[direction + 3];
     int center[] = { x, y, z };
@@ -197,15 +197,15 @@ float BasicTree::treeShape(int y)
     // This method is intended for overriding in child classes, allowing
     // different shaped trees.
     // This method should return a consistent value for each y (don't randomize).
-    if (y < (((float) height) * 0.3)) return (float) -1.618;
-    float radius = ((float) height) / ((float) 2.0);
-    float adjacent = (((float) height) / ((float) 2.0)) - y;
+    if (y < (static_cast<float>(height) * 0.3)) return (float) -1.618;
+    float radius = static_cast<float>(height) / static_cast<float>(2.0);
+    float adjacent = (static_cast<float>(height) / static_cast<float>(2.0)) - y;
     float distance;
     if (adjacent == 0) distance = radius;
-    else if (abs(adjacent) >= radius) distance = (float) 0.0;
-    else distance = (float) sqrt(pow(abs(radius), 2) - pow(abs(adjacent), 2));
+    else if (abs(adjacent) >= radius) distance = static_cast<float>(0.0);
+    else distance = static_cast<float>(sqrt(pow(abs(radius), 2) - pow(abs(adjacent), 2)));
     // Alter this factor to change the overall width of the tree.
-    distance *= (float) 0.5;
+    distance *= static_cast<float>(0.5);
     return distance;
 }
 
@@ -216,9 +216,9 @@ float BasicTree::foliageShape(int y)
     // Return a negative number if no foliage should be created at this level
     // this method is intended for overriding in child classes, allowing
     // foliage of different sizes and shapes.
-    if ((y < 0) || (y >= foliageHeight)) return (float) -1;
-    else if ((y == 0) || (y == (foliageHeight - 1))) return (float) 2;
-    else return (float) 3;
+    if ((y < 0) || (y >= foliageHeight)) return static_cast<float>(-1);
+    else if ((y == 0) || (y == (foliageHeight - 1))) return static_cast<float>(2);
+    else return static_cast<float>(3);
 }
 
 void BasicTree::foliageCluster(int x, int y, int z)
@@ -270,8 +270,8 @@ void BasicTree::limb(int *start, int *end, int material)
     if (delta[primidx] > 0) primsign = 1;
     else primsign = -1;
     // Initilize the per-step movement for the non-primary axies.
-    double secfac1 = ((double) delta[secidx1]) / ((double) delta[primidx]);
-    double secfac2 = ((double) delta[secidx2]) / ((double) delta[primidx]);
+    double secfac1 = static_cast<double>(delta[secidx1]) / static_cast<double>(delta[primidx]);
+    double secfac2 = static_cast<double>(delta[secidx2]) / static_cast<double>(delta[primidx]);
     // Initialize the coordinates.
     int coordinate[] = { 0, 0, 0 };
     // Loop through each crossection along the primary axis, from start to end
@@ -411,8 +411,8 @@ int BasicTree::checkLine(int *start, int *end)
     if (delta[primidx] > 0) primsign = 1;
     else primsign = -1;
     // Initilize the per-step movement for the non-primary axies.
-    double secfac1 = ((double) delta[secidx1]) / ((double) delta[primidx]);
-    double secfac2 = ((double) delta[secidx2]) / ((double) delta[primidx]);
+    double secfac1 = static_cast<double>(delta[secidx1]) / static_cast<double>(delta[primidx]);
+    double secfac2 = static_cast<double>(delta[secidx2]) / static_cast<double>(delta[primidx]);
     // Initialize the coordinates.
     int coordinate[] = { 0, 0, 0 };
     // Loop through each crossection along the primary axis, from start to end
@@ -460,7 +460,7 @@ bool BasicTree::checkLocation()
     int endPosition[] = { origin[0], origin[1] + height - 1, origin[2] };
 
 	// 4J Stu Added to stop tree features generating areas previously place by game rule generation
-	if(app.getLevelGenerationOptions() != NULL)
+	if(app.getLevelGenerationOptions() != nullptr)
 	{
 		LevelGenerationOptions *levelGenOptions = app.getLevelGenerationOptions();
 		bool intersects = levelGenOptions->checkIntersects(startPosition[0], startPosition[1], startPosition[2], endPosition[0], endPosition[1], endPosition[2]);
@@ -507,7 +507,7 @@ void BasicTree::init(double heightInit, double widthInit, double foliageDensityI
     //
     // Note, you can call "place" without calling "init".
     // This is the same as calling init(1.0,1.0,1.0) and then calling place.
-    heightVariance = (int) (heightInit * 12);
+    heightVariance = static_cast<int>(heightInit * 12);
     if (heightInit > 0.5) foliageHeight = 5;
     widthScale = widthInit;
     foliageDensity = foliageDensityInit;
@@ -524,7 +524,7 @@ bool BasicTree::place(Level *level, Random *random, int x, int y, int z)
 
     // Initialize the instance fields for the level and the seed.
     thisLevel = level;
-    __int64 seed = random->nextLong();
+    int64_t seed = random->nextLong();
     rnd->setSeed(seed);
     // Initialize the origin of the tree trunk
     origin[0] = x;

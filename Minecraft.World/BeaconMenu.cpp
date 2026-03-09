@@ -60,7 +60,7 @@ shared_ptr<ItemInstance> BeaconMenu::quickMoveStack(shared_ptr<Player> player, i
 {
 	shared_ptr<ItemInstance> clicked = nullptr;
 	Slot *slot = slots.at(slotIndex);
-	if (slot != NULL && slot->hasItem())
+	if (slot != nullptr && slot->hasItem())
 	{
 		shared_ptr<ItemInstance> stack = slot->getItem();
 		clicked = stack->copy();
@@ -127,7 +127,7 @@ BeaconMenu::PaymentSlot::PaymentSlot(shared_ptr<Container> container, int slot, 
 
 bool BeaconMenu::PaymentSlot::mayPlace(shared_ptr<ItemInstance> item)
 {
-	if (item != NULL)
+	if (item != nullptr)
 	{
 		return (item->id == Item::emerald_Id || item->id == Item::diamond_Id || item->id == Item::goldIngot_Id || item->id == Item::ironIngot_Id);
 	}

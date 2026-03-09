@@ -17,12 +17,12 @@
 // #include "..\PS3Extras\PS3Strings.h"
 
 
-int (* SQRNetworkManager_Orbis::s_SignInCompleteCallbackFn)(void *pParam, bool bContinue, int pad) = NULL;
-void * SQRNetworkManager_Orbis::s_SignInCompleteParam = NULL;
+int (* SQRNetworkManager_Orbis::s_SignInCompleteCallbackFn)(void *pParam, bool bContinue, int pad) = nullptr;
+void * SQRNetworkManager_Orbis::s_SignInCompleteParam = nullptr;
 sce::Toolkit::NP::PresenceDetails SQRNetworkManager_Orbis::s_lastPresenceInfo;
 
-__int64 SQRNetworkManager_Orbis::s_lastPresenceTime = 0;
-__int64 SQRNetworkManager_Orbis::s_resendPresenceTime = 0;
+int64_t SQRNetworkManager_Orbis::s_lastPresenceTime = 0;
+int64_t SQRNetworkManager_Orbis::s_resendPresenceTime = 0;
 
 bool SQRNetworkManager_Orbis::s_presenceStatusDirty = false;
 bool SQRNetworkManager_Orbis::s_presenceDataDirty = false;
@@ -51,7 +51,7 @@ int g_numRUDPContextsBound = 0;
 //unsigned int SQRNetworkManager_Orbis::RoomSyncData::playerCount = 0;
 
 // This maps internal to extern states, and needs to match element-by-element the eSQRNetworkManagerInternalState enumerated type
-const SQRNetworkManager_Orbis::eSQRNetworkManagerState SQRNetworkManager_Orbis::m_INTtoEXTStateMappings[SQRNetworkManager_Orbis::SNM_INT_STATE_COUNT] = 
+const SQRNetworkManager_Orbis::eSQRNetworkManagerState SQRNetworkManager_Orbis::m_INTtoEXTStateMappings[SQRNetworkManager_Orbis::SNM_INT_STATE_COUNT] =
 {
 	SNM_STATE_INITIALISING,			// SNM_INT_STATE_UNINITIALISED
 	SNM_STATE_INITIALISING,			// SNM_INT_STATE_SIGNING_IN
@@ -109,8 +109,8 @@ SQRNetworkManager_Orbis::SQRNetworkManager_Orbis(ISQRNetworkManagerListener *lis
 	m_isInSession = false;
 	m_offlineGame = false;
 	m_offlineSQR = false;
-	m_aServerId = NULL;
-	m_gameBootInvite = NULL;
+	m_aServerId = nullptr;
+	m_gameBootInvite = nullptr;
 	m_onlineStatus = false;
 	m_bLinkDisconnected = false;
 	m_bRefreshingRestrictionsForInvite = false;
@@ -137,13 +137,13 @@ void SQRNetworkManager_Orbis::Initialise()
 
 	int32_t ret = 0;
 	int32_t libCtxId = 0;
-	ret = sceNpInGameMessageInitialize(NP_IN_GAME_MESSAGE_POOL_SIZE, NULL);
+	ret = sceNpInGameMessageInitialize(NP_IN_GAME_MESSAGE_POOL_SIZE, nullptr);
 	assert (ret >= 0);
 	libCtxId = ret;
 
 	assert( m_state == SNM_INT_STATE_UNINITIALISED );
 
-	
+
 	//Initialize libnetctl
 	ret = sceNetCtlInit();
 	if( ( ret < 0 /*&& ret != CELL_NET_CTL_ERROR_NOT_TERMINATED*/ ) || ForceErrorPoint( SNM_FORCE_ERROR_NET_CTL_INIT ) )
@@ -172,14 +172,14 @@ void SQRNetworkManager_Orbis::Initialise()
 
 	SonyHttp::init();
 	ret = sceNpSetNpTitleId(GetSceNpTitleId(), GetSceNpTitleSecret());
-	if (ret < 0) 
+	if (ret < 0)
 	{
 		app.DebugPrintf("sceNpSetNpTitleId failed, ret=%x\n", ret);
 		assert(0);
 	}
 
  	ret = sceRudpEnableInternalIOThread(RUDP_THREAD_STACK_SIZE, RUDP_THREAD_PRIORITY);
-	if(ret < 0) 
+	if(ret < 0)
 	{
 		app.DebugPrintf("sceRudpEnableInternalIOThread failed with error code 0x%08x\n", ret);
 		assert(0);
@@ -192,7 +192,7 @@ void SQRNetworkManager_Orbis::Initialise()
 	else
 	{
 		// On Orbis, PSN sign in is only handled by the XMB
-		SetState(SNM_INT_STATE_IDLE);	
+		SetState(SNM_INT_STATE_IDLE);
 	}
  	SonyVoiceChat_Orbis::init();
 
@@ -251,7 +251,7 @@ void SQRNetworkManager_Orbis::InitialiseAfterOnline()
 		if( s_SignInCompleteCallbackFn )
 		{
 			s_SignInCompleteCallbackFn(s_SignInCompleteParam,true,s_SignInCompleteCallbackPad);
-			s_SignInCompleteCallbackFn  = NULL;
+			s_SignInCompleteCallbackFn  = nullptr;
 			s_SignInCompleteCallbackPad = -1;
 		}
 		return;
@@ -299,7 +299,7 @@ void SQRNetworkManager_Orbis::InitialiseAfterOnline()
 
 
 	ret = sceNpMatching2CreateContext(&param, &m_matchingContext);
-	
+
 	if( ( ret < 0 ) || ForceErrorPoint( SNM_FORCE_ERROR_CREATE_MATCHING_CONTEXT ) )
 	{
 		app.DebugPrintf("SQRNetworkManager_Orbis::InitialiseAfterOnline - sceNpMatching2CreateContext failed with error 0x%08x\n", ret);
@@ -334,7 +334,7 @@ void SQRNetworkManager_Orbis::RefreshChatAndContentRestrictionsReturned_HandleIn
 	SQRNetworkManager_Orbis *netMan = (SQRNetworkManager_Orbis *)pParam;
 
 	netMan->m_listener->HandleInviteReceived( ProfileManager.GetPrimaryPad(), netMan->m_gameBootInvite );
-	netMan->m_gameBootInvite = NULL;
+	netMan->m_gameBootInvite = nullptr;
 
 	netMan->m_bRefreshingRestrictionsForInvite = false;
 }
@@ -357,7 +357,7 @@ void SQRNetworkManager_Orbis::Tick()
 		m_bRefreshingRestrictionsForInvite = true;
 		ProfileManager.RefreshChatAndContentRestrictions(RefreshChatAndContentRestrictionsReturned_HandleInvite, this);
 		//m_listener->HandleInviteReceived( ProfileManager.GetPrimaryPad(), m_gameBootInvite );
-		//m_gameBootInvite = NULL;
+		//m_gameBootInvite = nullptr;
 	}
 
 	ErrorHandlingTick();
@@ -398,7 +398,7 @@ void SQRNetworkManager_Orbis::Tick()
 	{
 		// make sure we've removed all the remote players and killed the udp connections before we bail out
 		if(m_RudpCtxToPlayerMap.size() == 0)
-			ResetToIdle();	
+			ResetToIdle();
 	}
 
 	EnterCriticalSection(&m_csStateChangeQueue);
@@ -431,14 +431,14 @@ void SQRNetworkManager_Orbis::Tick()
 			if(s_SignInCompleteCallbackFn)
 			{
 			s_SignInCompleteCallbackFn(s_SignInCompleteParam,false,s_SignInCompleteCallbackPad);
-			s_SignInCompleteCallbackFn  = NULL;
+			s_SignInCompleteCallbackFn  = nullptr;
 			}
 			s_SignInCompleteCallbackPad = -1;
 		}
 		else if(s_SignInCompleteCallbackFn)
 		{
 			s_SignInCompleteCallbackFn(s_SignInCompleteParam, true, s_SignInCompleteCallbackPad);
-			s_SignInCompleteCallbackFn = NULL;
+			s_SignInCompleteCallbackFn = nullptr;
 			s_SignInCompleteCallbackPad = -1;
 		}
 	}
@@ -451,7 +451,7 @@ void SQRNetworkManager_Orbis::tickErrorDialog()
 	if(s_errorDialogRunning)
 	{
 		SceErrorDialogStatus s = sceErrorDialogUpdateStatus();
-		switch (s) 
+		switch (s)
 		{
 		case SCE_ERROR_DIALOG_STATUS_NONE:
 			assert(0);
@@ -465,9 +465,9 @@ void SQRNetworkManager_Orbis::tickErrorDialog()
 		case SCE_ERROR_DIALOG_STATUS_FINISHED:
 			sceErrorDialogTerminate();
 			s_errorDialogRunning = false;
-			
+
 			// Start callback timer
-			s_SignInCompleteCallbackPending = true;	
+			s_SignInCompleteCallbackPending = true;
 			s_errorDialogClosed = System::currentTimeMillis();
 		break;
 		}
@@ -490,9 +490,9 @@ void SQRNetworkManager_Orbis::tickErrorDialog()
 			SceSystemServiceStatus status = SceSystemServiceStatus();
 			sceSystemServiceGetStatus(&status);
 			bool systemUiDisplayed = status.isInBackgroundExecution || status.isSystemUiOverlaid;
-			
+
 			if (systemUiDisplayed)
-			{	
+			{
 				// Wait till the system goes away
 			}
 			else
@@ -539,7 +539,7 @@ void SQRNetworkManager_Orbis::ErrorHandlingTick()
 					m_bCallPSNSignInCallback=true;
 					//s_SignInCompleteCallbackFn(s_SignInCompleteParam,false,s_SignInCompleteCallbackPad);
 				}
-				//s_SignInCompleteCallbackFn  = NULL;
+				//s_SignInCompleteCallbackFn  = nullptr;
 				//s_SignInCompleteCallbackPad = -1;
 			}
 			app.DebugPrintf("Network error: SNM_INT_STATE_INITIALISE_FAILED\n");
@@ -583,7 +583,7 @@ void SQRNetworkManager_Orbis::ErrorHandlingTick()
 			DeleteServerContext();
 			break;
 	}
-	
+
 }
 
 // Start hosting a game, by creating a room & joining it. We explicity create a server context here (via GetServerContext) as Sony suggest that
@@ -643,7 +643,7 @@ void SQRNetworkManager_Orbis::UpdateExternalRoomData()
 {
 	if( m_offlineGame ) return;
 	if( m_isHosting )
-	{	
+	{
 		SceNpMatching2SetRoomDataExternalRequest reqParam;
 		memset( &reqParam, 0, sizeof(reqParam) );
 		reqParam.roomId = m_room;
@@ -655,7 +655,7 @@ void SQRNetworkManager_Orbis::UpdateExternalRoomData()
 		reqParam.roomBinAttrExternalNum = 1;
 		reqParam.roomBinAttrExternal = &roomBinAttr;
 
-		int ret = sceNpMatching2SetRoomDataExternal ( m_matchingContext, &reqParam, NULL, &m_setRoomDataRequestId );
+		int ret = sceNpMatching2SetRoomDataExternal ( m_matchingContext, &reqParam, nullptr, &m_setRoomDataRequestId );
 		app.DebugPrintf(CMinecraftApp::USER_RR,"sceNpMatching2SetRoomDataExternal returns 0x%x, number of players %d\n",ret,((char *)m_joinExtData)[174]);
 		if( ( ret < 0 ) || ForceErrorPoint( SNM_FORCE_ERROR_SET_EXTERNAL_ROOM_DATA ) )
 		{
@@ -685,11 +685,11 @@ bool SQRNetworkManager_Orbis::FriendRoomManagerSearch()
 	}
 
 	// Free up any external data that we received from the previous search
-	for( int i = 0; i < m_aFriendSearchResults.size(); i++ )
+	for( size_t i = 0; i < m_aFriendSearchResults.size(); i++ )
 	{
 		if(m_aFriendSearchResults[i].m_RoomExtDataReceived)
 			free(m_aFriendSearchResults[i].m_RoomExtDataReceived);
-		m_aFriendSearchResults[i].m_RoomExtDataReceived = NULL;
+		m_aFriendSearchResults[i].m_RoomExtDataReceived = nullptr;
 	}
 
 	m_friendSearchState = SNM_FRIEND_SEARCH_STATE_GETTING_FRIEND_COUNT;
@@ -755,7 +755,7 @@ void SQRNetworkManager_Orbis::FriendSearchTick()
 		{
 			m_friendSearchState = SNM_FRIEND_SEARCH_STATE_GETTING_FRIEND_INFO;
 			delete m_getFriendCountThread;
-			m_getFriendCountThread = NULL;
+			m_getFriendCountThread = nullptr;
 			FriendRoomManagerSearch2();
 		}
 	}
@@ -773,14 +773,14 @@ int SQRNetworkManager_Orbis::BasicEventThreadProc( void *lpParameter )
 
 	do
 	{
-		ret = sceKernelWaitEqueue(manager->m_basicEventQueue, &event, 1, &outEv, NULL);
-	
+		ret = sceKernelWaitEqueue(manager->m_basicEventQueue, &event, 1, &outEv, nullptr);
+
 		// If the sys_event_t we've sent here from the handler has a non-zero data1 element, this is to signify that we should terminate the thread
 		if( event.udata == 0 )
 		{
 // 			int iEvent;
 // 			SceNpUserInfo from;
-// 			uint8_t buffer[SCE_NP_BASIC_MAX_MESSAGE_SIZE]; 
+// 			uint8_t buffer[SCE_NP_BASIC_MAX_MESSAGE_SIZE];
 // 			size_t bufferSize = SCE_NP_BASIC_MAX_MESSAGE_SIZE;
 // 			int ret = sceNpBasicGetEvent(&iEvent, &from, &buffer, &bufferSize);
 // 			if( ret == 0 )
@@ -788,7 +788,7 @@ int SQRNetworkManager_Orbis::BasicEventThreadProc( void *lpParameter )
 // 				if( iEvent == SCE_NP_BASIC_EVENT_INCOMING_BOOTABLE_INVITATION )
 // 				{
 // 					// 4J Stu - Don't do this here as it can be very disruptive to gameplay. Players can bring this up from LoadOrJoinMenu, PauseMenu and InGameInfoMenu
-// 					//sceNpBasicRecvMessageCustom(SCE_NP_BASIC_MESSAGE_MAIN_TYPE_INVITE, SCE_NP_BASIC_RECV_MESSAGE_OPTIONS_INCLUDE_BOOTABLE, SYS_MEMORY_CONTAINER_ID_INVALID); 
+// 					//sceNpBasicRecvMessageCustom(SCE_NP_BASIC_MESSAGE_MAIN_TYPE_INVITE, SCE_NP_BASIC_RECV_MESSAGE_OPTIONS_INCLUDE_BOOTABLE, SYS_MEMORY_CONTAINER_ID_INVALID);
 // 				}
 // 				if( iEvent == SCE_NP_BASIC_EVENT_RECV_INVITATION_RESULT )
 // 				{
@@ -835,12 +835,12 @@ int SQRNetworkManager_Orbis::GetFriendsThreadProc( void* lpParameter )
 		return 0;
 	}
 
-	if (friendList.hasResult()) 
+	if (friendList.hasResult())
 	{
-		sce::Toolkit::NP::FriendsList::const_iterator iter ; 
+		sce::Toolkit::NP::FriendsList::const_iterator iter ;
 		int i = 1 ;
 		bool noFriends = true;
-		for (iter = friendList.get()->begin(); iter != friendList.get()->end() ; ++iter,i++) 
+		for (iter = friendList.get()->begin(); iter != friendList.get()->end() ; ++iter,i++)
 		{
 			manager->m_friendCount++;
 			noFriends = false;
@@ -848,7 +848,7 @@ int SQRNetworkManager_Orbis::GetFriendsThreadProc( void* lpParameter )
 			app.DebugPrintf("Online Name:	%s\n",iter->npid.handle.data);
 			app.DebugPrintf("------------------------\n");
 
-			
+
 			sce::Toolkit::NP::PresenceRequest presenceRequest;
 			sce::Toolkit::NP::Utilities::Future<sce::Toolkit::NP::PresenceInfo> presenceInfo;
 			memset(&presenceRequest,0,sizeof(presenceRequest));
@@ -858,11 +858,11 @@ int SQRNetworkManager_Orbis::GetFriendsThreadProc( void* lpParameter )
 
 
 			ret = sce::Toolkit::NP::Presence::Interface::getPresence(&presenceRequest,&presenceInfo,false);
-			if( ret < 0 ) 
+			if( ret < 0 )
 			{
 				app.DebugPrintf("getPresence() error. ret = 0x%x\n", ret);
 			}
-			else 
+			else
 			{
 				app.DebugPrintf("\nPresence Data Retrieved:\n");
 				app.DebugPrintf("Platform Type: %s\n", presenceInfo.get()->platformType.c_str());
@@ -897,13 +897,13 @@ int SQRNetworkManager_Orbis::GetFriendsThreadProc( void* lpParameter )
 			}
 		}
 	}
-	else if (friendList.hasError()) 
+	else if (friendList.hasError())
 	{
 		app.DebugPrintf( "Error occurred while retrieving FriendsList, ret =  0x%x\n", friendList.getError());
 		app.DebugPrintf("Check sign-in status\n");
 
 	}
-	
+
 	return 0;
 }
 
@@ -944,7 +944,7 @@ bool SQRNetworkManager_Orbis::IsReadyToPlayOrIdle()
 
 
 // Consider as "in session" from the moment that a game is created or joined, until the point where the game itself has been told via state change that we are now idle. The
-// game code requires IsInSession to return true as soon as it has asked to do one of these things (even if the state system hasn't really caught up with this request yet), and 
+// game code requires IsInSession to return true as soon as it has asked to do one of these things (even if the state system hasn't really caught up with this request yet), and
 // it also requires that it is informed of the state changes leading up to not being in the session, before this should report false.
 bool SQRNetworkManager_Orbis::IsInSession()
 {
@@ -979,7 +979,7 @@ SQRNetworkPlayer *SQRNetworkManager_Orbis::GetPlayerByIndex(int idx)
 	}
 	else
 	{
-		return NULL;
+		return nullptr;
 	}
 }
 
@@ -996,7 +996,7 @@ SQRNetworkPlayer *SQRNetworkManager_Orbis::GetPlayerBySmallId(int idx)
 		}
 	}
 	LeaveCriticalSection(&m_csRoomSyncData);
-	return NULL;
+	return nullptr;
 }
 
 SQRNetworkPlayer *SQRNetworkManager_Orbis::GetPlayerByXuid(PlayerUID xuid)
@@ -1012,7 +1012,7 @@ SQRNetworkPlayer *SQRNetworkManager_Orbis::GetPlayerByXuid(PlayerUID xuid)
 		}
 	}
 	LeaveCriticalSection(&m_csRoomSyncData);
-	return NULL;
+	return nullptr;
 }
 
 SQRNetworkPlayer *SQRNetworkManager_Orbis::GetLocalPlayerByUserIndex(int idx)
@@ -1028,7 +1028,7 @@ SQRNetworkPlayer *SQRNetworkManager_Orbis::GetLocalPlayerByUserIndex(int idx)
 		}
 	}
 	LeaveCriticalSection(&m_csRoomSyncData);
-	return NULL;
+	return nullptr;
 }
 
 SQRNetworkPlayer *SQRNetworkManager_Orbis::GetHostPlayer()
@@ -1041,11 +1041,11 @@ SQRNetworkPlayer *SQRNetworkManager_Orbis::GetHostPlayer()
 
 SQRNetworkPlayer *SQRNetworkManager_Orbis::GetPlayerIfReady(SQRNetworkPlayer *player)
 {
-	if( player == NULL ) return NULL;
+	if( player == nullptr ) return nullptr;
 
 	if( player->IsReady() ) return player;
 
-	return NULL;
+	return nullptr;
 }
 
 // Update state internally
@@ -1099,7 +1099,7 @@ bool SQRNetworkManager_Orbis::JoinRoom(SQRNetworkManager_Orbis::SessionSearchRes
 {
 	// Set up the presence info we would like to synchronise out when we have fully joined the game
  	CPlatformNetworkManagerSony::SetSQRPresenceInfoFromExtData(&s_lastPresenceSyncInfo, searchResult->m_extData, searchResult->m_sessionId.m_RoomId, searchResult->m_sessionId.m_ServerId);
-	return JoinRoom(searchResult->m_sessionId.m_RoomId, searchResult->m_sessionId.m_ServerId, localPlayerMask, NULL);
+	return JoinRoom(searchResult->m_sessionId.m_RoomId, searchResult->m_sessionId.m_ServerId, localPlayerMask, nullptr);
 }
 
 // Join room with a specified roomId. This is used when joining from an invite, as well as by the previous method
@@ -1119,7 +1119,7 @@ bool SQRNetworkManager_Orbis::JoinRoom(SceNpMatching2RoomId roomId, SceNpMatchin
 	m_localPlayerJoinMask = localPlayerMask;
 	m_localPlayerCount = 0;
 	m_localPlayerJoined = 0;
-	
+
 	for( int i = 0; i < MAX_LOCAL_PLAYER_COUNT; i++ )
 	{
 		if( localPlayerMask & ( 1 << i ) ) m_localPlayerCount++;
@@ -1165,7 +1165,7 @@ void SQRNetworkManager_Orbis::LeaveRoom(bool bActuallyLeaveRoom)
 			reqParam.roomId = m_room;
 
 			SetState(SNM_INT_STATE_LEAVING);
-			int ret = sceNpMatching2LeaveRoom( m_matchingContext, &reqParam, NULL, &m_leaveRoomRequestId );
+			int ret = sceNpMatching2LeaveRoom( m_matchingContext, &reqParam, nullptr, &m_leaveRoomRequestId );
 			if( ( ret < 0 ) || ForceErrorPoint(SNM_FORCE_ERROR_LEAVE_ROOM) )
 			{
 				SetState(SNM_INT_STATE_LEAVING_FAILED);
@@ -1240,7 +1240,7 @@ bool SQRNetworkManager_Orbis::AddLocalPlayerByUserIndex(int idx)
 
 		// Sync this back out to our networked clients...
 		SyncRoomData();
-		
+
 		UpdateRemotePlay();
 
 		// no connections being made because we're all on the host, so add this player to the existing connections
@@ -1264,7 +1264,7 @@ bool SQRNetworkManager_Orbis::AddLocalPlayerByUserIndex(int idx)
 
 		memset(&reqParam, 0, sizeof(reqParam));
 		memset(&binAttr, 0, sizeof(binAttr));
-					
+
 		binAttr.id = SCE_NP_MATCHING2_ROOMMEMBER_BIN_ATTR_INTERNAL_1_ID;
 		binAttr.ptr = &m_localPlayerJoinMask;
 		binAttr.size = sizeof(m_localPlayerJoinMask);
@@ -1274,7 +1274,7 @@ bool SQRNetworkManager_Orbis::AddLocalPlayerByUserIndex(int idx)
 		reqParam.roomMemberBinAttrInternalNum = 1;
 		reqParam.roomMemberBinAttrInternal = &binAttr;
 
-		int ret = sceNpMatching2SetRoomMemberDataInternal( m_matchingContext, &reqParam, NULL, &m_setRoomMemberInternalDataRequestId );
+		int ret = sceNpMatching2SetRoomMemberDataInternal( m_matchingContext, &reqParam, nullptr, &m_setRoomMemberInternalDataRequestId );
 
 		if( ( ret < 0 ) || ForceErrorPoint(SNM_FORCE_ERROR_SET_ROOM_MEMBER_DATA_INTERNAL) )
 		{
@@ -1326,7 +1326,7 @@ bool SQRNetworkManager_Orbis::RemoveLocalPlayerByUserIndex(int idx)
 				// And do any adjusting necessary to the mappings from this room data, to the SQRNetworkPlayers.
 				// This will also delete the SQRNetworkPlayer and do all the callbacks that requires etc.
 				MapRoomSlotPlayers(roomSlotPlayerCount);
-				m_aRoomSlotPlayers[m_roomSyncData.getPlayerCount()] = NULL;
+				m_aRoomSlotPlayers[m_roomSyncData.getPlayerCount()] = nullptr;
 
 				// Sync this back out to our networked clients...
 				SyncRoomData();
@@ -1357,7 +1357,7 @@ bool SQRNetworkManager_Orbis::RemoveLocalPlayerByUserIndex(int idx)
 
 		memset(&reqParam, 0, sizeof(reqParam));
 		memset(&binAttr, 0, sizeof(binAttr));
-					
+
 		binAttr.id = SCE_NP_MATCHING2_ROOMMEMBER_BIN_ATTR_INTERNAL_1_ID;
 		binAttr.ptr = &m_localPlayerJoinMask;
 		binAttr.size = sizeof(m_localPlayerJoinMask);
@@ -1367,7 +1367,7 @@ bool SQRNetworkManager_Orbis::RemoveLocalPlayerByUserIndex(int idx)
 		reqParam.roomMemberBinAttrInternalNum = 1;
 		reqParam.roomMemberBinAttrInternal = &binAttr;
 
-		int ret = sceNpMatching2SetRoomMemberDataInternal( m_matchingContext, &reqParam, NULL, &m_setRoomMemberInternalDataRequestId );
+		int ret = sceNpMatching2SetRoomMemberDataInternal( m_matchingContext, &reqParam, nullptr, &m_setRoomMemberInternalDataRequestId );
 
 		if( ( ret < 0 ) || ForceErrorPoint(SNM_FORCE_ERROR_SET_ROOM_MEMBER_DATA_INTERNAL2) )
 		{
@@ -1388,14 +1388,14 @@ void SQRNetworkManager_Orbis::UpdateRemotePlay()
 	int localPlayerCount = 0;
 	for(int i = 0; i < XUSER_MAX_COUNT; i++)
 	{
-		if(GetLocalPlayerByUserIndex(i) != NULL) localPlayerCount++;
+		if(GetLocalPlayerByUserIndex(i) != nullptr) localPlayerCount++;
 	}
 	InputManager.SetLocalMultiplayer(localPlayerCount > 1);
 }
 
 extern uint8_t *mallocAndCreateUTF8ArrayFromString(int iID);
 
-// Bring up a Gui to send an invite so a player that the user can select. This invite will contain the room Id so that 
+// Bring up a Gui to send an invite so a player that the user can select. This invite will contain the room Id so that
 void SQRNetworkManager_Orbis::SendInviteGUI()
 {
 	if(s_bInviteDialogRunning)
@@ -1403,7 +1403,7 @@ void SQRNetworkManager_Orbis::SendInviteGUI()
 		app.DebugPrintf("SendInviteGUI - Invite dialog is already running so ignoring request\n");
 		return;
 	}
-	
+
 	s_bInviteDialogRunning = true;
 
 	//Set invitation information - this is now exactly the same as the presence information that we synchronise out.
@@ -1427,8 +1427,8 @@ void SQRNetworkManager_Orbis::SendInviteGUI()
 	messData.body.assign(body);
 	messData.dialogFlag = SCE_TOOLKIT_NP_DIALOG_TYPE_USER_EDITABLE;
 	messData.npIdsCount = 2; // TODO: Set this to the number of available slots
-	messData.npIds = NULL;
-	messData.userInfo.userId = userId; 
+	messData.npIds = nullptr;
+	messData.userInfo.userId = userId;
 
 	// Set expire to maximum
 	messData.expireMinutes = 0;
@@ -1451,9 +1451,9 @@ void SQRNetworkManager_Orbis::SendInviteGUI()
 // 	int ret = sce::Toolkit::NP::Messaging::Interface::sendMessage(&messData, SCE_TOOLKIT_NP_MESSAGE_TYPE_INVITE);
 
 	free(subject);
-	free(body);	
+	free(body);
 
-	if(ret < SCE_TOOLKIT_NP_SUCCESS ) 
+	if(ret < SCE_TOOLKIT_NP_SUCCESS )
 	{
 		s_bInviteDialogRunning = false;
 		app.DebugPrintf("Send Message failed 0x%x ...\n",ret);
@@ -1513,7 +1513,7 @@ void SQRNetworkManager_Orbis::TickInviteGUI()
 			int32_t	ret = sceGameCustomDataDialogGetResult( &dialogResult );
 
 			if( SCE_OK != ret )
-			{	
+			{
 				app.DebugPrintf( "***** sceGameCustomDataDialogGetResult error:0x%x\n", ret);
 			}
 			sceGameCustomDataDialogClose();
@@ -1536,7 +1536,7 @@ void SQRNetworkManager_Orbis::GetInviteDataAndProcess(sce::Toolkit::NP::MessageA
 	}
 // 	InvitationInfoRequest requestInfo;
 // 	sce::Toolkit::NP::Utilities::Future< NpSessionInvitationInfo > inviteInfo;
-// 
+//
 // 	requestInfo.invitationId = pInvite->invitationId;
 // 	requestInfo.userInfo.npId = pInvite->onlineId;
 // 	int err = sce::Toolkit::NP::Sessions::Interface::getInvitationInfo(&requestInfo, &inviteInfo, false);
@@ -1555,21 +1555,21 @@ void SQRNetworkManager_Orbis::GetInviteDataAndProcess(sce::Toolkit::NP::MessageA
 // 	{
 // 		app.DebugPrintf("getInvitationInfo error 0x%08x", err);
 // 	}
-// 
-// 
-// 
+//
+//
+//
 // 	INVITE_INFO *invite = &m_inviteReceived[m_inviteIndex];
 // 	m_inviteIndex = ( m_inviteIndex + 1 ) % MAX_SIMULTANEOUS_INVITES;
 // 	size_t dataSize = sizeof(INVITE_INFO);
 // 	int ret = sceNpBasicRecvMessageAttachmentLoad(id, invite, &dataSize);
-// 
+//
 // 	// If we fail ( which we might do if we aren't online at this point) then zero the invite information and we'll try and get it later after (possibly) signing in
 // 	if( ret != 0 )
 // 	{
 // 		memset(invite, 0, sizeof( INVITE_INFO ) );
 // 		s_lastInviteIdToRetry = id;
 // 	}
-// 
+//
 // 	m_gameBootInvite = invite;
 }
 
@@ -1588,8 +1588,8 @@ void SQRNetworkManager_Orbis::GetInviteDataAndProcess(sce::Toolkit::NP::MessageA
 // and there's a period when starting up the host game where it doesn't accurately know the memberId for its own local players
 void SQRNetworkManager_Orbis::FindOrCreateNonNetworkPlayer(int slot, int playerType, SceNpMatching2RoomMemberId memberId, int localPlayerIdx, int smallId)
 {
-	for(AUTO_VAR(it, m_vecTempPlayers.begin()); it != m_vecTempPlayers.end(); it++ )
-	{
+    for (auto it = m_vecTempPlayers.begin(); it != m_vecTempPlayers.end(); it++)
+    {
 		if( ((*it)->m_type == playerType ) && ( (*it)->m_localPlayerIdx == localPlayerIdx ) )
 		{
 			if( ( playerType != SQRNetworkPlayer::SNP_TYPE_REMOTE ) || ( (*it)->m_roomMemberId == memberId ) )
@@ -1602,7 +1602,7 @@ void SQRNetworkManager_Orbis::FindOrCreateNonNetworkPlayer(int slot, int playerT
 		}
 	}
 	// Create the player - non-network players can be considered complete as soon as we create them as we aren't waiting on their network connections becoming complete, so can flag them as such and notify via callback
-	PlayerUID *pUID = NULL;
+	PlayerUID *pUID = nullptr;
 	PlayerUID localUID;
 	if( ( playerType == SQRNetworkPlayer::SNP_TYPE_LOCAL ) ||
 		(m_isHosting && ( playerType == SQRNetworkPlayer::SNP_TYPE_HOST )) )
@@ -1647,7 +1647,7 @@ void SQRNetworkManager_Orbis::MapRoomSlotPlayers(int roomSlotPlayerCount/*=-1*/)
 {
 	EnterCriticalSection(&m_csRoomSyncData);
 
-	// If we pass an explicit roomSlotPlayerCount, it is because we are removing a player, and this is the count of slots that there were *before* the removal. 
+	// If we pass an explicit roomSlotPlayerCount, it is because we are removing a player, and this is the count of slots that there were *before* the removal.
 	bool zeroLastSlot = false;
 	if( roomSlotPlayerCount == -1 )
 	{
@@ -1669,7 +1669,7 @@ void SQRNetworkManager_Orbis::MapRoomSlotPlayers(int roomSlotPlayerCount/*=-1*/)
 				if( m_aRoomSlotPlayers[i]->m_type != SQRNetworkPlayer::SNP_TYPE_REMOTE )
 				{
 					m_vecTempPlayers.push_back(m_aRoomSlotPlayers[i]);
-					m_aRoomSlotPlayers[i] = NULL;
+					m_aRoomSlotPlayers[i] = nullptr;
 				}
 			}
 		}
@@ -1725,7 +1725,7 @@ void SQRNetworkManager_Orbis::MapRoomSlotPlayers(int roomSlotPlayerCount/*=-1*/)
 				if( m_aRoomSlotPlayers[i]->m_type != SQRNetworkPlayer::SNP_TYPE_LOCAL )
 				{
 					m_vecTempPlayers.push_back(m_aRoomSlotPlayers[i]);
-					m_aRoomSlotPlayers[i] = NULL;
+					m_aRoomSlotPlayers[i] = nullptr;
 				}
 			}
 		}
@@ -1751,7 +1751,7 @@ void SQRNetworkManager_Orbis::MapRoomSlotPlayers(int roomSlotPlayerCount/*=-1*/)
 				}
 				else
 				{
-					FindOrCreateNonNetworkPlayer( i, SQRNetworkPlayer::SNP_TYPE_REMOTE, m_roomSyncData.players[i].m_roomMemberId, m_roomSyncData.players[i].m_localIdx, m_roomSyncData.players[i].m_smallId);					
+					FindOrCreateNonNetworkPlayer( i, SQRNetworkPlayer::SNP_TYPE_REMOTE, m_roomSyncData.players[i].m_roomMemberId, m_roomSyncData.players[i].m_localIdx, m_roomSyncData.players[i].m_smallId);
 					m_aRoomSlotPlayers[i]->SetUID(m_roomSyncData.players[i].m_UID);  // On client, UIDs flow from m_roomSyncData->player data
 				}
 			}
@@ -1759,8 +1759,8 @@ void SQRNetworkManager_Orbis::MapRoomSlotPlayers(int roomSlotPlayerCount/*=-1*/)
 	}
 	// Clear up any non-network players that are no longer required - this would be a good point to notify of players leaving when we support that
 	// FindOrCreateNonNetworkPlayer will have pulled any players that we Do need out of m_vecTempPlayers, so the ones that are remaining are no longer in the game
-	for(AUTO_VAR(it, m_vecTempPlayers.begin()); it != m_vecTempPlayers.end(); it++ )
-	{
+    for (auto it = m_vecTempPlayers.begin(); it != m_vecTempPlayers.end(); it++)
+    {
 		if( m_listener )
 		{
 			m_listener->HandlePlayerLeaving(*it);
@@ -1817,7 +1817,7 @@ void SQRNetworkManager_Orbis::UpdatePlayersFromRoomSyncUIDs()
 }
 
 // Host only - add remote players to our internal storage of player slots, and synchronise this with other room members.
-bool SQRNetworkManager_Orbis::AddRemotePlayersAndSync( SceNpMatching2RoomMemberId memberId, int playerMask, bool *isFull/*==NULL*/ )
+bool SQRNetworkManager_Orbis::AddRemotePlayersAndSync( SceNpMatching2RoomMemberId memberId, int playerMask, bool *isFull/*==nullptr*/ )
 {
 	assert( m_isHosting );
 
@@ -1844,7 +1844,7 @@ bool SQRNetworkManager_Orbis::AddRemotePlayersAndSync( SceNpMatching2RoomMemberI
 	}
 
 	// We want to keep all players from a particular machine together, so search through the room sync data to see if we can find
-	// any pre-existing players from this machine. 
+	// any pre-existing players from this machine.
 	int firstIdx = -1;
 	for( int i = 0; i < m_roomSyncData.getPlayerCount(); i++ )
 	{
@@ -1939,7 +1939,7 @@ void SQRNetworkManager_Orbis::RemoveRemotePlayersAndSync( SceNpMatching2RoomMemb
 			}
 			// Zero last element, that isn't part of the currently sized array anymore
 			memset(&m_roomSyncData.players[m_roomSyncData.getPlayerCount()],0,sizeof(PlayerSyncData));
-			m_aRoomSlotPlayers[m_roomSyncData.getPlayerCount()] = NULL;
+			m_aRoomSlotPlayers[m_roomSyncData.getPlayerCount()] = nullptr;
 		}
 		else
 		{
@@ -1950,7 +1950,7 @@ void SQRNetworkManager_Orbis::RemoveRemotePlayersAndSync( SceNpMatching2RoomMemb
 
 	// Update mapping from the room slot players to SQRNetworkPlayer instances
 	MapRoomSlotPlayers();
-	
+
 
 	// And then synchronise this out to all other machines
 	SyncRoomData();
@@ -1964,8 +1964,8 @@ void SQRNetworkManager_Orbis::RemoveNetworkPlayers( int mask )
 {
 	assert( !m_isHosting );
 
-	for(AUTO_VAR(it, m_RudpCtxToPlayerMap.begin()); it != m_RudpCtxToPlayerMap.end(); )
-	{
+    for (auto it = m_RudpCtxToPlayerMap.begin(); it != m_RudpCtxToPlayerMap.end();)
+    {
 		SQRNetworkPlayer *player = it->second;
 		if( (player->m_roomMemberId == m_localMemberId ) && ( ( 1 << player->m_localPlayerIdx ) & mask ) )
 		{
@@ -1984,7 +1984,7 @@ void SQRNetworkManager_Orbis::RemoveNetworkPlayers( int mask )
 			{
 				if( m_aRoomSlotPlayers[i] == player )
 				{
-					m_aRoomSlotPlayers[i] = NULL;
+					m_aRoomSlotPlayers[i] = nullptr;
 				}
 			}
 			// And delete the reference from the ctx->player map
@@ -1993,7 +1993,7 @@ void SQRNetworkManager_Orbis::RemoveNetworkPlayers( int mask )
 			removePlayerFromVoiceChat(player);
 
 			// Delete the player itself and the mapping from context to player map as this context is no longer valid
-			delete player;		
+			delete player;
 		}
 		else
 		{
@@ -2037,7 +2037,7 @@ void SQRNetworkManager_Orbis::SyncRoomData()
 	roomBinAttr.size = sizeof( m_roomSyncData );
 	reqParam.roomBinAttrInternalNum = 1;
 	reqParam.roomBinAttrInternal = &roomBinAttr;
-	sceNpMatching2SetRoomDataInternal ( m_matchingContext, &reqParam, NULL, &m_setRoomDataRequestId );
+	sceNpMatching2SetRoomDataInternal ( m_matchingContext, &reqParam, nullptr, &m_setRoomDataRequestId );
 }
 
 // Check if the matching context is valid, and if not attempt to create one. If to do this requires starting an asynchronous process, then sets the internal state to the state passed in
@@ -2107,7 +2107,7 @@ bool SQRNetworkManager_Orbis::GetMatchingContext(eSQRNetworkManagerInternalState
 
 // Starts the process of obtaining a server context. This is an asynchronous operation, at the end of which (if successful), we'll be creating
 // a room. General procedure followed here is as suggested by Sony - we get a list of servers, then pick a random one, and see if it is available.
-// If not we just cycle round trying other random ones until we either find an available one or fail. 
+// If not we just cycle round trying other random ones until we either find an available one or fail.
 bool SQRNetworkManager_Orbis::GetServerContext()
 {
 	assert(m_state == SNM_INT_STATE_IDLE);
@@ -2159,13 +2159,13 @@ bool SQRNetworkManager_Orbis::GetServerContext(SceNpMatching2ServerId serverId)
 //	{
 // 		// Get list of server IDs of servers allocated to the application. We don't actually need to do this, but it is as good a way as any to try a matching2 service and check that
 // 		// the context *really* is valid.
-// 		int serverCount = sceNpMatching2GetServerIdListLocal( m_matchingContext, NULL, 0 );
+// 		int serverCount = sceNpMatching2GetServerIdListLocal( m_matchingContext, nullptr, 0 );
 // 		// If an error is returned here, we need to destroy and recerate our server - if this goes ok we should come back through this path again
 // 		if( ( serverCount == SCE_NP_MATCHING2_ERROR_CONTEXT_UNAVAILABLE ) ||		// This error has been seen (occasionally) in a normal working environment
 // 			( serverCount == SCE_NP_MATCHING2_ERROR_CONTEXT_NOT_STARTED ) )				// Also checking for this as a means of simulating the previous error
 // 		{
 // 			sceNpMatching2DestroyContext(m_matchingContext);
-// 			m_matchingContextValid = false;		
+// 			m_matchingContextValid = false;
 // 			if( !GetMatchingContext(SNM_INT_STATE_JOINING_STARTING_MATCHING_CONTEXT) ) return false;
 // 		}
 //	}
@@ -2253,7 +2253,7 @@ void SQRNetworkManager_Orbis::RoomCreateTick()
 				SetState(SNM_INT_STATE_HOSTING_CREATE_ROOM_CREATING_ROOM);
 				app.DebugPrintf(CMinecraftApp::USER_RR,">> Creating room start\n");
 				s_roomStartTime = System::currentTimeMillis();
-				int ret = sceNpMatching2CreateJoinRoom( m_matchingContext, &reqParam, NULL, &m_createRoomRequestId );
+				int ret = sceNpMatching2CreateJoinRoom( m_matchingContext, &reqParam, nullptr, &m_createRoomRequestId );
 				if ( ( ret < 0 ) || ForceErrorPoint(SNM_FORCE_ERROR_CREATE_JOIN_ROOM) )
 				{
 					SetState(SNM_INT_STATE_HOSTING_CREATE_ROOM_FAILED);
@@ -2298,7 +2298,7 @@ void SQRNetworkManager_Orbis::NetworkPlayerConnectionComplete(SQRNetworkPlayer *
 
 	if( ( !wasReady ) && ( isReady ) )
 	{
-		HandlePlayerJoined( player );	
+		HandlePlayerJoined( player );
 	}
 }
 
@@ -2327,7 +2327,7 @@ void SQRNetworkManager_Orbis::NetworkPlayerSmallIdAllocated(SQRNetworkPlayer *pl
 
 	if( ( !wasReady ) && ( isReady ) )
 	{
-		HandlePlayerJoined( player );	
+		HandlePlayerJoined( player );
 	}
 }
 
@@ -2345,7 +2345,7 @@ void SQRNetworkManager_Orbis::NetworkPlayerInitialDataReceived(SQRNetworkPlayer 
 
 	if( ( !wasReady ) && ( isReady ) )
 	{
-		HandlePlayerJoined( player );	
+		HandlePlayerJoined( player );
 	}
 }
 
@@ -2361,7 +2361,7 @@ void SQRNetworkManager_Orbis::HandlePlayerJoined(SQRNetworkPlayer *player)
 {
 	if( m_listener )
 	{
-		m_listener->HandlePlayerJoined( player );	
+		m_listener->HandlePlayerJoined( player );
 	}
 	app.DebugPrintf(sc_verbose, ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>    HandlePlayerJoined\n");
 
@@ -2425,7 +2425,7 @@ std::string getIPAddressString(SceNetInAddr add)
 {
 	char str[32];
 	unsigned char *vals = (unsigned char*)&add.s_addr;
-	sprintf(str, "%d.%d.%d.%d", (int)vals[0], (int)vals[1], (int)vals[2], (int)vals[3]);  
+	sprintf(str, "%d.%d.%d.%d", (int)vals[0], (int)vals[1], (int)vals[2], (int)vals[3]);
 	return std::string(str);
 }
 
@@ -2493,9 +2493,9 @@ bool SQRNetworkManager_Orbis::CreateVoiceRudpConnections(SceNpMatching2RoomId ro
 
 	// create this connection if we don't have it already
 	SQRVoiceConnection* pConnection = SonyVoiceChat_Orbis::getVoiceConnectionFromRoomMemberID(peerMemberId);
-	if(pConnection == NULL)
+	if(pConnection == nullptr)
 	{
-	
+
 		// Create an Rudp context for the voice connection, this will happen regardless of whether the peer is client or host
 		int rudpCtx;
 		ret = sceRudpCreateContext( RudpContextCallback, this, &rudpCtx );
@@ -2510,7 +2510,7 @@ bool SQRNetworkManager_Orbis::CreateVoiceRudpConnections(SceNpMatching2RoomId ro
 		g_numRUDPContextsBound++;
 		app.DebugPrintf(sc_verbose, "-----------------::::::::::::: sceRudpBind\n" );
 
-		ret = sceRudpInitiate( rudpCtx, (SceNetSockaddr*)&sinp2pPeer, sizeof(sinp2pPeer), 0); 
+		ret = sceRudpInitiate( rudpCtx, (SceNetSockaddr*)&sinp2pPeer, sizeof(sinp2pPeer), 0);
 		if(ret < 0){ app.DebugPrintf("sceRudpInitiate %s failed : 0x%08x\n", getIPAddressString(sinp2pPeer.sin_addr).c_str(), ret); assert(0); }
 		if ( ( ret < 0 ) || ForceErrorPoint(SNM_FORCE_ERROR_RUDP_INIT2) ) return false;
 		app.DebugPrintf(sc_verbose, "-----------------::::::::::::: sceRudpInitiate\n" );
@@ -2521,7 +2521,7 @@ bool SQRNetworkManager_Orbis::CreateVoiceRudpConnections(SceNpMatching2RoomId ro
 
 		pConnection = SonyVoiceChat_Orbis::addRemoteConnection(rudpCtx, peerMemberId);
 	}
-	
+
 	for( int i = 0; i < MAX_LOCAL_PLAYER_COUNT; i++ )
 	{
 		bool bMaskVal = ( playerMask & ( 1 << i ) );
@@ -2544,11 +2544,11 @@ bool SQRNetworkManager_Orbis::CreateRudpConnections(SceNpMatching2RoomId roomId,
 	memset(&sinp2pPeer, 0, sizeof(sinp2pPeer));
 	sinp2pPeer.sin_len =  sizeof(sinp2pPeer);
 	sinp2pPeer.sin_family = AF_INET;
-				
+
 	int ret = sceNpMatching2SignalingGetConnectionStatus(m_matchingContext, roomId, peerMemberId, &connStatus, &sinp2pPeer.sin_addr, &sinp2pPeer.sin_port);
 	app.DebugPrintf(CMinecraftApp::USER_RR,"sceNpMatching2SignalingGetConnectionStatus returned 0x%x, connStatus %d peer add:%s peer port:0x%x\n",ret, connStatus,getIPAddressString(sinp2pPeer.sin_addr).c_str(),sinp2pPeer.sin_port);
 
-	// Set vport 
+	// Set vport
 	sinp2pPeer.sin_vport = sceNetHtons(1);
 
 	// Create socket & bind, if we don't already have one
@@ -2573,7 +2573,7 @@ bool SQRNetworkManager_Orbis::CreateRudpConnections(SceNpMatching2RoomId roomId,
 
 		if( m_isHosting )
 		{
-			m_RudpCtxToPlayerMap[ rudpCtx ] = new SQRNetworkPlayer( this, SQRNetworkPlayer::SNP_TYPE_REMOTE, true, playersMemberId, i, rudpCtx, NULL );
+			m_RudpCtxToPlayerMap[ rudpCtx ] = new SQRNetworkPlayer( this, SQRNetworkPlayer::SNP_TYPE_REMOTE, true, playersMemberId, i, rudpCtx, nullptr );
 		}
 		else
 		{
@@ -2606,26 +2606,26 @@ bool SQRNetworkManager_Orbis::CreateRudpConnections(SceNpMatching2RoomId roomId,
 
 SQRNetworkPlayer *SQRNetworkManager_Orbis::GetPlayerFromRudpCtx(int rudpCtx)
 {
-	AUTO_VAR(it,m_RudpCtxToPlayerMap.find(rudpCtx));
-	if( it != m_RudpCtxToPlayerMap.end() )
+    auto it = m_RudpCtxToPlayerMap.find(rudpCtx);
+    if( it != m_RudpCtxToPlayerMap.end() )
 	{
 		return it->second;
 	}
-	return NULL;
+	return nullptr;
 }
 
 
 
 SQRNetworkPlayer *SQRNetworkManager_Orbis::GetPlayerFromRoomMemberAndLocalIdx(int roomMember, int localIdx)
 {
-	for(AUTO_VAR(it, m_RudpCtxToPlayerMap.begin()); it != m_RudpCtxToPlayerMap.end(); it++ )
-	{
+    for (auto it = m_RudpCtxToPlayerMap.begin(); it != m_RudpCtxToPlayerMap.end(); it++)
+    {
 		if( (it->second->m_roomMemberId == roomMember ) && ( it->second->m_localPlayerIdx == localIdx ) )
 		{
 			return it->second;
 		}
 	}
-	return NULL;
+	return nullptr;
 }
 
 
@@ -2706,7 +2706,7 @@ void SQRNetworkManager_Orbis::ContextCallback(SceNpMatching2ContextId  id, SceNp
 					manager->m_state == SNM_INT_STATE_HOSTING_STARTING_MATCHING_CONTEXT ||
 					manager->m_state == SNM_INT_STATE_JOINING_STARTING_MATCHING_CONTEXT)
 				{
-					// matching context failed to start (this can happen when you block the IP addresses of the matching servers on your router 
+					// matching context failed to start (this can happen when you block the IP addresses of the matching servers on your router
 					// agent-0101.ww.sp-int.matching.playstation.net (198.107.157.191)
 					// static-resource.sp-int.community.playstation.net (203.105.77.140)
 					app.DebugPrintf("SQRNetworkManager_Orbis::ContextCallback - Error\n");
@@ -2720,7 +2720,7 @@ void SQRNetworkManager_Orbis::ContextCallback(SceNpMatching2ContextId  id, SceNp
 			if( manager->m_state == SNM_INT_STATE_IDLE_RECREATING_MATCHING_CONTEXT )
 			{
 				manager->SetState( SNM_INT_STATE_IDLE );
-				manager->GetExtDataForRoom(0, NULL, NULL, NULL);
+				manager->GetExtDataForRoom(0, nullptr, nullptr, nullptr);
 				break;
 			}
 
@@ -2759,7 +2759,7 @@ void SQRNetworkManager_Orbis::ContextCallback(SceNpMatching2ContextId  id, SceNp
 				// 				if(s_SignInCompleteCallbackFn)
 				// 				{
 				// 					s_SignInCompleteCallbackFn(s_SignInCompleteParam, true, 0);
-				// 					s_SignInCompleteCallbackFn = NULL;
+				// 					s_SignInCompleteCallbackFn = nullptr;
 				// 				}
 
 
@@ -2771,7 +2771,7 @@ void SQRNetworkManager_Orbis::ContextCallback(SceNpMatching2ContextId  id, SceNp
 // 					unsigned int type, attributes;
 // 					CellGameContentSize gameSize;`
 // 					char dirName[CELL_GAME_DIRNAME_SIZE];
-// 
+//
 // 					if( g_bBootedFromInvite )
 // 					{
 // 						manager->GetInviteDataAndProcess(SCE_NP_BASIC_SELECTED_INVITATION_DATA);
@@ -2789,7 +2789,7 @@ void SQRNetworkManager_Orbis::ContextCallback(SceNpMatching2ContextId  id, SceNp
 			assert(false);
 			break;
 		case SCE_NP_MATCHING2_CONTEXT_EVENT_START_OVER:
-			
+
 			app.DebugPrintf("SCE_NP_MATCHING2_CONTEXT_EVENT_START_OVER\n");
 			app.DebugPrintf("eventCause=%u, errorCode=0x%08x\n", eventCause, errorCode);
 
@@ -2950,7 +2950,7 @@ void SQRNetworkManager_Orbis::DefaultRequestCallback(SceNpMatching2ContextId id,
 						if( success1 )
 						{
 							success2 = manager->CreateRudpConnections(manager->m_room, pRoomMemberData->roomMemberDataInternal->memberId, playerMask, pRoomMemberData->roomMemberDataInternal->memberId);
-							if( success2 ) 
+							if( success2 )
 							{
 								bool ret = manager->CreateVoiceRudpConnections( manager->m_room, pRoomMemberData->roomMemberDataInternal->memberId, 0);
 								assert(ret == true);
@@ -2966,12 +2966,12 @@ void SQRNetworkManager_Orbis::DefaultRequestCallback(SceNpMatching2ContextId id,
 						// Set flag to indicate whether we were kicked for being out of room or not
 						reqParam.optData.data[0] = isFull ? 1 : 0;
 						reqParam.optData.len = 1;
-						int ret = sceNpMatching2KickoutRoomMember(manager->m_matchingContext, &reqParam, NULL, &manager->m_kickRequestId);
+						int ret = sceNpMatching2KickoutRoomMember(manager->m_matchingContext, &reqParam, nullptr, &manager->m_kickRequestId);
 						app.DebugPrintf(CMinecraftApp::USER_RR,"sceNpMatching2KickoutRoomMember returns error 0x%x\n",ret);
 					}
 					else
 					{
-						if(pRoomMemberData->roomMemberDataInternal->roomMemberBinAttrInternal->data.ptr == NULL)
+						if(pRoomMemberData->roomMemberDataInternal->roomMemberBinAttrInternal->data.ptr == nullptr)
 						{
 							// the host doesn't send out data, so this must be the host we're connecting to
 
@@ -3055,7 +3055,7 @@ void SQRNetworkManager_Orbis::DefaultRequestCallback(SceNpMatching2ContextId id,
 void SQRNetworkManager_Orbis::RoomEventCallback(SceNpMatching2ContextId id, SceNpMatching2RoomId roomId, SceNpMatching2Event event, const void *data, void *arg)
 {
 	SQRNetworkManager_Orbis *manager = (SQRNetworkManager_Orbis *)arg;
-	
+
 	bool gotEventData = false;
 	switch( event )
 	{
@@ -3186,7 +3186,7 @@ void SQRNetworkManager_Orbis::RoomEventCallback(SceNpMatching2ContextId id, SceN
 						int oldMask = manager->GetOldMask( pRoomMemberData->newRoomMemberDataInternal->memberId );
 						int addedMask = manager->GetAddedMask(playerMask, oldMask );
 						int removedMask = manager->GetRemovedMask(playerMask, oldMask );
-						
+
 						if( addedMask != 0 )
 						{
 							bool success = manager->AddRemotePlayersAndSync( pRoomMemberData->newRoomMemberDataInternal->memberId, addedMask );
@@ -3203,7 +3203,7 @@ void SQRNetworkManager_Orbis::RoomEventCallback(SceNpMatching2ContextId id, SceN
 
 								memset(&reqParam, 0, sizeof(reqParam));
 								memset(&binAttr, 0, sizeof(binAttr));
-					
+
 								binAttr.id = SCE_NP_MATCHING2_ROOMMEMBER_BIN_ATTR_INTERNAL_1_ID;
 								binAttr.ptr = &oldMask;
 								binAttr.size = sizeof(oldMask);
@@ -3213,7 +3213,7 @@ void SQRNetworkManager_Orbis::RoomEventCallback(SceNpMatching2ContextId id, SceN
 								reqParam.roomMemberBinAttrInternalNum = 1;
 								reqParam.roomMemberBinAttrInternal = &binAttr;
 
-								int ret = sceNpMatching2SetRoomMemberDataInternal( manager->m_matchingContext, &reqParam, NULL, &manager->m_setRoomMemberInternalDataRequestId );
+								int ret = sceNpMatching2SetRoomMemberDataInternal( manager->m_matchingContext, &reqParam, nullptr, &manager->m_setRoomMemberInternalDataRequestId );
 							}
 							else
 							{
@@ -3265,7 +3265,7 @@ void SQRNetworkManager_Orbis::RoomEventCallback(SceNpMatching2ContextId id, SceN
 							}
 						}
 					}
-					
+
 				}
 			}
 			break;
@@ -3349,7 +3349,7 @@ void SQRNetworkManager_Orbis::ProcessSignallingEvent(SceNpMatching2ContextId ctx
 			reqParam.attrId = attrs;
 			reqParam.attrIdNum = 1;
 
-			sceNpMatching2GetRoomMemberDataInternal( m_matchingContext, &reqParam, NULL, &m_roomMemberDataRequestId);
+			sceNpMatching2GetRoomMemberDataInternal( m_matchingContext, &reqParam, nullptr, &m_roomMemberDataRequestId);
 		}
 		break;
 	}
@@ -3358,7 +3358,7 @@ void SQRNetworkManager_Orbis::ProcessSignallingEvent(SceNpMatching2ContextId ctx
 void SQRNetworkManager_Orbis::SignallingEventsTick()
 {
 	EnterCriticalSection(&m_signallingEventListCS);
-	for(int i=0;i<m_signallingEventList.size(); i++)
+	for(size_t i=0;i<m_signallingEventList.size(); i++)
 	{
 		SignallingEvent& ev = m_signallingEventList[i];
 		ProcessSignallingEvent(ev.ctxId, ev.roomId, ev.peerMemberId, ev.event, ev.error_code);
@@ -3376,7 +3376,7 @@ int SQRNetworkManager_Orbis::BasicEventCallback(int event, int retCode, uint32_t
 	ORBIS_STUBBED;
 // 	SQRNetworkManager_Orbis *manager = (SQRNetworkManager_Orbis *)arg;
 // 	// We aren't allowed to actually get the event directly from this callback, so send our own internal event to a thread dedicated to doing this
-// 	sceKernelTriggerUserEvent(m_basicEventQueue, sc_UserEventHandle, NULL);
+// 	sceKernelTriggerUserEvent(m_basicEventQueue, sc_UserEventHandle, nullptr);
 
 	return 0;
 }
@@ -3422,11 +3422,11 @@ void SQRNetworkManager_Orbis::SysUtilCallback(uint64_t status, uint64_t param, v
 // 					{
 // 						s_SignInCompleteCallbackFn(s_SignInCompleteParam,false,0);
 // 					}
-// 					s_SignInCompleteCallbackFn  = NULL;
+// 					s_SignInCompleteCallbackFn  = nullptr;
 // 				}
 // 				return;
 // 			}
-// 
+//
 // 			if( netstart_result.result != 0 )
 // 			{
 // 				// Failed, or user may have decided not to sign in - maybe need to differentiate here
@@ -3437,10 +3437,10 @@ void SQRNetworkManager_Orbis::SysUtilCallback(uint64_t status, uint64_t param, v
 // 					{
 // 						s_SignInCompleteCallbackFn(s_SignInCompleteParam,false,0);
 // 					}
-// 					s_SignInCompleteCallbackFn  = NULL;
+// 					s_SignInCompleteCallbackFn  = nullptr;
 // 				}
 // 			}
-// 
+//
 // 			break;
 // 		case CELL_SYSUTIL_NET_CTL_NETSTART_UNLOADED:
 // 			break;
@@ -3534,7 +3534,7 @@ void SQRNetworkManager_Orbis::RudpContextCallback(int ctx_id, int event_id, int 
 							if( dataSize >= sizeof(SQRNetworkPlayer::InitSendData) )
 							{
 								SQRNetworkPlayer::InitSendData ISD;
-								int bytesRead = sceRudpRead( ctx_id, &ISD, sizeof(SQRNetworkPlayer::InitSendData), 0, NULL );
+								int bytesRead = sceRudpRead( ctx_id, &ISD, sizeof(SQRNetworkPlayer::InitSendData), 0, nullptr );
 								if( bytesRead == sizeof(SQRNetworkPlayer::InitSendData) )
 								{
 									manager->NetworkPlayerInitialDataReceived(playerFrom, &ISD);
@@ -3555,7 +3555,7 @@ void SQRNetworkManager_Orbis::RudpContextCallback(int ctx_id, int event_id, int 
 					if( dataSize > 0 )
 					{
 						unsigned char *data = new unsigned char [ dataSize ];
-						int bytesRead = sceRudpRead( ctx_id, data, dataSize, 0, NULL );
+						int bytesRead = sceRudpRead( ctx_id, data, dataSize, 0, nullptr );
 						if( bytesRead > 0 )
 						{
 							SQRNetworkPlayer *playerFrom, *playerTo;
@@ -3571,7 +3571,7 @@ void SQRNetworkManager_Orbis::RudpContextCallback(int ctx_id, int event_id, int 
 								playerFrom = manager->m_aRoomSlotPlayers[0];
 								playerTo = manager->GetPlayerFromRudpCtx( ctx_id );
 							}
-							if( ( playerFrom != NULL ) && ( playerTo != NULL ) )
+							if( ( playerFrom != nullptr ) && ( playerTo != nullptr ) )
 							{
 								manager->m_listener->HandleDataReceived( playerFrom, playerTo, data, bytesRead );
 							}
@@ -3608,7 +3608,7 @@ void SQRNetworkManager_Orbis::NetCtlCallback(int eventType, void *arg)
 	if( eventType == SCE_NET_CTL_EVENT_TYPE_DISCONNECTED)// CELL_NET_CTL_EVENT_LINK_DISCONNECTED )
 	{
 		manager->m_bLinkDisconnected = true;
-		manager->m_listener->HandleDisconnect(false);	
+		manager->m_listener->HandleDisconnect(false);
 	}
 	else //if( event == CELL_NET_CTL_EVENT_ESTABLISH )
 	{
@@ -3632,7 +3632,7 @@ void SQRNetworkManager_Orbis::ServerContextValid_CreateRoom()
 	int ret = -1;
 	if( !ForceErrorPoint(SNM_FORCE_ERROR_GET_WORLD_INFO_LIST) )
 	{
-		ret = sceNpMatching2GetWorldInfoList( m_matchingContext, &reqParam, NULL, &m_getWorldRequestId);
+		ret = sceNpMatching2GetWorldInfoList( m_matchingContext, &reqParam, nullptr, &m_getWorldRequestId);
 	}
 	if (ret < 0)
 	{
@@ -3661,7 +3661,7 @@ void SQRNetworkManager_Orbis::ServerContextValid_JoinRoom()
 	reqParam.roomMemberBinAttrInternalNum = 1;
 	reqParam.roomMemberBinAttrInternal = &binAttr;
 
-	int ret = sceNpMatching2JoinRoom( m_matchingContext, &reqParam, NULL, &m_joinRoomRequestId );
+	int ret = sceNpMatching2JoinRoom( m_matchingContext, &reqParam, nullptr, &m_joinRoomRequestId );
 	if ( (ret < 0) || ForceErrorPoint(SNM_FORCE_ERROR_JOIN_ROOM) )
 	{
 		if( ret == SCE_NP_MATCHING2_SERVER_ERROR_NAT_TYPE_MISMATCH)
@@ -3722,9 +3722,9 @@ void SQRNetworkManager_Orbis::GetExtDataForRoom( SceNpMatching2RoomId roomId, vo
 	static SceNpMatching2RoomId aRoomId[1];
 	static SceNpMatching2AttributeId attr[1];
 
-	// All parameters will be NULL if this is being called a second time, after creating a new matching context via one of the paths below (using GetMatchingContext).
-	// NULL parameters therefore basically represents an attempt to retry the last sceNpMatching2GetRoomDataExternalList
-	if( extData != NULL )
+	// All parameters will be nullptr if this is being called a second time, after creating a new matching context via one of the paths below (using GetMatchingContext).
+	// nullptr parameters therefore basically represents an attempt to retry the last sceNpMatching2GetRoomDataExternalList
+	if( extData != nullptr )
 	{
 		aRoomId[0] = roomId;
 		attr[0] = SCE_NP_MATCHING2_ROOM_BIN_ATTR_EXTERNAL_1_ID;
@@ -3748,28 +3748,28 @@ void SQRNetworkManager_Orbis::GetExtDataForRoom( SceNpMatching2RoomId roomId, vo
 		return;
 	}
 
-	// Kicked off an asynchronous thing that will create a matching context, and then call this method back again (with NULL params) once done, so we can reattempt. Don't do anything more now.
+	// Kicked off an asynchronous thing that will create a matching context, and then call this method back again (with nullptr params) once done, so we can reattempt. Don't do anything more now.
 	if( m_state == SNM_INT_STATE_IDLE_RECREATING_MATCHING_CONTEXT )
 	{
 		app.DebugPrintf("Having to recreate matching context, setting state to SNM_INT_STATE_IDLE_RECREATING_MATCHING_CONTEXT\n");
 		return;
 	}
 
-	int ret = sceNpMatching2GetRoomDataExternalList( m_matchingContext, &reqParam, NULL, &m_roomDataExternalListRequestId );
+	int ret = sceNpMatching2GetRoomDataExternalList( m_matchingContext, &reqParam, nullptr, &m_roomDataExternalListRequestId );
 
 	// If we hadn't properly detected that a matching context was unvailable, we might still get an error indicating that it is from the previous call. Handle similarly, but we need
 	// to destroy the context first.
 	if( ret == SCE_NP_MATCHING2_ERROR_CONTEXT_NOT_STARTED )			// Also checking for this as a means of simulating the previous error
 	{
 		sceNpMatching2DestroyContext(m_matchingContext);
-		m_matchingContextValid = false;		
+		m_matchingContextValid = false;
 		if( !GetMatchingContext(SNM_INT_STATE_IDLE_RECREATING_MATCHING_CONTEXT) )
 		{
 			// No matching context, and failed to try and make one. We're really broken here.
 			m_FriendSessionUpdatedFn(false, m_pParamFriendSessionUpdated);
 			return;
 		};
-		// Kicked off an asynchronous thing that will create a matching context, and then call this method back again (with NULL params) once done, so we can reattempt. Don't do anything more now.
+		// Kicked off an asynchronous thing that will create a matching context, and then call this method back again (with nullptr params) once done, so we can reattempt. Don't do anything more now.
 		if( m_state == SNM_INT_STATE_IDLE_RECREATING_MATCHING_CONTEXT )
 		{
 			return;
@@ -3789,7 +3789,7 @@ bool SQRNetworkManager_Orbis::ForceErrorPoint(eSQRForceError error)
 	return false;
 }
 #else
-bool SQRNetworkManager_Orbis::aForceError[SNM_FORCE_ERROR_COUNT] = 
+bool SQRNetworkManager_Orbis::aForceError[SNM_FORCE_ERROR_COUNT] =
 {
 		false, // SNM_FORCE_ERROR_NP2_INIT
 		false, // SNM_FORCE_ERROR_NET_INITIALIZE_NETWORK
@@ -3907,7 +3907,7 @@ void SQRNetworkManager_Orbis::AttemptPSNSignIn(int (*SignInCompleteCallbackFn)(v
 					//s_signInCompleteCallbackIfFailed=false;
 					//s_SignInCompleteCallbackFn(s_SignInCompleteParam, false, iPad);
 				}
-				//s_SignInCompleteCallbackFn = NULL;
+				//s_SignInCompleteCallbackFn = nullptr;
 			}
 		}
 	}
@@ -3919,7 +3919,7 @@ void SQRNetworkManager_Orbis::AttemptPSNSignIn(int (*SignInCompleteCallbackFn)(v
 		ui.RequestMessageBox( IDS_ERROR_NETWORK_TITLE, IDS_ERROR_NETWORK, uiIDA,1,iPad,ErrorPSNDisconnectedDialogReturned,pParam, app.GetStringTable());
 
 	}
-} 
+}
 
 int SQRNetworkManager_Orbis::SetRichPresence(const void *data)
 {
@@ -3971,13 +3971,13 @@ void SQRNetworkManager_Orbis::SendLastPresenceInfo()
 
 	// On PS4 we can't set the status and the data at the same time
 	unsigned int options = 0;
-	if( s_presenceDataDirty ) 
+	if( s_presenceDataDirty )
 	{
 		// Prioritise data over status as it is critical to discovering the network game
 		s_lastPresenceInfo.presenceType = SCE_TOOLKIT_NP_PRESENCE_DATA;
 	}
-	else if( s_presenceStatusDirty ) 
-	{	
+	else if( s_presenceStatusDirty )
+	{
 		s_lastPresenceInfo.presenceType = SCE_TOOLKIT_NP_PRESENCE_STATUS;
 	}
 	else
@@ -4065,7 +4065,7 @@ void SQRNetworkManager_Orbis::removePlayerFromVoiceChat( SQRNetworkPlayer* pPlay
 {
 	if(pPlayer->IsLocal())
 	{
-		
+
 		SonyVoiceChat_Orbis::disconnectLocalPlayer(pPlayer->GetLocalPlayerIndex());
 	}
 	else
@@ -4097,7 +4097,7 @@ void SQRNetworkManager_Orbis::removePlayerFromVoiceChat( SQRNetworkPlayer* pPlay
 void SQRNetworkManager_Orbis::TickNotify()
 {
 	if (g_NetworkManager.IsInSession() && !g_NetworkManager.IsLocalGame())
-	{	
+	{
 		long long currentTime = System::currentTimeMillis();
 
 		// Note: interval at which to notify Sony of realtime play, according to docs an interval greater than 1 sec is bad
@@ -4109,7 +4109,7 @@ void SQRNetworkManager_Orbis::TickNotify()
 			m_lastNotifyTime = currentTime;
 			for(int i = 0; i < XUSER_MAX_COUNT; i++)
 			{
-				if (ProfileManager.IsSignedInLive(i)) 
+				if (ProfileManager.IsSignedInLive(i))
 				{
 					NotifyRealtimePlusFeature(i);
 				}
@@ -4143,13 +4143,13 @@ void SQRNetworkManager_Orbis::NotifyRealtimePlusFeature(int iQuadrant)
 // 	{
 // 		app.DebugPrintf("============ Calling CallSignInCompleteCallback and s_SignInCompleteCallbackFn is OK\n");
 // 		bool isSignedIn = ProfileManager.IsSignedInLive(s_SignInCompleteCallbackPad);
-// 
-// 		s_SignInCompleteCallbackFn(s_SignInCompleteParam, isSignedIn, s_SignInCompleteCallbackPad);			
-// 		s_SignInCompleteCallbackFn  = NULL;
+//
+// 		s_SignInCompleteCallbackFn(s_SignInCompleteParam, isSignedIn, s_SignInCompleteCallbackPad);
+// 		s_SignInCompleteCallbackFn  = nullptr;
 // 		s_SignInCompleteCallbackPad = -1;
 // 	}
 // 	else
 // 	{
-// 		app.DebugPrintf("============ Calling CallSignInCompleteCallback but s_SignInCompleteCallbackFn is NULL\n");
+// 		app.DebugPrintf("============ Calling CallSignInCompleteCallback but s_SignInCompleteCallbackFn is nullptr\n");
 // 	}
 //}

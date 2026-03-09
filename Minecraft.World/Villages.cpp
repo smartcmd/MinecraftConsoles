@@ -11,7 +11,7 @@ const wstring Villages::VILLAGE_FILE_ID = L"villages";
 Villages::Villages(const wstring &id) : SavedData(id)
 {
 	_tick = 0;
-	level = NULL;
+	level = nullptr;
 }
 
 Villages::Villages(Level *level) : SavedData(VILLAGE_FILE_ID)
@@ -22,17 +22,16 @@ Villages::Villages(Level *level) : SavedData(VILLAGE_FILE_ID)
 
 Villages::~Villages()
 {
-	for(AUTO_VAR(it,queries.begin()); it != queries.end(); ++it) delete *it;
+	for(auto& querie : queries)
+		delete querie;
 }
 
 void Villages::setLevel(Level *level)
 {
 	this->level = level;
 
-	//for (Village village : villages)
-	for(AUTO_VAR(it, villages.begin()); it != villages.end(); ++it)
+	for(auto& village : villages)
 	{
-		shared_ptr<Village> village = *it;
 		village->setLevel(level);
 	}
 }
@@ -47,9 +46,8 @@ void Villages::tick()
 {
 	++_tick;
 	//for (Village village : villages)
-	for(AUTO_VAR(it, villages.begin()); it != villages.end(); ++it)
+	for(auto& village : villages)
 	{
-		shared_ptr<Village> village = *it;
 		village->tick(_tick);
 	}
 	removeVillages();
@@ -64,8 +62,8 @@ void Villages::tick()
 
 void Villages::removeVillages()
 {
-	for(AUTO_VAR(it, villages.begin()); it != villages.end(); )
-	{
+    for (auto it = villages.begin(); it != villages.end();)
+    {
 		shared_ptr<Village> village = *it;
 		if (village->canRemove())
 		{
@@ -88,9 +86,8 @@ shared_ptr<Village> Villages::getClosestVillage(int x, int y, int z, int maxDist
 {
 	shared_ptr<Village> closest = nullptr;
 	float closestDistSqr = Float::MAX_VALUE;
-	for(AUTO_VAR(it, villages.begin()); it != villages.end(); ++it)
+	for(auto& village : villages)
 	{
-		shared_ptr<Village> village = *it;
 		float distSqr = village->getCenter()->distSqr(x, y, z);
 		if (distSqr >= closestDistSqr) continue;
 
@@ -115,15 +112,12 @@ void Villages::processNextQuery()
 void Villages::cluster()
 {
 	// note doesn't merge or split existing villages
-	for(AUTO_VAR(it, unclustered.begin()); it != unclustered.end(); ++it)
+	for(auto& di : unclustered)
 	{
-		shared_ptr<DoorInfo> di = *it;
-
 		bool found = false;
-		for(AUTO_VAR(itV, villages.begin()); itV != villages.end(); ++itV)
+		for(auto& village : villages)
 		{
-			shared_ptr<Village> village = *itV;
-			int dist = (int) village->getCenter()->distSqr(di->x, di->y, di->z);
+			int dist = static_cast<int>(village->getCenter()->distSqr(di->x, di->y, di->z));
 			int radius = MaxDoorDist + village->getRadius();
 			if (dist > radius * radius) continue;
 			village->addDoorInfo(di);
@@ -133,7 +127,7 @@ void Villages::cluster()
 		if (found) continue;
 
 		// create new Village
-		shared_ptr<Village> village = shared_ptr<Village>(new Village(level));
+		shared_ptr<Village> village = std::make_shared<Village>(level);
 		village->addDoorInfo(di);
 		villages.push_back(village);
 		setDirty();
@@ -153,7 +147,7 @@ void Villages::addDoorInfos(Pos *pos)
 				if (isDoor(xx, yy, zz))
 				{
 					shared_ptr<DoorInfo> currentDoor = getDoorInfo(xx, yy, zz);
-					if (currentDoor == NULL) createDoorInfo(xx, yy, zz);
+					if (currentDoor == nullptr) createDoorInfo(xx, yy, zz);
 					else currentDoor->timeStamp = _tick;
 				}
 			}
@@ -164,24 +158,22 @@ void Villages::addDoorInfos(Pos *pos)
 shared_ptr<DoorInfo> Villages::getDoorInfo(int x, int y, int z)
 {
 	//for (DoorInfo di : unclustered)
-	for(AUTO_VAR(it,unclustered.begin()); it != unclustered.end(); ++it)
+	for( const auto& di : unclustered)
 	{
-		shared_ptr<DoorInfo> di = *it;
 		if (di->x == x && di->z == z && abs(di->y - y) <= 1) return di;
 	}
 	//for (Village v : villages)
-	for(AUTO_VAR(it,villages.begin()); it != villages.end(); ++it)
+	for(auto& v : villages)
 	{
-		shared_ptr<Village> v = *it;
 		shared_ptr<DoorInfo> di = v->getDoorInfo(x, y, z);
-		if (di != NULL) return di;
+		if (di != nullptr) return di;
 	}
 	return nullptr;
 }
 
 void Villages::createDoorInfo(int x, int y, int z)
 {
-	int dir = ((DoorTile *) Tile::door_wood)->getDir(level, x, y, z);
+	int dir = static_cast<DoorTile *>(Tile::door_wood)->getDir(level, x, y, z);
 	if (dir == 0 || dir == 2)
 	{
 		int canSeeX = 0;
@@ -189,7 +181,7 @@ void Villages::createDoorInfo(int x, int y, int z)
 			if (level->canSeeSky(x + i, y, z)) canSeeX--;
 		for (int i = 1; i <= 5; ++i)
 			if (level->canSeeSky(x + i, y, z)) canSeeX++;
-		if (canSeeX != 0) unclustered.push_back(shared_ptr<DoorInfo>(new DoorInfo(x, y, z, canSeeX > 0 ? -2 : 2, 0, _tick)));
+		if (canSeeX != 0) unclustered.push_back(std::make_shared<DoorInfo>(x, y, z, canSeeX > 0 ? -2 : 2, 0, _tick));
 	}
 	else
 	{
@@ -198,17 +190,17 @@ void Villages::createDoorInfo(int x, int y, int z)
 			if (level->canSeeSky(x, y, z + i)) canSeeZ--;
 		for (int i = 1; i <= 5; ++i)
 			if (level->canSeeSky(x, y, z + i)) canSeeZ++;
-		if (canSeeZ != 0) unclustered.push_back(shared_ptr<DoorInfo>(new DoorInfo(x, y, z, 0, canSeeZ > 0 ? -2 : 2, _tick)));
+		if (canSeeZ != 0) unclustered.push_back(std::make_shared<DoorInfo>(x, y, z, 0, canSeeZ > 0 ? -2 : 2, _tick));
 	}
 }
 
 bool Villages::hasQuery(int x, int y, int z)
 {
 	//for (Pos pos : queries)
-	for(AUTO_VAR(it, queries.begin()); it != queries.end(); ++it)
+	for(const Pos* pos : queries)
 	{
-		Pos *pos = *it;
-		if (pos->x == x && pos->y == y && pos->z == z) return true;
+		if (pos->x == x && pos->y == y && pos->z == z)
+			return true;
 	}
 	return false;
 }
@@ -226,7 +218,7 @@ void Villages::load(CompoundTag *tag)
 	for (int i = 0; i < villageTags->size(); i++)
 	{
 		CompoundTag *compoundTag = villageTags->get(i);
-		shared_ptr<Village> village = shared_ptr<Village>(new Village());
+		shared_ptr<Village> village = std::make_shared<Village>();
 		village->readAdditionalSaveData(compoundTag);
 		villages.push_back(village);
 	}
@@ -237,9 +229,8 @@ void Villages::save(CompoundTag *tag)
 	tag->putInt(L"Tick", _tick);
 	ListTag<CompoundTag> *villageTags = new ListTag<CompoundTag>(L"Villages");
 	//for (Village village : villages)
-	for(AUTO_VAR(it, villages.begin()); it != villages.end(); ++it)
+	for(auto& village : villages)
 	{
-		shared_ptr<Village> village = *it;
 		CompoundTag *villageTag = new CompoundTag(L"Village");
 		village->addAdditonalSaveData(villageTag);
 		villageTags->add(villageTag);

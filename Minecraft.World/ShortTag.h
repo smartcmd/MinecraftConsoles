@@ -28,7 +28,7 @@ public:
 	{
 		if (Tag::equals(obj))
 		{
-			ShortTag *o = (ShortTag *) obj;
+			ShortTag *o = static_cast<ShortTag *>(obj);
 			return data == o->data;
 		}
 		return false;

@@ -24,7 +24,7 @@ void FallingTile::_init()
 	hurtEntities = false;
 	fallDamageMax = 40;
 	fallDamageAmount = 2;
-	tileData = NULL;
+	tileData = nullptr;
 
 	// 4J Added so that client-side falling tiles can fall through blocks
 	// This fixes a bug on the host where the tile update from the server comes in before the client-side falling tile
@@ -136,22 +136,24 @@ void FallingTile::tick()
 					{
 						hv->onLand(level, xt, yt, zt, data);
 					}
-					if (tileData != NULL && Tile::tiles[tile]->isEntityTile())
+					if (tileData != nullptr && Tile::tiles[tile]->isEntityTile())
 					{
 						shared_ptr<TileEntity> tileEntity = level->getTileEntity(xt, yt, zt);
 
-						if (tileEntity != NULL)
+						if (tileEntity != nullptr)
 						{
 							CompoundTag *swap = new CompoundTag();
 							tileEntity->save(swap);
 							vector<Tag *> *allTags = tileData->getAllTags();
-							for(AUTO_VAR(it, allTags->begin()); it != allTags->end(); ++it)
+							if ( allTags )
 							{
-								Tag *tag = *it;
-								if (tag->getName().compare(L"x") == 0 || tag->getName().compare(L"y") == 0 || tag->getName().compare(L"z") == 0) continue;
-								swap->put(tag->getName(), tag->copy());
+								for ( Tag* tag : *allTags )
+								{
+									if (tag->getName().compare(L"x") == 0 || tag->getName().compare(L"y") == 0 || tag->getName().compare(L"z") == 0) continue;
+									swap->put(tag->getName(), tag->copy());
+								}
+								delete allTags;
 							}
-							delete allTags;
 							tileEntity->load(swap);
 							tileEntity->setChanged();
 						}
@@ -159,13 +161,13 @@ void FallingTile::tick()
 				}
 				else
 				{
-					if(dropItem && !cancelDrop) spawnAtLocation( shared_ptr<ItemInstance>(new ItemInstance(tile, 1, Tile::tiles[tile]->getSpawnResourcesAuxValue(data))), 0);
+					if(dropItem && !cancelDrop) spawnAtLocation(std::make_shared<ItemInstance>(tile, 1, Tile::tiles[tile]->getSpawnResourcesAuxValue(data)), 0);
 				}
 			}
 		}
 		else if ( (time > 20 * 5 && !level->isClientSide && (yt < 1 || yt > Level::maxBuildHeight)) || (time > 20 * 30))
 		{
-			if(dropItem) spawnAtLocation( shared_ptr<ItemInstance>( new ItemInstance(tile, 1, Tile::tiles[tile]->getSpawnResourcesAuxValue(data) )), 0);
+			if(dropItem) spawnAtLocation(std::make_shared<ItemInstance>(tile, 1, Tile::tiles[tile]->getSpawnResourcesAuxValue(data)), 0);
 			remove();
 		}
 	}
@@ -181,12 +183,14 @@ void FallingTile::causeFallDamage(float distance)
 			// 4J: Copy vector since it might be modified when we hurt the entities (invalidating our iterator)
 			vector<shared_ptr<Entity> > *entities = new vector<shared_ptr<Entity> >(*level->getEntities(shared_from_this(), bb));
 			DamageSource *source = tile == Tile::anvil_Id ? DamageSource::anvil : DamageSource::fallingBlock;
-			//for (Entity entity : entities)
-			for(AUTO_VAR(it, entities->begin()); it != entities->end(); ++it)
+			if ( source )
 			{
-				(*it)->hurt(source, min(Mth::floor(dmg * fallDamageAmount), fallDamageMax));
+				for (auto& it : *entities)
+				{
+					it->hurt(source, static_cast<float>(std::min<int>(Mth::floor(dmg * fallDamageAmount), fallDamageMax)));
+				}
+				delete entities;
 			}
-			delete entities;
 
 			if (tile == Tile::anvil_Id && random->nextFloat() < 0.05f + (dmg * 0.05))
 			{
@@ -208,15 +212,15 @@ void FallingTile::causeFallDamage(float distance)
 
 void FallingTile::addAdditonalSaveData(CompoundTag *tag)
 {
-	tag->putByte(L"Tile", (byte) tile);
+	tag->putByte(L"Tile", static_cast<byte>(tile));
 	tag->putInt(L"TileID", tile);
-	tag->putByte(L"Data", (byte) data);
-	tag->putByte(L"Time", (byte) time);
+	tag->putByte(L"Data", static_cast<byte>(data));
+	tag->putByte(L"Time", static_cast<byte>(time));
 	tag->putBoolean(L"DropItem", dropItem);
 	tag->putBoolean(L"HurtEntities", hurtEntities);
 	tag->putFloat(L"FallHurtAmount", fallDamageAmount);
 	tag->putInt(L"FallHurtMax", fallDamageMax);
-	if (tileData != NULL) tag->putCompound(L"TileEntityData", tileData);
+	if (tileData != nullptr) tag->putCompound(L"TileEntityData", tileData);
 }
 
 void FallingTile::readAdditionalSaveData(CompoundTag *tag)

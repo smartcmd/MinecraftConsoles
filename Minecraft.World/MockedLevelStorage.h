@@ -18,5 +18,5 @@ public:
 	virtual ConsoleSavePath getDataFile(const wstring& id);
 	virtual wstring getLevelId();
 public:
-	virtual ConsoleSaveFile *getSaveFile() { return NULL; }
+	virtual ConsoleSaveFile *getSaveFile() { return nullptr; }
 };

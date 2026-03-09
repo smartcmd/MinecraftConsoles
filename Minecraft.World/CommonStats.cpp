@@ -50,26 +50,26 @@ Stat* CommonStats::get_killsNetherZombiePigman() { return Stats::killsNetherZomb
 Stat *CommonStats::get_breedEntity(eINSTANCEOF mobType)
 {
 	if (mobType == eTYPE_COW)			return GenericStats::repopulation();
-	else								return NULL;
+	else								return nullptr;
 }
 
 Stat *CommonStats::get_tamedEntity(eINSTANCEOF mobType)
 {
 	if (mobType == eTYPE_OCELOT)		return GenericStats::lionTamer();
 	else if (mobType == eTYPE_WOLF)		return Stats::befriendsWolf;
-	else								return NULL;
+	else								return nullptr;
 }
 
 Stat *CommonStats::get_craftedEntity(eINSTANCEOF mobType)
 {
 	if (mobType == eTYPE_VILLAGERGOLEM)	return GenericStats::bodyGuard();
-	else								return NULL;
+	else								return nullptr;
 }
 
 Stat *CommonStats::get_shearedEntity(eINSTANCEOF mobType)
 {
 	if (mobType == eTYPE_SHEEP)			return GenericStats::haveAShearfulDay();
-	else								return NULL;
+	else								return nullptr;
 }
 
 Stat *CommonStats::get_totalBlocksMined() { return Stats::totalBlocksMined; }
@@ -81,7 +81,7 @@ Stat* CommonStats::get_blocksPlaced(int blockId)
 #if (defined _EXTENDED_ACHIEVEMENTS) && (!defined _XBOX_ONE)
 	return Stats::blocksPlaced[blockId];
 #else
-	return NULL;
+	return nullptr;
 #endif
 }
 
@@ -97,7 +97,7 @@ Stat *CommonStats::get_itemsCollected(int itemId, int itemAux)
 #endif
 
 	if (itemId != Item::emerald_Id)			return Stats::itemsCollected[itemId];
-	else									return NULL;
+	else									return nullptr;
 }
 
 Stat *CommonStats::get_itemsCrafted(int itemId) { return Stats::itemsCrafted[itemId]; }
@@ -111,7 +111,7 @@ Stat *CommonStats::get_itemsUsed(int itemId)
 	if (itemId == Item::porkChop_cooked_Id)	return Stats::blocksPlaced[itemId];
 #endif
 
-	return NULL;
+	return nullptr;
 }
 
 Stat *CommonStats::get_itemsBought(int itemId)
@@ -121,7 +121,7 @@ Stat *CommonStats::get_itemsBought(int itemId)
 	// StatArray for Items Bought.
 
 	if (itemId == Item::emerald_Id)	return Stats::itemsCollected[itemId];
-	else							return NULL;
+	else							return nullptr;
 }
 
 Stat *CommonStats::get_killsEnderdragon() { return Stats::killsEnderdragon; }
@@ -133,7 +133,7 @@ Stat *CommonStats::get_enteredBiome(int biomeId)
 #if (defined _EXTENDED_ACHIEVEMENTS) && (!defined _XBOX_ONE)
 	return Stats::biomesVisisted[biomeId];
 #else
-	return NULL;
+	return nullptr;
 #endif
 }
 
@@ -171,7 +171,7 @@ Stat *CommonStats::get_achievement(eAward achievementId)
 #ifndef _XBOX
 	case eAward_snipeSkeleton:		return (Stat *) Achievements::snipeSkeleton;
 	case eAward_diamonds:			return (Stat *) Achievements::diamonds;
-	case eAward_portal:				return (Stat *) NULL;						// TODO
+	case eAward_portal:				return (Stat *) nullptr;						// TODO
 	case eAward_ghast:				return (Stat *) Achievements::ghast;
 	case eAward_blazeRod:			return (Stat *) Achievements::blazeRod;
 	case eAward_potion:				return (Stat *) Achievements::potion;
@@ -205,7 +205,7 @@ Stat *CommonStats::get_achievement(eAward achievementId)
 	case eAward_lionTamer:				return (Stat *) Achievements::lionTamer;
 #endif
 
-	default:						return (Stat *) NULL;
+	default:						return (Stat *) nullptr;
 	}
 }
 
@@ -286,7 +286,7 @@ byteArray CommonStats::getParam_noArgs()
 
 byteArray CommonStats::makeParam(int count)
 {
-	byteArray out( sizeof(int) );
+	byteArray out( static_cast<unsigned int>(sizeof(int)) );
 	memcpy(out.data,&count,sizeof(int));
 	return out;
 }

@@ -23,7 +23,7 @@ void MinecartRenderer::render(shared_ptr<Entity> _cart, double x, double y, doub
 
 	bindTexture(cart);
 
-	__int64 seed = cart->entityId * 493286711l;
+	int64_t seed = cart->entityId * 493286711l;
 	seed = seed * seed * 4392167121l + seed * 98761;
 
 	float xo = ((((seed >> 16) & 0x7) + 0.5f) / 8.0f - 0.5f) * 0.004f;
@@ -42,12 +42,12 @@ void MinecartRenderer::render(shared_ptr<Entity> _cart, double x, double y, doub
 
 	float xRot = cart->xRotO + (cart->xRot - cart->xRotO) * a;
 
-	if (p != NULL)
+	if (p != nullptr)
 	{
 		Vec3 *p0 = cart->getPosOffs(xx, yy, zz, r);
 		Vec3 *p1 = cart->getPosOffs(xx, yy, zz, -r);
-		if (p0 == NULL) p0 = p;
-		if (p1 == NULL) p1 = p;
+		if (p0 == nullptr) p0 = p;
+		if (p1 == nullptr) p1 = p;
 
 		x += p->x - xx;
 		y += (p0->y + p1->y) / 2 - yy;
@@ -60,11 +60,11 @@ void MinecartRenderer::render(shared_ptr<Entity> _cart, double x, double y, doub
 		else
 		{
 			dir = dir->normalize();
-			rot = (float) (atan2(dir->z, dir->x) * 180 / PI);
-			xRot = (float) (atan(dir->y) * 73);
+			rot = static_cast<float>(atan2(dir->z, dir->x) * 180 / PI);
+			xRot = static_cast<float>(atan(dir->y) * 73);
 		}
 	}
-	glTranslatef((float) x, (float) y, (float) z);
+	glTranslatef(static_cast<float>(x), static_cast<float>(y), static_cast<float>(z));
 
 	glRotatef(180 - rot, 0, 1, 0);
 	glRotatef(-xRot, 0, 0, 1);
@@ -80,7 +80,7 @@ void MinecartRenderer::render(shared_ptr<Entity> _cart, double x, double y, doub
 	Tile *tile = cart->getDisplayTile();
 	int tileData = cart->getDisplayData();
 
-	if (tile != NULL)
+	if (tile != nullptr)
 	{
 		glPushMatrix();
 

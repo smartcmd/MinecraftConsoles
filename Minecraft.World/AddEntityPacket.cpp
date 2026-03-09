@@ -32,9 +32,9 @@ void AddEntityPacket::_init(shared_ptr<Entity> e, int type, int data, int xp, in
 		if (xd > m) xd = m;
 		if (yd > m) yd = m;
 		if (zd > m) zd = m;
-		xa = (int) (xd * 8000.0);
-		ya = (int) (yd * 8000.0);
-		za = (int) (zd * 8000.0);
+		xa = static_cast<int>(xd * 8000.0);
+		ya = static_cast<int>(yd * 8000.0);
+		za = static_cast<int>(zd * 8000.0);
 	}
 }
 

@@ -145,7 +145,7 @@ bool SQRNetworkPlayer::IsReady()
 {
 	return ( ( m_flags & SNP_FLAG_READY_MASK ) == SNP_FLAG_READY_MASK );
 }
-	
+
 PlayerUID SQRNetworkPlayer::GetUID()
 {
 	return m_ISD.m_UID;
@@ -224,7 +224,7 @@ void SQRNetworkPlayer::SendData( SQRNetworkPlayer *pPlayerTarget, const void *da
 {
 	AckFlags ackFlags = ack ? e_flag_AckRequested : e_flag_AckNotRequested;
 	// Our network is connected as a star. If we are the host, then we can send to any remote player. If we're a client, we can send only to the host.
-	// The host can also send to other local players, but this doesn't need to go through Rudp. 
+	// The host can also send to other local players, but this doesn't need to go through Rudp.
 	if( m_host )
 	{
 		if( ( m_type == SNP_TYPE_HOST ) && ( pPlayerTarget->m_type == SNP_TYPE_LOCAL ) )
@@ -279,14 +279,14 @@ void SQRNetworkPlayer::SendInternal(const void *data, unsigned int dataSize, Ack
 	{
 		// no data, just the flag
 		assert(dataSize == 0);
-		assert(data == NULL);
+		assert(data == nullptr);
 		int dataSize = dataRemaining;
 		if( dataSize > SNP_MAX_PAYLOAD ) dataSize = SNP_MAX_PAYLOAD;
-		sendBlock.start = NULL;
-		sendBlock.end = NULL;
-		sendBlock.current = NULL;
+		sendBlock.start = nullptr;
+		sendBlock.end = nullptr;
+		sendBlock.current = nullptr;
 		sendBlock.ack = ackFlags;
-		m_sendQueue.push(sendBlock);		
+		m_sendQueue.push(sendBlock);
 	}
 	else
 	{
@@ -299,13 +299,13 @@ void SQRNetworkPlayer::SendInternal(const void *data, unsigned int dataSize, Ack
 		sendBlock.current = sendBlock.start;
 			sendBlock.ack = ackFlags;
 		memcpy( sendBlock.start, dataCurrent, dataSize);
-		m_sendQueue.push(sendBlock);		
+		m_sendQueue.push(sendBlock);
 		dataRemaining -= dataSize;
 		dataCurrent += dataSize;
 	}
 
 	}
-	m_totalBytesInSendQueue += dataSize; 
+	m_totalBytesInSendQueue += dataSize;
 
 	// if the queue had something in it already, then the UDP callback will fire and call SendMoreInternal
 	// so we don't call it here, to avoid a deadlock
@@ -343,7 +343,7 @@ int SQRNetworkPlayer::WriteDataPacket(const void* data, int dataSize, AckFlags a
 		// nothing was sent!
 	}
 	else
-	{ 
+	{
 		assert(ret==packetSize || ret > headerSize); // we must make sure we've sent the entire packet or the header and some data at least
 		ret -= headerSize;
 		if(ackFlags == e_flag_AckRequested)
@@ -387,9 +387,9 @@ int SQRNetworkPlayer::ReadDataPacket(void* data, int dataSize)
 
 	unsigned char* packetData = new unsigned char[packetSize];
 #ifdef __PS3__
-	int bytesRead = cellRudpRead( m_rudpCtx, packetData, packetSize, 0, NULL );
+	int bytesRead = cellRudpRead( m_rudpCtx, packetData, packetSize, 0, nullptr );
 #else // __ORBIS__ && __PSVITA__
-	int bytesRead = sceRudpRead( m_rudpCtx, packetData, packetSize, 0, NULL );
+	int bytesRead = sceRudpRead( m_rudpCtx, packetData, packetSize, 0, nullptr );
 #endif
 	if(bytesRead == sc_wouldBlockFlag)
 	{
@@ -426,9 +426,9 @@ void SQRNetworkPlayer::ReadAck()
 {
 	DataPacketHeader header;
 #ifdef __PS3__
-	int bytesRead = cellRudpRead( m_rudpCtx, &header, sizeof(header), 0, NULL );
+	int bytesRead = cellRudpRead( m_rudpCtx, &header, sizeof(header), 0, nullptr );
 #else // __ORBIS__ && __PSVITA__
-	int bytesRead = sceRudpRead( m_rudpCtx, &header, sizeof(header), 0, NULL );
+	int bytesRead = sceRudpRead( m_rudpCtx, &header, sizeof(header), 0, nullptr );
 #endif
 	if(bytesRead == sc_wouldBlockFlag)
 	{
@@ -443,7 +443,7 @@ void SQRNetworkPlayer::ReadAck()
 
 #ifndef _CONTENT_PACKAGE
 #ifdef PRINT_ACK_STATS
-	__int64 timeTaken = System::currentTimeMillis() - m_ackStats[0];
+	int64_t timeTaken = System::currentTimeMillis() - m_ackStats[0];
 	if(timeTaken < m_minAckTime)
 		m_minAckTime = timeTaken;
 	if(timeTaken > m_maxAckTime)
@@ -459,7 +459,7 @@ void SQRNetworkPlayer::ReadAck()
 
 void SQRNetworkPlayer::WriteAck()
 {
-	SendInternal(NULL, 0, e_flag_AckReturning);
+	SendInternal(nullptr, 0, e_flag_AckReturning);
 }
 
 int SQRNetworkPlayer::GetOutstandingAckCount()
@@ -525,7 +525,7 @@ void SQRNetworkPlayer::SendMoreInternal()
 				{
 					keepSending = true;
 				}
-			} 
+			}
 			else if( ( ret >= 0 ) || ( ret == sc_wouldBlockFlag ) )
 			{
 
@@ -543,7 +543,7 @@ void SQRNetworkPlayer::SendMoreInternal()
 					// Is CELL_RUDP_ERROR_WOULDBLOCK, nothing has yet been sent
 					remainingBytes = dataSize;
 				}
-				m_sendQueue.front().current = m_sendQueue.front().end - remainingBytes;	
+				m_sendQueue.front().current = m_sendQueue.front().end - remainingBytes;
 			}
 		}
 	} while (keepSending);

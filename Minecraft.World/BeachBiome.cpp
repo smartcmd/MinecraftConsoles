@@ -8,8 +8,8 @@ BeachBiome::BeachBiome(int id) : Biome(id)
 	// remove default mob spawn settings
 	friendlies.clear();
 	friendlies_chicken.clear();	// 4J added
-	topMaterial = (byte) Tile::sand_Id;
-	material = (byte) Tile::sand_Id;
+	topMaterial = static_cast<byte>(Tile::sand_Id);
+	material = static_cast<byte>(Tile::sand_Id);
 
 	decorator->treeCount = -999;
 	decorator->deadBushCount = 0;

@@ -196,8 +196,8 @@ typedef struct _ConnectionProgressParams
 		showTooltips = false;
 		setFailTimer = false;
 		timerTime = 0;
-		cancelFunc = NULL;
-		cancelFuncParam = NULL;
+		cancelFunc = nullptr;
+		cancelFuncParam = nullptr;
 	}
 } ConnectionProgressParams;
 
@@ -250,7 +250,7 @@ typedef struct _SaveListDetails
 	_SaveListDetails()
 	{
 		saveId = 0;
-		pbThumbnailData = NULL;
+		pbThumbnailData = nullptr;
 		dwThumbnailSize = 0;
 #ifdef _DURANGO
 		ZeroMemory(UTF16SaveName,sizeof(wchar_t)*128);
@@ -280,7 +280,48 @@ typedef struct _JoinMenuInitData
 {
 	FriendSessionInfo *selectedSession;
 	int iPad;
+#ifdef _WINDOWS64
+	int serverIndex; // Index of the server in servers.db, -1 if not a saved server
+#endif
 } JoinMenuInitData;
+
+// Native keyboard (Windows64 replacement for InputManager.RequestKeyboard WinAPI dialog)
+#ifdef _WINDOWS64
+typedef struct _UIKeyboardInitData
+{
+	const wchar_t* title;
+	const wchar_t* defaultText;
+	int maxChars;
+	int(*callback)(LPVOID, const bool);
+	LPVOID lpParam;
+	bool pcMode; // When true, disables on-screen keyboard buttons (PC keyboard users only need the text field)
+
+	_UIKeyboardInitData() : title(nullptr), defaultText(nullptr), maxChars(25), callback(nullptr), lpParam(nullptr), pcMode(false) {}
+} UIKeyboardInitData;
+
+// Stores the text typed in UIScene_Keyboard so callbacks can retrieve it
+// without calling InputManager.GetText (which shows the WinAPI dialog result).
+extern wchar_t g_Win64KeyboardResult[256];
+inline void Win64_GetKeyboardText(uint16_t* outBuf, int maxChars)
+{
+	wcsncpy_s((wchar_t*)outBuf, maxChars, g_Win64KeyboardResult, _TRUNCATE);
+}
+
+// Returns true if any XInput controller is currently connected.
+// Used to decide whether to show the in-game keyboard UI or fall back to PC input.
+#include <Xinput.h>
+inline bool Win64_IsControllerConnected()
+{
+	XINPUT_STATE state;
+	for (DWORD i = 0; i < XUSER_MAX_COUNT; i++)
+	{
+		memset(&state, 0, sizeof(state));
+		if (XInputGetState(i, &state) == ERROR_SUCCESS)
+			return true;
+	}
+	return false;
+}
+#endif // _WINDOWS64
 
 // More Options
 typedef struct _LaunchMoreOptionsMenuInitData
@@ -365,15 +406,15 @@ typedef struct _LoadingInputParams
 
 	_LoadingInputParams()
 	{
-		func = NULL;
-		lpParam = NULL;
-		completionData = NULL;
+		func = nullptr;
+		lpParam = nullptr;
+		completionData = nullptr;
 
 		cancelText = -1;
-		cancelFunc = NULL;
-		completeFunc = NULL;
-		m_cancelFuncParam = NULL;
-		m_completeFuncParam = NULL;
+		cancelFunc = nullptr;
+		completeFunc = nullptr;
+		m_cancelFuncParam = nullptr;
+		m_completeFuncParam = nullptr;
 		waitForThreadToDelete = false;
 	}
 } LoadingInputParams;
@@ -401,7 +442,7 @@ typedef struct _TutorialPopupInfo
 
 	_TutorialPopupInfo()
 	{
-		interactScene = NULL;
+		interactScene = nullptr;
 		desc = L"";
 		title = L"";
 		icon = -1;
@@ -409,7 +450,7 @@ typedef struct _TutorialPopupInfo
 		isFoil = false;
 		allowFade = true;
 		isReminder = false;
-		tutorial = NULL;
+		tutorial = nullptr;
 	}
 
 } TutorialPopupInfo;

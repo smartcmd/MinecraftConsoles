@@ -176,20 +176,20 @@ int ByteBuffer::getInt(unsigned int index)
 //
 //Returns:
 //The long value at the buffer's current position
-__int64 ByteBuffer::getLong()
+int64_t ByteBuffer::getLong()
 {
 	assert( m_position+8 < m_limit );
 
-	__int64 value = 0;
+	int64_t value = 0;
 
-	__int64 b1 = buffer[ m_position ];
-	__int64 b2 = buffer[ m_position+1 ];
-	__int64 b3 = buffer[ m_position+2 ];
-	__int64 b4 = buffer[ m_position+3 ];
-	__int64 b5 = buffer[ m_position+4 ];
-	__int64 b6 = buffer[ m_position+5 ];
-	__int64 b7 = buffer[ m_position+6 ];
-	__int64 b8 = buffer[ m_position+7 ];
+	int64_t b1 = buffer[ m_position ];
+	int64_t b2 = buffer[ m_position+1 ];
+	int64_t b3 = buffer[ m_position+2 ];
+	int64_t b4 = buffer[ m_position+3 ];
+	int64_t b5 = buffer[ m_position+4 ];
+	int64_t b6 = buffer[ m_position+5 ];
+	int64_t b7 = buffer[ m_position+6 ];
+	int64_t b8 = buffer[ m_position+7 ];
 
 	m_position += 8;
 
@@ -358,7 +358,7 @@ ByteBuffer *ByteBuffer::putShortArray(shortArray &s)
 	// TODO 4J Stu - Should this function be writing from the start of the buffer, or from position?
 	// And should it update position?
 	assert( s.length*2 <= m_limit);
-	
+
 	// 4J Stu - Assumes big endian
 	memcpy( buffer, s.data, s.length*2 );
 
@@ -373,7 +373,7 @@ ByteBuffer *ByteBuffer::putShortArray(shortArray &s)
 //value - The long value to be written
 //Returns:
 //This buffer
-ByteBuffer *ByteBuffer::putLong(__int64 value)
+ByteBuffer *ByteBuffer::putLong(int64_t value)
 {
 	assert( m_position+7 < m_limit );
 
@@ -407,7 +407,7 @@ ByteBuffer *ByteBuffer::putLong(__int64 value)
 //This method transfers the entire content of the given source byte array into this buffer.
 //An invocation of this method of the form dst.put(a) behaves in exactly the same way as the invocation
 //
-//     dst.put(a, 0, a.length) 
+//     dst.put(a, 0, a.length)
 //Returns:
 //This buffer
 ByteBuffer *ByteBuffer::put(byteArray inputArray)
@@ -436,7 +436,7 @@ byteArray ByteBuffer::array()
 //it will be read-only if, and only if, this buffer is read-only.
 //
 //Returns:
-//A new int buffer 
+//A new int buffer
 IntBuffer *ByteBuffer::asIntBuffer()
 {
 	// TODO 4J Stu - Is it safe to just cast our byte array pointer to another type?
@@ -463,7 +463,7 @@ FloatBuffer *ByteBuffer::asFloatBuffer()
 
 #ifdef __PS3__
 // we're using the RSX now to upload textures to vram, so we need th main ram textures allocated from io space
-ByteBuffer_IO::ByteBuffer_IO( unsigned int capacity ) 
+ByteBuffer_IO::ByteBuffer_IO( unsigned int capacity )
 	: ByteBuffer(capacity, (byte*)RenderManager.allocIOMem(capacity, 64))
 {
 	memset( buffer,0,sizeof(byte)*capacity);

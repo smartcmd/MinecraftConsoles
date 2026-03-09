@@ -26,13 +26,13 @@ void *user_new(std::size_t size) throw(std::bad_alloc)
 	if (size == 0)
 		size = 1;
 
-	while ((ptr = (void *)std::malloc(size)) == NULL) {
+	while ((ptr = (void *)std::malloc(size)) == nullptr) {
 		//E Obtain new_handler
 		//J new_handler を取得する
 		std::new_handler handler = std::get_new_handler();
 
-		//E When new_handler is a NULL pointer, bad_alloc is send. If not, new_handler is called.
-		//J new_handler が NULL ポインタの場合、bad_alloc を送出する、そうでない場合、new_handler を呼び出す
+		//E When new_handler is a nullptr pointer, bad_alloc is send. If not, new_handler is called.
+		//J new_handler が nullptr ポインタの場合、bad_alloc を送出する、そうでない場合、new_handler を呼び出す
 		if (!handler)
 		{
 			assert(0);//throw std::bad_alloc();
@@ -54,27 +54,27 @@ void *user_new(std::size_t size, const std::nothrow_t& x) throw()
 // 	if (size == 0)
 // 		size = 1;
 // 
-// 	while ((ptr = (void *)std::malloc(size)) == NULL) {
+// 	while ((ptr = (void *)std::malloc(size)) == nullptr) {
 // 		//E Obtain new_handler
 // 		//J new_handler を取得する
 // 		std::new_handler handler = std::get_new_handler();
 // 
-// 		//E When new_handler is a NULL pointer, NULL is returned.
-// 		//J new_handler が NULL ポインタの場合、NULL を返す
+// 		//E When new_handler is a nullptr pointer, nullptr is returned.
+// 		//J new_handler が nullptr ポインタの場合、nullptr を返す
 // 		if (!handler)
-// 			return NULL;
+// 			return nullptr;
 // 
-// 		//E Call new_handler. If new_handler sends bad_alloc, NULL is returned.
-// 		//J new_handler を呼び出す、new_handler が bad_alloc を送出した場合、NULL を返す
+// 		//E Call new_handler. If new_handler sends bad_alloc, nullptr is returned.
+// 		//J new_handler を呼び出す、new_handler が bad_alloc を送出した場合、nullptr を返す
 // 		try {
 // 			(*handler)();
 // 		} catch (std::bad_alloc) {
-// 			return NULL;
+// 			return nullptr;
 // 		}
 // 	}
 // 	return ptr;
 	assert(0);
-	return NULL;
+	return nullptr;
 }
 
 //E Replace operator new[].
@@ -95,9 +95,9 @@ void *user_new_array(std::size_t size, const std::nothrow_t& x) throw()
 //J operator delete と置き換わる
 void user_delete(void *ptr) throw()
 {
-	//E In the case of the NULL pointer, no action will be taken.
-	//J NULL ポインタの場合、何も行わない
-	if (ptr != NULL)
+	//E In the case of the nullptr pointer, no action will be taken.
+	//J nullptr ポインタの場合、何も行わない
+	if (ptr != nullptr)
 		std::free(ptr);
 }
 

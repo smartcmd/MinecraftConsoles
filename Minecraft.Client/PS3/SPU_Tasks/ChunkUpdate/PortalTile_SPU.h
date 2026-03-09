@@ -5,7 +5,7 @@ class PortalTile_SPU : public HalfTransparentTile_SPU
 {
 public:
 	PortalTile_SPU(int id): HalfTransparentTile_SPU(id) {}
-    virtual void updateShape(ChunkRebuildData *level, int x, int y, int z, int forceData = -1, TileEntity* forceEntity = NULL)	// 4J added forceData, forceEntity param
+    virtual void updateShape(ChunkRebuildData *level, int x, int y, int z, int forceData = -1, TileEntity* forceEntity = nullptr)	// 4J added forceData, forceEntity param
 	{
 		if (level->getTile(x - 1, y, z) == id || level->getTile(x + 1, y, z) == id)
 		{

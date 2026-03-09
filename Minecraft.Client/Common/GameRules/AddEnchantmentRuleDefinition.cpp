@@ -14,10 +14,10 @@ void AddEnchantmentRuleDefinition::writeAttributes(DataOutputStream *dos, UINT n
 	GameRuleDefinition::writeAttributes(dos, numAttributes + 2);
 
 	ConsoleGameRules::write(dos, ConsoleGameRules::eGameRuleAttr_enchantmentId);
-	dos->writeUTF( _toString( m_enchantmentId ) );
+	dos->writeUTF( std::to_wstring( m_enchantmentId ) );
 
 	ConsoleGameRules::write(dos, ConsoleGameRules::eGameRuleAttr_enchantmentLevel);
-	dos->writeUTF( _toString( m_enchantmentLevel ) );
+	dos->writeUTF( std::to_wstring( m_enchantmentLevel ) );
 }
 
 void AddEnchantmentRuleDefinition::addAttribute(const wstring &attributeName, const wstring &attributeValue)
@@ -46,11 +46,11 @@ void AddEnchantmentRuleDefinition::addAttribute(const wstring &attributeName, co
 bool AddEnchantmentRuleDefinition::enchantItem(shared_ptr<ItemInstance> item)
 {
 	bool enchanted = false;
-	if (item != NULL)
+	if (item != nullptr)
 	{
 		// 4J-JEV: Ripped code from enchantmenthelpers
 		// Maybe we want to add an addEnchantment method to EnchantmentHelpers
-		if (item->id == Item::enchantedBook_Id) 
+		if (item->id == Item::enchantedBook_Id)
 		{
 			Item::enchantedBook->addEnchantment( item, new EnchantmentInstance(m_enchantmentId, m_enchantmentLevel) );
 		}
@@ -58,7 +58,7 @@ bool AddEnchantmentRuleDefinition::enchantItem(shared_ptr<ItemInstance> item)
 		{
 			Enchantment *e = Enchantment::enchantments[m_enchantmentId];
 
-			if(e != NULL && e->category->canEnchant(item->getItem()))
+			if(e != nullptr && e->category->canEnchant(item->getItem()))
 			{
 				int level = min(e->getMaxLevel(), m_enchantmentLevel);
 				item->enchant(e, m_enchantmentLevel);

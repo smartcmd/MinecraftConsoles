@@ -54,10 +54,10 @@ void MoveControl::tick()
 	double dd = xd * xd + yd * yd + zd * zd;
 	if (dd < MIN_SPEED_SQR) return;
 
-	float yRotD = (float) (atan2(zd, xd) * 180 / PI) - 90;
+	float yRotD = static_cast<float>(atan2(zd, xd) * 180 / PI) - 90;
 
 	mob->yRot = rotlerp(mob->yRot, yRotD, MAX_TURN);
-	mob->setSpeed((float) (speedModifier * mob->getAttribute(SharedMonsterAttributes::MOVEMENT_SPEED)->getValue()));
+	mob->setSpeed(static_cast<float>(speedModifier * mob->getAttribute(SharedMonsterAttributes::MOVEMENT_SPEED)->getValue()));
 
 	if (yd > 0 && xd * xd + zd * zd < 1) mob->getJumpControl()->jump();
 }

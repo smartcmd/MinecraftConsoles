@@ -5,7 +5,7 @@ class ColourTable
 private:
 	unsigned int m_colourValues[eMinecraftColour_COUNT];
 
-	static wchar_t *ColourTableElements[eMinecraftColour_COUNT];
+	static const wchar_t *ColourTableElements[eMinecraftColour_COUNT];
 	static unordered_map<wstring,eMinecraftColour> s_colourNamesMap;
 
 public:

@@ -73,5 +73,5 @@ int RotatedPillarTile::getType(int data)
 
 shared_ptr<ItemInstance> RotatedPillarTile::getSilkTouchItemInstance(int data)
 {
-	return shared_ptr<ItemInstance>( new ItemInstance(id, 1, getType(data)) );
+	return std::make_shared<ItemInstance>(id, 1, getType(data));
 }

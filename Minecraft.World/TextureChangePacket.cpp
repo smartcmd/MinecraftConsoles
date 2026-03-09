@@ -24,7 +24,7 @@ TextureChangePacket::TextureChangePacket(shared_ptr<Entity> e, ETextureChangeTyp
 void TextureChangePacket::read(DataInputStream *dis) //throws IOException 
 {
 	id = dis->readInt();
-	action = (ETextureChangeType)dis->readByte();
+	action = static_cast<ETextureChangeType>(dis->readByte());
 	path = dis->readUTF();
 }
 
@@ -42,5 +42,5 @@ void TextureChangePacket::handle(PacketListener *listener)
 
 int TextureChangePacket::getEstimatedSize() 
 {
-	return 5 + (int)path.size();
+	return 5 + static_cast<int>(path.size());
 }

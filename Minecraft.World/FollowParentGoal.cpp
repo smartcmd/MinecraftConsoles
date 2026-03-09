@@ -22,9 +22,9 @@ bool FollowParentGoal::canUse()
 
 	shared_ptr<Animal> closest = nullptr;
 	double closestDistSqr = Double::MAX_VALUE;
-	for(AUTO_VAR(it, parents->begin()); it != parents->end(); ++it)
+	for(auto& it : *parents)
 	{
-		shared_ptr<Animal> parent = dynamic_pointer_cast<Animal>(*it);
+		shared_ptr<Animal> parent = dynamic_pointer_cast<Animal>(it);
 		if (parent->getAge() < 0) continue;
 		double distSqr = animal->distanceToSqr(parent);
 		if (distSqr > closestDistSqr) continue;
@@ -33,7 +33,7 @@ bool FollowParentGoal::canUse()
 	}
 	delete parents;
 
-	if (closest == NULL) return false;
+	if (closest == nullptr) return false;
 	if (closestDistSqr < 3 * 3) return false;
 	parent = weak_ptr<Animal>(closest);
 	return true;
@@ -41,7 +41,7 @@ bool FollowParentGoal::canUse()
 
 bool FollowParentGoal::canContinueToUse()
 {
-	if (parent.lock() == NULL || !parent.lock()->isAlive()) return false;
+	if (parent.lock() == nullptr || !parent.lock()->isAlive()) return false;
 	double distSqr = animal->distanceToSqr(parent.lock());
 	if (distSqr < 3 * 3 || distSqr > 16 * 16) return false;
 	return true;

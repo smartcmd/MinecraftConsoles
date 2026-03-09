@@ -6,8 +6,9 @@
 #include "..\..\..\Minecraft.World\StringHelpers.h"
 #include "..\..\Minecraft.h"
 #include "..\..\TexturePackRepository.h"
+#include "Common/UI/UI.h"
 
-WCHAR *DLCManager::wchTypeNamesA[]=
+const WCHAR *DLCManager::wchTypeNamesA[]=
 {
 	L"DISPLAYNAME",
 	L"THEMENAME",
@@ -32,10 +33,10 @@ DLCManager::DLCManager()
 
 DLCManager::~DLCManager()
 {
-	for(AUTO_VAR(it, m_packs.begin()); it != m_packs.end(); ++it)
+	for ( DLCPack *pack : m_packs )
 	{
-		DLCPack *pack = *it;
-		delete pack;
+		if ( pack )
+			delete pack;
 	}
 }
 
@@ -47,7 +48,7 @@ DLCManager::EDLCParameterType DLCManager::getParameterType(const wstring &paramN
 	{
 		if(paramName.compare(wchTypeNamesA[i]) == 0)
 		{
-			type = (EDLCParameterType)i;
+			type = static_cast<EDLCParameterType>(i);
 			break;
 		}
 	}
@@ -60,10 +61,9 @@ DWORD DLCManager::getPackCount(EDLCType type /*= e_DLCType_All*/)
 	DWORD packCount = 0;
 	if( type != e_DLCType_All )
 	{
-		for(AUTO_VAR(it, m_packs.begin()); it != m_packs.end(); ++it)
+		for( DLCPack *pack : m_packs )
 		{
-			DLCPack *pack = *it;
-			if( pack->getDLCItemsCount(type) > 0 )
+			if( pack && pack->getDLCItemsCount(type) > 0 )
 			{
 				++packCount;
 			}
@@ -71,7 +71,7 @@ DWORD DLCManager::getPackCount(EDLCType type /*= e_DLCType_All*/)
 	}
 	else
 	{
-		packCount = (DWORD)m_packs.size();
+		packCount = static_cast<DWORD>(m_packs.size());
 	}
 	return packCount;
 }
@@ -83,9 +83,9 @@ void DLCManager::addPack(DLCPack *pack)
 
 void DLCManager::removePack(DLCPack *pack)
 {
-	if(pack != NULL)
+	if(pack != nullptr)
 	{
-		AUTO_VAR(it, find(m_packs.begin(),m_packs.end(),pack));
+		auto it = find(m_packs.begin(), m_packs.end(), pack);
 		if(it != m_packs.end() ) m_packs.erase(it);
 		delete pack;
 	}
@@ -93,10 +93,10 @@ void DLCManager::removePack(DLCPack *pack)
 
 void DLCManager::removeAllPacks(void)
 {
-	for(AUTO_VAR(it, m_packs.begin()); it != m_packs.end(); ++it)
+	for( DLCPack *pack : m_packs )
 	{
-		DLCPack *pack = (DLCPack *)*it;
-		delete pack;
+		if ( pack )
+			delete pack;
 	}
 
 	m_packs.clear();
@@ -104,23 +104,19 @@ void DLCManager::removeAllPacks(void)
 
 void DLCManager::LanguageChanged(void)
 {
-	for(AUTO_VAR(it, m_packs.begin()); it != m_packs.end(); ++it)
+	for( DLCPack *pack : m_packs )
 	{
-		DLCPack *pack = (DLCPack *)*it;
 		// update the language
 		pack->UpdateLanguage();
 	}
-
 }
 
 DLCPack *DLCManager::getPack(const wstring &name)
 {
-	DLCPack *pack = NULL;
+	DLCPack *pack = nullptr;
 	//DWORD currentIndex = 0;
-	DLCPack *currentPack = NULL;
-	for(AUTO_VAR(it, m_packs.begin()); it != m_packs.end(); ++it)
+	for( DLCPack * currentPack : m_packs )
 	{
-		currentPack = *it;
 		wstring wsName=currentPack->getName();
 
 		if(wsName.compare(name) == 0)
@@ -135,12 +131,9 @@ DLCPack *DLCManager::getPack(const wstring &name)
 #ifdef _XBOX_ONE
 DLCPack *DLCManager::getPackFromProductID(const wstring &productID)
 {
-	DLCPack *pack = NULL;
-	//DWORD currentIndex = 0;
-	DLCPack *currentPack = NULL;
-	for(AUTO_VAR(it, m_packs.begin()); it != m_packs.end(); ++it)
+	DLCPack *pack = nullptr;
+	for( DLCPack *currentPack : m_packs )
 	{
-		currentPack = *it;
 		wstring wsName=currentPack->getPurchaseOfferId();
 
 		if(wsName.compare(productID) == 0)
@@ -155,14 +148,12 @@ DLCPack *DLCManager::getPackFromProductID(const wstring &productID)
 
 DLCPack *DLCManager::getPack(DWORD index, EDLCType type /*= e_DLCType_All*/)
 {
-	DLCPack *pack = NULL;
+	DLCPack *pack = nullptr;
 	if( type != e_DLCType_All )
 	{
 		DWORD currentIndex = 0;
-		DLCPack *currentPack = NULL;
-		for(AUTO_VAR(it, m_packs.begin()); it != m_packs.end(); ++it)
+		for( DLCPack *currentPack : m_packs )
 		{
-			currentPack = *it;
 			if(currentPack->getDLCItemsCount(type)>0)
 			{
 				if(currentIndex == index)
@@ -191,18 +182,17 @@ DWORD DLCManager::getPackIndex(DLCPack *pack, bool &found, EDLCType type /*= e_D
 {
 	DWORD foundIndex = 0;
 	found = false;
-	if(pack == NULL)
+	if(pack == nullptr)
 	{
-		app.DebugPrintf("DLCManager: Attempting to find the index for a NULL pack\n");
+		app.DebugPrintf("DLCManager: Attempting to find the index for a nullptr pack\n");
 		//__debugbreak();
 		return foundIndex;
 	}
 	if( type != e_DLCType_All )
 	{
 		DWORD index = 0;
-		for(AUTO_VAR(it, m_packs.begin()); it != m_packs.end(); ++it)
+		for( DLCPack *thisPack : m_packs )
 		{
-			DLCPack *thisPack = *it;
 			if(thisPack->getDLCItemsCount(type)>0)
 			{
 				if(thisPack == pack)
@@ -218,9 +208,8 @@ DWORD DLCManager::getPackIndex(DLCPack *pack, bool &found, EDLCType type /*= e_D
 	else
 	{
 		DWORD index = 0;
-		for(AUTO_VAR(it, m_packs.begin()); it != m_packs.end(); ++it)
+		for( DLCPack *thisPack : m_packs )
 		{
-			DLCPack *thisPack = *it;
 			if(thisPack == pack)
 			{
 				found = true;
@@ -238,9 +227,8 @@ DWORD DLCManager::getPackIndexContainingSkin(const wstring &path, bool &found)
 	DWORD foundIndex = 0;
 	found = false;
 	DWORD index = 0;
-	for(AUTO_VAR(it, m_packs.begin()); it != m_packs.end(); ++it)
+	for( DLCPack *pack : m_packs )
 	{
-		DLCPack *pack = *it;
 		if(pack->getDLCItemsCount(e_DLCType_Skin)>0)
 		{
 			if(pack->doesPackContainSkin(path))
@@ -257,10 +245,9 @@ DWORD DLCManager::getPackIndexContainingSkin(const wstring &path, bool &found)
 
 DLCPack *DLCManager::getPackContainingSkin(const wstring &path)
 {
-	DLCPack *foundPack = NULL;
-	for(AUTO_VAR(it, m_packs.begin()); it != m_packs.end(); ++it)
+	DLCPack *foundPack = nullptr;
+	for( DLCPack *pack : m_packs )
 	{
-		DLCPack *pack = *it;
 		if(pack->getDLCItemsCount(e_DLCType_Skin)>0)
 		{
 			if(pack->doesPackContainSkin(path))
@@ -275,12 +262,11 @@ DLCPack *DLCManager::getPackContainingSkin(const wstring &path)
 
 DLCSkinFile *DLCManager::getSkinFile(const wstring &path)
 {
-	DLCSkinFile *foundSkinfile = NULL;
-	for(AUTO_VAR(it, m_packs.begin()); it != m_packs.end(); ++it)
+	DLCSkinFile *foundSkinfile = nullptr;
+	for( DLCPack *pack : m_packs )
 	{
-		DLCPack *pack = *it;
 		foundSkinfile=pack->getSkinFile(path);
-		if(foundSkinfile!=NULL)
+		if(foundSkinfile!=nullptr)
 		{
 			break;
 		}
@@ -291,16 +277,14 @@ DLCSkinFile *DLCManager::getSkinFile(const wstring &path)
 DWORD DLCManager::checkForCorruptDLCAndAlert(bool showMessage /*= true*/)
 {
 	DWORD corruptDLCCount = m_dwUnnamedCorruptDLCCount;	
-	DLCPack *pack = NULL;
-	DLCPack *firstCorruptPack = NULL;
+	DLCPack *firstCorruptPack = nullptr;
 
-	for(AUTO_VAR(it, m_packs.begin()); it != m_packs.end(); ++it)
+	for( DLCPack *pack : m_packs )
 	{
-		pack = *it;
 		if( pack->IsCorrupt() )
 		{
 			++corruptDLCCount;
-			if(firstCorruptPack == NULL) firstCorruptPack = pack;
+			if(firstCorruptPack == nullptr) firstCorruptPack = pack;
 		}
 	}
 
@@ -308,13 +292,13 @@ DWORD DLCManager::checkForCorruptDLCAndAlert(bool showMessage /*= true*/)
 	{
 		UINT uiIDA[1];
 		uiIDA[0]=IDS_CONFIRM_OK;
-		if(corruptDLCCount == 1 && firstCorruptPack != NULL)
+		if(corruptDLCCount == 1 && firstCorruptPack != nullptr)
 		{
 			// pass in the pack format string
 			WCHAR wchFormat[132];
 			swprintf(wchFormat, 132, L"%ls\n\n%%ls", firstCorruptPack->getName().c_str());
 
-			C4JStorage::EMessageResult result = ui.RequestErrorMessage( IDS_CORRUPT_DLC_TITLE, IDS_CORRUPT_DLC, uiIDA,1,ProfileManager.GetPrimaryPad(),NULL,NULL,wchFormat);
+			C4JStorage::EMessageResult result = ui.RequestErrorMessage( IDS_CORRUPT_DLC_TITLE, IDS_CORRUPT_DLC, uiIDA,1,ProfileManager.GetPrimaryPad(),nullptr,nullptr,wchFormat);
 
 		}
 		else
@@ -347,13 +331,13 @@ bool DLCManager::readDLCDataFile(DWORD &dwFilesProcessed, const string &path, DL
 #ifdef _WINDOWS64
 	string finalPath = StorageManager.GetMountedPath(path.c_str());
 	if(finalPath.size() == 0) finalPath = path;
-	HANDLE file = CreateFile(finalPath.c_str(), GENERIC_READ, 0, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
+	HANDLE file = CreateFile(finalPath.c_str(), GENERIC_READ, 0, nullptr, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, nullptr);
 #elif defined(_DURANGO)
 	wstring finalPath = StorageManager.GetMountedPath(wPath.c_str());
 	if(finalPath.size() == 0) finalPath = wPath;
-	HANDLE file = CreateFile(finalPath.c_str(), GENERIC_READ, 0, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
+	HANDLE file = CreateFile(finalPath.c_str(), GENERIC_READ, 0, nullptr, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, nullptr);
 #else
-	HANDLE file = CreateFile(path.c_str(), GENERIC_READ, 0, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
+	HANDLE file = CreateFile(path.c_str(), GENERIC_READ, 0, nullptr, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, nullptr);
 #endif
 	if( file == INVALID_HANDLE_VALUE )
 	{
@@ -364,9 +348,9 @@ bool DLCManager::readDLCDataFile(DWORD &dwFilesProcessed, const string &path, DL
 		return false;
 	}
 
-	DWORD bytesRead,dwFileSize = GetFileSize(file,NULL);
+	DWORD bytesRead,dwFileSize = GetFileSize(file,nullptr);
 	PBYTE pbData =  (PBYTE) new BYTE[dwFileSize];
-	BOOL bSuccess = ReadFile(file,pbData,dwFileSize,&bytesRead,NULL);
+	BOOL bSuccess = ReadFile(file,pbData,dwFileSize,&bytesRead,nullptr);
 	if(bSuccess==FALSE)
 	{
 		// need to treat the file as corrupt, and flag it, so can't call fatal error
@@ -389,7 +373,7 @@ bool DLCManager::readDLCDataFile(DWORD &dwFilesProcessed, const string &path, DL
 
 bool DLCManager::processDLCDataFile(DWORD &dwFilesProcessed, PBYTE pbData, DWORD dwLength, DLCPack *pack)
 {
-	unordered_map<int, DLCManager::EDLCParameterType> parameterMapping;
+	unordered_map<int, EDLCParameterType> parameterMapping;
 	unsigned int uiCurrentByte=0;
 
 	// File format defined in the DLC_Creator
@@ -408,7 +392,7 @@ bool DLCManager::processDLCDataFile(DWORD &dwFilesProcessed, PBYTE pbData, DWORD
 
 	if(uiVersion < CURRENT_DLC_VERSION_NUM)
 	{
-		if(pbData!=NULL) delete [] pbData;
+		if(pbData!=nullptr) delete [] pbData;
 		app.DebugPrintf("DLC version of %d is too old to be read\n", uiVersion);
 		return false;
 	}
@@ -420,9 +404,9 @@ bool DLCManager::processDLCDataFile(DWORD &dwFilesProcessed, PBYTE pbData, DWORD
 	for(unsigned int i=0;i<uiParameterCount;i++)
 	{
 		// Map DLC strings to application strings, then store the DLC index mapping to application index
-		wstring parameterName((WCHAR *)pParams->wchData);
-		DLCManager::EDLCParameterType type = DLCManager::getParameterType(parameterName);
-		if( type != DLCManager::e_DLCParamType_Invalid )
+		wstring parameterName(static_cast<WCHAR *>(pParams->wchData));
+		EDLCParameterType type = getParameterType(parameterName);
+		if( type != e_DLCParamType_Invalid )
 		{
 			parameterMapping[pParams->dwType] = type;
 		}
@@ -446,10 +430,10 @@ bool DLCManager::processDLCDataFile(DWORD &dwFilesProcessed, PBYTE pbData, DWORD
 
 	for(unsigned int i=0;i<uiFileCount;i++)
 	{
-		DLCManager::EDLCType type = (DLCManager::EDLCType)pFile->dwType;
+		EDLCType type = static_cast<EDLCType>(pFile->dwType);
 
-		DLCFile *dlcFile = NULL;
-		DLCPack *dlcTexturePack = NULL;
+		DLCFile *dlcFile = nullptr;
+		DLCPack *dlcTexturePack = nullptr;
 
 		if(type == e_DLCType_TexturePack)
 		{
@@ -468,7 +452,7 @@ bool DLCManager::processDLCDataFile(DWORD &dwFilesProcessed, PBYTE pbData, DWORD
 		{
 			//DLCManager::EDLCParameterType paramType = DLCManager::e_DLCParamType_Invalid;
 
-			AUTO_VAR(it, parameterMapping.find( pParams->dwType ));
+			auto it = parameterMapping.find(pParams->dwType);
 
 			if(it != parameterMapping.end() )
 			{
@@ -478,8 +462,8 @@ bool DLCManager::processDLCDataFile(DWORD &dwFilesProcessed, PBYTE pbData, DWORD
 				}
 				else
 				{
-					if(dlcFile != NULL) dlcFile->addParameter(it->second,(WCHAR *)pParams->wchData);
-					else if(dlcTexturePack != NULL) dlcTexturePack->addParameter(it->second, (WCHAR *)pParams->wchData);
+					if(dlcFile != nullptr) dlcFile->addParameter(it->second,(WCHAR *)pParams->wchData);
+					else if(dlcTexturePack != nullptr) dlcTexturePack->addParameter(it->second, (WCHAR *)pParams->wchData);
 				}
 			}
 			pbTemp+=sizeof(C4JStorage::DLC_FILE_PARAM)+(sizeof(WCHAR)*pParams->dwWchCount);
@@ -487,28 +471,28 @@ bool DLCManager::processDLCDataFile(DWORD &dwFilesProcessed, PBYTE pbData, DWORD
 		}
 		//pbTemp+=ulParameterCount * sizeof(C4JStorage::DLC_FILE_PARAM);
 
-		if(dlcTexturePack != NULL)
+		if(dlcTexturePack != nullptr)
 		{
 			DWORD texturePackFilesProcessed = 0;
 			bool validPack = processDLCDataFile(texturePackFilesProcessed,pbTemp,pFile->uiFileSize,dlcTexturePack);
-			pack->SetDataPointer(NULL); // If it's a child pack, it doesn't own the data
+			pack->SetDataPointer(nullptr); // If it's a child pack, it doesn't own the data
 			if(!validPack || texturePackFilesProcessed == 0)
 			{
 				delete dlcTexturePack;
-				dlcTexturePack = NULL;
+				dlcTexturePack = nullptr;
 			}
 			else
 			{
 				pack->addChildPack(dlcTexturePack);
 
-				if(dlcTexturePack->getDLCItemsCount(DLCManager::e_DLCType_Texture) > 0)
+				if(dlcTexturePack->getDLCItemsCount(e_DLCType_Texture) > 0)
 				{
 					Minecraft::GetInstance()->skins->addTexturePackFromDLC(dlcTexturePack, dlcTexturePack->GetPackId() );
 				}
 			}
 			++dwFilesProcessed;
 		}
-		else if(dlcFile != NULL)
+		else if(dlcFile != nullptr)
 		{
 			// Data
 			dlcFile->addData(pbTemp,pFile->uiFileSize);
@@ -516,7 +500,7 @@ bool DLCManager::processDLCDataFile(DWORD &dwFilesProcessed, PBYTE pbData, DWORD
 			// TODO - 4J Stu Remove the need for this vSkinNames vector, or manage it differently
 			switch(pFile->dwType)
 			{
-			case DLCManager::e_DLCType_Skin:
+			case e_DLCType_Skin:
 				app.vSkinNames.push_back((WCHAR *)pFile->wchFile);
 				break;
 			}
@@ -531,13 +515,13 @@ bool DLCManager::processDLCDataFile(DWORD &dwFilesProcessed, PBYTE pbData, DWORD
 		pFile=(C4JStorage::DLC_FILE_DETAILS *)&pbData[uiCurrentByte];
 	}
 
-	if( pack->getDLCItemsCount(DLCManager::e_DLCType_GameRules) > 0
-		|| pack->getDLCItemsCount(DLCManager::e_DLCType_GameRulesHeader) > 0)
+	if( pack->getDLCItemsCount(e_DLCType_GameRules) > 0
+		|| pack->getDLCItemsCount(e_DLCType_GameRulesHeader) > 0)
 	{
 		app.m_gameRules.loadGameRules(pack);
 	}
 
-	if(pack->getDLCItemsCount(DLCManager::e_DLCType_Audio) > 0)
+	if(pack->getDLCItemsCount(e_DLCType_Audio) > 0)
 	{
 		//app.m_Audio.loadAudioDetails(pack);
 	}
@@ -554,22 +538,22 @@ DWORD DLCManager::retrievePackIDFromDLCDataFile(const string &path, DLCPack *pac
 #ifdef _WINDOWS64
 	string finalPath = StorageManager.GetMountedPath(path.c_str());
 	if(finalPath.size() == 0) finalPath = path;
-	HANDLE file = CreateFile(finalPath.c_str(), GENERIC_READ, 0, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
+	HANDLE file = CreateFile(finalPath.c_str(), GENERIC_READ, 0, nullptr, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, nullptr);
 #elif defined(_DURANGO)
 	wstring finalPath = StorageManager.GetMountedPath(wPath.c_str());
 	if(finalPath.size() == 0) finalPath = wPath;
-	HANDLE file = CreateFile(finalPath.c_str(), GENERIC_READ, 0, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
+	HANDLE file = CreateFile(finalPath.c_str(), GENERIC_READ, 0, nullptr, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, nullptr);
 #else
-	HANDLE file = CreateFile(path.c_str(), GENERIC_READ, 0, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
+	HANDLE file = CreateFile(path.c_str(), GENERIC_READ, 0, nullptr, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, nullptr);
 #endif
 	if( file == INVALID_HANDLE_VALUE )
 	{
 		return 0;
 	}
 
-	DWORD bytesRead,dwFileSize = GetFileSize(file,NULL);
+	DWORD bytesRead,dwFileSize = GetFileSize(file,nullptr);
 	PBYTE pbData =  (PBYTE) new BYTE[dwFileSize];
-	BOOL bSuccess = ReadFile(file,pbData,dwFileSize,&bytesRead,NULL);
+	BOOL bSuccess = ReadFile(file,pbData,dwFileSize,&bytesRead,nullptr);
 	if(bSuccess==FALSE)
 	{
 		// need to treat the file as corrupt, and flag it, so can't call fatal error
@@ -596,7 +580,7 @@ DWORD DLCManager::retrievePackID(PBYTE pbData, DWORD dwLength, DLCPack *pack)
 {
 	DWORD packId=0;
 	bool bPackIDSet=false;
-	unordered_map<int, DLCManager::EDLCParameterType> parameterMapping;
+	unordered_map<int, EDLCParameterType> parameterMapping;
 	unsigned int uiCurrentByte=0;
 
 	// File format defined in the DLC_Creator
@@ -625,9 +609,9 @@ DWORD DLCManager::retrievePackID(PBYTE pbData, DWORD dwLength, DLCPack *pack)
 	for(unsigned int i=0;i<uiParameterCount;i++)
 	{
 		// Map DLC strings to application strings, then store the DLC index mapping to application index
-		wstring parameterName((WCHAR *)pParams->wchData);
-		DLCManager::EDLCParameterType type = DLCManager::getParameterType(parameterName);
-		if( type != DLCManager::e_DLCParamType_Invalid )
+		wstring parameterName(static_cast<WCHAR *>(pParams->wchData));
+		EDLCParameterType type = getParameterType(parameterName);
+		if( type != e_DLCParamType_Invalid )
 		{
 			parameterMapping[pParams->dwType] = type;
 		}
@@ -650,7 +634,7 @@ DWORD DLCManager::retrievePackID(PBYTE pbData, DWORD dwLength, DLCPack *pack)
 
 	for(unsigned int i=0;i<uiFileCount;i++)
 	{
-		DLCManager::EDLCType type = (DLCManager::EDLCType)pFile->dwType;
+		EDLCType type = static_cast<EDLCType>(pFile->dwType);
 
 		// Params
 		uiParameterCount=*(unsigned int *)pbTemp;
@@ -658,7 +642,7 @@ DWORD DLCManager::retrievePackID(PBYTE pbData, DWORD dwLength, DLCPack *pack)
 		pParams = (C4JStorage::DLC_FILE_PARAM *)pbTemp;
 		for(unsigned int j=0;j<uiParameterCount;j++)
 		{
-			AUTO_VAR(it, parameterMapping.find( pParams->dwType ));
+			auto it = parameterMapping.find(pParams->dwType);
 
 			if(it != parameterMapping.end() )
 			{
@@ -666,7 +650,7 @@ DWORD DLCManager::retrievePackID(PBYTE pbData, DWORD dwLength, DLCPack *pack)
 				{
 					if(it->second==e_DLCParamType_PackId)
 					{				
-						wstring wsTemp=(WCHAR *)pParams->wchData;
+						wstring wsTemp=static_cast<WCHAR *>(pParams->wchData);
 						std::wstringstream ss;
 						// 4J Stu - numbered using decimal to make it easier for artists/people to number manually
 						ss << std::dec << wsTemp.c_str();

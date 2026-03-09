@@ -39,7 +39,7 @@ AttributeModifier *LivingEntity::SPEED_MODIFIER_SPRINTING = (new AttributeModifi
 
 void LivingEntity::_init()
 {
-	attributes = NULL;
+	attributes = nullptr;
 	combatTracker = new CombatTracker(this);
 	lastEquipment = ItemInstanceArray(5);
 
@@ -107,10 +107,10 @@ LivingEntity::LivingEntity( Level* level) : Entity(level)
 
 	blocksBuilding = true;
 
-	rotA = (float) (Math::random() + 1) * 0.01f;
+	rotA = static_cast<float>(Math::random() + 1) * 0.01f;
 	setPos(x, y, z);
-	timeOffs = (float) Math::random() * 12398;
-	yRot = (float) (Math::random() * PI * 2);
+	timeOffs = static_cast<float>(Math::random()) * 12398;
+	yRot = static_cast<float>(Math::random() * PI * 2);
 	yHeadRot = yRot;
 
 	footSize = 0.5f;
@@ -118,22 +118,22 @@ LivingEntity::LivingEntity( Level* level) : Entity(level)
 
 LivingEntity::~LivingEntity()
 {
-	for(AUTO_VAR(it, activeEffects.begin()); it != activeEffects.end(); ++it)
+	for(auto& it : activeEffects)
 	{
-		delete it->second;
+		delete it.second;
 	}
 
 	delete attributes;
 	delete combatTracker;
 
-	if(lastEquipment.data != NULL) delete [] lastEquipment.data;
+	if(lastEquipment.data != nullptr) delete [] lastEquipment.data;
 }
 
-void LivingEntity::defineSynchedData() 
+void LivingEntity::defineSynchedData()
 {
 	entityData->define(DATA_EFFECT_COLOR_ID, 0);
-	entityData->define(DATA_EFFECT_AMBIENCE_ID, (byte) 0);
-	entityData->define(DATA_ARROW_COUNT_ID, (byte) 0);
+	entityData->define(DATA_EFFECT_AMBIENCE_ID, static_cast<byte>(0));
+	entityData->define(DATA_ARROW_COUNT_ID, static_cast<byte>(0));
 	entityData->define(DATA_HEALTH_ID, 1.0f);
 }
 
@@ -186,23 +186,23 @@ bool LivingEntity::isWaterMob()
 	return false;
 }
 
-void LivingEntity::baseTick() 
+void LivingEntity::baseTick()
 {
 	oAttackAnim = attackAnim;
 	Entity::baseTick();
 
-	if (isAlive() && isInWall()) 
+	if (isAlive() && isInWall())
 	{
 		hurt(DamageSource::inWall, 1);
 	}
 
 	if (isFireImmune() || level->isClientSide) clearFire();
 	shared_ptr<Player> thisPlayer = dynamic_pointer_cast<Player>(shared_from_this());
-	bool isInvulnerable = (thisPlayer != NULL && thisPlayer->abilities.invulnerable);
+	bool isInvulnerable = (thisPlayer != nullptr && thisPlayer->abilities.invulnerable);
 
 	if (isAlive() && isUnderLiquid(Material::water))
 	{
-		if(!isWaterMob() && !hasEffect(MobEffect::waterBreathing->id) && !isInvulnerable) 
+		if(!isWaterMob() && !hasEffect(MobEffect::waterBreathing->id) && !isInvulnerable)
 		{
 			setAirSupply(decreaseAirSupply(getAirSupply()));
 			if (getAirSupply() == -20)
@@ -227,8 +227,8 @@ void LivingEntity::baseTick()
 		{
 			ride(nullptr);
 		}
-	} 
-	else 
+	}
+	else
 	{
 		setAirSupply(TOTAL_AIR_SUPPLY);
 	}
@@ -238,7 +238,7 @@ void LivingEntity::baseTick()
 	if (attackTime > 0) attackTime--;
 	if (hurtTime > 0) hurtTime--;
 	if (invulnerableTime > 0) invulnerableTime--;
-	if (getHealth() <= 0) 
+	if (getHealth() <= 0)
 	{
 		tickDeath();
 	}
@@ -253,13 +253,13 @@ void LivingEntity::baseTick()
 			lastHurtByPlayer.reset();
 		}
 	}
-	if (lastHurtMob != NULL && !lastHurtMob->isAlive())
+	if (lastHurtMob != nullptr && !lastHurtMob->isAlive())
 	{
 		lastHurtMob = nullptr;
 	}
 
 	// If lastHurtByMob is dead, remove it
-	if (lastHurtByMob != NULL && !lastHurtByMob->isAlive())
+	if (lastHurtByMob != nullptr && !lastHurtByMob->isAlive())
 	{
 		setLastHurtByMob(nullptr);
 	}
@@ -281,9 +281,9 @@ bool LivingEntity::isBaby()
 }
 
 void LivingEntity::tickDeath()
-{	
+{
 	deathTime++;
-	if (deathTime == 20) 
+	if (deathTime == 20)
 	{
 		// 4J Stu - Added level->isClientSide check from 1.2 to fix XP orbs being created client side
 		if(!level->isClientSide && (lastHurtByPlayerTime > 0 || isAlwaysExperienceDropper()) )
@@ -295,13 +295,13 @@ void LivingEntity::tickDeath()
 				{
 					int newCount = ExperienceOrb::getExperienceValue(xpCount);
 					xpCount -= newCount;
-					level->addEntity(shared_ptr<ExperienceOrb>( new ExperienceOrb(level, x, y, z, newCount) ) );
+					level->addEntity(std::make_shared<ExperienceOrb>(level, x, y, z, newCount));
 				}
 			}
 		}
 
 		remove();
-		for (int i = 0; i < 20; i++) 
+		for (int i = 0; i < 20; i++)
 		{
 			double xa = random->nextGaussian() * 0.02;
 			double ya = random->nextGaussian() * 0.02;
@@ -391,17 +391,17 @@ int LivingEntity::getNoActionTime()
 void LivingEntity::addAdditonalSaveData(CompoundTag *entityTag)
 {
 	entityTag->putFloat(L"HealF", getHealth());
-	entityTag->putShort(L"Health", (short) ceil(getHealth()));
-	entityTag->putShort(L"HurtTime", (short) hurtTime);
-	entityTag->putShort(L"DeathTime", (short) deathTime);
-	entityTag->putShort(L"AttackTime", (short) attackTime);
+	entityTag->putShort(L"Health", static_cast<short>(ceil(getHealth())));
+	entityTag->putShort(L"HurtTime", static_cast<short>(hurtTime));
+	entityTag->putShort(L"DeathTime", static_cast<short>(deathTime));
+	entityTag->putShort(L"AttackTime", static_cast<short>(attackTime));
 	entityTag->putFloat(L"AbsorptionAmount", getAbsorptionAmount());
 
 	ItemInstanceArray items = getEquipmentSlots();
 	for (unsigned int i = 0; i < items.length; ++i)
 	{
 		shared_ptr<ItemInstance> item = items[i];
-		if (item != NULL)
+		if (item != nullptr)
 		{
 			attributes->removeItemModifiers(item);
 		}
@@ -412,7 +412,7 @@ void LivingEntity::addAdditonalSaveData(CompoundTag *entityTag)
 	for (unsigned int i = 0; i < items.length; ++i)
 	{
 		shared_ptr<ItemInstance> item = items[i];
-		if (item != NULL)
+		if (item != nullptr)
 		{
 			attributes->addItemModifiers(item);
 		}
@@ -422,20 +422,20 @@ void LivingEntity::addAdditonalSaveData(CompoundTag *entityTag)
 	{
 		ListTag<CompoundTag> *listTag = new ListTag<CompoundTag>();
 
-		for(AUTO_VAR(it, activeEffects.begin()); it != activeEffects.end(); ++it)
+		for(auto & it : activeEffects)
 		{
-			MobEffectInstance *effect = it->second;
+			MobEffectInstance *effect = it.second;
 			listTag->add(effect->save(new CompoundTag()));
 		}
 		entityTag->put(L"ActiveEffects", listTag);
 	}
 }
 
-void LivingEntity::readAdditionalSaveData(CompoundTag *tag) 
+void LivingEntity::readAdditionalSaveData(CompoundTag *tag)
 {
 	setAbsorptionAmount(tag->getFloat(L"AbsorptionAmount"));
 
-	if (tag->contains(L"Attributes") && level != NULL && !level->isClientSide)
+	if (tag->contains(L"Attributes") && level != nullptr && !level->isClientSide)
 	{
 		SharedMonsterAttributes::loadAttributes(getAttributes(), (ListTag<CompoundTag> *) tag->getList(L"Attributes"));
 	}
@@ -458,18 +458,18 @@ void LivingEntity::readAdditionalSaveData(CompoundTag *tag)
 	else
 	{
 		Tag *healthTag = tag->get(L"Health");
-		if (healthTag == NULL)
+		if (healthTag == nullptr)
 		{
 			setHealth(getMaxHealth());
 		}
 		else if (healthTag->getId() == Tag::TAG_Float)
 		{
-			setHealth(((FloatTag *) healthTag)->data);
+			setHealth(static_cast<FloatTag *>(healthTag)->data);
 		}
 		else if (healthTag->getId() == Tag::TAG_Short)
 		{
 			// pre-1.6 health
-			setHealth((float) ((ShortTag *) healthTag)->data);
+			setHealth((float) static_cast<ShortTag *>(healthTag)->data);
 		}
 	}
 
@@ -481,8 +481,8 @@ void LivingEntity::readAdditionalSaveData(CompoundTag *tag)
 void LivingEntity::tickEffects()
 {
 	bool removed = false;
-	for(AUTO_VAR(it, activeEffects.begin()); it != activeEffects.end();)
-	{
+    for (auto it = activeEffects.begin(); it != activeEffects.end();)
+    {
 		MobEffectInstance *effect = it->second;
 		removed = false;
 		if (!effect->tick(dynamic_pointer_cast<LivingEntity>(shared_from_this())))
@@ -512,7 +512,7 @@ void LivingEntity::tickEffects()
 		{
 			if (activeEffects.empty())
 			{
-				entityData->set(DATA_EFFECT_AMBIENCE_ID, (byte) 0);
+				entityData->set(DATA_EFFECT_AMBIENCE_ID, static_cast<byte>(0));
 				entityData->set(DATA_EFFECT_COLOR_ID, 0);
 				setInvisible(false);
 				setWeakened(false);
@@ -520,12 +520,12 @@ void LivingEntity::tickEffects()
 			else
 			{
 				vector<MobEffectInstance *> values;
-				for(AUTO_VAR(it, activeEffects.begin()); it != activeEffects.end();++it)
+				for(auto& it : activeEffects)
 				{
-					values.push_back(it->second);
+					values.push_back(it.second);
 				}
 				int colorValue = PotionBrewing::getColorValue(&values);
-				entityData->set(DATA_EFFECT_AMBIENCE_ID, PotionBrewing::areAllEffectsAmbient(&values) ? (byte) 1 : (byte) 0);
+				entityData->set(DATA_EFFECT_AMBIENCE_ID, PotionBrewing::areAllEffectsAmbient(&values) ? static_cast<byte>(1) : static_cast<byte>(0));
 				values.clear();
 				entityData->set(DATA_EFFECT_COLOR_ID, colorValue);
 				setInvisible(hasEffect(MobEffect::invisibility->id));
@@ -558,9 +558,9 @@ void LivingEntity::tickEffects()
 			//                int colorValue = entityData.getInteger(DATA_EFFECT_COLOR_ID);
 			if (colorValue > 0)
 			{
-				double red = (double) ((colorValue >> 16) & 0xff) / 255.0;
-				double green = (double) ((colorValue >> 8) & 0xff) / 255.0;
-				double blue = (double) ((colorValue >> 0) & 0xff) / 255.0;
+				double red = static_cast<double>((colorValue >> 16) & 0xff) / 255.0;
+				double green = static_cast<double>((colorValue >> 8) & 0xff) / 255.0;
+				double blue = static_cast<double>((colorValue >> 0) & 0xff) / 255.0;
 
 				level->addParticle(ambient? eParticleType_mobSpellAmbient : eParticleType_mobSpell, x + (random->nextDouble() - 0.5) * bbWidth, y + random->nextDouble() * bbHeight - heightOffset, z + (random->nextDouble() - 0.5) * bbWidth, red, green, blue);
 			}
@@ -570,16 +570,12 @@ void LivingEntity::tickEffects()
 
 void LivingEntity::removeAllEffects()
 {
-	//Iterator<Integer> effectIdIterator = activeEffects.keySet().iterator();
-	//while (effectIdIterator.hasNext())
-	for(AUTO_VAR(it, activeEffects.begin()); it != activeEffects.end(); )
-	{
-		//Integer effectId = effectIdIterator.next();
+    for (auto it = activeEffects.begin(); it != activeEffects.end();)
+    {
 		MobEffectInstance *effect = it->second;//activeEffects.get(effectId);
 
 		if (!level->isClientSide)
 		{
-			//effectIdIterator.remove();
 			it = activeEffects.erase(it);
 			onEffectRemoved(effect);
 			delete effect;
@@ -595,9 +591,9 @@ vector<MobEffectInstance *> *LivingEntity::getActiveEffects()
 {
 	vector<MobEffectInstance *> *active = new vector<MobEffectInstance *>();
 
-	for(AUTO_VAR(it, activeEffects.begin()); it != activeEffects.end(); ++it)
+	for(auto& it : activeEffects)
 	{
-		active->push_back(it->second);
+		active->push_back(it.second);
 	}
 
 	return active;
@@ -615,10 +611,10 @@ bool LivingEntity::hasEffect(MobEffect *effect)
 
 MobEffectInstance *LivingEntity::getEffect(MobEffect *effect)
 {
-	MobEffectInstance *effectInst = NULL;
+	MobEffectInstance *effectInst = nullptr;
 
-	AUTO_VAR(it, activeEffects.find(effect->id));
-	if(it != activeEffects.end() ) effectInst = it->second;
+    auto it = activeEffects.find(effect->id);
+    if(it != activeEffects.end() ) effectInst = it->second;
 
 	return effectInst;
 }
@@ -685,11 +681,11 @@ bool LivingEntity::isInvertedHealAndHarm()
 
 void LivingEntity::removeEffectNoUpdate(int effectId)
 {
-	AUTO_VAR(it, activeEffects.find(effectId));
-	if (it != activeEffects.end())
+    auto it = activeEffects.find(effectId);
+    if (it != activeEffects.end())
 	{
 		MobEffectInstance *effect = it->second;
-		if(effect != NULL)
+		if(effect != nullptr)
 		{
 			delete effect;
 		}
@@ -699,11 +695,11 @@ void LivingEntity::removeEffectNoUpdate(int effectId)
 
 void LivingEntity::removeEffect(int effectId)
 {
-	AUTO_VAR(it, activeEffects.find(effectId));
-	if (it != activeEffects.end())
+    auto it = activeEffects.find(effectId);
+    if (it != activeEffects.end())
 	{
 		MobEffectInstance *effect = it->second;
-		if(effect != NULL)
+		if(effect != nullptr)
 		{
 			onEffectRemoved(effect);
 			delete effect;
@@ -734,7 +730,7 @@ void LivingEntity::onEffectRemoved(MobEffectInstance *effect)
 	if (!level->isClientSide) MobEffect::effects[effect->getId()]->removeAttributeModifiers(dynamic_pointer_cast<LivingEntity>(shared_from_this()), getAttributes(), effect->getAmplifier());
 }
 
-void LivingEntity::heal(float heal) 
+void LivingEntity::heal(float heal)
 {
 	float health = getHealth();
 	if (health > 0)
@@ -753,7 +749,7 @@ void LivingEntity::setHealth(float health)
 	entityData->set(DATA_HEALTH_ID, Mth::clamp(health, 0.0f, getMaxHealth()));
 }
 
-bool LivingEntity::hurt(DamageSource *source, float dmg) 
+bool LivingEntity::hurt(DamageSource *source, float dmg)
 {
 	if (isInvulnerable()) return false;
 
@@ -761,8 +757,8 @@ bool LivingEntity::hurt(DamageSource *source, float dmg)
 	// Fix for #8823 - Gameplay: Confirmation that a monster or animal has taken damage from an attack is highly delayed
 	// 4J Stu - Change to the fix to only show damage when attacked, rather than collision damage
 	// Fix for #10299 - When in corners, passive mobs may show that they are taking damage.
-	// 4J Stu - Change to the fix for TU6, as source is never NULL due to changes in 1.8.2 to what source actually is
-	if (level->isClientSide && dynamic_cast<EntityDamageSource *>(source) == NULL) return false;
+	// 4J Stu - Change to the fix for TU6, as source is never nullptr due to changes in 1.8.2 to what source actually is
+	if (level->isClientSide && dynamic_cast<EntityDamageSource *>(source) == nullptr) return false;
 	noActionTime = 0;
 	if (getHealth() <= 0) return false;
 
@@ -777,23 +773,23 @@ bool LivingEntity::hurt(DamageSource *source, float dmg)
 		return false;
 	}
 
-	if ((source == DamageSource::anvil || source == DamageSource::fallingBlock) && getCarried(SLOT_HELM) != NULL)
+	if ((source == DamageSource::anvil || source == DamageSource::fallingBlock) && getCarried(SLOT_HELM) != nullptr)
 	{
-		getCarried(SLOT_HELM)->hurtAndBreak((int) (dmg * 4 + random->nextFloat() * dmg * 2.0f), dynamic_pointer_cast<LivingEntity>( shared_from_this() ));
+		getCarried(SLOT_HELM)->hurtAndBreak(static_cast<int>(dmg * 4 + random->nextFloat() * dmg * 2.0f), dynamic_pointer_cast<LivingEntity>( shared_from_this() ));
 		dmg *= 0.75f;
 	}
 
 	walkAnimSpeed = 1.5f;
 
 	bool sound = true;
-	if (invulnerableTime > invulnerableDuration / 2.0f) 
+	if (invulnerableTime > invulnerableDuration / 2.0f)
 	{
 		if (dmg <= lastHurt) return false;
 		if(!level->isClientSide) actuallyHurt(source, dmg - lastHurt);
 		lastHurt = dmg;
 		sound = false;
-	} 
-	else 
+	}
+	else
 	{
 		lastHurt = dmg;
 		lastHealth = getHealth();
@@ -805,7 +801,7 @@ bool LivingEntity::hurt(DamageSource *source, float dmg)
 	hurtDir = 0;
 
 	shared_ptr<Entity> sourceEntity = source->getEntity();
-	if (sourceEntity != NULL)
+	if (sourceEntity != nullptr)
 	{
 		if ( sourceEntity->instanceof(eTYPE_LIVINGENTITY) )
 		{
@@ -837,31 +833,31 @@ bool LivingEntity::hurt(DamageSource *source, float dmg)
 	{
 		level->broadcastEntityEvent(shared_from_this(), EntityEvent::HURT);
 		if (source != DamageSource::drown) markHurt();
-		if (sourceEntity != NULL) 
+		if (sourceEntity != nullptr)
 		{
 			double xd = sourceEntity->x - x;
 			double zd = sourceEntity->z - z;
-			while (xd * xd + zd * zd < 0.0001) 
+			while (xd * xd + zd * zd < 0.0001)
 			{
 				xd = (Math::random() - Math::random()) * 0.01;
 				zd = (Math::random() - Math::random()) * 0.01;
 			}
-			hurtDir = (float) (atan2(zd, xd) * 180 / PI) - yRot;
+			hurtDir = static_cast<float>(atan2(zd, xd) * 180 / PI) - yRot;
 			knockback(sourceEntity, dmg, xd, zd);
-		} 
-		else 
+		}
+		else
 		{
-			hurtDir = (float) (int) ((Math::random() * 2) * 180); // 4J This cast is the same as Java
+			hurtDir = static_cast<float>((int)((Math::random() * 2) * 180)); // 4J This cast is the same as Java
 		}
 	}
 
 	MemSect(31);
-	if (getHealth() <= 0) 
+	if (getHealth() <= 0)
 	{
 		if (sound) playSound(getDeathSound(), getSoundVolume(), getVoicePitch());
 		die(source);
-	} 
-	else 
+	}
+	else
 	{
 		if (sound) playSound(getHurtSound(), getSoundVolume(), getVoicePitch());
 	}
@@ -888,22 +884,22 @@ void LivingEntity::breakItem(shared_ptr<ItemInstance> itemInstance)
 	}
 }
 
-void LivingEntity::die(DamageSource *source) 
+void LivingEntity::die(DamageSource *source)
 {
 	shared_ptr<Entity> sourceEntity = source->getEntity();
 	shared_ptr<LivingEntity> killer = getKillCredit();
-	if (deathScore >= 0 && killer != NULL) killer->awardKillScore(shared_from_this(), deathScore);
+	if (deathScore >= 0 && killer != nullptr) killer->awardKillScore(shared_from_this(), deathScore);
 
-	if (sourceEntity != NULL) sourceEntity->killed( dynamic_pointer_cast<LivingEntity>( shared_from_this() ) );
+	if (sourceEntity != nullptr) sourceEntity->killed( dynamic_pointer_cast<LivingEntity>( shared_from_this() ) );
 
 	dead = true;
 
-	if (!level->isClientSide) 
+	if (!level->isClientSide)
 	{
 		int playerBonus = 0;
 
-		shared_ptr<Player> player = nullptr; 
-		if ( (sourceEntity != NULL) && sourceEntity->instanceof(eTYPE_PLAYER) )
+		shared_ptr<Player> player = nullptr;
+		if ( (sourceEntity != nullptr) && sourceEntity->instanceof(eTYPE_PLAYER) )
 		{
 			player = dynamic_pointer_cast<Player>(sourceEntity);
 			playerBonus = EnchantmentHelper::getKillingLootBonus(dynamic_pointer_cast<LivingEntity>(player));
@@ -924,7 +920,7 @@ void LivingEntity::die(DamageSource *source)
 		}
 
 		// 4J-JEV, hook for Durango mobKill event.
-		if (player != NULL)
+		if (player != nullptr)
 		{
 			player->awardStat(GenericStats::killMob(),GenericStats::param_mobKill(player, dynamic_pointer_cast<Mob>(shared_from_this()), source));
 		}
@@ -937,7 +933,7 @@ void LivingEntity::dropEquipment(bool byPlayer, int playerBonusLevel)
 {
 }
 
-void LivingEntity::knockback(shared_ptr<Entity> source, float dmg, double xd, double zd) 
+void LivingEntity::knockback(shared_ptr<Entity> source, float dmg, double xd, double zd)
 {
 	if (random->nextDouble() < getAttribute(SharedMonsterAttributes::KNOCKBACK_RESISTANCE)->getValue())
 	{
@@ -959,12 +955,12 @@ void LivingEntity::knockback(shared_ptr<Entity> source, float dmg, double xd, do
 	if (yd > 0.4f) yd = 0.4f;
 }
 
-int LivingEntity::getHurtSound() 
+int LivingEntity::getHurtSound()
 {
 	return eSoundType_DAMAGE_HURT;
 }
 
-int LivingEntity::getDeathSound() 
+int LivingEntity::getDeathSound()
 {
 	return eSoundType_DAMAGE_HURT;
 }
@@ -972,7 +968,7 @@ int LivingEntity::getDeathSound()
 /**
 * Drop extra rare loot. Only occurs roughly 5% of the time, rareRootLevel
 * is set to 1 (otherwise 0) 1% of the time.
-* 
+*
 * @param rareLootLevel
 */
 void LivingEntity::dropRareDeathLoot(int rareLootLevel)
@@ -980,11 +976,11 @@ void LivingEntity::dropRareDeathLoot(int rareLootLevel)
 
 }
 
-void LivingEntity::dropDeathLoot(bool wasKilledByPlayer, int playerBonusLevel) 
+void LivingEntity::dropDeathLoot(bool wasKilledByPlayer, int playerBonusLevel)
 {
 }
 
-bool LivingEntity::onLadder() 
+bool LivingEntity::onLadder()
 {
 	int xt = Mth::floor(x);
 	int yt = Mth::floor(bb->y0);
@@ -995,24 +991,24 @@ bool LivingEntity::onLadder()
 	return  (iTile== Tile::ladder_Id) || (iTile== Tile::vine_Id);
 }
 
-bool LivingEntity::isShootable() 
+bool LivingEntity::isShootable()
 {
 	return true;
 }
 
-bool LivingEntity::isAlive() 
+bool LivingEntity::isAlive()
 {
 	return !removed && getHealth() > 0;
 }
 
-void LivingEntity::causeFallDamage(float distance) 
+void LivingEntity::causeFallDamage(float distance)
 {
 	Entity::causeFallDamage(distance);
 	MobEffectInstance *jumpBoost = getEffect(MobEffect::jump);
-	float padding = jumpBoost != NULL ? jumpBoost->getAmplifier() + 1 : 0;
+	float padding = jumpBoost != nullptr ? jumpBoost->getAmplifier() + 1 : 0;
 
-	int dmg = (int) ceil(distance - 3 - padding);
-	if (dmg > 0) 
+	int dmg = static_cast<int>(ceil(distance - 3 - padding));
+	if (dmg > 0)
 	{
 		// 4J - new sounds here brought forward from 1.2.3
 		if (dmg > 4)
@@ -1026,7 +1022,7 @@ void LivingEntity::causeFallDamage(float distance)
 		hurt(DamageSource::fall, dmg);
 
 		int t = level->getTile( Mth::floor(x), Mth::floor(y - 0.2f - this->heightOffset), Mth::floor(z));
-		if (t > 0) 
+		if (t > 0)
 		{
 			const Tile::SoundType *soundType = Tile::tiles[t]->soundType;
 			MemSect(31);
@@ -1036,7 +1032,7 @@ void LivingEntity::causeFallDamage(float distance)
 	}
 }
 
-void LivingEntity::animateHurt() 
+void LivingEntity::animateHurt()
 {
 	hurtTime = hurtDuration = 10;
 	hurtDir = 0;
@@ -1044,7 +1040,7 @@ void LivingEntity::animateHurt()
 
 /**
 * Fetches the mob's armor value, from 0 (no armor) to 20 (full armor)
-* 
+*
 * @return
 */
 int LivingEntity::getArmorValue()
@@ -1054,9 +1050,9 @@ int LivingEntity::getArmorValue()
 	for (unsigned int i = 0; i < items.length; ++i)
 	{
 		shared_ptr<ItemInstance> item = items[i];
-		if (item != NULL && dynamic_cast<ArmorItem *>(item->getItem()) != NULL)
+		if (item != nullptr && dynamic_cast<ArmorItem *>(item->getItem()) != nullptr)
 		{
-			int baseProtection = ((ArmorItem *) item->getItem())->defense;
+			int baseProtection = static_cast<ArmorItem *>(item->getItem())->defense;
 			val += baseProtection;
 		}
 	}
@@ -1111,7 +1107,7 @@ float LivingEntity::getDamageAfterMagicAbsorb(DamageSource *damageSource, float 
 	return damage;
 }
 
-void LivingEntity::actuallyHurt(DamageSource *source, float dmg) 
+void LivingEntity::actuallyHurt(DamageSource *source, float dmg)
 {
 	if (isInvulnerable()) return;
 	dmg = getDamageAfterArmorAbsorb(source, dmg);
@@ -1135,15 +1131,15 @@ CombatTracker *LivingEntity::getCombatTracker()
 
 shared_ptr<LivingEntity> LivingEntity::getKillCredit()
 {
-	if (combatTracker->getKiller() != NULL) return combatTracker->getKiller();
-	if (lastHurtByPlayer != NULL) return lastHurtByPlayer;
-	if (lastHurtByMob != NULL) return lastHurtByMob;
+	if (combatTracker->getKiller() != nullptr) return combatTracker->getKiller();
+	if (lastHurtByPlayer != nullptr) return lastHurtByPlayer;
+	if (lastHurtByMob != nullptr) return lastHurtByMob;
 	return nullptr;
 }
 
 float LivingEntity::getMaxHealth()
 {
-	return (float) getAttribute(SharedMonsterAttributes::MAX_HEALTH)->getValue();
+	return static_cast<float>(getAttribute(SharedMonsterAttributes::MAX_HEALTH)->getValue());
 }
 
 int LivingEntity::getArrowCount()
@@ -1153,7 +1149,7 @@ int LivingEntity::getArrowCount()
 
 void LivingEntity::setArrowCount(int count)
 {
-	entityData->set(DATA_ARROW_COUNT_ID, (byte) count);
+	entityData->set(DATA_ARROW_COUNT_ID, static_cast<byte>(count));
 }
 
 int LivingEntity::getCurrentSwingDuration()
@@ -1176,16 +1172,16 @@ void LivingEntity::swing()
 		swingTime = -1;
 		swinging = true;
 
-		if (dynamic_cast<ServerLevel *>(level) != NULL)
+		if (dynamic_cast<ServerLevel *>(level) != nullptr)
 		{
-			((ServerLevel *) level)->getTracker()->broadcast(shared_from_this(), shared_ptr<AnimatePacket>( new AnimatePacket(shared_from_this(), AnimatePacket::SWING)));
+			static_cast<ServerLevel *>(level)->getTracker()->broadcast(shared_from_this(), std::make_shared<AnimatePacket>(shared_from_this(), AnimatePacket::SWING));
 		}
 	}
 }
 
-void LivingEntity::handleEntityEvent(byte id) 
+void LivingEntity::handleEntityEvent(byte id)
 {
-	if (id == EntityEvent::HURT) 
+	if (id == EntityEvent::HURT)
 	{
 		walkAnimSpeed = 1.5f;
 
@@ -1197,32 +1193,32 @@ void LivingEntity::handleEntityEvent(byte id)
 		// 4J-PB -added because villagers have no sounds
 		int iHurtSound=getHurtSound();
 		if(iHurtSound!=-1)
-		{		
+		{
 			playSound(iHurtSound, getSoundVolume(), (random->nextFloat() - random->nextFloat()) * 0.2f + 1.0f);
 		}
 		MemSect(0);
 		hurt(DamageSource::genericSource, 0);
-	} 
-	else if (id == EntityEvent::DEATH) 
+	}
+	else if (id == EntityEvent::DEATH)
 	{
 		MemSect(31);
 		// 4J-PB -added because villagers have no sounds
 		int iDeathSound=getDeathSound();
 		if(iDeathSound!=-1)
-		{		
+		{
 			playSound(iDeathSound, getSoundVolume(), (random->nextFloat() - random->nextFloat()) * 0.2f + 1.0f);
 		}
 		MemSect(0);
 		setHealth(0);
 		die(DamageSource::genericSource);
-	} 
-	else 
+	}
+	else
 	{
 		Entity::handleEntityEvent(id);
 	}
 }
 
-void LivingEntity::outOfWorld() 
+void LivingEntity::outOfWorld()
 {
 	hurt(DamageSource::outOfWorld, 4);
 }
@@ -1244,7 +1240,7 @@ void LivingEntity::updateSwingTime()
 		swingTime = 0;
 	}
 
-	attackAnim = swingTime / (float) currentSwingDuration;
+	attackAnim = swingTime / static_cast<float>(currentSwingDuration);
 }
 
 AttributeInstance *LivingEntity::getAttribute(Attribute *attribute)
@@ -1254,7 +1250,7 @@ AttributeInstance *LivingEntity::getAttribute(Attribute *attribute)
 
 BaseAttributeMap *LivingEntity::getAttributes()
 {
-	if (attributes == NULL)
+	if (attributes == nullptr)
 	{
 		attributes = new ServersideAttributeMap();
 	}
@@ -1272,7 +1268,7 @@ void LivingEntity::setSprinting(bool value)
 	Entity::setSprinting(value);
 
 	AttributeInstance *speed = getAttribute(SharedMonsterAttributes::MOVEMENT_SPEED);
-	if (speed->getModifier(eModifierId_MOB_SPRINTING) != NULL)
+	if (speed->getModifier(eModifierId_MOB_SPRINTING) != nullptr)
 	{
 		speed->removeModifier(eModifierId_MOB_SPRINTING);
 	}
@@ -1282,7 +1278,7 @@ void LivingEntity::setSprinting(bool value)
 	}
 }
 
-float LivingEntity::getSoundVolume() 
+float LivingEntity::getSoundVolume()
 {
 	return 1;
 }
@@ -1297,54 +1293,58 @@ float LivingEntity::getVoicePitch()
 	return (random->nextFloat() - random->nextFloat()) * 0.2f + 1.0f;
 }
 
-bool LivingEntity::isImmobile() 
+bool LivingEntity::isImmobile()
 {
 	return getHealth() <= 0;
 }
 
-void LivingEntity::teleportTo(double x, double y, double z) 
+void LivingEntity::teleportTo(double x, double y, double z)
 {
 	moveTo(x, y, z, yRot, xRot);
 }
 
 void LivingEntity::findStandUpPosition(shared_ptr<Entity> vehicle)
 {
-	AABB *boundingBox;
-	double fallbackX = vehicle->x;
-	double fallbackY = vehicle->bb->y0 + vehicle->bbHeight;
-	double fallbackZ = vehicle->z;
+    const double vehicleX = vehicle->x;
+    const double vehicleY = vehicle->bb->y0 + vehicle->bbHeight;
+    const double vehicleZ = vehicle->z;
+    double fallbackX = vehicleX;
+    double fallbackY = vehicleY;
+    double fallbackZ = vehicleZ;
+    const double searchY = vehicleY;
 
-	for (double xDiff = -1.5; xDiff < 2; xDiff += 1.5)
-	{
-		for (double zDiff = -1.5; zDiff < 2; zDiff += 1.5)
-		{
-			if (xDiff == 0 && zDiff == 0)
-			{
-				continue;
-			}
+    for (double xDiff = -1.5; xDiff < 2; xDiff += 1.5)
+    {
+        for (double zDiff = -1.5; zDiff < 2; zDiff += 1.5)
+        {
+            if (xDiff == 0 && zDiff == 0)
+            {
+                continue;
+            }
 
-			int xToInt = (int) (x + xDiff);
-			int zToInt = (int) (z + zDiff);
-			boundingBox = bb->cloneMove(xDiff, 1, zDiff);
+            const int xToInt = static_cast<int>(vehicleX + xDiff);
+            const int zToInt = static_cast<int>(vehicleZ + zDiff);
+            AABB *boundingBox = bb->cloneMove(vehicleX + xDiff - x, searchY + 1 - y, vehicleZ + zDiff - z);
 
-			if (level->getTileCubes(boundingBox, true)->empty())
-			{
-				if (level->isTopSolidBlocking(xToInt, (int) y, zToInt))
-				{
-					teleportTo(x + xDiff, y + 1, z + zDiff);
-					return;
-				}
-				else if (level->isTopSolidBlocking(xToInt, (int) y - 1, zToInt) || level->getMaterial(xToInt, (int) y - 1, zToInt) == Material::water)
-				{
-					fallbackX = x + xDiff;
-					fallbackY = y + 1;
-					fallbackZ = z + zDiff;
-				}
-			}
-		}
-	}
+            if (level->getTileCubes(boundingBox, true)->empty())
+            {
+                if (level->isTopSolidBlocking(xToInt, static_cast<int>(searchY), zToInt))
+                {
+                    teleportTo(vehicleX + xDiff, searchY + 1, vehicleZ + zDiff);
+                    return;
+                }
+                if (level->isTopSolidBlocking(xToInt, static_cast<int>(searchY) - 1, zToInt) ||
+                    level->getMaterial(xToInt, static_cast<int>(searchY) - 1, zToInt) == Material::water)
+                {
+                    fallbackX = vehicleX + xDiff;
+                    fallbackY = searchY + 1;
+                    fallbackZ = vehicleZ + zDiff;
+                }
+            }
+        }
+    }
 
-	teleportTo(fallbackX, fallbackY, fallbackZ);
+    teleportTo(fallbackX, fallbackY, fallbackZ);
 }
 
 bool LivingEntity::shouldShowName()
@@ -1352,12 +1352,12 @@ bool LivingEntity::shouldShowName()
 	return false;
 }
 
-Icon *LivingEntity::getItemInHandIcon(shared_ptr<ItemInstance> item, int layer) 
+Icon *LivingEntity::getItemInHandIcon(shared_ptr<ItemInstance> item, int layer)
 {
 	return item->getIcon();
 }
 
-void LivingEntity::jumpFromGround() 
+void LivingEntity::jumpFromGround()
 {
 	yd = 0.42f;
 	if (hasEffect(MobEffect::jump))
@@ -1374,11 +1374,11 @@ void LivingEntity::jumpFromGround()
 	this->hasImpulse = true;
 }
 
-void LivingEntity::travel(float xa, float ya) 
+void LivingEntity::travel(float xa, float ya)
 {
 #ifdef __PSVITA__
 	// AP - dynamic_pointer_cast is a non-trivial call
-	Player *thisPlayer = NULL;
+	Player *thisPlayer = nullptr;
 	if( this->instanceof(eTYPE_PLAYER) )
 	{
 		thisPlayer = (Player*) this;
@@ -1386,7 +1386,7 @@ void LivingEntity::travel(float xa, float ya)
 #else
 	shared_ptr<Player> thisPlayer = dynamic_pointer_cast<Player>(shared_from_this());
 #endif
-	if (isInWater() && !(thisPlayer && thisPlayer->abilities.flying) ) 
+	if (isInWater() && !(thisPlayer && thisPlayer->abilities.flying) )
 	{
 		double yo = y;
 		moveRelative(xa, ya, useNewAi() ? 0.04f : 0.02f);
@@ -1397,12 +1397,12 @@ void LivingEntity::travel(float xa, float ya)
 		zd *= 0.80f;
 		yd -= 0.02;
 
-		if (horizontalCollision && isFree(xd, yd + 0.6f - y + yo, zd)) 
+		if (horizontalCollision && isFree(xd, yd + 0.6f - y + yo, zd))
 		{
 			yd = 0.3f;
 		}
-	} 
-	else if (isInLava() && !(thisPlayer && thisPlayer->abilities.flying) ) 
+	}
+	else if (isInLava() && !(thisPlayer && thisPlayer->abilities.flying) )
 	{
 		double yo = y;
 		moveRelative(xa, ya, 0.02f);
@@ -1412,19 +1412,19 @@ void LivingEntity::travel(float xa, float ya)
 		zd *= 0.50f;
 		yd -= 0.02;
 
-		if (horizontalCollision && isFree(xd, yd + 0.6f - y + yo, zd)) 
+		if (horizontalCollision && isFree(xd, yd + 0.6f - y + yo, zd))
 		{
 			yd = 0.3f;
 		}
-	} 
-	else 
+	}
+	else
 	{
 		float friction = 0.91f;
-		if (onGround) 
+		if (onGround)
 		{
 			friction = 0.6f * 0.91f;
 			int t = level->getTile(Mth::floor(x), Mth::floor(bb->y0) - 1, Mth::floor(z));
-			if (t > 0) 
+			if (t > 0)
 			{
 				friction = Tile::tiles[t]->friction * 0.91f;
 			}
@@ -1445,16 +1445,16 @@ void LivingEntity::travel(float xa, float ya)
 		moveRelative(xa, ya, speed);
 
 		friction = 0.91f;
-		if (onGround) 
+		if (onGround)
 		{
 			friction = 0.6f * 0.91f;
 			int t = level->getTile( Mth::floor(x), Mth::floor(bb->y0) - 1, Mth::floor(z));
-			if (t > 0) 
+			if (t > 0)
 			{
 				friction = Tile::tiles[t]->friction * 0.91f;
 			}
 		}
-		if (onLadder()) 
+		if (onLadder())
 		{
 			float max = 0.15f;
 			if (xd < -max) xd = -max;
@@ -1469,12 +1469,12 @@ void LivingEntity::travel(float xa, float ya)
 
 		move(xd, yd, zd);
 
-		if (horizontalCollision && onLadder()) 
+		if (horizontalCollision && onLadder())
 		{
 			yd = 0.2;
 		}
 
-		if (!level->isClientSide || (level->hasChunkAt((int) x, 0, (int) z) && level->getChunkAt((int) x, (int) z)->loaded))
+		if (!level->isClientSide || (level->hasChunkAt(static_cast<int>(x), 0, static_cast<int>(z)) && level->getChunkAt(static_cast<int>(x), static_cast<int>(z))->loaded))
 		{
 			yd -= 0.08;
 		}
@@ -1517,12 +1517,12 @@ int LivingEntity::getLightColor(float a)
 		for( int yt = ymin; yt <= ymax; yt++ )
 			for( int zt = zmin; zt <= zmax; zt++ )
 			{
-				float tilexmin = (float)xt;
-				float tilexmax = (float)(xt+1);
-				float tileymin = (float)yt;
-				float tileymax = (float)(yt+1);
-				float tilezmin = (float)zt;
-				float tilezmax = (float)(zt+1);
+				float tilexmin = static_cast<float>(xt);
+				float tilexmax = static_cast<float>(xt + 1);
+				float tileymin = static_cast<float>(yt);
+				float tileymax = static_cast<float>(yt + 1);
+				float tilezmin = static_cast<float>(zt);
+				float tilezmax = static_cast<float>(zt + 1);
 				if( tilexmin < bb->x0 ) tilexmin = bb->x0;
 				if( tilexmax > bb->x1 ) tilexmax = bb->x1;
 				if( tileymin < bb->y0 ) tileymin = bb->y0;
@@ -1532,14 +1532,14 @@ int LivingEntity::getLightColor(float a)
 				float tileVol = ( tilexmax - tilexmin ) * ( tileymax - tileymin ) * ( tilezmax - tilezmin );
 				float frac = tileVol / totVol;
 				int lc = level->getLightColor(xt, yt, zt, 0);
-				accum[0] += frac * (float)( lc & 0xffff );
-				accum[1] += frac * (float)( lc >> 16 );
+				accum[0] += frac * static_cast<float>(lc & 0xffff);
+				accum[1] += frac * static_cast<float>(lc >> 16);
 			}
 
 			if( accum[0] > 240.0f ) accum[0] = 240.0f;
 			if( accum[1] > 240.0f ) accum[1] = 240.0f;
 
-			return ( ( (int)accum[1])<<16) | ((int)accum[0]);
+			return ( static_cast<int>(accum[1])<<16) | static_cast<int>(accum[0]);
 }
 
 bool LivingEntity::useNewAi()
@@ -1570,12 +1570,12 @@ bool LivingEntity::doHurtTarget(shared_ptr<Entity> target)
 	return false;
 }
 
-bool LivingEntity::isSleeping() 
+bool LivingEntity::isSleeping()
 {
 	return false;
 }
 
-void LivingEntity::tick() 
+void LivingEntity::tick()
 {
 	Entity::tick();
 
@@ -1602,10 +1602,10 @@ void LivingEntity::tick()
 
 			if (!ItemInstance::matches(current, previous))
 			{
-				((ServerLevel *) level)->getTracker()->broadcast(shared_from_this(), shared_ptr<SetEquippedItemPacket>( new SetEquippedItemPacket(entityId, i, current)));
-				if (previous != NULL) attributes->removeItemModifiers(previous);
-				if (current != NULL) attributes->addItemModifiers(current);
-				lastEquipment[i] = current == NULL ? nullptr : current->copy();
+				static_cast<ServerLevel *>(level)->getTracker()->broadcast(shared_from_this(), std::make_shared<SetEquippedItemPacket>(entityId, i, current));
+				if (previous != nullptr) attributes->removeItemModifiers(previous);
+				if (current != nullptr) attributes->addItemModifiers(current);
+				lastEquipment[i] = current == nullptr ? nullptr : current->copy();
 			}
 		}
 	}
@@ -1622,17 +1622,17 @@ void LivingEntity::tick()
 	float walkSpeed = 0;
 	oRun = run;
 	float tRun = 0;
-	if (sideDist > 0.05f * 0.05f) 
+	if (sideDist > 0.05f * 0.05f)
 	{
 		tRun = 1;
 		walkSpeed = sqrt(sideDist) * 3;
-		yBodyRotT = ((float) atan2(zd, xd) * 180 / (float) PI - 90);
+		yBodyRotT = (static_cast<float>(atan2(zd, xd)) * 180 / (float) PI - 90);
 	}
-	if (attackAnim > 0) 
+	if (attackAnim > 0)
 	{
 		yBodyRotT = yRot;
 	}
-	if (!onGround) 
+	if (!onGround)
 	{
 		tRun = 0;
 	}
@@ -1686,10 +1686,10 @@ float LivingEntity::tickHeadTurn(float yBodyRotT, float walkSpeed)
 	return walkSpeed;
 }
 
-void LivingEntity::aiStep() 
+void LivingEntity::aiStep()
 {
 	if (noJumpDelay > 0) noJumpDelay--;
-	if (lSteps > 0) 
+	if (lSteps > 0)
 	{
 		double xt = x + (lx - x) / lSteps;
 		double yt = y + (ly - y) / lSteps;
@@ -1698,8 +1698,8 @@ void LivingEntity::aiStep()
 		double yrd = Mth::wrapDegrees(lyr - yRot);
 		double xrd = Mth::wrapDegrees(lxr - xRot);
 
-		yRot += (float) ( (yrd) / lSteps );
-		xRot += (float) ( (xrd) / lSteps );
+		yRot += static_cast<float>((yrd) / lSteps);
+		xRot += static_cast<float>((xrd) / lSteps);
 
 		lSteps--;
 		setPos(xt, yt, zt);
@@ -1716,10 +1716,8 @@ void LivingEntity::aiStep()
 		if (collisions->size() > 0)
 		{
 			double yTop = 0;
-			AUTO_VAR(itEnd, collisions->end());
-			for (AUTO_VAR(it, collisions->begin()); it != itEnd; it++)
+			for (const auto& ab : *collisions)
 			{
-				AABB *ab = *it; //collisions->at(i);
 				if (ab->y1 > yTop) yTop = ab->y1;
 			}
 
@@ -1740,14 +1738,14 @@ void LivingEntity::aiStep()
 	if (abs(yd) < MIN_MOVEMENT_DISTANCE) yd = 0;
 	if (abs(zd) < MIN_MOVEMENT_DISTANCE) zd = 0;
 
-	if (isImmobile()) 
+	if (isImmobile())
 	{
 		jumping = false;
 		xxa = 0;
 		yya = 0;
 		yRotA = 0;
-	} 
-	else 
+	}
+	else
 	{
 		MemSect(25);
 		if (isEffectiveAi())
@@ -1765,13 +1763,13 @@ void LivingEntity::aiStep()
 		MemSect(0);
 	}
 
-	if (jumping) 
+	if (jumping)
 	{
-		if (isInWater() || isInLava() ) 
+		if (isInWater() || isInLava() )
 		{
 			yd += 0.04f;
 		}
-		else if (onGround) 
+		else if (onGround)
 		{
 			if (noJumpDelay == 0)
 			{
@@ -1806,13 +1804,12 @@ void LivingEntity::pushEntities()
 {
 
 	vector<shared_ptr<Entity> > *entities = level->getEntities(shared_from_this(), this->bb->grow(0.2f, 0, 0.2f));
-	if (entities != NULL && !entities->empty()) 
+	if (entities != nullptr && !entities->empty())
 	{
-		AUTO_VAR(itEnd, entities->end());
-		for (AUTO_VAR(it, entities->begin()); it != itEnd; it++)
+		for (auto& e : *entities)
 		{
-			shared_ptr<Entity> e = *it; //entities->at(i);
-			if (e->isPushable()) e->push(shared_from_this());
+			if ( e && e->isPushable())
+				e->push(shared_from_this());
 		}
 	}
 }
@@ -1822,7 +1819,7 @@ void LivingEntity::doPush(shared_ptr<Entity> e)
 	e->push(shared_from_this());
 }
 
-void LivingEntity::rideTick() 
+void LivingEntity::rideTick()
 {
 	Entity::rideTick();
 	oRun = run;
@@ -1830,7 +1827,7 @@ void LivingEntity::rideTick()
 	fallDistance = 0;
 }
 
-void LivingEntity::lerpTo(double x, double y, double z, float yRot, float xRot, int steps) 
+void LivingEntity::lerpTo(double x, double y, double z, float yRot, float xRot, int steps)
 {
 	heightOffset = 0;
 	lx = x;
@@ -1846,7 +1843,7 @@ void LivingEntity::serverAiMobStep()
 {
 }
 
-void LivingEntity::serverAiStep() 
+void LivingEntity::serverAiStep()
 {
 	noActionTime++;
 }
@@ -1860,38 +1857,38 @@ void LivingEntity::take(shared_ptr<Entity> e, int orgCount)
 {
 	if (!e->removed && !level->isClientSide)
 	{
-		EntityTracker *entityTracker = ((ServerLevel *) level)->getTracker();
+		EntityTracker *entityTracker = static_cast<ServerLevel *>(level)->getTracker();
 		if ( e->instanceof(eTYPE_ITEMENTITY) )
 		{
-			entityTracker->broadcast(e, shared_ptr<TakeItemEntityPacket>( new TakeItemEntityPacket(e->entityId, entityId)));
+			entityTracker->broadcast(e, std::make_shared<TakeItemEntityPacket>(e->entityId, entityId));
 		}
 		else if ( e->instanceof(eTYPE_ARROW) )
 		{
-			entityTracker->broadcast(e, shared_ptr<TakeItemEntityPacket>( new TakeItemEntityPacket(e->entityId, entityId)));
+			entityTracker->broadcast(e, std::make_shared<TakeItemEntityPacket>(e->entityId, entityId));
 		}
 		else if ( e->instanceof(eTYPE_EXPERIENCEORB) )
 		{
-			entityTracker->broadcast(e, shared_ptr<TakeItemEntityPacket>( new TakeItemEntityPacket(e->entityId, entityId)));
+			entityTracker->broadcast(e, std::make_shared<TakeItemEntityPacket>(e->entityId, entityId));
 		}
 	}
 }
 
-bool LivingEntity::canSee(shared_ptr<Entity> target) 
+bool LivingEntity::canSee(shared_ptr<Entity> target)
 {
 	HitResult *hres = level->clip(Vec3::newTemp(x, y + getHeadHeight(), z), Vec3::newTemp(target->x, target->y + target->getHeadHeight(), target->z));
-	bool retVal = (hres == NULL);
+	bool retVal = (hres == nullptr);
 	delete hres;
 	return retVal;
 }
 
-Vec3 *LivingEntity::getLookAngle() 
+Vec3 *LivingEntity::getLookAngle()
 {
 	return getViewVector(1);
 }
 
-Vec3 *LivingEntity::getViewVector(float a) 
+Vec3 *LivingEntity::getViewVector(float a)
 {
-	if (a == 1) 
+	if (a == 1)
 	{
 		float yCos = Mth::cos(-yRot * Mth::RAD_TO_GRAD - PI);
 		float ySin = Mth::sin(-yRot * Mth::RAD_TO_GRAD - PI);
@@ -1911,16 +1908,16 @@ Vec3 *LivingEntity::getViewVector(float a)
 	return Vec3::newTemp(ySin * xCos, xSin, yCos * xCos);
 }
 
-float LivingEntity::getAttackAnim(float a) 
+float LivingEntity::getAttackAnim(float a)
 {
 	float diff = attackAnim - oAttackAnim;
 	if (diff < 0) diff += 1;
 	return oAttackAnim + diff * a;
 }
 
-Vec3 *LivingEntity::getPos(float a) 
+Vec3 *LivingEntity::getPos(float a)
 {
-	if (a == 1) 
+	if (a == 1)
 	{
 		return Vec3::newTemp(x, y, z);
 	}
@@ -1931,7 +1928,7 @@ Vec3 *LivingEntity::getPos(float a)
 	return Vec3::newTemp(x, y, z);
 }
 
-HitResult *LivingEntity::pick(double range, float a) 
+HitResult *LivingEntity::pick(double range, float a)
 {
 	Vec3 *from = getPos(a);
 	Vec3 *b = getViewVector(a);
@@ -1944,17 +1941,17 @@ bool LivingEntity::isEffectiveAi()
 	return !level->isClientSide;
 }
 
-bool LivingEntity::isPickable() 
+bool LivingEntity::isPickable()
 {
 	return !removed;
 }
 
-bool LivingEntity::isPushable() 
+bool LivingEntity::isPushable()
 {
 	return !removed;
 }
 
-float LivingEntity::getHeadHeight() 
+float LivingEntity::getHeadHeight()
 {
 	return bbHeight * 0.85f;
 }
@@ -1987,7 +1984,7 @@ void LivingEntity::setAbsorptionAmount(float absorptionAmount)
 
 Team *LivingEntity::getTeam()
 {
-	return NULL;
+	return nullptr;
 }
 
 bool LivingEntity::isAlliedTo(shared_ptr<LivingEntity> other)
@@ -1997,7 +1994,7 @@ bool LivingEntity::isAlliedTo(shared_ptr<LivingEntity> other)
 
 bool LivingEntity::isAlliedTo(Team *other)
 {
-	if (getTeam() != NULL)
+	if (getTeam() != nullptr)
 	{
 		return getTeam()->isAlliedTo(other);
 	}

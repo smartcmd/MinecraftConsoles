@@ -6,12 +6,12 @@
 
 LevelRuleset::LevelRuleset()
 {
-	m_stringTable = NULL;
+	m_stringTable = nullptr;
 }
 
 LevelRuleset::~LevelRuleset()
 {
-	for(AUTO_VAR(it, m_areas.begin()); it != m_areas.end(); ++it)
+	for (auto it = m_areas.begin(); it != m_areas.end(); ++it)
 	{
 		delete *it;
 	}
@@ -20,17 +20,17 @@ LevelRuleset::~LevelRuleset()
 void LevelRuleset::getChildren(vector<GameRuleDefinition *> *children)
 {
 	CompoundGameRuleDefinition::getChildren(children);
-	for (AUTO_VAR(it, m_areas.begin()); it != m_areas.end(); it++)
-		children->push_back(*it);
+	for (const auto& area : m_areas)
+		children->push_back(area);
 }
 
 GameRuleDefinition *LevelRuleset::addChild(ConsoleGameRules::EGameRuleType ruleType)
 {
-	GameRuleDefinition *rule = NULL;
+	GameRuleDefinition *rule = nullptr;
 	if(ruleType == ConsoleGameRules::eGameRuleType_NamedArea)
 	{
 		rule = new NamedAreaRuleDefinition();
-		m_areas.push_back((NamedAreaRuleDefinition *)rule);
+		m_areas.push_back(static_cast<NamedAreaRuleDefinition *>(rule));
 	}
 	else
 	{
@@ -46,7 +46,7 @@ void LevelRuleset::loadStringTable(StringTable *table)
 
 LPCWSTR LevelRuleset::getString(const wstring &key)
 {
-	if(m_stringTable == NULL)
+	if(m_stringTable == nullptr)
 	{
 		return L"";
 	}
@@ -58,12 +58,12 @@ LPCWSTR LevelRuleset::getString(const wstring &key)
 
 AABB *LevelRuleset::getNamedArea(const wstring &areaName)
 {
-	AABB *area = NULL;
-	for(AUTO_VAR(it, m_areas.begin()); it != m_areas.end(); ++it)
+	AABB *area = nullptr;
+	for(auto& it : m_areas)
 	{
-		if( (*it)->getName().compare(areaName) == 0 )
+		if( it->getName().compare(areaName) == 0 )
 		{
-			area = (*it)->getArea();
+			area = it->getArea();
 			break;
 		}
 	}

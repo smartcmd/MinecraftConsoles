@@ -127,10 +127,10 @@ Fireball::Fireball(Level *level, shared_ptr<LivingEntity> mob, double xa, double
 void Fireball::tick()
 {
 	// 4J-PB - Moved forward from 1.2.3
-	//if (!level->isClientSide && (owner == NULL || owner->removed))
+	//if (!level->isClientSide && (owner == nullptr || owner->removed))
 	if (!level->isClientSide)
 	{
-		if((owner != NULL && owner->removed) || !level->hasChunkAt((int) x, (int) y, (int) z))
+		if((owner != nullptr && owner->removed) || !level->hasChunkAt(static_cast<int>(x), static_cast<int>(y), static_cast<int>(z)))
 		{
 			app.DebugPrintf("Fireball removed - owner is null or removed is true for owner\n");
 			remove();
@@ -193,23 +193,21 @@ void Fireball::tick()
 
     from = Vec3::newTemp(x, y, z);
     to = Vec3::newTemp(x + xd, y + yd, z + zd);
-    if (res != NULL)
+    if (res != nullptr)
 	{
         to = Vec3::newTemp(res->pos->x, res->pos->y, res->pos->z);
     }
     shared_ptr<Entity> hitEntity = nullptr;
     vector<shared_ptr<Entity> > *objects = level->getEntities(shared_from_this(), bb->expand(xd, yd, zd)->grow(1, 1, 1));
     double nearest = 0;
-	AUTO_VAR(itEnd, objects->end());
-	for (AUTO_VAR(it, objects->begin()); it != itEnd; it++)
+	for ( auto& e : *objects )
 	{
-        shared_ptr<Entity> e = *it; //objects->at(i);
-        if (!e->isPickable() || (e->is(owner) )) continue; //4J Stu - Never collide with the owner (Enderdragon) // && flightTime < 25)) continue;
+        if ( e == nullptr || !e->isPickable() || (e->is(owner) )) continue; //4J Stu - Never collide with the owner (Enderdragon) // && flightTime < 25)) continue;
 
         float rr = 0.3f;
         AABB *bb = e->bb->grow(rr, rr, rr);
         HitResult *p = bb->clip(from, to);
-        if (p != NULL)
+        if (p != nullptr)
 		{
             double dd = from->distanceTo(p->pos);
             if (dd < nearest || nearest == 0)
@@ -222,14 +220,14 @@ void Fireball::tick()
 
     }
 
-    if (hitEntity != NULL)
+    if (hitEntity != nullptr)
 	{
 		delete res;
         res = new HitResult(hitEntity);
     }
 	MemSect(0);
 
-    if (res != NULL)
+    if (res != nullptr)
 	{
 		onHit(res);
     }
@@ -239,8 +237,8 @@ void Fireball::tick()
     z += zd;
 
     double sd = sqrt(xd * xd + zd * zd);
-    yRot = (float) (atan2(zd, xd) * 180 / PI) + 90;
-    xRot = (float) (atan2(sd, yd) * 180 / PI) - 90;
+    yRot = static_cast<float>(atan2(zd, xd) * 180 / PI) + 90;
+    xRot = static_cast<float>(atan2(sd, yd) * 180 / PI) - 90;
 
     while (xRot - xRotO < -180)
         xRotO -= 360;
@@ -299,11 +297,11 @@ float Fireball::getInertia()
 
 void Fireball::addAdditonalSaveData(CompoundTag *tag)
 {
-	tag->putShort(L"xTile", (short) xTile);
-    tag->putShort(L"yTile", (short) yTile);
-    tag->putShort(L"zTile", (short) zTile);
-    tag->putByte(L"inTile", (byte) lastTile);
-    tag->putByte(L"inGround", (byte) (inGround ? 1 : 0));
+	tag->putShort(L"xTile", static_cast<short>(xTile));
+    tag->putShort(L"yTile", static_cast<short>(yTile));
+    tag->putShort(L"zTile", static_cast<short>(zTile));
+    tag->putByte(L"inTile", static_cast<byte>(lastTile));
+    tag->putByte(L"inGround", static_cast<byte>(inGround ? 1 : 0));
 	tag->put(L"direction", newDoubleList(3, xd, yd, zd));
 }
 
@@ -345,10 +343,10 @@ bool Fireball::hurt(DamageSource *source, float damage)
 	if (isInvulnerable()) return false;
     markHurt();
 
-    if (source->getEntity() != NULL)
+    if (source->getEntity() != nullptr)
 	{
         Vec3 *lookAngle = source->getEntity()->getLookAngle();
-        if (lookAngle != NULL)
+        if (lookAngle != nullptr)
 		{
             xd = lookAngle->x;
             yd = lookAngle->y;

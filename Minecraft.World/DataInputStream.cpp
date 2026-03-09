@@ -32,8 +32,8 @@ int DataInputStream::read()
 //
 //The read(b) method has the same effect as:
 //
-// read(b, 0, b.length) 
-// 
+// read(b, 0, b.length)
+//
 //Overrides:
 //read in class FilterInputStream
 //Parameters:
@@ -92,17 +92,17 @@ bool DataInputStream::readBoolean()
 //the 8-bit value read.
 byte DataInputStream::readByte()
 {
-	return (byte) stream->read();
+	return static_cast<byte>(stream->read());
 }
 
 unsigned char DataInputStream::readUnsignedByte()
 {
-	return (unsigned char) stream->read();
+	return static_cast<unsigned char>(stream->read());
 }
 
 //Reads two input bytes and returns a char value. Let a be the first byte read and b be the second byte. The value returned is:
 //(char)((a << 8) | (b & 0xff))
-// 
+//
 //This method is suitable for reading bytes written by the writeChar method of interface DataOutput.
 //Returns:
 //the char value read.
@@ -110,7 +110,7 @@ wchar_t DataInputStream::readChar()
 {
 	int a = stream->read();
 	int b = stream->read();
-	return (wchar_t)((a << 8) | (b & 0xff)); 
+	return static_cast<wchar_t>((a << 8) | (b & 0xff));
 }
 
 //Reads some bytes from an input stream and stores them into the buffer array b. The number of bytes read is equal to the length of b.
@@ -170,7 +170,7 @@ bool DataInputStream::readFully(charArray b)
 //the double value read.
 double DataInputStream::readDouble()
 {
-	__int64 bits = readLong();
+	int64_t bits = readLong();
 
 	return Double::longBitsToDouble( bits );
 }
@@ -188,10 +188,10 @@ float DataInputStream::readFloat()
 }
 
 //Reads four input bytes and returns an int value. Let a-d be the first through fourth bytes read. The value returned is:
-// 
+//
 // (((a & 0xff) << 24) | ((b & 0xff) << 16) |
 //  ((c & 0xff) << 8) | (d & 0xff))
-// 
+//
 //This method is suitable for reading bytes written by the writeInt method of interface DataOutput.
 //Returns:
 //the int value read.
@@ -207,7 +207,7 @@ int DataInputStream::readInt()
 }
 
 //Reads eight input bytes and returns a long value. Let a-h be the first through eighth bytes read. The value returned is:
-// 
+//
 // (((long)(a & 0xff) << 56) |
 //  ((long)(b & 0xff) << 48) |
 //  ((long)(c & 0xff) << 40) |
@@ -216,23 +216,23 @@ int DataInputStream::readInt()
 //  ((long)(f & 0xff) << 16) |
 //  ((long)(g & 0xff) <<  8) |
 //  ((long)(h & 0xff)))
-// 
+//
 //This method is suitable for reading bytes written by the writeLong method of interface DataOutput.
 //
 //Returns:
 //the long value read.
-__int64 DataInputStream::readLong()
+int64_t DataInputStream::readLong()
 {
-	__int64 a = stream->read();
-	__int64 b = stream->read();
-	__int64 c = stream->read();
-	__int64 d = stream->read();
-	__int64 e = stream->read();
-	__int64 f = stream->read();
-	__int64 g = stream->read();
-	__int64 h = stream->read();
+	int64_t a = stream->read();
+	int64_t b = stream->read();
+	int64_t c = stream->read();
+	int64_t d = stream->read();
+	int64_t e = stream->read();
+	int64_t f = stream->read();
+	int64_t g = stream->read();
+	int64_t h = stream->read();
 
-	__int64 bits = (((a & 0xff) << 56) |
+	int64_t bits = (((a & 0xff) << 56) |
 		((b & 0xff) << 48) |
 		((c & 0xff) << 40) |
 		((d & 0xff) << 32) |
@@ -246,7 +246,7 @@ __int64 DataInputStream::readLong()
 
 //Reads two input bytes and returns a short value. Let a be the first byte read and b be the second byte. The value returned is:
 //(short)((a << 8) | (b & 0xff))
-// 
+//
 //This method is suitable for reading the bytes written by the writeShort method of interface DataOutput.
 //Returns:
 //the 16-bit value read.
@@ -254,14 +254,14 @@ short DataInputStream::readShort()
 {
 	int a = stream->read();
 	int b = stream->read();
-	return (short)((a << 8) | (b & 0xff));
+	return static_cast<short>((a << 8) | (b & 0xff));
 }
 
 unsigned short DataInputStream::readUnsignedShort()
 {
 	int a = stream->read();
 	int b = stream->read();
-	return (unsigned short)((a << 8) | (b & 0xff));
+	return static_cast<unsigned short>((a << 8) | (b & 0xff));
 }
 
 //Reads in a string that has been encoded using a modified UTF-8 format. The general contract of readUTF is that it reads a representation
@@ -279,13 +279,13 @@ unsigned short DataInputStream::readUnsignedShort()
 //then a UTFDataFormatException is thrown. Otherwise, the group is converted to the character:
 //
 //(char)(((a& 0x1F) << 6) | (b & 0x3F))
-// 
+//
 //If the first byte of a group matches the bit pattern 1110xxxx, then the group consists of that byte a and two more bytes b and c.
 //If there is no byte c (because byte a was one of the last two of the bytes to be read), or either byte b or byte c does not match the bit
 //pattern 10xxxxxx, then a UTFDataFormatException is thrown. Otherwise, the group is converted to the character:
 //
 // (char)(((a & 0x0F) << 12) | ((b & 0x3F) << 6) | (c & 0x3F))
-// 
+//
 //If the first byte of a group matches the pattern 1111xxxx or the pattern 10xxxxxx, then a UTFDataFormatException is thrown.
 //If end of file is encountered at any time during this entire process, then an EOFException is thrown.
 //
@@ -301,7 +301,11 @@ wstring DataInputStream::readUTF()
 	wstring outputString;
 	int a = stream->read();
 	int b = stream->read();
-	unsigned short UTFLength = (unsigned short) (((a & 0xff) << 8) | (b & 0xff));
+	unsigned short UTFLength = static_cast<unsigned short>(((a & 0xff) << 8) | (b & 0xff));
+
+	const unsigned short MAX_UTF_LENGTH = 32767;
+    if (UTFLength > MAX_UTF_LENGTH)
+        return outputString;
 
 	//// 4J Stu - I decided while writing DataOutputStream that we didn't need to bother using the UTF8 format
 	//// used in the java libs, and just write in/out as wchar_t all the time
@@ -312,7 +316,7 @@ wstring DataInputStream::readUTF()
 		outputString.push_back(theChar);
 	}*/
 
-	
+
 	unsigned short currentByteIndex = 0;
 	while( currentByteIndex < UTFLength )
 	{
@@ -343,7 +347,7 @@ wstring DataInputStream::readUTF()
 		else if( (firstByte & 0x80) == 0x00 )
 		{
 			// One byte UTF
-			wchar_t readChar = (wchar_t)firstByte;
+			wchar_t readChar = static_cast<wchar_t>(firstByte);
 			outputString.push_back( readChar );
 			continue;
 		}
@@ -374,7 +378,7 @@ wstring DataInputStream::readUTF()
 				break;
 			}
 
-			wchar_t readChar = (wchar_t)( ((firstByte& 0x1F) << 6) | (secondByte & 0x3F) );
+			wchar_t readChar = static_cast<wchar_t>(((firstByte & 0x1F) << 6) | (secondByte & 0x3F));
 			outputString.push_back( readChar );
 			continue;
 		}
@@ -397,7 +401,7 @@ wstring DataInputStream::readUTF()
 			{
 				// TODO 4J Stu - EOFException
 				break;
-			}			
+			}
 
 			// No more bytes to read
 			if( !(currentByteIndex < UTFLength) )
@@ -422,12 +426,12 @@ wstring DataInputStream::readUTF()
 				break;
 			}
 
-			wchar_t readChar = (wchar_t)(((firstByte & 0x0F) << 12) | ((secondByte & 0x3F) << 6) | (thirdByte & 0x3F));
+			wchar_t readChar = static_cast<wchar_t>(((firstByte & 0x0F) << 12) | ((secondByte & 0x3F) << 6) | (thirdByte & 0x3F));
 			outputString.push_back( readChar );
 			continue;
 		}
 	}
-	
+
 	return outputString;
 }
 
@@ -493,7 +497,7 @@ int DataInputStream::readUTFChar()
 		{
 			// TODO 4J Stu - EOFException
 			return returnValue;
-		}			
+		}
 
 		int thirdByte = stream->read();
 
@@ -542,7 +546,7 @@ void DataInputStream::deleteChildStream()
 //n - the number of bytes to be skipped.
 //Returns:
 //the actual number of bytes skipped.
-__int64 DataInputStream::skip(__int64 n)
+int64_t DataInputStream::skip(int64_t n)
 {
 	return stream->skip(n);
 }

@@ -34,11 +34,11 @@ RandomScatteredLargeFeature::RandomScatteredLargeFeature(unordered_map<wstring, 
 {
 	_init();
 
-	for(AUTO_VAR(it, options.begin()); it != options.end(); ++it)
+	for(auto& option : options)
 	{
-		if (it->first.compare(OPTION_SPACING) == 0)
+		if (option.first.compare(OPTION_SPACING) == 0)
 		{
-			spacing = Mth::getInt(it->second, spacing, minSeparation + 1);
+			spacing = Mth::getInt(option.second, spacing, minSeparation + 1);
 		}
 	}
 }
@@ -67,7 +67,7 @@ bool RandomScatteredLargeFeature::isFeatureChunk(int x, int z, bool bIsSuperflat
 
 	bool forcePlacement = false;
 	LevelGenerationOptions *levelGenOptions = app.getLevelGenerationOptions();
-	if( levelGenOptions != NULL )
+	if( levelGenOptions != nullptr )
 	{
 		forcePlacement = levelGenOptions->isFeatureChunk(x,z,eFeature_Temples);
 	}
@@ -75,9 +75,8 @@ bool RandomScatteredLargeFeature::isFeatureChunk(int x, int z, bool bIsSuperflat
 	if (forcePlacement || (x == xCenterFeatureChunk && z == zCenterFeatureChunk))
 	{
 		Biome *biome = level->getBiomeSource()->getBiome(x * 16 + 8, z * 16 + 8);
-		for (AUTO_VAR(it,allowedBiomes.begin()); it != allowedBiomes.end(); ++it)
+		for ( const auto& a : allowedBiomes)
 		{
-			Biome *a = *it;
 			if (biome == a)
 			{
 				return true;
@@ -124,14 +123,14 @@ RandomScatteredLargeFeature::ScatteredFeatureStart::ScatteredFeatureStart(Level 
 bool RandomScatteredLargeFeature::isSwamphut(int cellX, int cellY, int cellZ)
 {
 	StructureStart *structureAt = getStructureAt(cellX, cellY, cellZ);
-	if (structureAt == NULL || !( dynamic_cast<ScatteredFeatureStart *>( structureAt ) ) || structureAt->pieces.empty())
+	if (structureAt == nullptr || !( dynamic_cast<ScatteredFeatureStart *>( structureAt ) ) || structureAt->pieces.empty())
 	{
 		return false;
 	}
-	StructurePiece *first = NULL;
-	AUTO_VAR(it, structureAt->pieces.begin());
-	if(it != structureAt->pieces.end() ) first = *it;
-	return dynamic_cast<ScatteredFeaturePieces::SwamplandHut *>(first) != NULL;
+	StructurePiece *first = nullptr;
+    auto it = structureAt->pieces.begin();
+    if(it != structureAt->pieces.end() ) first = *it;
+	return dynamic_cast<ScatteredFeaturePieces::SwamplandHut *>(first) != nullptr;
 }
 
 vector<Biome::MobSpawnerData *> *RandomScatteredLargeFeature::getSwamphutEnemies()

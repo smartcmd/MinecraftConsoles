@@ -11,13 +11,13 @@ void SnowShovelParticle::init(Level *level, double x, double y, double z, double
     yd += ya;
     zd += za;
 
-    rCol = gCol = bCol = 1 - (float) (Math::random() * 0.3f);
+    rCol = gCol = bCol = 1 - static_cast<float>(Math::random() * 0.3f);
     size *= 0.75f;
     size *= scale;
     oSize = size;
 
-    lifetime = (int) (8 / (Math::random() * 0.8 + 0.2));
-    lifetime = (int) ( lifetime * scale );
+    lifetime = static_cast<int>(8 / (Math::random() * 0.8 + 0.2));
+    lifetime = static_cast<int>(lifetime * scale);
     noPhysics = false;
 }
 

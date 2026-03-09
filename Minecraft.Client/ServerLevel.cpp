@@ -1,5 +1,7 @@
 #include "stdafx.h"
 #include "ServerLevel.h"
+
+#include <memory>
 #include "MinecraftServer.h"
 #include "ServerChunkCache.h"
 #include "PlayerList.h"
@@ -40,7 +42,7 @@
 
 WeighedTreasureArray ServerLevel::RANDOM_BONUS_ITEMS;
 
-C4JThread* ServerLevel::m_updateThread = NULL;
+C4JThread* ServerLevel::m_updateThread = nullptr;
 C4JThread::EventArray* ServerLevel::m_updateTrigger;
 CRITICAL_SECTION ServerLevel::m_updateCS[3];
 
@@ -61,7 +63,7 @@ void ServerLevel::staticCtor()
 	InitializeCriticalSection(&m_updateCS[1]);
 	InitializeCriticalSection(&m_updateCS[2]);
 
-	m_updateThread = new C4JThread(runUpdate, NULL, "Tile update");
+	m_updateThread = new C4JThread(runUpdate, nullptr, "Tile update");
 	m_updateThread->SetProcessor(CPU_CORE_TILE_UPDATE);
 #ifdef __ORBIS__
 	m_updateThread->SetPriority(THREAD_PRIORITY_BELOW_NORMAL);	// On Orbis, this core is also used for Matching 2, and that priority of that seems to be always at default no matter what we set it to. Prioritise this below Matching 2.
@@ -96,8 +98,8 @@ void ServerLevel::staticCtor()
 
 ServerLevel::ServerLevel(MinecraftServer *server, shared_ptr<LevelStorage>levelStorage, const wstring& levelName, int dimension, LevelSettings *levelSettings) : Level(levelStorage, levelName, levelSettings, Dimension::getNew(dimension), false)
 {
-	InitializeCriticalSection(&m_limiterCS);	
-	InitializeCriticalSection(&m_tickNextTickCS);	
+	InitializeCriticalSection(&m_limiterCS);
+	InitializeCriticalSection(&m_tickNextTickCS);
 	InitializeCriticalSection(&m_csQueueSendTileUpdates);
 	m_fallingTileCount = 0;
 	m_primedTntCount = 0;
@@ -121,7 +123,7 @@ ServerLevel::ServerLevel(MinecraftServer *server, shared_ptr<LevelStorage>levelS
 	scoreboard = new ServerScoreboard(server);
 
 	//shared_ptr<ScoreboardSaveData> scoreboardSaveData = dynamic_pointer_cast<ScoreboardSaveData>( savedDataStorage->get(typeid(ScoreboardSaveData), ScoreboardSaveData::FILE_ID) );
-	//if (scoreboardSaveData == NULL)
+	//if (scoreboardSaveData == nullptr)
 	//{
 	//	scoreboardSaveData = shared_ptr<ScoreboardSaveData>( new ScoreboardSaveData() );
 	//	savedDataStorage->set(ScoreboardSaveData::FILE_ID, scoreboardSaveData);
@@ -165,9 +167,8 @@ ServerLevel::~ServerLevel()
 	delete mobSpawner;
 
 	EnterCriticalSection(&m_csQueueSendTileUpdates);
-	for(AUTO_VAR(it, m_queuedSendTileUpdates.begin()); it != m_queuedSendTileUpdates.end(); ++it)
+	for(Pos* p : m_queuedSendTileUpdates)
 	{
-		Pos *p = *it;
 		delete p;
 	}
 	m_queuedSendTileUpdates.clear();
@@ -206,7 +207,7 @@ void ServerLevel::tick()
 		if (getGameRules()->getBoolean(GameRules::RULE_DAYLIGHT))
 		{
 			// skip time until new day
-			__int64 newTime = levelData->getDayTime() + TICKS_PER_DAY;
+			int64_t newTime = levelData->getDayTime() + TICKS_PER_DAY;
 
 			// 4J : WESTY : Changed so that time update goes through stats tracking update code.
 			//levelData->setTime(newTime - (newTime % TICKS_PER_DAY));
@@ -238,17 +239,16 @@ void ServerLevel::tick()
 		skyDarken = newDark;
 		if (!SharedConstants::TEXTURE_LIGHTING)	// 4J - change brought forward from 1.8.2
 		{
-			AUTO_VAR(itEnd, listeners.end());
-			for (AUTO_VAR(it, listeners.begin()); it != itEnd; it++)
+			for (auto& listener : listeners)
 			{
-				(*it)->skyColorChanged();
+				listener->skyColorChanged();
 			}
 		}
 	}
 
 	//4J - temporarily disabling saves as they are causing gameplay to generally stutter quite a lot
 
-	__int64 time = levelData->getGameTime() + 1;
+	int64_t time = levelData->getGameTime() + 1;
 	// 4J Stu - Putting this back in, but I have reduced the number of chunks that save when not forced
 #ifdef _LARGE_WORLDS
 	if (time % (saveInterval) == (dimension->id + 1))
@@ -256,9 +256,8 @@ void ServerLevel::tick()
 	if (time % (saveInterval) == (dimension->id * dimension->id * (saveInterval/2)))
 #endif
 	{
-		//app.DebugPrintf("Incremental save\n");
 		PIXBeginNamedEvent(0,"Incremental save");
-		save(false, NULL);
+		save(false, nullptr);
 		PIXEndNamedEvent();
 	}
 
@@ -268,7 +267,7 @@ void ServerLevel::tick()
 	if (getGameRules()->getBoolean(GameRules::RULE_DAYLIGHT))
 	{
 		// 4J: Debug setting added to keep it at day time
-#ifndef _FINAL_BUILD		
+#ifndef _FINAL_BUILD
 		bool freezeTime = app.DebugSettingsOn() && app.GetGameSettingsDebugMask(ProfileManager.GetPrimaryPad())&(1L<<eDebugSetting_FreezeTime);
 		if (!freezeTime)
 #endif
@@ -313,9 +312,9 @@ void ServerLevel::tick()
 Biome::MobSpawnerData *ServerLevel::getRandomMobSpawnAt(MobCategory *mobCategory, int x, int y, int z)
 {
 	vector<Biome::MobSpawnerData *> *mobList = getChunkSource()->getMobsAt(mobCategory, x, y, z);
-	if (mobList == NULL || mobList->empty()) return NULL;
+	if (mobList == nullptr || mobList->empty()) return nullptr;
 
-	return (Biome::MobSpawnerData *) WeighedRandom::getRandomItem(random, (vector<WeighedRandomItem *> *)mobList);
+	return static_cast<Biome::MobSpawnerData *>(WeighedRandom::getRandomItem(random, (vector<WeighedRandomItem *> *)mobList));
 }
 
 void ServerLevel::updateSleepingPlayerList()
@@ -323,10 +322,9 @@ void ServerLevel::updateSleepingPlayerList()
 	allPlayersSleeping = !players.empty();
 	m_bAtLeastOnePlayerSleeping = false;
 
-	AUTO_VAR(itEnd, players.end());
-	for (AUTO_VAR(it, players.begin()); it != itEnd; it++)
+	for (auto& player : players)
 	{
-		if (!(*it)->isSleeping())
+		if (!player->isSleeping())
 		{
 			allPlayersSleeping = false;
 			//break;
@@ -344,12 +342,11 @@ void ServerLevel::awakenAllPlayers()
 	allPlayersSleeping = false;
 	m_bAtLeastOnePlayerSleeping = false;
 
-	AUTO_VAR(itEnd, players.end());
-	for (vector<shared_ptr<Player> >::iterator it = players.begin(); it != itEnd; it++)
+	for (auto& player : players)
 	{
-		if ((*it)->isSleeping())
+		if (player->isSleeping())
 		{
-			(*it)->stopSleepInBed(false, false, true);
+			player->stopSleepInBed(false, false, true);
 		}
 	}
 
@@ -369,11 +366,10 @@ bool ServerLevel::allPlayersAreSleeping()
 	if (allPlayersSleeping && !isClientSide)
 	{
 		// all players are sleeping, but have they slept long enough?
-		AUTO_VAR(itEnd, players.end());
-		for (vector<shared_ptr<Player> >::iterator it = players.begin(); it != itEnd; it++ )
+		for (auto& player : players)
 		{
 			//                System.out.println(player->entityId + ": " + player->getSleepTimer());
-			if (! (*it)->isSleepingLongEnough())
+			if (!player->isSleepingLongEnough())
 			{
 				return false;
 			}
@@ -436,7 +432,7 @@ void ServerLevel::tickTiles()
 		if( hasChunkAt(x,y,z) )
 		{
 			int id = getTile(x,y,z);
-			if (Tile::tiles[id] != NULL && Tile::tiles[id]->isTicking())
+			if (Tile::tiles[id] != nullptr && Tile::tiles[id]->isTicking())
 			{
 				/*if(id == 2) ++grassTicks;
 				else if(id == 11) ++lavaTicks;
@@ -462,10 +458,8 @@ void ServerLevel::tickTiles()
 	{
 		ChunkPos cp = chunksToPoll.get(i);
 #else
-	AUTO_VAR(itEndCtp, chunksToPoll.end());
-	for (AUTO_VAR(it, chunksToPoll.begin()); it != itEndCtp; it++)
+	for (ChunkPos cp : chunksToPoll)
 	{
-		ChunkPos cp = *it;
 #endif
 		int xo = cp.x * 16;
 		int zo = cp.z * 16;
@@ -502,7 +496,7 @@ void ServerLevel::tickTiles()
 
 			if (isRainingAt(x, y, z))
 			{
-				addGlobalEntity( shared_ptr<LightningBolt>( new LightningBolt(this, x, y, z) ) );
+				addGlobalEntity(std::make_shared<LightningBolt>(this, x, y, z));
 			}
 		}
 
@@ -526,7 +520,7 @@ void ServerLevel::tickTiles()
 			{
 				Biome *b = getBiome(x + xo, z + zo);
 				if (b->hasRain())
-				{			
+				{
 					int tile = getTile(x + xo, yy - 1, z + zo);
 					if (tile != 0)
 					{
@@ -645,8 +639,8 @@ void ServerLevel::resetEmptyTime()
 bool ServerLevel::tickPendingTicks(bool force)
 {
 	EnterCriticalSection(&m_tickNextTickCS);
-	int count = (int)tickNextTickList.size();
-	int count2 = (int)tickNextTickSet.size();
+	int count = static_cast<int>(tickNextTickList.size());
+	int count2 = static_cast<int>(tickNextTickSet.size());
 	if (count != tickNextTickSet.size())
 	{
 		// TODO 4J Stu - Add new exception types
@@ -654,8 +648,8 @@ bool ServerLevel::tickPendingTicks(bool force)
 	}
 	if (count > MAX_TICK_TILES_PER_TICK) count = MAX_TICK_TILES_PER_TICK;
 
-	AUTO_VAR(itTickList, tickNextTickList.begin());
-	for (int i = 0; i < count; i++)
+    auto itTickList = tickNextTickList.begin();
+    for (int i = 0; i < count; i++)
 	{
 		TickNextTickData td = *(itTickList);
 		if (!force && td.m_delay > levelData->getGameTime())
@@ -668,8 +662,8 @@ bool ServerLevel::tickPendingTicks(bool force)
 		toBeTicked.push_back(td);
 	}
 
-	for(AUTO_VAR(it,toBeTicked.begin()); it != toBeTicked.end();)
-	{
+    for (auto it = toBeTicked.begin(); it != toBeTicked.end();)
+    {
 		TickNextTickData td = *it;
 		it = toBeTicked.erase(it);
 
@@ -690,8 +684,8 @@ bool ServerLevel::tickPendingTicks(bool force)
 
 	toBeTicked.clear();
 
-	int count3 = (int)tickNextTickList.size();
-	int count4 = (int)tickNextTickSet.size();
+	int count3 = static_cast<int>(tickNextTickList.size());
+	int count4 = static_cast<int>(tickNextTickSet.size());
 
 	bool retval = tickNextTickList.size() != 0;
 	LeaveCriticalSection(&m_tickNextTickCS);
@@ -715,8 +709,8 @@ vector<TickNextTickData> *ServerLevel::fetchTicksInChunk(LevelChunk *chunk, bool
 	{
 		if (i == 0)
 		{
-			for( AUTO_VAR(it, tickNextTickList.begin()); it != tickNextTickList.end(); )
-			{
+            for (auto it = tickNextTickList.begin(); it != tickNextTickList.end();)
+            {
 				TickNextTickData td = *it;
 
 				if (td.x >= xMin && td.x < xMax && td.z >= zMin && td.z < zMax)
@@ -745,8 +739,8 @@ vector<TickNextTickData> *ServerLevel::fetchTicksInChunk(LevelChunk *chunk, bool
 			{
 				app.DebugPrintf("To be ticked size: %d\n",toBeTicked.size());
 			}
-			for( AUTO_VAR(it, toBeTicked.begin()); it != toBeTicked.end();)
-			{
+            for (auto it = toBeTicked.begin(); it != toBeTicked.end();)
+            {
 				TickNextTickData td = *it;
 
 				if (td.x >= xMin && td.x < xMax && td.z >= zMin && td.z < zMax)
@@ -781,7 +775,7 @@ void ServerLevel::tick(shared_ptr<Entity> e, bool actual)
 	{
 		e->remove();
 	}
-	if (!server->isNpcsEnabled() && (dynamic_pointer_cast<Npc>(e) != NULL))
+	if (!server->isNpcsEnabled() && (dynamic_pointer_cast<Npc>(e) != nullptr))
 	{
 		e->remove();
 	}
@@ -865,7 +859,7 @@ void ServerLevel::setInitialSpawn(LevelSettings *levelSettings)
 	int minXZ = - (dimension->getXZSize() * 16 ) / 2;
 	int maxXZ = (dimension->getXZSize() * 16 ) / 2 - 1;
 
-	if (findBiome != NULL)
+	if (findBiome != nullptr)
 	{
 		xSpawn = findBiome->x;
 		zSpawn = findBiome->z;
@@ -919,7 +913,7 @@ void ServerLevel::generateBonusItemsNearSpawn()
 			if( getTile( x, y, z ) == Tile::chest_Id )
 			{
 				shared_ptr<ChestTileEntity> chest = dynamic_pointer_cast<ChestTileEntity>(getTileEntity(x, y, z));
-				if (chest != NULL)
+				if (chest != nullptr)
 				{
 					if( chest->isBonusChest )
 					{
@@ -965,7 +959,7 @@ void ServerLevel::save(bool force, ProgressListener *progressListener, bool bAut
 	if(StorageManager.GetSaveDisabled()) return;
 
 
-	if (progressListener != NULL) 
+	if (progressListener != nullptr)
 	{
 		if(bAutosave)
 		{
@@ -981,7 +975,7 @@ void ServerLevel::save(bool force, ProgressListener *progressListener, bool bAut
 	saveLevelData();
 	PIXEndNamedEvent();
 
-	if (progressListener != NULL) progressListener->progressStage(IDS_PROGRESS_SAVING_CHUNKS);
+	if (progressListener != nullptr) progressListener->progressStage(IDS_PROGRESS_SAVING_CHUNKS);
 
 #if defined(_XBOX_ONE) || defined(__ORBIS__)
 	// Our autosave is a minimal save. All the chunks are saves by the constant save process
@@ -1001,10 +995,9 @@ void ServerLevel::save(bool force, ProgressListener *progressListener, bool bAut
 			// 4J Stu - This will come in a later change anyway
 			// clean cache
 			vector<LevelChunk *> *loadedChunkList = cache->getLoadedChunkList();
-			for (AUTO_VAR(it, loadedChunkList->begin()); it != loadedChunkList->end(); ++it)
+			for ( LevelChunk *lc : *loadedChunkList )
 			{
-				LevelChunk *lc = *it;
-				if (!chunkMap->hasChunk(lc->x, lc->z) )
+				if ( lc && !chunkMap->hasChunk(lc->x, lc->z) )
 				{
 					cache->drop(lc->x, lc->z);
 				}
@@ -1015,7 +1008,7 @@ void ServerLevel::save(bool force, ProgressListener *progressListener, bool bAut
 
 	//if( force && !isClientSide )
 	//{
-	//	if (progressListener != NULL) progressListener->progressStage(IDS_PROGRESS_SAVING_TO_DISC);
+	//	if (progressListener != nullptr) progressListener->progressStage(IDS_PROGRESS_SAVING_TO_DISC);
 	//	levelStorage->flushSaveFile();
 	//}
 }
@@ -1030,17 +1023,17 @@ void ServerLevel::saveToDisc(ProgressListener *progressListener, bool autosave)
 	if(!Minecraft::GetInstance()->skins->isUsingDefaultSkin())
 	{
 		TexturePack *tPack = Minecraft::GetInstance()->skins->getSelected();
-		DLCTexturePack *pDLCTexPack=(DLCTexturePack *)tPack;
+		DLCTexturePack *pDLCTexPack=static_cast<DLCTexturePack *>(tPack);
 
 		DLCPack * pDLCPack=pDLCTexPack->getDLCInfoParentPack();
 
 		if(!pDLCPack->hasPurchasedFile( DLCManager::e_DLCType_Texture, L"" ))
-		{	
+		{
 			return;
 		}
 	}
 
-	if (progressListener != NULL) progressListener->progressStage(IDS_PROGRESS_SAVING_TO_DISC);
+	if (progressListener != nullptr) progressListener->progressStage(IDS_PROGRESS_SAVING_TO_DISC);
 	levelStorage->flushSaveFile(autosave);
 }
 
@@ -1057,12 +1050,11 @@ void ServerLevel::entityAdded(shared_ptr<Entity> e)
 	Level::entityAdded(e);
 	entitiesById[e->entityId] = e;
 	vector<shared_ptr<Entity> > *es = e->getSubEntities();
-	if (es != NULL)
+	if (es)
 	{
-		//for (int i = 0; i < es.length; i++)
-		for(AUTO_VAR(it, es->begin()); it != es->end(); ++it)
+		for(auto& i : *es)
 		{
-			entitiesById.insert( intEntityMap::value_type( (*it)->entityId, (*it) ));
+			entitiesById.emplace(i->entityId, i);
 		}
 	}
 	entityAddedExtra(e);	// 4J added
@@ -1073,12 +1065,11 @@ void ServerLevel::entityRemoved(shared_ptr<Entity> e)
 	Level::entityRemoved(e);
 	entitiesById.erase(e->entityId);
 	vector<shared_ptr<Entity> > *es = e->getSubEntities();
-	if (es != NULL)
+	if (es)
 	{
-		//for (int i = 0; i < es.length; i++)
-		for(AUTO_VAR(it, es->begin()); it != es->end(); ++it)
+		for(auto& i : *es)
 		{
-			entitiesById.erase((*it)->entityId);
+			entitiesById.erase(i->entityId);
 		}
 	}
 	entityRemovedExtra(e);		// 4J added
@@ -1086,14 +1077,19 @@ void ServerLevel::entityRemoved(shared_ptr<Entity> e)
 
 shared_ptr<Entity> ServerLevel::getEntity(int id)
 {
-	return entitiesById[id];
+    auto it = entitiesById.find(id);
+    if (it != entitiesById.end())
+    {
+        return it->second;
+    }
+    return nullptr;
 }
 
 bool ServerLevel::addGlobalEntity(shared_ptr<Entity> e)
 {
 	if (Level::addGlobalEntity(e))
 	{
-		server->getPlayers()->broadcast(e->x, e->y, e->z, 512, dimension->id, shared_ptr<AddGlobalEntityPacket>( new AddGlobalEntityPacket(e) ) );
+		server->getPlayers()->broadcast(e->x, e->y, e->z, 512, dimension->id, std::make_shared<AddGlobalEntityPacket>(e));
 		return true;
 	}
 	return false;
@@ -1101,7 +1097,7 @@ bool ServerLevel::addGlobalEntity(shared_ptr<Entity> e)
 
 void ServerLevel::broadcastEntityEvent(shared_ptr<Entity> e, byte event)
 {
-	shared_ptr<Packet> p = shared_ptr<EntityEventPacket>( new EntityEventPacket(e->entityId, event) );
+	shared_ptr<Packet> p = std::make_shared<EntityEventPacket>(e->entityId, event);
 	server->getLevel(dimension->id)->getTracker()->broadcastAndSend(e, p);
 }
 
@@ -1109,7 +1105,7 @@ shared_ptr<Explosion> ServerLevel::explode(shared_ptr<Entity> source, double x, 
 {
 	// instead of calling super, we run the same explosion code here except
 	// we don't generate any particles
-	shared_ptr<Explosion> explosion = shared_ptr<Explosion>( new Explosion(this, source, x, y, z, r) );
+	shared_ptr<Explosion> explosion = std::make_shared<Explosion>(this, source, x, y, z, r);
 	explosion->fire = fire;
 	explosion->destroyBlocks = destroyBlocks;
 	explosion->explode();
@@ -1121,26 +1117,25 @@ shared_ptr<Explosion> ServerLevel::explode(shared_ptr<Entity> source, double x, 
 	}
 
 	vector<shared_ptr<ServerPlayer> > sentTo;
-	for(AUTO_VAR(it, players.begin()); it != players.end(); ++it)
+	for(auto& it : players)
 	{
-		shared_ptr<ServerPlayer> player = dynamic_pointer_cast<ServerPlayer>(*it);
+		shared_ptr<ServerPlayer> player = dynamic_pointer_cast<ServerPlayer>(it);
 		if (player->dimension != dimension->id) continue;
 
 		bool knockbackOnly = false;
 		if( sentTo.size() )
 		{
 			INetworkPlayer *thisPlayer = player->connection->getNetworkPlayer();
-			if( thisPlayer == NULL )
+			if( thisPlayer == nullptr )
 			{
 				continue;
 			}
 			else
 			{
-				for(unsigned int j = 0; j < sentTo.size(); j++ )	
+				for(auto& player2 : sentTo)
 				{
-					shared_ptr<ServerPlayer> player2 = sentTo[j];
 					INetworkPlayer *otherPlayer = player2->connection->getNetworkPlayer();
-					if( otherPlayer != NULL && thisPlayer->IsSameSystem(otherPlayer) )
+					if( otherPlayer != nullptr && thisPlayer->IsSameSystem(otherPlayer) )
 					{
 						knockbackOnly = true;
 					}
@@ -1153,7 +1148,7 @@ shared_ptr<Explosion> ServerLevel::explode(shared_ptr<Entity> source, double x, 
 			Vec3 *knockbackVec = explosion->getHitPlayerKnockback(player);
 			//app.DebugPrintf("Sending %s with knockback (%f,%f,%f)\n", knockbackOnly?"knockbackOnly":"allExplosion",knockbackVec->x,knockbackVec->y,knockbackVec->z);
 			// If the player is not the primary on the system, then we only want to send info for the knockback
-			player->connection->send( shared_ptr<ExplodePacket>( new ExplodePacket(x, y, z, r, &explosion->toBlow, knockbackVec, knockbackOnly)));
+			player->connection->send(std::make_shared<ExplodePacket>(x, y, z, r, &explosion->toBlow, knockbackVec, knockbackOnly));
 			sentTo.push_back( player );
 		}
 	}
@@ -1167,9 +1162,9 @@ void ServerLevel::tileEvent(int x, int y, int z, int tile, int b0, int b1)
 	//        server.getPlayers().broadcast(x, y, z, 64, dimension.id, new TileEventPacket(x, y, z, b0, b1));
 	TileEventData newEvent(x, y, z, tile, b0, b1);
 	//for (TileEventData te : tileEvents[activeTileEventsList])
-	for(AUTO_VAR(it, tileEvents[activeTileEventsList].begin()); it != tileEvents[activeTileEventsList].end(); ++it)
+	for(auto& it : tileEvents[activeTileEventsList])
 	{
-		if ((*it).equals(newEvent))
+		if (it.equals(newEvent))
 		{
 			return;
 		}
@@ -1186,13 +1181,12 @@ void ServerLevel::runTileEvents()
 		int runList = activeTileEventsList;
 		activeTileEventsList ^= 1;
 
-		//for (TileEventData te : tileEvents[runList])
-		for(AUTO_VAR(it, tileEvents[runList].begin()); it != tileEvents[runList].end(); ++it)
+		for(auto& it : tileEvents[runList])
 		{
-			if (doTileEvent(&(*it)))
+			if (doTileEvent(&it))
 			{
-				TileEventData te = *it;
-				server->getPlayers()->broadcast(te.getX(), te.getY(), te.getZ(), 64, dimension->id, shared_ptr<TileEventPacket>( new TileEventPacket(te.getX(), te.getY(), te.getZ(), te.getTile(), te.getParamA(), te.getParamB())));
+				TileEventData te = it;
+				server->getPlayers()->broadcast(te.getX(), te.getY(), te.getZ(), 64, dimension->id, std::make_shared<TileEventPacket>(te.getX(), te.getY(), te.getZ(), te.getTile(), te.getParamA(), te.getParamB()));
 			}
 		}
 		tileEvents[runList].clear();
@@ -1222,11 +1216,11 @@ void ServerLevel::tickWeather()
 	{
 		if (wasRaining)
 		{
-			server->getPlayers()->broadcastAll( shared_ptr<GameEventPacket>( new GameEventPacket(GameEventPacket::STOP_RAINING, 0) ) );
+			server->getPlayers()->broadcastAll(std::make_shared<GameEventPacket>(GameEventPacket::STOP_RAINING, 0));
 		}
 		else
 		{
-			server->getPlayers()->broadcastAll( shared_ptr<GameEventPacket>( new GameEventPacket(GameEventPacket::START_RAINING, 0) ) );
+			server->getPlayers()->broadcastAll(std::make_shared<GameEventPacket>(GameEventPacket::START_RAINING, 0));
 		}
 	}
 
@@ -1242,21 +1236,21 @@ EntityTracker *ServerLevel::getTracker()
 	return tracker;
 }
 
-void ServerLevel::setTimeAndAdjustTileTicks(__int64 newTime)
+void ServerLevel::setTimeAndAdjustTileTicks(int64_t newTime)
 {
-	__int64 delta = newTime - levelData->getGameTime();
+	int64_t delta = newTime - levelData->getGameTime();
 	// 4J - can't directly adjust m_delay in a set as it has a const interator, since changing values in here might change the ordering of the elements in the set.
 	// Instead move to a vector, do the adjustment, put back in the set.
 	vector<TickNextTickData> temp;
-	for(AUTO_VAR(it, tickNextTickList.begin()); it != tickNextTickList.end(); ++it)
+	for(const auto& it : tickNextTickList)
 	{
-		temp.push_back(*it);
+		temp.push_back(it);
 		temp.back().m_delay += delta;
 	}
 	tickNextTickList.clear();
-	for(unsigned int i = 0; i < temp.size(); i++ )
+	for(const auto& it : temp)
 	{
-		tickNextTickList.insert(temp[i]);
+		tickNextTickList.insert(it);
 	}
 	setGameTime(newTime);
 }
@@ -1278,12 +1272,11 @@ void ServerLevel::sendParticles(const wstring &name, double x, double y, double 
 
 void ServerLevel::sendParticles(const wstring &name, double x, double y, double z, int count, double xDist, double yDist, double zDist, double speed)
 {
-	shared_ptr<Packet> packet = shared_ptr<LevelParticlesPacket>( new LevelParticlesPacket(name, (float) x, (float) y, (float) z, (float) xDist, (float) yDist, (float) zDist, (float) speed, count) );
+	shared_ptr<Packet> packet = std::make_shared<LevelParticlesPacket>( name, static_cast<float>(x), static_cast<float>(y), static_cast<float>(z), static_cast<float>(xDist), static_cast<float>(yDist), static_cast<float>(zDist), static_cast<float>(speed), count );
 
-
-	for(AUTO_VAR(it, players.begin()); it != players.end(); ++it)
+	for(auto& it : players)
 	{
-		shared_ptr<ServerPlayer> player = dynamic_pointer_cast<ServerPlayer>(*it);
+		shared_ptr<ServerPlayer> player = dynamic_pointer_cast<ServerPlayer>(it);
 		player->connection->send(packet);
 	}
 }
@@ -1299,9 +1292,8 @@ void ServerLevel::queueSendTileUpdate(int x, int y, int z)
 void ServerLevel::runQueuedSendTileUpdates()
 {
 	EnterCriticalSection(&m_csQueueSendTileUpdates);
-	for(AUTO_VAR(it, m_queuedSendTileUpdates.begin()); it != m_queuedSendTileUpdates.end(); ++it)
+	for(Pos* p : m_queuedSendTileUpdates)
 	{
-		Pos *p = *it;
 		sendTileUpdated(p->x, p->y, p->z);
 		delete p;
 	}
@@ -1455,54 +1447,54 @@ void ServerLevel::entityRemovedExtra(shared_ptr<Entity> e)
 	{
 		EnterCriticalSection(&m_limiterCS);
 		//		printf("entity removed: item entity count %d\n",m_itemEntities.size());
-		AUTO_VAR(it, find(m_itemEntities.begin(),m_itemEntities.end(),e));
-		if( it != m_itemEntities.end() )
+        auto it = find(m_itemEntities.begin(), m_itemEntities.end(), e);
+        if( it != m_itemEntities.end() )
 		{
 			//			printf("Item to remove found\n");
 			m_itemEntities.erase(it);
 		}
 		//		printf("entity removed: item entity count now %d\n",m_itemEntities.size());
 		LeaveCriticalSection(&m_limiterCS);
-	} 
+	}
 	else if( e->instanceof(eTYPE_HANGING_ENTITY) )
 	{
 		EnterCriticalSection(&m_limiterCS);
 		//		printf("entity removed: item entity count %d\n",m_itemEntities.size());
-		AUTO_VAR(it, find(m_hangingEntities.begin(),m_hangingEntities.end(),e));
-		if( it != m_hangingEntities.end() )
+        auto it = find(m_hangingEntities.begin(), m_hangingEntities.end(), e);
+        if( it != m_hangingEntities.end() )
 		{
 			//			printf("Item to remove found\n");
 			m_hangingEntities.erase(it);
 		}
 		//		printf("entity removed: item entity count now %d\n",m_itemEntities.size());
 		LeaveCriticalSection(&m_limiterCS);
-	} 
+	}
 	else if( e->instanceof(eTYPE_ARROW) )
 	{
 		EnterCriticalSection(&m_limiterCS);
 		//		printf("entity removed: arrow entity count %d\n",m_arrowEntities.size());
-		AUTO_VAR(it, find(m_arrowEntities.begin(),m_arrowEntities.end(),e));
-		if( it != m_arrowEntities.end() )
+        auto it = find(m_arrowEntities.begin(), m_arrowEntities.end(), e);
+        if( it != m_arrowEntities.end() )
 		{
 			//			printf("Item to remove found\n");
 			m_arrowEntities.erase(it);
 		}
 		//		printf("entity removed: arrow entity count now %d\n",m_arrowEntities.size());
 		LeaveCriticalSection(&m_limiterCS);
-	} 
+	}
 	else if( e->instanceof(eTYPE_EXPERIENCEORB) )
 	{
 		EnterCriticalSection(&m_limiterCS);
 		//		printf("entity removed: experience orb entity count %d\n",m_arrowEntities.size());
-		AUTO_VAR(it, find(m_experienceOrbEntities.begin(),m_experienceOrbEntities.end(),e));
-		if( it != m_experienceOrbEntities.end() )
+        auto it = find(m_experienceOrbEntities.begin(), m_experienceOrbEntities.end(), e);
+        if( it != m_experienceOrbEntities.end() )
 		{
 			//			printf("Item to remove found\n");
 			m_experienceOrbEntities.erase(it);
 		}
 		//		printf("entity removed: experience orb entity count now %d\n",m_arrowEntities.size());
 		LeaveCriticalSection(&m_limiterCS);
-	} 
+	}
 	else if( e->instanceof(eTYPE_PRIMEDTNT) )
 	{
 		EnterCriticalSection(&m_limiterCS);
@@ -1590,7 +1582,7 @@ int ServerLevel::runUpdate(void* lpParam)
 					if( (id == Tile::grass_Id && grassTicks >= MAX_GRASS_TICKS) || (id == Tile::calmLava_Id && lavaTicks >= MAX_LAVA_TICKS) ) continue;
 
 					// 4J Stu - Added shouldTileTick as some tiles won't even do anything if they are set to tick and use up one of our updates
-					if (Tile::tiles[id] != NULL && Tile::tiles[id]->isTicking() && Tile::tiles[id]->shouldTileTick(m_level[iLev],x + (cx * 16), y, z + (cz * 16) ) )
+					if (Tile::tiles[id] != nullptr && Tile::tiles[id]->isTicking() && Tile::tiles[id]->shouldTileTick(m_level[iLev],x + (cx * 16), y, z + (cz * 16) ) )
 					{
 						if(id == Tile::grass_Id) ++grassTicks;
 						else if(id == Tile::calmLava_Id) ++lavaTicks;

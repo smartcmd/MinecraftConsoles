@@ -26,7 +26,7 @@ public:
 			case TEXTURE_CROSS_OVERLAY: return &ms_pTileData->redStoneDust_iconCrossOver;
 			case TEXTURE_LINE_OVERLAY: return &ms_pTileData->redStoneDust_iconLineOver;
 		}
-		return NULL;
+		return nullptr;
 	}
 
 	static bool shouldConnectTo(ChunkRebuildData *level, int x, int y, int z, int direction)

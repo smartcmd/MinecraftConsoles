@@ -4,7 +4,7 @@
 NetworkPlayerXbox::NetworkPlayerXbox(IQNetPlayer *qnetPlayer)
 {
 	m_qnetPlayer = qnetPlayer;
-	m_pSocket = NULL;
+	m_pSocket = nullptr;
 }
 
 unsigned char NetworkPlayerXbox::GetSmallId()
@@ -17,7 +17,7 @@ void NetworkPlayerXbox::SendData(INetworkPlayer *player, const void *pvData, int
 	DWORD flags;
 	flags = QNET_SENDDATA_RELIABLE | QNET_SENDDATA_SEQUENTIAL;
 	if( lowPriority ) flags |= QNET_SENDDATA_LOW_PRIORITY | QNET_SENDDATA_SECONDARY;
-	m_qnetPlayer->SendData(((NetworkPlayerXbox *)player)->m_qnetPlayer, pvData, dataSize, flags);
+	m_qnetPlayer->SendData(static_cast<NetworkPlayerXbox *>(player)->m_qnetPlayer, pvData, dataSize, flags);
 }
 
 int NetworkPlayerXbox::GetOutstandingAckCount()
@@ -27,21 +27,21 @@ int NetworkPlayerXbox::GetOutstandingAckCount()
 
 bool NetworkPlayerXbox::IsSameSystem(INetworkPlayer *player)
 {
-	return ( m_qnetPlayer->IsSameSystem(((NetworkPlayerXbox *)player)->m_qnetPlayer) == TRUE );
+	return ( m_qnetPlayer->IsSameSystem(static_cast<NetworkPlayerXbox *>(player)->m_qnetPlayer) == TRUE );
 }
 
 int NetworkPlayerXbox::GetSendQueueSizeBytes( INetworkPlayer *player, bool lowPriority )
 {
 	DWORD flags = QNET_GETSENDQUEUESIZE_BYTES;
 	if( lowPriority ) flags |= QNET_GETSENDQUEUESIZE_SECONDARY_TYPE;
-	return m_qnetPlayer->GetSendQueueSize(player ? ((NetworkPlayerXbox *)player)->m_qnetPlayer : NULL , flags);
+	return m_qnetPlayer->GetSendQueueSize(player ? static_cast<NetworkPlayerXbox *>(player)->m_qnetPlayer : nullptr , flags);
 }
 
 int NetworkPlayerXbox::GetSendQueueSizeMessages( INetworkPlayer *player, bool lowPriority )
 {
 	DWORD flags = QNET_GETSENDQUEUESIZE_MESSAGES;
 	if( lowPriority ) flags |= QNET_GETSENDQUEUESIZE_SECONDARY_TYPE;
-	return m_qnetPlayer->GetSendQueueSize(player ? ((NetworkPlayerXbox *)player)->m_qnetPlayer : NULL , flags);
+	return m_qnetPlayer->GetSendQueueSize(player ? static_cast<NetworkPlayerXbox *>(player)->m_qnetPlayer : nullptr , flags);
 }
 
 int NetworkPlayerXbox::GetCurrentRtt()
@@ -137,6 +137,6 @@ int NetworkPlayerXbox::GetTimeSinceLastChunkPacket_ms()
 		return INT_MAX;
 	}
 
-	__int64 currentTime = System::currentTimeMillis();
-	return (int)( currentTime - m_lastChunkPacketTime );
+	const int64_t currentTime = System::currentTimeMillis();
+	return static_cast<int>(currentTime - m_lastChunkPacketTime);
 }

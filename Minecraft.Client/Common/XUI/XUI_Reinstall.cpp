@@ -26,7 +26,7 @@
 HRESULT CScene_Reinstall::OnInit( XUIMessageInit* pInitData, BOOL& bHandled )
 {
 	// We'll only be in this menu from the main menu, not in game
-	m_iPad = *(int *)pInitData->pvInitData;
+	m_iPad = *static_cast<int *>(pInitData->pvInitData);
 
 	m_bIgnoreInput=false;
 	MapChildControls();
@@ -224,7 +224,7 @@ HRESULT CScene_Reinstall::OnControlNavigate(XUIMessageControlNavigate *pControlN
 {
 	pControlNavigateData->hObjDest=XuiControlGetNavigation(pControlNavigateData->hObjSource,pControlNavigateData->nControlNavigate,TRUE,TRUE);
 	
-	if(pControlNavigateData->hObjDest!=NULL)
+	if(pControlNavigateData->hObjDest!=nullptr)
 	{
 		bHandled=TRUE;
 	}
@@ -241,7 +241,7 @@ HRESULT CScene_Reinstall::OnTransitionStart( XUIMessageTransition *pTransition, 
 
 		// 4J-PB - Going to resize buttons if the text is too big to fit on any of them (Br-pt problem with the length of Unlock Full Game)
 		XUIRect xuiRect;
-		HXUIOBJ visual=NULL;
+		HXUIOBJ visual=nullptr;
 		HXUIOBJ text;
 		float fMaxTextLen=0.0f;
 		float fTextVisualLen;
@@ -283,7 +283,7 @@ HRESULT CScene_Reinstall::OnTransitionStart( XUIMessageTransition *pTransition, 
 
 int CScene_Reinstall::DeviceSelectReturned(void *pParam,bool bContinue)
 {
-	CScene_Reinstall* pClass = (CScene_Reinstall*)pParam;
+	CScene_Reinstall* pClass = static_cast<CScene_Reinstall *>(pParam);
 
 	if(!StorageManager.GetSaveDeviceSelected(pClass->m_iPad))
 	{
@@ -300,7 +300,7 @@ int CScene_Reinstall::DeviceSelectReturned(void *pParam,bool bContinue)
 
 int CScene_Reinstall::DeviceSelectReturned_AndReinstall(void *pParam,bool bContinue)
 {
-	CScene_Reinstall* pClass = (CScene_Reinstall*)pParam;
+	CScene_Reinstall* pClass = static_cast<CScene_Reinstall *>(pParam);
 
 	if(!StorageManager.GetSaveDeviceSelected(pClass->m_iPad))
 	{

@@ -36,22 +36,22 @@
 HRESULT CScene_MultiGameJoinLoad::OnInit( XUIMessageInit* pInitData, BOOL& bHandled )
 {
 
-	m_iPad=*(int *)pInitData->pvInitData;
+	m_iPad=*static_cast<int *>(pInitData->pvInitData);
 	m_bReady=false;
 	MapChildControls();
 
 	m_iTexturePacksNotInstalled=0;
-	m_iConfigA=NULL;
-	
+	m_iConfigA=nullptr;
+
 	XuiControlSetText(m_LabelNoGames,app.GetString(IDS_NO_GAMES_FOUND));
 	XuiControlSetText(m_GamesList,app.GetString(IDS_JOIN_GAME));
 	XuiControlSetText(m_SavesList,app.GetString(IDS_START_GAME));
 
 
-	const DWORD LOCATOR_SIZE = 256; // Use this to allocate space to hold a ResourceLocator string 
+	const DWORD LOCATOR_SIZE = 256; // Use this to allocate space to hold a ResourceLocator string
 	WCHAR szResourceLocator[ LOCATOR_SIZE ];
 
-	const ULONG_PTR c_ModuleHandle = (ULONG_PTR)GetModuleHandle(NULL);
+	const ULONG_PTR c_ModuleHandle = (ULONG_PTR)GetModuleHandle(nullptr);
 	swprintf(szResourceLocator, LOCATOR_SIZE ,L"section://%X,%ls#%ls",c_ModuleHandle,L"media", L"media/Graphics/TexturePackIcon.png");
 
 	m_DefaultMinecraftIconSize = 0;
@@ -64,17 +64,17 @@ HRESULT CScene_MultiGameJoinLoad::OnInit( XUIMessageInit* pInitData, BOOL& bHand
 
 	m_bRetrievingSaveInfo=false;
 	m_bSaveTransferInProgress=false;
-	
+
 	// check for a default custom cloak in the global storage
 	// 4J-PB - changed to a config file
 // 	if(ProfileManager.IsSignedInLive( m_iPad ))
-// 	{		
+// 	{
 // 		app.InstallDefaultCape();
 // 	}
 
 	m_initData= new JoinMenuInitData();
 	m_bMultiplayerAllowed = ProfileManager.IsSignedInLive( m_iPad ) && ProfileManager.AllowedToPlayMultiplayer(m_iPad);
-	
+
 	XPARTY_USER_LIST partyList;
 
 	if((XPartyGetUserList(  &partyList ) != XPARTY_E_NOT_IN_PARTY ) && (partyList.dwUserCount>1))
@@ -90,15 +90,15 @@ HRESULT CScene_MultiGameJoinLoad::OnInit( XUIMessageInit* pInitData, BOOL& bHand
 	if(m_bInParty) iLB = IDS_TOOLTIPS_PARTY_GAMES;
 
 	XuiSetTimer(m_hObj,JOIN_LOAD_ONLINE_TIMER_ID,JOIN_LOAD_ONLINE_TIMER_TIME);
-	
+
 	m_iSaveInfoC=0;
 
 	VOID *pObj;
 	XuiObjectFromHandle( m_SavesList, &pObj );
-	m_pSavesList = (CXuiCtrl4JList *)pObj;
+	m_pSavesList = static_cast<CXuiCtrl4JList *>(pObj);
 
 	XuiObjectFromHandle( m_GamesList, &pObj );
-	m_pGamesList = (CXuiCtrl4JList *)pObj;
+	m_pGamesList = static_cast<CXuiCtrl4JList *>(pObj);
 
 	// block input if we're waiting for DLC to install, and wipe the saves list. The end of dlc mounting custom message will fill the list again
 	if(app.StartInstallDLCProcess(m_iPad)==true)
@@ -110,7 +110,7 @@ HRESULT CScene_MultiGameJoinLoad::OnInit( XUIMessageInit* pInitData, BOOL& bHand
 	{
 		// if we're waiting for DLC to mount, don't fill the save list. The custom message on end of dlc mounting will do that
 		m_bIgnoreInput=false;
-	
+
 
 
 		m_iChangingSaveGameInfoIndex = 0;
@@ -135,7 +135,7 @@ HRESULT CScene_MultiGameJoinLoad::OnInit( XUIMessageInit* pInitData, BOOL& bHand
 				// saving is disabled, but we should still be able to load from a selected save device
 
 				ui.SetTooltips( DEFAULT_XUI_MENU_USER, IDS_TOOLTIPS_SELECT,IDS_TOOLTIPS_BACK,IDS_TOOLTIPS_CHANGEDEVICE,-1,-1,-1,iLB,IDS_TOOLTIPS_DELETESAVE);
-			
+
 				GetSaveInfo();
 			}
 			else
@@ -153,7 +153,7 @@ HRESULT CScene_MultiGameJoinLoad::OnInit( XUIMessageInit* pInitData, BOOL& bHand
 			// 4J-PB - we need to check that there is enough space left to create a copy of the save (for a rename)
 			bool bCanRename = StorageManager.EnoughSpaceForAMinSaveGame();
 			ui.SetTooltips( DEFAULT_XUI_MENU_USER, IDS_TOOLTIPS_SELECT,IDS_TOOLTIPS_BACK,IDS_TOOLTIPS_CHANGEDEVICE,-1,-1,-1,-1,bCanRename?IDS_TOOLTIPS_SAVEOPTIONS:IDS_TOOLTIPS_DELETESAVE);
-		
+
 			GetSaveInfo();
 		}
 	}
@@ -165,7 +165,7 @@ HRESULT CScene_MultiGameJoinLoad::OnInit( XUIMessageInit* pInitData, BOOL& bHand
 
 	// 4J Stu - Fix for #12530 -TCR 001 BAS Game Stability: Title will crash if the player disconnects while starting a new world and then opts to play the tutorial once they have been returned to the Main Menu.
 	MinecraftServer::resetFlags();
-	
+
 	// If we're not ignoring input, then we aren't still waiting for the DLC to mount, and can now check for corrupt dlc. Otherwise this will happen when the dlc has finished mounting.
 	if( !m_bIgnoreInput)
 	{
@@ -185,13 +185,13 @@ HRESULT CScene_MultiGameJoinLoad::OnInit( XUIMessageInit* pInitData, BOOL& bHand
 
 	// 4J-PB - there may be texture packs we don't have, so use the info from TMS for this
 
-	DLC_INFO *pDLCInfo=NULL;
+	DLC_INFO *pDLCInfo=nullptr;
 
 	// first pass - look to see if there are any that are not in the list
 	bool bTexturePackAlreadyListed;
 	bool bNeedToGetTPD=false;
 	Minecraft *pMinecraft = Minecraft::GetInstance();
-	int texturePacksCount = pMinecraft->skins->getTexturePackCount();	
+	int texturePacksCount = pMinecraft->skins->getTexturePackCount();
 	//CXuiCtrl4JList::LIST_ITEM_INFO ListInfo;
 	//HRESULT hr;
 
@@ -267,9 +267,8 @@ void CScene_MultiGameJoinLoad::AddDefaultButtons()
 	int iGeneratorIndex = 0;
 	m_iMashUpButtonsC=0;
 
-	for(AUTO_VAR(it, m_generators->begin()); it != m_generators->end(); ++it)
-	{
-		LevelGenerationOptions *levelGen = *it;
+    for (LevelGenerationOptions *levelGen : *m_generators )
+    {
 		ListInfo.pwszText = levelGen->getWorldName();
 		ListInfo.fEnabled = TRUE;
 		ListInfo.iData = iGeneratorIndex++; // used to index into the list of generators
@@ -295,7 +294,7 @@ void CScene_MultiGameJoinLoad::AddDefaultButtons()
 			// increment the count of the mash-up pack worlds in the save list
 			m_iMashUpButtonsC++;
 			TexturePack *tp = Minecraft::GetInstance()->skins->getTexturePackById(levelGen->getRequiredTexturePackId());
-			DWORD dwImageBytes;	
+			DWORD dwImageBytes;
 			PBYTE pbImageData = tp->getPackIcon(dwImageBytes);
 			HXUIBRUSH hXuiBrush;
 
@@ -327,7 +326,7 @@ HRESULT CScene_MultiGameJoinLoad::GetSaveInfo(  )
 		if( savesDir.exists() )
 		{
 			m_saves = savesDir.listFiles();
-			uiSaveC = (unsigned int)m_saves->size();
+			uiSaveC = static_cast<unsigned int>(m_saves->size());
 		}
 		// add the New Game and Tutorial after the saves list is retrieved, if there are any saves
 
@@ -353,8 +352,8 @@ HRESULT CScene_MultiGameJoinLoad::GetSaveInfo(  )
 			ListInfo.fEnabled=TRUE;
 			ListInfo.iData = -1;
 			m_pSavesList->AddData(ListInfo);
-		}	
-		m_pSavesList->SetCurSelVisible(0);	
+		}
+		m_pSavesList->SetCurSelVisible(0);
 	}
 	else
 	{
@@ -385,11 +384,11 @@ HRESULT CScene_MultiGameJoinLoad::GetSaveInfo(  )
 
 HRESULT CScene_MultiGameJoinLoad::OnDestroy()
 {
-	g_NetworkManager.SetSessionsUpdatedCallback( NULL, NULL );
+	g_NetworkManager.SetSessionsUpdatedCallback( nullptr, nullptr );
 
-	for(AUTO_VAR(it, currentSessions.begin()); it < currentSessions.end(); ++it)
-	{
-		delete (*it);
+    for (auto& it : currentSessions )
+    {
+		delete it;
 	}
 
 	if(m_bSaveTransferInProgress)
@@ -416,10 +415,10 @@ HRESULT CScene_MultiGameJoinLoad::OnDestroy()
 
 int CScene_MultiGameJoinLoad::DeviceRemovedDialogReturned(void *pParam,int iPad,C4JStorage::EMessageResult result)
 {
-	CScene_MultiGameJoinLoad* pClass = (CScene_MultiGameJoinLoad*)pParam;
+	CScene_MultiGameJoinLoad* pClass = static_cast<CScene_MultiGameJoinLoad *>(pParam);
 
 	// results switched for this dialog
-	if(result==C4JStorage::EMessage_ResultDecline) 
+	if(result==C4JStorage::EMessage_ResultDecline)
 	{
 		StorageManager.SetSaveDisabled(true);
 		StorageManager.SetSaveDeviceSelected(ProfileManager.GetPrimaryPad(),false);
@@ -462,7 +461,7 @@ HRESULT CScene_MultiGameJoinLoad::OnNotifyPressEx(HXUIOBJ hObjPressed, XUINotify
 			//CScene_MultiGameInfo::JoinMenuInitData *initData = new CScene_MultiGameInfo::JoinMenuInitData();
 			m_initData->iPad = m_iPad;
 			m_initData->selectedSession = currentSessions.at( nIndex );
-		
+
 			// check that we have the texture pack available
 			// If it's not the default texture pack
 			if(m_initData->selectedSession->data.texturePackParentId!=0)
@@ -513,7 +512,7 @@ HRESULT CScene_MultiGameJoinLoad::OnNotifyPressEx(HXUIOBJ hObjPressed, XUINotify
 					return S_OK;
 				}
 			}
-			
+
 			m_NetGamesListTimer.SetShow( FALSE );
 
 			// Reset the background downloading, in case we changed it by attempting to download a texture pack
@@ -536,7 +535,7 @@ HRESULT CScene_MultiGameJoinLoad::OnNotifyPressEx(HXUIOBJ hObjPressed, XUINotify
 		CXuiCtrl4JList::LIST_ITEM_INFO info = m_pSavesList->GetData(iIndex);
 
 		if(iIndex == JOIN_LOAD_CREATE_BUTTON_INDEX)
-		{		
+		{
 			app.SetTutorialMode( false );
 			m_NetGamesListTimer.SetShow( FALSE );
 
@@ -544,7 +543,7 @@ HRESULT CScene_MultiGameJoinLoad::OnNotifyPressEx(HXUIOBJ hObjPressed, XUINotify
 
 			CreateWorldMenuInitData *params = new CreateWorldMenuInitData();
 			params->iPad = m_iPad;
-			app.NavigateToScene(pNotifyPressData->UserIndex,eUIScene_CreateWorldMenu,(void *)params);
+			app.NavigateToScene(pNotifyPressData->UserIndex,eUIScene_CreateWorldMenu,static_cast<void *>(params));
 		}
 		else if(info.iData >= 0)
 		{
@@ -571,7 +570,7 @@ HRESULT CScene_MultiGameJoinLoad::OnNotifyPressEx(HXUIOBJ hObjPressed, XUINotify
 			}
 		}
 		else
-		{			
+		{
 			// check if this is a damaged save
 			if(m_pSavesList->GetData(iIndex).bIsDamaged)
 			{
@@ -582,7 +581,7 @@ HRESULT CScene_MultiGameJoinLoad::OnNotifyPressEx(HXUIOBJ hObjPressed, XUINotify
 				StorageManager.RequestMessageBox(IDS_CORRUPT_OR_DAMAGED_SAVE_TITLE, IDS_CORRUPT_OR_DAMAGED_SAVE_TEXT, uiIDA, 2, pNotifyPressData->UserIndex,&CScene_MultiGameJoinLoad::DeleteSaveDialogReturned,this, app.GetStringTable());
 			}
 			else
-			{		
+			{
 				app.SetTutorialMode( false );
 				if(app.DebugSettingsOn() && app.GetLoadSavesFromFolderEnabled())
 				{
@@ -595,7 +594,7 @@ HRESULT CScene_MultiGameJoinLoad::OnNotifyPressEx(HXUIOBJ hObjPressed, XUINotify
 					// need to get the iIndex from the list item, since the position in the list doesn't correspond to the GetSaveGameInfo list because of sorting
 					params->iSaveGameInfoIndex=m_pSavesList->GetData(iIndex).iIndex-m_iDefaultButtonsC;
 					//params->pbSaveRenamed=&m_bSaveRenamed;
-					params->levelGen = NULL;
+					params->levelGen = nullptr;
 
 					// kill the texture pack timer
 					XuiKillTimer(m_hObj,CHECKFORAVAILABLETEXTUREPACKS_TIMER_ID);
@@ -605,7 +604,7 @@ HRESULT CScene_MultiGameJoinLoad::OnNotifyPressEx(HXUIOBJ hObjPressed, XUINotify
 			}
 		}
 	}
-	
+
 	return S_OK;
 }
 
@@ -632,11 +631,11 @@ HRESULT CScene_MultiGameJoinLoad::OnKeyDown(XUIMessageInput* pInputData, BOOL& r
 
 		app.NavigateBack(XUSER_INDEX_ANY);
 		rfHandled = TRUE;
-		break;		
+		break;
 	case VK_PAD_X:
 
 		// Change device
-		// Fix for #12531 - TCR 001: BAS Game Stability: When a player selects to change a storage 
+		// Fix for #12531 - TCR 001: BAS Game Stability: When a player selects to change a storage
 		// device, and repeatedly backs out of the SD screen, disconnects from LIVE, and then selects a SD, the title crashes.
 		m_bIgnoreInput=true;
 		StorageManager.SetSaveDevice(&CScene_MultiGameJoinLoad::DeviceSelectReturned,this,true);
@@ -657,7 +656,7 @@ HRESULT CScene_MultiGameJoinLoad::OnKeyDown(XUIMessageInput* pInputData, BOOL& r
 		{
 			// save transfer - make sure they want to overwrite a save that is up there
 			if(ProfileManager.IsSignedInLive( m_iPad ))
-			{	
+			{
 				// 4J-PB - required for a delete of the save if it's found to be a corrupted save
 				DWORD nIndex = m_pSavesList->GetCurSel();
 				m_iChangingSaveGameInfoIndex=m_pSavesList->GetData(nIndex).iIndex;
@@ -668,13 +667,13 @@ HRESULT CScene_MultiGameJoinLoad::OnKeyDown(XUIMessageInput* pInputData, BOOL& r
 
 				ui.RequestMessageBox(IDS_SAVE_TRANSFER_TITLE, IDS_SAVE_TRANSFER_TEXT, uiIDA, 2, pInputData->UserIndex,&CScene_MultiGameJoinLoad::SaveTransferDialogReturned,this, app.GetStringTable());
 			}
-		}		
+		}
 		break;
 	case VK_PAD_RSHOULDER:
 		if(DoesSavesListHaveFocus())
 		{
 			m_bIgnoreInput = true;
-			
+
 			int iIndex=m_SavesList.GetCurSel();
 			m_iChangingSaveGameInfoIndex=m_pSavesList->GetData(iIndex).iIndex;
 
@@ -755,19 +754,19 @@ HRESULT CScene_MultiGameJoinLoad::OnKeyDown(XUIMessageInput* pInputData, BOOL& r
 		}
 		break;
 	}
-	
+
 	return hr;
 }
 
 HRESULT CScene_MultiGameJoinLoad::OnNavReturn(HXUIOBJ hSceneFrom,BOOL& rfHandled)
 {
-	
+
 	CXuiSceneBase::ShowLogo( DEFAULT_XUI_MENU_USER, TRUE );
 	// start the texture pack timer again
 	XuiSetTimer(m_hObj,CHECKFORAVAILABLETEXTUREPACKS_TIMER_ID,CHECKFORAVAILABLETEXTUREPACKS_TIMER_TIME);
 
-	m_bMultiplayerAllowed = ProfileManager.IsSignedInLive( m_iPad ) && ProfileManager.AllowedToPlayMultiplayer(m_iPad); 
-	
+	m_bMultiplayerAllowed = ProfileManager.IsSignedInLive( m_iPad ) && ProfileManager.AllowedToPlayMultiplayer(m_iPad);
+
 	// re-enable button presses
 	m_bIgnoreInput=false;
 
@@ -812,7 +811,7 @@ HRESULT CScene_MultiGameJoinLoad::OnNavReturn(HXUIOBJ hSceneFrom,BOOL& rfHandled
 		iY = IDS_TOOLTIPS_VIEW_GAMERCARD;
 	}
 	else if(DoesSavesListHaveFocus())
-	{	
+	{
 		if(ProfileManager.IsSignedInLive( m_iPad ))
 		{
 			iY=IDS_TOOLTIPS_UPLOAD_SAVE_FOR_XBOXONE;
@@ -901,7 +900,7 @@ HRESULT CScene_MultiGameJoinLoad::OnTransitionStart( XUIMessageTransition *pTran
 		if(pTransition->dwTransType == XUI_TRANSITION_BACKTO)
 		{
 			// Can't call this here because if you back out of the load info screen and then go back in and load a game, it will attempt to use the dlc as it's running a mount of the dlc
-			
+
 			// block input if we're waiting for DLC to install, and wipe the saves list. The end of dlc mounting custom message will fill the list again
 			if(app.StartInstallDLCProcess(m_iPad)==false)
 			{
@@ -925,14 +924,14 @@ HRESULT CScene_MultiGameJoinLoad::OnFontRendererChange()
 	// update the tooltips
 	// if the saves list has focus, then we should show the Delete Save tooltip
 	// if the games list has focus, then we should the the View Gamercard tooltip
-	int iRB=-1;	
+	int iRB=-1;
 	int iY = -1;
 	if( DoesGamesListHaveFocus() )
 	{
 		iY = IDS_TOOLTIPS_VIEW_GAMERCARD;
-	}	
+	}
 	else if(DoesSavesListHaveFocus())
-	{	
+	{
 		if(ProfileManager.IsSignedInLive( m_iPad ))
 		{
 			iY=IDS_TOOLTIPS_UPLOAD_SAVE_FOR_XBOXONE;
@@ -986,12 +985,12 @@ HRESULT CScene_MultiGameJoinLoad::OnNotifySetFocus(HXUIOBJ hObjSource, XUINotify
 	// update the tooltips
 	// if the saves list has focus, then we should show the Delete Save tooltip
 	// if the games list has focus, then we should the the View Gamercard tooltip
-	int iRB=-1;	
+	int iRB=-1;
 	int iY = -1;
 	if( DoesGamesListHaveFocus() )
 	{
 		iY = IDS_TOOLTIPS_VIEW_GAMERCARD;
-	}	
+	}
 	else if(DoesSavesListHaveFocus())
 	{
 		if(ProfileManager.IsSignedInLive( m_iPad ))
@@ -1051,7 +1050,7 @@ bool CScene_MultiGameJoinLoad::DoesSavesListHaveFocus()
 {
 	HXUIOBJ hParentObj,hObj=TreeGetFocus();
 
-	if(hObj!=NULL)
+	if(hObj!=nullptr)
 	{
 		// get the parent and see if it's the saves list
 		XuiElementGetParent(hObj,&hParentObj);
@@ -1071,7 +1070,7 @@ bool CScene_MultiGameJoinLoad::DoesMashUpWorldHaveFocus()
 {
 	HXUIOBJ hParentObj,hObj=TreeGetFocus();
 
-	if(hObj!=NULL)
+	if(hObj!=nullptr)
 	{
 		// get the parent and see if it's the saves list
 		XuiElementGetParent(hObj,&hParentObj);
@@ -1098,7 +1097,7 @@ bool CScene_MultiGameJoinLoad::DoesGamesListHaveFocus()
 {
 	HXUIOBJ hParentObj,hObj=TreeGetFocus();
 
-	if(hObj!=NULL)
+	if(hObj!=nullptr)
 	{
 		// get the parent and see if it's the saves list
 		XuiElementGetParent(hObj,&hParentObj);
@@ -1112,13 +1111,13 @@ bool CScene_MultiGameJoinLoad::DoesGamesListHaveFocus()
 
 void CScene_MultiGameJoinLoad::UpdateGamesListCallback(LPVOID lpParam)
 {
-	if(lpParam != NULL)
+	if(lpParam != nullptr)
 	{
-		CScene_MultiGameJoinLoad* pClass = (CScene_MultiGameJoinLoad *) lpParam;
+		CScene_MultiGameJoinLoad* pClass = static_cast<CScene_MultiGameJoinLoad *>(lpParam);
 		// check this there's no save transfer in progress
 		if(!pClass->m_bSaveTransferInProgress)
 		{
-				pClass->UpdateGamesList();	
+				pClass->UpdateGamesList();
 		}
 	}
 }
@@ -1134,7 +1133,7 @@ void CScene_MultiGameJoinLoad::UpdateGamesList()
 	}
 
 	DWORD nIndex = -1;
-	FriendSessionInfo *pSelectedSession = NULL;
+	FriendSessionInfo *pSelectedSession = nullptr;
 	if(m_pGamesList->TreeHasFocus() && m_pGamesList->GetItemCount() > 0)
 	{
 		nIndex = m_pGamesList->GetCurSel();
@@ -1142,20 +1141,20 @@ void CScene_MultiGameJoinLoad::UpdateGamesList()
 	}
 
 	SessionID selectedSessionId;
-	if( pSelectedSession != NULL )selectedSessionId = pSelectedSession->sessionId;
-	pSelectedSession = NULL;
+	if( pSelectedSession != nullptr )selectedSessionId = pSelectedSession->sessionId;
+	pSelectedSession = nullptr;
 
-	for(AUTO_VAR(it, currentSessions.begin()); it < currentSessions.end(); ++it)
-	{
-		delete (*it);
+    for (auto& it : currentSessions )
+    {
+		delete it;
 	}
 	currentSessions.clear();
-	
+
 	m_NetGamesListTimer.SetShow( FALSE );
-		
+
 	// if the saves list has focus, then we should show the Delete Save tooltip
 	// if the games list has focus, then we should show the View Gamercard tooltip
-	int iRB=-1;	
+	int iRB=-1;
 	int iY = -1;
 
 	if( DoesGamesListHaveFocus() )
@@ -1163,7 +1162,7 @@ void CScene_MultiGameJoinLoad::UpdateGamesList()
 		iY = IDS_TOOLTIPS_VIEW_GAMERCARD;
 	}
 	else if(DoesSavesListHaveFocus())
-	{	
+	{
 		if(ProfileManager.IsSignedInLive( m_iPad ))
 		{
 			iY=IDS_TOOLTIPS_UPLOAD_SAVE_FOR_XBOXONE;
@@ -1214,7 +1213,7 @@ void CScene_MultiGameJoinLoad::UpdateGamesList()
 
 	// Update the xui list displayed
 	unsigned int xuiListSize = m_pGamesList->GetItemCount();
-	unsigned int filteredListSize = (unsigned int)currentSessions.size();
+	unsigned int filteredListSize = static_cast<unsigned int>(currentSessions.size());
 
 	BOOL gamesListHasFocus = m_pGamesList->TreeHasFocus();
 
@@ -1248,9 +1247,8 @@ void CScene_MultiGameJoinLoad::UpdateGamesList()
 		unsigned int sessionIndex = 0;
 		m_pGamesList->SetCurSel(0);
 
-		for( AUTO_VAR(it, currentSessions.begin()); it < currentSessions.end(); ++it)
-		{
-			FriendSessionInfo *sessionInfo = *it;
+        for ( FriendSessionInfo *sessionInfo : currentSessions )
+        {
 			HXUIBRUSH hXuiBrush;
 			CXuiCtrl4JList::LIST_ITEM_INFO ListInfo;
 
@@ -1271,18 +1269,18 @@ void CScene_MultiGameJoinLoad::UpdateGamesList()
 				HRESULT hr;
 
 				DWORD dwImageBytes=0;
-				PBYTE pbImageData=NULL;
+				PBYTE pbImageData=nullptr;
 
-				if(tp==NULL)
+				if(tp==nullptr)
 				{
 					DWORD dwBytes=0;
-					PBYTE pbData=NULL;
+					PBYTE pbData=nullptr;
 					app.GetTPD(sessionInfo->data.texturePackParentId,&pbData,&dwBytes);
 
 					// is it in the tpd data ?
 					app.GetFileFromTPD(eTPDFileType_Icon,pbData,dwBytes,&pbImageData,&dwImageBytes );
 					if(dwImageBytes > 0 && pbImageData)
-					{	
+					{
 						hr=XuiCreateTextureBrushFromMemory(pbImageData,dwImageBytes,&hXuiBrush);
 						m_pGamesList->UpdateGraphic(sessionIndex,hXuiBrush);
 					}
@@ -1291,7 +1289,7 @@ void CScene_MultiGameJoinLoad::UpdateGamesList()
 				{
 					pbImageData = tp->getPackIcon(dwImageBytes);
 					if(dwImageBytes > 0 && pbImageData)
-					{			
+					{
 						hr=XuiCreateTextureBrushFromMemory(pbImageData,dwImageBytes,&hXuiBrush);
 						m_pGamesList->UpdateGraphic(sessionIndex,hXuiBrush);
 					}
@@ -1303,7 +1301,7 @@ void CScene_MultiGameJoinLoad::UpdateGamesList()
 				XuiCreateTextureBrushFromMemory(m_DefaultMinecraftIconData,m_DefaultMinecraftIconSize,&hXuiBrush);
 				m_pGamesList->UpdateGraphic(sessionIndex,hXuiBrush);
 			}
-			
+
 
 			if(memcmp( &selectedSessionId, &sessionInfo->sessionId, sizeof(SessionID) ) == 0)
 			{
@@ -1324,14 +1322,14 @@ void CScene_MultiGameJoinLoad::UpdateGamesList(DWORD dwNumResults, IQNetGameSear
 
 	if(m_searches>0)
 		--m_searches;
-	
+
 	if(m_searches==0)
 	{
 		m_NetGamesListTimer.SetShow( FALSE );
-		
+
 		// if the saves list has focus, then we should show the Delete Save tooltip
 		// if the games list has focus, then we should show the View Gamercard tooltip
-		int iRB=-1;	
+		int iRB=-1;
 		int iY = -1;
 
 		if( DoesGamesListHaveFocus() )
@@ -1374,7 +1372,7 @@ void CScene_MultiGameJoinLoad::UpdateGamesList(DWORD dwNumResults, IQNetGameSear
 	}
 
 	unsigned int startOffset = m_GamesList.GetItemCount();
-	//m_GamesList.InsertItems(startOffset,dwNumResults);	
+	//m_GamesList.InsertItems(startOffset,dwNumResults);
 	//m_GamesList.SetEnable(TRUE);
 	//XuiElementSetDisableFocusRecursion( m_GamesList.m_hObj, FALSE);
 
@@ -1388,9 +1386,9 @@ void CScene_MultiGameJoinLoad::UpdateGamesList(DWORD dwNumResults, IQNetGameSear
 		if(pSearchResult->dwOpenPublicSlots < m_localPlayers)
 			continue;
 
-		FriendSessionInfo *sessionInfo = NULL;
+		FriendSessionInfo *sessionInfo = nullptr;
 		bool foundSession = false;
-		for(AUTO_VAR(it, friendsSessions.begin()); it < friendsSessions.end(); ++it)
+		for( auto it = friendsSessions.begin(); it != friendsSessions.end(); ++it)
 		{
 			sessionInfo = *it;
 			if(memcmp( &pSearchResult->info.sessionID, &sessionInfo->sessionId, sizeof(SessionID) ) == 0)
@@ -1449,7 +1447,7 @@ void CScene_MultiGameJoinLoad::UpdateGamesList(DWORD dwNumResults, IQNetGameSear
 #endif
         }
     }
-	
+
 	if( m_GamesList.GetItemCount() == 0)
 	{
 		m_LabelNoGames.SetShow( TRUE );
@@ -1483,8 +1481,8 @@ void CScene_MultiGameJoinLoad::UpdateGamesList(DWORD dwNumResults, IQNetGameSear
 	XUIRect xuiRect;
 	HXUIOBJ item = XuiListGetItemControl(m_GamesList,0);
 
-	HXUIOBJ hObj=NULL;
-	HXUIOBJ hTextPres=NULL;
+	HXUIOBJ hObj=nullptr;
+	HXUIOBJ hTextPres=nullptr;
  	HRESULT hr=XuiControlGetVisual(item,&hObj);
 	hr=XuiElementGetChildById(hObj,L"text_Label",&hTextPres);
 
@@ -1493,7 +1491,7 @@ void CScene_MultiGameJoinLoad::UpdateGamesList(DWORD dwNumResults, IQNetGameSear
 	{
 		FriendSessionInfo *sessionInfo = currentSessions.at(i);
 
-		if(hTextPres != NULL )
+		if(hTextPres != nullptr )
 		{
 			hr=XuiTextPresenterMeasureText(hTextPres, sessionInfo->displayLabel, &xuiRect);
 
@@ -1530,21 +1528,21 @@ void CScene_MultiGameJoinLoad::SearchForGameCallback(void *param, DWORD dwNumRes
 
 int CScene_MultiGameJoinLoad::DeviceSelectReturned(void *pParam,bool bContinue)
 {
-	CScene_MultiGameJoinLoad* pClass = (CScene_MultiGameJoinLoad*)pParam;
+	CScene_MultiGameJoinLoad* pClass = static_cast<CScene_MultiGameJoinLoad *>(pParam);
 	//HRESULT hr;
 
 	if(bContinue==true)
 	{
 		// if the saves list has focus, then we should show the Delete Save tooltip
 		// if the games list has focus, then we should show the View Gamercard tooltip
-		int iRB=-1;	
+		int iRB=-1;
 		int iY = -1;
 		if( pClass->DoesGamesListHaveFocus() )
 		{
 			iY = IDS_TOOLTIPS_VIEW_GAMERCARD;
 		}
 		else if(pClass->DoesSavesListHaveFocus())
-		{	
+		{
 			if(ProfileManager.IsSignedInLive( pClass->m_iPad ))
 			{
 				iY=IDS_TOOLTIPS_UPLOAD_SAVE_FOR_XBOXONE;
@@ -1593,7 +1591,7 @@ int CScene_MultiGameJoinLoad::DeviceSelectReturned(void *pParam,bool bContinue)
 				pClass->GetSaveInfo();
 			}
 			else
-			{		
+			{
 				ui.SetTooltips( DEFAULT_XUI_MENU_USER, IDS_TOOLTIPS_SELECT,IDS_TOOLTIPS_BACK,IDS_TOOLTIPS_SELECTDEVICE,iY,-1,-1,iLB,iRB);
 				// clear the saves list
 				pClass->m_pSavesList->RemoveAllData();
@@ -1623,11 +1621,11 @@ int CScene_MultiGameJoinLoad::DeviceSelectReturned(void *pParam,bool bContinue)
 
 HRESULT CScene_MultiGameJoinLoad::OnTimer( XUIMessageTimer *pTimer, BOOL& bHandled )
 {
-	// 4J-PB - TODO - Don't think we can do this - if a 2nd player signs in here with an offline profile, the signed in LIVE player gets re-logged in, and bMultiplayerAllowed is false briefly 
+	// 4J-PB - TODO - Don't think we can do this - if a 2nd player signs in here with an offline profile, the signed in LIVE player gets re-logged in, and bMultiplayerAllowed is false briefly
 	switch(pTimer->nId)
 	{
 
-	
+
 	case JOIN_LOAD_ONLINE_TIMER_ID:
 	{
 		XPARTY_USER_LIST partyList;
@@ -1673,7 +1671,7 @@ HRESULT CScene_MultiGameJoinLoad::OnTimer( XUIMessageTimer *pTimer, BOOL& bHandl
 			{
 			}
 			else if(DoesSavesListHaveFocus())
-			{	
+			{
 				if(ProfileManager.IsSignedInLive( m_iPad ))
 				{
 					iY=IDS_TOOLTIPS_UPLOAD_SAVE_FOR_XBOXONE;
@@ -1737,13 +1735,13 @@ HRESULT CScene_MultiGameJoinLoad::OnTimer( XUIMessageTimer *pTimer, BOOL& bHandl
 
 				//CXuiCtrl4JList::LIST_ITEM_INFO ListInfo;
 				// for each iConfig, check if the data is available, and add it to the List, then remove it from the viConfig
-				
+
 				for(int i=0;i<m_iTexturePacksNotInstalled;i++)
 				{
 					if(m_iConfigA[i]!=-1)
 					{
 						DWORD dwBytes=0;
-						PBYTE pbData=NULL;
+						PBYTE pbData=nullptr;
 						//app.DebugPrintf("Retrieving iConfig %d from TPD\n",m_iConfigA[i]);
 
 						app.GetTPD(m_iConfigA[i],&pbData,&dwBytes);
@@ -1760,7 +1758,7 @@ HRESULT CScene_MultiGameJoinLoad::OnTimer( XUIMessageTimer *pTimer, BOOL& bHandl
 				bool bAllDone=true;
 				for(int i=0;i<m_iTexturePacksNotInstalled;i++)
 				{
-					if(m_iConfigA[i]!=-1) 
+					if(m_iConfigA[i]!=-1)
 					{
 						bAllDone = false;
 					}
@@ -1816,7 +1814,7 @@ int CScene_MultiGameJoinLoad::LoadSaveDataReturned(void *pParam,bool bContinue)
 
 int CScene_MultiGameJoinLoad::StartGame_SignInReturned(void *pParam,bool bContinue, int iPad)
 {
-	CScene_MultiGameJoinLoad* pClass = (CScene_MultiGameJoinLoad*)pParam;
+	CScene_MultiGameJoinLoad* pClass = static_cast<CScene_MultiGameJoinLoad *>(pParam);
 
 	if(bContinue==true)
 	{
@@ -1854,7 +1852,7 @@ void CScene_MultiGameJoinLoad::StartGameFromSave(CScene_MultiGameJoinLoad* pClas
 
 	LoadingInputParams *loadingParams = new LoadingInputParams();
 	loadingParams->func = &CGameNetworkManager::RunNetworkGameThreadProc;
-	loadingParams->lpParam = NULL;
+	loadingParams->lpParam = nullptr;
 
 	UIFullscreenProgressCompletionData *completionData = new UIFullscreenProgressCompletionData();
 	completionData->bShowBackground=TRUE;
@@ -1868,7 +1866,7 @@ void CScene_MultiGameJoinLoad::StartGameFromSave(CScene_MultiGameJoinLoad* pClas
 
 int CScene_MultiGameJoinLoad::DeleteSaveDataReturned(void *pParam,bool bSuccess)
 {
-	CScene_MultiGameJoinLoad* pClass = (CScene_MultiGameJoinLoad*)pParam;
+	CScene_MultiGameJoinLoad* pClass = static_cast<CScene_MultiGameJoinLoad *>(pParam);
 
 	if(bSuccess==true)
 	{
@@ -1878,25 +1876,25 @@ int CScene_MultiGameJoinLoad::DeleteSaveDataReturned(void *pParam,bool bSuccess)
 		pClass->m_iSaveInfoC=0;
 		pClass->GetSaveInfo();
 	}
-	
+
 	pClass->m_bIgnoreInput=false;
 
 	return 0;
 }
 
 void CScene_MultiGameJoinLoad::LoadLevelGen(LevelGenerationOptions *levelGen)
-{	
+{
 	// Load data from disc
 	//File saveFile( L"Tutorial\\Tutorial" );
 	//LoadSaveFromDisk(&saveFile);
 
 	// clear out the app's terrain features list
 	app.ClearTerrainFeaturePosition();
-		
+
 	StorageManager.ResetSaveData();
 	// Make our next save default to the name of the level
 	StorageManager.SetSaveTitle(levelGen->getDefaultSaveName().c_str());
-	
+
 	bool isClientSide = false;
 	bool isPrivate = false;
 	int maxPlayers = MINECRAFT_NET_MAX_PLAYERS;
@@ -1911,14 +1909,14 @@ void CScene_MultiGameJoinLoad::LoadLevelGen(LevelGenerationOptions *levelGen)
 
 	NetworkGameInitData *param = new NetworkGameInitData();
 	param->seed = 0;
-	param->saveData = NULL;
+	param->saveData = nullptr;
 	param->settings = app.GetGameHostOption( eGameHostOption_Tutorial );
 	param->levelGen = levelGen;
 
 	if(levelGen->requiresTexturePack())
 	{
 		param->texturePackId = levelGen->getRequiredTexturePackId();
-	
+
 		Minecraft *pMinecraft = Minecraft::GetInstance();
 		pMinecraft->skins->selectTexturePackById(param->texturePackId);
 		//pMinecraft->skins->updateUI();
@@ -1926,7 +1924,7 @@ void CScene_MultiGameJoinLoad::LoadLevelGen(LevelGenerationOptions *levelGen)
 
 	LoadingInputParams *loadingParams = new LoadingInputParams();
 	loadingParams->func = &CGameNetworkManager::RunNetworkGameThreadProc;
-	loadingParams->lpParam = (LPVOID)param;
+	loadingParams->lpParam = static_cast<LPVOID>(param);
 
 	UIFullscreenProgressCompletionData *completionData = new UIFullscreenProgressCompletionData();
 	completionData->bShowBackground=TRUE;
@@ -1939,7 +1937,7 @@ void CScene_MultiGameJoinLoad::LoadLevelGen(LevelGenerationOptions *levelGen)
 }
 
 void CScene_MultiGameJoinLoad::LoadSaveFromDisk(File *saveFile)
-{	
+{
 	// we'll only be coming in here when the tutorial is loaded now
 
 	StorageManager.ResetSaveData();
@@ -1947,12 +1945,12 @@ void CScene_MultiGameJoinLoad::LoadSaveFromDisk(File *saveFile)
 	// Make our next save default to the name of the level
 	StorageManager.SetSaveTitle(saveFile->getName().c_str());
 
-	__int64 fileSize = saveFile->length();
+	int64_t fileSize = saveFile->length();
 	FileInputStream fis(*saveFile);
 	byteArray ba(fileSize);
 	fis.read(ba);
 	fis.close();
-	
+
 	bool isClientSide = false;
 	bool isPrivate = false;
 	int maxPlayers = MINECRAFT_NET_MAX_PLAYERS;
@@ -1962,7 +1960,7 @@ void CScene_MultiGameJoinLoad::LoadSaveFromDisk(File *saveFile)
 		isClientSide = false;
 		maxPlayers = 4;
 	}
-	
+
 	app.SetGameHostOption(eGameHostOption_GameType,GameType::CREATIVE->getId());
 
 	g_NetworkManager.HostGame(0,isClientSide,isPrivate,maxPlayers,0);
@@ -1976,7 +1974,7 @@ void CScene_MultiGameJoinLoad::LoadSaveFromDisk(File *saveFile)
 
 	LoadingInputParams *loadingParams = new LoadingInputParams();
 	loadingParams->func = &CGameNetworkManager::RunNetworkGameThreadProc;
-	loadingParams->lpParam = (LPVOID)param;
+	loadingParams->lpParam = static_cast<LPVOID>(param);
 
 	UIFullscreenProgressCompletionData *completionData = new UIFullscreenProgressCompletionData();
 	completionData->bShowBackground=TRUE;
@@ -1990,9 +1988,9 @@ void CScene_MultiGameJoinLoad::LoadSaveFromDisk(File *saveFile)
 
 int CScene_MultiGameJoinLoad::DeleteSaveDialogReturned(void *pParam,int iPad,C4JStorage::EMessageResult result)
 {
-	CScene_MultiGameJoinLoad* pClass = (CScene_MultiGameJoinLoad*)pParam;
+	CScene_MultiGameJoinLoad* pClass = static_cast<CScene_MultiGameJoinLoad *>(pParam);
 	// results switched for this dialog
-	if(result==C4JStorage::EMessage_ResultDecline) 
+	if(result==C4JStorage::EMessage_ResultDecline)
 	{
 		if(app.DebugSettingsOn() && app.GetLoadSavesFromFolderEnabled())
 		{
@@ -2015,9 +2013,9 @@ int CScene_MultiGameJoinLoad::DeleteSaveDialogReturned(void *pParam,int iPad,C4J
 
 int CScene_MultiGameJoinLoad::SaveTransferDialogReturned(void *pParam,int iPad,C4JStorage::EMessageResult result)
 {
-	CScene_MultiGameJoinLoad* pClass = (CScene_MultiGameJoinLoad*)pParam;
+	CScene_MultiGameJoinLoad* pClass = static_cast<CScene_MultiGameJoinLoad *>(pParam);
 	// results switched for this dialog
-	if(result==C4JStorage::EMessage_ResultAccept) 
+	if(result==C4JStorage::EMessage_ResultAccept)
 	{
 		// upload the save
 
@@ -2041,8 +2039,8 @@ int CScene_MultiGameJoinLoad::SaveTransferDialogReturned(void *pParam,int iPad,C
 
 int CScene_MultiGameJoinLoad::UploadSaveForXboxOneThreadProc( LPVOID lpParameter )
 {
-	CScene_MultiGameJoinLoad* pClass = (CScene_MultiGameJoinLoad *) lpParameter;
-	Minecraft *pMinecraft = Minecraft::GetInstance();	
+	CScene_MultiGameJoinLoad* pClass = static_cast<CScene_MultiGameJoinLoad *>(lpParameter);
+	Minecraft *pMinecraft = Minecraft::GetInstance();
 
 	pMinecraft->progressRenderer->progressStart(IDS_SAVE_TRANSFER_TITLE);
 	pMinecraft->progressRenderer->progressStage( IDS_SAVE_TRANSFER_UPLOADING );
@@ -2085,23 +2083,23 @@ int CScene_MultiGameJoinLoad::UploadSaveForXboxOneThreadProc( LPVOID lpParameter
 
 		{
 			// set the save icon
-			PBYTE pbImageData=NULL;
+			PBYTE pbImageData=nullptr;
 			DWORD dwImageBytes=0;
 			XCONTENT_DATA XContentData;
 			int iIndex=pClass->m_pSavesList->GetData(pClass->m_pSavesList->GetCurSel()).iIndex-pClass->m_iDefaultButtonsC;
 			StorageManager.GetSaveCacheFileInfo(iIndex,XContentData);
 			StorageManager.GetSaveCacheFileInfo(iIndex,&pbImageData,&dwImageBytes);
 
-			// if there is no thumbnail, retrieve the default one from the file. 
+			// if there is no thumbnail, retrieve the default one from the file.
 			// Don't delete the image data after creating the xuibrush, since we'll use it in the rename of the save
-			if(pbImageData==NULL)
+			if(pbImageData==nullptr)
 			{
-				DWORD dwResult=XContentGetThumbnail(ProfileManager.GetPrimaryPad(),&XContentData,NULL,&dwImageBytes,NULL);
+				DWORD dwResult=XContentGetThumbnail(ProfileManager.GetPrimaryPad(),&XContentData,nullptr,&dwImageBytes,nullptr);
 				if(dwResult==ERROR_SUCCESS)
 				{
 					pClass->m_pbSaveTransferData = new BYTE[dwImageBytes];
 					pbImageData = pClass->m_pbSaveTransferData; // Copy pointer so that we can use the same name as the library owned one, but m_pbSaveTransferData will get deleted when done
-					XContentGetThumbnail(ProfileManager.GetPrimaryPad(),&XContentData,pbImageData,&dwImageBytes,NULL);
+					XContentGetThumbnail(ProfileManager.GetPrimaryPad(),&XContentData,pbImageData,&dwImageBytes,nullptr);
 				}
 			}
 
@@ -2143,7 +2141,7 @@ int CScene_MultiGameJoinLoad::UploadSaveForXboxOneThreadProc( LPVOID lpParameter
 
 		return 0;
 	}
-	// change text for completion confirmation 
+	// change text for completion confirmation
 	pMinecraft->progressRenderer->progressStage( IDS_SAVE_TRANSFER_UPLOADCOMPLETE );
 
 	// done
@@ -2161,7 +2159,7 @@ void CScene_MultiGameJoinLoad::DeleteFile(CScene_MultiGameJoinLoad *pClass, char
 		C4JStorage::TMS_FILETYPE_BINARY,
 		&CScene_MultiGameJoinLoad::DeleteComplete,
 		pClass,
-		NULL);
+		nullptr);
 
 	if(result != C4JStorage::ETMSStatus_DeleteInProgress)
 	{
@@ -2180,7 +2178,7 @@ void CScene_MultiGameJoinLoad::UploadFile(CScene_MultiGameJoinLoad *pClass, char
 			C4JStorage::TMS_FILETYPE_BINARY,
 			C4JStorage::TMS_UGCTYPE_NONE,
 			filename,
-			(CHAR *)data, 
+			static_cast<CHAR *>(data),
 			size,
 			&CScene_MultiGameJoinLoad::TransferComplete,pClass, 0,
 			&CScene_MultiGameJoinLoad::Progress,pClass);
@@ -2191,10 +2189,10 @@ void CScene_MultiGameJoinLoad::UploadFile(CScene_MultiGameJoinLoad *pClass, char
 		File targetFileDir(L"GAME:\\FakeTMSPP");
 		if(!targetFileDir.exists()) targetFileDir.mkdir();
 		string path = string( wstringtofilename( targetFileDir.getPath() ) ).append("\\").append(filename);
-		HANDLE hSaveFile = CreateFile( path.c_str(), GENERIC_WRITE, 0, NULL, OPEN_ALWAYS, FILE_FLAG_RANDOM_ACCESS, NULL);
+		HANDLE hSaveFile = CreateFile( path.c_str(), GENERIC_WRITE, 0, nullptr, OPEN_ALWAYS, FILE_FLAG_RANDOM_ACCESS, nullptr);
 
 		DWORD numberOfBytesWritten = 0;
-		WriteFile( hSaveFile,data,size,&numberOfBytesWritten,NULL);
+		WriteFile( hSaveFile,data,size,&numberOfBytesWritten,nullptr);
 		assert(numberOfBytesWritten == size);
 
 		CloseHandle(hSaveFile);
@@ -2219,9 +2217,9 @@ bool CScene_MultiGameJoinLoad::WaitForTransferComplete( CScene_MultiGameJoinLoad
 			// cancelled
 			return false;
 		}
-		Sleep(50);		
+		Sleep(50);
 		// update the progress
-		pMinecraft->progressRenderer->progressStagePercentage((unsigned int)(pClass->m_fProgress*100.0f));
+		pMinecraft->progressRenderer->progressStagePercentage(static_cast<unsigned int>(pClass->m_fProgress * 100.0f));
 	}
 
 	// was there a transfer error?
@@ -2231,11 +2229,11 @@ bool CScene_MultiGameJoinLoad::WaitForTransferComplete( CScene_MultiGameJoinLoad
 
 int CScene_MultiGameJoinLoad::SaveOptionsDialogReturned(void *pParam,int iPad,C4JStorage::EMessageResult result)
 {
-	CScene_MultiGameJoinLoad* pClass = (CScene_MultiGameJoinLoad*)pParam;
+	CScene_MultiGameJoinLoad* pClass = static_cast<CScene_MultiGameJoinLoad *>(pParam);
 
 	// results switched for this dialog
 	// EMessage_ResultAccept means cancel
-	if(result==C4JStorage::EMessage_ResultDecline || result==C4JStorage::EMessage_ResultThirdOption) 
+	if(result==C4JStorage::EMessage_ResultDecline || result==C4JStorage::EMessage_ResultThirdOption)
 	{
 		if(result==C4JStorage::EMessage_ResultDecline) // rename
 		{
@@ -2263,7 +2261,7 @@ int CScene_MultiGameJoinLoad::SaveOptionsDialogReturned(void *pParam,int iPad,C4
 
 int CScene_MultiGameJoinLoad::LoadSaveDataReturned(void *pParam,bool bContinue)
 {
-	CScene_MultiGameJoinLoad* pClass = (CScene_MultiGameJoinLoad*)pParam;
+	CScene_MultiGameJoinLoad* pClass = static_cast<CScene_MultiGameJoinLoad *>(pParam);
 
 	if(bContinue==true)
 	{
@@ -2302,9 +2300,9 @@ int CScene_MultiGameJoinLoad::LoadSaveDataReturned(void *pParam,bool bContinue)
 		UINT uiIDA[2];
 		uiIDA[0]=IDS_CONFIRM_CANCEL;
 		uiIDA[1]=IDS_CONFIRM_OK;
-		StorageManager.RequestMessageBox(IDS_CORRUPT_OR_DAMAGED_SAVE_TITLE, IDS_CORRUPT_OR_DAMAGED_SAVE_TEXT, uiIDA, 2, 
+		StorageManager.RequestMessageBox(IDS_CORRUPT_OR_DAMAGED_SAVE_TITLE, IDS_CORRUPT_OR_DAMAGED_SAVE_TEXT, uiIDA, 2,
 			pClass->m_iPad,&CScene_MultiGameJoinLoad::DeleteSaveDialogReturned,pClass, app.GetStringTable());
-	
+
 	}
 
 	return 0;
@@ -2312,7 +2310,7 @@ int CScene_MultiGameJoinLoad::LoadSaveDataReturned(void *pParam,bool bContinue)
 
 int CScene_MultiGameJoinLoad::Progress(void *pParam,float fProgress)
 {
-	CScene_MultiGameJoinLoad* pClass = (CScene_MultiGameJoinLoad*)pParam;
+	CScene_MultiGameJoinLoad* pClass = static_cast<CScene_MultiGameJoinLoad *>(pParam);
 
 	app.DebugPrintf("Progress - %f\n",fProgress);
 	pClass->m_fProgress=fProgress;
@@ -2321,17 +2319,17 @@ int CScene_MultiGameJoinLoad::Progress(void *pParam,float fProgress)
 
 int CScene_MultiGameJoinLoad::TransferComplete(void *pParam,int iPad, int iResult)
 {
-	CScene_MultiGameJoinLoad* pClass = (CScene_MultiGameJoinLoad*)pParam;
+	CScene_MultiGameJoinLoad* pClass = static_cast<CScene_MultiGameJoinLoad *>(pParam);
 
 	delete [] pClass->m_pbSaveTransferData;
-	pClass->m_pbSaveTransferData = NULL;
+	pClass->m_pbSaveTransferData = nullptr;
 	if(iResult!=0)
 	{
 		// There was a transfer fail
 		// Display a dialog
 		UINT uiIDA[1];
 		uiIDA[0]=IDS_CONFIRM_OK;
-		StorageManager.RequestMessageBox(IDS_SAVE_TRANSFER_TITLE, IDS_SAVE_TRANSFER_UPLOADFAILED, uiIDA, 1, ProfileManager.GetPrimaryPad(),NULL,NULL,app.GetStringTable());
+		StorageManager.RequestMessageBox(IDS_SAVE_TRANSFER_TITLE, IDS_SAVE_TRANSFER_UPLOADFAILED, uiIDA, 1, ProfileManager.GetPrimaryPad(),nullptr,nullptr,app.GetStringTable());
 		pClass->m_bTransferFail=true;
 	}
 	else
@@ -2345,14 +2343,14 @@ int CScene_MultiGameJoinLoad::TransferComplete(void *pParam,int iPad, int iResul
 
 int CScene_MultiGameJoinLoad::DeleteComplete(void *pParam,int iPad, int iResult)
 {
-	CScene_MultiGameJoinLoad* pClass = (CScene_MultiGameJoinLoad*)pParam;
+	CScene_MultiGameJoinLoad* pClass = static_cast<CScene_MultiGameJoinLoad *>(pParam);
 	pClass->m_bTransferComplete=true;
 	return 0;
 }
 
 int CScene_MultiGameJoinLoad::KeyboardReturned(void *pParam,bool bSet)
 {
-	CScene_MultiGameJoinLoad* pClass = (CScene_MultiGameJoinLoad*)pParam;
+	CScene_MultiGameJoinLoad* pClass = static_cast<CScene_MultiGameJoinLoad *>(pParam);
 	HRESULT hr = S_OK;
 
 	// if the user has left the name empty, treat this as backing out
@@ -2366,7 +2364,7 @@ int CScene_MultiGameJoinLoad::KeyboardReturned(void *pParam,bool bSet)
 
 		if(eLoadStatus==C4JStorage::ELoadGame_DeviceRemoved)
 		{
-			// disable saving 
+			// disable saving
 			StorageManager.SetSaveDisabled(true);
 			StorageManager.SetSaveDeviceSelected(ProfileManager.GetPrimaryPad(),false);
 			UINT uiIDA[1];
@@ -2375,11 +2373,11 @@ int CScene_MultiGameJoinLoad::KeyboardReturned(void *pParam,bool bSet)
 		}
 #else
 		// rename the save
-		
+
 #endif
 	}
 	else
-	{		
+	{
 		pClass->m_bIgnoreInput=false;
 	}
 
@@ -2388,27 +2386,27 @@ int CScene_MultiGameJoinLoad::KeyboardReturned(void *pParam,bool bSet)
 
 int CScene_MultiGameJoinLoad::LoadSaveDataForRenameReturned(void *pParam,bool bContinue)
 {
-	CScene_MultiGameJoinLoad* pClass = (CScene_MultiGameJoinLoad*)pParam;
+	CScene_MultiGameJoinLoad* pClass = static_cast<CScene_MultiGameJoinLoad *>(pParam);
 #ifdef _XBOX
 	if(bContinue==true)
 	{
 		// set the save icon
-		PBYTE pbImageData=NULL;
+		PBYTE pbImageData=nullptr;
 		DWORD dwImageBytes=0;
 		HXUIBRUSH hXuiBrush;
 		XCONTENT_DATA XContentData;
 		StorageManager.GetSaveCacheFileInfo(pClass->m_iChangingSaveGameInfoIndex-pClass->m_iDefaultButtonsC,XContentData);
 		StorageManager.GetSaveCacheFileInfo(pClass->m_iChangingSaveGameInfoIndex-pClass->m_iDefaultButtonsC,&pbImageData,&dwImageBytes);
 
-		// if there is no thumbnail, retrieve the default one from the file. 
+		// if there is no thumbnail, retrieve the default one from the file.
 		// Don't delete the image data after creating the xuibrush, since we'll use it in the rename of the save
-		if(pbImageData==NULL)
+		if(pbImageData==nullptr)
 		{
-			DWORD dwResult=XContentGetThumbnail(ProfileManager.GetPrimaryPad(),&XContentData,NULL,&dwImageBytes,NULL);
+			DWORD dwResult=XContentGetThumbnail(ProfileManager.GetPrimaryPad(),&XContentData,nullptr,&dwImageBytes,nullptr);
 			if(dwResult==ERROR_SUCCESS)
 			{
 				pbImageData = new BYTE[dwImageBytes];
-				XContentGetThumbnail(ProfileManager.GetPrimaryPad(),&XContentData,pbImageData,&dwImageBytes,NULL);
+				XContentGetThumbnail(ProfileManager.GetPrimaryPad(),&XContentData,pbImageData,&dwImageBytes,nullptr);
 				XuiCreateTextureBrushFromMemory(pbImageData,dwImageBytes,&hXuiBrush);
 			}
 		}
@@ -2430,7 +2428,7 @@ int CScene_MultiGameJoinLoad::LoadSaveDataForRenameReturned(void *pParam,bool bC
 
 int CScene_MultiGameJoinLoad::CopySaveReturned(void *pParam,bool bResult)
 {
-	CScene_MultiGameJoinLoad* pClass = (CScene_MultiGameJoinLoad*)pParam;
+	CScene_MultiGameJoinLoad* pClass = static_cast<CScene_MultiGameJoinLoad *>(pParam);
 #ifdef _XBOX
 	if(bResult)
 	{
@@ -2452,11 +2450,11 @@ int CScene_MultiGameJoinLoad::CopySaveReturned(void *pParam,bool bResult)
 
 int CScene_MultiGameJoinLoad::TexturePackDialogReturned(void *pParam,int iPad,C4JStorage::EMessageResult result)
 {
-	CScene_MultiGameJoinLoad *pClass = (CScene_MultiGameJoinLoad *)pParam;
+	CScene_MultiGameJoinLoad *pClass = static_cast<CScene_MultiGameJoinLoad *>(pParam);
 
 	// Exit with or without saving
 	// Decline means install full version of the texture pack in this dialog
-	if(result==C4JStorage::EMessage_ResultDecline || result==C4JStorage::EMessage_ResultAccept) 
+	if(result==C4JStorage::EMessage_ResultDecline || result==C4JStorage::EMessage_ResultAccept)
 	{
 		// we need to enable background downloading for the DLC
 		XBackgroundDownloadSetMode(XBACKGROUND_DOWNLOAD_MODE_ALWAYS_ALLOW);
@@ -2468,7 +2466,7 @@ int CScene_MultiGameJoinLoad::TexturePackDialogReturned(void *pParam,int iPad,C4
 		if( result==C4JStorage::EMessage_ResultAccept ) // Full version
 		{
 			ullIndexA[0]=ullOfferID_Full;
-			StorageManager.InstallOffer(1,ullIndexA,NULL,NULL);
+			StorageManager.InstallOffer(1,ullIndexA,nullptr,nullptr);
 
 		}
 		else // trial version
@@ -2478,9 +2476,9 @@ int CScene_MultiGameJoinLoad::TexturePackDialogReturned(void *pParam,int iPad,C4
 			if(pDLCInfo->ullOfferID_Trial!=0LL)
 			{
 				ullIndexA[0]=pDLCInfo->ullOfferID_Trial;
-				StorageManager.InstallOffer(1,ullIndexA,NULL,NULL);
+				StorageManager.InstallOffer(1,ullIndexA,nullptr,nullptr);
 			}
-		}		
+		}
 	}
 	pClass->m_bIgnoreInput=false;
 	return 0;
@@ -2489,7 +2487,7 @@ int CScene_MultiGameJoinLoad::TexturePackDialogReturned(void *pParam,int iPad,C4
 HRESULT CScene_MultiGameJoinLoad::OnCustomMessage_DLCInstalled()
 {
 	// mounted DLC may have changed
-	
+
 	if(app.StartInstallDLCProcess(m_iPad)==false)
 	{
 		// not doing a mount, so re-enable input
@@ -2508,11 +2506,11 @@ HRESULT CScene_MultiGameJoinLoad::OnCustomMessage_DLCInstalled()
 }
 
 HRESULT CScene_MultiGameJoinLoad::OnCustomMessage_DLCMountingComplete()
-{	
+{
 
 	VOID *pObj;
 	XuiObjectFromHandle( m_SavesList, &pObj );
-	m_pSavesList = (CXuiCtrl4JList *)pObj;
+	m_pSavesList = static_cast<CXuiCtrl4JList *>(pObj);
 
 	m_iChangingSaveGameInfoIndex = 0;
 
@@ -2534,7 +2532,7 @@ HRESULT CScene_MultiGameJoinLoad::OnCustomMessage_DLCMountingComplete()
 
 	int iY=-1;
 	if(DoesSavesListHaveFocus())
-	{	
+	{
 		if(ProfileManager.IsSignedInLive( m_iPad ))
 		{
 			iY=IDS_TOOLTIPS_UPLOAD_SAVE_FOR_XBOXONE;
@@ -2627,7 +2625,7 @@ void CScene_MultiGameJoinLoad::UpdateTooltips()
 		// 4J-PB - we need to check that there is enough space left to create a copy of the save (for a rename)
 		bool bCanRename = StorageManager.EnoughSpaceForAMinSaveGame();
 
-		if(bCanRename) 
+		if(bCanRename)
 		{
 			iRB=IDS_TOOLTIPS_SAVEOPTIONS;
 		}
@@ -2694,13 +2692,13 @@ bool CScene_MultiGameJoinLoad::GetSavesInfoCallback(LPVOID pParam,int iTotalSave
 				pbCurrentImagePtr=pbImageData+InfoA[i].dwImageOffset;
 				hr=XuiCreateTextureBrushFromMemory(pbCurrentImagePtr,InfoA[i].dwImageBytes,&hXuiBrush);
 				pClass->m_pSavesList->UpdateGraphic(i+pClass->m_iDefaultButtonsC,hXuiBrush );
-			}	
+			}
 			else
 			{
 				// we could put in a damaged save icon here
-				const DWORD LOCATOR_SIZE = 256; // Use this to allocate space to hold a ResourceLocator string 
+				const DWORD LOCATOR_SIZE = 256; // Use this to allocate space to hold a ResourceLocator string
 				WCHAR szResourceLocator[ LOCATOR_SIZE ];
-				const ULONG_PTR c_ModuleHandle = (ULONG_PTR)GetModuleHandle(NULL);
+				const ULONG_PTR c_ModuleHandle = (ULONG_PTR)GetModuleHandle(nullptr);
 
 				swprintf(szResourceLocator, LOCATOR_SIZE, L"section://%X,%ls#%ls",c_ModuleHandle,L"media", L"media/Graphics/MinecraftBrokenIcon.png");
 
@@ -2724,7 +2722,7 @@ bool CScene_MultiGameJoinLoad::GetSavesInfoCallback(LPVOID pParam,int iTotalSave
 	// It's possible that the games list is updated but we haven't displayed it yet as we were still waiting on saves list to load
 	// This is to fix a bug where joining a game before the saves list has loaded causes a crash when this callback is called
 	// as the scene no longer exists
-	pClass->UpdateGamesList();	
+	pClass->UpdateGamesList();
 
 	// Fix for #45154 - Frontend: DLC: Content can only be downloaded from the frontend if you have not joined/exited multiplayer
 	XBackgroundDownloadSetMode(XBACKGROUND_DOWNLOAD_MODE_AUTO);
@@ -2740,7 +2738,7 @@ int CScene_MultiGameJoinLoad::GetSavesInfoCallback(LPVOID lpParam,const bool)
 
 void CScene_MultiGameJoinLoad::CancelSaveUploadCallback(LPVOID lpParam)
 {
-	CScene_MultiGameJoinLoad* pClass = (CScene_MultiGameJoinLoad *) lpParam;
+	CScene_MultiGameJoinLoad* pClass = static_cast<CScene_MultiGameJoinLoad *>(lpParam);
 
 	StorageManager.TMSPP_CancelWriteFileWithProgress(pClass->m_iPad);
 
@@ -2752,12 +2750,12 @@ void CScene_MultiGameJoinLoad::CancelSaveUploadCallback(LPVOID lpParam)
 // 	pClass->m_eSaveUploadState = eSaveUpload_Idle;
 
 	UINT uiIDA[1] = { IDS_CONFIRM_OK };
-	ui.RequestMessageBox(IDS_XBONE_CANCEL_UPLOAD_TITLE, IDS_XBONE_CANCEL_UPLOAD_TEXT, uiIDA, 1, pClass->m_iPad, NULL, NULL, app.GetStringTable());
+	ui.RequestMessageBox(IDS_XBONE_CANCEL_UPLOAD_TITLE, IDS_XBONE_CANCEL_UPLOAD_TEXT, uiIDA, 1, pClass->m_iPad, nullptr, nullptr, app.GetStringTable());
 }
 
 void CScene_MultiGameJoinLoad::SaveUploadCompleteCallback(LPVOID lpParam)
 {
-	CScene_MultiGameJoinLoad* pClass = (CScene_MultiGameJoinLoad *) lpParam;
+	CScene_MultiGameJoinLoad* pClass = static_cast<CScene_MultiGameJoinLoad *>(lpParam);
 
 	pClass->m_bSaveTransferInProgress=false;
 	// change back to the normal title group id

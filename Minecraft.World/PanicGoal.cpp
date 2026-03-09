@@ -10,17 +10,24 @@ PanicGoal::PanicGoal(PathfinderMob *mob, double speedModifier)
 {
 	this->mob = mob;
 	this->speedModifier = speedModifier;
-	setRequiredControlFlags(Control::MoveControlFlag);
+    Goal::setRequiredControlFlags(Control::MoveControlFlag);
 }
 
 bool PanicGoal::canUse()
 {
-	if (mob->getLastHurtByMob() == NULL && !mob->isOnFire()) return false;
-	Vec3 *pos = RandomPos::getPos(dynamic_pointer_cast<PathfinderMob>(mob->shared_from_this()), 5, 4);
-	if (pos == NULL) return false;
+	if (mob->getLastHurtByMob() == nullptr && !mob->isOnFire()) return false;
+	const int hurtTimeout = mob->getLastHurtByMobTimestamp();
+	if (hurtTimeout == 0) return false;
+    static thread_local std::mt19937 rng(std::random_device{}());
+	std::uniform_int_distribution<int> dist(60, 100);
+	const int panicDuration = dist(rng);
+	if (mob->tickCount - hurtTimeout > panicDuration) return false;
+	const Vec3* pos = RandomPos::getPos(dynamic_pointer_cast<PathfinderMob>(mob->shared_from_this()), 5, 4);
+	if (pos == nullptr) return false;
 	posX = pos->x;
 	posY = pos->y;
 	posZ = pos->z;
+
 	return true;
 }
 
@@ -31,5 +38,6 @@ void PanicGoal::start()
 
 bool PanicGoal::canContinueToUse()
 {
+	if (mob->getLastHurtByMob() == nullptr && !mob->isOnFire()) return false;
 	return !mob->getNavigation()->isDone();
 }

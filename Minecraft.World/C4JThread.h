@@ -66,7 +66,7 @@ public:
 			e_modeAutoClear,
 			e_modeManualClear
 		};
-		Event(EMode mode = e_modeAutoClear);	
+		Event(EMode mode = e_modeAutoClear);
 		~Event();
 		void Set();
 		void Clear();
@@ -75,7 +75,7 @@ public:
 	private:
 		EMode	m_mode;
 	#ifdef __PS3__
-		sys_event_flag_t m_event; 
+		sys_event_flag_t m_event;
 	#elif defined __ORBIS__
 		SceKernelEventFlag m_event;
 	#elif defined __PSVITA__
@@ -111,7 +111,7 @@ public:
 		int		m_size;
 		EMode	m_mode;
 #ifdef __PS3__
-		sys_event_flag_t	m_events; 
+		sys_event_flag_t	m_events;
 #elif defined __ORBIS__
 		SceKernelEventFlag	m_events;
 #elif defined __PSVITA__
@@ -129,7 +129,7 @@ public:
 		typedef void (ThreadInitFunc)();
 
 		C4JThread*				m_thread;
-		std::queue<void*>		m_queue; 
+		std::queue<void*>		m_queue;
 		C4JThread::EventArray*	m_startEvent;
 		C4JThread::Event*		m_finishedEvent;
 		CRITICAL_SECTION		m_critSect;
@@ -187,7 +187,7 @@ private:
 	bool				m_isRunning;
 	bool				m_hasStarted;
 	int					m_exitCode;
-	__int64				m_lastSleepTime;
+	int64_t				m_lastSleepTime;
 	static std::vector<C4JThread*> ms_threadList;
 	static CRITICAL_SECTION ms_threadListCS;
 

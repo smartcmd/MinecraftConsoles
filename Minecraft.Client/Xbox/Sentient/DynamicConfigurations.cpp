@@ -11,7 +11,7 @@ bool MinecraftDynamicConfigurations::s_bUpdatedConfigs[MinecraftDynamicConfigura
 MinecraftDynamicConfigurations::EDynamic_Configs MinecraftDynamicConfigurations::s_eCurrentConfig = MinecraftDynamicConfigurations::eDynamic_Config_Max;
 size_t MinecraftDynamicConfigurations::s_currentConfigSize = 0;
 size_t MinecraftDynamicConfigurations::s_dataWrittenSize = 0;
-byte *MinecraftDynamicConfigurations::s_dataWritten = NULL;
+byte *MinecraftDynamicConfigurations::s_dataWritten = nullptr;
 
 void MinecraftDynamicConfigurations::Tick()
 {
@@ -43,7 +43,7 @@ void MinecraftDynamicConfigurations::UpdateNextConfiguration()
 	{
 		if(!s_bUpdatedConfigs[i])
 		{
-			update = (EDynamic_Configs)i;
+			update = static_cast<EDynamic_Configs>(i);
 			break;
 		}
 	}
@@ -57,7 +57,7 @@ void MinecraftDynamicConfigurations::UpdateConfiguration(EDynamic_Configs id)
 {
 	app.DebugPrintf("DynamicConfig: Attempting to update dynamic configuration %d\n", id);
 
-	HRESULT hr = Sentient::SenDynamicConfigGetSize( id,  &s_currentConfigSize, &MinecraftDynamicConfigurations::GetSizeCompletedCallback, NULL);
+	HRESULT hr = Sentient::SenDynamicConfigGetSize( id,  &s_currentConfigSize, &MinecraftDynamicConfigurations::GetSizeCompletedCallback, nullptr);
 
 	switch(hr)
 	{
@@ -76,7 +76,7 @@ void MinecraftDynamicConfigurations::UpdateConfiguration(EDynamic_Configs id)
 		break;
 	case E_POINTER:
 		app.DebugPrintf("DynamicConfig: Failed to get size for config as pointer is invalid\n");
-		//The out_size pointer is NULL. 
+		//The out_size pointer is nullptr. 
 		break;
 	}
 	if(FAILED(hr) )
@@ -97,7 +97,7 @@ void MinecraftDynamicConfigurations::GetSizeCompletedCallback(HRESULT taskResult
 			&s_dataWrittenSize,
 			s_dataWritten,
 			&MinecraftDynamicConfigurations::GetDataCompletedCallback,
-			NULL
+			nullptr
 			);
 
 		switch(hr)
@@ -115,8 +115,8 @@ void MinecraftDynamicConfigurations::GetSizeCompletedCallback(HRESULT taskResult
 			//Sentient is not initialized. You must call SentientInitialize before you call this function. 
 			break;
 		case E_POINTER:
-			app.DebugPrintf("DynamicConfig: Failed to get bytes for config as pointer is NULL\n");
-			//The out_size pointer is NULL. 
+			app.DebugPrintf("DynamicConfig: Failed to get bytes for config as pointer is nullptr\n");
+			//The out_size pointer is nullptr. 
 			break;
 		}
 		if(FAILED(hr) )
@@ -160,7 +160,7 @@ void MinecraftDynamicConfigurations::GetDataCompletedCallback(HRESULT   taskResu
 	}
 
 	delete [] s_dataWritten;
-	s_dataWritten = NULL;
+	s_dataWritten = nullptr;
 
 	s_bUpdatedConfigs[s_eCurrentConfig] = true;
 	UpdateNextConfiguration();

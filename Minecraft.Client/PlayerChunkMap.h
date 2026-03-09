@@ -45,7 +45,7 @@ public:
         int zChangeMin, zChangeMax;
 		int ticksToNextRegionUpdate;	// 4J added
 		bool prioritised;				// 4J added
-		__int64 firstInhabitedTime;
+		int64_t firstInhabitedTime;
 
 	public:
 		PlayerChunk(int x, int z, PlayerChunkMap *pcm);
@@ -73,7 +73,7 @@ public:
 	vector<shared_ptr<ServerPlayer> > players;
 	void flagEntitiesToBeRemoved(unsigned int *flags, bool *removedFound);		// 4J added
 private:
-	unordered_map<__int64,PlayerChunk *,LongKeyHash,LongKeyEq> chunks;	// 4J - was LongHashMap
+	unordered_map<int64_t,PlayerChunk *,LongKeyHash,LongKeyEq> chunks;	// 4J - was LongHashMap
     vector<PlayerChunk *> changedChunks;
 	vector<PlayerChunk *> knownChunks;
 	vector<PlayerChunkAddRequest> addRequests; // 4J added
@@ -82,7 +82,7 @@ private:
     ServerLevel *level;
     int radius;
 	int dimension;
-	__int64 lastInhabitedUpdate;
+	int64_t lastInhabitedUpdate;
 
 public:
 	PlayerChunkMap(ServerLevel *level, int dimension, int radius);

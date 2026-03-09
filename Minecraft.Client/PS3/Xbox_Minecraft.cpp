@@ -63,7 +63,7 @@ DWORD dwProfileSettingsA[NUM_PROFILE_VALUES]=
 #endif
 
 //-------------------------------------------------------------------------------------
-// Time             Since fAppTime is a float, we need to keep the quadword app time 
+// Time             Since fAppTime is a float, we need to keep the quadword app time
 //                  as a LARGE_INTEGER so that we don't lose precision after running
 //                  for a long time.
 //-------------------------------------------------------------------------------------
@@ -114,11 +114,11 @@ void DefineActions(void)
 	InputManager.SetGameJoypadMaps(MAP_STYLE_0,MINECRAFT_ACTION_CRAFTING,				_360_JOY_BUTTON_X);
 	InputManager.SetGameJoypadMaps(MAP_STYLE_0,MINECRAFT_ACTION_RENDER_THIRD_PERSON,	_360_JOY_BUTTON_LTHUMB);
 	InputManager.SetGameJoypadMaps(MAP_STYLE_0,MINECRAFT_ACTION_GAME_INFO,				_360_JOY_BUTTON_BACK);
-	
+
 	InputManager.SetGameJoypadMaps(MAP_STYLE_0,MINECRAFT_ACTION_DPAD_LEFT,				_360_JOY_BUTTON_DPAD_LEFT);
 	InputManager.SetGameJoypadMaps(MAP_STYLE_0,MINECRAFT_ACTION_DPAD_RIGHT,				_360_JOY_BUTTON_DPAD_RIGHT);
 	InputManager.SetGameJoypadMaps(MAP_STYLE_0,MINECRAFT_ACTION_DPAD_UP,				_360_JOY_BUTTON_DPAD_UP);
-	InputManager.SetGameJoypadMaps(MAP_STYLE_0,MINECRAFT_ACTION_DPAD_DOWN,				_360_JOY_BUTTON_DPAD_DOWN);		
+	InputManager.SetGameJoypadMaps(MAP_STYLE_0,MINECRAFT_ACTION_DPAD_DOWN,				_360_JOY_BUTTON_DPAD_DOWN);
 
 	InputManager.SetGameJoypadMaps(MAP_STYLE_1,ACTION_MENU_A,							_360_JOY_BUTTON_A);
 	InputManager.SetGameJoypadMaps(MAP_STYLE_1,ACTION_MENU_B,							_360_JOY_BUTTON_B);
@@ -195,7 +195,7 @@ void DefineActions(void)
 }
 
 #if 0
-HRESULT InitD3D( IDirect3DDevice9 **ppDevice, 
+HRESULT InitD3D( IDirect3DDevice9 **ppDevice,
 	D3DPRESENT_PARAMETERS *pd3dPP )
 {
 	IDirect3D9 *pD3D;
@@ -222,14 +222,14 @@ HRESULT InitD3D( IDirect3DDevice9 **ppDevice,
 	//pd3dPP->Flags				   = D3DPRESENTFLAG_NO_LETTERBOX;
 	//ERR[D3D]: Can't set D3DPRESENTFLAG_NO_LETTERBOX when wide-screen is enabled
 	//	in the launcher/dashboard.
-	if(g_bWidescreen) 
+	if(g_bWidescreen)
 		pd3dPP->Flags=0;
-	else 
+	else
 		pd3dPP->Flags				   = D3DPRESENTFLAG_NO_LETTERBOX;
 
 	// Create the device.
 	return pD3D->CreateDevice(
-		0, 
+		0,
 		D3DDEVTYPE_HAL,
 		NULL,
 		D3DCREATE_HARDWARE_VERTEXPROCESSING|D3DCREATE_BUFFER_2_FRAMES,
@@ -535,18 +535,18 @@ int APIENTRY _tWinMain(_In_ HINSTANCE hInstance,
 	}
 
 	// Initialize the application, assuming sharing of the d3d interface.
-	hr = app.InitShared( pDevice, &d3dpp, 
+	hr = app.InitShared( pDevice, &d3dpp,
 		XuiPNGTextureLoader );
 
 	if ( FAILED(hr) )
 	{
 		app.DebugPrintf
 			( "Failed initializing application.\n" );
-		
+
 		return -1;
 	}
-	
-	
+
+
 #endif
 	RenderManager.Initialise(g_pd3dDevice, g_pSwapChain);
 
@@ -642,7 +642,7 @@ int APIENTRY _tWinMain(_In_ HINSTANCE hInstance,
 
 	// set a function to be called when the ethernet is disconnected, so we can back out if required
 	ProfileManager.SetNotificationsCallback(&CXboxMinecraftApp::NotificationsCallback,(LPVOID)&app);
-	
+
 	// Set a callback for the default player options to be set - when there is no profile data for the player
 	ProfileManager.SetDefaultOptionsCallback(&CXboxMinecraftApp::DefaultOptionsCallback,(LPVOID)&app);
 	// Set a callback to deal with old profile versions needing updated to new versions
@@ -669,13 +669,13 @@ int APIENTRY _tWinMain(_In_ HINSTANCE hInstance,
 
 	if(XNuiGetHardwareStatus()!=0)
 	{
-		// If the Kinect Sensor is not physically connected, this function returns 0. 
-		NuiInitialize(NUI_INITIALIZE_FLAG_USES_HIGH_QUALITY_COLOR | NUI_INITIALIZE_FLAG_USES_DEPTH | 
+		// If the Kinect Sensor is not physically connected, this function returns 0.
+		NuiInitialize(NUI_INITIALIZE_FLAG_USES_HIGH_QUALITY_COLOR | NUI_INITIALIZE_FLAG_USES_DEPTH |
 			NUI_INITIALIZE_FLAG_EXTRAPOLATE_FLOOR_PLANE | NUI_INITIALIZE_FLAG_USES_FITNESS | NUI_INITIALIZE_FLAG_NUI_GUIDE_DISABLED | NUI_INITIALIZE_FLAG_SUPPRESS_AUTOMATIC_UI,NUI_INITIALIZE_DEFAULT_HARDWARE_THREAD );
 	}
 
 	// Sentient !
-	hr = SentientManager.Init();  
+	hr = SentientManager.Init();
 
 
 #endif
@@ -763,7 +763,7 @@ int APIENTRY _tWinMain(_In_ HINSTANCE hInstance,
 	}
 #endif
 
-	while( TRUE ) 
+	while( TRUE )
 	{
 #if 0
 		if(pMinecraft->soundEngine->isStreamingWavebankReady() &&
@@ -792,7 +792,7 @@ int APIENTRY _tWinMain(_In_ HINSTANCE hInstance,
 		PIXBeginNamedEvent(0,"Social network manager tick");
 //		CSocialManager::Instance()->Tick();
 		PIXEndNamedEvent();
-		
+
 		// Tick sentient.
 		PIXBeginNamedEvent(0,"Sentient tick");
 		MemSect(37);
@@ -806,7 +806,7 @@ int APIENTRY _tWinMain(_In_ HINSTANCE hInstance,
 
 //		LeaderboardManager::Instance()->Tick();
 		// Render game graphics.
-		if(app.GetGameStarted()) 
+		if(app.GetGameStarted())
 		{
 			pMinecraft->run_middle();
 			app.SetAppPaused( g_qNetManager.IsLocalGame() && g_qNetManager.GetPlayerCount() == 1 && app.IsPauseMenuDisplayed(ProfileManager.GetPrimaryPad()) );
@@ -881,7 +881,7 @@ int APIENTRY _tWinMain(_In_ HINSTANCE hInstance,
 
 		for(int i=0;i<8;i++)
 		{
-			if(RenderStateA2[i]!=RenderStateA[i]) 
+			if(RenderStateA2[i]!=RenderStateA[i])
 			{
 				//printf("Reseting RenderStateA[%d] after a XUI render\n",i);
 				pDevice->SetRenderState(RenderStateModes[i],RenderStateA[i]);
@@ -889,7 +889,7 @@ int APIENTRY _tWinMain(_In_ HINSTANCE hInstance,
 		}
 		for(int i=0;i<5;i++)
 		{
-			if(SamplerStateA2[i]!=SamplerStateA[i]) 
+			if(SamplerStateA2[i]!=SamplerStateA[i])
 			{
 				//printf("Reseting SamplerStateA[%d] after a XUI render\n",i);
 				pDevice->SetSamplerState(0,SamplerStateModes[i],SamplerStateA[i]);
@@ -923,7 +923,7 @@ int APIENTRY _tWinMain(_In_ HINSTANCE hInstance,
 #ifdef _DEBUG_MENUS_ENABLED
 					if(app.DebugSettingsOn())
 					{
-						app.ActionDebugMask(i);		
+						app.ActionDebugMask(i);
 					}
 					else
 					{
@@ -968,7 +968,7 @@ int APIENTRY _tWinMain(_In_ HINSTANCE hInstance,
 		if(!ProfileManager.IsFullVersion())
 		{
 			// display the trial timer
-			if(app.GetGameStarted()) 
+			if(app.GetGameStarted())
 			{
 				// 4J-PB - if the game is paused, add the elapsed time to the trial timer count so it doesn't tick down
 				if(app.IsAppPaused())
@@ -1016,7 +1016,7 @@ LPVOID XMemAlloc(SIZE_T dwSize, DWORD dwAllocAttributes)
 {
 	if( !trackStarted )
 	{
-		void *p = XMemAllocDefault(dwSize,dwAllocAttributes); 
+		void *p = XMemAllocDefault(dwSize,dwAllocAttributes);
 		size_t realSize = XMemSizeDefault(p, dwAllocAttributes);
 		totalAllocGen += realSize;
 		return p;
@@ -1024,7 +1024,7 @@ LPVOID XMemAlloc(SIZE_T dwSize, DWORD dwAllocAttributes)
 
 	EnterCriticalSection(&memCS);
 
-	void *p=XMemAllocDefault(dwSize + 16,dwAllocAttributes); 
+	void *p=XMemAllocDefault(dwSize + 16,dwAllocAttributes);
 	size_t realSize = XMemSizeDefault(p,dwAllocAttributes) - 16;
 
 	if( trackEnable )
@@ -1050,7 +1050,7 @@ LPVOID XMemAlloc(SIZE_T dwSize, DWORD dwAllocAttributes)
 			trackEnable = true;
 		}
 	}
-	 
+
 	LeaveCriticalSection(&memCS);
 
 	return p;
@@ -1085,7 +1085,7 @@ void WINAPI XMemFree(PVOID pAddress, DWORD dwAllocAttributes)
 	if( pAddress )
 	{
 		size_t realSize = XMemSizeDefault(pAddress, dwAllocAttributes) - 16;
-		
+
 		if(trackEnable)
 		{
 			int sect = *(((unsigned char *)pAddress)+realSize);
@@ -1121,7 +1121,7 @@ SIZE_T WINAPI XMemSize(
 void DumpMem()
 {
 	int totalLeak = 0;
-	for(AUTO_VAR(it, allocCounts.begin()); it != allocCounts.end(); it++ )
+	for( auto it = allocCounts.begin(); it != allocCounts.end(); it++ )
 	{
 		if(it->second > 0 )
 		{
@@ -1169,7 +1169,7 @@ void MemPixStuff()
 
 	int totals[MAX_SECT] = {0};
 
-	for(AUTO_VAR(it, allocCounts.begin()); it != allocCounts.end(); it++ )
+	for( auto it = allocCounts.begin(); it != allocCounts.end(); it++ )
 	{
 		if(it->second > 0 )
 		{

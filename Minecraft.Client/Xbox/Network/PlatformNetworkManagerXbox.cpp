@@ -48,7 +48,7 @@ VOID CPlatformNetworkManagerXbox::NotifyStateChanged(
 	else if( NewState == QNET_STATE_IDLE && OldState == QNET_STATE_SESSION_JOINING )
 	{
 		// 4J-PB - now and then we get ERROR_DEVICE_REMOVED when qnet says
-		// " Couldn't join, removed from session!" or 
+		// " Couldn't join, removed from session!" or
 		//[qnet]: Received data change notification from partially connected player!
 		//[qnet]: Couldn't join, removed from session!
 		// instead of a QNET_E_SESSION_FULL as should be reported
@@ -109,7 +109,7 @@ VOID CPlatformNetworkManagerXbox::NotifyPlayerJoined(
 	bool createFakeSocket = false;
 	bool localPlayer = false;
 
-	NetworkPlayerXbox *networkPlayer = (NetworkPlayerXbox *)addNetworkPlayer(pQNetPlayer);
+	NetworkPlayerXbox *networkPlayer = static_cast<NetworkPlayerXbox *>(addNetworkPlayer(pQNetPlayer));
 
     if( pQNetPlayer->IsLocal() )
     {
@@ -150,8 +150,8 @@ VOID CPlatformNetworkManagerXbox::NotifyPlayerJoined(
 		{
 			// Do we already have a primary player for this system?
 			bool systemHasPrimaryPlayer = false;
-			for(AUTO_VAR(it, m_machineQNetPrimaryPlayers.begin()); it < m_machineQNetPrimaryPlayers.end(); ++it)
-			{
+            for (auto it = m_machineQNetPrimaryPlayers.begin(); it < m_machineQNetPrimaryPlayers.end(); ++it)
+            {
 				IQNetPlayer *pQNetPrimaryPlayer = *it;
 				if( pQNetPlayer->IsSameSystem(pQNetPrimaryPlayer) )
 				{
@@ -164,7 +164,7 @@ VOID CPlatformNetworkManagerXbox::NotifyPlayerJoined(
 		}
     }
 	g_NetworkManager.PlayerJoining( networkPlayer );
-	
+
 	if( createFakeSocket == true && !m_bHostChanged )
 	{
 		g_NetworkManager.CreateSocket( networkPlayer, localPlayer );
@@ -184,10 +184,10 @@ VOID CPlatformNetworkManagerXbox::NotifyPlayerJoined(
 		g_NetworkManager.UpdateAndSetGameSessionData();
 		SystemFlagAddPlayer( networkPlayer );
 	}
-	
+
 	for( int idx = 0; idx < XUSER_MAX_COUNT; ++idx)
 	{
-		if(playerChangedCallback[idx] != NULL)
+		if(playerChangedCallback[idx] != nullptr)
 			playerChangedCallback[idx]( playerChangedCallbackParam[idx], networkPlayer, false );
 	}
 
@@ -196,7 +196,7 @@ VOID CPlatformNetworkManagerXbox::NotifyPlayerJoined(
 		int localPlayerCount = 0;
 		for(unsigned int idx = 0; idx < XUSER_MAX_COUNT; ++idx)
 		{
-			if( m_pIQNet->GetLocalPlayerByUserIndex(idx) != NULL ) ++localPlayerCount;
+			if( m_pIQNet->GetLocalPlayerByUserIndex(idx) != nullptr ) ++localPlayerCount;
 		}
 
 		float appTime = app.getAppTime();
@@ -221,7 +221,7 @@ VOID CPlatformNetworkManagerXbox::NotifyPlayerLeaving(
 
 	// Get our wrapper object associated with this player.
     Socket *socket = networkPlayer->GetSocket();
-    if( socket != NULL )
+    if( socket != nullptr )
     {
 		// If we are in game then remove this player from the game as well.
 		// We may get here either from the player requesting to exit the game,
@@ -237,14 +237,14 @@ VOID CPlatformNetworkManagerXbox::NotifyPlayerLeaving(
 		// We need this as long as the game server still needs to communicate with the player
         //delete socket;
 
-        networkPlayer->SetSocket( NULL );
+        networkPlayer->SetSocket( nullptr );
     }
 
 	if( m_pIQNet->IsHost() && !m_bHostChanged )
 	{
 		if( isSystemPrimaryPlayer(pQNetPlayer) )
 		{
-			IQNetPlayer *pNewQNetPrimaryPlayer = NULL;
+			IQNetPlayer *pNewQNetPrimaryPlayer = nullptr;
 			for(unsigned int i = 0; i < m_pIQNet->GetPlayerCount(); ++i )
 			{
 				IQNetPlayer *pQNetPlayer2 = m_pIQNet->GetPlayerByIndex( i );
@@ -255,13 +255,13 @@ VOID CPlatformNetworkManagerXbox::NotifyPlayerLeaving(
 					break;
 				}
 			}
-			AUTO_VAR(it, find( m_machineQNetPrimaryPlayers.begin(), m_machineQNetPrimaryPlayers.end(), pQNetPlayer));
-			if( it != m_machineQNetPrimaryPlayers.end() )
+            auto it = find(m_machineQNetPrimaryPlayers.begin(), m_machineQNetPrimaryPlayers.end(), pQNetPlayer);
+            if( it != m_machineQNetPrimaryPlayers.end() )
 			{
 				m_machineQNetPrimaryPlayers.erase( it );
 			}
 
-			if( pNewQNetPrimaryPlayer != NULL )
+			if( pNewQNetPrimaryPlayer != nullptr )
 				m_machineQNetPrimaryPlayers.push_back( pNewQNetPrimaryPlayer );
 		}
 
@@ -271,10 +271,10 @@ VOID CPlatformNetworkManagerXbox::NotifyPlayerLeaving(
 	}
 
 	g_NetworkManager.PlayerLeaving( networkPlayer );
-	
+
 	for( int idx = 0; idx < XUSER_MAX_COUNT; ++idx)
 	{
-		if(playerChangedCallback[idx] != NULL)
+		if(playerChangedCallback[idx] != nullptr)
 			playerChangedCallback[idx]( playerChangedCallbackParam[idx], networkPlayer, true );
 	}
 
@@ -283,7 +283,7 @@ VOID CPlatformNetworkManagerXbox::NotifyPlayerLeaving(
 		int localPlayerCount = 0;
 		for(unsigned int idx = 0; idx < XUSER_MAX_COUNT; ++idx)
 		{
-			if( m_pIQNet->GetLocalPlayerByUserIndex(idx) != NULL ) ++localPlayerCount;
+			if( m_pIQNet->GetLocalPlayerByUserIndex(idx) != nullptr ) ++localPlayerCount;
 		}
 
 		float appTime = app.getAppTime();
@@ -334,7 +334,7 @@ VOID CPlatformNetworkManagerXbox::NotifyDataReceived(
             dwDataSize,
             pPlayerFrom->GetGamertag(),
             apPlayersTo[ dwPlayer ]->GetGamertag());
-    
+
 	}
 	*/
 
@@ -349,7 +349,7 @@ VOID CPlatformNetworkManagerXbox::NotifyDataReceived(
 			INetworkPlayer *pPlayerFrom = getNetworkPlayer(pQNetPlayerFrom);
 			Socket *socket = pPlayerFrom->GetSocket();
 
-			if(socket != NULL)
+			if(socket != nullptr)
 				socket->pushDataToQueue(pbData, dwDataSize, false);
 		}
 		else
@@ -358,7 +358,7 @@ VOID CPlatformNetworkManagerXbox::NotifyDataReceived(
 			INetworkPlayer *pPlayerTo = getNetworkPlayer(apQNetPlayersTo[dwPlayer]);
 			Socket *socket = pPlayerTo->GetSocket();
 			//app.DebugPrintf( "Pushing data into read queue for user \"%ls\"\n", apPlayersTo[dwPlayer]->GetGamertag());
-			if(socket != NULL)
+			if(socket != nullptr)
 				socket->pushDataToQueue(pbData, dwDataSize);
 		}
 	}
@@ -380,7 +380,7 @@ VOID CPlatformNetworkManagerXbox::NotifyReadinessChanged(
 	__in BOOL                       bReady
 	)
 {
-	app.DebugPrintf( "Player 0x%p readiness is now %i.\n", pQNetPlayer, (int) bReady );
+	app.DebugPrintf( "Player 0x%p readiness is now %i.\n", pQNetPlayer, static_cast<int>(bReady) );
 }
 
 
@@ -432,15 +432,15 @@ bool CPlatformNetworkManagerXbox::Initialise(CGameNetworkManager *pGameNetworkMa
 	g_pPlatformNetworkManager = this;
 	for( int i = 0; i < XUSER_MAX_COUNT; i++ )
 	{
-		playerChangedCallback[ i ] = NULL;
+		playerChangedCallback[ i ] = nullptr;
 	}
-	
+
 	HRESULT hr;
 	int iResult;
 	DWORD dwResult;
 
     // Start up XNet with default settings.
-    iResult = XNetStartup( NULL );
+    iResult = XNetStartup( nullptr );
     if( iResult != 0 )
     {
         app.DebugPrintf( "Starting up XNet failed (err = %i)!\n", iResult );
@@ -457,7 +457,7 @@ bool CPlatformNetworkManagerXbox::Initialise(CGameNetworkManager *pGameNetworkMa
     }
 
     // Create the QNet object.
-    hr = QNetCreateUsingXAudio2( QNET_SESSIONTYPE_LIVE_STANDARD, this, NULL, g_pXAudio2, &m_pIQNet );
+    hr = QNetCreateUsingXAudio2( QNET_SESSIONTYPE_LIVE_STANDARD, this, nullptr, g_pXAudio2, &m_pIQNet );
     if( FAILED( hr ) )
     {
         app.DebugPrintf( "Creating QNet object failed (err = 0x%08x)!\n", hr );
@@ -475,7 +475,7 @@ bool CPlatformNetworkManagerXbox::Initialise(CGameNetworkManager *pGameNetworkMa
 	m_pIQNet->SetOpt( QNET_OPTION_INVITES_ALLOWED, &enableInv, sizeof BOOL );
 	BOOL enablePres = FALSE;
 	m_pIQNet->SetOpt( QNET_OPTION_PRESENCE_JOIN_MODE, &enablePres, sizeof BOOL );
-	
+
 	// We DO NOT want QNet to handle XN_SYS_SIGNINCHANGED but so far everything else should be fine
 	// We DO WANT QNet to handle XN_LIVE_INVITE_ACCEPTED at a minimum
 	// Receive all types that QNet needs, and filter out the specific ones we don't want later
@@ -489,8 +489,8 @@ bool CPlatformNetworkManagerXbox::Initialise(CGameNetworkManager *pGameNetworkMa
 	m_bSearchPending = false;
 
 	m_bIsOfflineGame = false;
-	m_pSearchParam = NULL;
-	m_SessionsUpdatedCallback = NULL;
+	m_pSearchParam = nullptr;
+	m_SessionsUpdatedCallback = nullptr;
 
 	for(unsigned int i = 0; i < XUSER_MAX_COUNT; ++i)
 	{
@@ -498,10 +498,10 @@ bool CPlatformNetworkManagerXbox::Initialise(CGameNetworkManager *pGameNetworkMa
 		m_lastSearchStartTime[i] = 0;
 
 		// The results that will be filled in with the current search
-		m_pSearchResults[i] = NULL;
-		m_pQoSResult[i] = NULL;
-		m_pCurrentSearchResults[i] = NULL;
-		m_pCurrentQoSResult[i] = NULL;
+		m_pSearchResults[i] = nullptr;
+		m_pQoSResult[i] = nullptr;
+		m_pCurrentSearchResults[i] = nullptr;
+		m_pCurrentQoSResult[i] = nullptr;
 		m_currentSearchResultsCount[i] = 0;
 	}
 
@@ -526,8 +526,8 @@ int CPlatformNetworkManagerXbox::CorrectErrorIDS(int IDS)
 bool CPlatformNetworkManagerXbox::isSystemPrimaryPlayer(IQNetPlayer *pQNetPlayer)
 {
 	bool playerIsSystemPrimary = false;
-	for(AUTO_VAR(it, m_machineQNetPrimaryPlayers.begin()); it < m_machineQNetPrimaryPlayers.end(); ++it)
-	{
+    for (auto it = m_machineQNetPrimaryPlayers.begin(); it < m_machineQNetPrimaryPlayers.end(); ++it)
+    {
 		IQNetPlayer *pQNetPrimaryPlayer = *it;
 		if( pQNetPrimaryPlayer == pQNetPlayer )
 		{
@@ -548,7 +548,7 @@ void CPlatformNetworkManagerXbox::DoWork()
          m_notificationListener,
          0,							// Any notification
          &dwNotifyId,
-         &ulpNotifyParam) 
+         &ulpNotifyParam)
 		)
 	{
 
@@ -629,11 +629,11 @@ bool CPlatformNetworkManagerXbox::RemoveLocalPlayerByUserIndex( int userIndex )
 	IQNetPlayer *pQNetPlayer = m_pIQNet->GetLocalPlayerByUserIndex(userIndex);
 	INetworkPlayer *pNetworkPlayer = getNetworkPlayer(pQNetPlayer);
 
-	if(pNetworkPlayer != NULL)
+	if(pNetworkPlayer != nullptr)
 	{
 		Socket *socket = pNetworkPlayer->GetSocket();
 
-		if( socket != NULL )
+		if( socket != nullptr )
 		{
 			// We can't remove the player from qnet until we have stopped using it to communicate
 			C4JThread* thread = new C4JThread(&CPlatformNetworkManagerXbox::RemovePlayerOnSocketClosedThreadProc, pNetworkPlayer, "RemovePlayerOnSocketClosed");
@@ -655,7 +655,7 @@ bool CPlatformNetworkManagerXbox::IsInStatsEnabledSession()
 	DWORD dataSize = sizeof(QNET_LIVE_STATS_MODE);
 	QNET_LIVE_STATS_MODE statsMode;
 	m_pIQNet->GetOpt(QNET_OPTION_LIVE_STATS_MODE, &statsMode , &dataSize );
-	
+
 	// Use QNET_LIVE_STATS_MODE_AUTO if there is another way to check if stats are enabled or not
 	bool statsEnabled = statsMode == QNET_LIVE_STATS_MODE_ENABLED;
 	return m_pIQNet->GetState() != QNET_STATE_IDLE && statsEnabled;
@@ -701,11 +701,11 @@ bool CPlatformNetworkManagerXbox::LeaveGame(bool bMigrateHost)
 	IQNetPlayer *pQNetPlayer = m_pIQNet->GetLocalPlayerByUserIndex(g_NetworkManager.GetPrimaryPad());
 	INetworkPlayer *pNetworkPlayer = getNetworkPlayer(pQNetPlayer);
 
-	if(pNetworkPlayer != NULL)
+	if(pNetworkPlayer != nullptr)
 	{
 		Socket *socket = pNetworkPlayer->GetSocket();
 
-		if( socket != NULL )
+		if( socket != nullptr )
 		{
 			//printf("Waiting for socket closed event\n");
 			DWORD result = socket->m_socketClosedEvent->WaitForSignal(INFINITE);
@@ -717,13 +717,13 @@ bool CPlatformNetworkManagerXbox::LeaveGame(bool bMigrateHost)
 				// 4J Stu - Clear our reference to this socket
 				pQNetPlayer = m_pIQNet->GetLocalPlayerByUserIndex(g_NetworkManager.GetPrimaryPad());
 				pNetworkPlayer = getNetworkPlayer(pQNetPlayer);
-				if(pNetworkPlayer) pNetworkPlayer->SetSocket( NULL );
+				if(pNetworkPlayer) pNetworkPlayer->SetSocket( nullptr );
 			}
 			delete socket;
 		}
 		else
 		{
-			//printf("Socket is already NULL\n");
+			//printf("Socket is already nullptr\n");
 		}
 	}
 
@@ -778,7 +778,7 @@ void CPlatformNetworkManagerXbox::_HostGame(int usersMask, unsigned char publicS
 	if(publicSlots==1 && privateSlots==0)
 		privateSlots = 1;
 
-	//printf("Hosting game with %d public slots and %d private slots\n", publicSlots, privateSlots);	
+	//printf("Hosting game with %d public slots and %d private slots\n", publicSlots, privateSlots);
 
 	BOOL enableJip = FALSE;
 	m_pIQNet->SetOpt( QNET_OPTION_JOIN_IN_PROGRESS_ALLOWED, &enableJip, sizeof BOOL );
@@ -795,7 +795,7 @@ void CPlatformNetworkManagerXbox::_HostGame(int usersMask, unsigned char publicS
 		publicSlots,                   // dwPublicSlots
 		privateSlots,                  // dwPrivateSlots
 		0,                             // cProperties
-		NULL,                          // pProperties
+		nullptr,                          // pProperties
 		ARRAYSIZE( aXUserContexts ),   // cContexts
 		aXUserContexts );              // pContexts
 
@@ -838,10 +838,10 @@ int CPlatformNetworkManagerXbox::JoinGame(FriendSessionInfo *searchResult, int l
                 localUsersMask,   // dwUserMask
 				&searchResultCopy );      // pSearchResult
 
-	
+
     if( FAILED( hr ) )
     {
-        app.DebugPrintf( "Failed joining game (err = 0x%08x)!\n", hr ); 
+        app.DebugPrintf( "Failed joining game (err = 0x%08x)!\n", hr );
     }
 
 	switch( hr )
@@ -899,14 +899,14 @@ void CPlatformNetworkManagerXbox::UnRegisterPlayerChangedCallback(int iPad, void
 {
 	if(playerChangedCallbackParam[iPad] == callbackParam)
 	{
-		playerChangedCallback[iPad] = NULL;
-		playerChangedCallbackParam[iPad] = NULL;
+		playerChangedCallback[iPad] = nullptr;
+		playerChangedCallbackParam[iPad] = nullptr;
 	}
 }
 
 void CPlatformNetworkManagerXbox::HandleSignInChange()
 {
-	return;	
+	return;
 }
 
 bool CPlatformNetworkManagerXbox::_RunNetworkGame()
@@ -927,14 +927,14 @@ bool CPlatformNetworkManagerXbox::_RunNetworkGame()
 	return true;
 }
 
-void CPlatformNetworkManagerXbox::UpdateAndSetGameSessionData(INetworkPlayer *pNetworkPlayerLeaving /*= NULL*/)
+void CPlatformNetworkManagerXbox::UpdateAndSetGameSessionData(INetworkPlayer *pNetworkPlayerLeaving /*= nullptr*/)
 {
 	DWORD playerCount = m_pIQNet->GetPlayerCount();
 
 	if( this->m_bLeavingGame )
 		return;
 
-	if( GetHostPlayer() == NULL )
+	if( GetHostPlayer() == nullptr )
 		return;
 
 	for(unsigned int i = 0; i < MINECRAFT_NET_MAX_PLAYERS; ++i)
@@ -946,7 +946,7 @@ void CPlatformNetworkManagerXbox::UpdateAndSetGameSessionData(INetworkPlayer *pN
 			// We can call this from NotifyPlayerLeaving but at that point the player is still considered in the session
 			if( pNetworkPlayer != pNetworkPlayerLeaving )
 			{
-				m_hostGameSessionData.players[i] = ((NetworkPlayerXbox *)pNetworkPlayer)->GetUID();
+				m_hostGameSessionData.players[i] = static_cast<NetworkPlayerXbox *>(pNetworkPlayer)->GetUID();
 
 				char *temp;
 				temp = (char *)wstringtofilename( pNetworkPlayer->GetOnlineName() );
@@ -954,18 +954,18 @@ void CPlatformNetworkManagerXbox::UpdateAndSetGameSessionData(INetworkPlayer *pN
 			}
 			else
 			{
-				m_hostGameSessionData.players[i] = NULL;
+				m_hostGameSessionData.players[i] = nullptr;
 				memset(m_hostGameSessionData.szPlayers[i],0,XUSER_NAME_SIZE);
 			}
 		}
 		else
 		{
-			m_hostGameSessionData.players[i] = NULL;
+			m_hostGameSessionData.players[i] = nullptr;
 			memset(m_hostGameSessionData.szPlayers[i],0,XUSER_NAME_SIZE);
 		}
 	}
 
-	m_hostGameSessionData.hostPlayerUID = ((NetworkPlayerXbox *)GetHostPlayer())->GetQNetPlayer()->GetXuid();
+	m_hostGameSessionData.hostPlayerUID = static_cast<NetworkPlayerXbox *>(GetHostPlayer())->GetQNetPlayer()->GetXuid();
 	m_hostGameSessionData.m_uiGameHostSettings = app.GetGameHostOption(eGameHostOption_All);
 
 	HRESULT hr = S_OK;
@@ -978,18 +978,18 @@ void CPlatformNetworkManagerXbox::UpdateAndSetGameSessionData(INetworkPlayer *pN
 
 int CPlatformNetworkManagerXbox::RemovePlayerOnSocketClosedThreadProc( void* lpParam )
 {
-	INetworkPlayer *pNetworkPlayer = (INetworkPlayer *)lpParam;
+	INetworkPlayer *pNetworkPlayer = static_cast<INetworkPlayer *>(lpParam);
 
 	Socket *socket = pNetworkPlayer->GetSocket();
 
-	if( socket != NULL )
+	if( socket != nullptr )
 	{
 		//printf("Waiting for socket closed event\n");
 		socket->m_socketClosedEvent->WaitForSignal(INFINITE);
 
 		//printf("Socket closed event has fired\n");
 		// 4J Stu - Clear our reference to this socket
-		pNetworkPlayer->SetSocket( NULL );
+		pNetworkPlayer->SetSocket( nullptr );
 		delete socket;
 	}
 
@@ -1066,7 +1066,7 @@ void CPlatformNetworkManagerXbox::SystemFlagReset()
 void CPlatformNetworkManagerXbox::SystemFlagSet(INetworkPlayer *pNetworkPlayer, int index)
 {
 	if( ( index < 0 ) || ( index >= m_flagIndexSize ) ) return;
-	if( pNetworkPlayer == NULL ) return;
+	if( pNetworkPlayer == nullptr ) return;
 
 	for( unsigned int i = 0; i < m_playerFlags.size(); i++ )
 	{
@@ -1082,7 +1082,7 @@ void CPlatformNetworkManagerXbox::SystemFlagSet(INetworkPlayer *pNetworkPlayer, 
 bool CPlatformNetworkManagerXbox::SystemFlagGet(INetworkPlayer *pNetworkPlayer, int index)
 {
 	if( ( index < 0 ) || ( index >= m_flagIndexSize ) ) return false;
-	if( pNetworkPlayer == NULL )
+	if( pNetworkPlayer == nullptr )
 	{
 		return false;
 	}
@@ -1099,8 +1099,8 @@ bool CPlatformNetworkManagerXbox::SystemFlagGet(INetworkPlayer *pNetworkPlayer, 
 
 wstring CPlatformNetworkManagerXbox::GatherStats()
 {
-	return L"Queue messages: " + _toString(((NetworkPlayerXbox *)GetHostPlayer())->GetQNetPlayer()->GetSendQueueSize( NULL, QNET_GETSENDQUEUESIZE_MESSAGES ) )
-		+ L" Queue bytes: " + _toString( ((NetworkPlayerXbox *)GetHostPlayer())->GetQNetPlayer()->GetSendQueueSize( NULL, QNET_GETSENDQUEUESIZE_BYTES  ) );
+	return L"Queue messages: " + std::to_wstring(static_cast<NetworkPlayerXbox *>(GetHostPlayer())->GetQNetPlayer()->GetSendQueueSize( nullptr, QNET_GETSENDQUEUESIZE_MESSAGES ) )
+		+ L" Queue bytes: " + std::to_wstring( static_cast<NetworkPlayerXbox *>(GetHostPlayer())->GetQNetPlayer()->GetSendQueueSize( nullptr, QNET_GETSENDQUEUESIZE_BYTES  ) );
 }
 
 wstring CPlatformNetworkManagerXbox::GatherRTTStats()
@@ -1111,7 +1111,7 @@ wstring CPlatformNetworkManagerXbox::GatherRTTStats()
 
 	for(unsigned int i = 0; i < GetPlayerCount(); ++i)
 	{
-		IQNetPlayer *pQNetPlayer = ((NetworkPlayerXbox *)GetPlayerByIndex( i ))->GetQNetPlayer();
+		IQNetPlayer *pQNetPlayer = static_cast<NetworkPlayerXbox *>(GetPlayerByIndex(i))->GetQNetPlayer();
 
 		if(!pQNetPlayer->IsLocal())
 		{
@@ -1132,23 +1132,23 @@ void CPlatformNetworkManagerXbox::TickSearch()
 			m_currentSearchResultsCount[m_lastSearchPad] = m_searchResultsCount[m_lastSearchPad];
 
 			// Store the current search results so that we don't delete them too early
-			if( m_pCurrentSearchResults[m_lastSearchPad] != NULL )
+			if( m_pCurrentSearchResults[m_lastSearchPad] != nullptr )
 			{
 				delete m_pCurrentSearchResults[m_lastSearchPad];
-				m_pCurrentSearchResults[m_lastSearchPad] = NULL;
-			}	
+				m_pCurrentSearchResults[m_lastSearchPad] = nullptr;
+			}
 			m_pCurrentSearchResults[m_lastSearchPad] = m_pSearchResults[m_lastSearchPad];
-			m_pSearchResults[m_lastSearchPad] = NULL;
+			m_pSearchResults[m_lastSearchPad] = nullptr;
 
-			if( m_pCurrentQoSResult[m_lastSearchPad] != NULL )
+			if( m_pCurrentQoSResult[m_lastSearchPad] != nullptr )
 			{
 				XNetQosRelease(m_pCurrentQoSResult[m_lastSearchPad]);
-				m_pCurrentQoSResult[m_lastSearchPad] = NULL;
+				m_pCurrentQoSResult[m_lastSearchPad] = nullptr;
 			}
 			m_pCurrentQoSResult[m_lastSearchPad] = m_pQoSResult[m_lastSearchPad];
-			m_pQoSResult[m_lastSearchPad] = NULL;
+			m_pQoSResult[m_lastSearchPad] = nullptr;
 
-			if( m_SessionsUpdatedCallback != NULL ) m_SessionsUpdatedCallback(m_pSearchParam);
+			if( m_SessionsUpdatedCallback != nullptr ) m_SessionsUpdatedCallback(m_pSearchParam);
 			m_bSearchResultsReady = false;
 			m_bSearchPending = false;
 		}
@@ -1156,7 +1156,7 @@ void CPlatformNetworkManagerXbox::TickSearch()
 	else
 	{
 		// Don't start searches unless we have registered a callback
-		if( m_SessionsUpdatedCallback != NULL && (m_lastSearchStartTime[g_NetworkManager.GetPrimaryPad()] + MINECRAFT_XSESSION_SEARCH_DELAY_MILLISECONDS) < GetTickCount() )
+		if( m_SessionsUpdatedCallback != nullptr && (m_lastSearchStartTime[g_NetworkManager.GetPrimaryPad()] + MINECRAFT_XSESSION_SEARCH_DELAY_MILLISECONDS) < GetTickCount() )
 		{
 			SearchForGames();
 		}
@@ -1174,21 +1174,21 @@ void CPlatformNetworkManagerXbox::SearchForGames()
 	m_bSearchPending = true;
 	m_bSearchResultsReady = false;
 
-	for(AUTO_VAR(it, friendsSessions[m_lastSearchPad].begin()); it < friendsSessions[m_lastSearchPad].end(); ++it)
-	{
+    for (auto it = friendsSessions[m_lastSearchPad].begin(); it < friendsSessions[m_lastSearchPad].end(); ++it)
+    {
 		delete (*it);
 	}
-	friendsSessions[m_lastSearchPad].clear();	
-	
-	if( m_pSearchResults[m_lastSearchPad] != NULL )
+	friendsSessions[m_lastSearchPad].clear();
+
+	if( m_pSearchResults[m_lastSearchPad] != nullptr )
 	{
 		delete m_pSearchResults[m_lastSearchPad];
-		m_pSearchResults[m_lastSearchPad] = NULL;
-	}	
-	if( m_pQoSResult[m_lastSearchPad] != NULL )
+		m_pSearchResults[m_lastSearchPad] = nullptr;
+	}
+	if( m_pQoSResult[m_lastSearchPad] != nullptr )
 	{
 		XNetQosRelease(m_pQoSResult[m_lastSearchPad]);
-		m_pQoSResult[m_lastSearchPad] = NULL;
+		m_pQoSResult[m_lastSearchPad] = nullptr;
 	}
 
 	bool bMultiplayerAllowed = g_NetworkManager.IsSignedInLive( g_NetworkManager.GetPrimaryPad() ) && g_NetworkManager.AllowedToPlayMultiplayer( g_NetworkManager.GetPrimaryPad() );
@@ -1202,15 +1202,15 @@ void CPlatformNetworkManagerXbox::SearchForGames()
 		{
 			for(unsigned int i = 0; i<partyUserList.dwUserCount; i++)
 			{
-				if( 
+				if(
 					( (partyUserList.Users[i].dwFlags & XPARTY_USER_ISLOCAL ) !=  XPARTY_USER_ISLOCAL ) &&
 					( (partyUserList.Users[i].dwFlags & XPARTY_USER_ISINGAMESESSION) ==  XPARTY_USER_ISINGAMESESSION ) &&
 					partyUserList.Users[i].dwTitleId == TITLEID_MINECRAFT
 					)
 				{
 					bool sessionAlreadyAdded = false;
-					for(AUTO_VAR(it, friendsSessions[m_lastSearchPad].begin()); it < friendsSessions[m_lastSearchPad].end(); ++it)
-					{
+                    for (auto it = friendsSessions[m_lastSearchPad].begin(); it < friendsSessions[m_lastSearchPad].end(); ++it)
+                    {
 						FriendSessionInfo *current = *it;
 						if( memcmp( &partyUserList.Users[i].SessionInfo.sessionID, &current->sessionId, sizeof(SessionID) ) == 0 )
 						{
@@ -1250,7 +1250,7 @@ void CPlatformNetworkManagerXbox::SearchForGames()
 			 buffer,
 			 bufferSize,
 			 &itemsReturned,
-			 NULL
+			 nullptr
 		);
 
 		DWORD flagPlayingOnline = XONLINE_FRIENDSTATE_FLAG_ONLINE; // | XONLINE_FRIENDSTATE_FLAG_PLAYING;
@@ -1268,8 +1268,8 @@ void CPlatformNetworkManagerXbox::SearchForGames()
 				//printf("Valid game to join\n");
 
 				bool sessionAlreadyAdded = false;
-				for(AUTO_VAR(it, friendsSessions[m_lastSearchPad].begin()); it < friendsSessions[m_lastSearchPad].end(); ++it)
-				{
+                for (auto it = friendsSessions[m_lastSearchPad].begin(); it < friendsSessions[m_lastSearchPad].end(); ++it)
+                {
 					FriendSessionInfo *current = *it;
 					if( memcmp( &friends[i].sessionID, &current->sessionId, sizeof(SessionID) ) == 0 )
 					{
@@ -1317,8 +1317,8 @@ void CPlatformNetworkManagerXbox::SearchForGames()
 		sessionIDList,
 		g_NetworkManager.GetPrimaryPad(),
 		&cbResults,         // Pass in the address of the size variable
-		NULL,
-		NULL                       // This example uses the synchronous model
+		nullptr,
+		nullptr                       // This example uses the synchronous model
 		);
 
 	XOVERLAPPED *pOverlapped = new XOVERLAPPED();
@@ -1386,7 +1386,7 @@ void CPlatformNetworkManagerXbox::SearchForGames()
 
 int CPlatformNetworkManagerXbox::SearchForGamesThreadProc( void* lpParameter )
 {
-	SearchForGamesData *threadData = (SearchForGamesData *)lpParameter;
+	SearchForGamesData *threadData = static_cast<SearchForGamesData *>(lpParameter);
 
 	DWORD sessionIDCount = threadData->sessionIDCount;
 
@@ -1423,24 +1423,24 @@ int CPlatformNetworkManagerXbox::SearchForGamesThreadProc( void* lpParameter )
 	}
 	// Create an event object that is autoreset with an initial state of "not signaled".
 	// Pass this event handle to the QoSLookup to receive notification of each QoS lookup.
-	HANDLE QoSLookupHandle = CreateEvent(NULL, false, false, NULL);
+	HANDLE QoSLookupHandle = CreateEvent(nullptr, false, false, nullptr);
 
 	*threadData->ppQos = new XNQOS();
-    
+
 	INT iRet = XNetQosLookup(
 		pSearchResults->dwSearchResults, // Number of remote Xbox 360 consoles to probe
-		QoSxnaddr,                       // Array of pointers to XNADDR structures  
+		QoSxnaddr,                       // Array of pointers to XNADDR structures
 		QoSxnkid,                        // Array of pointers to XNKID structures that contain session IDs for the remote Xbox 360 consoles
 		QoSxnkey,                        // Array of pointers to XNKEY structures that contain key-exchange keys for the remote Xbox 360 consoles
 		0,                                 // Number of security gateways to probe
-		NULL,                              // Pointer to an array of IN_ADDR structures that contain the IP addresses of the security gateways
-		NULL,                              // Pointer to an array of service IDs for the security gateway
+		nullptr,                              // Pointer to an array of IN_ADDR structures that contain the IP addresses of the security gateways
+		nullptr,                              // Pointer to an array of service IDs for the security gateway
 		8,                                 // Number of desired probe replies to receive
 		0,                                 // Maximum upstream bandwidth that the outgoing QoS probe packets can consume
 		0,                                 // Flags
 		QoSLookupHandle,                   // Event handle
 		threadData->ppQos );              // Pointer to a pointer to an XNQOS structure that receives the results from the QoS probes
-    
+
 	if( 0 != iRet )
 	{
 		app.DebugPrintf( "XNetQosLookup failed with error 0x%08x", iRet);
@@ -1448,9 +1448,9 @@ int CPlatformNetworkManagerXbox::SearchForGamesThreadProc( void* lpParameter )
 	}
 	else
 	{
-    
+
 		//m_bQoSTesting = TRUE;
-    
+
 		// Wait for results to all complete.  cxnqosPending will eventually hit zero.
 		// Pause thread waiting for QosLookup events to be triggered.
 		while ( (*threadData->ppQos)->cxnqosPending != 0 )
@@ -1458,7 +1458,7 @@ int CPlatformNetworkManagerXbox::SearchForGamesThreadProc( void* lpParameter )
 			// 4J Stu - We could wait for INFINITE if we weren't watching for the kill flag
 			WaitForSingleObject(QoSLookupHandle, 100);
 		}
-    
+
 		// Close handle
 		CloseHandle( QoSLookupHandle );
 
@@ -1487,15 +1487,15 @@ vector<FriendSessionInfo *> *CPlatformNetworkManagerXbox::GetSessionList(int iPa
 		for( DWORD dwResult = 0; dwResult < m_currentSearchResultsCount[iPad]; dwResult++ )
 		{
 			pSearchResult = &m_pCurrentSearchResults[iPad]->pResults[dwResult];
-			
+
 			// No room for us, so ignore it
-			// 4J Stu - pSearchResult should never be NULL, but just in case...
-			if(pSearchResult == NULL || pSearchResult->dwOpenPublicSlots < localPlayers) continue;
+			// 4J Stu - pSearchResult should never be nullptr, but just in case...
+			if(pSearchResult == nullptr || pSearchResult->dwOpenPublicSlots < localPlayers) continue;
 
 			bool foundSession = false;
-			FriendSessionInfo *sessionInfo = NULL;
-			AUTO_VAR(itFriendSession, friendsSessions[iPad].begin());
-			for(itFriendSession = friendsSessions[iPad].begin(); itFriendSession < friendsSessions[iPad].end(); ++itFriendSession)
+			FriendSessionInfo *sessionInfo = nullptr;
+            auto itFriendSession = friendsSessions[iPad].begin();
+            for(itFriendSession = friendsSessions[iPad].begin(); itFriendSession < friendsSessions[iPad].end(); ++itFriendSession)
 			{
 				sessionInfo = *itFriendSession;
 				if(memcmp( &pSearchResult->info.sessionID, &sessionInfo->sessionId, sizeof(SessionID) ) == 0 && (!partyOnly || (partyOnly && sessionInfo->hasPartyMember) ) )
@@ -1595,8 +1595,8 @@ bool CPlatformNetworkManagerXbox::GetGameSessionInfo(int iPad, SessionID session
 			if(memcmp( &pSearchResult->info.sessionID, &sessionId, sizeof(SessionID) ) != 0) continue;
 
 			bool foundSession = false;
-			FriendSessionInfo *sessionInfo = NULL;
-			AUTO_VAR(itFriendSession, friendsSessions[iPad].begin());
+			FriendSessionInfo *sessionInfo = nullptr;
+			auto = itFriendSession, friendsSessions[iPad].begin();
 			for(itFriendSession = friendsSessions[iPad].begin(); itFriendSession < friendsSessions[iPad].end(); ++itFriendSession)
 			{
 				sessionInfo = *itFriendSession;
@@ -1628,7 +1628,7 @@ bool CPlatformNetworkManagerXbox::GetGameSessionInfo(int iPad, SessionID session
 				else
 				{
 					swprintf(sessionInfo->displayLabel,app.GetString(IDS_GAME_HOST_NAME_UNKNOWN));
-				}				
+				}
 				sessionInfo->displayLabelLength = wcslen( sessionInfo->displayLabel );
 
 				// If this host wasn't disabled use this one.
@@ -1637,7 +1637,7 @@ bool CPlatformNetworkManagerXbox::GetGameSessionInfo(int iPad, SessionID session
 					sessionInfo->data.isJoinable)
 				{
 					foundSessionInfo->data = sessionInfo->data;
-					if(foundSessionInfo->displayLabel != NULL) delete [] foundSessionInfo->displayLabel;
+					if(foundSessionInfo->displayLabel != nullptr) delete [] foundSessionInfo->displayLabel;
 					foundSessionInfo->displayLabel = new wchar_t[100];
 					memcpy(foundSessionInfo->displayLabel, sessionInfo->displayLabel, 100 * sizeof(wchar_t) );
 					foundSessionInfo->displayLabelLength = sessionInfo->displayLabelLength;
@@ -1672,7 +1672,7 @@ void CPlatformNetworkManagerXbox::ForceFriendsSessionRefresh()
 		m_searchResultsCount[i] = 0;
 		m_lastSearchStartTime[i] = 0;
 		delete m_pSearchResults[i];
-		m_pSearchResults[i] = NULL;
+		m_pSearchResults[i] = nullptr;
 	}
 }
 
@@ -1687,7 +1687,7 @@ INetworkPlayer *CPlatformNetworkManagerXbox::addNetworkPlayer(IQNetPlayer *pQNet
 void CPlatformNetworkManagerXbox::removeNetworkPlayer(IQNetPlayer *pQNetPlayer)
 {
 	INetworkPlayer *pNetworkPlayer = getNetworkPlayer(pQNetPlayer);
-	for( AUTO_VAR(it, currentNetworkPlayers.begin()); it != currentNetworkPlayers.end(); it++ )
+	for( auto it = currentNetworkPlayers.begin(); it != currentNetworkPlayers.end(); it++ )
 	{
 		if( *it == pNetworkPlayer )
 		{
@@ -1699,13 +1699,13 @@ void CPlatformNetworkManagerXbox::removeNetworkPlayer(IQNetPlayer *pQNetPlayer)
 
 INetworkPlayer *CPlatformNetworkManagerXbox::getNetworkPlayer(IQNetPlayer *pQNetPlayer)
 {
-	return pQNetPlayer ? (INetworkPlayer *)(pQNetPlayer->GetCustomDataValue()) : NULL;
+	return pQNetPlayer ? (INetworkPlayer *)(pQNetPlayer->GetCustomDataValue()) : nullptr;
 }
 
 
 INetworkPlayer *CPlatformNetworkManagerXbox::GetLocalPlayerByUserIndex(int userIndex )
 {
-	return getNetworkPlayer(m_pIQNet->GetLocalPlayerByUserIndex(userIndex)); 
+	return getNetworkPlayer(m_pIQNet->GetLocalPlayerByUserIndex(userIndex));
 }
 
 INetworkPlayer *CPlatformNetworkManagerXbox::GetPlayerByIndex(int playerIndex)

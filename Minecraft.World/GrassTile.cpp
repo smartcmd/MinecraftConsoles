@@ -12,9 +12,9 @@
 
 GrassTile::GrassTile(int id) : Tile(id, Material::grass)
 {
-	iconTop = NULL;
-	iconSnowSide = NULL;
-	iconSideOverlay = NULL;
+	iconTop = nullptr;
+	iconSnowSide = nullptr;
+	iconSideOverlay = nullptr;
 
 	setTicking(true);
 }

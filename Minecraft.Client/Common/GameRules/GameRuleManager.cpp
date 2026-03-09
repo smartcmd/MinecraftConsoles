@@ -12,7 +12,7 @@
 #include "ConsoleGameRules.h"
 #include "GameRuleManager.h"
 
-WCHAR *GameRuleManager::wchTagNameA[] =
+const WCHAR *GameRuleManager::wchTagNameA[] =
 {
 	L"", // eGameRuleType_Root
 	L"MapOptions", // eGameRuleType_LevelGenerationOptions
@@ -34,7 +34,7 @@ WCHAR *GameRuleManager::wchTagNameA[] =
 	L"UpdatePlayer", // eGameRuleType_UpdatePlayerRule
 };
 
-WCHAR *GameRuleManager::wchAttrNameA[] =
+const WCHAR *GameRuleManager::wchAttrNameA[] =
 {
 	L"descriptionName", // eGameRuleAttr_descriptionName
 	L"promptName", // eGameRuleAttr_promptName
@@ -77,7 +77,7 @@ WCHAR *GameRuleManager::wchAttrNameA[] =
 	L"spawnY", // eGameRuleAttr_spawnY
 	L"spawnZ", // eGameRuleAttr_spawnZ
 	L"orientation",
-	L"dimension",	
+	L"dimension",
 	L"topTileId", // eGameRuleAttr_topTileId
 	L"biomeId", // eGameRuleAttr_biomeId
 	L"feature", // eGameRuleAttr_feature
@@ -85,24 +85,24 @@ WCHAR *GameRuleManager::wchAttrNameA[] =
 
 GameRuleManager::GameRuleManager()
 {
-	m_currentGameRuleDefinitions = NULL;
-	m_currentLevelGenerationOptions = NULL;
+	m_currentGameRuleDefinitions = nullptr;
+	m_currentLevelGenerationOptions = nullptr;
 }
 
 void GameRuleManager::loadGameRules(DLCPack *pack)
 {
-	StringTable *strings = NULL;
+	StringTable *strings = nullptr;
 
 	if(pack->doesPackContainFile(DLCManager::e_DLCType_LocalisationData,L"languages.loc"))
 	{
-		DLCLocalisationFile *localisationFile = (DLCLocalisationFile *)pack->getFile(DLCManager::e_DLCType_LocalisationData, L"languages.loc");
+		DLCLocalisationFile *localisationFile = static_cast<DLCLocalisationFile *>(pack->getFile(DLCManager::e_DLCType_LocalisationData, L"languages.loc"));
 		strings = localisationFile->getStringTable();
 	}
 
 	int gameRulesCount = pack->getDLCItemsCount(DLCManager::e_DLCType_GameRulesHeader);
 	for(int i = 0; i < gameRulesCount; ++i)
 	{
-		DLCGameRulesHeader *dlcHeader = (DLCGameRulesHeader *)pack->getFile(DLCManager::e_DLCType_GameRulesHeader, i);
+		DLCGameRulesHeader *dlcHeader = static_cast<DLCGameRulesHeader *>(pack->getFile(DLCManager::e_DLCType_GameRulesHeader, i));
 		DWORD dSize;
 		byte *dData = dlcHeader->getData(dSize);
 
@@ -120,14 +120,14 @@ void GameRuleManager::loadGameRules(DLCPack *pack)
 	gameRulesCount = pack->getDLCItemsCount(DLCManager::e_DLCType_GameRules);
 	for (int i = 0; i < gameRulesCount; ++i)
 	{
-		DLCGameRulesFile *dlcFile = (DLCGameRulesFile *)pack->getFile(DLCManager::e_DLCType_GameRules, i);
+		DLCGameRulesFile *dlcFile = static_cast<DLCGameRulesFile *>(pack->getFile(DLCManager::e_DLCType_GameRules, i));
 
 		DWORD dSize;
 		byte *dData = dlcFile->getData(dSize);
 
 		LevelGenerationOptions *createdLevelGenerationOptions = new LevelGenerationOptions(pack);
 		//	= loadGameRules(dData, dSize); //, strings);
-		
+
 		createdLevelGenerationOptions->setGrSource( new JustGrSource() );
 		createdLevelGenerationOptions->setSrc( LevelGenerationOptions::eSrc_tutorial );
 
@@ -164,7 +164,7 @@ void GameRuleManager::loadGameRules(LevelGenerationOptions *lgo, byte *dIn, UINT
 	app.DebugPrintf("\tversion=%d.\n", version);
 
 	for (int i = 0; i < 8; i++) dis.readByte();
-	
+
 	BYTE compression_type = dis.readByte();
 
 	app.DebugPrintf("\tcompressionType=%d.\n", compression_type);
@@ -174,15 +174,15 @@ void GameRuleManager::loadGameRules(LevelGenerationOptions *lgo, byte *dIn, UINT
 	decomp_len = dis.readInt();
 
 	app.DebugPrintf("\tcompr_len=%d.\n\tdecomp_len=%d.\n", compr_len, decomp_len);
-	
+
 
 	// Decompress File Body
 
-	byteArray content(new BYTE[decomp_len], decomp_len), 
+	byteArray content(new BYTE[decomp_len], decomp_len),
 				compr_content(new BYTE[compr_len], compr_len);
 	dis.read(compr_content);
 
-	Compression::getCompression()->SetDecompressionType( (Compression::ECompressionTypes)compression_type );
+	Compression::getCompression()->SetDecompressionType( static_cast<Compression::ECompressionTypes>(compression_type) );
 	Compression::getCompression()->DecompressLZXRLE(	content.data, &content.length,
 													compr_content.data, compr_content.length);
 	Compression::getCompression()->SetDecompressionType( SAVE_FILE_PLATFORM_LOCAL );
@@ -237,11 +237,11 @@ void GameRuleManager::loadGameRules(LevelGenerationOptions *lgo, byte *dIn, UINT
 // 4J-JEV: Reverse of loadGameRules.
 void GameRuleManager::saveGameRules(byte **dOut, UINT *dSize)
 {
-	if (m_currentGameRuleDefinitions == NULL &&
-		m_currentLevelGenerationOptions == NULL)
+	if (m_currentGameRuleDefinitions == nullptr &&
+		m_currentLevelGenerationOptions == nullptr)
 	{
 		app.DebugPrintf("GameRuleManager:: Nothing here to save.");
-		*dOut = NULL;
+		*dOut = nullptr;
 		*dSize = 0;
 		return;
 	}
@@ -251,7 +251,7 @@ void GameRuleManager::saveGameRules(byte **dOut, UINT *dSize)
 	// Initialise output stream.
 	ByteArrayOutputStream baos;
 	DataOutputStream dos(&baos);
-	
+
 	// Write header.
 
 	// VERSION NUMBER
@@ -268,7 +268,7 @@ void GameRuleManager::saveGameRules(byte **dOut, UINT *dSize)
 	ByteArrayOutputStream compr_baos;
 	DataOutputStream compr_dos(&compr_baos);
 
-	if (m_currentGameRuleDefinitions == NULL)
+	if (m_currentGameRuleDefinitions == nullptr)
 	{
 		compr_dos.writeInt( 0 ); // numStrings for StringTable
 		compr_dos.writeInt( version_number );
@@ -279,12 +279,12 @@ void GameRuleManager::saveGameRules(byte **dOut, UINT *dSize)
 		compr_dos.writeInt( 0 ); // XmlObjects.length
 	}
 	else
-	{	
+	{
 		StringTable *st = m_currentGameRuleDefinitions->getStringTable();
 
-		if (st == NULL)
+		if (st == nullptr)
 		{
-			app.DebugPrintf("GameRuleManager::saveGameRules: StringTable == NULL!");
+			app.DebugPrintf("GameRuleManager::saveGameRules: StringTable == nullptr!");
 		}
 		else
 		{
@@ -311,9 +311,9 @@ void GameRuleManager::saveGameRules(byte **dOut, UINT *dSize)
 	dos.writeInt( compr_ba.length ); // Write length
 	dos.writeInt( compr_baos.buf.length );
 	dos.write(compr_ba);
-	
+
 	delete [] compr_ba.data;
-	
+
 	compr_dos.close();
 	compr_baos.close();
 	// -- END COMPRESSED -- //
@@ -322,8 +322,8 @@ void GameRuleManager::saveGameRules(byte **dOut, UINT *dSize)
 	*dSize = baos.buf.length;
 	*dOut = baos.buf.data;
 
-	baos.buf.data = NULL;
-	
+	baos.buf.data = nullptr;
+
 	dos.close(); baos.close();
 }
 
@@ -344,11 +344,10 @@ void GameRuleManager::writeRuleFile(DataOutputStream *dos)
 	// Write schematic files.
 	unordered_map<wstring, ConsoleSchematicFile *> *files;
 	files = getLevelGenerationOptions()->getUnfinishedSchematicFiles();
-	dos->writeInt( files->size() );
-	for (AUTO_VAR(it, files->begin()); it != files->end(); it++)
+	for ( auto& it : *files )
 	{
-		wstring filename = it->first;
-		ConsoleSchematicFile *file = it->second;
+		const wstring& filename = it.first;
+		ConsoleSchematicFile *file = it.second;
 
 		ByteArrayOutputStream fileBaos;
 		DataOutputStream fileDos(&fileBaos);
@@ -378,7 +377,7 @@ bool GameRuleManager::readRuleFile(LevelGenerationOptions *lgo, byte *dIn, UINT 
 	//DWORD dwLen = 0;
 	//PBYTE pbData = dlcFile->getData(dwLen);
 	//byteArray data(pbData,dwLen);
-	
+
 	byteArray data(dIn, dSize);
 	ByteArrayInputStream bais(data);
 	DataInputStream dis(&bais);
@@ -386,7 +385,7 @@ bool GameRuleManager::readRuleFile(LevelGenerationOptions *lgo, byte *dIn, UINT 
 	// Read File.
 
 	// version_number
-	__int64 version = dis.readShort();
+	int64_t version = dis.readShort();
 	unsigned char compressionType = 0;
 	if(version == 0)
 	{
@@ -400,8 +399,8 @@ bool GameRuleManager::readRuleFile(LevelGenerationOptions *lgo, byte *dIn, UINT 
 		for(int i = 0; i < 8; ++i) dis.readBoolean();
 	}
 
-	ByteArrayInputStream *contentBais = NULL;
-	DataInputStream *contentDis = NULL;
+	ByteArrayInputStream *contentBais = nullptr;
+	DataInputStream *contentDis = nullptr;
 
 	if(compressionType == Compression::eCompressionType_None)
 	{
@@ -470,13 +469,13 @@ bool GameRuleManager::readRuleFile(LevelGenerationOptions *lgo, byte *dIn, UINT 
 		tagsAndAtts.push_back( contentDis->readUTF() );
 
 	unordered_map<int, ConsoleGameRules::EGameRuleType> tagIdMap;
-	for(int type = (int)ConsoleGameRules::eGameRuleType_Root; type < (int)ConsoleGameRules::eGameRuleType_Count; ++type)
+	for(int type = (int)ConsoleGameRules::eGameRuleType_Root; type < static_cast<int>(ConsoleGameRules::eGameRuleType_Count); ++type)
 	{
 		for(UINT i = 0; i < numStrings; ++i)
 		{
 			if(tagsAndAtts[i].compare(wchTagNameA[type]) == 0)
 			{
-				tagIdMap.insert( unordered_map<int, ConsoleGameRules::EGameRuleType>::value_type(i, (ConsoleGameRules::EGameRuleType)type) );
+				tagIdMap.insert( unordered_map<int, ConsoleGameRules::EGameRuleType>::value_type(i, static_cast<ConsoleGameRules::EGameRuleType>(type)) );
 				break;
 			}
 		}
@@ -497,7 +496,7 @@ bool GameRuleManager::readRuleFile(LevelGenerationOptions *lgo, byte *dIn, UINT 
 		}
 	}*/
 
-	// subfile 
+	// subfile
 	UINT numFiles = contentDis->readInt();
 	for (UINT i = 0; i < numFiles; i++)
 	{
@@ -519,10 +518,10 @@ bool GameRuleManager::readRuleFile(LevelGenerationOptions *lgo, byte *dIn, UINT 
 	{
 		int tagId = contentDis->readInt();
 		ConsoleGameRules::EGameRuleType tagVal = ConsoleGameRules::eGameRuleType_Invalid;
-		AUTO_VAR(it,tagIdMap.find(tagId));
+		auto it = tagIdMap.find(tagId);
 		if(it != tagIdMap.end()) tagVal = it->second;
 
-		GameRuleDefinition *rule = NULL;
+		GameRuleDefinition *rule = nullptr;
 
 		if(tagVal == ConsoleGameRules::eGameRuleType_LevelGenerationOptions)
 		{
@@ -549,14 +548,14 @@ bool GameRuleManager::readRuleFile(LevelGenerationOptions *lgo, byte *dIn, UINT 
 	{
 		// Not default
 		contentDis->close();
-		if(contentBais != NULL) delete contentBais;
+		if(contentBais != nullptr) delete contentBais;
 		delete contentDis;
 	}
 
 	dis.close();
 	bais.reset();
 
-	//if(!levelGenAdded) { delete levelGenerator; levelGenerator = NULL; }
+	//if(!levelGenAdded) { delete levelGenerator; levelGenerator = nullptr; }
 	if(!gameRulesAdded) delete gameRules;
 
 	return true;
@@ -565,10 +564,10 @@ bool GameRuleManager::readRuleFile(LevelGenerationOptions *lgo, byte *dIn, UINT 
 
 LevelGenerationOptions *GameRuleManager::readHeader(DLCGameRulesHeader *grh)
 {
-	LevelGenerationOptions *out = 
+	LevelGenerationOptions *out =
 		new LevelGenerationOptions();
 
-	
+
 	out->setSrc(LevelGenerationOptions::eSrc_fromDLC);
 	out->setGrSource(grh);
 	addLevelGenerationOptions(out);
@@ -584,7 +583,7 @@ void GameRuleManager::readAttributes(DataInputStream *dis, vector<wstring> *tags
 		int attID = dis->readInt();
 		wstring value = dis->readUTF();
 
-		if(rule != NULL) rule->addAttribute(tagsAndAtts->at(attID),value);
+		if(rule != nullptr) rule->addAttribute(tagsAndAtts->at(attID),value);
 	}
 }
 
@@ -595,11 +594,11 @@ void GameRuleManager::readChildren(DataInputStream *dis, vector<wstring> *tagsAn
 	{
 		int tagId = dis->readInt();
 		ConsoleGameRules::EGameRuleType tagVal = ConsoleGameRules::eGameRuleType_Invalid;
-		AUTO_VAR(it,tagIdMap->find(tagId));
+		auto it = tagIdMap->find(tagId);
 		if(it != tagIdMap->end()) tagVal = it->second;
 
-		GameRuleDefinition *childRule = NULL;
-		if(rule != NULL) childRule = rule->addChild(tagVal);
+		GameRuleDefinition *childRule = nullptr;
+		if(rule != nullptr) childRule = rule->addChild(tagVal);
 
 		readAttributes(dis,tagsAndAtts,childRule);
 		readChildren(dis,tagsAndAtts,tagIdMap,childRule);
@@ -608,7 +607,7 @@ void GameRuleManager::readChildren(DataInputStream *dis, vector<wstring> *tagsAn
 
 void GameRuleManager::processSchematics(LevelChunk *levelChunk)
 {
-	if(getLevelGenerationOptions() != NULL)
+	if(getLevelGenerationOptions() != nullptr)
 	{
 		LevelGenerationOptions *levelGenOptions = getLevelGenerationOptions();
 		levelGenOptions->processSchematics(levelChunk);
@@ -617,7 +616,7 @@ void GameRuleManager::processSchematics(LevelChunk *levelChunk)
 
 void GameRuleManager::processSchematicsLighting(LevelChunk *levelChunk)
 {
-	if(getLevelGenerationOptions() != NULL)
+	if(getLevelGenerationOptions() != nullptr)
 	{
 		LevelGenerationOptions *levelGenOptions = getLevelGenerationOptions();
 		levelGenOptions->processSchematicsLighting(levelChunk);
@@ -639,18 +638,6 @@ void GameRuleManager::loadDefaultGameRules()
 		//m_levelGenerators.getLevelGenerators()->at(0)->setDefaultSaveName(L"Tutorial");
 		m_levelGenerators.getLevelGenerators()->at(0)->setDefaultSaveName(app.GetString(IDS_TUTORIALSAVENAME));
 	}
-
-#ifndef _CONTENT_PACKAGE
-	// 4J Stu - Remove these just now
-	//File testRulesPath(L"GAME:\\GameRules");
-	//vector<File *> *packFiles = testRulesPath.listFiles();
-
-	//for(AUTO_VAR(it,packFiles->begin()); it != packFiles->end(); ++it)
-	//{
-	//	loadGameRulesPack(*it);
-	//}
-	//delete packFiles;
-#endif
 
 #else // _XBOX
 
@@ -714,21 +701,21 @@ void GameRuleManager::setLevelGenerationOptions(LevelGenerationOptions *levelGen
 {
 	unloadCurrentGameRules();
 
-	m_currentGameRuleDefinitions = NULL;
+	m_currentGameRuleDefinitions = nullptr;
 	m_currentLevelGenerationOptions = levelGen;
 
-	if(m_currentLevelGenerationOptions != NULL && m_currentLevelGenerationOptions->requiresGameRules() )
+	if(m_currentLevelGenerationOptions != nullptr && m_currentLevelGenerationOptions->requiresGameRules() )
 	{
 		m_currentGameRuleDefinitions = m_currentLevelGenerationOptions->getRequiredGameRules();
 	}
 
-	if(m_currentLevelGenerationOptions != NULL)
+	if(m_currentLevelGenerationOptions != nullptr)
 		m_currentLevelGenerationOptions->reset_start();
 }
 
 LPCWSTR	GameRuleManager::GetGameRulesString(const wstring &key)
 {
-	if(m_currentGameRuleDefinitions != NULL && !key.empty() )
+	if(m_currentGameRuleDefinitions != nullptr && !key.empty() )
 	{
 		return m_currentGameRuleDefinitions->getString(key);
 	}
@@ -741,7 +728,7 @@ LPCWSTR	GameRuleManager::GetGameRulesString(const wstring &key)
 LEVEL_GEN_ID GameRuleManager::addLevelGenerationOptions(LevelGenerationOptions *lgo)
 {
 	vector<LevelGenerationOptions *> *lgs = m_levelGenerators.getLevelGenerators();
-	
+
 	for (int i = 0; i<lgs->size(); i++)
 		if (lgs->at(i) == lgo)
 			return i;
@@ -752,16 +739,16 @@ LEVEL_GEN_ID GameRuleManager::addLevelGenerationOptions(LevelGenerationOptions *
 
 void GameRuleManager::unloadCurrentGameRules()
 {
-	if (m_currentLevelGenerationOptions != NULL)
+	if (m_currentLevelGenerationOptions != nullptr)
 	{
-		if (m_currentGameRuleDefinitions != NULL
+		if (m_currentGameRuleDefinitions != nullptr
 			&& m_currentLevelGenerationOptions->isFromSave())
 				m_levelRules.removeLevelRule( m_currentGameRuleDefinitions );
 
 		if (m_currentLevelGenerationOptions->isFromSave())
 		{
 			m_levelGenerators.removeLevelGenerator( m_currentLevelGenerationOptions );
-			
+
 			delete m_currentLevelGenerationOptions;
 		}
 		else if (m_currentLevelGenerationOptions->isFromDLC())
@@ -770,6 +757,6 @@ void GameRuleManager::unloadCurrentGameRules()
 		}
 	}
 
-	m_currentGameRuleDefinitions = NULL;
-	m_currentLevelGenerationOptions = NULL;
+	m_currentGameRuleDefinitions = nullptr;
+	m_currentLevelGenerationOptions = nullptr;
 }

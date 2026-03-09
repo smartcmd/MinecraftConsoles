@@ -28,15 +28,15 @@ public:
 		e_AudioParamType_Max,
 
 	};
-	static WCHAR *wchTypeNamesA[e_AudioParamType_Max];
+	static const WCHAR *wchTypeNamesA[e_AudioParamType_Max];
 
 	DLCAudioFile(const wstring &path);
 
-	virtual void addData(PBYTE pbData, DWORD dwBytes);
-	virtual PBYTE getData(DWORD &dwBytes);
+    void addData(PBYTE pbData, DWORD dwBytes) override;
+    PBYTE getData(DWORD &dwBytes) override;
 
 	bool processDLCDataFile(PBYTE pbData, DWORD dwLength);
-	int GetCountofType(DLCAudioFile::EAudioType ptype);
+	int GetCountofType(EAudioType ptype);
 	wstring &GetSoundName(int iIndex);
 
 private:
@@ -49,6 +49,6 @@ private:
 	vector<wstring> m_parameters[e_AudioType_Max];
 
 	// use the EAudioType to order these
-	void addParameter(DLCAudioFile::EAudioType type, DLCAudioFile::EAudioParameterType ptype, const wstring &value);
-	DLCAudioFile::EAudioParameterType getParameterType(const wstring &paramName);
+	void addParameter(EAudioType type, EAudioParameterType ptype, const wstring &value);
+	EAudioParameterType getParameterType(const wstring &paramName);
 };

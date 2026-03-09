@@ -17,6 +17,7 @@
 #include "TutorialTasks.h"
 #include "TutorialConstraints.h"
 #include "TutorialHints.h"
+#include "Common/UI/UI.h"
 
 vector<int> Tutorial::s_completableTasks;
 
@@ -31,7 +32,7 @@ int Tutorial::m_iTutorialFreezeTimeValue = 8000;
 
 bool Tutorial::PopupMessageDetails::isSameContent(PopupMessageDetails *other)
 {
-	if(other == NULL) return false;
+	if(other == nullptr) return false;
 
 	bool textTheSame = (m_messageId == other->m_messageId) && (m_messageString.compare(other->m_messageString) == 0);
 	bool titleTheSame = (m_titleId == other->m_titleId) && (m_titleString.compare(other->m_titleString) == 0);
@@ -41,7 +42,7 @@ bool Tutorial::PopupMessageDetails::isSameContent(PopupMessageDetails *other)
 
 void Tutorial::staticCtor()
 {
-	// 
+	//
 	/*
 	*****
 	*****
@@ -72,7 +73,7 @@ void Tutorial::staticCtor()
 	s_completableTasks.push_back( e_Tutorial_State_Enchanting );
 
 	s_completableTasks.push_back( e_Tutorial_Hint_Hold_To_Mine );
-	s_completableTasks.push_back( e_Tutorial_Hint_Tool_Damaged );	
+	s_completableTasks.push_back( e_Tutorial_Hint_Tool_Damaged );
 	s_completableTasks.push_back( e_Tutorial_Hint_Swim_Up );
 
 	s_completableTasks.push_back( e_Tutorial_Hint_Unused_2 );
@@ -164,7 +165,7 @@ void Tutorial::staticCtor()
 	s_completableTasks.push_back( e_Tutorial_Hint_Thin_Glass );
 	s_completableTasks.push_back( e_Tutorial_Hint_Melon );
 	s_completableTasks.push_back( e_Tutorial_Hint_Vine );
-	s_completableTasks.push_back( e_Tutorial_Hint_Fence_Gate );	
+	s_completableTasks.push_back( e_Tutorial_Hint_Fence_Gate );
 	s_completableTasks.push_back( e_Tutorial_Hint_Mycel );
 	s_completableTasks.push_back( e_Tutorial_Hint_Water_Lily );
 	s_completableTasks.push_back( e_Tutorial_Hint_Nether_Brick );
@@ -319,7 +320,7 @@ void Tutorial::staticCtor()
 	s_completableTasks.push_back( e_Tutorial_State_Enderchests );
 	s_completableTasks.push_back( e_Tutorial_State_Horse_Menu );
 	s_completableTasks.push_back( e_Tutorial_State_Hopper_Menu );
-	
+
 	s_completableTasks.push_back( e_Tutorial_Hint_Wither );
 	s_completableTasks.push_back( e_Tutorial_Hint_Witch );
 	s_completableTasks.push_back( e_Tutorial_Hint_Bat );
@@ -360,12 +361,12 @@ Tutorial::Tutorial(int iPad, bool isFullTutorial /*= false*/) : m_iPad( iPad )
 	m_hintDisplayed = false;
 	m_freezeTime = false;
 	m_timeFrozen = false;
-	m_UIScene = NULL;
+	m_UIScene = nullptr;
 	m_allowShow = true;
 	m_bHasTickedOnce = false;
 	m_firstTickTime = 0;
 
-	m_lastMessage = NULL;
+	m_lastMessage = nullptr;
 
 	lastMessageTime = 0;
 	m_iTaskReminders = 0;
@@ -374,13 +375,13 @@ Tutorial::Tutorial(int iPad, bool isFullTutorial /*= false*/) : m_iPad( iPad )
 	m_CurrentState = e_Tutorial_State_Gameplay;
 	m_hasStateChanged = false;
 #ifdef _XBOX
-	m_hTutorialScene=NULL;
+	m_hTutorialScene=nullptr;
 #endif
 
 	for(unsigned int i = 0; i < e_Tutorial_State_Max; ++i)
 	{
-		currentTask[i] = NULL;
-		currentFailedConstraint[i] = NULL;
+		currentTask[i] = nullptr;
+		currentFailedConstraint[i] = nullptr;
 	}
 
 	// DEFAULT TASKS THAT ALL TUTORIALS SHARE
@@ -470,7 +471,7 @@ Tutorial::Tutorial(int iPad, bool isFullTutorial /*= false*/) : m_iPad( iPad )
 	if(!isHintCompleted(e_Tutorial_Hint_Detector_Rail)) addHint(e_Tutorial_State_Gameplay, new LookAtTileHint(e_Tutorial_Hint_Detector_Rail, this, detectorRailItems, 1 ) );
 
 	int tallGrassItems[] = {Tile::tallgrass_Id};
-	if(!isHintCompleted(e_Tutorial_Hint_Tall_Grass)) 
+	if(!isHintCompleted(e_Tutorial_Hint_Tall_Grass))
 	{
 		addHint(e_Tutorial_State_Gameplay, new LookAtTileHint(e_Tutorial_Hint_Tall_Grass, this, tallGrassItems, 1, -1, TallGrass::DEAD_SHRUB ) );
 		addHint(e_Tutorial_State_Gameplay, new LookAtTileHint(e_Tutorial_Hint_Tall_Grass, this, tallGrassItems, 1, -1, TallGrass::TALL_GRASS ) );
@@ -753,46 +754,46 @@ Tutorial::Tutorial(int iPad, bool isFullTutorial /*= false*/) : m_iPad( iPad )
 
 	int potatoItems[] = {Tile::potatoes_Id};
 	if(!isHintCompleted(e_Tutorial_Hint_Potato)) addHint(e_Tutorial_State_Gameplay, new LookAtTileHint(e_Tutorial_Hint_Potato, this, potatoItems, 1, -1, -1, 7 ) );
-	
+
 	int carrotItems[] = {Tile::carrots_Id};
 	if(!isHintCompleted(e_Tutorial_Hint_Carrot)) addHint(e_Tutorial_State_Gameplay, new LookAtTileHint(e_Tutorial_Hint_Carrot, this, carrotItems, 1, -1, -1, 7 ) );
-	
+
 	int commandBlockItems[] = {Tile::commandBlock_Id};
 	if(!isHintCompleted(e_Tutorial_Hint_CommandBlock)) addHint(e_Tutorial_State_Gameplay, new LookAtTileHint(e_Tutorial_Hint_CommandBlock, this, commandBlockItems, 1 ) );
-	
+
 	int beaconItems[] = {Tile::beacon_Id};
 	if(!isHintCompleted(e_Tutorial_Hint_Beacon)) addHint(e_Tutorial_State_Gameplay, new LookAtTileHint(e_Tutorial_Hint_Beacon, this, beaconItems, 1 ) );
-	
+
 	int activatorRailItems[] = {Tile::activatorRail_Id};
 	if(!isHintCompleted(e_Tutorial_Hint_Activator_Rail)) addHint(e_Tutorial_State_Gameplay, new LookAtTileHint(e_Tutorial_Hint_Activator_Rail, this, activatorRailItems, 1 ) );
-	
+
 	int redstoneBlockItems[] = {Tile::redstoneBlock_Id};
 	if(!isHintCompleted(e_Tutorial_Hint_RedstoneBlock)) addHint(e_Tutorial_State_Gameplay, new LookAtTileHint(e_Tutorial_Hint_RedstoneBlock, this, redstoneBlockItems, 1 ) );
-	
+
 	int daylightDetectorItems[] = {Tile::daylightDetector_Id};
 	if(!isHintCompleted(e_Tutorial_Hint_DaylightDetector)) addHint(e_Tutorial_State_Gameplay, new LookAtTileHint(e_Tutorial_Hint_DaylightDetector, this, daylightDetectorItems, 1 ) );
-	
+
 	int dropperItems[] = {Tile::dropper_Id};
 	if(!isHintCompleted(e_Tutorial_Hint_Dropper)) addHint(e_Tutorial_State_Gameplay, new LookAtTileHint(e_Tutorial_Hint_Dropper, this, dropperItems, 1 ) );
-	
+
 	int hopperItems[] = {Tile::hopper_Id};
 	if(!isHintCompleted(e_Tutorial_Hint_Hopper)) addHint(e_Tutorial_State_Gameplay, new LookAtTileHint(e_Tutorial_Hint_Hopper, this, hopperItems, 1 ) );
-	
+
 	int comparatorItems[] = {Tile::comparator_off_Id, Tile::comparator_on_Id};
 	if(!isHintCompleted(e_Tutorial_Hint_Comparator)) addHint(e_Tutorial_State_Gameplay, new LookAtTileHint(e_Tutorial_Hint_Comparator, this, comparatorItems, 2, Item::comparator_Id ) );
-	
+
 	int trappedChestItems[] = {Tile::chest_trap_Id};
 	if(!isHintCompleted(e_Tutorial_Hint_ChestTrap)) addHint(e_Tutorial_State_Gameplay, new LookAtTileHint(e_Tutorial_Hint_ChestTrap, this, trappedChestItems, 1 ) );
-	
+
 	int hayBlockItems[] = {Tile::hayBlock_Id};
 	if(!isHintCompleted(e_Tutorial_Hint_HayBlock)) addHint(e_Tutorial_State_Gameplay, new LookAtTileHint(e_Tutorial_Hint_HayBlock, this, hayBlockItems, 1 ) );
-	
+
 	int clayHardenedItems[] = {Tile::clayHardened_Id};
 	if(!isHintCompleted(e_Tutorial_Hint_ClayHardened)) addHint(e_Tutorial_State_Gameplay, new LookAtTileHint(e_Tutorial_Hint_ClayHardened, this, clayHardenedItems, 1 ) );
-	
+
 	int clayHardenedColoredItems[] = {Tile::clayHardened_colored_Id};
 	if(!isHintCompleted(e_Tutorial_Hint_ClayHardenedColored)) addHint(e_Tutorial_State_Gameplay, new LookAtTileHint(e_Tutorial_Hint_ClayHardenedColored, this, clayHardenedColoredItems, 1 ) );
-	
+
 	int coalBlockItems[] = {Tile::coalBlock_Id};
 	if(!isHintCompleted(e_Tutorial_Hint_CoalBlock)) addHint(e_Tutorial_State_Gameplay, new LookAtTileHint(e_Tutorial_Hint_CoalBlock, this, coalBlockItems, 1 ) );
 
@@ -1000,9 +1001,9 @@ Tutorial::Tutorial(int iPad, bool isFullTutorial /*= false*/) : m_iPad( iPad )
 	* HORSE ENCOUNTER
 	*
 	*/
-	if(isFullTutorial || !isStateCompleted(e_Tutorial_State_Horse) ) 
+	if(isFullTutorial || !isStateCompleted(e_Tutorial_State_Horse) )
 	{
-		addTask(e_Tutorial_State_Horse, 
+		addTask(e_Tutorial_State_Horse,
 			new HorseChoiceTask(this, IDS_TUTORIAL_TASK_HORSE_OVERVIEW,	IDS_TUTORIAL_TASK_DONKEY_OVERVIEW, IDS_TUTORIAL_TASK_MULE_OVERVIEW, IDS_TUTORIAL_PROMPT_HORSE_OVERVIEW,
 			true, ACTION_MENU_A, ACTION_MENU_B, e_Tutorial_Completion_Complete_State_Gameplay_Constraints, eTelemetryTutorial_Horse) );
 
@@ -1012,7 +1013,7 @@ Tutorial::Tutorial(int iPad, bool isFullTutorial /*= false*/) : m_iPad( iPad )
 		addTask(e_Tutorial_State_Horse, new InfoTask(this, IDS_TUTORIAL_TASK_HORSE_TAMING2,		IDS_TUTORIAL_PROMPT_PRESS_A_TO_CONTINUE, true, ACTION_MENU_A) );
 
 		// 4J-JEV: Only force the RideEntityTask if we're on the full-tutorial.
-		if (isFullTutorial)	addTask(e_Tutorial_State_Horse, new RideEntityTask(eTYPE_HORSE, this, IDS_TUTORIAL_TASK_HORSE_RIDE, true, NULL, false, false, false) );
+		if (isFullTutorial)	addTask(e_Tutorial_State_Horse, new RideEntityTask(eTYPE_HORSE, this, IDS_TUTORIAL_TASK_HORSE_RIDE, true, nullptr, false, false, false) );
 		else				addTask(e_Tutorial_State_Horse, new InfoTask(this, IDS_TUTORIAL_TASK_HORSE_RIDE,	IDS_TUTORIAL_PROMPT_PRESS_A_TO_CONTINUE, true, ACTION_MENU_A) );
 
 		addTask(e_Tutorial_State_Horse, new InfoTask(this, IDS_TUTORIAL_TASK_HORSE_SADDLES,		IDS_TUTORIAL_PROMPT_PRESS_A_TO_CONTINUE, true, ACTION_MENU_A) );
@@ -1144,27 +1145,27 @@ Tutorial::Tutorial(int iPad, bool isFullTutorial /*= false*/) : m_iPad( iPad )
 
 Tutorial::~Tutorial()
 {
-	for(AUTO_VAR(it, m_globalConstraints.begin()); it != m_globalConstraints.end(); ++it)
+	for(auto& it : m_globalConstraints)
 	{
-		delete (*it);
+		delete it;
 	}
-	for(unordered_map<int, TutorialMessage *>::iterator it = messages.begin(); it != messages.end(); ++it)
+	for(auto& message : messages)
 	{
-		delete (*it).second;
+		delete message.second;
 	}
 	for(unsigned int i = 0; i < e_Tutorial_State_Max; ++i)
 	{
-		for(AUTO_VAR(it, activeTasks[i].begin()); it < activeTasks[i].end(); ++it)
+		for(auto& it : activeTasks[i])
 		{
-			delete (*it);
+			delete it;
 		}
-		for(AUTO_VAR(it, hints[i].begin()); it < hints[i].end(); ++it)
+		for(auto& it : hints[i])
 		{
-			delete (*it);
+			delete it;
 		}
 
-		currentTask[i] = NULL;
-		currentFailedConstraint[i] = NULL;
+		currentTask[i] = nullptr;
+		currentFailedConstraint[i] = nullptr;
 	}
 }
 
@@ -1173,7 +1174,7 @@ void Tutorial::debugResetPlayerSavedProgress(int iPad)
 #if ( defined  __PS3__ || defined __ORBIS__ || defined _DURANGO || defined __PSVITA__)
 	GAME_SETTINGS *pGameSettings = (GAME_SETTINGS *)StorageManager.GetGameDefinedProfileData(iPad);
 #else
-	GAME_SETTINGS *pGameSettings = (GAME_SETTINGS *)ProfileManager.GetGameDefinedProfileData(iPad);
+	GAME_SETTINGS *pGameSettings = static_cast<GAME_SETTINGS *>(ProfileManager.GetGameDefinedProfileData(iPad));
 #endif
 	ZeroMemory( pGameSettings->ucTutorialCompletion, TUTORIAL_PROFILE_STORAGE_BYTES );
 	pGameSettings->uiSpecialTutorialBitmask = 0;
@@ -1188,10 +1189,10 @@ void Tutorial::setCompleted( int completableId )
 
 
 	int completableIndex = -1;
-	for( AUTO_VAR(it, s_completableTasks.begin()); it < s_completableTasks.end(); ++it)
-	{
+    for (int task : s_completableTasks)
+    {
 		++completableIndex;
-		if( *it == completableId )
+		if( task == completableId )
 		{
 			break;
 		}
@@ -1202,7 +1203,7 @@ void Tutorial::setCompleted( int completableId )
 #if (defined __PS3__ || defined __ORBIS__ || defined _DURANGO  || defined __PSVITA__)
 		GAME_SETTINGS *pGameSettings = (GAME_SETTINGS *)StorageManager.GetGameDefinedProfileData(m_iPad);
 #else
-		GAME_SETTINGS *pGameSettings = (GAME_SETTINGS *)ProfileManager.GetGameDefinedProfileData(m_iPad);
+		GAME_SETTINGS *pGameSettings = static_cast<GAME_SETTINGS *>(ProfileManager.GetGameDefinedProfileData(m_iPad));
 #endif
 		int arrayIndex = completableIndex >> 3;
 		int bitIndex = 7 - (completableIndex % 8);
@@ -1220,10 +1221,10 @@ bool Tutorial::getCompleted( int completableId )
 	//}
 
 	int completableIndex = -1;
-	for( AUTO_VAR(it, s_completableTasks.begin()); it < s_completableTasks.end(); ++it)
-	{
+    for (int it : s_completableTasks)
+    {
 		++completableIndex;
-		if( *it == completableId )
+		if( it == completableId )
 		{
 			break;
 		}
@@ -1235,7 +1236,7 @@ bool Tutorial::getCompleted( int completableId )
 #if ( defined __PS3__ || defined __ORBIS__ || defined _DURANGO  || defined __PSVITA__)
 		GAME_SETTINGS *pGameSettings = (GAME_SETTINGS *)StorageManager.GetGameDefinedProfileData(m_iPad);
 #else
-		GAME_SETTINGS *pGameSettings = (GAME_SETTINGS *)ProfileManager.GetGameDefinedProfileData(m_iPad);
+		GAME_SETTINGS *pGameSettings = static_cast<GAME_SETTINGS *>(ProfileManager.GetGameDefinedProfileData(m_iPad));
 #endif
 		int arrayIndex = completableIndex >> 3;
 		int bitIndex = 7 - (completableIndex % 8);
@@ -1318,8 +1319,8 @@ void Tutorial::tick()
 
 	for(unsigned int state = 0; state < e_Tutorial_State_Max; ++state)
 	{
-		AUTO_VAR(it, constraintsToRemove[state].begin());
-		while(it < constraintsToRemove[state].end() )
+        auto it = constraintsToRemove[state].begin();
+        while(it != constraintsToRemove[state].end() )
 		{
 			++(*it).second;
 			if( (*it).second > m_iTutorialConstraintDelayRemoveTicks )
@@ -1361,8 +1362,8 @@ void Tutorial::tick()
 	}
 
 	if(!m_allowShow)
-	{		
-		if( currentTask[m_CurrentState] != NULL && (!currentTask[m_CurrentState]->AllowFade() || (lastMessageTime + m_iTutorialDisplayMessageTime ) > GetTickCount() ) )
+	{
+		if( currentTask[m_CurrentState] != nullptr && (!currentTask[m_CurrentState]->AllowFade() || (lastMessageTime + m_iTutorialDisplayMessageTime ) > GetTickCount() ) )
 		{
 			uiTempDisabled = true;
 		}
@@ -1397,7 +1398,7 @@ void Tutorial::tick()
 			app.TutorialSceneNavigateBack(m_iPad);
 			m_bSceneIsSplitscreen=app.GetLocalPlayerCount()>1;
 			if(m_bSceneIsSplitscreen)
-			{				
+			{
 				app.NavigateToScene(m_iPad, eUIComponent_TutorialPopup,(void *)this, false, false, &m_hTutorialScene);
 			}
 			else
@@ -1412,7 +1413,7 @@ void Tutorial::tick()
 
 	if(ui.IsPauseMenuDisplayed( m_iPad ) )
 	{
-		if( currentTask[m_CurrentState] != NULL && (!currentTask[m_CurrentState]->AllowFade() || (lastMessageTime + m_iTutorialDisplayMessageTime ) > GetTickCount() ) )
+		if( currentTask[m_CurrentState] != nullptr && (!currentTask[m_CurrentState]->AllowFade() || (lastMessageTime + m_iTutorialDisplayMessageTime ) > GetTickCount() ) )
 		{
 			uiTempDisabled = true;
 		}
@@ -1427,9 +1428,8 @@ void Tutorial::tick()
 	}
 
 	// Check constraints
-	for(AUTO_VAR(it, m_globalConstraints.begin()); it < m_globalConstraints.end(); ++it)
-	{
-		TutorialConstraint *constraint = *it;
+    for (auto& constraint : m_globalConstraints)
+    {
 		constraint->tick(m_iPad);
 	}
 
@@ -1443,9 +1443,8 @@ void Tutorial::tick()
 
 		if(hintsOn)
 		{
-			for(AUTO_VAR(it, hints[m_CurrentState].begin()); it < hints[m_CurrentState].end(); ++it)
-			{
-				TutorialHint *hint = *it;
+            for (auto& hint : hints[m_CurrentState])
+            {
 				hintNeeded = hint->tick();
 				if(hintNeeded >= 0)
 				{
@@ -1462,16 +1461,15 @@ void Tutorial::tick()
 
 	// Check constraints
 	// Only need to update these if we aren't already failing something
-	if( !m_allTutorialsComplete && (currentFailedConstraint[m_CurrentState] == NULL || currentFailedConstraint[m_CurrentState]->isConstraintSatisfied(m_iPad)) )
+	if( !m_allTutorialsComplete && (currentFailedConstraint[m_CurrentState] == nullptr || currentFailedConstraint[m_CurrentState]->isConstraintSatisfied(m_iPad)) )
 	{
-		if( currentFailedConstraint[m_CurrentState] != NULL && currentFailedConstraint[m_CurrentState]->isConstraintSatisfied(m_iPad) )
+		if( currentFailedConstraint[m_CurrentState] != nullptr && currentFailedConstraint[m_CurrentState]->isConstraintSatisfied(m_iPad) )
 		{
 			constraintChanged = true;
-			currentFailedConstraint[m_CurrentState] = NULL;
+			currentFailedConstraint[m_CurrentState] = nullptr;
 		}
-		for(AUTO_VAR(it, constraints[m_CurrentState].begin()); it < constraints[m_CurrentState].end(); ++it)
-		{
-			TutorialConstraint *constraint = *it;
+        for (auto& constraint : constraints[m_CurrentState])
+        {
 			if( !constraint->isConstraintSatisfied(m_iPad) && constraint->isConstraintRestrictive(m_iPad) )
 			{
 				constraintChanged = true;
@@ -1480,26 +1478,26 @@ void Tutorial::tick()
 		}
 	}
 
-	if( !m_allTutorialsComplete && currentFailedConstraint[m_CurrentState] == NULL )
+	if( !m_allTutorialsComplete && currentFailedConstraint[m_CurrentState] == nullptr )
 	{
 		// Update tasks
 		bool isCurrentTask = true;
-		AUTO_VAR(it, activeTasks[m_CurrentState].begin());
-		while(activeTasks[m_CurrentState].size() > 0 && it < activeTasks[m_CurrentState].end())
+        auto it = activeTasks[m_CurrentState].begin();
+        while(activeTasks[m_CurrentState].size() > 0 && it != activeTasks[m_CurrentState].end())
 		{
 			TutorialTask *task = *it;
 			if( isCurrentTask || task->isPreCompletionEnabled() )
 			{
 				isCurrentTask = false;
 				if(
-					( !task->ShowMinimumTime() || ( task->hasBeenActivated() && (lastMessageTime + m_iTutorialMinimumDisplayMessageTime ) < GetTickCount() ) ) 
+					( !task->ShowMinimumTime() || ( task->hasBeenActivated() && (lastMessageTime + m_iTutorialMinimumDisplayMessageTime ) < GetTickCount() ) )
 					&& task->isCompleted()
 					)
 				{
 					eTutorial_CompletionAction compAction = task->getCompletionAction();
 					it = activeTasks[m_CurrentState].erase( it );
 					delete task;
-					task = NULL;
+					task = nullptr;
 
 					if( activeTasks[m_CurrentState].size() > 0 )
 					{
@@ -1509,8 +1507,8 @@ void Tutorial::tick()
 							{
 								// 4J Stu - Move the delayed constraints to the gameplay state so that they are in
 								// effect for a bit longer
-								AUTO_VAR(itCon, constraintsToRemove[m_CurrentState].begin());
-								while(itCon != constraintsToRemove[m_CurrentState].end() )
+                                auto itCon = constraintsToRemove[m_CurrentState].begin();
+                                while(itCon != constraintsToRemove[m_CurrentState].end() )
 								{
 									constraints[e_Tutorial_State_Gameplay].push_back(itCon->first);
 									constraintsToRemove[e_Tutorial_State_Gameplay].push_back( pair<TutorialConstraint *, unsigned char>(itCon->first, itCon->second) );
@@ -1521,9 +1519,9 @@ void Tutorial::tick()
 							}
 							// Fall through the the normal complete state
 						case e_Tutorial_Completion_Complete_State:
-							for(AUTO_VAR(itRem, activeTasks[m_CurrentState].begin()); itRem < activeTasks[m_CurrentState].end(); ++itRem)
-							{
-								delete (*itRem);
+                            for (auto& itRem : activeTasks[m_CurrentState])
+                            {
+								delete itRem;
 							}
 							activeTasks[m_CurrentState].clear();
 							break;
@@ -1531,9 +1529,9 @@ void Tutorial::tick()
 							{
 								TutorialTask *lastTask = activeTasks[m_CurrentState].at( activeTasks[m_CurrentState].size() - 1 );
 								activeTasks[m_CurrentState].pop_back();
-								for(AUTO_VAR(itRem, activeTasks[m_CurrentState].begin()); itRem < activeTasks[m_CurrentState].end(); ++itRem)
+								for(auto& itRem : activeTasks[m_CurrentState])
 								{
-									delete (*itRem);
+									delete itRem;
 								}
 								activeTasks[m_CurrentState].clear();
 								activeTasks[m_CurrentState].push_back( lastTask );
@@ -1555,12 +1553,12 @@ void Tutorial::tick()
 					{
 						setStateCompleted( m_CurrentState );
 
-						currentTask[m_CurrentState] = NULL;
+						currentTask[m_CurrentState] = nullptr;
 					}
 					taskChanged = true;
 
 					// If we can complete this early, check if we can complete it right now
-					if( currentTask[m_CurrentState] != NULL && currentTask[m_CurrentState]->isPreCompletionEnabled() )
+					if( currentTask[m_CurrentState] != nullptr && currentTask[m_CurrentState]->isPreCompletionEnabled() )
 					{
 						isCurrentTask = true;
 					}
@@ -1569,7 +1567,7 @@ void Tutorial::tick()
 				{
 					++it;
 				}
-				if( task != NULL && task->ShowMinimumTime() && task->hasBeenActivated() && (lastMessageTime + m_iTutorialMinimumDisplayMessageTime ) < GetTickCount() )
+				if( task != nullptr && task->ShowMinimumTime() && task->hasBeenActivated() && (lastMessageTime + m_iTutorialMinimumDisplayMessageTime ) < GetTickCount() )
 				{
 					task->setShownForMinimumTime();
 
@@ -1590,7 +1588,7 @@ void Tutorial::tick()
 			}
 		}
 
-		if( currentTask[m_CurrentState] == NULL && activeTasks[m_CurrentState].size() > 0 )
+		if( currentTask[m_CurrentState] == nullptr && activeTasks[m_CurrentState].size() > 0 )
 		{
 			currentTask[m_CurrentState] = activeTasks[m_CurrentState][0];
 			currentTask[m_CurrentState]->setAsCurrentTask();
@@ -1619,28 +1617,28 @@ void Tutorial::tick()
 	}
 
 	if( constraintChanged || taskChanged || m_hasStateChanged ||
-		(currentFailedConstraint[m_CurrentState] == NULL && currentTask[m_CurrentState] != NULL && (m_lastMessage == NULL || currentTask[m_CurrentState]->getDescriptionId() != m_lastMessage->m_messageId) && !m_hintDisplayed)
+		(currentFailedConstraint[m_CurrentState] == nullptr && currentTask[m_CurrentState] != nullptr && (m_lastMessage == nullptr || currentTask[m_CurrentState]->getDescriptionId() != m_lastMessage->m_messageId) && !m_hintDisplayed)
 		)
 	{
-		if( currentFailedConstraint[m_CurrentState] != NULL )
+		if( currentFailedConstraint[m_CurrentState] != nullptr )
 		{
 			PopupMessageDetails *message = new PopupMessageDetails();
 			message->m_messageId = currentFailedConstraint[m_CurrentState]->getDescriptionId();
 			message->m_allowFade = false;
 			setMessage( message );
 		}
-		else if( currentTask[m_CurrentState] != NULL )
+		else if( currentTask[m_CurrentState] != nullptr )
 		{
 			PopupMessageDetails *message = new PopupMessageDetails();
 			message->m_messageId = currentTask[m_CurrentState]->getDescriptionId();
 			message->m_promptId = currentTask[m_CurrentState]->getPromptId();
 			message->m_allowFade = currentTask[m_CurrentState]->AllowFade();
 			setMessage( message );
-			currentTask[m_CurrentState]->TaskReminders()? m_iTaskReminders = 1 : m_iTaskReminders = 0;			
+			currentTask[m_CurrentState]->TaskReminders()? m_iTaskReminders = 1 : m_iTaskReminders = 0;
 		}
 		else
 		{
-			setMessage( NULL );
+			setMessage( nullptr );
 		}
 	}
 
@@ -1649,7 +1647,7 @@ void Tutorial::tick()
 		m_hintDisplayed = false;
 	}
 
-	if( currentFailedConstraint[m_CurrentState] == NULL && currentTask[m_CurrentState] != NULL && (m_iTaskReminders!=0) && (lastMessageTime + (m_iTaskReminders * m_iTutorialReminderTime) ) < GetTickCount() )
+	if( currentFailedConstraint[m_CurrentState] == nullptr && currentTask[m_CurrentState] != nullptr && (m_iTaskReminders!=0) && (lastMessageTime + (m_iTaskReminders * m_iTutorialReminderTime) ) < GetTickCount() )
 	{
 		// Reminder
 		PopupMessageDetails *message = new PopupMessageDetails();
@@ -1674,7 +1672,7 @@ void Tutorial::tick()
 
 bool Tutorial::setMessage(PopupMessageDetails *message)
 {
-	if(message != NULL && !message->m_forceDisplay &&
+	if(message != nullptr && !message->m_forceDisplay &&
 		m_lastMessageState == m_CurrentState &&
 		message->isSameContent(m_lastMessage) &&
 		( !message->m_isReminder || ( (lastMessageTime + m_iTutorialReminderTime ) > GetTickCount() && message->m_isReminder ) )
@@ -1684,7 +1682,7 @@ bool Tutorial::setMessage(PopupMessageDetails *message)
 		return false;
 	}
 
-	if(message != NULL && (message->m_messageId > 0 || !message->m_messageString.empty()) )
+	if(message != nullptr && (message->m_messageId > 0 || !message->m_messageString.empty()) )
 	{
 		m_lastMessageState = m_CurrentState;
 
@@ -1697,8 +1695,8 @@ bool Tutorial::setMessage(PopupMessageDetails *message)
 		}
 		else
 		{
-			AUTO_VAR(it, messages.find(message->m_messageId));
-			if( it != messages.end() && it->second != NULL )
+            auto it = messages.find(message->m_messageId);
+            if( it != messages.end() && it->second != nullptr )
 			{
 				TutorialMessage *messageString = it->second;
 				text = wstring( messageString->getMessageForDisplay() );
@@ -1727,8 +1725,8 @@ bool Tutorial::setMessage(PopupMessageDetails *message)
 		}
 		else if(message->m_promptId >= 0)
 		{
-			AUTO_VAR(it, messages.find(message->m_promptId));
-			if(it != messages.end() && it->second != NULL)
+            auto it = messages.find(message->m_promptId);
+            if(it != messages.end() && it->second != nullptr)
 			{
 				TutorialMessage *prompt = it->second;
 				text.append( prompt->getMessageForDisplay() );
@@ -1757,7 +1755,7 @@ bool Tutorial::setMessage(PopupMessageDetails *message)
 			ui.SetTutorialDescription( m_iPad, &popupInfo );
 		}
 	}
-	else if( (m_lastMessage != NULL && m_lastMessage->m_messageId != -1) ) //&& (lastMessageTime + m_iTutorialReminderTime ) > GetTickCount() )
+	else if( (m_lastMessage != nullptr && m_lastMessage->m_messageId != -1) ) //&& (lastMessageTime + m_iTutorialReminderTime ) > GetTickCount() )
 	{
 		// This should cause the popup to dissappear
 		TutorialPopupInfo popupInfo;
@@ -1766,7 +1764,7 @@ bool Tutorial::setMessage(PopupMessageDetails *message)
 		ui.SetTutorialDescription( m_iPad, &popupInfo );
 	}
 
-	if(m_lastMessage != NULL) delete m_lastMessage;
+	if(m_lastMessage != nullptr) delete m_lastMessage;
 	m_lastMessage = message;
 
 	return true;
@@ -1780,8 +1778,8 @@ bool Tutorial::setMessage(TutorialHint *hint, PopupMessageDetails *message)
 
 	bool messageShown = false;
 	DWORD time = GetTickCount();
-	if(message != NULL && (message->m_forceDisplay || hintsOn) &&
-		(!message->m_delay || 
+	if(message != nullptr && (message->m_forceDisplay || hintsOn) &&
+		(!message->m_delay ||
 		(
 		(m_hintDisplayed && (time - m_lastHintDisplayedTime) > m_iTutorialHintDelayTime ) ||
 		(!m_hintDisplayed && (time - lastMessageTime) > m_iTutorialMinimumDisplayMessageTime )
@@ -1793,9 +1791,9 @@ bool Tutorial::setMessage(TutorialHint *hint, PopupMessageDetails *message)
 
 		if(messageShown)
 		{
-			m_lastHintDisplayedTime = time;		
+			m_lastHintDisplayedTime = time;
 			m_hintDisplayed = true;
-			if(hint!=NULL) setHintCompleted( hint );
+			if(hint!=nullptr) setHintCompleted( hint );
 		}
 	}
 	return messageShown;
@@ -1817,8 +1815,8 @@ void Tutorial::showTutorialPopup(bool show)
 	m_allowShow = show;
 
 	if(!show)
-	{		
-		if( currentTask[m_CurrentState] != NULL && (!currentTask[m_CurrentState]->AllowFade() || (lastMessageTime + m_iTutorialDisplayMessageTime ) > GetTickCount() ) )
+	{
+		if( currentTask[m_CurrentState] != nullptr && (!currentTask[m_CurrentState]->AllowFade() || (lastMessageTime + m_iTutorialDisplayMessageTime ) > GetTickCount() ) )
 		{
 			uiTempDisabled = true;
 		}
@@ -1828,36 +1826,32 @@ void Tutorial::showTutorialPopup(bool show)
 
 void Tutorial::useItemOn(Level *level, shared_ptr<ItemInstance> item, int x, int y, int z, bool bTestUseOnly)
 {
-	for(AUTO_VAR(it, activeTasks[m_CurrentState].begin()); it < activeTasks[m_CurrentState].end(); ++it)
+	for(auto& task : activeTasks[m_CurrentState])
 	{
-		TutorialTask *task = *it;
 		task->useItemOn(level, item, x, y, z, bTestUseOnly);
 	}
 }
 
 void Tutorial::useItemOn(shared_ptr<ItemInstance> item, bool bTestUseOnly)
 {
-	for(AUTO_VAR(it, activeTasks[m_CurrentState].begin()); it < activeTasks[m_CurrentState].end(); ++it)
+	for(auto& task : activeTasks[m_CurrentState])
 	{
-		TutorialTask *task = *it;
 		task->useItem(item, bTestUseOnly);
 	}
 }
 
 void Tutorial::completeUsingItem(shared_ptr<ItemInstance> item)
 {
-	for(AUTO_VAR(it, activeTasks[m_CurrentState].begin()); it < activeTasks[m_CurrentState].end(); ++it)
+	for(auto task : activeTasks[m_CurrentState])
 	{
-		TutorialTask *task = *it;
 		task->completeUsingItem(item);
 	}
 
 	// Fix for #46922 - TU5: UI: Player receives a reminder that he is hungry while "hunger bar" is full (triggered in split-screen mode)
 	if(m_CurrentState != e_Tutorial_State_Gameplay)
 	{
-		for(AUTO_VAR(it, activeTasks[e_Tutorial_State_Gameplay].begin()); it < activeTasks[e_Tutorial_State_Gameplay].end(); ++it)
+		for(auto task : activeTasks[e_Tutorial_State_Gameplay])
 		{
-			TutorialTask *task = *it;
 			task->completeUsingItem(item);
 		}
 	}
@@ -1866,9 +1860,8 @@ void Tutorial::completeUsingItem(shared_ptr<ItemInstance> item)
 void Tutorial::startDestroyBlock(shared_ptr<ItemInstance> item, Tile *tile)
 {
 	int hintNeeded = -1;
-	for(AUTO_VAR(it, hints[m_CurrentState].begin()); it < hints[m_CurrentState].end(); ++it)
+	for(auto& hint : hints[m_CurrentState])
 	{
-		TutorialHint *hint = *it;
 		hintNeeded =  hint->startDestroyBlock(item, tile);
 		if(hintNeeded >= 0)
 		{
@@ -1877,16 +1870,14 @@ void Tutorial::startDestroyBlock(shared_ptr<ItemInstance> item, Tile *tile)
 			setMessage( hint, message );
 			break;
 		}
-
 	}
 }
 
 void Tutorial::destroyBlock(Tile *tile)
 {
 	int hintNeeded = -1;
-	for(AUTO_VAR(it, hints[m_CurrentState].begin()); it < hints[m_CurrentState].end(); ++it)
+	for(auto& hint : hints[m_CurrentState])
 	{
-		TutorialHint *hint = *it;
 		hintNeeded =  hint->destroyBlock(tile);
 		if(hintNeeded >= 0)
 		{
@@ -1895,16 +1886,14 @@ void Tutorial::destroyBlock(Tile *tile)
 			setMessage( hint, message );
 			break;
 		}
-
 	}
 }
 
 void Tutorial::attack(shared_ptr<Player> player, shared_ptr<Entity> entity)
 {
 	int hintNeeded = -1;
-	for(AUTO_VAR(it, hints[m_CurrentState].begin()); it < hints[m_CurrentState].end(); ++it)
+	for(auto& hint : hints[m_CurrentState])
 	{
-		TutorialHint *hint = *it;
 		hintNeeded = hint->attack(player->inventory->getSelected(), entity);
 		if(hintNeeded >= 0)
 		{
@@ -1920,9 +1909,8 @@ void Tutorial::attack(shared_ptr<Player> player, shared_ptr<Entity> entity)
 void Tutorial::itemDamaged(shared_ptr<ItemInstance> item)
 {
 	int hintNeeded = -1;
-	for(AUTO_VAR(it, hints[m_CurrentState].begin()); it < hints[m_CurrentState].end(); ++it)
+	for(auto& hint : hints[m_CurrentState])
 	{
-		TutorialHint *hint = *it;
 		hintNeeded = hint->itemDamaged(item);
 		if(hintNeeded >= 0)
 		{
@@ -1939,21 +1927,15 @@ void Tutorial::handleUIInput(int iAction)
 {
 	if( m_hintDisplayed ) return;
 
-	//for(AUTO_VAR(it, activeTasks[m_CurrentState].begin()); it < activeTasks[m_CurrentState].end(); ++it)
-	//{
-	//	TutorialTask *task = *it;
-	//	task->handleUIInput(iAction);
-	//}
-	if(currentTask[m_CurrentState] != NULL)
+	if(currentTask[m_CurrentState] != nullptr)
 		currentTask[m_CurrentState]->handleUIInput(iAction);
 }
 
 void Tutorial::createItemSelected(shared_ptr<ItemInstance> item, bool canMake)
 {
 	int hintNeeded = -1;
-	for(AUTO_VAR(it, hints[m_CurrentState].begin()); it < hints[m_CurrentState].end(); ++it)
+	for(auto& hint : hints[m_CurrentState])
 	{
-		TutorialHint *hint = *it;
 		hintNeeded = hint->createItemSelected(item, canMake);
 		if(hintNeeded >= 0)
 		{
@@ -1968,11 +1950,10 @@ void Tutorial::createItemSelected(shared_ptr<ItemInstance> item, bool canMake)
 
 void Tutorial::onCrafted(shared_ptr<ItemInstance> item)
 {
-	for(unsigned int state = 0; state < e_Tutorial_State_Max; ++state)
+	for(auto& subtasks : activeTasks)
 	{
-		for(AUTO_VAR(it, activeTasks[state].begin()); it < activeTasks[state].end(); ++it)
+		for(auto& task : subtasks)
 		{
-			TutorialTask *task = *it;
 			task->onCrafted(item);
 		}
 	}
@@ -1983,23 +1964,20 @@ void Tutorial::onTake(shared_ptr<ItemInstance> item, unsigned int invItemCountAn
 	if( !m_hintDisplayed )
 	{
 		bool hintNeeded = false;
-		for(AUTO_VAR(it, hints[m_CurrentState].begin()); it < hints[m_CurrentState].end(); ++it)
+		for(auto hint : hints[m_CurrentState])
 		{
-			TutorialHint *hint = *it;
 			hintNeeded = hint->onTake(item);
 			if(hintNeeded)
 			{
 				break;
 			}
-
 		}
 	}
 
-	for(unsigned int state = 0; state < e_Tutorial_State_Max; ++state)
+	for(auto& subtasks : activeTasks)
 	{
-		for(AUTO_VAR(it, activeTasks[state].begin()); it < activeTasks[state].end(); ++it)
+		for(auto& task : subtasks)
 		{
-			TutorialTask *task = *it;
 			task->onTake(item, invItemCountAnyAux, invItemCountThisAux);
 		}
 	}
@@ -2011,7 +1989,7 @@ void Tutorial::onSelectedItemChanged(shared_ptr<ItemInstance> item)
 	// Menus and states like riding in a minecart will NOT allow this
 	if( isSelectedItemState() )
 	{
-		if(item != NULL)
+		if(item != nullptr)
 		{
 			switch(item->id)
 			{
@@ -2035,9 +2013,8 @@ void Tutorial::onLookAt(int id, int iData)
 	if( m_hintDisplayed ) return;
 
 	bool hintNeeded = false;
-	for(AUTO_VAR(it, hints[m_CurrentState].begin()); it < hints[m_CurrentState].end(); ++it)
+	for(auto& hint : hints[m_CurrentState])
 	{
-		TutorialHint *hint = *it;
 		hintNeeded = hint->onLookAt(id, iData);
 		if(hintNeeded)
 		{
@@ -2066,9 +2043,8 @@ void Tutorial::onLookAtEntity(shared_ptr<Entity> entity)
 	if( m_hintDisplayed ) return;
 
 	bool hintNeeded = false;
-	for(AUTO_VAR(it, hints[m_CurrentState].begin()); it < hints[m_CurrentState].end(); ++it)
+	for(auto& hint : hints[m_CurrentState])
 	{
-		TutorialHint *hint = *it;
 		hintNeeded = hint->onLookAtEntity(entity->GetType());
 		if(hintNeeded)
 		{
@@ -2081,9 +2057,9 @@ void Tutorial::onLookAtEntity(shared_ptr<Entity> entity)
 		changeTutorialState(e_Tutorial_State_Horse);
 	}
 
-	for (AUTO_VAR(it, activeTasks[m_CurrentState].begin()); it != activeTasks[m_CurrentState].end(); ++it)
+	for (auto& it : activeTasks[m_CurrentState])
 	{
-		(*it)->onLookAtEntity(entity);
+		it->onLookAtEntity(entity);
 	}
 }
 
@@ -2098,17 +2074,16 @@ void Tutorial::onRideEntity(shared_ptr<Entity> entity)
 		}
 	}
 
-	for (AUTO_VAR(it, activeTasks[m_CurrentState].begin()); it != activeTasks[m_CurrentState].end(); ++it)
+	for (auto& it : activeTasks[m_CurrentState])
 	{
-		(*it)->onRideEntity(entity);
+		it->onRideEntity(entity);
 	}
 }
 
 void Tutorial::onEffectChanged(MobEffect *effect, bool bRemoved)
 {
-	for(AUTO_VAR(it, activeTasks[m_CurrentState].begin()); it < activeTasks[m_CurrentState].end(); ++it)
+	for(auto& task : activeTasks[m_CurrentState])
 	{
-		TutorialTask *task = *it;
 		task->onEffectChanged(effect,bRemoved);
 	}
 }
@@ -2116,9 +2091,8 @@ void Tutorial::onEffectChanged(MobEffect *effect, bool bRemoved)
 bool Tutorial::canMoveToPosition(double xo, double yo, double zo, double xt, double yt, double zt)
 {
 	bool allowed = true;
-	for(AUTO_VAR(it, constraints[m_CurrentState].begin()); it < constraints[m_CurrentState].end(); ++it)
+	for(auto& constraint : constraints[m_CurrentState])
 	{
-		TutorialConstraint *constraint = *it;
 		if( !constraint->isConstraintSatisfied(m_iPad) && !constraint->canMoveToPosition(xo,yo,zo,xt,yt,zt) )
 		{
 			allowed = false;
@@ -2136,9 +2110,8 @@ bool Tutorial::isInputAllowed(int mapping)
 	if( Minecraft::GetInstance()->localplayers[m_iPad]->isUnderLiquid(Material::water) ) return true;
 
 	bool allowed = true;
-	for(AUTO_VAR(it, constraints[m_CurrentState].begin()); it < constraints[m_CurrentState].end(); ++it)
+	for(auto& constraint : constraints[m_CurrentState])
 	{
-		TutorialConstraint *constraint = *it;
 		if( constraint->isMappingConstrained( m_iPad, mapping ) )
 		{
 			allowed = false;
@@ -2156,9 +2129,9 @@ vector<TutorialTask *> *Tutorial::getTasks()
 unsigned int Tutorial::getCurrentTaskIndex()
 {
 	unsigned int index = 0;
-	for(AUTO_VAR(it, tasks.begin()); it < tasks.end(); ++it)
+	for(const auto& task : tasks)
 	{
-		if(*it == currentTask[e_Tutorial_State_Gameplay])
+		if(task == currentTask[e_Tutorial_State_Gameplay])
 			break;
 
 		++index;
@@ -2179,16 +2152,16 @@ void Tutorial::AddConstraint(TutorialConstraint *c)
 void Tutorial::RemoveConstraint(TutorialConstraint *c, bool delayedRemove /*= false*/)
 {
 	if( currentFailedConstraint[m_CurrentState] == c )
-		currentFailedConstraint[m_CurrentState] = NULL;
+		currentFailedConstraint[m_CurrentState] = nullptr;
 
 	if( c->getQueuedForRemoval() )
 	{
 		// If it is already queued for removal, remove it on the next tick
-		/*for(AUTO_VAR(it, constraintsToRemove[m_CurrentState].begin()); it < constraintsToRemove[m_CurrentState].end(); ++it)
+		/*for(auto& it : constraintsToRemove[m_CurrentState])
 		{
-		if( it->first == c )
+		if( it.first == c )
 		{
-		it->second = m_iTutorialConstraintDelayRemoveTicks;
+		it.second = m_iTutorialConstraintDelayRemoveTicks;
 		break;
 		}
 		}*/
@@ -2196,12 +2169,12 @@ void Tutorial::RemoveConstraint(TutorialConstraint *c, bool delayedRemove /*= fa
 	else if(delayedRemove)
 	{
 		c->setQueuedForRemoval(true);
-		constraintsToRemove[m_CurrentState].push_back( pair<TutorialConstraint *, unsigned char>(c, 0) );
+		constraintsToRemove[m_CurrentState].emplace_back(c, 0);
 	}
 	else
 	{
-		for( AUTO_VAR(it, constraintsToRemove[m_CurrentState].begin()); it < constraintsToRemove[m_CurrentState].end(); ++it)
-		{
+        for (auto it = constraintsToRemove[m_CurrentState].begin(); it != constraintsToRemove[m_CurrentState].end(); ++it)
+        {
 			if( it->first == c )
 			{
 				constraintsToRemove[m_CurrentState].erase( it );
@@ -2209,8 +2182,8 @@ void Tutorial::RemoveConstraint(TutorialConstraint *c, bool delayedRemove /*= fa
 			}
 		}
 
-		AUTO_VAR(it, find( constraints[m_CurrentState].begin(), constraints[m_CurrentState].end(), c));
-		if( it != constraints[m_CurrentState].end() ) constraints[m_CurrentState].erase( find( constraints[m_CurrentState].begin(), constraints[m_CurrentState].end(), c) );
+        auto it = find(constraints[m_CurrentState].begin(), constraints[m_CurrentState].end(), c);
+        if( it != constraints[m_CurrentState].end() ) constraints[m_CurrentState].erase( find( constraints[m_CurrentState].begin(), constraints[m_CurrentState].end(), c) );
 
 		// It may be in the gameplay list, so remove it from there if it is
 		it = find( constraints[e_Tutorial_State_Gameplay].begin(), constraints[e_Tutorial_State_Gameplay].end(), c);
@@ -2239,16 +2212,16 @@ void Tutorial::addMessage(int messageId, bool limitRepeats /*= false*/, unsigned
 }
 
 #ifdef _XBOX
-void Tutorial::changeTutorialState(eTutorial_State newState, CXuiScene *scene /*= NULL*/)
+void Tutorial::changeTutorialState(eTutorial_State newState, CXuiScene *scene /*= nullptr*/)
 #else
-void Tutorial::changeTutorialState(eTutorial_State newState, UIScene *scene /*= NULL*/)
+void Tutorial::changeTutorialState(eTutorial_State newState, UIScene *scene /*= nullptr*/)
 #endif
 {
 	if(newState == m_CurrentState)
 	{
 		// If clearing the scene, make sure that the tutorial popup has its reference to this scene removed
 #ifndef _XBOX
-		if( scene == NULL )
+		if( scene == nullptr )
 		{
 			ui.RemoveInteractSceneReference(m_iPad, m_UIScene);
 		}
@@ -2269,9 +2242,9 @@ void Tutorial::changeTutorialState(eTutorial_State newState, UIScene *scene /*= 
 		}
 
 		// The action that caused the change of state may also have completed the current task
-		if( currentTask[m_CurrentState] != NULL && currentTask[m_CurrentState]->isCompleted() )
+		if( currentTask[m_CurrentState] != nullptr && currentTask[m_CurrentState]->isCompleted() )
 		{
-			activeTasks[m_CurrentState].erase( find( activeTasks[m_CurrentState].begin(), activeTasks[m_CurrentState].end(), currentTask[m_CurrentState]) );					
+			activeTasks[m_CurrentState].erase( find( activeTasks[m_CurrentState].begin(), activeTasks[m_CurrentState].end(), currentTask[m_CurrentState]) );
 
 			if( activeTasks[m_CurrentState].size() > 0 )
 			{
@@ -2280,21 +2253,21 @@ void Tutorial::changeTutorialState(eTutorial_State newState, UIScene *scene /*= 
 			}
 			else
 			{
-				currentTask[m_CurrentState] = NULL;
+				currentTask[m_CurrentState] = nullptr;
 			}
 		}
 
-		if( currentTask[m_CurrentState] != NULL )
+		if( currentTask[m_CurrentState] != nullptr )
 		{
 			currentTask[m_CurrentState]->onStateChange(newState);
 		}
 
 		// Make sure that the current message is cleared
-		setMessage( NULL );
+		setMessage( nullptr );
 
 		// If clearing the scene, make sure that the tutorial popup has its reference to this scene removed
 #ifndef _XBOX
-		if( scene == NULL )
+		if( scene == nullptr )
 		{
 			ui.RemoveInteractSceneReference(m_iPad, m_UIScene);
 		}
@@ -2304,9 +2277,8 @@ void Tutorial::changeTutorialState(eTutorial_State newState, UIScene *scene /*= 
 
 		if( m_CurrentState != newState )
 		{
-			for(AUTO_VAR(it, activeTasks[newState].begin()); it < activeTasks[newState].end(); ++it)
-			{
-				TutorialTask *task = *it;
+            for (auto& task : activeTasks[newState] )
+            {
 				task->onStateChange(newState);
 			}
 			m_CurrentState = newState;

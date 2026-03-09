@@ -16,13 +16,13 @@ UIScene_AnvilMenu::UIScene_AnvilMenu(int iPad, void *_initData, UILayer *parentL
 
 	m_labelAnvil.init( app.GetString(IDS_REPAIR_AND_NAME) );
 
-	AnvilScreenInput *initData = (AnvilScreenInput *)_initData;
+	AnvilScreenInput *initData = static_cast<AnvilScreenInput *>(_initData);
 	m_inventory = initData->inventory;
 
 	Minecraft *pMinecraft = Minecraft::GetInstance();
-	if( pMinecraft->localgameModes[iPad] != NULL )
+	if( pMinecraft->localgameModes[iPad] != nullptr )
 	{
-		TutorialMode *gameMode = (TutorialMode *)pMinecraft->localgameModes[iPad];
+		TutorialMode *gameMode = static_cast<TutorialMode *>(pMinecraft->localgameModes[iPad]);
 		m_previousTutorialState = gameMode->getTutorial()->getCurrentState();
 		gameMode->getTutorial()->changeTutorialState(e_Tutorial_State_Anvil_Menu, this);
 	}
@@ -95,6 +95,19 @@ void UIScene_AnvilMenu::handleReload()
 void UIScene_AnvilMenu::tick()
 {
 	UIScene_AbstractContainerMenu::tick();
+
+#ifdef _WINDOWS64
+	// Live update: sync item name per-keystroke while editing (like Java edition)
+	if (m_textInputAnvil.isDirectEditing())
+	{
+		const wstring& buf = m_textInputAnvil.getEditBuffer();
+		if (buf != m_itemName)
+		{
+			m_itemName = buf;
+			updateItemName();
+		}
+	}
+#endif
 
 	handleTick();
 }
@@ -250,7 +263,7 @@ void UIScene_AnvilMenu::setSectionSelectedSlot(ESceneSection eSection, int x, in
 
 	int index = (y * cols) + x;
 
-	UIControl_SlotList *slotList = NULL;
+	UIControl_SlotList *slotList = nullptr;
 	switch( eSection )
 	{
 	case eSectionAnvilItem1:
@@ -278,7 +291,7 @@ void UIScene_AnvilMenu::setSectionSelectedSlot(ESceneSection eSection, int x, in
 
 UIControl *UIScene_AnvilMenu::getSection(ESceneSection eSection)
 {
-	UIControl *control = NULL;
+	UIControl *control = nullptr;
 	switch( eSection )
 	{
 	case eSectionAnvilItem1:
@@ -306,26 +319,67 @@ UIControl *UIScene_AnvilMenu::getSection(ESceneSection eSection)
 	return control;
 }
 
+#ifdef _WINDOWS64
+void UIScene_AnvilMenu::getDirectEditInputs(vector<UIControl_TextInput*> &inputs)
+{
+	inputs.push_back(&m_textInputAnvil);
+}
+
+void UIScene_AnvilMenu::onDirectEditFinished(UIControl_TextInput *input, UIControl_TextInput::EDirectEditResult result)
+{
+	m_itemName = input->getEditBuffer();
+	updateItemName();
+}
+#endif
+
 int UIScene_AnvilMenu::KeyboardCompleteCallback(LPVOID lpParam,bool bRes)
 {
-	// 4J HEG - No reason to set value if keyboard was cancelled
-	UIScene_AnvilMenu *pClass=(UIScene_AnvilMenu *)lpParam;
+	UIScene_AnvilMenu *pClass=static_cast<UIScene_AnvilMenu *>(lpParam);
 	pClass->setIgnoreInput(false);
 
 	if (bRes)
 	{
+#ifdef _WINDOWS64
+		uint16_t pchText[128];
+		ZeroMemory(pchText, 128 * sizeof(uint16_t));
+		Win64_GetKeyboardText(pchText, 128);
+		pClass->setEditNameValue(reinterpret_cast<wchar_t *>(pchText));
+		pClass->m_itemName = reinterpret_cast<wchar_t *>(pchText);
+		pClass->updateItemName();
+#else
 		uint16_t pchText[128];
 		ZeroMemory(pchText, 128 * sizeof(uint16_t) );
 		InputManager.GetText(pchText);
 		pClass->setEditNameValue((wchar_t *)pchText);
 		pClass->m_itemName = (wchar_t *)pchText;
 		pClass->updateItemName();
+#endif
 	}
 	return 0;
 }
 
 void UIScene_AnvilMenu::handleEditNamePressed()
 {
+#ifdef _WINDOWS64
+	if (isDirectEditBlocking())
+		return;
+
+	if (g_KBMInput.IsKBMActive())
+	{
+		m_textInputAnvil.beginDirectEdit(30);
+	}
+	else
+	{
+		setIgnoreInput(true);
+		UIKeyboardInitData kbData;
+		kbData.title       = app.GetString(IDS_TITLE_RENAME);
+		kbData.defaultText = m_textInputAnvil.getLabel();
+		kbData.maxChars    = 30;
+		kbData.callback    = &UIScene_AnvilMenu::KeyboardCompleteCallback;
+		kbData.lpParam     = this;
+		ui.NavigateToScene(m_iPad, eUIScene_Keyboard, &kbData, eUILayer_Fullscreen, eUIGroup_Fullscreen);
+	}
+#else
 	setIgnoreInput(true);
 #if defined(__PS3__) || defined(__ORBIS__) || defined __PSVITA__
 	int language = XGetLanguage();
@@ -337,12 +391,12 @@ void UIScene_AnvilMenu::handleEditNamePressed()
 		InputManager.RequestKeyboard(app.GetString(IDS_TITLE_RENAME),m_textInputAnvil.getLabel(),(DWORD)m_iPad,30,&UIScene_AnvilMenu::KeyboardCompleteCallback,this,C_4JInput::EKeyboardMode_Default);
 		break;
 	default:
-		// 4J Stu - Use a different keyboard for non-asian languages so we don't have prediction on
 		InputManager.RequestKeyboard(app.GetString(IDS_TITLE_RENAME),m_textInputAnvil.getLabel(),(DWORD)m_iPad,30,&UIScene_AnvilMenu::KeyboardCompleteCallback,this,C_4JInput::EKeyboardMode_Alphabet_Extended);
 		break;
 	}
 #else
-	InputManager.RequestKeyboard(app.GetString(IDS_TITLE_RENAME),m_textInputAnvil.getLabel(),(DWORD)m_iPad,30,&UIScene_AnvilMenu::KeyboardCompleteCallback,this,C_4JInput::EKeyboardMode_Default);
+	InputManager.RequestKeyboard(app.GetString(IDS_TITLE_RENAME),m_textInputAnvil.getLabel(),static_cast<DWORD>(m_iPad),30,&UIScene_AnvilMenu::KeyboardCompleteCallback,this,C_4JInput::EKeyboardMode_Default);
+#endif
 #endif
 }
 
@@ -357,6 +411,8 @@ void UIScene_AnvilMenu::setEditNameEditable(bool enabled)
 
 void UIScene_AnvilMenu::setCostLabel(const wstring &label, bool canAfford)
 {
+	if (!getMovie()) return;
+
 	IggyDataValue result;
 	IggyDataValue value[2];
 
@@ -375,6 +431,8 @@ void UIScene_AnvilMenu::showCross(bool show)
 {
 	if(m_showingCross != show)
 	{
+		if (!getMovie()) return;
+
 		IggyDataValue result;
 		IggyDataValue value[1];
 

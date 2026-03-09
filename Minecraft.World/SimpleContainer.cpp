@@ -13,12 +13,12 @@ SimpleContainer::SimpleContainer(int name, wstring stringName, bool customName, 
 	this->size = size;
 	items = new ItemInstanceArray( size );
 
-	listeners = NULL;
+	listeners = nullptr;
 }
 
 void SimpleContainer::addListener(net_minecraft_world::ContainerListener *listener)
 {
-	if (listeners == NULL) listeners = new vector<net_minecraft_world::ContainerListener *>();
+	if (listeners == nullptr) listeners = new vector<net_minecraft_world::ContainerListener *>();
 	listeners->push_back(listener);
 }
 
@@ -43,7 +43,7 @@ shared_ptr<ItemInstance> SimpleContainer::getItem(unsigned int slot)
 
 shared_ptr<ItemInstance> SimpleContainer::removeItem(unsigned int slot, int count)
 {
-	if ((*items)[slot] != NULL) {
+	if ((*items)[slot] != nullptr) {
 		if ((*items)[slot]->count <= count)
 		{
 			shared_ptr<ItemInstance> item = (*items)[slot];
@@ -64,7 +64,7 @@ shared_ptr<ItemInstance> SimpleContainer::removeItem(unsigned int slot, int coun
 
 shared_ptr<ItemInstance> SimpleContainer::removeItemNoUpdate(int slot)
 {
-	if ((*items)[slot] != NULL)
+	if ((*items)[slot] != nullptr)
 	{
 		shared_ptr<ItemInstance> item = (*items)[slot];
 		(*items)[slot] = nullptr;
@@ -76,7 +76,7 @@ shared_ptr<ItemInstance> SimpleContainer::removeItemNoUpdate(int slot)
 void SimpleContainer::setItem(unsigned int slot, shared_ptr<ItemInstance> item)
 {
 	(*items)[slot] = item;
-	if (item != NULL && item->count > getMaxStackSize()) item->count = getMaxStackSize();
+	if (item != nullptr && item->count > getMaxStackSize()) item->count = getMaxStackSize();
 	setChanged();
 }
 
@@ -113,7 +113,7 @@ int SimpleContainer::getMaxStackSize() const
 
 void SimpleContainer::setChanged()
 {
-	if (listeners != NULL) for (unsigned int i = 0; i < listeners->size(); i++)
+	if (listeners != nullptr) for (unsigned int i = 0; i < listeners->size(); i++)
 	{
 		listeners->at(i)->containerChanged();//shared_from_this());
 	}

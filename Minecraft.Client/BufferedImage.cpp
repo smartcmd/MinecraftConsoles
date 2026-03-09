@@ -1,4 +1,4 @@
-#include "stdafx.h"	
+#include "stdafx.h"
 #include "..\Minecraft.World\StringHelpers.h"
 #include "Textures.h"
 #include "..\Minecraft.World\ArrayWithLength.h"
@@ -31,7 +31,7 @@ BufferedImage::BufferedImage(int width,int height,int type)
 
 	for( int i = 1 ; i < 10; i++ )
 	{
-		data[i] = NULL;
+		data[i] = nullptr;
 	}
 	this->width = width;
 	this->height = height;
@@ -46,7 +46,7 @@ void BufferedImage::ByteFlip4(unsigned int &data)
 }
 // Loads a bitmap into a buffered image - only currently supports the 2 types of 32-bit image that we've made so far
 // and determines which of these is which by the compression method. Compression method 3 is a 32-bit image with only
-// 24-bits used (ie no alpha channel) whereas method 0 is a full 32-bit image with a valid alpha channel. 
+// 24-bits used (ie no alpha channel) whereas method 0 is a full 32-bit image with a valid alpha channel.
 BufferedImage::BufferedImage(const wstring& File, bool filenameHasExtension /*=false*/, bool bTitleUpdateTexture /*=false*/, const wstring &drive /*=L""*/)
 {
 	HRESULT hr;
@@ -140,7 +140,7 @@ BufferedImage::BufferedImage(const wstring& File, bool filenameHasExtension /*=f
 
 	for( int l = 0 ; l < 10; l++ )
 	{
-		data[l] = NULL;
+		data[l] = nullptr;
 	}
 
 	for( int l = 0; l < 10; l++ )
@@ -149,7 +149,7 @@ BufferedImage::BufferedImage(const wstring& File, bool filenameHasExtension /*=f
 		wstring mipMapPath = L"";
 		if( l != 0 )
 		{
-			mipMapPath = L"MipMapLevel" + _toString<int>(l+1);
+			mipMapPath = L"MipMapLevel" + std::to_wstring(l+1);
 		}
 		if( filenameHasExtension )
 		{
@@ -171,7 +171,7 @@ BufferedImage::BufferedImage(const wstring& File, bool filenameHasExtension /*=f
 		hr=RenderManager.LoadTextureData(pchTextureName,&ImageInfo,&data[l]);
 
 
-		if(hr!=ERROR_SUCCESS) 
+		if(hr!=ERROR_SUCCESS)
 		{
 			// 4J - If we haven't loaded the non-mipmap version then exit the game
 			if( l == 0 )
@@ -179,7 +179,7 @@ BufferedImage::BufferedImage(const wstring& File, bool filenameHasExtension /*=f
 				app.FatalLoadError();
 			}
 			return;
-		}				
+		}
 
 		if( l == 0 )
 		{
@@ -193,12 +193,12 @@ BufferedImage::BufferedImage(DLCPack *dlcPack, const wstring& File, bool filenam
 {
 	HRESULT hr;
 	wstring filePath = File;
-	BYTE *pbData = NULL;
+	BYTE *pbData = nullptr;
 	DWORD dwBytes = 0;
 
 	for( int l = 0 ; l < 10; l++ )
 	{
-		data[l] = NULL;
+		data[l] = nullptr;
 	}
 
 	for( int l = 0; l < 10; l++ )
@@ -207,7 +207,7 @@ BufferedImage::BufferedImage(DLCPack *dlcPack, const wstring& File, bool filenam
 		wstring mipMapPath = L"";
 		if( l != 0 )
 		{
-			mipMapPath = L"MipMapLevel" + _toString<int>(l+1);
+			mipMapPath = L"MipMapLevel" + std::to_wstring(l+1);
 		}
 		if( filenameHasExtension )
 		{
@@ -230,8 +230,8 @@ BufferedImage::BufferedImage(DLCPack *dlcPack, const wstring& File, bool filenam
 
 		DLCFile *dlcFile = dlcPack->getFile(DLCManager::e_DLCType_All, name);
 		pbData = dlcFile->getData(dwBytes);
-		if(pbData == NULL || dwBytes == 0)
-		{	
+		if(pbData == nullptr || dwBytes == 0)
+		{
 			// 4J - If we haven't loaded the non-mipmap version then exit the game
 			if( l == 0 )
 			{
@@ -245,7 +245,7 @@ BufferedImage::BufferedImage(DLCPack *dlcPack, const wstring& File, bool filenam
 		hr=RenderManager.LoadTextureData(pbData,dwBytes,&ImageInfo,&data[l]);
 
 
-		if(hr!=ERROR_SUCCESS) 
+		if(hr!=ERROR_SUCCESS)
 		{
 			// 4J - If we haven't loaded the non-mipmap version then exit the game
 			if( l == 0 )
@@ -253,7 +253,7 @@ BufferedImage::BufferedImage(DLCPack *dlcPack, const wstring& File, bool filenam
 				app.FatalLoadError();
 			}
 			return;
-		}				
+		}
 
 		if( l == 0 )
 		{
@@ -269,14 +269,14 @@ BufferedImage::BufferedImage(BYTE *pbData, DWORD dwBytes)
 	int iCurrentByte=0;
 	for( int l = 0 ; l < 10; l++ )
 	{
-		data[l] = NULL;
+		data[l] = nullptr;
 	}
 
 	D3DXIMAGE_INFO ImageInfo;
 	ZeroMemory(&ImageInfo,sizeof(D3DXIMAGE_INFO));
 	HRESULT hr=RenderManager.LoadTextureData(pbData,dwBytes,&ImageInfo,&data[0]);
 
-	if(hr==ERROR_SUCCESS) 
+	if(hr==ERROR_SUCCESS)
 	{
 		width=ImageInfo.Width;
 		height=ImageInfo.Height;
@@ -329,7 +329,7 @@ int *BufferedImage::getData(int level)
 
 Graphics *BufferedImage::getGraphics()
 {
-	return NULL;
+	return nullptr;
 }
 
 //Returns the transparency. Returns either OPAQUE, BITMASK, or TRANSLUCENT.
@@ -359,7 +359,7 @@ BufferedImage *BufferedImage::getSubimage(int x ,int y, int w, int h)
 	this->getRGB(x, y, w, h, arrayWrapper,0,w);
 
 	int level = 1;
-	while(getData(level) != NULL)
+	while(getData(level) != nullptr)
 	{
 		int ww = w >> level;
 		int hh = h >> level;
@@ -391,9 +391,9 @@ void BufferedImage::preMultiplyAlpha()
 	{
 		cur = curData[i];
 		alpha = (cur >> 24) & 0xff;
-		r = ((cur >> 16) & 0xff) * (float)alpha/255;
-		g = ((cur >> 8) & 0xff) * (float)alpha/255;
-		b = (cur & 0xff) * (float)alpha/255;
+		r = ((cur >> 16) & 0xff) * static_cast<float>(alpha)/255;
+		g = ((cur >> 8) & 0xff) * static_cast<float>(alpha)/255;
+		b = (cur & 0xff) * static_cast<float>(alpha)/255;
 
 		curData[i] = (r << 16) | (g << 8) | (b ) | (alpha << 24);
 	}

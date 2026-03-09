@@ -22,12 +22,12 @@ Texture *TextureHolder::getTexture()
 
 int TextureHolder::getWidth() const
 {
-	return rotated ? smallestFittingMinTexel((int) (height * scale)) : smallestFittingMinTexel((int) (width * scale));
+	return rotated ? smallestFittingMinTexel(static_cast<int>(height * scale)) : smallestFittingMinTexel(static_cast<int>(width * scale));
 }
 
 int TextureHolder::getHeight() const
 {
-	return rotated ? smallestFittingMinTexel((int) (width * scale)) : smallestFittingMinTexel((int) (height * scale));
+	return rotated ? smallestFittingMinTexel(static_cast<int>(width * scale)) : smallestFittingMinTexel(static_cast<int>(height * scale));
 }
 
 void TextureHolder::rotate()
@@ -52,13 +52,13 @@ void TextureHolder::setForcedScale(int targetSize)
 		return;
 	}
 
-	scale = (float) targetSize / min(width, height);
+	scale = static_cast<float>(targetSize) / min(width, height);
 }
 
 //@Override
 wstring TextureHolder::toString()
 {
-	return L"TextureHolder{width=" + _toString(width) +	L", height=" + _toString(height) + L'}';
+	return L"TextureHolder{width=" + std::to_wstring(width) +	L", height=" + std::to_wstring(height) + L'}';
 }
 
 int TextureHolder::compareTo(const TextureHolder *other) const

@@ -48,11 +48,12 @@ void glLoadIdentity()
 	RenderManager.MatrixSetIdentity();
 }
 
-// AAR - Use calculated aspect ratio to support dynamic resizing
-extern float g_iAspectRatio;
+// AAR - Use the aspect ratio passed by the caller.  For single-player this
+// equals g_iAspectRatio (screen width / height), but for split-screen
+// getFovAndAspect adjusts it to match the viewport dimensions.
 void gluPerspective(float fovy, float aspect, float zNear, float zFar)
 {
-	RenderManager.MatrixPerspective(fovy, g_iAspectRatio, zNear, zFar);
+	RenderManager.MatrixPerspective(fovy, aspect, zNear, zFar);
 }
 
 void glOrtho(float left,float right,float bottom,float top,float zNear,float zFar)
@@ -62,7 +63,7 @@ void glOrtho(float left,float right,float bottom,float top,float zNear,float zFa
 
 void glScaled(double x,double y,double z)
 {
-	RenderManager.MatrixScale((float)x,(float)y,(float)z);
+	RenderManager.MatrixScale(static_cast<float>(x),static_cast<float>(y),static_cast<float>(z));
 }
 
 void glGetFloat(int type, FloatBuffer *buff)

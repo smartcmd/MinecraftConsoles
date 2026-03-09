@@ -65,11 +65,11 @@ unsigned int CScene_HowToPlayMenu::m_uiHTPSceneA[]=
 //----------------------------------------------------------------------------------
 HRESULT CScene_HowToPlayMenu::OnInit( XUIMessageInit* pInitData, BOOL& bHandled )
 {
-	m_iPad = *(int *)pInitData->pvInitData;
+	m_iPad = *static_cast<int *>(pInitData->pvInitData);
 	// if we're not in the game, we need to use basescene 0 
-	bool bNotInGame=(Minecraft::GetInstance()->level==NULL);
+	bool bNotInGame=(Minecraft::GetInstance()->level==nullptr);
 	bool bSplitscreen= app.GetLocalPlayerCount()>1;
-	m_ButtonList=NULL;
+	m_ButtonList=nullptr;
 
 	//MapChildControls();
 
@@ -131,7 +131,7 @@ HRESULT CScene_HowToPlayMenu::OnGetSourceDataText(XUIMessageGetSourceText *pGetS
 {
 	if( pGetSourceTextData->bItemData )
 	{
-		if( pGetSourceTextData->iItem < (int)eHTPButton_Max )
+		if( pGetSourceTextData->iItem < static_cast<int>(eHTPButton_Max) )
 		{
 			pGetSourceTextData->szText = app.GetString(m_uiHTPButtonNameA[pGetSourceTextData->iItem]);//m_Buttons[pGetSourceTextData->iItem].GetText();
 			pGetSourceTextData->bDisplay = TRUE;
@@ -173,7 +173,7 @@ HRESULT CScene_HowToPlayMenu::OnNotifyPressEx(HXUIOBJ hObjPressed, XUINotifyPres
 	// 4J-PB - now using a list for all resolutions
 	//if((!RenderManager.IsHiDef() && !RenderManager.IsWidescreen()) || app.GetLocalPlayerCount()>1)
 	{
-		if(hObjPressed==m_ButtonList && m_ButtonList.TreeHasFocus() && (m_ButtonList.GetItemCount() > 0) && (m_ButtonList.GetCurSel() < (int)eHTPButton_Max) )
+		if(hObjPressed==m_ButtonList && m_ButtonList.TreeHasFocus() && (m_ButtonList.GetItemCount() > 0) && (m_ButtonList.GetCurSel() < static_cast<int>(eHTPButton_Max)) )
 		{
 			uiButtonCounter=m_ButtonList.GetCurSel();
 		}
@@ -186,7 +186,7 @@ HRESULT CScene_HowToPlayMenu::OnNotifyPressEx(HXUIOBJ hObjPressed, XUINotifyPres
 	// Determine which button was pressed,
 	// and call the appropriate function.
 
-	uiInitData = ( ( 1 <<  31 )  | ( m_uiHTPSceneA[uiButtonCounter]  << 16 ) | ( short )( m_iPad ) );
+	uiInitData = ( ( 1 <<  31 )  | ( m_uiHTPSceneA[uiButtonCounter]  << 16 ) | static_cast<short>(m_iPad) );
 	if(app.GetLocalPlayerCount()>1)
 	{
 		app.NavigateToScene(pNotifyPressData->UserIndex,eUIScene_HowToPlay, ( void* )( uiInitData ) );

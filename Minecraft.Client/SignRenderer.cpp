@@ -25,7 +25,7 @@ void SignRenderer::render(shared_ptr<TileEntity> _sign, double x, double y, doub
     float size = 16 / 24.0f;
     if (tile == Tile::sign)
 	{
-        glTranslatef((float) x + 0.5f, (float) y + 0.75f * size, (float) z + 0.5f);
+        glTranslatef(static_cast<float>(x) + 0.5f, static_cast<float>(y) + 0.75f * size, static_cast<float>(z) + 0.5f);
         float rot = sign->getData() * 360 / 16.0f;
         glRotatef(-rot, 0, 1, 0);
         signModel->cube2->visible = true;
@@ -39,7 +39,7 @@ void SignRenderer::render(shared_ptr<TileEntity> _sign, double x, double y, doub
         if (face == 4) rot = 90;
         if (face == 5) rot = -90;
 
-        glTranslatef((float) x + 0.5f, (float) y + 0.75f * size, (float) z + 0.5f);
+        glTranslatef(static_cast<float>(x) + 0.5f, static_cast<float>(y) + 0.75f * size, static_cast<float>(z) + 0.5f);
         glRotatef(-rot, 0, 1, 0);
         glTranslatef(0, -5 / 16.0f, -7 / 16.0f);
 

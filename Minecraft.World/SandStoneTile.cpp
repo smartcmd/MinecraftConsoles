@@ -14,9 +14,9 @@ int SandStoneTile::SANDSTONE_NAMES[SANDSTONE_BLOCK_NAMES] = {
 
 SandStoneTile::SandStoneTile(int id) : Tile(id, Material::stone)
 {
-	icons = NULL;
-	iconTop = NULL;
-	iconBottom = NULL;
+	icons = nullptr;
+	iconTop = nullptr;
+	iconBottom = nullptr;
 }
 
 Icon *SandStoneTile::getTexture(int face, int data)

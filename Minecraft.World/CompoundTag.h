@@ -11,7 +11,7 @@
 #include "ByteArrayTag.h"
 #include "IntArrayTag.h"
 
-class CompoundTag : public Tag    
+class CompoundTag : public Tag
 {
 private:
 	unordered_map<wstring, Tag *> tags;
@@ -22,10 +22,9 @@ public:
 
 	void write(DataOutput *dos)
 	{
-		AUTO_VAR(itEnd, tags.end());
-		for( unordered_map<wstring, Tag *>::iterator it = tags.begin(); it != itEnd; it++ )
+		for( auto& tag : tags )
 		{
-			Tag::writeNamedTag(it->second, dos);
+			Tag::writeNamedTag(tag.second, dos);
 		}
 		dos->writeByte(Tag::TAG_End);
 	}
@@ -43,10 +42,16 @@ public:
 		}
 		tags.clear();
 		Tag *tag;
-		while ((tag = Tag::readNamedTag(dis))->getId() != Tag::TAG_End)
-		{
-			tags[tag->getName()] = tag;
-		}
+        int tagCount = 0;
+        const int MAX_COMPOUND_TAGS = 10000;
+        while ((tag = Tag::readNamedTag(dis))->getId() != Tag::TAG_End)
+        {
+            tags[tag->getName()] = tag;
+            if (++tagCount >= MAX_COMPOUND_TAGS)
+            {
+                break;
+            }
+        }
 		delete tag;
 	}
 
@@ -55,10 +60,9 @@ public:
 		// 4J - was return tags.values();
 		vector<Tag *> *ret = new vector<Tag *>;
 
-		AUTO_VAR(itEnd, tags.end());
-		for( unordered_map<wstring, Tag *>::iterator it = tags.begin(); it != itEnd; it++ )
+		for( auto& tag : tags )
 		{
-			ret->push_back(it->second);
+			ret->push_back(tag.second);
 		}
 		return ret;
 	}
@@ -88,7 +92,7 @@ public:
 		tags[name] = (new IntTag(name,value));
 	}
 
-	void putLong(const wstring &name, __int64 value)
+	void putLong(const wstring &name, int64_t value)
 	{
 		tags[name] = (new LongTag(name,value));
 	}
@@ -125,14 +129,14 @@ public:
 
 	void putBoolean(const wstring &name, bool val)
 	{
-		putByte(name, val?(byte)1:0);
+		putByte(name, val?static_cast<byte>(1):0);
 	}
 
 	Tag *get(const wstring &name)
 	{
-		AUTO_VAR(it, tags.find(name));
+		auto it = tags.find(name);
 		if(it != tags.end()) return it->second;
-		return NULL;
+		return nullptr;
 	}
 
 	bool contains(const wstring &name)
@@ -143,67 +147,67 @@ public:
 	byte getByte(const wstring &name)
 	{
 		if (tags.find(name) == tags.end()) return (byte)0;
-		return ((ByteTag *) tags[name])->data;
+		return static_cast<ByteTag *>(tags[name])->data;
 	}
 
 	short getShort(const wstring &name)
 	{
 		if (tags.find(name) == tags.end()) return (short)0;
-		return ((ShortTag *) tags[name])->data;
+		return static_cast<ShortTag *>(tags[name])->data;
 	}
 
 	int getInt(const wstring &name)
 	{
 		if (tags.find(name) == tags.end()) return (int)0;
-		return ((IntTag *) tags[name])->data;
+		return static_cast<IntTag *>(tags[name])->data;
 	}
 
-	__int64 getLong(const wstring &name)
+	int64_t getLong(const wstring &name)
 	{
-		if (tags.find(name) == tags.end()) return (__int64)0;
+		if (tags.find(name) == tags.end()) return (int64_t)0;
 		return ((LongTag *) tags[name])->data;
 	}
 
 	float getFloat(const wstring &name)
 	{
-		if (tags.find(name) == tags.end()) return (float)0;
-		return ((FloatTag *) tags[name])->data;
+		if (tags.find(name) == tags.end()) return static_cast<float>(0);
+		return static_cast<FloatTag *>(tags[name])->data;
 	}
 
 	double getDouble(const wstring &name)
 	{
 		if (tags.find(name) == tags.end()) return (double)0;
-		return ((DoubleTag *) tags[name])->data;
+		return static_cast<DoubleTag *>(tags[name])->data;
 	}
 
 	wstring getString(const wstring &name)
 	{
 		if (tags.find(name) == tags.end()) return wstring( L"" );
-		return ((StringTag *) tags[name])->data;
+		return static_cast<StringTag *>(tags[name])->data;
 	}
 
 	byteArray getByteArray(const wstring &name)
 	{
 		if (tags.find(name) == tags.end()) return byteArray();
-		return ((ByteArrayTag *) tags[name])->data;
+		return static_cast<ByteArrayTag *>(tags[name])->data;
 	}
 
 	intArray getIntArray(const wstring &name)
 	{
 		if (tags.find(name) == tags.end()) return intArray();
-		return ((IntArrayTag *) tags[name])->data;
+		return static_cast<IntArrayTag *>(tags[name])->data;
 	}
 
 	CompoundTag *getCompound(const wstring &name)
 	{
 		if (tags.find(name) == tags.end()) return new CompoundTag(name);
-		return (CompoundTag *) tags[name];
+		return static_cast<CompoundTag *>(tags[name]);
 	}
 
 	ListTag<Tag> *getList(const wstring &name)
 	{
 		if (tags.find(name) == tags.end()) return new ListTag<Tag>(name);
-		return (ListTag<Tag> *) tags[name];
+		return static_cast<ListTag<Tag> *>(tags[name]);
 	}
 
 	bool getBoolean(const wstring &string)
@@ -213,7 +217,7 @@ public:
 
 	void remove(const wstring &name)
 	{
-		AUTO_VAR(it, tags.find(name));
+		auto it = tags.find(name);
 		if(it != tags.end()) tags.erase(it);
 		//tags.remove(name);
 	}
@@ -222,7 +226,7 @@ public:
 	{
 		static const int bufSize = 32;
 		static wchar_t buf[bufSize];
-		swprintf(buf,bufSize,L"%d entries",tags.size());
+		swprintf(buf,bufSize,L"%zu entries",tags.size());
 		return wstring( buf );
 	}
 
@@ -236,10 +240,9 @@ public:
 		strcpy( newPrefix, prefix);
 		strcat( newPrefix, "   ");
 
-		AUTO_VAR(itEnd, tags.end());
-		for( unordered_map<string, Tag *>::iterator it = tags.begin(); it != itEnd; it++ )
+		for( auto& it : tags )
 		{
-		it->second->print(newPrefix, out);
+			it.second->print(newPrefix, out);
 		}
 		delete[] newPrefix;
 		out << prefix << "}" << endl;
@@ -253,10 +256,9 @@ public:
 
 	virtual ~CompoundTag()
 	{
-		AUTO_VAR(itEnd, tags.end());
-		for( AUTO_VAR(it, tags.begin()); it != itEnd; it++ )
+		for( auto& tag : tags )
 		{
-			delete it->second;
+			delete tag.second;
 		}
 	}
 
@@ -264,10 +266,9 @@ public:
 	{
 		CompoundTag *tag = new CompoundTag(getName());
 
-		AUTO_VAR(itEnd, tags.end());
-		for( AUTO_VAR(it, tags.begin()); it != itEnd; it++ )
-		{			
-			tag->put((wchar_t *)it->first.c_str(), it->second->copy());
+		for( auto& it : tags )
+		{
+			tag->put((wchar_t *)it.first.c_str(), it.second->copy());
 		}
 		return tag;
 	}
@@ -276,16 +277,15 @@ public:
 	{
 		if (Tag::equals(obj))
 		{
-			CompoundTag *o = (CompoundTag *) obj;
+			CompoundTag *o = static_cast<CompoundTag *>(obj);
 
 			if(tags.size() == o->tags.size())
 			{
 				bool equal = true;
-				AUTO_VAR(itEnd, tags.end());
-				for( AUTO_VAR(it, tags.begin()); it != itEnd; it++ )
+				for( auto& it : tags )
 				{
-					AUTO_VAR(itFind, o->tags.find(it->first));
-					if(itFind == o->tags.end() || !it->second->equals(itFind->second) )
+					auto itFind = o->tags.find(it.first);
+					if(itFind == o->tags.end() || !it.second->equals(itFind->second) )
 					{
 						equal = false;
 						break;
