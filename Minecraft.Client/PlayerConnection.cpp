@@ -1084,6 +1084,95 @@ void PlayerConnection::handleCommand(const wstring& message)
     
 		server->getCommandDispatcher()->performCommand(player, eGameCommand_Summon, baos.toByteArray());
 	}
+	else if (commandStr == L"/effect")
+    {
+        if (args.size() < 2)
+        {
+            player->sendMessage(L"Incorrect command usage! Use: /effect <player> <clear or effectid> <duration>(default 30) <amplifier>(optional)");
+            return;
+        }
+
+        shared_ptr<ServerPlayer> targetPlayer = server->getPlayers()->getPlayer(args[0]);
+        if (!targetPlayer)
+        {
+            player->sendMessage(L"Player '" + args[0] + L"' not found!");
+            return;
+        }
+        
+        if (targetPlayer->getSelectedItem() == NULL)
+        {
+            player->sendMessage(L"Player " + targetPlayer->getName() + L" is not holding an item");
+            return;
+        }
+        int enchantmentId = -1;
+
+		wchar_t* endptr;
+		long numId = wcstol(args[1].c_str(), &endptr, 10);
+		if (*endptr == L'\0')
+		{
+			enchantmentId = (int)numId;
+		}
+		else
+		{
+			wstring enchantName = args[1];
+        
+            if (enchantName == L"protection") enchantmentId = 0;
+            else if (enchantName == L"fire_protection") enchantmentId = 1;
+            else if (enchantName == L"feather_falling") enchantmentId = 2;
+            else if (enchantName == L"blast_protection") enchantmentId = 3;
+            else if (enchantName == L"projectile_protection") enchantmentId = 4;
+            else if (enchantName == L"respiration") enchantmentId = 5;
+            else if (enchantName == L"aqua_affinity") enchantmentId = 6;
+            else if (enchantName == L"thorns") enchantmentId = 7;
+            else if (enchantName == L"sharpness") enchantmentId = 16;
+            else if (enchantName == L"smite") enchantmentId = 17;
+            else if (enchantName == L"bane_of_arthropods") enchantmentId = 18;
+            else if (enchantName == L"knockback") enchantmentId = 19;
+            else if (enchantName == L"fire_aspect") enchantmentId = 20;
+            else if (enchantName == L"looting") enchantmentId = 21;
+            else if (enchantName == L"efficiency") enchantmentId = 32;
+            else if (enchantName == L"silk_touch") enchantmentId = 33;
+            else if (enchantName == L"unbreaking") enchantmentId = 34;
+            else if (enchantName == L"fortune") enchantmentId = 35;
+            else if (enchantName == L"power") enchantmentId = 48;
+            else if (enchantName == L"punch") enchantmentId = 49;
+            else if (enchantName == L"flame") enchantmentId = 50;
+            else if (enchantName == L"infinity") enchantmentId = 51;
+            else
+			{
+				player->sendMessage(L"Unknown enchantment name: " + enchantName);
+				return;
+			}
+		}
+
+        if (enchantmentId < 0 || enchantmentId >= Enchantment::enchantments.length || Enchantment::enchantments[enchantmentId] == NULL)
+		{
+			player->sendMessage(L"Invalid enchantment ID: " + args[1]);
+			return;
+		}
+
+        int level = 1;
+        if (args.size() >= 3)
+        {
+            level = _wtoi(args[2].c_str());
+            Enchantment* e = Enchantment::enchantments[enchantmentId];
+            if (level < e->getMinLevel() || level > e->getMaxLevel())
+            {
+                player->sendMessage(L"Enchantment level must be between " + 
+                                   to_wstring(e->getMinLevel()) + L" and " + 
+                                   to_wstring(e->getMaxLevel()));
+                return;
+            }
+        }
+
+        ByteArrayOutputStream baos;
+        DataOutputStream dos(&baos);
+        dos.writePlayerUID(targetPlayer->getXuid());
+        dos.writeInt(enchantmentId);
+        dos.writeInt(level);
+        
+        server->getCommandDispatcher()->performCommand(player, eGameCommand_Effect, baos.toByteArray());
+    }
     else
     {
         player->sendMessage(L"Unknown command!");
