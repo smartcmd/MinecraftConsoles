@@ -15,7 +15,7 @@ Objective *Scoreboard::addObjective(const wstring &name, ObjectiveCriteria *crit
 //	if (objective != NULL)
 //	{
 //#indef _CONTENT_PACKAGE
-//		__debugbreak();
+//		// __debugbreak();
 //#endif
 //		//throw new IllegalArgumentException("An objective with the name '" + name + "' already exists!");
 //	}

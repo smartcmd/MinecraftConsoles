@@ -83,7 +83,7 @@ void EntityTracker::addEntity(shared_ptr<Entity> e, int range, int updateInterva
 	}
 	if( e->entityId >= 2048 )
 	{
-		__debugbreak();
+		// __debugbreak();
 	}
     shared_ptr<TrackedEntity> te = shared_ptr<TrackedEntity>( new TrackedEntity(e, range, updateInterval, trackDeltas) );
 	entities.insert(te);

@@ -105,7 +105,7 @@ wstring DLCTexturePack::getResource(const wstring& name)
 {
 	// 4J Stu - We should never call this function
 #ifndef __CONTENT_PACKAGE
-	__debugbreak();
+	// __debugbreak();
 #endif
 	return L"";
 }
@@ -114,7 +114,7 @@ InputStream *DLCTexturePack::getResourceImplementation(const wstring &name) //th
 {
 	// 4J Stu - We should never call this function
 #ifndef _CONTENT_PACKAGE
-	__debugbreak();
+	// __debugbreak();
 	if(hasFile(name)) return NULL;
 #endif
 	return NULL; //resource;

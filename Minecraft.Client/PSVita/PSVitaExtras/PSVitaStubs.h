@@ -174,7 +174,7 @@ BOOL MoveFileA(LPCSTR lpExistingFileName, LPCSTR lpNewFileName);
 
 #define MAX_PATH          260
 
-void __debugbreak();
+void // __debugbreak();
 VOID DebugBreak(VOID);
 
 

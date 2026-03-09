@@ -22,7 +22,7 @@ MoveEntityPacketSmall::MoveEntityPacketSmall(int id)
 	if( (id < 0 ) || (id >= 2048 ) )
 	{
 		// We shouln't be tracking an entity that doesn't have a short type of id
-		__debugbreak();
+		// __debugbreak();
 	}
 
 	this->id = id;
@@ -45,7 +45,7 @@ void MoveEntityPacketSmall::write(DataOutputStream *dos) //throws IOException
 	if( (id < 0 ) || (id >= 2048 ) )
 	{
 		// We shouln't be tracking an entity that doesn't have a short type of id
-		__debugbreak();
+		// __debugbreak();
 	}
 	dos->writeShort((short)id);
 }
@@ -102,7 +102,7 @@ void MoveEntityPacketSmall::PosRot::write(DataOutputStream *dos) //throws IOExce
 	if( (id < 0 ) || (id >= 2048 ) )
 	{
 		// We shouln't be tracking an entity that doesn't have a short type of id
-		__debugbreak();
+		// __debugbreak();
 	}
 	short idAndRot = id | yRot << 11;
 	dos->writeShort(idAndRot);
@@ -141,7 +141,7 @@ void MoveEntityPacketSmall::Pos::write(DataOutputStream *dos) //throws IOExcepti
 	if( (id < 0 ) || (id >= 2048 ) )
 	{
 		// We shouln't be tracking an entity that doesn't have a short type of id
-		__debugbreak();
+		// __debugbreak();
 	}
 	short idAndY = id | ya << 11;
 	dos->writeShort(idAndY);
@@ -179,7 +179,7 @@ void MoveEntityPacketSmall::Rot::write(DataOutputStream *dos) //throws IOExcepti
 	if( (id < 0 ) || (id >= 2048 ) )
 	{
 		// We shouln't be tracking an entity that doesn't have a short type of id
-		__debugbreak();
+		// __debugbreak();
 	}
 	short idAndRot = id | yRot << 11;
 	dos->writeShort(idAndRot);

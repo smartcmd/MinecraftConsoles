@@ -218,7 +218,7 @@ void Particle::setTex(Textures *textures, Icon *icon)
 	{
 #ifndef _CONTENT_PACKAGE
 		printf("Invalid call to Particle.setTex, use coordinate methods\n");
-		__debugbreak();
+		// __debugbreak();
 #endif
 		//throw new RuntimeException("Invalid call to Particle.setTex, use coordinate methods");
 	}
@@ -230,7 +230,7 @@ void Particle::setMiscTex(int slotIndex)
 	{
 #ifndef _CONTENT_PACKAGE
 		printf("Invalid call to Particle.setMixTex\n");
-		__debugbreak();
+		// __debugbreak();
 		//throw new RuntimeException("Invalid call to Particle.setMiscTex");
 #endif
 	}

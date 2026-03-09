@@ -187,7 +187,7 @@ EntityRenderer *EntityRenderDispatcher::getRenderer(eINSTANCEOF e)
 	{
 		app.DebugPrintf("Couldn't find renderer for entity of type %d\n", e);
 		// New renderer mapping required in above table
-		__debugbreak();
+		// __debugbreak();
 	}
 	/* 4J - not doing this hierarchical search anymore. We need to explicitly add renderers for any eINSTANCEOF type that we want to be able to render
 	if (it == renderers.end() && e != Entity::_class)

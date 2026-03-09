@@ -284,7 +284,7 @@ byteArray Packet::readBytes(DataInputStream *datainputstream)
 	{
 		app.DebugPrintf("Key was smaller than nothing!  Weird key!");
 #ifndef _CONTENT_PACKAGE
-		__debugbreak();
+		// __debugbreak();
 #endif
 		return byteArray();
 		//throw new IOException("Key was smaller than nothing!  Weird key!");
@@ -330,7 +330,7 @@ shared_ptr<Packet> Packet::readPacket(DataInputStream *dis, bool isServer) // th
 	if ((isServer && serverReceivedPackets.find(id) == serverReceivedPackets.end()) || (!isServer && clientReceivedPackets.find(id) == clientReceivedPackets.end()))
 	{
 		//app.DebugPrintf("Bad packet id %d\n", id);
-		__debugbreak();
+		// __debugbreak();
 		assert(false);
 		//            throw new IOException(wstring(L"Bad packet id ") + std::to_wstring(id));
 	}

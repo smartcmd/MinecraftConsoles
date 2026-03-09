@@ -238,7 +238,7 @@ HRESULT SonyLeaderboardManager::fillByIdsQuery(const SceNpId &myNpId, SceNpId* &
 			{
 				// 4J-JEV: Something terrible must have happend,
 				// 'getFriendslist' was supposed to be a synchronous operation.
-				__debugbreak();
+				// __debugbreak();
 
 				// 4J-JEV: We can at least fall-back to just the players score.
 				len = 1;

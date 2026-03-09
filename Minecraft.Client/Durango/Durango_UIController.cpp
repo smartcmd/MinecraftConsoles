@@ -20,7 +20,7 @@ void ConsoleUIController::init(Microsoft::WRL::ComPtr<ID3D11Device> dev, Microso
 	{
 		app.DebugPrintf("Failed to initialise GDraw!\n");
 #ifndef _CONTENT_PACKAGE
-		__debugbreak();
+		// __debugbreak();
 #endif
 		app.FatalLoadError();
 	}

@@ -208,7 +208,7 @@ void ArmorItem::setColor(shared_ptr<ItemInstance> item, int color)
 	{
 #ifndef _CONTENT_PACKAGE
 		printf("Can't dye non-leather!");
-		__debugbreak();
+		// __debugbreak();
 #endif
 		//throw new UnsupportedOperationException("Can't dye non-leather!");
 	}

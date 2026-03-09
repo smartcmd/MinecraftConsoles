@@ -446,7 +446,7 @@ bool GameRuleManager::readRuleFile(LevelGenerationOptions *lgo, byte *dIn, UINT 
 			break;
 		default:
 			app.DebugPrintf("Invalid compression type %d found\n", compressionType);
-			__debugbreak();
+			// __debugbreak();
 
 			delete [] compressedBuffer.data; delete [] decompressedBuffer.data;
 			dis.close(); bais.reset();

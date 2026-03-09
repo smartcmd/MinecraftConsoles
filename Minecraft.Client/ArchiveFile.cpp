@@ -104,7 +104,7 @@ byteArray ArchiveFile::getFile(const wstring &filename)
 		app.DebugPrintf("Couldn't find file in archive\n");
 		app.DebugPrintf("Failed to find file '%ls' in archive\n", filename.c_str());
 #ifndef _CONTENT_PACKAGE
-		__debugbreak();
+		// __debugbreak();
 #endif
 		app.FatalLoadError();
 	}

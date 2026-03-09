@@ -184,7 +184,7 @@ void BiomeSource::getRawBiomeBlock(BiomeArray &biomes, int x, int z, int w, int 
 		if(biomes[i] == NULL)
 		{
 			app.DebugPrintf("Tried to assign null biome %d\n", result[i]);
-			__debugbreak();
+			// __debugbreak();
 		}
 #endif
 	}

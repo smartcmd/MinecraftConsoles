@@ -299,7 +299,7 @@ void RegionFile::write(int x, int z, byte *data, int length)		// TODO - was sync
 #ifndef _CONTENT_PACKAGE
 		if(sectorNumber < 0)
 		{
-			__debugbreak();
+			// __debugbreak();
 		}
 #endif
 

@@ -169,7 +169,7 @@ DLCPack *DLCManager::getPack(DWORD index, EDLCType type /*= e_DLCType_All*/)
 		if(index >= m_packs.size())
 		{
 			app.DebugPrintf("DLCManager: Trying to access a DLC pack beyond the range of valid packs\n");
-			__debugbreak();
+			// __debugbreak();
 		}
 		pack = m_packs[index];
 	}
@@ -184,7 +184,7 @@ DWORD DLCManager::getPackIndex(DLCPack *pack, bool &found, EDLCType type /*= e_D
 	if(pack == NULL)
 	{
 		app.DebugPrintf("DLCManager: Attempting to find the index for a NULL pack\n");
-		//__debugbreak();
+		//// __debugbreak();
 		return foundIndex;
 	}
 	if( type != e_DLCType_All )
