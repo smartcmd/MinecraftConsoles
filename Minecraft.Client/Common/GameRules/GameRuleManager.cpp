@@ -344,6 +344,7 @@ void GameRuleManager::writeRuleFile(DataOutputStream *dos)
 	// Write schematic files.
 	unordered_map<wstring, ConsoleSchematicFile *> *files;
 	files = getLevelGenerationOptions()->getUnfinishedSchematicFiles();
+	dos->writeInt((int)files->size());
 	for ( auto& it : *files )
 	{
 		const wstring& filename = it.first;
@@ -497,17 +498,36 @@ bool GameRuleManager::readRuleFile(LevelGenerationOptions *lgo, byte *dIn, UINT 
 	}*/
 
 	// subfile
+	// Old saves didn't write a numFiles count before the schematic entries.
+	// Detect this: a real count is small, but a UTF filename prefix reads as a large int.
 	UINT numFiles = contentDis->readInt();
-	for (UINT i = 0; i < numFiles; i++)
+
+	if (lgo->isFromSave() && numFiles > 100)
 	{
-		wstring sFilename = contentDis->readUTF();
-		int length = contentDis->readInt();
-		byteArray ba( length );
+		contentDis->skip(-4);
+		while (true)
+		{
+			int peek = contentDis->readInt();
+			if (peek <= 100) { contentDis->skip(-4); break; }
+			contentDis->skip(-4);
 
-		contentDis->read(ba);
-
-		levelGenerator->loadSchematicFile(sFilename, ba.data, ba.length);
-
+			wstring sFilename = contentDis->readUTF();
+			int length = contentDis->readInt();
+			byteArray ba( length );
+			contentDis->read(ba);
+			levelGenerator->loadSchematicFile(sFilename, ba.data, ba.length);
+		}
+	}
+	else
+	{
+		for (UINT i = 0; i < numFiles; i++)
+		{
+			wstring sFilename = contentDis->readUTF();
+			int length = contentDis->readInt();
+			byteArray ba( length );
+			contentDis->read(ba);
+			levelGenerator->loadSchematicFile(sFilename, ba.data, ba.length);
+		}
 	}
 
 	LEVEL_GEN_ID lgoID = LEVEL_GEN_ID_NULL;
