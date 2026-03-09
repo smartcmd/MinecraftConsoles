@@ -227,9 +227,10 @@ vector<Biome::MobSpawnerData *> *Biome::getMobs(MobCategory *category)
 		if (app.GetGameHostOption(eGameHostOption_NoMobCap))
 		{
 			// Only input into this if necessary, this should be after all others are set up for this biome as well
-			if (all_friendlies.empty()) {
+			size_t combinedSize = friendlies.size() + friendlies_chicken.size() + friendlies_wolf.size() + friendlies_mushroomcow.size();
+			if (all_friendlies.empty() && combinedSize > 0) {
 				// If empty, reserve the combined size of all mob spawner data
-				all_friendlies.reserve(friendlies.size() + friendlies_chicken.size() + friendlies_wolf.size() + friendlies_mushroomcow.size());
+				all_friendlies.reserve(combinedSize);
 				// Combine each vector into all_friendlies
 				all_friendlies.insert(all_friendlies.end(), friendlies.begin(), friendlies.end());
 				all_friendlies.insert(all_friendlies.end(), friendlies_chicken.begin(), friendlies_chicken.end());
