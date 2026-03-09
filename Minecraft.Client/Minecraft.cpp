@@ -22,7 +22,6 @@
 #include "CreativeMode.h"
 #include "DemoLevel.h"
 #include "MultiPlayerLevel.h"
-#include "MultiPlayerLocalPlayer.h"
 #include "DemoUser.h"
 #include "GuiParticles.h"
 #include "Screen.h"
@@ -77,12 +76,7 @@
 #include "Orbis\Network\PsPlusUpsellWrapper_Orbis.h"
 #endif
 
-// #define DISABLE_SPU_CODE
-// 4J Turning this on will change the graph at the bottom of the debug overlay to show the number of packets of each type added per fram
-//#define DEBUG_RENDER_SHOWS_PACKETS 1
-//#define SPLITSCREEN_TEST
-
-// If not disabled, this creates an event queue on a seperate thread so that the Level::tick calls can be offloaded
+// If not disabled, this creates an event queue on a separate thread so that the Level::tick calls can be offloaded
 // from the main thread, and have longer to run, since it's called at 20Hz instead of 60
 #define DISABLE_LEVELTICK_THREAD
 
@@ -111,7 +105,6 @@ int QuickSelectBoxWidth[3]=
 	142
 };
 
-// 4J - TomK ToDo: these really shouldn't be magic numbers, it should read the hud position from flash.
 int iToolTipOffset = 85;
 
 #endif
@@ -122,13 +115,12 @@ ResourceLocation Minecraft::ALT_FONT_LOCATION = ResourceLocation(TN_ALT_FONT);
 
 Minecraft::Minecraft(Component *mouseComponent, Canvas *parent, MinecraftApplet *minecraftApplet, int width, int height, bool fullscreen)
 {
-	// 4J - added this block of initialisers
 	gameMode = nullptr;
 	hasCrashed = false;
 	timer = new Timer(SharedConstants::TICKS_PER_SECOND);
-	oldLevel = nullptr; //4J Stu added
+	oldLevel = nullptr;
 	level = nullptr;
-	levels = MultiPlayerLevelArray(3); // 4J Added
+	levels = MultiPlayerLevelArray(3);
 	levelRenderer = nullptr;
 	player = nullptr;
 	cameraTargetPlayer = nullptr;
@@ -142,21 +134,14 @@ Minecraft::Minecraft(Component *mouseComponent, Canvas *parent, MinecraftApplet 
 	localPlayerIdx = 0;
 	rightClickDelay = 0;
 
-	// 4J Stu Added
 	InitializeCriticalSection( &ProgressRenderer::s_progress );
 	InitializeCriticalSection(&m_setLevelCS);
-	//m_hPlayerRespawned = CreateEvent(nullptr, FALSE, FALSE, nullptr);
 
 	progressRenderer = nullptr;
 	gameRenderer = nullptr;
 	bgLoader = nullptr;
 
 	ticks = 0;
-	// 4J-PB - moved into the local player
-	//missTime = 0;
-	//lastClickTick = 0;
-	//isRaining = false;
-	// 4J-PB - end
 
 	orgWidth = orgHeight = 0;
 	achievementPopup = new AchievementPopup(this);
@@ -176,12 +161,8 @@ Minecraft::Minecraft(Component *mouseComponent, Canvas *parent, MinecraftApplet 
 	stats[3] = nullptr;
 	connectToPort = 0;
 	workDir = File(L"");
-	// 4J removed
-	//wasDown = false;
 	lastTimer = -1;
 
-	// 4J removed
-	//lastTickTime = System::currentTimeMillis();
 	recheckPlayerIn = 0;
 	running = true;
 	unoccupiedQuadrant = -1;
@@ -193,9 +174,9 @@ Minecraft::Minecraft(Component *mouseComponent, Canvas *parent, MinecraftApplet 
 	this->minecraftApplet = nullptr;
 
 	this->parent = parent;
-	// 4J - Our actual physical frame buffer is always 1280x720 ie in a 16:9 ratio. If we want to do a 4:3 mode, we are telling the original minecraft code
-	// that the width is 3/4 what it actually is, to correctly present a 4:3 image. Have added width_phys and height_phys for any code we add that requires
-	// to know the real physical dimensions of the frame buffer.
+	// Our actual physical frame buffer is always 1280x720 (16:9). For 4:3 mode, we tell the original
+	// Minecraft code the width is 3/4 of actual, to correctly present a 4:3 image.
+	// width_phys and height_phys hold the real physical frame buffer dimensions.
 	if( RenderManager.IsWidescreen() )
 	{
 		this->width = width;
@@ -223,14 +204,12 @@ Minecraft::Minecraft(Component *mouseComponent, Canvas *parent, MinecraftApplet 
 		localitemInHandRenderers[i] = nullptr;
 	}
 
-	animateTickLevel = nullptr;	// 4J added
-	m_inFullTutorialBits = 0; // 4J Added
+	animateTickLevel = nullptr;
+	m_inFullTutorialBits = 0;
 	reloadTextures = false;
 
-	// initialise the audio before any textures are loaded - to avoid the problem in win64 of the Miles audio causing the codec for textures to be unloaded
-
-	// 4J-PB - Removed it from here on Orbis due to it causing a crash with the network init.
-	// We should work out why...
+	// Initialise audio before any textures are loaded to avoid a Win64 issue where
+	// Miles audio causes the texture codec to be unloaded.
 #ifndef __ORBIS__
 	this->soundEngine->init(nullptr);
 #endif
@@ -239,7 +218,7 @@ Minecraft::Minecraft(Component *mouseComponent, Canvas *parent, MinecraftApplet 
 	levelTickEventQueue = new C4JThread::EventQueue(levelTickUpdateFunc, levelTickThreadInitFunc, "LevelTick_EventQueuePoll");
 	levelTickEventQueue->setProcessor(3);
 	levelTickEventQueue->setPriority(THREAD_PRIORITY_NORMAL);
-#endif // DISABLE_LEVELTICK_THREAD
+#endif
 }
 
 void Minecraft::clearConnectionFailed()
@@ -260,96 +239,15 @@ void Minecraft::connectTo(const wstring& server, int port)
 
 void Minecraft::init()
 {
-#if 0 // 4J - removed
-	if (parent != null)
-	{
-		Graphics g = parent.getGraphics();
-		if (g != null) {
-			g.setColor(Color.BLACK);
-			g.fillRect(0, 0, width, height);
-			g.dispose();
-		}
-		Display.setParent(parent);
-	} else {
-		if (fullscreen) {
-			Display.setFullscreen(true);
-			width = Display.getDisplayMode().getWidth();
-			height = Display.getDisplayMode().getHeight();
-			if (width <= 0) width = 1;
-			if (height <= 0) height = 1;
-		} else {
-			Display.setDisplayMode(new DisplayMode(width, height));
-		}
-	}
-
-	Display.setTitle("Minecraft " + VERSION_STRING);
-	try {
-		Display.create();
-		/*
-		* System.out.println("LWJGL version: " + Sys.getVersion());
-		* System.out.println("GL RENDERER: " +
-		* GL11.glGetString(GL11.GL_RENDERER));
-		* System.out.println("GL VENDOR: " +
-		* GL11.glGetString(GL11.GL_VENDOR));
-		* System.out.println("GL VERSION: " +
-		* GL11.glGetString(GL11.GL_VERSION)); ContextCapabilities caps =
-		* GLContext.getCapabilities(); System.out.println("OpenGL 3.0: " +
-		* caps.OpenGL30); System.out.println("OpenGL 3.1: " +
-		* caps.OpenGL31); System.out.println("OpenGL 3.2: " +
-		* caps.OpenGL32); System.out.println("ARB_compatibility: " +
-		* caps.GL_ARB_compatibility); if (caps.OpenGL32) { IntBuffer buffer
-		* = ByteBuffer.allocateDirect(16 *
-		* 4).order(ByteOrder.nativeOrder()).asIntBuffer();
-		* GL11.glGetInteger(GL32.GL_CONTEXT_PROFILE_MASK, buffer); int
-		* profileMask = buffer.get(0); System.out.println("PROFILE MASK: "
-		* + Integer.toBinaryString(profileMask));
-		* System.out.println("CORE PROFILE: " + ((profileMask &
-		* GL32.GL_CONTEXT_CORE_PROFILE_BIT) != 0));
-		* System.out.println("COMPATIBILITY PROFILE: " + ((profileMask &
-		* GL32.GL_CONTEXT_COMPATIBILITY_PROFILE_BIT) != 0)); }
-		*/
-	} catch (LWJGLException e) {
-		// This COULD be because of a bug! A delay followed by a new attempt
-		// is supposed getWorkingDirectoryto fix it.
-		e.printStackTrace();
-		try {
-			Thread.sleep(1000);
-		} catch (InterruptedException e1) {
-		}
-		Display.create();
-	}
-
-	if (Minecraft.FLYBY_MODE) {
-		glPixelStorei(GL_PACK_ALIGNMENT, 1);
-		glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
-	}
-#endif
-
-	// glClearColor(0.2f, 0.2f, 0.2f, 1);
-
-	workingDirectory = File(L"");//getWorkingDirectory();
+	workingDirectory = File(L"");
 	levelSource = new McRegionLevelStorageSource(File(workingDirectory, L"saves"));
-	//        levelSource = new MemoryLevelStorageSource();
 	options = new Options(this, workingDirectory);
 	skins = new TexturePackRepository(workingDirectory, this);
 	skins->addDebugPacks();
 	textures = new Textures(skins, options);
-	//renderLoadingScreen();
 
 	font = new Font(options, L"font/Default.png", textures, false, &DEFAULT_FONT_LOCATION, 23, 20, 8, 8, SFontData::Codepoints);
 	altFont = new Font(options, L"font/alternate.png", textures, false, &ALT_FONT_LOCATION, 16, 16, 8, 8);
-
-	//if (options.languageCode != null) {
-	//	Language.getInstance().loadLanguage(options.languageCode);
-	//	//            font.setEnforceUnicodeSheet("true".equalsIgnoreCase(I18n.get("language.enforceUnicode")));
-	//	font.setEnforceUnicodeSheet(Language.getInstance().isSelectedLanguageIsUnicode());
-	//	font.setBidirectional(Language.isBidirectional(options.languageCode));
-	//}
-
-	// 4J Stu - Not using these any more
-	//WaterColor::init(textures->loadTexturePixels(L"misc/watercolor.png"));
-	//GrassColor::init(textures->loadTexturePixels(L"misc/grasscolor.png"));
-	//FoliageColor::init(textures->loadTexturePixels(L"misc/foliagecolor.png"));
 
 	gameRenderer = new GameRenderer(this);
 	EntityRenderDispatcher::instance->itemInHandRenderer = new ItemInHandRenderer(this,false);
@@ -357,35 +255,11 @@ void Minecraft::init()
 	for( int i=0 ; i<4 ; ++i )
 		stats[i] = new StatsCounter();
 
-	/*		4J - TODO, 4J-JEV: Unnecessary.
-	Achievements::openInventory->setDescFormatter(nullptr);
-	Achievements.openInventory.setDescFormatter(new DescFormatter(){
-	public String format(String i18nValue) {
-	return String.format(i18nValue, Keyboard.getKeyName(options.keyBuild.key));
-	}
-	});
-	*/
-
-	// 4J-PB - We'll do this in a xui intro
-	//renderLoadingScreen();
-
-	//Keyboard::create();
 	Mouse::create();
-#if 0	// 4J - removed
-	mouseHandler = new MouseHandler(parent);
-	try {
-		Controllers.create();
-	} catch (Exception e) {
-		e.printStackTrace();
-	}
-#endif
 
 	MemSect(31);
 	checkGlError(L"Pre startup");
 	MemSect(0);
-
-	// width = Display.getDisplayMode().getWidth();
-	// height = Display.getDisplayMode().getHeight();
 
 	glEnable(GL_TEXTURE_2D);
 	glShadeModel(GL_SMOOTH);
@@ -403,11 +277,7 @@ void Minecraft::init()
 	checkGlError(L"Startup");
 	MemSect(0);
 
-	//    openGLCapabilities = new OpenGLCapabilities();	// 4J - removed
-
 	levelRenderer = new LevelRenderer(this, textures);
-	//textures->register(&TextureAtlas::LOCATION_BLOCKS, new TextureAtlas(Icon::TYPE_TERRAIN, TN_TERRAIN));
-	//textures->register(&TextureAtlas::LOCATION_ITEMS, new TextureAtlas(Icon::TYPE_ITEM, TN_GUI_ITEMS));
 	textures->stitch();
 
 	glViewport(0, 0, width, height);
@@ -419,9 +289,9 @@ void Minecraft::init()
 	MemSect(0);
 	gui = new Gui(this);
 
-	if (connectToIp != L"")	// 4J - was nullptr comparison
+	if (connectToIp != L"")
 	{
-		//        setScreen(new ConnectScreen(this, connectToIp, connectToPort));		// 4J TODO - put back in
+		// TODO: setScreen(new ConnectScreen(this, connectToIp, connectToPort));
 	}
 	else
 	{
@@ -434,12 +304,9 @@ void Minecraft::init()
 
 void Minecraft::renderLoadingScreen()
 {
-	// 4J Unused
-	// testing stuff on vita just now
 #ifdef __PSVITA__
 	ScreenSizeCalculator ssc(options, width, height);
 
-	// xxx
 	RenderManager.StartFrame();
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glMatrixMode(GL_PROJECTION);
@@ -456,7 +323,6 @@ void Minecraft::renderLoadingScreen()
 	glDisable(GL_LIGHTING);
 	glEnable(GL_TEXTURE_2D);
 	glDisable(GL_FOG);
-	// xxx
 	glBindTexture(GL_TEXTURE_2D, textures->loadTexture(TN_MOB_PIG));
 	t->begin();
 	t->color(0xffffff);
@@ -478,7 +344,6 @@ void Minecraft::renderLoadingScreen()
 	glAlphaFunc(GL_GREATER, 0.1f);
 
 	Display::swapBuffers();
-	// xxx
 	RenderManager.Present();
 #endif
 }
@@ -515,24 +380,12 @@ void Minecraft::setScreen(Screen *screen)
 	}
 #endif
 
-	//4J Gordon: Do not force a stats save here
-	/*if (dynamic_cast<TitleScreen *>(screen)!=nullptr)
-	{
-	stats->forceSend();
-	}
-	stats->forceSave();*/
-
 	if (screen == nullptr && level == nullptr)
 	{
 		screen = new TitleScreen();
 	}
 	else if (player != nullptr && !ui.GetMenuDisplayed(player->GetXboxPad()) && player->getHealth() <= 0)
 	{
-		//screen = new DeathScreen();
-
-		// 4J Stu - If we exit from the death screen then we are saved as being dead. In the Java
-		// game when you load the game you are still dead, but this is silly so only show the dead
-		// screen if we have died during gameplay
 		if(ticks==0)
 		{
 			player->respawn();
@@ -552,251 +405,38 @@ void Minecraft::setScreen(Screen *screen)
 	this->screen = screen;
 	if (screen != nullptr)
 	{
-		//        releaseMouse();	// 4J - removed
 		ScreenSizeCalculator ssc(options, width, height);
 		int screenWidth = ssc.getWidth();
 		int screenHeight = ssc.getHeight();
 		screen->init(this, screenWidth, screenHeight);
 		noRender = false;
 	}
-	else
-	{
-		//        grabMouse();	// 4J - removed
-	}
-
-	// 4J-PB - if a screen has been set, go into menu mode
-	// it's possible that player doesn't exist here yet
-	/*if(screen!=nullptr)
-	{
-	if(player && player->GetXboxPad()!=-1)
-	{
-	InputManager.SetMenuDisplayed(player->GetXboxPad(),true);
-	}
-	else
-	{
-	// set all
-	//InputManager.SetMenuDisplayed(XUSER_INDEX_ANY,true);
-	}
-	}
-	else
-	{
-	if(player && player->GetXboxPad()!=-1)
-	{
-	InputManager.SetMenuDisplayed(player->GetXboxPad(),false);
-	}
-	else
-	{
-	//InputManager.SetMenuDisplayed(XUSER_INDEX_ANY,false);
-	}
-	}*/
 }
 
 void Minecraft::checkGlError(const wstring& string)
 {
-	// 4J - TODO
+	// TODO
 }
 
 void Minecraft::destroy()
 {
-	//4J Gordon: Do not force a stats save here
-	/*stats->forceSend();
-	stats->forceSave();*/
-
-	//    try {
 	setLevel(nullptr);
-	//    } catch (Throwable e) {
-	//    }
-
-	//    try {
 	MemoryTracker::release();
-	//    } catch (Throwable e) {
-	//    }
-
 	soundEngine->destroy();
-	//} finally {
 	Display::destroy();
-	//    if (!hasCrashed) System.exit(0);	//4J - removed
-	//}
-	//System.gc();	// 4J - removed
 }
-
-// 4J-PB - splitting this function into 3 parts, so we can call the middle part from our xbox game loop
-
-#if 0
-void Minecraft::run()
-{
-	running = true;
-	//    try {	// 4J - removed try/catch
-	init();
-	//    } catch (Exception e) {
-	//        e.printStackTrace();
-	//       crash(new CrashReport("Failed to start game", e));
-	//        return;
-	//    }
-	//    try {	// 4J - removed try/catch
-	if (Minecraft::FLYBY_MODE)
-	{
-		generateFlyby();
-		return;
-	}
-
-	int64_t lastTime = System::currentTimeMillis();
-	int frames = 0;
-
-	while (running)
-	{
-		//        try {	// 4J - removed try/catch
-		//            if (minecraftApplet != null && !minecraftApplet.isActive()) break;	// 4J - removed
-		AABB::resetPool();
-		Vec3::resetPool();
-
-		//            if (parent == nullptr && Display.isCloseRequested()) {		// 4J - removed
-		//                stop();
-		//            }
-
-		if (pause && level != nullptr)
-		{
-			float lastA = timer->a;
-			timer->advanceTime();
-			timer->a = lastA;
-		}
-		else
-		{
-			timer->advanceTime();
-		}
-
-		int64_t beforeTickTime = System::nanoTime();
-		for (int i = 0; i < timer->ticks; i++)
-		{
-			ticks++;
-			//            try {		// 4J - try/catch removed
-			tick();
-			//            } catch (LevelConflictException e) {
-			//                this.level = null;
-			//                setLevel(null);
-			//                setScreen(new LevelConflictScreen());
-			//            }
-		}
-		int64_t tickDuraction = System::nanoTime() - beforeTickTime;
-		checkGlError(L"Pre render");
-
-		TileRenderer::fancy = options->fancyGraphics;
-
-		// if (pause) timer.a = 1;
-
-		soundEngine->update(player, timer->a);
-
-		glEnable(GL_TEXTURE_2D);
-		if (level != nullptr) level->updateLights();
-
-		//        if (!Keyboard::isKeyDown(Keyboard.KEY_F7)) Display.update();		// 4J - removed
-
-		if (player != nullptr && player->isInWall()) options->thirdPersonView = false;
-		if (!noRender)
-		{
-			if (gameMode != nullptr) gameMode->render(timer->a);
-			gameRenderer->render(timer->a);
-		}
-
-		/*	4J - removed
-		if (!Display::isActive())
-		{
-		if (fullscreen)
-		{
-		this->toggleFullScreen();
-		}
-		Sleep(10);
-		}
-		*/
-
-		if (options->renderDebug)
-		{
-			renderFpsMeter(tickDuraction);
-		}
-		else
-		{
-			lastTimer = System::nanoTime();
-		}
-
-		achievementPopup->render();
-
-		Sleep(0);	// 4J - was Thread.yield()
-
-		//        if (Keyboard::isKeyDown(Keyboard::KEY_F7)) Display.update();	// 4J - removed condition
-		Display::update();
-
-		//        checkScreenshot();	// 4J - removed
-
-		/* 4J - removed
-		if (parent != nullptr && !fullscreen)
-		{
-		if (parent.getWidth() != width || parent.getHeight() != height)
-		{
-		width = parent.getWidth();
-		height = parent.getHeight();
-		if (width <= 0) width = 1;
-		if (height <= 0) height = 1;
-
-		resize(width, height);
-		}
-		}
-		*/
-		checkGlError(L"Post render");
-		frames++;
-		pause = !isClientSide() && screen != nullptr && screen->isPauseScreen();
-
-		while (System::currentTimeMillis() >= lastTime + 1000)
-		{
-			fpsString = std::to_wstring(frames) + L" fps (" + std::to_wstring(Chunk::updates) + L" chunk updates)";
-			Chunk::updates = 0;
-			lastTime += 1000;
-			frames = 0;
-		}
-		/*
-		} catch (LevelConflictException e) {
-		this.level = null;
-		setLevel(null);
-		setScreen(new LevelConflictScreen());
-		} catch (OutOfMemoryError e) {
-		emergencySave();
-		setScreen(new OutOfMemoryScreen());
-		System.gc();
-		}
-		*/
-	}
-	/*
-	} catch (StopGameException e) {
-	} catch (Throwable e) {
-	emergencySave();
-	e.printStackTrace();
-	crash(new CrashReport("Unexpected error", e));
-	} finally {
-	destroy();
-	}
-	*/
-	destroy();
-}
-#endif
 
 void Minecraft::run()
 {
 	running = true;
-	//    try {	// 4J - removed try/catch
 	init();
-	//    } catch (Exception e) {
-	//        e.printStackTrace();
-	//       crash(new CrashReport("Failed to start game", e));
-	//        return;
-	//    }
-	//    try {	// 4J - removed try/catch
-	}
+}
 
-// 4J added - Selects which local player is currently active for processing by the existing minecraft code
 bool Minecraft::setLocalPlayerIdx(int idx)
 {
 	localPlayerIdx = idx;
-	// If the player is not null, but the game mode is then this is just a temp player
-	// whose only real purpose is to hold the viewport position
+	// If the player is not null but the game mode is, this is a temp player
+	// whose only real purpose is to hold the viewport position.
 	if( localplayers[idx] == nullptr || localgameModes[idx] == nullptr ) return false;
 
 	gameMode = localgameModes[idx];
@@ -817,7 +457,6 @@ int Minecraft::getLocalPlayerIdx()
 void Minecraft::updatePlayerViewportAssignments()
 {
 	unoccupiedQuadrant = -1;
-	// Find out how many viewports we'll be needing
 	int viewportsRequired = 0;
 	for( int i = 0; i < XUSER_MAX_COUNT; i++ )
 	{
@@ -825,10 +464,8 @@ void Minecraft::updatePlayerViewportAssignments()
 	}
 	if( viewportsRequired == 3 ) viewportsRequired = 4;
 
-	// Allocate away...
 	if( viewportsRequired == 1 )
 	{
-		// Single viewport
 		for( int i = 0; i < XUSER_MAX_COUNT; i++ )
 		{
 			if( localplayers[i] != nullptr ) localplayers[i]->m_iScreenSection = C4JRender::VIEWPORT_TYPE_FULLSCREEN;
@@ -836,13 +473,11 @@ void Minecraft::updatePlayerViewportAssignments()
 	}
 	else if( viewportsRequired == 2 )
 	{
-		// Split screen - TODO - option for vertical/horizontal split
 		int found = 0;
 		for( int i = 0; i < XUSER_MAX_COUNT; i++ )
 		{
 			if( localplayers[i] != nullptr )
 			{
-				// Primary player settings decide what the mode is
 				if(app.GetGameSettings(ProfileManager.GetPrimaryPad(),eGameSetting_SplitScreenVertical))
 				{
 					localplayers[i]->m_iScreenSection = C4JRender::VIEWPORT_TYPE_SPLIT_LEFT + found;
@@ -857,17 +492,16 @@ void Minecraft::updatePlayerViewportAssignments()
 	}
 	else if( viewportsRequired >= 3 )
 	{
-		// Quadrants - this is slightly more complicated. We don't want to move viewports around if we are going from 3 to 4, or 4 to 3 players,
-		// so persist any allocations for quadrants that already exist.
+		// Quadrant allocation: persist existing assignments to avoid rearranging viewports
+		// when going from 3 to 4 players (or vice versa).
 		bool quadrantsAllocated[4] = {false,false,false,false};
 
 		for( int i = 0; i < XUSER_MAX_COUNT; i++ )
 		{
 			if( localplayers[i] != nullptr )
 			{
-
-				// 4J Stu - If the game hasn't started, ignore current allocations (as the players won't have seen them)
-				// This fixes an issue with the primary player being the 4th controller quadrant, but ending up in the 3rd viewport.
+				// If the game hasn't started yet, ignore current allocations so the primary
+				// player doesn't end up in the wrong quadrant.
 				if(app.GetGameStarted())
 				{
 					if( ( localplayers[i]->m_iScreenSection >= C4JRender::VIEWPORT_TYPE_QUADRANT_TOP_LEFT ) &&
@@ -878,13 +512,11 @@ void Minecraft::updatePlayerViewportAssignments()
 				}
 				else
 				{
-					// Reset the viewport so that it can be assigned in the next loop
 					localplayers[i]->m_iScreenSection = C4JRender::VIEWPORT_TYPE_FULLSCREEN;
 				}
 			}
 		}
 
-		// Found which quadrants are currently in use, now allocate out any spares that are required
 		for( int i = 0; i < XUSER_MAX_COUNT; i++ )
 		{
 			if( localplayers[i] != nullptr )
@@ -904,7 +536,6 @@ void Minecraft::updatePlayerViewportAssignments()
 				}
 			}
 		}
-		// If there's an unoccupied quadrant, record which one so we can clear it to black when rendering
 		for( int i = 0; i < XUSER_MAX_COUNT; i++ )
 		{
 			if( quadrantsAllocated[i] == false )
@@ -914,18 +545,13 @@ void Minecraft::updatePlayerViewportAssignments()
 		}
 	}
 
-	// 4J Stu - If the game is not running we do not want to do this yet, and should wait until the task
-	// that caused the app to not be running is finished
-	if(app.GetGameStarted())ui.UpdatePlayerBasePositions();
+	if(app.GetGameStarted()) ui.UpdatePlayerBasePositions();
 }
 
-// Add a temporary player so that the viewports get re-arranged, and add the player to the game session
 bool Minecraft::addLocalPlayer(int idx)
 {
-	//int iLocalPlayerC=app.GetLocalPlayerCount();
 	if( m_pendingLocalConnections[idx] != nullptr )
 	{
-		// 4J Stu - Should we ever be in a state where this happens?
 		assert(false);
 		m_pendingLocalConnections[idx]->close();
 	}
@@ -943,18 +569,13 @@ bool Minecraft::addLocalPlayer(int idx)
 		updatePlayerViewportAssignments();
 
 #ifdef _XBOX
-		// tell the xui scenes a splitscreen player joined
 		XUIMessage xuiMsg;
 		CustomMessage_Splitscreenplayer_Struct myMsgData;
 		CustomMessage_Splitscreenplayer( &xuiMsg, &myMsgData, true);
 
-		// send the message
 		for(int i=0;i<XUSER_MAX_COUNT;i++)
 		{
-			//if((i!=idx) && (localplayers[i]!=nullptr))
-			{
-				XuiBroadcastMessage( CXuiSceneBase::GetPlayerBaseScene(i), &xuiMsg );
-			}
+			XuiBroadcastMessage( CXuiSceneBase::GetPlayerBaseScene(i), &xuiMsg );
 		}
 #endif
 
@@ -965,9 +586,7 @@ bool Minecraft::addLocalPlayer(int idx)
 		param->setFailTimer = true;
 		param->timerTime = CONNECTING_PROGRESS_CHECK_TIME;
 
-		// Joining as second player so always the small progress
 		ui.NavigateToScene(idx, eUIScene_ConnectingProgress, param);
-
 	}
 	else
 	{
@@ -994,18 +613,12 @@ shared_ptr<MultiplayerLocalPlayer> Minecraft::createExtraLocalPlayer(int idx, co
 		int tempScreenSection = C4JRender::VIEWPORT_TYPE_FULLSCREEN;
 		if( localplayers[idx] != nullptr && localgameModes[idx] == nullptr )
 		{
-			// A temp player displaying a connecting screen
 			tempScreenSection = localplayers[idx]->m_iScreenSection;
 		}
 		wstring prevname = user->name;
 		user->name = name;
 
-		// Don't need this any more
 		m_pendingLocalConnections[idx] = nullptr;
-
-		// Add the connection to the level which will now take responsibility for ticking it
-		// 4J-PB - can't use the dimension from localplayers[idx], since there may be no localplayers at this point
-		//MultiPlayerLevel *mpLevel = (MultiPlayerLevel *)getLevel( localplayers[idx]->dimension );
 
 		MultiPlayerLevel *mpLevel;
 
@@ -1025,7 +638,6 @@ shared_ptr<MultiplayerLocalPlayer> Minecraft::createExtraLocalPlayer(int idx, co
 		{
 			localgameModes[idx] = new FullTutorialMode(idx, this, clientConnection);
 		}
-		// check if we're in the trial version
 		else if(ProfileManager.IsFullVersion()==false)
 		{
 			localgameModes[idx] = new TrialMode(idx, this, clientConnection);
@@ -1035,9 +647,6 @@ shared_ptr<MultiplayerLocalPlayer> Minecraft::createExtraLocalPlayer(int idx, co
 			localgameModes[idx] = new ConsoleGameMode(idx, this, clientConnection);
 		}
 
-		// 4J-PB - can't do this here because they use a render context, but this is running from a thread.
-		// Moved the creation of these into the main thread, before level launch
-		//localitemInHandRenderers[idx] = new ItemInHandRenderer(this);
 		localplayers[idx] = localgameModes[idx]->createPlayer(level);
 
 		PlayerUID playerXUIDOffline = INVALID_XUID;
@@ -1045,7 +654,7 @@ shared_ptr<MultiplayerLocalPlayer> Minecraft::createExtraLocalPlayer(int idx, co
 		ProfileManager.GetXUID(idx,&playerXUIDOffline,false);
 		ProfileManager.GetXUID(idx,&playerXUIDOnline,true);
 #ifdef _WINDOWS64
-		// Compatibility rule for Win64 id migration
+		// Compatibility rule for Win64 id migration:
 		// host keeps legacy host XUID, non-host uses persistent uid.dat XUID.
 		INetworkPlayer *localNetworkPlayer = g_NetworkManager.GetLocalPlayerByUserIndex(idx);
 		if(localNetworkPlayer != nullptr && localNetworkPlayer->IsHost())
@@ -1065,7 +674,7 @@ shared_ptr<MultiplayerLocalPlayer> Minecraft::createExtraLocalPlayer(int idx, co
 
 		localplayers[idx]->m_iScreenSection = tempScreenSection;
 
-		if( levelpassedin == nullptr)	level->addEntity(localplayers[idx]);	// Don't add if we're passing the level in, we only do this from the client connection & we'll be handling adding it ourselves
+		if( levelpassedin == nullptr) level->addEntity(localplayers[idx]);
 
 		localplayers[idx]->SetXboxPad(iPad);
 
@@ -1080,20 +689,11 @@ shared_ptr<MultiplayerLocalPlayer> Minecraft::createExtraLocalPlayer(int idx, co
 		user->name = prevname;
 
 		updatePlayerViewportAssignments();
-
-		// Fix for #105852 - TU12: Content: Gameplay: Local splitscreen Players are spawned at incorrect places after re-joining previously saved and loaded "Mass Effect World".
-		// Move this check to ClientConnection::handleMovePlayer
-//		// 4J-PB - can't call this when this function is called from the qnet thread (GetGameStarted will be false)
-//		if(app.GetGameStarted())
-//		{
-//			ui.CloseUIScenes(idx);
-//		}
 	}
 
 	return localplayers[idx];
 }
 
-// on a respawn of the local player, just store them
 void Minecraft::storeExtraLocalPlayer(int idx)
 {
 	localplayers[idx] = player;
@@ -1123,12 +723,9 @@ void Minecraft::removeLocalPlayerIdx(int idx)
 		getLevel( localplayers[idx]->dimension )->removeEntity(localplayers[idx]);
 
 #ifdef _XBOX
-		// 4J Stu - Fix for #12368 - Crash: Game crashes when saving then exiting and selecting to save
 		app.TutorialSceneNavigateBack(idx);
 #endif
 
-		// 4J Stu - Fix for #13257 - CRASH: Gameplay: Title crashed after exiting the tutorial
-		// It doesn't matter if they were in the tutorial already
 		playerLeftTutorial( idx );
 
 		delete localgameModes[idx];
@@ -1143,13 +740,9 @@ void Minecraft::removeLocalPlayerIdx(int idx)
 	}
 	else
 	{
-		// Not sure how this works on qnet, but for other platforms, calling RemoveLocalPlayerByUserIndex won't do anything if there isn't a local user to remove
-		// Now just updating the UI directly in this case
 #ifdef _XBOX
-		// 4J Stu - A signout early in the game creation before this player has connected to the game server
 		updateXui = false;
 #endif
-		// 4J Stu - Adding this back in for exactly the reason my comment above suggests it was added in the first place
 #if defined(_XBOX_ONE) || defined(__ORBIS__)
 		g_NetworkManager.RemoveLocalPlayerByUserIndex(idx);
 #endif
@@ -1158,18 +751,8 @@ void Minecraft::removeLocalPlayerIdx(int idx)
 
 	if( idx == ProfileManager.GetPrimaryPad() )
 	{
-		// We should never try to remove the Primary player in this way
+		// We should never try to remove the primary player this way.
 		assert(false);
-		/*
-		// If we are removing the primary player then there can't be a valid gamemode left anymore, this
-		// pointer will be referring to the one we've just deleted
-		gameMode = nullptr;
-		// Remove references to player
-		player = nullptr;
-		cameraTargetPlayer = nullptr;
-		EntityRenderDispatcher::instance->cameraEntity = nullptr;
-		TileEntityRenderDispatcher::instance->cameraEntity = nullptr;
-		*/
 	}
 	else if( updateXui )
 	{
@@ -1179,17 +762,12 @@ void Minecraft::removeLocalPlayerIdx(int idx)
 		ui.CloseUIScenes(idx,true);
 		updatePlayerViewportAssignments();
 	}
-
-	// We only create these once ever so don't delete it here
-	//delete localitemInHandRenderers[idx];
 }
 
 void Minecraft::createPrimaryLocalPlayer(int iPad)
 {
 	localgameModes[iPad] = gameMode;
 	localplayers[iPad] = player;
-	//gameRenderer->itemInHandRenderer = localitemInHandRenderers[iPad];
-	// Give them the gamertag if they're signed in
 	if(ProfileManager.IsSignedIn(ProfileManager.GetPrimaryPad()))
 	{
 		user->name = convStringToWstring( ProfileManager.GetGamertag(ProfileManager.GetPrimaryPad()) );
@@ -1208,7 +786,7 @@ void Minecraft::applyFrameMouseLook()
 	{
 		if (localplayers[i] == nullptr) continue;
 		int iPad = localplayers[i]->GetXboxPad();
-		if (iPad != 0) continue;  // Mouse only applies to pad 0
+		if (iPad != 0) continue;
 
 		if (!g_KBMInput.IsMouseGrabbed()) continue;
 		if (localgameModes[iPad] == nullptr) continue;
@@ -1228,13 +806,12 @@ void Minecraft::applyFrameMouseLook()
 		float dpitch = -mdy * 0.15f;
 
 		// Apply to both current and old rotation so render interpolation
-		// reflects the change immediately (no 50ms tick delay)
+		// reflects the change immediately (no 50ms tick delay).
 		localplayers[i]->yRot += dyaw;
 		localplayers[i]->yRotO += dyaw;
 		localplayers[i]->xRot += dpitch;
 		localplayers[i]->xRotO += dpitch;
 
-		// Clamp pitch
 		if (localplayers[i]->xRot < -90.0f) localplayers[i]->xRot = -90.0f;
 		if (localplayers[i]->xRot > 90.0f) localplayers[i]->xRot = 90.0f;
 		if (localplayers[i]->xRotO < -90.0f) localplayers[i]->xRotO = -90.0f;
@@ -1263,36 +840,18 @@ void Minecraft::run_middle()
 			textures->reloadAll();
 		}
 
-		//while (running)
 		{
-			//        try {	// 4J - removed try/catch
-			//            if (minecraftApplet != null && !minecraftApplet.isActive()) break;	// 4J - removed
 			AABB::resetPool();
 			Vec3::resetPool();
 
-			//            if (parent == nullptr && Display.isCloseRequested()) {		// 4J - removed
-			//                stop();
-			//            }
-
-			// 4J-PB - AUTOSAVE TIMER - only in the full game and if the player is the host
+			// Autosave timer — only in full game when we are the host
 			if(level!=nullptr && ProfileManager.IsFullVersion() && g_NetworkManager.IsHost())
 			{
-				/*if(!bAutosaveTimerSet)
 				{
-				// set the timer
-				bAutosaveTimerSet=true;
-
-				app.SetAutosaveTimerTime();
-				}
-				else*/
-				{
-					// if the pause menu is up for the primary player, don't autosave
-					// If saving isn't disabled, and the main player has a app action running , or has any crafting or containers open, don't autosave
 					if(!StorageManager.GetSaveDisabled() && (app.GetXuiAction(ProfileManager.GetPrimaryPad())==eAppAction_Idle) )
 					{
 						if(!ui.IsPauseMenuDisplayed(ProfileManager.GetPrimaryPad()) && !ui.IsIgnoreAutosaveMenuDisplayed(ProfileManager.GetPrimaryPad()))
 						{
-							// check if the autotimer countdown has reached zero
 							unsigned char ucAutosaveVal=app.GetGameSettings(ProfileManager.GetPrimaryPad(),eGameSetting_Autosave);
 							bool bTrialTexturepack=false;
 							if(!Minecraft::GetInstance()->skins->isUsingDefaultSkin())
@@ -1311,27 +870,20 @@ void Minecraft::run_middle()
 								}
 							}
 
-							// If the autosave value is not zero, and the player isn't using a trial texture pack, then check whether we need to save this tick
 							if((ucAutosaveVal!=0) && !bTrialTexturepack)
 							{
 								if(app.AutosaveDue())
 								{
-									// disable the autosave countdown
 									ui.ShowAutosaveCountdownTimer(false);
 
-									// Need to save now
 									app.DebugPrintf("+++++++++++\n");
 									app.DebugPrintf("+++Autosave\n");
 									app.DebugPrintf("+++++++++++\n");
 									app.SetAction(ProfileManager.GetPrimaryPad(),eAppAction_AutosaveSaveGame);
-									//app.SetAutosaveTimerTime();
 #ifndef _CONTENT_PACKAGE
 									{
-										// print the time
 										SYSTEMTIME UTCSysTime;
 										GetSystemTime( &UTCSysTime );
-										//char szTime[15];
-
 										app.DebugPrintf("%02d:%02d:%02d\n",UTCSysTime.wHour,UTCSysTime.wMinute,UTCSysTime.wSecond);
 									}
 #endif
@@ -1350,24 +902,20 @@ void Minecraft::run_middle()
 						}
 						else
 						{
-							// disable the autosave countdown
 							ui.ShowAutosaveCountdownTimer(false);
 						}
 					}
 				}
 			}
 
-			// 4J-PB - Once we're in the level, check if the players have the level in their banned list and ask if they want to play it
+			// Once in the level, check if players have the level in their banned list
 			for( int i = 0; i < XUSER_MAX_COUNT; i++ )
 			{
 				if( localplayers[i] && (app.GetBanListCheck(i)==false) && !Minecraft::GetInstance()->isTutorial() && ProfileManager.IsSignedInLive(i) && !ProfileManager.IsGuest(i) )
 				{
-					// If there is a sys ui displayed, we can't display the message box here, so ignore until we can
 					if(!ProfileManager.IsSystemUIDisplayed())
 					{
 						app.SetBanListCheck(i,true);
-						// 4J-PB - check if the level is in the banned level list
-						// get the unique save name and xuid from whoever is the host
 #if defined _XBOX || defined _XBOX_ONE
 						INetworkPlayer *pHostPlayer = g_NetworkManager.GetHostPlayer();
 
@@ -1379,9 +927,7 @@ void Minecraft::run_middle()
 
 						if(app.IsInBannedLevelList(i,xuid,app.GetUniqueMapName()))
 						{
-							// put up a message box asking if the player would like to unban this level
 							app.DebugPrintf("This level is banned\n");
-							// set the app action to bring up the message box to give them the option to remove from the ban list or exit the level
 							app.SetAction(i,eAppAction_LevelInBanLevelList,(void *)TRUE);
 						}
 #endif
@@ -1394,10 +940,9 @@ void Minecraft::run_middle()
 				app.m_dlcManager.checkForCorruptDLCAndAlert();
 			}
 
-			// When we go into the first loaded level, check if the console has active joypads that are not in the game, and bring up the quadrant display to remind them to press start (if the session has space)
+			// On first level load, check for connected pads not yet in the game and prompt them to press start
 			if(level!=nullptr && bFirstTimeIntoGame && g_NetworkManager.SessionHasSpace())
 			{
-				// have a short delay before the display
 				if(iFirstTimeCountdown==0)
 				{
 					bFirstTimeIntoGame=false;
@@ -1418,8 +963,9 @@ void Minecraft::run_middle()
 				}
 				else iFirstTimeCountdown--;
 			}
-			// 4J-PB - store any button toggles for the players, since the minecraft::tick may not be called if we're running fast, and a button press and release will be missed
 
+			// Store button toggles for all players. Minecraft::tick may not be called every
+			// frame (runs at 20Hz), so a press-and-release within one frame would be missed.
 			for( int i = 0; i < XUSER_MAX_COUNT; i++ )
 			{
 #ifdef __ORBIS__
@@ -1441,39 +987,36 @@ void Minecraft::run_middle()
 				}
 				else
 #endif
-					if(localplayers[i])
+				if(localplayers[i])
 				{
-					// 4J-PB - add these to check for coming out of idle
 					if(InputManager.ButtonPressed(i, MINECRAFT_ACTION_JUMP))				localplayers[i]->ullButtonsPressed|=1LL<<MINECRAFT_ACTION_JUMP;
 					if(InputManager.ButtonPressed(i, MINECRAFT_ACTION_USE))					localplayers[i]->ullButtonsPressed|=1LL<<MINECRAFT_ACTION_USE;
 
-					if(InputManager.ButtonPressed(i, MINECRAFT_ACTION_INVENTORY))				localplayers[i]->ullButtonsPressed|=1LL<<MINECRAFT_ACTION_INVENTORY;
-					if(InputManager.ButtonPressed(i, MINECRAFT_ACTION_ACTION))					localplayers[i]->ullButtonsPressed|=1LL<<MINECRAFT_ACTION_ACTION;
-					if(InputManager.ButtonPressed(i, MINECRAFT_ACTION_CRAFTING))				localplayers[i]->ullButtonsPressed|=1LL<<MINECRAFT_ACTION_CRAFTING;
+					if(InputManager.ButtonPressed(i, MINECRAFT_ACTION_INVENTORY))			localplayers[i]->ullButtonsPressed|=1LL<<MINECRAFT_ACTION_INVENTORY;
+					if(InputManager.ButtonPressed(i, MINECRAFT_ACTION_ACTION))				localplayers[i]->ullButtonsPressed|=1LL<<MINECRAFT_ACTION_ACTION;
+					if(InputManager.ButtonPressed(i, MINECRAFT_ACTION_CRAFTING))			localplayers[i]->ullButtonsPressed|=1LL<<MINECRAFT_ACTION_CRAFTING;
 					if(InputManager.ButtonPressed(i, MINECRAFT_ACTION_PAUSEMENU))
 					{
 						localplayers[i]->ullButtonsPressed|=1LL<<MINECRAFT_ACTION_PAUSEMENU;
 						app.DebugPrintf("PAUSE PRESSED - ipad = %d, Storing press\n",i);
 					}
 #ifdef _DURANGO
-					if(InputManager.ButtonPressed(i, ACTION_MENU_GTC_PAUSE))					localplayers[i]->ullButtonsPressed|=1LL<<ACTION_MENU_GTC_PAUSE;
+					if(InputManager.ButtonPressed(i, ACTION_MENU_GTC_PAUSE))				localplayers[i]->ullButtonsPressed|=1LL<<ACTION_MENU_GTC_PAUSE;
 #endif
-					if(InputManager.ButtonPressed(i, MINECRAFT_ACTION_DROP))					localplayers[i]->ullButtonsPressed|=1LL<<MINECRAFT_ACTION_DROP;
+					if(InputManager.ButtonPressed(i, MINECRAFT_ACTION_DROP))				localplayers[i]->ullButtonsPressed|=1LL<<MINECRAFT_ACTION_DROP;
 
-					// 4J-PB - If we're flying, the sneak needs to be held on to go down
 					if(localplayers[i]->abilities.flying)
 					{
-						if(InputManager.ButtonDown(i, MINECRAFT_ACTION_SNEAK_TOGGLE))			localplayers[i]->ullButtonsPressed|=1LL<<MINECRAFT_ACTION_SNEAK_TOGGLE;
+						if(InputManager.ButtonDown(i, MINECRAFT_ACTION_SNEAK_TOGGLE))		localplayers[i]->ullButtonsPressed|=1LL<<MINECRAFT_ACTION_SNEAK_TOGGLE;
 					}
 					else
 					{
-						if(InputManager.ButtonPressed(i, MINECRAFT_ACTION_SNEAK_TOGGLE))		localplayers[i]->ullButtonsPressed|=1LL<<MINECRAFT_ACTION_SNEAK_TOGGLE;
+						if(InputManager.ButtonPressed(i, MINECRAFT_ACTION_SNEAK_TOGGLE))	localplayers[i]->ullButtonsPressed|=1LL<<MINECRAFT_ACTION_SNEAK_TOGGLE;
 					}
-					if(InputManager.ButtonPressed(i, MINECRAFT_ACTION_RENDER_THIRD_PERSON))		localplayers[i]->ullButtonsPressed|=1LL<<MINECRAFT_ACTION_RENDER_THIRD_PERSON;
-					if(InputManager.ButtonPressed(i, MINECRAFT_ACTION_GAME_INFO))				localplayers[i]->ullButtonsPressed|=1LL<<MINECRAFT_ACTION_GAME_INFO;
+					if(InputManager.ButtonPressed(i, MINECRAFT_ACTION_RENDER_THIRD_PERSON))	localplayers[i]->ullButtonsPressed|=1LL<<MINECRAFT_ACTION_RENDER_THIRD_PERSON;
+					if(InputManager.ButtonPressed(i, MINECRAFT_ACTION_GAME_INFO))			localplayers[i]->ullButtonsPressed|=1LL<<MINECRAFT_ACTION_GAME_INFO;
 
 #ifdef _WINDOWS64
-					// Keyboard/mouse button presses for player 0
 					if (i == 0)
 					{
 						if (g_KBMInput.IsKBMActive())
@@ -1514,15 +1057,15 @@ void Minecraft::run_middle()
 
 							if(g_KBMInput.IsKeyPressed(KeyboardMouseInput::KEY_CRAFTING) || g_KBMInput.IsKeyPressed(KeyboardMouseInput::KEY_CRAFTING_ALT))
 							{
-							if((ui.IsSceneInStack(i, eUIScene_Crafting2x2Menu) || ui.IsSceneInStack(i, eUIScene_Crafting3x3Menu) || ui.IsSceneInStack(i, eUIScene_CreativeMenu) || isClosableByEitherKey) && !isEditing)
-							{
-								ui.CloseUIScenes(i);
+								if((ui.IsSceneInStack(i, eUIScene_Crafting2x2Menu) || ui.IsSceneInStack(i, eUIScene_Crafting3x3Menu) || ui.IsSceneInStack(i, eUIScene_CreativeMenu) || isClosableByEitherKey) && !isEditing)
+								{
+									ui.CloseUIScenes(i);
+								}
+								else
+								{
+									localplayers[i]->ullButtonsPressed|=1LL<<MINECRAFT_ACTION_CRAFTING;
+								}
 							}
-							else
-							{
-								localplayers[i]->ullButtonsPressed|=1LL<<MINECRAFT_ACTION_CRAFTING;
-							}
-						}
 
 							for (int slot = 0; slot < 9; slot++)
 							{
@@ -1534,7 +1077,6 @@ void Minecraft::run_middle()
 							}
 						}
 
-						// Utility keys always work regardless of KBM active state
 						if(g_KBMInput.IsKeyPressed(KeyboardMouseInput::KEY_PAUSE) && !ui.GetMenuDisplayed(i))
 						{
 							localplayers[i]->ullButtonsPressed|=1LL<<MINECRAFT_ACTION_PAUSEMENU;
@@ -1549,7 +1091,6 @@ void Minecraft::run_middle()
 							localplayers[i]->ullButtonsPressed|=1LL<<MINECRAFT_ACTION_RENDER_DEBUG;
 						}
 
-						// In flying mode, Shift held = sneak/descend
 						if(g_KBMInput.IsKBMActive() && g_KBMInput.IsKeyDown(KeyboardMouseInput::KEY_SNEAK))
 						{
 							if (localplayers[i]->abilities.flying && !ui.GetMenuDisplayed(i))
@@ -1558,31 +1099,30 @@ void Minecraft::run_middle()
 					}
 #endif
 
-#if _DEBUG // ndef _FINAL_BUILD // Disable conflicting debug functionality in release builds
+#if _DEBUG
 					if( app.DebugSettingsOn() && app.GetUseDPadForDebug() )
 					{
 						localplayers[i]->ullDpad_last = 0;
 						localplayers[i]->ullDpad_this = 0;
 						localplayers[i]->ullDpad_filtered = 0;
-						if(InputManager.ButtonPressed(i, MINECRAFT_ACTION_DPAD_RIGHT))			localplayers[i]->ullButtonsPressed|=1LL<<MINECRAFT_ACTION_CHANGE_SKIN;
-						if(InputManager.ButtonPressed(i, MINECRAFT_ACTION_DPAD_UP))				localplayers[i]->ullButtonsPressed|=1LL<<MINECRAFT_ACTION_FLY_TOGGLE;
-						if(InputManager.ButtonPressed(i, MINECRAFT_ACTION_DPAD_DOWN))			localplayers[i]->ullButtonsPressed|=1LL<<MINECRAFT_ACTION_RENDER_DEBUG;
-						if(InputManager.ButtonPressed(i, MINECRAFT_ACTION_DPAD_LEFT))			localplayers[i]->ullButtonsPressed|=1LL<<MINECRAFT_ACTION_SPAWN_CREEPER;
+						if(InputManager.ButtonPressed(i, MINECRAFT_ACTION_DPAD_RIGHT))	localplayers[i]->ullButtonsPressed|=1LL<<MINECRAFT_ACTION_CHANGE_SKIN;
+						if(InputManager.ButtonPressed(i, MINECRAFT_ACTION_DPAD_UP))		localplayers[i]->ullButtonsPressed|=1LL<<MINECRAFT_ACTION_FLY_TOGGLE;
+						if(InputManager.ButtonPressed(i, MINECRAFT_ACTION_DPAD_DOWN))	localplayers[i]->ullButtonsPressed|=1LL<<MINECRAFT_ACTION_RENDER_DEBUG;
+						if(InputManager.ButtonPressed(i, MINECRAFT_ACTION_DPAD_LEFT))	localplayers[i]->ullButtonsPressed|=1LL<<MINECRAFT_ACTION_SPAWN_CREEPER;
 					}
 					else
 #endif
 					{
-						// Movement on DPAD is stored ulimately into ullDpad_filtered - this ignores any diagonals pressed, instead reporting the last single direction - otherwise
-						// we get loads of accidental diagonal movements
-
+						// D-Pad movement: ignore diagonals by only reporting the last single direction pressed,
+						// to avoid accidental diagonal inputs.
 						localplayers[i]->ullDpad_this = 0;
 						int dirCount = 0;
 
 #ifndef __PSVITA__
-						if(InputManager.ButtonDown(i, MINECRAFT_ACTION_DPAD_LEFT))					{ localplayers[i]->ullDpad_this|=1LL<<MINECRAFT_ACTION_DPAD_LEFT;		dirCount++; }
-						if(InputManager.ButtonDown(i, MINECRAFT_ACTION_DPAD_RIGHT))					{ localplayers[i]->ullDpad_this|=1LL<<MINECRAFT_ACTION_DPAD_RIGHT;		dirCount++; }
-						if(InputManager.ButtonDown(i, MINECRAFT_ACTION_DPAD_UP))					{ localplayers[i]->ullDpad_this|=1LL<<MINECRAFT_ACTION_DPAD_UP;			dirCount++; }
-						if(InputManager.ButtonDown(i, MINECRAFT_ACTION_DPAD_DOWN))					{ localplayers[i]->ullDpad_this|=1LL<<MINECRAFT_ACTION_DPAD_DOWN;		dirCount++; }
+						if(InputManager.ButtonDown(i, MINECRAFT_ACTION_DPAD_LEFT))		{ localplayers[i]->ullDpad_this|=1LL<<MINECRAFT_ACTION_DPAD_LEFT;	dirCount++; }
+						if(InputManager.ButtonDown(i, MINECRAFT_ACTION_DPAD_RIGHT))	{ localplayers[i]->ullDpad_this|=1LL<<MINECRAFT_ACTION_DPAD_RIGHT;	dirCount++; }
+						if(InputManager.ButtonDown(i, MINECRAFT_ACTION_DPAD_UP))		{ localplayers[i]->ullDpad_this|=1LL<<MINECRAFT_ACTION_DPAD_UP;		dirCount++; }
+						if(InputManager.ButtonDown(i, MINECRAFT_ACTION_DPAD_DOWN))		{ localplayers[i]->ullDpad_this|=1LL<<MINECRAFT_ACTION_DPAD_DOWN;	dirCount++; }
 #endif
 
 						if( dirCount <= 1 )
@@ -1596,24 +1136,17 @@ void Minecraft::run_middle()
 						}
 					}
 
-					// for the opacity timer
 					if(InputManager.ButtonPressed(i, MINECRAFT_ACTION_LEFT_SCROLL) || InputManager.ButtonPressed(i, MINECRAFT_ACTION_RIGHT_SCROLL))
-						//InputManager.ButtonPressed(i, MINECRAFT_ACTION_USE) || InputManager.ButtonPressed(i, MINECRAFT_ACTION_ACTION))
 					{
 						app.SetOpacityTimer(i);
 					}
 				}
 				else
 				{
-					// 4J Stu - This doesn't make any sense with the way we handle XboxOne users
 #ifndef _DURANGO
-					// did we just get input from a player who doesn't exist? They'll be wanting to join the game then
 #ifdef _WINDOWS64
-					// The 4J toggle system is unreliable here: UIController::handleInput() calls
-					// ButtonPressed for every ACTION_MENU_* mapped button (which covers all physical
-					// buttons) before run_middle() runs. Bypass it with raw XInput and own edge detection.
-					// A latch counter keeps startJustPressed active for ~120 frames after the rising edge
-					// so the detection window is large enough to be caught reliably.
+					// The 4J toggle system is unreliable here; bypass it with raw XInput and own edge detection.
+					// A latch counter keeps startJustPressed active for ~120 frames after the rising edge.
 					static WORD s_prevXButtons[XUSER_MAX_COUNT] = {};
 					static int  s_startPressLatch[XUSER_MAX_COUNT] = {};
 					XINPUT_STATE xstate_join;
@@ -1623,7 +1156,7 @@ void Minecraft::run_middle()
 					{
 						xCurButtons = xstate_join.Gamepad.wButtons;
 						if ((xCurButtons & XINPUT_GAMEPAD_START) != 0 && (s_prevXButtons[i] & XINPUT_GAMEPAD_START) == 0)
-							s_startPressLatch[i] = 120; // rising edge: latch for ~120 frames (~2s at 60fps)
+							s_startPressLatch[i] = 120;
 						else if (s_startPressLatch[i] > 0)
 							s_startPressLatch[i]--;
 						s_prevXButtons[i] = xCurButtons;
@@ -1634,10 +1167,8 @@ void Minecraft::run_middle()
 					bool tryJoin = !pause && !ui.IsIgnorePlayerJoinMenuDisplayed(ProfileManager.GetPrimaryPad()) && g_NetworkManager.SessionHasSpace() && RenderManager.IsHiDef() && InputManager.ButtonPressed(i);
 #endif
 #ifdef __ORBIS__
-					// Check for remote play
 					tryJoin = tryJoin && InputManager.IsLocalMultiplayerAvailable();
 
-					// 4J Stu - Check that content restriction information has been received
 					if( !g_NetworkManager.IsLocalGame() )
 					{
 						tryJoin = tryJoin && ProfileManager.GetChatAndContentRestrictions(i,true,nullptr,nullptr,nullptr);
@@ -1648,7 +1179,6 @@ void Minecraft::run_middle()
 						if(!ui.PressStartPlaying(i))
 						{
 #ifdef __ORBIS__
-							// Don't let player start joining until their PS Plus check has finished
 							if (g_NetworkManager.IsLocalGame() || !ProfileManager.RequestingPlaystationPlus(i))
 #endif
 							{
@@ -1657,7 +1187,6 @@ void Minecraft::run_middle()
 						}
 						else
 						{
-							// did we just get input from a player who doesn't exist? They'll be wanting to join the game then
 #ifdef __ORBIS__
 							if(InputManager.ButtonPressed(i, ACTION_MENU_A))
 #elif defined _WINDOWS64
@@ -1666,21 +1195,17 @@ void Minecraft::run_middle()
 							if(InputManager.ButtonPressed(i, MINECRAFT_ACTION_PAUSEMENU))
 #endif
 							{
-								// Let them join
-
-								// are they signed in?
 #ifdef _WINDOWS64
 								if(ProfileManager.IsSignedIn(i) || (g_NetworkManager.IsLocalGame() && InputManager.IsPadConnected(i)))
 #else
 								if(ProfileManager.IsSignedIn(i))
 #endif
 								{
-									// if this is a local game, then the player just needs to be signed in
 									if( g_NetworkManager.IsLocalGame() || (ProfileManager.IsSignedInLive(i) && ProfileManager.AllowedToPlayMultiplayer(i) ) )
 									{
 #ifdef __ORBIS__
 										bool contentRestricted = false;
-										ProfileManager.GetChatAndContentRestrictions(i,false,nullptr,&contentRestricted,nullptr); // TODO!
+										ProfileManager.GetChatAndContentRestrictions(i,false,nullptr,&contentRestricted,nullptr);
 
 										if (!g_NetworkManager.IsLocalGame() && contentRestricted)
 										{
@@ -1719,7 +1244,6 @@ void Minecraft::run_middle()
 										}
 										else
 										{
-											// create the localplayer
 											shared_ptr<Player> player = localplayers[i];
 											if( player == nullptr)
 											{
@@ -1732,9 +1256,6 @@ void Minecraft::run_middle()
 										if( ProfileManager.IsSignedInLive(ProfileManager.GetPrimaryPad()) && !ProfileManager.AllowedToPlayMultiplayer(i) )
 										{
 											ProfileManager.RequestConvertOfflineToGuestUI( &Minecraft::InGame_SignInReturned, this,i);
-											// 4J Stu - Don't allow converting to guests as we don't allow any guest sign-in while in the game
-											// Fix for #66516 - TCR #124: MPS Guest Support ; #001: BAS Game Stability: TU8: The game crashes when second Guest signs-in on console which takes part in Xbox LIVE multiplayer session.
-											//ProfileManager.RequestConvertOfflineToGuestUI( &Minecraft::InGame_SignInReturned, this,i);
 
 #ifndef _XBOX
 											ui.HidePressStart();
@@ -1743,7 +1264,6 @@ void Minecraft::run_middle()
 #ifdef __ORBIS__
 											int npAvailability = ProfileManager.getNPAvailability(i);
 
-											// Check if PSN is unavailable because of age restriction
 											if (npAvailability == SCE_NP_ERROR_AGE_RESTRICTION)
 											{
 												UINT uiIDA[1];
@@ -1752,7 +1272,6 @@ void Minecraft::run_middle()
 											}
 											else if (ProfileManager.IsSignedIn(i) && !ProfileManager.IsSignedInLive(i))
 											{
-												// You're not signed in to PSN!
 												UINT uiIDA[2];
 												uiIDA[0] = IDS_PRO_NOTONLINE_ACCEPT;
 												uiIDA[1] = IDS_CANCEL;
@@ -1766,18 +1285,12 @@ void Minecraft::run_middle()
 												ui.RequestErrorMessage(IDS_NO_MULTIPLAYER_PRIVILEGE_TITLE, IDS_NO_MULTIPLAYER_PRIVILEGE_JOIN_TEXT, uiIDA, 1, i);
 											}
 										}
-										//else
-										{
-											// player not signed in to live
-											// bring up the sign in dialog
-											app.DebugPrintf("Bringing up the sign in ui\n");
-											ProfileManager.RequestSignInUI(false, g_NetworkManager.IsLocalGame(), true, false,true,&Minecraft::InGame_SignInReturned, this,i);
-										}
+										app.DebugPrintf("Bringing up the sign in ui\n");
+										ProfileManager.RequestSignInUI(false, g_NetworkManager.IsLocalGame(), true, false,true,&Minecraft::InGame_SignInReturned, this,i);
 									}
 								}
 								else
 								{
-									// bring up the sign in dialog
 									app.DebugPrintf("Bringing up the sign in ui\n");
 									ProfileManager.RequestSignInUI(false, g_NetworkManager.IsLocalGame(), true, false,true,&Minecraft::InGame_SignInReturned, this,i);
 								}
@@ -1789,7 +1302,6 @@ void Minecraft::run_middle()
 			}
 
 #ifdef _DURANGO
-			// did we just get input from a player who doesn't exist? They'll be wanting to join the game then
 			if(!pause && !ui.IsIgnorePlayerJoinMenuDisplayed(ProfileManager.GetPrimaryPad()) && g_NetworkManager.SessionHasSpace() && RenderManager.IsHiDef() )
 			{
 				int firstEmptyUser = 0;
@@ -1802,7 +1314,6 @@ void Minecraft::run_middle()
 					}
 				}
 
-				// For durango, check for unmapped controllers
 				for(unsigned int iPad = XUSER_MAX_COUNT; iPad < (XUSER_MAX_COUNT + InputManager.MAX_GAMEPADS); ++iPad)
 				{
 					bool isPadLocked = InputManager.IsPadLocked(iPad), isPadConnected = InputManager.IsPadConnected(iPad), buttonPressed = InputManager.ButtonPressed(iPad);
@@ -1814,14 +1325,10 @@ void Minecraft::run_middle()
 					}
 					else
 					{
-						// did we just get input from a player who doesn't exist? They'll be wanting to join the game then
 						if(InputManager.ButtonPressed(iPad, MINECRAFT_ACTION_PAUSEMENU))
 						{
-							// bring up the sign in dialog
 							app.DebugPrintf("Bringing up the sign in ui\n");
 							ProfileManager.RequestSignInUI(false, g_NetworkManager.IsLocalGame(), true, false,true,&Minecraft::InGame_SignInReturned, this,iPad);
-
-							// 4J Stu - If we are joining a pad here, then we don't want to try and join any others
 							break;
 						}
 					}
@@ -1840,11 +1347,11 @@ void Minecraft::run_middle()
 				timer->advanceTime();
 			}
 
-			//int64_t beforeTickTime = System::nanoTime();
 			for (int i = 0; i < timer->ticks; i++)
 			{
 				bool bLastTimerTick = ( i == ( timer->ticks - 1 ) );
-				// 4J-PB - the tick here can run more than once, and this is a problem for our input, which would see the a key press twice with the same time - let's tick the inputmanager again
+				// When the tick runs more than once, re-tick the input manager so a key
+				// press+release within the same frame isn't seen twice.
 				if(i!=0)
 				{
 					InputManager.Tick();
@@ -1852,21 +1359,16 @@ void Minecraft::run_middle()
 				}
 
 				ticks++;
-				//            try {		// 4J - try/catch removed
 				bool bFirst = true;
 				for( int idx = 0; idx < XUSER_MAX_COUNT; idx++ )
 				{
-					// 4J - If we are waiting for this connection to do something, then tick it here.
-					// This replaces many of the original Java scenes which would tick the connection while showing that scene
 					if( m_pendingLocalConnections[idx] != nullptr )
 					{
 						m_pendingLocalConnections[idx]->tick();
 					}
 
-					// reset the player inactive tick
 					if(localplayers[idx]!=nullptr)
 					{
-						// any input received?
 						if((localplayers[idx]->ullButtonsPressed!=0) || InputManager.GetJoypadStick_LX(idx,false)!=0.0f ||
 							InputManager.GetJoypadStick_LY(idx,false)!=0.0f || InputManager.GetJoypadStick_RX(idx,false)!=0.0f ||
 							InputManager.GetJoypadStick_RY(idx,false)!=0.0f )
@@ -1898,7 +1400,6 @@ void Minecraft::run_middle()
 					{
 						tick(bFirst, bLastTimerTick);
 						bFirst = false;
-						// clear the stored button downs since the tick for this player will now have actioned them
 						player->ullButtonsPressed=0LL;
 					}
 				}
@@ -1907,8 +1408,6 @@ void Minecraft::run_middle()
 
 				setLocalPlayerIdx(ProfileManager.GetPrimaryPad());
 
-				// 4J - added - now do the equivalent of level::animateTick, but taking into account the positions of all our players
-
 				for( int l = 0; l < levels.length; l++ )
 				{
 					if( levels[l] )
@@ -1916,39 +1415,22 @@ void Minecraft::run_middle()
 						levels[l]->animateTickDoWork();
 					}
 				}
-
-				//            } catch (LevelConflictException e) {
-				//                this.level = null;
-				//                setLevel(null);
-				//                setScreen(new LevelConflictScreen());
-				//            }
-// 				SparseLightStorage::tick();	// 4J added
-// 				CompressedTileStorage::tick();	// 4J added
-// 				SparseDataStorage::tick();		// 4J added
 			}
-			//int64_t tickDuraction = System::nanoTime() - beforeTickTime;
+
 			MemSect(31);
 			checkGlError(L"Pre render");
 			MemSect(0);
 
 			TileRenderer::fancy = options->fancyGraphics;
 
-			// if (pause) timer.a = 1;
-
 			PIXBeginNamedEvent(0,"Sound engine update");
 			soundEngine->tick((shared_ptr<Mob> *)localplayers, timer->a);
 			PIXEndNamedEvent();
 
 			PIXBeginNamedEvent(0,"Light update");
-
 			glEnable(GL_TEXTURE_2D);
-
 			PIXEndNamedEvent();
 
-			//        if (!Keyboard::isKeyDown(Keyboard.KEY_F7)) Display.update();		// 4J - removed
-
-			// 4J-PB - changing this to be per player
-			//if (player != nullptr && player->isInWall()) options->thirdPersonView = false;
 			if (player != nullptr && player->isInWall()) player->SetThirdPersonView(0);
 
 			if (!noRender)
@@ -1968,26 +1450,21 @@ void Minecraft::run_middle()
 						if(i==iPrimaryPad)
 						{
 #ifdef __ORBIS__
-							// PS4 does much of the screen-capturing for every frame, to simplify the synchronisation when we actually want a capture. This call tells it the point in the frame to do it.
 							RenderManager.InternalScreenCapture();
 #endif
-							// check to see if we need to capture a screenshot for the save game thumbnail
 							switch(app.GetXuiAction(i))
 							{
 							case eAppAction_ExitWorldCapturedThumbnail:
 							case eAppAction_SaveGameCapturedThumbnail:
 							case eAppAction_AutosaveSaveGameCapturedThumbnail:
-								// capture the save thumbnail
 								app.CaptureSaveThumbnail();
 								break;
 							}
 						}
 					}
 				}
-				// If there's an unoccupied quadrant, then clear that to black
 				if( unoccupiedQuadrant > -1 )
 				{
-					// render a logo
 					RenderManager.StateSetViewport(static_cast<C4JRender::eViewportType>(C4JRender::VIEWPORT_TYPE_QUADRANT_TOP_LEFT + unoccupiedQuadrant));
 					glClearColor(0, 0, 0, 0);
 					glClear(GL_COLOR_BUFFER_BIT);
@@ -1998,7 +1475,6 @@ void Minecraft::run_middle()
 				RenderManager.StateSetViewport(C4JRender::VIEWPORT_TYPE_FULLSCREEN);
 
 #ifdef _XBOX
-				// Do we need to capture a screenshot for a social post?
 				for( int i = 0; i < XUSER_MAX_COUNT; i++ )
 				{
 					if(app.GetXuiAction(i)==eAppAction_SocialPostScreenshot)
@@ -2010,33 +1486,15 @@ void Minecraft::run_middle()
 			}
 			glFlush();
 
-			/*	4J - removed
-			if (!Display::isActive())
-			{
-			if (fullscreen)
-			{
-			this->toggleFullScreen();
-			}
-			Sleep(10);
-			}
-			*/
-
 #if PACKET_ENABLE_STAT_TRACKING
 			Packet::updatePacketStatsPIX();
 #endif
 
 			if (options->renderDebug)
 			{
-				//renderFpsMeter(tickDuraction);
-
 #if DEBUG_RENDER_SHOWS_PACKETS
-				// To show data for only one packet type
-				//Packet::renderPacketStats(31);
-
-				// To show data for all packet types selected as being renderable in the Packet:static_ctor call to Packet::map
 				Packet::renderAllPacketStats();
 #else
-				// To show the size of the QNet queue in bytes and messages
 				g_NetworkManager.renderQueueMeter();
 #endif
 			}
@@ -2048,36 +1506,17 @@ void Minecraft::run_middle()
 			achievementPopup->render();
 
 			PIXBeginNamedEvent(0,"Sleeping");
-			Sleep(0);	// 4J - was Thread.yield()
+			Sleep(0);
 			PIXEndNamedEvent();
 
-			//        if (Keyboard::isKeyDown(Keyboard::KEY_F7)) Display.update();	// 4J - removed condition
 			PIXBeginNamedEvent(0,"Display update");
 			Display::update();
 			PIXEndNamedEvent();
 
-			//        checkScreenshot();	// 4J - removed
-
-			/* 4J - removed
-			if (parent != nullptr && !fullscreen)
-			{
-			if (parent.getWidth() != width || parent.getHeight() != height)
-			{
-			width = parent.getWidth();
-			height = parent.getHeight();
-			if (width <= 0) width = 1;
-			if (height <= 0) height = 1;
-
-			resize(width, height);
-			}
-			}
-			*/
 			MemSect(31);
 			checkGlError(L"Post render");
 			MemSect(0);
 			frames++;
-			//pause = !isClientSide() && screen != nullptr && screen->isPauseScreen();
-			//pause = g_NetworkManager.IsLocalGame() && g_NetworkManager.GetPlayerCount() == 1 && app.IsPauseMenuDisplayed(ProfileManager.GetPrimaryPad());
 			pause = app.IsAppPaused();
 
 #ifndef _CONTENT_PACKAGE
@@ -2091,28 +1530,7 @@ void Minecraft::run_middle()
 				frames = 0;
 			}
 #endif
-			/*
-			} catch (LevelConflictException e) {
-			this.level = null;
-			setLevel(null);
-			setScreen(new LevelConflictScreen());
-			} catch (OutOfMemoryError e) {
-			emergencySave();
-			setScreen(new OutOfMemoryScreen());
-			System.gc();
-			}
-			*/
 		}
-		/*
-		} catch (StopGameException e) {
-		} catch (Throwable e) {
-		emergencySave();
-		e.printStackTrace();
-		crash(new CrashReport("Unexpected error", e));
-		} finally {
-		destroy();
-		}
-		*/
 	}
 	LeaveCriticalSection(&m_setLevelCS);
 }
@@ -2124,7 +1542,6 @@ void Minecraft::run_end()
 
 void Minecraft::emergencySave()
 {
-	// 4J - lots of try/catches removed here, and garbage collector things
 	levelRenderer->clear();
 	AABB::clearPool();
 	Vec3::clearPool();
@@ -2206,11 +1623,7 @@ void Minecraft::renderFpsMeter(int64_t tickTime)
 		t->vertex((float)(i + 0.5f), (float)( height - time + 0.5f), static_cast<float>(0));
 		t->vertex((float)(i + 0.5f), (float)( height + 0.5f), static_cast<float>(0));
 
-		// if (Minecraft.frameTimes[i]>nsPer60Fps) {
 		t->color(0xff000000 + cc * 65536 + cc * 256 + cc * 1);
-		// } else {
-		// t.color(0xff808080 + cc/2 * 256);
-		// }
 		t->vertex((float)(i + 0.5f), (float)( height - time + 0.5f), static_cast<float>(0));
 		t->vertex((float)(i + 0.5f), (float)( height - (time - time2) + 0.5f), static_cast<float>(0));
 	}
@@ -2222,14 +1635,11 @@ void Minecraft::renderFpsMeter(int64_t tickTime)
 void Minecraft::stop()
 {
 	running = false;
-	// keepPolling = false;
 }
 
 void Minecraft::pauseGame()
 {
 	if (screen != nullptr) return;
-
-	//    setScreen(new PauseScreen());	// 4J - TODO put back in
 }
 
 void Minecraft::resize(int width, int height)
@@ -2244,32 +1654,13 @@ void Minecraft::resize(int width, int height)
 		ScreenSizeCalculator ssc(options, width, height);
 		int screenWidth = ssc.getWidth();
 		int screenHeight = ssc.getHeight();
-		//        screen->init(this, screenWidth, screenHeight);	// 4J - TODO - put back in
 	}
 }
 
 void Minecraft::verify()
 {
-	/* 4J - TODO
-	new Thread() {
-	public void run() {
-	try {
-	HttpURLConnection huc = (HttpURLConnection) new URL("https://login.minecraft.net/session?name=" + user.name + "&session=" + user.sessionId).openConnection();
-	huc.connect();
-	if (huc.getResponseCode() == 400) {
-	warezTime = System.currentTimeMillis();
-	}
-	huc.disconnect();
-	} catch (Exception e) {
-	e.printStackTrace();
-	}
-	}
-	}.start();
-	*/
+	// TODO: verify session with minecraft.net
 }
-
-
-
 
 void Minecraft::levelTickUpdateFunc(void* pParam)
 {
@@ -2285,47 +1676,22 @@ void Minecraft::levelTickThreadInitFunc()
 	Compression::UseDefaultThreadStorage();
 }
 
-
-// 4J - added bFirst parameter, which is true for the first active viewport in splitscreen
-// 4J - added bUpdateTextures, which is true if the actual renderer textures are to be updated - this will be true for the last time this tick runs with bFirst true
 void Minecraft::tick(bool bFirst, bool bUpdateTextures)
 {
 	int iPad=player->GetXboxPad();
-	//OutputDebugString("Minecraft::tick\n");
 
-	//4J-PB - only tick this player's stats
 	stats[iPad]->tick(iPad);
 
-	// Tick the opacity timer (to display the interface at default opacity for a certain time if the user has been navigating it)
 	app.TickOpacityTimer(iPad);
 
-	// 4J added
 	if( bFirst ) levelRenderer->destroyedTileManager->tick();
 
 	gui->tick();
 	gameRenderer->pick(1);
-#if 0
-	// 4J - removed - we don't use ChunkCache anymore
-	if (player != nullptr)
-	{
-		ChunkSource *cs = level->getChunkSource();
-		if (dynamic_cast<ChunkCache *>(cs) != nullptr)
-		{
-			ChunkCache *spcc = (ChunkCache *)cs;
-
-			// 4J - there was also Mth::floors on these ints but that seems superfluous
-			int xt = ((int) player->x) >> 4;
-			int zt = ((int) player->z) >> 4;
-			spcc->centerOn(xt, zt);
-		}
-	}
-#endif
-
-	// soundEngine.playMusicTick();
 
 	if (!pause && level != nullptr) gameMode->tick();
 	MemSect(31);
-	glBindTexture(GL_TEXTURE_2D, textures->loadTexture(TN_TERRAIN)); //L"/terrain.png"));
+	glBindTexture(GL_TEXTURE_2D, textures->loadTexture(TN_TERRAIN));
 	MemSect(0);
 	if( bFirst )
 	{
@@ -2334,13 +1700,6 @@ void Minecraft::tick(bool bFirst, bool bUpdateTextures)
 		PIXEndNamedEvent();
 	}
 
-	/*
-	* if (serverConnection != null && !(screen instanceof ErrorScreen)) {
-	* if (!serverConnection.isConnected()) {
-	* progressRenderer.progressStart("Connecting..");
-	* progressRenderer.progressStagePercentage(0); } else {
-	* serverConnection.tick(); serverConnection.sendPosition(player); } }
-	*/
 	if (screen == nullptr && player != nullptr )
 	{
 		if (player->getHealth() <= 0 && !ui.GetMenuDisplayed(iPad) )
@@ -2349,7 +1708,7 @@ void Minecraft::tick(bool bFirst, bool bUpdateTextures)
 		}
 		else if (player->isSleeping() && level != nullptr && level->isClientSide)
 		{
-			//            setScreen(new InBedChatScreen());		// 4J - TODO put back in
+			// TODO: setScreen(new InBedChatScreen());
 		}
 	}
 	else if (screen != nullptr && (dynamic_cast<InBedChatScreen *>(screen)!=nullptr) && !player->isSleeping())
@@ -2375,8 +1734,8 @@ void Minecraft::tick(bool bFirst, bool bUpdateTextures)
 	}
 
 #ifdef _WINDOWS64
-	// Mouse grab/release only for the primary (KBM) player — splitscreen
-	// players use controllers and must never fight over the cursor state.
+	// Mouse grab/release only for the primary (KBM) player; splitscreen players
+	// use controllers and must never fight over the cursor state.
 	if (iPad == ProfileManager.GetPrimaryPad())
 	{
 		if ((screen != nullptr || ui.GetMenuDisplayed(iPad)) && g_KBMInput.IsMouseGrabbed())
@@ -2394,7 +1753,6 @@ void Minecraft::tick(bool bFirst, bool bUpdateTextures)
 			g_KBMInput.SetMouseGrabbed(true);
 		}
 #endif
-		// 4J-PB - add some tooltips if required
 		int iA=-1, iB=-1, iX, iY=IDS_CONTROLS_INVENTORY, iLT=-1, iRT=-1, iLB=-1, iRB=-1, iLS=-1, iRS=-1;
 
 		if(player->abilities.instabuild)
@@ -2405,7 +1763,7 @@ void Minecraft::tick(bool bFirst, bool bUpdateTextures)
 		{
 			iX=IDS_CONTROLS_CRAFTING;
 		}
-		// control scheme remapping can move the Action button, so we need to check this
+
 		int *piAction;
 		int *piJump;
 		int *piUse;
@@ -2416,62 +1774,33 @@ void Minecraft::tick(bool bFirst, bool bUpdateTextures)
 		unsigned int uiUse = InputManager.GetGameJoypadMaps(InputManager.GetJoypadMapVal( iPad ) ,MINECRAFT_ACTION_USE );
 		unsigned int uiAlt = InputManager.GetGameJoypadMaps(InputManager.GetJoypadMapVal( iPad ) ,MINECRAFT_ACTION_SNEAK_TOGGLE );
 
-		// Also need to handle PS3 having swapped triggers/bumpers
 		switch(uiAction)
 		{
-		case _360_JOY_BUTTON_RT:
-			piAction=&iRT;
-			break;
-		case _360_JOY_BUTTON_LT:
-			piAction=&iLT;
-			break;
-		case _360_JOY_BUTTON_LB:
-			piAction=&iLB;
-			break;
-		case _360_JOY_BUTTON_RB:
-			piAction=&iRB;
-			break;
+		case _360_JOY_BUTTON_RT:	piAction=&iRT;	break;
+		case _360_JOY_BUTTON_LT:	piAction=&iLT;	break;
+		case _360_JOY_BUTTON_LB:	piAction=&iLB;	break;
+		case _360_JOY_BUTTON_RB:	piAction=&iRB;	break;
 		case _360_JOY_BUTTON_A:
-		default:
-			piAction=&iA;
-			break;
+		default:					piAction=&iA;	break;
 		}
 
 		switch(uiJump)
 		{
-		case _360_JOY_BUTTON_LT:
-			piJump=&iLT;
-			break;
-		case _360_JOY_BUTTON_RT:
-			piJump=&iRT;
-			break;
-		case _360_JOY_BUTTON_LB:
-			piJump=&iLB;
-			break;
-		case _360_JOY_BUTTON_RB:
-			piJump=&iRB;
-			break;
+		case _360_JOY_BUTTON_LT:	piJump=&iLT;	break;
+		case _360_JOY_BUTTON_RT:	piJump=&iRT;	break;
+		case _360_JOY_BUTTON_LB:	piJump=&iLB;	break;
+		case _360_JOY_BUTTON_RB:	piJump=&iRB;	break;
 		case _360_JOY_BUTTON_A:
-		default:
-			piJump=&iA;
-			break;
+		default:					piJump=&iA;		break;
 		}
 
 		switch(uiUse)
 		{
-		case _360_JOY_BUTTON_LB:
-			piUse=&iLB;
-			break;
-		case _360_JOY_BUTTON_RB:
-			piUse=&iRB;
-			break;
-		case _360_JOY_BUTTON_LT:
-			piUse=&iLT;
-			break;
+		case _360_JOY_BUTTON_LB:	piUse=&iLB;		break;
+		case _360_JOY_BUTTON_RB:	piUse=&iRB;		break;
+		case _360_JOY_BUTTON_LT:	piUse=&iLT;		break;
 		case _360_JOY_BUTTON_RT:
-		default:
-			piUse=&iRT;
-			break;
+		default:					piUse=&iRT;		break;
 		}
 
 		switch(uiAlt)
@@ -2480,8 +1809,6 @@ void Minecraft::tick(bool bFirst, bool bUpdateTextures)
 		case _360_JOY_BUTTON_LSTICK_RIGHT:
 			piAlt=&iRS;
 			break;
-
-			//TODO
 		}
 
 		if (player->isUnderLiquid(Material::water))
@@ -2497,7 +1824,6 @@ void Minecraft::tick(bool bFirst, bool bUpdateTextures)
 		*piAction=-1;
 		*piAlt=-1;
 
-		// 4J-PB another special case for when the player is sleeping in a bed
 		if (player->isSleeping() && (level != nullptr) && level->isClientSide)
 		{
 			*piUse=IDS_TOOLTIPS_WAKEUP;
@@ -2518,18 +1844,14 @@ void Minecraft::tick(bool bFirst, bool bUpdateTextures)
 				}
 			}
 
-			// no hit result, but we may have something in our hand that we can do something with
 			shared_ptr<ItemInstance> itemInstance = player->inventory->getSelected();
 
-			// 4J-JEV: Moved all this here to avoid having it in 3 different places.
 			if (itemInstance)
 			{
-				// 4J-PB - very special case for boat and empty bucket and glass bottle and more
 				bool bUseItem = gameMode->useItem(player, level, itemInstance, true);
 
 				switch (itemInstance->getItem()->id)
 				{
-					// food
 				case Item::potatoBaked_Id:
 				case Item::potato_Id:
 				case Item::pumpkinPie_Id:
@@ -2552,7 +1874,6 @@ void Minecraft::tick(bool bFirst, bool bUpdateTextures)
 				case Item::melon_Id:
 				case Item::rotten_flesh_Id:
 				case Item::spiderEye_Id:
-					// Check that we are actually hungry so will eat this item
 					{
 						FoodItem *food = static_cast<FoodItem *>(itemInstance->getItem());
 						if (food != nullptr && food->canEat(player))
@@ -2566,17 +1887,17 @@ void Minecraft::tick(bool bFirst, bool bUpdateTextures)
 					*piUse=IDS_TOOLTIPS_DRINK;
 					break;
 
-				case Item::fishingRod_Id:	// use
+				case Item::fishingRod_Id:
 				case Item::emptyMap_Id:
 					*piUse=IDS_TOOLTIPS_USE;
 					break;
 
-				case Item::egg_Id:			// throw
+				case Item::egg_Id:
 				case Item::snowBall_Id:
 					*piUse=IDS_TOOLTIPS_THROW;
 					break;
 
-				case Item::bow_Id:	// draw or release
+				case Item::bow_Id:
 					if ( player->abilities.instabuild || player->inventory->hasResource(Item::arrow_Id) )
 					{
 						if (player->isUsingItem())	*piUse=IDS_TOOLTIPS_RELEASE_BOW;
@@ -2620,7 +1941,6 @@ void Minecraft::tick(bool bFirst, bool bUpdateTextures)
 					break;
 
 				case Item::eyeOfEnder_Id:
-					// This will only work if there is a stronghold in this dimension
 					if ( bUseItem && (level->dimension->id==0) && level->getLevelData()->getHasStronghold() )
 					{
 						*piUse=IDS_TOOLTIPS_THROW;
@@ -2650,18 +1970,11 @@ void Minecraft::tick(bool bFirst, bool bUpdateTextures)
 
 						if( gameMode != nullptr && gameMode->getTutorial() != nullptr )
 						{
-							// 4J Stu - For the tutorial we want to be able to record what items we look at so that we can give hints
 							gameMode->getTutorial()->onLookAt(iTileID,iData);
 						}
 
-						// 4J-PB - Call the useItemOn with the TestOnly flag set
 						bool bUseItemOn=gameMode->useItemOn(player, level, itemInstance, x, y, z, face, hitResult->pos, true);
 
-						/* 4J-Jev:
-						 *	Moved this here so we have item tooltips to fallback on
-						 *	for noteblocks, enderportals and flowerpots in case of non-standard items.
-						 *	(ie. ignite behaviour)
-						 */
 						if (bUseItemOn && itemInstance!=nullptr)
 						{
 							switch (itemInstance->getItem()->id)
@@ -2677,7 +1990,6 @@ void Minecraft::tick(bool bFirst, bool bUpdateTextures)
 								*piUse=IDS_TOOLTIPS_PLANT;
 								break;
 
-								// Things to USE
 							case Item::hoe_wood_Id:
 							case Item::hoe_stone_Id:
 							case Item::hoe_iron_Id:
@@ -2692,7 +2004,6 @@ void Minecraft::tick(bool bFirst, bool bUpdateTextures)
 								break;
 
 							case Item::dye_powder_Id:
-								// bonemeal grows various plants
 								if (itemInstance->getAuxValue() == DyePowderItem::WHITE)
 								{
 									switch(iTileID)
@@ -2782,7 +2093,6 @@ void Minecraft::tick(bool bFirst, bool bUpdateTextures)
 							break;
 
 						case Tile::noteblock_Id:
-							// if in creative mode, we will mine
 							if (player->abilities.instabuild)	*piAction=IDS_TOOLTIPS_MINE;
 							else								*piAction=IDS_TOOLTIPS_PLAY;
 							*piUse=IDS_TOOLTIPS_CHANGEPITCH;
@@ -2793,7 +2103,6 @@ void Minecraft::tick(bool bFirst, bool bUpdateTextures)
 							break;
 
 						case Tile::cauldron_Id:
-							// special case for a cauldron of water and an empty bottle
 							if (itemInstance)
 							{
 								int iID=itemInstance->getItem()->id;
@@ -2807,13 +2116,13 @@ void Minecraft::tick(bool bFirst, bool bUpdateTextures)
 							break;
 
 						case Tile::cake_Id:
-							if (player->abilities.instabuild) // if in creative mode, we will mine
+							if (player->abilities.instabuild)
 							{
 								*piAction=IDS_TOOLTIPS_MINE;
 							}
 							else
 							{
-								if (player->getFoodData()->needsFood() ) // 4J-JEV: Changed from healthto hunger.
+								if (player->getFoodData()->needsFood() )
 								{
 									*piAction=IDS_TOOLTIPS_EAT;
 									*piUse=IDS_TOOLTIPS_EAT;
@@ -2837,7 +2146,7 @@ void Minecraft::tick(bool bFirst, bool bUpdateTextures)
 							}
 							else
 							{
-								if (Tile::jukebox->TestUse(level, x, y, z, player)) // means we can eject
+								if (Tile::jukebox->TestUse(level, x, y, z, player))
 								{
 									*piUse=IDS_TOOLTIPS_EJECT;
 								}
@@ -2849,7 +2158,7 @@ void Minecraft::tick(bool bFirst, bool bUpdateTextures)
 							if ( !bUseItemOn && (itemInstance != nullptr) && (iData == 0) )
 							{
 								int iID = itemInstance->getItem()->id;
-								if (iID<256) // is it a tile?
+								if (iID<256)
 								{
 									switch(iID)
 									{
@@ -2909,7 +2218,6 @@ void Minecraft::tick(bool bFirst, bool bUpdateTextures)
 
 					if ( (gameMode != nullptr) && (gameMode->getTutorial() != nullptr) )
 					{
-						// 4J Stu - For the tutorial we want to be able to record what items we look at so that we can give hints
 						gameMode->getTutorial()->onLookAtEntity(hitResult->entity);
 					}
 
@@ -2953,7 +2261,7 @@ void Minecraft::tick(bool bFirst, bool bUpdateTextures)
 								}
 								break;
 
-							case -1: break; // 4J-JEV: Empty hand.
+							case -1: break;
 							}
 						}
 						break;
@@ -2972,7 +2280,6 @@ void Minecraft::tick(bool bFirst, bool bUpdateTextures)
 
 							switch (heldItemId)
 							{
-									// Things to USE
 							case Item::nameTag_Id:
 								*piUse=IDS_TOOLTIPS_NAME;
 								break;
@@ -2980,24 +2287,24 @@ void Minecraft::tick(bool bFirst, bool bUpdateTextures)
 								if (!animal->isLeashed()) *piUse=IDS_TOOLTIPS_LEASH;
 								break;
 							case Item::bucket_empty_Id:
-									*piUse=IDS_TOOLTIPS_MILK;
-									break;
-								default:
+								*piUse=IDS_TOOLTIPS_MILK;
+								break;
+							default:
+								{
+									if(!animal->isBaby() && !animal->isInLove() && (animal->getAge() == 0) && animal->isFood(heldItem))
 									{
-										if(!animal->isBaby() && !animal->isInLove() && (animal->getAge() == 0) && animal->isFood(heldItem))
-										{
-											*piUse=IDS_TOOLTIPS_LOVEMODE;
-										}
+										*piUse=IDS_TOOLTIPS_LOVEMODE;
 									}
-									break;
-
-							case -1: break; // 4J-JEV: Empty hand.
 								}
+								break;
+
+							case -1: break;
+							}
 						}
 						break;
+
 					case eTYPE_MUSHROOMCOW:
 						{
-							// 4J-PB - Fix for #13081 - No tooltip is displayed for hitting a cow when you have nothing in your hand
 							if(player->isAllowedToAttackAnimals()) *piAction=IDS_TOOLTIPS_HIT;
 
 							shared_ptr<Animal> animal = dynamic_pointer_cast<Animal>(hitResult->entity);
@@ -3008,10 +2315,8 @@ void Minecraft::tick(bool bFirst, bool bUpdateTextures)
 								break;
 							}
 
-								// It's an item
 							switch(heldItemId)
 							{
-								// Things to USE
 							case Item::nameTag_Id:
 								*piUse=IDS_TOOLTIPS_NAME;
 								break;
@@ -3020,26 +2325,26 @@ void Minecraft::tick(bool bFirst, bool bUpdateTextures)
 								if (!animal->isLeashed()) *piUse=IDS_TOOLTIPS_LEASH;
 								break;
 
-								case Item::bowl_Id:
-								case Item::bucket_empty_Id: // You can milk a mooshroom with either a bowl (mushroom soup) or a bucket (milk)!
-									*piUse=IDS_TOOLTIPS_MILK;
-									break;
-								case Item::shears_Id:
+							case Item::bowl_Id:
+							case Item::bucket_empty_Id:
+								*piUse=IDS_TOOLTIPS_MILK;
+								break;
+							case Item::shears_Id:
+								{
+									if(player->isAllowedToAttackAnimals()) *piAction=IDS_TOOLTIPS_HIT;
+									if(!animal->isBaby()) *piUse=IDS_TOOLTIPS_SHEAR;
+								}
+								break;
+							default:
+								{
+									if(!animal->isBaby() && !animal->isInLove() && (animal->getAge() == 0) && animal->isFood(heldItem))
 									{
-										if(player->isAllowedToAttackAnimals()) *piAction=IDS_TOOLTIPS_HIT;
-										if(!animal->isBaby()) *piUse=IDS_TOOLTIPS_SHEAR;
+										*piUse=IDS_TOOLTIPS_LOVEMODE;
 									}
-									break;
-								default:
-									{
-										if(!animal->isBaby() && !animal->isInLove() && (animal->getAge() == 0) && animal->isFood(heldItem))
-										{
-											*piUse=IDS_TOOLTIPS_LOVEMODE;
-										}
-									}
-									break;
+								}
+								break;
 
-							case -1: break; // 4J-JEV: Empty hand.
+							case -1: break;
 							}
 						}
 						break;
@@ -3051,13 +2356,11 @@ void Minecraft::tick(bool bFirst, bool bUpdateTextures)
 
 					case eTYPE_MINECART_RIDEABLE:
 						*piAction = IDS_TOOLTIPS_MINE;
-						*piUse = IDS_TOOLTIPS_RIDE; // are we in the minecart already? - 4J-JEV: Doesn't matter anymore.
+						*piUse = IDS_TOOLTIPS_RIDE;
 						break;
 
 					case eTYPE_MINECART_FURNACE:
 						*piAction = IDS_TOOLTIPS_MINE;
-
-						// if you have coal, it'll go. Is there an object in hand?
 						if (heldItemId == Item::coal_Id) *piUse=IDS_TOOLTIPS_USE;
 						break;
 
@@ -3074,7 +2377,6 @@ void Minecraft::tick(bool bFirst, bool bUpdateTextures)
 
 					case eTYPE_SHEEP:
 						{
-							// can dye a sheep
 							if(player->isAllowedToAttackAnimals()) *piAction=IDS_TOOLTIPS_HIT;
 
 							shared_ptr<Sheep> sheep = dynamic_pointer_cast<Sheep>(hitResult->entity);
@@ -3097,10 +2399,7 @@ void Minecraft::tick(bool bFirst, bool bUpdateTextures)
 
 							case Item::dye_powder_Id:
 								{
-									// convert to tile-based color value (0 is white instead of black)
 									int newColor = ColoredTile::getTileDataForItemAuxValue(heldItem->getAuxValue());
-
-									// can only use a dye on sheep that haven't been sheared
 									if(!(sheep->isSheared() && sheep->getColor() != newColor))
 									{
 										*piUse=IDS_TOOLTIPS_DYE;
@@ -3109,13 +2408,11 @@ void Minecraft::tick(bool bFirst, bool bUpdateTextures)
 								break;
 							case Item::shears_Id:
 								{
-									// can only shear a sheep that hasn't been sheared
 									if ( !sheep->isBaby() && !sheep->isSheared() )
 									{
 										*piUse=IDS_TOOLTIPS_SHEAR;
 									}
 								}
-
 								break;
 							default:
 								{
@@ -3126,14 +2423,13 @@ void Minecraft::tick(bool bFirst, bool bUpdateTextures)
 								}
 								break;
 
-							case -1: break; // 4J-JEV: Empty hand.
+							case -1: break;
 							}
 						}
 						break;
 
 					case eTYPE_PIG:
 						{
-							// can ride a pig
 							if(player->isAllowedToAttackAnimals()) *piAction=IDS_TOOLTIPS_HIT;
 
 							shared_ptr<Pig> pig = dynamic_pointer_cast<Pig>(hitResult->entity);
@@ -3150,7 +2446,7 @@ void Minecraft::tick(bool bFirst, bool bUpdateTextures)
 							{
 								*piUse = IDS_TOOLTIPS_NAME;
 							}
-							else if (pig->hasSaddle()) // does the pig have a saddle?
+							else if (pig->hasSaddle())
 							{
 								*piUse=IDS_TOOLTIPS_MOUNT;
 							}
@@ -3179,7 +2475,6 @@ void Minecraft::tick(bool bFirst, bool bUpdateTextures)
 						break;
 
 					case eTYPE_WOLF:
-						// can be tamed, fed, and made to sit/stand, or enter love mode
 						{
 							shared_ptr<Wolf> wolf = dynamic_pointer_cast<Wolf>(hitResult->entity);
 
@@ -3208,19 +2503,11 @@ void Minecraft::tick(bool bFirst, bool bUpdateTextures)
 								}
 								else if (equalsIgnoreCase(player->getUUID(), wolf->getOwnerUUID()))
 								{
-									if(wolf->isSitting())
-									{
-										*piUse=IDS_TOOLTIPS_FOLLOWME;
-									}
-									else
-									{
-										*piUse=IDS_TOOLTIPS_SIT;
-									}
+									if(wolf->isSitting())	*piUse=IDS_TOOLTIPS_FOLLOWME;
+									else					*piUse=IDS_TOOLTIPS_SIT;
 								}
-
 								break;
 							case Item::enderPearl_Id:
-								// Use is throw, so don't change the tips for the wolf
 								break;
 							case Item::dye_powder_Id:
 								if (wolf->isTame())
@@ -3229,14 +2516,8 @@ void Minecraft::tick(bool bFirst, bool bUpdateTextures)
 									{
 										*piUse=IDS_TOOLTIPS_DYECOLLAR;
 									}
-									else if (wolf->isSitting())
-									{
-										*piUse=IDS_TOOLTIPS_FOLLOWME;
-									}
-									else
-									{
-										*piUse=IDS_TOOLTIPS_SIT;
-									}
+									else if (wolf->isSitting())	*piUse=IDS_TOOLTIPS_FOLLOWME;
+									else						*piUse=IDS_TOOLTIPS_SIT;
 								}
 								break;
 							default:
@@ -3255,26 +2536,20 @@ void Minecraft::tick(bool bFirst, bool bUpdateTextures)
 												*piUse=IDS_TOOLTIPS_LOVEMODE;
 											}
 										}
-										// break out here
 										break;
 									}
 
 									if (equalsIgnoreCase(player->getUUID(), wolf->getOwnerUUID()))
 									{
-										if(wolf->isSitting())
-										{
-											*piUse=IDS_TOOLTIPS_FOLLOWME;
-										}
-										else
-										{
-											*piUse=IDS_TOOLTIPS_SIT;
-										}
+										if(wolf->isSitting())	*piUse=IDS_TOOLTIPS_FOLLOWME;
+										else					*piUse=IDS_TOOLTIPS_SIT;
 									}
 								}
 								break;
 							}
 						}
 						break;
+
 					case eTYPE_OCELOT:
 						{
 							shared_ptr<Ocelot> ocelot = dynamic_pointer_cast<Ocelot>(hitResult->entity);
@@ -3295,7 +2570,6 @@ void Minecraft::tick(bool bFirst, bool bUpdateTextures)
 							}
 							else if(ocelot->isTame())
 							{
-								// 4J-PB - if you have a raw fish in your hand, you will feed the ocelot rather than have it sit/follow
 								if(ocelot->isFood(heldItem))
 								{
 									if(!ocelot->isBaby())
@@ -3312,18 +2586,11 @@ void Minecraft::tick(bool bFirst, bool bUpdateTextures)
 											*piUse=IDS_TOOLTIPS_FEED;
 										}
 									}
-
 								}
 								else if (equalsIgnoreCase(player->getUUID(), ocelot->getOwnerUUID()) && !ocelot->isSittingOnTile() )
 								{
-									if(ocelot->isSitting())
-									{
-										*piUse=IDS_TOOLTIPS_FOLLOWME;
-									}
-									else
-									{
-										*piUse=IDS_TOOLTIPS_SIT;
-									}
+									if(ocelot->isSitting())	*piUse=IDS_TOOLTIPS_FOLLOWME;
+									else					*piUse=IDS_TOOLTIPS_SIT;
 								}
 							}
 							else if(heldItemId >= 0)
@@ -3335,10 +2602,9 @@ void Minecraft::tick(bool bFirst, bool bUpdateTextures)
 
 					case eTYPE_PLAYER:
 						{
-							// Fix for #58576 - TU6: Content: Gameplay: Hit button prompt is available when attacking a host who has "Invisible" option turned on
 							shared_ptr<Player> TargetPlayer = dynamic_pointer_cast<Player>(hitResult->entity);
 
-							if(!TargetPlayer->hasInvisiblePrivilege()) // This means they are invisible, not just that they have the privilege
+							if(!TargetPlayer->hasInvisiblePrivilege())
 							{
 								if( app.GetGameHostOption(eGameHostOption_PvP) && player->isAllowedToAttackPlayers())
 								{
@@ -3352,15 +2618,12 @@ void Minecraft::tick(bool bFirst, bool bUpdateTextures)
 						{
 							shared_ptr<ItemFrame> itemFrame = dynamic_pointer_cast<ItemFrame>(hitResult->entity);
 
-							// is the frame occupied?
 							if(itemFrame->getItem()!=nullptr)
 							{
-								// rotate the item
 								*piUse=IDS_TOOLTIPS_ROTATE;
 							}
 							else
 							{
-								// is there an object in hand?
 								if(heldItemId >= 0) *piUse=IDS_TOOLTIPS_PLACE;
 							}
 
@@ -3370,8 +2633,6 @@ void Minecraft::tick(bool bFirst, bool bUpdateTextures)
 
 					case eTYPE_VILLAGER:
 						{
-							// 4J-JEV: Cannot leash villagers.
-
 							shared_ptr<Villager> villager = dynamic_pointer_cast<Villager>(hitResult->entity);
 							if (!villager->isBaby())
 							{
@@ -3386,7 +2647,6 @@ void Minecraft::tick(bool bFirst, bool bUpdateTextures)
 							shared_ptr<Zombie> zomb = dynamic_pointer_cast<Zombie>(hitResult->entity);
 							static GoldenAppleItem *goldapple = static_cast<GoldenAppleItem *>(Item::apple_gold);
 
-							//zomb->hasEffect(MobEffect::weakness) - not present on client.
 							if ( zomb->isVillager() && zomb->isWeakened() && (heldItemId == Item::apple_gold_Id) && !goldapple->isFoil(heldItem) )
 							{
 								*piUse=IDS_TOOLTIPS_CURE;
@@ -3434,11 +2694,10 @@ void Minecraft::tick(bool bFirst, bool bUpdateTextures)
 							{
 								*piUse = IDS_TOOLTIPS_NAME;
 							}
-							else if (horse->isBaby()) // 4J-JEV: Can't ride baby horses due to morals.
+							else if (horse->isBaby())
 							{
 								if (heldItemIsFood)
 								{
-									// 4j - Can feed foles to speed growth.
 									*piUse = IDS_TOOLTIPS_FEED;
 								}
 							}
@@ -3446,12 +2705,10 @@ void Minecraft::tick(bool bFirst, bool bUpdateTextures)
 							{
 								if (heldItemId == -1)
 								{
-									// 4j - Player not holding anything, ride and attempt to break untamed horse.
 									*piUse = IDS_TOOLTIPS_TAME;
 								}
 								else if (heldItemIsFood)
 								{
-									// 4j - Attempt to make it like you more by feeding it.
 									*piUse = IDS_TOOLTIPS_FEED;
 								}
 							}
@@ -3460,30 +2717,25 @@ void Minecraft::tick(bool bFirst, bool bUpdateTextures)
 									||	(horse->canWearArmor() && heldItemIsArmour)
 									)
 							{
-								// 4j - Access horses inventory
 								if (*piUse == -1) *piUse = IDS_TOOLTIPS_OPEN;
 							}
 							else if (	horse->canWearBags()
 									&&	!horse->isChestedHorse()
 									&&	(heldItemId == Tile::chest_Id) )
 							{
-								// 4j - Attach saddle-bags (chest) to donkey or mule.
 								*piUse = IDS_TOOLTIPS_ATTACH;
 							}
 							else if (	horse->isReadyForParenting()
 									&&	heldItemIsLove )
 							{
-								// 4j - Different food to mate horses.
 								*piUse = IDS_TOOLTIPS_LOVEMODE;
 							}
 							else if ( heldItemIsFood && (horse->getHealth() < horse->getMaxHealth()) )
 							{
-								// 4j - Horse is damaged and can eat held item to heal
 								*piUse = IDS_TOOLTIPS_HEAL;
 							}
 							else
 							{
-								// 4j - Ride tamed horse.
 								*piUse = IDS_TOOLTIPS_MOUNT;
 							}
 
@@ -3492,7 +2744,6 @@ void Minecraft::tick(bool bFirst, bool bUpdateTextures)
 						break;
 
 					case eTYPE_ENDERDRAGON:
-						// 4J-JEV: Enderdragon cannot be named.
 						*piAction = IDS_TOOLTIPS_HIT;
 						break;
 
@@ -3533,7 +2784,6 @@ void Minecraft::tick(bool bFirst, bool bUpdateTextures)
 			}
 		}
 
-		// 4J-JEV: Don't set tooltips when we're reloading the skin, it'll crash.
 		if (!ui.IsReloadingSkin()) ui.SetTooltips( iPad, iA, iB, iX, iY, iLT, iRT, iLB, iRB, iLS, iRS);
 
 		int wheel = 0;
@@ -3558,11 +2808,9 @@ void Minecraft::tick(bool bFirst, bool bUpdateTextures)
 
 			if( gameMode != nullptr && gameMode->getTutorial() != nullptr )
 			{
-				// 4J Stu - For the tutorial we want to be able to record what items we are using so that we can give hints
 				gameMode->getTutorial()->onSelectedItemChanged(player->inventory->getSelected());
 			}
 
-			// Update presence
 			player->updateRichPresence();
 
 			if (options->isFlying)
@@ -3577,9 +2825,7 @@ void Minecraft::tick(bool bFirst, bool bUpdateTextures)
 		if( gameMode->isInputAllowed(MINECRAFT_ACTION_ACTION) )
 		{
 			if((player->ullButtonsPressed&(1LL<<MINECRAFT_ACTION_ACTION)))
-				//if(InputManager.ButtonPressed(iPad, MINECRAFT_ACTION_ACTION) )
 			{
-				//printf("MINECRAFT_ACTION_ACTION ButtonPressed");
 				player->handleMouseClick(0);
 				player->lastClickTick[0] = ticks;
 			}
@@ -3594,30 +2840,14 @@ void Minecraft::tick(bool bFirst, bool bUpdateTextures)
 
 			if (actionPressed)
 			{
-				//printf("MINECRAFT_ACTION_ACTION ButtonDown");
 				player->handleMouseClick(0);
 				player->lastClickTick[0] = ticks;
 			}
 
-			if(actionHeld)
-			{
-				player->handleMouseDown(0, true );
-			}
-			else
-			{
-				player->handleMouseDown(0, false );
-			}
+			if(actionHeld)	player->handleMouseDown(0, true );
+			else			player->handleMouseDown(0, false );
 		}
 
-		// 4J Stu - This is how we used to handle the USE action. It has now been replaced with the block below which is more like the way the Java game does it,
-		// however we may find that the way we had it previously is more fun to play.
-		/*
-		if ((InputManager.GetValue(iPad, MINECRAFT_ACTION_USE,true)>0) && gameMode->isInputAllowed(MINECRAFT_ACTION_USE) )
-		{
-		handleMouseClick(1);
-		lastClickTick = ticks;
-		}
-		*/
 #ifdef _WINDOWS64
 		bool useHeld = InputManager.ButtonDown(iPad, MINECRAFT_ACTION_USE) || (iPad == 0 && g_KBMInput.IsKBMActive() && g_KBMInput.IsMouseButtonDown(KeyboardMouseInput::MOUSE_RIGHT));
 #else
@@ -3631,19 +2861,16 @@ void Minecraft::tick(bool bFirst, bool bUpdateTextures)
 		{
 			if( player->abilities.instabuild )
 			{
-				// 4J - attempt to handle click in special creative mode fashion if possible (used for placing blocks at regular intervals)
+				// Creative mode: attempt to handle click in special creative fashion (regular interval block placing)
 				bool didClick = player->creativeModeHandleMouseClick(1, useHeld );
-				// If this handler has put us in lastClick_oldRepeat mode then it is because we aren't placing blocks - behave largely as the code used to
 				if( player->lastClickState == LocalPlayer::lastClick_oldRepeat )
 				{
-					// If we've already handled the click in creativeModeHandleMouseClick then just record the time of this click
 					if( didClick )
 					{
 						player->lastClickTick[1] = ticks;
 					}
 					else
 					{
-						// Otherwise just the original game code for handling autorepeat
 						if (useHeld && ticks - player->lastClickTick[1] >= timer->ticksPerSecond / 4)
 						{
 							player->handleMouseClick(1);
@@ -3654,15 +2881,13 @@ void Minecraft::tick(bool bFirst, bool bUpdateTextures)
 			}
 			else
 			{
-				// Consider as a click if we've had a period of not pressing the button, or we've reached auto-repeat time since the last time
-				// Auto-repeat is only considered if we aren't riding or sprinting, to avoid photo sensitivity issues when placing fire whilst doing fast things
-				// Also disable repeat when the player is sleeping to stop the waking up right after using the bed
+				// Auto-repeat is disabled while riding or sprinting to avoid photo-sensitivity issues
+				// when placing fire, and when sleeping to prevent immediately waking up.
 				bool firstClick = ( player->lastClickTick[1] == 0 );
 				bool autoRepeat = ticks - player->lastClickTick[1] >= timer->ticksPerSecond / 4;
 				if ( player->isRiding() || player->isSprinting() || player->isSleeping() ) autoRepeat = false;
 				if (useHeld )
 				{
-					// If the player has just exited a bed, then delay the time before a repeat key is allowed without releasing
 					if(player->isSleeping() ) player->lastClickTick[1] = ticks + (timer->ticksPerSecond * 2);
 					if( firstClick || autoRepeat )
 					{
@@ -3670,7 +2895,6 @@ void Minecraft::tick(bool bFirst, bool bUpdateTextures)
 
 						player->handleMouseClick(1);
 
-						// If the player has just exited a bed, then delay the time before a repeat key is allowed without releasing
 						if(wasSleeping) player->lastClickTick[1] = ticks + (timer->ticksPerSecond * 2);
 						else player->lastClickTick[1] = ticks;
 					}
@@ -3692,11 +2916,10 @@ void Minecraft::tick(bool bFirst, bool bUpdateTextures)
 
 		if (player->missTime > 0) player->missTime--;
 
-#ifdef _DEBUG//_MENUS_ENABLED // disable DPad cheats on release builds
+#ifdef _DEBUG
 		if(app.DebugSettingsOn())
 		{
 #ifndef __PSVITA__
-			// 4J-PB - debugoverlay for primary player only
 			if(iPad==ProfileManager.GetPrimaryPad())
 			{
 				if((player->ullButtonsPressed&(1LL<<MINECRAFT_ACTION_RENDER_DEBUG)) )
@@ -3705,16 +2928,15 @@ void Minecraft::tick(bool bFirst, bool bUpdateTextures)
 #ifdef _XBOX
 					app.EnableDebugOverlay(options->renderDebug,iPad);
 #else
-					// 4J Stu - The xbox uses a completely different way of navigating to this scene
 					ui.NavigateToScene(0, eUIScene_DebugOverlay, nullptr, eUILayer_Debug);
 #endif
 #endif
 				}
 
 				if((player->ullButtonsPressed&(1LL<<MINECRAFT_ACTION_SPAWN_CREEPER)))
-                {
+				{
 #ifndef _CONTENT_PACKAGE
-                    options->renderDebug = !options->renderDebug;
+					options->renderDebug = !options->renderDebug;
 #endif
 				}
 			}
@@ -3724,15 +2946,13 @@ void Minecraft::tick(bool bFirst, bool bUpdateTextures)
 				player->abilities.debugflying = !player->abilities.debugflying;
 				player->abilities.flying = !player->abilities.flying;
 			}
-#endif // PSVITA
+#endif
 		}
 #endif
 
 		if((player->ullButtonsPressed&(1LL<<MINECRAFT_ACTION_RENDER_THIRD_PERSON)) && gameMode->isInputAllowed(MINECRAFT_ACTION_RENDER_THIRD_PERSON))
 		{
-			// 4J-PB - changing this to be per player
 			player->SetThirdPersonView((player->ThirdPersonView()+1)%3);
-			//options->thirdPersonView = !options->thirdPersonView;
 		}
 
 		if((player->ullButtonsPressed&(1LL<<MINECRAFT_ACTION_GAME_INFO)) && gameMode->isInputAllowed(MINECRAFT_ACTION_GAME_INFO))
@@ -3760,20 +2980,13 @@ void Minecraft::tick(bool bFirst, bool bUpdateTextures)
 		{
 			shared_ptr<MultiplayerLocalPlayer> player = Minecraft::GetInstance()->player;
 
-			// 4J-PB - reordered the if statement so creative mode doesn't bring up the crafting table
-			// Fix for #39014 - TU5:  Creative Mode:  Pressing X to access the creative menu while looking at a crafting table causes the crafting menu to display
 			if(gameMode->hasInfiniteItems())
 			{
-				// Creative mode
-
 				ui.PlayUISFX(eSFX_Press);
 				app.LoadCreativeMenu(iPad,player);
 			}
-			// 4J-PB - Microsoft request that we use the 3x3 crafting if someone presses X while at the workbench
 			else if ((hitResult!=nullptr) && (hitResult->type == HitResult::TILE) && (level->getTile(hitResult->x, hitResult->y, hitResult->z) == Tile::workBench_Id))
 			{
-				//ui.PlayUISFX(eSFX_Press);
-				//app.LoadXuiCrafting3x3Menu(iPad,player,hitResult->x, hitResult->y, hitResult->z);
 				bool usedItem = false;
 				gameMode->useItemOn(player, level, nullptr, hitResult->x, hitResult->y, hitResult->z, 0, hitResult->pos, false, &usedItem);
 			}
@@ -3804,7 +3017,6 @@ void Minecraft::tick(bool bFirst, bool bUpdateTextures)
 
 		bool selected = false;
 #ifdef __PSVITA__
-		// 4J-PB - use the touchscreen for quickselect
 		SceTouchData* pTouchData = InputManager.GetTouchPadData(iPad,false);
 
 		if(pTouchData->reportNum==1)
@@ -3824,7 +3036,6 @@ void Minecraft::tick(bool bFirst, bool bUpdateTextures)
 		{
 			wstring itemName = L"";
 			shared_ptr<ItemInstance> selectedItem = player->getSelectedItem();
-			// Dropping items happens over network, so if we only have one then assume that we dropped it and should hide the item
 			int iCount=0;
 
 			if(selectedItem != nullptr) iCount=selectedItem->GetCount();
@@ -3837,175 +3048,11 @@ void Minecraft::tick(bool bFirst, bool bUpdateTextures)
 	}
 	else
 	{
-		// 4J-PB
 		if (InputManager.GetValue(iPad, ACTION_MENU_CANCEL) > 0 && gameMode->isInputAllowed(ACTION_MENU_CANCEL))
 		{
 			setScreen(nullptr);
 		}
 	}
-
-	// monitor for keyboard input
-	// #ifndef _CONTENT_PACKAGE
-	// 	if(!(ui.GetMenuDisplayed(iPad)))
-	// 	{
-	// 		WCHAR wchInput;
-	// 		if(InputManager.InputDetected(iPad,&wchInput))
-	// 		{
-	// 			printf("Input Detected!\n");
-	//
-	// 			// see if we can react to this
-	// 			if(app.GetXuiAction(iPad)==eAppAction_Idle)
-	// 			{
-	// 				app.SetAction(iPad,eAppAction_DebugText,(LPVOID)wchInput);
-	// 			}
-	// 		}
-	// 	}
-	// #endif
-
-#if 0
-	// 4J - TODO - some replacement for input handling...
-	if (screen == nullptr || screen.passEvents)
-	{
-		while (Mouse.next())
-		{
-			long passedTime = System.currentTimeMillis() - lastTickTime;
-			if (passedTime > 200) continue;
-
-			int wheel = Mouse.getEventDWheel();
-			if (wheel != 0) {
-				player->inventory.swapPaint(wheel);
-
-				if (options.isFlying) {
-					if (wheel > 0) wheel = 1;
-					if (wheel < 0) wheel = -1;
-
-					options.flySpeed += wheel * .25f;
-				}
-			}
-
-			if (screen == null) {
-				if (!mouseGrabbed && Mouse.getEventButtonState()) {
-					grabMouse();
-				} else {
-					if (Mouse.getEventButton() == 0 && Mouse.getEventButtonState()) {
-						handleMouseClick(0);
-						lastClickTick = ticks;
-					}
-					if (Mouse.getEventButton() == 1 && Mouse.getEventButtonState()) {
-						handleMouseClick(1);
-						lastClickTick = ticks;
-					}
-					if (Mouse.getEventButton() == 2 && Mouse.getEventButtonState()) {
-						handleGrabTexture();
-					}
-				}
-			} else if (screen != null) {
-				screen.mouseEvent();
-			}
-		}
-
-		if (missTime > 0) missTime--;
-
-		while (Keyboard.next()) {
-			player->setKey(Keyboard.getEventKey(), Keyboard.getEventKeyState());
-			if (Keyboard.getEventKeyState()) {
-				if (Keyboard.getEventKey() == Keyboard.KEY_F11) {
-					toggleFullScreen();
-					continue;
-				}
-				/*
-				* if (Keyboard.getEventKey() == Keyboard.KEY_F4) { new
-				* PortalForcer().createPortal(level, player); continue; }
-				*/
-
-				/*
-				* if (Keyboard.getEventKey() == Keyboard.KEY_RETURN) {
-				* level.pathFind(); continue; }
-				*/
-
-				if (screen != null) {
-					screen.keyboardEvent();
-				} else {
-					if (Keyboard.getEventKey() == Keyboard.KEY_ESCAPE) {
-						pauseGame();
-					}
-
-					if (Keyboard.getEventKey() == Keyboard.KEY_S && Keyboard.isKeyDown(Keyboard.KEY_F3)) {
-						reloadSound();
-					}
-
-					//                        if (Keyboard.getEventKey() == Keyboard.KEY_P) {
-					//                            gameMode = new DemoMode(this);
-					//                            selectLevel(CreateWorldScreen.findAvailableFolderName(getLevelSource(), "Demo"), "Demo World", 0L);
-					//                            setScreen(null);
-					//
-					//                        }
-
-					if (Keyboard.getEventKey() == Keyboard.KEY_F1) {
-						options.hideGui = !options.hideGui;
-					}
-					if (Keyboard.getEventKey() == Keyboard.KEY_F3) {
-						options.renderDebug = !options.renderDebug;
-					}
-					if (Keyboard.getEventKey() == Keyboard.KEY_F5) {
-						options.thirdPersonView = !options.thirdPersonView;
-					}
-					if (Keyboard.getEventKey() == Keyboard.KEY_F8) {
-						options.smoothCamera = !options.smoothCamera;
-					}
-					if (DEADMAU5_CAMERA_CHEATS) {
-						if (Keyboard.getEventKey() == Keyboard.KEY_F6) {
-							options.isFlying = !options.isFlying;
-						}
-						if (Keyboard.getEventKey() == Keyboard.KEY_F9) {
-							options.fixedCamera = !options.fixedCamera;
-						}
-						if (Keyboard.getEventKey() == Keyboard.KEY_ADD) {
-							options.cameraSpeed += .1f;
-						}
-						if (Keyboard.getEventKey() == Keyboard.KEY_SUBTRACT) {
-							options.cameraSpeed -= .1f;
-							if (options.cameraSpeed < 0) {
-								options.cameraSpeed = 0;
-							}
-						}
-					}
-
-					if (Keyboard.getEventKey() == options.keyBuild.key) {
-						setScreen(new InventoryScreen(player));
-					}
-
-					if (Keyboard.getEventKey() == options.keyDrop.key) {
-						player->drop();
-					}
-					if (isClientSide() && Keyboard.getEventKey() == options.keyChat.key) {
-						setScreen(new ChatScreen());
-					}
-				}
-
-				for (int i = 0; i < 9; i++) {
-					if (Keyboard.getEventKey() == Keyboard.KEY_1 + i) player->inventory.selected = i;
-				}
-				if (Keyboard.getEventKey() == options.keyFog.key) {
-					options.toggle(Options.Option.RENDER_DISTANCE, Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) || Keyboard.isKeyDown(Keyboard.KEY_RSHIFT) ? -1 : 1);
-				}
-			}
-		}
-
-		if (screen == null) {
-			if (Mouse.isButtonDown(0) && ticks - lastClickTick >= timer.ticksPerSecond / 4 && mouseGrabbed) {
-				handleMouseClick(0);
-				lastClickTick = ticks;
-			}
-			if (Mouse.isButtonDown(1) && ticks - lastClickTick >= timer.ticksPerSecond / 4 && mouseGrabbed) {
-				handleMouseClick(1);
-				lastClickTick = ticks;
-			}
-		}
-
-		handleMouseDown(0, screen == null && Mouse.isButtonDown(0) && mouseGrabbed);
-	}
-#endif
 
 	if (level != nullptr)
 	{
@@ -4018,12 +3065,8 @@ void Minecraft::tick(bool bFirst, bool bUpdateTextures)
 				level->ensureAdded(player);
 			}
 		}
-		// 4J Changed - We are setting the difficulty the same as the server so that leaderboard updates work correctly
-		//level->difficulty = options->difficulty;
-		//if (level->isClientSide) level->difficulty = Difficulty::HARD;
 		if( !level->isClientSide )
 		{
-			//app.DebugPrintf("Minecraft::tick - Difficulty = %d",options->difficulty);
 			level->difficulty = options->difficulty;
 		}
 
@@ -4031,9 +3074,8 @@ void Minecraft::tick(bool bFirst, bool bUpdateTextures)
 		if (!pause) gameRenderer->tick( bFirst);
 		PIXEndNamedEvent();
 
-		// 4J - we want to tick each level once only per frame, and do it when a player that is actually in that level happens to be active.
-		// This is important as things that get called in the level tick (eg the levellistener) eventually end up working out what the current
-		// level is by determing it from the current player. Use flags here to make sure each level is only ticked the once.
+		// Each level should be ticked exactly once per frame, when a player actually in that
+		// level happens to be the active player. Use flags to avoid double-ticking.
 		static unsigned int levelsTickedFlags;
 		if( bFirst )
 		{
@@ -4043,31 +3085,25 @@ void Minecraft::tick(bool bFirst, bool bUpdateTextures)
 			PIXBeginNamedEvent(0,"levelTickEventQueue waitForFinish");
 			levelTickEventQueue->waitForFinish();
 			PIXEndNamedEvent();
-#endif // DISABLE_LEVELTICK_THREAD
-			SparseLightStorage::tick();	// 4J added
-			CompressedTileStorage::tick();	// 4J added
-			SparseDataStorage::tick();		// 4J added
+#endif
+			SparseLightStorage::tick();
+			CompressedTileStorage::tick();
+			SparseDataStorage::tick();
 		}
 
 		for(unsigned int i = 0; i < levels.length; ++i)
 		{
-			if( player->level != levels[i] ) continue;	// Don't tick if the current player isn't in this level
+			if( player->level != levels[i] ) continue;
 
-			// 4J - this doesn't fully tick the animateTick here, but does register this player's position. The actual
-			// work is now done in Level::animateTickDoWork() so we can take into account multiple players in the one level.
 			if (!pause && levels[i] != nullptr) levels[i]->animateTick(Mth::floor(player->x), Mth::floor(player->y), Mth::floor(player->z));
 
-			if( levelsTickedFlags & ( 1 << i ) ) continue; // Don't tick further if we've already ticked this level this frame
+			if( levelsTickedFlags & ( 1 << i ) ) continue;
 			levelsTickedFlags |= (1 << i);
 
 			PIXBeginNamedEvent(0,"Level renderer tick");
 			if (!pause) levelRenderer->tick();
 			PIXEndNamedEvent();
-			// if (!pause && player!=null) {
-			// if (player != null && !level.entities.contains(player)) {
-			// level.addEntity(player);
-			// }
-			// }
+
 			if( levels[i] != nullptr )
 			{
 				if (!pause)
@@ -4078,9 +3114,7 @@ void Minecraft::tick(bool bFirst, bool bUpdateTextures)
 					PIXEndNamedEvent();
 				}
 
-				// optimisation to set the culling off early, in parallel with other stuff
 #if defined __PS3__ && !defined DISABLE_SPU_CODE
-				// kick off the culling for all valid players in this level
 				int currPlayerIdx = getLocalPlayerIdx();
 				for( int idx = 0; idx < XUSER_MAX_COUNT; idx++ )
 				{
@@ -4104,19 +3138,17 @@ void Minecraft::tick(bool bFirst, bool bUpdateTextures)
 					}
 				}
 				setLocalPlayerIdx(currPlayerIdx);
-#endif // __PS3__
+#endif
 
-				// 4J Stu - We are always online, but still could be paused
-				if (!pause) // || isClientSide())
+				if (!pause)
 				{
-					//app.DebugPrintf("Minecraft::tick spawn settings - Difficulty = %d",options->difficulty);
 					levels[i]->setSpawnSettings(level->difficulty > 0, true);
 					PIXBeginNamedEvent(0,"Level tick");
 #ifdef DISABLE_LEVELTICK_THREAD
 					levels[i]->tick();
 #else
 					levelTickEventQueue->sendEvent(levels[i]);
-#endif // DISABLE_LEVELTICK_THREAD
+#endif
 					PIXEndNamedEvent();
 				}
 			}
@@ -4129,32 +3161,12 @@ void Minecraft::tick(bool bFirst, bool bUpdateTextures)
 			PIXEndNamedEvent();
 		}
 
-		// 4J Stu - Keep ticking the connections if paused so that they don't time out
 		if( pause ) tickAllConnections();
-		// player->tick();
 	}
-#ifdef __PS3__
-
-// 	while(!g_tickLevelQueue.empty())
-// 	{
-// 		Level* pLevel = g_tickLevelQueue.front();
-// 		g_tickLevelQueue.pop();
-// 		pLevel->tick();
-// 	};
-
-#endif
-
-	// if (Keyboard.isKeyDown(Keyboard.KEY_NUMPAD7) ||
-	// Keyboard.isKeyDown(Keyboard.KEY_Q)) rota++;
-	// if (Keyboard.isKeyDown(Keyboard.KEY_NUMPAD9) ||
-	// Keyboard.isKeyDown(Keyboard.KEY_E)) rota--;
-	// 4J removed
-	//lastTickTime = System::currentTimeMillis();
 }
 
 void Minecraft::reloadSound()
 {
-	//    System.out.println("FORCING RELOAD!");		// 4J - removed
 	soundEngine = new SoundEngine();
 	soundEngine->init(options);
 	bgLoader->forceReload();
@@ -4167,7 +3179,7 @@ bool Minecraft::isClientSide()
 
 void Minecraft::selectLevel(ConsoleSaveFile *saveFile, const wstring& levelId, const wstring& levelName, LevelSettings *levelSettings)
 {
-	}
+}
 
 bool Minecraft::saveSlot(int slot, const wstring& name)
 {
@@ -4181,18 +3193,13 @@ bool Minecraft::loadSlot(const wstring& userName, int slot)
 
 void Minecraft::releaseLevel(int message)
 {
-	//this->level = nullptr;
 	setLevel(nullptr, message);
 }
 
-// 4J Stu - This code was within setLevel, but I moved it out so that I can call it at a better
-// time when exiting from an online game
 void Minecraft::forceStatsSave(int idx)
 {
-	//4J Gordon: Force a stats save
 	stats[idx]->save(idx, true);
 
-	//4J Gordon: If the player is signed in, save the leaderboards
 	if( ProfileManager.IsSignedInLive(idx) )
 	{
 		int tempLockedProfile = ProfileManager.GetLockedProfile();
@@ -4202,26 +3209,12 @@ void Minecraft::forceStatsSave(int idx)
 	}
 }
 
-// 4J Added
 MultiPlayerLevel *Minecraft::getLevel(int dimension)
 {
 	if (dimension == -1) return levels[1];
 	else if(dimension == 1) return levels[2];
 	else return levels[0];
 }
-
-// 4J Stu - Removed as redundant with default values in params.
-//void Minecraft::setLevel(Level *level, bool doForceStatsSave /*= true*/)
-//{
-//	setLevel(level, -1, nullptr, doForceStatsSave);
-//}
-
-// Also causing ambiguous call for some reason
-// as it is matching shared_ptr<Player> from the func below with bool from this one
-//void Minecraft::setLevel(Level *level, const wstring& message, bool doForceStatsSave /*= true*/)
-//{
-//	setLevel(level, message, nullptr, doForceStatsSave);
-//}
 
 void Minecraft::forceaddLevel(MultiPlayerLevel *level)
 {
@@ -4243,10 +3236,6 @@ void Minecraft::setLevel(MultiPlayerLevel *level, int message /*=-1*/, shared_pt
 		this->progressRenderer->progressStage(-1);
 	}
 
-	// 4J-PB - since we now play music in the menu, just let it keep playing
-	//soundEngine->playStreaming(L"", 0, 0, 0, 0, 0);
-
-	// 4J - stop update thread from processing this level, which blocks until it is safe to move on - will be re-enabled if we set the level to be non-nullptr
 	gameRenderer->DisableUpdateThread();
 
 	if (level == nullptr || player == nullptr)
@@ -4262,16 +3251,11 @@ void Minecraft::setLevel(MultiPlayerLevel *level, int message /*=-1*/, shared_pt
 
 	for(unsigned int i = 0; i < levels.length; ++i)
 	{
-		// 4J We only need to save out in multiplayer is we are setting the level to nullptr
-		// If we ever go back to making single player only then this will not work properly!
 		if (levels[i] != nullptr && level == nullptr)
 		{
-			// 4J Stu - This is really only relevant for single player (ie not what we do at the moment)
 			if((doForceStatsSave==true) && player!=nullptr)
 				forceStatsSave(player->GetXboxPad() );
 
-			// 4J Stu - Added these for the case when we exit a level so we are setting the level to nullptr
-			// The level renderer needs to have it's stored level set to nullptr so that it doesn't break next time we set one
 			if (levelRenderer != nullptr)
 			{
 				for(DWORD p = 0; p < XUSER_MAX_COUNT; ++p)
@@ -4282,7 +3266,7 @@ void Minecraft::setLevel(MultiPlayerLevel *level, int message /*=-1*/, shared_pt
 			if (particleEngine != nullptr) particleEngine->setLevel(nullptr);
 		}
 	}
-	// 4J If we are setting the level to nullptr then we are exiting, so delete the levels
+
 	if( level == nullptr )
 	{
 		if(levels[0]!=nullptr)
@@ -4290,7 +3274,6 @@ void Minecraft::setLevel(MultiPlayerLevel *level, int message /*=-1*/, shared_pt
 			delete levels[0];
 			levels[0] = nullptr;
 
-			// Both level share the same savedDataStorage
 			if(levels[1]!=nullptr) levels[1]->savedDataStorage = nullptr;
 		}
 		if(levels[1]!=nullptr)
@@ -4304,7 +3287,6 @@ void Minecraft::setLevel(MultiPlayerLevel *level, int message /*=-1*/, shared_pt
 			levels[2] = nullptr;
 		}
 
-		// Delete all the player objects
 		for(unsigned int idx = 0; idx < XUSER_MAX_COUNT; ++idx)
 		{
 			shared_ptr<MultiplayerLocalPlayer> mplp = localplayers[idx];
@@ -4328,10 +3310,7 @@ void Minecraft::setLevel(MultiPlayerLevel *level, int message /*=-1*/, shared_pt
 
 			localplayers[idx] = nullptr;
 		}
-		// If we are removing the primary player then there can't be a valid gamemode left anymore, this
-		// pointer will be referring to the one we've just deleted
 		gameMode = nullptr;
-		// Remove references to player
 		player = nullptr;
 		cameraTargetPlayer = nullptr;
 		EntityRenderDispatcher::instance->cameraEntity = nullptr;
@@ -4346,8 +3325,6 @@ void Minecraft::setLevel(MultiPlayerLevel *level, int message /*=-1*/, shared_pt
 		else if(dimId == 1) levels[2] = level;
 		else levels[0] = level;
 
-		// If no player has been set, then this is the first level to be set this game, so set up
-		// a primary player & initialise some other things
 		if (player == nullptr)
 		{
 			int iPrimaryPlayer = ProfileManager.GetPrimaryPad();
@@ -4361,13 +3338,10 @@ void Minecraft::setLevel(MultiPlayerLevel *level, int message /*=-1*/, shared_pt
 #ifdef __PSVITA__
 			if(CGameNetworkManager::usingAdhocMode() && playerXUIDOnline.getOnlineID()[0] == 0)
 			{
-				// player doesn't have an online UID, set it from the player name
 				playerXUIDOnline.setForAdhoc();
 			}
 #endif
 #ifdef _WINDOWS64
-			// On Windows, the implementation has been changed to use a per-client pseudo XUID based on `uid.dat`.
-			// To maintain player data compatibility with existing worlds, the world host (the first player) will use the previous embedded pseudo XUID.
 			INetworkPlayer *localNetworkPlayer = g_NetworkManager.GetLocalPlayerByUserIndex(iPrimaryPlayer);
 			if(localNetworkPlayer != nullptr && localNetworkPlayer->IsHost())
 			{
@@ -4382,8 +3356,6 @@ void Minecraft::setLevel(MultiPlayerLevel *level, int message /*=-1*/, shared_pt
 			player->setOnlineXuid(playerXUIDOnline);
 
 			player->m_displayName = ProfileManager.GetDisplayName(iPrimaryPlayer);
-
-
 
 			player->resetPos();
 			gameMode->initPlayer(player);
@@ -4400,7 +3372,6 @@ void Minecraft::setLevel(MultiPlayerLevel *level, int message /*=-1*/, shared_pt
 		if (player != nullptr)
 		{
 			player->resetPos();
-			// gameMode.initPlayer(player);
 			if (level != nullptr)
 			{
 				level->addEntity(player);
@@ -4414,20 +3385,6 @@ void Minecraft::setLevel(MultiPlayerLevel *level, int message /*=-1*/, shared_pt
 		if (levelRenderer != nullptr) levelRenderer->setLevel(player->GetXboxPad(), level);
 		if (particleEngine != nullptr) particleEngine->setLevel(level);
 
-#if 0
-		// 4J - removed - we don't use ChunkCache anymore
-		ChunkSource *cs = level->getChunkSource();
-		if (dynamic_cast<ChunkCache *>(cs) != nullptr)
-		{
-			ChunkCache *spcc = (ChunkCache *)cs;
-
-			// 4J - these had a Mth::floor which seems unrequired
-			int xt = ((int) player->x) >> 4;
-			int zt = ((int) player->z) >> 4;
-
-			spcc->centerOn(xt, zt);
-		}
-#endif
 		gameMode->adjustPlayer(player);
 
 		for(int i=0;i<XUSER_MAX_COUNT;i++)
@@ -4438,7 +3395,6 @@ void Minecraft::setLevel(MultiPlayerLevel *level, int message /*=-1*/, shared_pt
 
 		this->cameraTargetPlayer = player;
 
-		// 4J - allow update thread to start processing the level now both it & the player should be ok
 		gameRenderer->EnableUpdateThread();
 	}
 	else
@@ -4446,7 +3402,6 @@ void Minecraft::setLevel(MultiPlayerLevel *level, int message /*=-1*/, shared_pt
 		levelSource->clearAll();
 		player = nullptr;
 
-		// Clear all players if the new level is nullptr
 		for(int i=0;i<XUSER_MAX_COUNT;i++)
 		{
 			if( m_pendingLocalConnections[i] != nullptr ) m_pendingLocalConnections[i]->close();
@@ -4456,9 +3411,6 @@ void Minecraft::setLevel(MultiPlayerLevel *level, int message /*=-1*/, shared_pt
 		}
 	}
 
-	//    System.gc();	// 4J - removed
-	// 4J removed
-	//this->lastTickTime = 0;
 	LeaveCriticalSection(&m_setLevelCS);
 }
 
@@ -4483,16 +3435,6 @@ void Minecraft::prepareLevel(int title)
 		spawnPos->z = static_cast<int>(player->z);
 	}
 
-#if 0
-	// 4J - removed - we don't use ChunkCache anymore
-	if (dynamic_cast<ChunkCache *>(cs)!=nullptr)
-	{
-		ChunkCache *spcc = (ChunkCache *) cs;
-
-		spcc->centerOn(spawnPos->x >> 4, spawnPos->z >> 4);
-	}
-#endif
-
 	for (int x = -r; x <= r; x += 16)
 	{
 		for (int z = -r; z <= r; z += 16)
@@ -4508,25 +3450,22 @@ void Minecraft::prepareLevel(int title)
 	{
 		if(progressRenderer != nullptr) this->progressRenderer->progressStage(IDS_PROGRESS_SIMULATING_WORLD);
 		max = 2000;
-}
+	}
 }
 
 wstring Minecraft::gatherStats1()
 {
-	//return levelRenderer->gatherStats1();
 	return L"Time to autosave: " + std::to_wstring( app.SecondsToAutosave() ) + L"s";
 }
 
 wstring Minecraft::gatherStats2()
 {
 	return g_NetworkManager.GatherStats();
-	//return levelRenderer->gatherStats2();
 }
 
 wstring Minecraft::gatherStats3()
 {
 	return g_NetworkManager.GatherRTTStats();
-	//return L"P: " + particleEngine->countParticles() + L". T: " + level->gatherStats();
 }
 
 wstring Minecraft::gatherStats4()
@@ -4536,7 +3475,7 @@ wstring Minecraft::gatherStats4()
 
 void Minecraft::respawnPlayer(int iPad, int dimension, int newEntityId)
 {
-	gameRenderer->DisableUpdateThread(); // 4J - don't do updating whilst we are adjusting the player & localplayer array
+	gameRenderer->DisableUpdateThread();
 	shared_ptr<MultiplayerLocalPlayer> localPlayer = localplayers[iPad];
 
 	level->validateSpawn();
@@ -4550,7 +3489,6 @@ void Minecraft::respawnPlayer(int iPad, int dimension, int newEntityId)
 	shared_ptr<Player> oldPlayer = localPlayer;
 	cameraTargetPlayer = nullptr;
 
-	// 4J-PB - copy and set the players xbox pad
 	int iTempPad=localPlayer->GetXboxPad();
 	int iTempScreenSection = localPlayer->m_iScreenSection;
 	EDefaultSkins skin = localPlayer->getPlayerDefaultSkin();
@@ -4561,7 +3499,6 @@ void Minecraft::respawnPlayer(int iPad, int dimension, int newEntityId)
 	ProfileManager.GetXUID(iTempPad,&playerXUIDOffline,false);
 	ProfileManager.GetXUID(iTempPad,&playerXUIDOnline,true);
 #ifdef _WINDOWS64
-	// Same compatibility rule as create/init paths.
 	INetworkPlayer *localNetworkPlayer = g_NetworkManager.GetLocalPlayerByUserIndex(iTempPad);
 	if(localNetworkPlayer != nullptr && localNetworkPlayer->IsHost())
 	{
@@ -4591,14 +3528,12 @@ void Minecraft::respawnPlayer(int iPad, int dimension, int newEntityId)
 
 	player->SetThirdPersonView(oldPlayer->ThirdPersonView());
 
-	// Fix for #63021 - TU7: Content: UI: Travelling from/to the Nether results in switching currently held item to another.
-	// Fix for #81759 - TU9: Content: Gameplay: Entering The End Exit Portal replaces the Player's currently held item with the first one from the Quickbar
+	// Preserve hotbar selection on dimension change/respawn, but not on death
 	if( localPlayer->getHealth() > 0 && localPlayer->y > -64)
 	{
 		player->inventory->selected = localPlayer->inventory->selected;
 	}
 
-	// Set the animation override if the skin has one
 	DWORD dwSkinID=app.getSkinIdFromPath(player->customTextureUrl);
 	if(GET_IS_DLC_SKIN_FROM_BITMASK(dwSkinID))
 	{
@@ -4608,12 +3543,9 @@ void Minecraft::respawnPlayer(int iPad, int dimension, int newEntityId)
 	player->dimension = dimension;
 	cameraTargetPlayer = player;
 
-	// 4J-PB - are we the primary player or a local player?
 	if(iPad==ProfileManager.GetPrimaryPad())
 	{
 		createPrimaryLocalPlayer(iPad);
-
-		// update the debugoptions
 		app.SetGameSettingsDebugMask(ProfileManager.GetPrimaryPad(),app.GetGameSettingsDebugMask(-1,true));
 	}
 	else
@@ -4633,14 +3565,11 @@ void Minecraft::respawnPlayer(int iPad, int dimension, int newEntityId)
 	player->animateRespawn();
 	gameMode->adjustPlayer(player);
 
-	// 4J - added isClientSide check here
 	if (!level->isClientSide)
 	{
 		prepareLevel(IDS_PROGRESS_RESPAWNING);
 	}
 
-	// 4J Added for multiplayer. At this point we know everything is ready to run again
-	//SetEvent(m_hPlayerRespawned);
 	player->SetPlayerRespawned(true);
 
 	if (dynamic_cast<DeathScreen *>(screen) != nullptr) setScreen(nullptr);
@@ -4658,88 +3587,25 @@ void Minecraft::startAndConnectTo(const wstring& name, const wstring& sid, const
 	const bool fullScreen = false;
 	const wstring userName = name;
 
-	/* 4J - removed window handling things here
-	final Frame frame = new Frame("Minecraft");
-	Canvas canvas = new Canvas();
-	frame.setLayout(new BorderLayout());
-
-	frame.add(canvas, BorderLayout.CENTER);
-
-	// OverlayLayout oll = new OverlayLayout(frame);
-	// oll.addLayoutComponent(canvas, BorderLayout.CENTER);
-	// oll.addLayoutComponent(new JLabel("TEST"), BorderLayout.EAST);
-
-	canvas.setPreferredSize(new Dimension(854, 480));
-	frame.pack();
-	frame.setLocationRelativeTo(null);
-	*/
-
 	Minecraft *minecraft;
-	// 4J - was new Minecraft(frame, canvas, NULL, 854, 480, fullScreen);
-	// Logical width is proportional to the real screen aspect ratio so that
-	// the ortho projection and HUD layout match the viewport without stretching.
 	extern int g_iScreenWidth;
 	extern int g_iScreenHeight;
 	constexpr int logicalH = 720;
 	const int logicalW = logicalH * g_iScreenWidth / g_iScreenHeight;
 
 	minecraft = new Minecraft(nullptr, nullptr, nullptr, logicalW, logicalH, fullScreen);
-	/* - 4J - removed
-	{
-	@Override
-	public void onCrash(CrashReport crashReport) {
-	frame.removeAll();
-	frame.add(new CrashInfoPanel(crashReport), BorderLayout.CENTER);
-	frame.validate();
-	}
-	}; */
 
-	/* 4J - removed
-	final Thread thread = new Thread(minecraft, "Minecraft main thread");
-	thread.setPriority(Thread.MAX_PRIORITY);
-	*/
 	minecraft->serverDomain = L"www.minecraft.net";
 
-	// 4J Stu - We never want the player to be DemoUser, we always want them to have their gamertag displayed
-	//if (ProfileManager.IsFullVersion())
+	if (userName != L"" && sid != L"")
 	{
-		if (userName != L"" && sid != L"")	// 4J - username & side were compared with nullptr rather than empty strings
-		{
-			minecraft->user = new User(userName, sid);
-		}
-		else
-		{
-			minecraft->user = new User(L"Player" + std::to_wstring(System::currentTimeMillis() % 1000), L"");
-		}
+		minecraft->user = new User(userName, sid);
 	}
-	//else
-	//{
-	//	minecraft->user = new DemoUser();
-	//}
-
-	/* 4J - TODO
-	if (url != nullptr)
+	else
 	{
-	String[] tokens = url.split(":");
-	minecraft.connectTo(tokens[0], Integer.parseInt(tokens[1]));
+		minecraft->user = new User(L"Player" + std::to_wstring(System::currentTimeMillis() % 1000), L"");
 	}
-	*/
 
-	/* 4J - removed
-	frame.setVisible(true);
-	frame.addWindowListener(new WindowAdapter() {
-	public void windowClosing(WindowEvent arg0) {
-	minecraft.stop();
-	try {
-	thread.join();
-	} catch (InterruptedException e) {
-	e.printStackTrace();
-	}
-	System.exit(0);
-	}
-	});
-	*/
-	// 4J - TODO - consider whether we need to actually create a thread here
 	minecraft->run();
 }
 
@@ -4748,7 +3614,6 @@ ClientConnection *Minecraft::getConnection(int iPad)
 	return localplayers[iPad]->connection;
 }
 
-// 4J-PB - so we can access this from within our xbox game loop
 Minecraft *Minecraft::GetInstance()
 {
 	return m_instance;
@@ -4762,8 +3627,6 @@ void Minecraft::main()
 {
 	wstring name;
 	wstring sessionId;
-
-	//g_iMainThreadId = GetCurrentThreadId();
 
 	useLomp = true;
 
@@ -4779,45 +3642,11 @@ void Minecraft::main()
 	LevelRenderer::staticCtor();
 #endif
 
-	// 4J Stu - This block generates XML for the game rules schema
-#if 0
-	for(unsigned int i = 0; i < Item::items.length; ++i)
-	{
-		if(Item::items[i] != nullptr)
-		{
-			app.DebugPrintf("<xs:enumeration value=\"%d\"><xs:annotation><xs:documentation>%ls</xs:documentation></xs:annotation></xs:enumeration>\n", i, app.GetString( Item::items[i]->getDescriptionId() ));
-		}
-	}
+	name = L"Player" + std::to_wstring(System::currentTimeMillis() % 1000);
+	sessionId = L"-";
 
-	app.DebugPrintf("\n\n\n\n\n");
-
-	for(unsigned int i = 0; i < 256; ++i)
-	{
-		if(Tile::tiles[i] != nullptr)
-		{
-			app.DebugPrintf("<xs:enumeration value=\"%d\"><xs:annotation><xs:documentation>%ls</xs:documentation></xs:annotation></xs:enumeration>\n", i, app.GetString( Tile::tiles[i]->getDescriptionId() ));
-		}
-	}
-	__debugbreak();
-#endif
-
-	// 4J-PB - Can't call this for the first 5 seconds of a game - MS rule
-	//if (ProfileManager.IsFullVersion())
-	{
-		name = L"Player" + std::to_wstring(System::currentTimeMillis() % 1000);
-		sessionId = L"-";
-		/* 4J - TODO - get a session ID from somewhere?
-		if (args.length > 0) name = args[0];
-		sessionId = "-";
-		if (args.length > 1) sessionId = args[1];
-		*/
-	}
-
-	// Common for all platforms
 	IUIScene_CreativeMenu::staticCtor();
 
-	// On PS4, we call Minecraft::Start from another thread, as this has been timed taking ~2.5 seconds and we need to do some basic
-	// rendering stuff so that we don't break the TRCs on SubmitDone calls
 #ifndef __ORBIS__
 	Minecraft::start(name, sessionId);
 #endif
@@ -4854,17 +3683,7 @@ bool Minecraft::handleClientSideCommand(const wstring& chatMessage)
 
 int Minecraft::maxSupportedTextureSize()
 {
-	// 4J Force value
 	return 1024;
-
-	//for (int texSize = 16384; texSize > 0; texSize >>= 1) {
-	//	GL11.glTexImage2D(GL11.GL_PROXY_TEXTURE_2D, 0, GL11.GL_RGBA, texSize, texSize, 0, GL11.GL_RGBA, GL11.GL_UNSIGNED_BYTE, (ByteBuffer) null);
-	//	final int width = GL11.glGetTexLevelParameteri(GL11.GL_PROXY_TEXTURE_2D, 0, GL11.GL_TEXTURE_WIDTH);
-	//	if (width != 0) {
-	//		return texSize;
-	//	}
-	//}
-	//return -1;
 }
 
 void Minecraft::delayTextureReload()
@@ -4874,137 +3693,9 @@ void Minecraft::delayTextureReload()
 
 int64_t Minecraft::currentTimeMillis()
 {
-	return System::currentTimeMillis();//(Sys.getTime() * 1000) / Sys.getTimerResolution();
+	return System::currentTimeMillis();
 }
 
-/*void Minecraft::handleMouseDown(int button, bool down)
-{
-if (gameMode->instaBuild) return;
-if (!down) missTime = 0;
-if (button == 0 && missTime > 0) return;
-
-if (down && hitResult != nullptr && hitResult->type == HitResult::TILE && button == 0)
-{
-int x = hitResult->x;
-int y = hitResult->y;
-int z = hitResult->z;
-gameMode->continueDestroyBlock(x, y, z, hitResult->f);
-particleEngine->crack(x, y, z, hitResult->f);
-}
-else
-{
-gameMode->stopDestroyBlock();
-}
-}
-
-void Minecraft::handleMouseClick(int button)
-{
-if (button == 0 && missTime > 0) return;
-if (button == 0)
-{
-app.DebugPrintf("handleMouseClick - Player %d is swinging\n",player->GetXboxPad());
-player->swing();
-}
-
-bool mayUse = true;
-
-//	* if (button == 1) { ItemInstance item =
-//	* player.inventory.getSelected(); if (item != null) { if
-//	* (gameMode.useItem(player, item)) {
-//	* gameRenderer.itemInHandRenderer.itemUsed(); return; } } }
-
-// 4J-PB - Adding a special case in here for sleeping in a bed in a multiplayer game - we need to wake up, and we don't have the inbedchatscreen with a button
-
-if(button==1 && (player->isSleeping() && level != nullptr && level->isClientSide))
-{
-shared_ptr<MultiplayerLocalPlayer> mplp = dynamic_pointer_cast<MultiplayerLocalPlayer>( player );
-
-if(mplp) mplp->StopSleeping();
-
-// 4J - TODO
-//if (minecraft.player instanceof MultiplayerLocalPlayer)
-//{
-//    ClientConnection connection = ((MultiplayerLocalPlayer) minecraft.player).connection;
-//    connection.send(new PlayerCommandPacket(minecraft.player, PlayerCommandPacket.STOP_SLEEPING));
-//}
-}
-
-if (hitResult == nullptr)
-{
-if (button == 0 && !(dynamic_cast<CreativeMode *>(gameMode) != nullptr)) missTime = 10;
-}
-else if (hitResult->type == HitResult::ENTITY)
-{
-if (button == 0)
-{
-gameMode->attack(player, hitResult->entity);
-}
-if (button == 1)
-{
-gameMode->interact(player, hitResult->entity);
-}
-}
-else if (hitResult->type == HitResult::TILE)
-{
-int x = hitResult->x;
-int y = hitResult->y;
-int z = hitResult->z;
-int face = hitResult->f;
-
-//	* if (button != 0) { if (hitResult.f == 0) y--; if (hitResult.f ==
-//	* 1) y++; if (hitResult.f == 2) z--; if (hitResult.f == 3) z++; if
-//	* (hitResult.f == 4) x--; if (hitResult.f == 5) x++; }
-
-// if (isClientSide())
-// {
-// return;
-// }
-
-if (button == 0)
-{
-gameMode->startDestroyBlock(x, y, z, hitResult->f);
-}
-else
-{
-shared_ptr<ItemInstance> item = player->inventory->getSelected();
-int oldCount = item != nullptr ? item->count : 0;
-if (gameMode->useItemOn(player, level, item, x, y, z, face))
-{
-mayUse = false;
-app.DebugPrintf("Player %d is swinging\n",player->GetXboxPad());
-player->swing();
-}
-if (item == nullptr)
-{
-return;
-}
-
-if (item->count == 0)
-{
-player->inventory->items[player->inventory->selected] = nullptr;
-}
-else if (item->count != oldCount)
-{
-gameRenderer->itemInHandRenderer->itemPlaced();
-}
-}
-}
-
-if (mayUse && button == 1)
-{
-shared_ptr<ItemInstance> item = player->inventory->getSelected();
-if (item != nullptr)
-{
-if (gameMode->useItem(player, level, item))
-{
-gameRenderer->itemInHandRenderer->itemUsed();
-}
-}
-}
-}
-*/
-
-// 4J-PB
 Screen * Minecraft::getScreen()
 {
 	return screen;
@@ -5013,27 +3704,15 @@ Screen * Minecraft::getScreen()
 bool Minecraft::isTutorial()
 {
 	return m_inFullTutorialBits > 0;
-
-	/*if( gameMode != nullptr && gameMode->isTutorial() )
-	{
-	return true;
-	}
-	else
-	{
-	return false;
-	}*/
 }
 
 void Minecraft::playerStartedTutorial(int iPad)
 {
-	// If the app doesn't think we are in a tutorial mode then just ignore this add
 	if( app.GetTutorialMode() ) m_inFullTutorialBits = m_inFullTutorialBits | ( 1 << iPad );
 }
 
 void Minecraft::playerLeftTutorial(int iPad)
 {
-	// 4J Stu - Fix for bug that was flooding Sentient with LevelStart events
-	// If the tutorial bits are already 0 then don't need to update anything
 	if(m_inFullTutorialBits == 0)
 	{
 		app.SetTutorialMode( false );
@@ -5045,7 +3724,6 @@ void Minecraft::playerLeftTutorial(int iPad)
 	{
 		app.SetTutorialMode( false );
 
-		// 4J Stu -This telemetry event means something different on XboxOne, so we don't call it for simple state changes like this
 #ifndef _XBOX_ONE
 		for(DWORD idx = 0; idx < XUSER_MAX_COUNT; ++idx)
 		{
@@ -5078,7 +3756,6 @@ void Minecraft::inGameSignInCheckAllPrivilegesCallback(LPVOID lpParam, bool hasP
 		}
 		else if( ProfileManager.IsSignedInLive(iPad) && ProfileManager.AllowedToPlayMultiplayer(iPad) )
 		{
-			// create the local player for the iPad
 			shared_ptr<Player> player = pClass->localplayers[iPad];
 			if( player == nullptr)
 			{
@@ -5088,7 +3765,6 @@ void Minecraft::inGameSignInCheckAllPrivilegesCallback(LPVOID lpParam, bool hasP
 				}
 				else
 				{
-					// create the local player for the iPad
 					shared_ptr<Player> player = pClass->localplayers[iPad];
 					if( player == nullptr)
 					{
@@ -5111,16 +3787,12 @@ int Minecraft::InGame_SignInReturned(void *pParam,bool bContinue, int iPad)
 
 	if(g_NetworkManager.IsInSession())
 	{
-		// 4J Stu - There seems to be a bug in the signin ui call that enables guest sign in. We never allow this within game, so make sure that it's disabled
-		// Fix for #66516 - TCR #124: MPS Guest Support ; #001: BAS Game Stability: TU8: The game crashes when second Guest signs-in on console which takes part in Xbox LIVE multiplayer session.
 		app.DebugPrintf("Disabling Guest Signin\n");
 		XEnableGuestSignin(FALSE);
 	}
 
-	// If sign in succeded, we're in game and this player isn't already playing, continue
 	if(bContinue==true && g_NetworkManager.IsInSession() && pMinecraftClass->localplayers[iPad] == nullptr)
 	{
-		// It's possible that the player has not signed in - they can back out or choose no for the converttoguest
 		if(ProfileManager.IsSignedIn(iPad))
 		{
 #ifdef _DURANGO
@@ -5139,12 +3811,11 @@ int Minecraft::InGame_SignInReturned(void *pParam,bool bContinue, int iPad)
 				ProfileManager.RemoveGamepadFromGame(iPad);
 #endif
 			}
-			// if this is a local game then profiles just need to be signed in
 			else if( g_NetworkManager.IsLocalGame() || (ProfileManager.IsSignedInLive(iPad) && ProfileManager.AllowedToPlayMultiplayer(iPad)) )
 			{
 #ifdef __ORBIS__
 				bool contentRestricted = false;
-				ProfileManager.GetChatAndContentRestrictions(iPad,false,nullptr,&contentRestricted,nullptr); // TODO!
+				ProfileManager.GetChatAndContentRestrictions(iPad,false,nullptr,&contentRestricted,nullptr);
 
 				if (!g_NetworkManager.IsLocalGame() && contentRestricted)
 				{
@@ -5157,13 +3828,12 @@ int Minecraft::InGame_SignInReturned(void *pParam,bool bContinue, int iPad)
 				}
 				else
 #endif
-					if( pMinecraftClass->level->isClientSide )
-					{
+				if( pMinecraftClass->level->isClientSide )
+				{
 					pMinecraftClass->addLocalPlayer(iPad);
 				}
 				else
 				{
-					// create the local player for the iPad
 					shared_ptr<Player> player = pMinecraftClass->localplayers[iPad];
 					if( player == nullptr)
 					{
@@ -5173,9 +3843,6 @@ int Minecraft::InGame_SignInReturned(void *pParam,bool bContinue, int iPad)
 			}
 			else if( ProfileManager.IsSignedInLive(ProfileManager.GetPrimaryPad()) && !ProfileManager.AllowedToPlayMultiplayer(iPad) )
 			{
-				// 4J Stu - Don't allow converting to guests as we don't allow any guest sign-in while in the game
-				// Fix for #66516 - TCR #124: MPS Guest Support ; #001: BAS Game Stability: TU8: The game crashes when second Guest signs-in on console which takes part in Xbox LIVE multiplayer session.
-				//ProfileManager.RequestConvertOfflineToGuestUI( &Minecraft::InGame_SignInReturned, pMinecraftClass,iPad);
 				UINT uiIDA[1];
 				uiIDA[0]=IDS_CONFIRM_OK;
 				ui.RequestErrorMessage( IDS_NO_MULTIPLAYER_PRIVILEGE_TITLE, IDS_NO_MULTIPLAYER_PRIVILEGE_JOIN_TEXT, uiIDA,1,iPad);
@@ -5205,8 +3872,8 @@ void Minecraft::tickAllConnections()
 
 bool Minecraft::addPendingClientTextureRequest(const wstring &textureName)
 {
-    auto it = find(m_pendingTextureRequests.begin(), m_pendingTextureRequests.end(), textureName);
-    if( it == m_pendingTextureRequests.end() )
+	auto it = find(m_pendingTextureRequests.begin(), m_pendingTextureRequests.end(), textureName);
+	if( it == m_pendingTextureRequests.end() )
 	{
 		m_pendingTextureRequests.push_back(textureName);
 		return true;
@@ -5216,8 +3883,8 @@ bool Minecraft::addPendingClientTextureRequest(const wstring &textureName)
 
 void Minecraft::handleClientTextureReceived(const wstring &textureName)
 {
-    auto it = find(m_pendingTextureRequests.begin(), m_pendingTextureRequests.end(), textureName);
-    if( it != m_pendingTextureRequests.end() )
+	auto it = find(m_pendingTextureRequests.begin(), m_pendingTextureRequests.end(), textureName);
+	if( it != m_pendingTextureRequests.end() )
 	{
 		m_pendingTextureRequests.erase(it);
 	}
@@ -5255,4 +3922,3 @@ int Minecraft::MustSignInReturnedPSN(void *pParam, int iPad, C4JStorage::EMessag
 	return 0;
 }
 #endif
-
