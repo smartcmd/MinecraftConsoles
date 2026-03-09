@@ -719,7 +719,7 @@
     <ResourceCompile Include="..\Minecraft.Client\Xbox\MinecraftWindows.rc" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Minecraft.Server.PluginBridge\Minecraft.Server.PluginBridge.vcxproj">
+    <ProjectReference Include="..\Minecraft.Server.FourKit\Minecraft.Server.FourKit.vcxproj">
       <Project>{5a36ab02-6c2e-4272-86f8-3dcab976564c}</Project>
     </ProjectReference>
     <ProjectReference Include="..\Minecraft.World\Minecraft.World.vcxproj">
