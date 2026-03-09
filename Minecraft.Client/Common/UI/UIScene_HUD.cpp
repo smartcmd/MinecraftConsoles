@@ -718,7 +718,21 @@ void UIScene_HUD::render(S32 width, S32 height, C4JRender::eViewportType viewpor
 		F32 scale;
 		ComputeTileScale(tileWidth, tileHeight, m_movieWidth, m_movieHeight, needsYTile, scale, tileYStart);
 
-		IggyPlayerSetDisplaySize( getMovie(), static_cast<S32>(m_movieWidth * scale), static_cast<S32>(m_movieHeight * scale) );
+		// For vertical split, if the window is shorter than the SWF movie,
+		// scale the movie down to fit the full height instead of cropping.
+		// ComputeTileScale clamps scale >= 1.0 (needed for quadrant mode),
+		// but in vertical split the tile covers the full screen height and
+		// cropping the bottom pushes RepositionHud's ActionScript to shift
+		// elements down.  Scaling down keeps visibleH == movieHeight in SWF
+		// space, so ActionScript sees the full height and applies no offset.
+		if(!needsYTile && m_movieHeight > 0)
+		{
+			F32 scaleH = (F32)tileHeight / (F32)m_movieHeight;
+			if(scaleH < scale)
+				scale = scaleH;
+		}
+
+		IggyPlayerSetDisplaySize( getMovie(), (S32)(m_movieWidth * scale), (S32)(m_movieHeight * scale) );
 
 		repositionHud(tileWidth, tileHeight, scale);
 
