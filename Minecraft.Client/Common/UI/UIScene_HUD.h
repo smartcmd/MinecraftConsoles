@@ -176,5 +176,5 @@ protected:
 #endif
 
 private:
-	void repositionHud();
+	void repositionHud(S32 tileWidth, S32 tileHeight, F32 scale);
 };

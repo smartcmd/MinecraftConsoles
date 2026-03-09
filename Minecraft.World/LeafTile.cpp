@@ -17,7 +17,7 @@ const wstring LeafTile::TEXTURES[2][4] = { {L"leaves", L"leaves_spruce", L"leave
 
 LeafTile::LeafTile(int id) : TransparentTile(id, Material::leaves, false, isSolidRender())
 {
-	checkBuffer = NULL;
+	checkBuffer = nullptr;
 	fancyTextureSet = 0;
 	setTicking(true);
 }
@@ -123,7 +123,7 @@ void LeafTile::tick(Level *level, int x, int y, int z, Random *random)
 		int W = 32;
 		int WW = W * W;
 		int WO = W / 2;
-		if (checkBuffer == NULL)
+		if (checkBuffer == nullptr)
 		{
 			checkBuffer = new int[W * W * W];
 		}
@@ -249,7 +249,7 @@ void LeafTile::spawnResources(Level *level, int x, int y, int z, int data, float
 		if (level->random->nextInt(chance) == 0)
 		{
 			int type = getResource(data, level->random,playerBonusLevel);
-			popResource(level, x, y, z, shared_ptr<ItemInstance>( new ItemInstance(type, 1, getSpawnResourcesAuxValue(data))));
+			popResource(level, x, y, z, std::make_shared<ItemInstance>(type, 1, getSpawnResourcesAuxValue(data)));
 		}
 
 		chance = 200;
@@ -263,14 +263,14 @@ void LeafTile::spawnResources(Level *level, int x, int y, int z, int data, float
 		}
 		if ((data & LEAF_TYPE_MASK) == NORMAL_LEAF && level->random->nextInt(chance) == 0)
 		{
-			popResource(level, x, y, z, shared_ptr<ItemInstance>(new ItemInstance(Item::apple_Id, 1, 0)));
+			popResource(level, x, y, z, std::make_shared<ItemInstance>(Item::apple_Id, 1, 0));
 		}
 	}
 }
 
 void LeafTile::playerDestroy(Level *level, shared_ptr<Player> player, int x, int y, int z, int data)
 {
-	if (!level->isClientSide && player->getSelectedItem() != NULL && player->getSelectedItem()->id == Item::shears->id)
+	if (!level->isClientSide && player->getSelectedItem() != nullptr && player->getSelectedItem()->id == Item::shears->id)
 	{
 		player->awardStat(
 			GenericStats::blocksMined(id),
@@ -278,7 +278,7 @@ void LeafTile::playerDestroy(Level *level, shared_ptr<Player> player, int x, int
 			);
 
 		// drop leaf block instead of sapling
-		popResource(level, x, y, z, shared_ptr<ItemInstance>(new ItemInstance(Tile::leaves_Id, 1, data & LEAF_TYPE_MASK)));
+		popResource(level, x, y, z, std::make_shared<ItemInstance>(Tile::leaves_Id, 1, data & LEAF_TYPE_MASK));
 	}
 	else
 	{
@@ -324,7 +324,7 @@ void LeafTile::setFancy(bool fancyGraphics)
 
 shared_ptr<ItemInstance> LeafTile::getSilkTouchItemInstance(int data)
 {
-	return shared_ptr<ItemInstance>( new ItemInstance(id, 1, data & LEAF_TYPE_MASK) );
+	return std::make_shared<ItemInstance>(id, 1, data & LEAF_TYPE_MASK);
 }
 
 void LeafTile::stepOn(Level *level, int x, int y, int z, shared_ptr<Entity> entity)

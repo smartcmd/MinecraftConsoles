@@ -8,15 +8,15 @@
 #include "net.minecraft.world.level.tile.h"
 #include "net.minecraft.world.item.crafting.h"
 
-Recipes *Recipes::instance = NULL;
-ArmorRecipes *Recipes::pArmorRecipes=NULL;
-ClothDyeRecipes *Recipes::pClothDyeRecipes=NULL;
-FoodRecipies *Recipes::pFoodRecipies=NULL;
-OreRecipies *Recipes::pOreRecipies=NULL;
-StructureRecipies *Recipes::pStructureRecipies=NULL;
-ToolRecipies *Recipes::pToolRecipies=NULL;
-WeaponRecipies *Recipes::pWeaponRecipies=NULL;
-FireworksRecipe *Recipes::pFireworksRecipes=NULL;
+Recipes *Recipes::instance = nullptr;
+ArmorRecipes *Recipes::pArmorRecipes=nullptr;
+ClothDyeRecipes *Recipes::pClothDyeRecipes=nullptr;
+FoodRecipies *Recipes::pFoodRecipies=nullptr;
+OreRecipies *Recipes::pOreRecipies=nullptr;
+StructureRecipies *Recipes::pStructureRecipies=nullptr;
+ToolRecipies *Recipes::pToolRecipies=nullptr;
+WeaponRecipies *Recipes::pWeaponRecipies=nullptr;
+FireworksRecipe *Recipes::pFireworksRecipes=nullptr;
 
 void Recipes::staticCtor()
 {
@@ -950,7 +950,7 @@ Recipes::Recipes()
 		L'D');
 
 	// 4J - TODO - put these new 1.7.3 items in required place within recipes
-    addShapedRecipy(new ItemInstance((Tile *)Tile::pistonBase, 1), //
+    addShapedRecipy(new ItemInstance(static_cast<Tile *>(Tile::pistonBase), 1), //
 		L"sssctcicictg",
         L"TTT", //
         L"#X#", //
@@ -959,7 +959,7 @@ Recipes::Recipes()
         L'#', Tile::cobblestone, L'X', Item::ironIngot, L'R', Item::redStone, L'T', Tile::wood,
 		L'M');
 
-    addShapedRecipy(new ItemInstance((Tile *)Tile::pistonStickyBase, 1), //
+    addShapedRecipy(new ItemInstance(static_cast<Tile *>(Tile::pistonStickyBase), 1), //
 		L"sscictg",
         L"S", //
         L"P", //
@@ -1042,7 +1042,7 @@ ShapedRecipy *Recipes::addShapedRecipy(ItemInstance *result, ...)
 	Item *pItem;
 	wchar_t wchFrom;
 	int iCount;
-	ItemInstance **ids = NULL;
+	ItemInstance **ids = nullptr;
 
 	myMap *mappings = new unordered_map<wchar_t, ItemInstance *>();
 
@@ -1072,14 +1072,14 @@ ShapedRecipy *Recipes::addShapedRecipy(ItemInstance *result, ...)
 			pwchString=va_arg(vl,wchar_t *);
 			wString=pwchString;
 			height++;
-			width = (int)wString.length();
+			width = static_cast<int>(wString.length());
 			map += wString;
 			break;
 		case L's':
 			pwchString=va_arg(vl,wchar_t *);
 			wString=pwchString;
 			height++;
-			width = (int)wString.length();
+			width = static_cast<int>(wString.length());
 			map += wString;
 			break;
 		case L'w':
@@ -1091,7 +1091,7 @@ ShapedRecipy *Recipes::addShapedRecipy(ItemInstance *result, ...)
 				if(!wString.empty())
 				{
 					height++;
-					width = (int)wString.length();
+					width = static_cast<int>(wString.length());
 					map += wString;
 				}
 			}
@@ -1163,7 +1163,7 @@ ShapedRecipy *Recipes::addShapedRecipy(ItemInstance *result, ...)
 			}
 			else
 			{
-				ids[j] = NULL;
+				ids[j] = nullptr;
 			}
 		}
 	}
@@ -1248,7 +1248,7 @@ void Recipes::addShapelessRecipy(ItemInstance *result,... )
 	recipies->push_back(new ShapelessRecipy(result, ingredients, group));
 }
 
-shared_ptr<ItemInstance> Recipes::getItemFor(shared_ptr<CraftingContainer> craftSlots, Level *level, Recipy *recipesClass /*= NULL*/)
+shared_ptr<ItemInstance> Recipes::getItemFor(shared_ptr<CraftingContainer> craftSlots, Level *level, Recipy *recipesClass /*= nullptr*/)
 {
 	int count = 0;
 	shared_ptr<ItemInstance> first = nullptr;
@@ -1256,7 +1256,7 @@ shared_ptr<ItemInstance> Recipes::getItemFor(shared_ptr<CraftingContainer> craft
 	for (int i = 0; i < craftSlots->getContainerSize(); i++)
 	{
 		shared_ptr<ItemInstance> item = craftSlots->getItem(i);
-		if (item != NULL)
+		if (item != nullptr)
 		{
 			if (count == 0) first = item;
 			if (count == 1) second = item;
@@ -1272,10 +1272,10 @@ shared_ptr<ItemInstance> Recipes::getItemFor(shared_ptr<CraftingContainer> craft
 		int remaining = (remaining1 + remaining2) + item->getMaxDamage() * 5 / 100;
 		int resultDamage = item->getMaxDamage() - remaining;
 		if (resultDamage < 0) resultDamage = 0;
-		return shared_ptr<ItemInstance>( new ItemInstance(first->id, 1, resultDamage) );
+		return std::make_shared<ItemInstance>(first->id, 1, resultDamage);
 	}
 
-	if(recipesClass != NULL)
+	if(recipesClass != nullptr)
 	{
 		if (recipesClass->matches(craftSlots, level)) return recipesClass->assemble(craftSlots);
 	}
@@ -1305,7 +1305,7 @@ void Recipes::buildRecipeIngredientsArray(void)
 {
 	//RecipyList *recipes = ((Recipes *)Recipes::getInstance())->getRecipies();
 
-	int iRecipeC=(int)recipies->size();
+	int iRecipeC=static_cast<int>(recipies->size());
 
 	m_pRecipeIngredientsRequired= new Recipy::INGREDIENTS_REQUIRED [iRecipeC];
 

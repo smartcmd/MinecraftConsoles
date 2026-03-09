@@ -26,11 +26,11 @@ bool MakeLoveGoal::canUse()
 	if (villager->getRandom()->nextInt(500) != 0) return false;
 
 	village = level->villages->getClosestVillage(Mth::floor(villager->x), Mth::floor(villager->y), Mth::floor(villager->z), 0);
-	if (village.lock() == NULL) return false;
+	if (village.lock() == nullptr) return false;
 	if (!villageNeedsMoreVillagers()) return false;
 
 	shared_ptr<Entity> mate = level->getClosestEntityOfClass(typeid(Villager), villager->bb->grow(8, 3, 8), villager->shared_from_this());
-	if (mate == NULL) return false;
+	if (mate == nullptr) return false;
 
 	partner = weak_ptr<Villager>(dynamic_pointer_cast<Villager>(mate));
 	if (partner.lock()->getAge() != 0) return false;
@@ -53,7 +53,7 @@ void MakeLoveGoal::stop()
 
 bool MakeLoveGoal::canContinueToUse()
 {
-	return partner.lock() != NULL && loveMakingTime >= 0 && villageNeedsMoreVillagers() && villager->getAge() == 0;
+	return partner.lock() != nullptr && loveMakingTime >= 0 && villageNeedsMoreVillagers() && villager->getAge() == 0;
 }
 
 void MakeLoveGoal::tick()
@@ -76,14 +76,14 @@ void MakeLoveGoal::tick()
 bool MakeLoveGoal::villageNeedsMoreVillagers()
 {
 	shared_ptr<Village> _village = village.lock();
-	if( _village == NULL ) return false;
+	if( _village == nullptr ) return false;
 
 	if (!_village->isBreedTimerOk())
 	{
 		return false;
 	}
 
-	int idealSize = (int) ((float) _village->getDoorCount() * 0.35);
+	int idealSize = static_cast<int>((float)_village->getDoorCount() * 0.35);
 	// System.out.println("idealSize: " + idealSize + " pop: " +
 	// village.getPopulationSize());
 	return _village->getPopulationSize() < idealSize;

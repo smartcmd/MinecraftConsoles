@@ -34,7 +34,7 @@ FastNoise::~FastNoise()
 
 doubleArray FastNoise::getRegion(doubleArray buffer, double x, double y, double z, int xSize, int ySize, int zSize, double xScale, double yScale, double zScale)
 {
-    if (buffer.data == NULL) buffer = doubleArray(xSize * ySize * zSize);
+    if (buffer.data == nullptr) buffer = doubleArray(xSize * ySize * zSize);
     else for (unsigned int i = 0; i < buffer.length; i++)
         buffer[i] = 0;
 
@@ -50,23 +50,23 @@ doubleArray FastNoise::getRegion(doubleArray buffer, double x, double y, double 
         for (int zp = 0; zp < zSize; zp++)
 		{
             double zz = (z + zp) * zScale;
-            int Z = (int) zz;
+            int Z = static_cast<int>(zz);
             if (zz < Z) Z -= 1;
-            int zl = (int) ((zz - Z) * 65536);
+            int zl = static_cast<int>((zz - Z) * 65536);
 
             for (int yp = 0; yp < ySize; yp++)
 			{
                 double yy = (y + yp) * yScale;
-                int Y = (int) yy;
+                int Y = static_cast<int>(yy);
                 if (yy < Y) Y -= 1;
-                int yl = (int) ((yy - Y) * 65536);
+                int yl = static_cast<int>((yy - Y) * 65536);
 
                 for (int xp = 0; xp < xSize; xp++)
 				{
                     double xx = (x + xp) * xScale;
-                    int X = (int) xx;
+                    int X = static_cast<int>(xx);
                     if (xx < X) X -= 1;
-                    int xl = (int) ((xx - X) * 65536);
+                    int xl = static_cast<int>((xx - X) * 65536);
                         
                     int X0 = (X + 0) * AA;
                     int X1 = (X + 1) * AA;

@@ -62,7 +62,7 @@ void ModifiableAttributeInstance::getModifiers(unordered_set<AttributeModifier *
 
 AttributeModifier *ModifiableAttributeInstance::getModifier(eMODIFIER_ID id)
 {
-	AttributeModifier *modifier = NULL;
+	AttributeModifier *modifier = nullptr;
 
     auto it = modifierById.find(id);
     if(it != modifierById.end())
@@ -85,7 +85,7 @@ void ModifiableAttributeInstance::addModifiers(unordered_set<AttributeModifier *
 void ModifiableAttributeInstance::addModifier(AttributeModifier *modifier)
 {
 	// Can't add modifiers with the same ID (unless the modifier is anonymous)
-	if (modifier->getId() != eModifierId_ANONYMOUS && getModifier(modifier->getId()) != NULL)
+	if (modifier->getId() != eModifierId_ANONYMOUS && getModifier(modifier->getId()) != nullptr)
 	{
 		assert(0);
 		// throw new IllegalArgumentException("Modifier is already applied on this attribute!");
@@ -126,7 +126,7 @@ void ModifiableAttributeInstance::removeModifier(AttributeModifier *modifier)
 void ModifiableAttributeInstance::removeModifier(eMODIFIER_ID id)
 {
 	AttributeModifier *modifier = getModifier(id);
-	if (modifier != NULL) removeModifier(modifier);
+	if (modifier != nullptr) removeModifier(modifier);
 }
 
 void ModifiableAttributeInstance::removeModifiers()

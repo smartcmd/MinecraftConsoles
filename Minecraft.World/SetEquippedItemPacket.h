@@ -28,6 +28,6 @@ public:
 	shared_ptr<ItemInstance> getItem();
 
 public:
-	static shared_ptr<Packet> create() { return shared_ptr<Packet>(new SetEquippedItemPacket()); }
+	static shared_ptr<Packet> create() { return std::make_shared<SetEquippedItemPacket>(); }
 	virtual int getId() { return 5; }
 };

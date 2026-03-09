@@ -54,7 +54,7 @@ const int Painting::Motive::MAX_MOTIVE_NAME_LENGTH =  13; //JAVA: "SkullAndRoses
 // 4J - added for common ctor code
 void Painting::_init( Level *level )
 {
-	motive = NULL;
+	motive = nullptr;
 };
 
 Painting::Painting(Level *level) : HangingEntity( level )
@@ -98,7 +98,7 @@ void Painting::PaintingPostConstructor(int dir, int motive)
 		}
 		if (!survivableMotives->empty())
 		{
-			this->motive = survivableMotives->at(random->nextInt((int)survivableMotives->size()));
+			this->motive = survivableMotives->at(random->nextInt(static_cast<int>(survivableMotives->size())));
 		}
 		setDir(dir);
 	}
@@ -138,7 +138,7 @@ void Painting::readAdditionalSaveData(CompoundTag *tag)
 			this->motive = (Motive *)Motive::values[i];
 		}
 	}
-	if (this->motive == NULL) motive = (Motive *)Motive::values[ Kebab ];
+	if (this->motive == nullptr) motive = (Motive *)Motive::values[ Kebab ];
 
 	HangingEntity::readAdditionalSaveData(tag);
 }
@@ -155,7 +155,7 @@ int Painting::getHeight()
 
 void Painting::dropItem(shared_ptr<Entity> causedBy) 
 {
-	if ( (causedBy != NULL) && causedBy->instanceof(eTYPE_PLAYER) )
+	if ( (causedBy != nullptr) && causedBy->instanceof(eTYPE_PLAYER) )
 	{
 		shared_ptr<Player> player = dynamic_pointer_cast<Player>(causedBy);
 		if (player->abilities.instabuild)
@@ -164,5 +164,5 @@ void Painting::dropItem(shared_ptr<Entity> causedBy)
 		}
 	}
 
-	spawnAtLocation(shared_ptr<ItemInstance>(new ItemInstance(Item::painting)), 0.0f);
+	spawnAtLocation(std::make_shared<ItemInstance>(Item::painting), 0.0f);
 }

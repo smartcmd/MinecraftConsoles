@@ -7,7 +7,7 @@ ResourceLocation LavaSlimeRenderer::MAGMACUBE_LOCATION = ResourceLocation(TN_MOB
 
 LavaSlimeRenderer::LavaSlimeRenderer() : MobRenderer(new LavaSlimeModel(), .25f)
 {
-	this->modelVersion = ((LavaSlimeModel *) model)->getModelVersion();
+	this->modelVersion = static_cast<LavaSlimeModel *>(model)->getModelVersion();
 }
 
 ResourceLocation *LavaSlimeRenderer::getTextureLocation(shared_ptr<Entity> mob)

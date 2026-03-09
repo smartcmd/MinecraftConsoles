@@ -53,7 +53,7 @@ void TheEndLevelRandomLevelSource::prepareHeights(int xOffs, int zOffs, byteArra
 		{
 			for (int yc = 0; yc < Level::genDepth / CHUNK_HEIGHT; yc++)
 			{
-				double yStep = 1 / (double) CHUNK_HEIGHT;
+				double yStep = 1 / static_cast<double>(CHUNK_HEIGHT);
 				double s0 = buffer[((xc + 0) * zSize + (zc + 0)) * ySize + (yc + 0)];
 				double s1 = buffer[((xc + 0) * zSize + (zc + 1)) * ySize + (yc + 0)];
 				double s2 = buffer[((xc + 1) * zSize + (zc + 0)) * ySize + (yc + 0)];
@@ -66,7 +66,7 @@ void TheEndLevelRandomLevelSource::prepareHeights(int xOffs, int zOffs, byteArra
 
 				for (int y = 0; y < CHUNK_HEIGHT; y++)
 				{
-					double xStep = 1 / (double) CHUNK_WIDTH;
+					double xStep = 1 / static_cast<double>(CHUNK_WIDTH);
 
 					double _s0 = s0;
 					double _s1 = s1;
@@ -77,7 +77,7 @@ void TheEndLevelRandomLevelSource::prepareHeights(int xOffs, int zOffs, byteArra
 					{
 						int offs = (x + xc * CHUNK_WIDTH) << Level::genDepthBitsPlusFour | (0 + zc * CHUNK_WIDTH) << Level::genDepthBits | (yc * CHUNK_HEIGHT + y);
 						int step = 1 << Level::genDepthBits;
-						double zStep = 1 / (double) CHUNK_WIDTH;
+						double zStep = 1 / static_cast<double>(CHUNK_WIDTH);
 
 						double val = _s0;
 						double vala = (_s1 - _s0) * zStep;
@@ -90,7 +90,7 @@ void TheEndLevelRandomLevelSource::prepareHeights(int xOffs, int zOffs, byteArra
 							} else {
 							}
 
-							blocks[offs] = (byte) tileId;
+							blocks[offs] = static_cast<byte>(tileId);
 							offs += step;
 							val += vala;
 						}
@@ -139,7 +139,7 @@ void TheEndLevelRandomLevelSource::buildSurfaces(int xOffs, int zOffs, byteArray
 						if (runDepth <= 0)
 						{
 							top = 0;
-							material = (byte) Tile::endStone_Id;
+							material = static_cast<byte>(Tile::endStone_Id);
 						}
 
 						run = runDepth;
@@ -169,7 +169,7 @@ LevelChunk *TheEndLevelRandomLevelSource::getChunk(int xOffs, int zOffs)
 	BiomeArray biomes;
 	// 4J - now allocating this with a physical alloc & bypassing general memory management so that it will get cleanly freed
 	unsigned int blocksSize = Level::genDepth * 16 * 16;
-	byte *tileData = (byte *)XPhysicalAlloc(blocksSize, MAXULONG_PTR, 4096, PAGE_READWRITE);
+	byte *tileData = static_cast<byte *>(XPhysicalAlloc(blocksSize, MAXULONG_PTR, 4096, PAGE_READWRITE));
 	XMemSet128(tileData,0,blocksSize);
 	byteArray blocks = byteArray(tileData,blocksSize);
 	//    byteArray blocks = byteArray(16 * level->depth * 16);
@@ -195,7 +195,7 @@ LevelChunk *TheEndLevelRandomLevelSource::getChunk(int xOffs, int zOffs)
 
 doubleArray TheEndLevelRandomLevelSource::getHeights(doubleArray buffer, int x, int y, int z, int xSize, int ySize, int zSize)
 {
-	if (buffer.data == NULL)
+	if (buffer.data == nullptr)
 	{
 		buffer = doubleArray(xSize * ySize * zSize);
 	}
@@ -407,16 +407,16 @@ wstring TheEndLevelRandomLevelSource::gatherStats()
 vector<Biome::MobSpawnerData *> *TheEndLevelRandomLevelSource::getMobsAt(MobCategory *mobCategory, int x, int y, int z)
 {
 	Biome *biome = level->getBiome(x, z);
-	if (biome == NULL)
+	if (biome == nullptr)
 	{
-		return NULL;
+		return nullptr;
 	}
 	return biome->getMobs(mobCategory);
 }
 
 TilePos *TheEndLevelRandomLevelSource::findNearestMapFeature(Level *level, const wstring& featureName, int x, int y, int z)
 {
-	return NULL;
+	return nullptr;
 }
 
 void TheEndLevelRandomLevelSource::recreateLogicStructuresForChunk(int chunkX, int chunkZ)

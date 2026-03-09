@@ -25,7 +25,7 @@ int WeightedPressurePlateTile::getSignalStrength(Level *level, int x, int y, int
 	}
 	else
 	{
-		float pct = min(maxWeight, count) / (float) maxWeight;
+		float pct = min(maxWeight, count) / static_cast<float>(maxWeight);
 		return Mth::ceil(pct * Redstone::SIGNAL_MAX);
 	}
 }

@@ -24,8 +24,8 @@ void DragonBreathParticle::init(Level *level, double x, double y, double z, doub
     size *= scale;
     oSize = size;
 
-    lifetime = (int) (20 / (Math::random() * 0.8 + 0.2));
-    lifetime = (int) (lifetime * scale);
+    lifetime = static_cast<int>(20 / (Math::random() * 0.8 + 0.2));
+    lifetime = static_cast<int>(lifetime * scale);
     noPhysics = false;
 
 	m_bHasHitGround = false;

@@ -136,7 +136,7 @@ UIScene_HowToPlay::UIScene_HowToPlay(int iPad, void *initData, UILayer *parentLa
 	// Extract pad and required page from init data. We just put the data into the pointer rather than using it as an address.
 	size_t uiInitData = ( size_t )( initData );
 	
-	EHowToPlayPage eStartPage = ( EHowToPlayPage )( ( uiInitData >> 16 ) & 0xFFF );		// Ignores MSB which is set to 1!
+	EHowToPlayPage eStartPage = static_cast<EHowToPlayPage>((uiInitData >> 16) & 0xFFF);		// Ignores MSB which is set to 1!
 
 	TelemetryManager->RecordMenuShown(m_iPad, eUIScene_HowToPlay, (ETelemetry_HowToPlay_SubMenuId)eStartPage);
 
@@ -216,10 +216,10 @@ void UIScene_HowToPlay::handleInput(int iPad, int key, bool repeat, bool pressed
 		if(pressed)
 		{
 			// Next page
-			int iNextPage = ( int )( m_eCurrPage ) + 1;
+			int iNextPage = static_cast<int>(m_eCurrPage) + 1;
 			if ( iNextPage != eHowToPlay_NumPages )
 			{
-				StartPage( ( EHowToPlayPage )( iNextPage ) );
+				StartPage( static_cast<EHowToPlayPage>(iNextPage) );
 				ui.PlayUISFX(eSFX_Press);
 			}
 			handled = true;
@@ -229,7 +229,7 @@ void UIScene_HowToPlay::handleInput(int iPad, int key, bool repeat, bool pressed
 		if(pressed)
 		{
 			// Previous page
-			int iPrevPage = ( int )( m_eCurrPage ) - 1;
+			int iPrevPage = static_cast<int>(m_eCurrPage) - 1;
 
 			// 4J Stu - Add back for future platforms
 #if 0
@@ -247,7 +247,7 @@ void UIScene_HowToPlay::handleInput(int iPad, int key, bool repeat, bool pressed
 			{
 				if ( iPrevPage >= 0 ) 
 				{
-					StartPage( ( EHowToPlayPage )( iPrevPage ) );
+					StartPage( static_cast<EHowToPlayPage>(iPrevPage) );
 					ui.PlayUISFX(eSFX_Press);
 				}
 
@@ -300,8 +300,8 @@ void UIScene_HowToPlay::StartPage( EHowToPlayPage ePage )
 	finalText = startTags + finalText;
 
 	vector<wstring> paragraphs;
-	int lastIndex = 0;
-	for (	int index = finalText.find(L"\r\n", lastIndex, 2);
+	size_t lastIndex = 0;
+	for (	size_t index = finalText.find(L"\r\n", lastIndex, 2);
 		index != wstring::npos; 
 		index = finalText.find(L"\r\n", lastIndex, 2)
 		)
@@ -318,7 +318,7 @@ void UIScene_HowToPlay::StartPage( EHowToPlayPage ePage )
 	IggyStringUTF16 * stringVal = new IggyStringUTF16[paragraphs.size()];
 
 	value[0].type = IGGY_DATATYPE_number;
-	value[0].number = gs_pageToFlashMapping[(int)ePage];
+	value[0].number = gs_pageToFlashMapping[static_cast<int>(ePage)];
 
 	for(unsigned int i = 0; i < paragraphs.size(); ++i)
 	{

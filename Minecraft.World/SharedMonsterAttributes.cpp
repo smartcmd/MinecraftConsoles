@@ -70,7 +70,7 @@ void SharedMonsterAttributes::loadAttributes(BaseAttributeMap *attributes, ListT
 		CompoundTag *tag = list->get(i);
 		AttributeInstance *instance = attributes->getInstance(static_cast<eATTRIBUTE_ID>(tag->getInt(L"ID")));
 
-		if (instance != NULL)
+		if (instance != nullptr)
 		{
 			loadAttribute(instance, tag);
 		}
@@ -93,7 +93,7 @@ void SharedMonsterAttributes::loadAttribute(AttributeInstance *instance, Compoun
 		{
 			AttributeModifier *modifier = loadAttributeModifier(list->get(i));
 			AttributeModifier *old = instance->getModifier(modifier->getId());
-			if (old != NULL) instance->removeModifier(old);
+			if (old != nullptr) instance->removeModifier(old);
 			instance->addModifier(modifier);
 		}
 	}
@@ -101,6 +101,6 @@ void SharedMonsterAttributes::loadAttribute(AttributeInstance *instance, Compoun
 
 AttributeModifier *SharedMonsterAttributes::loadAttributeModifier(CompoundTag *tag)
 {
-	eMODIFIER_ID id = (eMODIFIER_ID)tag->getInt(L"UUID");
+	eMODIFIER_ID id = static_cast<eMODIFIER_ID>(tag->getInt(L"UUID"));
 	return new AttributeModifier(id, tag->getDouble(L"Amount"), tag->getInt(L"Operation"));
 }

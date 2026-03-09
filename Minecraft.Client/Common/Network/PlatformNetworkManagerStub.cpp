@@ -26,7 +26,7 @@ void CPlatformNetworkManagerStub::NotifyPlayerJoined(IQNetPlayer *pQNetPlayer	)
 	bool createFakeSocket = false;
 	bool localPlayer = false;
 
-	NetworkPlayerXbox *networkPlayer = (NetworkPlayerXbox *)addNetworkPlayer(pQNetPlayer);
+	NetworkPlayerXbox *networkPlayer = static_cast<NetworkPlayerXbox *>(addNetworkPlayer(pQNetPlayer));
 
     if( pQNetPlayer->IsLocal() )
     {
@@ -90,8 +90,8 @@ void CPlatformNetworkManagerStub::NotifyPlayerJoined(IQNetPlayer *pQNetPlayer	)
         pQNetPlayer,
         pQNetPlayer->GetGamertag(),
         pszDescription,
-        (int) pQNetPlayer->HasVoice(),
-        (int) pQNetPlayer->HasCamera() );
+        pQNetPlayer->HasVoice(),
+        pQNetPlayer->HasCamera() );
 
 
 	if( m_pIQNet->IsHost() )
@@ -103,7 +103,7 @@ void CPlatformNetworkManagerStub::NotifyPlayerJoined(IQNetPlayer *pQNetPlayer	)
 
 	for( int idx = 0; idx < XUSER_MAX_COUNT; ++idx)
 	{
-		if(playerChangedCallback[idx] != NULL)
+		if(playerChangedCallback[idx] != nullptr)
 			playerChangedCallback[idx]( playerChangedCallbackParam[idx], networkPlayer, false );
 	}
 
@@ -112,7 +112,7 @@ void CPlatformNetworkManagerStub::NotifyPlayerJoined(IQNetPlayer *pQNetPlayer	)
 		int localPlayerCount = 0;
 		for(unsigned int idx = 0; idx < XUSER_MAX_COUNT; ++idx)
 		{
-			if( m_pIQNet->GetLocalPlayerByUserIndex(idx) != NULL ) ++localPlayerCount;
+			if( m_pIQNet->GetLocalPlayerByUserIndex(idx) != nullptr ) ++localPlayerCount;
 		}
 
 		float appTime = app.getAppTime();
@@ -127,11 +127,11 @@ void CPlatformNetworkManagerStub::NotifyPlayerLeaving(IQNetPlayer* pQNetPlayer)
 	app.DebugPrintf("Player 0x%p \"%ls\" leaving.\n", pQNetPlayer, pQNetPlayer->GetGamertag());
 
 	INetworkPlayer* networkPlayer = getNetworkPlayer(pQNetPlayer);
-	if (networkPlayer == NULL)
+	if (networkPlayer == nullptr)
 		return;
 
 	Socket* socket = networkPlayer->GetSocket();
-	if (socket != NULL)
+	if (socket != nullptr)
 	{
 		if (m_pIQNet->IsHost())
 			g_NetworkManager.CloseConnection(networkPlayer);
@@ -146,7 +146,7 @@ void CPlatformNetworkManagerStub::NotifyPlayerLeaving(IQNetPlayer* pQNetPlayer)
 
 	for (int idx = 0; idx < XUSER_MAX_COUNT; ++idx)
 	{
-		if (playerChangedCallback[idx] != NULL)
+		if (playerChangedCallback[idx] != nullptr)
 			playerChangedCallback[idx](playerChangedCallbackParam[idx], networkPlayer, true);
 	}
 
@@ -162,7 +162,7 @@ bool CPlatformNetworkManagerStub::Initialise(CGameNetworkManager *pGameNetworkMa
 	g_pPlatformNetworkManager = this;
 	for( int i = 0; i < XUSER_MAX_COUNT; i++ )
 	{
-		playerChangedCallback[ i ] = NULL;
+		playerChangedCallback[ i ] = nullptr;
 	}
 
 	m_bLeavingGame = false;
@@ -173,8 +173,8 @@ bool CPlatformNetworkManagerStub::Initialise(CGameNetworkManager *pGameNetworkMa
 	m_bSearchPending = false;
 
 	m_bIsOfflineGame = false;
-	m_pSearchParam = NULL;
-	m_SessionsUpdatedCallback = NULL;
+	m_pSearchParam = nullptr;
+	m_SessionsUpdatedCallback = nullptr;
 
 	for(unsigned int i = 0; i < XUSER_MAX_COUNT; ++i)
 	{
@@ -182,10 +182,10 @@ bool CPlatformNetworkManagerStub::Initialise(CGameNetworkManager *pGameNetworkMa
 		m_lastSearchStartTime[i] = 0;
 
 		// The results that will be filled in with the current search
-		m_pSearchResults[i] = NULL;
-		m_pQoSResult[i] = NULL;
-		m_pCurrentSearchResults[i] = NULL;
-		m_pCurrentQoSResult[i] = NULL;
+		m_pSearchResults[i] = nullptr;
+		m_pQoSResult[i] = nullptr;
+		m_pCurrentSearchResults[i] = nullptr;
+		m_pCurrentQoSResult[i] = nullptr;
 		m_currentSearchResultsCount[i] = 0;
 	}
 
@@ -231,7 +231,7 @@ void CPlatformNetworkManagerStub::DoWork()
 		while (WinsockNetLayer::PopDisconnectedSmallId(&disconnectedSmallId))
 		{
 			IQNetPlayer* qnetPlayer = m_pIQNet->GetPlayerBySmallId(disconnectedSmallId);
-			if (qnetPlayer != NULL && qnetPlayer->m_smallId == disconnectedSmallId)
+			if (qnetPlayer != nullptr && qnetPlayer->m_smallId == disconnectedSmallId)
 			{
 				NotifyPlayerLeaving(qnetPlayer);
 				qnetPlayer->m_smallId = 0;
@@ -243,12 +243,18 @@ void CPlatformNetworkManagerStub::DoWork()
 				if (IQNet::s_playerCount > 1)
 					IQNet::s_playerCount--;
 			}
-			// Always return smallId to the free pool so it can be reused (game may have already cleared the slot).
-			WinsockNetLayer::PushFreeSmallId(disconnectedSmallId);
-			// Clear O(1) socket lookup so GetSocketForSmallId stays fast (s_connections never shrinks).
-			WinsockNetLayer::ClearSocketForSmallId(disconnectedSmallId);
+			// NOTE: Do NOT call PushFreeSmallId here. The old PlayerConnection's
+			// write thread may still be alive (it dies in PlayerList::tick when
+			// m_smallIdsToClose is processed). If we recycle the smallId now,
+			// AcceptThread can reuse it for a new connection, and the old write
+			// thread's getPlayer() lookup will resolve to the NEW player, sending
+			// stale game packets to the new client's TCP socket — corrupting its
+			// login handshake (bad packet id crash). PushFreeSmallId and
+			// ClearSocketForSmallId are called from PlayerList::tick after the
+			// old Connection threads are dead.
+			//
 			// Clear chunk visibility flags for this system so rejoin gets fresh chunk state.
-			SystemFlagRemoveBySmallId((int)disconnectedSmallId);
+			SystemFlagRemoveBySmallId(disconnectedSmallId);
 		}
 	}
 #endif
@@ -261,7 +267,7 @@ bool CPlatformNetworkManagerStub::CanAcceptMoreConnections()
 	if (server == NULL) return true;
 	PlayerList* list = server->getPlayerList();
 	if (list == NULL) return true;
-	return (unsigned int)list->players.size() < (unsigned int)list->getMaxPlayers();
+	return static_cast<unsigned int>(list->players.size()) < static_cast<unsigned int>(list->getMaxPlayers());
 #else
 	return true;
 #endif
@@ -289,12 +295,40 @@ int CPlatformNetworkManagerStub::GetLocalPlayerMask(int playerIndex)
 
 bool CPlatformNetworkManagerStub::AddLocalPlayerByUserIndex( int userIndex )
 {
-	NotifyPlayerJoined(m_pIQNet->GetLocalPlayerByUserIndex(userIndex));
-	return ( m_pIQNet->AddLocalPlayerByUserIndex(userIndex) == S_OK );
+	if ( m_pIQNet->AddLocalPlayerByUserIndex(userIndex) != S_OK )
+		return false;
+	// Player is now registered in IQNet — get a pointer and notify the network layer.
+	// Use the static array directly: GetLocalPlayerByUserIndex checks customData which
+	// isn't set until addNetworkPlayer runs inside NotifyPlayerJoined.
+	NotifyPlayerJoined(&IQNet::m_player[userIndex]);
+	return true;
 }
 
 bool CPlatformNetworkManagerStub::RemoveLocalPlayerByUserIndex( int userIndex )
 {
+#ifdef _WINDOWS64
+	if (userIndex > 0 && userIndex < XUSER_MAX_COUNT && !m_pIQNet->IsHost())
+	{
+		IQNetPlayer* qp = &IQNet::m_player[userIndex];
+
+		// Notify the network layer before clearing the slot
+		if (qp->GetCustomDataValue() != 0)
+		{
+			NotifyPlayerLeaving(qp);
+		}
+
+		// Close the split-screen TCP connection and reset WinsockNetLayer state
+		WinsockNetLayer::CloseSplitScreenConnection(userIndex);
+
+		// Clear the IQNet slot so it can be reused on rejoin
+		qp->m_smallId = 0;
+		qp->m_isRemote = false;
+		qp->m_isHostPlayer = false;
+		qp->m_resolvedXuid = INVALID_XUID;
+		qp->m_gamertag[0] = 0;
+		qp->SetCustomDataValue(0);
+	}
+#endif
 	return true;
 }
 
@@ -386,7 +420,7 @@ void CPlatformNetworkManagerStub::HostGame(int localUsersMask, bool bOnlineGame,
 
 #ifdef _WINDOWS64
 	int port = WIN64_NET_DEFAULT_PORT;
-	const char* bindIp = NULL;
+	const char* bindIp = nullptr;
 	if (g_Win64DedicatedServer)
 	{
 		if (g_Win64DedicatedServerPort > 0)
@@ -419,7 +453,7 @@ bool CPlatformNetworkManagerStub::_StartGame()
 int CPlatformNetworkManagerStub::JoinGame(FriendSessionInfo* searchResult, int localUsersMask, int primaryUserIndex)
 {
 #ifdef _WINDOWS64
-	if (searchResult == NULL)
+	if (searchResult == nullptr)
 		return CGameNetworkManager::JOINGAME_FAIL_GENERAL;
 
 	const char* hostIP = searchResult->data.hostIP;
@@ -493,8 +527,8 @@ void CPlatformNetworkManagerStub::UnRegisterPlayerChangedCallback(int iPad, void
 {
 	if(playerChangedCallbackParam[iPad] == callbackParam)
 	{
-		playerChangedCallback[iPad] = NULL;
-		playerChangedCallbackParam[iPad] = NULL;
+		playerChangedCallback[iPad] = nullptr;
+		playerChangedCallbackParam[iPad] = nullptr;
 	}
 }
 
@@ -514,7 +548,7 @@ bool CPlatformNetworkManagerStub::_RunNetworkGame()
 		if (IQNet::m_player[i].m_isRemote)
 		{
 			INetworkPlayer* pNetworkPlayer = getNetworkPlayer(&IQNet::m_player[i]);
-			if (pNetworkPlayer != NULL && pNetworkPlayer->GetSocket() != NULL)
+			if (pNetworkPlayer != nullptr && pNetworkPlayer->GetSocket() != nullptr)
 			{
 				Socket::addIncomingSocket(pNetworkPlayer->GetSocket());
 			}
@@ -524,14 +558,14 @@ bool CPlatformNetworkManagerStub::_RunNetworkGame()
 	return true;
 }
 
-void CPlatformNetworkManagerStub::UpdateAndSetGameSessionData(INetworkPlayer *pNetworkPlayerLeaving /*= NULL*/)
+void CPlatformNetworkManagerStub::UpdateAndSetGameSessionData(INetworkPlayer *pNetworkPlayerLeaving /*= nullptr*/)
 {
 // 	DWORD playerCount = m_pIQNet->GetPlayerCount();
 //
 // 	if( this->m_bLeavingGame )
 // 		return;
 //
-// 	if( GetHostPlayer() == NULL )
+// 	if( GetHostPlayer() == nullptr )
 // 		return;
 //
 // 	for(unsigned int i = 0; i < MINECRAFT_NET_MAX_PLAYERS; ++i)
@@ -551,13 +585,13 @@ void CPlatformNetworkManagerStub::UpdateAndSetGameSessionData(INetworkPlayer *pN
 // 			}
 // 			else
 // 			{
-// 				m_hostGameSessionData.players[i] = NULL;
+// 				m_hostGameSessionData.players[i] = nullptr;
 // 				memset(m_hostGameSessionData.szPlayers[i],0,XUSER_NAME_SIZE);
 // 			}
 // 		}
 // 		else
 // 		{
-// 			m_hostGameSessionData.players[i] = NULL;
+// 			m_hostGameSessionData.players[i] = nullptr;
 // 			memset(m_hostGameSessionData.szPlayers[i],0,XUSER_NAME_SIZE);
 // 		}
 // 	}
@@ -568,18 +602,18 @@ void CPlatformNetworkManagerStub::UpdateAndSetGameSessionData(INetworkPlayer *pN
 
 int CPlatformNetworkManagerStub::RemovePlayerOnSocketClosedThreadProc( void* lpParam )
 {
-	INetworkPlayer *pNetworkPlayer = (INetworkPlayer *)lpParam;
+	INetworkPlayer *pNetworkPlayer = static_cast<INetworkPlayer *>(lpParam);
 
 	Socket *socket = pNetworkPlayer->GetSocket();
 
-	if( socket != NULL )
+	if( socket != nullptr )
 	{
 		//printf("Waiting for socket closed event\n");
 		socket->m_socketClosedEvent->WaitForSignal(INFINITE);
 
 		//printf("Socket closed event has fired\n");
 		// 4J Stu - Clear our reference to this socket
-		pNetworkPlayer->SetSocket( NULL );
+		pNetworkPlayer->SetSocket( nullptr );
 		delete socket;
 	}
 
@@ -601,7 +635,7 @@ CPlatformNetworkManagerStub::PlayerFlags::PlayerFlags(INetworkPlayer *pNetworkPl
 	this->flags = new unsigned char [ count / 8 ];
 	memset( this->flags, 0, count / 8 );
 	this->count = count;
-	this->m_smallId = (pNetworkPlayer && pNetworkPlayer->IsLocal()) ? 256 : (pNetworkPlayer ? (int)pNetworkPlayer->GetSmallId() : -1);
+	this->m_smallId = (pNetworkPlayer && pNetworkPlayer->IsLocal()) ? 256 : (pNetworkPlayer ? static_cast<int>(pNetworkPlayer->GetSmallId()) : -1);
 }
 CPlatformNetworkManagerStub::PlayerFlags::~PlayerFlags()
 {
@@ -669,7 +703,7 @@ void CPlatformNetworkManagerStub::SystemFlagReset()
 void CPlatformNetworkManagerStub::SystemFlagSet(INetworkPlayer *pNetworkPlayer, int index)
 {
 	if( ( index < 0 ) || ( index >= m_flagIndexSize ) ) return;
-	if( pNetworkPlayer == NULL ) return;
+	if( pNetworkPlayer == nullptr ) return;
 
 	for( unsigned int i = 0; i < m_playerFlags.size(); i++ )
 	{
@@ -685,7 +719,7 @@ void CPlatformNetworkManagerStub::SystemFlagSet(INetworkPlayer *pNetworkPlayer, 
 bool CPlatformNetworkManagerStub::SystemFlagGet(INetworkPlayer *pNetworkPlayer, int index)
 {
 	if( ( index < 0 ) || ( index >= m_flagIndexSize ) ) return false;
-	if( pNetworkPlayer == NULL )
+	if( pNetworkPlayer == nullptr )
 	{
 		return false;
 	}
@@ -713,7 +747,7 @@ wstring CPlatformNetworkManagerStub::GatherRTTStats()
 
 	for(unsigned int i = 0; i < GetPlayerCount(); ++i)
 	{
-		IQNetPlayer *pQNetPlayer = ((NetworkPlayerXbox *)GetPlayerByIndex( i ))->GetQNetPlayer();
+		IQNetPlayer *pQNetPlayer = static_cast<NetworkPlayerXbox *>(GetPlayerByIndex(i))->GetQNetPlayer();
 
 		if(!pQNetPlayer->IsLocal())
 		{
@@ -728,7 +762,7 @@ wstring CPlatformNetworkManagerStub::GatherRTTStats()
 void CPlatformNetworkManagerStub::TickSearch()
 {
 #ifdef _WINDOWS64
-	if (m_SessionsUpdatedCallback == NULL)
+	if (m_SessionsUpdatedCallback == nullptr)
 		return;
 
 	static DWORD lastSearchTime = 0;
@@ -757,7 +791,7 @@ void CPlatformNetworkManagerStub::SearchForGames()
 		size_t nameLen = wcslen(lanSessions[i].hostName);
 		info->displayLabel = new wchar_t[nameLen + 1];
 		wcscpy_s(info->displayLabel, nameLen + 1, lanSessions[i].hostName);
-		info->displayLabelLength = (unsigned char)nameLen;
+		info->displayLabelLength = static_cast<unsigned char>(nameLen);
 		info->displayLabelViewableStartIndex = 0;
 
 		info->data.netVersion = lanSessions[i].netVersion;
@@ -772,14 +806,13 @@ void CPlatformNetworkManagerStub::SearchForGames()
 		info->data.playerCount = lanSessions[i].playerCount;
 		info->data.maxPlayers = lanSessions[i].maxPlayers;
 
-		info->sessionId = (SessionID)((uint64_t)inet_addr(lanSessions[i].hostIP) | ((uint64_t)lanSessions[i].hostPort << 32));
+        info->sessionId = static_cast<uint64_t>(inet_addr(lanSessions[i].hostIP)) |
+                          static_cast<uint64_t>(lanSessions[i].hostPort) << 32;
 
 		friendsSessions[0].push_back(info);
 	}
 
-	std::FILE* file = std::fopen("servers.db", "rb");
-
-	if (file) {
+	if (std::FILE* file = std::fopen("servers.db", "rb")) {
 		char magic[4] = {};
 		if (std::fread(magic, 1, 4, file) == 4 && memcmp(magic, "MCSV", 4) == 0)
 		{
@@ -797,7 +830,6 @@ void CPlatformNetworkManagerStub::SearchForGames()
 
 					char ipBuf[257] = {};
 					if (std::fread(ipBuf, 1, ipLen, file) != ipLen) break;
-
 					if (std::fread(&port, sizeof(uint16_t), 1, file) != 1) break;
 
 					if (std::fread(&nameLen, sizeof(uint16_t), 1, file) != 1) break;
@@ -815,13 +847,13 @@ void CPlatformNetworkManagerStub::SearchForGames()
 					size_t nLen = wName.length();
 					info->displayLabel = new wchar_t[nLen + 1];
 					wcscpy_s(info->displayLabel, nLen + 1, wName.c_str());
-					info->displayLabelLength = (unsigned char)nLen;
+					info->displayLabelLength = static_cast<unsigned char>(nLen);
 					info->displayLabelViewableStartIndex = 0;
 					info->data.isReadyToJoin = true;
 					info->data.isJoinable = true;
 					strncpy_s(info->data.hostIP, sizeof(info->data.hostIP), ipBuf, _TRUNCATE);
 					info->data.hostPort = port;
-					info->sessionId = (SessionID)(static_cast<uint64_t>(inet_addr(ipBuf)) | (static_cast<uint64_t>(port) << 32));
+					info->sessionId = static_cast<uint64_t>(inet_addr(ipBuf)) | static_cast<uint64_t>(port) << 32;
 					friendsSessions[0].push_back(info);
 				}
 			}
@@ -829,9 +861,9 @@ void CPlatformNetworkManagerStub::SearchForGames()
 		std::fclose(file);
 	}
 
-	m_searchResultsCount[0] = (int)friendsSessions[0].size();
+	m_searchResultsCount[0] = static_cast<int>(friendsSessions[0].size());
 
-	if (m_SessionsUpdatedCallback != NULL)
+	if (m_SessionsUpdatedCallback != nullptr)
 		m_SessionsUpdatedCallback(m_pSearchParam);
 #endif
 }
@@ -879,7 +911,7 @@ void CPlatformNetworkManagerStub::ForceFriendsSessionRefresh()
 		m_searchResultsCount[i] = 0;
 		m_lastSearchStartTime[i] = 0;
 		delete m_pSearchResults[i];
-		m_pSearchResults[i] = NULL;
+		m_pSearchResults[i] = nullptr;
 	}
 }
 
@@ -906,7 +938,7 @@ void CPlatformNetworkManagerStub::removeNetworkPlayer(IQNetPlayer *pQNetPlayer)
 
 INetworkPlayer *CPlatformNetworkManagerStub::getNetworkPlayer(IQNetPlayer *pQNetPlayer)
 {
-	return pQNetPlayer ? (INetworkPlayer *)(pQNetPlayer->GetCustomDataValue()) : NULL;
+	return pQNetPlayer ? (INetworkPlayer *)(pQNetPlayer->GetCustomDataValue()) : nullptr;
 }
 
 

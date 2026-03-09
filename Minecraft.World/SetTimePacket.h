@@ -21,6 +21,6 @@ public:
 	virtual bool isAync();
 
 public:
-	static shared_ptr<Packet> create() { return shared_ptr<Packet>(new SetTimePacket()); }
+	static shared_ptr<Packet> create() { return std::make_shared<SetTimePacket>(); }
 	virtual int getId() { return 4; }
 };

@@ -11,7 +11,7 @@ SaddleItem::SaddleItem(int id) : Item(id)
 
 bool SaddleItem::interactEnemy(shared_ptr<ItemInstance> itemInstance, shared_ptr<Player> player, shared_ptr<LivingEntity> mob) 
 {
-	if ( (mob != NULL) && mob->instanceof(eTYPE_PIG) )
+	if ( (mob != nullptr) && mob->instanceof(eTYPE_PIG) )
 	{
 		shared_ptr<Pig> pig = dynamic_pointer_cast<Pig>(mob);
 		if (!pig->hasSaddle() && !pig->isBaby()) 

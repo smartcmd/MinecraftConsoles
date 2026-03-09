@@ -58,7 +58,7 @@ Node *BinaryHeap::pop()
 {
     Node *popped = heap[0];
     heap[0] = heap[--sizeVar];
-    heap[sizeVar] = NULL;
+    heap[sizeVar] = nullptr;
     if (sizeVar > 0) downHeap(0);
     popped->heapIdx=-1;
     return popped;
@@ -68,7 +68,7 @@ void BinaryHeap::remove(Node *node)
 {
     // This is what node.heapIdx is for.
     heap[node->heapIdx] = heap[--sizeVar];
-    heap[sizeVar] = NULL;
+    heap[sizeVar] = nullptr;
     if (sizeVar > node->heapIdx)
     {
         if (heap[node->heapIdx]->f < node->f)
@@ -145,7 +145,7 @@ void BinaryHeap::downHeap(int idx)
         if (rightIdx >= sizeVar)
         {
             // Only need to compare with left.
-            rightNode = NULL;
+            rightNode = nullptr;
             rightCost = Float::POSITIVE_INFINITY;
         }
         else

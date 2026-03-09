@@ -21,7 +21,7 @@ const float CScene_Win::PLAYER_SCROLL_SPEED = 3.0f;
 //----------------------------------------------------------------------------------
 HRESULT CScene_Win::OnInit( XUIMessageInit* pInitData, BOOL& bHandled )
 {
-	m_iPad = *(int *)pInitData->pvInitData;
+	m_iPad = *static_cast<int *>(pInitData->pvInitData);
 
 	m_bIgnoreInput = false;
 
@@ -57,18 +57,18 @@ HRESULT CScene_Win::OnInit( XUIMessageInit* pInitData, BOOL& bHandled )
 	noNoiseString = app.FormatHTMLString(m_iPad, noNoiseString, 0xff000000);
 
 	Random random(8124371);
-	int found=(int)noNoiseString.find_first_of(L"{");
-	int length;
+	size_t found=noNoiseString.find_first_of(L"{");
+	size_t length;
 	while (found!=string::npos)
 	{
 		length = random.nextInt(4) + 3;
 		m_noiseLengths.push_back(length);
-		found=(int)noNoiseString.find_first_of(L"{",found+1);
+		found=noNoiseString.find_first_of(L"{", found + 1);
 	}
 
 	Minecraft *pMinecraft = Minecraft::GetInstance();
 
-	if(pMinecraft->localplayers[s_winUserIndex] != NULL)
+	if(pMinecraft->localplayers[s_winUserIndex] != nullptr)
 	{
 		noNoiseString = replaceAll(noNoiseString,L"{*PLAYER*}",pMinecraft->localplayers[s_winUserIndex]->name);
 	}
@@ -134,7 +134,7 @@ HRESULT CScene_Win::OnKeyDown(XUIMessageInput* pInputData, BOOL& rfHandled)
 			app.CloseAllPlayersXuiScenes();
 			for(unsigned int i = 0; i < XUSER_MAX_COUNT; ++i)
 			{
-				if(pMinecraft->localplayers[i] != NULL)
+				if(pMinecraft->localplayers[i] != nullptr)
 				{
 					app.SetAction(i,eAppAction_Respawn);
 				}
@@ -143,7 +143,7 @@ HRESULT CScene_Win::OnKeyDown(XUIMessageInput* pInputData, BOOL& rfHandled)
 			// Show the other players scenes
 			CXuiSceneBase::ShowOtherPlayersBaseScene(pInputData->UserIndex, true);
 			// This just allows it to be shown
-			if(pMinecraft->localgameModes[ProfileManager.GetPrimaryPad()] != NULL) pMinecraft->localgameModes[ProfileManager.GetPrimaryPad()]->getTutorial()->showTutorialPopup(true);
+			if(pMinecraft->localgameModes[ProfileManager.GetPrimaryPad()] != nullptr) pMinecraft->localgameModes[ProfileManager.GetPrimaryPad()]->getTutorial()->showTutorialPopup(true);
 			ui.UpdatePlayerBasePositions();
 
 			rfHandled = TRUE;
@@ -277,7 +277,7 @@ HRESULT CScene_Win::OnNavReturn(HXUIOBJ hObj,BOOL& rfHandled)
 	CXuiSceneBase::ShowOtherPlayersBaseScene(ProfileManager.GetPrimaryPad(), false);
 
 	// This just allows it to be shown
-	if(Minecraft::GetInstance()->localgameModes[ProfileManager.GetPrimaryPad()] != NULL) Minecraft::GetInstance()->localgameModes[ProfileManager.GetPrimaryPad()]->getTutorial()->showTutorialPopup(false);
+	if(Minecraft::GetInstance()->localgameModes[ProfileManager.GetPrimaryPad()] != nullptr) Minecraft::GetInstance()->localgameModes[ProfileManager.GetPrimaryPad()]->getTutorial()->showTutorialPopup(false);
 
 	// Temporarily make this scene fullscreen
 	CXuiSceneBase::SetPlayerBaseScenePosition( ProfileManager.GetPrimaryPad(), CXuiSceneBase::e_BaseScene_Fullscreen );

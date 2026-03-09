@@ -26,7 +26,7 @@ shared_ptr<SavedData> SavedDataStorage::get(const type_info& clazz, const wstrin
     if (it != cache.end()) return (*it).second;
 
 	shared_ptr<SavedData> data = nullptr;
-    if (levelStorage != NULL)
+    if (levelStorage != nullptr)
 	{
 		//File file = levelStorage->getDataFile(id);
 		ConsoleSavePath file = levelStorage->getDataFile(id);
@@ -37,15 +37,15 @@ shared_ptr<SavedData> SavedDataStorage::get(const type_info& clazz, const wstrin
 
 			if( clazz == typeid(MapItemSavedData) )
 			{
-				data = dynamic_pointer_cast<SavedData>( shared_ptr<MapItemSavedData>(new MapItemSavedData(id)) );
+				data = dynamic_pointer_cast<SavedData>(std::make_shared<MapItemSavedData>(id));
 			}
 			else if( clazz == typeid(Villages) )
 			{
-				data = dynamic_pointer_cast<SavedData>( shared_ptr<Villages>(new Villages(id) ) );
+				data = dynamic_pointer_cast<SavedData>(std::make_shared<Villages>(id));
 			}
 			else if( clazz == typeid(StructureFeatureSavedData) )
 			{
-				data = dynamic_pointer_cast<SavedData>( shared_ptr<StructureFeatureSavedData>( new StructureFeatureSavedData(id) ) );
+				data = dynamic_pointer_cast<SavedData>(std::make_shared<StructureFeatureSavedData>(id));
 			}
 			else
 			{
@@ -61,7 +61,7 @@ shared_ptr<SavedData> SavedDataStorage::get(const type_info& clazz, const wstrin
 		}
     }
 
-    if (data != NULL)
+    if (data != nullptr)
 	{
         cache.insert( unordered_map<wstring, shared_ptr<SavedData> >::value_type( id , data ) );
         savedDatas.push_back(data);
@@ -71,7 +71,7 @@ shared_ptr<SavedData> SavedDataStorage::get(const type_info& clazz, const wstrin
 
 void SavedDataStorage::set(const wstring& id, shared_ptr<SavedData> data)
 {
-	if (data == NULL)
+	if (data == nullptr)
 	{
 		// TODO 4J Stu - throw new RuntimeException("Can't set null data");
 		assert( false );
@@ -104,7 +104,7 @@ void SavedDataStorage::save()
 
 void SavedDataStorage::save(shared_ptr<SavedData> data)
 {
-    if (levelStorage == NULL) return;
+    if (levelStorage == nullptr) return;
     //File file = levelStorage->getDataFile(data->id);
 	ConsoleSavePath file = levelStorage->getDataFile(data->id);
 	if (!file.getName().empty())
@@ -127,7 +127,7 @@ void SavedDataStorage::loadAuxValues()
 {
     usedAuxIds.clear();
 
-    if (levelStorage == NULL) return;
+    if (levelStorage == nullptr) return;
     //File file = levelStorage->getDataFile(L"idcounts");
 	ConsoleSavePath file = levelStorage->getDataFile(L"idcounts");
 	if (!file.getName().empty() && levelStorage->getSaveFile()->doesFileExist( file ) )
@@ -163,7 +163,7 @@ int SavedDataStorage::getFreeAuxValueFor(const wstring& id)
     }
 
 	usedAuxIds[id] = val;
-    if (levelStorage == NULL) return val;
+    if (levelStorage == nullptr) return val;
     //File file = levelStorage->getDataFile(L"idcounts");
 	ConsoleSavePath file = levelStorage->getDataFile(L"idcounts");
     if (!file.getName().empty())
@@ -188,7 +188,7 @@ int SavedDataStorage::getFreeAuxValueFor(const wstring& id)
 // 4J Added
 int SavedDataStorage::getAuxValueForMap(PlayerUID xuid, int dimension, int centreXC, int centreZC, int scale)
 {
-	if( levelStorage == NULL )
+	if( levelStorage == nullptr )
 	{
 		switch(dimension)
 		{

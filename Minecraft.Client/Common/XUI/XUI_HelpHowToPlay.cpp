@@ -39,12 +39,12 @@ static SHowToPlayPageDef gs_aPageDefs[ eHowToPlay_NumPages ] =
 HRESULT CScene_HowToPlay::OnInit( XUIMessageInit* pInitData, BOOL& bHandled )
 {
 	// Extract pad and required page from init data. We just put the data into the pointer rather than using it as an address.
-	size_t uiInitData = ( size_t )( pInitData->pvInitData );
+	size_t uiInitData = static_cast<size_t>(pInitData->pvInitData);
 
-	m_iPad = ( int )( ( short )( uiInitData & 0xFFFF ) );
-	EHowToPlayPage eStartPage = ( EHowToPlayPage )( ( uiInitData >> 16 ) & 0xFFF );		// Ignores MSB which is set to 1!
+	m_iPad = static_cast<int>((short)(uiInitData & 0xFFFF));
+	EHowToPlayPage eStartPage = static_cast<EHowToPlayPage>((uiInitData >> 16) & 0xFFF);		// Ignores MSB which is set to 1!
 
-	TelemetryManager->RecordMenuShown(m_iPad, eUIScene_HowToPlay, (ETelemetry_HowToPlay_SubMenuId)eStartPage);
+	TelemetryManager->RecordMenuShown(m_iPad, eUIScene_HowToPlay, static_cast<ETelemetry_HowToPlay_SubMenuId>(eStartPage));
 
 	MapChildControls();
 
@@ -116,10 +116,10 @@ HRESULT CScene_HowToPlay::OnKeyDown(XUIMessageInput* pInputData, BOOL& rfHandled
 	case VK_PAD_A:
 	{
 		// Next page
-		int iNextPage = ( int )( m_eCurrPage ) + 1;
+		int iNextPage = static_cast<int>(m_eCurrPage) + 1;
 		if ( iNextPage != eHowToPlay_NumPages )
 		{
-			StartPage( ( EHowToPlayPage )( iNextPage ) );
+			StartPage( static_cast<EHowToPlayPage>(iNextPage) );
 			CXuiSceneBase::PlayUISFX(eSFX_Press);
 		}
 		rfHandled = TRUE;
@@ -128,10 +128,10 @@ HRESULT CScene_HowToPlay::OnKeyDown(XUIMessageInput* pInputData, BOOL& rfHandled
 	case VK_PAD_X:
 	{
 		// Next page
-		int iPrevPage = ( int )( m_eCurrPage ) - 1;
+		int iPrevPage = static_cast<int>(m_eCurrPage) - 1;
 		if ( iPrevPage >= 0 )
 		{
-			StartPage( ( EHowToPlayPage )( iPrevPage ) );
+			StartPage( static_cast<EHowToPlayPage>(iPrevPage) );
 			CXuiSceneBase::PlayUISFX(eSFX_Press);
 		}
 		rfHandled = TRUE;
@@ -146,7 +146,7 @@ void CScene_HowToPlay::StartPage( EHowToPlayPage ePage )
 {
 	int iBaseSceneUser;
 	// if we're not in the game, we need to use basescene 0 
-	if(Minecraft::GetInstance()->level==NULL)
+	if(Minecraft::GetInstance()->level==nullptr)
 	{
 		iBaseSceneUser=DEFAULT_XUI_MENU_USER;
 	}

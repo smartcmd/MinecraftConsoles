@@ -4,14 +4,14 @@
 
 DLCUIDataFile::DLCUIDataFile(const wstring &path) : DLCFile(DLCManager::e_DLCType_UIData,path)
 {	
-	m_pbData = NULL;
+	m_pbData = nullptr;
 	m_dwBytes = 0;
 	m_canDeleteData = false;
 }
 
 DLCUIDataFile::~DLCUIDataFile()
 {
-	if(m_canDeleteData && m_pbData != NULL)
+	if(m_canDeleteData && m_pbData != nullptr)
 	{
 		app.DebugPrintf("Deleting DLCUIDataFile data\n");
 		delete [] m_pbData;

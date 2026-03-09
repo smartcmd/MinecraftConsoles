@@ -71,7 +71,7 @@ bool ServerChunkCache::hasChunk(int x, int z)
 	if( ( iz < 0 ) || ( iz >= XZSIZE ) ) return true;
 	int idx = ix * XZSIZE + iz;
 	LevelChunk *lc = cache[idx];
-	if( lc == NULL ) return false;
+	if( lc == nullptr ) return false;
 	return true;
 }
 
@@ -148,13 +148,13 @@ LevelChunk *ServerChunkCache::create(int x, int z, bool asyncPostProcess)	// 4J 
 	LevelChunk *chunk = cache[idx];
 	LevelChunk *lastChunk = chunk;
 
-	if( ( chunk == NULL ) || ( chunk->x != x ) || ( chunk->z != z ) )
+	if( ( chunk == nullptr ) || ( chunk->x != x ) || ( chunk->z != z ) )
 	{
 		EnterCriticalSection(&m_csLoadCreate);
         chunk = load(x, z);
-        if (chunk == NULL)
+        if (chunk == nullptr)
 		{
-            if (source == NULL)
+            if (source == nullptr)
 			{
                 chunk = emptyChunk;
             }
@@ -163,7 +163,7 @@ LevelChunk *ServerChunkCache::create(int x, int z, bool asyncPostProcess)	// 4J 
                 chunk = source->getChunk(x, z);
             }
         }
-		if (chunk != NULL)
+		if (chunk != nullptr)
 		{
 			chunk->load();
 		}
@@ -320,7 +320,7 @@ void ServerChunkCache::overwriteLevelChunkFromSource(int x, int z)
 	if( ( iz < 0 ) || ( iz >= XZSIZE ) ) assert(0);
 	int idx = ix * XZSIZE + iz;
 
-	LevelChunk *chunk = NULL;
+	LevelChunk *chunk = nullptr;
 	chunk = source->getChunk(x, z);
 	assert(chunk);
 	if(chunk)
@@ -389,22 +389,22 @@ void ServerChunkCache::dontDrop(int x, int z)
 
 LevelChunk *ServerChunkCache::load(int x, int z)
 {
-    if (storage == NULL) return NULL;
+    if (storage == nullptr) return nullptr;
 
-    LevelChunk *levelChunk = NULL;
+    LevelChunk *levelChunk = nullptr;
 
 #ifdef _LARGE_WORLDS
 	int ix = x + XZOFFSET;
 	int iz = z + XZOFFSET;
 	int idx = ix * XZSIZE + iz;
 	levelChunk = m_unloadedCache[idx];
-	m_unloadedCache[idx] = NULL;
-	if(levelChunk == NULL)
+	m_unloadedCache[idx] = nullptr;
+	if(levelChunk == nullptr)
 #endif
 	{
 		levelChunk = storage->load(level, x, z);
 	}
-    if (levelChunk != NULL)
+    if (levelChunk != nullptr)
 	{
         levelChunk->lastSaveTime = level->getGameTime();
     }
@@ -413,14 +413,14 @@ LevelChunk *ServerChunkCache::load(int x, int z)
 
 void ServerChunkCache::saveEntities(LevelChunk *levelChunk)
 {
-    if (storage == NULL) return;
+    if (storage == nullptr) return;
 
     storage->saveEntities(level, levelChunk);
 }
 
 void ServerChunkCache::save(LevelChunk *levelChunk)
 {
-	if (storage == NULL) return;
+	if (storage == nullptr) return;
 
 	levelChunk->lastSaveTime = level->getGameTime();
 	storage->save(level, levelChunk);
@@ -542,7 +542,7 @@ void ServerChunkCache::postProcess(ChunkSource *parent, int x, int z )
     LevelChunk *chunk = getChunk(x, z);
     if ( (chunk->terrainPopulated & LevelChunk::sTerrainPopulatedFromHere) == 0 )
 	{
-		if (source != NULL)
+		if (source != nullptr)
 		{
 			PIXBeginNamedEvent(0,"Main post processing");
             source->postProcess(parent, x, z);
@@ -659,7 +659,7 @@ bool ServerChunkCache::save(bool force, ProgressListener *progressListener)
 				}
 
 				// 4J - added this to support progressListener
-				if (progressListener != NULL)
+				if (progressListener != nullptr)
 				{
 					if (++cc % 10 == 0)
 					{
@@ -679,19 +679,19 @@ bool ServerChunkCache::save(bool force, ProgressListener *progressListener)
 
 		vector<LevelChunk *> sortedChunkList;
 
-		for( int i = 0; i < m_loadedChunkList.size(); i++ )
+		for( size_t i = 0; i < m_loadedChunkList.size(); i++ )
 		{
 			if( ( m_loadedChunkList[i]->x < 0 ) && ( m_loadedChunkList[i]->z < 0 ) ) sortedChunkList.push_back(m_loadedChunkList[i]);
 		}
-		for( int i = 0; i < m_loadedChunkList.size(); i++ )
+		for( size_t i = 0; i < m_loadedChunkList.size(); i++ )
 		{
 			if( ( m_loadedChunkList[i]->x >= 0 ) && ( m_loadedChunkList[i]->z < 0 ) ) sortedChunkList.push_back(m_loadedChunkList[i]);
 		}
-		for( int i = 0; i < m_loadedChunkList.size(); i++ )
+		for( size_t i = 0; i < m_loadedChunkList.size(); i++ )
 		{
 			if( ( m_loadedChunkList[i]->x >= 0 ) && ( m_loadedChunkList[i]->z >= 0 ) ) sortedChunkList.push_back(m_loadedChunkList[i]);
 		}
-		for( int i = 0; i < m_loadedChunkList.size(); i++ )
+		for( size_t i = 0; i < m_loadedChunkList.size(); i++ )
 		{
 			if( ( m_loadedChunkList[i]->x < 0 ) && ( m_loadedChunkList[i]->z >= 0 ) ) sortedChunkList.push_back(m_loadedChunkList[i]);
 		}
@@ -712,7 +712,7 @@ bool ServerChunkCache::save(bool force, ProgressListener *progressListener)
 				}
 
 				// 4J - added this to support progressListener
-				if (progressListener != NULL)
+				if (progressListener != nullptr)
 				{
 					if (++cc % 10 == 0)
 					{
@@ -741,21 +741,21 @@ bool ServerChunkCache::save(bool force, ProgressListener *progressListener)
 
 		for(unsigned int i = 0; i < 3; ++i)
 		{
-			saveThreads[i] = NULL;
+			saveThreads[i] = nullptr;
 
 			threadData[i].cache = this;
 
-			wakeEvent[i] = new C4JThread::Event(); //CreateEvent(NULL,FALSE,FALSE,NULL);
+			wakeEvent[i] = new C4JThread::Event(); //CreateEvent(nullptr,FALSE,FALSE,nullptr);
 			threadData[i].wakeEvent = wakeEvent[i];
 
-			notificationEvent[i] = new C4JThread::Event(); //CreateEvent(NULL,FALSE,FALSE,NULL);
+			notificationEvent[i] = new C4JThread::Event(); //CreateEvent(nullptr,FALSE,FALSE,nullptr);
 			threadData[i].notificationEvent = notificationEvent[i];
 
 			if(i==0) threadData[i].useSharedThreadStorage = true;
 			else threadData[i].useSharedThreadStorage = false;
 		}
 
-		LevelChunk *chunk = NULL;
+		LevelChunk *chunk = nullptr;
 		byte workingThreads;
 		bool chunkSet = false;
 
@@ -764,19 +764,19 @@ bool ServerChunkCache::save(bool force, ProgressListener *progressListener)
 
 		vector<LevelChunk *> sortedChunkList;
 
-		for( int i = 0; i < m_loadedChunkList.size(); i++ )
+		for( size_t i = 0; i < m_loadedChunkList.size(); i++ )
 		{
 			if( ( m_loadedChunkList[i]->x < 0 ) && ( m_loadedChunkList[i]->z < 0 ) ) sortedChunkList.push_back(m_loadedChunkList[i]);
 		}
-		for( int i = 0; i < m_loadedChunkList.size(); i++ )
+		for( size_t i = 0; i < m_loadedChunkList.size(); i++ )
 		{
 			if( ( m_loadedChunkList[i]->x >= 0 ) && ( m_loadedChunkList[i]->z < 0 ) ) sortedChunkList.push_back(m_loadedChunkList[i]);
 		}
-		for( int i = 0; i < m_loadedChunkList.size(); i++ )
+		for( size_t i = 0; i < m_loadedChunkList.size(); i++ )
 		{
 			if( ( m_loadedChunkList[i]->x >= 0 ) && ( m_loadedChunkList[i]->z >= 0 ) ) sortedChunkList.push_back(m_loadedChunkList[i]);
 		}
-		for( int i = 0; i < m_loadedChunkList.size(); i++ )
+		for( size_t i = 0; i < m_loadedChunkList.size(); i++ )
 		{
 			if( ( m_loadedChunkList[i]->x < 0 ) && ( m_loadedChunkList[i]->z >= 0 ) ) sortedChunkList.push_back(m_loadedChunkList[i]);
 		}
@@ -804,13 +804,13 @@ bool ServerChunkCache::save(bool force, ProgressListener *progressListener)
 
 						//app.DebugPrintf("Chunk to save set for thread %d\n", j);
 
-						if(saveThreads[j] == NULL)
+						if(saveThreads[j] == nullptr)
 						{
 							char threadName[256];
 							sprintf(threadName,"Save thread %d\n",j);
 							SetThreadName(threadId[j], threadName);
 
-							//saveThreads[j] = CreateThread(NULL,0,runSaveThreadProc,&threadData[j],CREATE_SUSPENDED,&threadId[j]);
+							//saveThreads[j] = CreateThread(nullptr,0,runSaveThreadProc,&threadData[j],CREATE_SUSPENDED,&threadId[j]);
 							saveThreads[j] = new C4JThread(runSaveThreadProc,(void *)&threadData[j],threadName);
 
 
@@ -836,7 +836,7 @@ bool ServerChunkCache::save(bool force, ProgressListener *progressListener)
 						}
 
 						// 4J - added this to support progressListener
-						if (progressListener != NULL)
+						if (progressListener != nullptr)
 						{
 							if (count > 0 && ++cc % 10 == 0)
 							{
@@ -850,7 +850,7 @@ bool ServerChunkCache::save(bool force, ProgressListener *progressListener)
 
 				if( !chunkSet )
 				{
-					threadData[j].chunkToSave = NULL;
+					threadData[j].chunkToSave = nullptr;
 					//app.DebugPrintf("No chunk to save set for thread %d\n",j);
 				}
 			}
@@ -882,13 +882,13 @@ bool ServerChunkCache::save(bool force, ProgressListener *progressListener)
 		unsigned char validThreads = 0;
 		for(unsigned int i = 0; i < 3; ++i)
 		{
-			//app.DebugPrintf("Settings chunk to NULL for save thread %d\n", i);
-			threadData[i].chunkToSave = NULL;
+			//app.DebugPrintf("Settings chunk to nullptr for save thread %d\n", i);
+			threadData[i].chunkToSave = nullptr;
 
 			//app.DebugPrintf("Setting wake event for save thread %d\n",i);
 			threadData[i].wakeEvent->Set(); //SetEvent(threadData[i].wakeEvent);
 
-			if(saveThreads[i] != NULL) ++validThreads;
+			if(saveThreads[i] != nullptr) ++validThreads;
 		}
 
 		//WaitForMultipleObjects(validThreads,saveThreads,TRUE,INFINITE);
@@ -910,7 +910,7 @@ bool ServerChunkCache::save(bool force, ProgressListener *progressListener)
 
     if (force)
 	{
-        if (storage == NULL)
+        if (storage == nullptr)
 		{
 			LeaveCriticalSection(&m_csLoadCreate);
 			return true;
@@ -955,14 +955,14 @@ bool ServerChunkCache::tick()
 						int iz = chunk->z + XZOFFSET;
 						int idx = ix * XZSIZE + iz;
 						m_unloadedCache[idx] = chunk;
-						cache[idx] = NULL;
+						cache[idx] = nullptr;
 					}
 				}
 				m_toDrop.pop_front();
 			}
 		}
 #endif
-        if (storage != NULL) storage->tick();
+        if (storage != nullptr) storage->tick();
     }
 
     return source->tick();
@@ -995,7 +995,7 @@ void ServerChunkCache::recreateLogicStructuresForChunk(int chunkX, int chunkZ)
 
 int ServerChunkCache::runSaveThreadProc(LPVOID lpParam)
 {
-	SaveThreadData *params = (SaveThreadData *)lpParam;
+	SaveThreadData *params = static_cast<SaveThreadData *>(lpParam);
 
 	if(params->useSharedThreadStorage)
 	{
@@ -1013,7 +1013,7 @@ int ServerChunkCache::runSaveThreadProc(LPVOID lpParam)
 
 	//app.DebugPrintf("Save thread has started\n");
 
-	while(params->chunkToSave != NULL)
+	while(params->chunkToSave != nullptr)
 	{
 		PIXBeginNamedEvent(0,"Saving entities");
 		//app.DebugPrintf("Save thread has started processing a chunk\n");

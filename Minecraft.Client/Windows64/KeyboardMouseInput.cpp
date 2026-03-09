@@ -289,7 +289,7 @@ void KeyboardMouseInput::SetMouseGrabbed(bool grabbed)
 	else if (!grabbed && !m_cursorHiddenForUI && g_hWnd)
 	{
 		while (ShowCursor(TRUE) < 0) {}
-		ClipCursor(NULL);
+		ClipCursor(nullptr);
 	}
 }
 
@@ -318,7 +318,7 @@ void KeyboardMouseInput::SetCursorHiddenForUI(bool hidden)
 	else if (!hidden && !m_mouseGrabbed && g_hWnd)
 	{
 		while (ShowCursor(TRUE) < 0) {}
-		ClipCursor(NULL);
+		ClipCursor(nullptr);
 	}
 }
 
@@ -348,13 +348,13 @@ void KeyboardMouseInput::SetWindowFocused(bool focused)
 		else
 		{
 			while (ShowCursor(TRUE) < 0) {}
-			ClipCursor(NULL);
+			ClipCursor(nullptr);
 		}
 	}
 	else
 	{
 		while (ShowCursor(TRUE) < 0) {}
-		ClipCursor(NULL);
+		ClipCursor(nullptr);
 	}
 }
 

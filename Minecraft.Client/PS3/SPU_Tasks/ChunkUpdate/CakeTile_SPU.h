@@ -5,7 +5,7 @@ class CakeTile_SPU : public Tile_SPU
 {
 public:
 	CakeTile_SPU(int id) : Tile_SPU(id) {}
-    virtual void updateShape(ChunkRebuildData *level, int x, int y, int z, int forceData = -1, TileEntity* forceEntity = NULL)	// 4J added forceData, forceEntity param
+    virtual void updateShape(ChunkRebuildData *level, int x, int y, int z, int forceData = -1, TileEntity* forceEntity = nullptr)	// 4J added forceData, forceEntity param
 	{
 		int d = level->getData(x, y, z);
 		float r = 1 / 16.0f;

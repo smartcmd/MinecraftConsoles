@@ -13,7 +13,7 @@ UIScene_ControlsMenu::UIScene_ControlsMenu(int iPad, void *initData, UILayer *pa
 	IggyDataValue value[1];
 	value[0].type = IGGY_DATATYPE_number;
 #if defined(_XBOX) || defined(_WIN64)
-	value[0].number = (F64)0;
+	value[0].number = static_cast<F64>(0);
 #elif defined(_DURANGO)
 	value[0].number = (F64)1;
 #elif defined(__PS3__)
@@ -25,7 +25,7 @@ UIScene_ControlsMenu::UIScene_ControlsMenu(int iPad, void *initData, UILayer *pa
 #endif
 	IggyResult out = IggyPlayerCallMethodRS ( getMovie() , &result, IggyPlayerRootPath( getMovie() ), m_funcSetPlatform , 1 , value );
 
-	bool bNotInGame=(Minecraft::GetInstance()->level==NULL);
+	bool bNotInGame=(Minecraft::GetInstance()->level==nullptr);
 
 	if(bNotInGame)
 	{
@@ -84,7 +84,7 @@ UIScene_ControlsMenu::UIScene_ControlsMenu(int iPad, void *initData, UILayer *pa
 		IggyDataValue result;
 		IggyDataValue value[1];
 		value[0].type = IGGY_DATATYPE_number;
-		value[0].number = (F64)m_iCurrentNavigatedControlsLayout;
+		value[0].number = static_cast<F64>(m_iCurrentNavigatedControlsLayout);
 		IggyResult out = IggyPlayerCallMethodRS ( getMovie() , &result, IggyPlayerRootPath( getMovie() ), m_funcSetControllerLayout , 1 , value );
 	}
 
@@ -180,7 +180,7 @@ void UIScene_ControlsMenu::handleInput(int iPad, int key, bool repeat, bool pres
 
 void UIScene_ControlsMenu::handleCheckboxToggled(F64 controlId, bool selected)
 {
-	switch((int)controlId)
+	switch(static_cast<int>(controlId))
 	{
 	case eControl_InvertLook:
 		app.SetGameSettings(m_iPad,eGameSetting_ControlInvertLook,(unsigned char)( selected ) );
@@ -194,13 +194,13 @@ void UIScene_ControlsMenu::handleCheckboxToggled(F64 controlId, bool selected)
 
 void UIScene_ControlsMenu::handlePress(F64 controlId, F64 childId)
 {
-	int control = (int)controlId;
+	int control = static_cast<int>(controlId);
 	switch(control)
 	{
 	case eControl_Button0:
 	case eControl_Button1:
 	case eControl_Button2:
-		app.SetGameSettings(m_iPad,eGameSetting_ControlScheme,(unsigned char)control);
+		app.SetGameSettings(m_iPad,eGameSetting_ControlScheme,static_cast<unsigned char>(control));
 		LPWSTR layoutString = new wchar_t[ 128 ];
 		swprintf( layoutString, 128, L"%ls : %ls", app.GetString( IDS_CURRENT_LAYOUT ),app.GetString(m_iSchemeTextA[control]));	
 #ifdef __ORBIS__
@@ -216,7 +216,7 @@ void UIScene_ControlsMenu::handlePress(F64 controlId, F64 childId)
 
 void UIScene_ControlsMenu::handleFocusChange(F64 controlId, F64 childId)
 {
-	int control = (int)controlId;
+	int control = static_cast<int>(controlId);
 	switch(control)
 	{
 	case eControl_Button0:

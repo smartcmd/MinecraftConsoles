@@ -34,7 +34,7 @@ int _wcsicmp( const wchar_t * dst, const wchar_t * src )
 {
 	wchar_t f,l;
 
-	// validation section
+	// validation section 
 	// 	_VALIDATE_RETURN(dst != NULL, EINVAL, _NLSCMPERROR);
 	// 	_VALIDATE_RETURN(src != NULL, EINVAL, _NLSCMPERROR);
 
@@ -51,7 +51,7 @@ size_t wcsnlen(const wchar_t *wcs, size_t maxsize)
 {
     size_t n;
 
-//      Note that we do not check if s == NULL, because we do not
+//      Note that we do not check if s == nullptr, because we do not
 //      return errno_t...
 
     for (n = 0; n < maxsize && *wcs; n++, wcs++)
@@ -95,8 +95,8 @@ VOID GetLocalTime(LPSYSTEMTIME lpSystemTime)
 }
 
 HANDLE CreateEvent(void* lpEventAttributes,	BOOL bManualReset,	BOOL bInitialState,	LPCSTR lpName) { ORBIS_STUBBED; return NULL; }
-VOID Sleep(DWORD dwMilliseconds)
-{
+VOID Sleep(DWORD dwMilliseconds) 
+{ 
 	C4JThread::Sleep(dwMilliseconds);
 }
 
@@ -203,7 +203,7 @@ VOID InitializeCriticalSection(PCRITICAL_SECTION CriticalSection)
 	CriticalSection->m_cLock = 0;
 	assert(err == SCE_OK);
 #ifdef _DEBUG
-	CriticalSection->m_pOwnerThread = NULL;
+	CriticalSection->m_pOwnerThread = nullptr;
 #endif
 
 }
@@ -247,7 +247,7 @@ VOID LeaveCriticalSection(PCRITICAL_SECTION CriticalSection)
 		int err = scePthreadMutexUnlock(&CriticalSection->mutex);
 		assert(err == SCE_OK );
 #ifdef _DEBUG
-		CriticalSection->m_pOwnerThread = NULL;
+		CriticalSection->m_pOwnerThread = nullptr;
 #endif
 
 	}
@@ -266,8 +266,8 @@ ULONG TryEnterCriticalSection(PCRITICAL_SECTION CriticalSection)
 
 DWORD WaitForMultipleObjects(DWORD nCount, CONST HANDLE *lpHandles,BOOL bWaitAll,DWORD dwMilliseconds) { ORBIS_STUBBED; return 0; }
 
-BOOL CloseHandle(HANDLE hObject)
-{
+BOOL CloseHandle(HANDLE hObject) 
+{ 
 	sceFiosFHCloseSync(NULL,(SceFiosFH)((int64_t)hObject));
 	return true;
 // 	ORBIS_STUBBED;
@@ -342,7 +342,7 @@ public:
 		if(err != SCE_OK)
 		{
 			assert(0);
-			return NULL;
+			return nullptr;
 		}
 		// work out where the next page should be in virtual addr space, and pass that to the mapping function
 		void* pageVirtualAddr = ((char*)m_virtualAddr) + m_allocatedSize;
@@ -359,12 +359,12 @@ public:
 		if(inAddr != pageVirtualAddr) // make sure we actually get the virtual address that we requested
 		{
 			assert(0);
-			return NULL;
+			return nullptr;
 		}
 		if(err != SCE_OK)
 		{
 			assert(0);
-			return NULL;
+			return nullptr;
 		}
 		m_pagesAllocated.push_back(PageInfo(physAddr, pageVirtualAddr, sizeToAdd));
 		m_allocatedSize += sizeToAdd;
@@ -393,8 +393,8 @@ public:
 static std::vector<OrbisVAlloc*> s_orbisVAllocs;
 
 
-LPVOID VirtualAlloc(LPVOID lpAddress, SIZE_T dwSize, DWORD flAllocationType, DWORD flProtect)
-{
+LPVOID VirtualAlloc(LPVOID lpAddress, SIZE_T dwSize, DWORD flAllocationType, DWORD flProtect) 
+{ 
 	if(lpAddress == NULL)
 	{
 		void *pAddr = (void*)SCE_KERNEL_APP_MAP_AREA_START_ADDR;
@@ -402,7 +402,7 @@ LPVOID VirtualAlloc(LPVOID lpAddress, SIZE_T dwSize, DWORD flAllocationType, DWO
 		if( err != SCE_OK )
 		{
 			app.DebugPrintf("sceKernelReserveVirtualRange failed: 0x%08X\n", err);
-			return NULL;
+			return nullptr;
 		}
 		s_orbisVAllocs.push_back(new OrbisVAlloc(pAddr, dwSize));
 		return (LPVOID)pAddr;
@@ -419,10 +419,10 @@ LPVOID VirtualAlloc(LPVOID lpAddress, SIZE_T dwSize, DWORD flAllocationType, DWO
 				}
 			}
 			assert(0); // failed to find the virtual alloc in our table
-			return NULL;
+			return nullptr;
 		}
 	}
-	return NULL;
+	return nullptr;
 }
 
 BOOL VirtualFree(LPVOID lpAddress, SIZE_T dwSize, DWORD dwFreeType)
@@ -483,7 +483,7 @@ BOOL WriteFile(
 {
 	SceFiosFH fh = (SceFiosFH)((int64_t)hFile);
 	// sceFiosFHReadSync - Non-negative values are the number of bytes read, 0 <= result <= length. Negative values are error codes.
-	SceFiosSize bytesRead = sceFiosFHWriteSync(NULL, fh, lpBuffer, (SceFiosSize)nNumberOfBytesToWrite);
+	SceFiosSize bytesRead = sceFiosFHWriteSync(nullptr, fh, lpBuffer, (SceFiosSize)nNumberOfBytesToWrite);
 	if(bytesRead < 0)
 	{
 		// error
@@ -500,7 +500,7 @@ BOOL ReadFile(HANDLE hFile, LPVOID lpBuffer, DWORD nNumberOfBytesToRead, LPDWORD
 {
 	SceFiosFH fh = (SceFiosFH)((int64_t)hFile);
 	// sceFiosFHReadSync - Non-negative values are the number of bytes read, 0 <= result <= length. Negative values are error codes.
-	SceFiosSize bytesRead = sceFiosFHReadSync(NULL, fh, lpBuffer, (SceFiosSize)nNumberOfBytesToRead);
+	SceFiosSize bytesRead = sceFiosFHReadSync(nullptr, fh, lpBuffer, (SceFiosSize)nNumberOfBytesToRead);
 	*lpNumberOfBytesRead = (DWORD)bytesRead;
 	if(bytesRead < 0)
 	{
@@ -520,7 +520,7 @@ BOOL SetFilePointer(HANDLE hFile, LONG lDistanceToMove, PLONG lpDistanceToMoveHi
 	uint64_t bitsToMove = (int64_t) lDistanceToMove;
 	SceFiosOffset pos = 0;
 
-	if (lpDistanceToMoveHigh != NULL)
+	if (lpDistanceToMoveHigh != nullptr)
 		bitsToMove |= ((uint64_t) (*lpDistanceToMoveHigh)) << 32;
 
 	SceFiosWhence whence = SCE_FIOS_SEEK_SET;
@@ -581,7 +581,7 @@ HANDLE CreateFileA(LPCSTR lpFileName, DWORD dwDesiredAccess, DWORD dwShareMode, 
 	case TRUNCATE_EXISTING:
 		break;
 	}
-	int err = sceFiosFHOpenSync(NULL, &fh, filePath, &openParams);
+	int err = sceFiosFHOpenSync(nullptr, &fh, filePath, &openParams);
 
 	if(err != SCE_FIOS_OK)
 	{
@@ -597,7 +597,7 @@ BOOL DeleteFileA(LPCSTR lpFileName) { ORBIS_STUBBED; return false; }
 
 // BOOL XCloseHandle(HANDLE a)
 // {
-// 	sceFiosFHCloseSync(NULL,(SceFiosFH)((int64_t)a));
+// 	sceFiosFHCloseSync(nullptr,(SceFiosFH)((int64_t)a));
 // 	return true;
 // }
 
@@ -617,7 +617,7 @@ DWORD GetFileAttributesA(LPCSTR lpFileName)
 
 	// check if the file exists first
 	SceFiosStat  statData;
-	if(sceFiosStatSync(NULL, filePath, &statData) != SCE_FIOS_OK)
+	if(sceFiosStatSync(nullptr, filePath, &statData) != SCE_FIOS_OK)
 	{
 		app.DebugPrintf("*** sceFiosStatSync Failed\n");
 		return -1;

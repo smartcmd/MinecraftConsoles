@@ -21,12 +21,12 @@ UIScene_BeaconMenu::UIScene_BeaconMenu(int iPad, void *_initData, UILayer *paren
 	m_buttonsPowers[eControl_Secondary1].setVisible(false);
 	m_buttonsPowers[eControl_Secondary2].setVisible(false);
 
-	BeaconScreenInput *initData = (BeaconScreenInput *)_initData;
+	BeaconScreenInput *initData = static_cast<BeaconScreenInput *>(_initData);
 
 	Minecraft *pMinecraft = Minecraft::GetInstance();
-	if( pMinecraft->localgameModes[initData->iPad] != NULL )
+	if( pMinecraft->localgameModes[initData->iPad] != nullptr )
 	{
-		TutorialMode *gameMode = (TutorialMode *)pMinecraft->localgameModes[initData->iPad];
+		TutorialMode *gameMode = static_cast<TutorialMode *>(pMinecraft->localgameModes[initData->iPad]);
 		m_previousTutorialState = gameMode->getTutorial()->getCurrentState();
 		gameMode->getTutorial()->changeTutorialState(e_Tutorial_State_Beacon_Menu, this);
 	}
@@ -254,7 +254,7 @@ void UIScene_BeaconMenu::setSectionSelectedSlot(ESceneSection eSection, int x, i
 
 	int index = (y * cols) + x;
 
-	UIControl_SlotList *slotList = NULL;
+	UIControl_SlotList *slotList = nullptr;
 	switch( eSection )
 	{
 	case eSectionBeaconItem:
@@ -276,7 +276,7 @@ void UIScene_BeaconMenu::setSectionSelectedSlot(ESceneSection eSection, int x, i
 
 UIControl *UIScene_BeaconMenu::getSection(ESceneSection eSection)
 {
-	UIControl *control = NULL;
+	UIControl *control = nullptr;
 	switch( eSection )
 	{
 	case eSectionBeaconItem:
@@ -324,11 +324,11 @@ UIControl *UIScene_BeaconMenu::getSection(ESceneSection eSection)
 void UIScene_BeaconMenu::customDraw(IggyCustomDrawCallbackRegion *region)
 {
 	Minecraft *pMinecraft = Minecraft::GetInstance();
-	if(pMinecraft->localplayers[m_iPad] == NULL || pMinecraft->localgameModes[m_iPad] == NULL) return;
+	if(pMinecraft->localplayers[m_iPad] == nullptr || pMinecraft->localgameModes[m_iPad] == nullptr) return;
 
 	shared_ptr<ItemInstance> item = nullptr;
 	int slotId = -1;
-	swscanf((wchar_t*)region->name,L"slot_%d",&slotId);
+	swscanf(static_cast<wchar_t *>(region->name),L"slot_%d",&slotId);
 
 	if(slotId >= 0 && slotId >= m_menu->getSize() )
 	{			
@@ -336,22 +336,22 @@ void UIScene_BeaconMenu::customDraw(IggyCustomDrawCallbackRegion *region)
 		switch(icon)
 		{
 		case 0:
-			item = shared_ptr<ItemInstance>(new ItemInstance(Item::emerald) );
+			item = std::make_shared<ItemInstance>(Item::emerald);
 			break;
 		case 1:
-			item = shared_ptr<ItemInstance>(new ItemInstance(Item::diamond) );
+			item = std::make_shared<ItemInstance>(Item::diamond);
 			break;
 		case 2:
-			item = shared_ptr<ItemInstance>(new ItemInstance(Item::goldIngot) );
+			item = std::make_shared<ItemInstance>(Item::goldIngot);
 			break;
 		case 3:
-			item = shared_ptr<ItemInstance>(new ItemInstance(Item::ironIngot) );
+			item = std::make_shared<ItemInstance>(Item::ironIngot);
 			break;
 		default:
 			assert(false);
 			break;
 		};		
-		if(item != NULL) customDrawSlotControl(region,m_iPad,item,1.0f,item->isFoil(),true);
+		if(item != nullptr) customDrawSlotControl(region,m_iPad,item,1.0f,item->isFoil(),true);
 	}
 	else
 	{

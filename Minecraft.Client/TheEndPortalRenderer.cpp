@@ -16,9 +16,9 @@ void TheEndPortalRenderer::render(shared_ptr<TileEntity> _table, double x, doubl
 {
 	// 4J Convert as we aren't using a templated class
 	shared_ptr<TheEndPortalTileEntity> table = dynamic_pointer_cast<TheEndPortalTileEntity>(_table);
-	float xx = (float) tileEntityRenderDispatcher->xPlayer;
-	float yy = (float) tileEntityRenderDispatcher->yPlayer;
-	float zz = (float) tileEntityRenderDispatcher->zPlayer;
+	float xx = static_cast<float>(tileEntityRenderDispatcher->xPlayer);
+	float yy = static_cast<float>(tileEntityRenderDispatcher->yPlayer);
+	float zz = static_cast<float>(tileEntityRenderDispatcher->zPlayer);
 
 	glDisable(GL_LIGHTING);
 
@@ -50,12 +50,12 @@ void TheEndPortalRenderer::render(shared_ptr<TileEntity> _table, double x, doubl
 			sscale = 1 / 2.0f;
 		}
 
-		float dd = (float) -(y + hoff);
+		float dd = static_cast<float>(-(y + hoff));
 		{
 			float ss1 = (float) (dd + Camera::yPlayerOffs);
 			float ss2 = (float) (dd + dist + Camera::yPlayerOffs);
 			float s = ss1 / ss2;
-			s = (float) (y + hoff) + s;
+			s = static_cast<float>(y + hoff) + s;
 
 			glTranslatef(xx, s, zz);
 		}

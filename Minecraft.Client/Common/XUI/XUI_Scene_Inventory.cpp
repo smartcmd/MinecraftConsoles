@@ -23,7 +23,7 @@ HRESULT CXuiSceneInventory::OnInit( XUIMessageInit *pInitData, BOOL &bHandled )
 
 	Minecraft *pMinecraft = Minecraft::GetInstance();
 
-	InventoryScreenInput *initData = (InventoryScreenInput *)pInitData->pvInitData;
+	InventoryScreenInput *initData = static_cast<InventoryScreenInput *>(pInitData->pvInitData);
 	m_iPad=initData->iPad;
 	m_bSplitscreen=initData->bSplitscreen;
 
@@ -38,7 +38,7 @@ HRESULT CXuiSceneInventory::OnInit( XUIMessageInit *pInitData, BOOL &bHandled )
 	}
 
 #ifdef _XBOX
-	if( pMinecraft->localgameModes[initData->iPad] != NULL )
+	if( pMinecraft->localgameModes[initData->iPad] != nullptr )
 	{
 		TutorialMode *gameMode = (TutorialMode *)pMinecraft->localgameModes[initData->iPad];
 		m_previousTutorialState = gameMode->getTutorial()->getCurrentState();
@@ -79,15 +79,15 @@ HRESULT CXuiSceneInventory::OnDestroy()
 {
 	Minecraft *pMinecraft = Minecraft::GetInstance();
 
-	if( pMinecraft->localgameModes[m_iPad] != NULL )
+	if( pMinecraft->localgameModes[m_iPad] != nullptr )
 	{
-		TutorialMode *gameMode = (TutorialMode *)pMinecraft->localgameModes[m_iPad];
-		if(gameMode != NULL) gameMode->getTutorial()->changeTutorialState(m_previousTutorialState);
+		TutorialMode *gameMode = static_cast<TutorialMode *>(pMinecraft->localgameModes[m_iPad]);
+		if(gameMode != nullptr) gameMode->getTutorial()->changeTutorialState(m_previousTutorialState);
 	}
 
 	// 4J Stu - Fix for #11302 - TCR 001: Network Connectivity: Host crashed after being killed by the client while accessing a chest during burst packet loss.
 	// We need to make sure that we call closeContainer() anytime this menu is closed, even if it is forced to close by some other reason (like the player dying)
-	if(Minecraft::GetInstance()->localplayers[m_iPad] != NULL) Minecraft::GetInstance()->localplayers[m_iPad]->closeContainer();
+	if(Minecraft::GetInstance()->localplayers[m_iPad] != nullptr) Minecraft::GetInstance()->localplayers[m_iPad]->closeContainer();
 	return S_OK;
 }
 
@@ -118,7 +118,7 @@ CXuiControl* CXuiSceneInventory::GetSectionControl( ESceneSection eSection )
 			assert( false );
 			break;
 	}
-	return NULL;
+	return nullptr;
 }
 
 CXuiCtrlSlotList* CXuiSceneInventory::GetSectionSlotList( ESceneSection eSection )
@@ -138,7 +138,7 @@ CXuiCtrlSlotList* CXuiSceneInventory::GetSectionSlotList( ESceneSection eSection
 			assert( false );
 			break;
 	}
-	return NULL;
+	return nullptr;
 }
 
 // 4J Stu - Added to support auto-save. Need to re-associate on a navigate back
@@ -156,12 +156,12 @@ void CXuiSceneInventory::updateEffectsDisplay()
 	Minecraft *pMinecraft = Minecraft::GetInstance();
 	shared_ptr<LocalPlayer> player = pMinecraft->localplayers[m_iPad];
 
-	if(player == NULL) return;
+	if(player == nullptr) return;
 
 	vector<MobEffectInstance *> *activeEffects = player->getActiveEffects();
 
 	// Work out how to arrange the effects
-	int effectCount = (int)activeEffects->size();
+	int effectCount = static_cast<int>(activeEffects->size());
 
 	// Total size of all effects + spacing, minus spacing for the last effect
 	float fHeight = (effectCount * m_effectDisplaySpacing) - (m_effectDisplaySpacing - m_effectDisplayHeight);
