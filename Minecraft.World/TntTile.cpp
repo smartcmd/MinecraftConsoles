@@ -12,8 +12,8 @@
 
 TntTile::TntTile(int id) : Tile(id, Material::explosive)
 {
-	iconTop = NULL;
-	iconBottom = NULL;
+	iconTop = nullptr;
+	iconBottom = nullptr;
 }
 
 Icon *TntTile::getTexture(int face, int data)
@@ -57,7 +57,7 @@ void TntTile::wasExploded(Level *level, int x, int y, int z, Explosion *explosio
 	// 4J-JEV: Fix for #90934 - Customer Encountered: TU11: Content: Gameplay: TNT blocks are triggered by explosions even though "TNT explodes" option is unchecked.
 	if( level->newPrimedTntAllowed() && app.GetGameHostOption(eGameHostOption_TNT) )
 	{
-		shared_ptr<PrimedTnt> primed = shared_ptr<PrimedTnt>( new PrimedTnt(level, x + 0.5f, y + 0.5f, z + 0.5f, explosion->getSourceMob()) );
+		shared_ptr<PrimedTnt> primed = std::make_shared<PrimedTnt>(level, x + 0.5f, y + 0.5f, z + 0.5f, explosion->getSourceMob());
 		primed->life = level->random->nextInt(primed->life / 4) + primed->life / 8;
 		level->addEntity(primed);
 	}
@@ -77,7 +77,7 @@ void TntTile::destroy(Level *level, int x, int y, int z, int data, shared_ptr<Li
 		// 4J - added condition to have finite limit of these
 		if( level->newPrimedTntAllowed() && app.GetGameHostOption(eGameHostOption_TNT) )
 		{
-			shared_ptr<PrimedTnt> tnt = shared_ptr<PrimedTnt>(  new PrimedTnt(level, x + 0.5f, y + 0.5f, z + 0.5f, source) );
+			shared_ptr<PrimedTnt> tnt = std::make_shared<PrimedTnt>(level, x + 0.5f, y + 0.5f, z + 0.5f, source);
 			level->addEntity(tnt);
 			level->playEntitySound(tnt, eSoundType_RANDOM_FUSE, 1, 1.0f);
 		}
@@ -87,7 +87,7 @@ void TntTile::destroy(Level *level, int x, int y, int z, int data, shared_ptr<Li
 bool TntTile::use(Level *level, int x, int y, int z, shared_ptr<Player> player, int clickedFace, float clickX, float clickY, float clickZ, bool soundOnly/*=false*/) // 4J added soundOnly param
 {
 	if (soundOnly) return false;
-	if (player->getSelectedItem() != NULL && player->getSelectedItem()->id == Item::flintAndSteel_Id)
+	if (player->getSelectedItem() != nullptr && player->getSelectedItem()->id == Item::flintAndSteel_Id)
 	{
 		destroy(level, x, y, z, EXPLODE_BIT, player);
 		level->removeTile(x, y, z);

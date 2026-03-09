@@ -15,7 +15,7 @@ public:
 
 public:
 	StairTile_SPU(int id) : Tile_SPU(id) {}
-	void updateShape(ChunkRebuildData *level, int x, int y, int z, int forceData = -1, TileEntity* forceEntity = NULL);	// 4J added forceData, forceEntity param
+	void updateShape(ChunkRebuildData *level, int x, int y, int z, int forceData = -1, TileEntity* forceEntity = nullptr);	// 4J added forceData, forceEntity param
 	bool isSolidRender(bool isServerLevel = false);
 	int getRenderShape();
 	void setBaseShape(ChunkRebuildData *level, int x, int y, int z);

@@ -9,7 +9,7 @@ TutorialTask::TutorialTask(Tutorial *tutorial, int descriptionId, bool enablePre
 		areConstraintsEnabled( false ), bIsCompleted( false ), bHasBeenActivated( false ),
 		m_bAllowFade(bAllowFade), m_bTaskReminders(bTaskReminders), m_bShowMinimumTime( bShowMinimumTime), m_bShownForMinimumTime( false )
 {
-	if(inConstraints != NULL)
+	if(inConstraints != nullptr)
 	{
 		for(auto& constraint : *inConstraints)
 		{

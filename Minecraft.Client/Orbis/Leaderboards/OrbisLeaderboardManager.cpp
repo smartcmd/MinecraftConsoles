@@ -29,7 +29,7 @@ OrbisLeaderboardManager::OrbisLeaderboardManager()
 
 	m_myXUID = INVALID_XUID;
 
-	m_scores = NULL; //m_stats = NULL;
+	m_scores = nullptr; //m_stats = nullptr;
 
 	m_statsType = eStatsType_Kills;
 	m_difficulty = 0;
@@ -41,7 +41,7 @@ OrbisLeaderboardManager::OrbisLeaderboardManager()
 	InitializeCriticalSection(&m_csViewsLock);
 
 	m_running = false;
-	m_threadScoreboard = NULL;
+	m_threadScoreboard = nullptr;
 }
 
 OrbisLeaderboardManager::~OrbisLeaderboardManager()
@@ -181,7 +181,7 @@ bool OrbisLeaderboardManager::getScoreByIds()
 	SceRtcTick last_sort_date;
 	SceNpScoreRankNumber mTotalRecord;
 
-	SceNpId *npIds = NULL;
+	SceNpId *npIds = nullptr;
 	
 
 	int ret;
@@ -267,7 +267,7 @@ bool OrbisLeaderboardManager::getScoreByIds()
 	ZeroMemory(comments, sizeof(SceNpScoreComment) * num);
 
 	/* app.DebugPrintf("sceNpScoreGetRankingByNpId(\n\t transaction=%i,\n\t boardID=0,\n\t npId=%i,\n\t friendCount*sizeof(SceNpId)=%i*%i=%i,\
-	rankData=%i,\n\t friendCount*sizeof(SceNpScorePlayerRankData)=%i,\n\t NULL, 0, NULL, 0,\n\t friendCount=%i,\n...\n",
+	rankData=%i,\n\t friendCount*sizeof(SceNpScorePlayerRankData)=%i,\n\t nullptr, 0, nullptr, 0,\n\t friendCount=%i,\n...\n",
 	transaction, npId, friendCount, sizeof(SceNpId), friendCount*sizeof(SceNpId),
 	rankData, friendCount*sizeof(SceNpScorePlayerRankData), friendCount
 	); */
@@ -284,9 +284,9 @@ bool OrbisLeaderboardManager::getScoreByIds()
 
 			sceNpScoreDestroyTransactionCtx(ret);
 
-			if (npIds		!= NULL)	delete [] npIds;
-			if (ptr			!= NULL)	delete [] ptr;
-			if (comments	!= NULL)	delete [] comments;
+			if (npIds		!= nullptr)	delete [] npIds;
+			if (ptr			!= nullptr)	delete [] ptr;
+			if (comments	!= nullptr)	delete [] comments;
 
 			return false;
 		}
@@ -297,9 +297,9 @@ bool OrbisLeaderboardManager::getScoreByIds()
 
 			m_eStatsState = eStatsState_Failed;
 
-			if (npIds		!= NULL)	delete [] npIds;
-			if (ptr			!= NULL)	delete [] ptr;
-			if (comments	!= NULL)	delete [] comments;
+			if (npIds		!= nullptr)	delete [] npIds;
+			if (ptr			!= nullptr)	delete [] ptr;
+			if (comments	!= nullptr)	delete [] comments;
 
 			return false;
 		}
@@ -322,14 +322,14 @@ bool OrbisLeaderboardManager::getScoreByIds()
 
 			batch + comments,	sizeof(SceNpScoreComment) * tmpNum,			//OUT: Comments
 
-			NULL, 0, // GameData. (unused)
+			nullptr, 0, // GameData. (unused)
 
 			tmpNum,
 
 			&last_sort_date,
 			&mTotalRecord,
 
-			NULL // Reserved, specify null.
+			nullptr // Reserved, specify null.
 			);
 
 		if (ret == SCE_NP_COMMUNITY_ERROR_ABORTED)
@@ -357,7 +357,7 @@ bool OrbisLeaderboardManager::getScoreByIds()
 	m_readCount = num;
 
 	// Filter scorers and construct output structure.
-	if (m_scores != NULL) delete [] m_scores;
+	if (m_scores != nullptr) delete [] m_scores;
 	m_scores = new ReadScore[m_readCount];
 	convertToOutput(m_readCount, m_scores, ptr, comments);
 	m_maxRank = m_readCount;
@@ -390,7 +390,7 @@ error3:
 	delete [] ptr;
 	delete [] comments;
 error2:
-	if (npIds != NULL) delete [] npIds;
+	if (npIds != nullptr) delete [] npIds;
 error1:
 	if (m_eStatsState != eStatsState_Canceled) m_eStatsState = eStatsState_Failed;
 	app.DebugPrintf("[LeaderboardManger] getScoreByIds() FAILED, ret=0x%X\n", ret);
@@ -443,14 +443,14 @@ bool OrbisLeaderboardManager::getScoreByRange()
 
 		comments, sizeof(SceNpScoreComment) * num, //OUT: Comment Data
 
-		NULL, 0, // GameData.
+		nullptr, 0, // GameData.
 
 		num,
 
 		&last_sort_date,
 		&m_maxRank,		// 'Total number of players registered in the target scoreboard.'
 
-		NULL // Reserved, specify null.
+		nullptr // Reserved, specify null.
 		);
 
 	if (ret == SCE_NP_COMMUNITY_ERROR_ABORTED)
@@ -471,7 +471,7 @@ bool OrbisLeaderboardManager::getScoreByRange()
 		delete [] ptr;
 		delete [] comments;
 
-		m_scores = NULL;
+		m_scores = nullptr;
 		m_readCount = 0;
 
 		m_eStatsState = eStatsState_Ready;
@@ -489,7 +489,7 @@ bool OrbisLeaderboardManager::getScoreByRange()
 
 	//m_stats = ptr; //Maybe: addPadding(num,ptr);
 
-	if (m_scores != NULL) delete [] m_scores;
+	if (m_scores != nullptr) delete [] m_scores;
 	m_readCount = ret;
 	m_scores = new ReadScore[m_readCount];
 	for (int i=0; i<m_readCount; i++)
@@ -574,12 +574,12 @@ bool OrbisLeaderboardManager::setScore()
 		rscore.m_score,		//IN: new score,
 
 		&comment,	// Comments
-		NULL,		// GameInfo
+		nullptr,		// GameInfo
 
 		&tmp,		//OUT: current rank,
-		NULL,		//compareDate 
+		nullptr,		//compareDate 
 
-		NULL // Reserved, specify null.
+		nullptr // Reserved, specify null.
 		);
 
 	if (ret==SCE_NP_COMMUNITY_SERVER_ERROR_NOT_BEST_SCORE) //0x8002A415
@@ -615,7 +615,7 @@ void OrbisLeaderboardManager::Tick()
 	{
 	case eStatsState_Ready:
 		{		
-			assert(m_scores != NULL || m_readCount == 0);
+			assert(m_scores != nullptr || m_readCount == 0);
 
 			view.m_numQueries = m_readCount;
 			view.m_queries = m_scores;
@@ -627,7 +627,7 @@ void OrbisLeaderboardManager::Tick()
 			if (view.m_numQueries > 0)
 				ret = eStatsReturn_Success;
 
-			if (m_readListener != NULL)
+			if (m_readListener != nullptr)
 			{
 				app.DebugPrintf("[LeaderboardManager] OnStatsReadComplete(%i, %i, _), m_readCount=%i.\n", ret, m_maxRank, m_readCount);
 				m_readListener->OnStatsReadComplete(ret, m_maxRank, view);
@@ -636,16 +636,16 @@ void OrbisLeaderboardManager::Tick()
 			m_eStatsState = eStatsState_Idle;
 
 			delete [] m_scores;
-			m_scores = NULL;
+			m_scores = nullptr;
 		}
 		break;
 
 	case eStatsState_Failed:
 		{
 			view.m_numQueries = 0;
-			view.m_queries = NULL;
+			view.m_queries = nullptr;
 
-			if ( m_readListener != NULL )
+			if ( m_readListener != nullptr )
 				m_readListener->OnStatsReadComplete(eStatsReturn_NetworkError, 0, view);
 
 			m_eStatsState = eStatsState_Idle;
@@ -667,7 +667,7 @@ bool OrbisLeaderboardManager::OpenSession()
 {
 	if (m_openSessions == 0)
 	{
-		if (m_threadScoreboard == NULL)
+		if (m_threadScoreboard == nullptr)
 		{
 			m_threadScoreboard = new C4JThread(&scoreboardThreadEntry, this, "4JScoreboard");
 			m_threadScoreboard->SetProcessor(CPU_CORE_LEADERBOARDS);
@@ -762,7 +762,7 @@ void OrbisLeaderboardManager::FlushStats() {}
 
 void OrbisLeaderboardManager::CancelOperation()
 {
-	m_readListener = NULL;
+	m_readListener = nullptr;
 	m_eStatsState = eStatsState_Canceled;
 
 	if (m_requestId != 0)
@@ -912,7 +912,7 @@ void OrbisLeaderboardManager::fromBase32(void *out, SceNpScoreComment *in)
 	for (int i = 0; i < SCE_NP_SCORE_COMMENT_MAXLEN; i++)
 	{
 		ch[0] = in->utf8Comment[i];
-		unsigned char fivebits = strtol(ch, NULL, 32) << 3;
+		unsigned char fivebits = strtol(ch, nullptr, 32) << 3;
 
 		int sByte = (i*5) / 8;
 		int eByte = (5+(i*5)) / 8;
@@ -973,7 +973,7 @@ bool OrbisLeaderboardManager::test_string(string testing)
 	int ctx = sceNpScoreCreateTransactionCtx(m_titleContext);
 	if (ctx<0) return false;
 
-	int ret = sceNpScoreCensorComment(ctx, (const char *) &comment, NULL);
+	int ret = sceNpScoreCensorComment(ctx, (const char *) &comment, nullptr);
 
 	if (ret == SCE_NP_COMMUNITY_SERVER_ERROR_CENSORED)
 	{

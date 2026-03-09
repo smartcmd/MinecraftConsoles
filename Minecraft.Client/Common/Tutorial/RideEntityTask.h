@@ -13,7 +13,7 @@ protected:
 
 public:
 	RideEntityTask(const int eTYPE, Tutorial *tutorial, int descriptionId,
-		bool enablePreCompletion = false, vector<TutorialConstraint *> *inConstraints = NULL,
+		bool enablePreCompletion = false, vector<TutorialConstraint *> *inConstraints = nullptr,
 		bool bShowMinimumTime = false, bool bAllowFade = true, bool bTaskReminders = true );
 
 	virtual bool isCompleted();

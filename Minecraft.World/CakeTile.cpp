@@ -13,9 +13,9 @@ CakeTile::CakeTile(int id) : Tile(id, Material::cake,isSolidRender())
 {
 	setTicking(true);
 
-	iconTop = NULL;
-	iconBottom = NULL;
-	iconInner = NULL;
+	iconTop = nullptr;
+	iconBottom = nullptr;
+	iconInner = nullptr;
 }
 
 void CakeTile::updateShape(LevelSource *level, int x, int y, int z, int forceData, shared_ptr<TileEntity> forceEntity) // 4J added forceData, forceEntity param

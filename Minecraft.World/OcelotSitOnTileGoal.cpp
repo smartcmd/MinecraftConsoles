@@ -41,7 +41,7 @@ bool OcelotSitOnTileGoal::canContinueToUse()
 
 void OcelotSitOnTileGoal::start()
 {
-	ocelot->getNavigation()->moveTo((float) tileX + 0.5, tileY + 1, (float) tileZ + 0.5, speedModifier);
+	ocelot->getNavigation()->moveTo(static_cast<float>(tileX) + 0.5, tileY + 1, static_cast<float>(tileZ) + 0.5, speedModifier);
 	_tick = 0;
 	tryTicks = 0;
 	maxTicks = ocelot->getRandom()->nextInt(ocelot->getRandom()->nextInt(SIT_TICKS) + SIT_TICKS) + SIT_TICKS;
@@ -64,7 +64,7 @@ void OcelotSitOnTileGoal::tick()
 	if (ocelot->distanceToSqr(tileX, tileY + 1, tileZ) > 1)
 	{
 		ocelot->setSitting(false);
-		ocelot->getNavigation()->moveTo((float) tileX + 0.5, tileY + 1, (float) tileZ + 0.5, speedModifier);
+		ocelot->getNavigation()->moveTo(static_cast<float>(tileX) + 0.5, tileY + 1, static_cast<float>(tileZ) + 0.5, speedModifier);
 		tryTicks++;
 	}
 	else if (!ocelot->isSitting())
@@ -79,12 +79,12 @@ void OcelotSitOnTileGoal::tick()
 
 bool OcelotSitOnTileGoal::findNearestTile()
 {
-	int y = (int) ocelot->y;
+	int y = static_cast<int>(ocelot->y);
 	double distSqr = Integer::MAX_VALUE;
 
-	for (int x = (int) ocelot->x - SEARCH_RANGE; x < ocelot->x + SEARCH_RANGE; x++)
+	for (int x = static_cast<int>(ocelot->x) - SEARCH_RANGE; x < ocelot->x + SEARCH_RANGE; x++)
 	{
-		for (int z = (int) ocelot->z - SEARCH_RANGE; z < ocelot->z + SEARCH_RANGE; z++)
+		for (int z = static_cast<int>(ocelot->z) - SEARCH_RANGE; z < ocelot->z + SEARCH_RANGE; z++)
 		{
 			if (isValidTarget(ocelot->level, x, y, z) && ocelot->level->isEmptyTile(x, y + 1, z))
 			{

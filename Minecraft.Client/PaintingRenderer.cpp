@@ -21,7 +21,7 @@ void PaintingRenderer::render(shared_ptr<Entity> _painting, double x, double y, 
     random->setSeed(187);
 
     glPushMatrix();
-    glTranslatef((float)x, (float)y, (float)z);
+    glTranslatef(static_cast<float>(x), static_cast<float>(y), static_cast<float>(z));
     glRotatef(rot, 0, 1, 0);
     glEnable(GL_RESCALE_NORMAL);
     bindTexture(painting);	// 4J was L"/art/kz.png"

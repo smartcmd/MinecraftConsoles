@@ -3,7 +3,7 @@
 #include "net.minecraft.world.level.tile.h"
 #include "ShovelItem.h"
 
-TileArray *ShovelItem::diggables = NULL;
+TileArray *ShovelItem::diggables = nullptr;
 
 void ShovelItem::staticCtor()
 {

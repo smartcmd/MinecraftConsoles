@@ -18,6 +18,6 @@ class SetCreativeModeSlotPacket : public Packet, public enable_shared_from_this<
 
 
 public:
-	static shared_ptr<Packet> create() { return shared_ptr<Packet>(new SetCreativeModeSlotPacket()); }
+	static shared_ptr<Packet> create() { return std::make_shared<SetCreativeModeSlotPacket>(); }
 	virtual int getId() { return 107; }
 };

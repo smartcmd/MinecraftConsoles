@@ -55,7 +55,7 @@ void FlatLevelSource::prepareHeights(byteArray blocks)
 				{
 					block = Tile::grass_Id;
 				}
-				blocks[xc << 11 | zc << 7 | yc] = (byte) block;
+				blocks[xc << 11 | zc << 7 | yc] = static_cast<byte>(block);
 			}
 		}
 	}
@@ -70,7 +70,7 @@ LevelChunk *FlatLevelSource::getChunk(int xOffs, int zOffs)
 {
 	// 4J - now allocating this with a physical alloc & bypassing general memory management so that it will get cleanly freed
 	int chunksSize = Level::genDepth * 16  * 16;
-	byte *tileData = (byte *)XPhysicalAlloc(chunksSize, MAXULONG_PTR, 4096, PAGE_READWRITE);
+	byte *tileData = static_cast<byte *>(XPhysicalAlloc(chunksSize, MAXULONG_PTR, 4096, PAGE_READWRITE));
 	XMemSet128(tileData,0,chunksSize);
 	byteArray blocks = byteArray(tileData,chunksSize);
 //	byteArray blocks = byteArray(16 * level->depth * 16);
@@ -141,15 +141,15 @@ vector<Biome::MobSpawnerData *> *FlatLevelSource::getMobsAt(MobCategory *mobCate
 {
  	Biome *biome = level->getBiome(x, z);
  	if (biome == NULL)
- 	{
- 		return NULL;
+	{
+ 		return nullptr;
  	}
  	return biome->getMobs(mobCategory);
 }
 
 TilePos *FlatLevelSource::findNearestMapFeature(Level *level, const wstring& featureName, int x, int y, int z)
 {
-	return NULL;
+	return nullptr;
 }
 
 void FlatLevelSource::recreateLogicStructuresForChunk(int chunkX, int chunkZ)

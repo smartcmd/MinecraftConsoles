@@ -6,7 +6,7 @@
 #include "..\Minecraft.World\net.minecraft.h"
 #include "..\Minecraft.World\net.minecraft.world.level.tile.h"
 
-SkullTileRenderer *SkullTileRenderer::instance = NULL;
+SkullTileRenderer *SkullTileRenderer::instance = nullptr;
 
 ResourceLocation SkullTileRenderer::SKELETON_LOCATION = ResourceLocation(TN_MOB_SKELETON);
 ResourceLocation SkullTileRenderer::WITHER_SKELETON_LOCATION = ResourceLocation(TN_MOB_WITHER_SKELETON);
@@ -28,7 +28,7 @@ SkullTileRenderer::~SkullTileRenderer()
 void SkullTileRenderer::render(shared_ptr<TileEntity> _skull, double x, double y, double z, float a, bool setColor, float alpha, bool useCompiled)
 {
 	shared_ptr<SkullTileEntity> skull = dynamic_pointer_cast<SkullTileEntity>(_skull);
-	renderSkull((float) x, (float) y, (float) z, skull->getData() & SkullTile::PLACEMENT_MASK, skull->getRotation() * 360 / 16.0f, skull->getSkullType(), skull->getExtraType());
+	renderSkull(static_cast<float>(x), static_cast<float>(y), static_cast<float>(z), skull->getData() & SkullTile::PLACEMENT_MASK, skull->getRotation() * 360 / 16.0f, skull->getSkullType(), skull->getExtraType());
 }
 
 void SkullTileRenderer::init(TileEntityRenderDispatcher *tileEntityRenderDispatcher)

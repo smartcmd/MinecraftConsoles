@@ -30,7 +30,7 @@ void IceTile::playerDestroy(Level *level, shared_ptr<Player> player, int x, int 
 	if (isSilkTouchable() && EnchantmentHelper::hasSilkTouch(player))
 	{
 		shared_ptr<ItemInstance> item = getSilkTouchItemInstance(data);
-		if (item != NULL)
+		if (item != nullptr)
 		{
 			popResource(level, x, y, z, item);
 		}

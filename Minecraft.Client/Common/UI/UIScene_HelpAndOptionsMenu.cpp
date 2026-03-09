@@ -8,7 +8,7 @@ UIScene_HelpAndOptionsMenu::UIScene_HelpAndOptionsMenu(int iPad, void *initData,
 	// Setup all the Iggy references we need for this scene
 	initialiseMovie();
 
-	m_bNotInGame=(Minecraft::GetInstance()->level==NULL);
+	m_bNotInGame=(Minecraft::GetInstance()->level==nullptr);
 
 	m_buttons[BUTTON_HAO_CHANGESKIN].init(IDS_CHANGE_SKIN,BUTTON_HAO_CHANGESKIN);
 	m_buttons[BUTTON_HAO_HOWTOPLAY].init(IDS_HOW_TO_PLAY,BUTTON_HAO_HOWTOPLAY);
@@ -41,7 +41,7 @@ UIScene_HelpAndOptionsMenu::UIScene_HelpAndOptionsMenu(int iPad, void *initData,
 
 
 	// 4J-PB - do not need a storage device to see this menu - just need one when you choose to re-install them
-	bool bNotInGame=(Minecraft::GetInstance()->level==NULL);
+	bool bNotInGame=(Minecraft::GetInstance()->level==nullptr);
 
 	// any content to be re-installed? 
 	if(m_iPad==ProfileManager.GetPrimaryPad() && bNotInGame)
@@ -103,7 +103,7 @@ void UIScene_HelpAndOptionsMenu::updateTooltips()
 
 void UIScene_HelpAndOptionsMenu::updateComponents()
 {
-	bool bNotInGame=(Minecraft::GetInstance()->level==NULL);
+	bool bNotInGame=(Minecraft::GetInstance()->level==nullptr);
 	if(bNotInGame)
 	{
 		m_parentLayer->showComponent(m_iPad,eUIComponent_Panorama,true);
@@ -128,7 +128,7 @@ void UIScene_HelpAndOptionsMenu::handleReload()
 #endif
 
 	// 4J-PB - do not need a storage device to see this menu - just need one when you choose to re-install them
-	bool bNotInGame=(Minecraft::GetInstance()->level==NULL);
+	bool bNotInGame=(Minecraft::GetInstance()->level==nullptr);
 
 	// any content to be re-installed? 
 	if(m_iPad==ProfileManager.GetPrimaryPad() && bNotInGame)
@@ -207,7 +207,7 @@ void UIScene_HelpAndOptionsMenu::handleInput(int iPad, int key, bool repeat, boo
 
 void UIScene_HelpAndOptionsMenu::handlePress(F64 controlId, F64 childId)
 {
-	switch((int)controlId)
+	switch(static_cast<int>(controlId))
 	{
 	case BUTTON_HAO_CHANGESKIN:
 		ui.NavigateToScene(m_iPad, eUIScene_SkinSelectMenu);

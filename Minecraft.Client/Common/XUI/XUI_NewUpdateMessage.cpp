@@ -8,7 +8,7 @@
 
 HRESULT CScene_NewUpdateMessage::OnInit( XUIMessageInit* pInitData, BOOL& bHandled )
 {
-	m_iPad = *(int *) pInitData->pvInitData;
+	m_iPad = *static_cast<int *>(pInitData->pvInitData);
 	m_bIsSD=!RenderManager.IsHiDef() && !RenderManager.IsWidescreen();
 
 	MapChildControls();

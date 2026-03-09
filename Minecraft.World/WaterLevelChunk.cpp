@@ -160,5 +160,5 @@ void WaterLevelChunk::setLevelChunkBrightness(LightLayer::variety layer, int x, 
 
 Biome *WaterLevelChunk::getBiome(int x, int z, BiomeSource *biomeSource)
 {
-	return NULL;
+	return nullptr;
 }

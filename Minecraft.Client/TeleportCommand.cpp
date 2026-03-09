@@ -29,7 +29,7 @@ void TeleportCommand::execute(shared_ptr<CommandSender> source, byteArray comman
 	shared_ptr<ServerPlayer> subject = players->getPlayer(subjectID);
 	shared_ptr<ServerPlayer> destination = players->getPlayer(destinationID);
 
-	if(subject != NULL && destination != NULL && subject->level->dimension->id == destination->level->dimension->id && subject->isAlive() )
+	if(subject != nullptr && destination != nullptr && subject->level->dimension->id == destination->level->dimension->id && subject->isAlive() )
 	{
 		subject->ride(nullptr);
 		subject->connection->teleport(destination->x, destination->y, destination->z, destination->yRot, destination->xRot);
@@ -86,5 +86,5 @@ shared_ptr<GameCommandPacket> TeleportCommand::preparePacket(PlayerUID subject, 
 	dos.writePlayerUID(subject);
 	dos.writePlayerUID(destination);
 
-	return shared_ptr<GameCommandPacket>( new GameCommandPacket(eGameCommand_Teleport, baos.toByteArray() ));
+	return std::make_shared<GameCommandPacket>(eGameCommand_Teleport, baos.toByteArray());
 }

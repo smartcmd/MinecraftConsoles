@@ -76,7 +76,7 @@ bool Options::Option::isBoolean() const
 
 int	Options::Option::getId() const
 {
-	return (int)(this-options);
+	return static_cast<int>(this - options);
 }
 
 wstring Options::Option::getCaptionId() const
@@ -152,8 +152,8 @@ void Options::init()
 	keyMappings[12] = keyPickItem;
 	keyMappings[13] = keyToggleFog;
 
-	minecraft = NULL;
-	//optionsFile = NULL;
+	minecraft = nullptr;
+	//optionsFile = nullptr;
 
 	difficulty = 2;
 	hideGui = false;
@@ -417,12 +417,12 @@ void Options::load()
         BufferedReader *br = new BufferedReader(new InputStreamReader( new FileInputStream( optionsFile ) ) );
 
         wstring line = L"";
-        while ((line = br->readLine()) != L"")	// 4J - was check against NULL - do we need to distinguish between empty lines and a fail here?
+        while ((line = br->readLine()) != L"")	// 4J - was check against nullptr - do we need to distinguish between empty lines and a fail here?
 		{
 			// 4J - removed try/catch
 //            try {
                 wstring cmds[2];
-				int splitpos = (int)line.find(L":");
+				size_t splitpos = line.find(L":");
 				if( splitpos == wstring::npos )
 				{
 					cmds[0] = line;

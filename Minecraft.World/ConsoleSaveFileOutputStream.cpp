@@ -19,7 +19,7 @@ ConsoleSaveFileOutputStream::ConsoleSaveFileOutputStream(ConsoleSaveFile *saveFi
 
 	m_file = m_saveFile->createFile(file);
 
-	m_saveFile->setFilePointer( m_file, 0, NULL, FILE_BEGIN );
+	m_saveFile->setFilePointer( m_file, 0, nullptr, FILE_BEGIN );
 }
 
 ConsoleSaveFileOutputStream::ConsoleSaveFileOutputStream(ConsoleSaveFile *saveFile, FileEntry *file)
@@ -28,7 +28,7 @@ ConsoleSaveFileOutputStream::ConsoleSaveFileOutputStream(ConsoleSaveFile *saveFi
 
 	m_file = file;
 
-	m_saveFile->setFilePointer( m_file, 0, NULL, FILE_BEGIN );
+	m_saveFile->setFilePointer( m_file, 0, nullptr, FILE_BEGIN );
 }
 
 //Writes the specified byte to this file output stream. Implements the write method of OutputStream.
@@ -38,7 +38,7 @@ void ConsoleSaveFileOutputStream::write(unsigned int b)
 {	
 	DWORD numberOfBytesWritten;
 
-	byte value = (byte) b;
+	byte value = static_cast<byte>(b);
 
 	BOOL result = m_saveFile->writeFile(
 		m_file,
@@ -115,7 +115,7 @@ void ConsoleSaveFileOutputStream::write(byteArray b, unsigned int offset, unsign
 //If this stream has an associated channel then the channel is closed as well.
 void ConsoleSaveFileOutputStream::close()
 {
-	if( m_saveFile != NULL )
+	if( m_saveFile != nullptr )
 	{
 		BOOL result = m_saveFile->closeHandle( m_file );
 
@@ -125,6 +125,6 @@ void ConsoleSaveFileOutputStream::close()
 		}
 
 		// Stop the dtor from trying to close it again
-		m_saveFile = NULL;
+		m_saveFile = nullptr;
 	}
 }

@@ -141,11 +141,11 @@ void CanyonFeature::addTunnel(int64_t seed, int xOffs, int zOffs, byteArray bloc
 							{
 								if (yy < 10)
 								{
-									blocks[p] = (byte) Tile::lava_Id;
+									blocks[p] = static_cast<byte>(Tile::lava_Id);
 								}
 								else
 								{
-									blocks[p] = (byte) 0;
+									blocks[p] = static_cast<byte>(0);
 									if (hasGrass && blocks[p - 1] == Tile::dirt_Id) blocks[p - 1] = (byte) level->getBiome(xx + xOffs * 16, zz + zOffs * 16)->topMaterial;
 								}
 							}
@@ -179,7 +179,7 @@ void CanyonFeature::addFeature(Level *level, int x, int z, int xOffs, int zOffs,
 		addTunnel(random->nextLong(), xOffs, zOffs, blocks, xCave, yCave, zCave, thickness, yRot, xRot, 0, 0, 3.0);
 
 		// 4J Add to feature list
-		app.AddTerrainFeaturePosition(eTerrainFeature_Ravine,(int)(xCave/16.0),(int)(yCave/16.0));
+		app.AddTerrainFeaturePosition(eTerrainFeature_Ravine,static_cast<int>(xCave / 16.0),static_cast<int>(yCave / 16.0));
 	}
 
 }

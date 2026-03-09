@@ -11,7 +11,7 @@ ResourceLocation SnowManRenderer::SNOWMAN_LOCATION = ResourceLocation(TN_MOB_SNO
 
 SnowManRenderer::SnowManRenderer() : MobRenderer(new SnowManModel(), 0.5f)
 {
-	model = (SnowManModel *) MobRenderer::model;
+	model = static_cast<SnowManModel *>(MobRenderer::model);
 	this->setArmor(model);
 }
 
@@ -22,8 +22,8 @@ void SnowManRenderer::additionalRendering(shared_ptr<LivingEntity> _mob, float a
 	shared_ptr<SnowMan> mob = dynamic_pointer_cast<SnowMan>(_mob);
 
 	MobRenderer::additionalRendering(mob, a);
-	shared_ptr<ItemInstance> headGear = shared_ptr<ItemInstance>( new ItemInstance(Tile::pumpkin, 1) );
-	if (headGear != NULL && headGear->getItem()->id < 256)
+	shared_ptr<ItemInstance> headGear = std::make_shared<ItemInstance>(Tile::pumpkin, 1);
+	if (headGear != nullptr && headGear->getItem()->id < 256)
 	{
 		glPushMatrix();
 		model->head->translateTo(1 / 16.0f);

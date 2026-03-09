@@ -49,7 +49,7 @@ void SonyVoiceChat::init( SQRNetworkManager_PS3* pNetMan )
 
 	sm_pNetworkManager = pNetMan;
 	setState(AVC_STATE_CHAT_INIT);
-	ProfileManager.GetChatAndContentRestrictions(0,false,&sm_isChatRestricted,NULL,NULL);
+	ProfileManager.GetChatAndContentRestrictions(0,false,&sm_isChatRestricted,nullptr,nullptr);
 }
 
 void SonyVoiceChat::shutdown()
@@ -225,11 +225,11 @@ void SonyVoiceChat::eventcb( CellSysutilAvc2EventId event_id, CellSysutilAvc2Eve
 		{ CELL_AVC2_EVENT_LEAVE_FAILED,                     eventcb_leave },
 		{ CELL_AVC2_EVENT_UNLOAD_SUCCEEDED,                 eventcb_unload },
 		{ CELL_AVC2_EVENT_UNLOAD_FAILED,                    eventcb_unload },
-		{ CELL_AVC2_EVENT_SYSTEM_NEW_MEMBER_JOINED,         NULL },
-		{ CELL_AVC2_EVENT_SYSTEM_MEMBER_LEFT,               NULL },
-		{ CELL_AVC2_EVENT_SYSTEM_SESSION_ESTABLISHED,       NULL },
-		{ CELL_AVC2_EVENT_SYSTEM_SESSION_CANNOT_ESTABLISHED,NULL },
-		{ CELL_AVC2_EVENT_SYSTEM_SESSION_DISCONNECTED,      NULL },
+		{ CELL_AVC2_EVENT_SYSTEM_NEW_MEMBER_JOINED,         nullptr },
+		{ CELL_AVC2_EVENT_SYSTEM_MEMBER_LEFT,               nullptr },
+		{ CELL_AVC2_EVENT_SYSTEM_SESSION_ESTABLISHED,       nullptr },
+		{ CELL_AVC2_EVENT_SYSTEM_SESSION_CANNOT_ESTABLISHED,nullptr },
+		{ CELL_AVC2_EVENT_SYSTEM_SESSION_DISCONNECTED,      nullptr },
 		{ CELL_AVC2_EVENT_SYSTEM_VOICE_DETECTED,            eventcb_voiceDetected },
 
 	};
@@ -258,7 +258,7 @@ int SonyVoiceChat::load()
 	ret = cellSysutilAvc2LoadAsync( sm_pNetworkManager->m_matchingContext,
 		SYS_MEMORY_CONTAINER_ID_INVALID,
 		eventcb,
-		NULL,
+		nullptr,
 		&g_chat_avc2param );
 	if( ret != CELL_OK )
 	{

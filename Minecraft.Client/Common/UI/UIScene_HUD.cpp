@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "UI.h"
 #include "UIScene_HUD.h"
+#include "UISplitScreenHelpers.h"
 #include "BossMobGuiInfo.h"
 #include "..\..\Minecraft.h"
 #include "..\..\MultiplayerLocalPlayer.h"
@@ -114,7 +115,7 @@ void UIScene_HUD::tick()
 	if(getMovie() && app.GetGameStarted())
 	{
 		Minecraft *pMinecraft = Minecraft::GetInstance();
-		if(pMinecraft->localplayers[m_iPad] == NULL || pMinecraft->localgameModes[m_iPad] == NULL)
+		if(pMinecraft->localplayers[m_iPad] == nullptr || pMinecraft->localgameModes[m_iPad] == nullptr)
 		{
 			return;
 		}
@@ -155,10 +156,10 @@ void UIScene_HUD::tick()
 void UIScene_HUD::customDraw(IggyCustomDrawCallbackRegion *region)
 {
 	Minecraft *pMinecraft = Minecraft::GetInstance();
-	if(pMinecraft->localplayers[m_iPad] == NULL || pMinecraft->localgameModes[m_iPad] == NULL) return;
+	if(pMinecraft->localplayers[m_iPad] == nullptr || pMinecraft->localgameModes[m_iPad] == nullptr) return;
 
 	int slot = -1;
-	swscanf((wchar_t*)region->name,L"slot_%d",&slot);
+	swscanf(static_cast<wchar_t *>(region->name),L"slot_%d",&slot);
 	if (slot == -1)
 	{
 		app.DebugPrintf("This is not the control we are looking for\n");
@@ -167,7 +168,7 @@ void UIScene_HUD::customDraw(IggyCustomDrawCallbackRegion *region)
 	{
 		Slot *invSlot = pMinecraft->localplayers[m_iPad]->inventoryMenu->getSlot(InventoryMenu::USE_ROW_SLOT_START + slot);
 		shared_ptr<ItemInstance> item = invSlot->getItem();
-		if(item != NULL)
+		if(item != nullptr)
 		{
 			unsigned char ucAlpha=app.GetGameSettings(ProfileManager.GetPrimaryPad(),eGameSetting_InterfaceOpacity);
 			float fVal;
@@ -180,8 +181,8 @@ void UIScene_HUD::customDraw(IggyCustomDrawCallbackRegion *region)
 				{
 					if(uiOpacityTimer<10)
 					{
-						float fStep=(80.0f-(float)ucAlpha)/10.0f;
-						fVal=0.01f*(80.0f-((10.0f-(float)uiOpacityTimer)*fStep));
+						float fStep=(80.0f-static_cast<float>(ucAlpha))/10.0f;
+						fVal=0.01f*(80.0f-((10.0f-static_cast<float>(uiOpacityTimer))*fStep));
 					}
 					else
 					{
@@ -190,12 +191,12 @@ void UIScene_HUD::customDraw(IggyCustomDrawCallbackRegion *region)
 				}
 				else
 				{
-					fVal=0.01f*(float)ucAlpha;
+					fVal=0.01f*static_cast<float>(ucAlpha);
 				}
 			}
 			else
 			{
-				fVal=0.01f*(float)ucAlpha;
+				fVal=0.01f*static_cast<float>(ucAlpha);
 			}
 			customDrawSlotControl(region,m_iPad,item,fVal,item->isFoil(),true);
 		}
@@ -254,7 +255,7 @@ void UIScene_HUD::handleReload()
 
 	int iGuiScale;	
 	Minecraft *pMinecraft = Minecraft::GetInstance();
-	if(pMinecraft->localplayers[m_iPad] == NULL || pMinecraft->localplayers[m_iPad]->m_iScreenSection == C4JRender::VIEWPORT_TYPE_FULLSCREEN)
+	if(pMinecraft->localplayers[m_iPad] == nullptr || pMinecraft->localplayers[m_iPad]->m_iScreenSection == C4JRender::VIEWPORT_TYPE_FULLSCREEN)
 	{
 		iGuiScale=app.GetGameSettings(m_iPad,eGameSetting_UISize);
 	}
@@ -265,8 +266,6 @@ void UIScene_HUD::handleReload()
 	SetHudSize(iGuiScale);
 
 	SetDisplayName(ProfileManager.GetDisplayName(m_iPad));
-
-	repositionHud();
 
 	SetTooltipsEnabled(((ui.GetMenuDisplayed(ProfileManager.GetPrimaryPad())) || (app.GetGameSettings(ProfileManager.GetPrimaryPad(),eGameSetting_Tooltips) != 0)));
 }
@@ -595,7 +594,7 @@ void UIScene_HUD::SetSelectedLabel(const wstring &label)
 void UIScene_HUD::HideSelectedLabel()
 {
 	IggyDataValue result;
-	IggyResult out = IggyPlayerCallMethodRS ( getMovie() , &result, IggyPlayerRootPath( getMovie() ), m_funcHideSelectedLabel , 0 , NULL );
+	IggyResult out = IggyPlayerCallMethodRS ( getMovie() , &result, IggyPlayerRootPath( getMovie() ), m_funcHideSelectedLabel , 0 , nullptr );
 }
 
 
@@ -679,15 +678,15 @@ void UIScene_HUD::render(S32 width, S32 height, C4JRender::eViewportType viewpor
 		{
 		case C4JRender::VIEWPORT_TYPE_SPLIT_BOTTOM:
 		case C4JRender::VIEWPORT_TYPE_QUADRANT_BOTTOM_LEFT:
-			yPos = (S32)(ui.getScreenHeight() / 2);
+			yPos = static_cast<S32>(ui.getScreenHeight() / 2);
 			break;
 		case C4JRender::VIEWPORT_TYPE_SPLIT_RIGHT:
 		case C4JRender::VIEWPORT_TYPE_QUADRANT_TOP_RIGHT:
-			xPos = (S32)(ui.getScreenWidth() / 2);
+			xPos = static_cast<S32>(ui.getScreenWidth() / 2);
 			break;
 		case C4JRender::VIEWPORT_TYPE_QUADRANT_BOTTOM_RIGHT:
-			xPos = (S32)(ui.getScreenWidth() / 2);
-			yPos = (S32)(ui.getScreenHeight() / 2);
+			xPos = static_cast<S32>(ui.getScreenWidth() / 2);
+			yPos = static_cast<S32>(ui.getScreenHeight() / 2);
 			break;
 		}
 		ui.setupRenderPosition(xPos, yPos);
@@ -697,30 +696,46 @@ void UIScene_HUD::render(S32 width, S32 height, C4JRender::eViewportType viewpor
 		S32 tileWidth = width;
 		S32 tileHeight = height;
 
+		bool needsYTile = false;
 		switch( viewport )
 		{
 		case C4JRender::VIEWPORT_TYPE_SPLIT_LEFT:
 		case C4JRender::VIEWPORT_TYPE_SPLIT_RIGHT:
-			tileHeight = (S32)(ui.getScreenHeight());
+			tileHeight = static_cast<S32>(ui.getScreenHeight());
 			break;
-		case C4JRender::VIEWPORT_TYPE_SPLIT_TOP:
-			tileWidth = (S32)(ui.getScreenWidth());
-			tileYStart = (S32)(m_movieHeight / 2);
-			break;
-		case C4JRender::VIEWPORT_TYPE_SPLIT_BOTTOM:
-			tileWidth = (S32)(ui.getScreenWidth());
-			tileYStart = (S32)(m_movieHeight / 2);
+		case C4JRender::VIEWPORT_TYPE_SPLIT_TOP:case C4JRender::VIEWPORT_TYPE_SPLIT_BOTTOM:
+			tileWidth = static_cast<S32>(ui.getScreenWidth());
+			needsYTile = true;
 			break;
 		case C4JRender::VIEWPORT_TYPE_QUADRANT_TOP_LEFT:
 		case C4JRender::VIEWPORT_TYPE_QUADRANT_TOP_RIGHT:
 		case C4JRender::VIEWPORT_TYPE_QUADRANT_BOTTOM_LEFT:
 		case C4JRender::VIEWPORT_TYPE_QUADRANT_BOTTOM_RIGHT:
-			tileYStart = (S32)(m_movieHeight / 2);
+			needsYTile = true;
 			break;
 		}
 
-		IggyPlayerSetDisplaySize( getMovie(), m_movieWidth, m_movieHeight );
-		
+		F32 scale;
+		ComputeTileScale(tileWidth, tileHeight, m_movieWidth, m_movieHeight, needsYTile, scale, tileYStart);
+
+		// For vertical split, if the window is shorter than the SWF movie,
+		// scale the movie down to fit the full height instead of cropping.
+		// ComputeTileScale clamps scale >= 1.0 (needed for quadrant mode),
+		// but in vertical split the tile covers the full screen height and
+		// cropping the bottom pushes RepositionHud's ActionScript to shift
+		// elements down.  Scaling down keeps visibleH == movieHeight in SWF
+		// space, so ActionScript sees the full height and applies no offset.
+		if(!needsYTile && m_movieHeight > 0)
+		{
+			F32 scaleH = (F32)tileHeight / (F32)m_movieHeight;
+			if(scaleH < scale)
+				scale = scaleH;
+		}
+
+		IggyPlayerSetDisplaySize( getMovie(), (S32)(m_movieWidth * scale), (S32)(m_movieHeight * scale) );
+
+		repositionHud(tileWidth, tileHeight, scale);
+
 		m_renderWidth = tileWidth;
 		m_renderHeight = tileHeight;
 
@@ -730,7 +745,7 @@ void UIScene_HUD::render(S32 width, S32 height, C4JRender::eViewportType viewpor
 			tileYStart ,
 			tileXStart + tileWidth ,
 			tileYStart + tileHeight ,
-			0 ); 
+			0 );
 		IggyPlayerDrawTilesEnd ( getMovie() );
 	}
 	else
@@ -744,7 +759,7 @@ void UIScene_HUD::handleTimerComplete(int id)
 	Minecraft *pMinecraft = Minecraft::GetInstance();
 	
 	bool anyVisible = false;
-	if(pMinecraft->localplayers[m_iPad]!= NULL)
+	if(pMinecraft->localplayers[m_iPad]!= nullptr)
 	{
 		Gui *pGui = pMinecraft->gui;
 		//DWORD messagesToDisplay = min( CHAT_LINES_COUNT, pGui->getMessagesCount(m_iPad) );
@@ -790,34 +805,24 @@ void UIScene_HUD::handleTimerComplete(int id)
 	//setVisible(anyVisible);
 }
 
-void UIScene_HUD::repositionHud()
+void UIScene_HUD::repositionHud(S32 tileWidth, S32 tileHeight, F32 scale)
 {
 	if(!m_bSplitscreen) return;
 
-	S32 width = 0;
-	S32 height = 0;
-	m_parentLayer->getRenderDimensions( width, height );
+	// Pass the visible tile area in SWF coordinates so ActionScript
+	// positions elements (crosshair, hotbar, etc.) centered in the
+	// actually visible region, not the raw viewport.
+	S32 visibleW = static_cast<S32>(tileWidth / scale);
+	S32 visibleH = static_cast<S32>(tileHeight / scale);
 
-	switch( m_parentLayer->getViewport() )
-	{
-	case C4JRender::VIEWPORT_TYPE_SPLIT_LEFT:
-	case C4JRender::VIEWPORT_TYPE_SPLIT_RIGHT:
-		height = (S32)(ui.getScreenHeight());
-		break;
-	case C4JRender::VIEWPORT_TYPE_SPLIT_TOP:
-	case C4JRender::VIEWPORT_TYPE_SPLIT_BOTTOM:
-		width = (S32)(ui.getScreenWidth());
-		break;
-	}
-
-	app.DebugPrintf(app.USER_SR, "Reposition HUD with dims %d, %d\n", width, height );
+	app.DebugPrintf(app.USER_SR, "Reposition HUD: tile %dx%d, scale %.3f, visible SWF %dx%d\n", tileWidth, tileHeight, scale, visibleW, visibleH );
 
 	IggyDataValue result;
 	IggyDataValue value[2];
 	value[0].type = IGGY_DATATYPE_number;
-	value[0].number = width;
+	value[0].number = visibleW;
 	value[1].type = IGGY_DATATYPE_number;
-	value[1].number = height;
+	value[1].number = visibleH;
 	IggyResult out = IggyPlayerCallMethodRS ( getMovie() , &result, IggyPlayerRootPath( getMovie() ), m_funcRepositionHud , 2 , value );
 }
 
@@ -865,7 +870,7 @@ void UIScene_HUD::handleGameTick()
 	if(getMovie() && app.GetGameStarted())
 	{
 		Minecraft *pMinecraft = Minecraft::GetInstance();
-		if(pMinecraft->localplayers[m_iPad] == NULL || pMinecraft->localgameModes[m_iPad] == NULL)
+		if(pMinecraft->localplayers[m_iPad] == nullptr || pMinecraft->localgameModes[m_iPad] == nullptr)
 		{
 			m_parentLayer->showComponent(m_iPad, eUIScene_HUD,false);
 			return;

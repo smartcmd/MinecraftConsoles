@@ -181,7 +181,7 @@ static char *pshader_basic_vars[] = {
    "color_mul",
    "color_add",
    "focal",
-   NULL
+   nullptr
 };
 
 static char pshader_general2_frag0[] =
@@ -293,7 +293,7 @@ static char **pshader_general2(void)
 
 static char *pshader_general2_vars[] = {
    "tex0",
-   NULL
+   nullptr
 };
 
 static char pshader_exceptional_blend_frag0[] =
@@ -414,7 +414,7 @@ static char pshader_exceptional_blend_frag13[] =
 
 #define NUMFRAGMENTS_pshader_exceptional_blend 3
 static char *pshader_exceptional_blend_arr[13][NUMFRAGMENTS_pshader_exceptional_blend] = {
-   { NULL, NULL, NULL, },
+   { nullptr, nullptr, nullptr, },
    { pshader_exceptional_blend_frag0, pshader_exceptional_blend_frag1, pshader_exceptional_blend_frag2, },
    { pshader_exceptional_blend_frag0, pshader_exceptional_blend_frag3, pshader_exceptional_blend_frag2, },
    { pshader_exceptional_blend_frag0, pshader_exceptional_blend_frag4, pshader_exceptional_blend_frag2, },
@@ -439,7 +439,7 @@ static char *pshader_exceptional_blend_vars[] = {
    "tex1",
    "color_mul",
    "color_add",
-   NULL
+   nullptr
 };
 
 static char pshader_filter_frag0[] =
@@ -593,10 +593,10 @@ static char *pshader_filter_arr[32][NUMFRAGMENTS_pshader_filter] = {
    { pshader_filter_frag0, pshader_filter_frag1, pshader_filter_frag6, pshader_filter_frag1, pshader_filter_frag1, pshader_filter_frag3, pshader_filter_frag2, },
    { pshader_filter_frag0, pshader_filter_frag1, pshader_filter_frag6, pshader_filter_frag1, pshader_filter_frag4, pshader_filter_frag1, pshader_filter_frag2, },
    { pshader_filter_frag0, pshader_filter_frag1, pshader_filter_frag6, pshader_filter_frag1, pshader_filter_frag4, pshader_filter_frag3, pshader_filter_frag2, },
-   { NULL, NULL, NULL, NULL, NULL, NULL, NULL, },
-   { NULL, NULL, NULL, NULL, NULL, NULL, NULL, },
-   { NULL, NULL, NULL, NULL, NULL, NULL, NULL, },
-   { NULL, NULL, NULL, NULL, NULL, NULL, NULL, },
+   { nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, },
+   { nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, },
+   { nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, },
+   { nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, },
    { pshader_filter_frag0, pshader_filter_frag7, pshader_filter_frag1, pshader_filter_frag1, pshader_filter_frag1, pshader_filter_frag1, pshader_filter_frag2, },
    { pshader_filter_frag0, pshader_filter_frag7, pshader_filter_frag1, pshader_filter_frag1, pshader_filter_frag1, pshader_filter_frag3, pshader_filter_frag2, },
    { pshader_filter_frag0, pshader_filter_frag7, pshader_filter_frag1, pshader_filter_frag1, pshader_filter_frag4, pshader_filter_frag1, pshader_filter_frag2, },
@@ -609,10 +609,10 @@ static char *pshader_filter_arr[32][NUMFRAGMENTS_pshader_filter] = {
    { pshader_filter_frag0, pshader_filter_frag7, pshader_filter_frag6, pshader_filter_frag1, pshader_filter_frag1, pshader_filter_frag3, pshader_filter_frag2, },
    { pshader_filter_frag0, pshader_filter_frag7, pshader_filter_frag6, pshader_filter_frag1, pshader_filter_frag4, pshader_filter_frag1, pshader_filter_frag2, },
    { pshader_filter_frag0, pshader_filter_frag7, pshader_filter_frag6, pshader_filter_frag1, pshader_filter_frag4, pshader_filter_frag3, pshader_filter_frag2, },
-   { NULL, NULL, NULL, NULL, NULL, NULL, NULL, },
-   { NULL, NULL, NULL, NULL, NULL, NULL, NULL, },
-   { NULL, NULL, NULL, NULL, NULL, NULL, NULL, },
-   { NULL, NULL, NULL, NULL, NULL, NULL, NULL, },
+   { nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, },
+   { nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, },
+   { nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, },
+   { nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, },
 };
 
 static char **pshader_filter(int bevel, int ontop, int inner, int gradient, int knockout)
@@ -629,7 +629,7 @@ static char *pshader_filter_vars[] = {
    "clamp0",
    "clamp1",
    "color2",
-   NULL
+   nullptr
 };
 
 static char pshader_blur_frag0[] =
@@ -701,8 +701,8 @@ static char pshader_blur_frag9[] =
 
 #define NUMFRAGMENTS_pshader_blur 3
 static char *pshader_blur_arr[10][NUMFRAGMENTS_pshader_blur] = {
-   { NULL, NULL, NULL, },
-   { NULL, NULL, NULL, },
+   { nullptr, nullptr, nullptr, },
+   { nullptr, nullptr, nullptr, },
    { pshader_blur_frag0, pshader_blur_frag1, pshader_blur_frag2, },
    { pshader_blur_frag0, pshader_blur_frag3, pshader_blur_frag2, },
    { pshader_blur_frag0, pshader_blur_frag4, pshader_blur_frag2, },
@@ -722,7 +722,7 @@ static char *pshader_blur_vars[] = {
    "tex0",
    "tap",
    "clampv",
-   NULL
+   nullptr
 };
 
 static char pshader_color_matrix_frag0[] =
@@ -804,7 +804,7 @@ static char **pshader_color_matrix(void)
 static char *pshader_color_matrix_vars[] = {
    "tex0",
    "data",
-   NULL
+   nullptr
 };
 
 static char pshader_manual_clear_frag0[] =
@@ -855,7 +855,7 @@ static char **pshader_manual_clear(void)
 
 static char *pshader_manual_clear_vars[] = {
    "color_mul",
-   NULL
+   nullptr
 };
 
 static char vshader_vsgl_frag0[] =
@@ -966,7 +966,7 @@ static char *vshader_vsgl_vars[] = {
    "texgen_s",
    "texgen_t",
    "viewproj",
-   NULL
+   nullptr
 };
 
 static char vshader_vsglihud_frag0[] =
@@ -1079,6 +1079,6 @@ static char *vshader_vsglihud_vars[] = {
    "worldview",
    "material",
    "textmode",
-   NULL
+   nullptr
 };
 

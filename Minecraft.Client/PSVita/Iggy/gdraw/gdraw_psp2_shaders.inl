@@ -532,24 +532,24 @@ static unsigned char pshader_basic_17[436] = {
 };
 
 static ShaderCode pshader_basic_arr[18] = {
-   { pshader_basic_0, { NULL }  },
-   { pshader_basic_1, { NULL }  },
-   { pshader_basic_2, { NULL }  },
-   { pshader_basic_3, { NULL }  },
-   { pshader_basic_4, { NULL }  },
-   { pshader_basic_5, { NULL }  },
-   { pshader_basic_6, { NULL }  },
-   { pshader_basic_7, { NULL }  },
-   { pshader_basic_8, { NULL }  },
-   { pshader_basic_9, { NULL }  },
-   { pshader_basic_10, { NULL }  },
-   { pshader_basic_11, { NULL }  },
-   { pshader_basic_12, { NULL }  },
-   { pshader_basic_13, { NULL }  },
-   { pshader_basic_14, { NULL }  },
-   { pshader_basic_15, { NULL }  },
-   { pshader_basic_16, { NULL }  },
-   { pshader_basic_17, { NULL }  },
+   { pshader_basic_0, { nullptr }  },
+   { pshader_basic_1, { nullptr }  },
+   { pshader_basic_2, { nullptr }  },
+   { pshader_basic_3, { nullptr }  },
+   { pshader_basic_4, { nullptr }  },
+   { pshader_basic_5, { nullptr }  },
+   { pshader_basic_6, { nullptr }  },
+   { pshader_basic_7, { nullptr }  },
+   { pshader_basic_8, { nullptr }  },
+   { pshader_basic_9, { nullptr }  },
+   { pshader_basic_10, { nullptr }  },
+   { pshader_basic_11, { nullptr }  },
+   { pshader_basic_12, { nullptr }  },
+   { pshader_basic_13, { nullptr }  },
+   { pshader_basic_14, { nullptr }  },
+   { pshader_basic_15, { nullptr }  },
+   { pshader_basic_16, { nullptr }  },
+   { pshader_basic_17, { nullptr }  },
 };
 
 static unsigned char pshader_manual_clear_0[220] = {
@@ -570,7 +570,7 @@ static unsigned char pshader_manual_clear_0[220] = {
 };
 
 static ShaderCode pshader_manual_clear_arr[1] = {
-   { pshader_manual_clear_0, { NULL }  },
+   { pshader_manual_clear_0, { nullptr }  },
 };
 
 static unsigned char vshader_vspsp2_0[360] = {
@@ -664,9 +664,9 @@ static unsigned char vshader_vspsp2_2[336] = {
 };
 
 static ShaderCode vshader_vspsp2_arr[3] = {
-   { vshader_vspsp2_0, { NULL }  },
-   { vshader_vspsp2_1, { NULL }  },
-   { vshader_vspsp2_2, { NULL }  },
+   { vshader_vspsp2_0, { nullptr }  },
+   { vshader_vspsp2_1, { nullptr }  },
+   { vshader_vspsp2_2, { nullptr }  },
 };
 
 static unsigned char vshader_vspsp2_mask_0[304] = {
@@ -692,6 +692,6 @@ static unsigned char vshader_vspsp2_mask_0[304] = {
 };
 
 static ShaderCode vshader_vspsp2_mask_arr[1] = {
-   { vshader_vspsp2_mask_0, { NULL }  },
+   { vshader_vspsp2_mask_0, { nullptr }  },
 };
 

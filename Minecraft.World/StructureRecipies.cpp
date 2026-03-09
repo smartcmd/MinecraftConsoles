@@ -66,7 +66,7 @@ void StructureRecipies::addRecipes(Recipes *r)
 		L'#', Tile::cobblestone,
 		L'S');
 
-	r->addShapedRecipy(new ItemInstance((Tile*)Tile::chest), //
+	r->addShapedRecipy(new ItemInstance(static_cast<Tile *>(Tile::chest)), //
 		L"sssctg",
 		L"###", //
 		L"# #", //

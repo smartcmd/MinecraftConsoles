@@ -16,13 +16,13 @@ static const unsigned int NUM_SUBMIT_JOBS = 128;
 #define DMA_ALIGNMENT  (128)
 #define JOBHEADER_SYMBOL(JobName) _binary_jqjob_##JobName##_jobbin2_jobheader
 
-C4JSpursJobQueue* C4JSpursJobQueue::m_pMainJobQueue = NULL;
+C4JSpursJobQueue* C4JSpursJobQueue::m_pMainJobQueue = nullptr;
 
 uint16_t C4JSpursJobQueue::Port::s_jobTagBitmask = 0;
-C4JSpursJobQueue::Port* C4JSpursJobQueue::Port::s_allocatedPorts[16] = {NULL,NULL,NULL,NULL,
-																		NULL,NULL,NULL,NULL,
-																		NULL,NULL,NULL,NULL,
-																		NULL,NULL,NULL,NULL };
+C4JSpursJobQueue::Port* C4JSpursJobQueue::Port::s_allocatedPorts[16] = {nullptr,nullptr,nullptr,nullptr,
+																		nullptr,nullptr,nullptr,nullptr,
+																		nullptr,nullptr,nullptr,nullptr,
+																		nullptr,nullptr,nullptr,nullptr };
 bool C4JSpursJobQueue::Port::s_initialised;
 CRITICAL_SECTION C4JSpursJobQueue::Port::s_lock; 
 
@@ -43,7 +43,7 @@ C4JSpursJobQueue::C4JSpursJobQueue()
 
 	//E create jobQueue
 	pJobQueue = (JobQueue<JOB_QUEUE_DEPTH>*)memalign(CELL_SPURS_JOBQUEUE_ALIGN, sizeof(JobQueue<JOB_QUEUE_DEPTH>));
-	assert(pJobQueue != NULL);
+	assert(pJobQueue != nullptr);
 
 	ret = JobQueue<JOB_QUEUE_DEPTH>::create(	pJobQueue, 
 												spurs, 
@@ -168,7 +168,7 @@ int C4JSpursJobQueue::Port::getFreeJobTag()
 void C4JSpursJobQueue::Port::releaseJobTag( int tag )
 {
 	s_jobTagBitmask &= ~(1<<tag);
-	s_allocatedPorts[tag] = NULL;
+	s_allocatedPorts[tag] = nullptr;
 }
 
 void C4JSpursJobQueue::Port::destroyAll()

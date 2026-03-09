@@ -9,8 +9,8 @@ BiomeDecorator::BiomeDecorator(Biome *biome)
 	_init();
 
 	// 4J inits
-	level = NULL;
-	random = NULL;
+	level = nullptr;
+	random = nullptr;
 	xo = 0;
 	zo = 0;
 
@@ -19,7 +19,7 @@ BiomeDecorator::BiomeDecorator(Biome *biome)
 
 void BiomeDecorator::decorate(Level *level, Random *random, int xo, int zo)
 {
-	if (this->level != NULL)
+	if (this->level != nullptr)
 	{
 		app.DebugPrintf("BiomeDecorator::decorate - Already decorating!!\n");
 #ifndef _CONTENT_PACKAGE
@@ -34,8 +34,8 @@ void BiomeDecorator::decorate(Level *level, Random *random, int xo, int zo)
 
 	decorate();
 
-	this->level = NULL;
-	this->random = NULL;
+	this->level = nullptr;
+	this->random = nullptr;
 }
 
 
@@ -164,7 +164,7 @@ void BiomeDecorator::decorate()
 
 	// 4J Stu - For some reason this was created each time round in the loop
 	// I assume there is a case where deadBushCount could be 0
-	DeadBushFeature *deadBushFeature = NULL;
+	DeadBushFeature *deadBushFeature = nullptr;
 	if(deadBushCount > 0) deadBushFeature = new DeadBushFeature(Tile::deadBush_Id);
 	for (int i = 0; i < deadBushCount; i++)
 	{
@@ -174,7 +174,7 @@ void BiomeDecorator::decorate()
 		//new DeadBushFeature(Tile::deadBush_Id)->place(level, random, x, y, z);
 		deadBushFeature->place(level, random, x, y, z);
 	}
-	if(deadBushFeature != NULL)delete deadBushFeature;
+	if(deadBushFeature != nullptr)delete deadBushFeature;
 
 	for (int i = 0; i < waterlilyCount; i++)
 	{

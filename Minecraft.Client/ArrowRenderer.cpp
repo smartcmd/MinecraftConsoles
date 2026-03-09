@@ -23,7 +23,7 @@ void ArrowRenderer::render(shared_ptr<Entity> _arrow, double x, double y, double
 	if( ( xRot - xRotO ) > 180.0f ) xRot -= 360.0f;
 	else if( ( xRot - xRotO ) < -180.0f ) xRot += 360.0f;
 
-    glTranslatef((float)x, (float)y, (float)z);
+    glTranslatef(static_cast<float>(x), static_cast<float>(y), static_cast<float>(z));
     glRotatef(yRotO + (yRot - yRotO) * a - 90, 0, 1, 0);
     glRotatef(xRotO + (xRot - xRotO) * a, 0, 0, 1);
 
@@ -55,19 +55,19 @@ void ArrowRenderer::render(shared_ptr<Entity> _arrow, double x, double y, double
 //    glNormal3f(ss, 0, 0);		// 4J - changed to use tesselator
     t->begin();
 	t->normal(1,0,0);
-    t->vertexUV((float)(-7), (float)( -2), (float)( -2), (float)( u02), (float)( v02));
-    t->vertexUV((float)(-7), (float)( -2), (float)( +2), (float)( u12), (float)( v02));
-    t->vertexUV((float)(-7), (float)( +2), (float)( +2), (float)( u12), (float)( v12));
-    t->vertexUV((float)(-7), (float)( +2), (float)( -2), (float)( u02), (float)( v12));
+    t->vertexUV(static_cast<float>(-7), static_cast<float>(-2), static_cast<float>(-2), (float)( u02), (float)( v02));
+    t->vertexUV(static_cast<float>(-7), static_cast<float>(-2), static_cast<float>(+2), (float)( u12), (float)( v02));
+    t->vertexUV(static_cast<float>(-7), static_cast<float>(+2), static_cast<float>(+2), (float)( u12), (float)( v12));
+    t->vertexUV(static_cast<float>(-7), static_cast<float>(+2), static_cast<float>(-2), (float)( u02), (float)( v12));
     t->end();
 
 //    glNormal3f(-ss, 0, 0);	// 4J - changed to use tesselator
     t->begin();
 	t->normal(-1,0,0);
-    t->vertexUV((float)(-7), (float)( +2), (float)( -2), (float)( u02), (float)( v02));
-    t->vertexUV((float)(-7), (float)( +2), (float)( +2), (float)( u12), (float)( v02));
-    t->vertexUV((float)(-7), (float)( -2), (float)( +2), (float)( u12), (float)( v12));
-    t->vertexUV((float)(-7), (float)( -2), (float)( -2), (float)( u02), (float)( v12));
+    t->vertexUV(static_cast<float>(-7), static_cast<float>(+2), static_cast<float>(-2), (float)( u02), (float)( v02));
+    t->vertexUV(static_cast<float>(-7), static_cast<float>(+2), static_cast<float>(+2), (float)( u12), (float)( v02));
+    t->vertexUV(static_cast<float>(-7), static_cast<float>(-2), static_cast<float>(+2), (float)( u12), (float)( v12));
+    t->vertexUV(static_cast<float>(-7), static_cast<float>(-2), static_cast<float>(-2), (float)( u02), (float)( v12));
     t->end();
 
     for (int i = 0; i < 4; i++)
@@ -77,10 +77,10 @@ void ArrowRenderer::render(shared_ptr<Entity> _arrow, double x, double y, double
 //        glNormal3f(0, 0, ss);		// 4J - changed to use tesselator
         t->begin();
 		t->normal(0,0,1);
-        t->vertexUV((float)(-8), (float)( -2), (float)( 0), (float)( u0), (float)( v0));
-        t->vertexUV((float)(+8), (float)( -2), (float)( 0), (float)( u1), (float)( v0));
-        t->vertexUV((float)(+8), (float)( +2), (float)( 0), (float)( u1), (float)( v1));
-        t->vertexUV((float)(-8), (float)( +2), (float)( 0), (float)( u0), (float)( v1));
+        t->vertexUV(static_cast<float>(-8), static_cast<float>(-2), static_cast<float>(0), (float)( u0), (float)( v0));
+        t->vertexUV(static_cast<float>(+8), static_cast<float>(-2), static_cast<float>(0), (float)( u1), (float)( v0));
+        t->vertexUV(static_cast<float>(+8), static_cast<float>(+2), static_cast<float>(0), (float)( u1), (float)( v1));
+        t->vertexUV(static_cast<float>(-8), static_cast<float>(+2), static_cast<float>(0), (float)( u0), (float)( v1));
         t->end();
     }
     glDisable(GL_RESCALE_NORMAL);

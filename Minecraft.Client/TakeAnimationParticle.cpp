@@ -64,7 +64,7 @@ void TakeAnimationParticle::render(Tesselator *t, float a, float xa, float ya, f
     zz-=zOff;
         
     
-    EntityRenderDispatcher::instance->render(item, (float)xx, (float)yy, (float)zz, item->yRot, a);
+    EntityRenderDispatcher::instance->render(item, static_cast<float>(xx), static_cast<float>(yy), static_cast<float>(zz), item->yRot, a);
 
 }
 

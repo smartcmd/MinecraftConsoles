@@ -8,7 +8,7 @@
 
 ModelPart * HumanoidModel::AddOrRetrievePart(SKIN_BOX *pBox)
 {
-	ModelPart *pAttachTo=NULL;
+	ModelPart *pAttachTo=nullptr;
 
 	switch(pBox->ePart)
 	{
@@ -37,17 +37,17 @@ ModelPart * HumanoidModel::AddOrRetrievePart(SKIN_BOX *pBox)
 
 	if(pNewBox)
 	{
-		if((pNewBox->getfU()!=(int)pBox->fU) || (pNewBox->getfV()!=(int)pBox->fV))
+		if((pNewBox->getfU()!=static_cast<int>(pBox->fU)) || (pNewBox->getfV()!=static_cast<int>(pBox->fV)))
 		{
 			app.DebugPrintf("HumanoidModel::AddOrRetrievePart - Box geometry was found, but with different uvs\n");
-			pNewBox=NULL;
+			pNewBox=nullptr;
 		}
 	}
-	if(pNewBox==NULL)
+	if(pNewBox==nullptr)
 	{
 		//app.DebugPrintf("HumanoidModel::AddOrRetrievePart - Adding box to model part\n");
 
-		pNewBox = new ModelPart(this, (int)pBox->fU, (int)pBox->fV);
+		pNewBox = new ModelPart(this, static_cast<int>(pBox->fU), static_cast<int>(pBox->fV));
 		pNewBox->visible=false;
 		pNewBox->addHumanoidBox(pBox->fX, pBox->fY, pBox->fZ, pBox->fW, pBox->fH, pBox->fD, 0); 
 		// 4J-PB - don't compile here, since the lighting isn't set up. It'll be compiled on first use.
@@ -142,7 +142,7 @@ HumanoidModel::HumanoidModel(float g, float yOffset, int texWidth, int texHeight
 
 void HumanoidModel::render(shared_ptr<Entity> entity, float time, float r, float bob, float yRot, float xRot, float scale, bool usecompiled)
 {	
-	if(entity != NULL)
+	if(entity != nullptr)
 	{
 		m_uiAnimOverrideBitmask=entity->getAnimOverrideBitmask();
 	}

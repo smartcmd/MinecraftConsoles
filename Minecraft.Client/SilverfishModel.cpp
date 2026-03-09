@@ -48,7 +48,7 @@ SilverfishModel::SilverfishModel()
 	{
 		bodyParts[i] = new ModelPart(this, BODY_TEXS[i][0], BODY_TEXS[i][1]);
 		bodyParts[i]->addBox(BODY_SIZES[i][0] * -0.5f, 0, BODY_SIZES[i][2] * -0.5f, BODY_SIZES[i][0], BODY_SIZES[i][1], BODY_SIZES[i][2]);
-		bodyParts[i]->setPos(0.0f, 24.0f - (float)BODY_SIZES[i][1], placement);
+		bodyParts[i]->setPos(0.0f, 24.0f - static_cast<float>(BODY_SIZES[i][1]), placement);
 		zPlacement[i] = placement;
 		if (i < bodyParts.length - 1)
 		{
@@ -100,8 +100,8 @@ void SilverfishModel::setupAnim(float time, float r, float bob, float yRot, floa
 {
 	for (unsigned int i = 0; i < bodyParts.length; i++)
 	{
-		bodyParts[i]->yRot = Mth::cos(bob * .9f + i * .15f * PI) * PI * .05f * (1 + abs((int)i - 2));
-		bodyParts[i]->x = Mth::sin(bob * .9f + i * .15f * PI) * PI * .2f * abs((int)i - 2);
+		bodyParts[i]->yRot = Mth::cos(bob * .9f + i * .15f * PI) * PI * .05f * (1 + abs(static_cast<int>(i) - 2));
+		bodyParts[i]->x = Mth::sin(bob * .9f + i * .15f * PI) * PI * .2f * abs(static_cast<int>(i) - 2);
 	}
 
 	bodyLayers[0]->yRot = bodyParts[2]->yRot;

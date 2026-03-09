@@ -7,7 +7,7 @@ class DLCPack;
 class BufferedImage
 {
 private:
-	int *data[10];	// Arrays for mipmaps - NULL if not used
+	int *data[10];	// Arrays for mipmaps - nullptr if not used
 	int width;
 	int height;
 	void ByteFlip4(unsigned int &data);	// 4J added

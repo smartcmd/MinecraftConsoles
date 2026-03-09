@@ -69,7 +69,7 @@ public:
 		unsigned int m_debugItems;
 
 	public:
-		TabSpec( LPCWSTR icon, int descriptionId, int staticGroupsCount, ECreative_Inventory_Groups *staticGroups, int dynamicGroupsCount = 0, ECreative_Inventory_Groups *dynamicGroups = NULL, int debugGroupsCount = 0, ECreative_Inventory_Groups *debugGroups = NULL );
+		TabSpec( LPCWSTR icon, int descriptionId, int staticGroupsCount, ECreative_Inventory_Groups *staticGroups, int dynamicGroupsCount = 0, ECreative_Inventory_Groups *dynamicGroups = nullptr, int debugGroupsCount = 0, ECreative_Inventory_Groups *debugGroups = nullptr );
 		~TabSpec();
 
 		void populateMenu(AbstractContainerMenu *menu, int dynamicIndex, unsigned int page);

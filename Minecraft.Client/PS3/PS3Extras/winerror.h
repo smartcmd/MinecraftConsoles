@@ -3551,7 +3551,7 @@
 //
 // MessageText:
 //
-//  The password is too complex to be converted to a LAN Manager password. The LAN Manager password returned is a NULL string.
+//  The password is too complex to be converted to a LAN Manager password. The LAN Manager password returned is a nullptr string.
 //
 #define ERROR_NULL_LM_PASSWORD           1304L
 

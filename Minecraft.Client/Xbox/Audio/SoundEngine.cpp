@@ -12,16 +12,16 @@
 #include "..\..\DLCTexturePack.h"
 
 
-IXAudio2* g_pXAudio2 = NULL;       // pointer to XAudio2 instance used by QNet and XACT
-IXAudio2MasteringVoice* g_pXAudio2MasteringVoice = NULL;  // pointer to XAudio2 mastering voice
+IXAudio2* g_pXAudio2 = nullptr;       // pointer to XAudio2 instance used by QNet and XACT
+IXAudio2MasteringVoice* g_pXAudio2MasteringVoice = nullptr;  // pointer to XAudio2 mastering voice
 
-IXACT3Engine *SoundEngine::m_pXACT3Engine = NULL;
-IXACT3WaveBank	*SoundEngine::m_pWaveBank = NULL;
-IXACT3WaveBank	*SoundEngine::m_pWaveBank2 = NULL;
-IXACT3WaveBank	*SoundEngine::m_pStreamedWaveBank = NULL;
-IXACT3WaveBank	*SoundEngine::m_pStreamedWaveBankAdditional = NULL;
-IXACT3SoundBank	*SoundEngine::m_pSoundBank = NULL;
-IXACT3SoundBank	*SoundEngine::m_pSoundBank2 = NULL;
+IXACT3Engine *SoundEngine::m_pXACT3Engine = nullptr;
+IXACT3WaveBank	*SoundEngine::m_pWaveBank = nullptr;
+IXACT3WaveBank	*SoundEngine::m_pWaveBank2 = nullptr;
+IXACT3WaveBank	*SoundEngine::m_pStreamedWaveBank = nullptr;
+IXACT3WaveBank	*SoundEngine::m_pStreamedWaveBankAdditional = nullptr;
+IXACT3SoundBank	*SoundEngine::m_pSoundBank = nullptr;
+IXACT3SoundBank	*SoundEngine::m_pSoundBank2 = nullptr;
 CRITICAL_SECTION SoundEngine::m_CS;
 
 X3DAUDIO_HANDLE	 SoundEngine::m_xact3dInstance;
@@ -97,9 +97,9 @@ void SoundEngine::init(Options *pOptions)
 	// 4J-PB - move this to the title update, since we've corrected it to allow sounds to be pitch varied when they weren't before
 	HANDLE file;
 #ifdef _TU_BUILD
-	file = CreateFile("UPDATE:\\res\\audio\\Minecraft.xgs", GENERIC_READ, 0, NULL, OPEN_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
+	file = CreateFile("UPDATE:\\res\\audio\\Minecraft.xgs", GENERIC_READ, 0, nullptr, OPEN_ALWAYS, FILE_ATTRIBUTE_NORMAL, nullptr);
 #else
-	file = CreateFile("GAME:\\res\\TitleUpdate\\audio\\Minecraft.xgs", GENERIC_READ, 0, NULL, OPEN_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
+	file = CreateFile("GAME:\\res\\TitleUpdate\\audio\\Minecraft.xgs", GENERIC_READ, 0, nullptr, OPEN_ALWAYS, FILE_ATTRIBUTE_NORMAL, nullptr);
 #endif
 	if( file == INVALID_HANDLE_VALUE )
 	{
@@ -107,11 +107,11 @@ void SoundEngine::init(Options *pOptions)
 		assert(false);
 		return;
 	}
-	DWORD dwFileSize = GetFileSize(file,NULL);
+	DWORD dwFileSize = GetFileSize(file,nullptr);
 	DWORD bytesRead = 0;
 	DWORD memFlags = MAKE_XALLOC_ATTRIBUTES(0,FALSE,TRUE,FALSE,0,XALLOC_PHYSICAL_ALIGNMENT_DEFAULT,XALLOC_MEMPROTECT_READWRITE,FALSE,XALLOC_MEMTYPE_PHYSICAL);
 	void *pvGlobalSettings =  XMemAlloc(dwFileSize, memFlags);
-	ReadFile(file,pvGlobalSettings,dwFileSize,&bytesRead,NULL);
+	ReadFile(file,pvGlobalSettings,dwFileSize,&bytesRead,nullptr);
 	CloseHandle(file);
 
 	XACT_RUNTIME_PARAMETERS EngineParameters = {0};
@@ -161,7 +161,7 @@ void SoundEngine::init(Options *pOptions)
 
 	// Create resident wave bank - leave memory for this managed by xact so it can free it
 
-	file = CreateFile("GAME:\\res\\audio\\resident.xwb", GENERIC_READ, 0, NULL, OPEN_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
+	file = CreateFile("GAME:\\res\\audio\\resident.xwb", GENERIC_READ, 0, nullptr, OPEN_ALWAYS, FILE_ATTRIBUTE_NORMAL, nullptr);
 	if( file == INVALID_HANDLE_VALUE )
 	{
 		app.FatalLoadError();
@@ -169,9 +169,9 @@ void SoundEngine::init(Options *pOptions)
 		return;
 	}
 
-	dwFileSize = GetFileSize(file,NULL);
+	dwFileSize = GetFileSize(file,nullptr);
 	void *pvWaveBank =  XMemAlloc(dwFileSize, memFlags);
-	ReadFile(file,pvWaveBank,dwFileSize,&bytesRead,NULL);
+	ReadFile(file,pvWaveBank,dwFileSize,&bytesRead,nullptr);
 	CloseHandle(file);
 
 	if ( FAILED( hr = m_pXACT3Engine->CreateInMemoryWaveBank( pvWaveBank, dwFileSize, XACT_FLAG_ENGINE_CREATE_MANAGEDATA, memFlags, &m_pWaveBank ) ) )
@@ -183,9 +183,9 @@ void SoundEngine::init(Options *pOptions)
 
 	// 4J-PB - add new sounds wavebank
 #ifdef _TU_BUILD
-	file = CreateFile("UPDATE:\\res\\audio\\additional.xwb", GENERIC_READ, 0, NULL, OPEN_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
+	file = CreateFile("UPDATE:\\res\\audio\\additional.xwb", GENERIC_READ, 0, nullptr, OPEN_ALWAYS, FILE_ATTRIBUTE_NORMAL, nullptr);
 #else
-	file = CreateFile("GAME:\\res\\TitleUpdate\\audio\\additional.xwb", GENERIC_READ, 0, NULL, OPEN_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
+	file = CreateFile("GAME:\\res\\TitleUpdate\\audio\\additional.xwb", GENERIC_READ, 0, nullptr, OPEN_ALWAYS, FILE_ATTRIBUTE_NORMAL, nullptr);
 #endif
 	if( file == INVALID_HANDLE_VALUE )
 	{
@@ -194,9 +194,9 @@ void SoundEngine::init(Options *pOptions)
 		return;
 	}
 
-	dwFileSize = GetFileSize(file,NULL);
+	dwFileSize = GetFileSize(file,nullptr);
 	void *pvWaveBank2 =  XMemAlloc(dwFileSize, memFlags);
-	ReadFile(file,pvWaveBank2,dwFileSize,&bytesRead,NULL);
+	ReadFile(file,pvWaveBank2,dwFileSize,&bytesRead,nullptr);
 	CloseHandle(file);
 
 	if ( FAILED( hr = m_pXACT3Engine->CreateInMemoryWaveBank( pvWaveBank2, dwFileSize, XACT_FLAG_ENGINE_CREATE_MANAGEDATA, memFlags, &m_pWaveBank2 ) ) )
@@ -208,7 +208,7 @@ void SoundEngine::init(Options *pOptions)
 
 	// Create streamed sound bank
 
-	file = CreateFile("GAME:\\res\\audio\\streamed.xwb", GENERIC_READ, 0, NULL, OPEN_ALWAYS, FILE_FLAG_OVERLAPPED | FILE_FLAG_NO_BUFFERING, NULL);
+	file = CreateFile("GAME:\\res\\audio\\streamed.xwb", GENERIC_READ, 0, nullptr, OPEN_ALWAYS, FILE_FLAG_OVERLAPPED | FILE_FLAG_NO_BUFFERING, nullptr);
 
 	if( file == INVALID_HANDLE_VALUE )
 	{
@@ -232,11 +232,11 @@ void SoundEngine::init(Options *pOptions)
 
 	// Create streamed sound bank
 
-	//file = CreateFile("GAME:\\res\\audio\\AdditionalMusic.xwb", GENERIC_READ, 0, NULL, OPEN_ALWAYS, FILE_FLAG_OVERLAPPED | FILE_FLAG_NO_BUFFERING, NULL);
+	//file = CreateFile("GAME:\\res\\audio\\AdditionalMusic.xwb", GENERIC_READ, 0, nullptr, OPEN_ALWAYS, FILE_FLAG_OVERLAPPED | FILE_FLAG_NO_BUFFERING, nullptr);
 #ifdef _TU_BUILD
-	file = CreateFile("UPDATE:\\res\\audio\\AdditionalMusic.xwb", GENERIC_READ, 0, NULL, OPEN_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
+	file = CreateFile("UPDATE:\\res\\audio\\AdditionalMusic.xwb", GENERIC_READ, 0, nullptr, OPEN_ALWAYS, FILE_ATTRIBUTE_NORMAL, nullptr);
 #else
-	file = CreateFile("GAME:\\res\\TitleUpdate\\audio\\AdditionalMusic.xwb", GENERIC_READ, 0, NULL, OPEN_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
+	file = CreateFile("GAME:\\res\\TitleUpdate\\audio\\AdditionalMusic.xwb", GENERIC_READ, 0, nullptr, OPEN_ALWAYS, FILE_ATTRIBUTE_NORMAL, nullptr);
 #endif
 	if( file == INVALID_HANDLE_VALUE )
 	{
@@ -259,11 +259,11 @@ void SoundEngine::init(Options *pOptions)
 
 	// Create sound bank - leave memory for this managed by xact so it can free it
 	// 4J-PB - updated for the TU
-	//file = CreateFile("GAME:\\res\\audio\\minecraft.xsb", GENERIC_READ, 0, NULL, OPEN_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
+	//file = CreateFile("GAME:\\res\\audio\\minecraft.xsb", GENERIC_READ, 0, nullptr, OPEN_ALWAYS, FILE_ATTRIBUTE_NORMAL, nullptr);
 #ifdef _TU_BUILD
-	file = CreateFile("UPDATE:\\res\\audio\\minecraft.xsb", GENERIC_READ, 0, NULL, OPEN_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
+	file = CreateFile("UPDATE:\\res\\audio\\minecraft.xsb", GENERIC_READ, 0, nullptr, OPEN_ALWAYS, FILE_ATTRIBUTE_NORMAL, nullptr);
 #else
-	file = CreateFile("GAME:\\res\\TitleUpdate\\audio\\minecraft.xsb", GENERIC_READ, 0, NULL, OPEN_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
+	file = CreateFile("GAME:\\res\\TitleUpdate\\audio\\minecraft.xsb", GENERIC_READ, 0, nullptr, OPEN_ALWAYS, FILE_ATTRIBUTE_NORMAL, nullptr);
 #endif
 	if( file == INVALID_HANDLE_VALUE )
 	{
@@ -271,9 +271,9 @@ void SoundEngine::init(Options *pOptions)
 		assert(false);
 		return;
 	}
-	dwFileSize = GetFileSize(file,NULL);
+	dwFileSize = GetFileSize(file,nullptr);
 	void *pvSoundBank =  XMemAlloc(dwFileSize, memFlags);
-	ReadFile(file,pvSoundBank,dwFileSize,&bytesRead,NULL);
+	ReadFile(file,pvSoundBank,dwFileSize,&bytesRead,nullptr);
 	CloseHandle(file);
 
 	if ( FAILED( hr = m_pXACT3Engine->CreateSoundBank( pvSoundBank, dwFileSize, XACT_FLAG_ENGINE_CREATE_MANAGEDATA, memFlags, &m_pSoundBank ) ) )
@@ -286,9 +286,9 @@ void SoundEngine::init(Options *pOptions)
 	// Create sound bank2 - leave memory for this managed by xact so it can free it
 
 #ifdef _TU_BUILD
-	file = CreateFile("UPDATE:\\res\\audio\\additional.xsb", GENERIC_READ, 0, NULL, OPEN_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
+	file = CreateFile("UPDATE:\\res\\audio\\additional.xsb", GENERIC_READ, 0, nullptr, OPEN_ALWAYS, FILE_ATTRIBUTE_NORMAL, nullptr);
 #else
-	file = CreateFile("GAME:\\res\\TitleUpdate\\audio\\additional.xsb", GENERIC_READ, 0, NULL, OPEN_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
+	file = CreateFile("GAME:\\res\\TitleUpdate\\audio\\additional.xsb", GENERIC_READ, 0, nullptr, OPEN_ALWAYS, FILE_ATTRIBUTE_NORMAL, nullptr);
 #endif
 	if( file == INVALID_HANDLE_VALUE )
 	{
@@ -296,9 +296,9 @@ void SoundEngine::init(Options *pOptions)
 		assert(false);
 		return;
 	}
-	dwFileSize = GetFileSize(file,NULL);
+	dwFileSize = GetFileSize(file,nullptr);
 	void *pvSoundBank2 =  XMemAlloc(dwFileSize, memFlags);
-	ReadFile(file,pvSoundBank2,dwFileSize,&bytesRead,NULL);
+	ReadFile(file,pvSoundBank2,dwFileSize,&bytesRead,nullptr);
 	CloseHandle(file);
 
 	if ( FAILED( hr = m_pXACT3Engine->CreateSoundBank( pvSoundBank2, dwFileSize, XACT_FLAG_ENGINE_CREATE_MANAGEDATA, memFlags, &m_pSoundBank2 ) ) )
@@ -324,7 +324,7 @@ void SoundEngine::CreateStreamingWavebank(const char *pchName, IXACT3WaveBank **
 	// Create streamed sound bank
 	HRESULT hr;
 
-	HANDLE file = CreateFile(pchName, GENERIC_READ, 0, NULL, OPEN_ALWAYS, FILE_FLAG_OVERLAPPED | FILE_FLAG_NO_BUFFERING, NULL);
+	HANDLE file = CreateFile(pchName, GENERIC_READ, 0, nullptr, OPEN_ALWAYS, FILE_FLAG_OVERLAPPED | FILE_FLAG_NO_BUFFERING, nullptr);
 
 	if( file == INVALID_HANDLE_VALUE )
 	{ 
@@ -350,7 +350,7 @@ void SoundEngine::CreateStreamingWavebank(const char *pchName, IXACT3WaveBank **
 void SoundEngine::CreateSoundbank(const char *pchName, IXACT3SoundBank **ppSoundBank)
 {
 	HRESULT hr;
-	HANDLE file = CreateFile(pchName, GENERIC_READ, 0, NULL, OPEN_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
+	HANDLE file = CreateFile(pchName, GENERIC_READ, 0, nullptr, OPEN_ALWAYS, FILE_ATTRIBUTE_NORMAL, nullptr);
 
 	if( file == INVALID_HANDLE_VALUE )
 	{
@@ -358,11 +358,11 @@ void SoundEngine::CreateSoundbank(const char *pchName, IXACT3SoundBank **ppSound
 		assert(false);
 		return;
 	}
-	DWORD dwFileSize = GetFileSize(file,NULL);
+	DWORD dwFileSize = GetFileSize(file,nullptr);
 	DWORD bytesRead = 0;
 	DWORD memFlags = MAKE_XALLOC_ATTRIBUTES(0,FALSE,TRUE,FALSE,0,XALLOC_PHYSICAL_ALIGNMENT_DEFAULT,XALLOC_MEMPROTECT_READWRITE,FALSE,XALLOC_MEMTYPE_PHYSICAL);
 	void *pvSoundBank =  XMemAlloc(dwFileSize, memFlags);
-	ReadFile(file,pvSoundBank,dwFileSize,&bytesRead,NULL);
+	ReadFile(file,pvSoundBank,dwFileSize,&bytesRead,nullptr);
 	CloseHandle(file);
 
 	if ( FAILED( hr = m_pXACT3Engine->CreateSoundBank( pvSoundBank, dwFileSize, XACT_FLAG_ENGINE_CREATE_MANAGEDATA, memFlags, ppSoundBank ) ) )
@@ -416,11 +416,11 @@ bool SoundEngine::isStreamingWavebankReady(IXACT3WaveBank *pWaveBank)
 
 void SoundEngine::XACTNotificationCallback( const XACT_NOTIFICATION* pNotification )
 {
-	if(pNotification->pvContext!= NULL)
+	if(pNotification->pvContext!= nullptr)
 	{
 		if(pNotification->type==XACTNOTIFICATIONTYPE_WAVEBANKPREPARED)
 		{
-			SoundEngine *pSoundEngine=(SoundEngine *)pNotification->pvContext;
+			SoundEngine *pSoundEngine=static_cast<SoundEngine *>(pNotification->pvContext);
 			if(pNotification->waveBank.pWaveBank==pSoundEngine->m_pStreamedWaveBank)
 			{
 				pSoundEngine->m_bStreamingWaveBank1Ready=true;
@@ -446,7 +446,7 @@ char *SoundEngine::ConvertSoundPathToName(const wstring& name, bool bConvertSpac
 	{
 		wchar_t c = name[i];
 		if(c=='.') c='_';
-		buf[i] = (char)c;
+		buf[i] = static_cast<char>(c);
 	}
 	buf[name.length()] = 0;
 	return buf;
@@ -462,7 +462,7 @@ void SoundEngine::play(int iSound, float x, float y, float z, float volume, floa
 
 	bool bSoundbank1=(iSound<=eSoundType_STEP_SAND);
 
-	if( (m_pSoundBank == NULL ) || (m_pSoundBank2 == NULL))return;
+	if( (m_pSoundBank == nullptr ) || (m_pSoundBank2 == nullptr))return;
 
 	if( currentSounds.size() > MAX_POLYPHONY )
 	{
@@ -541,7 +541,7 @@ void SoundEngine::play(int iSound, float x, float y, float z, float volume, floa
 
 	soundInfo *info = new soundInfo();
 	info->idx = idx;
-	info->eSoundID = (eSOUND_TYPE)iSound;
+	info->eSoundID = static_cast<eSOUND_TYPE>(iSound);
 	info->iSoundBank = bSoundbank1?0:1;
 	info->x = x;
 	info->y = y;
@@ -570,7 +570,7 @@ void SoundEngine::playUI(int iSound, float, float)
 {
 	bool bSoundBank1=(iSound<=eSoundType_STEP_SAND);
 
-	if( (m_pSoundBank == NULL ) || (m_pSoundBank2 == NULL)) return;
+	if( (m_pSoundBank == nullptr ) || (m_pSoundBank2 == nullptr)) return;
 
 	if( currentSounds.size() > MAX_POLYPHONY )
 	{
@@ -578,7 +578,7 @@ void SoundEngine::playUI(int iSound, float, float)
 	}
 	wstring name = wchSoundNames[iSound];
 
-	char *xboxName = (char *)ConvertSoundPathToName(name);
+	char *xboxName = static_cast<char *>(ConvertSoundPathToName(name));
 
 	XACTINDEX idx = m_pSoundBank->GetCueIndex(xboxName);
 
@@ -618,7 +618,7 @@ void SoundEngine::playUI(int iSound, float, float)
 
 	// Add sound info just so we can detect end of this sound
 	soundInfo *info = new soundInfo();
-	info->eSoundID = (eSOUND_TYPE)0;
+	info->eSoundID = static_cast<eSOUND_TYPE>(0);
 	info->iSoundBank = bSoundBank1?0:1;
 	info->idx =idx;
 	info->x = 0.0f;
@@ -637,15 +637,15 @@ void SoundEngine::playUI(int iSound, float, float)
 
 void SoundEngine::playStreaming(const wstring& name, float x, float y, float z, float vol, float pitch, bool bMusicDelay)
 {
-	IXACT3SoundBank *pSoundBank=NULL;
+	IXACT3SoundBank *pSoundBank=nullptr;
 	
 	bool bSoundBank2=false;
 	MemSect(34);
-	if(m_MusicInfo.pCue!=NULL)
+	if(m_MusicInfo.pCue!=nullptr)
 	{
 		m_MusicInfo.pCue->Stop(0);
 		m_MusicInfo.pCue->Destroy();
-		m_MusicInfo.pCue = NULL;
+		m_MusicInfo.pCue = nullptr;
 	}
 
 	m_MusicInfo.volume = 1.0f;//m_fMusicVolume;
@@ -673,7 +673,7 @@ void SoundEngine::playStreaming(const wstring& name, float x, float y, float z, 
 
 		for(unsigned int i=0;i<XUSER_MAX_COUNT;i++)
 		{
-			if(pMinecraft->localplayers[i]!=NULL)
+			if(pMinecraft->localplayers[i]!=nullptr)
 			{
 				if(pMinecraft->localplayers[i]->dimension==LevelData::DIMENSION_END)
 				{
@@ -701,7 +701,7 @@ void SoundEngine::playStreaming(const wstring& name, float x, float y, float z, 
 		else
 		{
 			// get the dlc texture pack
-			DLCTexturePack *pDLCTexPack=(DLCTexturePack *)pTexPack;
+			DLCTexturePack *pDLCTexPack=static_cast<DLCTexturePack *>(pTexPack);
 			pSoundBank=pDLCTexPack->m_pSoundBank;
 
 			// check we can play the sound
@@ -743,7 +743,7 @@ void SoundEngine::playStreaming(const wstring& name, float x, float y, float z, 
 	{
 		//		printf("Sound prep failed\n");
 		m_musicIDX = XACTINDEX_INVALID; // don't do anything in the tick
-		m_MusicInfo.pCue=NULL;
+		m_MusicInfo.pCue=nullptr;
 		MemSect(0);
 		return;
 	}
@@ -774,7 +774,7 @@ void SoundEngine::playStreaming(const wstring& name, float x, float y, float z, 
 }
 void SoundEngine::playMusicTick()
 {
-	if( (m_pSoundBank == NULL ) || (m_pSoundBank2 == NULL)) return;
+	if( (m_pSoundBank == nullptr ) || (m_pSoundBank2 == nullptr)) return;
 
 	if( m_musicIDX == XACTINDEX_INVALID )
 	{
@@ -785,7 +785,7 @@ void SoundEngine::playMusicTick()
 	// check to see if the sound has stopped playing
 	DWORD state;
 	HRESULT hr;
-	if(m_MusicInfo.pCue!=NULL)
+	if(m_MusicInfo.pCue!=nullptr)
 	{
 		if( FAILED( hr = m_MusicInfo.pCue->GetState(&state) ) )
 		{
@@ -804,14 +804,14 @@ void SoundEngine::playMusicTick()
 
 	if(GetIsPlayingStreamingGameMusic())
 	{
-		if(m_MusicInfo.pCue!=NULL)
+		if(m_MusicInfo.pCue!=nullptr)
 		{
 			bool playerInEnd = false;
 			bool playerInNether=false;
 			Minecraft *pMinecraft = Minecraft::GetInstance();
 			for(unsigned int i = 0; i < XUSER_MAX_COUNT; ++i)
 			{
-				if(pMinecraft->localplayers[i]!=NULL)
+				if(pMinecraft->localplayers[i]!=nullptr)
 				{
 					if(pMinecraft->localplayers[i]->dimension==LevelData::DIMENSION_END)
 					{
@@ -852,7 +852,7 @@ void SoundEngine::playMusicTick()
 			return;
 		}
 
-		if(m_MusicInfo.pCue!=NULL)
+		if(m_MusicInfo.pCue!=nullptr)
 		{
 			update3DPosition(&m_MusicInfo, true);
 			SetIsPlayingStreamingGameMusic(true);
@@ -986,7 +986,7 @@ void SoundEngine::update3DPosition(SoundEngine::soundInfo *pInfo, bool bPlaceEmi
 
 void SoundEngine::tick(shared_ptr<Mob> *players, float a)
 {
-	if( m_pXACT3Engine == NULL ) return;
+	if( m_pXACT3Engine == nullptr ) return;
 
 	// Creater listener array from the local players
 	int listenerCount = 0;
@@ -995,13 +995,13 @@ void SoundEngine::tick(shared_ptr<Mob> *players, float a)
 	{
 		for( int i = 0; i < 4; i++ )
 		{
-			if( players[i] != NULL )
+			if( players[i] != nullptr )
 			{
 				float yRot = players[i]->yRotO + (players[i]->yRot - players[i]->yRotO) * a;
 
-				m_listeners[listenerCount].Position.x = (float) (players[i]->xo + (players[i]->x - players[i]->xo) * a);
-				m_listeners[listenerCount].Position.y = (float) (players[i]->yo + (players[i]->y - players[i]->yo) * a);
-				m_listeners[listenerCount].Position.z = -(float) (players[i]->zo + (players[i]->z - players[i]->zo) * a);	// Flipped sign of z as x3daudio is expecting left handed coord system
+				m_listeners[listenerCount].Position.x = static_cast<float>(players[i]->xo + (players[i]->x - players[i]->xo) * a);
+				m_listeners[listenerCount].Position.y = static_cast<float>(players[i]->yo + (players[i]->y - players[i]->yo) * a);
+				m_listeners[listenerCount].Position.z = -static_cast<float>(players[i]->zo + (players[i]->z - players[i]->zo) * a);	// Flipped sign of z as x3daudio is expecting left handed coord system
 
 				float yCos = (float)cos(-yRot * Mth::RAD_TO_GRAD - PI);
 				float ySin = (float)sin(-yRot * Mth::RAD_TO_GRAD - PI);

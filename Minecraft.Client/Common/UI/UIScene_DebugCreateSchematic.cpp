@@ -132,82 +132,96 @@ void UIScene_DebugCreateSchematic::handleInput(int iPad, int key, bool repeat, b
 void UIScene_DebugCreateSchematic::handlePress(F64 controlId, F64 childId)
 {
 #ifdef _WINDOWS64
-	if (isDirectEditBlocking()) return;
+    if (isDirectEditBlocking())
+        return;
 #endif
-	switch((int)controlId)
-	{
-	case eControl_Create:
-		{
-			// We want the start to be even
-			if(m_data->startX > 0 && m_data->startX%2 != 0)
-				m_data->startX-=1;
-			else if(m_data->startX < 0 && m_data->startX%2 !=0)
-				m_data->startX-=1;
-			if(m_data->startY < 0) m_data->startY = 0;
-			else if(m_data->startY > 0 && m_data->startY%2 != 0)
-				m_data->startY-=1;
-			if(m_data->startZ > 0 && m_data->startZ%2 != 0)
-				m_data->startZ-=1;
-			else if(m_data->startZ < 0 && m_data->startZ%2 !=0)
-				m_data->startZ-=1;
 
-			// We want the end to be odd to have a total size that is even
-			if(m_data->endX > 0 && m_data->endX%2 == 0)
-				m_data->endX+=1;
-			else if(m_data->endX < 0 && m_data->endX%2 ==0)
-				m_data->endX+=1;
-			if(m_data->endY > Level::maxBuildHeight)
-				m_data->endY = Level::maxBuildHeight;
-			else if(m_data->endY > 0 && m_data->endY%2 == 0)
-				m_data->endY+=1;
-			else if(m_data->endY < 0 && m_data->endY%2 ==0)
-				m_data->endY+=1;
-			if(m_data->endZ > 0 && m_data->endZ%2 == 0)
-				m_data->endZ+=1;
-			else if(m_data->endZ < 0 && m_data->endZ%2 ==0)
-				m_data->endZ+=1;
+    switch (static_cast<int>(controlId))
+    {
+    case eControl_Create:
+        {
+            // We want the start to be even
+            if (m_data->startX > 0 && m_data->startX % 2 != 0)
+                m_data->startX -= 1;
+            else if (m_data->startX < 0 && m_data->startX % 2 != 0)
+                m_data->startX -= 1;
 
-			app.SetXuiServerAction(ProfileManager.GetPrimaryPad(), eXuiServerAction_ExportSchematic, (void *)m_data);
+            if (m_data->startY < 0)
+                m_data->startY = 0;
+            else if (m_data->startY > 0 && m_data->startY % 2 != 0)
+                m_data->startY -= 1;
 
-			navigateBack();
-		}
-		break;
-	case eControl_Name:
-	case eControl_StartX:
-	case eControl_StartY:
-	case eControl_StartZ:
-	case eControl_EndX:
-	case eControl_EndY:
-	case eControl_EndZ:
-		{
-			m_keyboardCallbackControl = (eControls)((int)controlId);
+            if (m_data->startZ > 0 && m_data->startZ % 2 != 0)
+                m_data->startZ -= 1;
+            else if (m_data->startZ < 0 && m_data->startZ % 2 != 0)
+                m_data->startZ -= 1;
+
+            // We want the end to be odd to have a total size that is even
+            if (m_data->endX > 0 && m_data->endX % 2 == 0)
+                m_data->endX += 1;
+            else if (m_data->endX < 0 && m_data->endX % 2 == 0)
+                m_data->endX += 1;
+
+            if (m_data->endY > Level::maxBuildHeight)
+                m_data->endY = Level::maxBuildHeight;
+            else if (m_data->endY > 0 && m_data->endY % 2 == 0)
+                m_data->endY += 1;
+            else if (m_data->endY < 0 && m_data->endY % 2 == 0)
+                m_data->endY += 1;
+
+            if (m_data->endZ > 0 && m_data->endZ % 2 == 0)
+                m_data->endZ += 1;
+            else if (m_data->endZ < 0 && m_data->endZ % 2 == 0)
+                m_data->endZ += 1;
+
+            app.SetXuiServerAction(ProfileManager.GetPrimaryPad(), eXuiServerAction_ExportSchematic, static_cast<void*>(m_data));
+            navigateBack();
+        }
+        break;
+
+    case eControl_Name:
+    case eControl_StartX:
+    case eControl_StartY:
+    case eControl_StartZ:
+    case eControl_EndX:
+    case eControl_EndY:
+    case eControl_EndZ:
+        {
+            m_keyboardCallbackControl = static_cast<eControls>(static_cast<int>(controlId));
 #ifdef _WINDOWS64
-			if (g_KBMInput.IsKBMActive())
-			{
-				UIControl_TextInput* input = getTextInputForControl(m_keyboardCallbackControl);
-				if (input) input->beginDirectEdit(25);
-			}
-			else
-			{
-				UIKeyboardInitData kbData;
-				kbData.title       = L"Enter something";
-				kbData.defaultText = L"";
-				kbData.maxChars    = 25;
-				kbData.callback    = &UIScene_DebugCreateSchematic::KeyboardCompleteCallback;
-				kbData.lpParam     = this;
-				ui.NavigateToScene(m_iPad, eUIScene_Keyboard, &kbData, eUILayer_Fullscreen, eUIGroup_Fullscreen);
-			}
+            if (g_KBMInput.IsKBMActive())
+            {
+                UIControl_TextInput* input = getTextInputForControl(m_keyboardCallbackControl);
+                if (input) input->beginDirectEdit(25);
+            }
+            else
+            {
+                UIKeyboardInitData kbData;
+                kbData.title       = L"Enter something";
+                kbData.defaultText = L"";
+                kbData.maxChars    = 25;
+                kbData.callback    = &UIScene_DebugCreateSchematic::KeyboardCompleteCallback;
+                kbData.lpParam     = this;
+                ui.NavigateToScene(m_iPad, eUIScene_Keyboard, &kbData, eUILayer_Fullscreen, eUIGroup_Fullscreen);
+            }
 #else
-			InputManager.RequestKeyboard(L"Enter something",L"",(DWORD)0,25,&UIScene_DebugCreateSchematic::KeyboardCompleteCallback,this,C_4JInput::EKeyboardMode_Default);
+            InputManager.RequestKeyboard(
+                L"Enter something",
+                L"",
+                static_cast<DWORD>(0),
+                25,
+                &UIScene_DebugCreateSchematic::KeyboardCompleteCallback,
+                this,
+                C_4JInput::EKeyboardMode_Default);
 #endif
-		}
-		break;
-	};
+        }
+        break;
+    }
 }
 
 void UIScene_DebugCreateSchematic::handleCheckboxToggled(F64 controlId, bool selected)
 {
-	switch((int)controlId)
+	switch(static_cast<int>(controlId))
 	{
 	case eControl_SaveMobs:
 		m_data->bSaveMobs = selected;
@@ -223,7 +237,7 @@ void UIScene_DebugCreateSchematic::handleCheckboxToggled(F64 controlId, bool sel
 
 int UIScene_DebugCreateSchematic::KeyboardCompleteCallback(LPVOID lpParam,bool bRes)
 {
-	UIScene_DebugCreateSchematic *pClass=(UIScene_DebugCreateSchematic *)lpParam;
+	UIScene_DebugCreateSchematic *pClass=static_cast<UIScene_DebugCreateSchematic *>(lpParam);
 
 #ifdef _WINDOWS64
 	uint16_t pchText[128];

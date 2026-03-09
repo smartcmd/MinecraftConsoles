@@ -22,7 +22,7 @@ LavaSlimeModel::LavaSlimeModel()
             v = 19;
         }
         bodyCubes[i] = new ModelPart(this, u, v);
-        bodyCubes[i]->addBox(-4.0f, 16.0f + (float)i, -4.0f, 8, 1, 8);
+        bodyCubes[i]->addBox(-4.0f, 16.0f + static_cast<float>(i), -4.0f, 8, 1, 8);
     }
 
     insideCube = new ModelPart(this, 0, 16);
