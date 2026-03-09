@@ -4,7 +4,7 @@
 
 
 
-TLSStoragePS3* TLSStoragePS3::m_pInstance = NULL;
+TLSStoragePS3* TLSStoragePS3::m_pInstance = nullptr;
 
 BOOL TLSStoragePS3::m_activeList[sc_maxSlots];
 __thread LPVOID TLSStoragePS3::m_values[sc_maxSlots];
@@ -16,7 +16,7 @@ TLSStoragePS3::TLSStoragePS3()
 	for(int i=0;i<sc_maxSlots; i++)
 	{
 		m_activeList[i] = false;
-		m_values[i] = NULL;
+		m_values[i] = nullptr;
 	}
 }
 
@@ -37,7 +37,7 @@ int TLSStoragePS3::Alloc()
 		if(m_activeList[i] == false)
 		{
 			m_activeList[i] = true;
-			m_values[i] = NULL;
+			m_values[i] = nullptr;
 			return i;
 		}
 	}
@@ -51,7 +51,7 @@ BOOL TLSStoragePS3::Free( DWORD _index )
 		return false; // not been allocated
 
 	m_activeList[_index] = false;
-	m_values[_index] = NULL;
+	m_values[_index] = nullptr;
 	return true;
 }
 
@@ -66,7 +66,7 @@ BOOL TLSStoragePS3::SetValue( DWORD _index, LPVOID _val )
 LPVOID TLSStoragePS3::GetValue( DWORD _index )
 {
 	if(m_activeList[_index] == false)
-		return NULL;
+		return nullptr;
 	return m_values[_index];
 }
 

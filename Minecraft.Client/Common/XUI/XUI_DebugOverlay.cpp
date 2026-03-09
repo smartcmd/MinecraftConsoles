@@ -37,7 +37,7 @@ HRESULT CScene_DebugOverlay::OnInit( XUIMessageInit *pInitData, BOOL &bHandled )
 
 	for(unsigned int i = 0; i < Item::items.length; ++i)
 	{
-		if(Item::items[i] != NULL)
+		if(Item::items[i] != nullptr)
 		{
 			//m_items.InsertItems(m_items.GetItemCount(),1);
 			m_itemIds.push_back(i);
@@ -102,7 +102,7 @@ HRESULT CScene_DebugOverlay::OnInit( XUIMessageInit *pInitData, BOOL &bHandled )
 
 	Minecraft *pMinecraft = Minecraft::GetInstance();
 	m_setTime.SetValue( pMinecraft->level->getLevelData()->getTime() % 24000 );
-	m_setFov.SetValue( (int)pMinecraft->gameRenderer->GetFovVal());
+	m_setFov.SetValue( static_cast<int>(pMinecraft->gameRenderer->GetFovVal()));
 
 	XuiSetTimer(m_hObj,0,DEBUG_OVERLAY_UPDATE_TIME_PERIOD);
 
@@ -148,7 +148,7 @@ HRESULT CScene_DebugOverlay::OnNotifyPressEx(HXUIOBJ hObjPressed, XUINotifyPress
 	/*else if( hObjPressed == m_saveToDisc ) // 4J-JEV: Doesn't look like we use this debug option anymore.
 	{
 #ifndef _CONTENT_PACKAGE
-		pMinecraft->level->save(true, NULL);
+		pMinecraft->level->save(true, nullptr);
 
 		int radius;
 		m_chunkRadius.GetValue(&radius);
@@ -166,7 +166,7 @@ HRESULT CScene_DebugOverlay::OnNotifyPressEx(HXUIOBJ hObjPressed, XUINotifyPress
 	{
 #ifndef _CONTENT_PACKAGE
 		// load from the .xzp file
-		const ULONG_PTR c_ModuleHandle = (ULONG_PTR)GetModuleHandle(NULL);
+		const ULONG_PTR c_ModuleHandle = (ULONG_PTR)GetModuleHandle(nullptr);
 
 		HXUIOBJ hScene;
 		HRESULT hr;
@@ -175,7 +175,7 @@ HRESULT CScene_DebugOverlay::OnNotifyPressEx(HXUIOBJ hObjPressed, XUINotifyPress
 		WCHAR szResourceLocator[ LOCATOR_SIZE ];
 
 		swprintf(szResourceLocator, LOCATOR_SIZE, L"section://%X,%ls#%ls",c_ModuleHandle,L"media", L"media/");
-		hr = XuiSceneCreate(szResourceLocator,app.GetSceneName(eUIScene_DebugCreateSchematic,false, false), NULL, &hScene);
+		hr = XuiSceneCreate(szResourceLocator,app.GetSceneName(eUIScene_DebugCreateSchematic,false, false), nullptr, &hScene);
 		this->NavigateForward(hScene);
 		//app.NavigateToScene(ProfileManager.GetPrimaryPad(),eUIScene_DebugCreateSchematic);
 #endif
@@ -184,7 +184,7 @@ HRESULT CScene_DebugOverlay::OnNotifyPressEx(HXUIOBJ hObjPressed, XUINotifyPress
 	{
 #ifndef _CONTENT_PACKAGE
 		// load from the .xzp file
-		const ULONG_PTR c_ModuleHandle = (ULONG_PTR)GetModuleHandle(NULL);
+		const ULONG_PTR c_ModuleHandle = (ULONG_PTR)GetModuleHandle(nullptr);
 
 		HXUIOBJ hScene;
 		HRESULT hr;
@@ -193,7 +193,7 @@ HRESULT CScene_DebugOverlay::OnNotifyPressEx(HXUIOBJ hObjPressed, XUINotifyPress
 		WCHAR szResourceLocator[ LOCATOR_SIZE ];
 
 		swprintf(szResourceLocator, LOCATOR_SIZE, L"section://%X,%ls#%ls",c_ModuleHandle,L"media", L"media/");
-		hr = XuiSceneCreate(szResourceLocator,app.GetSceneName(eUIScene_DebugSetCamera, false, false), NULL, &hScene);
+		hr = XuiSceneCreate(szResourceLocator,app.GetSceneName(eUIScene_DebugSetCamera, false, false), nullptr, &hScene);
 		this->NavigateForward(hScene);
 		//app.NavigateToScene(ProfileManager.GetPrimaryPad(),eUIScene_DebugCreateSchematic);
 #endif
@@ -266,7 +266,7 @@ HRESULT CScene_DebugOverlay::OnNotifyValueChanged( HXUIOBJ hObjSource, XUINotify
 	if( hObjSource == m_setFov )
 	{
 		Minecraft *pMinecraft = Minecraft::GetInstance();
-		pMinecraft->gameRenderer->SetFovVal((float)pNotifyValueChangedData->nValue);
+		pMinecraft->gameRenderer->SetFovVal(static_cast<float>(pNotifyValueChangedData->nValue));
 	}
 	return S_OK;
 }
@@ -274,10 +274,10 @@ HRESULT CScene_DebugOverlay::OnNotifyValueChanged( HXUIOBJ hObjSource, XUINotify
 HRESULT CScene_DebugOverlay::OnTimer( XUIMessageTimer *pTimer, BOOL& bHandled )
 {
 	Minecraft *pMinecraft = Minecraft::GetInstance();
-	if(pMinecraft->level != NULL)
+	if(pMinecraft->level != nullptr)
 	{
 		m_setTime.SetValue( pMinecraft->level->getLevelData()->getTime() % 24000 );
-		m_setFov.SetValue( (int)pMinecraft->gameRenderer->GetFovVal());
+		m_setFov.SetValue( static_cast<int>(pMinecraft->gameRenderer->GetFovVal()));
 	}
 	return S_OK;
 }
@@ -286,9 +286,9 @@ void CScene_DebugOverlay::SetSpawnToPlayerPos()
 {
 	Minecraft *pMinecraft = Minecraft::GetInstance();
 
-	pMinecraft->level->getLevelData()->setXSpawn((int)pMinecraft->player->x);
-	pMinecraft->level->getLevelData()->setYSpawn((int)pMinecraft->player->y);
-	pMinecraft->level->getLevelData()->setZSpawn((int)pMinecraft->player->z);
+	pMinecraft->level->getLevelData()->setXSpawn(static_cast<int>(pMinecraft->player->x));
+	pMinecraft->level->getLevelData()->setYSpawn(static_cast<int>(pMinecraft->player->y));
+	pMinecraft->level->getLevelData()->setZSpawn(static_cast<int>(pMinecraft->player->z));
 }
 
 #ifndef _CONTENT_PACKAGE
@@ -301,14 +301,14 @@ void CScene_DebugOverlay::SaveLimitedFile(int chunkRadius)
 	ConsoleSaveFile *currentSave = pMinecraft->level->getLevelStorage()->getSaveFile();
 
 	// With a size of 0 but a value in the data pointer we should create a new save
-	ConsoleSaveFileOriginal newSave( currentSave->getFilename(), NULL, 0, true );
+	ConsoleSaveFileOriginal newSave( currentSave->getFilename(), nullptr, 0, true );
 
 	// TODO Make this only happen for the new save
 	//SetSpawnToPlayerPos();
 	FileEntry *origFileEntry = currentSave->createFile( wstring( L"level.dat" ) );
 	byteArray levelData( origFileEntry->getFileSize() );
 	DWORD bytesRead;
-	currentSave->setFilePointer(origFileEntry,0,NULL,FILE_BEGIN);
+	currentSave->setFilePointer(origFileEntry,0,nullptr,FILE_BEGIN);
 	currentSave->readFile(
          origFileEntry,
          levelData.data, // data buffer
@@ -331,10 +331,10 @@ void CScene_DebugOverlay::SaveLimitedFile(int chunkRadius)
 	{
 		for(int zPos = playerChunkZ - chunkRadius; zPos < playerChunkZ + chunkRadius; ++zPos)
 		{
-			CompoundTag *chunkData=NULL;
+			CompoundTag *chunkData=nullptr;
 
 			DataInputStream *is = RegionFileCache::getChunkDataInputStream(currentSave, L"", xPos, zPos);
-			if (is != NULL)
+			if (is != nullptr)
 			{
 				chunkData = NbtIo::read((DataInput *)is);
 				is->deleteChildStream();
@@ -342,7 +342,7 @@ void CScene_DebugOverlay::SaveLimitedFile(int chunkRadius)
 			}
 			app.DebugPrintf("Processing chunk (%d, %d)\n", xPos, zPos);
 			DataOutputStream *os = getChunkDataOutputStream(newFileCache, &newSave, L"", xPos, zPos);
-			if(os != NULL)
+			if(os != nullptr)
 			{
 				NbtIo::write(chunkData, os);
 				os->close();
@@ -352,7 +352,7 @@ void CScene_DebugOverlay::SaveLimitedFile(int chunkRadius)
 				os->deleteChildStream();
 				delete os;
 			}
-			if(chunkData != NULL)
+			if(chunkData != nullptr)
 			{
 				delete chunkData;
 			}
@@ -367,13 +367,13 @@ RegionFile *CScene_DebugOverlay::getRegionFile(unordered_map<File, RegionFile *,
 {
 	File file( prefix + wstring(L"r.") + std::to_wstring(chunkX>>5) + L"." + std::to_wstring(chunkZ>>5) + L".mcr" );
 
-	RegionFile *ref = NULL;
+	RegionFile *ref = nullptr;
     auto it = newFileCache.find(file);
     if( it != newFileCache.end() )
 		ref = it->second;
 
 	// 4J Jev, put back in.
-    if (ref != NULL)
+    if (ref != nullptr)
 	{
 		return ref;
     }

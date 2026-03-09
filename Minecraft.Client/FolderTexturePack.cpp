@@ -31,7 +31,7 @@ InputStream *FolderTexturePack::getResourceImplementation(const wstring &name) /
 #endif
 	InputStream *resource = InputStream::getResourceAsStream(wDrive + name);
 	//InputStream *stream = DefaultTexturePack::class->getResourceAsStream(name);
-	//if (stream == NULL)
+	//if (stream == nullptr)
 	//{
 	//	throw new FileNotFoundException(name);
 	//}
@@ -85,7 +85,7 @@ void FolderTexturePack::loadUI()
 		swprintf(szResourceLocator, LOCATOR_SIZE,L"file://%lsTexturePack.xzp#skin_Minecraft.xur",getPath().c_str());
 
 		XuiFreeVisuals(L"");
-		app.LoadSkin(szResourceLocator,NULL);//L"TexturePack");
+		app.LoadSkin(szResourceLocator,nullptr);//L"TexturePack");
 		bUILoaded = true;
 		//CXuiSceneBase::GetInstance()->SetVisualPrefix(L"TexturePack");
 	}

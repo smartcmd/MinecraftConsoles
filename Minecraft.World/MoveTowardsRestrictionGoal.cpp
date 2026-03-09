@@ -20,7 +20,7 @@ bool MoveTowardsRestrictionGoal::canUse()
 	if (mob->isWithinRestriction()) return false;
 	Pos *towards = mob->getRestrictCenter();
 	Vec3 *pos = RandomPos::getPosTowards(dynamic_pointer_cast<PathfinderMob>(mob->shared_from_this()), 16, 7, Vec3::newTemp(towards->x, towards->y, towards->z));
-	if (pos == NULL) return false;
+	if (pos == nullptr) return false;
 	wantedX = pos->x;
 	wantedY = pos->y;
 	wantedZ = pos->z;

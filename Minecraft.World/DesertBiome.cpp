@@ -10,8 +10,8 @@ DesertBiome::DesertBiome(int id) : Biome(id)
 	friendlies.clear();
 	friendlies_chicken.clear();	// 4J added
 	friendlies_wolf.clear(); 	// 4J added
-	topMaterial = (BYTE) Tile::sand_Id;
-	material = (BYTE) Tile::sand_Id;
+	topMaterial = static_cast<BYTE>(Tile::sand_Id);
+	material = static_cast<BYTE>(Tile::sand_Id);
 
 	decorator->treeCount = -999;
 	decorator->deadBushCount = 2;

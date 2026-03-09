@@ -50,7 +50,7 @@ IDOC extern int gdraw_orbis_SetResourceMemory(gdraw_orbis_resourcetype type, S32
    currently hold.
 
    SetResourceMemory takes a void* argument for the address of the resource pool.
-   Pass in NULL and zero bytes to reset a specific pool.
+   Pass in nullptr and zero bytes to reset a specific pool.
 
    Resource pool memory has certain alignment requirements - see the #defines
    above. If you pass in an unaligned pointer, GDraw will automatically clip off
@@ -86,7 +86,7 @@ IDOC extern GDrawFunctions * gdraw_orbis_CreateContext(S32 w, S32 h, void *conte
    There can only be one GDraw context active at any one time.
 
    If initialization fails for some reason (the main reason would be an out of memory condition),
-   NULL is returned. Otherwise, you can pass the return value to IggySetGDraw. */
+   nullptr is returned. Otherwise, you can pass the return value to IggySetGDraw. */
 
 IDOC extern void gdraw_orbis_DestroyContext(void);
 /* Destroys the current GDraw context, if any.
@@ -126,7 +126,7 @@ IDOC extern void gdraw_orbis_End(gdraw_orbis_staging_stats *staging_stats);
    
    staging_stats will be filled with stats for the staging buffer, denoting how much memory
    was actually used and which allocations were attempted. If you're not interested, just
-   pass NULL. */
+   pass nullptr. */
 
 IDOC extern void gdraw_orbis_SetTileOrigin(sce::Gnm::RenderTarget *color, sce::Gnm::DepthRenderTarget *depth, S32 x, S32 y);
 /* This sets the main color and depth buffers that GDraw should render to and the

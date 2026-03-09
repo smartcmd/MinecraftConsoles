@@ -265,7 +265,7 @@ public:
 
 	// NAVIGATION
 protected:
-	//void navigateForward(int iPad, EUIScene scene, void *initData = NULL);
+	//void navigateForward(int iPad, EUIScene scene, void *initData = nullptr);
 	void navigateBack();
 
 public:

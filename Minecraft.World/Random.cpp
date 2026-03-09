@@ -27,22 +27,22 @@ void Random::setSeed(int64_t s)
 int Random::next(int bits)
 {
     seed = (seed * 0x5DEECE66DLL + 0xBLL) & ((1LL << 48) - 1);
-    return (int)(seed >> (48 - bits));
+    return static_cast<int>(seed >> (48 - bits));
 }
 
 void Random::nextBytes(byte *bytes, unsigned int count)
 {
 	for(unsigned int i = 0; i < count; i++ )
 	{
-		bytes[i] = (byte)next(8);
+		bytes[i] = static_cast<byte>(next(8));
 	}
 }
 
 double Random::nextDouble()
 {
 
-    return (((int64_t)next(26) << 27) + next(27))
-        / (double)(1LL << 53);
+    return ((static_cast<int64_t>(next(26)) << 27) + next(27))
+        / static_cast<double>(1LL << 53);
 }
 
 double Random::nextGaussian()
@@ -79,7 +79,7 @@ int Random::nextInt(int n)
 
 
     if ((n & -n) == n)  // i.e., n is a power of 2
-        return (int)(((int64_t)next(31) * n) >> 31); // 4J Stu - Made int64_t instead of long
+        return static_cast<int>((static_cast<int64_t>(next(31)) * n) >> 31); // 4J Stu - Made int64_t instead of long
 
     int bits, val;
     do
@@ -92,12 +92,12 @@ int Random::nextInt(int n)
 
 float Random::nextFloat()
 {
-	return next(24) / ((float)(1 << 24));
+	return next(24) / static_cast<float>(1 << 24);
 }
 
 int64_t Random::nextLong()
 {
-	return ((int64_t)next(32) << 32) + next(32);
+	return (static_cast<int64_t>(next(32)) << 32) + next(32);
 }
 
 bool Random::nextBoolean()

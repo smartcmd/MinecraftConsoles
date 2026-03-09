@@ -165,7 +165,7 @@ public:
 class DurangoStats : public GenericStats
 {
 public:
-	static DurangoStats *getInstance() { return (DurangoStats*) GenericStats::getInstance(); }
+	static DurangoStats *getInstance() { return static_cast<DurangoStats *>(GenericStats::getInstance()); }
 
 protected:
 	enum {

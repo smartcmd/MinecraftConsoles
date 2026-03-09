@@ -9,7 +9,7 @@
 
 TutorialHint::TutorialHint(eTutorial_Hint id, Tutorial *tutorial, int descriptionId, eHintType type, bool allowFade /*= true*/) 
 	: m_id( id ), m_tutorial(tutorial), m_descriptionId( descriptionId ), m_type( type ), m_counter( 0 ),
-	m_lastTile( NULL ), m_hintNeeded( true ), m_allowFade(allowFade)
+	m_lastTile( nullptr ), m_hintNeeded( true ), m_allowFade(allowFade)
 {
 	tutorial->addMessage(descriptionId, type != e_Hint_NoIngredients);
 }

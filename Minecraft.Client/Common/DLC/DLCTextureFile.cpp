@@ -7,7 +7,7 @@ DLCTextureFile::DLCTextureFile(const wstring &path) : DLCFile(DLCManager::e_DLCT
 	m_bIsAnim = false;
 	m_animString = L"";
 	
-	m_pbData = NULL;
+	m_pbData = nullptr;
 	m_dwBytes = 0;
 }
 

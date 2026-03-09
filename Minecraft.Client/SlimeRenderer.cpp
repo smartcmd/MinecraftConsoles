@@ -41,7 +41,7 @@ void SlimeRenderer::scale(shared_ptr<LivingEntity> _slime, float a)
 	// 4J - dynamic cast required because we aren't using templates/generics in our version
 	shared_ptr<Slime> slime = dynamic_pointer_cast<Slime>(_slime);
 
-    float size = (float) slime->getSize();
+    float size = static_cast<float>(slime->getSize());
     float ss = (slime->oSquish + (slime->squish - slime->oSquish) * a) / (size * 0.5f + 1);
     float w = 1 / (ss + 1);
     glScalef(w * size, 1 / w * size, w * size);

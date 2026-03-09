@@ -120,7 +120,7 @@ public:
 		else
 		{
 			LeaveCriticalSection(&m_cs);
-			return NULL;
+			return nullptr;
 		}
 	}
 private:
@@ -332,10 +332,10 @@ public:
 #define PIXSetMarkerDeprecated(a, b, ...) PIXSetMarker(a, L ## b, __VA_ARGS__)
 #define PIXAddNamedCounter(a, b) PIXReportCounter( L ## b, a)
 #else
-void PIXAddNamedCounter(int a, const char *b, ...);
-void PIXBeginNamedEvent(int a, const char *b, ...);
-void PIXEndNamedEvent();
-void PIXSetMarkerDeprecated(int a, const char *b, ...);
+inline void PIXAddNamedCounter(int, const char*, ...) {}
+inline void PIXBeginNamedEvent(int, const char*, ...) {}
+inline void PIXEndNamedEvent() {}
+inline void PIXSetMarkerDeprecated(int, const char*, ...) {}
 #endif
 
 void XSetThreadProcessor(HANDLE a, int b);

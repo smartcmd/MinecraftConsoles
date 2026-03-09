@@ -14,13 +14,13 @@ HRESULT CScene_DebugItemEditor::OnInit( XUIMessageInit *pInitData, BOOL &bHandle
 {
 	MapChildControls();
 
-	ItemEditorInput *initData = (ItemEditorInput *)pInitData->pvInitData;
+	ItemEditorInput *initData = static_cast<ItemEditorInput *>(pInitData->pvInitData);
 	m_iPad = initData->iPad;
 	m_slot = initData->slot;
 	m_menu = initData->menu;
-	if(m_slot != NULL) m_item = m_slot->getItem();
+	if(m_slot != nullptr) m_item = m_slot->getItem();
 
-	if(m_item!=NULL)
+	if(m_item!=nullptr)
 	{
 		m_icon->SetIcon(m_iPad, m_item->id,m_item->getAuxValue(),m_item->count,10,31,false,m_item->isFoil());
 		m_itemName.SetText( app.GetString( Item::items[m_item->id]->getDescriptionId(m_item) ) );
@@ -54,13 +54,13 @@ HRESULT CScene_DebugItemEditor::OnKeyDown(XUIMessageInput* pInputData, BOOL& rfH
 	case VK_PAD_START:
 	case VK_PAD_BACK:
 		// We need to send a packet to the server to update it's representation of this item
-		if(m_slot != NULL && m_menu != NULL)
+		if(m_slot != nullptr && m_menu != nullptr)
 		{
 			m_slot->set(m_item);
 
 			Minecraft *pMinecraft = Minecraft::GetInstance();
 			shared_ptr<MultiplayerLocalPlayer> player = pMinecraft->localplayers[m_iPad];
-			if(player != NULL && player->connection) player->connection->send( shared_ptr<ContainerSetSlotPacket>( new ContainerSetSlotPacket(m_menu->containerId, m_slot->index, m_item) ) );
+			if(player != nullptr && player->connection) player->connection->send(std::make_shared<ContainerSetSlotPacket>(m_menu->containerId, m_slot->index, m_item));
 		}
 		// kill the crafting xui
 		app.NavigateBack(m_iPad);
@@ -76,7 +76,7 @@ HRESULT CScene_DebugItemEditor::OnKeyDown(XUIMessageInput* pInputData, BOOL& rfH
 
 HRESULT CScene_DebugItemEditor::OnNotifyValueChanged( HXUIOBJ hObjSource, XUINotifyValueChanged *pNotifyValueChangedData, BOOL &bHandled)
 {
-	if(m_item == NULL) m_item = shared_ptr<ItemInstance>( new ItemInstance(0,1,0) );
+	if(m_item == nullptr) m_item = std::make_shared<ItemInstance>(0, 1, 0);
 	if(hObjSource == m_itemId)
 	{
 		int id = 0;
@@ -84,7 +84,7 @@ HRESULT CScene_DebugItemEditor::OnNotifyValueChanged( HXUIOBJ hObjSource, XUINot
 		if(!value.empty()) id = _fromString<int>( value );
 
 		// TODO Proper validation of the valid item ids
-		if(id > 0 && Item::items[id] != NULL) m_item->id = id;
+		if(id > 0 && Item::items[id] != nullptr) m_item->id = id;
 	}
 	else if(hObjSource == m_itemAuxValue)
 	{

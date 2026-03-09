@@ -12,12 +12,12 @@ ConnectScreen::ConnectScreen(Minecraft *minecraft, const wstring& ip, int port)
 {
 	aborted = false;
 //    System.out.println("Connecting to " + ip + ", " + port);
-    minecraft->setLevel(NULL);
+    minecraft->setLevel(nullptr);
 #if 1
 	// 4J - removed from separate thread, but need to investigate what we actually need here
     connection = new ClientConnection(minecraft, ip, port);
     if (aborted) return;
-    connection->send( shared_ptr<PreLoginPacket>( new PreLoginPacket(minecraft->user->name) ) );
+    connection->send(std::make_shared<PreLoginPacket>(minecraft->user->name));
 #else
 
     new Thread() {
@@ -45,7 +45,7 @@ ConnectScreen::ConnectScreen(Minecraft *minecraft, const wstring& ip, int port)
 
 void ConnectScreen::tick()
 {
-    if (connection != NULL)
+    if (connection != nullptr)
 	{
         connection->tick();
     }
@@ -69,7 +69,7 @@ void ConnectScreen::buttonClicked(Button *button)
     if (button->id == 0)
 	{
         aborted = true;
-        if (connection != NULL) connection->close();
+        if (connection != nullptr) connection->close();
         minecraft->setScreen(new TitleScreen());
     }
 }
@@ -80,7 +80,7 @@ void ConnectScreen::render(int xm, int ym, float a)
 
     Language *language = Language::getInstance();
 
-    if (connection == NULL)
+    if (connection == nullptr)
 	{
         drawCenteredString(font, language->getElement(L"connect.connecting"), width / 2, height / 2 - 50, 0xffffff);
         drawCenteredString(font, L"", width / 2, height / 2 - 10, 0xffffff);

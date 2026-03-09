@@ -6,7 +6,7 @@
 
 MelonTile::MelonTile(int id) : Tile(id, Material::vegetable)
 {
-	iconTop = NULL;
+	iconTop = nullptr;
 }
 
 Icon *MelonTile::getTexture(int face, int data)

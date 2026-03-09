@@ -36,7 +36,7 @@ double Math::random()
 //the value of the argument rounded to the nearest long value.
 int64_t Math::round( double d )
 {
-	return (int64_t)floor( d + 0.5 );
+	return static_cast<int64_t>(floor(d + 0.5));
 }
 
 int Math::_max(int a, int b)

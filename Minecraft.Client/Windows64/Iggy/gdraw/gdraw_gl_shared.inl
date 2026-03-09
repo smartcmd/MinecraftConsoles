@@ -60,7 +60,7 @@ static RADINLINE void break_on_err(GLint e)
 static void report_err(GLint e)
 {
    break_on_err(e);
-   IggyGDrawSendWarning(NULL, "OpenGL glGetError error");
+   IggyGDrawSendWarning(nullptr, "OpenGL glGetError error");
 }
 
 static void compilation_err(const char *msg)
@@ -256,7 +256,7 @@ static void make_texture(GLuint tex)
 static void make_rendertarget(GDrawHandle *t, GLuint tex, GLenum int_type, GLenum ext_type, GLenum data_type, S32 w, S32 h, S32 size)
 {
    glBindTexture(GL_TEXTURE_2D, tex);
-   glTexImage2D(GL_TEXTURE_2D, 0, int_type, w, h, 0, ext_type, data_type, NULL);
+   glTexImage2D(GL_TEXTURE_2D, 0, int_type, w, h, 0, ext_type, data_type, nullptr);
    make_texture(tex);
    glBindTexture(GL_TEXTURE_2D, 0);
 }
@@ -309,7 +309,7 @@ extern GDrawTexture *gdraw_GLx_(WrappedTextureCreate)(S32 gl_texture_handle, S32
    p->handle.tex.w = width;
    p->handle.tex.h = height;
    p->handle.tex.nonpow2 = !(is_pow2(width) && is_pow2(height));
-   gdraw_HandleCacheAllocateEnd(p, 0, NULL, GDRAW_HANDLE_STATE_user_owned);
+   gdraw_HandleCacheAllocateEnd(p, 0, nullptr, GDRAW_HANDLE_STATE_user_owned);
    return (GDrawTexture *) p;
 }
 
@@ -350,7 +350,7 @@ static void RADLINK gdraw_SetTextureUniqueID(GDrawTexture *tex, void *old_id, vo
 static rrbool RADLINK gdraw_MakeTextureBegin(void *owner, S32 width, S32 height, gdraw_texture_format format, U32 flags, GDraw_MakeTexture_ProcessingInfo *p, GDrawStats *gstats)
 {
    S32 size=0, asize, stride;
-   GDrawHandle *t = NULL;
+   GDrawHandle *t = nullptr;
    opengl_check();
 
    stride = width;
@@ -369,7 +369,7 @@ static rrbool RADLINK gdraw_MakeTextureBegin(void *owner, S32 width, S32 height,
    p->texture_data = IggyGDrawMalloc(size);
    if (!p->texture_data) {
       gdraw_HandleCacheAllocateFail(t);
-      IggyGDrawSendWarning(NULL, "GDraw malloc for texture data failed");
+      IggyGDrawSendWarning(nullptr, "GDraw malloc for texture data failed");
       return false;
    }
    
@@ -419,9 +419,9 @@ static GDrawTexture * RADLINK gdraw_MakeTextureEnd(GDraw_MakeTexture_ProcessingI
 
    if (e != 0) {
       gdraw_HandleCacheAllocateFail(t);
-      IggyGDrawSendWarning(NULL, "GDraw OpenGL error creating texture");
+      IggyGDrawSendWarning(nullptr, "GDraw OpenGL error creating texture");
       eat_gl_err();
-      return NULL;
+      return nullptr;
    } else {
       gdraw_HandleCacheAllocateEnd(t, p->i4, p->p1, (flags & GDRAW_MAKETEXTURE_FLAGS_never_flush) ? GDRAW_HANDLE_STATE_pinned : GDRAW_HANDLE_STATE_locked);
       stats->nonzero_flags |= GDRAW_STATS_alloc_tex;
@@ -467,8 +467,8 @@ static void RADLINK gdraw_UpdateTextureEnd(GDrawTexture *tex, void *unique_id, G
 static void RADLINK gdraw_FreeTexture(GDrawTexture *tt, void *unique_id, GDrawStats *gstats)
 {
    GDrawHandle *t = (GDrawHandle *) tt;
-   assert(t != NULL);
-   if (t->owner == unique_id || unique_id == NULL) {
+   assert(t != nullptr);
+   if (t->owner == unique_id || unique_id == nullptr) {
       if (t->cache == &gdraw->rendertargets) {
          gdraw_HandleCacheUnlock(t);
          // cache it by simply not freeing it
@@ -516,7 +516,7 @@ static rrbool RADLINK gdraw_MakeVertexBufferBegin(void *unique_id, gdraw_vformat
    opengl_check();
    vb = gdraw_res_alloc_begin(gdraw->vbufcache, vbuf_size + ibuf_size, gstats);
    if (!vb) {
-      IggyGDrawSendWarning(NULL, "GDraw out of vertex buffer memory");
+      IggyGDrawSendWarning(nullptr, "GDraw out of vertex buffer memory");
       return false;
    }
 
@@ -526,9 +526,9 @@ static rrbool RADLINK gdraw_MakeVertexBufferBegin(void *unique_id, gdraw_vformat
    glGenBuffers(1, &vb->handle.vbuf.base);
    glGenBuffers(1, &vb->handle.vbuf.indices);
    glBindBuffer(GL_ARRAY_BUFFER, vb->handle.vbuf.base);
-   glBufferData(GL_ARRAY_BUFFER, vbuf_size, NULL, GL_STATIC_DRAW);
+   glBufferData(GL_ARRAY_BUFFER, vbuf_size, nullptr, GL_STATIC_DRAW);
    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, vb->handle.vbuf.indices);
-   glBufferData(GL_ELEMENT_ARRAY_BUFFER, ibuf_size, NULL, GL_STATIC_DRAW);
+   glBufferData(GL_ELEMENT_ARRAY_BUFFER, ibuf_size, nullptr, GL_STATIC_DRAW);
    if (!e) e = glGetError();
    if (e != GL_NO_ERROR) {
       glBindBuffer(GL_ARRAY_BUFFER, 0);
@@ -537,7 +537,7 @@ static rrbool RADLINK gdraw_MakeVertexBufferBegin(void *unique_id, gdraw_vformat
       glDeleteBuffers(1, &vb->handle.vbuf.indices);
       gdraw_HandleCacheAllocateFail(vb);
       eat_gl_err();
-      IggyGDrawSendWarning(NULL, "GDraw OpenGL vertex buffer creation failed");
+      IggyGDrawSendWarning(nullptr, "GDraw OpenGL vertex buffer creation failed");
       return false;
    }
 
@@ -556,7 +556,7 @@ static rrbool RADLINK gdraw_MakeVertexBufferBegin(void *unique_id, gdraw_vformat
       if (!p->vertex_data || !p->index_data) {
          if (p->vertex_data)  IggyGDrawFree(p->vertex_data);
          if (p->index_data)   IggyGDrawFree(p->index_data);
-         IggyGDrawSendWarning(NULL, "GDraw malloc for vertex buffer temporary memory failed");
+         IggyGDrawSendWarning(nullptr, "GDraw malloc for vertex buffer temporary memory failed");
          return false;
       }
    } else {
@@ -602,7 +602,7 @@ static GDrawVertexBuffer * RADLINK gdraw_MakeVertexBufferEnd(GDraw_MakeVertexBuf
       glDeleteBuffers(1, &vb->handle.vbuf.indices);
       gdraw_HandleCacheAllocateFail(vb);
       eat_gl_err();
-      return NULL;
+      return nullptr;
    } else
       gdraw_HandleCacheAllocateEnd(vb, p->i0 + p->i1, p->p1, GDRAW_HANDLE_STATE_locked);
 
@@ -619,7 +619,7 @@ static rrbool RADLINK gdraw_TryToLockVertexBuffer(GDrawVertexBuffer *vb, void *u
 static void RADLINK gdraw_FreeVertexBuffer(GDrawVertexBuffer *vb, void *unique_id, GDrawStats *stats)
 {
    GDrawHandle *h = (GDrawHandle *) vb;
-   assert(h != NULL);
+   assert(h != nullptr);
    if (h->owner == unique_id)
       gdraw_res_free(h, stats);
 }
@@ -678,13 +678,13 @@ static GDrawHandle *get_color_rendertarget(GDrawStats *gstats)
    // ran out of RTs, allocate a new one
    size = gdraw->frametex_width * gdraw->frametex_height * 4;
    if (gdraw->rendertargets.bytes_free < size) {
-      IggyGDrawSendWarning(NULL, "GDraw exceeded available rendertarget memory");
-      return NULL;
+      IggyGDrawSendWarning(nullptr, "GDraw exceeded available rendertarget memory");
+      return nullptr;
    }
 
    t = gdraw_HandleCacheAllocateBegin(&gdraw->rendertargets);
    if (!t) {
-      IggyGDrawSendWarning(NULL, "GDraw exceeded available rendertarget handles");
+      IggyGDrawSendWarning(nullptr, "GDraw exceeded available rendertarget handles");
       return t;
    }
 
@@ -873,7 +873,7 @@ static void RADLINK gdraw_SetViewSizeAndWorldScale(S32 w, S32 h, F32 scalex, F32
 
 static void RADLINK gdraw_Set3DTransform(F32 *mat)
 {
-   if (mat == NULL)
+   if (mat == nullptr)
       gdraw->use_3d = 0;
    else {
       gdraw->use_3d = 1;
@@ -992,30 +992,30 @@ static rrbool RADLINK gdraw_TextureDrawBufferBegin(gswf_recti *region, gdraw_tex
    GDrawHandle *t;
    int k;
    if (gdraw->tw == 0 || gdraw->th == 0) {
-      IggyGDrawSendWarning(NULL, "GDraw got a request for an empty rendertarget");
+      IggyGDrawSendWarning(nullptr, "GDraw got a request for an empty rendertarget");
       return false;
    }
 
    if (n >= &gdraw->frame[MAX_RENDER_STACK_DEPTH]) {
-      IggyGDrawSendWarning(NULL, "GDraw rendertarget nesting exceeded MAX_RENDER_STACK_DEPTH");
+      IggyGDrawSendWarning(nullptr, "GDraw rendertarget nesting exceeded MAX_RENDER_STACK_DEPTH");
       return false;
    }
 
    if (owner) {
       t = get_rendertarget_texture(region->x1 - region->x0, region->y1 - region->y0, owner, gstats);
       if (!t) {
-         IggyGDrawSendWarning(NULL, "GDraw ran out of rendertargets for cacheAsBItmap");
+         IggyGDrawSendWarning(nullptr, "GDraw ran out of rendertargets for cacheAsBItmap");
          return false;
       }
    } else {
       t = get_color_rendertarget(gstats);
       if (!t) {
-         IggyGDrawSendWarning(NULL, "GDraw ran out of rendertargets");
+         IggyGDrawSendWarning(nullptr, "GDraw ran out of rendertargets");
          return false;
       }
    }
    n->color_buffer = t;
-   assert(n->color_buffer != NULL);
+   assert(n->color_buffer != nullptr);
 
    if (n == gdraw->frame+1)
       n->stencil_depth = get_depthstencil_renderbuffer(gstats);
@@ -1023,7 +1023,7 @@ static rrbool RADLINK gdraw_TextureDrawBufferBegin(gswf_recti *region, gdraw_tex
       n->stencil_depth = (n-1)->stencil_depth;
    ++gdraw->cur;
 
-   gdraw->cur->cached = owner != NULL;
+   gdraw->cur->cached = owner != nullptr;
    if (owner) {
       gdraw->cur->base_x = region->x0;
       gdraw->cur->base_y = region->y0;
@@ -1161,8 +1161,8 @@ static GDrawTexture *RADLINK gdraw_TextureDrawBufferEnd(GDrawStats *gstats)
    assert(m >= gdraw->frame);  // bug in Iggy -- unbalanced
 
    if (m != gdraw->frame)
-      assert(m->color_buffer != NULL);
-   assert(n->color_buffer != NULL);
+      assert(m->color_buffer != nullptr);
+   assert(n->color_buffer != nullptr);
 
    // remove color and stencil buffers
    glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 , GL_RENDERBUFFER, 0);
@@ -1274,7 +1274,7 @@ static float depth_from_id(S32 id)
 static void set_texture(U32 texunit, GDrawTexture *tex)
 {
    glActiveTexture(GL_TEXTURE0 + texunit);
-   if (tex == NULL)
+   if (tex == nullptr)
       glBindTexture(GL_TEXTURE_2D, 0);
    else
       glBindTexture(GL_TEXTURE_2D, ((GDrawHandle *) tex)->handle.tex.gl);
@@ -1575,7 +1575,7 @@ static void RADLINK gdraw_DrawIndexedTriangles(GDrawRenderState *r, GDrawPrimiti
       glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
    }
 
-   if (!set_render_state(r,p->vertex_format, NULL, p, gstats)) return;
+   if (!set_render_state(r,p->vertex_format, nullptr, p, gstats)) return;
    gstats->nonzero_flags |= GDRAW_STATS_batches;
    gstats->num_batches += 1;
    gstats->drawn_indices += p->num_indices;
@@ -1593,7 +1593,7 @@ static void RADLINK gdraw_DrawIndexedTriangles(GDrawRenderState *r, GDrawPrimiti
       while (pos < p->num_vertices) {
          S32 vert_count = RR_MIN(p->num_vertices - pos, QUAD_IB_COUNT * 4);
          set_vertex_format(p->vertex_format, p->vertices + pos*stride);
-         glDrawElements(GL_TRIANGLES, (vert_count >> 2) * 6, GL_UNSIGNED_SHORT, NULL);
+         glDrawElements(GL_TRIANGLES, (vert_count >> 2) * 6, GL_UNSIGNED_SHORT, nullptr);
          pos += vert_count;
       }
       
@@ -1719,7 +1719,7 @@ static void gdraw_DriverBlurPass(GDrawRenderState *r, int taps, F32 *data, gswf_
 static void gdraw_Colormatrix(GDrawRenderState *r, gswf_recti *s, float *tc, GDrawStats *gstats)
 {
    ProgramWithCachedVariableLocations *prg = &gdraw->colormatrix;
-   if (!gdraw_TextureDrawBufferBegin(s, GDRAW_TEXTURE_FORMAT_rgba32, GDRAW_TEXTUREDRAWBUFFER_FLAGS_needs_color | GDRAW_TEXTUREDRAWBUFFER_FLAGS_needs_alpha, NULL, gstats))
+   if (!gdraw_TextureDrawBufferBegin(s, GDRAW_TEXTURE_FORMAT_rgba32, GDRAW_TEXTUREDRAWBUFFER_FLAGS_needs_color | GDRAW_TEXTUREDRAWBUFFER_FLAGS_needs_alpha, nullptr, gstats))
       return;
    use_lazy_shader(prg);
    set_texture(0, r->tex[0]);
@@ -1752,7 +1752,7 @@ static void set_clamp_constant(GLint constant, GDrawTexture *tex)
 static void gdraw_Filter(GDrawRenderState *r, gswf_recti *s, float *tc, int isbevel, GDrawStats *gstats)
 {
    ProgramWithCachedVariableLocations *prg = &gdraw->filter_prog[isbevel][r->filter_mode];
-   if (!gdraw_TextureDrawBufferBegin(s, GDRAW_TEXTURE_FORMAT_rgba32, GDRAW_TEXTUREDRAWBUFFER_FLAGS_needs_color | GDRAW_TEXTUREDRAWBUFFER_FLAGS_needs_alpha, NULL, gstats))
+   if (!gdraw_TextureDrawBufferBegin(s, GDRAW_TEXTURE_FORMAT_rgba32, GDRAW_TEXTUREDRAWBUFFER_FLAGS_needs_color | GDRAW_TEXTUREDRAWBUFFER_FLAGS_needs_alpha, nullptr, gstats))
       return;
    use_lazy_shader(prg);
    set_texture(0, r->tex[0]);
@@ -1845,7 +1845,7 @@ static void RADLINK gdraw_FilterQuad(GDrawRenderState *r, S32 x0, S32 y0, S32 x1
             assert(0);
       }
    } else {
-      GDrawTexture *blend_tex = NULL;
+      GDrawTexture *blend_tex = nullptr;
       const int *vvars;
 
       // for crazy blend modes, we need to read back from the framebuffer
@@ -1864,7 +1864,7 @@ static void RADLINK gdraw_FilterQuad(GDrawRenderState *r, S32 x0, S32 y0, S32 x1
          set_texture(1, blend_tex);
       }
 
-      if (!set_render_state(r, GDRAW_vformat_v2tc2, &vvars, NULL, gstats))
+      if (!set_render_state(r, GDRAW_vformat_v2tc2, &vvars, nullptr, gstats))
          return;
       do_screen_quad(&s, tc, vvars, gstats, 0);
       tag_resources(r->tex[0],r->tex[1],0);
@@ -1932,7 +1932,7 @@ static void make_fragment_program(ProgramWithCachedVariableLocations *p, int num
    }
 
    shad = glCreateShader(GL_FRAGMENT_SHADER);
-   glShaderSource(shad, num_strings, (const GLchar **)strings, NULL);
+   glShaderSource(shad, num_strings, (const GLchar **)strings, nullptr);
    glCompileShader(shad);
    glGetShaderiv(shad, GL_COMPILE_STATUS, &res);
    if (!res) {
@@ -1994,7 +1994,7 @@ static void make_vertex_program(GLuint *vprog, int num_strings, char **strings)
    if(strings[0])
    {
       shad = glCreateShader(GL_VERTEX_SHADER);
-      glShaderSource(shad, num_strings, (const GLchar **)strings, NULL);
+      glShaderSource(shad, num_strings, (const GLchar **)strings, nullptr);
       glCompileShader(shad);
       glGetShaderiv(shad, GL_COMPILE_STATUS, &res);
       if (!res) {
@@ -2154,7 +2154,7 @@ static void free_gdraw()
    if (gdraw->texturecache) IggyGDrawFree(gdraw->texturecache);
    if (gdraw->vbufcache) IggyGDrawFree(gdraw->vbufcache);
    IggyGDrawFree(gdraw);
-   gdraw = NULL;
+   gdraw = nullptr;
 }
 
 int gdraw_GLx_(SetResourceLimits)(gdraw_resourcetype type, S32 num_handles, S32 num_bytes)
@@ -2193,7 +2193,7 @@ int gdraw_GLx_(SetResourceLimits)(gdraw_resourcetype type, S32 num_handles, S32 
             IggyGDrawFree(gdraw->texturecache);
          }
          gdraw->texturecache = make_handle_cache(GDRAW_GLx_(RESOURCE_texture));
-         return gdraw->texturecache != NULL;
+         return gdraw->texturecache != nullptr;
 
       case GDRAW_GLx_(RESOURCE_vertexbuffer):
          if (gdraw->vbufcache) {
@@ -2201,7 +2201,7 @@ int gdraw_GLx_(SetResourceLimits)(gdraw_resourcetype type, S32 num_handles, S32 
             IggyGDrawFree(gdraw->vbufcache);
          }
          gdraw->vbufcache = make_handle_cache(GDRAW_GLx_(RESOURCE_vertexbuffer));
-         return gdraw->vbufcache != NULL;
+         return gdraw->vbufcache != nullptr;
 
       default:
          return 0;
@@ -2220,12 +2220,12 @@ GDrawTexture * RADLINK gdraw_GLx_(MakeTextureFromResource)(U8 *resource_file, S3
    while (fmt->iggyfmt != texture->format && fmt->blkbytes)
       fmt++;
    if (!fmt->blkbytes) // end of list - i.e. format not supported
-      return NULL;
+      return nullptr;
 
    // prepare texture
    glGenTextures(1, &gl_texture_handle);
    if (gl_texture_handle == 0)
-      return NULL;
+      return nullptr;
 
    opengl_check();
    make_texture(gl_texture_handle);
@@ -2283,7 +2283,7 @@ GDrawTexture * RADLINK gdraw_GLx_(MakeTextureFromResource)(U8 *resource_file, S3
       glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAX_LEVEL, mips-1);
 
    tex = gdraw_GLx_(WrappedTextureCreate)(gl_texture_handle, texture->w, texture->h, mips > 1);
-   if (tex == NULL)
+   if (tex == nullptr)
       glDeleteTextures(1, &gl_texture_handle);
    opengl_check();
    return tex;
@@ -2301,7 +2301,7 @@ static rrbool hasext(const char *exts, const char *which)
    size_t len;
 
 #ifdef GDRAW_USE_glGetStringi
-   if (exts == NULL) {
+   if (exts == nullptr) {
       GLint i, num_exts;
       glGetIntegerv(GL_NUM_EXTENSIONS, &num_exts);
       for (i=0; i < num_exts; ++i)
@@ -2316,7 +2316,7 @@ static rrbool hasext(const char *exts, const char *which)
 
    for(;;) {
       where = strstr(where, which);
-      if (where == NULL)
+      if (where == nullptr)
          return false;
 
       if (   (where == exts || *(where - 1) == ' ')   // starts with terminator
@@ -2329,7 +2329,7 @@ static rrbool hasext(const char *exts, const char *which)
 static GDrawFunctions *create_context(S32 w, S32 h)
 {
    gdraw = IggyGDrawMalloc(sizeof(*gdraw));
-   if (!gdraw) return NULL;
+   if (!gdraw) return nullptr;
 
    memset(gdraw, 0, sizeof(*gdraw));
 
@@ -2339,7 +2339,7 @@ static GDrawFunctions *create_context(S32 w, S32 h)
 
    if (!gdraw->texturecache || !gdraw->vbufcache || !make_quad_indices()) {
       free_gdraw();
-      return NULL;
+      return nullptr;
    }
 
    opengl_check();
@@ -2380,7 +2380,7 @@ static GDrawFunctions *create_context(S32 w, S32 h)
    gdraw_funcs.ClearID = gdraw_ClearID;
 
    gdraw_funcs.MakeTextureBegin = gdraw_MakeTextureBegin;
-   gdraw_funcs.MakeTextureMore = NULL;
+   gdraw_funcs.MakeTextureMore = nullptr;
    gdraw_funcs.MakeTextureEnd = gdraw_MakeTextureEnd;
 
    gdraw_funcs.UpdateTextureRect = gdraw_UpdateTextureRect;

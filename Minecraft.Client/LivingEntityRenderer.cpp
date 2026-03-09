@@ -17,7 +17,7 @@ LivingEntityRenderer::LivingEntityRenderer(Model *model, float shadow)
 {
 	this->model = model;
 	shadowRadius = shadow;
-	armor = NULL;
+	armor = nullptr;
 }
 
 void LivingEntityRenderer::setArmor(Model *armor)
@@ -37,17 +37,27 @@ float LivingEntityRenderer::rotlerp(float from, float to, float a)
 
 void LivingEntityRenderer::render(shared_ptr<Entity> _mob, double x, double y, double z, float rot, float a)
 {
+	if (_mob == nullptr)
+	{
+		return;
+	}
+
 	shared_ptr<LivingEntity> mob = dynamic_pointer_cast<LivingEntity>(_mob);
+
+	if (mob == nullptr)
+	{
+		return;
+	}
 
 	glPushMatrix();
 	glDisable(GL_CULL_FACE);
 
 	model->attackTime = getAttackAnim(mob, a);
-	if (armor != NULL) armor->attackTime = model->attackTime;
+	if (armor != nullptr) armor->attackTime = model->attackTime;
 	model->riding = mob->isRiding();
-	if (armor != NULL) armor->riding = model->riding;
+	if (armor != nullptr) armor->riding = model->riding;
 	model->young = mob->isBaby();
-	if (armor != NULL) armor->young = model->young;
+	if (armor != nullptr) armor->young = model->young;
 
 	/*try*/
 	{
@@ -259,7 +269,7 @@ void LivingEntityRenderer::renderModel(shared_ptr<LivingEntity> mob, float wp, f
 
 void LivingEntityRenderer::setupPosition(shared_ptr<LivingEntity> mob, double x, double y, double z)
 {
-	glTranslatef((float) x, (float) y, (float) z);
+	glTranslatef(static_cast<float>(x), static_cast<float>(y), static_cast<float>(z));
 }
 
 void LivingEntityRenderer::setupRotations(shared_ptr<LivingEntity> mob, float bob, float bodyRot, float a)
@@ -306,7 +316,7 @@ void LivingEntityRenderer::renderArrows(shared_ptr<LivingEntity> mob, float a)
 	int arrowCount = mob->getArrowCount();
 	if (arrowCount > 0)
 	{
-		shared_ptr<Entity> arrow = shared_ptr<Entity>(new Arrow(mob->level, mob->x, mob->y, mob->z));
+		shared_ptr<Entity> arrow = std::make_shared<Arrow>(mob->level, mob->x, mob->y, mob->z);
 		Random random = Random(mob->entityId);
 		Lighting::turnOff();
 		for (int i = 0; i < arrowCount; i++)
@@ -405,7 +415,7 @@ void LivingEntityRenderer::renderName(shared_ptr<LivingEntity> mob, double x, do
 
 					Font *font = getFont();
 					glPushMatrix();
-					glTranslatef((float) x + 0, (float) y + mob->bbHeight + 0.5f, (float) z);
+					glTranslatef(static_cast<float>(x) + 0, static_cast<float>(y) + mob->bbHeight + 0.5f, static_cast<float>(z));
 					glNormal3f(0, 1, 0);
 
 					glRotatef(-entityRenderDispatcher->playerRotY, 0, 1, 0);
@@ -448,7 +458,7 @@ void LivingEntityRenderer::renderName(shared_ptr<LivingEntity> mob, double x, do
 
 bool LivingEntityRenderer::shouldShowName(shared_ptr<LivingEntity> mob)
 {
-	return Minecraft::renderNames() && mob != entityRenderDispatcher->cameraEntity && !mob->isInvisibleTo(Minecraft::GetInstance()->player) && mob->rider.lock() == NULL;
+	return Minecraft::renderNames() && mob != entityRenderDispatcher->cameraEntity && !mob->isInvisibleTo(Minecraft::GetInstance()->player) && mob->rider.lock() == nullptr;
 }
 
 void LivingEntityRenderer::renderNameTags(shared_ptr<LivingEntity> mob, double x, double y, double z, const wstring &msg, float scale, double dist)
@@ -595,10 +605,10 @@ void LivingEntityRenderer::renderNameTag(shared_ptr<LivingEntity> mob, const wst
 		{
 			t->color(0.0f, 0.0f, 0.0f, 0.25f);
 		}
-		t->vertex((float)(-w - 1), (float)( -1 + offs), (float)( 0));
-		t->vertex((float)(-w - 1), (float)( +8 + offs + 1), (float)( 0));
-		t->vertex((float)(+w + 1), (float)( +8 + offs + 1), (float)( 0));
-		t->vertex((float)(+w + 1), (float)( -1 + offs), (float)( 0));
+		t->vertex(static_cast<float>(-w - 1), static_cast<float>(-1 + offs), static_cast<float>(0));
+		t->vertex(static_cast<float>(-w - 1), static_cast<float>(+8 + offs + 1), static_cast<float>(0));
+		t->vertex(static_cast<float>(+w + 1), static_cast<float>(+8 + offs + 1), static_cast<float>(0));
+		t->vertex(static_cast<float>(+w + 1), static_cast<float>(-1 + offs), static_cast<float>(0));
 		t->end();
 
 		glEnable(GL_DEPTH_TEST);
@@ -607,11 +617,11 @@ void LivingEntityRenderer::renderNameTag(shared_ptr<LivingEntity> mob, const wst
 		glLineWidth(2.0f);
 		t->begin(GL_LINE_STRIP);
 		t->color(color, 255 * textOpacity);
-		t->vertex((float)(-w - 1), (float)( -1 + offs), (float)( 0));
-		t->vertex((float)(-w - 1), (float)( +8 + offs + 1), (float)( 0));
-		t->vertex((float)(+w + 1), (float)( +8 + offs + 1), (float)( 0));
-		t->vertex((float)(+w + 1), (float)( -1 + offs), (float)( 0));
-		t->vertex((float)(-w - 1), (float)( -1 + offs), (float)( 0));
+		t->vertex(static_cast<float>(-w - 1), static_cast<float>(-1 + offs), static_cast<float>(0));
+		t->vertex(static_cast<float>(-w - 1), static_cast<float>(+8 + offs + 1), static_cast<float>(0));
+		t->vertex(static_cast<float>(+w + 1), static_cast<float>(+8 + offs + 1), static_cast<float>(0));
+		t->vertex(static_cast<float>(+w + 1), static_cast<float>(-1 + offs), static_cast<float>(0));
+		t->vertex(static_cast<float>(-w - 1), static_cast<float>(-1 + offs), static_cast<float>(0));
 		t->end();
 		glDepthFunc(GL_LEQUAL);
 		glDepthMask(false);
@@ -632,10 +642,10 @@ void LivingEntityRenderer::renderNameTag(shared_ptr<LivingEntity> mob, const wst
 		t->begin();
 		int w = font->width(playerName) / 2;
 		t->color(color, 255);
-		t->vertex((float)(-w - 1), (float)( -1 + offs), (float)( 0));
-		t->vertex((float)(-w - 1), (float)( +8 + offs), (float)( 0));
-		t->vertex((float)(+w + 1), (float)( +8 + offs), (float)( 0));
-		t->vertex((float)(+w + 1), (float)( -1 + offs), (float)( 0));
+		t->vertex(static_cast<float>(-w - 1), static_cast<float>(-1 + offs), static_cast<float>(0));
+		t->vertex(static_cast<float>(-w - 1), static_cast<float>(+8 + offs), static_cast<float>(0));
+		t->vertex(static_cast<float>(+w + 1), static_cast<float>(+8 + offs), static_cast<float>(0));
+		t->vertex(static_cast<float>(+w + 1), static_cast<float>(-1 + offs), static_cast<float>(0));
 		t->end();		
 		glDepthFunc(GL_LEQUAL);
 		glEnable(GL_TEXTURE_2D);
@@ -645,7 +655,7 @@ void LivingEntityRenderer::renderNameTag(shared_ptr<LivingEntity> mob, const wst
 
 	if( textOpacity > 0.0f )
 	{
-		int textColor = ( ( (int)(textOpacity*255) << 24 ) | 0xffffff );
+		int textColor = ( ( static_cast<int>(textOpacity * 255) << 24 ) | 0xffffff );
 		font->draw(playerName, -font->width(playerName) / 2, offs, textColor);
 	}
 

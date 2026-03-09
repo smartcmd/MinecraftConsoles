@@ -25,6 +25,6 @@ public:
 	virtual int getEstimatedSize();
 
 public:
-	static shared_ptr<Packet> create() { return shared_ptr<Packet>(new XZPacket()); }
+	static shared_ptr<Packet> create() { return std::make_shared<XZPacket>(); }
 	virtual int getId() { return 166; }
 };

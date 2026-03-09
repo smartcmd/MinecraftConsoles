@@ -7,7 +7,7 @@ UIScene_MessageBox::UIScene_MessageBox(int iPad, void *initData, UILayer *parent
 	// Setup all the Iggy references we need for this scene
 	initialiseMovie();
 
-	MessageBoxInfo *param = (MessageBoxInfo *)initData;
+	MessageBoxInfo *param = static_cast<MessageBoxInfo *>(initData);
 
 	m_buttonCount = param->uiOptionC;
 
@@ -41,7 +41,7 @@ UIScene_MessageBox::UIScene_MessageBox(int iPad, void *initData, UILayer *parent
 	m_labelTitle.init(app.GetString(param->uiTitle));
 	m_labelContent.init(app.GetString(param->uiText));
 
-	out = IggyPlayerCallMethodRS ( getMovie() , &result, IggyPlayerRootPath( getMovie() ), m_funcAutoResize , 0 , NULL );
+	out = IggyPlayerCallMethodRS ( getMovie() , &result, IggyPlayerRootPath( getMovie() ), m_funcAutoResize , 0 , nullptr );
 
 	m_Func = param->Func;
 	m_lpParam = param->lpParam;
@@ -84,10 +84,10 @@ void UIScene_MessageBox::handleReload()
 	value[0].number = m_buttonCount;
 
 	value[1].type = IGGY_DATATYPE_number;
-	value[1].number = (F64)getControlFocus();
+	value[1].number = static_cast<F64>(getControlFocus());
 	IggyResult out = IggyPlayerCallMethodRS ( getMovie() , &result, IggyPlayerRootPath( getMovie() ), m_funcInit , 2 , value );
 
-	out = IggyPlayerCallMethodRS ( getMovie() , &result, IggyPlayerRootPath( getMovie() ), m_funcAutoResize , 0 , NULL );
+	out = IggyPlayerCallMethodRS ( getMovie() , &result, IggyPlayerRootPath( getMovie() ), m_funcAutoResize , 0 , nullptr );
 }
 
 void UIScene_MessageBox::handleInput(int iPad, int key, bool repeat, bool pressed, bool released, bool &handled)
@@ -120,7 +120,7 @@ void UIScene_MessageBox::handleInput(int iPad, int key, bool repeat, bool presse
 void UIScene_MessageBox::handlePress(F64 controlId, F64 childId)
 {
 	C4JStorage::EMessageResult result = C4JStorage::EMessage_Cancelled;
-	switch((int)controlId)
+	switch(static_cast<int>(controlId))
 	{
 	case 0:
 		result = C4JStorage::EMessage_ResultAccept;

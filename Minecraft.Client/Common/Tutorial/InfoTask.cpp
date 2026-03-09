@@ -8,10 +8,11 @@
 #include "InfoTask.h"
 #include "..\..\..\Minecraft.World\Material.h"
 #include "..\..\Windows64\KeyboardMouseInput.h"
+#include "Common/UI/UI.h"
 
 InfoTask::InfoTask(Tutorial *tutorial, int descriptionId, int promptId /*= -1*/, bool requiresUserInput /*= false*/,
-	int iMapping /*= 0*/, ETelemetryChallenges telemetryEvent /*= eTelemetryTutorial_NoEvent*/)
-	: TutorialTask( tutorial, descriptionId, false, NULL, true, false, false )
+                   int iMapping /*= 0*/, ETelemetryChallenges telemetryEvent /*= eTelemetryTutorial_NoEvent*/)
+	: TutorialTask( tutorial, descriptionId, false, nullptr, true, false, false )
 {
 	if(requiresUserInput == true)
 	{

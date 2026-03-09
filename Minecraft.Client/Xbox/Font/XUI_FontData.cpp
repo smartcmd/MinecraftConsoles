@@ -68,7 +68,7 @@ float XUI_FontData::SChar::getMinX()
 
 float XUI_FontData::SChar::getMaxX()
 {
-	return (float) m_parent->m_fontData->getFontData()->m_uiGlyphWidth;
+	return static_cast<float>(m_parent->m_fontData->getFontData()->m_uiGlyphWidth);
 }
 
 float XUI_FontData::SChar::getMinY()
@@ -83,7 +83,7 @@ float XUI_FontData::SChar::getMaxY()
 
 float XUI_FontData::SChar::getAdvance()
 {
-	return (float) m_parent->m_fontData->getWidth(m_glyphId);
+	return static_cast<float>(m_parent->m_fontData->getWidth(m_glyphId));
 }
 
 int XUI_FontData::SChar::getGlyphId()
@@ -157,11 +157,11 @@ XUI_FontData::SChar XUI_FontData::getChar(const wchar_t strChar)
 //--------------------------------------------------------------------------------------
 XUI_FontData::XUI_FontData()
 {
-    m_pFontTexture = NULL;
+    m_pFontTexture = nullptr;
 	m_iFontTexture = -1;
 
     m_dwNumGlyphs = 0L;
-    m_Glyphs = NULL;
+    m_Glyphs = nullptr;
 
     m_cMaxGlyph = 0;
 
@@ -201,12 +201,12 @@ HRESULT XUI_FontData::Create( SFontData &sfontdata )
 
 	m_fontData = new CFontData( sfontdata, rawPixels.data );
 
-	if (rawPixels.data != NULL) delete [] rawPixels.data;
+	if (rawPixels.data != nullptr) delete [] rawPixels.data;
 
 #if 0
 	{  // 4J-JEV: Load in FontData (ABC) file, and initialize member variables from it.
 
-	const ULONG_PTR c_ModuleHandle = (ULONG_PTR)GetModuleHandle(NULL);
+	const ULONG_PTR c_ModuleHandle = (ULONG_PTR)GetModuleHandle(nullptr);
 
 	//wsprintfW(szResourceLocator,L"section://%X,%s#%s",c_ModuleHandle,L"media", L"media/font/Mojangles_10.abc");
 	wsprintfW(szResourceLocator,L"section://%X,%s#%s%s%s",c_ModuleHandle,L"media", L"media/font/",strFontFileName.c_str(),L".abc");
@@ -349,7 +349,7 @@ HRESULT XUI_FontData::Create( int iFontTexture, const VOID* pFontData )
 //--------------------------------------------------------------------------------------
 VOID XUI_FontData::Destroy()
 {
-	if(m_pFontTexture!=NULL)
+	if(m_pFontTexture!=nullptr)
 	{
 		m_pFontTexture->Release();
 		delete m_pFontTexture;
@@ -357,7 +357,7 @@ VOID XUI_FontData::Destroy()
 
 	m_fontData->release();
 
-    m_pFontTexture = NULL;
+    m_pFontTexture = nullptr;
     m_dwNumGlyphs = 0L;
     m_cMaxGlyph = 0;
 	

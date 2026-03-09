@@ -26,7 +26,7 @@
 //----------------------------------------------------------------------------------
 HRESULT CScene_Death::OnInit( XUIMessageInit* pInitData, BOOL& bHandled )
 {	
-	m_iPad = *(int *)pInitData->pvInitData;
+	m_iPad = *static_cast<int *>(pInitData->pvInitData);
 
 	m_bIgnoreInput = false;
 
@@ -59,7 +59,7 @@ HRESULT CScene_Death::OnNotifySelChanged( HXUIOBJ hObjSource, XUINotifySelChange
 		XuiSetLocale( Languages[curSel].pszLanguagePath );
 
 		// Apply the locale to the main scene.
-		XuiApplyLocale( m_hObj, NULL );
+		XuiApplyLocale( m_hObj, nullptr );
 
 		// Update the text for the current value.
 		m_Value.SetText( m_List.GetText( curSel ) );*/
@@ -105,9 +105,9 @@ HRESULT CScene_Death::OnNotifyPressEx(HXUIOBJ hObjPressed, XUINotifyPress* pNoti
 				if(pNotifyPressData->UserIndex==ProfileManager.GetPrimaryPad())
 				{
 					int playTime = -1;
-					if( pMinecraft->localplayers[pNotifyPressData->UserIndex] != NULL )
+					if( pMinecraft->localplayers[pNotifyPressData->UserIndex] != nullptr )
 					{
-						playTime = (int)pMinecraft->localplayers[pNotifyPressData->UserIndex]->getSessionTimer();
+						playTime = static_cast<int>(pMinecraft->localplayers[pNotifyPressData->UserIndex]->getSessionTimer());
 					}
 					TelemetryManager->RecordLevelExit(pNotifyPressData->UserIndex, eSen_LevelExitStatus_Failed);
 					

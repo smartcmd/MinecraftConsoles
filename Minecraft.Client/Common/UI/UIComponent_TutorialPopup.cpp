@@ -12,8 +12,8 @@ UIComponent_TutorialPopup::UIComponent_TutorialPopup(int iPad, void *initData, U
 	// Setup all the Iggy references we need for this scene
 	initialiseMovie();
 
-	m_interactScene = NULL;
-	m_lastInteractSceneMoved = NULL;
+	m_interactScene = nullptr;
+	m_lastInteractSceneMoved = nullptr;
 	m_lastSceneMovedLeft = false;
 	m_bAllowFade = false;
 	m_iconItem = nullptr;
@@ -90,7 +90,7 @@ void UIComponent_TutorialPopup::RemoveInteractSceneReference(UIScene *scene)
 {
 	if( m_interactScene == scene )
 	{
-		m_interactScene = NULL;
+		m_interactScene = nullptr;
 	}
 }
 
@@ -132,7 +132,7 @@ void UIComponent_TutorialPopup::_SetDescription(UIScene *interactScene, const ws
 {	
 	m_interactScene = interactScene;
 	app.DebugPrintf("Setting m_interactScene to %08x\n", m_interactScene);
-	if( interactScene != m_lastInteractSceneMoved ) m_lastInteractSceneMoved = NULL;
+	if( interactScene != m_lastInteractSceneMoved ) m_lastInteractSceneMoved = nullptr;
 	if(desc.empty())
 	{
 		SetVisible( false );
@@ -212,20 +212,20 @@ wstring UIComponent_TutorialPopup::_SetIcon(int icon, int iAuxVal, bool isFoil, 
 	if( icon != TUTORIAL_NO_ICON )
 	{
 		m_iconIsFoil = false;
-		m_iconItem = shared_ptr<ItemInstance>(new ItemInstance(icon,1,iAuxVal));
+		m_iconItem = std::make_shared<ItemInstance>(icon, 1, iAuxVal);
 	}
 	else
 	{
 		m_iconItem = nullptr;
 		wstring openTag(L"{*ICON*}");
 		wstring closeTag(L"{*/ICON*}");
-		int iconTagStartPos = (int)temp.find(openTag);
-		int iconStartPos = iconTagStartPos + (int)openTag.length();
-		if( iconTagStartPos > 0 && iconStartPos < (int)temp.length() )
+		size_t iconTagStartPos = temp.find(openTag);
+		size_t iconStartPos = iconTagStartPos + openTag.length();
+		if( iconTagStartPos > 0 && iconStartPos < temp.length() )
 		{
-			int iconEndPos = (int)temp.find( closeTag, iconStartPos );
+			size_t iconEndPos = temp.find(closeTag, iconStartPos);
 
-			if(iconEndPos > iconStartPos && iconEndPos < (int)temp.length() )
+			if(iconEndPos > iconStartPos && iconEndPos < temp.length() )
 			{
 				wstring id = temp.substr(iconStartPos, iconEndPos - iconStartPos);
 
@@ -241,7 +241,7 @@ wstring UIComponent_TutorialPopup::_SetIcon(int icon, int iAuxVal, bool isFoil, 
 				{
 					iAuxVal = 0;
 				}
-				m_iconItem = shared_ptr<ItemInstance>(new ItemInstance(iconId,1,iAuxVal));
+				m_iconItem = std::make_shared<ItemInstance>(iconId, 1, iAuxVal);
 
 				temp.replace(iconTagStartPos, iconEndPos - iconTagStartPos + closeTag.length(), L"");
 			}
@@ -250,63 +250,63 @@ wstring UIComponent_TutorialPopup::_SetIcon(int icon, int iAuxVal, bool isFoil, 
 		// remove any icon text
 		else if(temp.find(L"{*CraftingTableIcon*}")!=wstring::npos)
 		{
-			m_iconItem = shared_ptr<ItemInstance>(new ItemInstance(Tile::workBench_Id,1,0));
+			m_iconItem = std::make_shared<ItemInstance>(Tile::workBench_Id, 1, 0);
 		}
 		else if(temp.find(L"{*SticksIcon*}")!=wstring::npos)
 		{
-			m_iconItem = shared_ptr<ItemInstance>(new ItemInstance(Item::stick_Id,1,0));
+			m_iconItem = std::make_shared<ItemInstance>(Item::stick_Id, 1, 0);
 		}
 		else if(temp.find(L"{*PlanksIcon*}")!=wstring::npos)
 		{
-			m_iconItem = shared_ptr<ItemInstance>(new ItemInstance(Tile::wood_Id,1,0));
+			m_iconItem = std::make_shared<ItemInstance>(Tile::wood_Id, 1, 0);
 		}
 		else if(temp.find(L"{*WoodenShovelIcon*}")!=wstring::npos)
 		{
-			m_iconItem = shared_ptr<ItemInstance>(new ItemInstance(Item::shovel_wood_Id,1,0));
+			m_iconItem = std::make_shared<ItemInstance>(Item::shovel_wood_Id, 1, 0);
 		}
 		else if(temp.find(L"{*WoodenHatchetIcon*}")!=wstring::npos)
 		{
-			m_iconItem = shared_ptr<ItemInstance>(new ItemInstance(Item::hatchet_wood_Id,1,0));
+			m_iconItem = std::make_shared<ItemInstance>(Item::hatchet_wood_Id, 1, 0);
 		}
 		else if(temp.find(L"{*WoodenPickaxeIcon*}")!=wstring::npos)
 		{
-			m_iconItem = shared_ptr<ItemInstance>(new ItemInstance(Item::pickAxe_wood_Id,1,0));
+			m_iconItem = std::make_shared<ItemInstance>(Item::pickAxe_wood_Id, 1, 0);
 		}
 		else if(temp.find(L"{*FurnaceIcon*}")!=wstring::npos)
 		{
-			m_iconItem = shared_ptr<ItemInstance>(new ItemInstance(Tile::furnace_Id,1,0));
+			m_iconItem = std::make_shared<ItemInstance>(Tile::furnace_Id, 1, 0);
 		}
 		else if(temp.find(L"{*WoodenDoorIcon*}")!=wstring::npos)
 		{
-			m_iconItem = shared_ptr<ItemInstance>(new ItemInstance(Item::door_wood,1,0));
+			m_iconItem = std::make_shared<ItemInstance>(Item::door_wood, 1, 0);
 		}
 		else if(temp.find(L"{*TorchIcon*}")!=wstring::npos)
 		{
-			m_iconItem = shared_ptr<ItemInstance>(new ItemInstance(Tile::torch_Id,1,0));
+			m_iconItem = std::make_shared<ItemInstance>(Tile::torch_Id, 1, 0);
 		}
 		else if(temp.find(L"{*BoatIcon*}")!=wstring::npos)
 		{
-			m_iconItem = shared_ptr<ItemInstance>(new ItemInstance(Item::boat_Id,1,0));
+			m_iconItem = std::make_shared<ItemInstance>(Item::boat_Id, 1, 0);
 		}
 		else if(temp.find(L"{*FishingRodIcon*}")!=wstring::npos)
 		{
-			m_iconItem = shared_ptr<ItemInstance>(new ItemInstance(Item::fishingRod_Id,1,0));
+			m_iconItem = std::make_shared<ItemInstance>(Item::fishingRod_Id, 1, 0);
 		}
 		else if(temp.find(L"{*FishIcon*}")!=wstring::npos)
 		{
-			m_iconItem = shared_ptr<ItemInstance>(new ItemInstance(Item::fish_raw_Id,1,0));
+			m_iconItem = std::make_shared<ItemInstance>(Item::fish_raw_Id, 1, 0);
 		}
 		else if(temp.find(L"{*MinecartIcon*}")!=wstring::npos)
 		{
-			m_iconItem = shared_ptr<ItemInstance>(new ItemInstance(Item::minecart_Id,1,0));
+			m_iconItem = std::make_shared<ItemInstance>(Item::minecart_Id, 1, 0);
 		}
 		else if(temp.find(L"{*RailIcon*}")!=wstring::npos)
 		{
-			m_iconItem = shared_ptr<ItemInstance>(new ItemInstance(Tile::rail_Id,1,0));
+			m_iconItem = std::make_shared<ItemInstance>(Tile::rail_Id, 1, 0);
 		}
 		else if(temp.find(L"{*PoweredRailIcon*}")!=wstring::npos)
 		{
-			m_iconItem = shared_ptr<ItemInstance>(new ItemInstance(Tile::goldenRail_Id,1,0));
+			m_iconItem = std::make_shared<ItemInstance>(Tile::goldenRail_Id, 1, 0);
 		}
 		else if(temp.find(L"{*StructuresIcon*}")!=wstring::npos)
 		{
@@ -320,15 +320,15 @@ wstring UIComponent_TutorialPopup::_SetIcon(int icon, int iAuxVal, bool isFoil, 
 		}
 		else if(temp.find(L"{*StoneIcon*}")!=wstring::npos)
 		{
-			m_iconItem = shared_ptr<ItemInstance>(new ItemInstance(Tile::stone_Id,1,0));
+			m_iconItem = std::make_shared<ItemInstance>(Tile::stone_Id, 1, 0);
 		}
 		else
 		{
 			m_iconItem = nullptr;
 		}
 	}
-	if(!isFixedIcon && m_iconItem != NULL) setupIconHolder(e_ICON_TYPE_IGGY);
-	m_controlIconHolder.setVisible( isFixedIcon || m_iconItem != NULL);
+	if(!isFixedIcon && m_iconItem != nullptr) setupIconHolder(e_ICON_TYPE_IGGY);
+	m_controlIconHolder.setVisible( isFixedIcon || m_iconItem != nullptr);
 
 	return temp;
 }
@@ -341,13 +341,13 @@ wstring UIComponent_TutorialPopup::_SetImage(wstring &desc)
 
 	wstring openTag(L"{*IMAGE*}");
 	wstring closeTag(L"{*/IMAGE*}");
-	int imageTagStartPos = (int)desc.find(openTag);
-	int imageStartPos = imageTagStartPos + (int)openTag.length();
-	if( imageTagStartPos > 0 && imageStartPos < (int)desc.length() )
+	size_t imageTagStartPos = desc.find(openTag);
+	size_t imageStartPos = imageTagStartPos + openTag.length();
+	if( imageTagStartPos > 0 && imageStartPos < desc.length() )
 	{
-		int imageEndPos = (int)desc.find( closeTag, imageStartPos );
+		size_t imageEndPos = desc.find( closeTag, imageStartPos );
 
-		if(imageEndPos > imageStartPos && imageEndPos < (int)desc.length() )
+		if(imageEndPos > imageStartPos && imageEndPos < desc.length() )
 		{
 			wstring id = desc.substr(imageStartPos, imageEndPos - imageStartPos);
 			m_image.SetImagePath( id.c_str() );
@@ -425,7 +425,7 @@ wstring UIComponent_TutorialPopup::ParseDescription(int iPad, wstring &text)
 
 void UIComponent_TutorialPopup::UpdateInteractScenePosition(bool visible)
 {
-	if( m_interactScene == NULL ) return;
+	if( m_interactScene == nullptr ) return;
 
 	// 4J-PB - check this players screen section to see if we should allow the animation
 	bool bAllowAnim=false;
@@ -479,20 +479,20 @@ void UIComponent_TutorialPopup::render(S32 width, S32 height, C4JRender::eViewpo
 		switch( viewport )
 		{
 		case C4JRender::VIEWPORT_TYPE_SPLIT_BOTTOM:
-			xPos = (S32)(ui.getScreenWidth() / 2);
-			yPos = (S32)(ui.getScreenHeight() / 2);
+			xPos = static_cast<S32>(ui.getScreenWidth() / 2);
+			yPos = static_cast<S32>(ui.getScreenHeight() / 2);
 			break;
 		case C4JRender::VIEWPORT_TYPE_QUADRANT_BOTTOM_LEFT:
-			yPos = (S32)(ui.getScreenHeight() / 2);
+			yPos = static_cast<S32>(ui.getScreenHeight() / 2);
 			break;
 		case C4JRender::VIEWPORT_TYPE_SPLIT_TOP:
 		case C4JRender::VIEWPORT_TYPE_SPLIT_RIGHT:
 		case C4JRender::VIEWPORT_TYPE_QUADRANT_TOP_RIGHT:
-			xPos = (S32)(ui.getScreenWidth() / 2);
+			xPos = static_cast<S32>(ui.getScreenWidth() / 2);
 			break;
 		case C4JRender::VIEWPORT_TYPE_QUADRANT_BOTTOM_RIGHT:
-			xPos = (S32)(ui.getScreenWidth() / 2);
-			yPos = (S32)(ui.getScreenHeight() / 2);
+			xPos = static_cast<S32>(ui.getScreenWidth() / 2);
+			yPos = static_cast<S32>(ui.getScreenHeight() / 2);
 			break;
 		}
 		//Adjust for safezone
@@ -529,7 +529,7 @@ void UIComponent_TutorialPopup::render(S32 width, S32 height, C4JRender::eViewpo
 
 void UIComponent_TutorialPopup::customDraw(IggyCustomDrawCallbackRegion *region)
 {
-	if(m_iconItem != NULL) customDrawSlotControl(region,m_iPad,m_iconItem,1.0f,m_iconItem->isFoil() || m_iconIsFoil,false);
+	if(m_iconItem != nullptr) customDrawSlotControl(region,m_iPad,m_iconItem,1.0f,m_iconItem->isFoil() || m_iconIsFoil,false);
 }
 
 void UIComponent_TutorialPopup::setupIconHolder(EIcons icon)
@@ -538,7 +538,7 @@ void UIComponent_TutorialPopup::setupIconHolder(EIcons icon)
 	IggyDataValue result;
 	IggyDataValue value[1];
 	value[0].type = IGGY_DATATYPE_number;
-	value[0].number = (F64)icon;
+	value[0].number = static_cast<F64>(icon);
 	IggyResult out = IggyPlayerCallMethodRS ( getMovie() , &result, IggyPlayerRootPath( getMovie() ), m_funcSetupIconHolder , 1 , value );
 
 	m_iconType = icon;

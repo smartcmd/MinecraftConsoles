@@ -38,7 +38,7 @@ wstring HtmlString::ToString()
 
 wstring HtmlString::Compose(vector<HtmlString> *strings)
 {
-	if (strings == NULL) return L"";
+	if (strings == nullptr) return L"";
 
 	std::wstringstream ss;
 

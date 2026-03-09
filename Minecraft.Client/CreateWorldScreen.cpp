@@ -70,7 +70,7 @@ wstring CreateWorldScreen::findAvailableFolderName(LevelStorageSource *levelSour
 	wstring folder2 = folder;	// 4J - copy input as it is const
 
 #if 0
-    while (levelSource->getDataTagFor(folder2) != NULL)
+    while (levelSource->getDataTagFor(folder2) != nullptr)
 	{
         folder2 = folder2 + L"-";
     }
@@ -93,7 +93,7 @@ void CreateWorldScreen::buttonClicked(Button *button)
 	else if (button->id == 0)
 	{
         // note: code copied from SelectWorldScreen
-        minecraft->setScreen(NULL);
+        minecraft->setScreen(nullptr);
         if (done) return;
         done = true;
 
@@ -119,7 +119,7 @@ void CreateWorldScreen::buttonClicked(Button *button)
 #if 0
         minecraft->gameMode = new SurvivalMode(minecraft);
         minecraft->selectLevel(resultFolder, nameEdit->getValue(), seedValue);
-        minecraft->setScreen(NULL);
+        minecraft->setScreen(nullptr);
 #endif
     }
 

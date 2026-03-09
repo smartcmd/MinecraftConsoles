@@ -131,10 +131,10 @@ int SonyHttp_Vita::sslCallback(SceUInt32 verifyErr, SceSslCert * const sslCert[]
 	(void)userArg;
 
 	app.DebugPrintf("Ssl callback:\n");
-	app.DebugPrintf("\tbase tmpl[%x]\n", (SceInt32)userArg);
+	app.DebugPrintf("\tbase tmpl[%x]\n", static_cast<SceInt32>(userArg));
 
 	if (verifyErr != 0){
-		printSslError((SceInt32)SCE_HTTPS_ERROR_CERT, verifyErr);
+		printSslError(static_cast<SceInt32>(SCE_HTTPS_ERROR_CERT), verifyErr);
 	}
 	for (i = 0; i < certNum; i++){
 		printSslCertInfo(sslCert[i]);
@@ -192,7 +192,7 @@ bool SonyHttp_Vita::http_get(const char *targetUrl, void** ppOutData, int* pData
 	}
 
 	/* Register SSL callback */
-	ret = sceHttpsSetSslCallback(tmplId, sslCallback, (void*)&tmplId);
+	ret = sceHttpsSetSslCallback(tmplId, sslCallback, static_cast<void *>(&tmplId));
 	if (ret < 0) 
 	{
 		app.DebugPrintf("sceHttpsSetSslCallback() error: 0x%08X\n", ret);
@@ -215,7 +215,7 @@ bool SonyHttp_Vita::http_get(const char *targetUrl, void** ppOutData, int* pData
 	}
 	reqId = ret;
 
-	ret = sceHttpSendRequest(reqId, NULL, 0);
+	ret = sceHttpSendRequest(reqId, nullptr, 0);
 	if (ret < 0)
 	{
 		app.DebugPrintf("sceHttpSendRequest() error: 0x%08X\n", ret);

@@ -8,7 +8,7 @@ class ProcedureCompoundTask : public TutorialTask
 {
 public:
 	ProcedureCompoundTask(Tutorial *tutorial )
-		: TutorialTask(tutorial, -1, false, NULL, false,  true, false )
+		: TutorialTask(tutorial, -1, false, nullptr, false,  true, false )
 	{}
 
 	~ProcedureCompoundTask();

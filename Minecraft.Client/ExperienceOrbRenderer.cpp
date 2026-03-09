@@ -20,7 +20,7 @@ void ExperienceOrbRenderer::render(shared_ptr<Entity> _orb, double x, double y, 
 {
 	shared_ptr<ExperienceOrb> orb = dynamic_pointer_cast<ExperienceOrb>(_orb);
 	glPushMatrix();
-	glTranslatef((float) x, (float) y, (float) z);
+	glTranslatef(static_cast<float>(x), static_cast<float>(y), static_cast<float>(z));
 
 	int icon = orb->getIcon();
 	bindTexture(orb);	// 4J was L"/item/xporb.png"
@@ -50,9 +50,9 @@ void ExperienceOrbRenderer::render(shared_ptr<Entity> _orb, double x, double y, 
 	}
 	float br = 255.0f;
 	float rr = (orb->tickCount + a) / 2;
-	int rc = (int) ((Mth::sin(rr + 0 * PI * 2 / 3) + 1) * 0.5f * br);
-	int gc = (int) (br);
-	int bc = (int) ((Mth::sin(rr + 2 * PI * 2 / 3) + 1) * 0.1f * br);
+	int rc = static_cast<int>((Mth::sin(rr + 0 * PI * 2 / 3) + 1) * 0.5f * br);
+	int gc = static_cast<int>(br);
+	int bc = static_cast<int>((Mth::sin(rr + 2 * PI * 2 / 3) + 1) * 0.1f * br);
 	int col = rc << 16 | gc << 8 | bc;
 	glRotatef(180 - entityRenderDispatcher->playerRotY, 0, 1, 0);
 	glRotatef(-entityRenderDispatcher->playerRotX, 1, 0, 0);

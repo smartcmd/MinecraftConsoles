@@ -20,11 +20,11 @@ ContainerSetContentPacket::ContainerSetContentPacket()
 ContainerSetContentPacket::ContainerSetContentPacket(int containerId, vector<shared_ptr<ItemInstance> > *newItems)
 {
 	this->containerId = containerId;
-	items = ItemInstanceArray((int)newItems->size());
+	items = ItemInstanceArray(static_cast<int>(newItems->size()));
 	for (unsigned int i = 0; i < items.length; i++)
 	{
 		shared_ptr<ItemInstance> item = newItems->at(i);
-		items[i] = item == NULL ? nullptr : item->copy();
+		items[i] = item == nullptr ? nullptr : item->copy();
 	}
 }
 

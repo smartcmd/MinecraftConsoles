@@ -72,15 +72,15 @@ Arrow::Arrow(Level *level, shared_ptr<LivingEntity> mob, shared_ptr<LivingEntity
 	double sd = sqrt(xd * xd + zd * zd);
 	if (sd < 0.0000001) return;
 
-	float yRot = (float) (atan2(zd, xd) * 180 / PI) - 90;
-	float xRot = (float) -(atan2(yd, sd) * 180 / PI);
+	float yRot = static_cast<float>(atan2(zd, xd) * 180 / PI) - 90;
+	float xRot = static_cast<float>(-(atan2(yd, sd) * 180 / PI));
 
 	double xdn = xd / sd;
 	double zdn = zd / sd;
 	moveTo(mob->x + xdn, y, mob->z + zdn, yRot, xRot);
 	heightOffset = 0;
 
-	float yo = (float) sd * 0.2f;
+	float yo = static_cast<float>(sd) * 0.2f;
 	shoot(xd, yd + yo, zd, power, uncertainty);
 }
 
@@ -123,13 +123,13 @@ Arrow::Arrow(Level *level, shared_ptr<LivingEntity> mob, float power) : Entity( 
 
 void Arrow::defineSynchedData()
 {
-	entityData->define(ID_FLAGS, (byte) 0);
+	entityData->define(ID_FLAGS, static_cast<byte>(0));
 }
 
 
 void Arrow::shoot(double xd, double yd, double zd, float pow, float uncertainty)
 {
-	float dist = (float) sqrt(xd * xd + yd * yd + zd * zd);
+	float dist = static_cast<float>(sqrt(xd * xd + yd * yd + zd * zd));
 
 	xd /= dist;
 	yd /= dist;
@@ -149,8 +149,8 @@ void Arrow::shoot(double xd, double yd, double zd, float pow, float uncertainty)
 
 	double sd = sqrt(xd * xd + zd * zd);
 
-	yRotO = yRot = (float) (atan2(xd, zd) * 180 / PI);
-	xRotO = xRot = (float) (atan2(yd, sd) * 180 / PI);
+	yRotO = yRot = static_cast<float>(atan2(xd, zd) * 180 / PI);
+	xRotO = xRot = static_cast<float>(atan2(yd, sd) * 180 / PI);
 	life = 0;
 }
 
@@ -168,8 +168,8 @@ void Arrow::lerpMotion(double xd, double yd, double zd)
 	if (xRotO == 0 && yRotO == 0)
 	{
 		double sd = sqrt(xd * xd + zd * zd);
-		yRotO = yRot = (float) (atan2( xd, zd) * 180 / PI);
-		xRotO = xRot = (float) (atan2( yd, sd) * 180 / PI);
+		yRotO = yRot = static_cast<float>(atan2(xd, zd) * 180 / PI);
+		xRotO = xRot = static_cast<float>(atan2(yd, sd) * 180 / PI);
 		xRotO = xRot;
 		yRotO = yRot;
 		app.DebugPrintf("%f %f : 0x%x\n",xRot,yRot,&yRot);
@@ -186,8 +186,8 @@ void Arrow::tick()
 	if (xRotO == 0 && yRotO == 0) 
 	{
 		double sd = sqrt(xd * xd + zd * zd);
-		yRotO = yRot = (float) (atan2(xd, zd) * 180 / PI);
-		xRotO = xRot = (float) (atan2(yd, sd) * 180 / PI);
+		yRotO = yRot = static_cast<float>(atan2(xd, zd) * 180 / PI);
+		xRotO = xRot = static_cast<float>(atan2(yd, sd) * 180 / PI);
 	}
 
 
@@ -197,7 +197,7 @@ void Arrow::tick()
 		{
 			Tile::tiles[t]->updateShape(level, xTile, yTile, zTile);
 			AABB *aabb = Tile::tiles[t]->getAABB(level, xTile, yTile, zTile);
-			if (aabb != NULL && aabb->contains(Vec3::newTemp(x, y, z)))
+			if (aabb != nullptr && aabb->contains(Vec3::newTemp(x, y, z)))
 			{
 				inGround = true;
 			}
@@ -242,7 +242,7 @@ void Arrow::tick()
 
 	from = Vec3::newTemp(x, y, z);
 	to = Vec3::newTemp(x + xd, y + yd, z + zd);
-	if (res != NULL)
+	if (res != nullptr)
 	{
 		to = Vec3::newTemp(res->pos->x, res->pos->y, res->pos->z);
 	}
@@ -256,7 +256,7 @@ void Arrow::tick()
 		float rr = 0.3f;
 		AABB *bb = e->bb->grow(rr, rr, rr);
 		HitResult *p = bb->clip(from, to);
-		if (p != NULL)
+		if (p != nullptr)
 		{
 			double dd = from->distanceTo(p->pos);
 			if (dd < nearest || nearest == 0)
@@ -268,33 +268,33 @@ void Arrow::tick()
 		}
 	}
 
-	if (hitEntity != NULL)
+	if (hitEntity != nullptr)
 	{
 		delete res;
 		res = new HitResult(hitEntity);
 	}
 
-	if ( (res != NULL) && (res->entity != NULL) && res->entity->instanceof(eTYPE_PLAYER))
+	if ( (res != nullptr) && (res->entity != nullptr) && res->entity->instanceof(eTYPE_PLAYER))
 	{
 		shared_ptr<Player> player = dynamic_pointer_cast<Player>(res->entity);
 		// 4J: Check for owner being null
-		if ( player->abilities.invulnerable || ((owner != NULL) && (owner->instanceof(eTYPE_PLAYER) && !dynamic_pointer_cast<Player>(owner)->canHarmPlayer(player))))
+		if ( player->abilities.invulnerable || ((owner != nullptr) && (owner->instanceof(eTYPE_PLAYER) && !dynamic_pointer_cast<Player>(owner)->canHarmPlayer(player))))
 		{
-			res = NULL;
+			res = nullptr;
 		}
 	}
 
-	if (res != NULL)
+	if (res != nullptr)
 	{
-		if (res->entity != NULL)
+		if (res->entity != nullptr)
 		{
 			float pow = Mth::sqrt(xd * xd + yd * yd + zd * zd);
-			int dmg = (int) Mth::ceil((float)(pow * baseDamage));
+			int dmg = (int) Mth::ceil(static_cast<float>(pow * baseDamage));
 
 			if(isCritArrow()) dmg += random->nextInt(dmg / 2 + 2);
 
-			DamageSource *damageSource = NULL;
-			if (owner == NULL)
+			DamageSource *damageSource = nullptr;
+			if (owner == nullptr)
 			{
 				damageSource = DamageSource::arrow(dynamic_pointer_cast<Arrow>(shared_from_this()), shared_from_this());
 			}
@@ -303,16 +303,20 @@ void Arrow::tick()
 				damageSource = DamageSource::arrow(dynamic_pointer_cast<Arrow>(shared_from_this()), owner);
 			}
 
+			if(!res->entity->isInvulnerable())
+			{
+				if (isOnFire() && res->entity->GetType() != eTYPE_ENDERMAN)
+				{
+					res->entity->setOnFire(5);
+				}
+			}
+
 			if(res->entity->hurt(damageSource, dmg))
 			{
 				// Firx for #67839 - Customer Encountered: Bows enchanted with "Flame" still set things on fire if pvp/attack animals is turned off
 				// 4J Stu - We should not set the entity on fire unless we can cause some damage (this doesn't necessarily mean that the arrow hit lowered their health)
 				// set targets on fire first because we want cooked
 				// pork/chicken/steak
-				if (isOnFire() && res->entity->GetType() != eTYPE_ENDERMAN)
-				{
-					res->entity->setOnFire(5);
-				}
 
 				if (res->entity->instanceof(eTYPE_LIVINGENTITY))
 				{
@@ -331,19 +335,19 @@ void Arrow::tick()
 						}
 					}
 
-					if (owner != NULL)
+					if (owner != nullptr)
 					{
 						ThornsEnchantment::doThornsAfterAttack(owner, mob, random);
 					}
 
-					if (owner != NULL && res->entity != owner && owner->GetType() == eTYPE_SERVERPLAYER)
+					if (owner != nullptr && res->entity != owner && owner->GetType() == eTYPE_SERVERPLAYER)
 					{
-						dynamic_pointer_cast<ServerPlayer>(owner)->connection->send( shared_ptr<GameEventPacket>( new GameEventPacket(GameEventPacket::SUCCESSFUL_BOW_HIT, 0)) );
+						dynamic_pointer_cast<ServerPlayer>(owner)->connection->send(std::make_shared<GameEventPacket>(GameEventPacket::SUCCESSFUL_BOW_HIT, 0));
 					}
 				}
 
 				// 4J : WESTY : For award, need to track if creeper was killed by arrow from the player.
-				if (owner != NULL && owner->instanceof(eTYPE_PLAYER)				// arrow owner is a player
+				if (owner != nullptr && owner->instanceof(eTYPE_PLAYER)				// arrow owner is a player
 					&&	!res->entity->isAlive()						// target is now dead
 					&&	(res->entity->GetType() == eTYPE_CREEPER))	// target is a creeper
 
@@ -376,10 +380,10 @@ void Arrow::tick()
 			zTile = res->z;
 			lastTile = level->getTile(xTile, yTile, zTile);
 			lastData = level->getData(xTile, yTile, zTile);
-			xd = (float) (res->pos->x - x);
-			yd = (float) (res->pos->y - y);
-			zd = (float) (res->pos->z - z);
-			float dd = (float) sqrt(xd * xd + yd * yd + zd * zd);
+			xd = static_cast<float>(res->pos->x - x);
+			yd = static_cast<float>(res->pos->y - y);
+			zd = static_cast<float>(res->pos->z - z);
+			float dd = static_cast<float>(sqrt(xd * xd + yd * yd + zd * zd));
 			// 4J added check - zero dd here was creating NaNs
 			if( dd > 0.0001f )
 			{
@@ -414,8 +418,8 @@ void Arrow::tick()
 	z += zd;
 
 	double sd = sqrt(xd * xd + zd * zd);
-	yRot = (float) (atan2(xd, zd) * 180 / PI);
-	xRot = (float) (atan2(yd, sd) * 180 / PI);
+	yRot = static_cast<float>(atan2(xd, zd) * 180 / PI);
+	xRot = static_cast<float>(atan2(yd, sd) * 180 / PI);
 
 	while (xRot - xRotO < -180)
 		xRotO -= 360;
@@ -456,14 +460,14 @@ void Arrow::tick()
 
 void Arrow::addAdditonalSaveData(CompoundTag *tag)
 {
-	tag->putShort(L"xTile", (short) xTile);
-	tag->putShort(L"yTile", (short) yTile);
-	tag->putShort(L"zTile", (short) zTile);
-	tag->putByte(L"inTile", (byte) lastTile);
-	tag->putByte(L"inData", (byte) lastData);
-	tag->putByte(L"shake", (byte) shakeTime);
-	tag->putByte(L"inGround", (byte) (inGround ? 1 : 0));
-	tag->putByte(L"pickup", (byte) pickup);
+	tag->putShort(L"xTile", static_cast<short>(xTile));
+	tag->putShort(L"yTile", static_cast<short>(yTile));
+	tag->putShort(L"zTile", static_cast<short>(zTile));
+	tag->putByte(L"inTile", static_cast<byte>(lastTile));
+	tag->putByte(L"inData", static_cast<byte>(lastData));
+	tag->putByte(L"shake", static_cast<byte>(shakeTime));
+	tag->putByte(L"inGround", static_cast<byte>(inGround ? 1 : 0));
+	tag->putByte(L"pickup", static_cast<byte>(pickup));
 	tag->putDouble(L"damage", baseDamage);
 }
 
@@ -499,7 +503,7 @@ void Arrow::playerTouch(shared_ptr<Player> player)
 
 	if (pickup == PICKUP_ALLOWED)
 	{
-		if (!player->inventory->add( shared_ptr<ItemInstance>( new ItemInstance(Item::arrow, 1) ) ))
+		if (!player->inventory->add(std::make_shared<ItemInstance>(Item::arrow, 1)))
 		{
 			bRemove = false;
 		}
@@ -548,11 +552,11 @@ void Arrow::setCritArrow(bool critArrow)
 	byte flags = entityData->getByte(ID_FLAGS);
 	if (critArrow)
 	{
-		entityData->set(ID_FLAGS, (byte) (flags | FLAG_CRIT));
+		entityData->set(ID_FLAGS, static_cast<byte>(flags | FLAG_CRIT));
 	}
 	else
 	{
-		entityData->set(ID_FLAGS, (byte) (flags & ~FLAG_CRIT));
+		entityData->set(ID_FLAGS, static_cast<byte>(flags & ~FLAG_CRIT));
 	}
 }
 

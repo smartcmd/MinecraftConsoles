@@ -19,11 +19,11 @@ int ArmorSlot::getMaxStackSize() const
 
 bool ArmorSlot::mayPlace(shared_ptr<ItemInstance> item)
 {
-	if (item == NULL)
+	if (item == nullptr)
 	{
 		return false;
 	}
-	if ( dynamic_cast<ArmorItem *>( item->getItem() ) != NULL)
+	if ( dynamic_cast<ArmorItem *>( item->getItem() ) != nullptr)
 	{
 		return dynamic_cast<ArmorItem *>( item->getItem() )->slot == slotNum;
 	}
@@ -43,7 +43,7 @@ Icon *ArmorSlot::getNoItemIcon()
 //bool ArmorSlot::mayCombine(shared_ptr<ItemInstance> item)
 //{
 //	shared_ptr<ItemInstance> thisItemI = getItem();
-//	if(thisItemI == NULL || item == NULL) return false;
+//	if(thisItemI == nullptr || item == nullptr) return false;
 //
 //	ArmorItem *thisItem = (ArmorItem *)thisItemI->getItem();
 //	bool thisIsDyableArmor = thisItem->getMaterial() == ArmorItem::ArmorMaterial::CLOTH;
@@ -53,7 +53,7 @@ Icon *ArmorSlot::getNoItemIcon()
 //
 //shared_ptr<ItemInstance> ArmorSlot::combine(shared_ptr<ItemInstance> item)
 //{
-//	shared_ptr<CraftingContainer> craftSlots = shared_ptr<CraftingContainer>( new CraftingContainer(NULL, 2, 2) );
+//	shared_ptr<CraftingContainer> craftSlots = shared_ptr<CraftingContainer>( new CraftingContainer(nullptr, 2, 2) );
 //	craftSlots->setItem(0, item);
 //	craftSlots->setItem(1, getItem()); // Armour item needs to go second
 //	shared_ptr<ItemInstance> result = ArmorDyeRecipe::assembleDyedArmor(craftSlots);

@@ -40,7 +40,7 @@ public:
 	stringValueMapType m_parameters; // These are the members of this rule that maintain it's state
 
 public:
-	GameRule(GameRuleDefinition *definition, Connection *connection = NULL);
+	GameRule(GameRuleDefinition *definition, Connection *connection = nullptr);
 	virtual ~GameRule();
 
 	Connection *getConnection() { return m_connection; }
