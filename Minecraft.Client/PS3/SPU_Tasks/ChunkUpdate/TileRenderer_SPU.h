@@ -72,8 +72,8 @@ public:
 
 	void tesselateInWorldFixedTexture( Tile_SPU* tile, int x, int y, int z, Icon_SPU *fixedTexture );	// 4J renamed to differentiate from tesselateInWorld
 	void tesselateInWorldNoCulling( Tile_SPU* tile, int x, int y, int z, int forceData = -1,
-									TileEntity* forceEntity = NULL );	// 4J added forceData, forceEntity param
-	bool tesselateInWorld( Tile_SPU* tt, int x, int y, int z, int forceData = -1, TileEntity* forceEntity = NULL );	// 4J added forceData, forceEntity param
+									TileEntity* forceEntity = nullptr );	// 4J added forceData, forceEntity param
+	bool tesselateInWorld( Tile_SPU* tt, int x, int y, int z, int forceData = -1, TileEntity* forceEntity = nullptr );	// 4J added forceData, forceEntity param
 
 	private:
 	bool tesselateAirPortalFrameInWorld(TheEndPortalFrameTile *tt, int x, int y, int z);

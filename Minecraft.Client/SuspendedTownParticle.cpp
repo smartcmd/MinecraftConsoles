@@ -18,7 +18,7 @@ SuspendedTownParticle::SuspendedTownParticle(Level *level, double x, double y, d
 	yd *= 0.02f;
 	zd *= 0.02f;
 
-	lifetime = (int) (20 / (Math::random() * 0.8 + 0.2));
+	lifetime = static_cast<int>(20 / (Math::random() * 0.8 + 0.2));
 	this->noPhysics = true;
 }
 

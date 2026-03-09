@@ -61,9 +61,9 @@ void ChangeStateConstraint::tick(int iPad)
 				// Send update settings packet to server
 				Minecraft *pMinecraft = Minecraft::GetInstance();				
 				shared_ptr<MultiplayerLocalPlayer> player = minecraft->localplayers[iPad];
-				if(player != NULL && player->connection && player->connection->getNetworkPlayer() != NULL)
+				if(player != nullptr && player->connection && player->connection->getNetworkPlayer() != nullptr)
 				{
-					player->connection->send( shared_ptr<PlayerInfoPacket>( new PlayerInfoPacket( player->connection->getNetworkPlayer()->GetSmallId(), -1, playerPrivs) ) );
+					player->connection->send(std::make_shared<PlayerInfoPacket>(player->connection->getNetworkPlayer()->GetSmallId(), -1, playerPrivs));
 				}
 			}
 		}
@@ -89,7 +89,7 @@ void ChangeStateConstraint::tick(int iPad)
 
 		if(m_changeGameMode)
 		{
-			if(minecraft->localgameModes[iPad] != NULL)
+			if(minecraft->localgameModes[iPad] != nullptr)
 			{
 				m_changedFromGameMode = minecraft->localplayers[iPad]->abilities.instabuild ? GameType::CREATIVE : GameType::SURVIVAL;
 
@@ -102,9 +102,9 @@ void ChangeStateConstraint::tick(int iPad)
 					// Send update settings packet to server
 					Minecraft *pMinecraft = Minecraft::GetInstance();				
 					shared_ptr<MultiplayerLocalPlayer> player = minecraft->localplayers[iPad];
-					if(player != NULL && player->connection && player->connection->getNetworkPlayer() != NULL)
+					if(player != nullptr && player->connection && player->connection->getNetworkPlayer() != nullptr)
 					{
-						player->connection->send( shared_ptr<PlayerInfoPacket>( new PlayerInfoPacket( player->connection->getNetworkPlayer()->GetSmallId(), -1, playerPrivs) ) );
+						player->connection->send(std::make_shared<PlayerInfoPacket>(player->connection->getNetworkPlayer()->GetSmallId(), -1, playerPrivs));
 					}
 				}
 			}
@@ -126,9 +126,9 @@ void ChangeStateConstraint::tick(int iPad)
 				// Send update settings packet to server
 				Minecraft *pMinecraft = Minecraft::GetInstance();				
 				shared_ptr<MultiplayerLocalPlayer> player = minecraft->localplayers[iPad];
-				if(player != NULL && player->connection && player->connection->getNetworkPlayer() != NULL)
+				if(player != nullptr && player->connection && player->connection->getNetworkPlayer() != nullptr)
 				{
-					player->connection->send( shared_ptr<PlayerInfoPacket>( new PlayerInfoPacket( player->connection->getNetworkPlayer()->GetSmallId(), -1, playerPrivs) ) );
+					player->connection->send(std::make_shared<PlayerInfoPacket>(player->connection->getNetworkPlayer()->GetSmallId(), -1, playerPrivs));
 				}
 			}
 		}

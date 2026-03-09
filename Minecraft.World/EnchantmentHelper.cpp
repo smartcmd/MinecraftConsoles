@@ -11,12 +11,12 @@ Random EnchantmentHelper::random;
 
 int EnchantmentHelper::getEnchantmentLevel(int enchantmentId, shared_ptr<ItemInstance> piece)
 {
-	if (piece == NULL)
+	if (piece == nullptr)
 	{
 		return 0;
 	}
 	ListTag<CompoundTag> *enchantmentTags = piece->getEnchantmentTags();
-	if (enchantmentTags == NULL)
+	if (enchantmentTags == nullptr)
 	{
 		return 0;
 	}
@@ -38,7 +38,7 @@ unordered_map<int, int> *EnchantmentHelper::getEnchantments(shared_ptr<ItemInsta
 	unordered_map<int, int> *result = new unordered_map<int, int>();
 	ListTag<CompoundTag> *list = item->id == Item::enchantedBook_Id ? Item::enchantedBook->getEnchantments(item) : item->getEnchantmentTags();
 
-	if (list != NULL)
+	if (list != nullptr)
 	{
 		for (int i = 0; i < list->size(); i++)
 		{
@@ -62,8 +62,8 @@ void EnchantmentHelper::setEnchantments(unordered_map<int, int> *enchantments, s
 		int id = it.first;
 		CompoundTag *tag = new CompoundTag();
 
-		tag->putShort((wchar_t *)ItemInstance::TAG_ENCH_ID, (short) id);
-		tag->putShort((wchar_t *)ItemInstance::TAG_ENCH_LEVEL, (short)(int)it.second);
+		tag->putShort((wchar_t *)ItemInstance::TAG_ENCH_ID, static_cast<short>(id));
+		tag->putShort((wchar_t *)ItemInstance::TAG_ENCH_LEVEL, static_cast<short>((int)it.second));
 
 		list->add(tag);
 
@@ -88,7 +88,7 @@ void EnchantmentHelper::setEnchantments(unordered_map<int, int> *enchantments, s
 
 int EnchantmentHelper::getEnchantmentLevel(int enchantmentId, ItemInstanceArray inventory)
 {
-	if (inventory.data == NULL) return 0;
+	if (inventory.data == nullptr) return 0;
 	int bestLevel = 0;
 	//for (ItemInstance piece : inventory)
 	for(unsigned int i = 0; i < inventory.length; ++i)
@@ -104,12 +104,12 @@ int EnchantmentHelper::getEnchantmentLevel(int enchantmentId, ItemInstanceArray 
 
 void EnchantmentHelper::runIterationOnItem(EnchantmentIterationMethod &method, shared_ptr<ItemInstance> piece)
 {
-	if (piece == NULL)
+	if (piece == nullptr)
 	{
 		return;
 	}
 	ListTag<CompoundTag> *enchantmentTags = piece->getEnchantmentTags();
-	if (enchantmentTags == NULL)
+	if (enchantmentTags == nullptr)
 	{
 		return;
 	}
@@ -118,7 +118,7 @@ void EnchantmentHelper::runIterationOnItem(EnchantmentIterationMethod &method, s
 		int type = enchantmentTags->get(i)->getShort((wchar_t *)ItemInstance::TAG_ENCH_ID);
 		int level = enchantmentTags->get(i)->getShort((wchar_t *)ItemInstance::TAG_ENCH_LEVEL);
 
-		if (Enchantment::enchantments[type] != NULL)
+		if (Enchantment::enchantments[type] != nullptr)
 		{
 			method.doEnchantment(Enchantment::enchantments[type], level);
 		}
@@ -245,7 +245,7 @@ shared_ptr<ItemInstance> EnchantmentHelper::getRandomItemWith(Enchantment *encha
 	for(unsigned int i = 0; i < items.length; ++i)
 	{
 		shared_ptr<ItemInstance> item = items[i];
-		if (item != NULL && getEnchantmentLevel(enchantment->id, item) > 0)
+		if (item != nullptr && getEnchantmentLevel(enchantment->id, item) > 0)
 		{
 			return item;
 		}
@@ -338,7 +338,7 @@ vector<EnchantmentInstance *> *EnchantmentHelper::selectEnchantment(Random *rand
 
 	if (itemBonus <= 0)
 	{
-		return NULL;
+		return nullptr;
 	}
 	// 4J Stu - Update function to 1.3 version for TU7
 	itemBonus /= 2;
@@ -348,13 +348,13 @@ vector<EnchantmentInstance *> *EnchantmentHelper::selectEnchantment(Random *rand
 
 	// the final enchantment cost will have another random span of +- 15%
 	float deviation = (random->nextFloat() + random->nextFloat() - 1.0f) * .15f;
-	int realValue = (int) ((float) enchantmentValue * (1.0f + deviation) + .5f);
+	int realValue = static_cast<int>((float)enchantmentValue * (1.0f + deviation) + .5f);
 	if (realValue < 1)
 	{
 		realValue = 1;
 	}
 
-	vector<EnchantmentInstance *> *results = NULL;
+	vector<EnchantmentInstance *> *results = nullptr;
 
 	unordered_map<int, EnchantmentInstance *> *availableEnchantments = getAvailableEnchantmentResults(realValue, itemInstance);
 	if (availableEnchantments && !availableEnchantments->empty())
@@ -364,7 +364,7 @@ vector<EnchantmentInstance *> *EnchantmentHelper::selectEnchantment(Random *rand
 		{
 			values.push_back(it.second);
 		}
-		EnchantmentInstance *instance = (EnchantmentInstance *) WeighedRandom::getRandomItem(random, &values);
+		EnchantmentInstance *instance = static_cast<EnchantmentInstance *>(WeighedRandom::getRandomItem(random, &values));
 		values.clear();
 
 		if (instance)
@@ -409,7 +409,7 @@ vector<EnchantmentInstance *> *EnchantmentHelper::selectEnchantment(Random *rand
 					{
 						values.push_back(it.second);
 					}
-					EnchantmentInstance *nextInstance = (EnchantmentInstance *) WeighedRandom::getRandomItem(random, &values);
+					EnchantmentInstance *nextInstance = static_cast<EnchantmentInstance *>(WeighedRandom::getRandomItem(random, &values));
 					values.clear();
 					results->push_back( nextInstance->copy() ); // 4J Stu - Inserting a copy so we can clear memory from the availableEnchantments collection
 				}
@@ -433,7 +433,7 @@ vector<EnchantmentInstance *> *EnchantmentHelper::selectEnchantment(Random *rand
 unordered_map<int, EnchantmentInstance *> *EnchantmentHelper::getAvailableEnchantmentResults(int value, shared_ptr<ItemInstance> itemInstance)
 {
 	Item *item = itemInstance->getItem();
-	unordered_map<int, EnchantmentInstance *> *results = NULL;
+	unordered_map<int, EnchantmentInstance *> *results = nullptr;
 
 	bool isBook = itemInstance->id == Item::book_Id;
 
@@ -441,7 +441,7 @@ unordered_map<int, EnchantmentInstance *> *EnchantmentHelper::getAvailableEnchan
 	for(unsigned int i = 0; i < Enchantment::enchantments.length; ++i)
 	{
 		Enchantment *e = Enchantment::enchantments[i];
-		if (e == NULL)
+		if (e == nullptr)
 		{
 			continue;
 		}
@@ -456,7 +456,7 @@ unordered_map<int, EnchantmentInstance *> *EnchantmentHelper::getAvailableEnchan
 		{
 			if (value >= e->getMinCost(level) && value <= e->getMaxCost(level))
 			{
-				if (results == NULL)
+				if (results == nullptr)
 				{
 					results = new unordered_map<int, EnchantmentInstance *>();
 				}

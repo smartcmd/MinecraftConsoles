@@ -5,10 +5,10 @@ class CraftTask : public TutorialTask
 {
 public:
 	CraftTask( int itemId, int auxValue, int  quantity,
-		Tutorial *tutorial, int descriptionId, bool enablePreCompletion = true, vector<TutorialConstraint *> *inConstraints = NULL,
+		Tutorial *tutorial, int descriptionId, bool enablePreCompletion = true, vector<TutorialConstraint *> *inConstraints = nullptr,
 		bool bShowMinimumTime=false,  bool bAllowFade=true, bool m_bTaskReminders=true );
 	CraftTask( int *items, int *auxValues, int numItems, int  quantity,
-		Tutorial *tutorial, int descriptionId, bool enablePreCompletion = true, vector<TutorialConstraint *> *inConstraints = NULL,
+		Tutorial *tutorial, int descriptionId, bool enablePreCompletion = true, vector<TutorialConstraint *> *inConstraints = nullptr,
 		bool bShowMinimumTime=false,  bool bAllowFade=true, bool m_bTaskReminders=true );
 
 	~CraftTask();

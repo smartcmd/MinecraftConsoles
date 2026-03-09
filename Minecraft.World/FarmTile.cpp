@@ -8,8 +8,8 @@
 
 FarmTile::FarmTile(int id) : Tile(id, Material::dirt,isSolidRender())
 {
-	iconWet = NULL;
-	iconDry = NULL;
+	iconWet = nullptr;
+	iconDry = nullptr;
 
 	setTicking(true);
 	updateDefaultShape();

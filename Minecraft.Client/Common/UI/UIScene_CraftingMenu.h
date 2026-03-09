@@ -66,9 +66,18 @@ public:
 
 #ifdef __PSVITA__
 	virtual void handleTouchInput(unsigned int iPad, S32 x, S32 y, int iId, bool bPressed, bool bRepeat, bool bReleased);
-	virtual UIControl* GetMainPanel();
 	virtual void handleTouchBoxRebuild();
 	virtual void handleTimerComplete(int id);
+#endif
+#if defined(__PSVITA__) || defined(_WINDOWS64)
+	virtual UIControl* GetMainPanel();
+#endif
+#ifdef _WINDOWS64
+	virtual bool handleMouseClick(F32 x, F32 y);
+	// Cached from customDraw — H slot bounding boxes in SWF space
+	F32 m_hSlotX0, m_hSlotY0, m_hSlotY1;
+	F32 m_hSlotSpacing; // x distance between slot 0 and slot 1
+	bool m_hSlotBoundsValid;
 #endif
 
 protected:
@@ -97,7 +106,7 @@ protected:
 		ETouchInput_TouchPanel_5,
 		ETouchInput_TouchPanel_6,
 		ETouchInput_CraftingHSlots,
-		
+
 		ETouchInput_Count,
 	};
 	UIControl_Touch m_TouchInput[ETouchInput_Count];

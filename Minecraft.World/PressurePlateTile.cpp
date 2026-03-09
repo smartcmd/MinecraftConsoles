@@ -23,14 +23,14 @@ int PressurePlateTile::getSignalForData(int data)
 
 int PressurePlateTile::getSignalStrength(Level *level, int x, int y, int z)
 {
-	vector< shared_ptr<Entity> > *entities = NULL;
+	vector< shared_ptr<Entity> > *entities = nullptr;
 
 	if (sensitivity == everything)		entities = level->getEntities(nullptr, getSensitiveAABB(x, y, z));
 	else if (sensitivity == mobs)		entities = level->getEntitiesOfClass(typeid(LivingEntity), getSensitiveAABB(x, y, z));
 	else if (sensitivity == players)	entities = level->getEntitiesOfClass(typeid(Player), getSensitiveAABB(x, y, z));
 	else								__debugbreak(); // 4J-JEV: We're going to delete something at a random location.
 
-	if (entities != NULL && !entities->empty())
+	if (entities != nullptr && !entities->empty())
 	{
         for (auto& e : *entities)
         {

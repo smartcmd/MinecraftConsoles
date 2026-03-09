@@ -21,9 +21,9 @@ bool SitGoal::canUse()
 	if (!mob->onGround) return false;
 
 	shared_ptr<LivingEntity> owner = dynamic_pointer_cast<LivingEntity>( mob->getOwner() );
-	if (owner == NULL) return true; // owner not on level
+	if (owner == nullptr) return true; // owner not on level
 
-	if (mob->distanceToSqr(owner) < FollowOwnerGoal::TeleportDistance * FollowOwnerGoal::TeleportDistance && owner->getLastHurtByMob() != NULL) return false;
+	if (mob->distanceToSqr(owner) < FollowOwnerGoal::TeleportDistance * FollowOwnerGoal::TeleportDistance && owner->getLastHurtByMob() != nullptr) return false;
 
 	return _wantToSit;
 }

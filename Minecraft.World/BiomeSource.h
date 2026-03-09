@@ -25,20 +25,20 @@ private:
 
 protected:
 	void _init();
-	void _init(__int64 seed, LevelType *generator);
+	void _init(int64_t seed, LevelType *generator);
     BiomeSource();
 
 public:
-	BiomeSource(__int64 seed, LevelType *generator);
+	BiomeSource(int64_t seed, LevelType *generator);
     BiomeSource(Level *level);
 private:
 	static bool getIsMatch(float *frac);					// 4J added
 	static void getFracs(intArray indices, float *fracs);	// 4J added
 public:
 #ifdef __PSVITA__
-	static __int64 findSeed(LevelType *generator, bool* pServerRunning);	// MGH - added pRunning, so we can early out of this on Vita as it can take up to 60 secs							// 4J added
+	static int64_t findSeed(LevelType *generator, bool* pServerRunning);	// MGH - added pRunning, so we can early out of this on Vita as it can take up to 60 secs							// 4J added
 #else
-	static __int64 findSeed(LevelType *generator);	// 4J added
+	static int64_t findSeed(LevelType *generator);	// 4J added
 #endif
 	~BiomeSource();
 
@@ -71,7 +71,7 @@ public:
 	/**
 	* Checks if an area around a block contains only the specified biomes.
 	* Useful for placing elements like towns.
-	* 
+	*
 	* This is a bit of a rough check, to make it as fast as possible. To ensure
 	* NO other biomes, add a margin of at least four blocks to the radius
 	*/
@@ -80,7 +80,7 @@ public:
 	/**
 	* Checks if an area around a block contains only the specified biome.
 	* Useful for placing elements like towns.
-	* 
+	*
 	* This is a bit of a rough check, to make it as fast as possible. To ensure
 	* NO other biomes, add a margin of at least four blocks to the radius
 	*/
@@ -89,7 +89,7 @@ public:
 	/**
 	* Finds the specified biome within the radius. This will return a random
 	* position if several are found. This test is fairly rough.
-	* 
+	*
 	* Returns null if the biome wasn't found
 	*/
 	virtual TilePos *findBiome(int x, int z, int r, Biome *toFind, Random *random);
@@ -97,7 +97,7 @@ public:
 	/**
 	* Finds one of the specified biomes within the radius. This will return a
 	* random position if several are found. This test is fairly rough.
-	* 
+	*
 	* Returns null if the biome wasn't found
 	*/
 	virtual TilePos *findBiome(int x, int z, int r, vector<Biome *> allowed, Random *random);

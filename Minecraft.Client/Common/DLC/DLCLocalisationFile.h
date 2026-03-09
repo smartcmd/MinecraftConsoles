@@ -12,7 +12,7 @@ public:
 	DLCLocalisationFile(const wstring &path);
 	DLCLocalisationFile(PBYTE pbData, DWORD dwBytes); // when we load in a texture pack details file from TMS++
 
-	virtual void addData(PBYTE pbData, DWORD dwBytes);
+    void addData(PBYTE pbData, DWORD dwBytes) override;
 
 	StringTable *getStringTable() { return m_strings; }
 };

@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "TexturePack.h"
 
-wstring TexturePack::getPath(bool bTitleUpdateTexture /*= false*/,const char *pchBDPatchFileName /*= NULL*/)
+wstring TexturePack::getPath(bool bTitleUpdateTexture /*= false*/,const char *pchBDPatchFileName /*= nullptr*/)
 {
 	wstring wDrive;
 #ifdef _XBOX
@@ -24,8 +24,8 @@ wstring TexturePack::getPath(bool bTitleUpdateTexture /*= false*/,const char *pc
 #ifdef __PS3__
 
 	// 4J-PB - we need to check for a BD patch - this is going to be an issue for full DLC texture packs (Halloween)
-	char *pchUsrDir=NULL;
-	if(app.GetBootedFromDiscPatch() && pchBDPatchFileName!=NULL)
+	char *pchUsrDir=nullptr;
+	if(app.GetBootedFromDiscPatch() && pchBDPatchFileName!=nullptr)
 	{
 		pchUsrDir = app.GetBDUsrDirPath(pchBDPatchFileName);
 		wstring wstr (pchUsrDir, pchUsrDir+strlen(pchUsrDir));

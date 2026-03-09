@@ -44,7 +44,7 @@ void StringTable::ProcessStringTableData(void)
 	app.getLocale(locales);
 
 	bool foundLang = false;
-	__int64 bytesToSkip = 0;
+	int64_t bytesToSkip = 0;
 	int dataSize = 0;
 
 	//
@@ -118,9 +118,7 @@ void StringTable::ProcessStringTableData(void)
 	else
 	{
 		app.DebugPrintf("Failed to get language\n");
-#ifdef _DEBUG
-		__debugbreak();
-#endif
+
 
 		isStatic = false;
 	}

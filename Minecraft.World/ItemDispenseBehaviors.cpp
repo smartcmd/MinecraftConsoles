@@ -11,7 +11,7 @@
 
 shared_ptr<Projectile> ArrowDispenseBehavior::getProjectile(Level *world, Position *position)
 {
-	shared_ptr<Arrow> arrow = shared_ptr<Arrow>(new Arrow(world, position->getX(), position->getY(), position->getZ()));
+	shared_ptr<Arrow> arrow = std::make_shared<Arrow>(world, position->getX(), position->getY(), position->getZ());
 	arrow->pickup = Arrow::PICKUP_ALLOWED;
 
 	return arrow;
@@ -21,7 +21,7 @@ shared_ptr<Projectile> ArrowDispenseBehavior::getProjectile(Level *world, Positi
 
 shared_ptr<Projectile> EggDispenseBehavior::getProjectile(Level *world, Position *position)
 {
-	return shared_ptr<Projectile>(new ThrownEgg(world, position->getX(), position->getY(), position->getZ()));
+	return std::make_shared<ThrownEgg>(world, position->getX(), position->getY(), position->getZ());
 }
 
 
@@ -29,7 +29,7 @@ shared_ptr<Projectile> EggDispenseBehavior::getProjectile(Level *world, Position
 
 shared_ptr<Projectile> SnowballDispenseBehavior::getProjectile(Level *world, Position *position)
 {
-	return shared_ptr<Projectile>(new Snowball(world, position->getX(), position->getY(), position->getZ()));
+	return std::make_shared<Snowball>(world, position->getX(), position->getY(), position->getZ());
 }
 
 
@@ -37,7 +37,7 @@ shared_ptr<Projectile> SnowballDispenseBehavior::getProjectile(Level *world, Pos
 
 shared_ptr<Projectile> ExpBottleDispenseBehavior::getProjectile(Level *world, Position *position)
 {
-	return shared_ptr<Projectile>(new ThrownExpBottle(world, position->getX(), position->getY(), position->getZ()));
+	return std::make_shared<ThrownExpBottle>(world, position->getX(), position->getY(), position->getZ());
 }
 
 float ExpBottleDispenseBehavior::getUncertainty()
@@ -60,7 +60,7 @@ ThrownPotionDispenseBehavior::ThrownPotionDispenseBehavior(int potionValue)
 
 shared_ptr<Projectile> ThrownPotionDispenseBehavior::getProjectile(Level *world, Position *position)
 {
-	return shared_ptr<Projectile>(new ThrownPotion(world, position->getX(), position->getY(), position->getZ(), m_potionValue));
+	return std::make_shared<ThrownPotion>(world, position->getX(), position->getY(), position->getZ(), m_potionValue);
 }
 
 float ThrownPotionDispenseBehavior::getUncertainty()
@@ -104,7 +104,7 @@ shared_ptr<ItemInstance> SpawnEggDispenseBehavior::execute(BlockSource *source, 
 	shared_ptr<Entity> entity = SpawnEggItem::spawnMobAt(source->getWorld(), dispensed->getAuxValue(), spawnX, spawnY, spawnZ, &iResult);
 
 	// 4J-JEV: Added in-case spawn limit is encountered.
-	if (entity == NULL)
+	if (entity == nullptr)
 	{
 		outcome = LEFT_ITEM;
 		return dispensed;
@@ -139,7 +139,7 @@ shared_ptr<ItemInstance> FireworksDispenseBehavior::execute(BlockSource *source,
 	double spawnY = source->getBlockY() + .2f;
 	double spawnZ = source->getZ() + facing->getStepZ();
 
-	shared_ptr<FireworksRocketEntity> firework = shared_ptr<FireworksRocketEntity>(new FireworksRocketEntity(world, spawnX, spawnY, spawnZ, dispensed));
+	shared_ptr<FireworksRocketEntity> firework = std::make_shared<FireworksRocketEntity>(world, spawnX, spawnY, spawnZ, dispensed);
 	source->getWorld()->addEntity(firework);
 
 	outcome = ACTIVATED_ITEM;
@@ -183,7 +183,7 @@ shared_ptr<ItemInstance> FireballDispenseBehavior::execute(BlockSource *source, 
 	double dirY = random->nextGaussian() * .05 + facing->getStepY();
 	double dirZ = random->nextGaussian() * .05 + facing->getStepZ();
 
-	world->addEntity(shared_ptr<SmallFireball>(new SmallFireball(world, spawnX, spawnY, spawnZ, dirX, dirY, dirZ)));
+	world->addEntity(std::make_shared<SmallFireball>(world, spawnX, spawnY, spawnZ, dirX, dirY, dirZ));
 
 	outcome = ACTIVATED_ITEM;
 
@@ -254,7 +254,7 @@ shared_ptr<ItemInstance> BoatDispenseBehavior::execute(BlockSource *source, shar
 
 	outcome = ACTIVATED_ITEM;
 
-	shared_ptr<Boat> boat = shared_ptr<Boat>(new Boat(world, spawnX, spawnY + yOffset, spawnZ));
+	shared_ptr<Boat> boat = std::make_shared<Boat>(world, spawnX, spawnY + yOffset, spawnZ);
 	world->addEntity(boat);
 
 	dispensed->remove(1);
@@ -273,7 +273,7 @@ void BoatDispenseBehavior::playSound(BlockSource *source, eOUTCOME outcome)
 
 shared_ptr<ItemInstance> FilledBucketDispenseBehavior::execute(BlockSource *source, shared_ptr<ItemInstance> dispensed, eOUTCOME &outcome)
 {
-	BucketItem *bucket = (BucketItem *)dispensed->getItem();
+	BucketItem *bucket = static_cast<BucketItem *>(dispensed->getItem());
 	int sourceX = source->getBlockX();
 	int sourceY = source->getBlockY();
 	int sourceZ = source->getBlockZ();
@@ -326,9 +326,9 @@ shared_ptr<ItemInstance> EmptyBucketDispenseBehavior::execute(BlockSource *sourc
 		dispensed->id = targetType->id;
 		dispensed->count = 1;
 	}
-	else if (dynamic_pointer_cast<DispenserTileEntity>(source->getEntity())->addItem(shared_ptr<ItemInstance>(new ItemInstance(targetType))) < 0)
+	else if (dynamic_pointer_cast<DispenserTileEntity>(source->getEntity())->addItem(std::make_shared<ItemInstance>(targetType)) < 0)
 	{
-		DefaultDispenseItemBehavior::dispense(source, shared_ptr<ItemInstance>(new ItemInstance(targetType)));
+		DefaultDispenseItemBehavior::dispense(source, std::make_shared<ItemInstance>(targetType));
 	}
 
 	outcome = ACTIVATED_ITEM;
@@ -442,7 +442,7 @@ shared_ptr<ItemInstance> TntDispenseBehavior::execute(BlockSource *source, share
 		int targetY = source->getBlockY() + facing->getStepY();
 		int targetZ = source->getBlockZ() + facing->getStepZ();
 
-		shared_ptr<PrimedTnt> tnt = shared_ptr<PrimedTnt>(new PrimedTnt(world, targetX + 0.5f, targetY + 0.5f, targetZ + 0.5f, nullptr));
+		shared_ptr<PrimedTnt> tnt(new PrimedTnt(world, targetX + 0.5, targetY + 0.5, targetZ + 0.5, nullptr));
 		world->addEntity(tnt);
 
 		outcome = ACTIVATED_ITEM;

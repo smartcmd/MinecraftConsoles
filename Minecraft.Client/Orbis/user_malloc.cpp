@@ -38,7 +38,7 @@ int user_malloc_init(void)
 	int res;
 	void *addr;
 	uint64_t dmemSize = SCE_KERNEL_MAIN_DMEM_SIZE;
-	
+
 	s_heapLength = ((size_t)4608) * 1024 * 1024;	// Initial allocation for the application
 	s_heapLength -= ((size_t)4) * 1024 * 1024;		// Allocated for TLS
 	s_heapLength -= ((size_t)2) * 1024 * 1024;		// 64K (sometimes?) allocated for razor - rounding up to 2MB here to match our alignment
@@ -54,7 +54,7 @@ int user_malloc_init(void)
 		return 1;
 	}
 
-	addr = NULL;
+	addr = nullptr;
 	//E Map direct memory to the process address space
 	res = sceKernelMapDirectMemory(&addr, s_heapLength, SCE_KERNEL_PROT_CPU_READ | SCE_KERNEL_PROT_CPU_WRITE, 0, s_memStart, s_memAlign);
 	if (res < 0) {
@@ -64,7 +64,7 @@ int user_malloc_init(void)
 
 	//E Generate mspace
 	s_mspace = sceLibcMspaceCreate("User Malloc", addr, s_heapLength, 0);
-	if (s_mspace == NULL) {
+	if (s_mspace == nullptr) {
 		//E Error handling
 		return 1;
 	}
@@ -77,7 +77,7 @@ int user_malloc_finalize(void)
 {
 	int res;
 
-	if (s_mspace != NULL) {
+	if (s_mspace != nullptr) {
 		//E Free mspace
 		//J mspace を解放する
 		res = sceLibcMspaceDestroy(s_mspace);
@@ -106,10 +106,10 @@ void *user_malloc(size_t size)
 {
 #if 0
 	static int throttle = 0;
-	static __int64 lasttime = 0;
+	static int64_t lasttime = 0;
 	if( ( throttle % 100 ) == 0 )
 	{
-		__int64 nowtime = System::currentTimeMillis();
+		int64_t nowtime = System::currentTimeMillis();
 		if( ( nowtime - lasttime ) > 20000 )
 		{
 			lasttime = nowtime;

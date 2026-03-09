@@ -9,7 +9,7 @@
 DoorInteractGoal::DoorInteractGoal(Mob *mob)
 {
 	doorX = doorY = doorZ = 0;
-	doorTile = NULL;
+	doorTile = nullptr;
 	passed = false;
 	doorOpenDirX = doorOpenDirZ = 0.0f;
 
@@ -21,7 +21,7 @@ bool DoorInteractGoal::canUse()
 	if (!mob->horizontalCollision) return false;
 	PathNavigation *pathNav = mob->getNavigation();
 	Path *path = pathNav->getPath();
-	if (path == NULL || path->isDone() || !pathNav->canOpenDoors()) return false;
+	if (path == nullptr || path->isDone() || !pathNav->canOpenDoors()) return false;
 
 	for (int i = 0; i < min(path->getIndex() + 2, path->getSize()); ++i)
 	{
@@ -31,7 +31,7 @@ bool DoorInteractGoal::canUse()
 		doorZ = n->z;
 		if (mob->distanceToSqr(doorX, mob->y, doorZ) > 1.5 * 1.5) continue;
 		doorTile = getDoorTile(doorX, doorY, doorZ);
-		if (doorTile == NULL) continue;
+		if (doorTile == nullptr) continue;
 		return true;
 	}
 
@@ -39,7 +39,7 @@ bool DoorInteractGoal::canUse()
 	doorY = Mth::floor(mob->y + 1);
 	doorZ = Mth::floor(mob->z);
 	doorTile = getDoorTile(doorX, doorY, doorZ);
-	return doorTile != NULL;
+	return doorTile != nullptr;
 }
 
 bool DoorInteractGoal::canContinueToUse()
@@ -50,14 +50,14 @@ bool DoorInteractGoal::canContinueToUse()
 void DoorInteractGoal::start()
 {
 	passed = false;
-	doorOpenDirX = (float) (doorX + 0.5f - mob->x);
-	doorOpenDirZ = (float) (doorZ + 0.5f - mob->z);
+	doorOpenDirX = static_cast<float>(doorX + 0.5f - mob->x);
+	doorOpenDirZ = static_cast<float>(doorZ + 0.5f - mob->z);
 }
 
 void DoorInteractGoal::tick()
 {
-	float newDoorDirX = (float) (doorX + 0.5f - mob->x);
-	float newDoorDirZ = (float) (doorZ + 0.5f - mob->z);
+	float newDoorDirX = static_cast<float>(doorX + 0.5f - mob->x);
+	float newDoorDirZ = static_cast<float>(doorZ + 0.5f - mob->z);
 	float dot = doorOpenDirX * newDoorDirX + doorOpenDirZ * newDoorDirZ;
 	if (dot < 0)
 	{
@@ -68,6 +68,6 @@ void DoorInteractGoal::tick()
 DoorTile *DoorInteractGoal::getDoorTile(int x, int y, int z)
 {
 	int tileId = mob->level->getTile(x, y, z);
-	if (tileId != Tile::door_wood_Id) return NULL;
-	return (DoorTile *) Tile::tiles[tileId];
+	if (tileId != Tile::door_wood_Id) return nullptr;
+	return static_cast<DoorTile *>(Tile::tiles[tileId]);
 }

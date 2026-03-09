@@ -91,9 +91,9 @@ HRESULT CScene_Controls::OnInit( XUIMessageInit* pInitData, BOOL& bHandled )
 	XuiControlSetText(m_SouthPaw,app.GetString(IDS_SOUTHPAW));
 	XuiControlSetText(m_InvertLook,app.GetString(IDS_INVERT_LOOK));
 
-	m_iPad=*(int *)pInitData->pvInitData;
+	m_iPad=*static_cast<int *>(pInitData->pvInitData);
 	// if we're not in the game, we need to use basescene 0 
-	bool bNotInGame=(Minecraft::GetInstance()->level==NULL);
+	bool bNotInGame=(Minecraft::GetInstance()->level==nullptr);
 	bool bSplitscreen=(app.GetLocalPlayerCount()>1);
 	m_iCurrentTextIndex=0;
 	m_bCreativeMode = !bNotInGame && Minecraft::GetInstance()->localplayers[m_iPad] && Minecraft::GetInstance()->localplayers[m_iPad]->abilities.mayfly;
@@ -159,20 +159,20 @@ HRESULT CScene_Controls::OnInit( XUIMessageInit* pInitData, BOOL& bHandled )
 			controlDetailsA[i].vPos.y/=2.0f;
 		}
 		m_FigA[i].SetShow(FALSE);
-		m_TextPresenterA[i] = NULL;
+		m_TextPresenterA[i] = nullptr;
 	}
 
 	// fill out the layouts list
 	VOID *pObj;
 	XuiObjectFromHandle( m_SchemeList, &pObj );
-	m_pLayoutList = (CXuiCtrl4JList *)pObj;
+	m_pLayoutList = static_cast<CXuiCtrl4JList *>(pObj);
 	CXuiCtrl4JList::LIST_ITEM_INFO ListInfo[3];
 	ZeroMemory(ListInfo,sizeof(CXuiCtrl4JList::LIST_ITEM_INFO)*3);
 
 	for(int i=0;i<3;i++)
 	{
 		ListInfo[i].pwszText=m_LayoutNameA[i];
-		ListInfo[i].hXuiBrush=NULL;
+		ListInfo[i].hXuiBrush=nullptr;
 		ListInfo[i].fEnabled=TRUE;
 		m_pLayoutList->AddData(ListInfo[i]);
 	}
@@ -325,9 +325,9 @@ void CScene_Controls::PositionText(int iPad,int iTextID, unsigned char ucAction)
 	XuiElementGetScale(hFigGroup,&vScale);
 
 	// check the width of the control with the text set in it
-	if(m_TextPresenterA[m_iCurrentTextIndex]==NULL)
+	if(m_TextPresenterA[m_iCurrentTextIndex]==nullptr)
 	{
- 		HXUIOBJ hObj=NULL;
+ 		HXUIOBJ hObj=nullptr;
  		HRESULT hr=XuiControlGetVisual(m_TextA[m_iCurrentTextIndex].m_hObj,&hObj);
 		hr=XuiElementGetChildById(hObj,L"Text",&m_TextPresenterA[m_iCurrentTextIndex]);
 	}
@@ -452,9 +452,9 @@ void CScene_Controls::PositionTextDirect(int iPad,int iTextID, int iControlDetai
 	XuiElementGetScale(hFigGroup,&vScale);
 
 	// check the width of the control with the text set in it	
-	if(m_TextPresenterA[m_iCurrentTextIndex]==NULL)
+	if(m_TextPresenterA[m_iCurrentTextIndex]==nullptr)
 	{
- 		HXUIOBJ hObj=NULL;
+ 		HXUIOBJ hObj=nullptr;
  		HRESULT hr=XuiControlGetVisual(m_TextA[m_iCurrentTextIndex].m_hObj,&hObj);
 		hr=XuiElementGetChildById(hObj,L"Text",&m_TextPresenterA[m_iCurrentTextIndex]);
 	}
@@ -532,18 +532,18 @@ HRESULT CScene_Controls::OnNotifyPressEx(HXUIOBJ hObjPressed, XUINotifyPress* pN
 	if ( hObjPressed == m_InvertLook.m_hObj )
 	{
 		BOOL bIsChecked = m_InvertLook.IsChecked();
-		app.SetGameSettings(m_iPad,eGameSetting_ControlInvertLook,(unsigned char)( bIsChecked ) );
+		app.SetGameSettings(m_iPad,eGameSetting_ControlInvertLook,static_cast<unsigned char>(bIsChecked) );
 	}
 	else if ( hObjPressed == m_SouthPaw.m_hObj )
 	{
 		BOOL bIsChecked = m_SouthPaw.IsChecked();
-		app.SetGameSettings(m_iPad,eGameSetting_ControlSouthPaw,(unsigned char)( bIsChecked ) );
+		app.SetGameSettings(m_iPad,eGameSetting_ControlSouthPaw,static_cast<unsigned char>(bIsChecked) );
 		PositionAllText(m_iPad);
 	}
 	else if( hObjPressed == m_SchemeList)
 	{
 		// check what's been selected
-		app.SetGameSettings(m_iPad,eGameSetting_ControlScheme,(unsigned char)m_SchemeList.GetCurSel());
+		app.SetGameSettings(m_iPad,eGameSetting_ControlScheme,static_cast<unsigned char>(m_SchemeList.GetCurSel()));
 		LPWSTR layoutString = new wchar_t[ 128 ];
 		swprintf( layoutString, 128, L"%ls : %ls", app.GetString( IDS_CURRENT_LAYOUT ),app.GetString(m_iSchemeTextA[m_SchemeList.GetCurSel()]) );	
 		

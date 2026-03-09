@@ -15,12 +15,12 @@ FireworksParticles::FireworksStarter::FireworksStarter(Level *level, double x, d
 	this->engine = engine;
 	lifetime = 8;
 
-	if (infoTag != NULL)
+	if (infoTag != nullptr)
 	{
-		explosions = (ListTag<CompoundTag> *)infoTag->getList(FireworksItem::TAG_EXPLOSIONS)->copy();
+		explosions = static_cast<ListTag<CompoundTag> *>(infoTag->getList(FireworksItem::TAG_EXPLOSIONS)->copy());
 		if (explosions->size() == 0)
 		{
-			explosions = NULL;
+			explosions = nullptr;
 		}
 		else
 		{
@@ -42,7 +42,7 @@ FireworksParticles::FireworksStarter::FireworksStarter(Level *level, double x, d
 	else
 	{
 		// 4J:
-		explosions = NULL;
+		explosions = nullptr;
 	}
 }
 
@@ -53,7 +53,7 @@ void FireworksParticles::FireworksStarter::render(Tesselator *t, float a, float 
 
 void FireworksParticles::FireworksStarter::tick()
 {
-	if (life == 0 && explosions != NULL)
+	if (life == 0 && explosions != nullptr)
 	{
 		bool farEffect = isFarAwayFromCamera();
 
@@ -97,7 +97,7 @@ void FireworksParticles::FireworksStarter::tick()
 		level->playLocalSound(x, y, z, soundId, 20, .95f + random->nextFloat() * .1f, true, 100.0f);
 	}
 
-	if ((life % 2) == 0 && explosions != NULL && (life / 2) < explosions->size())
+	if ((life % 2) == 0 && explosions != nullptr && (life / 2) < explosions->size())
 	{
 		int eIndex = life / 2;
 		CompoundTag *compoundTag = explosions->get(eIndex);
@@ -186,10 +186,10 @@ void FireworksParticles::FireworksStarter::tick()
 		}
 		{
 			int rgb = colors[0];
-			float r = (float) ((rgb & 0xff0000) >> 16) / 255.0f;
-			float g = (float) ((rgb & 0x00ff00) >> 8) / 255.0f;
-			float b = (float) ((rgb & 0x0000ff) >> 0) / 255.0f;
-			shared_ptr<FireworksOverlayParticle> fireworksOverlayParticle = shared_ptr<FireworksOverlayParticle>(new FireworksParticles::FireworksOverlayParticle(level, x, y, z));
+			float r = static_cast<float>((rgb & 0xff0000) >> 16) / 255.0f;
+			float g = static_cast<float>((rgb & 0x00ff00) >> 8) / 255.0f;
+			float b = static_cast<float>((rgb & 0x0000ff) >> 0) / 255.0f;
+			shared_ptr<FireworksOverlayParticle> fireworksOverlayParticle = std::make_shared<FireworksOverlayParticle>(level, x, y, z);
 			fireworksOverlayParticle->setColor(r, g, b);
 			fireworksOverlayParticle->setAlpha(0.99f);		// 4J added
 			engine->add(fireworksOverlayParticle);
@@ -212,7 +212,7 @@ void FireworksParticles::FireworksStarter::tick()
 bool FireworksParticles::FireworksStarter::isFarAwayFromCamera()
 {
 	Minecraft *instance = Minecraft::GetInstance();
-	if (instance != NULL && instance->cameraTargetPlayer != NULL)
+	if (instance != nullptr && instance->cameraTargetPlayer != nullptr)
 	{
 		if (instance->cameraTargetPlayer->distanceToSqr(x, y, z) < 16 * 16)
 		{
@@ -224,14 +224,14 @@ bool FireworksParticles::FireworksStarter::isFarAwayFromCamera()
 
 void FireworksParticles::FireworksStarter::createParticle(double x, double y, double z, double xa, double ya, double za, intArray rgbColors, intArray fadeColors, bool trail, bool flicker)
 {
-	shared_ptr<FireworksSparkParticle> fireworksSparkParticle = shared_ptr<FireworksSparkParticle>(new FireworksSparkParticle(level, x, y, z, xa, ya, za, engine));
+	shared_ptr<FireworksSparkParticle> fireworksSparkParticle = std::make_shared<FireworksSparkParticle>(level, x, y, z, xa, ya, za, engine);
 	fireworksSparkParticle->setAlpha(0.99f);
 	fireworksSparkParticle->setTrail(trail);
 	fireworksSparkParticle->setFlicker(flicker);
 
 	int color = random->nextInt(rgbColors.length);
 	fireworksSparkParticle->setColor(rgbColors[color]);
-	if (/*fadeColors != NULL &&*/ fadeColors.length > 0)
+	if (/*fadeColors != nullptr &&*/ fadeColors.length > 0)
 	{
 		fireworksSparkParticle->setFadeColor(fadeColors[random->nextInt(fadeColors.length)]);
 	}
@@ -365,24 +365,24 @@ void FireworksParticles::FireworksSparkParticle::setFlicker(bool flicker)
 
 void FireworksParticles::FireworksSparkParticle::setColor(int rgb) 
 {
-	float r = (float) ((rgb & 0xff0000) >> 16) / 255.0f;
-	float g = (float) ((rgb & 0x00ff00) >> 8) / 255.0f;
-	float b = (float) ((rgb & 0x0000ff) >> 0) / 255.0f;
+	float r = static_cast<float>((rgb & 0xff0000) >> 16) / 255.0f;
+	float g = static_cast<float>((rgb & 0x00ff00) >> 8) / 255.0f;
+	float b = static_cast<float>((rgb & 0x0000ff) >> 0) / 255.0f;
 	float scale = 1.0f;
 	Particle::setColor(r * scale, g * scale, b * scale);
 }
 
 void FireworksParticles::FireworksSparkParticle::setFadeColor(int rgb)
 {
-	fadeR = (float) ((rgb & 0xff0000) >> 16) / 255.0f;
-	fadeG = (float) ((rgb & 0x00ff00) >> 8) / 255.0f;
-	fadeB = (float) ((rgb & 0x0000ff) >> 0) / 255.0f;
+	fadeR = static_cast<float>((rgb & 0xff0000) >> 16) / 255.0f;
+	fadeG = static_cast<float>((rgb & 0x00ff00) >> 8) / 255.0f;
+	fadeB = static_cast<float>((rgb & 0x0000ff) >> 0) / 255.0f;
 	hasFade = true;
 }
 
 AABB *FireworksParticles::FireworksSparkParticle::getCollideBox()
 {
-	return NULL;
+	return nullptr;
 }
 
 bool FireworksParticles::FireworksSparkParticle::isPushable()
@@ -407,7 +407,7 @@ void FireworksParticles::FireworksSparkParticle::tick()
 	if (age++ >= lifetime) remove();
 	if (age > lifetime / 2)
 	{
-		setAlpha(1.0f - (((float) age - lifetime / 2) / (float) lifetime));
+		setAlpha(1.0f - ((static_cast<float>(age) - lifetime / 2) / static_cast<float>(lifetime)));
 
 		if (hasFade)
 		{
@@ -433,7 +433,7 @@ void FireworksParticles::FireworksSparkParticle::tick()
 
 	if (trail && (age < lifetime / 2) && ((age + lifetime) % 2) == 0)
 	{
-		shared_ptr<FireworksSparkParticle> fireworksSparkParticle = shared_ptr<FireworksSparkParticle>(new FireworksParticles::FireworksSparkParticle(level, x, y, z, 0, 0, 0, engine));
+		shared_ptr<FireworksSparkParticle> fireworksSparkParticle = std::make_shared<FireworksSparkParticle>(level, x, y, z, 0, 0, 0, engine);
 		fireworksSparkParticle->setAlpha(0.99f);
 		fireworksSparkParticle->setColor(rCol, gCol, bCol);
 		fireworksSparkParticle->age = fireworksSparkParticle->lifetime / 2;
@@ -475,12 +475,12 @@ void FireworksParticles::FireworksOverlayParticle::render(Tesselator *t, float a
 	float u1 = u0 + 32.0f / 128.0f;
 	float v0 = 16.0f / 128.0f;
 	float v1 = v0 + 32.0f / 128.0f;
-	float r = 7.1f * sin(((float) age + a - 1.0f) * .25f * PI);
-	alpha = 0.6f - ((float) age + a - 1.0f) * .25f * .5f;
+	float r = 7.1f * sin((static_cast<float>(age) + a - 1.0f) * .25f * PI);
+	alpha = 0.6f - (static_cast<float>(age) + a - 1.0f) * .25f * .5f;
 
-	float x = (float) (xo + (this->x - xo) * a - xOff);
-	float y = (float) (yo + (this->y - yo) * a - yOff);
-	float z = (float) (zo + (this->z - zo) * a - zOff);
+	float x = static_cast<float>(xo + (this->x - xo) * a - xOff);
+	float y = static_cast<float>(yo + (this->y - yo) * a - yOff);
+	float z = static_cast<float>(zo + (this->z - zo) * a - zOff);
 
 	t->color(rCol, gCol, bCol, alpha);
 

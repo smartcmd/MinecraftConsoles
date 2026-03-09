@@ -94,7 +94,7 @@ public:
 
 	virtual void createFireworks(double x, double y, double z, double xd, double yd, double zd, CompoundTag *infoTag);
 	virtual void setScoreboard(Scoreboard *scoreboard);
-	virtual void setDayTime(__int64 newTime);
+	virtual void setDayTime(int64_t newTime);
 
 	// 4J Stu - Added so we can have multiple local connections
 	void addClientConnection(ClientConnection *c) { connections.push_back( c ); }

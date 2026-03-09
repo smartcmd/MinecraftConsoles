@@ -58,17 +58,17 @@ void _Polygon::render(Tesselator *t, float scale)
     t->begin();
     if (_flipNormal)
 	{
-        t->normal(-(float)n->x, -(float)n->y, -(float)n->z);
+        t->normal(-static_cast<float>(n->x), -static_cast<float>(n->y), -static_cast<float>(n->z));
     }
 	else
 	{
-        t->normal((float)n->x, (float)n->y, (float)n->z);
+        t->normal(static_cast<float>(n->x), static_cast<float>(n->y), static_cast<float>(n->z));
     }
 
     for (int i = 0; i < 4; i++)
 	{
         Vertex *v = vertices[i];
-        t->vertexUV((float)(v->pos->x * scale), (float)( v->pos->y * scale), (float)( v->pos->z * scale), (float)( v->u), (float)( v->v));
+        t->vertexUV(static_cast<float>(v->pos->x * scale), static_cast<float>(v->pos->y * scale), static_cast<float>(v->pos->z * scale), (float)( v->u), (float)( v->v));
     }
     t->end();
 }

@@ -27,7 +27,7 @@ public:
 	virtual bool isInvalidatedBy(shared_ptr<Packet> packet);
 
 public:
-	static shared_ptr<Packet> create() { return shared_ptr<Packet>(new MoveEntityPacketSmall()); }
+	static shared_ptr<Packet> create() { return std::make_shared<MoveEntityPacketSmall>(); }
 	virtual int getId() { return 162; }
 };
 
@@ -42,7 +42,7 @@ public:
 	virtual int getEstimatedSize();
 
 public:
-	static shared_ptr<Packet> create() { return shared_ptr<Packet>(new MoveEntityPacketSmall::PosRot()); }
+	static shared_ptr<Packet> create() { return std::make_shared<MoveEntityPacketSmall::PosRot>(); }
 	virtual int getId() { return 165; }
 };
 
@@ -57,7 +57,7 @@ public:
 	virtual int getEstimatedSize();
 
 public:
-	static shared_ptr<Packet> create() { return shared_ptr<Packet>(new MoveEntityPacketSmall::Pos()); }
+	static shared_ptr<Packet> create() { return std::make_shared<MoveEntityPacketSmall::Pos>(); }
 	virtual int getId() { return 163; }
 
 };
@@ -73,7 +73,7 @@ public:
 	virtual int getEstimatedSize();
 
 public:
-	static shared_ptr<Packet> create() { return shared_ptr<Packet>(new MoveEntityPacketSmall::Rot()); }
+	static shared_ptr<Packet> create() { return std::make_shared<MoveEntityPacketSmall::Rot>(); }
 	virtual int getId() { return 164; }
 
 };

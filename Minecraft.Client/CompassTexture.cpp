@@ -7,13 +7,13 @@
 #include "Texture.h"
 #include "CompassTexture.h"
 
-CompassTexture *CompassTexture::instance = NULL;
+CompassTexture *CompassTexture::instance = nullptr;
 
 CompassTexture::CompassTexture() : StitchedTexture(L"compass",L"compass")
 {
 	instance = this;
 
-	m_dataTexture = NULL;
+	m_dataTexture = nullptr;
 	m_iPad = XUSER_INDEX_ANY;
 
 	rot = rota = 0.0;
@@ -31,27 +31,27 @@ void CompassTexture::cycleFrames()
 {
 	Minecraft *mc = Minecraft::GetInstance();
 
-	if (m_iPad >= 0 && m_iPad < XUSER_MAX_COUNT && mc->level != NULL && mc->localplayers[m_iPad] != NULL)
+	if (m_iPad >= 0 && m_iPad < XUSER_MAX_COUNT && mc->level != nullptr && mc->localplayers[m_iPad] != nullptr)
 	{
 		updateFromPosition(mc->localplayers[m_iPad]->level, mc->localplayers[m_iPad]->x, mc->localplayers[m_iPad]->z, mc->localplayers[m_iPad]->yRot, false, false);
 	}
 	else
 	{
 		frame = 1;
-		updateFromPosition(NULL, 0, 0, 0, false, true);
+		updateFromPosition(nullptr, 0, 0, 0, false, true);
 	}
 }
 
 void CompassTexture::updateFromPosition(Level *level, double x, double z, double yRot, bool noNeedle, bool instant)
 {
 	double rott = 0;
-	if (level != NULL && !noNeedle)
+	if (level != nullptr && !noNeedle)
 	{
 		Pos *spawnPos = level->getSharedSpawnPos();
 		double xa = spawnPos->x - x;
 		double za = spawnPos->z - z;
 		delete spawnPos;
-		yRot = (int)yRot % 360;
+		yRot = static_cast<int>(yRot) % 360;
 		rott = -((yRot - 90) * PI / 180 - atan2(za, xa));
 		if (!level->dimension->isNaturalDimension())
 		{
@@ -78,9 +78,9 @@ void CompassTexture::updateFromPosition(Level *level, double x, double z, double
 	}
 
 	// 4J Stu - We share data with another texture
-	if(m_dataTexture != NULL)
+	if(m_dataTexture != nullptr)
 	{
-		int newFrame = (int) (((rot / (PI * 2)) + 1.0) * m_dataTexture->frames->size()) % m_dataTexture->frames->size();
+		int newFrame = static_cast<int>(((rot / (PI * 2)) + 1.0) * m_dataTexture->frames->size()) % m_dataTexture->frames->size();
 		while (newFrame < 0)
 		{
 			newFrame = (newFrame + m_dataTexture->frames->size()) % m_dataTexture->frames->size();
@@ -93,7 +93,7 @@ void CompassTexture::updateFromPosition(Level *level, double x, double z, double
 	}
 	else
 	{
-		int newFrame = (int) (((rot / (PI * 2)) + 1.0) * frames->size()) % frames->size();
+		int newFrame = static_cast<int>(((rot / (PI * 2)) + 1.0) * frames->size()) % frames->size();
 		while (newFrame < 0)
 		{
 			newFrame = (newFrame + frames->size()) % frames->size();
@@ -118,7 +118,7 @@ int CompassTexture::getSourceHeight() const
 
 int CompassTexture::getFrames()
 {
-	if(m_dataTexture == NULL)
+	if(m_dataTexture == nullptr)
 	{
 		return StitchedTexture::getFrames();
 	}
@@ -130,7 +130,7 @@ int CompassTexture::getFrames()
 
 void CompassTexture::freeFrameTextures()
 {
-	if(m_dataTexture == NULL)
+	if(m_dataTexture == nullptr)
 	{
 		StitchedTexture::freeFrameTextures();
 	}
@@ -138,5 +138,5 @@ void CompassTexture::freeFrameTextures()
 
 bool CompassTexture::hasOwnData()
 {
-	return m_dataTexture == NULL;
+	return m_dataTexture == nullptr;
 }

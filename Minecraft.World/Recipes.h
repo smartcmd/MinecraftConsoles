@@ -90,7 +90,7 @@ public:
 	ShapedRecipy *addShapedRecipy(ItemInstance *, ... );
 	void addShapelessRecipy(ItemInstance *result,... ); 
 
-	shared_ptr<ItemInstance> getItemFor(shared_ptr<CraftingContainer> craftSlots, Level *level, Recipy *recipesClass = NULL); // 4J Added recipesClass param
+	shared_ptr<ItemInstance> getItemFor(shared_ptr<CraftingContainer> craftSlots, Level *level, Recipy *recipesClass = nullptr); // 4J Added recipesClass param
 	vector <Recipy *> *getRecipies();
 
 	// 4J-PB - Added all below for new Xbox 'crafting'

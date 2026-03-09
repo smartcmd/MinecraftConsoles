@@ -20,7 +20,7 @@ AABB *WoolCarpetTile::getAABB(Level *level, int x, int y, int z)
 {
 	int height = 0;
 	float offset = 1.0f / SharedConstants::WORLD_RESOLUTION;
-	ThreadStorage *tls = (ThreadStorage *)TlsGetValue(Tile::tlsIdxShape);
+	ThreadStorage *tls = static_cast<ThreadStorage *>(TlsGetValue(Tile::tlsIdxShape));
 	// 4J Stu - Added this so that the TLS shape is correct for this tile
 	if(tls->tileId != this->id) updateDefaultShape();
 	return AABB::newTemp(x + tls->xx0, y + tls->yy0, z + tls->zz0, x + tls->xx1, y + (height * offset), z + tls->zz1);

@@ -14,16 +14,16 @@ void RedDustParticle::init(Level *level, double x, double y, double z, float sca
 	{
         rCol = 1;
     }
-    float brr = (float) Math::random() * 0.4f + 0.6f;
-    this->rCol = ((float) (Math::random() * 0.2f) + 0.8f) * rCol * brr;
-    this->gCol = ((float) (Math::random() * 0.2f) + 0.8f) * gCol * brr;
-    this->bCol = ((float) (Math::random() * 0.2f) + 0.8f) * bCol * brr;
+    float brr = static_cast<float>(Math::random()) * 0.4f + 0.6f;
+    this->rCol = (static_cast<float>(Math::random() * 0.2f) + 0.8f) * rCol * brr;
+    this->gCol = (static_cast<float>(Math::random() * 0.2f) + 0.8f) * gCol * brr;
+    this->bCol = (static_cast<float>(Math::random() * 0.2f) + 0.8f) * bCol * brr;
     size *= 0.75f;
     size *= scale;
     oSize = size;
 
-    lifetime = (int) (8 / (Math::random() * 0.8 + 0.2));
-    lifetime = (int)(lifetime * scale);
+    lifetime = static_cast<int>(8 / (Math::random() * 0.8 + 0.2));
+    lifetime = static_cast<int>(lifetime * scale);
     noPhysics = false;
 }
 

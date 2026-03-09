@@ -5,9 +5,9 @@
 
 ExplodeParticle::ExplodeParticle(Level *level, double x, double y, double z, double xa, double ya, double za) : Particle(level, x, y, z, xa, ya, za)
 {
-	xd = xa+(float)(Math::random()*2-1)*0.05f;
-	yd = ya+(float)(Math::random()*2-1)*0.05f;
-	zd = za+(float)(Math::random()*2-1)*0.05f;        
+	xd = xa+static_cast<float>(Math::random() * 2 - 1)*0.05f;
+	yd = ya+static_cast<float>(Math::random() * 2 - 1)*0.05f;
+	zd = za+static_cast<float>(Math::random() * 2 - 1)*0.05f;        
         
 	//rCol = gCol = bCol = random->nextFloat()*.3f+.7;
 	
@@ -21,16 +21,16 @@ ExplodeParticle::ExplodeParticle(Level *level, double x, double y, double z, dou
 
 	size = random->nextFloat()*random->nextFloat()*6+1;
         
-	lifetime = (int)(16/(random->nextFloat()*0.8+0.2))+2;
+	lifetime = static_cast<int>(16 / (random->nextFloat() * 0.8 + 0.2))+2;
 //        noPhysics = true;
 }
 
 void ExplodeParticle::render(Tesselator *t, float a, float xa, float ya, float za, float xa2, float za2)
 {
 	// 4J - don't render explosion particles that are less than 3 metres away, to try and avoid large particles that are causing us problems with photosensitivity testing
-	float x = (float) (xo + (this->x - xo) * a - xOff);
-	float y = (float) (yo + (this->y - yo) * a - yOff);
-	float z = (float) (zo + (this->z - zo) * a - zOff);
+	float x = static_cast<float>(xo + (this->x - xo) * a - xOff);
+	float y = static_cast<float>(yo + (this->y - yo) * a - yOff);
+	float z = static_cast<float>(zo + (this->z - zo) * a - zOff);
 
 	float distSq = (x*x + y*y + z*z);
 	if( distSq < (3.0f * 3.0f) ) return;

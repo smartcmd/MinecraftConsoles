@@ -3,10 +3,10 @@
 #include "net.minecraft.world.level.storage.h"
 #include "LevelType.h"
 
-GameType *GameType::NOT_SET = NULL;
-GameType *GameType::SURVIVAL= NULL;
-GameType *GameType::CREATIVE = NULL;
-GameType *GameType::ADVENTURE = NULL;
+GameType *GameType::NOT_SET = nullptr;
+GameType *GameType::SURVIVAL= nullptr;
+GameType *GameType::CREATIVE = nullptr;
+GameType *GameType::ADVENTURE = nullptr;
 
 void GameType::staticCtor()
 {
@@ -85,7 +85,7 @@ GameType *GameType::byName(const wstring &name)
 	return SURVIVAL;
 }
 
-void LevelSettings::_init(__int64 seed, GameType *gameType, bool generateMapFeatures, bool hardcore, bool newSeaLevel, LevelType *levelType, int xzSize, int hellScale)
+void LevelSettings::_init(int64_t seed, GameType *gameType, bool generateMapFeatures, bool hardcore, bool newSeaLevel, LevelType *levelType, int xzSize, int hellScale)
 {
 	this->seed = seed;
 	this->gameType = gameType;
@@ -100,11 +100,11 @@ void LevelSettings::_init(__int64 seed, GameType *gameType, bool generateMapFeat
 	m_hellScale = hellScale;
 }
 
-LevelSettings::LevelSettings(__int64 seed, GameType *gameType, bool generateMapFeatures, bool hardcore, bool newSeaLevel, LevelType *levelType, int xzSize, int hellScale) : 
-	seed(seed), 
-	gameType(gameType), 
+LevelSettings::LevelSettings(int64_t seed, GameType *gameType, bool generateMapFeatures, bool hardcore, bool newSeaLevel, LevelType *levelType, int xzSize, int hellScale) :
+	seed(seed),
+	gameType(gameType),
 	hardcore(hardcore),
-	generateMapFeatures(generateMapFeatures), 
+	generateMapFeatures(generateMapFeatures),
 	newSeaLevel(newSeaLevel),
 	levelType(levelType),
 	startingBonusItems(false)
@@ -140,7 +140,7 @@ bool LevelSettings::hasStartingBonusItems()
 	return startingBonusItems;
 }
 
-__int64 LevelSettings::getSeed()
+int64_t LevelSettings::getSeed()
 {
 	return seed;
 }
@@ -155,7 +155,7 @@ bool LevelSettings::isHardcore()
 	return hardcore;
 }
 
-LevelType *LevelSettings::getLevelType() 
+LevelType *LevelSettings::getLevelType()
 {
 	return levelType;
 }

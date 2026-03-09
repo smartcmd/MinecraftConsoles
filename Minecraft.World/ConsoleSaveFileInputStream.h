@@ -17,7 +17,7 @@ public:
 	virtual int read(byteArray b);
 	virtual int read(byteArray b, unsigned int offset, unsigned int length);
 	virtual void close();
-	virtual __int64 skip(__int64 n) { return n; }
+	virtual int64_t skip(int64_t n) { return n; }
 
 private:
 	ConsoleSaveFile *m_saveFile;

@@ -68,7 +68,7 @@ typedef unsigned short    hfloat;
 hfloat convertFloatToHFloat(float f)
 {
 	unsigned int    x = *(unsigned int *)&f;
-	unsigned int    sign = (unsigned short)(x >> 31);
+	unsigned int    sign = static_cast<unsigned short>(x >> 31);
 	unsigned int    mantissa;
 	unsigned int    exp;
 	hfloat          hf;
@@ -90,8 +90,8 @@ hfloat convertFloatToHFloat(float f)
 			// 16-bit half-float representation stores number as Inf
 			mantissa = 0;
 		}
-		hf = (((hfloat)sign) << 15) | (hfloat)(HALF_FLOAT_MAX_BIASED_EXP) |
-			(hfloat)(mantissa >> 13);
+		hf = (static_cast<hfloat>(sign) << 15) | static_cast<hfloat>(HALF_FLOAT_MAX_BIASED_EXP) |
+			static_cast<hfloat>(mantissa >> 13);
 	}
 	// check if exponent is <= -15
 	else if (exp <= HALF_FLOAT_MIN_BIASED_EXP_AS_SINGLE_FP_EXP)
@@ -101,13 +101,13 @@ hfloat convertFloatToHFloat(float f)
 		exp = (HALF_FLOAT_MIN_BIASED_EXP_AS_SINGLE_FP_EXP - exp) >> 23;
 		mantissa >>= (14 + exp);
 
-		hf = (((hfloat)sign) << 15) | (hfloat)(mantissa);
+		hf = (static_cast<hfloat>(sign) << 15) | static_cast<hfloat>(mantissa);
 	}
 	else
 	{
-		hf = (((hfloat)sign) << 15) |
-			(hfloat)((exp - HALF_FLOAT_MIN_BIASED_EXP_AS_SINGLE_FP_EXP) >> 13) |
-			(hfloat)(mantissa >> 13);
+		hf = (static_cast<hfloat>(sign) << 15) |
+			static_cast<hfloat>((exp - HALF_FLOAT_MIN_BIASED_EXP_AS_SINGLE_FP_EXP) >> 13) |
+			static_cast<hfloat>(mantissa >> 13);
 	}
 
 	return hf;
@@ -115,8 +115,8 @@ hfloat convertFloatToHFloat(float f)
 
 float convertHFloatToFloat(hfloat hf)
 {
-	unsigned int    sign = (unsigned int)(hf >> 15);
-	unsigned int    mantissa = (unsigned int)(hf & ((1 << 10) - 1));
+	unsigned int    sign = static_cast<unsigned int>(hf >> 15);
+	unsigned int    mantissa = static_cast<unsigned int>(hf & ((1 << 10) - 1));
 	unsigned int    exp = (unsigned int)(hf & HALF_FLOAT_MAX_BIASED_EXP);
 	unsigned int    f;
 
@@ -170,7 +170,7 @@ float convertHFloatToFloat(hfloat hf)
 // 
 Tesselator_SPU *Tesselator_SPU::getInstance()
 {
-	return NULL;
+	return nullptr;
 // 	return (Tesselator_SPU *)TlsGetValue(tlsIdx);
 }
 
@@ -329,12 +329,12 @@ void Tesselator_SPU::tex2(int tex2)
 
 void Tesselator_SPU::color(float r, float g, float b)
 {
-    color((int) (r * 255), (int) (g * 255), (int) (b * 255));
+    color(static_cast<int>(r * 255), static_cast<int>(g * 255), static_cast<int>(b * 255));
 }
 
 void Tesselator_SPU::color(float r, float g, float b, float a)
 {
-    color((int) (r * 255), (int) (g * 255), (int) (b * 255), (int) (a * 255));
+    color(static_cast<int>(r * 255), static_cast<int>(g * 255), static_cast<int>(b * 255), static_cast<int>(a * 255));
 }
 
 void Tesselator_SPU::color(int r, int g, int b)
@@ -539,7 +539,7 @@ void Tesselator_SPU::vertex(float x, float y, float z)
 	// see comments in packCompactQuad() for exact format
 	if( useCompactFormat360 )
 	{
-		unsigned int ucol = (unsigned int)col;
+		unsigned int ucol = static_cast<unsigned int>(col);
 
 #ifdef _XBOX
 		// Pack as 4:4:4 RGB_
@@ -564,7 +564,7 @@ void Tesselator_SPU::vertex(float x, float y, float z)
 		unsigned short packedcol = ((col & 0xf8000000 ) >> 16 ) |
 								   ((col & 0x00fc0000 ) >> 13 ) |
 								   ((col & 0x0000f800 ) >> 11 );
-		int ipackedcol = ((int)packedcol) & 0xffff;	// 0 to 65535 range
+		int ipackedcol = static_cast<int>(packedcol) & 0xffff;	// 0 to 65535 range
 
 		ipackedcol -= 32768;	// -32768 to 32767 range
 		ipackedcol &= 0xffff;
@@ -597,12 +597,12 @@ void Tesselator_SPU::vertex(float x, float y, float z)
 		pShortData[7] = ((INT_ROUND(tex2V * (8192.0f/256.0f)))&0xffff);
 		incData(4);
 #else
-		pShortData[0] = (((int)((x + xo ) * 1024.0f))&0xffff);
-		pShortData[1] = (((int)((y + yo ) * 1024.0f))&0xffff);
-		pShortData[2] = (((int)((z + zo ) * 1024.0f))&0xffff);
+		pShortData[0] = (static_cast<int>((x + xo) * 1024.0f)&0xffff);
+		pShortData[1] = (static_cast<int>((y + yo) * 1024.0f)&0xffff);
+		pShortData[2] = (static_cast<int>((z + zo) * 1024.0f)&0xffff);
 		pShortData[3] = ipackedcol;
-		pShortData[4] = (((int)(uu * 8192.0f))&0xffff);
-		pShortData[5] = (((int)(v * 8192.0f))&0xffff);
+		pShortData[4] = (static_cast<int>(uu * 8192.0f)&0xffff);
+		pShortData[5] = (static_cast<int>(v * 8192.0f)&0xffff);
 		pShortData[6] = ((int16_t*)&_tex2)[0];
 		pShortData[7] = ((int16_t*)&_tex2)[1];
 		incData(4);
@@ -723,9 +723,9 @@ void Tesselator_SPU::noColor()
 void Tesselator_SPU::normal(float x, float y, float z)
 {
     hasNormal = true;
-    byte xx = (byte) (x * 127);
-    byte yy = (byte) (y * 127);
-    byte zz = (byte) (z * 127);
+    byte xx = static_cast<byte>(x * 127);
+    byte yy = static_cast<byte>(y * 127);
+    byte zz = static_cast<byte>(z * 127);
 
     _normal = (xx & 0xff) | ((yy & 0xff) << 8) | ((zz & 0xff) << 16);
 }

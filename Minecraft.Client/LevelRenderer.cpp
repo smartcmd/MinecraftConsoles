@@ -61,6 +61,7 @@
 #include "..\Minecraft.World\SoundTypes.h"
 #include "FrustumCuller.h"
 #include "..\Minecraft.World\BasicTypeContainers.h"
+#include "Common/UI/UIScene_SettingsGraphicsMenu.h"	
 
 //#define DISABLE_SPU_CODE
 
@@ -111,12 +112,12 @@ const int LevelRenderer::DIMENSION_OFFSETS[3] = { 0, (80 * 80 * CHUNK_Y_COUNT) ,
 
 LevelRenderer::LevelRenderer(Minecraft *mc, Textures *textures)
 {
-	breakingTextures = NULL;
+	breakingTextures = nullptr;
 
 	for( int i = 0; i < 4; i++ )
 	{
-		level[i] = NULL;
-		tileRenderer[i] = NULL;
+		level[i] = nullptr;
+		tileRenderer[i] = nullptr;
 		xOld[i] = -9999;
 		yOld[i] = -9999;
 		zOld[i] = -9999;
@@ -142,7 +143,7 @@ LevelRenderer::LevelRenderer(Minecraft *mc, Textures *textures)
 	totalChunks= offscreenChunks= occludedChunks= renderedChunks= emptyChunks = 0;
 	for( int i = 0; i < 4; i++ )
 	{
-		//		sortedChunks[i] = NULL;	// 4J - removed - not sorting our chunks anymore
+		//		sortedChunks[i] = nullptr;	// 4J - removed - not sorting our chunks anymore
 		chunks[i] = ClipChunkArray();
 		lastPlayerCount[i] = 0;
 	}
@@ -184,16 +185,16 @@ LevelRenderer::LevelRenderer(Minecraft *mc, Textures *textures)
 	float yy;
 	int s = 64;
 	int d = 256 / s + 2;
-	yy = (float) 16;
+	yy = static_cast<float>(16);
 	for (int xx = -s * d; xx <= s * d; xx += s)
 	{
 		for (int zz = -s * d; zz <= s * d; zz += s)
 		{
 			t->begin();
-			t->vertex((float)(xx + 0), (float)( yy), (float)( zz + 0));
-			t->vertex((float)(xx + s), (float)( yy), (float)( zz + 0));
-			t->vertex((float)(xx + s), (float)( yy), (float)( zz + s));
-			t->vertex((float)(xx + 0), (float)( yy), (float)( zz + s));
+			t->vertex(static_cast<float>(xx + 0), (float)( yy), static_cast<float>(zz + 0));
+			t->vertex(static_cast<float>(xx + s), (float)( yy), static_cast<float>(zz + 0));
+			t->vertex(static_cast<float>(xx + s), (float)( yy), static_cast<float>(zz + s));
+			t->vertex(static_cast<float>(xx + 0), (float)( yy), static_cast<float>(zz + s));
 			t->end();
 		}
 	}
@@ -201,16 +202,16 @@ LevelRenderer::LevelRenderer(Minecraft *mc, Textures *textures)
 
 	darkList = starList + 2;
 	glNewList(darkList, GL_COMPILE);
-	yy = -(float) 16;
+	yy = -static_cast<float>(16);
 	t->begin();
 	for (int xx = -s * d; xx <= s * d; xx += s)
 	{
 		for (int zz = -s * d; zz <= s * d; zz += s)
 		{
-			t->vertex((float)(xx + s), (float)( yy), (float)( zz + 0));
-			t->vertex((float)(xx + 0), (float)( yy), (float)( zz + 0));
-			t->vertex((float)(xx + 0), (float)( yy), (float)( zz + s));
-			t->vertex((float)(xx + s), (float)( yy), (float)( zz + s));
+			t->vertex(static_cast<float>(xx + s), (float)( yy), static_cast<float>(zz + 0));
+			t->vertex(static_cast<float>(xx + 0), (float)( yy), static_cast<float>(zz + 0));
+			t->vertex(static_cast<float>(xx + 0), (float)( yy), static_cast<float>(zz + s));
+			t->vertex(static_cast<float>(xx + s), (float)( yy), static_cast<float>(zz + s));
 		}
 	}
 	t->end();
@@ -312,7 +313,7 @@ void LevelRenderer::renderStars()
 				double yo = _yo;
 				double zo = _zo * ySin + _xo * yCos;
 
-				t->vertex((float)(xp + xo), (float)( yp + yo), (float)( zp + zo));
+				t->vertex(static_cast<float>(xp + xo), static_cast<float>(yp + yo), static_cast<float>(zp + zo));
 			}
 		}
 	}
@@ -323,7 +324,7 @@ void LevelRenderer::renderStars()
 
 void LevelRenderer::setLevel(int playerIndex, MultiPlayerLevel *level)
 {
-	if (this->level[playerIndex] != NULL)
+	if (this->level[playerIndex] != nullptr)
 	{
 		// Remove listener for this level if this is the last player referencing it
 		Level *prevLevel = this->level[playerIndex];
@@ -343,12 +344,12 @@ void LevelRenderer::setLevel(int playerIndex, MultiPlayerLevel *level)
 	zOld[playerIndex] = -9999;
 
 	this->level[playerIndex] = level;
-	if( tileRenderer[playerIndex] != NULL )
+	if( tileRenderer[playerIndex] != nullptr )
 	{
 		delete tileRenderer[playerIndex];
 	}
 	tileRenderer[playerIndex] = new TileRenderer(level);
-	if (level != NULL)
+	if (level != nullptr)
 	{
 		// If we're the only player referencing this level, add a new listener for it
 		int refCount = 0;
@@ -366,7 +367,7 @@ void LevelRenderer::setLevel(int playerIndex, MultiPlayerLevel *level)
 	else
 	{
 		//		printf("NULLing player %d, chunks @ 0x%x\n",playerIndex,chunks[playerIndex]);
-		if( chunks[playerIndex].data != NULL )
+		if( chunks[playerIndex].data != nullptr )
 		{
 			for (unsigned int i = 0; i < chunks[playerIndex].length; i++)
 			{
@@ -374,21 +375,21 @@ void LevelRenderer::setLevel(int playerIndex, MultiPlayerLevel *level)
 				delete chunks[playerIndex][i].chunk;
 			}
 			delete chunks[playerIndex].data;
-			chunks[playerIndex].data = NULL;
+			chunks[playerIndex].data = nullptr;
 			chunks[playerIndex].length = 0;
 			//			delete sortedChunks[playerIndex];	// 4J - removed - not sorting our chunks anymore
-			//			sortedChunks[playerIndex] = NULL;	// 4J - removed - not sorting our chunks anymore
+			//			sortedChunks[playerIndex] = nullptr;	// 4J - removed - not sorting our chunks anymore
 		}
 
 		// 4J Stu - If we do this for splitscreen players leaving, then all the tile entities in the world dissappear
-		// We should only do this when actually exiting the game, so only when the primary player sets there level to NULL
+		// We should only do this when actually exiting the game, so only when the primary player sets there level to nullptr
 		if(playerIndex == ProfileManager.GetPrimaryPad()) renderableTileEntities.clear();
 	}
 }
 
 void LevelRenderer::AddDLCSkinsToMemTextures()
 {
-	for(int i=0;i<app.vSkinNames.size();i++)
+	for(size_t i=0;i<app.vSkinNames.size();i++)
 	{
 		textures->addMemTexture(app.vSkinNames[i], new MobSkinMemTextureProcessor());
 	}
@@ -416,7 +417,7 @@ void LevelRenderer::allChanged(int playerIndex)
 	// If this CS is entered before DisableUpdateThread is called then (on 360 at least) we can get a
 	// deadlock when starting a game in splitscreen.
 	//EnterCriticalSection(&m_csDirtyChunks);
-	if( level == NULL )
+	if( level == nullptr )
 	{
 		return;
 	}
@@ -426,8 +427,11 @@ void LevelRenderer::allChanged(int playerIndex)
 	Tile::leaves->setFancy(mc->options->fancyGraphics);
 	lastViewDistance = mc->options->viewDistance;
 
+	int realviewDistance = UIScene_SettingsGraphicsMenu::LevelToDistance(3 - mc->options->viewDistance) + 2;
+	int realrenderArea = (realviewDistance * realviewDistance * 4);
+
 	// Calculate size of area we can render based on number of players we need to render for
-	int dist = (int)sqrtf( (float)PLAYER_RENDER_AREA / (float)activePlayers() );
+	int dist = static_cast<int>(sqrtf(static_cast<float>(realrenderArea) / static_cast<float>(activePlayers())));
 
 	// AP - poor little Vita just can't cope with such a big area
 #ifdef __PSVITA__
@@ -440,7 +444,7 @@ void LevelRenderer::allChanged(int playerIndex)
 	yChunks = Level::maxBuildHeight / CHUNK_SIZE;
 	zChunks = dist;
 
-	if( chunks[playerIndex].data != NULL )
+	if( chunks[playerIndex].data != nullptr )
 	{
 		for (unsigned int i = 0; i < chunks[playerIndex].length; i++)
 		{
@@ -463,7 +467,7 @@ void LevelRenderer::allChanged(int playerIndex)
 	yMaxChunk = yChunks;
 	zMaxChunk = zChunks;
 
-	// 4J removed - we now only fully clear this on exiting the game (setting level to NULL). Apart from that, the chunk rebuilding is responsible for maintaining this
+	// 4J removed - we now only fully clear this on exiting the game (setting level to nullptr). Apart from that, the chunk rebuilding is responsible for maintaining this
 	//	renderableTileEntities.clear();
 
 	for (int x = 0; x < xChunks; x++)
@@ -483,10 +487,10 @@ void LevelRenderer::allChanged(int playerIndex)
 	}
 	nonStackDirtyChunksAdded();
 
-	if (level != NULL)
+	if (level != nullptr)
 	{
 		shared_ptr<Entity> player = mc->cameraTargetPlayer;
-		if (player != NULL)
+		if (player != nullptr)
 		{
 			this->resortChunks(Mth::floor(player->x), Mth::floor(player->y), Mth::floor(player->z));
 			//			sort(sortedChunks[playerIndex]->begin(),sortedChunks[playerIndex]->end(), DistanceChunkSorter(player));	// 4J - removed - not sorting our chunks anymore
@@ -503,6 +507,11 @@ void LevelRenderer::allChanged(int playerIndex)
 
 void LevelRenderer::renderEntities(Vec3 *cam, Culler *culler, float a)
 {
+	if (mc == nullptr || mc->player == nullptr)
+	{
+		return;
+	}
+
 	int playerIndex = mc->player->GetXboxPad();	// 4J added
 
 	// 4J Stu - Set these up every time, even when not rendering as other things (like particle render) may depend on it for those frames.
@@ -520,6 +529,10 @@ void LevelRenderer::renderEntities(Vec3 *cam, Culler *culler, float a)
 	culledEntities = 0;
 
 	shared_ptr<Entity> player = mc->cameraTargetPlayer;
+	if (player == nullptr)
+	{
+		return;
+	}
 
 	EntityRenderDispatcher::xOff = (player->xOld + (player->x - player->xOld) * a);
 	EntityRenderDispatcher::yOff = (player->yOld + (player->y - player->yOld) * a);
@@ -531,7 +544,7 @@ void LevelRenderer::renderEntities(Vec3 *cam, Culler *culler, float a)
 	mc->gameRenderer->turnOnLightLayer(a);		// 4J - brought forward from 1.8.2
 
 	vector<shared_ptr<Entity> > entities = level[playerIndex]->getAllEntities();
-	totalEntities = (int)entities.size();
+	totalEntities = static_cast<int>(entities.size());
 
 	for (auto& entity : level[playerIndex]->globalEntities)
 	{
@@ -541,13 +554,14 @@ void LevelRenderer::renderEntities(Vec3 *cam, Culler *culler, float a)
 
 	for (auto& entity : entities)
 	{
-		bool shouldRender = (entity->shouldRender(cam) && (entity->noCulling || culler->isVisible(entity->bb)));
+		bool isPlayerVehicle = (entity == mc->cameraTargetPlayer->riding);
+		bool shouldRender = (entity->shouldRender(cam) && (entity->noCulling || isPlayerVehicle || culler->isVisible(entity->bb)));
 
 		// Render the mob if the mob's leash holder is within the culler
 		if ( !shouldRender && entity->instanceof(eTYPE_MOB) )
 		{
 			shared_ptr<Mob> mob = dynamic_pointer_cast<Mob>(entity);
-			if ( mob->isLeashed() && (mob->getLeashHolder() != NULL) )
+			if ( mob->isLeashed() && (mob->getLeashHolder() != nullptr) )
 			{
 				shared_ptr<Entity> leashHolder = mob->getLeashHolder();
 				shouldRender = culler->isVisible(leashHolder->bb);
@@ -729,7 +743,7 @@ int LevelRenderer::render(shared_ptr<LivingEntity> player, int layer, double alp
 	}
 	Lighting::turnOff();
 
-	int count = renderChunks(0, (int)chunks[playerIndex].length, layer, alpha);
+	int count = renderChunks(0, static_cast<int>(chunks[playerIndex].length), layer, alpha);
 
 	return count;
 
@@ -754,18 +768,27 @@ int compare (const void * a, const void * b)
 
 int LevelRenderer::renderChunks(int from, int to, int layer, double alpha)
 {
+	if (mc == nullptr || mc->player == nullptr)
+	{
+		return 0;
+	}
+
 	int playerIndex = mc->player->GetXboxPad();	// 4J added
 
 #if 1
 	// 4J - cut down version, we're not using offsetted render lists, or a sorted chunk list, anymore
 	mc->gameRenderer->turnOnLightLayer(alpha);		// 4J - brought forward from 1.8.2
 	shared_ptr<LivingEntity> player = mc->cameraTargetPlayer;
+	if (player == nullptr)
+	{
+		return 0;
+	}
 	double xOff = player->xOld + (player->x - player->xOld) * alpha;
 	double yOff = player->yOld + (player->y - player->yOld) * alpha;
 	double zOff = player->zOld + (player->z - player->zOld) * alpha;
 
 	glPushMatrix();
-	glTranslatef((float)-xOff, (float)-yOff, (float)-zOff);
+	glTranslatef(static_cast<float>(-xOff), static_cast<float>(-yOff), static_cast<float>(-zOff));
 
 #ifdef __PSVITA__
 	// AP - also set the camera position so we can work out if a chunk is fogged or not
@@ -990,9 +1013,9 @@ void LevelRenderer::renderSky(float alpha)
 
 	int playerIndex = mc->player->GetXboxPad();
 	Vec3 *sc = level[playerIndex]->getSkyColor(mc->cameraTargetPlayer, alpha);
-	float sr = (float) sc->x;
-	float sg = (float) sc->y;
-	float sb = (float) sc->z;
+	float sr = static_cast<float>(sc->x);
+	float sg = static_cast<float>(sc->y);
+	float sb = static_cast<float>(sc->z);
 
 	if (mc->options->anaglyph3d)
 	{
@@ -1027,7 +1050,7 @@ void LevelRenderer::renderSky(float alpha)
 	Lighting::turnOff();
 
 	float *c = level[playerIndex]->dimension->getSunriseColor(level[playerIndex]->getTimeOfDay(alpha), alpha);
-	if (c != NULL)
+	if (c != nullptr)
 	{
 		glDisable(GL_TEXTURE_2D);
 		glShadeModel(GL_SMOOTH);
@@ -1055,7 +1078,7 @@ void LevelRenderer::renderSky(float alpha)
 			t->begin(GL_TRIANGLE_FAN);
 			t->color(r, g, b, c[3]);
 
-			t->vertex((float)(0), (float)( 100), (float)( 0));
+			t->vertex(static_cast<float>(0), static_cast<float>(100), static_cast<float>(0));
 			int steps = 16;
 			t->color(c[0], c[1], c[2], 0.0f);
 			for (int i = 0; i <= steps; i++)
@@ -1089,10 +1112,10 @@ void LevelRenderer::renderSky(float alpha)
 		textures->bindTexture(&SUN_LOCATION);
 		MemSect(0);
 		t->begin();
-		t->vertexUV((float)(-ss), (float)( 100), (float)( -ss), (float)( 0), (float)( 0));
-		t->vertexUV((float)(+ss), (float)( 100), (float)( -ss), (float)( 1), (float)( 0));
-		t->vertexUV((float)(+ss), (float)( 100), (float)( +ss), (float)( 1), (float)( 1));
-		t->vertexUV((float)(-ss), (float)( 100), (float)( +ss), (float)( 0), (float)( 1));
+		t->vertexUV((float)(-ss), static_cast<float>(100), (float)( -ss), static_cast<float>(0), static_cast<float>(0));
+		t->vertexUV((float)(+ss), static_cast<float>(100), (float)( -ss), static_cast<float>(1), static_cast<float>(0));
+		t->vertexUV((float)(+ss), static_cast<float>(100), (float)( +ss), static_cast<float>(1), static_cast<float>(1));
+		t->vertexUV((float)(-ss), static_cast<float>(100), (float)( +ss), static_cast<float>(0), static_cast<float>(1));
 		t->end();
 
 		ss = 20;
@@ -1137,7 +1160,7 @@ void LevelRenderer::renderSky(float alpha)
 	if (yy < 0)
 	{
 		glPushMatrix();
-		glTranslatef(0, -(float) (-12), 0);
+		glTranslatef(0, -static_cast<float>(-12), 0);
 		glCallList(darkList);
 		glPopMatrix();
 
@@ -1188,7 +1211,7 @@ void LevelRenderer::renderSky(float alpha)
 		glColor3f(sr, sg, sb);
 	}
 	glPushMatrix();
-	glTranslatef(0, -(float) (yy - 16), 0);
+	glTranslatef(0, -static_cast<float>(yy - 16), 0);
 	glCallList(darkList);
 	glPopMatrix();
 	glEnable(GL_TEXTURE_2D);
@@ -1209,9 +1232,9 @@ void LevelRenderer::renderHaloRing(float alpha)
 	int playerIndex = mc->player->GetXboxPad();
 
 	Vec3 *sc = level[playerIndex]->getSkyColor(mc->cameraTargetPlayer, alpha);
-	float sr = (float) sc->x;
-	float sg = (float) sc->y;
-	float sb = (float) sc->z;
+	float sr = static_cast<float>(sc->x);
+	float sg = static_cast<float>(sc->y);
+	float sb = static_cast<float>(sc->z);
 
 	// Rough lumninance calculation
 	float Y = (sr+sr+sb+sg+sg+sg)/6;
@@ -1274,7 +1297,7 @@ void LevelRenderer::renderClouds(float alpha)
 		}
 	}
 	glDisable(GL_CULL_FACE);
-	float yOffs = (float) (mc->cameraTargetPlayer->yOld + (mc->cameraTargetPlayer->y - mc->cameraTargetPlayer->yOld) * alpha);
+	float yOffs = static_cast<float>(mc->cameraTargetPlayer->yOld + (mc->cameraTargetPlayer->y - mc->cameraTargetPlayer->yOld) * alpha);
 	int s = 32;
 	int d = 256 / s;
 	Tesselator *t = Tesselator::getInstance();
@@ -1284,9 +1307,9 @@ void LevelRenderer::renderClouds(float alpha)
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 	Vec3 *cc = level[playerIndex]->getCloudColor(alpha);
-	float cr = (float) cc->x;
-	float cg = (float) cc->y;
-	float cb = (float) cc->z;
+	float cr = static_cast<float>(cc->x);
+	float cg = static_cast<float>(cc->y);
+	float cb = static_cast<float>(cc->z);
 
 	if (mc->options->anaglyph3d)
 	{
@@ -1312,8 +1335,8 @@ void LevelRenderer::renderClouds(float alpha)
 	zo -= zOffs * 2048;
 
 	float yy = (float) (level[playerIndex]->dimension->getCloudHeight() - yOffs + 0.33f);
-	float uo = (float) (xo * scale);
-	float vo = (float) (zo * scale);
+	float uo = static_cast<float>(xo * scale);
+	float vo = static_cast<float>(zo * scale);
 	t->begin();
 
 	t->color(cr, cg, cb, 0.8f);
@@ -1321,10 +1344,10 @@ void LevelRenderer::renderClouds(float alpha)
 	{
 		for (int zz = -s * d; zz < +s * d; zz += s)
 		{
-			t->vertexUV((float)(xx + 0), (float)( yy), (float)( zz + s), (float)( (xx + 0) * scale + uo), (float)( (zz + s) * scale + vo));
-			t->vertexUV((float)(xx + s), (float)( yy), (float)( zz + s), (float)( (xx + s) * scale + uo), (float)( (zz + s) * scale + vo));
-			t->vertexUV((float)(xx + s), (float)( yy), (float)( zz + 0), (float)( (xx + s) * scale + uo), (float)( (zz + 0) * scale + vo));
-			t->vertexUV((float)(xx + 0), (float)( yy), (float)( zz + 0), (float)( (xx + 0) * scale + uo), (float)( (zz + 0) * scale + vo));
+			t->vertexUV(static_cast<float>(xx + 0), (float)( yy), static_cast<float>(zz + s), (float)( (xx + 0) * scale + uo), (float)( (zz + s) * scale + vo));
+			t->vertexUV(static_cast<float>(xx + s), (float)( yy), static_cast<float>(zz + s), (float)( (xx + s) * scale + uo), (float)( (zz + s) * scale + vo));
+			t->vertexUV(static_cast<float>(xx + s), (float)( yy), static_cast<float>(zz + 0), (float)( (xx + s) * scale + uo), (float)( (zz + 0) * scale + vo));
+			t->vertexUV(static_cast<float>(xx + 0), (float)( yy), static_cast<float>(zz + 0), (float)( (xx + 0) * scale + uo), (float)( (zz + 0) * scale + vo));
 		}
 	}
 	t->end();
@@ -1371,13 +1394,13 @@ void LevelRenderer::createCloudMesh()
 			{
 				for( int xt = 0; xt < D; xt++ )
 				{
-					float u = (((float) xt ) + 0.5f ) / 256.0f;
-					float v = (((float) zt ) + 0.5f ) / 256.0f;
-					float x0 = (float)xt;
+					float u = (static_cast<float>(xt) + 0.5f ) / 256.0f;
+					float v = (static_cast<float>(zt) + 0.5f ) / 256.0f;
+					float x0 = static_cast<float>(xt);
 					float x1 = x0 + 1.0f;
 					float y0 = 0;
 					float y1 = h;
-					float z0 = (float)zt;
+					float z0 = static_cast<float>(zt);
 					float z1 = z0 + 1.0f;
 					t->color(0.7f, 0.7f, 0.7f, 0.8f);
 					t->normal(0, -1, 0);
@@ -1396,13 +1419,13 @@ void LevelRenderer::createCloudMesh()
 			{
 				for( int xt = 0; xt < D; xt++ )
 				{
-					float u = (((float) xt ) + 0.5f ) / 256.0f;
-					float v = (((float) zt ) + 0.5f ) / 256.0f;
-					float x0 = (float)xt;
+					float u = (static_cast<float>(xt) + 0.5f ) / 256.0f;
+					float v = (static_cast<float>(zt) + 0.5f ) / 256.0f;
+					float x0 = static_cast<float>(xt);
 					float x1 = x0 + 1.0f;
 					float y0 = 0;
 					float y1 = h;
-					float z0 = (float)zt;
+					float z0 = static_cast<float>(zt);
 					float z1 = z0 + 1.0f;
 					t->color(1.0f, 1.0f, 1.0f, 0.8f);
 					t->normal(0, 1, 0);
@@ -1421,13 +1444,13 @@ void LevelRenderer::createCloudMesh()
 			{
 				for( int xt = 0; xt < D; xt++ )
 				{
-					float u = (((float) xt ) + 0.5f ) / 256.0f;
-					float v = (((float) zt ) + 0.5f ) / 256.0f;
-					float x0 = (float)xt;
+					float u = (static_cast<float>(xt) + 0.5f ) / 256.0f;
+					float v = (static_cast<float>(zt) + 0.5f ) / 256.0f;
+					float x0 = static_cast<float>(xt);
 					float x1 = x0 + 1.0f;
 					float y0 = 0;
 					float y1 = h;
-					float z0 = (float)zt;
+					float z0 = static_cast<float>(zt);
 					float z1 = z0 + 1.0f;
 					t->color(0.9f, 0.9f, 0.9f, 0.8f);
 					t->normal(-1, 0, 0);
@@ -1446,13 +1469,13 @@ void LevelRenderer::createCloudMesh()
 			{
 				for( int xt = 0; xt < D; xt++ )
 				{
-					float u = (((float) xt ) + 0.5f ) / 256.0f;
-					float v = (((float) zt ) + 0.5f ) / 256.0f;
-					float x0 = (float)xt;
+					float u = (static_cast<float>(xt) + 0.5f ) / 256.0f;
+					float v = (static_cast<float>(zt) + 0.5f ) / 256.0f;
+					float x0 = static_cast<float>(xt);
 					float x1 = x0 + 1.0f;
 					float y0 = 0;
 					float y1 = h;
-					float z0 = (float)zt;
+					float z0 = static_cast<float>(zt);
 					float z1 = z0 + 1.0f;
 					t->color(0.9f, 0.9f, 0.9f, 0.8f);
 					t->normal(1, 0, 0);
@@ -1471,13 +1494,13 @@ void LevelRenderer::createCloudMesh()
 			{
 				for( int xt = 0; xt < D; xt++ )
 				{
-					float u = (((float) xt ) + 0.5f ) / 256.0f;
-					float v = (((float) zt ) + 0.5f ) / 256.0f;
-					float x0 = (float)xt;
+					float u = (static_cast<float>(xt) + 0.5f ) / 256.0f;
+					float v = (static_cast<float>(zt) + 0.5f ) / 256.0f;
+					float x0 = static_cast<float>(xt);
 					float x1 = x0 + 1.0f;
 					float y0 = 0;
 					float y1 = h;
-					float z0 = (float)zt;
+					float z0 = static_cast<float>(zt);
 					float z1 = z0 + 1.0f;
 					t->color(0.8f, 0.8f, 0.8f, 0.8f);
 					t->normal(-1, 0, 0);
@@ -1496,13 +1519,13 @@ void LevelRenderer::createCloudMesh()
 			{
 				for( int xt = 0; xt < D; xt++ )
 				{
-					float u = (((float) xt ) + 0.5f ) / 256.0f;
-					float v = (((float) zt ) + 0.5f ) / 256.0f;
-					float x0 = (float)xt;
+					float u = (static_cast<float>(xt) + 0.5f ) / 256.0f;
+					float v = (static_cast<float>(zt) + 0.5f ) / 256.0f;
+					float x0 = static_cast<float>(xt);
 					float x1 = x0 + 1.0f;
 					float y0 = 0;
 					float y1 = h;
-					float z0 = (float)zt;
+					float z0 = static_cast<float>(zt);
 					float z1 = z0 + 1.0f;
 					t->color(0.8f, 0.8f, 0.8f, 0.8f);
 					t->normal(1, 0, 0);
@@ -1527,7 +1550,7 @@ void LevelRenderer::renderAdvancedClouds(float alpha)
 	// 4J - most of our viewports are now rendered with no clip planes but using stencilling to limit the area drawn to. Clouds have a relatively large fill area compared to
 	// the number of vertices that they have, and so enabling clipping here to try and reduce fill rate cost.
 	RenderManager.StateSetEnableViewportClipPlanes(true);
-	float yOffs = (float) (mc->cameraTargetPlayer->yOld + (mc->cameraTargetPlayer->y - mc->cameraTargetPlayer->yOld) * alpha);
+	float yOffs = static_cast<float>(mc->cameraTargetPlayer->yOld + (mc->cameraTargetPlayer->y - mc->cameraTargetPlayer->yOld) * alpha);
 	Tesselator *t = Tesselator::getInstance();
 	int playerIndex = mc->player->GetXboxPad();
 
@@ -1577,9 +1600,9 @@ void LevelRenderer::renderAdvancedClouds(float alpha)
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 	Vec3 *cc = level[playerIndex]->getCloudColor(alpha);
-	float cr = (float) cc->x;
-	float cg = (float) cc->y;
-	float cb = (float) cc->z;
+	float cr = static_cast<float>(cc->x);
+	float cg = static_cast<float>(cc->y);
+	float cb = static_cast<float>(cc->z);
 
 	if (mc->options->anaglyph3d)
 	{
@@ -1592,19 +1615,19 @@ void LevelRenderer::renderAdvancedClouds(float alpha)
 		cb = cbb;
 	}
 
-	float uo = (float) (xo * 0);
-	float vo = (float) (zo * 0);
+	float uo = static_cast<float>(xo * 0);
+	float vo = static_cast<float>(zo * 0);
 
 	float scale = 1 / 256.0f;
 
-	uo = (float) (Mth::floor(xo)) * scale;
-	vo = (float) (Mth::floor(zo)) * scale;
+	uo = static_cast<float>(Mth::floor(xo)) * scale;
+	vo = static_cast<float>(Mth::floor(zo)) * scale;
 	// 4J - keep our UVs +ve - there's a small bug in the xbox GPU that incorrectly rounds small -ve UVs (between -1/(64*size) and 0) up to 0, which leaves gaps in our clouds...
 	while( uo < 1.0f ) uo += 1.0f;
 	while( vo < 1.0f ) vo += 1.0f;
 
-	float xoffs = (float) (xo - Mth::floor(xo));
-	float zoffs = (float) (zo - Mth::floor(zo));
+	float xoffs = static_cast<float>(xo - Mth::floor(xo));
+	float zoffs = static_cast<float>(zo - Mth::floor(zo));
 
 	int D = 8;
 
@@ -1634,8 +1657,8 @@ void LevelRenderer::renderAdvancedClouds(float alpha)
 				// 4J - reimplemented the clouds with full cube-per-texel geometry to get rid of seams. This is a huge amount more quads to render, so
 				// now using command buffers to render each section to cut CPU hit.
 #if 1
-				float xx = (float)(xPos * D);
-				float zz = (float)(zPos * D);
+				float xx = static_cast<float>(xPos * D);
+				float zz = static_cast<float>(zPos * D);
 				float xp = xx - xoffs;
 				float zp = zz - zoffs;
 
@@ -1813,7 +1836,7 @@ bool LevelRenderer::updateDirtyChunks()
 	std::list< std::pair<ClipChunk *, int> > nearestClipChunks;
 #endif
 
-	ClipChunk *nearChunk = NULL;			// Nearest chunk that is dirty
+	ClipChunk *nearChunk = nullptr;			// Nearest chunk that is dirty
 	int veryNearCount = 0;
 	int minDistSq = 0x7fffffff;		// Distances to this chunk
 
@@ -1828,7 +1851,7 @@ bool LevelRenderer::updateDirtyChunks()
 	}
 	throttle++;
 	*/
-	PIXAddNamedCounter(((float)memAlloc)/(1024.0f*1024.0f),"Command buffer allocations");
+	PIXAddNamedCounter(static_cast<float>(memAlloc)/(1024.0f*1024.0f),"Command buffer allocations");
 	bool onlyRebuild = ( memAlloc >= MAX_COMMANDBUFFER_ALLOCATIONS );
 	EnterCriticalSection(&m_csDirtyChunks);
 
@@ -1891,15 +1914,15 @@ bool LevelRenderer::updateDirtyChunks()
 			g_findNearestChunkDataIn.chunks[i] = (LevelRenderer_FindNearestChunk_DataIn::ClipChunk*)chunks[i].data;
 			g_findNearestChunkDataIn.chunkLengths[i] = chunks[i].length;
 			g_findNearestChunkDataIn.level[i] = level[i];
-			g_findNearestChunkDataIn.playerData[i].bValid = mc->localplayers[i] != NULL;
-			if(mc->localplayers[i] != NULL)
+			g_findNearestChunkDataIn.playerData[i].bValid = mc->localplayers[i] != nullptr;
+			if(mc->localplayers[i] != nullptr)
 			{
 				g_findNearestChunkDataIn.playerData[i].x = mc->localplayers[i]->x;
 				g_findNearestChunkDataIn.playerData[i].y = mc->localplayers[i]->y;
 				g_findNearestChunkDataIn.playerData[i].z = mc->localplayers[i]->z;
 
 			}
-			if(level[i] != NULL)
+			if(level[i] != nullptr)
 			{
 				g_findNearestChunkDataIn.multiplayerChunkCache[i].XZOFFSET = ((MultiPlayerChunkCache*)(level[i]->chunkSource))->XZOFFSET;
 				g_findNearestChunkDataIn.multiplayerChunkCache[i].XZSIZE = ((MultiPlayerChunkCache*)(level[i]->chunkSource))->XZSIZE;
@@ -1923,16 +1946,16 @@ bool LevelRenderer::updateDirtyChunks()
 		// Find nearest chunk that is dirty
 		for( int p = 0; p < XUSER_MAX_COUNT; p++ )
 		{
-			// It's possible that the localplayers member can be set to NULL on the main thread when a player chooses to exit the game
+			// It's possible that the localplayers member can be set to nullptr on the main thread when a player chooses to exit the game
 			// So take a reference to the player object now. As it is a shared_ptr it should live as long as we need it
 			shared_ptr<LocalPlayer> player = mc->localplayers[p];
-			if( player == NULL ) continue;
-			if( chunks[p].data == NULL ) continue;
-			if( level[p] == NULL ) continue;
+			if( player == nullptr ) continue;
+			if( chunks[p].data == nullptr ) continue;
+			if( level[p] == nullptr ) continue;
 			if( chunks[p].length != xChunks * zChunks * CHUNK_Y_COUNT ) continue;
-			int px = (int)player->x;
-			int py = (int)player->y;
-			int pz = (int)player->z;
+			int px = static_cast<int>(player->x);
+			int py = static_cast<int>(player->y);
+			int pz = static_cast<int>(player->z);
 
 			//			app.DebugPrintf("!! %d %d %d, %d %d %d {%d,%d} ",px,py,pz,stackChunkDirty,nonStackChunkDirty,onlyRebuild, xChunks, zChunks);
 
@@ -2031,7 +2054,7 @@ bool LevelRenderer::updateDirtyChunks()
 
 
 
-	Chunk *chunk = NULL;
+	Chunk *chunk = nullptr;
 #ifdef _LARGE_WORLDS
 	if(!nearestClipChunks.empty())
 	{
@@ -2076,9 +2099,9 @@ bool LevelRenderer::updateDirtyChunks()
 			if( bAtomic || (index == 0) )
 			{
 				//PIXBeginNamedEvent(0,"Rebuilding near chunk %d %d %d",chunk->x, chunk->y, chunk->z);
-				//		static __int64 totalTime = 0;
-				//		static __int64 countTime = 0;
-				//		__int64 startTime = System::currentTimeMillis();
+				//		static int64_t totalTime = 0;
+				//		static int64_t countTime = 0;
+				//		int64_t startTime = System::currentTimeMillis();
 
 				//app.DebugPrintf("Rebuilding permaChunk %d\n", index);
 
@@ -2087,7 +2110,7 @@ bool LevelRenderer::updateDirtyChunks()
 				if(index !=0)
 					s_rebuildCompleteEvents->Set(index-1);		// MGH - this rebuild happening on the main thread instead, mark the thread it should have been running on as complete
 
-				//		__int64 endTime = System::currentTimeMillis();
+				//		int64_t endTime = System::currentTimeMillis();
 				//		totalTime += (endTime - startTime);
 				//		countTime++;
 				//		printf("%d : %f\n", countTime, (float)totalTime / (float)countTime);
@@ -2126,11 +2149,11 @@ bool LevelRenderer::updateDirtyChunks()
 		static Chunk permaChunk;
 		permaChunk.makeCopyForRebuild(chunk);
 		LeaveCriticalSection(&m_csDirtyChunks);
-		//		static __int64 totalTime = 0;
-		//		static __int64 countTime = 0;
-		//		__int64 startTime = System::currentTimeMillis();
+		//		static int64_t totalTime = 0;
+		//		static int64_t countTime = 0;
+		//		int64_t startTime = System::currentTimeMillis();
 		permaChunk.rebuild();
-		//		__int64 endTime = System::currentTimeMillis();
+		//		int64_t endTime = System::currentTimeMillis();
 		//		totalTime += (endTime - startTime);
 		//		countTime++;
 		//		printf("%d : %f\n", countTime, (float)totalTime / (float)countTime);
@@ -2182,7 +2205,7 @@ void LevelRenderer::renderHit(shared_ptr<Player> player, HitResult *h, int mode,
 	glEnable(GL_ALPHA_TEST);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE);
 	glColor4f(1, 1, 1, ((float) (Mth::sin(Minecraft::currentTimeMillis() / 100.0f)) * 0.2f + 0.4f) * 0.5f);
-	if (mode != 0 && inventoryItem != NULL)
+	if (mode != 0 && inventoryItem != nullptr)
 	{
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 		float br = (Mth::sin(Minecraft::currentTimeMillis() / 100.0f) * 0.2f + 0.8f);
@@ -2221,7 +2244,7 @@ void LevelRenderer::renderDestroyAnimation(Tesselator *t, shared_ptr<Player> pla
 		// so just add on a little bit of y to fix this. hacky hacky
 		t->offset((float)-xo, (float)-yo + 0.01f,(float) -zo);
 #else
-		t->offset((float)-xo, (float)-yo,(float) -zo);
+		t->offset(static_cast<float>(-xo), static_cast<float>(-yo),static_cast<float>(-zo));
 #endif
 		t->noColor();
 
@@ -2237,8 +2260,8 @@ void LevelRenderer::renderDestroyAnimation(Tesselator *t, shared_ptr<Player> pla
 			{
 				int iPad = mc->player->GetXboxPad();	// 4J added
 				int tileId = level[iPad]->getTile(block->getX(), block->getY(), block->getZ());
-				Tile *tile = tileId > 0 ? Tile::tiles[tileId] : NULL;
-				if (tile == NULL) tile = Tile::stone;
+				Tile *tile = tileId > 0 ? Tile::tiles[tileId] : nullptr;
+				if (tile == nullptr) tile = Tile::stone;
 				tileRenderer[iPad]->tesselateInWorldFixedTexture(tile, block->getX(), block->getY(), block->getZ(), breakingTextures[block->getProgress()]);	// 4J renamed to differentiate from tesselateInWorld
 			}
 			++it;
@@ -2298,30 +2321,30 @@ void LevelRenderer::render(AABB *b)
 	Tesselator *t = Tesselator::getInstance();
 
 	t->begin(GL_LINE_STRIP);
-	t->vertex((float)(b->x0), (float)( b->y0), (float)( b->z0));
-	t->vertex((float)(b->x1), (float)( b->y0), (float)( b->z0));
-	t->vertex((float)(b->x1), (float)( b->y0), (float)( b->z1));
-	t->vertex((float)(b->x0), (float)( b->y0), (float)( b->z1));
-	t->vertex((float)(b->x0), (float)( b->y0), (float)( b->z0));
+	t->vertex(static_cast<float>(b->x0), static_cast<float>(b->y0), static_cast<float>(b->z0));
+	t->vertex(static_cast<float>(b->x1), static_cast<float>(b->y0), static_cast<float>(b->z0));
+	t->vertex(static_cast<float>(b->x1), static_cast<float>(b->y0), static_cast<float>(b->z1));
+	t->vertex(static_cast<float>(b->x0), static_cast<float>(b->y0), static_cast<float>(b->z1));
+	t->vertex(static_cast<float>(b->x0), static_cast<float>(b->y0), static_cast<float>(b->z0));
 	t->end();
 
 	t->begin(GL_LINE_STRIP);
-	t->vertex((float)(b->x0), (float)( b->y1), (float)( b->z0));
-	t->vertex((float)(b->x1), (float)( b->y1), (float)( b->z0));
-	t->vertex((float)(b->x1), (float)( b->y1), (float)( b->z1));
-	t->vertex((float)(b->x0), (float)( b->y1), (float)( b->z1));
-	t->vertex((float)(b->x0), (float)( b->y1), (float)( b->z0));
+	t->vertex(static_cast<float>(b->x0), static_cast<float>(b->y1), static_cast<float>(b->z0));
+	t->vertex(static_cast<float>(b->x1), static_cast<float>(b->y1), static_cast<float>(b->z0));
+	t->vertex(static_cast<float>(b->x1), static_cast<float>(b->y1), static_cast<float>(b->z1));
+	t->vertex(static_cast<float>(b->x0), static_cast<float>(b->y1), static_cast<float>(b->z1));
+	t->vertex(static_cast<float>(b->x0), static_cast<float>(b->y1), static_cast<float>(b->z0));
 	t->end();
 
 	t->begin(GL_LINES);
-	t->vertex((float)(b->x0), (float)( b->y0), (float)( b->z0));
-	t->vertex((float)(b->x0), (float)( b->y1), (float)( b->z0));
-	t->vertex((float)(b->x1), (float)( b->y0), (float)( b->z0));
-	t->vertex((float)(b->x1), (float)( b->y1), (float)( b->z0));
-	t->vertex((float)(b->x1), (float)( b->y0), (float)( b->z1));
-	t->vertex((float)(b->x1), (float)( b->y1), (float)( b->z1));
-	t->vertex((float)(b->x0), (float)( b->y0), (float)( b->z1));
-	t->vertex((float)(b->x0), (float)( b->y1), (float)( b->z1));
+	t->vertex(static_cast<float>(b->x0), static_cast<float>(b->y0), static_cast<float>(b->z0));
+	t->vertex(static_cast<float>(b->x0), static_cast<float>(b->y1), static_cast<float>(b->z0));
+	t->vertex(static_cast<float>(b->x1), static_cast<float>(b->y0), static_cast<float>(b->z0));
+	t->vertex(static_cast<float>(b->x1), static_cast<float>(b->y1), static_cast<float>(b->z0));
+	t->vertex(static_cast<float>(b->x1), static_cast<float>(b->y0), static_cast<float>(b->z1));
+	t->vertex(static_cast<float>(b->x1), static_cast<float>(b->y1), static_cast<float>(b->z1));
+	t->vertex(static_cast<float>(b->x0), static_cast<float>(b->y0), static_cast<float>(b->z1));
+	t->vertex(static_cast<float>(b->x0), static_cast<float>(b->y1), static_cast<float>(b->z1));
 	t->end();
 }
 
@@ -2329,7 +2352,7 @@ void LevelRenderer::setDirty(int x0, int y0, int z0, int x1, int y1, int z1, Lev
 {
 	// 4J - level is passed if this is coming from setTilesDirty, which could come from when connection is being ticked outside of normal level tick, and player won't
 	// be set up
-	if( level == NULL ) level = this->level[mc->player->GetXboxPad()];
+	if( level == nullptr ) level = this->level[mc->player->GetXboxPad()];
 	//	EnterCriticalSection(&m_csDirtyChunks);
 	int _x0 = Mth::intFloorDiv(x0, CHUNK_XZSIZE);
 	int _y0 = Mth::intFloorDiv(y0, CHUNK_SIZE);
@@ -2350,7 +2373,7 @@ void LevelRenderer::setDirty(int x0, int y0, int z0, int x1, int y1, int z1, Lev
 				// These chunks are then added to the global flags in the render update thread.
 				// An XLockFreeQueue actually implements a queue of pointers to its templated type, and I don't want to have to go allocating ints here just to store the
 				// pointer to them in a queue. Hence actually pretending that the int Is a pointer here. Our Index has a a valid range from 0 to something quite big,
-				// but including zero. The lock free queue, since it thinks it is dealing with pointers, uses a NULL pointer to signify that a Pop hasn't succeeded.
+				// but including zero. The lock free queue, since it thinks it is dealing with pointers, uses a nullptr pointer to signify that a Pop hasn't succeeded.
 				// We also want to reserve one special value (of 1 ) for use when multiple chunks not individually listed are made dirty. Therefore adding 2 to our
 				// index value here to move our valid range from 1 to something quite big + 2
 				if( index > -1 )
@@ -2408,12 +2431,12 @@ void LevelRenderer::setDirty(int x0, int y0, int z0, int x1, int y1, int z1, Lev
 
 void LevelRenderer::tileChanged(int x, int y, int z)
 {
-	setDirty(x - 1, y - 1, z - 1, x + 1, y + 1, z + 1, NULL);
+	setDirty(x - 1, y - 1, z - 1, x + 1, y + 1, z + 1, nullptr);
 }
 
 void LevelRenderer::tileLightChanged(int x, int y, int z)
 {
-	setDirty(x - 1, y - 1, z - 1, x + 1, y + 1, z + 1, NULL);
+	setDirty(x - 1, y - 1, z - 1, x + 1, y + 1, z + 1, nullptr);
 }
 
 void LevelRenderer::setTilesDirty(int x0, int y0, int z0, int x1, int y1, int z1, Level *level)	// 4J - added level param
@@ -2527,7 +2550,7 @@ void LevelRenderer::cull(Culler *culler, float a)
 #endif // __PS3__
 
 
-	FrustumCuller *fc = (FrustumCuller *)culler;
+	FrustumCuller *fc = static_cast<FrustumCuller *>(culler);
 	FrustumData *fd = fc->frustum;
 	float fdraw[6 * 4];
 	for( int i = 0; i < 6; i++ )
@@ -2535,10 +2558,10 @@ void LevelRenderer::cull(Culler *culler, float a)
 		double fx = fd->m_Frustum[i][0];
 		double fy = fd->m_Frustum[i][1];
 		double fz = fd->m_Frustum[i][2];
-		fdraw[i * 4 + 0] = (float)fx;
-		fdraw[i * 4 + 1] = (float)fy;
-		fdraw[i * 4 + 2] = (float)fz;
-		fdraw[i * 4 + 3] = (float)(fd->m_Frustum[i][3] + ( fx * -fc->xOff ) + ( fy * - fc->yOff ) + ( fz * -fc->zOff ));
+		fdraw[i * 4 + 0] = static_cast<float>(fx);
+		fdraw[i * 4 + 1] = static_cast<float>(fy);
+		fdraw[i * 4 + 2] = static_cast<float>(fz);
+		fdraw[i * 4 + 3] = static_cast<float>(fd->m_Frustum[i][3] + (fx * -fc->xOff) + (fy * -fc->yOff) + (fz * -fc->zOff));
 	}
 
 	ClipChunk *pClipChunk = chunks[playerIndex].data;
@@ -2577,7 +2600,7 @@ void LevelRenderer::playStreamingMusic(const wstring& name, int x, int y, int z)
 	{
 		mc->gui->setNowPlaying(L"C418 - " + name);
 	}
-	mc->soundEngine->playStreaming(name, (float) x, (float) y, (float) z, 1, 1);
+	mc->soundEngine->playStreaming(name, static_cast<float>(x), static_cast<float>(y), static_cast<float>(z), 1, 1);
 }
 
 void LevelRenderer::playSound(int iSound, double x, double y, double z, float volume, float pitch, float fSoundClipDist)
@@ -2620,7 +2643,7 @@ void LevelRenderer::playSoundExceptPlayer(shared_ptr<Player> player, int iSound,
 /*
 void LevelRenderer::addParticle(const wstring& name, double x, double y, double z, double xa, double ya, double za)
 {
-if (mc == NULL || mc->cameraTargetPlayer == NULL || mc->particleEngine == NULL) return;
+if (mc == nullptr || mc->cameraTargetPlayer == nullptr || mc->particleEngine == nullptr) return;
 
 double xd = mc->cameraTargetPlayer->x - x;
 double yd = mc->cameraTargetPlayer->y - y;
@@ -2656,7 +2679,7 @@ void LevelRenderer::addParticle(ePARTICLE_TYPE eParticleType, double x, double y
 
 shared_ptr<Particle> LevelRenderer::addParticleInternal(ePARTICLE_TYPE eParticleType, double x, double y, double z, double xa, double ya, double za)
 {
-	if (mc == NULL || mc->cameraTargetPlayer == NULL || mc->particleEngine == NULL)
+	if (mc == nullptr || mc->cameraTargetPlayer == nullptr || mc->particleEngine == nullptr)
 	{
 		return nullptr;
 	}
@@ -2691,12 +2714,12 @@ shared_ptr<Particle> LevelRenderer::addParticleInternal(ePARTICLE_TYPE eParticle
 		distCull = false;
 	}
 
-	// 4J - this is a bit of hack to get communication through from the level itself, but if Minecraft::animateTickLevel is NULL then
+	// 4J - this is a bit of hack to get communication through from the level itself, but if Minecraft::animateTickLevel is nullptr then
 	// we are to behave as normal, and if it is set, then we should use that as a pointer to the level the particle is to be created with
 	// rather than try to work it out from the current player. This is because in this state we are calling from a loop that is trying
 	// to amalgamate particle creation between all players for a particular level. Also don't do distance clipping as it isn't for a particular
 	// player, and distance is already taken into account before we get here anyway by the code in Level::animateTickDoWork
-	if( mc->animateTickLevel == NULL )
+	if( mc->animateTickLevel == nullptr )
 	{
 		double particleDistanceSquared = 16 * 16;
 		double xd = 0.0f;
@@ -2709,7 +2732,7 @@ shared_ptr<Particle> LevelRenderer::addParticleInternal(ePARTICLE_TYPE eParticle
 		for(unsigned int i = 0; i < XUSER_MAX_COUNT; ++i)
 		{
 			shared_ptr<Player> thisPlayer = mc->localplayers[i];
-			if(thisPlayer != NULL && level[i] == lev)
+			if(thisPlayer != nullptr && level[i] == lev)
 			{
 				xd = thisPlayer->x - x;
 				yd = thisPlayer->y - y;
@@ -2736,32 +2759,32 @@ shared_ptr<Particle> LevelRenderer::addParticleInternal(ePARTICLE_TYPE eParticle
 	switch(eParticleType)
 	{
 	case eParticleType_hugeexplosion:
-		particle = shared_ptr<Particle>(new HugeExplosionSeedParticle(lev, x, y, z, xa, ya, za));
+		particle = std::make_shared<HugeExplosionSeedParticle>(lev, x, y, z, xa, ya, za);
 		break;
 	case eParticleType_largeexplode:
-		particle = shared_ptr<Particle>(new HugeExplosionParticle(textures, lev, x, y, z, xa, ya, za));
+		particle = std::make_shared<HugeExplosionParticle>(textures, lev, x, y, z, xa, ya, za);
 		break;
 	case eParticleType_fireworksspark:
-		particle = shared_ptr<Particle>(new FireworksParticles::FireworksSparkParticle(lev, x, y, z, xa, ya, za, mc->particleEngine));
+		particle = std::make_shared<FireworksParticles::FireworksSparkParticle>(lev, x, y, z, xa, ya, za, mc->particleEngine);
 		particle->setAlpha(0.99f);
 		break;
 
 	case eParticleType_bubble:
-		particle = shared_ptr<Particle>( new BubbleParticle(lev, x, y, z, xa, ya, za) );
+		particle = std::make_shared<BubbleParticle>(lev, x, y, z, xa, ya, za);
 		break;
 
 	case eParticleType_suspended:
-		particle = shared_ptr<Particle>( new SuspendedParticle(lev, x, y, z, xa, ya, za) );
+		particle = std::make_shared<SuspendedParticle>(lev, x, y, z, xa, ya, za);
 		break;
 	case eParticleType_depthsuspend:
-		particle = shared_ptr<Particle>( new SuspendedTownParticle(lev, x, y, z, xa, ya, za) );
+		particle = std::make_shared<SuspendedTownParticle>(lev, x, y, z, xa, ya, za);
 		break;
 	case eParticleType_townaura:
-		particle = shared_ptr<Particle>( new SuspendedTownParticle(lev, x, y, z, xa, ya, za) );
+		particle = std::make_shared<SuspendedTownParticle>(lev, x, y, z, xa, ya, za);
 		break;
 	case eParticleType_crit:
 		{
-			shared_ptr<CritParticle2> critParticle2 = shared_ptr<CritParticle2>(new CritParticle2(lev, x, y, z, xa, ya, za));
+			shared_ptr<CritParticle2> critParticle2 = std::make_shared<CritParticle2>(lev, x, y, z, xa, ya, za);
 			critParticle2->CritParticle2PostConstructor();
 			particle = shared_ptr<Particle>( critParticle2 );
 			// request from 343 to set pink for the needler in the Halo Texture Pack
@@ -2777,8 +2800,8 @@ shared_ptr<Particle> LevelRenderer::addParticleInternal(ePARTICLE_TYPE eParticle
 			}
 			else
 			{
-				float fStart=((float)(cStart&0xFF));
-				float fDiff=(float)((cEnd-cStart)&0xFF);
+				float fStart=static_cast<float>(cStart & 0xFF);
+				float fDiff=static_cast<float>((cEnd - cStart) & 0xFF);
 
 				float fCol =  (fStart + (Math::random() * fDiff))/255.0f;
 				particle->setColor( fCol, fCol, fCol );
@@ -2787,7 +2810,7 @@ shared_ptr<Particle> LevelRenderer::addParticleInternal(ePARTICLE_TYPE eParticle
 		break;
 	case eParticleType_magicCrit:
 		{
-			shared_ptr<CritParticle2> critParticle2 = shared_ptr<CritParticle2>(new CritParticle2(lev, x, y, z, xa, ya, za));
+			shared_ptr<CritParticle2> critParticle2 = std::make_shared<CritParticle2>(lev, x, y, z, xa, ya, za);
 			critParticle2->CritParticle2PostConstructor();
 			particle = shared_ptr<Particle>(critParticle2);
 			particle->setColor(particle->getRedCol() * 0.3f, particle->getGreenCol() * 0.8f, particle->getBlueCol());
@@ -2795,7 +2818,7 @@ shared_ptr<Particle> LevelRenderer::addParticleInternal(ePARTICLE_TYPE eParticle
 		}
 		break;
 	case eParticleType_smoke:
-		particle = shared_ptr<Particle>( new SmokeParticle(lev, x, y, z, xa, ya, za) );
+		particle = std::make_shared<SmokeParticle>(lev, x, y, z, xa, ya, za);
 		break;
 	case eParticleType_endportal: // 4J - Added.
 		{
@@ -2809,107 +2832,107 @@ shared_ptr<Particle> LevelRenderer::addParticleInternal(ePARTICLE_TYPE eParticle
 		}
 		break;
 	case eParticleType_mobSpell:
-		particle = shared_ptr<Particle>(new SpellParticle(lev, x, y, z, 0, 0, 0));
-		particle->setColor((float) xa, (float) ya, (float) za);
+		particle = std::make_shared<SpellParticle>(lev, x, y, z, 0, 0, 0);
+		particle->setColor(static_cast<float>(xa), static_cast<float>(ya), static_cast<float>(za));
 		break;
 	case eParticleType_mobSpellAmbient:
-		particle = shared_ptr<SpellParticle>(new SpellParticle(lev, x, y, z, 0, 0, 0));
+		particle = std::make_shared<SpellParticle>(lev, x, y, z, 0, 0, 0);
 		particle->setAlpha(0.15f);
-		particle->setColor((float) xa, (float) ya, (float) za);
+		particle->setColor(static_cast<float>(xa), static_cast<float>(ya), static_cast<float>(za));
 		break;
 	case eParticleType_spell:
-		particle = shared_ptr<Particle>( new SpellParticle(lev, x, y, z, xa, ya, za) );
+		particle = std::make_shared<SpellParticle>(lev, x, y, z, xa, ya, za);
 		break;
 	case eParticleType_witchMagic:
 		{
-			particle = shared_ptr<SpellParticle>(new SpellParticle(lev, x, y, z, xa, ya, za));
+			particle = std::make_shared<SpellParticle>(lev, x, y, z, xa, ya, za);
 			dynamic_pointer_cast<SpellParticle>(particle)->setBaseTex(9 * 16);
 			float randBrightness = lev->random->nextFloat() * 0.5f + 0.35f;
 			particle->setColor(1 * randBrightness, 0 * randBrightness, 1 * randBrightness);
 		}
 		break;
 	case eParticleType_instantSpell:
-		particle = shared_ptr<Particle>(new SpellParticle(lev, x, y, z, xa, ya, za));
+		particle = std::make_shared<SpellParticle>(lev, x, y, z, xa, ya, za);
 		dynamic_pointer_cast<SpellParticle>(particle)->setBaseTex(9 * 16);
 		break;
 	case eParticleType_note:
-		particle = shared_ptr<Particle>( new NoteParticle(lev, x, y, z, xa, ya, za) );
+		particle = std::make_shared<NoteParticle>(lev, x, y, z, xa, ya, za);
 		break;
 	case eParticleType_netherportal:
-		particle = shared_ptr<Particle>( new NetherPortalParticle(lev, x, y, z, xa, ya, za) );
+		particle = std::make_shared<NetherPortalParticle>(lev, x, y, z, xa, ya, za);
 		break;
 	case eParticleType_ender:
-		particle = shared_ptr<Particle>( new EnderParticle(lev, x, y, z, xa, ya, za) );
+		particle = std::make_shared<EnderParticle>(lev, x, y, z, xa, ya, za);
 		break;
 	case eParticleType_enchantmenttable:
-		particle = shared_ptr<Particle>(new EchantmentTableParticle(lev, x, y, z, xa, ya, za) );
+		particle = std::make_shared<EchantmentTableParticle>(lev, x, y, z, xa, ya, za);
 		break;
 	case eParticleType_explode:
-		particle = shared_ptr<Particle>( new ExplodeParticle(lev, x, y, z, xa, ya, za) );
+		particle = std::make_shared<ExplodeParticle>(lev, x, y, z, xa, ya, za);
 		break;
 	case eParticleType_flame:
-		particle = shared_ptr<Particle>( new FlameParticle(lev, x, y, z, xa, ya, za) );
+		particle = std::make_shared<FlameParticle>(lev, x, y, z, xa, ya, za);
 		break;
 	case eParticleType_lava:
-		particle = shared_ptr<Particle>( new LavaParticle(lev, x, y, z) );
+		particle = std::make_shared<LavaParticle>(lev, x, y, z);
 		break;
 	case eParticleType_footstep:
-		particle = shared_ptr<Particle>( new FootstepParticle(textures, lev, x, y, z) );
+		particle = std::make_shared<FootstepParticle>(textures, lev, x, y, z);
 		break;
 	case eParticleType_splash:
-		particle = shared_ptr<Particle>( new SplashParticle(lev, x, y, z, xa, ya, za) );
+		particle = std::make_shared<SplashParticle>(lev, x, y, z, xa, ya, za);
 		break;
 	case eParticleType_largesmoke:
-		particle = shared_ptr<Particle>( new SmokeParticle(lev, x, y, z, xa, ya, za, 2.5f) );
+		particle = std::make_shared<SmokeParticle>(lev, x, y, z, xa, ya, za, 2.5f);
 		break;
 	case eParticleType_reddust:
-		particle = shared_ptr<Particle>( new RedDustParticle(lev, x, y, z, (float) xa, (float) ya, (float) za) );
+		particle = std::make_shared<RedDustParticle>(lev, x, y, z, static_cast<float>(xa), static_cast<float>(ya), static_cast<float>(za));
 		break;
 	case eParticleType_snowballpoof:
-		particle = shared_ptr<Particle>( new BreakingItemParticle(lev, x, y, z, Item::snowBall, textures) );
+		particle = std::make_shared<BreakingItemParticle>(lev, x, y, z, Item::snowBall, textures);
 		break;
 	case eParticleType_dripWater:
-		particle = shared_ptr<Particle>( new DripParticle(lev, x, y, z, Material::water) );
+		particle = std::make_shared<DripParticle>(lev, x, y, z, Material::water);
 		break;
 	case eParticleType_dripLava:
-		particle = shared_ptr<Particle>( new DripParticle(lev, x, y, z, Material::lava) );
+		particle = std::make_shared<DripParticle>(lev, x, y, z, Material::lava);
 		break;
 	case eParticleType_snowshovel:
-		particle = shared_ptr<Particle>( new SnowShovelParticle(lev, x, y, z, xa, ya, za) );
+		particle = std::make_shared<SnowShovelParticle>(lev, x, y, z, xa, ya, za);
 		break;
 	case eParticleType_slime:
-		particle = shared_ptr<Particle>( new BreakingItemParticle(lev, x, y, z, Item::slimeBall, textures));
+		particle = std::make_shared<BreakingItemParticle>(lev, x, y, z, Item::slimeBall, textures);
 		break;
 	case eParticleType_heart:
-		particle = shared_ptr<Particle>( new HeartParticle(lev, x, y, z, xa, ya, za) );
+		particle = std::make_shared<HeartParticle>(lev, x, y, z, xa, ya, za);
 		break;
 	case eParticleType_angryVillager:
-		particle = shared_ptr<Particle>( new HeartParticle(lev, x, y + 0.5f, z, xa, ya, za) );
+		particle = std::make_shared<HeartParticle>(lev, x, y + 0.5f, z, xa, ya, za);
 		particle->setMiscTex(1 + 16 * 5);
 		particle->setColor(1, 1, 1);
 		break;
 	case eParticleType_happyVillager:
-		particle = shared_ptr<Particle>( new SuspendedTownParticle(lev, x, y, z, xa, ya, za) );
+		particle = std::make_shared<SuspendedTownParticle>(lev, x, y, z, xa, ya, za);
 		particle->setMiscTex(2 + 16 * 5);
 		particle->setColor(1, 1, 1);
 		break;
 	case eParticleType_dragonbreath:
-		particle = shared_ptr<Particle>( new DragonBreathParticle(lev, x, y, z, xa, ya, za) );
+		particle = std::make_shared<DragonBreathParticle>(lev, x, y, z, xa, ya, za);
 		break;
 	default:
 		if( ( eParticleType >= eParticleType_iconcrack_base ) &&  ( eParticleType <= eParticleType_iconcrack_last )  )
 		{
 			int id = PARTICLE_CRACK_ID(eParticleType), data = PARTICLE_CRACK_DATA(eParticleType);
-			particle = shared_ptr<Particle>(new BreakingItemParticle(lev, x, y, z, xa, ya, za, Item::items[id], textures, data));
+			particle = std::make_shared<BreakingItemParticle>(lev, x, y, z, xa, ya, za, Item::items[id], textures, data);
 		}
 		else if( ( eParticleType >= eParticleType_tilecrack_base ) &&  ( eParticleType <= eParticleType_tilecrack_last )  )
 		{
 			int id = PARTICLE_CRACK_ID(eParticleType), data = PARTICLE_CRACK_DATA(eParticleType);
-			particle = dynamic_pointer_cast<Particle>( shared_ptr<TerrainParticle>(new TerrainParticle(lev, x, y, z, xa, ya, za, Tile::tiles[id], 0, data, textures))->init(data) );
+			particle = dynamic_pointer_cast<Particle>(std::make_shared<TerrainParticle>(lev, x, y, z, xa, ya, za, Tile::tiles[id], 0, data, textures)->init(data) );
 		}
 	}
 
-	if (particle != NULL)
+	if (particle != nullptr)
 	{
 		mc->particleEngine->add(particle);
 	}
@@ -2985,7 +3008,7 @@ void LevelRenderer::globalLevelEvent(int type, int sourceX, int sourceY, int sou
 	{
 	case LevelEvent::SOUND_WITHER_BOSS_SPAWN:
 	case LevelEvent::SOUND_DRAGON_DEATH:
-		if (mc->cameraTargetPlayer != NULL)
+		if (mc->cameraTargetPlayer != nullptr)
 		{
 			// play the sound at an offset from the player
 			double dx = sourceX - mc->cameraTargetPlayer->x;
@@ -3024,7 +3047,7 @@ void LevelRenderer::levelEvent(shared_ptr<Player> source, int type, int x, int y
 	{
 		//case LevelEvent::SOUND_WITHER_BOSS_SPAWN:
 	case LevelEvent::SOUND_DRAGON_DEATH:
-		if (mc->cameraTargetPlayer != NULL)
+		if (mc->cameraTargetPlayer != nullptr)
 		{
 			// play the sound at an offset from the player
 			double dx = x - mc->cameraTargetPlayer->x;
@@ -3110,9 +3133,9 @@ void LevelRenderer::levelEvent(shared_ptr<Player> source, int type, int x, int y
 
 			int colorValue = Item::potion->getColor(data);
 
-			float red = (float) ((colorValue >> 16) & 0xff) / 255.0f;
-			float green = (float) ((colorValue >> 8) & 0xff) / 255.0f;
-			float blue = (float) ((colorValue >> 0) & 0xff) / 255.0f;
+			float red = static_cast<float>((colorValue >> 16) & 0xff) / 255.0f;
+			float green = static_cast<float>((colorValue >> 8) & 0xff) / 255.0f;
+			float blue = static_cast<float>((colorValue >> 0) & 0xff) / 255.0f;
 
 			ePARTICLE_TYPE particleName = eParticleType_spell;
 			if (Item::potion->hasInstantenousEffects(data))
@@ -3129,11 +3152,11 @@ void LevelRenderer::levelEvent(shared_ptr<Player> source, int type, int x, int y
 				double zs = sin(angle) * dist;
 
 				shared_ptr<Particle> spellParticle = addParticleInternal(particleName, xp + xs * 0.1, yp + 0.3, zp + zs * 0.1, xs, ys, zs);
-				if (spellParticle != NULL)
+				if (spellParticle != nullptr)
 				{
 					float randBrightness = 0.75f + random->nextFloat() * 0.25f;
 					spellParticle->setColor(red * randBrightness, green * randBrightness, blue * randBrightness);
-					spellParticle->setPower((float) dist);
+					spellParticle->setPower(static_cast<float>(dist));
 				}
 			}
 			level[playerIndex]->playLocalSound(x + 0.5, y + 0.5, z + 0.5, eSoundType_RANDOM_GLASS, 1, level[playerIndex]->random->nextFloat() * 0.1f + 0.9f, false);
@@ -3156,10 +3179,10 @@ void LevelRenderer::levelEvent(shared_ptr<Player> source, int type, int x, int y
 				double zs = sin(angle) * dist;
 
 				shared_ptr<Particle> acidParticle = addParticleInternal(particleName, xp + xs * 0.1, yp + 0.3, zp + zs * 0.1, xs, ys, zs);
-				if (acidParticle != NULL)
+				if (acidParticle != nullptr)
 				{
 					float randBrightness = 0.75f + random->nextFloat() * 0.25f;
-					acidParticle->setPower((float) dist);
+					acidParticle->setPower(static_cast<float>(dist));
 				}
 			}
 			level[playerIndex]->playLocalSound(x + 0.5, y + 0.5, z + 0.5, eSoundType_RANDOM_EXPLODE, 1, level[playerIndex]->random->nextFloat() * 0.1f + 0.9f);
@@ -3217,7 +3240,7 @@ void LevelRenderer::levelEvent(shared_ptr<Player> source, int type, int x, int y
 	case LevelEvent::SOUND_PLAY_RECORDING:
 		{
 			RecordingItem *rci = dynamic_cast<RecordingItem *>(Item::items[data]);
-			if (rci != NULL)
+			if (rci != nullptr)
 			{
 				level[playerIndex]->playStreamingMusic(rci->recording, x, y, z);
 			}
@@ -3226,7 +3249,7 @@ void LevelRenderer::levelEvent(shared_ptr<Player> source, int type, int x, int y
 				// 4J-PB - only play streaming music if there isn't already some playing - the CD playing may have finished, and game music started playing already
 				if(!mc->soundEngine->GetIsPlayingStreamingGameMusic())
 				{
-					level[playerIndex]->playStreamingMusic(L"", x, y, z);	// 4J - used to pass NULL, but using empty string here now instead
+					level[playerIndex]->playStreamingMusic(L"", x, y, z);	// 4J - used to pass nullptr, but using empty string here now instead
 				}
 			}
 			mc->localplayers[playerIndex]->updateRichPresence();
@@ -3286,12 +3309,12 @@ void LevelRenderer::destroyTileProgress(int id, int x, int y, int z, int progres
 	}
 	else
 	{
-		BlockDestructionProgress *entry = NULL;
+		BlockDestructionProgress *entry = nullptr;
 
         auto it = destroyingBlocks.find(id);
         if(it != destroyingBlocks.end()) entry = it->second;
 
-		if (entry == NULL || entry->getX() != x || entry->getY() != y || entry->getZ() != z)
+		if (entry == nullptr || entry->getX() != x || entry->getY() != y || entry->getZ() != z)
 		{
 			entry = new BlockDestructionProgress(id, x, y, z);
 			destroyingBlocks.insert( unordered_map<int, BlockDestructionProgress *>::value_type(id, entry) );
@@ -3550,10 +3573,10 @@ void LevelRenderer::DestroyedTileManager::destroyingTileAt( Level *level, int x,
 	// ones, so make a temporary list and then copy over
 
 	RecentTile *recentTile = new RecentTile(x, y, z, level);
-	AABB *box = AABB::newTemp((float)x, (float)y, (float)z, (float)(x+1), (float)(y+1), (float)(z+1));
+	AABB *box = AABB::newTemp(static_cast<float>(x), static_cast<float>(y), static_cast<float>(z), static_cast<float>(x + 1), static_cast<float>(y + 1), static_cast<float>(z + 1));
 	Tile *tile = Tile::tiles[level->getTile(x, y, z)];
 
-	if (tile != NULL)
+	if (tile != nullptr)
 	{
 		tile->addAABBs(level, x, y, z, box, &recentTile->boxes, nullptr);
 	}

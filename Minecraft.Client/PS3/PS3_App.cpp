@@ -35,7 +35,7 @@ CConsoleMinecraftApp::CConsoleMinecraftApp() : CMinecraftApp()
 // 	debugOverlayCreated = false;
 // #endif
 
-	m_ProductListA=NULL;
+	m_ProductListA=nullptr;
 	m_bBootedFromDiscPatch=false;
 	memset(m_usrdirPathBDPatch,0,128);
 	m_pRemoteStorage = new SonyRemoteStorage_PS3;
@@ -117,7 +117,7 @@ BOOL CConsoleMinecraftApp::ReadProductCodes()
 	char chDLCTitle[64];
 
 	// 4J-PB - Read the file containing the product codes. This will be different for the SCEE/SCEA/SCEJ builds
-	HANDLE file = CreateFile("PS3/PS3ProductCodes.bin", GENERIC_READ, 0, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
+	HANDLE file = CreateFile("PS3/PS3ProductCodes.bin", GENERIC_READ, 0, nullptr, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, nullptr);
 	if( file == INVALID_HANDLE_VALUE )
 	{
 		//DWORD error = GetLastError();
@@ -132,14 +132,14 @@ BOOL CConsoleMinecraftApp::ReadProductCodes()
 	{
 		DWORD bytesRead;
 
-		WRAPPED_READFILE(file,ProductCodes.chProductCode,PRODUCT_CODE_SIZE,&bytesRead,NULL);
-		WRAPPED_READFILE(file,ProductCodes.chDiscProductCode,PRODUCT_CODE_SIZE,&bytesRead,NULL);
-		WRAPPED_READFILE(file,ProductCodes.chSaveFolderPrefix,SAVEFOLDERPREFIX_SIZE,&bytesRead,NULL);
-		WRAPPED_READFILE(file,ProductCodes.chDiscSaveFolderPrefix,SAVEFOLDERPREFIX_SIZE,&bytesRead,NULL);
-		WRAPPED_READFILE(file,ProductCodes.chCommerceCategory,COMMERCE_CATEGORY_SIZE,&bytesRead,NULL);
-		WRAPPED_READFILE(file,ProductCodes.chTexturePackID,SCE_NP_COMMERCE2_CATEGORY_ID_LEN,&bytesRead,NULL);
-		WRAPPED_READFILE(file,ProductCodes.chUpgradeKey,UPGRADE_KEY_SIZE,&bytesRead,NULL);
-		WRAPPED_READFILE(file,ProductCodes.chSkuPostfix,SKU_POSTFIX_SIZE,&bytesRead,NULL);
+		WRAPPED_READFILE(file,ProductCodes.chProductCode,PRODUCT_CODE_SIZE,&bytesRead,nullptr);
+		WRAPPED_READFILE(file,ProductCodes.chDiscProductCode,PRODUCT_CODE_SIZE,&bytesRead,nullptr);
+		WRAPPED_READFILE(file,ProductCodes.chSaveFolderPrefix,SAVEFOLDERPREFIX_SIZE,&bytesRead,nullptr);
+		WRAPPED_READFILE(file,ProductCodes.chDiscSaveFolderPrefix,SAVEFOLDERPREFIX_SIZE,&bytesRead,nullptr);
+		WRAPPED_READFILE(file,ProductCodes.chCommerceCategory,COMMERCE_CATEGORY_SIZE,&bytesRead,nullptr);
+		WRAPPED_READFILE(file,ProductCodes.chTexturePackID,SCE_NP_COMMERCE2_CATEGORY_ID_LEN,&bytesRead,nullptr);
+		WRAPPED_READFILE(file,ProductCodes.chUpgradeKey,UPGRADE_KEY_SIZE,&bytesRead,nullptr);
+		WRAPPED_READFILE(file,ProductCodes.chSkuPostfix,SKU_POSTFIX_SIZE,&bytesRead,nullptr);
 
 		app.DebugPrintf("ProductCodes.chProductCode %s\n",ProductCodes.chProductCode);
 		app.DebugPrintf("ProductCodes.chDiscProductCode %s\n",ProductCodes.chDiscProductCode);
@@ -152,7 +152,7 @@ BOOL CConsoleMinecraftApp::ReadProductCodes()
 
 		// DLC
 		unsigned int uiDLC;
-		WRAPPED_READFILE(file,&uiDLC,sizeof(int),&bytesRead,NULL);
+		WRAPPED_READFILE(file,&uiDLC,sizeof(int),&bytesRead,nullptr);
 
 		for(unsigned int i=0;i<uiDLC;i++)
 		{
@@ -161,16 +161,16 @@ BOOL CConsoleMinecraftApp::ReadProductCodes()
 			memset(chDLCTitle,0,64);
 
 			unsigned int uiVal;
-			WRAPPED_READFILE(file,&uiVal,sizeof(int),&bytesRead,NULL);
-			WRAPPED_READFILE(file,pDLCInfo->chDLCKeyname,sizeof(char)*uiVal,&bytesRead,NULL);
+			WRAPPED_READFILE(file,&uiVal,sizeof(int),&bytesRead,nullptr);
+			WRAPPED_READFILE(file,pDLCInfo->chDLCKeyname,sizeof(char)*uiVal,&bytesRead,nullptr);
 
-			WRAPPED_READFILE(file,&uiVal,sizeof(int),&bytesRead,NULL);
-			WRAPPED_READFILE(file,chDLCTitle,sizeof(char)*uiVal,&bytesRead,NULL);
+			WRAPPED_READFILE(file,&uiVal,sizeof(int),&bytesRead,nullptr);
+			WRAPPED_READFILE(file,chDLCTitle,sizeof(char)*uiVal,&bytesRead,nullptr);
 			app.DebugPrintf("DLC title %s\n",chDLCTitle);
 
-			WRAPPED_READFILE(file,&pDLCInfo->eDLCType,sizeof(int),&bytesRead,NULL);
-			WRAPPED_READFILE(file,&pDLCInfo->iFirstSkin,sizeof(int),&bytesRead,NULL);
-			WRAPPED_READFILE(file,&pDLCInfo->iConfig,sizeof(int),&bytesRead,NULL);
+			WRAPPED_READFILE(file,&pDLCInfo->eDLCType,sizeof(int),&bytesRead,nullptr);
+			WRAPPED_READFILE(file,&pDLCInfo->iFirstSkin,sizeof(int),&bytesRead,nullptr);
+			WRAPPED_READFILE(file,&pDLCInfo->iConfig,sizeof(int),&bytesRead,nullptr);
 
 			// push this into a vector
 
@@ -345,7 +345,7 @@ void CConsoleMinecraftApp::FatalLoadError()
 	}
 
 	app.DebugPrintf("Requesting Message Box for Fatal Error\n");
-	EMsgBoxResult eResult=InputManager.RequestMessageBox(EMSgBoxType_None,0,NULL,this,(char *)u8Message,0);
+	EMsgBoxResult eResult=InputManager.RequestMessageBox(EMSgBoxType_None,0,nullptr,this,(char *)u8Message,0);
 
 	while ((eResult==EMsgBox_Busy) || (eResult==EMsgBox_SysUtilBusy))
 	{
@@ -359,7 +359,7 @@ void CConsoleMinecraftApp::FatalLoadError()
 			_Exit(0);
 		}
 		app.DebugPrintf("Requesting Message Box for Fatal Error again due to BUSY\n");
-		eResult=InputManager.RequestMessageBox(EMSgBoxType_None,0,NULL,this,(char *)u8Message,0);
+		eResult=InputManager.RequestMessageBox(EMSgBoxType_None,0,nullptr,this,(char *)u8Message,0);
 	}
 
 	while(1)
@@ -469,7 +469,7 @@ void CConsoleMinecraftApp::FreeLocalTMSFiles(eTMSFileType eType)
 LoadSaveDataThreadParam* LoadSaveFromDisk(const wstring& pathName)
 {
 	File saveFile(pathName);
-	__int64 fileSize = saveFile.length();
+	int64_t fileSize = saveFile.length();
 	FileInputStream fis(saveFile);
 	byteArray ba(fileSize);
 	fis.read(ba);
@@ -483,7 +483,7 @@ void CConsoleMinecraftApp::TemporaryCreateGameStart()
 {
 	////////////////////////////////////////////////////////////////////////////////////////////// From CScene_Main::OnInit
 
-	app.setLevelGenerationOptions(NULL);
+	app.setLevelGenerationOptions(nullptr);
 
 	// From CScene_Main::RunPlayGame
 	Minecraft *pMinecraft=Minecraft::GetInstance();
@@ -507,8 +507,8 @@ void CConsoleMinecraftApp::TemporaryCreateGameStart()
 	StorageManager.SetSaveTitle(wWorldName.c_str());
 
 	bool isFlat = false;
-	__int64 seedValue = 0;//BiomeSource::findSeed(isFlat?LevelType::lvl_flat:LevelType::lvl_normal);	// 4J - was (new Random())->nextLong() - now trying to actually find a seed to suit our requirements
-//	__int64 seedValue =  0xfd97203ebdbf5c6f;
+	int64_t seedValue = 0;//BiomeSource::findSeed(isFlat?LevelType::lvl_flat:LevelType::lvl_normal);	// 4J - was (new Random())->nextLong() - now trying to actually find a seed to suit our requirements
+//	int64_t seedValue =  0xfd97203ebdbf5c6f;
 	unsigned int seedLow = (unsigned int )(seedValue & 0xffffffff);
 	unsigned int  seedHigh = (unsigned int )(seedValue>>32);
 #ifndef _CONTENT_PACKAGE
@@ -521,7 +521,7 @@ void CConsoleMinecraftApp::TemporaryCreateGameStart()
 #ifdef SAVE_GAME_TO_LOAD
 	param->saveData =  LoadSaveFromDisk(wstring(SAVE_GAME_TO_LOAD));
 #else
- 	param->saveData =  NULL;
+ 	param->saveData =  nullptr;
 #endif
 	app.SetGameHostOption(eGameHostOption_Difficulty,0);
 	app.SetGameHostOption(eGameHostOption_FriendsOfFriends,0);
@@ -728,7 +728,7 @@ SonyCommerce::CategoryInfo *CConsoleMinecraftApp::GetCategoryInfo()
 {
 	if(m_bCommerceCategoriesRetrieved==false)
 	{
-		return NULL;
+		return nullptr;
 	}
 
 	return &m_CategoryInfo;
@@ -742,10 +742,10 @@ void CConsoleMinecraftApp::ClearCommerceDetails()
 		pProductList->clear();
 	}
 
-	if(m_ProductListA!=NULL)
+	if(m_ProductListA!=nullptr)
 	{
 		delete [] m_ProductListA;
-		m_ProductListA=NULL;
+		m_ProductListA=nullptr;
 	}
 
 	m_ProductListRetrievedC=0;
@@ -769,7 +769,7 @@ void CConsoleMinecraftApp::GetDLCSkuIDFromProductList(char * pchDLCProductID, ch
 	// find the DLC
 	for(int i=0;i<m_ProductListCategoriesC;i++)
 	{
-		for(int j=0;j<m_ProductListA[i].size();j++)
+		for(size_t j=0;j<m_ProductListA[i].size();j++)
 		{
 			std::vector<SonyCommerce::ProductInfo>* pProductList=&m_ProductListA[i];
             auto itEnd = pProductList->end();
@@ -831,7 +831,7 @@ std::vector<SonyCommerce::ProductInfo>* CConsoleMinecraftApp::GetProductList(int
 {
 	if((m_bCommerceProductListRetrieved==false) || (m_bProductListAdditionalDetailsRetrieved==false) )
 	{
-		return NULL;
+		return nullptr;
 	}
 
 	return &m_ProductListA[iIndex];
@@ -842,7 +842,7 @@ bool CConsoleMinecraftApp::DLCAlreadyPurchased(char *pchTitle)
 	// find the DLC
 	for(int i=0;i<m_ProductListCategoriesC;i++)
 	{
-		for(int j=0;j<m_ProductListA[i].size();j++)
+		for(size_t j=0;j<m_ProductListA[i].size();j++)
 		{
 			std::vector<SonyCommerce::ProductInfo>* pProductList=&m_ProductListA[i];
             auto itEnd = pProductList->end();
@@ -1181,7 +1181,7 @@ char *PatchFilelist[] =
 
 
 
-	NULL
+	nullptr
 };
 
 bool CConsoleMinecraftApp::IsFileInPatchList(LPCSTR lpFileName)
@@ -1226,7 +1226,7 @@ bool CConsoleMinecraftApp::CheckForEmptyStore(int iPad)
 	SonyCommerce::CategoryInfo *pCategories=app.GetCategoryInfo();
 
 	bool bEmptyStore=true;
-	if(pCategories!=NULL)
+	if(pCategories!=nullptr)
 	{
 		if(pCategories->countOfProducts>0)
 		{

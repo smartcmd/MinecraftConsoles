@@ -10,10 +10,10 @@ wstring toLower(const wstring& a)
 wstring trimString(const wstring& a)
 {
 	wstring b;
-	int start = (int)a.find_first_not_of(L" \t\n\r");
-	int end = (int)a.find_last_not_of(L" \t\n\r");
+	size_t start = a.find_first_not_of(L" \t\n\r");
+	size_t end = a.find_last_not_of(L" \t\n\r");
 	if( start == wstring::npos ) start = 0;
-	if( end == wstring::npos ) end = (int)a.size()-1;
+	if( end == wstring::npos ) end = a.size() - 1;
 	b = a.substr(start,(end-start)+1);
 	return b;
 }
@@ -62,7 +62,7 @@ const char *wstringtofilename(const wstring& name)
 		if(c=='/') c='\\';
 #endif
 		assert(c<128);	// Will we have to do any conversion of non-ASCII characters in filenames?
-		buf[i] = (char)c;
+		buf[i] = static_cast<char>(c);
 	}
 	buf[name.length()] = 0;
 	return buf;
@@ -76,7 +76,7 @@ const char *wstringtochararray(const wstring& name)
 	{
 		wchar_t c = name[i];
 		assert(c<128);	// Will we have to do any conversion of non-ASCII characters in filenames?
-		buf[i] = (char)c;
+		buf[i] = static_cast<char>(c);
 	}
 	buf[name.length()] = 0;
 	return buf;

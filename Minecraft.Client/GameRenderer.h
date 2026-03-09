@@ -81,7 +81,9 @@ private:
     float m_cachedGammaPerPlayer[NUM_LIGHT_TEXTURES];
     static float ComputeGammaFromSlider(float slider0to100);
     void CachePlayerGammas();
+public:
     void ApplyGammaPostProcess() const;
+private:
     bool ComputeViewportForPlayer(int j, D3D11_VIEWPORT& outViewport) const;
     uint32_t BuildPlayerViewports(D3D11_VIEWPORT* outViewports, float* outGammas, UINT maxCount) const;
 
@@ -115,8 +117,8 @@ public:
 	void setupCamera(float a, int eye);
 private:
     void renderItemInHand(float a, int eye);
-    __int64 lastActiveTime;
-    __int64 lastNsTime;
+    int64_t lastActiveTime;
+    int64_t lastNsTime;
 	// 4J - changes brought forward from 1.8.2
 	bool _updateLightTexture;
 public:
@@ -133,7 +135,7 @@ private:
 public:
 	void render(float a, bool bFirst);		// 4J added bFirst
     void renderLevel(float a);
-    void renderLevel(float a, __int64 until);
+    void renderLevel(float a, int64_t until);
 private:
 	Random *random;
     int rainSoundTime;

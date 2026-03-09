@@ -54,7 +54,7 @@ void DragonFireball::onHit(HitResult *res)
 			}
 			delete entitiesOfClass;
 		}
-		level->levelEvent(LevelEvent::ENDERDRAGON_FIREBALL_SPLASH, (int) Math::round(x), (int) Math::round(y), (int) Math::round(z), 0);
+		level->levelEvent(LevelEvent::ENDERDRAGON_FIREBALL_SPLASH, static_cast<int>(Math::round(x)), static_cast<int>(Math::round(y)), static_cast<int>(Math::round(z)), 0);
 
 		remove();
 	}

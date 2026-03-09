@@ -59,7 +59,7 @@ public:
 	void displayClientMessage(int messageId, int iPad);
 
 	// 4J Added
-	DWORD getMessagesCount(int iPad) { return (int)guiMessages[iPad].size(); }
+	DWORD getMessagesCount(int iPad) { return static_cast<int>(guiMessages[iPad].size()); }
 	wstring getMessage(int iPad, DWORD index) { return guiMessages[iPad].at(index).string; }
 	float getOpacity(int iPad, DWORD index);
 
@@ -67,6 +67,6 @@ public:
 	float getJukeboxOpacity(int iPad);
 
 	// 4J Added
-	void renderGraph(int dataLength, int dataPos, __int64 *dataA, float dataAScale, int dataAWarning, __int64 *dataB, float dataBScale, int dataBWarning);
-	void renderStackedGraph(int dataPos, int dataLength, int dataSources, __int64 (*func)(unsigned int dataPos, unsigned int dataSource) );
+	void renderGraph(int dataLength, int dataPos, int64_t *dataA, float dataAScale, int dataAWarning, int64_t *dataB, float dataBScale, int dataBWarning);
+	void renderStackedGraph(int dataPos, int dataLength, int dataSources, int64_t (*func)(unsigned int dataPos, unsigned int dataSource) );
 };

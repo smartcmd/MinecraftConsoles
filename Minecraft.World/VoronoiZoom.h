@@ -5,7 +5,7 @@
 class VoronoiZoom : public Layer
 {
 public:
-	VoronoiZoom(__int64 seedMixup, shared_ptr<Layer>parent);
+	VoronoiZoom(int64_t seedMixup, shared_ptr<Layer>parent);
 
 	virtual intArray getArea(int xo, int yo, int w, int h);
 

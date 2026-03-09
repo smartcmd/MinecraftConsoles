@@ -5,7 +5,7 @@ class DefaultTexturePack : public AbstractTexturePack
 {
 public:
 	DefaultTexturePack();
-	DLCPack * getDLCPack() {return NULL;}
+	DLCPack * getDLCPack() {return nullptr;}
 
 protected:
 	//@Override

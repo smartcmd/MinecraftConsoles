@@ -66,7 +66,7 @@ void MinecartTNT::destroy(DamageSource *source)
 
 	if (!source->isExplosion())
 	{
-		spawnAtLocation( shared_ptr<ItemInstance>( new ItemInstance(Tile::tnt, 1) ), 0);
+		spawnAtLocation(std::make_shared<ItemInstance>(Tile::tnt, 1), 0);
 	}
 
 	if (source->isFire() || source->isExplosion() || speedSqr >= 0.01f)
@@ -80,9 +80,12 @@ void MinecartTNT::explode(double speedSqr)
 	if (!level->isClientSide)
 	{
 		double speed = sqrt(speedSqr);
-		if (speed > 5) speed = 5;
-		level->explode(shared_from_this(), x, y, z, (float) (4 + random->nextDouble() * 1.5f * speed), true);
-		remove();
+		if (speed > 5.0) speed = 5.0;
+		if (app.GetGameHostOption(eGameHostOption_TNT))
+		{
+			level->explode(shared_from_this(), x, y, z, static_cast<float>(4 + random->nextDouble() * 1.5f * speed), true);
+			remove();
+		}
 	}
 }
 

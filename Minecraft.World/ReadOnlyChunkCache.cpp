@@ -25,7 +25,7 @@ ReadOnlyChunkCache::~ReadOnlyChunkCache()
 bool ReadOnlyChunkCache::hasChunk(int x, int z)
 {
     int slot = (x & LEN_MASK) | ((z & LEN_MASK) * LEN);
-    return chunks[slot] != NULL && (chunks[slot]->isAt(x, z));
+    return chunks[slot] != nullptr && (chunks[slot]->isAt(x, z));
 }
 
 LevelChunk *ReadOnlyChunkCache::create(int x, int z)
@@ -41,7 +41,7 @@ LevelChunk *ReadOnlyChunkCache::getChunk(int x, int z)
         if (!hasChunk(x, z))
 		{
             LevelChunk *newChunk = load(x, z);
-            if (newChunk == NULL)
+            if (newChunk == nullptr)
 			{
                 newChunk = new EmptyLevelChunk(level, emptyPixels, x, z);
             }
@@ -91,10 +91,10 @@ wstring ReadOnlyChunkCache::gatherStats()
 
 vector<Biome::MobSpawnerData *> *ReadOnlyChunkCache::getMobsAt(MobCategory *mobCategory, int x, int y, int z)
 {
-	return NULL;
+	return nullptr;
 }
 
 TilePos *ReadOnlyChunkCache::findNearestMapFeature(Level *level, const wstring& featureName, int x, int y, int z)
 {
-	return NULL;
+	return nullptr;
 }

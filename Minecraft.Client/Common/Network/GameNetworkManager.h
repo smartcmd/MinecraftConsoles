@@ -100,26 +100,26 @@ public:
 	void			SetSessionsUpdatedCallback( void (*SessionsUpdatedCallback)(LPVOID pParam), LPVOID pSearchParam );
 	void			GetFullFriendSessionInfo( FriendSessionInfo *foundSession, void (* FriendSessionUpdatedFn)(bool success, void *pParam), void *pParam );
 	void			ForceFriendsSessionRefresh();
-	
+
 	// Session joining and leaving
 
 	bool			JoinGameFromInviteInfo( int userIndex, int userMask, const INVITE_INFO *pInviteInfo);
-	eJoinGameResult	JoinGame(FriendSessionInfo *searchResult, int localUsersMask);	
+	eJoinGameResult	JoinGame(FriendSessionInfo *searchResult, int localUsersMask);
 	static void		CancelJoinGame(LPVOID lpParam); // Not part of the shared interface
 	bool			LeaveGame(bool bMigrateHost);
 	static int		JoinFromInvite_SignInReturned(void *pParam,bool bContinue, int iPad);
-	void			UpdateAndSetGameSessionData(INetworkPlayer *pNetworkPlayerLeaving = NULL);
+	void			UpdateAndSetGameSessionData(INetworkPlayer *pNetworkPlayerLeaving = nullptr);
 	void			SendInviteGUI(int iPad);
 	void			ResetLeavingGame();
 
 	// Threads
-	
+
 	bool			IsNetworkThreadRunning();
 	static int		RunNetworkGameThreadProc( void* lpParameter );
 	static int		ServerThreadProc( void* lpParameter );
 	static int		ExitAndJoinFromInviteThreadProc( void* lpParam );
 
-#if (defined __PS3__) || (defined __ORBIS__) || (defined __PSVITA__) 
+#if (defined __PS3__) || (defined __ORBIS__) || (defined __PSVITA__)
 	static int		MustSignInReturned_0(void *pParam,int iPad,C4JStorage::EMessageResult result);
 	static int		PSNSignInReturned_0(void* pParam, bool bContinue, int iPad);
 
@@ -130,24 +130,24 @@ public:
 	static void		_LeaveGame();
 	static int		ChangeSessionTypeThreadProc( void* lpParam );
 
-	// System flags	
+	// System flags
 
 	void SystemFlagSet(INetworkPlayer *pNetworkPlayer, int index);
 	bool SystemFlagGet(INetworkPlayer *pNetworkPlayer, int index);
 
 	// Events
 
-	void ServerReadyCreate(bool create);	// Create the signal (or set to NULL)
+	void ServerReadyCreate(bool create);	// Create the signal (or set to nullptr)
 	void ServerReady();						// Signal that we are ready
 	void ServerReadyWait();					// Wait for the signal
 	void ServerReadyDestroy();				// Destroy signal
-	bool ServerReadyValid();				// Is non-NULL
+	bool ServerReadyValid();				// Is non-nullptr
 
 	void ServerStoppedCreate(bool create);	// Create the signal
 	void ServerStopped();					// Signal that we are ready
-	void ServerStoppedWait();				// Wait for the signal	
-	void ServerStoppedDestroy();			// Destroy signal	
-	bool ServerStoppedValid();				// Is non-NULL
+    void ServerStoppedWait();               // Wait for the signal
+    void ServerStoppedDestroy();            // Destroy signal
+    bool ServerStoppedValid();              // Is non-nullptr
 
 #ifdef __PSVITA__
 	static bool usingAdhocMode();
@@ -164,9 +164,9 @@ public:
 
 	// Used for debugging output
 	static const int messageQueue_length = 512;
-	static __int64 messageQueue[messageQueue_length];
+	static int64_t messageQueue[messageQueue_length];
 	static const int byteQueue_length = 512;
-    static __int64 byteQueue[byteQueue_length];
+    static int64_t byteQueue[byteQueue_length];
 	static int messageQueuePos;
 
 	// Methods called from PlatformNetworkManager

@@ -148,7 +148,7 @@ bool WaterLevelChunk::testSetBlocksAndData(byteArray data, int x0, int y0, int z
 	return false;
 }
 
-Random *WaterLevelChunk::getRandom(__int64 l)
+Random *WaterLevelChunk::getRandom(int64_t l)
 {
 	return new Random((level->getSeed() + x * x * 4987142 + x * 5947611 + z * z * 4392871l + z * 389711) ^ l);
 }
@@ -160,5 +160,5 @@ void WaterLevelChunk::setLevelChunkBrightness(LightLayer::variety layer, int x, 
 
 Biome *WaterLevelChunk::getBiome(int x, int z, BiomeSource *biomeSource)
 {
-	return NULL;
+	return nullptr;
 }

@@ -28,6 +28,7 @@
 #include "..\Minecraft.World\net.minecraft.world.h"
 #include "..\Minecraft.World\LevelChunk.h"
 #include "..\Minecraft.World\Biome.h"
+#include <Common/UI/UI.h>
 
 ResourceLocation Gui::PUMPKIN_BLUR_LOCATION = ResourceLocation(TN__BLUR__MISC_PUMPKINBLUR);
 
@@ -62,6 +63,12 @@ void Gui::render(float a, bool mouseFree, int xMouse, int yMouse)
 	// 4J Stu - I have copied this code for XUI_BaseScene. If/when it gets changed it should be broken out
 	// 4J - altered to force full screen mode to 3X scaling, and any split screen modes to 2X scaling. This is so that the further scaling by 0.5 that
 	// happens in split screen modes results in a final scaling of 1 rather than 1.5.
+	
+	if (minecraft->player == nullptr)
+	{
+		return;
+	}
+	
 	int splitYOffset;// = 20;	// This offset is applied when doing the 2X scaling above to move the gui out of the way of the tool tips
 	int guiScale;// = ( minecraft->player->m_iScreenSection == C4JRender::VIEWPORT_TYPE_FULLSCREEN ? 3 : 2 );
 	int iPad=minecraft->player->GetXboxPad();
@@ -87,7 +94,7 @@ void Gui::render(float a, bool mouseFree, int xMouse, int yMouse)
 	int quickSelectHeight=22;
 	float fScaleFactorWidth=1.0f,fScaleFactorHeight=1.0f;
 	bool bTwoPlayerSplitscreen=false;
-	currentGuiScaleFactor = (float) guiScale;		// Keep static copy of scale so we know how gui coordinates map to physical pixels - this is also affected by the viewport
+	currentGuiScaleFactor = static_cast<float>(guiScale);		// Keep static copy of scale so we know how gui coordinates map to physical pixels - this is also affected by the viewport
 
 	switch(guiScale)
 	{
@@ -117,7 +124,7 @@ void Gui::render(float a, bool mouseFree, int xMouse, int yMouse)
 		iSafezoneYHalf = splitYOffset;
 		iSafezoneTopYHalf = screenHeight/10;
 		fScaleFactorWidth=0.5f;
-		iWidthOffset=(int)((float)screenWidth*(1.0f - fScaleFactorWidth));
+		iWidthOffset=static_cast<int>((float)screenWidth * (1.0f - fScaleFactorWidth));
 		iTooltipsYOffset=44;
 		bTwoPlayerSplitscreen=true;
 		currentGuiScaleFactor *= 0.5f;
@@ -127,7 +134,7 @@ void Gui::render(float a, bool mouseFree, int xMouse, int yMouse)
 		iSafezoneYHalf = splitYOffset + screenHeight/10;// 5%  (need to treat the whole screen is 2x this screen)
 		iSafezoneTopYHalf = 0;
 		fScaleFactorWidth=0.5f;
-		iWidthOffset=(int)((float)screenWidth*(1.0f - fScaleFactorWidth));
+		iWidthOffset=static_cast<int>((float)screenWidth * (1.0f - fScaleFactorWidth));
 		iTooltipsYOffset=44;
 		bTwoPlayerSplitscreen=true;
 		currentGuiScaleFactor *= 0.5f;
@@ -697,7 +704,7 @@ void Gui::render(float a, bool mouseFree, int xMouse, int yMouse)
 #endif
 
 				glPushMatrix();
-				glTranslatef((float)xo, (float)yo, 50);
+				glTranslatef(static_cast<float>(xo), static_cast<float>(yo), 50);
 				float ss = 12;
 				glScalef(-ss, ss, ss);
 				glRotatef(180, 0, 0, 1);
@@ -806,14 +813,14 @@ void Gui::render(float a, bool mouseFree, int xMouse, int yMouse)
         glDisable(GL_DEPTH_TEST);
         glDisable(GL_ALPHA_TEST);
         int timer = minecraft->player->getSleepTimer();
-        float amount = (float) timer / (float) Player::SLEEP_DURATION;
+        float amount = static_cast<float>(timer) / static_cast<float>(Player::SLEEP_DURATION);
         if (amount > 1)
 		{
             // waking up
-            amount = 1.0f - ((float) (timer - Player::SLEEP_DURATION) / (float) Player::WAKE_UP_DURATION);
+            amount = 1.0f - (static_cast<float>(timer - Player::SLEEP_DURATION) / static_cast<float>(Player::WAKE_UP_DURATION));
         }
 
-        int color = (int) (220.0f * amount) << 24 | (0x101020);
+        int color = static_cast<int>(220.0f * amount) << 24 | (0x101020);
         fill(0, 0, screenWidth/fScaleFactorWidth, screenHeight/fScaleFactorHeight, color);
         glEnable(GL_ALPHA_TEST);
         glEnable(GL_DEPTH_TEST);
@@ -825,9 +832,9 @@ void Gui::render(float a, bool mouseFree, int xMouse, int yMouse)
 		glDisable(GL_DEPTH_TEST);
 		glDisable(GL_ALPHA_TEST);
 		int timer = minecraft->player->getDeathFadeTimer();
-		float amount = (float) timer / (float) Player::DEATHFADE_DURATION;
+		float amount = static_cast<float>(timer) / static_cast<float>(Player::DEATHFADE_DURATION);
 
-		int color = (int) (220.0f * amount) << 24 | (0x200000);
+		int color = static_cast<int>(220.0f * amount) << 24 | (0x200000);
 		fill(0, 0, screenWidth/fScaleFactorWidth, screenHeight/fScaleFactorHeight, color);
 		glEnable(GL_ALPHA_TEST);
 		glEnable(GL_DEPTH_TEST);
@@ -844,78 +851,193 @@ void Gui::render(float a, bool mouseFree, int xMouse, int yMouse)
 
 #ifndef _FINAL_BUILD
 	MemSect(31);
-    if (minecraft->options->renderDebug)
+    if (minecraft->options->renderDebug && minecraft->player != nullptr && minecraft->level != nullptr)
 	{
+		const int debugLeft = 1;
+		const int debugTop = 1;
+		const float maxContentWidth = 1200.f;
+		const float maxContentHeight = 420.f;
+		float scale = static_cast<float>(screenWidth - debugLeft - 8) / maxContentWidth;
+		float scaleV = static_cast<float>(screenHeight - debugTop - 80) / maxContentHeight;
+		if (scaleV < scale) scale = scaleV;
+		if (scale > 1.f) scale = 1.f;
+		if (scale < 0.5f) scale = 0.5f;
         glPushMatrix();
-        if (Minecraft::warezTime > 0) glTranslatef(0, 32, 0);
-        font->drawShadow(ClientConstants::VERSION_STRING + L" (" + minecraft->fpsString + L")", iSafezoneXHalf+2, 20, 0xffffff);
-        font->drawShadow(L"Seed: " + std::to_wstring(minecraft->level->getLevelData()->getSeed() ), iSafezoneXHalf+2, 32 + 00, 0xffffff);
-        font->drawShadow(minecraft->gatherStats1(), iSafezoneXHalf+2, 32 + 10, 0xffffff);
-        font->drawShadow(minecraft->gatherStats2(), iSafezoneXHalf+2, 32 + 20, 0xffffff);
-        font->drawShadow(minecraft->gatherStats3(), iSafezoneXHalf+2, 32 + 30, 0xffffff);
-        font->drawShadow(minecraft->gatherStats4(), iSafezoneXHalf+2, 32 + 40, 0xffffff);
+		glTranslatef(static_cast<float>(debugLeft), static_cast<float>(debugTop), 0.f);
+		glScalef(scale, scale, 1.f);
+		glTranslatef(static_cast<float>(-debugLeft), static_cast<float>(-debugTop), 0.f);
 
-		// TERRAIN FEATURES
-		int iYPos=82;
+		vector<wstring> lines;
 
-		if(minecraft->level->dimension->id==0)
-		{
-			wstring wfeature[eTerrainFeature_Count];
+        lines.push_back(ClientConstants::VERSION_STRING);
+        lines.push_back(minecraft->fpsString);
+        lines.push_back(L"E: " + std::to_wstring(minecraft->level->getAllEntities().size())); // Could maybe use entity::shouldRender to work out how many are rendered but thats like expensive
+		// TODO Add server information with packet counts - once multiplayer is more stable
+        int renderDistance = app.GetGameSettings(iPad, eGameSetting_RenderDistance);
+		// Calculate the chunk sections using 16 * (2n + 1)^2
+        lines.push_back(L"C: " + std::to_wstring(16 * (2 * renderDistance + 1) * (2 * renderDistance + 1)) + L" D: " + std::to_wstring(renderDistance));
+        lines.push_back(minecraft->gatherStats4()); // Chunk Cache
 
-			wfeature[eTerrainFeature_Stronghold] = L"Stronghold: ";
-			wfeature[eTerrainFeature_Mineshaft] = L"Mineshaft: ";
-			wfeature[eTerrainFeature_Village] = L"Village: ";
-			wfeature[eTerrainFeature_Ravine] = L"Ravine: ";
-
-			for(int i=0;i<app.m_vTerrainFeatures.size();i++)
-			{
-				FEATURE_DATA *pFeatureData=app.m_vTerrainFeatures[i];
-
-				wstring itemInfo = L"[" + std::to_wstring( pFeatureData->x*16 ) + L", " + std::to_wstring( pFeatureData->z*16 ) + L"] ";
-				wfeature[pFeatureData->eTerrainFeature] += itemInfo;
-			}
-
-			for( int i = eTerrainFeature_Stronghold; i < (int) eTerrainFeature_Count; i++ )
-			{
-				font->drawShadow(wfeature[i], iSafezoneXHalf + 2, iYPos, 0xffffff);
-				iYPos+=10;
-			}
+		// Dimension
+        wstring dimension = L"unknown";
+        switch (minecraft->player->dimension)
+        {
+        case -1:
+            dimension = L"minecraft:the_nether";
+            break;
+        case 0:
+            dimension = L"minecraft:overworld";
+            break;
+        case 1:
+			dimension = L"minecraft:the_end";
+			break;
 		}
+        lines.push_back(dimension);
 
-		//font->drawShadow(minecraft->gatherStats5(), iSafezoneXHalf+2, 32 + 10, 0xffffff);
-       {
-			/* 4J - removed
-            long max = Runtime.getRuntime().maxMemory();
-            long total = Runtime.getRuntime().totalMemory();
-            long free = Runtime.getRuntime().freeMemory();
-            long used = total - free;
-            String msg = "Used memory: " + (used * 100 / max) + "% (" + (used / 1024 / 1024) + "MB) of " + (max / 1024 / 1024) + "MB";
-            drawString(font, msg, screenWidth - font.width(msg) - 2, 2, 0xe0e0e0);
-            msg = "Allocated memory: " + (total * 100 / max) + "% (" + (total / 1024 / 1024) + "MB)";
-            drawString(font, msg, screenWidth - font.width(msg) - 2, 12, 0xe0e0e0);
-			*/
+        lines.push_back(L""); // Spacer
+
+		// Players block pos
+        int xBlockPos = Mth::floor(minecraft->player->x);
+        int yBlockPos = Mth::floor(minecraft->player->y);
+        int zBlockPos = Mth::floor(minecraft->player->z);
+
+		// Chunk player is in
+        int xChunkPos = xBlockPos >> 4;
+        int yChunkPos = yBlockPos >> 4;
+        int zChunkPos = zBlockPos >> 4;
+
+		// Players offset within the chunk
+		int xChunkOffset = xBlockPos & 15;
+        int yChunkOffset = yBlockPos & 15;
+        int zChunkOffset = zBlockPos & 15;
+
+		// Format the position like java with limited decumal places
+		WCHAR posString[44]; // Allows upto 7 digit positions (+-9_999_999)
+        swprintf(posString, 44, L"%.3f / %.5f / %.3f", minecraft->player->x, minecraft->player->y, minecraft->player->z);
+
+        lines.push_back(L"XYZ: " + std::wstring(posString));
+        lines.push_back(L"Block: " + std::to_wstring(static_cast<int>(xBlockPos)) + L" " + std::to_wstring(static_cast<int>(yBlockPos)) + L" " + std::to_wstring(static_cast<int>(zBlockPos)));
+        lines.push_back(L"Chunk: " + std::to_wstring(xChunkOffset) + L" " + std::to_wstring(yChunkOffset) + L" " + std::to_wstring(zChunkOffset) + L" in " + std::to_wstring(xChunkPos) + L" " + std::to_wstring(yChunkPos) + L" " + std::to_wstring(zChunkPos));
+
+		// Wrap the yRot to 360 then adjust to (-180 to 180) range to match java
+		float yRotDisplay = fmod(minecraft->player->yRot, 360.0f);
+        if (yRotDisplay > 180.0f)
+        {
+            yRotDisplay -= 360.0f;
         }
-		// 4J Stu - Moved these so that they don't overlap
-		double xBlockPos = floor(minecraft->player->x);
-		double yBlockPos = floor(minecraft->player->y);
-		double zBlockPos = floor(minecraft->player->z);
-        drawString(font, L"x: " + std::to_wstring(minecraft->player->x) + L"/ Head: " + std::to_wstring(static_cast<int>(xBlockPos)) + L"/ Chunk: " + std::to_wstring(minecraft->player->xChunk), iSafezoneXHalf+2, iYPos + 8 * 0, 0xe0e0e0);
-        drawString(font, L"y: " + std::to_wstring(minecraft->player->y) + L"/ Head: " + std::to_wstring(static_cast<int>(yBlockPos)), iSafezoneXHalf+2, iYPos + 8 * 1, 0xe0e0e0);
-        drawString(font, L"z: " + std::to_wstring(minecraft->player->z) + L"/ Head: " + std::to_wstring(static_cast<int>(zBlockPos)) + L"/ Chunk: " + std::to_wstring(minecraft->player->zChunk), iSafezoneXHalf+2, iYPos + 8 * 2, 0xe0e0e0);
-		drawString(font, L"f: " + std::to_wstring(Mth::floor(minecraft->player->yRot * 4.0f / 360.0f + 0.5) & 0x3) + L"/ yRot: " + std::to_wstring(minecraft->player->yRot), iSafezoneXHalf+2, iYPos + 8 * 3, 0xe0e0e0);
-		iYPos += 8*4;
+        if (yRotDisplay < -180.0f)
+        {
+            yRotDisplay += 360.0f;
+        }
+        // Generate the angle string in the format "yRot / xRot" with one decimal place, similar to java edition
+        WCHAR angleString[16];
+        swprintf(angleString, 16, L"%.1f / %.1f", yRotDisplay, minecraft->player->xRot);
 
-		int px = Mth::floor(minecraft->player->x);
-		int py = Mth::floor(minecraft->player->y);
-		int pz = Mth::floor(minecraft->player->z);
-		if (minecraft->level != NULL && minecraft->level->hasChunkAt(px, py, pz))
+		// Work out the named direction
+        int direction = Mth::floor(minecraft->player->yRot * 4.0f / 360.0f + 0.5) & 0x3;
+        wstring cardinalDirection;
+        switch (direction)
+        {
+        case 0:
+            cardinalDirection = L"south";
+            break;
+        case 1:
+            cardinalDirection = L"west";
+            break;
+        case 2:
+            cardinalDirection = L"north";
+            break;
+        case 3:
+            cardinalDirection = L"east";
+            break;
+        }
+
+        lines.push_back(L"Facing: " + cardinalDirection + L" (" + angleString + L")");
+
+		// We have to limit y to 256 as we don't get any information past that
+		if (minecraft->level != NULL && minecraft->level->hasChunkAt(xBlockPos, fmod(yBlockPos, 256), zBlockPos))
 		{
-			LevelChunk *chunkAt = minecraft->level->getChunkAt(px, pz);
-			Biome *biome = chunkAt->getBiome(px & 15, pz & 15, minecraft->level->getBiomeSource());
-			drawString(
-				font,
-				L"b: " + biome->m_name + L" (" + std::to_wstring(biome->id) + L")", iSafezoneXHalf+2, iYPos, 0xe0e0e0);
+            LevelChunk *chunkAt = minecraft->level->getChunkAt(xBlockPos, zBlockPos);
+			if (chunkAt != NULL)
+			{
+				int skyLight = chunkAt->getBrightness(LightLayer::Sky, xChunkOffset, yChunkOffset, zChunkOffset);
+				int blockLight = chunkAt->getBrightness(LightLayer::Block, xChunkOffset, yChunkOffset, zChunkOffset);
+				int maxLight = fmax(skyLight, blockLight);
+				lines.push_back(L"Light: " + std::to_wstring(maxLight) + L" (" + std::to_wstring(skyLight) + L" sky, " + std::to_wstring(blockLight) + L" block)");
+
+				lines.push_back(L"CH S: " + std::to_wstring(chunkAt->getHeightmap(xChunkOffset, zChunkOffset)));
+
+				Biome *biome = chunkAt->getBiome(xChunkOffset, zChunkOffset, minecraft->level->getBiomeSource());
+				lines.push_back(L"Biome: " + biome->m_name + L" (" + std::to_wstring(biome->id) + L")");
+
+				lines.push_back(L"Difficulty: " + std::to_wstring(minecraft->level->difficulty) + L" (Day " + std::to_wstring(minecraft->level->getGameTime() / Level::TICKS_PER_DAY) + L")");
+			}
 		}
+
+
+		// This is all LCE only stuff, it was never on java
+        lines.push_back(L""); // Spacer
+        lines.push_back(L"Seed: " + std::to_wstring(minecraft->level->getLevelData()->getSeed()));
+        lines.push_back(minecraft->gatherStats1()); // Time to autosave
+        lines.push_back(minecraft->gatherStats2()); // Empty currently - CPlatformNetworkManagerStub::GatherStats()
+        lines.push_back(minecraft->gatherStats3()); // RTT
+		
+#ifdef _DEBUG // Only show terrain features in debug builds not release
+        // TERRAIN FEATURES
+        if (minecraft->level->dimension->id == 0)
+        {
+            wstring wfeature[eTerrainFeature_Count];
+
+            wfeature[eTerrainFeature_Stronghold] = L"Stronghold: ";
+            wfeature[eTerrainFeature_Mineshaft] = L"Mineshaft: ";
+            wfeature[eTerrainFeature_Village] = L"Village: ";
+            wfeature[eTerrainFeature_Ravine] = L"Ravine: ";
+
+            float maxW = static_cast<float>(screenWidth - debugLeft - 8) / scale;
+            float maxWForContent = maxW - static_cast<float>(font->width(L"..."));
+            bool truncated[eTerrainFeature_Count] = {};
+
+            for (size_t i = 0; i < app.m_vTerrainFeatures.size(); i++)
+            {
+                FEATURE_DATA *pFeatureData = app.m_vTerrainFeatures[i];
+                int type = pFeatureData->eTerrainFeature;
+                if (type < eTerrainFeature_Stronghold || type > eTerrainFeature_Ravine)
+                {
+                    continue;
+                }
+                if (truncated[type])
+                {
+                    continue;
+                }
+
+                wstring itemInfo = L"[" + std::to_wstring(pFeatureData->x * 16) + L", " + std::to_wstring(pFeatureData->z * 16) + L"] ";
+                if (font->width(wfeature[type] + itemInfo) <= maxWForContent)
+                {
+                    wfeature[type] += itemInfo;
+                }
+                else
+                {
+                    wfeature[type] += L"...";
+                    truncated[type] = true;
+                }
+            }
+
+            lines.push_back(L""); // Add a spacer line
+            for (int i = eTerrainFeature_Stronghold; i <= static_cast<int>(eTerrainFeature_Ravine); i++)
+            {
+                lines.push_back(wfeature[i]);
+            }
+            lines.push_back(L"");
+        }
+#endif
+
+		// Loop through the lines and draw them all on screen
+		int yPos = debugTop;
+        for (const auto &line : lines)
+        {
+            drawString(font, line, debugLeft, yPos, 0xffffff);
+            yPos += 10;
+        }
 
         glPopMatrix();
     }
@@ -971,15 +1093,10 @@ void Gui::render(float a, bool mouseFree, int xMouse, int yMouse)
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     glDisable(GL_ALPHA_TEST);
 
-// 4J Stu - We have moved the chat text to a xui
-#if 0
+#if 0 // defined(_WINDOWS64) // Temporarily disable this chat in favor of iggy chat until we have better visual parity
     glPushMatrix();
-	// 4J-PB we need to move this up a bit because we've moved the quick select
-	//glTranslatef(0, ((float)screenHeight) - 48, 0);
-    glTranslatef(0.0f, (float)(screenHeight - iSafezoneYHalf - iTooltipsYOffset - 16 - 3 + 22) - 24.0f, 0.0f);
-    // glScalef(1.0f / ssc.scale, 1.0f / ssc.scale, 1);
+    glTranslatef(0.0f, static_cast<float>(screenHeight - iSafezoneYHalf - iTooltipsYOffset - 16 - 3 + 22) - 24.0f, 0.0f);
 
-	// 4J-PB - we need gui messages for each of the possible 4 splitscreen players
 	if(bDisplayGui)
 	{
 		int iPad=minecraft->player->GetXboxPad();
@@ -993,23 +1110,21 @@ void Gui::render(float a, bool mouseFree, int xMouse, int yMouse)
 				if (t < 0) t = 0;
 				if (t > 1) t = 1;
 				t = t * t;
-				int alpha = (int) (255 * t);
+				int alpha = static_cast<int>(255 * t);
 				if (isChatting) alpha = 255;
 
 				if (alpha > 0)
 				{
 					int x = iSafezoneXHalf+2;
-					int y = -((int)i) * 9;
+					int y = -(static_cast<int>(i)) * 9;
 					if(bTwoPlayerSplitscreen)
 					{
 						y+= iHeightOffset;
 					}
 
 					wstring msg = guiMessages[iPad][i].string;
-					// 4J-PB - fill the black bar across the whole screen, otherwise it looks odd due to the safe area
 					this->fill(0, y - 1, screenWidth/fScaleFactorWidth, y + 8, (alpha / 2) << 24);
 					glEnable(GL_BLEND);
-
 					font->drawShadow(msg, iSafezoneXHalf+4, y, 0xffffff + (alpha << 24));
 				}
 			}
@@ -1135,10 +1250,10 @@ void Gui::renderPumpkin(int w, int h)
 	MemSect(0);
     Tesselator *t = Tesselator::getInstance();
     t->begin();
-    t->vertexUV((float)(0), (float)( h), (float)( -90), (float)( 0), (float)( 1));
-    t->vertexUV((float)(w), (float)( h), (float)( -90), (float)( 1), (float)( 1));
-    t->vertexUV((float)(w), (float)( 0), (float)( -90), (float)( 1), (float)( 0));
-    t->vertexUV((float)(0), (float)( 0), (float)( -90), (float)( 0), (float)( 0));
+    t->vertexUV(static_cast<float>(0), static_cast<float>(h), static_cast<float>(-90), static_cast<float>(0), static_cast<float>(1));
+    t->vertexUV(static_cast<float>(w), static_cast<float>(h), static_cast<float>(-90), static_cast<float>(1), static_cast<float>(1));
+    t->vertexUV(static_cast<float>(w), static_cast<float>(0), static_cast<float>(-90), static_cast<float>(1), static_cast<float>(0));
+    t->vertexUV(static_cast<float>(0), static_cast<float>(0), static_cast<float>(-90), static_cast<float>(0), static_cast<float>(0));
     t->end();
     glDepthMask(true);
     glEnable(GL_DEPTH_TEST);
@@ -1199,10 +1314,10 @@ void Gui::renderTp(float br, int w, int h)
     float v1 = slot->getV1();
     Tesselator *t = Tesselator::getInstance();
     t->begin();
-    t->vertexUV((float)(0), (float)( h), (float)( -90), (float)( u0), (float)( v1));
-    t->vertexUV((float)(w), (float)( h), (float)( -90), (float)( u1), (float)( v1));
-    t->vertexUV((float)(w), (float)( 0), (float)( -90), (float)( u1), (float)( v0));
-    t->vertexUV((float)(0), (float)( 0), (float)( -90), (float)( u0), (float)( v0));
+    t->vertexUV(static_cast<float>(0), static_cast<float>(h), static_cast<float>(-90), (float)( u0), (float)( v1));
+    t->vertexUV(static_cast<float>(w), static_cast<float>(h), static_cast<float>(-90), (float)( u1), (float)( v1));
+    t->vertexUV(static_cast<float>(w), static_cast<float>(0), static_cast<float>(-90), (float)( u1), (float)( v0));
+    t->vertexUV(static_cast<float>(0), static_cast<float>(0), static_cast<float>(-90), (float)( u0), (float)( v0));
     t->end();
     glDepthMask(true);
     glEnable(GL_DEPTH_TEST);
@@ -1220,10 +1335,10 @@ void Gui::renderSlot(int slot, int x, int y, float a)
     if (pop > 0)
 	{
         glPushMatrix();
-        float squeeze = 1 + pop / (float) Inventory::POP_TIME_DURATION;
-        glTranslatef((float)(x + 8), (float)(y + 12), 0);
+        float squeeze = 1 + pop / static_cast<float>(Inventory::POP_TIME_DURATION);
+        glTranslatef(static_cast<float>(x + 8), static_cast<float>(y + 12), 0);
         glScalef(1 / squeeze, (squeeze + 1) / 2, 1);
-        glTranslatef((float)-(x + 8), (float)-(y + 12), 0);
+        glTranslatef(static_cast<float>(-(x + 8)), static_cast<float>(-(y + 12)), 0);
     }
 
     itemRenderer->renderAndDecorateItem(minecraft->font, minecraft->textures, item, x, y);
@@ -1362,7 +1477,7 @@ void Gui::addMessage(const wstring& _string,int iPad,bool bIsDeathMessage)
 		{
             i++;
         }
-		int iLast=(int)string.find_last_of(L" ",i);
+		size_t iLast=string.find_last_of(L" ",i);
 		switch(XGetLanguage())
 		{
 			case XC_LANGUAGE_JAPANESE:
@@ -1371,7 +1486,7 @@ void Gui::addMessage(const wstring& _string,int iPad,bool bIsDeathMessage)
 				iLast = maximumChars;
 				break;
 			default:
-				iLast=(int)string.find_last_of(L" ",i);
+				iLast=string.find_last_of(L" ",i);
 				break;
 		}
 
@@ -1431,7 +1546,7 @@ float Gui::getOpacity(int iPad, DWORD index)
 float Gui::getJukeboxOpacity(int iPad)
 {
 	float t = overlayMessageTime - lastTickA;
-    int alpha = (int) (t * 256 / 20);
+    int alpha = static_cast<int>(t * 256 / 20);
     if (alpha > 255) alpha = 255;
 	alpha /= 255;
 
@@ -1455,7 +1570,7 @@ void Gui::displayClientMessage(int messageId, int iPad)
 }
 
 // 4J Added
-void Gui::renderGraph(int dataLength, int dataPos, __int64 *dataA, float dataAScale, int dataAWarning, __int64 *dataB, float dataBScale, int dataBWarning)
+void Gui::renderGraph(int dataLength, int dataPos, int64_t *dataA, float dataAScale, int dataAWarning, int64_t *dataB, float dataBScale, int dataBWarning)
 {
 	int height = minecraft->height;
 	// This causes us to cover xScale*dataLength pixels in the horizontal
@@ -1465,7 +1580,7 @@ void Gui::renderGraph(int dataLength, int dataPos, __int64 *dataA, float dataASc
 	glClear(GL_DEPTH_BUFFER_BIT);
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
-	glOrtho(0, (float)minecraft->width, (float)height, 0, 1000, 3000);
+	glOrtho(0, static_cast<float>(minecraft->width), static_cast<float>(height), 0, 1000, 3000);
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 	glTranslatef(0, 0, -2000);
@@ -1494,10 +1609,10 @@ void Gui::renderGraph(int dataLength, int dataPos, __int64 *dataA, float dataASc
 				t->color(0xff000000 + cc * 256);
 			}
 
-			__int64 aVal = dataA[i] / dataAScale;
+			int64_t aVal = dataA[i] / dataAScale;
 
-			t->vertex((float)(xScale*i + 0.5f), (float)( height - aVal + 0.5f), (float)( 0));
-			t->vertex((float)(xScale*i + 0.5f), (float)( height + 0.5f), (float)( 0));
+			t->vertex((float)(xScale*i + 0.5f), (float)( height - aVal + 0.5f), static_cast<float>(0));
+			t->vertex((float)(xScale*i + 0.5f), (float)( height + 0.5f), static_cast<float>(0));
 		}
 
 		if( dataB != NULL )
@@ -1511,10 +1626,10 @@ void Gui::renderGraph(int dataLength, int dataPos, __int64 *dataA, float dataASc
 				t->color(0xff808080 + cc/2 * 256);
 			}
 
-			__int64 bVal = dataB[i] / dataBScale;
+			int64_t bVal = dataB[i] / dataBScale;
 
-			t->vertex((float)(xScale*i + (xScale - 1) + 0.5f), (float)( height - bVal + 0.5f), (float)( 0));
-			t->vertex((float)(xScale*i + (xScale - 1) + 0.5f), (float)( height + 0.5f), (float)( 0));
+			t->vertex((float)(xScale*i + (xScale - 1) + 0.5f), (float)( height - bVal + 0.5f), static_cast<float>(0));
+			t->vertex((float)(xScale*i + (xScale - 1) + 0.5f), (float)( height + 0.5f), static_cast<float>(0));
 		}
 	}
 	t->end();
@@ -1522,14 +1637,14 @@ void Gui::renderGraph(int dataLength, int dataPos, __int64 *dataA, float dataASc
 	glEnable(GL_TEXTURE_2D);
 }
 
-void Gui::renderStackedGraph(int dataPos, int dataLength, int dataSources, __int64 (*func)(unsigned int dataPos, unsigned int dataSource) )
+void Gui::renderStackedGraph(int dataPos, int dataLength, int dataSources, int64_t (*func)(unsigned int dataPos, unsigned int dataSource) )
 {
 	int height = minecraft->height;
 
 	glClear(GL_DEPTH_BUFFER_BIT);
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
-	glOrtho(0, (float)minecraft->width, (float)height, 0, 1000, 3000);
+	glOrtho(0, static_cast<float>(minecraft->width), static_cast<float>(height), 0, 1000, 3000);
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 	glTranslatef(0, 0, -2000);
@@ -1539,8 +1654,8 @@ void Gui::renderStackedGraph(int dataPos, int dataLength, int dataSources, __int
 	Tesselator *t = Tesselator::getInstance();
 
 	t->begin(GL_LINES);
-	__int64 thisVal = 0;
-	__int64 topVal = 0;
+	int64_t thisVal = 0;
+	int64_t topVal = 0;
 	for (int i = 0; i < dataLength; i++)
 	{
 		thisVal = 0;
@@ -1558,15 +1673,15 @@ void Gui::renderStackedGraph(int dataPos, int dataLength, int dataSources, __int
 
 			if( thisVal > 0 )
 			{
-				float vary = (float)source/dataSources;
+				float vary = static_cast<float>(source)/dataSources;
 				int fColour = floor(vary * 0xffffff);
 
 				int colour = 0xff000000 + fColour;
 				//printf("Colour is %x\n", colour);
 				t->color(colour);
 
-				t->vertex((float)(i + 0.5f), (float)( height - topVal - thisVal + 0.5f), (float)( 0));
-				t->vertex((float)(i + 0.5f), (float)( height - topVal + 0.5f), (float)( 0));
+				t->vertex((float)(i + 0.5f), (float)( height - topVal - thisVal + 0.5f), static_cast<float>(0));
+				t->vertex((float)(i + 0.5f), (float)( height - topVal + 0.5f), static_cast<float>(0));
 
 				topVal += thisVal;
 			}
@@ -1577,8 +1692,8 @@ void Gui::renderStackedGraph(int dataPos, int dataLength, int dataSources, __int
 		{
 			t->color(0xff000000);
 
-			t->vertex((float)(0 + 0.5f), (float)( height - (horiz*100) + 0.5f), (float)( 0));
-			t->vertex((float)(dataLength + 0.5f), (float)( height - (horiz*100) + 0.5f), (float)( 0));
+			t->vertex((float)(0 + 0.5f), (float)( height - (horiz*100) + 0.5f), static_cast<float>(0));
+			t->vertex((float)(dataLength + 0.5f), (float)( height - (horiz*100) + 0.5f), static_cast<float>(0));
 		}
 	}
 	t->end();

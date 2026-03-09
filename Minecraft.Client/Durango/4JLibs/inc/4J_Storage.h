@@ -378,7 +378,7 @@ public:
 
 	// Get details of existing savedata
 	C4JStorage::ESaveGameState	GetSavesInfo(int iPad,int ( *Func)(LPVOID lpParam,SAVE_DETAILS *pSaveDetails,const bool),LPVOID lpParam,char *pszSavePackName);						// Start search
-	PSAVE_DETAILS				ReturnSavesInfo();																																	// Returns result of search (or NULL if not yet received)
+	PSAVE_DETAILS				ReturnSavesInfo();																																	// Returns result of search (or nullptr if not yet received)
 	void						ClearSavesInfo();																																	// Clears results
 	C4JStorage::ESaveGameState	LoadSaveDataThumbnail(PSAVE_INFO pSaveInfo,int( *Func)(LPVOID lpParam,PBYTE pbThumbnail,DWORD dwThumbnailBytes), LPVOID lpParam, bool force=false);	// Get the thumbnail for an individual save referenced by pSaveInfo
 
@@ -442,8 +442,8 @@ public:
 	void						SetLicenseChangeFn(void( *Func)(void));
 
 	XCONTENT_DATA&				GetDLC(DWORD dw);
-	DWORD						MountInstalledDLC(int iPad,DWORD dwDLC,int( *Func)(LPVOID, int, DWORD,DWORD),LPVOID lpParam,LPWSTR szMountDrive = NULL);
-	DWORD						UnmountInstalledDLC(LPWSTR szMountDrive = NULL);
+	DWORD						MountInstalledDLC(int iPad,DWORD dwDLC,int( *Func)(LPVOID, int, DWORD,DWORD),LPVOID lpParam,LPWSTR szMountDrive = nullptr);
+	DWORD						UnmountInstalledDLC(LPWSTR szMountDrive = nullptr);
 	void						GetMountedDLCFileList(const char* szMountDrive, std::vector<std::wstring>& fileList);
 	std::wstring				GetMountedPath(std::wstring szMount);
 	XCONTENT_DATA *				GetInstalledDLC(WCHAR *wszProductID);
@@ -470,10 +470,10 @@ public:
 	
 	// TMS++
   	C4JStorage::ETMSStatus		TMSPP_GetUserQuotaInfo(C4JStorage::eGlobalStorage eStorageFacility,int iPad);//,TMSCLIENT_CALLBACK Func,LPVOID lpParam, int iUserData=0);
-	eTitleStorageState			TMSPP_WriteFile(int iQuadrant,C4JStorage::eGlobalStorage eStorageFacility,C4JStorage::eTMS_FILETYPEVAL eFileTypeVal,LPWSTR wszFilename,BYTE *pbBuffer,DWORD dwBufferSize,int( *Func)(LPVOID,int,int)=NULL,LPVOID lpParam=NULL, int iUserData=0);
+	eTitleStorageState			TMSPP_WriteFile(int iQuadrant,C4JStorage::eGlobalStorage eStorageFacility,C4JStorage::eTMS_FILETYPEVAL eFileTypeVal,LPWSTR wszFilename,BYTE *pbBuffer,DWORD dwBufferSize,int( *Func)(LPVOID,int,int)=nullptr,LPVOID lpParam=nullptr, int iUserData=0);
 	eTitleStorageState			TMSPP_ReadFile(int iQuadrant,C4JStorage::eGlobalStorage eStorageFacility,C4JStorage::eTMS_FILETYPEVAL eFileTypeVal,LPWSTR wszFilename,int( *Func)(LPVOID,int,int,LPVOID, WCHAR *),LPVOID lpParam, int iUserData);
 	eTitleStorageState			TMSPP_DeleteFile(int iQuadrant,C4JStorage::eGlobalStorage eStorageFacility,C4JStorage::eTMS_FILETYPEVAL eFileTypeVal,LPWSTR wszFilename,int( *Func)(LPVOID,int,int),LPVOID lpParam, int iUserData);
-	eTitleStorageState			TMSPP_ReadFileList(int iPad,C4JStorage::eGlobalStorage eStorageFacility,int( *Func)(LPVOID,int,int,LPVOID,WCHAR *)=NULL,LPVOID lpParam=NULL, int iUserData=0);
+	eTitleStorageState			TMSPP_ReadFileList(int iPad,C4JStorage::eGlobalStorage eStorageFacility,int( *Func)(LPVOID,int,int,LPVOID,WCHAR *)=nullptr,LPVOID lpParam=nullptr, int iUserData=0);
 	bool						TMSPP_InFileList(eGlobalStorage eStorageFacility, int iPad,const wstring &Filename);
 
 	eTitleStorageState			TMSPP_GetTitleStorageState(int iPad);

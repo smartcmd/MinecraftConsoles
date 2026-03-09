@@ -8,7 +8,7 @@
 
 RenameWorldScreen::RenameWorldScreen(Screen *lastScreen, const wstring& levelId)
 {
-	nameEdit = NULL;
+	nameEdit = nullptr;
     this->lastScreen = lastScreen;
     this->levelId = levelId;
 }

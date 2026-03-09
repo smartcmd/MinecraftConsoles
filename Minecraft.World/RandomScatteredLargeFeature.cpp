@@ -67,7 +67,7 @@ bool RandomScatteredLargeFeature::isFeatureChunk(int x, int z, bool bIsSuperflat
 
 	bool forcePlacement = false;
 	LevelGenerationOptions *levelGenOptions = app.getLevelGenerationOptions();
-	if( levelGenOptions != NULL )
+	if( levelGenOptions != nullptr )
 	{
 		forcePlacement = levelGenOptions->isFeatureChunk(x,z,eFeature_Temples);
 	}
@@ -123,14 +123,14 @@ RandomScatteredLargeFeature::ScatteredFeatureStart::ScatteredFeatureStart(Level 
 bool RandomScatteredLargeFeature::isSwamphut(int cellX, int cellY, int cellZ)
 {
 	StructureStart *structureAt = getStructureAt(cellX, cellY, cellZ);
-	if (structureAt == NULL || !( dynamic_cast<ScatteredFeatureStart *>( structureAt ) ) || structureAt->pieces.empty())
+	if (structureAt == nullptr || !( dynamic_cast<ScatteredFeatureStart *>( structureAt ) ) || structureAt->pieces.empty())
 	{
 		return false;
 	}
-	StructurePiece *first = NULL;
+	StructurePiece *first = nullptr;
     auto it = structureAt->pieces.begin();
     if(it != structureAt->pieces.end() ) first = *it;
-	return dynamic_cast<ScatteredFeaturePieces::SwamplandHut *>(first) != NULL;
+	return dynamic_cast<ScatteredFeaturePieces::SwamplandHut *>(first) != nullptr;
 }
 
 vector<Biome::MobSpawnerData *> *RandomScatteredLargeFeature::getSwamphutEnemies()

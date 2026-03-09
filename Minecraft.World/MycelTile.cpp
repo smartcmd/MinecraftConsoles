@@ -6,8 +6,8 @@
 
 MycelTile::MycelTile(int id) : Tile(id, Material::grass)
 {
-	iconTop = NULL;
-	iconSnowSide = NULL;
+	iconTop = nullptr;
+	iconSnowSide = nullptr;
 	setTicking(true);
 }
 

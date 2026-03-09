@@ -23,7 +23,7 @@ void EnderChestRenderer::render(shared_ptr<TileEntity>  _chest, double x, double
 	glEnable(GL_RESCALE_NORMAL);
 	//glColor4f(1, 1, 1, 1);
 	if( setColor ) glColor4f(1, 1, 1, alpha);
-	glTranslatef((float) x, (float) y + 1, (float) z + 1);
+	glTranslatef(static_cast<float>(x), static_cast<float>(y) + 1, static_cast<float>(z) + 1);
 	glScalef(1, -1, -1);
 
 	glTranslatef(0.5f, 0.5f, 0.5f);

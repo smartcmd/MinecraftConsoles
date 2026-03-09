@@ -159,7 +159,7 @@ void DragonModel::render(shared_ptr<Entity> entity, float time, float r, float b
 
 		rr = (float) Mth::cos(i * 0.45f + roff) * 0.15f;
 		neck->yRot = rotWrap(dragon->getHeadPartYRotDiff(i, start, p)) * PI / 180.0f * rotScale; // 4J replaced "p[0] - start[0] with call to getHeadPartYRotDiff
-		neck->xRot = rr + (float) (dragon->getHeadPartYOffset(i, start, p)) * PI / 180.0f * rotScale * 5.0f; // 4J replaced "p[1] - start[1]" with call to getHeadPartYOffset
+		neck->xRot = rr + static_cast<float>(dragon->getHeadPartYOffset(i, start, p)) * PI / 180.0f * rotScale * 5.0f; // 4J replaced "p[1] - start[1]" with call to getHeadPartYOffset
 		neck->zRot = -rotWrap(p[0] - rot) * PI / 180.0f * rotScale;
 
 		neck->y = yy;
@@ -176,7 +176,7 @@ void DragonModel::render(shared_ptr<Entity> entity, float time, float r, float b
 	head->x = xx;
 	dragon->getLatencyPos(p, 0, a);
 	head->yRot = rotWrap(dragon->getHeadPartYRotDiff(6, start, p)) * PI / 180.0f * 1; // 4J replaced "p[0] - start[0] with call to getHeadPartYRotDiff
-	head->xRot = (float) (dragon->getHeadPartYOffset(6, start, p)) * PI / 180.0f * rotScale * 5.0f; // 4J Added
+	head->xRot = static_cast<float>(dragon->getHeadPartYOffset(6, start, p)) * PI / 180.0f * rotScale * 5.0f; // 4J Added
 	head->zRot = -rotWrap(p[0] - rot) * PI / 180 * 1;
 	head->render(scale,usecompiled);
 	glPushMatrix();
@@ -226,7 +226,7 @@ void DragonModel::render(shared_ptr<Entity> entity, float time, float r, float b
 		dragon->getLatencyPos(p, 12 + i, a);
 		rr += Mth::sin(i * 0.45f + roff) * 0.05f;
 		neck->yRot = (rotWrap(p[0] - start[0]) * rotScale + 180) * PI / 180;
-		neck->xRot = rr + (float) (p[1] - start[1]) * PI / 180 * rotScale * 5;
+		neck->xRot = rr + static_cast<float>(p[1] - start[1]) * PI / 180 * rotScale * 5;
 		neck->zRot = rotWrap(p[0] - rot) * PI / 180 * rotScale;
 		neck->y = yy;
 		neck->z = zz;
@@ -244,5 +244,5 @@ float DragonModel::rotWrap(double d)
 		d -= 360;
 	while (d < -180)
 		d += 360;
-	return (float) d;
+	return static_cast<float>(d);
 }

@@ -41,8 +41,72 @@ wstring UIScene_DebugCreateSchematic::getMoviePath()
 	return L"DebugCreateSchematic";
 }
 
+UIControl_TextInput* UIScene_DebugCreateSchematic::getTextInputForControl(eControls ctrl)
+{
+	switch (ctrl)
+	{
+	case eControl_Name:   return &m_textInputName;
+	case eControl_StartX: return &m_textInputStartX;
+	case eControl_StartY: return &m_textInputStartY;
+	case eControl_StartZ: return &m_textInputStartZ;
+	case eControl_EndX:   return &m_textInputEndX;
+	case eControl_EndY:   return &m_textInputEndY;
+	case eControl_EndZ:   return &m_textInputEndZ;
+	default: return NULL;
+	}
+}
+
+#ifdef _WINDOWS64
+void UIScene_DebugCreateSchematic::getDirectEditInputs(vector<UIControl_TextInput*> &inputs)
+{
+	inputs.push_back(&m_textInputName);
+	inputs.push_back(&m_textInputStartX);
+	inputs.push_back(&m_textInputStartY);
+	inputs.push_back(&m_textInputStartZ);
+	inputs.push_back(&m_textInputEndX);
+	inputs.push_back(&m_textInputEndY);
+	inputs.push_back(&m_textInputEndZ);
+}
+
+void UIScene_DebugCreateSchematic::onDirectEditFinished(UIControl_TextInput *input, UIControl_TextInput::EDirectEditResult result)
+{
+	wstring value = input->getEditBuffer();
+	int iVal = 0;
+	if (!value.empty())
+		iVal = _fromString<int>(value);
+
+	if (input == &m_textInputName)
+	{
+		if (!value.empty())
+			swprintf(m_data->name, 64, L"%ls", value.c_str());
+		else
+			swprintf(m_data->name, 64, L"schematic");
+	}
+	else if (input == &m_textInputStartX) m_data->startX = iVal;
+	else if (input == &m_textInputStartY) m_data->startY = iVal;
+	else if (input == &m_textInputStartZ) m_data->startZ = iVal;
+	else if (input == &m_textInputEndX)   m_data->endX = iVal;
+	else if (input == &m_textInputEndY)   m_data->endY = iVal;
+	else if (input == &m_textInputEndZ)   m_data->endZ = iVal;
+}
+
+bool UIScene_DebugCreateSchematic::handleMouseClick(F32 x, F32 y)
+{
+	UIScene::handleMouseClick(x, y);
+	return true; // always consume to prevent Iggy re-entry on empty space
+}
+#endif
+
+void UIScene_DebugCreateSchematic::tick()
+{
+	UIScene::tick();
+}
+
 void UIScene_DebugCreateSchematic::handleInput(int iPad, int key, bool repeat, bool pressed, bool released, bool &handled)
 {
+#ifdef _WINDOWS64
+	if (isDirectEditBlocking()) return;
+#endif
 	ui.AnimateKeyPress(iPad, key, repeat, pressed, released);
 
 	switch(key)
@@ -67,60 +131,97 @@ void UIScene_DebugCreateSchematic::handleInput(int iPad, int key, bool repeat, b
 
 void UIScene_DebugCreateSchematic::handlePress(F64 controlId, F64 childId)
 {
-	switch((int)controlId)
-	{
-	case eControl_Create:
-		{
-			// We want the start to be even
-			if(m_data->startX > 0 && m_data->startX%2 != 0)
-				m_data->startX-=1;
-			else if(m_data->startX < 0 && m_data->startX%2 !=0)
-				m_data->startX-=1;
-			if(m_data->startY < 0) m_data->startY = 0;
-			else if(m_data->startY > 0 && m_data->startY%2 != 0)
-				m_data->startY-=1;
-			if(m_data->startZ > 0 && m_data->startZ%2 != 0)
-				m_data->startZ-=1;
-			else if(m_data->startZ < 0 && m_data->startZ%2 !=0)
-				m_data->startZ-=1;
+#ifdef _WINDOWS64
+    if (isDirectEditBlocking())
+        return;
+#endif
 
-			// We want the end to be odd to have a total size that is even
-			if(m_data->endX > 0 && m_data->endX%2 == 0)
-				m_data->endX+=1;
-			else if(m_data->endX < 0 && m_data->endX%2 ==0)
-				m_data->endX+=1;
-			if(m_data->endY > Level::maxBuildHeight)
-				m_data->endY = Level::maxBuildHeight;
-			else if(m_data->endY > 0 && m_data->endY%2 == 0)
-				m_data->endY+=1;
-			else if(m_data->endY < 0 && m_data->endY%2 ==0)
-				m_data->endY+=1;
-			if(m_data->endZ > 0 && m_data->endZ%2 == 0)
-				m_data->endZ+=1;
-			else if(m_data->endZ < 0 && m_data->endZ%2 ==0)
-				m_data->endZ+=1;
+    switch (static_cast<int>(controlId))
+    {
+    case eControl_Create:
+        {
+            // We want the start to be even
+            if (m_data->startX > 0 && m_data->startX % 2 != 0)
+                m_data->startX -= 1;
+            else if (m_data->startX < 0 && m_data->startX % 2 != 0)
+                m_data->startX -= 1;
 
-			app.SetXuiServerAction(ProfileManager.GetPrimaryPad(), eXuiServerAction_ExportSchematic, (void *)m_data);
+            if (m_data->startY < 0)
+                m_data->startY = 0;
+            else if (m_data->startY > 0 && m_data->startY % 2 != 0)
+                m_data->startY -= 1;
 
-			navigateBack();
-		}
-		break;
-	case eControl_Name:
-	case eControl_StartX:
-	case eControl_StartY:
-	case eControl_StartZ:
-	case eControl_EndX:
-	case eControl_EndY:
-	case eControl_EndZ:
-		m_keyboardCallbackControl = (eControls)((int)controlId);	
-		InputManager.RequestKeyboard(L"Enter something",L"",(DWORD)0,25,&UIScene_DebugCreateSchematic::KeyboardCompleteCallback,this,C_4JInput::EKeyboardMode_Default);
-		break;
-	};
+            if (m_data->startZ > 0 && m_data->startZ % 2 != 0)
+                m_data->startZ -= 1;
+            else if (m_data->startZ < 0 && m_data->startZ % 2 != 0)
+                m_data->startZ -= 1;
+
+            // We want the end to be odd to have a total size that is even
+            if (m_data->endX > 0 && m_data->endX % 2 == 0)
+                m_data->endX += 1;
+            else if (m_data->endX < 0 && m_data->endX % 2 == 0)
+                m_data->endX += 1;
+
+            if (m_data->endY > Level::maxBuildHeight)
+                m_data->endY = Level::maxBuildHeight;
+            else if (m_data->endY > 0 && m_data->endY % 2 == 0)
+                m_data->endY += 1;
+            else if (m_data->endY < 0 && m_data->endY % 2 == 0)
+                m_data->endY += 1;
+
+            if (m_data->endZ > 0 && m_data->endZ % 2 == 0)
+                m_data->endZ += 1;
+            else if (m_data->endZ < 0 && m_data->endZ % 2 == 0)
+                m_data->endZ += 1;
+
+            app.SetXuiServerAction(ProfileManager.GetPrimaryPad(), eXuiServerAction_ExportSchematic, static_cast<void*>(m_data));
+            navigateBack();
+        }
+        break;
+
+    case eControl_Name:
+    case eControl_StartX:
+    case eControl_StartY:
+    case eControl_StartZ:
+    case eControl_EndX:
+    case eControl_EndY:
+    case eControl_EndZ:
+        {
+            m_keyboardCallbackControl = static_cast<eControls>(static_cast<int>(controlId));
+#ifdef _WINDOWS64
+            if (g_KBMInput.IsKBMActive())
+            {
+                UIControl_TextInput* input = getTextInputForControl(m_keyboardCallbackControl);
+                if (input) input->beginDirectEdit(25);
+            }
+            else
+            {
+                UIKeyboardInitData kbData;
+                kbData.title       = L"Enter something";
+                kbData.defaultText = L"";
+                kbData.maxChars    = 25;
+                kbData.callback    = &UIScene_DebugCreateSchematic::KeyboardCompleteCallback;
+                kbData.lpParam     = this;
+                ui.NavigateToScene(m_iPad, eUIScene_Keyboard, &kbData, eUILayer_Fullscreen, eUIGroup_Fullscreen);
+            }
+#else
+            InputManager.RequestKeyboard(
+                L"Enter something",
+                L"",
+                static_cast<DWORD>(0),
+                25,
+                &UIScene_DebugCreateSchematic::KeyboardCompleteCallback,
+                this,
+                C_4JInput::EKeyboardMode_Default);
+#endif
+        }
+        break;
+    }
 }
 
 void UIScene_DebugCreateSchematic::handleCheckboxToggled(F64 controlId, bool selected)
 {
-	switch((int)controlId)
+	switch(static_cast<int>(controlId))
 	{
 	case eControl_SaveMobs:
 		m_data->bSaveMobs = selected;
@@ -136,11 +237,17 @@ void UIScene_DebugCreateSchematic::handleCheckboxToggled(F64 controlId, bool sel
 
 int UIScene_DebugCreateSchematic::KeyboardCompleteCallback(LPVOID lpParam,bool bRes)
 {
-	UIScene_DebugCreateSchematic *pClass=(UIScene_DebugCreateSchematic *)lpParam;
+	UIScene_DebugCreateSchematic *pClass=static_cast<UIScene_DebugCreateSchematic *>(lpParam);
 
+#ifdef _WINDOWS64
+	uint16_t pchText[128];
+	ZeroMemory(pchText, 128 * sizeof(uint16_t));
+	Win64_GetKeyboardText(pchText, 128);
+#else
 	uint16_t pchText[128];
 	ZeroMemory(pchText, 128 * sizeof(uint16_t) );
 	InputManager.GetText(pchText);
+#endif
 
 	if(pchText[0]!=0)
 	{

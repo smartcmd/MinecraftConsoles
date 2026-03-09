@@ -22,8 +22,8 @@ void NoteParticle::init(Level *level, double x, double y, double z, double xa, d
 
 	// 4J-JEV: Added,
 	// There are 24 valid colours for this particle input through the 'xa' field (0.0-1.0).
-	int note = (int) floor(0.5 + (xa*24.0)) + (int) eMinecraftColour_Particle_Note_00;
-	unsigned int col = Minecraft::GetInstance()->getColourTable()->getColor( (eMinecraftColour) note );
+	int note = static_cast<int>(floor(0.5 + (xa * 24.0))) + static_cast<int>(eMinecraftColour_Particle_Note_00);
+	unsigned int col = Minecraft::GetInstance()->getColourTable()->getColor( static_cast<eMinecraftColour>(note) );
 	
 	rCol = ( (col>>16)&0xFF )/255.0;
 	gCol = ( (col>>8)&0xFF )/255.0;

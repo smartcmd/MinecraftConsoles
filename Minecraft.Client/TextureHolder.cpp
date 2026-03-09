@@ -22,12 +22,12 @@ Texture *TextureHolder::getTexture()
 
 int TextureHolder::getWidth() const
 {
-	return rotated ? smallestFittingMinTexel((int) (height * scale)) : smallestFittingMinTexel((int) (width * scale));
+	return rotated ? smallestFittingMinTexel(static_cast<int>(height * scale)) : smallestFittingMinTexel(static_cast<int>(width * scale));
 }
 
 int TextureHolder::getHeight() const
 {
-	return rotated ? smallestFittingMinTexel((int) (width * scale)) : smallestFittingMinTexel((int) (height * scale));
+	return rotated ? smallestFittingMinTexel(static_cast<int>(width * scale)) : smallestFittingMinTexel(static_cast<int>(height * scale));
 }
 
 void TextureHolder::rotate()
@@ -52,7 +52,7 @@ void TextureHolder::setForcedScale(int targetSize)
 		return;
 	}
 
-	scale = (float) targetSize / min(width, height);
+	scale = static_cast<float>(targetSize) / min(width, height);
 }
 
 //@Override

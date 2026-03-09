@@ -6,7 +6,7 @@
 
 const int ZoneFile::slotsLength = ZonedChunkStorage::CHUNKS_PER_ZONE * ZonedChunkStorage::CHUNKS_PER_ZONE;
 
-ZoneFile::ZoneFile(__int64 key, File file, File entityFile) : slots(slotsLength)
+ZoneFile::ZoneFile(int64_t key, File file, File entityFile) : slots(slotsLength)
 {
 	lastUse = 0;
 
@@ -23,7 +23,7 @@ ZoneFile::ZoneFile(__int64 key, File file, File entityFile) : slots(slotsLength)
 //        this.entityFile = new NbtSlotFile(entityFile);
 //    }
 
-    channel = CreateFile(wstringtofilename(file.getPath()), GENERIC_READ | GENERIC_WRITE, 0, NULL, OPEN_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
+    channel = CreateFile(wstringtofilename(file.getPath()), GENERIC_READ | GENERIC_WRITE, 0, nullptr, OPEN_ALWAYS, FILE_ATTRIBUTE_NORMAL, nullptr);
 	// 4J - try/catch removed
 //    try {
         readHeader();

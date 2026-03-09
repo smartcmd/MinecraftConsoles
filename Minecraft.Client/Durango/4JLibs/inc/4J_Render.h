@@ -16,8 +16,8 @@ public:
 	int GetType()			{ return m_type; }
 	void *GetBufferPointer()	{ return m_pBuffer; }
 	int GetBufferSize()			{ return m_bufferSize; }
-	void Release()				{ free(m_pBuffer); m_pBuffer = NULL; }
-	bool Allocated() { return m_pBuffer != NULL; }
+	void Release()				{ free(m_pBuffer); m_pBuffer = nullptr; }
+	bool Allocated() { return m_pBuffer != nullptr; }
 };
 
 typedef struct
@@ -60,7 +60,7 @@ public:
 	void StartFrame();
 	void DoScreenGrabOnNextPresent();
 	void Present();
-	void Clear(int flags, D3D11_RECT *pRect = NULL);
+	void Clear(int flags, D3D11_RECT *pRect = nullptr);
 	void SetClearColour(const float colourRGBA[4]);
 	bool IsWidescreen();
 	bool IsHiDef();

@@ -17,7 +17,7 @@ void Stitcher::_init(const wstring &name, int maxWidth, int maxHeight, bool forc
 	// 4J init
 	storageX = 0;
 	storageY = 0;
-	stitchedTexture = NULL;
+	stitchedTexture = nullptr;
 }
 
 Stitcher::Stitcher(const wstring &name, int maxWidth, int maxHeight, bool forcePowerOfTwo)
@@ -78,7 +78,7 @@ void Stitcher::stitch()
 	//TextureHolder[] textureHolders = texturesToBeStitched.toArray(new TextureHolder[texturesToBeStitched.size()]);
 	//Arrays.sort(textureHolders);
 
-	stitchedTexture = NULL;
+	stitchedTexture = nullptr;
 
 	//for (int i = 0; i < textureHolders.length; i++)
 	for( TextureHolder *textureHolder : texturesToBeStitched )
@@ -122,7 +122,7 @@ int Stitcher::smallestEncompassingPowerOfTwo(int input)
 
 bool Stitcher::addToStorage(TextureHolder *textureHolder)
 {
-	for (int i = 0; i < storage.size(); i++)
+	for (size_t i = 0; i < storage.size(); i++)
 	{
 		if (storage.at(i)->add(textureHolder))
 		{

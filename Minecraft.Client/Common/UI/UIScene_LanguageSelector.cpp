@@ -58,7 +58,7 @@ void UIScene_LanguageSelector::updateTooltips()
 
 void UIScene_LanguageSelector::updateComponents()
 {
-	bool bNotInGame=(Minecraft::GetInstance()->level==NULL);
+	bool bNotInGame=(Minecraft::GetInstance()->level==nullptr);
 	if(bNotInGame)
 	{
 		m_parentLayer->showComponent(m_iPad,eUIComponent_Panorama,true);
@@ -112,14 +112,14 @@ void UIScene_LanguageSelector::handleInput(int iPad, int key, bool repeat, bool 
 
 void UIScene_LanguageSelector::handlePress(F64 controlId, F64 childId)
 {
-	if( (int)controlId == eControl_Buttons )
+	if( static_cast<int>(controlId) == eControl_Buttons )
 	{
 		//CD - Added for audio
 		ui.PlayUISFX(eSFX_Press);
 
 		int newLanguage, newLocale;
-		newLanguage = uiLangMap[(int)childId];
-		newLocale =	uiLocaleMap[(int)childId];
+		newLanguage = uiLangMap[static_cast<int>(childId)];
+		newLocale =	uiLocaleMap[static_cast<int>(childId)];
 
 		app.SetMinecraftLanguage(m_iPad, newLanguage);
 		app.SetMinecraftLocale(m_iPad, newLocale);

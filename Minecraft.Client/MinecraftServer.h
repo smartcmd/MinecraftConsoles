@@ -18,7 +18,11 @@ class LevelType;
 class ProgressRenderer;
 class CommandDispatcher;
 
+#if defined(_WINDOWS64)
+#define MINECRAFT_SERVER_SLOW_QUEUE_DELAY 0 // Removed slow queue because at large player counts, chunks stopped appearing
+#else
 #define MINECRAFT_SERVER_SLOW_QUEUE_DELAY 250
+#endif
 
 #if defined _XBOX_ONE || defined _XBOX || defined __ORBIS__ || defined __PS3__ || defined __PSVITA__
 #define _ACK_CHUNK_SEND_THROTTLING
@@ -27,14 +31,14 @@ class CommandDispatcher;
 typedef struct _LoadSaveDataThreadParam
 {
 	LPVOID data;
-	__int64 fileSize;
+	int64_t fileSize;
 	const wstring saveName;
-	_LoadSaveDataThreadParam(LPVOID data, __int64 filesize, const wstring &saveName) : data( data ), fileSize( filesize ), saveName( saveName ) {}
+	_LoadSaveDataThreadParam(LPVOID data, int64_t filesize, const wstring &saveName) : data( data ), fileSize( filesize ), saveName( saveName ) {}
 } LoadSaveDataThreadParam;
 
 typedef struct _NetworkGameInitData
 {
-	__int64 seed;
+	int64_t seed;
 	LoadSaveDataThreadParam *saveData;
 	DWORD settings;
 	LevelGenerationOptions *levelGen;
@@ -48,9 +52,9 @@ typedef struct _NetworkGameInitData
 	_NetworkGameInitData()
 	{
 		seed = 0;
-		saveData = NULL;
+		saveData = nullptr;
 		settings = 0;
-		levelGen = NULL;
+		levelGen = nullptr;
 		texturePackId = 0;
 		findSeed = false;
 		xzSize = LEVEL_LEGACY_WIDTH;
@@ -133,9 +137,9 @@ public:
 	~MinecraftServer();
 private:
 	// 4J Added - LoadSaveDataThreadParam
-	bool initServer(__int64 seed, NetworkGameInitData *initData, DWORD initSettings, bool findSeed);
+	bool initServer(int64_t seed, NetworkGameInitData *initData, DWORD initSettings, bool findSeed);
 	void postProcessTerminate(ProgressRenderer *mcprogress);
-    bool loadLevel(LevelStorageSource *storageSource, const wstring& name, __int64 levelSeed, LevelType *pLevelType, NetworkGameInitData *initData);
+    bool loadLevel(LevelStorageSource *storageSource, const wstring& name, int64_t levelSeed, LevelType *pLevelType, NetworkGameInitData *initData);
     void setProgress(const wstring& status, int progress);
     void endProgress();
     void saveAllChunks();
@@ -171,13 +175,13 @@ public:
 	bool isUnderSpawnProtection(Level *level, int x, int y, int z, shared_ptr<Player> player);
 	void setForceGameType(bool forceGameType);
 	bool getForceGameType();
-	static __int64 getCurrentTimeMillis();
+	static int64_t getCurrentTimeMillis();
 	int getPlayerIdleTimeout();
 	void setPlayerIdleTimeout(int playerIdleTimeout);
 
 public:
 	void halt();
-    void run(__int64 seed, void *lpParameter);
+    void run(int64_t seed, void *lpParameter);
 
 	void broadcastStartSavingPacket();
 	void broadcastStopSavingPacket();
@@ -188,7 +192,7 @@ public:
 	void handleConsoleInput(const wstring& msg, ConsoleInputSource *source);
     void handleConsoleInputs();
 //    void addTickable(Tickable tickable);	// 4J removed
-    static void main(__int64 seed, void *lpParameter);
+    static void main(int64_t seed, void *lpParameter);
 	static void HaltServer(bool bPrimaryPlayerSignedOut=false);
 
     File *getFile(const wstring& name);
@@ -208,9 +212,9 @@ private:
 	static MinecraftServer *server;
 
 	static bool setTimeOfDayAtEndOfTick;
-	static __int64 setTimeOfDay;
+	static int64_t setTimeOfDay;
 	static bool setTimeAtEndOfTick;
-	static __int64 setTime;
+	static int64_t setTime;
 
 	static bool	m_bPrimaryPlayerSignedOut;	// 4J-PB added to tell the stopserver not to save the game - another player may have signed in in their place, so ProfileManager.IsSignedIn isn't enough
 	static bool s_bServerHalted; // 4J Stu Added so that we can halt the server even before it's been created properly
@@ -232,11 +236,10 @@ private:
 public:
 	void					addPostProcessRequest(ChunkSource *chunkSource, int x, int z);
 
-public:
-	static PlayerList *getPlayerList() { if( server != NULL ) return server->players; else return NULL; }
-	static void SetTimeOfDay(__int64 time) { setTimeOfDayAtEndOfTick = true; setTimeOfDay = time; }
-	static void SetTime(__int64 time) { setTimeAtEndOfTick = true; setTime = time; }
-	
+    static PlayerList *getPlayerList() { if( server != nullptr) return server->players; else return nullptr; }
+	static void SetTimeOfDay(int64_t time) { setTimeOfDayAtEndOfTick = true; setTimeOfDay = time; }
+	static void SetTime(int64_t time) { setTimeAtEndOfTick = true; setTime = time; }
+
 	C4JThread::Event* m_serverPausedEvent;
 private:
 	// 4J Added
@@ -245,7 +248,7 @@ private:
 	// 4J Added - A static that stores the QNet index of the player that is next allowed to send a packet in the slow queue
 #ifdef _ACK_CHUNK_SEND_THROTTLING
 	static bool s_hasSentEnoughPackets;
-	static __int64 s_tickStartTime;
+	static int64_t s_tickStartTime;
 	static vector<INetworkPlayer *> s_sentTo;
 	static const int MAX_TICK_TIME_FOR_PACKET_SENDS = 35;
 #else
@@ -267,7 +270,7 @@ public:
 #ifndef _ACK_CHUNK_SEND_THROTTLING
 	static void cycleSlowQueueIndex();
 #endif
-	
+
 	void chunkPacketManagement_PreTick();
 	void chunkPacketManagement_PostTick();
 
@@ -275,5 +278,5 @@ public:
 	void Suspend();
 	bool IsSuspending();
 
-	// 4J Stu - A load of functions were all added in 1.0.1 in the ServerInterface, but I don't think we need any of them 
+	// 4J Stu - A load of functions were all added in 1.0.1 in the ServerInterface, but I don't think we need any of them
 };

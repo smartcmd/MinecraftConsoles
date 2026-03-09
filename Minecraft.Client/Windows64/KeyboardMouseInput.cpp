@@ -125,7 +125,7 @@ void KeyboardMouseInput::Tick()
 		}
 	}
 
-	if ((m_mouseGrabbed || m_cursorHiddenForUI) && g_hWnd)
+	if ((m_mouseGrabbed || m_cursorHiddenForUI) && m_windowFocused && g_hWnd)
 	{
 		RECT rc;
 		GetClientRect(g_hWnd, &rc);
@@ -257,8 +257,8 @@ bool KeyboardMouseInput::IsMouseButtonReleased(int button) const
 
 void KeyboardMouseInput::ConsumeMouseDelta(float &dx, float &dy)
 {
-	dx = (float)m_mouseDeltaAccumX;
-	dy = (float)m_mouseDeltaAccumY;
+	dx = static_cast<float>(m_mouseDeltaAccumX);
+	dy = static_cast<float>(m_mouseDeltaAccumY);
 	m_mouseDeltaAccumX = 0;
 	m_mouseDeltaAccumY = 0;
 }
@@ -288,7 +288,7 @@ void KeyboardMouseInput::SetMouseGrabbed(bool grabbed)
 	else if (!grabbed && !m_cursorHiddenForUI && g_hWnd)
 	{
 		while (ShowCursor(TRUE) < 0) {}
-		ClipCursor(NULL);
+		ClipCursor(nullptr);
 	}
 }
 
@@ -317,7 +317,7 @@ void KeyboardMouseInput::SetCursorHiddenForUI(bool hidden)
 	else if (!hidden && !m_mouseGrabbed && g_hWnd)
 	{
 		while (ShowCursor(TRUE) < 0) {}
-		ClipCursor(NULL);
+		ClipCursor(nullptr);
 	}
 }
 
@@ -347,13 +347,13 @@ void KeyboardMouseInput::SetWindowFocused(bool focused)
 		else
 		{
 			while (ShowCursor(TRUE) < 0) {}
-			ClipCursor(NULL);
+			ClipCursor(nullptr);
 		}
 	}
 	else
 	{
 		while (ShowCursor(TRUE) < 0) {}
-		ClipCursor(NULL);
+		ClipCursor(nullptr);
 	}
 }
 
@@ -375,12 +375,12 @@ float KeyboardMouseInput::GetMoveY() const
 
 float KeyboardMouseInput::GetLookX(float sensitivity) const
 {
-	return (float)m_mouseDeltaX * sensitivity;
+	return static_cast<float>(m_mouseDeltaX) * sensitivity;
 }
 
 float KeyboardMouseInput::GetLookY(float sensitivity) const
 {
-	return (float)(-m_mouseDeltaY) * sensitivity;
+	return static_cast<float>(-m_mouseDeltaY) * sensitivity;
 }
 
 void KeyboardMouseInput::OnChar(wchar_t c)

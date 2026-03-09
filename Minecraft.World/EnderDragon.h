@@ -163,7 +163,7 @@ private:
 	EEnderdragonAction getSynchedAction();
 	int findClosestNode(double tX, double tY, double tZ);
 	int findClosestNode();
-	Path *findPath(int startIndex, int endIndex, Node *finalNode  = NULL);
+	Path *findPath(int startIndex, int endIndex, Node *finalNode  = nullptr);
 	Path *reconstruct_path(Node *from, Node *to);
 
 	void strafeAttackTarget();

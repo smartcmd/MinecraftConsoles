@@ -31,8 +31,8 @@ void InventoryScreen::renderLabels()
 void InventoryScreen::render(int xm, int ym, float a)
 {
     AbstractContainerScreen::render(xm, ym, a);
-    this->xMouse = (float)xm;
-    this->yMouse = (float)ym;
+    this->xMouse = static_cast<float>(xm);
+    this->yMouse = static_cast<float>(ym);
 }
 
 void InventoryScreen::renderBg(float a)

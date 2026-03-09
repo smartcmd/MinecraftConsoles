@@ -24,7 +24,7 @@ public:
 	virtual int getEstimatedSize();
 	virtual bool isAync();
 
-	static shared_ptr<Packet> create() { return shared_ptr<Packet>(new AwardStatPacket()); }
+	static shared_ptr<Packet> create() { return std::make_shared<AwardStatPacket>(); }
 	virtual int getId() { return 200; }
 
 public:

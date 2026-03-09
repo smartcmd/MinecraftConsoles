@@ -50,7 +50,7 @@ GameRuleDefinition *GameRuleDefinition::addChild(ConsoleGameRules::EGameRuleType
 #ifndef _CONTENT_PACKAGE
 		wprintf(L"GameRuleDefinition: Attempted to add invalid child rule - %d\n", ruleType );
 #endif
-	return NULL;
+	return nullptr;
 }
 
 void GameRuleDefinition::addAttribute(const wstring &attributeName, const wstring &attributeValue)

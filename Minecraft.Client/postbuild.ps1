@@ -27,7 +27,6 @@ $copies = @(
     @{ Source = "Common\Tutorial"; Dest = "Common\Tutorial" },
     @{ Source = "Windows64\GameHDD"; Dest = "Windows64\GameHDD" },
     @{ Source = "Windows64\Sound";  Dest = "Windows64\Sound" },
-    @{ Source = "DurangoMedia";    Dest = "Windows64Media" },
     @{ Source = "Windows64Media";  Dest = "Windows64Media" }
 )
 
@@ -40,3 +39,5 @@ foreach ($copy in $copies) {
 		xcopy /q /y /i /s /e /d "$src" "$dst" 2>$null
     }
 }
+
+git restore "**/BuildVer.h"

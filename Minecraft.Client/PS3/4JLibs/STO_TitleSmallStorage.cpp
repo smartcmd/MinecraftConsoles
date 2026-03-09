@@ -58,7 +58,7 @@ int32_t CTSS::doLookupTitleSmallStorage(void)
 {
 	int32_t ret = 0;
 	int32_t transId = 0;
-	void *data=NULL;
+	void *data=nullptr;
 	size_t dataSize=0;
 
 	SceNpId npId;
@@ -100,7 +100,7 @@ int32_t CTSS::doLookupTitleSmallStorage(void)
 	//memset(&npclient_info, 0x00, sizeof(npclient_info));
 
 	data = malloc(SCE_NET_NP_TSS_MAX_SIZE);
-	if (data == NULL)
+	if (data == nullptr)
 	{
 		printf("out of memory: can't allocate memory for titleSmallStorage\n");
 		ret = -1;
@@ -121,7 +121,7 @@ int32_t CTSS::doLookupTitleSmallStorage(void)
 // 		data,
 // 		SCE_NET_NP_TSS_MAX_SIZE,
 // 		&dataSize,
-// 		NULL);
+// 		nullptr);
 // 	if (ret < 0)
 // 	{
 // 		printf("sceNpLookupTitleSmallStorage() failed. ret = 0x%x\n", ret);
@@ -150,7 +150,7 @@ int32_t CTSS::doLookupTitleSmallStorage(void)
 	size_t dataSize;
 	SceNpTssSlotId slotId=SLOTID;
 	SceNpTssDataStatus dataStatus;
-	const char *ptr =NULL;
+	const char *ptr =nullptr;
 	size_t recvdSize=0;
 	size_t totalSize=0;
 	size_t recvSize=0;
@@ -163,7 +163,7 @@ int32_t CTSS::doLookupTitleSmallStorage(void)
 			sizeof(SceNpTssDataStatus),
 			ptr,
 			recvSize,
-			NULL);
+			nullptr);
 		if (ret < 0) 
 		{
 			// Error handling
@@ -174,10 +174,10 @@ int32_t CTSS::doLookupTitleSmallStorage(void)
 			// Processing when there is no data
 			goto finish;
 		}
-		if (ptr == NULL)
+		if (ptr == nullptr)
 		{
 			ptr = malloc(dataStatus.contentLength);
-			if (ptr == NULL){
+			if (ptr == nullptr){
 				// Error handling
 				goto error;
 			}
@@ -197,7 +197,7 @@ error:
 		ret = sceNpLookupDestroyTransactionCtx(transId);
 		printf("sceNpLookupDestroyTransactionCtx() done. ret = 0x%x\n", ret);
 	}
-	if (data != NULL)
+	if (data != nullptr)
 	{
 		free(data);
 	}

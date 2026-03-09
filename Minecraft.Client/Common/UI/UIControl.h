@@ -38,12 +38,14 @@ protected:
 	bool m_bHidden; // set by the Remove call
 
 public:
+	UIControl *m_pParentPanel; // set by UI_MAP_ELEMENT macro during mapElementsAndNames
 
 	void setControlType(eUIControlType eType) {m_eControlType=eType;}
 	eUIControlType getControlType() {return m_eControlType;}
 	void setId(int iID) { m_id=iID; }
 	int getId() { return m_id; }
 	UIScene * getParentScene() {return m_parentScene;}
+	UIControl* getParentPanel() { return m_pParentPanel; }
 
 protected:
 	IggyValuePath m_iggyPath;
@@ -62,10 +64,8 @@ public:
 
 	virtual bool setupControl(UIScene *scene, IggyValuePath *parent, const string &controlName);
 	void UpdateControl();
-#ifdef __PSVITA__
 	void setHidden(bool bHidden) {m_bHidden=bHidden;}
 	bool getHidden(void) {return m_bHidden;}
-#endif
 
 	IggyValuePath *getIggyValuePath();
 
