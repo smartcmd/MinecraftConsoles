@@ -36,6 +36,7 @@ namespace
 			{
 				player->SetPlayerData(snapshot.health, snapshot.food, snapshot.fallDistance,
 					              snapshot.yRot, snapshot.xRot,
+					              snapshot.sneaking, snapshot.sprinting,
 					              snapshot.x, snapshot.y, snapshot.z, snapshot.dimension);
 			}
 		}
@@ -241,8 +242,9 @@ void FourKit::FireEventOnPlayerJoin(const PlayerJoinData &playerData)
 
         Player ^ player = gcnew Player(name);
         player->SetPlayerData(playerData.health, playerData.food, playerData.fallDistance,
-                              playerData.yRot, playerData.xRot,
-                              playerData.x, playerData.y, playerData.z, playerData.dimension);
+		                      playerData.yRot, playerData.xRot,
+		                      playerData.sneaking, playerData.sprinting,
+		                      playerData.x, playerData.y, playerData.z, playerData.dimension);
 
         PlayerJoinEvent ^ event = gcnew PlayerJoinEvent();
         event->PlayerObject = player;
@@ -470,12 +472,17 @@ extern "C"
 		FourKitSendMessageCallback SendMessage,
 		FourKitTeleportToCallback TeleportTo,
 		FourKitKickCallback Kick,
+		FourKitIsSneakingCallback IsSneaking,
+		FourKitSetSneakingCallback SetSneaking,
+		FourKitIsSprintingCallback IsSprinting,
+		FourKitSetSprintingCallback SetSprinting,
 		FourKitBlockBreakNaturallyCallback BlockBreakNaturally,
 		FourKitGetBlockTypeCallback GetBlockType,
 		FourKitSetBlockTypeCallback SetBlockType,
 		FourKitGetBlockDataCallback GetBlockData,
 		FourKitSetBlockDataCallback SetBlockData,
-		FourKitGetPlayerSnapshotCallback GetPlayerSnapshot)
+		FourKitGetPlayerSnapshotCallback GetPlayerSnapshot,
+		FourKitGetPlayerNetworkAddressCallback GetPlayerNetworkAddress)
 	{
 #define PB_ASSIGN_STORAGE(Name, Ret, Sig) g_##Name = Name;
 		PB_NATIVE_CALLBACK_LIST(PB_ASSIGN_STORAGE)
@@ -530,6 +537,40 @@ extern "C"
 		}
 	}
 
+	__declspec(dllexport) int NativeCallback_IsSneaking(const char* playerName)
+	{
+		if (g_IsSneaking != nullptr)
+		{
+			return g_IsSneaking(playerName);
+		}
+		return 0;
+	}
+
+	__declspec(dllexport) void NativeCallback_SetSneaking(const char* playerName, int sneaking)
+	{
+		if (g_SetSneaking != nullptr)
+		{
+			g_SetSneaking(playerName, sneaking);
+		}
+	}
+
+	__declspec(dllexport) int NativeCallback_IsSprinting(const char* playerName)
+	{
+		if (g_IsSprinting != nullptr)
+		{
+			return g_IsSprinting(playerName);
+		}
+		return 0;
+	}
+
+	__declspec(dllexport) void NativeCallback_SetSprinting(const char* playerName, int sprinting)
+	{
+		if (g_SetSprinting != nullptr)
+		{
+			g_SetSprinting(playerName, sprinting);
+		}
+	}
+
 	__declspec(dllexport) void NativeCallback_BlockBreakNaturally(int x, int y, int z, int dimension)
 	{
 		if (g_BlockBreakNaturally != nullptr)
@@ -577,6 +618,15 @@ extern "C"
 		if (g_GetPlayerSnapshot != nullptr)
 		{
 			return g_GetPlayerSnapshot(playerName, outData);
+		}
+		return false;
+	}
+
+	__declspec(dllexport) bool NativeCallback_GetPlayerNetworkAddress(const char* playerName, PlayerNetworkAddressData* outData)
+	{
+		if (g_GetPlayerNetworkAddress != nullptr)
+		{
+			return g_GetPlayerNetworkAddress(playerName, outData);
 		}
 		return false;
 	}

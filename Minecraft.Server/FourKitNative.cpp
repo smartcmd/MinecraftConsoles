@@ -7,6 +7,8 @@
 #include "..\Minecraft.Client\PlayerConnection.h"
 #include "..\Minecraft.Client\MinecraftServer.h"
 #include "..\Minecraft.Client\PlayerList.h"
+#include "..\Minecraft.World\Connection.h"
+#include "..\Minecraft.World\Socket.h"
 #include "..\Minecraft.Server.FourKit\FourKitStructs.h"
 #include "..\Minecraft.Server.FourKit\FourKitInterop.h"
 #include "..\Minecraft.World\net.minecraft.world.level.tile.h"
@@ -14,6 +16,10 @@
 #include "../Minecraft.World/TileUpdatePacket.h"
 #include "..\Minecraft.World\StringHelpers.h"
 #include "../Minecraft.Server/Common/StringUtils.h"
+
+#if defined(_WINDOWS64)
+#include "..\Minecraft.Client\Windows64\Network\WinsockNetLayer.h"
+#endif
 
 namespace FourKit
 {
@@ -132,6 +138,44 @@ namespace FourKit
 		}
 	}
 
+	int NativeCallback_IsSneaking(const char* playerName)
+	{
+		auto it = g_nativePlayerMap.find(playerName);
+		if (it != g_nativePlayerMap.end() && it->second)
+		{
+			return it->second->isSneaking() ? 1 : 0;
+		}
+		return 0;
+	}
+
+	void NativeCallback_SetSneaking(const char* playerName, int sneaking)
+	{
+		auto it = g_nativePlayerMap.find(playerName);
+		if (it != g_nativePlayerMap.end() && it->second)
+		{
+			it->second->setSneaking(sneaking != 0);
+		}
+	}
+
+	int NativeCallback_IsSprinting(const char* playerName)
+	{
+		auto it = g_nativePlayerMap.find(playerName);
+		if (it != g_nativePlayerMap.end() && it->second)
+		{
+			return it->second->isSprinting() ? 1 : 0;
+		}
+		return 0;
+	}
+
+	void NativeCallback_SetSprinting(const char* playerName, int sprinting)
+	{
+		auto it = g_nativePlayerMap.find(playerName);
+		if (it != g_nativePlayerMap.end() && it->second)
+		{
+			it->second->setSprinting(sprinting != 0);
+		}
+	}
+
 	void NativeCallback_BlockBreakNaturally(int x, int y, int z, int dimension)
 	{
 		ServerLevel* level = MinecraftServer::getInstance()->getLevel(dimension);
@@ -208,10 +252,47 @@ namespace FourKit
 		outData->fallDistance = p->fallDistance;
 		outData->yRot = p->yRot;
 		outData->xRot = p->xRot;
+		outData->sneaking = p->isSneaking();
+		outData->sprinting = p->isSprinting();
 		outData->x = p->x;
 		outData->y = p->y;
 		outData->z = p->z;
 		outData->dimension = p->dimension;
+		return true;
+	}
+
+	bool NativeCallback_GetPlayerNetworkAddress(const char* playerName, PlayerNetworkAddressData* outData)
+	{
+		if (playerName == nullptr || outData == nullptr)
+		{
+			return false;
+		}
+
+		auto it = g_nativePlayerMap.find(playerName);
+		if (it == g_nativePlayerMap.end() || it->second == nullptr || it->second->connection == nullptr || it->second->connection->connection == nullptr)
+		{
+			return false;
+		}
+
+		Socket* socket = it->second->connection->connection->getSocket();
+		if (socket == NULL)
+		{
+			return false;
+		}
+
+		BYTE smallId = socket->getSmallId();
+		char ip[64] = {};
+		int port = 0;
+		if (!WinsockNetLayer::GetRemoteEndpointForSmallId(smallId, ip, (int)sizeof(ip), &port))
+		{
+			return false;
+		}
+
+		strcpy_s(outData->hostAddress, sizeof(outData->hostAddress), ip);
+		strcpy_s(outData->hostString, sizeof(outData->hostString), ip);
+		strcpy_s(outData->hostName, sizeof(outData->hostName), ip);
+		outData->port = port;
+		outData->unresolved = false;
 		return true;
 	}
 
@@ -328,12 +409,17 @@ namespace FourKit
 					&NativeCallback_SendMessage,
 					&NativeCallback_TeleportTo,
 					&NativeCallback_Kick,
+					&NativeCallback_IsSneaking,
+					&NativeCallback_SetSneaking,
+					&NativeCallback_IsSprinting,
+					&NativeCallback_SetSprinting,
 					&NativeCallback_BlockBreakNaturally,
 					&NativeCallback_GetBlockType,
 					&NativeCallback_SetBlockType,
 					&NativeCallback_GetBlockData,
 					&NativeCallback_SetBlockData,
-					&NativeCallback_GetPlayerSnapshot);
+					&NativeCallback_GetPlayerSnapshot,
+					&NativeCallback_GetPlayerNetworkAddress);
 				g_callbacksRegistered = true;
 			}
 
@@ -349,6 +435,8 @@ namespace FourKit
 			playerData.fallDistance = nativePlayer->fallDistance;
 			playerData.yRot = nativePlayer->yRot;
 			playerData.xRot = nativePlayer->xRot;
+			playerData.sneaking = nativePlayer->isSneaking();
+			playerData.sprinting = nativePlayer->isSprinting();
 			
 			playerData.x = nativePlayer->x;
 			playerData.y = nativePlayer->y;

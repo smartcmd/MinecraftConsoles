@@ -10,7 +10,11 @@
 	X(SetFood, void, (const char* playerName, int food)) \
 	X(SendMessage, void, (const char* playerName, const char* message)) \
 	X(TeleportTo, void, (const char* playerName, double x, double y, double z)) \
-	X(Kick, void, (const char* playerName, const char* reason))
+	X(Kick, void, (const char* playerName, const char* reason)) \
+	X(IsSneaking, int, (const char* playerName)) \
+	X(SetSneaking, void, (const char* playerName, int sneaking)) \
+	X(IsSprinting, int, (const char* playerName)) \
+	X(SetSprinting, void, (const char* playerName, int sprinting))
 
 #define PB_BLOCK_CALLBACK_LIST(X) \
 	X(BlockBreakNaturally, void, (int x, int y, int z, int dimension)) \
@@ -20,7 +24,8 @@
 	X(SetBlockData, void, (int x, int y, int z, int dimension, int data))
 
 #define PB_QUERY_CALLBACK_LIST(X) \
-	X(GetPlayerSnapshot, bool, (const char* playerName, PlayerJoinData* outData))
+	X(GetPlayerSnapshot, bool, (const char* playerName, PlayerJoinData* outData)) \
+	X(GetPlayerNetworkAddress, bool, (const char* playerName, PlayerNetworkAddressData* outData))
 
 #define PB_NATIVE_CALLBACK_LIST(X) \
 	PB_PLAYER_CALLBACK_LIST(X) \
@@ -51,12 +56,17 @@ extern "C"
 		FourKitSendMessageCallback SendMessage,
 		FourKitTeleportToCallback TeleportTo,
 		FourKitKickCallback Kick,
+		FourKitIsSneakingCallback IsSneaking,
+		FourKitSetSneakingCallback SetSneaking,
+		FourKitIsSprintingCallback IsSprinting,
+		FourKitSetSprintingCallback SetSprinting,
 		FourKitBlockBreakNaturallyCallback BlockBreakNaturally,
 		FourKitGetBlockTypeCallback GetBlockType,
 		FourKitSetBlockTypeCallback SetBlockType,
 		FourKitGetBlockDataCallback GetBlockData,
 		FourKitSetBlockDataCallback SetBlockData,
-		FourKitGetPlayerSnapshotCallback GetPlayerSnapshot);
+		FourKitGetPlayerSnapshotCallback GetPlayerSnapshot,
+		FourKitGetPlayerNetworkAddressCallback GetPlayerNetworkAddress);
 
 #define PB_DECLARE_NATIVE_EXPORT(Name, Ret, Sig) __declspec(dllexport) Ret NativeCallback_##Name Sig;
 	PB_NATIVE_CALLBACK_LIST(PB_DECLARE_NATIVE_EXPORT)

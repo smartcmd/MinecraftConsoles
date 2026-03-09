@@ -133,7 +133,9 @@
       <NoEntryPoint>true</NoEntryPoint>
     </Link>
     <PostBuildEvent>
-      <Command>copy /Y "$(TargetPath)" "C:\Users\sylvessa\source\repos\PluginExample\PluginExample\"</Command>
+      <Command>if exist "C:\Users\sylvessa\source\repos\PluginExample\PluginExample\" (
+ copy /Y "$(TargetPath)" "C:\Users\sylvessa\source\repos\PluginExample\PluginExample\" 
+)</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -155,12 +157,16 @@
       <NoEntryPoint>true</NoEntryPoint>
     </Link>
     <PostBuildEvent>
-      <Command>copy /Y "$(TargetPath)" "C:\Users\sylvessa\source\repos\PluginExample\PluginExample\"</Command>
+      <Command>if exist "C:\Users\sylvessa\source\repos\PluginExample\PluginExample\" (
+ copy /Y "$(TargetPath)" "C:\Users\sylvessa\source\repos\PluginExample\PluginExample\" 
+)</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Block.cpp" />
     <ClCompile Include="EventManager.cpp" />
+    <ClCompile Include="InetAddress.cpp" />
+    <ClCompile Include="InetSocketAddress.cpp" />
     <ClCompile Include="NativeBlockCallbacks.cpp" />
     <ClCompile Include="NativePlayerCallbacks.cpp" />
     <ClCompile Include="Player.cpp" />
@@ -171,6 +177,8 @@
     <ClInclude Include="Block.h" />
     <ClInclude Include="EventManager.h" />
     <ClInclude Include="Events.h" />
+    <ClInclude Include="InetAddress.h" />
+    <ClInclude Include="InetSocketAddress.h" />
     <ClInclude Include="Listener.h" />
     <ClInclude Include="NativeBlockCallbacks.h" />
     <ClInclude Include="NativePlayerCallbacks.h" />

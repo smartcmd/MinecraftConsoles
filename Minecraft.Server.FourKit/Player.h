@@ -1,5 +1,7 @@
 #pragma once
 
+#include "InetSocketAddress.h"
+
 // todo: improve a little
 
 using namespace System;
@@ -15,14 +17,19 @@ public:
 	float getFallDistance() { return m_fallDistance; }
 	float getYRot() { return m_yRot; }
 	float getXRot() { return m_xRot; }
+	bool isSneaking() { return m_sneaking; }
+	bool isSprinting() { return m_sprinting; }
 	double getX() { return m_x; }
 	double getY() { return m_y; }
 	double getZ() { return m_z; }
 	int getDimension() { return m_dimension; }
+	InetSocketAddress^ getAddress();
 	
 	void setFallDistance(float distance);
 	void setHealth(float health);
 	void setFood(int food);
+	//void setSneaking(bool sneaking); doesnt work rn
+	void setSprinting(bool sprinting);
 	void sendMessage(String^ message);
     void kickPlayer(); // String^ reason
 	void teleport(double x, double y, double z);
@@ -68,6 +75,20 @@ internal:
             return m_xRot;
         }
     }
+    property bool sneaking
+    {
+        bool get()
+        {
+            return m_sneaking;
+        }
+    }
+    property bool sprinting
+    {
+        bool get()
+        {
+            return m_sprinting;
+        }
+    }
 
     property double x
     {
@@ -97,7 +118,8 @@ internal:
             return m_dimension;
         }
     }
-	void SetPlayerData(float health, int food, float fallDistance, float yRot, float xRot, 
+	void SetPlayerData(float health, int food, float fallDistance, float yRot, float xRot,
+	                   bool sneaking, bool sprinting,
 	                   double x, double y, double z, int dimension);
 
 private:
@@ -108,6 +130,8 @@ private:
 	float m_fallDistance;
 	float m_yRot;
 	float m_xRot;
+	bool m_sneaking;
+	bool m_sprinting;
 	
 	double m_x;
 	double m_y;

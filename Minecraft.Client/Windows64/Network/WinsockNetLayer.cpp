@@ -20,10 +20,7 @@
 #include <string>
 
 static bool RecvExact(SOCKET sock, BYTE* buf, int len);
-
-#if defined(MINECRAFT_SERVER_BUILD)
 static bool TryGetNumericRemoteIp(const sockaddr_in &remoteAddress, std::string *outIp);
-#endif
 
 SOCKET WinsockNetLayer::s_listenSocket = INVALID_SOCKET;
 SOCKET WinsockNetLayer::s_hostConnectionSocket = INVALID_SOCKET;
@@ -64,6 +61,8 @@ CRITICAL_SECTION WinsockNetLayer::s_freeSmallIdLock;
 std::vector<BYTE> WinsockNetLayer::s_freeSmallIds;
 SOCKET WinsockNetLayer::s_smallIdToSocket[256];
 CRITICAL_SECTION WinsockNetLayer::s_smallIdToSocketLock;
+Win64RemoteEndpoint WinsockNetLayer::s_smallIdToEndpoint[256];
+CRITICAL_SECTION WinsockNetLayer::s_smallIdToEndpointLock;
 
 bool g_Win64MultiplayerHost = false;
 bool g_Win64MultiplayerJoin = false;
@@ -93,8 +92,14 @@ bool WinsockNetLayer::Initialize()
 	InitializeCriticalSection(&s_disconnectLock);
 	InitializeCriticalSection(&s_freeSmallIdLock);
 	InitializeCriticalSection(&s_smallIdToSocketLock);
+	InitializeCriticalSection(&s_smallIdToEndpointLock);
 	for (int i = 0; i < 256; i++)
+	{
 		s_smallIdToSocket[i] = INVALID_SOCKET;
+		s_smallIdToEndpoint[i].ip[0] = '\0';
+		s_smallIdToEndpoint[i].port = 0;
+		s_smallIdToEndpoint[i].valid = false;
+	}
 
 	s_initialized = true;
 
@@ -189,6 +194,7 @@ void WinsockNetLayer::Shutdown()
 		DeleteCriticalSection(&s_freeSmallIdLock);
 		s_freeSmallIds.clear();
 		DeleteCriticalSection(&s_smallIdToSocketLock);
+		DeleteCriticalSection(&s_smallIdToEndpointLock);
 		WSACleanup();
 		s_initialized = false;
 	}
@@ -211,6 +217,14 @@ bool WinsockNetLayer::HostGame(int port, const char* bindIp)
 	for (int i = 0; i < 256; i++)
 		s_smallIdToSocket[i] = INVALID_SOCKET;
 	LeaveCriticalSection(&s_smallIdToSocketLock);
+	EnterCriticalSection(&s_smallIdToEndpointLock);
+	for (int i = 0; i < 256; i++)
+	{
+		s_smallIdToEndpoint[i].ip[0] = '\0';
+		s_smallIdToEndpoint[i].port = 0;
+		s_smallIdToEndpoint[i].valid = false;
+	}
+	LeaveCriticalSection(&s_smallIdToEndpointLock);
 
 	struct addrinfo hints = {};
 	struct addrinfo* result = NULL;
@@ -458,6 +472,31 @@ void WinsockNetLayer::ClearSocketForSmallId(BYTE smallId)
 	EnterCriticalSection(&s_smallIdToSocketLock);
 	s_smallIdToSocket[smallId] = INVALID_SOCKET;
 	LeaveCriticalSection(&s_smallIdToSocketLock);
+
+	EnterCriticalSection(&s_smallIdToEndpointLock);
+	s_smallIdToEndpoint[smallId].ip[0] = '\0';
+	s_smallIdToEndpoint[smallId].port = 0;
+	s_smallIdToEndpoint[smallId].valid = false;
+	LeaveCriticalSection(&s_smallIdToEndpointLock);
+}
+
+bool WinsockNetLayer::GetRemoteEndpointForSmallId(BYTE smallId, char* outIp, int outIpSize, int* outPort)
+{
+	if (outIp == NULL || outIpSize <= 0 || outPort == NULL)
+	{
+		return false;
+	}
+
+	bool found = false;
+	EnterCriticalSection(&s_smallIdToEndpointLock);
+	if (s_smallIdToEndpoint[smallId].valid)
+	{
+		strcpy_s(outIp, outIpSize, s_smallIdToEndpoint[smallId].ip);
+		*outPort = s_smallIdToEndpoint[smallId].port;
+		found = true;
+	}
+	LeaveCriticalSection(&s_smallIdToEndpointLock);
+	return found;
 }
 
 
@@ -487,7 +526,6 @@ static bool RecvExact(SOCKET sock, BYTE* buf, int len)
 	return true;
 }
 
-#if defined(MINECRAFT_SERVER_BUILD)
 static bool TryGetNumericRemoteIp(const sockaddr_in &remoteAddress, std::string *outIp)
 {
 	if (outIp == NULL)
@@ -506,7 +544,6 @@ static bool TryGetNumericRemoteIp(const sockaddr_in &remoteAddress, std::string 
 	*outIp = ip;
 	return true;
 }
-#endif
 
 void WinsockNetLayer::HandleDataReceived(BYTE fromSmallId, BYTE toSmallId, unsigned char* data, unsigned int dataSize)
 {
@@ -664,6 +701,16 @@ DWORD WINAPI WinsockNetLayer::AcceptThreadProc(LPVOID param)
 		s_smallIdToSocket[assignedSmallId] = clientSocket;
 		LeaveCriticalSection(&s_smallIdToSocketLock);
 
+		EnterCriticalSection(&s_smallIdToEndpointLock);
+		s_smallIdToEndpoint[assignedSmallId].ip[0] = '\0';
+		if (hasRemoteIp)
+		{
+			strcpy_s(s_smallIdToEndpoint[assignedSmallId].ip, sizeof(s_smallIdToEndpoint[assignedSmallId].ip), remoteIpForLog);
+		}
+		s_smallIdToEndpoint[assignedSmallId].port = ntohs(remoteAddress.sin_port);
+		s_smallIdToEndpoint[assignedSmallId].valid = hasRemoteIp;
+		LeaveCriticalSection(&s_smallIdToEndpointLock);
+
 		IQNetPlayer* qnetPlayer = &IQNet::m_player[assignedSmallId];
 
 		extern void Win64_SetupRemoteQNetPlayer(IQNetPlayer * player, BYTE smallId, bool isHost, bool isLocal);
@@ -761,6 +808,8 @@ DWORD WINAPI WinsockNetLayer::RecvThreadProc(LPVOID param)
 	s_disconnectedSmallIds.push_back(clientSmallId);
 	LeaveCriticalSection(&s_disconnectLock);
 
+	ClearSocketForSmallId(clientSmallId);
+
 	return 0;
 }
 
@@ -799,6 +848,8 @@ void WinsockNetLayer::CloseConnectionBySmallId(BYTE smallId)
 		}
 	}
 	LeaveCriticalSection(&s_connectionsLock);
+
+	ClearSocketForSmallId(smallId);
 }
 
 DWORD WINAPI WinsockNetLayer::ClientRecvThreadProc(LPVOID param)

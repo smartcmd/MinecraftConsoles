@@ -9,6 +9,8 @@ struct PlayerJoinData
 	float fallDistance;
 	float yRot;
 	float xRot;
+	bool sneaking;
+	bool sprinting;
 	
 	double x;
 	double y;
@@ -23,6 +25,8 @@ struct PlayerJoinData
 		, fallDistance(0.0f)
 		, yRot(0.0f)
 		, xRot(0.0f)
+		, sneaking(false)
+		, sprinting(false)
 		, x(0.0)
 		, y(0.0)
 		, z(0.0)
@@ -112,5 +116,23 @@ struct PlayerMoveData
 		, toY(0.0)
 		, toZ(0.0)
 	{
+	}
+};
+
+struct PlayerNetworkAddressData
+{
+	char hostName[256];
+	char hostString[256];
+	char hostAddress[64];
+	int port;
+	bool unresolved;
+
+	PlayerNetworkAddressData()
+		: port(0)
+		, unresolved(true)
+	{
+		hostName[0] = '\0';
+		hostString[0] = '\0';
+		hostAddress[0] = '\0';
 	}
 };

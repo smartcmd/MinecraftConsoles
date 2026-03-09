@@ -84,3 +84,68 @@ void NativePlayerCallbacks::Kick(String^ playerName, String^ reason)
 		Marshal::FreeHGlobal(IntPtr((void*)reasonPtr));
 	}
 }
+
+bool NativePlayerCallbacks::IsSneaking(String^ playerName)
+{
+	const char* namePtr = (const char*)(Marshal::StringToHGlobalAnsi(playerName)).ToPointer();
+	try
+	{
+		return NativeCallback_IsSneaking(namePtr) != 0;
+	}
+	finally
+	{
+		Marshal::FreeHGlobal(IntPtr((void*)namePtr));
+	}
+}
+
+void NativePlayerCallbacks::SetSneaking(String^ playerName, bool sneaking)
+{
+	const char* namePtr = (const char*)(Marshal::StringToHGlobalAnsi(playerName)).ToPointer();
+	try
+	{
+		NativeCallback_SetSneaking(namePtr, sneaking ? 1 : 0);
+	}
+	finally
+	{
+		Marshal::FreeHGlobal(IntPtr((void*)namePtr));
+	}
+}
+
+bool NativePlayerCallbacks::IsSprinting(String^ playerName)
+{
+	const char* namePtr = (const char*)(Marshal::StringToHGlobalAnsi(playerName)).ToPointer();
+	try
+	{
+		return NativeCallback_IsSprinting(namePtr) != 0;
+	}
+	finally
+	{
+		Marshal::FreeHGlobal(IntPtr((void*)namePtr));
+	}
+}
+
+void NativePlayerCallbacks::SetSprinting(String^ playerName, bool sprinting)
+{
+	const char* namePtr = (const char*)(Marshal::StringToHGlobalAnsi(playerName)).ToPointer();
+	try
+	{
+		NativeCallback_SetSprinting(namePtr, sprinting ? 1 : 0);
+	}
+	finally
+	{
+		Marshal::FreeHGlobal(IntPtr((void*)namePtr));
+	}
+}
+
+bool NativePlayerCallbacks::GetPlayerNetworkAddress(String^ playerName, PlayerNetworkAddressData* outData)
+{
+	const char* namePtr = (const char*)(Marshal::StringToHGlobalAnsi(playerName)).ToPointer();
+	try
+	{
+		return NativeCallback_GetPlayerNetworkAddress(namePtr, outData);
+	}
+	finally
+	{
+		Marshal::FreeHGlobal(IntPtr((void*)namePtr));
+	}
+}
