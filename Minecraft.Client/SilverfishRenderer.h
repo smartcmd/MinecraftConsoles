@@ -16,7 +16,7 @@ protected:
 	float getFlipDegrees(shared_ptr<LivingEntity> spider);
 
 public:
-	virtual void render(shared_ptr<Entity> _mob, double x, double y, double z, float rot, float a);
+	virtual void render(const shared_ptr<Entity> _mob, double x, double y, double z, float rot, float a);
 	virtual ResourceLocation *getTextureLocation(shared_ptr<Entity> mob);
 
 protected:

@@ -540,6 +540,7 @@ void LevelRenderer::renderEntities(Vec3 *cam, Culler *culler, float a)
 	TileEntityRenderDispatcher::xOff = (player->xOld + (player->x - player->xOld) * a);
 	TileEntityRenderDispatcher::yOff = (player->yOld + (player->y - player->yOld) * a);
 	TileEntityRenderDispatcher::zOff = (player->zOld + (player->z - player->zOld) * a);
+    EntityRenderDispatcher::instance->beginFrame();
 
 	mc->gameRenderer->turnOnLightLayer(a);		// 4J - brought forward from 1.8.2
 

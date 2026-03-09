@@ -17,6 +17,29 @@ private:
 
 public:
 	static EntityRenderDispatcher *instance;
+    struct ShadowTileKey
+    {
+        int x, y, z;
+        bool operator==(const ShadowTileKey &o) const
+        {
+            return x == o.x && y == o.y && z == o.z;
+        }
+    };
+
+    struct ShadowTileKeyHash
+    {
+        size_t operator()(const ShadowTileKey &k) const
+        {
+            return ((size_t)k.x * 73856093) ^ ((size_t)k.y * 19349663) ^ ((size_t)k.z * 83492791);
+        }
+    };
+
+    struct ShadowTileValue
+    {
+        int tileid;
+        int brightness;
+    };
+
 private:
 	Font *font;
 
@@ -39,11 +62,13 @@ private:
 	EntityRenderDispatcher();
 
 public:
+    unordered_map<ShadowTileKey, ShadowTileValue, ShadowTileKeyHash> shadowTileCache;
+    void beginFrame();
 	EntityRenderer *getRenderer(eINSTANCEOF e);
     EntityRenderer *getRenderer(shared_ptr<Entity> e);
     void prepare(Level *level, Textures *textures, Font *font, shared_ptr<LivingEntity> player, shared_ptr<LivingEntity> crosshairPickMob, Options *options, float a);
-    void render(shared_ptr<Entity> entity, float a);
-    void render(shared_ptr<Entity> entity, double x, double y, double z, float rot, float a, bool bItemFrame = false, bool bRenderPlayerShadow = true);
+    void render(const shared_ptr<Entity> entity, float a);
+    void render(const shared_ptr<Entity> entity, double x, double y, double z, float rot, float a, bool bItemFrame = false, bool bRenderPlayerShadow = true);
     void setLevel(Level *level);
     double distanceToSqr(double x, double y, double z);
     Font *getFont();

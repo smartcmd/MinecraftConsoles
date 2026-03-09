@@ -40,6 +40,7 @@ PathfinderMob::~PathfinderMob()
 
 void PathfinderMob::serverAiStep()
 {
+    auto self = shared_from_this();
 	if (fleeTime > 0)
 	{
 		if (--fleeTime == 0)
@@ -56,14 +57,14 @@ void PathfinderMob::serverAiStep()
 		attackTarget = findAttackTarget();
 		if (attackTarget != nullptr)
 		{
-			setPath(level->findPath(shared_from_this(), attackTarget, maxDist, true, false, false, true)); // 4J - changed to setPath from path =
+			setPath(level->findPath(self, attackTarget, maxDist, true, false, false, true)); // 4J - changed to setPath from path =
 		}
 	}
 	else
 	{
 		if (attackTarget->isAlive())
 		{
-			float d = attackTarget->distanceTo(shared_from_this());
+			float d = attackTarget->distanceTo(self);
 			if (canSee(attackTarget))
 			{
 				checkHurtTarget(attackTarget, d);
@@ -86,7 +87,7 @@ void PathfinderMob::serverAiStep()
 
 	if (!holdGround && (attackTarget != nullptr && (path == nullptr || random->nextInt(20) == 0)))
 	{
-		setPath(level->findPath(shared_from_this(), attackTarget, maxDist, true, false, false, true));// 4J - changed to setPath from path =
+		setPath(level->findPath(self, attackTarget, maxDist, true, false, false, true));// 4J - changed to setPath from path =
 	}
 	else if (!holdGround && ((path == nullptr && (random->nextInt(180) == 0) || fleeTime > 0) || (random->nextInt(120) == 0 || fleeTime > 0)))
 	{
@@ -111,18 +112,17 @@ void PathfinderMob::serverAiStep()
 	considerForExtraWandering( isDespawnProtected() );
 
 	int yFloor = Mth::floor(bb->y0 + 0.5f);
-
+    xRot = 0;
+    if (path == nullptr || random->nextInt(100) == 0)
+    {
+        this->Mob::serverAiStep();
+        setPath(nullptr); // 4J - changed to setPath from path =
+        return;
+    }
 	bool inWater = isInWater();
 	bool inLava = isInLava();
-	xRot = 0;
-	if (path == nullptr || random->nextInt(100) == 0)
-	{
-		this->Mob::serverAiStep();
-		setPath(nullptr);// 4J - changed to setPath from path =
-		return;
-	}
 
-	Vec3 *target = path->currentPos(shared_from_this());
+	Vec3 *target = path->currentPos(self);
 	double r = bbWidth * 2;
 	while (target != nullptr && target->distanceToSqr(x, target->y, z) < r * r)
 	{
@@ -132,7 +132,7 @@ void PathfinderMob::serverAiStep()
 			target = nullptr;
 			setPath(nullptr); // 4J - changed to setPath from path =
 		}
-		else target = path->currentPos(shared_from_this());
+		else target = path->currentPos(self);
 	}
 
 	jumping = false;
@@ -221,7 +221,7 @@ void PathfinderMob::findRandomStrollLocation(int quadrant/*=-1*/)	// 4J - added 
 	}
 	if (hasBest)
 	{
-		setPath(level->findPath(shared_from_this(), xBest, yBest, zBest, 10, true, false, false, true)); // 4J - changed to setPath from path =
+        setPath(level->findPath(shared_from_this(), xBest, yBest, zBest, 10, true, false, false, true)); // 4J - changed to setPath from path =
 	}
 }
 
